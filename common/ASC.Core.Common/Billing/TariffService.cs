@@ -124,7 +124,7 @@ namespace ASC.Core.Billing
             options.Options = ILog;
             options.CoreBaseSettings = CoreBaseSettings;
             options.Test = Configuration["core:payment:test"] == "true";
-            _ = int.TryParse(Configuration["core:payment:delay"], out var paymentDelay);
+            int.TryParse(Configuration["core:payment:delay"], out var paymentDelay);
             options.PaymentDelay = paymentDelay;
             options.Cache = TariffServiceStorage.Cache;
             options.Notify = TariffServiceStorage.Notify;
@@ -185,7 +185,7 @@ namespace ASC.Core.Billing
             Options = options;
             CoreBaseSettings = coreBaseSettings;
             Test = configuration["core:payment:test"] == "true";
-            _ = int.TryParse(configuration["core:payment:delay"], out var paymentDelay);
+            int.TryParse(configuration["core:payment:delay"], out var paymentDelay);
 
             PaymentDelay = paymentDelay;
 
@@ -218,7 +218,7 @@ namespace ASC.Core.Billing
 
                 if (billingConfigured && withRequestToPaymentSystem)
                 {
-                    _ = Task.Run(() =>
+                    Task.Run(() =>
                       {
                           try
                           {
@@ -261,7 +261,7 @@ namespace ASC.Core.Billing
 
             var q = QuotaService.GetTenantQuota(tariff.QuotaId);
             if (q == null) return;
-            _ = SaveBillingInfo(tenantId, Tuple.Create(tariff.QuotaId, tariff.DueDate));
+            SaveBillingInfo(tenantId, Tuple.Create(tariff.QuotaId, tariff.DueDate));
             if (q.Trial)
             {
                 // reset trial date
@@ -269,7 +269,7 @@ namespace ASC.Core.Billing
                 if (tenant != null)
                 {
                     tenant.VersionChanged = DateTime.UtcNow;
-                    _ = TenantService.SaveTenant(CoreSettings, tenant);
+                    TenantService.SaveTenant(CoreSettings, tenant);
                 }
             }
 
@@ -455,8 +455,8 @@ namespace ASC.Core.Billing
                 ButtonUrl = buttonUrl
             };
 
-            _ = CoreDbContext.AddOrUpdate(r => r.Buttons, efButton);
-            _ = CoreDbContext.SaveChanges();
+            CoreDbContext.AddOrUpdate(r => r.Buttons, efButton);
+            CoreDbContext.SaveChanges();
         }
 
 
@@ -491,8 +491,8 @@ namespace ASC.Core.Billing
                         CreateOn = DateTime.UtcNow
                     };
 
-                    _ = CoreDbContext.Tariffs.Add(efTariff);
-                    _ = CoreDbContext.SaveChanges();
+                    CoreDbContext.Tariffs.Add(efTariff);
+                    CoreDbContext.SaveChanges();
 
                     Cache.Remove(GetTariffCacheKey(tenant));
                     inserted = true;
@@ -506,7 +506,7 @@ namespace ASC.Core.Billing
                 if (t != null)
                 {
                     // update tenant.LastModified to flush cache in documents
-                    _ = TenantService.SaveTenant(CoreSettings, t);
+                    TenantService.SaveTenant(CoreSettings, t);
                 }
             }
             return inserted;
@@ -523,7 +523,7 @@ namespace ASC.Core.Billing
                 t.Tenant = -2;
             }
 
-            _ = CoreDbContext.SaveChanges();
+            CoreDbContext.SaveChanges();
 
             ClearCache(tenant);
         }
@@ -587,7 +587,7 @@ namespace ASC.Core.Billing
                         defaultQuota.Features = q.Features;
                         defaultQuota.Support = false;
 
-                        _ = QuotaService.SaveTenantQuota(defaultQuota);
+                        QuotaService.SaveTenantQuota(defaultQuota);
                     }
 
                     var unlimTariff = Tariff.CreateDefault();
@@ -692,9 +692,9 @@ namespace ASC.Core.Billing
         {
             if (services.TryAddScoped<ITariffService, TariffService>())
             {
-                _ = services.AddCoreDbContextService();
-                _ = services.TryAddSingleton<TariffServiceStorage>();
-                _ = services.TryAddScoped<IConfigureOptions<TariffService>, ConfigureTariffService>();
+                services.AddCoreDbContextService();
+                services.TryAddSingleton<TariffServiceStorage>();
+                services.TryAddScoped<IConfigureOptions<TariffService>, ConfigureTariffService>();
             }
 
             return services;

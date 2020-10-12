@@ -198,7 +198,7 @@ namespace ASC.Files.Thirdparty.Box
                 token = OAuth20TokenHelper.RefreshToken<BoxLoginProvider>(ConsumerFactory, token);
 
                 var dbDao = ServiceProvider.GetService<CachedProviderAccountDao>();
-                _ = dbDao.UpdateProviderInfo(id, new AuthData(token: token.ToJson()));
+                dbDao.UpdateProviderInfo(id, new AuthData(token: token.ToJson()));
             }
         }
 
@@ -322,8 +322,8 @@ namespace ASC.Files.Thirdparty.Box
         {
             if (services.TryAddScoped<BoxProviderInfo>())
             {
-                _ = services.TryAddScoped<BoxStorageDisposableWrapper>();
-                _ = services.TryAddSingleton<BoxProviderInfoHelper>();
+                services.TryAddScoped<BoxStorageDisposableWrapper>();
+                services.TryAddSingleton<BoxProviderInfoHelper>();
 
                 return services;
             }

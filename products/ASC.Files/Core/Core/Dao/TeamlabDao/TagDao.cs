@@ -87,7 +87,7 @@ namespace ASC.Files.Core.Data
 
             if (subject != Guid.Empty)
             {
-                _ = q.Where(r => r.Link.CreateBy == subject);
+                q.Where(r => r.Link.CreateBy == subject);
             }
 
             return FromQuery(q);
@@ -219,13 +219,13 @@ namespace ASC.Files.Core.Data
                 FilesDbContext.TagLink.RemoveRange(linksToRemove);
             }
 
-            _ = FilesDbContext.SaveChanges();
+            FilesDbContext.SaveChanges();
 
             var tagsToRemove = Query(FilesDbContext.Tag)
                 .Where(r => !Query(FilesDbContext.TagLink).Where(a => a.TagId == r.Id).Any());
 
             FilesDbContext.Tag.RemoveRange(tagsToRemove);
-            _ = FilesDbContext.SaveChanges();
+            FilesDbContext.SaveChanges();
         }
 
         private Tag SaveTag(Tag t, Dictionary<string, int> cacheTagId, DateTime createOn)
@@ -253,7 +253,7 @@ namespace ASC.Files.Core.Data
                     };
 
                     toAdd = FilesDbContext.Tag.Add(toAdd).Entity;
-                    _ = FilesDbContext.SaveChanges();
+                    FilesDbContext.SaveChanges();
                     id = toAdd.Id;
                 }
 
@@ -273,8 +273,8 @@ namespace ASC.Files.Core.Data
                 TagCount = t.Count
             };
 
-            _ = FilesDbContext.AddOrUpdate(r => r.TagLink, linkToInsert);
-            _ = FilesDbContext.SaveChanges();
+            FilesDbContext.AddOrUpdate(r => r.TagLink, linkToInsert);
+            FilesDbContext.SaveChanges();
 
             return t;
         }
@@ -324,7 +324,7 @@ namespace ASC.Files.Core.Data
                 f.TagCount = tag.Count;
             }
 
-            _ = FilesDbContext.SaveChanges();
+            FilesDbContext.SaveChanges();
         }
 
         public void RemoveTags(IEnumerable<Tag> tags)
@@ -374,14 +374,14 @@ namespace ASC.Files.Core.Data
                     .Where(r => r.EntryType == tag.EntryType);
 
                 FilesDbContext.TagLink.RemoveRange(toDelete);
-                _ = FilesDbContext.SaveChanges();
+                FilesDbContext.SaveChanges();
 
                 var count = Query(FilesDbContext.TagLink).Where(r => r.TagId == id).Count();
                 if (count == 0)
                 {
                     var tagToDelete = Query(FilesDbContext.Tag).Where(r => r.Id == id);
                     FilesDbContext.Tag.RemoveRange(tagToDelete);
-                    _ = FilesDbContext.SaveChanges();
+                    FilesDbContext.SaveChanges();
                 }
             }
         }
@@ -701,7 +701,7 @@ namespace ASC.Files.Core.Data
         {
             if (services.TryAddScoped<TagDao<string>>())
             {
-                _ = services.TryAddScoped<ITagDao<int>, TagDao<int>>();
+                services.TryAddScoped<ITagDao<int>, TagDao<int>>();
 
                 return services
                     .AddUserManagerService()

@@ -1432,8 +1432,8 @@ namespace ASC.Api.Documents
         [Create("favorites")]
         public bool AddFavorites(BaseBatchModel<JsonElement> model)
         {
-            _ = FileStorageServiceInt.AddToFavorites(model.FolderIds.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()), model.FileIds.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()));
-            _ = FileStorageService.AddToFavorites(model.FolderIds.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()), model.FileIds.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()));
+            FileStorageServiceInt.AddToFavorites(model.FolderIds.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()), model.FileIds.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()));
+            FileStorageService.AddToFavorites(model.FolderIds.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()), model.FileIds.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()));
             return true;
         }
 
@@ -1448,8 +1448,8 @@ namespace ASC.Api.Documents
         [Delete("favorites")]
         public bool DeleteFavorites(BaseBatchModel<JsonElement> model)
         {
-            _ = FileStorageServiceInt.DeleteFavorites(model.FolderIds.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()), model.FileIds.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()));
-            _ = FileStorageService.DeleteFavorites(model.FolderIds.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()), model.FileIds.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()));
+            FileStorageServiceInt.DeleteFavorites(model.FolderIds.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()), model.FileIds.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()));
+            FileStorageService.DeleteFavorites(model.FolderIds.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()), model.FileIds.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()));
             return true;
         }
 
@@ -1463,7 +1463,7 @@ namespace ASC.Api.Documents
         [Create("templates")]
         public bool AddTemplates(IEnumerable<int> fileIds)
         {
-            _ = FileStorageServiceInt.AddToTemplates(fileIds);
+            FileStorageServiceInt.AddToTemplates(fileIds);
             return true;
         }
 
@@ -1477,7 +1477,7 @@ namespace ASC.Api.Documents
         [Delete("templates")]
         public bool DeleteTemplates(IEnumerable<int> fileIds)
         {
-            _ = FileStorageServiceInt.DeleteTemplates(fileIds);
+            FileStorageServiceInt.DeleteTemplates(fileIds);
             return true;
         }
 
@@ -1950,7 +1950,7 @@ namespace ASC.Api.Documents
             }
             finally
             {
-                _ = context.RouteContext.HttpContext.Request.Body.Seek(0, SeekOrigin.Begin);
+                context.RouteContext.HttpContext.Request.Body.Seek(0, SeekOrigin.Begin);
             }
 
         }

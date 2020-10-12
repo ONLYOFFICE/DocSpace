@@ -343,7 +343,7 @@ namespace ASC.ApiSystem.Controllers
 
                     settings.Completed = false;
 
-                    _ = SettingsManager.Save(settings);
+                    SettingsManager.Save(settings);
                 }
                 catch (Exception e)
                 {
@@ -460,7 +460,7 @@ namespace ASC.ApiSystem.Controllers
                 quota.MaxFileSize = model.MaxFileSize;
             }
 
-            _ = HostedSolution.SaveTenantQuota(quota);
+            HostedSolution.SaveTenantQuota(quota);
 
             var tariff = new Tariff
             {
@@ -542,7 +542,7 @@ namespace ASC.ApiSystem.Controllers
 
             tenant.SetStatus(active ? TenantStatus.Active : TenantStatus.Suspended);
 
-            _ = HostedSolution.SaveTenant(tenant);
+            HostedSolution.SaveTenant(tenant);
 
             return Ok(new
             {

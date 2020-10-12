@@ -9,7 +9,7 @@ namespace ASC.Files.Core.Migrations.MySql.FilesDbContextMySql
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            _ = migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "files_bunch_objects",
                 columns: table => new
                 {
@@ -23,10 +23,10 @@ namespace ASC.Files.Core.Migrations.MySql.FilesDbContextMySql
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("PRIMARY", x => new { x.tenant_id, x.right_node });
+                    table.PrimaryKey("PRIMARY", x => new { x.tenant_id, x.right_node });
                 });
 
-            _ = migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "files_file",
                 columns: table => new
                 {
@@ -64,10 +64,10 @@ namespace ASC.Files.Core.Migrations.MySql.FilesDbContextMySql
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("PRIMARY", x => new { x.tenant_id, x.id, x.version });
+                    table.PrimaryKey("PRIMARY", x => new { x.tenant_id, x.id, x.version });
                 });
 
-            _ = migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "files_folder",
                 columns: table => new
                 {
@@ -92,10 +92,10 @@ namespace ASC.Files.Core.Migrations.MySql.FilesDbContextMySql
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("PK_files_folder", x => x.id);
+                    table.PrimaryKey("PK_files_folder", x => x.id);
                 });
 
-            _ = migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "files_folder_tree",
                 columns: table => new
                 {
@@ -105,10 +105,10 @@ namespace ASC.Files.Core.Migrations.MySql.FilesDbContextMySql
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("PRIMARY", x => new { x.parent_id, x.folder_id });
+                    table.PrimaryKey("PRIMARY", x => new { x.parent_id, x.folder_id });
                 });
 
-            _ = migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "files_security",
                 columns: table => new
                 {
@@ -128,10 +128,10 @@ namespace ASC.Files.Core.Migrations.MySql.FilesDbContextMySql
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("PRIMARY", x => new { x.tenant_id, x.entry_id, x.entry_type, x.subject });
+                    table.PrimaryKey("PRIMARY", x => new { x.tenant_id, x.entry_id, x.entry_type, x.subject });
                 });
 
-            _ = migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "files_tag",
                 columns: table => new
                 {
@@ -148,10 +148,10 @@ namespace ASC.Files.Core.Migrations.MySql.FilesDbContextMySql
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("PK_files_tag", x => x.id);
+                    table.PrimaryKey("PK_files_tag", x => x.id);
                 });
 
-            _ = migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "files_tag_link",
                 columns: table => new
                 {
@@ -169,10 +169,10 @@ namespace ASC.Files.Core.Migrations.MySql.FilesDbContextMySql
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("PRIMARY", x => new { x.tenant_id, x.tag_id, x.entry_id, x.entry_type });
+                    table.PrimaryKey("PRIMARY", x => new { x.tenant_id, x.tag_id, x.entry_id, x.entry_type });
                 });
 
-            _ = migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "files_thirdparty_account",
                 columns: table => new
                 {
@@ -205,10 +205,10 @@ namespace ASC.Files.Core.Migrations.MySql.FilesDbContextMySql
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("PK_files_thirdparty_account", x => x.id);
+                    table.PrimaryKey("PK_files_thirdparty_account", x => x.id);
                 });
 
-            _ = migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "files_thirdparty_app",
                 columns: table => new
                 {
@@ -226,10 +226,10 @@ namespace ASC.Files.Core.Migrations.MySql.FilesDbContextMySql
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("PRIMARY", x => new { x.user_id, x.app });
+                    table.PrimaryKey("PRIMARY", x => new { x.user_id, x.app });
                 });
 
-            _ = migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "files_thirdparty_id_mapping",
                 columns: table => new
                 {
@@ -243,71 +243,71 @@ namespace ASC.Files.Core.Migrations.MySql.FilesDbContextMySql
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("PRIMARY", x => x.hash_id);
+                    table.PrimaryKey("PRIMARY", x => x.hash_id);
                 });
 
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "left_node",
                 table: "files_bunch_objects",
                 column: "left_node");
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "folder_id",
                 table: "files_file",
                 column: "folder_id");
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "id",
                 table: "files_file",
                 column: "id");
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "modified_on",
                 table: "files_file",
                 column: "modified_on");
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "modified_on",
                 table: "files_folder",
                 column: "modified_on");
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "parent_id",
                 table: "files_folder",
                 columns: new[] { "tenant_id", "parent_id" });
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "folder_id",
                 table: "files_folder_tree",
                 column: "folder_id");
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "owner",
                 table: "files_security",
                 column: "owner");
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "tenant_id",
                 table: "files_security",
                 columns: new[] { "tenant_id", "entry_type", "entry_id", "owner" });
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "name",
                 table: "files_tag",
                 columns: new[] { "tenant_id", "owner", "name", "flag" });
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "create_on",
                 table: "files_tag_link",
                 column: "create_on");
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "entry_id",
                 table: "files_tag_link",
                 columns: new[] { "tenant_id", "entry_id", "entry_type" });
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "index_1",
                 table: "files_thirdparty_id_mapping",
                 columns: new[] { "tenant_id", "hash_id" });
@@ -316,34 +316,34 @@ namespace ASC.Files.Core.Migrations.MySql.FilesDbContextMySql
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "files_bunch_objects");
 
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "files_file");
 
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "files_folder");
 
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "files_folder_tree");
 
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "files_security");
 
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "files_tag");
 
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "files_tag_link");
 
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "files_thirdparty_account");
 
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "files_thirdparty_app");
 
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "files_thirdparty_id_mapping");
 
         }

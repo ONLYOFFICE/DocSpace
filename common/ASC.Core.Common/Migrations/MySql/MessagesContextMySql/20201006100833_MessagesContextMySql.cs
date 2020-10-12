@@ -10,7 +10,7 @@ namespace ASC.Core.Common.Migrations.MySql.MessagesContextMySql
         protected override void Up(MigrationBuilder migrationBuilder)
         {
 
-            _ = migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "audit_events",
                 columns: table => new
                 {
@@ -46,10 +46,10 @@ namespace ASC.Core.Common.Migrations.MySql.MessagesContextMySql
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("PK_audit_events", x => x.id);
+                    table.PrimaryKey("PK_audit_events", x => x.id);
                 });
 
-            _ = migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "login_events",
                 columns: table => new
                 {
@@ -82,20 +82,20 @@ namespace ASC.Core.Common.Migrations.MySql.MessagesContextMySql
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("PK_login_events", x => x.id);
+                    table.PrimaryKey("PK_login_events", x => x.id);
                 });
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "date",
                 table: "audit_events",
                 columns: new[] { "tenant_id", "date" });
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "date",
                 table: "login_events",
                 column: "date");
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "tenant_id",
                 table: "login_events",
                 columns: new[] { "tenant_id", "user_id" });
@@ -104,10 +104,10 @@ namespace ASC.Core.Common.Migrations.MySql.MessagesContextMySql
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "audit_events");
 
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "login_events");
 
         }

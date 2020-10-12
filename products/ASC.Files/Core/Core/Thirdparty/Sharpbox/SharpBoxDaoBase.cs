@@ -182,7 +182,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
                     m.HashId = newHashID;
                 }
 
-                _ = FilesDbContext.SaveChanges();
+                FilesDbContext.SaveChanges();
 
                 var securityForUpdate = Query(FilesDbContext.Security)
                     .Where(r => r.EntryId == oldHashID)
@@ -193,7 +193,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
                     s.EntryId = newHashID;
                 }
 
-                _ = FilesDbContext.SaveChanges();
+                FilesDbContext.SaveChanges();
 
                 var linkForUpdate = Query(FilesDbContext.TagLink)
                     .Where(r => r.EntryId == oldHashID)
@@ -204,7 +204,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
                     l.EntryId = newHashID;
                 }
 
-                _ = FilesDbContext.SaveChanges();
+                FilesDbContext.SaveChanges();
             }
 
             tx.Commit();

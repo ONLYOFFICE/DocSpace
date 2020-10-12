@@ -59,7 +59,7 @@ namespace ASC.FederatedLogin.Helpers
             var sb = new StringBuilder();
             for (var i = 0; i < hash.Length; i++)
             {
-                _ = sb.Append(hash[i].ToString("X2"));
+                sb.Append(hash[i].ToString("X2"));
             }
             return sb.ToString();
         }

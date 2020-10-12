@@ -94,9 +94,9 @@ namespace ASC.Employee.Core.Controllers
             }
 
             group.Name = groupModel.GroupName ?? group.Name;
-            _ = UserManager.SaveGroupInfo(group);
+            UserManager.SaveGroupInfo(group);
 
-            _ = RemoveMembersFrom(new GroupModel { Groupid = groupid, Members = UserManager.GetUsersByGroup(groupid, EmployeeStatus.All).Select(u => u.ID).Where(id => !groupModel.Members.Contains(id)) });
+            RemoveMembersFrom(new GroupModel { Groupid = groupid, Members = UserManager.GetUsersByGroup(groupid, EmployeeStatus.All).Select(u => u.ID).Where(id => !groupModel.Members.Contains(id)) });
 
             TransferUserToDepartment(groupModel.GroupManager, @group, true);
             if (groupModel.Members != null)
@@ -153,8 +153,8 @@ namespace ASC.Employee.Core.Controllers
         [Create("{groupid}/members")]
         public GroupWrapperFull SetMembersTo(GroupModel groupModel)
         {
-            _ = RemoveMembersFrom(new GroupModel { Groupid = groupModel.Groupid, Members = UserManager.GetUsersByGroup(groupModel.Groupid).Select(x => x.ID) });
-            _ = AddMembersTo(groupModel);
+            RemoveMembersFrom(new GroupModel { Groupid = groupModel.Groupid, Members = UserManager.GetUsersByGroup(groupModel.Groupid).Select(x => x.ID) });
+            AddMembersTo(groupModel);
             return GetById(groupModel.Groupid);
         }
 
@@ -205,7 +205,7 @@ namespace ASC.Employee.Core.Controllers
 
             var user = UserManager.GetUsers(userId);
             UserManager.RemoveUserFromGroup(user.ID, @group.ID);
-            _ = UserManager.SaveUserInfo(user);
+            UserManager.SaveUserInfo(user);
         }
 
         private void TransferUserToDepartment(Guid userId, GroupInfo group, bool setAsManager)

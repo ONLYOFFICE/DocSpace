@@ -31,7 +31,7 @@ namespace ASC.Core.Common.EF
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            _ = ModelBuilderWrapper
+            ModelBuilderWrapper
                   .From(modelBuilder, Provider)
                 .AddAcl()
                 .AddDbButton()

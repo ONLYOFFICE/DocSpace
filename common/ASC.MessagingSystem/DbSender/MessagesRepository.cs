@@ -72,7 +72,7 @@ namespace ASC.MessagingSystem.DbSender
             timerStarted = false;
 
             ClearTimer = new Timer(DeleteOldEvents);
-            _ = ClearTimer.Change(new TimeSpan(0), TimeSpan.FromDays(1));
+            ClearTimer.Change(new TimeSpan(0), TimeSpan.FromDays(1));
             Log = options.CurrentValue;
             ServiceProvider = serviceProvider;
         }
@@ -97,7 +97,7 @@ namespace ASC.MessagingSystem.DbSender
 
                 if (!timerStarted)
                 {
-                    _ = Timer.Change(0, 100);
+                    Timer.Change(0, 100);
                     timerStarted = true;
                 }
             }
@@ -112,7 +112,7 @@ namespace ASC.MessagingSystem.DbSender
             {
                 lock (Cache)
                 {
-                    _ = Timer.Change(-1, -1);
+                    Timer.Change(-1, -1);
                     timerStarted = false;
 
                     events = new List<EventMessage>(Cache.Values);
@@ -193,8 +193,8 @@ namespace ASC.MessagingSystem.DbSender
                     });
             }
 
-            _ = dbContext.LoginEvents.Add(le);
-            _ = dbContext.SaveChanges();
+            dbContext.LoginEvents.Add(le);
+            dbContext.SaveChanges();
         }
 
         private static void AddAuditEvent(EventMessage message, MessagesContext dbContext)
@@ -222,8 +222,8 @@ namespace ASC.MessagingSystem.DbSender
                     });
             }
 
-            _ = dbContext.AuditEvents.Add(ae);
-            _ = dbContext.SaveChanges();
+            dbContext.AuditEvents.Add(ae);
+            dbContext.SaveChanges();
         }
 
         private static IList<string> GetSafeDescription(IEnumerable<string> description)
@@ -309,7 +309,7 @@ namespace ASC.MessagingSystem.DbSender
                 if (!ids.Any()) return;
 
                 table.RemoveRange(ids);
-                _ = ef.SaveChanges();
+                ef.SaveChanges();
 
             } while (ids.Any());
         }

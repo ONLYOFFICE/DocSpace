@@ -132,7 +132,7 @@ namespace System.Web
                                                         rewrittenUri.Host + ":" + requestUri.Port);
                         }
                         //Hack:
-                        _ = typeof(HttpRequest).InvokeMember("_url",
+                        typeof(HttpRequest).InvokeMember("_url",
                                                           BindingFlags.NonPublic | BindingFlags.SetField |
                                                           BindingFlags.Instance,
                                                           null, request,
@@ -204,7 +204,7 @@ namespace System.Web
                 s = HttpUtility.UrlDecode(s);
             }
 
-            _ = Uri.TryCreate(s, UriKind.Absolute, out var result);
+            Uri.TryCreate(s, UriKind.Absolute, out var result);
             return result;
         }
 

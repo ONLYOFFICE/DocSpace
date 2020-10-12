@@ -305,8 +305,8 @@ namespace ASC.Web.Core.WhiteLabel
                 var logoSize = image.Size;
                 var logoFileName = BuildLogoFileName(type, logoFileExt, false);
 
-                _ = memory.Seek(0, SeekOrigin.Begin);
-                _ = store.Save(logoFileName, memory);
+                memory.Seek(0, SeekOrigin.Begin);
+                store.Save(logoFileName, memory);
             }
 
             tenantWhiteLabelSettings.SetExt(type, logoFileExt);
@@ -522,7 +522,7 @@ namespace ASC.Web.Core.WhiteLabel
                 //fileExt = CommonPhotoManager.GetImgFormatName(imgFormat);
 
                 using var stream2 = new MemoryStream(data);
-                _ = store.Save(fileName, stream2);
+                store.Save(fileName, stream2);
             }
             catch (ArgumentException error)
             {
@@ -545,7 +545,7 @@ namespace ASC.Web.Core.WhiteLabel
 
         public void Save(TenantWhiteLabelSettings tenantWhiteLabelSettings, int tenantId, TenantLogoManager tenantLogoManager, bool restore = false)
         {
-            _ = SettingsManager.SaveForTenant(tenantWhiteLabelSettings, tenantId);
+            SettingsManager.SaveForTenant(tenantWhiteLabelSettings, tenantId);
 
             if (tenantId == Tenant.DEFAULT_TENANT)
             {

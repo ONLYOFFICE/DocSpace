@@ -105,11 +105,11 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
                 if (x.FileEntryType == FileEntryType.File)
                 {
-                    _ = ProcessedFile(((File<T>)x).ID);
+                    ProcessedFile(((File<T>)x).ID);
                 }
                 else
                 {
-                    _ = ProcessedFolder(((Folder<T>)x).ID);
+                    ProcessedFolder(((Folder<T>)x).ID);
                 }
                 ProgressStep();
             });

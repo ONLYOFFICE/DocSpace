@@ -150,7 +150,7 @@ namespace ASC.Web.Core.Sms
             }
 
             var cacheCheck = BuildCacheKey("check" + phone);
-            _ = int.TryParse(CheckCache.Get<string>(cacheCheck), out var counter);
+            int.TryParse(CheckCache.Get<string>(cacheCheck), out var counter);
             if (++counter > AttemptCount)
                 return Result.TooMuch;
             CheckCache.Insert(cacheCheck, counter.ToString(CultureInfo.InvariantCulture), DateTime.UtcNow.Add(StoreInterval));

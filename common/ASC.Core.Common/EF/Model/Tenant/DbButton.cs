@@ -28,29 +28,29 @@ namespace ASC.Core.Common.EF
     {
         public static ModelBuilderWrapper AddDbButton(this ModelBuilderWrapper modelBuilder)
         {
-            _ = modelBuilder
+            modelBuilder
                 .Add(MySqlAddDbButton, Provider.MySql)
                 .Add(PgSqlAddDbButton, Provider.Postgre);
             return modelBuilder;
         }
         public static void MySqlAddDbButton(this ModelBuilder modelBuilder)
         {
-            _ = modelBuilder.Entity<DbButton>(entity =>
+            modelBuilder.Entity<DbButton>(entity =>
             {
-                _ = entity.HasKey(e => new { e.TariffId, e.PartnerId })
+                entity.HasKey(e => new { e.TariffId, e.PartnerId })
                     .HasName("PRIMARY");
 
-                _ = entity.ToTable("tenants_buttons");
+                entity.ToTable("tenants_buttons");
 
-                _ = entity.Property(e => e.TariffId).HasColumnName("tariff_id");
+                entity.Property(e => e.TariffId).HasColumnName("tariff_id");
 
-                _ = entity.Property(e => e.PartnerId)
+                entity.Property(e => e.PartnerId)
                     .HasColumnName("partner_id")
                     .HasColumnType("varchar(50)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.ButtonUrl)
+                entity.Property(e => e.ButtonUrl)
                     .IsRequired()
                     .HasColumnName("button_url")
                     .HasColumnType("text")
@@ -60,20 +60,20 @@ namespace ASC.Core.Common.EF
         }
         public static void PgSqlAddDbButton(this ModelBuilder modelBuilder)
         {
-            _ = modelBuilder.Entity<DbButton>(entity =>
+            modelBuilder.Entity<DbButton>(entity =>
             {
-                _ = entity.HasKey(e => new { e.TariffId, e.PartnerId })
+                entity.HasKey(e => new { e.TariffId, e.PartnerId })
                     .HasName("tenants_buttons_pkey");
 
-                _ = entity.ToTable("tenants_buttons", "onlyoffice");
+                entity.ToTable("tenants_buttons", "onlyoffice");
 
-                _ = entity.Property(e => e.TariffId).HasColumnName("tariff_id");
+                entity.Property(e => e.TariffId).HasColumnName("tariff_id");
 
-                _ = entity.Property(e => e.PartnerId)
+                entity.Property(e => e.PartnerId)
                     .HasColumnName("partner_id")
                     .HasMaxLength(50);
 
-                _ = entity.Property(e => e.ButtonUrl)
+                entity.Property(e => e.ButtonUrl)
                     .IsRequired()
                     .HasColumnName("button_url");
             });

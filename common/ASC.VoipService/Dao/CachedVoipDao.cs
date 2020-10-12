@@ -117,7 +117,7 @@ namespace ASC.VoipService.Dao
         {
             if (services.TryAddScoped<VoipDao, CachedVoipDao>())
             {
-                _ = services.TryAddSingleton<VoipDaoCache>();
+                services.TryAddSingleton<VoipDaoCache>();
 
                 return services
                     .AddDbContextManagerService<VoipDbContext>()

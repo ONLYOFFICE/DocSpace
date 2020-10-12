@@ -46,7 +46,7 @@ namespace ASC.Core.Caching
 
         public IEnumerable<AzRecord> Get(string objectId)
         {
-            _ = byObjectId.TryGetValue(objectId ?? string.Empty, out var aces);
+            byObjectId.TryGetValue(objectId ?? string.Empty, out var aces);
             return aces ?? new List<AzRecord>();
         }
 
@@ -59,7 +59,7 @@ namespace ASC.Core.Caching
             {
                 byObjectId[id] = new List<AzRecord>();
             }
-            _ = byObjectId[id].RemoveAll(a => a.SubjectId == r.SubjectId && a.ActionId == r.ActionId); // remove escape, see DbAzService
+            byObjectId[id].RemoveAll(a => a.SubjectId == r.SubjectId && a.ActionId == r.ActionId); // remove escape, see DbAzService
             byObjectId[id].Add(r);
         }
 
@@ -70,7 +70,7 @@ namespace ASC.Core.Caching
             var id = r.ObjectId ?? string.Empty;
             if (byObjectId.ContainsKey(id))
             {
-                _ = byObjectId[id].RemoveAll(a => a.SubjectId == r.SubjectId && a.ActionId == r.ActionId && a.Reaction == r.Reaction);
+                byObjectId[id].RemoveAll(a => a.SubjectId == r.SubjectId && a.ActionId == r.ActionId && a.Reaction == r.Reaction);
             }
         }
 

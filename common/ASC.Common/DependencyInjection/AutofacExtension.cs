@@ -74,13 +74,13 @@ namespace ASC.Common.DependencyInjection
                 var config = new ConfigurationBuilder();
                 if (p.Item1)
                 {
-                    _ = config.SetBasePath(configuration["pathToConf"]);
+                    config.SetBasePath(configuration["pathToConf"]);
                 }
-                _ = config.AddJsonFile(p.Item2);
+                config.AddJsonFile(p.Item2);
 
                 var root = config.Build();
                 var module = new ConfigurationModule(root);
-                _ = builder.RegisterModule(module);
+                builder.RegisterModule(module);
 
                 if (p.Item2 == "autofac.products.json")
                 {

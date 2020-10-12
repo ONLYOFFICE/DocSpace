@@ -233,8 +233,8 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
                             if (FolderDao.UseRecursiveOperation(folder.ID, toFolderId))
                             {
-                                _ = MoveOrCopyFiles(scope, FileDao.GetFiles(folder.ID), newFolder, copy);
-                                _ = MoveOrCopyFolders(scope, FolderDao.GetFolders(folder.ID).Select(f => f.ID).ToList(), newFolder, copy);
+                                MoveOrCopyFiles(scope, FileDao.GetFiles(folder.ID), newFolder, copy);
+                                MoveOrCopyFolders(scope, FolderDao.GetFolders(folder.ID).Select(f => f.ID).ToList(), newFolder, copy);
 
                                 if (!copy)
                                 {

@@ -177,7 +177,7 @@ namespace ASC.Files.Thirdparty.OneDrive
     {
         public static DIHelper AddOneDriveTagDaoService(this DIHelper services)
         {
-            _ = services.TryAddScoped<OneDriveTagDao>();
+            services.TryAddScoped<OneDriveTagDao>();
 
             return services;
         }

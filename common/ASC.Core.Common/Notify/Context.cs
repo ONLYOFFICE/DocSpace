@@ -93,7 +93,7 @@ namespace ASC.Notify
         {
             lock (channels)
             {
-                _ = channels.Remove(senderName);
+                channels.Remove(senderName);
             }
         }
 
@@ -101,7 +101,7 @@ namespace ASC.Notify
         {
             lock (channels)
             {
-                _ = channels.TryGetValue(senderName, out var channel);
+                channels.TryGetValue(senderName, out var channel);
                 return channel;
             }
         }

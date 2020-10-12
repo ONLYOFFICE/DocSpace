@@ -189,7 +189,7 @@ namespace ASC.Files.Thirdparty.SharePoint
                 {
                     str.CopyTo(tempBuffer);
                     tempBuffer.Flush();
-                    _ = tempBuffer.Seek(offset, SeekOrigin.Begin);
+                    tempBuffer.Seek(offset, SeekOrigin.Begin);
                 }
             }
 
@@ -673,8 +673,8 @@ namespace ASC.Files.Thirdparty.SharePoint
     {
         public static DIHelper AddSharePointProviderInfoService(this DIHelper services)
         {
-            _ = services.TryAddScoped<SharePointProviderInfo>();
-            _ = services.TryAddSingleton<SharePointProviderInfoHelper>();
+            services.TryAddScoped<SharePointProviderInfo>();
+            services.TryAddSingleton<SharePointProviderInfoHelper>();
 
             return services;
         }

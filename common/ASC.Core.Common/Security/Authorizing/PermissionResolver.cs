@@ -128,7 +128,7 @@ namespace ASC.Core.Security.Authorizing
     {
         public static DIHelper AddPermissionResolverService(this DIHelper services)
         {
-            _ = services.TryAddScoped(typeof(IPermissionResolver), typeof(PermissionResolver));
+            services.TryAddScoped(typeof(IPermissionResolver), typeof(PermissionResolver));
             return services.AddAzManagerService();
         }
     }

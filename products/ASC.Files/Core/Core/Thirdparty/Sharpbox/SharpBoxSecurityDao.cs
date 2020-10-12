@@ -95,7 +95,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
     {
         public static DIHelper AddSharpBoxSecurityDaoService(this DIHelper services)
         {
-            _ = services.TryAddScoped<SharpBoxSecurityDao>();
+            services.TryAddScoped<SharpBoxSecurityDao>();
 
             return services;
         }

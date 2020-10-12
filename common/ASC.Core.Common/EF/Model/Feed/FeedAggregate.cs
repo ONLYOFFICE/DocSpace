@@ -40,153 +40,153 @@ namespace ASC.Core.Common.EF.Model
     {
         public static ModelBuilderWrapper AddFeedAggregate(this ModelBuilderWrapper modelBuilder)
         {
-            _ = modelBuilder
+            modelBuilder
                 .Add(MySqlAddFeedAggregate, Provider.MySql)
                 .Add(PgSqlAddFeedAggregate, Provider.Postgre);
             return modelBuilder;
         }
         public static void MySqlAddFeedAggregate(this ModelBuilder modelBuilder)
         {
-            _ = modelBuilder.Entity<FeedAggregate>(entity =>
+            modelBuilder.Entity<FeedAggregate>(entity =>
             {
-                _ = entity.ToTable("feed_aggregate");
+                entity.ToTable("feed_aggregate");
 
-                _ = entity.HasIndex(e => new { e.Tenant, e.AggregateDate })
+                entity.HasIndex(e => new { e.Tenant, e.AggregateDate })
                     .HasName("aggregated_date");
 
-                _ = entity.HasIndex(e => new { e.Tenant, e.ModifiedDate })
+                entity.HasIndex(e => new { e.Tenant, e.ModifiedDate })
                     .HasName("modified_date");
 
-                _ = entity.HasIndex(e => new { e.Tenant, e.Product })
+                entity.HasIndex(e => new { e.Tenant, e.Product })
                     .HasName("product");
 
-                _ = entity.Property(e => e.Id)
+                entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("varchar(88)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.AggregateDate)
+                entity.Property(e => e.AggregateDate)
                     .HasColumnName("aggregated_date")
                     .HasColumnType("datetime");
 
-                _ = entity.Property(e => e.Author)
+                entity.Property(e => e.Author)
                     .IsRequired()
                     .HasColumnName("author")
                     .HasColumnType("char(38)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.CreatedDate)
+                entity.Property(e => e.CreatedDate)
                     .HasColumnName("created_date")
                     .HasColumnType("datetime");
 
-                _ = entity.Property(e => e.GroupId)
+                entity.Property(e => e.GroupId)
                     .HasColumnName("group_id")
                     .HasColumnType("varchar(70)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.Json)
+                entity.Property(e => e.Json)
                     .IsRequired()
                     .HasColumnName("json")
                     .HasColumnType("mediumtext")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.Keywords)
+                entity.Property(e => e.Keywords)
                     .HasColumnName("keywords")
                     .HasColumnType("text")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.ModifiedBy)
+                entity.Property(e => e.ModifiedBy)
                     .IsRequired()
                     .HasColumnName("modified_by")
                     .HasColumnType("char(38)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.ModifiedDate)
+                entity.Property(e => e.ModifiedDate)
                     .HasColumnName("modified_date")
                     .HasColumnType("datetime");
 
-                _ = entity.Property(e => e.Module)
+                entity.Property(e => e.Module)
                     .IsRequired()
                     .HasColumnName("module")
                     .HasColumnType("varchar(50)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.Product)
+                entity.Property(e => e.Product)
                     .IsRequired()
                     .HasColumnName("product")
                     .HasColumnType("varchar(50)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.Tenant).HasColumnName("tenant");
+                entity.Property(e => e.Tenant).HasColumnName("tenant");
             });
         }
         public static void PgSqlAddFeedAggregate(this ModelBuilder modelBuilder)
         {
-            _ = modelBuilder.Entity<FeedAggregate>(entity =>
+            modelBuilder.Entity<FeedAggregate>(entity =>
             {
-                _ = entity.ToTable("feed_aggregate", "onlyoffice");
+                entity.ToTable("feed_aggregate", "onlyoffice");
 
-                _ = entity.HasIndex(e => new { e.Tenant, e.AggregateDate })
+                entity.HasIndex(e => new { e.Tenant, e.AggregateDate })
                     .HasName("aggregated_date");
 
-                _ = entity.HasIndex(e => new { e.Tenant, e.ModifiedDate })
+                entity.HasIndex(e => new { e.Tenant, e.ModifiedDate })
                     .HasName("modified_date");
 
-                _ = entity.HasIndex(e => new { e.Tenant, e.Product })
+                entity.HasIndex(e => new { e.Tenant, e.Product })
                     .HasName("product");
 
-                _ = entity.Property(e => e.Id)
+                entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasMaxLength(88);
 
-                _ = entity.Property(e => e.AggregateDate).HasColumnName("aggregated_date");
+                entity.Property(e => e.AggregateDate).HasColumnName("aggregated_date");
 
-                _ = entity.Property(e => e.Author)
+                entity.Property(e => e.Author)
                     .IsRequired()
                     .HasColumnName("author")
                     .HasMaxLength(38)
                     .IsFixedLength();
 
-                _ = entity.Property(e => e.CreatedDate).HasColumnName("created_date");
+                entity.Property(e => e.CreatedDate).HasColumnName("created_date");
 
-                _ = entity.Property(e => e.GroupId)
+                entity.Property(e => e.GroupId)
                     .HasColumnName("group_id")
                     .HasMaxLength(70)
                     .HasDefaultValueSql("NULL");
 
-                _ = entity.Property(e => e.Json)
+                entity.Property(e => e.Json)
                     .IsRequired()
                     .HasColumnName("json");
 
-                _ = entity.Property(e => e.Keywords).HasColumnName("keywords");
+                entity.Property(e => e.Keywords).HasColumnName("keywords");
 
-                _ = entity.Property(e => e.ModifiedBy)
+                entity.Property(e => e.ModifiedBy)
                     .IsRequired()
                     .HasColumnName("modified_by")
                     .HasMaxLength(38)
                     .IsFixedLength();
 
-                _ = entity.Property(e => e.ModifiedDate).HasColumnName("modified_date");
+                entity.Property(e => e.ModifiedDate).HasColumnName("modified_date");
 
-                _ = entity.Property(e => e.Module)
+                entity.Property(e => e.Module)
                     .IsRequired()
                     .HasColumnName("module")
                     .HasMaxLength(50);
 
-                _ = entity.Property(e => e.Product)
+                entity.Property(e => e.Product)
                     .IsRequired()
                     .HasColumnName("product")
                     .HasMaxLength(50);
 
-                _ = entity.Property(e => e.Tenant).HasColumnName("tenant");
+                entity.Property(e => e.Tenant).HasColumnName("tenant");
             });
         }
     }

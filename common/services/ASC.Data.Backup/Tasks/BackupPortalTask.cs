@@ -82,7 +82,7 @@ namespace ASC.Data.Backup.Tasks
         public override void RunJob()
         {
             Logger.DebugFormat("begin backup {0}", TenantId);
-            _ = TenantManager.SetCurrentTenant(TenantId);
+            TenantManager.SetCurrentTenant(TenantId);
 
 
             using (var writer = new ZipWriteOperator(BackupFilePath))
@@ -157,11 +157,11 @@ namespace ASC.Data.Backup.Tasks
 
             if (!Directory.Exists(schemeDir))
             {
-                _ = Directory.CreateDirectory(schemeDir);
+                Directory.CreateDirectory(schemeDir);
             }
             if (!Directory.Exists(dataDir))
             {
-                _ = Directory.CreateDirectory(dataDir);
+                Directory.CreateDirectory(dataDir);
             }
 
             var dict = tables.ToDictionary(t => t, SelectCount);
@@ -219,12 +219,12 @@ namespace ASC.Data.Backup.Tasks
                     command.CommandText = string.Format("SHOW CREATE TABLE `{0}`", t);
                     var createScheme = ExecuteList(command);
                     var creates = new StringBuilder();
-                    _ = creates.AppendFormat("DROP TABLE IF EXISTS `{0}`;", t);
-                    _ = creates.AppendLine();
-                    _ = creates.Append(createScheme
+                    creates.AppendFormat("DROP TABLE IF EXISTS `{0}`;", t);
+                    creates.AppendLine();
+                    creates.Append(createScheme
                             .Select(r => Convert.ToString(r[1]))
                             .FirstOrDefault());
-                    _ = creates.Append(";");
+                    creates.Append(";");
 
                     var path = Path.Combine(dir, t);
                     using (var stream = File.OpenWrite(path))
@@ -253,7 +253,7 @@ namespace ASC.Data.Backup.Tasks
                 using var connection = DbFactory.OpenConnection();
                 using var analyzeCommand = connection.CreateCommand();
                 analyzeCommand.CommandText = $"analyze table {t}";
-                _ = analyzeCommand.ExecuteNonQuery();
+                analyzeCommand.ExecuteNonQuery();
                 using var command = connection.CreateCommand();
                 command.CommandText = "select TABLE_ROWS from INFORMATION_SCHEMA.TABLES where TABLE_NAME = '" + t + "'";
                 return int.Parse(command.ExecuteScalar().ToString());
@@ -450,7 +450,7 @@ namespace ASC.Data.Backup.Tasks
 
                 if (!Directory.Exists(storageDir))
                 {
-                    _ = Directory.CreateDirectory(storageDir);
+                    Directory.CreateDirectory(storageDir);
                 }
 
                 var tasks = new List<Task>(TasksLimit);
@@ -470,7 +470,7 @@ namespace ASC.Data.Backup.Tasks
             var restoreInfoXml = new XElement("storage_restore", files.Select(file => (object)file.ToXElement()).ToArray());
 
             var tmpPath = Path.Combine(subDir, KeyHelper.GetStorageRestoreInfoZipKey());
-            _ = Directory.CreateDirectory(Path.GetDirectoryName(tmpPath));
+            Directory.CreateDirectory(Path.GetDirectoryName(tmpPath));
 
             using (var tmpFile = File.OpenWrite(tmpPath))
             {
@@ -496,7 +496,7 @@ namespace ASC.Data.Backup.Tasks
 
             if (!Directory.Exists(dirName) && !string.IsNullOrEmpty(dirName))
             {
-                _ = Directory.CreateDirectory(dirName);
+                Directory.CreateDirectory(dirName);
             }
 
             if (!WorkContext.IsMono && filePath.Length > MaxLength)
@@ -671,7 +671,7 @@ namespace ASC.Data.Backup.Tasks
                 while (result.Read())
                 {
                     var objects = new object[result.FieldCount];
-                    _ = result.GetValues(objects);
+                    result.GetValues(objects);
                     list.Add(objects);
                 }
             }

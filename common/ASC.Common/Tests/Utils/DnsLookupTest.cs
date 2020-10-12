@@ -44,7 +44,7 @@ namespace ASC.Common.Tests.Utils
 
             var dnsLoopup = new DnsLookup();
 
-            _ = Assert.Throws<ArgumentException>(() => dnsLoopup.IsDomainExists(domain), "domainName");
+            Assert.Throws<ArgumentException>(() => dnsLoopup.IsDomainExists(domain), "domainName");
         }
 
         [Test]
@@ -54,7 +54,7 @@ namespace ASC.Common.Tests.Utils
 
             var dnsLoopup = new DnsLookup();
 
-            _ = Assert.Throws<ArgumentException>(() => dnsLoopup.IsDomainExists(domain), "Domain name could not be parsed");
+            Assert.Throws<ArgumentException>(() => dnsLoopup.IsDomainExists(domain), "Domain name could not be parsed");
         }
 
         [Test]

@@ -85,7 +85,7 @@ namespace ASC.Common.Caching
                     }
                 };
 
-                _ = Producer.ProduceAsync(channelName, message);
+                Producer.ProduceAsync(channelName, message);
             }
             catch (ProduceException<Null, string> e)
             {
@@ -165,7 +165,7 @@ namespace ASC.Common.Caching
 
         public void Unsubscribe(CacheNotifyAction action)
         {
-            _ = Cts.TryGetValue(GetChannelName(action), out var source);
+            Cts.TryGetValue(GetChannelName(action), out var source);
             if (source != null)
             {
                 source.Cancel();
@@ -223,14 +223,14 @@ namespace ASC.Common.Caching
             if (onchange != null)
             {
                 var key = GetKey(notifyAction);
-                _ = actions.TryAdd(key, new List<Action<T>>());
+                actions.TryAdd(key, new List<Action<T>>());
                 actions[key].Add(onchange);
             }
         }
 
         public void Unsubscribe(CacheNotifyAction action)
         {
-            _ = actions.Remove(GetKey(action));
+            actions.Remove(GetKey(action));
         }
 
         private string GetKey(CacheNotifyAction cacheNotifyAction)
@@ -243,7 +243,7 @@ namespace ASC.Common.Caching
     {
         public static DIHelper AddKafkaService(this DIHelper services)
         {
-            _ = services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+            services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
 
             return services;
         }

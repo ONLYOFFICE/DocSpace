@@ -158,7 +158,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                             filesMessageService.Send(folder, _headers, MessageAction.ThirdPartyDeleted, folder.ID.ToString(), folder.ProviderKey);
                         }
 
-                        _ = ProcessedFolder(folderId);
+                        ProcessedFolder(folderId);
                     }
                     else
                     {
@@ -173,7 +173,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                 FolderDao.DeleteFolder(folder.ID);
                                 filesMessageService.Send(folder, _headers, MessageAction.FolderDeleted, folder.Title);
 
-                                _ = ProcessedFolder(folderId);
+                                ProcessedFolder(folderId);
                             }
                         }
                         else
@@ -192,11 +192,11 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                 }
                                 else
                                 {
-                                    _ = FolderDao.MoveFolder(folder.ID, _trashId, CancellationToken);
+                                    FolderDao.MoveFolder(folder.ID, _trashId, CancellationToken);
                                     filesMessageService.Send(folder, _headers, MessageAction.FolderMovedToTrash, folder.Title);
                                 }
 
-                                _ = ProcessedFolder(folderId);
+                                ProcessedFolder(folderId);
                             }
                         }
                     }
@@ -227,7 +227,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                     fileMarker.RemoveMarkAsNewForAll(file);
                     if (!_immediately && FileDao.UseTrashForRemove(file))
                     {
-                        _ = FileDao.MoveFile(file.ID, _trashId);
+                        FileDao.MoveFile(file.ID, _trashId);
                         filesMessageService.Send(file, _headers, MessageAction.FileMovedToTrash, file.Title);
                     }
                     else
@@ -243,7 +243,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                             Logger.Error(Error, ex);
                         }
                     }
-                    _ = ProcessedFile(fileId);
+                    ProcessedFile(fileId);
                 }
                 ProgressStep(fileId: FolderDao.CanCalculateSubitems(fileId) ? default : fileId);
             }

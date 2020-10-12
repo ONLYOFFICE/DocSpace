@@ -65,7 +65,7 @@ namespace ASC.Web.Core.Users
 
             thumbnailsData.Save(resultBitmaps);
 
-            _ = settingsManager.SaveForUser(thumbnailSettings, userId);
+            settingsManager.SaveForUser(thumbnailSettings, userId);
 
             return thumbnailsData.ThumbnailList();
         }
@@ -163,7 +163,7 @@ namespace ASC.Web.Core.Users
             foreach (var item in bitmaps)
             {
                 using var mainImgBitmap = MainImgBitmap();
-                _ = UserPhotoManager.SaveThumbnail(UserId, item.Bitmap, mainImgBitmap.RawFormat);
+                UserPhotoManager.SaveThumbnail(UserId, item.Bitmap, mainImgBitmap.RawFormat);
             }
         }
     }

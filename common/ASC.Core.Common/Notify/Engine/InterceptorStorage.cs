@@ -122,7 +122,7 @@ namespace ASC.Notify.Engine
             ISendInterceptor interceptor = null;
             lock (syncRoot)
             {
-                _ = storage.TryGetValue(name, out interceptor);
+                storage.TryGetValue(name, out interceptor);
             }
             return interceptor;
         }
@@ -131,7 +131,7 @@ namespace ASC.Notify.Engine
         {
             lock (syncRoot)
             {
-                _ = storage.Remove(name);
+                storage.Remove(name);
             }
         }
     }

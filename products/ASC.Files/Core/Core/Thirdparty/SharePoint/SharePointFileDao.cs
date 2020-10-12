@@ -491,7 +491,7 @@ namespace ASC.Files.Thirdparty.SharePoint
     {
         public static DIHelper AddSharePointFileDaoService(this DIHelper services)
         {
-            _ = services.TryAddScoped<SharePointFileDao>();
+            services.TryAddScoped<SharePointFileDao>();
 
             return services;
         }

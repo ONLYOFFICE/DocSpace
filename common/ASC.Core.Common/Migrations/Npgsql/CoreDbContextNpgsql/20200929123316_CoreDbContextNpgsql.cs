@@ -10,10 +10,10 @@ namespace ASC.Core.Common.Migrations.Npgsql.CoreDbContextNpgsql
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            _ = migrationBuilder.EnsureSchema(
+            migrationBuilder.EnsureSchema(
                 name: "onlyoffice");
 
-            _ = migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "core_acl",
                 schema: "onlyoffice",
                 columns: table => new
@@ -26,10 +26,10 @@ namespace ASC.Core.Common.Migrations.Npgsql.CoreDbContextNpgsql
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("core_acl_pkey", x => new { x.tenant, x.subject, x.action, x.@object });
+                    table.PrimaryKey("core_acl_pkey", x => new { x.tenant, x.subject, x.action, x.@object });
                 });
 
-            _ = migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "tenants_buttons",
                 schema: "onlyoffice",
                 columns: table => new
@@ -40,10 +40,10 @@ namespace ASC.Core.Common.Migrations.Npgsql.CoreDbContextNpgsql
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("tenants_buttons_pkey", x => new { x.tariff_id, x.partner_id });
+                    table.PrimaryKey("tenants_buttons_pkey", x => new { x.tariff_id, x.partner_id });
                 });
 
-            _ = migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "tenants_quota",
                 schema: "onlyoffice",
                 columns: table => new
@@ -62,16 +62,16 @@ namespace ASC.Core.Common.Migrations.Npgsql.CoreDbContextNpgsql
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("tenants_quota_pkey", x => x.tenant);
+                    table.PrimaryKey("tenants_quota_pkey", x => x.tenant);
                 });
 
-            _ = migrationBuilder.InsertData(
+            migrationBuilder.InsertData(
                 schema: "onlyoffice",
                 table: "tenants_quota",
                 columns: new[] { "tenant", "active_users", "avangate_id", "description", "features", "max_file_size", "max_total_size", "name", "visible" },
                 values: new object[] { -1, 10000, "0", null, "docs,domain,audit,controlpanel,healthcheck,ldap,sso,whitelabel,branding,ssbranding,update,support,portals:10000,discencryption", 102400L, 10995116277760L, "default", false });
 
-            _ = migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "tenants_quotarow",
                 schema: "onlyoffice",
                 columns: table => new
@@ -84,10 +84,10 @@ namespace ASC.Core.Common.Migrations.Npgsql.CoreDbContextNpgsql
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("tenants_quotarow_pkey", x => new { x.tenant, x.path });
+                    table.PrimaryKey("tenants_quotarow_pkey", x => new { x.tenant, x.path });
                 });
 
-            _ = migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "tenants_tariff",
                 schema: "onlyoffice",
                 columns: table => new
@@ -103,10 +103,10 @@ namespace ASC.Core.Common.Migrations.Npgsql.CoreDbContextNpgsql
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("PK_tenants_tariff", x => x.id);
+                    table.PrimaryKey("PK_tenants_tariff", x => x.id);
                 });
 
-            _ = migrationBuilder.InsertData(
+            migrationBuilder.InsertData(
                 schema: "onlyoffice",
                 table: "core_acl",
                 columns: new[] { "tenant", "subject", "action", "object", "acetype" },
@@ -180,13 +180,13 @@ namespace ASC.Core.Common.Migrations.Npgsql.CoreDbContextNpgsql
                     { -1, new Guid("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"), new Guid("77777777-32ae-425f-99b5-83176061d1ae"), "ASC.Web.Core.WebItemSecurity+WebItemSecurityObject|46cfa73af32046cf8d5bcd82e1d67f26", 0 }
                 });
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "last_modified_tenants_quotarow",
                 schema: "onlyoffice",
                 table: "tenants_quotarow",
                 column: "last_modified");
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "tenant_tenants_tariff",
                 schema: "onlyoffice",
                 table: "tenants_tariff",
@@ -195,29 +195,29 @@ namespace ASC.Core.Common.Migrations.Npgsql.CoreDbContextNpgsql
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "core_acl",
                 schema: "onlyoffice");
 
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "tenants_buttons",
                 schema: "onlyoffice");
 
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "tenants_quota",
                 schema: "onlyoffice");
 
-            _ = migrationBuilder.DeleteData(
+            migrationBuilder.DeleteData(
                 schema: "onlyoffice",
                 table: "tenants_quota",
                 keyColumn: "tenant",
                 keyValue: -1);
 
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "tenants_quotarow",
                 schema: "onlyoffice");
 
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "tenants_tariff",
                 schema: "onlyoffice");
         }

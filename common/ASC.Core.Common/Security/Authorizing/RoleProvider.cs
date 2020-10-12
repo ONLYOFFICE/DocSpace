@@ -90,7 +90,7 @@ namespace ASC.Core.Security.Authorizing
     {
         public static DIHelper AddRoleProviderService(this DIHelper services)
         {
-            _ = services.TryAddScoped(typeof(IRoleProvider), typeof(RoleProvider));
+            services.TryAddScoped(typeof(IRoleProvider), typeof(RoleProvider));
             return services;
         }
     }

@@ -81,7 +81,7 @@ namespace ASC.Data.Backup.Service
             TempFolder = PathHelper.ToRootedPath(settings.TempFolder);
             if (!Directory.Exists(TempFolder))
             {
-                _ = Directory.CreateDirectory(TempFolder);
+                Directory.CreateDirectory(TempFolder);
             }
 
             Limit = settings.Limit;
@@ -519,7 +519,7 @@ namespace ASC.Data.Backup.Service
                 Percentage = 10;
 
                 tenant.SetStatus(TenantStatus.Restoring);
-                _ = tenantManager.SaveTenant(tenant);
+                tenantManager.SaveTenant(tenant);
 
                 var columnMapper = new ColumnMapper();
                 columnMapper.SetMapping("tenants_tenants", "alias", tenant.TenantAlias, ((Guid)Id).ToString("N"));
@@ -560,7 +560,7 @@ namespace ASC.Data.Backup.Service
                     {
                         restoredTenant.MappedDomain = tenant.MappedDomain;
                     }
-                    _ = tenantManager.SaveTenant(restoredTenant);
+                    tenantManager.SaveTenant(restoredTenant);
 
                     // sleep until tenants cache expires
                     Thread.Sleep(TimeSpan.FromMinutes(2));
@@ -585,7 +585,7 @@ namespace ASC.Data.Backup.Service
                 if (tenant != null)
                 {
                     tenant.SetStatus(TenantStatus.Active);
-                    _ = tenantManager.SaveTenant(tenant);
+                    tenantManager.SaveTenant(tenant);
                 }
             }
             finally
@@ -853,15 +853,15 @@ namespace ASC.Data.Backup.Service
     {
         public static DIHelper AddBackupWorkerService(this DIHelper services)
         {
-            _ = services.TryAddSingleton<BackupWorker>();
-            _ = services.TryAddSingleton<FactoryProgressItem>();
-            _ = services.TryAddTransient<BackupProgressItem>();
-            _ = services.TryAddTransient<TransferProgressItem>();
-            _ = services.TryAddTransient<RestoreProgressItem>();
-            _ = services.TryAddScoped<BackupWorkerScope>();
-            _ = services.TryAddSingleton<ProgressQueueOptionsManager<BaseBackupProgressItem>>();
-            _ = services.TryAddSingleton<ProgressQueue<BaseBackupProgressItem>>();
-            _ = services.AddSingleton<IPostConfigureOptions<ProgressQueue<BaseBackupProgressItem>>, ConfigureProgressQueue<BaseBackupProgressItem>>();
+            services.TryAddSingleton<BackupWorker>();
+            services.TryAddSingleton<FactoryProgressItem>();
+            services.TryAddTransient<BackupProgressItem>();
+            services.TryAddTransient<TransferProgressItem>();
+            services.TryAddTransient<RestoreProgressItem>();
+            services.TryAddScoped<BackupWorkerScope>();
+            services.TryAddSingleton<ProgressQueueOptionsManager<BaseBackupProgressItem>>();
+            services.TryAddSingleton<ProgressQueue<BaseBackupProgressItem>>();
+            services.AddSingleton<IPostConfigureOptions<ProgressQueue<BaseBackupProgressItem>>, ConfigureProgressQueue<BaseBackupProgressItem>>();
 
             return services
                 .AddTenantManagerService()

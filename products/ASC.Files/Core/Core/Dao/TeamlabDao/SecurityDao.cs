@@ -132,7 +132,7 @@ namespace ASC.Files.Core.Data
                         .Where(a => a.Subject == r.Subject);
 
                     FilesDbContext.Security.RemoveRange(toDelete);
-                    _ = FilesDbContext.SaveChanges();
+                    FilesDbContext.SaveChanges();
 
                 }
                 else
@@ -149,7 +149,7 @@ namespace ASC.Files.Core.Data
                         .Where(a => a.Subject == r.Subject);
 
                     FilesDbContext.Security.RemoveRange(toDelete);
-                    _ = FilesDbContext.SaveChanges();
+                    FilesDbContext.SaveChanges();
                 }
 
                 tx.Commit();
@@ -167,8 +167,8 @@ namespace ASC.Files.Core.Data
                     TimeStamp = DateTime.UtcNow
                 };
 
-                _ = FilesDbContext.AddOrUpdate(r => r.Security, toInsert);
-                _ = FilesDbContext.SaveChanges();
+                FilesDbContext.AddOrUpdate(r => r.Security, toInsert);
+                FilesDbContext.SaveChanges();
             }
         }
 
@@ -306,10 +306,10 @@ namespace ASC.Files.Core.Data
             var toDelete2 = FilesDbContext.Security.Where(r => r.Owner == subject);
 
             FilesDbContext.RemoveRange(toDelete1);
-            _ = FilesDbContext.SaveChanges();
+            FilesDbContext.SaveChanges();
 
             FilesDbContext.RemoveRange(toDelete2);
-            _ = FilesDbContext.SaveChanges();
+            FilesDbContext.SaveChanges();
 
             tr.Commit();
         }
@@ -379,8 +379,8 @@ namespace ASC.Files.Core.Data
         {
             if (services.TryAddScoped<SecurityDao<int>>())
             {
-                _ = services.TryAddScoped<SecurityDao<string>>();
-                _ = services.TryAddScoped<ISecurityDao<int>, SecurityDao<int>>();
+                services.TryAddScoped<SecurityDao<string>>();
+                services.TryAddScoped<ISecurityDao<int>, SecurityDao<int>>();
 
                 return services
                     .AddUserManagerService()

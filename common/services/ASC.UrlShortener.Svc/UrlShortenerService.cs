@@ -87,7 +87,7 @@ namespace ASC.UrlShortener.Svc
                 }
 
                 process.Kill();
-                _ = process.WaitForExit(10000);
+                process.WaitForExit(10000);
 
                 process.Close();
                 process.Dispose();
@@ -150,7 +150,7 @@ namespace ASC.UrlShortener.Svc
     {
         public static DIHelper AddUrlShortenerService(this DIHelper services)
         {
-            _ = services.TryAddSingleton<UrlShortenerService>();
+            services.TryAddSingleton<UrlShortenerService>();
 
             return services;
         }

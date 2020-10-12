@@ -47,7 +47,7 @@ namespace ASC.Notify
         public override string ToString()
         {
             var sb = new StringBuilder();
-            _ = sb.AppendFormat("SendResult: {0} whith {1} sub-results", Result, Responses.Count);
+            sb.AppendFormat("SendResult: {0} whith {1} sub-results", Result, Responses.Count);
             foreach (var responce in Responses)
             {
                 var recipient = "<recipient:nomessage>";
@@ -66,8 +66,8 @@ namespace ASC.Notify
                     }
                 }
                 if (responce.Exception != null) error = responce.Exception.Message;
-                _ = sb.AppendLine();
-                _ = sb.AppendFormat("   {3}->{0}({1})={2} {4}", recipient, responce.SenderName, responce.Result, responce.NotifyAction.ID, error);
+                sb.AppendLine();
+                sb.AppendFormat("   {3}->{0}({1})={2} {4}", recipient, responce.SenderName, responce.Result, responce.NotifyAction.ID, error);
             }
             return sb.ToString();
         }

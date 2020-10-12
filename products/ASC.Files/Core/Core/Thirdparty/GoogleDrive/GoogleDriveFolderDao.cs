@@ -213,7 +213,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
                     .ToList();
 
                 FilesDbContext.TagLink.RemoveRange(link);
-                _ = FilesDbContext.SaveChanges();
+                FilesDbContext.SaveChanges();
 
                 var tagsToRemove = Query(FilesDbContext.Tag)
                     .Where(r => !Query(FilesDbContext.TagLink).Where(a => a.TagId == r.Id).Any());
@@ -224,13 +224,13 @@ namespace ASC.Files.Thirdparty.GoogleDrive
                     .Where(r => hashIDs.Any(h => h == r.EntryId));
 
                 FilesDbContext.Security.RemoveRange(securityToDelete);
-                _ = FilesDbContext.SaveChanges();
+                FilesDbContext.SaveChanges();
 
                 var mappingToDelete = Query(FilesDbContext.ThirdpartyIdMapping)
                     .Where(r => hashIDs.Any(h => h == r.HashId));
 
                 FilesDbContext.ThirdpartyIdMapping.RemoveRange(mappingToDelete);
-                _ = FilesDbContext.SaveChanges();
+                FilesDbContext.SaveChanges();
 
                 tx.Commit();
             }
@@ -282,7 +282,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             driveFolder = ProviderInfo.Storage.InsertEntryIntoFolder(driveFolder, toDriveFolder.Id);
             if (fromFolderDriveId != null)
             {
-                _ = ProviderInfo.Storage.RemoveEntryFromFolder(driveFolder, fromFolderDriveId);
+                ProviderInfo.Storage.RemoveEntryFromFolder(driveFolder, fromFolderDriveId);
             }
 
             ProviderInfo.CacheReset(driveFolder.Id);
@@ -526,7 +526,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
     {
         public static DIHelper AddGoogleDriveFolderDaoService(this DIHelper services)
         {
-            _ = services.TryAddScoped<GoogleDriveFolderDao>();
+            services.TryAddScoped<GoogleDriveFolderDao>();
 
             return services;
         }

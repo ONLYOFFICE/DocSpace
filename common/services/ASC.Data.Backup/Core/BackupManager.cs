@@ -71,7 +71,7 @@ namespace ASC.Data.Backup
             if (providers.ContainsKey(name))
             {
                 providers[name].ProgressChanged -= OnProgressChanged;
-                _ = providers.Remove(name);
+                providers.Remove(name);
             }
         }
 
@@ -125,7 +125,7 @@ namespace ASC.Data.Backup
     {
         public static DIHelper AddBackupManager(this DIHelper services)
         {
-            _ = services.TryAddSingleton<BackupManager>();
+            services.TryAddSingleton<BackupManager>();
             return services;
         }
     }

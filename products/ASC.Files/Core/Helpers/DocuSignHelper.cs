@@ -201,7 +201,7 @@ namespace ASC.Web.Files.Helpers
 
         public bool ValidateToken(OAuth20Token token)
         {
-            _ = GetDocuSignAccount(token);
+            GetDocuSignAccount(token);
             return true;
         }
 
@@ -483,7 +483,7 @@ namespace ASC.Web.Files.Helpers
 
         public static DIHelper AddDocuSignHelperService(this DIHelper services)
         {
-            _ = services.TryAddScoped<DocuSignHelper>();
+            services.TryAddScoped<DocuSignHelper>();
 
             return services
                 .AddDocuSignLoginProviderService()

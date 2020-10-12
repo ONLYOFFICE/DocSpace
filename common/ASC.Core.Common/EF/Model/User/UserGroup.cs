@@ -34,7 +34,7 @@ namespace ASC.Core.Common.EF
     {
         public static ModelBuilderWrapper AddUserGroup(this ModelBuilderWrapper modelBuilder)
         {
-            _ = modelBuilder
+            modelBuilder
                 .Add(MySqlAddUserGroup, Provider.MySql)
                 .Add(PgSqlAddUserGroup, Provider.Postgre)
                 .HasData(
@@ -52,69 +52,69 @@ namespace ASC.Core.Common.EF
 
         public static void MySqlAddUserGroup(this ModelBuilder modelBuilder)
         {
-            _ = modelBuilder.Entity<UserGroup>(entity =>
+            modelBuilder.Entity<UserGroup>(entity =>
             {
-                _ = entity.HasKey(e => new { e.Tenant, e.UserId, e.GroupId, e.RefType })
+                entity.HasKey(e => new { e.Tenant, e.UserId, e.GroupId, e.RefType })
                     .HasName("PRIMARY");
 
-                _ = entity.ToTable("core_usergroup");
+                entity.ToTable("core_usergroup");
 
-                _ = entity.HasIndex(e => e.LastModified)
+                entity.HasIndex(e => e.LastModified)
                     .HasName("last_modified");
 
-                _ = entity.Property(e => e.Tenant).HasColumnName("tenant");
+                entity.Property(e => e.Tenant).HasColumnName("tenant");
 
-                _ = entity.Property(e => e.UserId)
+                entity.Property(e => e.UserId)
                     .HasColumnName("userid")
                     .HasColumnType("varchar(38)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.GroupId)
+                entity.Property(e => e.GroupId)
                     .HasColumnName("groupid")
                     .HasColumnType("varchar(38)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.RefType).HasColumnName("ref_type");
+                entity.Property(e => e.RefType).HasColumnName("ref_type");
 
-                _ = entity.Property(e => e.LastModified)
+                entity.Property(e => e.LastModified)
                     .HasColumnName("last_modified")
                     .HasColumnType("timestamp")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
-                _ = entity.Property(e => e.Removed).HasColumnName("removed");
+                entity.Property(e => e.Removed).HasColumnName("removed");
             });
         }
         public static void PgSqlAddUserGroup(this ModelBuilder modelBuilder)
         {
-            _ = modelBuilder.Entity<UserGroup>(entity =>
+            modelBuilder.Entity<UserGroup>(entity =>
             {
-                _ = entity.HasKey(e => new { e.Tenant, e.UserId, e.GroupId, e.RefType })
+                entity.HasKey(e => new { e.Tenant, e.UserId, e.GroupId, e.RefType })
                     .HasName("core_usergroup_pkey");
 
-                _ = entity.ToTable("core_usergroup", "onlyoffice");
+                entity.ToTable("core_usergroup", "onlyoffice");
 
-                _ = entity.HasIndex(e => e.LastModified)
+                entity.HasIndex(e => e.LastModified)
                     .HasName("last_modified_core_usergroup");
 
-                _ = entity.Property(e => e.Tenant).HasColumnName("tenant");
+                entity.Property(e => e.Tenant).HasColumnName("tenant");
 
-                _ = entity.Property(e => e.UserId)
+                entity.Property(e => e.UserId)
                     .HasColumnName("userid")
                     .HasMaxLength(38);
 
-                _ = entity.Property(e => e.GroupId)
+                entity.Property(e => e.GroupId)
                     .HasColumnName("groupid")
                     .HasMaxLength(38);
 
-                _ = entity.Property(e => e.RefType).HasColumnName("ref_type");
+                entity.Property(e => e.RefType).HasColumnName("ref_type");
 
-                _ = entity.Property(e => e.LastModified)
+                entity.Property(e => e.LastModified)
                     .HasColumnName("last_modified")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
-                _ = entity.Property(e => e.Removed).HasColumnName("removed");
+                entity.Property(e => e.Removed).HasColumnName("removed");
             });
 
         }

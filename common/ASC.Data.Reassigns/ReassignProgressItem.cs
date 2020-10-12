@@ -109,7 +109,7 @@ namespace ASC.Data.Reassigns
                 Percentage = 0;
                 Status = ProgressStatus.Started;
 
-                _ = securityContext.AuthenticateMe(_currentUserId);
+                securityContext.AuthenticateMe(_currentUserId);
 
                 logger.InfoFormat("reassignment of data from {0} to {1}", FromUser, ToUser);
 
@@ -198,7 +198,7 @@ namespace ASC.Data.Reassigns
 
             userPhotoManager.RemovePhoto(user.ID);
             userManager.DeleteUser(user.ID);
-            _ = QueueWorkerRemove.Start(_tenantId, user, _currentUserId, false);
+            QueueWorkerRemove.Start(_tenantId, user, _currentUserId, false);
 
             if (_httpHeaders != null)
                 messageService.Send(_httpHeaders, MessageAction.UserDeleted, messageTarget.Create(FromUser), new[] { userName });
@@ -273,9 +273,9 @@ namespace ASC.Data.Reassigns
         {
             if (services.TryAddScoped<ReassignProgressItemScope>())
             {
-                _ = services.TryAddSingleton<ProgressQueueOptionsManager<ReassignProgressItem>>();
-                _ = services.TryAddSingleton<ProgressQueue<ReassignProgressItem>>();
-                _ = services.AddSingleton<IPostConfigureOptions<ProgressQueue<ReassignProgressItem>>, ConfigureProgressQueue<ReassignProgressItem>>();
+                services.TryAddSingleton<ProgressQueueOptionsManager<ReassignProgressItem>>();
+                services.TryAddSingleton<ProgressQueue<ReassignProgressItem>>();
+                services.AddSingleton<IPostConfigureOptions<ProgressQueue<ReassignProgressItem>>, ConfigureProgressQueue<ReassignProgressItem>>();
             }
 
             return services;

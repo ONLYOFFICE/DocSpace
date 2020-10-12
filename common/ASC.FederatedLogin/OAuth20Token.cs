@@ -131,15 +131,15 @@ namespace ASC.FederatedLogin
         public string ToJson()
         {
             var sb = new StringBuilder();
-            _ = sb.Append("{");
-            _ = sb.AppendFormat(" \"access_token\": \"{0}\"", AccessToken);
-            _ = sb.AppendFormat(", \"refresh_token\": \"{0}\"", RefreshToken);
-            _ = sb.AppendFormat(", \"expires_in\": \"{0}\"", ExpiresIn);
-            _ = sb.AppendFormat(", \"client_id\": \"{0}\"", ClientID);
-            _ = sb.AppendFormat(", \"client_secret\": \"{0}\"", ClientSecret);
-            _ = sb.AppendFormat(", \"redirect_uri\": \"{0}\"", RedirectUri);
-            _ = sb.AppendFormat(", \"timestamp\": \"{0}\"", Timestamp.ToString("o", new CultureInfo("en-US")));
-            _ = sb.Append("}");
+            sb.Append("{");
+            sb.AppendFormat(" \"access_token\": \"{0}\"", AccessToken);
+            sb.AppendFormat(", \"refresh_token\": \"{0}\"", RefreshToken);
+            sb.AppendFormat(", \"expires_in\": \"{0}\"", ExpiresIn);
+            sb.AppendFormat(", \"client_id\": \"{0}\"", ClientID);
+            sb.AppendFormat(", \"client_secret\": \"{0}\"", ClientSecret);
+            sb.AppendFormat(", \"redirect_uri\": \"{0}\"", RedirectUri);
+            sb.AppendFormat(", \"timestamp\": \"{0}\"", Timestamp.ToString("o", new CultureInfo("en-US")));
+            sb.Append("}");
             return sb.ToString();
         }
 

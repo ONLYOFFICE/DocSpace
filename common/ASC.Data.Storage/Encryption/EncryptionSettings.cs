@@ -196,8 +196,8 @@ namespace ASC.Data.Storage.Encryption
     {
         public static DIHelper AddEncryptionSettingsHelperService(this DIHelper services)
         {
-            _ = services.TryAddScoped<EncryptionSettingsHelper>();
-            _ = services.TryAddSingleton<AscCacheNotify>();
+            services.TryAddScoped<EncryptionSettingsHelper>();
+            services.TryAddSingleton<AscCacheNotify>();
             return services
                 .AddCoreConfigurationService();
         }

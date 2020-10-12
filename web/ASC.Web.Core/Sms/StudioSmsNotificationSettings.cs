@@ -91,7 +91,7 @@ namespace ASC.Web.Studio.Core.SMS
             {
                 var settings = SettingsManager.Load<StudioSmsNotificationSettings>();
                 settings.EnableSetting = value;
-                _ = SettingsManager.Save<StudioSmsNotificationSettings>(settings);
+                SettingsManager.Save<StudioSmsNotificationSettings>(settings);
             }
         }
     }

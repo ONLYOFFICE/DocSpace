@@ -118,7 +118,7 @@ namespace ASC.Web.Core.Notify
         {
             if (services.TryAddScoped<StudioNotifyServiceHelper>())
             {
-                _ = services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+                services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
 
                 return services
                     .AddAuthContextService()

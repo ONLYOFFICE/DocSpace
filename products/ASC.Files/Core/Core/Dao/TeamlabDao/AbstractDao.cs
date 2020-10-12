@@ -127,7 +127,7 @@ namespace ASC.Files.Core.Data
                 f.FilesCount = filesCount;
             }
 
-            _ = FilesDbContext.SaveChanges();
+            FilesDbContext.SaveChanges();
         }
 
         protected object MappingID(object id, bool saveIfNotExist)
@@ -165,7 +165,7 @@ namespace ASC.Files.Core.Data
                     HashId = result.ToString()
                 };
 
-                _ = FilesDbContext.AddOrUpdate(r => r.ThirdpartyIdMapping, newItem);
+                FilesDbContext.AddOrUpdate(r => r.ThirdpartyIdMapping, newItem);
             }
 
             return result;

@@ -114,7 +114,7 @@ namespace ASC.Core.Notify.Senders
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<SmtpSenderScope>();
             var (tenantManager, configuration) = scopeClass;
-            _ = tenantManager.SetCurrentTenant(m.Tenant);
+            tenantManager.SetCurrentTenant(m.Tenant);
 
             var smtpClient = GetSmtpClient();
             var result = NoticeSendResult.TryOnceAgain;
@@ -343,8 +343,8 @@ namespace ASC.Core.Notify.Senders
     {
         public static DIHelper AddSmtpSenderService(this DIHelper services)
         {
-            _ = services.TryAddSingleton<SmtpSender>();
-            _ = services.TryAddScoped<SmtpSenderScope>();
+            services.TryAddSingleton<SmtpSender>();
+            services.TryAddScoped<SmtpSenderScope>();
             return services
                 .AddTenantManagerService()
                 .AddCoreSettingsService();

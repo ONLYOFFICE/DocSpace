@@ -75,7 +75,7 @@ namespace ASC.Core.Users
             set
             {
                 contacts = value;
-                _ = ContactsFromString(contacts);
+                ContactsFromString(contacts);
             }
         }
 
@@ -168,7 +168,7 @@ namespace ASC.Core.Users
             var sBuilder = new StringBuilder();
             foreach (var contact in ContactsList)
             {
-                _ = sBuilder.AppendFormat("{0}|", contact);
+                sBuilder.AppendFormat("{0}|", contact);
             }
             return sBuilder.ToString();
         }

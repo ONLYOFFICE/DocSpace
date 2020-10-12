@@ -41,9 +41,9 @@ namespace ASC.Web.Files.Services.FFmpegService
             Process process;
             using (process = new Process { StartInfo = startInfo })
             {
-                _ = process.Start();
+                process.Start();
 
-                _ = StreamCopyToAsync(inputStream, process.StandardInput.BaseStream, closeDst: true);
+                StreamCopyToAsync(inputStream, process.StandardInput.BaseStream, closeDst: true);
 
                 ProcessLog(process.StandardError.BaseStream);
 
@@ -161,7 +161,7 @@ namespace ASC.Web.Files.Services.FFmpegService
     {
         public static DIHelper AddFFmpegServiceService(this DIHelper services)
         {
-            _ = services.TryAddSingleton<FFmpegService>();
+            services.TryAddSingleton<FFmpegService>();
             return services;
         }
     }

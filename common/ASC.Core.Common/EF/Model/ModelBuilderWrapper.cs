@@ -33,7 +33,7 @@ namespace ASC.Core.Common.EF.Model
 
         public ModelBuilderWrapper HasData<T>(params T[] data) where T : class
         {
-            _ = ModelBuilder.Entity<T>().HasData(data);
+            ModelBuilder.Entity<T>().HasData(data);
 
             return this;
         }

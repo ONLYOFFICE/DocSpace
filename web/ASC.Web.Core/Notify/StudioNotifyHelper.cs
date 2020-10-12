@@ -96,7 +96,7 @@ namespace ASC.Web.Studio.Core.Notify
             RecipientsProvider = NotifySource.GetRecipientsProvider();
             Log = option.CurrentValue;
 
-            _ = int.TryParse(configuration["core:notify:countspam"], out CountMailsToNotActivated);
+            int.TryParse(configuration["core:notify:countspam"], out CountMailsToNotActivated);
             NotificationImagePath = configuration["web:notification:image:path"];
         }
 
@@ -177,7 +177,7 @@ namespace ASC.Web.Studio.Core.Notify
                         Log.Warn(string.Format("Free tenant {0} for today is trying to send {1} more letters without checking activation. Sent {2}", tenant.TenantId, tryCount, mayTake));
                     }
                     spamEmailSettings.MailsSended = sended + tryCount;
-                    _ = SettingsManager.Save(spamEmailSettings);
+                    SettingsManager.Save(spamEmailSettings);
                 }
             }
 

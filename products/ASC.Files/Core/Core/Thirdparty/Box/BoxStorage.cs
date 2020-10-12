@@ -136,7 +136,7 @@ namespace ASC.Files.Thirdparty.Box
             {
                 str.CopyTo(tempBuffer);
                 tempBuffer.Flush();
-                _ = tempBuffer.Seek(offset, SeekOrigin.Begin);
+                tempBuffer.Seek(offset, SeekOrigin.Begin);
 
                 str.Dispose();
             }

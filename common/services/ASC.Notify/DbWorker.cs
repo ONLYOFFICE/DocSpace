@@ -84,7 +84,7 @@ namespace ASC.Notify
             };
 
             notifyQueue = dbContext.NotifyQueue.Add(notifyQueue).Entity;
-            _ = dbContext.SaveChanges();
+            dbContext.SaveChanges();
 
             var id = notifyQueue.NotifyId;
 
@@ -97,8 +97,8 @@ namespace ASC.Notify
                 Priority = m.Priority
             };
 
-            _ = dbContext.NotifyInfo.Add(info);
-            _ = dbContext.SaveChanges();
+            dbContext.NotifyInfo.Add(info);
+            dbContext.SaveChanges();
 
             tx.Commit();
 
@@ -157,7 +157,7 @@ namespace ASC.Notify
                     i.State = (int)MailSendingState.Sending;
                 }
 
-                _ = dbContext.SaveChanges();
+                dbContext.SaveChanges();
                 tx.Commit();
 
                 return messages;
@@ -178,7 +178,7 @@ namespace ASC.Notify
                 i.State = 0;
             }
 
-            _ = dbContext.SaveChanges();
+            dbContext.SaveChanges();
             tr.Commit();
         }
 
@@ -191,8 +191,8 @@ namespace ASC.Notify
             if (result == MailSendingState.Sended)
             {
                 var d = dbContext.NotifyInfo.Where(r => r.NotifyId == id).FirstOrDefault();
-                _ = dbContext.NotifyInfo.Remove(d);
-                _ = dbContext.SaveChanges();
+                dbContext.NotifyInfo.Remove(d);
+                dbContext.SaveChanges();
             }
             else
             {
@@ -216,7 +216,7 @@ namespace ASC.Notify
                     i.ModifyDate = DateTime.UtcNow;
                 }
 
-                _ = dbContext.SaveChanges();
+                dbContext.SaveChanges();
             }
 
             tx.Commit();
@@ -227,7 +227,7 @@ namespace ASC.Notify
     {
         public static DIHelper AddDbWorker(this DIHelper services)
         {
-            _ = services.TryAddSingleton<DbWorker>();
+            services.TryAddSingleton<DbWorker>();
 
             return services
                 .AddNotifyDbContext();

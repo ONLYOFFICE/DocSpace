@@ -8,7 +8,7 @@ namespace ASC.Core.Common.Migrations.MySql.WebstudioDbContextMySql
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            _ = migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "webstudio_index",
                 columns: table => new
                 {
@@ -19,10 +19,10 @@ namespace ASC.Core.Common.Migrations.MySql.WebstudioDbContextMySql
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("PRIMARY", x => x.index_name);
+                    table.PrimaryKey("PRIMARY", x => x.index_name);
                 });
 
-            _ = migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "webstudio_settings",
                 columns: table => new
                 {
@@ -39,10 +39,10 @@ namespace ASC.Core.Common.Migrations.MySql.WebstudioDbContextMySql
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("PRIMARY", x => new { x.TenantID, x.ID, x.UserID });
+                    table.PrimaryKey("PRIMARY", x => new { x.TenantID, x.ID, x.UserID });
                 });
 
-            _ = migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "webstudio_uservisit",
                 columns: table => new
                 {
@@ -60,10 +60,10 @@ namespace ASC.Core.Common.Migrations.MySql.WebstudioDbContextMySql
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("PRIMARY", x => new { x.tenantid, x.visitdate, x.productid, x.userid });
+                    table.PrimaryKey("PRIMARY", x => new { x.tenantid, x.visitdate, x.productid, x.userid });
                 });
 
-            _ = migrationBuilder.InsertData(
+            migrationBuilder.InsertData(
                 table: "webstudio_settings",
                 columns: new[] { "TenantID", "ID", "UserID", "Data" },
                 values: new object[,]
@@ -72,7 +72,7 @@ namespace ASC.Core.Common.Migrations.MySql.WebstudioDbContextMySql
                     { 1, "ab5b3c97-a972-475c-bb13-71936186c4e6", "00000000-0000-0000-0000-000000000000", "{'ColorThemeName':'pure - orange','FirstRequest':false}" }
                 });
 
-            _ = migrationBuilder.InsertData(
+            migrationBuilder.InsertData(
                 table: "webstudio_uservisit",
                 columns: new[] { "tenantid", "visitdate", "productid", "userid", "firstvisittime", "lastvisittime", "visitcount" },
                 values: new object[,]
@@ -82,12 +82,12 @@ namespace ASC.Core.Common.Migrations.MySql.WebstudioDbContextMySql
                     { 1, new DateTime(2020, 10, 8, 10, 18, 4, 448, DateTimeKind.Utc).AddTicks(5519), "e67be73d-f9ae-4ce1-8fec-1880cb518cb4", "66faa6e4-f133-11ea-b126-00ffeec8b4ef", new DateTime(2020, 10, 6, 10, 18, 4, 448, DateTimeKind.Utc).AddTicks(5525), new DateTime(2020, 10, 6, 10, 18, 4, 448, DateTimeKind.Utc).AddTicks(5526), 1 }
                 });
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "ID",
                 table: "webstudio_settings",
                 column: "ID");
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "visitdate",
                 table: "webstudio_uservisit",
                 column: "visitdate");
@@ -95,13 +95,13 @@ namespace ASC.Core.Common.Migrations.MySql.WebstudioDbContextMySql
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "webstudio_index");
 
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "webstudio_settings");
 
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "webstudio_uservisit");
         }
     }

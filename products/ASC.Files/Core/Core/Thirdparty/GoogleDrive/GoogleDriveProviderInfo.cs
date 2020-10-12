@@ -213,7 +213,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
 
                 var dbDao = ServiceProvider.GetService<CachedProviderAccountDao>();
                 var authData = new AuthData(token: token.ToJson());
-                _ = dbDao.UpdateProviderInfo(id, authData);
+                dbDao.UpdateProviderInfo(id, authData);
             }
         }
 
@@ -370,9 +370,9 @@ namespace ASC.Files.Thirdparty.GoogleDrive
         {
             if (services.TryAddScoped<GoogleDriveProviderInfo>())
             {
-                _ = services.TryAddScoped<GoogleDriveStorageDisposableWrapper>();
-                _ = services.TryAddScoped<GoogleDriveStorage>();
-                _ = services.TryAddSingleton<GoogleDriveProviderInfoHelper>();
+                services.TryAddScoped<GoogleDriveStorageDisposableWrapper>();
+                services.TryAddScoped<GoogleDriveStorage>();
+                services.TryAddSingleton<GoogleDriveProviderInfoHelper>();
             }
 
             return services;

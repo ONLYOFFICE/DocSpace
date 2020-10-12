@@ -97,8 +97,8 @@ namespace ASC.Feed.Data
                 Tenant = tenant
             };
 
-            _ = FeedDbContext.AddOrUpdate(r => r.FeedReaded, feedReaded);
-            _ = FeedDbContext.SaveChanges();
+            FeedDbContext.AddOrUpdate(r => r.FeedReaded, feedReaded);
+            FeedDbContext.SaveChanges();
         }
 
         public IEnumerable<string> GetReadedModules(DateTime fromTime)

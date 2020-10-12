@@ -115,7 +115,7 @@ namespace TMResourceData
                         if (!(rm is DBResourceManager))
                         {
                             var dbrm = new DBResourceManager(rm.BaseName, a);
-                            _ = type.InvokeMember("resourceMan", BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.SetField, null, type, new object[] { dbrm });
+                            type.InvokeMember("resourceMan", BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.SetField, null, type, new object[] { dbrm });
                         }
                     }
                 }
@@ -140,12 +140,12 @@ namespace TMResourceData
 
         protected override ResourceSet InternalGetResourceSet(CultureInfo culture, bool createIfNotExists, bool tryParents)
         {
-            _ = resourceSets.TryGetValue(culture.Name, out var set);
+            resourceSets.TryGetValue(culture.Name, out var set);
             if (set == null)
             {
                 var invariant = culture == CultureInfo.InvariantCulture ? base.InternalGetResourceSet(CultureInfo.InvariantCulture, true, true) : null;
                 set = new DBResourceSet(Configuration, Option, DbContext, invariant, culture, BaseName);
-                _ = resourceSets.AddOrUpdate(culture.Name, set, (k, v) => set);
+                resourceSets.AddOrUpdate(culture.Name, set, (k, v) => set);
             }
             return set;
         }
@@ -206,7 +206,7 @@ namespace TMResourceData
                 try
                 {
                     var dic = GetResources();
-                    _ = dic.TryGetValue(name, out result);
+                    dic.TryGetValue(name, out result);
                 }
                 catch (Exception err)
                 {
@@ -298,7 +298,7 @@ namespace TMResourceData
         {
             try
             {
-                _ = whiteLabelDictionary.AddOrUpdate(tenantId, r => newText, (i, s) => newText);
+                whiteLabelDictionary.AddOrUpdate(tenantId, r => newText, (i, s) => newText);
             }
             catch (Exception e)
             {
@@ -310,7 +310,7 @@ namespace TMResourceData
         {
             try
             {
-                _ = whiteLabelDictionary.TryRemove(tenantId, out var text);
+                whiteLabelDictionary.TryRemove(tenantId, out var text);
             }
             catch (Exception e)
             {
@@ -371,7 +371,7 @@ namespace TMResourceData
     {
         public static DIHelper AddWhiteLabelHelperService(this DIHelper services)
         {
-            _ = services.TryAddSingleton<WhiteLabelHelper>();
+            services.TryAddSingleton<WhiteLabelHelper>();
             return services;
         }
     }

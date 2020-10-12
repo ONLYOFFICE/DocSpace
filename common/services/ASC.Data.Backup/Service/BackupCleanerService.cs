@@ -138,7 +138,7 @@ namespace ASC.Data.Backup.Service
                 Log.Info("stopping backup cleaner service...");
                 if (CleanTimer != null)
                 {
-                    _ = CleanTimer.Change(Timeout.Infinite, Timeout.Infinite);
+                    CleanTimer.Change(Timeout.Infinite, Timeout.Infinite);
                     CleanTimer.Dispose();
                     CleanTimer = null;
                 }
@@ -175,7 +175,7 @@ namespace ASC.Data.Backup.Service
         {
             if (services.TryAddScoped<BackupCleanerHelperService>())
             {
-                _ = services.TryAddSingleton<BackupCleanerService>();
+                services.TryAddSingleton<BackupCleanerService>();
                 return services
                     .AddBackupStorageFactory()
                     .AddBackupRepositoryService();

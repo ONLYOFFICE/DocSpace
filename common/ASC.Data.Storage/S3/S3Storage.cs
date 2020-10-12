@@ -684,23 +684,23 @@ namespace ASC.Data.Storage.S3
             var policyBase64 = GetPolicyBase64(key, string.Empty, contentType, contentDisposition, maxUploadSize,
                                                   out var sign);
             var postBuilder = new StringBuilder();
-            _ = postBuilder.Append("{");
-            _ = postBuilder.AppendFormat("\"key\":\"{0}${{filename}}\",", key);
-            _ = postBuilder.AppendFormat("\"acl\":\"public-read\",");
-            _ = postBuilder.AppendFormat("\"key\":\"{0}\",", key);
-            _ = postBuilder.AppendFormat("\"success_action_status\":\"{0}\",", 201);
+            postBuilder.Append("{");
+            postBuilder.AppendFormat("\"key\":\"{0}${{filename}}\",", key);
+            postBuilder.AppendFormat("\"acl\":\"public-read\",");
+            postBuilder.AppendFormat("\"key\":\"{0}\",", key);
+            postBuilder.AppendFormat("\"success_action_status\":\"{0}\",", 201);
 
             if (!string.IsNullOrEmpty(contentType))
-                _ = postBuilder.AppendFormat("\"Content-Type\":\"{0}\",", contentType);
+                postBuilder.AppendFormat("\"Content-Type\":\"{0}\",", contentType);
             if (!string.IsNullOrEmpty(contentDisposition))
-                _ = postBuilder.AppendFormat("\"Content-Disposition\":\"{0}\",", contentDisposition);
+                postBuilder.AppendFormat("\"Content-Disposition\":\"{0}\",", contentDisposition);
 
-            _ = postBuilder.AppendFormat("\"AWSAccessKeyId\":\"{0}\",", _accessKeyId);
-            _ = postBuilder.AppendFormat("\"Policy\":\"{0}\",", policyBase64);
-            _ = postBuilder.AppendFormat("\"Signature\":\"{0}\"", sign);
-            _ = postBuilder.AppendFormat("\"SignatureVersion\":\"{0}\"", 2);
-            _ = postBuilder.AppendFormat("\"SignatureMethod\":\"{0}\"", "HmacSHA1");
-            _ = postBuilder.Append("}");
+            postBuilder.AppendFormat("\"AWSAccessKeyId\":\"{0}\",", _accessKeyId);
+            postBuilder.AppendFormat("\"Policy\":\"{0}\",", policyBase64);
+            postBuilder.AppendFormat("\"Signature\":\"{0}\"", sign);
+            postBuilder.AppendFormat("\"SignatureVersion\":\"{0}\"", 2);
+            postBuilder.AppendFormat("\"SignatureMethod\":\"{0}\"", "HmacSHA1");
+            postBuilder.Append("}");
             return postBuilder.ToString();
         }
 
@@ -714,27 +714,27 @@ namespace ASC.Data.Storage.S3
                                                   out var sign);
 
             var formBuilder = new StringBuilder();
-            _ = formBuilder.AppendFormat("<form action=\"{0}\" method=\"post\" enctype=\"multipart/form-data\">", destBucket);
-            _ = formBuilder.AppendFormat("<input type=\"hidden\" name=\"key\" value=\"{0}${{filename}}\" />", key);
-            _ = formBuilder.Append("<input type=\"hidden\" name=\"acl\" value=\"public-read\" />");
+            formBuilder.AppendFormat("<form action=\"{0}\" method=\"post\" enctype=\"multipart/form-data\">", destBucket);
+            formBuilder.AppendFormat("<input type=\"hidden\" name=\"key\" value=\"{0}${{filename}}\" />", key);
+            formBuilder.Append("<input type=\"hidden\" name=\"acl\" value=\"public-read\" />");
             if (!string.IsNullOrEmpty(redirectTo))
-                _ = formBuilder.AppendFormat("<input type=\"hidden\" name=\"success_action_redirect\" value=\"{0}\" />",
+                formBuilder.AppendFormat("<input type=\"hidden\" name=\"success_action_redirect\" value=\"{0}\" />",
                                          redirectTo);
 
-            _ = formBuilder.AppendFormat("<input type=\"hidden\" name=\"success_action_status\" value=\"{0}\" />", 201);
+            formBuilder.AppendFormat("<input type=\"hidden\" name=\"success_action_status\" value=\"{0}\" />", 201);
 
             if (!string.IsNullOrEmpty(contentType))
-                _ = formBuilder.AppendFormat("<input type=\"hidden\" name=\"Content-Type\" value=\"{0}\" />", contentType);
+                formBuilder.AppendFormat("<input type=\"hidden\" name=\"Content-Type\" value=\"{0}\" />", contentType);
             if (!string.IsNullOrEmpty(contentDisposition))
-                _ = formBuilder.AppendFormat("<input type=\"hidden\" name=\"Content-Disposition\" value=\"{0}\" />",
+                formBuilder.AppendFormat("<input type=\"hidden\" name=\"Content-Disposition\" value=\"{0}\" />",
                                          contentDisposition);
-            _ = formBuilder.AppendFormat("<input type=\"hidden\" name=\"AWSAccessKeyId\" value=\"{0}\"/>", _accessKeyId);
-            _ = formBuilder.AppendFormat("<input type=\"hidden\" name=\"Policy\" value=\"{0}\" />", policyBase64);
-            _ = formBuilder.AppendFormat("<input type=\"hidden\" name=\"Signature\" value=\"{0}\" />", sign);
-            _ = formBuilder.AppendFormat("<input type=\"hidden\" name=\"SignatureVersion\" value=\"{0}\" />", 2);
-            _ = formBuilder.AppendFormat("<input type=\"hidden\" name=\"SignatureMethod\" value=\"{0}\" />", "HmacSHA1");
-            _ = formBuilder.AppendFormat("<input type=\"file\" name=\"file\" />");
-            _ = formBuilder.AppendFormat("<input type=\"submit\" name=\"submit\" value=\"{0}\" /></form>", submitLabel);
+            formBuilder.AppendFormat("<input type=\"hidden\" name=\"AWSAccessKeyId\" value=\"{0}\"/>", _accessKeyId);
+            formBuilder.AppendFormat("<input type=\"hidden\" name=\"Policy\" value=\"{0}\" />", policyBase64);
+            formBuilder.AppendFormat("<input type=\"hidden\" name=\"Signature\" value=\"{0}\" />", sign);
+            formBuilder.AppendFormat("<input type=\"hidden\" name=\"SignatureVersion\" value=\"{0}\" />", 2);
+            formBuilder.AppendFormat("<input type=\"hidden\" name=\"SignatureMethod\" value=\"{0}\" />", "HmacSHA1");
+            formBuilder.AppendFormat("<input type=\"file\" name=\"file\" />");
+            formBuilder.AppendFormat("<input type=\"submit\" name=\"submit\" value=\"{0}\" /></form>", submitLabel);
             return formBuilder.ToString();
         }
 
@@ -742,27 +742,27 @@ namespace ASC.Data.Storage.S3
                                        long maxUploadSize, out string sign)
         {
             var policyBuilder = new StringBuilder();
-            _ = policyBuilder.AppendFormat("{{\"expiration\": \"{0}\",\"conditions\":[",
+            policyBuilder.AppendFormat("{{\"expiration\": \"{0}\",\"conditions\":[",
                                        DateTime.UtcNow.AddMinutes(15).ToString(AWSSDKUtils.ISO8601DateFormat,
                                                                                CultureInfo.InvariantCulture));
-            _ = policyBuilder.AppendFormat("{{\"bucket\": \"{0}\"}},", _bucket);
-            _ = policyBuilder.AppendFormat("[\"starts-with\", \"$key\", \"{0}\"],", key);
-            _ = policyBuilder.Append("{\"acl\": \"public-read\"},");
+            policyBuilder.AppendFormat("{{\"bucket\": \"{0}\"}},", _bucket);
+            policyBuilder.AppendFormat("[\"starts-with\", \"$key\", \"{0}\"],", key);
+            policyBuilder.Append("{\"acl\": \"public-read\"},");
             if (!string.IsNullOrEmpty(redirectTo))
             {
-                _ = policyBuilder.AppendFormat("{{\"success_action_redirect\": \"{0}\"}},", redirectTo);
+                policyBuilder.AppendFormat("{{\"success_action_redirect\": \"{0}\"}},", redirectTo);
             }
-            _ = policyBuilder.AppendFormat("{{\"success_action_status\": \"{0}\"}},", 201);
+            policyBuilder.AppendFormat("{{\"success_action_status\": \"{0}\"}},", 201);
             if (!string.IsNullOrEmpty(contentType))
             {
-                _ = policyBuilder.AppendFormat("[\"eq\", \"$Content-Type\", \"{0}\"],", contentType);
+                policyBuilder.AppendFormat("[\"eq\", \"$Content-Type\", \"{0}\"],", contentType);
             }
             if (!string.IsNullOrEmpty(contentDisposition))
             {
-                _ = policyBuilder.AppendFormat("[\"eq\", \"$Content-Disposition\", \"{0}\"],", contentDisposition);
+                policyBuilder.AppendFormat("[\"eq\", \"$Content-Disposition\", \"{0}\"],", contentDisposition);
             }
-            _ = policyBuilder.AppendFormat("[\"content-length-range\", 0, {0}]", maxUploadSize);
-            _ = policyBuilder.Append("]}");
+            policyBuilder.AppendFormat("[\"content-length-range\", 0, {0}]", maxUploadSize);
+            policyBuilder.Append("]}");
 
             var policyBase64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(policyBuilder.ToString()));
             //sign = AWSSDKUtils.HMACSign(policyBase64, _secretAccessKeyId, new HMACSHA1());
@@ -796,7 +796,7 @@ namespace ASC.Data.Storage.S3
                     var skipQuota = false;
                     if (HttpContextAccessor?.HttpContext.Session != null)
                     {
-                        _ = HttpContextAccessor.HttpContext.Session.TryGetValue(etag, out var isCounted);
+                        HttpContextAccessor.HttpContext.Session.TryGetValue(etag, out var isCounted);
                         skipQuota = isCounted != null;
                     }
                     //Add to quota controller
@@ -1063,11 +1063,11 @@ namespace ASC.Data.Storage.S3
 
             if (props.ContainsKey("lower"))
             {
-                _ = bool.TryParse(props["lower"], out _lowerCasing);
+                bool.TryParse(props["lower"], out _lowerCasing);
             }
             if (props.ContainsKey("cloudfront"))
             {
-                _ = bool.TryParse(props["cloudfront"], out _revalidateCloudFront);
+                bool.TryParse(props["cloudfront"], out _revalidateCloudFront);
             }
             if (props.ContainsKey("distribution"))
             {

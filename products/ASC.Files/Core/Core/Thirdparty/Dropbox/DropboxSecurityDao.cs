@@ -95,7 +95,7 @@ namespace ASC.Files.Thirdparty.Dropbox
     {
         public static DIHelper AddDropboxSecurityDaoService(this DIHelper services)
         {
-            _ = services.TryAddScoped<DropboxSecurityDao>();
+            services.TryAddScoped<DropboxSecurityDao>();
 
             return services;
         }

@@ -42,7 +42,7 @@ namespace ASC.Common.Tests.Logging
         [Test]
         public void FolderTest()
         {
-            _ = XmlConfigurator.Configure(log4net.LogManager.GetRepository(Assembly.GetCallingAssembly()));
+            XmlConfigurator.Configure(log4net.LogManager.GetRepository(Assembly.GetCallingAssembly()));
             var appenders = LogManager.GetLogger(Assembly.GetCallingAssembly(), "ASC").Logger.Repository.GetAppenders();
             Assert.AreEqual("..\\Logs\\onlyoffice\\8.0\\bin\\Test." + DateTime.Now.ToString("MM-dd") + ".log", ((FileAppender)appenders[0]).File);
         }
@@ -50,9 +50,9 @@ namespace ASC.Common.Tests.Logging
         [Test]
         public void CommandLineTest()
         {
-            _ = XmlConfigurator.Configure(log4net.LogManager.GetRepository(Assembly.GetCallingAssembly()));
-            var appenders = LogManager.GetLogger(Assembly.GetCallingAssembly(), "ASC").Logger.Repository.GetAppenders();
-            _ = ((FileAppender)appenders[0]).File;
+            //XmlConfigurator.Configure(log4net.LogManager.GetRepository(Assembly.GetCallingAssembly()));
+            //var appenders = LogManager.GetLogger(Assembly.GetCallingAssembly(), "ASC").Logger.Repository.GetAppenders();
+            //((FileAppender)appenders[0]).File;
             //Assert.AreEqual(Path.GetTempPath() + "onlyoffice\\8.0\\bin\\Test." + DateTime.Now.ToString("MM-dd") + ".log", ((FileAppender)appenders[0]).File);
         }
     }

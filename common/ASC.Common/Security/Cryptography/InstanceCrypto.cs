@@ -90,7 +90,7 @@ namespace ASC.Security.Cryptography
     {
         public static DIHelper AddInstanceCryptoService(this DIHelper services)
         {
-            _ = services.TryAddSingleton<InstanceCrypto>();
+            services.TryAddSingleton<InstanceCrypto>();
 
             return services
                 .AddMachinePseudoKeysService();

@@ -253,7 +253,7 @@ namespace ASC.Core.Caching
 
         public void RemoveSubscriptions(string objectId)
         {
-            _ = records.RemoveAll(s => s.ObjectId == objectId);
+            records.RemoveAll(s => s.ObjectId == objectId);
             BuildSubscriptionsIndex(records);
         }
 
@@ -266,7 +266,7 @@ namespace ASC.Core.Caching
 
         public void SetSubscriptionMethod(SubscriptionMethod m)
         {
-            _ = methods.RemoveAll(r => r.Tenant == m.Tenant && r.SourceId == m.SourceId && r.ActionId == m.ActionId && r.RecipientId == m.RecipientId);
+            methods.RemoveAll(r => r.Tenant == m.Tenant && r.SourceId == m.SourceId && r.ActionId == m.ActionId && r.RecipientId == m.RecipientId);
             if (m.Methods != null && 0 < m.Methods.Length)
             {
                 methods.Add(m);
@@ -292,10 +292,10 @@ namespace ASC.Core.Caching
         {
             if (services.TryAddScoped<DbSubscriptionService>())
             {
-                _ = services.TryAddScoped<ISubscriptionService, CachedSubscriptionService>();
-                _ = services.TryAddSingleton<SubscriptionServiceCache>();
-                _ = services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
-                _ = services.AddUserDbContextService();
+                services.TryAddScoped<ISubscriptionService, CachedSubscriptionService>();
+                services.TryAddSingleton<SubscriptionServiceCache>();
+                services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+                services.AddUserDbContextService();
             }
 
             return services;

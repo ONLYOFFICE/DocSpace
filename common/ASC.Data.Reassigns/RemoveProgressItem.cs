@@ -108,7 +108,7 @@ namespace ASC.Data.Reassigns
                 Percentage = 0;
                 Status = ProgressStatus.Started;
 
-                _ = securityContext.AuthenticateMe(_currentUserId);
+                securityContext.AuthenticateMe(_currentUserId);
 
                 long crmSpace;
                 GetUsageSpace(webItemManagerSecurity, out var docsSpace, out var mailSpace, out var talkSpace);
@@ -213,7 +213,7 @@ namespace ASC.Data.Reassigns
 
             for (int i = 0, n = data.Length; i < n; i++)
             {
-                _ = sBuilder.Append(data[i].ToString("x2"));
+                sBuilder.Append(data[i].ToString("x2"));
             }
 
             var md5Hash = sBuilder.ToString();
@@ -315,10 +315,10 @@ namespace ASC.Data.Reassigns
     {
         public static DIHelper AddRemoveProgressItemService(this DIHelper services)
         {
-            _ = services.TryAddSingleton<ProgressQueueOptionsManager<RemoveProgressItem>>();
-            _ = services.TryAddSingleton<ProgressQueue<RemoveProgressItem>>();
-            _ = services.TryAddScoped<RemoveProgressItemScope>();
-            _ = services.AddSingleton<IPostConfigureOptions<ProgressQueue<RemoveProgressItem>>, ConfigureProgressQueue<RemoveProgressItem>>();
+            services.TryAddSingleton<ProgressQueueOptionsManager<RemoveProgressItem>>();
+            services.TryAddSingleton<ProgressQueue<RemoveProgressItem>>();
+            services.TryAddScoped<RemoveProgressItemScope>();
+            services.AddSingleton<IPostConfigureOptions<ProgressQueue<RemoveProgressItem>>, ConfigureProgressQueue<RemoveProgressItem>>();
             return services;
         }
     }

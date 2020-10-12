@@ -25,45 +25,45 @@ namespace ASC.Core.Common.EF.Model
     {
         public static ModelBuilderWrapper AddFeedLast(this ModelBuilderWrapper modelBuilder)
         {
-            _ = modelBuilder
+            modelBuilder
                 .Add(MySqlAddFeedLast, Provider.MySql)
                 .Add(PgSqlAddFeedLast, Provider.Postgre);
             return modelBuilder;
         }
         public static void MySqlAddFeedLast(this ModelBuilder modelBuilder)
         {
-            _ = modelBuilder.Entity<FeedLast>(entity =>
+            modelBuilder.Entity<FeedLast>(entity =>
             {
-                _ = entity.HasKey(e => e.LastKey)
+                entity.HasKey(e => e.LastKey)
                     .HasName("PRIMARY");
 
-                _ = entity.ToTable("feed_last");
+                entity.ToTable("feed_last");
 
-                _ = entity.Property(e => e.LastKey)
+                entity.Property(e => e.LastKey)
                     .HasColumnName("last_key")
                     .HasColumnType("varchar(128)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.LastDate)
+                entity.Property(e => e.LastDate)
                     .HasColumnName("last_date")
                     .HasColumnType("datetime");
             });
         }
         public static void PgSqlAddFeedLast(this ModelBuilder modelBuilder)
         {
-            _ = modelBuilder.Entity<FeedLast>(entity =>
+            modelBuilder.Entity<FeedLast>(entity =>
             {
-                _ = entity.HasKey(e => e.LastKey)
+                entity.HasKey(e => e.LastKey)
                     .HasName("feed_last_pkey");
 
-                _ = entity.ToTable("feed_last", "onlyoffice");
+                entity.ToTable("feed_last", "onlyoffice");
 
-                _ = entity.Property(e => e.LastKey)
+                entity.Property(e => e.LastKey)
                     .HasColumnName("last_key")
                     .HasMaxLength(128);
 
-                _ = entity.Property(e => e.LastDate).HasColumnName("last_date");
+                entity.Property(e => e.LastDate).HasColumnName("last_date");
             });
         }
     }

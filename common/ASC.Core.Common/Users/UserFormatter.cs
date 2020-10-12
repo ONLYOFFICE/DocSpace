@@ -151,7 +151,7 @@ namespace ASC.Core.Users
     {
         public static DIHelper AddUserFormatter(this DIHelper services)
         {
-            _ = services.TryAddSingleton<UserFormatter>();
+            services.TryAddSingleton<UserFormatter>();
             return services;
         }
     }

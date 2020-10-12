@@ -197,7 +197,7 @@ namespace ASC.Web.Core.WhiteLabel
     {
         public static DIHelper AddAdditionalWhiteLabelSettingsService(this DIHelper services)
         {
-            _ = services.TryAddSingleton<AdditionalWhiteLabelSettingsHelper>();
+            services.TryAddSingleton<AdditionalWhiteLabelSettingsHelper>();
             return services;
         }
     }

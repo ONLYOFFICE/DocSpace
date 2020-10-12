@@ -9,7 +9,7 @@ namespace ASC.Core.Common.Migrations.MySql.NotifyDbContextMySql
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            _ = migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "notify_info",
                 columns: table => new
                 {
@@ -22,10 +22,10 @@ namespace ASC.Core.Common.Migrations.MySql.NotifyDbContextMySql
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("PRIMARY", x => x.notify_id);
+                    table.PrimaryKey("PRIMARY", x => x.notify_id);
                 });
 
-            _ = migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "notify_queue",
                 columns: table => new
                 {
@@ -63,10 +63,10 @@ namespace ASC.Core.Common.Migrations.MySql.NotifyDbContextMySql
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("PRIMARY", x => x.notify_id);
+                    table.PrimaryKey("PRIMARY", x => x.notify_id);
                 });
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "state",
                 table: "notify_info",
                 column: "state");
@@ -74,10 +74,10 @@ namespace ASC.Core.Common.Migrations.MySql.NotifyDbContextMySql
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "notify_info");
 
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "notify_queue");
         }
     }

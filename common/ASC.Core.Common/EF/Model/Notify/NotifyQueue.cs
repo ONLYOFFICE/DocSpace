@@ -40,136 +40,136 @@ namespace ASC.Core.Common.EF.Model
     {
         public static ModelBuilderWrapper AddNotifyQueue(this ModelBuilderWrapper modelBuilder)
         {
-            _ = modelBuilder
+            modelBuilder
                 .Add(MySqlAddNotifyQueue, Provider.MySql)
                 .Add(PgSqlAddNotifyQueue, Provider.Postgre);
             return modelBuilder;
         }
         public static void MySqlAddNotifyQueue(this ModelBuilder modelBuilder)
         {
-            _ = modelBuilder.Entity<NotifyQueue>(entity =>
+            modelBuilder.Entity<NotifyQueue>(entity =>
             {
-                _ = entity.HasKey(e => e.NotifyId)
+                entity.HasKey(e => e.NotifyId)
                     .HasName("PRIMARY");
 
-                _ = entity.ToTable("notify_queue");
+                entity.ToTable("notify_queue");
 
-                _ = entity.Property(e => e.NotifyId).HasColumnName("notify_id");
+                entity.Property(e => e.NotifyId).HasColumnName("notify_id");
 
-                _ = entity.Property(e => e.Attachments)
+                entity.Property(e => e.Attachments)
                     .HasColumnName("attachments")
                     .HasColumnType("text")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.AutoSubmitted)
+                entity.Property(e => e.AutoSubmitted)
                     .HasColumnName("auto_submitted")
                     .HasColumnType("varchar(64)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.Content)
+                entity.Property(e => e.Content)
                     .HasColumnName("content")
                     .HasColumnType("text")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.ContentType)
+                entity.Property(e => e.ContentType)
                     .HasColumnName("content_type")
                     .HasColumnType("varchar(64)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.CreationDate)
+                entity.Property(e => e.CreationDate)
                     .HasColumnName("creation_date")
                     .HasColumnType("datetime");
 
-                _ = entity.Property(e => e.Reciever)
+                entity.Property(e => e.Reciever)
                     .HasColumnName("reciever")
                     .HasColumnType("varchar(255)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.ReplyTo)
+                entity.Property(e => e.ReplyTo)
                     .HasColumnName("reply_to")
                     .HasColumnType("varchar(1024)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.Sender)
+                entity.Property(e => e.Sender)
                     .HasColumnName("sender")
                     .HasColumnType("varchar(255)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.SenderType)
+                entity.Property(e => e.SenderType)
                     .HasColumnName("sender_type")
                     .HasColumnType("varchar(64)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.Subject)
+                entity.Property(e => e.Subject)
                     .HasColumnName("subject")
                     .HasColumnType("varchar(1024)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.TenantId).HasColumnName("tenant_id");
+                entity.Property(e => e.TenantId).HasColumnName("tenant_id");
             });
         }
         public static void PgSqlAddNotifyQueue(this ModelBuilder modelBuilder)
         {
-            _ = modelBuilder.Entity<NotifyQueue>(entity =>
+            modelBuilder.Entity<NotifyQueue>(entity =>
             {
-                _ = entity.HasKey(e => e.NotifyId)
+                entity.HasKey(e => e.NotifyId)
                     .HasName("notify_queue_pkey");
 
-                _ = entity.ToTable("notify_queue", "onlyoffice");
+                entity.ToTable("notify_queue", "onlyoffice");
 
-                _ = entity.Property(e => e.NotifyId).HasColumnName("notify_id");
+                entity.Property(e => e.NotifyId).HasColumnName("notify_id");
 
-                _ = entity.Property(e => e.Attachments).HasColumnName("attachments");
+                entity.Property(e => e.Attachments).HasColumnName("attachments");
 
-                _ = entity.Property(e => e.AutoSubmitted)
+                entity.Property(e => e.AutoSubmitted)
                     .HasColumnName("auto_submitted")
                     .HasMaxLength(64)
                     .HasDefaultValueSql("NULL");
 
-                _ = entity.Property(e => e.Content).HasColumnName("content");
+                entity.Property(e => e.Content).HasColumnName("content");
 
-                _ = entity.Property(e => e.ContentType)
+                entity.Property(e => e.ContentType)
                     .HasColumnName("content_type")
                     .HasMaxLength(64)
                     .HasDefaultValueSql("NULL");
 
-                _ = entity.Property(e => e.CreationDate).HasColumnName("creation_date");
+                entity.Property(e => e.CreationDate).HasColumnName("creation_date");
 
-                _ = entity.Property(e => e.Reciever)
+                entity.Property(e => e.Reciever)
                     .HasColumnName("reciever")
                     .HasMaxLength(255)
                     .HasDefaultValueSql("NULL");
 
-                _ = entity.Property(e => e.ReplyTo)
+                entity.Property(e => e.ReplyTo)
                     .HasColumnName("reply_to")
                     .HasMaxLength(1024)
                     .HasDefaultValueSql("NULL");
 
-                _ = entity.Property(e => e.Sender)
+                entity.Property(e => e.Sender)
                     .HasColumnName("sender")
                     .HasMaxLength(255)
                     .HasDefaultValueSql("NULL");
 
-                _ = entity.Property(e => e.SenderType)
+                entity.Property(e => e.SenderType)
                     .HasColumnName("sender_type")
                     .HasMaxLength(64)
                     .HasDefaultValueSql("NULL");
 
-                _ = entity.Property(e => e.Subject)
+                entity.Property(e => e.Subject)
                     .HasColumnName("subject")
                     .HasMaxLength(1024)
                     .HasDefaultValueSql("NULL");
 
-                _ = entity.Property(e => e.TenantId).HasColumnName("tenant_id");
+                entity.Property(e => e.TenantId).HasColumnName("tenant_id");
             });
         }
     }

@@ -190,7 +190,7 @@ namespace ASC.Core.Notify
     {
         public static DIHelper AddEmailSenderSinkService(this DIHelper services)
         {
-            _ = services.TryAddScoped<EmailSenderSinkScope>();
+            services.TryAddScoped<EmailSenderSinkScope>();
             return services;
         }
     }

@@ -8,10 +8,10 @@ namespace ASC.Core.Common.Migrations.Npgsql.TelegramDbContextNpgsql
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            _ = migrationBuilder.EnsureSchema(
+            migrationBuilder.EnsureSchema(
                 name: "onlyoffice");
 
-            _ = migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "telegram_users",
                 schema: "onlyoffice",
                 columns: table => new
@@ -22,10 +22,10 @@ namespace ASC.Core.Common.Migrations.Npgsql.TelegramDbContextNpgsql
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("telegram_users_pkey", x => new { x.tenant_id, x.portal_user_id });
+                    table.PrimaryKey("telegram_users_pkey", x => new { x.tenant_id, x.portal_user_id });
                 });
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "tgId",
                 schema: "onlyoffice",
                 table: "telegram_users",
@@ -34,7 +34,7 @@ namespace ASC.Core.Common.Migrations.Npgsql.TelegramDbContextNpgsql
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "telegram_users",
                 schema: "onlyoffice");
         }

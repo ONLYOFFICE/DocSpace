@@ -10,13 +10,13 @@ namespace ASC.Core.Common.Migrations.Npgsql.DbContextNpgsql
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            _ = migrationBuilder.EnsureSchema(
+            migrationBuilder.EnsureSchema(
                 name: "onlyoffice");
 
-            _ = migrationBuilder.AlterDatabase()
+            migrationBuilder.AlterDatabase()
                 .Annotation("Npgsql:Enum:onlyoffice.enum_dbip_location", "ipv4,ipv6");
 
-            _ = migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "regions",
                 columns: table => new
                 {
@@ -26,10 +26,10 @@ namespace ASC.Core.Common.Migrations.Npgsql.DbContextNpgsql
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("PK_regions", x => x.Region);
+                    table.PrimaryKey("PK_regions", x => x.Region);
                 });
 
-            _ = migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "dbip_location",
                 schema: "onlyoffice",
                 columns: table => new
@@ -53,10 +53,10 @@ namespace ASC.Core.Common.Migrations.Npgsql.DbContextNpgsql
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("PK_dbip_location", x => x.id);
+                    table.PrimaryKey("PK_dbip_location", x => x.id);
                 });
 
-            _ = migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "mobile_app_install",
                 schema: "onlyoffice",
                 columns: table => new
@@ -68,10 +68,10 @@ namespace ASC.Core.Common.Migrations.Npgsql.DbContextNpgsql
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("mobile_app_install_pkey", x => new { x.user_email, x.app_type });
+                    table.PrimaryKey("mobile_app_install_pkey", x => new { x.user_email, x.app_type });
                 });
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "ip_start",
                 schema: "onlyoffice",
                 table: "dbip_location",
@@ -80,14 +80,14 @@ namespace ASC.Core.Common.Migrations.Npgsql.DbContextNpgsql
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "regions");
 
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "dbip_location",
                 schema: "onlyoffice");
 
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "mobile_app_install",
                 schema: "onlyoffice");
         }

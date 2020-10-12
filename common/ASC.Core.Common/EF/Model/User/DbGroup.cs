@@ -30,107 +30,107 @@ namespace ASC.Core.Common.EF
     {
         public static ModelBuilderWrapper AddDbGroup(this ModelBuilderWrapper modelBuilder)
         {
-            _ = modelBuilder
+            modelBuilder
                 .Add(MySqlAddDbGroup, Provider.MySql)
                 .Add(PgSqlAddDbGroup, Provider.Postgre);
             return modelBuilder;
         }
         private static void MySqlAddDbGroup(this ModelBuilder modelBuilder)
         {
-            _ = modelBuilder.Entity<DbGroup>(entity =>
+            modelBuilder.Entity<DbGroup>(entity =>
             {
-                _ = entity.ToTable("core_group");
+                entity.ToTable("core_group");
 
-                _ = entity.HasIndex(e => e.LastModified)
+                entity.HasIndex(e => e.LastModified)
                     .HasName("last_modified");
 
-                _ = entity.HasIndex(e => new { e.Tenant, e.ParentId })
+                entity.HasIndex(e => new { e.Tenant, e.ParentId })
                     .HasName("parentid");
 
-                _ = entity.Property(e => e.Id)
+                entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("varchar(38)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.CategoryId)
+                entity.Property(e => e.CategoryId)
                     .HasColumnName("categoryid")
                     .HasColumnType("varchar(38)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.LastModified)
+                entity.Property(e => e.LastModified)
                     .HasColumnName("last_modified")
                     .HasColumnType("timestamp")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
-                _ = entity.Property(e => e.Name)
+                entity.Property(e => e.Name)
                     .IsRequired()
                     .HasColumnName("name")
                     .HasColumnType("varchar(128)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.ParentId)
+                entity.Property(e => e.ParentId)
                     .HasColumnName("parentid")
                     .HasColumnType("varchar(38)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.Removed).HasColumnName("removed");
+                entity.Property(e => e.Removed).HasColumnName("removed");
 
-                _ = entity.Property(e => e.Sid)
+                entity.Property(e => e.Sid)
                     .HasColumnName("sid")
                     .HasColumnType("varchar(512)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.Tenant).HasColumnName("tenant");
+                entity.Property(e => e.Tenant).HasColumnName("tenant");
             });
         }
         private static void PgSqlAddDbGroup(this ModelBuilder modelBuilder)
         {
-            _ = modelBuilder.Entity<DbGroup>(entity =>
+            modelBuilder.Entity<DbGroup>(entity =>
             {
-                _ = entity.ToTable("core_group");
+                entity.ToTable("core_group");
 
-                _ = entity.HasIndex(e => e.LastModified)
+                entity.HasIndex(e => e.LastModified)
                     .HasName("last_modified");
 
-                _ = entity.HasIndex(e => new { e.Tenant, e.ParentId })
+                entity.HasIndex(e => new { e.Tenant, e.ParentId })
                     .HasName("parentid");
 
-                _ = entity.Property(e => e.Id)
+                entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasMaxLength(38);
 
-                _ = entity.Property(e => e.CategoryId)
+                entity.Property(e => e.CategoryId)
                     .HasColumnName("categoryid")
                     .HasMaxLength(38)
                     .HasDefaultValueSql("NULL");
 
-                _ = entity.Property(e => e.LastModified)
+                entity.Property(e => e.LastModified)
                     .HasColumnName("last_modified")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
-                _ = entity.Property(e => e.Name)
+                entity.Property(e => e.Name)
                     .IsRequired()
                     .HasColumnName("name")
                     .HasMaxLength(128);
 
-                _ = entity.Property(e => e.ParentId)
+                entity.Property(e => e.ParentId)
                     .HasColumnName("parentid")
                     .HasMaxLength(38)
                     .HasDefaultValueSql("NULL");
 
-                _ = entity.Property(e => e.Removed).HasColumnName("removed");
+                entity.Property(e => e.Removed).HasColumnName("removed");
 
-                _ = entity.Property(e => e.Sid)
+                entity.Property(e => e.Sid)
                     .HasColumnName("sid")
                     .HasMaxLength(512)
                     .HasDefaultValueSql("NULL");
 
-                _ = entity.Property(e => e.Tenant).HasColumnName("tenant");
+                entity.Property(e => e.Tenant).HasColumnName("tenant");
             });
         }
     }

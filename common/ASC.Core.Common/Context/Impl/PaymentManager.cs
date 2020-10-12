@@ -128,7 +128,7 @@ namespace ASC.Core
             webClient.Headers.Add("Authorization", GetPartnerAuthHeader(actionUrl));
             try
             {
-                _ = webClient.DownloadData(partnerUrl + actionUrl);
+                webClient.DownloadData(partnerUrl + actionUrl);
             }
             catch (WebException we)
             {
@@ -147,7 +147,7 @@ namespace ASC.Core
                 // clear tenant cache
                 Thread.Sleep(timeout);
             }
-            _ = TenantManager.GetTenant(TenantManager.GetCurrentTenant().TenantId);
+            TenantManager.GetTenant(TenantManager.GetCurrentTenant().TenantId);
         }
 
         private string GetPartnerAuthHeader(string url)

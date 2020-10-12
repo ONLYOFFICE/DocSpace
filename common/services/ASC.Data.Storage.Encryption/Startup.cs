@@ -48,13 +48,13 @@ namespace ASC.Data.Storage.Encryption
         {
             var diHelper = new DIHelper(services);
 
-            _ = diHelper.AddEncryptionServiceLauncher();
+            diHelper.AddEncryptionServiceLauncher();
 
-            _ = services.AddHostedService<EncryptionServiceLauncher>();
+            services.AddHostedService<EncryptionServiceLauncher>();
 
             base.ConfigureServices(services);
 
-            _ = services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
+            services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
         }
     }
 }

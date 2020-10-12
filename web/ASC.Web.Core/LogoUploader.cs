@@ -181,7 +181,7 @@ namespace ASC.Web.Studio.UserControls.CustomNavigation
             var store = StorageFactory.GetStorage(TenantManager.GetCurrentTenant().TenantId.ToString(CultureInfo.InvariantCulture), StorageName);
 
             using var stream = new MemoryStream(data);
-            _ = stream.Seek(0, SeekOrigin.Begin);
+            stream.Seek(0, SeekOrigin.Begin);
             return store.Save(fileName, stream).ToString();
         }
     }

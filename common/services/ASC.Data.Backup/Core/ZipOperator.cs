@@ -86,10 +86,10 @@ namespace ASC.Data.Backup
 
                     if (!Directory.Exists(Path.GetDirectoryName(fullPath)))
                     {
-                        _ = Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
+                        Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
                     }
 
-                    _ = reader.MoveToNextEntry();
+                    reader.MoveToNextEntry();
 
                     using var fileStream = File.Create(fullPath);
                     using var entryStream = reader.OpenEntryStream();

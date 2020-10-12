@@ -9,7 +9,7 @@ namespace ASC.Core.Common.Migrations.MySql.UserDbContextMySql
         protected override void Up(MigrationBuilder migrationBuilder)
         {
 
-            _ = migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "core_group",
                 columns: table => new
                 {
@@ -34,10 +34,10 @@ namespace ASC.Core.Common.Migrations.MySql.UserDbContextMySql
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("PK_core_group", x => x.id);
+                    table.PrimaryKey("PK_core_group", x => x.id);
                 });
 
-            _ = migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "core_subscription",
                 columns: table => new
                 {
@@ -58,10 +58,10 @@ namespace ASC.Core.Common.Migrations.MySql.UserDbContextMySql
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("PRIMARY", x => new { x.tenant, x.source, x.action, x.recipient, x.@object });
+                    table.PrimaryKey("PRIMARY", x => new { x.tenant, x.source, x.action, x.recipient, x.@object });
                 });
 
-            _ = migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "core_subscriptionmethod",
                 columns: table => new
                 {
@@ -81,12 +81,12 @@ namespace ASC.Core.Common.Migrations.MySql.UserDbContextMySql
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("PRIMARY", x => new { x.tenant, x.source, x.action, x.recipient });
+                    table.PrimaryKey("PRIMARY", x => new { x.tenant, x.source, x.action, x.recipient });
                 });
 
 
 
-            _ = migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "core_userphoto",
                 columns: table => new
                 {
@@ -98,11 +98,11 @@ namespace ASC.Core.Common.Migrations.MySql.UserDbContextMySql
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("PRIMARY", x => x.userid);
+                    table.PrimaryKey("PRIMARY", x => x.userid);
                 });
 
 
-            _ = migrationBuilder.InsertData(
+            migrationBuilder.InsertData(
                 table: "core_subscription",
                 columns: new[] { "tenant", "source", "action", "recipient", "object", "unsubscribed" },
                 values: new object[,]
@@ -129,7 +129,7 @@ namespace ASC.Core.Common.Migrations.MySql.UserDbContextMySql
                     { -1, "6fe286a4-479e-4c25-a8d9-0156e332b0c0", "sharefolder", "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e", "", false }
                 });
 
-            _ = migrationBuilder.InsertData(
+            migrationBuilder.InsertData(
                 table: "core_subscriptionmethod",
                 columns: new[] { "tenant", "source", "action", "recipient", "sender" },
                 values: new object[,]
@@ -168,18 +168,18 @@ namespace ASC.Core.Common.Migrations.MySql.UserDbContextMySql
                     { -1, "13ff36fb-0272-4887-b416-74f52b0d0b02", "SetAccess", "abef62db-11a8-4673-9d32-ef1d8af19dc0", "email.sender|messanger.sender" }
                 });
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "last_modified",
                 table: "core_group",
                 column: "last_modified");
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "parentid",
                 table: "core_group",
                 columns: new[] { "tenant", "parentid" });
 
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "tenant",
                 table: "core_userphoto",
                 column: "tenant");
@@ -188,28 +188,28 @@ namespace ASC.Core.Common.Migrations.MySql.UserDbContextMySql
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "core_acl");
 
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "core_group");
 
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "core_subscription");
 
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "core_subscriptionmethod");
 
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "core_usergroup");
 
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "core_userphoto");
 
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "core_usersecurity");
 
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "core_user");
         }
     }

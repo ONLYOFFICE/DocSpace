@@ -53,7 +53,7 @@ namespace ASC.Web.Studio.Core
 
             var settings = settingsManager.Load<PrivacyRoomSettings>();
             settings.EnabledSetting = value;
-            _ = settingsManager.Save(settings);
+            settingsManager.Save(settings);
         }
 
         public static bool IsAvailable(TenantManager tenantManager)

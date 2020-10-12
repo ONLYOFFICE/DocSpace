@@ -53,8 +53,8 @@ namespace ASC.Web.Core.Mobile
                 LastSign = DateTime.UtcNow
             };
 
-            _ = DbContext.MobileAppInstall.Add(mai);
-            _ = DbContext.SaveChanges();
+            DbContext.MobileAppInstall.Add(mai);
+            DbContext.SaveChanges();
         }
 
         public bool IsInstallRegistered(string userEmail, MobileAppType? appType)

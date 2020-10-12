@@ -274,7 +274,7 @@ namespace ASC.Data.Backup.Tasks
                 {
                     var storage = StorageFactory.GetStorage(ConfigPath, Dump ? file.Tenant.ToString() : ColumnMapper.GetTenantMapping().ToString(), group.Key);
                     var quotaController = storage.QuotaController;
-                    _ = storage.SetQuotaController(null);
+                    storage.SetQuotaController(null);
 
                     try
                     {
@@ -290,7 +290,7 @@ namespace ASC.Data.Backup.Tasks
                             using var stream = dataReader.GetEntry(key);
                             try
                             {
-                                _ = storage.Save(file.Domain, adjustedPath, module != null ? module.PrepareData(key, stream, ColumnMapper) : stream);
+                                storage.Save(file.Domain, adjustedPath, module != null ? module.PrepareData(key, stream, ColumnMapper) : stream);
                             }
                             catch (Exception error)
                             {
@@ -302,7 +302,7 @@ namespace ASC.Data.Backup.Tasks
                     {
                         if (quotaController != null)
                         {
-                            _ = storage.SetQuotaController(quotaController);
+                            storage.SetQuotaController(quotaController);
                         }
                     }
                 }
@@ -378,7 +378,7 @@ namespace ASC.Data.Backup.Tasks
                 DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"),
                 tenantId);
 
-            _ = connection.CreateCommand().WithTimeout(120).ExecuteNonQuery();
+            connection.CreateCommand().WithTimeout(120).ExecuteNonQuery();
         }
     }
 
@@ -388,7 +388,7 @@ namespace ASC.Data.Backup.Tasks
         {
             if (services.TryAddScoped<RestorePortalTask>())
             {
-                _ = services.TryAddSingleton<AscCacheNotify>();
+                services.TryAddSingleton<AscCacheNotify>();
                 return services
                     .AddCoreConfigurationService()
                     .AddStorageFactoryService()

@@ -15,30 +15,30 @@ namespace ASC.Core.Common.EF.Model.Resource
     {
         public static ModelBuilderWrapper AddResAuthorsLang(this ModelBuilderWrapper modelBuilder)
         {
-            _ = modelBuilder
+            modelBuilder
                 .Add(MySqlAddResAuthorsLang, Provider.MySql)
                 .Add(PgSqlAddResAuthorsLang, Provider.Postgre);
             return modelBuilder;
         }
         public static void MySqlAddResAuthorsLang(this ModelBuilder modelBuilder)
         {
-            _ = modelBuilder.Entity<ResAuthorsLang>(entity =>
+            modelBuilder.Entity<ResAuthorsLang>(entity =>
             {
-                _ = entity.HasKey(e => new { e.AuthorLogin, e.CultureTitle })
+                entity.HasKey(e => new { e.AuthorLogin, e.CultureTitle })
                     .HasName("PRIMARY");
 
-                _ = entity.ToTable("res_authorslang");
+                entity.ToTable("res_authorslang");
 
-                _ = entity.HasIndex(e => e.CultureTitle)
+                entity.HasIndex(e => e.CultureTitle)
                     .HasName("res_authorslang_FK2");
 
-                _ = entity.Property(e => e.AuthorLogin)
+                entity.Property(e => e.AuthorLogin)
                     .HasColumnName("authorLogin")
                     .HasColumnType("varchar(50)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.CultureTitle)
+                entity.Property(e => e.CultureTitle)
                     .HasColumnName("cultureTitle")
                     .HasColumnType("varchar(20)")
                     .HasCharSet("utf8")
@@ -47,21 +47,21 @@ namespace ASC.Core.Common.EF.Model.Resource
         }
         public static void PgSqlAddResAuthorsLang(this ModelBuilder modelBuilder)
         {
-            _ = modelBuilder.Entity<ResAuthorsLang>(entity =>
+            modelBuilder.Entity<ResAuthorsLang>(entity =>
             {
-                _ = entity.HasKey(e => new { e.AuthorLogin, e.CultureTitle })
+                entity.HasKey(e => new { e.AuthorLogin, e.CultureTitle })
                     .HasName("res_authorslang_pkey");
 
-                _ = entity.ToTable("res_authorslang", "onlyoffice");
+                entity.ToTable("res_authorslang", "onlyoffice");
 
-                _ = entity.HasIndex(e => e.CultureTitle)
+                entity.HasIndex(e => e.CultureTitle)
                     .HasName("res_authorslang_FK2");
 
-                _ = entity.Property(e => e.AuthorLogin)
+                entity.Property(e => e.AuthorLogin)
                     .HasColumnName("authorLogin")
                     .HasMaxLength(50);
 
-                _ = entity.Property(e => e.CultureTitle)
+                entity.Property(e => e.CultureTitle)
                     .HasColumnName("cultureTitle")
                     .HasMaxLength(50);
             });

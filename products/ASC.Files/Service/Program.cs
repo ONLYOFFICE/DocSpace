@@ -30,9 +30,9 @@ namespace ASC.Files.Service
                     {
                         path = Path.GetFullPath(Path.Combine(hostContext.HostingEnvironment.ContentRootPath, path));
                     }
-                    _ = config.SetBasePath(path);
+                    config.SetBasePath(path);
                     var env = hostContext.Configuration.GetValue("ENVIRONMENT", "Production");
-                    _ = config
+                    config
                         .AddInMemoryCollection(new Dictionary<string, string>
                             {
                                 {"pathToConf", path }
@@ -51,21 +51,21 @@ namespace ASC.Files.Service
                 .ConfigureServices((hostContext, services) =>
                 {
                     var diHelper = new DIHelper(services);
-                    _ = diHelper.AddNLogManager("ASC.Files");
-                    _ = services.AddHostedService<ServiceLauncher>();
-                    _ = diHelper
+                    diHelper.AddNLogManager("ASC.Files");
+                    services.AddHostedService<ServiceLauncher>();
+                    diHelper
                         .AddServiceLauncher()
                         .AddFileConverterService()
                         .AddKafkaService()
                         .AddFactoryIndexerFileService()
                         .AddFactoryIndexerFolderService();
 
-                    _ = diHelper.AddNLogManager("ASC.Feed.Agregator");
-                    _ = services.AddHostedService<FeedAggregatorService>();
-                    _ = diHelper
+                    diHelper.AddNLogManager("ASC.Feed.Agregator");
+                    services.AddHostedService<FeedAggregatorService>();
+                    diHelper
                         .AddFeedAggregatorService();
 
-                    _ = services.AddAutofac(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath, true, false, "search.json", "feed.json");
+                    services.AddAutofac(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath, true, false, "search.json", "feed.json");
                 })
                 .UseConsoleLifetime()
                 .Build();

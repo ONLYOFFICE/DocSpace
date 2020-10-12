@@ -224,7 +224,7 @@ namespace ASC.Api.Core
             var id = HttpContextAccessor.HttpContext.User.Claims.FirstOrDefault(r => r.Type == ClaimTypes.Sid);
             if (Guid.TryParse(id?.Value, out var userId))
             {
-                _ = SecurityContext.AuthenticateMe(userId);
+                SecurityContext.AuthenticateMe(userId);
             }
         }
     }
@@ -275,7 +275,7 @@ namespace ASC.Api.Core
         {
             if (services.TryAddScoped<ApiContext>())
             {
-                _ = services
+                services
                     .AddTenantManagerService()
                     .AddSecurityContextService();
             }

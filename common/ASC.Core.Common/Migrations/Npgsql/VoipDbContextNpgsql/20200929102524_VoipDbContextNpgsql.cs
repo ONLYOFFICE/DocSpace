@@ -10,10 +10,10 @@ namespace ASC.Core.Common.Migrations.Npgsql.VoipDbContextNpgsql
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            _ = migrationBuilder.EnsureSchema(
+            migrationBuilder.EnsureSchema(
                 name: "onlyoffice");
 
-            _ = migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "crm_contact",
                 schema: "onlyoffice",
                 columns: table => new
@@ -41,10 +41,10 @@ namespace ASC.Core.Common.Migrations.Npgsql.VoipDbContextNpgsql
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("PK_crm_contact", x => x.id);
+                    table.PrimaryKey("PK_crm_contact", x => x.id);
                 });
 
-            _ = migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "crm_voip_number",
                 schema: "onlyoffice",
                 columns: table => new
@@ -57,10 +57,10 @@ namespace ASC.Core.Common.Migrations.Npgsql.VoipDbContextNpgsql
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("PK_crm_voip_number", x => x.id);
+                    table.PrimaryKey("PK_crm_voip_number", x => x.id);
                 });
 
-            _ = migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "crm_voip_calls",
                 schema: "onlyoffice",
                 columns: table => new
@@ -84,8 +84,8 @@ namespace ASC.Core.Common.Migrations.Npgsql.VoipDbContextNpgsql
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("PK_crm_voip_calls", x => x.id);
-                    _ = table.ForeignKey(
+                    table.PrimaryKey("PK_crm_voip_calls", x => x.id);
+                    table.ForeignKey(
                         name: "FK_crm_voip_calls_crm_contact_CrmContactId",
                         column: x => x.CrmContactId,
                         principalSchema: "onlyoffice",
@@ -94,49 +94,49 @@ namespace ASC.Core.Common.Migrations.Npgsql.VoipDbContextNpgsql
                         onDelete: ReferentialAction.Restrict);
                 });
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "create_on_crm_contact",
                 schema: "onlyoffice",
                 table: "crm_contact",
                 column: "create_on");
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "last_modifed_on_crm_contact",
                 schema: "onlyoffice",
                 table: "crm_contact",
                 columns: new[] { "last_modifed_on", "tenant_id" });
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "company_id",
                 schema: "onlyoffice",
                 table: "crm_contact",
                 columns: new[] { "tenant_id", "company_id" });
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "display_name",
                 schema: "onlyoffice",
                 table: "crm_contact",
                 columns: new[] { "tenant_id", "display_name" });
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "IX_crm_voip_calls_CrmContactId",
                 schema: "onlyoffice",
                 table: "crm_voip_calls",
                 column: "CrmContactId");
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "tenant_id_crm_voip_calls",
                 schema: "onlyoffice",
                 table: "crm_voip_calls",
                 column: "tenant_id");
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "parent_call_id",
                 schema: "onlyoffice",
                 table: "crm_voip_calls",
                 columns: new[] { "parent_call_id", "tenant_id" });
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "tenant_id_crm_voip_number",
                 schema: "onlyoffice",
                 table: "crm_voip_number",
@@ -145,15 +145,15 @@ namespace ASC.Core.Common.Migrations.Npgsql.VoipDbContextNpgsql
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "crm_voip_calls",
                 schema: "onlyoffice");
 
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "crm_voip_number",
                 schema: "onlyoffice");
 
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "crm_contact",
                 schema: "onlyoffice");
         }

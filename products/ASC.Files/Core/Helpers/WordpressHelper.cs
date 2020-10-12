@@ -100,7 +100,7 @@ namespace ASC.Web.Files.Helpers
             try
             {
                 var wpStatus = ((WordpressStatus)status).ToString();
-                _ = WordpressLoginProvider.CreateWordpressPost(title, content, wpStatus, blogId, token);
+                WordpressLoginProvider.CreateWordpressPost(title, content, wpStatus, blogId, token);
                 return true;
             }
             catch (Exception ex)
@@ -115,7 +115,7 @@ namespace ASC.Web.Files.Helpers
     {
         public static DIHelper AddWordpressHelperService(this DIHelper services)
         {
-            _ = services.TryAddSingleton<WordpressHelper>();
+            services.TryAddSingleton<WordpressHelper>();
             return services;
         }
 

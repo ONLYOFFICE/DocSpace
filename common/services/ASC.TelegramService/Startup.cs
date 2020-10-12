@@ -48,13 +48,13 @@ namespace ASC.TelegramService
         {
             var diHelper = new DIHelper(services);
 
-            _ = diHelper.AddTelegramLauncher();
+            diHelper.AddTelegramLauncher();
 
-            _ = services.AddHostedService<TelegramLauncher>();
+            services.AddHostedService<TelegramLauncher>();
 
             base.ConfigureServices(services);
 
-            _ = services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
+            services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
         }
     }
 }

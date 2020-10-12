@@ -539,7 +539,7 @@ namespace ASC.Web.Studio.Core.Notify
             var admins = UserManager.GetUsers()
                         .Where(u => WebItemSecurity.IsProductAdministrator(WebItemManager.PeopleProductID, u.ID));
 
-            _ = ThreadPool.QueueUserWorkItem(_ =>
+            ThreadPool.QueueUserWorkItem(_ =>
             {
                 try
                 {
@@ -849,7 +849,7 @@ namespace ASC.Web.Studio.Core.Notify
             var users = UserManager.GetUsers()
                         .Where(u => u.ActivationStatus.HasFlag(EmployeeActivationStatus.Activated));
 
-            _ = ThreadPool.QueueUserWorkItem(_ =>
+            ThreadPool.QueueUserWorkItem(_ =>
             {
                 try
                 {
@@ -1035,7 +1035,7 @@ namespace ASC.Web.Studio.Core.Notify
         {
             if (services.TryAddScoped<StudioNotifyService>())
             {
-                _ = services.TryAddScoped<StudioNotifyServiceScope>();
+                services.TryAddScoped<StudioNotifyServiceScope>();
                 return services
                     .AddDisplayUserSettingsService()
                     .AddMailWhiteLabelSettingsService()

@@ -27,61 +27,61 @@ namespace ASC.Files.Core.EF
     {
         public static ModelBuilderWrapper AddDbFilesThirdpartyIdMapping(this ModelBuilderWrapper modelBuilder)
         {
-            _ = modelBuilder
+            modelBuilder
                 .Add(MySqlAddDbFilesThirdpartyIdMapping, Provider.MySql)
                 .Add(PgSqlAddDbFilesThirdpartyIdMapping, Provider.Postgre);
             return modelBuilder;
         }
         public static void MySqlAddDbFilesThirdpartyIdMapping(this ModelBuilder modelBuilder)
         {
-            _ = modelBuilder.Entity<DbFilesThirdpartyIdMapping>(entity =>
+            modelBuilder.Entity<DbFilesThirdpartyIdMapping>(entity =>
             {
-                _ = entity.HasKey(e => e.HashId)
+                entity.HasKey(e => e.HashId)
                     .HasName("PRIMARY");
 
-                _ = entity.ToTable("files_thirdparty_id_mapping");
+                entity.ToTable("files_thirdparty_id_mapping");
 
-                _ = entity.HasIndex(e => new { e.TenantId, e.HashId })
+                entity.HasIndex(e => new { e.TenantId, e.HashId })
                     .HasName("index_1");
 
-                _ = entity.Property(e => e.HashId)
+                entity.Property(e => e.HashId)
                     .HasColumnName("hash_id")
                     .HasColumnType("char(32)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.Id)
+                entity.Property(e => e.Id)
                     .IsRequired()
                     .HasColumnName("id")
                     .HasColumnType("text")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.TenantId).HasColumnName("tenant_id");
+                entity.Property(e => e.TenantId).HasColumnName("tenant_id");
             });
         }
         public static void PgSqlAddDbFilesThirdpartyIdMapping(this ModelBuilder modelBuilder)
         {
-            _ = modelBuilder.Entity<DbFilesThirdpartyIdMapping>(entity =>
+            modelBuilder.Entity<DbFilesThirdpartyIdMapping>(entity =>
             {
-                _ = entity.HasKey(e => e.HashId)
+                entity.HasKey(e => e.HashId)
                     .HasName("files_thirdparty_id_mapping_pkey");
 
-                _ = entity.ToTable("files_thirdparty_id_mapping", "onlyoffice");
+                entity.ToTable("files_thirdparty_id_mapping", "onlyoffice");
 
-                _ = entity.HasIndex(e => new { e.TenantId, e.HashId })
+                entity.HasIndex(e => new { e.TenantId, e.HashId })
                     .HasName("index_1");
 
-                _ = entity.Property(e => e.HashId)
+                entity.Property(e => e.HashId)
                     .HasColumnName("hash_id")
                     .HasMaxLength(32)
                     .IsFixedLength();
 
-                _ = entity.Property(e => e.Id)
+                entity.Property(e => e.Id)
                     .IsRequired()
                     .HasColumnName("id");
 
-                _ = entity.Property(e => e.TenantId).HasColumnName("tenant_id");
+                entity.Property(e => e.TenantId).HasColumnName("tenant_id");
             });
         }
     }

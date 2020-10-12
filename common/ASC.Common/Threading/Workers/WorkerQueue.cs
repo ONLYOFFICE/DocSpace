@@ -109,7 +109,7 @@ namespace ASC.Common.Threading.Workers
                     Items.Add(new WorkItem<T>(item));
                 }
             }
-            _ = waitEvent.Set();
+            waitEvent.Set();
             ReviveThreads();
         }
 
@@ -119,7 +119,7 @@ namespace ASC.Common.Threading.Workers
             {
                 Items.Add(new WorkItem<T>(item));
             }
-            _ = waitEvent.Set();
+            waitEvent.Set();
             ReviveThreads();
         }
 
@@ -150,8 +150,8 @@ namespace ASC.Common.Threading.Workers
             {
                 started = false;
 
-                _ = stopEvent.Set();
-                _ = waitEvent.Set();
+                stopEvent.Set();
+                waitEvent.Set();
 
                 log.Debug("Stoping queue. Joining threads");
                 foreach (var workerThread in threads)
@@ -169,8 +169,8 @@ namespace ASC.Common.Threading.Workers
             {
                 started = false;
 
-                _ = stopEvent.Set();
-                _ = waitEvent.Set();
+                stopEvent.Set();
+                waitEvent.Set();
 
                 log.Debug("Stoping queue. Terminating threads");
                 foreach (var worker in threads.Where(t => t != Thread.CurrentThread))
@@ -203,7 +203,7 @@ namespace ASC.Common.Threading.Workers
         {
             if (item != null)
             {
-                _ = Items.Remove(item);
+                Items.Remove(item);
                 item.Dispose();
             }
         }
@@ -247,8 +247,8 @@ namespace ASC.Common.Threading.Workers
                 started = true;
                 action = starter;
 
-                _ = stopEvent.Reset();
-                _ = waitEvent.Reset();
+                stopEvent.Reset();
+                waitEvent.Reset();
 
                 log.Debug("Creating threads");
                 for (var i = 0; i < workerCount; i++)

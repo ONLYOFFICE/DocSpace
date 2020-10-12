@@ -53,16 +53,16 @@ namespace ASC.Core.Common.EF
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            _ = optionsBuilder.UseLoggerFactory(LoggerFactory);
-            _ = optionsBuilder.EnableSensitiveDataLogging();
+            optionsBuilder.UseLoggerFactory(LoggerFactory);
+            optionsBuilder.EnableSensitiveDataLogging();
             Provider = GetProviderByConnectionString();
             switch (Provider)
             {
                 case Provider.MySql:
-                    _ = optionsBuilder.UseMySql(ConnectionStringSettings.ConnectionString);
+                    optionsBuilder.UseMySql(ConnectionStringSettings.ConnectionString);
                     break;
                 case Provider.Postgre:
-                    _ = optionsBuilder.UseNpgsql(ConnectionStringSettings.ConnectionString);
+                    optionsBuilder.UseNpgsql(ConnectionStringSettings.ConnectionString);
                     break;
             }
         }

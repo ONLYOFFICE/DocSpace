@@ -47,89 +47,89 @@ namespace ASC.Core.Common.EF.Model
     {
         public static ModelBuilderWrapper AddDbipLocation(this ModelBuilderWrapper modelBuilder)
         {
-            _ = modelBuilder
+            modelBuilder
                 .Add(MySqlAddDbipLocation, Provider.MySql)
                 .Add(PgSqlAddDbipLocation, Provider.Postgre);
             return modelBuilder;
         }
         public static void MySqlAddDbipLocation(this ModelBuilder modelBuilder)
         {
-            _ = modelBuilder.Entity<DbipLocation>(entity =>
+            modelBuilder.Entity<DbipLocation>(entity =>
             {
-                _ = entity.ToTable("dbip_location");
+                entity.ToTable("dbip_location");
 
-                _ = entity.HasIndex(e => e.IPStart)
+                entity.HasIndex(e => e.IPStart)
                     .HasName("ip_start");
 
-                _ = entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.Id).HasColumnName("id");
 
-                _ = entity.Property(e => e.AddrType)
+                entity.Property(e => e.AddrType)
                     .IsRequired()
                     .HasColumnName("addr_type")
                     .HasColumnType("enum('ipv4','ipv6')")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.City)
+                entity.Property(e => e.City)
                     .IsRequired()
                     .HasColumnName("city")
                     .HasColumnType("varchar(255)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.Country)
+                entity.Property(e => e.Country)
                     .IsRequired()
                     .HasColumnName("country")
                     .HasColumnType("varchar(2)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.District)
+                entity.Property(e => e.District)
                     .HasColumnName("district")
                     .HasColumnType("varchar(255)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.GeonameId).HasColumnName("geoname_id");
+                entity.Property(e => e.GeonameId).HasColumnName("geoname_id");
 
-                _ = entity.Property(e => e.IPEnd)
+                entity.Property(e => e.IPEnd)
                     .IsRequired()
                     .HasColumnName("ip_end")
                     .HasColumnType("varchar(39)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.IPStart)
+                entity.Property(e => e.IPStart)
                     .IsRequired()
                     .HasColumnName("ip_start")
                     .HasColumnType("varchar(39)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.Latitude).HasColumnName("latitude");
+                entity.Property(e => e.Latitude).HasColumnName("latitude");
 
-                _ = entity.Property(e => e.Longitude).HasColumnName("longitude");
+                entity.Property(e => e.Longitude).HasColumnName("longitude");
 
-                _ = entity.Property(e => e.Processed)
+                entity.Property(e => e.Processed)
                     .HasColumnName("processed")
                     .HasDefaultValueSql("'1'");
 
-                _ = entity.Property(e => e.StateProv)
+                entity.Property(e => e.StateProv)
                     .IsRequired()
                     .HasColumnName("stateprov")
                     .HasColumnType("varchar(255)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.TimezoneName)
+                entity.Property(e => e.TimezoneName)
                     .HasColumnName("timezone_name")
                     .HasColumnType("varchar(255)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.TimezoneOffset).HasColumnName("timezone_offset");
+                entity.Property(e => e.TimezoneOffset).HasColumnName("timezone_offset");
 
-                _ = entity.Property(e => e.ZipCode)
+                entity.Property(e => e.ZipCode)
                     .HasColumnName("zipcode")
                     .HasColumnType("varchar(255)")
                     .HasCharSet("utf8")
@@ -139,64 +139,64 @@ namespace ASC.Core.Common.EF.Model
         }
         public static void PgSqlAddDbipLocation(this ModelBuilder modelBuilder)
         {
-            _ = modelBuilder.HasPostgresEnum("onlyoffice", "enum_dbip_location", new[] { "ipv4", "ipv6" });
-            _ = modelBuilder.Entity<DbipLocation>(entity =>
+            modelBuilder.HasPostgresEnum("onlyoffice", "enum_dbip_location", new[] { "ipv4", "ipv6" });
+            modelBuilder.Entity<DbipLocation>(entity =>
             {
-                _ = entity.ToTable("dbip_location", "onlyoffice");
+                entity.ToTable("dbip_location", "onlyoffice");
 
-                _ = entity.HasIndex(e => e.IPStart)
+                entity.HasIndex(e => e.IPStart)
                     .HasName("ip_start");
 
-                _ = entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.Id).HasColumnName("id");
 
-                _ = entity.Property(e => e.City)
+                entity.Property(e => e.City)
                     .IsRequired()
                     .HasColumnName("city")
                     .HasMaxLength(255);
 
-                _ = entity.Property(e => e.Country)
+                entity.Property(e => e.Country)
                     .IsRequired()
                     .HasColumnName("country")
                     .HasMaxLength(2);
 
-                _ = entity.Property(e => e.District)
+                entity.Property(e => e.District)
                     .HasColumnName("district")
                     .HasMaxLength(255)
                     .HasDefaultValueSql("NULL");
 
-                _ = entity.Property(e => e.GeonameId).HasColumnName("geoname_id");
+                entity.Property(e => e.GeonameId).HasColumnName("geoname_id");
 
-                _ = entity.Property(e => e.IPEnd)
+                entity.Property(e => e.IPEnd)
                     .IsRequired()
                     .HasColumnName("ip_end")
                     .HasMaxLength(39);
 
-                _ = entity.Property(e => e.IPStart)
+                entity.Property(e => e.IPStart)
                     .IsRequired()
                     .HasColumnName("ip_start")
                     .HasMaxLength(39);
 
-                _ = entity.Property(e => e.Latitude).HasColumnName("latitude");
+                entity.Property(e => e.Latitude).HasColumnName("latitude");
 
-                _ = entity.Property(e => e.Longitude).HasColumnName("longitude");
+                entity.Property(e => e.Longitude).HasColumnName("longitude");
 
-                _ = entity.Property(e => e.Processed)
+                entity.Property(e => e.Processed)
                     .HasColumnName("processed")
                     .HasDefaultValueSql("1");
 
-                _ = entity.Property(e => e.StateProv)
+                entity.Property(e => e.StateProv)
                     .IsRequired()
                     .HasColumnName("stateprov")
                     .HasMaxLength(255);
 
-                _ = entity.Property(e => e.TimezoneName)
+                entity.Property(e => e.TimezoneName)
                     .HasColumnName("timezone_name")
                     .HasMaxLength(255)
                     .HasDefaultValueSql("NULL");
 
-                _ = entity.Property(e => e.TimezoneOffset).HasColumnName("timezone_offset");
+                entity.Property(e => e.TimezoneOffset).HasColumnName("timezone_offset");
 
-                _ = entity.Property(e => e.ZipCode)
+                entity.Property(e => e.ZipCode)
                     .HasColumnName("zipcode")
                     .HasMaxLength(255)
                     .HasDefaultValueSql("NULL");

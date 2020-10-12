@@ -332,7 +332,7 @@ namespace ASC.Data.Backup
 
         private static void ValidateCronSettings(CronParams cronParams)
         {
-            _ = new CronExpression(cronParams.ToString());
+            new CronExpression(cronParams.ToString());
         }
 
         private int GetCurrentTenantId()

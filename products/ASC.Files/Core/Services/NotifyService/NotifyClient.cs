@@ -253,7 +253,7 @@ namespace ASC.Files.Core.Services.NotifyService
         {
             if (services.TryAddScoped<NotifyClient>())
             {
-                _ = services.TryAddScoped<NotifyClientScope>();
+                services.TryAddScoped<NotifyClientScope>();
                 return services
                     .AddFilesNotifySourceService()
                     .AddBaseCommonLinkUtilityService()

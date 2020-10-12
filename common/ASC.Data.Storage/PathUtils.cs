@@ -122,7 +122,7 @@ namespace ASC.Data.Storage
     {
         public static DIHelper AddPathUtilsService(this DIHelper services)
         {
-            _ = services.TryAddSingleton<PathUtils>();
+            services.TryAddSingleton<PathUtils>();
 
             return services;
         }

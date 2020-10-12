@@ -27,7 +27,7 @@ namespace ASC.Core.Common.EF
     {
         public static ModelBuilderWrapper AddAcl(this ModelBuilderWrapper modelBuilder)
         {
-            _ = modelBuilder
+            modelBuilder
                 .Add(MySqlAddAcl, Provider.MySql)
                 .Add(PgSqlAddAcl, Provider.Postgre)
                 .HasData(
@@ -104,62 +104,62 @@ namespace ASC.Core.Common.EF
 
         public static void MySqlAddAcl(this ModelBuilder modelBuilder)
         {
-            _ = modelBuilder.Entity<Acl>(entity =>
+            modelBuilder.Entity<Acl>(entity =>
             {
-                _ = entity.HasKey(e => new { e.Tenant, e.Subject, e.Action, e.Object })
+                entity.HasKey(e => new { e.Tenant, e.Subject, e.Action, e.Object })
                     .HasName("PRIMARY");
 
-                _ = entity.ToTable("core_acl");
+                entity.ToTable("core_acl");
 
-                _ = entity.Property(e => e.Tenant).HasColumnName("tenant");
+                entity.Property(e => e.Tenant).HasColumnName("tenant");
 
-                _ = entity.Property(e => e.Subject)
+                entity.Property(e => e.Subject)
                     .HasColumnName("subject")
                     .HasColumnType("varchar(38)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.Action)
+                entity.Property(e => e.Action)
                     .HasColumnName("action")
                     .HasColumnType("varchar(38)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.Object)
+                entity.Property(e => e.Object)
                     .HasColumnName("object")
                     .HasColumnType("varchar(255)")
                     .HasDefaultValueSql("''")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.AceType).HasColumnName("acetype");
+                entity.Property(e => e.AceType).HasColumnName("acetype");
             });
         }
         public static void PgSqlAddAcl(this ModelBuilder modelBuilder)
         {
-            _ = modelBuilder.Entity<Acl>(entity =>
+            modelBuilder.Entity<Acl>(entity =>
             {
-                _ = entity.HasKey(e => new { e.Tenant, e.Subject, e.Action, e.Object })
+                entity.HasKey(e => new { e.Tenant, e.Subject, e.Action, e.Object })
                     .HasName("core_acl_pkey");
 
-                _ = entity.ToTable("core_acl", "onlyoffice");
+                entity.ToTable("core_acl", "onlyoffice");
 
-                _ = entity.Property(e => e.Tenant).HasColumnName("tenant");
+                entity.Property(e => e.Tenant).HasColumnName("tenant");
 
-                _ = entity.Property(e => e.Subject)
+                entity.Property(e => e.Subject)
                     .HasColumnName("subject")
                     .HasMaxLength(38);
 
-                _ = entity.Property(e => e.Action)
+                entity.Property(e => e.Action)
                     .HasColumnName("action")
                     .HasMaxLength(38);
 
-                _ = entity.Property(e => e.Object)
+                entity.Property(e => e.Object)
                     .HasColumnName("object")
                     .HasMaxLength(255)
                     .HasDefaultValueSql("''");
 
-                _ = entity.Property(e => e.AceType).HasColumnName("acetype");
+                entity.Property(e => e.AceType).HasColumnName("acetype");
             });
         }
     }

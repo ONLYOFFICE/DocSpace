@@ -20,7 +20,7 @@ namespace ASC.Core.Common.EF
     {
         public static void AddDbFunction(this ModelBuilder modelBuilder)
         {
-            _ = modelBuilder
+            modelBuilder
                 .HasDbFunction(typeof(JsonExtensions).GetMethod(nameof(JsonExtensions.JsonValue)))
                 .HasTranslation(e =>
                 {

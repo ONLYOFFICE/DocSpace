@@ -79,7 +79,7 @@ namespace ASC.TelegramService
                 }
 
                 var chat = await client.GetChatAsync(tgUser.TelegramUserId);
-                _ = await client.SendTextMessageAsync(chat, msg.Content, Telegram.Bot.Types.Enums.ParseMode.Markdown);
+                await client.SendTextMessageAsync(chat, msg.Content, Telegram.Bot.Types.Enums.ParseMode.Markdown);
             }
             catch (Exception e)
             {
@@ -94,7 +94,7 @@ namespace ASC.TelegramService
             var client = Clients[tenantId];
             client.Client.StopReceiving();
 
-            _ = Clients.Remove(tenantId);
+            Clients.Remove(tenantId);
         }
 
         public void CreateOrUpdateClientForTenant(int tenantId, string token, int tokenLifespan, string proxy, bool startTelegramService, bool force = false)
@@ -177,7 +177,7 @@ namespace ASC.TelegramService
     {
         public static DIHelper AddTelegramHandlerService(this DIHelper services)
         {
-            _ = services.TryAddSingleton<TelegramHandler>();
+            services.TryAddSingleton<TelegramHandler>();
             return services.AddCachedTelegramDaoService()
                 .AddCommandModuleService()
                 .AddTelegramHelperSerivce();

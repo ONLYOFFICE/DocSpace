@@ -33,7 +33,7 @@ namespace ASC.Core.Common.EF.Context
         {
             modelBuilder.AddDbFunction();
 
-            _ = ModelBuilderWrapper
+            ModelBuilderWrapper
                 .From(modelBuilder, Provider)
                 .AddDbTenant()
                 .AddWebstudioSettings()

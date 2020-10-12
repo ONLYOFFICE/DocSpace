@@ -63,7 +63,7 @@ namespace ASC.ElasticSearch.Service
     {
         public static DIHelper AddSettingsService(this DIHelper services)
         {
-            _ = services.TryAddSingleton<Settings>();
+            services.TryAddSingleton<Settings>();
             return services;
         }
     }

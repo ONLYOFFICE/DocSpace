@@ -128,8 +128,8 @@ namespace ASC.Core.Data
                 Visible = quota.Visible
             };
 
-            _ = CoreDbContext.AddOrUpdate(r => r.Quotas, dbQuota);
-            _ = CoreDbContext.SaveChanges();
+            CoreDbContext.AddOrUpdate(r => r.Quotas, dbQuota);
+            CoreDbContext.SaveChanges();
 
             return quota;
         }
@@ -143,8 +143,8 @@ namespace ASC.Core.Data
 
             if (d != null)
             {
-                _ = CoreDbContext.Quotas.Remove(d);
-                _ = CoreDbContext.SaveChanges();
+                CoreDbContext.Quotas.Remove(d);
+                CoreDbContext.SaveChanges();
             }
 
             tr.Commit();
@@ -171,8 +171,8 @@ namespace ASC.Core.Data
                 LastModified = DateTime.UtcNow
             };
 
-            _ = CoreDbContext.AddOrUpdate(r => r.QuotaRows, dbQuotaRow);
-            _ = CoreDbContext.SaveChanges();
+            CoreDbContext.AddOrUpdate(r => r.QuotaRows, dbQuotaRow);
+            CoreDbContext.SaveChanges();
 
             tx.Commit();
         }

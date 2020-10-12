@@ -117,8 +117,8 @@ namespace ASC.Web.Files.ThirdPartyApp
                 TenantId = TenantManager.GetCurrentTenant().TenantId
             };
 
-            _ = FilesDbContext.AddOrUpdate(r => r.ThirdpartyApp, dbFilesThirdpartyApp);
-            _ = FilesDbContext.SaveChanges();
+            FilesDbContext.AddOrUpdate(r => r.ThirdpartyApp, dbFilesThirdpartyApp);
+            FilesDbContext.SaveChanges();
         }
 
         public Token GetToken(string app)
@@ -148,7 +148,7 @@ namespace ASC.Web.Files.ThirdPartyApp
                 .Where(r => r.App == app);
 
             FilesDbContext.RemoveRange(apps);
-            _ = FilesDbContext.SaveChanges();
+            FilesDbContext.SaveChanges();
         }
 
         private string EncryptToken(OAuth20Token token)

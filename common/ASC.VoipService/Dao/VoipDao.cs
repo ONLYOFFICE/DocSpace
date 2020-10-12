@@ -74,8 +74,8 @@ namespace ASC.VoipService.Dao
                 TenantId = TenantID
             };
 
-            _ = VoipDbContext.VoipNumbers.Add(voipNumber);
-            _ = VoipDbContext.SaveChanges();
+            VoipDbContext.VoipNumbers.Add(voipNumber);
+            VoipDbContext.SaveChanges();
 
             return phone;
         }
@@ -83,8 +83,8 @@ namespace ASC.VoipService.Dao
         public virtual void DeleteNumber(string phoneId = "")
         {
             var number = VoipDbContext.VoipNumbers.Where(r => r.Id == phoneId && r.TenantId == TenantID).FirstOrDefault();
-            _ = VoipDbContext.VoipNumbers.Remove(number);
-            _ = VoipDbContext.SaveChanges();
+            VoipDbContext.VoipNumbers.Remove(number);
+            VoipDbContext.SaveChanges();
         }
 
         public virtual IEnumerable<VoipPhone> GetNumbers(params string[] ids)
@@ -176,8 +176,8 @@ namespace ASC.VoipService.Dao
                 }
             }
 
-            _ = VoipDbContext.VoipCalls.Add(voipCall);
-            _ = VoipDbContext.SaveChanges();
+            VoipDbContext.VoipCalls.Add(voipCall);
+            VoipDbContext.SaveChanges();
 
             return call;
         }
@@ -188,7 +188,7 @@ namespace ASC.VoipService.Dao
 
             if (filter.SortByColumn != null)
             {
-                _ = query.OrderBy(filter.SortByColumn, filter.SortOrder);
+                query.OrderBy(filter.SortByColumn, filter.SortOrder);
             }
 
             query = query.Skip((int)filter.Offset);

@@ -10,14 +10,14 @@ namespace ASC.Core.Common.Migrations.Npgsql.MailDbContextNpgsql
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            _ = migrationBuilder.EnsureSchema(
+            migrationBuilder.EnsureSchema(
                 name: "onlyoffice");
 
-            _ = migrationBuilder.AlterDatabase()
+            migrationBuilder.AlterDatabase()
                 .Annotation("Npgsql:Enum:onlyoffice.enum_dbip_location", "ipv4,ipv6")
                 .Annotation("Npgsql:Enum:onlyoffice.enum_mail_mailbox_server", "pop3,imap,smtp");
 
-            _ = migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "mail_mailbox",
                 schema: "onlyoffice",
                 columns: table => new
@@ -57,10 +57,10 @@ namespace ASC.Core.Common.Migrations.Npgsql.MailDbContextNpgsql
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("PK_mail_mailbox", x => x.id);
+                    table.PrimaryKey("PK_mail_mailbox", x => x.id);
                 });
 
-            _ = migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "mail_mailbox_provider",
                 schema: "onlyoffice",
                 columns: table => new
@@ -74,10 +74,10 @@ namespace ASC.Core.Common.Migrations.Npgsql.MailDbContextNpgsql
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("PK_mail_mailbox_provider", x => x.id);
+                    table.PrimaryKey("PK_mail_mailbox_provider", x => x.id);
                 });
 
-            _ = migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "mail_mailbox_server",
                 schema: "onlyoffice",
                 columns: table => new
@@ -94,10 +94,10 @@ namespace ASC.Core.Common.Migrations.Npgsql.MailDbContextNpgsql
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("PK_mail_mailbox_server", x => x.id);
+                    table.PrimaryKey("PK_mail_mailbox_server", x => x.id);
                 });
 
-            _ = migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "mail_server_server",
                 schema: "onlyoffice",
                 columns: table => new
@@ -112,46 +112,46 @@ namespace ASC.Core.Common.Migrations.Npgsql.MailDbContextNpgsql
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("PK_mail_server_server", x => x.id);
+                    table.PrimaryKey("PK_mail_server_server", x => x.id);
                 });
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "address_index",
                 schema: "onlyoffice",
                 table: "mail_mailbox",
                 column: "address");
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "main_mailbox_id_in_server_mail_mailbox_server_id",
                 schema: "onlyoffice",
                 table: "mail_mailbox",
                 column: "id_in_server");
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "main_mailbox_id_smtp_server_mail_mailbox_server_id",
                 schema: "onlyoffice",
                 table: "mail_mailbox",
                 column: "id_smtp_server");
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "date_login_delay_expires",
                 schema: "onlyoffice",
                 table: "mail_mailbox",
                 columns: new[] { "date_checked", "date_login_delay_expires" });
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "user_id_index",
                 schema: "onlyoffice",
                 table: "mail_mailbox",
                 columns: new[] { "tenant", "id_user" });
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "id_provider_mail_mailbox_server",
                 schema: "onlyoffice",
                 table: "mail_mailbox_server",
                 column: "id_provider");
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "mail_server_server_type_server_type_fk_id",
                 schema: "onlyoffice",
                 table: "mail_server_server",
@@ -160,19 +160,19 @@ namespace ASC.Core.Common.Migrations.Npgsql.MailDbContextNpgsql
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "mail_mailbox",
                 schema: "onlyoffice");
 
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "mail_mailbox_provider",
                 schema: "onlyoffice");
 
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "mail_mailbox_server",
                 schema: "onlyoffice");
 
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "mail_server_server",
                 schema: "onlyoffice");
         }

@@ -66,58 +66,58 @@ namespace ASC.Files.Core.EF
     {
         public static ModelBuilderWrapper AddDbFolder(this ModelBuilderWrapper modelBuilder)
         {
-            _ = modelBuilder
+            modelBuilder
                 .Add(MySqlAddDbFolder, Provider.MySql)
                     .Add(PgSqlAddDbFolder, Provider.Postgre);
             return modelBuilder;
         }
         public static void MySqlAddDbFolder(this ModelBuilder modelBuilder)
         {
-            _ = modelBuilder.Entity<DbFolder>(entity =>
+            modelBuilder.Entity<DbFolder>(entity =>
             {
-                _ = entity.ToTable("files_folder");
+                entity.ToTable("files_folder");
 
-                _ = entity.HasIndex(e => e.ModifiedOn)
+                entity.HasIndex(e => e.ModifiedOn)
                     .HasName("modified_on");
 
-                _ = entity.HasIndex(e => new { e.TenantId, e.ParentId })
+                entity.HasIndex(e => new { e.TenantId, e.ParentId })
                     .HasName("parent_id");
 
-                _ = entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.Id).HasColumnName("id");
 
-                _ = entity.Property(e => e.CreateBy)
+                entity.Property(e => e.CreateBy)
                     .IsRequired()
                     .HasColumnName("create_by")
                     .HasColumnType("char(38)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.CreateOn)
+                entity.Property(e => e.CreateOn)
                     .HasColumnName("create_on")
                     .HasColumnType("datetime");
 
-                _ = entity.Property(e => e.FilesCount).HasColumnName("filesCount");
+                entity.Property(e => e.FilesCount).HasColumnName("filesCount");
 
-                _ = entity.Property(e => e.FolderType).HasColumnName("folder_type");
+                entity.Property(e => e.FolderType).HasColumnName("folder_type");
 
-                _ = entity.Property(e => e.FoldersCount).HasColumnName("foldersCount");
+                entity.Property(e => e.FoldersCount).HasColumnName("foldersCount");
 
-                _ = entity.Property(e => e.ModifiedBy)
+                entity.Property(e => e.ModifiedBy)
                     .IsRequired()
                     .HasColumnName("modified_by")
                     .HasColumnType("char(38)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.ModifiedOn)
+                entity.Property(e => e.ModifiedOn)
                     .HasColumnName("modified_on")
                     .HasColumnType("datetime");
 
-                _ = entity.Property(e => e.ParentId).HasColumnName("parent_id");
+                entity.Property(e => e.ParentId).HasColumnName("parent_id");
 
-                _ = entity.Property(e => e.TenantId).HasColumnName("tenant_id");
+                entity.Property(e => e.TenantId).HasColumnName("tenant_id");
 
-                _ = entity.Property(e => e.Title)
+                entity.Property(e => e.Title)
                     .IsRequired()
                     .HasColumnName("title")
                     .HasColumnType("varchar(400)")
@@ -127,45 +127,45 @@ namespace ASC.Files.Core.EF
         }
         public static void PgSqlAddDbFolder(this ModelBuilder modelBuilder)
         {
-            _ = modelBuilder.Entity<DbFolder>(entity =>
+            modelBuilder.Entity<DbFolder>(entity =>
             {
-                _ = entity.ToTable("files_folder", "onlyoffice");
+                entity.ToTable("files_folder", "onlyoffice");
 
-                _ = entity.HasIndex(e => e.ModifiedOn)
+                entity.HasIndex(e => e.ModifiedOn)
                     .HasName("modified_on_files_folder");
 
-                _ = entity.HasIndex(e => new { e.TenantId, e.ParentId })
+                entity.HasIndex(e => new { e.TenantId, e.ParentId })
                     .HasName("parent_id");
 
-                _ = entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.Id).HasColumnName("id");
 
-                _ = entity.Property(e => e.CreateBy)
+                entity.Property(e => e.CreateBy)
                     .IsRequired()
                     .HasColumnName("create_by")
                     .HasMaxLength(38)
                     .IsFixedLength();
 
-                _ = entity.Property(e => e.CreateOn).HasColumnName("create_on");
+                entity.Property(e => e.CreateOn).HasColumnName("create_on");
 
-                _ = entity.Property(e => e.FilesCount).HasColumnName("filesCount");
+                entity.Property(e => e.FilesCount).HasColumnName("filesCount");
 
-                _ = entity.Property(e => e.FolderType).HasColumnName("folder_type");
+                entity.Property(e => e.FolderType).HasColumnName("folder_type");
 
-                _ = entity.Property(e => e.FoldersCount).HasColumnName("foldersCount");
+                entity.Property(e => e.FoldersCount).HasColumnName("foldersCount");
 
-                _ = entity.Property(e => e.ModifiedBy)
+                entity.Property(e => e.ModifiedBy)
                     .IsRequired()
                     .HasColumnName("modified_by")
                     .HasMaxLength(38)
                     .IsFixedLength();
 
-                _ = entity.Property(e => e.ModifiedOn).HasColumnName("modified_on");
+                entity.Property(e => e.ModifiedOn).HasColumnName("modified_on");
 
-                _ = entity.Property(e => e.ParentId).HasColumnName("parent_id");
+                entity.Property(e => e.ParentId).HasColumnName("parent_id");
 
-                _ = entity.Property(e => e.TenantId).HasColumnName("tenant_id");
+                entity.Property(e => e.TenantId).HasColumnName("tenant_id");
 
-                _ = entity.Property(e => e.Title)
+                entity.Property(e => e.Title)
                     .IsRequired()
                     .HasColumnName("title")
                     .HasMaxLength(400);

@@ -38,7 +38,7 @@ public static class Extensions
     {
         var ms = TempStream.Create();
         IronReadToStream(store, domain, path, tryCount, ms);
-        _ = ms.Seek(0, SeekOrigin.Begin);
+        ms.Seek(0, SeekOrigin.Begin);
         return ms;
     }
 

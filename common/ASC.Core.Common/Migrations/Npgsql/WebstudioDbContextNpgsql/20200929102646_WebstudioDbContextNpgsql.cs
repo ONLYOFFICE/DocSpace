@@ -8,10 +8,10 @@ namespace ASC.Core.Common.Migrations.Npgsql.WebstudioDbContextNpgsql
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            _ = migrationBuilder.EnsureSchema(
+            migrationBuilder.EnsureSchema(
                 name: "onlyoffice");
 
-            _ = migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "webstudio_index",
                 schema: "onlyoffice",
                 columns: table => new
@@ -21,10 +21,10 @@ namespace ASC.Core.Common.Migrations.Npgsql.WebstudioDbContextNpgsql
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("webstudio_index_pkey", x => x.index_name);
+                    table.PrimaryKey("webstudio_index_pkey", x => x.index_name);
                 });
 
-            _ = migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "webstudio_settings",
                 schema: "onlyoffice",
                 columns: table => new
@@ -36,10 +36,10 @@ namespace ASC.Core.Common.Migrations.Npgsql.WebstudioDbContextNpgsql
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("webstudio_settings_pkey", x => new { x.TenantID, x.ID, x.UserID });
+                    table.PrimaryKey("webstudio_settings_pkey", x => new { x.TenantID, x.ID, x.UserID });
                 });
 
-            _ = migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "webstudio_uservisit",
                 schema: "onlyoffice",
                 columns: table => new
@@ -54,10 +54,10 @@ namespace ASC.Core.Common.Migrations.Npgsql.WebstudioDbContextNpgsql
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("webstudio_uservisit_pkey", x => new { x.tenantid, x.visitdate, x.productid, x.userid });
+                    table.PrimaryKey("webstudio_uservisit_pkey", x => new { x.tenantid, x.visitdate, x.productid, x.userid });
                 });
 
-            _ = migrationBuilder.InsertData(
+            migrationBuilder.InsertData(
                 schema: "onlyoffice",
                 table: "webstudio_settings",
                 columns: new[] { "TenantID", "ID", "UserID", "Data" },
@@ -66,7 +66,7 @@ namespace ASC.Core.Common.Migrations.Npgsql.WebstudioDbContextNpgsql
                     { 1, new Guid("ab5b3c97-a972-475c-bb13-71936186c4e6"), new Guid("00000000-0000-0000-0000-000000000000"), "{'ColorThemeName':'pure - orange','FirstRequest':false}" }
                 });
 
-            _ = migrationBuilder.InsertData(
+            migrationBuilder.InsertData(
                 schema: "onlyoffice",
                 table: "webstudio_uservisit",
                 columns: new[] { "tenantid", "visitdate", "productid", "userid", "firstvisittime", "lastvisittime", "visitcount" },
@@ -77,13 +77,13 @@ namespace ASC.Core.Common.Migrations.Npgsql.WebstudioDbContextNpgsql
                     { 1, new DateTime(2020, 10, 1, 16, 53, 22, 199, DateTimeKind.Utc).AddTicks(2046), new Guid("e67be73d-f9ae-4ce1-8fec-1880cb518cb4"), new Guid("66faa6e4-f133-11ea-b126-00ffeec8b4ef"), new DateTime(2020, 10, 1, 16, 53, 22, 199, DateTimeKind.Utc).AddTicks(2061), new DateTime(2020, 10, 1, 16, 53, 22, 199, DateTimeKind.Utc).AddTicks(2065), 1 }
                 });
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "ID",
                 schema: "onlyoffice",
                 table: "webstudio_settings",
                 column: "ID");
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "visitdate",
                 schema: "onlyoffice",
                 table: "webstudio_uservisit",
@@ -92,15 +92,15 @@ namespace ASC.Core.Common.Migrations.Npgsql.WebstudioDbContextNpgsql
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "webstudio_index",
                 schema: "onlyoffice");
 
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "webstudio_settings",
                 schema: "onlyoffice");
 
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "webstudio_uservisit",
                 schema: "onlyoffice");
         }

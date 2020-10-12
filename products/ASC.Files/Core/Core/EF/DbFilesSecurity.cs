@@ -36,52 +36,52 @@ namespace ASC.Files.Core.EF
     {
         public static ModelBuilderWrapper AddDbFilesSecurity(this ModelBuilderWrapper modelBuilder)
         {
-            _ = modelBuilder
+            modelBuilder
                 .Add(MySqlAddDbFilesSecurity, Provider.MySql)
                 .Add(PgSqlAddDbFilesSecurity, Provider.Postgre);
             return modelBuilder;
         }
         public static void MySqlAddDbFilesSecurity(this ModelBuilder modelBuilder)
         {
-            _ = modelBuilder.Entity<DbFilesSecurity>(entity =>
+            modelBuilder.Entity<DbFilesSecurity>(entity =>
             {
-                _ = entity.HasKey(e => new { e.TenantId, e.EntryId, e.EntryType, e.Subject })
+                entity.HasKey(e => new { e.TenantId, e.EntryId, e.EntryType, e.Subject })
                     .HasName("PRIMARY");
 
-                _ = entity.ToTable("files_security");
+                entity.ToTable("files_security");
 
-                _ = entity.HasIndex(e => e.Owner)
+                entity.HasIndex(e => e.Owner)
                     .HasName("owner");
 
-                _ = entity.HasIndex(e => new { e.TenantId, e.EntryType, e.EntryId, e.Owner })
+                entity.HasIndex(e => new { e.TenantId, e.EntryType, e.EntryId, e.Owner })
                     .HasName("tenant_id");
 
-                _ = entity.Property(e => e.TenantId).HasColumnName("tenant_id");
+                entity.Property(e => e.TenantId).HasColumnName("tenant_id");
 
-                _ = entity.Property(e => e.EntryId)
+                entity.Property(e => e.EntryId)
                     .HasColumnName("entry_id")
                     .HasColumnType("varchar(50)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.EntryType).HasColumnName("entry_type");
+                entity.Property(e => e.EntryType).HasColumnName("entry_type");
 
-                _ = entity.Property(e => e.Subject)
+                entity.Property(e => e.Subject)
                     .HasColumnName("subject")
                     .HasColumnType("char(38)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.Owner)
+                entity.Property(e => e.Owner)
                     .IsRequired()
                     .HasColumnName("owner")
                     .HasColumnType("char(38)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.Security).HasColumnName("security");
+                entity.Property(e => e.Security).HasColumnName("security");
 
-                _ = entity.Property(e => e.TimeStamp)
+                entity.Property(e => e.TimeStamp)
                     .HasColumnName("timestamp")
                     .HasColumnType("timestamp")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP")
@@ -90,41 +90,41 @@ namespace ASC.Files.Core.EF
         }
         public static void PgSqlAddDbFilesSecurity(this ModelBuilder modelBuilder)
         {
-            _ = modelBuilder.Entity<DbFilesSecurity>(entity =>
+            modelBuilder.Entity<DbFilesSecurity>(entity =>
             {
-                _ = entity.HasKey(e => new { e.TenantId, e.EntryId, e.EntryType, e.Subject })
+                entity.HasKey(e => new { e.TenantId, e.EntryId, e.EntryType, e.Subject })
                     .HasName("files_security_pkey");
 
-                _ = entity.ToTable("files_security", "onlyoffice");
+                entity.ToTable("files_security", "onlyoffice");
 
-                _ = entity.HasIndex(e => e.Owner)
+                entity.HasIndex(e => e.Owner)
                     .HasName("owner");
 
-                _ = entity.HasIndex(e => new { e.EntryId, e.TenantId, e.EntryType, e.Owner })
+                entity.HasIndex(e => new { e.EntryId, e.TenantId, e.EntryType, e.Owner })
                     .HasName("tenant_id_files_security");
 
-                _ = entity.Property(e => e.TenantId).HasColumnName("tenant_id");
+                entity.Property(e => e.TenantId).HasColumnName("tenant_id");
 
-                _ = entity.Property(e => e.EntryId)
+                entity.Property(e => e.EntryId)
                     .HasColumnName("entry_id")
                     .HasMaxLength(50);
 
-                _ = entity.Property(e => e.EntryType).HasColumnName("entry_type");
+                entity.Property(e => e.EntryType).HasColumnName("entry_type");
 
-                _ = entity.Property(e => e.Subject)
+                entity.Property(e => e.Subject)
                     .HasColumnName("subject")
                     .HasMaxLength(38)
                     .IsFixedLength();
 
-                _ = entity.Property(e => e.Owner)
+                entity.Property(e => e.Owner)
                     .IsRequired()
                     .HasColumnName("owner")
                     .HasMaxLength(38)
                     .IsFixedLength();
 
-                _ = entity.Property(e => e.Security).HasColumnName("security");
+                entity.Property(e => e.Security).HasColumnName("security");
 
-                _ = entity.Property(e => e.TimeStamp)
+                entity.Property(e => e.TimeStamp)
                     .HasColumnName("timestamp")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP");
             });

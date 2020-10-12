@@ -33,47 +33,47 @@ namespace ASC.Files.Core.EF
     {
         public static ModelBuilderWrapper AddDbFolderTree(this ModelBuilderWrapper modelBuilder)
         {
-            _ = modelBuilder
+            modelBuilder
                 .Add(MySqlAddDbFolderTree, Provider.MySql)
                 .Add(PgSqlAddDbFolderTree, Provider.Postgre);
             return modelBuilder;
         }
         public static void MySqlAddDbFolderTree(this ModelBuilder modelBuilder)
         {
-            _ = modelBuilder.Entity<DbFolderTree>(entity =>
+            modelBuilder.Entity<DbFolderTree>(entity =>
             {
-                _ = entity.HasKey(e => new { e.ParentId, e.FolderId })
+                entity.HasKey(e => new { e.ParentId, e.FolderId })
                     .HasName("PRIMARY");
 
-                _ = entity.ToTable("files_folder_tree");
+                entity.ToTable("files_folder_tree");
 
-                _ = entity.HasIndex(e => e.FolderId)
+                entity.HasIndex(e => e.FolderId)
                     .HasName("folder_id");
 
-                _ = entity.Property(e => e.ParentId).HasColumnName("parent_id");
+                entity.Property(e => e.ParentId).HasColumnName("parent_id");
 
-                _ = entity.Property(e => e.FolderId).HasColumnName("folder_id");
+                entity.Property(e => e.FolderId).HasColumnName("folder_id");
 
-                _ = entity.Property(e => e.Level).HasColumnName("level");
+                entity.Property(e => e.Level).HasColumnName("level");
             });
         }
         public static void PgSqlAddDbFolderTree(this ModelBuilder modelBuilder)
         {
-            _ = modelBuilder.Entity<DbFolderTree>(entity =>
+            modelBuilder.Entity<DbFolderTree>(entity =>
             {
-                _ = entity.HasKey(e => new { e.ParentId, e.FolderId })
+                entity.HasKey(e => new { e.ParentId, e.FolderId })
                     .HasName("files_folder_tree_pkey");
 
-                _ = entity.ToTable("files_folder_tree", "onlyoffice");
+                entity.ToTable("files_folder_tree", "onlyoffice");
 
-                _ = entity.HasIndex(e => e.FolderId)
+                entity.HasIndex(e => e.FolderId)
                     .HasName("folder_id_files_folder_tree");
 
-                _ = entity.Property(e => e.ParentId).HasColumnName("parent_id");
+                entity.Property(e => e.ParentId).HasColumnName("parent_id");
 
-                _ = entity.Property(e => e.FolderId).HasColumnName("folder_id");
+                entity.Property(e => e.FolderId).HasColumnName("folder_id");
 
-                _ = entity.Property(e => e.Level).HasColumnName("level");
+                entity.Property(e => e.Level).HasColumnName("level");
             });
 
         }

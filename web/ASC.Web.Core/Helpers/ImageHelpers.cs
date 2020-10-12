@@ -188,8 +188,8 @@ namespace ASC.Web.Studio.Helpers
 
                     var ms = new MemoryStream();
                     image.Save(ms, icJPG, ep);
-                    _ = ms.Seek(0, SeekOrigin.Begin);
-                    _ = Store.Save(outputPath, ms);
+                    ms.Seek(0, SeekOrigin.Begin);
+                    Store.Save(outputPath, ms);
                     ms.Dispose();
                 }
                 return;
@@ -241,8 +241,8 @@ namespace ASC.Web.Studio.Helpers
 
                 var ms = new MemoryStream();
                 thumbnail.Save(ms, icJPG, ep);
-                _ = ms.Seek(0, SeekOrigin.Begin);
-                _ = Store.Save(outputPath, ms);
+                ms.Seek(0, SeekOrigin.Begin);
+                Store.Save(outputPath, ms);
                 ms.Dispose();
             }
 
@@ -285,8 +285,8 @@ namespace ASC.Web.Studio.Helpers
 
                     var ms = new MemoryStream();
                     image.Save(ms, icJPG, ep);
-                    _ = ms.Seek(0, SeekOrigin.Begin);
-                    _ = Store.Save(outputPath, ms);
+                    ms.Seek(0, SeekOrigin.Begin);
+                    Store.Save(outputPath, ms);
                     ms.Dispose();
                 }
 
@@ -329,8 +329,8 @@ namespace ASC.Web.Studio.Helpers
 
                 var ms = new MemoryStream();
                 preview.Save(ms, icJPG, ep);
-                _ = ms.Seek(0, SeekOrigin.Begin);
-                _ = Store.Save(outputPath, ms);
+                ms.Seek(0, SeekOrigin.Begin);
+                Store.Save(outputPath, ms);
                 ms.Dispose();
             }
 
@@ -364,8 +364,8 @@ namespace ASC.Web.Studio.Helpers
                 {
                     using var ms = new MemoryStream();
                     image.Save(ms, icJPG, ep);
-                    _ = ms.Seek(0, SeekOrigin.Begin);
-                    _ = Store.Save(outputPath, ms);
+                    ms.Seek(0, SeekOrigin.Begin);
+                    Store.Save(outputPath, ms);
                 }
 
                 Store.Delete(path);

@@ -56,7 +56,7 @@ namespace ASC.Files.Thirdparty
         }
         private void RemoveFromCache(string key)
         {
-            _ = Cache.TryRemove(key, out _);
+            Cache.TryRemove(key, out _);
         }
     }
 
@@ -90,7 +90,7 @@ namespace ASC.Files.Thirdparty
             if (!cache.TryGetValue(key, out var value))
             {
                 value = base.GetProviderInfo(linkId);
-                _ = cache.TryAdd(key, value);
+                cache.TryAdd(key, value);
             }
             return value;
         }
@@ -127,7 +127,7 @@ namespace ASC.Files.Thirdparty
         {
             if (services.TryAddScoped<IProviderDao, ProviderAccountDao>())
             {
-                _ = services.TryAddSingleton<CachedProviderAccountDaoNotify>();
+                services.TryAddSingleton<CachedProviderAccountDaoNotify>();
 
                 return services
                     .AddProviderAccountDaoService();

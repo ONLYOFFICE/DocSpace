@@ -227,7 +227,7 @@ namespace ASC.Data.Storage.Encryption
             if (!metadata.TryReadFromStream(fileStream, Version))
             {
                 decryptedMemoryStream.Close();
-                _ = fileStream.Seek(0, SeekOrigin.Begin);
+                fileStream.Seek(0, SeekOrigin.Begin);
                 return fileStream;
             }
 
@@ -243,7 +243,7 @@ namespace ASC.Data.Storage.Encryption
 
             fileStream.Close();
 
-            _ = decryptedMemoryStream.Seek(0, SeekOrigin.Begin);
+            decryptedMemoryStream.Seek(0, SeekOrigin.Begin);
 
             return decryptedMemoryStream;
         }
@@ -258,7 +258,7 @@ namespace ASC.Data.Storage.Encryption
 
             if (!metadata.TryReadFromStream(fileStream, Version))
             {
-                _ = fileStream.Seek(0, SeekOrigin.Begin);
+                fileStream.Seek(0, SeekOrigin.Begin);
                 return fileStream;
             }
 

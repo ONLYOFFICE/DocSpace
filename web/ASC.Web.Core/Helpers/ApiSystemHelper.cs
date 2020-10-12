@@ -78,7 +78,7 @@ namespace ASC.Web.Core.Helpers
             try
             {
                 var data = string.Format("portalName={0}", HttpUtility.UrlEncode(domain));
-                _ = SendToApi(ApiSystemUrl, "portal/validateportalname", WebRequestMethods.Http.Post, userId, data);
+                SendToApi(ApiSystemUrl, "portal/validateportalname", WebRequestMethods.Http.Post, userId, data);
             }
             catch (WebException exception)
             {
@@ -120,12 +120,12 @@ namespace ASC.Web.Core.Helpers
         public void AddTenantToCache(string domain, Guid userId)
         {
             var data = string.Format("portalName={0}", HttpUtility.UrlEncode(domain));
-            _ = SendToApi(ApiCacheUrl, "portal/add", WebRequestMethods.Http.Post, userId, data);
+            SendToApi(ApiCacheUrl, "portal/add", WebRequestMethods.Http.Post, userId, data);
         }
 
         public void RemoveTenantFromCache(string domain, Guid userId)
         {
-            _ = SendToApi(ApiCacheUrl, "portal/remove?portalname=" + HttpUtility.UrlEncode(domain), "DELETE", userId);
+            SendToApi(ApiCacheUrl, "portal/remove?portalname=" + HttpUtility.UrlEncode(domain), "DELETE", userId);
         }
 
         public IEnumerable<string> FindTenantsInCache(string domain, Guid userId)
@@ -175,7 +175,7 @@ namespace ASC.Web.Core.Helpers
     {
         public static DIHelper AddApiSystemHelper(this DIHelper services)
         {
-            _ = services.TryAddScoped<ApiSystemHelper>();
+            services.TryAddScoped<ApiSystemHelper>();
             return services;
         }
     }

@@ -130,7 +130,7 @@ namespace ASC.ElasticSearch
 
         private void IndexAll(bool reindex = false)
         {
-            _ = Timer.Change(-1, -1);
+            Timer.Change(-1, -1);
             IsStarted = true;
 
             using var scope = Container.BeginLifetimeScope();
@@ -141,7 +141,7 @@ namespace ASC.ElasticSearch
                 IndexProduct(w, reindex);
             }
 
-            _ = Timer.Change(Period, Period);
+            Timer.Change(Period, Period);
             IndexNotify.Publish(new IndexAction() { Indexing = "", LastIndexed = DateTime.Now.Ticks }, CacheNotifyAction.Any);
             IsStarted = false;
         }
@@ -202,10 +202,10 @@ namespace ASC.ElasticSearch
     {
         public static DIHelper AddServiceLauncher(this DIHelper services)
         {
-            _ = services.TryAddSingleton<ServiceLauncher>();
-            _ = services.TryAddScoped<ServiceLauncherScope>();
-            _ = services.TryAddSingleton<Service.Service>();
-            _ = services.TryAddScoped<ServiceScope>();
+            services.TryAddSingleton<ServiceLauncher>();
+            services.TryAddScoped<ServiceLauncherScope>();
+            services.TryAddSingleton<Service.Service>();
+            services.TryAddScoped<ServiceScope>();
 
             return services
                 .AddSettingsService()

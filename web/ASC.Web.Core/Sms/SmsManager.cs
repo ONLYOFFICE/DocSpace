@@ -75,14 +75,14 @@ namespace ASC.Web.Studio.Core.SMS
             user.MobilePhoneActivationStatus = MobilePhoneActivationStatus.NotActivated;
             if (SecurityContext.IsAuthenticated)
             {
-                _ = UserManager.SaveUserInfo(user);
+                UserManager.SaveUserInfo(user);
             }
             else
             {
                 try
                 {
-                    _ = SecurityContext.AuthenticateMe(ASC.Core.Configuration.Constants.CoreSystem);
-                    _ = UserManager.SaveUserInfo(user);
+                    SecurityContext.AuthenticateMe(ASC.Core.Configuration.Constants.CoreSystem);
+                    UserManager.SaveUserInfo(user);
                 }
                 finally
                 {
@@ -148,7 +148,7 @@ namespace ASC.Web.Studio.Core.SMS
             if (user.MobilePhoneActivationStatus == MobilePhoneActivationStatus.NotActivated)
             {
                 user.MobilePhoneActivationStatus = MobilePhoneActivationStatus.Activated;
-                _ = UserManager.SaveUserInfo(user);
+                UserManager.SaveUserInfo(user);
             }
         }
     }

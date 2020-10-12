@@ -412,7 +412,7 @@ namespace ASC.Core.Data
                 }
             }
 
-            _ = UserDbContext.SaveChanges();
+            UserDbContext.SaveChanges();
             tr.Commit();
         }
 
@@ -457,7 +457,7 @@ namespace ASC.Core.Data
                 }
             }
 
-            _ = UserDbContext.SaveChanges();
+            UserDbContext.SaveChanges();
 
             tr.Commit();
         }
@@ -486,7 +486,7 @@ namespace ASC.Core.Data
             }
             var user = UserDbContext.Users.First(r => r.Tenant == tenant && r.Id == userId);
             user.LastModified = DateTime.UtcNow;
-            _ = UserDbContext.SaveChanges();
+            UserDbContext.SaveChanges();
 
             tr.Commit();
         }
@@ -500,8 +500,8 @@ namespace ASC.Core.Data
             group.Tenant = tenant;
 
             var dbGroup = FromGroupToDbGroup(group);
-            _ = UserDbContext.AddOrUpdate(r => r.Groups, dbGroup);
-            _ = UserDbContext.SaveChanges();
+            UserDbContext.AddOrUpdate(r => r.Groups, dbGroup);
+            UserDbContext.SaveChanges();
 
             return group;
         }
@@ -533,8 +533,8 @@ namespace ASC.Core.Data
                 throw new ArgumentOutOfRangeException("Duplicate email.");
             }
 
-            _ = UserDbContext.AddOrUpdate(r => r.Users, FromUserInfoToUser(user));
-            _ = UserDbContext.SaveChanges();
+            UserDbContext.AddOrUpdate(r => r.Users, FromUserInfoToUser(user));
+            UserDbContext.SaveChanges();
             tx.Commit();
 
             return user;
@@ -549,7 +549,7 @@ namespace ASC.Core.Data
 
             using var tr = UserDbContext.Database.BeginTransaction();
 
-            _ = UserDbContext.AddOrUpdate(r => r.UserGroups, FromUserGroupRefToUserGroup(r));
+            UserDbContext.AddOrUpdate(r => r.UserGroups, FromUserGroupRefToUserGroup(r));
 
             var user = UserDbContext.Users.FirstOrDefault(a => a.Tenant == tenant && a.Id == r.UserId);
             if (user != null)
@@ -557,7 +557,7 @@ namespace ASC.Core.Data
                 user.LastModified = r.LastModified;
             }
 
-            _ = UserDbContext.SaveChanges();
+            UserDbContext.SaveChanges();
             tr.Commit();
 
             return r;
@@ -576,8 +576,8 @@ namespace ASC.Core.Data
                 LastModified = DateTime.UtcNow
             };
 
-            _ = UserDbContext.AddOrUpdate(r => r.UserSecurity, us);
-            _ = UserDbContext.SaveChanges();
+            UserDbContext.AddOrUpdate(r => r.UserSecurity, us);
+            UserDbContext.SaveChanges();
         }
 
         public void SetUserPhoto(int tenant, Guid id, byte[] photo)
@@ -601,14 +601,14 @@ namespace ASC.Core.Data
                     userPhoto.Photo = photo;
                 }
 
-                _ = UserDbContext.AddOrUpdate(r => r.Photos, userPhoto);
+                UserDbContext.AddOrUpdate(r => r.Photos, userPhoto);
             }
             else if (userPhoto != null)
             {
-                _ = UserDbContext.Photos.Remove(userPhoto);
+                UserDbContext.Photos.Remove(userPhoto);
             }
 
-            _ = UserDbContext.SaveChanges();
+            UserDbContext.SaveChanges();
             tr.Commit();
         }
 

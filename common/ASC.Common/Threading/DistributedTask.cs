@@ -115,7 +115,7 @@ namespace ASC.Common.Threading
             var current = DistributedTaskCache.Props.SingleOrDefault(r => r.Key == name);
             if (current != null)
             {
-                _ = DistributedTaskCache.Props.Remove(current);
+                DistributedTaskCache.Props.Remove(current);
             }
 
             if (value != null)

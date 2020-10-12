@@ -95,7 +95,7 @@ namespace ASC.TelegramService
     {
         public static DIHelper AddTelegramListenerService(this DIHelper services)
         {
-            _ = services.TryAddSingleton<TelegramListener>();
+            services.TryAddSingleton<TelegramListener>();
             return services.AddTelegramService();
         }
     }

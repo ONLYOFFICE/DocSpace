@@ -70,7 +70,7 @@ namespace ASC.Web.Core.Files
             {
                 if (IsByteValidHeaderValueCharacter(b))
                 {
-                    _ = builder.Append((char)b);
+                    builder.Append((char)b);
                 }
                 else
                 {
@@ -117,7 +117,7 @@ namespace ASC.Web.Core.Files
 
         private static void AddByteToStringBuilder(byte b, StringBuilder builder)
         {
-            _ = builder.Append('%');
+            builder.Append('%');
 
             int i = b;
             AddHexDigitToStringBuilder(i >> 4, builder);
@@ -128,7 +128,7 @@ namespace ASC.Web.Core.Files
 
         private static void AddHexDigitToStringBuilder(int digit, StringBuilder builder)
         {
-            _ = builder.Append(HexDigits[digit]);
+            builder.Append(HexDigits[digit]);
         }
     }
 }

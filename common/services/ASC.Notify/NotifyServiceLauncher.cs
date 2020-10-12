@@ -124,7 +124,7 @@ namespace ASC.Notify
             foreach (var pair in NotifyServiceCfg.Schedulers.Where(r => r.MethodInfo != null))
             {
                 Log.DebugFormat("Start scheduler {0} ({1})", pair.Name, pair.MethodInfo);
-                _ = pair.MethodInfo.Invoke(null, null);
+                pair.MethodInfo.Invoke(null, null);
             }
         }
     }

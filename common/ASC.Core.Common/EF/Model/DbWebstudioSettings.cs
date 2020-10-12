@@ -23,7 +23,7 @@ namespace ASC.Core.Common.EF.Model
     {
         public static ModelBuilderWrapper AddWebstudioSettings(this ModelBuilderWrapper modelBuilder)
         {
-            _ = modelBuilder
+            modelBuilder
                 .Add(MySqlAddWebstudioSettings, Provider.MySql)
                 .Add(PgSqlAddWebstudioSettings, Provider.Postgre)
                 .HasData(
@@ -35,31 +35,31 @@ namespace ASC.Core.Common.EF.Model
 
         public static void MySqlAddWebstudioSettings(this ModelBuilder modelBuilder)
         {
-            _ = modelBuilder.Entity<DbWebstudioSettings>(entity =>
+            modelBuilder.Entity<DbWebstudioSettings>(entity =>
             {
-                _ = entity.HasKey(e => new { e.TenantId, e.Id, e.UserId })
+                entity.HasKey(e => new { e.TenantId, e.Id, e.UserId })
                     .HasName("PRIMARY");
 
-                _ = entity.ToTable("webstudio_settings");
+                entity.ToTable("webstudio_settings");
 
-                _ = entity.HasIndex(e => e.Id)
+                entity.HasIndex(e => e.Id)
                     .HasName("ID");
 
-                _ = entity.Property(e => e.TenantId).HasColumnName("TenantID");
+                entity.Property(e => e.TenantId).HasColumnName("TenantID");
 
-                _ = entity.Property(e => e.Id)
+                entity.Property(e => e.Id)
                     .HasColumnName("ID")
                     .HasColumnType("varchar(64)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.UserId)
+                entity.Property(e => e.UserId)
                     .HasColumnName("UserID")
                     .HasColumnType("varchar(64)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.Data)
+                entity.Property(e => e.Data)
                     .IsRequired()
                     .HasColumnType("mediumtext")
                     .HasCharSet("utf8")
@@ -68,27 +68,27 @@ namespace ASC.Core.Common.EF.Model
         }
         public static void PgSqlAddWebstudioSettings(this ModelBuilder modelBuilder)
         {
-            _ = modelBuilder.Entity<DbWebstudioSettings>(entity =>
+            modelBuilder.Entity<DbWebstudioSettings>(entity =>
             {
-                _ = entity.HasKey(e => new { e.TenantId, e.Id, e.UserId })
+                entity.HasKey(e => new { e.TenantId, e.Id, e.UserId })
                     .HasName("webstudio_settings_pkey");
 
-                _ = entity.ToTable("webstudio_settings", "onlyoffice");
+                entity.ToTable("webstudio_settings", "onlyoffice");
 
-                _ = entity.HasIndex(e => e.Id)
+                entity.HasIndex(e => e.Id)
                     .HasName("ID");
 
-                _ = entity.Property(e => e.TenantId).HasColumnName("TenantID");
+                entity.Property(e => e.TenantId).HasColumnName("TenantID");
 
-                _ = entity.Property(e => e.Id)
+                entity.Property(e => e.Id)
                     .HasColumnName("ID")
                     .HasMaxLength(64);
 
-                _ = entity.Property(e => e.UserId)
+                entity.Property(e => e.UserId)
                     .HasColumnName("UserID")
                     .HasMaxLength(64);
 
-                _ = entity.Property(e => e.Data).IsRequired();
+                entity.Property(e => e.Data).IsRequired();
             });
         }
     }

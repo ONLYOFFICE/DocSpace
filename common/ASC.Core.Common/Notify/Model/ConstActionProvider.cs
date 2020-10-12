@@ -46,7 +46,7 @@ namespace ASC.Notify.Model
 
         public INotifyAction GetAction(string id)
         {
-            _ = actions.TryGetValue(id, out var action);
+            actions.TryGetValue(id, out var action);
             return action;
         }
     }

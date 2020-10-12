@@ -25,7 +25,7 @@ namespace ASC.Core.Common.EF.Model
     {
         public static ModelBuilderWrapper AddCoreSettings(this ModelBuilderWrapper modelBuilder)
         {
-            _ = modelBuilder
+            modelBuilder
                 .Add(MySqlAddCoreSettings, Provider.MySql)
                 .Add(PgSqlAddCoreSettings, Provider.Postgre)
                 .HasData(
@@ -39,28 +39,28 @@ namespace ASC.Core.Common.EF.Model
 
         public static void MySqlAddCoreSettings(this ModelBuilder modelBuilder)
         {
-            _ = modelBuilder.Entity<DbCoreSettings>(entity =>
+            modelBuilder.Entity<DbCoreSettings>(entity =>
             {
-                _ = entity.HasKey(e => new { e.Tenant, e.Id })
+                entity.HasKey(e => new { e.Tenant, e.Id })
                     .HasName("PRIMARY");
 
-                _ = entity.ToTable("core_settings");
+                entity.ToTable("core_settings");
 
-                _ = entity.Property(e => e.Tenant).HasColumnName("tenant");
+                entity.Property(e => e.Tenant).HasColumnName("tenant");
 
-                _ = entity.Property(e => e.Id)
+                entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("varchar(128)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.LastModified)
+                entity.Property(e => e.LastModified)
                     .HasColumnName("last_modified")
                     .HasColumnType("timestamp")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP")
                     .ValueGeneratedOnAddOrUpdate();
 
-                _ = entity.Property(e => e.Value)
+                entity.Property(e => e.Value)
                     .IsRequired()
                     .HasColumnName("value")
                     .HasColumnType("mediumblob");
@@ -68,24 +68,24 @@ namespace ASC.Core.Common.EF.Model
         }
         public static void PgSqlAddCoreSettings(this ModelBuilder modelBuilder)
         {
-            _ = modelBuilder.Entity<DbCoreSettings>(entity =>
+            modelBuilder.Entity<DbCoreSettings>(entity =>
             {
-                _ = entity.HasKey(e => new { e.Tenant, e.Id })
+                entity.HasKey(e => new { e.Tenant, e.Id })
                     .HasName("core_settings_pkey");
 
-                _ = entity.ToTable("core_settings", "onlyoffice");
+                entity.ToTable("core_settings", "onlyoffice");
 
-                _ = entity.Property(e => e.Tenant).HasColumnName("tenant");
+                entity.Property(e => e.Tenant).HasColumnName("tenant");
 
-                _ = entity.Property(e => e.Id)
+                entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasMaxLength(128);
 
-                _ = entity.Property(e => e.LastModified)
+                entity.Property(e => e.LastModified)
                     .HasColumnName("last_modified")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
-                _ = entity.Property(e => e.Value)
+                entity.Property(e => e.Value)
                     .IsRequired()
                     .HasColumnName("value");
             });

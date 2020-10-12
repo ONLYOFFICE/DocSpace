@@ -92,7 +92,7 @@ namespace ASC.Notify
                     }
                     else
                     {
-                        _ = await Task.WhenAny(tasks.ToArray()).ContinueWith(r => tasks.RemoveAll(a => a.IsCompleted));
+                        await Task.WhenAny(tasks.ToArray()).ContinueWith(r => tasks.RemoveAll(a => a.IsCompleted));
                     }
                 }
                 catch (ThreadAbortException)
@@ -120,7 +120,7 @@ namespace ASC.Notify
                         var sender = NotifyServiceCfg.Senders.FirstOrDefault(r => r.Name == m.Value.Sender);
                         if (sender != null)
                         {
-                            _ = sender.NotifySender.Send(m.Value);
+                            sender.NotifySender.Send(m.Value);
                         }
                         else
                         {
@@ -152,7 +152,7 @@ namespace ASC.Notify
     {
         public static DIHelper AddNotifySender(this DIHelper services)
         {
-            _ = services.TryAddSingleton<NotifySender>();
+            services.TryAddSingleton<NotifySender>();
 
             return services
                 .AddDbWorker();

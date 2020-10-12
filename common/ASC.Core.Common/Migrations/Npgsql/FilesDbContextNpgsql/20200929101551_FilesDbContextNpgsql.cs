@@ -6,10 +6,10 @@ namespace ASC.Core.Common.Migrations.Npgsql.FilesDbContextNpgsql
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            _ = migrationBuilder.EnsureSchema(
+            migrationBuilder.EnsureSchema(
                 name: "onlyoffice");
 
-            _ = migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "files_converts",
                 schema: "onlyoffice",
                 columns: table => new
@@ -19,10 +19,10 @@ namespace ASC.Core.Common.Migrations.Npgsql.FilesDbContextNpgsql
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("files_converts_pkey", x => new { x.input, x.output });
+                    table.PrimaryKey("files_converts_pkey", x => new { x.input, x.output });
                 });
 
-            _ = migrationBuilder.InsertData(
+            migrationBuilder.InsertData(
                 schema: "onlyoffice",
                 table: "files_converts",
                 columns: new[] { "input", "output" },
@@ -176,7 +176,7 @@ namespace ASC.Core.Common.Migrations.Npgsql.FilesDbContextNpgsql
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "files_converts",
                 schema: "onlyoffice");
         }

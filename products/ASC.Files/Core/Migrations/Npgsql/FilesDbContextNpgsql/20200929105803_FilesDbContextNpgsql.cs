@@ -10,10 +10,10 @@ namespace ASC.Files.Core.Migrations.Npgsql.FilesDbContextNpgsql
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            _ = migrationBuilder.EnsureSchema(
+            migrationBuilder.EnsureSchema(
                 name: "onlyoffice");
 
-            _ = migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "encrypted_data",
                 schema: "onlyoffice",
                 columns: table => new
@@ -26,10 +26,10 @@ namespace ASC.Files.Core.Migrations.Npgsql.FilesDbContextNpgsql
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("encrypted_data_pkey", x => new { x.public_key, x.file_hash });
+                    table.PrimaryKey("encrypted_data_pkey", x => new { x.public_key, x.file_hash });
                 });
 
-            _ = migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "files_bunch_objects",
                 schema: "onlyoffice",
                 columns: table => new
@@ -40,10 +40,10 @@ namespace ASC.Files.Core.Migrations.Npgsql.FilesDbContextNpgsql
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("files_bunch_objects_pkey", x => new { x.tenant_id, x.right_node });
+                    table.PrimaryKey("files_bunch_objects_pkey", x => new { x.tenant_id, x.right_node });
                 });
 
-            _ = migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "files_file",
                 schema: "onlyoffice",
                 columns: table => new
@@ -70,10 +70,10 @@ namespace ASC.Files.Core.Migrations.Npgsql.FilesDbContextNpgsql
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("files_file_pkey", x => new { x.id, x.tenant_id, x.version });
+                    table.PrimaryKey("files_file_pkey", x => new { x.id, x.tenant_id, x.version });
                 });
 
-            _ = migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "files_folder",
                 schema: "onlyoffice",
                 columns: table => new
@@ -93,10 +93,10 @@ namespace ASC.Files.Core.Migrations.Npgsql.FilesDbContextNpgsql
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("PK_files_folder", x => x.id);
+                    table.PrimaryKey("PK_files_folder", x => x.id);
                 });
 
-            _ = migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "files_folder_tree",
                 schema: "onlyoffice",
                 columns: table => new
@@ -107,10 +107,10 @@ namespace ASC.Files.Core.Migrations.Npgsql.FilesDbContextNpgsql
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("files_folder_tree_pkey", x => new { x.parent_id, x.folder_id });
+                    table.PrimaryKey("files_folder_tree_pkey", x => new { x.parent_id, x.folder_id });
                 });
 
-            _ = migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "files_security",
                 schema: "onlyoffice",
                 columns: table => new
@@ -125,10 +125,10 @@ namespace ASC.Files.Core.Migrations.Npgsql.FilesDbContextNpgsql
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("files_security_pkey", x => new { x.tenant_id, x.entry_id, x.entry_type, x.subject });
+                    table.PrimaryKey("files_security_pkey", x => new { x.tenant_id, x.entry_id, x.entry_type, x.subject });
                 });
 
-            _ = migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "files_tag",
                 schema: "onlyoffice",
                 columns: table => new
@@ -142,10 +142,10 @@ namespace ASC.Files.Core.Migrations.Npgsql.FilesDbContextNpgsql
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("PK_files_tag", x => x.id);
+                    table.PrimaryKey("PK_files_tag", x => x.id);
                 });
 
-            _ = migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "files_tag_link",
                 schema: "onlyoffice",
                 columns: table => new
@@ -160,10 +160,10 @@ namespace ASC.Files.Core.Migrations.Npgsql.FilesDbContextNpgsql
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("files_tag_link_pkey", x => new { x.tenant_id, x.tag_id, x.entry_type, x.entry_id });
+                    table.PrimaryKey("files_tag_link_pkey", x => new { x.tenant_id, x.tag_id, x.entry_type, x.entry_id });
                 });
 
-            _ = migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "files_thirdparty_account",
                 schema: "onlyoffice",
                 columns: table => new
@@ -183,10 +183,10 @@ namespace ASC.Files.Core.Migrations.Npgsql.FilesDbContextNpgsql
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("PK_files_thirdparty_account", x => x.id);
+                    table.PrimaryKey("PK_files_thirdparty_account", x => x.id);
                 });
 
-            _ = migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "files_thirdparty_app",
                 schema: "onlyoffice",
                 columns: table => new
@@ -199,10 +199,10 @@ namespace ASC.Files.Core.Migrations.Npgsql.FilesDbContextNpgsql
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("files_thirdparty_app_pkey", x => new { x.user_id, x.app });
+                    table.PrimaryKey("files_thirdparty_app_pkey", x => new { x.user_id, x.app });
                 });
 
-            _ = migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "files_thirdparty_id_mapping",
                 schema: "onlyoffice",
                 columns: table => new
@@ -213,90 +213,90 @@ namespace ASC.Files.Core.Migrations.Npgsql.FilesDbContextNpgsql
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("files_thirdparty_id_mapping_pkey", x => x.hash_id);
+                    table.PrimaryKey("files_thirdparty_id_mapping_pkey", x => x.hash_id);
                 });
 
 
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "tenant_id_encrypted_data",
                 schema: "onlyoffice",
                 table: "encrypted_data",
                 column: "tenant_id");
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "left_node",
                 schema: "onlyoffice",
                 table: "files_bunch_objects",
                 column: "left_node");
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "folder_id",
                 schema: "onlyoffice",
                 table: "files_file",
                 column: "folder_id");
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "id",
                 schema: "onlyoffice",
                 table: "files_file",
                 column: "id");
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "modified_on_files_file",
                 schema: "onlyoffice",
                 table: "files_file",
                 column: "modified_on");
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "modified_on_files_folder",
                 schema: "onlyoffice",
                 table: "files_folder",
                 column: "modified_on");
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "parent_id",
                 schema: "onlyoffice",
                 table: "files_folder",
                 columns: new[] { "tenant_id", "parent_id" });
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "folder_id_files_folder_tree",
                 schema: "onlyoffice",
                 table: "files_folder_tree",
                 column: "folder_id");
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "owner",
                 schema: "onlyoffice",
                 table: "files_security",
                 column: "owner");
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "tenant_id_files_security",
                 schema: "onlyoffice",
                 table: "files_security",
                 columns: new[] { "entry_id", "tenant_id", "entry_type", "owner" });
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "name_files_tag",
                 schema: "onlyoffice",
                 table: "files_tag",
                 columns: new[] { "tenant_id", "owner", "name", "flag" });
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "create_on_files_tag_link",
                 schema: "onlyoffice",
                 table: "files_tag_link",
                 column: "create_on");
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "entry_id",
                 schema: "onlyoffice",
                 table: "files_tag_link",
                 columns: new[] { "tenant_id", "entry_type", "entry_id" });
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "index_1",
                 schema: "onlyoffice",
                 table: "files_thirdparty_id_mapping",
@@ -307,54 +307,54 @@ namespace ASC.Files.Core.Migrations.Npgsql.FilesDbContextNpgsql
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "tenants_partners");
 
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "encrypted_data",
                 schema: "onlyoffice");
 
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "files_bunch_objects",
                 schema: "onlyoffice");
 
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "files_file",
                 schema: "onlyoffice");
 
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "files_folder",
                 schema: "onlyoffice");
 
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "files_folder_tree",
                 schema: "onlyoffice");
 
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "files_security",
                 schema: "onlyoffice");
 
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "files_tag",
                 schema: "onlyoffice");
 
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "files_tag_link",
                 schema: "onlyoffice");
 
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "files_thirdparty_account",
                 schema: "onlyoffice");
 
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "files_thirdparty_app",
                 schema: "onlyoffice");
 
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "files_thirdparty_id_mapping",
                 schema: "onlyoffice");
 
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "tenants_tenants",
                 schema: "onlyoffice");
         }

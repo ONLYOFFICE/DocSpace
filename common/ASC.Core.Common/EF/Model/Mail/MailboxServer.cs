@@ -27,7 +27,7 @@ namespace ASC.Core.Common.EF.Model.Mail
     {
         public static ModelBuilderWrapper AddMailboxServer(this ModelBuilderWrapper modelBuilder)
         {
-            _ = modelBuilder
+            modelBuilder
                 .Add(MySqlAddMailboxServer, Provider.MySql)
                 .Add(PgSqlAddMailboxServer, Provider.Postgre)
                 .HasData(
@@ -541,35 +541,35 @@ namespace ASC.Core.Common.EF.Model.Mail
 
         public static void MySqlAddMailboxServer(this ModelBuilder modelBuilder)
         {
-            _ = modelBuilder.Entity<MailboxServer>(entity =>
+            modelBuilder.Entity<MailboxServer>(entity =>
             {
-                _ = entity.ToTable("mail_mailbox_server");
+                entity.ToTable("mail_mailbox_server");
 
-                _ = entity.HasIndex(e => e.IdProvider)
+                entity.HasIndex(e => e.IdProvider)
                     .HasName("id_provider");
 
-                _ = entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.Id).HasColumnName("id");
 
-                _ = entity.Property(e => e.Authentication)
+                entity.Property(e => e.Authentication)
                     .HasColumnName("authentication")
                     .HasColumnType("varchar(255)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.Hostname)
+                entity.Property(e => e.Hostname)
                     .IsRequired()
                     .HasColumnName("hostname")
                     .HasColumnType("varchar(255)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.IdProvider).HasColumnName("id_provider");
+                entity.Property(e => e.IdProvider).HasColumnName("id_provider");
 
-                _ = entity.Property(e => e.IsUserData).HasColumnName("is_user_data");
+                entity.Property(e => e.IsUserData).HasColumnName("is_user_data");
 
-                _ = entity.Property(e => e.Port).HasColumnName("port");
+                entity.Property(e => e.Port).HasColumnName("port");
 
-                _ = entity.Property(e => e.SocketType)
+                entity.Property(e => e.SocketType)
                     .IsRequired()
                     .HasColumnName("socket_type")
                     .HasColumnType("enum('plain','SSL','STARTTLS')")
@@ -577,14 +577,14 @@ namespace ASC.Core.Common.EF.Model.Mail
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.Type)
+                entity.Property(e => e.Type)
                     .IsRequired()
                     .HasColumnName("type")
                     .HasColumnType("enum('pop3','imap','smtp')")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.UserName)
+                entity.Property(e => e.UserName)
                     .HasColumnName("username")
                     .HasColumnType("varchar(255)")
                     .HasCharSet("utf8")
@@ -593,42 +593,42 @@ namespace ASC.Core.Common.EF.Model.Mail
         }
         public static void PgSqlAddMailboxServer(this ModelBuilder modelBuilder)
         {
-            _ = modelBuilder.HasPostgresEnum("onlyoffice", "enum_mail_mailbox_server", new[] { "pop3", "imap", "smtp" });
+            modelBuilder.HasPostgresEnum("onlyoffice", "enum_mail_mailbox_server", new[] { "pop3", "imap", "smtp" });
 
-            _ = modelBuilder.Entity<MailboxServer>(entity =>
+            modelBuilder.Entity<MailboxServer>(entity =>
             {
-                _ = entity.ToTable("mail_mailbox_server", "onlyoffice");
+                entity.ToTable("mail_mailbox_server", "onlyoffice");
 
-                _ = entity.HasIndex(e => e.IdProvider)
+                entity.HasIndex(e => e.IdProvider)
                     .HasName("id_provider_mail_mailbox_server");
 
-                _ = entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.Id).HasColumnName("id");
 
-                _ = entity.Property(e => e.Authentication)
+                entity.Property(e => e.Authentication)
                     .HasColumnName("authentication")
                     .HasMaxLength(255)
                     .HasDefaultValueSql("NULL");
 
-                _ = entity.Property(e => e.Hostname)
+                entity.Property(e => e.Hostname)
                     .IsRequired()
                     .HasColumnName("hostname")
                     .HasColumnType("character varying");
 
-                _ = entity.Property(e => e.IdProvider).HasColumnName("id_provider");
+                entity.Property(e => e.IdProvider).HasColumnName("id_provider");
 
-                _ = entity.Property(e => e.IsUserData)
+                entity.Property(e => e.IsUserData)
                     .HasColumnName("is_user_data")
                     .HasDefaultValueSql("'0'");
 
-                _ = entity.Property(e => e.Port).HasColumnName("port");
+                entity.Property(e => e.Port).HasColumnName("port");
 
-                _ = entity.Property(e => e.SocketType)
+                entity.Property(e => e.SocketType)
                     .IsRequired()
                     .HasColumnName("socket_type")
                     .HasColumnType("character varying")
                     .HasDefaultValueSql("'plain'");
 
-                _ = entity.Property(e => e.UserName)
+                entity.Property(e => e.UserName)
                     .HasColumnName("username")
                     .HasMaxLength(255)
                     .HasDefaultValueSql("NULL");

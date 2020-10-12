@@ -135,7 +135,7 @@ namespace ASC.Web.Files.Classes
             {
                 var setting = SettingsManager.Load<FilesSettings>();
                 setting.EnableThirdpartySetting = value;
-                _ = SettingsManager.Save(setting);
+                SettingsManager.Save(setting);
             }
             get { return SettingsManager.Load<FilesSettings>().EnableThirdpartySetting; }
         }
@@ -229,7 +229,7 @@ namespace ASC.Web.Files.Classes
                 if (CoreBaseSettings.Personal) throw new NotSupportedException();
                 var setting = SettingsManager.Load<FilesSettings>();
                 setting.StoreForcesaveSetting = value;
-                _ = SettingsManager.Save(setting);
+                SettingsManager.Save(setting);
             }
             get { return !CoreBaseSettings.Personal && SettingsManager.Load<FilesSettings>().StoreForcesaveSetting; }
         }
@@ -274,7 +274,7 @@ namespace ASC.Web.Files.Classes
 
         private void SaveForCurrentUser(FilesSettings settings)
         {
-            _ = SettingsManager.SaveForCurrentUser(settings);
+            SettingsManager.SaveForCurrentUser(settings);
         }
     }
 

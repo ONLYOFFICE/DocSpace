@@ -145,7 +145,7 @@ namespace ASC.Core.Notify.Signalr
                     Text = messageText
                 };
 
-                _ = MakeRequest("send", new { tenantId = tenant.TenantId, callerUserName, calleeUserName, message, isTenantUser });
+                MakeRequest("send", new { tenantId = tenant.TenantId, callerUserName, calleeUserName, message, isTenantUser });
             }
             catch (Exception error)
             {
@@ -167,7 +167,7 @@ namespace ASC.Core.Notify.Signalr
                     Text = chatRoomName
                 };
 
-                _ = MakeRequest("sendInvite", new { tenantId = tenant.TenantId, calleeUserName, message });
+                MakeRequest("sendInvite", new { tenantId = tenant.TenantId, calleeUserName, message });
             }
             catch (Exception error)
             {
@@ -186,7 +186,7 @@ namespace ASC.Core.Notify.Signalr
                     tenantId = TenantManager.GetTenant(domain).TenantId;
                 }
 
-                _ = MakeRequest("setState", new { tenantId, from, state });
+                MakeRequest("setState", new { tenantId, from, state });
             }
             catch (Exception error)
             {
@@ -198,7 +198,7 @@ namespace ASC.Core.Notify.Signalr
         {
             try
             {
-                _ = MakeRequest("sendOfflineMessages", new { tenantId, callerUserName, users });
+                MakeRequest("sendOfflineMessages", new { tenantId, callerUserName, users });
             }
             catch (Exception error)
             {
@@ -214,7 +214,7 @@ namespace ASC.Core.Notify.Signalr
 
                 var tenant = TenantManager.GetTenant(domain);
 
-                _ = MakeRequest("sendUnreadCounts", new { tenantId = tenant.TenantId, unreadCounts });
+                MakeRequest("sendUnreadCounts", new { tenantId = tenant.TenantId, unreadCounts });
             }
             catch (Exception error)
             {
@@ -226,7 +226,7 @@ namespace ASC.Core.Notify.Signalr
         {
             try
             {
-                _ = MakeRequest("sendUnreadUsers", unreadUsers);
+                MakeRequest("sendUnreadUsers", unreadUsers);
             }
             catch (Exception error)
             {
@@ -238,7 +238,7 @@ namespace ASC.Core.Notify.Signalr
         {
             try
             {
-                _ = MakeRequest("updateFolders", new { tenant, userId, count });
+                MakeRequest("updateFolders", new { tenant, userId, count });
             }
             catch (Exception error)
             {
@@ -250,7 +250,7 @@ namespace ASC.Core.Notify.Signalr
         {
             try
             {
-                _ = MakeRequest("sendMailNotification", new { tenant, userId, state });
+                MakeRequest("sendMailNotification", new { tenant, userId, state });
             }
             catch (Exception error)
             {
@@ -262,7 +262,7 @@ namespace ASC.Core.Notify.Signalr
         {
             try
             {
-                _ = MakeRequest("enqueue", new { numberId, callId, agent });
+                MakeRequest("enqueue", new { numberId, callId, agent });
             }
             catch (Exception error)
             {
@@ -274,7 +274,7 @@ namespace ASC.Core.Notify.Signalr
         {
             try
             {
-                _ = MakeRequest("incoming", new { callId, agent });
+                MakeRequest("incoming", new { callId, agent });
             }
             catch (Exception error)
             {
@@ -286,7 +286,7 @@ namespace ASC.Core.Notify.Signalr
         {
             try
             {
-                _ = MakeRequest("miss", new { numberId, callId, agent });
+                MakeRequest("miss", new { numberId, callId, agent });
             }
             catch (Exception error)
             {
@@ -299,7 +299,7 @@ namespace ASC.Core.Notify.Signalr
             try
             {
                 var numberRoom = TenantManager.GetCurrentTenant().TenantId + numberId;
-                _ = MakeRequest("reload", new { numberRoom, agentId });
+                MakeRequest("reload", new { numberRoom, agentId });
             }
             catch (Exception error)
             {
@@ -311,7 +311,7 @@ namespace ASC.Core.Notify.Signalr
         {
             try
             {
-                _ = MakeRequest("changeEditors", new { tenantId, fileId, finish });
+                MakeRequest("changeEditors", new { tenantId, fileId, finish });
             }
             catch (Exception error)
             {
@@ -401,7 +401,7 @@ namespace ASC.Core.Notify.Signalr
         {
             if (services.TryAddScoped<SignalrServiceClient>())
             {
-                _ = services.TryAddScoped<IConfigureNamedOptions<SignalrServiceClient>, ConfigureSignalrServiceClient>();
+                services.TryAddScoped<IConfigureNamedOptions<SignalrServiceClient>, ConfigureSignalrServiceClient>();
 
                 return services
                     .AddTenantManagerService()

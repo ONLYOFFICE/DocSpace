@@ -443,7 +443,7 @@ namespace ASC.Core
             }
             PermissionContext.DemandPermissions(Constants.Action_EditGroups);
 
-            _ = UserService.SaveUserGroupRef(Tenant.TenantId, new UserGroupRef(userId, groupId, UserGroupRefType.Contains));
+            UserService.SaveUserGroupRef(Tenant.TenantId, new UserGroupRef(userId, groupId, UserGroupRefType.Contains));
 
             ResetGroupCache(userId);
         }
@@ -494,7 +494,7 @@ namespace ASC.Core
             }
             if (userID != Guid.Empty)
             {
-                _ = UserService.SaveUserGroupRef(
+                UserService.SaveUserGroupRef(
                     Tenant.TenantId,
                     new UserGroupRef(userID, deparmentID, UserGroupRefType.Manager));
             }
@@ -659,7 +659,7 @@ namespace ASC.Core
         {
             if (services.TryAddScoped<UserManager>())
             {
-                _ = services.TryAddSingleton<UserManagerConstants>();
+                services.TryAddSingleton<UserManagerConstants>();
 
                 return services
                     .AddUserService()

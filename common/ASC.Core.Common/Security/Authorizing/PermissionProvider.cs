@@ -58,7 +58,7 @@ namespace ASC.Core.Security.Authorizing
     {
         public static DIHelper AddPermissionProviderService(this DIHelper services)
         {
-            _ = services.TryAddScoped(typeof(IPermissionProvider), typeof(PermissionProvider));
+            services.TryAddScoped(typeof(IPermissionProvider), typeof(PermissionProvider));
             return services.AddAuthorizationManagerService();
         }
     }

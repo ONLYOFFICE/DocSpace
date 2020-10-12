@@ -144,7 +144,7 @@ namespace ASC.Data.Storage.RackspaceCloud
 
             if (props.ContainsKey("lower"))
             {
-                _ = bool.TryParse(props["lower"], out _lowerCasing);
+                bool.TryParse(props["lower"], out _lowerCasing);
             }
 
             if (props.ContainsKey("subdir"))
@@ -229,7 +229,7 @@ namespace ASC.Data.Storage.RackspaceCloud
 
             outputStream.Position = 0;
 
-            if (0 < offset) _ = outputStream.Seek(Convert.ToInt64(offset), SeekOrigin.Begin);
+            if (0 < offset) outputStream.Seek(Convert.ToInt64(offset), SeekOrigin.Begin);
 
             return outputStream;
         }
@@ -383,7 +383,7 @@ namespace ASC.Data.Storage.RackspaceCloud
         public override void Delete(string domain, string path)
         {
             var client = GetClient();
-            _ = MakePath(domain, path);
+            MakePath(domain, path);
             var size = GetFileSize(domain, path);
 
             client.DeleteObject(_private_container, MakePath(domain, path));

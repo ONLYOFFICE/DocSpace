@@ -49,8 +49,8 @@ namespace ASC.Data.Backup.Storage
 
         public void SaveBackupRecord(BackupRecord backup)
         {
-            _ = BackupContext.AddOrUpdate(r => r.Backups, backup);
-            _ = BackupContext.SaveChanges();
+            BackupContext.AddOrUpdate(r => r.Backups, backup);
+            BackupContext.SaveChanges();
         }
 
         public BackupRecord GetBackupRecord(Guid id)
@@ -80,22 +80,22 @@ namespace ASC.Data.Backup.Storage
             var backup = BackupContext.Backups.FirstOrDefault(b => b.Id == id);
             if (backup != null)
             {
-                _ = BackupContext.Backups.Remove(backup);
-                _ = BackupContext.SaveChanges();
+                BackupContext.Backups.Remove(backup);
+                BackupContext.SaveChanges();
             }
         }
 
         public void SaveBackupSchedule(BackupSchedule schedule)
         {
-            _ = BackupContext.AddOrUpdate(r => r.Schedules, schedule);
-            _ = BackupContext.SaveChanges();
+            BackupContext.AddOrUpdate(r => r.Schedules, schedule);
+            BackupContext.SaveChanges();
         }
 
         public void DeleteBackupSchedule(int tenantId)
         {
             var shedule = BackupContext.Schedules.Where(s => s.TenantId == tenantId).ToList();
             BackupContext.Schedules.RemoveRange(shedule);
-            _ = BackupContext.SaveChanges();
+            BackupContext.SaveChanges();
         }
 
         public List<BackupSchedule> GetBackupSchedules()

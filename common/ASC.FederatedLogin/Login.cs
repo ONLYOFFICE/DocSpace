@@ -123,7 +123,7 @@ namespace ASC.FederatedLogin
                 //Render xrds
                 await RenderXrds(context);
             }
-            _ = context.PopRewritenUri();
+            context.PopRewritenUri();
         }
 
         protected bool Minimal
@@ -132,7 +132,7 @@ namespace ASC.FederatedLogin
             {
                 if (_params.ContainsKey("min"))
                 {
-                    _ = bool.TryParse(_params.Get("min"), out var result);
+                    bool.TryParse(_params.Get("min"), out var result);
                     return result;
                 }
                 return false;

@@ -26,65 +26,65 @@ namespace ASC.Files.Core.EF
     {
         public static ModelBuilderWrapper AddDbFilesTag(this ModelBuilderWrapper modelBuilder)
         {
-            _ = modelBuilder
+            modelBuilder
                 .Add(MySqlAddDbFilesTag, Provider.MySql)
                 .Add(PgSqlAddDbFilesTag, Provider.Postgre);
             return modelBuilder;
         }
         public static void MySqlAddDbFilesTag(this ModelBuilder modelBuilder)
         {
-            _ = modelBuilder.Entity<DbFilesTag>(entity =>
+            modelBuilder.Entity<DbFilesTag>(entity =>
             {
-                _ = entity.ToTable("files_tag");
+                entity.ToTable("files_tag");
 
-                _ = entity.HasIndex(e => new { e.TenantId, e.Owner, e.Name, e.Flag })
+                entity.HasIndex(e => new { e.TenantId, e.Owner, e.Name, e.Flag })
                     .HasName("name");
 
-                _ = entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.Id).HasColumnName("id");
 
-                _ = entity.Property(e => e.Flag).HasColumnName("flag");
+                entity.Property(e => e.Flag).HasColumnName("flag");
 
-                _ = entity.Property(e => e.Name)
+                entity.Property(e => e.Name)
                     .IsRequired()
                     .HasColumnName("name")
                     .HasColumnType("varchar(255)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.Owner)
+                entity.Property(e => e.Owner)
                     .IsRequired()
                     .HasColumnName("owner")
                     .HasColumnType("varchar(38)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.TenantId).HasColumnName("tenant_id");
+                entity.Property(e => e.TenantId).HasColumnName("tenant_id");
             });
         }
         public static void PgSqlAddDbFilesTag(this ModelBuilder modelBuilder)
         {
-            _ = modelBuilder.Entity<DbFilesTag>(entity =>
+            modelBuilder.Entity<DbFilesTag>(entity =>
             {
-                _ = entity.ToTable("files_tag", "onlyoffice");
+                entity.ToTable("files_tag", "onlyoffice");
 
-                _ = entity.HasIndex(e => new { e.TenantId, e.Owner, e.Name, e.Flag })
+                entity.HasIndex(e => new { e.TenantId, e.Owner, e.Name, e.Flag })
                     .HasName("name_files_tag");
 
-                _ = entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.Id).HasColumnName("id");
 
-                _ = entity.Property(e => e.Flag).HasColumnName("flag");
+                entity.Property(e => e.Flag).HasColumnName("flag");
 
-                _ = entity.Property(e => e.Name)
+                entity.Property(e => e.Name)
                     .IsRequired()
                     .HasColumnName("name")
                     .HasMaxLength(255);
 
-                _ = entity.Property(e => e.Owner)
+                entity.Property(e => e.Owner)
                     .IsRequired()
                     .HasColumnName("owner")
                     .HasMaxLength(38);
 
-                _ = entity.Property(e => e.TenantId).HasColumnName("tenant_id");
+                entity.Property(e => e.TenantId).HasColumnName("tenant_id");
             });
         }
     }

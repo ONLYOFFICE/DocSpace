@@ -24,30 +24,30 @@ namespace ASC.Core.Common.EF.Model
     {
         public static ModelBuilderWrapper AddFeedUsers(this ModelBuilderWrapper modelBuilder)
         {
-            _ = modelBuilder
+            modelBuilder
                 .Add(MySqlAddFeedUsers, Provider.MySql)
                 .Add(PgSqlAddFeedUsers, Provider.Postgre);
             return modelBuilder;
         }
         public static void MySqlAddFeedUsers(this ModelBuilder modelBuilder)
         {
-            _ = modelBuilder.Entity<FeedUsers>(entity =>
+            modelBuilder.Entity<FeedUsers>(entity =>
             {
-                _ = entity.HasKey(e => new { e.FeedId, e.UserId })
+                entity.HasKey(e => new { e.FeedId, e.UserId })
                     .HasName("PRIMARY");
 
-                _ = entity.ToTable("feed_users");
+                entity.ToTable("feed_users");
 
-                _ = entity.HasIndex(e => e.UserId)
+                entity.HasIndex(e => e.UserId)
                     .HasName("user_id");
 
-                _ = entity.Property(e => e.FeedId)
+                entity.Property(e => e.FeedId)
                     .HasColumnName("feed_id")
                     .HasColumnType("varchar(88)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.UserId)
+                entity.Property(e => e.UserId)
                     .HasColumnName("user_id")
                     .HasColumnType("char(38)")
                     .HasCharSet("utf8")
@@ -56,21 +56,21 @@ namespace ASC.Core.Common.EF.Model
         }
         public static void PgSqlAddFeedUsers(this ModelBuilder modelBuilder)
         {
-            _ = modelBuilder.Entity<FeedUsers>(entity =>
+            modelBuilder.Entity<FeedUsers>(entity =>
             {
-                _ = entity.HasKey(e => new { e.FeedId, e.UserId })
+                entity.HasKey(e => new { e.FeedId, e.UserId })
                     .HasName("feed_users_pkey");
 
-                _ = entity.ToTable("feed_users", "onlyoffice");
+                entity.ToTable("feed_users", "onlyoffice");
 
-                _ = entity.HasIndex(e => e.UserId)
+                entity.HasIndex(e => e.UserId)
                     .HasName("user_id_feed_users");
 
-                _ = entity.Property(e => e.FeedId)
+                entity.Property(e => e.FeedId)
                     .HasColumnName("feed_id")
                     .HasMaxLength(88);
 
-                _ = entity.Property(e => e.UserId)
+                entity.Property(e => e.UserId)
                     .HasColumnName("user_id")
                     .HasMaxLength(38)
                     .IsFixedLength();

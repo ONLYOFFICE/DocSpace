@@ -109,7 +109,7 @@ namespace ASC.Web.Files.Utils
                 conversionQueue.Add(file, queueResult);
                 cache.Insert(GetKey(file), queueResult, TimeSpan.FromMinutes(10));
 
-                _ = timer.Change(0, Timeout.Infinite);
+                timer.Change(0, Timeout.Infinite);
             }
         }
 
@@ -124,7 +124,7 @@ namespace ASC.Web.Files.Utils
                 {
                     if (operation.Progress == 100)
                     {
-                        _ = conversionQueue.Remove(file);
+                        conversionQueue.Remove(file);
                         cache.Remove(key);
                     }
                     return operation;
@@ -153,7 +153,7 @@ namespace ASC.Web.Files.Utils
                     var filesIsConverting = new List<File<T>>();
                     lock (locker)
                     {
-                        _ = timer.Change(Timeout.Infinite, Timeout.Infinite);
+                        timer.Change(Timeout.Infinite, Timeout.Infinite);
 
                         conversionQueue.Where(x => !string.IsNullOrEmpty(x.Value.Processed)
                                                    && (x.Value.Progress == 100 && DateTime.UtcNow - x.Value.StopDateTime > TimeSpan.FromMinutes(1) ||
@@ -161,7 +161,7 @@ namespace ASC.Web.Files.Utils
                                        .ToList()
                                        .ForEach(x =>
                                        {
-                                           _ = conversionQueue.Remove(x);
+                                           conversionQueue.Remove(x);
                                            cache.Remove(GetKey(x.Key));
                                        });
 
@@ -212,9 +212,9 @@ namespace ASC.Web.Files.Utils
                                 cache.Insert(GetKey(file), operationResult, TimeSpan.FromMinutes(10));
                             }
 
-                            _ = tenantManager.SetCurrentTenant(tenantId);
+                            tenantManager.SetCurrentTenant(tenantId);
 
-                            _ = securityContext.AuthenticateMe(account);
+                            securityContext.AuthenticateMe(account);
 
                             var user = userManager.GetUsers(account.ID);
                             var culture = string.IsNullOrEmpty(user.CultureName) ? tenantManager.GetCurrentTenant().GetCulture() : CultureInfo.GetCultureInfo(user.CultureName);
@@ -254,7 +254,7 @@ namespace ASC.Web.Files.Utils
                                     var operationResult = conversionQueue[file];
                                     if (operationResult.Delete)
                                     {
-                                        _ = conversionQueue.Remove(file);
+                                        conversionQueue.Remove(file);
                                         cache.Remove(GetKey(file));
                                     }
                                     else
@@ -321,7 +321,7 @@ namespace ASC.Web.Files.Utils
                                     var operationResult = conversionQueue[file];
                                     if (operationResult.Delete)
                                     {
-                                        _ = conversionQueue.Remove(file);
+                                        conversionQueue.Remove(file);
                                         cache.Remove(GetKey(file));
                                     }
                                     else
@@ -352,7 +352,7 @@ namespace ASC.Web.Files.Utils
 
                     lock (locker)
                     {
-                        _ = timer.Change(TIMER_PERIOD, TIMER_PERIOD);
+                        timer.Change(TIMER_PERIOD, TIMER_PERIOD);
                     }
                 }
                 catch (Exception exception)
@@ -360,7 +360,7 @@ namespace ASC.Web.Files.Utils
                     logger.Error(exception.Message, exception);
                     lock (locker)
                     {
-                        _ = timer.Change(Timeout.Infinite, Timeout.Infinite);
+                        timer.Change(Timeout.Infinite, Timeout.Infinite);
                     }
                 }
                 finally
@@ -634,7 +634,7 @@ namespace ASC.Web.Files.Utils
             var fileUri = PathProvider.GetFileStreamUrl(file);
             var docKey = DocumentServiceHelper.GetDocKey(file);
             fileUri = DocumentServiceConnector.ReplaceCommunityAdress(fileUri);
-            _ = DocumentServiceConnector.GetConvertedUri(fileUri, file.ConvertedExtension, toExtension, docKey, null, false, out var convertUri);
+            DocumentServiceConnector.GetConvertedUri(fileUri, file.ConvertedExtension, toExtension, docKey, null, false, out var convertUri);
 
             if (WorkContext.IsMono && ServicePointManager.ServerCertificateValidationCallback == null)
             {
@@ -666,7 +666,7 @@ namespace ASC.Web.Files.Utils
             var docKey = DocumentServiceHelper.GetDocKey(file);
 
             fileUri = DocumentServiceConnector.ReplaceCommunityAdress(fileUri);
-            _ = DocumentServiceConnector.GetConvertedUri(fileUri, fileExtension, toExtension, docKey, null, false, out var convertUri);
+            DocumentServiceConnector.GetConvertedUri(fileUri, fileExtension, toExtension, docKey, null, false, out var convertUri);
 
             return SaveConvertedFile(file, convertUri);
         }
@@ -805,12 +805,12 @@ namespace ASC.Web.Files.Utils
             if (tags.Any())
             {
                 tags.ForEach(r => r.EntryId = newFile.ID);
-                _ = tagDao.SaveTags(tags);
+                tagDao.SaveTags(tags);
             }
 
             if (markAsTemplate)
             {
-                _ = tagDao.SaveTags(Tag.Template(AuthContext.CurrentAccount.ID, newFile));
+                tagDao.SaveTags(Tag.Template(AuthContext.CurrentAccount.ID, newFile));
             }
 
             return newFile;
@@ -852,9 +852,9 @@ namespace ASC.Web.Files.Utils
         {
             if (services.TryAddScoped<FileConverter>())
             {
-                _ = services.TryAddSingleton<FileConverterQueue<string>>();
-                _ = services.TryAddSingleton<FileConverterQueue<int>>();
-                _ = services.TryAddScoped<FileConverterQueueScope>();
+                services.TryAddSingleton<FileConverterQueue<string>>();
+                services.TryAddSingleton<FileConverterQueue<int>>();
+                services.TryAddScoped<FileConverterQueueScope>();
 
                 return services
                     .AddFilesLinkUtilityService()

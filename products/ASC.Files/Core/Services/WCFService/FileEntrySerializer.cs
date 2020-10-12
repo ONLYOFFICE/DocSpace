@@ -73,7 +73,7 @@ namespace ASC.Web.Files.Services.WCFService
                 var serializer = serializers[o.GetType()];
                 serializer.WriteObject(writer, o);
             }
-            _ = result.Seek(0, System.IO.SeekOrigin.Begin);
+            result.Seek(0, System.IO.SeekOrigin.Begin);
 
             if (oldMonoSerializer)
             {
@@ -97,7 +97,7 @@ namespace ASC.Web.Files.Services.WCFService
                                 a.Value = a.Value.Substring(nsattr.LocalName.Length + 1);
                             }
                         }
-                        _ = entry.Attributes.Remove(nsattr);
+                        entry.Attributes.Remove(nsattr);
                     }
                 }
 
@@ -106,12 +106,12 @@ namespace ASC.Web.Files.Services.WCFService
                 nsmanager.AddNamespace("i", "http://www.w3.org/2001/XMLSchema-instance");
                 foreach (XmlNode nil in xml.SelectNodes("//*[@i:nil='true']", nsmanager))
                 {
-                    _ = nil.ParentNode.RemoveChild(nil);
+                    nil.ParentNode.RemoveChild(nil);
                 }
 
                 result = new System.IO.MemoryStream();
                 xml.Save(result);
-                _ = result.Seek(0, System.IO.SeekOrigin.Begin);
+                result.Seek(0, System.IO.SeekOrigin.Begin);
             }
 
             return result;

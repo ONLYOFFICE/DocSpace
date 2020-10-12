@@ -177,7 +177,7 @@ namespace ASC.Socket.IO.Svc
 
                 Thread.Sleep(PingInterval);
 
-                _ = Task.Run(() =>
+                Task.Run(() =>
                 {
                     while (WebSocket.Ping())
                     {
@@ -244,7 +244,7 @@ namespace ASC.Socket.IO.Svc
     {
         public static DIHelper AddSocketServiceLauncher(this DIHelper services)
         {
-            _ = services.TryAddScoped<SocketServiceLauncher>();
+            services.TryAddScoped<SocketServiceLauncher>();
             return services
                 .AddCoreBaseSettingsService()
                 .AddSignalrServiceClient();

@@ -237,7 +237,7 @@ namespace ASC.Web.Core.Users
         {
             var settings = SettingsManager.Load<PeopleNamesSettings>();
             settings.ItemID = schemaId;
-            _ = SettingsManager.Save(settings);
+            SettingsManager.Save(settings);
         }
 
         public void SetPeopleNames(PeopleNamesItem custom)
@@ -246,7 +246,7 @@ namespace ASC.Web.Core.Users
             custom.Id = PeopleNamesItem.CustomID;
             settings.ItemID = PeopleNamesItem.CustomID;
             settings.Item = custom;
-            _ = SettingsManager.Save(settings);
+            SettingsManager.Save(settings);
         }
 
 

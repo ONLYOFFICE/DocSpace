@@ -130,7 +130,7 @@ namespace ASC.Web.Files.Core.Entries
         {
             if (services.TryAddScoped<EncryptionKeyPairHelper>())
             {
-                _ = services
+                services
                     .AddAuthContextService()
                     .AddUserManagerService()
                     .AddEncryptionLoginProviderService()

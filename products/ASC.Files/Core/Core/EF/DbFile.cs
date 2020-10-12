@@ -103,97 +103,97 @@ namespace ASC.Files.Core.EF
     {
         public static ModelBuilderWrapper AddDbFiles(this ModelBuilderWrapper modelBuilder)
         {
-            _ = modelBuilder
+            modelBuilder
                 .Add(MySqlAddDbFiles, Provider.MySql)
                 .Add(PgSqlAddDbFiles, Provider.Postgre);
             return modelBuilder;
         }
         public static void MySqlAddDbFiles(this ModelBuilder modelBuilder)
         {
-            _ = modelBuilder.Entity<DbFile>(entity =>
+            modelBuilder.Entity<DbFile>(entity =>
             {
-                _ = entity.HasKey(e => new { e.TenantId, e.Id, e.Version })
+                entity.HasKey(e => new { e.TenantId, e.Id, e.Version })
                     .HasName("PRIMARY");
 
-                _ = entity.ToTable("files_file");
+                entity.ToTable("files_file");
 
-                _ = entity.HasIndex(e => e.FolderId)
+                entity.HasIndex(e => e.FolderId)
                     .HasName("folder_id");
 
-                _ = entity.HasIndex(e => e.Id)
+                entity.HasIndex(e => e.Id)
                     .HasName("id");
 
-                _ = entity.HasIndex(e => e.ModifiedOn)
+                entity.HasIndex(e => e.ModifiedOn)
                     .HasName("modified_on");
 
-                _ = entity.Property(e => e.TenantId).HasColumnName("tenant_id");
+                entity.Property(e => e.TenantId).HasColumnName("tenant_id");
 
-                _ = entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.Id).HasColumnName("id");
 
-                _ = entity.Property(e => e.Version).HasColumnName("version");
+                entity.Property(e => e.Version).HasColumnName("version");
 
-                _ = entity.Property(e => e.Category).HasColumnName("category");
+                entity.Property(e => e.Category).HasColumnName("category");
 
-                _ = entity.Property(e => e.Changes)
+                entity.Property(e => e.Changes)
                     .HasColumnName("changes")
                     .HasColumnType("mediumtext")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.Comment)
+                entity.Property(e => e.Comment)
                     .HasColumnName("comment")
                     .HasColumnType("varchar(255)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.ContentLength).HasColumnName("content_length");
+                entity.Property(e => e.ContentLength).HasColumnName("content_length");
 
-                _ = entity.Property(e => e.ConvertedType)
+                entity.Property(e => e.ConvertedType)
                     .HasColumnName("converted_type")
                     .HasColumnType("varchar(10)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.CreateBy)
+                entity.Property(e => e.CreateBy)
                     .IsRequired()
                     .HasColumnName("create_by")
                     .HasColumnType("char(38)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.CreateOn)
+                entity.Property(e => e.CreateOn)
                     .HasColumnName("create_on")
                     .HasColumnType("datetime");
 
-                _ = entity.Property(e => e.CurrentVersion).HasColumnName("current_version");
+                entity.Property(e => e.CurrentVersion).HasColumnName("current_version");
 
-                _ = entity.Property(e => e.Encrypted).HasColumnName("encrypted");
+                entity.Property(e => e.Encrypted).HasColumnName("encrypted");
 
-                _ = entity.Property(e => e.FileStatus).HasColumnName("file_status");
+                entity.Property(e => e.FileStatus).HasColumnName("file_status");
 
-                _ = entity.Property(e => e.FolderId).HasColumnName("folder_id");
+                entity.Property(e => e.FolderId).HasColumnName("folder_id");
 
-                _ = entity.Property(e => e.Forcesave).HasColumnName("forcesave");
+                entity.Property(e => e.Forcesave).HasColumnName("forcesave");
 
-                _ = entity.Property(e => e.ModifiedBy)
+                entity.Property(e => e.ModifiedBy)
                     .IsRequired()
                     .HasColumnName("modified_by")
                     .HasColumnType("char(38)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.ModifiedOn)
+                entity.Property(e => e.ModifiedOn)
                     .HasColumnName("modified_on")
                     .HasColumnType("datetime");
 
-                _ = entity.Property(e => e.Title)
+                entity.Property(e => e.Title)
                     .IsRequired()
                     .HasColumnName("title")
                     .HasColumnType("varchar(400)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.VersionGroup)
+                entity.Property(e => e.VersionGroup)
                     .HasColumnName("version_group")
                     .HasDefaultValueSql("'1'");
             });
@@ -201,78 +201,78 @@ namespace ASC.Files.Core.EF
         }
         public static void PgSqlAddDbFiles(this ModelBuilder modelBuilder)
         {
-            _ = modelBuilder.Entity<DbFile>(entity =>
+            modelBuilder.Entity<DbFile>(entity =>
             {
-                _ = entity.HasKey(e => new { e.Id, e.TenantId, e.Version })
+                entity.HasKey(e => new { e.Id, e.TenantId, e.Version })
                     .HasName("files_file_pkey");
 
-                _ = entity.ToTable("files_file", "onlyoffice");
+                entity.ToTable("files_file", "onlyoffice");
 
-                _ = entity.HasIndex(e => e.FolderId)
+                entity.HasIndex(e => e.FolderId)
                     .HasName("folder_id");
 
-                _ = entity.HasIndex(e => e.Id)
+                entity.HasIndex(e => e.Id)
                     .HasName("id");
 
-                _ = entity.HasIndex(e => e.ModifiedOn)
+                entity.HasIndex(e => e.ModifiedOn)
                     .HasName("modified_on_files_file");
 
-                _ = entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.Id).HasColumnName("id");
 
-                _ = entity.Property(e => e.TenantId).HasColumnName("tenant_id");
+                entity.Property(e => e.TenantId).HasColumnName("tenant_id");
 
-                _ = entity.Property(e => e.Version).HasColumnName("version");
+                entity.Property(e => e.Version).HasColumnName("version");
 
-                _ = entity.Property(e => e.Category).HasColumnName("category");
+                entity.Property(e => e.Category).HasColumnName("category");
 
-                _ = entity.Property(e => e.Changes).HasColumnName("changes");
+                entity.Property(e => e.Changes).HasColumnName("changes");
 
-                _ = entity.Property(e => e.Comment)
+                entity.Property(e => e.Comment)
                     .HasColumnName("comment")
                     .HasMaxLength(255)
                     .HasDefaultValueSql("NULL::character varying");
 
-                _ = entity.Property(e => e.ContentLength)
+                entity.Property(e => e.ContentLength)
                     .HasColumnName("content_length")
                     .HasDefaultValueSql("'0'::bigint");
 
-                _ = entity.Property(e => e.ConvertedType)
+                entity.Property(e => e.ConvertedType)
                     .HasColumnName("converted_type")
                     .HasMaxLength(10)
                     .HasDefaultValueSql("NULL::character varying");
 
-                _ = entity.Property(e => e.CreateBy)
+                entity.Property(e => e.CreateBy)
                     .IsRequired()
                     .HasColumnName("create_by")
                     .HasMaxLength(38)
                     .IsFixedLength();
 
-                _ = entity.Property(e => e.CreateOn).HasColumnName("create_on");
+                entity.Property(e => e.CreateOn).HasColumnName("create_on");
 
-                _ = entity.Property(e => e.CurrentVersion).HasColumnName("current_version");
+                entity.Property(e => e.CurrentVersion).HasColumnName("current_version");
 
-                _ = entity.Property(e => e.Encrypted).HasColumnName("encrypted");
+                entity.Property(e => e.Encrypted).HasColumnName("encrypted");
 
-                _ = entity.Property(e => e.FileStatus).HasColumnName("file_status");
+                entity.Property(e => e.FileStatus).HasColumnName("file_status");
 
-                _ = entity.Property(e => e.FolderId).HasColumnName("folder_id");
+                entity.Property(e => e.FolderId).HasColumnName("folder_id");
 
-                _ = entity.Property(e => e.Forcesave).HasColumnName("forcesave");
+                entity.Property(e => e.Forcesave).HasColumnName("forcesave");
 
-                _ = entity.Property(e => e.ModifiedBy)
+                entity.Property(e => e.ModifiedBy)
                     .IsRequired()
                     .HasColumnName("modified_by")
                     .HasMaxLength(38)
                     .IsFixedLength();
 
-                _ = entity.Property(e => e.ModifiedOn).HasColumnName("modified_on");
+                entity.Property(e => e.ModifiedOn).HasColumnName("modified_on");
 
-                _ = entity.Property(e => e.Title)
+                entity.Property(e => e.Title)
                     .IsRequired()
                     .HasColumnName("title")
                     .HasMaxLength(400);
 
-                _ = entity.Property(e => e.VersionGroup)
+                entity.Property(e => e.VersionGroup)
                     .HasColumnName("version_group")
                     .HasDefaultValueSql("1");
             });

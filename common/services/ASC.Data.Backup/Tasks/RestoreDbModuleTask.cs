@@ -159,7 +159,7 @@ namespace ASC.Data.Backup.Tasks
                         ColumnMapper.Rollback();
                         continue;
                     }
-                    _ = insertCommand.WithTimeout(120).ExecuteNonQuery();
+                    insertCommand.WithTimeout(120).ExecuteNonQuery();
                     rowsSuccess++;
 
                     if (tableInfo.HasIdColumn() && tableInfo.IdType == IdType.Autoincrement)
@@ -193,7 +193,7 @@ namespace ASC.Data.Backup.Tasks
                                 oldValue is string ? "'" + oldValue + "'" : oldValue,
                                 relation.Item2.TenantColumn,
                                 ColumnMapper.GetTenantMapping());
-                        _ = command.WithTimeout(120).ExecuteNonQuery();
+                        command.WithTimeout(120).ExecuteNonQuery();
                     }
                 }
 

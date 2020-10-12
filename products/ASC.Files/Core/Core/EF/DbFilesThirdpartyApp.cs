@@ -34,41 +34,41 @@ namespace ASC.Files.Core.EF
     {
         public static ModelBuilderWrapper AddDbDbFilesThirdpartyApp(this ModelBuilderWrapper modelBuilder)
         {
-            _ = modelBuilder
+            modelBuilder
                 .Add(MySqlAddDbFilesThirdpartyApp, Provider.MySql)
                 .Add(PgSqlAddDbFilesThirdpartyApp, Provider.Postgre);
             return modelBuilder;
         }
         public static void MySqlAddDbFilesThirdpartyApp(this ModelBuilder modelBuilder)
         {
-            _ = modelBuilder.Entity<DbFilesThirdpartyApp>(entity =>
+            modelBuilder.Entity<DbFilesThirdpartyApp>(entity =>
             {
-                _ = entity.HasKey(e => new { e.UserId, e.App })
+                entity.HasKey(e => new { e.UserId, e.App })
                     .HasName("PRIMARY");
 
-                _ = entity.ToTable("files_thirdparty_app");
+                entity.ToTable("files_thirdparty_app");
 
-                _ = entity.Property(e => e.UserId)
+                entity.Property(e => e.UserId)
                     .HasColumnName("user_id")
                     .HasColumnType("varchar(38)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.App)
+                entity.Property(e => e.App)
                     .HasColumnName("app")
                     .HasColumnType("varchar(50)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.ModifiedOn)
+                entity.Property(e => e.ModifiedOn)
                     .HasColumnName("modified_on")
                     .HasColumnType("timestamp")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP")
                     .ValueGeneratedOnAddOrUpdate();
 
-                _ = entity.Property(e => e.TenantId).HasColumnName("tenant_id");
+                entity.Property(e => e.TenantId).HasColumnName("tenant_id");
 
-                _ = entity.Property(e => e.Token)
+                entity.Property(e => e.Token)
                     .HasColumnName("token")
                     .HasColumnType("text")
                     .HasCharSet("utf8")
@@ -77,28 +77,28 @@ namespace ASC.Files.Core.EF
         }
         public static void PgSqlAddDbFilesThirdpartyApp(this ModelBuilder modelBuilder)
         {
-            _ = modelBuilder.Entity<DbFilesThirdpartyApp>(entity =>
+            modelBuilder.Entity<DbFilesThirdpartyApp>(entity =>
             {
-                _ = entity.HasKey(e => new { e.UserId, e.App })
+                entity.HasKey(e => new { e.UserId, e.App })
                     .HasName("files_thirdparty_app_pkey");
 
-                _ = entity.ToTable("files_thirdparty_app", "onlyoffice");
+                entity.ToTable("files_thirdparty_app", "onlyoffice");
 
-                _ = entity.Property(e => e.UserId)
+                entity.Property(e => e.UserId)
                     .HasColumnName("user_id")
                     .HasMaxLength(38);
 
-                _ = entity.Property(e => e.App)
+                entity.Property(e => e.App)
                     .HasColumnName("app")
                     .HasMaxLength(50);
 
-                _ = entity.Property(e => e.ModifiedOn)
+                entity.Property(e => e.ModifiedOn)
                     .HasColumnName("modified_on")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
-                _ = entity.Property(e => e.TenantId).HasColumnName("tenant_id");
+                entity.Property(e => e.TenantId).HasColumnName("tenant_id");
 
-                _ = entity.Property(e => e.Token).HasColumnName("token");
+                entity.Property(e => e.Token).HasColumnName("token");
             });
         }
     }

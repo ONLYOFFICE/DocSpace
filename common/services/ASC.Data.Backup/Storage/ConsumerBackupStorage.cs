@@ -53,7 +53,7 @@ namespace ASC.Data.Backup.Storage
         {
             using var stream = File.OpenRead(localPath);
             var storagePath = Path.GetFileName(localPath);
-            _ = Store.Save(Domain, storagePath, stream, ACL.Private);
+            Store.Save(Domain, storagePath, stream, ACL.Private);
             return storagePath;
         }
 

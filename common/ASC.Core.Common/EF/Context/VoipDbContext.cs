@@ -28,7 +28,7 @@ namespace ASC.Core.Common.EF.Context
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            _ = ModelBuilderWrapper
+            ModelBuilderWrapper
                .From(modelBuilder, Provider)
                .AddVoipNumber()
                .AddDbVoipCall()

@@ -96,7 +96,7 @@ namespace ASC.Common.Utils
     {
         public static DIHelper AddSignatureService(this DIHelper services)
         {
-            _ = services.TryAddSingleton<Signature>();
+            services.TryAddSingleton<Signature>();
             return services.AddMachinePseudoKeysService();
         }
     }

@@ -199,14 +199,14 @@ namespace ASC.Core
             };
             user = UserService.SaveUser(tenant.TenantId, user);
             UserService.SetUserPasswordHash(tenant.TenantId, user.ID, ri.PasswordHash);
-            _ = UserService.SaveUserGroupRef(tenant.TenantId, new UserGroupRef(user.ID, Constants.GroupAdmin.ID, UserGroupRefType.Contains));
+            UserService.SaveUserGroupRef(tenant.TenantId, new UserGroupRef(user.ID, Constants.GroupAdmin.ID, UserGroupRefType.Contains));
 
             // save tenant owner
             tenant.OwnerId = user.ID;
             tenant = TenantService.SaveTenant(CoreSettings, tenant);
 
-            _ = SettingsManager.SaveSettings(new TenantAnalyticsSettings() { Analytics = ri.Analytics }, tenant.TenantId);
-            _ = SettingsManager.SaveSettings(new TenantControlPanelSettings { LimitedAccess = ri.LimitedControlPanel }, tenant.TenantId);
+            SettingsManager.SaveSettings(new TenantAnalyticsSettings() { Analytics = ri.Analytics }, tenant.TenantId);
+            SettingsManager.SaveSettings(new TenantControlPanelSettings { LimitedAccess = ri.LimitedControlPanel }, tenant.TenantId);
         }
 
         public Tenant SaveTenant(Tenant tenant)

@@ -48,8 +48,8 @@ namespace ASC.Data.Backup.Tasks.Data
             };
 
             using var xmlReader = XmlReader.Create(stream, readerSettings);
-            _ = xmlReader.MoveToContent();
-            _ = xmlReader.ReadToFollowing("schema", XmlSchemaNamespace);
+            xmlReader.MoveToContent();
+            xmlReader.ReadToFollowing("schema", XmlSchemaNamespace);
 
             var schema = new Dictionary<string, string>();
 

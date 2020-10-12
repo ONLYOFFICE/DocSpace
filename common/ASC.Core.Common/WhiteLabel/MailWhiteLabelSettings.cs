@@ -160,7 +160,7 @@ namespace ASC.Web.Core.WhiteLabel
     {
         public static DIHelper AddMailWhiteLabelSettingsService(this DIHelper services)
         {
-            _ = services.TryAddSingleton<MailWhiteLabelSettingsHelper>();
+            services.TryAddSingleton<MailWhiteLabelSettingsHelper>();
             return services.AddSettingsManagerService();
         }
     }

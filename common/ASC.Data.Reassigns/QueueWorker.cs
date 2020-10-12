@@ -146,7 +146,7 @@ namespace ASC.Data.Reassigns
         {
             if (services.TryAddScoped<QueueWorkerRemove>())
             {
-                _ = services.AddRemoveProgressItemService();
+                services.AddRemoveProgressItemService();
             }
 
             return services;

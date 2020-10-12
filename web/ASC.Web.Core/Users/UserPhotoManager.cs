@@ -121,10 +121,10 @@ namespace ASC.Web.Core.Users
                     {
                         foreach (var s in (CacheSize[])Enum.GetValues(typeof(CacheSize)))
                         {
-                            _ = Photofiles.TryGetValue(s, out var dict);
-                            _ = dict?.TryRemove(userId, out _);
+                            Photofiles.TryGetValue(s, out var dict);
+                            dict?.TryRemove(userId, out _);
                         }
-                        _ = SetCacheLoadedForTenant(false, data.TenantId);
+                        SetCacheLoadedForTenant(false, data.TenantId);
                     }
                     catch { }
                 }, CacheNotifyAction.Remove);
@@ -164,11 +164,11 @@ namespace ASC.Web.Core.Users
         public string SearchInCache(Guid userId, Size size)
         {
             string fileName = null;
-            _ = Photofiles.TryGetValue(UserPhotoManager.ToCache(size), out var photo);
+            Photofiles.TryGetValue(UserPhotoManager.ToCache(size), out var photo);
 
             if (size != Size.Empty)
             {
-                _ = photo?.TryGetValue(userId, out fileName);
+                photo?.TryGetValue(userId, out fileName);
             }
             else
             {
@@ -421,7 +421,7 @@ namespace ASC.Web.Core.Users
                 }
 
                 //Enqueue for sizing
-                _ = SizePhoto(userID, data, -1, size);
+                SizePhoto(userID, data, -1, size);
             }
             catch { }
 
@@ -498,7 +498,7 @@ namespace ASC.Web.Core.Users
                                 }
                             }
                         }
-                        _ = UserPhotoManagerCache.SetCacheLoadedForTenant(true, Tenant.TenantId);
+                        UserPhotoManagerCache.SetCacheLoadedForTenant(true, Tenant.TenantId);
                     }
                     catch (Exception err)
                     {
@@ -510,7 +510,7 @@ namespace ASC.Web.Core.Users
         public void ResetThumbnailSettings(Guid userId)
         {
             var thumbSettings = new UserPhotoThumbnailSettings().GetDefault(ServiceProvider) as UserPhotoThumbnailSettings;
-            _ = SettingsManager.SaveForUser(thumbSettings, userId);
+            SettingsManager.SaveForUser(thumbSettings, userId);
         }
 
         public string SaveOrUpdatePhoto(Guid userID, byte[] data)
@@ -553,11 +553,11 @@ namespace ASC.Web.Core.Users
                     photoUrl = store.Save(fileName, stream).ToString();
                 }
                 //Queue resizing
-                _ = SizePhoto(userID, data, -1, SmallFotoSize, true);
-                _ = SizePhoto(userID, data, -1, MediumFotoSize, true);
-                _ = SizePhoto(userID, data, -1, BigFotoSize, true);
-                _ = SizePhoto(userID, data, -1, MaxFotoSize, true);
-                _ = SizePhoto(userID, data, -1, RetinaFotoSize, true);
+                SizePhoto(userID, data, -1, SmallFotoSize, true);
+                SizePhoto(userID, data, -1, MediumFotoSize, true);
+                SizePhoto(userID, data, -1, BigFotoSize, true);
+                SizePhoto(userID, data, -1, MaxFotoSize, true);
+                SizePhoto(userID, data, -1, RetinaFotoSize, true);
             }
             return photoUrl;
         }
@@ -577,7 +577,7 @@ namespace ASC.Web.Core.Users
                 width >= height ? new Point(pos, 0) : new Point(0, pos),
                 new Size(min, min));
 
-            _ = SettingsManager.SaveForUser(settings, userId);
+            SettingsManager.SaveForUser(settings, userId);
         }
 
         private byte[] TryParseImage(byte[] data, long maxFileSize, Size maxsize, out ImageFormat imgFormat, out int width, out int height)
@@ -709,7 +709,7 @@ namespace ASC.Web.Core.Users
                 var fileName = string.Format("{0}_size_{1}-{2}.{3}", item.UserId, item.Size.Width, item.Size.Height, widening);
 
                 using var stream2 = new MemoryStream(data);
-                _ = item.DataStore.Save(fileName, stream2).ToString();
+                item.DataStore.Save(fileName, stream2).ToString();
 
                 UserPhotoManagerCache.AddToCache(item.UserId, item.Size, fileName);
             }
@@ -1006,11 +1006,11 @@ namespace ASC.Web.Core.Users
     {
         public static DIHelper AddResizeWorkerItemService(this DIHelper services)
         {
-            _ = services.TryAddSingleton<WorkerQueueOptionsManager<ResizeWorkerItem>>();
-            _ = services.TryAddSingleton<WorkerQueue<ResizeWorkerItem>>();
-            _ = services.AddSingleton<IConfigureOptions<WorkerQueue<ResizeWorkerItem>>, ConfigureWorkerQueue<ResizeWorkerItem>>();
+            services.TryAddSingleton<WorkerQueueOptionsManager<ResizeWorkerItem>>();
+            services.TryAddSingleton<WorkerQueue<ResizeWorkerItem>>();
+            services.AddSingleton<IConfigureOptions<WorkerQueue<ResizeWorkerItem>>, ConfigureWorkerQueue<ResizeWorkerItem>>();
 
-            _ = services.AddWorkerQueue<ResizeWorkerItem>(2, (int)TimeSpan.FromSeconds(30).TotalMilliseconds, true, 1);
+            services.AddWorkerQueue<ResizeWorkerItem>(2, (int)TimeSpan.FromSeconds(30).TotalMilliseconds, true, 1);
             return services;
         }
     }
@@ -1021,7 +1021,7 @@ namespace ASC.Web.Core.Users
         {
             if (services.TryAddScoped<UserPhotoManager>())
             {
-                _ = services.TryAddSingleton<UserPhotoManagerCache>();
+                services.TryAddSingleton<UserPhotoManagerCache>();
 
                 return services
                     .AddStorageFactoryService()

@@ -140,8 +140,8 @@ namespace ASC.Data.Storage.Migration
     {
         public static DIHelper AddServiceClient(this DIHelper services)
         {
-            _ = services.TryAddScoped<ServiceClient>();
-            _ = services.TryAddSingleton<ServiceClientListener>();
+            services.TryAddScoped<ServiceClient>();
+            services.TryAddSingleton<ServiceClientListener>();
 
             return services;
         }

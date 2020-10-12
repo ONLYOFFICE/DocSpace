@@ -168,7 +168,7 @@ namespace ASC.Data.Backup
                         var storage = StorageFactory.GetStorage(config, tenant.ToString(), backupInfo.Module, null);
                         try
                         {
-                            _ = storage.Save(backupInfo.Domain, backupInfo.Path, entry);
+                            storage.Save(backupInfo.Domain, backupInfo.Path, entry);
                         }
                         catch (Exception error)
                         {

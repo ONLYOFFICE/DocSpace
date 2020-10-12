@@ -77,8 +77,8 @@ namespace ASC.Feed.Data
                 LastDate = value
             };
 
-            _ = FeedDbContext.AddOrUpdate(r => r.FeedLast, feedLast);
-            _ = FeedDbContext.SaveChanges();
+            FeedDbContext.AddOrUpdate(r => r.FeedLast, feedLast);
+            FeedDbContext.SaveChanges();
 
             const int feedsPortionSize = 1000;
             var aggregatedDate = DateTime.UtcNow;
@@ -127,11 +127,11 @@ namespace ASC.Feed.Data
                     var fu = FeedDbContext.FeedUsers.Where(r => r.FeedId == f.Id).FirstOrDefault();
                     if (fu != null)
                     {
-                        _ = FeedDbContext.FeedUsers.Remove(fu);
+                        FeedDbContext.FeedUsers.Remove(fu);
                     }
                 }
 
-                _ = FeedDbContext.AddOrUpdate(r => r.FeedAggregates, feedAggregate);
+                FeedDbContext.AddOrUpdate(r => r.FeedAggregates, feedAggregate);
 
                 foreach (var u in f.Users)
                 {
@@ -141,11 +141,11 @@ namespace ASC.Feed.Data
                         UserId = u
                     };
 
-                    _ = FeedDbContext.AddOrUpdate(r => r.FeedUsers, feedUser);
+                    FeedDbContext.AddOrUpdate(r => r.FeedUsers, feedUser);
                 }
             }
 
-            _ = FeedDbContext.SaveChanges();
+            FeedDbContext.SaveChanges();
 
             tx.Commit();
         }
@@ -302,7 +302,7 @@ namespace ASC.Feed.Data
             var users = FeedDbContext.FeedUsers.Where(r => r.FeedId == id);
             FeedDbContext.FeedUsers.RemoveRange(users);
 
-            _ = FeedDbContext.SaveChanges();
+            FeedDbContext.SaveChanges();
 
             tx.Commit();
         }
@@ -386,7 +386,7 @@ namespace ASC.Feed.Data
     {
         public static DIHelper AddFeedAggregateDataProvider(this DIHelper services)
         {
-            _ = services.TryAddScoped<FeedAggregateDataProvider>();
+            services.TryAddScoped<FeedAggregateDataProvider>();
 
             return services
                 .AddAuthContextService()

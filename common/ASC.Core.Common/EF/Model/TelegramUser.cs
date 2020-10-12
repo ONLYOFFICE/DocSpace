@@ -27,53 +27,53 @@ namespace ASC.Core.Common.EF.Model
     {
         public static ModelBuilderWrapper AddTelegramUsers(this ModelBuilderWrapper modelBuilder)
         {
-            _ = modelBuilder
+            modelBuilder
                 .Add(MySqlAddTelegramUsers, Provider.MySql)
                 .Add(PgSqlAddTelegramUsers, Provider.Postgre);
             return modelBuilder;
         }
         public static void MySqlAddTelegramUsers(this ModelBuilder modelBuilder)
         {
-            _ = modelBuilder.Entity<TelegramUser>(entity =>
+            modelBuilder.Entity<TelegramUser>(entity =>
             {
-                _ = entity.HasKey(e => new { e.TenantId, e.PortalUserId })
+                entity.HasKey(e => new { e.TenantId, e.PortalUserId })
                     .HasName("PRIMARY");
 
-                _ = entity.ToTable("telegram_users");
+                entity.ToTable("telegram_users");
 
-                _ = entity.HasIndex(e => e.TelegramUserId)
+                entity.HasIndex(e => e.TelegramUserId)
                     .HasName("tgId");
 
-                _ = entity.Property(e => e.TenantId).HasColumnName("tenant_id");
+                entity.Property(e => e.TenantId).HasColumnName("tenant_id");
 
-                _ = entity.Property(e => e.PortalUserId)
+                entity.Property(e => e.PortalUserId)
                     .HasColumnName("portal_user_id")
                     .HasColumnType("varchar(38)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.TelegramUserId).HasColumnName("telegram_user_id");
+                entity.Property(e => e.TelegramUserId).HasColumnName("telegram_user_id");
             });
         }
         public static void PgSqlAddTelegramUsers(this ModelBuilder modelBuilder)
         {
-            _ = modelBuilder.Entity<TelegramUser>(entity =>
+            modelBuilder.Entity<TelegramUser>(entity =>
             {
-                _ = entity.HasKey(e => new { e.TenantId, e.PortalUserId })
+                entity.HasKey(e => new { e.TenantId, e.PortalUserId })
                     .HasName("telegram_users_pkey");
 
-                _ = entity.ToTable("telegram_users", "onlyoffice");
+                entity.ToTable("telegram_users", "onlyoffice");
 
-                _ = entity.HasIndex(e => e.TelegramUserId)
+                entity.HasIndex(e => e.TelegramUserId)
                     .HasName("tgId");
 
-                _ = entity.Property(e => e.TenantId).HasColumnName("tenant_id");
+                entity.Property(e => e.TenantId).HasColumnName("tenant_id");
 
-                _ = entity.Property(e => e.PortalUserId)
+                entity.Property(e => e.PortalUserId)
                     .HasColumnName("portal_user_id")
                     .HasMaxLength(38);
 
-                _ = entity.Property(e => e.TelegramUserId).HasColumnName("telegram_user_id");
+                entity.Property(e => e.TelegramUserId).HasColumnName("telegram_user_id");
             });
         }
     }

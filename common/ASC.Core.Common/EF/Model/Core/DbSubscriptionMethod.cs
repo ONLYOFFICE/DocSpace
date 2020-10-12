@@ -25,7 +25,7 @@ namespace ASC.Core.Common.EF
     {
         public static ModelBuilderWrapper AddSubscriptionMethod(this ModelBuilderWrapper modelBuilder)
         {
-            _ = modelBuilder
+            modelBuilder
                 .Add(MySqlAddSubscriptionMethod, Provider.MySql)
                 .Add(PgSqlAddSubscriptionMethod, Provider.Postgre)
                 .HasData(
@@ -68,34 +68,34 @@ namespace ASC.Core.Common.EF
 
         public static void MySqlAddSubscriptionMethod(this ModelBuilder modelBuilder)
         {
-            _ = modelBuilder.Entity<DbSubscriptionMethod>(entity =>
+            modelBuilder.Entity<DbSubscriptionMethod>(entity =>
             {
-                _ = entity.HasKey(e => new { e.Tenant, e.Source, e.Action, e.Recipient })
+                entity.HasKey(e => new { e.Tenant, e.Source, e.Action, e.Recipient })
                     .HasName("PRIMARY");
 
-                _ = entity.ToTable("core_subscriptionmethod");
+                entity.ToTable("core_subscriptionmethod");
 
-                _ = entity.Property(e => e.Tenant).HasColumnName("tenant");
+                entity.Property(e => e.Tenant).HasColumnName("tenant");
 
-                _ = entity.Property(e => e.Source)
+                entity.Property(e => e.Source)
                     .HasColumnName("source")
                     .HasColumnType("varchar(38)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.Action)
+                entity.Property(e => e.Action)
                     .HasColumnName("action")
                     .HasColumnType("varchar(128)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.Recipient)
+                entity.Property(e => e.Recipient)
                     .HasColumnName("recipient")
                     .HasColumnType("varchar(38)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.Sender)
+                entity.Property(e => e.Sender)
                     .IsRequired()
                     .HasColumnName("sender")
                     .HasColumnType("varchar(1024)")
@@ -105,28 +105,28 @@ namespace ASC.Core.Common.EF
         }
         public static void PgSqlAddSubscriptionMethod(this ModelBuilder modelBuilder)
         {
-            _ = modelBuilder.Entity<DbSubscriptionMethod>(entity =>
+            modelBuilder.Entity<DbSubscriptionMethod>(entity =>
             {
-                _ = entity.HasKey(e => new { e.Tenant, e.Source, e.Action, e.Recipient })
+                entity.HasKey(e => new { e.Tenant, e.Source, e.Action, e.Recipient })
                     .HasName("core_subscriptionmethod_pkey");
 
-                _ = entity.ToTable("core_subscriptionmethod", "onlyoffice");
+                entity.ToTable("core_subscriptionmethod", "onlyoffice");
 
-                _ = entity.Property(e => e.Tenant).HasColumnName("tenant");
+                entity.Property(e => e.Tenant).HasColumnName("tenant");
 
-                _ = entity.Property(e => e.Source)
+                entity.Property(e => e.Source)
                     .HasColumnName("source")
                     .HasMaxLength(38);
 
-                _ = entity.Property(e => e.Action)
+                entity.Property(e => e.Action)
                     .HasColumnName("action")
                     .HasMaxLength(128);
 
-                _ = entity.Property(e => e.Recipient)
+                entity.Property(e => e.Recipient)
                     .HasColumnName("recipient")
                     .HasMaxLength(38);
 
-                _ = entity.Property(e => e.Sender)
+                entity.Property(e => e.Sender)
                     .IsRequired()
                     .HasColumnName("sender")
                     .HasMaxLength(1024);

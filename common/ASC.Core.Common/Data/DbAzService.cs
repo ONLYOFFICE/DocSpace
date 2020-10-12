@@ -75,10 +75,10 @@ namespace ASC.Core.Data
                 if (commonAces.ContainsKey(key))
                 {
                     var common = commonAces[key];
-                    _ = commonAces.Remove(key);
+                    commonAces.Remove(key);
                     if (common.Reaction == a.Reaction)
                     {
-                        _ = tenantAces.Remove(a);
+                        tenantAces.Remove(a);
                     }
                 }
             }
@@ -146,8 +146,8 @@ namespace ASC.Core.Data
 
             if (record != null)
             {
-                _ = CoreDbContext.Acl.Remove(record);
-                _ = CoreDbContext.SaveChanges();
+                CoreDbContext.Acl.Remove(record);
+                CoreDbContext.SaveChanges();
             }
         }
 
@@ -162,8 +162,8 @@ namespace ASC.Core.Data
                 Tenant = r.Tenant
             };
 
-            _ = CoreDbContext.AddOrUpdate(r => r.Acl, record);
-            _ = CoreDbContext.SaveChanges();
+            CoreDbContext.AddOrUpdate(r => r.Acl, record);
+            CoreDbContext.SaveChanges();
         }
     }
 }

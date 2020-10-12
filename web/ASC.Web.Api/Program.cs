@@ -20,7 +20,7 @@ namespace ASC.Web.Api
             return Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    _ = webBuilder.UseStartup<Startup>();
+                    webBuilder.UseStartup<Startup>();
                 })
                 .ConfigureAppConfiguration((hostingContext, config) =>
                 {
@@ -31,8 +31,8 @@ namespace ASC.Web.Api
                         path = Path.GetFullPath(Path.Combine(hostingContext.HostingEnvironment.ContentRootPath, path));
                     }
 
-                    _ = config.SetBasePath(path);
-                    _ = config
+                    config.SetBasePath(path);
+                    config
                     .AddInMemoryCollection(new Dictionary<string, string>
                     {
                                         {"pathToConf", path}

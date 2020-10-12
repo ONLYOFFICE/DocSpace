@@ -191,7 +191,7 @@ namespace ASC.Security.Cryptography
         {
             var request = QueryHelpers.ParseQuery(HttpContextAccessor.HttpContext.Request.Headers["confirm"]);
 
-            _ = request.TryGetValue("type", out var type);
+            request.TryGetValue("type", out var type);
 
             ConfirmType? cType = null;
             if (Enum.TryParse<ConfirmType>(type, out var confirmType))
@@ -199,17 +199,17 @@ namespace ASC.Security.Cryptography
                 cType = confirmType;
             }
 
-            _ = request.TryGetValue("key", out var key);
+            request.TryGetValue("key", out var key);
 
-            _ = request.TryGetValue("p", out var pkey);
-            _ = int.TryParse(pkey, out var p);
+            request.TryGetValue("p", out var pkey);
+            int.TryParse(pkey, out var p);
 
-            _ = request.TryGetValue("emplType", out var emplType);
-            _ = Enum.TryParse<EmployeeType>(emplType, out var employeeType);
+            request.TryGetValue("emplType", out var emplType);
+            Enum.TryParse<EmployeeType>(emplType, out var employeeType);
 
-            _ = request.TryGetValue("email", out var _email);
-            _ = request.TryGetValue("uid", out var userIdKey);
-            _ = Guid.TryParse(userIdKey, out var userId);
+            request.TryGetValue("email", out var _email);
+            request.TryGetValue("uid", out var userIdKey);
+            Guid.TryParse(userIdKey, out var userId);
 
             return new EmailValidationKeyModel
             {
@@ -280,7 +280,7 @@ namespace ASC.Security.Cryptography
         {
             if (services.TryAddScoped<EmailValidationKeyProvider>())
             {
-                _ = services.TryAddTransient<EmailValidationKeyModelHelper>();
+                services.TryAddTransient<EmailValidationKeyModelHelper>();
 
                 return services
                     .AddTenantManagerService()

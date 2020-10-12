@@ -119,7 +119,7 @@ namespace ASC.Common
             if (!Singleton.Contains(serviceName))
             {
                 Singleton.Add(serviceName);
-                _ = ServiceCollection.AddSingleton<TService, TImplementation>();
+                ServiceCollection.AddSingleton<TService, TImplementation>();
             }
 
             return this;
@@ -155,7 +155,7 @@ namespace ASC.Common
             if (!Configured.Contains(serviceName))
             {
                 Configured.Add(serviceName);
-                _ = ServiceCollection.Configure(configureOptions);
+                ServiceCollection.Configure(configureOptions);
             }
 
             return this;
@@ -166,7 +166,7 @@ namespace ASC.Common
             if (!Configured.Contains(type))
             {
                 Configured.Add(type);
-                _ = ServiceCollection.Configure(action);
+                ServiceCollection.Configure(action);
             }
         }
 
@@ -201,7 +201,7 @@ namespace ASC.Common
             if (!Configured.Contains(serviceName))
             {
                 Configured.Add(serviceName);
-                _ = ServiceCollection.Configure(name, configureOptions);
+                ServiceCollection.Configure(name, configureOptions);
             }
 
             return this;

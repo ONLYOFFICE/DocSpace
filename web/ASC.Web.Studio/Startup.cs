@@ -29,49 +29,49 @@ namespace ASC.Web.Studio
 
         public override void ConfigureServices(IServiceCollection services)
         {
-            _ = services.AddCors();
+            services.AddCors();
 
             var diHelper = new DIHelper(services);
-            _ = diHelper
+            diHelper
                 .AddStorage()
                 .AddPathUtilsService()
                 .AddStorageHandlerService()
                 .AddLoginHandlerService();
 
-            _ = services.AddMemoryCache();
+            services.AddMemoryCache();
 
             base.ConfigureServices(services);
-            _ = services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
+            services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
         }
 
         public override void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
 
-            _ = app.UseForwardedHeaders(new ForwardedHeadersOptions
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
             });
 
-            _ = app.UseRouting();
+            app.UseRouting();
 
-            _ = app.UseCors(builder =>
+            app.UseCors(builder =>
                 builder
                     .AllowAnyOrigin()
                     .AllowAnyHeader()
                     .AllowAnyMethod());
 
-            _ = app.UseAuthentication();
+            app.UseAuthentication();
 
-            _ = app.UseEndpoints(endpoints =>
+            app.UseEndpoints(endpoints =>
             {
                 endpoints.InitializeHttpHandlers();
             });
 
-            _ = app.MapWhen(
+            app.MapWhen(
                context => context.Request.Path.ToString().EndsWith("login.ashx"),
                appBranch =>
                {
-                   _ = appBranch.UseLoginHandler();
+                   appBranch.UseLoginHandler();
                });
         }
     }

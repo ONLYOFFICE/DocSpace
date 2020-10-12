@@ -101,7 +101,7 @@ namespace ASC.Core.Billing
         {
             if (timer != null)
             {
-                _ = timer.Change(Timeout.Infinite, Timeout.Infinite);
+                timer.Change(Timeout.Infinite, Timeout.Infinite);
                 timer.Dispose();
                 timer = null;
             }
@@ -148,15 +148,15 @@ namespace ASC.Core.Billing
                 // save new
                 foreach (var tariff in wcfClient.GetTariffs(tenant.Version, CoreSettings.GetKey(tenant.TenantId)))
                 {
-                    _ = quotaService.SaveTenantQuota(tariff);
-                    _ = oldtariffs.Remove(tariff.Id);
+                    quotaService.SaveTenantQuota(tariff);
+                    oldtariffs.Remove(tariff.Id);
                 }
 
                 // remove old
                 foreach (var tariff in oldtariffs.Values)
                 {
                     tariff.Visible = false;
-                    _ = quotaService.SaveTenantQuota(tariff);
+                    quotaService.SaveTenantQuota(tariff);
                 }
             }
         }

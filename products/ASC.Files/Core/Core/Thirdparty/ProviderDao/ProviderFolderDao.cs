@@ -452,8 +452,8 @@ filterType, subjectGroup, subjectID, searchText, searchSubfolders, checkShare);
         {
             if (services.TryAddScoped<ProviderFolderDao>())
             {
-                _ = services.TryAddScoped<Folder<string>>();
-                _ = services.TryAddScoped<IFolderDao<string>, ProviderFolderDao>();
+                services.TryAddScoped<Folder<string>>();
+                services.TryAddScoped<IFolderDao<string>, ProviderFolderDao>();
 
                 return services
                     .AddProviderDaoBaseService();

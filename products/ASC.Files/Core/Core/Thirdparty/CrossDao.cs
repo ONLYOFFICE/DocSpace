@@ -85,7 +85,7 @@ namespace ASC.Files.Core.Thirdparty
                 {
                     fromFileTags.ForEach(x => x.EntryId = toFile.ID);
 
-                    _ = tagDao.SaveTags(fromFileTags);
+                    tagDao.SaveTags(fromFileTags);
                 }
 
                 //Delete source file if needed
@@ -119,7 +119,7 @@ namespace ASC.Files.Core.Thirdparty
                 if (cancellationToken.HasValue) cancellationToken.Value.ThrowIfCancellationRequested();
                 try
                 {
-                    _ = PerformCrossDaoFileCopy(fileId, fromFileDao, fromConverter,
+                    PerformCrossDaoFileCopy(fileId, fromFileDao, fromConverter,
                         toFolderId, toFileDao, toConverter,
                         deleteSourceFolder);
                 }
@@ -133,7 +133,7 @@ namespace ASC.Files.Core.Thirdparty
                 if (cancellationToken.HasValue) cancellationToken.Value.ThrowIfCancellationRequested();
                 try
                 {
-                    _ = PerformCrossDaoFolderCopy(folder.ID, fromFolderDao, fromFileDao, fromConverter,
+                    PerformCrossDaoFolderCopy(folder.ID, fromFolderDao, fromFileDao, fromConverter,
                         toFolderId, toFolderDao, toFileDao, toConverter,
                         deleteSourceFolder, cancellationToken);
                 }
@@ -165,7 +165,7 @@ namespace ASC.Files.Core.Thirdparty
                 {
                     fromFileNewTags.ForEach(x => x.EntryId = toFolderId);
 
-                    _ = tagDao.SaveTags(fromFileNewTags);
+                    tagDao.SaveTags(fromFileNewTags);
                 }
 
                 if (copyException == null)

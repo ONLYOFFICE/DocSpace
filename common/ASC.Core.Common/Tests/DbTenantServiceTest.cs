@@ -73,8 +73,8 @@ namespace ASC.Core.Common.Tests
             t2.TrustedDomains.Add(null);
             t2.TrustedDomains.Add("microsoft");
 
-            _ = Service.SaveTenant(null, t1);
-            _ = Service.SaveTenant(null, t2);
+            Service.SaveTenant(null, t1);
+            Service.SaveTenant(null, t2);
 
             var tenants = Service.GetTenants(default);
             CollectionAssert.Contains(tenants.ToList(), t1);
@@ -84,7 +84,7 @@ namespace ASC.Core.Common.Tests
             CompareTenants(t, t1);
 
             t1.Version = 2;
-            _ = Service.SaveTenant(null, t1);
+            Service.SaveTenant(null, t1);
             t = Service.GetTenant(t1.TenantId);
             CompareTenants(t, t1);
 
@@ -99,7 +99,7 @@ namespace ASC.Core.Common.Tests
 
 
             t1 = new Tenant("nct5nct5");
-            _ = Service.SaveTenant(null, t1);
+            Service.SaveTenant(null, t1);
 
             var user = new UserInfo
             {
@@ -108,7 +108,7 @@ namespace ASC.Core.Common.Tests
                 LastName = "last name",
                 Email = "user@mail.ru"
             };
-            _ = userService.SaveUser(t1.TenantId, user);
+            userService.SaveUser(t1.TenantId, user);
 
             var password = "password";
             //userService.SetUserPassword(t1.TenantId, user.ID, password);
@@ -152,7 +152,7 @@ namespace ASC.Core.Common.Tests
             }
 
             t.MappedDomain = "abc.defg";
-            _ = Service.SaveTenant(null, t);
+            Service.SaveTenant(null, t);
             Service.RemoveTenant(Tenant);
         }
 

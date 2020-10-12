@@ -172,7 +172,7 @@ namespace ASC.Files.Thirdparty.SharePoint
     {
         public static DIHelper AddSharePointTagDaoService(this DIHelper services)
         {
-            _ = services.TryAddScoped<SharePointTagDao>();
+            services.TryAddScoped<SharePointTagDao>();
 
             return services;
         }

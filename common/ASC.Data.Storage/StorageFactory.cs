@@ -126,7 +126,7 @@ namespace ASC.Data.Storage
                     foreach (var m in section.Module.Where(m => m.Type == "disc"))
                     {
                         if (m.Path.Contains(Constants.STORAGE_ROOT_PARAM))
-                            _ = builder.RegisterDiscDataHandler(
+                            builder.RegisterDiscDataHandler(
                                 pathUtils.ResolveVirtualPath(m.VirtualPath),
                                 pathUtils.ResolvePhysicalPath(m.Path, props),
                                 m.Public);
@@ -135,7 +135,7 @@ namespace ASC.Data.Storage
                         {
                             foreach (var d in m.Domain.Where(d => (d.Type == "disc" || string.IsNullOrEmpty(d.Type)) && d.Path.Contains(Constants.STORAGE_ROOT_PARAM)))
                             {
-                                _ = builder.RegisterDiscDataHandler(
+                                builder.RegisterDiscDataHandler(
                                     pathUtils.ResolveVirtualPath(d.VirtualPath),
                                     pathUtils.ResolvePhysicalPath(d.Path, props));
                             }
@@ -150,7 +150,7 @@ namespace ASC.Data.Storage
                     {
                         //todo: add path criterion
                         if (m.Type == "disc" || !m.Public || m.Path.Contains(Constants.STORAGE_ROOT_PARAM))
-                            _ = builder.RegisterStorageHandler(
+                            builder.RegisterStorageHandler(
                                 m.Name,
                                 string.Empty,
                                 m.Public);
@@ -160,7 +160,7 @@ namespace ASC.Data.Storage
                         {
                             foreach (var d in m.Domain.Where(d => d.Path.Contains(Constants.STORAGE_ROOT_PARAM)))
                             {
-                                _ = builder.RegisterStorageHandler(
+                                builder.RegisterStorageHandler(
                                     m.Name,
                                     d.Name,
                                     d.Public);
@@ -240,7 +240,7 @@ namespace ASC.Data.Storage
 
         public IDataStore GetStorage(string configpath, string tenant, string module)
         {
-            _ = int.TryParse(tenant, out var tenantId);
+            int.TryParse(tenant, out var tenantId);
             return GetStorage(configpath, tenant, module, new TenantQuotaController(tenantId, TenantManager));
         }
 
@@ -288,7 +288,7 @@ namespace ASC.Data.Storage
                 throw new InvalidOperationException("config section not found");
             }
 
-            _ = int.TryParse(tenant, out var tenantId);
+            int.TryParse(tenant, out var tenantId);
             return GetDataStore(tenant, module, consumer, new TenantQuotaController(tenantId, TenantManager));
         }
 
@@ -340,7 +340,7 @@ namespace ASC.Data.Storage
     {
         public static DIHelper AddStorageFactoryConfigService(this DIHelper services)
         {
-            _ = services.TryAddSingleton<StorageFactoryConfig>();
+            services.TryAddSingleton<StorageFactoryConfig>();
 
             return services;
         }
@@ -349,7 +349,7 @@ namespace ASC.Data.Storage
         {
             if (services.TryAddScoped<StorageFactory>())
             {
-                _ = services.TryAddSingleton<StorageFactoryListener>();
+                services.TryAddSingleton<StorageFactoryListener>();
 
                 return services
                     .AddConsumerFactoryService()

@@ -89,7 +89,7 @@ namespace ASC.Core
 
         public void AddAce(AzRecord r)
         {
-            _ = service.SaveAce(TenantManager.GetCurrentTenant().TenantId, r);
+            service.SaveAce(TenantManager.GetCurrentTenant().TenantId, r);
         }
 
         public void RemoveAce(AzRecord r)

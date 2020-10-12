@@ -69,7 +69,7 @@ namespace ASC.Core.Notify
                 var tenant = tenantManager.GetCurrentTenant(false);
                 m.Tenant = tenant == null ? Tenant.DEFAULT_TENANT : tenant.TenantId;
 
-                _ = sender.Send(m);
+                sender.Send(m);
 
                 return new SendResponse(message, senderName, result);
             }

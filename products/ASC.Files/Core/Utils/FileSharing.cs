@@ -129,7 +129,7 @@ namespace ASC.Web.Files.Utils
                     listUsersId = UserManager.GetUsersByGroup(w.SubjectId).Select(ui => ui.ID).ToList();
                 else
                     listUsersId.Add(w.SubjectId);
-                _ = listUsersId.Remove(AuthContext.CurrentAccount.ID);
+                listUsersId.Remove(AuthContext.CurrentAccount.ID);
 
                 if (entryType == FileEntryType.File)
                 {
@@ -147,7 +147,7 @@ namespace ASC.Web.Files.Utils
                                 || share == FileShare.Restrict;
                 listUsersId.ForEach(id =>
                 {
-                    _ = recipients.Remove(id);
+                    recipients.Remove(id);
                     if (addRecipient)
                     {
                         recipients.Add(id, share);
@@ -481,7 +481,7 @@ namespace ASC.Web.Files.Utils
                         aceForObject.Owner = false;
                         aceForObject.Share = FileShare.Varies;
                     }
-                    _ = result.Remove(duplicate);
+                    result.Remove(duplicate);
                 }
 
                 var withoutAce = result.Where(ace =>
@@ -508,15 +508,15 @@ namespace ASC.Web.Files.Utils
 
 
             var ownerAce = result.FirstOrDefault(ace => ace.Owner);
-            _ = result.Remove(ownerAce);
+            result.Remove(ownerAce);
 
             var meAce = result.FirstOrDefault(ace => ace.SubjectId == AuthContext.CurrentAccount.ID);
-            _ = result.Remove(meAce);
+            result.Remove(meAce);
 
             AceWrapper linkAce = null;
             if (objectIds.Count > 1)
             {
-                _ = result.RemoveAll(ace => ace.SubjectId == FileConstant.ShareLinkId);
+                result.RemoveAll(ace => ace.SubjectId == FileConstant.ShareLinkId);
             }
             else
             {
@@ -535,7 +535,7 @@ namespace ASC.Web.Files.Utils
             }
             if (linkAce != null)
             {
-                _ = result.Remove(linkAce);
+                result.Remove(linkAce);
                 result = new List<AceWrapper> { linkAce }.Concat(result).ToList();
             }
 
@@ -589,7 +589,7 @@ namespace ASC.Web.Files.Utils
         {
             if (services.TryAddScoped<FileSharingAceHelper<string>>())
             {
-                _ = services.TryAddScoped<FileSharingAceHelper<int>>();
+                services.TryAddScoped<FileSharingAceHelper<int>>();
 
                 return services
                     .AddFileSecurityService()

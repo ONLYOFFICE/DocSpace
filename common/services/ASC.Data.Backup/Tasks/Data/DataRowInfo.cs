@@ -86,14 +86,14 @@ namespace ASC.Data.Backup.Tasks.Data
             while (i < _values.Count && sb.Length <= maxStrLength)
             {
                 var strVal = Convert.ToString(_values[i]);
-                _ = sb.AppendFormat("\"{0}\", ", strVal);
+                sb.AppendFormat("\"{0}\", ", strVal);
                 i++;
             }
 
             if (sb.Length > maxStrLength + 2)
             {
                 sb.Length = maxStrLength - 3;
-                _ = sb.Append("...");
+                sb.Append("...");
             }
             else if (sb.Length > 0)
             {

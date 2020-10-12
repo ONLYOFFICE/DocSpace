@@ -142,7 +142,7 @@ namespace ASC.ElasticSearch.Core
 
             settings.Items = items;
             settings.Data = JsonConvert.SerializeObject(items);
-            _ = SettingsManager.Save(settings);
+            SettingsManager.Save(settings);
 
             var action = new ReIndexAction() { Tenant = TenantManager.GetCurrentTenant().TenantId };
             action.Names.AddRange(toReIndex.Select(r => r.ID).ToList());

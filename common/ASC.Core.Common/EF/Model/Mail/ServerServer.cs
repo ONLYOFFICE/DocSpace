@@ -28,32 +28,32 @@ namespace ASC.Core.Common.EF.Model.Mail
     {
         public static ModelBuilderWrapper AddServerServer(this ModelBuilderWrapper modelBuilder)
         {
-            _ = modelBuilder
+            modelBuilder
                 .Add(MySqlAddServerServer, Provider.MySql)
                 .Add(PgSqlAddServerServer, Provider.Postgre);
             return modelBuilder;
         }
         public static void MySqlAddServerServer(this ModelBuilder modelBuilder)
         {
-            _ = modelBuilder.Entity<ServerServer>(entity =>
+            modelBuilder.Entity<ServerServer>(entity =>
             {
-                _ = entity.ToTable("mail_server_server");
+                entity.ToTable("mail_server_server");
 
-                _ = entity.HasIndex(e => e.ServerType)
+                entity.HasIndex(e => e.ServerType)
                     .HasName("mail_server_server_type_server_type_fk_id");
 
-                _ = entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.Id).HasColumnName("id");
 
-                _ = entity.Property(e => e.ConnectionString)
+                entity.Property(e => e.ConnectionString)
                     .IsRequired()
                     .HasColumnName("connection_string")
                     .HasColumnType("text")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.ImapSettingsId).HasColumnName("imap_settings_id");
+                entity.Property(e => e.ImapSettingsId).HasColumnName("imap_settings_id");
 
-                _ = entity.Property(e => e.MxRecord)
+                entity.Property(e => e.MxRecord)
                     .IsRequired()
                     .HasColumnName("mx_record")
                     .HasColumnType("varchar(128)")
@@ -61,37 +61,37 @@ namespace ASC.Core.Common.EF.Model.Mail
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.ServerType).HasColumnName("server_type");
+                entity.Property(e => e.ServerType).HasColumnName("server_type");
 
-                _ = entity.Property(e => e.SmtpSettingsId).HasColumnName("smtp_settings_id");
+                entity.Property(e => e.SmtpSettingsId).HasColumnName("smtp_settings_id");
             });
         }
         public static void PgSqlAddServerServer(this ModelBuilder modelBuilder)
         {
-            _ = modelBuilder.Entity<ServerServer>(entity =>
+            modelBuilder.Entity<ServerServer>(entity =>
             {
-                _ = entity.ToTable("mail_server_server", "onlyoffice");
+                entity.ToTable("mail_server_server", "onlyoffice");
 
-                _ = entity.HasIndex(e => e.ServerType)
+                entity.HasIndex(e => e.ServerType)
                     .HasName("mail_server_server_type_server_type_fk_id");
 
-                _ = entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.Id).HasColumnName("id");
 
-                _ = entity.Property(e => e.ConnectionString)
+                entity.Property(e => e.ConnectionString)
                     .IsRequired()
                     .HasColumnName("connection_string");
 
-                _ = entity.Property(e => e.ImapSettingsId).HasColumnName("imap_settings_id");
+                entity.Property(e => e.ImapSettingsId).HasColumnName("imap_settings_id");
 
-                _ = entity.Property(e => e.MxRecord)
+                entity.Property(e => e.MxRecord)
                     .IsRequired()
                     .HasColumnName("mx_record")
                     .HasMaxLength(128)
                     .HasDefaultValueSql("' '");
 
-                _ = entity.Property(e => e.ServerType).HasColumnName("server_type");
+                entity.Property(e => e.ServerType).HasColumnName("server_type");
 
-                _ = entity.Property(e => e.SmtpSettingsId).HasColumnName("smtp_settings_id");
+                entity.Property(e => e.SmtpSettingsId).HasColumnName("smtp_settings_id");
             });
         }
     }

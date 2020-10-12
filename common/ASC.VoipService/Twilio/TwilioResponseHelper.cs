@@ -77,10 +77,10 @@ namespace ASC.VoipService.Twilio
             {
                 if (!string.IsNullOrEmpty(settings.GreetingAudio))
                 {
-                    _ = response.Play(Uri.EscapeUriString(settings.GreetingAudio));
+                    response.Play(Uri.EscapeUriString(settings.GreetingAudio));
                 }
 
-                _ = response.Enqueue(settings.Queue.Name, GetEcho("Enqueue", agent != null), "POST",
+                response.Enqueue(settings.Queue.Name, GetEcho("Enqueue", agent != null), "POST",
                     GetEcho("Wait", agent != null), "POST");
             }
 
@@ -129,12 +129,12 @@ namespace ASC.VoipService.Twilio
             if (!string.IsNullOrEmpty(queue.WaitUrl))
             {
                 var gather = new Gather(method: "POST", action: GetEcho("gatherQueue"));
-                _ = gather.Play(Uri.EscapeUriString(queue.WaitUrl));
-                _ = response.Gather(gather);
+                gather.Play(Uri.EscapeUriString(queue.WaitUrl));
+                response.Gather(gather);
             }
             else
             {
-                _ = response.Pause(queue.WaitTime);
+                response.Pause(queue.WaitTime);
             }
 
             return response;
@@ -162,7 +162,7 @@ namespace ASC.VoipService.Twilio
 
             if (Guid.TryParse(to, out var newCallerId))
             {
-                _ = SecurityContext.AuthenticateMe(newCallerId);
+                SecurityContext.AuthenticateMe(newCallerId);
             }
 
             return new VoiceResponse().Enqueue(settings.Queue.Name, GetEcho("enqueue"), "POST",
@@ -181,13 +181,13 @@ namespace ASC.VoipService.Twilio
             switch (agent.Answer)
             {
                 case AnswerType.Number:
-                    _ = response.Dial(dial.Number(agent.PhoneNumber, method: "POST", url: GetEcho("client")));
+                    response.Dial(dial.Number(agent.PhoneNumber, method: "POST", url: GetEcho("client")));
                     break;
                 case AnswerType.Client:
-                    _ = response.Dial(dial.Client(agent.ClientID, "POST", GetEcho("client")));
+                    response.Dial(dial.Client(agent.ClientID, "POST", GetEcho("client")));
                     break;
                 case AnswerType.Sip:
-                    _ = response.Dial(dial.Sip(agent.ClientID, method: "POST", url: GetEcho("client")));
+                    response.Dial(dial.Sip(agent.ClientID, method: "POST", url: GetEcho("client")));
                     break;
             }
 

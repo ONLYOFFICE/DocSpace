@@ -104,13 +104,13 @@ namespace ASC.Web.Core.Sms
                 return mobilePhone;
 
             var sb = new StringBuilder();
-            _ = sb.Append("+");
-            _ = sb.Append(mobilePhone.Substring(0, startLen));
+            sb.Append("+");
+            sb.Append(mobilePhone.Substring(0, startLen));
             for (var i = startLen; i < mobilePhone.Length - endLen; i++)
             {
-                _ = sb.Append("*");
+                sb.Append("*");
             }
-            _ = sb.Append(mobilePhone.Substring(mobilePhone.Length - endLen));
+            sb.Append(mobilePhone.Substring(mobilePhone.Length - endLen));
             return sb.ToString();
         }
     }

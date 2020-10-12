@@ -74,16 +74,16 @@ namespace ASC.Api.Core.Auth
                 {
                     if (emailValidationKeyModel.UiD.HasValue && !emailValidationKeyModel.UiD.Equals(Guid.Empty))
                     {
-                        _ = SecurityContext.AuthenticateMe(emailValidationKeyModel.UiD.Value, claims);
+                        SecurityContext.AuthenticateMe(emailValidationKeyModel.UiD.Value, claims);
                     }
                     else
                     {
-                        _ = SecurityContext.AuthenticateMe(ASC.Core.Configuration.Constants.CoreSystem, claims);
+                        SecurityContext.AuthenticateMe(ASC.Core.Configuration.Constants.CoreSystem, claims);
                     }
                 }
                 else
                 {
-                    _ = SecurityContext.AuthenticateMe(SecurityContext.CurrentAccount, claims);
+                    SecurityContext.AuthenticateMe(SecurityContext.CurrentAccount, claims);
                 }
             }
 

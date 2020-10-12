@@ -104,7 +104,7 @@ namespace ASC.Common.Logging
     {
         static Log()
         {
-            _ = XmlConfigurator.Configure(log4net.LogManager.GetRepository(Assembly.GetCallingAssembly()));
+            XmlConfigurator.Configure(log4net.LogManager.GetRepository(Assembly.GetCallingAssembly()));
         }
 
         private readonly log4net.ILog loger;
@@ -877,23 +877,23 @@ namespace ASC.Common.Logging
         {
             const string baseName = "ASC";
             var baseSqlName = $"{baseName}.SQL";
-            _ = services.Configure<T>(r => r.Name = baseName);
-            _ = services.Configure<T>(baseName, r => r.Name = baseName);
-            _ = services.Configure<T>(baseSqlName, r => r.Name = baseSqlName);
+            services.Configure<T>(r => r.Name = baseName);
+            services.Configure<T>(baseName, r => r.Name = baseName);
+            services.Configure<T>(baseSqlName, r => r.Name = baseSqlName);
 
             foreach (var l in additionalLoggers)
             {
-                _ = services.Configure<T>(l, r => r.Name = l);
+                services.Configure<T>(l, r => r.Name = l);
             }
 
-            _ = services.TryAddSingleton(typeof(IOptionsMonitor<ILog>), typeof(LogManager<T>));
+            services.TryAddSingleton(typeof(IOptionsMonitor<ILog>), typeof(LogManager<T>));
             return services;
         }
 
         public static DIHelper AddNLogManager(this DIHelper services, params string[] additionalLoggers)
         {
-            _ = services.TryAddSingleton<IConfigureNamedOptions<LogNLog>, ConfigureLogNLog>();
-            _ = services.TryAddSingleton<IConfigureOptions<LogNLog>, ConfigureLogNLog>();
+            services.TryAddSingleton<IConfigureNamedOptions<LogNLog>, ConfigureLogNLog>();
+            services.TryAddSingleton<IConfigureOptions<LogNLog>, ConfigureLogNLog>();
             return services.AddLogManager<LogNLog>(additionalLoggers);
         }
     }

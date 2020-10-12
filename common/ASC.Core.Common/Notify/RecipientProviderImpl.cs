@@ -163,7 +163,7 @@ namespace ASC.Core.Notify
     {
         public static DIHelper AddRecipientProviderImplService(this DIHelper services)
         {
-            _ = services.TryAddScoped(typeof(IRecipientProvider), typeof(RecipientProviderImpl));
+            services.TryAddScoped(typeof(IRecipientProvider), typeof(RecipientProviderImpl));
 
             return services
                 .AddUserManagerService();

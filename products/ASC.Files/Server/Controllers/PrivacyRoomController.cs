@@ -168,7 +168,7 @@ namespace ASC.Api.Documents
         {
             if (services.TryAddScoped<PrivacyRoomApi>())
             {
-                _ = services
+                services
                     .AddAuthContextService()
                     .AddPermissionContextService()
                     .AddSettingsManagerService()

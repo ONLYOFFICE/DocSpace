@@ -24,12 +24,12 @@ namespace ASC.Data.Backup
         {
             var diHelper = new DIHelper(services);
 
-            _ = diHelper
+            diHelper
                 .AddBackupServiceLauncher()
                 .AddBackupController()
                 .AddProgressQueue<BaseBackupProgressItem>(1, (int)TimeSpan.FromMinutes(5).TotalMilliseconds, true, false, 0);
 
-            _ = services.AddHostedService<BackupServiceLauncher>();
+            services.AddHostedService<BackupServiceLauncher>();
             base.ConfigureServices(services);
         }
     }

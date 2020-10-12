@@ -218,7 +218,7 @@ namespace ASC.Files.Thirdparty.SharePoint
                     .ToList();
 
                 FilesDbContext.TagLink.RemoveRange(link);
-                _ = FilesDbContext.SaveChanges();
+                FilesDbContext.SaveChanges();
 
                 var tagsToRemove = Query(FilesDbContext.Tag)
                     .Where(r => !Query(FilesDbContext.TagLink).Where(a => a.TagId == r.Id).Any());
@@ -229,13 +229,13 @@ namespace ASC.Files.Thirdparty.SharePoint
                     .Where(r => hashIDs.Any(h => h == r.EntryId));
 
                 FilesDbContext.Security.RemoveRange(securityToDelete);
-                _ = FilesDbContext.SaveChanges();
+                FilesDbContext.SaveChanges();
 
                 var mappingToDelete = Query(FilesDbContext.ThirdpartyIdMapping)
                     .Where(r => hashIDs.Any(h => h == r.HashId));
 
                 FilesDbContext.ThirdpartyIdMapping.RemoveRange(mappingToDelete);
-                _ = FilesDbContext.SaveChanges();
+                FilesDbContext.SaveChanges();
 
                 tx.Commit();
             }
@@ -487,7 +487,7 @@ namespace ASC.Files.Thirdparty.SharePoint
     {
         public static DIHelper AddSharePointFolderDaoService(this DIHelper services)
         {
-            _ = services.TryAddScoped<SharePointFolderDao>();
+            services.TryAddScoped<SharePointFolderDao>();
 
             return services;
         }

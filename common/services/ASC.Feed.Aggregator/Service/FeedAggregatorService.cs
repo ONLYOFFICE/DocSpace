@@ -98,14 +98,14 @@ namespace ASC.Feed.Aggregator
 
             if (aggregateTimer != null)
             {
-                _ = aggregateTimer.Change(Timeout.Infinite, Timeout.Infinite);
+                aggregateTimer.Change(Timeout.Infinite, Timeout.Infinite);
                 aggregateTimer.Dispose();
                 aggregateTimer = null;
             }
 
             if (removeTimer != null)
             {
-                _ = removeTimer.Change(Timeout.Infinite, Timeout.Infinite);
+                removeTimer.Change(Timeout.Infinite, Timeout.Infinite);
                 removeTimer.Dispose();
                 removeTimer = null;
             }
@@ -158,7 +158,7 @@ namespace ASC.Feed.Aggregator
                                 continue;
                             }
 
-                            _ = tenantManager.SetCurrentTenant(tenant);
+                            tenantManager.SetCurrentTenant(tenant);
                             var users = userManager.GetUsers();
 
                             var feeds = Attempt(10, () => module.GetFeeds(new FeedFilter(fromTime, toTime) { Tenant = tenant }).Where(r => r.Item1 != null).ToList());
@@ -278,7 +278,7 @@ namespace ASC.Feed.Aggregator
         {
             try
             {
-                _ = securityContext.AuthenticateMe(authManager.GetAccountByID(tenantId, userid));
+                securityContext.AuthenticateMe(authManager.GetAccountByID(tenantId, userid));
                 return true;
             }
             catch
@@ -332,8 +332,8 @@ namespace ASC.Feed.Aggregator
     {
         public static DIHelper AddFeedAggregatorService(this DIHelper services)
         {
-            _ = services.TryAddSingleton<FeedAggregatorService>();
-            _ = services.TryAddScoped<FeedAggregatorServiceScope>();
+            services.TryAddSingleton<FeedAggregatorService>();
+            services.TryAddScoped<FeedAggregatorServiceScope>();
 
             return services
                 .AddBaseCommonLinkUtilityService()

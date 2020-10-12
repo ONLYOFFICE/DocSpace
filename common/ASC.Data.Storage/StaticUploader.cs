@@ -100,7 +100,7 @@ namespace ASC.Data.Storage
                 Cache.Insert(key, uploadOperation, DateTime.MaxValue);
             }
 
-            _ = uploadOperation.DoJob();
+            uploadOperation.DoJob();
             onComplete?.Invoke(uploadOperation.Result);
 
             return uploadOperation.Result;
@@ -114,11 +114,11 @@ namespace ASC.Data.Storage
                 using var scope = ServiceProvider.CreateScope();
                 var scopeClass = scope.ServiceProvider.GetService<StaticUploaderScope>();
                 var (tenantManager, staticUploader, _, _, _) = scopeClass;
-                _ = tenantManager.SetCurrentTenant(tenantId);
+                tenantManager.SetCurrentTenant(tenantId);
                 return staticUploader.UploadFile(relativePath, mappedPath, onComplete);
             }, TaskCreationOptions.LongRunning);
 
-            _ = task.ConfigureAwait(false);
+            task.ConfigureAwait(false);
 
             task.Start(Scheduler);
 
@@ -145,12 +145,12 @@ namespace ASC.Data.Storage
 
 
             tenant.SetStatus(TenantStatus.Migrating);
-            _ = TenantManager.SaveTenant(tenant);
+            TenantManager.SaveTenant(tenant);
 
             await uploadOperation.RunJobAsync();
 
             tenant.SetStatus(Core.Tenants.TenantStatus.Active);
-            _ = TenantManager.SaveTenant(tenant);
+            TenantManager.SaveTenant(tenant);
         }
 
         public bool CanUpload()
@@ -212,7 +212,7 @@ namespace ASC.Data.Storage
                 var (tenantManager, _, securityContext, settingsManager, storageSettingsHelper) = scopeClass;
                 var tenant = tenantManager.GetTenant(tenantId);
                 tenantManager.SetCurrentTenant(tenant);
-                _ = securityContext.AuthenticateMe(tenant.OwnerId);
+                securityContext.AuthenticateMe(tenant.OwnerId);
 
                 var dataStore = storageSettingsHelper.DataStore(settingsManager.Load<CdnStorageSettings>());
 
@@ -221,7 +221,7 @@ namespace ASC.Data.Storage
                     if (!dataStore.IsFile(path))
                     {
                         using var stream = File.OpenRead(mappedPath);
-                        _ = dataStore.Save(path, stream);
+                        dataStore.Save(path, stream);
                     }
 
                     Result = dataStore.GetInternalUri("", path, TimeSpan.Zero, null).AbsoluteUri.ToLower();
@@ -320,7 +320,7 @@ namespace ASC.Data.Storage
         {
             if (services.TryAddScoped<StaticUploader>())
             {
-                _ = services.TryAddScoped<StaticUploaderScope>();
+                services.TryAddScoped<StaticUploaderScope>();
                 return services
                     .AddTenantManagerService()
                     .AddStorageSettingsService();

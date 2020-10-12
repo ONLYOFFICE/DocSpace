@@ -27,58 +27,58 @@ namespace ASC.Core.Common.EF
     {
         public static ModelBuilderWrapper AddUserPhoto(this ModelBuilderWrapper modelBuilder)
         {
-            _ = modelBuilder
+            modelBuilder
                 .Add(MySqlAddUserPhoto, Provider.MySql)
                 .Add(PgSqlAddUserPhoto, Provider.Postgre);
             return modelBuilder;
         }
         public static void MySqlAddUserPhoto(this ModelBuilder modelBuilder)
         {
-            _ = modelBuilder.Entity<UserPhoto>(entity =>
+            modelBuilder.Entity<UserPhoto>(entity =>
             {
-                _ = entity.HasKey(e => e.UserId)
+                entity.HasKey(e => e.UserId)
                     .HasName("PRIMARY");
 
-                _ = entity.ToTable("core_userphoto");
+                entity.ToTable("core_userphoto");
 
-                _ = entity.HasIndex(e => e.Tenant)
+                entity.HasIndex(e => e.Tenant)
                     .HasName("tenant");
 
-                _ = entity.Property(e => e.UserId)
+                entity.Property(e => e.UserId)
                     .HasColumnName("userid")
                     .HasColumnType("varchar(38)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.Photo)
+                entity.Property(e => e.Photo)
                     .IsRequired()
                     .HasColumnName("photo")
                     .HasColumnType("mediumblob");
 
-                _ = entity.Property(e => e.Tenant).HasColumnName("tenant");
+                entity.Property(e => e.Tenant).HasColumnName("tenant");
             });
         }
         public static void PgSqlAddUserPhoto(this ModelBuilder modelBuilder)
         {
-            _ = modelBuilder.Entity<UserPhoto>(entity =>
+            modelBuilder.Entity<UserPhoto>(entity =>
             {
-                _ = entity.HasKey(e => e.UserId)
+                entity.HasKey(e => e.UserId)
                     .HasName("core_userphoto_pkey");
 
-                _ = entity.ToTable("core_userphoto", "onlyoffice");
+                entity.ToTable("core_userphoto", "onlyoffice");
 
-                _ = entity.HasIndex(e => e.Tenant)
+                entity.HasIndex(e => e.Tenant)
                     .HasName("tenant_core_userphoto");
 
-                _ = entity.Property(e => e.UserId)
+                entity.Property(e => e.UserId)
                     .HasColumnName("userid")
                     .HasMaxLength(38);
 
-                _ = entity.Property(e => e.Photo)
+                entity.Property(e => e.Photo)
                     .IsRequired()
                     .HasColumnName("photo");
 
-                _ = entity.Property(e => e.Tenant).HasColumnName("tenant");
+                entity.Property(e => e.Tenant).HasColumnName("tenant");
             });
         }
     }

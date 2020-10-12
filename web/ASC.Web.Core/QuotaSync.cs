@@ -55,19 +55,19 @@ namespace ASC.Web.Studio.Core.Quota
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<QuotaSyncScope>();
             var (tenantManager, storageFactoryConfig, storageFactory) = scopeClass;
-            _ = tenantManager.SetCurrentTenant(TenantId);
+            tenantManager.SetCurrentTenant(TenantId);
 
             var storageModules = storageFactoryConfig.GetModuleList(string.Empty).ToList();
 
             foreach (var module in storageModules)
             {
                 var storage = storageFactory.GetStorage(TenantId.ToString(), module);
-                _ = storage.ResetQuota("");
+                storage.ResetQuota("");
 
                 var domains = storageFactoryConfig.GetDomainList(string.Empty, module).ToList();
                 foreach (var domain in domains)
                 {
-                    _ = storage.ResetQuota(domain);
+                    storage.ResetQuota(domain);
                 }
 
             }

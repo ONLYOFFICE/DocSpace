@@ -15,7 +15,7 @@ namespace ASC.Data.Backup
             await Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    _ = webBuilder.UseStartup<Startup>();
+                    webBuilder.UseStartup<Startup>();
                 })
                 .ConfigureAppConfiguration((hostContext, config) =>
                 {
@@ -25,9 +25,9 @@ namespace ASC.Data.Backup
                     {
                         path = Path.GetFullPath(Path.Combine(hostContext.HostingEnvironment.ContentRootPath, path));
                     }
-                    _ = config.SetBasePath(path);
+                    config.SetBasePath(path);
                     var env = hostContext.Configuration.GetValue("ENVIRONMENT", "Production");
-                    _ = config
+                    config
                         .AddInMemoryCollection(new Dictionary<string, string>
                             {
                                 {"pathToConf", path }

@@ -132,13 +132,13 @@ namespace ASC.Data.Storage.DiscStorage
 
                 if (!builder.DataSources.Any(r => r.Endpoints.Any(e => e.DisplayName == url)))
                 {
-                    _ = builder.Map(url, handler.Invoke);
+                    builder.Map(url, handler.Invoke);
 
                     var newUrl = url.Replace("{0}", "{t1}/{t2}/{t3}");
 
                     if (newUrl != url)
                     {
-                        _ = builder.Map(url, handler.Invoke);
+                        builder.Map(url, handler.Invoke);
                     }
                 }
             }

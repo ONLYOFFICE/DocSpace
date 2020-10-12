@@ -31,7 +31,7 @@ namespace ASC.Core.Common.EF
     {
         public static ModelBuilderWrapper AddUserSecurity(this ModelBuilderWrapper modelBuilder)
         {
-            _ = modelBuilder
+            modelBuilder
                 .Add(MySqlAddUserSecurity, Provider.MySql)
                 .Add(PgSqlAddUserSecurity, Provider.Postgre)
                 .HasData(
@@ -50,77 +50,77 @@ namespace ASC.Core.Common.EF
 
         public static void MySqlAddUserSecurity(this ModelBuilder modelBuilder)
         {
-            _ = modelBuilder.Entity<UserSecurity>(entity =>
+            modelBuilder.Entity<UserSecurity>(entity =>
             {
-                _ = entity.HasKey(e => e.UserId)
+                entity.HasKey(e => e.UserId)
                     .HasName("PRIMARY");
 
-                _ = entity.ToTable("core_usersecurity");
+                entity.ToTable("core_usersecurity");
 
-                _ = entity.HasIndex(e => e.PwdHash)
+                entity.HasIndex(e => e.PwdHash)
                     .HasName("pwdhash");
 
-                _ = entity.HasIndex(e => e.Tenant)
+                entity.HasIndex(e => e.Tenant)
                     .HasName("tenant");
 
-                _ = entity.Property(e => e.UserId)
+                entity.Property(e => e.UserId)
                     .HasColumnName("userid")
                     .HasColumnType("varchar(38)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.LastModified)
+                entity.Property(e => e.LastModified)
                     .HasColumnType("timestamp")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP")
                     .ValueGeneratedOnAddOrUpdate();
 
-                _ = entity.Property(e => e.PwdHash)
+                entity.Property(e => e.PwdHash)
                     .HasColumnName("pwdhash")
                     .HasColumnType("varchar(512)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.PwdHashSha512)
+                entity.Property(e => e.PwdHashSha512)
                     .HasColumnName("pwdhashsha512")
                     .HasColumnType("varchar(512)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.Tenant).HasColumnName("tenant");
+                entity.Property(e => e.Tenant).HasColumnName("tenant");
             });
         }
         public static void PgSqlAddUserSecurity(this ModelBuilder modelBuilder)
         {
-            _ = modelBuilder.Entity<UserSecurity>(entity =>
+            modelBuilder.Entity<UserSecurity>(entity =>
             {
-                _ = entity.HasKey(e => e.UserId)
+                entity.HasKey(e => e.UserId)
                     .HasName("core_usersecurity_pkey");
 
-                _ = entity.ToTable("core_usersecurity", "onlyoffice");
+                entity.ToTable("core_usersecurity", "onlyoffice");
 
-                _ = entity.HasIndex(e => e.PwdHash)
+                entity.HasIndex(e => e.PwdHash)
                     .HasName("pwdhash");
 
-                _ = entity.HasIndex(e => e.Tenant)
+                entity.HasIndex(e => e.Tenant)
                     .HasName("tenant_core_usersecurity");
 
-                _ = entity.Property(e => e.UserId)
+                entity.Property(e => e.UserId)
                     .HasColumnName("userid")
                     .HasMaxLength(38);
 
-                _ = entity.Property(e => e.LastModified).HasDefaultValueSql("CURRENT_TIMESTAMP");
+                entity.Property(e => e.LastModified).HasDefaultValueSql("CURRENT_TIMESTAMP");
 
-                _ = entity.Property(e => e.PwdHash)
+                entity.Property(e => e.PwdHash)
                     .HasColumnName("pwdhash")
                     .HasMaxLength(512)
                     .HasDefaultValueSql("NULL");
 
-                _ = entity.Property(e => e.PwdHashSha512)
+                entity.Property(e => e.PwdHashSha512)
                     .HasColumnName("pwdhashsha512")
                     .HasMaxLength(512)
                     .HasDefaultValueSql("NULL");
 
-                _ = entity.Property(e => e.Tenant).HasColumnName("tenant");
+                entity.Property(e => e.Tenant).HasColumnName("tenant");
             });
         }
     }

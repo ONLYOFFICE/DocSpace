@@ -95,7 +95,7 @@ namespace ASC.Web.Files.Api
             IFileSecurityProvider provider;
             lock (providers)
             {
-                _ = providers.TryGetValue(parts[0] + parts[1], out provider);
+                providers.TryGetValue(parts[0] + parts[1], out provider);
             }
             return provider?.GetFileSecurity(parts[2]);
         }
@@ -122,7 +122,7 @@ namespace ASC.Web.Files.Api
                 IFileSecurityProvider provider;
                 lock (providers)
                 {
-                    _ = providers.TryGetValue(grouping.Key, out provider);
+                    providers.TryGetValue(grouping.Key, out provider);
                 }
                 if (provider == null) continue;
 

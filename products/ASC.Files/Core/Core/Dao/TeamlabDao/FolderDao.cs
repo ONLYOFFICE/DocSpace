@@ -313,9 +313,9 @@ namespace ASC.Files.Core.Data
                 toUpdate.ModifiedOn = TenantUtil.DateTimeToUtc(folder.ModifiedOn);
                 toUpdate.ModifiedBy = folder.ModifiedBy;
 
-                _ = FilesDbContext.SaveChanges();
+                FilesDbContext.SaveChanges();
 
-                _ = FactoryIndexer.IndexAsync(toUpdate);
+                FactoryIndexer.IndexAsync(toUpdate);
             }
             else
             {
@@ -334,8 +334,8 @@ namespace ASC.Files.Core.Data
                 };
 
                 newFolder = FilesDbContext.Folders.Add(newFolder).Entity;
-                _ = FilesDbContext.SaveChanges();
-                _ = FactoryIndexer.IndexAsync(newFolder);
+                FilesDbContext.SaveChanges();
+                FactoryIndexer.IndexAsync(newFolder);
                 folder.ID = newFolder.Id;
 
                 //itself link
@@ -346,8 +346,8 @@ namespace ASC.Files.Core.Data
                     Level = 0
                 };
 
-                _ = FilesDbContext.Tree.Add(newTree);
-                _ = FilesDbContext.SaveChanges();
+                FilesDbContext.Tree.Add(newTree);
+                FilesDbContext.SaveChanges();
 
                 //full path to root
                 var oldTree = FilesDbContext.Tree
@@ -362,10 +362,10 @@ namespace ASC.Files.Core.Data
                         Level = o.Level + 1
                     };
 
-                    _ = FilesDbContext.Tree.Add(treeToAdd);
+                    FilesDbContext.Tree.Add(treeToAdd);
                 }
 
-                _ = FilesDbContext.SaveChanges();
+                FilesDbContext.SaveChanges();
             }
 
             if (transaction == null)
@@ -413,7 +413,7 @@ namespace ASC.Files.Core.Data
 
             foreach (var f in folderToDelete)
             {
-                _ = FactoryIndexer.DeleteAsync(f);
+                FactoryIndexer.DeleteAsync(f);
             }
 
             var treeToDelete = FilesDbContext.Tree.Where(r => subfolders.Any(a => r.FolderId == a));
@@ -435,13 +435,13 @@ namespace ASC.Files.Core.Data
                     .Where(r => r.EntryType == FileEntryType.Folder);
 
             FilesDbContext.Security.RemoveRange(securityToDelete);
-            _ = FilesDbContext.SaveChanges();
+            FilesDbContext.SaveChanges();
 
             var bunchToDelete = Query(FilesDbContext.BunchObjects)
                 .Where(r => r.LeftNode == id.ToString());
 
             FilesDbContext.RemoveRange(bunchToDelete);
-            _ = FilesDbContext.SaveChanges();
+            FilesDbContext.SaveChanges();
 
             tx.Commit();
 
@@ -490,7 +490,7 @@ namespace ASC.Files.Core.Data
                 toUpdate.ModifiedOn = DateTime.UtcNow;
                 toUpdate.ModifiedBy = AuthContext.CurrentAccount.ID;
 
-                _ = FilesDbContext.SaveChanges();
+                FilesDbContext.SaveChanges();
 
                 var subfolders = FilesDbContext.Tree
                     .Where(r => r.ParentId == folderId)
@@ -500,7 +500,7 @@ namespace ASC.Files.Core.Data
                     .Where(r => subfolders.Keys.Any(a => a == r.FolderId) && !subfolders.Keys.Any(a => a == r.ParentId));
 
                 FilesDbContext.Tree.RemoveRange(toDelete);
-                _ = FilesDbContext.SaveChanges();
+                FilesDbContext.SaveChanges();
 
                 var toInsert = FilesDbContext.Tree
                     .Where(r => r.FolderId == toFolderId)
@@ -516,11 +516,11 @@ namespace ASC.Files.Core.Data
                             ParentId = f.ParentId,
                             Level = f.Level + 1
                         };
-                        _ = FilesDbContext.AddOrUpdate(r => r.Tree, newTree);
+                        FilesDbContext.AddOrUpdate(r => r.Tree, newTree);
                     }
                 }
 
-                _ = FilesDbContext.SaveChanges();
+                FilesDbContext.SaveChanges();
                 tx.Commit();
 
                 recalcFolders.ForEach(RecalculateFoldersCount);
@@ -678,9 +678,9 @@ namespace ASC.Files.Core.Data
             toUpdate.ModifiedOn = DateTime.UtcNow;
             toUpdate.ModifiedBy = AuthContext.CurrentAccount.ID;
 
-            _ = FilesDbContext.SaveChanges();
+            FilesDbContext.SaveChanges();
 
-            _ = FactoryIndexer.IndexAsync(toUpdate);
+            FactoryIndexer.IndexAsync(toUpdate);
 
             return folder.ID;
         }
@@ -766,7 +766,7 @@ namespace ASC.Files.Core.Data
                 f.FoldersCount = count;
             }
 
-            _ = FilesDbContext.SaveChanges();
+            FilesDbContext.SaveChanges();
         }
 
         #region Only for TMFolderDao
@@ -781,7 +781,7 @@ namespace ASC.Files.Core.Data
                 f.CreateBy = newOwnerId;
             }
 
-            _ = FilesDbContext.SaveChanges();
+            FilesDbContext.SaveChanges();
         }
 
 
@@ -880,8 +880,8 @@ namespace ASC.Files.Core.Data
                         TenantId = TenantID
                     };
 
-                    _ = FilesDbContext.AddOrUpdate(r => r.BunchObjects, newBunch);
-                    _ = FilesDbContext.SaveChanges();
+                    FilesDbContext.AddOrUpdate(r => r.BunchObjects, newBunch);
+                    FilesDbContext.SaveChanges();
 
                     tx.Commit(); //Commit changes
                 }
@@ -966,11 +966,11 @@ namespace ASC.Files.Core.Data
                     TenantId = TenantID
                 };
 
-                _ = FilesDbContext.AddOrUpdate(r => r.BunchObjects, toInsert);
+                FilesDbContext.AddOrUpdate(r => r.BunchObjects, toInsert);
                 tx.Commit(); //Commit changes
             }
 
-            _ = FilesDbContext.SaveChanges();
+            FilesDbContext.SaveChanges();
 
             return newFolderId;
         }
@@ -1286,8 +1286,8 @@ namespace ASC.Files.Core.Data
         {
             if (services.TryAddScoped<IFolderDao<int>, FolderDao>())
             {
-                _ = services.TryAddTransient<Folder<int>>();
-                _ = services.TryAddTransient<Folder<string>>();
+                services.TryAddTransient<Folder<int>>();
+                services.TryAddTransient<Folder<string>>();
 
                 return services
                     .AddFactoryIndexerService<DbFolder>()

@@ -189,7 +189,7 @@ namespace ASC.Data.Storage.Configuration
         {
             baseStorageSettings.Module = null;
             baseStorageSettings.Props = null;
-            _ = Save(baseStorageSettings);
+            Save(baseStorageSettings);
         }
 
         private DataStoreConsumer dataStoreConsumer;
@@ -251,10 +251,10 @@ namespace ASC.Data.Storage.Configuration
         {
             if (services.TryAddScoped<StorageSettingsHelper>())
             {
-                _ = services.TryAddSingleton<BaseStorageSettingsListener>();
-                _ = services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
-                _ = services.TryAddScoped<BaseStorageSettingsListenerScope>();
-                _ = services.TryAddScoped<CdnStorageSettings>();
+                services.TryAddSingleton<BaseStorageSettingsListener>();
+                services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+                services.TryAddScoped<BaseStorageSettingsListenerScope>();
+                services.TryAddScoped<CdnStorageSettings>();
                 return services
                     .AddSettingsManagerService()
                     .AddConsumerFactoryService()

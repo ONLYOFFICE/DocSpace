@@ -120,7 +120,7 @@ namespace ASC.Core.Common.Billing
 
             if (Products != null)
             {
-                _ = SemaphoreSlim.Release();
+                SemaphoreSlim.Release();
                 return Products;
             }
 
@@ -145,7 +145,7 @@ namespace ASC.Core.Common.Billing
             }
             finally
             {
-                _ = SemaphoreSlim.Release();
+                SemaphoreSlim.Release();
             }
         }
 
@@ -154,9 +154,9 @@ namespace ASC.Core.Common.Billing
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
             const string applicationJson = "application/json";
             var httpClient = new HttpClient { BaseAddress = BaseAddress, Timeout = TimeSpan.FromMinutes(3) };
-            _ = httpClient.DefaultRequestHeaders.TryAddWithoutValidation("accept", applicationJson);
-            _ = httpClient.DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", applicationJson);
-            _ = httpClient.DefaultRequestHeaders.TryAddWithoutValidation("X-Avangate-Authentication", CreateAuthHeader());
+            httpClient.DefaultRequestHeaders.TryAddWithoutValidation("accept", applicationJson);
+            httpClient.DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", applicationJson);
+            httpClient.DefaultRequestHeaders.TryAddWithoutValidation("X-Avangate-Authentication", CreateAuthHeader());
             return httpClient;
         }
 
@@ -170,13 +170,13 @@ namespace ASC.Core.Common.Billing
             var sBuilder = new StringBuilder();
             foreach (var t in data)
             {
-                _ = sBuilder.Append(t.ToString("x2"));
+                sBuilder.Append(t.ToString("x2"));
             }
 
             var stringBuilder = new StringBuilder();
-            _ = stringBuilder.AppendFormat("code='{0}' ", VendorCode);
-            _ = stringBuilder.AppendFormat("date='{0}' ", date);
-            _ = stringBuilder.AppendFormat("hash='{0}'", sBuilder);
+            stringBuilder.AppendFormat("code='{0}' ", VendorCode);
+            stringBuilder.AppendFormat("date='{0}' ", date);
+            stringBuilder.AppendFormat("hash='{0}'", sBuilder);
             return stringBuilder.ToString();
         }
     }

@@ -125,7 +125,7 @@ namespace ASC.ApiSystem.Controllers
                 quota.MaxFileSize = model.MaxFileSize;
             }
 
-            _ = HostedSolution.SaveTenantQuota(quota);
+            HostedSolution.SaveTenantQuota(quota);
 
             var tariff = new Tariff
             {

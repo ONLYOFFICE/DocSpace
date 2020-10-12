@@ -334,7 +334,7 @@ namespace ASC.Web.Files.Utils
                                                             || (projectFolder.Value.Value ?? "").ToLower().Trim().Contains(searchText.ToLower().Trim()))
                                     .Select(projectFolder => projectFolder.Key);
 
-                            _ = folders.RemoveAll(folder => rootKeys.Contains(folder.ID));
+                            folders.RemoveAll(folder => rootKeys.Contains(folder.ID));
 
                             var projectFolders = DaoFactory.GetFolderDao<int>().GetFolders(projectFolderIds.ToArray(), filter, subjectGroup, subjectId, null, false, false);
                             folders.AddRange(projectFolders);
@@ -868,7 +868,7 @@ namespace ASC.Web.Files.Utils
                     }
 
                     var key = DocumentServiceConnector.GenerateRevisionId(downloadUri);
-                    _ = DocumentServiceConnector.GetConvertedUri(downloadUri, newExtension, currentExt, key, null, false, out downloadUri);
+                    DocumentServiceConnector.GetConvertedUri(downloadUri, newExtension, currentExt, key, null, false, out downloadUri);
 
                     stream = null;
                 }
@@ -1112,7 +1112,7 @@ namespace ASC.Web.Files.Utils
                 file = fileDao.GetFile(newFileID);
                 file.Access = fileAccess;
 
-                _ = DocumentServiceHelper.RenameFile(file, fileDao);
+                DocumentServiceHelper.RenameFile(file, fileDao);
 
                 renamed = true;
             }
@@ -1130,7 +1130,7 @@ namespace ASC.Web.Files.Utils
             var userID = AuthContext.CurrentAccount.ID;
 
             var tag = Tag.Recent(userID, file);
-            _ = tagDao.SaveTags(tag);
+            tagDao.SaveTags(tag);
         }
 
 
@@ -1166,7 +1166,7 @@ namespace ASC.Web.Files.Utils
                 if (shared)
                 {
                     Logger.InfoFormat("Move shared folder {0} from {1} to {2}", folder.ID, parentId, toId);
-                    _ = folderDao.MoveFolder(folder.ID, toId, null);
+                    folderDao.MoveFolder(folder.ID, toId, null);
                 }
                 else
                 {
@@ -1181,7 +1181,7 @@ namespace ASC.Web.Files.Utils
             foreach (var file in files)
             {
                 Logger.InfoFormat("Move shared file {0} from {1} to {2}", file.ID, parentId, toId);
-                _ = fileDao.MoveFile(file.ID, toId);
+                fileDao.MoveFile(file.ID, toId);
             }
         }
 

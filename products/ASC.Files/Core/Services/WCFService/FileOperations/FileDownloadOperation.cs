@@ -100,7 +100,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 stream.Position = 0;
                 const string fileName = FileConstant.DownloadTitle + ".zip";
                 var store = globalStore.GetStore();
-                _ = store.Save(
+                store.Save(
                     FileConstant.StorageDomainTmp,
                     string.Format(@"{0}\{1}", ((IAccount)Thread.CurrentPrincipal.Identity).ID, fileName),
                     stream,
@@ -170,7 +170,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                     stream.Position = 0;
                     const string fileName = FileConstant.DownloadTitle + ".zip";
                     var store = globalStore.GetStore();
-                    _ = store.Save(
+                    store.Save(
                         FileConstant.StorageDomainTmp,
                         string.Format(@"{0}\{1}", ((IAccount)Thread.CurrentPrincipal.Identity).ID, fileName),
                         stream,
@@ -324,7 +324,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                         }
                     }
 
-                    _ = zip.PutNextEntry(newtitle);
+                    zip.PutNextEntry(newtitle);
 
                     if (!entryId.Equals(default(T)) && file != null)
                     {
@@ -432,7 +432,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
         public void Remove(string name)
         {
-            _ = dic.Remove(name);
+            dic.Remove(name);
         }
     }
 

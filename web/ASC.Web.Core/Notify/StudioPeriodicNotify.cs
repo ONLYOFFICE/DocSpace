@@ -95,7 +95,7 @@ namespace ASC.Web.Studio.Core.Notify
                     using var scope = ServiceProvider.CreateScope();
                     var scopeClass = scope.ServiceProvider.GetService<StudioPeriodicNotifyScope>();
                     var (tenantManager, userManager, studioNotifyHelper, paymentManager, tenantExtra, authContext, commonLinkUtility, apiSystemHelper, setupInfo, dbContextManager, couponManager, _, _, coreBaseSettings, _, _, _) = scopeClass;
-                    _ = tenantManager.SetCurrentTenant(tenant.TenantId);
+                    tenantManager.SetCurrentTenant(tenant.TenantId);
                     var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifyHelper.NotifySource, scope);
 
                     var tariff = paymentManager.GetTariff(tenant.TenantId);
@@ -556,7 +556,7 @@ namespace ASC.Web.Studio.Core.Notify
                     var scopeClass = scope.ServiceProvider.GetService<StudioPeriodicNotifyScope>();
                     var (tenantManager, userManager, studioNotifyHelper, paymentManager, tenantExtra, _, commonLinkUtility, _, _, dbContextManager, _, configuration, settingsManager, coreBaseSettings, _, _, _) = scopeClass;
                     var defaultRebranding = MailWhiteLabelSettings.IsDefault(settingsManager, configuration);
-                    _ = tenantManager.SetCurrentTenant(tenant.TenantId);
+                    tenantManager.SetCurrentTenant(tenant.TenantId);
                     var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifyHelper.NotifySource, scope);
 
                     var tariff = paymentManager.GetTariff(tenant.TenantId);
@@ -953,7 +953,7 @@ namespace ASC.Web.Studio.Core.Notify
                     using var scope = ServiceProvider.CreateScope();
                     var scopeClass = scope.ServiceProvider.GetService<StudioPeriodicNotifyScope>();
                     var (tenantManager, userManager, studioNotifyHelper, _, _, _, _, _, _, _, _, _, _, _, displayUserSettingsHelper, _, _) = scopeClass;
-                    _ = tenantManager.SetCurrentTenant(tenant.TenantId);
+                    tenantManager.SetCurrentTenant(tenant.TenantId);
                     var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifyHelper.NotifySource, scope);
 
                     var createdDate = tenant.CreatedDateTime.Date;
@@ -1022,7 +1022,7 @@ namespace ASC.Web.Studio.Core.Notify
                     var scopeClass = scope.ServiceProvider.GetService<StudioPeriodicNotifyScope>();
                     var (tenantManager, userManager, studioNotifyHelper, _, _, _, _, _, _, _, _, _, _, coreBaseSettings, _, authManager, securityContext) = scopeClass;
 
-                    _ = tenantManager.SetCurrentTenant(tenant.TenantId);
+                    tenantManager.SetCurrentTenant(tenant.TenantId);
                     var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifyHelper.NotifySource, scope);
 
                     Log.InfoFormat("Current tenant: {0}", tenant.TenantId);
@@ -1033,7 +1033,7 @@ namespace ASC.Web.Studio.Core.Notify
                     {
                         INotifyAction action;
 
-                        _ = securityContext.AuthenticateMe(authManager.GetAccountByID(tenant.TenantId, user.ID));
+                        securityContext.AuthenticateMe(authManager.GetAccountByID(tenant.TenantId, user.ID));
 
                         var culture = tenant.GetCulture();
                         if (!string.IsNullOrEmpty(user.CultureName))
@@ -1229,9 +1229,9 @@ namespace ASC.Web.Studio.Core.Notify
     {
         public static DIHelper AddStudioPeriodicNotify(this DIHelper services)
         {
-            _ = services.TryAddSingleton<StudioPeriodicNotify>();
-            _ = services.TryAddSingleton<CouponManager>();
-            _ = services.TryAddScoped<StudioPeriodicNotifyScope>();
+            services.TryAddSingleton<StudioPeriodicNotify>();
+            services.TryAddSingleton<CouponManager>();
+            services.TryAddScoped<StudioPeriodicNotifyScope>();
 
             return services
                 .AddApiSystemHelper()

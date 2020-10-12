@@ -129,7 +129,7 @@ namespace ASC.Data.Storage.DiscStorage
             if (File.Exists(target))
             {
                 var stream = Crypt.GetReadStream(target);
-                if (0 < offset && stream.CanSeek) _ = stream.Seek(offset, SeekOrigin.Begin);
+                if (0 < offset && stream.CanSeek) stream.Seek(offset, SeekOrigin.Begin);
                 return stream;
             }
             throw new FileNotFoundException("File not found", Path.GetFullPath(target));
@@ -166,7 +166,7 @@ namespace ASC.Data.Storage.DiscStorage
             //Try seek to start
             if (buffered.CanSeek)
             {
-                _ = buffered.Seek(0, SeekOrigin.Begin);
+                buffered.Seek(0, SeekOrigin.Begin);
             }
             //Lookup domain
             var target = GetTarget(domain, path);
@@ -355,7 +355,7 @@ namespace ASC.Data.Storage.DiscStorage
 
             if (!Directory.Exists(newtargetSub))
             {
-                _ = Directory.CreateDirectory(newtargetSub);
+                Directory.CreateDirectory(newtargetSub);
             }
             Directory.Move(target, newtarget);
         }
@@ -371,7 +371,7 @@ namespace ASC.Data.Storage.DiscStorage
             {
                 if (!Directory.Exists(Path.GetDirectoryName(newtarget)))
                 {
-                    _ = Directory.CreateDirectory(Path.GetDirectoryName(newtarget));
+                    Directory.CreateDirectory(Path.GetDirectoryName(newtarget));
                 }
 
                 var flength = Crypt.GetFileSize(target);
@@ -594,7 +594,7 @@ namespace ASC.Data.Storage.DiscStorage
             {
                 if (!Directory.Exists(Path.GetDirectoryName(newtarget)))
                 {
-                    _ = Directory.CreateDirectory(Path.GetDirectoryName(newtarget));
+                    Directory.CreateDirectory(Path.GetDirectoryName(newtarget));
                 }
 
                 File.Copy(target, newtarget, true);
@@ -625,14 +625,14 @@ namespace ASC.Data.Storage.DiscStorage
             // Check if the target directory exists, if not, create it.
             if (!Directory.Exists(target.FullName))
             {
-                _ = Directory.CreateDirectory(target.FullName);
+                Directory.CreateDirectory(target.FullName);
             }
 
             // Copy each file into it's new directory.
             foreach (var fi in source.GetFiles())
             {
                 var fp = Path.Combine(target.ToString(), fi.Name);
-                _ = fi.CopyTo(fp, true);
+                fi.CopyTo(fp, true);
                 var size = Crypt.GetFileSize(fp);
                 QuotaUsedAdd(newdomain, size);
             }
@@ -674,7 +674,7 @@ namespace ASC.Data.Storage.DiscStorage
             var targetDirectory = Path.GetDirectoryName(target);
             if (!Directory.Exists(targetDirectory))
             {
-                _ = Directory.CreateDirectory(targetDirectory);
+                Directory.CreateDirectory(targetDirectory);
             }
         }
 

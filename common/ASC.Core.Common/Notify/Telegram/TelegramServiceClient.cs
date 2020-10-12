@@ -100,7 +100,7 @@ namespace ASC.Core.Common.Notify
     {
         public static DIHelper AddTelegramServiceClient(this DIHelper services)
         {
-            _ = services.TryAddSingleton<TelegramServiceClient>();
+            services.TryAddSingleton<TelegramServiceClient>();
             return services;
         }
     }

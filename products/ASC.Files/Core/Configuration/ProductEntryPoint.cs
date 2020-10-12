@@ -182,7 +182,7 @@ namespace ASC.Web.Files.Configuration
         {
             if (services.TryAddScoped<ProductEntryPoint>())
             {
-                _ = services.TryAddScoped<IWebItem, ProductEntryPoint>();
+                services.TryAddScoped<IWebItem, ProductEntryPoint>();
                 return services
                     .AddFilesSpaceUsageStatManagerService()
                     .AddCoreBaseSettingsService()

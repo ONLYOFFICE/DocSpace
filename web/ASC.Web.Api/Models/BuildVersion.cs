@@ -122,7 +122,7 @@ namespace ASC.Api.Settings
     {
         public static DIHelper AddBuildVersionService(this DIHelper services)
         {
-            _ = services.TryAddSingleton<BuildVersion>();
+            services.TryAddSingleton<BuildVersion>();
 
             return services;
         }

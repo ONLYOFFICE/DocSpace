@@ -82,7 +82,7 @@ namespace ASC.Core.Notify.Senders
                     using var scope = ServiceProvider.CreateScope();
                     var scopeClass = scope.ServiceProvider.GetService<AWSSenderScope>();
                     var (tenantManager, configuration) = scopeClass;
-                    _ = tenantManager.SetCurrentTenant(m.Tenant);
+                    tenantManager.SetCurrentTenant(m.Tenant);
 
                     if (!configuration.SmtpSettings.IsDefaultSettings)
                     {
@@ -251,8 +251,8 @@ namespace ASC.Core.Notify.Senders
     {
         public static DIHelper AddAWSSenderService(this DIHelper services)
         {
-            _ = services.TryAddSingleton<AWSSender>();
-            _ = services.TryAddScoped<AWSSenderScope>();
+            services.TryAddSingleton<AWSSender>();
+            services.TryAddScoped<AWSSenderScope>();
             return services
                 .AddTenantManagerService()
                 .AddCoreSettingsService();

@@ -126,11 +126,11 @@ namespace ASC.Api.Settings.Smtp
 
                 SetProgress(5, "Setup tenant");
 
-                _ = TenantManager.SetCurrentTenant(CurrentTenant);
+                TenantManager.SetCurrentTenant(CurrentTenant);
 
                 SetProgress(10, "Setup user");
 
-                _ = SecurityContext.AuthenticateMe(CurrentUser); //Core.Configuration.Constants.CoreSystem);
+                SecurityContext.AuthenticateMe(CurrentUser); //Core.Configuration.Constants.CoreSystem);
 
                 SetProgress(15, "Find user data");
 

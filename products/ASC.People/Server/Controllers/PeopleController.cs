@@ -177,7 +177,7 @@ namespace ASC.Employee.Core.Controllers
             if ("group".Equals(ApiContext.FilterBy, StringComparison.OrdinalIgnoreCase) && !string.IsNullOrEmpty(ApiContext.FilterValue))
             {
                 groupId = new Guid(ApiContext.FilterValue);
-                _ = ApiContext.SetDataFiltered();
+                ApiContext.SetDataFiltered();
             }
             return GetFullByFilter(status, groupId, null, null, null);
         }
@@ -267,7 +267,7 @@ namespace ASC.Employee.Core.Controllers
                     var groupId = new Guid(ApiContext.FilterValue);
                     //Filter by group
                     list = list.Where(x => UserManager.IsUserInGroup(x.ID, groupId));
-                    _ = ApiContext.SetDataFiltered();
+                    ApiContext.SetDataFiltered();
                 }
 
                 list = list.Where(x => x.FirstName != null && x.FirstName.IndexOf(query, StringComparison.OrdinalIgnoreCase) > -1 || (x.LastName != null && x.LastName.IndexOf(query, StringComparison.OrdinalIgnoreCase) != -1) ||
@@ -392,7 +392,7 @@ namespace ASC.Employee.Core.Controllers
 
             var users = UserManager.GetUsers(isAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, ApiContext.FilterValue, ApiContext.SortBy, !ApiContext.SortDescending, ApiContext.Count, ApiContext.StartIndex, out var total, out var count);
 
-            _ = ApiContext.SetTotalCount(total).SetCount(count);
+            ApiContext.SetTotalCount(total).SetCount(count);
 
             return users;
         }
@@ -533,7 +533,7 @@ namespace ASC.Employee.Core.Controllers
 
                     try
                     {
-                        _ = UserManager.SaveUserInfo(user);
+                        UserManager.SaveUserInfo(user);
                     }
                     catch (Exception ex)
                     {
@@ -646,7 +646,7 @@ namespace ASC.Employee.Core.Controllers
                 }
             }
 
-            _ = UserManager.SaveUserInfo(user);
+            UserManager.SaveUserInfo(user);
             MessageService.Send(MessageAction.UserUpdated, MessageTarget.Create(user.ID), user.DisplayUserName(false, DisplayUserSettingsHelper));
 
             if (memberModel.Disable.HasValue && memberModel.Disable.Value)
@@ -677,7 +677,7 @@ namespace ASC.Employee.Core.Controllers
 
             UserPhotoManager.RemovePhoto(user.ID);
             UserManager.DeleteUser(user.ID);
-            _ = QueueWorkerRemove.Start(Tenant.TenantId, user, SecurityContext.CurrentAccount.ID, false);
+            QueueWorkerRemove.Start(Tenant.TenantId, user, SecurityContext.CurrentAccount.ID, false);
 
             MessageService.Send(MessageAction.UserDeleted, MessageTarget.Create(user.ID), userName);
 
@@ -701,11 +701,11 @@ namespace ASC.Employee.Core.Controllers
             if (user.IsLDAP())
                 throw new SecurityException();
 
-            _ = SecurityContext.AuthenticateMe(ASC.Core.Configuration.Constants.CoreSystem);
+            SecurityContext.AuthenticateMe(ASC.Core.Configuration.Constants.CoreSystem);
 
             user.Status = EmployeeStatus.Terminated;
 
-            _ = UserManager.SaveUserInfo(user);
+            UserManager.SaveUserInfo(user);
 
             var userName = user.DisplayUserName(false, DisplayUserSettingsHelper);
             MessageService.Send(MessageAction.UsersUpdatedStatus, MessageTarget.Create(user.ID), userName);
@@ -737,7 +737,7 @@ namespace ASC.Employee.Core.Controllers
                 throw new SecurityException();
 
             UpdateContacts(memberModel.Contacts, user);
-            _ = UserManager.SaveUserInfo(user);
+            UserManager.SaveUserInfo(user);
             return EmployeeWraperFullHelper.GetFull(user);
         }
 
@@ -750,7 +750,7 @@ namespace ASC.Employee.Core.Controllers
                 throw new SecurityException();
 
             UpdateContacts(memberModel.Contacts, user);
-            _ = UserManager.SaveUserInfo(user);
+            UserManager.SaveUserInfo(user);
             return EmployeeWraperFullHelper.GetFull(user);
         }
 
@@ -763,7 +763,7 @@ namespace ASC.Employee.Core.Controllers
                 throw new SecurityException();
 
             DeleteContacts(memberModel.Contacts, user);
-            _ = UserManager.SaveUserInfo(user);
+            UserManager.SaveUserInfo(user);
             return EmployeeWraperFullHelper.GetFull(user);
         }
 
@@ -814,7 +814,7 @@ namespace ASC.Employee.Core.Controllers
                     using var inputStream = userPhoto.OpenReadStream();
 
                     var br = new BinaryReader(inputStream);
-                    _ = br.Read(data, 0, (int)userPhoto.Length);
+                    br.Read(data, 0, (int)userPhoto.Length);
                     br.Close();
 
                     CheckImgFormat(data);
@@ -888,7 +888,7 @@ namespace ASC.Employee.Core.Controllers
                 UpdatePhotoUrl(model.Files, user);
             }
 
-            _ = UserManager.SaveUserInfo(user);
+            UserManager.SaveUserInfo(user);
             MessageService.Send(MessageAction.UserAddedAvatar, MessageTarget.Create(user.ID), user.DisplayUserName(false, DisplayUserSettingsHelper));
 
             return new ThumbnailsDataWrapper(user.ID, UserPhotoManager);
@@ -906,7 +906,7 @@ namespace ASC.Employee.Core.Controllers
 
             UserPhotoManager.RemovePhoto(user.ID);
 
-            _ = UserManager.SaveUserInfo(user);
+            UserManager.SaveUserInfo(user);
             MessageService.Send(MessageAction.UserDeletedAvatar, MessageTarget.Create(user.ID), user.DisplayUserName(false, DisplayUserSettingsHelper));
 
             return new ThumbnailsDataWrapper(user.ID, UserPhotoManager);
@@ -929,18 +929,18 @@ namespace ASC.Employee.Core.Controllers
                 var data = UserPhotoManager.GetTempPhotoData(fileName);
 
                 var settings = new UserPhotoThumbnailSettings(thumbnailsModel.X, thumbnailsModel.Y, thumbnailsModel.Width, thumbnailsModel.Height);
-                _ = SettingsManager.SaveForUser(settings, user.ID);
+                SettingsManager.SaveForUser(settings, user.ID);
 
                 UserPhotoManager.RemovePhoto(user.ID);
-                _ = UserPhotoManager.SaveOrUpdatePhoto(user.ID, data);
+                UserPhotoManager.SaveOrUpdatePhoto(user.ID, data);
                 UserPhotoManager.RemoveTempPhoto(fileName);
             }
             else
             {
-                _ = UserPhotoThumbnailManager.SaveThumbnails(UserPhotoManager, SettingsManager, thumbnailsModel.X, thumbnailsModel.Y, thumbnailsModel.Width, thumbnailsModel.Height, user.ID);
+                UserPhotoThumbnailManager.SaveThumbnails(UserPhotoManager, SettingsManager, thumbnailsModel.X, thumbnailsModel.Y, thumbnailsModel.Width, thumbnailsModel.Height, user.ID);
             }
 
-            _ = UserManager.SaveUserInfo(user);
+            UserManager.SaveUserInfo(user);
             MessageService.Send(MessageAction.UserUpdatedAvatarThumbnails, MessageTarget.Create(user.ID), user.DisplayUserName(false, DisplayUserSettingsHelper));
 
             return new ThumbnailsDataWrapper(user.ID, UserPhotoManager);
@@ -981,7 +981,7 @@ namespace ASC.Employee.Core.Controllers
                 {
                     user.Email = address.Address.ToLowerInvariant();
                     user.ActivationStatus = EmployeeActivationStatus.Activated;
-                    _ = UserManager.SaveUserInfo(user);
+                    UserManager.SaveUserInfo(user);
                 }
             }
 
@@ -1012,7 +1012,7 @@ namespace ASC.Employee.Core.Controllers
         [Create("email", false)]
         public string SendEmailChangeInstructions(UpdateMemberModel model)
         {
-            _ = Guid.TryParse(model.UserId, out var userid);
+            Guid.TryParse(model.UserId, out var userid);
 
             if (userid == Guid.Empty) throw new ArgumentNullException("userid");
 
@@ -1047,7 +1047,7 @@ namespace ASC.Employee.Core.Controllers
 
                 user.Email = email;
                 user.ActivationStatus = EmployeeActivationStatus.NotActivated;
-                _ = UserManager.SaveUserInfo(user);
+                UserManager.SaveUserInfo(user);
                 StudioNotifyService.SendEmailActivationInstructions(user, email);
             }
 
@@ -1087,7 +1087,7 @@ namespace ASC.Employee.Core.Controllers
                 if (u.ID == Constants.LostUser.ID || u.IsLDAP()) continue;
 
                 u.ActivationStatus = activationstatus;
-                _ = UserManager.SaveUserInfo(u);
+                UserManager.SaveUserInfo(u);
                 retuls.Add(EmployeeWraperFullHelper.GetFull(u));
             }
 
@@ -1154,13 +1154,13 @@ namespace ASC.Employee.Core.Controllers
                             if (TenantStatisticsProvider.GetUsersCount() < TenantExtra.GetTenantQuota().ActiveUsers || user.IsVisitor(UserManager))
                             {
                                 user.Status = EmployeeStatus.Active;
-                                _ = UserManager.SaveUserInfo(user);
+                                UserManager.SaveUserInfo(user);
                             }
                         }
                         break;
                     case EmployeeStatus.Terminated:
                         user.Status = EmployeeStatus.Terminated;
-                        _ = UserManager.SaveUserInfo(user);
+                        UserManager.SaveUserInfo(user);
 
                         CookiesManager.ResetUserCookie(user.ID);
                         MessageService.Send(MessageAction.CookieSettingsUpdated);
@@ -1227,7 +1227,7 @@ namespace ASC.Employee.Core.Controllers
 
                 UserPhotoManager.RemovePhoto(user.ID);
                 UserManager.DeleteUser(user.ID);
-                _ = QueueWorkerRemove.Start(Tenant.TenantId, user, SecurityContext.CurrentAccount.ID, false);
+                QueueWorkerRemove.Start(Tenant.TenantId, user, SecurityContext.CurrentAccount.ID, false);
             }
 
             MessageService.Send(MessageAction.UsersDeleted, MessageTarget.Create(users.Select(x => x.ID)), userNames);
@@ -1474,7 +1474,7 @@ namespace ASC.Employee.Core.Controllers
             using var inputStream = response.GetResponseStream();
             using var br = new BinaryReader(inputStream);
             var imageByteArray = br.ReadBytes((int)response.ContentLength);
-            _ = UserPhotoManager.SaveOrUpdatePhoto(user.ID, imageByteArray);
+            UserPhotoManager.SaveOrUpdatePhoto(user.ID, imageByteArray);
         }
 
         private static void CheckImgFormat(byte[] data)

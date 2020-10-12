@@ -8,10 +8,10 @@ namespace ASC.Core.Common.Migrations.Npgsql.AccountLinkContextNpgsql
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            _ = migrationBuilder.EnsureSchema(
+            migrationBuilder.EnsureSchema(
                 name: "onlyoffice");
 
-            _ = migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "account_links",
                 schema: "onlyoffice",
                 columns: table => new
@@ -24,10 +24,10 @@ namespace ASC.Core.Common.Migrations.Npgsql.AccountLinkContextNpgsql
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("account_links_pkey", x => new { x.id, x.uid });
+                    table.PrimaryKey("account_links_pkey", x => new { x.id, x.uid });
                 });
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "uid",
                 schema: "onlyoffice",
                 table: "account_links",
@@ -36,7 +36,7 @@ namespace ASC.Core.Common.Migrations.Npgsql.AccountLinkContextNpgsql
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "account_links",
                 schema: "onlyoffice");
         }

@@ -305,7 +305,7 @@ namespace ASC.Web.Files.ThirdPartyApp
                     Logger.Debug("GoogleDriveApp: GetConvertedUri from " + fileType + " to " + currentType + " - " + downloadUrl);
 
                     var key = DocumentServiceConnector.GenerateRevisionId(downloadUrl);
-                    _ = DocumentServiceConnector.GetConvertedUri(downloadUrl, fileType, currentType, key, null, false, out downloadUrl);
+                    DocumentServiceConnector.GetConvertedUri(downloadUrl, fileType, currentType, key, null, false, out downloadUrl);
                     stream = null;
                 }
                 catch (Exception e)
@@ -422,7 +422,7 @@ namespace ASC.Web.Files.ThirdPartyApp
                 {
                     var userHelpTourSettings = SettingsManager.LoadForCurrentUser<UserHelpTourSettings>();
                     userHelpTourSettings.IsNewUser = true;
-                    _ = SettingsManager.SaveForCurrentUser(userHelpTourSettings);
+                    SettingsManager.SaveForCurrentUser(userHelpTourSettings);
 
                     PersonalSettingsHelper.IsNewUser = true;
                     PersonalSettingsHelper.IsNotActivated = true;
@@ -692,7 +692,7 @@ namespace ASC.Web.Files.ThirdPartyApp
 
                 try
                 {
-                    _ = SecurityContext.AuthenticateMe(ASC.Core.Configuration.Constants.CoreSystem);
+                    SecurityContext.AuthenticateMe(ASC.Core.Configuration.Constants.CoreSystem);
                     userInfo = UserManagerWrapper.AddUser(userInfo, UserManagerWrapper.GeneratePassword());
                 }
                 finally
@@ -780,7 +780,7 @@ namespace ASC.Web.Files.ThirdPartyApp
                 const int bufferSize = 2048;
                 var buffer = new byte[bufferSize];
                 int readed;
-                _ = tmpStream.Seek(0, SeekOrigin.Begin);
+                tmpStream.Seek(0, SeekOrigin.Begin);
                 while ((readed = tmpStream.Read(buffer, 0, bufferSize)) > 0)
                 {
                     request.GetRequestStream().Write(buffer, 0, readed);
@@ -827,7 +827,7 @@ namespace ASC.Web.Files.ThirdPartyApp
                 Logger.Debug("GoogleDriveApp: GetConvertedUri- " + downloadUrl);
 
                 var key = DocumentServiceConnector.GenerateRevisionId(downloadUrl);
-                _ = DocumentServiceConnector.GetConvertedUri(downloadUrl, fromExt, toExt, key, null, false, out downloadUrl);
+                DocumentServiceConnector.GetConvertedUri(downloadUrl, fromExt, toExt, key, null, false, out downloadUrl);
             }
             catch (Exception e)
             {

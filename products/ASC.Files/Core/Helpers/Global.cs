@@ -143,7 +143,7 @@ namespace ASC.Web.Files.Classes
         {
             get
             {
-                _ = int.TryParse(Configuration["files:stream-url-minute"], out var validateTimespan);
+                int.TryParse(Configuration["files:stream-url-minute"], out var validateTimespan);
                 if (validateTimespan <= 0) validateTimespan = 16;
                 return TimeSpan.FromMinutes(validateTimespan);
             }
@@ -334,7 +334,7 @@ namespace ASC.Web.Files.Classes
         protected internal void SetFolderMy(object value)
         {
             var cacheKey = string.Format("my/{0}/{1}", TenantManager.GetCurrentTenant().TenantId, value);
-            _ = UserRootFolderCache.Remove(cacheKey);
+            UserRootFolderCache.Remove(cacheKey);
         }
 
         public bool IsFirstVisit(IDaoFactory daoFactory)
@@ -511,7 +511,7 @@ namespace ASC.Web.Files.Classes
         protected internal void SetFolderTrash(object value)
         {
             var cacheKey = string.Format("trash/{0}/{1}", TenantManager.GetCurrentTenant().TenantId, value);
-            _ = TrashFolderCache.Remove(cacheKey);
+            TrashFolderCache.Remove(cacheKey);
         }
 
         private T GetFolderIdAndProccessFirstVisit<T>(FileMarker fileMarker, IDaoFactory daoFactory, bool my)
@@ -675,7 +675,7 @@ namespace ASC.Web.Files.Classes
     {
         public static DIHelper AddGlobalNotifyService(this DIHelper services)
         {
-            _ = services.TryAddSingleton<GlobalNotify>();
+            services.TryAddSingleton<GlobalNotify>();
 
             return services
                 .AddKafkaService()

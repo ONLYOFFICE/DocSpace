@@ -232,7 +232,7 @@ namespace ASC.Files.Thirdparty
                 f.Url = authData.Url ?? "";
             }
 
-            _ = FilesDbContext.SaveChanges();
+            FilesDbContext.SaveChanges();
 
             return forUpdate.Count == 1 ? linkId : default;
         }
@@ -309,7 +309,7 @@ namespace ASC.Files.Thirdparty
                 }
             }
 
-            _ = FilesDbContext.SaveChanges();
+            FilesDbContext.SaveChanges();
             return toUpdate.Count == 1 ? linkId : default;
         }
 
@@ -330,7 +330,7 @@ namespace ASC.Files.Thirdparty
                 .ToList();
 
             FilesDbContext.Security.RemoveRange(forDelete);
-            _ = FilesDbContext.SaveChanges();
+            FilesDbContext.SaveChanges();
 
             var linksForDelete = FilesDbContext.TagLink
                 .Where(r => r.TenantId == TenantID)
@@ -338,7 +338,7 @@ namespace ASC.Files.Thirdparty
                 .ToList();
 
             FilesDbContext.TagLink.RemoveRange(linksForDelete);
-            _ = FilesDbContext.SaveChanges();
+            FilesDbContext.SaveChanges();
 
             var accountsForDelete = FilesDbContext.ThirdpartyAccount
                 .Where(r => r.Id == linkId)
@@ -346,7 +346,7 @@ namespace ASC.Files.Thirdparty
                 .ToList();
 
             FilesDbContext.ThirdpartyAccount.RemoveRange(accountsForDelete);
-            _ = FilesDbContext.SaveChanges();
+            FilesDbContext.SaveChanges();
 
             tx.Commit();
         }

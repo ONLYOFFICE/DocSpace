@@ -38,7 +38,7 @@ namespace ASC.Common.Utils
             var rnd = new Random();
             while (0 < length--)
             {
-                _ = res.Append(valid[rnd.Next(valid.Length)]);
+                res.Append(valid[rnd.Next(valid.Length)]);
             }
             return res.ToString();
         }

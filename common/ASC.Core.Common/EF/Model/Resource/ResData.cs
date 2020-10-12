@@ -24,45 +24,45 @@ namespace ASC.Core.Common.EF.Model.Resource
     {
         public static ModelBuilderWrapper AddResData(this ModelBuilderWrapper modelBuilder)
         {
-            _ = modelBuilder
+            modelBuilder
                 .Add(MySqlAddResData, Provider.MySql)
                 .Add(PgSqlAddResData, Provider.Postgre);
             return modelBuilder;
         }
         public static void MySqlAddResData(this ModelBuilder modelBuilder)
         {
-            _ = modelBuilder.Entity<ResData>(entity =>
+            modelBuilder.Entity<ResData>(entity =>
             {
-                _ = entity.HasKey(e => new { e.FileId, e.CultureTitle, e.Title })
+                entity.HasKey(e => new { e.FileId, e.CultureTitle, e.Title })
                     .HasName("PRIMARY");
 
-                _ = entity.ToTable("res_data");
+                entity.ToTable("res_data");
 
-                _ = entity.HasIndex(e => e.CultureTitle)
+                entity.HasIndex(e => e.CultureTitle)
                     .HasName("resources_FK2");
 
-                _ = entity.HasIndex(e => e.Id)
+                entity.HasIndex(e => e.Id)
                     .HasName("id")
                     .IsUnique();
 
-                _ = entity.HasIndex(e => e.TimeChanges)
+                entity.HasIndex(e => e.TimeChanges)
                     .HasName("dateIndex");
 
-                _ = entity.Property(e => e.FileId).HasColumnName("fileid");
+                entity.Property(e => e.FileId).HasColumnName("fileid");
 
-                _ = entity.Property(e => e.CultureTitle)
+                entity.Property(e => e.CultureTitle)
                     .HasColumnName("cultureTitle")
                     .HasColumnType("varchar(20)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.Title)
+                entity.Property(e => e.Title)
                     .HasColumnName("title")
                     .HasColumnType("varchar(120)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.AuthorLogin)
+                entity.Property(e => e.AuthorLogin)
                     .IsRequired()
                     .HasColumnName("authorLogin")
                     .HasColumnType("varchar(50)")
@@ -70,37 +70,37 @@ namespace ASC.Core.Common.EF.Model.Resource
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.Description)
+                entity.Property(e => e.Description)
                     .HasColumnName("description")
                     .HasColumnType("text")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.Flag).HasColumnName("flag");
+                entity.Property(e => e.Flag).HasColumnName("flag");
 
-                _ = entity.Property(e => e.Id)
+                entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .ValueGeneratedOnAdd();
 
-                _ = entity.Property(e => e.Link)
+                entity.Property(e => e.Link)
                     .HasColumnName("link")
                     .HasColumnType("varchar(120)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.ResourceType)
+                entity.Property(e => e.ResourceType)
                     .HasColumnName("resourceType")
                     .HasColumnType("varchar(20)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.TextValue)
+                entity.Property(e => e.TextValue)
                     .HasColumnName("textValue")
                     .HasColumnType("text")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.TimeChanges)
+                entity.Property(e => e.TimeChanges)
                     .HasColumnName("timeChanges")
                     .HasColumnType("timestamp")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP")
@@ -109,60 +109,60 @@ namespace ASC.Core.Common.EF.Model.Resource
         }
         public static void PgSqlAddResData(this ModelBuilder modelBuilder)
         {
-            _ = modelBuilder.Entity<ResData>(entity =>
+            modelBuilder.Entity<ResData>(entity =>
             {
-                _ = entity.HasKey(e => new { e.FileId, e.CultureTitle, e.Title })
+                entity.HasKey(e => new { e.FileId, e.CultureTitle, e.Title })
                     .HasName("res_data_pkey");
 
-                _ = entity.ToTable("res_data", "onlyoffice");
+                entity.ToTable("res_data", "onlyoffice");
 
-                _ = entity.HasIndex(e => e.CultureTitle)
+                entity.HasIndex(e => e.CultureTitle)
                     .HasName("resources_FK2");
 
-                _ = entity.HasIndex(e => e.Id)
+                entity.HasIndex(e => e.Id)
                     .HasName("id_res_data")
                     .IsUnique();
 
-                _ = entity.HasIndex(e => e.TimeChanges)
+                entity.HasIndex(e => e.TimeChanges)
                     .HasName("dateIndex");
 
-                _ = entity.Property(e => e.FileId).HasColumnName("fileid");
+                entity.Property(e => e.FileId).HasColumnName("fileid");
 
-                _ = entity.Property(e => e.CultureTitle)
+                entity.Property(e => e.CultureTitle)
                     .HasColumnName("cultureTitle")
                     .HasMaxLength(20);
 
-                _ = entity.Property(e => e.Title)
+                entity.Property(e => e.Title)
                     .HasColumnName("title")
                     .HasMaxLength(120);
 
-                _ = entity.Property(e => e.AuthorLogin)
+                entity.Property(e => e.AuthorLogin)
                     .IsRequired()
                     .HasColumnName("authorLogin")
                     .HasMaxLength(50)
                     .HasDefaultValueSql("'Console'");
 
-                _ = entity.Property(e => e.Description).HasColumnName("description");
+                entity.Property(e => e.Description).HasColumnName("description");
 
-                _ = entity.Property(e => e.Flag).HasColumnName("flag");
+                entity.Property(e => e.Flag).HasColumnName("flag");
 
-                _ = entity.Property(e => e.Id)
+                entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .ValueGeneratedOnAdd();
 
-                _ = entity.Property(e => e.Link)
+                entity.Property(e => e.Link)
                     .HasColumnName("link")
                     .HasMaxLength(120)
                     .HasDefaultValueSql("NULL");
 
-                _ = entity.Property(e => e.ResourceType)
+                entity.Property(e => e.ResourceType)
                     .HasColumnName("resourceType")
                     .HasMaxLength(20)
                     .HasDefaultValueSql("NULL");
 
-                _ = entity.Property(e => e.TextValue).HasColumnName("textValue");
+                entity.Property(e => e.TextValue).HasColumnName("textValue");
 
-                _ = entity.Property(e => e.TimeChanges)
+                entity.Property(e => e.TimeChanges)
                     .HasColumnName("timeChanges")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP");
             });

@@ -973,7 +973,7 @@ namespace ASC.Files.Core.Security
         {
             if (services.TryAddScoped<FileSecurity>())
             {
-                _ = services.TryAddScoped<IFileSecurity, FileSecurity>();
+                services.TryAddScoped<IFileSecurity, FileSecurity>();
 
                 return services
                     .AddDaoFactoryService()

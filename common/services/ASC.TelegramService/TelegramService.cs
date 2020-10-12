@@ -64,7 +64,7 @@ namespace ASC.TelegramService
     {
         public static DIHelper AddTelegramService(this DIHelper services)
         {
-            _ = services.TryAddSingleton<TelegramService>();
+            services.TryAddSingleton<TelegramService>();
             return services.AddTelegramHandlerService();
         }
     }

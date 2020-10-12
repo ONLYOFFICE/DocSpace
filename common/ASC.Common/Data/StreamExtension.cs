@@ -57,7 +57,7 @@ public static class StreamExtension
         using var mem = stream.GetBuffered();
         var buffer = new byte[mem.Length];
         mem.Position = 0;
-        _ = mem.Read(buffer, 0, buffer.Length);
+        mem.Read(buffer, 0, buffer.Length);
         return buffer;
     }
 }

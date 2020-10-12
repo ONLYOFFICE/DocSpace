@@ -73,7 +73,7 @@ namespace ASC.Core.Common.Tests
                 TerminatedDate = new DateTime(2011, 01, 01, 7, 8, 9),
                 CultureName = "de-DE",
             };
-            _ = user1.ContactsFromString("contacts");
+            user1.ContactsFromString("contacts");
             user1 = Service.SaveUser(Tenant, user1);
             CompareUsers(user1, Service.GetUser(Tenant, user1.ID));
 
@@ -182,7 +182,7 @@ namespace ASC.Core.Common.Tests
         [Test]
         public void CRUDUserGroupRef()
         {
-            _ = Service.SaveUserGroupRef(Tenant, new UserGroupRef { UserId = Guid.Empty, GroupId = Guid.Empty, RefType = UserGroupRefType.Manager });
+            Service.SaveUserGroupRef(Tenant, new UserGroupRef { UserId = Guid.Empty, GroupId = Guid.Empty, RefType = UserGroupRefType.Manager });
 
             Service.RemoveUserGroupRef(Tenant, Guid.Empty, Guid.Empty, UserGroupRefType.Manager);
             Assert.IsTrue(Service.GetUserGroupRefs(Tenant, new DateTime(1900, 1, 1)).First().Value.Removed);
@@ -198,7 +198,7 @@ namespace ASC.Core.Common.Tests
 
 
             var u = Service.SaveUser(Tenant, new UserInfo { UserName = "username", LastName = "lastname", FirstName = "firstname" });
-            _ = Service.SaveUserGroupRef(Tenant, new UserGroupRef { UserId = u.ID, GroupId = Guid.Empty, RefType = UserGroupRefType.Manager });
+            Service.SaveUserGroupRef(Tenant, new UserGroupRef { UserId = u.ID, GroupId = Guid.Empty, RefType = UserGroupRefType.Manager });
 
             Service.RemoveUser(Tenant, u.ID);
             Assert.IsTrue(Service.GetUserGroupRefs(Tenant, new DateTime(1900, 1, 1)).First().Value.Removed);
@@ -209,13 +209,13 @@ namespace ASC.Core.Common.Tests
 
             var g = Service.SaveGroup(Tenant, new Group { Name = "group1" });
             u = Service.SaveUser(Tenant, new UserInfo { UserName = "username", LastName = "lastname", FirstName = "firstname" });
-            _ = Service.SaveUserGroupRef(Tenant, new UserGroupRef { UserId = u.ID, GroupId = g.Id, RefType = UserGroupRefType.Manager });
+            Service.SaveUserGroupRef(Tenant, new UserGroupRef { UserId = u.ID, GroupId = g.Id, RefType = UserGroupRefType.Manager });
             u = Service.GetUser(Tenant, u.ID);
 
             Service.RemoveGroup(Tenant, g.Id);
             Assert.IsTrue(Service.GetUserGroupRefs(Tenant, new DateTime(1900, 1, 1)).First().Value.Removed);
 
-            _ = Service.SaveUser(Tenant, u);
+            Service.SaveUser(Tenant, u);
             Service.RemoveGroup(Tenant, g.Id, true);
             Assert.AreEqual(0, Service.GetUserGroupRefs(Tenant, new DateTime(1900, 1, 1)).Count());
         }

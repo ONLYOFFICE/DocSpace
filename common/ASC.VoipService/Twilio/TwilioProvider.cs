@@ -135,7 +135,7 @@ namespace ASC.VoipService.Twilio
 
         public VoipPhone DeleteNumber(VoipPhone phone)
         {
-            _ = IncomingPhoneNumberResource.Delete(phone.Id, client: client);
+            IncomingPhoneNumberResource.Delete(phone.Id, client: client);
             return phone;
         }
 
@@ -230,12 +230,12 @@ namespace ASC.VoipService.Twilio
 
         public void UpdateSettings(VoipPhone phone)
         {
-            _ = IncomingPhoneNumberResource.Update(phone.Id, voiceUrl: new Uri(phone.Settings.Connect(false)), client: client);
+            IncomingPhoneNumberResource.Update(phone.Id, voiceUrl: new Uri(phone.Settings.Connect(false)), client: client);
         }
 
         public void DisablePhone(VoipPhone phone)
         {
-            _ = IncomingPhoneNumberResource.Update(phone.Id, voiceUrl: new Uri("https://demo.twilio.com/welcome/voice/"), client: client);
+            IncomingPhoneNumberResource.Update(phone.Id, voiceUrl: new Uri("https://demo.twilio.com/welcome/voice/"), client: client);
         }
 
         #endregion

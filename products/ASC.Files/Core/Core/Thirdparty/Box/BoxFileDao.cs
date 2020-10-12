@@ -320,7 +320,7 @@ namespace ASC.Files.Thirdparty.Box
                     .ToList();
 
                 FilesDbContext.TagLink.RemoveRange(link);
-                _ = FilesDbContext.SaveChanges();
+                FilesDbContext.SaveChanges();
 
                 var tagsToRemove = Query(FilesDbContext.Tag)
                     .Where(r => !Query(FilesDbContext.TagLink).Where(a => a.TagId == r.Id).Any());
@@ -331,13 +331,13 @@ namespace ASC.Files.Thirdparty.Box
                     .Where(r => hashIDs.Any(h => h == r.EntryId));
 
                 FilesDbContext.Security.RemoveRange(securityToDelete);
-                _ = FilesDbContext.SaveChanges();
+                FilesDbContext.SaveChanges();
 
                 var mappingToDelete = Query(FilesDbContext.ThirdpartyIdMapping)
                     .Where(r => hashIDs.Any(h => h == r.HashId));
 
                 FilesDbContext.ThirdpartyIdMapping.RemoveRange(mappingToDelete);
-                _ = FilesDbContext.SaveChanges();
+                FilesDbContext.SaveChanges();
 
                 tx.Commit();
             }
@@ -611,7 +611,7 @@ namespace ASC.Files.Thirdparty.Box
     {
         public static DIHelper AddBoxFileDaoService(this DIHelper services)
         {
-            _ = services.TryAddScoped<BoxFileDao>();
+            services.TryAddScoped<BoxFileDao>();
 
             return services;
         }

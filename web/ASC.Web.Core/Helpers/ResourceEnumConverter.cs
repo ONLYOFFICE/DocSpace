@@ -161,7 +161,7 @@ namespace ASC.Web.Core.Helpers
         private object GetValue(CultureInfo culture, string text)
         {
             var lookupTable = GetLookupTable(culture);
-            _ = lookupTable.TryGetValue(text, out var result);
+            lookupTable.TryGetValue(text, out var result);
             return result;
         }
 

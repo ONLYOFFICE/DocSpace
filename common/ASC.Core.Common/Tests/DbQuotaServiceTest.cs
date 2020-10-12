@@ -62,7 +62,7 @@ namespace ASC.Core.Common.Tests
                 MaxTotalSize = 4,
                 ActiveUsers = 30,
             };
-            _ = Service.SaveTenantQuota(quota1);
+            Service.SaveTenantQuota(quota1);
             CompareQuotas(quota1, Service.GetTenantQuota(quota1.Id));
 
             Service.RemoveTenantQuota(Tenant);

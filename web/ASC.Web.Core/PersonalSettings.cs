@@ -70,7 +70,7 @@ namespace ASC.Web.Studio.Core
             {
                 var settings = SettingsManager.LoadForCurrentUser<PersonalSettings>();
                 settings.IsNewUserSetting = value;
-                _ = SettingsManager.SaveForCurrentUser(settings);
+                SettingsManager.SaveForCurrentUser(settings);
             }
         }
 
@@ -81,7 +81,7 @@ namespace ASC.Web.Studio.Core
             {
                 var settings = SettingsManager.LoadForCurrentUser<PersonalSettings>();
                 settings.IsNotActivatedSetting = value;
-                _ = SettingsManager.SaveForCurrentUser(settings);
+                SettingsManager.SaveForCurrentUser(settings);
             }
         }
 

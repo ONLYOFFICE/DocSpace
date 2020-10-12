@@ -52,9 +52,9 @@ namespace ASC.Socket.IO.Svc
                     {
                         path = Path.GetFullPath(Path.Combine(hostContext.HostingEnvironment.ContentRootPath, path));
                     }
-                    _ = config.SetBasePath(path);
+                    config.SetBasePath(path);
                     var env = hostContext.Configuration.GetValue("ENVIRONMENT", "Production");
-                    _ = config
+                    config
                         .AddInMemoryCollection(new Dictionary<string, string>
                             {
                                 {"pathToConf", path }
@@ -73,11 +73,11 @@ namespace ASC.Socket.IO.Svc
                 .ConfigureServices((hostContext, services) =>
                 {
                     var diHelper = new DIHelper(services);
-                    _ = diHelper.AddNLogManager("ASC.Socket.IO.Svc");
-                    _ = services.AddHostedService<SocketServiceLauncher>();
-                    _ = diHelper.AddSocketServiceLauncher();
+                    diHelper.AddNLogManager("ASC.Socket.IO.Svc");
+                    services.AddHostedService<SocketServiceLauncher>();
+                    diHelper.AddSocketServiceLauncher();
 
-                    _ = services.AddAutofac(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath, false, false);
+                    services.AddAutofac(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath, false, false);
                 })
                 .UseConsoleLifetime()
                 .Build();

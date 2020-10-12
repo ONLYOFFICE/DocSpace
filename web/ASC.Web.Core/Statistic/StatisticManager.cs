@@ -156,8 +156,8 @@ namespace ASC.Web.Studio.Core.Statistic
                     w.LastVisitTime = v.LastVisitTime.Value;
                 }
 
-                _ = WebstudioDbContext.WebstudioUserVisit.Add(w);
-                _ = WebstudioDbContext.SaveChanges();
+                WebstudioDbContext.WebstudioUserVisit.Add(w);
+                WebstudioDbContext.SaveChanges();
             }
             tx.Commit();
         }

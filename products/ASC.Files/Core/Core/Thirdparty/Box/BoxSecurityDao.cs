@@ -95,7 +95,7 @@ namespace ASC.Files.Thirdparty.Box
     {
         public static DIHelper AddBoxSecurityDaoService(this DIHelper services)
         {
-            _ = services.TryAddScoped<BoxSecurityDao>();
+            services.TryAddScoped<BoxSecurityDao>();
 
             return services;
         }

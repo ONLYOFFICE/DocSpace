@@ -299,7 +299,7 @@ namespace ASC.Web.Files.Services.DocumentService
                         Logger.Error("DocService userId is not Guid: " + user);
                         continue;
                     }
-                    _ = users.Remove(userId);
+                    users.Remove(userId);
 
                     try
                     {
@@ -362,7 +362,7 @@ namespace ASC.Web.Files.Services.DocumentService
             UserInfo user = null;
             try
             {
-                _ = SecurityContext.AuthenticateMe(userId);
+                SecurityContext.AuthenticateMe(userId);
 
                 user = UserManager.GetUsers(userId);
                 var culture = string.IsNullOrEmpty(user.CultureName) ? TenantManager.GetCurrentTenant().GetCulture() : CultureInfo.GetCultureInfo(user.CultureName);
@@ -389,7 +389,7 @@ namespace ASC.Web.Files.Services.DocumentService
 
                     file = EntryManager.CompleteVersionFile(fileId, 0, false, false);
 
-                    _ = DaoFactory.GetFileDao<T>().UpdateComment(file.ID, file.Version, string.Join("; ", comments));
+                    DaoFactory.GetFileDao<T>().UpdateComment(file.ID, file.Version, string.Join("; ", comments));
 
                     file = null;
                     Logger.ErrorFormat("DocService save error. Empty url. File id: '{0}'. UserId: {1}. DocKey '{2}'", fileId, userId, fileData.Key);
@@ -469,7 +469,7 @@ namespace ASC.Web.Files.Services.DocumentService
 
             try
             {
-                _ = SecurityContext.AuthenticateMe(userId);
+                SecurityContext.AuthenticateMe(userId);
 
                 var user = UserManager.GetUsers(userId);
                 var culture = string.IsNullOrEmpty(user.CultureName) ? TenantManager.GetCurrentTenant().GetCulture() : CultureInfo.GetCultureInfo(user.CultureName);
@@ -601,7 +601,7 @@ namespace ASC.Web.Files.Services.DocumentService
 
                 using (var fileStream = new ResponseStream(req.GetResponse()))
                 {
-                    _ = store.Save(FileConstant.StorageDomainTmp, path, fileStream);
+                    store.Save(FileConstant.StorageDomainTmp, path, fileStream);
                 }
                 Logger.DebugFormat("DocService storing to {0}", path);
             }

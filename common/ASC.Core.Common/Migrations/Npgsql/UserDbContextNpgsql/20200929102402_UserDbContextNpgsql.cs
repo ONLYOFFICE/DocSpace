@@ -8,10 +8,10 @@ namespace ASC.Core.Common.Migrations.Npgsql.UserDbContextNpgsql
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            _ = migrationBuilder.EnsureSchema(
+            migrationBuilder.EnsureSchema(
                 name: "onlyoffice");
 
-            _ = migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "core_group",
                 schema: "onlyoffice",
                 columns: table => new
@@ -27,10 +27,10 @@ namespace ASC.Core.Common.Migrations.Npgsql.UserDbContextNpgsql
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("PK_core_group", x => x.id);
+                    table.PrimaryKey("PK_core_group", x => x.id);
                 });
 
-            _ = migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "core_subscription",
                 schema: "onlyoffice",
                 columns: table => new
@@ -44,10 +44,10 @@ namespace ASC.Core.Common.Migrations.Npgsql.UserDbContextNpgsql
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("core_subscription_pkey", x => new { x.tenant, x.source, x.action, x.recipient, x.@object });
+                    table.PrimaryKey("core_subscription_pkey", x => new { x.tenant, x.source, x.action, x.recipient, x.@object });
                 });
 
-            _ = migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "core_subscriptionmethod",
                 schema: "onlyoffice",
                 columns: table => new
@@ -60,12 +60,12 @@ namespace ASC.Core.Common.Migrations.Npgsql.UserDbContextNpgsql
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("core_subscriptionmethod_pkey", x => new { x.tenant, x.source, x.action, x.recipient });
+                    table.PrimaryKey("core_subscriptionmethod_pkey", x => new { x.tenant, x.source, x.action, x.recipient });
                 });
 
 
 
-            _ = migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "core_userphoto",
                 schema: "onlyoffice",
                 columns: table => new
@@ -76,13 +76,13 @@ namespace ASC.Core.Common.Migrations.Npgsql.UserDbContextNpgsql
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("core_userphoto_pkey", x => x.userid);
+                    table.PrimaryKey("core_userphoto_pkey", x => x.userid);
                 });
 
 
 
 
-            _ = migrationBuilder.InsertData(
+            migrationBuilder.InsertData(
                 schema: "onlyoffice",
                 table: "core_subscription",
                 columns: new[] { "tenant", "source", "action", "recipient", "object", "unsubscribed" },
@@ -110,7 +110,7 @@ namespace ASC.Core.Common.Migrations.Npgsql.UserDbContextNpgsql
                     { -1, "40650da3-f7c1-424c-8c89-b9c115472e08", "calendar_sharing", "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e", "", false }
                 });
 
-            _ = migrationBuilder.InsertData(
+            migrationBuilder.InsertData(
                 schema: "onlyoffice",
                 table: "core_subscriptionmethod",
                 columns: new[] { "tenant", "source", "action", "recipient", "sender" },
@@ -150,7 +150,7 @@ namespace ASC.Core.Common.Migrations.Npgsql.UserDbContextNpgsql
                     { -1, "13ff36fb-0272-4887-b416-74f52b0d0b02", "SetAccess", "abef62db-11a8-4673-9d32-ef1d8af19dc0", "email.sender|messanger.sender" }
                 });
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "tenant_core_userphoto",
                 schema: "onlyoffice",
                 table: "core_userphoto",
@@ -160,35 +160,35 @@ namespace ASC.Core.Common.Migrations.Npgsql.UserDbContextNpgsql
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "core_acl",
                 schema: "onlyoffice");
 
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "core_group",
                 schema: "onlyoffice");
 
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "core_subscription",
                 schema: "onlyoffice");
 
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "core_subscriptionmethod",
                 schema: "onlyoffice");
 
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "core_usergroup",
                 schema: "onlyoffice");
 
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "core_userphoto",
                 schema: "onlyoffice");
 
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "core_usersecurity",
                 schema: "onlyoffice");
 
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "core_user",
                 schema: "onlyoffice");
         }

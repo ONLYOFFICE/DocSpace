@@ -56,7 +56,7 @@ namespace ASC.Common.Caching
 
             foreach (var k in keys)
             {
-                _ = MemoryCache.Default.Remove(k);
+                MemoryCache.Default.Remove(k);
             }
         }
     }
@@ -96,7 +96,7 @@ namespace ASC.Common.Caching
         public void Remove(string key)
         {
             var cache = GetCache();
-            _ = cache.Remove(key);
+            cache.Remove(key);
         }
 
         public void Remove(Regex pattern)
@@ -108,7 +108,7 @@ namespace ASC.Common.Caching
             var keys = copy.Select(p => p.Key).Where(k => pattern.IsMatch(k)).ToArray();
             foreach (var key in keys)
             {
-                _ = cache.Remove(key);
+                cache.Remove(key);
             }
         }
 
@@ -146,10 +146,10 @@ namespace ASC.Common.Caching
             }
             else if (dic != null)
             {
-                _ = dic.Remove(field);
+                dic.Remove(field);
                 if (dic.Count == 0)
                 {
-                    _ = cache.Remove(key);
+                    cache.Remove(key);
                 }
                 else
                 {

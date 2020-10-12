@@ -54,7 +54,7 @@ namespace ASC.Common.Logging
 
             if (repo != null && repo.Properties.GetKeys().Contains(key))
             {
-                _ = int.TryParse(repo.Properties[key].ToString(), out value);
+                int.TryParse(repo.Properties[key].ToString(), out value);
             }
 
             _cleanPeriod = value;

@@ -31,11 +31,11 @@ namespace ASC.Files
         {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
-            _ = services.AddMemoryCache();
+            services.AddMemoryCache();
 
             var diHelper = new DIHelper(services);
 
-            _ = diHelper
+            diHelper
                 .AddApiProductEntryPointService()
                 .AddDocumentsControllerService()
                 .AddPrivacyRoomApiService()
@@ -52,32 +52,32 @@ namespace ASC.Files
         {
             base.Configure(app, env);
 
-            _ = app.MapWhen(
+            app.MapWhen(
                 context => context.Request.Path.ToString().EndsWith("httphandlers/filehandler.ashx"),
                 appBranch =>
                 {
-                    _ = appBranch.UseFileHandler();
+                    appBranch.UseFileHandler();
                 });
 
-            _ = app.MapWhen(
+            app.MapWhen(
                 context => context.Request.Path.ToString().EndsWith("ChunkedUploader.ashx"),
                 appBranch =>
                 {
-                    _ = appBranch.UseChunkedUploaderHandler();
+                    appBranch.UseChunkedUploaderHandler();
                 });
 
-            _ = app.MapWhen(
+            app.MapWhen(
                 context => context.Request.Path.ToString().EndsWith("ThirdPartyAppHandler.ashx"),
                 appBranch =>
                 {
-                    _ = appBranch.UseThirdPartyAppHandler();
+                    appBranch.UseThirdPartyAppHandler();
                 });
 
-            _ = app.MapWhen(
+            app.MapWhen(
                 context => context.Request.Path.ToString().EndsWith("DocuSignHandler.ashx"),
                 appBranch =>
                 {
-                    _ = appBranch.UseDocuSignHandler();
+                    appBranch.UseDocuSignHandler();
                 });
         }
     }

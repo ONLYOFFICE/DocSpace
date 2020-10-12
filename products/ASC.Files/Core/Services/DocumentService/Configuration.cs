@@ -104,7 +104,7 @@ namespace ASC.Web.Files.Services.DocumentService
             set { }
             get
             {
-                _ = DocType.TryGetValue(GetFileType, out var documentType);
+                DocType.TryGetValue(GetFileType, out var documentType);
                 return documentType;
             }
         }
@@ -364,7 +364,7 @@ namespace ASC.Web.Files.Services.DocumentService
             {
                 try
                 {
-                    _ = JsonSerializer.Deserialize<ActionLinkConfig>(value);
+                    JsonSerializer.Deserialize<ActionLinkConfig>(value);
                 }
                 catch (Exception)
                 {
@@ -515,7 +515,7 @@ namespace ASC.Web.Files.Services.DocumentService
                     return null;
             }
 
-            _ = Configuration<T>.DocType.TryGetValue(fileType, out var documentType);
+            Configuration<T>.DocType.TryGetValue(fileType, out var documentType);
 
             return BaseCommonLinkUtility.GetFullAbsolutePath(FilesLinkUtility.FileHandlerPath)
                    + "?" + FilesLinkUtility.Action + "=create"
@@ -928,8 +928,8 @@ namespace ASC.Web.Files.Services.DocumentService
 
         public static DIHelper AddDocumentConfigService(this DIHelper services)
         {
-            _ = services.TryAddTransient<DocumentConfig<string>>();
-            _ = services.TryAddTransient<DocumentConfig<int>>();
+            services.TryAddTransient<DocumentConfig<string>>();
+            services.TryAddTransient<DocumentConfig<int>>();
 
             return services
                 .AddDocumentServiceConnectorService()
@@ -939,8 +939,8 @@ namespace ASC.Web.Files.Services.DocumentService
 
         public static DIHelper AddInfoConfigService(this DIHelper services)
         {
-            _ = services.TryAddTransient<InfoConfig<string>>();
-            _ = services.TryAddTransient<InfoConfig<int>>();
+            services.TryAddTransient<InfoConfig<string>>();
+            services.TryAddTransient<InfoConfig<int>>();
 
             return services
                 .AddBreadCrumbsManagerService()
@@ -949,8 +949,8 @@ namespace ASC.Web.Files.Services.DocumentService
 
         public static DIHelper AddEditorConfigurationService(this DIHelper services)
         {
-            _ = services.TryAddTransient<EditorConfiguration<string>>();
-            _ = services.TryAddTransient<EditorConfiguration<int>>();
+            services.TryAddTransient<EditorConfiguration<string>>();
+            services.TryAddTransient<EditorConfiguration<int>>();
 
             return services
                 .AddUserManagerService()
@@ -965,7 +965,7 @@ namespace ASC.Web.Files.Services.DocumentService
 
         public static DIHelper AddPluginsConfigService(this DIHelper services)
         {
-            _ = services.TryAddTransient<PluginsConfig>();
+            services.TryAddTransient<PluginsConfig>();
 
             return services
                 .AddConsumerFactoryService()
@@ -974,7 +974,7 @@ namespace ASC.Web.Files.Services.DocumentService
 
         public static DIHelper AddEmbeddedConfigService(this DIHelper services)
         {
-            _ = services.TryAddTransient<EmbeddedConfig>();
+            services.TryAddTransient<EmbeddedConfig>();
 
             return services
                 .AddFilesLinkUtilityService()
@@ -983,8 +983,8 @@ namespace ASC.Web.Files.Services.DocumentService
 
         public static DIHelper AddCustomizationConfigService(this DIHelper services)
         {
-            _ = services.TryAddTransient<CustomizationConfig<string>>();
-            _ = services.TryAddTransient<CustomizationConfig<int>>();
+            services.TryAddTransient<CustomizationConfig<string>>();
+            services.TryAddTransient<CustomizationConfig<int>>();
 
             return services
                 .AddCoreBaseSettingsService()
@@ -1004,8 +1004,8 @@ namespace ASC.Web.Files.Services.DocumentService
 
         public static DIHelper AddCustomerConfigService(this DIHelper services)
         {
-            _ = services.TryAddTransient<CustomerConfig<string>>();
-            _ = services.TryAddTransient<CustomerConfig<int>>();
+            services.TryAddTransient<CustomerConfig<string>>();
+            services.TryAddTransient<CustomerConfig<int>>();
 
             return services
                 .AddSettingsManagerService()
@@ -1015,8 +1015,8 @@ namespace ASC.Web.Files.Services.DocumentService
 
         public static DIHelper AddLogoConfigService(this DIHelper services)
         {
-            _ = services.TryAddTransient<LogoConfig<string>>();
-            _ = services.TryAddTransient<LogoConfig<int>>();
+            services.TryAddTransient<LogoConfig<string>>();
+            services.TryAddTransient<LogoConfig<int>>();
 
             return services
                 .AddSettingsManagerService()

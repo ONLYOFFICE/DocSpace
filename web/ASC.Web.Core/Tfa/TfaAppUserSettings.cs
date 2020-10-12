@@ -65,7 +65,7 @@ namespace ASC.Web.Studio.Core.TFA
                 var from = new DateTime(2018, 07, 07, 0, 0, 0, DateTimeKind.Utc);
                 settings.SaltSetting = salt = (long)(DateTime.UtcNow - from).TotalMilliseconds;
 
-                _ = settingsManager.SaveForUser<TfaAppUserSettings>(settings, userId);
+                settingsManager.SaveForUser<TfaAppUserSettings>(settings, userId);
             }
             return salt;
         }
@@ -83,7 +83,7 @@ namespace ASC.Web.Studio.Core.TFA
             if (query.Any())
                 query.First().IsUsed = true;
 
-            _ = settingsManager.SaveForUser(settings, userId);
+            settingsManager.SaveForUser(settings, userId);
         }
 
         public static bool EnableForUser(SettingsManager settingsManager, Guid guid)
@@ -95,7 +95,7 @@ namespace ASC.Web.Studio.Core.TFA
         {
             if (new TfaAppUserSettings().GetDefault(serviceProvider) is TfaAppUserSettings defaultSettings)
             {
-                _ = settingsManager.SaveForUser(defaultSettings, guid);
+                settingsManager.SaveForUser(defaultSettings, guid);
             }
         }
 

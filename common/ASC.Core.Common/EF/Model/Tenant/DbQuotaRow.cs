@@ -28,39 +28,39 @@ namespace ASC.Core.Common.EF
     {
         public static ModelBuilderWrapper AddDbQuotaRow(this ModelBuilderWrapper modelBuilder)
         {
-            _ = modelBuilder
+            modelBuilder
                 .Add(MySqlAddDbQuotaRow, Provider.MySql)
                 .Add(PgSqlAddDbQuotaRow, Provider.Postgre);
             return modelBuilder;
         }
         public static void MySqlAddDbQuotaRow(this ModelBuilder modelBuilder)
         {
-            _ = modelBuilder.Entity<DbQuotaRow>(entity =>
+            modelBuilder.Entity<DbQuotaRow>(entity =>
             {
-                _ = entity.HasKey(e => new { e.Tenant, e.Path })
+                entity.HasKey(e => new { e.Tenant, e.Path })
                     .HasName("PRIMARY");
 
-                _ = entity.ToTable("tenants_quotarow");
+                entity.ToTable("tenants_quotarow");
 
-                _ = entity.HasIndex(e => e.LastModified)
+                entity.HasIndex(e => e.LastModified)
                     .HasName("last_modified");
 
-                _ = entity.Property(e => e.Tenant).HasColumnName("tenant");
+                entity.Property(e => e.Tenant).HasColumnName("tenant");
 
-                _ = entity.Property(e => e.Path)
+                entity.Property(e => e.Path)
                     .HasColumnName("path")
                     .HasColumnType("varchar(255)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.Counter).HasColumnName("counter");
+                entity.Property(e => e.Counter).HasColumnName("counter");
 
-                _ = entity.Property(e => e.LastModified)
+                entity.Property(e => e.LastModified)
                     .HasColumnName("last_modified")
                     .HasColumnType("timestamp")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
-                _ = entity.Property(e => e.Tag)
+                entity.Property(e => e.Tag)
                     .HasColumnName("tag")
                     .HasColumnType("varchar(1024)")
                     .HasCharSet("utf8")
@@ -69,31 +69,31 @@ namespace ASC.Core.Common.EF
         }
         public static void PgSqlAddDbQuotaRow(this ModelBuilder modelBuilder)
         {
-            _ = modelBuilder.Entity<DbQuotaRow>(entity =>
+            modelBuilder.Entity<DbQuotaRow>(entity =>
             {
-                _ = entity.HasKey(e => new { e.Tenant, e.Path })
+                entity.HasKey(e => new { e.Tenant, e.Path })
                     .HasName("tenants_quotarow_pkey");
 
-                _ = entity.ToTable("tenants_quotarow", "onlyoffice");
+                entity.ToTable("tenants_quotarow", "onlyoffice");
 
-                _ = entity.HasIndex(e => e.LastModified)
+                entity.HasIndex(e => e.LastModified)
                     .HasName("last_modified_tenants_quotarow");
 
-                _ = entity.Property(e => e.Tenant).HasColumnName("tenant");
+                entity.Property(e => e.Tenant).HasColumnName("tenant");
 
-                _ = entity.Property(e => e.Path)
+                entity.Property(e => e.Path)
                     .HasColumnName("path")
                     .HasMaxLength(255);
 
-                _ = entity.Property(e => e.Counter)
+                entity.Property(e => e.Counter)
                     .HasColumnName("counter")
                     .HasDefaultValueSql("'0'");
 
-                _ = entity.Property(e => e.LastModified)
+                entity.Property(e => e.LastModified)
                     .HasColumnName("last_modified")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
-                _ = entity.Property(e => e.Tag)
+                entity.Property(e => e.Tag)
                     .HasColumnName("tag")
                     .HasMaxLength(1024)
                     .HasDefaultValueSql("'0'");

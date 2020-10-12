@@ -68,7 +68,7 @@ namespace ASC.Web.Core.Calendars
         {
             lock (this._calendars)
             {
-                _ = this._calendars.RemoveAll(c => string.Equals(c.Id, calendarId, StringComparison.InvariantCultureIgnoreCase));
+                this._calendars.RemoveAll(c => string.Equals(c.Id, calendarId, StringComparison.InvariantCultureIgnoreCase));
             }
         }
 
@@ -85,7 +85,7 @@ namespace ASC.Web.Core.Calendars
         {
             lock (this._calendarProviders)
             {
-                _ = this._calendarProviders.RemoveAll(p => p.Equals(provider));
+                this._calendarProviders.RemoveAll(p => p.Equals(provider));
             }
         }
 

@@ -27,79 +27,79 @@ namespace ASC.Core.Common.EF
     {
         public static ModelBuilderWrapper AddDbTariff(this ModelBuilderWrapper modelBuilder)
         {
-            _ = modelBuilder
+            modelBuilder
                 .Add(MySqlAddDbTariff, Provider.MySql)
                 .Add(PgSqlAddDbTariff, Provider.Postgre);
             return modelBuilder;
         }
         public static void MySqlAddDbTariff(this ModelBuilder modelBuilder)
         {
-            _ = modelBuilder.Entity<DbTariff>(entity =>
+            modelBuilder.Entity<DbTariff>(entity =>
             {
-                _ = entity.ToTable("tenants_tariff");
+                entity.ToTable("tenants_tariff");
 
-                _ = entity.HasIndex(e => e.Tenant)
+                entity.HasIndex(e => e.Tenant)
                     .HasName("tenant");
 
-                _ = entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.Id).HasColumnName("id");
 
-                _ = entity.Property(e => e.Comment)
+                entity.Property(e => e.Comment)
                     .HasColumnName("comment")
                     .HasColumnType("varchar(255)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.CreateOn)
+                entity.Property(e => e.CreateOn)
                     .HasColumnName("create_on")
                     .HasColumnType("timestamp")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP")
                     .ValueGeneratedOnAddOrUpdate();
 
-                _ = entity.Property(e => e.Stamp)
+                entity.Property(e => e.Stamp)
                     .HasColumnName("stamp")
                     .HasColumnType("datetime");
 
-                _ = entity.Property(e => e.Tariff).HasColumnName("tariff");
+                entity.Property(e => e.Tariff).HasColumnName("tariff");
 
-                _ = entity.Property(e => e.TariffKey)
+                entity.Property(e => e.TariffKey)
                     .HasColumnName("tariff_key")
                     .HasColumnType("varchar(64)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.Tenant).HasColumnName("tenant");
+                entity.Property(e => e.Tenant).HasColumnName("tenant");
             });
         }
         public static void PgSqlAddDbTariff(this ModelBuilder modelBuilder)
         {
-            _ = modelBuilder.Entity<DbTariff>(entity =>
+            modelBuilder.Entity<DbTariff>(entity =>
             {
-                _ = entity.ToTable("tenants_tariff", "onlyoffice");
+                entity.ToTable("tenants_tariff", "onlyoffice");
 
-                _ = entity.HasIndex(e => e.Tenant)
+                entity.HasIndex(e => e.Tenant)
                     .HasName("tenant_tenants_tariff");
 
-                _ = entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.Id).HasColumnName("id");
 
-                _ = entity.Property(e => e.Comment)
+                entity.Property(e => e.Comment)
                     .HasColumnName("comment")
                     .HasMaxLength(255)
                     .HasDefaultValueSql("NULL");
 
-                _ = entity.Property(e => e.CreateOn)
+                entity.Property(e => e.CreateOn)
                     .HasColumnName("create_on")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
-                _ = entity.Property(e => e.Stamp).HasColumnName("stamp");
+                entity.Property(e => e.Stamp).HasColumnName("stamp");
 
-                _ = entity.Property(e => e.Tariff).HasColumnName("tariff");
+                entity.Property(e => e.Tariff).HasColumnName("tariff");
 
-                _ = entity.Property(e => e.TariffKey)
+                entity.Property(e => e.TariffKey)
                     .HasColumnName("tariff_key")
                     .HasMaxLength(64)
                     .HasDefaultValueSql("NULL");
 
-                _ = entity.Property(e => e.Tenant).HasColumnName("tenant");
+                entity.Property(e => e.Tenant).HasColumnName("tenant");
             });
         }
     }

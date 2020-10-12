@@ -55,30 +55,30 @@ namespace ASC.Core.Common.EF.Model
     {
         public static ModelBuilderWrapper AddDbVoipCall(this ModelBuilderWrapper modelBuilder)
         {
-            _ = modelBuilder
+            modelBuilder
                 .Add(MySqlAddDbVoipCall, Provider.MySql)
                 .Add(PgSqlAddDbVoipCall, Provider.Postgre);
             return modelBuilder;
         }
         public static void MySqlAddDbVoipCall(this ModelBuilder modelBuilder)
         {
-            _ = modelBuilder.Entity<DbVoipCall>(entity =>
+            modelBuilder.Entity<DbVoipCall>(entity =>
             {
-                _ = entity.ToTable("crm_voip_calls");
+                entity.ToTable("crm_voip_calls");
 
-                _ = entity.HasIndex(e => e.TenantId)
+                entity.HasIndex(e => e.TenantId)
                     .HasName("tenant_id");
 
-                _ = entity.HasIndex(e => new { e.ParentCallId, e.TenantId })
+                entity.HasIndex(e => new { e.ParentCallId, e.TenantId })
                     .HasName("parent_call_id");
 
-                _ = entity.Property(e => e.Id)
+                entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasColumnType("varchar(50)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.AnsweredBy)
+                entity.Property(e => e.AnsweredBy)
                     .IsRequired()
                     .HasColumnName("answered_by")
                     .HasColumnType("varchar(50)")
@@ -86,126 +86,126 @@ namespace ASC.Core.Common.EF.Model
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.ContactId).HasColumnName("contact_id");
+                entity.Property(e => e.ContactId).HasColumnName("contact_id");
 
-                _ = entity.Property(e => e.DialDate)
+                entity.Property(e => e.DialDate)
                     .HasColumnName("dial_date")
                     .HasColumnType("datetime");
 
-                _ = entity.Property(e => e.DialDuration).HasColumnName("dial_duration");
+                entity.Property(e => e.DialDuration).HasColumnName("dial_duration");
 
-                _ = entity.Property(e => e.NumberFrom)
+                entity.Property(e => e.NumberFrom)
                     .IsRequired()
                     .HasColumnName("number_from")
                     .HasColumnType("varchar(50)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.NumberTo)
+                entity.Property(e => e.NumberTo)
                     .IsRequired()
                     .HasColumnName("number_to")
                     .HasColumnType("varchar(50)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.ParentCallId)
+                entity.Property(e => e.ParentCallId)
                     .IsRequired()
                     .HasColumnName("parent_call_id")
                     .HasColumnType("varchar(50)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.Price)
+                entity.Property(e => e.Price)
                     .HasColumnName("price")
                     .HasColumnType("decimal(10,4)");
 
-                _ = entity.Property(e => e.RecordDuration).HasColumnName("record_duration");
+                entity.Property(e => e.RecordDuration).HasColumnName("record_duration");
 
-                _ = entity.Property(e => e.RecordPrice)
+                entity.Property(e => e.RecordPrice)
                     .HasColumnName("record_price")
                     .HasColumnType("decimal(10,4)");
 
-                _ = entity.Property(e => e.RecordSid)
+                entity.Property(e => e.RecordSid)
                     .HasColumnName("record_sid")
                     .HasColumnType("varchar(50)")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.RecordUrl)
+                entity.Property(e => e.RecordUrl)
                     .HasColumnName("record_url")
                     .HasColumnType("text")
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
 
-                _ = entity.Property(e => e.Status).HasColumnName("status");
+                entity.Property(e => e.Status).HasColumnName("status");
 
-                _ = entity.Property(e => e.TenantId).HasColumnName("tenant_id");
+                entity.Property(e => e.TenantId).HasColumnName("tenant_id");
             });
         }
         public static void PgSqlAddDbVoipCall(this ModelBuilder modelBuilder)
         {
-            _ = modelBuilder.Entity<DbVoipCall>(entity =>
+            modelBuilder.Entity<DbVoipCall>(entity =>
             {
-                _ = entity.ToTable("crm_voip_calls", "onlyoffice");
+                entity.ToTable("crm_voip_calls", "onlyoffice");
 
-                _ = entity.HasIndex(e => e.TenantId)
+                entity.HasIndex(e => e.TenantId)
                     .HasName("tenant_id_crm_voip_calls");
 
-                _ = entity.HasIndex(e => new { e.ParentCallId, e.TenantId })
+                entity.HasIndex(e => new { e.ParentCallId, e.TenantId })
                     .HasName("parent_call_id");
 
-                _ = entity.Property(e => e.Id)
+                entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasMaxLength(50);
 
-                _ = entity.Property(e => e.AnsweredBy)
+                entity.Property(e => e.AnsweredBy)
                     .IsRequired()
                     .HasColumnName("answered_by")
                     .HasMaxLength(50)
                     .HasDefaultValueSql("'00000000-0000-0000-0000-000000000000'");
 
-                _ = entity.Property(e => e.ContactId).HasColumnName("contact_id");
+                entity.Property(e => e.ContactId).HasColumnName("contact_id");
 
-                _ = entity.Property(e => e.DialDate).HasColumnName("dial_date");
+                entity.Property(e => e.DialDate).HasColumnName("dial_date");
 
-                _ = entity.Property(e => e.DialDuration).HasColumnName("dial_duration");
+                entity.Property(e => e.DialDuration).HasColumnName("dial_duration");
 
-                _ = entity.Property(e => e.NumberFrom)
+                entity.Property(e => e.NumberFrom)
                     .IsRequired()
                     .HasColumnName("number_from")
                     .HasMaxLength(50);
 
-                _ = entity.Property(e => e.NumberTo)
+                entity.Property(e => e.NumberTo)
                     .IsRequired()
                     .HasColumnName("number_to")
                     .HasMaxLength(50);
 
-                _ = entity.Property(e => e.ParentCallId)
+                entity.Property(e => e.ParentCallId)
                     .IsRequired()
                     .HasColumnName("parent_call_id")
                     .HasMaxLength(50);
 
-                _ = entity.Property(e => e.Price)
+                entity.Property(e => e.Price)
                     .HasColumnName("price")
                     .HasColumnType("numeric(10,4)")
                     .HasDefaultValueSql("NULL");
 
-                _ = entity.Property(e => e.RecordDuration).HasColumnName("record_duration");
+                entity.Property(e => e.RecordDuration).HasColumnName("record_duration");
 
-                _ = entity.Property(e => e.RecordPrice)
+                entity.Property(e => e.RecordPrice)
                     .HasColumnName("record_price")
                     .HasColumnType("numeric(10,4)");
 
-                _ = entity.Property(e => e.RecordSid)
+                entity.Property(e => e.RecordSid)
                     .HasColumnName("record_sid")
                     .HasMaxLength(50)
                     .HasDefaultValueSql("NULL");
 
-                _ = entity.Property(e => e.RecordUrl).HasColumnName("record_url");
+                entity.Property(e => e.RecordUrl).HasColumnName("record_url");
 
-                _ = entity.Property(e => e.Status).HasColumnName("status");
+                entity.Property(e => e.Status).HasColumnName("status");
 
-                _ = entity.Property(e => e.TenantId).HasColumnName("tenant_id");
+                entity.Property(e => e.TenantId).HasColumnName("tenant_id");
             });
         }
     }

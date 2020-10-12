@@ -107,8 +107,8 @@ namespace ASC.Data.Storage.Encryption
     {
         public static DIHelper AddNotifyHelperService(this DIHelper services)
         {
-            _ = services.TryAddScoped<NotifyHelper>();
-            _ = services.TryAddScoped<NotifyServiceClient>();
+            services.TryAddScoped<NotifyHelper>();
+            services.TryAddScoped<NotifyServiceClient>();
             return services;
 
         }

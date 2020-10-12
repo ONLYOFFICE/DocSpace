@@ -256,7 +256,7 @@ namespace ASC.Web.Studio.Core
     {
         public static DIHelper AddSetupInfo(this DIHelper services)
         {
-            _ = services.TryAddSingleton<SetupInfo>();
+            services.TryAddSingleton<SetupInfo>();
 
             return services;
         }

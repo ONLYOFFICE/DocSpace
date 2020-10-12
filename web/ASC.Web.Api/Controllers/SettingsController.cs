@@ -340,7 +340,7 @@ namespace ASC.Api.Settings
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-            _ = SettingsManager.Save(new StudioAdminMessageSettings { Enable = model.TurnOn });
+            SettingsManager.Save(new StudioAdminMessageSettings { Enable = model.TurnOn });
 
             MessageService.Send(MessageAction.AdministratorMessageSettingsUpdated);
 
@@ -393,9 +393,9 @@ namespace ASC.Api.Settings
 
             Tenant.TrustedDomainsType = model.Type;
 
-            _ = SettingsManager.Save(new StudioTrustedDomainSettings { InviteUsersAsVisitors = model.InviteUsersAsVisitors });
+            SettingsManager.Save(new StudioTrustedDomainSettings { InviteUsersAsVisitors = model.InviteUsersAsVisitors });
 
-            _ = TenantManager.SaveTenant(Tenant);
+            TenantManager.SaveTenant(Tenant);
 
             MessageService.Send(MessageAction.TrustedMailDomainSettingsUpdated);
 
@@ -627,7 +627,7 @@ namespace ASC.Api.Settings
                 PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
                 Tenant.Name = model.Title;
-                _ = TenantManager.SaveTenant(Tenant);
+                TenantManager.SaveTenant(Tenant);
 
                 MessageService.Send(MessageAction.GreetingSettingsUpdated);
 
@@ -713,8 +713,8 @@ namespace ASC.Api.Settings
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-            _ = TenantManager.GetTenantVersions().FirstOrDefault(r => r.Id == model.VersionId).NotFoundIfNull();
-            _ = TenantManager.SetTenantVersion(Tenant, model.VersionId);
+            TenantManager.GetTenantVersions().FirstOrDefault(r => r.Id == model.VersionId).NotFoundIfNull();
+            TenantManager.SetTenantVersion(Tenant, model.VersionId);
 
             return GetVersions();
         }
@@ -842,7 +842,7 @@ namespace ASC.Api.Settings
                 }
                 else if (productId == defaultPageSettings.DefaultProductID)
                 {
-                    _ = SettingsManager.Save((StudioDefaultPageSettings)defaultPageSettings.GetDefault(ServiceProvider));
+                    SettingsManager.Save((StudioDefaultPageSettings)defaultPageSettings.GetDefault(ServiceProvider));
                 }
 
                 WebItemSecurity.SetSecurity(item.Key, item.Value, subjects);
@@ -1003,7 +1003,7 @@ namespace ASC.Api.Settings
                 TenantWhiteLabelSettingsHelper.SetLogoFromStream(settings, logoType, fileExt, f.OpenReadStream(), storage);
             }
 
-            _ = SettingsManager.SaveForTenant(settings, tenantId);
+            SettingsManager.SaveForTenant(settings, tenantId);
         }
 
 
@@ -1121,7 +1121,7 @@ namespace ASC.Api.Settings
 
             var tenantInfoSettings = SettingsManager.Load<TenantInfoSettings>();
             TenantInfoSettingsHelper.RestoreDefaultLogo(tenantInfoSettings, TenantLogoManager);
-            _ = SettingsManager.Save(tenantInfoSettings);
+            SettingsManager.Save(tenantInfoSettings);
         }
 
         private void RestoreWhiteLabelOptionsForDefaultTenant()
@@ -1158,7 +1158,7 @@ namespace ASC.Api.Settings
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
             var settings = new IPRestrictionsSettings { Enable = model.Enable };
-            _ = SettingsManager.Save(settings);
+            SettingsManager.Save(settings);
 
             return settings;
         }
@@ -1167,7 +1167,7 @@ namespace ASC.Api.Settings
         public TipsSettings UpdateTipsSettings(SettingsModel model)
         {
             var settings = new TipsSettings { Show = model.Show };
-            _ = SettingsManager.SaveForCurrentUser(settings);
+            SettingsManager.SaveForCurrentUser(settings);
 
             if (!model.Show && !string.IsNullOrEmpty(SetupInfo.TipsAddress))
             {
@@ -1180,7 +1180,7 @@ namespace ASC.Api.Settings
                         ["tenantId"] = Tenant.TenantId.ToString(CultureInfo.InvariantCulture)
                     };
 
-                    _ = client.UploadValues(string.Format("{0}/tips/deletereaded", SetupInfo.TipsAddress), data);
+                    client.UploadValues(string.Format("{0}/tips/deletereaded", SetupInfo.TipsAddress), data);
                 }
                 catch (Exception e)
                 {
@@ -1234,7 +1234,7 @@ namespace ASC.Api.Settings
                     if (settings.EnableSetting)
                     {
                         settings.EnableSetting = false;
-                        _ = SettingsManager.Save(settings);
+                        SettingsManager.Save(settings);
                     }
 
                     result = true;
@@ -1248,7 +1248,7 @@ namespace ASC.Api.Settings
                     }
 
                     settings.EnableSetting = true;
-                    _ = SettingsManager.Save(settings);
+                    SettingsManager.Save(settings);
 
                     action = MessageAction.TwoFactorAuthenticationEnabledByTfaApp;
 
@@ -1265,7 +1265,7 @@ namespace ASC.Api.Settings
                     if (settings.EnableSetting)
                     {
                         settings.EnableSetting = false;
-                        _ = SettingsManager.Save(settings);
+                        SettingsManager.Save(settings);
                     }
 
                     if (StudioSmsNotificationSettingsHelper.IsVisibleSettings() && StudioSmsNotificationSettingsHelper.Enable)
@@ -1358,7 +1358,7 @@ namespace ASC.Api.Settings
                 throw new NotSupportedException("Not available.");
 
             collaboratorPopupSettings.FirstVisit = false;
-            _ = SettingsManager.SaveForCurrentUser(collaboratorPopupSettings);
+            SettingsManager.SaveForCurrentUser(collaboratorPopupSettings);
         }
 
         ///<visible>false</visible>
@@ -1396,7 +1396,7 @@ namespace ASC.Api.Settings
             }
             Tenant.TimeZone = timeZones.FirstOrDefault(tz => tz.Id == model.TimeZoneID)?.Id ?? TimeZoneInfo.Utc.Id;
 
-            _ = TenantManager.SaveTenant(Tenant);
+            TenantManager.SaveTenant(Tenant);
 
             if (!Tenant.TimeZone.Equals(oldTimeZone) || changelng)
             {
@@ -1462,7 +1462,7 @@ namespace ASC.Api.Settings
 
             var curTenant = TenantManager.GetCurrentTenant();
             curTenant.OwnerId = newOwner.ID;
-            _ = TenantManager.SaveTenant(curTenant);
+            TenantManager.SaveTenant(curTenant);
 
             MessageService.Send(MessageAction.OwnerUpdated, newOwner.DisplayUserName(false, DisplayUserSettingsHelper));
         }
@@ -1473,7 +1473,7 @@ namespace ASC.Api.Settings
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-            _ = SettingsManager.Save(new StudioDefaultPageSettings { DefaultProductID = model.DefaultProductID });
+            SettingsManager.Save(new StudioDefaultPageSettings { DefaultProductID = model.DefaultProductID });
 
             MessageService.Send(MessageAction.DefaultStartPageSettingsUpdated);
 
@@ -1608,7 +1608,7 @@ namespace ASC.Api.Settings
                 settings.Items.Add(item);
             }
 
-            _ = SettingsManager.Save(settings);
+            SettingsManager.Save(settings);
 
             MessageService.Send(MessageAction.CustomNavigationSettingsUpdated);
 
@@ -1629,8 +1629,8 @@ namespace ASC.Api.Settings
             StorageHelper.DeleteLogo(terget.SmallImg);
             StorageHelper.DeleteLogo(terget.BigImg);
 
-            _ = settings.Items.Remove(terget);
-            _ = SettingsManager.Save(settings);
+            settings.Items.Remove(terget);
+            SettingsManager.Save(settings);
 
             MessageService.Send(MessageAction.CustomNavigationSettingsUpdated);
         }
@@ -1640,7 +1640,7 @@ namespace ASC.Api.Settings
         {
             var settings = new EmailActivationSettings { Show = show };
 
-            _ = SettingsManager.SaveForCurrentUser(settings);
+            SettingsManager.SaveForCurrentUser(settings);
 
             return settings;
         }
@@ -1873,7 +1873,7 @@ namespace ASC.Api.Settings
                 }
 
                 tenant.SetStatus(TenantStatus.Encryption);
-                _ = TenantManager.SaveTenant(tenant);
+                TenantManager.SaveTenant(tenant);
             }
 
             EncryptionSettingsHelper.Save(settings);
@@ -2090,7 +2090,7 @@ namespace ASC.Api.Settings
             ServiceClient.Migrate(Tenant.TenantId, settings);
 
             Tenant.SetStatus(TenantStatus.Migrating);
-            _ = TenantManager.SaveTenant(Tenant);
+            TenantManager.SaveTenant(Tenant);
         }
 
         [Read("socket")]
@@ -2125,7 +2125,7 @@ namespace ASC.Api.Settings
 
             settings.IsLicensorSetting = false; //TODO: CoreContext.TenantManager.GetTenantQuota(TenantProvider.CurrentTenantID).Branding && settings.IsLicensor
 
-            _ = SettingsManager.SaveForDefaultTenant(settings);
+            SettingsManager.SaveForDefaultTenant(settings);
         }
 
         ///<visible>false</visible>
@@ -2143,7 +2143,7 @@ namespace ASC.Api.Settings
 
             var defaultSettings = (CompanyWhiteLabelSettings)SettingsManager.LoadForDefaultTenant<CompanyWhiteLabelSettings>().GetDefault(CoreSettings);
 
-            _ = SettingsManager.SaveForDefaultTenant(defaultSettings);
+            SettingsManager.SaveForDefaultTenant(defaultSettings);
 
             return defaultSettings;
         }
@@ -2156,7 +2156,7 @@ namespace ASC.Api.Settings
 
             DemandRebrandingPermission();
 
-            _ = SettingsManager.SaveForDefaultTenant(settings);
+            SettingsManager.SaveForDefaultTenant(settings);
         }
 
         ///<visible>false</visible>
@@ -2174,7 +2174,7 @@ namespace ASC.Api.Settings
 
             var defaultSettings = (AdditionalWhiteLabelSettings)SettingsManager.LoadForDefaultTenant<AdditionalWhiteLabelSettings>().GetDefault(Configuration);
 
-            _ = SettingsManager.SaveForDefaultTenant(defaultSettings);
+            SettingsManager.SaveForDefaultTenant(defaultSettings);
 
             return defaultSettings;
         }
@@ -2187,7 +2187,7 @@ namespace ASC.Api.Settings
 
             DemandRebrandingPermission();
 
-            _ = SettingsManager.SaveForDefaultTenant(settings);
+            SettingsManager.SaveForDefaultTenant(settings);
         }
 
         ///<visible>false</visible>
@@ -2200,7 +2200,7 @@ namespace ASC.Api.Settings
 
             settings.FooterEnabled = footerEnabled;
 
-            _ = SettingsManager.SaveForDefaultTenant(settings);
+            SettingsManager.SaveForDefaultTenant(settings);
         }
 
         ///<visible>false</visible>
@@ -2218,7 +2218,7 @@ namespace ASC.Api.Settings
 
             var defaultSettings = (MailWhiteLabelSettings)SettingsManager.LoadForDefaultTenant<MailWhiteLabelSettings>().GetDefault(Configuration);
 
-            _ = SettingsManager.SaveForDefaultTenant(defaultSettings);
+            SettingsManager.SaveForDefaultTenant(defaultSettings);
 
             return defaultSettings;
         }
@@ -2378,7 +2378,7 @@ namespace ASC.Api.Settings
                     throw new Exception(Resource.ErrorRequestLimitExceeded);
             }
 
-            _ = MemoryCache.Set(key, ++count, TimeSpan.FromMinutes(expirationMinutes));
+            MemoryCache.Set(key, ++count, TimeSpan.FromMinutes(expirationMinutes));
         }
     }
 
@@ -2412,7 +2412,6 @@ namespace ASC.Api.Settings
                 .AddPermissionContextService()
                 .AddWebItemManager()
                 .AddWebItemManagerSecurity()
-                .AddCdnStorageSettingsService()
                 .AddStorageSettingsService()
                 .AddStorageFactoryService()
                 .AddStorageFactoryConfigService()

@@ -51,7 +51,7 @@ namespace ASC.Data.Backup.Storage
         {
             using var stream = File.OpenRead(localPath);
             var storagePath = Path.GetFileName(localPath);
-            _ = GetDataStore().Save("", storagePath, stream);
+            GetDataStore().Save("", storagePath, stream);
             return storagePath;
         }
 

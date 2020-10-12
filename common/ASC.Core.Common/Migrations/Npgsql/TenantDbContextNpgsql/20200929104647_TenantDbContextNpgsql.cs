@@ -10,10 +10,10 @@ namespace ASC.Core.Common.Migrations.Npgsql.TenantDbContextNpgsql
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            _ = migrationBuilder.EnsureSchema(
+            migrationBuilder.EnsureSchema(
                 name: "onlyoffice");
 
-            _ = migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "core_settings",
                 schema: "onlyoffice",
                 columns: table => new
@@ -25,10 +25,10 @@ namespace ASC.Core.Common.Migrations.Npgsql.TenantDbContextNpgsql
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("core_settings_pkey", x => new { x.tenant, x.id });
+                    table.PrimaryKey("core_settings_pkey", x => new { x.tenant, x.id });
                 });
 
-            _ = migrationBuilder.InsertData(
+            migrationBuilder.InsertData(
                 schema: "onlyoffice",
                 table: "core_settings",
                 columns: new[] { "tenant", "id", "last_modified", "value" },
@@ -39,7 +39,7 @@ namespace ASC.Core.Common.Migrations.Npgsql.TenantDbContextNpgsql
                     { -1, "SmtpSettings", new DateTime(2020, 10, 1, 16, 42, 12, 312, DateTimeKind.Utc).AddTicks(5448), new byte[] { 48, 120, 70, 48, 53, 50, 69, 48, 57, 48, 65, 49, 65, 51, 55, 53, 48, 68, 65, 68, 67, 68, 52, 69, 57, 57, 54, 49, 68, 65, 48, 52, 65, 65, 53, 49, 69, 70, 48, 49, 57, 55, 69, 50, 67, 48, 54, 50, 51, 67, 70, 49, 50, 67, 53, 56, 51, 56, 66, 70, 65, 52, 48, 65, 57, 66, 52, 56, 66, 65, 69, 70, 67, 66, 69, 51, 55, 49, 53, 56, 55, 55, 51, 49, 68, 55, 69, 51, 68, 67, 57, 69, 55, 67, 54, 48, 48, 57, 55, 52, 50, 70, 57, 69, 52, 49, 53, 68, 53, 54, 68, 66, 48, 70, 48, 65, 69, 48, 56, 69, 51, 50, 70, 56, 57, 48, 52, 66, 50, 67, 52, 52, 49, 67, 67, 54, 53, 55, 67, 54, 52, 53, 52, 51, 69, 65, 69, 69, 50, 54, 50, 48, 52, 52, 65, 50, 56, 66, 52, 51, 51, 53, 68, 67, 66, 48, 70, 48, 67, 52, 69, 57, 52, 48, 49, 68, 56, 57, 49, 70, 65, 48, 54, 51, 54, 57, 70, 57, 56, 52, 67, 65, 50, 68, 52, 55, 53, 67, 56, 54, 67, 50, 51, 55, 57, 49, 55, 57, 54, 49, 67, 53, 56, 50, 55, 55, 54, 57, 56, 51, 49, 53, 56, 53, 50, 51, 48, 65, 54, 54, 65, 67, 55, 55, 56, 55, 69, 54, 70, 66, 53, 54, 70, 68, 51, 69, 51, 55, 51, 56, 57, 50, 54, 55, 65, 52, 54, 65 } }
                 });
 
-            _ = migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "core_user",
                 schema: "onlyoffice",
                 columns: table => new
@@ -72,16 +72,16 @@ namespace ASC.Core.Common.Migrations.Npgsql.TenantDbContextNpgsql
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("PK_core_user", x => x.id);
+                    table.PrimaryKey("PK_core_user", x => x.id);
                 });
 
-            _ = migrationBuilder.InsertData(
+            migrationBuilder.InsertData(
                schema: "onlyoffice",
                table: "core_user",
                columns: new[] { "id", "firstname", "lastname", "username", "tenant", "email", "workfromdate", "last_modified", "status", "activation_status", "phone_activation", "removed" },
                values: new object[] { new Guid("66faa6e4-f133-11ea-b126-00ffeec8b4ef"), "Administrator", "", "administrator", 1, " ", new DateTime(2020, 9, 29, 10, 46, 46, 424, DateTimeKind.Utc).AddTicks(6218), new DateTime(2020, 9, 29, 10, 46, 46, 424, DateTimeKind.Utc).AddTicks(6218), 1, 0, 0, false });
 
-            _ = migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "tenants_forbiden",
                 schema: "onlyoffice",
                 columns: table => new
@@ -90,10 +90,10 @@ namespace ASC.Core.Common.Migrations.Npgsql.TenantDbContextNpgsql
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("tenants_forbiden_pkey", x => x.address);
+                    table.PrimaryKey("tenants_forbiden_pkey", x => x.address);
                 });
 
-            _ = _ = migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "tenants_iprestrictions",
                 schema: "onlyoffice",
                 columns: table => new
@@ -105,10 +105,10 @@ namespace ASC.Core.Common.Migrations.Npgsql.TenantDbContextNpgsql
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("PK_tenants_iprestrictions", x => x.id);
+                    table.PrimaryKey("PK_tenants_iprestrictions", x => x.id);
                 });
 
-            _ = migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "tenants_tenants",
                 schema: "onlyoffice",
                 columns: table => new
@@ -139,10 +139,10 @@ namespace ASC.Core.Common.Migrations.Npgsql.TenantDbContextNpgsql
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("PK_tenants_tenants", x => x.id);
+                    table.PrimaryKey("PK_tenants_tenants", x => x.id);
                 });
 
-            _ = migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "tenants_version",
                 schema: "onlyoffice",
                 columns: table => new
@@ -155,10 +155,10 @@ namespace ASC.Core.Common.Migrations.Npgsql.TenantDbContextNpgsql
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("PK_tenants_version", x => x.id);
+                    table.PrimaryKey("PK_tenants_version", x => x.id);
                 });
 
-            _ = migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "core_usergroup",
                 schema: "onlyoffice",
                 columns: table => new
@@ -172,16 +172,16 @@ namespace ASC.Core.Common.Migrations.Npgsql.TenantDbContextNpgsql
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("core_usergroup_pkey", x => new { x.tenant, x.userid, x.groupid, x.ref_type });
+                    table.PrimaryKey("core_usergroup_pkey", x => new { x.tenant, x.userid, x.groupid, x.ref_type });
 
                 });
-            _ = migrationBuilder.InsertData(
+            migrationBuilder.InsertData(
                schema: "onlyoffice",
                table: "core_usergroup",
                columns: new[] { "tenant", "userid", "groupid", "ref_type", "last_modified", "removed" },
                values: new object[] { 1, new Guid("66faa6e4-f133-11ea-b126-00ffeec8b4ef"), "cd84e66b-b803-40fc-99f9-b2969a54a1de", 0, new DateTime(2020, 9, 29, 10, 46, 46, 424, DateTimeKind.Utc).AddTicks(6218), false });
 
-            _ = migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "core_usersecurity",
                 schema: "onlyoffice",
                 columns: table => new
@@ -194,17 +194,17 @@ namespace ASC.Core.Common.Migrations.Npgsql.TenantDbContextNpgsql
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("core_usersecurity_pkey", x => x.userid);
+                    table.PrimaryKey("core_usersecurity_pkey", x => x.userid);
                 });
 
-            _ = migrationBuilder.InsertData(
+            migrationBuilder.InsertData(
                schema: "onlyoffice",
                table: "core_usersecurity",
                columns: new[] { "userid", "tenant", "pwdhash", "pwdhashsha512", "LastModified" },
                values: new object[] { new Guid("66faa6e4-f133-11ea-b126-00ffeec8b4ef"), 1, "vLFfghR5tNV3K9DKhmwArV+SbjWAcgZZzIDTnJ0JgCo=", "USubvPlB+ogq0Q1trcSupg==", new DateTime(2020, 9, 29, 10, 46, 46, 424, DateTimeKind.Utc).AddTicks(6218) });
 
 
-            _ = migrationBuilder.CreateTable(
+            migrationBuilder.CreateTable(
                 name: "tenants_partners",
                 schema: "onlyoffice",
                 columns: table => new
@@ -216,11 +216,11 @@ namespace ASC.Core.Common.Migrations.Npgsql.TenantDbContextNpgsql
                 },
                 constraints: table =>
                 {
-                    _ = table.PrimaryKey("tenants_partners_pkey", x => x.tenant_id);
+                    table.PrimaryKey("tenants_partners_pkey", x => x.tenant_id);
 
                 });
 
-            _ = migrationBuilder.InsertData(
+            migrationBuilder.InsertData(
                 schema: "onlyoffice",
                 table: "tenants_forbiden",
                 column: "address",
@@ -230,80 +230,80 @@ namespace ASC.Core.Common.Migrations.Npgsql.TenantDbContextNpgsql
                     "localhost"
                 });
 
-            _ = migrationBuilder.InsertData(
+            migrationBuilder.InsertData(
                 schema: "onlyoffice",
                 table: "tenants_tenants",
                 columns: new[] { "id", "alias", "creationdatetime", "industry", "name", "owner_id", "public", "status", "statuschanged", "version_changed", "Version_Changed" },
                 values: new object[] { 1, "localhost", new DateTime(2020, 9, 29, 10, 46, 46, 424, DateTimeKind.Utc).AddTicks(6218), null, "Web Office", new Guid("66faa6e4-f133-11ea-b126-00ffeec8b4ef"), false, 0, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null });
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "email",
                 schema: "onlyoffice",
                 table: "core_user",
                 column: "email");
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "last_modified_core_user",
                 schema: "onlyoffice",
                 table: "core_user",
                 column: "last_modified");
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "username",
                 schema: "onlyoffice",
                 table: "core_user",
                 columns: new[] { "username", "tenant" });
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "last_modified_core_usergroup",
                 schema: "onlyoffice",
                 table: "core_usergroup",
                 column: "last_modified");
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "IX_core_usergroup_userid",
                 schema: "onlyoffice",
                 table: "core_usergroup",
                 column: "userid");
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "pwdhash",
                 schema: "onlyoffice",
                 table: "core_usersecurity",
                 column: "pwdhash");
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "tenant_core_usersecurity",
                 schema: "onlyoffice",
                 table: "core_usersecurity",
                 column: "tenant");
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "tenant_tenants_iprestrictions",
                 schema: "onlyoffice",
                 table: "tenants_iprestrictions",
                 column: "tenant");
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "alias",
                 schema: "onlyoffice",
                 table: "tenants_tenants",
                 column: "alias",
                 unique: true);
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "last_modified_tenants_tenants",
                 schema: "onlyoffice",
                 table: "tenants_tenants",
                 column: "last_modified");
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "mappeddomain",
                 schema: "onlyoffice",
                 table: "tenants_tenants",
                 column: "mappeddomain");
 
-            _ = migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex(
                 name: "version",
                 schema: "onlyoffice",
                 table: "tenants_tenants",
@@ -312,39 +312,39 @@ namespace ASC.Core.Common.Migrations.Npgsql.TenantDbContextNpgsql
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "core_settings",
                 schema: "onlyoffice");
 
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "core_usergroup",
                 schema: "onlyoffice");
 
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "core_usersecurity",
                 schema: "onlyoffice");
 
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "tenants_forbiden",
                 schema: "onlyoffice");
 
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "tenants_iprestrictions",
                 schema: "onlyoffice");
 
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "tenants_partners",
                 schema: "onlyoffice");
 
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "tenants_version",
                 schema: "onlyoffice");
 
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "core_user",
                 schema: "onlyoffice");
 
-            _ = migrationBuilder.DropTable(
+            migrationBuilder.DropTable(
                 name: "tenants_tenants",
                 schema: "onlyoffice");
         }

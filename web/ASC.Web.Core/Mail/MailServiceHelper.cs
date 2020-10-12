@@ -217,7 +217,7 @@ namespace ASC.Web.Core.Mail
             };
 
             var pReq = MailDbContext.MailboxProvider.Add(mailboxProvider);
-            _ = MailDbContext.SaveChanges();
+            MailDbContext.SaveChanges();
             mailboxProvider = pReq.Entity;
 
             var providerId = mailboxProvider.Id;
@@ -236,7 +236,7 @@ namespace ASC.Web.Core.Mail
             };
 
             var req = MailDbContext.MailboxServer.Add(mailboxServer);
-            _ = MailDbContext.SaveChanges();
+            MailDbContext.SaveChanges();
 
             mailboxServer = req.Entity;
 
@@ -256,7 +256,7 @@ namespace ASC.Web.Core.Mail
             };
 
             req = MailDbContext.MailboxServer.Add(mailboxServer);
-            _ = MailDbContext.SaveChanges();
+            MailDbContext.SaveChanges();
 
             mailboxServer = req.Entity;
 
@@ -276,14 +276,14 @@ namespace ASC.Web.Core.Mail
                 ImapSettingsId = imapServerId
             };
 
-            _ = MailDbContext.ServerServer.Add(server);
-            _ = MailDbContext.SaveChanges();
+            MailDbContext.ServerServer.Add(server);
+            MailDbContext.SaveChanges();
 
             if (mailServerData != null)
             {
                 server = MailDbContext.ServerServer.Where(r => r.Id == mailServerData.Id).FirstOrDefault();
-                _ = MailDbContext.ServerServer.Remove(server);
-                _ = MailDbContext.SaveChanges();
+                MailDbContext.ServerServer.Remove(server);
+                MailDbContext.SaveChanges();
 
                 providerId = MailDbContext.MailboxServer
                     .Where(r => r.Id == mailServerData.SmtpSettingsId)
@@ -292,14 +292,14 @@ namespace ASC.Web.Core.Mail
 
                 var providers = MailDbContext.MailboxProvider.Where(r => r.Id == providerId).ToList();
                 MailDbContext.MailboxProvider.RemoveRange(providers);
-                _ = MailDbContext.SaveChanges();
+                MailDbContext.SaveChanges();
 
                 var servers = MailDbContext.MailboxServer
                     .Where(r => new[] { mailServerData.SmtpSettingsId, mailServerData.ImapSettingsId }.Any(a => a == r.Id))
                     .ToList();
 
                 MailDbContext.MailboxServer.RemoveRange(servers);
-                _ = MailDbContext.SaveChanges();
+                MailDbContext.SaveChanges();
 
                 var mailboxId = MailDbContext.Mailbox
                     .Where(r => r.IdSmtpServer == mailServerData.SmtpSettingsId)
@@ -311,7 +311,7 @@ namespace ASC.Web.Core.Mail
                     m.IdSmtpServer = smtpServerId;
                     m.IdInServer = imapServerId;
                 }
-                _ = MailDbContext.SaveChanges();
+                MailDbContext.SaveChanges();
             }
 
             transaction.Commit();

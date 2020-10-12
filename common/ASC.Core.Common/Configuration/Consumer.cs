@@ -437,7 +437,7 @@ namespace ASC.Core.Common.Configuration
     {
         public static DIHelper AddConsumerFactoryService(this DIHelper services)
         {
-            _ = services.TryAddScoped<ConsumerFactory>();
+            services.TryAddScoped<ConsumerFactory>();
             return services;
         }
     }
