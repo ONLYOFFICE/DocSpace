@@ -36,14 +36,16 @@ const PureSettings = ({
   const { setting } = match.params;
 
   useEffect(() => {
-    setIsLoading(true);
-    getFilesSettings()
-      .then(() => setIsLoading(false))
-      .catch((e) => {
-        setIsErrorSettings(true);
-        setIsLoading(false);
-      });
-  }, [getFilesSettings, setIsErrorSettings, setIsLoading]);
+    if (Object.keys(settingsTree).length === 0) {
+      setIsLoading(true);
+      getFilesSettings()
+        .then(() => setIsLoading(false))
+        .catch((e) => {
+          setIsErrorSettings(true);
+          setIsLoading(false);
+        });
+    }
+  }, [getFilesSettings, setIsErrorSettings, setIsLoading, settingsTree]);
 
   useEffect(() => {
     if (isLoading) {
@@ -106,6 +108,7 @@ const Settings = (props) => {
 function mapStateToProps(state) {
   return {
     isLoading: state.files.isLoading,
+    settingsTree: state.files.settingsTree,
   };
 }
 
