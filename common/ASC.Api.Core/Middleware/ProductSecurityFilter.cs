@@ -122,8 +122,6 @@ namespace ASC.Api.Core.Middleware
         public static DIHelper AddProductSecurityFilter(this DIHelper services)
         {
             return services
-                .AddUserManagerService()
-                .AddTenantManagerService()
                 .AddWebItemSecurity()
                 .AddAuthContextService();
         }
