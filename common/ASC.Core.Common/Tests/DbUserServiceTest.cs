@@ -131,7 +131,7 @@ namespace ASC.Core.Common.Tests
             Service.SetUserPhoto(Tenant, user1.ID, new byte[] { 1, 2, 3 });
             CollectionAssert.AreEquivalent(new byte[] { 1, 2, 3 }, Service.GetUserPhoto(Tenant, user1.ID));
 
-            var password = "password";
+            //var password = "password";
             //Service.SetUserPassword(Tenant, user1.ID, password);
             //Assert.AreEqual(password, Service.GetUserPassword(Tenant, user1.ID));
 

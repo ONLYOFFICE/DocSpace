@@ -137,7 +137,7 @@ namespace ASC.Web.Core.Users
                 userInfo.ActivationStatus = !afterInvite ? EmployeeActivationStatus.Pending : EmployeeActivationStatus.Activated;
             }
 
-            var newUserInfo = UserManager.SaveUserInfo(userInfo, isVisitor);
+            var newUserInfo = UserManager.SaveUserInfo(userInfo);
             SecurityContext.SetUserPasswordHash(newUserInfo.ID, passwordHash);
 
             if (CoreBaseSettings.Personal)

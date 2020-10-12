@@ -369,7 +369,7 @@ namespace ASC.ApiSystem.Controllers
         [Authorize(AuthenticationSchemes = "auth.allowskip")]
         public IActionResult Remove([FromQuery] TenantModel model)
         {
-            if (!CommonMethods.GetTenant(model, out Tenant tenant))
+            if (!CommonMethods.GetTenant(model, out var tenant))
             {
                 Log.Error("Model without tenant");
 
@@ -404,7 +404,7 @@ namespace ASC.ApiSystem.Controllers
         [Authorize(AuthenticationSchemes = "auth.allowskip")]
         public IActionResult ChangeStatus(TenantModel model)
         {
-            if (!CommonMethods.GetTenant(model, out Tenant tenant))
+            if (!CommonMethods.GetTenant(model, out var tenant))
             {
                 Log.Error("Model without tenant");
 
@@ -456,7 +456,7 @@ namespace ASC.ApiSystem.Controllers
                 });
             }
 
-            if (!CheckExistingNamePortal((model.PortalName ?? "").Trim(), out object error))
+            if (!CheckExistingNamePortal((model.PortalName ?? "").Trim(), out var error))
             {
                 return BadRequest(error);
             }

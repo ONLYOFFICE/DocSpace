@@ -58,12 +58,12 @@ namespace ASC.Data.Backup.Storage
 
         public string Upload(string storageBasePath, string localPath, Guid userId)
         {
-            var key = String.Empty;
+            string key;
 
-            if (String.IsNullOrEmpty(storageBasePath))
+            if (string.IsNullOrEmpty(storageBasePath))
                 key = "backup/" + Path.GetFileName(localPath);
             else
-                key = String.Concat(storageBasePath.Trim(new char[] { ' ', '/', '\\' }), "/", Path.GetFileName(localPath));
+                key = string.Concat(storageBasePath.Trim(new char[] { ' ', '/', '\\' }), "/", Path.GetFileName(localPath));
 
             using (var fileTransferUtility = new TransferUtility(accessKeyId, secretAccessKey, RegionEndpoint.GetBySystemName(region)))
             {

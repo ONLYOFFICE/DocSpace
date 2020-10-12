@@ -383,7 +383,8 @@ namespace ASC.Common.Logging
 
         public void Configure(LogNLog options)
         {
-            LogManager.Configuration = new NLog.Config.XmlLoggingConfiguration(Path.Combine(Configuration["pathToConf"], "nlog.config"), true);
+            LogManager.Configuration = new NLog.Config.XmlLoggingConfiguration(Path.Combine(Configuration["pathToConf"], "nlog.config"));
+            LogManager.ThrowConfigExceptions = false;
 
             var settings = Configuration.GetSetting<NLogSettings>("log");
             if (!string.IsNullOrEmpty(settings.Name))

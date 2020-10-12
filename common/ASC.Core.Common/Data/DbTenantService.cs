@@ -149,7 +149,7 @@ namespace ASC.Core.Data
         {
             if (string.IsNullOrEmpty(login)) throw new ArgumentNullException("login");
 
-            Func<IQueryable<TenantUserSecurity>> query = () => TenantsQuery()
+            IQueryable<TenantUserSecurity> query() => TenantsQuery()
                     .Where(r => r.Status == TenantStatus.Active)
                     .Join(TenantDbContext.Users, r => r.Id, r => r.Tenant, (tenant, user) => new
                     {

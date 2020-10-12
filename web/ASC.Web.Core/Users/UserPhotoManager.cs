@@ -726,7 +726,7 @@ namespace ASC.Web.Core.Users
 
         public string SaveTempPhoto(byte[] data, long maxFileSize, int maxWidth, int maxHeight)
         {
-            data = TryParseImage(data, maxFileSize, new Size(maxWidth, maxHeight), out var imgFormat, out var width, out var height);
+            data = TryParseImage(data, maxFileSize, new Size(maxWidth, maxHeight), out var imgFormat, out _, out _);
 
             var fileName = Guid.NewGuid() + "." + CommonPhotoManager.GetImgFormatName(imgFormat);
 

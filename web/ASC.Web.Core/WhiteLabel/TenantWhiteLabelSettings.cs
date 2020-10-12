@@ -314,7 +314,7 @@ namespace ASC.Web.Core.WhiteLabel
 
             var generalSize = GetSize(type, true);
             var generalFileName = BuildLogoFileName(type, logoFileExt, true);
-            ResizeLogo(type, generalFileName, data, -1, generalSize, store);
+            ResizeLogo(generalFileName, data, -1, generalSize, store);
         }
 
         public void SetLogo(TenantWhiteLabelSettings tenantWhiteLabelSettings, Dictionary<int, string> logo, IDataStore storage = null)
@@ -329,8 +329,7 @@ namespace ASC.Web.Core.WhiteLabel
                 if (!string.IsNullOrEmpty(currentLogoPath))
                 {
                     var fileExt = "png";
-                    byte[] data = null;
-
+                    byte[] data;
                     if (!currentLogoPath.StartsWith(xStart))
                     {
                         var fileName = Path.GetFileName(currentLogoPath);
@@ -499,7 +498,7 @@ namespace ASC.Web.Core.WhiteLabel
             };
         }
 
-        private static void ResizeLogo(WhiteLabelLogoTypeEnum type, string fileName, byte[] data, long maxFileSize, Size size, IDataStore store)
+        private static void ResizeLogo(string fileName, byte[] data, long maxFileSize, Size size, IDataStore store)
         {
             //Resize synchronously
             if (data == null || data.Length <= 0) throw new UnknownImageFormatException();

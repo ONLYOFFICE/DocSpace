@@ -36,7 +36,7 @@ namespace ASC.Data.Storage.Encryption
     {
         public static async Task Main(string[] args)
         {
-            Host.CreateDefaultBuilder(args)
+            await Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     _ = webBuilder.UseStartup<Startup>();
@@ -67,7 +67,7 @@ namespace ASC.Data.Storage.Encryption
                 })
                 .UseConsoleLifetime()
                 .Build()
-                .Run();
+                .RunAsync();
         }
     }
 }

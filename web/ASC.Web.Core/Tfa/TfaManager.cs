@@ -119,7 +119,7 @@ namespace ASC.Web.Studio.Core.TFA
             return Tfa.GenerateSetupCode(SetupInfo.TfaAppSender, user.Email, Encoding.UTF8.GetBytes(GenerateAccessToken(user)), size, true);
         }
 
-        public bool ValidateAuthCode(UserInfo user, int tenantId, string code, bool checkBackup = true)
+        public bool ValidateAuthCode(UserInfo user, string code, bool checkBackup = true)
         {
             if (!TfaAppAuthSettings.IsVisibleSettings
                 || !SettingsManager.Load<TfaAppAuthSettings>().EnableSetting)
@@ -162,14 +162,14 @@ namespace ASC.Web.Studio.Core.TFA
 
             if (!TfaAppUserSettings.EnableForUser(SettingsManager, user.ID))
             {
-                _ = GenerateBackupCodes(user);
+                _ = GenerateBackupCodes();
                 return true;
             }
 
             return false;
         }
 
-        public IEnumerable<BackupCode> GenerateBackupCodes(UserInfo user)
+        public IEnumerable<BackupCode> GenerateBackupCodes()
         {
             var count = SetupInfo.TfaAppBackupCodeCount;
             var length = SetupInfo.TfaAppBackupCodeLength;

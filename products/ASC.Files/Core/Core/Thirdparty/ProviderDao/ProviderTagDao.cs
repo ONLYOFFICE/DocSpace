@@ -129,10 +129,6 @@ namespace ASC.Files.Thirdparty.ProviderDao
         }
 
         #endregion
-
-        public void Dispose()
-        {
-        }
     }
 
     public static class ProviderTagDaoExtention
@@ -141,11 +137,11 @@ namespace ASC.Files.Thirdparty.ProviderDao
         {
             if (services.TryAddScoped<ITagDao<string>, ProviderTagDao>())
             {
-            return services
-                .AddProviderDaoBaseService();
-        }
+                return services
+                    .AddProviderDaoBaseService();
+            }
 
             return services;
-    }
+        }
     }
 }

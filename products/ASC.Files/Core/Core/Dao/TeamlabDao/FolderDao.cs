@@ -822,7 +822,7 @@ namespace ASC.Files.Core.Data
 
             foreach (var key in keys)
             {
-                int newFolderId = 0;
+                var newFolderId = 0;
                 if (createIfNotExists && !folderIdsDictionary.TryGetValue(key, out var folderId))
                 {
                     var folder = ServiceProvider.GetService<Folder<int>>();
@@ -1289,23 +1289,23 @@ namespace ASC.Files.Core.Data
                 _ = services.TryAddTransient<Folder<int>>();
                 _ = services.TryAddTransient<Folder<string>>();
 
-            return services
-                .AddFactoryIndexerService<DbFolder>()
-                .AddTenantManagerService()
-                .AddUserManagerService()
-                .AddFilesDbContextService()
-                .AddTenantUtilService()
-                .AddSetupInfo()
-                .AddTenantExtraService()
-                .AddTenantStatisticsProviderService()
-                .AddCoreBaseSettingsService()
-                .AddCoreConfigurationService()
-                .AddSettingsManagerService()
-                .AddAuthContextService()
-                .AddGlobalSpaceService();
-        }
+                return services
+                    .AddFactoryIndexerService<DbFolder>()
+                    .AddTenantManagerService()
+                    .AddUserManagerService()
+                    .AddFilesDbContextService()
+                    .AddTenantUtilService()
+                    .AddSetupInfo()
+                    .AddTenantExtraService()
+                    .AddTenantStatisticsProviderService()
+                    .AddCoreBaseSettingsService()
+                    .AddCoreConfigurationService()
+                    .AddSettingsManagerService()
+                    .AddAuthContextService()
+                    .AddGlobalSpaceService();
+            }
 
             return services;
-    }
+        }
     }
 }

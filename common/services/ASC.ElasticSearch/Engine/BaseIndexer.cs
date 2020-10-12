@@ -266,6 +266,7 @@ namespace ASC.ElasticSearch
         public async Task ReIndex()
         {
             Clear();
+            await Task.CompletedTask;
             //((IIndexer) this).IndexAll();
         }
 
@@ -474,7 +475,7 @@ namespace ASC.ElasticSearch
 
             var sourceExprText = "";
 
-            while (!string.IsNullOrEmpty(name = TryGetName(expression, out MemberExpression member)))
+            while (!string.IsNullOrEmpty(name = TryGetName(expression, out var member)))
             {
                 sourceExprText = "." + name + sourceExprText;
                 expression = member.Expression;

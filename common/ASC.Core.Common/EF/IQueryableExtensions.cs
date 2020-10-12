@@ -20,7 +20,7 @@ namespace ASC.Core.Common.EF
             var sqlGenerator = factory.Create();
             var command = sqlGenerator.GetCommand(selectExpression);
 
-            string sql = command.CommandText;
+            var sql = command.CommandText;
             return sql;
         }
 

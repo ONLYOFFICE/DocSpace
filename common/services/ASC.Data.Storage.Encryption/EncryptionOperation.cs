@@ -96,7 +96,7 @@ namespace ASC.Data.Storage.Encryption
                 GetProgress(progressEncryption);
                 foreach (var tenant in Tenants)
                 {
-                    Dictionary<string, DiscDataStore> dictionary = new Dictionary<string, DiscDataStore>();
+                    var dictionary = new Dictionary<string, DiscDataStore>();
                     foreach (var module in Modules)
                     {
                         dictionary.Add(module, (DiscDataStore)storageFactory.GetStorage(ConfigPath, tenant.TenantId.ToString(), module));

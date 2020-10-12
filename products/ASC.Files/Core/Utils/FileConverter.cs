@@ -520,7 +520,6 @@ namespace ASC.Web.Files.Utils
             TenantManager tenantManager,
             AuthContext authContext,
             EntryManager entryManager,
-            IOptionsMonitor<ILog> options,
             FilesSettingsHelper filesSettingsHelper,
             GlobalFolderHelper globalFolderHelper,
             FilesMessageService filesMessageService,
@@ -558,7 +557,6 @@ namespace ASC.Web.Files.Utils
             TenantManager tenantManager,
             AuthContext authContext,
             EntryManager entryManager,
-            IOptionsMonitor<ILog> options,
             FilesSettingsHelper filesSettingsHelper,
             GlobalFolderHelper globalFolderHelper,
             FilesMessageService filesMessageService,
@@ -568,7 +566,7 @@ namespace ASC.Web.Files.Utils
             IServiceProvider serviceProvider,
             IHttpContextAccessor httpContextAccesor)
             : this(fileUtility, filesLinkUtility, daoFactory, setupInfo, pathProvider, fileSecurity,
-                  fileMarker, tenantManager, authContext, entryManager, options, filesSettingsHelper,
+                  fileMarker, tenantManager, authContext, entryManager, filesSettingsHelper,
                   globalFolderHelper, filesMessageService, fileShareLink, documentServiceHelper, documentServiceConnector,
                   serviceProvider)
         {

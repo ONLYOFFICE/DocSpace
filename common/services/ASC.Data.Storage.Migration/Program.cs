@@ -17,7 +17,7 @@ namespace ASC.Data.Storage.Migration
     {
         public static async Task Main(string[] args)
         {
-            Host.CreateDefaultBuilder(args)
+            await Host.CreateDefaultBuilder(args)
                 .ConfigureAppConfiguration((hostContext, config) =>
                 {
                     var buided = config.Build();
@@ -59,7 +59,7 @@ namespace ASC.Data.Storage.Migration
                 })
                 .UseConsoleLifetime()
                 .Build()
-                .Run();
+                .RunAsync();
         }
     }
 }

@@ -132,7 +132,7 @@ namespace ASC.Web.Studio.Helpers
             set;
         }
 
-        public ThumbnailGenerator(string tmpPath, bool crop, int width, int heigth, int widthPreview, int heightPreview)
+        public ThumbnailGenerator(bool crop, int width, int heigth, int widthPreview, int heightPreview)
         {
             _crop = crop;
             _width = width;
@@ -397,7 +397,7 @@ namespace ASC.Web.Studio.Helpers
 
         public static void GenerateThumbnail(string path, string outputPath, ref ImageInfo imageInfo)
         {
-            var _generator = new ThumbnailGenerator(null, true,
+            var _generator = new ThumbnailGenerator(true,
                 maxSize,
                 maxSize,
                 maxWidthPreview,
@@ -408,7 +408,7 @@ namespace ASC.Web.Studio.Helpers
 
         public static void GenerateThumbnail(string path, string outputPath, ref ImageInfo imageInfo, int maxWidth, int maxHeight)
         {
-            var _generator = new ThumbnailGenerator(null, true,
+            var _generator = new ThumbnailGenerator(true,
                 maxWidth,
                 maxHeight,
                 maxWidthPreview,
@@ -418,7 +418,7 @@ namespace ASC.Web.Studio.Helpers
         }
         public static void GenerateThumbnail(Stream stream, string outputPath, ref ImageInfo imageInfo, int maxWidth, int maxHeight)
         {
-            var _generator = new ThumbnailGenerator(null, true,
+            var _generator = new ThumbnailGenerator(true,
                 maxWidth,
                 maxHeight,
                 maxWidthPreview,
@@ -429,7 +429,7 @@ namespace ASC.Web.Studio.Helpers
 
         public static void GenerateThumbnail(string path, string outputPath, ref ImageInfo imageInfo, int maxWidth, int maxHeight, IDataStore store)
         {
-            var _generator = new ThumbnailGenerator(null, true,
+            var _generator = new ThumbnailGenerator(true,
                 maxWidth,
                 maxHeight,
                 maxWidthPreview,
@@ -442,7 +442,7 @@ namespace ASC.Web.Studio.Helpers
         }
         public static void GenerateThumbnail(Stream stream, string outputPath, ref ImageInfo imageInfo, int maxWidth, int maxHeight, IDataStore store)
         {
-            var _generator = new ThumbnailGenerator(null, true,
+            var _generator = new ThumbnailGenerator(true,
                 maxWidth,
                 maxHeight,
                 maxWidthPreview,
@@ -457,7 +457,7 @@ namespace ASC.Web.Studio.Helpers
 
         public static void GenerateThumbnail(Stream stream, string outputPath, ref ImageInfo imageInfo)
         {
-            var _generator = new ThumbnailGenerator(null, true,
+            var _generator = new ThumbnailGenerator(true,
                 maxSize,
                 maxSize,
                 maxWidthPreview,
@@ -468,7 +468,7 @@ namespace ASC.Web.Studio.Helpers
 
         public static void GenerateThumbnail(Stream stream, string outputPath, ref ImageInfo imageInfo, IDataStore store)
         {
-            var _generator = new ThumbnailGenerator(null, true,
+            var _generator = new ThumbnailGenerator(true,
                 maxSize,
                 maxSize,
                 maxWidthPreview,
@@ -482,7 +482,7 @@ namespace ASC.Web.Studio.Helpers
 
         public static void GeneratePreview(string path, string outputPath, ref ImageInfo imageInfo)
         {
-            var _generator = new ThumbnailGenerator(null, true,
+            var _generator = new ThumbnailGenerator(true,
                 maxSize,
                 maxSize,
                 maxWidthPreview,
@@ -493,7 +493,7 @@ namespace ASC.Web.Studio.Helpers
         }
         public static void GeneratePreview(Stream stream, string outputPath, ref ImageInfo imageInfo)
         {
-            var _generator = new ThumbnailGenerator(null, true,
+            var _generator = new ThumbnailGenerator(true,
                 maxSize,
                 maxSize,
                 maxWidthPreview,
@@ -504,7 +504,7 @@ namespace ASC.Web.Studio.Helpers
         }
         public static void GeneratePreview(Stream stream, string outputPath, ref ImageInfo imageInfo, IDataStore store)
         {
-            var _generator = new ThumbnailGenerator(null, true,
+            var _generator = new ThumbnailGenerator(true,
                 maxSize,
                 maxSize,
                 maxWidthPreview,
@@ -519,7 +519,7 @@ namespace ASC.Web.Studio.Helpers
 
         public static void RotateImage(string path, string outputPath, bool back, IDataStore store)
         {
-            var _generator = new ThumbnailGenerator(null, true,
+            var _generator = new ThumbnailGenerator(true,
                 maxSize,
                 maxSize,
                 maxWidthPreview,

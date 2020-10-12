@@ -130,7 +130,7 @@ namespace ASC.Web.Core.Sms
     public abstract class SmsProvider : Consumer
     {
         protected readonly ILog Log;
-        protected static readonly ICache Cache = AscCache.Memory;
+        protected static readonly ICache MemoryCache = AscCache.Memory;
 
         protected virtual string SendMessageUrlFormat { get; set; }
         protected virtual string GetBalanceUrlFormat { get; set; }
@@ -256,9 +256,9 @@ namespace ASC.Web.Core.Sms
             var tenantCache = tenant == null ? Tenant.DEFAULT_TENANT : tenant.TenantId;
 
             var key = "sms/smsc/" + tenantCache;
-            if (eraseCache) Cache.Remove(key);
+            if (eraseCache) MemoryCache.Remove(key);
 
-            var balance = Cache.Get<string>(key);
+            var balance = MemoryCache.Get<string>(key);
 
             if (string.IsNullOrEmpty(balance))
             {
@@ -287,7 +287,7 @@ namespace ASC.Web.Core.Sms
                     balance = string.Empty;
                 }
 
-                Cache.Insert(key, balance, TimeSpan.FromMinutes(1));
+                MemoryCache.Insert(key, balance, TimeSpan.FromMinutes(1));
             }
 
             return balance;
@@ -512,7 +512,7 @@ namespace ASC.Web.Core.Sms
         private SecurityContext SecurityContext { get; }
         private BaseCommonLinkUtility BaseCommonLinkUtility { get; }
 
-        public TwilioProviderCleaner(VoipDao voipDao, AuthContext authContext, TenantUtil tenantUtil, SecurityContext securityContext, TenantManager tenantManager, BaseCommonLinkUtility baseCommonLinkUtility, VoipDaoCache voipDaoCache)
+        public TwilioProviderCleaner(VoipDao voipDao, AuthContext authContext, TenantUtil tenantUtil, SecurityContext securityContext, BaseCommonLinkUtility baseCommonLinkUtility)
         {
             VoipDao = voipDao;
             AuthContext = authContext;

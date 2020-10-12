@@ -73,7 +73,7 @@ namespace ASC.Data.Storage.Encryption
                     return iterations.Value;
                 }
 
-                if (!int.TryParse(Configuration["storage:encryption:iterations"], out int iterationsCount))
+                if (!int.TryParse(Configuration["storage:encryption:iterations"], out var iterationsCount))
                 {
                     iterationsCount = 4096;
                 }

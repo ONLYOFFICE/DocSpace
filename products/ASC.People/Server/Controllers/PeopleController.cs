@@ -646,7 +646,7 @@ namespace ASC.Employee.Core.Controllers
                 }
             }
 
-            _ = UserManager.SaveUserInfo(user, memberModel.IsVisitor);
+            _ = UserManager.SaveUserInfo(user);
             MessageService.Send(MessageAction.UserUpdated, MessageTarget.Create(user.ID), user.DisplayUserName(false, DisplayUserSettingsHelper));
 
             if (memberModel.Disable.HasValue && memberModel.Disable.Value)

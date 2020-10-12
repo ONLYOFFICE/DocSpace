@@ -1161,11 +1161,6 @@ namespace ASC.Data.Storage.S3
             return new AmazonS3Client(_accessKeyId, _secretAccessKeyId, cfg);
         }
 
-        public Stream GetWriteStream(string domain, string path)
-        {
-            throw new NotSupportedException();
-        }
-
 
 
         private class ResponseStreamWrapper : Stream

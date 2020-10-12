@@ -269,7 +269,7 @@ namespace ASC.Core
             return findUsers.ToArray();
         }
 
-        public UserInfo SaveUserInfo(UserInfo u, bool isVisitor = false)
+        public UserInfo SaveUserInfo(UserInfo u)
         {
             if (IsSystemUser(u.ID)) return SystemUsers[u.ID];
             if (u.ID == Guid.Empty) PermissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
