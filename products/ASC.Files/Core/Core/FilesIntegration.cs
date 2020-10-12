@@ -140,9 +140,7 @@ namespace ASC.Web.Files.Api
             if (services.TryAddScoped<FilesIntegration>())
             {
                 return services
-                    .AddDaoFactoryService()
-                    .AddFileSecurityService()
-                    .AddGlobalStoreService();
+                    .AddDaoFactoryService();
             }
 
             return services;
