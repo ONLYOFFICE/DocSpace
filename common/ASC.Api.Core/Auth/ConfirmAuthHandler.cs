@@ -102,13 +102,7 @@ namespace ASC.Api.Core.Auth
         public static DIHelper AddConfirmAuthHandler(this DIHelper services)
         {
             return services
-                .AddSecurityContextService()
-                .AddEmailValidationKeyProviderService()
-                .AddSetupInfo()
-                .AddTenantManagerService()
-                .AddUserManagerService()
-                .AddAuthManager()
-                .AddAuthContextService();
+                .AddSecurityContextService();
         }
     }
 }
