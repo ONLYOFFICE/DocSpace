@@ -499,3 +499,4 @@ export function removeFromFavorite(ids) {
 
 export function getDocServiceUrl() {
   return request({ method: "get", url: `/files/docservice` });
+}
