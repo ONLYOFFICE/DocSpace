@@ -105,6 +105,7 @@ class AvatarEditorPage extends React.PureComponent {
         })
         .then(() => {
           this.props.fetchProfile(profile.id);
+          this.returnToEditor(false);
         });
     } else {
       deleteAvatar(profile.id)
@@ -114,7 +115,10 @@ class AvatarEditorPage extends React.PureComponent {
         })
         .catch((error) => toastr.error(error))
         .then(() => this.props.updateProfile(this.props.profile))
-        .then(() => this.props.fetchProfile(profile.id));
+        .then(() => {
+          this.props.fetchProfile(profile.id);
+          this.returnToEditor(false);
+        })
     }
   };
 

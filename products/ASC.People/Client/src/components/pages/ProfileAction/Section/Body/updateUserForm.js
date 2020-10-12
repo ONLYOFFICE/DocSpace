@@ -171,7 +171,8 @@ class UpdateUserForm extends React.Component {
         [dialogsDataset.changeEmail]: false,
         currentDialog: "",
       },
-      isMobile: isMobile || isTablet,    };
+      isMobile: isMobile || isTablet,    
+    };
 
     //Set unique contacts id
     const now = new Date().getTime();
@@ -418,9 +419,8 @@ class UpdateUserForm extends React.Component {
         height: result.height,
         tmpFile: avatar.tmpFile,
       })
-          .then(() => {
+        .then(() => {
           toastr.success(this.props.t("ChangesSavedSuccessfully"));
-          this.setState({ isLoading: false });
           this.setIsEdit();
         })
         .catch((error) => {
@@ -429,19 +429,30 @@ class UpdateUserForm extends React.Component {
         })
         .then(() => {
           this.props.updateProfile(this.props.profile);
-          this.setState({ isLoading: false });
         })
         .then(() => {
-          this.props.fetchProfile(profile.id);
-        });    } else {
+          this.setState({
+            isLoading: false,
+            visibleAvatarEditor: false
+          });
+        })
+        .then(() => {
+          this.setState(this.mapPropsToState(this.props));
+        });    
+      } else {
       deleteAvatar(profile.id)
-        .then(() => {          toastr.success(this.props.t("ChangesSavedSuccessfully"));
-          this.setState({ isLoading: false });
+        .then(() => {          
+          toastr.success(this.props.t("ChangesSavedSuccessfully"));
+          this.setState({ 
+            isLoading: false,
+            visibleAvatarEditor: false
+          });
           this.setIsEdit();
         })
         .catch((error) => toastr.error(error))
         .then(() => this.props.updateProfile(this.props.profile))
-        .then(() => this.props.fetchProfile(profile.id));    }
+        .then(() => this.props.fetchProfile(profile.id));    
+      }
   };
 
   onCloseAvatarEditor() {
