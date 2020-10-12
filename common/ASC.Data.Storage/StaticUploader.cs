@@ -323,7 +323,7 @@ namespace ASC.Data.Storage
                 _ = services.TryAddScoped<StaticUploaderScope>();
                 return services
                     .AddTenantManagerService()
-                    .AddCdnStorageSettingsService();
+                    .AddStorageSettingsService();
             }
 
             return services;

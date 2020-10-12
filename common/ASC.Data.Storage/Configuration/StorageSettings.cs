@@ -229,39 +229,18 @@ namespace ASC.Data.Storage.Configuration
 
     public static class StorageSettingsExtension
     {
-        public static DIHelper AddBaseStorageSettingsService(this DIHelper services)
-        {
-            _ = services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
-            _ = services.TryAddSingleton<BaseStorageSettingsListener>();
-            _ = services.TryAddScoped<BaseStorageSettingsListenerScope>();
-            _ = services.TryAddScoped<CdnStorageSettings>();
-            return services
-                .AddStorageFactoryConfigService()
-                .AddPathUtilsService()
-                .AddEmailValidationKeyProviderService();
-        }
-
-        public static DIHelper AddCdnStorageSettingsService(this DIHelper services)
-        {
-            if (services.TryAddScoped<StorageSettingsHelper>())
-            {
-                return services
-                    .AddSettingsManagerService()
-                    .AddBaseStorageSettingsService()
-                    .AddConsumerFactoryService();
-            }
-
-            return services;
-        }
-
         public static DIHelper AddStorageSettingsService(this DIHelper services)
         {
             if (services.TryAddScoped<StorageSettingsHelper>())
             {
+                _ = services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+                _ = services.TryAddScoped<BaseStorageSettingsListenerScope>();
+                _ = services.TryAddScoped<CdnStorageSettings>();
                 return services
                     .AddSettingsManagerService()
-                    .AddBaseStorageSettingsService()
-                    .AddConsumerFactoryService();
+                    .AddConsumerFactoryService()
+                    .AddStorageFactoryConfigService()
+                    .AddPathUtilsService();
             }
 
             return services;
