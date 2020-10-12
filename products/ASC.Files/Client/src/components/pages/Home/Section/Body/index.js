@@ -1480,6 +1480,8 @@ class SectionBodyContent extends React.Component {
                         : {};
                     const checkedProps = isEdit || item.id <= 0 ? {} : { checked };
                     const element = this.getItemIcon(item, isEdit || item.id <= 0);
+                    const sharedButton = this.getSharedButton();
+                    const displayShareButton = widthProp > 500 ? '96px' : '26px';
                     let classNameProp =
                       isFolder && item.access < 2 && !isRecycleBin ? { className: " dropable" } : { className: "" };
 
@@ -1500,12 +1502,14 @@ class SectionBodyContent extends React.Component {
                           key={item.id}
                           data={item}
                           element={element}
+                          contentElement={sharedButton}
                           onSelect={this.onContentRowSelect}
                           editing={editingId}
                           {...checkedProps}
                           {...contextOptionsProps}
                           needForUpdate={this.needForUpdate}
                           selectItem={this.onSelectItem.bind(this, item)}
+                          contextButtonSpacerWidth={displayShareButton}
                         >
                           <FilesRowContent
                             widthProp={widthProp}
