@@ -1602,6 +1602,7 @@ class SectionBodyContent extends React.Component {
                             culture={settings.culture}
                             onEditComplete={this.onEditComplete}
                             onMediaFileClick={this.onMediaFileClick}
+                            onClickFavorite={this.onClickFavorite}
                           />
                         </SimpleFilesRow>
                       </DragAndDrop>
