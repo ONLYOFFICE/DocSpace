@@ -23,6 +23,7 @@ import {
   getRootFolderId,
   getDraggableItems,
 } from "../../../store/files/selectors";
+import { onConvertFiles } from "../../../helpers/files-converter";
 const { isAdmin } = initStore.auth.selectors;
 
 const { files } = api;
@@ -390,7 +391,8 @@ class TreeFolders extends React.Component {
     const { dragging, id } = data.node.props;
     setDragging(false);
     if (dragging) {
-      onTreeDrop(data.event, id);
+      const promise = new Promise((resolve) => onConvertFiles(data.event, resolve));
+      promise.then(files => onTreeDrop(files, id));
     }
   };
 

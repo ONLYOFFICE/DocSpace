@@ -24,8 +24,8 @@ const DragAndDrop = props => {
   const { isDropZone, children, dragging, className, ...rest } = props;
   const classNameProp = className ? className : "";
 
-  const onDrop = (acceptedFiles, array, e) => {
-    acceptedFiles.length && props.onDrop && props.onDrop(acceptedFiles, e);
+  const onDrop = (acceptedFiles, array) => {
+    acceptedFiles.length && props.onDrop && props.onDrop(acceptedFiles);
   };
 
   const { getRootProps, isDragActive } = useDropzone({

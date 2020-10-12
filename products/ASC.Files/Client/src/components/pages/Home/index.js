@@ -31,7 +31,6 @@ import {
   getFileActionId,
   getFilter,
   getProgressData,
-  getSelected,
   getTreeFolders,
   getViewAs,
   getIsLoading,
@@ -56,15 +55,7 @@ class PureHome extends React.Component {
     this.state = {
       overwriteSetting: false,
       uploadOriginalFormatSetting: false,
-      hideWindowSetting: false,
-
-      files: [],
-      uploadedFiles: 0,
-      percent: 0,
-
-      uploadStatus: null,
-      uploaded: true,
-      uploadToFolder: null,
+      hideWindowSetting: false
     };
   }
 
@@ -158,11 +149,11 @@ class PureHome extends React.Component {
       });
   }
 
-  onDrop = (files, e, uploadToFolder) => {
-    const { t, currentFolderId, startUpload } = this.props;
+  onDrop = (files, uploadToFolder) => {
+    const { t, currentFolderId, startUpload, setDragging } = this.props;
     const folderId = uploadToFolder ? uploadToFolder : currentFolderId;
 
-    this.props.setDragging(false);
+    setDragging(false);
     startUpload(files, folderId, t);
   };
 

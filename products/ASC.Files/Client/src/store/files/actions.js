@@ -759,14 +759,13 @@ const updateFiles = (folderId, dispatch, getState) => {
         const foldersCount = data.selectedFolder.foldersCount;
         loopTreeFolders(path, newTreeFolders, folders, foldersCount);
         dispatch(setTreeFolders(newTreeFolders));
+        dispatch(setUpdateTree(true));
       })
       .catch((err) => toastr.error(err))
       .finally(() => setTimeout(() => { 
         dispatch(clearProgressData());
         dispatch(setUploadData(uploadData));
-      }, 5000))
-    ;
-    //.finally(() => this.setState({ uploaded: true }));
+      }, 5000));
   } else {
     return api.files
       .getFolder(folderId, filter.clone())
@@ -777,13 +776,13 @@ const updateFiles = (folderId, dispatch, getState) => {
         const foldersCount = data.count;
         loopTreeFolders(path, newTreeFolders, folders, foldersCount);
         dispatch(setTreeFolders(newTreeFolders));
+        dispatch(setUpdateTree(true));
       })
       .catch((err) => toastr.error(err))
       .finally(() => setTimeout(() => {
         dispatch(clearProgressData());
         dispatch(setUploadData(uploadData));
       }, 5000));
-    //.finally(() => this.setState({ uploaded: true }));
   }
 };
 

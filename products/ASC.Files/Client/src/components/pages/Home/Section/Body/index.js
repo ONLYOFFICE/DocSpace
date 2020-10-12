@@ -931,7 +931,7 @@ class SectionBodyContent extends React.Component {
     if (!item.fileExst) {
       const { setDragging, onDropZoneUpload } = this.props;
       setDragging(false);
-      onDropZoneUpload(items, e, item.id);
+      onDropZoneUpload(items, item.id);
     }
   };
 
