@@ -720,6 +720,7 @@ class SectionBodyContent extends React.Component {
           <img
             className="empty-folder_container_plus-image"
             src="images/plus.svg"
+            data-format="docx"
             onClick={this.onCreate}
             alt="plus_icon"
           />
