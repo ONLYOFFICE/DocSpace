@@ -48,9 +48,27 @@ namespace ASC.Data.Storage
 {
     public class StorageFactoryListener
     {
+        private volatile bool Subscribed;
+        private readonly object locker;
+        private ICacheNotify<DataStoreCacheItem> Cache { get; }
+
         public StorageFactoryListener(ICacheNotify<DataStoreCacheItem> cache)
         {
-            cache.Subscribe((r) => DataStoreCache.Remove(r.TenantId, r.Module), CacheNotifyAction.Remove);
+            Cache = cache;
+            locker = new object();
+        }
+
+        public void Subscribe()
+        {
+            if (Subscribed) return;
+
+            lock (locker)
+            {
+                if (Subscribed) return;
+
+                Subscribed = true;
+                Cache.Subscribe((r) => DataStoreCache.Remove(r.TenantId, r.Module), CacheNotifyAction.Remove);
+            }
         }
     }
 
@@ -172,6 +190,7 @@ namespace ASC.Data.Storage
         private EncryptionFactory EncryptionFactory { get; }
 
         public StorageFactory(
+            StorageFactoryListener storageFactoryListener,
             StorageFactoryConfig storageFactoryConfig,
             SettingsManager settingsManager,
             StorageSettingsHelper storageSettingsHelper,
@@ -182,10 +201,12 @@ namespace ASC.Data.Storage
             IOptionsMonitor<ILog> options,
             EncryptionSettingsHelper encryptionSettingsHelper,
             EncryptionFactory encryptionFactory) :
-            this(storageFactoryConfig, settingsManager, storageSettingsHelper, tenantManager, coreBaseSettings, pathUtils, emailValidationKeyProvider, options, null, encryptionSettingsHelper, encryptionFactory)
+            this(storageFactoryListener, storageFactoryConfig, settingsManager, storageSettingsHelper, tenantManager, coreBaseSettings, pathUtils, emailValidationKeyProvider, options, null, encryptionSettingsHelper, encryptionFactory)
         {
         }
+
         public StorageFactory(
+            StorageFactoryListener storageFactoryListener,
             StorageFactoryConfig storageFactoryConfig,
             SettingsManager settingsManager,
             StorageSettingsHelper storageSettingsHelper,
@@ -198,6 +219,7 @@ namespace ASC.Data.Storage
             EncryptionSettingsHelper encryptionSettingsHelper,
             EncryptionFactory encryptionFactory)
         {
+            storageFactoryListener.Subscribe();
             StorageFactoryConfig = storageFactoryConfig;
             SettingsManager = settingsManager;
             StorageSettingsHelper = storageSettingsHelper;

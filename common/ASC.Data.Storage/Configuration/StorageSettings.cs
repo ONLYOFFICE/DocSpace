@@ -33,7 +33,6 @@ using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.Configuration;
 using ASC.Core.Common.Settings;
-using ASC.Security.Cryptography;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -43,30 +42,46 @@ namespace ASC.Data.Storage.Configuration
 {
     public class BaseStorageSettingsListener
     {
+        private IServiceProvider ServiceProvider { get; }
+        private volatile bool Subscribed;
+        private readonly object locker;
+
         public BaseStorageSettingsListener(IServiceProvider serviceProvider)
         {
             ServiceProvider = serviceProvider;
-            serviceProvider.GetService<ICacheNotify<ConsumerCacheItem>>().Subscribe((i) =>
-            {
-                using var scope = ServiceProvider.CreateScope();
-
-                var scopeClass = scope.ServiceProvider.GetService<BaseStorageSettingsListenerScope>();
-                var (storageSettingsHelper, settingsManager, cdnStorageSettings) = scopeClass;
-                var settings = settingsManager.LoadForTenant<StorageSettings>(i.TenantId);
-                if (i.Name == settings.Module)
-                {
-                    storageSettingsHelper.Clear(settings);
-                }
-
-                var cdnSettings = settingsManager.LoadForTenant<CdnStorageSettings>(i.TenantId);
-                if (i.Name == cdnSettings.Module)
-                {
-                    storageSettingsHelper.Clear(cdnSettings);
-                }
-            }, CacheNotifyAction.Remove);
+            locker = new object();
         }
 
-        private IServiceProvider ServiceProvider { get; }
+        public void Subscribe()
+        {
+            if (Subscribed) return;
+
+            lock (locker)
+            {
+                if (Subscribed) return;
+
+                Subscribed = true;
+
+                ServiceProvider.GetService<ICacheNotify<ConsumerCacheItem>>().Subscribe((i) =>
+                {
+                    using var scope = ServiceProvider.CreateScope();
+
+                    var scopeClass = scope.ServiceProvider.GetService<BaseStorageSettingsListenerScope>();
+                    var (storageSettingsHelper, settingsManager, cdnStorageSettings) = scopeClass;
+                    var settings = settingsManager.LoadForTenant<StorageSettings>(i.TenantId);
+                    if (i.Name == settings.Module)
+                    {
+                        storageSettingsHelper.Clear(settings);
+                    }
+
+                    var cdnSettings = settingsManager.LoadForTenant<CdnStorageSettings>(i.TenantId);
+                    if (i.Name == cdnSettings.Module)
+                    {
+                        storageSettingsHelper.Clear(cdnSettings);
+                    }
+                }, CacheNotifyAction.Remove);
+            }
+        }
     }
 
     [Serializable]
@@ -120,6 +135,7 @@ namespace ASC.Data.Storage.Configuration
         private ConsumerFactory ConsumerFactory { get; }
 
         public StorageSettingsHelper(
+            BaseStorageSettingsListener baseStorageSettingsListener,
             StorageFactoryConfig storageFactoryConfig,
             PathUtils pathUtils,
             ICacheNotify<DataStoreCacheItem> cache,
@@ -128,6 +144,7 @@ namespace ASC.Data.Storage.Configuration
             SettingsManager settingsManager,
             ConsumerFactory consumerFactory)
         {
+            baseStorageSettingsListener.Subscribe();
             StorageFactoryConfig = storageFactoryConfig;
             PathUtils = pathUtils;
             Cache = cache;
@@ -137,6 +154,7 @@ namespace ASC.Data.Storage.Configuration
             ConsumerFactory = consumerFactory;
         }
         public StorageSettingsHelper(
+            BaseStorageSettingsListener baseStorageSettingsListener,
             StorageFactoryConfig storageFactoryConfig,
             PathUtils pathUtils,
             ICacheNotify<DataStoreCacheItem> cache,
@@ -145,7 +163,7 @@ namespace ASC.Data.Storage.Configuration
             SettingsManager settingsManager,
             IHttpContextAccessor httpContextAccessor,
             ConsumerFactory consumerFactory)
-            : this(storageFactoryConfig, pathUtils, cache, options, tenantManager, settingsManager, consumerFactory)
+            : this(baseStorageSettingsListener, storageFactoryConfig, pathUtils, cache, options, tenantManager, settingsManager, consumerFactory)
         {
             HttpContextAccessor = httpContextAccessor;
         }
@@ -233,6 +251,7 @@ namespace ASC.Data.Storage.Configuration
         {
             if (services.TryAddScoped<StorageSettingsHelper>())
             {
+                _ = services.TryAddSingleton<BaseStorageSettingsListener>();
                 _ = services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
                 _ = services.TryAddScoped<BaseStorageSettingsListenerScope>();
                 _ = services.TryAddScoped<CdnStorageSettings>();
