@@ -15,7 +15,7 @@ const i18n = createI18N({
 
 const { setCurrentProductId } = store.auth.actions;
 const { changeLanguage } = utils;
-
+const { getLanguage } = store.auth.selectors;
 const Layout = ({
   currentProductId,
   setCurrentProductId,
@@ -50,7 +50,7 @@ const Layout = ({
 
 function mapStateToProps(state) {
   return {
-    language: state.auth.user.cultureName || state.auth.settings.culture
+    language: getLanguage(state)
   };
 }
 
