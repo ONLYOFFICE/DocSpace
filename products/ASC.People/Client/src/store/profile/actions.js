@@ -6,6 +6,8 @@ const { isMe } = store.auth.selectors;
 export const SET_PROFILE = "SET_PROFILE";
 export const CLEAN_PROFILE = "CLEAN_PROFILE";
 export const SET_AVATAR_MAX = "SET_AVATAR_MAX";
+export const SET_CREATED_AVATAR = "SET_CREATED_AVATAR";
+export const SET_CROPPED_AVATAR = "SET_CROPPED_AVATAR";
 
 export function setProfile(targetUser) {
   return {
@@ -113,5 +115,19 @@ export function setAvatarMax(avatarMax) {
   return {
     type: SET_AVATAR_MAX,
     avatarMax,
+  };
+}
+
+export function setCreatedAvatar(avatar) {
+  return {
+    type: SET_CREATED_AVATAR,
+    avatar,
+  };
+}
+
+export function setCroppedAvatar(croppedAvatar) {
+  return {
+    type: SET_CROPPED_AVATAR,
+    croppedAvatar,
   };
 }

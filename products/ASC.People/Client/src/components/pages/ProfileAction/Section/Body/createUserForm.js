@@ -22,6 +22,8 @@ import {
 import {
   createProfile,
   updateCreatedAvatar,
+  setCreatedAvatar,
+  setCroppedAvatar,
 } from "../../../../../store/profile/actions";
 import {
   setFilter,
@@ -85,12 +87,14 @@ class CreateUserForm extends React.Component {
   }
 
   createAvatar(userId, userName) {
+    const { createdAvatar } = this.props
+    debugger
     createThumbnailsAvatar(userId, {
-      x: this.state.avatar.x,
-      y: this.state.avatar.y,
-      width: this.state.avatar.width,
-      height: this.state.avatar.height,
-      tmpFile: this.state.avatar.tmpFile,
+      x: createdAvatar.x,
+      y: createdAvatar.y,
+      width: createdAvatar.width,
+      height: createdAvatar.height,
+      tmpFile: createdAvatar.tmpFile,
     })
       .then((res) => {
         this.props.updateCreatedAvatar(res);
@@ -178,6 +182,7 @@ class CreateUserForm extends React.Component {
 
   onSaveAvatar(isUpdate, result, avatar, croppedImage) {
     var stateCopy = Object.assign({}, this.state);
+    const { setCreatedAvatar, setCroppedAvatar } = this.props 
 
     stateCopy.visibleAvatarEditor = false;
     stateCopy.croppedAvatarImage = croppedImage;
@@ -192,6 +197,8 @@ class CreateUserForm extends React.Component {
       stateCopy.avatar.height = result.height;
     }
     this.setState(stateCopy);
+    setCreatedAvatar(stateCopy.avatar)
+    setCroppedAvatar(croppedImage)
     this.setIsEdit();
   }
 
@@ -305,11 +312,10 @@ class CreateUserForm extends React.Component {
     if (!this.validate()) return false;
 
     this.setState({ isLoading: true });
-
     this.props
       .createProfile(this.state.profile)
       .then((profile) => {
-        if (this.state.avatar.tmpFile !== "") {
+        if (this.props.createdAvatar.tmpFile !== "") {
           this.createAvatar(profile.id, profile.userName);
         } else {
           toastr.success(this.props.t("ChangesSavedSuccessfully"));
@@ -427,7 +433,7 @@ class CreateUserForm extends React.Component {
 
   render() {
     const { isLoading, errors, profile, selector, isMobile } = this.state;
-    const { t, settings, i18n } = this.props;
+    const { t, settings, i18n, createdAvatar, croppedAvatar } = this.props;
     const {
       regDateCaption,
       userPostCaption,
@@ -446,14 +452,14 @@ class CreateUserForm extends React.Component {
               size="max"
               role={getUserRole(profile)}
               editing={true}
-              source={this.state.croppedAvatarImage}
+              source={croppedAvatar}
               editLabel={t("AddButton")}
               editAction={
                 isMobile ? this.openAvatarEditorPage : this.openAvatarEditor
               }
             />
             <AvatarEditor
-              image={this.state.avatar.image}
+              image={createdAvatar.image}
               visible={this.state.visibleAvatarEditor}
               onClose={this.onCloseAvatarEditor}
               onSave={this.onSaveAvatar}
@@ -663,11 +669,14 @@ class CreateUserForm extends React.Component {
 const mapStateToProps = (state) => {
   const { settings } = state.auth;
   const { groups, filter, editingForm } = state.people;
+  const { createdAvatar, croppedAvatar } = state.profile;
   return {
     settings,
     groups,
     filter,
     editingForm,
+    createdAvatar,
+    croppedAvatar,
   };
 };
 
@@ -679,4 +688,6 @@ export default connect(mapStateToProps, {
   setIsVisibleDataLossDialog,
   setIsEditingForm,
   toggleAvatarEditor,
+  setCreatedAvatar,
+  setCroppedAvatar,
 })(withRouter(withTranslation()(CreateUserForm)));

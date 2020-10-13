@@ -12,7 +12,9 @@ import {
   SectionHeaderContent,
   CreateUserForm,
   UpdateUserForm,
-  AvatarEditorPage,} from "./Section";
+  AvatarEditorPage,
+  CreateAvatarEditorPage
+} from "./Section";
 import { fetchProfile } from "../../../store/profile/actions";
 import { setIsEditingForm } from "../../../store/people/actions";
 import { I18nextProvider, withTranslation } from "react-i18next";
@@ -96,17 +98,21 @@ class ProfileAction extends React.Component {
           )}
 
           <PageLayout.SectionBody>
-            {loaded ? (
-              avatarEditorIsOpen ? (
-                <AvatarEditorPage />
-              ) : type ? (
-                <CreateUserForm />
-              ) : (
-                <UpdateUserForm />
-              )
+          {loaded ? (
+              type ? 
+                avatarEditorIsOpen ? (
+                  <CreateAvatarEditorPage/>
+                ) : (
+                  <CreateUserForm />
+                ) 
+                : avatarEditorIsOpen ? (
+                  <AvatarEditorPage/>
+                ) : (
+                  <UpdateUserForm />
+                )
             ) : (
-              <Loader className="pageLoader" type="rombs" size="40px" />
-            )}
+                <Loader className="pageLoader" type="rombs" size="40px" />
+              )}
           </PageLayout.SectionBody>
         </PageLayout>
       </I18nextProvider>
