@@ -410,7 +410,6 @@ namespace ASC.Web.Files.HttpHandlers
                     .AddAuthManager()
                     .AddSecurityContextService()
                     .AddSetupInfo()
-                    .AddEntryManagerService()
                     .AddInstanceCryptoService()
                     .AddChunkedUploadSessionHolderService()
                     .AddChunkedUploadSessionHelperService();
