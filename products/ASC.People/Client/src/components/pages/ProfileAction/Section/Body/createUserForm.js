@@ -24,6 +24,7 @@ import {
   updateCreatedAvatar,
   setCreatedAvatar,
   setCroppedAvatar,
+  resetProfile,
 } from "../../../../../store/profile/actions";
 import {
   setFilter,
@@ -143,6 +144,11 @@ class CreateUserForm extends React.Component {
     data.append("file", file);
     data.append("Autosave", false);
 
+    if(!file) {
+      _this.onSaveAvatar(false)
+      return;
+    }
+
     loadAvatar(0, data)
       .then((response) => {
         var img = new Image();
@@ -171,7 +177,7 @@ class CreateUserForm extends React.Component {
                 fileData.avatar,
                 fileData.croppedImage
               );
-            } 
+            }
           }
 
         };
@@ -182,7 +188,7 @@ class CreateUserForm extends React.Component {
 
   onSaveAvatar(isUpdate, result, avatar, croppedImage) {
     var stateCopy = Object.assign({}, this.state);
-    const { setCreatedAvatar, setCroppedAvatar } = this.props 
+    const { setCreatedAvatar, setCroppedAvatar, resetProfile } = this.props 
 
     stateCopy.visibleAvatarEditor = false;
     stateCopy.croppedAvatarImage = croppedImage;
@@ -195,10 +201,13 @@ class CreateUserForm extends React.Component {
       );
       stateCopy.avatar.width = result.width;
       stateCopy.avatar.height = result.height;
+
+      setCreatedAvatar(stateCopy.avatar)
+      setCroppedAvatar(croppedImage)
+    } else {
+      resetProfile()
     }
     this.setState(stateCopy);
-    setCreatedAvatar(stateCopy.avatar)
-    setCroppedAvatar(croppedImage)
     this.setIsEdit();
   }
 
@@ -690,4 +699,5 @@ export default connect(mapStateToProps, {
   toggleAvatarEditor,
   setCreatedAvatar,
   setCroppedAvatar,
+  resetProfile,
 })(withRouter(withTranslation()(CreateUserForm)));

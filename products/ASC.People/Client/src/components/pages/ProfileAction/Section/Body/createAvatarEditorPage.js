@@ -13,6 +13,7 @@ import {
   updateCreatedAvatar,
   setCreatedAvatar,
   setCroppedAvatar,
+  resetProfile,
 } from "../../../../../store/profile/actions";
 import {
   toEmployeeWrapper,
@@ -142,6 +143,11 @@ class CreateAvatarEditorPage extends React.PureComponent {
     data.append("file", file);
     data.append("Autosave", false);
 
+    if(!file) {
+      _this.onSaveAvatar(false)
+      return;
+    }
+
     loadAvatar(0, data)
       .then((response) => {
         var img = new Image();
@@ -183,7 +189,7 @@ class CreateAvatarEditorPage extends React.PureComponent {
 
   onSaveAvatar (isUpdate, result, avatar, croppedImage) {
     var stateCopy = Object.assign({}, this.state);
-    const { setCreatedAvatar, toggleAvatarEditor, setCroppedAvatar } = this.props
+    const { setCreatedAvatar, toggleAvatarEditor, setCroppedAvatar, resetProfile } = this.props
 
     stateCopy.visibleAvatarEditor = false;
     stateCopy.croppedAvatarImage = croppedImage;
@@ -196,11 +202,14 @@ class CreateAvatarEditorPage extends React.PureComponent {
       );
       stateCopy.avatar.width = result.width;
       stateCopy.avatar.height = result.height;
+      
+      setCreatedAvatar(stateCopy.avatar)
+      setCroppedAvatar(croppedImage)
+    } else {
+      resetProfile()
     }
 
-    setCreatedAvatar(stateCopy.avatar)
-    setCroppedAvatar(croppedImage)
-    toggleAvatarEditor(false); 
+    toggleAvatarEditor(false);
   }
 
   setUserPhotoToState = () => {
@@ -286,4 +295,5 @@ export default connect(mapStateToProps, {
   updateProfileInUsers,
   setCreatedAvatar,
   setCroppedAvatar,
+  resetProfile,
 })(withTranslation()(withRouter(CreateAvatarEditorPage)));
