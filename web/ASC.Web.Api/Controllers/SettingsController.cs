@@ -161,7 +161,7 @@ namespace ASC.Api.Settings
         private EncryptionSettingsHelper EncryptionSettingsHelper { get; }
         private BackupServiceNotifier BackupServiceNotifier { get; }
         private ICacheNotify<DeleteSchedule> CacheDeleteSchedule { get; }
-        private EncryptionServiceNotifier EncryptionServiceNotifier { get; }
+        private EncryptionWorker EncryptionWorker { get; }
         private PasswordHasher PasswordHasher { get; }
         private ILog Log { get; set; }
         private TelegramHelper TelegramHelper { get; }
@@ -225,7 +225,7 @@ namespace ASC.Api.Settings
             EncryptionSettingsHelper encryptionSettingsHelper,
             BackupServiceNotifier backupServiceNotifier,
             ICacheNotify<DeleteSchedule> cacheDeleteSchedule,
-            EncryptionServiceNotifier encryptionServiceNotifier,
+            EncryptionWorker encryptionWorker,
             PasswordHasher passwordHasher)
         {
             Log = option.Get("ASC.Api");
@@ -283,7 +283,7 @@ namespace ASC.Api.Settings
             EncryptionSettingsHelper = encryptionSettingsHelper;
             BackupServiceNotifier = backupServiceNotifier;
             CacheDeleteSchedule = cacheDeleteSchedule;
-            EncryptionServiceNotifier = encryptionServiceNotifier;
+            EncryptionWorker = encryptionWorker;
             PasswordHasher = passwordHasher;
             StorageFactory = storageFactory;
             UrlShortener = urlShortener;
@@ -1758,19 +1758,6 @@ namespace ASC.Api.Settings
             return ServiceClient.GetProgress(Tenant.TenantId);
         }
 
-        [Read("encryption")]
-        public void StartEncryption(EncryptionSettingsModel settings)
-        {
-            EncryptionSettingsProto encryptionSettingsProto = new EncryptionSettingsProto
-            {
-                NotifyUsers = settings.NotifyUsers,
-                Password = settings.Password,
-                Status = settings.Status,
-                ServerRootPath = settings.ServerRootPath
-            };
-            EncryptionServiceClient.Start(encryptionSettingsProto);
-        }
-
         public readonly object Locker = new object();
 
         [Create("encryption/start")]
@@ -1948,7 +1935,7 @@ namespace ASC.Api.Settings
                 throw new BillingException(Resource.ErrorNotAllowedOption, "DiscEncryption");
             }
 
-            return EncryptionServiceNotifier.GetEncryptionProgress(Tenant.TenantId)?.Progress;
+            return EncryptionWorker.GetEncryptionProgress();
         }
 
         [Update("storage")]
@@ -2440,7 +2427,7 @@ namespace ASC.Api.Settings
                 .AddEncryptionSettingsHelperService()
                 .AddStorageFactoryService()
                 .AddBackupService()
-                .AddEncryptionServiceNotifierService()
+                .AddEncryptionWorkerService()
                 .AddTelegramLoginProviderService()
                 .AddTelegramHelperSerivce()
                 .AddPasswordHasherService();

@@ -52,24 +52,9 @@ namespace ASC.Common.Threading
 
         public void RunJob()
         {
-            try
-            {
-                Percentage = 0;
-                Status = DistributedTaskStatus.Running;
-                DoJob();
-            }
-            catch (AggregateException e)
-            {
-                Status = DistributedTaskStatus.Failted;
-                Exception = e;
-            }
-            finally
-            {
-                Percentage = 100;
-                IsCompleted = true;
-                Status = DistributedTaskStatus.Completed;
-                PublishChanges();
-            }
+            Percentage = 0;
+            Status = DistributedTaskStatus.Running;
+            DoJob();
         }
 
         protected virtual void DoJob()

@@ -130,7 +130,7 @@ namespace ASC.Common.Threading
         private TaskScheduler Scheduler { get; set; } = TaskScheduler.Default;
 
         public IServiceProvider ServiceProvider { get; set; }
-        public string Name { set { key = value + GetType().Name; } }
+        public string Name { get { return key; }  set { key = value + GetType().Name; } }
         private ICache Cache { get => DistributedTaskCacheNotify.Cache; }
         private ConcurrentDictionary<string, CancellationTokenSource> Cancelations { get => DistributedTaskCacheNotify.Cancelations; }
 
@@ -243,6 +243,7 @@ namespace ASC.Common.Threading
             if (cache != null)
             {
                 var task = new DistributedTask();
+                task.DistributedTaskCache = cache;
                 if (task != null && task.Publication == null)
                 {
                     task.Publication = GetPublication();

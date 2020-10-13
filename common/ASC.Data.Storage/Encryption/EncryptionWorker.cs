@@ -27,6 +27,7 @@
 using System;
 
 using ASC.Common;
+using ASC.Common.Caching;
 using ASC.Common.Threading;
 
 using Microsoft.Extensions.DependencyInjection;
@@ -37,11 +38,14 @@ namespace ASC.Data.Storage.Encryption
     {
         private object Locker { get; }
         private FactoryOperation FactoryOperation { get; }
+        private ICache Cache { get; }
+
 
         private DistributedTaskQueue Queue { get; }
 
         public EncryptionWorker(FactoryOperation factoryOperation, DistributedTaskQueueOptionsManager options)
         {
+            Cache = AscCache.Memory;
             Locker = new object();
             FactoryOperation = factoryOperation;
             Queue = options.Get(nameof(EncryptionWorker));
@@ -52,20 +56,26 @@ namespace ASC.Data.Storage.Encryption
             EncryptionOperation encryptionOperation;
             lock (Locker)
             {
-                if (Queue.GetTask<EncryptionOperation>(GetCacheKey()) != null) return;
-                encryptionOperation = FactoryOperation.CreateOperation(encryptionSettings, GetCacheKey());
+                if (Queue.GetTask<EncryptionOperation>(GetCacheId()) != null) return;
+                encryptionOperation = FactoryOperation.CreateOperation(encryptionSettings, GetCacheId());
                 Queue.QueueTask(encryptionOperation);
             }
         }
 
         public void Stop()
         {
-            Queue.CancelTask(GetCacheKey());
+            Queue.CancelTask(GetCacheId());
         }
 
-        public string GetCacheKey()
+        public string GetCacheId()
         {
             return typeof(EncryptionOperation).FullName;
+        }
+
+        public double? GetEncryptionProgress()
+        {
+            var dic = Cache.HashGet<DistributedTaskCache>(Queue.Name, GetCacheId());
+            return dic.Percentage;
         }
     }
 
