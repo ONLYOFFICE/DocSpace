@@ -129,23 +129,19 @@ namespace ASC.Data.Storage.Encryption
 
                     using (var algorithm = metadata.GetCryptographyAlgorithm())
                     {
-                        using (var transform = algorithm.CreateEncryptor())
+                        using var transform = algorithm.CreateEncryptor();
+                        using var cryptoStream = new CryptoStreamWrapper(ecryptedFileStream, transform, CryptoStreamMode.Write);
+                        using (var fileStream = File.OpenRead(filePath))
                         {
-                            using (var cryptoStream = new CryptoStreamWrapper(ecryptedFileStream, transform, CryptoStreamMode.Write))
-                            {
-                                using (var fileStream = File.OpenRead(filePath))
-                                {
-                                    fileStream.CopyTo(cryptoStream);
-                                    fileStream.Close();
-                                }
-
-                                cryptoStream.FlushFinalBlock();
-
-                                metadata.ComputeAndWriteHmacHash(ecryptedFileStream);
-
-                                cryptoStream.Close();
-                            }
+                            fileStream.CopyTo(cryptoStream);
+                            fileStream.Close();
                         }
+
+                        cryptoStream.FlushFinalBlock();
+
+                        metadata.ComputeAndWriteHmacHash(ecryptedFileStream);
+
+                        cryptoStream.Close();
                     }
 
                     ecryptedFileStream.Close();
@@ -191,16 +187,12 @@ namespace ASC.Data.Storage.Encryption
                     {
                         using (var algorithm = metadata.GetCryptographyAlgorithm())
                         {
-                            using (var transform = algorithm.CreateDecryptor())
-                            {
-                                using (var cryptoStream = new CryptoStreamWrapper(decryptedFileStream, transform, CryptoStreamMode.Write))
-                                {
-                                    fileStream.CopyTo(cryptoStream);
+                            using var transform = algorithm.CreateDecryptor();
+                            using var cryptoStream = new CryptoStreamWrapper(decryptedFileStream, transform, CryptoStreamMode.Write);
+                            fileStream.CopyTo(cryptoStream);
 
-                                    cryptoStream.FlushFinalBlock();
-                                    cryptoStream.Close();
-                                }
-                            }
+                            cryptoStream.FlushFinalBlock();
+                            cryptoStream.Close();
                         }
 
                         decryptedFileStream.Close();
@@ -243,14 +235,10 @@ namespace ASC.Data.Storage.Encryption
 
             using (var algorithm = metadata.GetCryptographyAlgorithm())
             {
-                using (var transform = algorithm.CreateDecryptor())
-                {
-                    using (var cryptoStream = new CryptoStreamWrapper(fileStream, transform, CryptoStreamMode.Read))
-                    {
-                        cryptoStream.CopyTo(decryptedMemoryStream);
-                        cryptoStream.Close();
-                    }
-                }
+                using var transform = algorithm.CreateDecryptor();
+                using var cryptoStream = new CryptoStreamWrapper(fileStream, transform, CryptoStreamMode.Read);
+                cryptoStream.CopyTo(decryptedMemoryStream);
+                cryptoStream.Close();
             }
 
             fileStream.Close();
@@ -287,16 +275,14 @@ namespace ASC.Data.Storage.Encryption
 
             metadata.Initialize(password);
 
-            using (var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read, metadata.GetMetadataLength(), FileOptions.SequentialScan))
+            using var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read, metadata.GetMetadataLength(), FileOptions.SequentialScan);
+            if (metadata.TryReadFromStream(fileStream, Version))
             {
-                if (metadata.TryReadFromStream(fileStream, Version))
-                {
-                    return metadata.GetFileSize();
-                }
-                else
-                {
-                    return new FileInfo(filePath).Length;
-                }
+                return metadata.GetFileSize();
+            }
+            else
+            {
+                return new FileInfo(filePath).Length;
             }
         }
 

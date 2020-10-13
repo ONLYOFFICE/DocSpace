@@ -219,33 +219,33 @@ namespace ASC.Core.Billing
                 if (billingConfigured && withRequestToPaymentSystem)
                 {
                     Task.Run(() =>
-                    {
-                        try
-                        {
-                            using var client = GetBillingClient();
-                            var p = client.GetLastPayment(GetPortalId(tenantId));
-                            var quota = QuotaService.GetTenantQuotas().SingleOrDefault(q => q.AvangateId == p.ProductId);
-                            if (quota == null)
-                            {
-                                throw new InvalidOperationException(string.Format("Quota with id {0} not found for portal {1}.", p.ProductId, GetPortalId(tenantId)));
-                            }
-                            var asynctariff = Tariff.CreateDefault();
-                            asynctariff.QuotaId = quota.Id;
-                            asynctariff.Autorenewal = p.Autorenewal;
-                            asynctariff.DueDate = 9999 <= p.EndDate.Year ? DateTime.MaxValue : p.EndDate;
+                      {
+                          try
+                          {
+                              using var client = GetBillingClient();
+                              var p = client.GetLastPayment(GetPortalId(tenantId));
+                              var quota = QuotaService.GetTenantQuotas().SingleOrDefault(q => q.AvangateId == p.ProductId);
+                              if (quota == null)
+                              {
+                                  throw new InvalidOperationException(string.Format("Quota with id {0} not found for portal {1}.", p.ProductId, GetPortalId(tenantId)));
+                              }
+                              var asynctariff = Tariff.CreateDefault();
+                              asynctariff.QuotaId = quota.Id;
+                              asynctariff.Autorenewal = p.Autorenewal;
+                              asynctariff.DueDate = 9999 <= p.EndDate.Year ? DateTime.MaxValue : p.EndDate;
 
-                            if (SaveBillingInfo(tenantId, Tuple.Create(asynctariff.QuotaId, asynctariff.DueDate), false))
-                            {
-                                asynctariff = CalculateTariff(tenantId, asynctariff);
-                                ClearCache(tenantId);
-                                Cache.Insert(key, asynctariff, DateTime.UtcNow.Add(GetCacheExpiration()));
-                            }
-                        }
-                        catch (Exception error)
-                        {
-                            LogError(error);
-                        }
-                    });
+                              if (SaveBillingInfo(tenantId, Tuple.Create(asynctariff.QuotaId, asynctariff.DueDate), false))
+                              {
+                                  asynctariff = CalculateTariff(tenantId, asynctariff);
+                                  ClearCache(tenantId);
+                                  Cache.Insert(key, asynctariff, DateTime.UtcNow.Add(GetCacheExpiration()));
+                              }
+                          }
+                          catch (Exception error)
+                          {
+                              LogError(error);
+                          }
+                      });
                 }
             }
 

@@ -38,7 +38,6 @@ namespace ASC.Core.Common.Tests
     [TestFixture]
     public class HostedSolutionTest
     {
-        private IConfiguration Configuration { get; set; }
         [Test]
         public void FindTenants()
         {

@@ -59,11 +59,13 @@ namespace ASC.Data.Storage.Migration
         {
             ProgressMigrationNotify.Subscribe(n =>
             {
-                var migrationProgress = new MigrationProgress { 
+                var migrationProgress = new MigrationProgress
+                {
                     TenantId = n.TenantId,
                     Progress = n.Progress,
                     IsCompleted = n.IsCompleted,
-                    Error = n.Error };
+                    Error = n.Error
+                };
 
                 Cache.Insert(GetCacheKey(n.TenantId), migrationProgress, DateTime.MaxValue);
             },

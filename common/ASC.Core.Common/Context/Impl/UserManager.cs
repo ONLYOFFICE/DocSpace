@@ -67,7 +67,7 @@ namespace ASC.Core
         private Constants Constants { get; }
 
         private Tenant tenant;
-        private Tenant Tenant { get { return tenant ?? (tenant = TenantManager.GetCurrentTenant()); } }
+        private Tenant Tenant { get { return tenant ??= TenantManager.GetCurrentTenant(); } }
 
         public UserManager()
         {
@@ -269,7 +269,7 @@ namespace ASC.Core
             return findUsers.ToArray();
         }
 
-        public UserInfo SaveUserInfo(UserInfo u, bool isVisitor = false)
+        public UserInfo SaveUserInfo(UserInfo u)
         {
             if (IsSystemUser(u.ID)) return SystemUsers[u.ID];
             if (u.ID == Guid.Empty) PermissionContext.DemandPermissions(Constants.Action_AddRemoveUser);

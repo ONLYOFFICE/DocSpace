@@ -43,23 +43,6 @@ namespace ASC.Notify.Textile
     {
         private static readonly Regex VelocityArgumentsRegex = new Regex(NVelocityPatternFormatter.NoStylePreffix + "(?'arg'.*?)" + NVelocityPatternFormatter.NoStyleSuffix, RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled);
 
-        public PushStyler(
-            CoreBaseSettings coreBaseSettings,
-            IConfiguration configuration,
-            InstanceCrypto instanceCrypto,
-            MailWhiteLabelSettingsHelper mailWhiteLabelSettingsHelper)
-        {
-            CoreBaseSettings = coreBaseSettings;
-            Configuration = configuration;
-            InstanceCrypto = instanceCrypto;
-            MailWhiteLabelSettingsHelper = mailWhiteLabelSettingsHelper;
-        }
-
-        private CoreBaseSettings CoreBaseSettings { get; }
-        private IConfiguration Configuration { get; }
-        private InstanceCrypto InstanceCrypto { get; }
-        private MailWhiteLabelSettingsHelper MailWhiteLabelSettingsHelper { get; }
-
         public void ApplyFormating(NoticeMessage message)
         {
             if (!string.IsNullOrEmpty(message.Subject))

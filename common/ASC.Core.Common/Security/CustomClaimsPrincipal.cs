@@ -5,19 +5,11 @@ namespace ASC.Core.Common.Security
 {
     public class CustomClaimsPrincipal : ClaimsPrincipal
     {
-        private IIdentity identity { get; set; }
-
-        public override IIdentity Identity
-        {
-            get
-            {
-                return identity;
-            }
-        }
+        public override IIdentity Identity { get; }
 
         public CustomClaimsPrincipal(ClaimsIdentity claimsIdentity, IIdentity identity) : base(claimsIdentity)
         {
-            this.identity = identity;
+            this.Identity = identity;
         }
     }
 }

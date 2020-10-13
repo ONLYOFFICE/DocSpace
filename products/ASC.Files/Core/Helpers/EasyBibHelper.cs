@@ -45,7 +45,7 @@ namespace ASC.Web.Files.Helpers
     {
         public ILog Log { get; set; }
 
-        static string searchBookUrl = "https://worldcat.citation-api.com/query?search=",
+        static readonly string searchBookUrl = "https://worldcat.citation-api.com/query?search=",
                         searchJournalUrl = "https://crossref.citation-api.com/query?search=",
                         searchWebSiteUrl = "https://web.citation-api.com/query?search=",
                         easyBibStyles = "https://api.citation-api.com/2.1/rest/styles";

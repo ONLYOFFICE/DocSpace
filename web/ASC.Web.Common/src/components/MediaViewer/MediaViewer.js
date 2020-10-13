@@ -35,10 +35,10 @@ class MediaViewer extends React.Component {
         super(props);
 
         this.state = {
-            visible: this.props.visible,
+            visible: props.visible,
             allowConvert: true,
-            playlist: this.props.playlist,
-            playlistPos: this.props.playlist.length > 0 ? this.props.playlist.find(file => file.fileId === this.props.currentFileId).id : 0
+            playlist: props.playlist,
+            playlistPos: props.playlist.length > 0 ? props.playlist.find(file => file.fileId === props.currentFileId).id : 0
         };
 
         this.detailsContainer = React.createRef();
@@ -63,25 +63,35 @@ class MediaViewer extends React.Component {
             this.hammer.off('doubletap', this.prevMedia);
         }
         this.hammer = null;
-        setTimeout(function () {
+        setTimeout(function() {
+          try {
             if (_this.canImageView(ext)) {
-                var pinch = new Hammer.Pinch();
-                _this.hammer = Hammer(document.getElementsByClassName('react-viewer-canvas')[0]);
-                _this.hammer.add([pinch]);
-                _this.hammer.on('pinchout', _this.handleZoomOut);
-                _this.hammer.on('pinchin', _this.handleZoomIn);
-                _this.hammer.on('pinchend', _this.handleZoomEnd);
-                _this.hammer.on('doubletap', _this.doubleTap);
-
-            } else if (_this.mapSupplied[ext] && (_this.mapSupplied[ext].type == mediaTypes.video || _this.mapSupplied[ext].type == mediaTypes.audio)) {
-                _this.hammer = Hammer(document.getElementsByClassName('videoViewerOverlay')[0]);
+              const pinch = new Hammer.Pinch();
+              _this.hammer = Hammer(
+                document.getElementsByClassName("react-viewer-canvas")[0]
+              );
+              _this.hammer.add([pinch]);
+              _this.hammer.on("pinchout", _this.handleZoomOut);
+              _this.hammer.on("pinchin", _this.handleZoomIn);
+              _this.hammer.on("pinchend", _this.handleZoomEnd);
+              _this.hammer.on("doubletap", _this.doubleTap);
+            } else if (
+              _this.mapSupplied[ext] &&
+              (_this.mapSupplied[ext].type == mediaTypes.video ||
+                _this.mapSupplied[ext].type == mediaTypes.audio)
+            ) {
+              _this.hammer = Hammer(
+                document.getElementsByClassName("videoViewerOverlay")[0]
+              );
             }
             if (_this.hammer) {
-                _this.hammer.on('swipeleft', _this.nextMedia);
-                _this.hammer.on('swiperight', _this.prevMedia);
+              _this.hammer.on("swipeleft", _this.nextMedia);
+              _this.hammer.on("swiperight", _this.prevMedia);
             }
-        }, 500)
-
+          } catch (ex) {
+            console.error("MediaViewer updateHammer", ex);
+          }
+        }, 500);
     }
 
     componentDidUpdate(prevProps) {
@@ -306,6 +316,12 @@ class MediaViewer extends React.Component {
             }
         }
     }
+
+    onClose = () => {
+        this.props.onClose();
+        this.setState({visible: false});
+    }
+
     render() {
 
         let currentPlaylistPos = this.state.playlistPos;
@@ -363,7 +379,7 @@ class MediaViewer extends React.Component {
                         isImage ?
                             <ImageViewer
                                 visible={this.state.visible}
-                                onClose={() => { this.setState({ visible: false }); }}
+                                onClose={this.onClose}
                                 images={[
                                     { src: url, alt: '' }
                                 ]}

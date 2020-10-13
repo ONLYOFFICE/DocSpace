@@ -202,7 +202,7 @@ const StyledSharingHeaderContent = styled.div`
       position: relative;
 
       .sharing_panel-drop-down {
-        padding: 8px 16px;
+        padding: 0px;
       }
       .sharing_panel-plus-icon {
         margin-right: 12px;
