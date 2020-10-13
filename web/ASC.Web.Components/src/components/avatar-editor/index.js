@@ -60,19 +60,20 @@ class AvatarEditor extends React.Component {
   };
 
   onLoadFile = (file, needSave) => {
-    if (typeof this.props.onLoadFile === "function")
-    var fileData = {
-      existImage: this.state.existImage,
-      position: {
-        x: this.state.x,
-        y: this.state.y,
-        width: this.state.width,
-        height: this.state.height
-      },
-      croppedImage: this.state.croppedImage
-    }
+    if (typeof this.props.onLoadFile === "function") {
+      var fileData = {
+        existImage: this.state.existImage,
+        position: {
+          x: this.state.x,
+          y: this.state.y,
+          width: this.state.width,
+          height: this.state.height
+        },
+        croppedImage: this.state.croppedImage
+      }
 
-    needSave ? this.props.onLoadFile(file, fileData) : this.props.onLoadFile(file); 
+      needSave ? this.props.onLoadFile(file, fileData) : this.props.onLoadFile(file); 
+    }
 
     if (!this.state.existImage) this.setState({ existImage: true });
   };

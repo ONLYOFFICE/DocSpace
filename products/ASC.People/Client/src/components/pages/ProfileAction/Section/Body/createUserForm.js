@@ -89,7 +89,6 @@ class CreateUserForm extends React.Component {
 
   createAvatar(userId, userName) {
     const { createdAvatar } = this.props
-    debugger
     createThumbnailsAvatar(userId, {
       x: createdAvatar.x,
       y: createdAvatar.y,
