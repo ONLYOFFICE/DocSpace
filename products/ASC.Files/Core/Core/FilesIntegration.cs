@@ -41,14 +41,10 @@ namespace ASC.Web.Files.Api
         private static readonly IDictionary<string, IFileSecurityProvider> providers = new Dictionary<string, IFileSecurityProvider>();
 
         private IDaoFactory DaoFactory { get; }
-        private IFileSecurity FileSecurity { get; }
-        private GlobalStore GlobalStore { get; }
 
-        public FilesIntegration(IDaoFactory daoFactory, IFileSecurity fileSecurity, GlobalStore globalStore)
+        public FilesIntegration(IDaoFactory daoFactory)
         {
             DaoFactory = daoFactory;
-            FileSecurity = fileSecurity;
-            GlobalStore = globalStore;
         }
 
         public T RegisterBunch<T>(string module, string bunch, string data)
@@ -144,9 +140,7 @@ namespace ASC.Web.Files.Api
             if (services.TryAddScoped<FilesIntegration>())
             {
                 return services
-                    .AddDaoFactoryService()
-                    .AddFileSecurityService()
-                    .AddGlobalStoreService();
+                    .AddDaoFactoryService();
             }
 
             return services;

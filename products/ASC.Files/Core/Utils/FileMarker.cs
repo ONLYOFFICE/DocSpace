@@ -758,7 +758,7 @@ namespace ASC.Web.Files.Utils
             services.TryAddSingleton<WorkerQueue<AsyncTaskData<T>>>();
             services.AddSingleton<IConfigureOptions<WorkerQueue<AsyncTaskData<T>>>, ConfigureWorkerQueue<AsyncTaskData<T>>>();
 
-            _ = services.AddWorkerQueue<AsyncTaskData<T>>(1, (int)TimeSpan.FromSeconds(60).TotalMilliseconds, false, 1);
+            services.AddWorkerQueue<AsyncTaskData<T>>(1, (int)TimeSpan.FromSeconds(60).TotalMilliseconds, false, 1);
 
             return services
                 .AddTenantManagerService()

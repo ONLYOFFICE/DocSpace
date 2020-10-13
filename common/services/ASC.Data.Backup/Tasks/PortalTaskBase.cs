@@ -285,37 +285,33 @@ namespace ASC.Data.Backup.Tasks
 
             if (stream == null) return;
 
-            using (var reader = new StreamReader(stream, Encoding.UTF8))
+            using var reader = new StreamReader(stream, Encoding.UTF8);
+            string commandText;
+
+            while ((commandText = await reader.ReadLineAsync()) != null)
             {
-                string commandText;
-
-                while ((commandText = await reader.ReadLineAsync()) != null)
+                while (!commandText.EndsWith(delimiter))
                 {
-                    while (!commandText.EndsWith(delimiter))
+                    var newline = await reader.ReadLineAsync();
+                    if (newline == null)
                     {
-                        var newline = await reader.ReadLineAsync();
-                        if (newline == null)
-                        {
-                            break;
-                        }
-                        commandText += newline;
+                        break;
                     }
+                    commandText += newline;
+                }
 
-                    try
-                    {
+                try
+                {
 
-                        using (var connection = DbFactory.OpenConnection())
-                        {
-                            var command = connection.CreateCommand();
-                            command.CommandText = commandText;
-                            await command.ExecuteNonQueryAsync();
-                        }
-                        //  await dbManager.ExecuteNonQueryAsync(commandText, null);
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.Error("Restore", e);
-                    }
+                    using var connection = DbFactory.OpenConnection();
+                    var command = connection.CreateCommand();
+                    command.CommandText = commandText;
+                    await command.ExecuteNonQueryAsync();
+                    //  await dbManager.ExecuteNonQueryAsync(commandText, null);
+                }
+                catch (Exception e)
+                {
+                    Logger.Error("Restore", e);
                 }
             }
         }

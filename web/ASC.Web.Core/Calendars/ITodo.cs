@@ -41,7 +41,7 @@ namespace ASC.Web.Core.Calendars
         #endregion
     }
 
-    public interface ITodo : IiCalFormatView
+    public interface ITodo : IICalFormatView
     {
         string Id { get; }
         string Uid { get; }

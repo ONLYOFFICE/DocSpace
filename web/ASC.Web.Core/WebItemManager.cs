@@ -162,13 +162,13 @@ namespace ASC.Web.Core
             {
                 if (webitem != null && this[webitem.ID] == null)
                 {
-                    if (webitem is IAddon)
+                    if (webitem is IAddon addon)
                     {
-                        ((IAddon)webitem).Init();
+                        addon.Init();
                     }
-                    if (webitem is IProduct)
+                    if (webitem is IProduct product)
                     {
-                        ((IProduct)webitem).Init();
+                        product.Init();
                     }
 
                     if (webitem is IModule module)

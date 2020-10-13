@@ -14,8 +14,9 @@ namespace ASC.Web.Studio
             CreateWebHostBuilder(args).Build().Run();
         }
 
-        public static IHostBuilder CreateWebHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
+        public static IHostBuilder CreateWebHostBuilder(string[] args)
+        {
+            return Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(w =>
                 {
                     w.UseStartup<Startup>();
@@ -30,17 +31,18 @@ namespace ASC.Web.Studio
                     }
                     config.SetBasePath(path);
                     config
-                        .AddInMemoryCollection(new Dictionary<string, string>
-                        {
-                            {"pathToConf", path}
-                        })
-                        .AddJsonFile("appsettings.json")
-                        .AddJsonFile($"appsettings.{hostingContext.HostingEnvironment.EnvironmentName}.json", true)
-                        .AddJsonFile("storage.json")
-                        .AddJsonFile("kafka.json")
-                        .AddJsonFile($"kafka.{hostingContext.HostingEnvironment.EnvironmentName}.json", true)
-                        .AddEnvironmentVariables()
-                        .AddCommandLine(args);
+                    .AddInMemoryCollection(new Dictionary<string, string>
+                    {
+                                            {"pathToConf", path}
+                    })
+                    .AddJsonFile("appsettings.json")
+                    .AddJsonFile($"appsettings.{hostingContext.HostingEnvironment.EnvironmentName}.json", true)
+                    .AddJsonFile("storage.json")
+                    .AddJsonFile("kafka.json")
+                    .AddJsonFile($"kafka.{hostingContext.HostingEnvironment.EnvironmentName}.json", true)
+                    .AddEnvironmentVariables()
+                    .AddCommandLine(args);
                 });
+        }
     }
 }

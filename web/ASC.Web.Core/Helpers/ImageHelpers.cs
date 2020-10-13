@@ -126,13 +126,13 @@ namespace ASC.Web.Studio.Helpers
         readonly int _widthPreview;
         readonly int _heightPreview;
 
-        public IDataStore store
+        public IDataStore Store
         {
             get;
             set;
         }
 
-        public ThumbnailGenerator(string tmpPath, bool crop, int width, int heigth, int widthPreview, int heightPreview)
+        public ThumbnailGenerator(bool crop, int width, int heigth, int widthPreview, int heightPreview)
         {
             _crop = crop;
             _width = width;
@@ -163,16 +163,16 @@ namespace ASC.Web.Studio.Helpers
 
             ep.Param[0] = new EncoderParameter(Encoder.Quality, (long)90);
 
-            var icJPG = getCodecInfo("image/jpeg");
+            var icJPG = GetCodecInfo("image/jpeg");
 
             if (!string.IsNullOrEmpty(imageInfo.Name) && imageInfo.Name.Contains("."))
             {
                 var indexDot = imageInfo.Name.ToLower().LastIndexOf(".");
 
                 if (imageInfo.Name.ToLower().IndexOf("png", indexDot) > indexDot)
-                    icJPG = getCodecInfo("image/png");
+                    icJPG = GetCodecInfo("image/png");
                 else if (imageInfo.Name.ToLower().IndexOf("gif", indexDot) > indexDot)
-                    icJPG = getCodecInfo("image/png");
+                    icJPG = GetCodecInfo("image/png");
             }
             Bitmap thumbnail;
 
@@ -181,7 +181,7 @@ namespace ASC.Web.Studio.Helpers
                 imageInfo.ThumbnailWidth = realWidth;
                 imageInfo.ThumbnailHeight = realHeight;
 
-                if (store == null)
+                if (Store == null)
                     image.Save(outputPath);
                 else
                 {
@@ -189,7 +189,7 @@ namespace ASC.Web.Studio.Helpers
                     var ms = new MemoryStream();
                     image.Save(ms, icJPG, ep);
                     ms.Seek(0, SeekOrigin.Begin);
-                    store.Save(outputPath, ms);
+                    Store.Save(outputPath, ms);
                     ms.Dispose();
                 }
                 return;
@@ -234,7 +234,7 @@ namespace ASC.Web.Studio.Helpers
                 graphic.DrawImage(image, rect);
             }
 
-            if (store == null)
+            if (Store == null)
                 thumbnail.Save(outputPath, icJPG, ep);
             else
             {
@@ -242,7 +242,7 @@ namespace ASC.Web.Studio.Helpers
                 var ms = new MemoryStream();
                 thumbnail.Save(ms, icJPG, ep);
                 ms.Seek(0, SeekOrigin.Begin);
-                store.Save(outputPath, ms);
+                Store.Save(outputPath, ms);
                 ms.Dispose();
             }
 
@@ -270,7 +270,7 @@ namespace ASC.Web.Studio.Helpers
             var widthPreview = realWidth;
 
             var ep = new EncoderParameters(1);
-            var icJPG = getCodecInfo("image/jpeg");
+            var icJPG = GetCodecInfo("image/jpeg");
             ep.Param[0] = new EncoderParameter(Encoder.Quality, (long)90);
 
             if (realWidth <= _widthPreview && realHeight <= _heightPreview)
@@ -278,7 +278,7 @@ namespace ASC.Web.Studio.Helpers
                 imageInfo.PreviewWidth = widthPreview;
                 imageInfo.PreviewHeight = heightPreview;
 
-                if (store == null)
+                if (Store == null)
                     image.Save(outputPath);
                 else
                 {
@@ -286,7 +286,7 @@ namespace ASC.Web.Studio.Helpers
                     var ms = new MemoryStream();
                     image.Save(ms, icJPG, ep);
                     ms.Seek(0, SeekOrigin.Begin);
-                    store.Save(outputPath, ms);
+                    Store.Save(outputPath, ms);
                     ms.Dispose();
                 }
 
@@ -322,7 +322,7 @@ namespace ASC.Web.Studio.Helpers
                 graphic.DrawImage(image, 0, 0, widthPreview, heightPreview);
             }
 
-            if (store == null)
+            if (Store == null)
                 preview.Save(outputPath, icJPG, ep);
             else
             {
@@ -330,7 +330,7 @@ namespace ASC.Web.Studio.Helpers
                 var ms = new MemoryStream();
                 preview.Save(ms, icJPG, ep);
                 ms.Seek(0, SeekOrigin.Begin);
-                store.Save(outputPath, ms);
+                Store.Save(outputPath, ms);
                 ms.Dispose();
             }
 
@@ -341,7 +341,7 @@ namespace ASC.Web.Studio.Helpers
         {
             try
             {
-                using var stream = store.GetReadStream(path);
+                using var stream = Store.GetReadStream(path);
                 using var image = Image.FromStream(stream);
                 if (back)
                 {
@@ -353,10 +353,10 @@ namespace ASC.Web.Studio.Helpers
                 }
 
                 var ep = new EncoderParameters(1);
-                var icJPG = getCodecInfo("image/jpeg");
+                var icJPG = GetCodecInfo("image/jpeg");
                 ep.Param[0] = new EncoderParameter(Encoder.Quality, (long)100);
 
-                if (store == null)
+                if (Store == null)
                 {
                     image.Save(outputPath, icJPG, ep);
                 }
@@ -365,15 +365,15 @@ namespace ASC.Web.Studio.Helpers
                     using var ms = new MemoryStream();
                     image.Save(ms, icJPG, ep);
                     ms.Seek(0, SeekOrigin.Begin);
-                    store.Save(outputPath, ms);
+                    Store.Save(outputPath, ms);
                 }
 
-                store.Delete(path);
+                Store.Delete(path);
             }
             catch { }
         }
 
-        private static ImageCodecInfo getCodecInfo(string mt)
+        private static ImageCodecInfo GetCodecInfo(string mt)
         {
             var ici = ImageCodecInfo.GetImageEncoders();
             var idx = 0;
@@ -397,7 +397,7 @@ namespace ASC.Web.Studio.Helpers
 
         public static void GenerateThumbnail(string path, string outputPath, ref ImageInfo imageInfo)
         {
-            var _generator = new ThumbnailGenerator(null, true,
+            var _generator = new ThumbnailGenerator(true,
                 maxSize,
                 maxSize,
                 maxWidthPreview,
@@ -408,7 +408,7 @@ namespace ASC.Web.Studio.Helpers
 
         public static void GenerateThumbnail(string path, string outputPath, ref ImageInfo imageInfo, int maxWidth, int maxHeight)
         {
-            var _generator = new ThumbnailGenerator(null, true,
+            var _generator = new ThumbnailGenerator(true,
                 maxWidth,
                 maxHeight,
                 maxWidthPreview,
@@ -418,7 +418,7 @@ namespace ASC.Web.Studio.Helpers
         }
         public static void GenerateThumbnail(Stream stream, string outputPath, ref ImageInfo imageInfo, int maxWidth, int maxHeight)
         {
-            var _generator = new ThumbnailGenerator(null, true,
+            var _generator = new ThumbnailGenerator(true,
                 maxWidth,
                 maxHeight,
                 maxWidthPreview,
@@ -429,26 +429,26 @@ namespace ASC.Web.Studio.Helpers
 
         public static void GenerateThumbnail(string path, string outputPath, ref ImageInfo imageInfo, int maxWidth, int maxHeight, IDataStore store)
         {
-            var _generator = new ThumbnailGenerator(null, true,
+            var _generator = new ThumbnailGenerator(true,
                 maxWidth,
                 maxHeight,
                 maxWidthPreview,
                 maxHeightPreview)
             {
-                store = store
+                Store = store
             };
 
             _generator.DoThumbnail(path, outputPath, ref imageInfo);
         }
         public static void GenerateThumbnail(Stream stream, string outputPath, ref ImageInfo imageInfo, int maxWidth, int maxHeight, IDataStore store)
         {
-            var _generator = new ThumbnailGenerator(null, true,
+            var _generator = new ThumbnailGenerator(true,
                 maxWidth,
                 maxHeight,
                 maxWidthPreview,
                 maxHeightPreview)
             {
-                store = store
+                Store = store
             };
 
             _generator.DoThumbnail(stream, outputPath, ref imageInfo);
@@ -457,7 +457,7 @@ namespace ASC.Web.Studio.Helpers
 
         public static void GenerateThumbnail(Stream stream, string outputPath, ref ImageInfo imageInfo)
         {
-            var _generator = new ThumbnailGenerator(null, true,
+            var _generator = new ThumbnailGenerator(true,
                 maxSize,
                 maxSize,
                 maxWidthPreview,
@@ -468,13 +468,13 @@ namespace ASC.Web.Studio.Helpers
 
         public static void GenerateThumbnail(Stream stream, string outputPath, ref ImageInfo imageInfo, IDataStore store)
         {
-            var _generator = new ThumbnailGenerator(null, true,
+            var _generator = new ThumbnailGenerator(true,
                 maxSize,
                 maxSize,
                 maxWidthPreview,
                 maxHeightPreview)
             {
-                store = store
+                Store = store
             };
             _generator.DoThumbnail(stream, outputPath, ref imageInfo);
         }
@@ -482,7 +482,7 @@ namespace ASC.Web.Studio.Helpers
 
         public static void GeneratePreview(string path, string outputPath, ref ImageInfo imageInfo)
         {
-            var _generator = new ThumbnailGenerator(null, true,
+            var _generator = new ThumbnailGenerator(true,
                 maxSize,
                 maxSize,
                 maxWidthPreview,
@@ -493,7 +493,7 @@ namespace ASC.Web.Studio.Helpers
         }
         public static void GeneratePreview(Stream stream, string outputPath, ref ImageInfo imageInfo)
         {
-            var _generator = new ThumbnailGenerator(null, true,
+            var _generator = new ThumbnailGenerator(true,
                 maxSize,
                 maxSize,
                 maxWidthPreview,
@@ -504,13 +504,13 @@ namespace ASC.Web.Studio.Helpers
         }
         public static void GeneratePreview(Stream stream, string outputPath, ref ImageInfo imageInfo, IDataStore store)
         {
-            var _generator = new ThumbnailGenerator(null, true,
+            var _generator = new ThumbnailGenerator(true,
                 maxSize,
                 maxSize,
                 maxWidthPreview,
                 maxHeightPreview)
             {
-                store = store
+                Store = store
             };
             _generator.DoPreviewImage(stream, outputPath, ref imageInfo);
 
@@ -519,13 +519,13 @@ namespace ASC.Web.Studio.Helpers
 
         public static void RotateImage(string path, string outputPath, bool back, IDataStore store)
         {
-            var _generator = new ThumbnailGenerator(null, true,
+            var _generator = new ThumbnailGenerator(true,
                 maxSize,
                 maxSize,
                 maxWidthPreview,
                 maxHeightPreview)
             {
-                store = store
+                Store = store
             };
 
             _generator.RotateImage(path, outputPath, back);
