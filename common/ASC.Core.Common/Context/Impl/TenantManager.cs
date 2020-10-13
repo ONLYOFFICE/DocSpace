@@ -124,7 +124,7 @@ namespace ASC.Core
         internal IQuotaService QuotaService { get; set; }
         internal ITariffService TariffService { get; set; }
 
-        private static List<string> thisCompAddresses = new List<string>();
+        private static readonly List<string> thisCompAddresses = new List<string>();
 
         internal IHttpContextAccessor HttpContextAccessor { get; set; }
         internal CoreBaseSettings CoreBaseSettings { get; set; }

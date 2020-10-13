@@ -1,7 +1,9 @@
 ﻿
 using ASC.Common;
 using ASC.Core.Common.EF.Model;
+
 using Microsoft.EntityFrameworkCore;
+
 using System;
 using System.Collections.Generic;
 
@@ -31,8 +33,8 @@ namespace ASC.Core.Common.EF
         {
             ModelBuilderWrapper
                   .From(modelBuilder, Provider)
-                  .AddAcl()
-                  .AddDbButton()
+                .AddAcl()
+                .AddDbButton()
                   .AddDbQuotaRow()
                   .AddDbQuota()
                   .AddDbTariff();

@@ -112,7 +112,7 @@ namespace ASC.TelegramService.Core
 
         private object[] ParseParams(MethodInfo cmd, string[] args)
         {
-            List<object> parsedParams = new List<object>();
+            var parsedParams = new List<object>();
 
             var cmdArgs = cmd.GetParameters();
 

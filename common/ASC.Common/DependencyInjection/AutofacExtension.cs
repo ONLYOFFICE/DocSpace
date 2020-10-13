@@ -142,7 +142,7 @@ namespace ASC.Common.DependencyInjection
                 return GetPath(Path.Combine(productPath, "bin"), n, SearchOption.AllDirectories) ?? GetPath(productPath, n, SearchOption.TopDirectoryOnly);
             }
 
-            string GetPath(string dirPath, string dll, SearchOption searchOption)
+            static string GetPath(string dirPath, string dll, SearchOption searchOption)
             {
                 if (!Directory.Exists(dirPath)) return null;
 

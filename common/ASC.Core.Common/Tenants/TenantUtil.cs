@@ -80,7 +80,7 @@ namespace ASC.Core.Tenants
         {
             get
             {
-                return timeZoneInfo ?? (timeZoneInfo = TimeZoneConverter.GetTimeZone(TenantManager.GetCurrentTenant().TimeZone));
+                return timeZoneInfo ??= TimeZoneConverter.GetTimeZone(TenantManager.GetCurrentTenant().TimeZone);
             }
         }
         public DateTime DateTimeFromUtc(DateTime utc)

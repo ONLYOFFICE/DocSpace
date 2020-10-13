@@ -57,19 +57,22 @@ namespace ASC.Common.Logging
         }
 
         public IDisposable BeginScope<TState>(TState state) { return null; }
-        public bool IsEnabled(LogLevel logLevel) => logLevel switch
+        public bool IsEnabled(LogLevel logLevel)
         {
-            LogLevel.Trace => CustomLogger.IsTraceEnabled,
-            LogLevel.Information => CustomLogger.IsInfoEnabled,
-            LogLevel.None => false,
+            return logLevel switch
+            {
+                LogLevel.Trace => CustomLogger.IsTraceEnabled,
+                LogLevel.Information => CustomLogger.IsInfoEnabled,
+                LogLevel.None => false,
 
-            LogLevel.Debug => CustomLogger.IsDebugEnabled,
-            LogLevel.Warning => CustomLogger.IsWarnEnabled,
-            LogLevel.Error => CustomLogger.IsErrorEnabled,
-            LogLevel.Critical => CustomLogger.IsErrorEnabled,
+                LogLevel.Debug => CustomLogger.IsDebugEnabled,
+                LogLevel.Warning => CustomLogger.IsWarnEnabled,
+                LogLevel.Error => CustomLogger.IsErrorEnabled,
+                LogLevel.Critical => CustomLogger.IsErrorEnabled,
 
-            _ => true,
-        };
+                _ => true,
+            };
+        }
 
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
         {
@@ -99,7 +102,8 @@ namespace ASC.Common.Logging
                             new KeyValuePair<string, object>("sqlParams", parameters ?? "")
                         );
                     }
-                    string GetParam(KeyValuePair<string, object> keyValuePair, string key, string currentVal)
+
+                    static string GetParam(KeyValuePair<string, object> keyValuePair, string key, string currentVal)
                     {
                         return keyValuePair.Key == key ? keyValuePair.Value.ToString() : currentVal;
                     }
