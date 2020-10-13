@@ -225,10 +225,12 @@ namespace ASC.FederatedLogin
 
     public class LoginHandler
     {
+        private RequestDelegate Next { get; }
         private IServiceProvider ServiceProvider { get; }
 
-        public LoginHandler(IServiceProvider serviceProvider)
+        public LoginHandler(RequestDelegate next, IServiceProvider serviceProvider)
         {
+            Next = next;
             ServiceProvider = serviceProvider;
         }
 
@@ -237,6 +239,7 @@ namespace ASC.FederatedLogin
             using var scope = ServiceProvider.CreateScope();
             var login = scope.ServiceProvider.GetService<Login>();
             await login.Invoke(context);
+            await Next.Invoke(context);
         }
     }
 

@@ -91,7 +91,7 @@ namespace ASC.Web.Api.Controllers
         }
 
         [Read("users/invite/{employeeType}")]
-        public string GeInviteLink(EmployeeType employeeType)
+        public object GeInviteLink(EmployeeType employeeType)
         {
             if (!WebItemSecurity.IsProductAdministrator(WebItemManager.PeopleProductID, AuthContext.CurrentAccount.ID))
             {
@@ -103,7 +103,7 @@ namespace ASC.Web.Api.Controllers
         }
 
         [Update("getshortenlink")]
-        public string GetShortenLink(string link)
+        public object GetShortenLink(string link)
         {
             try
             {
@@ -160,7 +160,7 @@ namespace ASC.Web.Api.Controllers
 
 
         [Read("path")]
-        public string GetFullAbsolutePath(string virtualPath)
+        public object GetFullAbsolutePath(string virtualPath)
         {
             return CommonLinkUtility.GetFullAbsolutePath(virtualPath);
         }
