@@ -150,9 +150,6 @@ namespace ASC.Web.Api.Controllers
                 .AddTenantManagerService()
                 .AddSecurityContextService()
                 .AddTenantCookieSettingsService()
-                .AddEmailValidationKeyProviderService()
-                .AddAuthContextService()
-                .AddAuthManager()
                 .AddPasswordHasherService();
         }
     }
