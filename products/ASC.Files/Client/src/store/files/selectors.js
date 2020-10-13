@@ -935,4 +935,21 @@ export const getDraggableItems = createSelector(
     }
   }
 );
-  
+  export const getTest = createSelector(getTreeFolders, (treeFolders) => {
+  const treeFoldersItem = treeFolders.find((x) => x.rootFolderName === "@my");
+  if (treeFoldersItem) return treeFoldersItem.id;
+});
+
+const getSettingsTreeSelector = (state) => {
+  return state.files.settingsTree;
+};
+
+export const getSettingsTree = createSelector(
+  getSettingsTreeSelector,
+  (settingsTree) => {
+    if (Object.keys(settingsTree).length !== 0) {
+      return settingsTree;
+    }
+    return {};
+  }
+);

@@ -28,7 +28,7 @@ import {
   SET_FILES_SETTING,
   SET_IS_ERROR_SETTINGS,
   SET_FIRST_LOAD,
-  SET_UPLOAD_DATA
+  SET_UPLOAD_DATA,
 } from "./actions";
 import { api } from "asc-web-common";
 import { isFileSelected, skipFile, getFilesBySelected } from "./selectors";
@@ -56,16 +56,7 @@ const initialState = {
   selectedTreeNode: [],
   isLoading: false,
   firstLoad: true,
-  settingsTree: {
-    expandedSetting: [],
-    storeOriginalFiles: false,
-    confirmDelete: false,
-    updateIfExist: false,
-    forceSave: false,
-    storeForceSave: false,
-    enableThirdParty: false,
-    isErrorSettings: false,
-  },
+  settingsTree: {},
   uploadData: {
     files: [],
     filesSize: 0,
@@ -433,7 +424,6 @@ const filesReducer = (state = initialState, action) => {
     case SET_SELECTED_FOLDER:
       return Object.assign({}, state, {
         selectedFolder: action.selectedFolder,
-        selectedTreeNode: [action.selectedFolder.id.toString()],
       });
     case SET_TREE_FOLDERS:
       return Object.assign({}, state, {

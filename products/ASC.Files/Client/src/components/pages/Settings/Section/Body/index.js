@@ -9,7 +9,6 @@ import {
   setEnableThirdParty,
   setConfirmDelete,
   setStoreForceSave,
-  setSelectedNode,
   setForceSave,
 } from "../../../../../store/files/actions";
 import {
@@ -21,6 +20,7 @@ import {
   getSettingsTreeForceSave,
   getSettingsTreeStoreForceSave,
   getSettingsTreeEnableThirdParty,
+  getSettingsTree
 } from "../../../../../store/files/selectors";
 import { setDocumentTitle } from "../../../../../helpers/utils";
 
@@ -43,8 +43,6 @@ const StyledSettings = styled.div`
 const SectionBodyContent = ({
   setting,
   isLoading,
-  selectedTreeNode,
-  setSelectedNode,
   storeForceSave,
   setStoreForceSave,
   enableThirdParty,
@@ -59,18 +57,13 @@ const SectionBodyContent = ({
   setForceSave,
   isAdmin,
   isErrorSettings,
+  settingsTree,
   t,
 }) => {
   useEffect(() => {
     const title = setting[0].toUpperCase() + setting.slice(1);
     setDocumentTitle(t(`${title}`));
   }, [setting, t]);
-
-  useEffect(() => {
-    if (setting !== selectedTreeNode[0]) {
-      setSelectedNode([setting]);
-    }
-  }, [setting]);
 
   const onChangeStoreForceSave = () => {
     setStoreForceSave(!storeForceSave, "storeForceSave");
@@ -81,7 +74,7 @@ const SectionBodyContent = ({
   };
 
   const renderAdminSettings = () => {
-    return (
+    return Object.keys(settingsTree).length === 0 || isLoading ? null : (
       <StyledSettings>
         <ToggleButton
           className="toggle-btn"
@@ -116,7 +109,7 @@ const SectionBodyContent = ({
   };
 
   const renderCommonSettings = () => {
-    return (
+    return Object.keys(settingsTree).length === 0 || isLoading ? null : (
       <StyledSettings>
         <ToggleButton
           className="toggle-btn"
@@ -175,6 +168,7 @@ const SectionBodyContent = ({
   };
 
   let content;
+
   if (setting === "admin" && isAdmin) content = renderAdminSettings();
   if (setting === "common") content = renderCommonSettings();
   if (setting === "thirdParty" && enableThirdParty) content = renderClouds();
@@ -200,6 +194,7 @@ function mapStateToProps(state) {
     storeForceSave: getSettingsTreeStoreForceSave(state),
     enableThirdParty: getSettingsTreeEnableThirdParty(state),
     isLoading: getIsLoading(state),
+    settingsTree: getSettingsTree(state),
   };
 }
 
@@ -209,6 +204,5 @@ export default connect(mapStateToProps, {
   setEnableThirdParty,
   setConfirmDelete,
   setStoreForceSave,
-  setSelectedNode,
   setForceSave,
 })(SectionBodyContent);
