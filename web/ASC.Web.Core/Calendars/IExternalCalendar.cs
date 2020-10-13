@@ -49,7 +49,7 @@ namespace ASC.Web.Core.Calendars
         #endregion
     }
 
-    public interface ICalendar : IiCalFormatView
+    public interface ICalendar : IICalFormatView
     {
         string Id { get; }
         string Name { get; }

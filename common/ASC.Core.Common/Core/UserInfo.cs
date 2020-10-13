@@ -75,7 +75,7 @@ namespace ASC.Core.Users
             set
             {
                 contacts = value;
-                _ = ContactsFromString(contacts);
+                ContactsFromString(contacts);
             }
         }
 

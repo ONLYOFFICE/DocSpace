@@ -646,7 +646,7 @@ namespace ASC.Employee.Core.Controllers
                 }
             }
 
-            UserManager.SaveUserInfo(user, memberModel.IsVisitor);
+            UserManager.SaveUserInfo(user);
             MessageService.Send(MessageAction.UserUpdated, MessageTarget.Create(user.ID), user.DisplayUserName(false, DisplayUserSettingsHelper));
 
             if (memberModel.Disable.HasValue && memberModel.Disable.Value)
@@ -701,7 +701,7 @@ namespace ASC.Employee.Core.Controllers
             if (user.IsLDAP())
                 throw new SecurityException();
 
-            _ = SecurityContext.AuthenticateMe(ASC.Core.Configuration.Constants.CoreSystem);
+            SecurityContext.AuthenticateMe(ASC.Core.Configuration.Constants.CoreSystem);
 
             user.Status = EmployeeStatus.Terminated;
 

@@ -30,7 +30,6 @@ namespace ASC.Files.Service.Core
         private FilesLinkUtility FilesLinkUtility { get; }
         private FileSecurity FileSecurity { get; }
 
-        private IFileDao<int> FileDao { get; }
         private IFolderDao<int> FolderDao { get; }
 
         public FoldersModule(
@@ -45,7 +44,6 @@ namespace ASC.Files.Service.Core
             UserManager = userManager;
             FilesLinkUtility = filesLinkUtility;
             FileSecurity = fileSecurity;
-            FileDao = daoFactory.GetFileDao<int>();
             FolderDao = daoFactory.GetFolderDao<int>();
         }
 

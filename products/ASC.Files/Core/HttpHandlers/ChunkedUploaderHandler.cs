@@ -82,7 +82,6 @@ namespace ASC.Web.Files.HttpHandlers
         private AuthManager AuthManager { get; }
         private SecurityContext SecurityContext { get; }
         private SetupInfo SetupInfo { get; }
-        private EntryManager EntryManager { get; }
         private InstanceCrypto InstanceCrypto { get; }
         private ChunkedUploadSessionHolder ChunkedUploadSessionHolder { get; }
         private ChunkedUploadSessionHelper ChunkedUploadSessionHelper { get; }
@@ -96,7 +95,6 @@ namespace ASC.Web.Files.HttpHandlers
             AuthManager authManager,
             SecurityContext securityContext,
             SetupInfo setupInfo,
-            EntryManager entryManager,
             InstanceCrypto instanceCrypto,
             ChunkedUploadSessionHolder chunkedUploadSessionHolder,
             ChunkedUploadSessionHelper chunkedUploadSessionHelper)
@@ -107,7 +105,6 @@ namespace ASC.Web.Files.HttpHandlers
             AuthManager = authManager;
             SecurityContext = securityContext;
             SetupInfo = setupInfo;
-            EntryManager = entryManager;
             InstanceCrypto = instanceCrypto;
             ChunkedUploadSessionHolder = chunkedUploadSessionHolder;
             ChunkedUploadSessionHelper = chunkedUploadSessionHelper;
@@ -413,7 +410,6 @@ namespace ASC.Web.Files.HttpHandlers
                     .AddAuthManager()
                     .AddSecurityContextService()
                     .AddSetupInfo()
-                    .AddEntryManagerService()
                     .AddInstanceCryptoService()
                     .AddChunkedUploadSessionHolderService()
                     .AddChunkedUploadSessionHelperService();

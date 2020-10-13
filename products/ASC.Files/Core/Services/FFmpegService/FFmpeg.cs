@@ -43,7 +43,7 @@ namespace ASC.Web.Files.Services.FFmpegService
             {
                 process.Start();
 
-                var _ = StreamCopyToAsync(inputStream, process.StandardInput.BaseStream, closeDst: true);
+                StreamCopyToAsync(inputStream, process.StandardInput.BaseStream, closeDst: true);
 
                 ProcessLog(process.StandardError.BaseStream);
 

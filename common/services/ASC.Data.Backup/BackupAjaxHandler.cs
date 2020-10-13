@@ -198,7 +198,7 @@ namespace ASC.Data.Backup
                 var Schedule = new CreateScheduleRequest
                 {
                     TenantId = TenantManager.GetCurrentTenant().TenantId,
-                    BackupMail = schedule.BackupMail == null ? false : (bool)schedule.BackupMail,
+                    BackupMail = schedule.BackupMail != null && (bool)schedule.BackupMail,
                     Cron = schedule.CronParams.ToString(),
                     NumberOfBackupsStored = schedule.BackupsStored == null ? 0 : (int)schedule.BackupsStored,
                     StorageType = schedule.StorageType,

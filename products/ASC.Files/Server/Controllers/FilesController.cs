@@ -75,7 +75,6 @@ namespace ASC.Api.Documents
     [ApiController]
     public class FilesController : ControllerBase
     {
-        private readonly ApiContext ApiContext;
         private readonly FileStorageService<string> FileStorageService;
 
         private FilesControllerHelper<string> FilesControllerHelperString { get; }
@@ -89,7 +88,6 @@ namespace ASC.Api.Documents
         private FileOperationWraperHelper FileOperationWraperHelper { get; }
         private EntryManager EntryManager { get; }
         private UserManager UserManager { get; }
-        private WebItemSecurity WebItemSecurity { get; }
         private CoreBaseSettings CoreBaseSettings { get; }
         private ThirdpartyConfiguration ThirdpartyConfiguration { get; }
         private BoxLoginProvider BoxLoginProvider { get; }
@@ -99,7 +97,6 @@ namespace ASC.Api.Documents
         private MessageService MessageService { get; }
         private CommonLinkUtility CommonLinkUtility { get; }
         private DocumentServiceConnector DocumentServiceConnector { get; }
-        private FolderContentWrapperHelper FolderContentWrapperHelper { get; }
         private WordpressToken WordpressToken { get; }
         private WordpressHelper WordpressHelper { get; }
         private ConsumerFactory ConsumerFactory { get; }
@@ -111,7 +108,6 @@ namespace ASC.Api.Documents
         /// <param name="context"></param>
         /// <param name="fileStorageService"></param>
         public FilesController(
-            ApiContext context,
             FilesControllerHelper<string> filesControllerHelperString,
             FilesControllerHelper<int> filesControllerHelperInt,
             FileStorageService<string> fileStorageService,
@@ -124,20 +120,17 @@ namespace ASC.Api.Documents
             FileOperationWraperHelper fileOperationWraperHelper,
             EntryManager entryManager,
             UserManager userManager,
-            WebItemSecurity webItemSecurity,
             CoreBaseSettings coreBaseSettings,
             ThirdpartyConfiguration thirdpartyConfiguration,
             MessageService messageService,
             CommonLinkUtility commonLinkUtility,
             DocumentServiceConnector documentServiceConnector,
-            FolderContentWrapperHelper folderContentWrapperHelper,
             WordpressToken wordpressToken,
             WordpressHelper wordpressHelper,
             ConsumerFactory consumerFactory,
             EasyBibHelper easyBibHelper,
             ProductEntryPoint productEntryPoint)
         {
-            ApiContext = context;
             FilesControllerHelperString = filesControllerHelperString;
             FilesControllerHelperInt = filesControllerHelperInt;
             FileStorageService = fileStorageService;
@@ -150,7 +143,6 @@ namespace ASC.Api.Documents
             FileOperationWraperHelper = fileOperationWraperHelper;
             EntryManager = entryManager;
             UserManager = userManager;
-            WebItemSecurity = webItemSecurity;
             CoreBaseSettings = coreBaseSettings;
             ThirdpartyConfiguration = thirdpartyConfiguration;
             ConsumerFactory = consumerFactory;
@@ -161,7 +153,6 @@ namespace ASC.Api.Documents
             MessageService = messageService;
             CommonLinkUtility = commonLinkUtility;
             DocumentServiceConnector = documentServiceConnector;
-            FolderContentWrapperHelper = folderContentWrapperHelper;
             WordpressToken = wordpressToken;
             WordpressHelper = wordpressHelper;
             EasyBibHelper = easyBibHelper;

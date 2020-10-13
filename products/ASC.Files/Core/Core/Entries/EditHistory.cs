@@ -49,13 +49,11 @@ namespace ASC.Files.Core
         public EditHistory(
             IOptionsMonitor<ILog> options,
             TenantUtil tenantUtil,
-            AuthContext authContext,
             UserManager userManager,
             DisplayUserSettingsHelper displayUserSettingsHelper)
         {
             Logger = options.CurrentValue;
             TenantUtil = tenantUtil;
-            AuthContext = authContext;
             UserManager = userManager;
             DisplayUserSettingsHelper = displayUserSettingsHelper;
         }
@@ -95,7 +93,7 @@ namespace ASC.Files.Core
                                               return new EditHistoryChanges(TenantUtil)
                                               {
                                                   Date = jChange.Value<string>("created"),
-                                                  Author = new EditHistoryAuthor(AuthContext, UserManager, DisplayUserSettingsHelper)
+                                                  Author = new EditHistoryAuthor(UserManager, DisplayUserSettingsHelper)
                                                   {
                                                       Id = new Guid(jUser.Value<string>("id") ?? Guid.Empty.ToString()),
                                                       Name = jUser.Value<string>("name"),
@@ -126,7 +124,6 @@ namespace ASC.Files.Core
 
         public ILog Logger { get; }
         private TenantUtil TenantUtil { get; }
-        private AuthContext AuthContext { get; }
         private UserManager UserManager { get; }
         private DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
 
@@ -137,11 +134,9 @@ namespace ASC.Files.Core
     public class EditHistoryAuthor
     {
         public EditHistoryAuthor(
-            AuthContext authContext,
             UserManager userManager,
             DisplayUserSettingsHelper displayUserSettingsHelper)
         {
-            AuthContext = authContext;
             UserManager = userManager;
             DisplayUserSettingsHelper = displayUserSettingsHelper;
         }
@@ -167,7 +162,6 @@ namespace ASC.Files.Core
             set { _name = value; }
         }
 
-        private AuthContext AuthContext { get; }
         private UserManager UserManager { get; }
         private DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
     }

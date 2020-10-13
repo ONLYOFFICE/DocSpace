@@ -277,7 +277,7 @@ namespace ASC.Core.Billing
             }
         }
 
-        private static DateTime _date = DateTime.MinValue;
+        private static readonly DateTime _date = DateTime.MinValue;
 
         public DateTime VersionReleaseDate
         {
