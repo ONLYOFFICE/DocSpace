@@ -42,23 +42,17 @@ namespace ASC.Web.Studio.Core
 {
     public class EncryptionLoginProvider
     {
-        private UserManager UserManager { get; }
-        private TenantManager TenantManager { get; }
         private SecurityContext SecurityContext { get; }
         private Signature Signature { get; }
         private InstanceCrypto InstanceCrypto { get; }
         private IOptionsSnapshot<AccountLinker> Snapshot { get; }
 
         public EncryptionLoginProvider(
-            UserManager userManager,
-            TenantManager tenantManager,
             SecurityContext securityContext,
             Signature signature,
             InstanceCrypto instanceCrypto,
             IOptionsSnapshot<AccountLinker> snapshot)
         {
-            UserManager = userManager;
-            TenantManager = tenantManager;
             SecurityContext = securityContext;
             Signature = signature;
             InstanceCrypto = instanceCrypto;
@@ -103,8 +97,6 @@ namespace ASC.Web.Studio.Core
             if (services.TryAddScoped<EncryptionLoginProvider>())
             {
                 return services
-                    .AddUserManagerService()
-                    .AddTenantManagerService()
                     .AddSecurityContextService()
                     .AddSignatureService()
                     .AddInstanceCryptoService()

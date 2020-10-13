@@ -58,7 +58,7 @@ namespace ASC.Web.Core.Users
 
     public class DisplayUserSettingsHelper
     {
-        private string RemovedProfileName;
+        private readonly string RemovedProfileName;
         public DisplayUserSettingsHelper(UserManager userManager, UserFormatter userFormatter, IConfiguration configuration)
         {
             UserManager = userManager;

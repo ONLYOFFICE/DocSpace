@@ -74,10 +74,10 @@ namespace ASC.Common.Logging
                         }
 
                         var val = repo.Properties[realKey];
-                        if (val is PatternString)
+                        if (val is PatternString patternString)
                         {
-                            ((PatternString)val).ActivateOptions();
-                            ((PatternString)val).Format(writer);
+                            patternString.ActivateOptions();
+                            patternString.Format(writer);
                         }
                         else if (val != null)
                         {

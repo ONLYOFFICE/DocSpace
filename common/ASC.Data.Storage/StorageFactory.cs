@@ -48,9 +48,27 @@ namespace ASC.Data.Storage
 {
     public class StorageFactoryListener
     {
+        private volatile bool Subscribed;
+        private readonly object locker;
+        private ICacheNotify<DataStoreCacheItem> Cache { get; }
+
         public StorageFactoryListener(ICacheNotify<DataStoreCacheItem> cache)
         {
-            cache.Subscribe((r) => DataStoreCache.Remove(r.TenantId, r.Module), CacheNotifyAction.Remove);
+            Cache = cache;
+            locker = new object();
+        }
+
+        public void Subscribe()
+        {
+            if (Subscribed) return;
+
+            lock (locker)
+            {
+                if (Subscribed) return;
+
+                Subscribed = true;
+                Cache.Subscribe((r) => DataStoreCache.Remove(r.TenantId, r.Module), CacheNotifyAction.Remove);
+            }
         }
     }
 
@@ -159,7 +177,6 @@ namespace ASC.Data.Storage
     {
         private const string DefaultTenantName = "default";
 
-        private StorageFactoryListener StorageFactoryListener { get; }
         private StorageFactoryConfig StorageFactoryConfig { get; }
         private SettingsManager SettingsManager { get; }
         private StorageSettingsHelper StorageSettingsHelper { get; }
@@ -187,6 +204,7 @@ namespace ASC.Data.Storage
             this(storageFactoryListener, storageFactoryConfig, settingsManager, storageSettingsHelper, tenantManager, coreBaseSettings, pathUtils, emailValidationKeyProvider, options, null, encryptionSettingsHelper, encryptionFactory)
         {
         }
+
         public StorageFactory(
             StorageFactoryListener storageFactoryListener,
             StorageFactoryConfig storageFactoryConfig,
@@ -197,11 +215,11 @@ namespace ASC.Data.Storage
             PathUtils pathUtils,
             EmailValidationKeyProvider emailValidationKeyProvider,
             IOptionsMonitor<ILog> options,
-            IHttpContextAccessor httpContextAccessor, 
+            IHttpContextAccessor httpContextAccessor,
             EncryptionSettingsHelper encryptionSettingsHelper,
             EncryptionFactory encryptionFactory)
         {
-            StorageFactoryListener = storageFactoryListener;
+            storageFactoryListener.Subscribe();
             StorageFactoryConfig = storageFactoryConfig;
             SettingsManager = settingsManager;
             StorageSettingsHelper = storageSettingsHelper;

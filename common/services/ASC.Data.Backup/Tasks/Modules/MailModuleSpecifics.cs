@@ -43,8 +43,8 @@ namespace ASC.Data.Backup.Tasks.Modules
 {
     internal class MailModuleSpecifics : ModuleSpecificsBase
     {
-        private ILog log;
-        private Helpers helpers;
+        private readonly ILog log;
+        private readonly Helpers helpers;
         public MailModuleSpecifics(IOptionsMonitor<ILog> options, Helpers helpers) : base(helpers)
         {
             log = options.CurrentValue;

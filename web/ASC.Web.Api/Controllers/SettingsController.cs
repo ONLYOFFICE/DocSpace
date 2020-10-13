@@ -439,23 +439,23 @@ namespace ASC.Api.Settings
                 switch (Tenant.TrustedDomainsType)
                 {
                     case TenantTrustedDomainsType.Custom:
-                        {
-                            var address = new MailAddress(email);
-                            if (Tenant.TrustedDomains.Any(d => address.Address.EndsWith("@" + d, StringComparison.InvariantCultureIgnoreCase)))
-                            {
-                                StudioNotifyService.SendJoinMsg(email, emplType);
-                                MessageService.Send(MessageInitiator.System, MessageAction.SentInviteInstructions, email);
-                                return new ContentResult() { Content = Resource.FinishInviteJoinEmailMessage };
-                            }
-
-                            throw new Exception(Resource.ErrorEmailDomainNotAllowed);
-                        }
-                    case TenantTrustedDomainsType.All:
+                    {
+                        var address = new MailAddress(email);
+                        if (Tenant.TrustedDomains.Any(d => address.Address.EndsWith("@" + d, StringComparison.InvariantCultureIgnoreCase)))
                         {
                             StudioNotifyService.SendJoinMsg(email, emplType);
                             MessageService.Send(MessageInitiator.System, MessageAction.SentInviteInstructions, email);
                             return new ContentResult() { Content = Resource.FinishInviteJoinEmailMessage };
                         }
+
+                        throw new Exception(Resource.ErrorEmailDomainNotAllowed);
+                    }
+                    case TenantTrustedDomainsType.All:
+                    {
+                        StudioNotifyService.SendJoinMsg(email, emplType);
+                        MessageService.Send(MessageInitiator.System, MessageAction.SentInviteInstructions, email);
+                        return new ContentResult() { Content = Resource.FinishInviteJoinEmailMessage };
+                    }
                     default:
                         throw new Exception(Resource.ErrorNotCorrectEmail);
                 }
@@ -1041,7 +1041,7 @@ namespace ASC.Api.Settings
                 throw new BillingException(Resource.ErrorNotAllowedOption, "WhiteLabel");
             }
 
-            var result = new Dictionary<int, string>();
+            Dictionary<int, string> result;
 
             if (model.IsDefault)
             {
@@ -1313,7 +1313,7 @@ namespace ASC.Api.Settings
             if (currentUser.IsVisitor(UserManager) || currentUser.IsOutsider(UserManager))
                 throw new NotSupportedException("Not available.");
 
-            var codes = TfaManager.GenerateBackupCodes(currentUser).Select(r => new { r.IsUsed, r.Code }).ToList();
+            var codes = TfaManager.GenerateBackupCodes().Select(r => new { r.IsUsed, r.Code }).ToList();
             MessageService.Send(MessageAction.UserConnectedTfaApp, MessageTarget.Create(currentUser.ID), currentUser.DisplayUserName(false, DisplayUserSettingsHelper));
             return codes;
         }
@@ -1761,7 +1761,7 @@ namespace ASC.Api.Settings
         [Read("encryption")]
         public void StartEncryption(EncryptionSettingsModel settings)
         {
-            EncryptionSettingsProto encryptionSettingsProto = new EncryptionSettingsProto
+            var encryptionSettingsProto = new EncryptionSettingsProto
             {
                 NotifyUsers = settings.NotifyUsers,
                 Password = settings.Password,
@@ -2412,7 +2412,6 @@ namespace ASC.Api.Settings
                 .AddPermissionContextService()
                 .AddWebItemManager()
                 .AddWebItemManagerSecurity()
-                .AddCdnStorageSettingsService()
                 .AddStorageSettingsService()
                 .AddStorageFactoryService()
                 .AddStorageFactoryConfigService()

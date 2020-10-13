@@ -225,12 +225,10 @@ namespace ASC.FederatedLogin
 
     public class LoginHandler
     {
-        private RequestDelegate Next { get; }
         private IServiceProvider ServiceProvider { get; }
 
-        public LoginHandler(RequestDelegate next, IServiceProvider serviceProvider)
+        public LoginHandler(IServiceProvider serviceProvider)
         {
-            Next = next;
             ServiceProvider = serviceProvider;
         }
 
