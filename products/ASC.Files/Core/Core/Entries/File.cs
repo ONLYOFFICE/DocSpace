@@ -220,16 +220,13 @@ namespace ASC.Files.Core
                 if (string.IsNullOrEmpty(ConvertedType)) return FileUtility.GetFileExtension(Title);
 
                 var curFileType = FileUtility.GetFileTypeByFileName(Title);
-                switch (curFileType)
+                return curFileType switch
                 {
-                    case FileType.Image:
-                        return ConvertedType.Trim('.') == "zip" ? ".pptt" : ConvertedType;
-                    case FileType.Spreadsheet:
-                        return ConvertedType.Trim('.') != "xlsx" ? ".xlst" : ConvertedType;
-                    case FileType.Document:
-                        return ConvertedType.Trim('.') == "zip" ? ".doct" : ConvertedType;
-                }
-                return ConvertedType;
+                    FileType.Image => ConvertedType.Trim('.') == "zip" ? ".pptt" : ConvertedType,
+                    FileType.Spreadsheet => ConvertedType.Trim('.') != "xlsx" ? ".xlst" : ConvertedType,
+                    FileType.Document => ConvertedType.Trim('.') == "zip" ? ".doct" : ConvertedType,
+                    _ => ConvertedType,
+                };
             }
         }
 

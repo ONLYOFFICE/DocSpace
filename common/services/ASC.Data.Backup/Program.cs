@@ -12,7 +12,7 @@ namespace ASC.Data.Backup
     {
         public static async Task Main(string[] args)
         {
-            Host.CreateDefaultBuilder(args)
+            await Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
@@ -44,7 +44,7 @@ namespace ASC.Data.Backup
                 })
                 .UseConsoleLifetime()
                 .Build()
-                .Run();
+                .RunAsync();
         }
     }
 }

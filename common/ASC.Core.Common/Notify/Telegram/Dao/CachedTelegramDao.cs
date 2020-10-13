@@ -49,13 +49,13 @@ namespace ASC.Core.Common.Notify.Telegram
         public void Configure(string name, CachedTelegramDao options)
         {
             Configure(options);
-            options.tgDao = Service.Get(name);
+            options.TgDao = Service.Get(name);
         }
 
         public void Configure(CachedTelegramDao options)
         {
-            options.tgDao = Service.Value;
-            options.cache = AscCache.Memory;
+            options.TgDao = Service.Value;
+            options.Cache = AscCache.Memory;
             options.Expiration = TimeSpan.FromMinutes(20);
 
             options.PairKeyFormat = "tgUser:{0}:{1}";
@@ -65,8 +65,8 @@ namespace ASC.Core.Common.Notify.Telegram
 
     public class CachedTelegramDao
     {
-        public TelegramDao tgDao { get; set; }
-        public ICache cache { get; set; }
+        public TelegramDao TgDao { get; set; }
+        public ICache Cache { get; set; }
         public TimeSpan Expiration { get; set; }
 
         public string PairKeyFormat { get; set; }
@@ -75,25 +75,25 @@ namespace ASC.Core.Common.Notify.Telegram
 
         public void Delete(Guid userId, int tenantId)
         {
-            cache.Remove(string.Format(PairKeyFormat, userId, tenantId));
-            tgDao.Delete(userId, tenantId);
+            Cache.Remove(string.Format(PairKeyFormat, userId, tenantId));
+            TgDao.Delete(userId, tenantId);
         }
 
         public void Delete(int telegramId)
         {
-            cache.Remove(string.Format(SingleKeyFormat, telegramId));
-            tgDao.Delete(telegramId);
+            Cache.Remove(string.Format(SingleKeyFormat, telegramId));
+            TgDao.Delete(telegramId);
         }
 
         public TelegramUser GetUser(Guid userId, int tenantId)
         {
             var key = string.Format(PairKeyFormat, userId, tenantId);
 
-            var user = cache.Get<TelegramUser>(key);
+            var user = Cache.Get<TelegramUser>(key);
             if (user != null) return user;
 
-            user = tgDao.GetUser(userId, tenantId);
-            if (user != null) cache.Insert(key, user, Expiration);
+            user = TgDao.GetUser(userId, tenantId);
+            if (user != null) Cache.Insert(key, user, Expiration);
             return user;
         }
 
@@ -101,20 +101,20 @@ namespace ASC.Core.Common.Notify.Telegram
         {
             var key = string.Format(SingleKeyFormat, telegramId);
 
-            var users = cache.Get<List<TelegramUser>>(key);
+            var users = Cache.Get<List<TelegramUser>>(key);
             if (users != null) return users;
 
-            users = tgDao.GetUser(telegramId);
-            if (users.Any()) cache.Insert(key, users, Expiration);
+            users = TgDao.GetUser(telegramId);
+            if (users.Any()) Cache.Insert(key, users, Expiration);
             return users;
         }
 
         public void RegisterUser(Guid userId, int tenantId, int telegramId)
         {
-            tgDao.RegisterUser(userId, tenantId, telegramId);
+            TgDao.RegisterUser(userId, tenantId, telegramId);
 
             var key = string.Format(PairKeyFormat, userId, tenantId);
-            cache.Insert(key, new TelegramUser { PortalUserId = userId, TenantId = tenantId, TelegramUserId = telegramId }, Expiration);
+            Cache.Insert(key, new TelegramUser { PortalUserId = userId, TenantId = tenantId, TelegramUserId = telegramId }, Expiration);
         }
     }
 
