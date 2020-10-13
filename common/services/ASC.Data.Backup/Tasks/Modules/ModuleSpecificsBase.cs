@@ -43,12 +43,12 @@ namespace ASC.Data.Backup.Tasks.Modules
         private string _connectionStringName;
         public virtual string ConnectionStringName
         {
-            get { return _connectionStringName ?? (_connectionStringName = ModuleName.ToString().ToLower()); }
+            get { return _connectionStringName ??= ModuleName.ToString().ToLower(); }
         }
 
         public abstract IEnumerable<TableInfo> Tables { get; }
         public abstract IEnumerable<RelationInfo> TableRelations { get; }
-        private Helpers helpers;
+        private readonly Helpers helpers;
         public ModuleSpecificsBase(Helpers helpers)
         {
             this.helpers = helpers;
@@ -108,8 +108,7 @@ namespace ASC.Data.Backup.Tasks.Modules
             if (table.InsertMethod == InsertMethod.None)
                 return null;
 
-            Dictionary<string, object> valuesForInsert;
-            if (!TryPrepareRow(dump, connection, columnMapper, table, row, out valuesForInsert))
+            if (!TryPrepareRow(dump, connection, columnMapper, table, row, out var valuesForInsert))
                 return null;
 
             var columns = valuesForInsert.Keys.Intersect(table.Columns).ToArray();
@@ -151,15 +150,13 @@ namespace ASC.Data.Backup.Tasks.Modules
                 return DBNull.Value;
             }
 
-            var @enum = value as Enum;
-            if (@enum != null)
+            if (value is Enum @enum)
             {
                 return @enum.ToString("d");
             }
 
-            if (value is DateTime)
+            if (value is DateTime d)
             {
-                var d = (DateTime)value;
                 return new DateTime(d.Year, d.Month, d.Day, d.Hour, d.Minute, d.Second, DateTimeKind.Unspecified);
             }
             return value;
@@ -259,11 +256,9 @@ namespace ASC.Data.Backup.Tasks.Modules
                 return true;
             }
 
-            Guid guidVal;
-            int intVal;
             return value == null ||
-                Guid.TryParse(Convert.ToString(value), out guidVal) ||
-                int.TryParse(Convert.ToString(value), out intVal);
+                Guid.TryParse(Convert.ToString(value), out _) ||
+                int.TryParse(Convert.ToString(value), out _);
         }
 
         public virtual void PrepareData(DataTable data)

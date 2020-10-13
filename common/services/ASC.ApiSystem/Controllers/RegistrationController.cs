@@ -267,7 +267,7 @@ namespace ASC.ApiSystem.Controllers
                 Culture = lang,
                 FirstName = model.FirstName.Trim(),
                 LastName = model.LastName.Trim(),
-                PasswordHash = String.IsNullOrEmpty(model.PasswordHash) ? null : model.PasswordHash,
+                PasswordHash = string.IsNullOrEmpty(model.PasswordHash) ? null : model.PasswordHash,
                 Email = model.Email.Trim(),
                 TimeZoneInfo = tz,
                 MobilePhone = string.IsNullOrEmpty(model.Phone) ? null : model.Phone.Trim(),
@@ -280,7 +280,7 @@ namespace ASC.ApiSystem.Controllers
 
             if (!string.IsNullOrEmpty(model.PartnerId))
             {
-                if (Guid.TryParse(model.PartnerId, out Guid guid))
+                if (Guid.TryParse(model.PartnerId, out var guid))
                 {
                     // valid guid
                     info.PartnerId = model.PartnerId;
@@ -328,7 +328,7 @@ namespace ASC.ApiSystem.Controllers
 
             string sendCongratulationsAddress = null;
 
-            if (!String.IsNullOrEmpty(model.PasswordHash))
+            if (!string.IsNullOrEmpty(model.PasswordHash))
             {
                 isFirst = !CommonMethods.SendCongratulations(Request.Scheme, t, model.SkipWelcome, out sendCongratulationsAddress);
             }

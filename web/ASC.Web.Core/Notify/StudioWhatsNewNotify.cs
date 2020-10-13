@@ -61,7 +61,7 @@ namespace ASC.Web.Studio.Core.Notify
             ServiceProvider = serviceProvider;
             Confuguration = confuguration;
         }
-        
+
         public void SendMsgWhatsNew(DateTime scheduleDate)
         {
             var log = ServiceProvider.GetService<IOptionsMonitor<ILog>>().Get("ASC.Notify");
@@ -142,7 +142,7 @@ namespace ASC.Web.Studio.Core.Notify
                                 Title = HtmlUtil.GetText(f.Title, 512),
                                 URL = commonLinkUtility.GetFullAbsolutePath(f.ItemUrl),
                                 BreadCrumbs = new string[0],
-                                Action = getWhatsNewActionText(f)
+                                Action = GetWhatsNewActionText(f)
                             }).ToList());
 
 
@@ -165,7 +165,7 @@ namespace ASC.Web.Studio.Core.Notify
                                             Title = HtmlUtil.GetText(prawbc.Title, 512),
                                             URL = commonLinkUtility.GetFullAbsolutePath(prawbc.ItemUrl),
                                             BreadCrumbs = new string[0],
-                                            Action = getWhatsNewActionText(prawbc)
+                                            Action = GetWhatsNewActionText(prawbc)
                                         });
                         }
 
@@ -185,7 +185,7 @@ namespace ASC.Web.Studio.Core.Notify
                                         Title = HtmlUtil.GetText(ls.Title, 512),
                                         URL = commonLinkUtility.GetFullAbsolutePath(ls.ItemUrl),
                                         BreadCrumbs = i == 0 ? new string[1] { gr.Key } : new string[0],
-                                        Action = getWhatsNewActionText(ls)
+                                        Action = GetWhatsNewActionText(ls)
                                     });
                             }
                         }
@@ -214,7 +214,7 @@ namespace ASC.Web.Studio.Core.Notify
             }
         }
 
-        private static string getWhatsNewActionText(FeedMin feed)
+        private static string GetWhatsNewActionText(FeedMin feed)
         {
 
             if (feed.Module == ASC.Feed.Constants.BookmarksModule)
@@ -340,13 +340,13 @@ namespace ASC.Web.Studio.Core.Notify
             out TenantUtil tenantUtil,
             out StudioNotifyHelper studioNotifyHelper,
             out UserManager userManager,
-            out SecurityContext securityContext, 
+            out SecurityContext securityContext,
             out AuthContext authContext,
             out AuthManager authManager,
-            out CommonLinkUtility commonLinkUtility, 
+            out CommonLinkUtility commonLinkUtility,
             out DisplayUserSettingsHelper displayUserSettingsHelper,
             out FeedAggregateDataProvider feedAggregateDataProvider,
-            out CoreSettings coreSettings )
+            out CoreSettings coreSettings)
         {
             tenantManager = TenantManager;
             paymentManager = PaymentManager;

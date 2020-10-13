@@ -47,7 +47,6 @@ namespace ASC.IPSecurity
 
         public bool IpSecurityEnabled { get; }
 
-        private IConfiguration Configuration { get; }
         private IHttpContextAccessor HttpContextAccessor { get; }
         private AuthContext AuthContext { get; }
         private TenantManager TenantManager { get; }
@@ -66,7 +65,6 @@ namespace ASC.IPSecurity
             IOptionsMonitor<ILog> options)
         {
             Log = options.Get("ASC.IPSecurity");
-            Configuration = configuration;
             HttpContextAccessor = httpContextAccessor;
             AuthContext = authContext;
             TenantManager = tenantManager;

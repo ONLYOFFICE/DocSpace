@@ -51,21 +51,17 @@ namespace ASC.Data.Backup.Storage
         }
         public string Upload(string storageBasePath, string localPath, Guid userId)
         {
-            using (var stream = File.OpenRead(localPath))
-            {
-                var storagePath = Path.GetFileName(localPath);
-                Store.Save(Domain, storagePath, stream, ACL.Private);
-                return storagePath;
-            }
+            using var stream = File.OpenRead(localPath);
+            var storagePath = Path.GetFileName(localPath);
+            Store.Save(Domain, storagePath, stream, ACL.Private);
+            return storagePath;
         }
 
         public void Download(string storagePath, string targetLocalPath)
         {
-            using (var source = Store.GetReadStream(Domain, storagePath))
-            using (var destination = File.OpenWrite(targetLocalPath))
-            {
-                source.CopyTo(destination);
-            }
+            using var source = Store.GetReadStream(Domain, storagePath);
+            using var destination = File.OpenWrite(targetLocalPath);
+            source.CopyTo(destination);
         }
 
         public void Delete(string storagePath)

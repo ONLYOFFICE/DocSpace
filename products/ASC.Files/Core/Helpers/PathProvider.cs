@@ -88,17 +88,15 @@ namespace ASC.Web.Files.Classes
         public string GetFileStaticRelativePath(string fileName)
         {
             var ext = FileUtility.GetFileExtension(fileName);
-            switch (ext)
+            return ext switch
             {
-                case ".js": //Attention: Only for ResourceBundleControl
-                    return VirtualPathUtility.ToAbsolute("~/Products/Files/js/" + fileName);
-                case ".ascx":
-                    return BaseCommonLinkUtility.ToAbsolute("~/Products/Files/Controls/" + fileName);
-                case ".css": //Attention: Only for ResourceBundleControl
-                    return VirtualPathUtility.ToAbsolute("~/Products/Files/App_Themes/default/" + fileName);
-            }
-
-            return fileName;
+                //Attention: Only for ResourceBundleControl
+                ".js" => VirtualPathUtility.ToAbsolute("~/Products/Files/js/" + fileName),
+                ".ascx" => BaseCommonLinkUtility.ToAbsolute("~/Products/Files/Controls/" + fileName),
+                //Attention: Only for ResourceBundleControl
+                ".css" => VirtualPathUtility.ToAbsolute("~/Products/Files/App_Themes/default/" + fileName),
+                _ => fileName,
+            };
         }
 
         public string GetFileControlPath(string fileName)

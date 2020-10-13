@@ -275,7 +275,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             Total = InitTotalProgressSteps();
             Source = string.Join(SPLIT_CHAR, Folders.Select(f => "folder_" + f).Concat(Files.Select(f => "file_" + f)).ToArray());
         }
-        
+
         public override void RunJob(DistributedTask _, CancellationToken cancellationToken)
         {
             try
@@ -407,7 +407,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             Options = options;
         }
 
-        public void Deconstruct(out TenantManager tenantManager, out IDaoFactory daoFactory, out FileSecurity fileSecurity, out IOptionsMonitor<ILog> optionsMonitor )
+        public void Deconstruct(out TenantManager tenantManager, out IDaoFactory daoFactory, out FileSecurity fileSecurity, out IOptionsMonitor<ILog> optionsMonitor)
         {
             tenantManager = TenantManager;
             daoFactory = DaoFactory;

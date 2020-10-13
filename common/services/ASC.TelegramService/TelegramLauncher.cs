@@ -44,7 +44,7 @@ namespace ASC.TelegramService
         private TelegramListener TelegramListener { get; set; }
         private IServiceProvider ServiceProvider { get; set; }
 
-        public TelegramLauncher(TelegramListener telegramListener,  IServiceProvider serviceProvider)
+        public TelegramLauncher(TelegramListener telegramListener, IServiceProvider serviceProvider)
         {
             TelegramListener = telegramListener;
             ServiceProvider = serviceProvider;
