@@ -81,10 +81,23 @@ export function updateProfile(profile) {
   };
 }
 export function updateProfileCulture(id, culture) {
-  return (dispatch) => {
+  return (dispatch, getState) => {
+
     return api.people.updateUserCulture(id, culture).then((user) => {
       dispatch(setCurrentUser(user));
       return dispatch(setProfile(user));
+    })
+    .then(() => caches.delete("api-cache"))
+    .then(() => {
+      const { getCurrentCustomSchema, getModules } = store.auth.actions;
+      const state = getState();
+        const { nameSchemaId } = state.auth.settings;
+
+      if (!nameSchemaId) return getModules();
+
+      const requests = [(getModules(dispatch)), (getCurrentCustomSchema(dispatch, nameSchemaId))];
+
+      return Promise.all(requests);
     });
   };
 }

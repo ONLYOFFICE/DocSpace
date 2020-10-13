@@ -14,7 +14,7 @@ import { connect } from "react-redux";
 import { updateProfileCulture } from "../../../../../../store/profile/actions";
 
 const { resendUserInvites } = api.people;
-const { getCurrentCustomSchema, getModules } = store.auth.actions;
+
 
 const InfoContainer = styled.div`
   margin-bottom: 24px;
@@ -142,22 +142,12 @@ class ProfileInfo extends React.PureComponent {
     console.log("onLanguageSelect", language);
     const {
       profile,
-      updateProfileCulture,
-      nameSchemaId,
-      getModules,
-      getCurrentCustomSchema,
+      updateProfileCulture
     } = this.props;
 
     if (profile.cultureName === language.key) return;
 
     updateProfileCulture(profile.id, language.key)
-      .then(() => {
-        if (!nameSchemaId) return getModules();
-        return (
-          axios.all([getModules(), getCurrentCustomSchema(nameSchemaId)]),
-          console.log("Update getModules", getModules())
-        );
-      })
       .catch((err) => console.log(err));
   };
 
@@ -339,7 +329,7 @@ class ProfileInfo extends React.PureComponent {
 }
 
 function mapStateToProps(state) {
-  const { customNames, nameSchemaId } = state.auth.settings;
+  const { customNames } = state.auth.settings;
   const {
     groupCaption,
     regDateCaption,
@@ -354,13 +344,10 @@ function mapStateToProps(state) {
     userPostCaption,
     userCaption,
     guestCaption,
-    nameSchemaId,
   };
 }
 const mapDispatchToProps = (dispatch) => {
   return {
-    getModules: () => getModules(dispatch),
-    getCurrentCustomSchema: (id) => getCurrentCustomSchema(dispatch, id),
     updateProfileCulture: (id, culture) =>
       dispatch(updateProfileCulture(id, culture)),
   };
