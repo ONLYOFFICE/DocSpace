@@ -234,14 +234,8 @@ namespace ASC.Api.Settings
         public static DIHelper AddSmtpSettingsController(this DIHelper services)
         {
             return services
-                .AddMessageServiceService()
-                .AddStudioNotifyServiceService()
                 .AddApiContextService()
-                .AddUserManagerService()
-                .AddSecurityContextService()
                 .AddPermissionContextService()
-                .AddTenantManagerService()
-                .AddCoreSettingsService()
                 .AddCoreConfigurationService()
                 .AddCoreBaseSettingsService()
                 ;
