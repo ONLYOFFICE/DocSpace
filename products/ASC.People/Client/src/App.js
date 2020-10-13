@@ -20,6 +20,7 @@ import {
   constants,
   NavMenu,
   Main,
+  toastr,
 } from "asc-web-common";
 import { getFilterByLocation } from "./helpers/converters";
 import { fetchGroups, fetchPeople } from "./store/people/actions";
@@ -75,9 +76,13 @@ class App extends React.Component {
       fetchPeople(),
     ];
 
-    Promise.all(requests).finally(() => {
-      setIsLoaded();
-    });
+    Promise.all(requests)
+      .catch((e) => {
+        toastr.error(e);
+      })
+      .finally(() => {
+        setIsLoaded();
+      });
   }
 
   render() {

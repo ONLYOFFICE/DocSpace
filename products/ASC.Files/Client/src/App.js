@@ -1,6 +1,5 @@
 import React, { Suspense } from "react";
 import { connect } from "react-redux";
-import axios from "axios";
 import { Router, Switch, Redirect } from "react-router-dom";
 import { Loader } from "asc-web-components";
 import Home from "./components/pages/Home";
@@ -23,6 +22,7 @@ import {
   NavMenu,
   Main,
   utils,
+  toastr,
 } from "asc-web-common";
 
 const {
@@ -57,7 +57,6 @@ class App extends React.Component {
     const token = localStorage.getItem(AUTH_KEY);
 
     if (!token) {
-      utils.hideLoader();
       return setIsLoaded();
     }
 
@@ -70,10 +69,13 @@ class App extends React.Component {
       fetchTreeFolders(),
     ];
 
-    axios.all(requests).then(() => {
-      utils.hideLoader();
-      setIsLoaded();
-    });
+    Promise.all(requests)
+      .catch((e) => {
+        toastr.error(e);
+      })
+      .finally(() => {
+        setIsLoaded();
+      });
   }
 
   render() {
