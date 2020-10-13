@@ -18,7 +18,7 @@ import {
 import {
   toEmployeeWrapper,
 } from "../../../../../store/people/selectors";
-import { toggleAvatarEditor, updateProfileInUsers } from "../../../../../store/people/actions";
+import { toggleAvatarEditor, updateProfileInUsers, setIsEditingForm } from "../../../../../store/people/actions";
 import { setDocumentTitle } from "../../../../../helpers/utils";
 import { isMobile } from "react-device-detect";
 
@@ -137,6 +137,11 @@ class CreateAvatarEditorPage extends React.PureComponent {
     };
   };
 
+  setIsEdit(hasChanges) {
+    const { setIsEditingForm } = this.props;
+    setIsEditingForm(hasChanges);
+  }
+
   onLoadFileAvatar (file, fileData) {
     let data = new FormData();
     let _this = this;
@@ -205,8 +210,10 @@ class CreateAvatarEditorPage extends React.PureComponent {
       
       setCreatedAvatar(stateCopy.avatar)
       setCroppedAvatar(croppedImage)
+      this.setIsEdit(true)
     } else {
       resetProfile()
+      this.setIsEdit(false)
     }
 
     toggleAvatarEditor(false);
@@ -283,6 +290,7 @@ function mapStateToProps(state) {
     createdAvatar: state.profile.createdAvatar,
     croppedAvatar: state.profile.croppedAvatar,
     settings: state.auth.settings,
+    editingForm: state.people.editingForm,
   };
 }
 
@@ -296,4 +304,5 @@ export default connect(mapStateToProps, {
   setCreatedAvatar,
   setCroppedAvatar,
   resetProfile,
+  setIsEditingForm,
 })(withTranslation()(withRouter(CreateAvatarEditorPage)));
