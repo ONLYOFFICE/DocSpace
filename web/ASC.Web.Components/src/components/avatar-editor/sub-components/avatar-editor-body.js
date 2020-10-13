@@ -169,7 +169,7 @@ const mobileStyles = css`
   grid-template-rows: 1fr auto;
 
   .preview-container {
-    margin-bottom: 24px;
+    margin-bottom: 23px;
 
     .editor-container {
       display: grid;
