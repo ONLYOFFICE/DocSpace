@@ -996,8 +996,6 @@ namespace ASC.Web.Files.Services.DocumentService
                 .AddDaoFactoryService()
                 .AddGlobalFolderHelperService()
                 .AddPathProviderService()
-                .AddWebImageSupplierService()
-                .AddBaseCommonLinkUtilityService()
                 .AddCustomerConfigService()
                 .AddLogoConfigService();
         }
