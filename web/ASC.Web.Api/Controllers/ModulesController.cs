@@ -41,8 +41,6 @@ namespace ASC.Web.Api.Controllers
         public static DIHelper AddModulesController(this DIHelper services)
         {
             return services
-                .AddUserManagerService()
-                .AddTenantManagerService()
                 .AddWebItemManagerSecurity();
         }
     }
