@@ -114,8 +114,8 @@ namespace ASC.Data.Backup.Tasks.Modules
                 new RelationInfo("files_thirdparty_account", "id", "files_thirdparty_id_mapping", "hash_id")
             };
 
-        private Helpers helpers;
-        private ILog log;
+        private readonly Helpers helpers;
+        private readonly ILog log;
         public FilesModuleSpecifics(IOptionsMonitor<ILog> options, Helpers helpers) : base(helpers)
         {
             log = options.CurrentValue;

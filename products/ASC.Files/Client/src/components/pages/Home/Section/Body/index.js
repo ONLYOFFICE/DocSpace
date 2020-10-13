@@ -214,10 +214,7 @@ class SectionBodyContent extends React.Component {
       return false;
     }
 
-    if (
-      !isEqual(this.props, nextProps) ||
-      !isEqual(this.state.mediaViewerVisible, nextState.mediaViewerVisible)
-    ) {
+    if (!isEqual(this.props, nextProps)) {
       return true;
     }
 
@@ -1555,7 +1552,7 @@ class SectionBodyContent extends React.Component {
                       editingId === item.id &&
                       item.fileExst === fileAction.extension;
                     const contextOptionsProps =
-                      contextOptions && contextOptions.length > 0
+                      !isEdit && contextOptions && contextOptions.length > 0
                         ? {
                           contextOptions: this.getFilesContextOptions(
                             contextOptions,
@@ -1567,7 +1564,7 @@ class SectionBodyContent extends React.Component {
                     const element = this.getItemIcon(item, isEdit || item.id <= 0);
                     const classNameProp =
                       isFolder && item.access < 2 ? { className: " dropable" } : {};
-                    const sharedButton = this.getSharedButton();
+                    const sharedButton = (isEdit || item.id <= 0) ? null : this.getSharedButton();
                     const displayShareButton = widthProp > 500 ? '96px' : '26px';
 
                     return (

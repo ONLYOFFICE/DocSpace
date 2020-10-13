@@ -126,11 +126,11 @@ namespace ASC.Core.Notify
             m.To = string.Join("|", to.ToArray());
 
             var replyTag = message.Arguments.FirstOrDefault(x => x.Tag == "replyto");
-            if (replyTag != null && replyTag.Value is string)
+            if (replyTag != null && replyTag.Value is string value)
             {
                 try
                 {
-                    m.ReplyTo = MailAddressUtils.Create((string)replyTag.Value).ToString();
+                    m.ReplyTo = MailAddressUtils.Create(value).ToString();
                 }
                 catch (Exception e)
                 {
@@ -181,7 +181,9 @@ namespace ASC.Core.Notify
         }
 
         public void Deconstruct(out TenantManager tenantManager, out CoreConfiguration coreConfiguration, out IOptionsMonitor<ILog> optionsMonitor)
-            => (tenantManager, coreConfiguration, optionsMonitor) = (TenantManager, CoreConfiguration, Options);
+        {
+            (tenantManager, coreConfiguration, optionsMonitor) = (TenantManager, CoreConfiguration, Options);
+        }
     }
 
     public static class EmailSenderSinkExtension

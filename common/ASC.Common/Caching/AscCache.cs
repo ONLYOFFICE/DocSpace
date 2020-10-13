@@ -56,7 +56,7 @@ namespace ASC.Common.Caching
 
             foreach (var k in keys)
             {
-                _ = MemoryCache.Default.Remove(k);
+                MemoryCache.Default.Remove(k);
             }
         }
     }

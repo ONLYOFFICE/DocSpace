@@ -160,56 +160,54 @@ namespace ASC.Files.Thirdparty.Sharpbox
         {
             if (oldValue.Equals(newValue)) return;
 
-            using (var tx = FilesDbContext.Database.BeginTransaction())
+            using var tx = FilesDbContext.Database.BeginTransaction();
+            var oldIDs = Query(FilesDbContext.ThirdpartyIdMapping)
+                .Where(r => r.Id.StartsWith(oldValue))
+                .Select(r => r.Id)
+                .ToList();
+
+            foreach (var oldID in oldIDs)
             {
-                var oldIDs = Query(FilesDbContext.ThirdpartyIdMapping)
-                    .Where(r => r.Id.StartsWith(oldValue))
-                    .Select(r => r.Id)
+                var oldHashID = MappingID(oldID);
+                var newID = oldID.Replace(oldValue, newValue);
+                var newHashID = MappingID(newID);
+
+                var mappingForUpdate = Query(FilesDbContext.ThirdpartyIdMapping)
+                    .Where(r => r.HashId == oldHashID)
                     .ToList();
 
-                foreach (var oldID in oldIDs)
+                foreach (var m in mappingForUpdate)
                 {
-                    var oldHashID = MappingID(oldID);
-                    var newID = oldID.Replace(oldValue, newValue);
-                    var newHashID = MappingID(newID);
-
-                    var mappingForUpdate = Query(FilesDbContext.ThirdpartyIdMapping)
-                        .Where(r => r.HashId == oldHashID)
-                        .ToList();
-
-                    foreach (var m in mappingForUpdate)
-                    {
-                        m.Id = newID;
-                        m.HashId = newHashID;
-                    }
-
-                    FilesDbContext.SaveChanges();
-
-                    var securityForUpdate = Query(FilesDbContext.Security)
-                        .Where(r => r.EntryId == oldHashID)
-                        .ToList();
-
-                    foreach (var s in securityForUpdate)
-                    {
-                        s.EntryId = newHashID;
-                    }
-
-                    FilesDbContext.SaveChanges();
-
-                    var linkForUpdate = Query(FilesDbContext.TagLink)
-                        .Where(r => r.EntryId == oldHashID)
-                        .ToList();
-
-                    foreach (var l in linkForUpdate)
-                    {
-                        l.EntryId = newHashID;
-                    }
-
-                    FilesDbContext.SaveChanges();
+                    m.Id = newID;
+                    m.HashId = newHashID;
                 }
 
-                tx.Commit();
+                FilesDbContext.SaveChanges();
+
+                var securityForUpdate = Query(FilesDbContext.Security)
+                    .Where(r => r.EntryId == oldHashID)
+                    .ToList();
+
+                foreach (var s in securityForUpdate)
+                {
+                    s.EntryId = newHashID;
+                }
+
+                FilesDbContext.SaveChanges();
+
+                var linkForUpdate = Query(FilesDbContext.TagLink)
+                    .Where(r => r.EntryId == oldHashID)
+                    .ToList();
+
+                foreach (var l in linkForUpdate)
+                {
+                    l.EntryId = newHashID;
+                }
+
+                FilesDbContext.SaveChanges();
             }
+
+            tx.Commit();
         }
 
         protected string MakePath(object entryId)

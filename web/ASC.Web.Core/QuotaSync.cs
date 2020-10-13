@@ -49,8 +49,8 @@ namespace ASC.Web.Studio.Core.Quota
             TaskInfo = new DistributedTask();
             ServiceProvider = serviceProvider;
         }
-        
-        public void RunJob(DistributedTask _, CancellationToken cancellationToken)
+
+        public void RunJob()//DistributedTask distributedTask, CancellationToken cancellationToken)
         {
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<QuotaSyncScope>();
@@ -93,7 +93,7 @@ namespace ASC.Web.Studio.Core.Quota
             StorageFactory = storageFactory;
         }
 
-        public void Deconstruct(out TenantManager tenantManager, out StorageFactoryConfig storageFactoryConfig, out StorageFactory storageFactory )
+        public void Deconstruct(out TenantManager tenantManager, out StorageFactoryConfig storageFactoryConfig, out StorageFactory storageFactory)
         {
             tenantManager = TenantManager;
             storageFactoryConfig = StorageFactoryConfig;

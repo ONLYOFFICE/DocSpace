@@ -156,10 +156,8 @@ namespace ASC.Web.Files.Utils
             using (var stream = response.GetResponseStream())
             {
                 if (stream == null) throw new WebException("Could not get an answer");
-                using (var reader = new StreamReader(stream))
-                {
-                    responseAttachString = reader.ReadToEnd();
-                }
+                using var reader = new StreamReader(stream);
+                responseAttachString = reader.ReadToEnd();
             }
 
             var responseAttach = JObject.Parse(responseAttachString);

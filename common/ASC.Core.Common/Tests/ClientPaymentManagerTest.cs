@@ -37,7 +37,7 @@ namespace ASC.Core.Common.Tests
     public class ClientPaymentManagerTest
     {
         private readonly PaymentManager paymentManager = new PaymentManager(null, null, null);
-        private IServiceProvider serviceProvider;
+        private readonly IServiceProvider serviceProvider;
 
         [Test]
         public void ActivateCuponTest()
