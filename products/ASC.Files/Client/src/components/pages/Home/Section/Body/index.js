@@ -209,10 +209,7 @@ class SectionBodyContent extends React.Component {
       return false;
     }
 
-    if (
-      !isEqual(this.props, nextProps) ||
-      !isEqual(this.state.mediaViewerVisible, nextState.mediaViewerVisible)
-    ) {
+    if (!isEqual(this.props, nextProps)) {
       return true;
     }
 
