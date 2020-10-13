@@ -4,11 +4,13 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { IconButton } from "asc-web-components";
 import { Headline } from "asc-web-common";
-import { useTranslation } from "react-i18next";import {
+import { useTranslation } from "react-i18next";
+import {
   setFilter,
   setIsVisibleDataLossDialog,
   toggleAvatarEditor
 } from "../../../../../store/people/actions";
+import { resetProfile } from "../../../../../store/profile/actions";
 const Wrapper = styled.div`
   display: flex;
   align-items: center;
@@ -58,12 +60,23 @@ const SectionHeaderContent = (props) => {
       onClickBack();
     }
   };
+
+  const setFilterAndReset = (filter) => {
+    props.resetProfile();
+    setFilter(filter)
+  }
+  
+  const goBackAndReset = () => {
+    props.resetProfile();
+    history.goBack();
+  }
+  
   const onClickBack = useCallback(() => {
     avatarEditorIsOpen
       ? toggleAvatarEditor(false)
       : !profile || !document.referrer
-      ? setFilter(filter)
-      : history.goBack();
+      ? setFilterAndReset(filter)
+      : goBackAndReset()
   }, [history, profile,setFilter, filter, settings.homepage, avatarEditorIsOpen]);
   return (
     <Wrapper>
@@ -95,5 +108,6 @@ function mapStateToProps(state) {
 export default connect(mapStateToProps, {
   setFilter,
   setIsVisibleDataLossDialog,
-  toggleAvatarEditor
+  toggleAvatarEditor,
+  resetProfile,
 })(withRouter(SectionHeaderContent));
