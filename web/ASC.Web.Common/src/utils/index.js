@@ -97,13 +97,13 @@ export function hideLoader() {
     window.loadingTimeout = null;
   }
 
-  document.body.style.cursor = "";
+  document.body.classList.remove("loading");
 }
 
 export function showLoader() {
   if (isMobile) return;
 
   window.loadingTimeout = setTimeout(() => {
-    document.body.style.cursor = "wait !important";
+    document.body.classList.add("loading");
   }, 1000);
 }
