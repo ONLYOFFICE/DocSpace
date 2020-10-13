@@ -10,7 +10,6 @@ import {
   setEnableThirdParty,
   setConfirmDelete,
   setStoreForceSave,
-  setSelectedNode,
   setForceSave,
 } from "../../../../../store/files/actions";
 import { setDocumentTitle } from "../../../../../helpers/utils";
@@ -32,8 +31,6 @@ const StyledSettings = styled.div`
 const SectionBodyContent = ({
   setting,
   isLoading,
-  selectedTreeNode,
-  setSelectedNode,
   storeForceSave,
   setStoreForceSave,
   enableThirdParty,
@@ -55,12 +52,6 @@ const SectionBodyContent = ({
     setDocumentTitle(t(`${title}`));
   }, [setting, t]);
 
-  useEffect(() => {
-    if (setting !== selectedTreeNode[0]) {
-      setSelectedNode([setting]);
-    }
-  }, [setting]);
-
   const onChangeStoreForceSave = () => {
     setStoreForceSave(!storeForceSave, "storeForceSave");
   };
@@ -70,7 +61,7 @@ const SectionBodyContent = ({
   };
 
   const renderAdminSettings = () => {
-    return (
+    return isLoading ? null : (
       <StyledSettings>
         <ToggleButton
           className="toggle-btn"
@@ -105,7 +96,7 @@ const SectionBodyContent = ({
   };
 
   const renderCommonSettings = () => {
-    return (
+    return isLoading ? null : (
       <StyledSettings>
         <ToggleButton
           className="toggle-btn"
@@ -179,7 +170,7 @@ const SectionBodyContent = ({
 };
 
 function mapStateToProps(state) {
-  const { settingsTree, selectedTreeNode, isLoading } = state.files;
+  const { settingsTree, isLoading } = state.files;
   const { isAdmin } = state.auth.user;
   const {
     storeOriginalFiles,
@@ -192,7 +183,6 @@ function mapStateToProps(state) {
 
   return {
     isAdmin,
-    selectedTreeNode,
     storeOriginalFiles,
     confirmDelete,
     updateIfExist,
@@ -209,6 +199,5 @@ export default connect(mapStateToProps, {
   setEnableThirdParty,
   setConfirmDelete,
   setStoreForceSave,
-  setSelectedNode,
   setForceSave,
 })(SectionBodyContent);

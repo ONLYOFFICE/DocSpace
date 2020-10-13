@@ -11,7 +11,6 @@ import { SectionHeaderContent, SectionBodyContent } from "./Section";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import { createI18N } from "../../../helpers/i18n";
 import {
-  setIsErrorSettings,
   getFilesSettings,
   setIsLoading,
 } from "../../../store/files/actions";
@@ -27,8 +26,6 @@ const PureSettings = ({
   match,
   t,
   isLoading,
-  settingsTree,
-  setIsErrorSettings,
   getFilesSettings,
   setIsLoading,
 }) => {
@@ -36,16 +33,12 @@ const PureSettings = ({
   const { setting } = match.params;
 
   useEffect(() => {
-    if (Object.keys(settingsTree).length === 0) {
       setIsLoading(true);
       getFilesSettings()
-        .then(() => setIsLoading(false))
-        .catch((e) => {
-          setIsErrorSettings(true);
+        .then(() => {
           setIsLoading(false);
-        });
-    }
-  }, [getFilesSettings, setIsErrorSettings, setIsLoading, settingsTree]);
+        })
+  }, [getFilesSettings, setIsLoading]);
 
   useEffect(() => {
     if (isLoading) {
@@ -108,12 +101,14 @@ const Settings = (props) => {
 function mapStateToProps(state) {
   return {
     isLoading: state.files.isLoading,
-    settingsTree: state.files.settingsTree,
   };
-}
+};
 
-export default connect(mapStateToProps, {
-  setIsErrorSettings,
-  getFilesSettings,
-  setIsLoading,
-})(withRouter(Settings));
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setIsLoading: (isLoading) => dispatch(setIsLoading(isLoading)),
+    getFilesSettings: () => dispatch(getFilesSettings())
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Settings));
