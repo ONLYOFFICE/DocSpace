@@ -250,10 +250,9 @@ namespace ASC.Data.Storage
         {
             if (services.TryAddScoped<WebPath>())
             {
-
                 return services
                     .AddStaticUploaderService()
-                    .AddCdnStorageSettingsService()
+                    .AddStorageSettingsService()
                     .AddWebPathSettingsService()
                     .AddCoreBaseSettingsService();
             }

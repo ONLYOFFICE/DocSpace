@@ -105,12 +105,16 @@ namespace ASC.Web.Files.Core.Search
     {
         public static DIHelper AddFactoryIndexerFolderService(this DIHelper services)
         {
-            services.TryAddTransient<DbFolder>();
-            services.TryAddScoped<FactoryIndexer<DbFolder>, FactoryIndexerFolder>();
+            if (services.TryAddScoped<FactoryIndexer<DbFolder>, FactoryIndexerFolder>())
+            {
+                services.TryAddTransient<DbFolder>();
 
-            return services
-                .AddFactoryIndexerService<DbFolder>(false)
-                .AddDaoFactoryService();
+                return services
+                    .AddFactoryIndexerService<DbFolder>(false)
+                    .AddDaoFactoryService();
+            }
+
+            return services;
         }
     }
 }

@@ -76,9 +76,9 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             get { return FileOperationType.Download; }
         }
 
-        public override void RunJob(DistributedTask _, CancellationToken cancellationToken)
+        public override void RunJob(DistributedTask distributedTask, CancellationToken cancellationToken)
         {
-            base.RunJob(_, cancellationToken);
+            base.RunJob(distributedTask, cancellationToken);
 
             using var scope = ThirdPartyOperation.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<FileDownloadOperationScope>();

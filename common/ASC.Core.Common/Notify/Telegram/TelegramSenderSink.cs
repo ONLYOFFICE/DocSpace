@@ -37,7 +37,7 @@ namespace ASC.Core.Notify
 {
     class TelegramSenderSink : Sink
     {
-        private string senderName = Configuration.Constants.NotifyTelegramSenderSysName;
+        private readonly string senderName = Configuration.Constants.NotifyTelegramSenderSysName;
         private readonly INotifySender sender;
         private readonly IServiceProvider serviceProvider;
 

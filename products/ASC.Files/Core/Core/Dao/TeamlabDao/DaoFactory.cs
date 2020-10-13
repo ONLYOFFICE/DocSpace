@@ -70,18 +70,22 @@ namespace ASC.Files.Core.Data
     {
         public static DIHelper AddDaoFactoryService(this DIHelper services)
         {
-            services.TryAddScoped<IDaoFactory, DaoFactory>();
-            return services
-                .AddFileDaoService()
-                .AddFolderDaoService()
-                .AddTagDaoService()
-                .AddSecurityDaoService()
-                .AddCachedProviderAccountDaoService()
-                .AddProviderTagDaoService()
-                .AddProviderSecurityDaoService()
-                .AddProviderFileDaoService()
-                .AddProviderFolderDaoService()
-                ;
+            if (services.TryAddScoped<IDaoFactory, DaoFactory>())
+            {
+                return services
+                    .AddFileDaoService()
+                    .AddFolderDaoService()
+                    .AddTagDaoService()
+                    .AddSecurityDaoService()
+                    .AddCachedProviderAccountDaoService()
+                    .AddProviderTagDaoService()
+                    .AddProviderSecurityDaoService()
+                    .AddProviderFileDaoService()
+                    .AddProviderFolderDaoService()
+                    ;
+            }
+
+            return services;
         }
     }
 }

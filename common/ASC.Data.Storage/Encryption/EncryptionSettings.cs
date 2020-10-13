@@ -139,18 +139,18 @@ namespace ASC.Data.Storage.Encryption
                 throw new ArgumentException("min_required_non_alphanumeric_characters_incorrect", "numberOfNonAlphanumericCharacters");
             }
 
-            byte[] array = new byte[length];
-            char[] array2 = new char[length];
-            int num = 0;
+            var array = new byte[length];
+            var array2 = new char[length];
+            var num = 0;
 
             using (var rng = new RNGCryptoServiceProvider())
             {
                 rng.GetBytes(array);
             }
 
-            for (int i = 0; i < length; i++)
+            for (var i = 0; i < length; i++)
             {
-                int num2 = (int)array[i] % 87;
+                var num2 = (int)array[i] % 87;
                 if (num2 < 10)
                 {
                     array2[i] = (char)(48 + num2);
@@ -175,8 +175,8 @@ namespace ASC.Data.Storage.Encryption
 
             if (num < numberOfNonAlphanumericCharacters)
             {
-                Random random = new Random();
-                for (int j = 0; j < numberOfNonAlphanumericCharacters - num; j++)
+                var random = new Random();
+                for (var j = 0; j < numberOfNonAlphanumericCharacters - num; j++)
                 {
                     int num3;
                     do

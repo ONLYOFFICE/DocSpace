@@ -38,7 +38,7 @@ namespace ASC.Data.Backup
         private const string ROOT = "backup";
         private const string XML_NAME = "backupinfo.xml";
 
-        private IDictionary<string, IBackupProvider> providers;
+        private readonly IDictionary<string, IBackupProvider> providers;
         private readonly string backup;
         private readonly string[] configs;
 

@@ -125,12 +125,15 @@ namespace ASC.Files.Thirdparty
     {
         public static DIHelper AddCachedProviderAccountDaoService(this DIHelper services)
         {
-            services.TryAddScoped<IProviderDao, ProviderAccountDao>();
+            if (services.TryAddScoped<IProviderDao, ProviderAccountDao>())
+            {
+                services.TryAddSingleton<CachedProviderAccountDaoNotify>();
 
-            services.TryAddSingleton<CachedProviderAccountDaoNotify>();
+                return services
+                    .AddProviderAccountDaoService();
+            }
 
-            return services
-                .AddProviderAccountDaoService();
+            return services;
         }
     }
 }

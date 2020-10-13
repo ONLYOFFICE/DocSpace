@@ -57,7 +57,7 @@ namespace ASC.Web.Studio.Core.Notify
             ServiceProvider = serviceProvider;
             Configuration = configuration;
         }
-       
+
         public void OnMessage(NotifyItem item)
         {
             using var scope = ServiceProvider.CreateScope();
@@ -109,7 +109,7 @@ namespace ASC.Web.Studio.Core.Notify
 
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<StudioNotifyServiceSenderScope>();
-            var (_, _, _,  _,  tenantExtra, coreBaseSettings) = scopeClass;
+            var (_, _, _, _, tenantExtra, coreBaseSettings) = scopeClass;
             if (Configuration["core:notify:tariff"] != "false")
             {
                 if (tenantExtra.Enterprise)
@@ -199,7 +199,7 @@ namespace ASC.Web.Studio.Core.Notify
             out UserManager userManager,
             out SecurityContext securityContext,
             out StudioNotifyHelper studioNotifyHelper,
-            out TenantExtra tenantExtra, 
+            out TenantExtra tenantExtra,
             out CoreBaseSettings coreBaseSettings)
         {
             tenantManager = TenantManager;

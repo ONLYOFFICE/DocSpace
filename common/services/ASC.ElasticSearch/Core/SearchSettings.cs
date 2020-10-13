@@ -127,7 +127,7 @@ namespace ASC.ElasticSearch.Core
         {
             get
             {
-                return allItems ?? (allItems = FactoryIndexer.Builder.Resolve<IEnumerable<IFactoryIndexer>>().ToList());
+                return allItems ??= FactoryIndexer.Builder.Resolve<IEnumerable<IFactoryIndexer>>().ToList();
             }
         }
 

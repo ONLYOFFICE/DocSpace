@@ -115,16 +115,20 @@ namespace ASC.VoipService.Dao
     {
         public static DIHelper AddVoipDaoService(this DIHelper services)
         {
-            services.TryAddScoped<VoipDao, CachedVoipDao>();
-            services.TryAddSingleton<VoipDaoCache>();
+            if (services.TryAddScoped<VoipDao, CachedVoipDao>())
+            {
+                services.TryAddSingleton<VoipDaoCache>();
 
-            return services
-                .AddDbContextManagerService<VoipDbContext>()
-                .AddAuthContextService()
-                .AddTenantUtilService()
-                .AddSecurityContextService()
-                .AddBaseCommonLinkUtilityService()
-                .AddConsumerFactoryService();
+                return services
+                    .AddDbContextManagerService<VoipDbContext>()
+                    .AddAuthContextService()
+                    .AddTenantUtilService()
+                    .AddSecurityContextService()
+                    .AddBaseCommonLinkUtilityService()
+                    .AddConsumerFactoryService();
+            }
+
+            return services;
         }
     }
 }

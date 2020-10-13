@@ -1,17 +1,34 @@
-﻿using ASC.Common;
+﻿using System;
+using System.Collections.Generic;
+
+using ASC.Common;
 using ASC.Core.Common.EF.Model;
 
 using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF.Context
 {
+    public class MySqlFilesDbContext : FilesDbContext { }
+    public class PostgreSqlFilesDbContext : FilesDbContext { }
     public class FilesDbContext : BaseDbContext
     {
         public DbSet<FilesConverts> FilesConverts { get; set; }
-
+        protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
+        {
+            get
+            {
+                return new Dictionary<Provider, Func<BaseDbContext>>()
+                {
+                    { Provider.MySql, () => new MySqlFilesDbContext() } ,
+                    { Provider.Postgre, () => new PostgreSqlFilesDbContext() } ,
+                };
+            }
+        }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.AddFilesConverts();
+            ModelBuilderWrapper
+                .From(modelBuilder, Provider)
+                .AddFilesConverts();
         }
     }
 

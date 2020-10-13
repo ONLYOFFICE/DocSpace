@@ -239,6 +239,7 @@ namespace ASC.FederatedLogin
             using var scope = ServiceProvider.CreateScope();
             var login = scope.ServiceProvider.GetService<Login>();
             await login.Invoke(context);
+            await Next.Invoke(context);
         }
     }
 

@@ -1,6 +1,8 @@
 using ASC.Api.Core;
 using ASC.Common;
 using ASC.Common.DependencyInjection;
+using ASC.Core.Common.EF;
+using ASC.Core.Common.EF.Context;
 using ASC.Data.Storage;
 using ASC.Data.Storage.Configuration;
 using ASC.Data.Storage.DiscStorage;
@@ -44,6 +46,7 @@ namespace ASC.Web.Studio
 
         public override void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto

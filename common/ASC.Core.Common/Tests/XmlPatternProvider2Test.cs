@@ -49,17 +49,17 @@ namespace ASC.Common.Tests.Notify
 
     class PatternResource
     {
-        internal static string resource1
+        internal static string Resource1
         {
             get { return "resource1"; }
         }
 
-        internal static string resource2
+        internal static string Resource2
         {
             get { return "resource2"; }
         }
 
-        internal static string resource3
+        internal static string Resource3
         {
             get { return "resource3"; }
         }
@@ -97,8 +97,8 @@ namespace ASC.Common.Tests.Notify
             var pattern = xmlPatternProvider2.GetPattern(new NotifyAction("id1"), "email.sender");
             Assert.IsNotNull(pattern);
             Assert.AreEqual("id1", pattern.ID);
-            Assert.AreEqual(PatternResource.resource1, pattern.Subject);
-            Assert.AreEqual(PatternResource.resource2, pattern.Body);
+            Assert.AreEqual(PatternResource.Resource1, pattern.Subject);
+            Assert.AreEqual(PatternResource.Resource2, pattern.Body);
             Assert.AreEqual("ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile", pattern.Styler);
             Assert.AreEqual("html", pattern.ContentType);
 
@@ -106,7 +106,7 @@ namespace ASC.Common.Tests.Notify
             Assert.IsNotNull(pattern);
             Assert.AreEqual("id1", pattern.ID);
             Assert.AreEqual(string.Empty, pattern.Subject);
-            Assert.AreEqual(PatternResource.resource3, pattern.Body);
+            Assert.AreEqual(PatternResource.Resource3, pattern.Body);
             Assert.AreEqual("ASC.Notify.Textile.JabberStyler,ASC.Notify.Textile", pattern.Styler);
             Assert.AreEqual("html", pattern.ContentType);
 
