@@ -365,7 +365,6 @@ namespace ASC.Web.Core.Users
                     .AddStudioNotifyServiceService()
                     .AddUserManagerService()
                     .AddSecurityContextService()
-                    .AddAuthContextService()
                     .AddMessageServiceService()
                     .AddDisplayUserSettingsService()
                     .AddCoreBaseSettingsService()

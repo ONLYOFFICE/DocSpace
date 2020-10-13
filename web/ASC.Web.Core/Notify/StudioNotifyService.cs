@@ -1050,8 +1050,7 @@ namespace ASC.Web.Studio.Core.Notify
                     .AddCoreBaseSettingsService()
                     .AddCommonLinkUtilityService()
                     .AddSetupInfo()
-                    .AddWebItemSecurity()
-                    .AddWebItemManager();
+                    .AddWebItemSecurity();
             }
 
             return services;

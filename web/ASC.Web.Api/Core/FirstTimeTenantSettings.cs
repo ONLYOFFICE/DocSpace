@@ -373,8 +373,6 @@ namespace ASC.Web.Studio.UserControls.FirstTime
                 .AddSettingsManagerService()
                 .AddSetupInfo()
                 .AddSecurityContextService()
-                .AddCookiesManagerService()
-                .AddUserManagerWrapperService()
                 .AddPaymentManagerService()
                 .AddMessageServiceService()
                 .AddLicenseReaderService()
