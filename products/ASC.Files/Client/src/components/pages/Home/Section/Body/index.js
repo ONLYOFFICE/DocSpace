@@ -1470,7 +1470,7 @@ class SectionBodyContent extends React.Component {
                       editingId === item.id &&
                       item.fileExst === fileAction.extension;
                     const contextOptionsProps =
-                      contextOptions && contextOptions.length > 0
+                      !isEdit && contextOptions && contextOptions.length > 0
                         ? {
                           contextOptions: this.getFilesContextOptions(
                             contextOptions,
@@ -1480,7 +1480,7 @@ class SectionBodyContent extends React.Component {
                         : {};
                     const checkedProps = isEdit || item.id <= 0 ? {} : { checked };
                     const element = this.getItemIcon(item, isEdit || item.id <= 0);
-                    const sharedButton = this.getSharedButton();
+                    const sharedButton = (isEdit || item.id <= 0) ? null : this.getSharedButton();
                     const displayShareButton = widthProp > 500 ? '96px' : '26px';
                     let classNameProp =
                       isFolder && item.access < 2 && !isRecycleBin ? { className: " dropable" } : { className: "" };
