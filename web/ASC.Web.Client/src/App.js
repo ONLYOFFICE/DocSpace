@@ -57,7 +57,6 @@ class App extends React.Component {
         console.log("INIT REQUESTS FAILED", e);
       })
       .finally(() => {
-        utils.hideLoader();
         setIsLoaded(true);
       });
   }

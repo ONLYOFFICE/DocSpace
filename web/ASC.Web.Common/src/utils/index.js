@@ -1,5 +1,6 @@
 import { AUTH_KEY, LANGUAGE } from "../constants";
 import sjcl from "sjcl";
+import { isMobile } from "react-device-detect";
 
 export const toUrlParams = (obj, skipNull) => {
   let str = "";
@@ -32,7 +33,10 @@ export function getObjectByLocation(location) {
   return object;
 }
 
-export function changeLanguage(i18n, currentLng = localStorage.getItem(LANGUAGE)) {
+export function changeLanguage(
+  i18n,
+  currentLng = localStorage.getItem(LANGUAGE)
+) {
   return currentLng
     ? i18n.language !== currentLng
       ? i18n.changeLanguage(currentLng)
@@ -86,22 +90,20 @@ export function removeTempContent() {
 }
 
 export function hideLoader() {
-  const ele = document.getElementById("ipl-progress-indicator");
-  if (ele) {
-    // fade out
-    ele.classList.add("available");
-    ele.style.display = "";
-    // setTimeout(() => {
-    //   // remove from DOM
-    //   ele.outerHTML = "";
-    // }, 2000);
+  if (isMobile) return;
+
+  if (window.loadingTimeout) {
+    clearTimeout(window.loadingTimeout);
+    window.loadingTimeout = null;
   }
+
+  document.body.style.cursor = "";
 }
 
 export function showLoader() {
-  const ele = document.getElementById("ipl-progress-indicator");
-  if (ele) {
-    ele.classList.remove("available");
-    ele.style.display = "block";
-  }
+  if (isMobile) return;
+
+  window.loadingTimeout = setTimeout(() => {
+    document.body.style.cursor = "wait !important";
+  }, 1000);
 }

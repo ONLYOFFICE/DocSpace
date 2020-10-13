@@ -62,7 +62,6 @@ class App extends React.Component {
     const token = localStorage.getItem(AUTH_KEY);
 
     if (!token) {
-      utils.hideLoader();
       return setIsLoaded();
     }
 
@@ -77,7 +76,6 @@ class App extends React.Component {
     ];
 
     Promise.all(requests).finally(() => {
-      utils.hideLoader();
       setIsLoaded();
     });
   }
