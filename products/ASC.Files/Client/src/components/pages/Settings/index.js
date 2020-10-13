@@ -11,6 +11,7 @@ import { SectionHeaderContent, SectionBodyContent } from "./Section";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import { createI18N } from "../../../helpers/i18n";
 import { getFilesSettings, setIsLoading } from "../../../store/files/actions";
+import { getSettingsTree } from "../../../store/files/selectors";
 
 const i18n = createI18N({
   page: "Settings",
@@ -23,6 +24,7 @@ const PureSettings = ({
   match,
   t,
   isLoading,
+  settingsTree,
   getFilesSettings,
   setIsLoading,
 }) => {
@@ -62,7 +64,7 @@ const PureSettings = ({
         </PageLayout.ArticleBody>
 
         <PageLayout.SectionHeader>
-          {isLoading ? (
+          {Object.keys(settingsTree).length === 0 ? (
             <Loaders.Headline />
           ) : (
             <SectionHeaderContent setting={setting} t={t} />
@@ -70,7 +72,7 @@ const PureSettings = ({
         </PageLayout.SectionHeader>
 
         <PageLayout.SectionBody>
-          {isLoading ? (
+          {Object.keys(settingsTree).length === 0 ? (
             <Loaders.SettingsFiles />
           ) : (
             <SectionBodyContent setting={setting} t={t} />
@@ -97,6 +99,7 @@ const Settings = (props) => {
 function mapStateToProps(state) {
   return {
     isLoading: state.files.isLoading,
+    settingsTree: getSettingsTree(state),
   };
 }
 
