@@ -6,9 +6,9 @@ import { store } from "asc-web-common";
 import { MainButton, DropDownItem } from "asc-web-components";
 import { InviteDialog } from "./../../dialogs";
 import { withTranslation, I18nextProvider } from "react-i18next";
-import { utils, toastr } from "asc-web-common";
+import { utils, toastr, Loaders } from "asc-web-common";
 import { createI18N } from "../../../helpers/i18n";
-const { getLanguage } = store.auth.selectors;
+const { getLanguage, getSettings } = store.auth.selectors;
 const i18n = createI18N({
   page: "Article",
   localesPath: "Article",
@@ -52,10 +52,12 @@ class PureArticleMainButtonContent extends React.Component {
 
   render() {
     //console.log("People ArticleMainButtonContent render");
-    const { settings, t } = this.props;
+    const { settings, t, isLoaded } = this.props;
     const { userCaption, guestCaption, groupCaption } = settings.customNames;
     const { dialogVisible } = this.state;
-    return (
+    return !isLoaded ? (
+      <Loaders.Filter />
+    ) : (
       <>
         <MainButton isDisabled={false} isDropdown={true} text={t("Actions")}>
           <DropDownItem
@@ -129,8 +131,10 @@ ArticleMainButtonContent.propTypes = {
 };
 
 const mapStateToProps = (state) => {
+  const { isLoaded } = state.auth;
   return {
-    settings: state.auth.settings,
+    isLoaded,
+    settings: getSettings(state),
     language: getLanguage(state),
   };
 };

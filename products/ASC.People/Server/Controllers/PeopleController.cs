@@ -949,7 +949,7 @@ namespace ASC.Employee.Core.Controllers
 
         [AllowAnonymous]
         [Create("password", false)]
-        public string SendUserPassword(MemberModel memberModel)
+        public object SendUserPassword(MemberModel memberModel)
         {
             string error;
             if (!string.IsNullOrEmpty(error = UserManagerWrapper.SendUserPassword(memberModel.Email)))
@@ -1010,7 +1010,7 @@ namespace ASC.Employee.Core.Controllers
 
 
         [Create("email", false)]
-        public string SendEmailChangeInstructions(UpdateMemberModel model)
+        public object SendEmailChangeInstructions(UpdateMemberModel model)
         {
             Guid.TryParse(model.UserId, out var userid);
 
@@ -1237,7 +1237,7 @@ namespace ASC.Employee.Core.Controllers
 
 
         [Update("self/delete")]
-        public string SendInstructionsToDelete()
+        public object SendInstructionsToDelete()
         {
             var user = UserManager.GetUsers(SecurityContext.CurrentAccount.ID);
 

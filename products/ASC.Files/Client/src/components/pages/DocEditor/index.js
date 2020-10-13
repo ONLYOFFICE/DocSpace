@@ -51,7 +51,6 @@ class PureEditor extends React.Component {
         .catch((e) => {
           console.log(e);
           toastr.error(e);
-          hideLoader();
         });
     };
 
