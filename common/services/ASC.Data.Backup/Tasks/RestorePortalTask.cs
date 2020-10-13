@@ -287,16 +287,14 @@ namespace ASC.Data.Backup.Tasks
                             {
                                 key = Path.Combine(KeyHelper.GetStorage(), key);
                             }
-                            using (var stream = dataReader.GetEntry(key))
+                            using var stream = dataReader.GetEntry(key);
+                            try
                             {
-                                try
-                                {
-                                    storage.Save(file.Domain, adjustedPath, module != null ? module.PrepareData(key, stream, ColumnMapper) : stream);
-                                }
-                                catch (Exception error)
-                                {
-                                    Logger.WarnFormat("can't restore file ({0}:{1}): {2}", file.Module, file.Path, error);
-                                }
+                                storage.Save(file.Domain, adjustedPath, module != null ? module.PrepareData(key, stream, ColumnMapper) : stream);
+                            }
+                            catch (Exception error)
+                            {
+                                Logger.WarnFormat("can't restore file ({0}:{1}): {2}", file.Module, file.Path, error);
                             }
                         }
                     }
@@ -357,34 +355,30 @@ namespace ASC.Data.Backup.Tasks
 
         private IEnumerable<BackupFileInfo> GetFilesToProcess(IDataReadOperator dataReader)
         {
-            using (var stream = dataReader.GetEntry(KeyHelper.GetStorageRestoreInfoZipKey()))
+            using var stream = dataReader.GetEntry(KeyHelper.GetStorageRestoreInfoZipKey());
+            if (stream == null)
             {
-                if (stream == null)
-                {
-                    return Enumerable.Empty<BackupFileInfo>();
-                }
-                var restoreInfo = XElement.Load(new StreamReader(stream));
-                return restoreInfo.Elements("file").Select(BackupFileInfo.FromXElement).ToList();
+                return Enumerable.Empty<BackupFileInfo>();
             }
+            var restoreInfo = XElement.Load(new StreamReader(stream));
+            return restoreInfo.Elements("file").Select(BackupFileInfo.FromXElement).ToList();
         }
 
         private void SetTenantActive(int tenantId)
         {
-            using (var connection = DbFactory.OpenConnection())
-            {
-                var commandText = string.Format(
-                    "update tenants_tenants " +
-                    "set " +
-                    "  status={0}, " +
-                    "  last_modified='{1}', " +
-                    "  statuschanged='{1}' " +
-                    "where id = '{2}'",
-                    (int)TenantStatus.Active,
-                    DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"),
-                    tenantId);
+            using var connection = DbFactory.OpenConnection();
+            var commandText = string.Format(
+                "update tenants_tenants " +
+                "set " +
+                "  status={0}, " +
+                "  last_modified='{1}', " +
+                "  statuschanged='{1}' " +
+                "where id = '{2}'",
+                (int)TenantStatus.Active,
+                DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"),
+                tenantId);
 
-                connection.CreateCommand().WithTimeout(120).ExecuteNonQuery();
-            }
+            connection.CreateCommand().WithTimeout(120).ExecuteNonQuery();
         }
     }
 

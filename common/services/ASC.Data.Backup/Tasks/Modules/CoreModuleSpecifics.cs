@@ -81,7 +81,7 @@ namespace ASC.Data.Backup.Tasks.Modules
             };
 
         private readonly RelationInfo[] _tableRelations;
-        private Helpers helpers;
+        private readonly Helpers helpers;
         public CoreModuleSpecifics(Helpers helpers) : base(helpers)
         {
             this.helpers = helpers;

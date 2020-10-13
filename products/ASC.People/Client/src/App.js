@@ -19,8 +19,9 @@ import {
   store as commonStore,
   constants,
   NavMenu,
-  Main,} from "asc-web-common";
-import { getFilterByLocation } from "./helpers/converters";
+  Main,
+  toastr,
+} from "asc-web-common";import { getFilterByLocation } from "./helpers/converters";
 import { fetchGroups, fetchPeople } from "./store/people/actions";
 import config from "../package.json";
 
@@ -61,7 +62,6 @@ class App extends React.Component {
     const token = localStorage.getItem(AUTH_KEY);
 
     if (!token) {
-      utils.hideLoader();
       return setIsLoaded();
     }
 
@@ -75,10 +75,13 @@ class App extends React.Component {
       fetchPeople(),
     ];
 
-    Promise.all(requests).finally(() => {
-      utils.hideLoader();
-      setIsLoaded();
-    });
+    Promise.all(requests)
+      .catch((e) => {
+        toastr.error(e);
+      })
+      .finally(() => {
+        setIsLoaded();
+      });
   }
 
   render() {

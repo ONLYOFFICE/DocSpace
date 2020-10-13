@@ -204,7 +204,7 @@ namespace ASC.Data.Backup.Controllers
 
         ///<visible>false</visible>
         [Read("backuptmp")]
-        public string GetTempPath()
+        public object GetTempPath()
         {
             if (CoreBaseSettings.Standalone)
             {

@@ -2,6 +2,7 @@
 
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Model;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Files.Core.EF
@@ -18,7 +19,10 @@ namespace ASC.Files.Core.EF
         [Column("left_node")]
         public string LeftNode { get; set; }
 
-        public override object[] GetKeys() => new object[] { TenantId, RightNode };
+        public override object[] GetKeys()
+        {
+            return new object[] { TenantId, RightNode };
+        }
     }
 
     public static class DbFilesBunchObjectsExtension

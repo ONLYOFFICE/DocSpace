@@ -383,7 +383,7 @@ namespace ASC.Data.Storage.RackspaceCloud
         public override void Delete(string domain, string path)
         {
             var client = GetClient();
-            _ = MakePath(domain, path);
+            MakePath(domain, path);
             var size = GetFileSize(domain, path);
 
             client.DeleteObject(_private_container, MakePath(domain, path));

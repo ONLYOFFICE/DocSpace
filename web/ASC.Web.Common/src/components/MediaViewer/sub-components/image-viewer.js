@@ -160,19 +160,13 @@ var customToolbar = [
 ];
 
 class ImageViewer extends React.Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            visible: false,
-        };
-    }
     componentDidUpdate(){
         document.getElementsByClassName("iconContainer reset").length > 0 && document.getElementsByClassName("iconContainer reset")[0].click();
     }
+
     render() {
 
-        const { className, visible, images, inactive } = this.props;
+        const { className, visible, images, inactive, onClose } = this.props;
 
         customToolbar.forEach((button) => {
             switch (button.key) {
@@ -198,6 +192,7 @@ class ImageViewer extends React.Component {
                     inactive={inactive}
                     visible={visible}
                     zoomSpeed={0.1}
+                    onMaskClick={onClose}
                     customToolbar={(toolbars) => {
                         return customToolbar;
                     }}
@@ -217,7 +212,8 @@ ImageViewer.propTypes = {
     onNextClick: PropTypes.func,
     onPrevClick: PropTypes.func,
     onDeleteClick: PropTypes.func,
-    onDownloadClick: PropTypes.func
+    onDownloadClick: PropTypes.func,
+    onClose: PropTypes.func
 }
 
 export default ImageViewer;

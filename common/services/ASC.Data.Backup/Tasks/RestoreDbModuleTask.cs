@@ -95,115 +95,111 @@ namespace ASC.Data.Backup.Tasks
         {
             SetColumns(connection, tableInfo);
 
-            using (var stream = Reader.GetEntry(KeyHelper.GetTableZipKey(Module, tableInfo.Name)))
+            using var stream = Reader.GetEntry(KeyHelper.GetTableZipKey(Module, tableInfo.Name));
+            var lowImportanceRelations = Module
+                .TableRelations
+                .Where(
+                    r =>
+                        string.Equals(r.ParentTable, tableInfo.Name, StringComparison.InvariantCultureIgnoreCase))
+                .Where(r => r.Importance == RelationImportance.Low && !r.IsSelfRelation())
+                .Select(r => Tuple.Create(r, Module.Tables.Single(t => t.Name == r.ChildTable)))
+                .ToList();
+
+            foreach (
+                var rows in
+                    GetRows(tableInfo, stream)
+                        .Skip(transactionsCommited * TransactionLength)
+                        .MakeParts(TransactionLength))
             {
-                var lowImportanceRelations = Module
-                    .TableRelations
-                    .Where(
-                        r =>
-                            string.Equals(r.ParentTable, tableInfo.Name, StringComparison.InvariantCultureIgnoreCase))
-                    .Where(r => r.Importance == RelationImportance.Low && !r.IsSelfRelation())
-                    .Select(r => Tuple.Create(r, Module.Tables.Single(t => t.Name == r.ChildTable)))
-                    .ToList();
-
-                foreach (
-                    var rows in
-                        GetRows(tableInfo, stream)
-                            .Skip(transactionsCommited * TransactionLength)
-                            .MakeParts(TransactionLength))
+                using var transaction = connection.BeginTransaction();
+                var rowsSuccess = 0;
+                foreach (var row in rows)
                 {
-                    using (var transaction = connection.BeginTransaction())
+                    if (ReplaceDate)
                     {
-                        var rowsSuccess = 0;
-                        foreach (var row in rows)
+                        foreach (var column in tableInfo.DateColumns)
                         {
-                            if (ReplaceDate)
+                            ColumnMapper.SetDateMapping(tableInfo.Name, column, row[column.Key]);
+                        }
+                    }
+
+                    object oldIdValue = null;
+                    object newIdValue = null;
+
+                    if (tableInfo.HasIdColumn())
+                    {
+                        oldIdValue = row[tableInfo.IdColumn];
+                        newIdValue = ColumnMapper.GetMapping(tableInfo.Name, tableInfo.IdColumn, oldIdValue);
+                        if (newIdValue == null)
+                        {
+                            if (tableInfo.IdType == IdType.Guid)
                             {
-                                foreach (var column in tableInfo.DateColumns)
-                                {
-                                    ColumnMapper.SetDateMapping(tableInfo.Name, column, row[column.Key]);
-                                }
+                                newIdValue = Guid.NewGuid().ToString("D");
                             }
-
-                            object oldIdValue = null;
-                            object newIdValue = null;
-
-                            if (tableInfo.HasIdColumn())
+                            else if (tableInfo.IdType == IdType.Integer)
                             {
-                                oldIdValue = row[tableInfo.IdColumn];
-                                newIdValue = ColumnMapper.GetMapping(tableInfo.Name, tableInfo.IdColumn, oldIdValue);
-                                if (newIdValue == null)
-                                {
-                                    if (tableInfo.IdType == IdType.Guid)
-                                    {
-                                        newIdValue = Guid.NewGuid().ToString("D");
-                                    }
-                                    else if (tableInfo.IdType == IdType.Integer)
-                                    {
-                                        var command = connection.CreateCommand();
-                                        command.CommandText = string.Format("select max({0}) from {1};", tableInfo.IdColumn, tableInfo.Name);
-                                        newIdValue = (int)command.WithTimeout(120).ExecuteScalar() + 1;
-                                    }
-                                }
-                                if (newIdValue != null)
-                                {
-                                    ColumnMapper.SetMapping(tableInfo.Name, tableInfo.IdColumn, oldIdValue,
-                                        newIdValue);
-                                }
-                            }
-
-                            var insertCommand = Module.CreateInsertCommand(Dump, connection, ColumnMapper, tableInfo,
-                                row);
-                            if (insertCommand == null)
-                            {
-                                Logger.WarnFormat("Can't create command to insert row to {0} with values [{1}]", tableInfo,
-                                    row);
-                                ColumnMapper.Rollback();
-                                continue;
-                            }
-                            insertCommand.WithTimeout(120).ExecuteNonQuery();
-                            rowsSuccess++;
-
-                            if (tableInfo.HasIdColumn() && tableInfo.IdType == IdType.Autoincrement)
-                            {
-                                var lastIdCommand = DbFactory.CreateLastInsertIdCommand();
-                                lastIdCommand.Connection = connection;
-                                newIdValue = Convert.ToInt32(lastIdCommand.ExecuteScalar());
-                                ColumnMapper.SetMapping(tableInfo.Name, tableInfo.IdColumn, oldIdValue, newIdValue);
-                            }
-
-                            ColumnMapper.Commit();
-
-                            foreach (var relation in lowImportanceRelations)
-                            {
-                                if (!relation.Item2.HasTenantColumn())
-                                {
-                                    Logger.WarnFormat(
-                                        "Table {0} does not contain tenant id column. Can't apply low importance relations on such tables.",
-                                        relation.Item2.Name);
-                                    continue;
-                                }
-
-                                var oldValue = row[relation.Item1.ParentColumn];
-                                var newValue = ColumnMapper.GetMapping(relation.Item1.ParentTable,
-                                    relation.Item1.ParentColumn, oldValue);
                                 var command = connection.CreateCommand();
-                                command.CommandText = string.Format("update {0} set {1} = {2} where {1} = {3} and {4} = {5}",
-                                        relation.Item1.ChildTable,
-                                        relation.Item1.ChildColumn,
-                                        newValue is string ? "'" + newValue + "'" : newValue,
-                                        oldValue is string ? "'" + oldValue + "'" : oldValue,
-                                        relation.Item2.TenantColumn,
-                                        ColumnMapper.GetTenantMapping());
-                                command.WithTimeout(120).ExecuteNonQuery();
+                                command.CommandText = string.Format("select max({0}) from {1};", tableInfo.IdColumn, tableInfo.Name);
+                                newIdValue = (int)command.WithTimeout(120).ExecuteScalar() + 1;
                             }
                         }
+                        if (newIdValue != null)
+                        {
+                            ColumnMapper.SetMapping(tableInfo.Name, tableInfo.IdColumn, oldIdValue,
+                                newIdValue);
+                        }
+                    }
 
-                        transaction.Commit();
-                        transactionsCommited++;
-                        rowsInserted += rowsSuccess;
+                    var insertCommand = Module.CreateInsertCommand(Dump, connection, ColumnMapper, tableInfo,
+                        row);
+                    if (insertCommand == null)
+                    {
+                        Logger.WarnFormat("Can't create command to insert row to {0} with values [{1}]", tableInfo,
+                            row);
+                        ColumnMapper.Rollback();
+                        continue;
+                    }
+                    insertCommand.WithTimeout(120).ExecuteNonQuery();
+                    rowsSuccess++;
+
+                    if (tableInfo.HasIdColumn() && tableInfo.IdType == IdType.Autoincrement)
+                    {
+                        var lastIdCommand = DbFactory.CreateLastInsertIdCommand();
+                        lastIdCommand.Connection = connection;
+                        newIdValue = Convert.ToInt32(lastIdCommand.ExecuteScalar());
+                        ColumnMapper.SetMapping(tableInfo.Name, tableInfo.IdColumn, oldIdValue, newIdValue);
+                    }
+
+                    ColumnMapper.Commit();
+
+                    foreach (var relation in lowImportanceRelations)
+                    {
+                        if (!relation.Item2.HasTenantColumn())
+                        {
+                            Logger.WarnFormat(
+                                "Table {0} does not contain tenant id column. Can't apply low importance relations on such tables.",
+                                relation.Item2.Name);
+                            continue;
+                        }
+
+                        var oldValue = row[relation.Item1.ParentColumn];
+                        var newValue = ColumnMapper.GetMapping(relation.Item1.ParentTable,
+                            relation.Item1.ParentColumn, oldValue);
+                        var command = connection.CreateCommand();
+                        command.CommandText = string.Format("update {0} set {1} = {2} where {1} = {3} and {4} = {5}",
+                                relation.Item1.ChildTable,
+                                relation.Item1.ChildColumn,
+                                newValue is string ? "'" + newValue + "'" : newValue,
+                                oldValue is string ? "'" + oldValue + "'" : oldValue,
+                                relation.Item2.TenantColumn,
+                                ColumnMapper.GetTenantMapping());
+                        command.WithTimeout(120).ExecuteNonQuery();
                     }
                 }
+
+                transaction.Commit();
+                transactionsCommited++;
+                rowsInserted += rowsSuccess;
             }
         }
 

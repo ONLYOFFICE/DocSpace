@@ -124,31 +124,14 @@ namespace ASC.Files.Thirdparty.SharePoint
 
             if (orderBy == null) orderBy = new OrderBy(SortedByType.DateAndTime, false);
 
-            switch (orderBy.SortedBy)
+            folders = orderBy.SortedBy switch
             {
-                case SortedByType.Author:
-                    folders = orderBy.IsAsc
-                        ? folders.OrderBy(x => x.CreateBy)
-                        : folders.OrderByDescending(x => x.CreateBy);
-                    break;
-                case SortedByType.AZ:
-                    folders = orderBy.IsAsc ? folders.OrderBy(x => x.Title) : folders.OrderByDescending(x => x.Title);
-                    break;
-                case SortedByType.DateAndTime:
-                    folders = orderBy.IsAsc
-                        ? folders.OrderBy(x => x.ModifiedOn)
-                        : folders.OrderByDescending(x => x.ModifiedOn);
-                    break;
-                case SortedByType.DateAndTimeCreation:
-                    folders = orderBy.IsAsc
-                        ? folders.OrderBy(x => x.CreateOn)
-                        : folders.OrderByDescending(x => x.CreateOn);
-                    break;
-                default:
-                    folders = orderBy.IsAsc ? folders.OrderBy(x => x.Title) : folders.OrderByDescending(x => x.Title);
-                    break;
-            }
-
+                SortedByType.Author => orderBy.IsAsc ? folders.OrderBy(x => x.CreateBy) : folders.OrderByDescending(x => x.CreateBy),
+                SortedByType.AZ => orderBy.IsAsc ? folders.OrderBy(x => x.Title) : folders.OrderByDescending(x => x.Title),
+                SortedByType.DateAndTime => orderBy.IsAsc ? folders.OrderBy(x => x.ModifiedOn) : folders.OrderByDescending(x => x.ModifiedOn),
+                SortedByType.DateAndTimeCreation => orderBy.IsAsc ? folders.OrderBy(x => x.CreateOn) : folders.OrderByDescending(x => x.CreateOn),
+                _ => orderBy.IsAsc ? folders.OrderBy(x => x.Title) : folders.OrderByDescending(x => x.Title),
+            };
             return folders.ToList();
         }
 

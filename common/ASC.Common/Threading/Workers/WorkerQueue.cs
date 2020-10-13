@@ -269,9 +269,9 @@ namespace ASC.Common.Threading.Workers
             try
             {
                 var stopAfterFinsih = false;
-                if (state != null && state is bool)
+                if (state != null && state is bool b)
                 {
-                    stopAfterFinsih = (bool)state;
+                    stopAfterFinsih = b;
                 }
                 do
                 {

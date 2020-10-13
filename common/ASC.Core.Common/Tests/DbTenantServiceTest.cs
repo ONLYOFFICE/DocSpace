@@ -152,7 +152,7 @@ namespace ASC.Core.Common.Tests
             }
 
             t.MappedDomain = "abc.defg";
-            _ = Service.SaveTenant(null, t);
+            Service.SaveTenant(null, t);
             Service.RemoveTenant(Tenant);
         }
 
