@@ -1040,14 +1040,12 @@ namespace ASC.Files.Helpers
                     .AddFilesLinkUtilityService()
                     .AddApiContextService()
                     .AddFileStorageService()
-                    .AddGlobalFolderHelperService()
                     .AddFilesSettingsHelperService()
                     .AddBoxLoginProviderService()
                     .AddDropboxLoginProviderService()
                     .AddOneDriveLoginProviderService()
                     .AddGoogleLoginProviderService()
                     .AddChunkedUploadSessionHelperService()
-                    .AddProductEntryPointService()
                     ;
             }
 
