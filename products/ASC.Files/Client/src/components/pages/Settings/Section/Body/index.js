@@ -12,6 +12,7 @@ import {
   setStoreForceSave,
   setForceSave,
 } from "../../../../../store/files/actions";
+import { getSettingsTree } from "../../../../../store/files/selectors";
 import { setDocumentTitle } from "../../../../../helpers/utils";
 
 const StyledSettings = styled.div`
@@ -45,6 +46,7 @@ const SectionBodyContent = ({
   setForceSave,
   isAdmin,
   isErrorSettings,
+  settingsTree,
   t,
 }) => {
   useEffect(() => {
@@ -61,7 +63,7 @@ const SectionBodyContent = ({
   };
 
   const renderAdminSettings = () => {
-    return isLoading ? null : (
+    return Object.keys(settingsTree).length === 0 || isLoading ? null : (
       <StyledSettings>
         <ToggleButton
           className="toggle-btn"
@@ -96,7 +98,7 @@ const SectionBodyContent = ({
   };
 
   const renderCommonSettings = () => {
-    return isLoading ? null : (
+    return Object.keys(settingsTree).length === 0 || isLoading ? null : (
       <StyledSettings>
         <ToggleButton
           className="toggle-btn"
@@ -155,6 +157,7 @@ const SectionBodyContent = ({
   };
 
   let content;
+
   if (setting === "admin" && isAdmin) content = renderAdminSettings();
   if (setting === "common") content = renderCommonSettings();
   if (setting === "thirdParty" && enableThirdParty) content = renderClouds();
@@ -170,7 +173,8 @@ const SectionBodyContent = ({
 };
 
 function mapStateToProps(state) {
-  const { settingsTree, isLoading } = state.files;
+  const { isLoading } = state.files;
+  const settingsTree = getSettingsTree(state);
   const { isAdmin } = state.auth.user;
   const {
     storeOriginalFiles,
@@ -190,6 +194,7 @@ function mapStateToProps(state) {
     storeForceSave,
     enableThirdParty,
     isLoading,
+    settingsTree,
   };
 }
 

@@ -13,10 +13,10 @@ import {
   getFilesSettings,
   setSelectedFolder,
 } from "../../../store/files/actions";
-import { 
+import {
   getSettingsTree,
-  getSelectedTreeNode
-} from '../../../store/files/selectors';
+  getSelectedTreeNode,
+} from "../../../store/files/selectors";
 
 const i18n = createI18N({
   page: "Settings",
@@ -85,15 +85,16 @@ const PureTreeSettings = ({
 
   const onSelect = (section) => {
     const path = section[0];
-    console.log(section[0], selectedTreeNode[0], path)
-    if(selectedFolder) setSelectedFolder({});
+
+    if (selectedFolder) setSelectedFolder({});
 
     if (path === "settings") {
       setSelectedNode(["common"]);
-      if(!expandedSetting || expandedSetting[0] !== "settings") setExpandSettingsTree(section);
+      if (!expandedSetting || expandedSetting[0] !== "settings")
+        setExpandSettingsTree(section);
       return history.push("/products/files/settings/common");
     }
-    
+
     if (selectedTreeNode[0] !== path) {
       setSelectedNode(section);
       return history.push(`/products/files/settings/${path}`);
@@ -191,7 +192,7 @@ function mapStateToProps(state) {
     enableThirdParty,
     isAdmin,
     isLoading,
-    selectedFolder
+    selectedFolder,
   };
 }
 

@@ -916,16 +916,16 @@ export const getTest = createSelector(getTreeFolders, (treeFolders) => {
   if (treeFoldersItem) return treeFoldersItem.id;
 });
 
-const getSettingsTreeSelector = state => {
-  return state.files.settingsTree
-}
+const getSettingsTreeSelector = (state) => {
+  return state.files.settingsTree;
+};
 
 export const getSettingsTree = createSelector(
-  getSettingsTreeSelector, 
+  getSettingsTreeSelector,
   (settingsTree) => {
-    if (Object.keys(settingsTree).length !== 0 ){
-      return settingsTree
-    };
+    if (Object.keys(settingsTree).length !== 0) {
+      return settingsTree;
+    }
     return {};
   }
-)
+);

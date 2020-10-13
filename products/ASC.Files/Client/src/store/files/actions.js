@@ -14,7 +14,12 @@ import {
   PREVIEW,
 } from "../../helpers/constants";
 import config from "../../../package.json";
-import { createTreeFolders, canConvert, loopTreeFolders, getSettingsTree } from "./selectors";
+import {
+  createTreeFolders,
+  canConvert,
+  loopTreeFolders,
+  getSettingsTree,
+} from "./selectors";
 
 const { files, FilesFilter } = api;
 
@@ -532,7 +537,7 @@ export function setForceSave(data, setting) {
 
 export function getFilesSettings() {
   return (dispatch, getState) => {
-    const state = getState()
+    const state = getState();
     const settingsTree = getSettingsTree(state);
 
     if (Object.keys(settingsTree).length === 0) {
