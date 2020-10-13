@@ -29,6 +29,7 @@ const max = 5;
 const StyledAvatarEditorBody = styled.div`
   max-width: 400px;
   ${props => !props.useModalDialog && "margin-bottom: 40px;"}
+  ${props => !props.useModalDialog && !props.image && "max-width: none;"}
 `;
 
 const StyledErrorContainer = styled.div`
@@ -598,6 +599,7 @@ class AvatarEditorBody extends React.Component {
         onTouchMove={this.onTouchMove}
         onTouchEnd={this.onTouchEnd}
         useModalDialog={useModalDialog}
+        image={this.state.image}
       >
         <Dropzone
           ref={this.dropzoneRef}
@@ -769,7 +771,7 @@ AvatarEditorBody.propTypes = {
   unknownError: PropTypes.string,
   role: PropTypes.string,
   title: PropTypes.string,
-  useModalDialog: PropTypes.bool
+  useModalDialog: PropTypes.bool,
 };
 
 AvatarEditorBody.defaultProps = {
