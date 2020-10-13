@@ -385,7 +385,6 @@ class UpdateUserForm extends React.Component {
 
   onLoadFileAvatar = (file, fileData) => {
 
-    this.setState({ isLoading: true });
     let data = new FormData();
     let _this = this;
  

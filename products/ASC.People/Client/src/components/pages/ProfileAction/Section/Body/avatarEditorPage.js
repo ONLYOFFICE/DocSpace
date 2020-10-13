@@ -215,7 +215,6 @@ class AvatarEditorPage extends React.PureComponent {
   onLoadFileAvatar = (file, fileData) => {
     const { profile } = this.props;
 
-    this.setState({ isLoading: true });
     let data = new FormData();
     let _this = this;
  
