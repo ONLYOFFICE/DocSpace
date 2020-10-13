@@ -76,7 +76,7 @@ namespace ASC.Web.Core.Calendars
         #endregion
     }
 
-    public interface IEvent : IiCalFormatView
+    public interface IEvent : IICalFormatView
     {
         string Id { get; }
         string Uid { get; }

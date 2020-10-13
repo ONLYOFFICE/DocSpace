@@ -67,21 +67,19 @@ namespace ASC.Data.Backup.Tasks.Modules
                 new Guid("{BF88953E-3C43-4850-A3FB-B1E43AD53A3E}")  //talk product
             };
 
-        private InstanceCrypto instanceCrypto;
+        private readonly InstanceCrypto instanceCrypto;
         public Helpers(InstanceCrypto instanceCrypto)
         {
             this.instanceCrypto = instanceCrypto;
         }
         public bool IsEmptyOrSystemUser(string id)
         {
-            Guid g;
-            return string.IsNullOrEmpty(id) || Guid.TryParse(id, out g) && SystemUsers.Contains(g);
+            return string.IsNullOrEmpty(id) || Guid.TryParse(id, out var g) && SystemUsers.Contains(g);
         }
 
         public bool IsEmptyOrSystemGroup(string id)
         {
-            Guid g;
-            return string.IsNullOrEmpty(id) || Guid.TryParse(id, out g) && SystemGroups.Contains(g);
+            return string.IsNullOrEmpty(id) || Guid.TryParse(id, out var g) && SystemGroups.Contains(g);
         }
 
         public string CreateHash(string s)

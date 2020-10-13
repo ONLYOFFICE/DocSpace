@@ -33,7 +33,7 @@ namespace ASC.Data.Storage.Encryption
         private ICacheNotify<EncryptionStop> NotifyStop { get; }
         private EncryptionWorker EncryptionWorker { get; }
 
-        public EncryptionServiceListener( ICacheNotify<EncryptionSettingsProto> notifySettings, ICacheNotify<EncryptionStop> notifyStop, EncryptionWorker encryptionWorker)
+        public EncryptionServiceListener(ICacheNotify<EncryptionSettingsProto> notifySettings, ICacheNotify<EncryptionStop> notifyStop, EncryptionWorker encryptionWorker)
         {
             NotifySettings = notifySettings;
             NotifyStop = notifyStop;
@@ -71,4 +71,4 @@ namespace ASC.Data.Storage.Encryption
             return services.AddEncryptionWorkerService();
         }
     }
-}   
+}

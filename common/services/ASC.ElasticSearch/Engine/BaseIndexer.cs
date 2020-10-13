@@ -87,7 +87,6 @@ namespace ASC.ElasticSearch
         private Client Client { get; }
         public ILog Log { get; }
         private TenantManager TenantManager { get; }
-        private SearchSettingsHelper SearchSettingsHelper { get; }
         private BaseIndexerHelper BaseIndexerHelper { get; }
         private Settings Settings { get; }
         private IServiceProvider ServiceProvider { get; }
@@ -98,7 +97,6 @@ namespace ASC.ElasticSearch
             IOptionsMonitor<ILog> log,
             DbContextManager<WebstudioDbContext> dbContextManager,
             TenantManager tenantManager,
-            SearchSettingsHelper searchSettingsHelper,
             BaseIndexerHelper baseIndexerHelper,
             Settings settings,
             IServiceProvider serviceProvider)
@@ -106,7 +104,6 @@ namespace ASC.ElasticSearch
             Client = client;
             Log = log.CurrentValue;
             TenantManager = tenantManager;
-            SearchSettingsHelper = searchSettingsHelper;
             BaseIndexerHelper = baseIndexerHelper;
             Settings = settings;
             ServiceProvider = serviceProvider;
@@ -254,7 +251,7 @@ namespace ASC.ElasticSearch
 
                     isExist = Client.Instance.Indices.Exists(data.IndexName).Exists;
 
-                    _ = BaseIndexerHelper.IsExist.TryUpdate(data.IndexName, IsExist, false);
+                    BaseIndexerHelper.IsExist.TryUpdate(data.IndexName, IsExist, false);
 
                     if (isExist) return true;
                 }
@@ -269,6 +266,7 @@ namespace ASC.ElasticSearch
         public async Task ReIndex()
         {
             Clear();
+            await Task.CompletedTask;
             //((IIndexer) this).IndexAll();
         }
 
@@ -475,10 +473,9 @@ namespace ASC.ElasticSearch
 
             var expression = fields.Body;
 
-            MemberExpression member;
             var sourceExprText = "";
 
-            while (!string.IsNullOrEmpty(name = TryGetName(expression, out member)))
+            while (!string.IsNullOrEmpty(name = TryGetName(expression, out var member)))
             {
                 sourceExprText = "." + name + sourceExprText;
                 expression = member.Expression;
@@ -524,8 +521,7 @@ namespace ASC.ElasticSearch
             member = expr as MemberExpression;
             if (member == null)
             {
-                var unary = expr as UnaryExpression;
-                if (unary != null)
+                if (expr is UnaryExpression unary)
                 {
                     member = unary.Operand as MemberExpression;
                 }
@@ -645,7 +641,6 @@ namespace ASC.ElasticSearch
                     .AddClientService()
                     .AddWebstudioDbContextService()
                     .AddTenantManagerService()
-                    .AddSearchSettingsHelperService()
                     .AddBaseIndexerHelperService()
                     ;
             }

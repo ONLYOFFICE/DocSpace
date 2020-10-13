@@ -447,7 +447,7 @@ namespace ASC.ElasticSearch
 
     public class FactoryIndexer
     {
-        private static ICache cache = AscCache.Memory;
+        private static readonly ICache cache = AscCache.Memory;
 
         private FactoryIndexerHelper FactoryIndexerHelper { get; }
         internal ILifetimeScope Builder { get; set; }

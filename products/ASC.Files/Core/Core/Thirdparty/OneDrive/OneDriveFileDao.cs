@@ -224,25 +224,14 @@ namespace ASC.Files.Thirdparty.OneDrive
 
             if (orderBy == null) orderBy = new OrderBy(SortedByType.DateAndTime, false);
 
-            switch (orderBy.SortedBy)
+            files = orderBy.SortedBy switch
             {
-                case SortedByType.Author:
-                    files = orderBy.IsAsc ? files.OrderBy(x => x.CreateBy) : files.OrderByDescending(x => x.CreateBy);
-                    break;
-                case SortedByType.AZ:
-                    files = orderBy.IsAsc ? files.OrderBy(x => x.Title) : files.OrderByDescending(x => x.Title);
-                    break;
-                case SortedByType.DateAndTime:
-                    files = orderBy.IsAsc ? files.OrderBy(x => x.ModifiedOn) : files.OrderByDescending(x => x.ModifiedOn);
-                    break;
-                case SortedByType.DateAndTimeCreation:
-                    files = orderBy.IsAsc ? files.OrderBy(x => x.CreateOn) : files.OrderByDescending(x => x.CreateOn);
-                    break;
-                default:
-                    files = orderBy.IsAsc ? files.OrderBy(x => x.Title) : files.OrderByDescending(x => x.Title);
-                    break;
-            }
-
+                SortedByType.Author => orderBy.IsAsc ? files.OrderBy(x => x.CreateBy) : files.OrderByDescending(x => x.CreateBy),
+                SortedByType.AZ => orderBy.IsAsc ? files.OrderBy(x => x.Title) : files.OrderByDescending(x => x.Title),
+                SortedByType.DateAndTime => orderBy.IsAsc ? files.OrderBy(x => x.ModifiedOn) : files.OrderByDescending(x => x.ModifiedOn),
+                SortedByType.DateAndTimeCreation => orderBy.IsAsc ? files.OrderBy(x => x.CreateOn) : files.OrderByDescending(x => x.CreateOn),
+                _ => orderBy.IsAsc ? files.OrderBy(x => x.Title) : files.OrderByDescending(x => x.Title),
+            };
             return files.ToList();
         }
 
@@ -258,7 +247,7 @@ namespace ASC.Files.Thirdparty.OneDrive
 
             var onedriveFile = GetOneDriveItem(file.ID);
             if (onedriveFile == null) throw new ArgumentNullException("file", FilesCommonResource.ErrorMassage_FileNotFound);
-            if (onedriveFile is ErrorItem) throw new Exception(((ErrorItem)onedriveFile).Error);
+            if (onedriveFile is ErrorItem errorItem) throw new Exception(errorItem.Error);
 
             var fileStream = ProviderInfo.Storage.DownloadStream(onedriveFile, (int)offset);
 
@@ -393,10 +382,10 @@ namespace ASC.Files.Thirdparty.OneDrive
         public string MoveFile(string fileId, string toFolderId)
         {
             var onedriveFile = GetOneDriveItem(fileId);
-            if (onedriveFile is ErrorItem) throw new Exception(((ErrorItem)onedriveFile).Error);
+            if (onedriveFile is ErrorItem errorItem) throw new Exception(errorItem.Error);
 
             var toOneDriveFolder = GetOneDriveItem(toFolderId);
-            if (toOneDriveFolder is ErrorItem) throw new Exception(((ErrorItem)toOneDriveFolder).Error);
+            if (toOneDriveFolder is ErrorItem errorItem1) throw new Exception(errorItem1.Error);
 
             var fromFolderId = GetParentFolderId(onedriveFile);
 
@@ -438,10 +427,10 @@ namespace ASC.Files.Thirdparty.OneDrive
         public File<string> CopyFile(string fileId, string toFolderId)
         {
             var onedriveFile = GetOneDriveItem(fileId);
-            if (onedriveFile is ErrorItem) throw new Exception(((ErrorItem)onedriveFile).Error);
+            if (onedriveFile is ErrorItem errorItem) throw new Exception(errorItem.Error);
 
             var toOneDriveFolder = GetOneDriveItem(toFolderId);
-            if (toOneDriveFolder is ErrorItem) throw new Exception(((ErrorItem)toOneDriveFolder).Error);
+            if (toOneDriveFolder is ErrorItem errorItem1) throw new Exception(errorItem1.Error);
 
             var newTitle = GetAvailableTitle(onedriveFile.Name, toOneDriveFolder.Id, IsExist);
             var newOneDriveFile = ProviderInfo.Storage.CopyItem(onedriveFile.Id, newTitle, toOneDriveFolder.Id);
@@ -551,10 +540,8 @@ namespace ASC.Files.Thirdparty.OneDrive
             else
             {
                 var tempPath = uploadSession.GetItemOrDefault<string>("TempPath");
-                using (var fs = new FileStream(tempPath, FileMode.Append))
-                {
-                    stream.CopyTo(fs);
-                }
+                using var fs = new FileStream(tempPath, FileMode.Append);
+                stream.CopyTo(fs);
             }
 
             uploadSession.BytesUploaded += chunkLength;
@@ -582,10 +569,8 @@ namespace ASC.Files.Thirdparty.OneDrive
                 return ToFile(GetOneDriveItem(oneDriveSession.FileId));
             }
 
-            using (var fs = new FileStream(uploadSession.GetItemOrDefault<string>("TempPath"), FileMode.Open, FileAccess.Read, System.IO.FileShare.None, 4096, FileOptions.DeleteOnClose))
-            {
-                return SaveFile(uploadSession.File, fs);
-            }
+            using var fs = new FileStream(uploadSession.GetItemOrDefault<string>("TempPath"), FileMode.Open, FileAccess.Read, System.IO.FileShare.None, 4096, FileOptions.DeleteOnClose);
+            return SaveFile(uploadSession.File, fs);
         }
 
         public void AbortUploadSession(ChunkedUploadSession<string> uploadSession)

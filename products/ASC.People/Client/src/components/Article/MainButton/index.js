@@ -2,12 +2,13 @@ import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
+import { store } from "asc-web-common";
 import { MainButton, DropDownItem } from "asc-web-components";
 import { InviteDialog } from "./../../dialogs";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import { utils, toastr } from "asc-web-common";
 import { createI18N } from "../../../helpers/i18n";
-
+const { getLanguage } = store.auth.selectors;
 const i18n = createI18N({
   page: "Article",
   localesPath: "Article",
@@ -128,11 +129,9 @@ ArticleMainButtonContent.propTypes = {
 };
 
 const mapStateToProps = (state) => {
-  const { culture } = state.auth.settings;
-  const { cultureName } = state.auth.user;
   return {
     settings: state.auth.settings,
-    language: cultureName || culture || "en-US",
+    language: getLanguage(state),
   };
 };
 

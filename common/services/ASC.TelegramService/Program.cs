@@ -36,7 +36,7 @@ namespace ASC.TelegramService
     {
         public static async Task Main(string[] args)
         {
-            Host.CreateDefaultBuilder(args)
+            await Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
@@ -67,7 +67,7 @@ namespace ASC.TelegramService
                 })
                 .UseConsoleLifetime()
                 .Build()
-                .Run();
+                .RunAsync();
         }
     }
 }

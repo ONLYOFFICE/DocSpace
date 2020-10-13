@@ -127,20 +127,18 @@ namespace ASC.Files.Thirdparty.Dropbox
         {
             if (string.IsNullOrEmpty(filePath)) throw new ArgumentNullException("file");
 
-            using (var response = _dropboxClient.Files.DownloadAsync(filePath).Result)
+            using var response = _dropboxClient.Files.DownloadAsync(filePath).Result;
+            var tempBuffer = new FileStream(Path.GetTempFileName(), FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Read, 8096, FileOptions.DeleteOnClose);
+            using (var str = response.GetContentAsStreamAsync().Result)
             {
-                var tempBuffer = new FileStream(Path.GetTempFileName(), FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Read, 8096, FileOptions.DeleteOnClose);
-                using (var str = response.GetContentAsStreamAsync().Result)
+                if (str != null)
                 {
-                    if (str != null)
-                    {
-                        str.CopyTo(tempBuffer);
-                        tempBuffer.Flush();
-                        tempBuffer.Seek(offset, SeekOrigin.Begin);
-                    }
+                    str.CopyTo(tempBuffer);
+                    tempBuffer.Flush();
+                    tempBuffer.Seek(offset, SeekOrigin.Begin);
                 }
-                return tempBuffer;
             }
+            return tempBuffer;
         }
 
         public FolderMetadata CreateFolder(string title, string parentPath)

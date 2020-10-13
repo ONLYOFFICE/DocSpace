@@ -78,7 +78,10 @@ namespace ASC.Data.Backup.Service
             return Cache.Get<BackupProgress>(GetCacheKey(tenantId, BackupProgressEnum.Restore));
         }
 
-        private string GetCacheKey(int tenantId, BackupProgressEnum backupProgressEnum) => $"{backupProgressEnum}backup{tenantId}";
+        private string GetCacheKey(int tenantId, BackupProgressEnum backupProgressEnum)
+        {
+            return $"{backupProgressEnum}backup{tenantId}";
+        }
     }
 
     public class BackupService : IBackupService

@@ -37,7 +37,7 @@ namespace ASC.Data.Backup.Tasks.Modules
     public class TenantsModuleSpecifics : ModuleSpecificsBase
     {
 
-        private CoreSettings coreSettings;
+        private readonly CoreSettings coreSettings;
         public TenantsModuleSpecifics(CoreSettings coreSettings, Helpers helpers)
             : base(helpers)
         {

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -15,7 +16,10 @@ namespace ASC.Core.Common.EF.Model
         [Column("last_date")]
         public DateTime LastDate { get; set; }
 
-        public override object[] GetKeys() => new object[] { LastKey };
+        public override object[] GetKeys()
+        {
+            return new object[] { LastKey };
+        }
     }
     public static class FeedLastExtension
     {

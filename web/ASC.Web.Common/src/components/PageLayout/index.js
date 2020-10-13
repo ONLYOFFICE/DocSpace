@@ -1,6 +1,8 @@
 import React, { useEffect } from "react";
+import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { Backdrop, ProgressBar, utils } from "asc-web-components";
+import { store } from "asc-web-common";
 import { withTranslation } from "react-i18next";
 import i18n from "./i18n";
 import { ARTICLE_PINNED_KEY } from "../../constants";
@@ -19,7 +21,7 @@ import SubSectionPaging from "./sub-components/section-paging";
 import SectionToggler from "./sub-components/section-toggler";
 import { changeLanguage } from "../../utils";
 import ReactResizeDetector from "react-resize-detector";
-
+const { getLanguage } = store.auth.selectors;
 const { size } = utils.device;
 
 function ArticleHeader() {
@@ -381,12 +383,12 @@ PageLayoutComponent.defaultProps = {
 
 const PageLayoutTranslated = withTranslation()(PageLayoutComponent);
 
-const PageLayout = props => {
+const PageLayout = ({ language, ...rest }) => {
   useEffect(() => {
-    changeLanguage(i18n);
-  }, []);
+    changeLanguage(i18n, language);
+  }, [language]);
 
-  return <PageLayoutTranslated i18n={i18n} {...props} />;
+  return <PageLayoutTranslated i18n={i18n} {...rest} />;
 };
 
 PageLayout.ArticleHeader = ArticleHeader;
@@ -402,4 +404,10 @@ PageLayout.propTypes = {
   children: PropTypes.any
 };
 
-export default PageLayout;
+function mapStateToProps(state) {
+  return {
+    language: getLanguage(state),
+  };
+}
+
+export default  connect(mapStateToProps)(PageLayout);
