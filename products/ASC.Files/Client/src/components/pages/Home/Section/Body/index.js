@@ -191,16 +191,19 @@ class SectionBodyContent extends React.Component {
     document.removeEventListener("dragleave", this.onDragLeaveDoc);
   }
 
-  /* componentDidUpdate(prevProps, prevState) {
-    Object.entries(this.props).forEach(([key, val]) =>
-      prevProps[key] !== val && console.log(`Prop '${key}' changed`)
-    );
-    if (this.state) {
-      Object.entries(this.state).forEach(([key, val]) =>
-        prevState[key] !== val && console.log(`State '${key}' changed`)
-      );
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.folderId !== this.props.folderId) {
+      this.onResetFilter();
     }
-  } */
+    // Object.entries(this.props).forEach(([key, val]) =>
+    //   prevProps[key] !== val && console.log(`Prop '${key}' changed`)
+    // );
+    // if (this.state) {
+    //   Object.entries(this.state).forEach(([key, val]) =>
+    //     prevState[key] !== val && console.log(`State '${key}' changed`)
+    //   );
+    // }
+  } 
 
   shouldComponentUpdate(nextProps, nextState) {
     if (this.props && this.props.firstLoad) return true;
