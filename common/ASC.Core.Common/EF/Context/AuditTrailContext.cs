@@ -14,8 +14,12 @@ namespace ASC.Core.Common.EF.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.AddDbFunction();
-            modelBuilder.AddUser();
+            ModelBuilderWrapper
+            .From(modelBuilder, Provider)
+            .AddUser()
+            .AddLoginEvents()
+            .AddAuditEvent()
+            .AddDbFunction();
         }
     }
 
