@@ -22,4 +22,19 @@
     <ProjectReference Include="..\..\ASC.MessagingSystem\ASC.MessagingSystem.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="AuditReportResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>AuditReportResource.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="AuditReportResource.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>AuditReportResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  
 </Project>

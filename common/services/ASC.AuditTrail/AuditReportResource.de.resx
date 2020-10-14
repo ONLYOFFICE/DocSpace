@@ -59,1407 +59,1407 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ActionCol" xml:space="preserve">
-    <value>Action</value>
+    <value>Aktion</value>
   </data>
   <data name="ActionIdCol" xml:space="preserve">
-    <value>Action ID</value>
+    <value>Aktions-ID</value>
   </data>
   <data name="ActionTypeCol" xml:space="preserve">
-    <value>Action Type</value>
+    <value>Typ der Aktion</value>
   </data>
   <data name="AdministratorAdded" xml:space="preserve">
-    <value>Administrator Added: {0}</value>
+    <value>Administrator hinzugefügt: {0}</value>
   </data>
   <data name="AdministratorDeleted" xml:space="preserve">
-    <value>Administrator Deleted: {0}</value>
+    <value>Administrator gelöscht: {0}</value>
   </data>
   <data name="AdministratorMessageSettingsUpdated" xml:space="preserve">
-    <value>Administrator Message Settings Updated</value>
+    <value>Einstellungen der Nachrichten des Administrators aktualisiert</value>
   </data>
   <data name="AdministratorOpenedFullAccess" xml:space="preserve">
-    <value>Administrators [{0}]. Full Access Opened</value>
+    <value>Administratoren [{0}]. Vollzugriff geöffnet</value>
   </data>
   <data name="AttachActionType" xml:space="preserve">
-    <value>Attach</value>
+    <value>Beifügen</value>
   </data>
   <data name="AuditSettingsUpdated" xml:space="preserve">
-    <value>Audit Lifetime Settings Updated</value>
+    <value>Audit Lifetime-Einstellungen sind aktualisiert</value>
   </data>
   <data name="AuditTrailReportDownloaded" xml:space="preserve">
-    <value>Audit Trail Report Downloaded</value>
+    <value>Bericht vom Audit-Trail wurde heruntergeladen</value>
   </data>
   <data name="AuditTrailReportName" xml:space="preserve">
-    <value>Audit Trail Report ({0}-{1})</value>
+    <value>Audit-Trail-Bericht ({0}-{1})</value>
   </data>
   <data name="AuthorizationKeysSetting" xml:space="preserve">
-    <value>Third-party authorization keys updated</value>
+    <value>Drittanbietern-Berechtigungsschlüssel aktualisiert</value>
   </data>
   <data name="BrowserCol" xml:space="preserve">
     <value>Browser</value>
   </data>
   <data name="CaseAddedMember" xml:space="preserve">
-    <value>Cases [{0}]. Member Added: {1}</value>
+    <value>Veranstaltungen[{0}]. Mitglied hinzugefügt: {1}</value>
   </data>
   <data name="CaseAttachedFiles" xml:space="preserve">
-    <value>Cases [{0}]. Files Attached: {1}</value>
+    <value>Veranstaltungen[{0}]. Dateien angehängt: {1}</value>
   </data>
   <data name="CaseClosed" xml:space="preserve">
-    <value>Case Closed: {0}</value>
+    <value>Veranstaltung geschlossen: {0}</value>
   </data>
   <data name="CaseCreated" xml:space="preserve">
-    <value>Case Created: {0}</value>
+    <value>Veranstaltung erstellt: {0}</value>
   </data>
   <data name="CaseCreatedHistoryEvent" xml:space="preserve">
-    <value>Cases [{0}]. History Event Created: {1}</value>
+    <value>Veranstaltungen [{0}]. Ereignis der Historie erstellt: {1}</value>
   </data>
   <data name="CaseCreatedTag" xml:space="preserve">
-    <value>Cases [{0}]. Tag Created: {1}</value>
+    <value>Veranstaltungen[{0}]. Tag erstellt: {1}</value>
   </data>
   <data name="CaseDeleted" xml:space="preserve">
-    <value>Case Deleted: {0}</value>
+    <value>Veranstaltung gelöscht: {0}</value>
   </data>
   <data name="CaseDeletedHistoryEvent" xml:space="preserve">
-    <value>Cases [{0}]. History Event Deleted: {1}</value>
+    <value>Veranstaltungen [{0}]. Ereignis der Historie gelöscht: {1}</value>
   </data>
   <data name="CaseDeletedTag" xml:space="preserve">
-    <value>Cases [{0}]. Tag Deleted: {1}</value>
+    <value>Veranstaltungen[{0}]. Tag gelöscht: {1}</value>
   </data>
   <data name="CaseDetachedFile" xml:space="preserve">
-    <value>Cases [{0}]. File Detached: {1}</value>
+    <value>Veranstaltungen [{0}]. Datei getrennt: {1}</value>
   </data>
   <data name="CaseExcludedMember" xml:space="preserve">
-    <value>Cases [{0}]. Member Excluded: {1}</value>
+    <value>Veranstaltungen [{0}]. Mitglied ausgeschlossen: {1}</value>
   </data>
   <data name="CaseLinkedCompany" xml:space="preserve">
-    <value>Cases [{0}]. Company Linked: {1}</value>
+    <value>Veranstaltungen [{0}]. Unternehmen verknüpft: {1}</value>
   </data>
   <data name="CaseLinkedPerson" xml:space="preserve">
-    <value>Cases [{0}]. Person Linked: {1}</value>
+    <value>Veranstaltungen[{0}]. Person verknüpft: {1}</value>
   </data>
   <data name="CaseOpened" xml:space="preserve">
-    <value>Case Opened: {0}</value>
+    <value>Veranstaltung geöffnet: {0}</value>
   </data>
   <data name="CaseOpenedAccess" xml:space="preserve">
-    <value>Cases [{0}]. Access Opened</value>
+    <value>Veranstaltungen [{0}]. Zugriff geöffnet</value>
   </data>
   <data name="CaseRestrictedAccess" xml:space="preserve">
-    <value>Cases [{0}]. Access Restricted: {1}</value>
+    <value>Veranstaltungen [{0}]. Zugriff beschränkt: {1}</value>
   </data>
   <data name="CasesCreatedTag" xml:space="preserve">
-    <value>Cases. Tag Created: {0}</value>
+    <value>Veranstaltungen. Tag erstellt: {0}</value>
   </data>
   <data name="CasesDeleted" xml:space="preserve">
-    <value>Cases Deleted: {0}</value>
+    <value>Veranstaltungen gelöscht: {0}</value>
   </data>
   <data name="CasesDeletedTag" xml:space="preserve">
-    <value>Cases. Tag Deleted: {0}</value>
+    <value>Veranstaltungen. Tag gelöscht: {0}</value>
   </data>
   <data name="CasesExportedToCsv" xml:space="preserve">
-    <value>Cases Exported To CSV File: {0}</value>
+    <value>Veranstaltungen in CSV-Datei exportiert: {0}</value>
   </data>
   <data name="CasesImportedFromCSV" xml:space="preserve">
-    <value>Cases Imported From CSV File</value>
+    <value>Veranstaltungen aus der CSV-Datei importiert</value>
   </data>
   <data name="CasesModule" xml:space="preserve">
-    <value>Cases</value>
+    <value>Veranstaltungen</value>
   </data>
   <data name="CaseUnlinkedCompany" xml:space="preserve">
-    <value>Cases [{0}]. Company Unlinked: {1}</value>
+    <value>Veranstaltungen [{0}]. Unternehmen unverknüpft: {1}</value>
   </data>
   <data name="CaseUnlinkedPerson" xml:space="preserve">
-    <value>Cases [{0}]. Person Unlinked: {1}</value>
+    <value>Veranstaltungen[{0}]. Person unverknüpft: {1}</value>
   </data>
   <data name="CaseUpdated" xml:space="preserve">
-    <value>Case Updated: {0}</value>
+    <value>Veranstaltung aktualisiert: {0}</value>
   </data>
   <data name="CaseUserFieldCreated" xml:space="preserve">
-    <value>Case User Field Created: {0}</value>
+    <value>Benutzerfeld für Veranstaltungen erstellt: {0}</value>
   </data>
   <data name="CaseUserFieldDeleted" xml:space="preserve">
-    <value>Case User Field Deleted: {0}</value>
+    <value>Benutzerfeld für Veranstaltungen gelöscht: {0}</value>
   </data>
   <data name="CaseUserFieldsUpdatedOrder" xml:space="preserve">
-    <value>Case User Fields Order Updated: {0}</value>
+    <value>Reihenfolge von Benutzerfeldern für Veranstaltungen aktualisiert: {0}</value>
   </data>
   <data name="CaseUserFieldUpdated" xml:space="preserve">
-    <value>Case User Field Updated: {0}</value>
+    <value>Benutzerfeld für Veranstaltungen aktualisiert: {0}</value>
   </data>
   <data name="ColorThemeChanged" xml:space="preserve">
-    <value>Color Theme Changed</value>
+    <value>Farbschema wurde geändert</value>
   </data>
   <data name="CommonCrmSettingsModule" xml:space="preserve">
-    <value>Common Settings</value>
+    <value>Allgemeine Einstellungen</value>
   </data>
   <data name="CompaniesMerged" xml:space="preserve">
-    <value>Companies Merged: {0} - {1}</value>
+    <value>Unternehmen zusammengeführt: {0} - {1}</value>
   </data>
   <data name="CompaniesModule" xml:space="preserve">
-    <value>Companies</value>
+    <value>Unternehmen</value>
   </data>
   <data name="CompanyAttachedFiles" xml:space="preserve">
-    <value>Companies [{0}]. Files Attached: {1}</value>
+    <value>Unternehmen [{0}]. Dateien angehängt: {1}</value>
   </data>
   <data name="CompanyCreated" xml:space="preserve">
-    <value>Company Created: {0}</value>
+    <value>Unternehmen erstellt: {0}</value>
   </data>
   <data name="CompanyCreatedHistoryEvent" xml:space="preserve">
-    <value>Companies [{0}]. History Event Created: {1}</value>
+    <value>Unternehmen [{0}]. Ereignis der Historie erstellt: {1}</value>
   </data>
   <data name="CompanyCreatedPersonsTag" xml:space="preserve">
-    <value>Companies [{0}]. Persons Tag Created: {1}</value>
+    <value>Unternehmen [{0}]. Tag für die Person erstellt: {1}</value>
   </data>
   <data name="CompanyCreatedTag" xml:space="preserve">
-    <value>Companies [{0}]. Tag Created: {1}</value>
+    <value>Unternehmen [{0}]. Tag erstellt: {1}</value>
   </data>
   <data name="CompanyCreatedWithWebForm" xml:space="preserve">
-    <value>Company Created with Web Form: {0}</value>
+    <value>Unternehmen mithilfe des Web-Formulars erstellt: {0}</value>
   </data>
   <data name="CompanyDeleted" xml:space="preserve">
-    <value>Company Deleted: {0}</value>
+    <value>Unternehmen gelöscht: {0}</value>
   </data>
   <data name="CompanyDeletedHistoryEvent" xml:space="preserve">
-    <value>Companies [{0}]. History Event Deleted: {1}</value>
+    <value>Unternehmen [{0}]. Ereignis der Historie gelöscht: {1}</value>
   </data>
   <data name="CompanyDeletedTag" xml:space="preserve">
-    <value>Companies [{0}]. Tag Deleted: {1}</value>
+    <value>Unternehmen [{0}]. Tag gelöscht: {1}</value>
   </data>
   <data name="CompanyDetachedFile" xml:space="preserve">
-    <value>Companies [{0}]. File Detached: {1}</value>
+    <value>Unternehmen [{0}]. Datei getrennt: {1}</value>
   </data>
   <data name="CompanyLinkedPerson" xml:space="preserve">
-    <value>Companies [{0}]. Person Linked: {1}</value>
+    <value>Unternehmen [{0}]. Person verknüpft: {1}</value>
   </data>
   <data name="CompanyLinkedProject" xml:space="preserve">
-    <value>Companies [{0}]. Project Linked: {1}</value>
+    <value>Unternehmen [{0}]. Projekt verknüpft: {1}</value>
   </data>
   <data name="CompanyUnlinkedOpportunity" xml:space="preserve">
-    <value>Companies [{0}]. Opportunity Unlinked: {1}</value>
+    <value>Unternehmen [{0}]. Verkaufschance unverknüpft: {1}</value>
   </data>
   <data name="CompanyUnlinkedPerson" xml:space="preserve">
-    <value>Companies [{0}]. Person Unlinked: {1}</value>
+    <value>Unternehmen [{0}]. Person unverknüpft: {1}</value>
   </data>
   <data name="CompanyUnlinkedProject" xml:space="preserve">
-    <value>Companies [{0}]. Project Unlinked: {1}</value>
+    <value>Unternehmen [{0}]. Projekt unverknüpft: {1}</value>
   </data>
   <data name="CompanyUpdated" xml:space="preserve">
-    <value>Company Updated: {0}</value>
+    <value>Unternehmen aktualisiert: {0}</value>
   </data>
   <data name="CompanyUpdatedPersonsTemperatureLevel" xml:space="preserve">
-    <value>Companies [{0}]. Person Temperature Level Updated</value>
+    <value>Unternehmen [{0}]. Temperaturniveau der Person aktualisiert</value>
   </data>
   <data name="CompanyUpdatedPhoto" xml:space="preserve">
-    <value>Companies [{0}]. Photo Updated</value>
+    <value>Unternehmen [{0}]. Foto aktualisiert</value>
   </data>
   <data name="CompanyUpdatedPrincipalInfo" xml:space="preserve">
-    <value>Companies [{0}]. Principal Info Updated</value>
+    <value>Unternehmen [{0}]. Hauptinformation aktualisiert</value>
   </data>
   <data name="CompanyUpdatedTemperatureLevel" xml:space="preserve">
-    <value>Companies [{0}]. Temperature Level Updated</value>
+    <value>Unternehmen [{0}]. Temperaturniveau aktualisiert</value>
   </data>
   <data name="CompanyUploadedFiles" xml:space="preserve">
-    <value>Companies [{0}]. Files Uploaded: {1}</value>
+    <value>Unternehmen [{0}]. Dateien hochgeladen: {1}</value>
   </data>
   <data name="CompanyUserFieldCreated" xml:space="preserve">
-    <value>Company User Field Created: {0}</value>
+    <value>Benutzerfeld für Unternehmen erstellt: {0}</value>
   </data>
   <data name="CompanyUserFieldDeleted" xml:space="preserve">
-    <value>Company User Field Deleted: {0}</value>
+    <value>Benutzerfeld für Unternehmen gelöscht: {0}</value>
   </data>
   <data name="CompanyUserFieldsUpdatedOrder" xml:space="preserve">
-    <value>Company User Fields Order Updated: {0}</value>
+    <value>Reihenfolge von Benutzerfeldern für Unternehmen aktualisiert: {0}</value>
   </data>
   <data name="CompanyUserFieldUpdated" xml:space="preserve">
-    <value>Company User Field Updated: {0}</value>
+    <value>Benutzerfeld für Unternehmen aktualisiert: {0}</value>
   </data>
   <data name="ContactAdminMailSent" xml:space="preserve">
-    <value>Contact Admin Mail Sent</value>
+    <value>Nachricht an den Administrator gesendet</value>
   </data>
   <data name="ContactLinkedProject" xml:space="preserve">
-    <value>Contacts [{0}]. Project Linked: {1}</value>
+    <value>Kontakte [{0}]. Projekt verknüpft: {1}</value>
   </data>
   <data name="ContactsCreatedCrmTasks" xml:space="preserve">
-    <value>Contacts [{0}]. Task Created: {1}</value>
+    <value>Kontakte [{0}]. Aufgabe erstellt: {1}</value>
   </data>
   <data name="ContactsCreatedTag" xml:space="preserve">
-    <value>Contacts. Tag Created: {0}</value>
+    <value>Kontakte. Tag erstellt: {0}</value>
   </data>
   <data name="ContactsDeleted" xml:space="preserve">
-    <value>Contacts Deleted: {0}</value>
+    <value>Kontakte gelöscht: {0}</value>
   </data>
   <data name="ContactsDeletedTag" xml:space="preserve">
-    <value>Contacts. Tag Deleted: {0}</value>
+    <value>Kontakte. Tag gelöscht: {0}</value>
   </data>
   <data name="ContactsExportedToCsv" xml:space="preserve">
-    <value>Contacts Exported To CSV File: {0}</value>
+    <value>Kontakte in CSV-Datei exportiert: {0}</value>
   </data>
   <data name="ContactsImportedFromCSV" xml:space="preserve">
-    <value>Contacts Imported From CSV File</value>
+    <value>Kontakte aus der CSV-Datei importiert</value>
   </data>
   <data name="ContactsModule" xml:space="preserve">
-    <value>Contacts</value>
+    <value>Kontakte</value>
   </data>
   <data name="ContactsSettingsModule" xml:space="preserve">
-    <value>Settings</value>
+    <value>Einstellungen</value>
   </data>
   <data name="ContactsTagSettingsUpdated" xml:space="preserve">
-    <value>Contacts Tag Settings Updated</value>
+    <value>Tag-Einstellungen für Kontakte aktualisiert</value>
   </data>
   <data name="ContactStatusesModule" xml:space="preserve">
-    <value>Contact Statuses</value>
+    <value>Status der Kontakte</value>
   </data>
   <data name="ContactTemperatureLevelCreated" xml:space="preserve">
-    <value>Contact Temperature Level Created: {0}</value>
+    <value>Kontakttemperaturniveau erstellt: {0}</value>
   </data>
   <data name="ContactTemperatureLevelDeleted" xml:space="preserve">
-    <value>Contact Temperature Level Deleted: {0}</value>
+    <value>Kontakttemperaturniveau gelöscht: {0}</value>
   </data>
   <data name="ContactTemperatureLevelSettingsUpdated" xml:space="preserve">
-    <value>Contact Temperature Level Settings Updated</value>
+    <value>Einstellungen der Kontakttemperaturniveaus wurden aktualisiert</value>
   </data>
   <data name="ContactTemperatureLevelsUpdatedOrder" xml:space="preserve">
-    <value>Contact Temperature Levels Order Updated: {0}</value>
+    <value>Reihenfolge der Kontakttemperaturniveaus aktualisiert: {0}</value>
   </data>
   <data name="ContactTemperatureLevelUpdated" xml:space="preserve">
-    <value>Contact Temperature Level Updated: {0}</value>
+    <value>Kontakttemperaturniveau aktualisiert: {0}</value>
   </data>
   <data name="ContactTemperatureLevelUpdatedColor" xml:space="preserve">
-    <value>Contact Temperature Level [{0}]. Color Updated</value>
+    <value>Kontakttemperaturniveau [{0}]. Farbe aktualisiert</value>
   </data>
   <data name="ContactTypeCreated" xml:space="preserve">
-    <value>Contact Type Created: {0}</value>
+    <value>Kontakttyp erstellt: {0}</value>
   </data>
   <data name="ContactTypeDeleted" xml:space="preserve">
-    <value>Contact Type Deleted: {0}</value>
+    <value>Kontakttyp gelöscht: {0}</value>
   </data>
   <data name="ContactTypesModule" xml:space="preserve">
-    <value>Contact Types</value>
+    <value>Kontakttypen</value>
   </data>
   <data name="ContactTypesUpdatedOrder" xml:space="preserve">
-    <value>Contact Types Order Updated: {0}</value>
+    <value>Reihenfolge von Kontakttypen aktualisiert: {0}</value>
   </data>
   <data name="ContactTypeUpdated" xml:space="preserve">
-    <value>Contact Type Updated: {0}</value>
+    <value>Kontakttyp aktualisiert: {0}</value>
   </data>
   <data name="ContactUnlinkedProject" xml:space="preserve">
-    <value>Contacts [{0}]. Project Unlinked: {1}</value>
+    <value>Kontakte [{0}]. Projekt unverknüpft: {1}</value>
   </data>
   <data name="ContactUserFieldCreated" xml:space="preserve">
-    <value>Contact User Field Created: {0}</value>
+    <value>Benutzerfeld für Kontakte erstellt: {0}</value>
   </data>
   <data name="ContactUserFieldDeleted" xml:space="preserve">
-    <value>Contact User Field Deleted: {0}</value>
+    <value>Benutzerfeld für Kontakte gelöscht: {0}</value>
   </data>
   <data name="ContactUserFieldsUpdatedOrder" xml:space="preserve">
-    <value>Contacts User Fields Order Updated: {0}</value>
+    <value>Reihenfolge von Benutzerfeldern für Kontakte aktualisiert: {0}</value>
   </data>
   <data name="ContactUserFieldUpdated" xml:space="preserve">
-    <value>Contact User Field Updated: {0}</value>
+    <value>Benutzerfeld für Kontakte aktualisiert: {0}</value>
   </data>
   <data name="CookieSettingsUpdated" xml:space="preserve">
-    <value>Cookie Settings Updated</value>
+    <value>Cookie-Einstellungen sind aktualisiert</value>
   </data>
   <data name="CopyActionType" xml:space="preserve">
-    <value>Copy</value>
+    <value>Kopieren</value>
   </data>
   <data name="CreateActionType" xml:space="preserve">
-    <value>Create</value>
+    <value>Erstellen</value>
   </data>
   <data name="CrmAllDataExported" xml:space="preserve">
-    <value>All Data Exported</value>
+    <value>Alle Daten wurden exportiert</value>
   </data>
   <data name="CrmDefaultCurrencyUpdated" xml:space="preserve">
-    <value>Default Currency Updated</value>
+    <value>Standardwährung aktualisiert</value>
   </data>
   <data name="CrmEntityDetachedFile" xml:space="preserve">
-    <value>CRM Entity. Detached File: {0}</value>
+    <value>CRM-Element. Datei getrennt: {0}</value>
   </data>
   <data name="CrmFilesModule" xml:space="preserve">
-    <value>CRM Files</value>
+    <value>CRM-Dateien</value>
   </data>
   <data name="CrmHistoryModule" xml:space="preserve">
-    <value>CRM History</value>
+    <value>CRM-Historie</value>
   </data>
   <data name="CrmProduct" xml:space="preserve">
     <value>CRM</value>
   </data>
   <data name="CrmSmtpMailSent" xml:space="preserve">
-    <value>SMTP Mail Sent to Contacts: {0}</value>
+    <value>Verschikte Mails per SMTP Server</value>
   </data>
   <data name="CrmSmtpSettingsUpdated" xml:space="preserve">
-    <value>SMTP Settings Updated</value>
+    <value>SMTP-Einstellungen wurden aktualisiert</value>
   </data>
   <data name="CrmTagsModule" xml:space="preserve">
-    <value>CRM Tags</value>
+    <value>CRM-Tags</value>
   </data>
   <data name="CrmTaskCategories" xml:space="preserve">
-    <value>CRM Task Categories</value>
+    <value>Kategorien der CRM-Aufgaben</value>
   </data>
   <data name="CrmTaskCategoriesUpdatedOrder" xml:space="preserve">
-    <value>CRM Task Categories Order Updated: {0}</value>
+    <value>Reihenfolge von Kategorien der CRM-Aufgaben aktualisiert: {0}</value>
   </data>
   <data name="CrmTaskCategoryCreated" xml:space="preserve">
-    <value>CRM Task Category Created: {0}</value>
+    <value>CRM-Aufgabenkategorie erstellt: {0}</value>
   </data>
   <data name="CrmTaskCategoryDeleted" xml:space="preserve">
-    <value>CRM Task Category Deleted: {0}</value>
+    <value>CRM-Aufgabenkategorie gelöscht: {0}</value>
   </data>
   <data name="CrmTaskCategoryUpdated" xml:space="preserve">
-    <value>CRM Task Category Updated: {0}</value>
+    <value>CRM-Aufgabenkategorie aktualisiert: {0}</value>
   </data>
   <data name="CrmTaskCategoryUpdatedIcon" xml:space="preserve">
-    <value>CRM Task Category Icon Updated: {0}</value>
+    <value>Symbol der CRM-Aufgabenkategorie aktualisiert: {0}</value>
   </data>
   <data name="CrmTaskClosed" xml:space="preserve">
-    <value>CRM Task Closed: {0}</value>
+    <value>CRM-Aufgabe geschlossen: {0}</value>
   </data>
   <data name="CrmTaskCreated" xml:space="preserve">
-    <value>CRM Task Created: {0}</value>
+    <value>CRM-Aufgabe erstellt: {0}</value>
   </data>
   <data name="CrmTaskDeleted" xml:space="preserve">
-    <value>CRM Task Deleted: {0}</value>
+    <value>CRM-Aufgabe gelöscht: {0}</value>
   </data>
   <data name="CrmTaskOpened" xml:space="preserve">
-    <value>CRM Task Opened: {0}</value>
+    <value>CRM-Aufgabe geöffnet: {0}</value>
   </data>
   <data name="CrmTasksExportedToCsv" xml:space="preserve">
-    <value>CRM Tasks Exported To CSV File: {0}</value>
+    <value>CRM-Aufgaben in die CSV-Datei exportiert: {0}</value>
   </data>
   <data name="CrmTasksImportedFromCSV" xml:space="preserve">
-    <value>CRM Tasks Imported From CSV File</value>
+    <value>CRM-Aufgaben aus der CSV-Datei importiert</value>
   </data>
   <data name="CrmTasksModule" xml:space="preserve">
-    <value>CRM Tasks</value>
+    <value>CRM-Aufgaben</value>
   </data>
   <data name="CrmTaskUpdated" xml:space="preserve">
-    <value>CRM Tasks Updated: {0}</value>
+    <value>CRM-Aufgaben aktualisiert: {0}</value>
   </data>
   <data name="CrmTestMailSent" xml:space="preserve">
-    <value>Test Mail Sent</value>
+    <value>Testnachricht wurde gesendet</value>
   </data>
   <data name="CurrencyRateUpdated" xml:space="preserve">
-    <value>Currency Rate Updated: {0} - {1}</value>
+    <value>Währungskurs aktualisiert: {0} - {1}</value>
   </data>
   <data name="CustomFieldsModule" xml:space="preserve">
-    <value>Custom Fields</value>
+    <value>Benutzerdefinierte Felder</value>
   </data>
   <data name="CustomNavigationSettingsUpdated" xml:space="preserve">
-    <value>Custom Navigation Settings Updated</value>
+    <value>Benutzerdefinierte Navigationseinstellungen sind aktualisiert</value>
   </data>
   <data name="CustomTeamTemplateUpdated" xml:space="preserve">
-    <value>Custom Team Template Updated</value>
+    <value>Benutzerdefinierte Vorlage fürs Team ist aktualisiert</value>
   </data>
   <data name="DateCol" xml:space="preserve">
-    <value>Date</value>
+    <value>Datum</value>
   </data>
   <data name="DefaultStartPageSettingsUpdated" xml:space="preserve">
-    <value>Default Start Page Settings Updated</value>
+    <value>Einstellungen der Standardstartseite wurden aktualisiert</value>
   </data>
   <data name="DeleteActionType" xml:space="preserve">
-    <value>Delete</value>
+    <value>Löschen</value>
   </data>
   <data name="DetachActionType" xml:space="preserve">
-    <value>Detach</value>
+    <value>Abtrennen</value>
   </data>
   <data name="DiscussionAttachedFiles" xml:space="preserve">
-    <value>Projects [{0}]. Discussions [{1}]. Files Attached: {2}</value>
+    <value>Projekte [{0}]. Diskussionen [{1}]. Dateien angehängt: {2}</value>
   </data>
   <data name="DiscussionCommentCreated" xml:space="preserve">
-    <value>Projects [{0}]. Discussions [{1}]. Comment Created</value>
+    <value>Projekte [{0}]. Diskussionen [{1}]. Kommentar erstellt</value>
   </data>
   <data name="DiscussionCommentDeleted" xml:space="preserve">
-    <value>Projects [{0}]. Discussions [{1}]. Comment Deleted</value>
+    <value>Projekte [{0}]. Diskussionen [{1}]. Kommentar gelöscht</value>
   </data>
   <data name="DiscussionCommentUpdated" xml:space="preserve">
-    <value>Projects [{0}]. Discussions [{1}]. Comment Updated</value>
+    <value>Projekte [{0}]. Diskussionen [{1}]. Kommentar aktualisiert</value>
   </data>
   <data name="DiscussionCreated" xml:space="preserve">
-    <value>Projects [{0}]. Discussion Created: {1}</value>
+    <value>Projekte [{0}]. Diskussion erstellt: {1}</value>
   </data>
   <data name="DiscussionDeleted" xml:space="preserve">
-    <value>Projects [{0}]. Discussion Deleted: {1}</value>
+    <value>Projekte [{0}]. Diskussion gelöscht: {1}</value>
   </data>
   <data name="DiscussionDetachedFile" xml:space="preserve">
-    <value>Projects [{0}]. Discussions [{1}]. File Detached: {2}</value>
+    <value>Projekte [{0}]. Diskussionen [{1}]. Datei getrennt: {2}</value>
   </data>
   <data name="DiscussionsModule" xml:space="preserve">
-    <value>Discussions</value>
+    <value>Diskussionen</value>
   </data>
   <data name="DiscussionUpdated" xml:space="preserve">
-    <value>Projects [{0}]. Discussion Updated: {1}</value>
+    <value>Projekte [{0}]. Diskussion aktualisiert: {1}</value>
   </data>
   <data name="DiscussionUpdatedFollowing" xml:space="preserve">
-    <value>Projects [{0}]. Discussion  Following Updated: {1}</value>
+    <value>Projekte [{0}]. Verfolgung der Diskussion aktualisiert: {1}</value>
   </data>
   <data name="DnsSettingsUpdated" xml:space="preserve">
-    <value>DNS Settings Updated</value>
+    <value>DNS-Einstellungen aktualisiert</value>
   </data>
   <data name="DocumentServiceLocationSetting" xml:space="preserve">
-    <value>Document Service Location Updated</value>
+    <value>Document Service Lage Aktualisiert</value>
   </data>
   <data name="DocumentsForcesave" xml:space="preserve">
-    <value>Forcesave settings Updated</value>
+    <value>Forcesave-Einstellungen wurden aktualisiert</value>
   </data>
   <data name="DocumentsModule" xml:space="preserve">
-    <value>Documents</value>
+    <value>Dokumente</value>
   </data>
   <data name="DocumentsOverwritingSettingsUpdated" xml:space="preserve">
-    <value> Overwriting Settings Updated</value>
+    <value>Einstellungen vom Überschreiben wurden aktualisiert</value>
   </data>
   <data name="DocumentsProduct" xml:space="preserve">
-    <value>Documents</value>
+    <value>Dokumente</value>
   </data>
   <data name="DocumentsSettingsModule" xml:space="preserve">
-    <value>Settings</value>
+    <value>Einstellungen</value>
   </data>
   <data name="DocumentsStoreForcesave" xml:space="preserve">
-    <value>Store forcesave settings Updated</value>
+    <value>Force-Save-Speichereinstellungen wurden aktualisiert</value>
   </data>
   <data name="DocumentsThirdPartySettingsUpdated" xml:space="preserve">
-    <value>Third-Party Settings Updated</value>
+    <value>Drittanbieter-Einstellungen aktualisiert</value>
   </data>
   <data name="DocumentsUploadingFormatsSettingsUpdated" xml:space="preserve">
-    <value>Uploading Formats Settings Updated</value>
+    <value>Einstellungen der Formate beim Hochladen wurden aktualisiert</value>
   </data>
   <data name="DownloadActionType" xml:space="preserve">
-    <value>Download</value>
+    <value>Herunterladen</value>
   </data>
   <data name="EncryptionDisable" xml:space="preserve">
-    <value>Encryption is disabled</value>
+    <value>Verschlüsselung deaktiviert</value>
   </data>
   <data name="EncryptionEnable" xml:space="preserve">
-    <value>Encryption is enabled</value>
+    <value>Verschlüsselung aktiviert</value>
   </data>
   <data name="ExportActionType" xml:space="preserve">
     <value>Export</value>
   </data>
   <data name="FileChangeOwner" xml:space="preserve">
-    <value>Set owner of [{0}] to [{1}]</value>
+    <value>Besitzer von [{0}] [{1}] wird festgestellt</value>
   </data>
   <data name="FileConverted" xml:space="preserve">
-    <value>File Converted to Internal Format: {0}</value>
+    <value>Datei ins interne Format konvertiert: {0}</value>
   </data>
   <data name="FileCopied" xml:space="preserve">
-    <value>Files [{0}]. Copied From Folder "{1}" To Folder: "{2}"</value>
+    <value>Dateien [{0}]. Vom Ordner "{1}" auf den Ordner "{2}" kopiert</value>
   </data>
   <data name="FileCopiedWithOverwriting" xml:space="preserve">
-    <value>Files [{0}]. Copied With Overwriting From Folder "{1}" To Folder: "{2}"</value>
+    <value>Dateien [{0}]. Vom Ordner "{1}" auf den Ordner "{2}" mit Überschreiben kopiert</value>
   </data>
   <data name="FileCreated" xml:space="preserve">
-    <value>File Created: {0}</value>
+    <value>Datei erstellt: {0}</value>
   </data>
   <data name="FileCreatedVersion" xml:space="preserve">
-    <value>Files [{0}]. Revision: {1}. Version Created</value>
+    <value>Dateien [{0}]. Revision {1}. Version erstellt</value>
   </data>
   <data name="FileDeleted" xml:space="preserve">
-    <value>File Deleted: {0}</value>
+    <value>Datei gelöscht: {0}</value>
   </data>
   <data name="FileDeletedVersion" xml:space="preserve">
-    <value>Files [{0}]. Revision: {1}. Version Deleted</value>
+    <value>Dateien [{0}]. Revision {1}. Version gelöscht</value>
   </data>
   <data name="FileDownloaded" xml:space="preserve">
-    <value>File Downloaded: {0}</value>
+    <value>Datei heruntergeladen: {0}</value>
   </data>
   <data name="FileDownloadedAs" xml:space="preserve">
-    <value>Files [{0}]. Downloaded As: {1}</value>
+    <value>Files [{0}]. Heruntergeladen als: {1}</value>
   </data>
   <data name="FileImported" xml:space="preserve">
-    <value>Folders [{0}]. File Imported: {1}. Provider: {2}</value>
+    <value>Ordner [{0}]. Datei importiert: {1}. Provider: {2}</value>
   </data>
   <data name="FileLocked" xml:space="preserve">
-    <value>File Locked: {0}</value>
+    <value>Datei gesperrt: {0}</value>
   </data>
   <data name="FileMoved" xml:space="preserve">
-    <value>Files [{0}]. Moved From Folder "{1}" To Folder: "{2}"</value>
+    <value>Dateien [{0}]. Aus dem Ordner "{1}" in den Ordner: "{2}" verschoben</value>
   </data>
   <data name="FileMovedToTrash" xml:space="preserve">
-    <value>Files [{0}]. Moved To Trash Folder</value>
+    <value>Dateien [{0}]. In den Papierkorb verschoben</value>
   </data>
   <data name="FileMovedWithOverwriting" xml:space="preserve">
-    <value>Files [{0}]. Moved With Overwriting From Folder "{1}" To Folder: "{2}"</value>
+    <value>Dateien [{0}]. Vom Ordner "{1}" nach Ordner "{2}" mit Überschreiben verschoben</value>
   </data>
   <data name="FileRenamed" xml:space="preserve">
-    <value>File Renamed: {0}</value>
+    <value>Datei umbenannt: {0}</value>
   </data>
   <data name="FileRestoreVersion" xml:space="preserve">
-    <value>Files [{0}]. Revision: {1}. Version Restored</value>
+    <value>Dateien[{0}].Revision:{1}.Version ist wiederhergestellt</value>
   </data>
   <data name="FilesDocumentSigned" xml:space="preserve">
-    <value>Document {1} signed via {0}</value>
+    <value>Dokument {1} ist via {0}unterschrieben</value>
   </data>
   <data name="FileSendAccessLink" xml:space="preserve">
-    <value>Sent shared link to the [{0}] file. Recipients: [{1}]</value>
+    <value>Senden Sie teilten Link zu der [{0}] Datei. Empfänger: [{1}]</value>
   </data>
   <data name="FilesModule" xml:space="preserve">
-    <value>Files</value>
+    <value>Dateien</value>
   </data>
   <data name="FilesRequestSign" xml:space="preserve">
-    <value>Document {1} sent to sign via {0}</value>
+    <value>Dokument {1} ist zur Signatur via {0}gesendet</value>
   </data>
   <data name="FileUnlocked" xml:space="preserve">
-    <value>File Unlocked: {0}</value>
+    <value>Datei nicht gesperrt: {0}</value>
   </data>
   <data name="FileUpdated" xml:space="preserve">
-    <value>File Updated: {0}</value>
+    <value>Datei aktualisiert: {0}</value>
   </data>
   <data name="FileUpdatedAccess" xml:space="preserve">
-    <value>Files [{0}]. Access Updated</value>
+    <value>Dateien [{0}]. Zugriff aktualisiert</value>
   </data>
   <data name="FileUpdatedRevisionComment" xml:space="preserve">
-    <value>Files [{0}]. Revision {1}. Comment Updated </value>
+    <value>Dateien [{0}]. Revision {1}. Kommentar aktualisiert</value>
   </data>
   <data name="FileUploaded" xml:space="preserve">
-    <value>File Uploaded: {0}</value>
+    <value>Datei hochgeladen: {0}</value>
   </data>
   <data name="FolderCopied" xml:space="preserve">
-    <value>Folders [{0}]. Copied To Folder: {1}</value>
+    <value>Ordner [{0}]. In Ordner kopiert: {1}</value>
   </data>
   <data name="FolderCopiedWithOverwriting" xml:space="preserve">
-    <value>Folders [{0}]. Copied With Overwriting To Folder: {1}</value>
+    <value>Ordner [{0}]. In Ordner mit Überschreiben kopiert: {1}</value>
   </data>
   <data name="FolderCreated" xml:space="preserve">
-    <value>Folder Created: {0}</value>
+    <value>Ordner erstellt: {0}</value>
   </data>
   <data name="FolderDeleted" xml:space="preserve">
-    <value>Folder Deleted: {0}</value>
+    <value>Ordner gelöscht: {0}</value>
   </data>
   <data name="FolderMoved" xml:space="preserve">
-    <value>Folders [{0}]. Moved To Folder: {1}</value>
+    <value>Ordner [{0}]. Verschoben in den Ordner: {1}</value>
   </data>
   <data name="FolderMovedToTrash" xml:space="preserve">
-    <value>Folders [{0}]. Moved To Trash Folder</value>
+    <value>Ordner [{0}]. Verschoben in den Papierkorb</value>
   </data>
   <data name="FolderMovedWithOverwriting" xml:space="preserve">
-    <value>Folders [{0}]. Moved With Overwriting To Folder: {1}</value>
+    <value>Ordner [{0}]. Nach Ordner mit Überschreiben verschoben: {1}</value>
   </data>
   <data name="FolderRenamed" xml:space="preserve">
-    <value>Folder Renamed: {0}</value>
+    <value>Ordner umbenannt: {0}</value>
   </data>
   <data name="FoldersModule" xml:space="preserve">
-    <value>Folders</value>
+    <value>Ordner</value>
   </data>
   <data name="FolderUpdatedAccess" xml:space="preserve">
-    <value>Folders [{0}]. Access Updated</value>
+    <value>Ordner [{0}]. Zugriff aktualisiert</value>
   </data>
   <data name="FollowActionType" xml:space="preserve">
-    <value>Follow</value>
+    <value>Verfolgen</value>
   </data>
   <data name="FullTextSearchSetting" xml:space="preserve">
-    <value>Sphinx settings updated</value>
+    <value>Sphinx Einstellungen aktualisiert</value>
   </data>
   <data name="GeneralModule" xml:space="preserve">
-    <value>General</value>
+    <value>Allgemeines</value>
   </data>
   <data name="GreetingSettingsUpdated" xml:space="preserve">
-    <value>Welcome Page Settings Updated</value>
+    <value>Begrüßungseinstellungen aktualisiert</value>
   </data>
   <data name="GroupCreated" xml:space="preserve">
-    <value>Group Created: {0}</value>
+    <value>Gruppe erstellt: {0}</value>
   </data>
   <data name="GroupDeleted" xml:space="preserve">
-    <value>Group Deleted: {0}</value>
+    <value>Gruppe gelöscht: {0}</value>
   </data>
   <data name="GroupsModule" xml:space="preserve">
-    <value>Groups</value>
+    <value>Gruppen</value>
   </data>
   <data name="GroupUpdated" xml:space="preserve">
-    <value>Group Updated: {0}</value>
+    <value>Gruppe aktualisiert: {0}</value>
   </data>
   <data name="GuestAccount" xml:space="preserve">
-    <value>Guest Account</value>
+    <value>Gastkonto</value>
   </data>
   <data name="GuestActivated" xml:space="preserve">
-    <value>Guest Activated: {0}</value>
+    <value>Gast aktiviert: {0}</value>
   </data>
   <data name="GuestCreated" xml:space="preserve">
-    <value>Guest Created: {0}</value>
+    <value>Gast erstellt: {0}</value>
   </data>
   <data name="GuestCreatedViaInvite" xml:space="preserve">
-    <value>Guest Created Via Invite: {0}</value>
+    <value>Gast per Einladung erstellt: {0}</value>
   </data>
   <data name="GuestImported" xml:space="preserve">
-    <value>Guest Imported: {0}</value>
+    <value>Gast importiert: {0}</value>
   </data>
   <data name="HistoryCategoriesModule" xml:space="preserve">
-    <value>History Categories</value>
+    <value>Kategorien der Historie</value>
   </data>
   <data name="HistoryEventCategoriesUpdatedOrder" xml:space="preserve">
-    <value>History Events Categories. Order Updated: {0}</value>
+    <value>Kategorien vom Ereignis der Historie. Reihenfolge aktualisiert: {0}</value>
   </data>
   <data name="HistoryEventCategoryCreated" xml:space="preserve">
-    <value>History Event Category Created: {0}</value>
+    <value>Kategorie vom Ereignis der Historie erstellt: {0}</value>
   </data>
   <data name="HistoryEventCategoryDeleted" xml:space="preserve">
-    <value>History Event Category Deleted: {0}</value>
+    <value>Kategorie vom Ereignis der Historie gelöscht: {0}</value>
   </data>
   <data name="HistoryEventCategoryUpdated" xml:space="preserve">
-    <value>History Event Category Updated: {0}</value>
+    <value>Kategorie vom Ereignis der Historie aktualisiert: {0}</value>
   </data>
   <data name="HistoryEventCategoryUpdatedIcon" xml:space="preserve">
-    <value>History Event Categories [{0}]. Icon Updated</value>
+    <value>Kategorien der Ereignisse der Historie [{0}]. Symbol aktualisiert</value>
   </data>
   <data name="ImportActionType" xml:space="preserve">
     <value>Import</value>
   </data>
   <data name="InvoiceCreated" xml:space="preserve">
-    <value>Invoice Created: {0}</value>
+    <value>Rechnung erstellt: {0} </value>
   </data>
   <data name="InvoiceDefaultTermsUpdated" xml:space="preserve">
-    <value>Invoice Default Terms Updated</value>
+    <value>Standardmäßige Rechnungsbedingungen aktualisiert</value>
   </data>
   <data name="InvoiceDeleted" xml:space="preserve">
-    <value>Invoice Deleted: {0}</value>
+    <value>Rechnung gelöscht: {0}</value>
   </data>
   <data name="InvoiceDownloaded" xml:space="preserve">
-    <value>Invoice Downloaded: {0}</value>
+    <value>heruntergeladene Rechnung: {0}</value>
   </data>
   <data name="InvoiceItemCreated" xml:space="preserve">
-    <value>Invoice Item Created: {0}</value>
+    <value>Artikel der Rechnungen erstellt: {0}</value>
   </data>
   <data name="InvoiceItemDeleted" xml:space="preserve">
-    <value>Invoice Item Deleted: {0}</value>
+    <value>Artikel der Rechnungen gelöscht: {0}</value>
   </data>
   <data name="InvoiceItemsDeleted" xml:space="preserve">
-    <value>Invoice Items Deleted: {0}</value>
+    <value>Artikel der Rechnungen gelöscht: {0}</value>
   </data>
   <data name="InvoiceItemUpdated" xml:space="preserve">
-    <value>Invoice Item Updated: {0}</value>
+    <value>Artikel der Rechnungen aktualisiert: {0}</value>
   </data>
   <data name="InvoiceNumberFormatUpdated" xml:space="preserve">
-    <value>Invoice Number Format Updated</value>
+    <value>Nummerformat der Rechnungen aktualisiert</value>
   </data>
   <data name="InvoicesDeleted" xml:space="preserve">
-    <value>Invoices Deleted: {0}</value>
+    <value>Rechnungen gelöscht: {0}</value>
   </data>
   <data name="InvoiceSettingsModule" xml:space="preserve">
-    <value>Invoice Settings</value>
+    <value>Einstellungen der Rechnungen</value>
   </data>
   <data name="InvoicesModule" xml:space="preserve">
-    <value>Invoices</value>
+    <value>Rechnungen</value>
   </data>
   <data name="InvoicesUpdatedStatus" xml:space="preserve">
-    <value>Invoices [{0}]. Status Updated: {1}</value>
+    <value>Rechnungen [{0}]. Status aktualisiert: {1}</value>
   </data>
   <data name="InvoiceTaxCreated" xml:space="preserve">
-    <value>Invoice Tax Created: {0}</value>
+    <value>Steuer der Rechnungen erstellt: {0}</value>
   </data>
   <data name="InvoiceTaxDeleted" xml:space="preserve">
-    <value>Invoice Tax Deleted: {0}</value>
+    <value>Steuer der Rechnungen gelöscht: {0}</value>
   </data>
   <data name="InvoiceTaxUpdated" xml:space="preserve">
-    <value>Invoice Tax Updated: {0}</value>
+    <value>Steuer der Rechnungen aktualisiert: {0}</value>
   </data>
   <data name="InvoiceUpdated" xml:space="preserve">
-    <value>Invoice Updated: {0}</value>
+    <value>Rechnung aktualisiert: {0}</value>
   </data>
   <data name="IpCol" xml:space="preserve">
     <value>IP</value>
   </data>
   <data name="LanguageSettingsUpdated" xml:space="preserve">
-    <value>Language Settings Updated</value>
+    <value>Einstellungen der Sprache wurden aktualisiert</value>
   </data>
   <data name="LicenseKeyUploaded" xml:space="preserve">
-    <value>License key uploaded</value>
+    <value>Lizenzschlüssel ist hochgeladen</value>
   </data>
   <data name="LinkActionType" xml:space="preserve">
-    <value>Link</value>
+    <value>Verknüpfen</value>
   </data>
   <data name="LoginFail" xml:space="preserve">
-    <value>Login Fail</value>
+    <value>Anmeldung fehlgeschlagen</value>
   </data>
   <data name="LoginFailBruteForce" xml:space="preserve">
-    <value>Login Fail. Too many attempts</value>
+    <value>Fehlgeschlagene Anmeldung. Zu viele Anmeldeversuche</value>
   </data>
   <data name="LoginFailDisabledProfile" xml:space="preserve">
-    <value>Login Fail. Profile Disabled</value>
+    <value>Anmeldung fehlgeschlagen. Profil deaktiviert</value>
   </data>
   <data name="LoginFailInvalidCombination" xml:space="preserve">
-    <value>Login Fail. Invalid username-password combination</value>
+    <value>Anmeldung fehlgeschlagen. Ungültige Kombination Benutzername-Kennwort</value>
   </data>
   <data name="LoginFailIpSecurity" xml:space="preserve">
-    <value>IP Security: Login Failed</value>
+    <value>IP-Sicherheit: Anmeldung fehlgeschlagen</value>
   </data>
   <data name="LoginFailRecaptcha" xml:space="preserve">
-    <value>Login Fail. Recaptcha is invalid</value>
+    <value>Anmeldung fehlgeschlagen. Ungültiges Recaptcha</value>
   </data>
   <data name="LoginFailSocialAccountNotFound" xml:space="preserve">
-    <value>Login Fail. Associated Social Account Not Found</value>
+    <value>Anmeldung fehlgeschlagen. Verbundenes Konto des sozialen Netzwerks ist nicht gefunden.</value>
   </data>
   <data name="LoginFailViaApi" xml:space="preserve">
-    <value>Failed Login via API</value>
+    <value>Fehlgeschlagene Anmeldung via API</value>
   </data>
   <data name="LoginFailViaApiSms" xml:space="preserve">
-    <value>Failed Login via API &amp; SMS Code</value>
+    <value>Fehlgeschlagene Anmeldung via API und SMS-Code</value>
   </data>
   <data name="LoginFailViaApiSocialAccount" xml:space="preserve">
-    <value>Login via API &amp; Social Media Failed</value>
+    <value>Die Anmeldung über API &amp; soziale Netzwerke ist ausgefallen </value>
   </data>
   <data name="LoginFailViaApiTfa" xml:space="preserve">
-    <value>Failed Login via API &amp; authenticator application</value>
+    <value>Anmeldung über API und Authentifizierungsanwendung ist fehlgeschlagen</value>
   </data>
   <data name="LoginFailViaSms" xml:space="preserve">
-    <value>Login via SMS failed</value>
+    <value>Login über SMS fehlgeschlagen</value>
   </data>
   <data name="LoginFailViaSSO" xml:space="preserve">
-    <value>Login via SSO Failed</value>
+    <value>Anmeldung über SSO ist ausgefallen</value>
   </data>
   <data name="LoginFailViaTfaApp" xml:space="preserve">
-    <value>Login via authenticator application Failed</value>
+    <value>Anmeldung über Authentifizierungs-App fehlgeschlagen</value>
   </data>
   <data name="LoginHistoryReportDownloaded" xml:space="preserve">
-    <value>Login History Report Downloaded</value>
+    <value>Bericht über Anmeldehistorie heruntergeladen</value>
   </data>
   <data name="LoginHistoryReportName" xml:space="preserve">
-    <value>Login History Report ({0}-{1})</value>
+    <value>Bericht über Anmeldehistorie ({0}-{1})</value>
   </data>
   <data name="LoginSuccess" xml:space="preserve">
-    <value>Login Success</value>
+    <value>Erfolgreiche Anmeldung </value>
   </data>
   <data name="LoginSuccessSocialAccount" xml:space="preserve">
-    <value>Login Via Social Account Success</value>
+    <value>Login über Konto im sozialen Netzwerk ist erfolgreich</value>
   </data>
   <data name="LoginSuccessSocialApp" xml:space="preserve">
-    <value>Successful login via social application</value>
+    <value>Erfolgreiche Anmeldung über soziale Anwendung</value>
   </data>
   <data name="LoginSuccessViaApi" xml:space="preserve">
-    <value>Successful Login via API</value>
+    <value>Erfolgreiche Anmeldung via API</value>
   </data>
   <data name="LoginSuccessViaApiSms" xml:space="preserve">
-    <value>Successful Login via API &amp; SMS Code</value>
+    <value>Erfolgreiche Anmeldung via API und SMS-Code</value>
   </data>
   <data name="LoginSuccessViaApiTfa" xml:space="preserve">
-    <value>Successful Login via API &amp; authenticator application</value>
+    <value>Erfolgreiche Anmeldung über API &amp; Authentifizierungs-App</value>
   </data>
   <data name="LoginSuccessViaSms" xml:space="preserve">
-    <value>Login via SMS successful</value>
+    <value>Login über SMS erfolgreich</value>
   </data>
   <data name="LoginSuccessViaSocialAccount" xml:space="preserve">
-    <value>Login via API &amp; Social Media Successful</value>
+    <value>Erfolgreiche Anmeldung über API &amp; soziale Netzwerke</value>
   </data>
   <data name="LoginSuccessViaSSO" xml:space="preserve">
-    <value>Successful Login via SSO</value>
+    <value>Erfolgreiche Anmeldung via SSO</value>
   </data>
   <data name="LoginSuccesViaTfaApp" xml:space="preserve">
-    <value>Successful Login via authenticator application</value>
+    <value>Erfolgreicher Login über Authenticator-App</value>
   </data>
   <data name="Logout" xml:space="preserve">
-    <value>Logout</value>
+    <value>Abmelden</value>
   </data>
   <data name="MailServiceSettingsUpdated" xml:space="preserve">
-    <value>Mail Service Settings Updated</value>
+    <value>Mail Service Einstellungen sind aktualisiert</value>
   </data>
   <data name="MilestoneCreated" xml:space="preserve">
-    <value>Projects [{0}]. Milestone Created: {1}</value>
+    <value>Projekte [{0}]. Meilenstein erstellt: {1}</value>
   </data>
   <data name="MilestoneDeleted" xml:space="preserve">
-    <value>Projects [{0}]. Milestone Deleted: {1}</value>
+    <value>Projekte [{0}]. Meilenstein gelöscht: {1}</value>
   </data>
   <data name="MilestonesModule" xml:space="preserve">
-    <value>Milestones</value>
+    <value>Meilensteine</value>
   </data>
   <data name="MilestoneUpdated" xml:space="preserve">
-    <value>Projects [{0}]. Milestone Updated: {1}</value>
+    <value>Projekte [{0}]. Meilenstein aktualisiert: {1}</value>
   </data>
   <data name="MilestoneUpdatedStatus" xml:space="preserve">
-    <value>Projects [{0}]. Milestones [{1}]. Status Updated: {2}</value>
+    <value>Projekte [{0}]. Meilensteine [{1}]. Status aktualisiert: {2}</value>
   </data>
   <data name="MobileCol" xml:space="preserve">
-    <value>Mobile</value>
+    <value>Mobile Version</value>
   </data>
   <data name="ModuleCol" xml:space="preserve">
-    <value>Module</value>
+    <value>Modul</value>
   </data>
   <data name="MoveActionType" xml:space="preserve">
-    <value>Move</value>
+    <value>Verschieben</value>
   </data>
   <data name="OpportunitiesCreatedTag" xml:space="preserve">
-    <value>Opportunities. Tag Created: {0}</value>
+    <value>Verkaufschancen. Tag erstellt: {0}</value>
   </data>
   <data name="OpportunitiesDeleted" xml:space="preserve">
-    <value>Opportunities Deleted: {0}</value>
+    <value>Verkaufschancen gelöscht: {0}</value>
   </data>
   <data name="OpportunitiesDeletedTag" xml:space="preserve">
-    <value>Opportunities. Tag Deleted: {0}</value>
+    <value>Verkaufschancen. Tag gelöscht: {0}</value>
   </data>
   <data name="OpportunitiesExportedToCsv" xml:space="preserve">
-    <value>Opportunities Exported To CSV File: {0}</value>
+    <value>Verkaufschancen in CSV-Datei exportiert: {0}</value>
   </data>
   <data name="OpportunitiesImportedFromCSV" xml:space="preserve">
-    <value>Opportunities Imported From CSV File</value>
+    <value>Verkaufschancen aus der CSV-Datei importiert</value>
   </data>
   <data name="OpportunitiesModule" xml:space="preserve">
-    <value>Opportunities</value>
+    <value>Verkaufschancen</value>
   </data>
   <data name="OpportunityAttachedFiles" xml:space="preserve">
-    <value>Opportunities [{0}]. Files Attached: {1}</value>
+    <value>Verkaufschancen [{0}]. Dateien angehängt: {1}</value>
   </data>
   <data name="OpportunityCreated" xml:space="preserve">
-    <value>Opportunity Created: {0}</value>
+    <value>Verkaufschance erstellt: {0}</value>
   </data>
   <data name="OpportunityCreatedHistoryEvent" xml:space="preserve">
-    <value>Opportunities [{0}]. History Event Created: {1}</value>
+    <value>Verkaufschancen [{0}]. Ereignis der Historie erstellt: {1}</value>
   </data>
   <data name="OpportunityCreatedTag" xml:space="preserve">
-    <value>Opportunities [{0}]. Tag Created: {1}</value>
+    <value>Verkaufschancen [{0}]. Tag erstellt: {1}</value>
   </data>
   <data name="OpportunityDeleted" xml:space="preserve">
-    <value>Opportunity Deleted: {0}</value>
+    <value>Verkaufschance gelöscht: {0}</value>
   </data>
   <data name="OpportunityDeletedHistoryEvent" xml:space="preserve">
-    <value>Opportunities [{0}]. History Event Deleted: {1}</value>
+    <value>Verkaufschancen [{0}]. Ereignis der Historie gelöscht: {1}</value>
   </data>
   <data name="OpportunityDeletedTag" xml:space="preserve">
-    <value>Opportunities [{0}]. Tag Deleted: {1}</value>
+    <value>Verkaufschancen [{0}]. Tag gelöscht: {1}</value>
   </data>
   <data name="OpportunityDetachedFile" xml:space="preserve">
-    <value>Opportunities [{0}]. File Detached: {1}</value>
+    <value>Verkaufschancen [{0}]. Datei getrennt: {1}</value>
   </data>
   <data name="OpportunityLinkedCompany" xml:space="preserve">
-    <value>Opportunities [{0}]. Company Linked: {1}</value>
+    <value>Verkaufschancen [{0}]. Unternehmen verknüpft: {1}</value>
   </data>
   <data name="OpportunityLinkedPerson" xml:space="preserve">
-    <value>Opportunities [{0}]. Person Linked: {1}</value>
+    <value>Verkaufschancen [{0}]. Person verknüpft: {1}</value>
   </data>
   <data name="OpportunityOpenedAccess" xml:space="preserve">
-    <value>Opportunities [{0}]. Access Opened</value>
+    <value>Verkaufschancen [{0}]. Zugriff geöffnet</value>
   </data>
   <data name="OpportunityRestrictedAccess" xml:space="preserve">
-    <value>Opportunities [{0}]. Access Restricted: {1}</value>
+    <value>Verkaufschancen [{0}]. Zugriff beschränkt: {1}</value>
   </data>
   <data name="OpportunityStageCreated" xml:space="preserve">
-    <value>Opportunity Stage Created: {0}</value>
+    <value>Phase der Verkaufschance erstellt: {0}</value>
   </data>
   <data name="OpportunityStageDeleted" xml:space="preserve">
-    <value>Opportunity Stage Deleted: {0}</value>
+    <value>Phase der Verkaufschance gelöscht: {0}</value>
   </data>
   <data name="OpportunityStagesModule" xml:space="preserve">
-    <value>Opportunity Stages</value>
+    <value>Phasen der Verkaufschancen</value>
   </data>
   <data name="OpportunityStagesUpdatedOrder" xml:space="preserve">
-    <value>Opportunity Stages Order Updated: {0}</value>
+    <value>Reihenfolge von Phasen der Verkaufschancen aktualisiert: {0}</value>
   </data>
   <data name="OpportunityStageUpdated" xml:space="preserve">
-    <value>Opportunity Stage Updated: {0}</value>
+    <value>Phase der Verkaufschance aktualisiert: {0}</value>
   </data>
   <data name="OpportunityStageUpdatedColor" xml:space="preserve">
-    <value>Opportunity Stage Color Updated: {0}</value>
+    <value>Farbe von Phase der Verkaufschance aktualisiert: {0}</value>
   </data>
   <data name="OpportunityUnlinkedCompany" xml:space="preserve">
-    <value>Opportunities [{0}]. Company Unlinked: {1}</value>
+    <value>Verkaufschancen [{0}]. Unternehmen unverknüpft: {1}</value>
   </data>
   <data name="OpportunityUnlinkedPerson" xml:space="preserve">
-    <value>Opportunities [{0}]. Person Unlinked: {1}</value>
+    <value>Verkaufschancen [{0}]. Person unverknüpft: {1}</value>
   </data>
   <data name="OpportunityUpdated" xml:space="preserve">
-    <value>Opportunity Updated: {0}</value>
+    <value>Verkaufschance aktualisiert: {0}</value>
   </data>
   <data name="OpportunityUpdatedStage" xml:space="preserve">
-    <value>Opportunity Stage Updated: {0}</value>
+    <value>Phase der Verkaufschance aktualisiert: {0}</value>
   </data>
   <data name="OpportunityUserFieldCreated" xml:space="preserve">
-    <value>Opportunity User Field Created: {0}</value>
+    <value>Benutzerfeld für Verkaufschance erstellt: {0}</value>
   </data>
   <data name="OpportunityUserFieldDeleted" xml:space="preserve">
-    <value>Opportunity User Field Deleted: {0}</value>
+    <value>Benutzerfeld für Verkaufschance gelöscht: {0}</value>
   </data>
   <data name="OpportunityUserFieldsUpdatedOrder" xml:space="preserve">
-    <value>Opportunity User Fields Order Updated: {0}</value>
+    <value>Reihenfolge der Benutzerfelder für Verkaufschance aktualisiert: {0}</value>
   </data>
   <data name="OpportunityUserFieldUpdated" xml:space="preserve">
-    <value>Opportunity User Field Updated: {0}</value>
+    <value>Benutzerfeld für Verkaufschance aktualisiert: {0}</value>
   </data>
   <data name="OrganizationProfileUpdatedAddress" xml:space="preserve">
-    <value>Organization Profile. Address Updated</value>
+    <value>Profil des Unternehmens. Adresse aktualisiert.</value>
   </data>
   <data name="OrganizationProfileUpdatedCompanyName" xml:space="preserve">
-    <value>Organization Profile. Company Name Updated: {0}</value>
+    <value>Profil des Unternehmens. Unternehmensname aktualisiert: {0}</value>
   </data>
   <data name="OrganizationProfileUpdatedInvoiceLogo" xml:space="preserve">
-    <value>Organization Profile. Invoice Logo Updated</value>
+    <value>Profil des Unternehmens. Logo der Rechnung aktualisiert</value>
   </data>
   <data name="OtherCrmSettingsModule" xml:space="preserve">
-    <value>Other Settings</value>
+    <value>Andere Einstellungen</value>
   </data>
   <data name="OthersProduct" xml:space="preserve">
-    <value>Others</value>
+    <value>Sonstiges</value>
   </data>
   <data name="OwnerChanged" xml:space="preserve">
-    <value>Owner Changed: {0}</value>
+    <value>Besitzer geändert: {0}</value>
   </data>
   <data name="OwnerSentChangeOwnerInstructions" xml:space="preserve">
-    <value>Owner [{0}]. Sent Change Owner Instructions</value>
+    <value>Besitzer [{0}]. Anweisungen zur Änderung des Besitzers wurden gesendet</value>
   </data>
   <data name="OwnerSentPortalDeactivationInstructions" xml:space="preserve">
-    <value>Owner [{0}]. Sent Portal Deactivation Instructions</value>
+    <value>Besitzer [{0}]. Anweisungen zur Deaktivierung des Portals wurden gesendet</value>
   </data>
   <data name="OwnerSentPortalDeleteInstructions" xml:space="preserve">
-    <value>Owner [{0}]. Sent Portal Delete Instructions</value>
+    <value>Besitzer [{0}]. Anweisungen zum Löschen des Portals wurden gesendet</value>
   </data>
   <data name="PageCol" xml:space="preserve">
-    <value>Page</value>
+    <value>Seite</value>
   </data>
   <data name="PasswordStrengthSettingsUpdated" xml:space="preserve">
-    <value>Password Strength Settings Updated</value>
+    <value>Einstellungen der Kennwortstärke sind aktualisiert</value>
   </data>
   <data name="PeopleProduct" xml:space="preserve">
-    <value>People</value>
+    <value>Personen</value>
   </data>
   <data name="PersonAttachedFiles" xml:space="preserve">
-    <value>Persons [{0}]. Files Attached: {1}</value>
+    <value>Personen [{0}]. Dateien angehängt: {1}</value>
   </data>
   <data name="PersonCreated" xml:space="preserve">
-    <value>Person Created: {0}</value>
+    <value>Person erstellt: {0}</value>
   </data>
   <data name="PersonCreatedCompanyTag" xml:space="preserve">
-    <value>Persons [{0}]. Company Tag Created: {1}</value>
+    <value>Personen [{0}]. Tag für das Unternehmen erstellt: {1}</value>
   </data>
   <data name="PersonCreatedHistoryEvent" xml:space="preserve">
-    <value>Persons [{0}]. History Event Created: {1}</value>
+    <value>Personen [{0}]. Ereignis der Historie erstellt: {1}</value>
   </data>
   <data name="PersonCreatedTag" xml:space="preserve">
-    <value>Persons [{0}]. Tag Created: {1}</value>
+    <value>Personen [{0}]. Tag erstellt: {1}</value>
   </data>
   <data name="PersonCreatedWithWebForm" xml:space="preserve">
-    <value>Person Created with Web Form: {0}</value>
+    <value>Person mithilfe des Web-Formulars erstellt: {0}</value>
   </data>
   <data name="PersonDeleted" xml:space="preserve">
-    <value>Person Deleted: {0}</value>
+    <value>Person gelöscht: {0}</value>
   </data>
   <data name="PersonDeletedHistoryEvent" xml:space="preserve">
-    <value>Persons [{0}]. History Event Deleted: {1}</value>
+    <value>Personen [{0}]. Ereignis der Historie gelöscht: {1}</value>
   </data>
   <data name="PersonDeletedTag" xml:space="preserve">
-    <value>Persons [{0}]. Tag Deleted: {1}</value>
+    <value>Personen [{0}]. Tag gelöscht: {1}</value>
   </data>
   <data name="PersonDetachedFile" xml:space="preserve">
-    <value>Persons [{0}]. File Detached: {1}</value>
+    <value>Personen [{0}]. Datei getrennt: {1}</value>
   </data>
   <data name="PersonLinkedProject" xml:space="preserve">
-    <value>Persons [{0}]. Project Linked: {1}</value>
+    <value>Personen [{0}]. Projekt verknüpft: {1}</value>
   </data>
   <data name="PersonsCreated" xml:space="preserve">
-    <value>Persons Created: {0}</value>
+    <value>Personen erstellt: {0}</value>
   </data>
   <data name="PersonsMerged" xml:space="preserve">
-    <value>Persons Merged: {0} - {1}</value>
+    <value>Personen zusammengeführt: {0} - {1}</value>
   </data>
   <data name="PersonsModule" xml:space="preserve">
-    <value>Persons</value>
+    <value>Personen</value>
   </data>
   <data name="PersonUnlinkedProject" xml:space="preserve">
-    <value>Persons [{0}]. Project Unlinked: {1}</value>
+    <value>Personen [{0}]. Projekt unverknüpft: {1}</value>
   </data>
   <data name="PersonUpdated" xml:space="preserve">
-    <value>Person Updated: {0}</value>
+    <value>Person aktualisiert: {0}</value>
   </data>
   <data name="PersonUpdatedCompanyTemperatureLevel" xml:space="preserve">
-    <value>Persons [{0}]. Company Temperature Level Updated</value>
+    <value>Personen [{0}]. Temperaturniveau des Unternehmens aktualisiert</value>
   </data>
   <data name="PersonUpdatedPhoto" xml:space="preserve">
-    <value>Persons [{0}]. Photo Updated</value>
+    <value>Personen [{0}]. Foto aktualisiert</value>
   </data>
   <data name="PersonUpdatedPrincipalInfo" xml:space="preserve">
-    <value>Persons [{0}]. Principal Info Updated</value>
+    <value>Personen [{0}]. Grundinformation aktualisiert</value>
   </data>
   <data name="PersonUpdatedTemperatureLevel" xml:space="preserve">
-    <value>Persons [{0}]. Temperature Level Updated</value>
+    <value>Personen [{0}]. Temperaturniveau aktualisiert</value>
   </data>
   <data name="PersonUploadedFiles" xml:space="preserve">
-    <value>Persons [{0}]. Files Uploaded: {1}</value>
+    <value>Personen [{0}]. Dateien hochgeladen: {1}</value>
   </data>
   <data name="PersonUserFieldCreated" xml:space="preserve">
-    <value>Person User Field Created: {0}</value>
+    <value>Benutzerfeld für Personen erstellt: {0}</value>
   </data>
   <data name="PersonUserFieldDeleted" xml:space="preserve">
-    <value>Person User Field Deleted: {0}</value>
+    <value>Benutzerfeld für Personen gelöscht: {0}</value>
   </data>
   <data name="PersonUserFieldsUpdatedOrder" xml:space="preserve">
-    <value>Person User Fields Order Updated: {0}</value>
+    <value>Reihenfolge der Benutzerfelder für Personen aktualisiert: {0}</value>
   </data>
   <data name="PersonUserFieldUpdated" xml:space="preserve">
-    <value>Person User Field Updated: {0}</value>
+    <value>Benutzerfeld für Personen aktualisiert: {0}</value>
   </data>
   <data name="PlatformCol" xml:space="preserve">
-    <value>Platform</value>
+    <value>Plattform</value>
   </data>
   <data name="PortalAccessSettingsUpdated" xml:space="preserve">
-    <value>Portal Access Settings Updated</value>
+    <value>Zugriffeinstellungen zu dem Portal sind aktualisiert</value>
   </data>
   <data name="PortalDeactivated" xml:space="preserve">
-    <value>Portal Deactivated</value>
+    <value>Portal ist deaktiviert</value>
   </data>
   <data name="PortalDeleted" xml:space="preserve">
-    <value>Portal Deleted</value>
+    <value>Das Portal ist gelöscht</value>
   </data>
   <data name="PrivacyRoomDisable" xml:space="preserve">
-    <value>Privacy Room is disabled</value>
+    <value>Privater Raum deaktiviert</value>
   </data>
   <data name="PrivacyRoomEnable" xml:space="preserve">
-    <value>Privacy Room is enabled</value>
+    <value>Privater Raum aktiviert</value>
   </data>
   <data name="ProductAccessOpened" xml:space="preserve">
-    <value>Products [{0}]. Access Opened</value>
+    <value>Produkte [{0}]. Zugriff geöffnet</value>
   </data>
   <data name="ProductAccessOpenedForGroups" xml:space="preserve">
-    <value>Products: [{0}]. Groups [{1}].  Access Opened</value>
+    <value>Produkte: [{0}]. Gruppen [{1}].  Zugriff geöffnet</value>
   </data>
   <data name="ProductAccessOpenedForUsers" xml:space="preserve">
-    <value>Products: [{0}]. Users [{1}].  Access Opened</value>
+    <value>Produkte: [{0}]. Benutzer [{1}].  Zugriff geöffnet</value>
   </data>
   <data name="ProductAccessRestricted" xml:space="preserve">
-    <value>Products [{0}]. Access Restricted</value>
+    <value>Produkte [{0}]. Zugriff beschränkt</value>
   </data>
   <data name="ProductAddedAdministrator" xml:space="preserve">
-    <value>Products [{0}]. Administrator Added: {1}</value>
+    <value>Produkte [{0}]. Administrator hinzugefügt: {1}</value>
   </data>
   <data name="ProductCol" xml:space="preserve">
-    <value>Product</value>
+    <value>Produkt</value>
   </data>
   <data name="ProductDeletedAdministrator" xml:space="preserve">
-    <value>Products [{0}]. Administrator Deleted: {1}</value>
+    <value>Produkte [{0}]. Administrator gelöscht: {1}</value>
   </data>
   <data name="ProductsListUpdated" xml:space="preserve">
-    <value>Products List Updated</value>
+    <value>Produktliste aktualisiert</value>
   </data>
   <data name="ProductsModule" xml:space="preserve">
-    <value>Products</value>
+    <value>Produkte</value>
   </data>
   <data name="ProjectCreated" xml:space="preserve">
-    <value>Project Created: {0}</value>
+    <value>Projekt erstellt: {0}</value>
   </data>
   <data name="ProjectCreatedFromTemplate" xml:space="preserve">
-    <value>Templates [{0}]. Project Created: {1}</value>
+    <value>Vorlagen [{0}]. Projekt erstellt: {1}</value>
   </data>
   <data name="ProjectDeleted" xml:space="preserve">
-    <value>Project Deleted: {0}</value>
+    <value>Projekt gelöscht: {0}</value>
   </data>
   <data name="ProjectDeletedMember" xml:space="preserve">
-    <value>Projects [{0}]. Member Deleted: {1}</value>
+    <value>Projekte [{0}]. Mitglied gelöscht: {1}</value>
   </data>
   <data name="ProjectFollowed" xml:space="preserve">
-    <value>Project Followed: {0}</value>
+    <value>Projekt gefolgt: {0}</value>
   </data>
   <data name="ProjectLinkedCompany" xml:space="preserve">
-    <value>Projects [{0}]. Company Linked: {1}</value>
+    <value>Projekte [{0}]. Unternehmen verknüpft: {1}</value>
   </data>
   <data name="ProjectLinkedContacts" xml:space="preserve">
-    <value>Projects [{0}]. Contacts Linked: {1}</value>
+    <value>Projekte [{0}]. Kontakte verknüpft: {1}</value>
   </data>
   <data name="ProjectLinkedPerson" xml:space="preserve">
-    <value>Projects [{0}]. Person Linked: {1}</value>
+    <value>Projekte [{0}]. Person verknüpft: {1}</value>
   </data>
   <data name="ProjectsImportedFromBasecamp" xml:space="preserve">
-    <value>Projects Imported From Basecamp: {0}</value>
+    <value>Projekte aus Basecamp importiert: {0}</value>
   </data>
   <data name="ProjectsModule" xml:space="preserve">
-    <value>Projects</value>
+    <value>Projekte</value>
   </data>
   <data name="ProjectsProduct" xml:space="preserve">
-    <value>Projects</value>
+    <value>Projekte</value>
   </data>
   <data name="ProjectsSettingsModule" xml:space="preserve">
-    <value>Settings</value>
+    <value>Einstellungen</value>
   </data>
   <data name="ProjectTemplateCreated" xml:space="preserve">
-    <value>Project Template Created: {0}</value>
+    <value>Vorlage des Projektes erstellt: {0}</value>
   </data>
   <data name="ProjectTemplateDeleted" xml:space="preserve">
-    <value>Project Template Deleted: {0}</value>
+    <value>Vorlage des Projektes gelöscht: {0}</value>
   </data>
   <data name="ProjectTemplateUpdated" xml:space="preserve">
-    <value>Project Template Updated: {0}</value>
+    <value>Vorlage des Projektes aktualisiert: {0}</value>
   </data>
   <data name="ProjectUnfollowed" xml:space="preserve">
-    <value>Project Unfollowed: {0}</value>
+    <value>Projekt nicht mehr verfolgt: {0}</value>
   </data>
   <data name="ProjectUnlinkedCompany" xml:space="preserve">
-    <value>Projects [{0}]. Company Unlinked: {1}</value>
+    <value>Projekte [{0}]. Unternehmen unverknüpft: {1}</value>
   </data>
   <data name="ProjectUnlinkedPerson" xml:space="preserve">
-    <value>Projects [{0}]. Person Unlinked: {1}</value>
+    <value>Projekte [{0}]. Person unverknüpft: {1}</value>
   </data>
   <data name="ProjectUpdated" xml:space="preserve">
-    <value>Project Updated: {0}</value>
+    <value>Projekt aktualisiert: {0}</value>
   </data>
   <data name="ProjectUpdatedMemberRights" xml:space="preserve">
-    <value>Projects [{0}]. Members [{1}]. Access Rights Updated</value>
+    <value>Projekte [{0}]. Mitglieder [{1}]. Zugriffsrechte aktualisiert</value>
   </data>
   <data name="ProjectUpdatedStatus" xml:space="preserve">
-    <value>Projects [{0}]. Status Updated: {1}</value>
+    <value>Projekte [{0}]. Status aktualisiert: {1}</value>
   </data>
   <data name="ProjectUpdatedTeam" xml:space="preserve">
-    <value>Projects [{0}]. Team Updated: {1}</value>
+    <value>Projekte [{0}]. Team aktualisiert: {1}</value>
   </data>
   <data name="ReassignsActionType" xml:space="preserve">
-    <value>Reassigns</value>
+    <value>Erneut zuweisen</value>
   </data>
   <data name="ReportsModule" xml:space="preserve">
-    <value>Reports</value>
+    <value>Berichte</value>
   </data>
   <data name="ReportTemplateCreated" xml:space="preserve">
-    <value>Project Report Template Created: {0}</value>
+    <value>Berichtsvorlage des Projektes erstellt: {0}</value>
   </data>
   <data name="ReportTemplateDeleted" xml:space="preserve">
-    <value>Project Report Template Deleted: {0}</value>
+    <value>Berichtsvorlage des Projektes gelöscht: {0}</value>
   </data>
   <data name="ReportTemplateUpdated" xml:space="preserve">
-    <value>Project Report Template Updated: {0}</value>
+    <value>Berichtsvorlage des Projektes aktualisiert: {0}</value>
   </data>
   <data name="SendActionType" xml:space="preserve">
-    <value>Send</value>
+    <value>Senden</value>
   </data>
   <data name="SentInviteInstructions" xml:space="preserve">
-    <value>Invite Instructions Sent: {0}</value>
+    <value>Anweisungen zur Einladung wurden gesendet: {0}</value>
   </data>
   <data name="SessionCompleted" xml:space="preserve">
-    <value>Session Completed</value>
+    <value>Sitzung abgeschlossen</value>
   </data>
   <data name="SessionStarted" xml:space="preserve">
-    <value>Session Started</value>
+    <value>Sitzung gestartet</value>
   </data>
   <data name="SettingsProduct" xml:space="preserve">
-    <value>Settings</value>
+    <value>Einstellungen</value>
   </data>
   <data name="SSODisabled" xml:space="preserve">
-    <value>SSO Disabled</value>
+    <value>SSO deaktiviert</value>
   </data>
   <data name="SSOEnabled" xml:space="preserve">
-    <value>SSO Enabled</value>
+    <value>SSO aktiviert</value>
   </data>
   <data name="StartBackupSetting" xml:space="preserve">
-    <value>Start backup</value>
+    <value>Backup starten </value>
   </data>
   <data name="StartStorageDecryption" xml:space="preserve">
-    <value>Start storage decryption</value>
+    <value>Entschlüsselung des Speichers anfangen</value>
   </data>
   <data name="StartStorageEncryption" xml:space="preserve">
-    <value>Start storage encryption</value>
+    <value>Starten Sie die Verschlüsselung des Speichers</value>
   </data>
   <data name="StartTransferSetting" xml:space="preserve">
-    <value>Start portal region migration</value>
+    <value>Regionsmigration des Portals starten</value>
   </data>
   <data name="SubtaskCreated" xml:space="preserve">
-    <value>Projects [{0}]. Tasks [{1}]. Subtask Created: {2}</value>
+    <value>Projekte [{0}]. Aufgaben [{1}]. Teilaufgabe erstellt: {2}</value>
   </data>
   <data name="SubtaskDeleted" xml:space="preserve">
-    <value>Projects [{0}]. Tasks [{1}]. Subtask Deleted: {2}</value>
+    <value>Projekte [{0}]. Aufgaben [{1}]. Teilaufgabe gelöscht: {2}</value>
   </data>
   <data name="SubtaskUpdated" xml:space="preserve">
-    <value>Projects [{0}]. Tasks [{1}]. Subtask Updated: {2}</value>
+    <value>Projekte [{0}]. Aufgaben [{1}]. Teilaufgabe aktualisiert: {2}</value>
   </data>
   <data name="SubtaskUpdatedStatus" xml:space="preserve">
-    <value>Projects [{0}]. Tasks [{1}]. Subtasks [{2}]. Status Updated: {3}</value>
+    <value>Projekte [{0}]. Aufgaben [{1}]. Teilaufgaben [{2}]. Status aktualisiert: {3}</value>
   </data>
   <data name="SystemAccount" xml:space="preserve">
-    <value>System Account</value>
+    <value>Systemkonto</value>
   </data>
   <data name="TargetIdCol" xml:space="preserve">
-    <value>Target ID</value>
+    <value>Ziel-ID</value>
   </data>
   <data name="TaskAttachedFiles" xml:space="preserve">
-    <value>Projects [{0}]. Tasks [{1}]. Files Attached: {2}</value>
+    <value>Projekte [{0}]. Aufgaben [{1}]. Dateien angehängt: {2}</value>
   </data>
   <data name="TaskCommentCreated" xml:space="preserve">
-    <value>Projects [{0}]. Tasks [{1}]. Comment Created</value>
+    <value>Projekte [{0}]. Aufgaben [{1}]. Kommentar erstellt</value>
   </data>
   <data name="TaskCommentDeleted" xml:space="preserve">
-    <value>Projects [{0}]. Tasks [{1}]. Comment Deleted</value>
+    <value>Projekte [{0}]. Aufgaben [{1}]. Kommentar gelöscht</value>
   </data>
   <data name="TaskCommentUpdated" xml:space="preserve">
-    <value>Projects [{0}]. Tasks [{1}]. Comment Updated</value>
+    <value>Projekte [{0}]. Aufgaben [{1}]. Kommentar aktualisiert</value>
   </data>
   <data name="TaskCreated" xml:space="preserve">
-    <value>Projects [{0}]. Task Created: {1}</value>
+    <value>Projekte [{0}]. Aufgabe erstellt: {1}</value>
   </data>
   <data name="TaskCreatedFromDiscussion" xml:space="preserve">
-    <value>Projects [{0}]. Discussions [{1}]. Task Created: {2}</value>
+    <value>Projekte [{0}]. Diskussionen [{1}]. Aufgabe erstellt: {2}</value>
   </data>
   <data name="TaskDeleted" xml:space="preserve">
-    <value>Projects [{0}]. Task Deleted: {1}</value>
+    <value>Projekte [{0}]. Aufgabe gelöscht: {1}</value>
   </data>
   <data name="TaskDetachedFile" xml:space="preserve">
-    <value>Projects [{0}]. Task: {1}. File Detached: {2}</value>
+    <value>Projekte [{0}]. Aufgabe: {1}. Datei getrennt: {2}</value>
   </data>
   <data name="TaskMovedToMilestone" xml:space="preserve">
-    <value>Projects [{0}]. Milestones [{1}]. Task Moved: {2}</value>
+    <value>Projekte [{0}]. Meilensteine [{1}]. Aufgabe verschoben: {2}</value>
   </data>
   <data name="TasksLinked" xml:space="preserve">
-    <value>Projects [{0}]. Tasks Linked: {1} - {2}</value>
+    <value>Projekte [{0}]. Aufgaben verknüpft: {1} - {2}</value>
   </data>
   <data name="TasksModule" xml:space="preserve">
-    <value>Tasks</value>
+    <value>Aufgaben</value>
   </data>
   <data name="TasksUnlinked" xml:space="preserve">
-    <value>Projects [{0}]. Tasks Unlinked: {1} - {2}</value>
+    <value>Projekte [{0}]. Aufgaben unverknüpft: {1} - {2}</value>
   </data>
   <data name="TaskTimeCreated" xml:space="preserve">
-    <value>Projects [{0}]. Tasks [{1}]. Task Time Created: {2}</value>
+    <value>Projekte [{0}]. Aufgaben [{1}]. Arbeitszeit an der Aufgabe erstellt: {2}</value>
   </data>
   <data name="TaskTimesDeleted" xml:space="preserve">
-    <value>Task Times Deleted: {0}</value>
+    <value>Arbeitszeit an der Aufgabe gelöscht: {0}</value>
   </data>
   <data name="TaskTimesUpdatedStatus" xml:space="preserve">
-    <value>Task Times [{0}]. Status Updated: {1}</value>
+    <value>Arbeitszeit an der Aufgabe[{0}]. Status aktualisiert: {1}</value>
   </data>
   <data name="TaskTimeUpdated" xml:space="preserve">
-    <value>Projects [{0}]. Tasks [{1}]. Task Time Updated: {2}</value>
+    <value>Projekte [{0}]. Aufgaben [{1}]. Arbeitszeit an der Aufgabe aktualisiert: {2}</value>
   </data>
   <data name="TaskUnlinkedMilestone" xml:space="preserve">
-    <value>Projects [{0}]. Tasks [{1}]. Unlinked From Milestones.</value>
+    <value>Projekte [{0}]. Aufgaben [{1}]. Von Meilensteinen unverknüpft.</value>
   </data>
   <data name="TaskUpdated" xml:space="preserve">
-    <value>Projects [{0}]. Task Updated: {1}</value>
+    <value>Projekte [{0}]. Aufgabe aktualisiert: {1}</value>
   </data>
   <data name="TaskUpdatedFollowing" xml:space="preserve">
-    <value>Projects [{0}]. Task Following Updated: {1}</value>
+    <value>Projekte [{0}]. Verfolgung der Aufgabe aktualisiert: {1}</value>
   </data>
   <data name="TaskUpdatedStatus" xml:space="preserve">
-    <value>Projects [{0}]. Tasks [{1}]. Status Updated: {2}</value>
+    <value>Projekte [{0}]. Aufgaben [{1}]. Status aktualisiert: {2}</value>
   </data>
   <data name="TeamTemplateChanged" xml:space="preserve">
-    <value>Team Template Changed</value>
+    <value>Team-Vorlage wurde geändert</value>
   </data>
   <data name="ThirdPartyCreated" xml:space="preserve">
-    <value>Third Party Created: {0}. Provider: {1}</value>
+    <value>Drittanbieter erstellt: {0}. Provider: {1}</value>
   </data>
   <data name="ThirdPartyDeleted" xml:space="preserve">
-    <value>Third Party Deleted: {0}. Provider: {1}</value>
+    <value>Drittanbieter gelöscht: {0}. Provider: {1}</value>
   </data>
   <data name="ThirdPartyUpdated" xml:space="preserve">
-    <value>Third Party Updated: {0}. Provider: {1}</value>
+    <value>Drittanbieter aktualisiert: {0}. Provider: {1}</value>
   </data>
   <data name="TimeTrackingModule" xml:space="preserve">
-    <value>Time Tracking</value>
+    <value>Zeitverfolgung</value>
   </data>
   <data name="TimeZoneSettingsUpdated" xml:space="preserve">
-    <value>Time Zone Settings Updated</value>
+    <value>Einstellungen der Zeitzone aktualisiert</value>
   </data>
   <data name="TrustedMailDomainSettingsUpdated" xml:space="preserve">
-    <value>Trusted mail domain settings updated</value>
+    <value>Einstellungen der vertrauenswürdigen Mail-Domänen wurden aktualisiert</value>
   </data>
   <data name="TwoFactorAuthenticationSettingsDisabled" xml:space="preserve">
-    <value>Two-factor Authentication Settings Updated: Two-factor auth was disabled</value>
+    <value>Zwei-Faktor-Authentifizierungseinstellungen sind aktualisiert: Zwei-Faktor-Authentifizierung wurde deaktiviert</value>
   </data>
   <data name="TwoFactorAuthenticationSettingsEnabledBySms" xml:space="preserve">
-    <value>Two-factor Authentication Settings Updated: SMS confirmation was enabled</value>
+    <value>Zwei-Faktor-Authentifizierungseinstellungen sind aktualisiert: SMS-Bestätigung wurde aktiviert</value>
   </data>
   <data name="TwoFactorAuthenticationSettingsEnabledByTfaApp" xml:space="preserve">
-    <value>Two-factor Authentication Settings Updated: Authentication app was enabled</value>
+    <value>Zwei-Faktor-Authentifizierungseinstellungen sind aktualisiert: Authentifizierungs-App wurde aktiviert</value>
   </data>
   <data name="TwoFactorAuthenticationSettingsUpdated" xml:space="preserve">
-    <value>Two-factor Authentication Settings Updated</value>
+    <value>Einstellungen der Zwei-Faktor-Authentifizierung aktualisiert</value>
   </data>
   <data name="UnfollowActionType" xml:space="preserve">
-    <value>Unfollow</value>
+    <value>Nicht mehr verfolgen</value>
   </data>
   <data name="UnknownAccount" xml:space="preserve">
-    <value>Unknown Account</value>
+    <value>Unbekanntes Konto</value>
   </data>
   <data name="UnlinkActionType" xml:space="preserve">
-    <value>Unlink</value>
+    <value>Verknüpfung aufheben</value>
   </data>
   <data name="UpdateAccessActionType" xml:space="preserve">
-    <value>Updated Access</value>
+    <value>Aktualisierung des Zugriffs</value>
   </data>
   <data name="UpdateActionType" xml:space="preserve">
-    <value>Update</value>
+    <value>Aktualisierung</value>
   </data>
   <data name="UploadActionType" xml:space="preserve">
-    <value>Upload</value>
+    <value>Hochladen</value>
   </data>
   <data name="UserActivated" xml:space="preserve">
-    <value>User Activated: {0}</value>
+    <value>Benutzer aktiviert: {0}</value>
   </data>
   <data name="UserAddedAvatar" xml:space="preserve">
-    <value>Users [{0}]. Avatar Added</value>
+    <value>Benutzer [{0}]. Avatar hinzugefügt</value>
   </data>
   <data name="UserCol" xml:space="preserve">
-    <value>User</value>
+    <value>Benutzer</value>
   </data>
   <data name="UserCreated" xml:space="preserve">
-    <value>User Created: {0}</value>
+    <value>Benutzer erstellt: {0}</value>
   </data>
   <data name="UserCreatedViaInvite" xml:space="preserve">
-    <value>User Created Via Invite: {0}</value>
+    <value>Benutzer per Einladung erstellt: {0}</value>
   </data>
   <data name="UserDataReassigns" xml:space="preserve">
-    <value>Data Reassigned: from user {0} to user {1}</value>
+    <value>Neuzugewiesen: von Benutzer{0} zu Benutzer{1}</value>
   </data>
   <data name="UserDataRemoving" xml:space="preserve">
-    <value>User data for {0} has been deleted</value>
+    <value>Benutzerdaten für {0} wurden gelöscht</value>
   </data>
   <data name="UserDeleted" xml:space="preserve">
-    <value>User Deleted: {0}</value>
+    <value>Benutzer gelöscht: {0}</value>
   </data>
   <data name="UserDeletedAvatar" xml:space="preserve">
-    <value>Users [{0}]. Avatar Deleted</value>
+    <value>Benutzer [{0}]. Avatar gelöscht</value>
   </data>
   <data name="UserDeletedWithDataReassigns" xml:space="preserve">
-    <value>User Deleted: {0}. Data reassigned to user: {1}</value>
+    <value>Benutzer gelöscht: {0}. Daten wurden dem Benutzer neu zugewiesen: {1}</value>
   </data>
   <data name="UserFileUpdated" xml:space="preserve">
-    <value>Users [{0}]. File Updated: {1}</value>
+    <value>Benutzer [{0}]. Datei aktualisiert: {1}</value>
   </data>
   <data name="UserImported" xml:space="preserve">
-    <value>User Imported: {0}</value>
+    <value>Benutzer importiert: {0}</value>
   </data>
   <data name="UserLinkedSocialAccount" xml:space="preserve">
-    <value>Social Account Linked. Provider: {0}</value>
+    <value>Konto im sozialen Netzwerk verknüpft. Provider: {0}</value>
   </data>
   <data name="UsersDeleted" xml:space="preserve">
-    <value>Users Deleted: {0}</value>
+    <value>Benutzer gelöscht: {0}</value>
   </data>
   <data name="UserSentActivationInstructions" xml:space="preserve">
-    <value>Users [{0}]. Sent Activation Instructions</value>
+    <value>Benutzer [{0}]. Anweisungen zur Aktivierung wurden gesendet</value>
   </data>
   <data name="UserSentDeleteInstructions" xml:space="preserve">
-    <value>Sent Delete Profile Instructions</value>
+    <value>Anweisungen zum Löschen des Profils wurden gesendet</value>
   </data>
   <data name="UserSentEmailInstructions" xml:space="preserve">
-    <value>Users [{0}]. Sent Email Change Instructions</value>
+    <value>Benutzer [{0}]. Anweisungen zur E-Mail-Änderung wurden gesendet</value>
   </data>
   <data name="UserSentPasswordInstructions" xml:space="preserve">
-    <value>Users [{0}]. Sent Password Change Instructions</value>
+    <value>Benutzer [{0}]. Anweisungen zur Änderung des Kennwortes wurden gesendet</value>
   </data>
   <data name="UsersModule" xml:space="preserve">
-    <value>Users</value>
+    <value>Benutzer</value>
   </data>
   <data name="UsersSentActivationInstructions" xml:space="preserve">
-    <value>Users [{0}]. Activation Instructions Sent</value>
+    <value>Benutzer [{0}]. Anweisungen zur Aktivierung wurden gesendet</value>
   </data>
   <data name="UsersUpdatedStatus" xml:space="preserve">
-    <value>Users [{0}]. Updated Status</value>
+    <value>Benutzer [{0}]. Status aktualisiert</value>
   </data>
   <data name="UsersUpdatedType" xml:space="preserve">
-    <value>Users [{0}]. Updated Type</value>
+    <value>Benutzer [{0}]. Typ aktualisiert</value>
   </data>
   <data name="UserTfaDisconnected" xml:space="preserve">
-    <value>Authenticator application disconnected: {0}</value>
+    <value>Authenticator App ist unterbrochen: {0}</value>
   </data>
   <data name="UserTfaGenerateCodes" xml:space="preserve">
-    <value>New backup codes are created</value>
+    <value>Neue Sicherheitscodes werden erstellt</value>
   </data>
   <data name="UserUnlinkedSocialAccount" xml:space="preserve">
-    <value>Social Account Unlinked. Provider: {0}</value>
+    <value>Konto im sozialen Netzwerk unverknüpft. Provider: {0}</value>
   </data>
   <data name="UserUpdated" xml:space="preserve">
-    <value>User Updated: {0}</value>
+    <value>Benutzer aktualisiert: {0}</value>
   </data>
   <data name="UserUpdatedAvatarThumbnails" xml:space="preserve">
-    <value>Users [{0}]. Avatar Thumbnails Updated</value>
+    <value>Benutzer [{0}]. Miniaturansichten des Avatars aktualisiert</value>
   </data>
   <data name="UserUpdatedEmail" xml:space="preserve">
-    <value>Email Updated</value>
+    <value>E-Mail wurde aktualisiert</value>
   </data>
   <data name="UserUpdatedLanguage" xml:space="preserve">
-    <value>Language Updated</value>
+    <value>Sprache wurde aktualisiert</value>
   </data>
   <data name="UserUpdatedMobileNumber" xml:space="preserve">
-    <value>Users [{0}]. Mobile Number Updated: {1}</value>
+    <value>Benutzer [{0}].Handynummer aktualisieren: {1}</value>
   </data>
   <data name="UserUpdatedPassword" xml:space="preserve">
-    <value>Password Updated</value>
+    <value>Kennwort aktualisiert</value>
   </data>
   <data name="WebsiteContactFormUpdatedKey" xml:space="preserve">
-    <value>Website Contact Form Key Updated</value>
+    <value>Schlüssel des Formulars Kontakte der Webseite wurde aktualisiert</value>
   </data>
 </root>
