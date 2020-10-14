@@ -1379,7 +1379,7 @@ class SectionBodyContent extends React.Component {
       fileAction,
       setIsLoading,
       isLoading,
-      currentFolderCount,
+      filesCount,
       currentFolderType,
       dragging,
       mediaViewerVisible,
@@ -1436,7 +1436,7 @@ class SectionBodyContent extends React.Component {
       });
     }
 
-    return !fileAction.id && currentFolderCount === 0 ? (
+    return !fileAction.id && filesCount === 0 ? (
       parentId === 0 ? (
         this.renderEmptyRootFolderContainer()
       ) : (
