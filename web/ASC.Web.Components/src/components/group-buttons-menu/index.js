@@ -188,7 +188,14 @@ class GroupButtonsMenu extends React.Component {
 
   render() {
     //console.log("GroupButtonsMenu render");
-    const { selected, moreLabel, closeTitle } = this.props;
+    const {
+      selected,
+      moreLabel,
+      closeTitle,
+      checked,
+      isIndeterminate,
+      onChange
+    } = this.props;
     const { priorityItems, moreItems, visible, width } = this.state;
 
     return (
@@ -212,13 +219,11 @@ class GroupButtonsMenu extends React.Component {
               onClick={this.groupButtonClick}
               data-index={i}
               activated={item.activated}
-              checked={item.checked}
-              className={item.className}
+              checked={checked}
               dropDownMaxHeight={item.dropDownMaxHeight}
               hovered={item.hovered}
-              id={item.id}
-              isIndeterminate={item.isIndeterminate}
-              onChange={item.onChange}
+              isIndeterminate={isIndeterminate}
+              onChange={onChange}
               opened={item.opened}
             >
               {item.children}
@@ -251,6 +256,7 @@ GroupButtonsMenu.propTypes = {
   onSelect: PropTypes.func,
   menuItems: PropTypes.array,
   checked: PropTypes.bool,
+  isIndeterminate: PropTypes.bool,
   selected: PropTypes.string,
   visible: PropTypes.bool,
   moreLabel: PropTypes.string,
