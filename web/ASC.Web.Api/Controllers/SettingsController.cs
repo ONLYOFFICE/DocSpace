@@ -337,7 +337,7 @@ namespace ASC.Api.Settings
         }
 
         [Create("messagesettings")]
-        public ContentResult EnableAdminMessageSettings(AdminMessageSettingsModel model)
+        public object EnableAdminMessageSettings(AdminMessageSettingsModel model)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -345,12 +345,12 @@ namespace ASC.Api.Settings
 
             MessageService.Send(MessageAction.AdministratorMessageSettingsUpdated);
 
-            return new ContentResult() { Content = Resource.SuccessfullySaveSettingsMessage };
+            return  Resource.SuccessfullySaveSettingsMessage;
         }
 
         [AllowAnonymous]
         [Create("sendadmmail")]
-        public ContentResult SendAdmMail(AdminMessageSettingsModel model)
+        public object SendAdmMail(AdminMessageSettingsModel model)
         {
             var studioAdminMessageSettings = SettingsManager.Load<StudioAdminMessageSettings>();
             var enableAdmMess = studioAdminMessageSettings.Enable || TenantExtra.IsNotPaid();
@@ -369,11 +369,11 @@ namespace ASC.Api.Settings
             StudioNotifyService.SendMsgToAdminFromNotAuthUser(model.Email, model.Message);
             MessageService.Send(MessageAction.ContactAdminMailSent);
 
-            return new ContentResult() { Content = Resource.AdminMessageSent };
+            return Resource.AdminMessageSent;
         }
 
         [Create("maildomainsettings")]
-        public ContentResult SaveMailDomainSettings(MailDomainSettingsModel model)
+        public object SaveMailDomainSettings(MailDomainSettingsModel model)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -383,7 +383,7 @@ namespace ASC.Api.Settings
                 foreach (var d in model.Domains.Select(domain => (domain ?? "").Trim().ToLower()))
                 {
                     if (!(!string.IsNullOrEmpty(d) && new Regex("^[a-z0-9]([a-z0-9-.]){1,98}[a-z0-9]$").IsMatch(d)))
-                        return new ContentResult() { Content = Resource.ErrorNotCorrectTrustedDomain };
+                        return Resource.ErrorNotCorrectTrustedDomain;
 
                     Tenant.TrustedDomains.Add(d);
                 }
@@ -400,12 +400,12 @@ namespace ASC.Api.Settings
 
             MessageService.Send(MessageAction.TrustedMailDomainSettingsUpdated);
 
-            return new ContentResult { Content = Resource.SuccessfullySaveSettingsMessage };
+            return Resource.SuccessfullySaveSettingsMessage;
         }
 
         [AllowAnonymous]
         [Create("sendjoininvite")]
-        public ContentResult SendJoinInviteMail(AdminMessageSettingsModel model)
+        public object SendJoinInviteMail(AdminMessageSettingsModel model)
         {
             try
             {
@@ -440,34 +440,34 @@ namespace ASC.Api.Settings
                 switch (Tenant.TrustedDomainsType)
                 {
                     case TenantTrustedDomainsType.Custom:
-                    {
-                        var address = new MailAddress(email);
-                        if (Tenant.TrustedDomains.Any(d => address.Address.EndsWith("@" + d, StringComparison.InvariantCultureIgnoreCase)))
+                        {
+                            var address = new MailAddress(email);
+                            if (Tenant.TrustedDomains.Any(d => address.Address.EndsWith("@" + d, StringComparison.InvariantCultureIgnoreCase)))
+                            {
+                                StudioNotifyService.SendJoinMsg(email, emplType);
+                                MessageService.Send(MessageInitiator.System, MessageAction.SentInviteInstructions, email);
+                                return Resource.FinishInviteJoinEmailMessage;
+                            }
+
+                            throw new Exception(Resource.ErrorEmailDomainNotAllowed);
+                        }
+                    case TenantTrustedDomainsType.All:
                         {
                             StudioNotifyService.SendJoinMsg(email, emplType);
                             MessageService.Send(MessageInitiator.System, MessageAction.SentInviteInstructions, email);
-                            return new ContentResult() { Content = Resource.FinishInviteJoinEmailMessage };
+                            return Resource.FinishInviteJoinEmailMessage ;
                         }
-
-                        throw new Exception(Resource.ErrorEmailDomainNotAllowed);
-                    }
-                    case TenantTrustedDomainsType.All:
-                    {
-                        StudioNotifyService.SendJoinMsg(email, emplType);
-                        MessageService.Send(MessageInitiator.System, MessageAction.SentInviteInstructions, email);
-                        return new ContentResult() { Content = Resource.FinishInviteJoinEmailMessage };
-                    }
                     default:
                         throw new Exception(Resource.ErrorNotCorrectEmail);
                 }
             }
             catch (FormatException)
             {
-                return new ContentResult() { Content = Resource.ErrorNotCorrectEmail };
+                return Resource.ErrorNotCorrectEmail;
             }
             catch (Exception e)
             {
-                return new ContentResult() { Content = e.Message.HtmlEncode() };
+                return e.Message.HtmlEncode();
             }
         }
 
@@ -609,7 +609,7 @@ namespace ASC.Api.Settings
 
         [Authorize(AuthenticationSchemes = "confirm", Roles = "Wizard")]
         [Read("machine", Check = false)]
-        public string GetMachineName()
+        public object GetMachineName()
         {
             return Dns.GetHostName().ToLowerInvariant();
         }
@@ -877,7 +877,7 @@ namespace ASC.Api.Settings
         }
 
         [Read("logo")]
-        public string GetLogo()
+        public object GetLogo()
         {
             return TenantInfoSettingsHelper.GetAbsoluteCompanyLogoPath(SettingsManager.Load<TenantInfoSettings>());
         }
@@ -1058,7 +1058,7 @@ namespace ASC.Api.Settings
 
         ///<visible>false</visible>
         [Read("whitelabel/logotext")]
-        public string GetWhiteLabelLogoText(WhiteLabelModel model)
+        public object GetWhiteLabelLogoText(WhiteLabelModel model)
         {
             if (!TenantLogoManager.WhiteLabelEnabled)
             {
@@ -1304,7 +1304,7 @@ namespace ASC.Api.Settings
         }
 
         [Update("tfaappnewapp")]
-        public string TfaAppNewApp(TfaModel model)
+        public object TfaAppNewApp(TfaModel model)
         {
             var isMe = model.Id.Equals(Guid.Empty);
             var user = UserManager.GetUsers(isMe ? AuthContext.CurrentAccount.ID : model.Id);
@@ -1357,7 +1357,7 @@ namespace ASC.Api.Settings
 
         ///<visible>false</visible>
         [Update("timeandlanguage")]
-        public string TimaAndLanguage(SettingsModel model)
+        public object TimaAndLanguage(SettingsModel model)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -1454,7 +1454,7 @@ namespace ASC.Api.Settings
 
         ///<visible>false</visible>
         [Update("defaultpage")]
-        public string SaveDefaultPageSettings(SettingsModel model)
+        public object SaveDefaultPageSettings(SettingsModel model)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 

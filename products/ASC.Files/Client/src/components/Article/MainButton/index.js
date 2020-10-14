@@ -5,25 +5,25 @@ import { withRouter } from "react-router";
 import { MainButton, DropDownItem } from "asc-web-components";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import { setAction, startUpload } from "../../../store/files/actions";
-import { isCanCreate } from "../../../store/files/selectors";
-import { utils as commonUtils, constants } from "asc-web-common";
+import { getFirstLoad, isCanCreate } from "../../../store/files/selectors";
+import { utils as commonUtils, constants, Loaders } from "asc-web-common";
 import { createI18N } from "../../../helpers/i18n";
 const i18n = createI18N({
   page: "Article",
-  localesPath: "Article"
+  localesPath: "Article",
 });
 
 const { changeLanguage } = commonUtils;
 const { FileAction } = constants;
 
 class PureArticleMainButtonContent extends React.Component {
-  onCreate = e => {
+  onCreate = (e) => {
     this.goToHomePage();
     const format = e.currentTarget.dataset.format || null;
     this.props.setAction({
       type: FileAction.Create,
       extension: format,
-      id: -1
+      id: -1,
     });
   };
 
@@ -36,23 +36,28 @@ class PureArticleMainButtonContent extends React.Component {
     history.push(`${settings.homepage}/filter?${urlFilter}`);
   };
 
-  onFileChange = e => {
+  onFileChange = (e) => {
     const { selectedFolder, startUpload, t } = this.props;
 
     this.goToHomePage();
     startUpload(e.target.files, selectedFolder.id, t);
   };
-  onInputClick = e => (e.target.value = null);
+  onInputClick = (e) => (e.target.value = null);
 
   shouldComponentUpdate(nextProps, nextState) {
-    return nextProps.isCanCreate !== this.props.isCanCreate;
+    return (
+      nextProps.isCanCreate !== this.props.isCanCreate ||
+      nextProps.firstLoad !== this.props.firstLoad
+    );
   }
 
   render() {
     //console.log("Files ArticleMainButtonContent render");
-    const { t, isCanCreate, isDisabled } = this.props;
+    const { t, isCanCreate, isDisabled, firstLoad } = this.props;
 
-    return (
+    return firstLoad ? (
+      <Loaders.Filter />
+    ) : (
       <MainButton
         isDisabled={isDisabled ? isDisabled : !isCanCreate}
         isDropdown={true}
@@ -99,7 +104,7 @@ class PureArticleMainButtonContent extends React.Component {
           type="file"
           onChange={this.onFileChange}
           onClick={this.onInputClick}
-          ref={input => (this.inputFilesElement = input)}
+          ref={(input) => (this.inputFilesElement = input)}
           style={{ display: "none" }}
         />
         <input
@@ -110,7 +115,7 @@ class PureArticleMainButtonContent extends React.Component {
           type="file"
           onChange={this.onFileChange}
           onClick={this.onInputClick}
-          ref={input => (this.inputFolderElement = input)}
+          ref={(input) => (this.inputFolderElement = input)}
           style={{ display: "none" }}
         />
       </MainButton>
@@ -122,7 +127,7 @@ const ArticleMainButtonContentContainer = withTranslation()(
   PureArticleMainButtonContent
 );
 
-const ArticleMainButtonContent = props => {
+const ArticleMainButtonContent = (props) => {
   useEffect(() => {
     changeLanguage(i18n);
   }, []);
@@ -134,22 +139,22 @@ const ArticleMainButtonContent = props => {
 };
 
 ArticleMainButtonContent.propTypes = {
-  history: PropTypes.object.isRequired
+  history: PropTypes.object.isRequired,
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const { selectedFolder, filter } = state.files;
   const { user, settings } = state.auth;
 
   return {
     isCanCreate: isCanCreate(selectedFolder, user),
+    firstLoad: getFirstLoad(state),
     settings,
     filter,
-    selectedFolder
+    selectedFolder,
   };
 };
 
-export default connect(
-  mapStateToProps,
-  { setAction, startUpload }
-)(withRouter(ArticleMainButtonContent));
+export default connect(mapStateToProps, { setAction, startUpload })(
+  withRouter(ArticleMainButtonContent)
+);

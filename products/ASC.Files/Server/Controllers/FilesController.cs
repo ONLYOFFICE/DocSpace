@@ -510,13 +510,13 @@ namespace ASC.Api.Documents
         /// <category>Files</category>
         /// <returns></returns>
         [Create("file/{fileId}/startedit", DisableFormat = true)]
-        public string StartEdit(string fileId, bool editingAlone, string doc)
+        public object StartEdit(string fileId, bool editingAlone, string doc)
         {
             return FilesControllerHelperString.StartEdit(fileId, editingAlone, doc);
         }
 
         [Create("file/{fileId:int}/startedit")]
-        public string StartEdit(int fileId, bool editingAlone, string doc)
+        public object StartEdit(int fileId, bool editingAlone, string doc)
         {
             return FilesControllerHelperInt.StartEdit(fileId, editingAlone, doc);
         }
@@ -1250,13 +1250,13 @@ namespace ASC.Api.Documents
         /// <category>Files</category>
         /// <returns>Shared file link</returns>
         [Update("{fileId}/sharedlink", DisableFormat = true)]
-        public string GenerateSharedLink(string fileId, FileShare share)
+        public object GenerateSharedLink(string fileId, FileShare share)
         {
             return FilesControllerHelperString.GenerateSharedLink(fileId, share);
         }
 
         [Update("{fileId:int}/sharedlink")]
-        public string GenerateSharedLink(int fileId, FileShare share)
+        public object GenerateSharedLink(int fileId, FileShare share)
         {
             return FilesControllerHelperInt.GenerateSharedLink(fileId, share);
         }

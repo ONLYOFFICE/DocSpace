@@ -20,8 +20,8 @@ import {
   constants,
   NavMenu,
   Main,
-} from "asc-web-common";
-import { getFilterByLocation } from "./helpers/converters";
+  toastr,
+} from "asc-web-common";import { getFilterByLocation } from "./helpers/converters";
 import { fetchGroups, fetchPeople } from "./store/people/actions";
 import config from "../package.json";
 
@@ -54,15 +54,14 @@ class App extends React.Component {
       getPortalCultures,
       fetchGroups,
       fetchPeople,
-      setIsLoaded,
-    } = this.props;
+      finalize,
+      setIsLoaded,    } = this.props;
 
     setModuleInfo();
 
     const token = localStorage.getItem(AUTH_KEY);
 
     if (!token) {
-      utils.hideLoader();
       return setIsLoaded();
     }
 
@@ -76,10 +75,13 @@ class App extends React.Component {
       fetchPeople(),
     ];
 
-    Promise.all(requests).finally(() => {
-      utils.hideLoader();
-      setIsLoaded();
-    });
+    Promise.all(requests)
+      .catch((e) => {
+        toastr.error(e);
+      })
+      .finally(() => {
+        setIsLoaded();
+      });
   }
 
   render() {
@@ -150,8 +152,7 @@ class App extends React.Component {
 
 const mapStateToProps = (state) => {
   const { settings } = state.auth;
-  const { homepage } = settings;
-  return {
+  const { homepage } = settings;  return {
     homepage: homepage || config.homepage,
   };
 };
@@ -179,8 +180,7 @@ const mapDispatchToProps = (dispatch) => {
 
       return Promise.resolve();
     },
-    setIsLoaded: () => dispatch(setIsLoaded(true)),
-  };
+    setIsLoaded: () => dispatch(setIsLoaded(true)),  };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
