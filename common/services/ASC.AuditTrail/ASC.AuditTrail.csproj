@@ -32,7 +32,7 @@
 
   <ItemGroup>
     <EmbeddedResource Update="AuditReportResource.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>AuditReportResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="AuditReportResource.ru.resx">
