@@ -1343,7 +1343,11 @@ class SectionBodyContent extends React.Component {
             onClose={this.onCopyAction}
           />
         )}
-        <CustomTooltip ref={this.tooltipRef}>{tooltipValue}</CustomTooltip>
+        <CustomTooltip ref={this.tooltipRef}>
+          {tooltipValue
+            ? t(tooltipValue.label, { element: tooltipValue.filesCount })
+            : ""}
+        </CustomTooltip>
 
         {viewAs === "tile" ? (
           <TileContainer
