@@ -40,10 +40,10 @@ namespace ASC.Web.Api.Controllers
             TenantExtra tenantExtra,
             TenantManager tenantManager,
             MessageService messageService,
-            LoginEventsRepository loginEventsRepository, 
-            AuditEventsRepository auditEventsRepository, 
+            LoginEventsRepository loginEventsRepository,
+            AuditEventsRepository auditEventsRepository,
             AuditReportCreator auditReportCreator,
-            SettingsManager settingsManager) 
+            SettingsManager settingsManager)
         {
             PermissionContext = permissionContext;
             CoreBaseSettings = coreBaseSettings;
@@ -57,25 +57,25 @@ namespace ASC.Web.Api.Controllers
         }
 
         [Read("audit/login/last")]
-        public IEnumerable<LoginEventWrapper> GetLastLoginEvents()
+        public IEnumerable<EventWrapper> GetLastLoginEvents()
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
             if (!SetupInfo.IsVisibleSettings(ManagementType.LoginHistory.ToString()) || CoreBaseSettings.Standalone && !TenantExtra.GetTenantQuota().Audit)
                 throw new BillingException(Resource.ErrorNotAllowedOption, "Audit");
 
-            return LoginEventsRepository.GetLast(TenantManager.GetCurrentTenant().TenantId, 20).Select(x => new LoginEventWrapper(x));
+            return LoginEventsRepository.GetLast(TenantManager.GetCurrentTenant().TenantId, 20).Select(x => new EventWrapper(x));
         }
 
         [Read("audit/events/last")]
-        public IEnumerable<AuditEventWrapper> GetLastAuditEvents()
+        public IEnumerable<EventWrapper> GetLastAuditEvents()
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
             if (!SetupInfo.IsVisibleSettings(ManagementType.LoginHistory.ToString()) || CoreBaseSettings.Standalone && !TenantExtra.GetTenantQuota().Audit)
                 throw new BillingException(Resource.ErrorNotAllowedOption, "Audit");
 
-            return AuditEventsRepository.GetLast(TenantManager.GetCurrentTenant().TenantId, 20).Select(x => new AuditEventWrapper(x));
+            return AuditEventsRepository.GetLast(TenantManager.GetCurrentTenant().TenantId, 20).Select(x => new EventWrapper(x));
         }
 
         [Create("audit/login/report")]

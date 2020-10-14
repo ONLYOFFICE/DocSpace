@@ -31,14 +31,14 @@ using ASC.AuditTrail;
 
 namespace ASC.Api.Security
 {
-    public class LoginEventWrapper
+    public class EventWrapper
     {
-        public LoginEventWrapper(LoginEvent loginEvent)
+        public EventWrapper(BaseEvent auditEvent)
         {
-            Id = loginEvent.Id;
-            Date = new ApiDateTime(loginEvent.Date, TimeSpan.Zero);
-            User = loginEvent.UserName;
-            Action = loginEvent.ActionText;
+            Id = auditEvent.Id;
+            Date = new ApiDateTime(auditEvent.Date, TimeSpan.Zero);
+            User = auditEvent.UserName;
+            Action = auditEvent.ActionText;
         }
 
         public int Id { get; private set; }

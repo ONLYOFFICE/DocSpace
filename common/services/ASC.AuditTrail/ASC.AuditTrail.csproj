@@ -35,6 +35,21 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>AuditReportResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Update="AuditReportResource.ru.resx">
+      <DependentUpon>AuditReportResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="AuditReportResource.de.resx">
+      <DependentUpon>AuditReportResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="AuditReportResource.es.resx">
+      <DependentUpon>AuditReportResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="AuditReportResource.fr.resx">
+      <DependentUpon>AuditReportResource.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="AuditReportResource.it.resx">
+      <DependentUpon>AuditReportResource.resx</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   
 </Project>
