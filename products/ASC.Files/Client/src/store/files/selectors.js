@@ -18,147 +18,114 @@ export const getMediaViewerMediaFormats = (state) => {
   return state.files.mediaViewerFormats.media;
 };
 
-export const getEditedFormats = state => {
+export const getEditedFormats = (state) => {
   return state.files.docservice.editedDocs;
 };
 
-export const getConvertedFormats = state => {
+export const getConvertedFormats = (state) => {
   return state.files.docservice.convertDocs;
 };
 
-export const getArchiveFormats = state => {
+export const getArchiveFormats = (state) => {
   return state.files.formats.archive;
 };
 
-export const getImageFormats = state => {
+export const getImageFormats = (state) => {
   return state.files.formats.image;
 };
 
-export const getSoundFormats = state => {
+export const getSoundFormats = (state) => {
   return state.files.formats.sound;
 };
 
-export const getVideoFormats = state => {
+export const getVideoFormats = (state) => {
   return state.files.formats.video;
 };
 
-export const getHtmlFormats = state => {
+export const getHtmlFormats = (state) => {
   return state.files.formats.html;
 };
 
-export const getEbookFormats = state => {
+export const getEbookFormats = (state) => {
   return state.files.formats.ebook;
 };
 
-export const getDocumentFormats = state => {
+export const getDocumentFormats = (state) => {
   return state.files.formats.document;
 };
 
-export const getPresentationFormats = state => {
+export const getPresentationFormats = (state) => {
   return state.files.formats.presentation;
 };
 
-export const getSpreadsheetFormats = state => {
+export const getSpreadsheetFormats = (state) => {
   return state.files.formats.spreadsheet;
 };
 
 export const canWebEdit = (extension) => {
-  return createSelector(
-    getEditedFormats,
-    (formats) => {
-      return presentInArray(formats, extension);
-    }
-  )
+  return createSelector(getEditedFormats, (formats) => {
+    return presentInArray(formats, extension);
+  });
 };
 
 export const canConvert = (extension) => {
-  return createSelector(
-    getConvertedFormats,
-    (formats) => {
-      return presentInArray(formats, extension);
-    }
-  )
+  return createSelector(getConvertedFormats, (formats) => {
+    return presentInArray(formats, extension);
+  });
 };
 
 export const isArchive = (extension) => {
-  return createSelector(
-    getArchiveFormats,
-    (formats) => {
-      return presentInArray(formats, extension);
-    }
-  )
+  return createSelector(getArchiveFormats, (formats) => {
+    return presentInArray(formats, extension);
+  });
 };
 
 export const isImage = (extension) => {
-  return createSelector(
-    getImageFormats,
-    (formats) => {
-      return presentInArray(formats, extension);
-    }
-  )
+  return createSelector(getImageFormats, (formats) => {
+    return presentInArray(formats, extension);
+  });
 };
 
 export const isSound = (extension) => {
-  return createSelector(
-    getSoundFormats,
-    (formats) => {
-      return presentInArray(formats, extension);
-    }
-  )
+  return createSelector(getSoundFormats, (formats) => {
+    return presentInArray(formats, extension);
+  });
 };
 
 export const isVideo = (extension) => {
-  return createSelector(
-    getVideoFormats,
-    (formats) => {
-      return presentInArray(formats, extension);
-    }
-  )
+  return createSelector(getVideoFormats, (formats) => {
+    return presentInArray(formats, extension);
+  });
 };
 
 export const isHtml = (extension) => {
-  return createSelector(
-    getHtmlFormats,
-    (formats) => {
-      return presentInArray(formats, extension);
-    }
-  )
+  return createSelector(getHtmlFormats, (formats) => {
+    return presentInArray(formats, extension);
+  });
 };
 
 export const isEbook = (extension) => {
-  return createSelector(
-    getEbookFormats,
-    (formats) => {
-      return presentInArray(formats, extension);
-    }
-  )
+  return createSelector(getEbookFormats, (formats) => {
+    return presentInArray(formats, extension);
+  });
 };
 
 export const isDocument = (extension) => {
-  return createSelector(
-    getDocumentFormats,
-    (formats) => {
-      return presentInArray(formats, extension);
-    }
-  )
+  return createSelector(getDocumentFormats, (formats) => {
+    return presentInArray(formats, extension);
+  });
 };
 
 export const isPresentation = (extension) => {
-  return createSelector(
-    getPresentationFormats,
-    (formats) => {
-      return presentInArray(formats, extension);
-    }
-  )
+  return createSelector(getPresentationFormats, (formats) => {
+    return presentInArray(formats, extension);
+  });
 };
 
 export const isSpreadsheet = (extension) => {
-  return createSelector(
-    getSpreadsheetFormats,
-    (formats) => {
-      return presentInArray(formats, extension);
-    }
-  )
+  return createSelector(getSpreadsheetFormats, (formats) => {
+    return presentInArray(formats, extension);
+  });
 };
 
 export function getSelectedFile(selection, fileId, parentId) {
@@ -302,7 +269,11 @@ export const loopTreeFolders = (
         addTreeFolder(folders, newItems, foldersCount);
       } else if (folders.length < foldersLength) {
         removeTreeFolder(folders, newItems, foldersCount);
-      } else if (folders.length > 0 && newItems.folders.length > 0 && currentFolder) {
+      } else if (
+        folders.length > 0 &&
+        newItems.folders.length > 0 &&
+        currentFolder
+      ) {
         renameTreeFolder(folders, newItems, currentFolder);
       } else {
         return;
@@ -383,7 +354,8 @@ export const canCreate = createSelector(
 );
 
 export const isCanBeDeleted = createSelector(
-  getSelectedFolderRootFolderType, isAdmin,
+  getSelectedFolderRootFolderType,
+  isAdmin,
   (folderType, isAdmin) => {
     switch (folderType) {
       case FolderType.USER:
@@ -604,15 +576,12 @@ export const isMediaOrImage = (fileExst) => {
   return createSelector(
     [getMediaViewerImageFormats, getMediaViewerMediaFormats],
     (media, images) => {
-      if (
-        media.includes(fileExst) ||
-        images.includes(fileExst)
-      ) {
+      if (media.includes(fileExst) || images.includes(fileExst)) {
         return true;
       }
       return false;
     }
-  )
+  );
 };
 
 const getFilesContextOptions = (item, isRecycleBin, canOpenPlayer) => {
@@ -784,7 +753,11 @@ export const getFilesList = (state) => {
           providerKey,
         } = item;
         const canOpenPlayer = isMediaOrImage(item.fileExst)(state);
-        const contextOptions = getFilesContextOptions(item, isRecycleBin, canOpenPlayer);
+        const contextOptions = getFilesContextOptions(
+          item,
+          isRecycleBin,
+          canOpenPlayer
+        );
         const checked = isFileSelected(selection, id, parentId);
 
         const selectedItem = selection.find(
@@ -793,7 +766,8 @@ export const getFilesList = (state) => {
 
         const isFolder = selectedItem ? false : fileExst ? false : true;
 
-        const draggable = selectedItem && !isRecycleBin && selectedItem.id !== actionId;
+        const draggable =
+          selectedItem && !isRecycleBin && selectedItem.id !== actionId;
 
         let value = fileExst ? `file_${id}` : `folder_${id}`;
 
@@ -804,7 +778,15 @@ export const getFilesList = (state) => {
         const isHtmlItem = isHtml(item.fileExst)(state);
 
         const icon = fileExst
-          ? getFileIcon(fileExst, 24, isArchiveItem, isImageItem, isSoundItem, isEbookItem, isHtmlItem)
+          ? getFileIcon(
+              fileExst,
+              24,
+              isArchiveItem,
+              isImageItem,
+              isSoundItem,
+              isEbookItem,
+              isHtmlItem
+            )
           : getFolderIcon(providerKey, 24);
 
         value += draggable ? "_draggable" : "";
@@ -843,7 +825,7 @@ export const getFilesList = (state) => {
           webUrl,
           providerKey,
           draggable,
-          canOpenPlayer
+          canOpenPlayer,
         };
       });
     }
@@ -943,7 +925,7 @@ export const getDraggableItems = createSelector(
     }
   }
 );
-  export const getTest = createSelector(getTreeFolders, (treeFolders) => {
+export const getTest = createSelector(getTreeFolders, (treeFolders) => {
   const treeFoldersItem = treeFolders.find((x) => x.rootFolderName === "@my");
   if (treeFoldersItem) return treeFoldersItem.id;
 });
@@ -995,3 +977,14 @@ export const getTooltipLabel = createSelector(
       : { label: "TooltipElementsMoveMessage", filesCount };
   }
 );
+
+export const getOnlyFoldersSelected = createSelector(
+  getSelection,
+  (selection) => {
+    return selection.every((selected) => selected.isFolder === true);
+  }
+);
+
+export const getAccessedSelected = createSelector(getSelection, (selection) => {
+  return selection.every((x) => x.access === 1 || x.access === 0);
+});
