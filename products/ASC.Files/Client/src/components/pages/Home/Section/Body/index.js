@@ -239,17 +239,18 @@ class SectionBodyContent extends React.Component {
       fetchFavoritesFolder,
       isFavorites,
       selectedFolderId,
+      //selection,
       t } = this.props;
     const { action, id } = e.currentTarget.dataset;
-
+    //let data = selection.map(item => item.id)
     switch (action) {
       case "mark":
-        return markItemAsFavorite(+id)
+        return markItemAsFavorite([id])
           .then(() => getFileInfo(id))
           .then(() => toastr.success(t("MarkedAsFavorite")))
           .catch(e => toastr.error(e));
       case "remove":
-        return removeItemFromFavorite(+id)
+        return removeItemFromFavorite([id])
           .then(() => {
             return isFavorites ? fetchFavoritesFolder(selectedFolderId) : getFileInfo(id)
           })

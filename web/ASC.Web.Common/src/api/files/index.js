@@ -476,7 +476,8 @@ export function getSettingsFiles() {
 }
 
 export function markAsFavorite(ids) {
-  const data = { fileIds: [ids] };
+  let items = ids.map(id => +id)
+  const data = { fileIds: items };
   const options = {
     method: "post",
     url: "/files/favorites",
@@ -487,7 +488,8 @@ export function markAsFavorite(ids) {
 }
 
 export function removeFromFavorite(ids) {
-  const data = { fileIds: [ids] };
+  let items = ids.map(id => +id)
+  const data = { fileIds: items };
   const options = {
     method: "delete",
     url: "/files/favorites",
