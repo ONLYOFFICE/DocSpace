@@ -31,7 +31,7 @@ echo "ASC.Socket.IO"
 call build\scripts\socket.sh
 
 echo "ASC.Web.sln"
-call dotnet build ASC.Web.sln  /fl1 /flp1:LogFile=build/ASC.Web.log;Verbosity=Normal
+call build\build.sln.bat
 
 start /b call build\start\start.bat
 
