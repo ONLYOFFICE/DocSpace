@@ -559,6 +559,10 @@ export const getSelection = (state) => {
   return state.files.selection;
 };
 
+export const getSelectionLength = (state) => {
+  return state.files.selection.length;
+};
+
 export const getViewAs = (state) => {
   return state.files.viewAs;
 };
@@ -902,25 +906,29 @@ export const getFilterSelectedItem = (state) => {
   return state.files.filter.selectedItem;
 };
 
-export const getHeaderVisible = (state) => {
-  return state.files.selection.length > 0 || state.files.selected !== "close";
-};
+export const getHeaderVisible = createSelector(
+  getSelectionLength,
+  getSelected,
+  (selectionLength, selected) => {
+    return selectionLength > 0 || selected !== "close";
+  }
+);
 
 export const getHeaderIndeterminate = createSelector(
   getHeaderVisible,
-  getSelection,
+  getSelectionLength,
   getItemsList,
-  (headerVisible, selection, items) => {
-    return headerVisible && selection.length < items.length;
+  (headerVisible, selectionLength, items) => {
+    return headerVisible && selectionLength < items.length;
   }
 );
 
 export const getHeaderChecked = createSelector(
   getHeaderVisible,
-  getSelection,
+  getSelectionLength,
   getItemsList,
-  (headerVisible, selection, items) => {
-    return headerVisible && selection.length === items.length;
+  (headerVisible, selectionLength, items) => {
+    return headerVisible && selectionLength === items.length;
   }
 );
 
@@ -951,5 +959,39 @@ export const getSettingsTree = createSelector(
       return settingsTree;
     }
     return {};
+  }
+);
+
+export const getTooltipLabel = createSelector(
+  getSelectionLength,
+  isAdmin,
+  getIsShareFolder,
+  getIsCommonFolder,
+  getSelection,
+  getDragging,
+  (selectionLength, isAdmin, isShare, isCommon, selection, dragging) => {
+    if (!dragging) return null;
+
+    const elementTitle = selectionLength && selection[0].title;
+    const singleElement = selectionLength === 1;
+    const filesCount = singleElement ?  elementTitle : selectionLength;
+
+    let operationName;
+
+    if (isAdmin && isShare) {
+      operationName = "copy";
+    } else if (!isAdmin && (isShare || isCommon)) {
+      operationName = "copy";
+    } else {
+      operationName = "move";
+    }
+
+    return operationName === "copy"
+      ? singleElement
+        ? { label: "TooltipElementCopyMessage", filesCount }
+        : { label: "TooltipElementsCopyMessage", filesCount }
+      : singleElement
+      ? { label: "TooltipElementMoveMessage", filesCount }
+      : { label: "TooltipElementsMoveMessage", filesCount };
   }
 );

@@ -442,7 +442,7 @@ TreeFolders.defaultProps = {
   needUpdate: true,
 };
 
-function mapStateToProps(state, props) {
+function mapStateToProps(state) {
   return {
     treeFolders: getTreeFolders(state),
     filter: getFilter(state),

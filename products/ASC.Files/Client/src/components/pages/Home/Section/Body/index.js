@@ -69,12 +69,8 @@ import {
   getTreeFolders,
   getViewAs,
   isFileSelected,
-  isImage,
-  isSound,
-  isVideo,
   loopTreeFolders,
   getFilesList,
-  isMediaOrImage,
   getMediaViewerImageFormats,
   getMediaViewerMediaFormats,
   getIsShareFolder,
@@ -82,6 +78,7 @@ import {
   getIsRecycleBinFolder,
   getIsMyFolder,
   getMyFolderId,
+  getTooltipLabel,
 } from "../../../../../store/files/selectors";
 import { SharingPanel, OperationsPanel } from "../../../../panels";
 const { isAdmin, getSettings, getCurrentUser } = store.auth.selectors;
@@ -1204,43 +1201,6 @@ class SectionBodyContent extends React.Component {
       });
   };
 
-  getTooltipLabel = () => {
-    const { t, selection, isAdmin, isShare, isCommon } = this.props;
-    const elementTitle = selection.length && selection[0].title;
-    const elementCount = selection.length;
-    if (selection.length) {
-      if (selection.length > 1) {
-        if (isAdmin) {
-          if (isShare) {
-            return t("TooltipElementsCopyMessage", { element: elementCount });
-          } else {
-            return t("TooltipElementsMoveMessage", { element: elementCount });
-          }
-        } else {
-          if (isShare || isCommon) {
-            return t("TooltipElementsCopyMessage", { element: elementCount });
-          } else {
-            return t("TooltipElementsMoveMessage", { element: elementCount });
-          }
-        }
-      } else {
-        if (isAdmin) {
-          if (isShare) {
-            return t("TooltipElementCopyMessage", { element: elementTitle });
-          } else {
-            return t("TooltipElementMoveMessage", { element: elementTitle });
-          }
-        } else {
-          if (isShare || isCommon) {
-            return t("TooltipElementCopyMessage", { element: elementTitle });
-          } else {
-            return t("TooltipElementMoveMessage", { element: elementTitle });
-          }
-        }
-      }
-    }
-  };
-
   onSelectItem = (item) => {
     const { selected, setSelected, setSelection } = this.props;
     selected === "close" && setSelected("none");
@@ -1288,7 +1248,6 @@ class SectionBodyContent extends React.Component {
 
   render() {
     const {
-      files,
       viewer,
       parentId,
       folderId,
@@ -1310,6 +1269,7 @@ class SectionBodyContent extends React.Component {
       filesList,
       mediaViewerImageFormats,
       mediaViewerMediaFormats,
+      tooltipValue,
     } = this.props;
 
     const {
@@ -1325,8 +1285,6 @@ class SectionBodyContent extends React.Component {
     };
 
     const items = filesList;
-
-    const tooltipLabel = this.getTooltipLabel();
 
     if (fileAction && fileAction.type === FileAction.Create) {
       this.onCreateAddTempItem(items, folderId, fileAction);
@@ -1380,7 +1338,12 @@ class SectionBodyContent extends React.Component {
                 onClose={this.onCopyAction}
               />
             )}
-            <CustomTooltip ref={this.tooltipRef}>{tooltipLabel}</CustomTooltip>
+        
+        <CustomTooltip ref={this.tooltipRef}>
+          {tooltipValue
+            ? t(tooltipValue.label, { element: tooltipValue.filesCount })
+            : ""}
+        </CustomTooltip>
 
             {viewAs === "tile" ? (
               <TileContainer
@@ -1590,6 +1553,7 @@ const mapStateToProps = (state) => {
     treeFolders: getTreeFolders(state),
     viewAs: getViewAs(state),
     viewer: getCurrentUser(state),
+    tooltipValue: getTooltipLabel(state),
   };
 };
 
