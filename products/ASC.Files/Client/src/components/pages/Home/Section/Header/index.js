@@ -46,6 +46,8 @@ import {
   getHeaderVisible,
   getHeaderIndeterminate,
   getHeaderChecked,
+  getOnlyFoldersSelected,
+  getAccessedSelected,
 } from "../../../../../store/files/selectors";
 
 const { isAdmin } = store.auth.selectors;
@@ -350,40 +352,17 @@ class SectionHeaderContent extends React.Component {
     this.props.setSelected("close");
   };
 
-  render() {
-    //console.log("Body header render");
-
+  getMenuItems = () => {
     const {
       t,
-      selection,
-      isHeaderVisible,
-      isRecycleBin,
-      isHeaderChecked,
-      isHeaderIndeterminate,
+      isItemsSelected,
+      isAccessedSelected,
+      isOnlyFoldersSelected,
       deleteDialogVisible,
-      isRootFolder,
-      title,
-      canCreate,
+      isRecycleBin,
     } = this.props;
 
-    const {
-      showDeleteDialog,
-      showSharingPanel,
-      showEmptyTrashDialog,
-      showDownloadDialog,
-      showMoveToPanel,
-      showCopyPanel,
-    } = this.state;
-
-    const isItemsSelected = selection.length;
-    const isOnlyFolderSelected = selection.every(
-      (selected) => !selected.fileType
-    );
-
-    const accessItem = selection.find((x) => x.access === 1 || x.access === 0);
-    const shareDisable = !accessItem;
-
-    const menuItems = [
+    let menu = [
       {
         label: t("LblSelect"),
         isDropdown: true,
@@ -437,7 +416,7 @@ class SectionHeaderContent extends React.Component {
       },
       {
         label: t("Share"),
-        disabled: shareDisable,
+        disabled: !isAccessedSelected,
         onClick: this.onOpenSharingPanel,
       },
       {
@@ -447,7 +426,7 @@ class SectionHeaderContent extends React.Component {
       },
       {
         label: t("DownloadAs"),
-        disabled: !isItemsSelected || isOnlyFolderSelected,
+        disabled: !isItemsSelected || isOnlyFoldersSelected,
         onClick: this.downloadAsAction,
       },
       {
@@ -468,18 +447,47 @@ class SectionHeaderContent extends React.Component {
     ];
 
     if (isRecycleBin) {
-      menuItems.push({
+      menu.push({
         label: t("EmptyRecycleBin"),
         onClick: this.onEmptyTrashAction,
       });
 
-      menuItems.splice(4, 2, {
+      menu.splice(4, 2, {
         label: t("Restore"),
         onClick: this.onMoveAction,
       });
 
-      menuItems.splice(1, 1);
+      menu.splice(1, 1);
     }
+
+    return menu;
+  };
+
+  render() {
+    //console.log("Body header render");
+
+    const {
+      t,
+      selection,
+      isHeaderVisible,
+      isRecycleBin,
+      isHeaderChecked,
+      isHeaderIndeterminate,
+      isRootFolder,
+      title,
+      canCreate,
+    } = this.props;
+
+    const {
+      showDeleteDialog,
+      showSharingPanel,
+      showEmptyTrashDialog,
+      showDownloadDialog,
+      showMoveToPanel,
+      showCopyPanel,
+    } = this.state;
+
+    const menuItems = this.getMenuItems();
 
     return (
       <StyledContainer isHeaderVisible={isHeaderVisible}>
@@ -618,12 +626,14 @@ class SectionHeaderContent extends React.Component {
 }
 
 const mapStateToProps = (state) => {
+  const selection = getSelection(state);
+
   return {
     isRootFolder: getIsRootFolder(state),
     isAdmin: isAdmin(state),
     isRecycleBin: getIsRecycleBinFolder(state),
     parentId: getSelectedFolderParentId(state),
-    selection: getSelection(state),
+    selection,
     title: getSelectedFolderTitle(state),
     filter: getFilter(state),
     deleteDialogVisible: isCanBeDeleted(state),
@@ -632,6 +642,9 @@ const mapStateToProps = (state) => {
     isHeaderVisible: getHeaderVisible(state),
     isHeaderIndeterminate: getHeaderIndeterminate(state),
     isHeaderChecked: getHeaderChecked(state),
+    isAccessedSelected: getAccessedSelected(state),
+    isOnlyFoldersSelected: getOnlyFoldersSelected(state),
+    isItemsSelected: selection.length,
   };
 };
 
