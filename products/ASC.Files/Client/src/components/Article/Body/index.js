@@ -15,7 +15,6 @@ import {
   getFilter,
   getSelectedFolderTitle,
   getSelectedTreeNode,
-  getCurrentFolderCount
 } from "../../../store/files/selectors";
 import { NewFilesPanel } from "../../panels";
 import { setDocumentTitle } from "../../../helpers/utils";
@@ -64,10 +63,8 @@ class ArticleBodyContent extends React.Component {
       selectedTreeNode,
       setSelectedNode,
       fetchFiles,
-      getFilesCount,
-      filesCount
     } = this.props;
-    
+
     if (!selectedTreeNode || selectedTreeNode[0] !== data[0]) {
       setSelectedNode(data);
       setIsLoading(true);
@@ -83,7 +80,6 @@ class ArticleBodyContent extends React.Component {
         : setDocumentTitle();
 
       fetchFiles(data[0], newFilter)
-        .then(() => getFilesCount(this.props.filesCount))
         .catch((err) => toastr.error(err))
         .finally(() => setIsLoading(false));
     }
@@ -147,7 +143,7 @@ function mapStateToProps(state) {
     treeFolders: getTreeFolders(state),
     filter: getFilter(state),
     selectedTreeNode: getSelectedTreeNode(state),
-    selectedFolderTitle: getSelectedFolderTitle(state)
+    selectedFolderTitle: getSelectedFolderTitle(state),
   };
 }
 

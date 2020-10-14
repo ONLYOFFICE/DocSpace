@@ -40,7 +40,6 @@ import {
   getFiles,
   getFilter,
   getFolders,
-  getCurrentFolderCount,
   getIsLoaded,
   getProgressData,
   getSelected,
@@ -76,7 +75,6 @@ class PureHome extends React.Component {
       hideWindowSetting: false,
 
       files: [],
-      filesCount: null,
       uploadedFiles: 0,
       percent: 0,
 
@@ -172,18 +170,8 @@ class PureHome extends React.Component {
       })
       .finally(() => {
         setIsLoading(false);
-        this.setState({
-          filesCount: this.props.filesCount
-        })
         setFirstLoad(false);
       });
-  }
-
-  getFilesCount = (count) =>
-  {
-    this.setState({
-      filesCount: count
-    })
   }
 
   renderGroupButtonMenu = () => {
@@ -509,11 +497,7 @@ class PureHome extends React.Component {
           </PageLayout.ArticleMainButton>
 
           <PageLayout.ArticleBody>
-            <ArticleBodyContent 
-              onTreeDrop={this.onDrop} 
-              getFilesCount={this.getFilesCount}
-              filesCount={this.props.filesCount}
-            />
+            <ArticleBodyContent onTreeDrop={this.onDrop} />
           </PageLayout.ArticleBody>
           <PageLayout.SectionHeader>
             <SectionHeaderContent
@@ -533,7 +517,6 @@ class PureHome extends React.Component {
 
           <PageLayout.SectionBody>
             <SectionBodyContent
-              filesCount={this.state.filesCount}
               isMobile={isMobile}
               selected={selected}
               onChange={this.onRowChange}
@@ -579,7 +562,6 @@ function mapStateToProps(state) {
     currentFolderId: getSelectedFolderId(state),
     fileActionId: getFileActionId(state),
     files: getFiles(state),
-    filesCount: getCurrentFolderCount(state),
     filter: getFilter(state),
     folders: getFolders(state),
     isLoaded: getIsLoaded(state),
