@@ -89,7 +89,6 @@ class FilesFilter {
         : null;
 
     const dtoFilter = {
-      folder: folder,
       count: pageCount,
       startIndex: this.getStartIndex(),
       page: page,
