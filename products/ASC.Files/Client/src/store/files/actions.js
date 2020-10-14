@@ -364,13 +364,21 @@ export function fetchCommonFolder(dispatch) {
   });
 }
 
-export function fetchFavoritesFolder() {
+export function fetchFavoritesFolder(folderId) {
   return dispatch => {
-    return files.getFavoritesFolderList().then(data => {
+    return files.getFolder(folderId).then((data) => {
       dispatch(setFolders(data.folders));
       dispatch(setFiles(data.files));
-      dispatch(setSelectedFolder(data.current));
-    })}}
+      return dispatch(
+        setSelectedFolder({
+          folders: data.folders,
+          ...data.current,
+          pathParts: data.pathParts,
+        })
+      );
+    });
+  }
+}
 
 export function markItemAsFavorite(id) {
   return dispatch => {

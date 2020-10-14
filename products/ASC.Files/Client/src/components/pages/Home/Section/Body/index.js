@@ -238,6 +238,7 @@ class SectionBodyContent extends React.Component {
       getFileInfo,
       fetchFavoritesFolder,
       isFavorites,
+      selectedFolderId,
       t } = this.props;
     const { action, id } = e.currentTarget.dataset;
 
@@ -249,7 +250,9 @@ class SectionBodyContent extends React.Component {
           .catch(e => toastr.error(e));
       case "remove":
         return removeItemFromFavorite(+id)
-          .then(() => (isFavorites ? fetchFavoritesFolder() : getFileInfo(id)))
+          .then(() => {
+            return isFavorites ? fetchFavoritesFolder(selectedFolderId) : getFileInfo(id)
+          })
           .then(() => toastr.success(t("RemovedFromFavorites")))
           .catch(e => toastr.error(e));
       default:
