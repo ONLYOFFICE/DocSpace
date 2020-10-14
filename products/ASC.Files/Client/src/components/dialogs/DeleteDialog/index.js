@@ -25,6 +25,7 @@ import {
   getTreeFolders,
   getIsLoading,
   getIsRecycleBinFolder,
+  getSelection,
 } from "../../../store/files/selectors";
 import { createI18N } from "../../../helpers/i18n";
 const i18n = createI18N({
@@ -282,6 +283,7 @@ const mapStateToProps = (state) => {
     treeFolders: getTreeFolders(state),
     isLoading: getIsLoading(state),
     isRecycleBinFolder: getIsRecycleBinFolder(state),
+    selection: getSelection(state)
   };
 };
 
