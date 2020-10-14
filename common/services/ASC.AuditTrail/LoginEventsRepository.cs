@@ -27,16 +27,19 @@
 
 using System;
 using System.Collections.Generic;
-using ASC.AuditTrail.Mappers;
 using System.Linq;
-using ASC.Core.Users;
-using Newtonsoft.Json;
-using ASC.Core.Common.EF.Context;
-using ASC.Core.Common.EF.Model;
-using ASC.Core.Common.EF;
+
+using ASC.AuditTrail.Mappers;
 using ASC.Common;
 using ASC.Common.Logging;
+using ASC.Core.Common.EF;
+using ASC.Core.Common.EF.Context;
+using ASC.Core.Common.EF.Model;
+using ASC.Core.Users;
+
 using Microsoft.Extensions.Options;
+
+using Newtonsoft.Json;
 
 namespace ASC.AuditTrail.Data
 {
@@ -61,28 +64,29 @@ namespace ASC.AuditTrail.Data
 
         public IEnumerable<LoginEvent> GetLast(int tenant, int chunk)
         {
-            var query = AuditTrailContext.LoginEvents.Join(AuditTrailContext.User,
-                l => l.UserId,
-                u => u.Id,
-                (l, u) => new Query { LoginEvents = l, User = u })
-                .Where(q => q.LoginEvents.TenantId == tenant)
-                .OrderBy(q => q.LoginEvents.Date)
+            var query =
+                (from b in AuditTrailContext.LoginEvents
+                 from p in AuditTrailContext.User.Where(p => b.UserId == p.Id).DefaultIfEmpty()
+                 where b.TenantId == tenant
+                 orderby b.Date descending
+                 select new Query { LoginEvents = b, User = p })
                 .Take(chunk);
-           
-            return ToLoginEvent(query.ToList());
+
+            return query.AsEnumerable().Select(ToLoginEvent).ToList();
         }
 
-        public IEnumerable<LoginEvent> Get(int tenant, DateTime from, DateTime to)
+        public IEnumerable<LoginEvent> Get(int tenant, DateTime fromDate, DateTime to)
         {
-            var query = AuditTrailContext.LoginEvents.Join(AuditTrailContext.User,
-                l => l.UserId,
-                u => u.Id,
-                 (l, u) => new Query { LoginEvents = l, User = u })
-               .Where(q => q.LoginEvents.TenantId == tenant)
-               .Where(q => q.LoginEvents.Date >= from & q.LoginEvents.Date <= to)
-               .OrderBy(q => q.LoginEvents.Date);
+            var query =
+                from q in AuditTrailContext.LoginEvents
+                from p in AuditTrailContext.User.Where(p => q.UserId == p.Id).DefaultIfEmpty()
+                where q.TenantId == tenant
+                where q.Date >= fromDate
+                where q.Date <= to
+                orderby q.Date descending
+                select new Query { LoginEvents = q, User = p };
 
-            return ToLoginEvent(query.ToList());
+            return query.AsEnumerable().Select(ToLoginEvent).ToList();
         }
 
         public int GetCount(int tenant, DateTime? from = null, DateTime? to = null)
@@ -92,59 +96,47 @@ namespace ASC.AuditTrail.Data
 
             if (from.HasValue && to.HasValue)
             {
-               query =  query.Where(l => l.Date >= from & l.Date <= to);
+                query = query.Where(l => l.Date >= from & l.Date <= to);
             }
 
             return query.Count();
         }
 
-        private IEnumerable<LoginEvent> ToLoginEvent(List<Query> list)
+        private LoginEvent ToLoginEvent(Query query)
         {
-            var loginsEvents = new List<LoginEvent>();
-            list.ForEach(query =>
+            var evt = new LoginEvent
             {
-                try
-                {
-                    var evt = new LoginEvent
-                        {
-                            Id = query.LoginEvents.Id,
-                            IP = query.LoginEvents.Ip,
-                            Login = query.LoginEvents.Login,
-                            Browser = query.LoginEvents.Browser,
-                            Platform = query.LoginEvents.Platform,
-                            Date = query.LoginEvents.Date,
-                            TenantId = query.LoginEvents.TenantId,
-                            UserId = query.LoginEvents.UserId,
-                            Page = query.LoginEvents.Page,
-                            Action = query.LoginEvents.Action
-                        };
+                Id = query.LoginEvents.Id,
+                IP = query.LoginEvents.Ip,
+                Login = query.LoginEvents.Login,
+                Browser = query.LoginEvents.Browser,
+                Platform = query.LoginEvents.Platform,
+                Date = query.LoginEvents.Date,
+                TenantId = query.LoginEvents.TenantId,
+                UserId = query.LoginEvents.UserId,
+                Page = query.LoginEvents.Page,
+                Action = query.LoginEvents.Action
+            };
 
-                    if (query.LoginEvents.Description != null)
+            if (query.LoginEvents.Description != null)
+            {
+                evt.Description = JsonConvert.DeserializeObject<IList<string>>(
+                    query.LoginEvents.Description,
+                    new JsonSerializerSettings
                     {
-                        evt.Description = JsonConvert.DeserializeObject<IList<string>>(
-                            query.LoginEvents.Description,
-                            new JsonSerializerSettings
-                                {
-                                    DateTimeZoneHandling = DateTimeZoneHandling.Utc
-                                });
-                    }
-                    evt.UserName = (query.User.UserName != null && query.User.LastName != null)
-                                        ? UserFormatter.GetUserName(query.User.UserName, query.User.LastName)
-                                        : !string.IsNullOrWhiteSpace(evt.Login)
-                                                ? evt.Login
-                                                : evt.UserId == Core.Configuration.Constants.Guest.ID
-                                                    ? AuditReportResource.GuestAccount
-                                                    : AuditReportResource.UnknownAccount;
+                        DateTimeZoneHandling = DateTimeZoneHandling.Utc
+                    });
+            }
+            evt.UserName = (!string.IsNullOrEmpty(query.User?.UserName) && !string.IsNullOrEmpty(query.User?.LastName))
+                                ? UserFormatter.GetUserName(query.User.FirstName, query.User.LastName)
+                                : !string.IsNullOrWhiteSpace(evt.Login)
+                                        ? evt.Login
+                                        : evt.UserId == Core.Configuration.Constants.Guest.ID
+                                            ? AuditReportResource.GuestAccount
+                                            : AuditReportResource.UnknownAccount;
 
-                    evt.ActionText = AuditActionMapper.GetActionText(evt);
-
-                    loginsEvents.Add(evt);
-                }
-                catch(Exception)
-                {
-                }
-            });
-            return loginsEvents;
+            evt.ActionText = AuditActionMapper.GetActionText(evt);
+            return evt;
         }
     }
 
@@ -152,11 +144,15 @@ namespace ASC.AuditTrail.Data
     {
         public static DIHelper AddLoginEventsRepositoryService(this DIHelper services)
         {
-            _ = services.TryAddScoped<LoginEventsRepository>();
-            return services
-                .AddUserFormatter()
-                .AddAuditTrailContextService()
-                .AddAuditActionMapperService();
+            if (services.TryAddScoped<LoginEventsRepository>())
+            {
+                return services
+                    .AddUserFormatter()
+                    .AddAuditTrailContextService()
+                    .AddAuditActionMapperService();
+            }
+
+            return services;
         }
     }
 }

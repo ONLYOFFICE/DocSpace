@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 
 using ASC.AuditTrail.Mappers;
 using ASC.Common;
@@ -70,89 +71,86 @@ namespace ASC.AuditTrail
             public User User { get; set; }
         }
 
-        private IEnumerable<AuditEvent> Get(int tenant, DateTime? from, DateTime? to, int? limit)
+        private IEnumerable<AuditEvent> Get(int tenant, DateTime? fromDate, DateTime? to, int? limit)
         {
-            var query = AuditTrailContext.AuditEvents.Join(AuditTrailContext.User,
-                a => a.UserId,
-                u => u.Id,
-                (a, u) => new Query { AuditEvent = a, User = u })
-                .Where(q => q.AuditEvent.TenantId == tenant)
-                .OrderBy(q => q.AuditEvent.Date);
+            var query =
+               from q in AuditTrailContext.AuditEvents
+               from p in AuditTrailContext.User.Where(p => q.UserId == p.Id).DefaultIfEmpty()
+               where q.TenantId == tenant
+               orderby q.Date descending
+               select new Query { AuditEvent = q, User = p };
 
-            if (from.HasValue && to.HasValue)
+            if (fromDate.HasValue && to.HasValue)
             {
-                query = (IOrderedQueryable<Query>)query.Where(q => q.AuditEvent.Date >= from & q.AuditEvent.Date <= to);
+                query = query.Where(q => q.AuditEvent.Date >= fromDate & q.AuditEvent.Date <= to);
             }
 
             if (limit.HasValue)
             {
-                query = (IOrderedQueryable<Query>)query.Take((int)limit);
+                query = query.Take((int)limit);
             }
 
-            return ToAuditEvent(query.ToList());
+            return query.AsEnumerable().Select(ToAuditEvent).ToList();
         }
 
         public int GetCount(int tenant, DateTime? from = null, DateTime? to = null)
         {
-            var query = AuditTrailContext.AuditEvents
+            IQueryable<Core.Common.EF.Model.AuditEvent> query = AuditTrailContext.AuditEvents
                 .Where(a => a.TenantId == tenant)
-                .OrderBy(a => a.Date);
+                .OrderByDescending(a => a.Date);
 
             if (from.HasValue && to.HasValue)
             {
-                query = (IOrderedQueryable<Core.Common.EF.Model.AuditEvent>)query.Where(a => a.Date >= from & a.Date <= to);
+                query = query.Where(a => a.Date >= from & a.Date <= to);
             }
 
             return query.Count();
         }
 
-        private IEnumerable<AuditEvent> ToAuditEvent(List<Query> list)
+        private AuditEvent ToAuditEvent(Query query)
         {
-            var auditEvents = new List<AuditEvent>();
-            list.ForEach(query =>
+            try
             {
-                try
+                var evt = new AuditEvent
                 {
-                    var evt = new AuditEvent
-                    {
-                        Id = query.AuditEvent.Id,
-                        IP = query.AuditEvent.Ip,
-                        Initiator = query.AuditEvent.Initiator,
-                        Browser = query.AuditEvent.Browser,
-                        Platform = query.AuditEvent.Platform,
-                        Date = query.AuditEvent.Date,
-                        TenantId = query.AuditEvent.TenantId,
-                        UserId = query.AuditEvent.UserId,
-                        Page = query.AuditEvent.Page,
-                        Action = query.AuditEvent.Action
-                    };
+                    Id = query.AuditEvent.Id,
+                    IP = query.AuditEvent.Ip,
+                    Initiator = query.AuditEvent.Initiator,
+                    Browser = query.AuditEvent.Browser,
+                    Platform = query.AuditEvent.Platform,
+                    Date = query.AuditEvent.Date,
+                    TenantId = query.AuditEvent.TenantId,
+                    UserId = query.AuditEvent.UserId,
+                    Page = query.AuditEvent.Page,
+                    Action = query.AuditEvent.Action
+                };
 
-                    if (query.AuditEvent.Description != null)
-                    {
-                        evt.Description = JsonConvert.DeserializeObject<IList<string>>(
-                            Convert.ToString(query.AuditEvent.Description),
-                            new JsonSerializerSettings { DateTimeZoneHandling = DateTimeZoneHandling.Utc });
-                    }
-
-                    evt.Target = MessageTarget.Parse(query.AuditEvent.Target);
-
-                    evt.UserName = (query.User.FirstName != null && query.User.LastName != null) ? UserFormatter.GetUserName(query.User.FirstName, query.User.LastName) :
-                        evt.UserId == Core.Configuration.Constants.CoreSystem.ID ? AuditReportResource.SystemAccount :
-                            evt.UserId == Core.Configuration.Constants.Guest.ID ? AuditReportResource.GuestAccount :
-                                evt.Initiator ?? AuditReportResource.UnknownAccount;
-
-                    evt.ActionText = AuditActionMapper.GetActionText(evt);
-                    evt.ActionTypeText = AuditActionMapper.GetActionTypeText(evt);
-                    evt.Product = AuditActionMapper.GetProductText(evt);
-                    evt.Module = AuditActionMapper.GetModuleText(evt);
-
-                    auditEvents.Add(evt);
-                }
-                catch (Exception)
+                if (query.AuditEvent.Description != null)
                 {
+                    evt.Description = JsonConvert.DeserializeObject<IList<string>>(
+                        Convert.ToString(query.AuditEvent.Description),
+                        new JsonSerializerSettings { DateTimeZoneHandling = DateTimeZoneHandling.Utc });
                 }
-            });
-            return auditEvents;
+
+                evt.Target = MessageTarget.Parse(query.AuditEvent.Target);
+
+                evt.UserName = (query.User.FirstName != null && query.User.LastName != null) ? UserFormatter.GetUserName(query.User.FirstName, query.User.LastName) :
+                    evt.UserId == Core.Configuration.Constants.CoreSystem.ID ? AuditReportResource.SystemAccount :
+                        evt.UserId == Core.Configuration.Constants.Guest.ID ? AuditReportResource.GuestAccount :
+                            evt.Initiator ?? AuditReportResource.UnknownAccount;
+
+                evt.ActionText = AuditActionMapper.GetActionText(evt);
+                evt.ActionTypeText = AuditActionMapper.GetActionTypeText(evt);
+                evt.Product = AuditActionMapper.GetProductText(evt);
+                evt.Module = AuditActionMapper.GetModuleText(evt);
+
+                return evt;
+            }
+            catch (Exception)
+            {
+            }
+
+            return null;
         }
     }
 
