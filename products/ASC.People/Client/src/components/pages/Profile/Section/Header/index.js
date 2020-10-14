@@ -320,11 +320,6 @@ class SectionHeaderContent extends React.PureComponent {
             label: t("EmailChangeButton"),
             onClick: this.toggleChangeEmailDialog,
           },
-          {
-            key: "edit-photo",
-            label: t("EditPhoto"),
-            onClick: this.openAvatarEditor,
-          },
           isMe(user, viewer.userName)
             ? viewer.isOwner
               ? {}
@@ -345,11 +340,6 @@ class SectionHeaderContent extends React.PureComponent {
             key: "enable",
             label: t("EnableUserButton"),
             onClick: this.onEnableClick,
-          },
-          {
-            key: "edit-photo",
-            label: t("EditPhoto"),
-            onClick: this.openAvatarEditor,
           },
           {
             key: "reassign-data",
@@ -378,11 +368,6 @@ class SectionHeaderContent extends React.PureComponent {
             key: "invite-again",
             label: t("InviteAgainLbl"),
             onClick: this.onInviteAgainClick,
-          },
-          {
-            key: "edit-photo",
-            label: t("EditPhoto"),
-            onClick: this.openAvatarEditor,
           },
           !isMe(user, viewer.userName) &&
             (user.status === EmployeeStatus.Active

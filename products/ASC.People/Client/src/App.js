@@ -21,8 +21,7 @@ import {
   NavMenu,
   Main,
   toastr,
-} from "asc-web-common";
-import { getFilterByLocation } from "./helpers/converters";
+} from "asc-web-common";import { getFilterByLocation } from "./helpers/converters";
 import { fetchGroups, fetchPeople } from "./store/people/actions";
 import config from "../package.json";
 
@@ -55,8 +54,8 @@ class App extends React.Component {
       getPortalCultures,
       fetchGroups,
       fetchPeople,
-      setIsLoaded,
-    } = this.props;
+      finalize,
+      setIsLoaded,    } = this.props;
 
     setModuleInfo();
 
@@ -153,8 +152,7 @@ class App extends React.Component {
 
 const mapStateToProps = (state) => {
   const { settings } = state.auth;
-  const { homepage } = settings;
-  return {
+  const { homepage } = settings;  return {
     homepage: homepage || config.homepage,
   };
 };
@@ -182,8 +180,7 @@ const mapDispatchToProps = (dispatch) => {
 
       return Promise.resolve();
     },
-    setIsLoaded: () => dispatch(setIsLoaded(true)),
-  };
+    setIsLoaded: () => dispatch(setIsLoaded(true)),  };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
