@@ -51,6 +51,7 @@ using ASC.Core.Common.Notify;
 using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
+using ASC.Data.Backup;
 using ASC.Data.Backup.Contracts;
 using ASC.Data.Backup.Service;
 using ASC.Data.Storage;
@@ -159,7 +160,7 @@ namespace ASC.Api.Settings
         private UrlShortener UrlShortener { get; }
         private EncryptionServiceClient EncryptionServiceClient { get; }
         private EncryptionSettingsHelper EncryptionSettingsHelper { get; }
-        private BackupServiceNotifier BackupServiceNotifier { get; }
+        private BackupAjaxHandler BackupAjaxHandler { get; }
         private ICacheNotify<DeleteSchedule> CacheDeleteSchedule { get; }
         private EncryptionWorker EncryptionWorker { get; }
         private PasswordHasher PasswordHasher { get; }
@@ -223,7 +224,7 @@ namespace ASC.Api.Settings
             UrlShortener urlShortener,
             EncryptionServiceClient encryptionServiceClient,
             EncryptionSettingsHelper encryptionSettingsHelper,
-            BackupServiceNotifier backupServiceNotifier,
+            BackupAjaxHandler backupAjaxHandler,
             ICacheNotify<DeleteSchedule> cacheDeleteSchedule,
             EncryptionWorker encryptionWorker,
             PasswordHasher passwordHasher)
@@ -281,7 +282,7 @@ namespace ASC.Api.Settings
             ServiceClient = serviceClient;
             EncryptionServiceClient = encryptionServiceClient;
             EncryptionSettingsHelper = encryptionSettingsHelper;
-            BackupServiceNotifier = backupServiceNotifier;
+            BackupAjaxHandler = backupAjaxHandler;
             CacheDeleteSchedule = cacheDeleteSchedule;
             EncryptionWorker = encryptionWorker;
             PasswordHasher = passwordHasher;
@@ -1813,7 +1814,7 @@ namespace ASC.Api.Settings
 
             foreach (var tenant in tenants)
             {
-                var progress = BackupServiceNotifier.GetBackupProgress(tenant.TenantId);
+                var progress = BackupAjaxHandler.GetBackupProgress(tenant.TenantId);
                 if (progress != null && progress.IsCompleted == false)
                 {
                     throw new Exception();
@@ -2426,7 +2427,7 @@ namespace ASC.Api.Settings
                 .AddEncryptionServiceClient()
                 .AddEncryptionSettingsHelperService()
                 .AddStorageFactoryService()
-                .AddBackupService()
+                .AddBackupAjaxHandler()
                 .AddEncryptionWorkerService()
                 .AddTelegramLoginProviderService()
                 .AddTelegramHelperSerivce()

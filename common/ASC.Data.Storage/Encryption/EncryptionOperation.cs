@@ -30,7 +30,6 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using ASC.Common;
-using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Common.Threading;
 using ASC.Core;
@@ -73,14 +72,13 @@ namespace ASC.Data.Storage.Encryption
         {
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<EncryptionOperationScope>();
-            var (log, encryptionSettingsHelper, tenantManager, notifyHelper, coreBaseSettings, storageFactoryConfig, storageFactory, progressEncryption, configuration) = scopeClass;
+            var (log, encryptionSettingsHelper, tenantManager, notifyHelper, coreBaseSettings, storageFactoryConfig, storageFactory, configuration) = scopeClass;
             notifyHelper.Init(ServerRootPath);
             Tenants = tenantManager.GetTenants(false);
             Modules = storageFactoryConfig.GetModuleList(ConfigPath, true);
             UseProgressFile = Convert.ToBoolean(configuration["storage:encryption:progressfile"] ?? "true");
 
             Percentage = 10;
-            PublishProgress(progressEncryption);
             PublishChanges();
 
             try
@@ -97,7 +95,6 @@ namespace ASC.Data.Storage.Encryption
                 }
 
                 Percentage = 30;
-                PublishProgress(progressEncryption);
                 PublishChanges();
 
                 foreach (var tenant in Tenants)
@@ -114,7 +111,6 @@ namespace ASC.Data.Storage.Encryption
                 }
 
                 Percentage = 70;
-                PublishProgress(progressEncryption);
                 PublishChanges();
 
                 if (!HasErrors)
@@ -124,13 +120,11 @@ namespace ASC.Data.Storage.Encryption
                 }
 
                 Percentage = 90;
-                PublishProgress(progressEncryption);
                 PublishChanges();
 
                 ActivateTenants(tenantManager, log, notifyHelper);
 
                 Percentage = 100;
-                PublishProgress(progressEncryption);
                 PublishChanges();
             }
             catch (Exception e)
@@ -193,16 +187,6 @@ namespace ASC.Data.Storage.Encryption
             }
 
             return encryptedFiles;
-        }
-
-        public void PublishProgress(ICacheNotify<ProgressEncryption> progress)
-        {
-            var progressEncryption = new ProgressEncryption()
-            {
-                Progress = Percentage
-            };
-
-            progress.Publish(progressEncryption, CacheNotifyAction.Insert);
         }
 
         private IEnumerable<string> GetFiles(List<string> domains, List<string> progress, DiscDataStore targetStore, string targetDomain)
@@ -365,7 +349,6 @@ namespace ASC.Data.Storage.Encryption
         private CoreBaseSettings CoreBaseSettings { get; set; }
         private StorageFactoryConfig StorageFactoryConfig { get; set; }
         private StorageFactory StorageFactory { get; set; }
-        private ICacheNotify<ProgressEncryption> ProgressEncryption { get; }
         private IConfiguration Configuration { get; }
 
         public EncryptionOperationScope(IOptionsMonitor<ILog> options,
@@ -375,8 +358,7 @@ namespace ASC.Data.Storage.Encryption
            CoreBaseSettings coreBaseSettings,
            NotifyHelper notifyHelper,
            EncryptionSettingsHelper encryptionSettingsHelper,
-           IConfiguration configuration,
-           ICacheNotify<ProgressEncryption> progressEncryption)
+           IConfiguration configuration)
         {
             Log = options.CurrentValue;
             StorageFactoryConfig = storageFactoryConfig;
@@ -385,11 +367,10 @@ namespace ASC.Data.Storage.Encryption
             CoreBaseSettings = coreBaseSettings;
             NotifyHelper = notifyHelper;
             EncryptionSettingsHelper = encryptionSettingsHelper;
-            ProgressEncryption = progressEncryption;
             Configuration = configuration;
         }
 
-        public void Deconstruct(out ILog log, out EncryptionSettingsHelper encryptionSettingsHelper, out TenantManager tenantManager, out NotifyHelper notifyHelper, out CoreBaseSettings coreBaseSettings, out StorageFactoryConfig storageFactoryConfig, out StorageFactory storageFactory, out ICacheNotify<ProgressEncryption> progressEncryption, out IConfiguration configuration)
+        public void Deconstruct(out ILog log, out EncryptionSettingsHelper encryptionSettingsHelper, out TenantManager tenantManager, out NotifyHelper notifyHelper, out CoreBaseSettings coreBaseSettings, out StorageFactoryConfig storageFactoryConfig, out StorageFactory storageFactory, out IConfiguration configuration)
         {
             log = Log;
             encryptionSettingsHelper = EncryptionSettingsHelper;
@@ -398,7 +379,6 @@ namespace ASC.Data.Storage.Encryption
             coreBaseSettings = CoreBaseSettings;
             storageFactoryConfig = StorageFactoryConfig;
             storageFactory = StorageFactory;
-            progressEncryption = ProgressEncryption;
             configuration = Configuration;
         }
     }

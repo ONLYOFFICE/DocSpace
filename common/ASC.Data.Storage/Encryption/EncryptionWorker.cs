@@ -25,6 +25,7 @@
 
 
 using System;
+using System.Linq;
 
 using ASC.Common;
 using ASC.Common.Caching;
@@ -74,8 +75,8 @@ namespace ASC.Data.Storage.Encryption
 
         public double? GetEncryptionProgress()
         {
-            var dic = Cache.HashGet<DistributedTaskCache>(Queue.Name, GetCacheId());
-            return dic.Percentage;
+            var progress = Queue.GetTasks<EncryptionOperation>().FirstOrDefault();
+            return progress.Percentage;
         }
     }
 
