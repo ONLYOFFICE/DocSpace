@@ -360,7 +360,7 @@ export const getRootFolderId = (state) => {
     return state.files.selectedFolder.pathParts[0];
 };
 
-export const isCanCreate = createSelector(
+export const canCreate = createSelector(
   getSelectedFolderRootFolderType,
   isAdmin,
   getPathParts,

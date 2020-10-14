@@ -5,7 +5,7 @@ import {
   setViewAs,
   setIsLoading,
 } from "../../../../../store/files/actions";
-import { getFilter, getSelectedFolderId, getViewAs, getFilterSelectedItem } from "../../../../../store/files/selectors";
+import { getFilter, getSelectedFolderId, getViewAs, getFilterSelectedItem, getFirstLoad } from "../../../../../store/files/selectors";
 import find from "lodash/find";
 import result from "lodash/result";
 import { withTranslation } from "react-i18next";
@@ -14,7 +14,7 @@ import { constants, FilterInput, store, Loaders } from "asc-web-common";
 import isEqual from "lodash/isEqual";
 import { isMobileOnly } from "react-device-detect";
 
-const { getCurrentUser, getSettingsCustomNames } = store.auth.selectors;
+const { getCurrentUser, getSettingsCustomNames, getLanguage } = store.auth.selectors;
 const { FilterType } = constants;
 
 const getFilterType = (filterValues) => {
@@ -314,11 +314,13 @@ class SectionFilterContent extends React.Component {
 function mapStateToProps(state) {
   return {
     user: getCurrentUser(state),
-    filter: getFilter(state),
     customNames: getSettingsCustomNames(state),
+    language: getLanguage(state),
+    firstLoad: getFirstLoad(state),
+    filter: getFilter(state),
     selectedFolderId: getSelectedFolderId(state),
     selectedItem: getFilterSelectedItem(state),
-    viewAs: getViewAs(state)
+    viewAs: getViewAs(state),
   };
 }
 

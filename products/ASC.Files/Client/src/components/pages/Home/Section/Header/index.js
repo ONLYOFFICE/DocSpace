@@ -36,7 +36,7 @@ import { SharingPanel, OperationsPanel } from "../../../../panels";
 import {
   isCanBeDeleted,
   getIsRecycleBinFolder,
-  isCanCreate,
+  canCreate,
   getSelectedFolderTitle,
   getFilter,
   getSelectedFolderId,
@@ -363,7 +363,7 @@ class SectionHeaderContent extends React.Component {
       deleteDialogVisible,
       isRootFolder,
       title,
-      isCanCreate,
+      canCreate,
     } = this.props;
 
     const {
@@ -521,7 +521,7 @@ class SectionHeaderContent extends React.Component {
                 >
                   {title}
                 </Headline>
-                {!isRootFolder && isCanCreate ? (
+                {!isRootFolder && canCreate ? (
                   <>
                     <ContextMenuButton
                       className="add-button"
@@ -547,7 +547,7 @@ class SectionHeaderContent extends React.Component {
                     />
                   </>
                 ) : (
-                  isCanCreate && (
+                  canCreate && (
                     <ContextMenuButton
                       className="add-button"
                       directionX="right"
@@ -628,7 +628,7 @@ const mapStateToProps = (state) => {
     filter: getFilter(state),
     deleteDialogVisible: isCanBeDeleted(state),
     currentFolderId: getSelectedFolderId(state),
-    isCanCreate: isCanCreate(state),
+    canCreate: canCreate(state),
     isHeaderVisible: getHeaderVisible(state),
     isHeaderIndeterminate: getHeaderIndeterminate(state),
     isHeaderChecked: getHeaderChecked(state),
