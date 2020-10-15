@@ -527,9 +527,13 @@ export const getSelected = (state) => {
   return state.files.selected;
 };
 
-export const getSelection = (state) => {
+const getSelectionSelector = (state) => {
   return state.files.selection;
-};
+}
+
+export const getSelection = createSelector(getSelectionSelector, selection => {
+  return selection;
+});
 
 export const getSelectionLength = (state) => {
   return state.files.selection.length;
@@ -925,10 +929,6 @@ export const getDraggableItems = createSelector(
     }
   }
 );
-export const getTest = createSelector(getTreeFolders, (treeFolders) => {
-  const treeFoldersItem = treeFolders.find((x) => x.rootFolderName === "@my");
-  if (treeFoldersItem) return treeFoldersItem.id;
-});
 
 const getSettingsTreeSelector = (state) => {
   return state.files.settingsTree;
