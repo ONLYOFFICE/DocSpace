@@ -1,7 +1,6 @@
 import React, { Suspense } from "react";
 import { connect } from "react-redux";
 import { Router, Switch, Redirect } from "react-router-dom";
-import { Loader } from "asc-web-components";
 import Home from "./components/pages/Home";
 import Profile from "./components/pages/Profile";
 import ProfileAction from "./components/pages/ProfileAction";
@@ -55,7 +54,6 @@ class App extends React.Component {
       getPortalCultures,
       fetchGroups,
       fetchPeople,
-      finalize,
       setIsLoaded,
     } = this.props;
 
@@ -93,11 +91,7 @@ class App extends React.Component {
       <Router history={history}>
         <NavMenu />
         <Main>
-          <Suspense
-            fallback={
-              <Loader className="pageLoader" type="rombs" size="40px" />
-            }
-          >
+          <Suspense fallback={null}>
             <Switch>
               <Redirect exact from="/" to={`${homepage}`} />
               <PrivateRoute
@@ -154,7 +148,8 @@ class App extends React.Component {
 
 const mapStateToProps = (state) => {
   const { settings } = state.auth;
-  const { homepage } = settings;  return {
+  const { homepage } = settings;
+  return {
     homepage: homepage || config.homepage,
   };
 };
@@ -182,7 +177,8 @@ const mapDispatchToProps = (dispatch) => {
 
       return Promise.resolve();
     },
-    setIsLoaded: () => dispatch(setIsLoaded(true)),  };
+    setIsLoaded: () => dispatch(setIsLoaded(true)),
+  };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

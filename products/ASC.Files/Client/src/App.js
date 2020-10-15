@@ -1,7 +1,6 @@
 import React, { Suspense } from "react";
 import { connect } from "react-redux";
 import { Router, Switch, Redirect } from "react-router-dom";
-import { Loader } from "asc-web-components";
 import Home from "./components/pages/Home";
 import DocEditor from "./components/pages/DocEditor";
 import Settings from "./components/pages/Settings";
@@ -87,11 +86,7 @@ class App extends React.Component {
           <NavMenu />
         )}
         <Main>
-          <Suspense
-            fallback={
-              <Loader className="pageLoader" type="rombs" size="40px" />
-            }
-          >
+          <Suspense fallback={null}>
             <Switch>
               <Redirect exact from="/" to={`${homepage}`} />
               <PrivateRoute
