@@ -1528,10 +1528,10 @@
     "@svgr/plugin-svgo" "^4.3.1"
     loader-utils "^1.2.3"
 
-"@tanem/svg-injector@^8.0.71":
-  version "8.0.71"
-  resolved "https://registry.yarnpkg.com/@tanem/svg-injector/-/svg-injector-8.0.71.tgz#810e1b0de741c774d68722499a4a48fb61dfa9e9"
-  integrity sha512-JOlNQDnhWjWyR9g2P3cYA+CPiBstxS0rLoSFOFtHxavpwwPiQf2JtyqAqMVxgR8XV1USadLrTFUtk4fEq3Pxow==
+"@tanem/svg-injector@^8.0.72":
+  version "8.0.72"
+  resolved "https://registry.yarnpkg.com/@tanem/svg-injector/-/svg-injector-8.0.72.tgz#d9ca8a6950492253c7ed4623ff20c59bc4743730"
+  integrity sha512-xBGrX4JyuboQsP1bbTIaEF1w0I8KlpXHIWfIkg2JXCgsKjrdf8QdI/9MGYeepiHbPL5I8em8hZm/kUcLREeopQ==
   dependencies:
     "@babel/runtime" "^7.11.2"
 
@@ -2171,7 +2171,7 @@ asap@~2.0.6:
   integrity sha1-5QNHYR1+aQlDIIu9r+vLwvuGbUY=
 
 "asc-web-common@file:../../../packages/asc-web-common":
-  version "1.0.257"
+  version "1.0.258"
   dependencies:
     axios "^0.19.1"
     history "4.10.1"
@@ -2187,7 +2187,7 @@ asap@~2.0.6:
     sjcl "^1.0.8"
 
 "asc-web-components@file:../../../packages/asc-web-components":
-  version "1.0.460"
+  version "1.0.467"
   dependencies:
     email-addresses "^3.1.0"
     html-to-react "^1.4.2"
@@ -4230,9 +4230,9 @@ ejs@^2.6.1:
   integrity sha512-7vmuyh5+kuUyJKePhQfRQBhXV5Ce+RnaeeQArKu1EAMpL3WbgMt5WG6uQZpEVvYSSsxMXRKOewtDk9RaTKXRlA==
 
 electron-to-chromium@^1.3.378, electron-to-chromium@^1.3.571:
-  version "1.3.578"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.578.tgz#e6671936f4571a874eb26e2e833aa0b2c0b776e0"
-  integrity sha512-z4gU6dA1CbBJsAErW5swTGAaU2TBzc2mPAonJb00zqW1rOraDo2zfBMDRvaz9cVic+0JEZiYbHWPw/fTaZlG2Q==
+  version "1.3.579"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.579.tgz#58bf17499de6edf697e1442017d8569bce0d301a"
+  integrity sha512-9HaGm4UDxCtcmIqWWdv79pGgpRZWTqr+zg6kxp0MelSHfe1PNjrI8HXy1HgTSy4p0iQETGt8/ElqKFLW008BSA==
 
 elliptic@^6.5.3:
   version "6.5.3"
@@ -9629,12 +9629,12 @@ react-scripts@3.4.3:
     fsevents "2.1.2"
 
 react-svg@^11.0.9:
-  version "11.0.43"
-  resolved "https://registry.yarnpkg.com/react-svg/-/react-svg-11.0.43.tgz#6d100589cd1b3e5ab6418457cada753d7b80adb9"
-  integrity sha512-IklkiSvNrqygMTiY5yfUbUq1SDq+iinSnQ5ZlG+pcVMKT0vENNw52ee+GYIIw7x/usmY91b9gduq3nXykmEKbg==
+  version "11.0.44"
+  resolved "https://registry.yarnpkg.com/react-svg/-/react-svg-11.0.44.tgz#a06b5262b8e427f132d6bde946134bed51bc25a6"
+  integrity sha512-bJdngg1F48/5/tallQUTQK3jVR5GyQ/jf+yX1MVyKf/oFA6/o5QUke5TERNc3vJHTd0K3vbID1s1ba9KCJWDTw==
   dependencies:
     "@babel/runtime" "^7.11.2"
-    "@tanem/svg-injector" "^8.0.71"
+    "@tanem/svg-injector" "^8.0.72"
     prop-types "^15.7.2"
 
 react-text-mask@^5.4.3:
