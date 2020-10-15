@@ -21,7 +21,8 @@ import {
   NavMenu,
   Main,
   toastr,
-} from "asc-web-common";import { getFilterByLocation } from "./helpers/converters";
+} from "asc-web-common";
+import { getFilterByLocation } from "./helpers/converters";
 import { fetchGroups, fetchPeople } from "./store/people/actions";
 import config from "../package.json";
 
@@ -55,7 +56,8 @@ class App extends React.Component {
       fetchGroups,
       fetchPeople,
       finalize,
-      setIsLoaded,    } = this.props;
+      setIsLoaded,
+    } = this.props;
 
     setModuleInfo();
 
