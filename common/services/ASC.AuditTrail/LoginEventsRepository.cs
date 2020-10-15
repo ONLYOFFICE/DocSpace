@@ -127,7 +127,7 @@ namespace ASC.AuditTrail.Data
                         DateTimeZoneHandling = DateTimeZoneHandling.Utc
                     });
             }
-            evt.UserName = (!string.IsNullOrEmpty(query.User?.UserName) && !string.IsNullOrEmpty(query.User?.LastName))
+            evt.UserName = (!string.IsNullOrEmpty(query.User?.FirstName) && !string.IsNullOrEmpty(query.User?.LastName))
                                 ? UserFormatter.GetUserName(query.User.FirstName, query.User.LastName)
                                 : !string.IsNullOrWhiteSpace(evt.Login)
                                         ? evt.Login
