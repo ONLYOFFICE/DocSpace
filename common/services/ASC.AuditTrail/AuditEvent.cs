@@ -1,6 +1,6 @@
 /*
  *
- * (c) Copyright Ascensio System Limited 2010-2018
+ * (c) Copyright Ascensio System Limited 2010-2020
  *
  * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
  * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
@@ -24,28 +24,27 @@
 */
 
 
-using System;
+using ASC.MessagingSystem;
 
-using ASC.Core.Common.Settings;
-
-namespace ASC.Web.Studio.Core
+namespace ASC.AuditTrail
 {
-    public class OpensourcePresentSettings : ISettings
+    public class AuditEvent : BaseEvent
     {
-        public bool Readed { get; set; }
+        public string Initiator { get; set; }
 
-        #region ISettings Members
+        [Event("ActionIdCol", 33)]
+        public int Action { get; set; }
 
-        public Guid ID
-        {
-            get { return new Guid("{1F4FEA2C-2D9F-47A6-ADEF-CEC4D1E1E243}"); }
-        }
+        [Event("ActionTypeCol", 30)]
+        public string ActionTypeText { get; set; }
 
-        public ISettings GetDefault(IServiceProvider serviceProvider)
-        {
-            return new OpensourcePresentSettings { Readed = false };
-        }
+        [Event("ProductCol", 31)]
+        public string Product { get; set; }
 
-        #endregion
+        [Event("ModuleCol", 32)]
+        public string Module { get; set; }
+
+        [Event("TargetIdCol", 34)]
+        public MessageTarget Target { get; set; }
     }
 }

@@ -26,26 +26,27 @@
 
 using System;
 
-using ASC.Core.Common.Settings;
+using ASC.Api.Core;
+using ASC.AuditTrail;
 
-namespace ASC.Web.Studio.Core
+namespace ASC.Api.Security
 {
-    public class OpensourcePresentSettings : ISettings
+    public class EventWrapper
     {
-        public bool Readed { get; set; }
-
-        #region ISettings Members
-
-        public Guid ID
+        public EventWrapper(BaseEvent auditEvent)
         {
-            get { return new Guid("{1F4FEA2C-2D9F-47A6-ADEF-CEC4D1E1E243}"); }
+            Id = auditEvent.Id;
+            Date = new ApiDateTime(auditEvent.Date, TimeSpan.Zero);
+            User = auditEvent.UserName;
+            Action = auditEvent.ActionText;
         }
 
-        public ISettings GetDefault(IServiceProvider serviceProvider)
-        {
-            return new OpensourcePresentSettings { Readed = false };
-        }
+        public int Id { get; private set; }
 
-        #endregion
+        public ApiDateTime Date { get; private set; }
+
+        public string User { get; private set; }
+
+        public string Action { get; private set; }
     }
 }

@@ -1,6 +1,6 @@
 /*
  *
- * (c) Copyright Ascensio System Limited 2010-2018
+ * (c) Copyright Ascensio System Limited 2010-2020
  *
  * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
  * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
@@ -24,28 +24,28 @@
 */
 
 
-using System;
 
-using ASC.Core.Common.Settings;
 
-namespace ASC.Web.Studio.Core
+using System.Collections.Generic;
+using ASC.MessagingSystem;
+
+namespace ASC.AuditTrail.Mappers
 {
-    public class OpensourcePresentSettings : ISettings
+    internal class OthersActionsMapper
     {
-        public bool Readed { get; set; }
-
-        #region ISettings Members
-
-        public Guid ID
+        public static Dictionary<MessageAction, MessageMaps> GetMaps()
         {
-            get { return new Guid("{1F4FEA2C-2D9F-47A6-ADEF-CEC4D1E1E243}"); }
+            return new Dictionary<MessageAction, MessageMaps>
+                {
+                    {
+                        MessageAction.ContactAdminMailSent, new MessageMaps
+                            {
+                                ActionTypeTextResourceName = "SendActionType",
+                                ActionTextResourceName = "ContactAdminMailSent",
+                                ProductResourceName = "OthersProduct"
+                            }
+                    }
+                };
         }
-
-        public ISettings GetDefault(IServiceProvider serviceProvider)
-        {
-            return new OpensourcePresentSettings { Readed = false };
-        }
-
-        #endregion
     }
 }

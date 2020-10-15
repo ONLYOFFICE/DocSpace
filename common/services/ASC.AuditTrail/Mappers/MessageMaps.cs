@@ -1,6 +1,9 @@
 /*
  *
- * (c) Copyright Ascensio System Limited 2010-2018
+ * (c) Copyright Ascensio System Limited 2010-2020
+/*
+ *
+ * (c) Copyright Ascensio System Limited 2010-2020
  *
  * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
  * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
@@ -24,28 +27,62 @@
 */
 
 
-using System;
 
-using ASC.Core.Common.Settings;
-
-namespace ASC.Web.Studio.Core
+namespace ASC.AuditTrail.Mappers
 {
-    public class OpensourcePresentSettings : ISettings
+    internal class MessageMaps
     {
-        public bool Readed { get; set; }
+        public string ActionTypeTextResourceName { get; set; }
+        public string ActionTextResourceName { get; set; }
+        public string ProductResourceName { get; set; }
+        public string ModuleResourceName { get; set; }
 
-        #region ISettings Members
-
-        public Guid ID
+        public string GetActionTypeText()
         {
-            get { return new Guid("{1F4FEA2C-2D9F-47A6-ADEF-CEC4D1E1E243}"); }
+            try
+            {
+                return AuditReportResource.ResourceManager.GetString(ActionTypeTextResourceName);
+            }
+            catch
+            {
+                return null;
+            }
         }
 
-        public ISettings GetDefault(IServiceProvider serviceProvider)
+        public string GetActionText()
         {
-            return new OpensourcePresentSettings { Readed = false };
+            try
+            {
+                return AuditReportResource.ResourceManager.GetString(ActionTextResourceName);
+            }
+            catch
+            {
+                return null;
+            }
         }
 
-        #endregion
+        public string GetProduct()
+        {
+            try
+            {
+                return AuditReportResource.ResourceManager.GetString(ProductResourceName);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public string GetModule()
+        {
+            try
+            {
+                return AuditReportResource.ResourceManager.GetString(ModuleResourceName);
+            }
+            catch
+            {
+                return null;
+            }
+        }
     }
 }
