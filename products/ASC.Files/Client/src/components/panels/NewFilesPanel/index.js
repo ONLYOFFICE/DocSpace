@@ -29,7 +29,12 @@ import {
   canWebEdit,
   isImage,
   isSound,
-  isVideo
+  isVideo,
+  getFilter,
+  getFiles,
+  getFolders,
+  getTreeFolders,
+  getSelectedFolder,
 } from "../../../store/files/selectors";
 import {
   fetchFiles,
@@ -135,12 +140,12 @@ class NewFilesPanelComponent extends React.Component {
 
   onFilesClick = item => {
     const { id, fileExst, viewUrl } = item;
-    const { filter, setMediaViewerData, fetchFiles } = this.props;
+    const { filter, setMediaViewerData, fetchFiles, canWebEdit } = this.props;
 
     if (!fileExst) {
       fetchFiles(id, filter).catch(err => toastr.error(err));
     } else {
-      if (canWebEdit(fileExst)) {
+      if (canWebEdit) {
         return window.open(`./doceditor?fileId=${id}`, "_blank");
       }
 
@@ -289,9 +294,15 @@ const NewFilesPanel = props => (
   <NewFilesPanelContainerTranslated i18n={i18n} {...props} />
 );
 
-const mapStateToProps = state => {
-  const { filter, files, folders, treeFolders, selectedFolder } = state.files;
-  return { filter, files, folders, treeFolders, selectedFolder };
+const mapStateToProps = (state, props) => {
+  return {
+    filter: getFilter(state),
+    files: getFiles(state),
+    folders: getFolders(state),
+    treeFolders: getTreeFolders(state),
+    selectedFolder: getSelectedFolder(state),
+    canWebEdit: canWebEdit(props.item.fileExst)(state),
+  };
 };
 
 export default connect(
