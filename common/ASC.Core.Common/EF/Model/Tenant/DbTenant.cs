@@ -30,7 +30,7 @@ namespace ASC.Core.Common.EF.Model
 
         //hack for DateTime?
         [NotMapped]
-        public DateTime? StatusChangedHack { get { return StatusChanged; } set { StatusChanged = value; } }
+        public DateTime StatusChangedHack { get { return StatusChanged ?? DateTime.MinValue; } set { StatusChanged = value; } }
 
         public DateTime CreationDateTime { get; set; }
 
@@ -186,7 +186,7 @@ namespace ASC.Core.Common.EF.Model
                     .HasColumnName("version")
                     .HasDefaultValueSql("'2'");
 
-                entity.Property(e => e.VersionChanged)
+                entity.Property(e => e.Version_Changed)
                     .HasColumnName("version_changed")
                     .HasColumnType("datetime");
             });
@@ -289,7 +289,7 @@ namespace ASC.Core.Common.EF.Model
                     .HasColumnName("version")
                     .HasDefaultValueSql("2");
 
-                entity.Property(e => e.VersionChanged).HasColumnName("version_changed");
+                entity.Property(e => e.Version_Changed).HasColumnName("version_changed");
             });
         }
     }

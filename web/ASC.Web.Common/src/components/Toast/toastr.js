@@ -1,6 +1,7 @@
 import { toastr as Toastr } from "asc-web-components";
 import i18n from "./i18n";
-
+import { LANGUAGE } from "../../constants";
+import {changeLanguage } from "../../utils";
 const toastr = {
     clear: clear,
     error: error,
@@ -9,7 +10,9 @@ const toastr = {
     warning: warning
 };
 
-const getTitleTranslation = title => {
+const getTitleTranslation = (title) => {
+   const currentLng = localStorage.getItem(LANGUAGE)
+   if (i18n.language !== currentLng) changeLanguage(i18n, currentLng)
     return(i18n.t(title))
 }
 
