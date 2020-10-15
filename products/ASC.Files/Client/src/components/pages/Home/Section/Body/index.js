@@ -9,6 +9,7 @@ import styled from "styled-components";
 import queryString from "query-string";
 import {
   IconButton,
+  Row,
   RowContainer,
   Link,
   DragAndDrop,
@@ -20,7 +21,6 @@ import FilesRowContent from "./FilesRowContent";
 import FilesTileContent from "./FilesTileContent";
 import TileContainer from "./TileContainer";
 import Tile from "./Tile";
-import SimpleFilesRow from "./SimpleFilesRow";
 
 import {
   api,
@@ -43,6 +43,7 @@ import {
   setUpdateTree,
   setProgressBarData,
   setSelected,
+  setSelection,
   setTreeFolders,
   loopFilesOperations,
 } from "../../../../../store/files/actions";
@@ -110,6 +111,28 @@ const CustomTooltip = styled.div`
   box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.13);
   -moz-box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.13);
   -webkit-box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.13);
+`;
+
+const SimpleFilesRow = styled(Row)`
+  ${(props) =>
+    !props.contextOptions &&
+    `
+    & > div:last-child {
+        width: 0px;
+      }
+  `}
+
+  .share-button-icon {
+    margin-right: 8px;
+  }
+
+  .share-button,
+  .share-button-icon:hover {
+    cursor: pointer;
+    div {
+      color: "#657077";
+    }
+  }
 `;
 
 class SectionBodyContent extends React.Component {
@@ -1183,6 +1206,12 @@ class SectionBodyContent extends React.Component {
       });
   };
 
+  onSelectItem = (item) => {
+    const { selected, setSelected, setSelection } = this.props;
+    selected === "close" && setSelected("none");
+    setSelection([item]);
+  };
+
   onCreateAddTempItem = (items, folderId, fileAction) => {
     if (items.length && items[0].id === -1) return; //TODO: if change media collection from state remove this;
     const icon = fileAction.extension
@@ -1448,6 +1477,7 @@ class SectionBodyContent extends React.Component {
                     {...checkedProps}
                     {...contextOptionsProps}
                     needForUpdate={this.needForUpdate}
+                    selectItem={this.onSelectItem.bind(this, item)}
                     contextButtonSpacerWidth={displayShareButton}
                   >
                     <FilesRowContent
@@ -1546,6 +1576,7 @@ export default connect(mapStateToProps, {
   setDragItem,
   setMediaViewerData,
   setProgressBarData,
+  setSelection,
   setSelected,
   setUpdateTree,
   setIsLoading,
