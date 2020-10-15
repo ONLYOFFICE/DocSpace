@@ -1,37 +1,90 @@
-import React from 'react';
-import styled, { css } from 'styled-components';
-import { Icons } from '../../icons';
-import { getCssFromSvg } from '../../icons/get-css-from-svg';
-import {TreeNode} from 'rc-tree';
-import ReactDOMServer from 'react-dom/server';
+import React from "react";
+import styled, { css } from "styled-components";
+import { Icons } from "../../icons";
+import { getCssFromSvg } from "../../icons/get-css-from-svg";
+import { TreeNode } from "rc-tree";
+import ReactDOMServer from "react-dom/server";
+import PropTypes from "prop-types";
 
 var checkboxIcon,
-    checkboxСheckedIcon,
-    сheckboxDisabledIcon,
-    сheckboxHoverIcon,
-    сheckboxIndeterminateIcon,
-    checkboxCheckedDisabledIcon,
-    checkboxCheckedHoverIcon,
-    checkboxIndeterminateDisabledIcon,
-    checkboxIndeterminateHoverIcon,
-    // eslint-disable-next-line no-unused-vars
-    treeIcon;
+  checkboxСheckedIcon,
+  сheckboxDisabledIcon,
+  сheckboxHoverIcon,
+  сheckboxIndeterminateIcon,
+  checkboxCheckedDisabledIcon,
+  checkboxCheckedHoverIcon,
+  checkboxIndeterminateDisabledIcon,
+  checkboxIndeterminateHoverIcon,
+  // eslint-disable-next-line no-unused-vars
+  treeIcon;
 
-(function(){
-    checkboxIcon = getCssFromSvg(ReactDOMServer.renderToString(<Icons.CheckboxIcon />));
-    сheckboxDisabledIcon = getCssFromSvg(ReactDOMServer.renderToString(<Icons.CheckboxIcon isfill={true} color="#F8F9F9" />));
-    сheckboxHoverIcon = getCssFromSvg(ReactDOMServer.renderToString(<Icons.CheckboxIcon isfill={true} color="white" />));
+(function() {
+  checkboxIcon = getCssFromSvg(
+    ReactDOMServer.renderToString(<Icons.CheckboxIcon />)
+  );
+  сheckboxDisabledIcon = getCssFromSvg(
+    ReactDOMServer.renderToString(
+      <Icons.CheckboxIcon isfill={true} color="#F8F9F9" />
+    )
+  );
+  сheckboxHoverIcon = getCssFromSvg(
+    ReactDOMServer.renderToString(
+      <Icons.CheckboxIcon isfill={true} color="white" />
+    )
+  );
 
-    checkboxСheckedIcon= getCssFromSvg(ReactDOMServer.renderToString(<Icons.CheckboxCheckedIcon />));
-    checkboxCheckedDisabledIcon= getCssFromSvg(ReactDOMServer.renderToString(<Icons.CheckboxCheckedIcon isfill={true} color="#F8F9F9" isStroke={true} stroke="#ECEEF1" />));
-    checkboxCheckedHoverIcon = getCssFromSvg(ReactDOMServer.renderToString(<Icons.CheckboxCheckedIcon isfill={true} color="white" isStroke={true} stroke="#A3A9AE" />));
+  checkboxСheckedIcon = getCssFromSvg(
+    ReactDOMServer.renderToString(<Icons.CheckboxCheckedIcon />)
+  );
+  checkboxCheckedDisabledIcon = getCssFromSvg(
+    ReactDOMServer.renderToString(
+      <Icons.CheckboxCheckedIcon
+        isfill={true}
+        color="#F8F9F9"
+        isStroke={true}
+        stroke="#ECEEF1"
+      />
+    )
+  );
+  checkboxCheckedHoverIcon = getCssFromSvg(
+    ReactDOMServer.renderToString(
+      <Icons.CheckboxCheckedIcon
+        isfill={true}
+        color="white"
+        isStroke={true}
+        stroke="#A3A9AE"
+      />
+    )
+  );
 
-    сheckboxIndeterminateIcon = getCssFromSvg(ReactDOMServer.renderToString(<Icons.CheckboxIndeterminateIcon />));
-    checkboxIndeterminateDisabledIcon = getCssFromSvg(ReactDOMServer.renderToString(<Icons.CheckboxIndeterminateIcon isfill={true} color="#F8F9F9" isStroke={true} stroke="#ECEEF1" />));
-    checkboxIndeterminateHoverIcon = getCssFromSvg(ReactDOMServer.renderToString(<Icons.CheckboxIndeterminateIcon isfill={true} color="white" isStroke={true} stroke="#A3A9AE" />));
+  сheckboxIndeterminateIcon = getCssFromSvg(
+    ReactDOMServer.renderToString(<Icons.CheckboxIndeterminateIcon />)
+  );
+  checkboxIndeterminateDisabledIcon = getCssFromSvg(
+    ReactDOMServer.renderToString(
+      <Icons.CheckboxIndeterminateIcon
+        isfill={true}
+        color="#F8F9F9"
+        isStroke={true}
+        stroke="#ECEEF1"
+      />
+    )
+  );
+  checkboxIndeterminateHoverIcon = getCssFromSvg(
+    ReactDOMServer.renderToString(
+      <Icons.CheckboxIndeterminateIcon
+        isfill={true}
+        color="white"
+        isStroke={true}
+        stroke="#A3A9AE"
+      />
+    )
+  );
 
-    treeIcon = getCssFromSvg(ReactDOMServer.renderToString(<Icons.CatalogFolderIcon />));
-}());
+  treeIcon = getCssFromSvg(
+    ReactDOMServer.renderToString(<Icons.CatalogFolderIcon />)
+  );
+})();
 
 const TreeNodeMenu = styled(TreeNode)`
     
@@ -82,10 +135,10 @@ const TreeNodeMenu = styled(TreeNode)`
         padding: 0;
     }
     .rc-tree-node-content-wrapper {
-        width: ${props => props.disableSwitch ? "90%" : "108%"};
+        width: ${props => (props.disableSwitch ? "90%" : "108%")};
         display: inline-block;
         position: relative;
-        /*min-width: ${props => props.disableSwitch ? "160px" : "190px"};*/
+        /*min-width: ${props => (props.disableSwitch ? "160px" : "190px")};*/
         overflow: hidden;
         
         cursor: pointer;
@@ -94,10 +147,10 @@ const TreeNodeMenu = styled(TreeNode)`
         vertical-align: top;
 
         left: 0;
-        background: ${props => props.dragging ? "#F8F7BF" : "none"};
+        background: ${props => (props.dragging ? "#F8F7BF" : "none")};
 
         :hover {
-            background: ${props => props.dragging ? "#EFEFB2" : "none"};
+            background: ${props => (props.dragging ? "#EFEFB2" : "none")};
         }
     }
     span.rc-tree-switcher,
@@ -117,7 +170,7 @@ const TreeNodeMenu = styled(TreeNode)`
         background-attachment: scroll;
     }
     span.rc-tree-iconEle {
-        display: ${props => props.icon ? 'inline-block' : 'none'};
+        display: ${props => (props.icon ? "inline-block" : "none")};
     }
     span.rc-tree-switcher
     {
@@ -214,33 +267,56 @@ const TreeNodeMenu = styled(TreeNode)`
     }
     span.rc-tree-title{
         display: inline-block;
-        width: ${props => !props.disableSwitch 
-            ? props.icon ? 'calc(100% - 44px)' : 'calc(100% - 20px)'
-            : '100%'};
+        width: ${props =>
+          !props.disableSwitch
+            ? props.icon
+              ? "calc(100% - 44px)"
+              : "calc(100% - 20px)"
+            : "100%"};
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
         color: #333;
-        padding-left: ${props => (props.icon || props.disableSwitch) ? '0' : '20px'};
+        padding-left: ${props =>
+          props.icon || props.disableSwitch ? "0" : "20px"};
     }
     span.rc-tree-title:first-child{
         max-width: 100%;
     }
+    .newItem {
+            position: absolute; 
+            right: 0px; 
+            top: 2px;
+        }
     .rc-tree-node-selected {
         background: #DFE2E3;
         mix-blend-mode: normal;
         border-radius: 3px;
         z-index: 0;
-        ${props => props.disableSwitch &&
-            css`
-                min-width: 0;
-                width: auto;
-            `
-        }
+        ${props =>
+          props.disableSwitch &&
+          css`
+            min-width: 0;
+            width: auto;
+          `}
         :hover {
             background: #DFE2E3;
         }
+        overflow: visible;
+
+        
     }
+    .newItem {
+          position: absolute;
+          right: -30px;
+          top: 2px;
+        }
 `;
+
+TreeNodeMenu.propTypes = {
+  newItems: PropTypes.number,
+  showBadge: PropTypes.bool,
+  onBadgeClick: PropTypes.func
+};
 
 export default TreeNodeMenu;

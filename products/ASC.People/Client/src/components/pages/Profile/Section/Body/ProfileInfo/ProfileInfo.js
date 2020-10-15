@@ -192,7 +192,7 @@ class ProfileInfo extends React.PureComponent {
     const selectedLanguage = languages.find((item) => item.key === language);
     const workFromDate = new Date(workFrom).toLocaleDateString(language);
     const birthDayDate = new Date(birthday).toLocaleDateString(language);
-    const formatedSex = capitalizeFirstLetter(sex);
+    const formatedSex = (sex === "male" && t("MaleSexStatus") ) || t("FemaleSexStatus");
     const formatedDepartments = department && getFormattedDepartments(groups);
     const supportEmail = "documentation@onlyoffice.com";
     const tooltipLanguage = (
@@ -213,7 +213,6 @@ class ProfileInfo extends React.PureComponent {
         </Link>
       </Text>
     );
-
     return (
       <InfoContainer>
         <InfoItem>

@@ -82,56 +82,17 @@ class TreeFolders extends React.Component {
   };
 
   getFolderIcon = (item) => {
-    const showItem = item.newItems
-      ? item.newItems > 0 && this.props.needUpdate
-      : false;
-    const style = { position: "absolute", right: 1, top: 2 };
-    const badgeProps = {
-      label: item.newItems,
-      backgroundColor: "#ED7309",
-      color: "#FFF",
-      fontSize: "11px",
-      fontWeight: 800,
-      borderRadius: "11px",
-      padding: "0 5px",
-      style,
-    };
-
     switch (item.key) {
       case "0-0":
         return <Icons.CatalogUserIcon size="scale" isfill color="#657077" />;
-
       case "0-1":
-        return (
-          <>
-            <Icons.CatalogSharedIcon size="scale" isfill color="#657077" />
-            {showItem && (
-              <Badge
-                data-id={item.id}
-                {...badgeProps}
-                onClick={this.onBadgeClick}
-              />
-            )}
-          </>
-        );
-
+        return <Icons.CatalogSharedIcon size="scale" isfill color="#657077" />;
       case "0-2":
         return (
-          <>
-            <Icons.CatalogPortfolioIcon size="scale" isfill color="#657077" />
-            {showItem && (
-              <Badge
-                data-id={item.id}
-                {...badgeProps}
-                onClick={this.onBadgeClick}
-              />
-            )}
-          </>
+          <Icons.CatalogPortfolioIcon size="scale" isfill color="#657077" />
         );
-
       case "0-3":
         return <Icons.CatalogTrashIcon size="scale" isfill color="#657077" />;
-
       default:
         return <Icons.CatalogFolderIcon size="scale" isfill color="#657077" />;
     }
@@ -187,6 +148,10 @@ class TreeFolders extends React.Component {
     return data.map((item) => {
       const dragging = this.showDragItems(item);
 
+      const showBadge = item.newItems
+        ? item.newItems > 0 && this.props.needUpdate
+        : false;
+
       if (item.folders && item.folders.length > 0) {
         return (
           <TreeNode
@@ -195,6 +160,9 @@ class TreeFolders extends React.Component {
             title={item.title}
             icon={this.getFolderIcon(item)}
             dragging={this.props.dragging && dragging}
+            newItems={item.newItems}
+            onBadgeClick={this.onBadgeClick}
+            showBadge={showBadge}
           >
             {this.getItems(item.folders)}
           </TreeNode>
@@ -442,8 +410,10 @@ function mapStateToProps(state) {
   const commonId = treeFolders[commonFolderIndex].id;
 
   const isMy = selectedFolder.length && selectedFolder.pathParts[0] === myId;
-  const isShare = selectedFolder.length && selectedFolder.pathParts[0] === shareId;
-  const isCommon = selectedFolder.length && selectedFolder.pathParts[0] === commonId;
+  const isShare =
+    selectedFolder.length && selectedFolder.pathParts[0] === shareId;
+  const isCommon =
+    selectedFolder.length && selectedFolder.pathParts[0] === commonId;
 
   return {
     treeFolders: getTreeFolders(state),

@@ -64,7 +64,7 @@ const PureSettings = ({
         </PageLayout.ArticleBody>
 
         <PageLayout.SectionHeader>
-          {Object.keys(settingsTree).length === 0 ? (
+          {Object.keys(settingsTree).length === 0 && isLoading ? (
             <Loaders.Headline />
           ) : (
             <SectionHeaderContent setting={setting} t={t} />
@@ -72,7 +72,7 @@ const PureSettings = ({
         </PageLayout.SectionHeader>
 
         <PageLayout.SectionBody>
-          {Object.keys(settingsTree).length === 0 ? (
+          {Object.keys(settingsTree).length === 0 && isLoading ? (
             <Loaders.SettingsFiles />
           ) : (
             <SectionBodyContent setting={setting} t={t} />

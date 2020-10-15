@@ -2,6 +2,8 @@
   "UserType": "Тип",
   "Email": "Email",
   "Sex": "Пол",
+  "MaleSexStatus": "Мужской",
+  "FemaleSexStatus": "Женский",
   "Birthdate": "Дата рождения",
   "Location": "Местоположение",
   "Language": "Язык",
