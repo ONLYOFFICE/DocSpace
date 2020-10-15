@@ -1,12 +1,13 @@
 import React from "react";
 import styled, { css } from "styled-components";
 import { withRouter } from "react-router";
-import { Headline } from 'asc-web-common';
+import { Headline, store } from 'asc-web-common';
 import { IconButton, utils } from "asc-web-components";
 import { connect } from "react-redux";
 import { withTranslation } from "react-i18next";
 
 const { tablet, desktop } = utils.device;
+const { getSettings } = store.auth.selectors;
 
 const StyledContainer = styled.div`
 
@@ -93,7 +94,7 @@ const SectionHeaderContent = props => {
 
 const mapStateToProps = state => {
   return {
-    settings: state.auth.settings,
+    settings: getSettings(state),
   };
 };
 

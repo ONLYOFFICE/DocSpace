@@ -11,7 +11,7 @@ import { SectionHeaderContent, SectionBodyContent } from "./Section";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import { createI18N } from "../../../helpers/i18n";
 import { getFilesSettings, setIsLoading } from "../../../store/files/actions";
-import { getSettingsTree } from "../../../store/files/selectors";
+import { getSettingsTree, getIsLoading } from "../../../store/files/selectors";
 
 const i18n = createI18N({
   page: "Settings",
@@ -98,7 +98,7 @@ const Settings = (props) => {
 
 function mapStateToProps(state) {
   return {
-    isLoading: state.files.isLoading,
+    isLoading: getIsLoading(state),
     settingsTree: getSettingsTree(state),
   };
 }
