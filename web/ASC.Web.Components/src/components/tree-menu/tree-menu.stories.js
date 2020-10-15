@@ -19,8 +19,7 @@ const iconNames = Object.keys(Icons);
 const treeData = [
   {
     key: "0-0",
-    children: [{ key: "0-0-0" }, { key: "0-0-1" }],
-    newItems: 1
+    children: [{ key: "0-0-0" }, { key: "0-0-1" }]
   }
 ];
 
@@ -123,6 +122,9 @@ const TreeMenuStory = props => {
               Icons[select("icon", iconNames, "CatalogFolderIcon")],
               { size: "scale", isfill: true, color: "dimgray" }
             )}
+            onBadgeClick={onBadgeClick}
+            newItems={number("newItems", 0)}
+            showBadge={boolean("showBadge", false)}
           >
             {getTreeNodes(item.children)}
           </TreeNode>
@@ -132,8 +134,6 @@ const TreeMenuStory = props => {
         <TreeNode
           key={item.key}
           title={text("title", "Title")}
-          onBadgeClick={onBadgeClick}
-          newItems={item.newItems}
           icon={React.createElement(
             Icons[select("icon", iconNames, "CatalogFolderIcon")],
             { size: "scale", isfill: true, color: "dimgray" }

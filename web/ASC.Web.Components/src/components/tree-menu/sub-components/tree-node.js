@@ -4,6 +4,7 @@ import { Icons } from "../../icons";
 import { getCssFromSvg } from "../../icons/get-css-from-svg";
 import { TreeNode } from "rc-tree";
 import ReactDOMServer from "react-dom/server";
+import PropTypes from "prop-types";
 
 var checkboxIcon,
   checkboxСheckedIcon,
@@ -311,5 +312,11 @@ const TreeNodeMenu = styled(TreeNode)`
           top: 2px;
         }
 `;
+
+TreeNodeMenu.propTypes = {
+  newItems: PropTypes.number,
+  showBadge: PropTypes.bool,
+  onBadgeClick: PropTypes.func
+};
 
 export default TreeNodeMenu;

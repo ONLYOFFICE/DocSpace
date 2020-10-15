@@ -179,12 +179,8 @@ const TreeMenu = React.forwardRef((props, ref) => {
     const items = [];
 
     React.Children.forEach(children, (child, i) => {
-      if (
-        child.props.newItems > 0 &&
-        typeof child.props.newItems === "number"
-      ) {
+      if (child.props.newItems > 0 && child.props.showBadge) {
         const el = React.cloneElement(child, {
-          key: child.props.id,
           icon: (
             <>
               {child.props.icon}
