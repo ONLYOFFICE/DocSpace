@@ -22,7 +22,7 @@
     <PackageReference Include="DotNetZip" Version="1.13.8" />
     <PackageReference Include="Dropbox.Api" Version="4.10.0" />
     <PackageReference Include="Google.Apis.Drive.v3" Version="1.46.0.1986" />
-    <PackageReference Include="Grpc.Tools" Version="2.30.0">
+    <PackageReference Include="Grpc.Tools" Version="2.31.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

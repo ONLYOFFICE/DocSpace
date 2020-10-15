@@ -51,7 +51,7 @@
     <PackageReference Include="AWSSDK.Core" Version="3.3.107.18" />
     <PackageReference Include="AWSSDK.S3" Version="3.3.111.19" />
     <PackageReference Include="AWSSDK.SimpleEmail" Version="3.3.101.172" />
-    <PackageReference Include="Grpc.Tools" Version="2.30.0">
+    <PackageReference Include="Grpc.Tools" Version="2.31.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
