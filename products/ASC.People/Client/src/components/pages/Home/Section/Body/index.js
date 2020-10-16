@@ -474,6 +474,7 @@ class SectionBodyContent extends React.PureComponent {
                 color="#657077"
               />
             </Box>
+            <Box displayProp="inline-block" marginProp="14px 0 0 0">
             <Link
               type="action"
               isHovered={true}
@@ -483,6 +484,7 @@ class SectionBodyContent extends React.PureComponent {
             >
               {t("ClearButton")}
             </Link>
+            </Box>
           </>
         }
       />

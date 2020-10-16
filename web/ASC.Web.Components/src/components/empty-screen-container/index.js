@@ -45,7 +45,7 @@ const EmptyContentBody = styled.div`
   @media (orientation: portrait) {
     @media (max-width: 768px) {
       padding-top: 0px;
-      max-width: 496px;
+      max-width: 700px;
 
       .ec-image {
         max-height: 100px;

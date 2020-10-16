@@ -756,6 +756,7 @@ class SectionBodyContent extends React.Component {
         <img
           className="empty-folder_container_up-image"
           src="images/empty_screen_people.svg"
+          width= "12px"
           alt=""
           onClick={this.onGoToMyDocuments}
         />
