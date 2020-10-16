@@ -718,15 +718,15 @@ namespace ASC.Api.Documents
         /// <param name="title">Title of new folder</param>
         /// <returns>New folder contents</returns>
         [Create("folder/{folderId}", DisableFormat = true)]
-        public FolderWrapper<string> CreateFolder(string folderId, string title)
+        public FolderWrapper<string> CreateFolder(string folderId, CreateFolderModel folderModel)
         {
-            return FilesControllerHelperString.CreateFolder(folderId, title);
+            return FilesControllerHelperString.CreateFolder(folderId, folderModel.Title);
         }
 
         [Create("folder/{folderId:int}")]
-        public FolderWrapper<int> CreateFolder(int folderId, string title)
+        public FolderWrapper<int> CreateFolder(int folderId, CreateFolderModel folderModel)
         {
-            return FilesControllerHelperInt.CreateFolder(folderId, title);
+            return FilesControllerHelperInt.CreateFolder(folderId, folderModel.Title);
         }
 
 
@@ -739,9 +739,9 @@ namespace ASC.Api.Documents
         /// <remarks>In case the extension for the file title differs from DOCX/XLSX/PPTX and belongs to one of the known text, spreadsheet or presentation formats, it will be changed to DOCX/XLSX/PPTX accordingly. If the file extension is not set or is unknown, the DOCX extension will be added to the file title.</remarks>
         /// <returns>New file info</returns>
         [Create("@my/file")]
-        public FileWrapper<int> CreateFile(string title)
+        public FileWrapper<int> CreateFile(CreateFileModel<int> model)
         {
-            return CreateFile(GlobalFolderHelper.FolderMy, title, 0);
+            return CreateFile(GlobalFolderHelper.FolderMy, model);
         }
 
         /// <summary>
@@ -754,15 +754,15 @@ namespace ASC.Api.Documents
         /// <remarks>In case the extension for the file title differs from DOCX/XLSX/PPTX and belongs to one of the known text, spreadsheet or presentation formats, it will be changed to DOCX/XLSX/PPTX accordingly. If the file extension is not set or is unknown, the DOCX extension will be added to the file title.</remarks>
         /// <returns>New file info</returns>
         [Create("{folderId}/file", DisableFormat = true)]
-        public FileWrapper<string> CreateFile(string folderId, string title, string templateId)
+        public FileWrapper<string> CreateFile(string folderId, CreateFileModel<string> model)
         {
-            return FilesControllerHelperString.CreateFile(folderId, title, templateId);
+            return FilesControllerHelperString.CreateFile(folderId, model.Title, model.TemplateId);
         }
 
         [Create("{folderId:int}/file")]
-        public FileWrapper<int> CreateFile(int folderId, string title, int templateId)
+        public FileWrapper<int> CreateFile(int folderId, CreateFileModel<int> model)
         {
-            return FilesControllerHelperInt.CreateFile(folderId, title, templateId);
+            return FilesControllerHelperInt.CreateFile(folderId, model.Title, model.TemplateId);
         }
 
         /// <summary>
@@ -776,15 +776,15 @@ namespace ASC.Api.Documents
         /// <param name="title">New title</param>
         /// <returns>Folder contents</returns>
         [Update("folder/{folderId}", DisableFormat = true)]
-        public FolderWrapper<string> RenameFolder(string folderId, string title)
+        public FolderWrapper<string> RenameFolder(string folderId, CreateFolderModel folderModel)
         {
-            return FilesControllerHelperString.RenameFolder(folderId, title);
+            return FilesControllerHelperString.RenameFolder(folderId, folderModel.Title);
         }
 
         [Update("folder/{folderId:int}")]
-        public FolderWrapper<int> RenameFolder(int folderId, string title)
+        public FolderWrapper<int> RenameFolder(int folderId, CreateFolderModel folderModel)
         {
-            return FilesControllerHelperInt.RenameFolder(folderId, title);
+            return FilesControllerHelperInt.RenameFolder(folderId, folderModel.Title);
         }
 
         /// <summary>
@@ -1231,15 +1231,10 @@ namespace ASC.Api.Documents
         /// <category>Sharing</category>
         /// <returns>Shared file information</returns>
         [Delete("share")]
-        public bool RemoveSecurityInfo(BaseBatchModel<int> model)
+        public bool RemoveSecurityInfo(BaseBatchModel<object> model)
         {
-            var itemList = new ItemList<string>();
-
-            itemList.AddRange((model.FolderIds ?? new List<int>()).Select(x => "folder_" + x));
-            itemList.AddRange((model.FileIds ?? new List<int>()).Select(x => "file_" + x));
-
-            FileStorageService.RemoveAce(itemList);
-
+            FileStorageService.RemoveAce(model.FileIds.OfType<string>().ToList(), model.FolderIds.OfType<string>().ToList());
+            FileStorageServiceInt.RemoveAce(model.FileIds.OfType<long>().Select(r => Convert.ToInt32(r)).ToList(), model.FolderIds.OfType<long>().Select(r => Convert.ToInt32(r)).ToList());
             return true;
         }
 

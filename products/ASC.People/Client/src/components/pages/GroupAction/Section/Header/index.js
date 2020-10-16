@@ -6,6 +6,7 @@ import { IconButton } from "asc-web-components";
 import { Headline } from "asc-web-common";
 import { withTranslation } from "react-i18next";
 import { resetGroup } from "../../../../../store/group/actions";
+import { setFilter } from "../../../../../store/people/actions";
 import styled from "styled-components";
 
 const Wrapper = styled.div`
@@ -23,7 +24,6 @@ const Wrapper = styled.div`
 `;
 
 class SectionHeaderContent extends React.Component {
-
   constructor(props) {
     super(props);
     const { group, t, groupCaption } = props;
@@ -32,14 +32,14 @@ class SectionHeaderContent extends React.Component {
       : t("CustomNewDepartment", { groupCaption });
 
     this.state = {
-      headerText
-    }
+      headerText,
+    };
   }
   onClickBack = () => {
-    const { history, settings, resetGroup } = this.props;
+    const { filter, resetGroup, setFilter } = this.props;
 
     resetGroup();
-    history.push(settings.homepage);
+    setFilter(filter);
   };
 
   render() {
@@ -48,7 +48,7 @@ class SectionHeaderContent extends React.Component {
       <Wrapper>
         <IconButton
           iconName="ArrowPathIcon"
-          size="16"
+          size="17"
           color="#A3A9AE"
           hoverColor="#657077"
           isFill={true}
@@ -65,22 +65,22 @@ class SectionHeaderContent extends React.Component {
 
 SectionHeaderContent.propTypes = {
   group: PropTypes.object,
-  history: PropTypes.object.isRequired
+  history: PropTypes.object.isRequired,
 };
 
 SectionHeaderContent.defaultProps = {
-  group: null
+  group: null,
 };
 
 function mapStateToProps(state) {
   return {
     settings: state.auth.settings,
     group: state.group.targetGroup,
-    groupCaption: state.auth.settings.customNames.groupCaption
+    groupCaption: state.auth.settings.customNames.groupCaption,
+    filter: state.people.filter,
   };
 }
 
-export default connect(
-  mapStateToProps,
-  { resetGroup }
-)(withTranslation()(withRouter(SectionHeaderContent)));
+export default connect(mapStateToProps, { resetGroup, setFilter })(
+  withTranslation()(withRouter(SectionHeaderContent))
+);

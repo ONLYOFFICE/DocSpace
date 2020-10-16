@@ -33,12 +33,12 @@ using System.Linq;
 using System.Net;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 
 using ASC.Common.Web;
 using ASC.Core;
 
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace ASC.Web.Core.Files
@@ -151,7 +151,7 @@ namespace ASC.Web.Core.Files
                 body.Token = token;
             }
 
-            var bodyString = JsonConvert.SerializeObject(body);
+            var bodyString = System.Text.Json.JsonSerializer.Serialize(body, new System.Text.Json.JsonSerializerOptions() { IgnoreNullValues = true });
 
             var bytes = Encoding.UTF8.GetBytes(bodyString ?? "");
             request.ContentLength = bytes.Length;
@@ -261,7 +261,7 @@ namespace ASC.Web.Core.Files
                 body.Token = token;
             }
 
-            var bodyString = JsonConvert.SerializeObject(body);
+            var bodyString = System.Text.Json.JsonSerializer.Serialize(body, new System.Text.Json.JsonSerializerOptions() { IgnoreNullValues = true });
 
             var bytes = Encoding.UTF8.GetBytes(bodyString ?? "");
             request.ContentLength = bytes.Length;
@@ -300,7 +300,8 @@ namespace ASC.Web.Core.Files
             return (CommandResultTypes)jResponse.Value<int>("error");
         }
 
-        public static string DocbuilderRequest(FileUtility fileUtility,
+        public static string DocbuilderRequest(
+            FileUtility fileUtility,
             string docbuilderUrl,
             string requestKey,
             string scriptUrl,
@@ -341,7 +342,7 @@ namespace ASC.Web.Core.Files
                 body.Token = token;
             }
 
-            var bodyString = JsonConvert.SerializeObject(body);
+            var bodyString = System.Text.Json.JsonSerializer.Serialize(body, new System.Text.Json.JsonSerializerOptions() { IgnoreNullValues = true });
 
             var bytes = Encoding.UTF8.GetBytes(bodyString ?? "");
             request.ContentLength = bytes.Length;
@@ -373,7 +374,10 @@ namespace ASC.Web.Core.Files
             if (responseFromService == null) throw new Exception("Invalid answer format");
 
             var errorElement = responseFromService.Value<string>("error");
-            if (!string.IsNullOrEmpty(errorElement)) DocumentServiceException.ProcessResponseError(errorElement);
+            if (!string.IsNullOrEmpty(errorElement))
+            {
+                DocumentServiceException.ProcessResponseError(errorElement);
+            }
 
             var isEnd = responseFromService.Value<bool>("end");
 
@@ -433,25 +437,32 @@ namespace ASC.Web.Core.Files
         [DebuggerDisplay("{Command} ({Key})")]
         private class CommandBody
         {
+            [System.Text.Json.Serialization.JsonIgnore]
             public CommandMethod Command { get; set; }
 
-
+            [JsonPropertyName("c")]
             public string C
             {
                 get { return Command.ToString().ToLower(CultureInfo.InvariantCulture); }
             }
 
+            [JsonPropertyName("callback")]
             public string Callback { get; set; }
 
+            [JsonPropertyName("key")]
             public string Key { get; set; }
 
+            [JsonPropertyName("meta")]
             public MetaData Meta { get; set; }
 
+            [JsonPropertyName("users")]
             public string[] Users { get; set; }
 
+            [JsonPropertyName("token")]
             public string Token { get; set; }
 
             //not used
+            [JsonPropertyName("userdata")]
             public string UserData { get; set; }
         }
 
@@ -459,27 +470,36 @@ namespace ASC.Web.Core.Files
         [DebuggerDisplay("{Title}")]
         public class MetaData
         {
-            public string Title;
+            [JsonPropertyName("title")]
+            public string Title { get; set; }
         }
 
         [Serializable]
         [DebuggerDisplay("{Title} from {FileType} to {OutputType} ({Key})")]
         private class ConvertionBody
         {
+            [JsonPropertyName("async")]
             public bool Async { get; set; }
 
+            [JsonPropertyName("filetype")]
             public string FileType { get; set; }
 
+            [JsonPropertyName("key")]
             public string Key { get; set; }
 
+            [JsonPropertyName("outputtype")]
             public string OutputType { get; set; }
 
+            [JsonPropertyName("password")]
             public string Password { get; set; }
 
+            [JsonPropertyName("title")]
             public string Title { get; set; }
 
+            [JsonPropertyName("url")]
             public string Url { get; set; }
 
+            [JsonPropertyName("token")]
             public string Token { get; set; }
         }
 
@@ -487,23 +507,30 @@ namespace ASC.Web.Core.Files
         [DebuggerDisplay("{Key}")]
         private class BuilderBody
         {
+            [JsonPropertyName("async")]
             public bool Async { get; set; }
 
+            [JsonPropertyName("key")]
             public string Key { get; set; }
 
+            [JsonPropertyName("url")]
             public string Url { get; set; }
 
+            [JsonPropertyName("token")]
             public string Token { get; set; }
         }
 
         [Serializable]
         public class FileLink
         {
-            public string FileType;
+            [JsonPropertyName("filetype")]
+            public string FileType { get; set; }
 
-            public string Token;
+            [JsonPropertyName("token")]
+            public string Token { get; set; }
 
-            public string Url;
+            [JsonPropertyName("url")]
+            public string Url { get; set; }
         }
 
         public class DocumentServiceException : Exception

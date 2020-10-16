@@ -74,14 +74,7 @@ namespace ASC.Core.Common.Migrations.MySql.WebstudioDbContextMySql
                             TenantId = 1,
                             Id = "9a925891-1f92-4ed7-b277-d6f649739f06",
                             UserId = "00000000-0000-0000-0000-000000000000",
-                            Data = "{'Analytics':true,'Completed':true}"
-                        },
-                        new
-                        {
-                            TenantId = 1,
-                            Id = "ab5b3c97-a972-475c-bb13-71936186c4e6",
-                            UserId = "00000000-0000-0000-0000-000000000000",
-                            Data = "{'ColorThemeName':'pure - orange','FirstRequest':false}"
+                            Data = "{\"Completed\":false}"
                         });
                 });
 

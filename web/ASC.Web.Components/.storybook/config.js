@@ -1,9 +1,9 @@
-import { configure, addDecorator, addParameters } from '@storybook/react';
-import { withA11y } from '@storybook/addon-a11y';
-import { addReadme } from 'storybook-readme';
-import { withConsole } from '@storybook/addon-console';
+import { configure, addDecorator, addParameters } from "@storybook/react";
+import { withA11y } from "@storybook/addon-a11y";
+import { addReadme } from "storybook-readme";
+import { withConsole } from "@storybook/addon-console";
 
-import '!style-loader!css-loader!./styles.scss';
+import "!style-loader!css-loader!./styles.scss";
 
 //import 'bootstrap/dist/css/bootstrap.css';
 //import 'react-toastify/dist/ReactToastify.min.css';
@@ -24,17 +24,19 @@ addDecorator(addReadme);
 
 /* General options for storybook */
 addParameters({
-  options:
-  {
-    name: 'ASC Web Components Storybook',
+  options: {
+    name: "ASC Web Components Storybook",
     //sortStoriesByKind: true,
-    storySort: (a, b) => a[1].kind === b[1].kind ? 0 : a[1].id.localeCompare(b[1].id, { numeric: true }),
+    storySort: (a, b) =>
+      a[1].kind === b[1].kind
+        ? 0
+        : a[1].id.localeCompare(b[1].id, { numeric: true }),
     showAddonPanel: true,
-    addonPanelInRight: true
+    addonPanelInRight: true,
   },
   /* Options for storybook-readme plugin */
   readme: {
-    codeTheme: 'github',
+    codeTheme: "github",
     StoryPreview: ({ children }) => children,
   },
 });
@@ -42,10 +44,10 @@ addParameters({
 /* automatically import all files ending in *.stories.js inside src folder */
 //const req = requireContext('../src', true, /\.stories\.js$/);
 //const req = require.context('../src', true, /\.stories\.js$/);
-const srcStories = require.context('../src', true, /\.stories\.js$/);
+const srcStories = require.context("../src", true, /\.stories\.js$/);
 function loadStories() {
   //req.keys().forEach(filename => req(filename));
-  srcStories.keys().forEach(filename => srcStories(filename));
+  srcStories.keys().forEach((filename) => srcStories(filename));
 }
 
 addDecorator((storyFn, context) => withConsole()(storyFn)(context));

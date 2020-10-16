@@ -2,6 +2,8 @@
   "UserType": "Тип",
   "Email": "Email",
   "Sex": "Пол",
+  "MaleSexStatus": "Мужской",
+  "FemaleSexStatus": "Женский",
   "Birthdate": "Дата рождения",
   "Location": "Местоположение",
   "Language": "Язык",
@@ -23,7 +25,7 @@
   "Actions": "Действия",
   "ChangeEmailSuccess": "Email успешно изменен",
   "NotFoundLanguage": "Если Вы не можете найти свой язык в списке доступных, Вы всегда можете написать нам по адресу <1>{{supportEmail}}</1>, чтобы принять участие в переводе и получить до 1 года бесплатного использования.",
-  "LearnMore":  "Подробнее...",
+  "LearnMore": "Подробнее...",
   "ErrorUnknownFileImageType": "Неизвестный тип файла изображения",
   "Error": "Ошибка",
   "SocialProfiles": "Социальные профили",
@@ -33,7 +35,7 @@
   "MessageEmailActivationInstuctionsSentOnEmail": "Инструкция по активации почты пользователя была отправлена по адресу <strong>{{ email }}</strong>",
   "People": "Люди",
   "Profile": "Профиль",
-  
+
   "PhoneChange": "Изменить номер телефона",
   "PhoneLbl": "Основной телефон",
   "EditSubscriptionsBtn": "Изменить подписки",
@@ -42,8 +44,8 @@
   "Culture_en": "Английский (Великобритания)",
   "Culture_en-US": "Английский (США)",
   "Culture_ru-RU": "Русский (Россия)",
-  "chooseFileLabel":  "Перетащите файл сюда или нажмите, чтобы выбрать файл",
-  "chooseMobileFileLabel": "Нажмите сюда, чтобы выбрать файл",
+  "selectNewPhotoLabel": "Выбрать новое фото",
+  "orDropFileHereLabel": "или перетащите файл сюда",
   "maxSizeFileError": "Превышен максимальный размер файла",
   "editAvatar": "Изменить"
 }

@@ -73,7 +73,7 @@ namespace ASC.Core.Common.Migrations.Npgsql.WebstudioDbContextNpgsql
                             TenantId = 1,
                             Id = new Guid("9a925891-1f92-4ed7-b277-d6f649739f06"),
                             UserId = new Guid("00000000-0000-0000-0000-000000000000"),
-                            Data = "{'Completed':false}"
+                            Data = "{\"Completed\':false}"
                         });
                 });
 

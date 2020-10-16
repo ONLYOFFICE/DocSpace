@@ -180,13 +180,13 @@ namespace ASC.Web.Core.Files
                     const string databaseId = "files";
 
                     var dbManager = FilesDbContext.Get(databaseId);
-                    var list = dbManager.FilesConverts.Select(r => new { r.Input, r.Ouput }).ToList();
+                    var list = dbManager.FilesConverts.Select(r => new { r.Input, r.Output }).ToList();
 
 
                     list.ForEach(item =>
                         {
                             var input = item.Input;
-                            var output = item.Ouput;
+                            var output = item.Output;
                             if (string.IsNullOrEmpty(input) || string.IsNullOrEmpty(output))
                                 return;
                             input = input.ToLower().Trim();
@@ -255,7 +255,7 @@ namespace ASC.Web.Core.Files
             }
         }
 
-        public List<string> extsWebEncrypt;
+        private List<string> extsWebEncrypt;
         public List<string> ExtsWebEncrypt { get => extsWebEncrypt ??= (Configuration.GetSection("files:docservice:encrypted-docs").Get<string[]>() ?? new string[] { }).ToList(); }
 
         private List<string> extsWebReviewed;

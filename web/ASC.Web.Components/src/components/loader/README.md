@@ -9,12 +9,7 @@ import { Loader } from "asc-web-components";
 ```
 
 ```jsx
-<Loader 
-  type="base" 
-  color="black" 
-  size='18px' 
-  label="Loading" 
-/>
+<Loader type="base" color="black" size="18px" label="Loading" />
 ```
 
 ### Properties

@@ -14,7 +14,7 @@ class ConfirmRoute extends React.Component {
     super(props);
     this.state = {
       linkData: {},
-      isLoaded: false
+      isLoaded: false,
     };
   }
 
@@ -22,7 +22,9 @@ class ConfirmRoute extends React.Component {
     const { forUnauthorized, history } = this.props;
 
     if (forUnauthorized && localStorage.getItem(AUTH_KEY))
-      return history.push(`/error=Access error. You should be unauthorized for performing this action`);
+      return history.push(
+        `/error=Access error. You should be unauthorized for performing this action`
+      );
 
     const { location, isAuthenticated } = this.props;
     const { search } = location;
@@ -39,17 +41,19 @@ class ConfirmRoute extends React.Component {
     }
 
     checkConfirmLink(confirmLinkData)
-      .then(validationResult => {
+      .then((validationResult) => {
         switch (validationResult) {
           case ValidationResult.Ok:
-            const confirmHeader = `type=${confirmLinkData.type}&${search.slice(1)}`;
+            const confirmHeader = `type=${confirmLinkData.type}&${search.slice(
+              1
+            )}`;
             const linkData = {
               ...confirmLinkData,
-              confirmHeader
+              confirmHeader,
             };
             this.setState({
               isLoaded: true,
-              linkData
+              linkData,
             });
             break;
           case ValidationResult.Invalid:
@@ -63,7 +67,7 @@ class ConfirmRoute extends React.Component {
             break;
         }
       })
-      .catch(error => {
+      .catch((error) => {
         history.push(`${path}/error=${error}`);
       });
   }
@@ -76,13 +80,13 @@ class ConfirmRoute extends React.Component {
     return (
       <Route
         {...rest}
-        render={props =>
+        render={(props) =>
           !this.state.isLoaded ? (
-            <PageLayout
-              sectionBodyContent={
-                <Loader className="pageLoader" type="rombs" size='40px' />
-              }
-            />
+            <PageLayout>
+              <PageLayout.SectionBody>
+                <Loader className="pageLoader" type="rombs" size="40px" />
+              </PageLayout.SectionBody>
+            </PageLayout>
           ) : (
             <Component
               {...(props = { ...props, linkData: this.state.linkData })}
@@ -96,11 +100,10 @@ class ConfirmRoute extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    isAuthenticated: state.auth.isAuthenticated
+    isAuthenticated: state.auth.isAuthenticated,
   };
 }
 
-export default connect(
-  mapStateToProps,
-  { checkConfirmLink }
-)(withRouter(ConfirmRoute));
+export default connect(mapStateToProps, { checkConfirmLink })(
+  withRouter(ConfirmRoute)
+);

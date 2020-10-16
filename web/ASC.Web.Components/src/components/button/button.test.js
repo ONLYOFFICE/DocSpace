@@ -1,18 +1,16 @@
-import React from 'react';
-import { mount } from 'enzyme';
-import Button from '.';
+import React from "react";
+import { mount } from "enzyme";
+import Button from ".";
 
 const baseProps = {
-  size: 'base',
+  size: "base",
   isDisabled: false,
-  label: 'OK'
-}
+  label: "OK",
+};
 
-describe('<Button />', () => {
-  it('renders without error', () => {
-    const wrapper = mount(
-      <Button {...baseProps} />
-    );
+describe("<Button />", () => {
+  it("renders without error", () => {
+    const wrapper = mount(<Button {...baseProps} />);
 
     expect(wrapper).toExist();
   });
@@ -40,120 +38,100 @@ describe('<Button />', () => {
     expect(shouldUpdate).toBe(true);
   }); */
 
-  it('accepts id', () => {
-    const wrapper = mount(
-      <Button {...baseProps} id="testId" />
-    );
+  it("accepts id", () => {
+    const wrapper = mount(<Button {...baseProps} id="testId" />);
 
-    expect(wrapper.prop('id')).toEqual('testId');
+    expect(wrapper.prop("id")).toEqual("testId");
   });
 
-  it('accepts className', () => {
-    const wrapper = mount(
-      <Button {...baseProps} className="test" />
-    );
+  it("accepts className", () => {
+    const wrapper = mount(<Button {...baseProps} className="test" />);
 
-    expect(wrapper.prop('className')).toEqual('test');
+    expect(wrapper.prop("className")).toEqual("test");
   });
 
-  it('accepts style', () => {
-    const wrapper = mount(
-      <Button {...baseProps} style={{ color: 'red' }} />
-    );
+  it("accepts style", () => {
+    const wrapper = mount(<Button {...baseProps} style={{ color: "red" }} />);
 
-    expect(wrapper.getDOMNode().style).toHaveProperty('color', 'red');
+    expect(wrapper.getDOMNode().style).toHaveProperty("color", "red");
   });
 
-  it('render with isHovered prop', () => {
-    const wrapper = mount(
-      <Button {...baseProps} isHovered />
-    );
+  it("render with isHovered prop", () => {
+    const wrapper = mount(<Button {...baseProps} isHovered />);
 
-    expect(wrapper.prop('isHovered')).toEqual(true);
+    expect(wrapper.prop("isHovered")).toEqual(true);
   });
 
-  it('render with isClicked prop', () => {
-    const wrapper = mount(
-      <Button {...baseProps} isClicked />
-    );
+  it("render with isClicked prop", () => {
+    const wrapper = mount(<Button {...baseProps} isClicked />);
 
-    expect(wrapper.prop('isClicked')).toEqual(true);
+    expect(wrapper.prop("isClicked")).toEqual(true);
   });
 
-  it('render with isDisabled prop', () => {
-    const wrapper = mount(
-      <Button {...baseProps} isDisabled />
-    );
+  it("render with isDisabled prop", () => {
+    const wrapper = mount(<Button {...baseProps} isDisabled />);
 
-    expect(wrapper.prop('isDisabled')).toEqual(true);
+    expect(wrapper.prop("isDisabled")).toEqual(true);
   });
 
-  it('render with isLoading prop', () => {
-    const wrapper = mount(
-      <Button {...baseProps} isLoading />
-    );
+  it("render with isLoading prop", () => {
+    const wrapper = mount(<Button {...baseProps} isLoading />);
 
-    expect(wrapper.prop('isLoading')).toEqual(true);
+    expect(wrapper.prop("isLoading")).toEqual(true);
 
-    wrapper.setProps({primary: true});
-    expect(wrapper.prop('primary')).toEqual(true);
-    expect(wrapper.prop('isLoading')).toEqual(true);
+    wrapper.setProps({ primary: true });
+    expect(wrapper.prop("primary")).toEqual(true);
+    expect(wrapper.prop("isLoading")).toEqual(true);
   });
 
-  it('render with various size', () => {
-    const wrapper = mount(
-      <Button {...baseProps} />
-    );
+  it("render with various size", () => {
+    const wrapper = mount(<Button {...baseProps} />);
 
-    wrapper.setProps({size: 'medium'});
-    expect(wrapper.prop('size')).toEqual('medium');
+    wrapper.setProps({ size: "medium" });
+    expect(wrapper.prop("size")).toEqual("medium");
 
-    wrapper.setProps({size: 'big'});
-    expect(wrapper.prop('size')).toEqual('big');
+    wrapper.setProps({ size: "big" });
+    expect(wrapper.prop("size")).toEqual("big");
 
-    wrapper.setProps({size: 'medium', primary: true});
-    expect(wrapper.prop('size')).toEqual('medium');
-    expect(wrapper.prop('primary')).toEqual(true);
+    wrapper.setProps({ size: "medium", primary: true });
+    expect(wrapper.prop("size")).toEqual("medium");
+    expect(wrapper.prop("primary")).toEqual(true);
 
-    wrapper.setProps({size: 'big', primary: true});
-    expect(wrapper.prop('size')).toEqual('big');
-    expect(wrapper.prop('primary')).toEqual(true);
+    wrapper.setProps({ size: "big", primary: true });
+    expect(wrapper.prop("size")).toEqual("big");
+    expect(wrapper.prop("primary")).toEqual(true);
 
-    wrapper.setProps({size: 'large', primary: true});
-    expect(wrapper.prop('size')).toEqual('large');
-    expect(wrapper.prop('primary')).toEqual(true);
+    wrapper.setProps({ size: "large", primary: true });
+    expect(wrapper.prop("size")).toEqual("large");
+    expect(wrapper.prop("primary")).toEqual(true);
 
-    wrapper.setProps({scale: true});
-    expect(wrapper.prop('scale')).toEqual(true);
+    wrapper.setProps({ scale: true });
+    expect(wrapper.prop("scale")).toEqual(true);
   });
 
-  it('render with icon', () => {
-    const icon = (<>1</>);
-    const wrapper = mount(
-      <Button {...baseProps} icon={icon} />
-    );
+  it("render with icon", () => {
+    const icon = <>1</>;
+    const wrapper = mount(<Button {...baseProps} icon={icon} />);
 
-    expect(wrapper.prop('icon')).toEqual(icon);
+    expect(wrapper.prop("icon")).toEqual(icon);
 
-    wrapper.setProps({size: 'big', primary: true});
-    expect(wrapper.prop('size')).toEqual('big');
-    expect(wrapper.prop('primary')).toEqual(true);
+    wrapper.setProps({ size: "big", primary: true });
+    expect(wrapper.prop("size")).toEqual("big");
+    expect(wrapper.prop("primary")).toEqual(true);
 
-    wrapper.setProps({size: 'medium', primary: true});
-    expect(wrapper.prop('size')).toEqual('medium');
-    expect(wrapper.prop('primary')).toEqual(true);
+    wrapper.setProps({ size: "medium", primary: true });
+    expect(wrapper.prop("size")).toEqual("medium");
+    expect(wrapper.prop("primary")).toEqual(true);
 
-    wrapper.setProps({size: 'large', primary: true});
-    expect(wrapper.prop('size')).toEqual('large');
-    expect(wrapper.prop('primary')).toEqual(true);
+    wrapper.setProps({ size: "large", primary: true });
+    expect(wrapper.prop("size")).toEqual("large");
+    expect(wrapper.prop("primary")).toEqual(true);
   });
 
-  it('accepts minWidth', () => {
-    const wrapper = mount(
-      <Button {...baseProps}/>
-    );
+  it("accepts minWidth", () => {
+    const wrapper = mount(<Button {...baseProps} />);
 
-    wrapper.setProps({minWidth: '40px'});
-    expect(wrapper.prop('minWidth')).toEqual('40px');
+    wrapper.setProps({ minWidth: "40px" });
+    expect(wrapper.prop("minWidth")).toEqual("40px");
   });
 });

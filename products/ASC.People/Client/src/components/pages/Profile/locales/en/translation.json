@@ -2,6 +2,8 @@
   "UserType": "Type",
   "Email": "Email",
   "Sex": "Sex",
+  "MaleSexStatus": "Male",
+  "FemaleSexStatus": "Female",
   "Birthdate": "Date of birth",
   "Location": "Location",
   "Language": "Language",
@@ -33,7 +35,7 @@
   "MessageEmailActivationInstuctionsSentOnEmail": "The email activation instructions have been sent to the <strong>{{ email }}</strong> email address",
   "People": "People",
   "Profile": "Profile",
-  
+
   "PhoneChange": "Change phone",
   "PhoneLbl": "Phone",
   "EditSubscriptionsBtn": "Edit subscriptions",
@@ -42,8 +44,8 @@
   "Culture_en": "English (United Kingdom)",
   "Culture_en-US": "English (United States)",
   "Culture_ru-RU": "Russian (Russia)",
-  "chooseFileLabel":  "Drop file here, or click to select file",
-  "chooseMobileFileLabel": "Click to select files",
+  "selectNewPhotoLabel": "Select new photo",
+  "orDropFileHereLabel": "or drop file here",
   "maxSizeFileError": "Maximum file size exceeded",
   "editAvatar": "Edit"
 }

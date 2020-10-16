@@ -68,8 +68,7 @@ namespace ASC.Core.Common.Migrations.MySql.WebstudioDbContextMySql
                 columns: new[] { "TenantID", "ID", "UserID", "Data" },
                 values: new object[,]
                 {
-                    { 1, "9a925891-1f92-4ed7-b277-d6f649739f06", "00000000-0000-0000-0000-000000000000", "{'Analytics':true,'Completed':true}" },
-                    { 1, "ab5b3c97-a972-475c-bb13-71936186c4e6", "00000000-0000-0000-0000-000000000000", "{'ColorThemeName':'pure - orange','FirstRequest':false}" }
+                    { 1, "9a925891-1f92-4ed7-b277-d6f649739f06", "00000000-0000-0000-0000-000000000000", "{\"Completed\":false}" }
                 });
 
             migrationBuilder.InsertData(

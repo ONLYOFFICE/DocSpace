@@ -6,15 +6,15 @@ import {
   SearchInput,
   SelectedItem,
   TextInput,
-  toastr,
-  utils
+  utils,
 } from "asc-web-components";
-import { PeopleSelector } from "asc-web-common";
+import { PeopleSelector, store as initStore, toastr } from "asc-web-common";
 import {
   createGroup,
   resetGroup,
-  updateGroup
+  updateGroup,
 } from "../../../../../store/group/actions";
+import { selectGroup, setFilter } from "../../../../../store/people/actions";
 
 import { GUID_EMPTY } from "../../../../../helpers/constants";
 import PropTypes from "prop-types";
@@ -23,6 +23,12 @@ import { connect } from "react-redux";
 import styled from "styled-components";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
+
+const {
+  getCurrentProductName,
+  getSettings,
+  getCurrentUser,
+} = initStore.auth.selectors;
 
 const MainContainer = styled.div`
   display: flex;
@@ -82,9 +88,7 @@ class SectionBodyContent extends React.Component {
 
   mapPropsToState = () => {
     const { group, users, groups, t } = this.props;
-    const buttonLabel = group
-    ? t('SaveButton')
-    : t("AddButton");
+    const buttonLabel = group ? t("SaveButton") : t("AddButton");
 
     const newState = {
       id: group ? group.id : "",
@@ -100,18 +104,18 @@ class SectionBodyContent extends React.Component {
       header: group
         ? {
             key: 0,
-            label: "{SELECTED HEADER NAME}" //group.head
+            label: "{SELECTED HEADER NAME}", //group.head
           }
         : {
             key: 0,
-            label: t("LblSelect")
+            label: t("LblSelect"),
           },
       groupMembers:
         group && group.members
-          ? group.members.map(m => {
+          ? group.members.map((m) => {
               return {
                 key: m.id,
-                label: m.displayName
+                label: m.displayName,
               };
             })
           : [],
@@ -119,83 +123,95 @@ class SectionBodyContent extends React.Component {
         group && group.manager
           ? {
               key: group.manager.id,
-              label: group.manager.displayName
+              label:
+                group.manager.displayName === "profile removed"
+                  ? t("LblSelect")
+                  : group.manager.displayName,
             }
           : {
               key: GUID_EMPTY,
               label: t("LblSelect"),
-              default: true
+              default: true,
             },
-      nameError: null
+      nameError: null,
+      updateGroup: false,
     };
 
     return newState;
   };
 
-  onGroupChange = e => {
+  onGroupChange = (e) => {
     this.setState({
-      groupName: e.target.value
+      groupName: e.target.value,
     });
   };
 
-  onSearchChange = value => {
+  onSearchChange = (value) => {
     this.setState({
-      searchValue: value
+      searchValue: value,
     });
   };
 
-  onHeadSelectorSelect = options => {
+  onHeadSelectorSelect = (options) => {
     if (!options || !options.length) return;
 
     const option = options[0];
     this.setState({
       groupManager: {
         key: option.key,
-        label: option.label
+        label: option.label,
       },
-      isHeadSelectorOpen: !this.state.isHeadSelectorOpen
+      isHeadSelectorOpen: !this.state.isHeadSelectorOpen,
     });
   };
 
   onHeadSelectorClick = () => {
     this.setState({
-      isHeadSelectorOpen: !this.state.isHeadSelectorOpen
+      isHeadSelectorOpen: !this.state.isHeadSelectorOpen,
     });
   };
 
-  onUsersSelectorSelect = selectedOptions => {
+  onUsersSelectorSelect = (selectedOptions) => {
     //console.log("onSelect", selectedOptions);
     //this.onUsersSelectorClick();
     this.setState({
-      groupMembers: selectedOptions.map(option => {
+      groupMembers: selectedOptions.map((option) => {
         return {
           key: option.key,
-          label: option.label
+          label: option.label,
         };
       }),
-      isUsersSelectorOpen: !this.state.isUsersSelectorOpen
+      isUsersSelectorOpen: !this.state.isUsersSelectorOpen,
     });
   };
 
   onUsersSelectorClick = () => {
     this.setState({
-      isUsersSelectorOpen: !this.state.isUsersSelectorOpen
+      isUsersSelectorOpen: !this.state.isUsersSelectorOpen,
     });
   };
 
-  save = group => {
+  save = (group) => {
     const { createGroup, updateGroup } = this.props;
+    if (group.id) this.setState({ updateGroup: true });
     return group.id
       ? updateGroup(group.id, group.name, group.managerKey, group.members)
       : createGroup(group.name, group.managerKey, group.members);
   };
 
   onSave = () => {
-    const { group, t, groupCaption } = this.props;
+    const {
+      group,
+      t,
+      groupCaption,
+      history,
+      settings,
+      selectGroup,
+    } = this.props;
     const { groupName, groupManager, groupMembers } = this.state;
 
-    if (!groupName || !groupName.trim().length) { 
-      this.setState({nameError: t('EmptyFieldError')});
+    if (!groupName || !groupName.trim().length) {
+      this.setState({ nameError: t("EmptyFieldError") });
       return false;
     }
 
@@ -204,35 +220,40 @@ class SectionBodyContent extends React.Component {
     const newGroup = {
       name: groupName,
       managerKey: groupManager.key,
-      members: groupMembers.map(u => u.key)
+      members: groupMembers.map((u) => u.key),
     };
 
     if (group && group.id) newGroup.id = group.id;
-
     this.save(newGroup)
-      .then(group => {
-        toastr.success(t('SuccessSaveGroup', {groupCaption, groupName: group.name }));
+      .then((group) => {
+        toastr.success(
+          t("SuccessSaveGroup", { groupCaption, groupName: group.name })
+        );
       })
-      .catch(error => {
+      .then(() => {
+        if (this.state.updateGroup) selectGroup(group.id);
+        else history.push(`${settings.homepage}/`);
+      })
+      .catch((error) => {
         toastr.error(error);
         this.setState({ inLoading: false });
       });
   };
 
   onCancel = () => {
-    const { history, resetGroup } = this.props;
+    const { resetGroup, filter, setFilter } = this.props;
 
     resetGroup();
-    history.goBack();
+    setFilter(filter);
   };
 
-  onSelectedItemClose = member => {
+  onSelectedItemClose = (member) => {
     this.setState({
-      groupMembers: this.state.groupMembers.filter(g => g.key !== member.key)
+      groupMembers: this.state.groupMembers.filter((g) => g.key !== member.key),
     });
   };
 
-  onCancelSelector = e => {
+  onCancelSelector = (e) => {
     if (
       (this.state.isHeadSelectorOpen &&
         (e.target.id === "head-selector_button" ||
@@ -247,20 +268,19 @@ class SectionBodyContent extends React.Component {
 
     this.setState({
       isHeadSelectorOpen: false,
-      isUsersSelectorOpen: false
+      isUsersSelectorOpen: false,
     });
   };
 
-  onKeyPress = event => {
+  onKeyPress = (event) => {
     if (event.key === "Enter") {
       this.onSave();
     }
-  }
+  };
 
   onFocusName = () => {
-    if(this.state.nameError)
-      this.setState({ nameError: null });
-  } 
+    if (this.state.nameError) this.setState({ nameError: null });
+  };
 
   render() {
     const { t, groupHeadCaption, groupsCaption, me } = this.props;
@@ -274,8 +294,9 @@ class SectionBodyContent extends React.Component {
       searchValue,
       groupManager,
       buttonLabel,
-      nameError
+      nameError,
     } = this.state;
+
     return (
       <MainContainer>
         <FieldContainer
@@ -328,7 +349,7 @@ class SectionBodyContent extends React.Component {
             onCancel={this.onCancelSelector}
             groupsCaption={groupsCaption}
             defaultOption={me}
-            defaultOptionLabel={t('MeLabel')}
+            defaultOptionLabel={t("MeLabel")}
           />
         </FieldContainer>
         <FieldContainer
@@ -347,7 +368,7 @@ class SectionBodyContent extends React.Component {
             selectedOption={{
               key: 0,
               label: t("AddMembers"),
-              default: true
+              default: true,
             }}
             scaled={true}
             size="content"
@@ -361,10 +382,11 @@ class SectionBodyContent extends React.Component {
             isMultiSelect={true}
             onSelect={this.onUsersSelectorSelect}
             onCancel={this.onCancelSelector}
-            searchPlaceHolderLabel={t('SearchAddedMembers')}
+            searchPlaceHolderLabel={t("SearchAddedMembers")}
             groupsCaption={groupsCaption}
             defaultOption={me}
-            defaultOptionLabel={t('MeLabel')}
+            defaultOptionLabel={t("MeLabel")}
+            selectedOptions={groupMembers}
           />
         </FieldContainer>
         {groupMembers && groupMembers.length > 0 && (
@@ -380,7 +402,7 @@ class SectionBodyContent extends React.Component {
               />
             </div>
             <div className="selected-members_container">
-              {groupMembers.map(member => (
+              {groupMembers.map((member) => (
                 <SelectedItem
                   key={member.key}
                   text={member.label}
@@ -393,7 +415,11 @@ class SectionBodyContent extends React.Component {
             </div>
           </>
         )}
-        {error && <div><strong>{error}</strong></div>}
+        {error && (
+          <div>
+            <strong>{error}</strong>
+          </div>
+        )}
         <div className="buttons_container">
           <Button
             label={buttonLabel}
@@ -419,51 +445,59 @@ class SectionBodyContent extends React.Component {
 }
 
 SectionBodyContent.propTypes = {
-  group: PropTypes.object
+  group: PropTypes.object,
 };
 
 SectionBodyContent.defaultProps = {
-  group: null
+  group: null,
 };
 
-const convertUsers = users => {
+const convertUsers = (users) => {
   return users
-    ? users.map(u => {
+    ? users.map((u) => {
         return {
           key: u.id,
           groups: u.groups || [],
-          label: u.displayName
+          label: u.displayName,
         };
       })
     : [];
 };
 
-const convertGroups = groups => {
+const convertGroups = (groups) => {
   return groups
-    ? groups.map(g => {
+    ? groups.map((g) => {
         return {
           key: g.id,
           label: g.name,
-          total: 0
+          total: 0,
         };
       })
     : [];
 };
 
 function mapStateToProps(state) {
+  const currentModuleName = getCurrentProductName(state);
+  const settings = getSettings(state);
+  const { groupHeadCaption, groupsCaption, groupCaption } = settings;
   return {
-    settings: state.auth.settings,
+    settings,
     group: state.group.targetGroup,
     groups: convertGroups(state.people.groups),
     users: convertUsers(state.people.selector.users), //TODO: replace to api requests with search
-    groupHeadCaption: state.auth.settings.customNames.groupHeadCaption,
-    groupsCaption: state.auth.settings.customNames.groupsCaption,
-    groupCaption: state.auth.settings.customNames.groupCaption,
-    me: state.auth.user
+    groupHeadCaption,
+    groupsCaption,
+    groupCaption,
+    me: getCurrentUser(state),
+    currentModuleName,
+    filter: state.people.filter,
   };
 }
 
-export default connect(
-  mapStateToProps,
-  { resetGroup, createGroup, updateGroup }
-)(withRouter(withTranslation()(SectionBodyContent)));
+export default connect(mapStateToProps, {
+  resetGroup,
+  createGroup,
+  updateGroup,
+  selectGroup,
+  setFilter,
+})(withRouter(withTranslation()(SectionBodyContent)));

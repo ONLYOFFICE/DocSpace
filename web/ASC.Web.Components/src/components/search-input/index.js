@@ -1,14 +1,14 @@
 import React from "react";
 import PropTypes from "prop-types";
-import styled from 'styled-components';
-import InputBlock from '../input-block';
+import styled from "styled-components";
+import InputBlock from "../input-block";
 
 const StyledSearchInput = styled.div`
   font-family: Open Sans;
   font-style: normal;
 
   .search-input-block {
-    & > input { 
+    & > input {
       font-size: 14px;
       font-weight: 600;
     }
@@ -29,30 +29,27 @@ class SearchInput extends React.Component {
 
   clearSearch = () => {
     this.setState({
-      inputValue: ''
+      inputValue: "",
     });
-    typeof this.props.onClearSearch === 'function' && this.props.onClearSearch();
-  }
+    typeof this.props.onClearSearch === "function" &&
+      this.props.onClearSearch();
+  };
 
   onInputChange = (e) => {
     this.setState({
-      inputValue: e.target.value
+      inputValue: e.target.value,
     });
-    if (this.props.autoRefresh)
-      this.setSearchTimer(e.target.value);
-  }
+    if (this.props.autoRefresh) this.setSearchTimer(e.target.value);
+  };
 
   setSearchTimer = (value) => {
     clearTimeout(this.timerId);
-    this.timerId = setTimeout(() => 
-      {
-        this.props.onChange(value);
-        clearTimeout(this.timerId);
-        this.timerId = null;
-      }, 
-      this.props.refreshTimeout
-    );
-  }
+    this.timerId = setTimeout(() => {
+      this.props.onChange(value);
+      clearTimeout(this.timerId);
+      this.timerId = null;
+    }, this.props.refreshTimeout);
+  };
   componentDidUpdate(prevProps) {
     if (this.props.value != prevProps.value) {
       this.setState({ inputValue: this.props.value });
@@ -64,34 +61,49 @@ class SearchInput extends React.Component {
     //console.log("Search input render");
     let clearButtonSize = 15;
     switch (this.props.size) {
-      case 'base':
-        clearButtonSize = !!this.state.inputValue || this.props.showClearButton ? 12 : 15;
+      case "base":
+        clearButtonSize =
+          !!this.state.inputValue || this.props.showClearButton ? 12 : 15;
         break;
-      case 'middle':
-        clearButtonSize = !!this.state.inputValue || this.props.showClearButton ? 16 : 18;
+      case "middle":
+        clearButtonSize =
+          !!this.state.inputValue || this.props.showClearButton ? 16 : 18;
         break;
-      case 'big':
-        clearButtonSize = !!this.state.inputValue || this.props.showClearButton ? 19 : 21;
+      case "big":
+        clearButtonSize =
+          !!this.state.inputValue || this.props.showClearButton ? 19 : 21;
         break;
-      case 'huge':
-        clearButtonSize = !!this.state.inputValue || this.props.showClearButton ? 22 : 24;
+      case "huge":
+        clearButtonSize =
+          !!this.state.inputValue || this.props.showClearButton ? 22 : 24;
         break;
     }
 
     return (
-      <StyledSearchInput className={this.props.className} style={this.props.style}>
+      <StyledSearchInput
+        className={this.props.className}
+        style={this.props.style}
+      >
         <InputBlock
-          className='search-input-block'
+          className="search-input-block"
           ref={this.input}
           id={this.props.id}
           name={this.props.name}
           isDisabled={this.props.isDisabled}
-          iconName={!!this.state.inputValue || this.props.showClearButton ? "CrossIcon" : "SearchIcon"}
+          iconName={
+            !!this.state.inputValue || this.props.showClearButton
+              ? "CrossIcon"
+              : "SearchIcon"
+          }
           isIconFill={true}
           iconSize={clearButtonSize}
           iconColor="#A3A9AE"
           hoverColor="#A3A9AE"
-          onIconClick={!!this.state.inputValue || this.props.showClearButton ? this.clearSearch : undefined}
+          onIconClick={
+            !!this.state.inputValue || this.props.showClearButton
+              ? this.clearSearch
+              : undefined
+          }
           size={this.props.size}
           scale={true}
           value={this.state.inputValue}
@@ -99,7 +111,6 @@ class SearchInput extends React.Component {
           onChange={this.onInputChange}
         >
           {this.props.children}
-
         </InputBlock>
       </StyledSearchInput>
     );
@@ -110,7 +121,7 @@ SearchInput.propTypes = {
   id: PropTypes.string,
   name: PropTypes.string,
   className: PropTypes.string,
-  size: PropTypes.oneOf(['base', 'middle', 'big', 'huge']),
+  size: PropTypes.oneOf(["base", "middle", "big", "huge"]),
   value: PropTypes.string,
   scale: PropTypes.bool,
   placeholder: PropTypes.string,
@@ -121,17 +132,17 @@ SearchInput.propTypes = {
   refreshTimeout: PropTypes.number,
   autoRefresh: PropTypes.bool,
   children: PropTypes.any,
-  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 };
 
 SearchInput.defaultProps = {
   autoRefresh: true,
-  size: 'base',
-  value: '',
+  size: "base",
+  value: "",
   scale: false,
   isDisabled: false,
   refreshTimeout: 1000,
-  showClearButton: false
+  showClearButton: false,
 };
 
 export default SearchInput;

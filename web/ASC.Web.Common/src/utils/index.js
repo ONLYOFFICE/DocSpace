@@ -1,5 +1,6 @@
-import { LANGUAGE } from "../constants";
+import { AUTH_KEY, LANGUAGE } from "../constants";
 import sjcl from "sjcl";
+import { isMobile } from "react-device-detect";
 
 export const toUrlParams = (obj, skipNull) => {
   let str = "";
@@ -32,13 +33,29 @@ export function getObjectByLocation(location) {
   return object;
 }
 
-export function changeLanguage(i18n) {
-  const currentLng = localStorage.getItem(LANGUAGE);
+export function changeLanguage(
+  i18n,
+  currentLng = localStorage.getItem(LANGUAGE)
+) {
   return currentLng
     ? i18n.language !== currentLng
       ? i18n.changeLanguage(currentLng)
       : Promise.resolve((...args) => i18n.t(...args))
     : i18n.changeLanguage("en");
+}
+
+export function redirectToDefaultPage() {
+  if (
+    (window.location.pathname === "/" ||
+      window.location.pathname === "" ||
+      window.location.pathname === "/login") &&
+    localStorage.getItem(AUTH_KEY) !== null
+  ) {
+    setTimeout(() => window.location.replace("/products/files"), 0);
+    return true;
+  }
+
+  return false;
 }
 
 export function createPasswordHash(password, hashSettings) {
@@ -63,4 +80,30 @@ export function createPasswordHash(password, hashSettings) {
   const hash = sjcl.codec.hex.fromBits(bits);
 
   return hash;
+}
+
+export function removeTempContent() {
+  const tempElm = document.getElementById("temp-content");
+  if (tempElm) {
+    tempElm.outerHTML = "";
+  }
+}
+
+export function hideLoader() {
+  if (isMobile) return;
+
+  if (window.loadingTimeout) {
+    clearTimeout(window.loadingTimeout);
+    window.loadingTimeout = null;
+  }
+
+  document.body.classList.remove("loading");
+}
+
+export function showLoader() {
+  if (isMobile) return;
+
+  window.loadingTimeout = setTimeout(() => {
+    document.body.classList.add("loading");
+  }, 1000);
 }

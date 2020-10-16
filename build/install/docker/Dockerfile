@@ -5,6 +5,7 @@ ARG RELEASE_DATE_SIGN=""
 ARG VERSION="8.9.0.190"
 ARG SOURCE_REPO_URL="deb http://static.teamlab.com.s3.amazonaws.com/repo/debian squeeze main"
 ARG DEBIAN_FRONTEND=noninteractive
+ARG GIT_BRANCH="master"
 
 LABEL onlyoffice.community.release-date="${RELEASE_DATE}" \
       onlyoffice.community.version="${VERSION}" \
@@ -75,7 +76,10 @@ RUN apt-get -y update && \
                         mysql-client \
                         mysql-server
 
-RUN git clone https://github.com/ONLYOFFICE/AppServer.git /app/onlyoffice/src/
+RUN git clone https://github.com/ONLYOFFICE/AppServer.git /app/onlyoffice/src/ && \
+    cd /app/onlyoffice/src/ && \
+    git checkout ${GIT_BRANCH} && \
+    git pull
 
 RUN cd /app/onlyoffice/src/ && \
     yarn install --cwd web/ASC.Web.Components --frozen-lockfile > build/ASC.Web.Components.log && \
@@ -190,8 +194,6 @@ RUN mkdir -p /var/mysqld/ && \
     mysql -D "onlyoffice" < /app/onlyoffice/dotnet_dump.sql && \
     mysql -D "onlyoffice" -e 'CREATE USER IF NOT EXISTS "onlyoffice_user"@"localhost" IDENTIFIED WITH mysql_native_password BY "onlyoffice_pass";' && \
     mysql -D "onlyoffice" -e 'GRANT ALL PRIVILEGES ON *.* TO 'onlyoffice_user'@'localhost';' && \
-    mysql -D "onlyoffice" -e 'UPDATE core_user SET email = "paul.bannov@gmail.com";' && \
-    mysql -D "onlyoffice" -e 'UPDATE core_usersecurity SET pwdhash = "vLFfghR5tNV3K9DKhmwArV+SbjWAcgZZzIDTnJ0JgCo=", pwdhashsha512 = "USubvPlB+ogq0Q1trcSupg==";' && \
     killall -u mysql -n mysql
 
 RUN rm -rf /var/lib/apt/lists/*

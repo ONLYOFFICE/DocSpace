@@ -579,27 +579,27 @@ namespace ASC.Web.Files.Services.WCFService
 
             if (fileWrapper.TemplateId.Equals(default(T)))
             {
-                var culture = UserManager.GetUsers(AuthContext.CurrentAccount.ID).GetCulture();
-                var storeTemplate = GetStoreTemplate();
+            var culture = UserManager.GetUsers(AuthContext.CurrentAccount.ID).GetCulture();
+            var storeTemplate = GetStoreTemplate();
 
-                var path = FileConstant.NewDocPath + culture + "/";
-                if (!storeTemplate.IsDirectory(path))
-                {
-                    path = FileConstant.NewDocPath + "default/";
-                }
+            var path = FileConstant.NewDocPath + culture + "/";
+            if (!storeTemplate.IsDirectory(path))
+            {
+                path = FileConstant.NewDocPath + "default/";
+            }
 
-                path += "new" + fileExt;
+            path += "new" + fileExt;
 
-                try
-                {
-                    using var stream = storeTemplate.GetReadStream("", path);
-                    file.ContentLength = stream.CanSeek ? stream.Length : storeTemplate.GetFileSize(path);
-                    file = fileDao.SaveFile(file, stream);
-                }
-                catch (Exception e)
-                {
-                    throw GenerateException(e);
-                }
+            try
+            {
+                using var stream = storeTemplate.GetReadStream("", path);
+                file.ContentLength = stream.CanSeek ? stream.Length : storeTemplate.GetFileSize(path);
+                file = fileDao.SaveFile(file, stream);
+            }
+            catch (Exception e)
+            {
+                throw GenerateException(e);
+            }
             }
             else
             {
@@ -1780,11 +1780,9 @@ namespace ASC.Web.Files.Services.WCFService
             return result;
         }
 
-        public void RemoveAce(ItemList<string> items)
+        public void RemoveAce(List<T> filesId, List<T> foldersId)
         {
             ErrorIf(!AuthContext.IsAuthenticated, FilesCommonResource.ErrorMassage_SecurityException);
-            ParseArrayItems(items, out var foldersId, out var filesId);
-
             var entries = new List<FileEntry<T>>();
 
             var fileDao = GetFileDao();
@@ -2255,46 +2253,46 @@ namespace ASC.Web.Files.Services.WCFService
         {
             if (services.TryAddScoped<FileStorageService<string>>())
             {
-                services.TryAddScoped<FileStorageService<int>>();
-                //services.TryAddScoped<IFileStorageService, FileStorageService>();
-                return services
-                    .AddGlobalService()
-                    .AddGlobalStoreService()
-                    .AddGlobalFolderHelperService()
-                    .AddAuthContextService()
-                    .AddUserManagerService()
-                    .AddFilesLinkUtilityService()
-                    .AddBaseCommonLinkUtilityService()
-                    .AddCoreBaseSettingsService()
-                    .AddCustomNamingPeopleService()
-                    .AddDisplayUserSettingsService()
-                    .AddPathProviderService()
-                    .AddDaoFactoryService()
-                    .AddFileMarkerService()
-                    .AddFilesSettingsHelperService()
-                    .AddFileUtilityService()
-                    .AddFileSecurityService()
-                    .AddFilesMessageService()
-                    .AddFileShareLinkService()
-                    .AddDocumentServiceConnectorService()
-                    .AddEntryManagerService()
-                    .AddDocumentServiceHelperService()
-                    .AddThirdpartyConfigurationService()
-                    .AddUrlShortener()
-                    .AddDocuSignHelperService()
-                    .AddDocuSignTokenService()
-                    .AddFileConverterService()
-                    .AddNotifyClientService()
-                    .AddFileSharingService()
-                    .AddDocumentServiceTrackerHelperService()
-                    .AddSocketManagerService()
-                    .AddFileOperationsManagerHelperService()
+            services.TryAddScoped<FileStorageService<int>>();
+            //services.TryAddScoped<IFileStorageService, FileStorageService>();
+            return services
+                .AddGlobalService()
+                .AddGlobalStoreService()
+                .AddGlobalFolderHelperService()
+                .AddAuthContextService()
+                .AddUserManagerService()
+                .AddFilesLinkUtilityService()
+                .AddBaseCommonLinkUtilityService()
+                .AddCoreBaseSettingsService()
+                .AddCustomNamingPeopleService()
+                .AddDisplayUserSettingsService()
+                .AddPathProviderService()
+                .AddDaoFactoryService()
+                .AddFileMarkerService()
+                .AddFilesSettingsHelperService()
+                .AddFileUtilityService()
+                .AddFileSecurityService()
+                .AddFilesMessageService()
+                .AddFileShareLinkService()
+                .AddDocumentServiceConnectorService()
+                .AddEntryManagerService()
+                .AddDocumentServiceHelperService()
+                .AddThirdpartyConfigurationService()
+                .AddUrlShortener()
+                .AddDocuSignHelperService()
+                .AddDocuSignTokenService()
+                .AddFileConverterService()
+                .AddNotifyClientService()
+                .AddFileSharingService()
+                .AddDocumentServiceTrackerHelperService()
+                .AddSocketManagerService()
+                .AddFileOperationsManagerHelperService()
                     .AddFileSharingAceHelperService()
                     .AddTenantManagerService();
-            }
+        }
 
             return services;
-        }
+    }
     }
 
     public class FileModel<T>

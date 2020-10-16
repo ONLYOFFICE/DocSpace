@@ -443,7 +443,7 @@ namespace ASC.Files.Helpers
 
         public IEnumerable<FileOperationWraper> DeleteFolder(T folderId, bool deleteAfter, bool immediately)
         {
-            return FileStorageService.DeleteFile("delete", folderId, false, deleteAfter, immediately)
+            return FileStorageService.DeleteFolder("delete", folderId, false, deleteAfter, immediately)
                     .Select(FileOperationWraperHelper.Get);
         }
 
@@ -594,14 +594,9 @@ namespace ASC.Files.Helpers
             return GetFolderSecurityInfo(folderId);
         }
 
-        public bool RemoveSecurityInfo(BaseBatchModel<T> model)
+        public bool RemoveSecurityInfo(List<T> fileIds, List<T> folderIds)
         {
-            var itemList = new ItemList<string>();
-
-            itemList.AddRange((model.FolderIds ?? new List<T>()).Select(x => "folder_" + x));
-            itemList.AddRange((model.FileIds ?? new List<T>()).Select(x => "file_" + x));
-
-            FileStorageService.RemoveAce(itemList);
+            FileStorageService.RemoveAce(fileIds, folderIds);
 
             return true;
         }
@@ -800,7 +795,7 @@ namespace ASC.Files.Helpers
             var startIndex = Convert.ToInt32(ApiContext.StartIndex);
             return FolderContentWrapperHelper.Get(FileStorageService.GetFolderItems(folderId,
                                                                                startIndex,
-                                                                               Convert.ToInt32(ApiContext.Count) - 1, //NOTE: in ApiContext +1
+                                                                               Convert.ToInt32(ApiContext.Count),
                                                                                filterType,
                                                                                filterType == FilterType.ByUser,
                                                                                userIdOrGroupId.ToString(),

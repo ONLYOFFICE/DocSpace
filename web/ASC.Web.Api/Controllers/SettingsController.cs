@@ -82,6 +82,7 @@ using ASC.Web.Studio.Core.Statistic;
 using ASC.Web.Studio.Core.TFA;
 using ASC.Web.Studio.UserControls.CustomNavigation;
 using ASC.Web.Studio.UserControls.FirstTime;
+using ASC.Web.Studio.UserControls.Management;
 using ASC.Web.Studio.UserControls.Statistics;
 using ASC.Web.Studio.Utility;
 
@@ -613,52 +614,36 @@ namespace ASC.Api.Settings
             return Dns.GetHostName().ToLowerInvariant();
         }
 
-        /*        [Read("greetingsettings")]
-                public string GetGreetingSettings()
-                {
-                    return Tenant.Name;
-                }*/
+        [Read("greetingsettings")]
+        public ContentResult GetGreetingSettings()
+        {
+            return new ContentResult { Content = Tenant.Name };
+        }
 
         [Create("greetingsettings")]
-        public object SaveGreetingSettings(GreetingSettingsModel model)
+        public ContentResult SaveGreetingSettings(GreetingSettingsModel model)
         {
-            try
-            {
-                PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-                Tenant.Name = model.Title;
-                TenantManager.SaveTenant(Tenant);
+            Tenant.Name = model.Title;
+            TenantManager.SaveTenant(Tenant);
 
-                MessageService.Send(MessageAction.GreetingSettingsUpdated);
+            MessageService.Send(MessageAction.GreetingSettingsUpdated);
 
-                return new { Status = 1, Message = Resource.SuccessfullySaveGreetingSettingsMessage };
-            }
-            catch (Exception e)
-            {
-                return new { Status = 0, Message = e.Message.HtmlEncode() };
-            }
+            return new ContentResult { Content = Resource.SuccessfullySaveGreetingSettingsMessage };
         }
 
         [Create("greetingsettings/restore")]
-        public object RestoreGreetingSettings()
+        public ContentResult RestoreGreetingSettings()
         {
-            try
-            {
-                PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-                TenantInfoSettingsHelper.RestoreDefaultTenantName();
+            TenantInfoSettingsHelper.RestoreDefaultTenantName();
 
-                return new
-                {
-                    Status = 1,
-                    Message = Resource.SuccessfullySaveGreetingSettingsMessage,
-                    CompanyName = Tenant.Name
-                };
-            }
-            catch (Exception e)
+            return new ContentResult
             {
-                return new { Status = 0, Message = e.Message.HtmlEncode() };
-            }
+                Content = Tenant.Name
+            };
         }
 
         //[Read("recalculatequota")]
@@ -1495,6 +1480,38 @@ namespace ASC.Api.Settings
             return true;
         }
 
+        [Create("license/accept", Check = false)]
+        public object AcceptLicense()
+        {
+            if (!CoreBaseSettings.Standalone) return "";
+
+            TariffSettings.SetLicenseAccept(SettingsManager);
+            MessageService.Send(MessageAction.LicenseKeyUploaded);
+
+            try
+            {
+                LicenseReader.RefreshLicense();
+            }
+            catch (BillingNotFoundException)
+            {
+                return UserControlsCommonResource.LicenseKeyNotFound;
+            }
+            catch (BillingNotConfiguredException)
+            {
+                return UserControlsCommonResource.LicenseKeyNotCorrect;
+            }
+            catch (BillingException)
+            {
+                return UserControlsCommonResource.LicenseException;
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+
+            return "";
+        }
+
         [AllowAnonymous]
         [Read("license/required", Check = false)]
         public bool RequestLicense()
@@ -1504,15 +1521,16 @@ namespace ASC.Api.Settings
 
 
         [Create("license", Check = false)]
-        [Authorize(AuthenticationSchemes = "confirm", Roles = "Wizard")]
+        [Authorize(AuthenticationSchemes = "confirm", Roles = "Wizard, Administrators")]
         public object UploadLicense([FromForm] UploadLicenseModel model)
         {
             try
             {
+                ApiContext.AuthByClaim();
                 if (!AuthContext.IsAuthenticated && SettingsManager.Load<WizardSettings>().Completed) throw new SecurityException(Resource.PortalSecurity);
                 if (!model.Files.Any()) throw new Exception(Resource.ErrorEmptyUploadFileSelected);
 
-                ApiContext.AuthByClaim();
+
 
                 var licenseFile = model.Files.First();
                 var dueDate = LicenseReader.SaveLicenseTemp(licenseFile.OpenReadStream());
@@ -2304,7 +2322,7 @@ namespace ASC.Api.Settings
             return changed;
         }
 
-        [Read("payment")]
+        [Read("payment", Check = false)]
         public object PaymentSettings()
         {
             var settings = SettingsManager.LoadForDefaultTenant<AdditionalWhiteLabelSettings>();

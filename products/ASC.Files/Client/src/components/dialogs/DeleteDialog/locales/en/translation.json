@@ -1,0 +1,14 @@
+{
+  "OKButton": "OK",
+  "CancelButton": "Cancel",
+  "ConfirmationTitle": "Confirmation",
+  "QuestionDeleteFile": "Are you sure you want to delete this file?",
+  "FilesModule": "Files",
+  "FoldersModule": "Folders",
+
+  "DeleteDialogQuestion": "Are you sure you want to delete these elements?",
+  "DeleteDialogNote": "Note: This action can not be undone.",
+  "QuestionDeleteFolder": "Are you sure you want to delete this folder?",
+  "QuestionDeleteElements": "Are you sure you want to delete these elements?",
+  "DeleteOperation": "Deleting"
+}

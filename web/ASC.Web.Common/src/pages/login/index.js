@@ -1,6 +1,7 @@
-import React, { Component } from "react";
+import React, { Component, useEffect } from "react";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
+import { store } from "asc-web-common";
 import {
   Box,
   Button,
@@ -11,7 +12,7 @@ import {
   Checkbox,
   HelpButton,
   PasswordInput,
-  FieldContainer
+  FieldContainer,
 } from "asc-web-components";
 import PageLayout from "../../components/PageLayout";
 import { connect } from "react-redux";
@@ -22,12 +23,14 @@ import ForgotPasswordModalDialog from "./sub-components/forgot-password-modal-di
 import {
   login,
   setIsLoaded,
-  reloadPortalSettings
+  reloadPortalSettings,
 } from "../../store/auth/actions";
 import { sendInstructionsToChangePassword } from "../../api/people";
 import Register from "./sub-components/register-container";
 import { createPasswordHash } from "../../utils";
-
+//import history from "../../history";
+import { redirectToDefaultPage } from "../../utils";
+const { getLanguage } = store.auth.selectors;
 const LoginContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -56,8 +59,8 @@ const LoginContainer = styled.div`
   }
 
   .auth-form-container {
-    margin: 32px 22.5% 0 22.5%;
-    width: 32.4%;
+    margin: 32px 213px 0 213px;
+    width: 311px;
 
     @media (max-width: 768px) {
       margin: 32px 0 0 0;
@@ -138,23 +141,23 @@ class Form extends Component {
       email: "",
       emailError: false,
       errorText: "",
-      socialButtons: []
+      socialButtons: [],
     };
   }
 
-  onChangeLogin = event => {
+  onChangeLogin = (event) => {
     this.setState({ identifier: event.target.value });
     !this.state.identifierValid && this.setState({ identifierValid: true });
     this.state.errorText && this.setState({ errorText: "" });
   };
 
-  onChangePassword = event => {
+  onChangePassword = (event) => {
     this.setState({ password: event.target.value });
     !this.state.passwordValid && this.setState({ passwordValid: true });
     this.state.errorText && this.setState({ errorText: "" });
   };
 
-  onChangeEmail = event => {
+  onChangeEmail = (event) => {
     this.setState({ email: event.target.value, emailError: false });
   };
 
@@ -164,11 +167,11 @@ class Form extends Component {
     this.setState({
       openDialog: true,
       isDisabled: true,
-      email: this.state.identifier
+      email: this.state.identifier,
     });
   };
 
-  onKeyPress = event => {
+  onKeyPress = (event) => {
     if (event.key === "Enter") {
       !this.state.isDisabled
         ? this.onSubmit()
@@ -183,8 +186,8 @@ class Form extends Component {
       this.setState({ isLoading: true });
       sendInstructionsToChangePassword(this.state.email)
         .then(
-          res => toastr.success(res),
-          message => toastr.error(message)
+          (res) => toastr.success(res),
+          (message) => toastr.error(message)
         )
         .finally(this.onDialogClose());
     }
@@ -196,13 +199,13 @@ class Form extends Component {
       isDisabled: false,
       isLoading: false,
       email: "",
-      emailError: false
+      emailError: false,
     });
   };
 
   onSubmit = () => {
     const { errorText, identifier, password } = this.state;
-    const { login, setIsLoaded, history, hashSettings } = this.props;
+    const { login, setIsLoaded, history, hashSettings, homepage } = this.props;
 
     errorText && this.setState({ errorText: "" });
     let hasError = false;
@@ -224,24 +227,31 @@ class Form extends Component {
     if (hasError) return false;
 
     this.setState({ isLoading: true });
-
     const hash = createPasswordHash(pass, hashSettings);
 
     login(userName, hash)
       .then(() => {
-        setIsLoaded(true);
-        history.push("/");
+        if (!redirectToDefaultPage()) {
+          setIsLoaded(true);
+        }
       })
-      .catch(error => {
-        this.setState({ errorText: error, isLoading: false });
+      .catch((error) => {
+        let err = error.data.error.message;
+        this.setState({ errorText: err, isLoading: false });
       });
   };
 
   componentDidMount() {
-    const { match, t, hashSettings, reloadPortalSettings } = this.props;
+    const {
+      match,
+      t,
+      hashSettings,
+      reloadPortalSettings,
+      organizationName,
+    } = this.props;
     const { error, confirmedEmail } = match.params;
 
-    document.title = `${t("Authorization")} – ${t("OrganizationName")}`;
+    document.title = `${t("Authorization")} – ${organizationName}`; //TODO: implement the setDocumentTitle() utility in ASC.Web.Common
 
     error && this.setState({ errorText: error });
     confirmedEmail && this.setState({ identifier: confirmedEmail });
@@ -260,7 +270,7 @@ class Form extends Component {
     minLength: 6,
     upperCase: false,
     digits: false,
-    specSymbols: false
+    specSymbols: false,
   };
 
   render() {
@@ -277,7 +287,7 @@ class Form extends Component {
       email,
       emailError,
       errorText,
-      socialButtons
+      socialButtons,
     } = this.state;
     const { params } = match;
 
@@ -425,37 +435,45 @@ class Form extends Component {
 Form.propTypes = {
   login: PropTypes.func.isRequired,
   match: PropTypes.object.isRequired,
-  history: PropTypes.object.isRequired,
+  //history: PropTypes.object.isRequired,
   setIsLoaded: PropTypes.func.isRequired,
   greetingTitle: PropTypes.string.isRequired,
   t: PropTypes.func.isRequired,
   i18n: PropTypes.object.isRequired,
   language: PropTypes.string.isRequired,
-  socialButtons: PropTypes.array
+  socialButtons: PropTypes.array,
+  organizationName: PropTypes.string,
+  homepage: PropTypes.string,
 };
 
 Form.defaultProps = {
   identifier: "",
   password: "",
-  email: ""
+  email: "",
 };
 
 const FormWrapper = withTranslation()(Form);
 const RegisterWrapper = withTranslation()(Register);
 
-const LoginForm = props => {
+const LoginForm = (props) => {
   const { language, isLoaded, enabledJoin } = props;
 
-  i18n.changeLanguage(language);
+  useEffect(() => {
+    i18n.changeLanguage(language);
+  }, [language]);
 
   return (
     <>
       {isLoaded && (
         <>
-          <PageLayout
-            sectionBodyContent={<FormWrapper i18n={i18n} {...props} />}
-          />
-          {enabledJoin && <RegisterWrapper i18n={i18n} {...props} />}
+          <PageLayout>
+            <PageLayout.SectionBody>
+              <>
+                <FormWrapper i18n={i18n} {...props} />
+                {enabledJoin && <RegisterWrapper i18n={i18n} {...props} />}
+              </>
+            </PageLayout.SectionBody>
+          </PageLayout>
         </>
       )}
     </>
@@ -465,21 +483,30 @@ const LoginForm = props => {
 LoginForm.propTypes = {
   language: PropTypes.string.isRequired,
   isLoaded: PropTypes.bool,
-  enabledJoin: PropTypes.bool
+  enabledJoin: PropTypes.bool,
 };
 
 function mapStateToProps(state) {
+  const { isLoaded, settings } = state.auth;
+  const {
+    greetingSettings,
+    enabledJoin,
+    organizationName,
+    hashSettings,
+  } = settings;
+
   return {
-    isLoaded: state.auth.isLoaded,
-    language: state.auth.user.cultureName || state.auth.settings.culture,
-    greetingTitle: state.auth.settings.greetingSettings,
-    enabledJoin: state.auth.settings.enabledJoin,
-    hashSettings: state.auth.settings.hashSettings
+    isLoaded,
+    enabledJoin,
+    organizationName,
+    language: getLanguage(state),
+    greetingTitle: greetingSettings,
+    hashSettings,
   };
 }
 
 export default connect(mapStateToProps, {
   login,
   setIsLoaded,
-  reloadPortalSettings
+  reloadPortalSettings,
 })(withRouter(LoginForm));

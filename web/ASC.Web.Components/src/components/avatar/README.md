@@ -9,13 +9,7 @@ import { Avatar } from "asc-web-components";
 ```
 
 ```jsx
-<Avatar 
-  size="max" 
-  role="admin" 
-  source="" 
-  userName="" 
-  editing={false}
- />
+<Avatar size="max" role="admin" source="" userName="" editing={false} />
 ```
 
 If you want to create an avatar with initials, only _first letter of first two words_ of line is used.

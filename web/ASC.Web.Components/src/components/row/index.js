@@ -47,18 +47,29 @@ const StyledElement = styled.div`
   user-select: none;
 `;
 
+const StyledContentElement = styled.div`
+  margin-right: 8px;
+  margin-left: 8px;
+  margin-top: 6px;
+  user-select: none;
+`;
+
 const StyledOptionButton = styled.div`
   display: flex;
-  width: 32px;
+  width: ${(props) => props.spacerWidth && props.spacerWidth};
 
   .expandButton > div:first-child {
-    padding-top: 8px;
-    padding-bottom: 8px;
-    padding-left: 16px;
+    padding: 8px 8px 8px 8px;
   }
 `;
 
 class Row extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.rowRef = React.createRef();
+  }
+
   shouldComponentUpdate(nextProps) {
     if (this.props.needForUpdate) {
       return this.props.needForUpdate(this.props, nextProps);
@@ -66,15 +77,34 @@ class Row extends React.Component {
     return !isEqual(this.props, nextProps);
   }
 
+  componentDidMount() {
+    if (this.props.selectItem) {
+      this.container = this.rowRef.current;
+      this.container.addEventListener("contextmenu", this.onSelectItem);
+    }
+  }
+
+  componentWillUnmount() {
+    this.props.selectItem &&
+      this.container.removeEventListener("contextmenu", this.onSelectItem);
+  }
+
+  onSelectItem = () => this.props.selectItem && this.props.selectItem();
+
   render() {
     //console.log("Row render");
     const {
       checked,
-      element,
       children,
-      data,
+      contentElement,
+      contextButtonSpacerWidth,
       contextOptions,
-      onSelect
+      data,
+      element,
+      indeterminate,
+      onSelect,
+      selectItem,
+      widthProp,
     } = this.props;
 
     const renderCheckbox = Object.prototype.hasOwnProperty.call(
@@ -87,29 +117,55 @@ class Row extends React.Component {
       "element"
     );
 
+    const renderContentElement =
+      Object.prototype.hasOwnProperty.call(this.props, "contentElement") &&
+      widthProp > 500;
+
     const renderContext =
       Object.prototype.hasOwnProperty.call(this.props, "contextOptions") &&
       contextOptions.length > 0;
 
-    const changeCheckbox = e => {
+    const changeCheckbox = (e) => {
       onSelect && onSelect(e.target.checked, data);
     };
 
     const getOptions = () => contextOptions;
 
     return (
-      <StyledRow {...this.props}>
+      <StyledRow ref={this.rowRef} {...this.props}>
         {renderCheckbox && (
           <StyledCheckbox>
-            <Checkbox isChecked={checked} onChange={changeCheckbox} />
+            <Checkbox
+              isChecked={checked}
+              isIndeterminate={indeterminate}
+              onChange={changeCheckbox}
+            />
           </StyledCheckbox>
         )}
         {renderElement && <StyledElement>{element}</StyledElement>}
-        <StyledContent>{children}</StyledContent>
-        <StyledOptionButton>
-          {renderContext 
-          ? (<ContextMenuButton className="expandButton" directionX="right" getData={getOptions} />)
-          : (<div className="expandButton">{' '}</div>)}
+        <StyledContent className="row_content">{children}</StyledContent>
+        <StyledOptionButton
+          className="row_context-menu-wrapper"
+          spacerWidth={contextButtonSpacerWidth}
+        >
+          {renderContentElement && (
+            <StyledContentElement onClick={selectItem}>
+              {contentElement}
+            </StyledContentElement>
+          )}
+          {renderContext ? (
+            <ContextMenuButton
+              isFill
+              color="#A3A9AE"
+              hoverColor="#657077"
+              onClick={selectItem}
+              className="expandButton"
+              directionX="right"
+              getData={getOptions}
+            />
+          ) : (
+            <div className="expandButton"> </div>
+          )}
         </StyledOptionButton>
       </StyledRow>
     );
@@ -120,13 +176,22 @@ Row.propTypes = {
   checked: PropTypes.bool,
   children: PropTypes.element,
   className: PropTypes.string,
+  contentElement: PropTypes.element,
+  contextButtonSpacerWidth: PropTypes.string,
   contextOptions: PropTypes.array,
   data: PropTypes.object,
   element: PropTypes.element,
   id: PropTypes.string,
+  indeterminate: PropTypes.bool,
   needForUpdate: PropTypes.func,
   onSelect: PropTypes.func,
-  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
+  selectItem: PropTypes.func,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  widthProp: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+};
+
+Row.defaultProps = {
+  contextButtonSpacerWidth: "26px",
 };
 
 export default Row;

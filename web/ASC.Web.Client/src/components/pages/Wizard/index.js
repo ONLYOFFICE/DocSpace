@@ -1,7 +1,6 @@
-import React, { Component } from "react";
+import React, { Component, useEffect } from "react";
 import { withRouter } from "react-router";
 import styled from "styled-components";
-import i18n from "./i18n";
 import { withTranslation } from "react-i18next";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
@@ -10,7 +9,6 @@ import {
   PageLayout,
   ErrorContainer,
   history,
-  constants,
   utils as commonUtils,
 } from "asc-web-common";
 import { Loader, utils } from "asc-web-components";
@@ -33,6 +31,14 @@ import {
   resetLicenseUploaded,
 } from "../../../store/wizard/actions";
 
+import { createI18N } from "../../../helpers/i18n";
+import { setDocumentTitle } from "../../../helpers/utils";
+
+const i18n = createI18N({
+  page: "Wizard",
+  localesPath: "pages/Wizard",
+});
+
 const { tablet } = utils.device;
 const { changeLanguage, createPasswordHash } = commonUtils;
 
@@ -43,7 +49,7 @@ emailSettings.allowDomainPunycode = true;
 const WizardContainer = styled.div`
   width: 960px;
   margin: 0 auto;
-  margin-top: 120px;
+  margin-top: 60px;
 
   .wizard-form {
     margin-top: 32px;
@@ -59,7 +65,7 @@ const WizardContainer = styled.div`
 
   @media (max-width: 520px) {
     width: calc(100% - 32px);
-    margin-top: 72px;
+    margin-top: 12px;
   }
 `;
 
@@ -96,7 +102,7 @@ class Body extends Component {
       checkingMessages: [],
     };
 
-    document.title = t("wizardTitle");
+    setDocumentTitle(t("WizardTitle"));
   }
 
   async componentDidMount() {
@@ -113,7 +119,6 @@ class Body extends Component {
     } = this.props;
 
     window.addEventListener("keyup", this.onKeyPressHandler);
-    localStorage.setItem(constants.WIZARD_KEY, true);
 
     if (!wizardToken) {
       history.push("/");
@@ -171,7 +176,6 @@ class Body extends Component {
 
   componentWillUnmount() {
     window.removeEventListener("keyup", this.onKeyPressHandler);
-    localStorage.removeItem(constants.WIZARD_KEY);
   }
 
   mapTimezonesToArray = (timezones) => {
@@ -263,17 +267,17 @@ class Body extends Component {
 
     let checkingMessages = [];
     if (!isValidPass) {
-      checkingMessages.push(t("errorPassword"));
+      checkingMessages.push(t("ErrorPassword"));
       this.setState({ hasErrorPass: true, checkingMessages: checkingMessages });
     }
     if (!license) {
-      checkingMessages.push(t("errorLicenseRead"));
+      checkingMessages.push(t("ErrorLicenseRead"));
       this.setState({ checkingMessages: checkingMessages });
     }
 
     if (emailNeeded && !isLicenseRequired) {
       if (!emailValid) {
-        checkingMessages.push(t("errorEmail"));
+        checkingMessages.push(t("ErrorEmail"));
         this.setState({
           hasErrorEmail: true,
           checkingMessages: checkingMessages,
@@ -287,7 +291,7 @@ class Body extends Component {
 
     if (emailNeeded && isLicenseRequired) {
       if (!emailValid) {
-        checkingMessages.push(t("errorEmail"));
+        checkingMessages.push(t("ErrorEmail"));
         this.setState({
           hasErrorEmail: true,
           checkingMessages: checkingMessages,
@@ -295,7 +299,7 @@ class Body extends Component {
       }
 
       if (!licenseUpload) {
-        checkingMessages.push(t("errorUploadLicenseFile"));
+        checkingMessages.push(t("ErrorUploadLicenseFile"));
         this.setState({
           hasErrorLicense: true,
           checkingMessages: checkingMessages,
@@ -309,7 +313,7 @@ class Body extends Component {
 
     if (!emailNeeded && isLicenseRequired) {
       if (!licenseUpload) {
-        checkingMessages.push(t("errorUploadLicenseFile"));
+        checkingMessages.push(t("ErrorUploadLicenseFile"));
         this.setState({
           hasErrorLicense: true,
           checkingMessages: checkingMessages,
@@ -412,9 +416,9 @@ class Body extends Component {
     if (errorInitWizard) {
       return (
         <ErrorContainer
-          headerText={t("errorInitWizardHeader")}
-          bodyText={t("errorInitWizard")}
-          buttonText={t("errorInitWizardButton")}
+          headerText={t("ErrorInitWizardHeader")}
+          bodyText={t("ErrorInitWizard")}
+          buttonText={t("ErrorInitWizardButton")}
           buttonUrl="/"
         />
       );
@@ -503,16 +507,18 @@ const WizardWrapper = withTranslation()(Body);
 const WizardPage = (props) => {
   const { isLoaded } = props;
 
-  changeLanguage(i18n);
+  useEffect(() => {
+    changeLanguage(i18n);
+  }, []);
 
   return (
-    <>
-      {isLoaded && (
-        <PageLayout
-          sectionBodyContent={<WizardWrapper i18n={i18n} {...props} />}
-        />
-      )}
-    </>
+    isLoaded && (
+      <PageLayout>
+        <PageLayout.SectionBody>
+          <WizardWrapper i18n={i18n} {...props} />
+        </PageLayout.SectionBody>
+      </PageLayout>
+    )
   );
 };
 

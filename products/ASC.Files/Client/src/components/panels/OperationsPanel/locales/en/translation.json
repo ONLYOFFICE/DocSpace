@@ -1,0 +1,8 @@
+{
+  "Copy": "Copy",
+  "Move": "Move",
+  "CopyOperation": "Copying",
+  "MoveToOperation": "Moving",
+  "Restore": "Restore",
+  "MoveToFolderMessage": "You cannot move the folder to its subfolder"
+}
