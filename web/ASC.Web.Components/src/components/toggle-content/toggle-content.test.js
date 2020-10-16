@@ -1,10 +1,10 @@
-import React from 'react';
-import { mount } from 'enzyme';
-import ToggleContent from '.';
+import React from "react";
+import { mount } from "enzyme";
+import ToggleContent from ".";
 
-describe('<ToggleContent />', () => {
-  it('renders without error', () => {
-    const wrapper = mount(     
+describe("<ToggleContent />", () => {
+  it("renders without error", () => {
+    const wrapper = mount(
       <ToggleContent>
         <span>Some text</span>
       </ToggleContent>
@@ -13,27 +13,21 @@ describe('<ToggleContent />', () => {
     expect(wrapper).toExist();
   });
 
-  it('accepts id', () => {
-    const wrapper = mount(
-      <ToggleContent id="testId" />
-    );
+  it("accepts id", () => {
+    const wrapper = mount(<ToggleContent id="testId" />);
 
-    expect(wrapper.prop('id')).toEqual('testId');
+    expect(wrapper.prop("id")).toEqual("testId");
   });
 
-  it('accepts className', () => {
-    const wrapper = mount(
-      <ToggleContent className="test" />
-    );
+  it("accepts className", () => {
+    const wrapper = mount(<ToggleContent className="test" />);
 
-    expect(wrapper.prop('className')).toEqual('test');
+    expect(wrapper.prop("className")).toEqual("test");
   });
 
-  it('accepts style', () => {
-    const wrapper = mount(
-      <ToggleContent style={{ color: 'red' }} />
-    );
+  it("accepts style", () => {
+    const wrapper = mount(<ToggleContent style={{ color: "red" }} />);
 
-    expect(wrapper.getDOMNode().style).toHaveProperty('color', 'red');
+    expect(wrapper.getDOMNode().style).toHaveProperty("color", "red");
   });
 });

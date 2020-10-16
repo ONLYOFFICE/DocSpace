@@ -8,7 +8,7 @@ import Text from "../text";
 storiesOf("Components| DragAndDrop", module)
   .addDecorator(withReadme(Readme))
   .add("base", () => {
-    const onDrop = items => {
+    const onDrop = (items) => {
       console.log("onDrop", items);
       for (let file of items) {
         if (file) {

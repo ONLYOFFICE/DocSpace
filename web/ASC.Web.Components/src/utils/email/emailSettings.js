@@ -13,34 +13,35 @@ export class EmailSettings {
     const instance1 = EmailSettings.parse(settings1);
     const instance2 = EmailSettings.parse(settings2);
     const comparedProperties = [
-      'allowDomainPunycode',
-      'allowLocalPartPunycode',
-      'allowDomainIp',
-      'allowStrictLocalPart',
-      'allowSpaces',
-      'allowName',
-      'allowLocalDomainName'
+      "allowDomainPunycode",
+      "allowLocalPartPunycode",
+      "allowDomainIp",
+      "allowStrictLocalPart",
+      "allowSpaces",
+      "allowName",
+      "allowLocalDomainName",
     ];
     const propLength = comparedProperties.length;
     for (let i = 0; i < propLength; i++) {
-      const comparedProp = comparedProperties[i]
+      const comparedProp = comparedProperties[i];
       if (instance1[comparedProp] !== instance2[comparedProp]) {
         return false;
       }
     }
     return true;
-  }
+  };
 
   get allowDomainPunycode() {
     return this._allowDomainPunycode;
   }
 
   set allowDomainPunycode(value) {
-    if (value !== undefined && typeof value === 'boolean') {
+    if (value !== undefined && typeof value === "boolean") {
       this._allowDomainPunycode = value;
-    }
-    else {
-      throw new TypeError(`Invalid value ${value} for allowDomainPunycode option. Use boolean value`);
+    } else {
+      throw new TypeError(
+        `Invalid value ${value} for allowDomainPunycode option. Use boolean value`
+      );
     }
   }
 
@@ -49,11 +50,12 @@ export class EmailSettings {
   }
 
   set allowLocalPartPunycode(value) {
-    if (value !== undefined && typeof value === 'boolean') {
+    if (value !== undefined && typeof value === "boolean") {
       this._allowLocalPartPunycode = value;
-    }
-    else {
-      throw new TypeError(`Invalid value ${value} for allowLocalPartPunycode option. Use boolean value`);
+    } else {
+      throw new TypeError(
+        `Invalid value ${value} for allowLocalPartPunycode option. Use boolean value`
+      );
     }
   }
 
@@ -62,11 +64,12 @@ export class EmailSettings {
   }
 
   set allowDomainIp(value) {
-    if (value !== undefined && typeof value === 'boolean') {
+    if (value !== undefined && typeof value === "boolean") {
       this._allowDomainIp = value;
-    }
-    else {
-      throw new TypeError(`Invalid value ${value} for allowDomainIp option. Use boolean value`);
+    } else {
+      throw new TypeError(
+        `Invalid value ${value} for allowDomainIp option. Use boolean value`
+      );
     }
   }
 
@@ -75,11 +78,12 @@ export class EmailSettings {
   }
 
   set allowStrictLocalPart(value) {
-    if (value !== undefined && typeof value === 'boolean') {
+    if (value !== undefined && typeof value === "boolean") {
       this._allowStrictLocalPart = value;
-    }
-    else {
-      throw new TypeError(`Invalid value ${value} for allowStrictLocalPart option. Use boolean value`);
+    } else {
+      throw new TypeError(
+        `Invalid value ${value} for allowStrictLocalPart option. Use boolean value`
+      );
     }
   }
 
@@ -88,11 +92,12 @@ export class EmailSettings {
   }
 
   set allowSpaces(value) {
-    if (value !== undefined && typeof value === 'boolean') {
+    if (value !== undefined && typeof value === "boolean") {
       this._allowSpaces = value;
-    }
-    else {
-      throw new TypeError(`Invalid value ${value} for allowSpaces option. Use boolean value`);
+    } else {
+      throw new TypeError(
+        `Invalid value ${value} for allowSpaces option. Use boolean value`
+      );
     }
   }
 
@@ -101,11 +106,12 @@ export class EmailSettings {
   }
 
   set allowName(value) {
-    if (value !== undefined && typeof value === 'boolean') {
+    if (value !== undefined && typeof value === "boolean") {
       this._allowName = value;
-    }
-    else {
-      throw new TypeError(`Invalid value ${value} for allowName option. Use boolean value`);
+    } else {
+      throw new TypeError(
+        `Invalid value ${value} for allowName option. Use boolean value`
+      );
     }
   }
 
@@ -114,11 +120,12 @@ export class EmailSettings {
   }
 
   set allowLocalDomainName(value) {
-    if (value !== undefined && typeof value === 'boolean') {
+    if (value !== undefined && typeof value === "boolean") {
       this._allowLocalDomainName = value;
-    }
-    else {
-      throw new TypeError(`Invalid value ${value} for allowLocalDomainName option. Use boolean value`);
+    } else {
+      throw new TypeError(
+        `Invalid value ${value} for allowLocalDomainName option. Use boolean value`
+      );
     }
   }
 
@@ -130,8 +137,8 @@ export class EmailSettings {
       allowStrictLocalPart: this.allowStrictLocalPart,
       allowSpaces: this.allowSpaces,
       allowName: this.allowName,
-      allowLocalDomainName: this.allowLocalDomainName
-    }
+      allowLocalDomainName: this.allowLocalDomainName,
+    };
   }
 
   disableAllSettings() {
@@ -145,20 +152,18 @@ export class EmailSettings {
   }
 
   static parse = (settings) => {
-    if(settings instanceof EmailSettings)
-      return settings;
+    if (settings instanceof EmailSettings) return settings;
 
-    if(typeof settings !== 'object')
-      throw new Error("Invalid argument");
+    if (typeof settings !== "object") throw new Error("Invalid argument");
 
     const defaultSettings = new EmailSettings();
     Object.keys(settings).map((key) => {
-      if (!(key in defaultSettings) || defaultSettings[key] === settings[key]) 
+      if (!(key in defaultSettings) || defaultSettings[key] === settings[key])
         return;
 
       defaultSettings[key] = settings[key];
     });
 
     return defaultSettings;
-  }
+  };
 }

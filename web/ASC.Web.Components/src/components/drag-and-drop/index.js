@@ -11,16 +11,22 @@ const StyledDragAndDrop = styled.div`
   -ms-user-select: none;
   user-select: none;*/
   height: 100%;
-  border: ${props => props.drag ? "1px dashed #bbb" : "1px solid transparent"};
-  
+  border: ${(props) =>
+    props.drag ? "1px dashed #bbb" : "1px solid transparent"};
+
   @media ${tablet} {
     border: none;
   }
   outline: none;
-  background: ${props => props.dragging ? props.isDragAccept ? "#EFEFB2" : "#F8F7BF" : "none !important"};
+  background: ${(props) =>
+    props.dragging
+      ? props.isDragAccept
+        ? "#EFEFB2"
+        : "#F8F7BF"
+      : "none !important"};
 `;
 
-const DragAndDrop = props => {
+const DragAndDrop = (props) => {
   const { isDropZone, children, dragging, className, ...rest } = props;
   const classNameProp = className ? className : "";
 
@@ -30,7 +36,7 @@ const DragAndDrop = props => {
 
   const { getRootProps, isDragActive } = useDropzone({
     noDragEventsBubbling: !isDropZone,
-    onDrop
+    onDrop,
   });
 
   return (
@@ -53,7 +59,7 @@ DragAndDrop.propTypes = {
   isDropZone: PropTypes.bool,
   dragging: PropTypes.bool,
   onMouseDown: PropTypes.func,
-  onDrop: PropTypes.func
+  onDrop: PropTypes.func,
 };
 
 export default DragAndDrop;

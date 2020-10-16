@@ -29,7 +29,7 @@ storiesOf("Components| EmptyScreenContainer", module)
       )}
       buttons={
         <>
-          <Icons.CrossIcon size="small" style={{marginRight: "4px"}} />
+          <Icons.CrossIcon size="small" style={{ marginRight: "4px" }} />
           <Link
             type="action"
             isHovered={true}

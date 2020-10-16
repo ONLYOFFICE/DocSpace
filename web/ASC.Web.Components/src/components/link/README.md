@@ -12,12 +12,7 @@ import { Link } from "asc-web-components";
 ```
 
 ```jsx
-<Link 
-  type="page" 
-  color="black" 
-  href="https://github.com" 
-  isBold={true}
->
+<Link type="page" color="black" href="https://github.com" isBold={true}>
   Bold page link
 </Link>
 ```
@@ -43,4 +38,4 @@ import { Link } from "asc-web-components";
 | `tabIndex`          |     `number`     |    -     |                    -                     |         `-1`          | Used as HTML `tabindex` property                                                               |
 | `target`            |     `oneOf`      |    -     | `\_blank`, `\_self`, `\_parent`, `\_top` |           -           | The _target_ attribute specifies where the linked document will open when the link is clicked. |
 | `title`             |     `string`     |    -     |                    -                     |           -           | Used as HTML `title` property                                                                  |
-| `type`              |     `oneOf`      |    -     |             `action`, `page`             |        `page`         | Type of link s                                                                                  |
+| `type`              |     `oneOf`      |    -     |             `action`, `page`             |        `page`         | Type of link s                                                                                 |

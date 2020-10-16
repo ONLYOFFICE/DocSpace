@@ -7,122 +7,122 @@ import Tree from "rc-tree";
 import Badge from "../badge";
 
 const StyledTreeMenu = styled(Tree)`
-    margin: 0;
-    padding: 0;
-    width: 93%;
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-    
-    .rc-tree-switcher {
-        margin-left: 0 !important;
-    }
+  margin: 0;
+  padding: 0;
+  width: 93%;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
-    & li span.rc-tree-iconEle {
-        margin-left: 4px;
-    }
+  .rc-tree-switcher {
+    margin-left: 0 !important;
+  }
 
-    ${props =>
-      props.isEmptyRootNode &&
-      css`
-        & > li > span.rc-tree-switcher-noop {
-          display: none;
-        }
-      `}
-    .rc-tree-node-content-wrapper {
-        position: static !important;
-        margin-bottom: ${props => +props.gapBetweenNodes - 15 + "px;"};
-        @media(max-width: 1024px) {
-            margin-bottom: ${props =>
-              props.gapBetweenNodesTablet
-                ? +props.gapBetweenNodesTablet - 15 + "px;"
-                : +props.gapBetweenNodes - 15 + "px;"};
-        }
-    };
-    ${props =>
-      !props.isFullFillSelection &&
-      css`
-        span.rc-tree-node-selected {
-          width: min-content !important;
-          padding-right: 5px;
-          max-width: 85%;
-        }
-      `}
-      
-    & .rc-tree-node-selected .rc-tree-title {
-      ${props => !props.isFullFillSelection && "width: 85%;"}
-    } 
+  & li span.rc-tree-iconEle {
+    margin-left: 4px;
+  }
 
-    &:not(.rc-tree-show-line) .rc-tree-switcher-noop {
-        background: none;
-    }
-    &.rc-tree-show-line li:not(:last-child) > ul {
-        background: url('data:image/gif;base64,R0lGODlhCQACAIAAAMzMzP///yH5BAEAAAEALAAAAAAJAAIAAAIEjI9pUAA7') 0 0 repeat-y;
-    }
-    &.rc-tree-show-line li:not(:last-child) > .rc-tree-switcher-noop {
-        background-position: -56px -18px;
-    }
-    &.rc-tree-show-line li:last-child > .rc-tree-switcher-noop {
-        background-position: -56px -36px;
-    }
-    .rc-tree-child-tree {
+  ${(props) =>
+    props.isEmptyRootNode &&
+    css`
+      & > li > span.rc-tree-switcher-noop {
         display: none;
+      }
+    `}
+  .rc-tree-node-content-wrapper {
+    position: static !important;
+    margin-bottom: ${(props) => +props.gapBetweenNodes - 15 + "px;"};
+    @media (max-width: 1024px) {
+      margin-bottom: ${(props) =>
+        props.gapBetweenNodesTablet
+          ? +props.gapBetweenNodesTablet - 15 + "px;"
+          : +props.gapBetweenNodes - 15 + "px;"};
     }
-    .rc-tree-treenode-switcher-open{
-        ${props => props.disableSwitch && "margin-bottom:10px;"}
+  }
+  ${(props) =>
+    !props.isFullFillSelection &&
+    css`
+      span.rc-tree-node-selected {
+        width: min-content !important;
+        padding-right: 5px;
+        max-width: 85%;
+      }
+    `}
+
+  & .rc-tree-node-selected .rc-tree-title {
+    ${(props) => !props.isFullFillSelection && "width: 85%;"}
+  }
+
+  &:not(.rc-tree-show-line) .rc-tree-switcher-noop {
+    background: none;
+  }
+  &.rc-tree-show-line li:not(:last-child) > ul {
+    background: url("data:image/gif;base64,R0lGODlhCQACAIAAAMzMzP///yH5BAEAAAEALAAAAAAJAAIAAAIEjI9pUAA7")
+      0 0 repeat-y;
+  }
+  &.rc-tree-show-line li:not(:last-child) > .rc-tree-switcher-noop {
+    background-position: -56px -18px;
+  }
+  &.rc-tree-show-line li:last-child > .rc-tree-switcher-noop {
+    background-position: -56px -36px;
+  }
+  .rc-tree-child-tree {
+    display: none;
+  }
+  .rc-tree-treenode-switcher-open {
+    ${(props) => props.disableSwitch && "margin-bottom:10px;"}
+  }
+  .rc-tree-child-tree-open {
+    display: block;
+    ${(props) => props.disableSwitch && "margin: 0 0 25px 0;"}
+    margin-left: ${(props) => (props.disableSwitch ? "27px" : "8px")};
+    li:first-child {
+      margin-top: ${(props) => (props.disableSwitch ? "10px" : "6px")};
+      margin-left: 0;
     }
-    .rc-tree-child-tree-open {
-        display: block;
-        ${props => props.disableSwitch && "margin: 0 0 25px 0;"}
-        margin-left: ${props => (props.disableSwitch ? "27px" : "8px")};
-        li:first-child{
-            margin-top: ${props => (props.disableSwitch ? "10px" : "6px")};
-            margin-left: 0;
-        }
-        
-    }
-    .rc-tree-treenode-disabled > span:not(.rc-tree-switcher),
-    .rc-tree-treenode-disabled > a,
-    .rc-tree-treenode-disabled > a span {
-        color: #767676;
-        cursor: not-allowed;
-    }
-    
-    .rc-tree-icon__open {
-        margin-right: 2px;
-        background-position: -110px -16px;
-        vertical-align: top;
-    }
-    .rc-tree-icon__close {
-        margin-right: 2px;
-        background-position: -110px 0;
-        vertical-align: top;
-    }
-    .rc-tree-icon__docu {
-        margin-right: 2px;
-        background-position: -110px -32px;
-        vertical-align: top;
-    }
-    .rc-tree-icon__customize {
-        margin-right: 2px;
-        vertical-align: top;
-    }
-    ${props =>
-      props.switcherIcon != null
-        ? css`
-            li span.rc-tree-switcher {
-              background: none;
-            }
-          `
-        : ""}
-    ${props =>
-      props.disableSwitch
-        ? css`
-            li span.rc-tree-switcher {
-              height: 0;
-              margin: 0;
-              width: 0;
-            }
-          `
-        : ``}
+  }
+  .rc-tree-treenode-disabled > span:not(.rc-tree-switcher),
+  .rc-tree-treenode-disabled > a,
+  .rc-tree-treenode-disabled > a span {
+    color: #767676;
+    cursor: not-allowed;
+  }
+
+  .rc-tree-icon__open {
+    margin-right: 2px;
+    background-position: -110px -16px;
+    vertical-align: top;
+  }
+  .rc-tree-icon__close {
+    margin-right: 2px;
+    background-position: -110px 0;
+    vertical-align: top;
+  }
+  .rc-tree-icon__docu {
+    margin-right: 2px;
+    background-position: -110px -32px;
+    vertical-align: top;
+  }
+  .rc-tree-icon__customize {
+    margin-right: 2px;
+    vertical-align: top;
+  }
+  ${(props) =>
+    props.switcherIcon != null
+      ? css`
+          li span.rc-tree-switcher {
+            background: none;
+          }
+        `
+      : ""}
+  ${(props) =>
+    props.disableSwitch
+      ? css`
+          li span.rc-tree-switcher {
+            height: 0;
+            margin: 0;
+            width: 0;
+          }
+        `
+      : ``}
 `;
 
 const TreeMenu = React.forwardRef((props, ref) => {
@@ -165,7 +165,7 @@ const TreeMenu = React.forwardRef((props, ref) => {
     isFullFillSelection,
     gapBetweenNodes,
     gapBetweenNodesTablet,
-    isEmptyRootNode
+    isEmptyRootNode,
   } = props;
 
   const expandedKeysProp = expandedKeys ? { expandedKeys: expandedKeys } : {};
@@ -175,7 +175,7 @@ const TreeMenu = React.forwardRef((props, ref) => {
     onSelect(result, e);
   };
 
-  const renderChildren = children => {
+  const renderChildren = (children) => {
     const items = [];
 
     React.Children.forEach(children, (child, i) => {
@@ -198,7 +198,7 @@ const TreeMenu = React.forwardRef((props, ref) => {
                 onClick={child.props.onBadgeClick}
               />
             </>
-          )
+          ),
         });
         items.push(el);
       } else {
@@ -275,7 +275,7 @@ TreeMenu.propTypes = {
 
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
-    PropTypes.node
+    PropTypes.node,
   ]),
   className: PropTypes.string,
   id: PropTypes.string,
@@ -286,14 +286,14 @@ TreeMenu.propTypes = {
   isFullFillSelection: PropTypes.bool,
   gapBetweenNodes: PropTypes.string,
   gapBetweenNodesTablet: PropTypes.string,
-  isEmptyRootNode: PropTypes.bool
+  isEmptyRootNode: PropTypes.bool,
 };
 
 TreeMenu.defaultProps = {
   disableSwitch: false,
   isFullFillSelection: true,
   gapBetweenNodes: "15",
-  isEmptyRootNode: false
+  isEmptyRootNode: false,
 };
 
 TreeMenu.displayName = "TreeMenu";

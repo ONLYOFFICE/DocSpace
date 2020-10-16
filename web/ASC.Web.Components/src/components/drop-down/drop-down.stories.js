@@ -13,7 +13,7 @@ storiesOf("Components| DropDown", module)
       style={{
         padding: "8px 0 0 60px",
         display: "grid",
-        gridTemplateColumns: "1fr 1fr"
+        gridTemplateColumns: "1fr 1fr",
       }}
     >
       <div style={{ position: "relative" }}>

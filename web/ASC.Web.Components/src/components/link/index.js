@@ -4,40 +4,43 @@ import PropTypes from "prop-types";
 import Text from "../text";
 
 const colorCss = css`
-    color: ${props => props.color};
+  color: ${(props) => props.color};
 `;
 
 const hoveredCss = css`
   ${colorCss};
-  text-decoration: ${props => (props.type === 'page' ? 'underline' : 'underline dashed')};
+  text-decoration: ${(props) =>
+    props.type === "page" ? "underline" : "underline dashed"};
 `;
 
 // eslint-disable-next-line react/prop-types, no-unused-vars
-const PureText = ({type, color, ...props}) => <Text {...props}/>;
+const PureText = ({ type, color, ...props }) => <Text {...props} />;
 const StyledText = styled(PureText)`
   text-decoration: none;
   user-select: none;
   cursor: pointer;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-  opacity: ${props => props.isSemitransparent && "0.5"};
+  opacity: ${(props) => props.isSemitransparent && "0.5"};
 
   line-height: calc(100% + 6px);
   ${colorCss};
 
   &:hover {
-    ${props => !props.noHover && hoveredCss};
+    ${(props) => !props.noHover && hoveredCss};
   }
 
-  ${props => !props.noHover && props.isHovered && hoveredCss}
+  ${(props) => !props.noHover && props.isHovered && hoveredCss}
 
-  ${props => props.isTextOverflow && css`
+  ${(props) =>
+    props.isTextOverflow &&
+    css`
       display: inline-block;
       max-width: 100%;
     `}
 `;
 
 // eslint-disable-next-line react/display-name
-const Link = memo(({ isTextOverflow, children, noHover,  ...rest }) => {
+const Link = memo(({ isTextOverflow, children, noHover, ...rest }) => {
   // console.log("Link render", rest);
 
   return (
@@ -78,7 +81,7 @@ Link.propTypes = {
 Link.defaultProps = {
   className: "",
   color: "#333333",
-  fontSize: '13px',
+  fontSize: "13px",
   href: undefined,
   isBold: false,
   isHovered: false,

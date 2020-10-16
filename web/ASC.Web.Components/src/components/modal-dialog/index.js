@@ -21,8 +21,8 @@ const Dialog = styled.div`
 
 const Content = styled.div`
   position: relative;
-  height: ${props => props.contentHeight};
-  width: ${props => props.contentWidth};
+  height: ${(props) => props.contentHeight};
+  width: ${(props) => props.contentWidth};
   background-color: #fff;
   padding: 0 16px 16px;
   box-sizing: border-box;
@@ -132,7 +132,7 @@ class ModalDialog extends React.Component {
     window.removeEventListener("keyup", this.onKeyPress);
   }
 
-  onKeyPress = event => {
+  onKeyPress = (event) => {
     if (event.key === "Esc" || event.key === "Escape") {
       this.props.onClose();
     }
@@ -150,14 +150,14 @@ class ModalDialog extends React.Component {
       className,
       id,
       style,
-      children
+      children,
     } = this.props;
 
     let header = null;
     let body = null;
     let footer = null;
 
-    React.Children.forEach(children, child => {
+    React.Children.forEach(children, (child) => {
       const childType =
         child && child.type && (child.type.displayName || child.type.name);
 
@@ -234,14 +234,14 @@ ModalDialog.propTypes = {
   contentWidth: PropTypes.string,
   className: PropTypes.string,
   id: PropTypes.string,
-  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 };
 
 ModalDialog.defaultProps = {
   displayType: "auto",
   zIndex: 310,
   bodyPadding: "16px 0",
-  contentWidth: "100%"
+  contentWidth: "100%",
 };
 
 ModalDialog.Header = Header;

@@ -5,14 +5,14 @@ import React from "react";
 import loadImageURL from "./utils/load-image-url";
 import loadImageFile from "./utils/load-image-file";
 
-const makeCancelable = promise => {
+const makeCancelable = (promise) => {
   let hasCanceled_ = false;
 
   const wrappedPromise = new Promise((resolve, reject) => {
     /* eslint-disable prefer-promise-reject-errors */
     promise.then(
-      val => (hasCanceled_ ? reject({ isCanceled: true }) : resolve(val)),
-      error => (hasCanceled_ ? reject({ isCanceled: true }) : reject(error))
+      (val) => (hasCanceled_ ? reject({ isCanceled: true }) : resolve(val)),
+      (error) => (hasCanceled_ ? reject({ isCanceled: true }) : reject(error))
     );
     /* eslint-enable */
   });
@@ -21,7 +21,7 @@ const makeCancelable = promise => {
     promise: wrappedPromise,
     cancel() {
       hasCanceled_ = true;
-    }
+    },
   };
 };
 
@@ -38,9 +38,9 @@ const isPassiveSupported = () => {
   let passiveSupported = false;
   try {
     const options = Object.defineProperty({}, "passive", {
-      get: function() {
+      get: function () {
         passiveSupported = true;
-      }
+      },
     });
 
     window.addEventListener("test", options, options);
@@ -60,7 +60,7 @@ const draggableEvents = {
       move: "onTouchMove",
       mouseMove: "onMouseMove",
       up: "onTouchEnd",
-      mouseUp: "onMouseUp"
+      mouseUp: "onMouseUp",
     },
     native: {
       down: "touchstart",
@@ -69,23 +69,23 @@ const draggableEvents = {
       move: "touchmove",
       mouseMove: "mousemove",
       up: "touchend",
-      mouseUp: "mouseup"
-    }
+      mouseUp: "mouseup",
+    },
   },
   desktop: {
     react: {
       down: "onMouseDown",
       drag: "onDragOver",
       move: "onMouseMove",
-      up: "onMouseUp"
+      up: "onMouseUp",
     },
     native: {
       down: "mousedown",
       drag: "dragStart",
       move: "mousemove",
-      up: "mouseup"
-    }
-  }
+      up: "mouseup",
+    },
+  },
 };
 const deviceEvents = isTouchDevice
   ? draggableEvents.touch
@@ -141,7 +141,7 @@ const drawRoundedRect = (context, x, y, width, height, borderRadius) => {
 
 const defaultEmptyImage = {
   x: 0.5,
-  y: 0.5
+  y: 0.5,
 };
 
 class AvatarEditor extends React.Component {
@@ -150,18 +150,18 @@ class AvatarEditor extends React.Component {
     rotate: PropTypes.number,
     image: PropTypes.oneOfType([
       PropTypes.string,
-      ...(isFileAPISupported ? [PropTypes.instanceOf(File)] : [])
+      ...(isFileAPISupported ? [PropTypes.instanceOf(File)] : []),
     ]),
     border: PropTypes.oneOfType([
       PropTypes.number,
-      PropTypes.arrayOf(PropTypes.number)
+      PropTypes.arrayOf(PropTypes.number),
     ]),
     borderRadius: PropTypes.number,
     width: PropTypes.number,
     height: PropTypes.number,
     position: PropTypes.shape({
       x: PropTypes.number,
-      y: PropTypes.number
+      y: PropTypes.number,
     }),
     color: PropTypes.arrayOf(PropTypes.number),
     crossOrigin: PropTypes.oneOf(["", "anonymous", "use-credentials"]),
@@ -175,7 +175,7 @@ class AvatarEditor extends React.Component {
     onPositionChange: PropTypes.func,
     disableBoundaryChecks: PropTypes.bool,
     disableHiDPIScaling: PropTypes.bool,
-    disableCanvasRotation: PropTypes.bool
+    disableCanvasRotation: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -195,7 +195,7 @@ class AvatarEditor extends React.Component {
     onPositionChange() {},
     disableBoundaryChecks: false,
     disableHiDPIScaling: false,
-    disableCanvasRotation: true
+    disableCanvasRotation: true,
   };
 
   constructor(props) {
@@ -207,7 +207,7 @@ class AvatarEditor extends React.Component {
     drag: false,
     my: null,
     mx: null,
-    image: defaultEmptyImage
+    image: defaultEmptyImage,
   };
 
   componentDidMount() {
@@ -340,7 +340,7 @@ class AvatarEditor extends React.Component {
       rotate,
       width,
       height,
-      border
+      border,
     };
   }
 
@@ -426,7 +426,7 @@ class AvatarEditor extends React.Component {
   getCroppingRect() {
     const position = this.props.position || {
       x: this.state.image.x,
-      y: this.state.image.y
+      y: this.state.image.y,
     };
     const width = (1 / this.props.scale) * this.getXScale();
     const height = (1 / this.props.scale) * this.getYScale();
@@ -435,7 +435,7 @@ class AvatarEditor extends React.Component {
       x: position.x - width / 2,
       y: position.y - height / 2,
       width,
-      height
+      height,
     };
 
     let xMin = 0;
@@ -459,7 +459,7 @@ class AvatarEditor extends React.Component {
     return {
       ...croppingRect,
       x: Math.max(xMin, Math.min(croppingRect.x, xMax)),
-      y: Math.max(yMin, Math.min(croppingRect.y, yMax))
+      y: Math.max(yMin, Math.min(croppingRect.y, yMax)),
     };
   }
 
@@ -477,7 +477,7 @@ class AvatarEditor extends React.Component {
     }
   }
 
-  handleImageReady = image => {
+  handleImageReady = (image) => {
     const imageState = this.getInitialSize(image.width, image.height);
     imageState.resource = image;
     imageState.x = 0.5;
@@ -504,7 +504,7 @@ class AvatarEditor extends React.Component {
 
     return {
       height: newHeight,
-      width: newWidth
+      width: newWidth,
     };
   }
 
@@ -512,7 +512,7 @@ class AvatarEditor extends React.Component {
     const context = this.canvas.getContext("2d");
     context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.setState({
-      image: defaultEmptyImage
+      image: defaultEmptyImage,
     });
   };
 
@@ -576,7 +576,7 @@ class AvatarEditor extends React.Component {
       x,
       y,
       height,
-      width
+      width,
     };
   }
 
@@ -616,7 +616,7 @@ class AvatarEditor extends React.Component {
     context.restore();
   }
 
-  handleMouseDown = e => {
+  handleMouseDown = (e) => {
     e = e || window.event;
     // if e is a touch event, preventDefault keeps
     // corresponding mouse events from also being fired
@@ -625,7 +625,7 @@ class AvatarEditor extends React.Component {
     this.setState({
       drag: true,
       mx: null,
-      my: null
+      my: null,
     });
   };
   handleMouseUp = () => {
@@ -635,7 +635,7 @@ class AvatarEditor extends React.Component {
     }
   };
 
-  handleMouseMove = e => {
+  handleMouseMove = (e) => {
     e = e || window.event;
     if (this.state.drag === false) {
       return;
@@ -652,7 +652,7 @@ class AvatarEditor extends React.Component {
 
     const newState = {
       mx: mousePositionX,
-      my: mousePositionY
+      my: mousePositionY,
     };
 
     let rotate = this.props.rotate;
@@ -673,7 +673,7 @@ class AvatarEditor extends React.Component {
       lastY *= height;
 
       // helpers to calculate vectors
-      const toRadians = degree => degree * (Math.PI / 180);
+      const toRadians = (degree) => degree * (Math.PI / 180);
       const cos = Math.cos(toRadians(rotate));
       const sin = Math.sin(toRadians(rotate));
 
@@ -685,14 +685,14 @@ class AvatarEditor extends React.Component {
 
       const position = {
         x: x / width + relativeWidth / 2,
-        y: y / height + relativeHeight / 2
+        y: y / height + relativeHeight / 2,
       };
 
       this.props.onPositionChange(position);
 
       newState.image = {
         ...this.state.image,
-        ...position
+        ...position,
       };
     }
 
@@ -701,7 +701,7 @@ class AvatarEditor extends React.Component {
     this.props.onMouseMove(e);
   };
 
-  setCanvas = canvas => {
+  setCanvas = (canvas) => {
     this.canvas = canvas;
   };
 
@@ -737,7 +737,7 @@ class AvatarEditor extends React.Component {
       width: dimensions.canvas.width,
       height: dimensions.canvas.height,
       cursor: this.state.drag ? "grabbing" : "grab",
-      touchAction: "none"
+      touchAction: "none",
     };
 
     const attributes = {
@@ -745,8 +745,8 @@ class AvatarEditor extends React.Component {
       height: dimensions.canvas.height * pixelRatio,
       style: {
         ...defaultStyle,
-        ...style
-      }
+        ...style,
+      },
     };
 
     attributes[deviceEvents.react.down] = this.handleMouseDown;

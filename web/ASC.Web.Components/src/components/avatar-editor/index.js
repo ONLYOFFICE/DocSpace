@@ -26,13 +26,13 @@ class AvatarEditor extends React.Component {
       y: 0,
       width: 0,
       height: 0,
-      croppedImage: ""
+      croppedImage: "",
     };
   }
 
-  onImageChange = file => {
+  onImageChange = (file) => {
     this.setState({
-      croppedImage: file
+      croppedImage: file,
     });
     if (typeof this.props.onImageChange === "function")
       this.props.onImageChange(file);
@@ -40,21 +40,21 @@ class AvatarEditor extends React.Component {
 
   onDeleteImage = () => {
     this.setState({
-      existImage: false
+      existImage: false,
     });
     if (typeof this.props.onDeleteImage === "function")
       this.props.onDeleteImage();
   };
 
-  onSizeChange = data => {
+  onSizeChange = (data) => {
     this.setState(data);
   };
 
-  onPositionChange = data => {
+  onPositionChange = (data) => {
     this.setState(data);
   };
 
-  onLoadFileError = error => {
+  onLoadFileError = (error) => {
     if (typeof this.props.onLoadFileError === "function")
       this.props.onLoadFileError(error);
   };
@@ -67,12 +67,14 @@ class AvatarEditor extends React.Component {
           x: this.state.x,
           y: this.state.y,
           width: this.state.width,
-          height: this.state.height
+          height: this.state.height,
         },
-        croppedImage: this.state.croppedImage
-      }
+        croppedImage: this.state.croppedImage,
+      };
 
-      needSave ? this.props.onLoadFile(file, fileData) : this.props.onLoadFile(file); 
+      needSave
+        ? this.props.onLoadFile(file, fileData)
+        : this.props.onLoadFile(file);
     }
 
     if (!this.state.existImage) this.setState({ existImage: true });
@@ -81,7 +83,7 @@ class AvatarEditor extends React.Component {
   onSaveButtonClick = () => {
     this.avatarEditorBodyRef.current.onSaveImage();
     //this.saveAvatar();
-  };;
+  };
 
   onCancelButtonClick = () => {
     this.props.onCancel();
@@ -99,7 +101,7 @@ class AvatarEditor extends React.Component {
         x: this.state.x,
         y: this.state.y,
         width: this.state.width,
-        height: this.state.height
+        height: this.state.height,
       },
       this.state.croppedImage
     );
@@ -137,9 +139,8 @@ class AvatarEditor extends React.Component {
       saveButtonLabel,
       saveButtonLoading,
       useModalDialog,
-      cancelButtonLabel
+      cancelButtonLabel,
     } = this.props;
-
 
     return useModalDialog ? (
       <ModalDialog
@@ -255,7 +256,7 @@ AvatarEditor.propTypes = {
   className: PropTypes.string,
   id: PropTypes.string,
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
-  useModalDialog: PropTypes.bool
+  useModalDialog: PropTypes.bool,
 };
 
 AvatarEditor.defaultProps = {
@@ -266,7 +267,7 @@ AvatarEditor.defaultProps = {
   cancelButtonLabel: "Cancel",
   accept: ["image/png", "image/jpeg"],
   displayType: "auto",
-  useModalDialog: true
+  useModalDialog: true,
 };
 
 export default AvatarEditor;

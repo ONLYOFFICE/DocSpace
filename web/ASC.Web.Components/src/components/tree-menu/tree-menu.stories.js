@@ -5,7 +5,7 @@ import {
   boolean,
   text,
   select,
-  number
+  number,
 } from "@storybook/addon-knobs/react";
 import withReadme from "storybook-readme/with-readme";
 import Readme from "./README.md";
@@ -19,11 +19,11 @@ const iconNames = Object.keys(Icons);
 const treeData = [
   {
     key: "0-0",
-    children: [{ key: "0-0-0" }, { key: "0-0-1" }]
-  }
+    children: [{ key: "0-0-0" }, { key: "0-0-1" }],
+  },
 ];
 
-const TreeMenuStory = props => {
+const TreeMenuStory = (props) => {
   // eslint-disable-next-line react/prop-types
   const { data } = props;
 
@@ -33,23 +33,23 @@ const TreeMenuStory = props => {
   const [expandedKeys, setExpandedKeys] = useState([
     "0-0-key",
     "0-0-0-key",
-    "0-0-0-0-key"
+    "0-0-0-0-key",
   ]);
 
-  const onDragStart = info => {
+  const onDragStart = (info) => {
     info.event.persist();
   };
 
-  const onDragEnter = info => {
+  const onDragEnter = (info) => {
     setExpandedKeys(info.expandedKeys);
   };
 
-  const onBadgeClick = e => {
+  const onBadgeClick = (e) => {
     const id = e.currentTarget.dataset.id;
     console.log("Clocked on badge: ", id);
   };
 
-  const onDrop = info => {
+  const onDrop = (info) => {
     info.event.persist();
     const dropKey = info.node.props.eventKey;
     const dragKey = info.dragNode.props.eventKey;
@@ -78,7 +78,7 @@ const TreeMenuStory = props => {
     });
 
     if (!info.dropToGap) {
-      loop(treeData, dropKey, item => {
+      loop(treeData, dropKey, (item) => {
         item.children = item.children || [];
         item.children.push(dragObj);
       });
@@ -87,7 +87,7 @@ const TreeMenuStory = props => {
       info.node.props.expanded &&
       dropPosition === 1
     ) {
-      loop(treeData, dropKey, item => {
+      loop(treeData, dropKey, (item) => {
         item.children = item.children || [];
         item.children.unshift(dragObj);
       });
@@ -106,13 +106,13 @@ const TreeMenuStory = props => {
     }
     setGData(treeData);
   };
-  const onExpand = expandedKeys => {
+  const onExpand = (expandedKeys) => {
     setExpandedKeys(expandedKeys);
     setAutoExpandParent(false);
   };
 
-  const getTreeNodes = tree => {
-    return tree.map(item => {
+  const getTreeNodes = (tree) => {
+    return tree.map((item) => {
       if (item.children && item.children.length) {
         return (
           <TreeNode
@@ -143,7 +143,7 @@ const TreeMenuStory = props => {
     });
   };
 
-  const switcherIcon = obj => {
+  const switcherIcon = (obj) => {
     if (obj.isLeaf) {
       return null;
     }
@@ -184,8 +184,8 @@ const TreeMenuStory = props => {
         onExpand={onExpand}
         autoExpandParent={autoExpandParent}
         expandedKeys={expandedKeys}
-        onDragStart={info => onDragStart(info)}
-        onDrop={info => onDrop(info)}
+        onDragStart={(info) => onDragStart(info)}
+        onDrop={(info) => onDrop(info)}
         onDragEnter={onDragEnter}
         switcherIcon={switcherIcon}
         onSelect={action("select")}

@@ -78,6 +78,7 @@
     "jest-junit": "^10.0.0",
     "jest-styled-components": "^7.0.0",
     "postcss": "^7.0.26",
+    "prettier": "2.1.2",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react-values": "^0.3.3",
