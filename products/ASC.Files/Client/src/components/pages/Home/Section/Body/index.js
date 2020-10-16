@@ -81,6 +81,7 @@ import {
   getIsCommonFolder,
   getIsRecycleBinFolder,
   getIsMyFolder,
+  getIsFavoritesFolder,
   getMyFolderId,
   getTooltipLabel,
 } from "../../../../../store/files/selectors";
@@ -745,7 +746,7 @@ class SectionBodyContent extends React.Component {
   };
 
   renderEmptyRootFolderContainer = () => {
-    const { isMy, isShare, isCommon, isRecycleBin, title, t } = this.props;
+    const { isMy, isShare, isCommon, isRecycleBin, isFavorites, title, t } = this.props;
     const subheadingText = t("SubheadingEmptyText");
     const myDescription = t("MyEmptyContainerDescription");
     const shareDescription = t("SharedEmptyContainerDescription");
@@ -850,6 +851,15 @@ class SectionBodyContent extends React.Component {
           descriptionText={trashDescription}
           imageSrc="images/empty_screen_trash.png"
           buttons={trashButtons}
+        />
+      );
+    } else if (isFavorites) {
+      return (
+        <EmptyFolderContainer
+          headerText={title}
+          subheadingText={subheadingText}
+          descriptionText={favoritesDescription}
+          imageSrc="images/empty_screen_favorites.png"
         />
       );
     } else {
@@ -1544,6 +1554,7 @@ class SectionBodyContent extends React.Component {
                       culture={settings.culture}
                       onEditComplete={this.onEditComplete}
                       onMediaFileClick={this.onMediaFileClick}
+                      onClickFavorite={this.onClickFavorite}
                     />
                   </SimpleFilesRow>
                 </DragAndDrop>
@@ -1601,7 +1612,7 @@ const mapStateToProps = (state) => {
     folders: getFolders(state),
     isAdmin: isAdmin(state),
     isCommon: getIsCommonFolder(state),
-    isFavorites,
+    isFavorites: getIsFavoritesFolder(state),
     isLoading: getIsLoading(state),
     isMy: getIsMyFolder(state),
     isRecycleBin: getIsRecycleBinFolder(state),

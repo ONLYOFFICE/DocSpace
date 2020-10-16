@@ -456,7 +456,7 @@ class FilesRowContent extends React.PureComponent {
                       color='#A3A9AE'
                     />
                   }
-                  {fileStatus === 32 && 
+                  {(fileStatus === 32 && !isTrashFolder) && 
                     <Icons.FavoriteIcon
                       className='favorite'
                       size='small'

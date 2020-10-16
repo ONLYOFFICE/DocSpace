@@ -641,8 +641,7 @@ const getFilesContextOptions = (item, isRecycleBin, canOpenPlayer) => {
     options.push("rename");
     options.push("delete");
   }
-  if (isFavorite) {
-    options.push("separator2");
+  if (isFavorite && !isRecycleBin) {
     options.push("remove-from-favorites");
   }
 
@@ -672,6 +671,10 @@ const getRecycleBinFolder = createSelector(getTreeFolders, (treeFolders) => {
   return treeFolders.find((x) => x.rootFolderName === "@trash");
 });
 
+const getFavoritesFolder = createSelector(getTreeFolders, (treeFolders) => {
+  return treeFolders.find((x) => x.rootFolderName === "@favorites");
+});
+
 export const getMyFolderId = createSelector(getMyFolder, (myFolder) => {
   if (myFolder) return myFolder.id;
 });
@@ -694,6 +697,13 @@ export const getRecycleBinFolderId = createSelector(
   getRecycleBinFolder,
   (recycleBinFolder) => {
     if (recycleBinFolder) return recycleBinFolder.id;
+  }
+);
+
+export const getFavoritesFolderId = createSelector(
+  getFavoritesFolder,
+  (favoritesFolder) => {
+    if (favoritesFolder) return favoritesFolder.id;
   }
 );
 
@@ -726,6 +736,14 @@ export const getIsRecycleBinFolder = createSelector(
   getSelectedFolderId,
   (recycleBinFolder, id) => {
     return recycleBinFolder && recycleBinFolder.id === id;
+  }
+);
+
+export const getIsFavoritesFolder = createSelector(
+  getFavoritesFolder,
+  getSelectedFolderId,
+  (favoritesFolder, id) => {
+    return favoritesFolder && favoritesFolder.id === id;
   }
 );
 
