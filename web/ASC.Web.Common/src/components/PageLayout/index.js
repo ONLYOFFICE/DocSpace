@@ -296,7 +296,10 @@ class PageLayoutComponent extends React.Component {
                 {isSectionFilterAvailable && (
                   <SubSectionFilter className="section-header_filter">
                     {sectionFilterContent
-                      ? sectionFilterContent.props.children
+                      ? React.cloneElement(
+                        sectionFilterContent.props.children,
+                        { widthProp: width }
+                      )
                       : null}
                   </SubSectionFilter>
                 )}
@@ -314,7 +317,10 @@ class PageLayoutComponent extends React.Component {
                       {isSectionFilterAvailable && (
                         <SubSectionFilter className="section-body_filter">
                           {sectionFilterContent
-                            ? sectionFilterContent.props.children
+                            ? React.cloneElement(
+                              sectionFilterContent.props.children,
+                              { widthProp: width }
+                            )
                             : null}
                         </SubSectionFilter>
                       )}
