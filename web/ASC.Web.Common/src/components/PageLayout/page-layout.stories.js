@@ -2,8 +2,10 @@ import React from "react";
 import { storiesOf } from "@storybook/react";
 import { action } from "@storybook/addon-actions";
 import styled from "@emotion/styled";
-import Layout from "../Layout";
+import NavMenu from "../NavMenu";
+import Main from "../Main";
 import PageLayout from ".";
+import history from "../../history";
 import Headline from "../Headline";
 import {
   IconButton,
@@ -16,6 +18,7 @@ import withReadme from "storybook-readme/with-readme";
 import { boolean, withKnobs } from "@storybook/addon-knobs/react";
 import Readme from "./README.md";
 import withProvider from "../../../.storybook/decorators/redux";
+import { Router } from "react-router-dom";
 
 const HeaderContent = styled.div`
   display: flex;
@@ -137,20 +140,39 @@ storiesOf("Components|PageLayout", module)
   .addDecorator(withKnobs)
   .addDecorator(withReadme(Readme))
   .add("base", () => (
-    <Layout
-      isBackdropVisible={boolean("isBackdropVisible", false)}
-      isNavHoverEnabled={boolean("isNavHoverEnabled", true)}
-      isNavOpened={boolean("isNavOpened", false)}
-      isAsideVisible={boolean("isAsideVisible", false)}
-    >
-      <PageLayout
-        articleHeaderContent={articleHeaderContent}
-        articleMainButtonContent={articleMainButtonContent}
-        articleBodyContent={articleBodyContent}
-        sectionHeaderContent={sectionHeaderContent}
-        sectionFilterContent={sectionFilterContent}
-        sectionBodyContent={sectionBodyContent}
-        sectionPagingContent={sectionPagingContent}
+    <Router history={history}>
+      <NavMenu
+        isBackdropVisible={boolean("isBackdropVisible", false)}
+        isNavHoverEnabled={boolean("isNavHoverEnabled", true)}
+        isNavOpened={boolean("isNavOpened", false)}
+        isAsideVisible={boolean("isAsideVisible", false)}
       />
-    </Layout>
+      <Main>
+        <PageLayout withBodyScroll={true}>
+          <PageLayout.ArticleHeader>
+            {articleHeaderContent}
+          </PageLayout.ArticleHeader>
+
+          <PageLayout.ArticleMainButton>
+            {articleMainButtonContent}
+          </PageLayout.ArticleMainButton>
+
+          <PageLayout.ArticleBody>{articleBodyContent}</PageLayout.ArticleBody>
+
+          <PageLayout.SectionHeader>
+            {sectionHeaderContent}
+          </PageLayout.SectionHeader>
+
+          <PageLayout.SectionFilter>
+            {sectionFilterContent}
+          </PageLayout.SectionFilter>
+
+          <PageLayout.SectionBody>{sectionBodyContent}</PageLayout.SectionBody>
+
+          <PageLayout.SectionPaging>
+            {sectionPagingContent}
+          </PageLayout.SectionPaging>
+        </PageLayout>
+      </Main>
+    </Router>
   ));
