@@ -5,7 +5,13 @@ import {
   setViewAs,
   setIsLoading,
 } from "../../../../../store/files/actions";
-import { getFilter, getSelectedFolderId, getViewAs, getFilterSelectedItem, getFirstLoad } from "../../../../../store/files/selectors";
+import {
+  getFilter,
+  getSelectedFolderId,
+  getViewAs,
+  getFilterSelectedItem,
+  getFirstLoad,
+} from "../../../../../store/files/selectors";
 import find from "lodash/find";
 import result from "lodash/result";
 import { withTranslation } from "react-i18next";
@@ -14,7 +20,11 @@ import { constants, FilterInput, store, Loaders } from "asc-web-common";
 import isEqual from "lodash/isEqual";
 import { isMobileOnly } from "react-device-detect";
 
-const { getCurrentUser, getSettingsCustomNames, getLanguage } = store.auth.selectors;
+const {
+  getCurrentUser,
+  getSettingsCustomNames,
+  getLanguage,
+} = store.auth.selectors;
 const { FilterType } = constants;
 
 const getFilterType = (filterValues) => {

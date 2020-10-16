@@ -283,7 +283,7 @@ const mapStateToProps = (state) => {
     treeFolders: getTreeFolders(state),
     isLoading: getIsLoading(state),
     isRecycleBinFolder: getIsRecycleBinFolder(state),
-    selection: getSelection(state)
+    selection: getSelection(state),
   };
 };
 

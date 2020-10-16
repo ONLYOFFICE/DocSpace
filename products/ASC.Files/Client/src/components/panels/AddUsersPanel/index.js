@@ -7,12 +7,12 @@ import {
   StyledAddUsersPanelPanel,
   StyledContent,
   StyledHeaderContent,
-  StyledBody
+  StyledBody,
 } from "../StyledPanels";
 import { createI18N } from "../../../helpers/i18n";
 const i18n = createI18N({
   page: "AddUsersPanel",
-  localesPath: "panels/AddUsersPanel"
+  localesPath: "panels/AddUsersPanel",
 });
 
 const { changeLanguage } = utils;
@@ -24,7 +24,7 @@ class AddUsersPanelComponent extends React.Component {
     changeLanguage(i18n);
 
     this.state = {
-      showActionPanel: false
+      showActionPanel: false,
     };
 
     this.scrollRef = React.createRef();
@@ -40,12 +40,12 @@ class AddUsersPanelComponent extends React.Component {
     this.props.onSharingPanelClose();
   };
 
-  onPeopleSelect = users => {
+  onPeopleSelect = (users) => {
     const {
       accessRight,
       shareDataItems,
       setShareDataItems,
-      onClose
+      onClose,
     } = this.props;
     const items = shareDataItems;
     for (let item of users) {
@@ -53,7 +53,7 @@ class AddUsersPanelComponent extends React.Component {
         item.id = item.key;
         delete item.key;
       }
-      const currentItem = shareDataItems.find(x => x.id === item.id);
+      const currentItem = shareDataItems.find((x) => x.id === item.id);
       if (!currentItem) {
         item.rights = accessRight;
         items.push(item);
@@ -74,7 +74,7 @@ class AddUsersPanelComponent extends React.Component {
     window.removeEventListener("keyup", this.onKeyPress);
   }
 
-  onKeyPress = event => {
+  onKeyPress = (event) => {
     if (event.key === "Esc" || event.key === "Escape") {
       this.props.onClose();
     }
@@ -157,14 +157,14 @@ class AddUsersPanelComponent extends React.Component {
 AddUsersPanelComponent.propTypes = {
   visible: PropTypes.bool,
   onSharingPanelClose: PropTypes.func,
-  onClose: PropTypes.func
+  onClose: PropTypes.func,
 };
 
 const AddUsersPanelContainerTranslated = withTranslation()(
   AddUsersPanelComponent
 );
 
-const AddUsersPanel = props => (
+const AddUsersPanel = (props) => (
   <AddUsersPanelContainerTranslated i18n={i18n} {...props} />
 );
 

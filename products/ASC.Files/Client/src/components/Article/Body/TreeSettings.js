@@ -18,7 +18,7 @@ import {
   getSettingsSelectedTreeNode,
   getExpandedSetting,
   getEnableThirdParty,
-  getSelectedTreeNode
+  getSelectedTreeNode,
 } from "../../../store/files/selectors";
 const { isAdmin } = initStore.auth.selectors;
 

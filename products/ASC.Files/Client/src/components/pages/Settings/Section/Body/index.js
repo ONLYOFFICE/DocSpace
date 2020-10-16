@@ -20,7 +20,7 @@ import {
   getSettingsTreeForceSave,
   getSettingsTreeStoreForceSave,
   getSettingsTreeEnableThirdParty,
-  getSettingsTree
+  getSettingsTree,
 } from "../../../../../store/files/selectors";
 import { setDocumentTitle } from "../../../../../helpers/utils";
 

@@ -66,22 +66,11 @@ const initialState = {
     uploadToFolder: null,
     uploadedFiles: 0,
     percent: 0,
-    uploaded: true
+    uploaded: true,
   },
   docservice: {
-    coauthorDocs: [
-      ".pptx",
-      ".ppsx",
-      ".xlsx",
-      ".csv",
-      ".docx",
-      ".txt"
-    ],
-    commentedDocs: [
-      ".docx",
-      ".xlsx",
-      ".pptx"
-    ],
+    coauthorDocs: [".pptx", ".ppsx", ".xlsx", ".csv", ".docx", ".txt"],
+    commentedDocs: [".docx", ".xlsx", ".pptx"],
     convertDocs: [
       ".pptm",
       ".ppt",
@@ -109,7 +98,7 @@ const initialState = {
       ".odt",
       ".fodt",
       ".ott",
-      ".rtf"
+      ".rtf",
     ],
     editedDocs: [
       ".pptx",
@@ -147,13 +136,9 @@ const initialState = {
       ".rtf",
       ".mht",
       ".html",
-      ".htm"
+      ".htm",
     ],
-    encryptedDocs: [
-      ".docx",
-      ".xlsx",
-      ".pptx"
-    ],
+    encryptedDocs: [".docx", ".xlsx", ".pptx"],
     formfillingDocs: [".docx"],
     customfilterDocs: [".xlsx"],
     reviewedDocs: [".docx"],
@@ -200,7 +185,7 @@ const initialState = {
       ".epub",
       ".pdf",
       ".djvu",
-      ".xps"
+      ".xps",
     ],
   },
   mediaViewerFormats: {
@@ -213,7 +198,7 @@ const initialState = {
       ".ico",
       ".tif",
       ".tiff",
-      ".webp"
+      ".webp",
     ],
     media: [
       ".aac",
@@ -232,7 +217,7 @@ const initialState = {
       ".avi",
       ".mpg",
       ".mpeg",
-      ".wmv"
+      ".wmv",
     ],
   },
   formats: {
@@ -383,8 +368,8 @@ const initialState = {
       ".xlsy",
       ".xlsb",
       ".gsheet",
-    ]
-  }
+    ],
+  },
 };
 
 const filesReducer = (state = initialState, action) => {
