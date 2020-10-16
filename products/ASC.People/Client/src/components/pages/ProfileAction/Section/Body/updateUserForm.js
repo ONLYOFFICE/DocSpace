@@ -274,6 +274,7 @@ class UpdateUserForm extends React.Component {
 
   handleSubmit() {
     if (!this.validate()) return false;
+    const { setIsEditingForm } = this.props;
 
     this.setState({ isLoading: true });
 
@@ -282,6 +283,7 @@ class UpdateUserForm extends React.Component {
       .then((profile) => {
         this.props.updateProfileInUsers(profile);
         toastr.success(this.props.t("ChangesSavedSuccessfully"));
+        setIsEditingForm(false);
         this.props.history.push(
           `${this.props.settings.homepage}/view/${profile.userName}`
         );
