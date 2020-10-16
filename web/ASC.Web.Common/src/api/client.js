@@ -25,13 +25,13 @@ client.interceptors.response.use(
   error => {
     switch (true) {
       case error.response.status === 401:
-      setAuthorizationToken();
+        setAuthorizationToken();
         window.location.href = "/login";
         break;
       case error.response.status === 402:
         if (!window.location.pathname.includes("payments")) {
           window.location.href = "/payments";
-    }
+        }
         break;
       default:
         break;
@@ -56,17 +56,16 @@ export function setClientBasePath(path) {
   client.defaults.baseURL = path;
 }
 
-const checkResponseError = res => {
+const getResponseError = res => {
   if (!res) return;
 
   if (res.data && res.data.error) {
-    console.error(res.data.error);
-    throw new Error(res.data.error.message);
+    return res.data.error.message;
   }
 
   if (res.isAxiosError && res.message) {
     console.error(res.message);
-    throw new Error(res.message);
+    return res.message;
   }
 };
 
@@ -76,7 +75,8 @@ const checkResponseError = res => {
  */
 export const request = function(options) {
   const onSuccess = function(response) {
-    checkResponseError(response);
+    const error = getResponseError(response);
+    if (error) throw new Error(error);
 
     if (!response || !response.data || response.isAxiosError) return null;
 
@@ -86,16 +86,14 @@ export const request = function(options) {
     return response.data.response;
   };
 
-  const onError = function(error) {
-    console.error("Request Failed:", error.config);
-    if (error.response) {
-      console.error("Status:", error.response.status);
-      console.error("Data:", error.response.data);
-      console.error("Headers:", error.response.headers);
-    } else {
-      console.error("Error Message:", error.message);
-    }
-    return Promise.reject(error.response || error.message);
+  const onError = function(errorResponse) {
+    console.error("Request Failed:", errorResponse);
+
+    const errorText = errorResponse.response
+      ? getResponseError(errorResponse.response)
+      : errorResponse.message;
+
+    return Promise.reject(errorText || errorResponse);
   };
 
   return client(options)
