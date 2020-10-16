@@ -34,6 +34,7 @@ namespace ASC.Web.Api
                 .AddModulesController()
                 .AddPortalController()
                 .AddSettingsController()
+                .AddSecurityController()
                 .AddSmtpSettingsController();
 
             base.ConfigureServices(services);
