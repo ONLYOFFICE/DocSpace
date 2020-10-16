@@ -529,11 +529,14 @@ export const getSelected = (state) => {
 
 const getSelectionSelector = (state) => {
   return state.files.selection;
-}
+};
 
-export const getSelection = createSelector(getSelectionSelector, selection => {
-  return selection;
-});
+export const getSelection = createSelector(
+  getSelectionSelector,
+  (selection) => {
+    return selection;
+  }
+);
 
 export const getSelectionLength = (state) => {
   return state.files.selection.length;
@@ -643,7 +646,15 @@ const getFilesContextOptions = (item, isRecycleBin, canOpenPlayer) => {
 export const getItemsList = createSelector(
   [getFolders, getFiles],
   (folders, files) => {
-    return folders && files ? [...folders, ...files] : [];
+    const items =
+      folders && files
+        ? [...folders, ...files]
+        : folders
+        ? folders
+        : files
+        ? files
+        : [];
+    return items;
   }
 );
 
@@ -780,6 +791,7 @@ export const getFilesList = (state) => {
         const isSoundItem = isSound(item.fileExst)(state);
         const isEbookItem = isEbook(item.fileExst)(state);
         const isHtmlItem = isHtml(item.fileExst)(state);
+        const isCanWebEdit = canWebEdit(item.fileExst)(state);
 
         const icon = fileExst
           ? getFileIcon(
@@ -830,6 +842,7 @@ export const getFilesList = (state) => {
           providerKey,
           draggable,
           canOpenPlayer,
+          canWebEdit: isCanWebEdit,
         };
       });
     }
@@ -956,7 +969,7 @@ export const getTooltipLabel = createSelector(
 
     const elementTitle = selectionLength && selection[0].title;
     const singleElement = selectionLength === 1;
-    const filesCount = singleElement ?  elementTitle : selectionLength;
+    const filesCount = singleElement ? elementTitle : selectionLength;
 
     let operationName;
 
