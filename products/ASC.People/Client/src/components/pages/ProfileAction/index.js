@@ -12,6 +12,8 @@ import {
   SectionHeaderContent,
   CreateUserForm,
   UpdateUserForm,
+  AvatarEditorPage,
+  CreateAvatarEditorPage
 } from "./Section";
 import { fetchProfile } from "../../../store/profile/actions";
 import { setIsEditingForm } from "../../../store/people/actions";
@@ -55,7 +57,13 @@ class ProfileAction extends React.Component {
     console.log("ProfileAction render");
 
     let loaded = false;
-    const { profile, isVisitor, match, isAdmin } = this.props;
+    const {
+      profile,
+      isVisitor,
+      match,
+      isAdmin,
+      avatarEditorIsOpen,
+    } = this.props;
     const { userId, type } = match.params;
 
     if (type) {
@@ -90,15 +98,21 @@ class ProfileAction extends React.Component {
           )}
 
           <PageLayout.SectionBody>
-            {loaded ? (
-              type ? (
-                <CreateUserForm />
-              ) : (
-                <UpdateUserForm />
-              )
+          {loaded ? (
+              type ? 
+                avatarEditorIsOpen ? (
+                  <CreateAvatarEditorPage/>
+                ) : (
+                  <CreateUserForm />
+                ) 
+                : avatarEditorIsOpen ? (
+                  <AvatarEditorPage/>
+                ) : (
+                  <UpdateUserForm />
+                )
             ) : (
-              <Loader className="pageLoader" type="rombs" size="40px" />
-            )}
+                <Loader className="pageLoader" type="rombs" size="40px" />
+              )}
           </PageLayout.SectionBody>
         </PageLayout>
       </I18nextProvider>
@@ -133,6 +147,7 @@ function mapStateToProps(state) {
     profile: state.profile.targetUser,
     isAdmin: isAdmin(state),
     isEdit: state.people.editingForm.isEdit,
+    avatarEditorIsOpen: state.people.avatarEditorIsOpen,
   };
 }
 

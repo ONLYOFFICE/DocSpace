@@ -129,10 +129,6 @@ namespace ASC.Files.Thirdparty.ProviderDao
         }
 
         #endregion
-
-        public void Dispose()
-        {
-        }
     }
 
     public static class ProviderTagDaoExtention

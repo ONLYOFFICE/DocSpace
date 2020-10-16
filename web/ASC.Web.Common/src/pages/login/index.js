@@ -1,6 +1,7 @@
 import React, { Component, useEffect } from "react";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
+import { store } from "asc-web-common";
 import {
   Box,
   Button,
@@ -29,7 +30,7 @@ import Register from "./sub-components/register-container";
 import { createPasswordHash } from "../../utils";
 //import history from "../../history";
 import { redirectToDefaultPage } from "../../utils";
-
+const { getLanguage } = store.auth.selectors;
 const LoginContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -480,14 +481,14 @@ LoginForm.propTypes = {
 };
 
 function mapStateToProps(state) {
-  const { isLoaded, user, settings } = state.auth;
-  const { greetingSettings, enabledJoin, organizationName, culture, hashSettings } = settings;
+  const { isLoaded,  settings } = state.auth;
+  const { greetingSettings, enabledJoin, organizationName,  hashSettings } = settings;
 
   return {
     isLoaded,
     enabledJoin,
     organizationName,
-    language: user.cultureName || culture,
+    language:  getLanguage(state),
     greetingTitle: greetingSettings,
     hashSettings  
   };

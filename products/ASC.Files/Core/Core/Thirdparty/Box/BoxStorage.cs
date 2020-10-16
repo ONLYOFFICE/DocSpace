@@ -258,7 +258,7 @@ namespace ASC.Files.Thirdparty.Box
         public long GetMaxUploadSize()
         {
             var boxUser = _boxClient.UsersManager.GetCurrentUserInformationAsync(new List<string>() { "max_upload_size" }).Result;
-            var max = boxUser.MaxUploadSize.HasValue ? boxUser.MaxUploadSize.Value : MaxChunkedUploadFileSize;
+            var max = boxUser.MaxUploadSize ?? MaxChunkedUploadFileSize;
 
             //todo: without chunked uploader:
             return Math.Min(max, MaxChunkedUploadFileSize);

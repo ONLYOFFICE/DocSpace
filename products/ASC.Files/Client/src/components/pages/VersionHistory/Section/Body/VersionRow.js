@@ -15,6 +15,7 @@ import { withRouter } from "react-router";
 import { connect } from "react-redux";
 import { api, toastr } from "asc-web-common";
 import { setIsLoading } from "../../../../../store/files/actions";
+import { getFilter, getSelectedFolderId } from "../../../../../store/files/selectors";
 
 const { tablet } = utils.device;
 
@@ -304,12 +305,9 @@ const VersionRow = props => {
 };
 
 const mapStateToProps = state => {
-  const { selectedFolder } = state.files;
-  const { id } = selectedFolder;
-
   return {
-    filter: state.files.filter,
-    selectedFolderId: id
+    filter: getFilter(state),
+    selectedFolderId: getSelectedFolderId(state)
   };
 };
 

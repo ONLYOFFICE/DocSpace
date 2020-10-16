@@ -10,7 +10,7 @@ import {
 } from "../../../../../store/settings/actions";
 import { default as clientStore } from "../../../../../store/store";
 import { setDocumentTitle } from "../../../../../helpers/utils";
-
+const { getLanguage } = store.auth.selectors;
 const { changeLanguage } = utils;
 const {
   getPortalCultures,
@@ -281,7 +281,7 @@ function mapStateToProps(state) {
   return {
     portalLanguage: culture,
     portalTimeZoneId: timezone,
-    language: state.auth.user.cultureName || culture || "en-US",
+    language: getLanguage(state),
     rawTimezones: timezones,
     rawCultures: cultures,
     nameSchemaId: nameSchemaId,

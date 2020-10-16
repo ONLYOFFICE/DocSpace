@@ -1,17 +1,16 @@
 import React, { useEffect } from "react";
-import { connect } from "react-redux";
-import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import { /*RequestLoader,*/ Box } from "asc-web-components";
 import { utils, api, toastr } from "asc-web-common";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import { createI18N } from "../../../helpers/i18n";
+
 const i18n = createI18N({
   page: "DocEditor",
   localesPath: "pages/DocEditor",
 });
 
-const { changeLanguage, getObjectByLocation, hideLoader, showLoader } = utils;
+const { changeLanguage, getObjectByLocation, showLoader } = utils;
 const { files } = api;
 
 class PureEditor extends React.Component {
@@ -49,7 +48,6 @@ class PureEditor extends React.Component {
         .catch((e) => {
           console.log(e);
           toastr.error(e);
-          hideLoader();
         });
     };
 
@@ -82,18 +80,4 @@ const DocEditor = (props) => {
   );
 };
 
-DocEditor.propTypes = {
-  files: PropTypes.array,
-  history: PropTypes.object,
-  isLoaded: PropTypes.bool,
-};
-
-function mapStateToProps(state) {
-  return {
-    files: state.files.files,
-    folders: state.files.folders,
-    isLoaded: state.auth.isLoaded,
-  };
-}
-
-export default connect(mapStateToProps)(withRouter(DocEditor));
+export default withRouter(DocEditor);

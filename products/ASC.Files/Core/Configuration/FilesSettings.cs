@@ -274,7 +274,7 @@ namespace ASC.Web.Files.Classes
 
         private void SaveForCurrentUser(FilesSettings settings)
         {
-            _ = SettingsManager.SaveForCurrentUser(settings);
+            SettingsManager.SaveForCurrentUser(settings);
         }
     }
 

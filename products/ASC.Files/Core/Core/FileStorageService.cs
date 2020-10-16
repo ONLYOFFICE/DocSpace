@@ -88,8 +88,6 @@ namespace ASC.Web.Files.Services.WCFService
         private FilesSettingsHelper FilesSettingsHelper { get; }
         private AuthContext AuthContext { get; }
         private UserManager UserManager { get; }
-        private FactoryIndexer<DbFolder> FoldersIndexer { get; }
-        private FactoryIndexer<DbFile> FilesIndexer { get; }
         private FileUtility FileUtility { get; }
         private FilesLinkUtility FilesLinkUtility { get; }
         private BaseCommonLinkUtility BaseCommonLinkUtility { get; }
@@ -97,7 +95,6 @@ namespace ASC.Web.Files.Services.WCFService
         private CustomNamingPeople CustomNamingPeople { get; }
         private DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
         private IHttpContextAccessor HttpContextAccessor { get; }
-        private DocuSignLoginProvider DocuSignLoginProvider { get; }
         private PathProvider PathProvider { get; }
         private FileSecurity FileSecurity { get; }
         private SocketManager SocketManager { get; }
@@ -115,15 +112,15 @@ namespace ASC.Web.Files.Services.WCFService
         private DocumentServiceConnector DocumentServiceConnector { get; }
         private FileSharing FileSharing { get; }
         private NotifyClient NotifyClient { get; }
-        private FileOperationsManagerHelper FileOperationsManagerHelper { get; }
         private UrlShortener UrlShortener { get; }
         private IServiceProvider ServiceProvider { get; }
         private FileSharingAceHelper<T> FileSharingAceHelper { get; }
-        private ApiContext ApiContext { get; }
         private ConsumerFactory ConsumerFactory { get; }
-        public EncryptionKeyPairHelper EncryptionKeyPairHelper { get; }
-        public SettingsManager SettingsManager { get; }
-        public ILog Logger { get; set; }
+        private EncryptionKeyPairHelper EncryptionKeyPairHelper { get; }
+        private SettingsManager SettingsManager { get; }
+        private FileOperationsManager FileOperationsManager { get; }
+        private TenantManager TenantManager { get; }
+        private ILog Logger { get; set; }
 
         public FileStorageService(
             Global global,
@@ -132,8 +129,6 @@ namespace ASC.Web.Files.Services.WCFService
             FilesSettingsHelper filesSettingsHelper,
             AuthContext authContext,
             UserManager userManager,
-            FactoryIndexer<DbFolder> foldersIndexer,
-            FactoryIndexer<DbFile> filesIndexer,
             FileUtility fileUtility,
             FilesLinkUtility filesLinkUtility,
             BaseCommonLinkUtility baseCommonLinkUtility,
@@ -159,14 +154,14 @@ namespace ASC.Web.Files.Services.WCFService
             DocumentServiceConnector documentServiceConnector,
             FileSharing fileSharing,
             NotifyClient notifyClient,
-            FileOperationsManagerHelper fileOperationsManagerHelper,
             UrlShortener urlShortener,
             IServiceProvider serviceProvider,
             FileSharingAceHelper<T> fileSharingAceHelper,
-            ApiContext apiContext,
             ConsumerFactory consumerFactory,
             EncryptionKeyPairHelper encryptionKeyPairHelper,
-            SettingsManager settingsManager)
+            SettingsManager settingsManager,
+            FileOperationsManager fileOperationsManager,
+            TenantManager tenantManager)
         {
             Global = global;
             GlobalStore = globalStore;
@@ -174,8 +169,6 @@ namespace ASC.Web.Files.Services.WCFService
             FilesSettingsHelper = filesSettingsHelper;
             AuthContext = authContext;
             UserManager = userManager;
-            FoldersIndexer = foldersIndexer;
-            FilesIndexer = filesIndexer;
             FileUtility = fileUtility;
             FilesLinkUtility = filesLinkUtility;
             BaseCommonLinkUtility = baseCommonLinkUtility;
@@ -200,15 +193,15 @@ namespace ASC.Web.Files.Services.WCFService
             DocumentServiceConnector = documentServiceConnector;
             FileSharing = fileSharing;
             NotifyClient = notifyClient;
-            FileOperationsManagerHelper = fileOperationsManagerHelper;
             UrlShortener = urlShortener;
             ServiceProvider = serviceProvider;
             FileSharingAceHelper = fileSharingAceHelper;
-            ApiContext = apiContext;
             ConsumerFactory = consumerFactory;
             EncryptionKeyPairHelper = encryptionKeyPairHelper;
             SettingsManager = settingsManager;
             Logger = optionMonitor.Get("ASC.Files");
+            FileOperationsManager = fileOperationsManager;
+            TenantManager = tenantManager;
         }
 
         public Folder<T> GetFolder(T folderId)
@@ -1121,8 +1114,7 @@ namespace ASC.Web.Files.Services.WCFService
         public ItemList<FileOperationResult> MarkAsRead(IEnumerable<JsonElement> foldersId, IEnumerable<JsonElement> filesId)
         {
             if (!foldersId.Any() && !filesId.Any()) return GetTasksStatuses();
-
-            return FileOperationsManagerHelper.MarkAsRead(foldersId, filesId);
+            return FileOperationsManager.MarkAsRead(AuthContext.CurrentAccount.ID, TenantManager.GetCurrentTenant(), foldersId, filesId);
         }
 
         public ItemList<ThirdPartyParams> GetThirdParty()
@@ -1313,21 +1305,21 @@ namespace ASC.Web.Files.Services.WCFService
         {
             ErrorIf(!AuthContext.IsAuthenticated, FilesCommonResource.ErrorMassage_SecurityException);
 
-            return FileOperationsManagerHelper.GetOperationResults();
+            return FileOperationsManager.GetOperationResults(AuthContext.CurrentAccount.ID);
         }
 
         public ItemList<FileOperationResult> TerminateTasks()
         {
             ErrorIf(!AuthContext.IsAuthenticated, FilesCommonResource.ErrorMassage_SecurityException);
 
-            return FileOperationsManagerHelper.CancelOperations();
+            return FileOperationsManager.CancelOperations(AuthContext.CurrentAccount.ID);
         }
 
         public ItemList<FileOperationResult> BulkDownload(Dictionary<JsonElement, string> folders, Dictionary<JsonElement, string> files)
         {
             ErrorIf(!folders.Any() && !files.Any(), FilesCommonResource.ErrorMassage_BadRequest);
 
-            return FileOperationsManagerHelper.Download(folders, files, GetHttpHeaders());
+            return FileOperationsManager.Download(AuthContext.CurrentAccount.ID, TenantManager.CurrentTenant, folders, files, GetHttpHeaders());
         }
 
 
@@ -1431,11 +1423,11 @@ namespace ASC.Web.Files.Services.WCFService
             ItemList<FileOperationResult> result;
             if (foldersId.Any() || filesId.Any())
             {
-                result = FileOperationsManagerHelper.MoveOrCopy(foldersId, filesId, destFolderId, ic, resolve, !deleteAfter, GetHttpHeaders());
+                result = FileOperationsManager.MoveOrCopy(AuthContext.CurrentAccount.ID, TenantManager.CurrentTenant, foldersId, filesId, destFolderId, ic, resolve, !deleteAfter, GetHttpHeaders());
             }
             else
             {
-                result = FileOperationsManagerHelper.GetOperationResults();
+                result = FileOperationsManager.GetOperationResults(AuthContext.CurrentAccount.ID);
             }
             return result;
         }
@@ -1443,16 +1435,16 @@ namespace ASC.Web.Files.Services.WCFService
 
         public ItemList<FileOperationResult> DeleteFile(string action, T fileId, bool ignoreException = false, bool deleteAfter = false, bool immediately = false)
         {
-            return FileOperationsManagerHelper.DeleteFile(fileId, ignoreException, !deleteAfter, immediately, GetHttpHeaders());
+            return FileOperationsManager.Delete(AuthContext.CurrentAccount.ID, TenantManager.CurrentTenant, new List<T>(), new List<T>() { fileId }, ignoreException, !deleteAfter, immediately, GetHttpHeaders());
         }
         public ItemList<FileOperationResult> DeleteFolder(string action, T folderId, bool ignoreException = false, bool deleteAfter = false, bool immediately = false)
         {
-            return FileOperationsManagerHelper.DeleteFolder(folderId, ignoreException, !deleteAfter, immediately, GetHttpHeaders());
+            return FileOperationsManager.Delete(AuthContext.CurrentAccount.ID, TenantManager.CurrentTenant, new List<T>() { folderId }, new List<T>(), ignoreException, !deleteAfter, immediately, GetHttpHeaders());
         }
 
         public ItemList<FileOperationResult> DeleteItems(string action, List<JsonElement> files, List<JsonElement> folders, bool ignoreException = false, bool deleteAfter = false, bool immediately = false)
         {
-            return FileOperationsManagerHelper.Delete(folders, files, ignoreException, !deleteAfter, immediately, GetHttpHeaders());
+            return FileOperationsManager.Delete(AuthContext.CurrentAccount.ID, TenantManager.CurrentTenant, folders, files, ignoreException, !deleteAfter, immediately, GetHttpHeaders());
         }
 
         public ItemList<FileOperationResult> EmptyTrash()
@@ -1463,7 +1455,7 @@ namespace ASC.Web.Files.Services.WCFService
             var foldersId = folderDao.GetFolders(trashId).Select(f => f.ID).ToList();
             var filesId = fileDao.GetFiles(trashId).ToList();
 
-            return FileOperationsManagerHelper.Delete(foldersId, filesId, false, true, false, GetHttpHeaders());
+            return FileOperationsManager.Delete(AuthContext.CurrentAccount.ID, TenantManager.CurrentTenant, foldersId, filesId, false, true, false, GetHttpHeaders());
         }
 
         public ItemList<FileOperationResult> CheckConversion(ItemList<ItemList<string>> filesInfoJSON)
@@ -2272,8 +2264,6 @@ namespace ASC.Web.Files.Services.WCFService
                 .AddGlobalFolderHelperService()
                 .AddAuthContextService()
                 .AddUserManagerService()
-                .AddFactoryIndexerFolderService()
-                .AddFactoryIndexerFileService()
                 .AddFilesLinkUtilityService()
                 .AddBaseCommonLinkUtilityService()
                 .AddCoreBaseSettingsService()
@@ -2288,7 +2278,6 @@ namespace ASC.Web.Files.Services.WCFService
                 .AddFilesMessageService()
                 .AddFileShareLinkService()
                 .AddDocumentServiceConnectorService()
-                .AddDocuSignLoginProviderService()
                 .AddEntryManagerService()
                 .AddDocumentServiceHelperService()
                 .AddThirdpartyConfigurationService()
@@ -2301,7 +2290,8 @@ namespace ASC.Web.Files.Services.WCFService
                 .AddDocumentServiceTrackerHelperService()
                 .AddSocketManagerService()
                 .AddFileOperationsManagerHelperService()
-                .AddFileSharingAceHelperService();
+                    .AddFileSharingAceHelperService()
+                    .AddTenantManagerService();
         }
 
             return services;

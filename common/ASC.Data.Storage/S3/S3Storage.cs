@@ -1044,21 +1044,13 @@ namespace ASC.Data.Storage.S3
 
             if (props.ContainsKey("sse") && !string.IsNullOrEmpty(props["sse"]))
             {
-                switch (props["sse"].ToLower())
+                _sse = (props["sse"].ToLower()) switch
                 {
-                    case "none":
-                        _sse = ServerSideEncryptionMethod.None;
-                        break;
-                    case "aes256":
-                        _sse = ServerSideEncryptionMethod.AES256;
-                        break;
-                    case "awskms":
-                        _sse = ServerSideEncryptionMethod.AWSKMS;
-                        break;
-                    default:
-                        _sse = ServerSideEncryptionMethod.None;
-                        break;
-                }
+                    "none" => ServerSideEncryptionMethod.None,
+                    "aes256" => ServerSideEncryptionMethod.AES256,
+                    "awskms" => ServerSideEncryptionMethod.AWSKMS,
+                    _ => ServerSideEncryptionMethod.None,
+                };
             }
 
             _bucketRoot = props.ContainsKey("cname") && Uri.IsWellFormedUriString(props["cname"], UriKind.Absolute)
@@ -1167,11 +1159,6 @@ namespace ASC.Data.Storage.S3
             cfg.UseHttp = _useHttp;
 
             return new AmazonS3Client(_accessKeyId, _secretAccessKeyId, cfg);
-        }
-
-        public Stream GetWriteStream(string domain, string path)
-        {
-            throw new NotSupportedException();
         }
 
 

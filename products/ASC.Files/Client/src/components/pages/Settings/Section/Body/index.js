@@ -2,18 +2,29 @@ import React, { useEffect } from "react";
 import styled from "styled-components";
 import { connect } from "react-redux";
 import { Heading, ToggleButton } from "asc-web-components";
-import { Error403, Error520 } from "asc-web-common";
-
+import { Error403, Error520, store } from "asc-web-common";
 import {
   setUpdateIfExist,
   setStoreOriginal,
   setEnableThirdParty,
   setConfirmDelete,
   setStoreForceSave,
-  setSelectedNode,
   setForceSave,
 } from "../../../../../store/files/actions";
+import {
+  getIsLoading,
+  getSettingsSelectedTreeNode,
+  getSettingsTreeStoreOriginalFiles,
+  getSettingsTreeConfirmDelete,
+  getSettingsTreeUpdateIfExist,
+  getSettingsTreeForceSave,
+  getSettingsTreeStoreForceSave,
+  getSettingsTreeEnableThirdParty,
+  getSettingsTree
+} from "../../../../../store/files/selectors";
 import { setDocumentTitle } from "../../../../../helpers/utils";
+
+const { isAdmin } = store.auth.selectors;
 
 const StyledSettings = styled.div`
   display: grid;
@@ -32,8 +43,6 @@ const StyledSettings = styled.div`
 const SectionBodyContent = ({
   setting,
   isLoading,
-  selectedTreeNode,
-  setSelectedNode,
   storeForceSave,
   setStoreForceSave,
   enableThirdParty,
@@ -48,18 +57,13 @@ const SectionBodyContent = ({
   setForceSave,
   isAdmin,
   isErrorSettings,
+  settingsTree,
   t,
 }) => {
   useEffect(() => {
     const title = setting[0].toUpperCase() + setting.slice(1);
     setDocumentTitle(t(`${title}`));
   }, [setting, t]);
-
-  useEffect(() => {
-    if (setting !== selectedTreeNode[0]) {
-      setSelectedNode([setting]);
-    }
-  }, [setting]);
 
   const onChangeStoreForceSave = () => {
     setStoreForceSave(!storeForceSave, "storeForceSave");
@@ -70,7 +74,7 @@ const SectionBodyContent = ({
   };
 
   const renderAdminSettings = () => {
-    return (
+    return Object.keys(settingsTree).length === 0 || isLoading ? null : (
       <StyledSettings>
         <ToggleButton
           className="toggle-btn"
@@ -105,7 +109,7 @@ const SectionBodyContent = ({
   };
 
   const renderCommonSettings = () => {
-    return (
+    return Object.keys(settingsTree).length === 0 || isLoading ? null : (
       <StyledSettings>
         <ToggleButton
           className="toggle-btn"
@@ -164,6 +168,7 @@ const SectionBodyContent = ({
   };
 
   let content;
+
   if (setting === "admin" && isAdmin) content = renderAdminSettings();
   if (setting === "common") content = renderCommonSettings();
   if (setting === "thirdParty" && enableThirdParty) content = renderClouds();
@@ -179,27 +184,17 @@ const SectionBodyContent = ({
 };
 
 function mapStateToProps(state) {
-  const { settingsTree, selectedTreeNode, isLoading } = state.files;
-  const { isAdmin } = state.auth.user;
-  const {
-    storeOriginalFiles,
-    confirmDelete,
-    updateIfExist,
-    forceSave,
-    storeForceSave,
-    enableThirdParty,
-  } = settingsTree;
-
   return {
-    isAdmin,
-    selectedTreeNode,
-    storeOriginalFiles,
-    confirmDelete,
-    updateIfExist,
-    forceSave,
-    storeForceSave,
-    enableThirdParty,
-    isLoading,
+    isAdmin: isAdmin(state),
+    selectedTreeNode: getSettingsSelectedTreeNode(state),
+    storeOriginalFiles: getSettingsTreeStoreOriginalFiles(state),
+    confirmDelete: getSettingsTreeConfirmDelete(state),
+    updateIfExist: getSettingsTreeUpdateIfExist(state),
+    forceSave: getSettingsTreeForceSave(state),
+    storeForceSave: getSettingsTreeStoreForceSave(state),
+    enableThirdParty: getSettingsTreeEnableThirdParty(state),
+    isLoading: getIsLoading(state),
+    settingsTree: getSettingsTree(state),
   };
 }
 
@@ -209,6 +204,5 @@ export default connect(mapStateToProps, {
   setEnableThirdParty,
   setConfirmDelete,
   setStoreForceSave,
-  setSelectedNode,
   setForceSave,
 })(SectionBodyContent);

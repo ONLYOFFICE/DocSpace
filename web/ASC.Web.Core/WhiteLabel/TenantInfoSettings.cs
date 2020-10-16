@@ -50,13 +50,13 @@ namespace ASC.Web.Core.WhiteLabel
         public string CompanyLogoFileName { get; set; }
 
         [JsonPropertyName("Default")]
-        internal bool _isDefault { get; set; }
+        internal bool IsDefault { get; set; }
 
         public ISettings GetDefault(IServiceProvider serviceProvider)
         {
             return new TenantInfoSettings()
             {
-                _isDefault = true
+                IsDefault = true
             };
         }
 
@@ -99,7 +99,7 @@ namespace ASC.Web.Core.WhiteLabel
 
         public void RestoreDefaultLogo(TenantInfoSettings tenantInfoSettings, TenantLogoManager tenantLogoManager)
         {
-            tenantInfoSettings._isDefault = true;
+            tenantInfoSettings.IsDefault = true;
 
             var store = StorageFactory.GetStorage(TenantManager.GetCurrentTenant().TenantId.ToString(), "logo");
             try
@@ -118,7 +118,7 @@ namespace ASC.Web.Core.WhiteLabel
         {
             var store = StorageFactory.GetStorage(TenantManager.GetCurrentTenant().TenantId.ToString(), "logo");
 
-            if (!tenantInfoSettings._isDefault)
+            if (!tenantInfoSettings.IsDefault)
             {
                 try
                 {
@@ -136,14 +136,14 @@ namespace ASC.Web.Core.WhiteLabel
                 store.Save(companyLogoFileName, memory);
                 tenantInfoSettings.CompanyLogoFileName = companyLogoFileName;
             }
-            tenantInfoSettings._isDefault = false;
+            tenantInfoSettings.IsDefault = false;
 
             tenantLogoManager.RemoveMailLogoDataFromCache();
         }
 
         public string GetAbsoluteCompanyLogoPath(TenantInfoSettings tenantInfoSettings)
         {
-            if (tenantInfoSettings._isDefault)
+            if (tenantInfoSettings.IsDefault)
             {
                 return WebImageSupplier.GetAbsoluteWebPath("onlyoffice_logo/dark_general.png");
             }
@@ -157,7 +157,7 @@ namespace ASC.Web.Core.WhiteLabel
         /// </summary>
         public Stream GetStorageLogoData(TenantInfoSettings tenantInfoSettings)
         {
-            if (tenantInfoSettings._isDefault) return null;
+            if (tenantInfoSettings.IsDefault) return null;
 
             var storage = StorageFactory.GetStorage(TenantManager.GetCurrentTenant().TenantId.ToString(CultureInfo.InvariantCulture), "logo");
 

@@ -172,27 +172,27 @@ namespace ASC.Common
 
         public DIHelper AddWorkerQueue<T1>(int workerCount, int waitInterval, bool stopAfterFinsih, int errorCount)
         {
-            Action<WorkerQueue<T1>> action = (a) =>
+            void action(WorkerQueue<T1> a)
             {
                 a.workerCount = workerCount;
                 a.waitInterval = waitInterval;
                 a.stopAfterFinsih = stopAfterFinsih;
                 a.errorCount = errorCount;
-            };
-            AddToConfigured($"{typeof(WorkerQueue<T1>)}", action);
+            }
+            AddToConfigured($"{typeof(WorkerQueue<T1>)}", (Action<WorkerQueue<T1>>)action);
             return this;
         }
         public DIHelper AddProgressQueue<T1>(int workerCount, int waitInterval, bool removeAfterCompleted, bool stopAfterFinsih, int errorCount) where T1 : class, IProgressItem
         {
-            Action<ProgressQueue<T1>> action = (a) =>
+            void action(ProgressQueue<T1> a)
             {
                 a.workerCount = workerCount;
                 a.waitInterval = waitInterval;
                 a.stopAfterFinsih = stopAfterFinsih;
                 a.errorCount = errorCount;
                 a.removeAfterCompleted = removeAfterCompleted;
-            };
-            AddToConfigured($"{typeof(ProgressQueue<T1>)}", action);
+            }
+            AddToConfigured($"{typeof(ProgressQueue<T1>)}", (Action<ProgressQueue<T1>>)action);
             return this;
         }
         public DIHelper Configure<TOptions>(string name, Action<TOptions> configureOptions) where TOptions : class

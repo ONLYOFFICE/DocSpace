@@ -55,6 +55,7 @@ const StyledInput = styled(Input).attrs((props) => ({
     flex: 1 1 0%;
     outline: none;
     overflow: hidden;
+    opacity: 1;
     padding: ${props =>
         (props.size === 'base' && '5px 7px') ||
         (props.size === 'middle' && '8px 12px') ||
