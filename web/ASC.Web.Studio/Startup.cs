@@ -1,8 +1,6 @@
 using ASC.Api.Core;
 using ASC.Common;
 using ASC.Common.DependencyInjection;
-using ASC.Core.Common.EF;
-using ASC.Core.Common.EF.Context;
 using ASC.Data.Storage;
 using ASC.Data.Storage.Configuration;
 using ASC.Data.Storage.DiscStorage;

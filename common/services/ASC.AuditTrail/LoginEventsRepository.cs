@@ -31,13 +31,10 @@ using System.Linq;
 
 using ASC.AuditTrail.Mappers;
 using ASC.Common;
-using ASC.Common.Logging;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Context;
 using ASC.Core.Common.EF.Model;
 using ASC.Core.Users;
-
-using Microsoft.Extensions.Options;
 
 using Newtonsoft.Json;
 

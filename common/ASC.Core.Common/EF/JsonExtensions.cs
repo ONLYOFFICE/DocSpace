@@ -1,11 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq.Expressions;
-
-using ASC.Core.Common.EF.Model;
-
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query;
-using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
+﻿using Microsoft.EntityFrameworkCore.Query;
 
 namespace ASC.Core.Common.EF
 {

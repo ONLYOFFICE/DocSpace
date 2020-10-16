@@ -36,8 +36,6 @@ using ASC.Notify.Patterns;
 using ASC.Security.Cryptography;
 using ASC.Web.Core.WhiteLabel;
 
-using Microsoft.Extensions.Configuration;
-
 namespace ASC.Notify.Textile
 {
     public class JabberStyler : IPatternStyler

@@ -54,7 +54,7 @@ namespace ASC.Core.ChunkedUploader
 
         public string CultureName { get; set; }
 
-        public readonly Dictionary<string, object> Items = new Dictionary<string, object>();
+        public Dictionary<string, object> Items = new Dictionary<string, object>();
 
         private const string TempPathKey = "TempPath";
         public string TempPath

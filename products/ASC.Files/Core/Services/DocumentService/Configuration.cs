@@ -46,7 +46,6 @@ using ASC.Files.Core.Resources;
 using ASC.Files.Core.Security;
 using ASC.Web.Core.Files;
 using ASC.Web.Core.Users;
-using ASC.Web.Core.Utility.Skins;
 using ASC.Web.Core.WhiteLabel;
 using ASC.Web.Files.Classes;
 using ASC.Web.Files.Helpers;
@@ -69,7 +68,7 @@ namespace ASC.Web.Files.Services.DocumentService
 
     public class Configuration<T>
     {
-        public static readonly Dictionary<FileType, string> DocType = new Dictionary<FileType, string>
+        internal static Dictionary<FileType, string> DocType = new Dictionary<FileType, string>
             {
                 { FileType.Document, "text" },
                 { FileType.Spreadsheet, "spreadsheet" },
