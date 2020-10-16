@@ -10,158 +10,86 @@ import map from 'lodash/map';
 import clone from 'lodash/clone';
 import StyledFilterInput from './StyledFilterInput';
 
-const cloneObjectsArray = function (props) {
+const cloneObjectsArray = (props) => {
     return map(props, clone);
-}
-const convertToInternalData = function (fullDataArray, inputDataArray) {
-    const filterItems = [];
-    for (let i = 0; i < inputDataArray.length; i++) {
-        let filterValue = fullDataArray.find(x => ((x.key === inputDataArray[i].key.replace(inputDataArray[i].group + "_", '')) && x.group === inputDataArray[i].group && !x.inSubgroup));
-        if (filterValue) {
-            inputDataArray[i].key = inputDataArray[i].group + "_" + inputDataArray[i].key;
-            inputDataArray[i].label = filterValue.label;
-            inputDataArray[i].groupLabel = !fullDataArray.inSubgroup ? fullDataArray.find(x => (x.group === inputDataArray[i].group)).label : inputDataArray[i].groupLabel;
-            filterItems.push(inputDataArray[i]);
-        } else {
-            filterValue = fullDataArray.find(x => ((x.key === inputDataArray[i].key.replace(inputDataArray[i].group + "_", '')) && x.group === inputDataArray[i].group && x.inSubgroup));
-            if (filterValue) {
-                inputDataArray[i].key = inputDataArray[i].group + "_" + inputDataArray[i].key;
-                inputDataArray[i].label = filterValue.label;
-                inputDataArray[i].groupLabel = fullDataArray.find(x => (x.subgroup === inputDataArray[i].group)).label;
-                filterItems.push(inputDataArray[i]);
-            } else {
-                filterValue = fullDataArray.find(x => ((x.subgroup === inputDataArray[i].group)));
-                if (filterValue) {
-                    const subgroupItems = fullDataArray.filter(t => t.group === filterValue.subgroup);
-                    if (subgroupItems.length > 1) {
-                        inputDataArray[i].key = inputDataArray[i].group + "_-1";
-                        inputDataArray[i].label = filterValue.defaultSelectLabel;
-                        inputDataArray[i].groupLabel = fullDataArray.find(x => (x.subgroup === inputDataArray[i].group)).label;
-                        filterItems.push(inputDataArray[i]);
-                    } else if (subgroupItems.length === 1) {
-
-                        const selectFilterItem = {
-                            key: subgroupItems[0].group + "_" + subgroupItems[0].key,
-                            group: subgroupItems[0].group,
-                            label: subgroupItems[0].label,
-                            groupLabel: fullDataArray.find(x => x.subgroup === subgroupItems[0].group).label,
-                            inSubgroup: true
-                        };
-                        filterItems.push(selectFilterItem);
-                    }
-                }
-            }
-        }
-    }
-    return filterItems;
 }
 
 class FilterInput extends React.Component {
     constructor(props) {
         super(props);
 
-        this.isResizeUpdate = false;
-        this.minWidth = 190;
+        const { selectedFilterData, getSortData, value } = props;
+        const { sortDirection, sortId, inputValue } = selectedFilterData;
+        const sortData = getSortData();
 
-        function getDefaultFilterData() {
-            const filterData = props.getFilterData();
-            const filterItems = [];
-            const selectedFilterData = cloneObjectsArray(props.selectedFilterData.filterValues);
-            selectedFilterData.forEach(defaultFilterValue => {
-                const filterValue = filterData.find(x => ((x.key === defaultFilterValue.key.replace(defaultFilterValue.group + "_", '')) && x.group === defaultFilterValue.group));
-                let groupLabel = '';
-
-                const groupFilterItem = filterData.find(x => (x.key === defaultFilterValue.group));
-                if (groupFilterItem != undefined) {
-                    groupLabel = groupFilterItem.label;
-                } else {
-                    const subgroupFilterItem = filterData.find(x => (x.subgroup === defaultFilterValue.group))
-                    if (subgroupFilterItem != undefined) {
-                        groupLabel = subgroupFilterItem.label;
-                    }
-                }
-
-                if (filterValue != undefined) {
-                    defaultFilterValue.key = defaultFilterValue.group + "_" + defaultFilterValue.key;
-                    defaultFilterValue.label = filterValue.label;
-                    defaultFilterValue.groupLabel = groupLabel;
-                    filterItems.push(defaultFilterValue);
-                }
-            });
-            return filterItems;
-        }
-
-        let filterValues = props.selectedFilterData ? getDefaultFilterData() : [];
-        filterValues = [...filterValues, ...this.convertSelectorToInternalData(props.getFilterData(), cloneObjectsArray(props.selectedFilterData.filterValues))];
+        const filterValues = selectedFilterData ? this.getDefaultFilterData() : [];
 
         this.state = {
-            sortDirection: props.selectedFilterData.sortDirection === "desc" ? true : false,
-            sortId: props.getSortData().findIndex(x => x.key === props.selectedFilterData.sortId) != -1 ? props.selectedFilterData.sortId : props.getSortData().length > 0 ? props.getSortData()[0].key : "",
-            searchText: props.selectedFilterData.inputValue || props.value,
-
+            sortDirection: sortDirection === "desc" ? true : false,
+            sortId: sortData.findIndex(x => x.key === sortId) != -1 ? sortId : sortData.length > 0 ? sortData[0].key : "",
+            searchText: inputValue || value,
             filterValues,
             openFilterItems: [],
-            hideFilterItems: []
+            hideFilterItems: [],
+            overflowFilter: true,
+            showFilter: false,
+            test: 0
         };
 
         this.searchWrapper = React.createRef();
         this.filterWrapper = React.createRef();
 
-        this.onClickSortItem = this.onClickSortItem.bind(this);
-        this.onSortDirectionClick = this.onSortDirectionClick.bind(this);
-        this.onChangeSortDirection = this.onChangeSortDirection.bind(this);
-        this.onSearch = this.onSearch.bind(this);
-        this.onChangeFilter = this.onChangeFilter.bind(this);
-
-        this.onSearchChanged = this.onSearchChanged.bind(this);
-
-        this.getDefaultSelectedIndex = this.getDefaultSelectedIndex.bind(this);
-
-        this.updateFilter = this.updateFilter.bind(this);
-        this.onClickFilterItem = this.onClickFilterItem.bind(this);
-        this.getFilterData = this.getFilterData.bind(this);
-        this.onFilterRender = this.onFilterRender.bind(this);
-        this.onDeleteFilterItem = this.onDeleteFilterItem.bind(this);
-        this.clearFilter = this.clearFilter.bind(this);
-
-        this.onClickViewSelector = this.onClickViewSelector.bind(this);
-
         this.throttledResize = throttle(this.resize, 300);
-
     }
 
     componentDidMount() {
-        window.addEventListener('resize', this.throttledResize);
-        if (this.state.filterValues.length > 0) this.updateFilter();
-    }
-    componentWillUnmount() {
-        window.removeEventListener('resize', this.throttledResize);
-    }
-    componentDidUpdate(prevProps, prevState) {
-        if (this.props.needForUpdate && this.props.needForUpdate(prevProps, this.props)) {
-            let internalFilterData = convertToInternalData(this.props.getFilterData(), cloneObjectsArray(this.props.selectedFilterData.filterValues));
-            this.updateFilter(internalFilterData);
+        //window.addEventListener('resize', this.throttledResize);
+        if (this.state.filterValues.length > 0) {
+            this.setState({ filterValues: cloneObjectsArray(this.state.filterValues), openFilterItems: cloneObjectsArray(this.state.filterValues), overflowFilter: false }, () => this.updateFilter(cloneObjectsArray(this.state.filterValues)));
         }
     }
+
+    /*componentWillUnmount() {
+        window.removeEventListener('resize', this.throttledResize);
+    }*/
+
+    componentDidUpdate(prevProps, prevState) {
+        const { selectedFilterData, widthProp, getSortData, value } = this.props;
+        const { filterValues } = selectedFilterData;
+
+        if(!isEqual(selectedFilterData, prevProps.selectedFilterData)) {
+            const newFilterValues = this.getDefaultFilterData();
+            const { sortDirection, sortId, inputValue } = selectedFilterData;
+            const sortData = getSortData();
+
+            this.setState({
+                filterValues: newFilterValues,
+                openFilterItems: newFilterValues,
+                overflowFilter: false,
+                sortDirection: sortDirection === "desc" ? true : false,
+                sortId: sortData.findIndex(x => x.key === sortId) != -1 ? sortId : sortData.length > 0 ? sortData[0].key : "",
+                searchText: inputValue || value
+            }, () => this.updateFilter(newFilterValues));
+        }
+
+        if (
+          selectedFilterData &&
+          filterValues.length !==
+            prevProps.selectedFilterData.filterValues.length &&
+          !filterValues.length
+        ) {
+          this.clearFilter();
+        }
+
+        if(widthProp !== prevProps.widthProp) {
+            this.resize();
+        }
+    }
+
     shouldComponentUpdate(nextProps, nextState) {
-        const { selectedFilterData, getFilterData, getSortData, value, id,
-            isDisabled, size, placeholder } = this.props;
+        const { selectedFilterData, value, id, isDisabled, size, placeholder } = this.props;
+
         if (!isEqual(selectedFilterData, nextProps.selectedFilterData)) {
-            let internalFilterData = cloneObjectsArray(this.state.filterValues);
-            if (nextProps.selectedFilterData.filterValues) {
-                internalFilterData = convertToInternalData(getFilterData(), cloneObjectsArray(nextProps.selectedFilterData.filterValues));
-                let internalFilterDataSelectors = this.convertSelectorToInternalData(getFilterData(), cloneObjectsArray(nextProps.selectedFilterData.filterValues));
-                internalFilterData = internalFilterData.concat(internalFilterDataSelectors);
-                this.updateFilter(internalFilterData);
-            }
-            this.setState(
-                {
-                    sortDirection: nextProps.selectedFilterData.sortDirection === "desc" ? true : false,
-                    sortId: getSortData().findIndex(x => x.key === nextProps.selectedFilterData.sortId) != -1 ? nextProps.selectedFilterData.sortId : "",
-                    filterValues: internalFilterData,
-                    searchText: nextProps.selectedFilterData.inputValue || value
-                }
-            );
             return true;
         }
 
@@ -169,116 +97,126 @@ class FilterInput extends React.Component {
             return true;
         }
 
-        if (this.props.isReady !== nextProps.isReady) {
-            let internalFilterData = cloneObjectsArray(this.state.filterValues);
-            internalFilterData = convertToInternalData(getFilterData(), cloneObjectsArray(nextProps.selectedFilterData.filterValues));
-
-            let internalFilterDataSelectors = this.convertSelectorToInternalData(getFilterData(), cloneObjectsArray(nextProps.selectedFilterData.filterValues));
-            internalFilterData = internalFilterData.concat(internalFilterDataSelectors);
-            this.updateFilter(internalFilterData);
-
-            this.setState(
-                {
-                    sortDirection: nextProps.selectedFilterData.sortDirection === "desc" ? true : false,
-                    sortId: getSortData().findIndex(x => x.key === nextProps.selectedFilterData.sortId) != -1 ? nextProps.selectedFilterData.sortId : "",
-                    filterValues: internalFilterData,
-                    searchText: nextProps.selectedFilterData.inputValue || value
-                }
-            );
-            // return true;
-        }
-
-        if (id != nextProps.id ||
-            isDisabled != nextProps.isDisabled ||
-            size != nextProps.size ||
-            placeholder != nextProps.placeholder ||
-            value != nextProps.value)
-
-            return true;
-        if (this.isResizeUpdate) {
+        if (this.props.widthProp !== nextProps.widthProp) {
             return true;
         }
+
+        if (
+          id != nextProps.id ||
+          isDisabled != nextProps.isDisabled ||
+          size != nextProps.size ||
+          placeholder != nextProps.placeholder ||
+          value != nextProps.value
+        ) {
+          return true;
+        }
+
         return !isEqual(this.state, nextState);
     }
 
-    convertSelectorToInternalData = (filterData, filterValues) => {
-        const resultValues = [];
-        filterValues.forEach((item) => {
-            const isSelector = item.group.includes('filter-author');
-            if (isSelector) {
-                const typeSelector = item.key.includes('user') ? 'user'
-                    : item.key.includes('group') ? 'group'
-                        : null;
-                const hasUnderscore = item.key.indexOf('_') !== -1;
-                const key = hasUnderscore ? item.key.slice(0, item.key.indexOf('_')) : item.key;
-                const finded = filterData.find(x => x.key === key && x.group === item.group);
-                if (!finded) return;
-                const convertedItem = {
-                    key: item.group + '_' + item.key,
-                    label: finded.label,
-                    group: item.group,
-                    groupLabel: finded.label,
-                    typeSelector,
-                    groupsCaption: finded.groupsCaption,
-                    defaultOptionLabel: finded.defaultOptionLabel,
-                    defaultOption: finded.defaultOption,
-                    defaultSelectLabel: finded.defaultSelectLabel,
-                    selectedItem: finded.selectedItem,
-                };
-                resultValues.push(convertedItem);
-            }
-        });
-        return resultValues;
+    resize = () => {
+        const filterValues = cloneObjectsArray(this.state.filterValues);
+        const fullWidth = this.searchWrapper.current.getBoundingClientRect().width;
+        const test = fullWidth * 45 / 100;
+        this.setState({ filterValues, openFilterItems: filterValues, overflowFilter: false, test }, () => this.updateFilter());
     }
 
-    resize = () => {
-        this.isResizeUpdate = true;
-        this.setState({
-            filterValues: this.state.filterValues,
-            openFilterItems: this.state.filterValues,
-            hideFilterItems: []
-        })
+    setShowFilter = showFilter => this.setState({ showFilter });
+
+    getDefaultFilterData = () => {
+        const { getFilterData, selectedFilterData } = this.props;
+        const filterData = getFilterData();
+        const filterItems = [];
+        const filterValues = cloneObjectsArray(selectedFilterData.filterValues);
+        
+        for(let item of filterValues) {
+            const filterValue = filterData.find(x => x.key === item.key && x.group === item.group);
+
+            if(!filterValue) {
+                const isSelector = item.group.includes('filter-author');
+
+                if (isSelector) {
+                    const typeSelector = item.key.includes('user') ? 'user' : item.key.includes('group') ? 'group' : null;
+                    const underlined = item.key.indexOf('_') !== -1;
+                    const key = underlined ? item.key.slice(0, item.key.indexOf('_')) : item.key;
+                    const filesFilterValue = filterData.find(x => x.key === key && x.group === item.group);
+
+                    if(filesFilterValue) {
+                        const convertedItem = {
+                            key: item.group + '_' + item.key,
+                            label: filesFilterValue.label,
+                            group: item.group,
+                            groupLabel: filesFilterValue.label,
+                            typeSelector,
+                            groupsCaption: filesFilterValue.groupsCaption,
+                            defaultOptionLabel: filesFilterValue.defaultOptionLabel,
+                            defaultOption: filesFilterValue.defaultOption,
+                            defaultSelectLabel: filesFilterValue.defaultSelectLabel,
+                            selectedItem: filesFilterValue.selectedItem
+                        };
+                        filterItems.push(convertedItem);
+                    }
+                }
+            }
+
+            let groupLabel = '';
+            const groupFilterItem = filterData.find(x => x.key === item.group);
+            if (groupFilterItem) {
+                groupLabel = groupFilterItem.label;
+            } else {
+                const subgroupFilterItem = filterData.find(x => x.subgroup === item.group);
+                if (subgroupFilterItem) {
+                    groupLabel = subgroupFilterItem.label;
+                }
+            }
+
+            if (filterValue) {
+                item.key = item.group + "_" + item.key;
+                item.label = filterValue.selectedItem ? filterValue.selectedItem.label : filterValue.label;
+                item.groupLabel = groupLabel;
+                filterItems.push(item);
+            }
+        }
+
+        return filterItems;
     }
-    onChangeSortDirection(key) {
+
+    onChangeSortDirection = (key) => {
         this.onFilter(this.state.filterValues, this.state.sortId, key ? "desc" : "asc");
         this.setState({ sortDirection: !!key });
     }
-    onClickViewSelector(item) {
+
+    onClickViewSelector = (item) => {
         const itemId = (item.target && item.target.dataset.for) || item;
         const viewAs = itemId.indexOf("row") === -1 ? "tile" : "row"
         this.props.onChangeViewAs(viewAs);
     }
-    getDefaultSelectedIndex() {
-        const sortData = this.props.getSortData();
-        if (sortData.length > 0) {
-            const defaultIndex = sortData.findIndex(x => x.key === this.state.sortId);
-            return defaultIndex != -1 ? defaultIndex : 0;
-        }
-        return 0;
-    }
-    onClickSortItem(key) {
+
+    onClickSortItem = (key) => {
         this.setState({ sortId: key });
         this.onFilter(this.state.filterValues, key, this.state.sortDirection ? "desc" : "asc");
     }
-    onSortDirectionClick() {
 
+    onSortDirectionClick = () => {
         this.onFilter(this.state.filterValues, this.state.sortId, !this.state.sortDirection ? "desc" : "asc");
         this.setState({ sortDirection: !this.state.sortDirection });
     }
-    onSearchChanged(value) {
+
+    onSearchChanged = (value) => {
         this.setState({ searchText: value });
         this.onFilter(this.state.filterValues, this.state.sortId, this.state.sortDirection ? "desc" : "asc", value);
     }
-    onSearch(result) {
+
+    onSearch = (result) => {
         this.onFilter(result.filterValues, this.state.sortId, this.state.sortDirection ? "desc" : "asc");
     }
-    getFilterData() {
-        const _this = this;
+
+    getFilterData = () => {
         const d = this.props.getFilterData();
         const result = [];
         d.forEach(element => {
             if (!element.inSubgroup) {
-                element.onClick = !element.isSeparator && !element.isHeader && !element.disabled ? ((e) => _this.props.onClickFilterItem(e, element)) : undefined;
+                element.onClick = !element.isSeparator && !element.isHeader && !element.disabled ? (() => this.onClickFilterItem(element)) : undefined;
                 element.key = element.group != element.key ? element.group + "_" + element.key : element.key;
                 if (element.subgroup != undefined) {
                     if (d.findIndex(x => x.group === element.subgroup) === -1) element.disabled = true;
@@ -288,7 +226,8 @@ class FilterInput extends React.Component {
         });
         return result;
     }
-    clearFilter() {
+
+    clearFilter = () => {
         this.setState({
             searchText: '',
             filterValues: [],
@@ -297,104 +236,86 @@ class FilterInput extends React.Component {
         });
         this.onFilter([], this.state.sortId, this.state.sortDirection ? "desc" : "asc", '');
     }
-    updateFilter(inputFilterItems) {
-        const currentFilterItems = inputFilterItems || cloneObjectsArray(this.state.filterValues);
+
+    updateFilter = (inputFilterItems) => {
+        const currentFilterItems = inputFilterItems ? cloneObjectsArray(inputFilterItems) : cloneObjectsArray(this.state.filterValues);
         const fullWidth = this.searchWrapper.current.getBoundingClientRect().width;
-        const filterWidth = this.filterWrapper.current.getBoundingClientRect().width;
+
         const filterArr = Array.from(Array.from(this.filterWrapper.current.children).find(x => x.id === 'filter-items-container').children);
-        const searchFilterButton = Array.from(this.filterWrapper.current.children).find(x => x.id != 'filter-items-container');
 
-        const filterButton = searchFilterButton ? Array.from(searchFilterButton.children)[0] : null;
+        let newOpenFilterItems = currentFilterItems;
+        let newHideFilterItems = [];
 
-        if (fullWidth <= this.minWidth && fullWidth > 0) {
-            this.setState({
-                openFilterItems: [],
-                hideFilterItems: cloneObjectsArray(currentFilterItems)
-            });
-        } else if (filterWidth > fullWidth / 2) {
-            let newOpenFilterItems = cloneObjectsArray(currentFilterItems);
-            let newHideFilterItems = [];
+        let elementsWidth = 0;
 
-            let elementsWidth = 0;
-            Array.from(filterArr).forEach(element => {
-                elementsWidth = elementsWidth + element.getBoundingClientRect().width;
-            });
+        const withHiddenItems = currentFilterItems.length > 0;
+        for(let elem of filterArr) {
+            if(elem.className !== "styled-hide-filter" && withHiddenItems) {
+                elementsWidth += elem.getBoundingClientRect().width;
+            }
+        }
 
-            if (filterButton !== null && (elementsWidth >= (fullWidth / 3) - filterButton.getBoundingClientRect().width)) {
-                for (let i = 0; i < filterArr.length; i++) {
-                    if (elementsWidth > (fullWidth / 3) - filterButton.getBoundingClientRect().width) {
-                        elementsWidth = elementsWidth - filterArr[i].getBoundingClientRect().width;
-                        const hiddenItem = currentFilterItems.find(x => x.key === filterArr[i].getAttribute('id'));
-                        if (hiddenItem) newHideFilterItems.push(hiddenItem);
-                        newOpenFilterItems.splice(newOpenFilterItems.findIndex(x => x.key === filterArr[i].getAttribute('id')), 1);
-                    }
+        for (let i = 0; i < filterArr.length; i++) {
+            const elementWidth = filterArr[i].getBoundingClientRect().width;
+            if (elementsWidth + 30 >= fullWidth * 45 / 100) {
+                const hiddenItem = currentFilterItems.find(x => x.key === filterArr[i].getAttribute('id'));
+                if (hiddenItem) {
+                    elementsWidth -= elementWidth;
+                    newHideFilterItems.push(hiddenItem);
+                    newOpenFilterItems = newOpenFilterItems.filter(x => x.key !== filterArr[i].getAttribute('id'));
                 }
             }
-            this.setState({
-                openFilterItems: newOpenFilterItems,
-                hideFilterItems: newHideFilterItems
-            });
-
-        } else {
-
-            this.setState({
-                openFilterItems: currentFilterItems.slice(),
-                hideFilterItems: []
-            });
         }
+
+        this.setState({
+            filterValues: currentFilterItems,
+            openFilterItems: newOpenFilterItems,
+            hideFilterItems: newHideFilterItems,
+            overflowFilter: true,
+            //showFilter: false
+        });
     }
-    onDeleteFilterItem(key) {
+
+    onDeleteFilterItem = (key) => {
         const currentFilterItems = this.state.filterValues.slice();
         const indexFilterItem = currentFilterItems.findIndex(x => x.key === key);
         if (indexFilterItem != -1) {
             currentFilterItems.splice(indexFilterItem, 1);
         }
-        this.setState({
-            filterValues: currentFilterItems,
-            openFilterItems: currentFilterItems,
-            hideFilterItems: []
-        });
+
+        this.setState({ filterValues: currentFilterItems, openFilterItems: currentFilterItems, overflowFilter: false }, () => this.updateFilter(currentFilterItems));
+
         let filterValues = cloneObjectsArray(currentFilterItems);
-        filterValues = filterValues.map(function (item) {
+        filterValues = filterValues.map(item => {
             item.key = item.key.replace(item.group + "_", '');
             return item;
         })
         this.onFilter(filterValues.filter(item => item.key != '-1'), this.state.sortId, this.state.sortDirection ? "desc" : "asc");
     }
-    onFilter(filterValues, sortId, sortDirection, searchText) {
+
+    onFilter = (filterValues, sortId, sortDirection, searchText) => {
         let cloneFilterValues = cloneObjectsArray(filterValues);
-        cloneFilterValues = cloneFilterValues.map(function (item) {
+
+        cloneFilterValues = cloneFilterValues.map(item => {
             item.key = item.key.replace(item.group + "_", '');
             return item;
         })
+        
         this.props.onFilter({
             inputValue: searchText != undefined ? searchText : this.state.searchText,
-            filterValues: cloneFilterValues.filter(item => item.key != '-1'),
+            filterValues: cloneFilterValues,
             sortId: sortId,
             sortDirection: sortDirection
         });
     }
-    onChangeFilter(result) {
-        this.setState({
-            searchText: result.inputValue,
-            filterValues: result.filterValues,
-        });
+
+    onChangeFilter = (result) => {
         this.onFilter(result.filterValues, this.state.sortId, this.state.sortDirection ? "desc" : "asc", result.inputValue);
     }
-    onFilterRender() {
-        if (this.isResizeUpdate) {
-            this.isResizeUpdate = false;
-        }
 
-        if (this.searchWrapper.current && this.filterWrapper.current) {
-            const fullWidth = this.searchWrapper.current.getBoundingClientRect().width;
-            const filterWidth = this.filterWrapper.current.getBoundingClientRect().width;
-            if (fullWidth <= this.minWidth || filterWidth > fullWidth / 2) this.updateFilter();
-        }
-    }
-    onClickFilterItem(event, filterItem) {
-        const currentFilterItems = cloneObjectsArray(this.state.filterValues);
-
+    onClickFilterItem = filterItem => {
+        const { filterValues, sortId, sortDirection } = this.state;
+        const currentFilterItems = cloneObjectsArray(filterValues);
 
         if (filterItem.isSelector) {
             const indexFilterItem = currentFilterItems.findIndex(x => x.group === filterItem.group);
@@ -419,28 +340,22 @@ class FilterInput extends React.Component {
                 defaultSelectLabel: filterItem.defaultSelectLabel,
                 selectedItem,
             };
-            currentFilterItems.push(selectFilterItem);
-            this.setState({
-                filterValues: currentFilterItems,
-                openFilterItems: currentFilterItems,
-                hideFilterItems: []
-            });
 
+            currentFilterItems.push(selectFilterItem);
+            this.setState({ filterValues: currentFilterItems, openFilterItems: currentFilterItems, overflowFilter: false }, () => this.updateFilter(currentFilterItems));
+            
             if (selectFilterItem.selectedItem.key) {
                 const clone = cloneObjectsArray(currentFilterItems.filter(item => item.key != '-1'));
-                clone.map(function (item) {
+                clone.map(item => {
                     item.key = item.key.replace(item.group + "_", '');
                     return item;
                 })
 
-
-                this.onFilter(clone.filter(item => item.key != '-1'), this.state.sortId, this.state.sortDirection ? "desc" : "asc");
+                this.onFilter(clone, sortId, sortDirection ? "desc" : "asc");
             }
 
             return;
-        }
-
-        if (filterItem.subgroup) {
+        } else if (filterItem.subgroup) {
             const indexFilterItem = currentFilterItems.findIndex(x => x.group === filterItem.subgroup);
             if (indexFilterItem != -1) {
                 currentFilterItems.splice(indexFilterItem, 1);
@@ -454,17 +369,14 @@ class FilterInput extends React.Component {
                     groupLabel: filterItem.label,
                     inSubgroup: true
                 };
-                if (indexFilterItem != -1)
+                if (indexFilterItem != -1) {
                     currentFilterItems.splice(indexFilterItem, 0, selectFilterItem);
-                else
+                }
+                else {
                     currentFilterItems.push(selectFilterItem);
-                this.setState({
-                    filterValues: currentFilterItems,
-                    openFilterItems: currentFilterItems,
-                    hideFilterItems: []
-                });
+                    this.setState({ filterValues: currentFilterItems, openFilterItems: currentFilterItems, overflowFilter: false }, () => this.updateFilter(currentFilterItems));
+                }
             } else if (subgroupItems.length === 1) {
-
                 const selectFilterItem = {
                     key: subgroupItems[0].group + "_" + subgroupItems[0].key,
                     group: subgroupItems[0].group,
@@ -472,23 +384,21 @@ class FilterInput extends React.Component {
                     groupLabel: this.props.getFilterData().find(x => x.subgroup === subgroupItems[0].group).label,
                     inSubgroup: true
                 };
-                if (indexFilterItem != -1)
+                if (indexFilterItem != -1) {
                     currentFilterItems.splice(indexFilterItem, 0, selectFilterItem);
-                else
+                } else {
                     currentFilterItems.push(selectFilterItem);
+                }
 
                 const clone = cloneObjectsArray(currentFilterItems.filter(item => item.key != '-1'));
-                clone.map(function (item) {
+                clone.map(item => {
                     item.key = item.key.replace(item.group + "_", '');
                     return item;
                 })
-                this.onFilter(clone.filter(item => item.key != '-1'), this.state.sortId, this.state.sortDirection ? "desc" : "asc");
-                this.setState({
-                    filterValues: currentFilterItems,
-                    openFilterItems: currentFilterItems,
-                    hideFilterItems: []
-                });
+                this.onFilter(clone, sortId, sortDirection ? "desc" : "asc");
             }
+            this.setState({ filterValues: currentFilterItems, openFilterItems: currentFilterItems, overflowFilter: false }, () => this.updateFilter(currentFilterItems));
+
         } else {
             const filterItems = this.getFilterData();
 
@@ -505,36 +415,25 @@ class FilterInput extends React.Component {
             };
             if (indexFilterItem != -1)
                 currentFilterItems.splice(indexFilterItem, 0, selectFilterItem);
-            else
+            else {
                 currentFilterItems.push(selectFilterItem);
-            this.setState({
-                filterValues: currentFilterItems,
-                openFilterItems: currentFilterItems,
-                hideFilterItems: []
-            });
+            }
 
             const clone = cloneObjectsArray(currentFilterItems.filter(item => item.key != '-1'));
-            clone.map(function (item) {
+            clone.map(item => {
                 item.key = item.key.replace(item.group + "_", '');
                 return item;
             })
-            this.onFilter(clone.filter(item => item.key != '-1'), this.state.sortId, this.state.sortDirection ? "desc" : "asc");
-        }
 
+            this.onFilter(clone, sortId, sortDirection ? "desc" : "asc");
+        }
     }
 
     render() {
-        /* eslint-disable react/prop-types */
-        const { className, id, style, size,
-            isDisabled, scale, getFilterData, placeholder,
-            getSortData, directionAscLabel, directionDescLabel,
-            filterColumnCount, viewAs, contextMenuHeader, isMobile } = this.props;
-        /* eslint-enable react/prop-types */
+        //console.log("FilterInput render");
+        const { className, id, style, size, isDisabled, scale, getFilterData, placeholder, getSortData, directionAscLabel, directionDescLabel, filterColumnCount, viewAs, contextMenuHeader, isMobile } = this.props;
+        const { searchText, filterValues, openFilterItems, hideFilterItems, sortId, sortDirection, overflowFilter, showFilter, test } = this.state;
 
-        const { searchText, filterValues, openFilterItems,
-            hideFilterItems, sortId, sortDirection } = this.state;
-
-        // console.log("filter input render, openFilterItems", openFilterItems, 'hideFilterItems', hideFilterItems);
         let iconSize = 30;
         switch (size) {
             case 'base':
@@ -548,8 +447,9 @@ class FilterInput extends React.Component {
             default:
                 break;
         }
+
         return (
-            <StyledFilterInput isMobile={isMobile} viewAs={viewAs} className={className} id={id} style={style}>
+            <StyledFilterInput test={test} overflowFilter={overflowFilter} isMobile={isMobile} viewAs={viewAs} className={className} id={id} style={style}>
                 <div className='styled-search-input' ref={this.searchWrapper}>
                     <SearchInput
                         id={id}
@@ -576,10 +476,10 @@ class FilterInput extends React.Component {
                                 getFilterData={getFilterData}
                                 onClickFilterItem={this.onClickFilterItem}
                                 onDeleteFilterItem={this.onDeleteFilterItem}
-                                isResizeUpdate={this.isResizeUpdate}
-                                onRender={this.onFilterRender}
                                 isDisabled={isDisabled}
                                 columnCount={filterColumnCount}
+                                showFilter={showFilter}
+                                setShowFilter={this.setShowFilter}
                             />
                         </div>
 
@@ -625,7 +525,9 @@ FilterInput.protoTypes = {
     needForUpdate: PropTypes.bool,
     filterColumnCount: PropTypes.number,
     onChangeViewAs: PropTypes.func,
-    contextMenuHeader: PropTypes.string
+    contextMenuHeader: PropTypes.string,
+    getSortData:  PropTypes.func,
+    getFilterData:  PropTypes.func
 };
 
 FilterInput.defaultProps = {
