@@ -42,6 +42,7 @@ using ASC.Files.Core.Security;
 using ASC.Files.Core.Thirdparty;
 using ASC.Files.Thirdparty.ProviderDao;
 using ASC.Web.Files.Classes;
+using ASC.Web.Files.Core.Search;
 using ASC.Web.Studio.Core;
 using ASC.Web.Studio.UserControls.Statistics;
 using ASC.Web.Studio.Utility;
@@ -395,57 +396,57 @@ namespace ASC.Files.Core.Data
             if (id == default) throw new ArgumentNullException("folderId");
 
             using var tx = FilesDbContext.Database.BeginTransaction();
-                var subfolders =
-                    FilesDbContext.Tree
-                    .Where(r => r.ParentId == id)
-                    .Select(r => r.FolderId)
-                    .ToList();
+            var subfolders =
+                FilesDbContext.Tree
+                .Where(r => r.ParentId == id)
+                .Select(r => r.FolderId)
+                .ToList();
 
-                if (!subfolders.Contains(id)) subfolders.Add(id); // chashed folder_tree
+            if (!subfolders.Contains(id)) subfolders.Add(id); // chashed folder_tree
 
-                var parent = Query(FilesDbContext.Folders)
-                    .Where(r => r.Id == id)
-                    .Select(r => r.ParentId)
-                    .FirstOrDefault();
+            var parent = Query(FilesDbContext.Folders)
+                .Where(r => r.Id == id)
+                .Select(r => r.ParentId)
+                .FirstOrDefault();
 
-                var folderToDelete = Query(FilesDbContext.Folders).Where(r => subfolders.Any(a => r.Id == a));
-                FilesDbContext.Folders.RemoveRange(folderToDelete);
+            var folderToDelete = Query(FilesDbContext.Folders).Where(r => subfolders.Any(a => r.Id == a));
+            FilesDbContext.Folders.RemoveRange(folderToDelete);
 
-                foreach (var f in folderToDelete)
-                {
-                    FactoryIndexer.DeleteAsync(f);
-                }
+            foreach (var f in folderToDelete)
+            {
+                FactoryIndexer.DeleteAsync(f);
+            }
 
-                var treeToDelete = FilesDbContext.Tree.Where(r => subfolders.Any(a => r.FolderId == a));
-                FilesDbContext.Tree.RemoveRange(treeToDelete);
+            var treeToDelete = FilesDbContext.Tree.Where(r => subfolders.Any(a => r.FolderId == a));
+            FilesDbContext.Tree.RemoveRange(treeToDelete);
 
-                var subfoldersStrings = subfolders.Select(r => r.ToString()).ToList();
-                var linkToDelete = Query(FilesDbContext.TagLink)
+            var subfoldersStrings = subfolders.Select(r => r.ToString()).ToList();
+            var linkToDelete = Query(FilesDbContext.TagLink)
+                .Where(r => subfoldersStrings.Any(a => r.EntryId == a))
+                .Where(r => r.EntryType == FileEntryType.Folder);
+            FilesDbContext.TagLink.RemoveRange(linkToDelete);
+
+            var tagsToRemove = Query(FilesDbContext.Tag)
+                .Where(r => !Query(FilesDbContext.TagLink).Where(a => a.TagId == r.Id).Any());
+
+            FilesDbContext.Tag.RemoveRange(tagsToRemove);
+
+            var securityToDelete = Query(FilesDbContext.Security)
                     .Where(r => subfoldersStrings.Any(a => r.EntryId == a))
                     .Where(r => r.EntryType == FileEntryType.Folder);
-                FilesDbContext.TagLink.RemoveRange(linkToDelete);
 
-                var tagsToRemove = Query(FilesDbContext.Tag)
-                    .Where(r => !Query(FilesDbContext.TagLink).Where(a => a.TagId == r.Id).Any());
+            FilesDbContext.Security.RemoveRange(securityToDelete);
+            FilesDbContext.SaveChanges();
 
-                FilesDbContext.Tag.RemoveRange(tagsToRemove);
+            var bunchToDelete = Query(FilesDbContext.BunchObjects)
+                .Where(r => r.LeftNode == id.ToString());
 
-                var securityToDelete = Query(FilesDbContext.Security)
-                        .Where(r => subfoldersStrings.Any(a => r.EntryId == a))
-                        .Where(r => r.EntryType == FileEntryType.Folder);
+            FilesDbContext.RemoveRange(bunchToDelete);
+            FilesDbContext.SaveChanges();
 
-                FilesDbContext.Security.RemoveRange(securityToDelete);
-                FilesDbContext.SaveChanges();
+            tx.Commit();
 
-                var bunchToDelete = Query(FilesDbContext.BunchObjects)
-                    .Where(r => r.LeftNode == id.ToString());
-
-                FilesDbContext.RemoveRange(bunchToDelete);
-                FilesDbContext.SaveChanges();
-
-                tx.Commit();
-
-                RecalculateFoldersCount(parent);
+            RecalculateFoldersCount(parent);
 
             //FactoryIndexer.DeleteAsync(new FoldersWrapper { Id = id });
         }
@@ -1286,26 +1287,26 @@ namespace ASC.Files.Core.Data
         {
             if (services.TryAddScoped<IFolderDao<int>, FolderDao>())
             {
-            services.TryAddTransient<Folder<int>>();
-            services.TryAddTransient<Folder<string>>();
+                services.TryAddTransient<Folder<int>>();
+                services.TryAddTransient<Folder<string>>();
 
-            return services
-                .AddFactoryIndexerService<DbFolder>()
-                .AddTenantManagerService()
-                .AddUserManagerService()
-                .AddFilesDbContextService()
-                .AddTenantUtilService()
-                .AddSetupInfo()
-                .AddTenantExtraService()
-                .AddTenantStatisticsProviderService()
-                .AddCoreBaseSettingsService()
-                .AddCoreConfigurationService()
-                .AddSettingsManagerService()
-                .AddAuthContextService()
-                .AddGlobalSpaceService();
-        }
+                return services
+                    .AddFactoryIndexerFolderService()
+                    .AddTenantManagerService()
+                    .AddUserManagerService()
+                    .AddFilesDbContextService()
+                    .AddTenantUtilService()
+                    .AddSetupInfo()
+                    .AddTenantExtraService()
+                    .AddTenantStatisticsProviderService()
+                    .AddCoreBaseSettingsService()
+                    .AddCoreConfigurationService()
+                    .AddSettingsManagerService()
+                    .AddAuthContextService()
+                    .AddGlobalSpaceService();
+            }
 
             return services;
-    }
+        }
     }
 }
