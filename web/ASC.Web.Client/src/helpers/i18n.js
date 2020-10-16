@@ -7,7 +7,7 @@ const { i18nBaseSettings } = constants;
  * @description create i18n instance
  * @param {object} object with method,url,data etc.
  */
-export const createI18N = function(options) {
+export const createI18N = function (options) {
   const { page, localesPath, forceBackend } = options;
 
   const newInstance = i18n.createInstance();
@@ -16,15 +16,15 @@ export const createI18N = function(options) {
     newInstance.use(Backend).init({
       ...i18nBaseSettings,
       backend: {
-        loadPath: `/locales/${page}/{{lng}}/{{ns}}.json`
-      }
+        loadPath: `/locales/${page}/{{lng}}/{{ns}}.json`,
+      },
     });
   } else if (process.env.NODE_ENV === "development") {
     const resources = {};
 
-    i18nBaseSettings.supportedLngs.forEach(name => {
+    i18nBaseSettings.supportedLngs.forEach((name) => {
       resources[name] = {
-        translation: require(`../components/${localesPath}/locales/${name}/translation.json`)
+        translation: require(`../components/${localesPath}/locales/${name}/translation.json`),
       };
     });
 

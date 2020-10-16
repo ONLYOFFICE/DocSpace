@@ -8,7 +8,7 @@ import styled from "styled-components";
 import {
   changeAdmins,
   getUpdateListAdmin,
-  fetchPeople
+  fetchPeople,
 } from "../../../../../../store/settings/actions";
 import {
   Text,
@@ -24,7 +24,7 @@ import {
   RequestLoader,
   Loader,
   EmptyScreenContainer,
-  Icons
+  Icons,
 } from "asc-web-components";
 import { FilterInput, PeopleSelector } from "asc-web-common";
 import { getUserRole } from "../../../../../../store/settings/selectors";
@@ -34,7 +34,7 @@ import { createI18N } from "../../../../../../helpers/i18n";
 
 const i18n = createI18N({
   page: "Settings",
-  localesPath: "pages/Settings"
+  localesPath: "pages/Settings",
 });
 
 const ToggleContentContainer = styled.div`
@@ -92,7 +92,7 @@ class PureAdminsSettings extends Component {
       showFullAdminSelector: false,
       isLoading: false,
       showLoader: true,
-      selectedOptions: []
+      selectedOptions: [],
     };
   }
 
@@ -102,12 +102,12 @@ class PureAdminsSettings extends Component {
     if (isEmpty(admins, true)) {
       const newFilter = this.onAdminsFilter();
       fetchPeople(newFilter)
-        .catch(error => {
+        .catch((error) => {
           toastr.error(error);
         })
         .finally(() =>
           this.setState({
-            showLoader: false
+            showLoader: false,
           })
         );
     } else {
@@ -121,7 +121,7 @@ class PureAdminsSettings extends Component {
     const newFilter = this.onAdminsFilter();
 
     changeAdmins(userIds, productId, isAdmin, newFilter)
-      .catch(error => {
+      .catch((error) => {
         toastr.error("accessRights onChangeAdmin", error);
       })
       .finally(() => {
@@ -135,7 +135,7 @@ class PureAdminsSettings extends Component {
     ); */
 
     this.setState({
-      showSelector: !this.state.showSelector
+      showSelector: !this.state.showSelector,
     });
   };
 
@@ -146,11 +146,11 @@ class PureAdminsSettings extends Component {
     ); */
 
     this.setState({
-      showFullAdminSelector: !this.state.showFullAdminSelector
+      showFullAdminSelector: !this.state.showFullAdminSelector,
     });
   };
 
-  onCancelSelector = e => {
+  onCancelSelector = (e) => {
     /* console.log(
       `onCancelSelector(showSelector: false, showFullAdminSelector: false`,
       e
@@ -168,26 +168,30 @@ class PureAdminsSettings extends Component {
 
     this.setState({
       showSelector: false,
-      showFullAdminSelector: false
+      showFullAdminSelector: false,
     });
   };
 
-  onSelect = selected => {
+  onSelect = (selected) => {
     const { productId } = this.props;
-    this.onChangeAdmin(selected.map(user => user.key), true, productId);
+    this.onChangeAdmin(
+      selected.map((user) => user.key),
+      true,
+      productId
+    );
     this.onShowGroupSelector();
   };
 
-  onSelectFullAdmin = selected => {
+  onSelectFullAdmin = (selected) => {
     this.onChangeAdmin(
-      selected.map(user => user.key),
+      selected.map((user) => user.key),
       true,
       "00000000-0000-0000-0000-000000000000"
     );
     this.onShowFullAdminGroupSelector();
   };
 
-  onChangePage = pageItem => {
+  onChangePage = (pageItem) => {
     const { filter, getUpdateListAdmin } = this.props;
 
     const newFilter = filter.clone();
@@ -195,11 +199,11 @@ class PureAdminsSettings extends Component {
     this.onLoading(true);
 
     getUpdateListAdmin(newFilter)
-      .catch(res => console.log(res))
+      .catch((res) => console.log(res))
       .finally(() => this.onLoading(false));
   };
 
-  onChangePageSize = pageItem => {
+  onChangePageSize = (pageItem) => {
     const { filter, getUpdateListAdmin } = this.props;
 
     const newFilter = filter.clone();
@@ -208,11 +212,11 @@ class PureAdminsSettings extends Component {
     this.onLoading(true);
 
     getUpdateListAdmin(newFilter)
-      .catch(res => console.log(res))
+      .catch((res) => console.log(res))
       .finally(() => this.onLoading(false));
   };
 
-  onPrevClick = e => {
+  onPrevClick = (e) => {
     const { filter, getUpdateListAdmin } = this.props;
 
     if (!filter.hasPrev()) {
@@ -223,11 +227,11 @@ class PureAdminsSettings extends Component {
     newFilter.page--;
     this.onLoading(true);
     getUpdateListAdmin(newFilter)
-      .catch(res => console.log(res))
+      .catch((res) => console.log(res))
       .finally(() => this.onLoading(false));
   };
 
-  onNextClick = e => {
+  onNextClick = (e) => {
     const { filter, getUpdateListAdmin } = this.props;
 
     if (!filter.hasNext()) {
@@ -239,11 +243,11 @@ class PureAdminsSettings extends Component {
     this.onLoading(true);
 
     getUpdateListAdmin(newFilter)
-      .catch(res => console.log(res))
+      .catch((res) => console.log(res))
       .finally(() => this.onLoading(false));
   };
 
-  onLoading = status => {
+  onLoading = (status) => {
     this.setState({ isLoading: status });
   };
 
@@ -257,7 +261,7 @@ class PureAdminsSettings extends Component {
     return newFilter;
   };
 
-  onFilter = data => {
+  onFilter = (data) => {
     const { filter, getUpdateListAdmin } = this.props;
 
     const search = data.inputValue || null;
@@ -275,7 +279,7 @@ class PureAdminsSettings extends Component {
     this.onLoading(true);
 
     getUpdateListAdmin(newFilter)
-      .catch(res => console.log(res))
+      .catch((res) => console.log(res))
       .finally(this.onLoading(false));
   };
 
@@ -286,7 +290,7 @@ class PureAdminsSettings extends Component {
 
     this.onLoading(true);
     getUpdateListAdmin(newFilter)
-      .catch(res => console.log(res))
+      .catch((res) => console.log(res))
       .finally(() => this.onLoading(false));
   };
 
@@ -294,10 +298,10 @@ class PureAdminsSettings extends Component {
     const { t, filter } = this.props;
     if (filter.total < filter.pageCount) return [];
     const totalPages = Math.ceil(filter.total / filter.pageCount);
-    return [...Array(totalPages).keys()].map(item => {
+    return [...Array(totalPages).keys()].map((item) => {
       return {
         key: item,
-        label: t("PageOfTotalPage", { page: item + 1, totalPage: totalPages })
+        label: t("PageOfTotalPage", { page: item + 1, totalPage: totalPages }),
       };
     });
   };
@@ -305,7 +309,7 @@ class PureAdminsSettings extends Component {
   countItems = () => [
     { key: 25, label: this.props.t("CountPerPage", { count: 25 }) },
     { key: 50, label: this.props.t("CountPerPage", { count: 50 }) },
-    { key: 100, label: this.props.t("CountPerPage", { count: 100 }) }
+    { key: 100, label: this.props.t("CountPerPage", { count: 100 }) },
   ];
 
   selectedPageItem = () => {
@@ -314,10 +318,10 @@ class PureAdminsSettings extends Component {
 
     const emptyPageSelection = {
       key: 0,
-      label: t("PageOfTotalPage", { page: 1, totalPage: 1 })
+      label: t("PageOfTotalPage", { page: 1, totalPage: 1 }),
     };
 
-    return pageItems.find(x => x.key === filter.page) || emptyPageSelection;
+    return pageItems.find((x) => x.key === filter.page) || emptyPageSelection;
   };
 
   selectedCountItem = () => {
@@ -325,13 +329,13 @@ class PureAdminsSettings extends Component {
 
     const emptyCountSelection = {
       key: 0,
-      label: t("CountPerPage", { count: 25 })
+      label: t("CountPerPage", { count: 25 }),
     };
 
     const countItems = this.countItems();
 
     return (
-      countItems.find(x => x.key === filter.pageCount) || emptyCountSelection
+      countItems.find((x) => x.key === filter.pageCount) || emptyCountSelection
     );
   };
 
@@ -340,7 +344,7 @@ class PureAdminsSettings extends Component {
 
     return [
       { key: "firstname", label: t("ByFirstNameSorting"), default: true },
-      { key: "lastname", label: t("ByLastNameSorting"), default: true }
+      { key: "lastname", label: t("ByLastNameSorting"), default: true },
     ];
   };
 
@@ -350,7 +354,7 @@ class PureAdminsSettings extends Component {
       showSelector,
       isLoading,
       showFullAdminSelector,
-      showLoader
+      showLoader,
     } = this.state;
 
     console.log("Admins render_");
@@ -431,7 +435,7 @@ class PureAdminsSettings extends Component {
                 <>
                   <div className="wrapper">
                     <RowContainer manualHeight={`${admins.length * 50}px`}>
-                      {admins.map(user => {
+                      {admins.map((user) => {
                         const element = (
                           <Avatar
                             size="small"
@@ -545,7 +549,7 @@ class PureAdminsSettings extends Component {
 
 const AccessRightsContainer = withTranslation()(PureAdminsSettings);
 
-const AdminsSettings = props => (
+const AdminsSettings = (props) => (
   <I18nextProvider i18n={i18n}>
     <AccessRightsContainer {...props} />
   </I18nextProvider>
@@ -562,27 +566,24 @@ function mapStateToProps(state) {
     owner,
     filter,
     me,
-    groupsCaption
+    groupsCaption,
   };
 }
 
 AdminsSettings.defaultProps = {
   admins: [],
   productId: "",
-  owner: {}
+  owner: {},
 };
 
 AdminsSettings.propTypes = {
   admins: PropTypes.arrayOf(PropTypes.object),
   productId: PropTypes.string,
-  owner: PropTypes.object
+  owner: PropTypes.object,
 };
 
-export default connect(
-  mapStateToProps,
-  {
-    changeAdmins,
-    fetchPeople,
-    getUpdateListAdmin
-  }
-)(withRouter(AdminsSettings));
+export default connect(mapStateToProps, {
+  changeAdmins,
+  fetchPeople,
+  getUpdateListAdmin,
+})(withRouter(AdminsSettings));
