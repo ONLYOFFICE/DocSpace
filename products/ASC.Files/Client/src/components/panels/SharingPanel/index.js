@@ -16,9 +16,9 @@ import {
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
-import { utils as commonUtils, constants, toastr } from "asc-web-common";
-import { getShareUsers, setShareFiles, setIsLoading } from "../../../store/files/actions";
-import { getAccessOption } from "../../../store/files/selectors";
+import { utils as commonUtils, constants, toastr, store } from "asc-web-common";
+import { getShareUsers, setShareFiles } from "../../../store/files/actions";
+import { getAccessOption, getSelection } from "../../../store/files/selectors";
 import {
   StyledAsidePanel,
   StyledContent,
@@ -36,6 +36,7 @@ const i18n = createI18N({
 
 const { changeLanguage } = commonUtils;
 const { ShareAccessRights } = constants;
+const { getCurrentUserId, getSettingsCustomNamesGroupsCaption } = store.auth.selectors;
 
 class SharingPanelComponent extends React.Component {
   constructor(props) {
@@ -388,10 +389,7 @@ class SharingPanelComponent extends React.Component {
 
     const accessOptions = getAccessOption(this.props.selectedItems);
 
-    this.setState(
-      { baseShareData, shareDataItems: arrayItems, accessOptions },
-      () => this.props.setIsLoading(false)
-    );
+    return { baseShareData, shareDataItems: arrayItems, accessOptions };
   };
 
   removeDuplicateShareData = shareDataItems => {
@@ -426,18 +424,18 @@ class SharingPanelComponent extends React.Component {
     const folderId = returnValue[0];
     const fileId = returnValue[1];
     let error = null;
+    let shareData = {};
 
     if (folderId.length !== 0 || fileId.length !== 0) {
       getShareUsers(folderId, fileId)
         .then(res => {
-          this.getShareDataItems(res);
+          shareData = this.getShareDataItems(res);
         })
         .catch(err => {
-          this.props.setIsLoading(false);
           error = err;
           toastr.error(err);
         })
-        .finally(() => !error && this.setState({ showPanel: true }));
+        .finally(() => !error && this.setState({...shareData, ...{ showPanel: true }}));
     }
   };
 
@@ -460,7 +458,6 @@ class SharingPanelComponent extends React.Component {
   onClose = () => this.setState({ showPanel: false });
 
   componentDidMount() {
-    this.props.setIsLoading(true);
     this.getShareData();
 
     document.addEventListener("keyup", this.onKeyPress);
@@ -732,10 +729,10 @@ const SharingPanel = props => (
 
 const mapStateToProps = state => {
   return {
-    isMyId: state.auth.user.id,
-    selectedItems: state.files.selection,
-    groupsCaption: state.auth.settings.customNames.groupsCaption
+    isMyId: getCurrentUserId(state),
+    selectedItems: getSelection(state),
+    groupsCaption: getSettingsCustomNamesGroupsCaption(state)
   };
 };
 
-export default connect(mapStateToProps, { setIsLoading })(withRouter(SharingPanel));
+export default connect(mapStateToProps)(withRouter(SharingPanel));

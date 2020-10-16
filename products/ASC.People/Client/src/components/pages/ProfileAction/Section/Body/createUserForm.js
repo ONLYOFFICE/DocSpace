@@ -318,6 +318,7 @@ class CreateUserForm extends React.Component {
 
   handleSubmit() {
     if (!this.validate()) return false;
+    const { setIsEditingForm } = this.props;
 
     this.setState({ isLoading: true });
     this.props
@@ -331,6 +332,7 @@ class CreateUserForm extends React.Component {
             `${this.props.settings.homepage}/view/${profile.userName}`
           );
         }
+        setIsEditingForm(false);
       })
       .catch((error) => {
         toastr.error(error);

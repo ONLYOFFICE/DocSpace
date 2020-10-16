@@ -5,9 +5,11 @@ import { withRouter } from "react-router";
 import { MainButton, DropDownItem } from "asc-web-components";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import { setAction, startUpload } from "../../../store/files/actions";
-import { getFirstLoad, isCanCreate } from "../../../store/files/selectors";
-import { utils as commonUtils, constants, Loaders } from "asc-web-common";
+import { canCreate, getFilter, getSelectedFolder, getFirstLoad } from "../../../store/files/selectors";
+import { utils as commonUtils, constants, store as initStore, Loaders } from "asc-web-common";
 import { createI18N } from "../../../helpers/i18n";
+
+const { getSettings } = initStore.auth.selectors;
 const i18n = createI18N({
   page: "Article",
   localesPath: "Article",
@@ -46,20 +48,20 @@ class PureArticleMainButtonContent extends React.Component {
 
   shouldComponentUpdate(nextProps, nextState) {
     return (
-      nextProps.isCanCreate !== this.props.isCanCreate ||
+      nextProps.canCreate !== this.props.canCreate ||
       nextProps.firstLoad !== this.props.firstLoad
     );
   }
 
   render() {
     //console.log("Files ArticleMainButtonContent render");
-    const { t, isCanCreate, isDisabled, firstLoad } = this.props;
+    const { t, canCreate, isDisabled, firstLoad } = this.props;
 
     return firstLoad ? (
       <Loaders.Filter />
     ) : (
       <MainButton
-        isDisabled={isDisabled ? isDisabled : !isCanCreate}
+        isDisabled={isDisabled ? isDisabled : !canCreate}
         isDropdown={true}
         text={t("Actions")}
       >
@@ -143,15 +145,12 @@ ArticleMainButtonContent.propTypes = {
 };
 
 const mapStateToProps = (state) => {
-  const { selectedFolder, filter } = state.files;
-  const { user, settings } = state.auth;
-
   return {
-    isCanCreate: isCanCreate(selectedFolder, user),
-    firstLoad: getFirstLoad(state),
-    settings,
-    filter,
-    selectedFolder,
+    canCreate: canCreate(state),
+	  firstLoad: getFirstLoad(state),
+    settings: getSettings(state),
+    filter: getFilter(state),
+    selectedFolder: getSelectedFolder(state)
   };
 };
 

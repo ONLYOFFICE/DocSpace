@@ -29,6 +29,7 @@ const StyledAsidePanel = styled.div`
   }
 
   .header_aside-panel {
+    transition: unset;
     transform: translateX(${(props) => (props.visible ? "0" : "500px")});
     width: 500px;
     overflow-y: hidden;

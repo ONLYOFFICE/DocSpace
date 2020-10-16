@@ -9,9 +9,17 @@ import { StyledAsidePanel } from "../StyledPanels";
 import TreeFolders from "../../Article/Body/TreeFolders";
 import {
   setProgressBarData,
-  clearProgressData
+  clearProgressData,
+  loopFilesOperations
 } from "../../../store/files/actions";
-import { checkFolderType } from "../../../store/files/selectors";
+import {
+  getTreeFolders,
+  getFilter,
+  getSelection,
+  getPathParts,
+  getSelectedFolderId,
+  getIsRecycleBinFolder,
+} from "../../../store/files/selectors";
 import { createI18N } from "../../../helpers/i18n";
 const i18n = createI18N({
   page: "OperationsPanel",
@@ -106,7 +114,7 @@ class OperationsPanelComponent extends React.Component {
       filter,
       treeFolders,
       isCopy,
-      isRecycleBinFolder,
+      isRecycleBin,
       visible,
       onClose
     } = this.props;
@@ -123,7 +131,7 @@ class OperationsPanelComponent extends React.Component {
           onClose={onClose}
         >
           <ModalDialog.Header>
-            {isRecycleBinFolder ? t("Restore") : isCopy ? t("Copy") : t("Move")}
+            {isRecycleBin ? t("Restore") : isCopy ? t("Copy") : t("Move")}
           </ModalDialog.Header>
           <ModalDialog.Body>
             <TreeFolders
@@ -154,18 +162,14 @@ const OperationsPanel = props => (
 );
 
 const mapStateToProps = state => {
-  const { selectedFolder, selection, treeFolders, filter } = state.files;
-  const { pathParts, id } = selectedFolder;
-  const indexOfTrash = 4;
-
   return {
-    treeFolders,
-    filter,
-    selection,
-    expandedKeys: pathParts,
-    currentFolderId: id,
-    isRecycleBinFolder: checkFolderType(id, indexOfTrash, treeFolders)
+    treeFolders: getTreeFolders(state),
+    filter: getFilter(state),
+    selection: getSelection(state),
+    expandedKeys: getPathParts(state),
+    currentFolderId: getSelectedFolderId(state),
+    isRecycleBin: getIsRecycleBinFolder(state),
   };
 };
 
-export default connect(mapStateToProps, { setProgressBarData, clearProgressData })(withRouter(OperationsPanel));
+export default connect(mapStateToProps, { setProgressBarData, clearProgressData, loopFilesOperations })(withRouter(OperationsPanel));

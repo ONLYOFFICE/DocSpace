@@ -6,6 +6,7 @@ import { ModalDialog, Button, Text } from "asc-web-components";
 import { withTranslation } from "react-i18next";
 import { api, utils, toastr } from "asc-web-common";
 import { fetchFiles, setProgressBarData, clearProgressData } from "../../../store/files/actions";
+import { getSelectedFolderId, getFilter, getIsLoading } from "../../../store/files/selectors";
 import { createI18N } from "../../../helpers/i18n";
 
 const i18n = createI18N({
@@ -132,11 +133,10 @@ const EmptyTrashDialog = props => (
 );
 
 const mapStateToProps = state => {
-  const { selectedFolder, filter, isLoading } = state.files;
   return {
-    currentFolderId: selectedFolder.id,
-    filter,
-    isLoading
+    currentFolderId: getSelectedFolderId(state),
+    filter: getFilter(state),
+    isLoading: getIsLoading(state),
   };
 };
 

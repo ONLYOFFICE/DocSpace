@@ -18,7 +18,8 @@ import {
   getFolderIcon,
   isSpreadsheet,
   isPresentation,
-  isDocument
+  isDocument,
+  getSelection
 } from "../../../store/files/selectors";
 import {
   setProgressBarData,
@@ -614,9 +615,8 @@ const DownloadDialog = props => (
 );
 
 const mapStateToProps = state => {
-  const { selection } = state.files;
   return {
-    items: selection
+    items: getSelection(state)
   };
 };
 

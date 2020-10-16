@@ -1,6 +1,10 @@
 import React, { useCallback, useMemo } from "react";
 import { connect } from "react-redux";
 import { fetchFiles, setIsLoading } from "../../../../../store/files/actions";
+import {
+  getFilter,
+  getSelectedFolderId,
+} from "../../../../../store/files/selectors";
 import { Paging } from "asc-web-components";
 import { useTranslation } from 'react-i18next';
 
@@ -145,8 +149,8 @@ const SectionPagingContent = ({
 
 function mapStateToProps(state) {
   return {
-    filter: state.files.filter,
-    selectedFolderId: state.files.selectedFolder.id
+    filter: getFilter(state),
+    selectedFolderId: getSelectedFolderId(state),
   };
 }
 

@@ -1,8 +1,10 @@
 /* eslint-disable react/prop-types */
-import React from 'react';
-import styled, { css } from 'styled-components';
-import PropTypes from 'prop-types';
-import Tree from 'rc-tree';
+import React from "react";
+import styled, { css } from "styled-components";
+import PropTypes from "prop-types";
+import Tree from "rc-tree";
+
+import Badge from "../badge";
 
 const StyledTreeMenu = styled(Tree)`
     margin: 0;
@@ -18,32 +20,33 @@ const StyledTreeMenu = styled(Tree)`
         margin-left: 4px;
     }
 
-    ${props => props.isEmptyRootNode &&
-        css`
-            & > li > span.rc-tree-switcher-noop {
-                display: none;
-            }
-        `
-    }
+    ${props =>
+      props.isEmptyRootNode &&
+      css`
+        & > li > span.rc-tree-switcher-noop {
+          display: none;
+        }
+      `}
     .rc-tree-node-content-wrapper {
-        margin-bottom: ${props => +props.gapBetweenNodes - 15 + 'px;'};
+        position: static !important;
+        margin-bottom: ${props => +props.gapBetweenNodes - 15 + "px;"};
         @media(max-width: 1024px) {
-            margin-bottom: ${props => props.gapBetweenNodesTablet 
-                ? +props.gapBetweenNodesTablet - 15 + 'px;'
-                : +props.gapBetweenNodes - 15 + 'px;'
-            };
+            margin-bottom: ${props =>
+              props.gapBetweenNodesTablet
+                ? +props.gapBetweenNodesTablet - 15 + "px;"
+                : +props.gapBetweenNodes - 15 + "px;"};
         }
     };
-    ${props => !props.isFullFillSelection && 
-        css`
-            & .rc-tree-node-selected {
-                width: min-content !important;
-                padding-right: 5px;
-                max-width: 100%;
-            }
-        `
-    }
-    
+    ${props =>
+      !props.isFullFillSelection &&
+      css`
+        span.rc-tree-node-selected {
+          width: min-content !important;
+          padding-right: 5px;
+          max-width: 85%;
+        }
+      `}
+      
     & .rc-tree-node-selected .rc-tree-title {
       ${props => !props.isFullFillSelection && "width: 85%;"}
     } 
@@ -69,9 +72,9 @@ const StyledTreeMenu = styled(Tree)`
     .rc-tree-child-tree-open {
         display: block;
         ${props => props.disableSwitch && "margin: 0 0 25px 0;"}
-        margin-left: ${props => props.disableSwitch ? "27px" : "8px"};
+        margin-left: ${props => (props.disableSwitch ? "27px" : "8px")};
         li:first-child{
-            margin-top: ${props => props.disableSwitch ? "10px" : "6px"};
+            margin-top: ${props => (props.disableSwitch ? "10px" : "6px")};
             margin-left: 0;
         }
         
@@ -102,129 +105,197 @@ const StyledTreeMenu = styled(Tree)`
         margin-right: 2px;
         vertical-align: top;
     }
-    ${props => props.switcherIcon != null ?
-        css`
-            li span.rc-tree-switcher{
-                background: none;
+    ${props =>
+      props.switcherIcon != null
+        ? css`
+            li span.rc-tree-switcher {
+              background: none;
             }
-        `
-        : ''
-    }
-    ${props => props.disableSwitch ? 
-        css`
-            li span.rc-tree-switcher{
-                height: 0;
-                margin: 0;
-                width: 0;
+          `
+        : ""}
+    ${props =>
+      props.disableSwitch
+        ? css`
+            li span.rc-tree-switcher {
+              height: 0;
+              margin: 0;
+              width: 0;
             }
-        `
-        : ``
-    }
+          `
+        : ``}
 `;
 
 const TreeMenu = React.forwardRef((props, ref) => {
-    //console.log("TreeMenu render");
-    const { defaultExpandAll, defaultExpandParent, showIcon, showLine, multiple, disabled, draggable, checkable, children, switcherIcon, icon,
-        onDragStart, onDrop, onSelect, onDragEnter, onDragEnd, onDragLeave, onDragOver, onCheck, onExpand, onLoad, onMouseEnter, onMouseLeave, onRightClick,
-        defaultSelectedKeys, expandedKeys, defaultExpandedKeys, defaultCheckedKeys, selectedKeys, className, id, style, loadData, disableSwitch,
-        isFullFillSelection, gapBetweenNodes, gapBetweenNodesTablet, isEmptyRootNode } = props;
+  //console.log("TreeMenu render");
+  const {
+    defaultExpandAll,
+    defaultExpandParent,
+    showIcon,
+    showLine,
+    multiple,
+    disabled,
+    draggable,
+    checkable,
+    children,
+    switcherIcon,
+    icon,
+    onDragStart,
+    onDrop,
+    onSelect,
+    onDragEnter,
+    onDragEnd,
+    onDragLeave,
+    onDragOver,
+    onCheck,
+    onExpand,
+    onLoad,
+    onMouseEnter,
+    onMouseLeave,
+    onRightClick,
+    defaultSelectedKeys,
+    expandedKeys,
+    defaultExpandedKeys,
+    defaultCheckedKeys,
+    selectedKeys,
+    className,
+    id,
+    style,
+    loadData,
+    disableSwitch,
+    isFullFillSelection,
+    gapBetweenNodes,
+    gapBetweenNodesTablet,
+    isEmptyRootNode
+  } = props;
 
-    const expandedKeysProp = expandedKeys ? { expandedKeys: expandedKeys } : {};
+  const expandedKeysProp = expandedKeys ? { expandedKeys: expandedKeys } : {};
 
-    const onTreeNodeSelect = (data, e) => {
-        const result = e.selected ? data : [e.node.props.eventKey];
-        onSelect(result, e);
-    }
-    return (
-        <StyledTreeMenu
-            id={id}
-            style={style}
-            className={className}
-            ref={ref}
-            {...expandedKeysProp}
-            loadData={loadData}
-            checkable={!!checkable}
-            draggable={!!draggable}
-            disabled={!!disabled}
-            multiple={!!multiple}
-            showLine={!!showLine}
-            showIcon={!!showIcon}
-            defaultExpandAll={!!defaultExpandAll}
-            defaultExpandParent={!!defaultExpandParent}
-            icon={icon}
+  const onTreeNodeSelect = (data, e) => {
+    const result = e.selected ? data : [e.node.props.eventKey];
+    onSelect(result, e);
+  };
 
-            selectedKeys={selectedKeys}
-            defaultSelectedKeys={defaultSelectedKeys}
-            defaultExpandedKeys={defaultExpandedKeys}
-            defaultCheckedKeys={defaultCheckedKeys}
+  const renderChildren = children => {
+    const items = [];
 
-            onDragStart={onDragStart}
-            onDrop={onDrop}
-            onDragEnd={onDragEnd}
-            onDragLeave={onDragLeave}
-            onDragOver={onDragOver}
+    React.Children.forEach(children, (child, i) => {
+      if (child.props.newItems > 0 && child.props.showBadge) {
+        const el = React.cloneElement(child, {
+          icon: (
+            <>
+              {child.props.icon}
+              <Badge
+                data-id={child.props.id}
+                className="newItem"
+                key={child.props.id + "-badge"}
+                label={child.props.newItems}
+                backgroundColor="#ED7309"
+                color="#FFF"
+                fontSize="11px"
+                fontWeight={800}
+                borderRadius="11px"
+                padding="0 5px"
+                onClick={child.props.onBadgeClick}
+              />
+            </>
+          )
+        });
+        items.push(el);
+      } else {
+        items.push(child);
+      }
+    });
+    return items;
+  };
 
-            switcherIcon={switcherIcon}
-            onSelect={onTreeNodeSelect}
-            onDragEnter={onDragEnter}
+  const modifiedChildren = renderChildren(children);
 
-            onCheck={onCheck}
-            onExpand={onExpand}
-
-            onLoad={onLoad}
-            onMouseEnter={onMouseEnter}
-            onMouseLeave={onMouseLeave}
-            onRightClick={onRightClick}
-
-            disableSwitch={disableSwitch}
-            isFullFillSelection={isFullFillSelection}
-            gapBetweenNodes={gapBetweenNodes}
-            gapBetweenNodesTablet={gapBetweenNodesTablet}
-            isEmptyRootNode={isEmptyRootNode}
-        >
-            {children}
-        </StyledTreeMenu>
-    );
-})
+  return (
+    <>
+      <StyledTreeMenu
+        id={id}
+        style={style}
+        className={className}
+        ref={ref}
+        {...expandedKeysProp}
+        loadData={loadData}
+        checkable={!!checkable}
+        draggable={!!draggable}
+        disabled={!!disabled}
+        multiple={!!multiple}
+        showLine={!!showLine}
+        showIcon={!!showIcon}
+        defaultExpandAll={!!defaultExpandAll}
+        defaultExpandParent={!!defaultExpandParent}
+        icon={icon}
+        selectedKeys={selectedKeys}
+        defaultSelectedKeys={defaultSelectedKeys}
+        defaultExpandedKeys={defaultExpandedKeys}
+        defaultCheckedKeys={defaultCheckedKeys}
+        onDragStart={onDragStart}
+        onDrop={onDrop}
+        onDragEnd={onDragEnd}
+        onDragLeave={onDragLeave}
+        onDragOver={onDragOver}
+        switcherIcon={switcherIcon}
+        onSelect={onTreeNodeSelect}
+        onDragEnter={onDragEnter}
+        onCheck={onCheck}
+        onExpand={onExpand}
+        onLoad={onLoad}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+        onRightClick={onRightClick}
+        disableSwitch={disableSwitch}
+        isFullFillSelection={isFullFillSelection}
+        gapBetweenNodes={gapBetweenNodes}
+        gapBetweenNodesTablet={gapBetweenNodesTablet}
+        isEmptyRootNode={isEmptyRootNode}
+      >
+        {modifiedChildren}
+      </StyledTreeMenu>
+    </>
+  );
+});
 
 TreeMenu.propTypes = {
-    checkable: PropTypes.bool,
-    draggable: PropTypes.bool,
-    disabled: PropTypes.bool,
-    multiple: PropTypes.bool,
-    showIcon: PropTypes.bool,
-    showLine: PropTypes.bool,
-    defaultExpandAll: PropTypes.bool,
-    defaultExpandParent: PropTypes.bool,
+  checkable: PropTypes.bool,
+  draggable: PropTypes.bool,
+  disabled: PropTypes.bool,
+  multiple: PropTypes.bool,
+  showIcon: PropTypes.bool,
+  showLine: PropTypes.bool,
+  defaultExpandAll: PropTypes.bool,
+  defaultExpandParent: PropTypes.bool,
 
-    icon: PropTypes.func,
-    onDragStart: PropTypes.func,
-    onDrop: PropTypes.func,
-    loadData: PropTypes.func,
+  icon: PropTypes.func,
+  onDragStart: PropTypes.func,
+  onDrop: PropTypes.func,
+  loadData: PropTypes.func,
 
-    children: PropTypes.oneOfType([
-        PropTypes.arrayOf(PropTypes.node),
-        PropTypes.node
-    ]),
-    className: PropTypes.string,
-    id: PropTypes.string,
-    style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node
+  ]),
+  className: PropTypes.string,
+  id: PropTypes.string,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 
-    disableSwitch: PropTypes.bool,
+  disableSwitch: PropTypes.bool,
 
-    isFullFillSelection: PropTypes.bool,
-    gapBetweenNodes: PropTypes.string,
-    gapBetweenNodesTablet: PropTypes.string,
-    isEmptyRootNode: PropTypes.bool
-}
+  isFullFillSelection: PropTypes.bool,
+  gapBetweenNodes: PropTypes.string,
+  gapBetweenNodesTablet: PropTypes.string,
+  isEmptyRootNode: PropTypes.bool
+};
 
 TreeMenu.defaultProps = {
-    disableSwitch: false,
-    isFullFillSelection: true,
-    gapBetweenNodes: '15',
-    isEmptyRootNode: false
-}
+  disableSwitch: false,
+  isFullFillSelection: true,
+  gapBetweenNodes: "15",
+  isEmptyRootNode: false
+};
 
 TreeMenu.displayName = "TreeMenu";
 
-export default TreeMenu
+export default TreeMenu;

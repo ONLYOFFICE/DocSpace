@@ -51,5 +51,6 @@
   "SuccessfullyRemovedUsers": "Пользователи были успешно удалены",
   "SendEmailAction": "Действие отправки e-mail",
   "SuccessfullyRemovedGroup": "Группа была успешно удалена",
-  "AddFilter": "Добавить фильтр"
+  "AddFilter": "Добавить фильтр",
+  "SuccessChangeUserStatus": "Статус пользователя успешно изменен"
 }

@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import { /*RequestLoader,*/ Loader } from "asc-web-components";
-import { PageLayout, utils, api } from "asc-web-common";
+import { PageLayout, utils, api, store } from "asc-web-common";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import {
   ArticleHeaderContent,
@@ -13,12 +13,14 @@ import {
 import { SectionHeaderContent, SectionBodyContent } from "./Section";
 import { createI18N } from "../../../helpers/i18n";
 //import { setDocumentTitle } from "../../../helpers/utils";
+import { getIsLoading } from "../../../store/files/selectors";
 const i18n = createI18N({
   page: "VersionHistory",
   localesPath: "pages/VersionHistory",
 });
 
 const { changeLanguage } = utils;
+const { getSettings, getIsLoaded } = store.auth.selectors;
 
 class PureVersionHistory extends React.Component {
   constructor(props) {
@@ -145,9 +147,9 @@ VersionHistory.propTypes = {
 
 function mapStateToProps(state) {
   return {
-    settings: state.auth.settings,
-    isLoaded: state.auth.isLoaded,
-    isLoading: state.files.isLoading,
+    settings: getSettings(state),
+    isLoaded: getIsLoaded(state),
+    isLoading: getIsLoading(state),
   };
 }
 

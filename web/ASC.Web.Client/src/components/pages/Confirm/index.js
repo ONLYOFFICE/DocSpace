@@ -1,6 +1,5 @@
 import React, { Suspense, lazy, useEffect } from "react";
 import { Route, Switch } from "react-router-dom";
-import { Loader } from "asc-web-components";
 import ConfirmRoute from "../../../helpers/confirmRoute";
 import { I18nextProvider } from "react-i18next";
 import { Error404, utils } from "asc-web-common";
@@ -8,7 +7,7 @@ import { Error404, utils } from "asc-web-common";
 import { createI18N } from "../../../helpers/i18n";
 const i18n = createI18N({
   page: "Confirm",
-  localesPath: "pages/Confirm"
+  localesPath: "pages/Confirm",
 });
 
 const { changeLanguage } = utils;
@@ -32,9 +31,7 @@ const Confirm = ({ match }) => {
   //console.log("Confirm render");
   return (
     <I18nextProvider i18n={i18n}>
-      <Suspense
-        fallback={<Loader className="pageLoader" type="rombs" size="40px" />}
-      >
+      <Suspense fallback={null}>
         <Switch>
           <ConfirmRoute
             forUnauthorized

@@ -18,6 +18,11 @@ import {
   createTreeFolders,
   canConvert,
   loopTreeFolders,
+  getSelectedFolderId,
+  getFilter,
+  getIsRecycleBinFolder,
+  getProgressData,
+  getTreeFolders,
   getSettingsTree,
 } from "./selectors";
 
@@ -589,6 +594,7 @@ export function getFilesSettings() {
 
 export const startUpload = (uploadFiles, folderId, t) => {
   return (dispatch, getState) => {
+    const state = getState()
     const newFiles = [];
     let filesSize = 0;
     const convertFiles = [];
@@ -599,7 +605,7 @@ export const startUpload = (uploadFiles, folderId, t) => {
       if (item.size !== 0) {
         const parts = item.name.split(".");
         const ext = parts.length > 1 ? "." + parts.pop() : "";
-        if (canConvert(ext)) {
+        if (canConvert(ext)(state)) {
           convertFiles.push(item);
           convertFilesSize += item.size;
         } else {
@@ -868,15 +874,13 @@ const updateFiles = (folderId, dispatch, getState) => {
         const foldersCount = data.selectedFolder.foldersCount;
         loopTreeFolders(path, newTreeFolders, folders, foldersCount);
         dispatch(setTreeFolders(newTreeFolders));
+        dispatch(setUpdateTree(true));
       })
       .catch((err) => toastr.error(err))
-      .finally(() =>
-        setTimeout(() => {
-          dispatch(clearProgressData());
-          dispatch(setUploadData(uploadData));
-        }, 5000)
-      );
-    //.finally(() => this.setState({ uploaded: true }));
+      .finally(() => setTimeout(() => { 
+        dispatch(clearProgressData());
+        dispatch(setUploadData(uploadData));
+      }, 5000));
   } else {
     return api.files
       .getFolder(folderId, filter.clone())
@@ -887,6 +891,7 @@ const updateFiles = (folderId, dispatch, getState) => {
         const foldersCount = data.count;
         loopTreeFolders(path, newTreeFolders, folders, foldersCount);
         dispatch(setTreeFolders(newTreeFolders));
+        dispatch(setUpdateTree(true));
       })
       .catch((err) => toastr.error(err))
       .finally(() =>
@@ -895,7 +900,6 @@ const updateFiles = (folderId, dispatch, getState) => {
           dispatch(setUploadData(uploadData));
         }, 5000)
       );
-    //.finally(() => this.setState({ uploaded: true }));
   }
 };
 
@@ -1017,5 +1021,170 @@ export const onConvert = (t) => {
     uploadData.uploadStatus = "convert";
     dispatch(setUploadData(uploadData));
     dispatch(setConvertDialogVisible(false));
+  };
+};
+
+export const setSelections = (items) => {
+  return (dispatch, getState) => {
+    const { selection, folders, files, fileActionId, selected } = getState().files;
+
+    if (selection.length > items.length) {
+      //Delete selection
+      const newSelection = [];
+      let newFile = null;
+      for (let item of items) {
+        if (!item) break; // temporary fall protection selection tile
+
+        item = item.split("_");
+        if (item[0] === "folder") {
+          newFile = selection.find(
+            (x) => x.id === Number(item[1]) && !x.fileExst
+          );
+        } else if (item[0] === "file") {
+          newFile = selection.find(
+            (x) => x.id === Number(item[1]) && x.fileExst
+          );
+        }
+        if (newFile) {
+          newSelection.push(newFile);
+        }
+      }
+
+      for (let item of selection) {
+        const element = newSelection.find(
+          (x) => x.id === item.id && x.fileExst === item.fileExst
+        );
+        if (!element) {
+          dispatch(deselectFile(item));
+        }
+      }
+    } else if (selection.length < items.length) {
+      //Add selection
+      for (let item of items) {
+        if (!item) break; // temporary fall protection selection tile
+
+        let newFile = null;
+        item = item.split("_");
+        if (item[0] === "folder") {
+          newFile = folders.find(
+            (x) => x.id === Number(item[1]) && !x.fileExst
+          );
+        } else if (item[0] === "file") {
+          newFile = files.find((x) => x.id === Number(item[1]) && x.fileExst);
+        }
+        if (newFile && fileActionId !== newFile.id) {
+          const existItem = selection.find(
+            (x) => x.id === newFile.id && x.fileExst === newFile.fileExst
+          );
+          if(!existItem) {
+            dispatch(selectFile(newFile));
+            selected !== "none" && dispatch(setSelected("none"));
+          }
+        }
+      }
+    } else {
+      return;
+    }
+  };
+};
+
+export const loopFilesOperations = (id, destFolderId, isCopy) => {
+  return (dispatch, getState) => {
+    const state = getState();
+
+    const currentFolderId = getSelectedFolderId(state);
+    const filter = getFilter(state);
+    const isRecycleBin = getIsRecycleBinFolder(state);
+    const progressData = getProgressData(state);
+    const treeFolders = getTreeFolders(state);
+
+    const loopOperation = () => {
+      api.files
+      .getProgress()
+      .then((res) => {
+        const currentItem = res.find((x) => x.id === id);
+        if (currentItem && currentItem.progress !== 100) {
+          dispatch(
+            setProgressBarData({
+              label: progressData.label,
+              percent: currentItem.progress,
+              visible: true,
+            })
+          );
+          setTimeout(
+            () => loopOperation(),
+            1000
+          );
+        } else {
+          dispatch(
+            setProgressBarData({
+              label: progressData.label,
+              percent: 100,
+              visible: true,
+            })
+          );
+          api.files
+            .getFolder(destFolderId)
+            .then((data) => {
+              let newTreeFolders = treeFolders;
+              let path = data.pathParts.slice(0);
+              let folders = data.folders;
+              let foldersCount = data.current.foldersCount;
+              loopTreeFolders(path, newTreeFolders, folders, foldersCount);
+
+              if (!isCopy || destFolderId === currentFolderId) {
+                dispatch(fetchFiles(currentFolderId, filter))
+                  .then((data) => {
+                    if (!isRecycleBin) {
+                      newTreeFolders = treeFolders;
+                      path = data.selectedFolder.pathParts.slice(0);
+                      folders = data.selectedFolder.folders;
+                      foldersCount = data.selectedFolder.foldersCount;
+                      loopTreeFolders(
+                        path,
+                        newTreeFolders,
+                        folders,
+                        foldersCount
+                      );
+                      dispatch(setUpdateTree(true));
+                      dispatch(setTreeFolders(newTreeFolders));
+                    }
+                  })
+                  .catch((err) => {
+                    console.log("ERROR_1", err);
+                    toastr.error(err);
+                    dispatch(clearProgressData());
+                  })
+                  .finally(() =>
+                    setTimeout(() => dispatch(clearProgressData()), 5000)
+                  );
+              } else {
+                dispatch(
+                  setProgressBarData({
+                    label: progressData.label,
+                    percent: 100,
+                    visible: true,
+                  })
+                );
+                setTimeout(() => dispatch(clearProgressData()), 5000);
+                dispatch(setUpdateTree(true));
+                dispatch(setTreeFolders(newTreeFolders));
+              }
+            })
+            .catch((err) => {
+              console.log("ERROR_2", err);
+              toastr.error(err);
+              dispatch(clearProgressData());
+            });
+        }
+      })
+      .catch((err) => {
+        console.log("ERROR_3", err);
+        toastr.error(err);
+        dispatch(clearProgressData());
+      });
+    }
+
+    loopOperation();
   };
 };

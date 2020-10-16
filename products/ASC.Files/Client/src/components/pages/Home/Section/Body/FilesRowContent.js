@@ -5,25 +5,38 @@ import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import styled from "styled-components";
 import { RowContent, Link, Text, Icons, IconButton, Badge } from "asc-web-components";
-import { constants, api, toastr } from 'asc-web-common';
-import { createFile, createFolder, renameFolder, updateFile, fetchFiles, setTreeFolders, setProgressBarData, clearProgressData, setUpdateTree, setNewRowItems, setIsLoading } from '../../../../../store/files/actions';
-import { 
-  canConvert, 
-  canWebEdit, 
-  getDragging, 
-  getFileAction, 
-  getFilter, 
-  getFolders, 
+import { constants, api, toastr, store as initStore } from 'asc-web-common';
+import {
+  clearProgressData,
+  createFile,
+  createFolder,
+  fetchFiles,
+  renameFolder,
+  setIsLoading,
+  setNewRowItems,
+  setProgressBarData,
+  setTreeFolders,
+  setUpdateTree,
+  updateFile,
+} from '../../../../../store/files/actions';
+import {
+  canConvert,
+  canWebEdit,
+  getDragging,
+  getFileAction,
+  getFilter,
+  getFolders,
   getIsLoading,
+  getIsRecycleBinFolder,
   getNewRowItems,
+  getRootFolderId,
   getSelectedFolder,
   getSelectedFolderNew,
-  getSelectedFolderParentId, 
-  getSettings, 
-  getTitleWithoutExst, 
-  getTreeFolders, 
-  isImage, 
-  isSound, 
+  getSelectedFolderParentId,
+  getTitleWithoutExst,
+  getTreeFolders,
+  isImage,
+  isSound,
   isVideo,
 } from '../../../../../store/files/selectors';
 import { NewFilesPanel } from "../../../../panels";
@@ -32,6 +45,7 @@ import EditingWrapperComponent from "./EditingWrapperComponent";
 
 const { FileAction } = constants;
 const sideColor = '#A3A9AE';
+const { getSettings } = initStore.auth.selectors;
 
 const SimpleFilesRowContent = styled(RowContent)`
 .badge-ext {
@@ -101,7 +115,7 @@ class FilesRowContent extends React.PureComponent {
   }
 
   completeAction = (id) => {
-    this.props.onEditComplete(id);
+    this.props.onEditComplete(id, !this.props.item.fileExst);
   }
 
   updateItem = (e) => {
@@ -179,11 +193,13 @@ class FilesRowContent extends React.PureComponent {
   }
 
   onFilesClick = () => {
-    const { id, fileExst, viewUrl } = this.props.item;
-    const { filter, parentFolder, setIsLoading, onMediaFileClick, fetchFiles } = this.props;
+    const { filter, parentFolder, setIsLoading, onMediaFileClick, fetchFiles, isImage, isSound, isVideo, canWebEdit, item } = this.props;
+    const { id, fileExst, viewUrl } = item;
+
     if (!fileExst) {
       setIsLoading(true);
       const newFilter = filter.clone();
+
       if (!newFilter.treeFolders.includes(parentFolder.toString())) {
         newFilter.treeFolders.push(parentFolder.toString());
       }
@@ -195,13 +211,11 @@ class FilesRowContent extends React.PureComponent {
         })
         .finally(() => setIsLoading(false));
     } else {
-      if (canWebEdit(fileExst)) {
+      if (canWebEdit) {
         return window.open(`./doceditor?fileId=${id}`, "_blank");
       }
 
-      const isOpenMedia = isImage(fileExst) || isSound(fileExst) || isVideo(fileExst);
-
-      if (isOpenMedia) {
+      if (isImage || isSound || isVideo) {
         onMediaFileClick(id);
         return;
       }
@@ -323,8 +337,26 @@ class FilesRowContent extends React.PureComponent {
   }
 
   render() {
-    const { t, item, fileAction, isTrashFolder, folders, widthProp, isLoading, isMobile } = this.props;
-    const { itemTitle, editingId, showNewFilesPanel, newItems, newFolderId, showConvertDialog } = this.state;
+    const {
+      t,
+      item,
+      fileAction,
+      isTrashFolder,
+      folders,
+      widthProp,
+      isLoading,
+      isMobile,
+      canWebEdit,
+      canConvert
+    } = this.props;
+    const {
+      itemTitle,
+      editingId,
+      showNewFilesPanel,
+      newItems,
+      newFolderId,
+      showConvertDialog
+    } = this.state;
     const {
       contentLength,
       updated,
@@ -337,12 +369,9 @@ class FilesRowContent extends React.PureComponent {
       versionGroup,
       locked
     } = item;
-
     const titleWithoutExt = getTitleWithoutExst(item);
     const fileOwner = createdBy && ((this.props.viewer.id === createdBy.id && t("AuthorMe")) || createdBy.displayName);
     const updatedDate = updated && this.getStatusByDate();
-    const canEditFile = fileExst && canWebEdit(fileExst);
-    const canConvertFile = fileExst && canConvert(fileExst);
 
     const isEdit = (id === editingId) && (fileExst === fileAction.extension);
     const linkStyles = isTrashFolder ? { noHover: true } : { onClick: this.onFilesClick };
@@ -409,7 +438,7 @@ class FilesRowContent extends React.PureComponent {
                   >
                     {fileExst}
                   </Text>
-                  {canConvertFile &&
+                  {canConvert &&
                     <IconButton
                       onClick={this.setConvertDialogVisible}
                       iconName="FileActionsConvertIcon"
@@ -419,7 +448,7 @@ class FilesRowContent extends React.PureComponent {
                       color='#A3A9AE'
                     />
                   }
-                  {canEditFile &&
+                  {canWebEdit &&
                     <Icons.AccessEditIcon
                       className='badge'
                       size='small'
@@ -547,28 +576,27 @@ class FilesRowContent extends React.PureComponent {
   }
 };
 
-function mapStateToProps(state) {
-  const selectedFolder = getSelectedFolder(state);
-  const treeFolders = getTreeFolders(state);
-
-  const indexOfTrash = 4;
-  const isTrashFolder = treeFolders.length && treeFolders[indexOfTrash].id === selectedFolder.id
-  const rootFolderId = selectedFolder.pathParts && selectedFolder.pathParts[0];
-
+function mapStateToProps(state, props) {
   return {
     filter: getFilter(state),
     fileAction: getFileAction(state),
     parentFolder: getSelectedFolderParentId(state),
-    isTrashFolder,
+    isTrashFolder: getIsRecycleBinFolder(state),
     settings: getSettings(state),
-    treeFolders,
-    rootFolderId,
+    treeFolders: getTreeFolders(state),
+    rootFolderId: getRootFolderId(state),
     newItems: getSelectedFolderNew(state),
-    selectedFolder,
+    selectedFolder: getSelectedFolder(state),
     folders: getFolders(state),
     newRowItems: getNewRowItems(state),
     dragging: getDragging(state),
-    isLoading: getIsLoading(state)
+    isLoading: getIsLoading(state),
+
+    canWebEdit: canWebEdit(props.item.fileExst)(state),
+    canConvert: canConvert(props.item.fileExst)(state),
+    isImage: isImage(props.item.fileExst)(state),
+    isSound: isSound(props.item.fileExst)(state),
+    isVideo: isVideo(props.item.fileExst)(state),
   }
 }
 

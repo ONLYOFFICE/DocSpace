@@ -25,6 +25,7 @@ import {
   setProgressBarData,
   clearProgressData,
   setIsLoading,
+  setSelected,
 } from "../../../../../store/files/actions";
 import {
   EmptyTrashDialog,
@@ -34,8 +35,19 @@ import {
 import { SharingPanel, OperationsPanel } from "../../../../panels";
 import {
   isCanBeDeleted,
-  checkFolderType,
-  isCanCreate,
+  getIsRecycleBinFolder,
+  canCreate,
+  getSelectedFolderTitle,
+  getFilter,
+  getSelectedFolderId,
+  getSelection,
+  getSelectedFolderParentId,
+  getIsRootFolder,
+  getHeaderVisible,
+  getHeaderIndeterminate,
+  getHeaderChecked,
+  getOnlyFoldersSelected,
+  getAccessedSelected,
 } from "../../../../../store/files/selectors";
 
 const { isAdmin } = store.auth.selectors;
@@ -328,49 +340,29 @@ class SectionHeaderContent extends React.Component {
     fetchFiles(parentId, filter).finally(() => setIsLoading(false));
   };
 
-  onSelectorSelect = (item) => {
-    const { onSelect } = this.props;
-
-    onSelect && onSelect(item.key);
+  onCheck = (checked) => {
+    this.props.setSelected(checked ? "all" : "none");
   };
 
-  render() {
-    //console.log("Body header render");
+  onSelect = (item) => {
+    this.props.setSelected(item.key);
+  };
 
+  onClose = () => {
+    this.props.setSelected("close");
+  };
+
+  getMenuItems = () => {
     const {
       t,
-      selection,
-      isHeaderVisible,
-      onClose,
-      isRecycleBinFolder,
-      isHeaderChecked,
-      isHeaderIndeterminate,
+      isItemsSelected,
+      isAccessedSelected,
+      isOnlyFoldersSelected,
       deleteDialogVisible,
-      folder,
-      onCheck,
-      title,
-      loopFilesOperations,
-      isCanCreate,
+      isRecycleBin,
     } = this.props;
 
-    const {
-      showDeleteDialog,
-      showSharingPanel,
-      showEmptyTrashDialog,
-      showDownloadDialog,
-      showMoveToPanel,
-      showCopyPanel,
-    } = this.state;
-
-    const isItemsSelected = selection.length;
-    const isOnlyFolderSelected = selection.every(
-      (selected) => !selected.fileType
-    );
-
-    const accessItem = selection.find((x) => x.access === 1 || x.access === 0);
-    const shareDisable = !accessItem;
-
-    const menuItems = [
+    let menu = [
       {
         label: t("LblSelect"),
         isDropdown: true,
@@ -420,11 +412,11 @@ class SectionHeaderContent extends React.Component {
             data-index={8}
           />,
         ],
-        onSelect: this.onSelectorSelect,
+        onSelect: this.onSelect,
       },
       {
         label: t("Share"),
-        disabled: shareDisable,
+        disabled: !isAccessedSelected,
         onClick: this.onOpenSharingPanel,
       },
       {
@@ -434,7 +426,7 @@ class SectionHeaderContent extends React.Component {
       },
       {
         label: t("DownloadAs"),
-        disabled: !isItemsSelected || isOnlyFolderSelected,
+        disabled: !isItemsSelected || isOnlyFoldersSelected,
         onClick: this.downloadAsAction,
       },
       {
@@ -454,19 +446,48 @@ class SectionHeaderContent extends React.Component {
       },
     ];
 
-    if (isRecycleBinFolder) {
-      menuItems.push({
+    if (isRecycleBin) {
+      menu.push({
         label: t("EmptyRecycleBin"),
         onClick: this.onEmptyTrashAction,
       });
 
-      menuItems.splice(4, 2, {
+      menu.splice(4, 2, {
         label: t("Restore"),
         onClick: this.onMoveAction,
       });
 
-      menuItems.splice(1, 1);
+      menu.splice(1, 1);
     }
+
+    return menu;
+  };
+
+  render() {
+    //console.log("Body header render");
+
+    const {
+      t,
+      selection,
+      isHeaderVisible,
+      isRecycleBin,
+      isHeaderChecked,
+      isHeaderIndeterminate,
+      isRootFolder,
+      title,
+      canCreate,
+    } = this.props;
+
+    const {
+      showDeleteDialog,
+      showSharingPanel,
+      showEmptyTrashDialog,
+      showDownloadDialog,
+      showMoveToPanel,
+      showCopyPanel,
+    } = this.state;
+
+    const menuItems = this.getMenuItems();
 
     return (
       <StyledContainer isHeaderVisible={isHeaderVisible}>
@@ -475,12 +496,12 @@ class SectionHeaderContent extends React.Component {
             <GroupButtonsMenu
               checked={isHeaderChecked}
               isIndeterminate={isHeaderIndeterminate}
-              onChange={onCheck}
+              onChange={this.onCheck}
               menuItems={menuItems}
               visible={isHeaderVisible}
               moreLabel={t("More")}
               closeTitle={t("CloseButton")}
-              onClose={onClose}
+              onClose={this.onClose}
               selected={menuItems[0].label}
             />
           </div>
@@ -490,7 +511,7 @@ class SectionHeaderContent extends React.Component {
               <Loaders.Headline />
             ) : (
               <>
-                {folder && (
+                {!isRootFolder && (
                   <IconButton
                     iconName="ArrowPathIcon"
                     size="17"
@@ -508,7 +529,7 @@ class SectionHeaderContent extends React.Component {
                 >
                   {title}
                 </Headline>
-                {folder && isCanCreate ? (
+                {!isRootFolder && canCreate ? (
                   <>
                     <ContextMenuButton
                       className="add-button"
@@ -534,7 +555,7 @@ class SectionHeaderContent extends React.Component {
                     />
                   </>
                 ) : (
-                  isCanCreate && (
+                  canCreate && (
                     <ContextMenuButton
                       className="add-button"
                       directionX="right"
@@ -555,8 +576,7 @@ class SectionHeaderContent extends React.Component {
 
         {showDeleteDialog && (
           <DeleteDialog
-            loopFilesOperations={loopFilesOperations}
-            isRecycleBinFolder={isRecycleBinFolder}
+            isRecycleBin={isRecycleBin}
             visible={showDeleteDialog}
             onClose={this.onDeleteAction}
             selection={selection}
@@ -565,7 +585,6 @@ class SectionHeaderContent extends React.Component {
 
         {showEmptyTrashDialog && (
           <EmptyTrashDialog
-            loopFilesOperations={loopFilesOperations}
             visible={showEmptyTrashDialog}
             onClose={this.onEmptyTrashAction}
           />
@@ -580,7 +599,6 @@ class SectionHeaderContent extends React.Component {
 
         {showMoveToPanel && (
           <OperationsPanel
-            loopFilesOperations={loopFilesOperations}
             isCopy={false}
             visible={showMoveToPanel}
             onClose={this.onMoveAction}
@@ -589,7 +607,6 @@ class SectionHeaderContent extends React.Component {
 
         {showCopyPanel && (
           <OperationsPanel
-            loopFilesOperations={loopFilesOperations}
             isCopy={true}
             visible={showCopyPanel}
             onClose={this.onCopyAction}
@@ -609,24 +626,25 @@ class SectionHeaderContent extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-  const { selectedFolder, selection, treeFolders, filter } = state.files;
-  const { parentId, title, id } = selectedFolder;
-  const { user } = state.auth;
-
-  const indexOfTrash = 4;
-  user.rights = { icon: "AccessEditIcon", rights: "FullAccess" };
+  const selection = getSelection(state);
 
   return {
-    folder: parentId !== 0,
+    isRootFolder: getIsRootFolder(state),
     isAdmin: isAdmin(state),
-    isRecycleBinFolder: checkFolderType(id, indexOfTrash, treeFolders),
-    parentId,
+    isRecycleBin: getIsRecycleBinFolder(state),
+    parentId: getSelectedFolderParentId(state),
     selection,
-    title,
-    filter,
-    deleteDialogVisible: isCanBeDeleted(selectedFolder, user),
-    currentFolderId: id,
-    isCanCreate: isCanCreate(selectedFolder, user),
+    title: getSelectedFolderTitle(state),
+    filter: getFilter(state),
+    deleteDialogVisible: isCanBeDeleted(state),
+    currentFolderId: getSelectedFolderId(state),
+    canCreate: canCreate(state),
+    isHeaderVisible: getHeaderVisible(state),
+    isHeaderIndeterminate: getHeaderIndeterminate(state),
+    isHeaderChecked: getHeaderChecked(state),
+    isAccessedSelected: getAccessedSelected(state),
+    isOnlyFoldersSelected: getOnlyFoldersSelected(state),
+    isItemsSelected: selection.length,
   };
 };
 
@@ -636,4 +654,5 @@ export default connect(mapStateToProps, {
   setIsLoading,
   clearProgressData,
   fetchFiles,
+  setSelected,
 })(withTranslation()(withRouter(SectionHeaderContent)));

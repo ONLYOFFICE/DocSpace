@@ -5,7 +5,7 @@ import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import styled from "styled-components";
 import { Link, Text, Icons, Badge } from "asc-web-components";
-import { constants, api, toastr } from 'asc-web-common';
+import { constants, api, toastr, store as initStore } from 'asc-web-common';
 import { createFile, createFolder, renameFolder, updateFile, fetchFiles, setTreeFolders, setIsLoading } from '../../../../../store/files/actions';
 import { 
   canWebEdit, 
@@ -17,19 +17,21 @@ import {
   getNewRowItems,
   getSelectedFolder,
   getSelectedFolderNew,
-  getSelectedFolderParentId, 
-  getSettings,  
+  getSelectedFolderParentId,
   getTitleWithoutExst,
   getTreeFolders,
   isImage, 
   isSound, 
-  isVideo, 
+  isVideo,
+  getIsRecycleBinFolder,
+  getRootFolderId,
 } from '../../../../../store/files/selectors';
 import { NewFilesPanel } from "../../../../panels";
 import EditingWrapperComponent from "./EditingWrapperComponent";
 import TileContent from './TileContent';
 
 const { FileAction } = constants;
+const { getSettings } = initStore.auth.selectors;
 
 const SimpleFilesTileContent = styled(TileContent)`
   .rowMainContainer{
@@ -184,7 +186,7 @@ class FilesTileContent extends React.PureComponent {
 
   onFilesClick = () => {
     const { id, fileExst, viewUrl } = this.props.item;
-    const { filter, parentFolder, setIsLoading, onMediaFileClick, fetchFiles } = this.props;
+    const { filter, parentFolder, setIsLoading, onMediaFileClick, fetchFiles, canWebEdit } = this.props;
     if (!fileExst) {
       setIsLoading(true);
       const newFilter = filter.clone();
@@ -199,7 +201,7 @@ class FilesTileContent extends React.PureComponent {
         })
         .finally(() => setIsLoading(false));
     } else {
-      if (canWebEdit(fileExst)) {
+      if (canWebEdit) {
         return window.open(`./doceditor?fileId=${id}`, "_blank");
       }
 
@@ -383,28 +385,22 @@ class FilesTileContent extends React.PureComponent {
   }
 };
 
-function mapStateToProps(state) {
-  const selectedFolder = getSelectedFolder(state);
-  const treeFolders = getTreeFolders(state);
-
-  const indexOfTrash = 4;
-  const isTrashFolder = treeFolders.length && treeFolders[indexOfTrash].id === selectedFolder.id
-  const rootFolderId = selectedFolder.pathParts && selectedFolder.pathParts[0];
-
+function mapStateToProps(state, props) {
   return {
     filter: getFilter(state),
     fileAction: getFileAction(state),
     parentFolder: getSelectedFolderParentId(state),
-    isTrashFolder,
+    isTrashFolder: getIsRecycleBinFolder(state),
     settings: getSettings(state),
-    treeFolders,
-    rootFolderId,
+    treeFolders: getTreeFolders(state),
+    rootFolderId: getRootFolderId(state),
     newItems: getSelectedFolderNew(state),
-    selectedFolder,
+    selectedFolder: getSelectedFolder(state),
     folders: getFolders(state),
     newRowItems: getNewRowItems(state),
     dragging: getDragging(state),
-    isLoading: getIsLoading(state)
+    isLoading: getIsLoading(state),
+    canWebEdit: canWebEdit(props.item.fileExst)(state),
   }
 }
 

@@ -1,7 +1,6 @@
 import React, { Suspense, lazy } from "react";
 import { Router, Route, Switch } from "react-router-dom";
 import { connect } from "react-redux";
-import { Loader } from "asc-web-components";
 import {
   store as CommonStore,
   constants,
@@ -65,11 +64,7 @@ class App extends React.Component {
       <Router history={history}>
         <NavMenu />
         <Main>
-          <Suspense
-            fallback={
-              <Loader className="pageLoader" type="rombs" size="40px" />
-            }
-          >
+          <Suspense fallback={null}>
             <Switch>
               <Route exact path="/wizard" component={Wizard} />
               <PublicRoute
