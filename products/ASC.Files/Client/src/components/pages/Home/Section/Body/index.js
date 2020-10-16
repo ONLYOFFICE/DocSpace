@@ -1232,7 +1232,7 @@ class SectionBodyContent extends React.Component {
       <Text
         className="share-button"
         as="span"
-        title={"Share"}
+        title={this.props.t("Share")}
         fontSize="12px"
         fontWeight={400}
         color="#A3A9AE"
@@ -1246,7 +1246,7 @@ class SectionBodyContent extends React.Component {
           size={16}
           iconName="CatalogSharedIcon"
         />
-        Share
+        {this.props.t("Share")}
       </Text>
     );
   };
