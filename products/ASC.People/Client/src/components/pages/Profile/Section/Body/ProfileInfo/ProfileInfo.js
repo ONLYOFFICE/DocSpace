@@ -15,7 +15,6 @@ import { updateProfileCulture } from "../../../../../../store/profile/actions";
 
 const { resendUserInvites } = api.people;
 
-
 const InfoContainer = styled.div`
   margin-bottom: 24px;
 `;
@@ -140,15 +139,13 @@ class ProfileInfo extends React.PureComponent {
 
   onLanguageSelect = (language) => {
     console.log("onLanguageSelect", language);
-    const {
-      profile,
-      updateProfileCulture
-    } = this.props;
+    const { profile, updateProfileCulture } = this.props;
 
     if (profile.cultureName === language.key) return;
 
-    updateProfileCulture(profile.id, language.key)
-      .catch((err) => console.log(err));
+    updateProfileCulture(profile.id, language.key).catch((err) =>
+      console.log(err)
+    );
   };
 
   getLanguages = () => {
@@ -192,7 +189,8 @@ class ProfileInfo extends React.PureComponent {
     const selectedLanguage = languages.find((item) => item.key === language);
     const workFromDate = new Date(workFrom).toLocaleDateString(language);
     const birthDayDate = new Date(birthday).toLocaleDateString(language);
-    const formatedSex = (sex === "male" && t("MaleSexStatus") ) || t("FemaleSexStatus");
+    const formatedSex =
+      (sex === "male" && t("MaleSexStatus")) || t("FemaleSexStatus");
     const formatedDepartments = department && getFormattedDepartments(groups);
     const supportEmail = "documentation@onlyoffice.com";
     const tooltipLanguage = (

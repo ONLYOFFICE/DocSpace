@@ -31,6 +31,7 @@
   "devDependencies": {
     "copy-webpack-plugin": "^5.1.1",
     "cross-env": "^6.0.3",
+    "prettier": "2.1.2",
     "react-app-rewired": "^2.1.6",
     "react-scripts": "3.4.3",
     "redux-devtools-extension": "^2.13.8",

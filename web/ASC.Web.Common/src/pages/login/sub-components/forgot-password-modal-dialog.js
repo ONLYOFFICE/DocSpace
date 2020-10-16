@@ -5,7 +5,7 @@ import {
   TextInput,
   Text,
   ModalDialog,
-  FieldContainer
+  FieldContainer,
 } from "asc-web-components";
 import ModalDialogContainer from "./modal-dialog-container";
 
@@ -19,7 +19,7 @@ class ForgotPasswordModalDialog extends React.Component {
       onChangeEmail,
       onSendPasswordInstructions,
       onDialogClose,
-      t
+      t,
     } = this.props;
     return (
       <ModalDialogContainer>
@@ -42,7 +42,7 @@ class ForgotPasswordModalDialog extends React.Component {
             >
               {t("MessageSendPasswordRecoveryInstructionsOnEmail")}
             </Text>
-            
+
             <FieldContainer
               key="e-mail"
               isVertical={true}
@@ -94,7 +94,7 @@ ForgotPasswordModalDialog.propTypes = {
   onChangeEmail: PropTypes.func.isRequired,
   onSendPasswordInstructions: PropTypes.func.isRequired,
   onDialogClose: PropTypes.func.isRequired,
-  t: PropTypes.func.isRequired
+  t: PropTypes.func.isRequired,
 };
 
 export default ForgotPasswordModalDialog;

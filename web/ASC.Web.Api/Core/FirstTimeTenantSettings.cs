@@ -43,7 +43,6 @@ using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.MessagingSystem;
 using ASC.Web.Api.Models;
-using ASC.Web.Core;
 using ASC.Web.Core.PublicResources;
 using ASC.Web.Core.Users;
 using ASC.Web.Core.Utility.Settings;

@@ -110,14 +110,13 @@ class TreeFolders extends React.Component {
       commonId,
       rootFolderId,
       currentId,
-      draggableItems
+      draggableItems,
     } = this.props;
     if (item.id === currentId) {
       return false;
     }
 
-    if(draggableItems.find(x => x.id === item.id))
-      return false;
+    if (draggableItems.find((x) => x.id === item.id)) return false;
 
     const isMy = rootFolderId === FolderType.USER;
     const isCommon = rootFolderId === FolderType.COMMON;
@@ -187,6 +186,9 @@ class TreeFolders extends React.Component {
           dragging={dragging}
           isLeaf={item.foldersCount ? false : true}
           icon={this.getFolderIcon(item)}
+          newItems={item.newItems}
+          onBadgeClick={this.onBadgeClick}
+          showBadge={showBadge}
         />
       );
     });
@@ -359,8 +361,10 @@ class TreeFolders extends React.Component {
     const { dragging, id } = data.node.props;
     setDragging(false);
     if (dragging) {
-      const promise = new Promise((resolve) => onConvertFiles(data.event, resolve));
-      promise.then(files => onTreeDrop(files, id));
+      const promise = new Promise((resolve) =>
+        onConvertFiles(data.event, resolve)
+      );
+      promise.then((files) => onTreeDrop(files, id));
     }
   };
 
@@ -421,7 +425,7 @@ function mapStateToProps(state) {
     dragging: getDragging(state),
     updateTree: getUpdateTree(state),
     rootFolderId: getRootFolderId(state),
-    draggableItems: getDraggableItems(state)
+    draggableItems: getDraggableItems(state),
   };
 }
 

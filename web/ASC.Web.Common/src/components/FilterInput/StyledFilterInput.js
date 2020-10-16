@@ -13,6 +13,19 @@ const StyledFilterInput = styled.div`
 
   .styled-search-input {
     display: block;
+  width: 100%;
+  min-width: 255px;
+  display: flex;
+  &:after {
+    content: " ";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+  }
+
+  .styled-search-input {
+    display: block;
     width: 100%;
 
     .prepend {
@@ -212,7 +225,7 @@ export const StyledFilterItemContent = styled.div`
 
 export const StyledCloseButtonBlock = styled.div`
   display: flex;
-  cursor: ${props =>
+  cursor: ${(props) =>
     props.isDisabled || !props.isClickable ? "default" : "pointer"};
   align-items: center;
   position: absolute;
@@ -248,8 +261,8 @@ export const Caret = styled.div`
   width: 7px;
   position: absolute;
   right: 6px;
-  transform: ${props => (props.isOpen ? "rotate(180deg)" : "rotate(0)")};
-  top: ${props => (props.isOpen ? "2px" : "0")};
+  transform: ${(props) => (props.isOpen ? "rotate(180deg)" : "rotate(0)")};
+  top: ${(props) => (props.isOpen ? "2px" : "0")};
 `;
 
 export const StyledHideFilterButton = styled.div`
@@ -265,15 +278,15 @@ export const StyledHideFilterButton = styled.div`
   background-color: #f8f9f9;
   padding: 0 20px 0 9px;
   margin-right: 2px;
-  cursor: ${props => (props.isDisabled ? "default" : "pointer")};
+  cursor: ${(props) => (props.isDisabled ? "default" : "pointer")};
   font-family: Open Sans;
   font-style: normal;
 
   :hover {
-    border-color: ${props => (props.isDisabled ? "#ECEEF1" : "#A3A9AE")};
+    border-color: ${(props) => (props.isDisabled ? "#ECEEF1" : "#A3A9AE")};
   }
   :active {
-    background-color: ${props => (props.isDisabled ? "#F8F9F9" : "#ECEEF1")};
+    background-color: ${(props) => (props.isDisabled ? "#F8F9F9" : "#ECEEF1")};
   }
 `;
 

@@ -59,7 +59,7 @@ namespace ASC.Notify
         {
             db.ResetStates();
             cancellationToken = new CancellationTokenSource();
-            var task = new Task(ThreadManagerWork, cancellationToken.Token, TaskCreationOptions.LongRunning);
+            var task = new Task(async () => await ThreadManagerWork(), cancellationToken.Token, TaskCreationOptions.LongRunning);
             task.Start();
         }
 
@@ -68,7 +68,7 @@ namespace ASC.Notify
             cancellationToken.Cancel();
         }
 
-        private async void ThreadManagerWork()
+        private async Task ThreadManagerWork()
         {
             var tasks = new List<Task>(NotifyServiceCfg.Process.MaxThreads);
 

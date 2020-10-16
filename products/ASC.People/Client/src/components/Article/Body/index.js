@@ -242,7 +242,7 @@ function mapStateToProps(state) {
     groups,
     isAdmin: isAdmin(state),
     isLoaded,
-	editingForm
+    editingForm,
   };
 }
 

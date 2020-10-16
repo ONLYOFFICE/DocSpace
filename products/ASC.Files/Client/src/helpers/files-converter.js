@@ -1,6 +1,6 @@
 export const onConvertFiles = (e, resolve) => {
   const items = e.dataTransfer.items;
-  const files = [];  
+  const files = [];
 
   const callItemFromQueue = (queue, callback) => {
     let i = 0;
@@ -10,9 +10,9 @@ export const onConvertFiles = (e, resolve) => {
       callback();
     }
 
-    const callNext = i => {
-      queue[i](error => {
-        if(!error && i+1 < queueLength) {
+    const callNext = (i) => {
+      queue[i]((error) => {
+        if (!error && i + 1 < queueLength) {
           i++;
           callNext(i);
         } else {
@@ -27,8 +27,8 @@ export const onConvertFiles = (e, resolve) => {
     const entries = [];
     const dirReader = dirEntry.createReader();
 
-    const getEntries = entriesCallback => {
-      dirReader.readEntries(moreEntries => {
+    const getEntries = (entriesCallback) => {
+      dirReader.readEntries((moreEntries) => {
         if (moreEntries.length) {
           Array.prototype.push.apply(entries, moreEntries);
           getEntries(entriesCallback);
@@ -46,7 +46,7 @@ export const onConvertFiles = (e, resolve) => {
   const readEntry = (entry, callback) => {
     if (entry.isFile) {
       entry.file(
-        file => {
+        (file) => {
           addFile(file, entry.fullPath);
           callback();
         },
@@ -61,8 +61,8 @@ export const onConvertFiles = (e, resolve) => {
 
   const readEntries = (entries, callback) => {
     const queue = [];
-    loop(entries, entry => {
-      queue.push(func => {
+    loop(entries, (entry) => {
+      queue.push((func) => {
         readEntry(entry, func);
       });
     });
@@ -106,7 +106,7 @@ export const onConvertFiles = (e, resolve) => {
 
   const readItems = (items, callback) => {
     const entries = [];
-    loop(items, item => {
+    loop(items, (item) => {
       const entry = item.webkitGetAsEntry();
       if (entry) {
         if (entry.isFile) {

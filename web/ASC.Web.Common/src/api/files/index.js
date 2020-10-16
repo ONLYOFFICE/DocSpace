@@ -5,7 +5,7 @@ import FilesFilter from "./filter";
 export function openEdit(fileId) {
   const options = {
     method: "get",
-    url: `/files/file/${fileId}/openedit`
+    url: `/files/file/${fileId}/openedit`,
   };
 
   return request(options);
@@ -14,7 +14,7 @@ export function openEdit(fileId) {
 export function getFolderInfo(folderId) {
   const options = {
     method: "get",
-    url: `/files/folder/${folderId}`
+    url: `/files/folder/${folderId}`,
   };
 
   return request(options);
@@ -23,7 +23,7 @@ export function getFolderInfo(folderId) {
 export function getFolderPath(folderId) {
   const options = {
     method: "get",
-    url: `/files/folder/${folderId}/path`
+    url: `/files/folder/${folderId}/path`,
   };
 
   return request(options);
@@ -37,7 +37,7 @@ export function getFolder(folderId, filter) {
 
   const options = {
     method: "get",
-    url: `/files/${params}`
+    url: `/files/${params}`,
   };
 
   return request(options);
@@ -48,38 +48,37 @@ export function getFoldersTree() {
     "@my",
     "@share",
     "@common",
-    /*'@projects',*/ "@trash"
+    /*'@projects',*/ "@trash",
   ]; //TODO: need get from settings
-  const requestsArray = rootFoldersPaths.map(path =>
+  const requestsArray = rootFoldersPaths.map((path) =>
     request({ method: "get", url: `/files/${path}?filterType=2` })
   );
 
   return axios.all(requestsArray).then(
     axios.spread((...responses) =>
       responses.map((data, index) => {
-        const isRecycleBinFolder = rootFoldersPaths[index] === '@trash';
+        const isRecycleBinFolder = rootFoldersPaths[index] === "@trash";
         return {
           id: data.current.id,
           key: `0-${index}`,
           title: data.current.title,
           rootFolderType: data.current.rootFolderType,
           rootFolderName: rootFoldersPaths[index],
-          folders:
-            !isRecycleBinFolder
-              ? data.folders.map(folder => {
-                  return {
-                    id: folder.id,
-                    title: folder.title,
-                    access: folder.access,
-                    foldersCount: folder.foldersCount,
-                    rootFolderType: folder.rootFolderType,
-                    newItems: folder.new
-                  };
-                })
-              : null,
+          folders: !isRecycleBinFolder
+            ? data.folders.map((folder) => {
+                return {
+                  id: folder.id,
+                  title: folder.title,
+                  access: folder.access,
+                  foldersCount: folder.foldersCount,
+                  rootFolderType: folder.rootFolderType,
+                  newItems: folder.new,
+                };
+              })
+            : null,
           pathParts: data.pathParts,
           foldersCount: !isRecycleBinFolder ? data.current.foldersCount : null,
-          newItems: data.new
+          newItems: data.new,
         };
       })
     )
@@ -89,7 +88,7 @@ export function getFoldersTree() {
 export function getMyFolderList(filter = FilesFilter.getDefault()) {
   const options = {
     method: "get",
-    url: `/files/@my`
+    url: `/files/@my`,
   };
 
   return request(options);
@@ -98,7 +97,7 @@ export function getMyFolderList(filter = FilesFilter.getDefault()) {
 export function getCommonFolderList(filter = FilesFilter.getDefault()) {
   const options = {
     method: "get",
-    url: `/files/@common`
+    url: `/files/@common`,
   };
 
   return request(options);
@@ -107,7 +106,7 @@ export function getCommonFolderList(filter = FilesFilter.getDefault()) {
 export function getProjectsFolderList(filter = FilesFilter.getDefault()) {
   const options = {
     method: "get",
-    url: `/files/@projects`
+    url: `/files/@projects`,
   };
 
   return request(options);
@@ -116,7 +115,7 @@ export function getProjectsFolderList(filter = FilesFilter.getDefault()) {
 export function getTrashFolderList(filter = FilesFilter.getDefault()) {
   const options = {
     method: "get",
-    url: `/files/@trash`
+    url: `/files/@trash`,
   };
 
   return request(options);
@@ -125,7 +124,7 @@ export function getTrashFolderList(filter = FilesFilter.getDefault()) {
 export function getSharedFolderList(filter = FilesFilter.getDefault()) {
   const options = {
     method: "get",
-    url: `/files/@share`
+    url: `/files/@share`,
   };
 
   return request(options);
@@ -136,7 +135,7 @@ export function createFolder(parentFolderId, title) {
   const options = {
     method: "post",
     url: `/files/folder/${parentFolderId}`,
-    data
+    data,
   };
 
   return request(options);
@@ -147,7 +146,7 @@ export function renameFolder(folderId, title) {
   const options = {
     method: "put",
     url: `/files/folder/${folderId}`,
-    data
+    data,
   };
 
   return request(options);
@@ -158,7 +157,7 @@ export function deleteFolder(folderId, deleteAfter, immediately) {
   const options = {
     method: "delete",
     url: `/files/folder/${folderId}`,
-    data
+    data,
   };
 
   return request(options);
@@ -169,7 +168,7 @@ export function createFile(folderId, title) {
   const options = {
     method: "post",
     url: `/files/${folderId}/file`,
-    data
+    data,
   };
 
   return request(options);
@@ -180,7 +179,7 @@ export function createTextFile(folderId, title, content) {
   const options = {
     method: "post",
     url: `/files/${folderId}/text`,
-    data
+    data,
   };
 
   return request(options);
@@ -191,7 +190,7 @@ export function createTextFileInMy(title) {
   const options = {
     method: "post",
     url: "/files/@my/file",
-    data
+    data,
   };
 
   return request(options);
@@ -202,7 +201,7 @@ export function createTextFileInCommon(title) {
   const options = {
     method: "post",
     url: "/files/@common/file",
-    data
+    data,
   };
 
   return request(options);
@@ -213,7 +212,7 @@ export function createHtmlFile(folderId, title, content) {
   const options = {
     method: "post",
     url: `/files/${folderId}/html`,
-    data
+    data,
   };
 
   return request(options);
@@ -224,7 +223,7 @@ export function createHtmlFileInMy(title, content) {
   const options = {
     method: "post",
     url: "/files/@my/html",
-    data
+    data,
   };
 
   return request(options);
@@ -235,7 +234,7 @@ export function createHtmlFileInCommon(title, content) {
   const options = {
     method: "post",
     url: "/files/@common/html",
-    data
+    data,
   };
 
   return request(options);
@@ -244,7 +243,7 @@ export function createHtmlFileInCommon(title, content) {
 export function getFileInfo(fileId) {
   const options = {
     method: "get",
-    url: `/files/file/${fileId}`
+    url: `/files/file/${fileId}`,
   };
 
   return request(options);
@@ -255,7 +254,7 @@ export function updateFile(fileId, title, lastVersion) {
   const options = {
     method: "put",
     url: `/files/file/${fileId}`,
-    data
+    data,
   };
 
   return request(options);
@@ -266,7 +265,7 @@ export function deleteFile(fileId, deleteAfter, immediately) {
   const options = {
     method: "delete",
     url: `/files/file/${fileId}`,
-    data
+    data,
   };
 
   return request(options);
@@ -284,14 +283,14 @@ export function removeFiles(folderIds, fileIds, deleteAfter, immediately) {
 export function getShareFolders(folderId) {
   return request({
     method: "get",
-    url: `/files/folder/${folderId}/share`
+    url: `/files/folder/${folderId}/share`,
   });
 }
 
 export function getShareFiles(fileId) {
   return request({
     method: "get",
-    url: `/files/file/${fileId}/share`
+    url: `/files/file/${fileId}/share`,
   });
 }
 
@@ -300,7 +299,7 @@ export function setShareFolder(folderId, share, notify, sharingMessage) {
   return request({
     method: "put",
     url: `/files/folder/${folderId}/share`,
-    data
+    data,
   });
 }
 
@@ -314,7 +313,7 @@ export function startUploadSession(folderId, fileName, fileSize, relativePath) {
   return request({
     method: "post",
     url: `/files/${folderId}/upload/create_session.json`,
-    data
+    data,
   });
 }
 
@@ -348,7 +347,7 @@ export function copyToFolder(
     folderIds,
     fileIds,
     conflictResolveType,
-    deleteAfter
+    deleteAfter,
   };
   return request({ method: "put", url: "/files/fileops/copy", data });
 }
@@ -365,7 +364,7 @@ export function moveToFolder(
     folderIds,
     fileIds,
     conflictResolveType,
-    deleteAfter
+    deleteAfter,
   };
   return request({ method: "put", url: "/files/fileops/move", data });
 }
@@ -373,7 +372,7 @@ export function moveToFolder(
 export function getFileVersionInfo(fileId) {
   return request({
     method: "get",
-    url: `/files/file/${fileId}/history`
+    url: `/files/file/${fileId}/history`,
   });
 }
 
@@ -385,21 +384,21 @@ export function markAsRead(folderIds, fileIds) {
 export function getNewFiles(folderId) {
   return request({
     method: "get",
-    url: `/files/${folderId}/news`
+    url: `/files/${folderId}/news`,
   });
 }
 
 export function convertFile(fileId) {
   return request({
     method: "put",
-    url: `/files/file/${fileId}/checkconversion`
+    url: `/files/file/${fileId}/checkconversion`,
   });
 }
 
 export function getConvertFile(fileId) {
   return request({
     method: "get",
-    url: `/files/file/${fileId}/checkconversion`
+    url: `/files/file/${fileId}/checkconversion`,
   });
 }
 
@@ -408,7 +407,7 @@ export function finalizeVersion(fileId, version, continueVersion) {
   return request({
     method: "put",
     url: `/files/file/${fileId}/history`,
-    data
+    data,
   });
 }
 

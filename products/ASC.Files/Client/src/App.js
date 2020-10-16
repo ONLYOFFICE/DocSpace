@@ -31,12 +31,17 @@ const {
   getModules,
   setCurrentProductId,
   setCurrentProductHomePage,
-  getPortalPasswordSettings,
   getPortalCultures,
 } = commonStore.auth.actions;
 const { AUTH_KEY } = constants;
 
 class App extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.isEditor = window.location.pathname.indexOf("doceditor") !== -1;
+  }
+
   componentDidMount() {
     utils.removeTempContent();
 
@@ -45,7 +50,6 @@ class App extends React.Component {
       getUser,
       getPortalSettings,
       getModules,
-      getPortalPasswordSettings,
       getPortalCultures,
       fetchTreeFolders,
       setIsLoaded,
@@ -59,14 +63,15 @@ class App extends React.Component {
       return setIsLoaded();
     }
 
-    const requests = [
-      getUser(),
-      getPortalSettings(),
-      getModules(),
-      getPortalPasswordSettings(),
-      getPortalCultures(),
-      fetchTreeFolders(),
-    ];
+    const requests = this.isEditor
+      ? [getUser()]
+      : [
+          getUser(),
+          getPortalSettings(),
+          getModules(),
+          getPortalCultures(),
+          fetchTreeFolders(),
+        ];
 
     Promise.all(requests)
       .catch((e) => {
@@ -82,9 +87,7 @@ class App extends React.Component {
 
     return navigator.onLine ? (
       <Router history={history}>
-        {!window.location.pathname.startsWith(`${homepage}/doceditor`) && (
-          <NavMenu />
-        )}
+        {!this.isEditor && <NavMenu />}
         <Main>
           <Suspense fallback={null}>
             <Switch>
@@ -144,7 +147,6 @@ const mapDispatchToProps = (dispatch) => {
     getUser: () => getUser(dispatch),
     getPortalSettings: () => getPortalSettings(dispatch),
     getModules: () => getModules(dispatch),
-    getPortalPasswordSettings: () => getPortalPasswordSettings(dispatch),
     getPortalCultures: () => getPortalCultures(dispatch),
     fetchTreeFolders: () => fetchTreeFolders(dispatch),
     setIsLoaded: () => dispatch(setIsLoaded(true)),

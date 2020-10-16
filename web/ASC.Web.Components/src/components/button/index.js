@@ -4,10 +4,10 @@ import PropTypes from "prop-types";
 import Loader from "../loader";
 
 const activeCss = css`
-  background-color: ${props => (props.primary ? "#1F97CA" : "#ECEEF1")};
-  color: ${props => (props.primary ? "#ffffff" : "#333333")};
+  background-color: ${(props) => (props.primary ? "#1F97CA" : "#ECEEF1")};
+  color: ${(props) => (props.primary ? "#ffffff" : "#333333")};
 
-  ${props =>
+  ${(props) =>
     !props.primary &&
     css`
       border: 1px solid #2da7db;
@@ -16,10 +16,10 @@ const activeCss = css`
 `;
 
 const hoverCss = css`
-  background-color: ${props => (props.primary ? "#3DB8EC" : "#FFFFFF")};
-  color: ${props => (props.primary ? "#ffffff" : "#333333")};
+  background-color: ${(props) => (props.primary ? "#3DB8EC" : "#FFFFFF")};
+  color: ${(props) => (props.primary ? "#ffffff" : "#333333")};
 
-  ${props =>
+  ${(props) =>
     !props.primary &&
     css`
       border: 1px solid #2da7db;
@@ -56,36 +56,36 @@ ButtonWrapper.propTypes = {
   isDisabled: PropTypes.bool,
   isLoading: PropTypes.bool,
 
-  onClick: PropTypes.func
+  onClick: PropTypes.func,
 };
 
-const StyledButton = styled(ButtonWrapper).attrs(props => ({
+const StyledButton = styled(ButtonWrapper).attrs((props) => ({
   disabled: props.isDisabled || props.isLoading ? "disabled" : "",
-  tabIndex: props.tabIndex
+  tabIndex: props.tabIndex,
 }))`
-  height: ${props =>
+  height: ${(props) =>
     (props.size === "large" && "44px") ||
     (props.size === "big" && "36px") ||
     (props.size === "medium" && "32px") ||
     (props.size === "base" && "24px")};
 
-  line-height: ${props =>
+  line-height: ${(props) =>
     (props.size === "large" && "20px") ||
     (props.size === "big" && "20px") ||
     (props.size === "medium" && "18px") ||
     (props.size === "base" && "15px")};
 
-  font-size: ${props =>
+  font-size: ${(props) =>
     (props.size === "large" && "16px") ||
     (props.size === "big" && "14px") ||
     (props.size === "medium" && "13px") ||
     (props.size === "base" && "12px")};
 
-  color: ${props =>
+  color: ${(props) =>
     (props.primary && "#FFFFFF") ||
     (!props.isDisabled ? "#333333" : "#ECEEF1")};
 
-  background-color: ${props =>
+  background-color: ${(props) =>
     !props.isDisabled || props.isLoading
       ? props.primary
         ? "#2DA7DB"
@@ -94,9 +94,9 @@ const StyledButton = styled(ButtonWrapper).attrs(props => ({
       ? "#A6DCF2"
       : "#FFFFFF"};
 
-  ${props => props.scale && `width: 100%;`}
+  ${(props) => props.scale && `width: 100%;`}
 
-  padding: ${props =>
+  padding: ${(props) =>
     (props.size === "large" &&
       (props.primary
         ? props.icon
@@ -162,12 +162,12 @@ const StyledButton = styled(ButtonWrapper).attrs(props => ({
         ? "4.5px 12px 4.5px 12px"
         : "0px"))};
 
-  ${props => (props.minwidth ? `min-width: ${props.minwidth};` : null)}
-  
-  cursor: ${props =>
+  ${(props) => (props.minwidth ? `min-width: ${props.minwidth};` : null)}
+
+  cursor: ${(props) =>
     props.isDisabled || props.isLoading ? "default !important" : "pointer"};
 
-  font-family: 'Open Sans', normal;
+  font-family: "Open Sans", normal;
   border: none;
   margin: 0;
   display: inline-block;
@@ -192,16 +192,16 @@ const StyledButton = styled(ButtonWrapper).attrs(props => ({
   white-space: nowrap;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
-  ${props =>
+  ${(props) =>
     !props.primary &&
     css`
       border: 1px solid;
       box-sizing: border-box;
-      border-color: ${props =>
+      border-color: ${(props) =>
         !props.isDisabled && !props.isLoading ? "#D0D5DA" : "#ECEEF1"};
     `}
 
-  ${props =>
+  ${(props) =>
     !props.isDisabled &&
     !props.isLoading &&
     (props.isHovered
@@ -212,7 +212,7 @@ const StyledButton = styled(ButtonWrapper).attrs(props => ({
           }
         `)}
 
-  ${props =>
+  ${(props) =>
     !props.isDisabled &&
     !props.isLoading &&
     (props.isClicked
@@ -224,7 +224,7 @@ const StyledButton = styled(ButtonWrapper).attrs(props => ({
         `)}
 
   &:focus {
-    outline: none
+    outline: none;
   }
 
   .btnIcon,
@@ -234,7 +234,7 @@ const StyledButton = styled(ButtonWrapper).attrs(props => ({
   }
 
   .loader {
-    vertical-align: ${props =>
+    vertical-align: ${(props) =>
       props.size === "large" || props.size === "base"
         ? "middle"
         : props.size === "medium"
@@ -242,7 +242,7 @@ const StyledButton = styled(ButtonWrapper).attrs(props => ({
         : "text-top"};
   }
 
-  ${props =>
+  ${(props) =>
     props.label &&
     css`
       .btnIcon,
@@ -258,7 +258,7 @@ const Icon = ({ size, primary, icon }) => (
       React.cloneElement(icon, {
         isfill: true,
         size: size === "large" ? "large" : size === "big" ? "medium" : "small",
-        color: primary ? "#FFFFFF" : "#333333"
+        color: primary ? "#FFFFFF" : "#333333",
       })}
   </div>
 );
@@ -266,11 +266,11 @@ const Icon = ({ size, primary, icon }) => (
 Icon.propTypes = {
   icon: PropTypes.node,
   size: PropTypes.string,
-  primary: PropTypes.bool
+  primary: PropTypes.bool,
 };
 
 Icon.defaultProps = {
-  icon: null
+  icon: null,
 };
 
 const Button = React.forwardRef((props, ref) => {
@@ -316,7 +316,7 @@ Button.propTypes = {
 
   minwidth: PropTypes.string,
 
-  onClick: PropTypes.func
+  onClick: PropTypes.func,
 };
 
 Button.defaultProps = {
@@ -333,7 +333,7 @@ Button.defaultProps = {
   isHovered: false,
   isClicked: false,
   isDisabled: false,
-  isLoading: false
+  isLoading: false,
 };
 
 Button.displayName = "Button";

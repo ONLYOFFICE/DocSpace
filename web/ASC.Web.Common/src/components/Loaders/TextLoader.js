@@ -1,7 +1,7 @@
 import React from "react";
 import ContentLoader from "react-content-loader";
 
-const TextLoader = props => (
+const TextLoader = (props) => (
   <ContentLoader
     speed={2}
     width={174}

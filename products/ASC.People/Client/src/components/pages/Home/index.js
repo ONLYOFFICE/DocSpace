@@ -105,52 +105,50 @@ class PureHome extends React.Component {
     const { isAdmin, setWidthProp } = this.props;
 
     return (
+      <PageLayout withBodyScroll={true} withBodyAutoFocus={!isMobile} setWidthProp={setWidthProp}>
+        <PageLayout.ArticleHeader>
+          <ArticleHeaderContent />
+        </PageLayout.ArticleHeader>
 
-        <PageLayout setWidthProp={setWidthProp} withBodyScroll={true} withBodyAutoFocus={!isMobile}>
-          <PageLayout.ArticleHeader>
-            <ArticleHeaderContent />
-          </PageLayout.ArticleHeader>
+        {isAdmin && (
+          <PageLayout.ArticleMainButton>
+            <ArticleMainButtonContent />
+          </PageLayout.ArticleMainButton>
+        )}
 
-          {isAdmin && (
-            <PageLayout.ArticleMainButton>
-              <ArticleMainButtonContent />
-            </PageLayout.ArticleMainButton>
-          )}
+        <PageLayout.ArticleBody>
+          <ArticleBodyContent />
+        </PageLayout.ArticleBody>
 
-          <PageLayout.ArticleBody>
-            <ArticleBodyContent />
-          </PageLayout.ArticleBody>
+        <PageLayout.SectionHeader>
+          <SectionHeaderContent
+            isHeaderVisible={isHeaderVisible}
+            isHeaderIndeterminate={isHeaderIndeterminate}
+            isHeaderChecked={isHeaderChecked}
+            onCheck={this.onSectionHeaderContentCheck}
+            onSelect={this.onSectionHeaderContentSelect}
+            onClose={this.onClose}
+            onLoading={this.onLoading}
+          />
+        </PageLayout.SectionHeader>
 
-          <PageLayout.SectionHeader>
-            <SectionHeaderContent
-              isHeaderVisible={isHeaderVisible}
-              isHeaderIndeterminate={isHeaderIndeterminate}
-              isHeaderChecked={isHeaderChecked}
-              onCheck={this.onSectionHeaderContentCheck}
-              onSelect={this.onSectionHeaderContentSelect}
-              onClose={this.onClose}
-              onLoading={this.onLoading}
-            />
-          </PageLayout.SectionHeader>
+        <PageLayout.SectionFilter>
+          <SectionFilterContent onLoading={this.onLoading} />
+        </PageLayout.SectionFilter>
 
-          <PageLayout.SectionFilter>
-            <SectionFilterContent onLoading={this.onLoading} />
-          </PageLayout.SectionFilter>
+        <PageLayout.SectionBody>
+          <SectionBodyContent
+            isMobile={isMobile}
+            selected={selected}
+            onLoading={this.onLoading}
+            onChange={this.onRowChange}
+          />
+        </PageLayout.SectionBody>
 
-          <PageLayout.SectionBody>
-            <SectionBodyContent
-              isMobile={isMobile}
-              selected={selected}
-              onLoading={this.onLoading}
-              onChange={this.onRowChange}
-            />
-          </PageLayout.SectionBody>
-
-          <PageLayout.SectionPaging>
-            <SectionPagingContent onLoading={this.onLoading} />
-          </PageLayout.SectionPaging>
-        </PageLayout>
-
+        <PageLayout.SectionPaging>
+          <SectionPagingContent onLoading={this.onLoading} />
+        </PageLayout.SectionPaging>
+      </PageLayout>
     );
   }
 }

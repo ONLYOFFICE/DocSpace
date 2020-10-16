@@ -11,10 +11,7 @@ import { ContextMenu } from "asc-web-components";
 ```
 
 ```jsx
-<ContextMenu 
-  targetAreaId="rowContainer" 
-  options={[]} 
-/>
+<ContextMenu targetAreaId="rowContainer" options={[]} />
 ```
 
 For use within separate component it is necessary to determine active zone and events for calling and transferring options in menu.

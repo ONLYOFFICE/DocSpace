@@ -1,7 +1,7 @@
 import React from "react";
 import { Icons, DropDown } from "asc-web-components";
-import PropTypes from 'prop-types';
-import { Caret, StyledHideFilterButton } from '../StyledFilterInput';
+import PropTypes from "prop-types";
+import { Caret, StyledHideFilterButton } from "../StyledFilterInput";
 
 class HideFilter extends React.Component {
   constructor(props) {
@@ -24,7 +24,7 @@ class HideFilter extends React.Component {
     }
   };
 
-  handleClickOutside = e => {
+  handleClickOutside = (e) => {
     if (this.ref.current.contains(e.target)) return;
     this.setState({isOpen: false});
   };
@@ -69,5 +69,5 @@ HideFilter.propTypes = {
   children: PropTypes.any,
   count: PropTypes.number,
   isDisabled: PropTypes.bool
-}
+};
 export default HideFilter;

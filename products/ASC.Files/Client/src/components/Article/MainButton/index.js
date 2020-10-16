@@ -5,8 +5,18 @@ import { withRouter } from "react-router";
 import { MainButton, DropDownItem } from "asc-web-components";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import { setAction, startUpload } from "../../../store/files/actions";
-import { canCreate, getFilter, getSelectedFolder, getFirstLoad } from "../../../store/files/selectors";
-import { utils as commonUtils, constants, store as initStore, Loaders } from "asc-web-common";
+import {
+  canCreate,
+  getFilter,
+  getSelectedFolder,
+  getFirstLoad,
+} from "../../../store/files/selectors";
+import {
+  utils as commonUtils,
+  constants,
+  store as initStore,
+  Loaders,
+} from "asc-web-common";
 import { createI18N } from "../../../helpers/i18n";
 
 const { getSettings } = initStore.auth.selectors;
@@ -147,10 +157,10 @@ ArticleMainButtonContent.propTypes = {
 const mapStateToProps = (state) => {
   return {
     canCreate: canCreate(state),
-	  firstLoad: getFirstLoad(state),
+    firstLoad: getFirstLoad(state),
     settings: getSettings(state),
     filter: getFilter(state),
-    selectedFolder: getSelectedFolder(state)
+    selectedFolder: getSelectedFolder(state),
   };
 };
 

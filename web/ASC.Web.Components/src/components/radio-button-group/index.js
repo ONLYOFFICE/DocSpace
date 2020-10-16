@@ -1,33 +1,36 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import RadioButton from '../radio-button';
-import styled, { css } from 'styled-components';
+import React from "react";
+import PropTypes from "prop-types";
+import RadioButton from "../radio-button";
+import styled, { css } from "styled-components";
 
 // eslint-disable-next-line react/prop-types, no-unused-vars
-const ClearDiv = ({ orientation, width, ...props }) => <div {...props} />
+const ClearDiv = ({ orientation, width, ...props }) => <div {...props} />;
 const StyledDiv = styled(ClearDiv)`
-  ${props =>
-    (props.orientation === 'horizontal' && css`display: flex;`) ||
-    (props.orientation === 'vertical' && css`display: block;`)};
+  ${(props) =>
+    (props.orientation === "horizontal" &&
+      css`
+        display: flex;
+      `) ||
+    (props.orientation === "vertical" &&
+      css`
+        display: block;
+      `)};
 
-    width: ${props => props.width};
-    `;
+  width: ${(props) => props.width};
+`;
 
 class RadioButtonGroup extends React.Component {
-
   constructor(props) {
     super(props);
 
     this.state = {
-      selectedOption: this.props.selected
-
+      selectedOption: this.props.selected,
     };
   }
 
-
-  handleOptionChange = changeEvent => {
+  handleOptionChange = (changeEvent) => {
     this.setState({
-      selectedOption: changeEvent.target.value
+      selectedOption: changeEvent.target.value,
     });
   };
 
@@ -47,7 +50,7 @@ class RadioButtonGroup extends React.Component {
         orientation={this.props.orientation}
         width={this.props.width}
       >
-        {options.map(option => {
+        {options.map((option) => {
           return (
             <RadioButton
               key={option.value}
@@ -58,7 +61,6 @@ class RadioButtonGroup extends React.Component {
                 this.handleOptionChange(e);
                 this.props.onClick && this.props.onClick(e);
               }}
-
               isDisabled={this.props.isDisabled || option.disabled}
               label={option.label}
               fontSize={this.props.fontSize}
@@ -66,10 +68,8 @@ class RadioButtonGroup extends React.Component {
               spacing={this.props.spacing}
               orientation={this.props.orientation}
             />
-          )
-        }
-        )
-        }
+          );
+        })}
       </StyledDiv>
     );
   }
@@ -79,28 +79,30 @@ RadioButtonGroup.propTypes = {
   isDisabled: PropTypes.bool,
   name: PropTypes.string.isRequired,
   onClick: PropTypes.func,
-  options: PropTypes.arrayOf(PropTypes.shape({
-    value: PropTypes.string.isRequired,
-    label: PropTypes.string,
-    disabled: PropTypes.bool
-  })).isRequired,
+  options: PropTypes.arrayOf(
+    PropTypes.shape({
+      value: PropTypes.string.isRequired,
+      label: PropTypes.string,
+      disabled: PropTypes.bool,
+    })
+  ).isRequired,
   selected: PropTypes.string.isRequired,
   spacing: PropTypes.string,
   className: PropTypes.string,
   id: PropTypes.string,
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
-  orientation: PropTypes.oneOf(['horizontal', 'vertical']),
+  orientation: PropTypes.oneOf(["horizontal", "vertical"]),
   width: PropTypes.string,
   fontSize: PropTypes.string,
   fontWeight: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-}
+};
 
 RadioButtonGroup.defaultProps = {
   isDisabled: false,
   selected: undefined,
-  spacing: '15px',
-  orientation: 'horizontal',
-  width: '100%'
-}
+  spacing: "15px",
+  orientation: "horizontal",
+  width: "100%",
+};
 
 export default RadioButtonGroup;

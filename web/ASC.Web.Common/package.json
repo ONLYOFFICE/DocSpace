@@ -1,6 +1,6 @@
 {
   "name": "asc-web-common",
-  "version": "1.0.259",
+  "version": "1.0.261",
   "description": "Ascensio System SIA common components and solutions library",
   "license": "AGPL-3.0",
   "files": [
@@ -89,6 +89,7 @@
     "jest-enzyme": "^7.1.2",
     "jest-junit": "^10.0.0",
     "postcss": "^7.0.26",
+    "prettier": "2.1.2",
     "prop-types": "^15.7.2",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",

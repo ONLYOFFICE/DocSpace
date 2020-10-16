@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 import { isArrayEqual } from "../../../utils/array";
 
 const StyledWeekdays = styled.div`
-  width: ${props => (props.size === "base" ? "272px" : "295px")};
+  width: ${(props) => (props.size === "base" ? "272px" : "295px")};
   display: flex;
   margin-bottom: -5px;
 
@@ -37,11 +37,7 @@ class Weekdays extends React.Component {
         {optionsWeekdays.map((weekday, index) => {
           return (
             <Weekday key={index}>
-              <Text
-                color={weekday.color}
-                isBold={true}
-                className={"dayText"}
-              >
+              <Text color={weekday.color} isBold={true} className={"dayText"}>
                 {" "}
                 {weekday.value}{" "}
               </Text>
@@ -55,7 +51,7 @@ class Weekdays extends React.Component {
 
 Weekdays.propTypes = {
   optionsWeekdays: PropTypes.array,
-  size: PropTypes.string
+  size: PropTypes.string,
 };
 
 export default Weekdays;

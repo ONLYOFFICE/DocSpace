@@ -60,15 +60,24 @@ class SectionBodyContent extends React.PureComponent {
   }
 
   componentDidMount() {
-    const { isLoaded, fetchPeople, filter, setIsLoaded, peopleList } = this.props;
+    const {
+      isLoaded,
+      fetchPeople,
+      filter,
+      setIsLoaded,
+      peopleList,
+    } = this.props;
     if (!isLoaded) return;
 
-    if(peopleList.length <= 0) setIsLoaded();
+    if (peopleList.length <= 0) setIsLoaded();
+
+    setIsLoaded(false);
+
     fetchPeople(filter)
       .then(() => isLoaded && setIsLoaded(true))
       .catch((error) => {
-        isLoaded && setIsLoaded(true)
-        toastr.error(error)
+        isLoaded && setIsLoaded(true);
+        toastr.error(error);
       });
   }
 

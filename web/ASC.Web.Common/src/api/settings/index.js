@@ -3,21 +3,21 @@ import { request } from "../client";
 export function getSettings() {
   return request({
     method: "get",
-    url: "/settings.json"
+    url: "/settings.json",
   });
 }
 
 export function getPortalCultures() {
   return request({
     method: "get",
-    url: "/settings/cultures.json"
+    url: "/settings/cultures.json",
   });
 }
 
 export function getPortalPasswordSettings(confirmKey = null) {
   const options = {
     method: "get",
-    url: "/settings/security/password"
+    url: "/settings/security/password",
   };
 
   if (confirmKey) options.headers = { confirm: confirmKey };
@@ -28,7 +28,7 @@ export function getPortalPasswordSettings(confirmKey = null) {
 export function getPortalTimezones(confirmKey = null) {
   const options = {
     method: "get",
-    url: "/settings/timezones.json"
+    url: "/settings/timezones.json",
   };
 
   if (confirmKey) options.headers = { confirm: confirmKey };
@@ -40,7 +40,7 @@ export function setLanguageAndTime(lng, timeZoneID) {
   return request({
     method: "put",
     url: "/settings/timeandlanguage.json",
-    data: { lng, timeZoneID }
+    data: { lng, timeZoneID },
   });
 }
 
@@ -48,41 +48,41 @@ export function setGreetingSettings(title) {
   return request({
     method: "post",
     url: `/settings/greetingsettings.json`,
-    data: { title }
+    data: { title },
   });
 }
 
 export function restoreGreetingSettings() {
   return request({
     method: "post",
-    url: `/settings/greetingsettings/restore.json`
+    url: `/settings/greetingsettings/restore.json`,
   });
 }
 
 export function getLogoText() {
   return request({
     method: "get",
-    url: `/settings/whitelabel/logotext.json`
+    url: `/settings/whitelabel/logotext.json`,
   });
 }
 export function getLogoSizes() {
   return request({
     method: "get",
-    url: `/settings/whitelabel/sizes.json`
+    url: `/settings/whitelabel/sizes.json`,
   });
 }
 
 export function getLogoUrls() {
   return request({
     method: "get",
-    url: `/settings/whitelabel/logos.json`
+    url: `/settings/whitelabel/logos.json`,
   });
 }
 
 export function getCurrentCustomSchema(id) {
   return request({
     method: "get",
-    url: `settings/customschemas/${id}.json`
+    url: `settings/customschemas/${id}.json`,
   });
 }
 
@@ -91,7 +91,7 @@ export function sendRecoverRequest(email, message) {
   return request({
     method: "post",
     url: `/settings/sendadmmail`,
-    data
+    data,
   });
 }
 
@@ -100,14 +100,14 @@ export function sendRegisterRequest(email) {
   return request({
     method: "post",
     url: `/settings/sendjoininvite`,
-    data
+    data,
   });
 }
 
 export function getMachineName(confirmKey = null) {
   const options = {
     method: "get",
-    url: "/settings/machine.json"
+    url: "/settings/machine.json",
   };
 
   if (confirmKey) options.headers = { confirm: confirmKey };
@@ -131,8 +131,8 @@ export function setPortalOwner(
       PasswordHash: hash,
       lng: lng,
       timeZone: timeZone,
-      analytics: analytics
-    }
+      analytics: analytics,
+    },
   };
 
   if (confirmKey) {
@@ -144,7 +144,7 @@ export function setPortalOwner(
 export function getIsLicenseRequired() {
   return request({
     method: "get",
-    url: "/settings/license/required.json"
+    url: "/settings/license/required.json",
   });
 }
 
@@ -152,7 +152,7 @@ export function setLicense(confirmKey = null, data) {
   const options = {
     method: "post",
     url: `/settings/license`,
-    data
+    data,
   };
 
   if (confirmKey) {
@@ -165,12 +165,12 @@ export function setLicense(confirmKey = null, data) {
 export function getPaymentSettings() {
   return request({
     method: "get",
-    url: `/settings/payment.json`
+    url: `/settings/payment.json`,
   });
 }
 export function acceptLicense() {
   return request({
     method: "post",
-    url: `/settings/license/accept.json`
+    url: `/settings/license/accept.json`,
   });
 }

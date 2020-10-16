@@ -15,11 +15,11 @@ const LogoItem = styled.div`
   }
 
   .nav-logo-icon {
-    display: ${props => (props.opened ? "block" : "none")};
+    display: ${(props) => (props.opened ? "block" : "none")};
   }
 `;
 
-const NavLogoItem = React.memo(props => {
+const NavLogoItem = React.memo((props) => {
   //console.log("NavLogoItem render");
   return (
     <LogoItem opened={props.opened}>
@@ -34,7 +34,7 @@ NavLogoItem.displayName = "NavLogoItem";
 
 NavLogoItem.propTypes = {
   opened: PropTypes.bool,
-  onClick: PropTypes.func
+  onClick: PropTypes.func,
 };
 
 export default NavLogoItem;

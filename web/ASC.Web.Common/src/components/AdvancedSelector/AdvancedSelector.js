@@ -14,28 +14,26 @@ class AdvancedSelector extends React.Component {
 
     this.ref = React.createRef();
 
-    this.state = { 
-      displayType: this.getTypeByWidth() 
+    this.state = {
+      displayType: this.getTypeByWidth(),
     };
 
     this.throttledResize = throttle(this.resize, 300);
   }
 
   componentDidMount() {
-    if(this.props.isOpen) {
+    if (this.props.isOpen) {
       window.addEventListener("resize", this.throttledResize);
     }
   }
 
   resize = () => {
-    if (this.props.displayType !== "auto") 
-      return;
+    if (this.props.displayType !== "auto") return;
 
     const type = this.getTypeByWidth();
-    
-    if (type === this.state.displayType) 
-      return;
-    
+
+    if (type === this.state.displayType) return;
+
     this.setState({ displayType: type });
   };
 
@@ -46,13 +44,12 @@ class AdvancedSelector extends React.Component {
   };
 
   componentDidUpdate(prevProps) {
-    if(this.props.isOpen !== prevProps.isOpen) {
+    if (this.props.isOpen !== prevProps.isOpen) {
       //console.log(`ADSelector componentDidUpdate isOpen=${this.props.isOpen}`);
-      if(this.props.isOpen) {
+      if (this.props.isOpen) {
         this.resize();
         window.addEventListener("resize", this.throttledResize);
-      }
-      else {
+      } else {
         this.throttledResize.cancel();
         window.removeEventListener("resize", this.throttledResize);
       }
@@ -65,17 +62,19 @@ class AdvancedSelector extends React.Component {
   }
 
   componentWillUnmount() {
-    if(this.throttledResize)
-    {
+    if (this.throttledResize) {
       this.throttledResize && this.throttledResize.cancel();
       window.removeEventListener("resize", this.throttledResize);
     }
   }
 
   getTypeByWidth = () => {
-    const displayType = this.props.displayType !== "auto" 
-      ? this.props.displayType 
-      : window.innerWidth < desktop.match(/\d+/)[0] ? "aside" : "dropdown";
+    const displayType =
+      this.props.displayType !== "auto"
+        ? this.props.displayType
+        : window.innerWidth < desktop.match(/\d+/)[0]
+        ? "aside"
+        : "dropdown";
 
     //console.log("AdvancedSelector2 displayType", displayType);
 
@@ -90,12 +89,15 @@ class AdvancedSelector extends React.Component {
 
     return (
       <div ref={this.ref} id={id} className={className} style={style}>
-        {displayType === "dropdown" 
-        ? 
-            <DropDown open={isOpen} className="dropdown-container" clickOutsideAction={this.onClose}>
-              <Selector {...this.props} displayType={displayType} />
-            </DropDown>
-        : withoutAside ? (
+        {displayType === "dropdown" ? (
+          <DropDown
+            open={isOpen}
+            className="dropdown-container"
+            clickOutsideAction={this.onClose}
+          >
+            <Selector {...this.props} displayType={displayType} />
+          </DropDown>
+        ) : withoutAside ? (
           <Selector {...this.props} displayType={displayType} />
         ) : (
           <>
@@ -145,7 +147,7 @@ AdvancedSelector.propTypes = {
   onGroupChange: PropTypes.func,
   onCancel: PropTypes.func,
   onAddNewClick: PropTypes.func,
-  loadNextPage: PropTypes.func
+  loadNextPage: PropTypes.func,
 };
 
 AdvancedSelector.defaultProps = {
@@ -156,7 +158,7 @@ AdvancedSelector.defaultProps = {
   allowGroupSelection: false,
   allowAnyClickClose: true,
   displayType: "auto",
-  options: []
+  options: [],
 };
 
 export default AdvancedSelector;

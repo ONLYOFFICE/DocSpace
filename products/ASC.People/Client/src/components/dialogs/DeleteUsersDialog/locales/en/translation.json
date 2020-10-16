@@ -4,7 +4,7 @@
   "DeleteUserDataConfirmation": "User's personal documents that are available to others will be deleted. To avoid this, you must start the data reassign process before deleting.",
   "OKButton": "OK",
   "CancelButton": "Cancel",
-  
+
   "DeleteGroupUsersMessage": "The selected disabled users will be deleted from the portal.",
   "DeleteGroupUsersMessageHeader": "Delete the users from portal",
   "DeleteGroupUsersSuccessMessage": "Users have been successfully deleted.",

@@ -47,7 +47,6 @@ using ASC.Files.Helpers;
 using ASC.Files.Model;
 using ASC.MessagingSystem;
 using ASC.Web.Api.Routing;
-using ASC.Web.Core;
 using ASC.Web.Core.Files;
 using ASC.Web.Files.Classes;
 using ASC.Web.Files.Configuration;

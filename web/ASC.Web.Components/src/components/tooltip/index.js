@@ -59,7 +59,7 @@ class Tooltip extends Component {
       afterHide,
       reference,
       className,
-      style
+      style,
     } = this.props;
 
     return (
@@ -75,7 +75,7 @@ class Tooltip extends Component {
             top: offsetTop,
             right: offsetRight,
             bottom: offsetBottom,
-            left: offsetLeft
+            left: offsetLeft,
           }}
           wrapper="div"
           afterShow={afterShow}
@@ -104,10 +104,10 @@ Tooltip.propTypes = {
   children: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   reference: PropTypes.oneOfType([
     PropTypes.func,
-    PropTypes.shape({ current: PropTypes.any })
+    PropTypes.shape({ current: PropTypes.any }),
   ]),
   className: PropTypes.string,
-  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 };
 
 Tooltip.defaultProps = {
@@ -116,7 +116,7 @@ Tooltip.defaultProps = {
   offsetTop: 0,
   offsetRight: 0,
   offsetBottom: 0,
-  offsetLeft: 0
+  offsetLeft: 0,
 };
 
 export default Tooltip;

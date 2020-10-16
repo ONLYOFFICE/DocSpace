@@ -8,8 +8,8 @@ const buildSW = () => {
       swDest: "build/sw.js", // this will be created in the build step
       globDirectory: "build",
       globPatterns: [
-        "**/!(service-worker|precache-manifest.*).{js,css,html,png,svg}"
-      ]
+        "**/!(service-worker|precache-manifest.*).{js,css,html,png,svg}",
+      ],
     })
     .then(({ count, size, warnings }) => {
       // Optionally, log any warnings and details.
