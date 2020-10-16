@@ -3,9 +3,10 @@ import FilterButton from "./FilterButton";
 import HideFilter from "./HideFilter";
 import FilterItem from "./FilterItem";
 import PropTypes from "prop-types";
+import isEqual from "lodash/isEqual";
 
 class FilterBlock extends React.Component {
-  onDeleteFilterItem = key => {
+  onDeleteFilterItem = (key) => {
     this.props.onDeleteFilterItem(key);
   };
 
@@ -17,14 +18,17 @@ class FilterBlock extends React.Component {
       setShowFilter,
       onClickFilterItem,
       isDisabled,
-      getFilterData
+      getFilterData,
     } = this.props;
 
     let result = [];
     let openItems = [];
     let hideItems = [];
+
+    const filterData = getFilterData();
+
     if (openFilterItems.length > 0) {
-      openItems = openFilterItems.map(item => {
+      openItems = openFilterItems.map((item) => {
         const {
           key,
           group,
@@ -35,7 +39,7 @@ class FilterBlock extends React.Component {
           defaultOptionLabel,
           defaultOption,
           defaultSelectLabel,
-          selectedItem
+          selectedItem,
         } = item;
 
         return (
@@ -43,8 +47,8 @@ class FilterBlock extends React.Component {
             block={false}
             isDisabled={isDisabled}
             key={key}
-            groupItems={getFilterData().filter(
-              t => t.group == group && t.group != t.key
+            groupItems={filterData.filter(
+              (t) => t.group == group && t.group != t.key
             )}
             onSelectFilterItem={onClickFilterItem}
             id={key}
@@ -63,8 +67,9 @@ class FilterBlock extends React.Component {
         );
       });
     }
+
     if (hideFilterItems.length > 0) {
-      const hideFilterItemsList = hideFilterItems.map(item => {
+      const hideFilterItemsList = hideFilterItems.map((item) => {
         const {
           key,
           group,
@@ -75,7 +80,7 @@ class FilterBlock extends React.Component {
           defaultOptionLabel,
           defaultOption,
           defaultSelectLabel,
-          selectedItem
+          selectedItem,
         } = item;
 
         return (
@@ -83,8 +88,8 @@ class FilterBlock extends React.Component {
             block={true}
             isDisabled={isDisabled}
             key={key}
-            groupItems={getFilterData().filter(
-              t => t.group == group && t.group != t.key
+            groupItems={filterData.filter(
+              (t) => t.group == group && t.group != t.key
             )}
             onSelectFilterItem={onClickFilterItem}
             id={key}
@@ -113,6 +118,7 @@ class FilterBlock extends React.Component {
         </HideFilter>
       );
     }
+    
     result = hideItems.concat(openItems);
     return result;
   };
@@ -121,7 +127,7 @@ class FilterBlock extends React.Component {
     const { getFilterData, onClickFilterItem } = this.props;
     const d = getFilterData();
     let result = [];
-    d.forEach(element => {
+    d.forEach((element) => {
       if (!element.inSubgroup) {
         element.onClick =
           !element.isSeparator && !element.isHeader && !element.disabled
@@ -132,7 +138,7 @@ class FilterBlock extends React.Component {
             ? element.group + "_" + element.key
             : element.key;
         if (element.subgroup != undefined) {
-          if (d.findIndex(x => x.group === element.subgroup) == -1)
+          if (d.findIndex((x) => x.group === element.subgroup) == -1)
             element.disabled = true;
         }
         result.push(element);
@@ -141,6 +147,13 @@ class FilterBlock extends React.Component {
     return result;
   };
 
+  shouldComponentUpdate(nextProps) {
+    if (!isEqual(this.props, nextProps)) {
+      return true;
+    }
+    return false;
+  }
+
   render() {
     //console.log("FilterBlock render");
     const {
@@ -148,7 +161,7 @@ class FilterBlock extends React.Component {
       isDisabled,
       contextMenuHeader,
       getFilterData,
-      columnCount
+      columnCount,
     } = this.props;
     const filterItems = this.getFilterItems();
     const filterData = getFilterData();
@@ -183,7 +196,7 @@ FilterBlock.propTypes = {
   contextMenuHeader: PropTypes.string,
   showFilter: PropTypes.bool,
   setShowFilter: PropTypes.func,
-  onClickFilterItem: PropTypes.func
+  onClickFilterItem: PropTypes.func,
 };
 
 export default FilterBlock;

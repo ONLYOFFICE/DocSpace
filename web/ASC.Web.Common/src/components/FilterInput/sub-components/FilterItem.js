@@ -5,10 +5,11 @@ import PropTypes from "prop-types";
 import {
   StyledFilterItem,
   StyledFilterItemContent,
-  StyledCloseButtonBlock
+  StyledCloseButtonBlock,
 } from "../StyledFilterInput";
 import GroupSelector from "../../GroupSelector";
 import PeopleSelector from "../../PeopleSelector";
+import isEqual from "lodash/isEqual";
 
 class FilterItem extends React.Component {
   constructor(props) {
@@ -21,12 +22,12 @@ class FilterItem extends React.Component {
       (typeSelector === selectedItem.type || id.includes(typeSelector))
         ? {
             key: selectedItem.key,
-            label: selectedItem.label
+            label: selectedItem.label,
           }
         : {
             key: null,
             label: this.props.defaultSelectLabel,
-            default: true
+            default: true,
           };
 
     const isOpenSelector = Boolean(selectedOption.key);
@@ -35,11 +36,11 @@ class FilterItem extends React.Component {
       id,
       isOpen: false,
       isOpenSelector: !isOpenSelector,
-      selectedOption
+      selectedOption,
     };
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
     const { selectedItem, defaultSelectLabel } = this.props;
 
     if (
@@ -51,28 +52,35 @@ class FilterItem extends React.Component {
       const selectedOption = selectedItem.key
         ? {
             key: selectedItem.key,
-            label: selectedItem.label
+            label: selectedItem.label,
           }
         : {
             key: null,
             label: defaultSelectLabel,
-            default: true
+            default: true,
           };
       const isOpenSelector = Boolean(selectedOption.key);
       this.setState({
         isOpenSelector: !isOpenSelector,
-        selectedOption
+        selectedOption,
       });
     }
   }
 
-  onSelect = option => {
+  shouldComponentUpdate(nextProps, nextState) {
+    if (!isEqual(this.props, nextProps) || !isEqual(this.state, nextState)) {
+      return true;
+    }
+    return false;
+  }
+
+  onSelect = (option) => {
     const { group, key, label, inSubgroup } = option;
     const filterItem = {
       key: group + "_" + key,
       label,
       group,
-      inSubgroup: !!inSubgroup
+      inSubgroup: !!inSubgroup,
     };
     this.props.onSelectFilterItem(filterItem);
   };
@@ -84,7 +92,7 @@ class FilterItem extends React.Component {
 
   toggleCombobox = (e, isOpen) => this.setState({ isOpen });
 
-  onCancelSelector = e => {
+  onCancelSelector = (e) => {
     if (
       this.state.isOpenSelector &&
       (e.target.id === "filter-selector_button" ||
@@ -96,15 +104,15 @@ class FilterItem extends React.Component {
     this.setState({ isOpenSelector: false });
   };
 
-  onSelectGroup = selected => {
+  onSelectGroup = (selected) => {
     const { key, label } = selected[0];
     const selectedOption = {
       key,
-      label
+      label,
     };
     this.setState({
       selectedOption,
-      isOpenSelector: false
+      isOpenSelector: false,
     });
 
     const {
@@ -115,7 +123,7 @@ class FilterItem extends React.Component {
       defaultOption,
       groupsCaption,
       defaultOptionLabel,
-      defaultSelectLabel
+      defaultSelectLabel,
     } = this.props;
 
     onSelectFilterItem({
@@ -128,7 +136,7 @@ class FilterItem extends React.Component {
       groupsCaption,
       defaultOptionLabel,
       defaultSelectLabel,
-      selectedItem: selected[0]
+      selectedItem: selected[0],
     });
   };
 
@@ -152,7 +160,7 @@ class FilterItem extends React.Component {
       typeSelector,
       defaultOptionLabel,
       groupsCaption,
-      defaultOption
+      defaultOption,
     } = this.props;
 
     return (
@@ -221,7 +229,7 @@ class FilterItem extends React.Component {
                   onSelect={this.onSelect}
                   selectedOption={{
                     key: id,
-                    label
+                    label,
                   }}
                   size="content"
                   scaled={false}
@@ -266,7 +274,7 @@ FilterItem.propTypes = {
   defaultOptionLabel: PropTypes.string,
   defaultOption: PropTypes.object,
   selectedItem: PropTypes.object,
-  defaultSelectLabel: PropTypes.string
+  defaultSelectLabel: PropTypes.string,
 };
 
 export default FilterItem;

@@ -15,6 +15,7 @@ const {
   getLanguage,
   getSettings,
   getIsLoaded,
+  getWidthProp,
 } = store.auth.selectors;
 
 const getEmployeeStatus = (filterValues) => {
@@ -279,6 +280,7 @@ function mapStateToProps(state) {
     settings: getSettings(state),
     isAdmin: isAdmin(state),
     isLoaded: getIsLoaded(state),
+    widthProp: getWidthProp(state),
   };
 }
 

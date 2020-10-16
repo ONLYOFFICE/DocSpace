@@ -9,6 +9,9 @@ import {
   Box,
 } from "asc-web-components";
 import { connect } from "react-redux";
+import { store } from "asc-web-common";
+
+const { getWidthProp } = store.auth.selectors;
 
 const getFormattedGroups = (user, selectGroup) => {
   let temp = [];
@@ -167,6 +170,7 @@ const UserContent = ({
 function mapStateToProps(state) {
   return {
     settings: state.auth.settings,
+    widthProp: getWidthProp(state),
   };
 }
 

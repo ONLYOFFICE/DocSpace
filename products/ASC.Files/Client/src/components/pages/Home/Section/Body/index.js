@@ -81,7 +81,7 @@ import {
   getTooltipLabel,
 } from "../../../../../store/files/selectors";
 import { SharingPanel, OperationsPanel } from "../../../../panels";
-const { isAdmin, getSettings, getCurrentUser } = store.auth.selectors;
+const { isAdmin, getSettings, getCurrentUser, getWidthProp } = store.auth.selectors;
 //import { getFilterByLocation } from "../../../../../helpers/converters";
 //import config from "../../../../../../package.json";
 
@@ -1481,7 +1481,6 @@ class SectionBodyContent extends React.Component {
                     contextButtonSpacerWidth={displayShareButton}
                   >
                     <FilesRowContent
-                      widthProp={widthProp}
                       isMobile={isMobile}
                       item={item}
                       viewer={viewer}
@@ -1563,6 +1562,7 @@ const mapStateToProps = (state) => {
     viewAs: getViewAs(state),
     viewer: getCurrentUser(state),
     tooltipValue: getTooltipLabel(state),
+    widthProp: getWidthProp(state),
   };
 };
 

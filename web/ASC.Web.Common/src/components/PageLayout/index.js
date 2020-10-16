@@ -152,8 +152,8 @@ class PageLayoutComponent extends React.Component {
     });
   };
 
-  onResize = (width, height) => {
-    //console.log(`onResize height: ${height}, width: ${width}`);
+  onResize = (width) => {
+    this.props.setWidthProp && this.props.setWidthProp(width);
   };
 
   render() {
@@ -279,7 +279,7 @@ class PageLayoutComponent extends React.Component {
         {isSectionAvailable && (
           <ReactResizeDetector
             onResize={this.onResize}
-            refreshRate={200}
+            refreshRate={2000}
             refreshMode="debounce"
           >
             {({ width }) => (
@@ -296,10 +296,7 @@ class PageLayoutComponent extends React.Component {
                 {isSectionFilterAvailable && (
                   <SubSectionFilter className="section-header_filter">
                     {sectionFilterContent
-                      ? React.cloneElement(
-                        sectionFilterContent.props.children,
-                        { widthProp: width }
-                      )
+                      ? sectionFilterContent.props.children
                       : null}
                   </SubSectionFilter>
                 )}
@@ -317,19 +314,13 @@ class PageLayoutComponent extends React.Component {
                       {isSectionFilterAvailable && (
                         <SubSectionFilter className="section-body_filter">
                           {sectionFilterContent
-                            ? React.cloneElement(
-                              sectionFilterContent.props.children,
-                              { widthProp: width }
-                            )
+                            ? sectionFilterContent.props.children
                             : null}
                         </SubSectionFilter>
                       )}
                       <SubSectionBodyContent>
                         {sectionBodyContent
-                          ? React.cloneElement(
-                              sectionBodyContent.props.children,
-                              { widthProp: width }
-                            )
+                          ? sectionBodyContent.props.children
                           : null}
                       </SubSectionBodyContent>
                       {isSectionPagingAvailable && (
@@ -371,7 +362,6 @@ PageLayoutComponent.propTypes = {
   withBodyScroll: PropTypes.bool,
   withBodyAutoFocus: PropTypes.bool,
   t: PropTypes.func,
-
   showProgressBar: PropTypes.bool,
   progressBarValue: PropTypes.number,
   progressBarDropDownContent: PropTypes.any,
@@ -379,7 +369,8 @@ PageLayoutComponent.propTypes = {
   onDrop: PropTypes.func,
   setSelections: PropTypes.func,
   uploadFiles: PropTypes.bool,
-  hideAside: PropTypes.bool
+  hideAside: PropTypes.bool,
+  setWidthProp: PropTypes.func
 };
 
 PageLayoutComponent.defaultProps = {
@@ -407,7 +398,7 @@ PageLayout.SectionPaging = SectionPaging;
 
 PageLayout.propTypes = {
   language: PropTypes.string,
-  children: PropTypes.any
+  children: PropTypes.any,
 };
 
 function mapStateToProps(state) {

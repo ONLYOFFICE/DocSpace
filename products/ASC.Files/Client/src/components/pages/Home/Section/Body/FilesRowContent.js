@@ -45,7 +45,7 @@ import EditingWrapperComponent from "./EditingWrapperComponent";
 
 const { FileAction } = constants;
 const sideColor = '#A3A9AE';
-const { getSettings } = initStore.auth.selectors;
+const { getSettings, getWidthProp } = initStore.auth.selectors;
 
 const SimpleFilesRowContent = styled(RowContent)`
 .badge-ext {
@@ -577,6 +577,7 @@ function mapStateToProps(state, props) {
     newRowItems: getNewRowItems(state),
     dragging: getDragging(state),
     isLoading: getIsLoading(state),
+    widthProp: getWidthProp(state),
 
     canWebEdit: canWebEdit(props.item.fileExst)(state),
     canConvert: canConvert(props.item.fileExst)(state),
@@ -597,5 +598,5 @@ export default connect(mapStateToProps, {
   setNewRowItems,
   setIsLoading,
   clearProgressData,
-  fetchFiles
+  fetchFiles,
 })(withRouter(withTranslation()(FilesRowContent)));

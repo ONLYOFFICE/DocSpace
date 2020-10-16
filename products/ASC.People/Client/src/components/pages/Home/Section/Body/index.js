@@ -38,7 +38,7 @@ const i18n = createI18N({
   localesPath: "pages/Home",
 });
 const { isArrayEqual } = utils.array;
-const { getSettings } = store.auth.selectors;
+const { getSettings, getWidthProp } = store.auth.selectors;
 const { setIsLoaded } = store.auth.actions;
 const { resendUserInvites } = api.people;
 const { EmployeeStatus } = constants;
@@ -415,7 +415,6 @@ class SectionBodyContent extends React.PureComponent {
               >
                 <UserContent
                   isMobile={isMobile}
-                  widthProp={widthProp}
                   user={man}
                   history={history}
                   settings={settings}
@@ -488,6 +487,7 @@ const mapStateToProps = (state) => {
     filter,
     peopleList: getPeopleList(state),
     settings: getSettings(state),
+    widthProp: getWidthProp(state),
   };
 };
 

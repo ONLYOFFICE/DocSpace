@@ -58,6 +58,7 @@ export const SET_FILES_SETTING = "SET_FILES_SETTING";
 export const SET_IS_ERROR_SETTINGS = "SET_IS_ERROR_SETTINGS";
 export const SET_FIRST_LOAD = "SET_FIRST_LOAD";
 export const SET_UPLOAD_DATA = "SET_UPLOAD_DATA";
+export const SET_WIDTH_PROP = "SET_WIDTH_PROP";
 
 export function setFile(file) {
   return {
@@ -262,6 +263,7 @@ export function setUploadData(uploadData) {
     uploadData,
   };
 }
+
 export function setFilterUrl(filter) {
   const defaultFilter = FilesFilter.getDefault();
   const params = [];

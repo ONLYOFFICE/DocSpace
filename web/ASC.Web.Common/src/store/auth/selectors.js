@@ -178,3 +178,7 @@ export const getTotalNotificationsCount = createSelector(
     return totalNotifications;
   }
 );
+
+export const getWidthProp = (state) => {
+  return state.auth.widthProp;
+};

@@ -14,7 +14,7 @@ import { constants, FilterInput, store, Loaders } from "asc-web-common";
 import isEqual from "lodash/isEqual";
 import { isMobileOnly } from "react-device-detect";
 
-const { getCurrentUser, getSettingsCustomNames, getLanguage } = store.auth.selectors;
+const { getCurrentUser, getSettingsCustomNames, getLanguage, getWidthProp } = store.auth.selectors;
 const { FilterType } = constants;
 
 const getFilterType = (filterValues) => {
@@ -322,6 +322,7 @@ function mapStateToProps(state) {
     selectedFolderId: getSelectedFolderId(state),
     selectedItem: getFilterSelectedItem(state),
     viewAs: getViewAs(state),
+    widthProp: getWidthProp(state),
   };
 }
 

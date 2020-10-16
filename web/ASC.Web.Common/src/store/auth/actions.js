@@ -16,6 +16,7 @@ export const SET_CURRENT_PRODUCT_HOME_PAGE = "SET_CURRENT_PRODUCT_HOME_PAGE";
 export const SET_GREETING_SETTINGS = "SET_GREETING_SETTINGS";
 export const SET_CUSTOM_NAMES = "SET_CUSTOM_NAMES";
 export const SET_WIZARD_COMPLETED = "SET_WIZARD_COMPLETED";
+export const SET_WIDTH_PROP = "SET_WIDTH_PROP";
 
 export function setCurrentUser(user) {
   return {
@@ -117,6 +118,13 @@ export function setCustomNames(customNames) {
 export function setWizardComplete() {
   return {
     type: SET_WIZARD_COMPLETED
+  };
+}
+
+export function setWidthProp(widthProp) {
+  return {
+    type: SET_WIDTH_PROP,
+    widthProp,
   };
 }
 

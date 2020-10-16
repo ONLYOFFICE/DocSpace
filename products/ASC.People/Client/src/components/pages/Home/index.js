@@ -26,6 +26,7 @@ const i18n = createI18N({
 });
 const { changeLanguage } = utils;
 const { isAdmin } = store.auth.selectors;
+const { setWidthProp } = store.auth.actions;
 
 class PureHome extends React.Component {
   constructor(props) {
@@ -101,11 +102,11 @@ class PureHome extends React.Component {
       selected,
     } = this.state;
 
-    const { isAdmin } = this.props;
+    const { isAdmin, setWidthProp } = this.props;
 
     return (
 
-        <PageLayout withBodyScroll={true} withBodyAutoFocus={!isMobile}>
+        <PageLayout setWidthProp={setWidthProp} withBodyScroll={true} withBodyAutoFocus={!isMobile}>
           <PageLayout.ArticleHeader>
             <ArticleHeaderContent />
           </PageLayout.ArticleHeader>
@@ -191,6 +192,6 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, { setSelected, setIsLoading })(
+export default connect(mapStateToProps, { setSelected, setIsLoading, setWidthProp })(
   withRouter(Home)
 );

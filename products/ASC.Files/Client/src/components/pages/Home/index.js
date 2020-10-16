@@ -23,7 +23,7 @@ import {
   setIsLoading,
   setFirstLoad,
   startUpload,
-  setSelections,
+  setSelections
 } from "../../../store/files/actions";
 import {
   getConvertDialogVisible,
@@ -47,6 +47,7 @@ const i18n = createI18N({
 const { changeLanguage } = utils;
 const { FilesFilter } = api;
 const { getSettingsHomepage } = store.auth.selectors;
+const { setWidthProp } = store.auth.actions;
 
 class PureHome extends React.Component {
   constructor(props) {
@@ -191,6 +192,7 @@ class PureHome extends React.Component {
       convertDialogVisible,
       fileActionId,
       isRecycleBin,
+      setWidthProp
     } = this.props;
 
     // const progressBarContent = (
@@ -240,6 +242,7 @@ class PureHome extends React.Component {
           progressBarLabel={progressData.label}
           viewAs={viewAs}
           hideAside={!!fileActionId || progressData.visible}
+          setWidthProp={setWidthProp}
         >
           <PageLayout.ArticleHeader>
             <ArticleHeaderContent />
@@ -318,6 +321,7 @@ const mapDispatchToProps = (dispatch) => {
     setFirstLoad: (firstLoad) => dispatch(setFirstLoad(firstLoad)),
     fetchFiles: (folderId, filter) => dispatch(fetchFiles(folderId, filter)),
     setSelections: (items) => dispatch(setSelections(items)),
+    setWidthProp: (value) => dispatch(setWidthProp(value)),
   };
 };
 
