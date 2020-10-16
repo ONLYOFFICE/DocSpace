@@ -24,7 +24,7 @@ services:
       - ../../../sql/onlyoffice.sql:/docker-entrypoint-initdb.d/02_onlyoffice.sql
       - ../../../sql/onlyoffice.data.sql:/docker-entrypoint-initdb.d/03_onlyoffice.data.sql
       - ../../../sql/onlyoffice.resources.sql:/docker-entrypoint-initdb.d/04_onlyoffice.resources.sql
-      - ../../../sql/onlyoffice.upgradev110.sql:/docker-entrypoint-initdb.d/05_onlyoffice.upgradev110.sql.sql
+        #- ../../../sql/onlyoffice.upgradev110.sql:/docker-entrypoint-initdb.d/05_onlyoffice.upgradev110.sql.sql
       #- ../../../sql/app.sql:/docker-entrypoint-initdb.d/02_app.sql
       #- ../../../sql/app.data.sql:/docker-entrypoint-initdb.d/03_app.data.sql
       #- ../../../sql/alter_priv.sql:/docker-entrypoint-initdb.d/04_alter_priv.sql
