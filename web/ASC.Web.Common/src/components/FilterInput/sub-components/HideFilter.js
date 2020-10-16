@@ -7,42 +7,42 @@ class HideFilter extends React.Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      isOpen: false
+    }
+
     this.ref = React.createRef();
     this.dropDownRef = React.createRef();
-    this.state = {
-      popoverOpen: this.props.open
-    };
   }
 
-  onClick = (state, e) => {
-    if (!state && e && this.dropDownRef.current.contains(e.target)) {
+  onClick = (e) => {
+    if (e && this.dropDownRef.current.contains(e.target)) {
       return;
     }
     if (!this.props.isDisabled) {
-      this.setState({
-        popoverOpen: state
-      });
+      this.setState({isOpen: !this.state.isOpen});
     }
   };
 
   handleClickOutside = e => {
     if (this.ref.current.contains(e.target)) return;
-    this.setState({ popoverOpen: !this.state.popoverOpen });
+    this.setState({isOpen: false});
   };
 
   render() {
     //console.log("HideFilter render");
     const { isDisabled, count, children } = this.props;
-    const { popoverOpen } = this.state;
+    const { isOpen } = this.state;
+
     return (
       <div
         className="styled-hide-filter"
-        onClick={this.onClick.bind(this, !popoverOpen)}
+        onClick={this.onClick}
         ref={this.ref}
       >
         <StyledHideFilterButton id="PopoverLegacy" isDisabled={isDisabled}>
           {count}
-          <Caret isOpen={popoverOpen}>
+          <Caret isOpen={isOpen}>
             <Icons.ExpanderDownIcon
               color="#A3A9AE"
               isfill={true}
@@ -51,12 +51,12 @@ class HideFilter extends React.Component {
           </Caret>
         </StyledHideFilterButton>
 
-        <div className="dropdown-style" ref={this.dropDownRef}>
+        <div className="filter_dropdown-style" ref={this.dropDownRef}>
           <DropDown
-            className="drop-down"
+            className="filter_drop-down"
             clickOutsideAction={this.handleClickOutside}
             manualY="8px"
-            open={popoverOpen}
+            open={isOpen}
           >
             {children}
           </DropDown>
@@ -68,7 +68,6 @@ class HideFilter extends React.Component {
 HideFilter.propTypes = {
   children: PropTypes.any,
   count: PropTypes.number,
-  isDisabled: PropTypes.bool,
-  open: PropTypes.bool,
+  isDisabled: PropTypes.bool
 }
 export default HideFilter;

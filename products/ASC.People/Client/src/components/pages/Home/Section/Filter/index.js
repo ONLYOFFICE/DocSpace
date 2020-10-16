@@ -248,7 +248,7 @@ class SectionFilterContent extends React.Component {
 
   render() {
     const selectedFilterData = this.getSelectedFilterData();
-    const { t, language, isLoaded } = this.props;
+    const { t, language, isLoaded, widthProp } = this.props;
     return isLoaded ? (
       <FilterInput
         getFilterData={this.getData}
@@ -262,6 +262,7 @@ class SectionFilterContent extends React.Component {
         language={language}
         contextMenuHeader={t("AddFilter")}
         isMobile={isMobileOnly}
+        widthProp={widthProp}
       />
     ) : (
       <Loaders.Filter />

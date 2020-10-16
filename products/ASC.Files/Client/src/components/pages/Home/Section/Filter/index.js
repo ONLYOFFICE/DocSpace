@@ -233,7 +233,7 @@ class SectionFilterContent extends React.Component {
 
     selectedFilterData.inputValue = filter.search;
 
-    if (filter.filterType >= 0) {
+    if (filter.filterType) {
       selectedFilterData.filterValues.push({
         key: `${filter.filterType}`,
         group: "filter-filterType",
@@ -277,14 +277,15 @@ class SectionFilterContent extends React.Component {
       this.props.selectedFolderId !== nextProps.selectedFolderId ||
       this.state.isReady !== nextState.isReady ||
       this.props.viewAs !== nextProps.viewAs ||
-      this.props.firstLoad !== nextProps.firstLoad
+      this.props.firstLoad !== nextProps.firstLoad ||
+      this.props.widthProp !== nextProps.widthProp
     );
   }
 
   render() {
     console.log("Filter render");
     const selectedFilterData = this.getSelectedFilterData();
-    const { t, language, firstLoad } = this.props;
+    const { t, language, firstLoad, widthProp } = this.props;
     const filterColumnCount =
       window.innerWidth < 500 ? {} : { filterColumnCount: 3 };
     return firstLoad ? (
@@ -302,10 +303,10 @@ class SectionFilterContent extends React.Component {
         placeholder={t("Search")}
         needForUpdate={this.needForUpdate}
         language={language}
-        isReady={this.state.isReady}
         {...filterColumnCount}
         contextMenuHeader={t("AddFilter")}
         isMobile={isMobileOnly}
+        widthProp={widthProp}
       />
     );
   }

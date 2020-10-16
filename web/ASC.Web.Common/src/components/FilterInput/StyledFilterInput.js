@@ -1,7 +1,4 @@
 import styled, { css } from 'styled-components';
-import { utils } from 'asc-web-components';
-
-const { mobile } = utils.device;
 
 const StyledFilterInput = styled.div`
     width: 100%;
@@ -12,12 +9,16 @@ const StyledFilterInput = styled.div`
         display: block;
         height: 0;
         clear: both;
-        visibility: hidden;
     }
 
     .styled-search-input {
       display: block;
       width: 100%;
+
+      .prepend {
+        max-width: ${props => props.test ? `${props.test + 50}px` : 'unset'};
+        overflow: ${props => props.overflowFilter ? 'visible' : 'hidden' };
+      }
 
       .search-input-block {
           & > input { 
@@ -94,10 +95,10 @@ const StyledFilterInput = styled.div`
       height: 100%;
     }
 
-    .dropdown-style {
+    .filter_dropdown-style {
       position: relative;
 
-      .drop-down {
+      .filter_drop-down {
         padding: 16px;
       }
     }
