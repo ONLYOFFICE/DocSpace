@@ -410,7 +410,6 @@ export function fetchTreeFolders(dispatch) {
 export function createFile(folderId, title) {
   return (dispatch) => {
     return files.createFile(folderId, title).then((file) => {
-      fetchFolder(folderId, dispatch);
       return Promise.resolve(file);
     });
   };
