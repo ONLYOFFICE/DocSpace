@@ -31,7 +31,6 @@ const {
   getModules,
   setCurrentProductId,
   setCurrentProductHomePage,
-  getPortalPasswordSettings,
   getPortalCultures,
 } = commonStore.auth.actions;
 const { AUTH_KEY } = constants;
@@ -45,7 +44,6 @@ class App extends React.Component {
       getUser,
       getPortalSettings,
       getModules,
-      getPortalPasswordSettings,
       getPortalCultures,
       fetchTreeFolders,
       setIsLoaded,
@@ -63,7 +61,6 @@ class App extends React.Component {
       getUser(),
       getPortalSettings(),
       getModules(),
-      getPortalPasswordSettings(),
       getPortalCultures(),
       fetchTreeFolders(),
     ];
@@ -144,7 +141,6 @@ const mapDispatchToProps = (dispatch) => {
     getUser: () => getUser(dispatch),
     getPortalSettings: () => getPortalSettings(dispatch),
     getModules: () => getModules(dispatch),
-    getPortalPasswordSettings: () => getPortalPasswordSettings(dispatch),
     getPortalCultures: () => getPortalCultures(dispatch),
     fetchTreeFolders: () => fetchTreeFolders(dispatch),
     setIsLoaded: () => dispatch(setIsLoaded(true)),
