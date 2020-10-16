@@ -39,7 +39,7 @@ class FilterItem extends React.Component {
     };
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(prevProps) {
     const { selectedItem, defaultSelectLabel } = this.props;
 
     if (
@@ -59,7 +59,6 @@ class FilterItem extends React.Component {
             default: true
           };
       const isOpenSelector = Boolean(selectedOption.key);
-      //console.log("!!! isOpenSelector", isOpenSelector);
       this.setState({
         isOpenSelector: !isOpenSelector,
         selectedOption
@@ -74,7 +73,7 @@ class FilterItem extends React.Component {
       label,
       group,
       inSubgroup: !!inSubgroup
-    }
+    };
     this.props.onSelectFilterItem(filterItem);
   };
 
@@ -136,16 +135,13 @@ class FilterItem extends React.Component {
   onPeopleSelectorClick = () => {
     this.props.setShowFilter(!this.state.isOpenSelector);
     this.setState({ isOpenSelector: !this.state.isOpenSelector });
-  }
+  };
 
   render() {
     //console.log("FilterItem render");
-    //console.log("FilterItem render isOpenSelector", this.state.isOpenSelector);
-    //console.log("FilterItem render opened", this.props.opened);
-    //console.log("FilterItem render isOpen", this.state.isOpen);
 
     const { id, isOpen, isOpenSelector, selectedOption } = this.state;
-    
+
     const {
       block,
       opened,
@@ -158,7 +154,7 @@ class FilterItem extends React.Component {
       groupsCaption,
       defaultOption
     } = this.props;
-    
+
     return (
       <StyledFilterItem key={id} id={id} block={block}>
         <StyledFilterItemContent isDisabled={isDisabled} isOpen={isOpen}>
@@ -263,7 +259,14 @@ FilterItem.propTypes = {
   label: PropTypes.string,
   groupLabel: PropTypes.string,
   onClose: PropTypes.func,
-  onSelectFilterItem: PropTypes.func
+  onSelectFilterItem: PropTypes.func,
+  setShowFilter: PropTypes.func,
+  typeSelector: PropTypes.string,
+  groupsCaption: PropTypes.string,
+  defaultOptionLabel: PropTypes.string,
+  defaultOption: PropTypes.object,
+  selectedItem: PropTypes.object,
+  defaultSelectLabel: PropTypes.string
 };
 
 export default FilterItem;
