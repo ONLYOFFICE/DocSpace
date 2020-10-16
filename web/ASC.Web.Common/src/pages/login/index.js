@@ -12,7 +12,7 @@ import {
   Checkbox,
   HelpButton,
   PasswordInput,
-  FieldContainer
+  FieldContainer,
 } from "asc-web-components";
 import PageLayout from "../../components/PageLayout";
 import { connect } from "react-redux";
@@ -23,7 +23,7 @@ import ForgotPasswordModalDialog from "./sub-components/forgot-password-modal-di
 import {
   login,
   setIsLoaded,
-  reloadPortalSettings
+  reloadPortalSettings,
 } from "../../store/auth/actions";
 import { sendInstructionsToChangePassword } from "../../api/people";
 import Register from "./sub-components/register-container";
@@ -141,23 +141,23 @@ class Form extends Component {
       email: "",
       emailError: false,
       errorText: "",
-      socialButtons: []
+      socialButtons: [],
     };
   }
 
-  onChangeLogin = event => {
+  onChangeLogin = (event) => {
     this.setState({ identifier: event.target.value });
     !this.state.identifierValid && this.setState({ identifierValid: true });
     this.state.errorText && this.setState({ errorText: "" });
   };
 
-  onChangePassword = event => {
+  onChangePassword = (event) => {
     this.setState({ password: event.target.value });
     !this.state.passwordValid && this.setState({ passwordValid: true });
     this.state.errorText && this.setState({ errorText: "" });
   };
 
-  onChangeEmail = event => {
+  onChangeEmail = (event) => {
     this.setState({ email: event.target.value, emailError: false });
   };
 
@@ -167,11 +167,11 @@ class Form extends Component {
     this.setState({
       openDialog: true,
       isDisabled: true,
-      email: this.state.identifier
+      email: this.state.identifier,
     });
   };
 
-  onKeyPress = event => {
+  onKeyPress = (event) => {
     if (event.key === "Enter") {
       !this.state.isDisabled
         ? this.onSubmit()
@@ -186,8 +186,8 @@ class Form extends Component {
       this.setState({ isLoading: true });
       sendInstructionsToChangePassword(this.state.email)
         .then(
-          res => toastr.success(res),
-          message => toastr.error(message)
+          (res) => toastr.success(res),
+          (message) => toastr.error(message)
         )
         .finally(this.onDialogClose());
     }
@@ -199,7 +199,7 @@ class Form extends Component {
       isDisabled: false,
       isLoading: false,
       email: "",
-      emailError: false
+      emailError: false,
     });
   };
 
@@ -235,14 +235,20 @@ class Form extends Component {
           setIsLoaded(true);
         }
       })
-      .catch(error => {
+      .catch((error) => {
         let err = error.data.error.message;
         this.setState({ errorText: err, isLoading: false });
       });
   };
 
   componentDidMount() {
-    const { match, t, hashSettings, reloadPortalSettings, organizationName } = this.props;
+    const {
+      match,
+      t,
+      hashSettings,
+      reloadPortalSettings,
+      organizationName,
+    } = this.props;
     const { error, confirmedEmail } = match.params;
 
     document.title = `${t("Authorization")} – ${organizationName}`; //TODO: implement the setDocumentTitle() utility in ASC.Web.Common
@@ -253,7 +259,7 @@ class Form extends Component {
 
     if (!hashSettings) {
       reloadPortalSettings();
-  }
+    }
   }
 
   componentWillUnmount() {
@@ -264,7 +270,7 @@ class Form extends Component {
     minLength: 6,
     upperCase: false,
     digits: false,
-    specSymbols: false
+    specSymbols: false,
   };
 
   render() {
@@ -281,7 +287,7 @@ class Form extends Component {
       email,
       emailError,
       errorText,
-      socialButtons
+      socialButtons,
     } = this.state;
     const { params } = match;
 
@@ -437,19 +443,19 @@ Form.propTypes = {
   language: PropTypes.string.isRequired,
   socialButtons: PropTypes.array,
   organizationName: PropTypes.string,
-  homepage: PropTypes.string
+  homepage: PropTypes.string,
 };
 
 Form.defaultProps = {
   identifier: "",
   password: "",
-  email: ""
+  email: "",
 };
 
 const FormWrapper = withTranslation()(Form);
 const RegisterWrapper = withTranslation()(Register);
 
-const LoginForm = props => {
+const LoginForm = (props) => {
   const { language, isLoaded, enabledJoin } = props;
 
   useEffect(() => {
@@ -477,25 +483,30 @@ const LoginForm = props => {
 LoginForm.propTypes = {
   language: PropTypes.string.isRequired,
   isLoaded: PropTypes.bool,
-  enabledJoin: PropTypes.bool
+  enabledJoin: PropTypes.bool,
 };
 
 function mapStateToProps(state) {
-  const { isLoaded,  settings } = state.auth;
-  const { greetingSettings, enabledJoin, organizationName,  hashSettings } = settings;
+  const { isLoaded, settings } = state.auth;
+  const {
+    greetingSettings,
+    enabledJoin,
+    organizationName,
+    hashSettings,
+  } = settings;
 
   return {
     isLoaded,
     enabledJoin,
     organizationName,
-    language:  getLanguage(state),
+    language: getLanguage(state),
     greetingTitle: greetingSettings,
-    hashSettings  
+    hashSettings,
   };
 }
 
 export default connect(mapStateToProps, {
   login,
   setIsLoaded,
-  reloadPortalSettings
+  reloadPortalSettings,
 })(withRouter(LoginForm));

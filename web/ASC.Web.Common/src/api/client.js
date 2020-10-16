@@ -13,16 +13,16 @@ const baseURL = `${window.location.origin}/${PREFIX}/${VERSION}`;
 const client = axios.create({
   baseURL: baseURL,
   responseType: "json",
-  timeout: 30000 // default is `0` (no timeout)
+  timeout: 30000, // default is `0` (no timeout)
 });
 
 setAuthorizationToken(localStorage.getItem(AUTH_KEY));
 
 client.interceptors.response.use(
-  response => {
+  (response) => {
     return response;
   },
-  error => {
+  (error) => {
     switch (true) {
       case error.response.status === 401:
         setAuthorizationToken();
@@ -56,7 +56,7 @@ export function setClientBasePath(path) {
   client.defaults.baseURL = path;
 }
 
-const getResponseError = res => {
+const getResponseError = (res) => {
   if (!res) return;
 
   if (res.data && res.data.error) {
@@ -73,8 +73,8 @@ const getResponseError = res => {
  * @description wrapper for making ajax requests
  * @param {object} object with method,url,data etc.
  */
-export const request = function(options) {
-  const onSuccess = function(response) {
+export const request = function (options) {
+  const onSuccess = function (response) {
     const error = getResponseError(response);
     if (error) throw new Error(error);
 
@@ -86,7 +86,7 @@ export const request = function(options) {
     return response.data.response;
   };
 
-  const onError = function(errorResponse) {
+  const onError = function (errorResponse) {
     console.error("Request Failed:", errorResponse);
 
     const errorText = errorResponse.response
@@ -96,7 +96,5 @@ export const request = function(options) {
     return Promise.reject(errorText || errorResponse);
   };
 
-  return client(options)
-    .then(onSuccess)
-    .catch(onError);
+  return client(options).then(onSuccess).catch(onError);
 };

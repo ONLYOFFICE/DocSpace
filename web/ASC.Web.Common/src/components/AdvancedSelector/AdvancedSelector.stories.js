@@ -7,13 +7,13 @@ import {
   text,
   number,
   boolean,
-  select
+  select,
 } from "@storybook/addon-knobs/react";
 import withReadme from "storybook-readme/with-readme";
 import Readme from "./README.md";
 import AdvancedSelector2 from ".";
 import Section from "../../../.storybook/decorators/section";
-import {Button, Avatar, Text} from "asc-web-components";
+import { Button, Avatar, Text } from "asc-web-components";
 import isEqual from "lodash/isEqual";
 import UserTooltip from "../PeopleSelector/sub-components/UserTooltip";
 
@@ -42,7 +42,7 @@ class ADSelectorExample extends React.Component {
       options: [],
       groups,
       hasNextPage: true,
-      isNextPageLoading: false
+      isNextPageLoading: false,
     };
   };
 
@@ -51,38 +51,38 @@ class ADSelectorExample extends React.Component {
       {
         key: "group-administration",
         label: "Administration",
-        total: 0
+        total: 0,
       },
       {
         key: "group-dev",
         label: "Development",
-        total: 0
+        total: 0,
       },
       {
         key: "group-management",
         label: "Management",
-        total: 0
+        total: 0,
       },
       {
         key: "group-marketing",
         label: "Marketing",
-        total: 0
+        total: 0,
       },
       {
         key: "group-mobile",
         label: "Mobile",
-        total: 0
+        total: 0,
       },
       {
         key: "group-support",
         label: "Support",
-        total: 0
+        total: 0,
       },
       {
         key: "group-web",
         label: "Web",
-        total: 0
-      }
+        total: 0,
+      },
     ];
   };
 
@@ -97,7 +97,7 @@ class ADSelectorExample extends React.Component {
         label: `Demo User ${index}`,
         avatarUrl: ``,
         position: `Demo`,
-        email: `demo@demo.demo`
+        email: `demo@demo.demo`,
       };
     });
   };
@@ -113,11 +113,13 @@ class ADSelectorExample extends React.Component {
         let filtered = [...this.state.allOptions];
 
         if (currentGroup) {
-          filtered = filtered.filter(o => o.groups.indexOf(currentGroup) > -1);
+          filtered = filtered.filter(
+            (o) => o.groups.indexOf(currentGroup) > -1
+          );
         }
 
         if (searchValue) {
-          filtered = filtered.filter(o => o.label.indexOf(searchValue) > -1);
+          filtered = filtered.filter((o) => o.label.indexOf(searchValue) > -1);
         }
 
         const newOptions = [...options].concat(
@@ -127,7 +129,7 @@ class ADSelectorExample extends React.Component {
         this.setState({
           hasNextPage: newOptions.length < filtered.length,
           isNextPageLoading: false,
-          options: newOptions
+          options: newOptions,
         });
       }, 1000);
     });
@@ -137,13 +139,13 @@ class ADSelectorExample extends React.Component {
     const { total, options, isOpen } = this.props;
     if (!isEqual(prevProps.options, options)) {
       this.setState({
-        options: options
+        options: options,
       });
     }
 
     if (isOpen !== prevProps.isOpen) {
       this.setState({
-        isOpen: isOpen
+        isOpen: isOpen,
       });
     }
 
@@ -156,7 +158,7 @@ class ADSelectorExample extends React.Component {
 
   toggle = () => {
     this.setState({
-      isOpen: !this.state.isOpen
+      isOpen: !this.state.isOpen,
     });
   };
 
@@ -168,7 +170,7 @@ class ADSelectorExample extends React.Component {
       selectedOptions,
       selectedGroups,
       hasNextPage,
-      isNextPageLoading
+      isNextPageLoading,
     } = this.state;
     return (
       <div style={{ position: "relative" }}>
@@ -198,23 +200,25 @@ class ADSelectorExample extends React.Component {
             "There are no users with such name"
           )}
           emptyOptionsLabel={text("emptyOptionsLabel", "There are no users")}
-          loadingLabel={text('loadingLabel', 'Loading... Please wait...')}
-          onSelect={selectedOptions => {
+          loadingLabel={text("loadingLabel", "Loading... Please wait...")}
+          onSelect={(selectedOptions) => {
             action("onSelect")(selectedOptions);
             this.toggle();
           }}
-          onSearchChanged={value => {
+          onSearchChanged={(value) => {
             action("onSearchChanged")(value);
             this.setState({ options: [], hasNextPage: true });
           }}
-          onGroupChanged={group => {
+          onGroupChanged={(group) => {
             action("onGroupChanged")(group);
             this.setState({ options: [], hasNextPage: true });
           }}
-          onCancel={() => this.setState({
-            isOpen: false
-          })}
-          getOptionTooltipContent={index => {
+          onCancel={() =>
+            this.setState({
+              isOpen: false,
+            })
+          }
+          getOptionTooltipContent={(index) => {
             if (!index) return null;
 
             const user = options[+index];
@@ -223,7 +227,14 @@ class ADSelectorExample extends React.Component {
 
             // console.log("onOptionTooltipShow", index, user);
 
-            return (<UserTooltip avatarUrl={user.avatarUrl} label={user.label} email={user.email} position={user.position} />);
+            return (
+              <UserTooltip
+                avatarUrl={user.avatarUrl}
+                label={user.label}
+                email={user.email}
+                position={user.position}
+              />
+            );
           }}
         />
       </div>

@@ -15,20 +15,20 @@ export function getUserList(filter = Filter.getDefault(), fake = false) {
 
   return request({
     method: "get",
-    url: `/people${params}`
+    url: `/people${params}`,
   });
 }
 
 export function getUser(userName = null) {
   return request({
     method: "get",
-    url: `/people/${userName || "@self"}.json`
+    url: `/people/${userName || "@self"}.json`,
   });
 }
 export function getUserPhoto(userId) {
   return request({
     method: "get",
-    url: `/people/${userId}/photo`
+    url: `/people/${userId}/photo`,
   });
 }
 
@@ -36,7 +36,7 @@ export function createUser(data, confirmKey = null) {
   const options = {
     method: "post",
     url: "/people",
-    data: data
+    data: data,
   };
 
   if (confirmKey) options.headers = { confirm: confirmKey };
@@ -51,7 +51,7 @@ export function changePassword(userId, passwordHash, key) {
     method: "put",
     url: `/people/${userId}/password`,
     data,
-    headers: { confirm: key }
+    headers: { confirm: key },
   });
 }
 
@@ -62,7 +62,7 @@ export function changeEmail(userId, email, key) {
     method: "put",
     url: `/people/${userId}/password`,
     data,
-    headers: { confirm: key }
+    headers: { confirm: key },
   });
 }
 export function updateActivationStatus(activationStatus, userId, key) {
@@ -70,7 +70,7 @@ export function updateActivationStatus(activationStatus, userId, key) {
     method: "put",
     url: `/people/activationstatus/${activationStatus}.json`,
     data: { userIds: [userId] },
-    headers: { confirm: key }
+    headers: { confirm: key },
   });
 }
 
@@ -78,7 +78,7 @@ export function updateUser(data) {
   return request({
     method: "put",
     url: `/people/${data.id}`,
-    data
+    data,
   });
 }
 
@@ -86,7 +86,7 @@ export function deleteSelf(key) {
   return request({
     method: "delete",
     url: "/people/@self",
-    headers: { confirm: key }
+    headers: { confirm: key },
   });
 }
 
@@ -94,7 +94,7 @@ export function sendInstructionsToChangePassword(email) {
   return request({
     method: "post",
     url: "/people/password.json",
-    data: { email }
+    data: { email },
   });
 }
 
@@ -104,7 +104,7 @@ export function getListAdmins(filter = Filter.getDefault()) {
     "fields=id,displayName,groups,name,avatar,avatarSmall,isOwner,isAdmin,profileUrl,listAdminModules";
   return request({
     method: "get",
-    url: `/people/filter.json?${filterParams}&${params}`
+    url: `/people/filter.json?${filterParams}&${params}`,
   });
 }
 
@@ -116,7 +116,7 @@ export function getAdmins(isParams) {
   }
   return request({
     method: "get",
-    url: `/people/filter.json?isadministrator=true&${params}`
+    url: `/people/filter.json?isadministrator=true&${params}`,
   });
 }
 
@@ -127,15 +127,15 @@ export function changeProductAdmin(userId, productId, administrator) {
     data: {
       productId,
       userId,
-      administrator
-    }
+      administrator,
+    },
   });
 }
 
 export function getUserById(userId) {
   return request({
     method: "get",
-    url: `/people/${userId}`
+    url: `/people/${userId}`,
   });
 }
 
@@ -143,7 +143,7 @@ export function resendUserInvites(userIds) {
   return request({
     method: "put",
     url: "/people/invite",
-    data: { userIds }
+    data: { userIds },
   });
 }
 
@@ -151,7 +151,7 @@ export function updateUserCulture(id, cultureName) {
   return request({
     method: "put",
     url: `/people/${id}/culture`,
-    data: { cultureName }
+    data: { cultureName },
   });
 }
 
@@ -159,7 +159,7 @@ export function loadAvatar(profileId, data) {
   return request({
     method: "post",
     url: `/people/${profileId}/photo`,
-    data
+    data,
   });
 }
 
@@ -167,14 +167,14 @@ export function createThumbnailsAvatar(profileId, data) {
   return request({
     method: "post",
     url: `/people/${profileId}/photo/thumbnails.json`,
-    data
+    data,
   });
 }
 
 export function deleteAvatar(profileId) {
   return request({
     method: "delete",
-    url: `/people/${profileId}/photo`
+    url: `/people/${profileId}/photo`,
   });
 }
 
@@ -182,7 +182,7 @@ export function updateUserStatus(status, userIds) {
   return request({
     method: "put",
     url: `/people/status/${status}`,
-    data: { userIds }
+    data: { userIds },
   });
 }
 
@@ -190,14 +190,14 @@ export function updateUserType(type, userIds) {
   return request({
     method: "put",
     url: `/people/type/${type}`,
-    data: { userIds }
+    data: { userIds },
   });
 }
 
 export function sendInstructionsToDelete() {
   return request({
     method: "put",
-    url: "/people/self/delete.json"
+    url: "/people/self/delete.json",
   });
 }
 
@@ -205,14 +205,14 @@ export function sendInstructionsToChangeEmail(userId, email) {
   return request({
     method: "post",
     url: "/people/email.json",
-    data: { userId, email }
+    data: { userId, email },
   });
 }
 
 export function deleteUser(userId) {
   return request({
     method: "delete",
-    url: `/people/${userId}.json`
+    url: `/people/${userId}.json`,
   });
 }
 
@@ -220,13 +220,13 @@ export function deleteUsers(userIds) {
   return request({
     method: "put",
     url: "/people/delete.json",
-    data: { userIds }
+    data: { userIds },
   });
 }
 
 export function getSelectorUserList() {
   return request({
     method: "get",
-    url: "/people/filter.json?fields=id,displayName,groups"
+    url: "/people/filter.json?fields=id,displayName,groups",
   });
 }

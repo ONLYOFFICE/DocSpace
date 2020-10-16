@@ -16,18 +16,18 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
     restricted,
     allowForMe,
     user,
-    computedMatch
+    computedMatch,
   } = rest;
   const { userId } = computedMatch.params;
 
-  const renderComponent = props => {
+  const renderComponent = (props) => {
     if (!isAuthenticated) {
       console.log("PrivateRoute render Redirect to login", rest);
       return (
         <Redirect
           to={{
             pathname: "/login",
-            state: { from: props.location }
+            state: { from: props.location },
           }}
         />
       );
@@ -83,7 +83,7 @@ function mapStateToProps(state) {
     isAuthenticated: !(
       !localStorage.getItem(AUTH_KEY) ||
       (isLoaded && !isAuthenticated)
-    )
+    ),
   };
 }
 

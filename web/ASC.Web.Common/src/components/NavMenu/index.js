@@ -22,14 +22,14 @@ class NavMenu extends React.Component {
       isBackdropVisible,
       isNavHoverEnabled,
       isNavOpened,
-      isAsideVisible
+      isAsideVisible,
     } = props;
 
     this.state = {
       isBackdropVisible,
       isNavOpened,
       isAsideVisible,
-      isNavHoverEnabled
+      isNavHoverEnabled,
     };
   }
 
@@ -38,7 +38,7 @@ class NavMenu extends React.Component {
       isBackdropVisible: false,
       isNavOpened: false,
       isAsideVisible: false,
-      isNavHoverEnabled: !this.state.isNavHoverEnabled
+      isNavHoverEnabled: !this.state.isNavHoverEnabled,
     });
   };
 
@@ -47,7 +47,7 @@ class NavMenu extends React.Component {
       isBackdropVisible: true,
       isNavOpened: true,
       isAsideVisible: false,
-      isNavHoverEnabled: false
+      isNavHoverEnabled: false,
     });
   };
 
@@ -63,7 +63,7 @@ class NavMenu extends React.Component {
       this.setState({
         isBackdropVisible: false,
         isNavOpened: true,
-        isAsideVisible: false
+        isAsideVisible: false,
       });
     }, 1000);
   };
@@ -74,7 +74,7 @@ class NavMenu extends React.Component {
     this.setState({
       isBackdropVisible: false,
       isNavOpened: false,
-      isAsideVisible: false
+      isAsideVisible: false,
     });
   };
 
@@ -84,7 +84,7 @@ class NavMenu extends React.Component {
       isBackdropVisible: true,
       isNavOpened: false,
       isAsideVisible: true,
-      isNavHoverEnabled: false
+      isNavHoverEnabled: false,
     });
   };
 
@@ -135,25 +135,25 @@ NavMenu.propTypes = {
 
   asideContent: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
-    PropTypes.node
+    PropTypes.node,
   ]),
 
   isAuthenticated: PropTypes.bool,
   isLoaded: PropTypes.bool,
 
-  history: PropTypes.object
+  history: PropTypes.object,
 };
 
 NavMenu.defaultProps = {
   isBackdropVisible: false,
   isNavHoverEnabled: true,
   isNavOpened: false,
-  isAsideVisible: false
+  isAsideVisible: false,
 };
 
 const NavMenuTranslationWrapper = withTranslation()(NavMenu);
 
-const NavMenuWrapper = props => {
+const NavMenuWrapper = (props) => {
   const { language } = props;
 
   useEffect(() => {
@@ -168,7 +168,7 @@ const NavMenuWrapper = props => {
 };
 
 NavMenuWrapper.propTypes = {
-  language: PropTypes.string.isRequired
+  language: PropTypes.string.isRequired,
 };
 
 function mapStateToProps(state) {
@@ -178,7 +178,7 @@ function mapStateToProps(state) {
     isAuthenticated,
     isLoaded,
 
-    language: getLanguage(state)
+    language: getLanguage(state),
   };
 }
 

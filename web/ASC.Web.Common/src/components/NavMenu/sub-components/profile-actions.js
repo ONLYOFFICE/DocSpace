@@ -11,11 +11,11 @@ class ProfileActions extends React.PureComponent {
 
     this.state = {
       opened: props.opened,
-      user: props.user
+      user: props.user,
     };
   }
 
-  setOpened = opened => {
+  setOpened = (opened) => {
     this.setState({ opened: opened });
   };
 
@@ -29,7 +29,7 @@ class ProfileActions extends React.PureComponent {
     }
   }
 
-  getUserRole = user => {
+  getUserRole = (user) => {
     let isModuleAdmin = user.listAdminModules && user.listAdminModules.length;
 
     if (user.isOwner) return "owner";
@@ -38,7 +38,7 @@ class ProfileActions extends React.PureComponent {
     return "user";
   };
 
-  onClose = e => {
+  onClose = (e) => {
     if (this.ref.current.contains(e.target)) return;
 
     this.setOpened(!this.state.opened);
@@ -50,7 +50,7 @@ class ProfileActions extends React.PureComponent {
     this.setOpened(!this.state.opened);
   };
 
-  onClickItemLink = e => {
+  onClickItemLink = (e) => {
     this.setOpened(!this.state.opened);
 
     e.preventDefault();
@@ -80,7 +80,7 @@ class ProfileActions extends React.PureComponent {
           clickOutsideAction={this.onClose}
         >
           <div style={{ paddingTop: "8px" }}>
-            {this.props.userActions.map(action => (
+            {this.props.userActions.map((action) => (
               <Link
                 noHover={true}
                 key={action.key}
@@ -100,13 +100,13 @@ class ProfileActions extends React.PureComponent {
 ProfileActions.propTypes = {
   opened: PropTypes.bool,
   user: PropTypes.object,
-  userActions: PropTypes.array
+  userActions: PropTypes.array,
 };
 
 ProfileActions.defaultProps = {
   opened: false,
   user: {},
-  userActions: []
+  userActions: [],
 };
 
 export default ProfileActions;

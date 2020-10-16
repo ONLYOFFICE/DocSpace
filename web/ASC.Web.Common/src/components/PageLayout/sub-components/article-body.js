@@ -6,7 +6,7 @@ import { Scrollbar, utils } from "asc-web-components";
 const { tablet, smallTablet } = utils.device;
 
 const StyledArticleBody = styled.div`
-  ${props => props.displayBorder && `outline: 1px dotted;`}
+  ${(props) => props.displayBorder && `outline: 1px dotted;`}
   flex-grow: 1;
   height: 100%;
 
@@ -15,8 +15,8 @@ const StyledArticleBody = styled.div`
     display: table;
     width: 100%;
 
-    .custom-scrollbar{
-      display:table-cell;
+    .custom-scrollbar {
+      display: table-cell;
     }
   }
 
@@ -73,8 +73,8 @@ ArticleBody.displayName = "ArticleBody";
 ArticleBody.propTypes = {
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
-    PropTypes.node
-  ])
+    PropTypes.node,
+  ]),
 };
 
 export default ArticleBody;

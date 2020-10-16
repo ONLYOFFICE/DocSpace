@@ -9,13 +9,13 @@ export const PublicRoute = ({ component: Component, ...rest }) => {
 
   const { wizardToken, wizardCompleted } = rest;
 
-  const renderComponent = props => {
+  const renderComponent = (props) => {
     if (token) {
       return (
         <Redirect
           to={{
             pathname: "/",
-            state: { from: props.location }
+            state: { from: props.location },
           }}
         />
       );
@@ -26,7 +26,7 @@ export const PublicRoute = ({ component: Component, ...rest }) => {
         <Redirect
           to={{
             pathname: "/wizard",
-            state: { from: props.location }
+            state: { from: props.location },
           }}
         />
       );
@@ -40,7 +40,7 @@ export const PublicRoute = ({ component: Component, ...rest }) => {
 function mapStateToProps(state) {
   return {
     wizardToken: state.auth.settings.wizardToken,
-    wizardCompleted: state.auth.settings.wizardCompleted
+    wizardCompleted: state.auth.settings.wizardCompleted,
   };
 }
 
