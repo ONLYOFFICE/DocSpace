@@ -109,7 +109,6 @@ class NewFilesPanelComponent extends React.Component {
     api.files
       .markAsRead(folderIds, fileIds)
       .then(() => {
-        this.props.setUpdateTree(true);
         this.setNewFilesCount(folderId, markAsReadFiles);
         this.props.setNewRowItems(itemsIds);
       })
@@ -162,7 +161,7 @@ class NewFilesPanelComponent extends React.Component {
   };
 
   setNewFilesCount = (folderPath, markAsReadAll, item) => {
-    const { treeFolders, setTreeFolders, folders, files } = this.props;
+    const { treeFolders, setTreeFolders, folders, files, setUpdateTree } = this.props;
 
     const data = treeFolders;
     let dataItem;
@@ -210,6 +209,7 @@ class NewFilesPanelComponent extends React.Component {
       }
     }
 
+    setUpdateTree(true);
     setTreeFolders(data);
   };
 
