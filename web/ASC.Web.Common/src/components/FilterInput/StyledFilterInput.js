@@ -13,25 +13,12 @@ const StyledFilterInput = styled.div`
 
   .styled-search-input {
     display: block;
-  width: 100%;
-  min-width: 255px;
-  display: flex;
-  &:after {
-    content: " ";
-    display: block;
-    height: 0;
-    clear: both;
-    visibility: hidden;
-  }
-
-  .styled-search-input {
-    display: block;
     width: 100%;
 
     .prepend {
-      max-width: ${props =>
+      max-width: ${(props) =>
         props.filterMaxWidth ? `${props.filterMaxWidth}px` : "unset"};
-      overflow: ${props => (props.overflowFilter ? "visible" : "hidden")};
+      overflow: ${(props) => (props.overflowFilter ? "visible" : "hidden")};
     }
 
     .search-input-block {
@@ -121,7 +108,7 @@ const StyledFilterInput = styled.div`
     width: fit-content;
     margin-left: 8px;
 
-    ${props =>
+    ${(props) =>
       props.isMobile &&
       `
           width: 50px;
@@ -147,10 +134,10 @@ export const StyledViewSelector = styled.div`
   }
 
   .view-selector-button {
-    border: 1px solid ${props => (props.isDisabled ? "#ECEEF1" : "#D0D5DA")};
+    border: 1px solid ${(props) => (props.isDisabled ? "#ECEEF1" : "#D0D5DA")};
     border-radius: 3px;
     padding: 7px;
-    ${props => props.isDisabled && "background-color: #F8F9F9;"}
+    ${(props) => props.isDisabled && "background-color: #F8F9F9;"}
 
     svg {
       pointer-events: none;
@@ -162,8 +149,8 @@ export const StyledViewSelector = styled.div`
     }
 
     &:hover {
-      ${props => !props.isDisabled && "background-color: #A3A9AE;"}
-      ${props => !props.isDisabled && "border-color: #A3A9AE;"}
+      ${(props) => !props.isDisabled && "background-color: #A3A9AE;"}
+      ${(props) => !props.isDisabled && "border-color: #A3A9AE;"}
     }
 
     &:first-child {
@@ -181,8 +168,8 @@ export const StyledViewSelector = styled.div`
 `;
 
 export const StyledFilterItem = styled.div`
-  display: ${props => (props.block ? "flex" : "inline-block")};
-  margin-bottom: ${props => (props.block ? "8px" : "0")};
+  display: ${(props) => (props.block ? "flex" : "inline-block")};
+  margin-bottom: ${(props) => (props.block ? "8px" : "0")};
   position: relative;
   height: 24px;
   margin-right: 2px;
@@ -208,13 +195,13 @@ export const StyledFilterItemContent = styled.div`
   width: max-content;
   user-select: none;
   color: #333;
-  ${props =>
+  ${(props) =>
     props.isOpen &&
     !props.isDisabled &&
     css`
       background: #eceef1;
     `}
-  ${props =>
+  ${(props) =>
     !props.isDisabled &&
     css`
       &:active {
@@ -235,7 +222,7 @@ export const StyledCloseButtonBlock = styled.div`
   right: 0;
   top: 0;
   background-color: #f8f9f9;
-  ${props =>
+  ${(props) =>
     !props.isDisabled &&
     css`
       &:active {
@@ -291,7 +278,7 @@ export const StyledHideFilterButton = styled.div`
 `;
 
 export const StyledIconButton = styled.div`
-  transform: ${state => (!state.sortDirection ? "scale(1, -1)" : "scale(1)")};
+  transform: ${(state) => (!state.sortDirection ? "scale(1, -1)" : "scale(1)")};
 `;
 
 export const StyledIconWrapper = styled.div`

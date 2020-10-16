@@ -43,8 +43,6 @@ class FilterInput extends React.Component {
 
     this.searchWrapper = React.createRef();
     this.filterWrapper = React.createRef();
-
-    this.throttledResize = throttle(this.resize, 300);
   }
 
   componentDidMount() {
