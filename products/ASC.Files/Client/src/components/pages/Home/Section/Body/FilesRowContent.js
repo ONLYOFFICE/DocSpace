@@ -189,7 +189,7 @@ class FilesRowContent extends React.PureComponent {
   }
 
   onFilesClick = () => {
-    const { filter, parentFolder, setIsLoading, onMediaFileClick, fetchFiles, isImage, isSound, isVideo, canWebEdit, item } = this.props;
+    const { filter, parentFolder, setIsLoading, onMediaFileClick, fetchFiles, isImage, isSound, isVideo, canWebEdit, item, openDocEditor } = this.props;
     const { id, fileExst, viewUrl } = item;
 
     if (!fileExst) {
@@ -208,7 +208,7 @@ class FilesRowContent extends React.PureComponent {
         .finally(() => setIsLoading(false));
     } else {
       if (canWebEdit) {
-        return window.open(`./doceditor?fileId=${id}`, "_blank");
+        return openDocEditor(id);
       }
 
       if (isImage || isSound || isVideo) {

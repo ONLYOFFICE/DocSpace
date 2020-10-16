@@ -76,6 +76,7 @@ import {
   getIsShareFolder,
   getIsCommonFolder,
   getIsRecycleBinFolder,
+  getIsRecentFolder,
   getIsMyFolder,
   getMyFolderId,
   getTooltipLabel,
@@ -388,14 +389,16 @@ class SectionBodyContent extends React.Component {
     return window.open(this.props.selection[0].viewUrl, "_blank");
   };
 
-  onClickLinkEdit = (e) => {
-    const id = e.currentTarget.dataset.id;
-    const { addFileToRecentlyViewed } = this.props; 
-
-    return addFileToRecentlyViewed(id)
+  openDocEditor = (id) => {
+    return this.props.addFileToRecentlyViewed(id)
     .then(() => console.log("Pushed to recently viewed"))
     .catch(e => console.error(e))
     .finally(window.open(`./doceditor?fileId=${id}`, "_blank"));
+  };
+
+  onClickLinkEdit = (e) => {
+    const id = e.currentTarget.dataset.id;
+    return this.openDocEditor(id)
   };
 
   showVersionHistory = (e) => {
@@ -695,7 +698,7 @@ class SectionBodyContent extends React.Component {
   };
 
   renderEmptyRootFolderContainer = () => {
-    const { isMy, isShare, isCommon, isRecycleBin, title, t } = this.props;
+    const { isMy, isShare, isCommon, isRecycleBin, isRecent, title, t } = this.props;
     const subheadingText = t("SubheadingEmptyText");
     const myDescription = t("MyEmptyContainerDescription");
     const shareDescription = t("SharedEmptyContainerDescription");
@@ -800,6 +803,15 @@ class SectionBodyContent extends React.Component {
           descriptionText={trashDescription}
           imageSrc="images/empty_screen_trash.png"
           buttons={trashButtons}
+        />
+      );
+    } else if (isRecent) {
+      return (
+        <EmptyFolderContainer
+          headerText={title}
+          subheadingText={subheadingText}
+          descriptionText={recentDescription}
+          imageSrc="images/empty_screen_recent.png"
         />
       );
     } else {
@@ -1427,6 +1439,7 @@ class SectionBodyContent extends React.Component {
                       culture={settings.culture}
                       onEditComplete={this.onEditComplete}
                       onMediaFileClick={this.onMediaFileClick}
+                      openDocEditor={this.openDocEditor}
                     />
                   </Tile>
                 </DragAndDrop>
@@ -1494,6 +1507,7 @@ class SectionBodyContent extends React.Component {
                       culture={settings.culture}
                       onEditComplete={this.onEditComplete}
                       onMediaFileClick={this.onMediaFileClick}
+                      openDocEditor={this.openDocEditor}
                     />
                   </SimpleFilesRow>
                 </DragAndDrop>
@@ -1554,6 +1568,7 @@ const mapStateToProps = (state) => {
     isLoading: getIsLoading(state),
     isMy: getIsMyFolder(state),
     isRecycleBin: getIsRecycleBinFolder(state),
+    isRecent: getIsRecentFolder(state),
     isShare: getIsShareFolder(state),
     mediaViewerImageFormats: getMediaViewerImageFormats(state),
     mediaViewerMediaFormats: getMediaViewerMediaFormats(state),

@@ -663,6 +663,10 @@ const getRecycleBinFolder = createSelector(getTreeFolders, (treeFolders) => {
   return treeFolders.find((x) => x.rootFolderName === "@trash");
 });
 
+const getRecentFolder = createSelector(getTreeFolders, (treeFolders) => {
+  return treeFolders.find((x) => x.rootFolderName === "@recent");
+});
+
 export const getMyFolderId = createSelector(getMyFolder, (myFolder) => {
   if (myFolder) return myFolder.id;
 });
@@ -685,6 +689,13 @@ export const getRecycleBinFolderId = createSelector(
   getRecycleBinFolder,
   (recycleBinFolder) => {
     if (recycleBinFolder) return recycleBinFolder.id;
+  }
+);
+
+export const getRecentFolderId = createSelector(
+  getRecentFolder,
+  (recentFolder) => {
+    if (recentFolder) return recentFolder.id;
   }
 );
 
@@ -717,6 +728,14 @@ export const getIsRecycleBinFolder = createSelector(
   getSelectedFolderId,
   (recycleBinFolder, id) => {
     return recycleBinFolder && recycleBinFolder.id === id;
+  }
+);
+
+export const getIsRecentFolder = createSelector(
+  getRecentFolder,
+  getSelectedFolderId,
+  (recentFolder, id) => {
+    return recentFolder && recentFolder.id === id;
   }
 );
 

@@ -186,7 +186,7 @@ class FilesTileContent extends React.PureComponent {
 
   onFilesClick = () => {
     const { id, fileExst, viewUrl } = this.props.item;
-    const { filter, parentFolder, setIsLoading, onMediaFileClick, fetchFiles, canWebEdit } = this.props;
+    const { filter, parentFolder, setIsLoading, onMediaFileClick, fetchFiles, canWebEdit, openDocEditor } = this.props;
     if (!fileExst) {
       setIsLoading(true);
       const newFilter = filter.clone();
@@ -202,7 +202,7 @@ class FilesTileContent extends React.PureComponent {
         .finally(() => setIsLoading(false));
     } else {
       if (canWebEdit) {
-        return window.open(`./doceditor?fileId=${id}`, "_blank");
+        return openDocEditor(id);
       }
 
       const isOpenMedia = isImage(fileExst) || isSound(fileExst) || isVideo(fileExst);
