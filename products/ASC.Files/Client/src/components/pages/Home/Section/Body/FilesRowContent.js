@@ -215,8 +215,11 @@ class FilesRowContent extends React.PureComponent {
       isVideo,
       canWebEdit,
       item,
+      isTrashFolder,
     } = this.props;
     const { id, fileExst, viewUrl } = item;
+
+    if (isTrashFolder) return;
 
     if (!fileExst) {
       setIsLoading(true);
@@ -247,7 +250,9 @@ class FilesRowContent extends React.PureComponent {
   };
 
   onMobileRowClick = (e) => {
-    if (window.innerWidth > 1024) return;
+    const { isTrashFolder } = this.props;
+
+    if (isTrashFolder || window.innerWidth > 1024) return;
 
     this.onFilesClick();
   };
