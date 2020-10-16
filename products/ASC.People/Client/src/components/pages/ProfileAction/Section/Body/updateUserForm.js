@@ -8,7 +8,8 @@ import {
   Text,
   AvatarEditor,
   Link,
-  utils,} from "asc-web-components";
+  utils,
+} from "asc-web-components";
 import { withTranslation, Trans } from "react-i18next";
 import {
   toEmployeeWrapper,
@@ -142,7 +143,7 @@ class UpdateUserForm extends React.Component {
         }
       }
     });
-  }
+  };
 
   mapPropsToState = (props) => {
     var profile = toEmployeeWrapper(props.profile);
@@ -195,7 +196,7 @@ class UpdateUserForm extends React.Component {
         [dialogsDataset.changeEmail]: false,
         currentDialog: "",
       },
-      isMobile: isMobile || isTablet,    
+      isMobile: isMobile || isTablet,
     };
 
     //Set unique contacts id
@@ -386,15 +387,14 @@ class UpdateUserForm extends React.Component {
   }
 
   onLoadFileAvatar = (file, fileData) => {
-
     let data = new FormData();
     let _this = this;
- 
-    if(!file) {
-      _this.onSaveAvatar(false)
+
+    if (!file) {
+      _this.onSaveAvatar(false);
       return;
     }
-    
+
     data.append("file", file);
     data.append("Autosave", false);
     loadAvatar(this.state.profile.id, data)
@@ -433,25 +433,22 @@ class UpdateUserForm extends React.Component {
     const { profile, setAvatarMax } = this.props;
     if (isUpdate) {
       createThumbnailsAvatar(profile.id, {
-        x: Math.round(
-          result.x * avatar.defaultWidth - result.width / 2
-        ),
-        y: Math.round(
-          result.y * avatar.defaultHeight - result.height / 2
-        ),
+        x: Math.round(result.x * avatar.defaultWidth - result.width / 2),
+        y: Math.round(result.y * avatar.defaultHeight - result.height / 2),
         width: result.width,
         height: result.height,
         tmpFile: avatar.tmpFile,
       })
         .then((response) => {
           let stateCopy = Object.assign({}, this.state);
-          const avatarMax = response.max +
+          const avatarMax =
+            response.max +
             "?_=" +
             Math.floor(Math.random() * Math.floor(10000));
 
           stateCopy.visibleAvatarEditor = false;
           stateCopy.isLoading = false;
-          stateCopy.avatar.tmpFile = "";         
+          stateCopy.avatar.tmpFile = "";
           this.setState(stateCopy);
 
           setAvatarMax(avatarMax);
@@ -468,10 +465,10 @@ class UpdateUserForm extends React.Component {
         .then(() => {
           this.updateUserPhotoInState();
         })
-        .then(() => this.props.fetchProfile(profile.id));    
-      } else {
+        .then(() => this.props.fetchProfile(profile.id));
+    } else {
       deleteAvatar(profile.id)
-        .then((response) => {          
+        .then((response) => {
           let stateCopy = Object.assign({}, this.state);
           stateCopy.visibleAvatarEditor = false;
           toastr.success(this.props.t("ChangesSavedSuccessfully"));
@@ -485,8 +482,8 @@ class UpdateUserForm extends React.Component {
         .then(() => {
           this.setState(this.mapPropsToState(this.props));
         })
-        .then(() => this.props.fetchProfile(profile.id));    
-      }
+        .then(() => this.props.fetchProfile(profile.id));
+    }
   };
 
   onCloseAvatarEditor() {

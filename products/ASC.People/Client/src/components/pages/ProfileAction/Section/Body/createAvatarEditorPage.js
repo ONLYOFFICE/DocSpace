@@ -15,10 +15,12 @@ import {
   setCroppedAvatar,
   resetProfile,
 } from "../../../../../store/profile/actions";
+import { toEmployeeWrapper } from "../../../../../store/people/selectors";
 import {
-  toEmployeeWrapper,
-} from "../../../../../store/people/selectors";
-import { toggleAvatarEditor, updateProfileInUsers, setIsEditingForm } from "../../../../../store/people/actions";
+  toggleAvatarEditor,
+  updateProfileInUsers,
+  setIsEditingForm,
+} from "../../../../../store/people/actions";
 import { setDocumentTitle } from "../../../../../helpers/utils";
 import { isMobile } from "react-device-detect";
 
@@ -104,7 +106,7 @@ class CreateAvatarEditorPage extends React.PureComponent {
         }
       }
     });
-  }
+  };
 
   mapPropsToState = (props) => {
     var profile = toEmployeeWrapper({
@@ -142,14 +144,14 @@ class CreateAvatarEditorPage extends React.PureComponent {
     setIsEditingForm(hasChanges);
   }
 
-  onLoadFileAvatar (file, fileData) {
+  onLoadFileAvatar(file, fileData) {
     let data = new FormData();
     let _this = this;
     data.append("file", file);
     data.append("Autosave", false);
 
-    if(!file) {
-      _this.onSaveAvatar(false)
+    if (!file) {
+      _this.onSaveAvatar(false);
       return;
     }
 
@@ -183,18 +185,22 @@ class CreateAvatarEditorPage extends React.PureComponent {
                 fileData.avatar,
                 fileData.croppedImage
               );
-            } 
+            }
           }
-
         };
         img.src = response.data;
       })
       .catch((error) => toastr.error(error));
   }
 
-  onSaveAvatar (isUpdate, result, avatar, croppedImage) {
+  onSaveAvatar(isUpdate, result, avatar, croppedImage) {
     var stateCopy = Object.assign({}, this.state);
-    const { setCreatedAvatar, toggleAvatarEditor, setCroppedAvatar, resetProfile } = this.props
+    const {
+      setCreatedAvatar,
+      toggleAvatarEditor,
+      setCroppedAvatar,
+      resetProfile,
+    } = this.props;
 
     stateCopy.visibleAvatarEditor = false;
     stateCopy.croppedAvatarImage = croppedImage;
@@ -207,13 +213,13 @@ class CreateAvatarEditorPage extends React.PureComponent {
       );
       stateCopy.avatar.width = result.width;
       stateCopy.avatar.height = result.height;
-      
-      setCreatedAvatar(stateCopy.avatar)
-      setCroppedAvatar(croppedImage)
-      this.setIsEdit(true)
+
+      setCreatedAvatar(stateCopy.avatar);
+      setCroppedAvatar(croppedImage);
+      this.setIsEdit(true);
     } else {
-      resetProfile()
-      this.setIsEdit(false)
+      resetProfile();
+      this.setIsEdit(false);
     }
 
     toggleAvatarEditor(false);
