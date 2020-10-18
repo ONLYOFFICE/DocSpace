@@ -30,6 +30,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 
+using ASC.Common;
 using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
@@ -39,6 +40,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Data
 {
+    [Scope]
     public class ConfigureEFUserService : IConfigureNamedOptions<EFUserService>
     {
         private DbContextManager<UserDbContext> DbContextManager { get; }
@@ -63,7 +65,7 @@ namespace ASC.Core.Data
         }
     }
 
-
+    [Scope]
     public class EFUserService : IUserService
     {
         public Expression<Func<User, UserInfo>> FromUserToUserInfo { get; set; }

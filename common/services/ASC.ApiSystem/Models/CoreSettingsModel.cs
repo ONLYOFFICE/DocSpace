@@ -24,6 +24,7 @@
 */
 
 
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace ASC.ApiSystem.Models

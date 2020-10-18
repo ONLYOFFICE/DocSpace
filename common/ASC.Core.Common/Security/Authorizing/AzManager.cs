@@ -31,6 +31,7 @@ using ASC.Core.Security.Authorizing;
 
 namespace ASC.Common.Security.Authorizing
 {
+    [Scope]
     public class AzManager
     {
         private readonly IPermissionProvider permissionProvider;

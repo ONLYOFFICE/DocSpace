@@ -32,6 +32,7 @@ using ASC.Common.Threading.Progress;
 using ASC.Core.Users;
 
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
 
 namespace ASC.Data.Reassigns

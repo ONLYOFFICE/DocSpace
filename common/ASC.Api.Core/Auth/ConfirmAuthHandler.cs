@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using ASC.Common;
 using ASC.Core;
 using ASC.Security.Cryptography;
+using ASC.Web.Studio.Core;
 
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.DependencyInjection;

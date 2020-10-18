@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Text;
 using System.Text.Json.Serialization;
 
@@ -35,6 +36,8 @@ namespace ASC.Files
 
             var diHelper = new DIHelper(services);
 
+            Stopwatch stopwatch = Stopwatch.StartNew();
+
             diHelper
                 .AddApiProductEntryPointService()
                 .AddDocumentsControllerService()
@@ -45,6 +48,7 @@ namespace ASC.Files
                 .AddDocuSignHandlerService()
                 .AddNotifyConfiguration();
 
+            var a = stopwatch.ElapsedMilliseconds;
             base.ConfigureServices(services);
         }
 

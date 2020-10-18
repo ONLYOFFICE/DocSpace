@@ -37,6 +37,7 @@ using Constants = ASC.Core.Configuration.Constants;
 
 namespace ASC.Core.Security.Authorizing
 {
+    [Scope]
     class PermissionResolver : IPermissionResolver
     {
         private readonly AzManager azManager;

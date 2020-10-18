@@ -290,6 +290,7 @@ namespace ASC.Core
         }
     }
 
+    [Scope]
     public class PermissionContext
     {
         public IPermissionResolver PermissionResolver { get; set; }
@@ -332,6 +333,7 @@ namespace ASC.Core
         }
     }
 
+    [Scope]
     public class AuthContext
     {
         private IHttpContextAccessor HttpContextAccessor { get; }

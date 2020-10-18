@@ -25,9 +25,11 @@
 
 
 using ASC.Common.Security.Authorizing;
+using ASC.Core.Security.Authorizing;
 
 namespace ASC.Common.Security
 {
+    [Scope(typeof(PermissionResolver))]
     public interface IPermissionResolver
     {
         bool Check(ISubject subject, params IAction[] actions);

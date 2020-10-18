@@ -31,6 +31,8 @@ namespace ASC.Core.Common.Tests
 
     using ASC.Core.Tenants;
 
+    using Microsoft.Extensions.Configuration;
+
     using NUnit.Framework;
 
     [TestFixture]

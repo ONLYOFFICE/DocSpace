@@ -138,6 +138,7 @@ namespace ASC.Core.Caching
         }
     }
 
+    [Scope]
     class ConfigureCachedUserService : IConfigureNamedOptions<CachedUserService>
     {
         internal IOptionsSnapshot<EFUserService> Service { get; }
@@ -174,6 +175,7 @@ namespace ASC.Core.Caching
         }
     }
 
+    [Scope]
     public class CachedUserService : IUserService, ICachedService
     {
         internal IUserService Service { get; set; }
@@ -524,11 +526,11 @@ namespace ASC.Core.Caching
     {
         public static DIHelper AddUserService(this DIHelper services)
         {
-            if (services.TryAddScoped<EFUserService>())
+            if (services.TryAddScoped<EFUserService>())//
             {
-                services.TryAddScoped<IUserService, CachedUserService>();
+                services.TryAddScoped<IConfigureOptions<EFUserService>, ConfigureEFUserService>();//
 
-                services.TryAddScoped<IConfigureOptions<EFUserService>, ConfigureEFUserService>();
+                services.TryAddScoped<IUserService, CachedUserService>();
                 services.TryAddScoped<IConfigureOptions<CachedUserService>, ConfigureCachedUserService>();
 
                 services.TryAddSingleton<UserServiceCache>();

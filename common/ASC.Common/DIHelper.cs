@@ -1,14 +1,75 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 
 using ASC.Common.Threading.Progress;
 using ASC.Common.Threading.Workers;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Common
 {
+    public class ScopeAttribute : DIAttribute
+    {
+
+
+        public ScopeAttribute()
+        {
+
+        }
+
+        public ScopeAttribute(Type type) : base(type)
+        {
+        }
+
+        public ScopeAttribute(Type type, Type cachedType) : base(type, cachedType)
+        {
+
+        }
+    }
+
+    public class SingletoneAttribute : DIAttribute
+    {
+        public SingletoneAttribute()
+        {
+
+        }
+
+        public SingletoneAttribute(Type type) : base(type)
+        {
+        }
+
+        public SingletoneAttribute(Type type, Type cachedType) : base(type, cachedType)
+        {
+
+        }
+    }
+
+    public class DIAttribute : Attribute
+    {
+        public Type CachedType { get; }
+        public Type Type { get; }
+
+        public DIAttribute()
+        {
+
+        }
+
+        public DIAttribute(Type type)
+        {
+            Type = type;
+        }
+
+        public DIAttribute(Type type, Type cachedType)
+        {
+            CachedType = cachedType;
+            Type = type;
+        }
+    }
+
     public class DIHelper
     {
         public List<string> Singleton { get; set; }
@@ -35,6 +96,130 @@ namespace ASC.Common
                 ServiceCollection.TryAddScoped<TService>();
                 return true;
             }
+            return false;
+        }
+
+        public bool TryAdd<TService>() where TService : class
+        {
+            return TryAdd(typeof(TService));
+        }
+
+        public bool TryAdd(Type service, Type implementation = null)
+        {
+            var di = service.GetCustomAttribute<DIAttribute>();
+            var isnew = false;
+
+            if (di != null)
+            {
+                if (service.IsInterface && implementation == null)
+                {
+                    var a = di.Type.GetInterfaces().FirstOrDefault(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IConfigureOptions<>));
+                    if (a != null)
+                    {
+                        var b = a.GetGenericArguments();
+
+                        foreach (var g in b)
+                        {
+                            TryAdd(g);
+                        }
+
+                        TryAdd(a, di.Type);
+                    }
+                    else
+                    {
+                        Register(service, di.Type);
+                    }
+
+                    if (di.CachedType != null)
+                    {
+                        a = di.CachedType.GetInterfaces().FirstOrDefault(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IConfigureOptions<>));
+                        if (a != null)
+                        {
+                            var b = a.GetGenericArguments();
+
+                            foreach (var g in b)
+                            {
+                                TryAdd(service, g);
+                            }
+
+                            TryAdd(a, di.CachedType);
+                        }
+                    }
+
+                }
+                else
+                {
+                    isnew = implementation != null ? Register(service, implementation) : Register(service);
+                }
+            }
+
+            if (isnew)
+            {
+                var props = service.GetConstructors();
+
+                foreach (var p in props)
+                {
+                    var par = p.GetParameters();
+
+                    foreach (var p1 in par)
+                    {
+                        TryAdd(p1.ParameterType);
+                    }
+                }
+            }
+
+            return isnew;
+        }
+
+        private bool Register(Type service)
+        {
+            var c = service.GetCustomAttribute<DIAttribute>();
+            var serviceName = $"{service}";
+            if (c is ScopeAttribute)
+            {
+                if (!Scoped.Contains(serviceName))
+                {
+                    Scoped.Add(serviceName);
+                    ServiceCollection.TryAddScoped(service);
+                    return true;
+                }
+            }
+            else if (c is SingletoneAttribute)
+            {
+                if (!Singleton.Contains(serviceName))
+                {
+                    Singleton.Add(serviceName);
+                    ServiceCollection.TryAddSingleton(service);
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private bool Register(Type service, Type implementation)
+        {
+            var c = service.GetCustomAttribute<DIAttribute>();
+            var serviceName = $"{service}{implementation}";
+            if (c is ScopeAttribute)
+            {
+                if (!Scoped.Contains(serviceName))
+                {
+                    Scoped.Add(serviceName);
+                    ServiceCollection.TryAddScoped(service, implementation);
+                    return true;
+                }
+            }
+            else if (c is SingletoneAttribute)
+            {
+                if (!Singleton.Contains(serviceName))
+                {
+                    Singleton.Add(serviceName);
+                    ServiceCollection.TryAddSingleton(service, implementation);
+                    return true;
+                }
+            }
+
             return false;
         }
 

@@ -40,6 +40,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace ASC.Core
 {
+    [Singletone]
     public class UserManagerConstants
     {
         public IDictionary<Guid, UserInfo> SystemUsers { get; }
@@ -55,6 +56,7 @@ namespace ASC.Core
         }
     }
 
+    [Scope]
     public class UserManager
     {
         private IDictionary<Guid, UserInfo> SystemUsers { get => UserManagerConstants.SystemUsers; }
@@ -657,6 +659,8 @@ namespace ASC.Core
     {
         public static DIHelper AddUserManagerService(this DIHelper services)
         {
+            services.TryAdd(typeof(UserManager));
+
             if (services.TryAddScoped<UserManager>())
             {
                 services.TryAddSingleton<UserManagerConstants>();

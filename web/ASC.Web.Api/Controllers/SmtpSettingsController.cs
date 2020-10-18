@@ -33,12 +33,16 @@ using ASC.Core;
 using ASC.Core.Billing;
 using ASC.Core.Configuration;
 using ASC.Core.Tenants;
+using ASC.MessagingSystem;
 using ASC.Web.Api.Routing;
 using ASC.Web.Core.PublicResources;
 using ASC.Web.Studio.Core;
+using ASC.Web.Studio.Core.Notify;
 using ASC.Web.Studio.Utility;
 
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 
 namespace ASC.Api.Settings
 {

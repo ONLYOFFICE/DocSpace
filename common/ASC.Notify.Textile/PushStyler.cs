@@ -29,8 +29,13 @@ using System.Text.RegularExpressions;
 
 using ASC.Common;
 using ASC.Common.Notify.Patterns;
+using ASC.Core;
 using ASC.Notify.Messages;
 using ASC.Notify.Patterns;
+using ASC.Security.Cryptography;
+using ASC.Web.Core.WhiteLabel;
+
+using Microsoft.Extensions.Configuration;
 
 namespace ASC.Notify.Textile
 {

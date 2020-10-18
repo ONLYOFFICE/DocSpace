@@ -309,9 +309,9 @@ namespace ASC.Core.Caching
         {
             if (services.TryAddScoped<DbTenantService>())
             {
-                services.TryAddScoped<ITenantService, CachedTenantService>();
-
                 services.TryAddScoped<IConfigureOptions<DbTenantService>, ConfigureDbTenantService>();
+
+                services.TryAddScoped<ITenantService, CachedTenantService>();
                 services.TryAddScoped<IConfigureOptions<CachedTenantService>, ConfigureCachedTenantService>();
 
                 services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));

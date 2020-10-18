@@ -40,6 +40,7 @@ using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Context;
 using ASC.Core.Common.EF.Model;
+using ASC.ElasticSearch.Core;
 using ASC.ElasticSearch.Service;
 
 using Autofac;
