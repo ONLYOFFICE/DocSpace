@@ -29,8 +29,9 @@ namespace ASC.Web.Studio
         {
             services.AddCors();
 
-            var diHelper = new DIHelper(services);
-            diHelper
+            base.ConfigureServices(services);
+
+            DIHelper
                 .AddStorage()
                 .AddPathUtilsService()
                 .AddStorageHandlerService()
@@ -38,7 +39,7 @@ namespace ASC.Web.Studio
 
             services.AddMemoryCache();
 
-            base.ConfigureServices(services);
+
             services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
         }
 
