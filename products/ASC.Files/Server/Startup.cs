@@ -34,11 +34,9 @@ namespace ASC.Files
 
             services.AddMemoryCache();
 
-            var diHelper = new DIHelper(services);
+            base.ConfigureServices(services);
 
-            Stopwatch stopwatch = Stopwatch.StartNew();
-
-            diHelper
+            DIHelper
                 .AddApiProductEntryPointService()
                 .AddDocumentsControllerService()
                 .AddPrivacyRoomApiService()
@@ -48,8 +46,7 @@ namespace ASC.Files
                 .AddDocuSignHandlerService()
                 .AddNotifyConfiguration();
 
-            var a = stopwatch.ElapsedMilliseconds;
-            base.ConfigureServices(services);
+
         }
 
         public override void Configure(IApplicationBuilder app, IWebHostEnvironment env)

@@ -58,13 +58,13 @@ namespace ASC.Core.Data
         public void Configure(string name, DbTenantService options)
         {
             Configure(options);
-            options.TenantDbContext = DbContextManager.Get(name);
+            options.LazyTenantDbContext = new Lazy<TenantDbContext>(() => DbContextManager.Get(name));
         }
 
         public void Configure(DbTenantService options)
         {
             options.TenantDomainValidator = TenantDomainValidator;
-            options.TenantDbContext = DbContextManager.Value;
+            options.LazyTenantDbContext = new Lazy<TenantDbContext>(() => DbContextManager.Value);
         }
     }
 
@@ -74,7 +74,8 @@ namespace ASC.Core.Data
 
         internal TenantDomainValidator TenantDomainValidator { get; set; }
         public MachinePseudoKeys MachinePseudoKeys { get; }
-        internal TenantDbContext TenantDbContext { get; set; }
+        internal TenantDbContext TenantDbContext { get => LazyTenantDbContext.Value; }
+        internal Lazy<TenantDbContext> LazyTenantDbContext { get; set; }
 
         public Expression<Func<DbTenant, Tenant>> FromDbTenantToTenant { get; set; }
         public Expression<Func<TenantUserSecurity, Tenant>> FromTenantUserToTenant { get; set; }
@@ -117,7 +118,7 @@ namespace ASC.Core.Data
             MachinePseudoKeys machinePseudoKeys)
             : this()
         {
-            TenantDbContext = dbContextManager.Value;
+            LazyTenantDbContext = new Lazy<TenantDbContext>(() => dbContextManager.Value);
             TenantDomainValidator = tenantDomainValidator;
             MachinePseudoKeys = machinePseudoKeys;
         }
