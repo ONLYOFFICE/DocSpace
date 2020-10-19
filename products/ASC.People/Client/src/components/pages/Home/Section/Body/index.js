@@ -33,6 +33,7 @@ import {
   DeleteProfileEverDialog,
 } from "../../../../dialogs";
 import { createI18N } from "../../../../../helpers/i18n";
+import { isMobile } from "react-device-detect";
 
 const i18n = createI18N({
   page: "Home",
@@ -376,11 +377,12 @@ class SectionBodyContent extends React.PureComponent {
       widthProp,
       isMobile,
       selectGroup,
+      isLoading
     } = this.props;
 
     const { dialogsVisible, user } = this.state;
 
-    return !isLoaded ? (
+    return !isLoaded || (isMobile && isLoading) ? (
       <Loaders.Rows />
     ) : peopleList.length > 0 ? (
       <>
@@ -509,10 +511,11 @@ class SectionBodyContent extends React.PureComponent {
 
 const mapStateToProps = (state) => {
   const { isLoaded } = state.auth;
-  const { filter } = state.people;
+  const { filter, isLoading } = state.people;
   return {
     isLoaded,
     filter,
+    isLoading,
     peopleList: getPeopleList(state),
     settings: getSettings(state),
   };

@@ -32,7 +32,11 @@ import {
 } from "asc-web-common";
 import {
   clearProgressData,
+  markItemAsFavorite,
+  removeItemFromFavorite,
+  fetchFavoritesFolder,
   deselectFile,
+  updateFile,
   fetchFiles,
   selectFile,
   setAction,
@@ -45,7 +49,7 @@ import {
   setSelected,
   setSelection,
   setTreeFolders,
-  loopFilesOperations,
+  getFileInfo
 } from "../../../../../store/files/actions";
 import {
   getCurrentFolderCount,
@@ -77,6 +81,7 @@ import {
   getIsCommonFolder,
   getIsRecycleBinFolder,
   getIsMyFolder,
+  getIsFavoritesFolder,
   getMyFolderId,
   getTooltipLabel,
 } from "../../../../../store/files/selectors";
@@ -171,16 +176,16 @@ class SectionBodyContent extends React.Component {
     document.removeEventListener("dragleave", this.onDragLeaveDoc);
   }
 
-  /* componentDidUpdate(prevProps, prevState) {
-    Object.entries(this.props).forEach(([key, val]) =>
-      prevProps[key] !== val && console.log(`Prop '${key}' changed`)
-    );
-    if (this.state) {
-      Object.entries(this.state).forEach(([key, val]) =>
-        prevState[key] !== val && console.log(`State '${key}' changed`)
-      );
-    }
-  } */
+  // componentDidUpdate(prevProps, prevState) {
+  //   Object.entries(this.props).forEach(([key, val]) =>
+  //     prevProps[key] !== val && console.log(`Prop '${key}' changed`)
+  //   );
+  //   if (this.state) {
+  //     Object.entries(this.state).forEach(([key, val]) =>
+  //       prevState[key] !== val && console.log(`State '${key}' changed`)
+  //     );
+  //   }
+  // } 
 
   shouldComponentUpdate(nextProps, nextState) {
     if (this.props && this.props.firstLoad) return true;
@@ -210,6 +215,35 @@ class SectionBodyContent extends React.Component {
     }
 
     return false;
+  }
+
+  onClickFavorite = e => {
+    const { markItemAsFavorite,
+      removeItemFromFavorite,
+      getFileInfo,
+      fetchFavoritesFolder,
+      isFavorites,
+      selectedFolderId,
+      //selection,
+      t } = this.props;
+    const { action, id } = e.currentTarget.dataset;
+    //let data = selection.map(item => item.id)
+    switch (action) {
+      case "mark":
+        return markItemAsFavorite([id])
+          .then(() => getFileInfo(id))
+          .then(() => toastr.success(t("MarkedAsFavorite")))
+          .catch(e => toastr.error(e));
+      case "remove":
+        return removeItemFromFavorite([id])
+          .then(() => {
+            return isFavorites ? fetchFavoritesFolder(selectedFolderId) : getFileInfo(id)
+          })
+          .then(() => toastr.success(t("RemovedFromFavorites")))
+          .catch(e => toastr.error(e));
+      default:
+        return;
+    }
   }
 
   onClickRename = () => {
@@ -498,6 +532,17 @@ class SectionBodyContent extends React.Component {
         case "separator1":
         case "separator2":
           return { key: option, isSeparator: true };
+        case "mark-as-favorite":
+          return {
+            key: option,
+            label: t("MarkAsFavorite"),
+            icon: "FavoritesIcon",
+            onClick: this.onClickFavorite,
+            disabled: false,
+            "data-action": "mark",
+            "data-id": item.id,
+            "data-title": item.title
+          };
         case "block-unblock-version":
           return {
             key: option,
@@ -603,6 +648,17 @@ class SectionBodyContent extends React.Component {
             onClick: this.onClickDelete,
             disabled: false,
           };
+        case "remove-from-favorites":
+          return {
+            key: option,
+            label: t("RemoveFromFavorites"),
+            icon: "FavoritesIcon",
+            onClick: this.onClickFavorite,
+            disabled: false,
+            "data-action": "remove",
+            "data-id": item.id,
+            "data-title": item.title
+          };
         default:
           break;
       }
@@ -690,12 +746,13 @@ class SectionBodyContent extends React.Component {
   };
 
   renderEmptyRootFolderContainer = () => {
-    const { isMy, isShare, isCommon, isRecycleBin, title, t } = this.props;
+    const { isMy, isShare, isCommon, isRecycleBin, isFavorites, title, t } = this.props;
     const subheadingText = t("SubheadingEmptyText");
     const myDescription = t("MyEmptyContainerDescription");
     const shareDescription = t("SharedEmptyContainerDescription");
     const commonDescription = t("CommonEmptyContainerDescription");
     const trashDescription = t("TrashEmptyContainerDescription");
+    const favoritesDescription = t("FavoritesEmptyContainerDescription");
 
     const commonButtons = (
       <>
@@ -786,6 +843,15 @@ class SectionBodyContent extends React.Component {
           descriptionText={trashDescription}
           imageSrc="images/empty_screen_trash.png"
           buttons={trashButtons}
+        />
+      );
+    } else if (isFavorites) {
+      return (
+        <EmptyFolderContainer
+          headerText={title}
+          subheadingText={subheadingText}
+          descriptionText={favoritesDescription}
+          imageSrc="images/empty_screen_favorites.png"
         />
       );
     } else {
@@ -1475,6 +1541,7 @@ class SectionBodyContent extends React.Component {
                       culture={settings.culture}
                       onEditComplete={this.onEditComplete}
                       onMediaFileClick={this.onMediaFileClick}
+                      onClickFavorite={this.onClickFavorite}
                     />
                   </SimpleFilesRow>
                 </DragAndDrop>
@@ -1532,6 +1599,7 @@ const mapStateToProps = (state) => {
     folders: getFolders(state),
     isAdmin: isAdmin(state),
     isCommon: getIsCommonFolder(state),
+    isFavorites: getIsFavoritesFolder(state),
     isLoading: getIsLoading(state),
     isMy: getIsMyFolder(state),
     isRecycleBin: getIsRecycleBinFolder(state),
@@ -1555,6 +1623,7 @@ const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps, {
   deselectFile,
+  updateFile,
   fetchFiles,
   selectFile,
   setAction,
@@ -1568,5 +1637,8 @@ export default connect(mapStateToProps, {
   setUpdateTree,
   setIsLoading,
   clearProgressData,
-  loopFilesOperations,
+  markItemAsFavorite,
+  removeItemFromFavorite,
+  fetchFavoritesFolder,
+  getFileInfo
 })(withRouter(withTranslation()(SectionBodyContent)));

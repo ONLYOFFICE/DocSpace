@@ -595,6 +595,7 @@ const getFilesContextOptions = (item, isRecycleBin, canOpenPlayer) => {
   const options = [];
 
   const isFile = !!item.fileExst;
+  const isFavorite = item.fileStatus === 32;
 
   if (item.id <= 0) return [];
 
@@ -619,6 +620,9 @@ const getFilesContextOptions = (item, isRecycleBin, canOpenPlayer) => {
       options.push("finalize-version");
       options.push("block-unblock-version");
       options.push("separator1");
+    if (!isFavorite) {
+      options.push("mark-as-favorite");
+    }
 
       if (canOpenPlayer) {
         options.push("view");
@@ -640,6 +644,10 @@ const getFilesContextOptions = (item, isRecycleBin, canOpenPlayer) => {
     options.push("rename");
     options.push("delete");
   }
+  if (isFavorite && !isRecycleBin) {
+    options.push("remove-from-favorites");
+  }
+
   return options;
 };
 
@@ -674,6 +682,10 @@ const getRecycleBinFolder = createSelector(getTreeFolders, (treeFolders) => {
   return treeFolders.find((x) => x.rootFolderName === "@trash");
 });
 
+const getFavoritesFolder = createSelector(getTreeFolders, (treeFolders) => {
+  return treeFolders.find((x) => x.rootFolderName === "@favorites");
+});
+
 export const getMyFolderId = createSelector(getMyFolder, (myFolder) => {
   if (myFolder) return myFolder.id;
 });
@@ -696,6 +708,13 @@ export const getRecycleBinFolderId = createSelector(
   getRecycleBinFolder,
   (recycleBinFolder) => {
     if (recycleBinFolder) return recycleBinFolder.id;
+  }
+);
+
+export const getFavoritesFolderId = createSelector(
+  getFavoritesFolder,
+  (favoritesFolder) => {
+    if (favoritesFolder) return favoritesFolder.id;
   }
 );
 
@@ -728,6 +747,14 @@ export const getIsRecycleBinFolder = createSelector(
   getSelectedFolderId,
   (recycleBinFolder, id) => {
     return recycleBinFolder && recycleBinFolder.id === id;
+  }
+);
+
+export const getIsFavoritesFolder = createSelector(
+  getFavoritesFolder,
+  getSelectedFolderId,
+  (favoritesFolder, id) => {
+    return favoritesFolder && favoritesFolder.id === id;
   }
 );
 
