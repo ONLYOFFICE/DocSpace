@@ -112,7 +112,7 @@ namespace ASC.Core.Billing
             Configure(options);
             options.QuotaService = QuotaService.Get(name);
             options.TenantService = TenantService.Get(name);
-            options.CoreDbContext = CoreDbContextManager.Get(name);
+            options.LazyCoreDbContext = new Lazy<CoreDbContext>(() => CoreDbContextManager.Get(name));
         }
 
         public void Configure(TariffService options)
@@ -131,7 +131,7 @@ namespace ASC.Core.Billing
 
             options.QuotaService = QuotaService.Value;
             options.TenantService = TenantService.Value;
-            options.CoreDbContext = CoreDbContextManager.Value;
+            options.LazyCoreDbContext = new Lazy<CoreDbContext>(() => CoreDbContextManager.Value);
         }
     }
 
@@ -155,7 +155,8 @@ namespace ASC.Core.Billing
         internal CoreBaseSettings CoreBaseSettings { get; set; }
         internal CoreSettings CoreSettings { get; set; }
         internal IConfiguration Configuration { get; set; }
-        internal CoreDbContext CoreDbContext { get; set; }
+        internal CoreDbContext CoreDbContext { get => LazyCoreDbContext.Value; }
+        internal Lazy<CoreDbContext> LazyCoreDbContext { get; set; }
         internal TariffServiceStorage TariffServiceStorage { get; set; }
         internal IOptionsMonitor<ILog> Options { get; set; }
 
@@ -191,7 +192,7 @@ namespace ASC.Core.Billing
 
             Cache = TariffServiceStorage.Cache;
             Notify = TariffServiceStorage.Notify;
-            CoreDbContext = coreDbContextManager.Value;
+            LazyCoreDbContext = new Lazy<CoreDbContext>(() => coreDbContextManager.Value);
         }
 
         public Tariff GetTariff(int tenantId, bool withRequestToPaymentSystem = true)

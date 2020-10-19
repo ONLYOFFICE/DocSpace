@@ -33,9 +33,9 @@ namespace ASC.Files
 
             services.AddMemoryCache();
 
-            var diHelper = new DIHelper(services);
+            base.ConfigureServices(services);
 
-            diHelper
+            DIHelper
                 .AddApiProductEntryPointService()
                 .AddDocumentsControllerService()
                 .AddPrivacyRoomApiService()
@@ -45,7 +45,7 @@ namespace ASC.Files
                 .AddDocuSignHandlerService()
                 .AddNotifyConfiguration();
 
-            base.ConfigureServices(services);
+
         }
 
         public override void Configure(IApplicationBuilder app, IWebHostEnvironment env)
