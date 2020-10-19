@@ -41,7 +41,6 @@ using ASC.Common.Security.Authorizing;
 using ASC.Core.Billing;
 using ASC.Core.Common.Security;
 using ASC.Core.Security.Authentication;
-using ASC.Core.Security.Authorizing;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
 
@@ -50,6 +49,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Core
 {
+    [Scope]
     public class SecurityContext
     {
         private readonly ILog log;
@@ -371,43 +371,6 @@ namespace ASC.Core
                 Thread.CurrentPrincipal = value;
                 if (HttpContextAccessor?.HttpContext != null) HttpContextAccessor.HttpContext.User = value;
             }
-        }
-    }
-
-    public static class AuthContextConfigExtension
-    {
-        public static DIHelper AddSecurityContextService(this DIHelper services)
-        {
-            if (services.TryAddScoped<SecurityContext>())
-            {
-                return services
-                    .AddCookieStorageService()
-                    .AddTenantCookieSettingsService()
-                    .AddAuthManager()
-                    .AddUserFormatter()
-                    .AddAuthContextService()
-                    .AddUserManagerService()
-                    .AddTenantManagerService();
-            }
-
-            return services;
-        }
-        public static DIHelper AddAuthContextService(this DIHelper services)
-        {
-            services.TryAddScoped<AuthContext>();
-            return services;
-        }
-
-        public static DIHelper AddPermissionContextService(this DIHelper services)
-        {
-            if (services.TryAddScoped<PermissionContext>())
-            {
-                return services
-                    .AddAuthContextService()
-                    .AddPermissionResolverService();
-            }
-
-            return services;
         }
     }
 }

@@ -28,7 +28,6 @@ using System;
 using System.Collections.Generic;
 using System.Web;
 
-using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Utils;
 using ASC.Core;
@@ -179,22 +178,6 @@ namespace ASC.FederatedLogin.LoginProviders
         private class GoogleMetadata
         {
             public bool primary = false;
-        }
-    }
-
-    public static class GoogleLoginProviderExtension
-    {
-        public static DIHelper AddGoogleLoginProviderService(this DIHelper services)
-        {
-            //services.TryAddScoped<GoogleLoginProvider>();
-            return services
-                .AddConsumerFactoryService()
-                .AddKafkaService()
-                .AddTenantManagerService()
-                .AddCoreBaseSettingsService()
-                .AddCoreSettingsService()
-                .AddSignatureService()
-                .AddInstanceCryptoService();
         }
     }
 }

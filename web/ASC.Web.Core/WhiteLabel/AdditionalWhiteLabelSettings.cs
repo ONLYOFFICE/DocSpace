@@ -129,6 +129,7 @@ namespace ASC.Web.Core.WhiteLabel
         }
     }
 
+    [Singletone]
     public class AdditionalWhiteLabelSettingsHelper
     {
         private IConfiguration Configuration { get; }
@@ -190,15 +191,6 @@ namespace ASC.Web.Core.WhiteLabel
                 var site = Configuration["web:teamlab-site"];
                 return !string.IsNullOrEmpty(site) ? site + "/post.ashx?type=buyenterprise" : "";
             }
-        }
-    }
-
-    public static class AdditionalWhiteLabelSettingsExtension
-    {
-        public static DIHelper AddAdditionalWhiteLabelSettingsService(this DIHelper services)
-        {
-            services.TryAddSingleton<AdditionalWhiteLabelSettingsHelper>();
-            return services;
         }
     }
 }

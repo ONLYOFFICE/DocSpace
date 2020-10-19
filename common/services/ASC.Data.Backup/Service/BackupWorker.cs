@@ -35,7 +35,6 @@ using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Common.Threading.Progress;
 using ASC.Core;
-using ASC.Core.Billing;
 using ASC.Core.Tenants;
 using ASC.Data.Backup.Contracts;
 using ASC.Data.Backup.EF.Model;
@@ -43,7 +42,6 @@ using ASC.Data.Backup.Storage;
 using ASC.Data.Backup.Tasks;
 using ASC.Data.Backup.Tasks.Modules;
 using ASC.Data.Backup.Utils;
-using ASC.Data.Storage;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -52,6 +50,7 @@ using Newtonsoft.Json;
 
 namespace ASC.Data.Backup.Service
 {
+    [Singletone]
     public class BackupWorker
     {
         private ILog Log { get; set; }
@@ -304,6 +303,7 @@ namespace ASC.Data.Backup.Service
         public abstract void RunJob();
     }
 
+    [Transient]
     public class BackupProgressItem : BaseBackupProgressItem
     {
         private const string ArchiveFormat = "tar.gz";
@@ -468,6 +468,7 @@ namespace ASC.Data.Backup.Service
         }
     }
 
+    [Transient]
     public class RestoreProgressItem : BaseBackupProgressItem
     {
         public override BackupProgressItemEnum BackupProgressItemEnum { get => BackupProgressItemEnum.Restore; }
@@ -615,6 +616,7 @@ namespace ASC.Data.Backup.Service
 
     }
 
+    [Transient]
     public class TransferProgressItem : BaseBackupProgressItem
     {
         public override BackupProgressItemEnum BackupProgressItemEnum { get => BackupProgressItemEnum.Transfer; }
@@ -728,6 +730,7 @@ namespace ASC.Data.Backup.Service
         }
     }
 
+    [Singletone]
     public class FactoryProgressItem
     {
         public IServiceProvider ServiceProvider { get; }
@@ -853,27 +856,12 @@ namespace ASC.Data.Backup.Service
     {
         public static DIHelper AddBackupWorkerService(this DIHelper services)
         {
-            services.TryAddSingleton<BackupWorker>();
-            services.TryAddSingleton<FactoryProgressItem>();
-            services.TryAddTransient<BackupProgressItem>();
-            services.TryAddTransient<TransferProgressItem>();
-            services.TryAddTransient<RestoreProgressItem>();
             services.TryAddScoped<BackupWorkerScope>();
             services.TryAddSingleton<ProgressQueueOptionsManager<BaseBackupProgressItem>>();
             services.TryAddSingleton<ProgressQueue<BaseBackupProgressItem>>();
             services.AddSingleton<IPostConfigureOptions<ProgressQueue<BaseBackupProgressItem>>, ConfigureProgressQueue<BaseBackupProgressItem>>();
 
-            return services
-                .AddTenantManagerService()
-                .AddCoreBaseSettingsService()
-                .AddStorageFactoryService()
-                .AddStorageFactoryConfigService()
-                .AddLicenseReaderService()
-                .AddNotifyHelperService()
-                .AddBackupPortalTaskService()
-                .AddDbFactoryService()
-                .AddRestorePortalTaskService()
-                .AddTransferPortalTaskService();
+            return services;
         }
     }
 }

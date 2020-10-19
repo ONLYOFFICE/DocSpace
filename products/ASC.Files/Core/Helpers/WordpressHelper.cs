@@ -36,6 +36,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Files.Helpers
 {
+    [Scope]
     public class WordpressToken
     {
         public ILog Log { get; set; }
@@ -67,6 +68,8 @@ namespace ASC.Web.Files.Helpers
 
         }
     }
+
+    [Singletone]
     public class WordpressHelper
     {
         public ILog Log { get; set; }
@@ -108,26 +111,6 @@ namespace ASC.Web.Files.Helpers
                 Log.Error("Create Wordpress post ", ex);
                 return false;
             }
-        }
-    }
-
-    public static class WordpressHelperExtention
-    {
-        public static DIHelper AddWordpressHelperService(this DIHelper services)
-        {
-            services.TryAddSingleton<WordpressHelper>();
-            return services;
-        }
-
-        public static DIHelper AddWordpressTokenService(this DIHelper services)
-        {
-            if (services.TryAddScoped<WordpressToken>())
-            {
-                return services
-                    .AddTokenHelperService();
-            }
-
-            return services;
         }
     }
 }

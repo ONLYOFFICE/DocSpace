@@ -35,11 +35,11 @@ using ASC.Files.Core.Resources;
 using ASC.Web.Core;
 using ASC.Web.Core.PublicResources;
 using ASC.Web.Files.Classes;
-using ASC.Web.Files.Core.Search;
 using ASC.Web.Studio.Core.Notify;
 
 namespace ASC.Web.Files.Configuration
 {
+    [Scope]
     public class ProductEntryPoint : Product
     {
         internal const string ProductPath = "/products/files/";
@@ -180,18 +180,7 @@ namespace ASC.Web.Files.Configuration
     {
         public static DIHelper AddProductEntryPointService(this DIHelper services)
         {
-            if (services.TryAddScoped<ProductEntryPoint>())
-            {
-                services.TryAddScoped<IWebItem, ProductEntryPoint>();
-                return services
-                    .AddFilesSpaceUsageStatManagerService()
-                    .AddCoreBaseSettingsService()
-                    .AddAuthContextService()
-                    .AddUserManagerService()
-                    .AddGlobalService()
-                    .AddFilesSubscriptionManagerService()
-                    .AddFactoryIndexerFileService();
-            }
+            services.TryAddScoped<IWebItem, ProductEntryPoint>();
 
             return services;
         }

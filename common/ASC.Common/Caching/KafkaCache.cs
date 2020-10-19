@@ -238,14 +238,4 @@ namespace ASC.Common.Caching
             return $"{typeof(T).Name}{cacheNotifyAction}";
         }
     }
-
-    public static class KafkaExtention
-    {
-        public static DIHelper AddKafkaService(this DIHelper services)
-        {
-            services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
-
-            return services;
-        }
-    }
 }

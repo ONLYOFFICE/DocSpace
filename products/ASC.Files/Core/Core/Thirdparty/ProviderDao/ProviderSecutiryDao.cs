@@ -203,8 +203,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
         {
             if (services.TryAddScoped<ISecurityDao<string>, ProviderSecurityDao>())
             {
-                return services
-                    .AddProviderDaoBaseService();
+                return services;
             }
 
             return services;

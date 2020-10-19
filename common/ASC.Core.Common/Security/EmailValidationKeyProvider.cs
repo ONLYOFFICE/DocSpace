@@ -31,7 +31,6 @@ using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Users;
-using ASC.Security.Cryptography;
 using ASC.Web.Studio.Utility;
 
 using Microsoft.AspNetCore.Http;
@@ -43,6 +42,7 @@ using static ASC.Security.Cryptography.EmailValidationKeyProvider;
 
 namespace ASC.Security.Cryptography
 {
+    [Scope]
     public class EmailValidationKeyProvider
     {
         public enum ValidationResult
@@ -165,6 +165,7 @@ namespace ASC.Security.Cryptography
         }
     }
 
+    [Transient]
     public class EmailValidationKeyModelHelper
     {
         private IHttpContextAccessor HttpContextAccessor { get; }
@@ -271,23 +272,6 @@ namespace ASC.Security.Cryptography
             }
 
             return checkKeyResult;
-        }
-    }
-
-    public static class EmailValidationKeyProviderExtension
-    {
-        public static DIHelper AddEmailValidationKeyProviderService(this DIHelper services)
-        {
-            if (services.TryAddScoped<EmailValidationKeyProvider>())
-            {
-                services.TryAddTransient<EmailValidationKeyModelHelper>();
-
-                return services
-                    .AddTenantManagerService()
-                    .AddMachinePseudoKeysService();
-            }
-
-            return services;
         }
     }
 }

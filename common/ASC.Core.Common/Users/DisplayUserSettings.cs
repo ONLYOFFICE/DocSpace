@@ -56,6 +56,7 @@ namespace ASC.Web.Core.Users
         }
     }
 
+    [Scope]
     public class DisplayUserSettingsHelper
     {
         private readonly string RemovedProfileName;
@@ -106,21 +107,6 @@ namespace ASC.Web.Core.Users
         public string HtmlEncode(string str)
         {
             return !string.IsNullOrEmpty(str) ? HttpUtility.HtmlEncode(str) : str;
-        }
-    }
-
-    public static class DisplayUserSettingsExtention
-    {
-        public static DIHelper AddDisplayUserSettingsService(this DIHelper services)
-        {
-            if (services.TryAddScoped<DisplayUserSettingsHelper>())
-            {
-                return services
-                    .AddUserFormatter()
-                    .AddUserManagerService();
-            }
-
-            return services;
         }
     }
 }

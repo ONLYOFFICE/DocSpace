@@ -45,6 +45,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Storage
 {
+    [Scope]
     public class StaticUploader
     {
         private static readonly TaskScheduler Scheduler;
@@ -318,13 +319,7 @@ namespace ASC.Data.Storage
     {
         public static DIHelper AddStaticUploaderService(this DIHelper services)
         {
-            if (services.TryAddScoped<StaticUploader>())
-            {
-                services.TryAddScoped<StaticUploaderScope>();
-                return services
-                    .AddTenantManagerService()
-                    .AddStorageSettingsService();
-            }
+            services.TryAddScoped<StaticUploaderScope>();
 
             return services;
         }

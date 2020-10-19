@@ -50,6 +50,7 @@ using Nest;
 
 namespace ASC.ElasticSearch
 {
+    [Singletone]
     public class FactoryIndexerHelper
     {
         public DateTime LastIndexed { get; set; }
@@ -76,6 +77,7 @@ namespace ASC.ElasticSearch
         string SettingsTitle { get; }
     }
 
+    [Scope]
     public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
     {
         private static readonly TaskScheduler Scheduler = new ConcurrentExclusiveSchedulerPair(TaskScheduler.Default, 10).ConcurrentScheduler;
@@ -445,6 +447,7 @@ namespace ASC.ElasticSearch
         }
     }
 
+    [Scope]
     public class FactoryIndexer
     {
         private static readonly ICache cache = AscCache.Memory;
@@ -585,42 +588,6 @@ namespace ASC.ElasticSearch
             {
                 indexer.ReIndex();
             }
-        }
-    }
-
-    public static class FactoryIndexerExtention
-    {
-        public static DIHelper AddFactoryIndexerService(this DIHelper services)
-        {
-            if (services.TryAddScoped<FactoryIndexer>())
-            {
-                services.TryAddSingleton<FactoryIndexerHelper>();
-                return services
-                    .AddClientService()
-                    .AddCoreBaseSettingsService();
-            }
-
-            return services;
-        }
-
-        public static DIHelper AddFactoryIndexerService<T>(this DIHelper services, bool addBase = true) where T : class, ISearchItem
-        {
-            if (addBase)
-            {
-                services.TryAddScoped<FactoryIndexer<T>>();
-            }
-
-            if (services.TryAddScoped<Selector<T>>())
-            {
-                return services
-                    .AddTenantManagerService()
-                    .AddFactoryIndexerService()
-                    .AddClientService()
-                    .AddSearchSettingsHelperService()
-                    .AddBaseIndexerService<T>();
-            }
-
-            return services;
         }
     }
 }

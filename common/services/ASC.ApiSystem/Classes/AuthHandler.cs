@@ -34,7 +34,6 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 
-using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Security.Cryptography;
 using ASC.Web.Core.Helpers;
@@ -163,14 +162,6 @@ namespace ASC.ApiSystem.Classes
             Log.InfoFormat("Auth success {0}", Scheme.Name);
 
             return Task.FromResult(AuthenticateResult.Success(new AuthenticationTicket(Context.User, new AuthenticationProperties(), Scheme.Name)));
-        }
-    }
-
-    public static class AuthAllowskipHandlerExtension
-    {
-        public static DIHelper AddAuthAllowskipHandler(this DIHelper services)
-        {
-            return services.AddApiSystemHelper();
         }
     }
 }

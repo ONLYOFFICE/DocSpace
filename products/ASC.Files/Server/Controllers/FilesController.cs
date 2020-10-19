@@ -1902,14 +1902,6 @@ namespace ASC.Api.Documents
         }
     }
 
-    public static class DocumentsControllerExtention
-    {
-        public static DIHelper AddDocumentsControllerService(this DIHelper services)
-        {
-            return services.AddFilesControllerHelperService();
-        }
-    }
-
     public class BodySpecificAttribute : Attribute, IActionConstraint
     {
         public BodySpecificAttribute()

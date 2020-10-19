@@ -41,7 +41,6 @@ using ASC.Common.Logging;
 using ASC.Common.Security.Authentication;
 using ASC.Core;
 using ASC.Files.Core;
-using ASC.Files.Core.Data;
 using ASC.Files.Core.Resources;
 using ASC.Files.Core.Security;
 using ASC.MessagingSystem;
@@ -61,6 +60,7 @@ using SecurityContext = ASC.Core.SecurityContext;
 
 namespace ASC.Web.Files.Utils
 {
+    [Singletone]
     internal class FileConverterQueue<T>
     {
         private readonly object singleThread = new object();
@@ -488,6 +488,7 @@ namespace ASC.Web.Files.Utils
         public string FileJson { get; set; }
     }
 
+    [Scope]
     public class FileConverter
     {
         private FileUtility FileUtility { get; }
@@ -850,30 +851,7 @@ namespace ASC.Web.Files.Utils
     {
         public static DIHelper AddFileConverterService(this DIHelper services)
         {
-            if (services.TryAddScoped<FileConverter>())
-            {
-                services.TryAddSingleton<FileConverterQueue<string>>();
-                services.TryAddSingleton<FileConverterQueue<int>>();
-                services.TryAddScoped<FileConverterQueueScope>();
-
-                return services
-                    .AddFilesLinkUtilityService()
-                    .AddFileUtilityService()
-                    .AddDaoFactoryService()
-                    .AddSetupInfo()
-                    .AddPathProviderService()
-                    .AddFileSecurityService()
-                    .AddFileMarkerService()
-                    .AddTenantManagerService()
-                    .AddAuthContextService()
-                    .AddEntryManagerService()
-                    .AddFilesSettingsHelperService()
-                    .AddGlobalFolderHelperService()
-                    .AddFilesMessageService()
-                    .AddFileShareLinkService()
-                    .AddDocumentServiceHelperService()
-                    .AddDocumentServiceConnectorService();
-            }
+            services.TryAddScoped<FileConverterQueueScope>();
 
             return services;
         }

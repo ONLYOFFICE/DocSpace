@@ -37,6 +37,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Backup.Service
 {
+    [Scope]
     internal class BackupCleanerHelperService
     {
         private readonly ILog log;
@@ -101,6 +102,8 @@ namespace ASC.Data.Backup.Service
             }
         }
     }
+
+    [Singletone]
     public class BackupCleanerService
     {
         private readonly object cleanerLock = new object();
@@ -167,21 +170,6 @@ namespace ASC.Data.Backup.Service
                     Monitor.Exit(cleanerLock);
                 }
             }
-        }
-    }
-    public static class BackupCleanerServiceExtension
-    {
-        public static DIHelper AddBackupCleanerService(this DIHelper services)
-        {
-            if (services.TryAddScoped<BackupCleanerHelperService>())
-            {
-                services.TryAddSingleton<BackupCleanerService>();
-                return services
-                    .AddBackupStorageFactory()
-                    .AddBackupRepositoryService();
-            }
-
-            return services;
         }
     }
 }

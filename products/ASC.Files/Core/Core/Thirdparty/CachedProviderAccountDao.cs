@@ -43,6 +43,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Files.Thirdparty
 {
+    [Singletone]
     internal class CachedProviderAccountDaoNotify
     {
         public ConcurrentDictionary<string, IProviderInfo> Cache { get; private set; }
@@ -119,21 +120,6 @@ namespace ASC.Files.Thirdparty
             var key = _rootKey + linkId.ToString(CultureInfo.InvariantCulture);
             cacheNotify.Publish(new ProviderAccountCacheItem { Key = key }, CacheNotifyAction.Any);
             return result;
-        }
-    }
-    public static class CachedProviderAccountDaoExtention
-    {
-        public static DIHelper AddCachedProviderAccountDaoService(this DIHelper services)
-        {
-            if (services.TryAddScoped<IProviderDao, ProviderAccountDao>())
-            {
-                services.TryAddSingleton<CachedProviderAccountDaoNotify>();
-
-                return services
-                    .AddProviderAccountDaoService();
-            }
-
-            return services;
         }
     }
 }

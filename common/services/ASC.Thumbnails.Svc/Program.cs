@@ -75,7 +75,7 @@ namespace ASC.Thumbnails.Svc
                     var diHelper = new DIHelper(services);
                     diHelper.AddNLogManager("ASC.Thumbnails.Svc");
                     services.AddHostedService<ThumbnailsServiceLauncher>();
-                    diHelper.AddThumbnailsServiceLauncher();
+                    diHelper.TryAdd<ThumbnailsServiceLauncher>();
 
                     services.AddAutofac(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath, false, false);
                 })

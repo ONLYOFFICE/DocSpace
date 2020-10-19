@@ -46,6 +46,7 @@ using SecurityContext = ASC.Core.SecurityContext;
 
 namespace ASC.Employee.Core.Controllers
 {
+    [Scope]
     [DefaultRoute]
     [ApiController]
     public class PeopleController : ControllerBase
@@ -1500,49 +1501,6 @@ namespace ASC.Employee.Core.Controllers
             {
                 throw new UnknownImageFormatException();
             }
-        }
-    }
-
-    public static class PeopleControllerExtention
-    {
-        public static DIHelper AddPeopleController(this DIHelper services)
-        {
-            return services
-                .AddAccountLinker()
-                .AddMessageTargetService()
-                .AddAccountLinkerStorageService()
-                .AddFileSizeCommentService()
-                .AddCookiesManagerService()
-                .AddUserPhotoManagerService()
-                .AddCustomNamingPeopleService()
-                .AddSignatureService()
-                .AddApiContextService()
-                .AddUserManagerWrapperService()
-                .AddInstanceCryptoService()
-                .AddTenantUtilService()
-                .AddSecurityContextService()
-                .AddWebItemSecurityCache()
-                .AddDisplayUserSettingsService()
-                .AddTenantManagerService()
-                .AddSetupInfo()
-                .AddCommonLinkUtilityService()
-                .AddCoreBaseSettingsService()
-                .AddWebItemManager()
-                .AddAuthContextService()
-                .AddWebItemSecurity()
-                .AddPermissionContextService()
-                .AddTenantStatisticsProviderService()
-                .AddTenantExtraService()
-                .AddMessageServiceService()
-                .AddQueueWorkerRemoveService()
-                .AddQueueWorkerReassignService()
-                .AddStudioNotifyServiceService()
-                .AddUserManagerService()
-                .AddSettingsManagerService()
-                .AddEmployeeWraperFull()
-                .AddEmployeeWraper()
-                .AddUserFormatter()
-                .AddPasswordHasherService();
         }
     }
 }

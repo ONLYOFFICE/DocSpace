@@ -74,7 +74,7 @@ namespace ASC.UrlShortener.Svc
                     var diHelper = new DIHelper(services);
                     diHelper.AddNLogManager("ASC.UrlShortener.Svc");
                     services.AddHostedService<UrlShortenerServiceLauncher>();
-                    diHelper.AddUrlShortenerServiceLauncher();
+                    diHelper.TryAdd<UrlShortenerServiceLauncher>();
 
                     services.AddAutofac(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath, false, false);
                 })

@@ -54,17 +54,8 @@ namespace ASC.Files.Service
 
                     diHelper.AddNLogManager("ASC.Files");
                     services.AddHostedService<ServiceLauncher>();
-                    diHelper
-                        .AddServiceLauncher()
-                        .AddFileConverterService()
-                        .AddKafkaService()
-                        .AddFactoryIndexerFileService()
-                        .AddFactoryIndexerFolderService();
-
                     diHelper.AddNLogManager("ASC.Feed.Agregator");
                     services.AddHostedService<FeedAggregatorService>();
-                    diHelper
-                        .AddFeedAggregatorService();
 
                     services.AddAutofac(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath, true, false, "search.json", "feed.json");
                 })

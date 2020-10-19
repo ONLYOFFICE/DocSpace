@@ -25,7 +25,6 @@
 
 
 using ASC.ApiSystem.Classes;
-using ASC.ApiSystem.Controllers;
 using ASC.Common;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
@@ -73,14 +72,6 @@ namespace ASC.ApiSystem
                 .AddScheme<AuthenticationSchemeOptions, AuthHandler>("auth.allowskip.registerportal", _ => { });
 
             diHelper.AddNLogManager("ASC.Apisystem");
-
-            diHelper
-                .AddPortalController()
-                .AddCoreSettingsController()
-                .AddCalDavController()
-                .AddRegistrationController()
-                .AddSettingsController()
-                .AddTariffController();
 
             services.AddAutofac(Configuration, HostEnvironment.ContentRootPath, false);
         }

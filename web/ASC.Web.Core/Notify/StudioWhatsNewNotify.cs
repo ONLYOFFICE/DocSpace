@@ -51,6 +51,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Studio.Core.Notify
 {
+    [Singletone]
     public class StudioWhatsNewNotify
     {
         private IServiceProvider ServiceProvider { get; }
@@ -367,24 +368,8 @@ namespace ASC.Web.Studio.Core.Notify
     {
         public static DIHelper AddStudioWhatsNewNotify(this DIHelper services)
         {
-            services.TryAddSingleton<StudioWhatsNewNotify>();
             services.TryAddScoped<StudioWhatsNewNotifyScope>();
-            return services
-                .AddWebItemManager()
-                .AddFeedAggregateDataProvider()
-
-                .AddTenantManagerService()
-                .AddPaymentManagerService()
-                .AddStudioNotifyHelperService()
-                .AddUserManagerService()
-                .AddSecurityContextService()
-                .AddAuthContextService()
-                .AddAuthManager()
-                .AddTenantUtilService()
-                .AddCommonLinkUtilityService()
-                .AddDisplayUserSettingsService()
-                .AddCoreSettingsService()
-                ;
+            return services;
         }
     }
 }

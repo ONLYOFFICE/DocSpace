@@ -42,6 +42,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Files.Thirdparty.Dropbox
 {
+    [Scope]
     internal class DropboxSecurityDao : DropboxDaoBase, ISecurityDao<string>
     {
         public DropboxSecurityDao(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor, FileUtility fileUtility) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility)
@@ -88,16 +89,6 @@ namespace ASC.Files.Thirdparty.Dropbox
         public bool IsShared(object entryId, FileEntryType type)
         {
             throw new NotImplementedException();
-        }
-    }
-
-    public static class DropboxSecurityDaoExtention
-    {
-        public static DIHelper AddDropboxSecurityDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<DropboxSecurityDao>();
-
-            return services;
         }
     }
 }

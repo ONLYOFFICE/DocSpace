@@ -29,13 +29,11 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core.Common;
 using ASC.Notify.Config;
 using ASC.Web.Core;
 using ASC.Web.Studio.Core.Notify;
-using ASC.Web.Studio.Utility;
 
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
@@ -126,19 +124,6 @@ namespace ASC.Notify
                 Log.DebugFormat("Start scheduler {0} ({1})", pair.Name, pair.MethodInfo);
                 pair.MethodInfo.Invoke(null, null);
             }
-        }
-    }
-
-    public static class NotifyServiceLauncherExtension
-    {
-        public static DIHelper AddNotifyServiceLauncher(this DIHelper services)
-        {
-            return services
-                .AddCommonLinkUtilityService()
-                .AddNotifySender()
-                .AddNotifyService()
-                .AddWebItemManager()
-                .AddNotifyCleaner();
         }
     }
 }

@@ -104,6 +104,7 @@ namespace ASC.Core
         }
     }
 
+    [Scope(typeof(ConfigureCoreSettings))]
     public class CoreSettings
     {
         private string basedomain;
@@ -243,6 +244,7 @@ namespace ASC.Core
         }
     }
 
+    [Scope]
     public class CoreConfiguration
     {
         private long? personalMaxSpace;
@@ -372,36 +374,5 @@ namespace ASC.Core
         }
 
         #endregion
-    }
-
-    public static class CoreSettingsConfigExtension
-    {
-        public static DIHelper AddCoreBaseSettingsService(this DIHelper services)
-        {
-            services.TryAddSingleton<CoreBaseSettings>();
-            return services;
-        }
-
-        public static DIHelper AddCoreSettingsService(this DIHelper services)
-        {
-            if (services.TryAddScoped<CoreSettings>())
-            {
-                services.TryAddScoped<CoreConfiguration>();
-                services.TryAddScoped<IConfigureOptions<CoreSettings>, ConfigureCoreSettings>();
-
-                return services
-                    .AddCoreBaseSettingsService()
-                    .AddTenantService();
-            }
-
-            return services;
-        }
-        public static DIHelper AddCoreConfigurationService(this DIHelper services)
-        {
-            services.TryAddScoped<CoreConfiguration>();
-            return services
-                .AddTenantManagerService()
-                .AddCoreSettingsService();
-        }
     }
 }

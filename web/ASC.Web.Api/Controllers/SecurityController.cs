@@ -20,6 +20,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ASC.Web.Api.Controllers
 {
+    [Scope]
     [DefaultRoute]
     [ApiController]
     public class SecurityController : ControllerBase
@@ -148,23 +149,6 @@ namespace ASC.Web.Api.Controllers
             MessageService.Send(MessageAction.AuditSettingsUpdated);
 
             return settings;
-        }
-    }
-
-    public static class SecurityControllerExtension
-    {
-        public static DIHelper AddSecurityController(this DIHelper services)
-        {
-            return services
-                .AddPermissionContextService()
-                .AddCoreBaseSettingsService()
-                .AddTenantExtraService()
-                .AddTenantManagerService()
-                .AddMessageServiceService()
-                .AddLoginEventsRepositoryService()
-                .AddAuditEventsRepositoryService()
-                .AddAuditReportCreatorService()
-                .AddSettingsManagerService();
         }
     }
 }

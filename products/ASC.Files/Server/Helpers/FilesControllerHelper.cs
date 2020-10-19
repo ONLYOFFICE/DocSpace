@@ -46,6 +46,7 @@ using SortedByType = ASC.Files.Core.SortedByType;
 
 namespace ASC.Files.Helpers
 {
+    [Scope]
     public class FilesControllerHelper<T>
     {
         private readonly ApiContext ApiContext;
@@ -989,52 +990,5 @@ namespace ASC.Files.Helpers
         }
 
         #endregion
-    }
-
-    public static class FilesControllerHelperExtention
-    {
-        public static DIHelper AddFilesControllerHelperService(this DIHelper services)
-        {
-            if (services.TryAddScoped<FilesControllerHelper<string>>())
-            {
-                services.TryAddScoped<FilesControllerHelper<int>>();
-
-                return services
-                    .AddEasyBibHelperService()
-                    .AddWordpressTokenService()
-                    .AddWordpressHelperService()
-                    .AddFolderContentWrapperHelperService()
-                    .AddFileUploaderService()
-                    .AddFileShareParamsService()
-                    .AddFileShareWrapperService()
-                    .AddFileOperationWraperHelperService()
-                    .AddFileWrapperHelperService()
-                    .AddFolderWrapperHelperService()
-                    .AddConsumerFactoryService()
-                    .AddDocumentServiceConnectorService()
-                    .AddCommonLinkUtilityService()
-                    .AddMessageServiceService()
-                    .AddThirdpartyConfigurationService()
-                    .AddCoreBaseSettingsService()
-                    .AddWebItemSecurity()
-                    .AddUserManagerService()
-                    .AddEntryManagerService()
-                    .AddTenantManagerService()
-                    .AddSecurityContextService()
-                    .AddDocumentServiceHelperService()
-                    .AddFilesLinkUtilityService()
-                    .AddApiContextService()
-                    .AddFileStorageService()
-                    .AddFilesSettingsHelperService()
-                    .AddBoxLoginProviderService()
-                    .AddDropboxLoginProviderService()
-                    .AddOneDriveLoginProviderService()
-                    .AddGoogleLoginProviderService()
-                    .AddChunkedUploadSessionHelperService()
-                    ;
-            }
-
-            return services;
-        }
     }
 }

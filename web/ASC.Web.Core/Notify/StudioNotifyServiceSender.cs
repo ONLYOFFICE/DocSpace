@@ -36,7 +36,6 @@ using ASC.Core.Configuration;
 using ASC.Notify.Model;
 using ASC.Notify.Patterns;
 using ASC.Notify.Recipients;
-using ASC.Web.Core.Users;
 using ASC.Web.Studio.Utility;
 
 using Microsoft.Extensions.Configuration;
@@ -44,6 +43,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Web.Studio.Core.Notify
 {
+    [Singletone]
     public class StudioNotifyServiceSender
     {
         private static string EMailSenderName { get { return Constants.NotifyEMailSenderSysName; } }
@@ -215,20 +215,9 @@ namespace ASC.Web.Studio.Core.Notify
     {
         public static DIHelper AddStudioNotifyServiceSender(this DIHelper services)
         {
-            services.TryAddSingleton<StudioNotifyServiceSender>();
             services.TryAddScoped<StudioNotifyServiceSenderScope>();
 
-            return services
-                .AddStudioPeriodicNotify()
-                .AddStudioWhatsNewNotify()
-                .AddTenantManagerService()
-                .AddUserManagerService()
-                .AddSecurityContextService()
-                .AddAuthContextService()
-                .AddStudioNotifyHelperService()
-                .AddDisplayUserSettingsService()
-                .AddTenantExtraService()
-                .AddCoreBaseSettingsService();
+            return services;
         }
     }
 }

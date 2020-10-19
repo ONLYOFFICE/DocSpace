@@ -161,6 +161,7 @@ namespace ASC.Web.Core.Users
         }
     }
 
+    [Scope]
     public class CustomNamingPeople
     {
         private static bool loaded = false;
@@ -370,19 +371,6 @@ namespace ASC.Web.Core.Users
                     .Replace("{!userpost}", item.UserPostCaption.ToLower());
             }
             return text;
-        }
-    }
-
-    public static class CustomNamingPeopleExtension
-    {
-        public static DIHelper AddCustomNamingPeopleService(this DIHelper services)
-        {
-            if (services.TryAddScoped<CustomNamingPeople>())
-            {
-                return services.AddSettingsManagerService();
-            }
-
-            return services;
         }
     }
 }

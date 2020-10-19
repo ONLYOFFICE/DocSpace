@@ -49,7 +49,7 @@ namespace ASC.Studio.Notify
                     var diHelper = new DIHelper(services);
                     diHelper.AddNLogManager("ASC.Notify", "ASC.Notify.Messages");
                     services.AddHostedService<ServiceLauncher>();
-                    diHelper.AddServiceLauncher();
+                    diHelper.TryAdd<ServiceLauncher>();
 
                     services.AddAutofac(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
                 })

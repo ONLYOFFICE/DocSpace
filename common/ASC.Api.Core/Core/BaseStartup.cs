@@ -64,12 +64,11 @@ namespace ASC.Api.Core
                     });
             }
 
-            DIHelper
-                .AddCultureMiddleware()
-                .AddIpSecurityFilter()
-                .AddPaymentFilter()
-                .AddProductSecurityFilter()
-                .AddTenantStatusFilter();
+            DIHelper.TryAdd<CultureMiddleware>();
+            DIHelper.TryAdd<IpSecurityFilter>();
+            DIHelper.TryAdd<PaymentFilter>();
+            DIHelper.TryAdd<ProductSecurityFilter>();
+            DIHelper.TryAdd<TenantStatusFilter>();
 
             var builder = services.AddMvcCore(config =>
             {
@@ -87,7 +86,7 @@ namespace ASC.Api.Core
                 config.OutputFormatters.Add(new XmlOutputFormatter());
             });
 
-            DIHelper.AddCookieAuthHandler();
+            DIHelper.TryAdd<CookieAuthHandler>();
             var authBuilder = services.AddAuthentication("cookie")
                 .AddScheme<AuthenticationSchemeOptions, CookieAuthHandler>("cookie", a => { });
 

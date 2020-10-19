@@ -2,7 +2,6 @@
 using System.Net;
 using System.Web;
 
-using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Web.Api.Routing;
 using ASC.Web.Studio.Utility;
@@ -47,15 +46,6 @@ namespace ASC.Api.Core.Middleware
                     log.WarnFormat("Payment Required {0}.", context.HttpContext.Request.Url());
                 }
             }
-        }
-    }
-
-    public static class PaymentFilterExtension
-    {
-        public static DIHelper AddPaymentFilter(this DIHelper services)
-        {
-            return services
-                .AddTenantExtraService();
         }
     }
 }

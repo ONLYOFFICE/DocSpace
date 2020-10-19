@@ -72,6 +72,7 @@ namespace ASC.Web.Studio.Utility
         PrivacyRoom = 22
     }
 
+    [Scope]
     public class CommonLinkUtility : BaseCommonLinkUtility
     {
         private static readonly Regex RegFilePathTrim = new Regex("/[^/]*\\.aspx", RegexOptions.IgnoreCase | RegexOptions.Compiled);
@@ -547,23 +548,5 @@ namespace ASC.Web.Studio.Utility
 
         #endregion
 
-    }
-
-    public static class CommonLinkUtilityExtension
-    {
-        public static DIHelper AddCommonLinkUtilityService(this DIHelper services)
-        {
-            if (services.TryAddScoped<CommonLinkUtility>())
-            {
-                return services
-                    .AddUserManagerService()
-                    .AddBaseCommonLinkUtilityService()
-                    .AddWebItemManagerSecurity()
-                    .AddWebItemManager()
-                    .AddEmailValidationKeyProviderService();
-            }
-
-            return services;
-        }
     }
 }

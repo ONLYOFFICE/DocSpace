@@ -44,6 +44,7 @@ using WebSocketSharp;
 
 namespace ASC.Socket.IO.Svc
 {
+    [Scope]
     public class SocketServiceLauncher : IHostedService
     {
         private const int PingInterval = 10000;
@@ -237,17 +238,6 @@ namespace ASC.Socket.IO.Svc
             {
                 Logger.Error("Ping failed stop");
             }
-        }
-    }
-
-    public static class SocketServiceLauncherExtension
-    {
-        public static DIHelper AddSocketServiceLauncher(this DIHelper services)
-        {
-            services.TryAddScoped<SocketServiceLauncher>();
-            return services
-                .AddCoreBaseSettingsService()
-                .AddSignalrServiceClient();
         }
     }
 }

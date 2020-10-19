@@ -57,6 +57,7 @@ using Newtonsoft.Json.Linq;
 
 namespace ASC.ApiSystem.Controllers
 {
+    [Scope]
     [ApiController]
     [Route("[controller]")]
     public class PortalController : ControllerBase
@@ -695,25 +696,5 @@ namespace ASC.ApiSystem.Controllers
         #endregion
 
         #endregion
-    }
-
-    public static class PortalControllerExtention
-    {
-        public static DIHelper AddPortalController(this DIHelper services)
-        {
-            return services
-                .AddCommonMethods()
-                .AddTimeZonesProvider()
-                .AddCommonConstants()
-                .AddUserManagerService()
-                .AddUserFormatter()
-                .AddCoreSettingsService()
-                .AddHostedSolutionService()
-                .AddApiSystemHelper()
-                .AddSettingsManagerService()
-                .AddTenantManagerService()
-                .AddSecurityContextService()
-                ;
-        }
     }
 }

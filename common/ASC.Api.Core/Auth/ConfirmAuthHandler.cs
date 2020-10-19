@@ -6,10 +6,8 @@ using System.Security.Claims;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 
-using ASC.Common;
 using ASC.Core;
 using ASC.Security.Cryptography;
-using ASC.Web.Studio.Core;
 
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.DependencyInjection;
@@ -94,15 +92,6 @@ namespace ASC.Api.Core.Auth
             };
 
             return Task.FromResult(result);
-        }
-    }
-
-    public static class ConfirmAuthHandlerExtension
-    {
-        public static DIHelper AddConfirmAuthHandler(this DIHelper services)
-        {
-            return services
-                .AddSecurityContextService();
         }
     }
 }

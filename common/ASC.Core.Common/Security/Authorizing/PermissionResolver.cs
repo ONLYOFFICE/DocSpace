@@ -124,13 +124,4 @@ namespace ASC.Core.Security.Authorizing
             }
         }
     }
-
-    public static class PermissionResolverConfigExtention
-    {
-        public static DIHelper AddPermissionResolverService(this DIHelper services)
-        {
-            services.TryAddScoped(typeof(IPermissionResolver), typeof(PermissionResolver));
-            return services.AddAzManagerService();
-        }
-    }
 }

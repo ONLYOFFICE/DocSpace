@@ -6,6 +6,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Common.Logging
 {
+    [Scope]
     public class EFLoggerFactory : ILoggerFactory
     {
         Dictionary<string, ILogger> Loggers { get; set; }
@@ -34,6 +35,7 @@ namespace ASC.Common.Logging
         }
     }
 
+    [Scope]
     public class EFLoggerProvider : ILoggerProvider
     {
         private IOptionsMonitor<ILog> Option { get; }
@@ -120,19 +122,6 @@ namespace ASC.Common.Logging
             return !string.IsNullOrEmpty(str) ?
                 str.Replace(Environment.NewLine, " ").Replace("\n", "").Replace("\r", "").Replace("\t", " ") :
                 string.Empty;
-        }
-    }
-
-    public static class LoggerExtension
-    {
-        public static DIHelper AddLoggerService(this DIHelper services)
-        {
-            if (services.TryAddScoped<EFLoggerFactory>())
-            {
-                services.TryAddScoped<EFLoggerProvider>();
-            }
-
-            return services;
         }
     }
 }

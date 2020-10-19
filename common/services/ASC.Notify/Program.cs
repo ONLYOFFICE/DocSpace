@@ -59,13 +59,8 @@ namespace ASC.Notify
                     diHelper.TryAddSingleton<CommonLinkUtilitySettings>();
                     diHelper.AddSingleton<IConfigureOptions<CommonLinkUtilitySettings>, ConfigureCommonLinkUtilitySettings>();
 
-                    diHelper.AddNotifyServiceLauncher();
+                    diHelper.TryAdd<NotifyServiceLauncher>();
                     services.AddHostedService<NotifyServiceLauncher>();
-
-                    diHelper
-                    .AddJabberSenderService()
-                    .AddSmtpSenderService()
-                    .AddAWSSenderService();
 
                     services.AddAutofac(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
                 })

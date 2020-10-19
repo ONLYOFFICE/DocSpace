@@ -46,6 +46,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Notify.Senders
 {
+    [Singletone]
     class AWSSender : SmtpSender
     {
         private readonly object locker = new object();
@@ -251,11 +252,8 @@ namespace ASC.Core.Notify.Senders
     {
         public static DIHelper AddAWSSenderService(this DIHelper services)
         {
-            services.TryAddSingleton<AWSSender>();
             services.TryAddScoped<AWSSenderScope>();
-            return services
-                .AddTenantManagerService()
-                .AddCoreSettingsService();
+            return services;
         }
     }
 }

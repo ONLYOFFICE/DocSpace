@@ -30,6 +30,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 
+using ASC.Common;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Context;
 using ASC.Core.Common.EF.Model;
@@ -42,6 +43,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Data
 {
+    [Scope]
     public class ConfigureDbTenantService : IConfigureNamedOptions<DbTenantService>
     {
         private TenantDomainValidator TenantDomainValidator { get; }

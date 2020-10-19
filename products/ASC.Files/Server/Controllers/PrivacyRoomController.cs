@@ -44,6 +44,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Api.Documents
 {
+    [Scope]
     [DefaultRoute]
     [ApiController]
     public class PrivacyRoomApi : ControllerBase
@@ -168,25 +169,6 @@ namespace ASC.Api.Documents
             MessageService.Send(enable ? MessageAction.PrivacyRoomEnable : MessageAction.PrivacyRoomDisable);
 
             return enable;
-        }
-    }
-
-    public static class PrivacyRoomApiExtention
-    {
-        public static DIHelper AddPrivacyRoomApiService(this DIHelper services)
-        {
-            if (services.TryAddScoped<PrivacyRoomApi>())
-            {
-                services
-                    .AddAuthContextService()
-                    .AddPermissionContextService()
-                    .AddSettingsManagerService()
-                    .AddTenantManagerService()
-                    .AddMessageServiceService()
-                    .AddEncryptionKeyPairHelperService();
-            }
-
-            return services;
         }
     }
 }

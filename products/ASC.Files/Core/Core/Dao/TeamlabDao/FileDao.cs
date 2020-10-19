@@ -44,7 +44,6 @@ using ASC.Files.Core.Thirdparty;
 using ASC.Files.Thirdparty.ProviderDao;
 using ASC.Web.Core.Files;
 using ASC.Web.Files.Classes;
-using ASC.Web.Files.Core.Search;
 using ASC.Web.Files.Services.DocumentService;
 using ASC.Web.Files.Utils;
 using ASC.Web.Studio.Core;
@@ -468,15 +467,15 @@ namespace ASC.Files.Core.Data
                 {
                     try
                     {
-                    if (isNew)
-                    {
-                        var stored = GlobalStore.GetStore().IsDirectory(GetUniqFileDirectory(file.ID));
-                        DeleteFile(file.ID, stored);
-                    }
-                    else if (!IsExistOnStorage(file))
-                    {
-                        DeleteVersion(file);
-                    }
+                        if (isNew)
+                        {
+                            var stored = GlobalStore.GetStore().IsDirectory(GetUniqFileDirectory(file.ID));
+                            DeleteFile(file.ID, stored);
+                        }
+                        else if (!IsExistOnStorage(file))
+                        {
+                            DeleteVersion(file);
+                        }
                     }
                     catch (Exception deleteException)
                     {
@@ -959,10 +958,10 @@ namespace ASC.Files.Core.Data
             if (!uploadSession.UseChunks)
             {
                 using var streamToSave = ChunkedUploadSessionHolder.UploadSingleChunk(uploadSession, stream, chunkLength);
-                    if (streamToSave != Stream.Null)
-                    {
-                        uploadSession.File = SaveFile(GetFileForCommit(uploadSession), streamToSave);
-                    }
+                if (streamToSave != Stream.Null)
+                {
+                    uploadSession.File = SaveFile(GetFileForCommit(uploadSession), streamToSave);
+                }
 
                 return;
             }
@@ -1441,31 +1440,9 @@ namespace ASC.Files.Core.Data
     {
         public static DIHelper AddFileDaoService(this DIHelper services)
         {
-            if (services.TryAddScoped<IFileDao<int>, FileDao>())
-            {
-            services.TryAddTransient<File<int>>();
-
-            return services
-                .AddFilesDbContextService()
-                .AddUserManagerService()
-                .AddTenantManagerService()
-                .AddTenantUtilService()
-                .AddSetupInfo()
-                .AddTenantExtraService()
-                .AddTenantStatisticsProviderService()
-                .AddCoreBaseSettingsService()
-                .AddCoreConfigurationService()
-                .AddSettingsManagerService()
-                .AddAuthContextService()
-                .AddGlobalStoreService()
-                .AddGlobalSpaceService()
-                .AddFactoryIndexerFileService()
-                .AddGlobalFolderService()
-                .AddChunkedUploadSessionHolderService()
-                .AddFolderDaoService();
-        }
+            services.TryAddScoped<IFileDao<int>, FileDao>();
 
             return services;
-    }
+        }
     }
 }

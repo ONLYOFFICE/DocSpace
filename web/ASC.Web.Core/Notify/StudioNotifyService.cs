@@ -53,6 +53,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Studio.Core.Notify
 {
+    [Scope]
     public class StudioNotifyService
     {
         private readonly StudioNotifyServiceHelper client;
@@ -1033,25 +1034,7 @@ namespace ASC.Web.Studio.Core.Notify
     {
         public static DIHelper AddStudioNotifyServiceService(this DIHelper services)
         {
-            if (services.TryAddScoped<StudioNotifyService>())
-            {
-                services.TryAddScoped<StudioNotifyServiceScope>();
-                return services
-                    .AddDisplayUserSettingsService()
-                    .AddMailWhiteLabelSettingsService()
-                    .AddAdditionalWhiteLabelSettingsService()
-                    .AddStudioNotifyServiceHelper()
-                    .AddUserManagerService()
-                    .AddStudioNotifyHelperService()
-                    .AddTenantExtraService()
-                    .AddAuthManager()
-                    .AddAuthContextService()
-                    .AddTenantManagerService()
-                    .AddCoreBaseSettingsService()
-                    .AddCommonLinkUtilityService()
-                    .AddSetupInfo()
-                    .AddWebItemSecurity();
-            }
+            services.TryAddScoped<StudioNotifyServiceScope>();
 
             return services;
         }

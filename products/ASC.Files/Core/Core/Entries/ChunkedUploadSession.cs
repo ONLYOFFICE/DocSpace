@@ -61,6 +61,7 @@ namespace ASC.Files.Core
         }
     }
 
+    [Scope]
     public class ChunkedUploadSessionHelper
     {
         private EntryManager EntryManager { get; }
@@ -98,19 +99,6 @@ namespace ASC.Files.Core
                 bytes_uploaded = session.BytesUploaded,
                 bytes_total = session.BytesTotal
             };
-        }
-    }
-
-    public static class ChunkedUploadSessionHelperExtention
-    {
-        public static DIHelper AddChunkedUploadSessionHelperService(this DIHelper services)
-        {
-            if (services.TryAddScoped<ChunkedUploadSessionHelper>())
-            {
-                return services.AddEntryManagerService();
-            }
-
-            return services;
         }
     }
 }

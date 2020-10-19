@@ -26,7 +26,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 
 using ASC.Common;
@@ -44,6 +43,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.FederatedLogin
 {
+    [Singletone]
     public class AccountLinkerStorage
     {
         private readonly ICache cache;
@@ -107,6 +107,7 @@ namespace ASC.FederatedLogin
         }
     }
 
+    [Scope(typeof(ConfigureAccountLinker))]
     public class AccountLinker
     {
         public string DbId { get; set; }
@@ -217,36 +218,6 @@ namespace ASC.FederatedLogin
 
             tr.Commit();
             AccountLinkerStorage.RemoveFromCache(obj);
-        }
-    }
-
-    public static class AccountLinkerStorageExtension
-    {
-        public static DIHelper AddAccountLinkerStorageService(this DIHelper services)
-        {
-            services.TryAddSingleton<AccountLinkerStorage>();
-            services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
-
-            return services;
-        }
-    }
-
-    public static class AccountLinkerExtension
-    {
-        public static DIHelper AddAccountLinker(this DIHelper services)
-        {
-            if (services.TryAddScoped<AccountLinker>())
-            {
-                services.TryAddScoped<IConfigureOptions<AccountLinker>, ConfigureAccountLinker>();
-
-                return services
-                    .AddAccountLinkContextService()
-                    .AddSignatureService()
-                    .AddInstanceCryptoService()
-                    .AddAccountLinkerStorageService();
-            }
-
-            return services;
         }
     }
 }

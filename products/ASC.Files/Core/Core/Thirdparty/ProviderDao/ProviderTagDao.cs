@@ -137,8 +137,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
         {
             if (services.TryAddScoped<ITagDao<string>, ProviderTagDao>())
             {
-                return services
-                    .AddProviderDaoBaseService();
+                return services;
             }
 
             return services;

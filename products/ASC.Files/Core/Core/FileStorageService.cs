@@ -48,7 +48,6 @@ using ASC.Data.Storage;
 using ASC.ElasticSearch;
 using ASC.FederatedLogin.LoginProviders;
 using ASC.Files.Core;
-using ASC.Files.Core.Data;
 using ASC.Files.Core.Resources;
 using ASC.Files.Core.Security;
 using ASC.Files.Core.Services.NotifyService;
@@ -56,7 +55,6 @@ using ASC.MessagingSystem;
 using ASC.Web.Core.Files;
 using ASC.Web.Core.PublicResources;
 using ASC.Web.Core.Users;
-using ASC.Web.Core.Utility;
 using ASC.Web.Files.Classes;
 using ASC.Web.Files.Core.Entries;
 using ASC.Web.Files.Helpers;
@@ -76,6 +74,7 @@ using UrlShortener = ASC.Web.Core.Utility.UrlShortener;
 
 namespace ASC.Web.Files.Services.WCFService
 {
+    [Scope]
     public class FileStorageService<T> //: IFileStorageService
     {
         private static readonly FileEntrySerializer serializer = new FileEntrySerializer();
@@ -579,27 +578,27 @@ namespace ASC.Web.Files.Services.WCFService
 
             if (fileWrapper.TemplateId.Equals(default(T)))
             {
-            var culture = UserManager.GetUsers(AuthContext.CurrentAccount.ID).GetCulture();
-            var storeTemplate = GetStoreTemplate();
+                var culture = UserManager.GetUsers(AuthContext.CurrentAccount.ID).GetCulture();
+                var storeTemplate = GetStoreTemplate();
 
-            var path = FileConstant.NewDocPath + culture + "/";
-            if (!storeTemplate.IsDirectory(path))
-            {
-                path = FileConstant.NewDocPath + "default/";
-            }
+                var path = FileConstant.NewDocPath + culture + "/";
+                if (!storeTemplate.IsDirectory(path))
+                {
+                    path = FileConstant.NewDocPath + "default/";
+                }
 
-            path += "new" + fileExt;
+                path += "new" + fileExt;
 
-            try
-            {
-                using var stream = storeTemplate.GetReadStream("", path);
-                file.ContentLength = stream.CanSeek ? stream.Length : storeTemplate.GetFileSize(path);
-                file = fileDao.SaveFile(file, stream);
-            }
-            catch (Exception e)
-            {
-                throw GenerateException(e);
-            }
+                try
+                {
+                    using var stream = storeTemplate.GetReadStream("", path);
+                    file.ContentLength = stream.CanSeek ? stream.Length : storeTemplate.GetFileSize(path);
+                    file = fileDao.SaveFile(file, stream);
+                }
+                catch (Exception e)
+                {
+                    throw GenerateException(e);
+                }
             }
             else
             {
@@ -2245,54 +2244,6 @@ namespace ASC.Web.Files.Services.WCFService
         {
             return HttpContextAccessor?.HttpContext?.Request?.Headers;
         }
-    }
-
-    public static class FileStorageServiceExtention
-    {
-        public static DIHelper AddFileStorageService(this DIHelper services)
-        {
-            if (services.TryAddScoped<FileStorageService<string>>())
-            {
-            services.TryAddScoped<FileStorageService<int>>();
-            //services.TryAddScoped<IFileStorageService, FileStorageService>();
-            return services
-                .AddGlobalService()
-                .AddGlobalStoreService()
-                .AddGlobalFolderHelperService()
-                .AddAuthContextService()
-                .AddUserManagerService()
-                .AddFilesLinkUtilityService()
-                .AddBaseCommonLinkUtilityService()
-                .AddCoreBaseSettingsService()
-                .AddCustomNamingPeopleService()
-                .AddDisplayUserSettingsService()
-                .AddPathProviderService()
-                .AddDaoFactoryService()
-                .AddFileMarkerService()
-                .AddFilesSettingsHelperService()
-                .AddFileUtilityService()
-                .AddFileSecurityService()
-                .AddFilesMessageService()
-                .AddFileShareLinkService()
-                .AddDocumentServiceConnectorService()
-                .AddEntryManagerService()
-                .AddDocumentServiceHelperService()
-                .AddThirdpartyConfigurationService()
-                .AddUrlShortener()
-                .AddDocuSignHelperService()
-                .AddDocuSignTokenService()
-                .AddFileConverterService()
-                .AddNotifyClientService()
-                .AddFileSharingService()
-                .AddDocumentServiceTrackerHelperService()
-                .AddSocketManagerService()
-                .AddFileOperationsManagerHelperService()
-                    .AddFileSharingAceHelperService()
-                    .AddTenantManagerService();
-        }
-
-            return services;
-    }
     }
 
     public class FileModel<T>

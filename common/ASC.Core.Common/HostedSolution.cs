@@ -291,16 +291,7 @@ namespace ASC.Core
         {
             if (services.TryAddScoped<IConfigureOptions<HostedSolution>, ConfigureHostedSolution>())
             {
-                return services
-                    .AddUserFormatter()
-                    .AddTenantService()
-                    .AddUserService()
-                    .AddQuotaService()
-                    .AddTariffService()
-                    .AddTenantManagerService()
-                    .AddTenantUtilService()
-                    .AddDbSettingsManagerService()
-                    .AddCoreSettingsService();
+                return services;
             }
 
             return services;

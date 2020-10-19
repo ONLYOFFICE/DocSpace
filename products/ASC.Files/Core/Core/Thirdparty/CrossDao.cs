@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading;
 
+using ASC.Common;
 using ASC.Files.Core.Data;
 using ASC.Files.Core.Resources;
 using ASC.Web.Files.Utils;
@@ -11,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Files.Core.Thirdparty
 {
+    [Scope]
     internal class CrossDao
     {
         private IServiceProvider ServiceProvider { get; }

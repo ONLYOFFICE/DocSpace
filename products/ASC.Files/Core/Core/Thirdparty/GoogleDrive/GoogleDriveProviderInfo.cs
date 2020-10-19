@@ -46,6 +46,7 @@ using DriveFile = Google.Apis.Drive.v3.Data.File;
 
 namespace ASC.Files.Thirdparty.GoogleDrive
 {
+    [Scope]
     [DebuggerDisplay("{CustomerTitle}")]
     internal class GoogleDriveProviderInfo : IProviderInfo
     {
@@ -180,6 +181,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
         }
     }
 
+    [Scope]
     internal class GoogleDriveStorageDisposableWrapper : IDisposable
     {
         internal GoogleDriveStorage Storage { get; set; }
@@ -223,6 +225,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
         }
     }
 
+    [Singletone]
     public class GoogleDriveProviderInfoHelper
     {
         private readonly TimeSpan CacheExpiration;
@@ -361,21 +364,6 @@ namespace ASC.Files.Thirdparty.GoogleDrive
         internal void CacheResetChilds(int id, string parentDriveId, bool? childFolder = null)
         {
             CacheNotify.Publish(new GoogleDriveCacheItem { ResetChilds = true, Key = id + "-" + parentDriveId, ChildFolder = childFolder ?? false, ChildFolderExist = childFolder.HasValue }, CacheNotifyAction.Remove);
-        }
-    }
-
-    public static class GoogleDriveProviderInfoExtension
-    {
-        public static DIHelper AddGoogleDriveProviderInfoService(this DIHelper services)
-        {
-            if (services.TryAddScoped<GoogleDriveProviderInfo>())
-            {
-                services.TryAddScoped<GoogleDriveStorageDisposableWrapper>();
-                services.TryAddScoped<GoogleDriveStorage>();
-                services.TryAddSingleton<GoogleDriveProviderInfoHelper>();
-            }
-
-            return services;
         }
     }
 }

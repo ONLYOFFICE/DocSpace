@@ -64,6 +64,7 @@ namespace ASC.Data.Storage.Encryption
         }
     }
 
+    [Scope]
     public class EncryptionSettingsHelper
     {
         private const string key = "EncryptionSettings";
@@ -189,17 +190,6 @@ namespace ASC.Data.Storage.Encryption
             }
 
             return new string(array2);
-        }
-    }
-
-    public static class EncryptionSettingsHelperExtension
-    {
-        public static DIHelper AddEncryptionSettingsHelperService(this DIHelper services)
-        {
-            services.TryAddScoped<EncryptionSettingsHelper>();
-            services.TryAddSingleton<AscCacheNotify>();
-            return services
-                .AddCoreConfigurationService();
         }
     }
 }

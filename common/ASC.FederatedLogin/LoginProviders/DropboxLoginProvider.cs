@@ -26,7 +26,6 @@
 
 using System.Collections.Generic;
 
-using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Core;
 using ASC.Core.Common.Configuration;
@@ -66,19 +65,6 @@ namespace ASC.FederatedLogin.LoginProviders
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
             : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, name, order, props, additional)
         {
-        }
-    }
-    public static class DropboxLoginProviderExtension
-    {
-        public static DIHelper AddDropboxLoginProviderService(this DIHelper services)
-        {
-            //services.TryAddScoped<DropboxLoginProvider>();
-            return services
-                .AddConsumerFactoryService()
-                .AddKafkaService()
-                .AddTenantManagerService()
-                .AddCoreBaseSettingsService()
-                .AddCoreSettingsService();
         }
     }
 }

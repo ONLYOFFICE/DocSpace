@@ -38,6 +38,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Security.Authentication
 {
+    [Scope]
     public class CookieStorage
     {
         private const string DateTimeFormat = "yyyy-MM-dd HH:mm:ss,fff";
@@ -139,21 +140,6 @@ namespace ASC.Core.Security.Authentication
             }
             catch { }
             return Hasher.Base64Hash(data ?? string.Empty, HashAlg.SHA256);
-        }
-    }
-
-    public static class CookieStorageExtension
-    {
-        public static DIHelper AddCookieStorageService(this DIHelper services)
-        {
-            if (services.TryAddScoped<CookieStorage>())
-            {
-                return services
-                    .AddTenantCookieSettingsService()
-                    .AddInstanceCryptoService();
-            }
-
-            return services;
         }
     }
 }

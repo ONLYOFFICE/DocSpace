@@ -57,12 +57,4 @@ namespace ASC.UrlShortener.Svc
             return Task.CompletedTask;
         }
     }
-
-    public static class UrlShortenerServiceLauncherExtension
-    {
-        public static DIHelper AddUrlShortenerServiceLauncher(this DIHelper services)
-        {
-            return services.AddUrlShortenerService();
-        }
-    }
 }

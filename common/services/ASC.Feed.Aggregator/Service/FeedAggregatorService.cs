@@ -49,6 +49,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Feed.Aggregator
 {
+    [Singletone]
     public class FeedAggregatorService : IHostedService
     {
         private ILog Log { get; set; }
@@ -288,6 +289,7 @@ namespace ASC.Feed.Aggregator
         }
     }
 
+    [Scope]
     public class FeedAggregatorServiceScope
     {
         private BaseCommonLinkUtility BaseCommonLinkUtility { get; }
@@ -325,24 +327,6 @@ namespace ASC.Feed.Aggregator
             userManager = UserManager;
             securityContext = SecurityContext;
             authManager = AuthManager;
-        }
-    }
-
-    public static class FeedAggregatorServiceExtension
-    {
-        public static DIHelper AddFeedAggregatorService(this DIHelper services)
-        {
-            services.TryAddSingleton<FeedAggregatorService>();
-            services.TryAddScoped<FeedAggregatorServiceScope>();
-
-            return services
-                .AddBaseCommonLinkUtilityService()
-                .AddTenantManagerService()
-                .AddUserManagerService()
-                .AddSecurityContextService()
-                .AddAuthManager()
-                .AddFeedAggregateDataProvider()
-                .AddSignalrServiceClient();
         }
     }
 }

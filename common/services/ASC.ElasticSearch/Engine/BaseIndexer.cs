@@ -40,7 +40,6 @@ using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Context;
 using ASC.Core.Common.EF.Model;
-using ASC.ElasticSearch.Core;
 using ASC.ElasticSearch.Service;
 
 using Autofac;
@@ -52,6 +51,7 @@ using Nest;
 
 namespace ASC.ElasticSearch
 {
+    [Singletone]
     public class BaseIndexerHelper
     {
         public ConcurrentDictionary<string, bool> IsExist { get; set; }
@@ -73,6 +73,7 @@ namespace ASC.ElasticSearch
         }
     }
 
+    [Scope]
     public class BaseIndexer<T> where T : class, ISearchItem
     {
         private static readonly object Locker = new object();
@@ -622,30 +623,5 @@ namespace ASC.ElasticSearch
         Add,
         Replace,
         Remove
-    }
-
-    public static class BaseIndexerExtention
-    {
-        public static DIHelper AddBaseIndexerHelperService(this DIHelper services)
-        {
-            services.TryAddSingleton<BaseIndexerHelper>();
-            return services.AddKafkaService();
-        }
-
-        public static DIHelper AddBaseIndexerService<T>(this DIHelper services) where T : class, ISearchItem
-        {
-            if (services.TryAddScoped<BaseIndexer<T>>())
-            {
-                return services
-                    .AddFactoryIndexerService()
-                    .AddClientService()
-                    .AddWebstudioDbContextService()
-                    .AddTenantManagerService()
-                    .AddBaseIndexerHelperService()
-                    ;
-            }
-
-            return services;
-        }
     }
 }

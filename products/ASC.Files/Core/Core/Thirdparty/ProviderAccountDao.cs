@@ -28,7 +28,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.Configuration;
@@ -581,28 +580,6 @@ namespace ASC.Files.Thirdparty
                 //old token in base64 without encrypt
                 return token ?? "";
             }
-        }
-    }
-
-    public static class ProviderAccountDaoExtention
-    {
-        public static DIHelper AddProviderAccountDaoService(this DIHelper services)
-        {
-            //services.TryAddScoped<IProviderDao, ProviderAccountDao>();
-
-            return services
-                .AddSharpBoxProviderInfoService()
-                .AddSharePointProviderInfoService()
-                .AddOneDriveProviderInfoService()
-                .AddGoogleDriveProviderInfoService()
-                .AddBoxProviderInfoService()
-                .AddDropboxProviderInfoService()
-                .AddTenantUtilService()
-                .AddTenantManagerService()
-                .AddInstanceCryptoService()
-                .AddSecurityContextService()
-                .AddConsumerFactoryService()
-                .AddDbContextManagerService<FilesDbContext>();
         }
     }
 }

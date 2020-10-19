@@ -42,6 +42,7 @@ using Microsoft.OneDrive.Sdk;
 
 namespace ASC.Files.Thirdparty.OneDrive
 {
+    [Scope]
     [DebuggerDisplay("{CustomerTitle}")]
     internal class OneDriveProviderInfo : IProviderInfo
     {
@@ -141,6 +142,7 @@ namespace ASC.Files.Thirdparty.OneDrive
         }
     }
 
+    [Scope]
     internal class OneDriveStorageDisposableWrapper : IDisposable
     {
         internal OneDriveStorage Storage { get; private set; }
@@ -188,6 +190,7 @@ namespace ASC.Files.Thirdparty.OneDrive
         }
     }
 
+    [Singletone]
     public class OneDriveProviderInfoHelper
     {
         private readonly TimeSpan CacheExpiration;
@@ -254,21 +257,6 @@ namespace ASC.Files.Thirdparty.OneDrive
 
                 CacheNotify.Publish(new OneDriveCacheItem { Key = key }, CacheNotifyAction.Remove);
             }
-        }
-    }
-
-    public static class OneDriveProviderInfoExtension
-    {
-        public static DIHelper AddOneDriveProviderInfoService(this DIHelper services)
-        {
-            if (services.TryAddScoped<OneDriveProviderInfo>())
-            {
-                services.TryAddScoped<OneDriveStorageDisposableWrapper>();
-                services.TryAddScoped<OneDriveStorage>();
-                services.TryAddSingleton<OneDriveProviderInfoHelper>();
-            }
-
-            return services;
         }
     }
 }

@@ -42,7 +42,6 @@ using ASC.Notify;
 using ASC.Notify.Engine;
 using ASC.Notify.Messages;
 using ASC.Notify.Patterns;
-using ASC.Notify.Textile;
 using ASC.Web.Core;
 using ASC.Web.Core.Users;
 using ASC.Web.Core.WhiteLabel;
@@ -447,24 +446,7 @@ namespace ASC.Web.Studio.Core.Notify
             if (services.TryAddScoped<NotifyConfigurationScope>())
             {
 
-                return services
-                    .AddJabberStylerService()
-                    .AddTextileStylerService()
-                    .AddPushStylerService()
-                    .AddTenantManagerService()
-                    .AddAuthContextService()
-                    .AddUserManagerService()
-                    .AddDisplayUserSettingsService()
-                    .AddTenantExtraService()
-                    .AddWebItemManagerSecurity()
-                    .AddWebItemManager()
-                    .AddTenantLogoManagerService()
-                    .AddTenantUtilService()
-                    .AddCoreBaseSettingsService()
-                    .AddAdditionalWhiteLabelSettingsService()
-                    .AddCommonLinkUtilityService()
-                    .AddMailWhiteLabelSettingsService()
-                    .AddStudioNotifyHelperService();
+                return services;
             }
 
             return services;

@@ -28,7 +28,6 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Core;
 using ASC.Core.Common.Configuration;
@@ -127,19 +126,6 @@ namespace ASC.FederatedLogin.LoginProviders
             refreshed.RedirectUri = RedirectUri;
             refreshed.RefreshToken ??= refreshToken;
             return refreshed;
-        }
-    }
-    public static class DocuSignLoginProviderExtension
-    {
-        public static DIHelper AddDocuSignLoginProviderService(this DIHelper services)
-        {
-            //services.TryAddScoped<DocuSignLoginProvider>();
-            return services
-                .AddConsumerFactoryService()
-                .AddKafkaService()
-                .AddTenantManagerService()
-                .AddCoreBaseSettingsService()
-                .AddCoreSettingsService();
         }
     }
 }

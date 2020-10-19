@@ -654,25 +654,4 @@ namespace ASC.Core
             };
         }
     }
-
-    public static class UserManagerConfigExtension
-    {
-        public static DIHelper AddUserManagerService(this DIHelper services)
-        {
-            services.TryAdd(typeof(UserManager));
-
-            if (services.TryAddScoped<UserManager>())
-            {
-                services.TryAddSingleton<UserManagerConstants>();
-
-                return services
-                    .AddUserService()
-                    .AddTenantManagerService()
-                    .AddConstantsService()
-                    .AddPermissionContextService();
-            }
-
-            return services;
-        }
-    }
 }

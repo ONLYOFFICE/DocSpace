@@ -43,6 +43,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Files.Thirdparty.Dropbox
 {
+    [Scope]
     internal class DropboxTagDao : DropboxDaoBase, ITagDao<string>
     {
         public DropboxTagDao(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor, FileUtility fileUtility) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility)
@@ -189,16 +190,6 @@ namespace ASC.Files.Thirdparty.Dropbox
         public int GetHashCode([DisallowNull] TagLink obj)
         {
             return obj.Id.GetHashCode() + obj.TenantId.GetHashCode();
-        }
-    }
-
-    public static class DropboxTagDaoExtention
-    {
-        public static DIHelper AddDropboxTagDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<DropboxTagDao>();
-
-            return services;
         }
     }
 }

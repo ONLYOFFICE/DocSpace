@@ -96,6 +96,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Api.Settings
 {
+    [Scope]
     [DefaultRoute]
     [ApiController]
     public partial class SettingsController : ControllerBase
@@ -345,7 +346,7 @@ namespace ASC.Api.Settings
 
             MessageService.Send(MessageAction.AdministratorMessageSettingsUpdated);
 
-            return  Resource.SuccessfullySaveSettingsMessage;
+            return Resource.SuccessfullySaveSettingsMessage;
         }
 
         [AllowAnonymous]
@@ -440,23 +441,23 @@ namespace ASC.Api.Settings
                 switch (Tenant.TrustedDomainsType)
                 {
                     case TenantTrustedDomainsType.Custom:
-                        {
-                            var address = new MailAddress(email);
-                            if (Tenant.TrustedDomains.Any(d => address.Address.EndsWith("@" + d, StringComparison.InvariantCultureIgnoreCase)))
-                            {
-                                StudioNotifyService.SendJoinMsg(email, emplType);
-                                MessageService.Send(MessageInitiator.System, MessageAction.SentInviteInstructions, email);
-                                return Resource.FinishInviteJoinEmailMessage;
-                            }
-
-                            throw new Exception(Resource.ErrorEmailDomainNotAllowed);
-                        }
-                    case TenantTrustedDomainsType.All:
+                    {
+                        var address = new MailAddress(email);
+                        if (Tenant.TrustedDomains.Any(d => address.Address.EndsWith("@" + d, StringComparison.InvariantCultureIgnoreCase)))
                         {
                             StudioNotifyService.SendJoinMsg(email, emplType);
                             MessageService.Send(MessageInitiator.System, MessageAction.SentInviteInstructions, email);
-                            return Resource.FinishInviteJoinEmailMessage ;
+                            return Resource.FinishInviteJoinEmailMessage;
                         }
+
+                        throw new Exception(Resource.ErrorEmailDomainNotAllowed);
+                    }
+                    case TenantTrustedDomainsType.All:
+                    {
+                        StudioNotifyService.SendJoinMsg(email, emplType);
+                        MessageService.Send(MessageInitiator.System, MessageAction.SentInviteInstructions, email);
+                        return Resource.FinishInviteJoinEmailMessage;
+                    }
                     default:
                         throw new Exception(Resource.ErrorNotCorrectEmail);
                 }
@@ -2397,70 +2398,6 @@ namespace ASC.Api.Settings
             }
 
             MemoryCache.Set(key, ++count, TimeSpan.FromMinutes(expirationMinutes));
-        }
-    }
-
-    public static class SettingsControllerExtension
-    {
-        public static DIHelper AddSettingsController(this DIHelper services)
-        {
-            return services
-                .AddMessageTargetService()
-                .AddCoreConfigurationService()
-                .AddIPRestrictionsService()
-                .AddDisplayUserSettingsService()
-                .AddSetupInfo()
-                .AddCommonLinkUtilityService()
-                .AddCoreBaseSettingsService()
-                .AddTenantUtilService()
-                .AddEmailValidationKeyProviderService()
-                .AddMessageServiceService()
-                .AddStudioNotifyServiceService()
-                .AddApiContextService()
-                .AddUserManagerService()
-                .AddTenantManagerService()
-                .AddTenantExtraService()
-                .AddTenantStatisticsProviderService()
-                .AddUserPhotoManagerService()
-                .AddAuthContextService()
-                .AddCookiesManagerService()
-                .AddWebItemSecurity()
-                .AddStudioNotifyHelperService()
-                .AddLicenseReaderService()
-                .AddPermissionContextService()
-                .AddWebItemManager()
-                .AddWebItemManagerSecurity()
-                .AddStorageSettingsService()
-                .AddStorageFactoryService()
-                .AddStorageFactoryConfigService()
-                .AddSettingsManagerService()
-                .AddTenantInfoSettingsService()
-                .AddColorThemesSettingsHelperService()
-                .AddTenantWhiteLabelSettingsService()
-                .AddStudioSmsNotificationSettingsService()
-                .AddTfaManagerService()
-                .AddStorageHelperService()
-                .AddTenantLogoManagerService()
-                .AddBuildVersionService()
-                .AddStatisticManagerService()
-                .AddEmployeeWraper()
-                .AddConsumerFactoryService()
-                .AddSmsProviderManagerService()
-                .AddCustomNamingPeopleService()
-                .AddProviderManagerService()
-                .AddAccountLinker()
-                .AddMobileDetectorService()
-                .AddFirstTimeTenantSettings()
-                .AddServiceClient()
-                .AddTwilioProviderService()
-                .AddEncryptionServiceClient()
-                .AddEncryptionSettingsHelperService()
-                .AddStorageFactoryService()
-                .AddBackupService()
-                .AddEncryptionServiceNotifierService()
-                .AddTelegramLoginProviderService()
-                .AddTelegramHelperSerivce()
-                .AddPasswordHasherService();
         }
     }
 }

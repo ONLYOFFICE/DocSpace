@@ -30,7 +30,6 @@ using System.Collections.Generic;
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Utils;
-using ASC.Core.Common.EF.Context;
 using ASC.Core.Data;
 using ASC.Core.Tenants;
 
@@ -38,6 +37,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Caching
 {
+    [Singletone]
     class TenantServiceCache
     {
         private const string KEY = "tenants";
@@ -152,6 +152,7 @@ namespace ASC.Core.Caching
         }
     }
 
+    [Scope]
     class ConfigureCachedTenantService : IConfigureNamedOptions<CachedTenantService>
     {
         private IOptionsSnapshot<DbTenantService> Service { get; }
@@ -300,31 +301,6 @@ namespace ASC.Core.Caching
             Service.SetTenantSettings(tenant, key, data);
             var cacheKey = string.Format("settings/{0}/{1}", tenant, key);
             CacheNotifySettings.Publish(new TenantSetting { Key = cacheKey }, CacheNotifyAction.Remove);
-        }
-    }
-
-    public static class TenantConfigExtension
-    {
-        public static DIHelper AddTenantService(this DIHelper services)
-        {
-            if (services.TryAddScoped<DbTenantService>())
-            {
-                services.TryAddScoped<IConfigureOptions<DbTenantService>, ConfigureDbTenantService>();
-
-                services.TryAddScoped<ITenantService, CachedTenantService>();
-                services.TryAddScoped<IConfigureOptions<CachedTenantService>, ConfigureCachedTenantService>();
-
-                services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
-                services.TryAddSingleton<TenantDomainValidator>();
-                services.TryAddSingleton<TimeZoneConverter>();
-                services.TryAddSingleton<TenantServiceCache>();
-
-                return services
-                    .AddCoreBaseSettingsService()
-                    .AddTenantDbContextService();
-            }
-
-            return services;
         }
     }
 }

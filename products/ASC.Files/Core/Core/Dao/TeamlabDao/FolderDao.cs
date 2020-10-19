@@ -42,7 +42,6 @@ using ASC.Files.Core.Security;
 using ASC.Files.Core.Thirdparty;
 using ASC.Files.Thirdparty.ProviderDao;
 using ASC.Web.Files.Classes;
-using ASC.Web.Files.Core.Search;
 using ASC.Web.Studio.Core;
 using ASC.Web.Studio.UserControls.Statistics;
 using ASC.Web.Studio.Utility;
@@ -1285,27 +1284,7 @@ namespace ASC.Files.Core.Data
     {
         public static DIHelper AddFolderDaoService(this DIHelper services)
         {
-            if (services.TryAddScoped<IFolderDao<int>, FolderDao>())
-            {
-                services.TryAddTransient<Folder<int>>();
-                services.TryAddTransient<Folder<string>>();
-
-                return services
-                    .AddFactoryIndexerFolderService()
-                    .AddTenantManagerService()
-                    .AddUserManagerService()
-                    .AddFilesDbContextService()
-                    .AddTenantUtilService()
-                    .AddSetupInfo()
-                    .AddTenantExtraService()
-                    .AddTenantStatisticsProviderService()
-                    .AddCoreBaseSettingsService()
-                    .AddCoreConfigurationService()
-                    .AddSettingsManagerService()
-                    .AddAuthContextService()
-                    .AddGlobalSpaceService();
-            }
-
+            services.TryAddScoped<IFolderDao<int>, FolderDao>();
             return services;
         }
     }

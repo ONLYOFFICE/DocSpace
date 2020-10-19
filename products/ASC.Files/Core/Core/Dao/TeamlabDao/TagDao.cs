@@ -41,6 +41,7 @@ using ASC.Web.Studio.Utility;
 
 namespace ASC.Files.Core.Data
 {
+    [Scope]
     internal class TagDao<T> : AbstractDao, ITagDao<T>
     {
         private static readonly object syncRoot = new object();
@@ -699,23 +700,7 @@ namespace ASC.Files.Core.Data
     {
         public static DIHelper AddTagDaoService(this DIHelper services)
         {
-            if (services.TryAddScoped<TagDao<string>>())
-            {
-                services.TryAddScoped<ITagDao<int>, TagDao<int>>();
-
-                return services
-                    .AddUserManagerService()
-                    .AddFilesDbContextService()
-                    .AddTenantManagerService()
-                    .AddTenantUtilService()
-                    .AddSetupInfo()
-                    .AddTenantExtraService()
-                    .AddTenantStatisticsProviderService()
-                    .AddCoreBaseSettingsService()
-                    .AddCoreConfigurationService()
-                    .AddSettingsManagerService()
-                    .AddAuthContextService();
-            }
+            services.TryAddScoped<ITagDao<int>, TagDao<int>>();
 
             return services;
         }

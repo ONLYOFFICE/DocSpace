@@ -32,6 +32,7 @@ using ASC.Files.Core.Security;
 
 namespace ASC.Files.Thirdparty.SharePoint
 {
+    [Scope]
     internal class SharePointDaoSelector : RegexDaoSelectorBase<SharePointProviderInfo>, IDaoSelector
     {
         protected internal override string Name { get => "sharepoint"; }
@@ -73,23 +74,6 @@ namespace ASC.Files.Thirdparty.SharePoint
                 throw new ArgumentException("Id is not a sharepoint id");
             }
             return base.ConvertId(null);
-        }
-    }
-
-    public static class SharePointDaoSelectorExtention
-    {
-        public static DIHelper AddSharePointSelectorService(this DIHelper services)
-        {
-            if (services.TryAddScoped<SharePointDaoSelector>())
-            {
-                return services
-                    .AddSharePointSecurityDaoService()
-                    .AddSharePointTagDaoService()
-                    .AddSharePointFolderDaoService()
-                    .AddSharePointFileDaoService();
-            }
-
-            return services;
         }
     }
 }

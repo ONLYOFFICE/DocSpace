@@ -49,10 +49,7 @@ namespace ASC.Data.Storage.Migration
                     var diHelper = new DIHelper(services);
 
                     diHelper.AddNLogManager("ASC.Data.Storage.Migration", "ASC.Migration");
-
-                    diHelper.TryAddSingleton<CommonLinkUtilitySettings>();
-
-                    diHelper.AddMigrationServiceLauncher();
+                    diHelper.TryAdd<MigrationServiceLauncher>();
                     services.AddHostedService<MigrationServiceLauncher>();
 
                     services.AddAutofac(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);

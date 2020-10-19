@@ -45,6 +45,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Files.Thirdparty.SharePoint
 {
+    [Scope]
     internal class SharePointFolderDao : SharePointDaoBase, IFolderDao<string>
     {
         private CrossDao CrossDao { get; }
@@ -481,15 +482,5 @@ namespace ASC.Files.Thirdparty.SharePoint
         }
 
         #endregion
-    }
-
-    public static class SharePointFolderDaoExtention
-    {
-        public static DIHelper AddSharePointFolderDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<SharePointFolderDao>();
-
-            return services;
-        }
     }
 }

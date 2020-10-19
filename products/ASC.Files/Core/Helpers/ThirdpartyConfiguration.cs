@@ -32,12 +32,12 @@ using ASC.Common;
 using ASC.Core.Common.Configuration;
 using ASC.FederatedLogin.LoginProviders;
 using ASC.Files.Core;
-using ASC.Files.Core.Data;
 
 using Microsoft.Extensions.Configuration;
 
 namespace ASC.Web.Files.Helpers
 {
+    [Scope]
     public class ThirdpartyConfiguration
     {
         private IConfiguration Configuration { get; }
@@ -156,25 +156,6 @@ namespace ASC.Web.Files.Helpers
             {
                 return ThirdPartyProviders.Contains("google") && GoogleLoginProvider.IsEnabled;
             }
-        }
-    }
-    public static class ThirdpartyConfigurationExtension
-    {
-        public static DIHelper AddThirdpartyConfigurationService(this DIHelper services)
-        {
-            if (services.TryAddScoped<ThirdpartyConfiguration>())
-            {
-                return services
-                    .AddDaoFactoryService()
-                    .AddDocuSignLoginProviderService()
-                    .AddBoxLoginProviderService()
-                    .AddDropboxLoginProviderService()
-                    .AddOneDriveLoginProviderService()
-                    .AddGoogleLoginProviderService()
-                    ;
-            }
-
-            return services;
         }
     }
 }

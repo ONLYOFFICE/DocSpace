@@ -348,6 +348,7 @@ namespace ASC.Api.Core
         }
     }
 
+    [Scope]
     public class ApiDateTimeHelper
     {
         private TenantManager TenantManager { get; }
@@ -362,20 +363,6 @@ namespace ASC.Api.Core
         public ApiDateTime Get(DateTime? from)
         {
             return ApiDateTime.FromDate(TenantManager, TimeZoneConverter, from);
-        }
-    }
-
-    public static class ApiDateTimeHelperExtension
-    {
-        public static DIHelper AddApiDateTimeHelper(this DIHelper services)
-        {
-            if (services.TryAddScoped<ApiDateTimeHelper>())
-            {
-                return services
-                    .AddTenantManagerService();
-            }
-
-            return services;
         }
     }
 }

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 
 using ASC.Common;
-using ASC.Common.Logging;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
@@ -85,14 +84,8 @@ namespace ASC.Core.Common.EF
     {
         public static DIHelper AddDbContextManagerService<T>(this DIHelper services) where T : BaseDbContext, new()
         {
-            if (services.TryAddScoped<DbContextManager<T>>())
-            {
-                services.TryAddScoped<IConfigureOptions<T>, ConfigureDbContext>();
-
-                services.TryAddScoped<MultiRegionalDbContextManager<T>>();
-                services.TryAddScoped<IConfigureOptions<MultiRegionalDbContext<T>>, ConfigureMultiRegionalDbContext<T>>();
-                return services.AddLoggerService();
-            }
+            services.TryAddScoped<MultiRegionalDbContextManager<T>>();
+            services.TryAddScoped<IConfigureOptions<MultiRegionalDbContext<T>>, ConfigureMultiRegionalDbContext<T>>();
             return services;
         }
     }

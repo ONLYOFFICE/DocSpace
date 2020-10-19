@@ -93,6 +93,7 @@ namespace ASC.Web.Core.Users
         }
     }
 
+    [Singletone]
     public class UserPhotoManagerCache
     {
         private readonly ConcurrentDictionary<CacheSize, ConcurrentDictionary<Guid, string>> Photofiles;
@@ -179,6 +180,7 @@ namespace ASC.Web.Core.Users
         }
     }
 
+    [Scope]
     public class UserPhotoManager
     {
         //Regex for parsing filenames into groups with id's
@@ -1011,27 +1013,6 @@ namespace ASC.Web.Core.Users
             services.AddSingleton<IConfigureOptions<WorkerQueue<ResizeWorkerItem>>, ConfigureWorkerQueue<ResizeWorkerItem>>();
 
             services.AddWorkerQueue<ResizeWorkerItem>(2, (int)TimeSpan.FromSeconds(30).TotalMilliseconds, true, 1);
-            return services;
-        }
-    }
-
-    public static class UserPhotoManagerExtension
-    {
-        public static DIHelper AddUserPhotoManagerService(this DIHelper services)
-        {
-            if (services.TryAddScoped<UserPhotoManager>())
-            {
-                services.TryAddSingleton<UserPhotoManagerCache>();
-
-                return services
-                    .AddStorageFactoryService()
-                    .AddSettingsManagerService()
-                    .AddWebImageSupplierService()
-                    .AddUserManagerService()
-                    .AddTenantManagerService()
-                    .AddResizeWorkerItemService();
-            }
-
             return services;
         }
     }

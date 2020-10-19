@@ -1,6 +1,5 @@
 ﻿using System.Net;
 
-using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Tenants;
@@ -43,15 +42,6 @@ namespace ASC.Api.Core.Middleware
                 log.WarnFormat("Tenant {0} is not removed or suspended", tenant.TenantId);
                 return;
             }
-        }
-    }
-
-    public static class TenantStatusFilterExtension
-    {
-        public static DIHelper AddTenantStatusFilter(this DIHelper services)
-        {
-            return services
-                .AddTenantManagerService();
         }
     }
 }

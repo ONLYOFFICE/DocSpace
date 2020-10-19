@@ -46,6 +46,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Storage
 {
+    [Singletone]
     public class StorageFactoryListener
     {
         private volatile bool Subscribed;
@@ -72,6 +73,7 @@ namespace ASC.Data.Storage
         }
     }
 
+    [Singletone]
     public class StorageFactoryConfig
     {
         public Configuration.Storage Section { get; }
@@ -172,7 +174,7 @@ namespace ASC.Data.Storage
         }
     }
 
-
+    [Scope]
     public class StorageFactory
     {
         private const string DefaultTenantName = "default";
@@ -332,38 +334,6 @@ namespace ASC.Data.Storage
                 .Configure(tenant, handler, moduleElement, props)
                 .SetQuotaController(moduleElement.Count ? controller : null
                 /*don't count quota if specified on module*/);
-        }
-    }
-
-
-    public static class StorageFactoryExtension
-    {
-        public static DIHelper AddStorageFactoryConfigService(this DIHelper services)
-        {
-            services.TryAddSingleton<StorageFactoryConfig>();
-
-            return services;
-        }
-
-        public static DIHelper AddStorageFactoryService(this DIHelper services)
-        {
-            if (services.TryAddScoped<StorageFactory>())
-            {
-                services.TryAddSingleton<StorageFactoryListener>();
-
-                return services
-                    .AddConsumerFactoryService()
-                    .AddTenantManagerService()
-                    .AddCoreBaseSettingsService()
-                    .AddPathUtilsService()
-                    .AddEmailValidationKeyProviderService()
-                    .AddStorageSettingsService()
-                    .AddStorage()
-                    .AddEncryptionFactoryService()
-                    .AddEncryptionSettingsHelperService();
-            }
-
-            return services;
         }
     }
 }

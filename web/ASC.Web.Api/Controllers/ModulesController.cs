@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 
 using ASC.Common;
-using ASC.Core;
 using ASC.Web.Api.Routing;
 using ASC.Web.Core;
 using ASC.Web.Core.WebZones;
@@ -10,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ASC.Web.Api.Controllers
 {
+    [Scope]
     [DefaultRoute]
     [ApiController]
     public class ModulesController : ControllerBase
@@ -33,15 +33,6 @@ namespace ASC.Web.Api.Controllers
             }
 
             return result;
-        }
-    }
-
-    public static class ModulesControllerExtension
-    {
-        public static DIHelper AddModulesController(this DIHelper services)
-        {
-            return services
-                .AddWebItemManagerSecurity();
         }
     }
 }

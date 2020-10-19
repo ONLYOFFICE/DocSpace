@@ -39,7 +39,6 @@ using ASC.Common.Logging;
 using ASC.Common.Web;
 using ASC.Core;
 using ASC.Files.Core;
-using ASC.Files.Core.Data;
 using ASC.Files.Core.Resources;
 using ASC.Files.Core.Security;
 using ASC.MessagingSystem;
@@ -90,6 +89,7 @@ namespace ASC.Web.Files
         }
     }
 
+    [Scope]
     public class FileHandlerService
     {
         public string FileHandlerPath
@@ -1260,38 +1260,6 @@ namespace ASC.Web.Files
 
     public static class FileHandlerExtensions
     {
-        public static DIHelper AddFileHandlerService(this DIHelper services)
-        {
-            if (services.TryAddScoped<FileHandlerService>())
-            {
-                return services
-                    .AddFilesLinkUtilityService()
-                    .AddTenantExtraService()
-                    .AddCookiesManagerService()
-                    .AddAuthContextService()
-                    .AddSecurityContextService()
-                    .AddGlobalStoreService()
-                    .AddDaoFactoryService()
-                    .AddFileSecurityService()
-                    .AddFileMarkerService()
-                    .AddSetupInfo()
-                    .AddFileUtilityService()
-                    .AddGlobalService()
-                    .AddEmailValidationKeyProviderService()
-                    .AddCoreBaseSettingsService()
-                    .AddGlobalFolderHelperService()
-                    .AddPathProviderService()
-                    .AddUserManagerService()
-                    .AddDocumentServiceTrackerHelperService()
-                    .AddFilesMessageService()
-                    .AddFileConverterService()
-                    .AddFileShareLinkService()
-                    .AddFFmpegServiceService();
-            }
-
-            return services;
-        }
-
         public static IApplicationBuilder UseFileHandler(this IApplicationBuilder builder)
         {
             return builder.UseMiddleware<FileHandler>();

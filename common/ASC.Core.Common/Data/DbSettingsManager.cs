@@ -42,6 +42,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Data
 {
+    [Singletone]
     public class DbSettingsManagerCache
     {
         public ICache Cache { get; }
@@ -106,6 +107,7 @@ namespace ASC.Core.Data
         }
     }
 
+    [Scope(typeof(ConfigureDbSettingsManager))]
     public class DbSettingsManager
     {
         private readonly TimeSpan expirationTimeout = TimeSpan.FromMinutes(5);
@@ -329,21 +331,5 @@ namespace ASC.Core.Data
             return JsonSerializer.Serialize(settings);
         }
 
-    }
-
-    public static class DbSettingsManagerExtension
-    {
-        public static DIHelper AddDbSettingsManagerService(this DIHelper services)
-        {
-            if (services.TryAddScoped<DbSettingsManager>())
-            {
-                services.TryAddScoped<IConfigureOptions<DbSettingsManager>, ConfigureDbSettingsManager>();
-                services.TryAddSingleton<DbSettingsManagerCache>();
-
-                return services.AddWebstudioDbContextService();
-            }
-
-            return services;
-        }
     }
 }

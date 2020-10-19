@@ -34,6 +34,7 @@ using System.Security;
 using System.Text;
 using System.Web;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core.Common.Configuration;
 using ASC.FederatedLogin;
@@ -58,6 +59,7 @@ using MimeMapping = ASC.Common.Web.MimeMapping;
 
 namespace ASC.Files.Thirdparty.GoogleDrive
 {
+    [Scope]
     internal class GoogleDriveStorage
     {
         public GoogleDriveStorage(

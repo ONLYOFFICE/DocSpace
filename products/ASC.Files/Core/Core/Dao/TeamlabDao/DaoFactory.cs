@@ -65,27 +65,4 @@ namespace ASC.Files.Core.Data
             return ServiceProvider.GetService<ISecurityDao<T>>();
         }
     }
-
-    public static class DaoFactoryExtention
-    {
-        public static DIHelper AddDaoFactoryService(this DIHelper services)
-        {
-            if (services.TryAddScoped<IDaoFactory, DaoFactory>())
-            {
-                return services
-                    .AddFileDaoService()
-                    .AddFolderDaoService()
-                    .AddTagDaoService()
-                    .AddSecurityDaoService()
-                    .AddCachedProviderAccountDaoService()
-                    .AddProviderTagDaoService()
-                    .AddProviderSecurityDaoService()
-                    .AddProviderFileDaoService()
-                    .AddProviderFolderDaoService()
-                    ;
-            }
-
-            return services;
-        }
-    }
 }

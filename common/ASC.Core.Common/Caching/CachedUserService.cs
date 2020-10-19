@@ -32,17 +32,16 @@ using System.Threading;
 
 using ASC.Common;
 using ASC.Common.Caching;
-using ASC.Common.Logging;
 using ASC.Core.Common.EF;
 using ASC.Core.Data;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
-using ASC.Security.Cryptography;
 
 using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Caching
 {
+    [Singletone]
     public class UserServiceCache
     {
         public const string USERS = "users";
@@ -520,30 +519,6 @@ namespace ASC.Core.Caching
         class UserPhoto
         {
             public string Key { get; set; }
-        }
-    }
-    public static class UserConfigExtension
-    {
-        public static DIHelper AddUserService(this DIHelper services)
-        {
-            if (services.TryAddScoped<EFUserService>())//
-            {
-                services.TryAddScoped<IConfigureOptions<EFUserService>, ConfigureEFUserService>();//
-
-                services.TryAddScoped<IUserService, CachedUserService>();
-                services.TryAddScoped<IConfigureOptions<CachedUserService>, ConfigureCachedUserService>();
-
-                services.TryAddSingleton<UserServiceCache>();
-                services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
-
-                services
-                    .AddCoreSettingsService()
-                    .AddLoggerService()
-                    .AddUserDbContextService()
-                    .AddPasswordHasherService();
-            }
-
-            return services;
         }
     }
 }

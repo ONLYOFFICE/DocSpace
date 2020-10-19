@@ -39,6 +39,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Backup.Service
 {
+    [Scope]
     internal class BackupSchedulerServiceHelper
     {
         private ILog Log { get; }
@@ -95,6 +96,7 @@ namespace ASC.Data.Backup.Service
         }
     }
 
+    [Singletone]
     public class BackupSchedulerService
     {
         private readonly object schedulerLock = new object();
@@ -159,26 +161,6 @@ namespace ASC.Data.Backup.Service
                     Monitor.Exit(schedulerLock);
                 }
             }
-        }
-    }
-
-    public static class BackupSchedulerServiceExtension
-    {
-        public static DIHelper AddBackupSchedulerService(this DIHelper services)
-        {
-            if (services.TryAddScoped<BackupSchedulerServiceHelper>())
-            {
-                services.TryAddSingleton<BackupSchedulerService>();
-
-                return services
-                    .AddPaymentManagerService()
-                    .AddScheduleService()
-                    .AddBackupStorageFactory()
-                    .AddBackupWorkerService()
-                    .AddBackupRepositoryService();
-            }
-
-            return services;
         }
     }
 }

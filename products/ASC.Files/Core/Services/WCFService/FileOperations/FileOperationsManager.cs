@@ -32,7 +32,6 @@ using System.Text.Json;
 
 using ASC.Common;
 using ASC.Common.Threading;
-using ASC.Core;
 using ASC.Core.Tenants;
 using ASC.Files.Core.Resources;
 
@@ -40,6 +39,7 @@ using Microsoft.Extensions.Primitives;
 
 namespace ASC.Web.Files.Services.WCFService.FileOperations
 {
+    [Singletone]
     public class FileOperationsManager
     {
         private readonly DistributedTaskQueue tasks;
@@ -171,18 +171,13 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
     {
         public static DIHelper AddFileOperationsManagerHelperService(this DIHelper services)
         {
-            services.TryAddSingleton<DistributedTaskCacheNotify>();
-            services.TryAddSingleton<FileOperationsManager>();
             services.TryAddScoped<FileDeleteOperationScope>();
             services.TryAddScoped<FileMarkAsReadOperationScope>();
             services.TryAddScoped<FileMoveCopyOperationScope>();
             services.TryAddScoped<FileOperationScope>();
             services.TryAddScoped<FileDownloadOperationScope>();
 
-            return services
-                .AddAuthContextService()
-                .AddTenantManagerService()
-                ;
+            return services;
 
         }
     }

@@ -12,10 +12,25 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Common
 {
+    public class TransientAttribute : DIAttribute
+    {
+        public TransientAttribute()
+        {
+
+        }
+
+        public TransientAttribute(Type type) : base(type)
+        {
+        }
+
+        public TransientAttribute(Type type, Type cachedType) : base(type, cachedType)
+        {
+
+        }
+    }
+
     public class ScopeAttribute : DIAttribute
     {
-
-
         public ScopeAttribute()
         {
 
@@ -210,6 +225,15 @@ namespace ASC.Common
                     return true;
                 }
             }
+            else if (c is TransientAttribute)
+            {
+                if (!Transient.Contains(serviceName))
+                {
+                    Transient.Add(serviceName);
+                    ServiceCollection.TryAddTransient(service);
+                    return true;
+                }
+            }
 
             return false;
         }
@@ -233,6 +257,15 @@ namespace ASC.Common
                 {
                     Singleton.Add(serviceName);
                     ServiceCollection.TryAddSingleton(service, implementation);
+                    return true;
+                }
+            }
+            else if (c is TransientAttribute)
+            {
+                if (!Transient.Contains(serviceName))
+                {
+                    Transient.Add(serviceName);
+                    ServiceCollection.TryAddTransient(service, implementation);
                     return true;
                 }
             }
@@ -286,18 +319,6 @@ namespace ASC.Common
             {
                 Singleton.Add(serviceName);
                 ServiceCollection.TryAddSingleton(implementationFactory);
-            }
-
-            return this;
-        }
-
-        public DIHelper TryAddSingleton<TService>(TService t) where TService : class
-        {
-            var serviceName = $"{typeof(TService)}";
-            if (!Singleton.Contains(serviceName))
-            {
-                Singleton.Add(serviceName);
-                ServiceCollection.TryAddSingleton(t);
             }
 
             return this;

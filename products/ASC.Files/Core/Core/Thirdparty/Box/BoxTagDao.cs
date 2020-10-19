@@ -43,6 +43,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Files.Thirdparty.Box
 {
+    [Scope]
     internal class BoxTagDao : BoxDaoBase, ITagDao<string>
     {
         public BoxTagDao(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor, FileUtility fileUtility) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility)
@@ -171,15 +172,5 @@ namespace ASC.Files.Thirdparty.Box
         }
 
         #endregion
-    }
-
-    public static class BoxTagDaoExtention
-    {
-        public static DIHelper AddBoxTagDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<BoxTagDao>();
-
-            return services;
-        }
     }
 }

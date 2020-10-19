@@ -38,6 +38,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace ASC.Data.Backup.Service
 {
+    [Singletone]
     internal class BackupServiceLauncher : IHostedService
     {
         private IServiceProvider ServiceProvider { get; }
@@ -96,19 +97,6 @@ namespace ASC.Data.Backup.Service
                 SchedulerService = null;
             }
             return Task.CompletedTask;
-        }
-    }
-    public static class BackupServiceLauncherExtension
-    {
-        public static DIHelper AddBackupServiceLauncher(this DIHelper services)
-        {
-            services.TryAddSingleton<BackupServiceLauncher>();
-            return services
-                .AddBackupCleanerService()
-                .AddBackupSchedulerService()
-                .AddBackupWorkerService()
-                .AddBackupService()
-                .AddBackupListenerService();
         }
     }
 }

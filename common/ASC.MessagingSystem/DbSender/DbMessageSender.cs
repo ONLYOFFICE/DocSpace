@@ -35,6 +35,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.MessagingSystem.DbSender
 {
+    [Singletone]
     public class DbMessageSender : IMessageSender
     {
         private readonly ILog log;
@@ -65,18 +66,6 @@ namespace ASC.MessagingSystem.DbSender
             {
                 log.Error("Failed to send a message", ex);
             }
-        }
-    }
-
-    public static class DbMessageSenderExtension
-    {
-        public static DIHelper AddDbMessageSenderService(this DIHelper services)
-        {
-            services.TryAddSingleton<DbMessageSender>();
-            services.TryAddSingleton<MessagesRepository>();
-            services.AddMessagesContextService();
-
-            return services;
         }
     }
 }

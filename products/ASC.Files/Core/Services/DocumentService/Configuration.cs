@@ -41,7 +41,6 @@ using ASC.Core.Common.Settings;
 using ASC.Core.Users;
 using ASC.FederatedLogin.LoginProviders;
 using ASC.Files.Core;
-using ASC.Files.Core.Data;
 using ASC.Files.Core.Resources;
 using ASC.Files.Core.Security;
 using ASC.Web.Core.Files;
@@ -141,6 +140,7 @@ namespace ASC.Web.Files.Services.DocumentService
     }
     #region Nested Classes
 
+    [Transient]
     public class DocumentConfig<T>
     {
         public string SharedLinkKey;
@@ -197,6 +197,7 @@ namespace ASC.Web.Files.Services.DocumentService
         private PathProvider PathProvider { get; }
     }
 
+    [Transient]
     public class InfoConfig<T>
     {
         public File<T> File;
@@ -301,6 +302,7 @@ namespace ASC.Web.Files.Services.DocumentService
         public bool Review { get; set; } = true;
     }
 
+    [Transient]
     public class EditorConfiguration<T>
     {
         public EditorConfiguration(
@@ -544,6 +546,7 @@ namespace ASC.Web.Files.Services.DocumentService
         }
     }
 
+    [Transient]
     public class EmbeddedConfig
     {
         public string ShareLinkParam { get; set; }
@@ -588,6 +591,7 @@ namespace ASC.Web.Files.Services.DocumentService
     }
 
 
+    [Transient]
     public class PluginsConfig
     {
         public string[] PluginsData
@@ -625,6 +629,7 @@ namespace ASC.Web.Files.Services.DocumentService
         }
     }
 
+    [Transient]
     public class CustomizationConfig<T>
     {
         public CustomizationConfig(
@@ -783,6 +788,7 @@ namespace ASC.Web.Files.Services.DocumentService
         private PathProvider PathProvider { get; }
     }
 
+    [Transient]
     public class CustomerConfig<T>
     {
         public CustomerConfig(
@@ -835,6 +841,7 @@ namespace ASC.Web.Files.Services.DocumentService
         public string Url { get; set; }
     }
 
+    [Transient]
     public class LogoConfig<T>
     {
         public LogoConfig(
@@ -914,111 +921,5 @@ namespace ASC.Web.Files.Services.DocumentService
         public string Id { get; set; }
 
         public string Name { get; set; }
-    }
-
-    public static class ConfigurationExtention
-    {
-        public static DIHelper AddConfigurationService(this DIHelper services)
-        {
-            return services
-                .AddDocumentConfigService()
-                .AddEditorConfigurationService();
-        }
-
-        public static DIHelper AddDocumentConfigService(this DIHelper services)
-        {
-            services.TryAddTransient<DocumentConfig<string>>();
-            services.TryAddTransient<DocumentConfig<int>>();
-
-            return services
-                .AddDocumentServiceConnectorService()
-                .AddPathProviderService()
-                .AddInfoConfigService();
-        }
-
-        public static DIHelper AddInfoConfigService(this DIHelper services)
-        {
-            services.TryAddTransient<InfoConfig<string>>();
-            services.TryAddTransient<InfoConfig<int>>();
-
-            return services
-                .AddBreadCrumbsManagerService()
-                .AddFileSharingService();
-        }
-
-        public static DIHelper AddEditorConfigurationService(this DIHelper services)
-        {
-            services.TryAddTransient<EditorConfiguration<string>>();
-            services.TryAddTransient<EditorConfiguration<int>>();
-
-            return services
-                .AddUserManagerService()
-                .AddAuthContextService()
-                .AddDisplayUserSettingsService()
-                .AddFilesLinkUtilityService()
-                .AddBaseCommonLinkUtilityService()
-                .AddPluginsConfigService()
-                .AddEmbeddedConfigService()
-                .AddCustomizationConfigService();
-        }
-
-        public static DIHelper AddPluginsConfigService(this DIHelper services)
-        {
-            services.TryAddTransient<PluginsConfig>();
-
-            return services
-                .AddConsumerFactoryService()
-                .AddBaseCommonLinkUtilityService();
-        }
-
-        public static DIHelper AddEmbeddedConfigService(this DIHelper services)
-        {
-            services.TryAddTransient<EmbeddedConfig>();
-
-            return services
-                .AddFilesLinkUtilityService()
-                .AddBaseCommonLinkUtilityService();
-        }
-
-        public static DIHelper AddCustomizationConfigService(this DIHelper services)
-        {
-            services.TryAddTransient<CustomizationConfig<string>>();
-            services.TryAddTransient<CustomizationConfig<int>>();
-
-            return services
-                .AddCoreBaseSettingsService()
-                .AddSettingsManagerService()
-                .AddFileUtilityService()
-                .AddFilesSettingsHelperService()
-                .AddAuthContextService()
-                .AddFileSecurityService()
-                .AddDaoFactoryService()
-                .AddGlobalFolderHelperService()
-                .AddPathProviderService()
-                .AddCustomerConfigService()
-                .AddLogoConfigService();
-        }
-
-        public static DIHelper AddCustomerConfigService(this DIHelper services)
-        {
-            services.TryAddTransient<CustomerConfig<string>>();
-            services.TryAddTransient<CustomerConfig<int>>();
-
-            return services
-                .AddSettingsManagerService()
-                .AddBaseCommonLinkUtilityService()
-                .AddTenantLogoHelperService();
-        }
-
-        public static DIHelper AddLogoConfigService(this DIHelper services)
-        {
-            services.TryAddTransient<LogoConfig<string>>();
-            services.TryAddTransient<LogoConfig<int>>();
-
-            return services
-                .AddSettingsManagerService()
-                .AddBaseCommonLinkUtilityService()
-                .AddTenantLogoHelperService();
-        }
     }
 }

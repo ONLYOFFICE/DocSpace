@@ -39,12 +39,8 @@ using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.Core;
-using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
-using ASC.Core.Users;
 using ASC.Security.Cryptography;
-using ASC.Web.Core.Helpers;
-using ASC.Web.Core.Users;
 using ASC.Web.Studio.Utility;
 
 using Microsoft.AspNetCore.Http;
@@ -57,6 +53,7 @@ using Newtonsoft.Json.Linq;
 
 namespace ASC.ApiSystem.Controllers
 {
+    [Scope]
     public class CommonMethods
     {
         private IHttpContextAccessor HttpContextAccessor { get; }
@@ -340,29 +337,6 @@ namespace ASC.ApiSystem.Controllers
                 Log.Error(ex);
             }
             return false;
-        }
-    }
-
-    public static class CommonMethodsExtention
-    {
-        public static DIHelper AddCommonMethods(this DIHelper services)
-        {
-            if (services.TryAddScoped<CommonMethods>())
-            {
-                return services
-                    .AddCoreSettingsService()
-                    .AddCommonLinkUtilityService()
-                    .AddEmailValidationKeyProviderService()
-                    .AddApiSystemHelper()
-                    .AddTenantManagerService()
-                    .AddUserFormatter()
-                    .AddUserManagerWrapperService()
-                    .AddSettingsManagerService()
-                    .AddSecurityContextService()
-                    .AddHostedSolutionService();
-            }
-
-            return services;
         }
     }
 }

@@ -64,18 +64,4 @@ namespace ASC.Notify
             return Task.CompletedTask;
         }
     }
-
-    public static class ServiceLauncherExtension
-    {
-        public static DIHelper AddServiceLauncher(this DIHelper services)
-        {
-            services.TryAddSingleton<StudioNotifyServiceSender>();
-
-            return services
-                .AddWebItemManager()
-                .AddStudioNotifyServiceSender()
-                .AddNotifyConfiguration()
-                ;
-        }
-    }
 }

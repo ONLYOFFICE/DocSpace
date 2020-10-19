@@ -1,9 +1,7 @@
 ﻿using System.Net;
 
-using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
-using ASC.Core.Common.Settings;
 using ASC.IPSecurity;
 
 using Microsoft.AspNetCore.Mvc;
@@ -42,17 +40,6 @@ namespace ASC.Api.Core.Middleware
                 log.WarnFormat("IPSecurity: user {0}", AuthContext.CurrentAccount.ID);
                 return;
             }
-        }
-    }
-
-    public static class IpSecurityFilterExtension
-    {
-        public static DIHelper AddIpSecurityFilter(this DIHelper services)
-        {
-            return services
-                .AddSettingsManagerService()
-                .AddAuthContextService()
-                .AddIPSecurityService();
         }
     }
 }

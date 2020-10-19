@@ -10,6 +10,7 @@ using ASC.Web.Studio.Core.Notify;
 
 namespace ASC.Web.Core.Notify
 {
+    [Scope]
     public class StudioNotifyServiceHelper
     {
         private ICacheNotify<NotifyItem> Cache { get; }
@@ -116,15 +117,7 @@ namespace ASC.Web.Core.Notify
     {
         public static DIHelper AddStudioNotifyServiceHelper(this DIHelper services)
         {
-            if (services.TryAddScoped<StudioNotifyServiceHelper>())
-            {
-                services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
-
-                return services
-                    .AddAuthContextService()
-                    .AddStudioNotifyHelperService()
-                    .AddTenantManagerService();
-            }
+            services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
 
             return services;
         }

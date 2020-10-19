@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Net;
 using System.Reflection;
 
-using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Notify.Engine;
 using ASC.Core;
@@ -114,16 +113,6 @@ namespace ASC.Api.Core.Middleware
                 return products[name];
             }
             return default;
-        }
-    }
-
-    public static class ProductSecurityFilterExtension
-    {
-        public static DIHelper AddProductSecurityFilter(this DIHelper services)
-        {
-            return services
-                .AddWebItemSecurity()
-                .AddAuthContextService();
         }
     }
 }

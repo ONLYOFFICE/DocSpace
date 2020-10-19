@@ -46,6 +46,7 @@ using MimeKit;
 
 namespace ASC.Core.Notify.Senders
 {
+    [Singletone]
     internal class SmtpSender : INotifySender
     {
         private const string HTML_FORMAT =
@@ -343,11 +344,8 @@ namespace ASC.Core.Notify.Senders
     {
         public static DIHelper AddSmtpSenderService(this DIHelper services)
         {
-            services.TryAddSingleton<SmtpSender>();
             services.TryAddScoped<SmtpSenderScope>();
-            return services
-                .AddTenantManagerService()
-                .AddCoreSettingsService();
+            return services;
         }
     }
 }

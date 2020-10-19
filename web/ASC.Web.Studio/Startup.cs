@@ -1,11 +1,6 @@
 using ASC.Api.Core;
-using ASC.Common;
 using ASC.Common.DependencyInjection;
-using ASC.Core.Common.EF;
-using ASC.Core.Common.EF.Context;
 using ASC.Data.Storage;
-using ASC.Data.Storage.Configuration;
-using ASC.Data.Storage.DiscStorage;
 using ASC.FederatedLogin;
 
 using Microsoft.AspNetCore.Builder;
@@ -33,14 +28,7 @@ namespace ASC.Web.Studio
 
             base.ConfigureServices(services);
 
-            DIHelper
-                .AddStorage()
-                .AddPathUtilsService()
-                .AddStorageHandlerService()
-                .AddLoginHandlerService();
-
             services.AddMemoryCache();
-
 
             services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
         }

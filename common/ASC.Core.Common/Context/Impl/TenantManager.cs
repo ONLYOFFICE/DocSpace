@@ -89,6 +89,7 @@ namespace ASC.Core
         }
     }
 
+    [Scope(typeof(ConfigureTenantManager))]
     public class TenantManager
     {
         private class TenantHolder
@@ -378,26 +379,6 @@ namespace ASC.Core
         public List<TenantQuotaRow> FindTenantQuotaRows(TenantQuotaRowQuery query)
         {
             return QuotaService.FindTenantQuotaRows(query).ToList();
-        }
-    }
-
-    public static class TenantManagerConfigExtension
-    {
-        public static DIHelper AddTenantManagerService(this DIHelper services)
-        {
-            if (services.TryAddScoped<TenantManager>())
-            {
-                services.TryAddScoped<IConfigureOptions<TenantManager>, ConfigureTenantManager>();
-
-                return services
-                    .AddTenantService()
-                    .AddQuotaService()
-                    .AddTariffService()
-                    .AddCoreBaseSettingsService()
-                    .AddCoreSettingsService();
-            }
-
-            return services;
         }
     }
 }

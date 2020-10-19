@@ -24,12 +24,14 @@
 */
 
 
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Notify;
 using ASC.Notify.Messages;
 
 namespace ASC.Core.Notify
 {
+    [Scope]
     public class NotifyServiceClient : INotifyService
     {
         private readonly ICacheNotify<NotifyMessage> СacheNotify;

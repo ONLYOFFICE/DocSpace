@@ -76,7 +76,7 @@ namespace ASC.Socket.IO.Svc
 
                     diHelper.AddNLogManager("ASC.Socket.IO.Svc");
                     services.AddHostedService<SocketServiceLauncher>();
-                    diHelper.AddSocketServiceLauncher();
+                    diHelper.TryAdd<SocketServiceLauncher>();
 
                     services.AddAutofac(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath, false, false);
                 })

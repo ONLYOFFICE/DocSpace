@@ -31,7 +31,6 @@ using System.Globalization;
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common;
-using ASC.Files.Core.Data;
 using ASC.Files.Core.Resources;
 using ASC.Files.Core.Security;
 using ASC.Notify.Patterns;
@@ -42,6 +41,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Files.Core.Services.NotifyService
 {
+    [Scope]
     public class NotifyClient
     {
         private IServiceProvider ServiceProvider { get; }
@@ -251,21 +251,7 @@ namespace ASC.Files.Core.Services.NotifyService
     {
         public static DIHelper AddNotifyClientService(this DIHelper services)
         {
-            if (services.TryAddScoped<NotifyClient>())
-            {
-                services.TryAddScoped<NotifyClientScope>();
-                return services
-                    .AddFilesNotifySourceService()
-                    .AddBaseCommonLinkUtilityService()
-                    .AddUserManagerService()
-                    .AddSecurityContextService()
-                    .AddFilesLinkUtilityService()
-                    .AddFileUtilityService()
-                    .AddPathProviderService()
-                    .AddTenantManagerService()
-                    .AddDaoFactoryService()
-                    ;
-            }
+            services.TryAddScoped<NotifyClientScope>();
 
             return services;
         }

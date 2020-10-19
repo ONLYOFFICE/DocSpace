@@ -30,15 +30,14 @@ using System.Threading.Tasks;
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.Configuration;
-using ASC.Core.Common.Notify;
 using ASC.FederatedLogin.LoginProviders;
-using ASC.TelegramService.Commands;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 namespace ASC.TelegramService
 {
+    [Singletone]
     public class TelegramLauncher : IHostedService
     {
         private TelegramListener TelegramListener { get; set; }
@@ -104,17 +103,8 @@ namespace ASC.TelegramService
     {
         public static DIHelper AddTelegramLauncher(this DIHelper services)
         {
-            services.TryAddSingleton<TelegramLauncher>();
             services.TryAddScoped<ScopeTelegramLauncher>();
-            return services.AddTelegramService()
-                .AddTelegramListenerService()
-                .AddTelegramHandlerService()
-                .AddTenantManagerService()
-                .AddTelegramLoginProviderService()
-                .AddTelegramHelperSerivce()
-                .AddTelegramServiceClient()
-                .AddConsumerFactoryService()
-                .AddUserCommandsService();
+            return services;
         }
     }
 }

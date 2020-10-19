@@ -42,6 +42,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Files.Thirdparty.GoogleDrive
 {
+    [Scope]
     internal class GoogleDriveSecurityDao : GoogleDriveDaoBase, ISecurityDao<string>
     {
         public GoogleDriveSecurityDao(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor, FileUtility fileUtility) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility)
@@ -88,16 +89,6 @@ namespace ASC.Files.Thirdparty.GoogleDrive
         public bool IsShared(object entryId, FileEntryType type)
         {
             throw new NotImplementedException();
-        }
-    }
-
-    public static class GoogleDriveSecurityDaoExtention
-    {
-        public static DIHelper AddGoogleDriveSecurityDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<GoogleDriveSecurityDao>();
-
-            return services;
         }
     }
 }

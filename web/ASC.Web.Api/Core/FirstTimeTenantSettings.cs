@@ -43,7 +43,6 @@ using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.MessagingSystem;
 using ASC.Web.Api.Models;
-using ASC.Web.Core;
 using ASC.Web.Core.PublicResources;
 using ASC.Web.Core.Users;
 using ASC.Web.Core.Utility.Settings;
@@ -57,6 +56,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Studio.UserControls.FirstTime
 {
+    [Transient]
     public class FirstTimeTenantSettings
     {
         private ILog Log { get; }
@@ -356,27 +356,6 @@ namespace ASC.Web.Studio.UserControls.FirstTime
             public string Version { get; set; }
             public string Id { get; set; }
             public string Alias { get; set; }
-        }
-    }
-
-    public static class FirstTimeTenantSettingsExtension
-    {
-        public static DIHelper AddFirstTimeTenantSettings(this DIHelper services)
-        {
-            services.TryAddTransient<FirstTimeTenantSettings>();
-
-            return services
-                .AddTenantManagerService()
-                .AddCoreConfigurationService()
-                .AddCoreSettingsService()
-                .AddTenantExtraService()
-                .AddSettingsManagerService()
-                .AddSetupInfo()
-                .AddSecurityContextService()
-                .AddPaymentManagerService()
-                .AddMessageServiceService()
-                .AddLicenseReaderService()
-                .AddStudioNotifyServiceService();
         }
     }
 }
