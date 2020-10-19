@@ -25,7 +25,7 @@ export class ExternalRedirect extends Component {
 }
 
 ExternalRedirect.propTypes = {
-  to: PropTypes.string
+  to: PropTypes.string,
 };
 
 export default ExternalRedirect;

@@ -16,7 +16,7 @@ describe("retrieveImageURL", () => {
   it('runs getAsString on the first item with type "text/html"', () => {
     const items = [
       { getAsString: jest.fn(), type: "something/else" },
-      { getAsString: jest.fn(), type: "text/html" }
+      { getAsString: jest.fn(), type: "text/html" },
     ];
 
     retrieveImageURL(items, () => {});
@@ -28,7 +28,7 @@ describe("retrieveImageURL", () => {
   it('does not run getAsString on later items with type "text/html"', () => {
     const items = [
       { getAsString: jest.fn(), type: "text/html" },
-      { getAsString: jest.fn(), type: "text/html" }
+      { getAsString: jest.fn(), type: "text/html" },
     ];
 
     retrieveImageURL(items, () => {});
@@ -46,7 +46,7 @@ describe("retrieveImageURL", () => {
       callback = jest.fn();
 
       mockParseDOM.mockReturnValue({
-        querySelector: mockQuerySelector
+        querySelector: mockQuerySelector,
       });
 
       retrieveImageURL(items, callback);
@@ -70,7 +70,7 @@ describe("retrieveImageURL", () => {
     describe("if the document contains an img with a src attribute", () => {
       beforeEach(() => {
         mockQuerySelector.mockReturnValue({
-          src: "http://placekitten.com/100/100"
+          src: "http://placekitten.com/100/100",
         });
         invokeGetAsStringCallback();
       });

@@ -1,22 +1,22 @@
-import { Checkbox, ContextMenuButton} from "asc-web-components";
+import { Checkbox, ContextMenuButton } from "asc-web-components";
 import PropTypes from "prop-types";
 import React from "react";
 import isEqual from "lodash/isEqual";
-import styled, {css} from "styled-components";
-import BadgesFileTile from './BadgesFileTile';
+import styled, { css } from "styled-components";
+import BadgesFileTile from "./BadgesFileTile";
 
 const FlexBoxStyles = css`
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
 
-    justify-content: flex-start;
-    align-items: center;
-    align-content: center;
-`
+  justify-content: flex-start;
+  align-items: center;
+  align-content: center;
+`;
 
 const FolderStyles = css`
-  padding-left:13px;
+  padding-left: 13px;
   box-sizing: border-box;
 `;
 
@@ -26,25 +26,24 @@ const StyledTile = styled.div`
   min-height: 55px;
   width: 100%;
 
-  ${props => props.isFolder && FlexBoxStyles}
-  ${props => props.isFolder && FolderStyles}
-
+  ${(props) => props.isFolder && FlexBoxStyles}
+  ${(props) => props.isFolder && FolderStyles}
 `;
 
 const StyledFileTileTop = styled.div`
   ${FlexBoxStyles}
   justify-content: space-between;
   align-items: baseline;
-  background-color:#F8F9F9;
+  background-color: #f8f9f9;
   padding: 13px;
   height: 157px;
   position: relative;
 
-  .thumbnailImage{
+  .thumbnailImage {
     position: absolute;
     bottom: 0;
-    left:0;
-    right:0;
+    left: 0;
+    right: 0;
     display: block;
     margin: auto;
     z-index: 0;
@@ -54,7 +53,7 @@ const StyledFileTileTop = styled.div`
 const StyledFileTileBottom = styled.div`
   ${FlexBoxStyles}
   padding: 9px 13px;
-  padding-right:0;
+  padding-right: 0;
   min-height: 56px;
   box-sizing: border-box;
 `;
@@ -63,7 +62,7 @@ const StyledContent = styled.div`
   display: flex;
   flex-basis: 100%;
 
-  a{
+  a {
     display: block;
     display: -webkit-box;
     max-width: 400px;
@@ -77,7 +76,6 @@ const StyledContent = styled.div`
     text-overflow: ellipsis;
     white-space: normal;
   }
-
 
   @media (max-width: 1024px) {
     white-space: nowrap;
@@ -127,7 +125,7 @@ class Tile extends React.Component {
       element,
       indeterminate,
       onSelect,
-      isFolder
+      isFolder,
     } = this.props;
 
     const renderCheckbox = Object.prototype.hasOwnProperty.call(
@@ -144,7 +142,7 @@ class Tile extends React.Component {
       Object.prototype.hasOwnProperty.call(this.props, "contextOptions") &&
       contextOptions.length > 0;
 
-    const changeCheckbox = e => {
+    const changeCheckbox = (e) => {
       onSelect && onSelect(e.target.checked, item);
     };
 
@@ -152,46 +150,77 @@ class Tile extends React.Component {
 
     return (
       <StyledTile {...this.props}>
-        {isFolder 
-          ? 
-            <>
+        {isFolder ? (
+          <>
+            {renderCheckbox && (
+              <StyledCheckbox>
+                <Checkbox
+                  isChecked={checked}
+                  isIndeterminate={indeterminate}
+                  onChange={changeCheckbox}
+                />
+              </StyledCheckbox>
+            )}
+            {renderElement && !isFolder && (
+              <StyledElement>{element}</StyledElement>
+            )}
+            <StyledContent isFolder={isFolder}>{children}</StyledContent>
+            <StyledOptionButton spacerWidth={contextButtonSpacerWidth}>
+              {renderContext ? (
+                <ContextMenuButton
+                  className="expandButton"
+                  directionX="right"
+                  getData={getOptions}
+                />
+              ) : (
+                <div className="expandButton"> </div>
+              )}
+            </StyledOptionButton>
+          </>
+        ) : (
+          <>
+            <StyledFileTileTop>
+              {item.thumbnail ? (
+                <img
+                  className="thumbnailImage"
+                  src={item.thumbnail}
+                  alt="thumbnail"
+                />
+              ) : (
+                <img
+                  className="thumbnailImage"
+                  src="images/example-thumbnail.png"
+                  alt="thumbnail"
+                />
+              )}
               {renderCheckbox && (
                 <StyledCheckbox>
-                  <Checkbox isChecked={checked} isIndeterminate={indeterminate} onChange={changeCheckbox} />
+                  <Checkbox
+                    isChecked={checked}
+                    isIndeterminate={indeterminate}
+                    onChange={changeCheckbox}
+                  />
                 </StyledCheckbox>
               )}
-              {renderElement && !isFolder && <StyledElement>{element}</StyledElement>}
+              <BadgesFileTile item={item} />
+            </StyledFileTileTop>
+            <StyledFileTileBottom>
+              <StyledElement>{element}</StyledElement>
               <StyledContent isFolder={isFolder}>{children}</StyledContent>
               <StyledOptionButton spacerWidth={contextButtonSpacerWidth}>
-                {renderContext
-                  ? (<ContextMenuButton className="expandButton" directionX="right" getData={getOptions} />)
-                  : (<div className="expandButton">{' '}</div>)}
-              </StyledOptionButton>
-            </>
-          :
-            <>
-              <StyledFileTileTop>
-                {item.thumbnail 
-                  ? <img className="thumbnailImage" src={item.thumbnail} alt="thumbnail"/>
-                  : <img className="thumbnailImage" src="images/example-thumbnail.png" alt="thumbnail"/>}
-                {renderCheckbox && (
-                  <StyledCheckbox>
-                    <Checkbox isChecked={checked} isIndeterminate={indeterminate} onChange={changeCheckbox} />
-                  </StyledCheckbox>
+                {renderContext ? (
+                  <ContextMenuButton
+                    className="expandButton"
+                    directionX="right"
+                    getData={getOptions}
+                  />
+                ) : (
+                  <div className="expandButton"> </div>
                 )}
-                <BadgesFileTile item={item}/>
-              </StyledFileTileTop>
-              <StyledFileTileBottom>
-                <StyledElement>{element}</StyledElement>
-                <StyledContent isFolder={isFolder}>{children}</StyledContent>
-                <StyledOptionButton spacerWidth={contextButtonSpacerWidth}>
-                  {renderContext
-                    ? (<ContextMenuButton className="expandButton" directionX="right" getData={getOptions} />)
-                    : (<div className="expandButton">{' '}</div>)}
-                </StyledOptionButton>
-              </StyledFileTileBottom>
-            </>
-          }
+              </StyledOptionButton>
+            </StyledFileTileBottom>
+          </>
+        )}
       </StyledTile>
     );
   }
@@ -210,11 +239,11 @@ Tile.propTypes = {
   needForUpdate: PropTypes.func,
   onSelect: PropTypes.func,
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
-  viewAs: PropTypes.string
+  viewAs: PropTypes.string,
 };
 
 Tile.defaultProps = {
-  contextButtonSpacerWidth: '32px'
+  contextButtonSpacerWidth: "32px",
 };
 
 export default Tile;

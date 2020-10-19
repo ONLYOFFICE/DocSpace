@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next";
 import {
   setFilter,
   setIsVisibleDataLossDialog,
-  toggleAvatarEditor
+  toggleAvatarEditor,
 } from "../../../../../store/people/actions";
 import { resetProfile } from "../../../../../store/profile/actions";
 const Wrapper = styled.div`
@@ -38,8 +38,9 @@ const SectionHeaderContent = (props) => {
     setFilter,
     setIsVisibleDataLossDialog,
     toggleAvatarEditor,
-    avatarEditorIsOpen
-  } = props;  const { userCaption, guestCaption } = settings.customNames;
+    avatarEditorIsOpen,
+  } = props;
+  const { userCaption, guestCaption } = settings.customNames;
   const { type } = match.params;
   const { t } = useTranslation();
 
@@ -63,21 +64,28 @@ const SectionHeaderContent = (props) => {
 
   const setFilterAndReset = (filter) => {
     props.resetProfile();
-    setFilter(filter)
-  }
-  
+    setFilter(filter);
+  };
+
   const goBackAndReset = () => {
     props.resetProfile();
     history.goBack();
-  }
-  
+  };
+
   const onClickBack = useCallback(() => {
     avatarEditorIsOpen
       ? toggleAvatarEditor(false)
       : !profile || !document.referrer
       ? setFilterAndReset(filter)
-      : goBackAndReset()
-  }, [history, profile,setFilter, filter, settings.homepage, avatarEditorIsOpen]);
+      : goBackAndReset();
+  }, [
+    history,
+    profile,
+    setFilter,
+    filter,
+    settings.homepage,
+    avatarEditorIsOpen,
+  ]);
   return (
     <Wrapper>
       <IconButton
@@ -102,7 +110,8 @@ function mapStateToProps(state) {
     settings: state.auth.settings,
     filter: state.people.filter,
     editingForm: state.people.editingForm,
-    avatarEditorIsOpen: state.people.avatarEditorIsOpen,  };
+    avatarEditorIsOpen: state.people.avatarEditorIsOpen,
+  };
 }
 
 export default connect(mapStateToProps, {

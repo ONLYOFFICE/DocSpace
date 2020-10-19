@@ -48,12 +48,12 @@ namespace ASC.Core.Data
 
         public void Configure(string name, DbQuotaService options)
         {
-            options.CoreDbContext = DbContextManager.Get(name);
+            options.LazyCoreDbContext = new Lazy<CoreDbContext>(() => DbContextManager.Get(name));
         }
 
         public void Configure(DbQuotaService options)
         {
-            options.CoreDbContext = DbContextManager.Value;
+            options.LazyCoreDbContext = new Lazy<CoreDbContext>(() => DbContextManager.Value);
         }
     }
 
@@ -61,7 +61,8 @@ namespace ASC.Core.Data
     {
         private Expression<Func<DbQuota, TenantQuota>> FromDbQuotaToTenantQuota { get; set; }
         private Expression<Func<DbQuotaRow, TenantQuotaRow>> FromDbQuotaRowToTenantQuotaRow { get; set; }
-        internal CoreDbContext CoreDbContext { get; set; }
+        internal CoreDbContext CoreDbContext { get => LazyCoreDbContext.Value; }
+        internal Lazy<CoreDbContext> LazyCoreDbContext { get; set; }
 
         public DbQuotaService()
         {
@@ -90,7 +91,7 @@ namespace ASC.Core.Data
 
         public DbQuotaService(DbContextManager<CoreDbContext> dbContextManager) : this()
         {
-            CoreDbContext = dbContextManager.Value;
+            LazyCoreDbContext = new Lazy<CoreDbContext>(() => dbContextManager.Value);
         }
 
         public IEnumerable<TenantQuota> GetTenantQuotas()

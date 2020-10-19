@@ -26,10 +26,6 @@ import {
 import {
   getFileIcon,
   getFolderIcon,
-  canWebEdit,
-  isImage,
-  isSound,
-  isVideo,
   getFilter,
   getFiles,
   getFolders,
@@ -109,7 +105,6 @@ class NewFilesPanelComponent extends React.Component {
     api.files
       .markAsRead(folderIds, fileIds)
       .then(() => {
-        this.props.setUpdateTree(true);
         this.setNewFilesCount(folderId, markAsReadFiles);
         this.props.setNewRowItems(itemsIds);
       })
@@ -130,7 +125,7 @@ class NewFilesPanelComponent extends React.Component {
       .then(() => {
         this.props.setUpdateTree(true);
         this.setNewFilesCount(folderId, false, item);
-        //this.onFilesClick(item);
+        this.onFilesClick(item);
       })
       .catch((err) => toastr.error(err))
       .finally(() => {
@@ -139,30 +134,37 @@ class NewFilesPanelComponent extends React.Component {
   };
 
   onFilesClick = (item) => {
-    const { id, fileExst, viewUrl } = item;
-    const { filter, setMediaViewerData, fetchFiles, canWebEdit } = this.props;
+    const { id, fileExst, viewUrl, fileType } = item;
+    const { filter, setMediaViewerData, fetchFiles } = this.props;
 
-    /*     if (!fileExst) {  //TODO: need fix on store property`s
+    if (!fileExst) {
       fetchFiles(id, filter).catch((err) => toastr.error(err));
     } else {
-      if (canWebEdit) {
+      const canEdit = [5, 6, 7].includes(fileType); //TODO: maybe dirty
+      const isMedia = [2, 3, 4].includes(fileType);
+
+      if (canEdit) {
         return window.open(`./doceditor?fileId=${id}`, "_blank");
       }
 
-      const isOpenMedia =
-        isImage(fileExst) || isSound(fileExst) || isVideo(fileExst);
-      if (isOpenMedia) {
+      if (isMedia) {
         const mediaItem = { visible: true, id };
         setMediaViewerData(mediaItem);
         return;
       }
 
       return window.open(viewUrl, "_blank");
-    } */
+    }
   };
 
   setNewFilesCount = (folderPath, markAsReadAll, item) => {
-    const { treeFolders, setTreeFolders, folders, files } = this.props;
+    const {
+      treeFolders,
+      setTreeFolders,
+      folders,
+      files,
+      setUpdateTree,
+    } = this.props;
 
     const data = treeFolders;
     let dataItem;
@@ -210,6 +212,7 @@ class NewFilesPanelComponent extends React.Component {
       }
     }
 
+    setUpdateTree(true);
     setTreeFolders(data);
   };
 
@@ -294,7 +297,7 @@ const NewFilesPanel = (props) => (
   <NewFilesPanelContainerTranslated i18n={i18n} {...props} />
 );
 
-const mapStateToProps = (state, props) => {
+const mapStateToProps = (state) => {
   return {
     filter: getFilter(state),
     files: getFiles(state),

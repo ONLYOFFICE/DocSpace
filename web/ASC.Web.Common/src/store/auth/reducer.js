@@ -13,7 +13,7 @@ import {
   SET_CURRENT_PRODUCT_HOME_PAGE,
   SET_GREETING_SETTINGS,
   SET_CUSTOM_NAMES,
-  SET_WIZARD_COMPLETED
+  SET_WIZARD_COMPLETED,
 } from "./actions";
 import isEmpty from "lodash/isEmpty";
 import { LANGUAGE, AUTH_KEY } from "../../constants";
@@ -41,7 +41,7 @@ const initialState = {
     datepicker: {
       datePattern: "mm/dd/yy",
       dateTimePattern: "DD, mm dd, yy h:mm:ss tt",
-      timePattern: "h:mm tt"
+      timePattern: "h:mm tt",
     },
     organizationName: "ONLYOFFICE",
     greetingSettings: "Web Office Applications",
@@ -57,9 +57,9 @@ const initialState = {
       regDateCaption: "Registration Date",
       groupHeadCaption: "Head",
       guestCaption: "Guest",
-      guestsCaption: "Guests"
-    }
-  }
+      guestsCaption: "Guests",
+    },
+  },
 };
 
 const authReducer = (state = initialState, action) => {
@@ -71,11 +71,11 @@ const authReducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         isAuthenticated:
           !isEmpty(action.user) || localStorage.getItem(AUTH_KEY),
-        user: action.user
+        user: action.user,
       });
     case SET_MODULES:
       return Object.assign({}, state, {
-        modules: action.modules
+        modules: action.modules,
       });
     case SET_SETTINGS:
       if (!localStorage.getItem(LANGUAGE)) {
@@ -84,27 +84,27 @@ const authReducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         settings: {
           ...state.settings,
-          ...action.settings
-        }
+          ...action.settings,
+        },
       });
     case SET_PORTAL_CULTURES:
       return Object.assign({}, state, {
-        settings: { ...state.settings, cultures: action.cultures }
+        settings: { ...state.settings, cultures: action.cultures },
       });
     case SET_PASSWORD_SETTINGS:
       return Object.assign({}, state, {
         settings: {
           ...state.settings,
-          passwordSettings: action.passwordSettings
-        }
+          passwordSettings: action.passwordSettings,
+        },
       });
     case SET_IS_LOADED:
       return Object.assign({}, state, {
-        isLoaded: action.isLoaded
+        isLoaded: action.isLoaded,
       });
     case SET_NEW_EMAIL:
       return Object.assign({}, state, {
-        user: { ...state.user, email: action.email }
+        user: { ...state.user, email: action.email },
       });
     case SET_PORTAL_LANGUAGE_AND_TIME:
       if (!state.user.cultureName) {
@@ -114,39 +114,39 @@ const authReducer = (state = initialState, action) => {
         settings: {
           ...state.settings,
           culture: action.newSettings.lng,
-          timezone: action.newSettings.timeZoneID
-        }
+          timezone: action.newSettings.timeZoneID,
+        },
       });
     case SET_TIMEZONES:
       return Object.assign({}, state, {
-        settings: { ...state.settings, timezones: action.timezones }
+        settings: { ...state.settings, timezones: action.timezones },
       });
     case SET_CURRENT_PRODUCT_ID:
       return Object.assign({}, state, {
         settings: {
           ...state.settings,
-          currentProductId: action.currentProductId
-        }
+          currentProductId: action.currentProductId,
+        },
       });
     case SET_CURRENT_PRODUCT_HOME_PAGE:
       return Object.assign({}, state, {
-        settings: { ...state.settings, homepage: action.homepage }
+        settings: { ...state.settings, homepage: action.homepage },
       });
     case SET_GREETING_SETTINGS:
       return Object.assign({}, state, {
-        settings: { ...state.settings, greetingSettings: action.title }
+        settings: { ...state.settings, greetingSettings: action.title },
       });
     case SET_CUSTOM_NAMES:
       return Object.assign({}, state, {
-        settings: { ...state.settings, customNames: action.customNames }
+        settings: { ...state.settings, customNames: action.customNames },
       });
     case LOGOUT:
       return Object.assign({}, initialState, {
-        settings: state.settings
+        settings: state.settings,
       });
     case SET_WIZARD_COMPLETED:
       return Object.assign({}, state, {
-        settings: { ...state.settings, wizardCompleted: true }
+        settings: { ...state.settings, wizardCompleted: true },
       });
 
     default:

@@ -84,16 +84,16 @@ HeaderUnAuth.displayName = "Header";
 
 HeaderUnAuth.propTypes = {
   enableAdmMess: PropTypes.bool,
-  wizardToken: PropTypes.string
+  wizardToken: PropTypes.string,
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const { settings } = state.auth;
   const { enableAdmMess, wizardToken } = settings;
 
   return {
     enableAdmMess,
-    wizardToken
+    wizardToken,
   };
 };
 

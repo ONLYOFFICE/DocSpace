@@ -52,13 +52,13 @@ namespace ASC.Core.Data
         public void Configure(string name, EFUserService options)
         {
             DbId = name;
-            options.UserDbContext = DbContextManager.Get(name);
+            options.LazyUserDbContext = new Lazy<UserDbContext>(() => DbContextManager.Get(name));
             options.UserDbContextManager = DbContextManager;
         }
 
         public void Configure(EFUserService options)
         {
-            options.UserDbContext = DbContextManager.Value;
+            options.LazyUserDbContext = new Lazy<UserDbContext>(() => DbContextManager.Value);
             options.UserDbContextManager = DbContextManager;
         }
     }
@@ -73,7 +73,8 @@ namespace ASC.Core.Data
         public Expression<Func<UserGroup, UserGroupRef>> FromUserGroupToUserGroupRef { get; set; }
         public Func<UserGroupRef, UserGroup> FromUserGroupRefToUserGroup { get; set; }
 
-        internal UserDbContext UserDbContext { get; set; }
+        internal UserDbContext UserDbContext { get => LazyUserDbContext.Value; }
+        internal Lazy<UserDbContext> LazyUserDbContext { get; set; }
         internal DbContextManager<UserDbContext> UserDbContextManager { get; set; }
         private PasswordHasher PasswordHasher { get; }
         public MachinePseudoKeys MachinePseudoKeys { get; }
@@ -189,7 +190,7 @@ namespace ASC.Core.Data
             UserDbContextManager = userDbContextManager;
             PasswordHasher = passwordHasher;
             MachinePseudoKeys = machinePseudoKeys;
-            UserDbContext = UserDbContextManager.Value;
+            LazyUserDbContext = new Lazy<UserDbContext>(() => UserDbContextManager.Value);
         }
 
         public Group GetGroup(int tenant, Guid id)

@@ -12,7 +12,7 @@ const baseCalendarProps = {
   minDate: new Date("1970/01/01"),
   maxDate: new Date("3000/01/01"),
   locale: "en",
-  onChange: () => jest.fn()
+  onChange: () => jest.fn(),
 };
 
 const baseWeekdaysProps = {
@@ -23,9 +23,9 @@ const baseWeekdaysProps = {
     { key: "en_3", value: "Th", color: "" },
     { key: "en_4", value: "Fr", color: "" },
     { key: "en_5", value: "Sa", color: "#A3A9AE" },
-    { key: "en_6", value: "Su", color: "#A3A9AE" }
+    { key: "en_6", value: "Su", color: "#A3A9AE" },
   ],
-  size: "base"
+  size: "base",
 };
 
 const baseDaysProps = {
@@ -34,17 +34,17 @@ const baseDaysProps = {
       className: "calendar-month_neighboringMonth",
       dayState: "prev",
       disableClass: null,
-      value: 25
+      value: 25,
     },
     {
       className: "calendar-month_neighboringMonth",
       dayState: "prev",
       disableClass: null,
-      value: 26
-    }
+      value: 26,
+    },
   ],
   onDayClick: jest.fn,
-  size: "base"
+  size: "base",
 };
 
 const baseDayProps = {
@@ -52,20 +52,20 @@ const baseDayProps = {
     className: "calendar-month_neighboringMonth",
     dayState: "prev",
     disableClass: null,
-    value: 26
+    value: 26,
   },
   onDayClick: jest.fn(),
-  size: "base"
+  size: "base",
 };
 
 const options = [
   { key: 0, value: "one" },
   { key: 1, value: "two" },
-  { key: 2, value: "three" }
+  { key: 2, value: "three" },
 ];
 const baseComboBoxProps = {
   options: options,
-  selectedOption: { key: 0, value: "one" }
+  selectedOption: { key: 0, value: "one" },
 };
 
 const selectedDate = new Date("09/12/2019");
@@ -89,7 +89,7 @@ describe("Weekdays tests:", () => {
     const wrapper = shallow(<Weekdays {...baseWeekdaysProps} />).instance();
     const shouldUpdate = wrapper.shouldComponentUpdate({
       ...wrapper.props,
-      size: "big"
+      size: "big",
     });
     expect(shouldUpdate).toBe(true);
   });
@@ -116,7 +116,7 @@ describe("Days tests:", () => {
     const wrapper = shallow(<Days {...baseDaysProps} />).instance();
     const shouldUpdate = wrapper.shouldComponentUpdate({
       ...wrapper.props,
-      size: "big"
+      size: "big",
     });
     expect(shouldUpdate).toBe(true);
   });
@@ -143,7 +143,7 @@ describe("Day tests:", () => {
     const wrapper = shallow(<Day {...baseDayProps} />).instance();
     const shouldUpdate = wrapper.shouldComponentUpdate({
       ...wrapper.props,
-      size: "big"
+      size: "big",
     });
     expect(shouldUpdate).toBe(true);
   });
@@ -220,14 +220,14 @@ describe("Calendar tests:", () => {
     const onChange = jest.fn();
     const props = {
       selectedDate: new Date("03/03/2000"),
-      onChange
+      onChange,
     };
     const wrapper = shallow(<Calendar {...props} />).instance();
     wrapper.onDayClick({
       value: 1,
       disableClass: "",
       className: "",
-      dayState: "prev"
+      dayState: "prev",
     });
     expect(onChange).toBeCalled();
 
@@ -236,7 +236,7 @@ describe("Calendar tests:", () => {
       value: 1,
       disableClass: "",
       className: "",
-      dayState: "next"
+      dayState: "next",
     });
     expect(onChange).toBeCalled();
 
@@ -245,7 +245,7 @@ describe("Calendar tests:", () => {
       value: 1,
       disableClass: "",
       className: "",
-      dayState: "now"
+      dayState: "now",
     });
     expect(onChange).toBeCalled();
   });
@@ -255,13 +255,13 @@ describe("Calendar tests:", () => {
       openToDate: new Date("05/01/2000"),
       selectedDate: new Date("01/01/2000"),
       minDate: new Date("01/01/1970"),
-      maxDate: new Date("01/01/2020")
+      maxDate: new Date("01/01/2020"),
     };
 
     const wrapper = shallow(<Calendar {...props} />).instance();
     wrapper.onSelectYear({
       key: 2020,
-      value: 2020
+      value: 2020,
     });
 
     expect(wrapper.state.openToDate).toEqual(new Date("01/01/2020"));
@@ -270,7 +270,7 @@ describe("Calendar tests:", () => {
   it("Calendar check onSelectMonth function", () => {
     const props = {
       openToDate: new Date("01/01/2000"),
-      selectedDate: new Date("01/01/2000")
+      selectedDate: new Date("01/01/2000"),
     };
     const wrapper = shallow(<Calendar {...props} />).instance();
     wrapper.onSelectMonth({ key: "1", label: "February", disabled: false });
@@ -315,27 +315,23 @@ describe("Calendar tests:", () => {
     expect(wrapper2.state).toBe(wrapper2.state);
   });
 
-  it('accepts id', () => {
-    const wrapper = mount(
-      <Calendar {...baseCalendarProps} id="testId" />
-    );
+  it("accepts id", () => {
+    const wrapper = mount(<Calendar {...baseCalendarProps} id="testId" />);
 
-    expect(wrapper.prop('id')).toEqual('testId');
+    expect(wrapper.prop("id")).toEqual("testId");
   });
 
-  it('accepts className', () => {
-    const wrapper = mount(
-      <Calendar {...baseCalendarProps} className="test" />
-    );
+  it("accepts className", () => {
+    const wrapper = mount(<Calendar {...baseCalendarProps} className="test" />);
 
-    expect(wrapper.prop('className')).toEqual('test');
+    expect(wrapper.prop("className")).toEqual("test");
   });
 
-  it('accepts style', () => {
+  it("accepts style", () => {
     const wrapper = mount(
-      <Calendar {...baseCalendarProps} style={{ color: 'red' }} />
+      <Calendar {...baseCalendarProps} style={{ color: "red" }} />
     );
 
-    expect(wrapper.getDOMNode().style).toHaveProperty('color', 'red');
+    expect(wrapper.getDOMNode().style).toHaveProperty("color", "red");
   });
 });

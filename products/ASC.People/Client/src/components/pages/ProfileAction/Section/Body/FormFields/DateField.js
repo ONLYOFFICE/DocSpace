@@ -20,7 +20,7 @@ class DateField extends React.Component {
       inputValue,
       inputIsDisabled,
       inputOnChange,
-      inputTabIndex
+      inputTabIndex,
     } = this.props;
 
     return (

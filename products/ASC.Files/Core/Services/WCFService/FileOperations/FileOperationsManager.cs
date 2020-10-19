@@ -144,10 +144,10 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             return QueueTask(userId, op);
         }
 
-        public ItemList<FileOperationResult> Delete(Guid userId, TenantManager tenantManager, IEnumerable<JsonElement> folders, IEnumerable<JsonElement> files, bool ignoreException, bool holdResult, bool immediately, IDictionary<string, StringValues> headers)
+        public ItemList<FileOperationResult> Delete(Guid userId, Tenant tenant, IEnumerable<JsonElement> folders, IEnumerable<JsonElement> files, bool ignoreException, bool holdResult, bool immediately, IDictionary<string, StringValues> headers)
         {
-            var op1 = new FileDeleteOperation<int>(ServiceProvider, new FileDeleteOperationData<int>(folders.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()), files.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()), tenantManager.GetCurrentTenant(), holdResult, ignoreException, immediately, headers));
-            var op2 = new FileDeleteOperation<string>(ServiceProvider, new FileDeleteOperationData<string>(folders.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()), files.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()), tenantManager.GetCurrentTenant(), holdResult, ignoreException, immediately, headers));
+            var op1 = new FileDeleteOperation<int>(ServiceProvider, new FileDeleteOperationData<int>(folders.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()), files.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()), tenant, holdResult, ignoreException, immediately, headers));
+            var op2 = new FileDeleteOperation<string>(ServiceProvider, new FileDeleteOperationData<string>(folders.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()), files.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()), tenant, holdResult, ignoreException, immediately, headers));
             var op = new FileDeleteOperation(ServiceProvider, op2, op1);
 
             return QueueTask(userId, op);
@@ -183,7 +183,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 .AddAuthContextService()
                 .AddTenantManagerService()
                 ;
-            
+
         }
     }
 }

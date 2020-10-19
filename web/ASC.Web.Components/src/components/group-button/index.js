@@ -28,18 +28,18 @@ const StyledGroupButton = styled.div`
 const StyledDropdownToggle = styled.div`
   font-family: Open Sans;
   font-style: normal;
-  font-weight: ${props => props.fontWeight};
+  font-weight: ${(props) => props.fontWeight};
   font-size: 14px;
   line-height: 19px;
 
   cursor: default;
   outline: 0;
 
-  color: ${props => (props.disabled ? disabledTextColor : textColor)};
+  color: ${(props) => (props.disabled ? disabledTextColor : textColor)};
 
   float: left;
   height: 19px;
-  margin: 18px 12px 19px ${props => (props.isSelect ? "0px" : "12px")};
+  margin: 18px 12px 19px ${(props) => (props.isSelect ? "0px" : "12px")};
   overflow: hidden;
   padding: 0px;
 
@@ -52,7 +52,7 @@ const StyledDropdownToggle = styled.div`
   -moz-user-select: none;
   -webkit-user-select: none;
 
-  ${props =>
+  ${(props) =>
     !props.disabled &&
     (props.activated
       ? `${activatedCss}`
@@ -62,7 +62,7 @@ const StyledDropdownToggle = styled.div`
           }
         `)}
 
-  ${props =>
+  ${(props) =>
     !props.disabled &&
     (props.hovered
       ? `${hoveredCss}`
@@ -78,7 +78,7 @@ const Caret = styled.div`
   width: 8px;
   margin-left: 6px;
 
-  ${props =>
+  ${(props) =>
     props.isOpen &&
     `
     padding-bottom: 2px;
@@ -115,13 +115,13 @@ class GroupButton extends React.Component {
 
     this.state = {
       isOpen: props.opened,
-      selected: props.selected
+      selected: props.selected,
     };
   }
 
-  setIsOpen = isOpen => this.setState({ isOpen: isOpen });
+  setIsOpen = (isOpen) => this.setState({ isOpen: isOpen });
 
-  setSelected = selected => this.setState({ selected: selected });
+  setSelected = (selected) => this.setState({ selected: selected });
 
   componentDidUpdate(prevProps) {
     if (this.props.opened !== prevProps.opened) {
@@ -137,19 +137,19 @@ class GroupButton extends React.Component {
     }
   }
 
-  clickOutsideAction = e => {
+  clickOutsideAction = (e) => {
     this.state.isOpen &&
       !this.ref.current.contains(e.target) &&
       this.setIsOpen(false);
   };
 
-  checkboxChange = e => {
+  checkboxChange = (e) => {
     this.props.onChange && this.props.onChange(e.target && e.target.checked);
 
     this.setSelected(this.props.selected);
   };
 
-  dropDownItemClick = e => {
+  dropDownItemClick = (e) => {
     const index = e.currentTarget.dataset.index;
     const child = this.props.children[index];
 
@@ -178,7 +178,7 @@ class GroupButton extends React.Component {
       isSelect,
       isSeparator,
       label,
-      style
+      style,
     } = this.props;
 
     const color = disabled ? disabledTextColor : textColor;
@@ -224,7 +224,7 @@ class GroupButton extends React.Component {
               open={this.state.isOpen}
               clickOutsideAction={this.clickOutsideAction}
             >
-              {React.Children.map(children, child => (
+              {React.Children.map(children, (child) => (
                 <DropDownItem
                   {...child.props}
                   onClick={this.dropDownItemClick}
@@ -262,7 +262,7 @@ GroupButton.propTypes = {
   opened: PropTypes.bool,
   selected: PropTypes.string,
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
-  tabIndex: PropTypes.number
+  tabIndex: PropTypes.number,
 };
 
 GroupButton.defaultProps = {
@@ -275,7 +275,7 @@ GroupButton.defaultProps = {
   isSeparator: false,
   label: "Group button",
   opened: false,
-  tabIndex: -1
+  tabIndex: -1,
 };
 
 export default GroupButton;

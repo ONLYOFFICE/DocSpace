@@ -1,8 +1,6 @@
 using ASC.Api.Core;
 using ASC.Common;
 using ASC.Common.DependencyInjection;
-using ASC.Core.Common.EF;
-using ASC.Core.Common.EF.Context;
 using ASC.Data.Storage;
 using ASC.Data.Storage.Configuration;
 using ASC.Data.Storage.DiscStorage;
@@ -31,8 +29,9 @@ namespace ASC.Web.Studio
         {
             services.AddCors();
 
-            var diHelper = new DIHelper(services);
-            diHelper
+            base.ConfigureServices(services);
+
+            DIHelper
                 .AddStorage()
                 .AddPathUtilsService()
                 .AddStorageHandlerService()
@@ -40,7 +39,7 @@ namespace ASC.Web.Studio
 
             services.AddMemoryCache();
 
-            base.ConfigureServices(services);
+
             services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
         }
 

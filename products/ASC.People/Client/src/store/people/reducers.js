@@ -109,7 +109,8 @@ const peopleReducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         isLoading: action.isLoading,
       });
-    default:      return state;
+    default:
+      return state;
   }
 };
 

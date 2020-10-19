@@ -1298,7 +1298,7 @@ class SectionBodyContent extends React.Component {
       <Text
         className="share-button"
         as="span"
-        title={"Share"}
+        title={this.props.t("Share")}
         fontSize="12px"
         fontWeight={400}
         color="#A3A9AE"
@@ -1312,7 +1312,7 @@ class SectionBodyContent extends React.Component {
           size={16}
           iconName="CatalogSharedIcon"
         />
-        Share
+        {this.props.t("Share")}
       </Text>
     );
   };
@@ -1513,8 +1513,11 @@ class SectionBodyContent extends React.Component {
               const checkedProps = isEdit || item.id <= 0 ? {} : { checked };
               const element = this.getItemIcon(item, isEdit || item.id <= 0);
               const sharedButton =
-                isEdit || item.id <= 0 ? null : this.getSharedButton();
-              const displayShareButton = widthProp > 500 ? "96px" : "26px";
+                isRecycleBin || isEdit || item.id <= 0
+                  ? null
+                  : this.getSharedButton();
+              const displayShareButton =
+                widthProp < 500 ? "26px" : isRecycleBin ? "38px" : "96px";
               let classNameProp =
                 isFolder && item.access < 2 && !isRecycleBin
                   ? { className: " dropable" }

@@ -15,7 +15,7 @@ const commonStyles = css`
     flex: 1 0 auto;
     padding: 16px 8px 16px 24px;
     outline: none;
-    ${props => props.viewAs == "tile" && "padding-right:0;"}
+    ${(props) => props.viewAs == "tile" && "padding-right:0;"}
 
     @media ${tablet} {
       padding: 16px 0 16px 24px;
@@ -31,8 +31,10 @@ const commonStyles = css`
 
 const StyledSectionBody = styled.div`
   ${commonStyles}
-  
-  ${props => props.withScroll && `
+
+  ${(props) =>
+    props.withScroll &&
+    `
     margin-left: -24px;
   `}
 `;
@@ -44,8 +46,10 @@ const StyledDropZoneBody = styled(DragAndDrop)`
     user-select: none;
     height: 100%;
   }
-  
-  ${props => props.withScroll && `
+
+  ${(props) =>
+    props.withScroll &&
+    `
     margin-left: -24px;
   `}
 `;
@@ -55,7 +59,7 @@ const StyledSpacer = styled.div`
   min-height: 64px;
 
   @media ${tablet} {
-    display: ${props => (props.pinned ? "none" : "block")};
+    display: ${(props) => (props.pinned ? "none" : "block")};
   }
 `;
 
@@ -79,7 +83,7 @@ class SectionBody extends React.Component {
 
   render() {
     //console.log("PageLayout SectionBody render");
-    const { 
+    const {
       autoFocus,
       children,
       onDrop,
@@ -87,13 +91,15 @@ class SectionBody extends React.Component {
       setSelections,
       uploadFiles,
       viewAs,
-      withScroll
+      withScroll,
     } = this.props;
 
-    const focusProps = autoFocus ? {
-      ref: this.focusRef,
-      tabIndex: 1
-    } : {};
+    const focusProps = autoFocus
+      ? {
+          ref: this.focusRef,
+          tabIndex: 1,
+        }
+      : {};
 
     const scrollProp = uploadFiles ? { ref: this.scrollRef } : {};
 
@@ -120,37 +126,37 @@ class SectionBody extends React.Component {
             </SelectedFrame>
           </Scrollbar>
         ) : (
-            <SelectedFrame
-              viewAs={viewAs}
-              scrollRef={this.scrollRef}
-              setSelections={setSelections}
-            >
-              <div className="section-wrapper">
-                {children}
-                <StyledSpacer pinned={pinned} />
-              </div>
-            </SelectedFrame>
-          )}
+          <SelectedFrame
+            viewAs={viewAs}
+            scrollRef={this.scrollRef}
+            setSelections={setSelections}
+          >
+            <div className="section-wrapper">
+              {children}
+              <StyledSpacer pinned={pinned} />
+            </div>
+          </SelectedFrame>
+        )}
       </StyledDropZoneBody>
     ) : (
-        <StyledSectionBody viewAs={viewAs} withScroll={withScroll}>
-          {withScroll ? (
-            <Scrollbar {...scrollProp} stype="mediumBlack">
-              <div className="section-wrapper">
-                <div className="section-wrapper-content" {...focusProps}>
-                  {children}
-                  <StyledSpacer pinned={pinned} />
-                </div>
-              </div>
-            </Scrollbar>
-          ) : (
-              <div className="section-wrapper">
+      <StyledSectionBody viewAs={viewAs} withScroll={withScroll}>
+        {withScroll ? (
+          <Scrollbar {...scrollProp} stype="mediumBlack">
+            <div className="section-wrapper">
+              <div className="section-wrapper-content" {...focusProps}>
                 {children}
                 <StyledSpacer pinned={pinned} />
               </div>
-            )}
-        </StyledSectionBody>
-      );
+            </div>
+          </Scrollbar>
+        ) : (
+          <div className="section-wrapper">
+            {children}
+            <StyledSpacer pinned={pinned} />
+          </div>
+        )}
+      </StyledSectionBody>
+    );
   }
 }
 
@@ -166,16 +172,16 @@ SectionBody.propTypes = {
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node,
-    PropTypes.any
+    PropTypes.any,
   ]),
-  viewAs: PropTypes.string
+  viewAs: PropTypes.string,
 };
 
 SectionBody.defaultProps = {
   autoFocus: false,
   pinned: false,
   uploadFiles: false,
-  withScroll: true
+  withScroll: true,
 };
 
 export default SectionBody;

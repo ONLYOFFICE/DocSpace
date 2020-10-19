@@ -11,7 +11,7 @@ import { Textarea } from "asc-web-components";
 ```jsx
 <Textarea
   placeholder="Add comment"
-  onChange={event => alert(event.target.value)}
+  onChange={(event) => alert(event.target.value)}
   value="value"
 />
 ```

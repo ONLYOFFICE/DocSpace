@@ -15,6 +15,7 @@ namespace ASC.Core.Common.EF.Model
         public string Alias { get; set; }
         public string MappedDomain { get; set; }
         public int Version { get; set; }
+
         public DateTime? Version_Changed { get; set; }
 
         [NotMapped]

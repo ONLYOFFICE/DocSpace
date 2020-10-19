@@ -14,7 +14,7 @@ import {
   getCurrentProductName,
   getDefaultPage,
   getMainModules,
-  getTotalNotificationsCount
+  getTotalNotificationsCount,
 } from "../../../store/auth/selectors";
 
 const { desktop } = utils.device;
@@ -51,7 +51,7 @@ const Header = styled.header`
 
     @media (max-width: 620px) {
       padding: 0 12px 0 0;
-      display: ${props => props.module && "block"};
+      display: ${(props) => props.module && "block"};
     }
   }
 
@@ -63,7 +63,7 @@ const Header = styled.header`
     cursor: pointer;
 
     @media (max-width: 620px) {
-      display: ${props => (props.module ? "none" : "block")};
+      display: ${(props) => (props.module ? "none" : "block")};
       padding: 0px 20px 0 6px;
     }
   }
@@ -79,7 +79,7 @@ const HeaderComponent = ({
   mainModules,
   isNavOpened,
   currentProductId,
-  toggleAside
+  toggleAside,
 }) => {
   //console.log("Header render");
 
@@ -89,9 +89,9 @@ const HeaderComponent = ({
     window.open(defaultPage, "_self");
   };
 
-  const onBadgeClick = e => {
+  const onBadgeClick = (e) => {
     const item = mainModules.find(
-      module => module.id === e.currentTarget.dataset.id
+      (module) => module.id === e.currentTarget.dataset.id
     );
     toggleAside();
 
@@ -138,7 +138,7 @@ const HeaderComponent = ({
               notifications,
               onClick,
               url,
-              title
+              title,
             }) => (
               <NavItem
                 separator={!!separator}
@@ -175,16 +175,16 @@ HeaderComponent.propTypes = {
   isNavOpened: PropTypes.bool,
   onNavMouseEnter: PropTypes.func,
   onNavMouseLeave: PropTypes.func,
-  toggleAside: PropTypes.func
+  toggleAside: PropTypes.func,
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     defaultPage: getDefaultPage(state),
     totalNotifications: getTotalNotificationsCount(state),
     mainModules: getMainModules(state),
     currentProductName: getCurrentProductName(state),
-    currentProductId: getCurrentProductId(state)
+    currentProductId: getCurrentProductId(state),
   };
 };
 

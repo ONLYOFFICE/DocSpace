@@ -8,7 +8,7 @@
   "AddButton": "Add",
 
   "SuccessSaveGroup": "{{groupCaption}} '{{ groupName }}' has been saved successfully",
-  
+
   "CustomNewDepartment": "{{groupCaption}} (creation)",
   "SearchAddedMembers": "Search added members",
   "MeLabel": "Me",

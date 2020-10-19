@@ -347,7 +347,10 @@ export const CatalogUserIcon = createStyledIcon(
 );
 export const ChatIcon = createStyledIcon(OrigChatIcon, "ChatIcon");
 export const CheckIcon = createStyledIcon(OrigCheckIcon, "CheckIcon");
-export const CheckToastIcon = createStyledIcon(OrigCheckToastIcon, "CheckToastIcon");
+export const CheckToastIcon = createStyledIcon(
+  OrigCheckToastIcon,
+  "CheckToastIcon"
+);
 export const CheckboxIcon = createStyledIcon(
   OrigCheckboxIcon,
   "CheckboxIcon",
@@ -402,7 +405,10 @@ export const CrossSidebarIcon = createStyledIcon(
   "CrossSidebarIcon"
 );
 export const DangerIcon = createStyledIcon(OrigDangerIcon, "DangerIcon");
-export const DangerToastIcon = createStyledIcon(OrigDangerToastIcon, "DangerToastIcon");
+export const DangerToastIcon = createStyledIcon(
+  OrigDangerToastIcon,
+  "DangerToastIcon"
+);
 export const DocumentsIcon = createStyledIcon(
   OrigDocumentsIcon,
   "DocumentsIcon"
@@ -453,7 +459,10 @@ export const HorizontalDotsIcon = createStyledIcon(
 export const IcqIcon = createStyledIcon(OrigIcqIcon, "IcqIcon");
 export const ImportIcon = createStyledIcon(OrigImportIcon, "ImportIcon");
 export const InfoIcon = createStyledIcon(OrigInfoIcon, "InfoIcon");
-export const InfoToastIcon = createStyledIcon(OrigInfoToastIcon, "InfoToastIcon");
+export const InfoToastIcon = createStyledIcon(
+  OrigInfoToastIcon,
+  "InfoToastIcon"
+);
 export const InvitationLinkIcon = createStyledIcon(
   OrigInvitationLinkIcon,
   "InvitationLinkIcon"

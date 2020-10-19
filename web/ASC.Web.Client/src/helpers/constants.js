@@ -19,7 +19,7 @@ export const ConfirmType = Object.freeze({
   PhoneAuth: 13,
   Auth: 14,
   TfaActivation: 15,
-  TfaAuth: 16
+  TfaAuth: 16,
 });
 
 /**
@@ -29,5 +29,5 @@ export const ConfirmType = Object.freeze({
 export const ValidationResult = Object.freeze({
   Ok: 0,
   Invalid: 1,
-  Expired: 2
+  Expired: 2,
 });

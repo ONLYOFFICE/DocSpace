@@ -13,5 +13,5 @@ export default {
   Text,
   Filter,
   ProfileView,
-  SettingsFiles
+  SettingsFiles,
 };

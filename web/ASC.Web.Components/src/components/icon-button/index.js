@@ -5,12 +5,12 @@ import { Icons } from "../icons";
 import isEmpty from "lodash/isEmpty";
 
 const StyledOuter = styled.div`
-  width: ${props =>
+  width: ${(props) =>
     props.size ? Math.abs(parseInt(props.size)) + "px" : "20px"};
-  cursor: ${props =>
+  cursor: ${(props) =>
     props.isDisabled || !props.isClickable ? "default" : "pointer"};
-    line-height: 0;
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  line-height: 0;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 `;
 class IconButton extends React.PureComponent {
   constructor(props) {
@@ -18,7 +18,7 @@ class IconButton extends React.PureComponent {
 
     this.state = {
       currentIconName: this.props.iconName,
-      currentIconColor: this.props.color
+      currentIconColor: this.props.color,
     };
     this.onMouseEnter = this.onMouseEnter.bind(this);
     this.onMouseLeave = this.onMouseLeave.bind(this);
@@ -35,14 +35,16 @@ class IconButton extends React.PureComponent {
       iconName,
       hoverColor,
       color,
-      onMouseEnter
+      onMouseEnter,
     } = this.props;
 
     if (isDisabled) return;
 
     this.setState({
-      currentIconName: !('ontouchstart' in document.documentElement) ? iconHoverName || iconName : iconName,
-      currentIconColor: hoverColor || color
+      currentIconName: !("ontouchstart" in document.documentElement)
+        ? iconHoverName || iconName
+        : iconName,
+      currentIconColor: hoverColor || color,
     });
 
     onMouseEnter && onMouseEnter(e);
@@ -54,7 +56,7 @@ class IconButton extends React.PureComponent {
 
     this.setState({
       currentIconName: iconName,
-      currentIconColor: color
+      currentIconColor: color,
     });
 
     onMouseLeave && onMouseLeave(e);
@@ -66,14 +68,16 @@ class IconButton extends React.PureComponent {
       iconName,
       clickColor,
       color,
-      onMouseDown
+      onMouseDown,
     } = this.props;
 
     if (isDisabled) return;
 
     this.setState({
-      currentIconName: !('ontouchstart' in document.documentElement) ? iconClickName || iconName : iconName,
-      currentIconColor: clickColor || color
+      currentIconName: !("ontouchstart" in document.documentElement)
+        ? iconClickName || iconName
+        : iconName,
+      currentIconColor: clickColor || color,
     });
 
     onMouseDown && onMouseDown(e);
@@ -85,7 +89,7 @@ class IconButton extends React.PureComponent {
       iconName,
       color,
       onClick,
-      onMouseUp
+      onMouseUp,
     } = this.props;
 
     if (isDisabled) return;
@@ -93,8 +97,10 @@ class IconButton extends React.PureComponent {
     switch (e.nativeEvent.which) {
       case 1: //Left click
         this.setState({
-          currentIconName: !('ontouchstart' in document.documentElement) ? iconHoverName || iconName : iconName,
-          currentIconColor: iconHoverName || color
+          currentIconName: !("ontouchstart" in document.documentElement)
+            ? iconHoverName || iconName
+            : iconName,
+          currentIconColor: iconHoverName || color,
         });
 
         onClick && onClick(e);
@@ -132,7 +138,7 @@ class IconButton extends React.PureComponent {
       onClick,
       id,
       style,
-      dataTip
+      dataTip,
     } = this.props;
 
     return (
@@ -154,7 +160,7 @@ class IconButton extends React.PureComponent {
         {React.createElement(Icons[this.state.currentIconName], {
           size: "scale",
           color: this.state.currentIconColor,
-          isfill: isFill
+          isfill: isFill,
         })}
       </StyledOuter>
     );
@@ -180,7 +186,7 @@ IconButton.propTypes = {
   onMouseLeave: PropTypes.func,
   id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
-  dataTip: PropTypes.string
+  dataTip: PropTypes.string,
 };
 
 IconButton.defaultProps = {
@@ -190,7 +196,7 @@ IconButton.defaultProps = {
   iconName: "AZSortingIcon",
   isDisabled: false,
   isClickable: false,
-  dataTip: ""
+  dataTip: "",
 };
 
 export default IconButton;

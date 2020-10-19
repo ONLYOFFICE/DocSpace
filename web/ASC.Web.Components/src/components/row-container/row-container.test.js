@@ -1,13 +1,13 @@
-import React from 'react';
-import { mount, shallow } from 'enzyme';
-import RowContainer from '.';
+import React from "react";
+import { mount, shallow } from "enzyme";
+import RowContainer from ".";
 
 const baseProps = {
-  manualHeight: '500px'
+  manualHeight: "500px",
 };
 
-describe('<RowContainer />', () => {
-  it('renders without error', () => {
+describe("<RowContainer />", () => {
+  it("renders without error", () => {
     const wrapper = mount(
       <RowContainer {...baseProps}>
         <span>Demo</span>
@@ -17,7 +17,7 @@ describe('<RowContainer />', () => {
     expect(wrapper).toExist();
   });
 
-  it('renders without manualHeight', () => {
+  it("renders without manualHeight", () => {
     const wrapper = mount(
       <RowContainer>
         <span>Demo</span>
@@ -27,12 +27,12 @@ describe('<RowContainer />', () => {
     expect(wrapper).toExist();
   });
 
-  it('call onRowContextClick() with normal options', () => {
+  it("call onRowContextClick() with normal options", () => {
     const options = [
       {
-        key: '1',
-        label: 'test'
-      }
+        key: "1",
+        label: "test",
+      },
     ];
 
     const wrapper = mount(
@@ -45,17 +45,14 @@ describe('<RowContainer />', () => {
 
     instance.onRowContextClick(options);
 
-    expect(wrapper.state('contextOptions')).toEqual(options);
+    expect(wrapper.state("contextOptions")).toEqual(options);
   });
 
-  it('call onRowContextClick() with wrong options', () => {
-    const options =
-    {
-      key: '1',
-      label: 'test'
-    }
-      ;
-
+  it("call onRowContextClick() with wrong options", () => {
+    const options = {
+      key: "1",
+      label: "test",
+    };
     const wrapper = mount(
       <RowContainer>
         <span>Demo</span>
@@ -66,14 +63,15 @@ describe('<RowContainer />', () => {
 
     instance.onRowContextClick(options);
 
-    expect(wrapper.state('contextOptions')).toEqual([]);
+    expect(wrapper.state("contextOptions")).toEqual([]);
   });
 
-  it('componentWillUnmount() props lifecycle test', () => {
+  it("componentWillUnmount() props lifecycle test", () => {
     const wrapper = shallow(
       <RowContainer>
         <span>Demo</span>
-      </RowContainer>);
+      </RowContainer>
+    );
     const instance = wrapper.instance();
 
     instance.componentWillUnmount();
@@ -81,43 +79,43 @@ describe('<RowContainer />', () => {
     expect(wrapper).toExist(false);
   });
 
-  it('render with normal rows', () => {
+  it("render with normal rows", () => {
     const wrapper = mount(
       <RowContainer {...baseProps}>
-        <div contextOptions={[{ key: '1', label: 'test' }]}>test</div>
+        <div contextOptions={[{ key: "1", label: "test" }]}>test</div>
       </RowContainer>
     );
 
     expect(wrapper).toExist();
   });
 
-  it('accepts id', () => {
+  it("accepts id", () => {
     const wrapper = mount(
       <RowContainer {...baseProps} id="testId">
         <span>Demo</span>
       </RowContainer>
     );
 
-    expect(wrapper.prop('id')).toEqual('testId');
+    expect(wrapper.prop("id")).toEqual("testId");
   });
 
-  it('accepts className', () => {
+  it("accepts className", () => {
     const wrapper = mount(
       <RowContainer {...baseProps} className="test">
         <span>Demo</span>
       </RowContainer>
     );
 
-    expect(wrapper.prop('className')).toEqual('test');
+    expect(wrapper.prop("className")).toEqual("test");
   });
 
-  it('accepts style', () => {
+  it("accepts style", () => {
     const wrapper = mount(
-      <RowContainer {...baseProps} style={{ color: 'red' }}>
+      <RowContainer {...baseProps} style={{ color: "red" }}>
         <span>Demo</span>
       </RowContainer>
     );
 
-    expect(wrapper.getDOMNode().style).toHaveProperty('color', 'red');
+    expect(wrapper.getDOMNode().style).toHaveProperty("color", "red");
   });
 });

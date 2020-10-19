@@ -34,7 +34,7 @@ class TextChangeField extends React.Component {
 
       tooltipContent,
       helpButtonHeaderContent,
-      dataDialog
+      dataDialog,
     } = this.props;
 
     return (

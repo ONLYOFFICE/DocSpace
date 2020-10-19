@@ -15,8 +15,8 @@ const options = [
     icon: "CatalogEmployeeIcon", // optional item
     label: "Option 1",
     disabled: false, // optional item
-    onClick: clickFunction // optional item
-  }
+    onClick: clickFunction, // optional item
+  },
 ];
 ```
 
@@ -26,14 +26,14 @@ const options = [
   isDisabled={false}
   selectedOption={{
     key: 0,
-    label: "Select"
+    label: "Select",
   }}
   dropDownMaxHeight={200}
   noBorder={false}
   scale={true}
   scaledOptions={true}
   size="content"
-  onSelect={option => console.log("selected", option)}
+  onSelect={(option) => console.log("selected", option)}
 />
 ```
 
@@ -78,10 +78,10 @@ const advancedOptions = (
 <ComboBox
   options={[]} // An empty array will enable advancedOptions
   advancedOptions={advancedOptions}
-  onSelect={option => console.log("Selected option", option)}
+  onSelect={(option) => console.log("Selected option", option)}
   selectedOption={{
     key: 0,
-    label: "Select"
+    label: "Select",
   }}
   isDisabled={false}
   scaled={false}
@@ -99,12 +99,12 @@ To use Combobox as a toggle button, you must declare it according to the paramet
   options={[]} // Required to display correctly
   selectedOption={{
     key: 0,
-    label: "Selected option"
+    label: "Selected option",
   }}
   scaled={false}
   size="content"
   displayType="toggle"
-  toggleAction={alert('action')}
+  toggleAction={alert("action")}
 >
   <Icons.NavLogoIcon size="medium" key="comboIcon" />
 </ComboBox>

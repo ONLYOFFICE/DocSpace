@@ -88,7 +88,7 @@ class CreateUserForm extends React.Component {
   }
 
   createAvatar(userId, userName) {
-    const { createdAvatar } = this.props
+    const { createdAvatar } = this.props;
     createThumbnailsAvatar(userId, {
       x: createdAvatar.x,
       y: createdAvatar.y,
@@ -143,8 +143,8 @@ class CreateUserForm extends React.Component {
     data.append("file", file);
     data.append("Autosave", false);
 
-    if(!file) {
-      _this.onSaveAvatar(false)
+    if (!file) {
+      _this.onSaveAvatar(false);
       return;
     }
 
@@ -178,7 +178,6 @@ class CreateUserForm extends React.Component {
               );
             }
           }
-
         };
         img.src = response.data;
       })
@@ -187,7 +186,7 @@ class CreateUserForm extends React.Component {
 
   onSaveAvatar(isUpdate, result, avatar, croppedImage) {
     var stateCopy = Object.assign({}, this.state);
-    const { setCreatedAvatar, setCroppedAvatar, resetProfile } = this.props 
+    const { setCreatedAvatar, setCroppedAvatar, resetProfile } = this.props;
 
     stateCopy.visibleAvatarEditor = false;
     stateCopy.croppedAvatarImage = croppedImage;
@@ -201,10 +200,10 @@ class CreateUserForm extends React.Component {
       stateCopy.avatar.width = result.width;
       stateCopy.avatar.height = result.height;
 
-      setCreatedAvatar(stateCopy.avatar)
-      setCroppedAvatar(croppedImage)
+      setCreatedAvatar(stateCopy.avatar);
+      setCroppedAvatar(croppedImage);
     } else {
-      resetProfile()
+      resetProfile();
     }
     this.setState(stateCopy);
     this.setIsEdit();

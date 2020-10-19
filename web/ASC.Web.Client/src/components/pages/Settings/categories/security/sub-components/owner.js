@@ -13,7 +13,7 @@ import {
   toastr,
   Button,
   RequestLoader,
-  Loader
+  Loader,
 } from "asc-web-components";
 import { PeopleSelector } from "asc-web-common";
 import isEmpty from "lodash/isEmpty";
@@ -21,7 +21,7 @@ import isEmpty from "lodash/isEmpty";
 import { createI18N } from "../../../../../../helpers/i18n";
 const i18n = createI18N({
   page: "Settings",
-  localesPath: "pages/Settings"
+  localesPath: "pages/Settings",
 });
 
 const OwnerContainer = styled.div`
@@ -87,7 +87,7 @@ class PureOwnerSettings extends Component {
       isLoading: false,
       showSelector: false,
       showLoader: true,
-      selectedOwner: null
+      selectedOwner: null,
     };
   }
 
@@ -96,7 +96,7 @@ class PureOwnerSettings extends Component {
 
     if (isEmpty(owner, true)) {
       getPortalOwner(ownerId)
-        .catch(error => {
+        .catch((error) => {
           toastr.error(error);
         })
         .finally(() => this.setState({ showLoader: false }));
@@ -109,11 +109,11 @@ class PureOwnerSettings extends Component {
     toastr.success(t("DnsChangeMsg", { email: owner.email }));
   };
 
-  onLoading = status => this.setState({ isLoading: status });
+  onLoading = (status) => this.setState({ isLoading: status });
 
-  onShowSelector = status => {
+  onShowSelector = (status) => {
     this.setState({
-      showSelector: status
+      showSelector: status,
     });
   };
 
@@ -121,7 +121,7 @@ class PureOwnerSettings extends Component {
     this.onShowSelector(false);
   };
 
-  onSelect = items => {
+  onSelect = (items) => {
     this.onShowSelector(false);
     this.setState({ selectedOwner: items[0] });
   };
@@ -168,7 +168,7 @@ class PureOwnerSettings extends Component {
                     {owner.displayName}
                   </Text>
                   {owner.groups &&
-                    owner.groups.map(group => (
+                    owner.groups.map((group) => (
                       <Link
                         fontSize="12px"
                         key={group.id}
@@ -235,7 +235,7 @@ class PureOwnerSettings extends Component {
 
 const AccessRightsContainer = withTranslation()(PureOwnerSettings);
 
-const OwnerSettings = props => (
+const OwnerSettings = (props) => (
   <I18nextProvider i18n={i18n}>
     <AccessRightsContainer {...props} />
   </I18nextProvider>
@@ -250,19 +250,18 @@ function mapStateToProps(state) {
     ownerId: state.auth.settings.ownerId,
     owner,
     me,
-    groupsCaption
+    groupsCaption,
   };
 }
 
 OwnerSettings.defaultProps = {
-  owner: {}
+  owner: {},
 };
 
 OwnerSettings.propTypes = {
-  owner: PropTypes.object
+  owner: PropTypes.object,
 };
 
-export default connect(
-  mapStateToProps,
-  { getPortalOwner }
-)(withRouter(OwnerSettings));
+export default connect(mapStateToProps, { getPortalOwner })(
+  withRouter(OwnerSettings)
+);
