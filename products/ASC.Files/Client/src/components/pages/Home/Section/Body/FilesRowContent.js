@@ -215,9 +215,12 @@ class FilesRowContent extends React.PureComponent {
       isVideo,
       canWebEdit,
       item,
+      isTrashFolder,
       openDocEditor
     } = this.props;
     const { id, fileExst, viewUrl } = item;
+
+    if (isTrashFolder) return;
 
     if (!fileExst) {
       setIsLoading(true);
@@ -428,7 +431,7 @@ class FilesRowContent extends React.PureComponent {
     const isEdit = id === editingId && fileExst === fileAction.extension;
     const linkStyles = isTrashFolder
       ? { noHover: true }
-      : { onClick: this.onMobileRowClick };
+      : { onClick: this.onFilesClick };
     const showNew = !!newItems;
 
     return isEdit ? (
