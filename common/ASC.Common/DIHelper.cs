@@ -151,14 +151,17 @@ namespace ASC.Common
 
                             foreach (var g in b)
                             {
-                                TryAdd(g);
+                                if (g != service)
+                                {
+                                    TryAdd(g);
+                                }
                             }
 
                             TryAdd(a, di.Type);
                         }
                         else
                         {
-                            Register(service, di.Type);
+                            isnew = Register(service, di.Type);
                         }
                     }
 
@@ -178,7 +181,7 @@ namespace ASC.Common
                         }
                         else
                         {
-                            Register(service, di.CachedType);
+                            isnew = Register(service, di.CachedType);
                         }
                     }
 
@@ -187,15 +190,31 @@ namespace ASC.Common
 
             if (isnew)
             {
-                var props = service.GetConstructors();
+                ConstructorInfo[] props = null;
 
-                foreach (var p in props)
+                if (!service.IsInterface)
                 {
-                    var par = p.GetParameters();
+                    props = service.GetConstructors();
+                }
+                else if (implementation != null)
+                {
+                    props = implementation.GetConstructors();
+                }
+                else if (di.Type != null)
+                {
+                    props = di.Type.GetConstructors();
+                }
 
-                    foreach (var p1 in par)
+                if (props != null)
+                {
+                    foreach (var p in props)
                     {
-                        TryAdd(p1.ParameterType);
+                        var par = p.GetParameters();
+
+                        foreach (var p1 in par)
+                        {
+                            TryAdd(p1.ParameterType);
+                        }
                     }
                 }
             }

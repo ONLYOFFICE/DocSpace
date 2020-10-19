@@ -158,15 +158,4 @@ namespace ASC.Core.Notify
             return false;
         }
     }
-
-    public static class RecipientProviderImplExtension
-    {
-        public static DIHelper AddRecipientProviderImplService(this DIHelper services)
-        {
-            services.TryAddScoped(typeof(IRecipientProvider), typeof(RecipientProviderImpl));
-
-            return services
-                .AddUserManagerService();
-        }
-    }
 }

@@ -32,6 +32,8 @@ namespace ASC.Files
             services.AddMemoryCache();
 
             base.ConfigureServices(services);
+
+            DIHelper.TryAdd<FilesController>();
         }
 
         public override void Configure(IApplicationBuilder app, IWebHostEnvironment env)

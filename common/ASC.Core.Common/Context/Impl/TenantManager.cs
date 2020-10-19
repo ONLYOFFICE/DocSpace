@@ -42,6 +42,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Core
 {
+    [Scope]
     class ConfigureTenantManager : IConfigureNamedOptions<TenantManager>
     {
         private IOptionsSnapshot<CachedTenantService> TenantService { get; }

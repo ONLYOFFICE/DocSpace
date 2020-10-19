@@ -4,6 +4,7 @@ using ASC.Api.Core.Auth;
 using ASC.Api.Core.Core;
 using ASC.Api.Core.Middleware;
 using ASC.Common;
+using ASC.Common.Caching;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
 
@@ -17,6 +18,7 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 
 namespace ASC.Api.Core
@@ -70,6 +72,8 @@ namespace ASC.Api.Core
             DIHelper.TryAdd<ProductSecurityFilter>();
             DIHelper.TryAdd<TenantStatusFilter>();
 
+            services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+
             var builder = services.AddMvcCore(config =>
             {
                 var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
@@ -86,7 +90,7 @@ namespace ASC.Api.Core
                 config.OutputFormatters.Add(new XmlOutputFormatter());
             });
 
-            DIHelper.TryAdd<CookieAuthHandler>();
+
             var authBuilder = services.AddAuthentication("cookie")
                 .AddScheme<AuthenticationSchemeOptions, CookieAuthHandler>("cookie", a => { });
 

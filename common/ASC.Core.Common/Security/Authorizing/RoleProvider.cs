@@ -38,6 +38,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Core.Security.Authorizing
 {
+    [Scope]
     class RoleProvider : IRoleProvider
     {
         //circ dep

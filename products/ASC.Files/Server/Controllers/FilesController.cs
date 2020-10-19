@@ -70,6 +70,7 @@ namespace ASC.Api.Documents
     /// <summary>
     /// Provides access to documents
     /// </summary>
+    [Scope]
     [DefaultRoute]
     [ApiController]
     public class FilesController : ControllerBase

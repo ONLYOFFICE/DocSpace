@@ -40,6 +40,7 @@ using Newtonsoft.Json;
 
 namespace ASC.Core
 {
+    [Singletone]
     public class CoreBaseSettings
     {
         private bool? standalone;
