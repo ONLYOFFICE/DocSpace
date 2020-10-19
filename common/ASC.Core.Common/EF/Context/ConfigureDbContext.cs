@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Utils;
 
@@ -9,6 +10,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Common.EF
 {
+    [Scope]
     public class ConfigureDbContext : IConfigureNamedOptions<BaseDbContext>
     {
         public const string baseName = "default";

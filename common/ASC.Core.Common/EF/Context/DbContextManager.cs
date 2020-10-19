@@ -66,6 +66,7 @@ namespace ASC.Core.Common.EF
         }
     }
 
+    [Scope(typeof(ConfigureDbContext))]
     public class DbContextManager<T> : BaseDbContextManager<T> where T : BaseDbContext, new()
     {
         public DbContextManager(IOptionsFactory<T> factory, IConfiguration configuration) : base(factory, configuration)

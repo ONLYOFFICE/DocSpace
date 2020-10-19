@@ -115,33 +115,41 @@ namespace ASC.Common
 
         public bool TryAdd(Type service, Type implementation = null)
         {
-            var di = service.GetCustomAttribute<DIAttribute>();
+            var di = service.IsGenericType && service.GetGenericTypeDefinition() == typeof(IConfigureOptions<>) && implementation != null ? implementation.GetCustomAttribute<DIAttribute>() : service.GetCustomAttribute<DIAttribute>();
             var isnew = false;
 
             if (di != null)
             {
-                if (service.IsInterface && implementation == null)
+                if (!service.IsInterface || implementation != null)
                 {
-                    var a = di.Type.GetInterfaces().FirstOrDefault(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IConfigureOptions<>));
-                    if (a != null)
-                    {
-                        var b = a.GetGenericArguments();
+                    isnew = implementation != null ? Register(service, implementation) : Register(service);
+                }
 
-                        foreach (var g in b)
+                if (service.IsInterface && implementation == null || !service.IsInterface)
+                {
+                    if (di.Type != null)
+                    {
+                        var a = di.Type.GetInterfaces().FirstOrDefault(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IConfigureOptions<>));
+                        if (a != null)
                         {
-                            TryAdd(g);
-                        }
+                            var b = a.GetGenericArguments();
 
-                        TryAdd(a, di.Type);
-                    }
-                    else
-                    {
-                        Register(service, di.Type);
+                            foreach (var g in b)
+                            {
+                                TryAdd(g);
+                            }
+
+                            TryAdd(a, di.Type);
+                        }
+                        else
+                        {
+                            Register(service, di.Type);
+                        }
                     }
 
                     if (di.CachedType != null)
                     {
-                        a = di.CachedType.GetInterfaces().FirstOrDefault(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IConfigureOptions<>));
+                        var a = di.CachedType.GetInterfaces().FirstOrDefault(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IConfigureOptions<>));
                         if (a != null)
                         {
                             var b = a.GetGenericArguments();
@@ -153,12 +161,12 @@ namespace ASC.Common
 
                             TryAdd(a, di.CachedType);
                         }
+                        else
+                        {
+                            Register(service, di.CachedType);
+                        }
                     }
 
-                }
-                else
-                {
-                    isnew = implementation != null ? Register(service, implementation) : Register(service);
                 }
             }
 
@@ -208,7 +216,7 @@ namespace ASC.Common
 
         private bool Register(Type service, Type implementation)
         {
-            var c = service.GetCustomAttribute<DIAttribute>();
+            var c = service.IsGenericType && service.GetGenericTypeDefinition() == typeof(IConfigureOptions<>) && implementation != null ? implementation.GetCustomAttribute<DIAttribute>() : service.GetCustomAttribute<DIAttribute>();
             var serviceName = $"{service}{implementation}";
             if (c is ScopeAttribute)
             {
