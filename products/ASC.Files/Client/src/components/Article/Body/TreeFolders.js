@@ -97,7 +97,10 @@ class TreeFolders extends React.Component {
           <Icons.CatalogPortfolioIcon size="scale" isfill color="#657077" />
         );
       case "0-3":
-        return <Icons.CatalogTrashIcon size="scale" isfill color="#657077" />;
+        return <Icons.CatalogFavoritesIcon size="scale" isfill color="#657077" />
+      case "0-4":
+        return <Icons.CatalogTrashIcon size="scale" isfill color="#657077" />;;
+
       default:
         return <Icons.CatalogFolderIcon size="scale" isfill color="#657077" />;
     }

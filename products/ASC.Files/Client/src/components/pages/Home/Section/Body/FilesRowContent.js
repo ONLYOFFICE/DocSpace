@@ -70,10 +70,14 @@ const SimpleFilesRowContent = styled(RowContent)`
     align-items: center;
   }
 
-  .share-icon {
-    margin-top: -4px;
-    padding-right: 8px;
-  }
+.favorite {
+  cursor: pointer;
+}
+
+.share-icon {
+  margin-top: -4px;
+  padding-right: 8px;
+}
 
   .row_update-text {
     overflow: hidden;
@@ -512,6 +516,16 @@ class FilesRowContent extends React.PureComponent {
                     color="#A3A9AE"
                   />
                 )}
+                {(fileStatus === 32 && !isTrashFolder) && 
+                  <Icons.FavoriteIcon
+                    className='favorite'
+                    size='small'
+                    data-action='remove'
+                    data-id={item.id}
+                    data-title={item.title}
+                    onClick={this.props.onClickFavorite}
+                   />
+                }
                 {fileStatus === 1 && (
                   <Icons.FileActionsConvertEditDocIcon
                     className="badge"

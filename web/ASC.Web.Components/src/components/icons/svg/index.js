@@ -190,6 +190,10 @@ import OrigFlipVertical from "./flip.vertical.react.svg";
 import OrigRotateLeft from "./rotate.left.react.svg";
 import OrigRotateRight from "./rotate.right.react.svg";
 
+import OrigFavorites from "./favorites.react.svg";
+import OrigCatalogFavoritesIcon from "./catalog.favorites.react.svg";
+import OrigFavoriteIcon from "./favorite.react.svg";
+
 export const AZSortingIcon = createStyledIcon(
   OrigAZSortingIcon,
   "AZSortingIcon"
@@ -744,4 +748,16 @@ export const RotateLeftIcon = createStyledIcon(
 export const RotateRightIcon = createStyledIcon(
   OrigRotateRight,
   "RotateRightIcon"
+);
+export const FavoritesIcon = createStyledIcon(
+  OrigFavorites,
+  "FavoritesIcon"
+);
+export const CatalogFavoritesIcon = createStyledIcon(
+  OrigCatalogFavoritesIcon,
+  "CatalogFavoritesIcon"
+);
+export const FavoriteIcon = createStyledIcon(
+  OrigFavoriteIcon,
+  "FavoriteIcon"
 );

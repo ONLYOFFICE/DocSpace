@@ -48,7 +48,9 @@ export function getFoldersTree() {
     "@my",
     "@share",
     "@common",
-    /*'@projects',*/ "@trash",
+    /*'@projects',*/
+    "@favorites",
+    "@trash",
   ]; //TODO: need get from settings
   const requestsArray = rootFoldersPaths.map((path) =>
     request({ method: "get", url: `/files/${path}?filterType=2` })
@@ -98,6 +100,15 @@ export function getCommonFolderList(filter = FilesFilter.getDefault()) {
   const options = {
     method: "get",
     url: `/files/@common`,
+  };
+
+  return request(options);
+}
+
+export function getFavoritesFolderList(filter = FilesFilter.getDefault()) {
+  const options = {
+    method: "get",
+    url: `/files/@favorites`
   };
 
   return request(options);
@@ -462,7 +473,31 @@ export function thirdParty(val) {
 }
 
 export function getSettingsFiles() {
-  return request({ method: "get", url: `/files/settings` });
+  return request({ method: "get", url: `/files/settings` }); 
+}
+
+export function markAsFavorite(ids) {
+  let items = ids.map(id => +id)
+  const data = { fileIds: items };
+  const options = {
+    method: "post",
+    url: "/files/favorites",
+    data
+  };
+
+  return request(options);
+}
+
+export function removeFromFavorite(ids) {
+  let items = ids.map(id => +id)
+  const data = { fileIds: items };
+  const options = {
+    method: "delete",
+    url: "/files/favorites",
+    data
+  };
+
+  return request(options);
 }
 
 export function getDocServiceUrl() {
