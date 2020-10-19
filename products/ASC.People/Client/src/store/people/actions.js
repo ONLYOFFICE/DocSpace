@@ -30,7 +30,7 @@ export const SET_IS_VISIBLE_DATA_LOSS_DIALOG =
   "SET_IS_VISIBLE_DATA_LOSS_DIALOG";
 export const SET_IS_EDITING_FORM = "SET_IS_EDITING_FORM";
 export const SET_IS_LOADING = "SET_IS_LOADING";
-export const TOGGLE_AVATAR_EDITOR = "TOGGLE_AVATAR_EDITOR"
+export const TOGGLE_AVATAR_EDITOR = "TOGGLE_AVATAR_EDITOR";
 export function setIsLoading(isLoading) {
   return {
     type: SET_IS_LOADING,
@@ -102,7 +102,7 @@ export function deselectUser(user) {
 export function toggleAvatarEditor(avatarEditorIsOpen) {
   return {
     type: TOGGLE_AVATAR_EDITOR,
-    avatarEditorIsOpen
+    avatarEditorIsOpen,
   };
 }
 

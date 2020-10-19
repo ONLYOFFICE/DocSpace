@@ -4,7 +4,7 @@ import {
   RowContent,
   RowContainer,
   Text,
-  LinkWithDropdown
+  LinkWithDropdown,
 } from "asc-web-components";
 
 const DownloadContent = (props) => {
@@ -19,46 +19,80 @@ const DownloadContent = (props) => {
     getItemIcon,
     titleFormat,
     getTitleLabel,
-    type
+    type,
   } = props;
 
-  const getFormats = item => {
-
+  const getFormats = (item) => {
     const documentFormats = [
       {
         key: "key1",
         label: t("OriginalFormat"),
-        onClick: onSelectFormat.bind(this, formatKeys.OriginalFormat, item, "document"),
+        onClick: onSelectFormat.bind(
+          this,
+          formatKeys.OriginalFormat,
+          item,
+          "document"
+        ),
       },
       {
         key: "key2",
         label: ".txt",
-        onClick: onSelectFormat.bind(this, formatKeys.TxtFormat, item, "document"),
+        onClick: onSelectFormat.bind(
+          this,
+          formatKeys.TxtFormat,
+          item,
+          "document"
+        ),
       },
       {
         key: "key3",
         label: ".docx",
-        onClick: onSelectFormat.bind(this, formatKeys.DocxFormat, item, "document"),
+        onClick: onSelectFormat.bind(
+          this,
+          formatKeys.DocxFormat,
+          item,
+          "document"
+        ),
       },
       {
         key: "key4",
         label: ".odt",
-        onClick: onSelectFormat.bind(this, formatKeys.OdtFormat, item, "document"),
+        onClick: onSelectFormat.bind(
+          this,
+          formatKeys.OdtFormat,
+          item,
+          "document"
+        ),
       },
       {
         key: "key5",
         label: ".pdf",
-        onClick: onSelectFormat.bind(this, formatKeys.PdfFormat, item, "document"),
+        onClick: onSelectFormat.bind(
+          this,
+          formatKeys.PdfFormat,
+          item,
+          "document"
+        ),
       },
       {
         key: "key6",
         label: ".rtf",
-        onClick: onSelectFormat.bind(this, formatKeys.RtfFormat, item, "document"),
+        onClick: onSelectFormat.bind(
+          this,
+          formatKeys.RtfFormat,
+          item,
+          "document"
+        ),
       },
       {
         key: "key7",
         label: t("CustomFormat"),
-        onClick: onSelectFormat.bind(this, formatKeys.CustomFormat, item, "document"),
+        onClick: onSelectFormat.bind(
+          this,
+          formatKeys.CustomFormat,
+          item,
+          "document"
+        ),
       },
     ];
 
@@ -66,27 +100,52 @@ const DownloadContent = (props) => {
       {
         key: "key1",
         label: t("OriginalFormat"),
-        onClick: onSelectFormat.bind(this, formatKeys.OriginalFormat, item, "presentation"),
+        onClick: onSelectFormat.bind(
+          this,
+          formatKeys.OriginalFormat,
+          item,
+          "presentation"
+        ),
       },
       {
         key: "key2",
         label: ".odp",
-        onClick: onSelectFormat.bind(this, formatKeys.OdpFormat, item, "presentation"),
+        onClick: onSelectFormat.bind(
+          this,
+          formatKeys.OdpFormat,
+          item,
+          "presentation"
+        ),
       },
       {
         key: "key3",
         label: ".pdf",
-        onClick: onSelectFormat.bind(this, formatKeys.PdfFormat, item, "presentation"),
+        onClick: onSelectFormat.bind(
+          this,
+          formatKeys.PdfFormat,
+          item,
+          "presentation"
+        ),
       },
       {
         key: "key4",
         label: ".pptx",
-        onClick: onSelectFormat.bind(this, formatKeys.PptxFormat, item, "presentation"),
+        onClick: onSelectFormat.bind(
+          this,
+          formatKeys.PptxFormat,
+          item,
+          "presentation"
+        ),
       },
       {
         key: "key5",
         label: t("CustomFormat"),
-        onClick: onSelectFormat.bind(this, formatKeys.CustomFormat, item, "presentation"),
+        onClick: onSelectFormat.bind(
+          this,
+          formatKeys.CustomFormat,
+          item,
+          "presentation"
+        ),
       },
     ];
 
@@ -94,49 +153,82 @@ const DownloadContent = (props) => {
       {
         key: "key1",
         label: t("OriginalFormat"),
-        onClick: onSelectFormat.bind(this, formatKeys.OriginalFormat, item, "spreadsheet"),
+        onClick: onSelectFormat.bind(
+          this,
+          formatKeys.OriginalFormat,
+          item,
+          "spreadsheet"
+        ),
       },
       {
         key: "key2",
         label: ".odp",
-        onClick: onSelectFormat.bind(this, formatKeys.OdsFormat, item, "spreadsheet"),
+        onClick: onSelectFormat.bind(
+          this,
+          formatKeys.OdsFormat,
+          item,
+          "spreadsheet"
+        ),
       },
       {
         key: "key3",
         label: ".pdf",
-        onClick: onSelectFormat.bind(this, formatKeys.PdfFormat, item, "spreadsheet"),
+        onClick: onSelectFormat.bind(
+          this,
+          formatKeys.PdfFormat,
+          item,
+          "spreadsheet"
+        ),
       },
       {
         key: "key4",
         label: ".xlsx",
-        onClick: onSelectFormat.bind(this, formatKeys.XlsxFormat, item, "spreadsheet"),
+        onClick: onSelectFormat.bind(
+          this,
+          formatKeys.XlsxFormat,
+          item,
+          "spreadsheet"
+        ),
       },
       {
         key: "key5",
         label: t("CustomFormat"),
-        onClick: onSelectFormat.bind(this, formatKeys.CustomFormat, item, "spreadsheet"),
+        onClick: onSelectFormat.bind(
+          this,
+          formatKeys.CustomFormat,
+          item,
+          "spreadsheet"
+        ),
       },
     ];
 
-    switch(type) {
-      case "document": return documentFormats;
-      case "spreadsheet": return spreadsheetFormats;
-      case "presentation": return presentationFormats;
-      default: return [];
+    switch (type) {
+      case "document":
+        return documentFormats;
+      case "spreadsheet":
+        return spreadsheetFormats;
+      case "presentation":
+        return presentationFormats;
+      default:
+        return [];
     }
-  }
+  };
 
   const getTitle = () => {
-    switch(type) {
-      case "document": return t("Documents");
-      case "spreadsheet": return t("Spreadsheets");
-      case "presentation": return t("Presentations");
-      default: return "";
+    switch (type) {
+      case "document":
+        return t("Documents");
+      case "spreadsheet":
+        return t("Spreadsheets");
+      case "presentation":
+        return t("Presentations");
+      default:
+        return "";
     }
-  }
+  };
 
   const title = getTitle();
-  
+
   const length = items.length;
   const minHeight = length > 2 ? 110 : length * 50;
   const showTitle = length > 1;
@@ -157,7 +249,9 @@ const DownloadContent = (props) => {
               {title}
             </Text>
             <></>
-            <Text fontSize="12px" containerWidth="auto">{t("ConvertInto")}</Text>
+            <Text fontSize="12px" containerWidth="auto">
+              {t("ConvertInto")}
+            </Text>
             <LinkWithDropdown
               containerWidth="auto"
               data={formats}
@@ -182,7 +276,9 @@ const DownloadContent = (props) => {
           let dropdownItems = getFormats(file);
           const format = getTitleLabel(file.format);
           dropdownItems = dropdownItems.slice(1, -1);
-          dropdownItems = dropdownItems.filter(x => x.label !== file.fileExst);
+          dropdownItems = dropdownItems.filter(
+            (x) => x.label !== file.fileExst
+          );
           return (
             <Row
               key={file.id}

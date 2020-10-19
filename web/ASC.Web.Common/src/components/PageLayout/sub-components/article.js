@@ -17,7 +17,7 @@ const StyledArticle = styled.article`
 
   @media ${tablet} {
     padding: 0 16px;
-    ${props =>
+    ${(props) =>
       props.visible
         ? props.pinned
           ? `

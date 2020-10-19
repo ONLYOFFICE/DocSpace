@@ -7,11 +7,11 @@ const newInstance = i18n.createInstance();
 
 const resources = {
   en: {
-    translation: en
+    translation: en,
   },
   ru: {
-    translation: ru
-  }
+    translation: ru,
+  },
 };
 
 newInstance.init({ ...i18nBaseSettings, resources });

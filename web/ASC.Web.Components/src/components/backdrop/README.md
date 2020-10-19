@@ -9,10 +9,7 @@ import { Backdrop } from "asc-web-components";
 ```
 
 ```jsx
-<Backdrop 
-  visible={true} 
-  zIndex={1} 
-/>
+<Backdrop visible={true} zIndex={1} />
 ```
 
 ### Properties

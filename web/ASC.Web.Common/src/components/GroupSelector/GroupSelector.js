@@ -18,8 +18,8 @@ class GroupSelector extends React.Component {
     changeLanguage(i18n);
 
     getGroupList(this.props.useFake)
-      .then(groups => this.setState({ groups: this.convertGroups(groups) }))
-      .catch(error => console.log(error));
+      .then((groups) => this.setState({ groups: this.convertGroups(groups) }))
+      .catch((error) => console.log(error));
   }
 
   componentDidUpdate(prevProps) {
@@ -27,13 +27,13 @@ class GroupSelector extends React.Component {
       this.setState({ isOpen: this.props.isOpen });
   }
 
-  convertGroups = groups => {
+  convertGroups = (groups) => {
     return groups
-      ? groups.map(g => {
+      ? groups.map((g) => {
           return {
             key: g.id,
             label: g.name,
-            total: 0
+            total: 0,
           };
         })
       : [];
@@ -46,16 +46,16 @@ class GroupSelector extends React.Component {
 
     this.setState({ isNextPageLoading: true }, () => {
       getGroupList(this.props.useFake)
-        .then(groups => {
+        .then((groups) => {
           const newOptions = this.convertGroups(groups);
 
           this.setState({
             hasNextPage: false,
             isNextPageLoading: false,
-            options: newOptions
+            options: newOptions,
           });
         })
-        .catch(error => console.log(error));
+        .catch((error) => console.log(error));
     });
   };
 
@@ -64,11 +64,11 @@ class GroupSelector extends React.Component {
       isOpen: isOpen,
       groups,
       hasNextPage: true,
-      isNextPageLoading: false
+      isNextPageLoading: false,
     };
   };
 
-  onSearchChanged = value => {
+  onSearchChanged = (value) => {
     //action("onSearchChanged")(value);
     console.log("Search group", value);
     this.setState({ options: [], hasNextPage: true });
@@ -80,7 +80,7 @@ class GroupSelector extends React.Component {
       groups,
       selectedOptions,
       hasNextPage,
-      isNextPageLoading
+      isNextPageLoading,
     } = this.state;
 
     const {
@@ -95,7 +95,7 @@ class GroupSelector extends React.Component {
       searchPlaceHolderLabel,
       displayType,
       withoutAside,
-      embeddedComponent
+      embeddedComponent,
     } = this.props;
 
     return (
@@ -146,18 +146,18 @@ GroupSelector.propTypes = {
   useFake: PropTypes.bool,
   displayType: PropTypes.oneOf(["auto", "aside", "dropdown"]),
   withoutAside: PropTypes.bool,
-  embeddedComponent: PropTypes.any
+  embeddedComponent: PropTypes.any,
 };
 
 GroupSelector.defaultProps = {
   useFake: false,
   displayType: "auto",
-  withoutAside: false
+  withoutAside: false,
 };
 
 const ExtendedGroupSelector = withTranslation()(GroupSelector);
 
-const GroupSelectorWithI18n = props => {
+const GroupSelectorWithI18n = (props) => {
   useEffect(() => {
     changeLanguage(i18n);
   }, []);

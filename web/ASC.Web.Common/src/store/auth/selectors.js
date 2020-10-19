@@ -15,17 +15,17 @@ const toModuleWrapper = (item, iconName) => {
     iconUrl: item.iconUrl,
     notifications: 0,
     url: item.link,
-    onClick: e => {
+    onClick: (e) => {
       if (e) {
         window.open(item.link, "_self");
         e.preventDefault();
       }
     },
-    onBadgeClick: e => console.log(iconName + " Badge Clicked", e)
+    onBadgeClick: (e) => console.log(iconName + " Badge Clicked", e),
   };
 };
 
-const getCustomModules = isAdmin => {
+const getCustomModules = (isAdmin) => {
   if (!isAdmin) {
     return [];
   } // Temporarily hiding the settings module
@@ -43,30 +43,32 @@ const getCustomModules = isAdmin => {
       return [separator, settingsModuleWrapper];*/ return [];
 };
 
-export const getCurrentUser = state => state.auth.user;
+export const getCurrentUser = (state) => state.auth.user;
 
-export const getCurrentUserId = state => state.auth.user;
+export const getCurrentUserId = (state) => state.auth.user;
 
-export const getModules = state => state.auth.modules;
+export const getModules = (state) => state.auth.modules;
 
-export const getSettings = state => state.auth.settings;
+export const getSettings = (state) => state.auth.settings;
 
-export const getSettingsHomepage = state => state.auth.settings.homepage;
+export const getSettingsHomepage = (state) => state.auth.settings.homepage;
 
-export const getSettingsCustomNames = state => state.auth.settings.customNames;
+export const getSettingsCustomNames = (state) =>
+  state.auth.settings.customNames;
 
-export const getSettingsCustomNamesGroupsCaption = state => state.auth.settings.customNames.groupsCaption;
+export const getSettingsCustomNamesGroupsCaption = (state) =>
+  state.auth.settings.customNames.groupsCaption;
 
-export const getIsLoaded = state => state.auth.isLoaded;
+export const getIsLoaded = (state) => state.auth.isLoaded;
 
 export const getDefaultPage = createSelector(
   [getSettings],
-  settings => (settings && settings.defaultPage) || ""
+  (settings) => (settings && settings.defaultPage) || ""
 );
 
 export const getCurrentProductId = createSelector(
   [getSettings],
-  settings => (settings && settings.currentProductId) || ""
+  (settings) => (settings && settings.currentProductId) || ""
 );
 
 export const getLanguage = createSelector(
@@ -78,7 +80,7 @@ export const getLanguage = createSelector(
   }
 );
 
-export const isVisitor = createSelector([getCurrentUser], currentUser => {
+export const isVisitor = createSelector([getCurrentUser], (currentUser) => {
   return (currentUser && currentUser.isVisitor) || false;
 });
 
@@ -118,23 +120,23 @@ export const getAvailableModules = createSelector(
 
     const isUserAdmin = user.isAdmin;
     const customModules = getCustomModules(isUserAdmin);
-    const products = modules.map(m => toModuleWrapper(m));
+    const products = modules.map((m) => toModuleWrapper(m));
 
     return [
       {
         separator: true,
-        id: "nav-products-separator"
+        id: "nav-products-separator",
       },
       ...products,
-      ...customModules
+      ...customModules,
     ];
   }
 );
 
 export const getIsolateModules = createSelector(
   [getAvailableModules],
-  availableModules => {
-    const isolateModules = availableModules.filter(item => item.isolateMode);
+  (availableModules) => {
+    const isolateModules = availableModules.filter((item) => item.isolateMode);
 
     return isolateModules;
   }
@@ -142,8 +144,8 @@ export const getIsolateModules = createSelector(
 
 export const getMainModules = createSelector(
   [getAvailableModules],
-  availableModules => {
-    const mainModules = availableModules.filter(item => !item.isolateMode);
+  (availableModules) => {
+    const mainModules = availableModules.filter((item) => !item.isolateMode);
 
     return mainModules;
   }
@@ -154,7 +156,7 @@ export const getCurrentProduct = createSelector(
   (availableModules, currentProductId) => {
     if (!currentProductId) return null;
 
-    const list = availableModules.filter(item => item.id == currentProductId);
+    const list = availableModules.filter((item) => item.id == currentProductId);
 
     return list && list.length > 0 ? list[0] : null;
   }
@@ -162,18 +164,18 @@ export const getCurrentProduct = createSelector(
 
 export const getCurrentProductName = createSelector(
   [getCurrentProduct],
-  currentProduct => {
+  (currentProduct) => {
     return (currentProduct && currentProduct.title) || "";
   }
 );
 
 export const getTotalNotificationsCount = createSelector(
   [getMainModules],
-  mainModules => {
+  (mainModules) => {
     let totalNotifications = 0;
     mainModules
-      .filter(item => !item.separator)
-      .forEach(item => (totalNotifications += item.notifications || 0));
+      .filter((item) => !item.separator)
+      .forEach((item) => (totalNotifications += item.notifications || 0));
 
     return totalNotifications;
   }

@@ -1,60 +1,48 @@
-import React from 'react';
-import { mount } from 'enzyme';
-import Loader from '.';
+import React from "react";
+import { mount } from "enzyme";
+import Loader from ".";
 
 const baseProps = {
-  type:"base",
+  type: "base",
   color: "black",
-  size: '18px',
-  label: "Loading"
+  size: "18px",
+  label: "Loading",
 };
 
-describe('<Loader />', () => {
-  it('renders without error', () => {
-    const wrapper = mount(
-      <Loader {...baseProps} />
-    );
+describe("<Loader />", () => {
+  it("renders without error", () => {
+    const wrapper = mount(<Loader {...baseProps} />);
 
     expect(wrapper).toExist();
   });
 
-  it('dual-ring type', () => {
-    const wrapper = mount(
-      <Loader {...baseProps} type="dual-ring" />
-    );
+  it("dual-ring type", () => {
+    const wrapper = mount(<Loader {...baseProps} type="dual-ring" />);
 
-    expect(wrapper.prop('type')).toEqual('dual-ring');
+    expect(wrapper.prop("type")).toEqual("dual-ring");
   });
 
-  it('rombs type', () => {
-    const wrapper = mount(
-      <Loader {...baseProps} type="rombs" />
-    );
+  it("rombs type", () => {
+    const wrapper = mount(<Loader {...baseProps} type="rombs" />);
 
-    expect(wrapper.prop('type')).toEqual('rombs');
+    expect(wrapper.prop("type")).toEqual("rombs");
   });
 
-  it('accepts id', () => {
-    const wrapper = mount(
-      <Loader {...baseProps} id="testId" />
-    );
+  it("accepts id", () => {
+    const wrapper = mount(<Loader {...baseProps} id="testId" />);
 
-    expect(wrapper.prop('id')).toEqual('testId');
+    expect(wrapper.prop("id")).toEqual("testId");
   });
 
-  it('accepts className', () => {
-    const wrapper = mount(
-      <Loader {...baseProps} className="test" />
-    );
+  it("accepts className", () => {
+    const wrapper = mount(<Loader {...baseProps} className="test" />);
 
-    expect(wrapper.prop('className')).toEqual('test');
+    expect(wrapper.prop("className")).toEqual("test");
   });
 
-  it('accepts style', () => {
-    const wrapper = mount(
-      <Loader {...baseProps} style={{ color: 'red' }} />
-    );
+  it("accepts style", () => {
+    const wrapper = mount(<Loader {...baseProps} style={{ color: "red" }} />);
 
-    expect(wrapper.getDOMNode().style).toHaveProperty('color', 'red');
+    expect(wrapper.getDOMNode().style).toHaveProperty("color", "red");
   });
 });

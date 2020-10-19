@@ -18,26 +18,26 @@ class PeopleSelector extends React.Component {
       groups: [],
       page: 0,
       hasNextPage: true,
-      isNextPageLoading: false
+      isNextPageLoading: false,
     };
   }
 
   componentDidMount() {
     const { groupsCaption } = this.props;
-    changeLanguage(i18n).then(t =>
+    changeLanguage(i18n).then((t) =>
       getGroupList(this.props.useFake)
-        .then(groups =>
+        .then((groups) =>
           this.setState({
             groups: [
               {
                 key: "all",
                 label: t("CustomAllGroups", { groupsCaption }),
-                total: 0
-              }
-            ].concat(this.convertGroups(groups))
+                total: 0,
+              },
+            ].concat(this.convertGroups(groups)),
           })
         )
-        .catch(error => console.log(error))
+        .catch((error) => console.log(error))
     );
   }
 
@@ -47,30 +47,30 @@ class PeopleSelector extends React.Component {
     }
   }
 
-  convertGroups = groups => {
+  convertGroups = (groups) => {
     return groups
-      ? groups.map(g => {
+      ? groups.map((g) => {
           return {
             key: g.id,
             label: g.name,
-            total: 0
+            total: 0,
           };
         })
       : [];
   };
 
-  convertUser = u => {
+  convertUser = (u) => {
     return {
       key: u.id,
-      groups: u.groups && u.groups.length ? u.groups.map(g => g.id) : [],
+      groups: u.groups && u.groups.length ? u.groups.map((g) => g.id) : [],
       label: u.displayName,
       email: u.email,
       position: u.title,
-      avatarUrl: u.avatar
+      avatarUrl: u.avatar,
     };
   };
 
-  convertUsers = users => {
+  convertUsers = (users) => {
     return users ? users.map(this.convertUser) : [];
   };
 
@@ -101,7 +101,7 @@ class PeopleSelector extends React.Component {
       const { defaultOption, defaultOptionLabel } = this.props;
 
       getUserList(filter, useFake)
-        .then(response => {
+        .then((response) => {
           let newOptions = startIndex ? [...this.state.options] : [];
 
           if (defaultOption) {
@@ -109,19 +109,19 @@ class PeopleSelector extends React.Component {
               !currentGroup ||
               currentGroup === "all" ||
               (defaultOption.groups &&
-                defaultOption.groups.filter(g => g.id === currentGroup).length >
-                  0);
+                defaultOption.groups.filter((g) => g.id === currentGroup)
+                  .length > 0);
 
             if (searchValue) {
               const exists = response.items.find(
-                item => item.id === defaultOption.id
+                (item) => item.id === defaultOption.id
               );
 
               if (exists && inGroup) {
                 newOptions.push(
                   this.convertUser({
                     ...defaultOption,
-                    displayName: defaultOptionLabel
+                    displayName: defaultOptionLabel,
                   })
                 );
               }
@@ -129,14 +129,14 @@ class PeopleSelector extends React.Component {
               newOptions.push(
                 this.convertUser({
                   ...defaultOption,
-                  displayName: defaultOptionLabel
+                  displayName: defaultOptionLabel,
                 })
               );
             }
 
             newOptions = newOptions.concat(
               this.convertUsers(
-                response.items.filter(item => item.id !== defaultOption.id)
+                response.items.filter((item) => item.id !== defaultOption.id)
               )
             );
           } else {
@@ -146,14 +146,14 @@ class PeopleSelector extends React.Component {
           this.setState({
             hasNextPage: newOptions.length < response.total,
             isNextPageLoading: false,
-            options: newOptions
+            options: newOptions,
           });
         })
-        .catch(error => console.log(error));
+        .catch((error) => console.log(error));
     });
   };
 
-  getOptionTooltipContent = index => {
+  getOptionTooltipContent = (index) => {
     if (!index) return null;
 
     const { options } = this.state;
@@ -197,7 +197,7 @@ class PeopleSelector extends React.Component {
       groups,
       selectedGroups,
       hasNextPage,
-      isNextPageLoading
+      isNextPageLoading,
     } = this.state;
 
     const {
@@ -216,7 +216,7 @@ class PeopleSelector extends React.Component {
       displayType,
       withoutAside,
       embeddedComponent,
-      selectedOptions
+      selectedOptions,
     } = this.props;
 
     return (
@@ -277,7 +277,7 @@ PeopleSelector.propTypes = {
   role: PropTypes.oneOf(["admin", "user", "guest"]),
   displayType: PropTypes.oneOf(["auto", "aside", "dropdown"]),
   withoutAside: PropTypes.bool,
-  embeddedComponent: PropTypes.any
+  embeddedComponent: PropTypes.any,
 };
 
 PeopleSelector.defaultProps = {
@@ -289,12 +289,12 @@ PeopleSelector.defaultProps = {
   defaultOptionLabel: "Me",
   groupsCaption: "Groups",
   displayType: "auto",
-  withoutAside: false
+  withoutAside: false,
 };
 
 const ExtendedPeopleSelector = withTranslation()(PeopleSelector);
 
-const PeopleSelectorWithI18n = props => {
+const PeopleSelectorWithI18n = (props) => {
   useEffect(() => {
     changeLanguage(i18n);
   }, []);
@@ -303,7 +303,7 @@ const PeopleSelectorWithI18n = props => {
 };
 
 PeopleSelectorWithI18n.propTypes = {
-  language: PropTypes.string
+  language: PropTypes.string,
 };
 
 export default PeopleSelectorWithI18n;

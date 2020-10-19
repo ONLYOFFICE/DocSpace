@@ -2,7 +2,7 @@ export const size = {
   mobile: 375,
   smallTablet: 600,
   tablet: 1024,
-  desktop: 1025
+  desktop: 1025,
 };
 
 export const mobile = `(max-width: ${size.mobile}px)`;

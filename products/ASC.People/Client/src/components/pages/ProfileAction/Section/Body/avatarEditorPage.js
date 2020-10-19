@@ -11,9 +11,7 @@ import {
   getUserPhoto,
   setAvatarMax,
 } from "../../../../../store/profile/actions";
-import {
-  toEmployeeWrapper,
-} from "../../../../../store/people/selectors";
+import { toEmployeeWrapper } from "../../../../../store/people/selectors";
 import { toggleAvatarEditor } from "../../../../../store/people/actions";
 import { setDocumentTitle } from "../../../../../helpers/utils";
 import { isMobile } from "react-device-detect";
@@ -93,7 +91,7 @@ class AvatarEditorPage extends React.PureComponent {
         }
       }
     });
-  }
+  };
 
   mapPropsToState = (props) => {
     var profile = toEmployeeWrapper(props.profile);
@@ -139,7 +137,7 @@ class AvatarEditorPage extends React.PureComponent {
         [dialogsDataset.changeEmail]: false,
         currentDialog: "",
       },
-      isMobile: isMobile || isTablet,    
+      isMobile: isMobile || isTablet,
     };
 
     //Set unique contacts id
@@ -157,26 +155,22 @@ class AvatarEditorPage extends React.PureComponent {
     const { profile, toggleAvatarEditor, setAvatarMax } = this.props;
     if (isUpdate) {
       createThumbnailsAvatar(profile.id, {
-        x: Math.round(
-          result.x * avatar.defaultWidth - result.width / 2
-        ),
-        y: Math.round(
-          result.y * avatar.defaultHeight - result.height / 2
-        ),
+        x: Math.round(result.x * avatar.defaultWidth - result.width / 2),
+        y: Math.round(result.y * avatar.defaultHeight - result.height / 2),
         width: result.width,
         height: result.height,
         tmpFile: avatar.tmpFile,
       })
         .then((response) => {
-          const avatarMax = response.max +
-          "?_=" +
-          Math.floor(Math.random() * Math.floor(10000));
+          const avatarMax =
+            response.max +
+            "?_=" +
+            Math.floor(Math.random() * Math.floor(10000));
 
           let stateCopy = Object.assign({}, this.state);
           setAvatarMax(avatarMax);
           toastr.success(this.props.t("ChangesSavedSuccessfully"));
           this.setState(stateCopy);
-
         })
         .catch((error) => {
           toastr.error(error);
@@ -192,11 +186,11 @@ class AvatarEditorPage extends React.PureComponent {
           this.props.fetchProfile(profile.id);
         })
         .then(() => {
-          toggleAvatarEditor(false)
+          toggleAvatarEditor(false);
         });
-      } else {
+    } else {
       deleteAvatar(profile.id)
-        .then((response) => {          
+        .then((response) => {
           let stateCopy = Object.assign({}, this.state);
           setAvatarMax(response.big);
           toastr.success(this.props.t("ChangesSavedSuccessfully"));
@@ -208,8 +202,8 @@ class AvatarEditorPage extends React.PureComponent {
           this.setState(this.mapPropsToState(this.props));
         })
         .then(() => this.props.fetchProfile(profile.id))
-        .then(() => toggleAvatarEditor(false));    
-      }
+        .then(() => toggleAvatarEditor(false));
+    }
   };
 
   onLoadFileAvatar = (file, fileData) => {
@@ -217,19 +211,18 @@ class AvatarEditorPage extends React.PureComponent {
 
     let data = new FormData();
     let _this = this;
- 
-    if(!file) {
-      _this.onSaveAvatar(false)
+
+    if (!file) {
+      _this.onSaveAvatar(false);
       return;
     }
-    
+
     data.append("file", file);
     data.append("Autosave", false);
     loadAvatar(profile.id, data)
       .then((response) => {
         var img = new Image();
         img.onload = function () {
-          
           _this.setState({ isLoading: false });
           if (fileData) {
             fileData.avatar = {
@@ -237,11 +230,15 @@ class AvatarEditorPage extends React.PureComponent {
               image: response.data,
               defaultWidth: img.width,
               defaultHeight: img.height,
-            }
-            if(!fileData.existImage) {
-              _this.onSaveAvatar(fileData.existImage)  // saving empty avatar
-            } else{
-              _this.onSaveAvatar(fileData.existImage, fileData.position, fileData.avatar)
+            };
+            if (!fileData.existImage) {
+              _this.onSaveAvatar(fileData.existImage); // saving empty avatar
+            } else {
+              _this.onSaveAvatar(
+                fileData.existImage,
+                fileData.position,
+                fileData.avatar
+              );
             }
           }
         };

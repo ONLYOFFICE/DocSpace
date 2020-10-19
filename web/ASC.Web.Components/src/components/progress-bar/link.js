@@ -18,7 +18,7 @@ const StyledLink = styled.a`
   padding-right: 20px;
   position: relative;
   display: inline-grid;
-  color: ${props => props.color};
+  color: ${(props) => props.color};
   text-decoration: underline dashed;
 
   .progress-bar_icon {
@@ -32,11 +32,11 @@ const StyledLink = styled.a`
     margin: auto;
 
     path {
-      fill: ${props => props.color};
-      stroke: ${props => props.color};
+      fill: ${(props) => props.color};
+      stroke: ${(props) => props.color};
     }
 
-    ${props =>
+    ${(props) =>
       props.isOpen &&
       css`
         bottom: -1px;
@@ -47,7 +47,7 @@ const StyledLink = styled.a`
 
 class Link extends React.Component {
   render() {
-    const { color, children, isOpen, showIcon,  ...rest } = this.props;
+    const { color, children, isOpen, showIcon, ...rest } = this.props;
 
     //console.log("ProgressBar link render");
     return (
@@ -65,7 +65,7 @@ Link.propTypes = {
   children: PropTypes.any,
   color: PropTypes.string,
   isOpen: PropTypes.bool,
-  showIcon: PropTypes.bool
+  showIcon: PropTypes.bool,
 };
 
 Link.displayName = "Link";

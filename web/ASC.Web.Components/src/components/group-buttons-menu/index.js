@@ -16,10 +16,10 @@ const StyledGroupButtonsMenu = styled.div`
   height: 57px;
   list-style: none;
   padding: 0 18px 19px 0;
-  width: ${props =>
+  width: ${(props) =>
     props.containerWidth ? props.containerWidth + "px" : "100%"};
   white-space: nowrap;
-  display: ${props => (props.visible ? "block" : "none")};
+  display: ${(props) => (props.visible ? "block" : "none")};
   z-index: 189;
 `;
 
@@ -74,18 +74,18 @@ class GroupButtonsMenu extends React.Component {
     this.state = {
       priorityItems: props.menuItems,
       moreItems: [],
-      visible: props.visible
+      visible: props.visible,
     };
 
     this.throttledResize = throttle(this.updateMenu, 300);
   }
 
-  closeMenu = e => {
+  closeMenu = (e) => {
     this.setState({ visible: false });
     this.props.onClose && this.props.onClose(e);
   };
 
-  groupButtonClick = e => {
+  groupButtonClick = (e) => {
     const { priorityItems } = this.state;
     const index = e.currentTarget.dataset.index;
     const item = priorityItems[index];
@@ -95,7 +95,7 @@ class GroupButtonsMenu extends React.Component {
     item.onClick && item.onClick(e);
   };
 
-  groupMoreMenuButtonClick = e => {
+  groupMoreMenuButtonClick = (e) => {
     const { moreItems } = this.state;
     const index = e.currentTarget.dataset.index;
     const item = moreItems[index];
@@ -111,7 +111,7 @@ class GroupButtonsMenu extends React.Component {
     const groupMenuItems = groupMenuElement ? groupMenuElement.children : [0];
     const groupMenuItemsArray = [...groupMenuItems];
 
-    this.widthsArray = groupMenuItemsArray.map(item => item.offsetWidth);
+    this.widthsArray = groupMenuItemsArray.map((item) => item.offsetWidth);
 
     window.addEventListener("resize", this.throttledResize);
     window.addEventListener("orientationchange", this.throttledResize);
@@ -177,7 +177,7 @@ class GroupButtonsMenu extends React.Component {
     this.setState({
       priorityItems: priorityItems,
       moreItems: moreItems,
-      width: groupMenuOuterWidth
+      width: groupMenuOuterWidth,
     });
   };
 
@@ -194,7 +194,7 @@ class GroupButtonsMenu extends React.Component {
       closeTitle,
       checked,
       isIndeterminate,
-      onChange
+      onChange,
     } = this.props;
     const { priorityItems, moreItems, visible, width } = this.state;
 
@@ -260,7 +260,7 @@ GroupButtonsMenu.propTypes = {
   selected: PropTypes.string,
   visible: PropTypes.bool,
   moreLabel: PropTypes.string,
-  closeTitle: PropTypes.string
+  closeTitle: PropTypes.string,
 };
 
 GroupButtonsMenu.defaultProps = {
@@ -268,7 +268,7 @@ GroupButtonsMenu.defaultProps = {
   selected: "Select",
   visible: true,
   moreLabel: "More",
-  closeTitle: "Close"
+  closeTitle: "Close",
 };
 
 export default GroupButtonsMenu;

@@ -5,19 +5,27 @@ import ModalDialogContainer from "../ModalDialogContainer";
 import { ModalDialog, Button, Text } from "asc-web-components";
 import { withTranslation } from "react-i18next";
 import { api, utils, toastr } from "asc-web-common";
-import { fetchFiles, setProgressBarData, clearProgressData } from "../../../store/files/actions";
-import { getSelectedFolderId, getFilter, getIsLoading } from "../../../store/files/selectors";
+import {
+  fetchFiles,
+  setProgressBarData,
+  clearProgressData,
+} from "../../../store/files/actions";
+import {
+  getSelectedFolderId,
+  getFilter,
+  getIsLoading,
+} from "../../../store/files/selectors";
 import { createI18N } from "../../../helpers/i18n";
 
 const i18n = createI18N({
   page: "EmptyTrashDialog",
-  localesPath: "dialogs/EmptyTrashDialog"
+  localesPath: "dialogs/EmptyTrashDialog",
 });
 
 const { files } = api;
 const { changeLanguage } = utils;
 
-const EmptyTrashDialogComponent = props => {
+const EmptyTrashDialogComponent = (props) => {
   const {
     onClose,
     visible,
@@ -27,7 +35,7 @@ const EmptyTrashDialogComponent = props => {
     setProgressBarData,
     isLoading,
     clearProgressData,
-    fetchFiles
+    fetchFiles,
   } = props;
 
   useEffect(() => {
@@ -35,16 +43,17 @@ const EmptyTrashDialogComponent = props => {
   }, []);
 
   const loopEmptyTrash = useCallback(
-    id => {
+    (id) => {
       const successMessage = "Success empty recycle bin";
-      api.files.getProgress()
-        .then(res => {
-          const currentProcess = res.find(x => x.id === id);
+      api.files
+        .getProgress()
+        .then((res) => {
+          const currentProcess = res.find((x) => x.id === id);
           if (currentProcess && currentProcess.progress !== 100) {
             const newProgressData = {
               visible: true,
               percent: currentProcess.progress,
-              label: t("DeleteOperation")
+              label: t("DeleteOperation"),
             };
             setProgressBarData(newProgressData);
             setTimeout(() => loopEmptyTrash(id), 1000);
@@ -54,40 +63,47 @@ const EmptyTrashDialogComponent = props => {
                 setProgressBarData({
                   visible: true,
                   percent: 100,
-                  label: t("DeleteOperation")
+                  label: t("DeleteOperation"),
                 });
                 setTimeout(() => clearProgressData(), 5000);
                 toastr.success(successMessage);
               })
-              .catch(err => {
+              .catch((err) => {
                 toastr.error(err);
                 clearProgressData();
               });
           }
         })
-        .catch(err => {
+        .catch((err) => {
           toastr.error(err);
           clearProgressData();
         });
     },
-    [t, currentFolderId, filter, setProgressBarData, clearProgressData, fetchFiles]
+    [
+      t,
+      currentFolderId,
+      filter,
+      setProgressBarData,
+      clearProgressData,
+      fetchFiles,
+    ]
   );
 
   const onEmptyTrash = useCallback(() => {
     const newProgressData = {
       visible: true,
       percent: 0,
-      label: t("DeleteOperation")
+      label: t("DeleteOperation"),
     };
     setProgressBarData(newProgressData);
     onClose();
     files
       .emptyTrash()
-      .then(res => {
+      .then((res) => {
         const id = res[0] && res[0].id ? res[0].id : null;
         loopEmptyTrash(id);
       })
-      .catch(err => {
+      .catch((err) => {
         toastr.error(err);
         clearProgressData();
       });
@@ -128,11 +144,11 @@ const ModalDialogContainerTranslated = withTranslation()(
   EmptyTrashDialogComponent
 );
 
-const EmptyTrashDialog = props => (
+const EmptyTrashDialog = (props) => (
   <ModalDialogContainerTranslated i18n={i18n} {...props} />
 );
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     currentFolderId: getSelectedFolderId(state),
     filter: getFilter(state),
@@ -140,6 +156,8 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps,
-  { setProgressBarData, clearProgressData, fetchFiles }
-)(withRouter(EmptyTrashDialog));
+export default connect(mapStateToProps, {
+  setProgressBarData,
+  clearProgressData,
+  fetchFiles,
+})(withRouter(EmptyTrashDialog));

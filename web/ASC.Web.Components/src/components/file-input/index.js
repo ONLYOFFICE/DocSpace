@@ -10,7 +10,7 @@ const StyledFileInput = styled.div`
   display: flex;
   position: relative;
   outline: none;
-  width: ${props =>
+  width: ${(props) =>
     (props.scale && "100%") ||
     (props.size === "base" && "173px") ||
     (props.size === "middle" && "300px") ||
@@ -19,14 +19,14 @@ const StyledFileInput = styled.div`
     (props.size === "large" && "550px")};
 
   .text-input {
-    border-color: ${props =>
+    border-color: ${(props) =>
       (props.hasError && "#c30") ||
       (props.hasWarning && "#f1ca92") ||
       (props.isDisabled && "#ECEEF1") ||
       "#D0D5DA"};
     text-overflow: ellipsis;
     padding-right: 40px;
-    padding-right: ${props =>
+    padding-right: ${(props) =>
       props.size === "large"
         ? "64px"
         : props.size === "huge"
@@ -36,12 +36,12 @@ const StyledFileInput = styled.div`
         : props.size === "middle"
         ? "48px"
         : "37px"};
-    cursor: ${props => (props.isDisabled ? "default" : "pointer")};
+    cursor: ${(props) => (props.isDisabled ? "default" : "pointer")};
   }
 
   :hover {
     .icon {
-      border-color: ${props =>
+      border-color: ${(props) =>
         (props.hasError && "#c30") ||
         (props.hasWarning && "#f1ca92") ||
         (props.isDisabled && "#ECEEF1") ||
@@ -51,7 +51,7 @@ const StyledFileInput = styled.div`
 
   :active {
     .icon {
-      border-color: ${props =>
+      border-color: ${(props) =>
         (props.hasError && "#c30") ||
         (props.hasWarning && "#f1ca92") ||
         (props.isDisabled && "#ECEEF1") ||
@@ -67,7 +67,7 @@ const StyledFileInput = styled.div`
     position: absolute;
     right: 0;
 
-    width: ${props =>
+    width: ${(props) =>
       props.size === "large"
         ? "48px"
         : props.size === "huge"
@@ -78,7 +78,7 @@ const StyledFileInput = styled.div`
         ? "36px"
         : "30px"};
 
-    height: ${props =>
+    height: ${(props) =>
       props.size === "large"
         ? "43px"
         : props.size === "huge"
@@ -93,16 +93,16 @@ const StyledFileInput = styled.div`
     border: 1px solid;
     border-radius: 0 3px 3px 0;
 
-    border-color: ${props =>
+    border-color: ${(props) =>
       (props.hasError && "#c30") ||
       (props.hasWarning && "#f1ca92") ||
       (props.isDisabled && "#ECEEF1") ||
       "#D0D5DA"};
-    cursor: ${props => (props.isDisabled ? "default" : "pointer")};
+    cursor: ${(props) => (props.isDisabled ? "default" : "pointer")};
   }
 
   .icon-button {
-    cursor: ${props => (props.isDisabled ? "default" : "pointer")};
+    cursor: ${(props) => (props.isDisabled ? "default" : "pointer")};
   }
 `;
 
@@ -114,7 +114,7 @@ class FileInput extends Component {
 
     this.state = {
       fileName: "",
-      file: null
+      file: null,
     };
   }
 
@@ -122,7 +122,7 @@ class FileInput extends Component {
     return !isEqual(this.props, nextProps) || !isEqual(this.state, nextState);
   }
 
-  onIconFileClick = e => {
+  onIconFileClick = (e) => {
     const { isDisabled } = this.props;
 
     if (isDisabled) {
@@ -132,9 +132,9 @@ class FileInput extends Component {
     this.inputRef.current.click();
   };
 
-  onChangeHandler = e => {
+  onChangeHandler = (e) => {
     this.setState({
-      fileName: e.target.value
+      fileName: e.target.value,
     });
   };
 
@@ -145,7 +145,7 @@ class FileInput extends Component {
       this.setState(
         {
           fileName: this.inputRef.current.files[0].name,
-          file: this.inputRef.current.files[0]
+          file: this.inputRef.current.files[0],
         },
         () => {
           if (onInput) {
@@ -248,7 +248,7 @@ FileInput.propTypes = {
   isDisabled: PropTypes.bool,
   name: PropTypes.string,
   onInput: PropTypes.func,
-  accept: PropTypes.string
+  accept: PropTypes.string,
 };
 
 FileInput.defaultProps = {
@@ -257,7 +257,7 @@ FileInput.defaultProps = {
   hasWarning: false,
   hasError: false,
   isDisabled: false,
-  accept: ""
+  accept: "",
 };
 
 export default FileInput;

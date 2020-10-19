@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { Backdrop, ProgressBar, utils } from "asc-web-components";
-import { store } from "asc-web-common";
+import store from "../../store";
 import { withTranslation } from "react-i18next";
 import i18n from "./i18n";
 import { ARTICLE_PINNED_KEY } from "../../constants";
@@ -78,7 +78,7 @@ class PageLayoutComponent extends React.Component {
     this.state = {
       isBackdropVisible: false,
       isArticleVisible: isArticleVisibleAndPinned,
-      isArticlePinned: isArticleVisibleAndPinned
+      isArticlePinned: isArticleVisibleAndPinned,
     };
   }
 
@@ -120,7 +120,7 @@ class PageLayoutComponent extends React.Component {
     this.setState({
       isBackdropVisible: false,
       isArticleVisible: false,
-      isArticlePinned: false
+      isArticlePinned: false,
     });
   };
 
@@ -128,7 +128,7 @@ class PageLayoutComponent extends React.Component {
     this.setState({
       isBackdropVisible: false,
       isArticlePinned: true,
-      isArticleVisible: true
+      isArticleVisible: true,
     });
 
     localStorage.setItem(ARTICLE_PINNED_KEY, true);
@@ -138,7 +138,7 @@ class PageLayoutComponent extends React.Component {
     this.setState({
       isBackdropVisible: true,
       isArticlePinned: false,
-      isArticleVisible: true
+      isArticleVisible: true,
     });
 
     localStorage.removeItem(ARTICLE_PINNED_KEY);
@@ -148,7 +148,7 @@ class PageLayoutComponent extends React.Component {
     this.setState({
       isBackdropVisible: true,
       isArticleVisible: true,
-      isArticlePinned: false
+      isArticlePinned: false,
     });
   };
 
@@ -168,7 +168,7 @@ class PageLayoutComponent extends React.Component {
       viewAs,
       withBodyAutoFocus,
       withBodyScroll,
-      children
+      children,
     } = this.props;
 
     let articleHeaderContent = null;
@@ -179,7 +179,7 @@ class PageLayoutComponent extends React.Component {
     let sectionPagingContent = null;
     let sectionBodyContent = null;
 
-    React.Children.forEach(children, child => {
+    React.Children.forEach(children, (child) => {
       const childType =
         child && child.type && (child.type.displayName || child.type.name);
 
@@ -373,12 +373,12 @@ PageLayoutComponent.propTypes = {
   onDrop: PropTypes.func,
   setSelections: PropTypes.func,
   uploadFiles: PropTypes.bool,
-  hideAside: PropTypes.bool
+  hideAside: PropTypes.bool,
 };
 
 PageLayoutComponent.defaultProps = {
   withBodyScroll: true,
-  withBodyAutoFocus: false
+  withBodyAutoFocus: false,
 };
 
 const PageLayoutTranslated = withTranslation()(PageLayoutComponent);
@@ -401,7 +401,7 @@ PageLayout.SectionPaging = SectionPaging;
 
 PageLayout.propTypes = {
   language: PropTypes.string,
-  children: PropTypes.any
+  children: PropTypes.any,
 };
 
 function mapStateToProps(state) {
@@ -410,4 +410,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default  connect(mapStateToProps)(PageLayout);
+export default connect(mapStateToProps)(PageLayout);

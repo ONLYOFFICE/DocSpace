@@ -321,5 +321,5 @@ export {
   StyledBody,
   StyledSharingHeaderContent,
   StyledSharingBody,
-  StyledFooter
+  StyledFooter,
 };

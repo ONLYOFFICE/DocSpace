@@ -1,27 +1,27 @@
-import React from 'react'
-import { ToastContainer, cssTransition } from 'react-toastify'
-import styled from 'styled-components'
-import PropTypes from 'prop-types'
-import { tablet } from '../../utils/device'
+import React from "react";
+import { ToastContainer, cssTransition } from "react-toastify";
+import styled from "styled-components";
+import PropTypes from "prop-types";
+import { tablet } from "../../utils/device";
 
 const Slide = cssTransition({
-  enter: 'SlideIn',
-  exit: 'SlideOut'
+  enter: "SlideIn",
+  exit: "SlideOut",
 });
 
 const toastColors = {
   active: {
-    success: '#cae796',
-    error: '#ffbfaa',
-    info: '#f1da92',
-    warning: '#f1ca92'
+    success: "#cae796",
+    error: "#ffbfaa",
+    info: "#f1da92",
+    warning: "#f1ca92",
   },
   hover: {
-    success: '#bcdf7e',
-    error: '#ffa98d',
-    info: '#eed27b',
-    warning: '#eeb97b'
-  }
+    success: "#bcdf7e",
+    error: "#ffa98d",
+    info: "#eed27b",
+    warning: "#eeb97b",
+  },
 };
 
 const StyledToastContainer = styled(ToastContainer)`
@@ -82,11 +82,11 @@ const StyledToastContainer = styled(ToastContainer)`
 
   @keyframes SlideOut {
     from {
-      opacity:1;
+      opacity: 1;
     }
 
-    to{
-      opacity:0;
+    to {
+      opacity: 0;
     }
   }
 
@@ -103,15 +103,15 @@ const StyledToastContainer = styled(ToastContainer)`
     }
   }
 
-  .Toastify__toast--success{
+  .Toastify__toast--success {
     background-color: ${toastColors.active.success};
 
     &:hover {
-        background-color: ${toastColors.hover.success};
+      background-color: ${toastColors.hover.success};
     }
   }
 
-  .Toastify__toast--error{
+  .Toastify__toast--error {
     background-color: ${toastColors.active.error};
 
     &:hover {
@@ -119,7 +119,7 @@ const StyledToastContainer = styled(ToastContainer)`
     }
   }
 
-  .Toastify__toast--info{
+  .Toastify__toast--info {
     background-color: ${toastColors.active.info};
 
     &:hover {
@@ -127,7 +127,7 @@ const StyledToastContainer = styled(ToastContainer)`
     }
   }
 
-  .Toastify__toast--warning{
+  .Toastify__toast--warning {
     background-color: ${toastColors.active.warning};
 
     &:hover {
@@ -138,7 +138,7 @@ const StyledToastContainer = styled(ToastContainer)`
   .Toastify__toast {
     box-sizing: border-box;
     margin-bottom: 1rem;
-    box-shadow: 0px 10px 16px -12px rgba(0,0,0,0.30);
+    box-shadow: 0px 10px 16px -12px rgba(0, 0, 0, 0.3);
     display: flex;
     justify-content: space-between;
     max-height: 800px;
@@ -152,12 +152,12 @@ const StyledToastContainer = styled(ToastContainer)`
     margin: 0 0 12px;
     padding: 12px;
     min-height: 32px;
-    font: normal 12px 'Open Sans', sans-serif;
+    font: normal 12px "Open Sans", sans-serif;
     width: 100%;
     right: 0;
     transition: 0.3s;
 
-  /*  @media ${tablet} {  // TODO: Discuss the behavior of notifications on mobile devices
+    /*  @media ${tablet} {  // TODO: Discuss the behavior of notifications on mobile devices
       position: absolute;
 
       &:nth-child(1){
@@ -203,7 +203,7 @@ const StyledToastContainer = styled(ToastContainer)`
   }
 `;
 
-const Toast = props => {
+const Toast = (props) => {
   return (
     <StyledToastContainer
       className={props.className}
@@ -219,7 +219,6 @@ const Toast = props => {
   );
 };
 
-
 Toast.propTypes = {
   autoClosed: PropTypes.bool,
   className: PropTypes.string,
@@ -227,14 +226,14 @@ Toast.propTypes = {
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   text: PropTypes.string,
   title: PropTypes.string,
-  type: PropTypes.oneOf(['success', 'error', 'warning', 'info']).isRequired
+  type: PropTypes.oneOf(["success", "error", "warning", "info"]).isRequired,
 };
 
 Toast.defaultProps = {
   autoClosed: true,
-  text: 'Demo text for example',
-  title: 'Demo title',
-  type: 'success',
-}
+  text: "Demo text for example",
+  title: "Demo title",
+  type: "success",
+};
 
 export default Toast;

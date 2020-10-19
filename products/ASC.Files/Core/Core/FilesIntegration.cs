@@ -32,7 +32,6 @@ using ASC.Common;
 using ASC.Files.Core;
 using ASC.Files.Core.Data;
 using ASC.Files.Core.Security;
-using ASC.Web.Files.Classes;
 
 namespace ASC.Web.Files.Api
 {

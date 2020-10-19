@@ -25,13 +25,13 @@
 
 using ASC.Api.Core;
 using ASC.Common;
+using ASC.Common.DependencyInjection;
 
 using Autofac.Extensions.DependencyInjection;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using ASC.Common.DependencyInjection;
 
 namespace ASC.TelegramService
 {
@@ -46,13 +46,11 @@ namespace ASC.TelegramService
 
         public override void ConfigureServices(IServiceCollection services)
         {
-            var diHelper = new DIHelper(services);
+            base.ConfigureServices(services);
 
-            diHelper.AddTelegramLauncher();
+            DIHelper.AddTelegramLauncher();
 
             services.AddHostedService<TelegramLauncher>();
-
-            base.ConfigureServices(services);
 
             services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
         }

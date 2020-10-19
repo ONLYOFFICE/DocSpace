@@ -17,7 +17,7 @@ const Error520Container = ({ match }) => {
 };
 
 Error520Container.propTypes = {
-  match: PropTypes.object
+  match: PropTypes.object,
 };
 
 const Error520 = Error520Container;

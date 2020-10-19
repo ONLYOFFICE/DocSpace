@@ -6,10 +6,10 @@ const generateUsers = (count, search, group) => {
     const user = {
       id: uniqueId(),
       groups: group ? [group] : [],
-      displayName: 'Demo User',
-      avatar: '',
-      title: 'Demo',
-      email: 'demo@demo.com'
+      displayName: "Demo User",
+      avatar: "",
+      title: "Demo",
+      email: "demo@demo.com",
     };
 
     return user;
@@ -25,6 +25,10 @@ avatarUrl: u.avatar
 */
 
 export function getUserList(filter = Filter.getDefault()) {
-  const fakeUsers = generateUsers(filter.pageCount, filter.search, filter.group);
-  return Promise.resolve({ items: fakeUsers, total: 1000});
+  const fakeUsers = generateUsers(
+    filter.pageCount,
+    filter.search,
+    filter.group
+  );
+  return Promise.resolve({ items: fakeUsers, total: 1000 });
 }

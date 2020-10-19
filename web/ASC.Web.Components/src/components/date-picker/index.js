@@ -70,13 +70,13 @@ class DatePicker extends Component {
       value: moment(selectedDate).format("L"),
       mask: this.getMask,
       hasError,
-      displayType: this.getTypeByWidth()
+      displayType: this.getTypeByWidth(),
     };
 
     if (this.isValidDate(selectedDate, maxDate, minDate, hasError)) {
       newState = Object.assign({}, newState, {
         hasError: true,
-        isOpen: false
+        isOpen: false,
       });
     }
 
@@ -84,13 +84,13 @@ class DatePicker extends Component {
     this.throttledResize = throttle(this.resize, 300);
   }
 
-  handleClick = e => {
+  handleClick = (e) => {
     this.state.isOpen &&
       !this.ref.current.contains(e.target) &&
       this.onClick(false);
   };
 
-  handleChange = e => {
+  handleChange = (e) => {
     const { value } = this.state;
 
     const targetValue = e.target.value;
@@ -109,31 +109,31 @@ class DatePicker extends Component {
         this.props.onChange && this.props.onChange(date);
         newState = Object.assign({}, newState, {
           selectedDate: date,
-          hasError: false
+          hasError: false,
         });
       } else if (targetValue.indexOf("_") !== -1 && targetValue.length !== 0) {
         //hasWarning
         newState = Object.assign({}, newState, {
-          hasError: true
+          hasError: true,
         });
       } else {
         newState = Object.assign({}, newState, {
           hasError: true,
-          isOpen: false
+          isOpen: false,
         });
       }
       this.setState(newState);
     }
   };
 
-  onChange = value => {
+  onChange = (value) => {
     this.onClick(!this.state.isOpen);
     const formatValue = moment(value).format("L");
     this.props.onChange && this.props.onChange(value);
     this.setState({ selectedDate: value, value: formatValue, hasError: false });
   };
 
-  onClick = isOpen => {
+  onClick = (isOpen) => {
     this.setState({ isOpen });
   };
 
@@ -141,7 +141,7 @@ class DatePicker extends Component {
     this.setState({ isOpen: false });
   };
 
-  compareDate = date => {
+  compareDate = (date) => {
     const { minDate, maxDate } = this.props;
     if (date < minDate || date > maxDate) {
       return false;
@@ -172,7 +172,7 @@ class DatePicker extends Component {
       /\d/,
       /\d/,
       /\d/,
-      /\d/
+      /\d/,
     ];
 
     if (localeMask[0] === "Y") {
@@ -235,7 +235,7 @@ class DatePicker extends Component {
       selectedDate,
       maxDate,
       minDate,
-      displayType
+      displayType,
     } = this.props;
     const { hasError, value } = this.state;
     let newState = {};
@@ -244,14 +244,14 @@ class DatePicker extends Component {
       moment.locale(locale);
       newState = {
         mask: this.getMask(),
-        value: moment(selectedDate).format("L")
+        value: moment(selectedDate).format("L"),
       };
     }
 
     if (selectedDate !== prevProps.selectedDate) {
       newState = Object.assign({}, newState, {
         selectedDate,
-        value: moment(selectedDate).format("L")
+        value: moment(selectedDate).format("L"),
       });
     }
 
@@ -261,14 +261,14 @@ class DatePicker extends Component {
 
     if (isOpen !== prevProps.isOpen) {
       newState = Object.assign({}, newState, {
-        isOpen
+        isOpen,
       });
     }
 
     if (this.props.hasError !== prevProps.hasError) {
       newState = Object.assign({}, newState, {
         hasError: this.props.hasError,
-        isOpen: false
+        isOpen: false,
       });
     }
 
@@ -284,7 +284,7 @@ class DatePicker extends Component {
       newState = Object.assign({}, newState, {
         hasError: false,
         selectedDate,
-        value: moment(selectedDate).format("L")
+        value: moment(selectedDate).format("L"),
       });
     }
 
@@ -294,13 +294,13 @@ class DatePicker extends Component {
     ) {
       newState = Object.assign({}, newState, {
         hasError: true,
-        isOpen: false
+        isOpen: false,
       });
     }
 
     if (displayType !== prevProps.displayType) {
       newState = Object.assign({}, newState, {
-        displayType: this.getTypeByWidth()
+        displayType: this.getTypeByWidth(),
       });
     }
 
@@ -343,7 +343,7 @@ class DatePicker extends Component {
       calendarHeaderContent,
       id,
       style,
-      className
+      className,
     } = this.props;
     const { value, isOpen, mask, hasError, displayType } = this.state;
 
@@ -420,7 +420,7 @@ DatePicker.propTypes = {
   calendarHeaderContent: PropTypes.string,
   className: PropTypes.string,
   id: PropTypes.string,
-  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 };
 
 DatePicker.defaultProps = {
@@ -428,7 +428,7 @@ DatePicker.defaultProps = {
   maxDate: new Date(new Date().getFullYear() + 1, 1, 1),
   selectedDate: moment(new Date()).toDate(),
   displayType: "auto",
-  zIndex: 310
+  zIndex: 310,
 };
 
 export default DatePicker;

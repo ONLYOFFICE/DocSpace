@@ -1,4 +1,10 @@
-import { SET_PROFILE, CLEAN_PROFILE, SET_AVATAR_MAX, SET_CREATED_AVATAR, SET_CROPPED_AVATAR } from "./actions";
+import {
+  SET_PROFILE,
+  CLEAN_PROFILE,
+  SET_AVATAR_MAX,
+  SET_CREATED_AVATAR,
+  SET_CROPPED_AVATAR,
+} from "./actions";
 
 const initialState = {
   targetUser: null,
@@ -20,7 +26,7 @@ const profileReducer = (state = initialState, action) => {
   switch (action.type) {
     case SET_PROFILE:
       return Object.assign({}, state, {
-        targetUser: action.targetUser
+        targetUser: action.targetUser,
       });
     case CLEAN_PROFILE:
       return initialState;

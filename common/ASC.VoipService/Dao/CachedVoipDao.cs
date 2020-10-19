@@ -98,7 +98,7 @@ namespace ASC.VoipService.Dao
             var numbers = cache.Get<List<VoipPhone>>(GetCacheKey(TenantID));
             if (numbers == null)
             {
-                numbers = new List<VoipPhone>(base.GetNumbers());
+                numbers = new List<VoipPhone>(base.GetAllNumbers());
                 cache.Insert(GetCacheKey(TenantID), numbers, DateTime.UtcNow.Add(timeout));
             }
 

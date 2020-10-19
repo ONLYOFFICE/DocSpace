@@ -28,7 +28,6 @@ using ASC.ApiSystem.Models;
 using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
-using ASC.Core.Tenants;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

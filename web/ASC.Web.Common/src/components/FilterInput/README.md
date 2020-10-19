@@ -15,15 +15,15 @@ import { FilterInput } from "asc-web-common";
       key: "filter-example",
       group: "filter-example",
       label: "example group",
-      isHeader: true
+      isHeader: true,
     },
-    { key: "0", group: "filter-example", label: "Test" }
+    { key: "0", group: "filter-example", label: "Test" },
   ]}
   getSortData={() => [
     { key: "name", label: "Name", default: true },
-    { key: "surname", label: "Surname", default: true }
+    { key: "surname", label: "Surname", default: true },
   ]}
-  onFilter={result => {
+  onFilter={(result) => {
     console.log(result);
   }}
 />

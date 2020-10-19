@@ -55,7 +55,7 @@ class PureHome extends React.Component {
     this.state = {
       overwriteSetting: false,
       uploadOriginalFormatSetting: false,
-      hideWindowSetting: false
+      hideWindowSetting: false,
     };
   }
 

@@ -19,7 +19,7 @@ const ToggleButtonContainer = styled.label`
   grid-template-columns: min-content auto;
   grid-gap: 8px;
 
-  ${props =>
+  ${(props) =>
     props.isDisabled
       ? css`
           cursor: default;
@@ -28,14 +28,14 @@ const ToggleButtonContainer = styled.label`
           cursor: pointer;
         `}
   svg {
-    ${props =>
-    props.isDisabled
-      ? css`
+    ${(props) =>
+      props.isDisabled
+        ? css`
             rect {
               fill: #eceff1;
             }
           `
-      : ""}
+        : ""}
   }
 
   .toggleText {
@@ -59,7 +59,7 @@ class ToggleButton extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      checked: props.isChecked
+      checked: props.isChecked,
     };
   }
 
@@ -106,11 +106,11 @@ ToggleButton.propTypes = {
   label: PropTypes.string,
   id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   className: PropTypes.string,
-  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 };
 
 ToggleIcon.propTypes = {
-  isChecked: PropTypes.bool
-}
+  isChecked: PropTypes.bool,
+};
 
 export default ToggleButton;

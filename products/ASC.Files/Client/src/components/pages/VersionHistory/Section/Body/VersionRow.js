@@ -8,14 +8,17 @@ import {
   Textarea,
   Button,
   ModalDialog,
-  utils
+  utils,
 } from "asc-web-components";
 import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
 import { connect } from "react-redux";
 import { api, toastr } from "asc-web-common";
 import { setIsLoading } from "../../../../../store/files/actions";
-import { getFilter, getSelectedFolderId } from "../../../../../store/files/selectors";
+import {
+  getFilter,
+  getSelectedFolderId,
+} from "../../../../../store/files/selectors";
 
 const { tablet } = utils.device;
 
@@ -55,7 +58,7 @@ const StyledRow = styled(Row)`
   }
 
   .version_link {
-    display: ${props => (props.showEditPanel ? "none" : "block")};
+    display: ${(props) => (props.showEditPanel ? "none" : "block")};
     text-decoration: underline dashed;
     white-space: break-spaces;
 
@@ -107,7 +110,7 @@ const StyledRow = styled(Row)`
   }
 `;
 
-const VersionRow = props => {
+const VersionRow = (props) => {
   const {
     info,
     index,
@@ -117,13 +120,13 @@ const VersionRow = props => {
     setIsLoading,
     isVersion,
     t,
-    getFileVersions
+    getFileVersions,
   } = props;
   const [showEditPanel, setShowEditPanel] = useState(false);
   const [commentValue, setCommentValue] = useState(info.comment);
   const [displayComment, setDisplayComment] = useState(info.comment);
 
-  const VersionBadge = props => (
+  const VersionBadge = (props) => (
     <Box {...props} marginProp="0 8px" displayProp="flex">
       <svg
         width="55"
@@ -150,7 +153,7 @@ const VersionRow = props => {
 
   const title = `${new Date(info.created).toLocaleString(culture)} ${
     info.createdBy.displayName
-    }`;
+  }`;
 
   const linkStyles = { isHovered: true, type: "action" };
 
@@ -158,13 +161,13 @@ const VersionRow = props => {
     window.open(`${info.viewUrl}&version=${info.version}`);
   const onEditComment = () => setShowEditPanel(!showEditPanel);
 
-  const onChange = e => setCommentValue(e.target.value);
+  const onChange = (e) => setCommentValue(e.target.value);
 
   const onSaveClick = () =>
     api.files
       .versionEditComment(info.id, commentValue, info.version)
       .then(() => setDisplayComment(commentValue))
-      .catch(err => toastr.error(err))
+      .catch((err) => toastr.error(err))
       .finally(() => onEditComment());
 
   const onCancelClick = () => {
@@ -178,7 +181,7 @@ const VersionRow = props => {
     api.files
       .versionRestore(info.id, info.version)
       .then(() => getFileVersions(info.id))
-      .catch(err => toastr.error(err))
+      .catch((err) => toastr.error(err))
       .finally(() => setIsLoading(false));
   };
 
@@ -187,7 +190,7 @@ const VersionRow = props => {
     api.files
       .markAsVersion(info.id, isVersion, info.version)
       .then(() => getFileVersions(info.id))
-      .catch(err => toastr.error(err))
+      .catch((err) => toastr.error(err))
       .finally(() => setIsLoading(false));
   };
 
@@ -197,8 +200,8 @@ const VersionRow = props => {
     {
       key: "download",
       label: `${t("Download")}(${info.contentLength})`,
-      onClick: onDownloadAction
-    }
+      onClick: onDownloadAction,
+    },
   ];
 
   return (
@@ -304,16 +307,13 @@ const VersionRow = props => {
   );
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     filter: getFilter(state),
-    selectedFolderId: getSelectedFolderId(state)
+    selectedFolderId: getSelectedFolderId(state),
   };
 };
 
-export default connect(
-  mapStateToProps,
-  {
-    setIsLoading
-  }
-)(withRouter(withTranslation()(VersionRow)));
+export default connect(mapStateToProps, {
+  setIsLoading,
+})(withRouter(withTranslation()(VersionRow)));

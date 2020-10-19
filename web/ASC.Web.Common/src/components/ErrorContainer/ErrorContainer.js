@@ -4,7 +4,7 @@ import StyledErrorContainer from "./StyledErrorContainer";
 import Headline from "../Headline";
 import { Text, Button } from "asc-web-components";
 
-const ErrorContainer = props => {
+const ErrorContainer = (props) => {
   //console.log("ErrorContainer render");
 
   const { headerText, bodyText, buttonText, buttonUrl, ...rest } = props;
@@ -350,7 +350,7 @@ ErrorContainer.propTypes = {
   headerText: PropTypes.string,
   bodyText: PropTypes.string,
   buttonText: PropTypes.string,
-  buttonUrl: PropTypes.string
+  buttonUrl: PropTypes.string,
 };
 
 export default ErrorContainer;

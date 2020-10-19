@@ -76,7 +76,7 @@ class FilesFilter {
       search,
       sortBy,
       sortOrder,
-      withSubfolders
+      withSubfolders,
     } = this;
 
     const isFilterSet =
@@ -97,7 +97,7 @@ class FilesFilter {
       filterType: filterType,
       filterValue: (search ?? "").trim(),
       withSubfolders: isFilterSet,
-      userIdOrGroupId
+      userIdOrGroupId,
     };
 
     return dtoFilter;

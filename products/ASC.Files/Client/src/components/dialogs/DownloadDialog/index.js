@@ -8,7 +8,7 @@ import {
   Text,
   Row,
   RowContent,
-  RowContainer
+  RowContainer,
 } from "asc-web-components";
 import { ReactSVG } from "react-svg";
 import { withTranslation } from "react-i18next";
@@ -19,17 +19,17 @@ import {
   isSpreadsheet,
   isPresentation,
   isDocument,
-  getSelection
+  getSelection,
 } from "../../../store/files/selectors";
 import {
   setProgressBarData,
-  clearProgressData
+  clearProgressData,
 } from "../../../store/files/actions";
 import DownloadContent from "./DownloadContent";
 import { createI18N } from "../../../helpers/i18n";
 const i18n = createI18N({
   page: "DownloadDialog",
-  localesPath: "dialogs/DownloadDialog"
+  localesPath: "dialogs/DownloadDialog",
 });
 
 const { changeLanguage } = utils;
@@ -45,7 +45,7 @@ const formatKeys = Object.freeze({
   RtfFormat: 7,
   XlsxFormat: 8,
   PptxFormat: 9,
-  CustomFormat: 10
+  CustomFormat: 10,
 });
 
 class DownloadDialogComponent extends React.Component {
@@ -96,11 +96,11 @@ class DownloadDialogComponent extends React.Component {
       indeterminateDocTitle: false,
       indeterminateSpreadsheetTitle: false,
       indeterminatePresentationTitle: false,
-      indeterminateOtherTitle: false
+      indeterminateOtherTitle: false,
     };
   }
 
-  getTitleLabel = format => {
+  getTitleLabel = (format) => {
     switch (format) {
       case 0:
         return this.props.t("OriginalFormat");
@@ -174,7 +174,13 @@ class DownloadDialogComponent extends React.Component {
   };
 
   onDownload = () => {
-    const { onDownloadProgress, onClose, t, setProgressBarData, clearProgressData } = this.props;
+    const {
+      onDownloadProgress,
+      onClose,
+      t,
+      setProgressBarData,
+      clearProgressData,
+    } = this.props;
 
     const downloadItems = this.getDownloadItems();
     const fileConvertIds = downloadItems[0];
@@ -184,7 +190,7 @@ class DownloadDialogComponent extends React.Component {
       setProgressBarData({
         visible: true,
         percent: 0,
-        label: t("ArchivingData")
+        label: t("ArchivingData"),
       });
       api.files
         .downloadFormatFiles(fileConvertIds, folderIds)
@@ -192,14 +198,14 @@ class DownloadDialogComponent extends React.Component {
           onClose();
           onDownloadProgress(false);
         })
-        .catch(err => {
+        .catch((err) => {
           toastr.error(err);
           clearProgressData();
         });
     }
   };
 
-  getItemIcon = item => {
+  getItemIcon = (item) => {
     const extension = item.fileExst;
     const icon = extension
       ? getFileIcon(extension, 24)
@@ -207,7 +213,7 @@ class DownloadDialogComponent extends React.Component {
 
     return (
       <ReactSVG
-        beforeInjection={svg => {
+        beforeInjection={(svg) => {
           svg.setAttribute("style", "margin-top: 4px");
         }}
         src={icon}
@@ -234,16 +240,16 @@ class DownloadDialogComponent extends React.Component {
         }
         this.setState({
           documents: newDocuments,
-          documentsTitleFormat: format
+          documentsTitleFormat: format,
         });
       } else {
         //Set single document format
-        const newDoc = newDocuments.find(x => x.id === file.id);
+        const newDoc = newDocuments.find((x) => x.id === file.id);
         if (newDoc.format !== format) {
           newDoc.format = format;
           this.setState({
             documents: newDocuments,
-            documentsTitleFormat: formatKeys.CustomFormat
+            documentsTitleFormat: formatKeys.CustomFormat,
           });
         }
       }
@@ -258,16 +264,16 @@ class DownloadDialogComponent extends React.Component {
         }
         this.setState({
           spreadsheets: newSpreadsheets,
-          spreadsheetsTitleFormat: format
+          spreadsheetsTitleFormat: format,
         });
       } else {
         //Set single spreadsheet format
-        const newSpreadsheet = newSpreadsheets.find(x => x.id === file.id);
+        const newSpreadsheet = newSpreadsheets.find((x) => x.id === file.id);
         if (newSpreadsheet.format !== format) {
           newSpreadsheet.format = format;
           this.setState({
             spreadsheets: newSpreadsheets,
-            spreadsheetsTitleFormat: formatKeys.CustomFormat
+            spreadsheetsTitleFormat: formatKeys.CustomFormat,
           });
         }
       }
@@ -282,16 +288,16 @@ class DownloadDialogComponent extends React.Component {
         }
         this.setState({
           presentations: newPresentations,
-          presentationsTitleFormat: format
+          presentationsTitleFormat: format,
         });
       } else {
         //Set single presentation format
-        const newPresentation = newPresentations.find(x => x.id === file.id);
+        const newPresentation = newPresentations.find((x) => x.id === file.id);
         if (newPresentation.format !== format) {
           newPresentation.format = format;
           this.setState({
             presentations: newPresentations,
-            presentationsTitleFormat: formatKeys.CustomFormat
+            presentationsTitleFormat: formatKeys.CustomFormat,
           });
         }
       }
@@ -311,7 +317,7 @@ class DownloadDialogComponent extends React.Component {
       indeterminateDocTitle,
       indeterminateSpreadsheetTitle,
       indeterminatePresentationTitle,
-      indeterminateOtherTitle
+      indeterminateOtherTitle,
     } = this.state;
 
     const newDocuments = documents;
@@ -329,21 +335,21 @@ class DownloadDialogComponent extends React.Component {
         this.setState({
           documents: newDocuments,
           indeterminateDocTitle: false,
-          checkedDocTitle: checked
+          checkedDocTitle: checked,
         });
       } else {
         //Select single document
-        const newDoc = newDocuments.find(x => x.id === item.id);
+        const newDoc = newDocuments.find((x) => x.id === item.id);
         newDoc.checked = !newDoc.checked;
 
-        const disableFiles = newDocuments.find(x => x.checked === false);
-        const activeFiles = newDocuments.find(x => x.checked === true);
+        const disableFiles = newDocuments.find((x) => x.checked === false);
+        const activeFiles = newDocuments.find((x) => x.checked === true);
         const indeterminate = !activeFiles ? false : !!disableFiles;
         const title = disableFiles ? false : true;
         this.setState({
           documents: newDocuments,
           indeterminateDocTitle: indeterminate,
-          checkedDocTitle: title
+          checkedDocTitle: title,
         });
       }
     } else if (type === "spreadsheet") {
@@ -358,23 +364,25 @@ class DownloadDialogComponent extends React.Component {
         this.setState({
           spreadsheets: newSpreadsheets,
           indeterminateSpreadsheetTitle: false,
-          checkedSpreadsheetTitle: checked
+          checkedSpreadsheetTitle: checked,
         });
       } else {
         //Select single spreadsheet
-        const newSpreadsheet = newSpreadsheets.find(x => x.id === item.id);
+        const newSpreadsheet = newSpreadsheets.find((x) => x.id === item.id);
         newSpreadsheet.checked = !newSpreadsheet.checked;
 
         const disableSpreadsheet = newSpreadsheets.find(
-          x => x.checked === false
+          (x) => x.checked === false
         );
-        const activeSpreadsheet = newSpreadsheets.find(x => x.checked === true);
+        const activeSpreadsheet = newSpreadsheets.find(
+          (x) => x.checked === true
+        );
         const indeterminate = !activeSpreadsheet ? false : !!disableSpreadsheet;
         const title = disableSpreadsheet ? false : true;
         this.setState({
           spreadsheets: newSpreadsheets,
           indeterminateSpreadsheetTitle: indeterminate,
-          checkedSpreadsheetTitle: title
+          checkedSpreadsheetTitle: title,
         });
       }
     } else if (type === "presentation") {
@@ -389,18 +397,18 @@ class DownloadDialogComponent extends React.Component {
         this.setState({
           presentations: newPresentations,
           indeterminatePresentationTitle: false,
-          checkedPresentationTitle: checked
+          checkedPresentationTitle: checked,
         });
       } else {
         //Select single presentation
-        const newPresentation = newPresentations.find(x => x.id === item.id);
+        const newPresentation = newPresentations.find((x) => x.id === item.id);
         newPresentation.checked = !newPresentation.checked;
 
         const disablePresentation = newPresentations.find(
-          x => x.checked === false
+          (x) => x.checked === false
         );
         const activePresentation = newPresentations.find(
-          x => x.checked === true
+          (x) => x.checked === true
         );
         const indeterminate = !activePresentation
           ? false
@@ -409,7 +417,7 @@ class DownloadDialogComponent extends React.Component {
         this.setState({
           presentations: newPresentations,
           indeterminatePresentationTitle: indeterminate,
-          checkedPresentationTitle: title
+          checkedPresentationTitle: title,
         });
       }
     } else {
@@ -421,21 +429,21 @@ class DownloadDialogComponent extends React.Component {
         this.setState({
           other: newOthers,
           indeterminateOtherTitle: false,
-          checkedOtherTitle: checked
+          checkedOtherTitle: checked,
         });
       } else {
-        const newOther = newOthers.find(x => x.id === item.id);
+        const newOther = newOthers.find((x) => x.id === item.id);
         newOther.checked = !newOther.checked;
 
-        const disableFolders = newOthers.find(x => x.checked === false);
-        const activeFolders = newOthers.find(x => x.checked === true);
+        const disableFolders = newOthers.find((x) => x.checked === false);
+        const activeFolders = newOthers.find((x) => x.checked === true);
 
         const indeterminate = !activeFolders ? false : !!disableFolders;
         const title = disableFolders ? false : true;
         this.setState({
           other: newOthers,
           indeterminateOtherTitle: indeterminate,
-          checkedOtherTitle: title
+          checkedOtherTitle: title,
         });
       }
     }
@@ -458,7 +466,7 @@ class DownloadDialogComponent extends React.Component {
       indeterminateDocTitle,
       indeterminateSpreadsheetTitle,
       indeterminatePresentationTitle,
-      indeterminateOtherTitle
+      indeterminateOtherTitle,
     } = this.state;
 
     const otherLength = other.length;
@@ -548,7 +556,7 @@ class DownloadDialogComponent extends React.Component {
                   style={{ minHeight: minHeight, padding: "8px 0" }}
                   itemHeight={50}
                 >
-                  {other.map(folder => {
+                  {other.map((folder) => {
                     const element = this.getItemIcon(folder);
                     return (
                       <Row
@@ -610,17 +618,17 @@ const ModalDialogContainerTranslated = withTranslation()(
   DownloadDialogComponent
 );
 
-const DownloadDialog = props => (
+const DownloadDialog = (props) => (
   <ModalDialogContainerTranslated i18n={i18n} {...props} />
 );
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
-    items: getSelection(state)
+    items: getSelection(state),
   };
 };
 
-export default connect(
-  mapStateToProps,
-  { setProgressBarData, clearProgressData }
-)(withRouter(DownloadDialog));
+export default connect(mapStateToProps, {
+  setProgressBarData,
+  clearProgressData,
+})(withRouter(DownloadDialog));

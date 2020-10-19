@@ -25,21 +25,21 @@ const StyledSection = styled.section`
     bottom: 0;
     position: sticky;
     margin-left: -24px;
-    
+
     @media ${tablet} {
       margin-left: -16px;
     }
   }
 
   .section-header_filter {
-      display: block;
-    }
+    display: block;
+  }
 
-    .section-body_filter {
-      display: none;
-    }
+  .section-body_filter {
+    display: none;
+  }
 
-  /*${props => props.widthProp < 738 && tabletProps};*/
+  /*${(props) => props.widthProp < 738 && tabletProps};*/
 
   @media ${tablet} {
     padding: 0 0 0 16px;

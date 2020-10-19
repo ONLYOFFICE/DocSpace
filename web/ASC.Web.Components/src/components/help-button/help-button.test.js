@@ -10,7 +10,13 @@ describe("<HelpButton />", () => {
   });
 
   it("HelpButton renders without error in Aside mode", () => {
-    const wrapper = mount(<HelpButton tooltipContent={tooltipContent} displayType="aside" helpButtonHeaderContent="Header text" />);
+    const wrapper = mount(
+      <HelpButton
+        tooltipContent={tooltipContent}
+        displayType="aside"
+        helpButtonHeaderContent="Header text"
+      />
+    );
     expect(wrapper).toExist();
   });
 
@@ -36,36 +42,38 @@ describe("<HelpButton />", () => {
     expect(wrapper.state.isOpen).toEqual(false);
   });
 
-  it('accepts id', () => {
+  it("accepts id", () => {
     const wrapper = mount(
       <HelpButton tooltipContent={tooltipContent} id="testId" />
     );
 
-    expect(wrapper.prop('id')).toEqual('testId');
+    expect(wrapper.prop("id")).toEqual("testId");
   });
 
-  it('accepts className', () => {
+  it("accepts className", () => {
     const wrapper = mount(
       <HelpButton tooltipContent={tooltipContent} className="test" />
     );
 
-    expect(wrapper.prop('className')).toEqual('test');
+    expect(wrapper.prop("className")).toEqual("test");
   });
 
-  it('accepts style', () => {
+  it("accepts style", () => {
     const wrapper = mount(
-      <HelpButton tooltipContent={tooltipContent} style={{ color: 'red' }} />
+      <HelpButton tooltipContent={tooltipContent} style={{ color: "red" }} />
     );
 
-    expect(wrapper.getDOMNode().style).toHaveProperty('color', 'red');
+    expect(wrapper.getDOMNode().style).toHaveProperty("color", "red");
   });
 
   it("", () => {
-    const wrapper = mount(<HelpButton tooltipContent={tooltipContent} />).instance();
+    const wrapper = mount(
+      <HelpButton tooltipContent={tooltipContent} />
+    ).instance();
     wrapper.componentDidUpdate(wrapper.props);
 
-    wrapper.componentDidUpdate({displayType: "auto"});
-    wrapper.componentDidUpdate({displayType: "aside"});
+    wrapper.componentDidUpdate({ displayType: "auto" });
+    wrapper.componentDidUpdate({ displayType: "aside" });
 
     expect(wrapper.props).toBe(wrapper.props);
   });

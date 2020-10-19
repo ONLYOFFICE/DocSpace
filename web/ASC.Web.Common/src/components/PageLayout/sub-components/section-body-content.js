@@ -17,7 +17,7 @@ class SectionBodyContent extends React.Component {
 SectionBodyContent.displayName = "SectionBodyContent";
 
 SectionBodyContent.propTypes = {
-  children: PropTypes.any
-}
+  children: PropTypes.any,
+};
 
 export default SectionBodyContent;

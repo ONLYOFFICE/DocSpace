@@ -23,7 +23,7 @@ const NavItemWrapper = styled(Link)`
   position: relative;
   box-sizing: border-box;
 
-  ${props =>
+  ${(props) =>
     !props.noHover &&
     css`
       &:hover {
@@ -34,14 +34,14 @@ const NavItemWrapper = styled(Link)`
 
   .injected-svg {
     path {
-      fill: ${props => props.iconColor};
+      fill: ${(props) => props.iconColor};
     }
   }
 `;
 
 const NavItemLabel = styled(Text)`
   margin: 0 auto 0 16px;
-  display: ${props => (props.opened ? "block" : "none")};
+  display: ${(props) => (props.opened ? "block" : "none")};
 `;
 
 const badgeCss = css`
@@ -52,10 +52,10 @@ const badgeCss = css`
 `;
 
 const NavItemBadge = styled(Badge)`
-  ${props => (props.opened ? "" : badgeCss)}
+  ${(props) => (props.opened ? "" : badgeCss)}
 `;
 
-const NavItem = React.memo(props => {
+const NavItem = React.memo((props) => {
   //console.log("NavItem render");
   const {
     separator,
@@ -68,7 +68,7 @@ const NavItem = React.memo(props => {
     onClick,
     onBadgeClick,
     url,
-    noHover
+    noHover,
   } = props;
   const color = active ? activeColor : baseColor;
 
@@ -84,7 +84,7 @@ const NavItem = React.memo(props => {
       {iconUrl ? (
         <ReactSVG
           src={iconUrl}
-          beforeInjection={svg => {
+          beforeInjection={(svg) => {
             svg.setAttribute("style", `width: 24px; height: 24px;`);
             svg.setAttribute("fill", color);
           }}
@@ -93,7 +93,7 @@ const NavItem = React.memo(props => {
         React.createElement(Icons[iconName], {
           size: "big",
           isfill: true,
-          color: color
+          color: color,
         })
       )}
       {children && (
@@ -123,7 +123,7 @@ NavItem.propTypes = {
   badgeNumber: PropTypes.number,
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
-    PropTypes.node
+    PropTypes.node,
   ]),
   url: PropTypes.string,
   iconName: PropTypes.string,
@@ -132,7 +132,7 @@ NavItem.propTypes = {
   onClick: PropTypes.func,
   opened: PropTypes.bool,
   separator: PropTypes.bool,
-  noHover: PropTypes.bool
+  noHover: PropTypes.bool,
 };
 
 export default NavItem;
