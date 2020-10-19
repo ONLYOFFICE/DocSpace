@@ -53,21 +53,21 @@ namespace ASC.Web.Studio.UserControls.Management
         public AuthService(Consumer consumer)
         {
             Consumer = consumer;
-            Title = consumer.GetResourceString(consumer.Name) ?? consumer.Name;
-            Description = consumer.GetResourceString(consumer.Name + "Description");
-            Instruction = consumer.GetResourceString(consumer.Name + "Instruction");
+            Title = ConsumerExtension.GetResourceString(consumer.Name) ?? consumer.Name;
+            Description = ConsumerExtension.GetResourceString(consumer.Name + "Description");
+            Instruction = ConsumerExtension.GetResourceString(consumer.Name + "InstructionV11");
             Props = new List<AuthKey>();
 
             foreach (var item in consumer.ManagedKeys)
             {
-                Props.Add(new AuthKey { Name = item, Value = Consumer[item], Title = consumer.GetResourceString(item) ?? item });
+                Props.Add(new AuthKey { Name = item, Value = Consumer[item], Title = ConsumerExtension.GetResourceString(item) ?? item });
             }
         }
     }
 
     public static class ConsumerExtension
     {
-        public static string GetResourceString(this Consumer consumer, string resourceKey)
+        public static string GetResourceString(string resourceKey)
         {
             try
             {

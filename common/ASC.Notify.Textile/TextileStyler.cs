@@ -242,7 +242,7 @@ namespace ASC.Notify.Textile
                     NotifyTemplateResource.FooterCommonV10
                                           .Replace("%SUPPORTURL%", MailWhiteLabelSettingsHelper.DefaultMailSupportUrl)
                                           .Replace("%SALESEMAIL%", MailWhiteLabelSettingsHelper.DefaultMailSalesEmail)
-                                          .Replace("%DEMOURL%", MailWhiteLabelSettingsHelper.DefaultMailDemotUrl);
+                                          .Replace("%DEMOURL%", MailWhiteLabelSettingsHelper.DefaultMailDemoUrl);
                 footerSocialContent = NotifyTemplateResource.SocialNetworksFooterV10;
 
             }
@@ -252,7 +252,7 @@ namespace ASC.Notify.Textile
                     NotifyTemplateResource.FooterCommonV10
                     .Replace("%SUPPORTURL%", string.IsNullOrEmpty(settings.SupportUrl) ? "mailto:" + settings.SalesEmail : settings.SupportUrl)
                     .Replace("%SALESEMAIL%", settings.SalesEmail)
-                    .Replace("%DEMOURL%", string.IsNullOrEmpty(settings.DemotUrl) ? "mailto:" + settings.SalesEmail : settings.DemotUrl);
+                    .Replace("%DEMOURL%", string.IsNullOrEmpty(settings.DemoUrl) ? "mailto:" + settings.SalesEmail : settings.DemoUrl);
                 footerSocialContent = settings.FooterSocialEnabled ? NotifyTemplateResource.SocialNetworksFooterV10 : string.Empty;
             }
         }

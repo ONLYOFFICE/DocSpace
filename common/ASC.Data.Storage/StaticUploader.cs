@@ -113,7 +113,7 @@ namespace ASC.Data.Storage
             {
                 using var scope = ServiceProvider.CreateScope();
                 var scopeClass = scope.ServiceProvider.GetService<StaticUploaderScope>();
-                var(tenantManager, staticUploader, _, _, _) = scopeClass;
+                var (tenantManager, staticUploader, _, _, _) = scopeClass;
                 tenantManager.SetCurrentTenant(tenantId);
                 return staticUploader.UploadFile(relativePath, mappedPath, onComplete);
             }, TaskCreationOptions.LongRunning);
@@ -125,7 +125,7 @@ namespace ASC.Data.Storage
             return task;
         }
 
-        public async void UploadDir(string relativePath, string mappedPath)
+        public async Task UploadDir(string relativePath, string mappedPath)
         {
             if (!CanUpload()) return;
             if (!Directory.Exists(mappedPath)) return;
@@ -243,7 +243,6 @@ namespace ASC.Data.Storage
         private readonly string mappedPath;
         private readonly IEnumerable<string> directoryFiles;
 
-        private IServiceProvider ServiceProvider { get; }
         private StaticUploader StaticUploader { get; }
 
         public UploadOperationProgress(StaticUploader staticUploader, string relativePath, string mappedPath)
@@ -324,7 +323,7 @@ namespace ASC.Data.Storage
                 services.TryAddScoped<StaticUploaderScope>();
                 return services
                     .AddTenantManagerService()
-                    .AddCdnStorageSettingsService();
+                    .AddStorageSettingsService();
             }
 
             return services;

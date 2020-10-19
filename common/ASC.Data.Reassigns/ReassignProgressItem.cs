@@ -50,7 +50,6 @@ namespace ASC.Data.Reassigns
 {
     public class ReassignProgressItem : IProgressItem
     {
-        private readonly HttpContext _context;
         private readonly IDictionary<string, StringValues> _httpHeaders;
 
         private readonly int _tenantId;
@@ -78,7 +77,6 @@ namespace ASC.Data.Reassigns
             int tenantId, Guid fromUserId, Guid toUserId, Guid currentUserId, bool deleteProfile)
         {
             ServiceProvider = serviceProvider;
-            _context = context;
             QueueWorkerRemove = queueWorkerRemove;
             _httpHeaders = QueueWorker.GetHttpHeaders(context.Request);
 
@@ -245,16 +243,16 @@ namespace ASC.Data.Reassigns
             Options = options;
         }
 
-        public void Deconstruct(out TenantManager tenantManager, 
+        public void Deconstruct(out TenantManager tenantManager,
             out CoreBaseSettings coreBaseSettings,
             out MessageService messageService,
             out StudioNotifyService studioNotifyService,
             out SecurityContext securityContext,
-            out UserManager userManager, 
+            out UserManager userManager,
             out UserPhotoManager userPhotoManager,
-            out DisplayUserSettingsHelper displayUserSettingsHelper, 
-            out MessageTarget messageTarget, 
-            out IOptionsMonitor<ILog> optionsMonitor )
+            out DisplayUserSettingsHelper displayUserSettingsHelper,
+            out MessageTarget messageTarget,
+            out IOptionsMonitor<ILog> optionsMonitor)
         {
             tenantManager = TenantManager;
             coreBaseSettings = CoreBaseSettings;
@@ -273,10 +271,13 @@ namespace ASC.Data.Reassigns
     {
         public static DIHelper AddReassignProgressItemService(this DIHelper services)
         {
-            services.TryAddSingleton<ProgressQueueOptionsManager<ReassignProgressItem>>();
-            services.TryAddSingleton<ProgressQueue<ReassignProgressItem>>();
-            services.TryAddScoped<ReassignProgressItemScope>();
-            services.AddSingleton<IPostConfigureOptions<ProgressQueue<ReassignProgressItem>>, ConfigureProgressQueue<ReassignProgressItem>>();
+            if (services.TryAddScoped<ReassignProgressItemScope>())
+            {
+                services.TryAddSingleton<ProgressQueueOptionsManager<ReassignProgressItem>>();
+                services.TryAddSingleton<ProgressQueue<ReassignProgressItem>>();
+                services.AddSingleton<IPostConfigureOptions<ProgressQueue<ReassignProgressItem>>, ConfigureProgressQueue<ReassignProgressItem>>();
+            }
+
             return services;
         }
     }

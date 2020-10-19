@@ -1,12 +1,29 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { Scrollbar } from "asc-web-components";
+import isEqual from "lodash/isEqual";
+import { Scrollbar, utils } from "asc-web-components";
+const { tablet, smallTablet } = utils.device;
 
 const StyledArticleBody = styled.div`
-  ${props => props.displayBorder && `outline: 1px dotted;`}
+  ${(props) => props.displayBorder && `outline: 1px dotted;`}
   flex-grow: 1;
   height: 100%;
+
+  @media ${tablet} {
+    height: calc(100% - 104px);
+    display: table;
+    width: 100%;
+
+    .custom-scrollbar {
+      display: table-cell;
+    }
+  }
+
+  @media ${smallTablet} {
+    display: flex;
+    height: 100%;
+  }
 
   .people-tree-menu {
     margin-right: 0;
@@ -32,26 +49,32 @@ const StyledArticleWrapper = styled.div`
   margin: 16px 0;
 `;
 
-const ArticleBody = React.memo(props => {
-  //console.log("PageLayout ArticleBody render");
-  const { children } = props;
+class ArticleBody extends React.Component {
+  shouldComponentUpdate(nextProps) {
+    return !isEqual(this.props, nextProps);
+  }
 
-  return (
-    <StyledArticleBody>
-      <Scrollbar className="custom-scrollbar" stype="mediumBlack">
-        <StyledArticleWrapper>{children}</StyledArticleWrapper>
-      </Scrollbar>
-    </StyledArticleBody>
-  );
-});
+  render() {
+    //console.log("PageLayout ArticleBody render");
+    const { children } = this.props;
+
+    return (
+      <StyledArticleBody>
+        <Scrollbar className="custom-scrollbar" stype="mediumBlack">
+          <StyledArticleWrapper>{children}</StyledArticleWrapper>
+        </Scrollbar>
+      </StyledArticleBody>
+    );
+  }
+}
 
 ArticleBody.displayName = "ArticleBody";
 
 ArticleBody.propTypes = {
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
-    PropTypes.node
-  ])
+    PropTypes.node,
+  ]),
 };
 
 export default ArticleBody;

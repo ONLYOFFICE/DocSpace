@@ -300,7 +300,7 @@ namespace ASC.MessagingSystem.DbSender
                     .Where(r => r.Date < DateTime.UtcNow.AddDays(
                         ef.WebstudioSettings
                         .Where(a => a.TenantId == r.TenantId && a.Id == TenantAuditSettings.Guid)
-                        .Select(r => Convert.ToDouble(JsonExtensions.JsonValue(nameof(r.Data).ToLower(), settings) ?? TenantAuditSettings.MaxLifeTime.ToString()))
+                        .Select(r => -Convert.ToDouble(JsonExtensions.JsonValue(nameof(r.Data).ToLower(), settings) ?? TenantAuditSettings.MaxLifeTime.ToString()))
                         .FirstOrDefault()))
                     .Take(1000);
 

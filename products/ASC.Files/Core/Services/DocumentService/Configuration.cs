@@ -46,7 +46,6 @@ using ASC.Files.Core.Resources;
 using ASC.Files.Core.Security;
 using ASC.Web.Core.Files;
 using ASC.Web.Core.Users;
-using ASC.Web.Core.Utility.Skins;
 using ASC.Web.Core.WhiteLabel;
 using ASC.Web.Files.Classes;
 using ASC.Web.Files.Helpers;
@@ -69,7 +68,7 @@ namespace ASC.Web.Files.Services.DocumentService
 
     public class Configuration<T>
     {
-        public static readonly Dictionary<FileType, string> DocType = new Dictionary<FileType, string>
+        internal static Dictionary<FileType, string> DocType = new Dictionary<FileType, string>
             {
                 { FileType.Document, "text" },
                 { FileType.Spreadsheet, "spreadsheet" },
@@ -211,14 +210,14 @@ namespace ASC.Web.Files.Services.DocumentService
             FileSharing = fileSharing;
         }
 
-        [Obsolete("Use owner (since v5.4)")]
+        //todo: obsolete since DS v5.5
         public string Author
         {
             set { }
             get { return File.CreateByString; }
         }
 
-        [Obsolete("Use uploaded (since v5.4)")]
+        //todo: obsolete since DS v5.5
         public string Created
         {
             set { }
@@ -281,7 +280,7 @@ namespace ASC.Web.Files.Services.DocumentService
 
     public class PermissionsConfig
     {
-        [Obsolete("Since DS v5.5")]
+        //todo: obsolete since DS v5.5
         public bool ChangeHistory { get; set; } = false;
 
         public bool Comment { get; set; } = true;
@@ -294,6 +293,9 @@ namespace ASC.Web.Files.Services.DocumentService
 
         public bool Print { get; set; } = true;
 
+        public bool ModifyFilter { get; set; } = true;
+
+        //todo: obsolete since DS v6.0
         public bool Rename { get; set; } = false;
 
         public bool Review { get; set; } = true;
@@ -306,16 +308,22 @@ namespace ASC.Web.Files.Services.DocumentService
             AuthContext authContext,
             DisplayUserSettingsHelper displayUserSettingsHelper,
             FilesLinkUtility filesLinkUtility,
+            FileUtility fileUtility,
             BaseCommonLinkUtility baseCommonLinkUtility,
             PluginsConfig pluginsConfig,
             EmbeddedConfig embeddedConfig,
-            CustomizationConfig<T> customizationConfig)
+            CustomizationConfig<T> customizationConfig,
+            FilesSettingsHelper filesSettingsHelper,
+            IDaoFactory daoFactory)
         {
             UserManager = userManager;
             AuthContext = authContext;
             FilesLinkUtility = filesLinkUtility;
+            FileUtility = fileUtility;
             BaseCommonLinkUtility = baseCommonLinkUtility;
             Customization = customizationConfig;
+            FilesSettingsHelper = filesSettingsHelper;
+            DaoFactory = daoFactory;
             Plugins = pluginsConfig;
             Embedded = embeddedConfig;
             _userInfo = userManager.GetUsers(authContext.CurrentAccount.ID);
@@ -364,6 +372,41 @@ namespace ASC.Web.Files.Services.DocumentService
             }
         }
 
+
+        public List<TemplatesConfig> GetTemplates(EntryManager entryManager)
+        {
+            if (!AuthContext.IsAuthenticated || UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager)) return null;
+            if (!FilesSettingsHelper.TemplatesSection) return null;
+
+            var extension = FileUtility.GetInternalExtension(_configuration.Document.Title).TrimStart('.');
+            var filter = FilterType.FilesOnly;
+            switch (_configuration.GetFileType)
+            {
+                case FileType.Document:
+                    filter = FilterType.DocumentsOnly;
+                    break;
+                case FileType.Spreadsheet:
+                    filter = FilterType.SpreadsheetsOnly;
+                    break;
+                case FileType.Presentation:
+                    filter = FilterType.PresentationsOnly;
+                    break;
+            }
+
+            var fileDao = DaoFactory.GetFileDao<int>();
+            var files = entryManager.GetTemplates(fileDao, filter, false, Guid.Empty, string.Empty, false);
+            var listTemplates = from file in files
+                                select
+                                    new TemplatesConfig
+                                    {
+                                        Image = BaseCommonLinkUtility.GetFullAbsolutePath("skins/default/images/filetype/thumb/" + extension + ".png"),
+                                        Name = file.Title,
+                                        Title = file.Title,
+                                        Url = BaseCommonLinkUtility.GetFullAbsolutePath(FilesLinkUtility.GetFileWebEditorUrl(file.ID))
+                                    };
+            return listTemplates.ToList();
+        }
+
         public string CallbackUrl { get; set; }
 
         public string CreateUrl
@@ -381,12 +424,16 @@ namespace ASC.Web.Files.Services.DocumentService
         public PluginsConfig Plugins { get; set; }
 
         public CustomizationConfig<T> Customization { get; set; }
+        private FilesSettingsHelper FilesSettingsHelper { get; }
+        private IDaoFactory DaoFactory { get; }
 
         public EmbeddedConfig Embedded
         {
             set { _embeddedConfig = value; }
             get { return _configuration.Document.Info.Type == EditorType.Embedded ? _embeddedConfig : null; }
         }
+
+        public EncryptionKeysConfig EncryptionKeys { get; set; }
 
         public string FileChoiceUrl { get; set; }
 
@@ -395,9 +442,6 @@ namespace ASC.Web.Files.Services.DocumentService
             set { }
             get { return _userInfo.GetCulture().Name; }
         }
-
-        //todo: remove old feild after release 5.2+
-        public string MergeFolderUrl { get; set; }
 
         public string Mode
         {
@@ -408,9 +452,45 @@ namespace ASC.Web.Files.Services.DocumentService
         private UserManager UserManager { get; }
         private AuthContext AuthContext { get; }
         private FilesLinkUtility FilesLinkUtility { get; }
+        private FileUtility FileUtility { get; }
         private BaseCommonLinkUtility BaseCommonLinkUtility { get; }
 
         public string SaveAsUrl { get; set; }
+
+        public List<RecentConfig> GetRecent(EntryManager entryManager)
+        {
+            if (!AuthContext.IsAuthenticated || UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager)) return null;
+            if (!FilesSettingsHelper.RecentSection) return null;
+
+            var filter = FilterType.FilesOnly;
+            switch (_configuration.GetFileType)
+            {
+                case FileType.Document:
+                    filter = FilterType.DocumentsOnly;
+                    break;
+                case FileType.Spreadsheet:
+                    filter = FilterType.SpreadsheetsOnly;
+                    break;
+                case FileType.Presentation:
+                    filter = FilterType.PresentationsOnly;
+                    break;
+            }
+
+            var folderDao = DaoFactory.GetFolderDao<int>();
+            var fileDao = DaoFactory.GetFileDao<int>();
+            var files = entryManager.GetRecent(fileDao, filter, false, Guid.Empty, string.Empty, false);
+
+            var listRecent = from file in files
+                             where !Equals(_configuration.Document.Info.File.ID, file.ID)
+                             select
+                                 new RecentConfig
+                                 {
+                                     Folder = folderDao.GetFolder(file.FolderID).Title,
+                                     Title = file.Title,
+                                     Url = BaseCommonLinkUtility.GetFullAbsolutePath(FilesLinkUtility.GetFileWebEditorUrl(file.ID))
+                                 };
+            return listRecent.ToList();
+        }
 
         public string SharingSettingsUrl { get; set; }
 
@@ -498,6 +578,16 @@ namespace ASC.Web.Files.Services.DocumentService
         }
     }
 
+    public class EncryptionKeysConfig
+    {
+        public string CryptoEngineId = "{FFF0E1EB-13DB-4678-B67D-FF0A41DBBCEF}";
+
+        public string PrivateKeyEnc { get; set; }
+
+        public string PublicKey { get; set; }
+    }
+
+
     public class PluginsConfig
     {
         public string[] PluginsData
@@ -547,10 +637,9 @@ namespace ASC.Web.Files.Services.DocumentService
             IDaoFactory daoFactory,
             GlobalFolderHelper globalFolderHelper,
             PathProvider pathProvider,
-            WebImageSupplier webImageSupplier,
-            BaseCommonLinkUtility baseCommonLinkUtility,
             CustomerConfig<T> customerConfig,
-            LogoConfig<T> logoConfig)
+            LogoConfig<T> logoConfig,
+            FileSharing fileSharing)
         {
             CoreBaseSettings = coreBaseSettings;
             SettingsManager = settingsManager;
@@ -561,10 +650,9 @@ namespace ASC.Web.Files.Services.DocumentService
             DaoFactory = daoFactory;
             GlobalFolderHelper = globalFolderHelper;
             PathProvider = pathProvider;
-            WebImageSupplier = webImageSupplier;
-            BaseCommonLinkUtility = baseCommonLinkUtility;
             Customer = customerConfig;
             Logo = logoConfig;
+            FileSharing = fileSharing;
         }
 
         private Configuration<T> _configuration;
@@ -664,29 +752,19 @@ namespace ASC.Web.Files.Services.DocumentService
             }
         }
 
-        public string LoaderLogo
-        {
-            set { }
-            get
-            {
-                return CoreBaseSettings.CustomMode
-                           ? BaseCommonLinkUtility.GetFullAbsolutePath(WebImageSupplier.GetAbsoluteWebPath("loader.svg").ToLower())
-                           : null;
-            }
-        }
-
-        public string LoaderName
-        {
-            set { }
-            get
-            {
-                return CoreBaseSettings.CustomMode
-                           ? " "
-                           : null;
-            }
-        }
-
         public LogoConfig<T> Logo { get; set; }
+        private FileSharing FileSharing { get; }
+
+        public bool MentionShare
+        {
+            set { }
+            get
+            {
+                return AuthContext.IsAuthenticated
+                       && !_configuration.Document.Info.File.Encrypted
+                       && FileSharing.CanSetAccess(_configuration.Document.Info.File);
+            }
+        }
 
         public string ReviewDisplay
         {
@@ -703,8 +781,6 @@ namespace ASC.Web.Files.Services.DocumentService
         private IDaoFactory DaoFactory { get; }
         private GlobalFolderHelper GlobalFolderHelper { get; }
         private PathProvider PathProvider { get; }
-        private WebImageSupplier WebImageSupplier { get; }
-        private BaseCommonLinkUtility BaseCommonLinkUtility { get; }
     }
 
     public class CustomerConfig<T>
@@ -812,6 +888,27 @@ namespace ASC.Web.Files.Services.DocumentService
         private SettingsManager SettingsManager { get; }
     }
 
+    public class RecentConfig
+    {
+        public string Folder { get; set; }
+
+        public string Title { get; set; }
+
+        public string Url { get; set; }
+    }
+
+    public class TemplatesConfig
+    {
+        public string Image { get; set; }
+
+        //todo: obsolete since DS v5.6
+        public string Name { get; set; }
+
+        public string Title { get; set; }
+
+        public string Url { get; set; }
+    }
+
     public class UserConfig
     {
         public string Id { get; set; }
@@ -898,8 +995,6 @@ namespace ASC.Web.Files.Services.DocumentService
                 .AddDaoFactoryService()
                 .AddGlobalFolderHelperService()
                 .AddPathProviderService()
-                .AddWebImageSupplierService()
-                .AddBaseCommonLinkUtilityService()
                 .AddCustomerConfigService()
                 .AddLogoConfigService();
         }

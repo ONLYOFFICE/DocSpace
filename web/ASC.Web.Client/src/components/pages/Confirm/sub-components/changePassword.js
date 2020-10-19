@@ -10,11 +10,16 @@ import {
   PasswordInput,
   Loader,
   toastr,
-  Heading
+  Heading,
 } from "asc-web-components";
 import { PageLayout } from "asc-web-common";
-import { store } from "asc-web-common";
-import { getConfirmationInfo, changePassword } from '../../../../store/confirm/actions';
+import { store, utils as commonUtils } from "asc-web-common";
+import {
+  getConfirmationInfo,
+  changePassword,
+} from "../../../../store/confirm/actions";
+
+const { createPasswordHash } = commonUtils;
 const { logout } = store.auth.actions;
 
 const BodyStyle = styled.form`
@@ -55,27 +60,27 @@ class Form extends React.PureComponent {
       isLoading: false,
       passwordEmpty: false,
       key: linkData.confirmHeader,
-      userId: linkData.uid
+      userId: linkData.uid,
     };
   }
 
-  onKeyPress = target => {
+  onKeyPress = (target) => {
     if (target.key === "Enter") {
       this.onSubmit();
     }
   };
 
-  onChange = event => {
+  onChange = (event) => {
     this.setState({ password: event.target.value });
     !this.state.passwordValid && this.setState({ passwordValid: true });
     event.target.value.trim() && this.setState({ passwordEmpty: false });
     this.onKeyPress(event);
   };
 
-  onSubmit = e => {
-    this.setState({ isLoading: true }, function() {
+  onSubmit = (e) => {
+    this.setState({ isLoading: true }, function () {
       const { userId, password, key } = this.state;
-      const { history, changePassword } = this.props;
+      const { history, changePassword, hashSettings } = this.props;
       let hasError = false;
 
       if (!this.state.passwordValid) {
@@ -89,14 +94,15 @@ class Form extends React.PureComponent {
         this.setState({ isLoading: false });
         return false;
       }
+      const hash = createPasswordHash(password, hashSettings);
 
-      changePassword(userId, password, key)
+      changePassword(userId, hash, key)
         .then(() => this.props.logout())
         .then(() => {
           history.push("/");
           toastr.success(this.props.t("ChangePasswordSuccess"));
         })
-        .catch(error => {
+        .catch((error) => {
           toastr.error(this.props.t(`${error}`));
           this.setState({ isLoading: false });
         });
@@ -105,7 +111,7 @@ class Form extends React.PureComponent {
 
   componentDidMount() {
     const { getConfirmationInfo, history } = this.props;
-    getConfirmationInfo(this.state.key).catch(error => {
+    getConfirmationInfo(this.state.key).catch((error) => {
       toastr.error(this.props.t(`${error}`));
       history.push("/");
     });
@@ -119,14 +125,14 @@ class Form extends React.PureComponent {
     window.removeEventListener("keyup", this.onKeyPress);
   }
 
-  validatePassword = value => this.setState({ passwordValid: value });
+  validatePassword = (value) => this.setState({ passwordValid: value });
 
   render() {
     const { settings, isConfirmLoaded, t, greetingTitle } = this.props;
     const { isLoading, password, passwordEmpty } = this.state;
 
     return !isConfirmLoaded ? (
-      <Loader className="pageLoader" type="rombs" size='40px' />
+      <Loader className="pageLoader" type="rombs" size="40px" />
     ) : (
       <BodyStyle>
         <div className="password-header">
@@ -139,7 +145,7 @@ class Form extends React.PureComponent {
             {greetingTitle}
           </Heading>
         </div>
-        <Text className="password-text" fontSize='14px'>
+        <Text className="password-text" fontSize="14px">
           {t("PassworResetTitle")}
         </Text>
         <PasswordInput
@@ -161,8 +167,8 @@ class Form extends React.PureComponent {
           passwordSettings={settings}
           tooltipPasswordTitle="Password must contain:"
           tooltipPasswordLength={`${t("ErrorPasswordLength", {
-            fromNumber: 6,
-            toNumber: 30
+            fromNumber: settings.minLength,
+            toNumber: 30,
           })}:`}
           placeholder={t("PasswordCustomMode")}
           maxLength={30}
@@ -192,15 +198,19 @@ Form.propTypes = {
   history: PropTypes.object.isRequired,
   changePassword: PropTypes.func.isRequired,
   logout: PropTypes.func.isRequired,
-  linkData: PropTypes.object.isRequired
+  linkData: PropTypes.object.isRequired,
 };
 
 Form.defaultProps = {
-  password: ""
+  password: "",
 };
 
-const ChangePasswordForm = props => (
-  <PageLayout sectionBodyContent={<Form {...props} />} />
+const ChangePasswordForm = (props) => (
+  <PageLayout>
+    <PageLayout.SectionBody>
+      <Form {...props} />
+    </PageLayout.SectionBody>
+  </PageLayout>
 );
 
 function mapStateToProps(state) {
@@ -209,12 +219,13 @@ function mapStateToProps(state) {
     isConfirmLoaded: state.confirm.isConfirmLoaded,
     settings: state.auth.settings.passwordSettings,
     isAuthenticated: state.auth.isAuthenticated,
-    greetingTitle: state.auth.settings.greetingSettings
+    greetingTitle: state.auth.settings.greetingSettings,
+    hashSettings: state.auth.settings.hashSettings,
   };
 }
 
 export default connect(mapStateToProps, {
   changePassword,
   getConfirmationInfo,
-  logout
+  logout,
 })(withRouter(withTranslation()(ChangePasswordForm)));

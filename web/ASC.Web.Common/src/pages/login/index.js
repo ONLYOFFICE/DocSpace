@@ -1,6 +1,7 @@
-import React, { Component } from "react";
+import React, { Component, useEffect } from "react";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
+import { store } from "asc-web-common";
 import {
   Box,
   Button,
@@ -11,7 +12,7 @@ import {
   Checkbox,
   HelpButton,
   PasswordInput,
-  FieldContainer
+  FieldContainer,
 } from "asc-web-components";
 import PageLayout from "../../components/PageLayout";
 import { connect } from "react-redux";
@@ -19,10 +20,17 @@ import styled from "styled-components";
 import { withTranslation } from "react-i18next";
 import i18n from "./i18n";
 import ForgotPasswordModalDialog from "./sub-components/forgot-password-modal-dialog";
-import { login, setIsLoaded } from "../../store/auth/actions";
+import {
+  login,
+  setIsLoaded,
+  reloadPortalSettings,
+} from "../../store/auth/actions";
 import { sendInstructionsToChangePassword } from "../../api/people";
 import Register from "./sub-components/register-container";
-
+import { createPasswordHash } from "../../utils";
+//import history from "../../history";
+import { redirectToDefaultPage } from "../../utils";
+const { getLanguage } = store.auth.selectors;
 const LoginContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -33,11 +41,11 @@ const LoginContainer = styled.div`
   @media (max-width: 768px) {
     padding: 0 16px;
     max-width: 475px;
-    }
+  }
   @media (max-width: 375px) {
     margin: 72px auto 0 auto;
     max-width: 311px;
-    }
+  }
 
   .greeting-title {
     width: 100%;
@@ -51,16 +59,16 @@ const LoginContainer = styled.div`
   }
 
   .auth-form-container {
-    margin: 32px 22.5% 0 22.5%;
-    width: 32.4%;
+    margin: 32px 213px 0 213px;
+    width: 311px;
 
     @media (max-width: 768px) {
       margin: 32px 0 0 0;
-      width: 100%
+      width: 100%;
     }
     @media (max-width: 375px) {
       margin: 32px 0 0 0;
-      width: 100%
+      width: 100%;
     }
 
     .login-forgot-wrapper {
@@ -73,48 +81,48 @@ const LoginContainer = styled.div`
 
         .login-checkbox {
           float: left;
-           span {
+          span {
             font-size: 12px;
-           }
-         }
+          }
+        }
 
-          .login-tooltip {
-            display: inline-flex;
+        .login-tooltip {
+          display: inline-flex;
 
-             @media(min-width: 1025px) {
-               margin-left: 8px;
-               margin-top: 4px;
-             }
-             @media(max-width: 1024px) {
-               padding: 4px 8px 8px 8px;
-             }
+          @media (min-width: 1025px) {
+            margin-left: 8px;
+            margin-top: 4px;
+          }
+          @media (max-width: 1024px) {
+            padding: 4px 8px 8px 8px;
+          }
+        }
       }
-    }
 
       .login-link {
         float: right;
         line-height: 16px;
       }
-  }
+    }
 
-  .login-button {
-    margin-bottom: 16px;
-  }
+    .login-button {
+      margin-bottom: 16px;
+    }
 
-  .login-button-dialog {
-    margin-right: 8px;
-  }
+    .login-button-dialog {
+      margin-right: 8px;
+    }
 
-  .login-bottom-border {
-    width: 100%;
-    height: 1px;
-    background: #ECEEF1;
-  }
+    .login-bottom-border {
+      width: 100%;
+      height: 1px;
+      background: #eceef1;
+    }
 
-  .login-bottom-text {
-    margin: 0 8px;
+    .login-bottom-text {
+      margin: 0 8px;
+    }
   }
-}
 `;
 
 class Form extends Component {
@@ -133,23 +141,23 @@ class Form extends Component {
       email: "",
       emailError: false,
       errorText: "",
-      socialButtons: []
+      socialButtons: [],
     };
   }
 
-  onChangeLogin = event => {
+  onChangeLogin = (event) => {
     this.setState({ identifier: event.target.value });
     !this.state.identifierValid && this.setState({ identifierValid: true });
     this.state.errorText && this.setState({ errorText: "" });
   };
 
-  onChangePassword = event => {
+  onChangePassword = (event) => {
     this.setState({ password: event.target.value });
     !this.state.passwordValid && this.setState({ passwordValid: true });
     this.state.errorText && this.setState({ errorText: "" });
   };
 
-  onChangeEmail = event => {
+  onChangeEmail = (event) => {
     this.setState({ email: event.target.value, emailError: false });
   };
 
@@ -159,11 +167,11 @@ class Form extends Component {
     this.setState({
       openDialog: true,
       isDisabled: true,
-      email: this.state.identifier
+      email: this.state.identifier,
     });
   };
 
-  onKeyPress = event => {
+  onKeyPress = (event) => {
     if (event.key === "Enter") {
       !this.state.isDisabled
         ? this.onSubmit()
@@ -174,13 +182,12 @@ class Form extends Component {
   onSendPasswordInstructions = () => {
     if (!this.state.email.trim()) {
       this.setState({ emailError: true });
-    }
-    else {
+    } else {
       this.setState({ isLoading: true });
       sendInstructionsToChangePassword(this.state.email)
         .then(
-          res => toastr.success(res),
-          message => toastr.error(message)
+          (res) => toastr.success(res),
+          (message) => toastr.error(message)
         )
         .finally(this.onDialogClose());
     }
@@ -192,13 +199,13 @@ class Form extends Component {
       isDisabled: false,
       isLoading: false,
       email: "",
-      emailError: false
+      emailError: false,
     });
   };
 
   onSubmit = () => {
     const { errorText, identifier, password } = this.state;
-    const { login, setIsLoaded, history } = this.props;
+    const { login, setIsLoaded, history, hashSettings, homepage } = this.props;
 
     errorText && this.setState({ errorText: "" });
     let hasError = false;
@@ -220,26 +227,39 @@ class Form extends Component {
     if (hasError) return false;
 
     this.setState({ isLoading: true });
+    const hash = createPasswordHash(pass, hashSettings);
 
-    login(userName, pass)
+    login(userName, hash)
       .then(() => {
-        setIsLoaded(true);
-        history.push("/");
+        if (!redirectToDefaultPage()) {
+          setIsLoaded(true);
+        }
       })
-      .catch(error => {
-        this.setState({ errorText: error, isLoading: false });
+      .catch((error) => {
+        let err = error.data.error.message;
+        this.setState({ errorText: err, isLoading: false });
       });
   };
 
   componentDidMount() {
-    const { match, t } = this.props;
+    const {
+      match,
+      t,
+      hashSettings,
+      reloadPortalSettings,
+      organizationName,
+    } = this.props;
     const { error, confirmedEmail } = match.params;
 
-    document.title = `${t("Authorization")} – ${t("OrganizationName")}`;
+    document.title = `${t("Authorization")} – ${organizationName}`; //TODO: implement the setDocumentTitle() utility in ASC.Web.Common
 
     error && this.setState({ errorText: error });
     confirmedEmail && this.setState({ identifier: confirmedEmail });
     window.addEventListener("keyup", this.onKeyPress);
+
+    if (!hashSettings) {
+      reloadPortalSettings();
+    }
   }
 
   componentWillUnmount() {
@@ -250,8 +270,8 @@ class Form extends Component {
     minLength: 6,
     upperCase: false,
     digits: false,
-    specSymbols: false
-  }
+    specSymbols: false,
+  };
 
   render() {
     const { greetingTitle, match, t } = this.props;
@@ -267,7 +287,7 @@ class Form extends Component {
       email,
       emailError,
       errorText,
-      socialButtons
+      socialButtons,
     } = this.state;
     const { params } = match;
 
@@ -276,16 +296,16 @@ class Form extends Component {
     return (
       <>
         <LoginContainer>
-
-          <Text fontSize="32px"
+          <Text
+            fontSize="32px"
             fontWeight={600}
             textAlign="center"
-            className="greeting-title">
+            className="greeting-title"
+          >
             {greetingTitle}
           </Text>
 
           <form className="auth-form-container">
-
             <FieldContainer
               isVertical={true}
               labelVisible={false}
@@ -338,19 +358,19 @@ class Form extends Component {
                   className="login-checkbox"
                   isChecked={isChecked}
                   onChange={this.onChangeCheckbox}
-                  label={<Text fontSize='13px'>{t("Remember")}</Text>}
+                  label={<Text fontSize="13px">{t("Remember")}</Text>}
                 />
                 <HelpButton
                   className="login-tooltip"
                   helpButtonHeaderContent={t("CookieSettingsTitle")}
                   tooltipContent={
-                    <Text fontSize='12px'>{t("RememberHelper")}</Text>
+                    <Text fontSize="12px">{t("RememberHelper")}</Text>
                   }
                 />
               </div>
 
               <Link
-                fontSize='13px'
+                fontSize="13px"
                 color="#316DAA"
                 className="login-link"
                 type="page"
@@ -361,7 +381,7 @@ class Form extends Component {
               </Link>
             </div>
 
-            {openDialog &&
+            {openDialog && (
               <ForgotPasswordModalDialog
                 openDialog={openDialog}
                 isLoading={isLoading}
@@ -372,7 +392,7 @@ class Form extends Component {
                 onDialogClose={this.onDialogClose}
                 t={t}
               />
-            }
+            )}
 
             <Button
               id="button"
@@ -388,25 +408,25 @@ class Form extends Component {
             />
 
             {params.confirmedEmail && (
-              <Text isBold={true} fontSize='16px'>
+              <Text isBold={true} fontSize="16px">
                 {t("MessageEmailConfirmed")} {t("MessageAuthorize")}
               </Text>
             )}
-            <Text fontSize='14px' color="#c30">
+            <Text fontSize="14px" color="#c30">
               {errorText}
             </Text>
 
-            {socialButtons.length ? (<Box displayProp="flex" alignItems="center">
-              <div className="login-bottom-border"></div>
-              <Text className="login-bottom-text" color="#A3A9AE">{t("Or")}</Text>
-              <div className="login-bottom-border"></div>
-            </Box>
+            {socialButtons.length ? (
+              <Box displayProp="flex" alignItems="center">
+                <div className="login-bottom-border"></div>
+                <Text className="login-bottom-text" color="#A3A9AE">
+                  {t("Or")}
+                </Text>
+                <div className="login-bottom-border"></div>
+              </Box>
             ) : null}
-
           </form>
-
         </LoginContainer>
-
       </>
     );
   }
@@ -415,38 +435,47 @@ class Form extends Component {
 Form.propTypes = {
   login: PropTypes.func.isRequired,
   match: PropTypes.object.isRequired,
-  history: PropTypes.object.isRequired,
+  //history: PropTypes.object.isRequired,
   setIsLoaded: PropTypes.func.isRequired,
   greetingTitle: PropTypes.string.isRequired,
   t: PropTypes.func.isRequired,
   i18n: PropTypes.object.isRequired,
   language: PropTypes.string.isRequired,
-  socialButtons: PropTypes.array
+  socialButtons: PropTypes.array,
+  organizationName: PropTypes.string,
+  homepage: PropTypes.string,
 };
 
 Form.defaultProps = {
   identifier: "",
   password: "",
-  email: ""
+  email: "",
 };
 
 const FormWrapper = withTranslation()(Form);
 const RegisterWrapper = withTranslation()(Register);
 
-const LoginForm = props => {
+const LoginForm = (props) => {
   const { language, isLoaded, enabledJoin } = props;
 
-  i18n.changeLanguage(language);
+  useEffect(() => {
+    i18n.changeLanguage(language);
+  }, [language]);
 
   return (
     <>
-      {isLoaded && <>
-        <PageLayout sectionBodyContent={<FormWrapper i18n={i18n} {...props} />} />
-        {enabledJoin &&
-          <RegisterWrapper i18n={i18n} {...props} />
-        }
-      </>
-      }
+      {isLoaded && (
+        <>
+          <PageLayout>
+            <PageLayout.SectionBody>
+              <>
+                <FormWrapper i18n={i18n} {...props} />
+                {enabledJoin && <RegisterWrapper i18n={i18n} {...props} />}
+              </>
+            </PageLayout.SectionBody>
+          </PageLayout>
+        </>
+      )}
     </>
   );
 };
@@ -454,18 +483,30 @@ const LoginForm = props => {
 LoginForm.propTypes = {
   language: PropTypes.string.isRequired,
   isLoaded: PropTypes.bool,
-  enabledJoin: PropTypes.bool
+  enabledJoin: PropTypes.bool,
 };
 
 function mapStateToProps(state) {
+  const { isLoaded, settings } = state.auth;
+  const {
+    greetingSettings,
+    enabledJoin,
+    organizationName,
+    hashSettings,
+  } = settings;
+
   return {
-    isLoaded: state.auth.isLoaded,
-    language: state.auth.user.cultureName || state.auth.settings.culture,
-    greetingTitle: state.auth.settings.greetingSettings,
-    enabledJoin: state.auth.settings.enabledJoin
+    isLoaded,
+    enabledJoin,
+    organizationName,
+    language: getLanguage(state),
+    greetingTitle: greetingSettings,
+    hashSettings,
   };
 }
 
-export default connect(mapStateToProps, { login, setIsLoaded })(
-  withRouter(LoginForm)
-);
+export default connect(mapStateToProps, {
+  login,
+  setIsLoaded,
+  reloadPortalSettings,
+})(withRouter(LoginForm));

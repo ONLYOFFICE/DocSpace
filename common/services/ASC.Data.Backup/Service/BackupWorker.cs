@@ -271,14 +271,16 @@ namespace ASC.Data.Backup.Service
 
     public static class BackupProgressItemEnumConverter
     {
-        public static BackupProgressEnum Convert(this BackupProgressItemEnum backupProgressItemEnum) =>
-            backupProgressItemEnum switch
+        public static BackupProgressEnum Convert(this BackupProgressItemEnum backupProgressItemEnum)
+        {
+            return backupProgressItemEnum switch
             {
                 BackupProgressItemEnum.Backup => BackupProgressEnum.Backup,
                 BackupProgressItemEnum.Restore => BackupProgressEnum.Restore,
                 BackupProgressItemEnum.Transfer => BackupProgressEnum.Transfer,
                 _ => BackupProgressEnum.Backup
             };
+        }
     }
 
     public abstract class BaseBackupProgressItem : IProgressItem
@@ -370,10 +372,12 @@ namespace ASC.Data.Backup.Service
 
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<BackupWorkerScope>();
-            var (tenantManager, backupStorageFactory, notifyHelper, backupRepository, backupWorker, backupPortalTask, _, _) = scopeClass;
+            var (tenantManager, backupStorageFactory, notifyHelper, backupRepository, backupWorker, backupPortalTask, _, _, coreBaseSettings) = scopeClass;
 
             var tenant = tenantManager.GetTenant(TenantId);
-            var backupName = string.Format("{0}_{1:yyyy-MM-dd_HH-mm-ss}.{2}", tenant.TenantAlias, DateTime.UtcNow, ArchiveFormat);
+            var dateTime = coreBaseSettings.Standalone ? DateTime.Now : DateTime.UtcNow;
+            var backupName = string.Format("{0}_{1:yyyy-MM-dd_HH-mm-ss}.{2}", tenantManager.GetTenant(TenantId).TenantAlias, dateTime, ArchiveFormat);
+
             var tempFile = Path.Combine(TempFolder, backupName);
             var storagePath = tempFile;
             try
@@ -502,7 +506,7 @@ namespace ASC.Data.Backup.Service
         {
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<BackupWorkerScope>();
-            var (tenantManager, backupStorageFactory, notifyHelper, _, backupWorker, _, restorePortalTask, _) = scopeClass;
+            var (tenantManager, backupStorageFactory, notifyHelper, _, backupWorker, _, restorePortalTask, _, _) = scopeClass;
             Tenant tenant = null;
             var tempFile = PathHelper.GetTempFileName(TempFolder);
             try
@@ -661,7 +665,7 @@ namespace ASC.Data.Backup.Service
         {
             using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<BackupWorkerScope>();
-            var (tenantManager, _, notifyHelper, _, backupWorker, _, _, transferPortalTask) = scopeClass;
+            var (tenantManager, _, notifyHelper, _, backupWorker, _, _, transferPortalTask, _) = scopeClass;
             var tempFile = PathHelper.GetTempFileName(TempFolder);
             var tenant = tenantManager.GetTenant(TenantId);
             var alias = tenant.TenantAlias;
@@ -800,6 +804,7 @@ namespace ASC.Data.Backup.Service
         private BackupPortalTask BackupPortalTask { get; }
         private RestorePortalTask RestorePortalTask { get; }
         private TransferPortalTask TransferPortalTask { get; }
+        public CoreBaseSettings CoreBaseSettings { get; }
 
         public BackupWorkerScope(TenantManager tenantManager,
             BackupStorageFactory backupStorageFactory,
@@ -808,7 +813,8 @@ namespace ASC.Data.Backup.Service
             BackupWorker backupWorker,
             BackupPortalTask backupPortalTask,
             RestorePortalTask restorePortalTask,
-            TransferPortalTask transferPortalTask)
+            TransferPortalTask transferPortalTask,
+            CoreBaseSettings coreBaseSettings)
         {
             TenantManager = tenantManager;
             BackupStorageFactory = backupStorageFactory;
@@ -818,6 +824,7 @@ namespace ASC.Data.Backup.Service
             BackupPortalTask = backupPortalTask;
             RestorePortalTask = restorePortalTask;
             TransferPortalTask = transferPortalTask;
+            CoreBaseSettings = coreBaseSettings;
         }
 
         public void Deconstruct(out TenantManager tenantManager,
@@ -827,7 +834,8 @@ namespace ASC.Data.Backup.Service
             out BackupWorker backupWorker,
             out BackupPortalTask backupPortalTask,
             out RestorePortalTask restorePortalTask,
-            out TransferPortalTask transferPortalTask)
+            out TransferPortalTask transferPortalTask,
+            out CoreBaseSettings coreBaseSettings)
         {
             tenantManager = TenantManager;
             backupStorageFactory = BackupStorageFactory;
@@ -837,6 +845,7 @@ namespace ASC.Data.Backup.Service
             backupPortalTask = BackupPortalTask;
             restorePortalTask = RestorePortalTask;
             transferPortalTask = TransferPortalTask;
+            coreBaseSettings = CoreBaseSettings;
         }
     }
 

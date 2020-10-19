@@ -1,4 +1,3 @@
-
 using System.Text;
 using System.Text.Json.Serialization;
 
@@ -34,23 +33,29 @@ namespace ASC.Files
 
             services.AddMemoryCache();
 
-            var diHelper = new DIHelper(services);
+            base.ConfigureServices(services);
 
-            diHelper
+            DIHelper
                 .AddApiProductEntryPointService()
                 .AddDocumentsControllerService()
-                .AddEncryptionControllerService()
+                .AddPrivacyRoomApiService()
                 .AddFileHandlerService()
                 .AddChunkedUploaderHandlerService()
                 .AddThirdPartyAppHandlerService()
                 .AddDocuSignHandlerService()
                 .AddNotifyConfiguration();
 
-            base.ConfigureServices(services);
+
         }
 
         public override void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseCors(builder =>
+                builder
+                    .AllowAnyOrigin()
+                    .AllowAnyHeader()
+                    .AllowAnyMethod());
+
             base.Configure(app, env);
 
             app.MapWhen(

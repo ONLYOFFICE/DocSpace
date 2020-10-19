@@ -5,7 +5,7 @@
 export const parseErrorTypes = Object.freeze({
   None: 0,
   EmptyRecipients: 1,
-  IncorrectEmail: 2
+  IncorrectEmail: 2,
 });
 
 export const errorKeys = Object.freeze({
@@ -19,5 +19,5 @@ export const errorKeys = Object.freeze({
   MaxLengthExceeded: "MaxLengthExceeded",
   IncorrectEmail: "IncorrectEmail",
   ManyEmails: "ManyEmails",
-  EmptyEmail: "EmptyEmail"
+  EmptyEmail: "EmptyEmail",
 });

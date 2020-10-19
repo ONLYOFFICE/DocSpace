@@ -64,7 +64,6 @@ namespace ASC.Web.Studio.Core.Notify
         private static readonly object locker = new object();
         private static readonly Regex urlReplacer = new Regex(@"(<a [^>]*href=(('(?<url>[^>']*)')|(""(?<url>[^>""]*)""))[^>]*>)|(<img [^>]*src=(('(?<url>(?![data:|cid:])[^>']*)')|(""(?<url>(?![data:|cid:])[^>""]*)""))[^/>]*/?>)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         private static readonly Regex textileLinkReplacer = new Regex(@"""(?<text>[\w\W]+?)"":""(?<link>[^""]+)""", RegexOptions.Singleline | RegexOptions.Compiled);
-        private static IServiceProvider ServiceProvider { get; set; }
         public static void Configure(IServiceProvider serviceProvider)
         {
             lock (locker)
@@ -72,7 +71,6 @@ namespace ASC.Web.Studio.Core.Notify
                 if (!configured)
                 {
                     configured = true;
-                    ServiceProvider = serviceProvider;
                     WorkContext.NotifyStartUp(serviceProvider);
                     WorkContext.NotifyContext.NotifyClientRegistration += NotifyClientRegisterCallback;
                     WorkContext.NotifyContext.NotifyEngine.BeforeTransferRequest += BeforeTransferRequest;

@@ -51,7 +51,6 @@ namespace ASC.Files.Helpers
         private readonly ApiContext ApiContext;
         private readonly FileStorageService<T> FileStorageService;
 
-        private GlobalFolderHelper GlobalFolderHelper { get; }
         private FileWrapperHelper FileWrapperHelper { get; }
         private FilesSettingsHelper FilesSettingsHelper { get; }
         private FilesLinkUtility FilesLinkUtility { get; }
@@ -81,7 +80,6 @@ namespace ASC.Files.Helpers
         private ConsumerFactory ConsumerFactory { get; }
         private EasyBibHelper EasyBibHelper { get; }
         private ChunkedUploadSessionHelper ChunkedUploadSessionHelper { get; }
-        private ProductEntryPoint ProductEntryPoint { get; }
         public ILog Logger { get; set; }
 
         /// <summary>
@@ -91,7 +89,6 @@ namespace ASC.Files.Helpers
         public FilesControllerHelper(
             ApiContext context,
             FileStorageService<T> fileStorageService,
-            GlobalFolderHelper globalFolderHelper,
             FileWrapperHelper fileWrapperHelper,
             FilesSettingsHelper filesSettingsHelper,
             FilesLinkUtility filesLinkUtility,
@@ -117,12 +114,10 @@ namespace ASC.Files.Helpers
             ConsumerFactory consumerFactory,
             EasyBibHelper easyBibHelper,
             ChunkedUploadSessionHelper chunkedUploadSessionHelper,
-            ProductEntryPoint productEntryPoint,
             IOptionsMonitor<ILog> optionMonitor)
         {
             ApiContext = context;
             FileStorageService = fileStorageService;
-            GlobalFolderHelper = globalFolderHelper;
             FileWrapperHelper = fileWrapperHelper;
             FilesSettingsHelper = filesSettingsHelper;
             FilesLinkUtility = filesLinkUtility;
@@ -152,7 +147,6 @@ namespace ASC.Files.Helpers
             WordpressHelper = wordpressHelper;
             EasyBibHelper = easyBibHelper;
             ChunkedUploadSessionHelper = chunkedUploadSessionHelper;
-            ProductEntryPoint = productEntryPoint;
             Logger = optionMonitor.Get("ASC.Files");
         }
 
@@ -215,11 +209,11 @@ namespace ASC.Files.Helpers
             }
         }
 
-        public FileWrapper<T> UpdateFileStream(Stream file, T fileId, bool encrypted = false)
+        public FileWrapper<T> UpdateFileStream(Stream file, T fileId, bool encrypted = false, bool forcesave = false)
         {
             try
             {
-                var resultFile = FileStorageService.UpdateFileStream(fileId, file, encrypted);
+                var resultFile = FileStorageService.UpdateFileStream(fileId, file, encrypted, forcesave);
                 return FileWrapperHelper.Get(resultFile);
             }
             catch (FileNotFoundException e)
@@ -308,13 +302,11 @@ namespace ASC.Files.Helpers
 
         private FileWrapper<T> CreateFile(T folderId, string title, string content, string extension)
         {
-            using (var memStream = new MemoryStream(Encoding.UTF8.GetBytes(content)))
-            {
-                var file = FileUploader.Exec(folderId,
-                                  title.EndsWith(extension, StringComparison.OrdinalIgnoreCase) ? title : (title + extension),
-                                  memStream.Length, memStream);
-                return FileWrapperHelper.Get(file);
-            }
+            using var memStream = new MemoryStream(Encoding.UTF8.GetBytes(content));
+            var file = FileUploader.Exec(folderId,
+                              title.EndsWith(extension, StringComparison.OrdinalIgnoreCase) ? title : (title + extension),
+                              memStream.Length, memStream);
+            return FileWrapperHelper.Get(file);
         }
 
         public FileWrapper<T> CreateHtmlFile(T folderId, string title, string content)
@@ -329,9 +321,9 @@ namespace ASC.Files.Helpers
             return FolderWrapperHelper.Get(folder);
         }
 
-        public FileWrapper<T> CreateFile(T folderId, string title)
+        public FileWrapper<T> CreateFile(T folderId, string title, T templateId)
         {
-            var file = FileStorageService.CreateNewFile(new FileModel<T> { ParentId = folderId, Title = title });
+            var file = FileStorageService.CreateNewFile(new FileModel<T> { ParentId = folderId, Title = title, TemplateId = templateId });
             return FileWrapperHelper.Get(file);
         }
 
@@ -356,6 +348,13 @@ namespace ASC.Files.Helpers
         public FileWrapper<T> GetFileInfo(T fileId, int version = -1)
         {
             var file = FileStorageService.GetFile(fileId, version).NotFoundIfNull("File not found");
+            return FileWrapperHelper.Get(file);
+        }
+
+        public FileWrapper<T> AddToRecent(T fileId, int version = -1)
+        {
+            var file = FileStorageService.GetFile(fileId, version).NotFoundIfNull("File not found");
+            EntryManager.MarkAsRecent(file);
             return FileWrapperHelper.Get(file);
         }
 
@@ -444,23 +443,13 @@ namespace ASC.Files.Helpers
 
         public IEnumerable<FileOperationWraper> DeleteFolder(T folderId, bool deleteAfter, bool immediately)
         {
-            return FileStorageService.DeleteFile("delete", folderId, false, deleteAfter, immediately)
+            return FileStorageService.DeleteFolder("delete", folderId, false, deleteAfter, immediately)
                     .Select(FileOperationWraperHelper.Get);
         }
 
         public IEnumerable<FileEntryWrapper> MoveOrCopyBatchCheck(BatchModel batchModel)
         {
-            var checkedFiles = new List<object>();
-            var checkedFolders = new List<object>();
-
-            if (batchModel.DestFolderId.ValueKind == System.Text.Json.JsonValueKind.Number)
-            {
-                (checkedFiles, checkedFolders) = FileStorageService.MoveOrCopyFilesCheck(batchModel.FileIds, batchModel.FolderIds, batchModel.DestFolderId);
-            }
-            else
-            {
-                (checkedFiles, checkedFolders) = FileStorageService.MoveOrCopyFilesCheck(batchModel.FileIds, batchModel.FolderIds, batchModel.DestFolderId);
-            }
+            var (checkedFiles, checkedFolders) = FileStorageService.MoveOrCopyFilesCheck(batchModel.FileIds, batchModel.FolderIds, batchModel.DestFolderId);
 
             var entries = FileStorageService.GetItems(checkedFiles.OfType<int>().Select(Convert.ToInt32), checkedFiles.OfType<int>().Select(Convert.ToInt32), FilterType.FilesOnly, false, "", "");
 
@@ -605,14 +594,9 @@ namespace ASC.Files.Helpers
             return GetFolderSecurityInfo(folderId);
         }
 
-        public bool RemoveSecurityInfo(BaseBatchModel<T> model)
+        public bool RemoveSecurityInfo(List<T> fileIds, List<T> folderIds)
         {
-            var itemList = new ItemList<string>();
-
-            itemList.AddRange((model.FolderIds ?? new List<T>()).Select(x => "folder_" + x));
-            itemList.AddRange((model.FileIds ?? new List<T>()).Select(x => "file_" + x));
-
-            FileStorageService.RemoveAce(itemList);
+            FileStorageService.RemoveAce(fileIds, folderIds);
 
             return true;
         }
@@ -811,7 +795,7 @@ namespace ASC.Files.Helpers
             var startIndex = Convert.ToInt32(ApiContext.StartIndex);
             return FolderContentWrapperHelper.Get(FileStorageService.GetFolderItems(folderId,
                                                                                startIndex,
-                                                                               Convert.ToInt32(ApiContext.Count) - 1, //NOTE: in ApiContext +1
+                                                                               Convert.ToInt32(ApiContext.Count),
                                                                                filterType,
                                                                                filterType == FilterType.ByUser,
                                                                                userIdOrGroupId.ToString(),
@@ -1041,14 +1025,12 @@ namespace ASC.Files.Helpers
                     .AddFilesLinkUtilityService()
                     .AddApiContextService()
                     .AddFileStorageService()
-                    .AddGlobalFolderHelperService()
                     .AddFilesSettingsHelperService()
                     .AddBoxLoginProviderService()
                     .AddDropboxLoginProviderService()
                     .AddOneDriveLoginProviderService()
                     .AddGoogleLoginProviderService()
                     .AddChunkedUploadSessionHelperService()
-                    .AddProductEntryPointService()
                     ;
             }
 

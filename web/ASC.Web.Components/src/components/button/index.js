@@ -1,41 +1,51 @@
-import React from 'react';
-import styled, { css } from 'styled-components';
-import PropTypes from 'prop-types';
-import Loader from '../loader';
-import isEqual from "lodash/isEqual";
+import React from "react";
+import styled, { css } from "styled-components";
+import PropTypes from "prop-types";
+import Loader from "../loader";
 
 const activeCss = css`
-  background-color: ${props => (props.primary ? '#1F97CA' : '#ECEEF1')};
-  color: ${props => (props.primary ? '#ffffff' : '#333333')};
+  background-color: ${(props) => (props.primary ? "#1F97CA" : "#ECEEF1")};
+  color: ${(props) => (props.primary ? "#ffffff" : "#333333")};
 
-  ${props =>
+  ${(props) =>
     !props.primary &&
     css`
-      border: 1px solid #2DA7DB;
+      border: 1px solid #2da7db;
       box-sizing: border-box;
     `}
-
 `;
 
 const hoverCss = css`
-  background-color: ${props => (props.primary ? '#3DB8EC' : '#FFFFFF')};
-  color: ${props => (props.primary ? '#ffffff' : '#333333')};
+  background-color: ${(props) => (props.primary ? "#3DB8EC" : "#FFFFFF")};
+  color: ${(props) => (props.primary ? "#ffffff" : "#333333")};
 
-  ${props =>
+  ${(props) =>
     !props.primary &&
     css`
-      border: 1px solid #2DA7DB;
+      border: 1px solid #2da7db;
       box-sizing: border-box;
     `}
 `;
 
-// eslint-disable-next-line no-unused-vars
-const ButtonWrapper = ({primary, scale, size, isHovered, isClicked, isDisabled, isLoading, label, innerRef, minWidth, ...props}) => <button ref={innerRef} type="button" {...props}></button>;
+// eslint-disable-next-line no-unused-vars, react/prop-types
+const ButtonWrapper = ({
+  primary,
+  scale,
+  size,
+  isHovered,
+  isClicked,
+  isDisabled,
+  isLoading,
+  label,
+  innerRef,
+  minWidth,
+  ...props
+}) => <button ref={innerRef} type="button" {...props}></button>;
 
 ButtonWrapper.propTypes = {
   label: PropTypes.string,
   primary: PropTypes.bool,
-  size: PropTypes.oneOf(['base', 'medium', 'big', 'large']),
+  size: PropTypes.oneOf(["base", "medium", "big", "large"]),
   scale: PropTypes.bool,
   icon: PropTypes.node,
 
@@ -50,91 +60,114 @@ ButtonWrapper.propTypes = {
 };
 
 const StyledButton = styled(ButtonWrapper).attrs((props) => ({
-  disabled: props.isDisabled || props.isLoading ? 'disabled' : '',
-  tabIndex: props.tabIndex
+  disabled: props.isDisabled || props.isLoading ? "disabled" : "",
+  tabIndex: props.tabIndex,
 }))`
-  height: ${props =>
-    (props.size === 'large' && '44px') ||
-    (props.size === 'big' && '36px') ||
-    (props.size === 'medium' && '32px') ||
-    (props.size === 'base' && '24px') 
-  };
+  height: ${(props) =>
+    (props.size === "large" && "44px") ||
+    (props.size === "big" && "36px") ||
+    (props.size === "medium" && "32px") ||
+    (props.size === "base" && "24px")};
 
-  line-height: ${props =>
-    (props.size === 'large' && '20px') ||
-    (props.size === 'big' && '20px') ||
-    (props.size === 'medium' && '18px') ||
-    (props.size === 'base' && '15px')
-  };
+  line-height: ${(props) =>
+    (props.size === "large" && "20px") ||
+    (props.size === "big" && "20px") ||
+    (props.size === "medium" && "18px") ||
+    (props.size === "base" && "15px")};
 
-  font-size: ${props =>
-    (props.size === 'large' && '16px') ||
-    (props.size === 'big' && '14px') ||
-    (props.size === 'medium' && '13px') ||
-    (props.size === 'base' && '12px')
-  };
+  font-size: ${(props) =>
+    (props.size === "large" && "16px") ||
+    (props.size === "big" && "14px") ||
+    (props.size === "medium" && "13px") ||
+    (props.size === "base" && "12px")};
 
-  color: ${props => (props.primary && '#FFFFFF') || (!props.isDisabled ? '#333333' : '#ECEEF1')};
+  color: ${(props) =>
+    (props.primary && "#FFFFFF") ||
+    (!props.isDisabled ? "#333333" : "#ECEEF1")};
 
-  background-color: ${props => 
-    (!props.isDisabled || props.isLoading 
-      ? (props.primary ? '#2DA7DB' : '#FFFFFF') 
-      : (props.primary ? '#A6DCF2' : '#FFFFFF'))
-  };
+  background-color: ${(props) =>
+    !props.isDisabled || props.isLoading
+      ? props.primary
+        ? "#2DA7DB"
+        : "#FFFFFF"
+      : props.primary
+      ? "#A6DCF2"
+      : "#FFFFFF"};
 
-  ${props => props.scale && `width: 100%;`}
+  ${(props) => props.scale && `width: 100%;`}
 
-  padding: ${props =>
-    (props.size === 'large' && (props.primary 
-      ? (props.icon 
-          ? (props.label ? '11px 24px 13px 24px' : '11px 11px 13px 11px')
-          : (props.label ? '12px 28px 12px 28px' : '0px')
-        ) 
-      : (props.icon 
-          ? (props.label ? '11px 24px 13px 24px' : '11px 11px 13px 11px')
-          : (props.label ? '11px 28px 13px 28px' : '0px')
-        ))
-    ) ||
-    (props.size === 'big' && (props.primary 
-      ? (props.icon 
-          ? (props.label ? '8px 24px 9px 24px' : '8px 10px 9px 10px')
-          : (props.label ? '8px 26px 9px 25px' : '0px')
-        ) 
-      : (props.icon 
-          ? (props.label ? '8px 24px 9px 24px' : '8px 10px 9px 10px')
-          : (props.label ? '8px 26px 9px 25px' : '0px')
-        ))
-    ) ||
-    (props.size === 'medium' && (props.primary 
-      ? (props.icon 
-          ? (props.label ? '6px 24px 7px 24px' : '6px 10px 7px 10px')
-          : (props.label ? '7px 24px 7px 24px' : '0px')
-        ) 
-      : (props.icon 
-          ? (props.label ? '6px 24px 7px 24px' : '6px 10px 7px 10px')
-          : (props.label ? '7px 24px 7px 24px' : '0px')
-        ))
-    ) ||
-    (props.size === 'base' && (props.primary 
-      ? (props.icon 
-          ? (props.label ? '3px 20px 5px 20px' : '3px 5px 5px 5px') 
-          : (props.label ? '3px 24px 5px 24px' : '0px')
-        )
-      : (props.icon 
-          ? (props.label ? '3px 20px 5px 20px' : '3px 5px 5px 5px') 
-          : (props.label ? '3px 24px 5px 24px' : '0px')
-        ))
-    )
-  };
+  padding: ${(props) =>
+    (props.size === "large" &&
+      (props.primary
+        ? props.icon
+          ? props.label
+            ? "11px 24px 13px 24px"
+            : "11px 11px 13px 11px"
+          : props.label
+          ? "12px 20px 12px 20px"
+          : "0px"
+        : props.icon
+        ? props.label
+          ? "11px 24px 13px 24px"
+          : "11px 11px 13px 11px"
+        : props.label
+        ? "12px 20px 12px 20px"
+        : "0px")) ||
+    (props.size === "big" &&
+      (props.primary
+        ? props.icon
+          ? props.label
+            ? "8px 24px 9px 24px"
+            : "8px 10px 9px 10px"
+          : props.label
+          ? "8px 16px 8px 16px"
+          : "0px"
+        : props.icon
+        ? props.label
+          ? "8px 24px 9px 24px"
+          : "8px 10px 9px 10px"
+        : props.label
+        ? "8px 16px 8px 16px"
+        : "0px")) ||
+    (props.size === "medium" &&
+      (props.primary
+        ? props.icon
+          ? props.label
+            ? "6px 24px 7px 24px"
+            : "6px 10px 7px 10px"
+          : props.label
+          ? "7px 16px 7px 16px"
+          : "0px"
+        : props.icon
+        ? props.label
+          ? "6px 24px 7px 24px"
+          : "6px 10px 7px 10px"
+        : props.label
+        ? "7px 16px 7px 16px"
+        : "0px")) ||
+    (props.size === "base" &&
+      (props.primary
+        ? props.icon
+          ? props.label
+            ? "3px 20px 5px 20px"
+            : "3px 5px 5px 5px"
+          : props.label
+          ? "4.5px 12px 4.5px 12px"
+          : "0px"
+        : props.icon
+        ? props.label
+          ? "3px 20px 5px 20px"
+          : "3px 5px 5px 5px"
+        : props.label
+        ? "4.5px 12px 4.5px 12px"
+        : "0px"))};
 
-  ${ props => props.minWidth 
-    ? `min-width: ${props.minWidth};`
-    : null
-  }
-  
-  cursor: ${props => props.isDisabled || props.isLoading ? 'default !important' : 'pointer'};
+  ${(props) => (props.minwidth ? `min-width: ${props.minwidth};` : null)}
 
-  font-family: 'Open Sans', normal;
+  cursor: ${(props) =>
+    props.isDisabled || props.isLoading ? "default !important" : "pointer"};
+
+  font-family: "Open Sans", normal;
   border: none;
   margin: 0;
   display: inline-block;
@@ -159,28 +192,39 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
   white-space: nowrap;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
-  ${props =>
+  ${(props) =>
     !props.primary &&
     css`
       border: 1px solid;
       box-sizing: border-box;
-      border-color: ${props => (!props.isDisabled && !props.isLoading) ? '#D0D5DA' : '#ECEEF1'};
+      border-color: ${(props) =>
+        !props.isDisabled && !props.isLoading ? "#D0D5DA" : "#ECEEF1"};
     `}
 
-  ${props => (!props.isDisabled && !props.isLoading) && (props.isHovered ? hoverCss : css`
-    &:hover {
-      ${hoverCss}
-    }`)
-  }
+  ${(props) =>
+    !props.isDisabled &&
+    !props.isLoading &&
+    (props.isHovered
+      ? hoverCss
+      : css`
+          &:hover {
+            ${hoverCss}
+          }
+        `)}
 
-  ${props => (!props.isDisabled && !props.isLoading) && (props.isClicked ? activeCss : css`
-    &:active {
-      ${activeCss}
-    }`)
-  }
+  ${(props) =>
+    !props.isDisabled &&
+    !props.isLoading &&
+    (props.isClicked
+      ? activeCss
+      : css`
+          &:active {
+            ${activeCss}
+          }
+        `)}
 
   &:focus {
-    outline: none
+    outline: none;
   }
 
   .btnIcon,
@@ -190,59 +234,64 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
   }
 
   .loader {
-    vertical-align: ${props => ( props.size === 'large' || props.size === 'base' )
-      ? 'middle' 
-      : props.size === 'medium' 
-        ? 'text-bottom'
-        : 'text-top'};
+    vertical-align: ${(props) =>
+      props.size === "large" || props.size === "base"
+        ? "middle"
+        : props.size === "medium"
+        ? "text-bottom"
+        : "text-top"};
   }
 
-  ${props => props.label && css`
-    .btnIcon,
-    .loader {
-      padding-right: 4px;
-    }
-  `}
+  ${(props) =>
+    props.label &&
+    css`
+      .btnIcon,
+      .loader {
+        padding-right: 4px;
+      }
+    `}
 `;
 
-const Icon = ({size, primary, icon}) => (
+const Icon = ({ size, primary, icon }) => (
   <div className="btnIcon">
-    { icon && React.cloneElement(icon, 
-      { 
-        isfill: true, 
-        size: size === "large" 
-          ? "large"
-          : size === "big"
-            ? "medium"
-            : "small",
-        color: primary ? "#FFFFFF" : '#333333'
-    })}
+    {icon &&
+      React.cloneElement(icon, {
+        isfill: true,
+        size: size === "large" ? "large" : size === "big" ? "medium" : "small",
+        color: primary ? "#FFFFFF" : "#333333",
+      })}
   </div>
 );
 
 Icon.propTypes = {
   icon: PropTypes.node,
   size: PropTypes.string,
-  primary: PropTypes.bool
+  primary: PropTypes.bool,
 };
 
 Icon.defaultProps = {
-  icon: null
+  icon: null,
 };
 
 const Button = React.forwardRef((props, ref) => {
-  const { primary, size, isLoading, icon, label} = props;
+  const { primary, size, isLoading, icon, label } = props;
   const iconProps = { primary, size, icon };
   return (
-    <StyledButton innerRef={ref} {...props} >
-      {(isLoading || icon)
-        ? (isLoading 
-            ? <Loader type="oval" size={
-              size === "large" ? '18px' : size === 'big' ? '16px' : '14px'
-            } color={primary ? "#FFFFFF" : '#333333'} className="loader" />
-            : <Icon {...iconProps} />)
-        : ""
-      }
+    <StyledButton innerRef={ref} {...props}>
+      {isLoading || icon ? (
+        isLoading ? (
+          <Loader
+            type="oval"
+            size={size === "large" ? "18px" : size === "big" ? "16px" : "14px"}
+            color={primary ? "#FFFFFF" : "#333333"}
+            className="loader"
+          />
+        ) : (
+          <Icon {...iconProps} />
+        )
+      ) : (
+        ""
+      )}
       {label}
     </StyledButton>
   );
@@ -251,7 +300,7 @@ const Button = React.forwardRef((props, ref) => {
 Button.propTypes = {
   label: PropTypes.string,
   primary: PropTypes.bool,
-  size: PropTypes.oneOf(['base', 'medium', 'big', 'large']),
+  size: PropTypes.oneOf(["base", "medium", "big", "large"]),
   scale: PropTypes.bool,
   icon: PropTypes.node,
 
@@ -265,26 +314,26 @@ Button.propTypes = {
   isDisabled: PropTypes.bool,
   isLoading: PropTypes.bool,
 
-  minWidth: PropTypes.string,
+  minwidth: PropTypes.string,
 
-  onClick: PropTypes.func
+  onClick: PropTypes.func,
 };
 
 Button.defaultProps = {
-  label: '',
+  label: "",
   primary: false,
-  size: 'base',
+  size: "base",
   scale: false,
   icon: null,
 
   tabIndex: -1,
-  
-  minWidth: null,
+
+  minwidth: null,
 
   isHovered: false,
   isClicked: false,
   isDisabled: false,
-  isLoading: false
+  isLoading: false,
 };
 
 Button.displayName = "Button";

@@ -37,6 +37,7 @@ using ASC.Core.Common.EF;
 using ASC.Core.Data;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
+using ASC.Security.Cryptography;
 
 using Microsoft.Extensions.Options;
 
@@ -283,9 +284,9 @@ namespace ASC.Core.Caching
             return user;
         }
 
-        public UserInfo GetUser(int tenant, string login, string passwordHash)
+        public UserInfo GetUserByPasswordHash(int tenant, string login, string passwordHash)
         {
-            return Service.GetUser(tenant, login, passwordHash);
+            return Service.GetUserByPasswordHash(tenant, login, passwordHash);
         }
 
         public UserInfo SaveUser(int tenant, UserInfo user)
@@ -318,15 +319,16 @@ namespace ASC.Core.Caching
             CacheUserPhotoItem.Publish(new UserPhotoCacheItem { Key = UserServiceCache.GetUserPhotoCacheKey(tenant, id) }, CacheNotifyAction.Remove);
         }
 
-        public string GetUserPassword(int tenant, Guid id)
+        public DateTime GetUserPasswordStamp(int tenant, Guid id)
         {
-            return Service.GetUserPassword(tenant, id);
+            return Service.GetUserPasswordStamp(tenant, id);
         }
 
-        public void SetUserPassword(int tenant, Guid id, string password)
+        public void SetUserPasswordHash(int tenant, Guid id, string passwordHash)
         {
-            Service.SetUserPassword(tenant, id, password);
+            Service.SetUserPasswordHash(tenant, id, passwordHash);
         }
+
 
 
         public IDictionary<Guid, Group> GetGroups(int tenant, DateTime from)
@@ -535,7 +537,8 @@ namespace ASC.Core.Caching
                 services
                     .AddCoreSettingsService()
                     .AddLoggerService()
-                    .AddUserDbContextService();
+                    .AddUserDbContextService()
+                    .AddPasswordHasherService();
             }
 
             return services;

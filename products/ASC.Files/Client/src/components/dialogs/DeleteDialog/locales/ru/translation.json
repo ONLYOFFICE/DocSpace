@@ -1,0 +1,15 @@
+{
+  "OKButton": "ОК",
+  "CancelButton": "Отмена",
+  "ConfirmationTitle": "Подтверждение удаления",
+  "QuestionDeleteFile": "Вы собираетесь удалить этот файл?",
+  "FilesModule": "Файлы",
+  "FoldersModule": "Папки",
+
+  "DeleteDialogQuestion": "Вы собираетесь удалить эти элементы?",
+  "DeleteDialogMessage": "Пожалуйста, обратите внимание, что если вы предоставили кому-то доступ к этим файлам/папкам, они станут недоступны. Вы уверены, что хотите продолжить?",
+  "DeleteDialogNote": "Замечание: Это действие не может быть отменено.",
+  "QuestionDeleteFolder": "Вы собираетесь удалить эту папку?",
+  "QuestionDeleteElements": "Вы собираетесь удалить эти элементы?",
+  "DeleteOperation": "Удаление"
+}

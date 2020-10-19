@@ -32,21 +32,22 @@ namespace ASC.Core.Notify
 {
     public class NotifyServiceClient : INotifyService
     {
-        private readonly ICacheNotify<NotifyMessage> cacheNotify;
-        public NotifyServiceClient(ICacheNotify<NotifyMessage> cacheNotify)
+        private readonly ICacheNotify<NotifyMessage> СacheNotify;
+        private readonly ICacheNotify<NotifyInvoke> NotifyInvoke;
+        public NotifyServiceClient(ICacheNotify<NotifyMessage> cacheNotify, ICacheNotify<NotifyInvoke> notifyInvoke)
         {
-            this.cacheNotify = cacheNotify;
+            СacheNotify = cacheNotify;
+            NotifyInvoke = notifyInvoke;
         }
 
         public void SendNotifyMessage(NotifyMessage m)
         {
-            cacheNotify.Publish(m, CacheNotifyAction.InsertOrUpdate);
+            СacheNotify.Publish(m, CacheNotifyAction.InsertOrUpdate);
         }
 
-        public void InvokeSendMethod(string service, string method, int tenant, params object[] parameters)
+        public void InvokeSendMethod(NotifyInvoke notifyInvoke)
         {
-            //TODO
-            //Channel.InvokeSendMethod(service, method, tenant, parameters);
+            NotifyInvoke.Publish(notifyInvoke, CacheNotifyAction.InsertOrUpdate);
         }
     }
 }

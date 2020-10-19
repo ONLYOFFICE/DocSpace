@@ -1,7 +1,11 @@
 import { api, store } from "asc-web-common";
 import axios from "axios";
 const { Filter } = api;
-const { setPortalLanguageAndTime, setTimezones, setGreetingSettings } = store.auth.actions;
+const {
+  setPortalLanguageAndTime,
+  setTimezones,
+  setGreetingSettings,
+} = store.auth.actions;
 
 export const SET_USERS = "SET_USERS";
 export const SET_ADMINS = "SET_ADMINS";
@@ -15,56 +19,56 @@ export const SET_LOGO_URLS = "SET_LOGO_URLS";
 export function setOptions(options) {
   return {
     type: SET_OPTIONS,
-    options
+    options,
   };
 }
 
 export function setUsers(users) {
   return {
     type: SET_USERS,
-    users
+    users,
   };
 }
 
 export function setAdmins(admins) {
   return {
     type: SET_ADMINS,
-    admins
+    admins,
   };
 }
 
 export function setOwner(owner) {
   return {
     type: SET_OWNER,
-    owner
+    owner,
   };
 }
 
 export function setFilter(filter) {
   return {
     type: SET_FILTER,
-    filter
+    filter,
   };
 }
 
 export function setLogoText(text) {
   return {
     type: SET_LOGO_TEXT,
-    text
+    text,
   };
 }
 
 export function setLogoSizes(sizes) {
   return {
     type: SET_LOGO_SIZES,
-    sizes
+    sizes,
   };
 }
 
 export function setLogoUrls(urls) {
   return {
     type: SET_LOGO_URLS,
-    urls
+    urls,
   };
 }
 
@@ -73,15 +77,15 @@ export function changeAdmins(userIds, productId, isAdmin, filter) {
   if (!filterData) {
     filterData = Filter.getDefault();
   }
-  return dispatch => {
+  return (dispatch) => {
     return axios
       .all(
-        userIds.map(userId =>
+        userIds.map((userId) =>
           api.people.changeProductAdmin(userId, productId, isAdmin)
         )
       )
       .then(() => api.people.getListAdmins(filterData))
-      .then(admins => {
+      .then((admins) => {
         filterData.total = admins.total;
         dispatch(setAdmins(admins.items));
         dispatch(setFilter(filterData));
@@ -90,8 +94,10 @@ export function changeAdmins(userIds, productId, isAdmin, filter) {
 }
 
 export function getPortalOwner(userId) {
-  return dispatch => {
-    return api.people.getUserById(userId).then(owner => dispatch(setOwner(owner)));
+  return (dispatch) => {
+    return api.people
+      .getUserById(userId)
+      .then((owner) => dispatch(setOwner(owner)));
   };
 }
 
@@ -101,13 +107,12 @@ export function fetchPeople(filter) {
     filterData = Filter.getDefault();
   }
 
-  return dispatch => {
-    return api.people.getListAdmins(filterData)
-      .then(admins => {
-        filterData.total = admins.total;
-        dispatch(setAdmins(admins.items));
-        dispatch(setFilter(filterData));
-      });
+  return (dispatch) => {
+    return api.people.getListAdmins(filterData).then((admins) => {
+      filterData.total = admins.total;
+      dispatch(setAdmins(admins.items));
+      dispatch(setFilter(filterData));
+    });
   };
 }
 
@@ -116,8 +121,8 @@ export function getUpdateListAdmin(filter) {
   if (!filterData) {
     filterData = Filter.getDefault();
   }
-  return dispatch => {
-    return api.people.getListAdmins(filterData).then(admins => {
+  return (dispatch) => {
+    return api.people.getListAdmins(filterData).then((admins) => {
       filterData.total = admins.total;
 
       dispatch(setAdmins(admins.items));
@@ -127,50 +132,47 @@ export function getUpdateListAdmin(filter) {
 }
 
 export function getWhiteLabelLogoText() {
-  return dispatch => {
-    return api.settings.getLogoText()
-    .then(res => {
+  return (dispatch) => {
+    return api.settings.getLogoText().then((res) => {
       dispatch(setLogoText(res));
     });
   };
 }
 
 export function getWhiteLabelLogoSizes() {
-  return dispatch => {
-    return api.settings.getLogoSizes()
-    .then(res => {
+  return (dispatch) => {
+    return api.settings.getLogoSizes().then((res) => {
       dispatch(setLogoSizes(res));
     });
   };
 }
 
 export function getWhiteLabelLogoUrls() {
-  return dispatch => {
-    return api.settings.getLogoUrls()
-    .then(res => {
+  return (dispatch) => {
+    return api.settings.getLogoUrls().then((res) => {
       dispatch(setLogoUrls(Object.values(res)));
     });
   };
 }
 
 export function setLanguageAndTime(lng, timeZoneID) {
-  return dispatch => {
+  return (dispatch) => {
     return api.settings
       .setLanguageAndTime(lng, timeZoneID)
       .then(() => dispatch(setPortalLanguageAndTime({ lng, timeZoneID })));
   };
-};
+}
 
 export function getPortalTimezones() {
-  return dispatch => {
-    return api.settings.getPortalTimezones().then(timezones => {
+  return (dispatch) => {
+    return api.settings.getPortalTimezones().then((timezones) => {
       dispatch(setTimezones(timezones));
     });
   };
-};
+}
 
 export function setGreetingTitle(greetingTitle) {
-  return dispatch => {
+  return (dispatch) => {
     return api.settings.setGreetingSettings(greetingTitle).then(() => {
       dispatch(setGreetingSettings(greetingTitle));
     });
@@ -178,9 +180,9 @@ export function setGreetingTitle(greetingTitle) {
 }
 
 export function restoreGreetingTitle() {
-  return dispatch => {
-    return api.settings.restoreGreetingSettings().then(res => {
-      dispatch(setGreetingSettings(res.companyName));
+  return (dispatch) => {
+    return api.settings.restoreGreetingSettings().then((res) => {
+      if (res) dispatch(setGreetingSettings(res.Content));
     });
   };
 }

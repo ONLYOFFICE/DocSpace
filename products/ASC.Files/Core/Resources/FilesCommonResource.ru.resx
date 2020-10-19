@@ -64,6 +64,9 @@
   <data name="AceStatusEnum_Comment" xml:space="preserve">
     <value>Комментирование</value>
   </data>
+  <data name="AceStatusEnum_CustomFilter" xml:space="preserve">
+    <value>Пользовательский фильтр</value>
+  </data>
   <data name="AceStatusEnum_FillForms" xml:space="preserve">
     <value>Заполнение форм</value>
   </data>

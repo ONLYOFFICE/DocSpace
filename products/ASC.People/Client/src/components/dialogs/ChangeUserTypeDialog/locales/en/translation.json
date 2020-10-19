@@ -3,7 +3,7 @@
   "UserCol": "User",
   "CancelButton": "Cancel",
   "SuccessChangeUserType": "The user type was successfully changed",
-  
+
   "ChangeUserTypeHeader": "Change user type",
   "ChangeUserTypeMessage": "Users with the '{{ firstType }}' type will be moved to '{{ secondType }}' type.",
   "ChangeUserTypeMessageWarning": "You cannot change the type for portal administrators and for yourself",

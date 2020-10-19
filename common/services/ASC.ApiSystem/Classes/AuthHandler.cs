@@ -36,6 +36,7 @@ using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Logging;
+using ASC.Security.Cryptography;
 using ASC.Web.Core.Helpers;
 
 using Microsoft.AspNetCore.Authentication;
@@ -59,7 +60,8 @@ namespace ASC.ApiSystem.Classes
             ISystemClock clock,
             IConfiguration configuration,
             IOptionsMonitor<ILog> option,
-            ApiSystemHelper apiSystemHelper) :
+            ApiSystemHelper apiSystemHelper,
+            MachinePseudoKeys machinePseudoKeys) :
             base(options, logger, encoder, clock)
         {
             Configuration = configuration;
@@ -67,6 +69,7 @@ namespace ASC.ApiSystem.Classes
             Log = option.Get("ASC.ApiSystem");
 
             ApiSystemHelper = apiSystemHelper;
+            MachinePseudoKeys = machinePseudoKeys;
         }
 
         private ILog Log { get; }
@@ -74,6 +77,7 @@ namespace ASC.ApiSystem.Classes
         private IConfiguration Configuration { get; }
 
         private ApiSystemHelper ApiSystemHelper { get; }
+        private MachinePseudoKeys MachinePseudoKeys { get; }
 
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
@@ -130,8 +134,8 @@ namespace ASC.ApiSystem.Classes
                         }
                     }
 
-                    var skey = Configuration["core:machinekey"];
-                    using var hasher = new HMACSHA1(Encoding.UTF8.GetBytes(skey));
+                    var skey = MachinePseudoKeys.GetMachineConstant();
+                    using var hasher = new HMACSHA1(skey);
                     var data = string.Join("\n", date, pkey);
                     var hash = hasher.ComputeHash(Encoding.UTF8.GetBytes(data));
 

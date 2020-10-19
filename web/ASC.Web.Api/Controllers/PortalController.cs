@@ -8,6 +8,7 @@ using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Billing;
+using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.MessagingSystem;
@@ -15,6 +16,7 @@ using ASC.Security.Cryptography;
 using ASC.Web.Api.Routing;
 using ASC.Web.Core;
 using ASC.Web.Core.Utility;
+using ASC.Web.Studio.Core;
 using ASC.Web.Studio.Core.Notify;
 using ASC.Web.Studio.Utility;
 
@@ -42,6 +44,7 @@ namespace ASC.Web.Api.Controllers
         private AuthContext AuthContext { get; }
         private WebItemSecurity WebItemSecurity { get; }
         private SecurityContext SecurityContext { get; }
+        private SettingsManager SettingsManager { get; }
         private IConfiguration Configuration { get; set; }
         public ILog Log { get; }
 
@@ -57,6 +60,7 @@ namespace ASC.Web.Api.Controllers
             AuthContext authContext,
             WebItemSecurity webItemSecurity,
             SecurityContext securityContext,
+            SettingsManager settingsManager,
             IConfiguration configuration
             )
         {
@@ -70,6 +74,7 @@ namespace ASC.Web.Api.Controllers
             AuthContext = authContext;
             WebItemSecurity = webItemSecurity;
             SecurityContext = securityContext;
+            SettingsManager = settingsManager;
             Configuration = configuration;
         }
 
@@ -86,7 +91,7 @@ namespace ASC.Web.Api.Controllers
         }
 
         [Read("users/invite/{employeeType}")]
-        public string GeInviteLink(EmployeeType employeeType)
+        public object GeInviteLink(EmployeeType employeeType)
         {
             if (!WebItemSecurity.IsProductAdministrator(WebItemManager.PeopleProductID, AuthContext.CurrentAccount.ID))
             {
@@ -98,7 +103,7 @@ namespace ASC.Web.Api.Controllers
         }
 
         [Update("getshortenlink")]
-        public string GetShortenLink(string link)
+        public object GetShortenLink(string link)
         {
             try
             {
@@ -155,7 +160,7 @@ namespace ASC.Web.Api.Controllers
 
 
         [Read("path")]
-        public string GetFullAbsolutePath(string virtualPath)
+        public object GetFullAbsolutePath(string virtualPath)
         {
             return CommonLinkUtility.GetFullAbsolutePath(virtualPath);
         }
@@ -175,6 +180,21 @@ namespace ASC.Web.Api.Controllers
             var bytes = wc.DownloadData(string.Format(Configuration["bookmarking:thumbnail-url"], url));
             var type = wc.ResponseHeaders["Content-Type"] ?? "image/png";
             return File(bytes, type);
+        }
+
+        [Create("present/mark")]
+        public void MarkPresentAsReaded()
+        {
+            try
+            {
+                var settings = SettingsManager.LoadForCurrentUser<OpensourcePresentSettings>();
+                settings.Readed = true;
+                SettingsManager.SaveForCurrentUser(settings);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("MarkPresentAsReaded", ex);
+            }
         }
     }
 

@@ -25,6 +25,7 @@
 
 
 using System;
+using System.Diagnostics;
 
 namespace ASC.Files.Core
 {
@@ -32,12 +33,15 @@ namespace ASC.Files.Core
     public enum TagType
     {
         New = 1,
-        //Favorite = 2,
+        Favorite = 2,
         System = 4,
         Locked = 8,
+        Recent = 16,
+        Template = 32,
     }
 
     [Serializable]
+    [DebuggerDisplay("{TagName} ({Id}) entry {EntryType} ({EntryId})")]
     public class Tag
     {
         public string TagName { get; set; }
@@ -93,10 +97,25 @@ namespace ASC.Files.Core
             return new Tag("new", TagType.New, owner, count).AddEntry(entry);
         }
 
+        public static Tag Recent<T>(Guid owner, FileEntry<T> entry)
+        {
+            return new Tag("recent", TagType.Recent, owner, 0).AddEntry(entry);
+        }
+
+        public static Tag Favorite<T>(Guid owner, FileEntry<T> entry)
+        {
+            return new Tag("favorite", TagType.Favorite, owner, 0).AddEntry(entry);
+        }
+
+        public static Tag Template<T>(Guid owner, FileEntry<T> entry)
+        {
+            return new Tag("template", TagType.Template, owner, 0).AddEntry(entry);
+        }
+
+
         public override bool Equals(object obj)
         {
-            var f = obj as Tag;
-            return f != null && Equals(f);
+            return obj is Tag f && Equals(f);
         }
         public bool Equals(Tag f)
         {

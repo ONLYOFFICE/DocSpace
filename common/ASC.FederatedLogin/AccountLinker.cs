@@ -38,6 +38,7 @@ using ASC.FederatedLogin.Profile;
 using ASC.Security.Cryptography;
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
 namespace ASC.FederatedLogin
@@ -71,17 +72,20 @@ namespace ASC.FederatedLogin
     public class ConfigureAccountLinker : IConfigureNamedOptions<AccountLinker>
     {
         private Signature Signature { get; }
+        public IConfiguration Configuration { get; }
         private InstanceCrypto InstanceCrypto { get; }
         private AccountLinkerStorage AccountLinkerStorage { get; }
         private DbContextManager<AccountLinkContext> DbContextManager { get; }
 
         public ConfigureAccountLinker(
             Signature signature,
+            IConfiguration configuration,
             InstanceCrypto instanceCrypto,
             AccountLinkerStorage accountLinkerStorage,
             DbContextManager<AccountLinkContext> dbContextManager)
         {
             Signature = signature;
+            Configuration = configuration;
             InstanceCrypto = instanceCrypto;
             AccountLinkerStorage = accountLinkerStorage;
             DbContextManager = dbContextManager;

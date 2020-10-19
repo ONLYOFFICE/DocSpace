@@ -25,36 +25,33 @@ namespace ASC.Web.Api.Controllers
         private TenantManager TenantManager { get; }
         private SecurityContext SecurityContext { get; }
         private TenantCookieSettingsHelper TenantCookieSettingsHelper { get; }
-        private EmailValidationKeyProvider EmailValidationKeyProvider { get; }
-        private AuthContext AuthContext { get; }
-        private AuthManager AuthManager { get; }
         private CookiesManager CookiesManager { get; }
+        public PasswordHasher PasswordHasher { get; }
+        public EmailValidationKeyModelHelper EmailValidationKeyModelHelper { get; }
 
         public AuthenticationController(
             UserManager userManager,
             TenantManager tenantManager,
             SecurityContext securityContext,
             TenantCookieSettingsHelper tenantCookieSettingsHelper,
-            EmailValidationKeyProvider emailValidationKeyProvider,
-            AuthContext authContext,
-            AuthManager authManager,
-            CookiesManager cookiesManager)
+            CookiesManager cookiesManager,
+            PasswordHasher passwordHasher,
+            EmailValidationKeyModelHelper emailValidationKeyModelHelper)
         {
             UserManager = userManager;
             TenantManager = tenantManager;
             SecurityContext = securityContext;
             TenantCookieSettingsHelper = tenantCookieSettingsHelper;
-            EmailValidationKeyProvider = emailValidationKeyProvider;
-            AuthContext = authContext;
-            AuthManager = authManager;
             CookiesManager = cookiesManager;
+            PasswordHasher = passwordHasher;
+            EmailValidationKeyModelHelper = emailValidationKeyModelHelper;
         }
 
         [Create(false)]
         public AuthenticationTokenData AuthenticateMe([FromBody] AuthModel auth)
         {
             var tenant = TenantManager.GetCurrentTenant();
-            var user = GetUser(tenant.TenantId, auth.UserName, auth.Password);
+            var user = GetUser(tenant.TenantId, auth);
 
             try
             {
@@ -85,15 +82,27 @@ namespace ASC.Web.Api.Controllers
         [Create("confirm", false)]
         public ValidationResult CheckConfirm([FromBody] EmailValidationKeyModel model)
         {
-            return model.Validate();
+            return EmailValidationKeyModelHelper.Validate(model);
         }
 
-        private UserInfo GetUser(int tenantId, string userName, string password)
+        private UserInfo GetUser(int tenantId, AuthModel memberModel)
         {
-            var user = UserManager.GetUsers(
-                        tenantId,
-                        userName,
-                        Hasher.Base64Hash(password, HashAlg.SHA256));
+            memberModel.PasswordHash = (memberModel.PasswordHash ?? "").Trim();
+
+            if (string.IsNullOrEmpty(memberModel.PasswordHash))
+            {
+                memberModel.Password = (memberModel.Password ?? "").Trim();
+
+                if (!string.IsNullOrEmpty(memberModel.Password))
+                {
+                    memberModel.PasswordHash = PasswordHasher.GetClientPassword(memberModel.Password);
+                }
+            }
+
+            var user = UserManager.GetUsersByPasswordHash(
+                tenantId,
+                memberModel.UserName,
+                memberModel.PasswordHash);
 
             if (user == null || !UserManager.UserExists(user))
             {
@@ -141,9 +150,7 @@ namespace ASC.Web.Api.Controllers
                 .AddTenantManagerService()
                 .AddSecurityContextService()
                 .AddTenantCookieSettingsService()
-                .AddEmailValidationKeyProviderService()
-                .AddAuthContextService()
-                .AddAuthManager();
+                .AddPasswordHasherService();
         }
     }
 }

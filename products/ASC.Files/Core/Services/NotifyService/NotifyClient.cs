@@ -141,7 +141,6 @@ namespace ASC.Files.Core.Services.NotifyService
                     recipient,
                     true,
                     new TagValue(NotifyConstants.Tag_DocumentTitle, fileEntry.Title),
-                    new TagValue(NotifyConstants.Tag_FolderID, fileEntry.ID),
                     new TagValue(NotifyConstants.Tag_DocumentUrl, baseCommonLinkUtility.GetFullAbsolutePath(url)),
                     new TagValue(NotifyConstants.Tag_AccessRights, aceString),
                     new TagValue(NotifyConstants.Tag_Message, message.HtmlEncode())
@@ -180,21 +179,16 @@ namespace ASC.Files.Core.Services.NotifyService
 
         private static string GetAccessString(FileShare fileShare, CultureInfo cultureInfo)
         {
-            switch (fileShare)
+            return fileShare switch
             {
-                case FileShare.Read:
-                    return FilesCommonResource.ResourceManager.GetString("AceStatusEnum_Read", cultureInfo);
-                case FileShare.ReadWrite:
-                    return FilesCommonResource.ResourceManager.GetString("AceStatusEnum_ReadWrite", cultureInfo);
-                case FileShare.Review:
-                    return FilesCommonResource.ResourceManager.GetString("AceStatusEnum_Review", cultureInfo);
-                case FileShare.FillForms:
-                    return FilesCommonResource.ResourceManager.GetString("AceStatusEnum_FillForms", cultureInfo);
-                case FileShare.Comment:
-                    return FilesCommonResource.ResourceManager.GetString("AceStatusEnum_Comment", cultureInfo);
-                default:
-                    return string.Empty;
-            }
+                FileShare.Read => FilesCommonResource.ResourceManager.GetString("AceStatusEnum_Read", cultureInfo),
+                FileShare.ReadWrite => FilesCommonResource.ResourceManager.GetString("AceStatusEnum_ReadWrite", cultureInfo),
+                FileShare.CustomFilter => FilesCommonResource.ResourceManager.GetString("AceStatusEnum_CustomFilter", cultureInfo),
+                FileShare.Review => FilesCommonResource.ResourceManager.GetString("AceStatusEnum_Review", cultureInfo),
+                FileShare.FillForms => FilesCommonResource.ResourceManager.GetString("AceStatusEnum_FillForms", cultureInfo),
+                FileShare.Comment => FilesCommonResource.ResourceManager.GetString("AceStatusEnum_Comment", cultureInfo),
+                _ => string.Empty,
+            };
         }
     }
 

@@ -520,7 +520,6 @@ namespace ASC.Web.Files.Utils
             TenantManager tenantManager,
             AuthContext authContext,
             EntryManager entryManager,
-            IOptionsMonitor<ILog> options,
             FilesSettingsHelper filesSettingsHelper,
             GlobalFolderHelper globalFolderHelper,
             FilesMessageService filesMessageService,
@@ -558,7 +557,6 @@ namespace ASC.Web.Files.Utils
             TenantManager tenantManager,
             AuthContext authContext,
             EntryManager entryManager,
-            IOptionsMonitor<ILog> options,
             FilesSettingsHelper filesSettingsHelper,
             GlobalFolderHelper globalFolderHelper,
             FilesMessageService filesMessageService,
@@ -568,7 +566,7 @@ namespace ASC.Web.Files.Utils
             IServiceProvider serviceProvider,
             IHttpContextAccessor httpContextAccesor)
             : this(fileUtility, filesLinkUtility, daoFactory, setupInfo, pathProvider, fileSecurity,
-                  fileMarker, tenantManager, authContext, entryManager, options, filesSettingsHelper,
+                  fileMarker, tenantManager, authContext, entryManager, filesSettingsHelper,
                   globalFolderHelper, filesMessageService, fileShareLink, documentServiceHelper, documentServiceConnector,
                   serviceProvider)
         {
@@ -719,12 +717,15 @@ namespace ASC.Web.Files.Utils
             var fileDao = DaoFactory.GetFileDao<T>();
             var folderDao = DaoFactory.GetFolderDao<T>();
             File<T> newFile = null;
+            var markAsTemplate = false;
             var newFileTitle = FileUtility.ReplaceFileExtension(file.Title, FileUtility.GetInternalExtension(file.Title));
 
             if (!FilesSettingsHelper.StoreOriginalFiles && fileSecurity.CanEdit(file))
             {
                 newFile = (File<T>)file.Clone();
                 newFile.Version++;
+                markAsTemplate = FileUtility.ExtsTemplate.Contains(FileUtility.GetFileExtension(file.Title), StringComparer.CurrentCultureIgnoreCase)
+                              && FileUtility.ExtsWebTemplate.Contains(FileUtility.GetFileExtension(newFileTitle), StringComparer.CurrentCultureIgnoreCase);
             }
             else
             {
@@ -772,11 +773,9 @@ namespace ASC.Web.Files.Utils
 
             try
             {
-                using (var convertedFileStream = new ResponseStream(req.GetResponse()))
-                {
-                    newFile.ContentLength = convertedFileStream.Length;
-                    newFile = fileDao.SaveFile(newFile, convertedFileStream);
-                }
+                using var convertedFileStream = new ResponseStream(req.GetResponse());
+                newFile.ContentLength = convertedFileStream.Length;
+                newFile = fileDao.SaveFile(newFile, convertedFileStream);
             }
             catch (WebException e)
             {
@@ -809,11 +808,18 @@ namespace ASC.Web.Files.Utils
                 tagDao.SaveTags(tags);
             }
 
+            if (markAsTemplate)
+            {
+                tagDao.SaveTags(Tag.Template(AuthContext.CurrentAccount.ID, newFile));
+            }
+
             return newFile;
         }
 
-        private FileConverterQueue<T> GetFileConverter<T>() => ServiceProvider.GetService<FileConverterQueue<T>>();
-
+        private FileConverterQueue<T> GetFileConverter<T>()
+        {
+            return ServiceProvider.GetService<FileConverterQueue<T>>();
+        }
     }
 
     internal class FileComparer<T> : IEqualityComparer<File<T>>

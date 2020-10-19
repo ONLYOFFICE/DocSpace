@@ -1,7 +1,7 @@
 import React, { lazy, Suspense } from "react";
 import { Route, Switch } from "react-router-dom";
 import { withRouter } from "react-router";
-import { Loader } from "asc-web-components";
+//import { Loader } from "asc-web-components";
 
 const AccessRightsSettings = lazy(() => import("./accessRights"));
 
@@ -9,11 +9,15 @@ const Security = () => {
   const basePath = "/settings/security";
 
   return (
-    <Suspense fallback={<Loader className="pageLoader" type="rombs" size='40px' />}>
+    <Suspense fallback={null}>
       <Switch>
         <Route
           exact
-          path={[`${basePath}/accessrights`, basePath, `${basePath}/accessrights/owner`]}
+          path={[
+            `${basePath}/accessrights`,
+            basePath,
+            `${basePath}/accessrights/owner`,
+          ]}
           component={AccessRightsSettings}
           selectedTab={0}
         />

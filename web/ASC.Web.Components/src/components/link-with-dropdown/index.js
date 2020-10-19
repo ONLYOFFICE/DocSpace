@@ -8,7 +8,17 @@ import Text from "../text";
 import isEqual from "lodash/isEqual";
 
 // eslint-disable-next-line no-unused-vars
-const SimpleLinkWithDropdown = ({ isBold, fontSize, fontWeight, isTextOverflow, isHovered, isSemitransparent, color, title, dropdownType, data,
+const SimpleLinkWithDropdown = ({
+  isBold,
+  fontSize,
+  fontWeight,
+  isTextOverflow,
+  isHovered,
+  isSemitransparent,
+  color,
+  title,
+  dropdownType,
+  data,
   ...props
 }) => <a {...props}></a>;
 
@@ -21,14 +31,20 @@ SimpleLinkWithDropdown.propTypes = {
   isSemitransparent: PropTypes.bool,
   color: PropTypes.string,
   title: PropTypes.string,
-  dropdownType: PropTypes.oneOf(["alwaysDashed", "appearDashedAfterHover"]).isRequired,
-  data: PropTypes.array
+  dropdownType: PropTypes.oneOf(["alwaysDashed", "appearDashedAfterHover"])
+    .isRequired,
+  data: PropTypes.array,
 };
 
-const color = props => props.color;
+const color = (props) => props.color;
 
 // eslint-disable-next-line react/prop-types, no-unused-vars
-const ExpanderDownIcon = ({ isSemitransparent, dropdownType, isOpen, ...props }) => (<Icons.ExpanderDownIcon {...props} />);
+const ExpanderDownIcon = ({
+  isSemitransparent,
+  dropdownType,
+  isOpen,
+  ...props
+}) => <Icons.ExpanderDownIcon {...props} />;
 
 const Caret = styled(ExpanderDownIcon)`
   width: 8px;
@@ -37,7 +53,7 @@ const Caret = styled(ExpanderDownIcon)`
   min-height: 8px;
   margin-left: 5px;
   margin-top: -4px;
-  
+
   position: absolute;
   right: 6px;
   top: 0;
@@ -48,9 +64,11 @@ const Caret = styled(ExpanderDownIcon)`
     fill: ${color};
   }
 
-  ${props => props.dropdownType === "appearDashedAfterHover" && `opacity: 0`};
+  ${(props) => props.dropdownType === "appearDashedAfterHover" && `opacity: 0`};
 
-  ${props => props.isOpen && `
+  ${(props) =>
+    props.isOpen &&
+    `
     bottom: -1px;
     transform: scale(1, -1);
   `}
@@ -66,11 +84,15 @@ const StyledLinkWithDropdown = styled(SimpleLinkWithDropdown)`
 
   color: ${color};
 
-  ${props => props.isSemitransparent && `opacity: 0.5`};
-  ${props => props.dropdownType === "alwaysDashed" && `text-decoration:  underline dashed`};
+  ${(props) => props.isSemitransparent && `opacity: 0.5`};
+  ${(props) =>
+    props.dropdownType === "alwaysDashed" &&
+    `text-decoration:  underline dashed`};
 
   &:not([href]):not([tabindex]) {
-    ${props => props.dropdownType === "alwaysDashed" && `text-decoration:  underline dashed`};
+    ${(props) =>
+      props.dropdownType === "alwaysDashed" &&
+      `text-decoration:  underline dashed`};
     color: ${color};
 
     &:hover {
@@ -83,19 +105,22 @@ const StyledLinkWithDropdown = styled(SimpleLinkWithDropdown)`
     color: ${color};
 
     svg {
-      ${props => props.dropdownType === "appearDashedAfterHover" && `position: absolute; opacity: 1`};
-      ${props => props.isSemitransparent && `opacity: 0.5`};
+      ${(props) =>
+        props.dropdownType === "appearDashedAfterHover" &&
+        `position: absolute; opacity: 1`};
+      ${(props) => props.isSemitransparent && `opacity: 0.5`};
     }
   }
-
 `;
 
 // eslint-disable-next-line react/prop-types, no-unused-vars
-const SimpleText = ({ color, ...props }) => (<Text as="span" {...props} />);
+const SimpleText = ({ color, ...props }) => <Text as="span" {...props} />;
 const StyledText = styled(SimpleText)`
   color: ${color};
 
-  ${props => props.isTextOverflow && css`
+  ${(props) =>
+    props.isTextOverflow &&
+    css`
       display: inline-block;
       max-width: 100%;
     `}
@@ -104,33 +129,36 @@ const StyledText = styled(SimpleText)`
 const StyledSpan = styled.span`
   position: relative;
 
+  .drop-down-item {
+    display: block;
+  }
+
   .fixed-max-width {
-    max-width: 260px;
+    max-width: 300px;
   }
 `;
 class LinkWithDropdown extends React.Component {
-
   constructor(props) {
     super(props);
 
     this.state = {
-      isOpen: props.isOpen
+      isOpen: props.isOpen,
     };
 
     this.ref = React.createRef();
   }
 
-  setIsOpen = isOpen => this.setState({ isOpen: isOpen });
+  setIsOpen = (isOpen) => this.setState({ isOpen: isOpen });
 
   onOpen = () => {
     this.setIsOpen(!this.state.isOpen);
-  }
+  };
 
   onClose = (e) => {
     if (this.ref.current.contains(e.target)) return;
 
     this.setIsOpen(!this.state.isOpen);
-  }
+  };
 
   componentDidUpdate(prevProps) {
     if (this.props.dropdownType !== prevProps.dropdownType) {
@@ -142,7 +170,7 @@ class LinkWithDropdown extends React.Component {
     }
   }
 
-  onClickDropDownItem = item => {
+  onClickDropDownItem = (item) => {
     this.setIsOpen(!this.state.isOpen);
     item.onClick && item.onClick();
   };
@@ -170,15 +198,8 @@ class LinkWithDropdown extends React.Component {
     } = this.props;
 
     return (
-      <StyledSpan
-        className={className}
-        id={id}
-        style={style}
-        ref={this.ref}
-      >
-        <span
-          onClick={this.onOpen}
-        >
+      <StyledSpan className={className} id={id} style={style} ref={this.ref}>
+        <span onClick={this.onOpen}>
           <StyledLinkWithDropdown
             isSemitransparent={isSemitransparent}
             dropdownType={dropdownType}
@@ -204,18 +225,18 @@ class LinkWithDropdown extends React.Component {
           </StyledLinkWithDropdown>
         </span>
         <DropDown
-          className='fixed-max-width'
+          className="fixed-max-width"
           open={this.state.isOpen}
           withArrow={false}
           clickOutsideAction={this.onClose}
-          maxHeight={200}
           {...rest}
         >
-          {data.map(item => (
+          {data.map((item) => (
             <DropDownItem
+              className="drop-down-item"
               key={item.key}
-              onClick={this.onClickDropDownItem.bind(this.props, item)}
               {...item}
+              onClick={this.onClickDropDownItem.bind(this.props, item)}
             />
           ))}
         </DropDown>
@@ -227,7 +248,7 @@ class LinkWithDropdown extends React.Component {
 LinkWithDropdown.propTypes = {
   color: PropTypes.string,
   data: PropTypes.array,
-  dropdownType: PropTypes.oneOf(["alwaysDashed", "appearDashedAfterHover"]).isRequired,
+  dropdownType: PropTypes.oneOf(["alwaysDashed", "appearDashedAfterHover"]),
   fontSize: PropTypes.string,
   fontWeight: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   isBold: PropTypes.bool,
@@ -238,14 +259,14 @@ LinkWithDropdown.propTypes = {
   children: PropTypes.any,
   className: PropTypes.string,
   id: PropTypes.string,
-  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 };
 
 LinkWithDropdown.defaultProps = {
   color: "#333333",
   data: [],
   dropdownType: "alwaysDashed",
-  fontSize: '13px',
+  fontSize: "13px",
   isBold: false,
   isSemitransparent: false,
   isTextOverflow: true,

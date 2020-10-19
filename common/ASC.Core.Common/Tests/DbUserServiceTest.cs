@@ -32,7 +32,6 @@ namespace ASC.Core.Common.Tests
 
     using ASC.Core.Data;
     using ASC.Core.Users;
-    using ASC.Security.Cryptography;
 
     using NUnit.Framework;
 
@@ -132,11 +131,11 @@ namespace ASC.Core.Common.Tests
             Service.SetUserPhoto(Tenant, user1.ID, new byte[] { 1, 2, 3 });
             CollectionAssert.AreEquivalent(new byte[] { 1, 2, 3 }, Service.GetUserPhoto(Tenant, user1.ID));
 
-            var password = "password";
-            Service.SetUserPassword(Tenant, user1.ID, password);
-            Assert.AreEqual(password, Service.GetUserPassword(Tenant, user1.ID));
+            //var password = "password";
+            //Service.SetUserPassword(Tenant, user1.ID, password);
+            //Assert.AreEqual(password, Service.GetUserPassword(Tenant, user1.ID));
 
-            CompareUsers(user1, Service.GetUser(Tenant, user1.Email, Hasher.Base64Hash(password, HashAlg.SHA256)));
+            //CompareUsers(user1, Service.GetUser(Tenant, user1.Email, Hasher.Base64Hash(password, HashAlg.SHA256)));
 
             Service.RemoveUser(Tenant, user1.ID);
             Assert.IsTrue(Service.GetUser(Tenant, user1.ID).Removed);
@@ -144,7 +143,7 @@ namespace ASC.Core.Common.Tests
             Service.RemoveUser(Tenant, user1.ID, true);
 
             Assert.AreEqual(0, Service.GetUserPhoto(Tenant, user1.ID).Count());
-            Assert.IsNull(Service.GetUserPassword(Tenant, user1.ID));
+            // Assert.IsNull(Service.GetUserPassword(Tenant, user1.ID));
         }
 
         [Test]

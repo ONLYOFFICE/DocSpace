@@ -21,12 +21,74 @@ namespace ASC.Core.Common.EF.Model
 
     public static class WebstudioSettingsExtension
     {
-        public static ModelBuilder AddWebstudioSettings(this ModelBuilder modelBuilder)
+        public static ModelBuilderWrapper AddWebstudioSettings(this ModelBuilderWrapper modelBuilder)
         {
-            modelBuilder.Entity<DbWebstudioSettings>()
-                .HasKey(c => new { c.TenantId, c.Id, c.UserId });
-
+            modelBuilder
+                .Add(MySqlAddWebstudioSettings, Provider.MySql)
+                .Add(PgSqlAddWebstudioSettings, Provider.Postgre)
+                .HasData(
+                new DbWebstudioSettings { TenantId = 1, Id = Guid.Parse("9a925891-1f92-4ed7-b277-d6f649739f06"), UserId = Guid.Parse("00000000-0000-0000-0000-000000000000"), Data = "{'Completed':false}" }
+                );
             return modelBuilder;
+        }
+
+        public static void MySqlAddWebstudioSettings(this ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<DbWebstudioSettings>(entity =>
+            {
+                entity.HasKey(e => new { e.TenantId, e.Id, e.UserId })
+                    .HasName("PRIMARY");
+
+                entity.ToTable("webstudio_settings");
+
+                entity.HasIndex(e => e.Id)
+                    .HasName("ID");
+
+                entity.Property(e => e.TenantId).HasColumnName("TenantID");
+
+                entity.Property(e => e.Id)
+                    .HasColumnName("ID")
+                    .HasColumnType("varchar(64)")
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+
+                entity.Property(e => e.UserId)
+                    .HasColumnName("UserID")
+                    .HasColumnType("varchar(64)")
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+
+                entity.Property(e => e.Data)
+                    .IsRequired()
+                    .HasColumnType("mediumtext")
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+            });
+        }
+        public static void PgSqlAddWebstudioSettings(this ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<DbWebstudioSettings>(entity =>
+            {
+                entity.HasKey(e => new { e.TenantId, e.Id, e.UserId })
+                    .HasName("webstudio_settings_pkey");
+
+                entity.ToTable("webstudio_settings", "onlyoffice");
+
+                entity.HasIndex(e => e.Id)
+                    .HasName("ID");
+
+                entity.Property(e => e.TenantId).HasColumnName("TenantID");
+
+                entity.Property(e => e.Id)
+                    .HasColumnName("ID")
+                    .HasMaxLength(64);
+
+                entity.Property(e => e.UserId)
+                    .HasColumnName("UserID")
+                    .HasMaxLength(64);
+
+                entity.Property(e => e.Data).IsRequired();
+            });
         }
     }
 }

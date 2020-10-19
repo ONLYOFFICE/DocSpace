@@ -1,25 +1,25 @@
-import React, { useRef } from 'react';
+import React, { useRef } from "react";
 import PropTypes from "prop-types";
-import styled from 'styled-components';
+import styled from "styled-components";
 
-import { 
-  Box, 
-  EmailInput, 
-  FileInput, 
-  PasswordInput, 
-  Link, 
-  Checkbox, 
-  utils 
-} from 'asc-web-components';
+import {
+  Box,
+  EmailInput,
+  FileInput,
+  PasswordInput,
+  Link,
+  Checkbox,
+  utils,
+} from "asc-web-components";
 
 const { tablet } = utils.device;
 
 const StyledContainer = styled(Box)`
   width: 311px;
   margin: 0 auto;
-  display: grid; 
+  display: grid;
   grid-template-columns: 1fr;
-  grid-row-gap: 16px; 
+  grid-row-gap: 16px;
 
   .generate-pass-link {
     margin-bottom: 16px;
@@ -44,62 +44,70 @@ const StyledContainer = styled(Box)`
 `;
 
 const InputContainer = ({
-  t, 
-  settingsPassword,  
-  emailNeeded, 
-  onEmailChangeHandler, 
-  onInputFileHandler, 
-  password, 
-  onChangePassword, 
-  isValidPassHandler, 
-  license, 
-  onChangeLicense, 
-  settings, 
+  t,
+  settingsPassword,
+  emailNeeded,
+  onEmailChangeHandler,
+  onInputFileHandler,
+  password,
+  onChangePassword,
+  isValidPassHandler,
+  license,
+  onChangeLicense,
+  settings,
   isLicenseRequired,
   hasErrorEmail,
-  hasErrorPass, 
+  hasErrorPass,
   hasErrorLicense,
-  urlLicense
+  urlLicense,
 }) => {
   const refPassInput = useRef(null);
 
-  const tooltipPassTitle = t('tooltipPasswordTitle');
-  const tooltipPassLength = `${settingsPassword.minLength}${t('tooltipPasswordLength')}`;
-  const tooltipPassDigits = settingsPassword.digits ? `${t('tooltipPasswordDigits')}` : null;
-  const tooltipPassCapital = settingsPassword.upperCase ? `${t('tooltipPasswordCapital')}` : null;
-  const tooltipPassSpecial = settingsPassword.specSymbols ? `${t('tooltipPasswordSpecial')}` : null;
-
-  const inputEmail = emailNeeded 
-    ? <EmailInput
-        name="wizard-email"
-        tabIndex={1}
-        size="large"
-        scale={true}
-        placeholder={t('email')}
-        emailSettings={settings}
-        hasError={hasErrorEmail}
-        onValidateInput={onEmailChangeHandler}
-      />
+  const tooltipPassTitle = t("TooltipPasswordTitle");
+  const tooltipPassLength = `${settingsPassword.minLength}${t(
+    "TooltipPasswordLength"
+  )}`;
+  const tooltipPassDigits = settingsPassword.digits
+    ? `${t("TooltipPasswordDigits")}`
+    : null;
+  const tooltipPassCapital = settingsPassword.upperCase
+    ? `${t("TooltipPasswordCapital")}`
+    : null;
+  const tooltipPassSpecial = settingsPassword.specSymbols
+    ? `${t("TooltipPasswordSpecial")}`
     : null;
 
-  const inputLicenseFile = isLicenseRequired 
-    ? <Box>
-        <FileInput
-          tabIndex={3}
-          placeholder={t('placeholderLicense')}
-          size="large"
-          scale={true}
-          accept=".lic"
-          hasError={hasErrorLicense}
-          onInput={onInputFileHandler}
-        />
-      </Box>
-    : null; 
+  const inputEmail = emailNeeded ? (
+    <EmailInput
+      name="wizard-email"
+      tabIndex={1}
+      size="large"
+      scale={true}
+      placeholder={t("Email")}
+      emailSettings={settings}
+      hasError={hasErrorEmail}
+      onValidateInput={onEmailChangeHandler}
+    />
+  ) : null;
+
+  const inputLicenseFile = isLicenseRequired ? (
+    <Box>
+      <FileInput
+        tabIndex={3}
+        placeholder={t("PlaceholderLicense")}
+        size="large"
+        scale={true}
+        accept=".lic"
+        hasError={hasErrorLicense}
+        onInput={onInputFileHandler}
+      />
+    </Box>
+  ) : null;
 
   return (
     <StyledContainer>
       {inputEmail}
-      
+
       <PasswordInput
         ref={refPassInput}
         tabIndex={2}
@@ -108,7 +116,7 @@ const InputContainer = ({
         inputValue={password}
         passwordSettings={settingsPassword}
         isDisabled={false}
-        placeholder={t('placeholderPass')}
+        placeholder={t("PlaceholderPass")}
         hideNewPasswordButton={true}
         isDisableTooltip={true}
         isTextTooltipVisible={true}
@@ -121,41 +129,45 @@ const InputContainer = ({
         onChange={onChangePassword}
         onValidateInput={isValidPassHandler}
       />
-      { inputLicenseFile }
-      {!isLicenseRequired 
-        ? <Link 
-            className='generate-pass-link'
-            type="action"
-            fontWeight="600"
-            isHovered={true}
-            onClick={() => refPassInput.current.onGeneratePassword()}>
-              {t('generatePassword')}
-          </Link>
-        : null
-      }
+      {inputLicenseFile}
+      {!isLicenseRequired ? (
+        <Link
+          className="generate-pass-link"
+          type="action"
+          fontWeight="600"
+          isHovered={true}
+          onClick={() => refPassInput.current.onGeneratePassword()}
+        >
+          {t("GeneratePassword")}
+        </Link>
+      ) : null}
       <Box>
         <Checkbox
           className="wizard-checkbox"
           id="license"
           name="confirm"
-          label={t('license')}
+          label={t("License")}
           isChecked={license}
           isDisabled={false}
           onChange={onChangeLicense}
         />
-        <Link 
+        <Link
           className="link"
-          type="page" 
-          color="#116d9d" 
+          type="page"
+          color="#116d9d"
           fontSize="13px"
           target="_blank"
-          href={urlLicense ? urlLicense : "https://gnu.org/licenses/gpl-3.0.html"} 
+          href={
+            urlLicense ? urlLicense : "https://gnu.org/licenses/gpl-3.0.html"
+          }
           isBold={false}
-        >{t('licenseLink')}</Link>
+        >
+          {t("LicenseLink")}
+        </Link>
       </Box>
     </StyledContainer>
   );
-}
+};
 
 InputContainer.propTypes = {
   t: PropTypes.func.isRequired,
@@ -168,7 +180,7 @@ InputContainer.propTypes = {
   isValidPassHandler: PropTypes.func.isRequired,
   license: PropTypes.bool.isRequired,
   onChangeLicense: PropTypes.func.isRequired,
-  urlLicense: PropTypes.string
+  urlLicense: PropTypes.string,
 };
 
 export default InputContainer;

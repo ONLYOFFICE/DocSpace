@@ -1,7 +1,4 @@
 {
-  "presets": [
-    "@babel/preset-env",
-    "react-app"
-  ],
+  "presets": ["@babel/preset-env", "react-app"],
   "plugins": [["babel-plugin-styled-components", { "diplayName": true }]]
 }

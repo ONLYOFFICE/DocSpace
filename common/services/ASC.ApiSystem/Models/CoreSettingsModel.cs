@@ -24,14 +24,13 @@
 */
 
 
-using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace ASC.ApiSystem.Models
 {
     public class CoreSettingsModel
     {
-        public Int32 Tenant { get; set; }
+        public int Tenant { get; set; }
 
         [StringLength(255)]
         public string Key { get; set; }

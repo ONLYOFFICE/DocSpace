@@ -64,6 +64,9 @@
   <data name="AceStatusEnum_Comment" xml:space="preserve">
     <value>Commentaire</value>
   </data>
+  <data name="AceStatusEnum_CustomFilter" xml:space="preserve">
+    <value>Filtre personnalisé</value>
+  </data>
   <data name="AceStatusEnum_FillForms" xml:space="preserve">
     <value>Remplissage de formulaire</value>
   </data>

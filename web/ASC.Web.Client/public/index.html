@@ -1,23 +1,30 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no">
-    <meta name="theme-color" content="#000000">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no"
+    />
+    <meta name="theme-color" content="#000000" />
     <base href="%PUBLIC_URL%/" />
     <!--
       manifest.json provides metadata used when your web app is added to the
       homescreen on Android. See https://developers.google.com/web/fundamentals/engage-and-retain/web-app-manifest/
     -->
-    <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico">
-    
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json">
+    <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico" />
+
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     <!-- Tell the browser it's a PWA -->
-    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes" />
     <!-- Tell iOS it's a PWA -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <link rel="apple-touch-icon" href="icon.png">
-    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i' rel='stylesheet' type='text/css'></link>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <link rel="apple-touch-icon" href="icon.png" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i"
+      rel="stylesheet"
+      type="text/css"
+    />
     <!--
       Notice the use of %PUBLIC_URL% in the tags above.
       It will be replaced with the URL of the `public` folder during the build.
@@ -27,12 +34,118 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
+    <style type="text/css">
+      body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        font-family: "Open Sans", sans-serif;
+        font-size: 13px;
+        -webkit-font-smoothing: antialiased;
+      }
+      .temp-header-container {
+        -webkit-box-align: center;
+        align-items: center;
+        background-color: rgb(15, 64, 113);
+        display: flex;
+        z-index: 185;
+        width: calc(100vw - 64px);
+        height: 56px;
+        padding: 0 32px;
+      }
+      .temp-header-container .header-items-wrapper {
+        width: 960px;
+      }
+      .temp-header-container .temp-header-logo-wrapper {
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+      }
+      .temp-header-container .temp-header-logo-icon {
+        width: 146px;
+        height: 24px;
+        position: relative;
+        padding: 4px 20px 0 30px;
+        cursor: pointer;
+      }
+      .temp-content-loader {
+        padding: 16px;
+        height: calc(100vh - 91px);
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-template-rows: calc(100vh - 91px);
+        grid-column-gap: 8px;
+      }
+    </style>
     <title>ONLYOFFICE</title>
-</head>
-<body>
-    <noscript>
-        You need to enable JavaScript to run this app.
-    </noscript>
+  </head>
+  <body>
+    <noscript> You need to enable JavaScript to run this app. </noscript>
+
+    <div id="temp-content">
+      <header class="temp-header-container">
+        <a class="temp-header-logo-wrapper" href="/">
+          <img
+            class="temp-header-logo-icon"
+            src="images/nav.logo.opened.react.svg"
+          />
+        </a>
+      </header>
+
+      <div class="temp-content-loader">
+        <svg
+          role="img"
+          width="100%"
+          height="100%"
+          aria-labelledby="loading-aria2"
+          preserveAspectRatio="none"
+        >
+          <title id="loading-aria2">Loading...</title>
+          <rect
+            x="0"
+            y="0"
+            width="100%"
+            height="100%"
+            clip-path="url(#clip-path2)"
+            style="fill: url('#fill2')"
+          ></rect>
+          <defs>
+            <clipPath id="clip-path2">
+              <rect x="3" y="3" rx="5" ry="5" width="100%" />
+            </clipPath>
+            <linearGradient id="fill2">
+              <stop offset="0.599964" stop-color="#f3f3f3" stop-opacity="1">
+                <animate
+                  attributeName="offset"
+                  values="-2; -2; 1"
+                  keyTimes="0; 0.25; 1"
+                  dur="2s"
+                  repeatCount="indefinite"
+                ></animate>
+              </stop>
+              <stop offset="1.59996" stop-color="#ecebeb" stop-opacity="1">
+                <animate
+                  attributeName="offset"
+                  values="-1; -1; 2"
+                  keyTimes="0; 0.25; 1"
+                  dur="2s"
+                  repeatCount="indefinite"
+                ></animate>
+              </stop>
+              <stop offset="2.59996" stop-color="#f3f3f3" stop-opacity="1">
+                <animate
+                  attributeName="offset"
+                  values="0; 0; 3"
+                  keyTimes="0; 0.25; 1"
+                  dur="2s"
+                  repeatCount="indefinite"
+                ></animate>
+              </stop>
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+    </div>
+
     <div id="root"></div>
     <!--
       This HTML file is a template.
@@ -44,5 +157,5 @@
       To begin the development, run `npm start` or `yarn start`.
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
-</body>
+  </body>
 </html>

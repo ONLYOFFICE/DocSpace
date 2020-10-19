@@ -47,7 +47,6 @@ using ASC.Files.Helpers;
 using ASC.Files.Model;
 using ASC.MessagingSystem;
 using ASC.Web.Api.Routing;
-using ASC.Web.Core;
 using ASC.Web.Core.Files;
 using ASC.Web.Files.Classes;
 using ASC.Web.Files.Configuration;
@@ -75,7 +74,6 @@ namespace ASC.Api.Documents
     [ApiController]
     public class FilesController : ControllerBase
     {
-        private readonly ApiContext ApiContext;
         private readonly FileStorageService<string> FileStorageService;
 
         private FilesControllerHelper<string> FilesControllerHelperString { get; }
@@ -89,7 +87,6 @@ namespace ASC.Api.Documents
         private FileOperationWraperHelper FileOperationWraperHelper { get; }
         private EntryManager EntryManager { get; }
         private UserManager UserManager { get; }
-        private WebItemSecurity WebItemSecurity { get; }
         private CoreBaseSettings CoreBaseSettings { get; }
         private ThirdpartyConfiguration ThirdpartyConfiguration { get; }
         private BoxLoginProvider BoxLoginProvider { get; }
@@ -99,7 +96,6 @@ namespace ASC.Api.Documents
         private MessageService MessageService { get; }
         private CommonLinkUtility CommonLinkUtility { get; }
         private DocumentServiceConnector DocumentServiceConnector { get; }
-        private FolderContentWrapperHelper FolderContentWrapperHelper { get; }
         private WordpressToken WordpressToken { get; }
         private WordpressHelper WordpressHelper { get; }
         private ConsumerFactory ConsumerFactory { get; }
@@ -111,7 +107,6 @@ namespace ASC.Api.Documents
         /// <param name="context"></param>
         /// <param name="fileStorageService"></param>
         public FilesController(
-            ApiContext context,
             FilesControllerHelper<string> filesControllerHelperString,
             FilesControllerHelper<int> filesControllerHelperInt,
             FileStorageService<string> fileStorageService,
@@ -124,20 +119,17 @@ namespace ASC.Api.Documents
             FileOperationWraperHelper fileOperationWraperHelper,
             EntryManager entryManager,
             UserManager userManager,
-            WebItemSecurity webItemSecurity,
             CoreBaseSettings coreBaseSettings,
             ThirdpartyConfiguration thirdpartyConfiguration,
             MessageService messageService,
             CommonLinkUtility commonLinkUtility,
             DocumentServiceConnector documentServiceConnector,
-            FolderContentWrapperHelper folderContentWrapperHelper,
             WordpressToken wordpressToken,
             WordpressHelper wordpressHelper,
             ConsumerFactory consumerFactory,
             EasyBibHelper easyBibHelper,
             ProductEntryPoint productEntryPoint)
         {
-            ApiContext = context;
             FilesControllerHelperString = filesControllerHelperString;
             FilesControllerHelperInt = filesControllerHelperInt;
             FileStorageService = fileStorageService;
@@ -150,7 +142,6 @@ namespace ASC.Api.Documents
             FileOperationWraperHelper = fileOperationWraperHelper;
             EntryManager = entryManager;
             UserManager = userManager;
-            WebItemSecurity = webItemSecurity;
             CoreBaseSettings = coreBaseSettings;
             ThirdpartyConfiguration = thirdpartyConfiguration;
             ConsumerFactory = consumerFactory;
@@ -161,7 +152,6 @@ namespace ASC.Api.Documents
             MessageService = messageService;
             CommonLinkUtility = commonLinkUtility;
             DocumentServiceConnector = documentServiceConnector;
-            FolderContentWrapperHelper = folderContentWrapperHelper;
             WordpressToken = wordpressToken;
             WordpressHelper = wordpressHelper;
             EasyBibHelper = easyBibHelper;
@@ -230,6 +220,54 @@ namespace ASC.Api.Documents
         public FolderContentWrapper<int> GetShareFolder(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
         {
             return FilesControllerHelperInt.GetFolder(GlobalFolderHelper.FolderShare, userIdOrGroupId, filterType, withsubfolders);
+        }
+
+        /// <summary>
+        /// Returns the detailed list of recent files
+        /// </summary>
+        /// <short>Section Recent</short>
+        /// <category>Folders</category>
+        /// <returns>Recent contents</returns>
+        [Read("@recent")]
+        public FolderContentWrapper<int> GetRecentFolder(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
+        {
+            return FilesControllerHelperInt.GetFolder(GlobalFolderHelper.FolderRecent, userIdOrGroupId, filterType, withsubfolders);
+        }
+
+        [Create("file/{fileId}/recent", order: int.MaxValue)]
+        public FileWrapper<string> AddToRecent(string fileId)
+        {
+            return FilesControllerHelperString.AddToRecent(fileId);
+        }
+
+        [Create("file/{fileId:int}/recent", order: int.MaxValue - 1)]
+        public FileWrapper<int> AddToRecent(int fileId)
+        {
+            return FilesControllerHelperInt.AddToRecent(fileId);
+        }
+
+        /// <summary>
+        /// Returns the detailed list of favorites files
+        /// </summary>
+        /// <short>Section Favorite</short>
+        /// <category>Folders</category>
+        /// <returns>Favorites contents</returns>
+        [Read("@favorites")]
+        public FolderContentWrapper<int> GetFavoritesFolder(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
+        {
+            return FilesControllerHelperInt.GetFolder(GlobalFolderHelper.FolderFavorites, userIdOrGroupId, filterType, withsubfolders);
+        }
+
+        /// <summary>
+        /// Returns the detailed list of templates files
+        /// </summary>
+        /// <short>Section Template</short>
+        /// <category>Folders</category>
+        /// <returns>Templates contents</returns>
+        [Read("@templates")]
+        public FolderContentWrapper<int> GetTemplatesFolder(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
+        {
+            return FilesControllerHelperInt.GetFolder(GlobalFolderHelper.FolderTemplates, userIdOrGroupId, filterType, withsubfolders);
         }
 
         /// <summary>
@@ -427,15 +465,15 @@ namespace ASC.Api.Documents
         /// <returns></returns>
         /// <visible>false</visible>
         [Update("{fileId}/update", DisableFormat = true)]
-        public FileWrapper<string> UpdateFileStream(Stream file, string fileId, bool encrypted = false)
+        public FileWrapper<string> UpdateFileStream(Stream file, string fileId, bool encrypted = false, bool forcesave = false)
         {
-            return FilesControllerHelperString.UpdateFileStream(file, fileId, encrypted);
+            return FilesControllerHelperString.UpdateFileStream(file, fileId, encrypted, forcesave);
         }
 
         [Update("{fileId:int}/update")]
-        public FileWrapper<int> UpdateFileStream(Stream file, int fileId, bool encrypted = false)
+        public FileWrapper<int> UpdateFileStream(Stream file, int fileId, bool encrypted = false, bool forcesave = false)
         {
-            return FilesControllerHelperInt.UpdateFileStream(file, fileId, encrypted);
+            return FilesControllerHelperInt.UpdateFileStream(file, fileId, encrypted, forcesave);
         }
 
 
@@ -471,13 +509,13 @@ namespace ASC.Api.Documents
         /// <category>Files</category>
         /// <returns></returns>
         [Create("file/{fileId}/startedit", DisableFormat = true)]
-        public string StartEdit(string fileId, bool editingAlone, string doc)
+        public object StartEdit(string fileId, bool editingAlone, string doc)
         {
             return FilesControllerHelperString.StartEdit(fileId, editingAlone, doc);
         }
 
         [Create("file/{fileId:int}/startedit")]
-        public string StartEdit(int fileId, bool editingAlone, string doc)
+        public object StartEdit(int fileId, bool editingAlone, string doc)
         {
             return FilesControllerHelperInt.StartEdit(fileId, editingAlone, doc);
         }
@@ -680,15 +718,15 @@ namespace ASC.Api.Documents
         /// <param name="title">Title of new folder</param>
         /// <returns>New folder contents</returns>
         [Create("folder/{folderId}", DisableFormat = true)]
-        public FolderWrapper<string> CreateFolder(string folderId, string title)
+        public FolderWrapper<string> CreateFolder(string folderId, CreateFolderModel folderModel)
         {
-            return FilesControllerHelperString.CreateFolder(folderId, title);
+            return FilesControllerHelperString.CreateFolder(folderId, folderModel.Title);
         }
 
         [Create("folder/{folderId:int}")]
-        public FolderWrapper<int> CreateFolder(int folderId, string title)
+        public FolderWrapper<int> CreateFolder(int folderId, CreateFolderModel folderModel)
         {
-            return FilesControllerHelperInt.CreateFolder(folderId, title);
+            return FilesControllerHelperInt.CreateFolder(folderId, folderModel.Title);
         }
 
 
@@ -701,9 +739,9 @@ namespace ASC.Api.Documents
         /// <remarks>In case the extension for the file title differs from DOCX/XLSX/PPTX and belongs to one of the known text, spreadsheet or presentation formats, it will be changed to DOCX/XLSX/PPTX accordingly. If the file extension is not set or is unknown, the DOCX extension will be added to the file title.</remarks>
         /// <returns>New file info</returns>
         [Create("@my/file")]
-        public FileWrapper<int> CreateFile(string title)
+        public FileWrapper<int> CreateFile(CreateFileModel<int> model)
         {
-            return CreateFile(GlobalFolderHelper.FolderMy, title);
+            return CreateFile(GlobalFolderHelper.FolderMy, model);
         }
 
         /// <summary>
@@ -716,15 +754,15 @@ namespace ASC.Api.Documents
         /// <remarks>In case the extension for the file title differs from DOCX/XLSX/PPTX and belongs to one of the known text, spreadsheet or presentation formats, it will be changed to DOCX/XLSX/PPTX accordingly. If the file extension is not set or is unknown, the DOCX extension will be added to the file title.</remarks>
         /// <returns>New file info</returns>
         [Create("{folderId}/file", DisableFormat = true)]
-        public FileWrapper<string> CreateFile(string folderId, string title)
+        public FileWrapper<string> CreateFile(string folderId, CreateFileModel<string> model)
         {
-            return FilesControllerHelperString.CreateFile(folderId, title);
+            return FilesControllerHelperString.CreateFile(folderId, model.Title, model.TemplateId);
         }
 
         [Create("{folderId:int}/file")]
-        public FileWrapper<int> CreateFile(int folderId, string title)
+        public FileWrapper<int> CreateFile(int folderId, CreateFileModel<int> model)
         {
-            return FilesControllerHelperInt.CreateFile(folderId, title);
+            return FilesControllerHelperInt.CreateFile(folderId, model.Title, model.TemplateId);
         }
 
         /// <summary>
@@ -738,15 +776,15 @@ namespace ASC.Api.Documents
         /// <param name="title">New title</param>
         /// <returns>Folder contents</returns>
         [Update("folder/{folderId}", DisableFormat = true)]
-        public FolderWrapper<string> RenameFolder(string folderId, string title)
+        public FolderWrapper<string> RenameFolder(string folderId, CreateFolderModel folderModel)
         {
-            return FilesControllerHelperString.RenameFolder(folderId, title);
+            return FilesControllerHelperString.RenameFolder(folderId, folderModel.Title);
         }
 
         [Update("folder/{folderId:int}")]
-        public FolderWrapper<int> RenameFolder(int folderId, string title)
+        public FolderWrapper<int> RenameFolder(int folderId, CreateFolderModel folderModel)
         {
-            return FilesControllerHelperInt.RenameFolder(folderId, title);
+            return FilesControllerHelperInt.RenameFolder(folderId, folderModel.Title);
         }
 
         /// <summary>
@@ -1193,15 +1231,10 @@ namespace ASC.Api.Documents
         /// <category>Sharing</category>
         /// <returns>Shared file information</returns>
         [Delete("share")]
-        public bool RemoveSecurityInfo(BaseBatchModel<int> model)
+        public bool RemoveSecurityInfo(BaseBatchModel<object> model)
         {
-            var itemList = new ItemList<string>();
-
-            itemList.AddRange((model.FolderIds ?? new List<int>()).Select(x => "folder_" + x));
-            itemList.AddRange((model.FileIds ?? new List<int>()).Select(x => "file_" + x));
-
-            FileStorageService.RemoveAce(itemList);
-
+            FileStorageService.RemoveAce(model.FileIds.OfType<string>().ToList(), model.FolderIds.OfType<string>().ToList());
+            FileStorageServiceInt.RemoveAce(model.FileIds.OfType<long>().Select(r => Convert.ToInt32(r)).ToList(), model.FolderIds.OfType<long>().Select(r => Convert.ToInt32(r)).ToList());
             return true;
         }
 
@@ -1216,13 +1249,13 @@ namespace ASC.Api.Documents
         /// <category>Files</category>
         /// <returns>Shared file link</returns>
         [Update("{fileId}/sharedlink", DisableFormat = true)]
-        public string GenerateSharedLink(string fileId, FileShare share)
+        public object GenerateSharedLink(string fileId, FileShare share)
         {
             return FilesControllerHelperString.GenerateSharedLink(fileId, share);
         }
 
         [Update("{fileId:int}/sharedlink")]
-        public string GenerateSharedLink(int fileId, FileShare share)
+        public object GenerateSharedLink(int fileId, FileShare share)
         {
             return FilesControllerHelperInt.GenerateSharedLink(fileId, share);
         }
@@ -1240,9 +1273,7 @@ namespace ASC.Api.Documents
             var result = new List<List<string>>();
 
             if (UserManager.GetUsers(SecurityContext.CurrentAccount.ID).IsVisitor(UserManager)
-                || (!UserManager.IsUserInGroup(SecurityContext.CurrentAccount.ID, Constants.GroupAdmin.ID)
-                    && !WebItemSecurity.IsProductAdministrator(ProductEntryPoint.ID, SecurityContext.CurrentAccount.ID)
-                    && !FilesSettingsHelper.EnableThirdParty
+                    || (!FilesSettingsHelper.EnableThirdParty
                     && !CoreBaseSettings.Personal))
             {
                 return result;
@@ -1267,6 +1298,10 @@ namespace ASC.Api.Documents
             if (ThirdpartyConfiguration.SupportSharePointInclusion)
             {
                 result.Add(new List<string> { "SharePoint" });
+            }
+            if (ThirdpartyConfiguration.SupportkDriveInclusion)
+            {
+                result.Add(new List<string> { "kDrive" });
             }
             if (ThirdpartyConfiguration.SupportYandexInclusion)
             {
@@ -1380,6 +1415,65 @@ namespace ASC.Api.Documents
         //    return files.Concat(folders);
         //}
 
+        /// <summary>
+        /// Adding files to favorite list
+        /// </summary>
+        /// <short>Favorite add</short>
+        /// <category>Files</category>
+        /// <param name="folderIds" visible="false"></param>
+        /// <param name="fileIds">File IDs</param>
+        /// <returns></returns>
+        [Create("favorites")]
+        public bool AddFavorites(BaseBatchModel<JsonElement> model)
+        {
+            FileStorageServiceInt.AddToFavorites(model.FolderIds.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()), model.FileIds.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()));
+            FileStorageService.AddToFavorites(model.FolderIds.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()), model.FileIds.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()));
+            return true;
+        }
+
+        /// <summary>
+        /// Removing files from favorite list
+        /// </summary>
+        /// <short>Favorite delete</short>
+        /// <category>Files</category>
+        /// <param name="folderIds" visible="false"></param>
+        /// <param name="fileIds">File IDs</param>
+        /// <returns></returns>
+        [Delete("favorites")]
+        public bool DeleteFavorites(BaseBatchModel<JsonElement> model)
+        {
+            FileStorageServiceInt.DeleteFavorites(model.FolderIds.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()), model.FileIds.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()));
+            FileStorageService.DeleteFavorites(model.FolderIds.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()), model.FileIds.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()));
+            return true;
+        }
+
+        /// <summary>
+        /// Adding files to template list
+        /// </summary>
+        /// <short>Template add</short>
+        /// <category>Files</category>
+        /// <param name="fileIds">File IDs</param>
+        /// <returns></returns>
+        [Create("templates")]
+        public bool AddTemplates(IEnumerable<int> fileIds)
+        {
+            FileStorageServiceInt.AddToTemplates(fileIds);
+            return true;
+        }
+
+        /// <summary>
+        /// Removing files from template list
+        /// </summary>
+        /// <short>Template delete</short>
+        /// <category>Files</category>
+        /// <param name="fileIds">File IDs</param>
+        /// <returns></returns>
+        [Delete("templates")]
+        public bool DeleteTemplates(IEnumerable<int> fileIds)
+        {
+            FileStorageServiceInt.DeleteTemplates(fileIds);
+            return true;
+        }
 
         /// <summary>
         /// 
@@ -1476,6 +1570,42 @@ namespace ASC.Api.Documents
         public bool ChangeAccessToThirdparty(SettingsModel model)
         {
             return FileStorageService.ChangeAccessToThirdparty(model.Set);
+        }
+
+        /// <summary>
+        /// Display recent folder
+        /// </summary>
+        /// <param name="set"></param>
+        /// <category>Settings</category>
+        /// <returns></returns>
+        [Update(@"displayRecent")]
+        public bool DisplayRecent(bool set)
+        {
+            return FileStorageService.DisplayRecent(set);
+        }
+
+        /// <summary>
+        /// Display favorite folder
+        /// </summary>
+        /// <param name="set"></param>
+        /// <category>Settings</category>
+        /// <returns></returns>
+        [Update(@"settings/favorites")]
+        public bool DisplayFavorite(bool set)
+        {
+            return FileStorageService.DisplayFavorite(set);
+        }
+
+        /// <summary>
+        /// Display template folder
+        /// </summary>
+        /// <param name="set"></param>
+        /// <category>Settings</category>
+        /// <returns></returns>
+        [Update(@"settings/templates")]
+        public bool DisplayTemplates(bool set)
+        {
+            return FileStorageService.DisplayTemplates(set);
         }
 
         /// <summary>
