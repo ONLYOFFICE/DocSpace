@@ -1292,7 +1292,7 @@ class SectionBodyContent extends React.Component {
       filesList,
       mediaViewerImageFormats,
       mediaViewerMediaFormats,
-      tooltipValue,
+      tooltipValue
     } = this.props;
 
     const {
