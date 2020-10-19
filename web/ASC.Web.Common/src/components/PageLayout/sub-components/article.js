@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { utils } from "asc-web-components";
+import { Resizable } from "re-resizable";
 const { tablet } = utils.device;
 
 const StyledArticle = styled.article`
@@ -8,12 +9,10 @@ const StyledArticle = styled.article`
   background: #f8f9f9;
   display: flex;
   flex-direction: column;
-  width: 264px;
-  min-width: 264px;
-  /*transition: width 0.3s ease-in-out;*/
+  width: 100%;
+  height: 100%;
   overflow: hidden auto;
   box-sizing: border-box;
-  resize: horizontal;
 
   @media ${tablet} {
     padding: 0 16px;
@@ -34,7 +33,6 @@ const StyledArticle = styled.article`
             top: 0;
             left: 0;
             z-index: 400;
-            resize: none;
           `
         : `
             width: 240px;
@@ -45,19 +43,24 @@ const StyledArticle = styled.article`
             top: 0;
             left: -240px;
             z-index: 400;
-            resize: none;
           `}
   }
 `;
 
-class Article extends React.Component {
-  /*shouldComponentUpdate() {
-    return false;
-  }*/
+const StyledResizable = styled(Resizable)`
+  min-width: 265px;
+  max-width: calc(100vw - 368px);
+  border-right: 1px solid #D0D5DA;
+`;
 
+class Article extends React.Component {
   render() {
     //console.log("PageLayout Article render");
-    return <StyledArticle {...this.props} />;
+    return (
+      <StyledResizable>
+        <StyledArticle {...this.props} />
+      </StyledResizable>
+    );
   }
 }
 
