@@ -19,12 +19,15 @@ const Container = ({
 
 const dropdownStyles = css`
   grid-auto-rows: max-content;
-  
-  ${props =>
-      props.groups && props.groups.length > 0 
-        ? css`grid-template-areas: "column-options splitter column-groups" "footer footer footer"`
-        : css`grid-template-areas: "column-options column-groups" "footer footer"`
-   };
+
+  ${(props) =>
+    props.groups && props.groups.length > 0
+      ? css`
+          grid-template-areas: "column-options splitter column-groups" "footer footer footer";
+        `
+      : css`
+          grid-template-areas: "column-options column-groups" "footer footer";
+        `};
 
   .column-groups {
     box-sizing: border-box;
@@ -81,22 +84,22 @@ const dropdownStyles = css`
     }
   }
 
-  ${props =>
-      props.groups && props.groups.length > 0 && 
-      css `
-        .splitter {
-          grid-area: splitter;
-          border-left: 1px solid #eceef1;
-          margin-top: 16px;
-        }
-      `
-  }
+  ${(props) =>
+    props.groups &&
+    props.groups.length > 0 &&
+    css`
+      .splitter {
+        grid-area: splitter;
+        border-left: 1px solid #eceef1;
+        margin-top: 16px;
+      }
+    `}
 `;
 
 const asideStyles = css`
   height: 100%;
   grid-template-columns: 1fr;
-  ${props =>
+  ${(props) =>
     props.isMultiSelect && props.hasSelected
       ? css`
           grid-template-rows: 1fr 69px;
@@ -111,7 +114,8 @@ const asideStyles = css`
 const StyledSelector = styled(Container)`
   display: grid;
 
-  ${props => (props.displayType === "dropdown" ? dropdownStyles : asideStyles)}
+  ${(props) =>
+    props.displayType === "dropdown" ? dropdownStyles : asideStyles}
 
   .column-options {
     grid-area: column-options;
@@ -123,16 +127,18 @@ const StyledSelector = styled(Container)`
     grid-row-gap: 2px;
 
     grid-template-columns: 1fr;
-    grid-template-rows: ${props =>
+    grid-template-rows: ${(props) =>
         props.displayType === "aside"
-          ? props.isMultiSelect && props.allowGroupSelection && props.options && props.options.length > 0
+          ? props.isMultiSelect &&
+            props.allowGroupSelection &&
+            props.options &&
+            props.options.length > 0
             ? props.groups && props.groups.length > 0
               ? "100px"
               : "30px"
-            :  
-              props.groups && props.groups.length > 0
-                ? "70px"
-                : "30px"
+            : props.groups && props.groups.length > 0
+            ? "70px"
+            : "30px"
           : "30px"} 1fr;
     grid-template-areas: "header-options" "body-options";
 
@@ -140,18 +146,18 @@ const StyledSelector = styled(Container)`
       grid-area: header-options;
       /* background-color: white; */
 
-      ${props =>
+      ${(props) =>
         props.displayType === "aside" &&
         css`
           display: grid;
           grid-row-gap: 12px;
           grid-template-columns: 1fr;
-          grid-template-rows: 30px 30px ${props =>
+          grid-template-rows: 30px 30px ${(props) =>
               props.isMultiSelect &&
               props.options &&
               props.options.length > 0 &&
               "30px"};
-          ${props =>
+          ${(props) =>
             props.isMultiSelect && props.options && props.options.length > 0
               ? css`
                   grid-template-areas: "options_searcher" "options_group_selector" "options_group_select_all";
@@ -168,7 +174,7 @@ const StyledSelector = styled(Container)`
             grid-area: options_group_selector;
           }
 
-          ${props =>
+          ${(props) =>
             props.isMultiSelect &&
             props.options &&
             props.options.length > 0 &&
@@ -179,23 +185,22 @@ const StyledSelector = styled(Container)`
             `}
         `}
 
-        .options_searcher {
+      .options_searcher {
+        div:first-child {
+          :hover {
+            border-color: #d0d5da;
+          }
 
-          div:first-child {
-            
-            :hover {
-              border-color: #D0D5DA;
-            }
-  
-            :focus, :focus-within {
-              border-color: #2DA7DB;
-            }
+          :focus,
+          :focus-within {
+            border-color: #2da7db;
+          }
 
-            & > input::placeholder {
-              color: #A3A9AE;
-            }
+          & > input::placeholder {
+            color: #a3a9ae;
           }
         }
+      }
     }
 
     .body-options {
@@ -205,7 +210,7 @@ const StyledSelector = styled(Container)`
       @media ${tablet} {
         width: 290px;
       }
-      
+
       /* background-color: white; */
 
       .row-option {

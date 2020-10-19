@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 
 using ASC.Common;
-using ASC.Core;
 using ASC.Web.Api.Routing;
 using ASC.Web.Core;
 using ASC.Web.Core.WebZones;
@@ -14,17 +13,11 @@ namespace ASC.Web.Api.Controllers
     [ApiController]
     public class ModulesController : ControllerBase
     {
-        private UserManager UserManager { get; }
-        private TenantManager TenantManager { get; }
         private WebItemManagerSecurity WebItemManagerSecurity { get; }
 
         public ModulesController(
-            UserManager userManager,
-            TenantManager tenantManager,
             WebItemManagerSecurity webItemManagerSecurity)
         {
-            UserManager = userManager;
-            TenantManager = tenantManager;
             WebItemManagerSecurity = webItemManagerSecurity;
         }
 
@@ -47,8 +40,6 @@ namespace ASC.Web.Api.Controllers
         public static DIHelper AddModulesController(this DIHelper services)
         {
             return services
-                .AddUserManagerService()
-                .AddTenantManagerService()
                 .AddWebItemManagerSecurity();
         }
     }

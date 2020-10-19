@@ -5,7 +5,7 @@ import {
   TextInput,
   Text,
   ModalDialog,
-  FieldContainer
+  FieldContainer,
 } from "asc-web-components";
 import ModalDialogContainer from "./modal-dialog-container";
 
@@ -27,7 +27,7 @@ const RegisterModalDialog = ({
   t,
   onChangeEmail,
   onRegisterModalClose,
-  onSendRegisterRequest
+  onSendRegisterRequest,
 }) => {
   return (
     <ModalDialogContainer>
@@ -46,7 +46,7 @@ const RegisterModalDialog = ({
             {t("RegisterTextBodyBeforeDomainsList")} {domainList}{" "}
             {t("RegisterTextBodyAfterDomainsList")}
           </Text>
-          
+
           <FieldContainer
             key="e-mail"
             isVertical={true}
@@ -99,7 +99,7 @@ RegisterModalDialog.propTypes = {
   t: PropTypes.func.isRequired,
   onChangeEmail: PropTypes.func.isRequired,
   onSendRegisterRequest: PropTypes.func.isRequired,
-  onRegisterModalClose: PropTypes.func.isRequired
+  onRegisterModalClose: PropTypes.func.isRequired,
 };
 
 export default RegisterModalDialog;

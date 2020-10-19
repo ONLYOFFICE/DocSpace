@@ -8,6 +8,7 @@ import {
   Text,
   AvatarEditor,
   Link,
+  utils,
 } from "asc-web-components";
 import { withTranslation, Trans } from "react-i18next";
 import {
@@ -23,12 +24,14 @@ import {
   updateProfile,
   getUserPhoto,
   fetchProfile,
+  setAvatarMax,
 } from "../../../../../store/profile/actions";
 import {
   setFilter,
   updateProfileInUsers,
   setIsVisibleDataLossDialog,
   setIsEditingForm,
+  toggleAvatarEditor,
 } from "../../../../../store/people/actions";
 import {
   MainContainer,
@@ -50,7 +53,9 @@ import {
   ChangePasswordDialog,
   ChangePhoneDialog,
 } from "../../../../dialogs";
+import { isMobile } from "react-device-detect";
 const { createThumbnailsAvatar, loadAvatar, deleteAvatar } = api.people;
+const { isTablet } = utils.device;
 
 const dialogsDataset = {
   changeEmail: "changeEmail",
@@ -91,6 +96,7 @@ class UpdateUserForm extends React.Component {
     this.onContactsItemRemove = this.onContactsItemRemove.bind(this);
 
     this.openAvatarEditor = this.openAvatarEditor.bind(this);
+    this.openAvatarEditorPage = this.openAvatarEditorPage.bind(this);
     this.onSaveAvatar = this.onSaveAvatar.bind(this);
     this.onCloseAvatarEditor = this.onCloseAvatarEditor.bind(this);
     this.onLoadFileAvatar = this.onLoadFileAvatar.bind(this);
@@ -108,7 +114,36 @@ class UpdateUserForm extends React.Component {
     if (this.props.match.params.userId !== prevProps.match.params.userId) {
       this.setState(this.mapPropsToState(this.props));
     }
+
+    const isMobileDevice = isMobile || isTablet();
+
+    if (prevState.isMobile !== isMobileDevice) {
+      this.setState({ isMobile: isMobileDevice });
+    }
   }
+
+  updateUserPhotoInState = () => {
+    var profile = toEmployeeWrapper(this.props.profile);
+    getUserPhoto(profile.id).then((userPhotoData) => {
+      if (userPhotoData.original) {
+        let avatarDefaultSizes = /_(\d*)-(\d*)./g.exec(userPhotoData.original);
+        if (avatarDefaultSizes !== null && avatarDefaultSizes.length > 2) {
+          this.setState({
+            avatar: {
+              tmpFile: this.state.avatar.tmpFile,
+              defaultWidth: avatarDefaultSizes[1],
+              defaultHeight: avatarDefaultSizes[2],
+              image: userPhotoData.original
+                ? userPhotoData.original.indexOf("default_user_photo") !== -1
+                  ? null
+                  : userPhotoData.original
+                : null,
+            },
+          });
+        }
+      }
+    });
+  };
 
   mapPropsToState = (props) => {
     var profile = toEmployeeWrapper(props.profile);
@@ -161,6 +196,7 @@ class UpdateUserForm extends React.Component {
         [dialogsDataset.changeEmail]: false,
         currentDialog: "",
       },
+      isMobile: isMobile || isTablet,
     };
 
     //Set unique contacts id
@@ -239,6 +275,7 @@ class UpdateUserForm extends React.Component {
 
   handleSubmit() {
     if (!this.validate()) return false;
+    const { setIsEditingForm } = this.props;
 
     this.setState({ isLoading: true });
 
@@ -247,6 +284,7 @@ class UpdateUserForm extends React.Component {
       .then((profile) => {
         this.props.updateProfileInUsers(profile);
         toastr.success(this.props.t("ChangesSavedSuccessfully"));
+        setIsEditingForm(false);
         this.props.history.push(
           `${this.props.settings.homepage}/view/${profile.userName}`
         );
@@ -342,26 +380,45 @@ class UpdateUserForm extends React.Component {
     });
   }
 
-  onLoadFileAvatar(file, callback) {
-    this.setState({ isLoading: true });
+  openAvatarEditorPage() {
+    const { toggleAvatarEditor } = this.props;
+
+    toggleAvatarEditor(true);
+  }
+
+  onLoadFileAvatar = (file, fileData) => {
     let data = new FormData();
     let _this = this;
+
+    if (!file) {
+      _this.onSaveAvatar(false);
+      return;
+    }
+
     data.append("file", file);
     data.append("Autosave", false);
     loadAvatar(this.state.profile.id, data)
       .then((response) => {
         var img = new Image();
         img.onload = function () {
-          var stateCopy = Object.assign({}, _this.state);
-          stateCopy.avatar = {
-            tmpFile: response.data,
-            image: response.data,
-            defaultWidth: img.width,
-            defaultHeight: img.height,
-          };
-          _this.setState(stateCopy);
           _this.setState({ isLoading: false });
-          if (typeof callback === "function") callback();
+          if (fileData) {
+            fileData.avatar = {
+              tmpFile: response.data,
+              image: response.data,
+              defaultWidth: img.width,
+              defaultHeight: img.height,
+            };
+            if (!fileData.existImage) {
+              _this.onSaveAvatar(fileData.existImage); // saving empty avatar
+            } else {
+              _this.onSaveAvatar(
+                fileData.existImage,
+                fileData.position,
+                fileData.avatar
+              );
+            }
+          }
         };
         img.src = response.data;
       })
@@ -369,35 +426,34 @@ class UpdateUserForm extends React.Component {
         toastr.error(error);
         this.setState({ isLoading: false });
       });
-  }
+  };
 
-  onSaveAvatar(isUpdate, result) {
+  onSaveAvatar = (isUpdate, result, avatar) => {
     this.setState({ isLoading: true });
+    const { profile, setAvatarMax } = this.props;
     if (isUpdate) {
-      createThumbnailsAvatar(this.state.profile.id, {
-        x: Math.round(
-          result.x * this.state.avatar.defaultWidth - result.width / 2
-        ),
-        y: Math.round(
-          result.y * this.state.avatar.defaultHeight - result.height / 2
-        ),
+      createThumbnailsAvatar(profile.id, {
+        x: Math.round(result.x * avatar.defaultWidth - result.width / 2),
+        y: Math.round(result.y * avatar.defaultHeight - result.height / 2),
         width: result.width,
         height: result.height,
-        tmpFile: this.state.avatar.tmpFile,
+        tmpFile: avatar.tmpFile,
       })
         .then((response) => {
           let stateCopy = Object.assign({}, this.state);
-          stateCopy.visibleAvatarEditor = false;
-          stateCopy.avatar.tmpFile = "";
-          stateCopy.profile.avatarMax =
+          const avatarMax =
             response.max +
             "?_=" +
             Math.floor(Math.random() * Math.floor(10000));
 
-          toastr.success(this.props.t("ChangesSavedSuccessfully"));
-          this.setState({ isLoading: false });
+          stateCopy.visibleAvatarEditor = false;
+          stateCopy.isLoading = false;
+          stateCopy.avatar.tmpFile = "";
           this.setState(stateCopy);
+
+          setAvatarMax(avatarMax);
           this.setIsEdit();
+          toastr.success(this.props.t("ChangesSavedSuccessfully"));
         })
         .catch((error) => {
           toastr.error(error);
@@ -405,21 +461,30 @@ class UpdateUserForm extends React.Component {
         })
         .then(() => {
           this.props.updateProfile(this.props.profile);
-          this.setState({ isLoading: false });
-        });
+        })
+        .then(() => {
+          this.updateUserPhotoInState();
+        })
+        .then(() => this.props.fetchProfile(profile.id));
     } else {
-      deleteAvatar(this.state.profile.id)
+      deleteAvatar(profile.id)
         .then((response) => {
           let stateCopy = Object.assign({}, this.state);
           stateCopy.visibleAvatarEditor = false;
-          stateCopy.profile.avatarMax = response.big;
           toastr.success(this.props.t("ChangesSavedSuccessfully"));
           this.setState(stateCopy);
+
+          setAvatarMax(response.big);
           this.setIsEdit();
         })
-        .catch((error) => toastr.error(error));
+        .catch((error) => toastr.error(error))
+        .then(() => this.props.updateProfile(this.props.profile))
+        .then(() => {
+          this.setState(this.mapPropsToState(this.props));
+        })
+        .then(() => this.props.fetchProfile(profile.id));
     }
-  }
+  };
 
   onCloseAvatarEditor() {
     this.setState({
@@ -470,8 +535,15 @@ class UpdateUserForm extends React.Component {
   }
 
   render() {
-    const { isLoading, errors, profile, selector, dialogsVisible } = this.state;
-    const { t, i18n, settings } = this.props;
+    const {
+      isLoading,
+      errors,
+      profile,
+      selector,
+      dialogsVisible,
+      isMobile,
+    } = this.state;
+    const { t, i18n, settings, avatarMax } = this.props;
     const {
       guestCaption,
       userCaption,
@@ -566,11 +638,13 @@ class UpdateUserForm extends React.Component {
             <Avatar
               size="max"
               role={getUserRole(profile)}
-              source={profile.avatarMax}
+              source={this.props.avatarMax || profile.avatarMax}
               userName={profile.displayName}
               editing={true}
               editLabel={t("editAvatar")}
-              editAction={this.openAvatarEditor}
+              editAction={
+                isMobile ? this.openAvatarEditorPage : this.openAvatarEditor
+              }
             />
             <AvatarEditor
               image={this.state.avatar.image}
@@ -827,6 +901,7 @@ class UpdateUserForm extends React.Component {
 const mapStateToProps = (state) => {
   return {
     profile: state.profile.targetUser,
+    avatarMax: state.profile.avatarMax,
     settings: state.auth.settings,
     groups: state.people.groups,
     editingForm: state.people.editingForm,
@@ -841,4 +916,6 @@ export default connect(mapStateToProps, {
   setIsVisibleDataLossDialog,
   setIsEditingForm,
   setFilter,
+  toggleAvatarEditor,
+  setAvatarMax,
 })(withRouter(withTranslation()(UpdateUserForm)));

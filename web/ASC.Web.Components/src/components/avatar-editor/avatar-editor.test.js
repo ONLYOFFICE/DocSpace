@@ -14,7 +14,7 @@ const baseProps = {
   accept: ["image/png", "image/jpeg"],
   unknownTypeError: "test",
   unknownError: "test",
-  displayType: "auto"
+  displayType: "auto",
 };
 
 describe("<AvatarEditor />", () => {

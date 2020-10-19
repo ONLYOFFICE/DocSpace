@@ -11,6 +11,8 @@ import {
   SET_SELECTOR_USERS,
   SET_IS_VISIBLE_DATA_LOSS_DIALOG,
   SET_IS_EDITING_FORM,
+  SET_IS_LOADING,
+  TOGGLE_AVATAR_EDITOR,
 } from "./actions";
 import { isUserSelected, skipUser, getUsersBySelected } from "./selectors";
 import { api } from "asc-web-common";
@@ -23,6 +25,7 @@ const initialState = {
   selected: "none",
   selectedGroup: null,
   filter: Filter.getDefault(),
+  avatarEditorIsOpen: false,
   selector: {
     users: [],
   },
@@ -30,8 +33,8 @@ const initialState = {
     isEdit: false,
     isVisibleDataLossDialog: false,
   },
+  isLoading: false,
 };
-
 const peopleReducer = (state = initialState, action) => {
   switch (action.type) {
     case SET_GROUPS:
@@ -97,6 +100,14 @@ const peopleReducer = (state = initialState, action) => {
           ...state.editingForm,
           isEdit: action.isEdit,
         },
+      });
+    case TOGGLE_AVATAR_EDITOR:
+      return Object.assign({}, state, {
+        avatarEditorIsOpen: action.avatarEditorIsOpen,
+      });
+    case SET_IS_LOADING:
+      return Object.assign({}, state, {
+        isLoading: action.isLoading,
       });
     default:
       return state;

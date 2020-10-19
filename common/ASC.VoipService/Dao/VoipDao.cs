@@ -87,6 +87,14 @@ namespace ASC.VoipService.Dao
             VoipDbContext.SaveChanges();
         }
 
+        public virtual IEnumerable<VoipPhone> GetAllNumbers()
+        {
+            return VoipDbContext.VoipNumbers
+                .Where(r => r.TenantId == TenantID)
+                .ToList()
+                .ConvertAll(ToPhone);
+        }
+
         public virtual IEnumerable<VoipPhone> GetNumbers(params string[] ids)
         {
             var numbers = VoipDbContext.VoipNumbers.Where(r => r.TenantId == TenantID);

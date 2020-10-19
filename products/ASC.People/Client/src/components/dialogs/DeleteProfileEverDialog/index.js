@@ -10,7 +10,7 @@ import ModalDialogContainer from "../ModalDialogContainer";
 import { createI18N } from "../../../helpers/i18n";
 const i18n = createI18N({
   page: "DeleteProfileEverDialog",
-  localesPath: "dialogs/DeleteProfileEverDialog"
+  localesPath: "dialogs/DeleteProfileEverDialog",
 });
 
 const { deleteUser } = api.people;
@@ -22,7 +22,7 @@ class DeleteProfileEverDialogComponent extends React.Component {
     super(props);
 
     this.state = {
-      isRequestRunning: false
+      isRequestRunning: false,
     };
 
     changeLanguage(i18n);
@@ -31,11 +31,11 @@ class DeleteProfileEverDialogComponent extends React.Component {
     const { onClose, filter, fetchPeople, user, t } = this.props;
     this.setState({ isRequestRunning: true }, () => {
       deleteUser(user.id)
-        .then(res => {
+        .then((res) => {
           toastr.success(t("SuccessfullyDeleteUserInfoMessage"));
           return fetchPeople(filter);
         })
-        .catch(error => toastr.error(error))
+        .catch((error) => toastr.error(error))
         .finally(() => {
           this.setState({ isRequestRunning: false }, () => onClose());
         });
@@ -97,7 +97,7 @@ const DeleteProfileEverDialogTranslated = withTranslation()(
   DeleteProfileEverDialogComponent
 );
 
-const DeleteProfileEverDialog = props => (
+const DeleteProfileEverDialog = (props) => (
   <DeleteProfileEverDialogTranslated i18n={i18n} {...props} />
 );
 
@@ -108,16 +108,15 @@ DeleteProfileEverDialog.propTypes = {
   filter: PropTypes.instanceOf(Filter).isRequired,
   fetchPeople: PropTypes.func.isRequired,
   settings: PropTypes.object.isRequired,
-  history: PropTypes.object.isRequired
+  history: PropTypes.object.isRequired,
 };
 
 function mapStateToProps(state) {
   return {
-    userCaption: state.auth.settings.customNames.userCaption
+    userCaption: state.auth.settings.customNames.userCaption,
   };
 }
 
-export default connect(
-  mapStateToProps,
-  { fetchPeople }
-)(withRouter(DeleteProfileEverDialog));
+export default connect(mapStateToProps, { fetchPeople })(
+  withRouter(DeleteProfileEverDialog)
+);

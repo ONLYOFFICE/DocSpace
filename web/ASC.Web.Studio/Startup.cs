@@ -29,8 +29,9 @@ namespace ASC.Web.Studio
         {
             services.AddCors();
 
-            var diHelper = new DIHelper(services);
-            diHelper
+            base.ConfigureServices(services);
+
+            DIHelper
                 .AddStorage()
                 .AddPathUtilsService()
                 .AddStorageHandlerService()
@@ -38,12 +39,13 @@ namespace ASC.Web.Studio
 
             services.AddMemoryCache();
 
-            base.ConfigureServices(services);
+
             services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
         }
 
         public override void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto

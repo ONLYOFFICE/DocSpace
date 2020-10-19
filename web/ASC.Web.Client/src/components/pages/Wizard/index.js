@@ -49,7 +49,7 @@ emailSettings.allowDomainPunycode = true;
 const WizardContainer = styled.div`
   width: 960px;
   margin: 0 auto;
-  margin-top: 120px;
+  margin-top: 60px;
 
   .wizard-form {
     margin-top: 32px;
@@ -65,7 +65,7 @@ const WizardContainer = styled.div`
 
   @media (max-width: 520px) {
     width: calc(100% - 32px);
-    margin-top: 72px;
+    margin-top: 12px;
   }
 `;
 

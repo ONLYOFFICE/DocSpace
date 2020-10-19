@@ -16,9 +16,10 @@ import {
   SectionFilterContent,
   SectionPagingContent,
 } from "./Section";
-import { setSelected } from "../../../store/people/actions";
+import { setSelected, setIsLoading } from "../../../store/people/actions";
 import { createI18N } from "../../../helpers/i18n";
 import { isMobile } from "react-device-detect";
+import { getIsLoading } from "../../../store/people/selectors";
 const i18n = createI18N({
   page: "Home",
   localesPath: "pages/Home",
@@ -34,7 +35,6 @@ class PureHome extends React.Component {
       isHeaderVisible: false,
       isHeaderIndeterminate: false,
       isHeaderChecked: false,
-      isLoading: false,
     };
   }
 
@@ -90,7 +90,7 @@ class PureHome extends React.Component {
   };
 
   onLoading = (status) => {
-    this.setState({ isLoading: status });
+    this.props.setIsLoading(status);
   };
 
   render() {
@@ -104,61 +104,50 @@ class PureHome extends React.Component {
     const { isAdmin } = this.props;
 
     return (
-      <>
-        {/* <RequestLoader
-          visible={this.state.isLoading}
-          zIndex={256}
-          loaderSize="16px"
-          loaderColor={"#999"}
-          label={`${t("LoadingProcessing")} ${t("LoadingDescription")}`}
-          fontSize="12px"
-          fontColor={"#999"}
-        /> */}
-        <PageLayout withBodyScroll={true} withBodyAutoFocus={!isMobile}>
-          <PageLayout.ArticleHeader>
-            <ArticleHeaderContent />
-          </PageLayout.ArticleHeader>
+      <PageLayout withBodyScroll={true} withBodyAutoFocus={!isMobile}>
+        <PageLayout.ArticleHeader>
+          <ArticleHeaderContent />
+        </PageLayout.ArticleHeader>
 
-          {isAdmin && (
-            <PageLayout.ArticleMainButton>
-              <ArticleMainButtonContent />
-            </PageLayout.ArticleMainButton>
-          )}
+        {isAdmin && (
+          <PageLayout.ArticleMainButton>
+            <ArticleMainButtonContent />
+          </PageLayout.ArticleMainButton>
+        )}
 
-          <PageLayout.ArticleBody>
-            <ArticleBodyContent />
-          </PageLayout.ArticleBody>
+        <PageLayout.ArticleBody>
+          <ArticleBodyContent />
+        </PageLayout.ArticleBody>
 
-          <PageLayout.SectionHeader>
-            <SectionHeaderContent
-              isHeaderVisible={isHeaderVisible}
-              isHeaderIndeterminate={isHeaderIndeterminate}
-              isHeaderChecked={isHeaderChecked}
-              onCheck={this.onSectionHeaderContentCheck}
-              onSelect={this.onSectionHeaderContentSelect}
-              onClose={this.onClose}
-              onLoading={this.onLoading}
-            />
-          </PageLayout.SectionHeader>
+        <PageLayout.SectionHeader>
+          <SectionHeaderContent
+            isHeaderVisible={isHeaderVisible}
+            isHeaderIndeterminate={isHeaderIndeterminate}
+            isHeaderChecked={isHeaderChecked}
+            onCheck={this.onSectionHeaderContentCheck}
+            onSelect={this.onSectionHeaderContentSelect}
+            onClose={this.onClose}
+            onLoading={this.onLoading}
+          />
+        </PageLayout.SectionHeader>
 
-          <PageLayout.SectionFilter>
-            <SectionFilterContent onLoading={this.onLoading} />
-          </PageLayout.SectionFilter>
+        <PageLayout.SectionFilter>
+          <SectionFilterContent onLoading={this.onLoading} />
+        </PageLayout.SectionFilter>
 
-          <PageLayout.SectionBody>
-            <SectionBodyContent
-              isMobile={isMobile}
-              selected={selected}
-              onLoading={this.onLoading}
-              onChange={this.onRowChange}
-            />
-          </PageLayout.SectionBody>
+        <PageLayout.SectionBody>
+          <SectionBodyContent
+            isMobile={isMobile}
+            selected={selected}
+            onLoading={this.onLoading}
+            onChange={this.onRowChange}
+          />
+        </PageLayout.SectionBody>
 
-          <PageLayout.SectionPaging>
-            <SectionPagingContent onLoading={this.onLoading} />
-          </PageLayout.SectionPaging>
-        </PageLayout>
-      </>
+        <PageLayout.SectionPaging>
+          <SectionPagingContent onLoading={this.onLoading} />
+        </PageLayout.SectionPaging>
+      </PageLayout>
     );
   }
 }
@@ -196,7 +185,10 @@ function mapStateToProps(state) {
     isLoaded,
     organizationName: settings.organizationName,
     isAdmin: isAdmin(state),
+    isLoading: getIsLoading(state),
   };
 }
 
-export default connect(mapStateToProps, { setSelected })(withRouter(Home));
+export default connect(mapStateToProps, { setSelected, setIsLoading })(
+  withRouter(Home)
+);

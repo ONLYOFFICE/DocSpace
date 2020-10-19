@@ -76,7 +76,7 @@ class FilesFilter {
       search,
       sortBy,
       sortOrder,
-      withSubfolders
+      withSubfolders,
     } = this;
 
     const isFilterSet =
@@ -89,7 +89,6 @@ class FilesFilter {
         : null;
 
     const dtoFilter = {
-      folder: folder,
       count: pageCount,
       startIndex: this.getStartIndex(),
       page: page,
@@ -98,7 +97,7 @@ class FilesFilter {
       filterType: filterType,
       filterValue: (search ?? "").trim(),
       withSubfolders: isFilterSet,
-      userIdOrGroupId
+      userIdOrGroupId,
     };
 
     return dtoFilter;

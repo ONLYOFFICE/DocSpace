@@ -92,7 +92,7 @@ namespace ASC.ApiSystem.Controllers
         [HttpGet("change_to_storage")]
         public IActionResult СhangeOfCalendarStorage(string change)
         {
-            if (!GetTenant(change, out Tenant tenant, out object error))
+            if (!GetTenant(change, out var tenant, out var error))
             {
                 return BadRequest(error);
             }
@@ -121,7 +121,7 @@ namespace ASC.ApiSystem.Controllers
         [Authorize(AuthenticationSchemes = "auth.allowskip")]
         public IActionResult CaldavDeleteEvent(string eventInfo)
         {
-            if (!GetTenant(eventInfo, out Tenant tenant, out object error))
+            if (!GetTenant(eventInfo, out var tenant, out var error))
             {
                 return BadRequest(error);
             }
@@ -230,8 +230,7 @@ namespace ASC.ApiSystem.Controllers
             Log.Info(string.Format("CalDav calendarParam: {0}", calendarParam));
 
             var userParam = calendarParam.Split('/')[0];
-
-            return GetUserData(userParam, out string email, out tenant, out error);
+            return GetUserData(userParam, out _, out tenant, out error);
         }
 
         private bool GetUserData(string userParam, out string email, out Tenant tenant, out object error)

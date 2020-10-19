@@ -12,7 +12,7 @@ import { logout } from "../../../store/auth/actions";
 import {
   getCurrentUser,
   getLanguage,
-  getIsolateModules
+  getIsolateModules,
 } from "../../../store/auth/selectors";
 
 const StyledNav = styled.nav`
@@ -65,19 +65,19 @@ const HeaderNav = React.memo(
           key: "ProfileBtn",
           label: t("Profile"),
           onClick: onProfileClick,
-          url: "/products/people/view/@self"
+          url: "/products/people/view/@self",
         },
         {
           key: "AboutBtn",
           label: t("AboutCompanyTitle"),
           onClick: onAboutClick,
-          url: "/about"
+          url: "/about",
         },
         {
           key: "LogoutBtn",
           label: t("LogoutButton"),
-          onClick: onLogoutClick
-        }
+          onClick: onLogoutClick,
+        },
       ];
 
       return currentUserActions;
@@ -86,7 +86,7 @@ const HeaderNav = React.memo(
     //console.log("HeaderNav render");
     return (
       <StyledNav>
-        {modules.map(module => (
+        {modules.map((module) => (
           <NavItem
             key={module.id}
             iconName={module.iconName}
@@ -113,7 +113,7 @@ HeaderNav.propTypes = {
   modules: PropTypes.array,
   user: PropTypes.object,
   logout: PropTypes.func,
-  isAuthenticated: PropTypes.bool
+  isAuthenticated: PropTypes.bool,
 };
 
 function mapStateToProps(state) {
@@ -127,7 +127,7 @@ function mapStateToProps(state) {
     isAuthenticated,
 
     modules: getIsolateModules(state),
-    language: getLanguage(state)
+    language: getLanguage(state),
   };
 }
 

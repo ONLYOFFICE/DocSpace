@@ -18,7 +18,12 @@ import {
   getDragging,
   getUpdateTree,
   getSelectedFolderId,
+  getMyFolderId,
+  getShareFolderId,
+  getRootFolderId,
+  getDraggableItems,
 } from "../../../store/files/selectors";
+import { onConvertFiles } from "../../../helpers/files-converter";
 const { isAdmin } = initStore.auth.selectors;
 
 const { files } = api;
@@ -82,56 +87,17 @@ class TreeFolders extends React.Component {
   };
 
   getFolderIcon = (item) => {
-    const showItem = item.newItems
-      ? item.newItems > 0 && this.props.needUpdate
-      : false;
-    const style = { position: "absolute", right: 1, top: 2 };
-    const badgeProps = {
-      label: item.newItems,
-      backgroundColor: "#ED7309",
-      color: "#FFF",
-      fontSize: "11px",
-      fontWeight: 800,
-      borderRadius: "11px",
-      padding: "0 5px",
-      style,
-    };
-
     switch (item.key) {
       case "0-0":
         return <Icons.CatalogUserIcon size="scale" isfill color="#657077" />;
-
       case "0-1":
-        return (
-          <>
-            <Icons.CatalogSharedIcon size="scale" isfill color="#657077" />
-            {showItem && (
-              <Badge
-                data-id={item.id}
-                {...badgeProps}
-                onClick={this.onBadgeClick}
-              />
-            )}
-          </>
-        );
-
+        return <Icons.CatalogSharedIcon size="scale" isfill color="#657077" />;
       case "0-2":
         return (
-          <>
-            <Icons.CatalogPortfolioIcon size="scale" isfill color="#657077" />
-            {showItem && (
-              <Badge
-                data-id={item.id}
-                {...badgeProps}
-                onClick={this.onBadgeClick}
-              />
-            )}
-          </>
+          <Icons.CatalogPortfolioIcon size="scale" isfill color="#657077" />
         );
-
       case "0-3":
         return <Icons.CatalogTrashIcon size="scale" isfill color="#657077" />;
-
       default:
         return <Icons.CatalogFolderIcon size="scale" isfill color="#657077" />;
     }
@@ -142,14 +108,19 @@ class TreeFolders extends React.Component {
       isAdmin,
       myId,
       commonId,
-      isCommon,
-      isMy,
-      isShare,
+      rootFolderId,
       currentId,
+      draggableItems,
     } = this.props;
     if (item.id === currentId) {
       return false;
     }
+
+    if (draggableItems.find((x) => x.id === item.id)) return false;
+
+    const isMy = rootFolderId === FolderType.USER;
+    const isCommon = rootFolderId === FolderType.COMMON;
+    const isShare = rootFolderId === FolderType.SHARE;
 
     if (
       item.rootFolderType === FolderType.SHARE &&
@@ -185,7 +156,11 @@ class TreeFolders extends React.Component {
 
   getItems = (data) => {
     return data.map((item) => {
-      const dragging = this.showDragItems(item);
+      const dragging = this.props.dragging ? this.showDragItems(item) : false;
+
+      const showBadge = item.newItems
+        ? item.newItems > 0 && this.props.needUpdate
+        : false;
 
       if (item.folders && item.folders.length > 0) {
         return (
@@ -194,7 +169,10 @@ class TreeFolders extends React.Component {
             key={item.id}
             title={item.title}
             icon={this.getFolderIcon(item)}
-            dragging={this.props.dragging && dragging}
+            dragging={dragging}
+            newItems={item.newItems}
+            onBadgeClick={this.onBadgeClick}
+            showBadge={showBadge}
           >
             {this.getItems(item.folders)}
           </TreeNode>
@@ -205,9 +183,12 @@ class TreeFolders extends React.Component {
           id={item.id}
           key={item.id}
           title={item.title}
-          dragging={this.props.dragging && dragging}
+          dragging={dragging}
           isLeaf={item.foldersCount ? false : true}
           icon={this.getFolderIcon(item)}
+          newItems={item.newItems}
+          onBadgeClick={this.onBadgeClick}
+          showBadge={showBadge}
         />
       );
     });
@@ -380,7 +361,10 @@ class TreeFolders extends React.Component {
     const { dragging, id } = data.node.props;
     setDragging(false);
     if (dragging) {
-      onTreeDrop(data.event, id);
+      const promise = new Promise((resolve) =>
+        onConvertFiles(data.event, resolve)
+      );
+      promise.then((files) => onTreeDrop(files, id));
     }
   };
 
@@ -431,32 +415,17 @@ TreeFolders.defaultProps = {
 };
 
 function mapStateToProps(state) {
-  const { treeFolders, selectedFolder } = state.files;
-
-  const myFolderIndex = 0;
-  const shareFolderIndex = 1;
-  const commonFolderIndex = 2;
-
-  const myId = treeFolders[myFolderIndex].id;
-  const shareId = treeFolders[shareFolderIndex].id;
-  const commonId = treeFolders[commonFolderIndex].id;
-
-  const isMy = selectedFolder.length && selectedFolder.pathParts[0] === myId;
-  const isShare = selectedFolder.length && selectedFolder.pathParts[0] === shareId;
-  const isCommon = selectedFolder.length && selectedFolder.pathParts[0] === commonId;
-
   return {
     treeFolders: getTreeFolders(state),
     filter: getFilter(state),
-    isMy,
-    isCommon,
-    isShare,
-    myId,
-    commonId,
+    myId: getMyFolderId(state),
+    commonId: getShareFolderId(state),
     currentId: getSelectedFolderId(state),
     isAdmin: isAdmin(state),
     dragging: getDragging(state),
     updateTree: getUpdateTree(state),
+    rootFolderId: getRootFolderId(state),
+    draggableItems: getDraggableItems(state),
   };
 }
 

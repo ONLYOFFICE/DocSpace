@@ -98,7 +98,7 @@ namespace ASC.VoipService.Dao
             var numbers = cache.Get<List<VoipPhone>>(GetCacheKey(TenantID));
             if (numbers == null)
             {
-                numbers = new List<VoipPhone>(base.GetNumbers());
+                numbers = new List<VoipPhone>(base.GetAllNumbers());
                 cache.Insert(GetCacheKey(TenantID), numbers, DateTime.UtcNow.Add(timeout));
             }
 
@@ -115,16 +115,20 @@ namespace ASC.VoipService.Dao
     {
         public static DIHelper AddVoipDaoService(this DIHelper services)
         {
-            services.TryAddScoped<VoipDao, CachedVoipDao>();
-            services.TryAddSingleton<VoipDaoCache>();
+            if (services.TryAddScoped<VoipDao, CachedVoipDao>())
+            {
+                services.TryAddSingleton<VoipDaoCache>();
 
-            return services
-                .AddDbContextManagerService<VoipDbContext>()
-                .AddAuthContextService()
-                .AddTenantUtilService()
-                .AddSecurityContextService()
-                .AddBaseCommonLinkUtilityService()
-                .AddConsumerFactoryService();
+                return services
+                    .AddDbContextManagerService<VoipDbContext>()
+                    .AddAuthContextService()
+                    .AddTenantUtilService()
+                    .AddSecurityContextService()
+                    .AddBaseCommonLinkUtilityService()
+                    .AddConsumerFactoryService();
+            }
+
+            return services;
         }
     }
 }

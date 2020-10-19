@@ -2,6 +2,8 @@
   "UserType": "Type",
   "Email": "Email",
   "Sex": "Sex",
+  "MaleSexStatus": "Male",
+  "FemaleSexStatus": "Female",
   "Birthdate": "Date of birth",
   "Location": "Location",
   "Language": "Language",

@@ -31,14 +31,11 @@ namespace ASC.Core.Common.Tests
 
     using ASC.Core.Tenants;
 
-    using Microsoft.Extensions.Configuration;
-
     using NUnit.Framework;
 
     [TestFixture]
     public class HostedSolutionTest
     {
-        private IConfiguration Configuration { get; set; }
         [Test]
         public void FindTenants()
         {

@@ -1,17 +1,16 @@
 import React from "react";
-import PropTypes from 'prop-types';
-import { Avatar, DropDown } from 'asc-web-components';
+import PropTypes from "prop-types";
+import { Avatar, DropDown } from "asc-web-components";
 import {
   AvatarContainer,
   LabelContainer,
   MainLabelContainer,
   MenuContainer,
   StyledProfileMenu,
-  TopArrow
+  TopArrow,
 } from "./StyledProfileMenu";
 
 class ProfileMenu extends React.Component {
-
   constructor(props) {
     super(props);
   }
@@ -25,13 +24,13 @@ class ProfileMenu extends React.Component {
       displayName,
       email,
       clickOutsideAction,
-      open
+      open,
     } = this.props;
 
     return (
       <DropDown
         className={className}
-        directionX='right'
+        directionX="right"
         open={open}
         clickOutsideAction={clickOutsideAction}
       >
@@ -39,18 +38,14 @@ class ProfileMenu extends React.Component {
           <MenuContainer>
             <AvatarContainer>
               <Avatar
-                size='medium'
+                size="medium"
                 role={avatarRole}
                 source={avatarSource}
                 userName={displayName}
               />
             </AvatarContainer>
-            <MainLabelContainer>
-              {displayName}
-            </MainLabelContainer>
-            <LabelContainer>
-              {email}
-            </LabelContainer>
+            <MainLabelContainer>{displayName}</MainLabelContainer>
+            <LabelContainer>{email}</LabelContainer>
           </MenuContainer>
           <TopArrow />
         </StyledProfileMenu>
@@ -60,10 +55,10 @@ class ProfileMenu extends React.Component {
   }
 }
 
-ProfileMenu.displayName = 'ProfileMenu';
+ProfileMenu.displayName = "ProfileMenu";
 
 ProfileMenu.propTypes = {
-  avatarRole: PropTypes.oneOf(['owner', 'admin', 'guest', 'user']),
+  avatarRole: PropTypes.oneOf(["owner", "admin", "guest", "user"]),
   avatarSource: PropTypes.string,
   children: PropTypes.any,
   className: PropTypes.string,
@@ -75,4 +70,4 @@ ProfileMenu.propTypes = {
   clickOutsideAction: PropTypes.func,
 };
 
-export default ProfileMenu
+export default ProfileMenu;

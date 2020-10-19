@@ -11,5 +11,5 @@ export {
   AddGroupsPanel,
   EmbeddingPanel,
   OperationsPanel,
-  NewFilesPanel
+  NewFilesPanel,
 };

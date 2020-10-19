@@ -33,7 +33,7 @@ class ContactField extends React.Component {
       inputOnChange,
 
       removeButtonName,
-      removeButtonOnChange
+      removeButtonOnChange,
     } = this.props;
 
     return (

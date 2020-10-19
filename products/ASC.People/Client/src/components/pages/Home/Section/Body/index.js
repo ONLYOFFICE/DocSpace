@@ -40,6 +40,7 @@ const i18n = createI18N({
 });
 const { isArrayEqual } = utils.array;
 const { getSettings } = store.auth.selectors;
+const { setIsLoaded } = store.auth.actions;
 const { resendUserInvites } = api.people;
 const { EmployeeStatus } = constants;
 
@@ -61,11 +62,25 @@ class SectionBodyContent extends React.PureComponent {
   }
 
   componentDidMount() {
-    const { isLoaded, fetchPeople, filter } = this.props;
-
+    const {
+      isLoaded,
+      fetchPeople,
+      filter,
+      setIsLoaded,
+      peopleList,
+    } = this.props;
     if (!isLoaded) return;
 
-    fetchPeople(filter).catch((error) => toastr.error(error));
+    if (peopleList.length <= 0) setIsLoaded();
+
+    setIsLoaded(false);
+
+    fetchPeople(filter)
+      .then(() => isLoaded && setIsLoaded(true))
+      .catch((error) => {
+        isLoaded && setIsLoaded(true);
+        toastr.error(error);
+      });
   }
 
   findUserById = (id) => this.props.peopleList.find((man) => man.id === id);
@@ -511,4 +526,5 @@ export default connect(mapStateToProps, {
   resetFilter,
   fetchPeople,
   selectGroup,
+  setIsLoaded,
 })(withRouter(withTranslation()(SectionBodyContent)));

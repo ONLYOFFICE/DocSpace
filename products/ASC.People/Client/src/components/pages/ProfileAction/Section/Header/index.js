@@ -8,8 +8,9 @@ import { useTranslation } from "react-i18next";
 import {
   setFilter,
   setIsVisibleDataLossDialog,
+  toggleAvatarEditor,
 } from "../../../../../store/people/actions";
-
+import { resetProfile } from "../../../../../store/profile/actions";
 const Wrapper = styled.div`
   display: flex;
   align-items: center;
@@ -36,12 +37,16 @@ const SectionHeaderContent = (props) => {
     editingForm,
     setFilter,
     setIsVisibleDataLossDialog,
+    toggleAvatarEditor,
+    avatarEditorIsOpen,
   } = props;
   const { userCaption, guestCaption } = settings.customNames;
   const { type } = match.params;
   const { t } = useTranslation();
 
-  const headerText = type
+  const headerText = avatarEditorIsOpen
+    ? t("EditPhoto")
+    : type
     ? type === "guest"
       ? t("CustomCreation", { user: guestCaption })
       : t("CustomCreation", { user: userCaption })
@@ -56,10 +61,31 @@ const SectionHeaderContent = (props) => {
       onClickBack();
     }
   };
-  const onClickBack = useCallback(() => {
-    !profile || !document.referrer ? setFilter(filter) : history.goBack();
-  }, [history, profile, setFilter, filter]);
 
+  const setFilterAndReset = (filter) => {
+    props.resetProfile();
+    setFilter(filter);
+  };
+
+  const goBackAndReset = () => {
+    props.resetProfile();
+    history.goBack();
+  };
+
+  const onClickBack = useCallback(() => {
+    avatarEditorIsOpen
+      ? toggleAvatarEditor(false)
+      : !profile || !document.referrer
+      ? setFilterAndReset(filter)
+      : goBackAndReset();
+  }, [
+    history,
+    profile,
+    setFilter,
+    filter,
+    settings.homepage,
+    avatarEditorIsOpen,
+  ]);
   return (
     <Wrapper>
       <IconButton
@@ -84,10 +110,13 @@ function mapStateToProps(state) {
     settings: state.auth.settings,
     filter: state.people.filter,
     editingForm: state.people.editingForm,
+    avatarEditorIsOpen: state.people.avatarEditorIsOpen,
   };
 }
 
 export default connect(mapStateToProps, {
   setFilter,
   setIsVisibleDataLossDialog,
+  toggleAvatarEditor,
+  resetProfile,
 })(withRouter(SectionHeaderContent));

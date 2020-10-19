@@ -2,7 +2,7 @@
   "CancelButton": "Cancel",
   "DisabledEmployeeTitle": "Disabled",
   "SuccessChangeUserStatus": "The user status was successfully changed",
-  
+
   "ShowUsersList": "View users list",
   "ChangeUserStatusDialogHeader": "Change user status",
   "ChangeUserStatusDialog": "The users with the '{{ status }}' status will be disabled.",

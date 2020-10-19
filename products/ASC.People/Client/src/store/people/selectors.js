@@ -191,6 +191,10 @@ export function filterGroupSelectorOptions(options, template) {
   });
 }
 
+export const getIsLoading = (state) => {
+  return state.people.isLoading;
+};
+
 export const getUsers = (state) => state.people.users || [];
 
 export const getSelection = (state) => state.people.selection;
@@ -430,3 +434,7 @@ export const getUsersToRemoveIds = createSelector(
 );
 
 export const hasUsersToRemove = createSelector([getUsersToRemove], hasAny);
+
+export const getFilter = (state) => state.people.filter;
+
+export const getGroups = (state) => state.people.groups;

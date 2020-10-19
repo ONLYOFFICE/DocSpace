@@ -3,6 +3,16 @@ import PropTypes from "prop-types";
 import ModalDialog from "../modal-dialog";
 import Button from "../button";
 import AvatarEditorBody from "./sub-components/avatar-editor-body";
+import styled from "styled-components";
+
+const StyledButtonsWrapper = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 8px;
+  min-width: 208px;
+  max-width: 300px;
+  width: max-content;
+`;
 
 class AvatarEditor extends React.Component {
   constructor(props) {
@@ -16,13 +26,13 @@ class AvatarEditor extends React.Component {
       y: 0,
       width: 0,
       height: 0,
-      croppedImage: ""
+      croppedImage: "",
     };
   }
 
-  onImageChange = file => {
+  onImageChange = (file) => {
     this.setState({
-      croppedImage: file
+      croppedImage: file,
     });
     if (typeof this.props.onImageChange === "function")
       this.props.onImageChange(file);
@@ -30,35 +40,53 @@ class AvatarEditor extends React.Component {
 
   onDeleteImage = () => {
     this.setState({
-      existImage: false
+      existImage: false,
     });
     if (typeof this.props.onDeleteImage === "function")
       this.props.onDeleteImage();
   };
 
-  onSizeChange = data => {
+  onSizeChange = (data) => {
     this.setState(data);
   };
 
-  onPositionChange = data => {
+  onPositionChange = (data) => {
     this.setState(data);
   };
 
-  onLoadFileError = error => {
+  onLoadFileError = (error) => {
     if (typeof this.props.onLoadFileError === "function")
       this.props.onLoadFileError(error);
   };
 
-  onLoadFile = (file, callback) => {
-    if (typeof this.props.onLoadFile === "function")
-      this.props.onLoadFile(file, callback);
+  onLoadFile = (file, needSave) => {
+    if (typeof this.props.onLoadFile === "function") {
+      var fileData = {
+        existImage: this.state.existImage,
+        position: {
+          x: this.state.x,
+          y: this.state.y,
+          width: this.state.width,
+          height: this.state.height,
+        },
+        croppedImage: this.state.croppedImage,
+      };
+
+      needSave
+        ? this.props.onLoadFile(file, fileData)
+        : this.props.onLoadFile(file);
+    }
 
     if (!this.state.existImage) this.setState({ existImage: true });
   };
 
   onSaveButtonClick = () => {
-    this.avatarEditorBodyRef.current.onSaveImage(this.saveAvatar);
+    this.avatarEditorBodyRef.current.onSaveImage();
     //this.saveAvatar();
+  };
+
+  onCancelButtonClick = () => {
+    this.props.onCancel();
   };
 
   saveAvatar = () => {
@@ -73,7 +101,7 @@ class AvatarEditor extends React.Component {
         x: this.state.x,
         y: this.state.y,
         width: this.state.width,
-        height: this.state.height
+        height: this.state.height,
       },
       this.state.croppedImage
     );
@@ -109,10 +137,12 @@ class AvatarEditor extends React.Component {
       maxSizeFileError,
       unknownError,
       saveButtonLabel,
-      saveButtonLoading
+      saveButtonLoading,
+      useModalDialog,
+      cancelButtonLabel,
     } = this.props;
 
-    return (
+    return useModalDialog ? (
       <ModalDialog
         visible={this.state.visible}
         displayType={displayType}
@@ -157,6 +187,46 @@ class AvatarEditor extends React.Component {
           />
         </ModalDialog.Footer>
       </ModalDialog>
+    ) : (
+      <>
+        <AvatarEditorBody
+          ref={this.avatarEditorBodyRef}
+          visible={this.state.visible}
+          onImageChange={this.onImageChange}
+          onPositionChange={this.onPositionChange}
+          onSizeChange={this.onSizeChange}
+          onLoadFileError={this.onLoadFileError}
+          onLoadFile={this.onLoadFile}
+          deleteImage={this.onDeleteImage}
+          saveAvatar={this.saveAvatar}
+          maxSize={maxSize * 1000000} // megabytes to bytes
+          accept={accept}
+          image={image}
+          selectNewPhotoLabel={selectNewPhotoLabel}
+          orDropFileHereLabel={orDropFileHereLabel}
+          unknownTypeError={unknownTypeError}
+          maxSizeFileError={maxSizeFileError}
+          unknownError={unknownError}
+          useModalDialog={false}
+        />
+        <StyledButtonsWrapper>
+          <Button
+            key="SaveBtn"
+            label={saveButtonLabel}
+            isLoading={saveButtonLoading}
+            primary={true}
+            size="big"
+            onClick={this.onSaveButtonClick}
+          />
+          <Button
+            key="CancelBtn"
+            label={cancelButtonLabel}
+            primary={false}
+            size="big"
+            onClick={this.onCancelButtonClick}
+          />
+        </StyledButtonsWrapper>
+      </>
     );
   }
 }
@@ -168,6 +238,7 @@ AvatarEditor.propTypes = {
   orDropFileHereLabel: PropTypes.string,
 
   saveButtonLabel: PropTypes.string,
+  cancelButtonLabel: PropTypes.string,
   saveButtonLoading: PropTypes.bool,
   maxSizeFileError: PropTypes.string,
   image: PropTypes.string,
@@ -184,7 +255,8 @@ AvatarEditor.propTypes = {
   displayType: PropTypes.oneOf(["auto", "modal", "aside"]),
   className: PropTypes.string,
   id: PropTypes.string,
-  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  useModalDialog: PropTypes.bool,
 };
 
 AvatarEditor.defaultProps = {
@@ -192,8 +264,10 @@ AvatarEditor.defaultProps = {
   maxSize: 10, //10MB
   headerLabel: "Edit Photo",
   saveButtonLabel: "Save",
+  cancelButtonLabel: "Cancel",
   accept: ["image/png", "image/jpeg"],
-  displayType: "auto"
+  displayType: "auto",
+  useModalDialog: true,
 };
 
 export default AvatarEditor;

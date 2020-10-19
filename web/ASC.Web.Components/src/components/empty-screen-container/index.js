@@ -11,8 +11,8 @@ const EmptyContentBody = styled.div`
   display: grid;
   grid-template-areas:
     "img headerText"
-    ${props => props.subheadingText && `"img subheadingText"`}
-    ${props => props.descriptionText && `"img descriptionText"`}
+    ${(props) => props.subheadingText && `"img subheadingText"`}
+    ${(props) => props.descriptionText && `"img descriptionText"`}
     "img button";
 
   grid-column-gap: 16px;
@@ -57,8 +57,8 @@ const EmptyContentBody = styled.div`
       grid-template-areas:
         "img"
         "headerText"
-        ${props => props.subheadingText && `"subheadingText"`}
-        ${props => props.descriptionText && `"descriptionText"`}
+        ${(props) => props.subheadingText && `"subheadingText"`}
+        ${(props) => props.descriptionText && `"descriptionText"`}
         "button";
 
       .ec-header {
@@ -79,21 +79,21 @@ const EmptyContentBody = styled.div`
   }
 `;
 
-const EmptyContentImage = styled.img.attrs(props => ({
+const EmptyContentImage = styled.img.attrs((props) => ({
   src: props.imageSrc,
-  alt: props.imageAlt
+  alt: props.imageAlt,
 }))`
   background: no-repeat 0 0 transparent;
 `;
 
-const EmptyScreenContainer = props => {
+const EmptyScreenContainer = (props) => {
   const {
     imageSrc,
     imageAlt,
     headerText,
     subheadingText,
     descriptionText,
-    buttons
+    buttons,
   } = props;
   return (
     <EmptyContentBody {...props}>
@@ -135,7 +135,7 @@ EmptyScreenContainer.propTypes = {
   buttons: PropTypes.any,
   className: PropTypes.string,
   id: PropTypes.string,
-  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 };
 
 export default EmptyScreenContainer;

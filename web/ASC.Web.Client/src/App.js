@@ -1,8 +1,6 @@
 import React, { Suspense, lazy } from "react";
 import { Router, Route, Switch } from "react-router-dom";
-import axios from "axios";
 import { connect } from "react-redux";
-import { Loader } from "asc-web-components";
 import {
   store as CommonStore,
   constants,
@@ -16,6 +14,7 @@ import {
   NavMenu,
   Main,
   utils,
+  toastr,
 } from "asc-web-common";
 import Home from "./components/pages/Home";
 
@@ -51,14 +50,12 @@ class App extends React.Component {
       requests.push(getModules());
     }
 
-    axios
-      .all(requests)
+    Promise.all(requests)
       .catch((e) => {
-        console.log("INIT REQUESTS FAILED", e);
+        toastr.error(e);
       })
       .finally(() => {
-        utils.hideLoader();
-        setIsLoaded(true);
+        setIsLoaded();
       });
   }
 
@@ -67,11 +64,7 @@ class App extends React.Component {
       <Router history={history}>
         <NavMenu />
         <Main>
-          <Suspense
-            fallback={
-              <Loader className="pageLoader" type="rombs" size="40px" />
-            }
-          >
+          <Suspense fallback={null}>
             <Switch>
               <Route exact path="/wizard" component={Wizard} />
               <PublicRoute

@@ -43,26 +43,26 @@ const arrayUsers = [
     key: "user_2",
     name: "John",
     email: "John@gmail.com",
-    position: "developer"
+    position: "developer",
   },
   {
     key: "user_3",
     name: "Kevin",
     email: "Kevin@gmail.com",
-    position: "developer"
+    position: "developer",
   },
   {
     key: "user_4",
     name: "Alex",
     email: "Alex@gmail.com",
-    position: "developer"
+    position: "developer",
   },
   {
     key: "user_5",
     name: "Tomas",
     email: "Tomas@gmail.com",
-    position: "developer"
-  }
+    position: "developer",
+  },
 ];
 ```
 
@@ -79,16 +79,16 @@ const arrayUsers = [
 <Tooltip
   id="group"
   offsetRight={90}
-  getContent={dataTip =>
+  getContent={(dataTip) =>
     dataTip ? (
       <div>
-        <Text isBold={true} fontSize='16px'>
+        <Text isBold={true} fontSize="16px">
           {arrayUsers[dataTip].name}
         </Text>
-        <Text color="#A3A9AE" fontSize='13px'>
+        <Text color="#A3A9AE" fontSize="13px">
           {arrayUsers[dataTip].email}
         </Text>
-        <Text fontSize='13px'>{arrayUsers[dataTip].position}</Text>
+        <Text fontSize="13px">{arrayUsers[dataTip].position}</Text>
       </div>
     ) : null
   }

@@ -9,15 +9,23 @@ import { PageLayout } from "asc-web-common";
 ```
 
 ```jsx
-<PageLayout
-  articleHeaderContent={articleHeaderContent}
-  articleMainButtonContent={articleMainButtonContent}
-  articleBodyContent={articleBodyContent}
-  sectionHeaderContent={sectionHeaderContent}
-  sectionFilterContent={sectionFilterContent}
-  sectionBodyContent={sectionBodyContent}
-  sectionPagingContent={sectionPagingContent}
-/>
+<PageLayout withBodyScroll={true}>
+  <PageLayout.ArticleHeader>{articleHeaderContent}</PageLayout.ArticleHeader>
+
+  <PageLayout.ArticleMainButton>
+    {articleMainButtonContent}
+  </PageLayout.ArticleMainButton>
+
+  <PageLayout.ArticleBody>{articleBodyContent}</PageLayout.ArticleBody>
+
+  <PageLayout.SectionHeader>{sectionHeaderContent}</PageLayout.SectionHeader>
+
+  <PageLayout.SectionFilter>{sectionFilterContent}</PageLayout.SectionFilter>
+
+  <PageLayout.SectionBody>{sectionBodyContent}</PageLayout.SectionBody>
+
+  <PageLayout.SectionPaging>{sectionPagingContent}</PageLayout.SectionPaging>
+</PageLayout>
 ```
 
 ### Properties

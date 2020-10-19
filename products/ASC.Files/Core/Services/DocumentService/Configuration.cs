@@ -46,7 +46,6 @@ using ASC.Files.Core.Resources;
 using ASC.Files.Core.Security;
 using ASC.Web.Core.Files;
 using ASC.Web.Core.Users;
-using ASC.Web.Core.Utility.Skins;
 using ASC.Web.Core.WhiteLabel;
 using ASC.Web.Files.Classes;
 using ASC.Web.Files.Helpers;
@@ -69,7 +68,7 @@ namespace ASC.Web.Files.Services.DocumentService
 
     public class Configuration<T>
     {
-        public static readonly Dictionary<FileType, string> DocType = new Dictionary<FileType, string>
+        internal static Dictionary<FileType, string> DocType = new Dictionary<FileType, string>
             {
                 { FileType.Document, "text" },
                 { FileType.Spreadsheet, "spreadsheet" },
@@ -638,8 +637,6 @@ namespace ASC.Web.Files.Services.DocumentService
             IDaoFactory daoFactory,
             GlobalFolderHelper globalFolderHelper,
             PathProvider pathProvider,
-            WebImageSupplier webImageSupplier,
-            BaseCommonLinkUtility baseCommonLinkUtility,
             CustomerConfig<T> customerConfig,
             LogoConfig<T> logoConfig,
             FileSharing fileSharing)
@@ -653,8 +650,6 @@ namespace ASC.Web.Files.Services.DocumentService
             DaoFactory = daoFactory;
             GlobalFolderHelper = globalFolderHelper;
             PathProvider = pathProvider;
-            WebImageSupplier = webImageSupplier;
-            BaseCommonLinkUtility = baseCommonLinkUtility;
             Customer = customerConfig;
             Logo = logoConfig;
             FileSharing = fileSharing;
@@ -786,8 +781,6 @@ namespace ASC.Web.Files.Services.DocumentService
         private IDaoFactory DaoFactory { get; }
         private GlobalFolderHelper GlobalFolderHelper { get; }
         private PathProvider PathProvider { get; }
-        private WebImageSupplier WebImageSupplier { get; }
-        private BaseCommonLinkUtility BaseCommonLinkUtility { get; }
     }
 
     public class CustomerConfig<T>
@@ -1002,8 +995,6 @@ namespace ASC.Web.Files.Services.DocumentService
                 .AddDaoFactoryService()
                 .AddGlobalFolderHelperService()
                 .AddPathProviderService()
-                .AddWebImageSupplierService()
-                .AddBaseCommonLinkUtilityService()
                 .AddCustomerConfigService()
                 .AddLogoConfigService();
         }

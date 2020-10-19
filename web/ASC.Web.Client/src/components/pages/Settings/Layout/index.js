@@ -10,17 +10,17 @@ import { createI18N } from "../../../../helpers/i18n";
 
 const i18n = createI18N({
   page: "Settings",
-  localesPath: "pages/Settings"
+  localesPath: "pages/Settings",
 });
 
 const { setCurrentProductId } = store.auth.actions;
 const { changeLanguage } = utils;
-
+const { getLanguage } = store.auth.selectors;
 const Layout = ({
   currentProductId,
   setCurrentProductId,
   language,
-  children
+  children,
 }) => {
   useEffect(() => {
     currentProductId !== "settings" && setCurrentProductId("settings");
@@ -50,11 +50,8 @@ const Layout = ({
 
 function mapStateToProps(state) {
   return {
-    language: state.auth.user.cultureName || state.auth.settings.culture
+    language: getLanguage(state),
   };
 }
 
-export default connect(
-  mapStateToProps,
-  { setCurrentProductId }
-)(Layout);
+export default connect(mapStateToProps, { setCurrentProductId })(Layout);

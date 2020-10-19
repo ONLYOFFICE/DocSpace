@@ -20,14 +20,20 @@ const StyledSectionHeader = styled.div`
     width: calc(100% - 76px);
 
     @media ${tablet} {
-    width: 100%;
+      width: 100%;
     }
 
-    h1, h2, h3, h4, h5, h6 {
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
       max-width: calc(100vw - 435px);
 
       @media ${tablet} {
-        max-width: ${props => props.isArticlePinned ? `calc(100vw - 320px)` : `calc(100vw - 96px)`};
+        max-width: ${(props) =>
+          props.isArticlePinned ? `calc(100vw - 320px)` : `calc(100vw - 96px)`};
       }
     }
   }

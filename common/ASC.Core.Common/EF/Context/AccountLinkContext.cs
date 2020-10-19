@@ -1,17 +1,36 @@
-﻿using ASC.Common;
+﻿using System;
+using System.Collections.Generic;
+
+using ASC.Common;
 using ASC.Core.Common.EF.Model;
 
 using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF.Context
 {
+    public class MySqlAccountLinkContext : AccountLinkContext { }
+    public class PostgreSqlAccountLinkContext : AccountLinkContext { }
     public class AccountLinkContext : BaseDbContext
     {
         public DbSet<AccountLinks> AccountLinks { get; set; }
 
+        protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
+        {
+            get
+            {
+                return new Dictionary<Provider, Func<BaseDbContext>>()
+                {
+                    { Provider.MySql, () => new MySqlAccountLinkContext() } ,
+                    { Provider.Postgre, () => new PostgreSqlAccountLinkContext() } ,
+                };
+            }
+        }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.AddAccountLinks();
+            ModelBuilderWrapper
+               .From(modelBuilder, Provider)
+               .AddAccountLinks();
         }
     }
 

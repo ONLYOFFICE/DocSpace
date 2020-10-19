@@ -47,7 +47,6 @@ using ASC.Files.Helpers;
 using ASC.Files.Model;
 using ASC.MessagingSystem;
 using ASC.Web.Api.Routing;
-using ASC.Web.Core;
 using ASC.Web.Core.Files;
 using ASC.Web.Files.Classes;
 using ASC.Web.Files.Configuration;
@@ -75,7 +74,6 @@ namespace ASC.Api.Documents
     [ApiController]
     public class FilesController : ControllerBase
     {
-        private readonly ApiContext ApiContext;
         private readonly FileStorageService<string> FileStorageService;
 
         private FilesControllerHelper<string> FilesControllerHelperString { get; }
@@ -89,7 +87,6 @@ namespace ASC.Api.Documents
         private FileOperationWraperHelper FileOperationWraperHelper { get; }
         private EntryManager EntryManager { get; }
         private UserManager UserManager { get; }
-        private WebItemSecurity WebItemSecurity { get; }
         private CoreBaseSettings CoreBaseSettings { get; }
         private ThirdpartyConfiguration ThirdpartyConfiguration { get; }
         private BoxLoginProvider BoxLoginProvider { get; }
@@ -99,7 +96,6 @@ namespace ASC.Api.Documents
         private MessageService MessageService { get; }
         private CommonLinkUtility CommonLinkUtility { get; }
         private DocumentServiceConnector DocumentServiceConnector { get; }
-        private FolderContentWrapperHelper FolderContentWrapperHelper { get; }
         private WordpressToken WordpressToken { get; }
         private WordpressHelper WordpressHelper { get; }
         private ConsumerFactory ConsumerFactory { get; }
@@ -111,7 +107,6 @@ namespace ASC.Api.Documents
         /// <param name="context"></param>
         /// <param name="fileStorageService"></param>
         public FilesController(
-            ApiContext context,
             FilesControllerHelper<string> filesControllerHelperString,
             FilesControllerHelper<int> filesControllerHelperInt,
             FileStorageService<string> fileStorageService,
@@ -124,20 +119,17 @@ namespace ASC.Api.Documents
             FileOperationWraperHelper fileOperationWraperHelper,
             EntryManager entryManager,
             UserManager userManager,
-            WebItemSecurity webItemSecurity,
             CoreBaseSettings coreBaseSettings,
             ThirdpartyConfiguration thirdpartyConfiguration,
             MessageService messageService,
             CommonLinkUtility commonLinkUtility,
             DocumentServiceConnector documentServiceConnector,
-            FolderContentWrapperHelper folderContentWrapperHelper,
             WordpressToken wordpressToken,
             WordpressHelper wordpressHelper,
             ConsumerFactory consumerFactory,
             EasyBibHelper easyBibHelper,
             ProductEntryPoint productEntryPoint)
         {
-            ApiContext = context;
             FilesControllerHelperString = filesControllerHelperString;
             FilesControllerHelperInt = filesControllerHelperInt;
             FileStorageService = fileStorageService;
@@ -150,7 +142,6 @@ namespace ASC.Api.Documents
             FileOperationWraperHelper = fileOperationWraperHelper;
             EntryManager = entryManager;
             UserManager = userManager;
-            WebItemSecurity = webItemSecurity;
             CoreBaseSettings = coreBaseSettings;
             ThirdpartyConfiguration = thirdpartyConfiguration;
             ConsumerFactory = consumerFactory;
@@ -161,7 +152,6 @@ namespace ASC.Api.Documents
             MessageService = messageService;
             CommonLinkUtility = commonLinkUtility;
             DocumentServiceConnector = documentServiceConnector;
-            FolderContentWrapperHelper = folderContentWrapperHelper;
             WordpressToken = wordpressToken;
             WordpressHelper = wordpressHelper;
             EasyBibHelper = easyBibHelper;
@@ -242,6 +232,18 @@ namespace ASC.Api.Documents
         public FolderContentWrapper<int> GetRecentFolder(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
         {
             return FilesControllerHelperInt.GetFolder(GlobalFolderHelper.FolderRecent, userIdOrGroupId, filterType, withsubfolders);
+        }
+
+        [Create("file/{fileId}/recent", order: int.MaxValue)]
+        public FileWrapper<string> AddToRecent(string fileId)
+        {
+            return FilesControllerHelperString.AddToRecent(fileId);
+        }
+
+        [Create("file/{fileId:int}/recent", order: int.MaxValue - 1)]
+        public FileWrapper<int> AddToRecent(int fileId)
+        {
+            return FilesControllerHelperInt.AddToRecent(fileId);
         }
 
         /// <summary>
@@ -507,13 +509,13 @@ namespace ASC.Api.Documents
         /// <category>Files</category>
         /// <returns></returns>
         [Create("file/{fileId}/startedit", DisableFormat = true)]
-        public string StartEdit(string fileId, bool editingAlone, string doc)
+        public object StartEdit(string fileId, bool editingAlone, string doc)
         {
             return FilesControllerHelperString.StartEdit(fileId, editingAlone, doc);
         }
 
         [Create("file/{fileId:int}/startedit")]
-        public string StartEdit(int fileId, bool editingAlone, string doc)
+        public object StartEdit(int fileId, bool editingAlone, string doc)
         {
             return FilesControllerHelperInt.StartEdit(fileId, editingAlone, doc);
         }
@@ -1247,13 +1249,13 @@ namespace ASC.Api.Documents
         /// <category>Files</category>
         /// <returns>Shared file link</returns>
         [Update("{fileId}/sharedlink", DisableFormat = true)]
-        public string GenerateSharedLink(string fileId, FileShare share)
+        public object GenerateSharedLink(string fileId, FileShare share)
         {
             return FilesControllerHelperString.GenerateSharedLink(fileId, share);
         }
 
         [Update("{fileId:int}/sharedlink")]
-        public string GenerateSharedLink(int fileId, FileShare share)
+        public object GenerateSharedLink(int fileId, FileShare share)
         {
             return FilesControllerHelperInt.GenerateSharedLink(fileId, share);
         }

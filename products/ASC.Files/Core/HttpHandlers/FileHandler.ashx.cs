@@ -53,7 +53,6 @@ using ASC.Web.Files.Services.DocumentService;
 using ASC.Web.Files.Services.FFmpegService;
 using ASC.Web.Files.Utils;
 using ASC.Web.Studio.Core;
-using ASC.Web.Studio.UserControls.Statistics;
 using ASC.Web.Studio.Utility;
 
 using JWT;
@@ -121,7 +120,6 @@ namespace ASC.Web.Files
         private UserManager UserManager { get; }
         public ILog Logger { get; }
         private CookiesManager CookiesManager { get; }
-        private TenantStatisticsProvider TenantStatisticsProvider { get; }
 
         public FileHandlerService(
             FilesLinkUtility filesLinkUtility,
@@ -927,11 +925,9 @@ namespace ASC.Web.Files
                 context.Response.Headers.Add("Content-Disposition", ContentDispositionUtil.GetHeaderValue(".zip"));
                 context.Response.ContentType = MimeMapping.GetMimeMapping(".zip");
 
-                using (var stream = fileDao.GetDifferenceStream(file))
-                {
-                    context.Response.Headers.Add("Content-Length", stream.Length.ToString(CultureInfo.InvariantCulture));
-                    await stream.CopyToAsync(context.Response.Body);
-                }
+                using var stream = fileDao.GetDifferenceStream(file);
+                context.Response.Headers.Add("Content-Length", stream.Length.ToString(CultureInfo.InvariantCulture));
+                await stream.CopyToAsync(context.Response.Body);
             }
             catch (Exception ex)
             {

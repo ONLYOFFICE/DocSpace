@@ -11,7 +11,7 @@ import { ToggleButton } from "asc-web-components";
 ```jsx
 <ToggleButton
   label="text"
-  onChange={event => console.log(event.target.value)}
+  onChange={(event) => console.log(event.target.value)}
   isChecked={false}
 />
 ```

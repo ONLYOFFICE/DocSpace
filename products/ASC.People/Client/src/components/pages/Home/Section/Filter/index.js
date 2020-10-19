@@ -6,9 +6,16 @@ import result from "lodash/result";
 import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
 import { getFilterByLocation } from "../../../../../helpers/converters";
-import { store, FilterInput } from "asc-web-common";
+import { store, FilterInput, Loaders } from "asc-web-common";
 import { isMobileOnly } from "react-device-detect";
-const { isAdmin } = store.auth.selectors;
+import { getFilter, getGroups } from "../../../../../store/people/selectors";
+const {
+  isAdmin,
+  getCurrentUser,
+  getLanguage,
+  getSettings,
+  getIsLoaded,
+} = store.auth.selectors;
 
 const getEmployeeStatus = (filterValues) => {
   const employeeStatus = result(
@@ -241,8 +248,8 @@ class SectionFilterContent extends React.Component {
 
   render() {
     const selectedFilterData = this.getSelectedFilterData();
-    const { t, i18n } = this.props;
-    return (
+    const { t, language, isLoaded } = this.props;
+    return isLoaded ? (
       <FilterInput
         getFilterData={this.getData}
         getSortData={this.getSortData}
@@ -252,21 +259,25 @@ class SectionFilterContent extends React.Component {
         directionDescLabel={t("DirectionDescLabel")}
         placeholder={t("Search")}
         needForUpdate={this.needForUpdate}
-        language={i18n.language}
+        language={language}
         contextMenuHeader={t("AddFilter")}
         isMobile={isMobileOnly}
       />
+    ) : (
+      <Loaders.Filter />
     );
   }
 }
 
 function mapStateToProps(state) {
   return {
-    user: state.auth.user,
-    groups: state.people.groups,
-    filter: state.people.filter,
-    settings: state.auth.settings,
+    user: getCurrentUser(state),
+    language: getLanguage(state),
+    groups: getGroups(state),
+    filter: getFilter(state),
+    settings: getSettings(state),
     isAdmin: isAdmin(state),
+    isLoaded: getIsLoaded(state),
   };
 }
 

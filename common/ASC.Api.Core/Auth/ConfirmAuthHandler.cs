@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using ASC.Common;
 using ASC.Core;
 using ASC.Security.Cryptography;
-using ASC.Web.Studio.Core;
 
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,32 +28,14 @@ namespace ASC.Api.Core.Auth
             UrlEncoder encoder,
             ISystemClock clock,
             SecurityContext securityContext,
-            EmailValidationKeyProvider emailValidationKeyProvider,
-            SetupInfo setupInfo,
-            TenantManager tenantManager,
-            UserManager userManager,
-            AuthManager authManager,
-            AuthContext authContext,
             IServiceProvider serviceProvider) :
             base(options, logger, encoder, clock)
         {
             SecurityContext = securityContext;
-            EmailValidationKeyProvider = emailValidationKeyProvider;
-            SetupInfo = setupInfo;
-            TenantManager = tenantManager;
-            UserManager = userManager;
-            AuthManager = authManager;
-            AuthContext = authContext;
             ServiceProvider = serviceProvider;
         }
 
         private SecurityContext SecurityContext { get; }
-        private EmailValidationKeyProvider EmailValidationKeyProvider { get; }
-        private SetupInfo SetupInfo { get; }
-        private TenantManager TenantManager { get; }
-        private UserManager UserManager { get; }
-        private AuthManager AuthManager { get; }
-        private AuthContext AuthContext { get; }
         public IServiceProvider ServiceProvider { get; }
 
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
@@ -120,13 +101,7 @@ namespace ASC.Api.Core.Auth
         public static DIHelper AddConfirmAuthHandler(this DIHelper services)
         {
             return services
-                .AddSecurityContextService()
-                .AddEmailValidationKeyProviderService()
-                .AddSetupInfo()
-                .AddTenantManagerService()
-                .AddUserManagerService()
-                .AddAuthManager()
-                .AddAuthContextService();
+                .AddSecurityContextService();
         }
     }
 }

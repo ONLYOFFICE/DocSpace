@@ -1,5 +1,5 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import Dropzone from "react-dropzone";
 import ReactAvatarEditor from "./react-avatar-editor";
 import PropTypes from "prop-types";
@@ -14,7 +14,7 @@ import {
   tablet,
   desktop,
   mobile,
-  isDesktop
+  isDesktop,
   //isTablet,
   //isMobile
 } from "../../../utils/device";
@@ -26,6 +26,12 @@ const step = 0.01;
 const min = 1;
 const max = 5;
 
+const StyledAvatarEditorBody = styled.div`
+  max-width: 400px;
+  ${(props) => !props.useModalDialog && "margin-bottom: 40px;"}
+  ${(props) => !props.useModalDialog && !props.image && "max-width: none;"}
+`;
+
 const StyledErrorContainer = styled.div`
   p {
     text-align: center;
@@ -33,7 +39,7 @@ const StyledErrorContainer = styled.div`
 `;
 
 const Slider = styled.input.attrs({
-  type: "range"
+  type: "range",
 })`
   width: 100%;
   margin: 8px 0;
@@ -156,9 +162,47 @@ const DropZoneContainer = styled.div`
     @media ${tablet} {
       height: 426px;
     }
+  }
+`;
 
-    @media ${mobile} {
-      height: 426px;
+const mobileStyles = css`
+  grid-template-rows: 1fr auto;
+
+  .preview-container {
+    margin-bottom: 23px;
+
+    .editor-container {
+      display: grid;
+      grid-template-columns: 1fr 40px;
+      grid-template-rows: 1fr auto;
+      gap: 0px 16px;
+
+      @media ${mobile} {
+      }
+
+      .react-avatar-editor {
+      }
+
+      .editor-buttons {
+        grid-template-columns: 1fr;
+        width: 40px;
+        grid-template-rows: repeat(4, 40px) auto 40px;
+        height: 100%;
+        grid-gap: 8px 0;
+        background: none;
+
+        .editor-button {
+          background: #a3a9ae;
+          padding: 0 12px;
+          height: 40px;
+          border-radius: 6px;
+        }
+      }
+
+      .zoom-container {
+        height: 24px;
+        margin-top: 16px;
+      }
     }
   }
 `;
@@ -220,9 +264,6 @@ const StyledAvatarContainer = styled.div`
         }
       }
 
-      .react-avatar-editor {
-      }
-
       .editor-buttons {
         display: grid;
         grid-template-columns: repeat(4, 1fr) 2fr 1fr;
@@ -241,8 +282,7 @@ const StyledAvatarContainer = styled.div`
     }
   }
 
-  .link-container {
-  }
+  ${(props) => !props.useModalDialog && mobileStyles}
 `;
 
 class AvatarEditorBody extends React.Component {
@@ -254,7 +294,7 @@ class AvatarEditorBody extends React.Component {
       scale: 1,
       croppedImage: "",
       errorText: null,
-      rotate: 0
+      rotate: 0,
     };
 
     this.setEditorRef = React.createRef();
@@ -263,53 +303,55 @@ class AvatarEditorBody extends React.Component {
     this.throttledSetCroppedImage = throttle(this.setCroppedImage, 300);
   }
 
-  onPositionChange = position => {
+  onPositionChange = (position) => {
     this.props.onPositionChange({
       x: position.x,
       y: position.y,
       width: this.setEditorRef.current.getImage().width,
-      height: this.setEditorRef.current.getImage().height
+      height: this.setEditorRef.current.getImage().height,
     });
   };
 
-  onDropRejected = rejectedFiles => {
+  onDropRejected = (rejectedFiles) => {
     if (!accepts(rejectedFiles[0], this.props.accept)) {
       this.props.onLoadFileError(0);
       this.setState({
-        errorText: this.props.unknownTypeError
+        errorText: this.props.unknownTypeError,
       });
       return;
     } else if (rejectedFiles[0].size > this.props.maxSize) {
       this.props.onLoadFileError(1);
       this.setState({
-        errorText: this.props.maxSizeFileError
+        errorText: this.props.maxSizeFileError,
       });
       return;
     }
     this.setState({
-      errorText: this.props.unknownError
+      errorText: this.props.unknownError,
     });
     this.props.onLoadFileError(2);
   };
 
-  onDropAccepted = acceptedFiles => {
+  onDropAccepted = (acceptedFiles) => {
     const _this = this;
     var fr = new FileReader();
     fr.readAsDataURL(acceptedFiles[0]);
-    fr.onload = function() {
+    fr.onload = function () {
       var img = new Image();
-      img.onload = function() {
+      img.onload = function () {
         var canvas = resizeImage.resize2Canvas(img, 1024, 1024);
         var data = resizeImage.resize(canvas, 1024, 1024, resizeImage.JPEG);
         _this.setState({
           image: data,
           rotate: 0,
-          errorText: null
+          errorText: null,
         });
         fetch(data)
-          .then(res => res.blob())
-          .then(blob => {
-            const file = new File([blob], "File name", { type: "image/jpg" });
+          .then((res) => res.blob())
+          .then((blob) => {
+            const file = new File([blob], "File name", {
+              type: "image/jpg",
+            });
             _this.props.onLoadFile(file);
           });
       };
@@ -321,7 +363,7 @@ class AvatarEditorBody extends React.Component {
     this.setState({
       image: "",
       rotate: 0,
-      croppedImage: ""
+      croppedImage: "",
     });
     this.props.deleteImage();
   };
@@ -330,7 +372,7 @@ class AvatarEditorBody extends React.Component {
     if (this.setEditorRef && this.setEditorRef.current) {
       const image = this.setEditorRef.current.getImage().toDataURL();
       this.setState({
-        croppedImage: image
+        croppedImage: image,
       });
       this.props.onImageChange(image);
     }
@@ -348,7 +390,7 @@ class AvatarEditorBody extends React.Component {
     );
   };
 
-  onTouchStart = evt => {
+  onTouchStart = (evt) => {
     //evt.preventDefault();
     var tt = evt.targetTouches;
     if (tt.length >= 2) {
@@ -359,7 +401,7 @@ class AvatarEditorBody extends React.Component {
     }
   };
 
-  onTouchMove = evt => {
+  onTouchMove = (evt) => {
     //evt.preventDefault();
     var tt = evt.targetTouches;
     if (this.scaling) {
@@ -372,16 +414,16 @@ class AvatarEditorBody extends React.Component {
             ? min
             : this.curr_scale > max
             ? max
-            : this.curr_scale
+            : this.curr_scale,
       });
       this.props.onSizeChange({
         width: this.setEditorRef.current.getImage().width,
-        height: this.setEditorRef.current.getImage().height
+        height: this.setEditorRef.current.getImage().height,
       });
     }
   };
 
-  onTouchEnd = evt => {
+  onTouchEnd = (evt) => {
     var tt = evt.targetTouches;
     if (tt.length < 2) {
       this.scaling = false;
@@ -399,7 +441,8 @@ class AvatarEditorBody extends React.Component {
     }
   };
 
-  onWheel = e => {
+  onWheel = (e) => {
+    if (!this.setEditorRef.current) return;
     e = e || window.event;
     const delta = e.deltaY || e.detail || e.wheelDelta;
     let scale =
@@ -408,25 +451,25 @@ class AvatarEditorBody extends React.Component {
         : this.state.scale - (delta / 100) * 0.1;
     scale = Math.round(scale * 10) / 10;
     this.setState({
-      scale: scale < 1 ? 1 : scale > 10 ? 10 : scale
+      scale: scale < 1 ? 1 : scale > 10 ? 10 : scale,
     });
     this.props.onSizeChange({
       width: this.setEditorRef.current.getImage().width,
-      height: this.setEditorRef.current.getImage().height
+      height: this.setEditorRef.current.getImage().height,
     });
   };
 
-  onRotateLeftClick = e => {
+  onRotateLeftClick = (e) => {
     e.preventDefault();
     this.setState({
-      rotate: this.state.rotate - 90
+      rotate: this.state.rotate - 90,
     });
   };
 
-  onRotateRightClick = e => {
+  onRotateRightClick = (e) => {
     e.preventDefault();
     this.setState({
-      rotate: this.state.rotate + 90
+      rotate: this.state.rotate + 90,
     });
   };
 
@@ -444,32 +487,33 @@ class AvatarEditorBody extends React.Component {
     this.setState({ scale: newScale > max ? max : newScale });
   };
 
-  handleScale = e => {
+  handleScale = (e) => {
     const scale = parseFloat(e.target.value);
     this.setState({ scale });
     this.props.onSizeChange({
       width: this.setEditorRef.current.getImage().width,
-      height: this.setEditorRef.current.getImage().height
+      height: this.setEditorRef.current.getImage().height,
     });
   };
 
   onImageReady = () => {
     this.setState({
-      croppedImage: this.setEditorRef.current.getImage().toDataURL()
+      croppedImage: this.setEditorRef.current.getImage().toDataURL(),
     });
     this.props.onImageChange(this.setEditorRef.current.getImage().toDataURL());
     this.props.onPositionChange({
       x: 0.5,
       y: 0.5,
       width: this.setEditorRef.current.getImage().width,
-      height: this.setEditorRef.current.getImage().height
+      height: this.setEditorRef.current.getImage().height,
     });
   };
 
-  onSaveImage(callback) {
+  onSaveImage() {
     var img = new Image();
     var _this = this;
     img.src = this.state.image;
+    if (!this.state.image) _this.props.onLoadFile(null);
     img.onload = () => {
       var canvas = document.createElement("canvas");
       canvas.setAttribute("width", img.height);
@@ -482,11 +526,10 @@ class AvatarEditorBody extends React.Component {
 
       var rotatedImageSrc = canvas.toDataURL("image/jpeg");
       fetch(rotatedImageSrc)
-        .then(res => res.blob())
-        .then(blob => {
+        .then((res) => res.blob())
+        .then((blob) => {
           const file = new File([blob], "File name", { type: "image/jpg" });
-          _this.props.onLoadFile(file, callback);
-          //callback(file);
+          _this.props.onLoadFile(file, true);
         });
     };
   }
@@ -498,7 +541,7 @@ class AvatarEditorBody extends React.Component {
     ) {
       this.setState({
         image: this.props.image ? this.props.image : "",
-        rotate: 0
+        rotate: 0,
       });
     }
   }
@@ -526,7 +569,7 @@ class AvatarEditorBody extends React.Component {
   };
 
   render() {
-    const { maxSize, accept, role, title } = this.props;
+    const { maxSize, accept, role, title, useModalDialog } = this.props;
 
     const desktopMode = isDesktop();
     //const tabletMode = isTablet();
@@ -534,6 +577,11 @@ class AvatarEditorBody extends React.Component {
 
     let editorWidth = 174;
     let editorHeight = 174;
+
+    if (!useModalDialog) {
+      editorWidth = 270;
+      editorHeight = 270;
+    }
 
     /*if (tabletMode) {
       editorWidth = 320;
@@ -544,11 +592,13 @@ class AvatarEditorBody extends React.Component {
     }*/
 
     return (
-      <div
+      <StyledAvatarEditorBody
         onWheel={this.onWheel}
         onTouchStart={this.onTouchStart}
         onTouchMove={this.onTouchMove}
         onTouchEnd={this.onTouchEnd}
+        useModalDialog={useModalDialog}
+        image={this.state.image}
       >
         <Dropzone
           ref={this.dropzoneRef}
@@ -566,7 +616,7 @@ class AvatarEditorBody extends React.Component {
                   {this.renderLinkContainer()}
                 </Box>
               ) : (
-                <StyledAvatarContainer>
+                <StyledAvatarContainer useModalDialog={useModalDialog}>
                   <Box className="preview-container">
                     <Box className="editor-container">
                       <ReactAvatarEditor
@@ -592,6 +642,7 @@ class AvatarEditorBody extends React.Component {
                           isFill={true}
                           isClickable={false}
                           color="#FFFFFF"
+                          className="editor-button"
                         />
                         <IconButton
                           size="16"
@@ -601,25 +652,10 @@ class AvatarEditorBody extends React.Component {
                           isFill={true}
                           isClickable={false}
                           color="#FFFFFF"
+                          className="editor-button"
                         />
-                        <IconButton
-                          size="16"
-                          isDisabled={true}
-                          onClick={this.onFlipVerticalClick}
-                          iconName={"FlipVerticalIcon"}
-                          isFill={true}
-                          isClickable={false}
-                          color="#FFFFFF"
-                        />
-                        <IconButton
-                          size="16"
-                          isDisabled={true}
-                          onClick={this.onFlipHorizontalClick}
-                          iconName={"FlipHorizontalIcon"}
-                          isFill={true}
-                          isClickable={false}
-                          color="#FFFFFF"
-                        />
+                        <Box></Box>
+                        <Box></Box>
                         <Box></Box>
                         <IconButton
                           size="16"
@@ -629,6 +665,7 @@ class AvatarEditorBody extends React.Component {
                           isFill={true}
                           isClickable={true}
                           color="#FFFFFF"
+                          className="editor-button"
                         />
                       </Box>
                       <Box className="zoom-container">
@@ -660,7 +697,7 @@ class AvatarEditorBody extends React.Component {
                         />
                       </Box>
                     </Box>
-                    {desktopMode && (
+                    {desktopMode && useModalDialog && (
                       <Box className="avatar-container">
                         <Avatar
                           size="max"
@@ -710,7 +747,7 @@ class AvatarEditorBody extends React.Component {
             </Text>
           )}
         </StyledErrorContainer>
-      </div>
+      </StyledAvatarEditorBody>
     );
   }
 }
@@ -732,7 +769,8 @@ AvatarEditorBody.propTypes = {
   maxSizeFileError: PropTypes.string,
   unknownError: PropTypes.string,
   role: PropTypes.string,
-  title: PropTypes.string
+  title: PropTypes.string,
+  useModalDialog: PropTypes.bool,
 };
 
 AvatarEditorBody.defaultProps = {
@@ -745,6 +783,7 @@ AvatarEditorBody.defaultProps = {
   maxSizeFileError: "Maximum file size exceeded",
   unknownError: "Error",
   role: "user",
-  title: "Sample title"
+  title: "Sample title",
+  useModalDialog: true,
 };
 export default AvatarEditorBody;

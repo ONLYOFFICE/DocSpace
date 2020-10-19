@@ -9,13 +9,21 @@ import { StyledAsidePanel } from "../StyledPanels";
 import TreeFolders from "../../Article/Body/TreeFolders";
 import {
   setProgressBarData,
-  clearProgressData
+  clearProgressData,
+  loopFilesOperations,
 } from "../../../store/files/actions";
-import { checkFolderType } from "../../../store/files/selectors";
+import {
+  getTreeFolders,
+  getFilter,
+  getSelection,
+  getPathParts,
+  getSelectedFolderId,
+  getIsRecycleBinFolder,
+} from "../../../store/files/selectors";
 import { createI18N } from "../../../helpers/i18n";
 const i18n = createI18N({
   page: "OperationsPanel",
-  localesPath: "panels/OperationsPanel"
+  localesPath: "panels/OperationsPanel",
 });
 
 const { changeLanguage } = commonUtils;
@@ -27,14 +35,14 @@ class OperationsPanelComponent extends React.Component {
     changeLanguage(i18n);
   }
 
-  onSelect = e => {
+  onSelect = (e) => {
     const {
       t,
       isCopy,
       selection,
       loopFilesOperations,
       setProgressBarData,
-      clearProgressData
+      clearProgressData,
     } = this.props;
 
     const destFolderId = Number(e);
@@ -58,20 +66,21 @@ class OperationsPanelComponent extends React.Component {
       setProgressBarData({
         visible: true,
         percent: 0,
-        label: t("CopyOperation")
+        label: t("CopyOperation"),
       });
-      api.files.copyToFolder(
-        destFolderId,
-        folderIds,
-        fileIds,
-        conflictResolveType,
-        deleteAfter
-      )
-        .then(res => {
+      api.files
+        .copyToFolder(
+          destFolderId,
+          folderIds,
+          fileIds,
+          conflictResolveType,
+          deleteAfter
+        )
+        .then((res) => {
           const id = res[0] && res[0].id ? res[0].id : null;
           loopFilesOperations(id, destFolderId, isCopy);
         })
-        .catch(err => {
+        .catch((err) => {
           toastr.error(err);
           clearProgressData();
         });
@@ -79,20 +88,21 @@ class OperationsPanelComponent extends React.Component {
       setProgressBarData({
         visible: true,
         percent: 0,
-        label: t("MoveToOperation")
+        label: t("MoveToOperation"),
       });
-      api.files.moveToFolder(
-        destFolderId,
-        folderIds,
-        fileIds,
-        conflictResolveType,
-        deleteAfter
-      )
-        .then(res => {
+      api.files
+        .moveToFolder(
+          destFolderId,
+          folderIds,
+          fileIds,
+          conflictResolveType,
+          deleteAfter
+        )
+        .then((res) => {
           const id = res[0] && res[0].id ? res[0].id : null;
           loopFilesOperations(id, destFolderId, false);
         })
-        .catch(err => {
+        .catch((err) => {
           toastr.error(err);
           clearProgressData();
         });
@@ -106,13 +116,13 @@ class OperationsPanelComponent extends React.Component {
       filter,
       treeFolders,
       isCopy,
-      isRecycleBinFolder,
+      isRecycleBin,
       visible,
-      onClose
+      onClose,
     } = this.props;
     const zIndex = 310;
     const data = treeFolders.slice(0, 3);
-    const expandedKeys = this.props.expandedKeys.map(item => item.toString());
+    const expandedKeys = this.props.expandedKeys.map((item) => item.toString());
 
     return (
       <StyledAsidePanel visible={visible}>
@@ -123,7 +133,7 @@ class OperationsPanelComponent extends React.Component {
           onClose={onClose}
         >
           <ModalDialog.Header>
-            {isRecycleBinFolder ? t("Restore") : isCopy ? t("Copy") : t("Move")}
+            {isRecycleBin ? t("Restore") : isCopy ? t("Copy") : t("Move")}
           </ModalDialog.Header>
           <ModalDialog.Body>
             <TreeFolders
@@ -142,30 +152,30 @@ class OperationsPanelComponent extends React.Component {
 
 OperationsPanelComponent.propTypes = {
   onClose: PropTypes.func,
-  visible: PropTypes.bool
+  visible: PropTypes.bool,
 };
 
 const OperationsPanelContainerTranslated = withTranslation()(
   OperationsPanelComponent
 );
 
-const OperationsPanel = props => (
+const OperationsPanel = (props) => (
   <OperationsPanelContainerTranslated i18n={i18n} {...props} />
 );
 
-const mapStateToProps = state => {
-  const { selectedFolder, selection, treeFolders, filter } = state.files;
-  const { pathParts, id } = selectedFolder;
-  const indexOfTrash = 3;
-
+const mapStateToProps = (state) => {
   return {
-    treeFolders,
-    filter,
-    selection,
-    expandedKeys: pathParts,
-    currentFolderId: id,
-    isRecycleBinFolder: checkFolderType(id, indexOfTrash, treeFolders)
+    treeFolders: getTreeFolders(state),
+    filter: getFilter(state),
+    selection: getSelection(state),
+    expandedKeys: getPathParts(state),
+    currentFolderId: getSelectedFolderId(state),
+    isRecycleBin: getIsRecycleBinFolder(state),
   };
 };
 
-export default connect(mapStateToProps, { setProgressBarData, clearProgressData })(withRouter(OperationsPanel));
+export default connect(mapStateToProps, {
+  setProgressBarData,
+  clearProgressData,
+  loopFilesOperations,
+})(withRouter(OperationsPanel));

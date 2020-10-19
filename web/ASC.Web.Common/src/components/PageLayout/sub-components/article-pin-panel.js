@@ -37,10 +37,15 @@ const StyledArticlePinPanel = styled.div`
   }
 `;
 
-const ArticlePinPanel = React.memo(props => {
+const ArticlePinPanel = React.memo((props) => {
   //console.log("PageLayout ArticlePinPanel render");
   const { pinned, pinText, onPin, unpinText, onUnpin } = props;
-  const textStyles = { as: 'span', color: '#555F65', fontSize: '14px', fontWeight: 600 };
+  const textStyles = {
+    as: "span",
+    color: "#555F65",
+    fontSize: "14px",
+    fontWeight: 600,
+  };
 
   return (
     <StyledArticlePinPanel>
@@ -66,7 +71,7 @@ ArticlePinPanel.propTypes = {
   pinText: PropTypes.string,
   onPin: PropTypes.func,
   unpinText: PropTypes.string,
-  onUnpin: PropTypes.func
+  onUnpin: PropTypes.func,
 };
 
 export default ArticlePinPanel;

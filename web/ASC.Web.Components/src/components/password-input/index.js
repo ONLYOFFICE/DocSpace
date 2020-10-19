@@ -17,7 +17,7 @@ const SimpleInput = ({ onValidateInput, onCopyToClipboard, ...props }) => (
 
 SimpleInput.propTypes = {
   onValidateInput: PropTypes.func,
-  onCopyToClipboard: PropTypes.func
+  onCopyToClipboard: PropTypes.func,
 };
 
 const StyledInput = styled(SimpleInput)`
@@ -46,7 +46,8 @@ const StyledInput = styled(SimpleInput)`
 `;
 
 const PasswordProgress = styled.div`
-  ${props => (props.inputWidth ? `width: ${props.inputWidth};` : `flex: auto;`)}
+  ${(props) =>
+    props.inputWidth ? `width: ${props.inputWidth};` : `flex: auto;`}
   .input-relative {
     position: relative;
     svg {
@@ -89,13 +90,13 @@ const TooltipStyle = styled.div`
 `;
 const Progress = styled.div`
   border: 1.5px solid
-    ${props =>
+    ${(props) =>
       !props.isDisabled && props.progressColor
         ? props.progressColor
         : "transparent"};
   border-radius: 2px;
   margin-top: -1px;
-  width: ${props => (props.progressWidth ? props.progressWidth + "%" : "0%")};
+  width: ${(props) => (props.progressWidth ? props.progressWidth + "%" : "0%")};
 `;
 
 const StyledTooltipContainer = styled(Text)`
@@ -105,7 +106,7 @@ const StyledTooltipContainer = styled(Text)`
 const StyledTooltipItem = styled(Text)`
   margin-left: 8px;
   height: 24px;
-  color: ${props => (props.valid ? "#44bb00" : "#B40404")};
+  color: ${(props) => (props.valid ? "#44bb00" : "#B40404")};
 `;
 
 class PasswordInput extends React.Component {
@@ -128,7 +129,7 @@ class PasswordInput extends React.Component {
       validLength: false,
       validDigits: false,
       validCapital: false,
-      validSpecial: false
+      validSpecial: false,
     };
   }
 
@@ -141,11 +142,11 @@ class PasswordInput extends React.Component {
     const newType = this.state.type === "text" ? "password" : "text";
 
     this.setState({
-      type: newType
+      type: newType,
     });
   };
 
-  testStrength = value => {
+  testStrength = (value) => {
     const { generatorSpecial, passwordSettings } = this.props;
     const specSymbols = new RegExp("[" + generatorSpecial + "]");
 
@@ -167,11 +168,11 @@ class PasswordInput extends React.Component {
       digits: digits,
       capital: capital,
       special: special,
-      length: value.trim().length >= passwordSettings.minLength
+      length: value.trim().length >= passwordSettings.minLength,
     };
   };
 
-  checkPassword = value => {
+  checkPassword = (value) => {
     const greenColor = "#44bb00";
     const redColor = "#B40404";
     const passwordValidation = this.testStrength(value);
@@ -197,16 +198,16 @@ class PasswordInput extends React.Component {
       validLength: passwordValidation.length,
       validDigits: passwordValidation.digits,
       validCapital: passwordValidation.capital,
-      validSpecial: passwordValidation.special
+      validSpecial: passwordValidation.special,
     });
   };
 
-  onChangeAction = e => {
+  onChangeAction = (e) => {
     this.props.onChange && this.props.onChange(e);
 
     if (this.props.simpleView) {
       this.setState({
-        inputValue: e.target.value
+        inputValue: e.target.value,
       });
       return;
     }
@@ -214,14 +215,14 @@ class PasswordInput extends React.Component {
     this.checkPassword(e.target.value);
   };
 
-  onGeneratePassword = e => {
+  onGeneratePassword = (e) => {
     if (this.props.isDisabled) return e.preventDefault();
 
     const newPassword = this.getNewPassword();
 
     if (this.state.type !== "text") {
       this.setState({
-        type: "text"
+        type: "text",
       });
     }
 
@@ -273,14 +274,14 @@ class PasswordInput extends React.Component {
     return password.substr(0, length);
   };
 
-  copyToClipboard = emailInputName => {
+  copyToClipboard = (emailInputName) => {
     const {
       clipEmailResource,
       clipPasswordResource,
       clipActionResource,
       clipCopiedResource,
       isDisabled,
-      onCopyToClipboard
+      onCopyToClipboard,
     } = this.props;
     const { disableCopyAction, inputValue } = this.state;
 
@@ -288,7 +289,7 @@ class PasswordInput extends React.Component {
 
     this.setState({
       disableCopyAction: true,
-      copyLabel: clipCopiedResource
+      copyLabel: clipCopiedResource,
     });
 
     const textField = document.createElement("textarea");
@@ -311,7 +312,7 @@ class PasswordInput extends React.Component {
     setTimeout(() => {
       this.setState({
         disableCopyAction: false,
-        copyLabel: clipActionResource
+        copyLabel: clipActionResource,
       });
     }, 2000);
   };
@@ -320,23 +321,25 @@ class PasswordInput extends React.Component {
     return !isEqual(this.props, nextProps) || !isEqual(this.state, nextState);
   }
 
-  renderTextTooltip = (
-    settings,
-    length,
-    digits,
-    capital,
-    special
-  ) => {
+  renderTextTooltip = (settings, length, digits, capital, special) => {
     return (
       <>
-      <div className="break"></div>
-      <Text className="text-tooltip" fontSize="10px" color="#A3A9AE" as="span">
-        {settings.minLength ? length : null} {settings.digits ? `, ${digits}` : null } {settings.upperCase ? `, ${capital}` : null} {settings.specSymbols ? `, ${special}` : null}
-      </Text>
-      <div className="break"></div>
+        <div className="break"></div>
+        <Text
+          className="text-tooltip"
+          fontSize="10px"
+          color="#A3A9AE"
+          as="span"
+        >
+          {settings.minLength ? length : null}{" "}
+          {settings.digits ? `, ${digits}` : null}{" "}
+          {settings.upperCase ? `, ${capital}` : null}{" "}
+          {settings.specSymbols ? `, ${special}` : null}
+        </Text>
+        <div className="break"></div>
       </>
     );
-  }
+  };
 
   render() {
     //console.log('PasswordInput render()');
@@ -367,7 +370,7 @@ class PasswordInput extends React.Component {
       simpleView,
       hideNewPasswordButton,
       isDisableTooltip,
-      isTextTooltipVisible
+      isTextTooltipVisible,
     } = this.props;
     const {
       type,
@@ -379,24 +382,23 @@ class PasswordInput extends React.Component {
       validDigits,
       validCapital,
       validSpecial,
-      disableCopyAction
+      disableCopyAction,
     } = this.state;
 
     const iconsColor = isDisabled ? "#D0D5DA" : "#A3A9AE";
     const iconName = type === "password" ? "EyeOffIcon" : "EyeIcon";
 
-    const textTooltip = isTextTooltipVisible 
+    const textTooltip = isTextTooltipVisible
       ? this.renderTextTooltip(
-        passwordSettings,
-        tooltipPasswordLength,
-        tooltipPasswordDigits,
-        tooltipPasswordCapital,
-        tooltipPasswordSpecial
-      ) 
+          passwordSettings,
+          tooltipPasswordLength,
+          tooltipPasswordDigits,
+          tooltipPasswordCapital,
+          tooltipPasswordSpecial
+        )
       : null;
 
-    const tooltipContent = !isDisableTooltip 
-      ? (
+    const tooltipContent = !isDisableTooltip ? (
       <StyledTooltipContainer forwardedAs="div" title={tooltipPasswordTitle}>
         {tooltipPasswordTitle}
         <StyledTooltipItem
@@ -434,8 +436,7 @@ class PasswordInput extends React.Component {
           </StyledTooltipItem>
         )}
       </StyledTooltipContainer>
-    )
-    : null;
+    ) : null;
 
     const inputGroup = (
       <>
@@ -504,17 +505,16 @@ class PasswordInput extends React.Component {
             >
               {inputGroup}
             </PasswordProgress>
-            {!hideNewPasswordButton 
-              ? <NewPasswordButton>
-                  <Icons.RefreshIcon
-                    size="medium"
-                    color={iconsColor}
-                    isfill={true}
-                    onClick={this.onGeneratePassword}
-                  />
-                </NewPasswordButton>
-              : null
-            }
+            {!hideNewPasswordButton ? (
+              <NewPasswordButton>
+                <Icons.RefreshIcon
+                  size="medium"
+                  color={iconsColor}
+                  isfill={true}
+                  onClick={this.onGeneratePassword}
+                />
+              </NewPasswordButton>
+            ) : null}
             {textTooltip}
             <CopyLink>
               <Link
@@ -580,7 +580,7 @@ PasswordInput.propTypes = {
 
   tooltipOffsetLeft: PropTypes.number,
 
-  simpleView: PropTypes.bool
+  simpleView: PropTypes.bool,
 };
 
 PasswordInput.defaultProps = {
@@ -604,7 +604,7 @@ PasswordInput.defaultProps = {
   className: "",
   tooltipOffsetLeft: 110,
 
-  simpleView: false
+  simpleView: false,
 };
 
 export default PasswordInput;

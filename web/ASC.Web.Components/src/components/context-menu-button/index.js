@@ -1,14 +1,14 @@
-import React from 'react'
-import styled from 'styled-components'
-import PropTypes from 'prop-types'
-import DropDownItem from '../drop-down-item'
-import DropDown from '../drop-down'
-import IconButton from '../icon-button'
-import Backdrop from '../backdrop'
-import Aside from '../aside'
-import Heading from '../heading'
-import Link from '../link'
-import { desktop } from '../../utils/device'
+import React from "react";
+import styled from "styled-components";
+import PropTypes from "prop-types";
+import DropDownItem from "../drop-down-item";
+import DropDown from "../drop-down";
+import IconButton from "../icon-button";
+import Backdrop from "../backdrop";
+import Aside from "../aside";
+import Heading from "../heading";
+import Link from "../link";
+import { desktop } from "../../utils/device";
 import throttle from "lodash/throttle";
 
 const StyledOuter = styled.div`
@@ -59,12 +59,13 @@ class ContextMenuButton extends React.Component {
     super(props);
 
     this.ref = React.createRef();
-    const displayType = props.displayType === 'auto' ? this.getTypeByWidth() : props.displayType;
+    const displayType =
+      props.displayType === "auto" ? this.getTypeByWidth() : props.displayType;
 
     this.state = {
       isOpen: props.opened,
       data: props.data,
-      displayType
+      displayType,
     };
     this.throttledResize = throttle(this.resize, 300);
   }
@@ -109,7 +110,7 @@ class ContextMenuButton extends React.Component {
     }
 
     if (this.props.displayType !== prevProps.displayType) {
-      this.setState({displayType: this.getTypeByWidth()});
+      this.setState({ displayType: this.getTypeByWidth() });
     }
   }
 
@@ -119,26 +120,36 @@ class ContextMenuButton extends React.Component {
       return;
     }
 
-    this.setState({
-      data: this.props.getData(),
-      isOpen: !this.state.isOpen
-    }, () => !this.props.isDisabled && this.state.isOpen && this.props.onClick && this.props.onClick()); // eslint-disable-line react/prop-types
-  }
+    this.setState(
+      {
+        data: this.props.getData(),
+        isOpen: !this.state.isOpen,
+      },
+      () =>
+        !this.props.isDisabled &&
+        this.state.isOpen &&
+        this.props.onClick &&
+        this.props.onClick()
+    ); // eslint-disable-line react/prop-types
+  };
 
   clickOutsideAction = (e) => {
     if (this.ref.current.contains(e.target)) return;
-    
+
     this.onIconButtonClick();
-  }
+  };
 
   onDropDownItemClick = (item, e) => {
     const open = this.state.displayType === "dropdown";
     item.onClick && item.onClick(e, open);
     this.toggle(!this.state.isOpen);
-  }
+  };
 
   shouldComponentUpdate(nextProps, nextState) {
-    if (this.props.opened === nextProps.opened && this.state.isOpen === nextState.isOpen) {
+    if (
+      this.props.opened === nextProps.opened &&
+      this.state.isOpen === nextState.isOpen
+    ) {
       return false;
     }
     return true;
@@ -167,7 +178,7 @@ class ContextMenuButton extends React.Component {
       size,
       style,
       isFill, // eslint-disable-line react/prop-types
-      asideHeader // eslint-disable-line react/prop-types
+      asideHeader, // eslint-disable-line react/prop-types
     } = this.props;
 
     const { isOpen, displayType } = this.state;
@@ -190,54 +201,60 @@ class ContextMenuButton extends React.Component {
           onMouseOver={onMouseOver}
           onMouseOut={onMouseOut}
         />
-        {displayType === 'dropdown' ? 
-          <DropDown 
+        {displayType === "dropdown" ? (
+          <DropDown
             directionX={directionX}
             directionY={directionY}
             open={isOpen}
             clickOutsideAction={this.clickOutsideAction}
             columnCount={columnCount}
           >
-            {
-              this.state.data.map((item, index) =>
-                (item && (item.label || item.icon || item.key)) && (
-                  <DropDownItem {...item} key={item.key || index} onClick={this.onDropDownItemClick.bind(this, item)} />
+            {this.state.data.map(
+              (item, index) =>
+                item &&
+                (item.label || item.icon || item.key) && (
+                  <DropDownItem
+                    {...item}
+                    key={item.key || index}
+                    onClick={this.onDropDownItemClick.bind(this, item)}
+                  />
                 )
-              )
-            }
+            )}
           </DropDown>
-          : <>
-              <Backdrop
-                onClick={this.onClose}
-                visible={isOpen}
-                zIndex={310}
-              />
-              <Aside visible={isOpen} scale={false} zIndex={310}>
-                <Content>
-                  <Header>
-                    <Heading className="header" size="medium" truncate={true}>
-                      {asideHeader}
-                    </Heading>
-                  </Header>
-                  <Body>
-                    {this.state.data.map((item, index) =>
-                      (item && (item.label || item.icon || item.key)) && (
-                      <Link
-                        className={`context-menu-button_link${item.isHeader ? '-header' : ''}`}
-                        key={item.key || index}
-                        fontSize={item.isHeader ? '15px' : '13px'}
-                        noHover={item.isHeader}
-                        fontWeight={600}
-                        onClick={this.onDropDownItemClick.bind(this, item)}
-                      >
-                        {item.label}
-                      </Link>
-                      ))}
-                  </Body>
-                </Content>
-              </Aside>
+        ) : (
+          <>
+            <Backdrop onClick={this.onClose} visible={isOpen} zIndex={310} />
+            <Aside visible={isOpen} scale={false} zIndex={310}>
+              <Content>
+                <Header>
+                  <Heading className="header" size="medium" truncate={true}>
+                    {asideHeader}
+                  </Heading>
+                </Header>
+                <Body>
+                  {this.state.data.map(
+                    (item, index) =>
+                      item &&
+                      (item.label || item.icon || item.key) && (
+                        <Link
+                          className={`context-menu-button_link${
+                            item.isHeader ? "-header" : ""
+                          }`}
+                          key={item.key || index}
+                          fontSize={item.isHeader ? "15px" : "13px"}
+                          noHover={item.isHeader}
+                          fontWeight={600}
+                          onClick={this.onDropDownItemClick.bind(this, item)}
+                        >
+                          {item.label}
+                        </Link>
+                      )
+                  )}
+                </Body>
+              </Content>
+            </Aside>
           </>
-      }
+        )}
       </StyledOuter>
     );
   }
@@ -272,19 +289,19 @@ ContextMenuButton.propTypes = {
   id: PropTypes.string,
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   columnCount: PropTypes.number,
-  displayType: PropTypes.string
+  displayType: PropTypes.string,
 };
 
 ContextMenuButton.defaultProps = {
   opened: false,
   data: [],
-  title: '',
-  iconName: 'VerticalDotsIcon',
+  title: "",
+  iconName: "VerticalDotsIcon",
   size: 16,
   isDisabled: false,
-  directionX: 'left',
+  directionX: "left",
   isFill: false,
-  displayType: 'dropdown'
+  displayType: "dropdown",
 };
 
-export default ContextMenuButton
+export default ContextMenuButton;

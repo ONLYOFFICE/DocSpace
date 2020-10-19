@@ -253,7 +253,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
                 }
                 if (i.ResetChilds)
                 {
-                    if (!i.ChildFolder || !i.ChildFolder)
+                    if (!i.ChildFolderExist || !i.ChildFolder)
                     {
                         CacheChildFiles.Remove("drivef-" + i.Key);
                     }

@@ -12,7 +12,7 @@ const StyledSectionToggler = styled.div`
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
   @media ${tablet} {
-    display: ${props => (props.visible ? "block" : "none")};
+    display: ${(props) => (props.visible ? "block" : "none")};
   }
 
   div {
@@ -32,10 +32,10 @@ const iconStyle = {
   width: "20px",
   height: "20px",
   minWidth: "20px",
-  minHeight: "20px"
+  minHeight: "20px",
 };
 
-const SectionToggler = React.memo(props => {
+const SectionToggler = React.memo((props) => {
   //console.log("PageLayout SectionToggler render");
   const { visible, onClick } = props;
 
@@ -52,7 +52,7 @@ SectionToggler.displayName = "SectionToggler";
 
 SectionToggler.propTypes = {
   visible: PropTypes.bool,
-  onClick: PropTypes.func
+  onClick: PropTypes.func,
 };
 
 export default SectionToggler;

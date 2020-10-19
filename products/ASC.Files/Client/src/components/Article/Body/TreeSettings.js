@@ -3,17 +3,24 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { TreeMenu, TreeNode, Icons } from "asc-web-components";
 import styled from "styled-components";
-import { history, utils } from "asc-web-common";
+import { history, utils, store as initStore } from "asc-web-common";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import { createI18N } from "../../../helpers/i18n";
 
 import {
   setSelectedNode,
   setExpandSettingsTree,
-  setIsErrorSettings,
   getFilesSettings,
   setSelectedFolder,
 } from "../../../store/files/actions";
+import {
+  getIsLoading,
+  getSettingsSelectedTreeNode,
+  getExpandedSetting,
+  getEnableThirdParty,
+  getSelectedTreeNode,
+} from "../../../store/files/selectors";
+const { isAdmin } = initStore.auth.selectors;
 
 const i18n = createI18N({
   page: "Settings",
@@ -54,19 +61,19 @@ const PureTreeSettings = ({
   isLoading,
   setSelectedNode,
   setExpandSettingsTree,
-  setIsErrorSettings,
   getFilesSettings,
   setSelectedFolder,
+  selectedFolder,
   t,
 }) => {
   useEffect(() => {
     const { setting } = match.params;
-    setSelectedNode([setting]);
-    if (setting) setExpandSettingsTree(["settings"]);
+    if (selectedTreeNode[0] !== setting) setSelectedNode([setting]);
+    if (setting && !expandedSetting) setExpandSettingsTree(["settings"]);
   }, [match]);
 
   useEffect(() => {
-    getFilesSettings().catch((e) => setIsErrorSettings(true));
+    getFilesSettings();
   }, []);
 
   const switcherIcon = (obj) => {
@@ -83,16 +90,19 @@ const PureTreeSettings = ({
   const onSelect = (section) => {
     const path = section[0];
 
+    if (selectedFolder) setSelectedFolder({});
+
     if (path === "settings") {
       setSelectedNode(["common"]);
-      setSelectedFolder({ id: "common" });
-      setExpandSettingsTree(section);
+      if (!expandedSetting || expandedSetting[0] !== "settings")
+        setExpandSettingsTree(section);
       return history.push("/products/files/settings/common");
     }
 
-    setSelectedNode(section);
-    setSelectedFolder({ id: section[0] });
-    return history.push(`/products/files/settings/${path}`);
+    if (selectedTreeNode[0] !== path) {
+      setSelectedNode(section);
+      return history.push(`/products/files/settings/${path}`);
+    }
   };
 
   const onExpand = (data) => {
@@ -174,25 +184,19 @@ const TreeSettings = (props) => {
 };
 
 function mapStateToProps(state) {
-  const { selectedTreeNode, settingsTree, isLoading } = state.files;
-
-  const { isAdmin } = state.auth.user;
-
-  const { expandedSetting, enableThirdParty } = settingsTree;
-
   return {
-    selectedTreeNode,
-    expandedSetting,
-    enableThirdParty,
-    isAdmin,
-    isLoading,
+    selectedTreeNode: getSettingsSelectedTreeNode(state),
+    expandedSetting: getExpandedSetting(state),
+    enableThirdParty: getEnableThirdParty(state),
+    isAdmin: isAdmin(state),
+    isLoading: getIsLoading(state),
+    selectedFolder: getSelectedTreeNode(state),
   };
 }
 
 export default connect(mapStateToProps, {
   setSelectedNode,
   setExpandSettingsTree,
-  setIsErrorSettings,
   getFilesSettings,
   setSelectedFolder,
 })(withRouter(TreeSettings));
