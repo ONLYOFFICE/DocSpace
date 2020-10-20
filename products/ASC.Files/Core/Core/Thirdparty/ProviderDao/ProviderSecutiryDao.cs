@@ -39,6 +39,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Files.Thirdparty.ProviderDao
 {
+    [Scope]
     internal class ProviderSecurityDao : ProviderDaoBase, ISecurityDao<string>
     {
         public ProviderSecurityDao(
@@ -194,19 +195,6 @@ namespace ASC.Files.Thirdparty.ProviderDao
         public bool IsShared(object entryId, FileEntryType type)
         {
             return SecurityDao.IsShared(entryId, type);
-        }
-    }
-
-    public static class ProviderSecurityDaoExtention
-    {
-        public static DIHelper AddProviderSecurityDaoService(this DIHelper services)
-        {
-            if (services.TryAddScoped<ISecurityDao<string>, ProviderSecurityDao>())
-            {
-                return services;
-            }
-
-            return services;
         }
     }
 }

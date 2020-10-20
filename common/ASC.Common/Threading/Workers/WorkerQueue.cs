@@ -43,6 +43,7 @@ namespace ASC.Common.Threading.Workers
         }
     }
 
+    [Singletone]
     public class ConfigureWorkerQueue<T> : IConfigureOptions<WorkerQueue<T>>
     {
         public ConfigureWorkerQueue(IOptionsMonitor<ILog> log)

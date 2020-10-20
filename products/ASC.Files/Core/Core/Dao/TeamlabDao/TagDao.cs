@@ -696,13 +696,4 @@ namespace ASC.Files.Core.Data
 
         public DbFilesTagLink Link { get; set; }
     }
-    public static class TagDaoExtention
-    {
-        public static DIHelper AddTagDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<ITagDao<int>, TagDao<int>>();
-
-            return services;
-        }
-    }
 }

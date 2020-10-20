@@ -32,7 +32,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Data.Storage.Encryption
 {
-    [Singletone]
+    [Singletone(Additional = typeof(EncryptionFactoryExtension))]
     public class EncryptionFactory
     {
         private IServiceProvider ServiceProvider { get; }
@@ -52,6 +52,15 @@ namespace ASC.Data.Storage.Encryption
         public IMetadata GetMetadata()
         {
             return ServiceProvider.GetService<Metadata>();
+        }
+    }
+
+    public class EncryptionFactoryExtension
+    {
+        public static void Register(DIHelper services)
+        {
+            services.TryAdd<Crypt>();
+            services.TryAdd<Metadata>();
         }
     }
 }

@@ -32,7 +32,7 @@ using ASC.Files.Thirdparty;
 
 namespace ASC.Files.Core
 {
-    [Scope(typeof(ProviderAccountDao))]
+    [Scope(typeof(ProviderAccountDao), Additional = typeof(ProviderAccountDaoExtension))]
     public interface IProviderDao
     {
         IProviderInfo GetProviderInfo(int linkId);

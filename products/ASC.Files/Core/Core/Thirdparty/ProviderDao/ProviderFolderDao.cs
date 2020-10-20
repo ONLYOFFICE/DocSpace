@@ -446,14 +446,4 @@ filterType, subjectGroup, subjectID, searchText, searchSubfolders, checkShare);
 
         #endregion
     }
-
-    public static class ProviderFolderDaoExtention
-    {
-        public static DIHelper AddProviderFolderDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<IFolderDao<string>, ProviderFolderDao>();
-
-            return services;
-        }
-    }
 }

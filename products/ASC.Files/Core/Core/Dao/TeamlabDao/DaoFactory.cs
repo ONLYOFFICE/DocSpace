@@ -28,6 +28,7 @@ using System;
 
 using ASC.Common;
 using ASC.Files.Core.Security;
+using ASC.Files.Thirdparty.ProviderDao;
 
 using Microsoft.Extensions.DependencyInjection;
 
@@ -54,6 +55,7 @@ namespace ASC.Files.Core.Data
         {
             return ServiceProvider.GetService<IFolderDao<T>>();
         }
+
         public ITagDao<T> GetTagDao<T>()
         {
             return ServiceProvider.GetService<ITagDao<T>>();
@@ -62,6 +64,30 @@ namespace ASC.Files.Core.Data
         public ISecurityDao<T> GetSecurityDao<T>()
         {
             return ServiceProvider.GetService<ISecurityDao<T>>();
+        }
+    }
+
+    public class DaoFactoryExtension
+    {
+        public static void Register(DIHelper services)
+        {
+            services.TryAdd<File<int>>();
+            services.TryAdd<IFileDao<int>, FileDao>();
+
+            services.TryAdd<File<string>>();
+            services.TryAdd<IFileDao<string>, ProviderFileDao>();
+
+            services.TryAdd<Folder<int>>();
+            services.TryAdd<IFolderDao<int>, FolderDao>();
+
+            services.TryAdd<Folder<string>>();
+            services.TryAdd<IFolderDao<string>, ProviderFolderDao>();
+
+            services.TryAdd<ISecurityDao<int>, SecurityDao<int>>();
+            services.TryAdd<ISecurityDao<string>, ProviderSecurityDao>();
+
+            services.TryAdd<ITagDao<int>, TagDao<int>>();
+            services.TryAdd<ITagDao<string>, ProviderTagDao>();
         }
     }
 }

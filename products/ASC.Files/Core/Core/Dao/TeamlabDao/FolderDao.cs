@@ -53,6 +53,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Files.Core.Data
 {
+    [Scope]
     internal class FolderDao : AbstractDao, IFolderDao<int>
     {
         private const string my = "my";
@@ -1279,14 +1280,5 @@ namespace ASC.Files.Core.Data
     {
         public DbFolderQuery DbFolderQuery { get; set; }
         public DbFilesSecurity Security { get; set; }
-    }
-
-    public static class FolderDaoExtention
-    {
-        public static DIHelper AddFolderDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<IFolderDao<int>, FolderDao>();
-            return services;
-        }
     }
 }

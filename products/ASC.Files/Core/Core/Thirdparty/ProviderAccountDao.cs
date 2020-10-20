@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.Configuration;
@@ -71,6 +72,7 @@ namespace ASC.Files.Thirdparty
         Yandex,
     }
 
+    [Scope]
     internal class ProviderAccountDao : IProviderDao
     {
         private int tenantID;
@@ -580,6 +582,19 @@ namespace ASC.Files.Thirdparty
                 //old token in base64 without encrypt
                 return token ?? "";
             }
+        }
+    }
+
+    public class ProviderAccountDaoExtension
+    {
+        public static void Register(DIHelper services)
+        {
+            services.TryAdd<BoxProviderInfo>();
+            services.TryAdd<DropboxProviderInfo>();
+            services.TryAdd<SharePointProviderInfo>();
+            services.TryAdd<GoogleDriveProviderInfo>();
+            services.TryAdd<OneDriveProviderInfo>();
+            services.TryAdd<SharpBoxProviderInfo>();
         }
     }
 }

@@ -12,11 +12,6 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Common
 {
-    public interface IAdditionalDI
-    {
-        void Register(DIHelper services);
-    }
-
     public class TransientAttribute : DIAttribute
     {
         public TransientAttribute()
@@ -88,6 +83,7 @@ namespace ASC.Common
 
     public class DIHelper
     {
+        public List<string> Added { get; set; }
         public List<string> Singleton { get; set; }
         public List<string> Scoped { get; set; }
         public List<string> Transient { get; set; }
@@ -96,6 +92,7 @@ namespace ASC.Common
 
         public DIHelper()
         {
+            Added = new List<string>();
             Singleton = new List<string>();
             Scoped = new List<string>();
             Transient = new List<string>();
@@ -129,13 +126,28 @@ namespace ASC.Common
             return TryAdd(typeof(TService));
         }
 
+        public bool TryAdd<TService, TImplementation>() where TService : class
+        {
+            return TryAdd(typeof(TService), typeof(TImplementation));
+        }
+
         public bool TryAdd(Type service, Type implementation = null)
         {
+            var serviceName = $"{service}{implementation}";
+            if (Added.Contains(serviceName)) return false;
+            Added.Add(serviceName);
+
             var di = service.IsGenericType && service.GetGenericTypeDefinition() == typeof(IConfigureOptions<>) && implementation != null ? implementation.GetCustomAttribute<DIAttribute>() : service.GetCustomAttribute<DIAttribute>();
             var isnew = false;
 
             if (di != null)
             {
+                if (di.Additional != null)
+                {
+                    var m = di.Additional.GetMethod("Register", BindingFlags.Public | BindingFlags.Static);
+                    m.Invoke(null, new[] { this });
+                }
+
                 if (!service.IsInterface || implementation != null)
                 {
                     isnew = implementation != null ? Register(service, implementation) : Register(service);
@@ -169,7 +181,20 @@ namespace ASC.Common
                             }
                             else
                             {
-                                TryAdd(a.GetGenericTypeDefinition().MakeGenericType(service.GetGenericArguments()), di.Service.MakeGenericType(service.GetGenericArguments()));
+                                Type c = null;
+                                var a1 = a.GetGenericTypeDefinition();
+                                var b = a.GetGenericArguments().FirstOrDefault();
+
+                                if (b != null && b.IsGenericType)
+                                {
+                                    c = a1.MakeGenericType(b.GetGenericTypeDefinition().MakeGenericType(service.GetGenericArguments()));
+                                }
+                                else
+                                {
+                                    c = a1.MakeGenericType(service.GetGenericArguments());
+                                }
+
+                                TryAdd(c, di.Service.MakeGenericType(service.GetGenericArguments()));
                                 //a, di.Service
                             }
                         }
@@ -206,12 +231,6 @@ namespace ASC.Common
                         }
                     }
                 }
-
-                if (di.Additional != null)
-                {
-                    var m = di.Additional.GetMethod("Register", BindingFlags.Public | BindingFlags.Static);
-                    m.Invoke(null, new[] { this });
-                }
             }
 
             if (isnew)
@@ -233,14 +252,10 @@ namespace ASC.Common
 
                 if (props != null)
                 {
-                    foreach (var p in props)
+                    var par = props.SelectMany(r => r.GetParameters()).Distinct();
+                    foreach (var p1 in par)
                     {
-                        var par = p.GetParameters();
-
-                        foreach (var p1 in par)
-                        {
-                            TryAdd(p1.ParameterType);
-                        }
+                        TryAdd(p1.ParameterType);
                     }
                 }
             }

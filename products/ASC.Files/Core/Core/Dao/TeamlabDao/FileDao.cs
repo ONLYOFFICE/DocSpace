@@ -1437,14 +1437,4 @@ namespace ASC.Files.Core.Data
         public DbFileQuery DbFileQuery { get; set; }
         public DbFilesSecurity Security { get; set; }
     }
-
-    public static class FileDaoExtention
-    {
-        public static DIHelper AddFileDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<IFileDao<int>, FileDao>();
-
-            return services;
-        }
-    }
 }

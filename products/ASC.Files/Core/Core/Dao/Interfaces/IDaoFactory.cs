@@ -30,7 +30,7 @@ using ASC.Files.Core.Security;
 
 namespace ASC.Files.Core
 {
-    [Scope(typeof(DaoFactory))]
+    [Scope(typeof(DaoFactory), Additional = typeof(DaoFactoryExtension))]
     public interface IDaoFactory
     {
         IFolderDao<T> GetFolderDao<T>();

@@ -373,14 +373,4 @@ namespace ASC.Files.Core.Data
         public DbFilesSecurity DbFilesSecurity { get; set; }
         public DbFolderTree DbFolderTree { get; set; }
     }
-
-    public static class SecurityDaoExtention
-    {
-        public static DIHelper AddSecurityDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<ISecurityDao<int>, SecurityDao<int>>();
-
-            return services;
-        }
-    }
 }
