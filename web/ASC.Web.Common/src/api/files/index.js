@@ -50,7 +50,8 @@ export function getFoldersTree() {
     "@common",
     /*'@projects',*/
     "@favorites",
-    "@trash",
+    "@recent",
+    "@trash"
   ]; //TODO: need get from settings
   const requestsArray = rootFoldersPaths.map((path) =>
     request({ method: "get", url: `/files/${path}?filterType=2` })
@@ -136,6 +137,15 @@ export function getSharedFolderList(filter = FilesFilter.getDefault()) {
   const options = {
     method: "get",
     url: `/files/@share`,
+  };
+
+  return request(options);
+}
+
+export function getRecentFolderList(filter = FilesFilter.getDefault()) {
+  const options = {
+    method: "get",
+    url: `/files/@recent`
   };
 
   return request(options);
@@ -266,6 +276,17 @@ export function updateFile(fileId, title, lastVersion) {
     method: "put",
     url: `/files/file/${fileId}`,
     data,
+  };
+
+  return request(options);
+}
+
+export function addFileToRecentlyViewed(fileId) {
+  const data = { fileId };
+  const options = {
+    method: "post",
+    url: `/files/file/${fileId}/recent`,
+    data
   };
 
   return request(options);
