@@ -219,6 +219,12 @@ class SectionBodyContent extends React.Component {
     return false;
   }
 
+  onOpenLocation = () => {
+    const item = this.props.selection[0];
+    const { folderId, checked } = this.props.selection[0];
+    return this.props.fetchFiles(folderId).then(() => this.onContentRowSelect(!checked, item));
+  }
+
   onClickFavorite = e => {
     const { markItemAsFavorite,
       removeItemFromFavorite,
@@ -541,6 +547,14 @@ class SectionBodyContent extends React.Component {
         case "separator1":
         case "separator2":
           return { key: option, isSeparator: true };
+        case "open-location":
+          return {
+            key: option,
+            label: t("OpenLocation"),
+            icon: "DownloadAsIcon",
+            onClick: this.onOpenLocation,
+            disabled: false
+          };
         case "mark-as-favorite":
           return {
             key: option,
