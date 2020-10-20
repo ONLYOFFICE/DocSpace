@@ -8,10 +8,10 @@ import copy from "copy-to-clipboard";
 import styled from "styled-components";
 import queryString from "query-string";
 import {
-  IconButton,
   Row,
   RowContainer,
   Link,
+  IconButton,
   DragAndDrop,
   Box,
   Text,
@@ -781,18 +781,13 @@ class SectionBodyContent extends React.Component {
     const commonButtons = (
       <>
         <div className="empty-folder_container-links">
-          <Link
+          <img
             className="empty-folder_container_plus-image"
-            color="#83888d"
-            fontSize="26px"
-            fontWeight="800"
-            noHover
+            src="images/plus.svg"
             data-format="docx"
             onClick={this.onCreate}
-          >
-            +
-          </Link>
-
+            alt="plus_icon"
+          />
           <Box className="flex-wrapper_container">
             <Link data-format="docx" onClick={this.onCreate} {...linkStyles}>
               {t("Document")},
@@ -807,16 +802,12 @@ class SectionBodyContent extends React.Component {
         </div>
 
         <div className="empty-folder_container-links">
-          <Link
+          <img
             className="empty-folder_container_plus-image"
-            color="#83888d"
-            fontSize="26px"
-            fontWeight="800"
+            src="images/plus.svg"
             onClick={this.onCreate}
-            noHover
-          >
-            +
-          </Link>
+            alt="plus_icon"
+          />
           <Link {...linkStyles} onClick={this.onCreate}>
             {t("Folder")}
           </Link>
@@ -829,6 +820,7 @@ class SectionBodyContent extends React.Component {
         <img
           className="empty-folder_container_up-image"
           src="images/empty_screen_people.svg"
+          width= "12px"
           alt=""
           onClick={this.onGoToMyDocuments}
         />
@@ -905,18 +897,13 @@ class SectionBodyContent extends React.Component {
     const buttons = (
       <>
         <div className="empty-folder_container-links">
-          <Link
+          <img
             className="empty-folder_container_plus-image"
-            color="#83888d"
-            fontSize="26px"
-            fontWeight="800"
-            noHover
+            src="images/plus.svg"
             data-format="docx"
             onClick={this.onCreate}
-          >
-            +
-          </Link>
-
+            alt="plus_icon"
+          />
           <Box className="flex-wrapper_container">
             <Link data-format="docx" onClick={this.onCreate} {...linkStyles}>
               {t("Document")},
@@ -931,16 +918,12 @@ class SectionBodyContent extends React.Component {
         </div>
 
         <div className="empty-folder_container-links">
-          <Link
+          <img
             className="empty-folder_container_plus-image"
-            color="#83888d"
-            fontSize="26px"
-            fontWeight="800"
+            src="images/plus.svg"
             onClick={this.onCreate}
-            noHover
-          >
-            +
-          </Link>
+            alt="plus_icon"
+          />
           <Link {...linkStyles} onClick={this.onCreate}>
             {t("Folder")}
           </Link>
@@ -951,8 +934,9 @@ class SectionBodyContent extends React.Component {
             className="empty-folder_container_up-image"
             src="images/up.svg"
             onClick={this.onBackToParentFolder}
-            alt=""
+            alt="up_icon"
           />
+
           <Link onClick={this.onBackToParentFolder} {...linkStyles}>
             {t("BackToParentFolderButton")}
           </Link>
@@ -982,10 +966,10 @@ class SectionBodyContent extends React.Component {
           onClick={this.onResetFilter}
           iconName="CrossIcon"
           isFill
-          color="A3A9AE"
+          color="#657077"
         />
         <Link onClick={this.onResetFilter} {...linkStyles}>
-          {this.props.t("ClearButton")}
+          {t("ClearButton")}
         </Link>
       </div>
     );
