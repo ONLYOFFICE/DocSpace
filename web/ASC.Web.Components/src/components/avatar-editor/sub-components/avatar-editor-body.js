@@ -339,8 +339,8 @@ class AvatarEditorBody extends React.Component {
     fr.onload = function () {
       var img = new Image();
       img.onload = function () {
-        var canvas = resizeImage.resize2Canvas(img, 1024, 1024);
-        var data = resizeImage.resize(canvas, 1024, 1024, resizeImage.JPEG);
+        var canvas = resizeImage.resize2Canvas(img, img.width, img.height);
+        var data = resizeImage.resize(canvas, img.width, img.height, resizeImage.JPEG);
         _this.setState({
           image: data,
           rotate: 0,
@@ -516,8 +516,8 @@ class AvatarEditorBody extends React.Component {
     if (!this.state.image) _this.props.onLoadFile(null);
     img.onload = () => {
       var canvas = document.createElement("canvas");
-      canvas.setAttribute("width", img.height);
-      canvas.setAttribute("height", img.width);
+      canvas.setAttribute("width", img.width);
+      canvas.setAttribute("height", img.height);
       var context = canvas.getContext("2d");
 
       context.translate(canvas.width / 2, canvas.height / 2);
