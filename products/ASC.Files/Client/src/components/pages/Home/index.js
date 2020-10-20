@@ -46,7 +46,7 @@ const i18n = createI18N({
 });
 const { changeLanguage } = utils;
 const { FilesFilter } = api;
-const { getSettingsHomepage } = store.auth.selectors;
+const { getSettingsHomepage, getIsLoaded } = store.auth.selectors;
 const { setWidthProp } = store.auth.actions;
 
 class PureHome extends React.Component {
@@ -192,7 +192,8 @@ class PureHome extends React.Component {
       convertDialogVisible,
       fileActionId,
       isRecycleBin,
-      setWidthProp
+      setWidthProp,
+      isLoaded,
     } = this.props;
 
     // const progressBarContent = (
@@ -243,6 +244,7 @@ class PureHome extends React.Component {
           viewAs={viewAs}
           hideAside={!!fileActionId || progressData.visible}
           setWidthProp={setWidthProp}
+          isLoaded={isLoaded}
         >
           <PageLayout.ArticleHeader>
             <ArticleHeaderContent />
@@ -309,6 +311,7 @@ function mapStateToProps(state) {
     viewAs: getViewAs(state),
     isLoading: getIsLoading(state),
     homepage: getSettingsHomepage(state),
+    isLoaded: getIsLoaded(state),
   };
 }
 

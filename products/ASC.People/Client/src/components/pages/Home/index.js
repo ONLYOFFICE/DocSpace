@@ -25,7 +25,7 @@ const i18n = createI18N({
   localesPath: "pages/Home",
 });
 const { changeLanguage } = utils;
-const { isAdmin } = store.auth.selectors;
+const { isAdmin, getIsLoaded } = store.auth.selectors;
 const { setWidthProp } = store.auth.actions;
 
 class PureHome extends React.Component {
@@ -102,10 +102,15 @@ class PureHome extends React.Component {
       selected,
     } = this.state;
 
-    const { isAdmin, setWidthProp } = this.props;
+    const { isAdmin, setWidthProp, isLoaded } = this.props;
 
     return (
-      <PageLayout withBodyScroll={true} withBodyAutoFocus={!isMobile} setWidthProp={setWidthProp}>
+      <PageLayout
+        withBodyScroll={true}
+        withBodyAutoFocus={!isMobile}
+        setWidthProp={setWidthProp}
+        isLoaded={isLoaded}
+      >
         <PageLayout.ArticleHeader>
           <ArticleHeaderContent />
         </PageLayout.ArticleHeader>
@@ -175,7 +180,7 @@ Home.propTypes = {
 };
 
 function mapStateToProps(state) {
-  const { isLoaded, settings } = state.auth;
+  const { settings } = state.auth;
   const { users, selection, selected, selectedGroup, groups } = state.people;
   return {
     users,
@@ -183,13 +188,15 @@ function mapStateToProps(state) {
     selected,
     selectedGroup,
     groups,
-    isLoaded,
+    isLoaded: getIsLoaded(state),
     organizationName: settings.organizationName,
     isAdmin: isAdmin(state),
     isLoading: getIsLoading(state),
   };
 }
 
-export default connect(mapStateToProps, { setSelected, setIsLoading, setWidthProp })(
-  withRouter(Home)
-);
+export default connect(mapStateToProps, {
+  setSelected,
+  setIsLoading,
+  setWidthProp,
+})(withRouter(Home));

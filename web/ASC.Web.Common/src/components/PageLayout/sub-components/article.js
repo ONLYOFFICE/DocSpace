@@ -1,67 +1,86 @@
 import React from "react";
 import styled from "styled-components";
+import PropTypes from "prop-types";
 import { utils } from "asc-web-components";
 import { Resizable } from "re-resizable";
+import { isMobile } from "react-device-detect";
 const { tablet } = utils.device;
 
 const StyledArticle = styled.article`
-  padding: 0 24px;
-  background: #f8f9f9;
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 100%;
-  overflow: hidden auto;
-  box-sizing: border-box;
+  .resizable-block {
+    padding: 0 24px;
+    background: #f8f9f9;
+    min-width: 265px;
+    height: 100% !important;
+    max-width: ${(props) => (props.isLoaded ? "calc(100vw - 368px)" : "265px")};
+    border-right: 1px solid #d0d5da;
+    box-sizing: border-box;
+    overflow: hidden auto;
+    display: flex;
+    flex-direction: column;
 
-  @media ${tablet} {
-    padding: 0 16px;
-    ${(props) =>
-      props.visible
-        ? props.pinned
-          ? `
-            display: flex;
-            width: 240px;
+    .resizable-border {
+      div {
+        cursor: ew-resize !important;
+      }
+    }
+
+    @media ${tablet} {
+      padding: 0 16px;
+      ${(props) =>
+        props.visible
+          ? props.pinned
+            ? `
             min-width: 240px;
+            z-index: 400;
           `
-          : `
-            width: 240px;
+            : `
+            position: fixed !important;
+            width: 240px !important;
             min-width: 240px;
             max-width: 240px;
             position: fixed;
-            height: 100%;
+            height: 100% !important;
             top: 0;
             left: 0;
             z-index: 400;
+            .resizable-border {
+              display: none;
+            }
           `
-        : `
-            width: 240px;
-            min-width: 240px;
-            max-width: 240px;
-            position: fixed;
-            height: 100%;
-            top: 0;
-            left: -240px;
-            z-index: 400;
+          : `
+          display: none;
           `}
+    }
   }
-`;
-
-const StyledResizable = styled(Resizable)`
-  min-width: 265px;
-  max-width: calc(100vw - 368px);
-  border-right: 1px solid #D0D5DA;
 `;
 
 class Article extends React.Component {
   render() {
-    //console.log("PageLayout Article render");
+    //console.log("PageLayout Article render", this.props);
+    const { children, ...rest } = this.props;
+    const enable = {
+      top: false,
+      right: !isMobile,
+      bottom: false,
+      left: false,
+    };
     return (
-      <StyledResizable>
-        <StyledArticle {...this.props} />
-      </StyledResizable>
+      <StyledArticle {...rest}>
+        <Resizable
+          enable={enable}
+          className="resizable-block"
+          handleWrapperClass="resizable-border"
+        >
+          {children}
+        </Resizable>
+      </StyledArticle>
     );
   }
 }
+
+Article.propTypes = {
+  children: PropTypes.any,
+};
 
 export default Article;

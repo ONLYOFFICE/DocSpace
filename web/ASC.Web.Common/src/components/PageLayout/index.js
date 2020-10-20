@@ -169,6 +169,7 @@ class PageLayoutComponent extends React.Component {
       withBodyAutoFocus,
       withBodyScroll,
       children,
+      isLoaded,
     } = this.props;
 
     let articleHeaderContent = null;
@@ -245,6 +246,7 @@ class PageLayoutComponent extends React.Component {
           <Article
             visible={this.state.isArticleVisible}
             pinned={this.state.isArticlePinned}
+            isLoaded={isLoaded}
           >
             {isArticleHeaderAvailable && (
               <SubArticleHeader>
@@ -279,7 +281,7 @@ class PageLayoutComponent extends React.Component {
         {isSectionAvailable && (
           <ReactResizeDetector
             onResize={this.onResize}
-            refreshRate={2000}
+            refreshRate={500}
             refreshMode="debounce"
           >
             {({ width }) => (
@@ -370,7 +372,9 @@ PageLayoutComponent.propTypes = {
   setSelections: PropTypes.func,
   uploadFiles: PropTypes.bool,
   hideAside: PropTypes.bool,
-  setWidthProp: PropTypes.func
+  setWidthProp: PropTypes.func,
+  isLoaded: PropTypes.bool,
+  viewAs: PropTypes.string,
 };
 
 PageLayoutComponent.defaultProps = {
