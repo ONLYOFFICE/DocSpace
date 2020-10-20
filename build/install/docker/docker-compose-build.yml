@@ -8,22 +8,25 @@ x-service:
     container_name: base
     restart: always
     expose:
-    - ${SERVICE_PORT}
+    - ${SERVICE_PORT:-5050}
     environment:
-      MYSQL_HOST: ${MYSQL_HOST}
+      MYSQL_HOST: ${MYSQL_HOST:-mysql}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-      KAFKA_HOST: ${KAFKA_HOST}
+      KAFKA_HOST: ${KAFKA_HOST:-kafka}
     volumes:
     - app_data:/app/onlyoffice/data/
     networks:
-      - ${NETWORK_NAME}
+      - ${NETWORK_NAME:-onlyoffice}
 
 services: 
   onlyoffice-elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.8.1
+    build:
+      args:
+         ELK_VERSION: ${ELK_VERSION:-latest}
+      context: elk/elasticsearch/
     container_name: elasticsearch
     environment:
       - node.name=elasticsearch
@@ -42,7 +45,7 @@ services:
     expose:
       - "9200"
     networks:
-      - ${NETWORK_NAME}
+      - ${NETWORK_NAME:-onlyoffice}
 
   onlyoffice-zookeeper:
     image: zookeeper:latest
@@ -58,11 +61,11 @@ services:
     - zoo_data:/data
     - zoo_log:/datalog
     networks:
-      - ${NETWORK_NAME}
+      - ${NETWORK_NAME:-onlyoffice}
 
   onlyoffice-kafka:
     image: confluentinc/cp-kafka:latest
-    container_name: ${KAFKA_HOST}
+    container_name: ${KAFKA_HOST:-kafka}
     restart: always
     expose:
       - "9092"
@@ -79,7 +82,7 @@ services:
     volumes:
     - kafka_data:/var/lib/kafka/data
     networks:
-      - ${NETWORK_NAME}
+      - ${NETWORK_NAME:-onlyoffice}
 
   onlyoffice-api:
     <<: *x-service-base
@@ -87,7 +90,7 @@ services:
       context: ./
       dockerfile: Dockerfile-app
       target: api
-    image: "${REPO}/${STATUS}appserver-api:${SERVICE_VERSION}"
+    image: "${REPO:-onlyoffice}/${STATUS:-onlyoffice-}appserver-api:${TAG_SRV:-latest}"
     container_name: onlyoffice-api
 
   onlyoffice-api_system:
@@ -96,7 +99,7 @@ services:
       context: ./
       dockerfile: Dockerfile-app
       target: api_system
-    image: "${REPO}/${STATUS}appserver-api_system:${SERVICE_VERSION}"
+    image: "${REPO:-onlyoffice}/${STATUS:-onlyoffice-}appserver-api_system:${TAG_SRV:-latest}"
     container_name: onlyoffice-api_system
      
   onlyoffice-urlshortener:
@@ -105,7 +108,7 @@ services:
       context: ./
       dockerfile: Dockerfile-app
       target: urlshortener
-    image: "${REPO}/${STATUS}appserver-urlshortener:${SERVICE_VERSION}"
+    image: "${REPO:-onlyoffice}/${STATUS:-onlyoffice-}appserver-urlshortener:${TAG_SRV:-latest}"
     container_name: onlyoffice-urlshortener
    
   onlyoffice-studio.notify:
@@ -114,7 +117,7 @@ services:
       context: ./
       dockerfile: Dockerfile-app
       target: studio.notify
-    image: "${REPO}/${STATUS}appserver-studio.notify:${SERVICE_VERSION}"
+    image: "${REPO:-onlyoffice}/${STATUS:-onlyoffice-}appserver-studio.notify:${TAG_SRV:-latest}"
     container_name: onlyoffice-studio.notify
     
   onlyoffice-notify:
@@ -123,7 +126,7 @@ services:
       context: ./
       dockerfile: Dockerfile-app
       target: notify
-    image: "${REPO}/${STATUS}appserver-notify:${SERVICE_VERSION}"
+    image: "${REPO:-onlyoffice}/${STATUS:-onlyoffice-}appserver-notify:${TAG_SRV:-latest}"
     container_name: onlyoffice-notify
 
   onlyoffice-people.server:
@@ -132,7 +135,7 @@ services:
       context: ./
       dockerfile: Dockerfile-app
       target: people.server
-    image: "${REPO}/${STATUS}appserver-people.server:${SERVICE_VERSION}"
+    image: "${REPO:-onlyoffice}/${STATUS:-onlyoffice-}appserver-people.server:${TAG_SRV:-latest}"
     container_name: onlyoffice-people.server
     
   onlyoffice-files:
@@ -141,7 +144,7 @@ services:
       context: ./
       dockerfile: Dockerfile-app
       target: files
-    image: "${REPO}/${STATUS}appserver-files:${SERVICE_VERSION}"
+    image: "${REPO:-onlyoffice}/${STATUS:-onlyoffice-}appserver-files:${TAG_SRV:-latest}"
     container_name: onlyoffice-files
     
   onlyoffice-files_services:
@@ -150,7 +153,7 @@ services:
       context: ./
       dockerfile: Dockerfile-app
       target: files_services
-    image: "${REPO}/${STATUS}appserver-files_services:${SERVICE_VERSION}"
+    image: "${REPO:-onlyoffice}/${STATUS:-onlyoffice-}appserver-files_services:${TAG_SRV:-latest}"
     container_name: onlyoffice-files_services
     
   onlyoffice-studio:
@@ -159,7 +162,7 @@ services:
       context: ./
       dockerfile: Dockerfile-app
       target: studio
-    image: "${REPO}/${STATUS}appserver-studio:${SERVICE_VERSION}"
+    image: "${REPO:-onlyoffice}/${STATUS:-onlyoffice-}appserver-studio:${TAG_SRV:-latest}"
     container_name: onlyoffice-studio
    
   onlyoffice-backup:
@@ -168,7 +171,7 @@ services:
       context: ./
       dockerfile: Dockerfile-app
       target: backup
-    image: "${REPO}/${STATUS}appserver-backup:${SERVICE_VERSION}"
+    image: "${REPO:-onlyoffice}/${STATUS:-onlyoffice-}appserver-backup:${TAG_SRV:-latest}"
     container_name: onlyoffice-backup
     
   onlyoffice-nginx:
@@ -177,9 +180,8 @@ services:
       dockerfile: Dockerfile-app
       target: web
       dockerfile: Dockerfile-app
-    image: "${REPO}/${STATUS}appserver-nginx:${SERVICE_VERSION}"
-    #container_name: onlyoffice-nginx
-    container_name: nginx
+    image: "${REPO:-onlyoffice}/${STATUS:-onlyoffice-}appserver-nginx:${TAG_Web:-latest}"
+    container_name: ${NGINX_HOST:-nginx}
     restart: always
     ports:
       - 8092:8092 
@@ -197,24 +199,24 @@ services:
       - onlyoffice-studio
       - onlyoffice-backup
     environment:
-      - SERVICE_API="onlyoffice-api:${SERVICE_PORT}"
-      - SERVICE_API_SYSTEM="onlyoffice-api_system:${SERVICE_PORT}"
-      - SERVICE_URLSHORYENER="onlyoffice-urlshortener:${SERVICE_PORT}"
-      - SERVICE_STUDIO_NOTIFY="onlyoffice-studio.notify:${SERVICE_PORT}"
-      - SERVICE_PEOPLE_SERVER="onlyoffice-people.server:${SERVICE_PORT}"
-      - SERVICE_FILES="onlyoffice-files:${SERVICE_PORT}"
-      - SERVICE_FILES_SERVICES="onlyoffice-files_services:${SERVICE_PORT}"
-      - SERVICE_STUDIO="onlyoffice-studio:${SERVICE_PORT}"
-      - SERVICE_BACKUP="onlyoffice-backup:${SERVICE_PORT}"
-      - SERVICE_PORT=${SERVICE_PORT}
+      - SERVICE_API="onlyoffice-api:${SERVICE_PORT:-5050}"
+      - SERVICE_API_SYSTEM="onlyoffice-api_system:${SERVICE_PORT:-5050}"
+      - SERVICE_URLSHORYENER="onlyoffice-urlshortener:${SERVICE_PORT:-5050}"
+      - SERVICE_STUDIO_NOTIFY="onlyoffice-studio.notify:${SERVICE_PORT:-5050}"
+      - SERVICE_PEOPLE_SERVER="onlyoffice-people.server:${SERVICE_PORT:-5050}"
+      - SERVICE_FILES="onlyoffice-files:${SERVICE_PORT:-5050}"
+      - SERVICE_FILES_SERVICES="onlyoffice-files_services:${SERVICE_PORT:-5050}"
+      - SERVICE_STUDIO="onlyoffice-studio:${SERVICE_PORT:-5050}"
+      - SERVICE_BACKUP="onlyoffice-backup:${SERVICE_PORT:-5050}"
+      - SERVICE_PORT=${SERVICE_PORT:-5050}
     volumes:
       - nginx_log:/var/log/nginx
     networks:
-     - ${NETWORK_NAME}
+     - ${NETWORK_NAME:-onlyoffice}
 
 networks:
   onlyoffice:
-    name: ${NETWORK_NAME}
+    name: ${NETWORK_NAME:-onlyoffice}
     driver: 'bridge'
 
 volumes:
