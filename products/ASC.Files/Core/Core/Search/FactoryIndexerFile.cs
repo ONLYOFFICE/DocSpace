@@ -41,6 +41,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Files.Core.Search
 {
+    [Scope]
     public class FactoryIndexerFile : FactoryIndexer<DbFile>
     {
         private IDaoFactory DaoFactory { get; }
@@ -111,18 +112,6 @@ namespace ASC.Web.Files.Core.Search
         public override string SettingsTitle
         {
             get { return FilesCommonResource.IndexTitle; }
-        }
-    }
-    public static class FactoryIndexerFileExtention
-    {
-        public static DIHelper AddFactoryIndexerFileService(this DIHelper services)
-        {
-            if (services.TryAddScoped<FactoryIndexer<DbFile>, FactoryIndexerFile>())
-            {
-                return services;
-            }
-
-            return services;
         }
     }
 }

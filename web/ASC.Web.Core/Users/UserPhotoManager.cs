@@ -1008,6 +1008,7 @@ namespace ASC.Web.Core.Users
     {
         public static DIHelper AddResizeWorkerItemService(this DIHelper services)
         {
+            //WorkerQueueOptionsManager<ResizeWorkerItem> optionsQueue,
             services.TryAddSingleton<WorkerQueueOptionsManager<ResizeWorkerItem>>();
             services.TryAddSingleton<WorkerQueue<ResizeWorkerItem>>();
             services.AddSingleton<IConfigureOptions<WorkerQueue<ResizeWorkerItem>>, ConfigureWorkerQueue<ResizeWorkerItem>>();

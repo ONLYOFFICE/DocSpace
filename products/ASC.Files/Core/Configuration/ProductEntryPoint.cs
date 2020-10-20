@@ -176,13 +176,4 @@ namespace ASC.Web.Files.Configuration
             get => "";
         }
     }
-    public static class ProductEntryPointExtention
-    {
-        public static DIHelper AddProductEntryPointService(this DIHelper services)
-        {
-            services.TryAddScoped<IWebItem, ProductEntryPoint>();
-
-            return services;
-        }
-    }
 }

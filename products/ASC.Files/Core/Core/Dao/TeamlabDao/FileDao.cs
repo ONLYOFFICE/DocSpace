@@ -44,6 +44,7 @@ using ASC.Files.Core.Thirdparty;
 using ASC.Files.Thirdparty.ProviderDao;
 using ASC.Web.Core.Files;
 using ASC.Web.Files.Classes;
+using ASC.Web.Files.Core.Search;
 using ASC.Web.Files.Services.DocumentService;
 using ASC.Web.Files.Utils;
 using ASC.Web.Studio.Core;
@@ -55,12 +56,13 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Files.Core.Data
 {
+    [Scope]
     internal class FileDao : AbstractDao, IFileDao<int>
     {
         public const long MaxContentLength = 2 * 1024 * 1024 * 1024L;
 
         private static readonly object syncRoot = new object();
-        private FactoryIndexer<DbFile> FactoryIndexer { get; }
+        private FactoryIndexerFile FactoryIndexer { get; }
         private GlobalStore GlobalStore { get; }
         private GlobalSpace GlobalSpace { get; }
         private GlobalFolder GlobalFolder { get; }
@@ -70,7 +72,7 @@ namespace ASC.Files.Core.Data
         private CrossDao CrossDao { get; }
 
         public FileDao(
-            FactoryIndexer<DbFile> factoryIndexer,
+            FactoryIndexerFile factoryIndexer,
             UserManager userManager,
             DbContextManager<FilesDbContext> dbContextManager,
             TenantManager tenantManager,

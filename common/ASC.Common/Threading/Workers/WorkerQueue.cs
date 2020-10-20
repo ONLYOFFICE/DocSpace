@@ -35,6 +35,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Common.Threading.Workers
 {
+    [Singletone(typeof(ConfigureWorkerQueue<>))]
     public class WorkerQueueOptionsManager<T> : OptionsManager<WorkerQueue<T>>
     {
         public WorkerQueueOptionsManager(IOptionsFactory<WorkerQueue<T>> factory) : base(factory)

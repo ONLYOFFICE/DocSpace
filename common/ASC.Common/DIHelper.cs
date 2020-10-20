@@ -12,18 +12,22 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Common
 {
+    public interface IAdditionalDI
+    {
+        void Register(DIHelper services);
+    }
+
     public class TransientAttribute : DIAttribute
     {
         public TransientAttribute()
         {
-
         }
 
-        public TransientAttribute(Type type) : base(type)
+        public TransientAttribute(Type service) : base(service)
         {
         }
 
-        public TransientAttribute(Type type, Type cachedType) : base(type, cachedType)
+        public TransientAttribute(Type service, Type implementation) : base(service, implementation)
         {
 
         }
@@ -33,16 +37,14 @@ namespace ASC.Common
     {
         public ScopeAttribute()
         {
-
         }
 
-        public ScopeAttribute(Type type) : base(type)
+        public ScopeAttribute(Type service) : base(service)
         {
         }
 
-        public ScopeAttribute(Type type, Type cachedType) : base(type, cachedType)
+        public ScopeAttribute(Type service, Type implementation) : base(service, implementation)
         {
-
         }
     }
 
@@ -50,38 +52,37 @@ namespace ASC.Common
     {
         public SingletoneAttribute()
         {
-
         }
 
-        public SingletoneAttribute(Type type) : base(type)
+        public SingletoneAttribute(Type service) : base(service)
         {
         }
 
-        public SingletoneAttribute(Type type, Type cachedType) : base(type, cachedType)
+        public SingletoneAttribute(Type service, Type implementation) : base(service, implementation)
         {
-
         }
     }
 
     public class DIAttribute : Attribute
     {
-        public Type CachedType { get; }
-        public Type Type { get; }
+        public Type Implementation { get; }
+        public Type Service { get; }
+        public Type Additional { get; set; }
 
         public DIAttribute()
         {
 
         }
 
-        public DIAttribute(Type type)
+        public DIAttribute(Type service)
         {
-            Type = type;
+            Service = service;
         }
 
-        public DIAttribute(Type type, Type cachedType)
+        public DIAttribute(Type service, Type implementation)
         {
-            CachedType = cachedType;
-            Type = type;
+            Implementation = implementation;
+            Service = service;
         }
     }
 
@@ -138,53 +139,78 @@ namespace ASC.Common
                 if (!service.IsInterface || implementation != null)
                 {
                     isnew = implementation != null ? Register(service, implementation) : Register(service);
+                    if (!isnew) return false;
                 }
 
                 if (service.IsInterface && implementation == null || !service.IsInterface)
                 {
-                    if (di.Type != null)
+                    if (di.Service != null)
                     {
-                        var a = di.Type.GetInterfaces().FirstOrDefault(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IConfigureOptions<>));
+                        var a = di.Service.GetInterfaces().FirstOrDefault(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IConfigureOptions<>));
                         if (a != null)
                         {
-                            var b = a.GetGenericArguments();
-
-                            foreach (var g in b)
+                            if (!a.ContainsGenericParameters)
                             {
-                                if (g != service)
+                                var b = a.GetGenericArguments();
+
+                                foreach (var g in b)
                                 {
-                                    TryAdd(g);
+                                    if (g != service)
+                                    {
+                                        TryAdd(g);
+                                        if (service.IsInterface)
+                                        {
+                                            TryAdd(service, g);
+                                        }
+                                    }
                                 }
-                            }
 
-                            TryAdd(a, di.Type);
+                                TryAdd(a, di.Service);
+                            }
+                            else
+                            {
+                                TryAdd(a.GetGenericTypeDefinition().MakeGenericType(service.GetGenericArguments()), di.Service.MakeGenericType(service.GetGenericArguments()));
+                                //a, di.Service
+                            }
                         }
                         else
                         {
-                            isnew = Register(service, di.Type);
+                            isnew = Register(service, di.Service);
                         }
                     }
 
-                    if (di.CachedType != null)
+                    if (di.Implementation != null)
                     {
-                        var a = di.CachedType.GetInterfaces().FirstOrDefault(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IConfigureOptions<>));
+                        var a = di.Implementation.GetInterfaces().FirstOrDefault(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IConfigureOptions<>));
                         if (a != null)
                         {
-                            var b = a.GetGenericArguments();
-
-                            foreach (var g in b)
+                            if (!a.ContainsGenericParameters)
                             {
-                                TryAdd(service, g);
-                            }
+                                var b = a.GetGenericArguments();
 
-                            TryAdd(a, di.CachedType);
+                                foreach (var g in b)
+                                {
+                                    TryAdd(service, g);
+                                }
+
+                                TryAdd(a, di.Implementation);
+                            }
+                            else
+                            {
+                                var qazw = 0;
+                            }
                         }
                         else
                         {
-                            isnew = Register(service, di.CachedType);
+                            isnew = Register(service, di.Implementation);
                         }
                     }
+                }
 
+                if (di.Additional != null)
+                {
+                    var m = di.Additional.GetMethod("Register", BindingFlags.Public | BindingFlags.Static);
+                    m.Invoke(null, new[] { this });
                 }
             }
 
@@ -200,9 +226,9 @@ namespace ASC.Common
                 {
                     props = implementation.GetConstructors();
                 }
-                else if (di.Type != null)
+                else if (di.Service != null)
                 {
-                    props = di.Type.GetConstructors();
+                    props = di.Service.GetConstructors();
                 }
 
                 if (props != null)
@@ -299,19 +325,6 @@ namespace ASC.Common
             {
                 Scoped.Add(serviceName);
                 ServiceCollection.TryAddScoped<TService, TImplementation>();
-                return true;
-            }
-
-            return false;
-        }
-
-        public bool TryAddScoped<TService, TImplementation>(TService tservice, TImplementation tImplementation) where TService : Type where TImplementation : Type
-        {
-            var serviceName = $"{tservice}{tImplementation}";
-            if (!Scoped.Contains(serviceName))
-            {
-                Scoped.Add(serviceName);
-                ServiceCollection.TryAddScoped(tservice, tImplementation);
                 return true;
             }
 

@@ -3,13 +3,10 @@ using System.IO;
 using System.Threading.Tasks;
 
 using ASC.Common;
-using ASC.Common.Caching;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
 using ASC.ElasticSearch;
 using ASC.Feed.Aggregator;
-using ASC.Web.Files.Core.Search;
-using ASC.Web.Files.Utils;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

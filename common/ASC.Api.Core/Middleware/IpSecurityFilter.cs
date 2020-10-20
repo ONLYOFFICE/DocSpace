@@ -1,5 +1,6 @@
 ﻿using System.Net;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.IPSecurity;
@@ -10,6 +11,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Api.Core.Middleware
 {
+    [Scope]
     public class IpSecurityFilter : IResourceFilter
     {
         private readonly ILog log;

@@ -6,13 +6,11 @@ using ASC.Common;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
 using ASC.Core.Common;
-using ASC.Core.Notify.Senders;
 using ASC.Notify.Config;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
 
 namespace ASC.Notify
 {
@@ -54,12 +52,10 @@ namespace ASC.Notify
                     diHelper.AddNLogManager("ASC.Notify", "ASC.Notify.Messages");
 
                     services.Configure<NotifyServiceCfg>(hostContext.Configuration.GetSection("notify"));
-                    diHelper.AddSingleton<IConfigureOptions<NotifyServiceCfg>, ConfigureNotifyServiceCfg>();
 
-                    diHelper.TryAddSingleton<CommonLinkUtilitySettings>();
-                    diHelper.AddSingleton<IConfigureOptions<CommonLinkUtilitySettings>, ConfigureCommonLinkUtilitySettings>();
-
+                    diHelper.TryAdd(typeof(CommonLinkUtilitySettings), typeof(ConfigureCommonLinkUtilitySettings));
                     diHelper.TryAdd<NotifyServiceLauncher>();
+
                     services.AddHostedService<NotifyServiceLauncher>();
 
                     services.AddAutofac(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);

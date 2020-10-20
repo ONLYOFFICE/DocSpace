@@ -86,13 +86,4 @@ namespace ASC.Core.Security.Authorizing
             return roles;
         }
     }
-
-    public static class RoleProviderConfigExtention
-    {
-        public static DIHelper AddRoleProviderService(this DIHelper services)
-        {
-            services.TryAddScoped(typeof(IRoleProvider), typeof(RoleProvider));
-            return services;
-        }
-    }
 }
