@@ -369,6 +369,42 @@ export function fetchCommonFolder(dispatch) {
   });
 }
 
+export function fetchFavoritesFolder(folderId) {
+  return dispatch => {
+    return files.getFolder(folderId).then((data) => {
+      dispatch(setFolders(data.folders));
+      dispatch(setFiles(data.files));
+      return dispatch(
+        setSelectedFolder({
+          folders: data.folders,
+          ...data.current,
+          pathParts: data.pathParts,
+        })
+      );
+    });
+  }
+}
+
+export function markItemAsFavorite(id) {
+  return dispatch => {
+    return files.markAsFavorite(id);
+  }
+}
+
+export function removeItemFromFavorite(id) {
+  return dispatch => {
+    return files.removeFromFavorite(id);
+  }
+}
+
+export function getFileInfo(id) {
+  return dispatch => {
+    return files.getFileInfo(id).then(data => {
+      dispatch(setFile(data));
+    });
+  }
+}
+
 export function fetchProjectsFolder(dispatch) {
   return files.getProjectsFolderList().then((data) => {
     dispatch(setFolders(data.folders));
