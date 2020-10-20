@@ -25,7 +25,7 @@ namespace ASC.Common
             Configured = new List<string>();
         }
 
-        public DIHelper(IServiceCollection serviceCollection)
+        public DIHelper(IServiceCollection serviceCollection) : this()
         {
             ServiceCollection = serviceCollection;
         }
