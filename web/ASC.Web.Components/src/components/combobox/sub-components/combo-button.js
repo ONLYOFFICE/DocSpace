@@ -25,7 +25,7 @@ const StyledComboButton = styled.div`
   -ms-user-select: none;
   user-select: none;
 
-  padding-left: 8px;
+  padding-left: 10px;
 
   background: ${(props) => (!props.noBorder ? "#FFFFFF" : "none")};
 
