@@ -130,7 +130,7 @@ const SimpleFilesRow = styled(Row)`
   `}
 
   .share-button-icon {
-    margin-right: 8px;
+    margin-right: 9px;
   }
 
   .share-button,

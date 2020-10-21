@@ -9,7 +9,7 @@ import { tablet } from "../../utils/device";
 const StyledRow = styled.div`
   cursor: default;
 
-  min-height: 50px;
+  min-height: 45px;
   width: 100%;
   border-bottom: 1px solid #eceef1;
 

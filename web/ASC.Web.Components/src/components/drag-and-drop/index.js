@@ -13,9 +13,11 @@ const StyledDragAndDrop = styled.div`
   height: 100%;
   border: ${(props) =>
     props.drag ? "1px dashed #bbb" : "1px solid transparent"};
+  margin-left: -2px;
 
   @media ${tablet} {
     border: none;
+    margin-left: 0;
   }
   outline: none;
   background: ${(props) =>
