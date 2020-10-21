@@ -14,8 +14,6 @@ class FilterBlock extends React.Component {
     const {
       openFilterItems,
       hideFilterItems,
-      showFilter,
-      setShowFilter,
       onClickFilterItem,
       isDisabled,
       getFilterData,
@@ -61,14 +59,14 @@ class FilterBlock extends React.Component {
             defaultOption={defaultOption}
             defaultSelectLabel={defaultSelectLabel}
             selectedItem={selectedItem}
-            opened={showFilter}
-            setShowFilter={setShowFilter}
+            opened={key.indexOf("_-1") == -1 ? false : true}
           ></FilterItem>
         );
       });
     }
 
     if (hideFilterItems.length > 0) {
+      let open = false;
       const hideFilterItemsList = hideFilterItems.map((item) => {
         const {
           key,
@@ -83,6 +81,8 @@ class FilterBlock extends React.Component {
           selectedItem,
         } = item;
 
+        open = key.indexOf("_-1") == -1 ? false : true;
+
         return (
           <FilterItem
             block={true}
@@ -94,7 +94,6 @@ class FilterBlock extends React.Component {
             onSelectFilterItem={onClickFilterItem}
             id={key}
             groupLabel={groupLabel}
-            opened={showFilter}
             label={label}
             onClose={this.onDeleteFilterItem}
             typeSelector={typeSelector}
@@ -103,7 +102,8 @@ class FilterBlock extends React.Component {
             defaultOption={defaultOption}
             defaultSelectLabel={defaultSelectLabel}
             selectedItem={selectedItem}
-            setShowFilter={setShowFilter}
+            opened={open}
+            setShowHiddenFilter={this.props.setShowHiddenFilter}
           ></FilterItem>
         );
       });
@@ -113,12 +113,14 @@ class FilterBlock extends React.Component {
           key="hide-filter"
           count={hideFilterItems.length}
           isDisabled={isDisabled}
+          open={open ? open : this.props.showHiddenFilter}
+          setShowHiddenFilter={this.props.setShowHiddenFilter}
         >
           {hideFilterItemsList}
         </HideFilter>
       );
     }
-    
+
     result = hideItems.concat(openItems);
     return result;
   };
@@ -194,8 +196,6 @@ FilterBlock.propTypes = {
   openFilterItems: PropTypes.array,
   columnCount: PropTypes.number,
   contextMenuHeader: PropTypes.string,
-  showFilter: PropTypes.bool,
-  setShowFilter: PropTypes.func,
   onClickFilterItem: PropTypes.func,
 };
 

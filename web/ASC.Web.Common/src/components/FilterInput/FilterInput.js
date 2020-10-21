@@ -37,8 +37,8 @@ class FilterInput extends React.Component {
       openFilterItems: [],
       hideFilterItems: [],
       overflowFilter: true,
-      showFilter: false,
       filterMaxWidth: 0,
+      showHiddenFilter: false,
     };
 
     this.searchWrapper = React.createRef();
@@ -149,8 +149,6 @@ class FilterInput extends React.Component {
       () => this.updateFilter()
     );
   };
-
-  setShowFilter = (showFilter) => this.setState({ showFilter });
 
   getDefaultFilterData = () => {
     const { getFilterData, selectedFilterData } = this.props;
@@ -358,7 +356,7 @@ class FilterInput extends React.Component {
       openFilterItems: newOpenFilterItems,
       hideFilterItems: newHideFilterItems,
       overflowFilter: true,
-      //showFilter: false
+      showHiddenFilter: false,
     });
   };
 
@@ -579,6 +577,10 @@ class FilterInput extends React.Component {
     }
   };
 
+  setShowHiddenFilter = (showHiddenFilter) => {
+    this.setState({ showHiddenFilter });
+  };
+
   render() {
     //console.log("FilterInput render");
     const {
@@ -597,6 +599,7 @@ class FilterInput extends React.Component {
       viewAs,
       contextMenuHeader,
       isMobile,
+      widthProp,
     } = this.props;
     const {
       searchText,
@@ -606,8 +609,8 @@ class FilterInput extends React.Component {
       sortId,
       sortDirection,
       overflowFilter,
-      showFilter,
       filterMaxWidth,
+      showHiddenFilter,
     } = this.state;
 
     let iconSize = 30;
@@ -628,7 +631,7 @@ class FilterInput extends React.Component {
       <StyledFilterInput
         filterMaxWidth={filterMaxWidth}
         overflowFilter={overflowFilter}
-        isMobile={isMobile}
+        isMobile={isMobile || widthProp <= 600}
         viewAs={viewAs}
         className={className}
         id={id}
@@ -662,8 +665,8 @@ class FilterInput extends React.Component {
                 onDeleteFilterItem={this.onDeleteFilterItem}
                 isDisabled={isDisabled}
                 columnCount={filterColumnCount}
-                showFilter={showFilter}
-                setShowFilter={this.setShowFilter}
+                showHiddenFilter={showHiddenFilter}
+                setShowHiddenFilter={this.setShowHiddenFilter}
               />
             </div>
           </SearchInput>

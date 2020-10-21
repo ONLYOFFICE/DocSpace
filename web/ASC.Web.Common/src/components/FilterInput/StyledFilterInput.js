@@ -1,4 +1,13 @@
 import styled, { css } from "styled-components";
+import { utils } from "asc-web-components";
+const { smallTablet } = utils.device;
+
+const HiddenSortStyles = css`
+  width: 50px;
+  .optionalBlock ~ div:first-child {
+    opacity: 0;
+  }
+`;
 
 const StyledFilterInput = styled.div`
   width: 100%;
@@ -51,6 +60,10 @@ const StyledFilterInput = styled.div`
           stroke: #a3a9ae;
         }
       }
+    }
+
+    .dropdown-container {
+      top: 25px;
     }
   }
 
@@ -108,14 +121,11 @@ const StyledFilterInput = styled.div`
     width: fit-content;
     margin-left: 8px;
 
-    ${(props) =>
-      props.isMobile &&
-      `
-          width: 50px;
-          .optionalBlock ~ div:first-child{
-              opacity: 0
-          }
-      `}
+    @media ${smallTablet} {
+      ${HiddenSortStyles}
+    }
+
+    ${(props) => props.isMobile && HiddenSortStyles}
 
     .combo-button-label {
       color: #a3a9ae;

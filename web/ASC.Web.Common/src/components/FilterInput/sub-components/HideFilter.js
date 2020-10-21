@@ -7,12 +7,18 @@ class HideFilter extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      isOpen: false
-    }
-
     this.ref = React.createRef();
     this.dropDownRef = React.createRef();
+
+    this.state = {
+      isOpen: props.open,
+    };
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.open !== prevProps.open) {
+      this.setState({ isOpen: this.props.open });
+    }
   }
 
   onClick = (e) => {
@@ -20,13 +26,15 @@ class HideFilter extends React.Component {
       return;
     }
     if (!this.props.isDisabled) {
-      this.setState({isOpen: !this.state.isOpen});
+      this.setState({ isOpen: !this.state.isOpen });
+      this.props.setShowHiddenFilter(!this.props.open);
     }
   };
 
   handleClickOutside = (e) => {
     if (this.ref.current.contains(e.target)) return;
-    this.setState({isOpen: false});
+    this.setState({ isOpen: false });
+    this.props.setShowHiddenFilter(false);
   };
 
   render() {
@@ -35,11 +43,7 @@ class HideFilter extends React.Component {
     const { isOpen } = this.state;
 
     return (
-      <div
-        className="styled-hide-filter"
-        onClick={this.onClick}
-        ref={this.ref}
-      >
+      <div className="styled-hide-filter" onClick={this.onClick} ref={this.ref}>
         <StyledHideFilterButton id="PopoverLegacy" isDisabled={isDisabled}>
           {count}
           <Caret isOpen={isOpen}>
@@ -68,6 +72,6 @@ class HideFilter extends React.Component {
 HideFilter.propTypes = {
   children: PropTypes.any,
   count: PropTypes.number,
-  isDisabled: PropTypes.bool
+  isDisabled: PropTypes.bool,
 };
 export default HideFilter;

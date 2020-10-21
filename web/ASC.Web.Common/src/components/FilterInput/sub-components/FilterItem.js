@@ -82,6 +82,7 @@ class FilterItem extends React.Component {
       group,
       inSubgroup: !!inSubgroup,
     };
+    this.props.setShowHiddenFilter && this.props.setShowHiddenFilter(false);
     this.props.onSelectFilterItem(filterItem);
   };
 
@@ -141,7 +142,6 @@ class FilterItem extends React.Component {
   };
 
   onPeopleSelectorClick = () => {
-    this.props.setShowFilter(!this.state.isOpenSelector);
     this.setState({ isOpenSelector: !this.state.isOpenSelector });
   };
 
@@ -268,7 +268,6 @@ FilterItem.propTypes = {
   groupLabel: PropTypes.string,
   onClose: PropTypes.func,
   onSelectFilterItem: PropTypes.func,
-  setShowFilter: PropTypes.func,
   typeSelector: PropTypes.string,
   groupsCaption: PropTypes.string,
   defaultOptionLabel: PropTypes.string,
