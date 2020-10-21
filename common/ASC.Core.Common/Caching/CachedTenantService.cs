@@ -180,6 +180,7 @@ namespace ASC.Core.Caching
         }
     }
 
+    [Scope]
     class CachedTenantService : ITenantService
     {
         internal ITenantService Service { get; set; }

@@ -139,6 +139,16 @@ namespace ASC.Common
             if (Added.Contains(serviceName)) return false;
             Added.Add(serviceName);
 
+            if (serviceName == "ASC.Core.IAzService")
+            {
+                var qweasd = 0;
+            }
+
+            if (serviceName == "ASC.Core.Caching.CachedAzService")
+            {
+                var qweasd = 0;
+            }
+
             var di = service.IsGenericType && service.GetGenericTypeDefinition() == typeof(IConfigureOptions<>) && implementation != null ? implementation.GetCustomAttribute<DIAttribute>() : service.GetCustomAttribute<DIAttribute>();
             var isnew = false;
 
@@ -172,7 +182,7 @@ namespace ASC.Common
                                     if (g != service)
                                     {
                                         TryAdd(g);
-                                        if (service.IsInterface)
+                                        if (service.IsInterface && di.Implementation == null)
                                         {
                                             TryAdd(service, g);
                                         }
@@ -205,7 +215,7 @@ namespace ASC.Common
                         }
                         else
                         {
-                            isnew = Register(service, di.Service);
+                            isnew = di.Implementation == null ? Register(service, di.Service) : Register(di.Service);
                         }
                     }
 
@@ -220,19 +230,43 @@ namespace ASC.Common
 
                                 foreach (var g in b)
                                 {
-                                    TryAdd(service, g);
+                                    if (g != service)
+                                    {
+                                        //TryAdd(g);
+                                        if (service.IsInterface && implementation == null)
+                                        {
+                                            TryAdd(service, g);
+                                        }
+                                    }
                                 }
 
                                 TryAdd(a, di.Implementation);
                             }
                             else
                             {
-                                var qazw = 0;
+                                Type c = null;
+                                var a1 = a.GetGenericTypeDefinition();
+                                var b = a.GetGenericArguments().FirstOrDefault();
+
+                                if (b != null && b.IsGenericType)
+                                {
+                                    var b1 = b.GetGenericTypeDefinition().MakeGenericType(service.GetGenericArguments());
+
+                                    TryAdd(b1);
+                                    c = a1.MakeGenericType(b1);
+                                }
+                                else
+                                {
+                                    c = a1.MakeGenericType(service.GetGenericArguments());
+                                }
+
+                                TryAdd(c, di.Implementation.MakeGenericType(service.GetGenericArguments()));
+                                //a, di.Service
                             }
                         }
                         else
                         {
-                            isnew = Register(service, di.Implementation);
+                            isnew = TryAdd(service, di.Implementation);
                         }
                     }
                 }

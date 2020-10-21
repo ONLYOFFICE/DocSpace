@@ -70,6 +70,7 @@ namespace ASC.Core.Data
         }
     }
 
+    [Scope]
     public class DbTenantService : ITenantService
     {
         private List<string> forbiddenDomains;
