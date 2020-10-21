@@ -59,6 +59,7 @@ namespace ASC.Common.Threading.Workers
         }
     }
 
+    [Singletone]
     public class WorkerQueue<T>
     {
         internal ILog log;

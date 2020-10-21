@@ -32,7 +32,7 @@ using ASC.Files.Core.Security;
 
 namespace ASC.Files.Thirdparty.GoogleDrive
 {
-    [Scope]
+    [Scope(Additional = typeof(GoogleDriveDaoSelectorExtension))]
     internal class GoogleDriveDaoSelector : RegexDaoSelectorBase<GoogleDriveProviderInfo>, IDaoSelector
     {
         protected internal override string Name { get => "GoogleDrive"; }
@@ -60,6 +60,17 @@ namespace ASC.Files.Thirdparty.GoogleDrive
         public ISecurityDao<string> GetSecurityDao(string id)
         {
             return base.GetSecurityDao<GoogleDriveSecurityDao>(id);
+        }
+    }
+
+    public class GoogleDriveDaoSelectorExtension
+    {
+        public static void Register(DIHelper services)
+        {
+            services.TryAdd<GoogleDriveFileDao>();
+            services.TryAdd<GoogleDriveFolderDao>();
+            services.TryAdd<GoogleDriveTagDao>();
+            services.TryAdd<GoogleDriveSecurityDao>();
         }
     }
 }

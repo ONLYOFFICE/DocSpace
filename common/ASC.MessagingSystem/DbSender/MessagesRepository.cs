@@ -49,7 +49,7 @@ using IsolationLevel = System.Data.IsolationLevel;
 
 namespace ASC.MessagingSystem.DbSender
 {
-    [Singletone]
+    [Singletone(Additional = typeof(MessagesRepositoryExtension))]
     public class MessagesRepository
     {
         private static DateTime lastSave = DateTime.UtcNow;
@@ -314,6 +314,14 @@ namespace ASC.MessagingSystem.DbSender
                 ef.SaveChanges();
 
             } while (ids.Any());
+        }
+    }
+
+    public class MessagesRepositoryExtension
+    {
+        public static void Register(DIHelper services)
+        {
+            services.TryAdd<DbContextManager<MessagesContext>>();
         }
     }
 }

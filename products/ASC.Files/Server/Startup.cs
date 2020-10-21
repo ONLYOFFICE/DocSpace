@@ -34,6 +34,8 @@ namespace ASC.Files
             base.ConfigureServices(services);
 
             DIHelper.TryAdd<FilesController>();
+
+            var a = 0;
         }
 
         public override void Configure(IApplicationBuilder app, IWebHostEnvironment env)

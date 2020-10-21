@@ -32,7 +32,7 @@ using ASC.Files.Core.Security;
 
 namespace ASC.Files.Thirdparty.Dropbox
 {
-    [Scope]
+    [Scope(Additional = typeof(DropboxDaoSelectorExtension))]
     internal class DropboxDaoSelector : RegexDaoSelectorBase<DropboxProviderInfo>, IDaoSelector
     {
         protected internal override string Name { get => "Dropbox"; }
@@ -61,6 +61,17 @@ namespace ASC.Files.Thirdparty.Dropbox
         public ISecurityDao<string> GetSecurityDao(string id)
         {
             return base.GetSecurityDao<DropboxSecurityDao>(id);
+        }
+    }
+
+    public class DropboxDaoSelectorExtension
+    {
+        public static void Register(DIHelper services)
+        {
+            services.TryAdd<DropboxFileDao>();
+            services.TryAdd<DropboxFolderDao>();
+            services.TryAdd<DropboxTagDao>();
+            services.TryAdd<DropboxSecurityDao>();
         }
     }
 }

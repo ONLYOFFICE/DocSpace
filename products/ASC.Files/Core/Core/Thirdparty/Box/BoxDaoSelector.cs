@@ -32,7 +32,7 @@ using ASC.Files.Core.Security;
 
 namespace ASC.Files.Thirdparty.Box
 {
-    [Scope]
+    [Scope(Additional = typeof(BoxDaoSelectorExtension))]
     internal class BoxDaoSelector : RegexDaoSelectorBase<BoxProviderInfo>, IDaoSelector
     {
         protected internal override string Name { get => "Box"; }
@@ -63,4 +63,15 @@ namespace ASC.Files.Thirdparty.Box
             return base.GetSecurityDao<BoxSecurityDao>(id);
         }
     }
+    public class BoxDaoSelectorExtension
+    {
+        public static void Register(DIHelper services)
+        {
+            services.TryAdd<BoxFileDao>();
+            services.TryAdd<BoxFolderDao>();
+            services.TryAdd<BoxTagDao>();
+            services.TryAdd<BoxSecurityDao>();
+        }
+    }
+
 }

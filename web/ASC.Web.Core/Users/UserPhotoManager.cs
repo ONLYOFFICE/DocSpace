@@ -180,7 +180,7 @@ namespace ASC.Web.Core.Users
         }
     }
 
-    [Scope]
+    [Scope(Additional = typeof(ResizeWorkerItemExtension))]
     public class UserPhotoManager
     {
         //Regex for parsing filenames into groups with id's
@@ -1004,17 +1004,11 @@ namespace ASC.Web.Core.Users
         }
     }
 
-    public static class ResizeWorkerItemExtension
+    public class ResizeWorkerItemExtension
     {
-        public static DIHelper AddResizeWorkerItemService(this DIHelper services)
+        public static void Register(DIHelper services)
         {
-            //WorkerQueueOptionsManager<ResizeWorkerItem> optionsQueue,
-            services.TryAddSingleton<WorkerQueueOptionsManager<ResizeWorkerItem>>();
-            services.TryAddSingleton<WorkerQueue<ResizeWorkerItem>>();
-            services.AddSingleton<IConfigureOptions<WorkerQueue<ResizeWorkerItem>>, ConfigureWorkerQueue<ResizeWorkerItem>>();
-
             services.AddWorkerQueue<ResizeWorkerItem>(2, (int)TimeSpan.FromSeconds(30).TotalMilliseconds, true, 1);
-            return services;
         }
     }
 }

@@ -32,7 +32,7 @@ using ASC.Files.Core.Security;
 
 namespace ASC.Files.Thirdparty.Sharpbox
 {
-    [Scope]
+    [Scope(Additional = typeof(SharpBoxDaoSelectorExtension))]
     internal class SharpBoxDaoSelector : RegexDaoSelectorBase<SharpBoxProviderInfo>, IDaoSelector
     {
         protected internal override string Name { get => "SharpBox"; }
@@ -61,6 +61,17 @@ namespace ASC.Files.Thirdparty.Sharpbox
         public ISecurityDao<string> GetSecurityDao(string id)
         {
             return base.GetSecurityDao<SharpBoxSecurityDao>(id);
+        }
+    }
+
+    public class SharpBoxDaoSelectorExtension
+    {
+        public static void Register(DIHelper services)
+        {
+            services.TryAdd<SharpBoxFileDao>();
+            services.TryAdd<SharpBoxFolderDao>();
+            services.TryAdd<SharpBoxTagDao>();
+            services.TryAdd<SharpBoxSecurityDao>();
         }
     }
 }

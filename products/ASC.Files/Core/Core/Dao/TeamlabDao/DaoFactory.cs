@@ -88,6 +88,8 @@ namespace ASC.Files.Core.Data
 
             services.TryAdd<ITagDao<int>, TagDao<int>>();
             services.TryAdd<ITagDao<string>, ProviderTagDao>();
+
+            // AddSharpBoxDaoSelectorService
         }
     }
 }

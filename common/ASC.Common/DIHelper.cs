@@ -187,7 +187,10 @@ namespace ASC.Common
 
                                 if (b != null && b.IsGenericType)
                                 {
-                                    c = a1.MakeGenericType(b.GetGenericTypeDefinition().MakeGenericType(service.GetGenericArguments()));
+                                    var b1 = b.GetGenericTypeDefinition().MakeGenericType(service.GetGenericArguments());
+
+                                    TryAdd(b1);
+                                    c = a1.MakeGenericType(b1);
                                 }
                                 else
                                 {
@@ -316,7 +319,7 @@ namespace ASC.Common
                 if (!Singleton.Contains(serviceName))
                 {
                     Singleton.Add(serviceName);
-                    ServiceCollection.TryAddSingleton(service, implementation);
+                    ServiceCollection.AddSingleton(service, implementation);
                     return true;
                 }
             }

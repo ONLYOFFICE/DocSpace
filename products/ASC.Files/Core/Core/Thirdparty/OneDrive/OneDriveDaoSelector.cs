@@ -32,7 +32,7 @@ using ASC.Files.Core.Security;
 
 namespace ASC.Files.Thirdparty.OneDrive
 {
-    [Scope]
+    [Scope(Additional = typeof(OneDriveDaoSelectorExtension))]
     internal class OneDriveDaoSelector : RegexDaoSelectorBase<OneDriveProviderInfo>, IDaoSelector
     {
         protected internal override string Name { get => "OneDrive"; }
@@ -61,6 +61,17 @@ namespace ASC.Files.Thirdparty.OneDrive
         public ISecurityDao<string> GetSecurityDao(string id)
         {
             return base.GetSecurityDao<OneDriveSecurityDao>(id);
+        }
+    }
+
+    public class OneDriveDaoSelectorExtension
+    {
+        public static void Register(DIHelper services)
+        {
+            services.TryAdd<OneDriveFileDao>();
+            services.TryAdd<OneDriveFolderDao>();
+            services.TryAdd<OneDriveTagDao>();
+            services.TryAdd<OneDriveSecurityDao>();
         }
     }
 }
