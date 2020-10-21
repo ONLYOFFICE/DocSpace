@@ -634,26 +634,8 @@ class AvatarEditorBody extends React.Component {
                         onImageReady={this.onImageReady}
                       />
                       <Box className="editor-buttons">
-                        <IconButton
-                          size="16"
-                          isDisabled={false}
-                          onClick={this.onRotateLeftClick}
-                          iconName={"RotateLeftIcon"}
-                          isFill={true}
-                          isClickable={false}
-                          color="#FFFFFF"
-                          className="editor-button"
-                        />
-                        <IconButton
-                          size="16"
-                          isDisabled={false}
-                          onClick={this.onRotateRightClick}
-                          iconName={"RotateRightIcon"}
-                          isFill={true}
-                          isClickable={false}
-                          color="#FFFFFF"
-                          className="editor-button"
-                        />
+                        <Box></Box>
+                        <Box></Box>
                         <Box></Box>
                         <Box></Box>
                         <Box></Box>
