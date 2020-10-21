@@ -66,13 +66,14 @@ namespace ASC.Api.Core
                     });
             }
 
+            DIHelper.TryAdd<DisposeMiddleware>();
             DIHelper.TryAdd<CultureMiddleware>();
             DIHelper.TryAdd<IpSecurityFilter>();
             DIHelper.TryAdd<PaymentFilter>();
             DIHelper.TryAdd<ProductSecurityFilter>();
             DIHelper.TryAdd<TenantStatusFilter>();
 
-            services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+            DIHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
 
             var builder = services.AddMvcCore(config =>
             {

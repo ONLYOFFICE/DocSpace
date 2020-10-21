@@ -6,6 +6,8 @@ using System.Reflection;
 using ASC.Common.Threading.Progress;
 using ASC.Common.Threading.Workers;
 
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
@@ -268,6 +270,7 @@ namespace ASC.Common
 
         private bool Register(Type service)
         {
+            if (service.IsSubclassOf(typeof(ControllerBase)) || service.GetInterfaces().Contains(typeof(IResourceFilter))) return true;
             var c = service.GetCustomAttribute<DIAttribute>();
             var serviceName = $"{service}";
             if (c is ScopeAttribute)
@@ -303,6 +306,7 @@ namespace ASC.Common
 
         private bool Register(Type service, Type implementation)
         {
+            if (service.IsSubclassOf(typeof(ControllerBase)) || service.GetInterfaces().Contains(typeof(IResourceFilter))) return true;
             var c = service.IsGenericType && service.GetGenericTypeDefinition() == typeof(IConfigureOptions<>) && implementation != null ? implementation.GetCustomAttribute<DIAttribute>() : service.GetCustomAttribute<DIAttribute>();
             var serviceName = $"{service}{implementation}";
             if (c is ScopeAttribute)

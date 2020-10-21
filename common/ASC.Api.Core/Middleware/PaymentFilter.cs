@@ -2,6 +2,7 @@
 using System.Net;
 using System.Web;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Web.Api.Routing;
 using ASC.Web.Studio.Utility;
@@ -13,6 +14,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Api.Core.Middleware
 {
+    [Scope]
     public class PaymentFilter : IResourceFilter
     {
         private readonly ILog log;

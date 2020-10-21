@@ -16,6 +16,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Common.Caching
 {
+    [Singletone]
     public class KafkaCache<T> : IDisposable, ICacheNotify<T> where T : IMessage<T>, new()
     {
         private ClientConfig ClientConfig { get; set; }

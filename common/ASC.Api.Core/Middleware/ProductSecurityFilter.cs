@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Reflection;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Notify.Engine;
 using ASC.Core;
@@ -16,6 +17,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Api.Core.Middleware
 {
+    [Scope]
     public class ProductSecurityFilter : IResourceFilter
     {
         private static readonly IDictionary<string, Guid> products;
