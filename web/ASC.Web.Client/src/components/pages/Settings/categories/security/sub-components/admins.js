@@ -58,7 +58,9 @@ const ToggleContentContainer = styled.div`
       margin-left: 0px;
     }
   }
-
+  .cross_icon {
+    margin-right: 8px;
+  }
   .people-admin_container {
     margin-right: 16px;
     position: relative;
@@ -524,13 +526,19 @@ class PureAdminsSettings extends Component {
                   descriptionText={t("NotFoundDescription")}
                   buttons={
                     <>
-                      <Icons.CrossIcon
-                        size="small"
-                        style={{ marginRight: "4px" }}
+                      <IconButton
+                        className="cross_icon"
+                        size="12"
+                        onClick={this.onResetFilter}
+                        iconName="CrossIcon"
+                        isFill
+                        color="#657077"
                       />
                       <Link
                         type="action"
                         isHovered={true}
+                        fontWeight="600"
+                        color="#555f65"
                         onClick={this.onResetFilter}
                       >
                         {t("ClearButton")}

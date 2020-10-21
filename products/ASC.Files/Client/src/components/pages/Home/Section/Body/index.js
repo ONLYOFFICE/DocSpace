@@ -8,10 +8,10 @@ import copy from "copy-to-clipboard";
 import styled from "styled-components";
 import queryString from "query-string";
 import {
-  IconButton,
   Row,
   RowContainer,
   Link,
+  IconButton,
   DragAndDrop,
   Box,
   Text,
@@ -49,7 +49,8 @@ import {
   setSelected,
   setSelection,
   setTreeFolders,
-  getFileInfo
+  getFileInfo,
+  addFileToRecentlyViewed
 } from "../../../../../store/files/actions";
 import {
   getCurrentFolderCount,
@@ -80,6 +81,7 @@ import {
   getIsShareFolder,
   getIsCommonFolder,
   getIsRecycleBinFolder,
+  getIsRecentFolder,
   getIsMyFolder,
   getIsFavoritesFolder,
   getMyFolderId,
@@ -215,6 +217,12 @@ class SectionBodyContent extends React.Component {
     }
 
     return false;
+  }
+
+  onOpenLocation = () => {
+    const item = this.props.selection[0];
+    const { folderId, checked } = this.props.selection[0];
+    return this.props.fetchFiles(folderId).then(() => this.onContentRowSelect(!checked, item));
   }
 
   onClickFavorite = e => {
@@ -422,9 +430,16 @@ class SectionBodyContent extends React.Component {
     return window.open(this.props.selection[0].viewUrl, "_blank");
   };
 
+  openDocEditor = (id) => {
+    return this.props.addFileToRecentlyViewed(id)
+    .then(() => console.log("Pushed to recently viewed"))
+    .catch(e => console.error(e))
+    .finally(window.open(`./doceditor?fileId=${id}`, "_blank"));
+  };
+
   onClickLinkEdit = (e) => {
     const id = e.currentTarget.dataset.id;
-    return window.open(`./doceditor?fileId=${id}`, "_blank");
+    return this.openDocEditor(id)
   };
 
   showVersionHistory = (e) => {
@@ -532,6 +547,14 @@ class SectionBodyContent extends React.Component {
         case "separator1":
         case "separator2":
           return { key: option, isSeparator: true };
+        case "open-location":
+          return {
+            key: option,
+            label: t("OpenLocation"),
+            icon: "DownloadAsIcon",
+            onClick: this.onOpenLocation,
+            disabled: false
+          };
         case "mark-as-favorite":
           return {
             key: option,
@@ -746,29 +769,25 @@ class SectionBodyContent extends React.Component {
   };
 
   renderEmptyRootFolderContainer = () => {
-    const { isMy, isShare, isCommon, isRecycleBin, isFavorites, title, t } = this.props;
+    const { isMy, isShare, isCommon, isRecycleBin, isFavorites, isRecent, title, t } = this.props;
     const subheadingText = t("SubheadingEmptyText");
     const myDescription = t("MyEmptyContainerDescription");
     const shareDescription = t("SharedEmptyContainerDescription");
     const commonDescription = t("CommonEmptyContainerDescription");
     const trashDescription = t("TrashEmptyContainerDescription");
     const favoritesDescription = t("FavoritesEmptyContainerDescription");
+    const recentDescription = t("RecentEmptyContainerDescription");
 
     const commonButtons = (
       <>
         <div className="empty-folder_container-links">
-          <Link
+          <img
             className="empty-folder_container_plus-image"
-            color="#83888d"
-            fontSize="26px"
-            fontWeight="800"
-            noHover
+            src="images/plus.svg"
             data-format="docx"
             onClick={this.onCreate}
-          >
-            +
-          </Link>
-
+            alt="plus_icon"
+          />
           <Box className="flex-wrapper_container">
             <Link data-format="docx" onClick={this.onCreate} {...linkStyles}>
               {t("Document")},
@@ -783,16 +802,12 @@ class SectionBodyContent extends React.Component {
         </div>
 
         <div className="empty-folder_container-links">
-          <Link
+          <img
             className="empty-folder_container_plus-image"
-            color="#83888d"
-            fontSize="26px"
-            fontWeight="800"
+            src="images/plus.svg"
             onClick={this.onCreate}
-            noHover
-          >
-            +
-          </Link>
+            alt="plus_icon"
+          />
           <Link {...linkStyles} onClick={this.onCreate}>
             {t("Folder")}
           </Link>
@@ -805,6 +820,7 @@ class SectionBodyContent extends React.Component {
         <img
           className="empty-folder_container_up-image"
           src="images/empty_screen_people.svg"
+          width= "12px"
           alt=""
           onClick={this.onGoToMyDocuments}
         />
@@ -862,6 +878,15 @@ class SectionBodyContent extends React.Component {
           imageSrc="images/empty_screen_favorites.png"
         />
       );
+    } else if (isRecent) {
+      return (
+        <EmptyFolderContainer
+          headerText={title}
+          subheadingText={subheadingText}
+          descriptionText={recentDescription}
+          imageSrc="images/empty_screen_recent.png"
+        />
+      );
     } else {
       return;
     }
@@ -872,18 +897,13 @@ class SectionBodyContent extends React.Component {
     const buttons = (
       <>
         <div className="empty-folder_container-links">
-          <Link
+          <img
             className="empty-folder_container_plus-image"
-            color="#83888d"
-            fontSize="26px"
-            fontWeight="800"
-            noHover
+            src="images/plus.svg"
             data-format="docx"
             onClick={this.onCreate}
-          >
-            +
-          </Link>
-
+            alt="plus_icon"
+          />
           <Box className="flex-wrapper_container">
             <Link data-format="docx" onClick={this.onCreate} {...linkStyles}>
               {t("Document")},
@@ -898,16 +918,12 @@ class SectionBodyContent extends React.Component {
         </div>
 
         <div className="empty-folder_container-links">
-          <Link
+          <img
             className="empty-folder_container_plus-image"
-            color="#83888d"
-            fontSize="26px"
-            fontWeight="800"
+            src="images/plus.svg"
             onClick={this.onCreate}
-            noHover
-          >
-            +
-          </Link>
+            alt="plus_icon"
+          />
           <Link {...linkStyles} onClick={this.onCreate}>
             {t("Folder")}
           </Link>
@@ -918,8 +934,9 @@ class SectionBodyContent extends React.Component {
             className="empty-folder_container_up-image"
             src="images/up.svg"
             onClick={this.onBackToParentFolder}
-            alt=""
+            alt="up_icon"
           />
+
           <Link onClick={this.onBackToParentFolder} {...linkStyles}>
             {t("BackToParentFolderButton")}
           </Link>
@@ -949,10 +966,10 @@ class SectionBodyContent extends React.Component {
           onClick={this.onResetFilter}
           iconName="CrossIcon"
           isFill
-          color="A3A9AE"
+          color="#657077"
         />
         <Link onClick={this.onResetFilter} {...linkStyles}>
-          {this.props.t("ClearButton")}
+          {t("ClearButton")}
         </Link>
       </div>
     );
@@ -1340,7 +1357,7 @@ class SectionBodyContent extends React.Component {
       filesList,
       mediaViewerImageFormats,
       mediaViewerMediaFormats,
-      tooltipValue,
+      tooltipValue
     } = this.props;
 
     const {
@@ -1487,6 +1504,7 @@ class SectionBodyContent extends React.Component {
                       culture={settings.culture}
                       onEditComplete={this.onEditComplete}
                       onMediaFileClick={this.onMediaFileClick}
+                      openDocEditor={this.openDocEditor}
                     />
                   </Tile>
                 </DragAndDrop>
@@ -1558,6 +1576,7 @@ class SectionBodyContent extends React.Component {
                       onEditComplete={this.onEditComplete}
                       onMediaFileClick={this.onMediaFileClick}
                       onClickFavorite={this.onClickFavorite}
+                      openDocEditor={this.openDocEditor}
                     />
                   </SimpleFilesRow>
                 </DragAndDrop>
@@ -1619,6 +1638,7 @@ const mapStateToProps = (state) => {
     isLoading: getIsLoading(state),
     isMy: getIsMyFolder(state),
     isRecycleBin: getIsRecycleBinFolder(state),
+    isRecent: getIsRecentFolder(state),
     isShare: getIsShareFolder(state),
     mediaViewerImageFormats: getMediaViewerImageFormats(state),
     mediaViewerMediaFormats: getMediaViewerMediaFormats(state),
@@ -1656,5 +1676,6 @@ export default connect(mapStateToProps, {
   markItemAsFavorite,
   removeItemFromFavorite,
   fetchFavoritesFolder,
-  getFileInfo
+  getFileInfo,
+  addFileToRecentlyViewed
 })(withRouter(withTranslation()(SectionBodyContent)));

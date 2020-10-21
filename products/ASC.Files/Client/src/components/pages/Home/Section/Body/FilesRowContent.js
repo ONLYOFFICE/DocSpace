@@ -152,7 +152,7 @@ class FilesRowContent extends React.PureComponent {
   };
 
   createItem = (e) => {
-    const { createFile, createFolder, item, setIsLoading } = this.props;
+    const { createFile, createFolder, item, setIsLoading, openDocEditor } = this.props;
     const { itemTitle } = this.state;
 
     setIsLoading(true);
@@ -161,15 +161,13 @@ class FilesRowContent extends React.PureComponent {
 
     if (itemTitle.trim() === "") return this.completeAction(itemId);
 
-    let newTab = item.fileExst ? window.open("about:blank", "_blank") : null;
-
     !item.fileExst
       ? createFolder(item.parentId, itemTitle)
           .then(() => this.completeAction(itemId))
           .finally(() => setIsLoading(false))
       : createFile(item.parentId, `${itemTitle}.${item.fileExst}`)
           .then((file) => {
-            newTab.location = file.webUrl;
+            openDocEditor(file.id);
             this.completeAction(itemId);
           })
           .finally(() => setIsLoading(false));
@@ -220,6 +218,7 @@ class FilesRowContent extends React.PureComponent {
       canWebEdit,
       item,
       isTrashFolder,
+      openDocEditor
     } = this.props;
     const { id, fileExst, viewUrl } = item;
 
@@ -241,7 +240,7 @@ class FilesRowContent extends React.PureComponent {
         .finally(() => setIsLoading(false));
     } else {
       if (canWebEdit) {
-        return window.open(`./doceditor?fileId=${id}`, "_blank");
+        return openDocEditor(id);
       }
 
       if (isImage || isSound || isVideo) {
