@@ -48,7 +48,10 @@ export function getFoldersTree() {
     "@my",
     "@share",
     "@common",
-    /*'@projects',*/ "@trash",
+    /*'@projects',*/
+    "@favorites",
+    "@recent",
+    "@trash"
   ]; //TODO: need get from settings
   const requestsArray = rootFoldersPaths.map((path) =>
     request({ method: "get", url: `/files/${path}?filterType=2` })
@@ -103,6 +106,15 @@ export function getCommonFolderList(filter = FilesFilter.getDefault()) {
   return request(options);
 }
 
+export function getFavoritesFolderList(filter = FilesFilter.getDefault()) {
+  const options = {
+    method: "get",
+    url: `/files/@favorites`
+  };
+
+  return request(options);
+}
+
 export function getProjectsFolderList(filter = FilesFilter.getDefault()) {
   const options = {
     method: "get",
@@ -125,6 +137,15 @@ export function getSharedFolderList(filter = FilesFilter.getDefault()) {
   const options = {
     method: "get",
     url: `/files/@share`,
+  };
+
+  return request(options);
+}
+
+export function getRecentFolderList(filter = FilesFilter.getDefault()) {
+  const options = {
+    method: "get",
+    url: `/files/@recent`
   };
 
   return request(options);
@@ -255,6 +276,17 @@ export function updateFile(fileId, title, lastVersion) {
     method: "put",
     url: `/files/file/${fileId}`,
     data,
+  };
+
+  return request(options);
+}
+
+export function addFileToRecentlyViewed(fileId) {
+  const data = { fileId };
+  const options = {
+    method: "post",
+    url: `/files/file/${fileId}/recent`,
+    data
   };
 
   return request(options);
@@ -462,7 +494,31 @@ export function thirdParty(val) {
 }
 
 export function getSettingsFiles() {
-  return request({ method: "get", url: `/files/settings` });
+  return request({ method: "get", url: `/files/settings` }); 
+}
+
+export function markAsFavorite(ids) {
+  let items = ids.map(id => +id)
+  const data = { fileIds: items };
+  const options = {
+    method: "post",
+    url: "/files/favorites",
+    data
+  };
+
+  return request(options);
+}
+
+export function removeFromFavorite(ids) {
+  let items = ids.map(id => +id)
+  const data = { fileIds: items };
+  const options = {
+    method: "delete",
+    url: "/files/favorites",
+    data
+  };
+
+  return request(options);
 }
 
 export function getDocServiceUrl() {

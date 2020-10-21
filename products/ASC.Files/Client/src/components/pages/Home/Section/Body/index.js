@@ -8,10 +8,10 @@ import copy from "copy-to-clipboard";
 import styled from "styled-components";
 import queryString from "query-string";
 import {
-  IconButton,
   Row,
   RowContainer,
   Link,
+  IconButton,
   DragAndDrop,
   Box,
   Text,
@@ -32,7 +32,11 @@ import {
 } from "asc-web-common";
 import {
   clearProgressData,
+  markItemAsFavorite,
+  removeItemFromFavorite,
+  fetchFavoritesFolder,
   deselectFile,
+  updateFile,
   fetchFiles,
   selectFile,
   setAction,
@@ -45,7 +49,8 @@ import {
   setSelected,
   setSelection,
   setTreeFolders,
-  loopFilesOperations,
+  getFileInfo,
+  addFileToRecentlyViewed
 } from "../../../../../store/files/actions";
 import {
   getCurrentFolderCount,
@@ -76,7 +81,9 @@ import {
   getIsShareFolder,
   getIsCommonFolder,
   getIsRecycleBinFolder,
+  getIsRecentFolder,
   getIsMyFolder,
+  getIsFavoritesFolder,
   getMyFolderId,
   getTooltipLabel,
 } from "../../../../../store/files/selectors";
@@ -171,16 +178,16 @@ class SectionBodyContent extends React.Component {
     document.removeEventListener("dragleave", this.onDragLeaveDoc);
   }
 
-  /* componentDidUpdate(prevProps, prevState) {
-    Object.entries(this.props).forEach(([key, val]) =>
-      prevProps[key] !== val && console.log(`Prop '${key}' changed`)
-    );
-    if (this.state) {
-      Object.entries(this.state).forEach(([key, val]) =>
-        prevState[key] !== val && console.log(`State '${key}' changed`)
-      );
-    }
-  } */
+  // componentDidUpdate(prevProps, prevState) {
+  //   Object.entries(this.props).forEach(([key, val]) =>
+  //     prevProps[key] !== val && console.log(`Prop '${key}' changed`)
+  //   );
+  //   if (this.state) {
+  //     Object.entries(this.state).forEach(([key, val]) =>
+  //       prevState[key] !== val && console.log(`State '${key}' changed`)
+  //     );
+  //   }
+  // } 
 
   shouldComponentUpdate(nextProps, nextState) {
     if (this.props && this.props.firstLoad) return true;
@@ -210,6 +217,41 @@ class SectionBodyContent extends React.Component {
     }
 
     return false;
+  }
+
+  onOpenLocation = () => {
+    const item = this.props.selection[0];
+    const { folderId, checked } = this.props.selection[0];
+    return this.props.fetchFiles(folderId).then(() => this.onContentRowSelect(!checked, item));
+  }
+
+  onClickFavorite = e => {
+    const { markItemAsFavorite,
+      removeItemFromFavorite,
+      getFileInfo,
+      fetchFavoritesFolder,
+      isFavorites,
+      selectedFolderId,
+      //selection,
+      t } = this.props;
+    const { action, id } = e.currentTarget.dataset;
+    //let data = selection.map(item => item.id)
+    switch (action) {
+      case "mark":
+        return markItemAsFavorite([id])
+          .then(() => getFileInfo(id))
+          .then(() => toastr.success(t("MarkedAsFavorite")))
+          .catch(e => toastr.error(e));
+      case "remove":
+        return removeItemFromFavorite([id])
+          .then(() => {
+            return isFavorites ? fetchFavoritesFolder(selectedFolderId) : getFileInfo(id)
+          })
+          .then(() => toastr.success(t("RemovedFromFavorites")))
+          .catch(e => toastr.error(e));
+      default:
+        return;
+    }
   }
 
   onClickRename = () => {
@@ -388,9 +430,16 @@ class SectionBodyContent extends React.Component {
     return window.open(this.props.selection[0].viewUrl, "_blank");
   };
 
+  openDocEditor = (id) => {
+    return this.props.addFileToRecentlyViewed(id)
+    .then(() => console.log("Pushed to recently viewed"))
+    .catch(e => console.error(e))
+    .finally(window.open(`./doceditor?fileId=${id}`, "_blank"));
+  };
+
   onClickLinkEdit = (e) => {
     const id = e.currentTarget.dataset.id;
-    return window.open(`./doceditor?fileId=${id}`, "_blank");
+    return this.openDocEditor(id)
   };
 
   showVersionHistory = (e) => {
@@ -498,6 +547,25 @@ class SectionBodyContent extends React.Component {
         case "separator1":
         case "separator2":
           return { key: option, isSeparator: true };
+        case "open-location":
+          return {
+            key: option,
+            label: t("OpenLocation"),
+            icon: "DownloadAsIcon",
+            onClick: this.onOpenLocation,
+            disabled: false
+          };
+        case "mark-as-favorite":
+          return {
+            key: option,
+            label: t("MarkAsFavorite"),
+            icon: "FavoritesIcon",
+            onClick: this.onClickFavorite,
+            disabled: false,
+            "data-action": "mark",
+            "data-id": item.id,
+            "data-title": item.title
+          };
         case "block-unblock-version":
           return {
             key: option,
@@ -603,6 +671,17 @@ class SectionBodyContent extends React.Component {
             onClick: this.onClickDelete,
             disabled: false,
           };
+        case "remove-from-favorites":
+          return {
+            key: option,
+            label: t("RemoveFromFavorites"),
+            icon: "FavoritesIcon",
+            onClick: this.onClickFavorite,
+            disabled: false,
+            "data-action": "remove",
+            "data-id": item.id,
+            "data-title": item.title
+          };
         default:
           break;
       }
@@ -690,28 +769,25 @@ class SectionBodyContent extends React.Component {
   };
 
   renderEmptyRootFolderContainer = () => {
-    const { isMy, isShare, isCommon, isRecycleBin, title, t } = this.props;
+    const { isMy, isShare, isCommon, isRecycleBin, isFavorites, isRecent, title, t } = this.props;
     const subheadingText = t("SubheadingEmptyText");
     const myDescription = t("MyEmptyContainerDescription");
     const shareDescription = t("SharedEmptyContainerDescription");
     const commonDescription = t("CommonEmptyContainerDescription");
     const trashDescription = t("TrashEmptyContainerDescription");
+    const favoritesDescription = t("FavoritesEmptyContainerDescription");
+    const recentDescription = t("RecentEmptyContainerDescription");
 
     const commonButtons = (
       <>
         <div className="empty-folder_container-links">
-          <Link
+          <img
             className="empty-folder_container_plus-image"
-            color="#83888d"
-            fontSize="26px"
-            fontWeight="800"
-            noHover
+            src="images/plus.svg"
             data-format="docx"
             onClick={this.onCreate}
-          >
-            +
-          </Link>
-
+            alt="plus_icon"
+          />
           <Box className="flex-wrapper_container">
             <Link data-format="docx" onClick={this.onCreate} {...linkStyles}>
               {t("Document")},
@@ -726,16 +802,12 @@ class SectionBodyContent extends React.Component {
         </div>
 
         <div className="empty-folder_container-links">
-          <Link
+          <img
             className="empty-folder_container_plus-image"
-            color="#83888d"
-            fontSize="26px"
-            fontWeight="800"
+            src="images/plus.svg"
             onClick={this.onCreate}
-            noHover
-          >
-            +
-          </Link>
+            alt="plus_icon"
+          />
           <Link {...linkStyles} onClick={this.onCreate}>
             {t("Folder")}
           </Link>
@@ -748,6 +820,7 @@ class SectionBodyContent extends React.Component {
         <img
           className="empty-folder_container_up-image"
           src="images/empty_screen_people.svg"
+          width= "12px"
           alt=""
           onClick={this.onGoToMyDocuments}
         />
@@ -796,6 +869,24 @@ class SectionBodyContent extends React.Component {
           buttons={trashButtons}
         />
       );
+    } else if (isFavorites) {
+      return (
+        <EmptyFolderContainer
+          headerText={title}
+          subheadingText={subheadingText}
+          descriptionText={favoritesDescription}
+          imageSrc="images/empty_screen_favorites.png"
+        />
+      );
+    } else if (isRecent) {
+      return (
+        <EmptyFolderContainer
+          headerText={title}
+          subheadingText={subheadingText}
+          descriptionText={recentDescription}
+          imageSrc="images/empty_screen_recent.png"
+        />
+      );
     } else {
       return;
     }
@@ -806,18 +897,13 @@ class SectionBodyContent extends React.Component {
     const buttons = (
       <>
         <div className="empty-folder_container-links">
-          <Link
+          <img
             className="empty-folder_container_plus-image"
-            color="#83888d"
-            fontSize="26px"
-            fontWeight="800"
-            noHover
+            src="images/plus.svg"
             data-format="docx"
             onClick={this.onCreate}
-          >
-            +
-          </Link>
-
+            alt="plus_icon"
+          />
           <Box className="flex-wrapper_container">
             <Link data-format="docx" onClick={this.onCreate} {...linkStyles}>
               {t("Document")},
@@ -832,16 +918,12 @@ class SectionBodyContent extends React.Component {
         </div>
 
         <div className="empty-folder_container-links">
-          <Link
+          <img
             className="empty-folder_container_plus-image"
-            color="#83888d"
-            fontSize="26px"
-            fontWeight="800"
+            src="images/plus.svg"
             onClick={this.onCreate}
-            noHover
-          >
-            +
-          </Link>
+            alt="plus_icon"
+          />
           <Link {...linkStyles} onClick={this.onCreate}>
             {t("Folder")}
           </Link>
@@ -852,8 +934,9 @@ class SectionBodyContent extends React.Component {
             className="empty-folder_container_up-image"
             src="images/up.svg"
             onClick={this.onBackToParentFolder}
-            alt=""
+            alt="up_icon"
           />
+
           <Link onClick={this.onBackToParentFolder} {...linkStyles}>
             {t("BackToParentFolderButton")}
           </Link>
@@ -883,10 +966,10 @@ class SectionBodyContent extends React.Component {
           onClick={this.onResetFilter}
           iconName="CrossIcon"
           isFill
-          color="A3A9AE"
+          color="#657077"
         />
         <Link onClick={this.onResetFilter} {...linkStyles}>
-          {this.props.t("ClearButton")}
+          {t("ClearButton")}
         </Link>
       </div>
     );
@@ -1274,7 +1357,7 @@ class SectionBodyContent extends React.Component {
       filesList,
       mediaViewerImageFormats,
       mediaViewerMediaFormats,
-      tooltipValue,
+      tooltipValue
     } = this.props;
 
     const {
@@ -1421,6 +1504,7 @@ class SectionBodyContent extends React.Component {
                       culture={settings.culture}
                       onEditComplete={this.onEditComplete}
                       onMediaFileClick={this.onMediaFileClick}
+                      openDocEditor={this.openDocEditor}
                     />
                   </Tile>
                 </DragAndDrop>
@@ -1490,6 +1574,8 @@ class SectionBodyContent extends React.Component {
                       culture={settings.culture}
                       onEditComplete={this.onEditComplete}
                       onMediaFileClick={this.onMediaFileClick}
+                      onClickFavorite={this.onClickFavorite}
+                      openDocEditor={this.openDocEditor}
                     />
                   </SimpleFilesRow>
                 </DragAndDrop>
@@ -1547,9 +1633,11 @@ const mapStateToProps = (state) => {
     folders: getFolders(state),
     isAdmin: isAdmin(state),
     isCommon: getIsCommonFolder(state),
+    isFavorites: getIsFavoritesFolder(state),
     isLoading: getIsLoading(state),
     isMy: getIsMyFolder(state),
     isRecycleBin: getIsRecycleBinFolder(state),
+    isRecent: getIsRecentFolder(state),
     isShare: getIsShareFolder(state),
     mediaViewerImageFormats: getMediaViewerImageFormats(state),
     mediaViewerMediaFormats: getMediaViewerMediaFormats(state),
@@ -1571,6 +1659,7 @@ const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps, {
   deselectFile,
+  updateFile,
   fetchFiles,
   selectFile,
   setAction,
@@ -1584,5 +1673,9 @@ export default connect(mapStateToProps, {
   setUpdateTree,
   setIsLoading,
   clearProgressData,
-  loopFilesOperations,
+  markItemAsFavorite,
+  removeItemFromFavorite,
+  fetchFavoritesFolder,
+  getFileInfo,
+  addFileToRecentlyViewed
 })(withRouter(withTranslation()(SectionBodyContent)));

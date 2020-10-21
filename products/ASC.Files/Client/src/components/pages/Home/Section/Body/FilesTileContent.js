@@ -210,6 +210,7 @@ class FilesTileContent extends React.PureComponent {
       onMediaFileClick,
       fetchFiles,
       canWebEdit,
+      openDocEditor
     } = this.props;
     if (!fileExst) {
       setIsLoading(true);
@@ -226,7 +227,7 @@ class FilesTileContent extends React.PureComponent {
         .finally(() => setIsLoading(false));
     } else {
       if (canWebEdit) {
-        return window.open(`./doceditor?fileId=${id}`, "_blank");
+        return openDocEditor(id);
       }
 
       const isOpenMedia =

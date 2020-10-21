@@ -591,10 +591,12 @@ export const isMediaOrImage = (fileExst) => {
   );
 };
 
-const getFilesContextOptions = (item, isRecycleBin, canOpenPlayer) => {
+const getFilesContextOptions = (item, isRecycleBin, isRecent, canOpenPlayer) => {
   const options = [];
 
   const isFile = !!item.fileExst;
+  const isFavorite = item.fileStatus === 32;
+  
 
   if (item.id <= 0) return [];
 
@@ -619,6 +621,12 @@ const getFilesContextOptions = (item, isRecycleBin, canOpenPlayer) => {
       options.push("finalize-version");
       options.push("block-unblock-version");
       options.push("separator1");
+       if (isRecent) {
+        options.push("open-location")
+      }
+       if (!isFavorite) {
+        options.push("mark-as-favorite");
+      }
 
       if (canOpenPlayer) {
         options.push("view");
@@ -640,6 +648,10 @@ const getFilesContextOptions = (item, isRecycleBin, canOpenPlayer) => {
     options.push("rename");
     options.push("delete");
   }
+  if (isFavorite && !isRecycleBin) {
+    options.push("remove-from-favorites");
+  }
+
   return options;
 };
 
@@ -674,6 +686,14 @@ const getRecycleBinFolder = createSelector(getTreeFolders, (treeFolders) => {
   return treeFolders.find((x) => x.rootFolderName === "@trash");
 });
 
+const getFavoritesFolder = createSelector(getTreeFolders, (treeFolders) => {
+  return treeFolders.find((x) => x.rootFolderName === "@favorites");
+});
+
+const getRecentFolder = createSelector(getTreeFolders, (treeFolders) => {
+  return treeFolders.find((x) => x.rootFolderName === "@recent");
+});
+
 export const getMyFolderId = createSelector(getMyFolder, (myFolder) => {
   if (myFolder) return myFolder.id;
 });
@@ -696,6 +716,20 @@ export const getRecycleBinFolderId = createSelector(
   getRecycleBinFolder,
   (recycleBinFolder) => {
     if (recycleBinFolder) return recycleBinFolder.id;
+  }
+);
+
+export const getFavoritesFolderId = createSelector(
+  getFavoritesFolder,
+  (favoritesFolder) => {
+    if (favoritesFolder) return favoritesFolder.id;
+  }
+);
+
+export const getRecentFolderId = createSelector(
+  getRecentFolder,
+  (recentFolder) => {
+    if (recentFolder) return recentFolder.id;
   }
 );
 
@@ -731,14 +765,30 @@ export const getIsRecycleBinFolder = createSelector(
   }
 );
 
+export const getIsFavoritesFolder = createSelector(
+  getFavoritesFolder,
+  getSelectedFolderId,
+  (favoritesFolder, id) => {
+    return favoritesFolder && favoritesFolder.id === id;
+  }
+);
+
+export const getIsRecentFolder = createSelector(
+  getRecentFolder,
+  getSelectedFolderId,
+  (recentFolder, id) => {
+    return recentFolder && recentFolder.id === id;
+  }
+);
+
 export const getFileActionId = (state) => {
   return state.files.fileAction.id;
 };
 
 export const getFilesList = (state) => {
   return createSelector(
-    [getItemsList, getSelection, getIsRecycleBinFolder, getFileActionId],
-    (items, selection, isRecycleBin, actionId) => {
+    [getItemsList, getSelection, getIsRecycleBinFolder, getIsRecentFolder, getFileActionId],
+    (items, selection, isRecycleBin, isRecent, actionId) => {
       return items.map((item) => {
         const {
           access,
@@ -771,6 +821,7 @@ export const getFilesList = (state) => {
         const contextOptions = getFilesContextOptions(
           item,
           isRecycleBin,
+          isRecent,
           canOpenPlayer
         );
         const checked = isFileSelected(selection, id, parentId);
