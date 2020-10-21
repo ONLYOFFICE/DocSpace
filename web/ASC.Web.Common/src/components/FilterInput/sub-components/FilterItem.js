@@ -14,7 +14,20 @@ import isEqual from "lodash/isEqual";
 class FilterItem extends React.Component {
   constructor(props) {
     super(props);
-    const { id, selectedItem, typeSelector } = props;
+
+    const selectedOption = this.getSelectedOption();
+    const isOpenSelector = Boolean(selectedOption.key);
+
+    this.state = {
+      id: props.id,
+      isOpen: false,
+      isOpenSelector: !isOpenSelector,
+      selectedOption,
+    };
+  }
+
+  getSelectedOption = () => {
+    const { selectedItem, typeSelector, id, label } = this.props;
 
     const selectedOption =
       selectedItem &&
@@ -24,41 +37,30 @@ class FilterItem extends React.Component {
             key: selectedItem.key,
             label: selectedItem.label,
           }
-        : {
+        : typeSelector
+        ? {
             key: null,
             label: this.props.defaultSelectLabel,
             default: true,
-          };
-
-    const isOpenSelector = Boolean(selectedOption.key);
-
-    this.state = {
-      id,
-      isOpen: false,
-      isOpenSelector: !isOpenSelector,
-      selectedOption,
-    };
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    const { selectedItem, defaultSelectLabel } = this.props;
-
-    if (
-      selectedItem &&
-      selectedItem.key !== this.state.selectedOption.key &&
-      selectedItem.key !== this.state.selectedOption.key &&
-      selectedItem.key !== prevProps.selectedItem.key
-    ) {
-      const selectedOption = selectedItem.key
-        ? {
-            key: selectedItem.key,
-            label: selectedItem.label,
           }
         : {
-            key: null,
-            label: defaultSelectLabel,
-            default: true,
+            key: id,
+            label,
           };
+
+    return selectedOption;
+  };
+
+  componentDidUpdate(prevProps) {
+    const { selectedItem } = this.props;
+
+    const selectedOption = this.getSelectedOption();
+    if (
+      (selectedItem &&
+        selectedItem.key !== this.state.selectedOption.key &&
+        selectedItem.key !== prevProps.selectedItem.key) ||
+      selectedOption.key !== this.state.selectedOption.key
+    ) {
       const isOpenSelector = Boolean(selectedOption.key);
       this.setState({
         isOpenSelector: !isOpenSelector,
@@ -75,6 +77,7 @@ class FilterItem extends React.Component {
   }
 
   onSelect = (option) => {
+    const { setShowHiddenFilter, onSelectFilterItem } = this.props;
     const { group, key, label, inSubgroup } = option;
     const filterItem = {
       key: group + "_" + key,
@@ -82,8 +85,9 @@ class FilterItem extends React.Component {
       group,
       inSubgroup: !!inSubgroup,
     };
-    this.props.setShowHiddenFilter && this.props.setShowHiddenFilter(false);
-    this.props.onSelectFilterItem(filterItem);
+    this.setState({ selectedOption: filterItem });
+    setShowHiddenFilter && setShowHiddenFilter(false);
+    onSelectFilterItem(filterItem);
   };
 
   onClick = () => {
@@ -91,9 +95,17 @@ class FilterItem extends React.Component {
     !isDisabled && onClose(id);
   };
 
-  toggleCombobox = (e, isOpen) => this.setState({ isOpen });
+  toggleCombobox = (e, isOpen) => {
+    const { onClose, id } = this.props;
+    if (id.indexOf("_-1") !== -1) {
+      onClose(id);
+    } else {
+      this.setState({ isOpen });
+    }
+  };
 
   onCancelSelector = (e) => {
+    const { id, onClose } = this.props;
     if (
       this.state.isOpenSelector &&
       (e.target.id === "filter-selector_button" ||
@@ -102,7 +114,12 @@ class FilterItem extends React.Component {
       // Skip double set of isOpen property
       return;
     }
-    this.setState({ isOpenSelector: false });
+
+    if (id.indexOf("_-1") !== -1) {
+      onClose(id);
+    } else {
+      this.setState({ isOpenSelector: false });
+    }
   };
 
   onSelectGroup = (selected) => {
@@ -146,8 +163,6 @@ class FilterItem extends React.Component {
   };
 
   render() {
-    //console.log("FilterItem render");
-
     const { id, isOpen, isOpenSelector, selectedOption } = this.state;
 
     const {
@@ -227,10 +242,7 @@ class FilterItem extends React.Component {
                   options={groupItems}
                   isDisabled={isDisabled}
                   onSelect={this.onSelect}
-                  selectedOption={{
-                    key: id,
-                    label,
-                  }}
+                  selectedOption={selectedOption}
                   size="content"
                   scaled={false}
                   noBorder={true}
@@ -274,6 +286,7 @@ FilterItem.propTypes = {
   defaultOption: PropTypes.object,
   selectedItem: PropTypes.object,
   defaultSelectLabel: PropTypes.string,
+  setShowHiddenFilter: PropTypes.func,
 };
 
 export default FilterItem;

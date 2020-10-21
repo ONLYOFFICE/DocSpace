@@ -19,6 +19,7 @@ const StyledSection = styled.section`
   flex-grow: 1;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 
   .layout-progress-bar {
     bottom: 0;

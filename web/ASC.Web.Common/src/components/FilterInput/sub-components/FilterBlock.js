@@ -6,10 +6,6 @@ import PropTypes from "prop-types";
 import isEqual from "lodash/isEqual";
 
 class FilterBlock extends React.Component {
-  onDeleteFilterItem = (key) => {
-    this.props.onDeleteFilterItem(key);
-  };
-
   getFilterItems = () => {
     const {
       openFilterItems,
@@ -17,6 +13,8 @@ class FilterBlock extends React.Component {
       onClickFilterItem,
       isDisabled,
       getFilterData,
+      onDeleteFilterItem,
+      setShowHiddenFilter,
     } = this.props;
 
     let result = [];
@@ -52,7 +50,7 @@ class FilterBlock extends React.Component {
             id={key}
             groupLabel={groupLabel}
             label={label}
-            onClose={this.onDeleteFilterItem}
+            onClose={onDeleteFilterItem}
             typeSelector={typeSelector}
             groupsCaption={groupsCaption}
             defaultOptionLabel={defaultOptionLabel}
@@ -95,7 +93,7 @@ class FilterBlock extends React.Component {
             id={key}
             groupLabel={groupLabel}
             label={label}
-            onClose={this.onDeleteFilterItem}
+            onClose={onDeleteFilterItem}
             typeSelector={typeSelector}
             groupsCaption={groupsCaption}
             defaultOptionLabel={defaultOptionLabel}
@@ -103,7 +101,7 @@ class FilterBlock extends React.Component {
             defaultSelectLabel={defaultSelectLabel}
             selectedItem={selectedItem}
             opened={open}
-            setShowHiddenFilter={this.props.setShowHiddenFilter}
+            setShowHiddenFilter={setShowHiddenFilter}
           ></FilterItem>
         );
       });
@@ -114,7 +112,7 @@ class FilterBlock extends React.Component {
           count={hideFilterItems.length}
           isDisabled={isDisabled}
           open={open ? open : this.props.showHiddenFilter}
-          setShowHiddenFilter={this.props.setShowHiddenFilter}
+          setShowHiddenFilter={setShowHiddenFilter}
         >
           {hideFilterItemsList}
         </HideFilter>
@@ -197,6 +195,7 @@ FilterBlock.propTypes = {
   columnCount: PropTypes.number,
   contextMenuHeader: PropTypes.string,
   onClickFilterItem: PropTypes.func,
+  setShowHiddenFilter: PropTypes.func,
 };
 
 export default FilterBlock;

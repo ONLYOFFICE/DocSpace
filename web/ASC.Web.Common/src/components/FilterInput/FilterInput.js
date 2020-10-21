@@ -1,14 +1,15 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { SearchInput } from "asc-web-components";
+import { SearchInput, utils } from "asc-web-components";
 import isEqual from "lodash/isEqual";
-import throttle from "lodash/throttle";
 import FilterBlock from "./sub-components/FilterBlock";
 import SortComboBox from "./sub-components/SortComboBox";
 import ViewSelector from "./sub-components/ViewSelector";
 import map from "lodash/map";
 import clone from "lodash/clone";
 import StyledFilterInput from "./StyledFilterInput";
+
+const { smallTablet } = utils.device.size;
 
 const cloneObjectsArray = (props) => {
   return map(props, clone);
@@ -361,22 +362,22 @@ class FilterInput extends React.Component {
   };
 
   onDeleteFilterItem = (key) => {
-    const currentFilterItems = this.state.filterValues.slice();
-    const indexFilterItem = currentFilterItems.findIndex((x) => x.key === key);
+    const filterItems = this.state.filterValues.slice();
+    const indexFilterItem = filterItems.findIndex((x) => x.key === key);
     if (indexFilterItem != -1) {
-      currentFilterItems.splice(indexFilterItem, 1);
+      filterItems.splice(indexFilterItem, 1);
     }
 
     this.setState(
       {
-        filterValues: currentFilterItems,
-        openFilterItems: currentFilterItems,
+        filterValues: filterItems,
+        openFilterItems: filterItems,
         overflowFilter: false,
       },
-      () => this.updateFilter(currentFilterItems)
+      () => this.updateFilter(filterItems)
     );
 
-    let filterValues = cloneObjectsArray(currentFilterItems);
+    let filterValues = cloneObjectsArray(filterItems);
     filterValues = filterValues.map((item) => {
       item.key = item.key.replace(item.group + "_", "");
       return item;
@@ -399,8 +400,8 @@ class FilterInput extends React.Component {
     this.props.onFilter({
       inputValue: searchText != undefined ? searchText : this.state.searchText,
       filterValues: cloneFilterValues,
-      sortId: sortId,
-      sortDirection: sortDirection,
+      sortId,
+      sortDirection,
     });
   };
 
@@ -533,6 +534,7 @@ class FilterInput extends React.Component {
         });
         this.onFilter(clone, sortId, sortDirection ? "desc" : "asc");
       }
+
       this.setState(
         {
           filterValues: currentFilterItems,
@@ -573,7 +575,13 @@ class FilterInput extends React.Component {
         return item;
       });
 
-      this.onFilter(clone, sortId, sortDirection ? "desc" : "asc");
+      this.setState(
+        {
+          filterValues: currentFilterItems,
+          overflowFilter: false,
+        },
+        () => this.updateFilter()
+      );
     }
   };
 
@@ -627,11 +635,13 @@ class FilterInput extends React.Component {
         break;
     }
 
+    const isMinimized = widthProp <= smallTablet;
+
     return (
       <StyledFilterInput
         filterMaxWidth={filterMaxWidth}
         overflowFilter={overflowFilter}
-        isMobile={isMobile || widthProp <= 600}
+        isMobile={isMobile || isMinimized}
         viewAs={viewAs}
         className={className}
         id={id}
@@ -667,6 +677,7 @@ class FilterInput extends React.Component {
                 columnCount={filterColumnCount}
                 showHiddenFilter={showHiddenFilter}
                 setShowHiddenFilter={this.setShowHiddenFilter}
+                isMinimized={isMinimized}
               />
             </div>
           </SearchInput>
