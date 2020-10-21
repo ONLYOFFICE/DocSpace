@@ -145,7 +145,7 @@ class DropDown extends React.PureComponent {
     this.setState({
       directionX: x,
       directionY: y,
-      width: rects.width,
+      width: !!rects.width ? rects.width : 220,
     });
   };
 
