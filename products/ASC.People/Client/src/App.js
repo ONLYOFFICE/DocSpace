@@ -6,6 +6,8 @@ import Profile from "./components/pages/Profile";
 import ProfileAction from "./components/pages/ProfileAction";
 import GroupAction from "./components/pages/GroupAction";
 import Reassign from "./components/pages/Reassign";
+import {  Scrollbar } from "asc-web-components";
+import {isMobile} from 'react-device-detect';
 import {
   history,
   PrivateRoute,
@@ -41,56 +43,11 @@ const { AUTH_KEY } = constants;
 const ProfileAction = lazy(() => import("./components/pages/ProfileAction"));
 const GroupAction = lazy(() => import("./components/pages/GroupAction"));*/
 
-class App extends React.Component {
-  componentDidMount() {
-    utils.removeTempContent();
-
-    const {
-      setModuleInfo,
-      getUser,
-      getPortalSettings,
-      getModules,
-      getPortalPasswordSettings,
-      getPortalCultures,
-      fetchGroups,
-      fetchPeople,
-      setIsLoaded,
-    } = this.props;
-
-    setModuleInfo();
-
-    const token = localStorage.getItem(AUTH_KEY);
-
-    if (!token) {
-      return setIsLoaded();
-    }
-
-    const requests = [
-      getUser(),
-      getPortalSettings(),
-      getModules(),
-      getPortalPasswordSettings(),
-      getPortalCultures(),
-      fetchGroups(),
-      fetchPeople(),
-    ];
-
-    Promise.all(requests)
-      .catch((e) => {
-        toastr.error(e);
-      })
-      .finally(() => {
-        setIsLoaded();
-      });
-  }
-
-  render() {
-    const { homepage } = this.props;
-    console.log("People App render", this.props);
-    return navigator.onLine ? (
-      <Router history={history}>
-        <NavMenu />
-        <Main>
+function MainApp(homepage) {
+  return (
+    <>
+    <NavMenu />
+    <Main>
           <Suspense fallback={null}>
             <Switch>
               <Redirect exact from="/" to={`${homepage}`} />
@@ -139,6 +96,66 @@ class App extends React.Component {
             </Switch>
           </Suspense>
         </Main>
+    </>
+    )
+}
+class App extends React.Component {
+  componentDidMount() {
+    utils.removeTempContent();
+
+    const {
+      setModuleInfo,
+      getUser,
+      getPortalSettings,
+      getModules,
+      getPortalPasswordSettings,
+      getPortalCultures,
+      fetchGroups,
+      fetchPeople,
+      setIsLoaded,
+    } = this.props;
+
+    setModuleInfo();
+
+    const token = localStorage.getItem(AUTH_KEY);
+
+    if (!token) {
+      return setIsLoaded();
+    }
+
+    const requests = [
+      getUser(),
+      getPortalSettings(),
+      getModules(),
+      getPortalPasswordSettings(),
+      getPortalCultures(),
+      fetchGroups(),
+      fetchPeople(),
+    ];
+
+    Promise.all(requests)
+      .catch((e) => {
+        toastr.error(e);
+      })
+      .finally(() => {
+        setIsLoaded();
+      });
+  }
+
+  render() {
+    const { homepage } = this.props;
+
+    console.log("People App render", this.props);
+    return navigator.onLine ? (
+      <Router history={history}>
+        {isMobile 
+        ? 
+            <Scrollbar  style={{position:"absolute"}} stype="mediumBlack">
+              {MainApp(homepage)}
+            </Scrollbar>
+
+        : MainApp(homepage)
+        }
       </Router>
     ) : (
       <Offline />

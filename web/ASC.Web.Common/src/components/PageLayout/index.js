@@ -6,7 +6,7 @@ import store from "../../store";
 import { withTranslation } from "react-i18next";
 import i18n from "./i18n";
 import { ARTICLE_PINNED_KEY } from "../../constants";
-
+import {isMobile} from 'react-device-detect';
 import Article from "./sub-components/article";
 import SubArticleHeader from "./sub-components/article-header";
 import SubArticleMainButton from "./sub-components/article-main-button";
@@ -306,8 +306,8 @@ class PageLayoutComponent extends React.Component {
                       onDrop={onDrop}
                       uploadFiles={uploadFiles}
                       setSelections={setSelections}
-                      withScroll={withBodyScroll}
-                      autoFocus={withBodyAutoFocus}
+                      withScroll={isMobile ? false : withBodyScroll}
+                      autoFocus={isMobile ? false :withBodyAutoFocus}
                       pinned={this.state.isArticlePinned}
                       viewAs={viewAs}
                     >
