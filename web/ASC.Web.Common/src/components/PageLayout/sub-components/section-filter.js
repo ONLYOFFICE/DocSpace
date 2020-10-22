@@ -3,7 +3,7 @@ import styled from "styled-components";
 import isEqual from "lodash/isEqual";
 
 const StyledSectionFilter = styled.div`
-  margin: 16px 24px -8px 0;
+  margin: 16px 24px 9px 0;
 `;
 
 class SectionFilter extends React.Component {

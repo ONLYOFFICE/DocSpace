@@ -19,6 +19,7 @@ const EditingWrapper = styled.div`
     font-family: "Open Sans", sans-serif, Arial;
     text-align: left;
     color: #333333;
+    margin-left: 6px;
   }
   .edit-button {
     margin-left: 8px;
