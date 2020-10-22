@@ -728,7 +728,7 @@ class SectionBodyContent extends React.Component {
       <ReactSVG
         beforeInjection={(svg) => {
           svg.setAttribute("style", "margin-top: 4px");
-          isEdit && svg.setAttribute("style", "margin: 4px 0 0 24px");
+          isEdit && svg.setAttribute("style", "margin: 4px 0 0 28px");
         }}
         src={item.icon}
         loading={this.svgLoader}
