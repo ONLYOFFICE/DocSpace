@@ -18,6 +18,7 @@ import {
   Loaders,
 } from "asc-web-common";
 import { createI18N } from "../../../helpers/i18n";
+import styled from "styled-components";
 
 const { getSettings } = initStore.auth.selectors;
 const i18n = createI18N({
@@ -27,6 +28,12 @@ const i18n = createI18N({
 
 const { changeLanguage } = commonUtils;
 const { FileAction } = constants;
+
+const StyledMainButton = styled(MainButton)`
+  .main-button_drop-down{
+    line-height: 36px;
+  }
+`
 
 class PureArticleMainButtonContent extends React.Component {
   onCreate = (e) => {
@@ -70,41 +77,47 @@ class PureArticleMainButtonContent extends React.Component {
     return firstLoad ? (
       <Loaders.Filter />
     ) : (
-      <MainButton
+      <StyledMainButton
         isDisabled={isDisabled ? isDisabled : !canCreate}
         isDropdown={true}
         text={t("Actions")}
       >
         <DropDownItem
+          className="main-button_drop-down"
           icon="ActionsDocumentsIcon"
           label={t("NewDocument")}
           onClick={this.onCreate}
           data-format="docx"
         />
         <DropDownItem
+          className="main-button_drop-down"
           icon="SpreadsheetIcon"
           label={t("NewSpreadsheet")}
           onClick={this.onCreate}
           data-format="xlsx"
         />
         <DropDownItem
+          className="main-button_drop-down"
           icon="ActionsPresentationIcon"
           label={t("NewPresentation")}
           onClick={this.onCreate}
           data-format="pptx"
         />
         <DropDownItem
+          className="main-button_drop-down"
           icon="CatalogFolderIcon"
           label={t("NewFolder")}
           onClick={this.onCreate}
         />
         <DropDownItem isSeparator />
         <DropDownItem
+          className="main-button_drop-down"
           icon="ActionsUploadIcon"
           label={t("UploadFiles")}
           onClick={this.onUploadFileClick}
         />
         <DropDownItem
+          className="main-button_drop-down"
           icon="ActionsUploadIcon"
           label={t("UploadFolder")}
           onClick={this.onUploadFolderClick}
@@ -130,7 +143,7 @@ class PureArticleMainButtonContent extends React.Component {
           ref={(input) => (this.inputFolderElement = input)}
           style={{ display: "none" }}
         />
-      </MainButton>
+      </StyledMainButton>
     );
   }
 }

@@ -96,7 +96,7 @@ const IconWrapper = styled.div`
 
 const DropDownItem = (props) => {
   //console.log("DropDownItem render");
-  const { isSeparator, label, icon, children, disabled, onClick } = props;
+  const { isSeparator, label, icon, children, disabled, onClick, className } = props;
   const color = disabled ? "#A3A9AE" : "#333333";
 
   const onClickAction = (e) => {
@@ -104,7 +104,7 @@ const DropDownItem = (props) => {
   };
 
   return (
-    <StyledDropdownItem {...props} onClick={onClickAction}>
+    <StyledDropdownItem {...props} className={className} onClick={onClickAction}>
       {icon && (
         <IconWrapper>
           {React.createElement(Icons[icon], {
