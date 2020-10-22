@@ -37,6 +37,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Data
 {
+    [Scope]
     class ConfigureDbQuotaService : IConfigureNamedOptions<DbQuotaService>
     {
         private DbContextManager<CoreDbContext> DbContextManager { get; }

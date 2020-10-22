@@ -142,7 +142,7 @@ namespace ASC.Files.Thirdparty.OneDrive
         }
     }
 
-    [Scope]
+    [Scope(Additional = typeof(OneDriveProviderInfoExtention))]
     internal class OneDriveStorageDisposableWrapper : IDisposable
     {
         internal OneDriveStorage Storage { get; private set; }
@@ -259,4 +259,12 @@ namespace ASC.Files.Thirdparty.OneDrive
             }
         }
     }
+    public class OneDriveProviderInfoExtention
+    {
+        public static void Register(DIHelper dIHelper)
+        {
+            dIHelper.TryAdd<OneDriveStorage>();
+        }
+    }
+
 }

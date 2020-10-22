@@ -33,6 +33,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Tenants
 {
+    [Scope]
     class ConfigureTenantUtil : IConfigureNamedOptions<TenantUtil>
     {
         private IOptionsSnapshot<TenantManager> TenantManager { get; }

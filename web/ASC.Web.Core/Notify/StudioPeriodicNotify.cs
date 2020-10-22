@@ -54,7 +54,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Studio.Core.Notify
 {
-    [Singletone]
+    [Singletone(Additional = typeof(StudioPeriodicNotifyExtension))]
     public class StudioPeriodicNotify
     {
         private IServiceProvider ServiceProvider { get; }
@@ -1226,13 +1226,11 @@ namespace ASC.Web.Studio.Core.Notify
         }
     }
 
-    public static class StudioPeriodicNotifyExtension
+    public class StudioPeriodicNotifyExtension
     {
-        public static DIHelper AddStudioPeriodicNotify(this DIHelper services)
+        public static void Register(DIHelper services)
         {
-            services.TryAddScoped<StudioPeriodicNotifyScope>();
-
-            return services;
+            services.TryAdd<StudioPeriodicNotifyScope>();
         }
     }
 }

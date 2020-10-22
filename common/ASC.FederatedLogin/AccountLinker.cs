@@ -70,6 +70,8 @@ namespace ASC.FederatedLogin
             return profiles;
         }
     }
+
+    [Scope]
     public class ConfigureAccountLinker : IConfigureNamedOptions<AccountLinker>
     {
         private Signature Signature { get; }

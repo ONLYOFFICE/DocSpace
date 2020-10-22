@@ -181,7 +181,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
         }
     }
 
-    [Scope]
+    [Scope(Additional = typeof(GoogleDriveProviderInfoExtention))]
     internal class GoogleDriveStorageDisposableWrapper : IDisposable
     {
         internal GoogleDriveStorage Storage { get; set; }
@@ -364,6 +364,14 @@ namespace ASC.Files.Thirdparty.GoogleDrive
         internal void CacheResetChilds(int id, string parentDriveId, bool? childFolder = null)
         {
             CacheNotify.Publish(new GoogleDriveCacheItem { ResetChilds = true, Key = id + "-" + parentDriveId, ChildFolder = childFolder ?? false, ChildFolderExist = childFolder.HasValue }, CacheNotifyAction.Remove);
+        }
+    }
+
+    public class GoogleDriveProviderInfoExtention
+    {
+        public static void Register(DIHelper dIHelper)
+        {
+            dIHelper.TryAdd<GoogleDriveStorage>();
         }
     }
 }

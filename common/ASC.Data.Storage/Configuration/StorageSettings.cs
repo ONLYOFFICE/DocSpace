@@ -40,7 +40,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Storage.Configuration
 {
-    [Singletone]
+    [Singletone(Additional = typeof(StorageSettingsExtension))]
     public class BaseStorageSettingsListener
     {
         private IServiceProvider ServiceProvider { get; }
@@ -227,6 +227,7 @@ namespace ASC.Data.Storage.Configuration
         }
     }
 
+    [Scope]
     public class BaseStorageSettingsListenerScope
     {
         private StorageSettingsHelper StorageSettingsHelper { get; }
@@ -248,13 +249,11 @@ namespace ASC.Data.Storage.Configuration
         }
     }
 
-    public static class StorageSettingsExtension
+    public class StorageSettingsExtension
     {
-        public static DIHelper AddStorageSettingsService(this DIHelper services)
+        public static void Register(DIHelper services)
         {
-            services.TryAddScoped<BaseStorageSettingsListenerScope>();
-
-            return services;
+            services.TryAdd<BaseStorageSettingsListenerScope>();
         }
     }
 }

@@ -6,6 +6,7 @@ using ASC.Api.Core;
 using ASC.Api.Documents;
 using ASC.Web.Files;
 using ASC.Web.Files.HttpHandlers;
+using ASC.Web.Studio.Core.Notify;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -35,6 +36,13 @@ namespace ASC.Files
             base.ConfigureServices(services);
 
             DIHelper.TryAdd<FilesController>();
+            DIHelper.TryAdd<PrivacyRoomApi>();
+            DIHelper.TryAdd<FileHandlerService>();
+            DIHelper.TryAdd<ChunkedUploaderHandlerService>();
+            DIHelper.TryAdd<DocuSignHandlerService>();
+            DIHelper.TryAdd<ThirdPartyAppHandlerService>();
+
+            NotifyConfigurationExtension.Register(DIHelper);
 
             var a = $"{string.Join(",", DIHelper.Singleton.OrderBy(r => r).ToArray())},{string.Join(",", DIHelper.Scoped.OrderBy(r => r).ToArray())},{string.Join(",", DIHelper.Transient.OrderBy(r => r).ToArray())}";
             var b = 0;

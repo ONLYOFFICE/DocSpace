@@ -83,6 +83,7 @@ namespace ASC.Files.Core.Data
             services.TryAdd<Folder<string>>();
             services.TryAdd<IFolderDao<string>, ProviderFolderDao>();
 
+            services.TryAdd<SecurityDao<int>>();
             services.TryAdd<ISecurityDao<int>, SecurityDao<int>>();
             services.TryAdd<ISecurityDao<string>, ProviderSecurityDao>();
 

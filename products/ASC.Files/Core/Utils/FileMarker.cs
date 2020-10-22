@@ -95,7 +95,7 @@ namespace ASC.Web.Files.Utils
         }
     }
 
-    [Scope]
+    [Scope(Additional = typeof(FileMarkerExtention))]
     public class FileMarker
     {
         private readonly ICache cache;
@@ -741,25 +741,17 @@ namespace ASC.Web.Files.Utils
         public Guid CurrentAccountId { get; set; }
     }
 
-    public static class FileMarkerExtention
+    public class FileMarkerExtention
     {
-        public static DIHelper AddFileMarkerService(this DIHelper services)
+        public static void Register(DIHelper services)
         {
-            return services
-                .AddFileMarkerService<string>()
-                .AddFileMarkerService<int>()
-                ;
-        }
+            services.TryAdd<AsyncTaskData<int>>();
+            services.TryAdd<FileMarkerHelper<int>>();
+            services.AddWorkerQueue<AsyncTaskData<int>>(1, (int)TimeSpan.FromSeconds(60).TotalMilliseconds, false, 1);
 
-        public static DIHelper AddFileMarkerService<T>(this DIHelper services)
-        {
-            services.TryAddSingleton<WorkerQueueOptionsManager<AsyncTaskData<T>>>();
-            services.TryAddSingleton<WorkerQueue<AsyncTaskData<T>>>();
-            services.AddSingleton<IConfigureOptions<WorkerQueue<AsyncTaskData<T>>>, ConfigureWorkerQueue<AsyncTaskData<T>>>();
-
-            services.AddWorkerQueue<AsyncTaskData<T>>(1, (int)TimeSpan.FromSeconds(60).TotalMilliseconds, false, 1);
-
-            return services;
+            services.TryAdd<AsyncTaskData<string>>();
+            services.TryAdd<FileMarkerHelper<string>>();
+            services.AddWorkerQueue<AsyncTaskData<string>>(1, (int)TimeSpan.FromSeconds(60).TotalMilliseconds, false, 1);
         }
     }
 }

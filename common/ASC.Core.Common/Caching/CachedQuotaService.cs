@@ -79,6 +79,7 @@ namespace ASC.Core.Caching
         }
     }
 
+    [Scope]
     class ConfigureCachedQuotaService : IConfigureNamedOptions<CachedQuotaService>
     {
         private IOptionsSnapshot<DbQuotaService> Service { get; }

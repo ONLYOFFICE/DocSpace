@@ -77,6 +77,7 @@ namespace ASC.Core.Billing
         }
     }
 
+    [Scope]
     class ConfigureTariffService : IConfigureNamedOptions<TariffService>
     {
         public ConfigureTariffService(

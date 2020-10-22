@@ -6,6 +6,7 @@ using System.Reflection;
 using ASC.Common.Threading.Progress;
 using ASC.Common.Threading.Workers;
 
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
@@ -135,18 +136,22 @@ namespace ASC.Common
 
         public bool TryAdd(Type service, Type implementation = null)
         {
+            if (service.IsInterface && service.IsGenericType && service.GetGenericTypeDefinition() == typeof(IOptionsSnapshot<>))
+            {
+                service = service.GetGenericArguments().FirstOrDefault();
+                if (service == null)
+                {
+                    return false;
+                }
+            }
+
             var serviceName = $"{service}{implementation}";
             if (Added.Contains(serviceName)) return false;
             Added.Add(serviceName);
 
-            if (serviceName == "ASC.Core.IAzService")
+            if (serviceName == "ASC.FederatedLogin.AccountLinker")
             {
-                var qweasd = 0;
-            }
-
-            if (serviceName == "ASC.Core.Caching.CachedAzService")
-            {
-                var qweasd = 0;
+                var qqaz = 0;
             }
 
             var di = service.IsGenericType && service.GetGenericTypeDefinition() == typeof(IConfigureOptions<>) && implementation != null ? implementation.GetCustomAttribute<DIAttribute>() : service.GetCustomAttribute<DIAttribute>();
@@ -304,7 +309,7 @@ namespace ASC.Common
 
         private bool Register(Type service)
         {
-            if (service.IsSubclassOf(typeof(ControllerBase)) || service.GetInterfaces().Contains(typeof(IResourceFilter))) return true;
+            if (service.IsSubclassOf(typeof(ControllerBase)) || service.GetInterfaces().Contains(typeof(IResourceFilter)) || service.GetInterfaces().Contains(typeof(IAuthenticationHandler))) return true;
             var c = service.GetCustomAttribute<DIAttribute>();
             var serviceName = $"{service}";
             if (c is ScopeAttribute)
@@ -447,19 +452,6 @@ namespace ASC.Common
             return this;
         }
 
-
-        public DIHelper TryAddTransient<TService>() where TService : class
-        {
-            var serviceName = $"{typeof(TService)}";
-            if (!Transient.Contains(serviceName))
-            {
-                Transient.Add(serviceName);
-                ServiceCollection.TryAddTransient<TService>();
-            }
-
-            return this;
-        }
-
         public DIHelper Configure<TOptions>(Action<TOptions> configureOptions) where TOptions : class
         {
             var serviceName = $"{typeof(TOptions)}";
@@ -493,6 +485,7 @@ namespace ASC.Common
             AddToConfigured($"{typeof(WorkerQueue<T1>)}", (Action<WorkerQueue<T1>>)action);
             return this;
         }
+
         public DIHelper AddProgressQueue<T1>(int workerCount, int waitInterval, bool removeAfterCompleted, bool stopAfterFinsih, int errorCount) where T1 : class, IProgressItem
         {
             void action(ProgressQueue<T1> a)
@@ -506,6 +499,7 @@ namespace ASC.Common
             AddToConfigured($"{typeof(ProgressQueue<T1>)}", (Action<ProgressQueue<T1>>)action);
             return this;
         }
+
         public DIHelper Configure<TOptions>(string name, Action<TOptions> configureOptions) where TOptions : class
         {
             var serviceName = $"{typeof(TOptions)}{name}";

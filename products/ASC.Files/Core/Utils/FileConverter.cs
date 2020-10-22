@@ -60,7 +60,7 @@ using SecurityContext = ASC.Core.SecurityContext;
 
 namespace ASC.Web.Files.Utils
 {
-    [Singletone]
+    [Singletone(Additional = typeof(FileConverterQueueExtension))]
     internal class FileConverterQueue<T>
     {
         private readonly object singleThread = new object();
@@ -401,6 +401,7 @@ namespace ASC.Web.Files.Utils
         }
     }
 
+    [Scope]
     public class FileConverterQueueScope
     {
         private IOptionsMonitor<ILog> Options { get; }
@@ -488,7 +489,7 @@ namespace ASC.Web.Files.Utils
         public string FileJson { get; set; }
     }
 
-    [Scope]
+    [Scope(Additional = typeof(FileConverterExtension))]
     public class FileConverter
     {
         private FileUtility FileUtility { get; }
@@ -847,13 +848,20 @@ namespace ASC.Web.Files.Utils
         public string Password { get; set; }
     }
 
-    public static class FileConverterExtension
+    public class FileConverterQueueExtension
     {
-        public static DIHelper AddFileConverterService(this DIHelper services)
+        public static void Register(DIHelper services)
         {
-            services.TryAddScoped<FileConverterQueueScope>();
+            services.TryAdd<FileConverterQueueScope>();
+        }
+    }
 
-            return services;
+    public class FileConverterExtension
+    {
+        public static void Register(DIHelper services)
+        {
+            services.TryAdd<FileConverterQueue<int>>();
+            services.TryAdd<FileConverterQueue<string>>();
         }
     }
 }

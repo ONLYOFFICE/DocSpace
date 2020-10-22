@@ -42,6 +42,7 @@ using ASC.Notify;
 using ASC.Notify.Engine;
 using ASC.Notify.Messages;
 using ASC.Notify.Patterns;
+using ASC.Notify.Textile;
 using ASC.Web.Core;
 using ASC.Web.Core.Users;
 using ASC.Web.Core.WhiteLabel;
@@ -353,6 +354,7 @@ namespace ASC.Web.Studio.Core.Notify
         }
     }
 
+    [Scope]
     public class NotifyConfigurationScope
     {
         private TenantManager TenantManager { get; }
@@ -439,17 +441,14 @@ namespace ASC.Web.Studio.Core.Notify
         }
     }
 
-    public static class NotifyConfigurationExtension
+    public class NotifyConfigurationExtension
     {
-        public static DIHelper AddNotifyConfiguration(this DIHelper services)
+        public static void Register(DIHelper services)
         {
-            if (services.TryAddScoped<NotifyConfigurationScope>())
-            {
-
-                return services;
-            }
-
-            return services;
+            services.TryAdd<NotifyConfigurationScope>();
+            services.TryAdd<TextileStyler>();
+            services.TryAdd<JabberStyler>();
+            services.TryAdd<PushStyler>();
         }
     }
 }

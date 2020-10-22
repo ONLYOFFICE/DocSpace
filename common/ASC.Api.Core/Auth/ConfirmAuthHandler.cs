@@ -6,6 +6,7 @@ using System.Security.Claims;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 
+using ASC.Common;
 using ASC.Core;
 using ASC.Security.Cryptography;
 
@@ -16,6 +17,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Api.Core.Auth
 {
+    [Scope(Additional = typeof(ConfirmAuthHandlerExtension))]
     public class ConfirmAuthHandler : AuthenticationHandler<AuthenticationSchemeOptions>
     {
         public ConfirmAuthHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock) : base(options, logger, encoder, clock)
@@ -92,6 +94,14 @@ namespace ASC.Api.Core.Auth
             };
 
             return Task.FromResult(result);
+        }
+    }
+
+    public class ConfirmAuthHandlerExtension
+    {
+        public static void Register(DIHelper services)
+        {
+            services.TryAdd<EmailValidationKeyModelHelper>();
         }
     }
 }

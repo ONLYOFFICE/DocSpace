@@ -112,14 +112,4 @@ namespace ASC.Web.Core.Notify
             Cache.Publish(item, CacheNotifyAction.Any);
         }
     }
-
-    public static class StudioNotifyServiceHelperExtension
-    {
-        public static DIHelper AddStudioNotifyServiceHelper(this DIHelper services)
-        {
-            services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
-
-            return services;
-        }
-    }
 }

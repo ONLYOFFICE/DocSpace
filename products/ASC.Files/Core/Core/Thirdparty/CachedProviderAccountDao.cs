@@ -61,6 +61,7 @@ namespace ASC.Files.Thirdparty
         }
     }
 
+    [Scope]
     internal class CachedProviderAccountDao : ProviderAccountDao
     {
         private readonly ConcurrentDictionary<string, IProviderInfo> cache;

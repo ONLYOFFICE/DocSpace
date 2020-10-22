@@ -61,6 +61,7 @@ namespace ASC.Core.Data
         }
     }
 
+    [Scope]
     class ConfigureDbSettingsManager : IConfigureNamedOptions<DbSettingsManager>
     {
         private IServiceProvider ServiceProvider { get; }

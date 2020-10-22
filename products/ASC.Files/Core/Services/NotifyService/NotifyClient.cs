@@ -41,7 +41,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Files.Core.Services.NotifyService
 {
-    [Scope]
+    [Scope(Additional = typeof(NotifyClientExtension))]
     public class NotifyClient
     {
         private IServiceProvider ServiceProvider { get; }
@@ -192,6 +192,7 @@ namespace ASC.Files.Core.Services.NotifyService
         }
     }
 
+    [Scope]
     public class NotifyClientScope
     {
         private NotifySource NotifySource { get; }
@@ -247,13 +248,11 @@ namespace ASC.Files.Core.Services.NotifyService
         }
     }
 
-    public static class NotifyClientExtension
+    public class NotifyClientExtension
     {
-        public static DIHelper AddNotifyClientService(this DIHelper services)
+        public static void Register(DIHelper services)
         {
-            services.TryAddScoped<NotifyClientScope>();
-
-            return services;
+            services.TryAdd<NotifyClientScope>();
         }
     }
 }

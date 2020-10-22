@@ -39,7 +39,7 @@ using Microsoft.Extensions.Primitives;
 
 namespace ASC.Web.Files.Services.WCFService.FileOperations
 {
-    [Singletone]
+    [Singletone(Additional = typeof(FileOperationsManagerHelperExtention))]
     public class FileOperationsManager
     {
         private readonly DistributedTaskQueue tasks;
@@ -167,18 +167,15 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         }
     }
 
-    public static class FileOperationsManagerHelperExtention
+    public class FileOperationsManagerHelperExtention
     {
-        public static DIHelper AddFileOperationsManagerHelperService(this DIHelper services)
+        public static void Register(DIHelper services)
         {
-            services.TryAddScoped<FileDeleteOperationScope>();
-            services.TryAddScoped<FileMarkAsReadOperationScope>();
-            services.TryAddScoped<FileMoveCopyOperationScope>();
-            services.TryAddScoped<FileOperationScope>();
-            services.TryAddScoped<FileDownloadOperationScope>();
-
-            return services;
-
+            services.TryAdd<FileDeleteOperationScope>();
+            services.TryAdd<FileMarkAsReadOperationScope>();
+            services.TryAdd<FileMoveCopyOperationScope>();
+            services.TryAdd<FileOperationScope>();
+            services.TryAdd<FileDownloadOperationScope>();
         }
     }
 }

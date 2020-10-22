@@ -46,7 +46,7 @@ using FileShare = ASC.Files.Core.Security.FileShare;
 
 namespace ASC.Web.Files.Services.DocumentService
 {
-    [Scope]
+    [Scope(Additional = typeof(ConfigurationExtention))]
     public class DocumentServiceHelper
     {
         private IDaoFactory DaoFactory { get; }

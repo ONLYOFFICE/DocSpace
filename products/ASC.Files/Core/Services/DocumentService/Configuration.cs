@@ -922,4 +922,32 @@ namespace ASC.Web.Files.Services.DocumentService
 
         public string Name { get; set; }
     }
+
+    public static class ConfigurationExtention
+    {
+        public static void Register(DIHelper services)
+        {
+            services.TryAdd<DocumentConfig<string>>();
+            services.TryAdd<DocumentConfig<int>>();
+
+            services.TryAdd<InfoConfig<string>>();
+            services.TryAdd<InfoConfig<int>>();
+
+            services.TryAdd<EditorConfiguration<string>>();
+            services.TryAdd<EditorConfiguration<int>>();
+
+            services.TryAdd<PluginsConfig>();
+            services.TryAdd<EmbeddedConfig>();
+
+            services.TryAdd<CustomizationConfig<string>>();
+            services.TryAdd<CustomizationConfig<int>>();
+
+            services.TryAdd<CustomerConfig<string>>();
+            services.TryAdd<CustomerConfig<int>>();
+
+            services.TryAdd<LogoConfig<string>>();
+            services.TryAdd<LogoConfig<int>>();
+
+        }
+    }
 }

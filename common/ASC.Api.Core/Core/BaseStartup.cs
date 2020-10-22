@@ -72,6 +72,7 @@ namespace ASC.Api.Core
             DIHelper.TryAdd<PaymentFilter>();
             DIHelper.TryAdd<ProductSecurityFilter>();
             DIHelper.TryAdd<TenantStatusFilter>();
+            DIHelper.TryAdd<ConfirmAuthHandler>();
 
             DIHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
 

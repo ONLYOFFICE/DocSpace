@@ -42,7 +42,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Data.Backup
 {
-    [Singletone]
+    [Singletone(Additional = typeof(NotifyHelperExtension))]
     public class NotifyHelper
     {
         private IServiceProvider ServiceProvider { get; }
@@ -169,13 +169,11 @@ namespace ASC.Data.Backup
         }
     }
 
-    public static class NotifyHelperExtension
+    public class NotifyHelperExtension
     {
-        public static DIHelper AddNotifyHelperService(this DIHelper services)
+        public static void Register(DIHelper services)
         {
-            services.TryAddScoped<NotifyHelperScope>();
-
-            return services;
+            services.TryAdd<NotifyHelperScope>();
         }
     }
 }

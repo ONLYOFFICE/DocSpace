@@ -43,7 +43,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Storage.Encryption
 {
-    [Transient]
+    [Transient(Additional = typeof(EncryptionOperationExtension))]
     public class EncryptionOperation : ProgressBase
     {
         private const string ConfigPath = "";
@@ -381,12 +381,11 @@ namespace ASC.Data.Storage.Encryption
         }
     }
 
-    public static class EncryptionOperationExtension
+    public class EncryptionOperationExtension
     {
-        public static DIHelper AddEncryptionOperationService(this DIHelper services)
+        public static void Register(DIHelper services)
         {
-            services.TryAddTransient<EncryptionOperationScope>();
-            return services;
+            services.TryAdd<EncryptionOperationScope>();
         }
     }
 }

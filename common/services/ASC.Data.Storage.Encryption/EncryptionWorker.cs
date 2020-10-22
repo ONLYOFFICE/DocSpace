@@ -87,7 +87,7 @@ namespace ASC.Data.Storage.Encryption
         }
     }
 
-    [Singletone]
+    [Singletone(Additional = typeof(FactoryOperationExtension))]
     public class FactoryOperation
     {
         private IServiceProvider ServiceProvider { get; set; }
@@ -102,6 +102,14 @@ namespace ASC.Data.Storage.Encryption
             var item = ServiceProvider.GetService<EncryptionOperation>();
             item.Init(encryptionSettings);
             return item;
+        }
+    }
+
+    public class FactoryOperationExtension
+    {
+        public static void Register(DIHelper dIHelper)
+        {
+            dIHelper.TryAdd<EncryptionOperation>();
         }
     }
 }
