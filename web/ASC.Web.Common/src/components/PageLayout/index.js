@@ -313,13 +313,13 @@ class PageLayoutComponent extends React.Component {
                       pinned={this.state.isArticlePinned}
                       viewAs={viewAs}
                     >
-                      {/*isSectionFilterAvailable && (
+                      {isSectionFilterAvailable && (
                         <SubSectionFilter className="section-body_filter">
                           {sectionFilterContent
                             ? sectionFilterContent.props.children
                             : null}
                         </SubSectionFilter>
-                      )*/}
+                      )}
                       <SubSectionBodyContent>
                         {sectionBodyContent
                           ? sectionBodyContent.props.children

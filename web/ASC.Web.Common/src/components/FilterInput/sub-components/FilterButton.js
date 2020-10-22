@@ -11,7 +11,9 @@ class FilterButton extends React.PureComponent {
       iconSize,
       columnCount,
       asideHeader,
+      isMinimized,
     } = this.props;
+
     return (
       <ContextMenuButton
         className="filter-button"
@@ -25,7 +27,7 @@ class FilterButton extends React.PureComponent {
         size={iconSize}
         title="Actions"
         columnCount={columnCount}
-        displayType="auto"
+        displayType={isMinimized ? "aside" : "auto"}
         asideHeader={asideHeader}
       ></ContextMenuButton>
     );
@@ -38,5 +40,6 @@ FilterButton.propTypes = {
   isDisabled: PropTypes.bool,
   columnCount: PropTypes.number,
   asideHeader: PropTypes.string,
+  isMinimized: PropTypes.bool,
 };
 export default FilterButton;

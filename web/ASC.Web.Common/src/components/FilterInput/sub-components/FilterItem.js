@@ -177,6 +177,7 @@ class FilterItem extends React.Component {
       defaultOptionLabel,
       groupsCaption,
       defaultOption,
+      isMinimized,
     } = this.props;
 
     return (
@@ -204,6 +205,7 @@ class FilterItem extends React.Component {
                 isMultiSelect={false}
                 onCancel={this.onCancelSelector}
                 onSelect={this.onSelectGroup}
+                displayType={isMinimized ? "aside" : "auto"}
               />
             </>
           )}
@@ -231,6 +233,7 @@ class FilterItem extends React.Component {
                 defaultOptionLabel={defaultOptionLabel}
                 onCancel={this.onCancelSelector}
                 onSelect={this.onSelectGroup}
+                displayType={isMinimized ? "aside" : "auto"}
               />
             </>
           )}
@@ -288,6 +291,7 @@ FilterItem.propTypes = {
   selectedItem: PropTypes.object,
   defaultSelectLabel: PropTypes.string,
   setShowHiddenFilter: PropTypes.func,
+  isMinimized: PropTypes.bool,
 };
 
 export default FilterItem;

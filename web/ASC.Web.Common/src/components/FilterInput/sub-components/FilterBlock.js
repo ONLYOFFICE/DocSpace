@@ -15,6 +15,7 @@ class FilterBlock extends React.Component {
       getFilterData,
       onDeleteFilterItem,
       setShowHiddenFilter,
+      isMinimized,
     } = this.props;
 
     let result = [];
@@ -58,6 +59,7 @@ class FilterBlock extends React.Component {
             defaultSelectLabel={defaultSelectLabel}
             selectedItem={selectedItem}
             opened={key.indexOf("_-1") == -1 ? false : true}
+            isMinimized={isMinimized}
           ></FilterItem>
         );
       });
@@ -102,6 +104,7 @@ class FilterBlock extends React.Component {
             selectedItem={selectedItem}
             opened={open}
             setShowHiddenFilter={setShowHiddenFilter}
+            isMinimized={isMinimized}
           ></FilterItem>
         );
       });
@@ -113,6 +116,7 @@ class FilterBlock extends React.Component {
           isDisabled={isDisabled}
           open={open ? open : this.props.showHiddenFilter}
           setShowHiddenFilter={setShowHiddenFilter}
+          isMinimized={isMinimized}
         >
           {hideFilterItemsList}
         </HideFilter>
@@ -162,6 +166,7 @@ class FilterBlock extends React.Component {
       contextMenuHeader,
       getFilterData,
       columnCount,
+      isMinimized,
     } = this.props;
     const filterItems = this.getFilterItems();
     const filterData = getFilterData();
@@ -178,6 +183,7 @@ class FilterBlock extends React.Component {
             getData={this.getData}
             isDisabled={isDisabled}
             asideHeader={contextMenuHeader}
+            isMinimized={isMinimized}
           />
         )}
       </>
@@ -195,7 +201,9 @@ FilterBlock.propTypes = {
   columnCount: PropTypes.number,
   contextMenuHeader: PropTypes.string,
   onClickFilterItem: PropTypes.func,
+  showHiddenFilter: PropTypes.bool,
   setShowHiddenFilter: PropTypes.func,
+  isMinimized: PropTypes.bool,
 };
 
 export default FilterBlock;

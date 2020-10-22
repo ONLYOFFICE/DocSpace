@@ -113,6 +113,7 @@ const StyledFilterInput = styled.div`
 
     .filter_drop-down {
       padding: 16px;
+      z-index: 400;
     }
   }
 
