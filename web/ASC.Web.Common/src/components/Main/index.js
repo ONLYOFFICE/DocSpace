@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { utils} from "asc-web-components";
-const { tablet } = utils.device;
+const { tablet,smallTablet } = utils.device;
 const StyledMain = styled.main`
   height: calc(100vh - 56px);
   height: calc(var(--vh, 1vh) * 100 - 56px);
@@ -16,6 +16,9 @@ const StyledMain = styled.main`
     min-height: 100%;
   }
 
+  @media ${smallTablet} {
+    min-height: auto;
+  }
 `;
 
 const Main = React.memo((props) => {
