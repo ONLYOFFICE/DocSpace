@@ -13,7 +13,7 @@ const StyledArticlePinPanel = styled.div`
 
   @media ${tablet} {
     display: block;
-    position: fixed;
+    //position: fixed;
     bottom: 0;
     width: 208px;
     z-index: 2;
