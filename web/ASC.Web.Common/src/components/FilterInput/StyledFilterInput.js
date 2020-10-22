@@ -13,7 +13,6 @@ const StyledFilterInput = styled.div`
   width: 100%;
   min-width: 255px;
   display: flex;
-  overflow-x: hidden;
   &:after {
     content: " ";
     display: block;

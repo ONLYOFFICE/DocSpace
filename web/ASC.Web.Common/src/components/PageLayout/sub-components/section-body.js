@@ -20,12 +20,12 @@ const commonStyles = css`
     @media ${tablet} {
       padding: 16px 0 16px 24px;
     }
-
-    .section-wrapper {
-      display: flex;
-      flex-direction: column;
-      min-height: 100%;
-    }
+  }
+  .section-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+    overflow-x: hidden;
   }
 `;
 

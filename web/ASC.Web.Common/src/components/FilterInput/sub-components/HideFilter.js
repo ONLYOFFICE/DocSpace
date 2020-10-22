@@ -34,7 +34,7 @@ class HideFilter extends React.Component {
       <div className="styled-hide-filter" onClick={this.onClick} ref={this.ref}>
         <StyledHideFilterButton id="PopoverLegacy" isDisabled={isDisabled}>
           {count}
-          <Caret isOpen={false}>
+          <Caret isOpen={open}>
             <Icons.ExpanderDownIcon
               color="#A3A9AE"
               isfill={true}
