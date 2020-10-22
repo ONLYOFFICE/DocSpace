@@ -97,8 +97,9 @@ class FilterItem extends React.Component {
 
   toggleCombobox = (e, isOpen) => {
     const { onClose, id } = this.props;
+    const { group } = this.state.selectedOption;
     if (id.indexOf("_-1") !== -1) {
-      onClose(id);
+      !group && onClose(id);
     } else {
       this.setState({ isOpen });
     }

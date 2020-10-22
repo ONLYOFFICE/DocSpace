@@ -575,13 +575,7 @@ class FilterInput extends React.Component {
         return item;
       });
 
-      this.setState(
-        {
-          filterValues: currentFilterItems,
-          overflowFilter: false,
-        },
-        () => this.updateFilter()
-      );
+      this.onFilter(clone, sortId, sortDirection ? "desc" : "asc");
     }
   };
 
