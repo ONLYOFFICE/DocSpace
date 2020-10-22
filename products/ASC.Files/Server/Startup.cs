@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
 
@@ -45,7 +46,8 @@ namespace ASC.Files
                 .AddDocuSignHandlerService()
                 .AddNotifyConfiguration();
 
-
+            var a = $"{string.Join(",", DIHelper.Singleton.OrderBy(r => r).ToArray())},{string.Join(",", DIHelper.Scoped.OrderBy(r => r).ToArray())},{string.Join(",", DIHelper.Transient.OrderBy(r => r).ToArray())}";
+            var b = 0;
         }
 
         public override void Configure(IApplicationBuilder app, IWebHostEnvironment env)
