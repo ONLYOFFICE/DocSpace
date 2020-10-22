@@ -95,6 +95,7 @@ const okIcon = (
     size="scale"
     isfill={true}
     color="#A3A9AE"
+    hoveredColor="#657077"
   />
 );
 
@@ -104,6 +105,7 @@ const cancelIcon = (
     size="scale"
     isfill={true}
     color="#A3A9AE"
+    hoveredColor="#657077"
   />
 );
 
