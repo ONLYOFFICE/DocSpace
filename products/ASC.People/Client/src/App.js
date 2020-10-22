@@ -26,7 +26,7 @@ import {
 import { getFilterByLocation } from "./helpers/converters";
 import { fetchGroups, fetchPeople } from "./store/people/actions";
 import config from "../package.json";
-
+import styled from "styled-components";
 const {
   setIsLoaded,
   getUser,
@@ -99,6 +99,11 @@ function MainApp(homepage) {
     </>
     )
 }
+const BoxStyled = styled.div`
+.scrollBar{
+  position: absolute !important;
+}
+`
 class App extends React.Component {
   componentDidMount() {
     utils.removeTempContent();
@@ -150,9 +155,11 @@ class App extends React.Component {
       <Router history={history}>
         {isMobile 
         ? 
-            <Scrollbar  style={{position:"absolute"}} stype="mediumBlack">
+        <BoxStyled>
+            <Scrollbar  className="scrollBar" stype="mediumBlack">
               {MainApp(homepage)}
             </Scrollbar>
+        </BoxStyled>
 
         : MainApp(homepage)
         }

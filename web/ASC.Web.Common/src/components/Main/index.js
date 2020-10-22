@@ -12,7 +12,8 @@ const StyledMain = styled.main`
   box-sizing: border-box;
 
   @media ${tablet} {
-    height:auto;
+    height: auto;
+    min-height: 100%;
   }
 
 `;
