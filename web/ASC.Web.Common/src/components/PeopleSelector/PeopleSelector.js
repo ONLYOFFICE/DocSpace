@@ -259,7 +259,7 @@ class PeopleSelector extends React.Component {
 
 PeopleSelector.propTypes = {
   id: PropTypes.string,
-  className: PropTypes.oneOf([PropTypes.string, PropTypes.array]),
+  className: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
   style: PropTypes.object,
   isOpen: PropTypes.bool,
   onSelect: PropTypes.func,

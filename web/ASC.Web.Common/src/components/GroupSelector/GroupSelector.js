@@ -132,7 +132,7 @@ class GroupSelector extends React.Component {
 }
 
 GroupSelector.propTypes = {
-  className: PropTypes.oneOf([PropTypes.string, PropTypes.array]),
+  className: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
   id: PropTypes.string,
   isDisabled: PropTypes.bool,
   isMultiSelect: PropTypes.bool,

@@ -114,7 +114,7 @@ class AdvancedSelector extends React.Component {
 
 AdvancedSelector.propTypes = {
   id: PropTypes.string,
-  className: PropTypes.oneOf([PropTypes.string, PropTypes.array]),
+  className: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
   style: PropTypes.object,
   options: PropTypes.array,
   selectedOptions: PropTypes.array,
