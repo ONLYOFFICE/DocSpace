@@ -131,6 +131,7 @@ export function getFoldersTree() {
         return {
           id: data.current.id,
           key: `0-${index}`,
+          parentId: data.current.parentId,
           title: data.current.title,
           rootFolderType: type,
           rootFolderName: name,
