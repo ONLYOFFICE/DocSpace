@@ -140,6 +140,10 @@ const SimpleFilesRow = styled(Row)`
       color: "#657077";
     }
   }
+
+  .styled-element {
+    margin-right:0;
+  }
 `;
 
 class SectionBodyContent extends React.Component {

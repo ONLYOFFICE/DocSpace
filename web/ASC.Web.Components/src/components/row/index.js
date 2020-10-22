@@ -142,7 +142,7 @@ class Row extends React.Component {
             />
           </StyledCheckbox>
         )}
-        {renderElement && <StyledElement>{element}</StyledElement>}
+        {renderElement && <StyledElement className="styled-element">{element}</StyledElement>}
         <StyledContent className="row_content">{children}</StyledContent>
         <StyledOptionButton
           className="row_context-menu-wrapper"

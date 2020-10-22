@@ -54,9 +54,6 @@ const sideColor = "#A3A9AE";
 const { getSettings } = initStore.auth.selectors;
 
 const SimpleFilesRowContent = styled(RowContent)`
-  div:first-child {
-    margin-left:0;
-  }
 
   .badge-ext {
     margin-left: -8px;
