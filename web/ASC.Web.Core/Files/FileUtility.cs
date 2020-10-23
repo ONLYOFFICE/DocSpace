@@ -314,7 +314,14 @@ namespace ASC.Web.Core.Files
             }
         }
 
-        public List<string> ExtsWebTemplate { get; }
+        private List<string> extsWebTemplate;
+        public List<string> ExtsWebTemplate
+        {
+            get
+            {
+                return extsWebTemplate ??= (Configuration.GetSection("files:docservice:template-docs").Get<string[]>() ?? new string[] { }).ToList();
+            }
+        }
 
         private List<string> extsMustConvert;
         public List<string> ExtsMustConvert
