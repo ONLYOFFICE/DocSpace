@@ -784,8 +784,9 @@ class SectionBodyContent extends React.Component {
       isFavorites,
       isRecent,
       title,
-      isEncryptionSupport
+      isEncryptionSupport,
       t,
+      i18n
     } = this.props;
     const subheadingText = t("SubheadingEmptyText");
     const myDescription = t("MyEmptyContainerDescription");
