@@ -14,10 +14,15 @@ const StyledTreeMenu = styled(Tree)`
 
   .rc-tree-switcher {
     margin-left: 0 !important;
+    margin-top: 1px;
   }
 
   & li span.rc-tree-iconEle {
-    margin-left: 4px;
+    margin-left: 3px;
+    width: 18px;
+    height: 16px;
+    padding: 0;
+    margin-top: 4px;
   }
 
   ${(props) =>
@@ -27,9 +32,12 @@ const StyledTreeMenu = styled(Tree)`
         display: none;
       }
     `}
+  span.rc-tree-switcher {
+    margin-right: 6px !important;
+  }
   .rc-tree-node-content-wrapper {
     position: static !important;
-    margin-bottom: ${(props) => +props.gapBetweenNodes - 15 + "px;"};
+    margin-bottom: ${(props) => +props.gapBetweenNodes - 16 + "px;"};
     @media (max-width: 1024px) {
       margin-bottom: ${(props) =>
         props.gapBetweenNodesTablet
@@ -43,6 +51,7 @@ const StyledTreeMenu = styled(Tree)`
       span.rc-tree-node-selected {
         width: min-content !important;
         padding-right: 5px;
+
         max-width: 85%;
       }
     `}

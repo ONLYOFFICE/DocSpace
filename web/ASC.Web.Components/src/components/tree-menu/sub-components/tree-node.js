@@ -306,6 +306,11 @@ const TreeNodeMenu = styled(TreeNode)`
     right: -30px;
     top: 2px;
   }
+  ${(props) =>
+    props.trash &&
+    css`
+      margin-top: 18px !important;
+    `}
 `;
 
 TreeNodeMenu.propTypes = {
