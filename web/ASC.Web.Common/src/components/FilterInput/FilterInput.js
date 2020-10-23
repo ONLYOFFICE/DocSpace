@@ -615,20 +615,6 @@ class FilterInput extends React.Component {
       showHiddenFilter,
     } = this.state;
 
-    let iconSize = 30;
-    switch (size) {
-      case "base":
-        iconSize = 30;
-        break;
-      case "middle":
-      case "big":
-      case "huge":
-        iconSize = 41;
-        break;
-      default:
-        break;
-    }
-
     const isMinimized = widthProp <= smallTablet;
 
     return (
@@ -663,7 +649,6 @@ class FilterInput extends React.Component {
                 contextMenuHeader={contextMenuHeader}
                 openFilterItems={openFilterItems}
                 hideFilterItems={hideFilterItems}
-                iconSize={iconSize}
                 getFilterData={getFilterData}
                 onClickFilterItem={this.onClickFilterItem}
                 onDeleteFilterItem={this.onDeleteFilterItem}

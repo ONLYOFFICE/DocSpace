@@ -3,7 +3,7 @@ import { utils } from "asc-web-components";
 const { smallTablet } = utils.device;
 
 const HiddenSortStyles = css`
-  width: 50px;
+  width: 46px;
   .optionalBlock ~ div:first-child {
     opacity: 0;
   }
@@ -42,7 +42,9 @@ const StyledFilterInput = styled.div`
     display: flex;
 
     .filter-button {
+      height: 26px;
       svg {
+        height: 26px;
         path:not(:first-child) {
           stroke: #a3a9ae;
         }

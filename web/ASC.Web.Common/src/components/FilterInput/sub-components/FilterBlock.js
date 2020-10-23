@@ -161,7 +161,6 @@ class FilterBlock extends React.Component {
   render() {
     //console.log("FilterBlock render");
     const {
-      iconSize,
       isDisabled,
       contextMenuHeader,
       getFilterData,
@@ -179,7 +178,6 @@ class FilterBlock extends React.Component {
           <FilterButton
             columnCount={columnCount}
             id="filter-button"
-            iconSize={iconSize}
             getData={this.getData}
             isDisabled={isDisabled}
             asideHeader={contextMenuHeader}
@@ -194,7 +192,6 @@ class FilterBlock extends React.Component {
 FilterBlock.propTypes = {
   getFilterData: PropTypes.func,
   hideFilterItems: PropTypes.array,
-  iconSize: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   isDisabled: PropTypes.bool,
   onDeleteFilterItem: PropTypes.func,
   openFilterItems: PropTypes.array,

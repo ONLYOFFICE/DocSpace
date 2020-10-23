@@ -8,11 +8,12 @@ class FilterButton extends React.PureComponent {
       getData,
       id,
       isDisabled,
-      iconSize,
       columnCount,
       asideHeader,
       isMinimized,
     } = this.props;
+
+    const iconSize = 32;
 
     return (
       <ContextMenuButton
@@ -35,7 +36,6 @@ class FilterButton extends React.PureComponent {
 }
 FilterButton.propTypes = {
   getData: PropTypes.func,
-  iconSize: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   id: PropTypes.string,
   isDisabled: PropTypes.bool,
   columnCount: PropTypes.number,

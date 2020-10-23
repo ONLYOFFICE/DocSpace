@@ -63,7 +63,7 @@ class SearchInput extends React.Component {
     switch (this.props.size) {
       case "base":
         clearButtonSize =
-          !!this.state.inputValue || this.props.showClearButton ? 12 : 15;
+          !!this.state.inputValue || this.props.showClearButton ? 12 : 16;
         break;
       case "middle":
         clearButtonSize =
@@ -97,8 +97,8 @@ class SearchInput extends React.Component {
           }
           isIconFill={true}
           iconSize={clearButtonSize}
-          iconColor="#A3A9AE"
-          hoverColor="#A3A9AE"
+          iconColor="#D0D5DA"
+          hoverColor="#D0D5DA"
           onIconClick={
             !!this.state.inputValue || this.props.showClearButton
               ? this.clearSearch

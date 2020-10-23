@@ -23,7 +23,7 @@ const StyledIconBlock = styled.div`
 const StyledChildrenBlock = styled.div`
   display: flex;
   align-items: center;
-  padding: 2px 0px 2px 2px;
+  padding: 2px 0px 2px 3px;
 `;
 
 /* eslint-disable react/prop-types, no-unused-vars */
