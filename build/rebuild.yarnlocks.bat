@@ -6,5 +6,5 @@ del /f /q web\ASC.Web.Client\yarn.lock
 del /f /q products\ASC.Files\Client\yarn.lock
 del /f /q products\ASC.People\Client\yarn.lock
 
-echo start /b call build\rebuild.frontend.bat
+start /b call build\rebuild.frontend.bat
 
