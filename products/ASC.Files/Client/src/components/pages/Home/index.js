@@ -23,7 +23,7 @@ import {
   setIsLoading,
   setFirstLoad,
   startUpload,
-  setSelections
+  setSelections,
 } from "../../../store/files/actions";
 import {
   getConvertDialogVisible,
@@ -50,16 +50,6 @@ const { getSettingsHomepage, getIsLoaded } = store.auth.selectors;
 const { setWidthProp } = store.auth.actions;
 
 class PureHome extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      overwriteSetting: false,
-      uploadOriginalFormatSetting: false,
-      hideWindowSetting: false,
-    };
-  }
-
   componentDidMount() {
     const { fetchFiles, homepage, setIsLoading, setFirstLoad } = this.props;
 
@@ -182,11 +172,6 @@ class PureHome extends React.Component {
   render() {
     console.log("Home render");
     const {
-      // overwriteSetting,
-      // uploadOriginalFormatSetting,
-      // hideWindowSetting
-    } = this.state;
-    const {
       progressData,
       viewAs,
       convertDialogVisible,
@@ -196,40 +181,11 @@ class PureHome extends React.Component {
       isLoaded,
     } = this.props;
 
-    // const progressBarContent = (
-    //   <div>
-    //     <Checkbox
-    //       onChange={this.onChangeOverwrite}
-    //       isChecked={overwriteSetting}
-    //       label={t("OverwriteSetting")}
-    //     />
-    //     <Checkbox
-    //       onChange={this.onChangeOriginalFormat}
-    //       isChecked={uploadOriginalFormatSetting}
-    //       label={t("UploadOriginalFormatSetting")}
-    //     />
-    //     <Checkbox
-    //       onChange={this.onChangeWindowVisible}
-    //       isChecked={hideWindowSetting}
-    //       label={t("HideWindowSetting")}
-    //     />
-    //   </div>
-    // );
-
     return (
       <>
         {convertDialogVisible && (
           <ConvertDialog visible={convertDialogVisible} />
         )}
-        {/* <RequestLoader
-          visible={isLoading}
-          zIndex={256}
-          loaderSize="16px"
-          loaderColor={"#999"}
-          label={`${t("LoadingProcessing")} ${t("LoadingDescription")}`}
-          fontSize="12px"
-          fontColor={"#999"}
-        /> */}
         <PageLayout
           withBodyScroll
           withBodyAutoFocus={!isMobile}
