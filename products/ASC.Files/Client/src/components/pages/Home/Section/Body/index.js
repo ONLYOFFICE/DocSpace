@@ -905,7 +905,7 @@ class SectionBodyContent extends React.Component {
         />
       );
     } else {
-      return;
+      return null;
     }
   };
 
@@ -1352,6 +1352,8 @@ class SectionBodyContent extends React.Component {
   };
 
   render() {
+    console.log("Files Home SectionBodyContent render", this.props);
+
     const {
       viewer,
       parentId,
@@ -1413,18 +1415,18 @@ class SectionBodyContent extends React.Component {
     }
 
     return !fileAction.id && currentFolderCount === 0 ? (
-      parentId === 0 ? (
-        this.renderEmptyRootFolderContainer()
-      ) : (
-        this.renderEmptyFolderContainer()
-      )
+        parentId === 0 ? (
+          this.renderEmptyRootFolderContainer()
+        ) : (
+          this.renderEmptyFolderContainer()
+        )
     ) : !fileAction.id && items.length === 0 ? (
-      firstLoad ? (
-        <Loaders.Rows />
+        firstLoad ? (
+          <Loaders.Rows />
+        ) : (
+          this.renderEmptyFilterContainer()
+        )
       ) : (
-        this.renderEmptyFilterContainer()
-      )
-    ) : (
       <>
         {showMoveToPanel && (
           <OperationsPanel
