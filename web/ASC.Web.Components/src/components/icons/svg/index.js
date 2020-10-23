@@ -195,6 +195,8 @@ import OrigCatalogFavoritesIcon from "./catalog.favorites.react.svg";
 import OrigFavoriteIcon from "./favorite.react.svg";
 import OrigRecentIcon from "./catalog.recent.react.svg";
 
+import OrigCatalogPrivateRoomIcon from "./catalog.private.react.svg";
+
 export const AZSortingIcon = createStyledIcon(
   OrigAZSortingIcon,
   "AZSortingIcon"
@@ -765,4 +767,8 @@ export const FavoriteIcon = createStyledIcon(
 export const CatalogRecentIcon = createStyledIcon(
   OrigRecentIcon,
   "CatalogRecentIcon"
+);
+export const CatalogPrivateRoomIcon = createStyledIcon(
+  OrigCatalogPrivateRoomIcon,
+  "CatalogPrivateRoomIcon"
 );
