@@ -19,6 +19,7 @@ const StyledSection = styled.section`
   flex-grow: 1;
   display: flex;
   flex-direction: column;
+  overflow-x: hidden;
 
   .layout-progress-bar {
     bottom: 0;
@@ -37,8 +38,6 @@ const StyledSection = styled.section`
   .section-body_filter {
     display: none;
   }
-
-  /*${(props) => props.widthProp < 738 && tabletProps};*/
 
   @media ${tablet} {
     padding: 0 0 0 16px;

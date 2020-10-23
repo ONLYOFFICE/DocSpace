@@ -25,7 +25,6 @@ const commonStyles = css`
     display: flex;
     flex-direction: column;
     min-height: 100%;
-    overflow-x: hidden;
   }
 `;
 
