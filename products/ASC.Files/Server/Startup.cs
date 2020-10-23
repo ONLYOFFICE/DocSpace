@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
 
@@ -44,8 +45,6 @@ namespace ASC.Files
                 .AddThirdPartyAppHandlerService()
                 .AddDocuSignHandlerService()
                 .AddNotifyConfiguration();
-
-
         }
 
         public override void Configure(IApplicationBuilder app, IWebHostEnvironment env)
