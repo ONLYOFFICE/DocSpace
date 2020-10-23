@@ -29,6 +29,7 @@ using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Security.Authentication;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Encodings.Web;
@@ -36,10 +37,12 @@ using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Logging;
+using ASC.Core.Common.Security;
 using ASC.Security.Cryptography;
 using ASC.Web.Core.Helpers;
 
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -61,7 +64,8 @@ namespace ASC.ApiSystem.Classes
             IConfiguration configuration,
             IOptionsMonitor<ILog> option,
             ApiSystemHelper apiSystemHelper,
-            MachinePseudoKeys machinePseudoKeys) :
+            MachinePseudoKeys machinePseudoKeys,
+            IHttpContextAccessor httpContextAccessor) :
             base(options, logger, encoder, clock)
         {
             Configuration = configuration;
@@ -70,6 +74,7 @@ namespace ASC.ApiSystem.Classes
 
             ApiSystemHelper = apiSystemHelper;
             MachinePseudoKeys = machinePseudoKeys;
+            HttpContextAccessor = httpContextAccessor;
         }
 
         private ILog Log { get; }
@@ -78,6 +83,7 @@ namespace ASC.ApiSystem.Classes
 
         private ApiSystemHelper ApiSystemHelper { get; }
         private MachinePseudoKeys MachinePseudoKeys { get; }
+        private IHttpContextAccessor HttpContextAccessor { get; }
 
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
@@ -103,7 +109,7 @@ namespace ASC.ApiSystem.Classes
 
                 var substring = "ASC";
 
-                if (!header.StartsWith(substring, StringComparison.InvariantCultureIgnoreCase))
+                if (header.StartsWith(substring, StringComparison.InvariantCultureIgnoreCase))
                 {
                     var splitted = header.Substring(substring.Length).Trim().Split(':', StringSplitOptions.RemoveEmptyEntries);
 
@@ -159,9 +165,10 @@ namespace ASC.ApiSystem.Classes
 
                 return Task.FromResult(AuthenticateResult.Fail(new AuthenticationException(HttpStatusCode.InternalServerError.ToString())));
             }
+            var identity = new ClaimsIdentity( Scheme.Name);
 
             Log.InfoFormat("Auth success {0}", Scheme.Name);
-
+            if (HttpContextAccessor?.HttpContext != null) HttpContextAccessor.HttpContext.User = new CustomClaimsPrincipal(new ClaimsIdentity(Scheme.Name), identity);
             return Task.FromResult(AuthenticateResult.Success(new AuthenticationTicket(Context.User, new AuthenticationProperties(), Scheme.Name)));
         }
     }
