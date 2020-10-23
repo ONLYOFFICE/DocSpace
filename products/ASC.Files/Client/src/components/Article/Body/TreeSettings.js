@@ -30,7 +30,7 @@ const i18n = createI18N({
 const { changeLanguage } = utils;
 
 const StyledTreeMenu = styled(TreeMenu)`
-  margin-top: 20px !important;
+  margin-top: 18px !important;
 
   .rc-tree-node-selected {
     background: #dfe2e3 !important;
@@ -48,7 +48,7 @@ const StyledTreeMenu = styled(TreeMenu)`
   }
 
   .rc-tree-child-tree {
-    margin-left: 24px;
+    margin-left: 22px;
   }
 `;
 
