@@ -4,7 +4,7 @@ import styled, { css } from "styled-components";
 import { utils, Scrollbar, DragAndDrop } from "asc-web-components";
 import SelectedFrame from "./SelectedFrame";
 import isEqual from "lodash/isEqual";
-
+import { isMobile } from "react-device-detect";
 const { tablet } = utils.device;
 
 const commonStyles = css`
@@ -96,14 +96,15 @@ class SectionBody extends React.Component {
 
     const focusProps = autoFocus
       ? {
-          ref: this.focusRef,
-          tabIndex: 1,
-        }
+        ref: this.focusRef,
+        tabIndex: 1,
+      }
       : {};
 
     const scrollProp = uploadFiles ? { ref: this.scrollRef } : {};
 
     return uploadFiles ? (
+
       <StyledDropZoneBody
         isDropZone
         onDrop={onDrop}
@@ -111,52 +112,78 @@ class SectionBody extends React.Component {
         viewAs={viewAs}
       >
         {withScroll ? (
-          <Scrollbar {...scrollProp} stype="mediumBlack">
+
+          !isMobile ? (
+            <Scrollbar {...scrollProp} stype="mediumBlack">
+              <SelectedFrame
+                viewAs={viewAs}
+                scrollRef={this.scrollRef}
+                setSelections={setSelections}
+              >
+                <div className="section-wrapper">
+                  <div className="section-wrapper-content" {...focusProps}>
+                    {children}
+                    <StyledSpacer pinned={pinned} />
+                  </div>
+                </div>
+              </SelectedFrame>
+            </Scrollbar>)
+            : (
+              <SelectedFrame
+                viewAs={viewAs}
+                scrollRef={this.scrollRef}
+                setSelections={setSelections}
+              >
+                <div className="section-wrapper">
+                  <div className="section-wrapper-content" {...focusProps}>
+                    {children}
+                    <StyledSpacer pinned={pinned} />
+                  </div>
+                </div>
+              </SelectedFrame>)
+        ) : (
             <SelectedFrame
               viewAs={viewAs}
               scrollRef={this.scrollRef}
               setSelections={setSelections}
             >
               <div className="section-wrapper">
-                <div className="section-wrapper-content" {...focusProps}>
-                  {children}
-                  <StyledSpacer pinned={pinned} />
-                </div>
+
+                {children}
+                <StyledSpacer pinned={pinned} />
+
               </div>
             </SelectedFrame>
-          </Scrollbar>
-        ) : (
-          <SelectedFrame
-            viewAs={viewAs}
-            scrollRef={this.scrollRef}
-            setSelections={setSelections}
-          >
-            <div className="section-wrapper">
-              {children}
-              <StyledSpacer pinned={pinned} />
-            </div>
-          </SelectedFrame>
-        )}
+          )}
       </StyledDropZoneBody>
     ) : (
-      <StyledSectionBody viewAs={viewAs} withScroll={withScroll}>
-        {withScroll ? (
-          <Scrollbar {...scrollProp} stype="mediumBlack">
-            <div className="section-wrapper">
-              <div className="section-wrapper-content" {...focusProps}>
+        <StyledSectionBody viewAs={viewAs} withScroll={withScroll}>
+          {withScroll ? (
+            !isMobile ? (
+              <Scrollbar {...scrollProp} stype="mediumBlack">
+                <div className="section-wrapper">
+                  <div className="section-wrapper-content" {...focusProps}>
+                    {children}
+                    <StyledSpacer pinned={pinned} />
+                  </div>
+                </div>
+              </Scrollbar>)
+              : (
+                <div className="section-wrapper">
+                  <div className="section-wrapper-content" {...focusProps}>
+                    {children}
+                    <StyledSpacer pinned={pinned} />
+                  </div>
+                </div>
+              )
+          ) : (
+              <div className="section-wrapper">
                 {children}
                 <StyledSpacer pinned={pinned} />
               </div>
-            </div>
-          </Scrollbar>
-        ) : (
-          <div className="section-wrapper">
-            {children}
-            <StyledSpacer pinned={pinned} />
-          </div>
-        )}
-      </StyledSectionBody>
-    );
+            )}
+        </StyledSectionBody>
+      );
   }
 }
 

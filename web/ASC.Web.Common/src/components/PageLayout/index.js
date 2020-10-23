@@ -306,7 +306,7 @@ class PageLayoutComponent extends React.Component {
                       onDrop={onDrop}
                       uploadFiles={uploadFiles}
                       setSelections={setSelections}
-                      withScroll={isMobile ? false : withBodyScroll}
+                      withScroll={ withBodyScroll}
                       autoFocus={isMobile ? false :withBodyAutoFocus}
                       pinned={this.state.isArticlePinned}
                       viewAs={viewAs}
