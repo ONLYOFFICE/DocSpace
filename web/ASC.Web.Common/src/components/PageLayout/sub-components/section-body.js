@@ -19,12 +19,14 @@ const commonStyles = css`
 
     @media ${tablet} {
       padding: 16px 0 16px 24px;
+      margin-top: 99px;
     }
 
     .section-wrapper {
       display: flex;
       flex-direction: column;
       min-height: 100%;
+
     }
   }
 `;
@@ -82,6 +84,7 @@ class SectionBody extends React.Component {
   }
 
   render() {
+
     //console.log("PageLayout SectionBody render");
     const {
       autoFocus,
@@ -92,8 +95,9 @@ class SectionBody extends React.Component {
       uploadFiles,
       viewAs,
       withScroll,
-    } = this.props;
 
+    } = this.props;
+    
     const focusProps = autoFocus
       ? {
         ref: this.focusRef,
@@ -115,6 +119,7 @@ class SectionBody extends React.Component {
 
           !isMobile ? (
             <Scrollbar {...scrollProp} stype="mediumBlack">
+              {console.log("Scroll ref in section", this.scrollRef)}
               <SelectedFrame
                 viewAs={viewAs}
                 scrollRef={this.scrollRef}
@@ -135,7 +140,7 @@ class SectionBody extends React.Component {
                 setSelections={setSelections}
               >
                 <div className="section-wrapper">
-                  <div className="section-wrapper-content" {...focusProps}>
+                  <div className="section-wrapper-content" >
                     {children}
                     <StyledSpacer pinned={pinned} />
                   </div>

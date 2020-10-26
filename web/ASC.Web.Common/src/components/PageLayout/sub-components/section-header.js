@@ -6,6 +6,8 @@ import isEqual from "lodash/isEqual";
 const { tablet } = utils.device;
 
 const StyledSectionHeader = styled.div`
+
+ 
   border-bottom: 1px solid #eceef1;
   height: 56px;
   margin-right: 24px;
@@ -14,6 +16,13 @@ const StyledSectionHeader = styled.div`
     margin-right: 16px;
     border-bottom: none;
     height: 44px;
+
+    background-color: #fff; 
+    position: fixed; 
+    top: 56px; 
+    width: 100%; 
+    transition: top 0.3s;
+    z-index:100;
   }
 
   .section-header {
@@ -40,17 +49,26 @@ const StyledSectionHeader = styled.div`
 `;
 
 class SectionHeader extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.focusRef = React.createRef();
+  }
+
   shouldComponentUpdate(nextProps) {
     return !isEqual(this.props, nextProps);
   }
-
+  componentDidMount() {
+   
+  }
   render() {
+
     //console.log("PageLayout SectionHeader render");
     // eslint-disable-next-line react/prop-types
     const { isArticlePinned, ...rest } = this.props;
     return (
       <StyledSectionHeader isArticlePinned={isArticlePinned}>
-        <div className="section-header" {...rest} />
+        <div id="scroll" className="section-header" {...rest} />
       </StyledSectionHeader>
     );
   }

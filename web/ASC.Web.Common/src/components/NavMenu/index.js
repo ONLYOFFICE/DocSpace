@@ -4,7 +4,7 @@ import { Backdrop, Toast, Aside } from "asc-web-components";
 import Header from "./sub-components/header";
 import HeaderNav from "./sub-components/header-nav";
 import HeaderUnAuth from "./sub-components/header-unauth";
-
+import styled from "styled-components"
 import { I18nextProvider, withTranslation } from "react-i18next";
 import i18n from "./i18n";
 import { connect } from "react-redux";
@@ -13,6 +13,12 @@ import { withRouter } from "react-router";
 
 import { getLanguage } from "../../store/auth/selectors";
 
+const StyledHideAndShow = styled.div`
+  position: fixed; 
+  top: 0px; 
+  transition: top 0.3s;
+  z-index:100;
+`
 class NavMenu extends React.Component {
   constructor(props) {
     super(props);
@@ -102,21 +108,21 @@ class NavMenu extends React.Component {
         <Toast />
 
         <Backdrop visible={isBackdropVisible} onClick={this.backdropClick} />
+         <StyledHideAndShow id="scroll">
+            <HeaderNav />
 
-        <HeaderNav />
-
-        {!isAuthenticated && isLoaded ? (
-          <HeaderUnAuth />
-        ) : (
-          <Header
-            isNavOpened={isNavOpened}
-            onClick={this.showNav}
-            onNavMouseEnter={this.handleNavMouseEnter}
-            onNavMouseLeave={this.handleNavMouseLeave}
-            toggleAside={this.toggleAside}
-          />
-        )}
-
+            {!isAuthenticated && isLoaded ? (
+              <HeaderUnAuth />
+            ) : (
+              <Header
+                isNavOpened={isNavOpened}
+                onClick={this.showNav}
+                onNavMouseEnter={this.handleNavMouseEnter}
+                onNavMouseLeave={this.handleNavMouseLeave}
+                toggleAside={this.toggleAside}
+              />
+          )}
+        </StyledHideAndShow>
         {isAsideAvailable && (
           <Aside visible={isAsideVisible} onClick={this.backdropClick}>
             {asideContent}
