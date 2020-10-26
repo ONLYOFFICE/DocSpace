@@ -58,7 +58,6 @@ export const SET_FILES_SETTING = "SET_FILES_SETTING";
 export const SET_IS_ERROR_SETTINGS = "SET_IS_ERROR_SETTINGS";
 export const SET_FIRST_LOAD = "SET_FIRST_LOAD";
 export const SET_UPLOAD_DATA = "SET_UPLOAD_DATA";
-export const SET_WIDTH_PROP = "SET_WIDTH_PROP";
 
 export function setFile(file) {
   return {
@@ -372,7 +371,7 @@ export function fetchCommonFolder(dispatch) {
 }
 
 export function fetchFavoritesFolder(folderId) {
-  return dispatch => {
+  return (dispatch) => {
     return files.getFolder(folderId).then((data) => {
       dispatch(setFolders(data.folders));
       dispatch(setFiles(data.files));
@@ -384,27 +383,27 @@ export function fetchFavoritesFolder(folderId) {
         })
       );
     });
-  }
+  };
 }
 
 export function markItemAsFavorite(id) {
-  return dispatch => {
+  return (dispatch) => {
     return files.markAsFavorite(id);
-  }
+  };
 }
 
 export function removeItemFromFavorite(id) {
-  return dispatch => {
+  return (dispatch) => {
     return files.removeFromFavorite(id);
-  }
+  };
 }
 
 export function getFileInfo(id) {
-  return dispatch => {
-    return files.getFileInfo(id).then(data => {
+  return (dispatch) => {
+    return files.getFileInfo(id).then((data) => {
       dispatch(setFile(data));
     });
-  }
+  };
 }
 
 export function fetchProjectsFolder(dispatch) {
@@ -470,9 +469,9 @@ export function updateFile(fileId, title) {
 }
 
 export function addFileToRecentlyViewed(fileId) {
-  return dispatch => {
+  return (dispatch) => {
     return files.addFileToRecentlyViewed(fileId);
-  } 
+  };
 }
 
 export function renameFolder(folderId, title) {

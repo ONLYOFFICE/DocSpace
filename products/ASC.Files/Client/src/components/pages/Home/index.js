@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import { isMobile } from "react-device-detect";
+import { utils as sizeUtil } from "asc-web-components";
 //import { RequestLoader } from "asc-web-components";
 import { PageLayout, utils, api, store } from "asc-web-common";
 import { withTranslation, I18nextProvider } from "react-i18next";
@@ -47,7 +48,6 @@ const i18n = createI18N({
 const { changeLanguage } = utils;
 const { FilesFilter } = api;
 const { getSettingsHomepage, getIsLoaded } = store.auth.selectors;
-const { setWidthProp } = store.auth.actions;
 
 class PureHome extends React.Component {
   componentDidMount() {
@@ -177,7 +177,6 @@ class PureHome extends React.Component {
       convertDialogVisible,
       fileActionId,
       isRecycleBin,
-      setWidthProp,
       isLoaded,
     } = this.props;
 
@@ -199,7 +198,6 @@ class PureHome extends React.Component {
           progressBarLabel={progressData.label}
           viewAs={viewAs}
           hideAside={!!fileActionId || progressData.visible}
-          setWidthProp={setWidthProp}
           isLoaded={isLoaded}
         >
           <PageLayout.ArticleHeader>
@@ -280,7 +278,6 @@ const mapDispatchToProps = (dispatch) => {
     setFirstLoad: (firstLoad) => dispatch(setFirstLoad(firstLoad)),
     fetchFiles: (folderId, filter) => dispatch(fetchFiles(folderId, filter)),
     setSelections: (items) => dispatch(setSelections(items)),
-    setWidthProp: (value) => dispatch(setWidthProp(value)),
   };
 };
 

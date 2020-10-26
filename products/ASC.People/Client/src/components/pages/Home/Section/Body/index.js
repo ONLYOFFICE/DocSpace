@@ -40,7 +40,7 @@ const i18n = createI18N({
   localesPath: "pages/Home",
 });
 const { isArrayEqual } = utils.array;
-const { getSettings, getWidthProp } = store.auth.selectors;
+const { getSettings } = store.auth.selectors;
 const { setIsLoaded } = store.auth.actions;
 const { resendUserInvites } = api.people;
 const { EmployeeStatus } = constants;
@@ -374,10 +374,9 @@ class SectionBodyContent extends React.PureComponent {
       settings,
       t,
       filter,
-      widthProp,
       isMobile,
       selectGroup,
-      isLoading
+      isLoading,
     } = this.props;
 
     const { dialogsVisible, user } = this.state;
@@ -424,7 +423,6 @@ class SectionBodyContent extends React.PureComponent {
                 {...checkedProps}
                 {...contextOptionsProps}
                 needForUpdate={this.needForUpdate}
-                widthProp={widthProp}
               >
                 <UserContent
                   isMobile={isMobile}
@@ -491,15 +489,15 @@ class SectionBodyContent extends React.PureComponent {
               />
             </Box>
             <Box displayProp="inline-block" marginProp="14px 0 0 0">
-            <Link
-              type="action"
-              isHovered={true}
-              fontWeight="600"
-              color="#555f65"
-              onClick={this.onResetFilter}
-            >
-              {t("ClearButton")}
-            </Link>
+              <Link
+                type="action"
+                isHovered={true}
+                fontWeight="600"
+                color="#555f65"
+                onClick={this.onResetFilter}
+              >
+                {t("ClearButton")}
+              </Link>
             </Box>
           </>
         }
@@ -517,7 +515,6 @@ const mapStateToProps = (state) => {
     isLoading,
     peopleList: getPeopleList(state),
     settings: getSettings(state),
-    widthProp: getWidthProp(state),
   };
 };
 

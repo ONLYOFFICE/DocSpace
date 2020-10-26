@@ -89,7 +89,7 @@ import {
   getTooltipLabel,
 } from "../../../../../store/files/selectors";
 import { SharingPanel, OperationsPanel } from "../../../../panels";
-const { isAdmin, getSettings, getCurrentUser, getWidthProp } = store.auth.selectors;
+const { isAdmin, getSettings, getCurrentUser } = store.auth.selectors;
 //import { getFilterByLocation } from "../../../../../helpers/converters";
 //import config from "../../../../../../package.json";
 
@@ -699,9 +699,6 @@ class SectionBodyContent extends React.Component {
   };
 
   needForUpdate = (currentProps, nextProps) => {
-    if (currentProps.widthProp !== nextProps.widthProp) {
-      return true;
-    }
     if (currentProps.checked !== nextProps.checked) {
       return true;
     }
@@ -1370,7 +1367,6 @@ class SectionBodyContent extends React.Component {
       currentMediaFileId,
       viewAs,
       t,
-      widthProp,
       isMobile,
       firstLoad,
       filesList,
@@ -1415,18 +1411,18 @@ class SectionBodyContent extends React.Component {
     }
 
     return !fileAction.id && currentFolderCount === 0 ? (
-        parentId === 0 ? (
-          this.renderEmptyRootFolderContainer()
-        ) : (
-          this.renderEmptyFolderContainer()
-        )
-    ) : !fileAction.id && items.length === 0 ? (
-        firstLoad ? (
-          <Loaders.Rows />
-        ) : (
-          this.renderEmptyFilterContainer()
-        )
+      parentId === 0 ? (
+        this.renderEmptyRootFolderContainer()
       ) : (
+        this.renderEmptyFolderContainer()
+      )
+    ) : !fileAction.id && items.length === 0 ? (
+      firstLoad ? (
+        <Loaders.Rows />
+      ) : (
+        this.renderEmptyFilterContainer()
+      )
+    ) : (
       <>
         {showMoveToPanel && (
           <OperationsPanel
@@ -1553,8 +1549,7 @@ class SectionBodyContent extends React.Component {
                 isRecycleBin || isEdit || item.id <= 0
                   ? null
                   : this.getSharedButton();
-              const displayShareButton =
-                widthProp < 500 ? "26px" : isRecycleBin ? "38px" : "96px";
+              const displayShareButton = isRecycleBin ? "38px" : "96px";
               let classNameProp =
                 isFolder && item.access < 2 && !isRecycleBin
                   ? { className: " dropable" }
@@ -1573,7 +1568,6 @@ class SectionBodyContent extends React.Component {
                   value={value}
                 >
                   <SimpleFilesRow
-                    widthProp={widthProp}
                     key={item.id}
                     data={item}
                     element={element}
@@ -1672,7 +1666,6 @@ const mapStateToProps = (state) => {
     viewAs: getViewAs(state),
     viewer: getCurrentUser(state),
     tooltipValue: getTooltipLabel(state),
-    widthProp: getWidthProp(state),
   };
 };
 

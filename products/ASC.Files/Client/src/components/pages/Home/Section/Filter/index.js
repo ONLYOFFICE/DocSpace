@@ -24,7 +24,6 @@ const {
   getCurrentUser,
   getSettingsCustomNames,
   getLanguage,
-  getWidthProp,
 } = store.auth.selectors;
 const { FilterType } = constants;
 
@@ -288,15 +287,14 @@ class SectionFilterContent extends React.Component {
       this.props.selectedFolderId !== nextProps.selectedFolderId ||
       this.state.isReady !== nextState.isReady ||
       this.props.viewAs !== nextProps.viewAs ||
-      this.props.firstLoad !== nextProps.firstLoad ||
-      this.props.widthProp !== nextProps.widthProp
+      this.props.firstLoad !== nextProps.firstLoad
     );
   }
 
   render() {
     console.log("Filter render");
     const selectedFilterData = this.getSelectedFilterData();
-    const { t, language, firstLoad, widthProp } = this.props;
+    const { t, language, firstLoad } = this.props;
     const filterColumnCount =
       window.innerWidth < 500 ? {} : { filterColumnCount: 3 };
     return firstLoad ? (
@@ -317,7 +315,6 @@ class SectionFilterContent extends React.Component {
         {...filterColumnCount}
         contextMenuHeader={t("AddFilter")}
         isMobile={isMobileOnly}
-        widthProp={widthProp}
       />
     );
   }
@@ -333,7 +330,6 @@ function mapStateToProps(state) {
     selectedFolderId: getSelectedFolderId(state),
     selectedItem: getFilterSelectedItem(state),
     viewAs: getViewAs(state),
-    widthProp: getWidthProp(state),
   };
 }
 

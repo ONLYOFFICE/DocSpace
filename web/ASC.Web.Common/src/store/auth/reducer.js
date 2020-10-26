@@ -14,7 +14,6 @@ import {
   SET_GREETING_SETTINGS,
   SET_CUSTOM_NAMES,
   SET_WIZARD_COMPLETED,
-  SET_WIDTH_PROP,
 } from "./actions";
 import isEmpty from "lodash/isEmpty";
 import { LANGUAGE, AUTH_KEY } from "../../constants";
@@ -61,7 +60,6 @@ const initialState = {
       guestsCaption: "Guests",
     },
   },
-  widthProp: null,
 };
 
 const authReducer = (state = initialState, action) => {
@@ -149,10 +147,6 @@ const authReducer = (state = initialState, action) => {
     case SET_WIZARD_COMPLETED:
       return Object.assign({}, state, {
         settings: { ...state.settings, wizardCompleted: true },
-      });
-    case SET_WIDTH_PROP:
-      return Object.assign({}, state, {
-        widthProp: action.widthProp,
       });
 
     default:

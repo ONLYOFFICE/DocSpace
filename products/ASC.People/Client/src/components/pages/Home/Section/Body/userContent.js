@@ -9,9 +9,6 @@ import {
   Box,
 } from "asc-web-components";
 import { connect } from "react-redux";
-import { store } from "asc-web-common";
-
-const { getWidthProp } = store.auth.selectors;
 
 const getFormattedGroups = (user, selectGroup) => {
   let temp = [];
@@ -63,14 +60,7 @@ const getFormattedGroups = (user, selectGroup) => {
   }
 };
 
-const UserContent = ({
-  user,
-  history,
-  settings,
-  selectGroup,
-  widthProp,
-  isMobile,
-}) => {
+const UserContent = ({ user, history, settings, selectGroup, isMobile }) => {
   const { userName, displayName, title, mobilePhone, email, statusType } = user;
   const groups = getFormattedGroups(user, selectGroup);
 
@@ -94,11 +84,7 @@ const UserContent = ({
   const sideInfoColor = "#A3A9AE";
 
   return (
-    <RowContent
-      widthProp={widthProp}
-      isMobile={isMobile}
-      sideColor={sideInfoColor}
-    >
+    <RowContent isMobile={isMobile} sideColor={sideInfoColor}>
       <Link
         containerWidth="28%"
         type="page"
@@ -170,7 +156,6 @@ const UserContent = ({
 function mapStateToProps(state) {
   return {
     settings: state.auth.settings,
-    widthProp: getWidthProp(state),
   };
 }
 
