@@ -191,7 +191,7 @@ class TreeFolders extends React.Component {
           id={item.id}
           key={item.id}
           title={item.title}
-          trash={item.key === "0-5" ? true : false}
+          needTopMargin={item.key === "0-5" ? true : false}
           dragging={dragging}
           isLeaf={item.foldersCount ? false : true}
           icon={this.getFolderIcon(item)}

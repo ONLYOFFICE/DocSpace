@@ -38,19 +38,14 @@ const StyledTreeMenu = styled(Tree)`
   .rc-tree-node-content-wrapper {
     position: static !important;
     margin-bottom: ${(props) => +props.gapBetweenNodes - 16 + "px;"};
-    @media (max-width: 1024px) {
-      margin-bottom: ${(props) =>
-        props.gapBetweenNodesTablet
-          ? +props.gapBetweenNodesTablet - 15 + "px;"
-          : +props.gapBetweenNodes - 15 + "px;"};
-    }
   }
+
   ${(props) =>
     !props.isFullFillSelection &&
     css`
       span.rc-tree-node-selected {
         width: min-content !important;
-        padding-right: 5px;
+        padding-right: 4px;
 
         max-width: 85%;
       }
@@ -132,6 +127,15 @@ const StyledTreeMenu = styled(Tree)`
           }
         `
       : ``}
+  @media (max-width: 1024px) {
+    margin-top: 20px !important;
+    .rc-tree-node-content-wrapper {
+      margin-bottom: ${(props) =>
+        props.gapBetweenNodesTablet
+          ? +props.gapBetweenNodesTablet - 16 + "px;"
+          : +props.gapBetweenNodes - 16 + "px;"};
+    }
+  }
 `;
 
 const TreeMenu = React.forwardRef((props, ref) => {

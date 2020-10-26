@@ -307,7 +307,7 @@ const TreeNodeMenu = styled(TreeNode)`
     top: 2px;
   }
   ${(props) =>
-    props.trash &&
+    props.needTopMargin &&
     css`
       margin-top: 18px !important;
     `}
