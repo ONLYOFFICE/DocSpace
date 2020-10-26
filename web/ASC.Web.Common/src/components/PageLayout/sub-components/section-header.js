@@ -7,13 +7,13 @@ const { tablet } = utils.device;
 
 const StyledSectionHeader = styled.div`
   border-bottom: 1px solid #eceef1;
-  height: 56px;
+  height: 55px;
   margin-right: 24px;
 
   @media ${tablet} {
     margin-right: 16px;
     border-bottom: none;
-    height: 44px;
+    height: 49px;
   }
 
   .section-header {
@@ -21,6 +21,7 @@ const StyledSectionHeader = styled.div`
 
     @media ${tablet} {
       width: 100%;
+      padding-top: 4px;
     }
 
     h1,
