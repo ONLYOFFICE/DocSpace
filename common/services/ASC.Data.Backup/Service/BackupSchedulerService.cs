@@ -96,7 +96,7 @@ namespace ASC.Data.Backup.Service
         }
     }
 
-    [Singletone]
+    [Singletone(Additional = typeof(BackupSchedulerServiceExtension))]
     public class BackupSchedulerService
     {
         private readonly object schedulerLock = new object();
@@ -161,6 +161,14 @@ namespace ASC.Data.Backup.Service
                     Monitor.Exit(schedulerLock);
                 }
             }
+        }
+    }
+
+    public class BackupSchedulerServiceExtension
+    {
+        public static void Register(DIHelper services)
+        {
+            services.TryAdd<BackupSchedulerServiceHelper>();
         }
     }
 }

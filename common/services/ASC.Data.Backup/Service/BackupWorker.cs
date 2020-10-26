@@ -50,7 +50,7 @@ using Newtonsoft.Json;
 
 namespace ASC.Data.Backup.Service
 {
-    [Singletone]
+    [Singletone(Additional = typeof(BackupWorkerExtension))]
     public class BackupWorker
     {
         private ILog Log { get; set; }
@@ -730,7 +730,7 @@ namespace ASC.Data.Backup.Service
         }
     }
 
-    [Singletone]
+    [Singletone(Additional = typeof(FactoryProgressItemExtension))]
     public class FactoryProgressItem
     {
         public IServiceProvider ServiceProvider { get; }
@@ -797,6 +797,7 @@ namespace ASC.Data.Backup.Service
         }
     }
 
+    [Scope]
     internal class BackupWorkerScope
     {
         private TenantManager TenantManager { get; }
@@ -852,16 +853,21 @@ namespace ASC.Data.Backup.Service
         }
     }
 
-    public static class BackupWorkerExtension
+    public class BackupWorkerExtension
     {
-        public static DIHelper AddBackupWorkerService(this DIHelper services)
+        public static void Register(DIHelper services)
         {
-            services.TryAddScoped<BackupWorkerScope>();
-            services.TryAddSingleton<ProgressQueueOptionsManager<BaseBackupProgressItem>>();
-            services.TryAddSingleton<ProgressQueue<BaseBackupProgressItem>>();
-            services.AddSingleton<IPostConfigureOptions<ProgressQueue<BaseBackupProgressItem>>, ConfigureProgressQueue<BaseBackupProgressItem>>();
+            services.TryAdd<BackupWorkerScope>();
+        }
+    }
 
-            return services;
+    public class FactoryProgressItemExtension
+    {
+        public static void Register(DIHelper services)
+        {
+            services.TryAdd<BackupProgressItem>();
+            services.TryAdd<RestoreProgressItem>();
+            services.TryAdd<TransferProgressItem>();
         }
     }
 }

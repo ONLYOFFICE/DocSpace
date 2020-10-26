@@ -145,6 +145,7 @@ namespace ASC.Data.Backup
         }
     }
 
+    [Scope]
     public class NotifyHelperScope
     {
         private UserManager UserManager { get; }

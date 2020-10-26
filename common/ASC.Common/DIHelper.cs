@@ -149,12 +149,12 @@ namespace ASC.Common
             if (Added.Contains(serviceName)) return false;
             Added.Add(serviceName);
 
-            if (serviceName == "ASC.FederatedLogin.AccountLinker")
+            if (serviceName == "ASC.Common.Threading.Progress.ProgressQueueOptionsManager`1[ASC.Data.Backup.Service.BaseBackupProgressItem]")
             {
                 var qqaz = 0;
             }
 
-            var di = service.IsGenericType && service.GetGenericTypeDefinition() == typeof(IConfigureOptions<>) && implementation != null ? implementation.GetCustomAttribute<DIAttribute>() : service.GetCustomAttribute<DIAttribute>();
+            var di = service.IsGenericType && (service.GetGenericTypeDefinition() == typeof(IConfigureOptions<>) || service.GetGenericTypeDefinition() == typeof(IPostConfigureOptions<>)) && implementation != null ? implementation.GetCustomAttribute<DIAttribute>() : service.GetCustomAttribute<DIAttribute>();
             var isnew = false;
 
             if (di != null)
@@ -175,7 +175,7 @@ namespace ASC.Common
                 {
                     if (di.Service != null)
                     {
-                        var a = di.Service.GetInterfaces().FirstOrDefault(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IConfigureOptions<>));
+                        var a = di.Service.GetInterfaces().FirstOrDefault(x => x.IsGenericType && (x.GetGenericTypeDefinition() == typeof(IConfigureOptions<>) || x.GetGenericTypeDefinition() == typeof(IPostConfigureOptions<>)));
                         if (a != null)
                         {
                             if (!a.ContainsGenericParameters)
@@ -226,7 +226,7 @@ namespace ASC.Common
 
                     if (di.Implementation != null)
                     {
-                        var a = di.Implementation.GetInterfaces().FirstOrDefault(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IConfigureOptions<>));
+                        var a = di.Implementation.GetInterfaces().FirstOrDefault(x => x.IsGenericType && (x.GetGenericTypeDefinition() == typeof(IConfigureOptions<>) || x.GetGenericTypeDefinition() == typeof(IPostConfigureOptions<>)));
                         if (a != null)
                         {
                             if (!a.ContainsGenericParameters)
@@ -346,7 +346,7 @@ namespace ASC.Common
         private bool Register(Type service, Type implementation)
         {
             if (service.IsSubclassOf(typeof(ControllerBase)) || service.GetInterfaces().Contains(typeof(IResourceFilter))) return true;
-            var c = service.IsGenericType && service.GetGenericTypeDefinition() == typeof(IConfigureOptions<>) && implementation != null ? implementation.GetCustomAttribute<DIAttribute>() : service.GetCustomAttribute<DIAttribute>();
+            var c = service.IsGenericType && (service.GetGenericTypeDefinition() == typeof(IConfigureOptions<>) || service.GetGenericTypeDefinition() == typeof(IPostConfigureOptions<>)) && implementation != null ? implementation.GetCustomAttribute<DIAttribute>() : service.GetCustomAttribute<DIAttribute>();
             var serviceName = $"{service}{implementation}";
             if (c is ScopeAttribute)
             {

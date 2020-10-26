@@ -103,7 +103,7 @@ namespace ASC.Data.Backup.Service
         }
     }
 
-    [Singletone]
+    [Singletone(Additional = typeof(BackupCleanerServiceExtension))]
     public class BackupCleanerService
     {
         private readonly object cleanerLock = new object();
@@ -170,6 +170,14 @@ namespace ASC.Data.Backup.Service
                     Monitor.Exit(cleanerLock);
                 }
             }
+        }
+    }
+
+    public class BackupCleanerServiceExtension
+    {
+        public static void Register(DIHelper services)
+        {
+            services.TryAdd<BackupCleanerHelperService>();
         }
     }
 }
