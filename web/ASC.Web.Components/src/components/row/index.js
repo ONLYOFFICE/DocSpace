@@ -37,6 +37,7 @@ const StyledContent = styled.div`
 
 const StyledCheckbox = styled.div`
   flex: 0 0 16px;
+  margin-right: 2px;
 `;
 
 const StyledElement = styled.div`
@@ -142,7 +143,9 @@ class Row extends React.Component {
             />
           </StyledCheckbox>
         )}
-        {renderElement && <StyledElement className="styled-element">{element}</StyledElement>}
+        {renderElement && (
+          <StyledElement className="styled-element">{element}</StyledElement>
+        )}
         <StyledContent className="row_content">{children}</StyledContent>
         <StyledOptionButton
           className="row_context-menu-wrapper"

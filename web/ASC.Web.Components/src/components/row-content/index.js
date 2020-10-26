@@ -10,7 +10,7 @@ const truncateCss = css`
 `;
 
 const commonCss = css`
-  margin: 0 8px;
+  margin: 0 6px;
   font-family: "Open Sans";
   font-size: 12px;
   font-style: normal;
@@ -37,7 +37,7 @@ const mainContainerTabletStyle = css`
 const sideInfoTabletStyle = css`
   display: block;
   min-width: 160px;
-  margin: 0 8px;
+  margin: 0 6px;
   ${commonCss};
   color: ${(props) => props.color && props.color};
   white-space: nowrap;
