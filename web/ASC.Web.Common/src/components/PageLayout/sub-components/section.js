@@ -10,7 +10,7 @@ const tabletProps = css`
 
   .section-body_filter {
     display: block;
-    margin: 0 0 23px;
+    margin: 0 0 25px;
   }
 `;
 
