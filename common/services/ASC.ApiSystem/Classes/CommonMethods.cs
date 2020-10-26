@@ -75,8 +75,10 @@ namespace ASC.ApiSystem.Controllers
         private HostedSolution HostedSolution { get; }
 
         private IMemoryCache MemoryCache { get; }
-        public CoreBaseSettings CoreBaseSettings { get; }
-        public TenantManager TenantManager { get; }
+
+        private CoreBaseSettings CoreBaseSettings { get; }
+
+        private TenantManager TenantManager { get; }
 
         public CommonMethods(
             IHttpContextAccessor httpContextAccessor,

@@ -334,6 +334,7 @@ namespace ASC.Data.Storage.Encryption
         }
     }
 
+    [Scope]
     public class EncryptionOperationScope
     {
         private ILog Log { get; set; }

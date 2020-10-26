@@ -23,6 +23,8 @@
  *
 */
 
+using System.Linq;
+
 using ASC.Api.Core;
 using ASC.Common;
 using ASC.Common.DependencyInjection;
@@ -48,7 +50,7 @@ namespace ASC.Data.Storage.Encryption
         {
             base.ConfigureServices(services);
 
-            DIHelper.AddEncryptionServiceLauncher();
+            DIHelper.TryAdd<EncryptionServiceLauncher>();
 
             services.AddHostedService<EncryptionServiceLauncher>();
 

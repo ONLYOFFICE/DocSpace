@@ -73,7 +73,7 @@ namespace ASC.Data.Storage
         }
     }
 
-    [Singletone]
+    [Singletone(Additional = typeof(StorageConfigExtension))]
     public class StorageFactoryConfig
     {
         public Configuration.Storage Section { get; }
