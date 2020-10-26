@@ -310,6 +310,9 @@ const TreeNodeMenu = styled(TreeNode)`
     props.needTopMargin &&
     css`
       margin-top: 18px !important;
+      @media (max-width: 1024px) {
+        margin-top: 14px !important;
+      }
     `}
 `;
 

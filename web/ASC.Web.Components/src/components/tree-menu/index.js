@@ -135,6 +135,9 @@ const StyledTreeMenu = styled(Tree)`
           ? +props.gapBetweenNodesTablet - 16 + "px;"
           : +props.gapBetweenNodes - 16 + "px;"};
     }
+    & > li > .rc-tree-child-tree {
+      margin-left: 4px;
+    }
   }
 `;
 
