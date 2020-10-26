@@ -42,7 +42,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.ElasticSearch
 {
-    [Singletone]
+    [Singletone(Additional = typeof(ServiceLauncherExtension))]
     public class ServiceLauncher : IHostedService
     {
         private ILog Log { get; }
@@ -181,6 +181,7 @@ namespace ASC.ElasticSearch
         }
     }
 
+    [Scope]
     public class ServiceLauncherScope
     {
         private FactoryIndexer FactoryIndexer { get; }
@@ -199,13 +200,11 @@ namespace ASC.ElasticSearch
         }
     }
 
-    public static class ServiceLauncherExtension
+    public class ServiceLauncherExtension
     {
-        public static DIHelper AddServiceLauncher(this DIHelper services)
+        public static void Register(DIHelper services)
         {
-            services.TryAddScoped<ServiceLauncherScope>();
-
-            return services;
+            services.TryAdd<ServiceLauncherScope>();
         }
     }
 }

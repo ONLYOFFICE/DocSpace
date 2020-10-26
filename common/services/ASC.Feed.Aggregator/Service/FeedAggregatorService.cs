@@ -49,7 +49,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Feed.Aggregator
 {
-    [Singletone]
+    [Singletone(Additional = typeof(FeedAggregatorServiceExtension))]
     public class FeedAggregatorService : IHostedService
     {
         private ILog Log { get; set; }
@@ -71,15 +71,13 @@ namespace ASC.Feed.Aggregator
             IServiceProvider serviceProvider,
             IContainer container,
             IOptionsMonitor<ILog> optionsMonitor,
-            SignalrServiceClient signalrServiceClient,
-            IConfigureNamedOptions<SignalrServiceClient> configureOptions)
+            IOptionsSnapshot<SignalrServiceClient> optionsSnapshot)
         {
             Configuration = configuration;
             ServiceProvider = serviceProvider;
             Container = container;
             Log = optionsMonitor.Get("ASC.Feed.Agregator");
-            SignalrServiceClient = signalrServiceClient;
-            configureOptions.Configure("counters", SignalrServiceClient);
+            SignalrServiceClient = optionsSnapshot.Get("counters");
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
@@ -327,6 +325,14 @@ namespace ASC.Feed.Aggregator
             userManager = UserManager;
             securityContext = SecurityContext;
             authManager = AuthManager;
+        }
+    }
+
+    public class FeedAggregatorServiceExtension
+    {
+        public static void Register(DIHelper services)
+        {
+            services.TryAdd<FeedAggregatorServiceScope>();
         }
     }
 }

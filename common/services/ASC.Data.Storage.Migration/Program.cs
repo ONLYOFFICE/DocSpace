@@ -1,8 +1,10 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 using ASC.Common;
+using ASC.Common.Caching;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
 
@@ -48,6 +50,8 @@ namespace ASC.Data.Storage.Migration
                     var diHelper = new DIHelper(services);
 
                     diHelper.AddNLogManager("ASC.Data.Storage.Migration", "ASC.Migration");
+                    diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+
                     diHelper.TryAdd<MigrationServiceLauncher>();
                     services.AddHostedService<MigrationServiceLauncher>();
 

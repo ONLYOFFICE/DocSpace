@@ -67,7 +67,7 @@ namespace ASC.Files.Thirdparty
         private readonly ConcurrentDictionary<string, IProviderInfo> cache;
         private readonly ICacheNotify<ProviderAccountCacheItem> cacheNotify;
 
-        private readonly string _rootKey;
+        private string _rootKey { get => TenantID.ToString(CultureInfo.InvariantCulture); }
 
         public CachedProviderAccountDao(
             IServiceProvider serviceProvider,
@@ -83,7 +83,6 @@ namespace ASC.Files.Thirdparty
         {
             cache = cachedProviderAccountDaoNotify.Cache;
             cacheNotify = cachedProviderAccountDaoNotify.CacheNotify;
-            _rootKey = tenantManager.GetCurrentTenant().TenantId.ToString(CultureInfo.InvariantCulture);
         }
 
         public override IProviderInfo GetProviderInfo(int linkId)

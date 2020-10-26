@@ -41,7 +41,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.ElasticSearch.Service
 {
-    [Singletone]
+    [Singletone(Additional = typeof(ServiceExtension))]
     public class Service
     {
         public IContainer Container { get; }
@@ -121,6 +121,14 @@ namespace ASC.ElasticSearch.Service
         {
             tenantManager = TenantManager;
             settingsManager = SettingsManager;
+        }
+    }
+
+    internal class ServiceExtension
+    {
+        public static void Register(DIHelper services)
+        {
+            services.TryAdd<ServiceScope>();
         }
     }
 }

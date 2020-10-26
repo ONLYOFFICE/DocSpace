@@ -1,12 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 using ASC.Common;
+using ASC.Common.Caching;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
 using ASC.ElasticSearch;
 using ASC.Feed.Aggregator;
+using ASC.Web.Files.Core.Search;
+using ASC.Web.Files.Utils;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -49,10 +53,18 @@ namespace ASC.Files.Service
                 {
                     var diHelper = new DIHelper(services);
 
+                    diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
                     diHelper.AddNLogManager("ASC.Files");
                     services.AddHostedService<ServiceLauncher>();
+                    diHelper.TryAdd<ServiceLauncher>();
+
                     diHelper.AddNLogManager("ASC.Feed.Agregator");
                     services.AddHostedService<FeedAggregatorService>();
+                    diHelper.TryAdd<FeedAggregatorService>();
+
+                    //diHelper.TryAdd<FileConverter>();
+                    diHelper.TryAdd<FactoryIndexerFile>();
+                    diHelper.TryAdd<FactoryIndexerFolder>();
 
                     services.AddAutofac(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath, true, false, "search.json", "feed.json");
                 })

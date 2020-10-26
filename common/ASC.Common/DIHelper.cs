@@ -102,7 +102,7 @@ namespace ASC.Common
             Configured = new List<string>();
         }
 
-        public DIHelper(IServiceCollection serviceCollection)
+        public DIHelper(IServiceCollection serviceCollection) : this()
         {
             ServiceCollection = serviceCollection;
         }
@@ -136,7 +136,7 @@ namespace ASC.Common
 
         public bool TryAdd(Type service, Type implementation = null)
         {
-            if (service.IsInterface && service.IsGenericType && service.GetGenericTypeDefinition() == typeof(IOptionsSnapshot<>))
+            if (service.IsInterface && service.IsGenericType && (service.GetGenericTypeDefinition() == typeof(IOptionsSnapshot<>) || service.GetGenericTypeDefinition() == typeof(IOptions<>)))
             {
                 service = service.GetGenericArguments().FirstOrDefault();
                 if (service == null)
