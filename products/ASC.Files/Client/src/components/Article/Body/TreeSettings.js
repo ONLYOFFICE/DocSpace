@@ -31,6 +31,9 @@ const { changeLanguage } = utils;
 
 const StyledTreeMenu = styled(TreeMenu)`
   margin-top: 18px !important;
+  @media (max-width: 1024px) {
+    margin-top: 14px !important;
+  }
 
   .rc-tree-node-selected {
     background: #dfe2e3 !important;
@@ -49,6 +52,12 @@ const StyledTreeMenu = styled(TreeMenu)`
 
   .rc-tree-child-tree {
     margin-left: 22px;
+  }
+
+  @media (max-width: 1024px) {
+    .settings-node {
+      margin-left: 18px !important;
+    }
   }
 `;
 
