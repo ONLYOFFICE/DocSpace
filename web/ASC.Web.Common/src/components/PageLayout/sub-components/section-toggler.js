@@ -8,6 +8,7 @@ const StyledSectionToggler = styled.div`
   height: 64px;
   position: fixed;
   bottom: 0;
+  right: 16px;
   display: none;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 

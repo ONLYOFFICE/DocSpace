@@ -11,7 +11,7 @@ const StyledArticleBody = styled.div`
   height: 100%;
 
   @media ${tablet} {
-    height: calc(100% - 80px);
+    height: calc(100% - 104px);
     display: table;
     width: 100%;
 
