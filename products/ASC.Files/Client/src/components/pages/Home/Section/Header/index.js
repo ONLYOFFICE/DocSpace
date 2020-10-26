@@ -70,7 +70,7 @@ const StyledContainer = styled.div`
     max-width: calc(100vw - 32px);
 
     .arrow-button {
-      margin-right: 14px;
+      margin-right: 15px;
       min-width: 17px;
 
       @media ${tablet} {
