@@ -87,23 +87,26 @@ class TreeFolders extends React.Component {
   };
 
   getFolderIcon = (item) => {
-    switch (item.key) {
-      case "0-0":
+    if (item.parentId !== 0)
+      return <Icons.CatalogFolderIcon size="scale" isfill color="#657077" />;
+
+    switch (item.rootFolderType) {
+      case FolderType.USER:
         return <Icons.CatalogUserIcon size="scale" isfill color="#657077" />;
-      case "0-1":
+      case FolderType.SHARE:
         return <Icons.CatalogSharedIcon size="scale" isfill color="#657077" />;
-      case "0-2":
+      case FolderType.COMMON:
         return (
           <Icons.CatalogPortfolioIcon size="scale" isfill color="#657077" />
         );
-      case "0-3":
+      case FolderType.Favorites:
         return (
           <Icons.CatalogFavoritesIcon size="scale" isfill color="#657077" />
         );
-      case "0-4":
+      case FolderType.Recent:
         return <Icons.CatalogRecentIcon size="scale" isfill color="#657077" />;
 
-      case "0-5":
+      case FolderType.TRASH:
         return <Icons.CatalogTrashIcon size="scale" isfill color="#657077" />;
 
       default:

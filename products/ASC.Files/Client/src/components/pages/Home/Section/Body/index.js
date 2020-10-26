@@ -32,6 +32,7 @@ import {
 } from "asc-web-common";
 import {
   clearProgressData,
+  loopFilesOperations,
   markItemAsFavorite,
   removeItemFromFavorite,
   fetchFavoritesFolder,
@@ -50,7 +51,7 @@ import {
   setSelection,
   setTreeFolders,
   getFileInfo,
-  addFileToRecentlyViewed
+  addFileToRecentlyViewed,
 } from "../../../../../store/files/actions";
 import {
   getCurrentFolderCount,
@@ -191,7 +192,7 @@ class SectionBodyContent extends React.Component {
   //       prevState[key] !== val && console.log(`State '${key}' changed`)
   //     );
   //   }
-  // } 
+  // }
 
   shouldComponentUpdate(nextProps, nextState) {
     if (this.props && this.props.firstLoad) return true;
@@ -226,18 +227,22 @@ class SectionBodyContent extends React.Component {
   onOpenLocation = () => {
     const item = this.props.selection[0];
     const { folderId, checked } = this.props.selection[0];
-    return this.props.fetchFiles(folderId).then(() => this.onContentRowSelect(!checked, item));
-  }
+    return this.props
+      .fetchFiles(folderId)
+      .then(() => this.onContentRowSelect(!checked, item));
+  };
 
-  onClickFavorite = e => {
-    const { markItemAsFavorite,
+  onClickFavorite = (e) => {
+    const {
+      markItemAsFavorite,
       removeItemFromFavorite,
       getFileInfo,
       fetchFavoritesFolder,
       isFavorites,
       selectedFolderId,
       //selection,
-      t } = this.props;
+      t,
+    } = this.props;
     const { action, id } = e.currentTarget.dataset;
     //let data = selection.map(item => item.id)
     switch (action) {
@@ -245,18 +250,20 @@ class SectionBodyContent extends React.Component {
         return markItemAsFavorite([id])
           .then(() => getFileInfo(id))
           .then(() => toastr.success(t("MarkedAsFavorite")))
-          .catch(e => toastr.error(e));
+          .catch((e) => toastr.error(e));
       case "remove":
         return removeItemFromFavorite([id])
           .then(() => {
-            return isFavorites ? fetchFavoritesFolder(selectedFolderId) : getFileInfo(id)
+            return isFavorites
+              ? fetchFavoritesFolder(selectedFolderId)
+              : getFileInfo(id);
           })
           .then(() => toastr.success(t("RemovedFromFavorites")))
-          .catch(e => toastr.error(e));
+          .catch((e) => toastr.error(e));
       default:
         return;
     }
-  }
+  };
 
   onClickRename = () => {
     const { id, fileExst } = this.props.selection[0];
@@ -435,15 +442,16 @@ class SectionBodyContent extends React.Component {
   };
 
   openDocEditor = (id) => {
-    return this.props.addFileToRecentlyViewed(id)
-    .then(() => console.log("Pushed to recently viewed"))
-    .catch(e => console.error(e))
-    .finally(window.open(`./doceditor?fileId=${id}`, "_blank"));
+    return this.props
+      .addFileToRecentlyViewed(id)
+      .then(() => console.log("Pushed to recently viewed"))
+      .catch((e) => console.error(e))
+      .finally(window.open(`./doceditor?fileId=${id}`, "_blank"));
   };
 
   onClickLinkEdit = (e) => {
     const id = e.currentTarget.dataset.id;
-    return this.openDocEditor(id)
+    return this.openDocEditor(id);
   };
 
   showVersionHistory = (e) => {
@@ -557,7 +565,7 @@ class SectionBodyContent extends React.Component {
             label: t("OpenLocation"),
             icon: "DownloadAsIcon",
             onClick: this.onOpenLocation,
-            disabled: false
+            disabled: false,
           };
         case "mark-as-favorite":
           return {
@@ -568,7 +576,7 @@ class SectionBodyContent extends React.Component {
             disabled: false,
             "data-action": "mark",
             "data-id": item.id,
-            "data-title": item.title
+            "data-title": item.title,
           };
         case "block-unblock-version":
           return {
@@ -684,7 +692,7 @@ class SectionBodyContent extends React.Component {
             disabled: false,
             "data-action": "remove",
             "data-id": item.id,
-            "data-title": item.title
+            "data-title": item.title,
           };
         default:
           break;
@@ -773,7 +781,16 @@ class SectionBodyContent extends React.Component {
   };
 
   renderEmptyRootFolderContainer = () => {
-    const { isMy, isShare, isCommon, isRecycleBin, isFavorites, isRecent, title, t } = this.props;
+    const {
+      isMy,
+      isShare,
+      isCommon,
+      isRecycleBin,
+      isFavorites,
+      isRecent,
+      title,
+      t,
+    } = this.props;
     const subheadingText = t("SubheadingEmptyText");
     const myDescription = t("MyEmptyContainerDescription");
     const shareDescription = t("SharedEmptyContainerDescription");
@@ -824,7 +841,7 @@ class SectionBodyContent extends React.Component {
         <img
           className="empty-folder_container_up-image"
           src="images/empty_screen_people.svg"
-          width= "12px"
+          width="12px"
           alt=""
           onClick={this.onGoToMyDocuments}
         />
@@ -892,7 +909,7 @@ class SectionBodyContent extends React.Component {
         />
       );
     } else {
-      return;
+      return null;
     }
   };
 
@@ -1339,6 +1356,8 @@ class SectionBodyContent extends React.Component {
   };
 
   render() {
+    console.log("Files Home SectionBodyContent render", this.props);
+
     const {
       viewer,
       parentId,
@@ -1361,7 +1380,7 @@ class SectionBodyContent extends React.Component {
       filesList,
       mediaViewerImageFormats,
       mediaViewerMediaFormats,
-      tooltipValue
+      tooltipValue,
     } = this.props;
 
     const {
@@ -1400,18 +1419,18 @@ class SectionBodyContent extends React.Component {
     }
 
     return !fileAction.id && currentFolderCount === 0 ? (
-      parentId === 0 ? (
-        this.renderEmptyRootFolderContainer()
-      ) : (
-        this.renderEmptyFolderContainer()
-      )
+        parentId === 0 ? (
+          this.renderEmptyRootFolderContainer()
+        ) : (
+          this.renderEmptyFolderContainer()
+        )
     ) : !fileAction.id && items.length === 0 ? (
-      firstLoad ? (
-        <Loaders.Rows />
+        firstLoad ? (
+          <Loaders.Rows />
+        ) : (
+          this.renderEmptyFilterContainer()
+        )
       ) : (
-        this.renderEmptyFilterContainer()
-      )
-    ) : (
       <>
         {showMoveToPanel && (
           <OperationsPanel
@@ -1681,5 +1700,6 @@ export default connect(mapStateToProps, {
   removeItemFromFavorite,
   fetchFavoritesFolder,
   getFileInfo,
-  addFileToRecentlyViewed
+  addFileToRecentlyViewed,
+  loopFilesOperations,
 })(withRouter(withTranslation()(SectionBodyContent)));

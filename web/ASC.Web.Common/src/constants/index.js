@@ -86,6 +86,10 @@ export const FolderType = Object.freeze({
   USER: 5,
   SHARE: 6,
   Projects: 8,
+  Favorites: 10,
+  Recent: 11,
+  Templates: 12,
+  Privacy: 13,
 });
 
 export const ShareAccessRights = Object.freeze({
