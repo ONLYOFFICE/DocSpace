@@ -22,12 +22,12 @@ const StyledAvatar = styled.div`
     (props.size === "max" && "160px") ||
     (props.size === "big" && "82px") ||
     (props.size === "medium" && "48px") ||
-    (props.size === "small" && "32px")};
+    (props.size === "small" && "36px")};
   height: ${(props) =>
     (props.size === "max" && "160px") ||
     (props.size === "big" && "82px") ||
     (props.size === "medium" && "48px") ||
-    (props.size === "small" && "32px")};
+    (props.size === "small" && "36px")};
 
   font-family: "Open Sans", sans-serif, Arial;
   font-style: normal;
