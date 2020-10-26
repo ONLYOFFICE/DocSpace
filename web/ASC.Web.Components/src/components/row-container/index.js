@@ -5,7 +5,11 @@ import PropTypes from "prop-types";
 import CustomScrollbarsVirtualList from "../scrollbar/custom-scrollbars-virtual-list";
 import { FixedSizeList as List, areEqual } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
+import { ContainerQuery } from "react-container-query";
 import ContextMenu from "../context-menu";
+import utils from "../../utils";
+
+const { size } = utils.device;
 
 const StyledRowContainer = styled.div`
   height: ${(props) =>
@@ -82,31 +86,58 @@ class RowContainer extends React.PureComponent {
       </List>
     );
 
+    const sizeError = 40;
+
+    const query = {
+      mobile: {
+        minWidth: 0,
+        maxWidth: size.mobile - sizeError,
+      },
+      smallTablet: {
+        minWidth: size.mobile - sizeError + 1,
+        maxWidth: size.smallTablet - sizeError,
+      },
+      tablet: {
+        minWidth: size.smallTablet - sizeError + 1,
+        maxWidth: size.tablet - sizeError,
+      },
+      desktop: {
+        minWidth: size.desktop - sizeError,
+      },
+    };
+
     return (
-      <StyledRowContainer
-        id={id}
-        className={className}
-        style={style}
-        manualHeight={manualHeight}
-        useReactWindow={useReactWindow}
-      >
-        {useReactWindow ? (
-          <AutoSizer>{renderList}</AutoSizer>
-        ) : (
-          children.map((item, index) => (
-            <div
-              key={index}
-              onContextMenu={this.onRowContextClick.bind(
-                this,
-                item.props.contextOptions
-              )}
-            >
-              {item}
-            </div>
-          ))
+      <ContainerQuery query={query}>
+        {(params) => (
+          <StyledRowContainer
+            id={id}
+            className={className}
+            style={style}
+            manualHeight={manualHeight}
+            useReactWindow={useReactWindow}
+          >
+            {useReactWindow ? (
+              <AutoSizer>{renderList}</AutoSizer>
+            ) : (
+              children.map((item, index) => (
+                <div
+                  key={index}
+                  onContextMenu={this.onRowContextClick.bind(
+                    this,
+                    item.props.contextOptions
+                  )}
+                >
+                  {item}
+                </div>
+              ))
+            )}
+            <ContextMenu
+              targetAreaId={id}
+              options={this.state.contextOptions}
+            />
+          </StyledRowContainer>
         )}
-        <ContextMenu targetAreaId={id} options={this.state.contextOptions} />
-      </StyledRowContainer>
+      </ContainerQuery>
     );
   }
 }
