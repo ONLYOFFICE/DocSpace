@@ -1,4 +1,4 @@
-import { api, history, toastr } from "asc-web-common";
+import { api, history, constants, toastr } from "asc-web-common";
 import axios from "axios";
 import queryString from "query-string";
 import {
@@ -27,6 +27,7 @@ import {
 } from "./selectors";
 
 const { files, FilesFilter } = api;
+const { FolderType } = constants;
 
 export const SET_FOLDER = "SET_FOLDER";
 export const SET_FOLDERS = "SET_FOLDERS";
@@ -302,15 +303,17 @@ export function setFilterUrl(filter) {
 
 // TODO: similar to fetchFolder, remove one
 export function fetchFiles(folderId, filter) {
-  return (dispatch) => {
+  return (dispatch, getState) => {
+    const isEncryptionSupport = getState().auth.settings.isEncryptionSupport;
     const filterData = filter ? filter.clone() : FilesFilter.getDefault();
     filterData.folder = folderId;
     return files.getFolder(folderId, filter).then((data) => {
+      const isPrivacyFolder = data.current.rootFolderType === FolderType.Privacy;
       filterData.treeFolders = createTreeFolders(data.pathParts, filterData);
       filterData.total = data.total;
       dispatch(setFilesFilter(filterData));
-      dispatch(setFolders(data.folders));
-      dispatch(setFiles(data.files));
+      dispatch(setFolders(isPrivacyFolder && !isEncryptionSupport ? [] : data.folders));
+      dispatch(setFiles(isPrivacyFolder && !isEncryptionSupport ? [] : data.files));
       dispatch(setSelected("close"));
       return dispatch(
         setSelectedFolder({

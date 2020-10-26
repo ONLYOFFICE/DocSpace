@@ -87,6 +87,7 @@ import {
   getIsFavoritesFolder,
   getMyFolderId,
   getTooltipLabel,
+  getIsPrivacyFolder,
 } from "../../../../../store/files/selectors";
 import { SharingPanel, OperationsPanel } from "../../../../panels";
 const { isAdmin, getSettings, getCurrentUser } = store.auth.selectors;
@@ -142,8 +143,6 @@ const SimpleFilesRow = styled(Row)`
     }
   }
 `;
-
-const PrivateRoomDescriptionList = styled(Box)``;
 
 class SectionBodyContent extends React.Component {
   constructor(props) {
@@ -783,8 +782,8 @@ class SectionBodyContent extends React.Component {
       isRecycleBin,
       isFavorites,
       isRecent,
+      isPrivacy,
       title,
-      isEncryptionSupport,
       t,
       i18n
     } = this.props;
@@ -810,7 +809,7 @@ class SectionBodyContent extends React.Component {
           {
             privateRoomDescTranslations
               .map(el => (
-                <Box displayProp="flex" alignItems="center" paddingProp="0 0 13px 0">
+                <Box displayProp="flex" alignItems="center" paddingProp="0 0 13px 0" key={el}>
                   <Box paddingProp="0 7px 0 0">
                     {privacyIcon}
                   </Box>
@@ -938,7 +937,7 @@ class SectionBodyContent extends React.Component {
           imageSrc="images/empty_screen_recent.png"
         />
       );
-    } else if (isEncryptionSupport) {
+    } else if (isPrivacy) {
       return (
         <EmptyFolderContainer
           headerText={privateRoomHeader}
@@ -1407,6 +1406,8 @@ class SectionBodyContent extends React.Component {
       isLoading,
       currentFolderCount,
       isRecycleBin,
+      isPrivacy,
+      isEncryptionSupport,
       dragging,
       mediaViewerVisible,
       currentMediaFileId,
@@ -1456,7 +1457,7 @@ class SectionBodyContent extends React.Component {
       });
     }
 
-    return !fileAction.id && currentFolderCount === 0 ? (
+    return (!fileAction.id && currentFolderCount === 0) || (null) ? (
         parentId === 0 ? (
           this.renderEmptyRootFolderContainer()
         ) : (
@@ -1465,7 +1466,7 @@ class SectionBodyContent extends React.Component {
     ) : !fileAction.id && items.length === 0 ? (
         firstLoad ? (
           <Loaders.Rows />
-        ) : (
+        ) : isPrivacy && !isEncryptionSupport ? this.renderEmptyRootFolderContainer() : (
           this.renderEmptyFilterContainer()
         )
       ) : (
@@ -1702,6 +1703,7 @@ const mapStateToProps = (state) => {
     isRecycleBin: getIsRecycleBinFolder(state),
     isRecent: getIsRecentFolder(state),
     isShare: getIsShareFolder(state),
+    isPrivacy: getIsPrivacyFolder(state),
     mediaViewerImageFormats: getMediaViewerImageFormats(state),
     mediaViewerMediaFormats: getMediaViewerMediaFormats(state),
     mediaViewerVisible: getMediaViewerVisibility(state),
