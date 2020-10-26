@@ -24,6 +24,10 @@ const StyledNav = styled.nav`
   height: 56px;
   z-index: 190;
 
+  @media ${tablet} {
+      position:fixed;
+  }
+    
   .profile-menu {
     right: 12px;
     top: 66px;

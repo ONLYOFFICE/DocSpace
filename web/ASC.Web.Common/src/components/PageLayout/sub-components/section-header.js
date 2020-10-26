@@ -22,7 +22,7 @@ const StyledSectionHeader = styled.div`
     top: 56px; 
     padding-right:100%;
     transition: top 0.3s;
-    z-index:100;
+    z-index:1;
   }
 
   .section-header {

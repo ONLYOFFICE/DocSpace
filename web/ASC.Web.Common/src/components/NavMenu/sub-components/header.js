@@ -17,7 +17,7 @@ import {
   getTotalNotificationsCount,
 } from "../../../store/auth/selectors";
 
-const { desktop } = utils.device;
+const { desktop, tablet } = utils.device;
 
 const backgroundColor = "#0F4071";
 
@@ -28,6 +28,10 @@ const Header = styled.header`
   width: 100vw;
   height: 56px;
 
+  @media ${tablet} {
+      position:fixed;
+      z-index:100;
+    }
   .header-logo-wrapper {
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   }
@@ -40,6 +44,8 @@ const Header = styled.header`
     @media ${desktop} {
       display: none;
     }
+
+  
   }
 
   .header-logo-min_icon {

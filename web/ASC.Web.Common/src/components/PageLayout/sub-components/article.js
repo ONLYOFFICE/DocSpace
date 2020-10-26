@@ -17,6 +17,7 @@ const StyledArticle = styled.article`
 
   @media ${tablet} {
     padding: 0 16px;
+
     ${(props) =>
       props.visible
         ? props.pinned
@@ -24,6 +25,7 @@ const StyledArticle = styled.article`
             display: flex;
             width: 240px;
             min-width: 240px;
+            margin-top: 50px;
           `
           : `
             width: 240px;

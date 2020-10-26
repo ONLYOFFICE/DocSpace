@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import PropTypes from "prop-types";
-import { Backdrop, Toast, Aside } from "asc-web-components";
+import { Backdrop, Toast, Aside, utils } from "asc-web-components";
 import Header from "./sub-components/header";
 import HeaderNav from "./sub-components/header-nav";
 import HeaderUnAuth from "./sub-components/header-unauth";
@@ -12,12 +12,16 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router";
 
 import { getLanguage } from "../../store/auth/selectors";
+const { tablet } = utils.device;
 
 const StyledHideAndShow = styled.div`
-  position: fixed; 
-  top: 0px; 
-  transition: top 0.3s;
-  z-index:100;
+  @media ${tablet} {
+    top: 0px; 
+    transition: top 0.3s;
+    z-index:100;
+  }
+  
+
 `
 class NavMenu extends React.Component {
   constructor(props) {
