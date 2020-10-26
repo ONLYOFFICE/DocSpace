@@ -20,7 +20,7 @@ const StyledSectionHeader = styled.div`
     background-color: #fff; 
     position: fixed; 
     top: 56px; 
-    width: 100%; 
+    padding-right:100%;
     transition: top 0.3s;
     z-index:100;
   }
