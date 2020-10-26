@@ -781,6 +781,18 @@ export const getIsRecentFolder = createSelector(
   }
 );
 
+export const getPrivacyFolder = createSelector(getTreeFolders, (treeFolders) => {
+  return treeFolders.find((x) => x.rootFolderType === FolderType.Privacy);
+});
+
+export const getIsPrivacyFolder = createSelector(
+  getPrivacyFolder,
+  getSelectedFolderRootFolderType,
+  (privacyFolder, id) => {
+    return privacyFolder && privacyFolder.rootFolderType === id;
+  }
+);
+
 export const getFileActionId = (state) => {
   return state.files.fileAction.id;
 };
