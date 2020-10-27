@@ -985,10 +985,6 @@ export const getPrivacyInstructionsLink = (state) => {
   return state.files.privacyInstructions;
 }
 
-export const getOrganizationName = (state) => {
-  return state.auth.settings.organizationName;
-}
-
 export const getHeaderVisible = createSelector(
   getSelectionLength,
   getSelected,

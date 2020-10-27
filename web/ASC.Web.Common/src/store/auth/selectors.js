@@ -185,3 +185,8 @@ export const isEncryptionSupport = createSelector([getSettings], (settings) => {
   const { isEncryptionSupport } = settings;
   return isEncryptionSupport || false;
 });
+
+export const getOrganizationName = createSelector([getSettings], (settings) => {
+  const { organizationName } = settings;
+  return organizationName;
+});

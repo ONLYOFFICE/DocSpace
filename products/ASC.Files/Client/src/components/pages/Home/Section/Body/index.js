@@ -88,8 +88,7 @@ import {
   getMyFolderId,
   getTooltipLabel,
   getIsPrivacyFolder,
-  getPrivacyInstructionsLink,
-  getOrganizationName
+  getPrivacyInstructionsLink
 } from "../../../../../store/files/selectors";
 import { SharingPanel, OperationsPanel } from "../../../../panels";
 const {
@@ -97,6 +96,7 @@ const {
   getSettings,
   getCurrentUser,
   isEncryptionSupport,
+  getOrganizationName
 } = store.auth.selectors;
 //import { getFilterByLocation } from "../../../../../helpers/converters";
 //import config from "../../../../../../package.json";
