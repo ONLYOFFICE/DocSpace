@@ -53,7 +53,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Studio.Core.Notify
 {
-    [Scope]
+    [Scope(Additional = typeof(StudioNotifyServiceExtension))]
     public class StudioNotifyService
     {
         private readonly StudioNotifyServiceHelper client;
@@ -1012,6 +1012,7 @@ namespace ASC.Web.Studio.Core.Notify
         #endregion
     }
 
+    [Scope]
     public class StudioNotifyServiceScope
     {
         private TenantManager TenantManager { get; }
@@ -1032,11 +1033,9 @@ namespace ASC.Web.Studio.Core.Notify
 
     public static class StudioNotifyServiceExtension
     {
-        public static DIHelper AddStudioNotifyServiceService(this DIHelper services)
+        public static void Register(DIHelper services)
         {
             services.TryAddScoped<StudioNotifyServiceScope>();
-
-            return services;
         }
     }
 }

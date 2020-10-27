@@ -34,6 +34,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Notify.Config
 {
+    [Singletone]
     public class ConfigureNotifyServiceCfg : IConfigureOptions<NotifyServiceCfg>
     {
         public ConfigureNotifyServiceCfg(IServiceProvider serviceProvider)

@@ -207,6 +207,7 @@ namespace ASC.Data.Reassigns
         }
     }
 
+    [Scope]
     public class ReassignProgressItemScope
     {
         private TenantManager TenantManager { get; }
@@ -267,18 +268,12 @@ namespace ASC.Data.Reassigns
         }
     }
 
-    public static class ReassignProgressItemExtension
+    public class ReassignProgressItemExtension
     {
-        public static DIHelper AddReassignProgressItemService(this DIHelper services)
+        public static void Register(DIHelper services)
         {
-            if (services.TryAddScoped<ReassignProgressItemScope>())
-            {
-                services.TryAddSingleton<ProgressQueueOptionsManager<ReassignProgressItem>>();
-                services.TryAddSingleton<ProgressQueue<ReassignProgressItem>>();
-                services.AddSingleton<IPostConfigureOptions<ProgressQueue<ReassignProgressItem>>, ConfigureProgressQueue<ReassignProgressItem>>();
-            }
-
-            return services;
+            services.TryAdd<ReassignProgressItemScope>();
+            services.AddProgressQueue<ReassignProgressItem>(1, (int)TimeSpan.FromMinutes(5).TotalMilliseconds, true, false, 0);
         }
     }
 }

@@ -38,7 +38,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Notify.Senders
 {
-    [Singletone]
+    [Singletone(Additional = typeof(JabberSenderExtension))]
     public class JabberSender : INotifySender
     {
         private readonly ILog log;
@@ -75,6 +75,14 @@ namespace ASC.Core.Notify.Senders
                        e.Message, e.StackTrace, e.InnerException != null ? e.InnerException.Message : string.Empty);
             }
             return NoticeSendResult.OK;
+        }
+    }
+
+    public class JabberSenderExtension
+    {
+        public static void Register(DIHelper services)
+        {
+            services.TryAdd<JabberServiceClient>();
         }
     }
 }

@@ -46,8 +46,8 @@ using MimeKit;
 
 namespace ASC.Core.Notify.Senders
 {
-    [Singletone]
-    internal class SmtpSender : INotifySender
+    [Singletone(Additional = typeof(SmtpSenderExtension))]
+    public class SmtpSender : INotifySender
     {
         private const string HTML_FORMAT =
             @"<!DOCTYPE html PUBLIC ""-//W3C//DTD HTML 4.01 Transitional//EN"">
@@ -323,6 +323,7 @@ namespace ASC.Core.Notify.Senders
         }
     }
 
+    [Scope]
     public class SmtpSenderScope
     {
         private TenantManager TenantManager { get; }
@@ -340,12 +341,11 @@ namespace ASC.Core.Notify.Senders
         }
     }
 
-    public static class SmtpSenderExtension
+    public class SmtpSenderExtension
     {
-        public static DIHelper AddSmtpSenderService(this DIHelper services)
+        public static void Register(DIHelper services)
         {
             services.TryAddScoped<SmtpSenderScope>();
-            return services;
         }
     }
 }

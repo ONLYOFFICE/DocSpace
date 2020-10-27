@@ -149,7 +149,7 @@ namespace ASC.Common
             if (Added.Contains(serviceName)) return false;
             Added.Add(serviceName);
 
-            if (serviceName == "ASC.Common.Threading.Progress.ProgressQueueOptionsManager`1[ASC.Data.Backup.Service.BaseBackupProgressItem]")
+            if (serviceName == "ASC.Notify.DbWorker")
             {
                 var qqaz = 0;
             }

@@ -29,6 +29,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core.Common;
 using ASC.Notify.Config;
@@ -40,6 +41,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Notify
 {
+    [Singletone]
     public class ConfigureCommonLinkUtilitySettings : IConfigureOptions<CommonLinkUtilitySettings>
     {
         public ConfigureCommonLinkUtilitySettings(IOptions<NotifyServiceCfg> notifyServiceCfg)
@@ -55,15 +57,16 @@ namespace ASC.Notify
         }
     }
 
+    [Singletone]
     public class NotifyServiceLauncher : IHostedService
     {
-        public NotifyServiceCfg NotifyServiceCfg { get; }
+        private NotifyServiceCfg NotifyServiceCfg { get; }
         private NotifyService NotifyService { get; }
         private NotifySender NotifySender { get; }
         private NotifyCleaner NotifyCleaner { get; }
         private WebItemManager WebItemManager { get; }
         private IServiceProvider ServiceProvider { get; }
-        public ILog Log { get; }
+        private ILog Log { get; }
 
         public NotifyServiceLauncher(
             IOptions<NotifyServiceCfg> notifyServiceCfg,

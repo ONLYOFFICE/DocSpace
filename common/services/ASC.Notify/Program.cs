@@ -1,16 +1,20 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 using ASC.Common;
+using ASC.Common.Caching;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
 using ASC.Core.Common;
+using ASC.Core.Notify.Senders;
 using ASC.Notify.Config;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Notify
 {
@@ -50,15 +54,24 @@ namespace ASC.Notify
                     var diHelper = new DIHelper(services);
 
                     diHelper.AddNLogManager("ASC.Notify", "ASC.Notify.Messages");
+                    diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
 
                     services.Configure<NotifyServiceCfg>(hostContext.Configuration.GetSection("notify"));
 
-                    diHelper.TryAdd(typeof(CommonLinkUtilitySettings), typeof(ConfigureCommonLinkUtilitySettings));
+                    diHelper.TryAdd(typeof(CommonLinkUtilitySettings));
+                    diHelper.TryAdd(typeof(IConfigureOptions<CommonLinkUtilitySettings>), typeof(ConfigureCommonLinkUtilitySettings));
                     diHelper.TryAdd<NotifyServiceLauncher>();
+
+                    diHelper.TryAdd<JabberSender>();
+                    diHelper.TryAdd<SmtpSender>();
+                    diHelper.TryAdd<AWSSender>(); // fix private
 
                     services.AddHostedService<NotifyServiceLauncher>();
 
                     services.AddAutofac(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
+
+                    var a = $"{string.Join(",", diHelper.Singleton.OrderBy(r => r).ToArray())},{string.Join(",", diHelper.Scoped.OrderBy(r => r).ToArray())},{string.Join(",", diHelper.Transient.OrderBy(r => r).ToArray())}";
+                    var b = 0;
                 })
                 .UseConsoleLifetime()
                 .Build();

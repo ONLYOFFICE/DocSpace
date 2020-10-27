@@ -105,7 +105,7 @@ namespace ASC.Data.Reassigns
         }
     }
 
-    [Scope]
+    [Scope(Additional = typeof(ReassignProgressItemExtension))]
     public class QueueWorkerReassign : QueueWorker<ReassignProgressItem>
     {
         private QueueWorkerRemove QueueWorkerRemove { get; }
@@ -125,7 +125,7 @@ namespace ASC.Data.Reassigns
         }
     }
 
-    [Scope]
+    [Scope(Additional = typeof(RemoveProgressItemExtension))]
     public class QueueWorkerRemove : QueueWorker<RemoveProgressItem>
     {
         public QueueWorkerRemove(

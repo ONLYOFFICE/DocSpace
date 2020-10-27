@@ -40,7 +40,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Notify
 {
-    [Singletone]
+    [Singletone(Additional = typeof(NotifyServiceExtension))]
     public class NotifyService : INotifyService, IDisposable
     {
         private ILog Log { get; }
@@ -120,6 +120,7 @@ namespace ASC.Notify
         }
     }
 
+    [Scope]
     public class NotifyServiceScope
     {
         private TenantManager TenantManager { get; }
@@ -141,13 +142,11 @@ namespace ASC.Notify
         }
     }
 
-    public static class NotifyServiceExtension
+    public class NotifyServiceExtension
     {
-        public static DIHelper AddNotifyService(this DIHelper services)
+        public static void Register(DIHelper services)
         {
-            services.TryAddScoped<NotifyServiceScope>();
-
-            return services;
+            services.TryAdd<NotifyServiceScope>();
         }
     }
 }
