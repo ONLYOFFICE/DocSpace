@@ -293,7 +293,7 @@ const SharingRow = (props) => {
             {item.rights.isOwner ? (
               <Text
                 className="sharing_panel-remove-icon"
-                //color="#A3A9AE"
+                color="#A3A9AE"
               >
                 {t("Owner")}
               </Text>

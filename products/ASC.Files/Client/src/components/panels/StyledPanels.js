@@ -233,6 +233,8 @@ const StyledSharingBody = styled(Scrollbar)`
 
   .sharing_panel-text {
     line-height: 24px;
+    font-weight: 600;
+    font-size: 14px;
   }
 
   .sharing_panel-link {
@@ -269,6 +271,9 @@ const StyledSharingBody = styled(Scrollbar)`
   .sharing_panel-remove-icon {
     margin-left: auto;
     line-height: 24px;
+    display: flex;
+    align-items: center;
+    flex-direction: row-reverse;
 
     svg {
       width: 16px;
