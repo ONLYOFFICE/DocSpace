@@ -14,7 +14,10 @@ const StyledContainer = styled.div`
   align-items: center;
 
   .arrow-button {
-    margin-right: 16px;
+    @media ${desktop} {
+      display: none;
+    }
+    margin-right: 15px;
     min-width: 17px;
 
     @media (max-width: 1024px) {
@@ -68,6 +71,11 @@ const StyledContainer = styled.div`
       }
     }
   }
+  .headline-header {
+    @media ${desktop} {
+      margin-left: -9px;
+    }
+  }
 `;
 
 const SectionHeaderContent = (props) => {
@@ -89,6 +97,7 @@ const SectionHeaderContent = (props) => {
         onClick={onClickBack}
         className="arrow-button"
       />
+
       <Headline className="headline-header" type="content" truncate={true}>
         {title}
       </Headline>
