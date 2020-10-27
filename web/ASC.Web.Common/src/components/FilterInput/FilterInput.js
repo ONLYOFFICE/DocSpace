@@ -7,7 +7,6 @@ import SortComboBox from "./sub-components/SortComboBox";
 import ViewSelector from "./sub-components/ViewSelector";
 import map from "lodash/map";
 import clone from "lodash/clone";
-import ReactResizeDetector from "react-resize-detector";
 import StyledFilterInput from "./StyledFilterInput";
 
 const { smallTablet } = utils.device.size;
@@ -61,7 +60,7 @@ class FilterInput extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { selectedFilterData, getSortData, value } = this.props;
+    const { selectedFilterData, widthProp, getSortData, value } = this.props;
     const { filterValues } = selectedFilterData;
 
     if (!isEqual(selectedFilterData, prevProps.selectedFilterData)) {
@@ -95,6 +94,10 @@ class FilterInput extends React.Component {
     ) {
       this.clearFilter();
     }
+
+    if (widthProp !== prevProps.widthProp) {
+      this.resize();
+    }
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -112,6 +115,10 @@ class FilterInput extends React.Component {
     }
 
     if (this.props.viewAs !== nextProps.viewAs) {
+      return true;
+    }
+
+    if (this.props.widthProp !== nextProps.widthProp) {
       return true;
     }
 
@@ -594,6 +601,7 @@ class FilterInput extends React.Component {
       viewAs,
       contextMenuHeader,
       isMobile,
+      widthProp,
     } = this.props;
     const {
       searchText,
@@ -607,84 +615,75 @@ class FilterInput extends React.Component {
       showHiddenFilter,
     } = this.state;
 
+    const isMinimized = widthProp <= smallTablet;
+
     return (
-      <ReactResizeDetector
-        refreshRate={500}
-        refreshMode="debounce"
-        onResize={this.resize}
+      <StyledFilterInput
+        filterMaxWidth={filterMaxWidth}
+        overflowFilter={overflowFilter}
+        isMobile={isMobile || isMinimized}
+        viewAs={viewAs}
+        className={className}
+        id={id}
+        style={style}
       >
-        {({ width }) => {
-          const isMinimized = width <= smallTablet;
-          return (
-            <StyledFilterInput
-              filterMaxWidth={filterMaxWidth}
-              overflowFilter={overflowFilter}
-              isMobile={isMobile || isMinimized}
-              viewAs={viewAs}
-              className={className}
-              id={id}
-              style={style}
-            >
-              <div className="styled-search-input" ref={this.searchWrapper}>
-                <SearchInput
-                  id={id}
-                  isDisabled={isDisabled}
-                  size={size}
-                  scale={scale}
-                  isNeedFilter={true}
-                  getFilterData={getFilterData}
-                  placeholder={placeholder}
-                  onSearchClick={this.onSearch}
-                  onChangeFilter={this.onChangeFilter}
-                  value={searchText}
-                  selectedFilterData={filterValues}
-                  showClearButton={filterValues.length > 0}
-                  onClearSearch={this.clearFilter}
-                  onChange={this.onSearchChanged}
-                >
-                  <div className="styled-filter-block" ref={this.filterWrapper}>
-                    <FilterBlock
-                      contextMenuHeader={contextMenuHeader}
-                      openFilterItems={openFilterItems}
-                      hideFilterItems={hideFilterItems}
-                      getFilterData={getFilterData}
-                      onClickFilterItem={this.onClickFilterItem}
-                      onDeleteFilterItem={this.onDeleteFilterItem}
-                      isDisabled={isDisabled}
-                      columnCount={filterColumnCount}
-                      showHiddenFilter={showHiddenFilter}
-                      setShowHiddenFilter={this.setShowHiddenFilter}
-                      isMinimized={isMinimized}
-                    />
-                  </div>
-                </SearchInput>
-              </div>
-
-              <SortComboBox
-                sortId={sortId}
-                getSortData={getSortData}
+        <div className="styled-search-input" ref={this.searchWrapper}>
+          <SearchInput
+            id={id}
+            isDisabled={isDisabled}
+            size={size}
+            scale={scale}
+            isNeedFilter={true}
+            getFilterData={getFilterData}
+            placeholder={placeholder}
+            onSearchClick={this.onSearch}
+            onChangeFilter={this.onChangeFilter}
+            value={searchText}
+            selectedFilterData={filterValues}
+            showClearButton={filterValues.length > 0}
+            onClearSearch={this.clearFilter}
+            onChange={this.onSearchChanged}
+          >
+            <div className="styled-filter-block" ref={this.filterWrapper}>
+              <FilterBlock
+                contextMenuHeader={contextMenuHeader}
+                openFilterItems={openFilterItems}
+                hideFilterItems={hideFilterItems}
+                getFilterData={getFilterData}
+                onClickFilterItem={this.onClickFilterItem}
+                onDeleteFilterItem={this.onDeleteFilterItem}
                 isDisabled={isDisabled}
-                onChangeSortId={this.onClickSortItem}
-                onChangeView={this.onClickViewSelector}
-                onChangeSortDirection={this.onChangeSortDirection}
-                onButtonClick={this.onSortDirectionClick}
-                viewAs={viewAs}
-                sortDirection={+sortDirection}
-                directionAscLabel={directionAscLabel}
-                directionDescLabel={directionDescLabel}
+                columnCount={filterColumnCount}
+                showHiddenFilter={showHiddenFilter}
+                setShowHiddenFilter={this.setShowHiddenFilter}
+                isMinimized={isMinimized}
               />
+            </div>
+          </SearchInput>
+        </div>
 
-              {viewAs && (
-                <ViewSelector
-                  isDisabled={isDisabled}
-                  onClickViewSelector={this.onClickViewSelector}
-                  viewAs={viewAs}
-                />
-              )}
-            </StyledFilterInput>
-          );
-        }}
-      </ReactResizeDetector>
+        <SortComboBox
+          sortId={sortId}
+          getSortData={getSortData}
+          isDisabled={isDisabled}
+          onChangeSortId={this.onClickSortItem}
+          onChangeView={this.onClickViewSelector}
+          onChangeSortDirection={this.onChangeSortDirection}
+          onButtonClick={this.onSortDirectionClick}
+          viewAs={viewAs}
+          sortDirection={+sortDirection}
+          directionAscLabel={directionAscLabel}
+          directionDescLabel={directionDescLabel}
+        />
+
+        {viewAs && (
+          <ViewSelector
+            isDisabled={isDisabled}
+            onClickViewSelector={this.onClickViewSelector}
+            viewAs={viewAs}
+          />
+        )}
+      </StyledFilterInput>
     );
   }
 }
@@ -708,6 +707,7 @@ FilterInput.propTypes = {
   placeholder: PropTypes.string,
   isMobile: PropTypes.bool,
   value: PropTypes.string,
+  widthProp: PropTypes.number,
   onFilter: PropTypes.func,
 };
 
