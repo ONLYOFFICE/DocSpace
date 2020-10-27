@@ -19,7 +19,7 @@ const commonStyles = css`
 
     @media ${tablet} {
       padding: 16px 0 16px 24px;
-      margin-top: 99px;
+       margin-top: 53px; 
     }
 
     .section-wrapper {
