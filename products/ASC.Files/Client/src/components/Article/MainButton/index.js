@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
-import { MainButton, DropDownItem } from "asc-web-components";
+import { MainButton, DropDownItem, utils } from "asc-web-components";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import { setAction, startUpload } from "../../../store/files/actions";
 import {
@@ -27,11 +27,18 @@ const i18n = createI18N({
 });
 
 const { changeLanguage } = commonUtils;
+const { tablet } = utils.device;
 const { FileAction } = constants;
 
 const StyledMainButton = styled(MainButton)`
   .main-button_drop-down{
     line-height: 36px;
+  }
+
+  @media ${tablet} {
+    .main-button_drop-down{
+      line-height: 40px;
+    }
   }
 `
 
