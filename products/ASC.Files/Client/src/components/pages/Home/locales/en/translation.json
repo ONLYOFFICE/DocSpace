@@ -80,7 +80,7 @@
   "PrivateRoomDescriptionSecure": "Secure sharing with trusted teammates.",
   "PrivateRoomDescriptionEncrypted": "Encrypted editing and real-time collaboration.",
   "PrivateRoomDescriptionUnbreakable": "Unbreakable AES-256 algorithm.",
-  "PrivateRoomSupport": "Work in Private Room is available via ONLYOFFICE desktop app. <1>Instructions</1>",
+  "PrivateRoomSupport": "Work in Private Room is available via {{organizationName}} desktop app. <3>Instructions</3>",
   "GoToMyButton": "Go to My Documents",
   "BackToParentFolderButton": "Back to parent folder",
   "EmptyFolderHeader": "No files in this folder",

@@ -88,6 +88,8 @@ import {
   getMyFolderId,
   getTooltipLabel,
   getIsPrivacyFolder,
+  getPrivacyInstructionsLink,
+  getOrganizationName
 } from "../../../../../store/files/selectors";
 import { SharingPanel, OperationsPanel } from "../../../../panels";
 const {
@@ -791,6 +793,8 @@ class SectionBodyContent extends React.Component {
       isFavorites,
       isRecent,
       isPrivacy,
+      organizationName,
+      privacyInstructions,
       title,
       t,
       i18n,
@@ -828,12 +832,12 @@ class SectionBodyContent extends React.Component {
         </Text>
         <Text fontSize="12px">
           <Trans i18nKey="PrivateRoomSupport" i18n={i18n}>
-            Work in Private Room is available via ONLYOFFICE desktop app.{" "}
+            Work in Private Room is available via {{organizationName}} desktop app.
             <Link
               isBold
               isHovered
               color="#116d9d"
-              href="https://www.onlyoffice.com/private-rooms.aspx"
+              href={privacyInstructions}
             >
               Instructions
             </Link>
@@ -1724,7 +1728,9 @@ const mapStateToProps = (state) => {
     mediaViewerMediaFormats: getMediaViewerMediaFormats(state),
     mediaViewerVisible: getMediaViewerVisibility(state),
     myDocumentsId: getMyFolderId(state),
+    organizationName: getOrganizationName(state),
     parentId: getSelectedFolderParentId(state),
+    privacyInstructions: getPrivacyInstructionsLink(state),
     selected: getSelected(state),
     selectedFolderId: getSelectedFolderId(state),
     selection: getSelection(state),

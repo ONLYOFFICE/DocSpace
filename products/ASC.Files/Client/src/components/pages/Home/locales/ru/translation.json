@@ -80,7 +80,7 @@
   "PrivateRoomDescriptionSecure": "Безопасное предоставление доступа доверенным участникам команды.",
   "PrivateRoomDescriptionEncrypted": "Зашифрованное редактирование и совместная работа в режиме реального времени.",
   "PrivateRoomDescriptionUnbreakable": "Стойкий алгоритм AES-256.",
-  "PrivateRoomSupport": "Работа в Приватной комнате доступна через десктопное приложение ONLYOFFICE. <1>Инструкции</1>",
+  "PrivateRoomSupport": "Работа в Приватной комнате доступна через десктопное приложение {{organizationName}}. <3>Инструкции</3>",
   "GoToMyButton": "Перейти к моим документам",
   "BackToParentFolderButton": "Вернуться в папку на уровень выше",
   "EmptyFolderHeader": "В этой папке нет файлов",
