@@ -8,5 +8,6 @@ namespace ASC.Files.Tests.Infrastructure
 
         public Guid Id { get; set; }
         public int TenantId { get; set; }
+
     }
 }

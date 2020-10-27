@@ -11,7 +11,6 @@ namespace ASC.Files.Tests
             yield return new TestCaseData("FolderOne");
             yield return new TestCaseData("FolderTwo");
         }
-
         public static IEnumerable<TestCaseData> GetFolderItems()
         {
             yield return new TestCaseData(14, true, 0, 0);

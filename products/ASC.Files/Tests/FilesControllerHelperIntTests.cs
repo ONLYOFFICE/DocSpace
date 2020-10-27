@@ -2,7 +2,6 @@
 using ASC.Files.Core;
 using ASC.Files.Tests.Infrastructure;
 using ASC.Web.Files.Services.WCFService.FileOperations;
-
 using NUnit.Framework;
 
 namespace ASC.Files.Tests
@@ -16,12 +15,13 @@ namespace ASC.Files.Tests
             base.SetUp();
         }
 
+        
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetCreateFolderItems))]
         [Category("section 'My Documents'")]
         public void CreateFolderReturnsFolderWrapperTest(string folderTitle)
         {
+            
             var folderWrapper = FilesControllerHelper.CreateFolder(GlobalFolderHelper.FolderMy, folderTitle);
-
             Assert.IsNotNull(folderWrapper);
             Assert.AreEqual(folderTitle, folderWrapper.Title);
         }
@@ -31,10 +31,10 @@ namespace ASC.Files.Tests
         public void GetFolderReturnsFolderContentWrapperTest(int folderId, bool withSubFolders,int filesCountExpected,int foldersCountExpected)
         {
             var folderContentWrapper = FilesControllerHelper.GetFolder(
-                folderId,
-                UserOptions.Id,
-                FilterType.None,
-                withSubFolders);
+                 folderId,
+                 UserOptions.Id,
+                 FilterType.None,
+                 withSubFolders);
 
             var filesCount = folderContentWrapper.Files.Count;
             var foldersCount = folderContentWrapper.Folders.Count;

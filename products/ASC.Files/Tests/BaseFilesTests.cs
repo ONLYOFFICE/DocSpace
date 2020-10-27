@@ -13,7 +13,6 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -85,6 +84,7 @@ namespace ASC.Files.Tests
             Configuration = config.Build();
         }
 
+
         private Tenant SetAndGetCurrentTenant()
         {
             var tenantManager = TestServer.Services.GetService<TenantManager>();
@@ -102,7 +102,7 @@ namespace ASC.Files.Tests
 
         private IAccount GetAccount()
         {
-            return new Account(User.ID, "maks", true);
+            return new Account(CurrentTenant.OwnerId, "di.vahomik22@gmail.com", true);
         }
 
         public BatchModel GetBatchModel(string text)
