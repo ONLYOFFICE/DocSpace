@@ -1,1 +1,2 @@
-export default from "./FilterInput";
+import { FilterConsumer as FilterInput } from "./FilterConsumer";
+export default FilterInput;
