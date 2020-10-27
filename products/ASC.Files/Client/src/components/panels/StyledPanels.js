@@ -17,6 +17,10 @@ const PanelStyles = css`
 
 const StyledAsidePanel = styled.div`
   z-index: 310;
+  .sharing_panel-header{
+    font-weight:700;
+    margin: 14px 0;
+  }
   .modal-dialog-aside {
     padding: 0;
     transform: translateX(${(props) => (props.visible ? "0" : "500px")});
@@ -206,7 +210,7 @@ const StyledSharingHeaderContent = styled.div`
         padding: 0px;
       }
       .sharing_panel-plus-icon {
-        margin-right: 12px;
+        //margin-right: 12px;
       }
     }
   }
