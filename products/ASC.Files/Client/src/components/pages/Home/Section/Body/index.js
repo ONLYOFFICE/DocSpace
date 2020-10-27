@@ -131,7 +131,8 @@ const SimpleFilesRow = styled(Row)`
   `}
 
   .share-button-icon {
-    margin-right: 9px;
+    margin-right: 7px;
+    margin-top: -1px;
   }
 
   .share-button,
@@ -142,8 +143,14 @@ const SimpleFilesRow = styled(Row)`
     }
   }
 
+  @media (max-width: 1312px) {
+    .share-button {
+      padding-top: 3px;
+    }
+  }
+
   .styled-element {
-    margin-right:0;
+    margin-right: 0;
   }
 `;
 
@@ -1338,7 +1345,7 @@ class SectionBodyContent extends React.Component {
         as="span"
         title={this.props.t("Share")}
         fontSize="12px"
-        fontWeight={400}
+        fontWeight={600}
         color="#A3A9AE"
         display="inline-flex"
         onClick={this.onClickShare}
@@ -1347,7 +1354,7 @@ class SectionBodyContent extends React.Component {
           className="share-button-icon"
           color="#a3a9ae"
           hoverColor="#657077"
-          size={16}
+          size={18}
           iconName="CatalogSharedIcon"
         />
         {this.props.t("Share")}
@@ -1419,18 +1426,18 @@ class SectionBodyContent extends React.Component {
     }
 
     return !fileAction.id && currentFolderCount === 0 ? (
-        parentId === 0 ? (
-          this.renderEmptyRootFolderContainer()
-        ) : (
-          this.renderEmptyFolderContainer()
-        )
-    ) : !fileAction.id && items.length === 0 ? (
-        firstLoad ? (
-          <Loaders.Rows />
-        ) : (
-          this.renderEmptyFilterContainer()
-        )
+      parentId === 0 ? (
+        this.renderEmptyRootFolderContainer()
       ) : (
+        this.renderEmptyFolderContainer()
+      )
+    ) : !fileAction.id && items.length === 0 ? (
+      firstLoad ? (
+        <Loaders.Rows />
+      ) : (
+        this.renderEmptyFilterContainer()
+      )
+    ) : (
       <>
         {showMoveToPanel && (
           <OperationsPanel
