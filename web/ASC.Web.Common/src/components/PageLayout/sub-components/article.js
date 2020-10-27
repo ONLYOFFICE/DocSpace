@@ -13,7 +13,6 @@ const StyledArticle = styled.article`
     min-width: 265px;
     height: 100% !important;
     max-width: ${(props) => (props.isLoaded ? "calc(100vw - 368px)" : "265px")};
-    border-right: 1px solid #d0d5da;
     box-sizing: border-box;
     overflow: hidden auto;
     display: flex;
