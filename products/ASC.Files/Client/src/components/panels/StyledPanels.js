@@ -263,7 +263,7 @@ const StyledSharingBody = styled(Scrollbar)`
   }
 
   .sharing_panel-owner-icon {
-    padding: 0px 24px 0px 8px;
+    padding-right: 24px;
   }
 
   .sharing_panel-remove-icon {
@@ -277,7 +277,7 @@ const StyledSharingBody = styled(Scrollbar)`
   }
 
   .panel_combo-box {
-    margin-left: 8px;
+    margin-left: 0px;
 
     .combo-button {
       height: 30px;
