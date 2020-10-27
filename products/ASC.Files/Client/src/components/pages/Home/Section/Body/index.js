@@ -817,7 +817,7 @@ class SectionBodyContent extends React.Component {
     ];
     const privateRoomDescription = (
       <>
-        <Text fontSize="15px">
+        <Text fontSize="15px" as="div">
           {privateRoomDescTranslations.map((el) => (
             <Box
               displayProp="flex"
