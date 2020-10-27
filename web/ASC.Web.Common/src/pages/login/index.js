@@ -236,8 +236,7 @@ class Form extends Component {
         }
       })
       .catch((error) => {
-        let err = error.data.error.message;
-        this.setState({ errorText: err, isLoading: false });
+        this.setState({ errorText: error, isLoading: false });
       });
   };
 
