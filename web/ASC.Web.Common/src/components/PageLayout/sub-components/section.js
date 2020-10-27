@@ -20,6 +20,7 @@ const StyledSection = styled.section`
   display: flex;
   flex-direction: column;
   width: ${(props) => `${props.widthProp}px`};
+  overflow-x: hidden;
 
   .layout-progress-bar {
     bottom: 0;
