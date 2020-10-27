@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import React from "react";
 import isEqual from "lodash/isEqual";
 import styled from "styled-components";
-import { tablet, mobile } from "../../utils/device";
+import { tablet } from "../../utils/device";
 
 const StyledRow = styled.div`
   cursor: default;
@@ -66,7 +66,7 @@ const StyledOptionButton = styled.div`
   .expandButton > div:first-child {
     padding: 8px 8px 8px 7px;
 
-    @media ${mobile} {
+    @media (max-width: 516px) {
       padding-left: 10px;
     }
   }
