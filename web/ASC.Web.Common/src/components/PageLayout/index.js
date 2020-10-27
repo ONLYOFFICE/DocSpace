@@ -287,6 +287,7 @@ class PageLayoutComponent extends React.Component {
                 {isSectionHeaderAvailable && (
                   <SubSectionHeader
                     isArticlePinned={this.state.isArticlePinned}
+                    borderBottom={this.props.headerBorderBottom}
                   >
                     {sectionHeaderContent
                       ? sectionHeaderContent.props.children

@@ -49,10 +49,14 @@ const StyledElement = styled.div`
 `;
 
 const StyledContentElement = styled.div`
-  margin-right: 8px;
-  margin-left: 8px;
-  margin-top: 6px;
+  margin-left: 18px;
+  margin-top: 4px;
+  margin-right: -2px;
   user-select: none;
+  @media ${tablet} {
+    margin-left: 17px;
+    margin-top: 6px;
+  }
 `;
 
 const StyledOptionButton = styled.div`
@@ -60,7 +64,16 @@ const StyledOptionButton = styled.div`
   width: ${(props) => props.spacerWidth && props.spacerWidth};
 
   .expandButton > div:first-child {
-    padding: 8px 8px 8px 8px;
+    padding: 8px 8px 8px 7px;
+
+    @media (max-width: 516px) {
+      padding-left: 10px;
+    }
+  }
+
+  margin-top: -1px;
+  @media ${tablet} {
+    margin-top: unset;
   }
 `;
 
