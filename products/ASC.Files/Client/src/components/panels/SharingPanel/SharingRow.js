@@ -239,6 +239,8 @@ const SharingRow = (props) => {
           color="black"
           dropdownType="alwaysDashed"
           data={data}
+          fontSize="14px"
+          fontWeight={600}
         >
           {t(linkText)}
         </LinkWithDropdown>

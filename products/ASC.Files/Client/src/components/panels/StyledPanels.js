@@ -220,6 +220,10 @@ const StyledSharingBody = styled(Scrollbar)`
   position: relative;
   padding: 16px 0;
 
+  .row_content{
+    overflow: visible;
+  }
+
   .nav-thumb-vertical {
     opacity: 0;
     transition: opacity 200ms ease;
@@ -240,6 +244,10 @@ const StyledSharingBody = styled(Scrollbar)`
   .sharing_panel-link {
     a {
       text-decoration: none !important;
+
+      span {
+        font-weight: 600;
+      }
     }
   }
 
