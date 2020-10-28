@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { ModalDialog } from "asc-web-components";
 import { withTranslation } from "react-i18next";
-import { utils as commonUtils, toastr, api } from "asc-web-common";
+import { utils as commonUtils, toastr } from "asc-web-common";
 import { StyledAsidePanel } from "../StyledPanels";
 import TreeFolders from "../../Article/Body/TreeFolders";
 import {
