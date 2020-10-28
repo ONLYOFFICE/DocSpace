@@ -140,6 +140,11 @@ const StyledRow = styled(Row)`
       width: 100%;
     }
   }
+
+  .row_context-menu-wrapper {
+    margin-right: -3px;
+    margin-top: -25px;
+  }
 `;
 
 const VersionRow = (props) => {
