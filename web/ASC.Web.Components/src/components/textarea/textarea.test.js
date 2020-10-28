@@ -36,4 +36,18 @@ describe("<Textarea />", () => {
 
     expect(wrapper.getDOMNode().style).toHaveProperty("color", "red");
   });
+
+  it("accepts fontSize", () => {
+    const wrapper = mount(
+      <Textarea
+        placeholder="Add comment"
+        onChange={jest.fn()}
+        value="value"
+        className="test"
+        fontSize={12}
+      />
+    );
+
+    expect(wrapper.prop("fontSize")).toEqual(12);
+  });
 });

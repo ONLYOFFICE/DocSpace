@@ -38,7 +38,7 @@ const StyledTextarea = styled(ClearTextareaAutosize)`
   resize: none;
   overflow: hidden;
   padding: 5px 8px 2px 8px;
-  font-size: 13px;
+  font-size: ${(props) => (props.fontSize ? props.fontSize + "px" : "13px")};
   font-family: "Open Sans", sans-serif;
   line-height: 1.5;
 
@@ -92,6 +92,7 @@ class Textarea extends React.PureComponent {
       style,
       tabIndex,
       value,
+      fontSize,
     } = this.props;
     return (
       <StyledScrollbar
@@ -113,6 +114,7 @@ class Textarea extends React.PureComponent {
           disabled={isDisabled}
           readOnly={isReadOnly}
           value={value}
+          fontSize={fontSize}
         />
       </StyledScrollbar>
     );
@@ -133,6 +135,7 @@ Textarea.propTypes = {
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   tabIndex: PropTypes.number,
   value: PropTypes.string,
+  fontSize: PropTypes.number,
 };
 
 Textarea.defaultProps = {

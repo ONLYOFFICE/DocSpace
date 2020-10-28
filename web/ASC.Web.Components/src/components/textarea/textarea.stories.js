@@ -34,6 +34,7 @@ storiesOf("Components|Input", module)
               name={text("name", "")}
               tabIndex={number("tabIndex", 1)}
               value={value}
+              fontSize={number("fontSize", 13)}
               onChange={(e) => {
                 set(e.target.value);
               }}

@@ -30,3 +30,4 @@ import { Textarea } from "asc-web-components";
 | `placeholder` |    `string`    |    -     |   -    |    -    | Placeholder for Textarea                                 |
 | `style`       | `obj`, `array` |    -     |   -    |    -    | Accepts css style                                        |
 | `value`       |    `string`    |    -     |   -    |    -    | Value for Textarea                                       |
+| `fontSize`    |    `number`    |    -     |   -    |   13    | Value for font-size                                      |
