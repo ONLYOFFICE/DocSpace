@@ -17,6 +17,10 @@ const PanelStyles = css`
 
 const StyledAsidePanel = styled.div`
   z-index: 310;
+  .sharing_panel-header{
+    font-weight:700;
+    margin: 14px 0;
+  }
   .modal-dialog-aside {
     padding: 0;
     transform: translateX(${(props) => (props.visible ? "0" : "500px")});
@@ -206,7 +210,7 @@ const StyledSharingHeaderContent = styled.div`
         padding: 0px;
       }
       .sharing_panel-plus-icon {
-        margin-right: 12px;
+        //margin-right: 12px;
       }
     }
   }
@@ -229,6 +233,8 @@ const StyledSharingBody = styled(Scrollbar)`
 
   .sharing_panel-text {
     line-height: 24px;
+    font-weight: 600;
+    font-size: 14px;
   }
 
   .sharing_panel-link {
@@ -259,12 +265,15 @@ const StyledSharingBody = styled(Scrollbar)`
   }
 
   .sharing_panel-owner-icon {
-    padding: 0px 24px 0px 8px;
+    padding-right: 24px;
   }
 
   .sharing_panel-remove-icon {
     margin-left: auto;
     line-height: 24px;
+    display: flex;
+    align-items: center;
+    flex-direction: row-reverse;
 
     svg {
       width: 16px;
@@ -273,7 +282,7 @@ const StyledSharingBody = styled(Scrollbar)`
   }
 
   .panel_combo-box {
-    margin-left: 8px;
+    margin-left: 0px;
 
     .combo-button {
       height: 30px;

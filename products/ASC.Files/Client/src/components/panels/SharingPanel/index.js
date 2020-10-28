@@ -600,10 +600,11 @@ class SharingPanelComponent extends React.Component {
               <div className="sharing_panel-icons-container">
                 <div ref={this.ref} className="sharing_panel-drop-down-wrapper">
                   <IconButton
-                    size="16"
+                    size="17"
                     iconName="PlusIcon"
                     className="sharing_panel-plus-icon"
                     onClick={this.onPlusClick}
+                    color="A3A9AE"
                   />
 
                   <DropDown
