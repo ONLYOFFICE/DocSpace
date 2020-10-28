@@ -1,5 +1,5 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import PropTypes from "prop-types";
 import { utils } from "asc-web-components";
 import { Resizable } from "re-resizable";
@@ -7,6 +7,16 @@ import { isMobile } from "react-device-detect";
 const { tablet } = utils.device;
 
 const StyledArticle = styled.article`
+  @media ${tablet} {
+    ${(props) =>
+      props.visible &&
+      !props.pinned &&
+      css`
+        position: fixed;
+        z-index: 400;
+      `}
+  }
+
   .resizable-block {
     padding: 0 24px;
     background: #f8f9f9;
