@@ -18,6 +18,8 @@ using ASC.Web.Core;
 using ASC.Web.Core.Utility;
 using ASC.Web.Studio.Core;
 using ASC.Web.Studio.Core.Notify;
+using ASC.Web.Studio.UserControls.Management;
+using ASC.Web.Studio.UserControls.Statistics;
 using ASC.Web.Studio.Utility;
 
 using Microsoft.AspNetCore.Mvc;
@@ -46,6 +48,7 @@ namespace ASC.Web.Api.Controllers
         private SecurityContext SecurityContext { get; }
         private SettingsManager SettingsManager { get; }
         private IConfiguration Configuration { get; set; }
+        private TenantExtra TenantExtra { get; set; }
         public ILog Log { get; }
 
 
@@ -61,7 +64,8 @@ namespace ASC.Web.Api.Controllers
             WebItemSecurity webItemSecurity,
             SecurityContext securityContext,
             SettingsManager settingsManager,
-            IConfiguration configuration
+            IConfiguration configuration,
+            TenantExtra tenantExtra
             )
         {
             Log = options.CurrentValue;
@@ -76,6 +80,7 @@ namespace ASC.Web.Api.Controllers
             SecurityContext = securityContext;
             SettingsManager = settingsManager;
             Configuration = configuration;
+            TenantExtra = tenantExtra;
         }
 
         [Read("")]
@@ -114,6 +119,20 @@ namespace ASC.Web.Api.Controllers
                 Log.Error("getshortenlink", ex);
                 return link;
             }
+        }
+
+        [Read("tenantextra")]
+        public object GetTenantExtra()
+        {
+            return new
+            {
+                opensource = TenantExtra.Opensource,
+                enterprise = TenantExtra.Enterprise,
+                tariff = TenantExtra.GetCurrentTariff(),
+                quota = TenantExtra.GetTenantQuota(),
+                notPaid = TenantExtra.IsNotPaid(),
+                licenseAccept = SettingsManager.LoadForCurrentUser<TariffSettings>().LicenseAcceptSetting
+            };
         }
 
 
@@ -216,7 +235,8 @@ namespace ASC.Web.Api.Controllers
                 .AddCommonLinkUtilityService()
                 .AddAuthContextService()
                 .AddWebItemSecurity()
-                .AddSecurityContextService();
+                .AddSecurityContextService()
+                .AddTenantExtraService();
         }
     }
 }

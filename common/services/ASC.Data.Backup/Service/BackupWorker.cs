@@ -592,6 +592,7 @@ namespace ASC.Data.Backup.Service
             {
                 try
                 {
+                    IsCompleted = true;
                     backupWorker.PublishProgress(this);
                 }
                 catch (Exception error)
@@ -603,7 +604,6 @@ namespace ASC.Data.Backup.Service
                 {
                     File.Delete(tempFile);
                 }
-                IsCompleted = true;
             }
         }
 
@@ -702,6 +702,8 @@ namespace ASC.Data.Backup.Service
             {
                 try
                 {
+
+                    IsCompleted = true;
                     backupWorker.PublishProgress(this);
                 }
                 catch (Exception error)
@@ -713,7 +715,6 @@ namespace ASC.Data.Backup.Service
                 {
                     File.Delete(tempFile);
                 }
-                IsCompleted = true;
             }
         }
 

@@ -12,6 +12,10 @@ namespace ASC.Web.Api.Models
         public string LogoText { get; set; }
         public IEnumerable<ItemKeyValuePair<string, string>> Logo { get; set; }
     }
+    public class WhiteLabelModel1
+    {
+        public IEnumerable<IFormFile> Attachments { get; set; }
+    }
     public class WhiteLabelQuery
     {
         public bool IsDefault { get; set; }

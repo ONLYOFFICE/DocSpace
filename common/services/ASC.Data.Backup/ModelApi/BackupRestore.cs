@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 
+using ASC.Api.Collections;
 using ASC.Data.Backup.Contracts;
 
 namespace ASC.Data.Backup.Models
@@ -8,7 +9,7 @@ namespace ASC.Data.Backup.Models
     {
         public string BackupId { get; set; }
         public BackupStorageType StorageType { get; set; }
-        public Dictionary<string, string> StorageParams { get; set; }
+        public IEnumerable<ItemKeyValuePair<object, object>> StorageParams { get; set; }
         public bool Notify { get; set; }
     }
 }

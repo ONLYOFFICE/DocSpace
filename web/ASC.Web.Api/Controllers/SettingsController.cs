@@ -36,6 +36,8 @@ using System.ServiceModel.Security;
 using System.Text.RegularExpressions;
 using System.Web;
 
+using ARSoft.Tools.Net.Dns;
+
 using ASC.Api.Collections;
 using ASC.Api.Core;
 using ASC.Api.Utils;
@@ -51,6 +53,7 @@ using ASC.Core.Common.Notify;
 using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
+using ASC.Data.Backup;
 using ASC.Data.Backup.Contracts;
 using ASC.Data.Backup.Service;
 using ASC.Data.Storage;
@@ -166,6 +169,7 @@ namespace ASC.Api.Settings
         private PasswordHasher PasswordHasher { get; }
         private ILog Log { get; set; }
         private TelegramHelper TelegramHelper { get; }
+        private BackupAjaxHandler BackupAjaxHandler { get; }
 
         public SettingsController(
             IOptionsMonitor<ILog> option,
@@ -227,7 +231,8 @@ namespace ASC.Api.Settings
             BackupServiceNotifier backupServiceNotifier,
             ICacheNotify<DeleteSchedule> cacheDeleteSchedule,
             EncryptionServiceNotifier encryptionServiceNotifier,
-            PasswordHasher passwordHasher)
+            PasswordHasher passwordHasher,
+            BackupAjaxHandler backupAjaxHandler)
         {
             Log = option.Get("ASC.Api");
             WebHostEnvironment = webHostEnvironment;
@@ -289,6 +294,7 @@ namespace ASC.Api.Settings
             StorageFactory = storageFactory;
             UrlShortener = urlShortener;
             TelegramHelper = telegramHelper;
+            BackupAjaxHandler = backupAjaxHandler;
         }
 
         [Read("", Check = false)]
@@ -939,7 +945,7 @@ namespace ASC.Api.Settings
 
         ///<visible>false</visible>
         [Create("whitelabel/savefromfiles")]
-        public bool SaveWhiteLabelSettingsFromFiles([FromBody]WhiteLabelModel model, [FromQuery]WhiteLabelQuery query)
+        public bool SaveWhiteLabelSettingsFromFiles([FromForm]WhiteLabelModel1 model, [FromQuery]WhiteLabelQuery query)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -965,14 +971,14 @@ namespace ASC.Api.Settings
             return true;
         }
 
-        private void SaveWhiteLabelSettingsFromFilesForCurrentTenant(WhiteLabelModel model)
+        private void SaveWhiteLabelSettingsFromFilesForCurrentTenant(WhiteLabelModel1 model)
         {
             var settings = SettingsManager.Load<TenantWhiteLabelSettings>();
 
             SaveWhiteLabelSettingsFromFilesForTenant(settings, null, Tenant.TenantId, model);
         }
 
-        private void SaveWhiteLabelSettingsFromFilesForDefaultTenant(WhiteLabelModel model)
+        private void SaveWhiteLabelSettingsFromFilesForDefaultTenant(WhiteLabelModel1 model)
         {
             var settings = SettingsManager.LoadForDefaultTenant<TenantWhiteLabelSettings>();
             var storage = StorageFactory.GetStorage(string.Empty, "static_partnerdata");
@@ -980,7 +986,7 @@ namespace ASC.Api.Settings
             SaveWhiteLabelSettingsFromFilesForTenant(settings, storage, Tenant.DEFAULT_TENANT, model);
         }
 
-        private void SaveWhiteLabelSettingsFromFilesForTenant(TenantWhiteLabelSettings settings, IDataStore storage, int tenantId, WhiteLabelModel model)
+        private void SaveWhiteLabelSettingsFromFilesForTenant(TenantWhiteLabelSettings settings, IDataStore storage, int tenantId, WhiteLabelModel1 model)
         {
             foreach (var f in model.Attachments)
             {
@@ -1779,23 +1785,10 @@ namespace ASC.Api.Settings
             return ServiceClient.GetProgress(Tenant.TenantId);
         }
 
-        [Read("encryption")]
-        public void StartEncryption(EncryptionSettingsModel settings)
-        {
-            var encryptionSettingsProto = new EncryptionSettingsProto
-            {
-                NotifyUsers = settings.NotifyUsers,
-                Password = settings.Password,
-                Status = settings.Status,
-                ServerRootPath = settings.ServerRootPath
-            };
-            EncryptionServiceClient.Start(encryptionSettingsProto);
-        }
-
         public readonly object Locker = new object();
 
         [Create("encryption/start")]
-        public void StartStorageEncryption(StorageEncryptionModel storageEncryption)
+        public bool StartStorageEncryption(StorageEncryptionModel storageEncryption)
         {
             lock (Locker)
             {
@@ -1806,6 +1799,7 @@ namespace ASC.Api.Settings
                     StartEncryption(storageEncryption.NotifyUsers);
                 }
             }
+            return true;
         }
 
         private void StartEncryption(bool notifyUsers)
@@ -2082,29 +2076,29 @@ namespace ASC.Api.Settings
             StorageSettingsHelper.Clear(SettingsManager.Load<CdnStorageSettings>());
         }
 
-        //[Read("storage/backup")]
-        //public List<StorageWrapper> GetAllBackupStorages()
-        //{
-        //    PermissionContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
-        //if (CoreContext.Configuration.Standalone)
-        //{
-        //    TenantExtra.DemandControlPanelPermission();
-        //}
-        //    var schedule = new BackupAjaxHandler().GetSchedule();
-        //    var current = new StorageSettings();
+        [Read("storage/backup")]
+        public List<StorageWrapper> GetAllBackupStorages()
+        {
+            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        if (CoreBaseSettings.Standalone)
+        {
+            TenantExtra.DemandControlPanelPermission();
+        }
+            var schedule = BackupAjaxHandler.GetSchedule();
+            var current = new StorageSettings();
 
-        //    if (schedule != null && schedule.StorageType == Contracts.BackupStorageType.ThirdPartyConsumer)
-        //    {
-        //        current = new StorageSettings
-        //        {
-        //            Module = schedule.StorageParams["module"],
-        //            Props = schedule.StorageParams.Where(r => r.Key != "module").ToDictionary(r => r.Key, r => r.Value)
-        //        };
-        //    }
+            if (schedule != null && schedule.StorageType == BackupStorageType.ThirdPartyConsumer)
+            {
+                current = new StorageSettings
+                {
+                    Module = schedule.StorageParams["module"],
+                    Props = schedule.StorageParams.Where(r => r.Key != "module").ToDictionary(r => r.Key, r => r.Value)
+                };
+            }
 
-        //    var consumers = ConsumerFactory.GetAll<DataStoreConsumer>().ToList();
-        //    return consumers.Select(consumer => new StorageWrapper(consumer, current)).ToList();
-        //}
+            var consumers = ConsumerFactory.GetAll<DataStoreConsumer>().ToList();
+            return consumers.Select(consumer => new StorageWrapper(consumer, current)).ToList();
+        }
 
         private void StartMigrate(StorageSettings settings)
         {
@@ -2138,15 +2132,16 @@ namespace ASC.Api.Settings
 
         ///<visible>false</visible>
         [Create("rebranding/company")]
-        public void SaveCompanyWhiteLabelSettings(CompanyWhiteLabelSettings settings)
+        public bool SaveCompanyWhiteLabelSettings(CompanyWhiteLabelSettingsWrapper  companyWhiteLabelSettingsWrapper)
         {
-            if (settings == null) throw new ArgumentNullException("settings");
+            if (companyWhiteLabelSettingsWrapper.Settings == null) throw new ArgumentNullException("settings");
 
             DemandRebrandingPermission();
 
-            settings.IsLicensorSetting = false; //TODO: CoreContext.TenantManager.GetTenantQuota(TenantProvider.CurrentTenantID).Branding && settings.IsLicensor
+            companyWhiteLabelSettingsWrapper.Settings.IsLicensorSetting = false; //TODO: CoreContext.TenantManager.GetTenantQuota(TenantProvider.CurrentTenantID).Branding && settings.IsLicensor
 
-            SettingsManager.SaveForDefaultTenant(settings);
+            SettingsManager.SaveForDefaultTenant(companyWhiteLabelSettingsWrapper.Settings);
+            return true;
         }
 
         ///<visible>false</visible>
@@ -2171,13 +2166,14 @@ namespace ASC.Api.Settings
 
         ///<visible>false</visible>
         [Create("rebranding/additional")]
-        public void SaveAdditionalWhiteLabelSettings(AdditionalWhiteLabelSettings settings)
+        public bool SaveAdditionalWhiteLabelSettings(AdditionalWhiteLabelSettingsWrapper wrapper)
         {
-            if (settings == null) throw new ArgumentNullException("settings");
+            if (wrapper.Settings == null) throw new ArgumentNullException("settings");
 
             DemandRebrandingPermission();
 
-            SettingsManager.SaveForDefaultTenant(settings);
+            SettingsManager.SaveForDefaultTenant(wrapper.Settings);
+            return true;
         }
 
         ///<visible>false</visible>
@@ -2202,18 +2198,19 @@ namespace ASC.Api.Settings
 
         ///<visible>false</visible>
         [Create("rebranding/mail")]
-        public void SaveMailWhiteLabelSettings(MailWhiteLabelSettings settings)
+        public bool SaveMailWhiteLabelSettings(MailWhiteLabelSettings settings)
         {
             if (settings == null) throw new ArgumentNullException("settings");
 
             DemandRebrandingPermission();
 
             SettingsManager.SaveForDefaultTenant(settings);
+            return true;
         }
 
         ///<visible>false</visible>
         [Update("rebranding/mail")]
-        public void UpdateMailWhiteLabelSettings(bool footerEnabled)
+        public bool UpdateMailWhiteLabelSettings(bool footerEnabled)
         {
             DemandRebrandingPermission();
 
@@ -2222,6 +2219,8 @@ namespace ASC.Api.Settings
             settings.FooterEnabled = footerEnabled;
 
             SettingsManager.SaveForDefaultTenant(settings);
+
+            return true;
         }
 
         ///<visible>false</visible>
@@ -2463,7 +2462,8 @@ namespace ASC.Api.Settings
                 .AddEncryptionServiceNotifierService()
                 .AddTelegramLoginProviderService()
                 .AddTelegramHelperSerivce()
-                .AddPasswordHasherService();
+                .AddPasswordHasherService()
+                .AddBackupAjaxHandler();
         }
     }
 }

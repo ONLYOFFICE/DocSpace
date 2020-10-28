@@ -1,16 +1,20 @@
 ﻿
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using ASC.Api.Core.Middleware;
 using ASC.Common;
 using ASC.Core;
 using ASC.Data.Backup.Contracts;
+using ASC.Data.Backup.ModelApi;
 using ASC.Data.Backup.Models;
 using ASC.Web.Api.Routing;
 using ASC.Web.Studio.Utility;
 
 using Microsoft.AspNetCore.Mvc;
+
+using static ASC.Data.Backup.BackupAjaxHandler;
 
 namespace ASC.Data.Backup.Controllers
 {
@@ -57,14 +61,23 @@ namespace ASC.Data.Backup.Controllers
         /// <param name="backupMail">Include mail in the backup</param>
         /// <category>Backup</category>
         [Create("createbackupschedule")]
-        public void CreateBackupSchedule(BackupStorageType storageType, [FromQuery] Dictionary<string, string> storageParams, int backupsStored, [FromBody] BackupAjaxHandler.CronParams cronParams, bool backupMail)
+        public bool CreateBackupSchedule(BackupSchedule backupSchedule)
         {
             if (CoreBaseSettings.Standalone)
             {
                 TenantExtra.DemandControlPanelPermission();
             }
-
-            BackupHandler.CreateSchedule(storageType, storageParams, backupsStored, cronParams, backupMail);
+            var storageType = backupSchedule.StorageType == null ? BackupStorageType.Documents : (BackupStorageType)Int32.Parse(backupSchedule.StorageType);
+            var storageParams = backupSchedule.StorageParams == null ? new Dictionary<string, string>() : backupSchedule.StorageParams.ToDictionary(r => r.Key.ToString(), r => r.Value.ToString());
+            var backupStored = backupSchedule.BackupsStored == null ? 0 : Int32.Parse(backupSchedule.BackupsStored);
+            var cron = new CronParams()
+            {
+                Period = backupSchedule.CronParams.Period == null ? BackupPeriod.EveryDay : (BackupPeriod)Int32.Parse(backupSchedule.CronParams.Period),
+                Hour = backupSchedule.CronParams.Hour == null ? 0 : Int32.Parse(backupSchedule.CronParams.Hour),
+                Day = backupSchedule.CronParams.Day == null ? 0 : Int32.Parse(backupSchedule.CronParams.Day),
+            };
+            BackupHandler.CreateSchedule(storageType, storageParams, backupStored, cron, backupSchedule.BackupMail);
+            return true;
         }
 
         /// <summary>
@@ -72,7 +85,7 @@ namespace ASC.Data.Backup.Controllers
         /// </summary>
         /// <category>Backup</category>
         [Delete("deletebackupschedule")]
-        public void DeleteBackupSchedule()
+        public bool DeleteBackupSchedule()
         {
             if (CoreBaseSettings.Standalone)
             {
@@ -80,6 +93,8 @@ namespace ASC.Data.Backup.Controllers
             }
 
             BackupHandler.DeleteSchedule();
+
+            return true;
         }
 
         /// <summary>
@@ -97,8 +112,9 @@ namespace ASC.Data.Backup.Controllers
             {
                 TenantExtra.DemandControlPanelPermission();
             }
-
-            BackupHandler.StartBackup(backup.StorageType, backup.StorageParams ?? new Dictionary<string, string>(), backup.BackupMail);
+            var storageType = backup.StorageType == null ? BackupStorageType.Documents : (BackupStorageType)Int32.Parse(backup.StorageType);
+            var storageParams = backup.StorageParams == null ? new Dictionary<string, string>() : backup.StorageParams.ToDictionary(r => r.Key.ToString(), r => r.Value.ToString());
+            BackupHandler.StartBackup(storageType, storageParams, backup.BackupMail);
             return BackupHandler.GetBackupProgress();
         }
 
@@ -139,7 +155,7 @@ namespace ASC.Data.Backup.Controllers
         /// </summary>
         /// <category>Backup</category>
         [Delete("deletebackup/{id}")]
-        public void DeleteBackup(Guid id)
+        public bool DeleteBackup(Guid id)
         {
             if (CoreBaseSettings.Standalone)
             {
@@ -147,6 +163,7 @@ namespace ASC.Data.Backup.Controllers
             }
 
             BackupHandler.DeleteBackup(id);
+            return true;
         }
 
         /// <summary>
@@ -155,7 +172,7 @@ namespace ASC.Data.Backup.Controllers
         /// <category>Backup</category>
         /// <returns>Backup History</returns>
         [Delete("deletebackuphistory")]
-        public void DeleteBackupHistory()
+        public bool DeleteBackupHistory()
         {
             if (CoreBaseSettings.Standalone)
             {
@@ -163,6 +180,7 @@ namespace ASC.Data.Backup.Controllers
             }
 
             BackupHandler.DeleteAllBackups();
+            return true;
         }
 
         /// <summary>
@@ -181,8 +199,8 @@ namespace ASC.Data.Backup.Controllers
             {
                 TenantExtra.DemandControlPanelPermission();
             }
-
-            BackupHandler.StartRestore(backupRestore.BackupId, backupRestore.StorageType, backupRestore.StorageParams, backupRestore.Notify);
+            var storageParams = backupRestore.StorageParams == null ? new Dictionary<string, string>() : backupRestore.StorageParams.ToDictionary(r => r.Key.ToString(), r => r.Value.ToString());
+            BackupHandler.StartRestore(backupRestore.BackupId, backupRestore.StorageType, storageParams, backupRestore.Notify);
             return BackupHandler.GetBackupProgress();
         }
 
