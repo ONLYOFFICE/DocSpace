@@ -18,7 +18,12 @@ const StyledScrollbar = styled(ClearScrollbar)`
     outline: none;
   }
   width: 100% !important;
-  height: ${(props) => (props.heightScale ? "67vh" : "91px")} !important;
+  height: ${(props) =>
+    props.heightScale
+      ? "67vh"
+      : props.heighttextarea
+      ? props.heighttextarea + 2 + "px"
+      : "91px"} !important;
   background-color: ${(props) => props.isDisabled && "#F8F9F9"};
 `;
 
@@ -38,7 +43,7 @@ const StyledTextarea = styled(ClearTextareaAutosize)`
   resize: none;
   overflow: hidden;
   padding: 5px 8px 2px 8px;
-  font-size: ${(props) => (props.fontSize ? props.fontSize + "px" : "13px")};
+  font-size: ${(props) => props.fontSize + "px"};
   font-family: "Open Sans", sans-serif;
   line-height: 1.5;
 
@@ -93,6 +98,7 @@ class Textarea extends React.PureComponent {
       tabIndex,
       value,
       fontSize,
+      heightTextArea,
     } = this.props;
     return (
       <StyledScrollbar
@@ -102,6 +108,7 @@ class Textarea extends React.PureComponent {
         isDisabled={isDisabled}
         hasError={hasError}
         heightScale={heightScale}
+        heighttextarea={heightTextArea}
       >
         <StyledTextarea
           id={id}
@@ -136,6 +143,7 @@ Textarea.propTypes = {
   tabIndex: PropTypes.number,
   value: PropTypes.string,
   fontSize: PropTypes.number,
+  heightTextArea: PropTypes.number,
 };
 
 Textarea.defaultProps = {
@@ -147,6 +155,7 @@ Textarea.defaultProps = {
   placeholder: "",
   tabIndex: -1,
   value: "",
+  fontSize: 13,
 };
 
 export default Textarea;

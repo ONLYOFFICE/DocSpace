@@ -50,4 +50,18 @@ describe("<Textarea />", () => {
 
     expect(wrapper.prop("fontSize")).toEqual(12);
   });
+
+  it("accepts heightTextArea", () => {
+    const wrapper = mount(
+      <Textarea
+        placeholder="Add comment"
+        onChange={jest.fn()}
+        value="value"
+        className="test"
+        heightTextArea={54}
+      />
+    );
+
+    expect(wrapper.prop("heightTextArea")).toEqual(54);
+  });
 });
