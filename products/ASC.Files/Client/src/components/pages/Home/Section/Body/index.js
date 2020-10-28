@@ -2,7 +2,7 @@ import React from "react";
 import { withRouter } from "react-router";
 import { connect } from "react-redux";
 import { ReactSVG } from "react-svg";
-import { withTranslation } from "react-i18next";
+import { withTranslation, Trans } from "react-i18next";
 import isEqual from "lodash/isEqual";
 import copy from "copy-to-clipboard";
 import styled from "styled-components";
@@ -87,9 +87,17 @@ import {
   getIsFavoritesFolder,
   getMyFolderId,
   getTooltipLabel,
+  getIsPrivacyFolder,
+  getPrivacyInstructionsLink
 } from "../../../../../store/files/selectors";
 import { SharingPanel, OperationsPanel } from "../../../../panels";
-const { isAdmin, getSettings, getCurrentUser } = store.auth.selectors;
+const {
+  isAdmin,
+  getSettings,
+  getCurrentUser,
+  isEncryptionSupport,
+  getOrganizationName
+} = store.auth.selectors;
 //import { getFilterByLocation } from "../../../../../helpers/converters";
 //import config from "../../../../../../package.json";
 
@@ -795,8 +803,12 @@ class SectionBodyContent extends React.Component {
       isRecycleBin,
       isFavorites,
       isRecent,
+      isPrivacy,
+      organizationName,
+      privacyInstructions,
       title,
       t,
+      i18n,
     } = this.props;
     const subheadingText = t("SubheadingEmptyText");
     const myDescription = t("MyEmptyContainerDescription");
@@ -806,8 +818,47 @@ class SectionBodyContent extends React.Component {
     const favoritesDescription = t("FavoritesEmptyContainerDescription");
     const recentDescription = t("RecentEmptyContainerDescription");
 
-    const commonButtons = (
+    const privateRoomHeader = t("PrivateRoomHeader");
+    const privacyIcon = <img alt="" src="images/privacy.svg" />;
+    const privateRoomDescTranslations = [
+      t("PrivateRoomDescriptionSafest"),
+      t("PrivateRoomDescriptionSecure"),
+      t("PrivateRoomDescriptionEncrypted"),
+      t("PrivateRoomDescriptionUnbreakable"),
+    ];
+    const privateRoomDescription = (
       <>
+        <Text fontSize="15px" as="div">
+          {privateRoomDescTranslations.map((el) => (
+            <Box
+              displayProp="flex"
+              alignItems="center"
+              paddingProp="0 0 13px 0"
+              key={el}
+            >
+              <Box paddingProp="0 7px 0 0">{privacyIcon}</Box>
+              <Box>{el}</Box>
+            </Box>
+          ))}
+        </Text>
+        <Text fontSize="12px">
+          <Trans i18nKey="PrivateRoomSupport" i18n={i18n}>
+            Work in Private Room is available via {{organizationName}} desktop app.
+            <Link
+              isBold
+              isHovered
+              color="#116d9d"
+              href={privacyInstructions}
+            >
+              Instructions
+            </Link>
+          </Trans>
+        </Text>
+      </>
+    );
+
+    const commonButtons = (
+      <span>
         <div className="empty-folder_container-links">
           <img
             className="empty-folder_container_plus-image"
@@ -840,7 +891,7 @@ class SectionBodyContent extends React.Component {
             {t("Folder")}
           </Link>
         </div>
-      </>
+      </span>
     );
 
     const trashButtons = (
@@ -913,6 +964,14 @@ class SectionBodyContent extends React.Component {
           subheadingText={subheadingText}
           descriptionText={recentDescription}
           imageSrc="images/empty_screen_recent.png"
+        />
+      );
+    } else if (isPrivacy) {
+      return (
+        <EmptyFolderContainer
+          headerText={privateRoomHeader}
+          descriptionText={privateRoomDescription}
+          imageSrc="images/empty_screen_privacy.png"
         />
       );
     } else {
@@ -1376,6 +1435,8 @@ class SectionBodyContent extends React.Component {
       isLoading,
       currentFolderCount,
       isRecycleBin,
+      isPrivacy,
+      isEncryptionSupport,
       dragging,
       mediaViewerVisible,
       currentMediaFileId,
@@ -1425,7 +1486,7 @@ class SectionBodyContent extends React.Component {
       });
     }
 
-    return !fileAction.id && currentFolderCount === 0 ? (
+    return (!fileAction.id && currentFolderCount === 0) || null ? (
       parentId === 0 ? (
         this.renderEmptyRootFolderContainer()
       ) : (
@@ -1434,6 +1495,8 @@ class SectionBodyContent extends React.Component {
     ) : !fileAction.id && items.length === 0 ? (
       firstLoad ? (
         <Loaders.Rows />
+      ) : isPrivacy && !isEncryptionSupport ? (
+        this.renderEmptyRootFolderContainer()
       ) : (
         this.renderEmptyFilterContainer()
       )
@@ -1664,17 +1727,21 @@ const mapStateToProps = (state) => {
     folders: getFolders(state),
     isAdmin: isAdmin(state),
     isCommon: getIsCommonFolder(state),
+    isEncryptionSupport: isEncryptionSupport(state),
     isFavorites: getIsFavoritesFolder(state),
     isLoading: getIsLoading(state),
     isMy: getIsMyFolder(state),
     isRecycleBin: getIsRecycleBinFolder(state),
     isRecent: getIsRecentFolder(state),
     isShare: getIsShareFolder(state),
+    isPrivacy: getIsPrivacyFolder(state),
     mediaViewerImageFormats: getMediaViewerImageFormats(state),
     mediaViewerMediaFormats: getMediaViewerMediaFormats(state),
     mediaViewerVisible: getMediaViewerVisibility(state),
     myDocumentsId: getMyFolderId(state),
+    organizationName: getOrganizationName(state),
     parentId: getSelectedFolderParentId(state),
+    privacyInstructions: getPrivacyInstructionsLink(state),
     selected: getSelected(state),
     selectedFolderId: getSelectedFolderId(state),
     selection: getSelection(state),
