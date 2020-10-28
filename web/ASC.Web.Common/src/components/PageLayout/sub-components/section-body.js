@@ -5,6 +5,7 @@ import { utils, Scrollbar, DragAndDrop } from "asc-web-components";
 import SelectedFrame from "./SelectedFrame";
 import isEqual from "lodash/isEqual";
 import { isMobile } from "react-device-detect";
+import {ThemeContextConsumer} from "asc-web-common"
 const { tablet } = utils.device;
 
 const commonStyles = css`
@@ -95,9 +96,8 @@ class SectionBody extends React.Component {
       uploadFiles,
       viewAs,
       withScroll,
-
     } = this.props;
-    
+
     const focusProps = autoFocus
       ? {
         ref: this.focusRef,
@@ -134,18 +134,22 @@ class SectionBody extends React.Component {
               </SelectedFrame>
             </Scrollbar>)
             : (
-              <SelectedFrame
-                viewAs={viewAs}
-                scrollRef={this.scrollRef}
-                setSelections={setSelections}
-              >
-                <div className="section-wrapper">
-                  <div className="section-wrapper-content" >
-                    {children}
-                    <StyledSpacer pinned={pinned} />
-                  </div>
-                </div>
-              </SelectedFrame>)
+              <ThemeContextConsumer>
+                {value => 
+                  <SelectedFrame
+                    viewAs={viewAs}
+                    scrollRef={value}
+                    setSelections={setSelections}
+                  >
+                    <div className="section-wrapper">
+                      <div className="section-wrapper-content" {...focusProps}>
+                        {children}
+                        <StyledSpacer pinned={pinned} />
+                      </div>
+                    </div>
+                  </SelectedFrame>
+                  }
+              </ThemeContextConsumer>)
         ) : (
             <SelectedFrame
               viewAs={viewAs}

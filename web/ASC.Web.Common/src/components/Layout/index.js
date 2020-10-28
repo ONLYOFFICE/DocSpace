@@ -1,32 +1,42 @@
 
-import React, { forwardRef, useEffect, Component, useState } from "react"
+import React, { Component, createRef} from "react"
 import styled from "styled-components";
 import {  Scrollbar } from "asc-web-components";
 import { isMobile } from "react-device-detect";
-import { scrolledTheVerticalAxis } from "../../utils";
+import {ThemeContextProvider} from "./context"
+
 const StyledContainer = styled.div`
 width:100%;
 height:100vh;
 `
+class Layout extends Component{
+  constructor(props) {
+    super(props);
 
-
-
-const Layout = (({children}) => {
+    this.scrollRefPage = createRef();
   
-      return(
-        <StyledContainer className="Layout">
-          {isMobile  
-          ? <Scrollbar  stype="mediumBlack">
-            {/* { console.log("(IN APP REF", scrollRefPage)} */}
-    
-             {children}
-             </Scrollbar>
-    
-           :  children
-             }
-         </StyledContainer>)
-})
+  }
+  
+  render() {  
+  const scrollProp =  { ref: this.scrollRefPage } ;
+  const { children } = this.props
 
+    return(
+      <StyledContainer className="Layout">
+           { isMobile  
+            ? <Scrollbar {...scrollProp} stype="mediumBlack">
+                <ThemeContextProvider value={this.scrollRefPage}>
+                  { children }
+                </ThemeContextProvider>
+              </Scrollbar>
+      
+           :  children
+            }
+          </StyledContainer>
+
+    )
+  }
+}
 
 
 
