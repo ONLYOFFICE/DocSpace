@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { ModalDialog } from "asc-web-components";
 import { withTranslation } from "react-i18next";
-import { utils as commonUtils, toastr, api } from "asc-web-common";
+import { utils as commonUtils, toastr, api, constants } from "asc-web-common";
 import { StyledAsidePanel } from "../StyledPanels";
 import TreeFolders from "../../Article/Body/TreeFolders";
 import {
@@ -27,6 +27,7 @@ const i18n = createI18N({
 });
 
 const { changeLanguage } = commonUtils;
+const { FolderType } = constants;
 
 class OperationsPanelComponent extends React.Component {
   constructor(props) {
@@ -43,6 +44,8 @@ class OperationsPanelComponent extends React.Component {
       loopFilesOperations,
       setProgressBarData,
       clearProgressData,
+      currentFolderId,
+      onClose
     } = this.props;
 
     const destFolderId = Number(e);
@@ -51,61 +54,66 @@ class OperationsPanelComponent extends React.Component {
     const folderIds = [];
     const fileIds = [];
 
-    for (let item of selection) {
-      if (item.fileExst) {
-        fileIds.push(item.id);
-      } else if (item.id === destFolderId) {
-        toastr.error(t("MoveToFolderMessage"));
-      } else {
-        folderIds.push(item.id);
-      }
+    if (currentFolderId === destFolderId) {
+      return onClose();
     }
-    this.props.onClose();
+    else {
+      for (let item of selection) {
+        if (item.fileExst) {
+          fileIds.push(item.id);
+        } else if (item.id === destFolderId) {
+          toastr.error(t("MoveToFolderMessage"));
+        } else {
+          folderIds.push(item.id);
+        }
+      }
+      onClose();
 
-    if (isCopy) {
-      setProgressBarData({
-        visible: true,
-        percent: 0,
-        label: t("CopyOperation"),
-      });
-      api.files
-        .copyToFolder(
-          destFolderId,
-          folderIds,
-          fileIds,
-          conflictResolveType,
-          deleteAfter
-        )
-        .then((res) => {
-          const id = res[0] && res[0].id ? res[0].id : null;
-          loopFilesOperations(id, destFolderId, isCopy);
-        })
-        .catch((err) => {
-          toastr.error(err);
-          clearProgressData();
+      if (isCopy) {
+        setProgressBarData({
+          visible: true,
+          percent: 0,
+          label: t("CopyOperation"),
         });
-    } else {
-      setProgressBarData({
-        visible: true,
-        percent: 0,
-        label: t("MoveToOperation"),
-      });
-      api.files
-        .moveToFolder(
-          destFolderId,
-          folderIds,
-          fileIds,
-          conflictResolveType,
-          deleteAfter
-        )
-        .then((res) => {
-          const id = res[0] && res[0].id ? res[0].id : null;
-          loopFilesOperations(id, destFolderId, false);
-        })
-        .catch((err) => {
-          toastr.error(err);
-          clearProgressData();
+        api.files
+          .copyToFolder(
+            destFolderId,
+            folderIds,
+            fileIds,
+            conflictResolveType,
+            deleteAfter
+          )
+          .then((res) => {
+            const id = res[0] && res[0].id ? res[0].id : null;
+            loopFilesOperations(id, destFolderId, isCopy);
+          })
+          .catch((err) => {
+            toastr.error(err);
+            clearProgressData();
+          });
+      } else {
+        setProgressBarData({
+          visible: true,
+          percent: 0,
+          label: t("MoveToOperation"),
         });
+        api.files
+          .moveToFolder(
+            destFolderId,
+            folderIds,
+            fileIds,
+            conflictResolveType,
+            deleteAfter
+          )
+          .then((res) => {
+            const id = res[0] && res[0].id ? res[0].id : null;
+            loopFilesOperations(id, destFolderId, false);
+          })
+          .catch((err) => {
+            toastr.error(err);
+            clearProgressData();
+          });
+      }
     }
   };
 
@@ -121,7 +129,11 @@ class OperationsPanelComponent extends React.Component {
       onClose,
     } = this.props;
     const zIndex = 310;
-    const data = treeFolders.slice(0, 3);
+    const data = treeFolders.filter(folder => (
+      folder.rootFolderType === FolderType.USER ||
+      folder.rootFolderType === FolderType.COMMON ||
+      folder.rootFolderType === FolderType.Projects
+    ) && folder);
     const expandedKeys = this.props.expandedKeys.map((item) => item.toString());
 
     return (
