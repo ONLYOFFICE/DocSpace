@@ -75,6 +75,8 @@ const StyledRow = styled(Row)`
   .version_content-length {
     display: block;
     margin-left: auto;
+    margin-top: -3px;
+    margin-right: -7px;
 
     @media ${tablet} {
       display: none;
@@ -107,9 +109,11 @@ const StyledRow = styled(Row)`
   .version_link-action {
     display: block;
     margin-left: auto;
+    margin-top: 5px;
 
     :last-child {
       margin-left: 8px;
+      margin-right: -7px;
     }
 
     @media ${tablet} {
@@ -227,7 +231,7 @@ const VersionRow = (props) => {
     { key: "restore", label: t("Restore"), onClick: onRestoreClick },
     {
       key: "download",
-      label: `${t("Download")}(${info.contentLength})`,
+      label: `${t("Download")} (${info.contentLength})`,
       onClick: onDownloadAction,
     },
   ];
@@ -250,6 +254,7 @@ const VersionRow = (props) => {
             className="version_content-length"
             fontWeight={600}
             color="#A3A9AE"
+            fontSize="14px"
           >
             {info.contentLength}
           </Text>
