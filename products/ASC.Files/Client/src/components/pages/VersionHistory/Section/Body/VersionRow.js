@@ -23,12 +23,27 @@ import {
 const { tablet } = utils.device;
 
 const StyledRow = styled(Row)`
+  min-height: 70px;
+
+  @media ${tablet} {
+    min-height: 69px;
+  }
   .version_badge {
     cursor: pointer;
 
     .version_badge-text {
       position: absolute;
-      left: 16px;
+      left: -2px;
+    }
+
+    margin-left: -8px;
+    margin-right: 16px;
+
+    @media ${tablet} {
+      margin-left: 0px;
+      .version_badge-text {
+        left: 6px;
+      }
     }
   }
 
@@ -61,6 +76,8 @@ const StyledRow = styled(Row)`
     display: ${(props) => (props.showEditPanel ? "none" : "block")};
     text-decoration: underline dashed;
     white-space: break-spaces;
+    margin-left: -7px;
+    margin-top: 4px;
 
     @media ${tablet} {
       display: none;
@@ -73,6 +90,8 @@ const StyledRow = styled(Row)`
 
     @media ${tablet} {
       display: block;
+      margin-left: 1px;
+      margin-top: 4px;
     }
   }
 
