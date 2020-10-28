@@ -407,6 +407,7 @@ class FilesRowContent extends React.PureComponent {
       isMobile,
       canWebEdit,
       canConvert,
+      sectionWidth,
     } = this.props;
     const {
       itemTitle,
@@ -470,6 +471,7 @@ class FilesRowContent extends React.PureComponent {
           />
         )}
         <SimpleFilesRowContent
+          sectionWidth={sectionWidth}
           isMobile={isMobile}
           sideColor={sideColor}
           isFile={fileExst}
