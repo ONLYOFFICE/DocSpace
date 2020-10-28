@@ -345,7 +345,7 @@ namespace ASC.Core.Notify.Senders
     {
         public static void Register(DIHelper services)
         {
-            services.TryAddScoped<SmtpSenderScope>();
+            services.TryAdd<SmtpSenderScope>();
         }
     }
 }

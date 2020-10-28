@@ -112,18 +112,6 @@ namespace ASC.Common
             ServiceCollection = serviceCollection;
         }
 
-        public bool TryAddScoped<TService>() where TService : class
-        {
-            var serviceName = $"{typeof(TService)}";
-            if (!Scoped.Contains(serviceName))
-            {
-                Scoped.Add(serviceName);
-                ServiceCollection.TryAddScoped<TService>();
-                return true;
-            }
-            return false;
-        }
-
         public bool TryAdd<TService>() where TService : class
         {
             return TryAdd(typeof(TService));
@@ -379,31 +367,6 @@ namespace ASC.Common
             return false;
         }
 
-        public bool TryAddScoped<TService, TImplementation>() where TService : class where TImplementation : class, TService
-        {
-            var serviceName = $"{typeof(TService)}{typeof(TImplementation)}";
-            if (!Scoped.Contains(serviceName))
-            {
-                Scoped.Add(serviceName);
-                ServiceCollection.TryAddScoped<TService, TImplementation>();
-                return true;
-            }
-
-            return false;
-        }
-
-
-        public DIHelper TryAddSingleton<TService>() where TService : class
-        {
-            var serviceName = $"{typeof(TService)}";
-            if (!Singleton.Contains(serviceName))
-            {
-                Singleton.Add(serviceName);
-                ServiceCollection.TryAddSingleton<TService>();
-            }
-
-            return this;
-        }
 
         public DIHelper TryAddSingleton<TService>(Func<IServiceProvider, TService> implementationFactory) where TService : class
         {
@@ -424,18 +387,6 @@ namespace ASC.Common
             {
                 Singleton.Add(serviceName);
                 ServiceCollection.TryAddSingleton<TService, TImplementation>();
-            }
-
-            return this;
-        }
-
-        public DIHelper AddSingleton<TService, TImplementation>() where TService : class where TImplementation : class, TService
-        {
-            var serviceName = $"{typeof(TService)}{typeof(TImplementation)}";
-            if (!Singleton.Contains(serviceName))
-            {
-                Singleton.Add(serviceName);
-                ServiceCollection.AddSingleton<TService, TImplementation>();
             }
 
             return this;

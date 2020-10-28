@@ -202,10 +202,5 @@ namespace ASC.Data.Storage.DiscStorage
 
             return builder;
         }
-        public static DIHelper AddStorageHandlerService(this DIHelper services)
-        {
-            services.TryAddScoped<StorageHandlerScope>();
-            return services;
-        }
     }
 }

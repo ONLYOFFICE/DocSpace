@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 
 using ASC.Common;
@@ -69,9 +68,6 @@ namespace ASC.Notify
                     services.AddHostedService<NotifyServiceLauncher>();
 
                     services.AddAutofac(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
-
-                    var a = $"{string.Join(",", diHelper.Singleton.OrderBy(r => r).ToArray())},{string.Join(",", diHelper.Scoped.OrderBy(r => r).ToArray())},{string.Join(",", diHelper.Transient.OrderBy(r => r).ToArray())}";
-                    var b = 0;
                 })
                 .UseConsoleLifetime()
                 .Build();

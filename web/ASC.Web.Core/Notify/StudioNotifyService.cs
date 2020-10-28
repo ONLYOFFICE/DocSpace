@@ -1035,7 +1035,7 @@ namespace ASC.Web.Studio.Core.Notify
     {
         public static void Register(DIHelper services)
         {
-            services.TryAddScoped<StudioNotifyServiceScope>();
+            services.TryAdd<StudioNotifyServiceScope>();
         }
     }
 }

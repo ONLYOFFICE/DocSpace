@@ -167,6 +167,7 @@ namespace ASC.Core.Notify
         }
     }
 
+    [Scope]
     public class EmailSenderSinkScope
     {
         private TenantManager TenantManager { get; }
@@ -183,15 +184,6 @@ namespace ASC.Core.Notify
         public void Deconstruct(out TenantManager tenantManager, out CoreConfiguration coreConfiguration, out IOptionsMonitor<ILog> optionsMonitor)
         {
             (tenantManager, coreConfiguration, optionsMonitor) = (TenantManager, CoreConfiguration, Options);
-        }
-    }
-
-    public static class EmailSenderSinkExtension
-    {
-        public static DIHelper AddEmailSenderSinkService(this DIHelper services)
-        {
-            services.TryAddScoped<EmailSenderSinkScope>();
-            return services;
         }
     }
 }

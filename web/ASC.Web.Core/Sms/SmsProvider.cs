@@ -51,7 +51,7 @@ using Twilio.Types;
 
 namespace ASC.Web.Core.Sms
 {
-    [Scope]
+    [Scope(Additional = typeof(TwilioProviderExtention))]
     public class SmsProviderManager
     {
         public SmscProvider SmscProvider { get => ConsumerFactory.Get<SmscProvider>(); }
@@ -530,11 +530,9 @@ namespace ASC.Web.Core.Sms
 
     public static class TwilioProviderExtention
     {
-        public static DIHelper AddTwilioProviderService(this DIHelper services)
+        public static void Register(DIHelper services)
         {
-            services.TryAddScoped<TwilioSaaSProvider>();
-
-            return services;
+            services.TryAdd<TwilioSaaSProvider>();
         }
     }
 }

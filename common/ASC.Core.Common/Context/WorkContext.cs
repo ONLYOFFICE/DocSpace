@@ -177,6 +177,8 @@ namespace ASC.Core
         public static void Register(DIHelper dIHelper)
         {
             dIHelper.TryAdd<TelegramHelper>();
+            dIHelper.TryAdd<EmailSenderSinkScope>();
+            dIHelper.TryAdd<JabberSenderSinkScope>();
         }
     }
 }
