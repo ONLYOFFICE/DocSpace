@@ -182,8 +182,8 @@ const RowContent = (props) => {
     style,
     sideColor,
     onClick,
-    widthProp,
     isMobile,
+    sectionWidth,
   } = props;
 
   const sideInfo = getSideInfo(children);
@@ -197,18 +197,18 @@ const RowContent = (props) => {
       id={id}
       onClick={onClick}
       style={style}
-      widthProp={widthProp}
+      widthProp={sectionWidth}
       isMobile={isMobile}
     >
       <MainContainerWrapper
         disableSideInfo={disableSideInfo}
         mainContainerWidth={mainContainerWidth}
-        widthProp={widthProp}
+        widthProp={sectionWidth}
         isMobile={isMobile}
       >
         <MainContainer
           className="rowMainContainer"
-          widthProp={widthProp}
+          widthProp={sectionWidth}
           isMobile={isMobile}
         >
           {children[0]}
@@ -225,7 +225,7 @@ const RowContent = (props) => {
               containerMinWidth={
                 element.props && element.props.containerMinWidth
               }
-              widthProp={widthProp}
+              widthProp={sectionWidth}
               isMobile={isMobile}
             >
               {element}
@@ -236,7 +236,7 @@ const RowContent = (props) => {
       {!disableSideInfo && (
         <TabletSideInfo
           color={sideColor}
-          widthProp={widthProp}
+          widthProp={sectionWidth}
           isMobile={isMobile}
         >
           {sideInfo}
@@ -254,8 +254,8 @@ RowContent.propTypes = {
   onClick: PropTypes.func,
   sideColor: PropTypes.string,
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
-  widthProp: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   isMobile: PropTypes.bool,
+  sectionWidth: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
 };
 
 RowContent.defaultProps = {
