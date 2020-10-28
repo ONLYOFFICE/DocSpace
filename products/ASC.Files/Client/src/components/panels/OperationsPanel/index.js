@@ -9,8 +9,7 @@ import { StyledAsidePanel } from "../StyledPanels";
 import TreeFolders from "../../Article/Body/TreeFolders";
 import {
   setProgressBarData,
-  clearProgressData,
-  loopFilesOperations,
+  itemOperationToFolder
 } from "../../../store/files/actions";
 import {
   getFilter,
@@ -40,11 +39,10 @@ class OperationsPanelComponent extends React.Component {
       t,
       isCopy,
       selection,
-      loopFilesOperations,
       setProgressBarData,
-      clearProgressData,
       currentFolderId,
-      onClose
+      onClose,
+      itemOperationToFolder
     } = this.props;
 
     const destFolderId = Number(e);
@@ -67,52 +65,12 @@ class OperationsPanelComponent extends React.Component {
         }
       }
       onClose();
-
-      if (isCopy) {
-        setProgressBarData({
-          visible: true,
-          percent: 0,
-          label: t("CopyOperation"),
-        });
-        api.files
-          .copyToFolder(
-            destFolderId,
-            folderIds,
-            fileIds,
-            conflictResolveType,
-            deleteAfter
-          )
-          .then((res) => {
-            const id = res[0] && res[0].id ? res[0].id : null;
-            loopFilesOperations(id, destFolderId, isCopy);
-          })
-          .catch((err) => {
-            toastr.error(err);
-            clearProgressData();
-          });
-      } else {
-        setProgressBarData({
-          visible: true,
-          percent: 0,
-          label: t("MoveToOperation"),
-        });
-        api.files
-          .moveToFolder(
-            destFolderId,
-            folderIds,
-            fileIds,
-            conflictResolveType,
-            deleteAfter
-          )
-          .then((res) => {
-            const id = res[0] && res[0].id ? res[0].id : null;
-            loopFilesOperations(id, destFolderId, false);
-          })
-          .catch((err) => {
-            toastr.error(err);
-            clearProgressData();
-          });
-      }
+      setProgressBarData({
+        visible: true,
+        percent: 0,
+        label: isCopy ? t("CopyOperation") : t("MoveToOperation"),
+      });
+      itemOperationToFolder(destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter, isCopy)
     }
   };
 
@@ -182,6 +140,5 @@ const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps, {
   setProgressBarData,
-  clearProgressData,
-  loopFilesOperations,
+  itemOperationToFolder
 })(withRouter(OperationsPanel));
