@@ -6,7 +6,6 @@ import CustomScrollbarsVirtualList from "../scrollbar/custom-scrollbars-virtual-
 import { FixedSizeList as List, areEqual } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import ContextMenu from "../context-menu";
-import { Consumer } from "../../utils/context";
 
 const StyledRowContainer = styled.div`
   height: ${(props) =>
@@ -84,38 +83,30 @@ class RowContainer extends React.PureComponent {
     );
 
     return (
-      <Consumer>
-        {(context) => (
-          <StyledRowContainer
-            id={id}
-            className={className}
-            style={style}
-            manualHeight={manualHeight}
-            useReactWindow={useReactWindow}
-          >
-            {console.log("context", context)}
-            {useReactWindow ? (
-              <AutoSizer>{renderList}</AutoSizer>
-            ) : (
-              children.map((item, index) => (
-                <div
-                  key={index}
-                  onContextMenu={this.onRowContextClick.bind(
-                    this,
-                    item.props.contextOptions
-                  )}
-                >
-                  {item}
-                </div>
-              ))
-            )}
-            <ContextMenu
-              targetAreaId={id}
-              options={this.state.contextOptions}
-            />
-          </StyledRowContainer>
+      <StyledRowContainer
+        id={id}
+        className={className}
+        style={style}
+        manualHeight={manualHeight}
+        useReactWindow={useReactWindow}
+      >
+        {useReactWindow ? (
+          <AutoSizer>{renderList}</AutoSizer>
+        ) : (
+          children.map((item, index) => (
+            <div
+              key={index}
+              onContextMenu={this.onRowContextClick.bind(
+                this,
+                item.props.contextOptions
+              )}
+            >
+              {item}
+            </div>
+          ))
         )}
-      </Consumer>
+        <ContextMenu targetAreaId={id} options={this.state.contextOptions} />
+      </StyledRowContainer>
     );
   }
 }
