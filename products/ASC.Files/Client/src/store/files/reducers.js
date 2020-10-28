@@ -370,6 +370,7 @@ const initialState = {
       ".gsheet",
     ],
   },
+  privacyInstructions: "https://www.onlyoffice.com/private-rooms.aspx",
 };
 
 const filesReducer = (state = initialState, action) => {
