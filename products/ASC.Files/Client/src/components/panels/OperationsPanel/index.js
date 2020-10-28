@@ -19,6 +19,7 @@ import {
   getPathParts,
   getSelectedFolderId,
   getIsRecycleBinFolder,
+  getOperationsFolders,
 } from "../../../store/files/selectors";
 import { createI18N } from "../../../helpers/i18n";
 const i18n = createI18N({
@@ -122,18 +123,13 @@ class OperationsPanelComponent extends React.Component {
     const {
       t,
       filter,
-      treeFolders,
       isCopy,
       isRecycleBin,
       visible,
       onClose,
+      operationsFolders
     } = this.props;
     const zIndex = 310;
-    const data = treeFolders.filter(folder => (
-      folder.rootFolderType === FolderType.USER ||
-      folder.rootFolderType === FolderType.COMMON ||
-      folder.rootFolderType === FolderType.Projects
-    ) && folder);
     const expandedKeys = this.props.expandedKeys.map((item) => item.toString());
 
     return (
@@ -150,7 +146,7 @@ class OperationsPanelComponent extends React.Component {
           <ModalDialog.Body>
             <TreeFolders
               expandedKeys={expandedKeys}
-              data={data}
+              data={operationsFolders}
               filter={filter}
               onSelect={this.onSelect}
               needUpdate={false}
@@ -177,12 +173,12 @@ const OperationsPanel = (props) => (
 
 const mapStateToProps = (state) => {
   return {
-    treeFolders: getTreeFolders(state),
     filter: getFilter(state),
     selection: getSelection(state),
     expandedKeys: getPathParts(state),
     currentFolderId: getSelectedFolderId(state),
     isRecycleBin: getIsRecycleBinFolder(state),
+    operationsFolders: getOperationsFolders(state)
   };
 };
 
