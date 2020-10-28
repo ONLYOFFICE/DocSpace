@@ -99,7 +99,7 @@ const StyledContent = styled.div`
   .header_aside-panel-header {
     max-width: 500px;
     margin: 0 0 0 16px;
-    line-height: 56px;
+    line-height: 57px;
     font-weight: 700;
   }
 

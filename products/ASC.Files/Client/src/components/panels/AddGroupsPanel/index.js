@@ -121,6 +121,7 @@ class AddGroupsPanelComponent extends React.Component {
                 size="16"
                 iconName="ArrowPathIcon"
                 onClick={this.onArrowClick}
+                color="A3A9AE"
               />
               <Heading
                 className="header_aside-panel-header"
