@@ -43,7 +43,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Web.Studio.Core.Notify
 {
-    [Singletone]
+    [Singletone(Additional = typeof(ServiceLauncherExtension))]
     public class StudioNotifyServiceSender
     {
         private static string EMailSenderName { get { return Constants.NotifyEMailSenderSysName; } }
@@ -171,6 +171,7 @@ namespace ASC.Web.Studio.Core.Notify
         }
     }
 
+    [Scope]
     public class StudioNotifyServiceSenderScope
     {
         private TenantManager TenantManager { get; }
@@ -213,11 +214,11 @@ namespace ASC.Web.Studio.Core.Notify
 
     public static class ServiceLauncherExtension
     {
-        public static DIHelper AddStudioNotifyServiceSender(this DIHelper services)
+        public static void Register(DIHelper services)
         {
-            services.TryAddScoped<StudioNotifyServiceSenderScope>();
-
-            return services;
+            services.TryAdd<StudioNotifyServiceSenderScope>();
+            services.TryAdd<StudioPeriodicNotify>();
+            services.TryAdd<StudioWhatsNewNotify>();
         }
     }
 }

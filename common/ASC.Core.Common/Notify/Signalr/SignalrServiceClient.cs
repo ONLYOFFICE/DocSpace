@@ -44,6 +44,7 @@ using Newtonsoft.Json;
 
 namespace ASC.Core.Notify.Signalr
 {
+    [Scope]
     public class ConfigureSignalrServiceClient : IConfigureNamedOptions<SignalrServiceClient>
     {
         internal TenantManager TenantManager { get; }

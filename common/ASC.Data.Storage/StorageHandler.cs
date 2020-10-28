@@ -153,6 +153,7 @@ namespace ASC.Data.Storage.DiscStorage
         }
     }
 
+    [Scope]
     public class StorageHandlerScope
     {
         private TenantManager TenantManager { get; }

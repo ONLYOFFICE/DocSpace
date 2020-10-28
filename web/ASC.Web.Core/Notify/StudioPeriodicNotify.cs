@@ -1131,6 +1131,7 @@ namespace ASC.Web.Studio.Core.Notify
         }
     }
 
+    [Scope]
     public class StudioPeriodicNotifyScope
     {
         private TenantManager TenantManager { get; }

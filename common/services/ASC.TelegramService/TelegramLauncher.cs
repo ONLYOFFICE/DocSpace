@@ -37,7 +37,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace ASC.TelegramService
 {
-    [Singletone]
+    [Singletone(Additional = typeof(TelegramLauncherExtension))]
     public class TelegramLauncher : IHostedService
     {
         private TelegramListener TelegramListener { get; set; }
@@ -78,6 +78,7 @@ namespace ASC.TelegramService
         }
     }
 
+    [Scope]
     public class ScopeTelegramLauncher
     {
         private TelegramHandler Handler { get; set; }
@@ -99,12 +100,11 @@ namespace ASC.TelegramService
         }
     }
 
-    public static class TelegramLauncherExtension
+    public class TelegramLauncherExtension
     {
-        public static DIHelper AddTelegramLauncher(this DIHelper services)
+        public static void Register(DIHelper services)
         {
-            services.TryAddScoped<ScopeTelegramLauncher>();
-            return services;
+            services.TryAdd<ScopeTelegramLauncher>();
         }
     }
 }

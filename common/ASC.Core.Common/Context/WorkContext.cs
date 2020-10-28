@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Core.Common.Notify;
@@ -168,6 +169,14 @@ namespace ASC.Core
                 var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
                 tenantManager.SetCurrentTenant(tenant);
             }
+        }
+    }
+
+    public class WorkContextExtension
+    {
+        public static void Register(DIHelper dIHelper)
+        {
+            dIHelper.TryAdd<TelegramHelper>();
         }
     }
 }

@@ -24,10 +24,10 @@
 */
 
 
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 
+using ASC.Common;
 using ASC.Web.Core;
 using ASC.Web.Studio.Core.Notify;
 
@@ -35,22 +35,26 @@ using Microsoft.Extensions.Hosting;
 
 namespace ASC.Notify
 {
+    [Singletone]
     public class ServiceLauncher : IHostedService
     {
         private WebItemManager WebItemManager { get; }
         private StudioNotifyServiceSender StudioNotifyServiceSender { get; }
-        private IServiceProvider ServiceProvider { get; }
+        private NotifyConfiguration NotifyConfiguration { get; }
 
-        public ServiceLauncher(WebItemManager webItemManager, StudioNotifyServiceSender studioNotifyServiceSender, IServiceProvider serviceProvider)
+        public ServiceLauncher(
+            WebItemManager webItemManager,
+            StudioNotifyServiceSender studioNotifyServiceSender,
+            NotifyConfiguration notifyConfiguration)
         {
             WebItemManager = webItemManager;
             StudioNotifyServiceSender = studioNotifyServiceSender;
-            ServiceProvider = serviceProvider;
+            NotifyConfiguration = notifyConfiguration;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            NotifyConfiguration.Configure(ServiceProvider);
+            NotifyConfiguration.Configure();
             WebItemManager.LoadItems();
 
             StudioNotifyServiceSender.RegisterSendMethod();

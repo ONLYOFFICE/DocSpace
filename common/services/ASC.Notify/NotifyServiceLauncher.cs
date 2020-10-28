@@ -66,6 +66,7 @@ namespace ASC.Notify
         private NotifyCleaner NotifyCleaner { get; }
         private WebItemManager WebItemManager { get; }
         private IServiceProvider ServiceProvider { get; }
+        private NotifyConfiguration NotifyConfiguration { get; }
         private ILog Log { get; }
 
         public NotifyServiceLauncher(
@@ -75,6 +76,7 @@ namespace ASC.Notify
             NotifyCleaner notifyCleaner,
             WebItemManager webItemManager,
             IServiceProvider serviceProvider,
+            NotifyConfiguration notifyConfiguration,
             IOptionsMonitor<ILog> options)
         {
             NotifyServiceCfg = notifyServiceCfg.Value;
@@ -83,6 +85,7 @@ namespace ASC.Notify
             NotifyCleaner = notifyCleaner;
             WebItemManager = webItemManager;
             ServiceProvider = serviceProvider;
+            NotifyConfiguration = notifyConfiguration;
             Log = options.Get("ASC.Notify");
         }
 
@@ -120,7 +123,7 @@ namespace ASC.Notify
 
         private void InitializeNotifySchedulers()
         {
-            NotifyConfiguration.Configure(ServiceProvider);
+            NotifyConfiguration.Configure();
             WebItemManager.LoadItems();
             foreach (var pair in NotifyServiceCfg.Schedulers.Where(r => r.MethodInfo != null))
             {

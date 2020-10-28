@@ -3,9 +3,11 @@ using System.IO;
 using System.Threading.Tasks;
 
 using ASC.Common;
+using ASC.Common.Caching;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
 using ASC.Notify;
+using ASC.Web.Studio.Core.Notify;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -47,9 +49,11 @@ namespace ASC.Studio.Notify
                 .ConfigureServices((hostContext, services) =>
                 {
                     var diHelper = new DIHelper(services);
+                    diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
                     diHelper.AddNLogManager("ASC.Notify", "ASC.Notify.Messages");
                     services.AddHostedService<ServiceLauncher>();
                     diHelper.TryAdd<ServiceLauncher>();
+                    NotifyConfigurationExtension.Register(diHelper);
 
                     services.AddAutofac(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
                 })

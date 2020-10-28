@@ -60,16 +60,19 @@ namespace ASC.Socket.IO.Svc
         private SignalrServiceClient SignalrServiceClient { get; set; }
         private IHostEnvironment HostEnvironment { get; set; }
 
-        public SocketServiceLauncher(IOptionsMonitor<ILog> options, IConfiguration configuration, CoreBaseSettings coreBaseSettings, SignalrServiceClient signalrServiceClient, IHostEnvironment hostEnvironment, IConfigureNamedOptions<SignalrServiceClient> configureOptions)
+        public SocketServiceLauncher(
+            IOptionsMonitor<ILog> options,
+            IConfiguration configuration,
+            CoreBaseSettings coreBaseSettings,
+            IOptionsSnapshot<SignalrServiceClient> signalrServiceClient,
+            IHostEnvironment hostEnvironment)
         {
             Logger = options.CurrentValue;
             CancellationTokenSource = new CancellationTokenSource();
             Configuration = configuration;
             CoreBaseSettings = coreBaseSettings;
-            SignalrServiceClient = signalrServiceClient;
+            SignalrServiceClient = signalrServiceClient.Value;
             HostEnvironment = hostEnvironment;
-
-            configureOptions.Configure(SignalrServiceClient);
         }
 
         public Task StartAsync(CancellationToken cancellationToken)

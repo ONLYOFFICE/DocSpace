@@ -58,20 +58,29 @@ using MimeKit.Utils;
 
 namespace ASC.Web.Studio.Core.Notify
 {
-    public static class NotifyConfiguration
+    [Singletone(Additional = typeof(WorkContextExtension))]
+    public class NotifyConfiguration
     {
         private static bool configured;
         private static readonly object locker = new object();
         private static readonly Regex urlReplacer = new Regex(@"(<a [^>]*href=(('(?<url>[^>']*)')|(""(?<url>[^>""]*)""))[^>]*>)|(<img [^>]*src=(('(?<url>(?![data:|cid:])[^>']*)')|(""(?<url>(?![data:|cid:])[^>""]*)""))[^/>]*/?>)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         private static readonly Regex textileLinkReplacer = new Regex(@"""(?<text>[\w\W]+?)"":""(?<link>[^""]+)""", RegexOptions.Singleline | RegexOptions.Compiled);
-        public static void Configure(IServiceProvider serviceProvider)
+
+        private IServiceProvider ServiceProvider { get; }
+
+        public NotifyConfiguration(IServiceProvider serviceProvider)
+        {
+            ServiceProvider = serviceProvider;
+        }
+
+        public void Configure()
         {
             lock (locker)
             {
                 if (!configured)
                 {
                     configured = true;
-                    WorkContext.NotifyStartUp(serviceProvider);
+                    WorkContext.NotifyStartUp(ServiceProvider);
                     WorkContext.NotifyContext.NotifyClientRegistration += NotifyClientRegisterCallback;
                     WorkContext.NotifyContext.NotifyEngine.BeforeTransferRequest += BeforeTransferRequest;
                 }

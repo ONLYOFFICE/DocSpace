@@ -1,6 +1,8 @@
 ﻿
 using ASC.Api.Core;
+using ASC.Api.Settings;
 using ASC.Common.DependencyInjection;
+using ASC.Web.Api.Controllers;
 
 using Autofac.Extensions.DependencyInjection;
 
@@ -28,6 +30,12 @@ namespace ASC.Web.Api
 
             services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
 
+            DIHelper.TryAdd<AuthenticationController>();
+            DIHelper.TryAdd<ModulesController>();
+            DIHelper.TryAdd<PortalController>();
+            DIHelper.TryAdd<SettingsController>();
+            DIHelper.TryAdd<SecurityController>();
+            DIHelper.TryAdd<SmtpSettingsController>();
         }
     }
 }

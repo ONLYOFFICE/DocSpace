@@ -27,11 +27,14 @@
 using System.Threading;
 using System.Threading.Tasks;
 
+using ASC.Common;
+
 using Microsoft.Extensions.Hosting;
 
 
 namespace ASC.UrlShortener.Svc
 {
+    [Singletone]
     public class UrlShortenerServiceLauncher : IHostedService
     {
         private UrlShortenerService UrlShortenerService { get; }

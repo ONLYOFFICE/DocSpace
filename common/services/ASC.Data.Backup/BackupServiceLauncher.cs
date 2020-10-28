@@ -24,7 +24,6 @@
 */
 
 
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -41,32 +40,32 @@ namespace ASC.Data.Backup.Service
     [Singletone]
     internal class BackupServiceLauncher : IHostedService
     {
-        private IServiceProvider ServiceProvider { get; }
         private BackupCleanerService CleanerService { get; set; }
         private BackupSchedulerService SchedulerService { get; set; }
         private BackupWorker BackupWorker { get; set; }
         private IConfiguration Configuration { get; set; }
         private BackupListener BackupListener { get; set; }
+        public NotifyConfiguration NotifyConfiguration { get; }
 
         public BackupServiceLauncher(
-            IServiceProvider serviceProvider,
             BackupCleanerService cleanerService,
             BackupSchedulerService schedulerService,
             BackupWorker backupWorker,
             IConfiguration configuration,
-            BackupListener backupListener)
+            BackupListener backupListener,
+            NotifyConfiguration notifyConfiguration)
         {
-            ServiceProvider = serviceProvider;
             CleanerService = cleanerService;
             SchedulerService = schedulerService;
             BackupWorker = backupWorker;
             Configuration = configuration;
             BackupListener = backupListener;
+            NotifyConfiguration = notifyConfiguration;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            NotifyConfiguration.Configure(ServiceProvider);
+            NotifyConfiguration.Configure();
 
             var settings = Configuration.GetSetting<BackupSettings>("backup");
 

@@ -48,7 +48,7 @@ namespace ASC.Web.Files.Configuration
         private CoreBaseSettings CoreBaseSettings { get; }
         private AuthContext AuthContext { get; }
         private UserManager UserManager { get; }
-        private IServiceProvider ServiceProvider { get; }
+        public NotifyConfiguration NotifyConfiguration { get; }
 
         //public SubscriptionManager SubscriptionManager { get; }
 
@@ -62,7 +62,8 @@ namespace ASC.Web.Files.Configuration
             CoreBaseSettings coreBaseSettings,
             AuthContext authContext,
             UserManager userManager,
-            IServiceProvider serviceProvider
+            IServiceProvider serviceProvider,
+            NotifyConfiguration notifyConfiguration
             //            SubscriptionManager subscriptionManager
             )
         {
@@ -70,7 +71,7 @@ namespace ASC.Web.Files.Configuration
             CoreBaseSettings = coreBaseSettings;
             AuthContext = authContext;
             UserManager = userManager;
-            ServiceProvider = serviceProvider;
+            NotifyConfiguration = notifyConfiguration;
             //SubscriptionManager = subscriptionManager;
         }
 
@@ -104,9 +105,9 @@ namespace ASC.Web.Files.Configuration
                     CanNotBeDisabled = true,
                 };
 
-            if (ServiceProvider != null)
+            if (NotifyConfiguration != null)
             {
-                NotifyConfiguration.Configure(ServiceProvider);
+                NotifyConfiguration.Configure();
             }
             //SearchHandlerManager.Registry(new SearchHandler());
         }

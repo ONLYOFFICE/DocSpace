@@ -1,6 +1,9 @@
+
 using ASC.Api.Core;
 using ASC.Common.DependencyInjection;
 using ASC.Data.Storage;
+using ASC.Data.Storage.Configuration;
+using ASC.Data.Storage.DiscStorage;
 using ASC.FederatedLogin;
 
 using Microsoft.AspNetCore.Builder;
@@ -31,6 +34,11 @@ namespace ASC.Web.Studio
             services.AddMemoryCache();
 
             services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
+
+            DIHelper.TryAdd<Login>();
+            StorageConfigExtension.Register(DIHelper);
+            DIHelper.TryAdd<PathUtils>();
+            DIHelper.TryAdd<StorageHandlerScope>();
         }
 
         public override void Configure(IApplicationBuilder app, IWebHostEnvironment env)
