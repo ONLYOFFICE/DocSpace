@@ -38,12 +38,21 @@ const StyledRow = styled(Row)`
 
     margin-left: -8px;
     margin-right: 16px;
+    margin-top: -2px;
 
     @media ${tablet} {
       margin-left: 0px;
+      margin-top: 0px;
       .version_badge-text {
         left: 6px;
       }
+    }
+  }
+
+  .version-link-file {
+    margin-top: -3px;
+    @media ${tablet} {
+      margin-top: -1px;
     }
   }
 
@@ -91,7 +100,7 @@ const StyledRow = styled(Row)`
     @media ${tablet} {
       display: block;
       margin-left: 1px;
-      margin-top: 4px;
+      margin-top: 5px;
     }
   }
 
@@ -233,6 +242,7 @@ const VersionRow = (props) => {
             fontWeight={600}
             fontSize="14px"
             title={title}
+            className="version-link-file"
           >
             {title}
           </Link>
