@@ -38,7 +38,7 @@ const StyledRow = styled(Row)`
 
     margin-left: -8px;
     margin-right: 16px;
-    margin-top: -2px;
+    margin-top: ${(props) => (props.showEditPanel ? "13px" : "-2px")};
 
     @media ${tablet} {
       margin-left: 0px;
@@ -50,7 +50,7 @@ const StyledRow = styled(Row)`
   }
 
   .version-link-file {
-    margin-top: -3px;
+    margin-top: ${(props) => (props.showEditPanel ? "12px" : "-3px")};
     @media ${tablet} {
       margin-top: -1px;
     }
@@ -66,16 +66,21 @@ const StyledRow = styled(Row)`
 
   .version_edit-comment {
     display: block;
+    margin-left: 63px;
 
     @media ${tablet} {
       display: none;
     }
   }
 
+  .textarea-desktop {
+    margin: 9px 23px 1px -7px;
+  }
+
   .version_content-length {
     display: block;
     margin-left: auto;
-    margin-top: -3px;
+    margin-top: ${(props) => (props.showEditPanel ? "12px" : "-3px")};
     margin-right: -7px;
 
     @media ${tablet} {
@@ -144,6 +149,14 @@ const StyledRow = styled(Row)`
   .row_context-menu-wrapper {
     margin-right: -3px;
     margin-top: -25px;
+  }
+
+  .version_edit-comment-button-primary {
+    margin-right: 8px;
+    width: 87px;
+  }
+  .version_edit-comment-button-second {
+    width: 87px;
   }
 `;
 
@@ -269,10 +282,12 @@ const VersionRow = (props) => {
             {showEditPanel && (
               <>
                 <Textarea
-                  className="version_edit-comment"
-                  style={{ margin: "8px 24px 8px 0" }}
+                  className="version_edit-comment textarea-desktop"
+                  //style={{ margin: "8px 24px 8px 0" }}
                   //placeholder="Add comment"
                   onChange={onChange}
+                  fontSize={12}
+                  heightTextArea={54}
                   value={commentValue}
                 />
                 <Box className="version_modal-dialog">
@@ -327,18 +342,29 @@ const VersionRow = (props) => {
         </Box>
         {showEditPanel && (
           <Box className="version_edit-comment" marginProp="8px 0 16px 70px">
-            <Button
-              size="medium"
-              primary
-              style={{ marginRight: "8px" }}
-              onClick={onSaveClick}
-              label={t("AddButton")}
-            />
-            <Button
-              size="medium"
-              onClick={onCancelClick}
-              label={t("CancelButton")}
-            />
+            <Box
+              className="version_edit-comment-button-primary"
+              displayProp="inline-block"
+            >
+              <Button
+                size="base"
+                scale={true}
+                primary
+                onClick={onSaveClick}
+                label={t("AddButton")}
+              />
+            </Box>
+            <Box
+              className="version_edit-comment-button-second"
+              displayProp="inline-block"
+            >
+              <Button
+                size="base"
+                scale={true}
+                onClick={onCancelClick}
+                label={t("CancelButton")}
+              />
+            </Box>
           </Box>
         )}
       </>
