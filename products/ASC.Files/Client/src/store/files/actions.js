@@ -1,4 +1,4 @@
-import { api, history, toastr } from "asc-web-common";
+import { api, history, constants, toastr, store } from "asc-web-common";
 import axios from "axios";
 import queryString from "query-string";
 import {
@@ -24,9 +24,12 @@ import {
   getProgressData,
   getTreeFolders,
   getSettingsTree,
+  getPrivacyFolder,
 } from "./selectors";
 
 const { files, FilesFilter } = api;
+const { FolderType } = constants;
+const { isEncryptionSupport } = store.auth.selectors;
 
 export const SET_FOLDER = "SET_FOLDER";
 export const SET_FOLDERS = "SET_FOLDERS";
@@ -303,15 +306,51 @@ export function setFilterUrl(filter) {
 
 // TODO: similar to fetchFolder, remove one
 export function fetchFiles(folderId, filter) {
-  return (dispatch) => {
+  return (dispatch, getState) => {
     const filterData = filter ? filter.clone() : FilesFilter.getDefault();
     filterData.folder = folderId;
+
+    const state = getState();
+    const privacyFolder = getPrivacyFolder(state);
+
+    if (privacyFolder && privacyFolder.id === +folderId) {
+      const isEncryptionSupported = isEncryptionSupport(state);
+
+      if (!isEncryptionSupported) {
+        filterData.treeFolders = createTreeFolders(
+          privacyFolder.pathParts,
+          filterData
+        );
+        filterData.total = 0;
+        dispatch(setFilesFilter(filterData));
+
+        dispatch(setFolders([]));
+        dispatch(setFiles([]));
+        dispatch(setSelected("close"));
+        dispatch(
+          setSelectedFolder({
+            folders: [],
+            ...privacyFolder,
+            pathParts: privacyFolder.pathParts,
+            ...{ new: 0 },
+          })
+        );
+        return Promise.resolve();
+      }
+    }
+
     return files.getFolder(folderId, filter).then((data) => {
+      const isPrivacyFolder =
+        data.current.rootFolderType === FolderType.Privacy;
       filterData.treeFolders = createTreeFolders(data.pathParts, filterData);
       filterData.total = data.total;
       dispatch(setFilesFilter(filterData));
-      dispatch(setFolders(data.folders));
-      dispatch(setFiles(data.files));
+      dispatch(
+        setFolders(isPrivacyFolder && !isEncryptionSupport ? [] : data.folders)
+      );
+      dispatch(
+        setFiles(isPrivacyFolder && !isEncryptionSupport ? [] : data.files)
+      );
       dispatch(setSelected("close"));
       return dispatch(
         setSelectedFolder({
