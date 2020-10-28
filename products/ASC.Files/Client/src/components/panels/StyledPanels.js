@@ -308,11 +308,23 @@ const StyledFooter = styled.div`
   position: fixed;
   bottom: 0;
   padding: 16px 0;
-  width: 94%;
+  width: calc(100% - 32px);
   background-color: #fff;
+  border-top: 1px solid #eceef1;
+
+  .sharing_panel-checkbox{
+    span {
+      font-weight:600;
+    }
+
+    .checkbox {
+      margin-right: 6px;
+    }
+  }
 
   .sharing_panel-button {
     margin-left: auto;
+    padding: 8px 27px;
   }
 
   @media (max-width: 550px) {

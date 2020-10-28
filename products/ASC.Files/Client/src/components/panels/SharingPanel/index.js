@@ -635,7 +635,7 @@ class SharingPanelComponent extends React.Component {
             <StyledSharingBody
               ref={this.scrollRef}
               stype="mediumBlack"
-              style={{ height: `calc(100vh - 170px)` }}
+              style={{ height: `calc(100vh - 157px)` }}
             >
               {shareDataItems.map((item, index) => (
                 <SharingRow
@@ -671,6 +671,7 @@ class SharingPanelComponent extends React.Component {
                 isChecked={isNotifyUsers}
                 label={t("Notify users")}
                 onChange={this.onNotifyUsersChange}
+                className="sharing_panel-checkbox"
               />
               <Button
                 className="sharing_panel-button"
