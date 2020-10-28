@@ -60,7 +60,14 @@ const getFormattedGroups = (user, selectGroup) => {
   }
 };
 
-const UserContent = ({ user, history, settings, selectGroup, isMobile }) => {
+const UserContent = ({
+  user,
+  history,
+  settings,
+  selectGroup,
+  isMobile,
+  sectionWidth,
+}) => {
   const { userName, displayName, title, mobilePhone, email, statusType } = user;
   const groups = getFormattedGroups(user, selectGroup);
 
@@ -84,7 +91,11 @@ const UserContent = ({ user, history, settings, selectGroup, isMobile }) => {
   const sideInfoColor = "#A3A9AE";
 
   return (
-    <RowContent isMobile={isMobile} sideColor={sideInfoColor}>
+    <RowContent
+      isMobile={isMobile}
+      sideColor={sideInfoColor}
+      sectionWidth={sectionWidth}
+    >
       <Link
         containerWidth="28%"
         type="page"
