@@ -21,7 +21,7 @@ import {
   NavMenu,
   Main,
   utils,
-  toastr,
+  toastr, Layout
 } from "asc-web-common";
 
 const {
@@ -66,12 +66,12 @@ class App extends React.Component {
     const requests = this.isEditor
       ? [getUser()]
       : [
-          getUser(),
-          getPortalSettings(),
-          getModules(),
-          getPortalCultures(),
-          fetchTreeFolders(),
-        ];
+        getUser(),
+        getPortalSettings(),
+        getModules(),
+        getPortalCultures(),
+        fetchTreeFolders(),
+      ];
 
     Promise.all(requests)
       .catch((e) => {
@@ -84,49 +84,52 @@ class App extends React.Component {
 
   render() {
     const { homepage } = this.props;
-
+    
     return navigator.onLine ? (
-      <Router history={history}>
-        {!this.isEditor && <NavMenu />}
-        <Main>
-          <Suspense fallback={null}>
-            <Switch>
-              <Redirect exact from="/" to={`${homepage}`} />
-              <PrivateRoute
-                exact
-                path={`${homepage}/settings/:setting`}
-                component={Settings}
-              />
-              <PrivateRoute
-                exact
-                path={`${homepage}/doceditor`}
-                component={DocEditor}
-              />
-              <PrivateRoute
-                exact
-                path={`${homepage}/:fileId/history`}
-                component={VersionHistory}
-              />
-              <PrivateRoute exact path={homepage} component={Home} />
-              <PrivateRoute path={`${homepage}/filter`} component={Home} />
-              <PublicRoute
-                exact
-                path={[
-                  "/login",
-                  "/login/error=:error",
-                  "/login/confirmed-email=:confirmedEmail",
-                ]}
-                component={Login}
-              />
-              <PrivateRoute exact path={`/error=:error`} component={Error520} />
-              <PrivateRoute component={Error404} />
-            </Switch>
-          </Suspense>
-        </Main>
-      </Router>
+      <Layout >
+          <Router history={history}>
+            {!this.isEditor && <NavMenu />}
+            <Main >
+              <Suspense fallback={null}>
+                <Switch>
+                  <Redirect exact from="/" to={`${homepage}`} />
+                  <PrivateRoute
+                    exact
+                    path={`${homepage}/settings/:setting`}
+                    component={Settings}
+                  />
+                  <PrivateRoute
+                    exact
+                    path={`${homepage}/doceditor`}
+                    component={DocEditor}
+                  />
+                  <PrivateRoute
+                    exact
+                    path={`${homepage}/:fileId/history`}
+                    component={VersionHistory}
+                  />
+                  <PrivateRoute exact path={homepage} component={Home} />
+                  <PrivateRoute path={`${homepage}/filter`} component={Home} />
+  
+                  <PublicRoute
+                    exact
+                    path={[
+                      "/login",
+                      "/login/error=:error",
+                      "/login/confirmed-email=:confirmedEmail",
+                    ]}
+                    component={Login}
+                  />
+                  <PrivateRoute exact path={`/error=:error`} component={Error520} />
+                  <PrivateRoute component={Error404} />
+                </Switch>
+              </Suspense>
+            </Main>
+          </Router>
+      </Layout>
     ) : (
-      <Offline />
-    );
+        <Offline />
+      );
   }
 }
 
