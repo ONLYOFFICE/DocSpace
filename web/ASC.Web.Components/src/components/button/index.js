@@ -152,14 +152,14 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
             ? "3px 20px 5px 20px"
             : "3px 5px 5px 5px"
           : props.label
-          ? "4.5px 12px 4.5px 12px"
+          ? "4px 12px 5px 12px"
           : "0px"
         : props.icon
         ? props.label
           ? "3px 20px 5px 20px"
           : "3px 5px 5px 5px"
         : props.label
-        ? "4.5px 12px 4.5px 12px"
+        ? "4px 12px 5px 12px"
         : "0px"))};
 
   ${(props) => (props.minwidth ? `min-width: ${props.minwidth};` : null)}
@@ -258,7 +258,13 @@ const Icon = ({ size, primary, icon, isHovered }) => (
       React.cloneElement(icon, {
         isfill: true,
         size: size === "large" ? "large" : size === "big" ? "medium" : "small",
-        color: icon.props.color ? isHovered ? icon.props.hoveredColor : icon.props.color : primary ? "#FFFFFF" : "#333333",
+        color: icon.props.color
+          ? isHovered
+            ? icon.props.hoveredColor
+            : icon.props.color
+          : primary
+          ? "#FFFFFF"
+          : "#333333",
       })}
   </div>
 );

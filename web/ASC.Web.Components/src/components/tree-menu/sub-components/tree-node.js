@@ -305,6 +305,9 @@ const TreeNodeMenu = styled(TreeNode)`
     position: absolute;
     right: -30px;
     top: 2px;
+    @media (max-width: 1024px) {
+      right: -29px;
+    }
   }
   ${(props) =>
     props.needTopMargin &&
