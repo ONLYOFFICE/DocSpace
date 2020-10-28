@@ -573,9 +573,9 @@ class SharingPanelComponent extends React.Component {
       <ComboBox
         advancedOptions={advancedOptions}
         options={[]}
-        selectedOption={{ key: 0 }}
+        selectedOption={{ key: 0, arrowIconColor: "#333333" }}
         size="content"
-        className="panel_combo-box"
+        className="panel_combo-box add-groups"
         scaled={false}
         directionX="right"
         //isDisabled={isDisabled}

@@ -3,7 +3,19 @@ import { Scrollbar } from "asc-web-components";
 
 const PanelStyles = css`
   .panel_combo-box {
-    margin-left: 8px;
+    margin-left: 10px;
+
+    .optionalBlock{
+      margin-right: 4px;
+    }
+
+    &.add-groups {
+      .combo-buttons_arrow-icon {
+        flex: 0 0 5px;
+        width: 5px;
+        margin-top: 16px;
+      }
+    } 
 
     .combo-button {
       height: 36px;
