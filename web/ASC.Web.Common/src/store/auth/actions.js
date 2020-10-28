@@ -16,6 +16,8 @@ export const SET_CURRENT_PRODUCT_HOME_PAGE = "SET_CURRENT_PRODUCT_HOME_PAGE";
 export const SET_GREETING_SETTINGS = "SET_GREETING_SETTINGS";
 export const SET_CUSTOM_NAMES = "SET_CUSTOM_NAMES";
 export const SET_WIZARD_COMPLETED = "SET_WIZARD_COMPLETED";
+export const SET_IS_ENCRYPTION_SUPPORT = "SET_IS_ENCRYPTION_SUPPORT";
+export const SET_IS_DESKTOP_CLIENT = "SET_IS_DESKTOP_CLIENT";
 
 export function setCurrentUser(user) {
   return {
@@ -120,6 +122,20 @@ export function setWizardComplete() {
   };
 }
 
+export function setIsEncryptionSupport(isSupport) {
+  return {
+    type: SET_IS_ENCRYPTION_SUPPORT,
+    isSupport
+  };
+}
+
+export function setIsDesktopClient(isDesktop) {
+  return {
+    type: SET_IS_DESKTOP_CLIENT,
+    isDesktop
+  };
+}
+
 export function getUser(dispatch) {
   return api.people
     .getUser()
@@ -130,6 +146,12 @@ export function getUser(dispatch) {
 export function getPortalSettings(dispatch) {
   return api.settings.getSettings().then((settings) => {
     const { passwordHash: hashSettings, ...otherSettings } = settings;
+    if (window["AscDesktopEditor"]) {
+      dispatch(setIsDesktopClient(true));
+      if (typeof window.AscDesktopEditor.cloudCryptoCommand === "function") {
+        dispatch(setIsEncryptionSupport(true));
+      }
+    }
 
     dispatch(
       setSettings(
@@ -140,6 +162,7 @@ export function getPortalSettings(dispatch) {
     otherSettings.nameSchemaId &&
       getCurrentCustomSchema(dispatch, otherSettings.nameSchemaId);
   });
+  
 }
 export function getCurrentCustomSchema(dispatch, id) {
   return api.settings
