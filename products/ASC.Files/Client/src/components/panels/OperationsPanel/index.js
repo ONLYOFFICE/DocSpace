@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { ModalDialog } from "asc-web-components";
 import { withTranslation } from "react-i18next";
-import { utils as commonUtils, toastr, api, constants } from "asc-web-common";
+import { utils as commonUtils, toastr, api } from "asc-web-common";
 import { StyledAsidePanel } from "../StyledPanels";
 import TreeFolders from "../../Article/Body/TreeFolders";
 import {
@@ -13,7 +13,6 @@ import {
   loopFilesOperations,
 } from "../../../store/files/actions";
 import {
-  getTreeFolders,
   getFilter,
   getSelection,
   getPathParts,
@@ -28,7 +27,6 @@ const i18n = createI18N({
 });
 
 const { changeLanguage } = commonUtils;
-const { FolderType } = constants;
 
 class OperationsPanelComponent extends React.Component {
   constructor(props) {
