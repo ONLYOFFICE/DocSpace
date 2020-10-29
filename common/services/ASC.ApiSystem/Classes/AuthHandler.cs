@@ -34,6 +34,7 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Security.Cryptography;
 using ASC.Web.Core.Helpers;
@@ -46,6 +47,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.ApiSystem.Classes
 {
+    [Scope]
     public class AuthHandler : AuthenticationHandler<AuthenticationSchemeOptions>
     {
         public AuthHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock) :

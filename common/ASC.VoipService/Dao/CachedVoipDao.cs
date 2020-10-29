@@ -59,6 +59,7 @@ namespace ASC.VoipService.Dao
         }
     }
 
+    [Scope]
     public class CachedVoipDao : VoipDao
     {
         private readonly ICache cache;

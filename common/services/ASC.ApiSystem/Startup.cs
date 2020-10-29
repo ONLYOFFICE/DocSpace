@@ -25,7 +25,9 @@
 
 
 using ASC.ApiSystem.Classes;
+using ASC.ApiSystem.Controllers;
 using ASC.Common;
+using ASC.Common.Caching;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
 
@@ -35,6 +37,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 
 
@@ -66,6 +69,15 @@ namespace ASC.ApiSystem
                 });
 
             services.AddMemoryCache();
+
+            diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+            diHelper.TryAdd<AuthHandler>();
+            diHelper.TryAdd<CalDavController>();
+            diHelper.TryAdd<CoreSettingsController>();
+            diHelper.TryAdd<PortalController>();
+            diHelper.TryAdd<RegistrationController>();
+            diHelper.TryAdd<SettingsController>();
+            diHelper.TryAdd<TariffController>();
 
             services.AddAuthentication()
                 .AddScheme<AuthenticationSchemeOptions, AuthHandler>("auth.allowskip", _ => { })

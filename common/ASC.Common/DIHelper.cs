@@ -245,7 +245,16 @@ namespace ASC.Common
                         }
                         else
                         {
-                            isnew = di.Implementation == null ? Register(service, di.Service) : Register(di.Service);
+                            if (di.Implementation == null)
+                            {
+                                isnew = Register(service, di.Service);
+                                TryAdd(di.Service);
+                            }
+                            else
+                            {
+                                Register(di.Service);
+                            }
+
                         }
                     }
 
