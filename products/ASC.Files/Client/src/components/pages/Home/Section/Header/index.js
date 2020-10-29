@@ -68,7 +68,15 @@ const StyledContainer = styled.div`
     display: flex;
     align-items: center;
     max-width: calc(100vw - 32px);
+    @media ${desktop} {
+      margin-top: -1px;
+    }
 
+    @media ${tablet} {
+      .headline-header {
+        margin-left: -1px;
+      }
+    }
     .arrow-button {
       margin-right: 15px;
       min-width: 17px;
@@ -76,6 +84,7 @@ const StyledContainer = styled.div`
       @media ${tablet} {
         padding: 8px 0 8px 8px;
         margin-left: -8px;
+        margin-right: 16px;
       }
     }
 
