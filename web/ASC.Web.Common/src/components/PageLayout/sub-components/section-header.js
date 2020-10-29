@@ -59,32 +59,34 @@ class SectionHeader extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      prevScrollpos: window.pageYOffset || document.documentElement.scrollTop,
-      visible: true
+  
+      prevScrollPosition: window.pageYOffset || document.documentElement.scrollTop,
+      visibleContent: true
     };
     this.focusRef = React.createRef();
   }
 
   componentDidMount() {
- 
-    window.addEventListener("scroll", this.scrolledTheVerticalAxis);
+    window.addEventListener("scroll", this.scrolledTheVerticalAxis,false);
   }
 
 
   componentWillUnmount() {
-    window.removeEventListener("scroll", this.scrolledTheVerticalAxis);
+    window.removeEventListener("scroll", this.scrolledTheVerticalAxis,false);
   }
 
   scrolledTheVerticalAxis = () => {
-    const { prevScrollpos } = this.state;
-
-    const currentScrollPos = window.pageYOffset || document.documentElement.scrollTop;
-    const visible = prevScrollpos > currentScrollPos;
+    const { prevScrollPosition } = this.state;
+    //  const first = document.documentElement.offsetTop 
+    //  const second =  document.body.scrollTop || document.documentElement.scrollTop
+    const currentScrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+ 
+    const visibleContent = prevScrollPosition > currentScrollPosition;
     
   
     this.setState({
-      prevScrollpos: currentScrollPos,
-      visible
+      prevScrollPosition: currentScrollPosition,
+      visibleContent
     });
   };
 
@@ -100,7 +102,7 @@ class SectionHeader extends React.Component {
     return (
       <StyledSectionHeader isArticlePinned={isArticlePinned}>
         <div id="scroll" className={classnames("section-header" , {
-          "section-header--hidden": !this.state.visible
+          "section-header--hidden": !this.state.visibleContent
         })} {...rest} />
       </StyledSectionHeader>
     );
