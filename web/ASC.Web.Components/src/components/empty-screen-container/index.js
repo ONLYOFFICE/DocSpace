@@ -27,19 +27,25 @@ const EmptyContentBody = styled.div`
   .ec-header {
     grid-area: headerText;
     padding-top: 16px;
+    @media (max-width: 375px) {
+      margin-top: 5px;
+    }
   }
 
   .ec-subheading {
     grid-area: subheadingText;
+    margin-top: -1px;
   }
 
   .ec-desc {
     grid-area: descriptionText;
     line-height: 18px;
+    margin-top: 2px;
   }
 
   .ec-buttons {
     grid-area: button;
+    margin-top: -1px;
   }
 
   @media (orientation: portrait) {
