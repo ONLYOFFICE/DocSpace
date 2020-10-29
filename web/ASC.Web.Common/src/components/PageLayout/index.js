@@ -106,8 +106,10 @@ class PageLayoutComponent extends React.Component {
   }
 
   orientationChangeHandler = () => {
-    const vh = (window.innerHeight - 57) * 0.01;
-    document.documentElement.style.setProperty("--vh", `${vh}px`);
+    setTimeout(() => {
+      const vh = (window.innerHeight - 57) * 0.01;
+      document.documentElement.style.setProperty("--vh", `${vh}px`);
+    }, 500);
 
     const isValueExist = !!localStorage.getItem(ARTICLE_PINNED_KEY);
     const isEnoughWidth = screen.availWidth > size.smallTablet;
