@@ -88,7 +88,7 @@ import {
   getMyFolderId,
   getTooltipLabel,
   getIsPrivacyFolder,
-  getPrivacyInstructionsLink
+  getPrivacyInstructionsLink,
 } from "../../../../../store/files/selectors";
 import { SharingPanel, OperationsPanel } from "../../../../panels";
 const {
@@ -96,7 +96,7 @@ const {
   getSettings,
   getCurrentUser,
   isEncryptionSupport,
-  getOrganizationName
+  getOrganizationName,
 } = store.auth.selectors;
 //import { getFilterByLocation } from "../../../../../helpers/converters";
 //import config from "../../../../../../package.json";
@@ -172,6 +172,7 @@ class SectionBodyContent extends React.Component {
       showMoveToPanel: false,
       showCopyPanel: false,
       isDrag: false,
+      canDrag: true,
     };
 
     this.tooltipRef = React.createRef();
@@ -187,15 +188,19 @@ class SectionBodyContent extends React.Component {
 
     window.addEventListener("mouseup", this.onMouseUp);
 
+    document.addEventListener("dragstart", this.onDragStart);
     document.addEventListener("dragover", this.onDragOver);
     document.addEventListener("dragleave", this.onDragLeaveDoc);
+    document.addEventListener("drop", this.onDropEvent);
   }
 
   componentWillUnmount() {
     window.removeEventListener("mouseup", this.onMouseUp);
 
+    document.addEventListener("dragstart", this.onDragStart);
     document.removeEventListener("dragover", this.onDragOver);
     document.removeEventListener("dragleave", this.onDragLeaveDoc);
+    document.removeEventListener("drop", this.onDropEvent);
   }
 
   // componentDidUpdate(prevProps, prevState) {
@@ -843,13 +848,9 @@ class SectionBodyContent extends React.Component {
         </Text>
         <Text fontSize="12px">
           <Trans i18nKey="PrivateRoomSupport" i18n={i18n}>
-            Work in Private Room is available via {{organizationName}} desktop app.
-            <Link
-              isBold
-              isHovered
-              color="#116d9d"
-              href={privacyInstructions}
-            >
+            Work in Private Room is available via {{ organizationName }} desktop
+            app.
+            <Link isBold isHovered color="#116d9d" href={privacyInstructions}>
               Instructions
             </Link>
           </Trans>
@@ -1096,18 +1097,30 @@ class SectionBodyContent extends React.Component {
     }
   };
 
-  onDrop = (item, items, e) => {
-    if (!item.fileExst) {
-      const { setDragging, onDropZoneUpload } = this.props;
-      setDragging(false);
-      onDropZoneUpload(items, item.id);
+  onDragStart = (e) => {
+    if (e.dataTransfer.dropEffect === "none") {
+      this.state.canDrag && this.setState({ canDrag: false });
     }
+  };
+
+  onDrop = (item, items, e) => {
+    const { onDropZoneUpload, selectedFolderId } = this.props;
+
+    if (!item.fileExst) {
+      onDropZoneUpload(items, item.id);
+    } else {
+      onDropZoneUpload(items, selectedFolderId);
+    }
+  };
+
+  onDropEvent = () => {
+    this.props.dragging && this.props.setDragging(false);
   };
 
   onDragOver = (e) => {
     e.preventDefault();
     const { dragging, setDragging } = this.props;
-    if (e.dataTransfer.items.length > 0 && !dragging) {
+    if (e.dataTransfer.items.length > 0 && !dragging && this.state.canDrag) {
       setDragging(true);
     }
   };
@@ -1173,7 +1186,12 @@ class SectionBodyContent extends React.Component {
       dragItem,
       setDragItem,
     } = this.props;
-    this.state.isDrag && this.setState({ isDrag: false });
+
+    document.body.classList.remove("drag-cursor");
+
+    if (this.state.isDrag || !this.state.canDrag) {
+      this.setState({ isDrag: false, canDrag: true });
+    }
     const mouseButton = e.which
       ? e.which !== 1
       : e.button
@@ -1222,6 +1240,7 @@ class SectionBodyContent extends React.Component {
 
   onMouseMove = (e) => {
     if (this.state.isDrag) {
+      document.body.classList.add("drag-cursor");
       !this.props.dragging && this.props.setDragging(true);
       const tooltip = this.tooltipRef.current;
       tooltip.style.display = "block";
