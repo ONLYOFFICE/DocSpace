@@ -50,7 +50,7 @@ namespace ASC.Studio.Notify
                 {
                     var diHelper = new DIHelper(services);
                     diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
-                    diHelper.AddNLogManager("ASC.Notify", "ASC.Notify.Messages");
+                    LogNLogExtension.ConfigureLog(diHelper, "ASC.Notify", "ASC.Notify.Messages");
                     services.AddHostedService<ServiceLauncher>();
                     diHelper.TryAdd<ServiceLauncher>();
                     NotifyConfigurationExtension.Register(diHelper);

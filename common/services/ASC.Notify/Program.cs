@@ -52,7 +52,7 @@ namespace ASC.Notify
                 {
                     var diHelper = new DIHelper(services);
 
-                    diHelper.AddNLogManager("ASC.Notify", "ASC.Notify.Messages");
+                    LogNLogExtension.ConfigureLog(diHelper, "ASC.Notify", "ASC.Notify.Messages");
                     diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
 
                     services.Configure<NotifyServiceCfg>(hostContext.Configuration.GetSection("notify"));

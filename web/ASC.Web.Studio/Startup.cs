@@ -36,7 +36,6 @@ namespace ASC.Web.Studio
             services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
 
             DIHelper.TryAdd<Login>();
-            StorageConfigExtension.Register(DIHelper);
             DIHelper.TryAdd<PathUtils>();
             DIHelper.TryAdd<StorageHandlerScope>();
         }

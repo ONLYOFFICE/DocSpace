@@ -18,7 +18,7 @@ namespace ASC.Data.Storage.Configuration
         }
     }
 
-    [Singletone]
+
     public class Storage
     {
         public IEnumerable<Appender> Appender { get; set; }

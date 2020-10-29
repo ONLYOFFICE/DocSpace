@@ -76,7 +76,7 @@ namespace ASC.Thumbnails.Svc
                     var diHelper = new DIHelper(services);
 
                     diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
-                    diHelper.AddNLogManager("ASC.Thumbnails.Svc");
+                    LogNLogExtension.ConfigureLog(diHelper, "ASC.Thumbnails.Svc");
                     services.AddHostedService<ThumbnailsServiceLauncher>();
                     diHelper.TryAdd<ThumbnailsServiceLauncher>();
 

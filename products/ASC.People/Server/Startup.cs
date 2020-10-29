@@ -1,4 +1,6 @@
 ﻿
+using System.Linq;
+
 using ASC.Api.Core;
 using ASC.Common;
 using ASC.Employee.Core.Controllers;

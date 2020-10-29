@@ -124,7 +124,11 @@ namespace ASC.Common
 
         public bool TryAdd(Type service, Type implementation = null)
         {
-            if (service.IsInterface && service.IsGenericType && (service.GetGenericTypeDefinition() == typeof(IOptionsSnapshot<>) || service.GetGenericTypeDefinition() == typeof(IOptions<>)))
+            if (service.IsInterface && service.IsGenericType && implementation == null &&
+                (service.GetGenericTypeDefinition() == typeof(IOptionsSnapshot<>) ||
+                service.GetGenericTypeDefinition() == typeof(IOptions<>) ||
+                service.GetGenericTypeDefinition() == typeof(IOptionsMonitor<>)
+                ))
             {
                 service = service.GetGenericArguments().FirstOrDefault();
                 if (service == null)
@@ -142,7 +146,11 @@ namespace ASC.Common
                 var qqaz = 0;
             }
 
-            var di = service.IsGenericType && (service.GetGenericTypeDefinition() == typeof(IConfigureOptions<>) || service.GetGenericTypeDefinition() == typeof(IPostConfigureOptions<>)) && implementation != null ? implementation.GetCustomAttribute<DIAttribute>() : service.GetCustomAttribute<DIAttribute>();
+            var di = service.IsGenericType && (
+                service.GetGenericTypeDefinition() == typeof(IConfigureOptions<>) ||
+                service.GetGenericTypeDefinition() == typeof(IPostConfigureOptions<>) ||
+                service.GetGenericTypeDefinition() == typeof(IOptionsMonitor<>)
+                ) && implementation != null ? implementation.GetCustomAttribute<DIAttribute>() : service.GetCustomAttribute<DIAttribute>();
             var isnew = false;
 
             if (di != null)
@@ -163,7 +171,11 @@ namespace ASC.Common
                 {
                     if (di.Service != null)
                     {
-                        var a = di.Service.GetInterfaces().FirstOrDefault(x => x.IsGenericType && (x.GetGenericTypeDefinition() == typeof(IConfigureOptions<>) || x.GetGenericTypeDefinition() == typeof(IPostConfigureOptions<>)));
+                        var a = di.Service.GetInterfaces().FirstOrDefault(x => x.IsGenericType && (
+                        x.GetGenericTypeDefinition() == typeof(IConfigureOptions<>) ||
+                        x.GetGenericTypeDefinition() == typeof(IPostConfigureOptions<>) ||
+                        x.GetGenericTypeDefinition() == typeof(IOptionsMonitor<>)
+                        ));
                         if (a != null)
                         {
                             if (!a.ContainsGenericParameters)
@@ -334,7 +346,11 @@ namespace ASC.Common
         private bool Register(Type service, Type implementation)
         {
             if (service.IsSubclassOf(typeof(ControllerBase)) || service.GetInterfaces().Contains(typeof(IResourceFilter))) return true;
-            var c = service.IsGenericType && (service.GetGenericTypeDefinition() == typeof(IConfigureOptions<>) || service.GetGenericTypeDefinition() == typeof(IPostConfigureOptions<>)) && implementation != null ? implementation.GetCustomAttribute<DIAttribute>() : service.GetCustomAttribute<DIAttribute>();
+            var c = service.IsGenericType && (
+                service.GetGenericTypeDefinition() == typeof(IConfigureOptions<>) ||
+                service.GetGenericTypeDefinition() == typeof(IPostConfigureOptions<>) ||
+                service.GetGenericTypeDefinition() == typeof(IOptionsMonitor<>)
+                ) && implementation != null ? implementation.GetCustomAttribute<DIAttribute>() : service.GetCustomAttribute<DIAttribute>();
             var serviceName = $"{service}{implementation}";
             if (c is ScopeAttribute)
             {
@@ -377,29 +393,6 @@ namespace ASC.Common
                 ServiceCollection.TryAddSingleton(implementationFactory);
             }
 
-            return this;
-        }
-
-        public DIHelper TryAddSingleton<TService, TImplementation>() where TService : class where TImplementation : class, TService
-        {
-            var serviceName = $"{typeof(TService)}{typeof(TImplementation)}";
-            if (!Singleton.Contains(serviceName))
-            {
-                Singleton.Add(serviceName);
-                ServiceCollection.TryAddSingleton<TService, TImplementation>();
-            }
-
-            return this;
-        }
-
-        public DIHelper TryAddSingleton<TService, TImplementation>(TService tservice, TImplementation tImplementation) where TService : Type where TImplementation : Type
-        {
-            var serviceName = $"{tservice}{tImplementation}";
-            if (!Singleton.Contains(serviceName))
-            {
-                Singleton.Add(serviceName);
-                ServiceCollection.TryAddSingleton(tservice, tImplementation);
-            }
             return this;
         }
 

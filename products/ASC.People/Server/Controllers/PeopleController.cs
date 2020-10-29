@@ -122,6 +122,7 @@ namespace ASC.Employee.Core.Controllers
             PasswordHasher passwordHasher)
         {
             Log = option.Get("ASC.Api");
+            Log.Debug("Test");
             MessageService = messageService;
             QueueWorkerReassign = queueWorkerReassign;
             QueueWorkerRemove = queueWorkerRemove;

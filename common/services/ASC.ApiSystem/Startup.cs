@@ -71,7 +71,7 @@ namespace ASC.ApiSystem
                 .AddScheme<AuthenticationSchemeOptions, AuthHandler>("auth.allowskip", _ => { })
                 .AddScheme<AuthenticationSchemeOptions, AuthHandler>("auth.allowskip.registerportal", _ => { });
 
-            diHelper.AddNLogManager("ASC.Apisystem");
+            LogNLogExtension.ConfigureLog(diHelper, "ASC.Apisystem");
 
             services.AddAutofac(Configuration, HostEnvironment.ContentRootPath, false);
         }

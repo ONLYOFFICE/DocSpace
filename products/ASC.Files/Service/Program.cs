@@ -52,14 +52,13 @@ namespace ASC.Files.Service
                     var diHelper = new DIHelper(services);
 
                     diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
-                    diHelper.AddNLogManager("ASC.Files");
                     services.AddHostedService<ServiceLauncher>();
                     diHelper.TryAdd<ServiceLauncher>();
 
-                    diHelper.AddNLogManager("ASC.Feed.Agregator");
                     services.AddHostedService<FeedAggregatorService>();
                     diHelper.TryAdd<FeedAggregatorService>();
 
+                    LogNLogExtension.ConfigureLog(diHelper, "ASC.Files", "ASC.Feed.Agregator");
                     //diHelper.TryAdd<FileConverter>();
                     diHelper.TryAdd<FactoryIndexerFile>();
                     diHelper.TryAdd<FactoryIndexerFolder>();

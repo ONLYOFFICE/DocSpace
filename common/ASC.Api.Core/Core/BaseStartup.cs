@@ -102,7 +102,7 @@ namespace ASC.Api.Core
 
             if (LogParams != null)
             {
-                DIHelper.AddNLogManager(LogParams);
+                LogNLogExtension.ConfigureLog(DIHelper, LogParams);
             }
 
             services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);

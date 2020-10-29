@@ -75,7 +75,7 @@ namespace ASC.Socket.IO.Svc
                 {
                     var diHelper = new DIHelper(services);
                     diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
-                    diHelper.AddNLogManager("ASC.Socket.IO.Svc");
+                    LogNLogExtension.ConfigureLog(diHelper, "ASC.Socket.IO.Svc");
                     services.AddHostedService<SocketServiceLauncher>();
                     diHelper.TryAdd<SocketServiceLauncher>();
 
