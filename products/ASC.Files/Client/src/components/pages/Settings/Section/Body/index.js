@@ -35,8 +35,12 @@ const StyledSettings = styled.div`
   }
 
   .heading {
-    margin-bottom: 0;
-    margin-top: 22px;
+    margin-bottom: 1px;
+    margin-top: 26px;
+  }
+
+  .toggle-btn:first-child {
+    margin-top: -3px;
   }
 `;
 
