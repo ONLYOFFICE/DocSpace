@@ -2,7 +2,6 @@
 using ASC.Api.Core;
 using ASC.Common.DependencyInjection;
 using ASC.Data.Storage;
-using ASC.Data.Storage.Configuration;
 using ASC.Data.Storage.DiscStorage;
 using ASC.FederatedLogin;
 

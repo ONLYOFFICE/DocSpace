@@ -6,7 +6,6 @@ using System.Reflection;
 using ASC.Common.Threading.Progress;
 using ASC.Common.Threading.Workers;
 
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,62 +14,90 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Common
 {
+    public enum DIAttributeEnum
+    {
+        Singletone,
+        Scope,
+        Transient
+    }
+
     public class TransientAttribute : DIAttribute
     {
-        public TransientAttribute()
-        {
-        }
+        public override DIAttributeEnum DIAttributeEnum { get => DIAttributeEnum.Transient; }
 
-        public TransientAttribute(Type service) : base(service)
-        {
-        }
+        public TransientAttribute() { }
 
-        public TransientAttribute(Type service, Type implementation) : base(service, implementation)
-        {
+        public TransientAttribute(Type service) : base(service) { }
 
+        public TransientAttribute(Type service, Type implementation) : base(service, implementation) { }
+
+        public override void TryAdd(IServiceCollection services, Type service, Type implementation = null)
+        {
+            if (implementation != null)
+            {
+                services.AddTransient(service, implementation);
+            }
+            else
+            {
+                services.AddTransient(service);
+            }
         }
     }
 
     public class ScopeAttribute : DIAttribute
     {
-        public ScopeAttribute()
-        {
-        }
+        public override DIAttributeEnum DIAttributeEnum { get => DIAttributeEnum.Scope; }
 
-        public ScopeAttribute(Type service) : base(service)
-        {
-        }
+        public ScopeAttribute() { }
 
-        public ScopeAttribute(Type service, Type implementation) : base(service, implementation)
+        public ScopeAttribute(Type service) : base(service) { }
+
+        public ScopeAttribute(Type service, Type implementation) : base(service, implementation) { }
+
+        public override void TryAdd(IServiceCollection services, Type service, Type implementation = null)
         {
+            if (implementation != null)
+            {
+                services.AddScoped(service, implementation);
+            }
+            else
+            {
+                services.AddScoped(service);
+            }
         }
     }
 
     public class SingletoneAttribute : DIAttribute
     {
-        public SingletoneAttribute()
-        {
-        }
+        public override DIAttributeEnum DIAttributeEnum { get => DIAttributeEnum.Singletone; }
 
-        public SingletoneAttribute(Type service) : base(service)
-        {
-        }
+        public SingletoneAttribute() { }
 
-        public SingletoneAttribute(Type service, Type implementation) : base(service, implementation)
+        public SingletoneAttribute(Type service) : base(service) { }
+
+        public SingletoneAttribute(Type service, Type implementation) : base(service, implementation) { }
+
+        public override void TryAdd(IServiceCollection services, Type service, Type implementation = null)
         {
+            if (implementation != null)
+            {
+                services.AddSingleton(service, implementation);
+            }
+            else
+            {
+                services.AddSingleton(service);
+            }
         }
     }
 
-    public class DIAttribute : Attribute
+    public abstract class DIAttribute : Attribute
     {
+        public abstract DIAttributeEnum DIAttributeEnum { get; }
         public Type Implementation { get; }
         public Type Service { get; }
         public Type Additional { get; set; }
 
-        public DIAttribute()
-        {
-
-        }
+        public DIAttribute() { }
 
         public DIAttribute(Type service)
         {
@@ -82,23 +109,26 @@ namespace ASC.Common
             Implementation = implementation;
             Service = service;
         }
+
+        public abstract void TryAdd(IServiceCollection services, Type service, Type implementation = null);
     }
 
     public class DIHelper
     {
+        public Dictionary<DIAttributeEnum, List<string>> Services { get; set; }
         public List<string> Added { get; set; }
-        public List<string> Singleton { get; set; }
-        public List<string> Scoped { get; set; }
-        public List<string> Transient { get; set; }
         public List<string> Configured { get; set; }
         public IServiceCollection ServiceCollection { get; private set; }
 
         public DIHelper()
         {
+            Services = new Dictionary<DIAttributeEnum, List<string>>()
+            {
+                { DIAttributeEnum.Singletone, new List<string>() },
+                { DIAttributeEnum.Scope, new List<string>() },
+                { DIAttributeEnum.Transient, new List<string>() }
+            };
             Added = new List<string>();
-            Singleton = new List<string>();
-            Scoped = new List<string>();
-            Transient = new List<string>();
             Configured = new List<string>();
         }
 
@@ -140,11 +170,6 @@ namespace ASC.Common
             var serviceName = $"{service}{implementation}";
             if (Added.Contains(serviceName)) return false;
             Added.Add(serviceName);
-
-            if (serviceName == "ASC.Notify.DbWorker")
-            {
-                var qqaz = 0;
-            }
 
             var di = service.IsGenericType && (
                 service.GetGenericTypeDefinition() == typeof(IConfigureOptions<>) ||
@@ -226,7 +251,11 @@ namespace ASC.Common
 
                     if (di.Implementation != null)
                     {
-                        var a = di.Implementation.GetInterfaces().FirstOrDefault(x => x.IsGenericType && (x.GetGenericTypeDefinition() == typeof(IConfigureOptions<>) || x.GetGenericTypeDefinition() == typeof(IPostConfigureOptions<>)));
+                        var a = di.Implementation.GetInterfaces().FirstOrDefault(x => x.IsGenericType &&
+                        (x.GetGenericTypeDefinition() == typeof(IConfigureOptions<>) ||
+                        x.GetGenericTypeDefinition() == typeof(IPostConfigureOptions<>) ||
+                        x.GetGenericTypeDefinition() == typeof(IOptionsMonitor<>))
+                        );
                         if (a != null)
                         {
                             if (!a.ContainsGenericParameters)
@@ -307,43 +336,7 @@ namespace ASC.Common
             return isnew;
         }
 
-        private bool Register(Type service)
-        {
-            if (service.IsSubclassOf(typeof(ControllerBase)) || service.GetInterfaces().Contains(typeof(IResourceFilter)) || service.GetInterfaces().Contains(typeof(IAuthenticationHandler))) return true;
-            var c = service.GetCustomAttribute<DIAttribute>();
-            var serviceName = $"{service}";
-            if (c is ScopeAttribute)
-            {
-                if (!Scoped.Contains(serviceName))
-                {
-                    Scoped.Add(serviceName);
-                    ServiceCollection.TryAddScoped(service);
-                    return true;
-                }
-            }
-            else if (c is SingletoneAttribute)
-            {
-                if (!Singleton.Contains(serviceName))
-                {
-                    Singleton.Add(serviceName);
-                    ServiceCollection.TryAddSingleton(service);
-                    return true;
-                }
-            }
-            else if (c is TransientAttribute)
-            {
-                if (!Transient.Contains(serviceName))
-                {
-                    Transient.Add(serviceName);
-                    ServiceCollection.TryAddTransient(service);
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        private bool Register(Type service, Type implementation)
+        private bool Register(Type service, Type implementation = null)
         {
             if (service.IsSubclassOf(typeof(ControllerBase)) || service.GetInterfaces().Contains(typeof(IResourceFilter))) return true;
             var c = service.IsGenericType && (
@@ -352,32 +345,12 @@ namespace ASC.Common
                 service.GetGenericTypeDefinition() == typeof(IOptionsMonitor<>)
                 ) && implementation != null ? implementation.GetCustomAttribute<DIAttribute>() : service.GetCustomAttribute<DIAttribute>();
             var serviceName = $"{service}{implementation}";
-            if (c is ScopeAttribute)
+
+            if (!Services[c.DIAttributeEnum].Contains(serviceName))
             {
-                if (!Scoped.Contains(serviceName))
-                {
-                    Scoped.Add(serviceName);
-                    ServiceCollection.TryAddScoped(service, implementation);
-                    return true;
-                }
-            }
-            else if (c is SingletoneAttribute)
-            {
-                if (!Singleton.Contains(serviceName))
-                {
-                    Singleton.Add(serviceName);
-                    ServiceCollection.AddSingleton(service, implementation);
-                    return true;
-                }
-            }
-            else if (c is TransientAttribute)
-            {
-                if (!Transient.Contains(serviceName))
-                {
-                    Transient.Add(serviceName);
-                    ServiceCollection.TryAddTransient(service, implementation);
-                    return true;
-                }
+                c.TryAdd(ServiceCollection, service, implementation);
+                Services[c.DIAttributeEnum].Add(serviceName);
+                return true;
             }
 
             return false;
@@ -387,9 +360,9 @@ namespace ASC.Common
         public DIHelper TryAddSingleton<TService>(Func<IServiceProvider, TService> implementationFactory) where TService : class
         {
             var serviceName = $"{typeof(TService)}";
-            if (!Singleton.Contains(serviceName))
+            if (!Services[DIAttributeEnum.Singletone].Contains(serviceName))
             {
-                Singleton.Add(serviceName);
+                Services[DIAttributeEnum.Singletone].Add(serviceName);
                 ServiceCollection.TryAddSingleton(implementationFactory);
             }
 
