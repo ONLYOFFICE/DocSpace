@@ -591,12 +591,16 @@ export const isMediaOrImage = (fileExst) => {
   );
 };
 
-const getFilesContextOptions = (item, isRecycleBin, isRecent, canOpenPlayer) => {
+const getFilesContextOptions = (
+  item,
+  isRecycleBin,
+  isRecent,
+  canOpenPlayer
+) => {
   const options = [];
 
   const isFile = !!item.fileExst;
   const isFavorite = item.fileStatus === 32;
-  
 
   if (item.id <= 0) return [];
 
@@ -621,10 +625,10 @@ const getFilesContextOptions = (item, isRecycleBin, isRecent, canOpenPlayer) => 
       options.push("finalize-version");
       options.push("block-unblock-version");
       options.push("separator1");
-       if (isRecent) {
-        options.push("open-location")
+      if (isRecent) {
+        options.push("open-location");
       }
-       if (!isFavorite) {
+      if (!isFavorite) {
         options.push("mark-as-favorite");
       }
 
@@ -781,13 +785,34 @@ export const getIsRecentFolder = createSelector(
   }
 );
 
+export const getPrivacyFolder = createSelector(
+  getTreeFolders,
+  (treeFolders) => {
+    return treeFolders.find((x) => x.rootFolderType === FolderType.Privacy);
+  }
+);
+
+export const getIsPrivacyFolder = createSelector(
+  getPrivacyFolder,
+  getSelectedFolderRootFolderType,
+  (privacyFolder, id) => {
+    return privacyFolder && privacyFolder.rootFolderType === id;
+  }
+);
+
 export const getFileActionId = (state) => {
   return state.files.fileAction.id;
 };
 
 export const getFilesList = (state) => {
   return createSelector(
-    [getItemsList, getSelection, getIsRecycleBinFolder, getIsRecentFolder, getFileActionId],
+    [
+      getItemsList,
+      getSelection,
+      getIsRecycleBinFolder,
+      getIsRecentFolder,
+      getFileActionId,
+    ],
     (items, selection, isRecycleBin, isRecent, actionId) => {
       return items.map((item) => {
         const {
@@ -956,6 +981,10 @@ export const getFilterSelectedItem = (state) => {
   return state.files.filter.selectedItem;
 };
 
+export const getPrivacyInstructionsLink = (state) => {
+  return state.files.privacyInstructions;
+}
+
 export const getHeaderVisible = createSelector(
   getSelectionLength,
   getSelected,
@@ -1052,3 +1081,13 @@ export const getOnlyFoldersSelected = createSelector(
 export const getAccessedSelected = createSelector(getSelection, (selection) => {
   return selection.every((x) => x.access === 1 || x.access === 0);
 });
+
+export const getOperationsFolders = createSelector(
+  getTreeFolders, (treeFolders) => {
+    return treeFolders.filter(folder => (
+      folder.rootFolderType === FolderType.USER ||
+      folder.rootFolderType === FolderType.COMMON ||
+      folder.rootFolderType === FolderType.Projects
+    ) && folder);
+  }
+)

@@ -1,4 +1,4 @@
-import { api, history, toastr } from "asc-web-common";
+import { api, history, constants, toastr, store } from "asc-web-common";
 import axios from "axios";
 import queryString from "query-string";
 import {
@@ -24,9 +24,12 @@ import {
   getProgressData,
   getTreeFolders,
   getSettingsTree,
+  getPrivacyFolder,
 } from "./selectors";
 
 const { files, FilesFilter } = api;
+const { FolderType } = constants;
+const { isEncryptionSupport } = store.auth.selectors;
 
 export const SET_FOLDER = "SET_FOLDER";
 export const SET_FOLDERS = "SET_FOLDERS";
@@ -302,15 +305,51 @@ export function setFilterUrl(filter) {
 
 // TODO: similar to fetchFolder, remove one
 export function fetchFiles(folderId, filter) {
-  return (dispatch) => {
+  return (dispatch, getState) => {
     const filterData = filter ? filter.clone() : FilesFilter.getDefault();
     filterData.folder = folderId;
+
+    const state = getState();
+    const privacyFolder = getPrivacyFolder(state);
+
+    if (privacyFolder && privacyFolder.id === +folderId) {
+      const isEncryptionSupported = isEncryptionSupport(state);
+
+      if (!isEncryptionSupported) {
+        filterData.treeFolders = createTreeFolders(
+          privacyFolder.pathParts,
+          filterData
+        );
+        filterData.total = 0;
+        dispatch(setFilesFilter(filterData));
+
+        dispatch(setFolders([]));
+        dispatch(setFiles([]));
+        dispatch(setSelected("close"));
+        dispatch(
+          setSelectedFolder({
+            folders: [],
+            ...privacyFolder,
+            pathParts: privacyFolder.pathParts,
+            ...{ new: 0 },
+          })
+        );
+        return Promise.resolve();
+      }
+    }
+
     return files.getFolder(folderId, filter).then((data) => {
+      const isPrivacyFolder =
+        data.current.rootFolderType === FolderType.Privacy;
       filterData.treeFolders = createTreeFolders(data.pathParts, filterData);
       filterData.total = data.total;
       dispatch(setFilesFilter(filterData));
-      dispatch(setFolders(data.folders));
-      dispatch(setFiles(data.files));
+      dispatch(
+        setFolders(isPrivacyFolder && !isEncryptionSupport ? [] : data.folders)
+      );
+      dispatch(
+        setFiles(isPrivacyFolder && !isEncryptionSupport ? [] : data.files)
+      );
       dispatch(setSelected("close"));
       return dispatch(
         setSelectedFolder({
@@ -370,7 +409,7 @@ export function fetchCommonFolder(dispatch) {
 }
 
 export function fetchFavoritesFolder(folderId) {
-  return dispatch => {
+  return (dispatch) => {
     return files.getFolder(folderId).then((data) => {
       dispatch(setFolders(data.folders));
       dispatch(setFiles(data.files));
@@ -382,27 +421,27 @@ export function fetchFavoritesFolder(folderId) {
         })
       );
     });
-  }
+  };
 }
 
 export function markItemAsFavorite(id) {
-  return dispatch => {
+  return (dispatch) => {
     return files.markAsFavorite(id);
-  }
+  };
 }
 
 export function removeItemFromFavorite(id) {
-  return dispatch => {
+  return (dispatch) => {
     return files.removeFromFavorite(id);
-  }
+  };
 }
 
 export function getFileInfo(id) {
-  return dispatch => {
-    return files.getFileInfo(id).then(data => {
+  return (dispatch) => {
+    return files.getFileInfo(id).then((data) => {
       dispatch(setFile(data));
     });
-  }
+  };
 }
 
 export function fetchProjectsFolder(dispatch) {
@@ -468,9 +507,9 @@ export function updateFile(fileId, title) {
 }
 
 export function addFileToRecentlyViewed(fileId) {
-  return dispatch => {
+  return (dispatch) => {
     return files.addFileToRecentlyViewed(fileId);
-  } 
+  };
 }
 
 export function renameFolder(folderId, title) {
@@ -702,8 +741,8 @@ const startSessionFunc = (indexOfFile, t, dispatch, getState) => {
   const relativePath = file.path
     ? file.path.slice(1, -file.name.length)
     : file.webkitRelativePath
-    ? file.webkitRelativePath.slice(0, -file.name.length)
-    : "";
+      ? file.webkitRelativePath.slice(0, -file.name.length)
+      : "";
 
   let location;
   const requestsDataArray = [];
@@ -1198,3 +1237,26 @@ export const loopFilesOperations = (id, destFolderId, isCopy) => {
     loopOperation();
   };
 };
+
+export function selectItemOperation(destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter, isCopy) {
+  return (dispatch) => {
+    return isCopy ?
+      files.copyToFolder(destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter)
+      :
+      files.moveToFolder(destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter)
+  }
+}
+
+export function itemOperationToFolder(destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter, isCopy) {
+  return (dispatch) => {
+    return dispatch(selectItemOperation(destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter, isCopy))
+      .then((res) => {
+        const id = res[0] && res[0].id ? res[0].id : null;
+        dispatch(loopFilesOperations(id, destFolderId, isCopy))
+      })
+      .catch((err) => {
+        toastr.error(err);
+        dispatch(clearProgressData())
+      })
+  };
+}

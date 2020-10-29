@@ -2,7 +2,7 @@ import React from "react";
 import { withRouter } from "react-router";
 import { connect } from "react-redux";
 import { ReactSVG } from "react-svg";
-import { withTranslation } from "react-i18next";
+import { withTranslation, Trans } from "react-i18next";
 import isEqual from "lodash/isEqual";
 import copy from "copy-to-clipboard";
 import styled from "styled-components";
@@ -87,9 +87,17 @@ import {
   getIsFavoritesFolder,
   getMyFolderId,
   getTooltipLabel,
+  getIsPrivacyFolder,
+  getPrivacyInstructionsLink,
 } from "../../../../../store/files/selectors";
 import { SharingPanel, OperationsPanel } from "../../../../panels";
-const { isAdmin, getSettings, getCurrentUser } = store.auth.selectors;
+const {
+  isAdmin,
+  getSettings,
+  getCurrentUser,
+  isEncryptionSupport,
+  getOrganizationName,
+} = store.auth.selectors;
 //import { getFilterByLocation } from "../../../../../helpers/converters";
 //import config from "../../../../../../package.json";
 
@@ -153,6 +161,7 @@ class SectionBodyContent extends React.Component {
       showMoveToPanel: false,
       showCopyPanel: false,
       isDrag: false,
+      canDrag: true,
     };
 
     this.tooltipRef = React.createRef();
@@ -168,15 +177,19 @@ class SectionBodyContent extends React.Component {
 
     window.addEventListener("mouseup", this.onMouseUp);
 
+    document.addEventListener("dragstart", this.onDragStart);
     document.addEventListener("dragover", this.onDragOver);
     document.addEventListener("dragleave", this.onDragLeaveDoc);
+    document.addEventListener("drop", this.onDropEvent);
   }
 
   componentWillUnmount() {
     window.removeEventListener("mouseup", this.onMouseUp);
 
+    document.addEventListener("dragstart", this.onDragStart);
     document.removeEventListener("dragover", this.onDragOver);
     document.removeEventListener("dragleave", this.onDragLeaveDoc);
+    document.removeEventListener("drop", this.onDropEvent);
   }
 
   // componentDidUpdate(prevProps, prevState) {
@@ -784,8 +797,12 @@ class SectionBodyContent extends React.Component {
       isRecycleBin,
       isFavorites,
       isRecent,
+      isPrivacy,
+      organizationName,
+      privacyInstructions,
       title,
       t,
+      i18n,
     } = this.props;
     const subheadingText = t("SubheadingEmptyText");
     const myDescription = t("MyEmptyContainerDescription");
@@ -795,8 +812,43 @@ class SectionBodyContent extends React.Component {
     const favoritesDescription = t("FavoritesEmptyContainerDescription");
     const recentDescription = t("RecentEmptyContainerDescription");
 
-    const commonButtons = (
+    const privateRoomHeader = t("PrivateRoomHeader");
+    const privacyIcon = <img alt="" src="images/privacy.svg" />;
+    const privateRoomDescTranslations = [
+      t("PrivateRoomDescriptionSafest"),
+      t("PrivateRoomDescriptionSecure"),
+      t("PrivateRoomDescriptionEncrypted"),
+      t("PrivateRoomDescriptionUnbreakable"),
+    ];
+    const privateRoomDescription = (
       <>
+        <Text fontSize="15px" as="div">
+          {privateRoomDescTranslations.map((el) => (
+            <Box
+              displayProp="flex"
+              alignItems="center"
+              paddingProp="0 0 13px 0"
+              key={el}
+            >
+              <Box paddingProp="0 7px 0 0">{privacyIcon}</Box>
+              <Box>{el}</Box>
+            </Box>
+          ))}
+        </Text>
+        <Text fontSize="12px">
+          <Trans i18nKey="PrivateRoomSupport" i18n={i18n}>
+            Work in Private Room is available via {{ organizationName }} desktop
+            app.
+            <Link isBold isHovered color="#116d9d" href={privacyInstructions}>
+              Instructions
+            </Link>
+          </Trans>
+        </Text>
+      </>
+    );
+
+    const commonButtons = (
+      <span>
         <div className="empty-folder_container-links">
           <img
             className="empty-folder_container_plus-image"
@@ -829,7 +881,7 @@ class SectionBodyContent extends React.Component {
             {t("Folder")}
           </Link>
         </div>
-      </>
+      </span>
     );
 
     const trashButtons = (
@@ -902,6 +954,14 @@ class SectionBodyContent extends React.Component {
           subheadingText={subheadingText}
           descriptionText={recentDescription}
           imageSrc="images/empty_screen_recent.png"
+        />
+      );
+    } else if (isPrivacy) {
+      return (
+        <EmptyFolderContainer
+          headerText={privateRoomHeader}
+          descriptionText={privateRoomDescription}
+          imageSrc="images/empty_screen_privacy.png"
         />
       );
     } else {
@@ -1026,18 +1086,30 @@ class SectionBodyContent extends React.Component {
     }
   };
 
-  onDrop = (item, items, e) => {
-    if (!item.fileExst) {
-      const { setDragging, onDropZoneUpload } = this.props;
-      setDragging(false);
-      onDropZoneUpload(items, item.id);
+  onDragStart = (e) => {
+    if (e.dataTransfer.dropEffect === "none") {
+      this.state.canDrag && this.setState({ canDrag: false });
     }
+  };
+
+  onDrop = (item, items, e) => {
+    const { onDropZoneUpload, selectedFolderId } = this.props;
+
+    if (!item.fileExst) {
+      onDropZoneUpload(items, item.id);
+    } else {
+      onDropZoneUpload(items, selectedFolderId);
+    }
+  };
+
+  onDropEvent = () => {
+    this.props.dragging && this.props.setDragging(false);
   };
 
   onDragOver = (e) => {
     e.preventDefault();
     const { dragging, setDragging } = this.props;
-    if (e.dataTransfer.items.length > 0 && !dragging) {
+    if (e.dataTransfer.items.length > 0 && !dragging && this.state.canDrag) {
       setDragging(true);
     }
   };
@@ -1103,7 +1175,12 @@ class SectionBodyContent extends React.Component {
       dragItem,
       setDragItem,
     } = this.props;
-    this.state.isDrag && this.setState({ isDrag: false });
+
+    document.body.classList.remove("drag-cursor");
+
+    if (this.state.isDrag || !this.state.canDrag) {
+      this.setState({ isDrag: false, canDrag: true });
+    }
     const mouseButton = e.which
       ? e.which !== 1
       : e.button
@@ -1152,6 +1229,7 @@ class SectionBodyContent extends React.Component {
 
   onMouseMove = (e) => {
     if (this.state.isDrag) {
+      document.body.classList.add("drag-cursor");
       !this.props.dragging && this.props.setDragging(true);
       const tooltip = this.tooltipRef.current;
       tooltip.style.display = "block";
@@ -1365,6 +1443,8 @@ class SectionBodyContent extends React.Component {
       isLoading,
       currentFolderCount,
       isRecycleBin,
+      isPrivacy,
+      isEncryptionSupport,
       dragging,
       mediaViewerVisible,
       currentMediaFileId,
@@ -1414,19 +1494,21 @@ class SectionBodyContent extends React.Component {
       });
     }
 
-    return !fileAction.id && currentFolderCount === 0 ? (
-        parentId === 0 ? (
-          this.renderEmptyRootFolderContainer()
-        ) : (
-          this.renderEmptyFolderContainer()
-        )
-    ) : !fileAction.id && items.length === 0 ? (
-        firstLoad ? (
-          <Loaders.Rows />
-        ) : (
-          this.renderEmptyFilterContainer()
-        )
+    return (!fileAction.id && currentFolderCount === 0) || null ? (
+      parentId === 0 ? (
+        this.renderEmptyRootFolderContainer()
       ) : (
+        this.renderEmptyFolderContainer()
+      )
+    ) : !fileAction.id && items.length === 0 ? (
+      firstLoad ? (
+        <Loaders.Rows />
+      ) : isPrivacy && !isEncryptionSupport ? (
+        this.renderEmptyRootFolderContainer()
+      ) : (
+        this.renderEmptyFilterContainer()
+      )
+    ) : (
       <>
         {showMoveToPanel && (
           <OperationsPanel
@@ -1653,17 +1735,21 @@ const mapStateToProps = (state) => {
     folders: getFolders(state),
     isAdmin: isAdmin(state),
     isCommon: getIsCommonFolder(state),
+    isEncryptionSupport: isEncryptionSupport(state),
     isFavorites: getIsFavoritesFolder(state),
     isLoading: getIsLoading(state),
     isMy: getIsMyFolder(state),
     isRecycleBin: getIsRecycleBinFolder(state),
     isRecent: getIsRecentFolder(state),
     isShare: getIsShareFolder(state),
+    isPrivacy: getIsPrivacyFolder(state),
     mediaViewerImageFormats: getMediaViewerImageFormats(state),
     mediaViewerMediaFormats: getMediaViewerMediaFormats(state),
     mediaViewerVisible: getMediaViewerVisibility(state),
     myDocumentsId: getMyFolderId(state),
+    organizationName: getOrganizationName(state),
     parentId: getSelectedFolderParentId(state),
+    privacyInstructions: getPrivacyInstructionsLink(state),
     selected: getSelected(state),
     selectedFolderId: getSelectedFolderId(state),
     selection: getSelection(state),

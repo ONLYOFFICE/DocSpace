@@ -105,6 +105,8 @@ class TreeFolders extends React.Component {
         );
       case FolderType.Recent:
         return <Icons.CatalogRecentIcon size="scale" isfill color="#657077" />;
+      case FolderType.Privacy:
+        return <Icons.CatalogPrivateRoomIcon size="scale" isfill color="#657077" />;
 
       case FolderType.TRASH:
         return <Icons.CatalogTrashIcon size="scale" isfill color="#657077" />;

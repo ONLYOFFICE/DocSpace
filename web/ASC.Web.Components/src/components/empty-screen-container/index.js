@@ -131,7 +131,7 @@ EmptyScreenContainer.propTypes = {
   imageAlt: PropTypes.string,
   headerText: PropTypes.string,
   subheadingText: PropTypes.string,
-  descriptionText: PropTypes.string,
+  descriptionText: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
   buttons: PropTypes.any,
   className: PropTypes.string,
   id: PropTypes.string,
