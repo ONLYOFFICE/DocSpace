@@ -144,6 +144,7 @@ class AddUsersPanelComponent extends React.Component {
                 onSelect={this.onPeopleSelect}
                 embeddedComponent={embeddedComponent}
                 groupsCaption={groupsCaption}
+                showCounter={true}
                 //onCancel={onClose}
               />
             </StyledBody>
