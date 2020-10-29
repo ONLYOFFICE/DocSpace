@@ -190,3 +190,8 @@ export const getOrganizationName = createSelector([getSettings], (settings) => {
   const { organizationName } = settings;
   return organizationName;
 });
+
+export const isDesktopClient = createSelector([getSettings], (settings) => {
+  const { isDesktopClient } = settings;
+  return isDesktopClient || false;
+});

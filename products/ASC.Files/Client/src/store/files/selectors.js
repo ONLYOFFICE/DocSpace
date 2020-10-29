@@ -3,7 +3,7 @@ import { constants, store } from "asc-web-common";
 import { createSelector } from "reselect";
 
 const { FileType, FilterType, FolderType } = constants;
-const { isAdmin } = store.auth.selectors;
+const { isAdmin, isEncryptionSupport, isDesktopClient } = store.auth.selectors;
 
 const presentInArray = (array, search) => {
   const result = array.findIndex((item) => item === search);
@@ -336,7 +336,9 @@ export const canCreate = createSelector(
   isAdmin,
   getPathParts,
   getSelectedFolderAccess,
-  (folderType, isAdmin, pathParts, access) => {
+  isEncryptionSupport,
+  isDesktopClient,
+  (folderType, isAdmin, pathParts, access, isSupport, isDesktop) => {
     switch (folderType) {
       case FolderType.USER:
         return true;
@@ -344,6 +346,8 @@ export const canCreate = createSelector(
         const isNotRootFolder = pathParts.length > 1;
         const canCreateInSharedFolder = access === 1;
         return isNotRootFolder && canCreateInSharedFolder;
+      case FolderType.Privacy:
+        return isDesktop && isSupport;
       case FolderType.COMMON:
         return isAdmin;
       case FolderType.TRASH:
