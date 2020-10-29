@@ -158,6 +158,12 @@ const StyledRow = styled(Row)`
   .version_edit-comment-button-second {
     width: 87px;
   }
+  .version_modal-dialog > div > aside > div > div > div > div:first-child {
+    border-bottom: unset;
+  }
+  .version_modal-dialog > div > aside > div > div > div > div:nth-child(2) {
+    margin-top: -24px;
+  }
 `;
 
 const VersionRow = (props) => {
@@ -303,6 +309,7 @@ const VersionRow = (props) => {
                         style={{ margin: "8px 24px 8px 0" }}
                         //placeholder="Add comment"
                         onChange={onChange}
+                        heightTextArea={298}
                         value={commentValue}
                       />
                     </ModalDialog.Body>
@@ -310,7 +317,7 @@ const VersionRow = (props) => {
                       <Button
                         className="version_save-button"
                         label={t("AddButton")}
-                        size="medium"
+                        size="big"
                         primary
                         onClick={onSaveClick}
                       />
