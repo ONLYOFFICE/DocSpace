@@ -349,8 +349,7 @@ $activity.Key
 
   <!-- saas user activation v10 -->
   <pattern id="saas_user_activation_v10">
-    <subject resource="|subject_saas_user_activation_v10|ASC.Web.Core.PublicResources.WebstudioNotifyPatternRes
-             ource,ASC.Web.Core"/>
+    <subject resource="|subject_saas_user_activation_v10|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core"/>
     <body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_saas_user_activation_v10|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
   </pattern>
 
