@@ -740,7 +740,7 @@ $activity.Key
     <body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_personal_custom_mode_profile_delete|ASC.Web.Core.PublicResources.CustomModeResource,ASC.Web.Core" />
   </pattern>
   <pattern id="saas_custom_mode_reg_data">
-    <subject resource="|subject_saas_custom_mode_reg_data|ASC.Web.Studio.PublicResources.CustomModeResource,ASC.Web.Core" />
+    <subject resource="|subject_saas_custom_mode_reg_data|ASC.Web.Core.PublicResources.CustomModeResource,ASC.Web.Core" />
     <body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_saas_custom_mode_reg_data|ASC.Web.Core.PublicResources.CustomModeResource,ASC.Web.Core" />
   </pattern>
 
