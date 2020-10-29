@@ -15,6 +15,15 @@ x-service:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      APP_DOTNET_ENV: ${APP_DOTNET_ENV:-products}
+      APP_CORE_BASE_DOMAIN: ${APP_CORE_BASE_DOMAIN:-localhost}
+      APP_CORE_MACHINEKEY: ${APP_CORE_MACHINEKEY:-""}
+      APP_SECRET_VALUE: ${APP_SECRET_VALUE:-""}
+      APP_SECRET_HEADER: ${APP_SECRET_HEADER:-""}
+      APP_URL_PUBLIC: ${APP_URL_PUBLIC:-/ds-vpath/}
+      APP_URL_INTERNAL: ${APP_URL_INTERNAL:-http://onlyoffice-document-server/}
+      APP_URL_PORTAL: ${APP_URL_PORTAL:-http://onlyoffice-community-server}
+      APP_URL_CONVERTER: ${APP_URL_CONVERTER:-/ds-vpath/ConvertService.ashx}
       KAFKA_HOST: ${KAFKA_HOST:-kafka}
     volumes:
     - app_data:/app/onlyoffice/data/
@@ -208,6 +217,7 @@ services:
       - SERVICE_FILES_SERVICES="onlyoffice-files_services:${SERVICE_PORT:-5050}"
       - SERVICE_STUDIO="onlyoffice-studio:${SERVICE_PORT:-5050}"
       - SERVICE_BACKUP="onlyoffice-backup:${SERVICE_PORT:-5050}"
+      - DOCUMENT_SERVER="onlyoffice-document-server"
       - SERVICE_PORT=${SERVICE_PORT:-5050}
     volumes:
       - nginx_log:/var/log/nginx

@@ -167,14 +167,6 @@ RUN rm -rf /var/lib/apt/lists/*
 
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.1 as builder
 
-# set up default mysql, kafka values for docker-entrypoint.sh 
-ENV MYSQL_HOST=mysql \
-MYSQL_DATABASE=onlyoffice \
-MYSQL_USER=onlyoffice_user \
-MYSQL_PASSWORD=onlyoffice_pass \
-KAFKA_HOST=kafka \
-DOTNET_ENV=test
-
 COPY --from=develop /app/onlyoffice/config/ /app/onlyoffice/config/
 
 # add defualt user and group for no-root run
@@ -189,7 +181,9 @@ RUN mkdir -p /var/log/onlyoffice && \
 RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \ 
     apt-get -y update && \
     apt-get -y upgrade && \
-    apt-get install -yq nano 
+    apt-get install -yq nano &&\
+    apt-get install -yq jq
+    
     
 #USER appuser    
 EXPOSE 5050
@@ -223,6 +217,7 @@ RUN chown nginx:nginx /etc/nginx/* -R &&\
     sed -i 's/localhost:5007/service_files/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/localhost:5003/service_studio/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/localhost:5012/service_backup/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/172.*/document_server;/' /etc/nginx/conf.d/onlyoffice.conf && \
     # configute the image nginx whith less privileged https://hub.docker.com/_/nginx
     sed -i 's/pid.*nginx.pid;/pid \/tmp\/nginx.pid;/' /etc/nginx/nginx.conf && \
     sed -i 's/http.*{/http {\n client_body_temp_path \/tmp\/client_temp;\n proxy_temp_path \/tmp\/proxy_temp_path;\n fastcgi_temp_path \/tmp\/fastcgi_temp;\n uwsgi_temp_path \/tmp\/uwsgi_temp;\n scgi_temp_path  \/tmp\/scgi_temp;/' /etc/nginx/nginx.conf
@@ -238,7 +233,7 @@ COPY --from=develop --chown=appuser:appuser /var/www/services/backup/ .
 COPY --from=develop --chown=appuser:appuser /var/www/products/ASC.People/server/ASC.People.dll /var/www/products/ASC.People/server/
 COPY --from=develop --chown=appuser:appuser /var/www/products/ASC.Files/server/ASC.Files*.dll /var/www/products/ASC.Files/server/
 
-CMD ["ASC.Data.Backup.dll", "backup", "--core:products:folder=/var/www/products/", "--core:products:subfolder=server"]
+CMD ["ASC.Data.Backup.dll", "backup", "core:products:folder=/var/www/products/", "core:products:subfolder=server"]
 
 ## api ##
 FROM builder AS api
@@ -282,7 +277,7 @@ COPY --from=develop /var/www/services/studio.notify/ .
 COPY --from=develop --chown=appuser:appuser /var/www/products/ASC.People/server/ASC.People.dll /var/www/products/ASC.People/server/
 COPY --from=develop --chown=appuser:appuser /var/www/products/ASC.Files/server/ASC.Files*.dll /var/www/products/ASC.Files/server/
 
-CMD ["ASC.Studio.Notify.dll", "studio.notify", "--core:products:folder=/var/www/products/", "--core:products:subfolder=server"]
+CMD ["ASC.Studio.Notify.dll", "studio.notify", "core:products:folder=/var/www/products/", "core:products:subfolder=server"]
 
 
 ## notify ##
@@ -295,7 +290,7 @@ COPY --from=develop /var/www/services/notify/ .
 COPY --from=develop --chown=appuser:appuser /var/www/products/ASC.People/server/ASC.People.dll /var/www/products/ASC.People/server/
 COPY --from=develop --chown=appuser:appuser /var/www/products/ASC.Files/server/ASC.Files*.dll /var/www/products/ASC.Files/server/
 
-CMD ["ASC.Notify.dll", "notify", "--core:products:folder=/var/www/products/", "--core:products:subfolder=server"]
+CMD ["ASC.Notify.dll", "notify", "core:products:folder=/var/www/products/", "core:products:subfolder=server"]
 
 ## people.server ##
 FROM builder AS people.server
@@ -329,7 +324,7 @@ COPY --from=develop --chown=appuser:appuser /var/www/products/ASC.Files/service/
 COPY --from=develop --chown=appuser:appuser /var/www/products/ASC.Files/server/ASC.Files*.dll /var/www/products/ASC.Files/server/
 COPY --from=develop --chown=appuser:appuser /var/www/products/ASC.People/server/ASC.People*.dll /var/www/products/ASC.People/server/
 
-CMD ["ASC.Files.Service.dll", "files_services", "--core:products:folder=/var/www/products/", "--core:products:subfolder=server"]
+CMD ["ASC.Files.Service.dll", "files_services", "core:products:folder=/var/www/products/", "core:products:subfolder=server"]
 
 ## studio ##
 FROM builder AS studio

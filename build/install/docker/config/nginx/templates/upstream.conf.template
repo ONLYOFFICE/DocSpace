@@ -1,42 +1,66 @@
 upstream  service_api {
   server $SERVICE_API;
+
+  server localhost:5000 backup;
 }
 
 upstream  service_api_system {
   server $SERVICE_API_SYSTEM;
+
+  server localhost:5010 backup;
 }
 
 
 upstream  service_urlshortener {
   server $SERVICE_URLSHORYENER;
+
+  server localhost:5015 backup;
 }
 
 
 upstream  service_studio.notify {
   server $SERVICE_STUDIO_NOTIFY;
+
+  server localhost:5006 backup;
 }
 
 
 upstream  service_people.server {
   server $SERVICE_PEOPLE_SERVER;
+
+  server localhost:5004 backup;
 }
 
 
 upstream  service_files {
   server $SERVICE_FILES;
+
+  server localhost:5007 backup;
 }
 
 
 upstream  service_files_services {
   server $SERVICE_FILES_SERVICES;
+
+  server localhost:5009 backup;
 }
 
 
 upstream  service_studio {
   server $SERVICE_STUDIO;
+
+  server localhost:5003 backup;
 }
 
 
 upstream  service_backup {
   server $SERVICE_BACKUP;
+
+  server localhost:5012 backup;
+}
+
+upstream  document_server {
+  server $DOCUMENT_SERVER;
+
+  server localhost:8080 backup;
 }

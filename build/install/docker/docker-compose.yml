@@ -157,6 +157,7 @@ services:
       - SERVICE_FILES_SERVICES="onlyoffice-files_services:${SERVICE_PORT:-5050}"
       - SERVICE_STUDIO="onlyoffice-studio:${SERVICE_PORT:-5050}"
       - SERVICE_BACKUP="onlyoffice-backup:${SERVICE_PORT:-5050}"
+      - DOCUMENT_SERVER="onlyoffice-document-server"
       - SERVICE_PORT=${SERVICE_PORT:-5050}
     volumes:
       - nginx_log:/var/log/nginx
