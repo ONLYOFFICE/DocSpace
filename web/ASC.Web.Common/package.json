@@ -30,6 +30,7 @@
     "lodash": "4.17.19",
     "lodash-es": "4.17.15",
     "moment": "^2.24.0",
+    "re-resizable": "^6.7.0",
     "react-content-loader": "^5.1.2",
     "react-device-detect": "^1.11.14",
     "react-hammerjs": "^1.0.1",
