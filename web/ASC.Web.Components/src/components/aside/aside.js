@@ -23,7 +23,7 @@ const StyledAside = styled(Container)`
     ${(props) => (props.visible ? "0" : props.scale ? "100%" : "320px")}
   );
   transition: transform 0.3s ease-in-out;
-  width: ${(props) => (props.scale ? "100%" : "320px")};
+  width: ${(props) => (props.scale ? "100%" : "325px")};
   z-index: ${(props) => props.zIndex};
   box-sizing: border-box;
 
