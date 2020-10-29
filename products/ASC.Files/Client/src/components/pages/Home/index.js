@@ -35,6 +35,7 @@ import {
   getViewAs,
   getIsLoading,
   getIsRecycleBinFolder,
+  getDragging,
 } from "../../../store/files/selectors";
 
 import { ConvertDialog } from "../../dialogs";
@@ -150,10 +151,16 @@ class PureHome extends React.Component {
   }
 
   onDrop = (files, uploadToFolder) => {
-    const { t, currentFolderId, startUpload, setDragging } = this.props;
+    const {
+      t,
+      currentFolderId,
+      startUpload,
+      setDragging,
+      dragging,
+    } = this.props;
     const folderId = uploadToFolder ? uploadToFolder : currentFolderId;
 
-    setDragging(false);
+    dragging && setDragging(false);
     startUpload(files, folderId, t);
   };
 
@@ -306,6 +313,7 @@ function mapStateToProps(state) {
     viewAs: getViewAs(state),
     isLoading: getIsLoading(state),
     homepage: getSettingsHomepage(state),
+    dragging: getDragging(state),
   };
 }
 
