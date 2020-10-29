@@ -146,6 +146,7 @@ class AddGroupsPanelComponent extends React.Component {
                 withoutAside
                 onSelect={this.onSelectGroups}
                 embeddedComponent={embeddedComponent}
+                showCounter={true}
               />
             </StyledBody>
           </StyledContent>
