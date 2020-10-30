@@ -53,7 +53,7 @@ const StyledInput = styled(Input).attrs((props) => ({
     (props.size === "middle" && "20px") ||
     (props.size === "big" && "20px") ||
     (props.size === "huge" && "21px") ||
-    (props.size === "large" && "21px")};
+    (props.size === "large" && "20px")};
   font-size: ${(props) =>
     (props.size === "base" && "13px") ||
     (props.size === "middle" && "14px") ||
@@ -73,7 +73,7 @@ const StyledInput = styled(Input).attrs((props) => ({
     (props.size === "middle" && "8px 12px") ||
     (props.size === "big" && "8px 16px") ||
     (props.size === "huge" && "8px 20px") ||
-    (props.size === "large" && "11px 16px")};
+    (props.size === "large" && "11px 15px")};
   transition: all 0.2s ease 0s;
 
   ::-webkit-input-placeholder {
