@@ -121,7 +121,7 @@ class PageLayoutComponent extends React.Component {
 
   updateMainHeight = () => {
     const intervalTime = 100;
-    const endTimeoutTime = 2000;
+    const endTimeoutTime = 1000;
 
     let interval, timeout, lastInnerHeight, noChangeCount;
 
