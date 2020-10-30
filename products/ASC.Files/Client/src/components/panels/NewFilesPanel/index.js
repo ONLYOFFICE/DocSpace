@@ -38,8 +38,8 @@ import {
   setTreeFolders,
   setUpdateTree,
   setNewRowItems,
-
-  addFileToRecentlyViewed
+  setIsLoading,
+  addFileToRecentlyViewed,
 } from "../../../store/files/actions";
 import { createI18N } from "../../../helpers/i18n";
 const i18n = createI18N({
@@ -136,7 +136,12 @@ class NewFilesPanelComponent extends React.Component {
 
   onFilesClick = (item) => {
     const { id, fileExst, viewUrl, fileType } = item;
-    const { filter, setMediaViewerData, fetchFiles, addFileToRecentlyViewed } = this.props;
+    const {
+      filter,
+      setMediaViewerData,
+      fetchFiles,
+      addFileToRecentlyViewed,
+    } = this.props;
 
     if (!fileExst) {
       fetchFiles(id, filter).catch((err) => toastr.error(err));
@@ -146,9 +151,9 @@ class NewFilesPanelComponent extends React.Component {
 
       if (canEdit) {
         return addFileToRecentlyViewed(id)
-        .then(() => console.log("Pushed to recently viewed"))
-        .catch(e => console.error(e))
-        .finally(window.open(`./doceditor?fileId=${id}`, "_blank"));
+          .then(() => console.log("Pushed to recently viewed"))
+          .catch((e) => console.error(e))
+          .finally(window.open(`./doceditor?fileId=${id}`, "_blank"));
       }
 
       if (isMedia) {
@@ -317,5 +322,6 @@ export default connect(mapStateToProps, {
   setUpdateTree,
   setNewRowItems,
   fetchFiles,
-  addFileToRecentlyViewed
+  addFileToRecentlyViewed,
+  setIsLoading,
 })(withRouter(NewFilesPanel));
