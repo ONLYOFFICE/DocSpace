@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using ASC.Common;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
+using ASC.Core.Notify;
 using ASC.Notify;
 
 using Microsoft.Extensions.Configuration;
@@ -50,7 +51,7 @@ namespace ASC.Studio.Notify
                     diHelper.AddNLogManager("ASC.Notify", "ASC.Notify.Messages");
                     services.AddHostedService<ServiceLauncher>();
                     diHelper.AddServiceLauncher();
-
+                    diHelper.AddEmailSenderSinkService();
                     services.AddAutofac(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
                 })
                 .UseConsoleLifetime()
