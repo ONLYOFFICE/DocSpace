@@ -1450,6 +1450,9 @@ Votre portail est de nouveau disponible.</value>
   <data name="subject_opensource_user_activation_v11" xml:space="preserve">
     <value>L'invitation à rejoindre le portail ${__VirtualRootPath}</value>
   </data>
+  <data name="subject_opensource_user_docs_tips_v11" xml:space="preserve">
+    <value>6 astuces pour travailler sur les documents de manière efficace</value>
+  </data>
   <data name="subject_opensource_user_welcome_v11" xml:space="preserve">
     <value>Bienvenue à votre bureau en ligne</value>
   </data>
