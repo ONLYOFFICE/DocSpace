@@ -14,12 +14,9 @@ import {
   SET_GREETING_SETTINGS,
   SET_CUSTOM_NAMES,
   SET_WIZARD_COMPLETED,
-  SET_IS_ENCRYPTION_SUPPORT,
-  SET_IS_DESKTOP_CLIENT
 } from "./actions";
 import isEmpty from "lodash/isEmpty";
 import { LANGUAGE, AUTH_KEY } from "../../constants";
-import { act } from "react-dom/test-utils";
 
 const initialState = {
   isAuthenticated: false,
@@ -62,8 +59,10 @@ const initialState = {
       guestCaption: "Guest",
       guestsCaption: "Guests",
     },
-    isEncryptionSupport: false, // TODO: should switch to "true", when desktop editors client uses
-    isDesktopClient: false
+    isEncryptionSupport:
+      window["AscDesktopEditor"] &&
+      typeof window.AscDesktopEditor.cloudCryptoCommand === "function",
+    isDesktopClient: window["AscDesktopEditor"] !== undefined,
   },
 };
 
@@ -153,23 +152,6 @@ const authReducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         settings: { ...state.settings, wizardCompleted: true },
       });
-    case SET_IS_ENCRYPTION_SUPPORT:
-      return {
-        ...state,
-        settings: {
-          ...state.settings,
-          isEncryptionSupport: action.isSupport
-        }
-      };
-    case SET_IS_DESKTOP_CLIENT:
-      return {
-        ...state,
-        settings: {
-          ...state.settings,
-          isDesktopClient: action.isDesktop
-        }
-      };
-
     default:
       return state;
   }
