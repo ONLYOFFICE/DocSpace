@@ -1,15 +1,14 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Web;
 
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Core;
-using ASC.Core.Common;
 using ASC.Notify.Model;
 using ASC.Notify.Patterns;
 using ASC.Notify.Recipients;
 using ASC.Web.Studio.Core.Notify;
-using ASC.Web.Studio.Utility;
 
 using Microsoft.AspNetCore.Http;
 
@@ -18,23 +17,31 @@ namespace ASC.Web.Core.Notify
     public class StudioNotifyServiceHelper
     {
         private ICacheNotify<NotifyItem> Cache { get; }
+        public IHttpContextAccessor HttpContextAccessor { get; }
         private StudioNotifyHelper StudioNotifyHelper { get; }
         private AuthContext AuthContext { get; }
         private TenantManager TenantManager { get; }
-        public CommonLinkUtility CommonLinkUtility { get; }
 
         public StudioNotifyServiceHelper(
             StudioNotifyHelper studioNotifyHelper,
             AuthContext authContext,
             TenantManager tenantManager,
-            CommonLinkUtility commonLinkUtility,
             ICacheNotify<NotifyItem> cache)
         {
             StudioNotifyHelper = studioNotifyHelper;
             AuthContext = authContext;
             TenantManager = tenantManager;
-            CommonLinkUtility = commonLinkUtility;
             Cache = cache;
+        }
+
+        public StudioNotifyServiceHelper(
+            StudioNotifyHelper studioNotifyHelper,
+            AuthContext authContext,
+            TenantManager tenantManager,
+            ICacheNotify<NotifyItem> cache,
+            IHttpContextAccessor httpContextAccessor) : this(studioNotifyHelper, authContext, tenantManager, cache)
+        {
+            HttpContextAccessor = httpContextAccessor;
         }
 
         public void SendNoticeToAsync(INotifyAction action, IRecipient[] recipients, string[] senderNames, params ITagValue[] args)
@@ -82,9 +89,14 @@ namespace ASC.Web.Core.Notify
                 TenantId = TenantManager.GetCurrentTenant().TenantId,
                 UserId = AuthContext.CurrentAccount.ID.ToString(),
                 Action = (NotifyAction)action,
-                CheckSubsciption = checkSubsciption,
-                BaseUrl = CommonLinkUtility.ServerRootPath
+                CheckSubsciption = checkSubsciption
             };
+
+            if (HttpContextAccessor?.HttpContext?.Request != null)
+            {
+                var u = HttpContextAccessor?.HttpContext?.Request.GetUrlRewriter();
+                item.BaseUrl = new UriBuilder(u.Scheme, u.Host, u.Port).ToString();
+            }
 
             if (objectID != null)
             {
