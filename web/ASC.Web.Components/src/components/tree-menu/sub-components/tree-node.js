@@ -138,7 +138,7 @@ const TreeNodeMenu = styled(TreeNode)`
     display: inline-block;
     position: relative;
     /*min-width: ${(props) => (props.disableSwitch ? "160px" : "190px")};*/
-    overflow: hidden;
+    // overflow: hidden;
 
     cursor: pointer;
     height: 24px;
@@ -146,12 +146,24 @@ const TreeNodeMenu = styled(TreeNode)`
     vertical-align: top;
 
     left: 0;
-    background: ${(props) => (props.dragging ? "#F8F7BF" : "none")};
-
-    :hover {
-      background: ${(props) => (props.dragging ? "#EFEFB2" : "none")};
-    }
   }
+  ${(props) =>
+    props.dragging &&
+    css`
+      span.draggable {
+        background: #f8f7bf;
+        border-radius: 3px;
+        ${(props) =>
+          !props.fullFillSelection && "width: min-content !important;"}
+        padding-right: 4px;
+        :hover {
+          background: #efefb2;
+        }
+      }
+      .rc-tree-title {
+        width: 85% !important;
+      }
+    `}
   span.rc-tree-switcher,
   span.rc-tree-iconEle {
     line-height: 0;
@@ -301,6 +313,7 @@ const TreeNodeMenu = styled(TreeNode)`
     }
     overflow: visible;
   }
+
   .newItem {
     position: absolute;
     right: -30px;
