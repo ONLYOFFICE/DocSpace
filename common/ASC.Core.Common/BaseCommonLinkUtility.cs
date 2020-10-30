@@ -58,7 +58,7 @@ namespace ASC.Core.Common
             CoreSettings coreSettings,
             TenantManager tenantManager,
             IOptionsMonitor<ILog> options,
-            IOptions<CommonLinkUtilitySettings> settings)
+            CommonLinkUtilitySettings settings)
             : this(null, coreBaseSettings, coreSettings, tenantManager, options, settings)
         {
         }
@@ -69,9 +69,9 @@ namespace ASC.Core.Common
             CoreSettings coreSettings,
             TenantManager tenantManager,
             IOptionsMonitor<ILog> options,
-            IOptions<CommonLinkUtilitySettings> settings)
+            CommonLinkUtilitySettings settings)
         {
-            var serverUri = settings.Value.ServerUri;
+            var serverUri = settings.ServerUri;
 
             if (!string.IsNullOrEmpty(serverUri))
             {
@@ -250,6 +250,7 @@ namespace ASC.Core.Common
         {
             if (services.TryAddScoped<BaseCommonLinkUtility>())
             {
+                services.TryAddScoped<CommonLinkUtilitySettings>();
                 return services
                     .AddCoreBaseSettingsService()
                     .AddCoreSettingsService()

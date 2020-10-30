@@ -1,12 +1,17 @@
 ﻿using System.Linq;
+using System.Web;
 
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Core;
+using ASC.Core.Common;
 using ASC.Notify.Model;
 using ASC.Notify.Patterns;
 using ASC.Notify.Recipients;
 using ASC.Web.Studio.Core.Notify;
+using ASC.Web.Studio.Utility;
+
+using Microsoft.AspNetCore.Http;
 
 namespace ASC.Web.Core.Notify
 {
@@ -16,12 +21,19 @@ namespace ASC.Web.Core.Notify
         private StudioNotifyHelper StudioNotifyHelper { get; }
         private AuthContext AuthContext { get; }
         private TenantManager TenantManager { get; }
+        public CommonLinkUtility CommonLinkUtility { get; }
 
-        public StudioNotifyServiceHelper(StudioNotifyHelper studioNotifyHelper, AuthContext authContext, TenantManager tenantManager, ICacheNotify<NotifyItem> cache)
+        public StudioNotifyServiceHelper(
+            StudioNotifyHelper studioNotifyHelper,
+            AuthContext authContext,
+            TenantManager tenantManager,
+            CommonLinkUtility commonLinkUtility,
+            ICacheNotify<NotifyItem> cache)
         {
             StudioNotifyHelper = studioNotifyHelper;
             AuthContext = authContext;
             TenantManager = tenantManager;
+            CommonLinkUtility = commonLinkUtility;
             Cache = cache;
         }
 
@@ -70,7 +82,8 @@ namespace ASC.Web.Core.Notify
                 TenantId = TenantManager.GetCurrentTenant().TenantId,
                 UserId = AuthContext.CurrentAccount.ID.ToString(),
                 Action = (NotifyAction)action,
-                CheckSubsciption = checkSubsciption
+                CheckSubsciption = checkSubsciption,
+                BaseUrl = CommonLinkUtility.ServerRootPath
             };
 
             if (objectID != null)
