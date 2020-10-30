@@ -327,8 +327,8 @@ export const getIsRootFolder = (state) => {
 };
 
 export const getRootFolderId = (state) => {
-  if (state.files.selectedFolder.pathParts)
-    return state.files.selectedFolder.pathParts[0];
+  if (state.files.selectedFolder.rootFolderType)
+    return state.files.selectedFolder.rootFolderType;
 };
 
 export const canCreate = createSelector(
@@ -983,7 +983,7 @@ export const getFilterSelectedItem = (state) => {
 
 export const getPrivacyInstructionsLink = (state) => {
   return state.files.privacyInstructions;
-}
+};
 
 export const getHeaderVisible = createSelector(
   getSelectionLength,
@@ -1083,11 +1083,14 @@ export const getAccessedSelected = createSelector(getSelection, (selection) => {
 });
 
 export const getOperationsFolders = createSelector(
-  getTreeFolders, (treeFolders) => {
-    return treeFolders.filter(folder => (
-      folder.rootFolderType === FolderType.USER ||
-      folder.rootFolderType === FolderType.COMMON ||
-      folder.rootFolderType === FolderType.Projects
-    ) && folder);
+  getTreeFolders,
+  (treeFolders) => {
+    return treeFolders.filter(
+      (folder) =>
+        (folder.rootFolderType === FolderType.USER ||
+          folder.rootFolderType === FolderType.COMMON ||
+          folder.rootFolderType === FolderType.Projects) &&
+        folder
+    );
   }
-)
+);
