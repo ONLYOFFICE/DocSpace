@@ -36,6 +36,7 @@ import {
   ChangeUserTypeDialog,
 } from "../../../../dialogs";
 const { tablet, desktop } = utils.device;
+const { Consumer } = utils.context;
 
 const { isAdmin } = store.auth.selectors;
 const { EmployeeType, EmployeeStatus } = constants;
@@ -57,9 +58,9 @@ const StyledContainer = styled.div`
     @media ${tablet} {
       & > div:first-child {
         ${(props) =>
-          props.isArticlePinned &&
+          props.width &&
           css`
-            width: calc(100% - 240px);
+            width: ${props.width + 16 + "px"};
           `}
         position: absolute;
         top: 56px;
@@ -114,14 +115,10 @@ const SectionHeaderContent = (props) => {
     isAdmin,
     t,
     history,
-
     customNames,
     homepage,
-
     deleteGroup,
-
     selection,
-
     hasAnybodySelected,
     hasUsersToMakeEmployees,
     hasUsersToMakeGuests,
@@ -129,7 +126,6 @@ const SectionHeaderContent = (props) => {
     hasUsersToDisable,
     hasUsersToInvite,
     hasUsersToRemove,
-
     isLoaded,
   } = props;
 
@@ -351,132 +347,135 @@ const SectionHeaderContent = (props) => {
     onInvitationDialogClick /* , onSentInviteAgain */,
   ]);
 
-  const isArticlePinned = window.localStorage.getItem("asc_article_pinned_key");
-
   return (
-    <StyledContainer
-      isHeaderVisible={isHeaderVisible}
-      isArticlePinned={isArticlePinned}
-    >
-      {employeeDialogVisible && (
-        <ChangeUserTypeDialog
-          visible={employeeDialogVisible}
-          onClose={toggleEmployeeDialog}
-          userType={EmployeeType.User}
-        />
-      )}
+    <Consumer>
+      {(context) => (
+        <StyledContainer
+          isHeaderVisible={isHeaderVisible}
+          width={context.sectionWidth}
+        >
+          {employeeDialogVisible && (
+            <ChangeUserTypeDialog
+              visible={employeeDialogVisible}
+              onClose={toggleEmployeeDialog}
+              userType={EmployeeType.User}
+            />
+          )}
 
-      {guestDialogVisible && (
-        <ChangeUserTypeDialog
-          visible={guestDialogVisible}
-          onClose={toggleGuestDialog}
-          userType={EmployeeType.Guest}
-        />
-      )}
-      {activeDialogVisible && (
-        <ChangeUserStatusDialog
-          visible={activeDialogVisible}
-          onClose={toggleActiveDialog}
-          userStatus={EmployeeStatus.Active}
-        />
-      )}
-      {disableDialogVisible && (
-        <ChangeUserStatusDialog
-          visible={disableDialogVisible}
-          onClose={toggleDisableDialog}
-          userStatus={EmployeeStatus.Disabled}
-        />
-      )}
+          {guestDialogVisible && (
+            <ChangeUserTypeDialog
+              visible={guestDialogVisible}
+              onClose={toggleGuestDialog}
+              userType={EmployeeType.Guest}
+            />
+          )}
+          {activeDialogVisible && (
+            <ChangeUserStatusDialog
+              visible={activeDialogVisible}
+              onClose={toggleActiveDialog}
+              userStatus={EmployeeStatus.Active}
+            />
+          )}
+          {disableDialogVisible && (
+            <ChangeUserStatusDialog
+              visible={disableDialogVisible}
+              onClose={toggleDisableDialog}
+              userStatus={EmployeeStatus.Disabled}
+            />
+          )}
 
-      {sendInviteDialogVisible && (
-        <SendInviteDialog
-          visible={sendInviteDialogVisible}
-          onClose={toggleSendInviteDialog}
-        />
-      )}
+          {sendInviteDialogVisible && (
+            <SendInviteDialog
+              visible={sendInviteDialogVisible}
+              onClose={toggleSendInviteDialog}
+            />
+          )}
 
-      {deleteDialogVisible && (
-        <DeleteUsersDialog
-          visible={deleteDialogVisible}
-          onClose={toggleDeleteDialog}
-        />
-      )}
+          {deleteDialogVisible && (
+            <DeleteUsersDialog
+              visible={deleteDialogVisible}
+              onClose={toggleDeleteDialog}
+            />
+          )}
 
-      {isHeaderVisible ? (
-        <div className="group-button-menu-container">
-          <GroupButtonsMenu
-            checked={isHeaderChecked}
-            isIndeterminate={isHeaderIndeterminate}
-            onChange={onCheck}
-            menuItems={menuItems}
-            visible={isHeaderVisible}
-            moreLabel={t("More")}
-            closeTitle={t("CloseButton")}
-            onClose={onClose}
-            selected={menuItems[0].label}
-          />
-        </div>
-      ) : (
-        <div className="header-container">
-          {!isLoaded ? (
-            <Loaders.Headline />
-          ) : group ? (
-            <>
-              <Headline
-                className="headline-header"
-                type="content"
-                truncate={true}
-              >
-                {group.name}
-              </Headline>
-              {isAdmin && (
-                <ContextMenuButton
-                  className="action-button"
-                  directionX="right"
-                  title={t("Actions")}
-                  iconName="VerticalDotsIcon"
-                  size={17}
-                  color="#A3A9AE"
-                  getData={getContextOptionsGroup}
-                  isDisabled={false}
-                />
-              )}
-            </>
+          {isHeaderVisible ? (
+            <div className="group-button-menu-container">
+              <GroupButtonsMenu
+                checked={isHeaderChecked}
+                isIndeterminate={isHeaderIndeterminate}
+                onChange={onCheck}
+                menuItems={menuItems}
+                visible={isHeaderVisible}
+                moreLabel={t("More")}
+                closeTitle={t("CloseButton")}
+                onClose={onClose}
+                selected={menuItems[0].label}
+                sectionWidth={context.sectionWidth}
+              />
+            </div>
           ) : (
-            <>
-              <Headline
-                className="headline-header"
-                truncate={true}
-                type="content"
-              >
-                {groupsCaption}
-              </Headline>
-              {isAdmin && (
+            <div className="header-container">
+              {!isLoaded ? (
+                <Loaders.Headline />
+              ) : group ? (
                 <>
-                  <ContextMenuButton
-                    className="action-button"
-                    directionX="right"
-                    title={t("Actions")}
-                    iconName="PlusIcon"
-                    size={17}
-                    color="#657077"
-                    getData={getContextOptionsPlus}
-                    isDisabled={false}
-                  />
-                  {invitationDialogVisible && (
-                    <InviteDialog
-                      visible={invitationDialogVisible}
-                      onClose={onInvitationDialogClick}
-                      onCloseButton={onInvitationDialogClick}
+                  <Headline
+                    className="headline-header"
+                    type="content"
+                    truncate={true}
+                  >
+                    {group.name}
+                  </Headline>
+                  {isAdmin && (
+                    <ContextMenuButton
+                      className="action-button"
+                      directionX="right"
+                      title={t("Actions")}
+                      iconName="VerticalDotsIcon"
+                      size={17}
+                      color="#A3A9AE"
+                      getData={getContextOptionsGroup}
+                      isDisabled={false}
                     />
                   )}
                 </>
+              ) : (
+                <>
+                  <Headline
+                    className="headline-header"
+                    truncate={true}
+                    type="content"
+                  >
+                    {groupsCaption}
+                  </Headline>
+                  {isAdmin && (
+                    <>
+                      <ContextMenuButton
+                        className="action-button"
+                        directionX="right"
+                        title={t("Actions")}
+                        iconName="PlusIcon"
+                        size={17}
+                        color="#657077"
+                        getData={getContextOptionsPlus}
+                        isDisabled={false}
+                      />
+                      {invitationDialogVisible && (
+                        <InviteDialog
+                          visible={invitationDialogVisible}
+                          onClose={onInvitationDialogClick}
+                          onCloseButton={onInvitationDialogClick}
+                        />
+                      )}
+                    </>
+                  )}
+                </>
               )}
-            </>
+            </div>
           )}
-        </div>
+        </StyledContainer>
       )}
-    </StyledContainer>
+    </Consumer>
   );
 };
 
