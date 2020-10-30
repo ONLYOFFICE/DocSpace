@@ -313,7 +313,11 @@ class PageLayoutComponent extends React.Component {
           </Article>
         )}
         {isSectionAvailable && (
-          <ReactResizeDetector refreshRate={300} refreshMode="throttle">
+          <ReactResizeDetector
+            refreshRate={100}
+            refreshMode="debounce"
+            refreshOptions={{ trailing: true }}
+          >
             {({ width }) => (
               <Provider
                 value={{
