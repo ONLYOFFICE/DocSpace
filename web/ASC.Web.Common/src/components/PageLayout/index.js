@@ -106,10 +106,7 @@ class PageLayoutComponent extends React.Component {
   }
 
   orientationChangeHandler = () => {
-    setTimeout(() => {
-      const vh = (window.innerHeight - 57) * 0.01;
-      document.documentElement.style.setProperty("--vh", `${vh}px`);
-    }, 500);
+    this.updateMainHeight();
 
     const isValueExist = !!localStorage.getItem(ARTICLE_PINNED_KEY);
     const isEnoughWidth = screen.availWidth > size.smallTablet;
@@ -120,6 +117,41 @@ class PageLayoutComponent extends React.Component {
     if (isEnoughWidth && isValueExist) {
       this.pinArticle();
     }
+  };
+
+  updateMainHeight = () => {
+    const intervalTime = 100;
+    const endTimeoutTime = 2000;
+
+    let interval, timeout, lastInnerHeight, noChangeCount;
+
+    const updateHeight = () => {
+      clearInterval(interval);
+      clearTimeout(timeout);
+
+      interval = null;
+      timeout = null;
+
+      const vh = (window.innerHeight - 57) * 0.01;
+      document.documentElement.style.setProperty("--vh", `${vh}px`);
+    };
+
+    interval = setInterval(() => {
+      if (window.innerHeight === lastInnerHeight) {
+        noChangeCount++;
+
+        if (noChangeCount === intervalTime) {
+          updateHeight();
+        }
+      } else {
+        lastInnerHeight = window.innerHeight;
+        noChangeCount = 0;
+      }
+    });
+
+    timeout = setTimeout(() => {
+      updateHeight();
+    }, endTimeoutTime);
   };
 
   backdropClick = () => {

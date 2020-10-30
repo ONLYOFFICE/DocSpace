@@ -1,9 +1,11 @@
 import React from "react";
 import styled from "styled-components";
-import { isIOS } from "react-device-detect";
+import { isIOS, isFirefox } from "react-device-detect";
 
 const StyledMain = styled.main`
-  height: ${isIOS ? "calc(var(--vh, 1vh) * 100)" : "calc(100vh - 56px)"};
+  height: ${isIOS && !isFirefox
+    ? "calc(var(--vh, 1vh) * 100)"
+    : "calc(100vh - 56px)"};
   width: 100vw;
   z-index: 0;
   display: flex;
