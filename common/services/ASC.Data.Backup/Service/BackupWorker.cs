@@ -512,6 +512,7 @@ namespace ASC.Data.Backup.Service
             try
             {
                 tenant = tenantManager.GetTenant(TenantId);
+                tenantManager.SetCurrentTenant(tenant);
                 notifyHelper.SendAboutRestoreStarted(tenant, Notify);
                 var storage = backupStorageFactory.GetBackupStorage(StorageType, TenantId, StorageParams);
                 storage.Download(StoragePath, tempFile);
