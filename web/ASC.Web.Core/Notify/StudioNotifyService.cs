@@ -178,7 +178,7 @@ namespace ASC.Web.Studio.Core.Notify
         public void UserPasswordChange(UserInfo userInfo)
         {
             var hash = Authentication.GetUserPasswordStamp(userInfo.ID).ToString("s");
-            var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(userInfo.Email, ConfirmType.PasswordChange, hash + userInfo.ID, userInfo.ID);
+            var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(userInfo.Email, ConfirmType.PasswordChange, hash, userInfo.ID);
 
             static string greenButtonText() => WebstudioNotifyPatternResource.ButtonChangePassword;
 

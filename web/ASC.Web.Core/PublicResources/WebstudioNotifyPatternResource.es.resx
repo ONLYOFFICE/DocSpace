@@ -2065,6 +2065,9 @@ El enlace es válido solo durante 7 días.</value>
   <data name="subject_opensource_user_activation_v11" xml:space="preserve">
     <value>Únase a ${__VirtualRootPath}</value>
   </data>
+  <data name="subject_opensource_user_docs_tips_v11" xml:space="preserve">
+    <value>6 consejos para trabajar de forma efectiva en sus documentos</value>
+  </data>
   <data name="subject_opensource_user_welcome_v11" xml:space="preserve">
     <value>Bienvenido a su oficina web</value>
   </data>
