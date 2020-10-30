@@ -76,7 +76,7 @@ namespace ASC.Core.Common
             if (!string.IsNullOrEmpty(serverUri))
             {
                 var uri = new Uri(serverUri.Replace('*', 'x').Replace('+', 'x'));
-                _serverRoot = new UriBuilder(uri.Scheme, LOCALHOST, uri.Port);
+                _serverRoot = new UriBuilder(uri.Scheme, uri.Host != "x" ? uri.Host : LOCALHOST, uri.Port);
                 _vpath = "/" + uri.AbsolutePath.Trim('/');
             }
             else
