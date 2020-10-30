@@ -121,13 +121,11 @@ export function setWizardComplete() {
   };
 }
 
-export function getUser(dispatch, getState) {
-  const state = getState();
-  const isDesktop = isDesktopClient(state);
+export function getUser(dispatch) {
   return api.people
     .getUser()
     .then((user) => {
-      isDesktop &&
+      window.AscDesktopEditor &&
         window.AscDesktopEditor.execCommand(
           "portal:login",
           JSON.stringify({
