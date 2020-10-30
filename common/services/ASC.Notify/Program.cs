@@ -6,6 +6,7 @@ using ASC.Common;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
 using ASC.Core.Common;
+using ASC.Core.Notify;
 using ASC.Core.Notify.Senders;
 using ASC.Notify.Config;
 
@@ -65,7 +66,8 @@ namespace ASC.Notify
                     diHelper
                     .AddJabberSenderService()
                     .AddSmtpSenderService()
-                    .AddAWSSenderService();
+                    .AddAWSSenderService()
+                    .AddEmailSenderSinkService();
 
                     services.AddAutofac(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
                 })
