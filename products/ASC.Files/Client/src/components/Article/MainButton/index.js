@@ -10,6 +10,7 @@ import {
   getFilter,
   getSelectedFolder,
   getFirstLoad,
+  getIsPrivacyFolder,
 } from "../../../store/files/selectors";
 import {
   utils as commonUtils,
@@ -59,13 +60,14 @@ class PureArticleMainButtonContent extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
     return (
       nextProps.canCreate !== this.props.canCreate ||
-      nextProps.firstLoad !== this.props.firstLoad
+      nextProps.firstLoad !== this.props.firstLoad ||
+      nextProps.isPrivacy !== this.props.isPrivacy
     );
   }
 
   render() {
     //console.log("Files ArticleMainButtonContent render");
-    const { t, canCreate, isDisabled, firstLoad } = this.props;
+    const { t, canCreate, isDisabled, firstLoad, isPrivacy } = this.props;
 
     return firstLoad ? (
       <Loaders.Filter />
@@ -107,6 +109,7 @@ class PureArticleMainButtonContent extends React.Component {
         <DropDownItem
           icon="ActionsUploadIcon"
           label={t("UploadFolder")}
+          disabled={isPrivacy}
           onClick={this.onUploadFolderClick}
         />
         <input
@@ -161,6 +164,7 @@ const mapStateToProps = (state) => {
     settings: getSettings(state),
     filter: getFilter(state),
     selectedFolder: getSelectedFolder(state),
+    isPrivacy: getIsPrivacyFolder(state),
   };
 };
 
