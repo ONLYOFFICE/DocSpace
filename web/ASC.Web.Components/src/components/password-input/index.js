@@ -34,6 +34,10 @@ const StyledInput = styled(SimpleInput)`
     padding-right: 8px;
   }
 
+  .prepend > div {
+    padding: 0;
+  }
+
   .break {
     flex-basis: 100%;
     height: 0;
