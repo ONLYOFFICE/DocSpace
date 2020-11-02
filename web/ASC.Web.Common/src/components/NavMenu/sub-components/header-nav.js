@@ -6,6 +6,7 @@ import NavItem from "./nav-item";
 import ProfileActions from "./profile-actions";
 import { useTranslation } from "react-i18next";
 import { utils } from "asc-web-components";
+import {IsVisibleContextConsumer} from "asc-web-common"
 const { tablet } = utils.device;
 import { logout } from "../../../store/auth/actions";
 
@@ -24,9 +25,6 @@ const StyledNav = styled.nav`
   height: 56px;
   z-index: 190;
 
-  @media ${tablet} {
-      position:fixed;
-  }
     
   .profile-menu {
     right: 12px;
@@ -41,11 +39,18 @@ const StyledNav = styled.nav`
     margin: 0 0 0 16px;
     padding: 0;
     min-width: 24px;
+
   }
 
   @media ${tablet} {
     padding: 0 16px;
+    position:fixed;
+    transition: top 0.3s;
+    top: ${props => props.valueTop ? "0" : "-56px"}
   }
+
+  
+}
 `;
 const HeaderNav = React.memo(
   ({ history, homepage, modules, user, logout, isAuthenticated }) => {
@@ -89,8 +94,11 @@ const HeaderNav = React.memo(
 
     //console.log("HeaderNav render");
     return (
-      <StyledNav>
+      <IsVisibleContextConsumer>
+      {value =>
+        <StyledNav valueTop={value}>
         {modules.map((module) => (
+          
           <NavItem
             key={module.id}
             iconName={module.iconName}
@@ -105,6 +113,8 @@ const HeaderNav = React.memo(
           <ProfileActions userActions={getCurrentUserActions()} user={user} />
         )}
       </StyledNav>
+      }
+      </IsVisibleContextConsumer>
     );
   }
 );

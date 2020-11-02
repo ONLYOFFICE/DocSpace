@@ -5,7 +5,7 @@ import { utils, Scrollbar, DragAndDrop } from "asc-web-components";
 import SelectedFrame from "./SelectedFrame";
 import isEqual from "lodash/isEqual";
 import { isMobile } from "react-device-detect";
-import {ThemeContextConsumer} from "asc-web-common"
+import {RefContextConsumer} from "asc-web-common"
 const { tablet } = utils.device;
 
 const commonStyles = css`
@@ -118,7 +118,7 @@ class SectionBody extends React.Component {
         {withScroll ? (
 
           !isMobile ? (
-            <Scrollbar {...scrollProp} stype="mediumBlack">
+            <Scrollbar {...scrollProp} stype="mediumBlack" >
               {console.log("Scroll ref in section", this.scrollRef)}
               <SelectedFrame
                 viewAs={viewAs}
@@ -134,7 +134,7 @@ class SectionBody extends React.Component {
               </SelectedFrame>
             </Scrollbar>)
             : (
-              <ThemeContextConsumer>
+              <RefContextConsumer>
                 {value => 
                   <SelectedFrame
                     viewAs={viewAs}
@@ -149,7 +149,7 @@ class SectionBody extends React.Component {
                     </div>
                   </SelectedFrame>
                   }
-              </ThemeContextConsumer>)
+              </RefContextConsumer>)
         ) : (
             <SelectedFrame
               viewAs={viewAs}

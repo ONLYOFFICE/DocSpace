@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { utils } from "asc-web-components";
 import isEqual from "lodash/isEqual";
 import classnames from "classnames";
-
+import {IsVisibleContextConsumer} from "asc-web-common"
 const { tablet } = utils.device;
 
 const StyledSectionHeader = styled.div`
@@ -20,12 +20,9 @@ const StyledSectionHeader = styled.div`
 
  
   }
-  .section-header--hidden {
-    @media ${tablet} {
-      top: -50px;
-    }
 
-}
+
+
   .section-header {
     width: calc(100% - 76px);
 
@@ -53,42 +50,22 @@ const StyledSectionHeader = styled.div`
       }
     }
   }
+
+  .section-header--hidden {
+    @media ${tablet} {
+      top: -50px;
+    }
+  }
 `;
 
 class SectionHeader extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-  
-      prevScrollPosition: window.pageYOffset || document.documentElement.scrollTop,
-      visibleContent: true
-    };
+    
     this.focusRef = React.createRef();
   }
 
-  componentDidMount() {
-    window.addEventListener("scroll", this.scrolledTheVerticalAxis,false);
-  }
 
-
-  componentWillUnmount() {
-    window.removeEventListener("scroll", this.scrolledTheVerticalAxis,false);
-  }
-
-  scrolledTheVerticalAxis = () => {
-    const { prevScrollPosition } = this.state;
-    //  const first = document.documentElement.offsetTop 
-    //  const second =  document.body.scrollTop || document.documentElement.scrollTop
-    const currentScrollPosition = window.pageYOffset || document.documentElement.scrollTop;
- 
-    const visibleContent = prevScrollPosition > currentScrollPosition;
-    
-  
-    this.setState({
-      prevScrollPosition: currentScrollPosition,
-      visibleContent
-    });
-  };
 
   shouldComponentUpdate(nextProps) {
     return !isEqual(this.props, nextProps);
@@ -100,11 +77,18 @@ class SectionHeader extends React.Component {
     // eslint-disable-next-line react/prop-types
     const { isArticlePinned, ...rest } = this.props;
     return (
-      <StyledSectionHeader isArticlePinned={isArticlePinned}>
-        <div id="scroll" className={classnames("section-header" , {
-          "section-header--hidden": !this.state.visibleContent
-        })} {...rest} />
+      
+      <StyledSectionHeader  isArticlePinned={isArticlePinned}>
+       <IsVisibleContextConsumer>
+       { value => 
+        <div id="scroll"  className={classnames("section-header", {
+          "section-header--hidden": !value
+        })} {...rest}/>
+        }
+         </IsVisibleContextConsumer>
       </StyledSectionHeader>
+      
+
     );
   }
 }

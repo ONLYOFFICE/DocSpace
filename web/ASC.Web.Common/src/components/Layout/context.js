@@ -1,5 +1,8 @@
 import { createContext } from 'react'
 
-const ThemeContext = createContext({})
-export const ThemeContextProvider = ThemeContext.Provider
-export const ThemeContextConsumer = ThemeContext.Consumer
+const RefContext = createContext({})
+const IsVisibleContext = createContext();
+export const RefContextProvider = RefContext.Provider
+export const IsVisibleContextProvider = IsVisibleContext.Provider
+export const RefContextConsumer = RefContext.Consumer
+export const IsVisibleContextConsumer = IsVisibleContext.Consumer

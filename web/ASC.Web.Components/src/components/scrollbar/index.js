@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { Scrollbars } from "react-custom-scrollbars";
 
 const Scrollbar = React.forwardRef((props, ref) => {
-  //console.log("Scrollbar render");
+
   const scrollbarType = {
     smallWhite: {
       thumbV: {
@@ -97,6 +97,7 @@ const Scrollbar = React.forwardRef((props, ref) => {
       style={{ ...style, ...view }}
       tabIndex={-1}
       className={"scroll-body"}
+      id="scroll"
     />
   );
 

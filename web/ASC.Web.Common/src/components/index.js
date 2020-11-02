@@ -7,7 +7,8 @@ export { default as PeopleSelector } from "./PeopleSelector";
 export { default as GroupSelector } from "./GroupSelector";
 export { default as AdvancedSelector } from "./AdvancedSelector";
 export { default as Layout } from "./Layout"
-export { ThemeContextConsumer } from "./Layout/context"
+export { RefContextConsumer } from "./Layout/context"
+export { IsVisibleContextConsumer} from "./Layout/context"
 export { default as PageLayout } from "./PageLayout";
 export { default as ProfileMenu } from "./ProfileMenu";
 export { default as ErrorContainer } from "./ErrorContainer";

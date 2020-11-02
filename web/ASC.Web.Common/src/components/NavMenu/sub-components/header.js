@@ -5,7 +5,7 @@ import NavItem from "./nav-item";
 import Headline from "../../Headline";
 import Nav from "./nav";
 import NavLogoItem from "./nav-logo-item";
-
+import {IsVisibleContextConsumer} from "asc-web-common"
 import { utils } from "asc-web-components";
 import { connect } from "react-redux";
 import {
@@ -31,7 +31,11 @@ const Header = styled.header`
   @media ${tablet} {
       position:fixed;
       z-index:100;
+      transition: top 0.3s;
+      top: ${props => props.valueTop ? "0" : "-56px"}
     }
+
+
   .header-logo-wrapper {
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   }
@@ -106,7 +110,9 @@ const HeaderComponent = ({
 
   return (
     <>
-      <Header module={currentProductName}>
+    <IsVisibleContextConsumer>
+      {value =>
+      <Header module={currentProductName} valueTop={value} >
         <NavItem
           iconName="MenuIcon"
           badgeNumber={totalNotifications}
@@ -127,7 +133,8 @@ const HeaderComponent = ({
         <Headline className="header-module-title" type="header" color="#FFF">
           {currentProductName}
         </Headline>
-      </Header>
+      </Header>}
+      </IsVisibleContextConsumer>
       {isNavAvailable && (
         <Nav
           opened={isNavOpened}
