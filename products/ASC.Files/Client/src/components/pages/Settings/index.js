@@ -10,7 +10,11 @@ import {
 import { SectionHeaderContent, SectionBodyContent } from "./Section";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import { createI18N } from "../../../helpers/i18n";
-import { getFilesSettings, setIsLoading } from "../../../store/files/actions";
+import {
+  getFilesSettings,
+  setIsLoading,
+  setFirstLoad,
+} from "../../../store/files/actions";
 import { getSettingsTree, getIsLoading } from "../../../store/files/selectors";
 
 const i18n = createI18N({
@@ -27,16 +31,20 @@ const PureSettings = ({
   settingsTree,
   getFilesSettings,
   setIsLoading,
+  setFirstLoad,
 }) => {
   //console.log("Settings render()");
   const { setting } = match.params;
 
   useEffect(() => {
-    setIsLoading(true);
-    getFilesSettings().then(() => {
-      setIsLoading(false);
-    });
-  }, [getFilesSettings, setIsLoading]);
+    if (Object.keys(settingsTree).length === 0) {
+      setIsLoading(true);
+      getFilesSettings().then(() => {
+        setIsLoading(false);
+        setFirstLoad(false);
+      });
+    }
+  }, [getFilesSettings, setIsLoading, setFirstLoad]);
 
   useEffect(() => {
     if (isLoading) {
@@ -107,6 +115,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     setIsLoading: (isLoading) => dispatch(setIsLoading(isLoading)),
     getFilesSettings: () => dispatch(getFilesSettings()),
+    setFirstLoad: (firstLoad) => dispatch(setFirstLoad(firstLoad)),
   };
 };
 
