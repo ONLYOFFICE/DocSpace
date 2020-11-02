@@ -122,11 +122,24 @@ const CustomTooltip = styled.div`
   z-index: 150;
   background: #fff;
   border-radius: 6px;
+  font-size: 15px;
+  font-weight: 600;
   -moz-border-radius: 6px;
   -webkit-border-radius: 6px;
   box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.13);
   -moz-box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.13);
   -webkit-box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.13);
+
+  .tooltip-moved-obj-wrapper {
+    display: flex;
+    align-items: center;
+  }
+  .tooltip-moved-obj-icon {
+    margin-right: 6px;
+  }
+  .tooltip-moved-obj-extension {
+    color: #a3a9ae;
+  }
 `;
 
 const SimpleFilesRow = styled(Row)`
@@ -1440,6 +1453,32 @@ class SectionBodyContent extends React.Component {
     );
   };
 
+  renderFileMoveTooltip = () => {
+    const { selection } = this.props;
+    const { title, icon } = selection[0];
+
+    const reg = /^([^\\]*)\.(\w+)/;
+    const matches = title.match(reg);
+
+    let nameOfMovedObj, fileExtension;
+    if (matches) {
+      nameOfMovedObj = matches[1];
+      fileExtension = matches.pop();
+    } else {
+      nameOfMovedObj = title;
+    }
+
+    return (
+      <div className="tooltip-moved-obj-wrapper">
+        <img className="tooltip-moved-obj-icon" src={`${icon}`} alt="" />
+        {nameOfMovedObj}
+        {fileExtension ? (
+          <span className="tooltip-moved-obj-extension">.{fileExtension}</span>
+        ) : null}
+      </div>
+    );
+  };
+
   render() {
     console.log("Files Home SectionBodyContent render", this.props);
 
@@ -1540,7 +1579,10 @@ class SectionBodyContent extends React.Component {
         )}
         <CustomTooltip ref={this.tooltipRef}>
           {tooltipValue
-            ? t(tooltipValue.label, { element: tooltipValue.filesCount })
+            ? selection.length === 1 &&
+              tooltipValue.label === "TooltipElementMoveMessage"
+              ? this.renderFileMoveTooltip()
+              : t(tooltipValue.label, { element: tooltipValue.filesCount })
             : ""}
         </CustomTooltip>
 
