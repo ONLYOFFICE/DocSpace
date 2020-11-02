@@ -26,8 +26,11 @@
 
 using System;
 
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Core;
+using ASC.Core.Common.EF;
+using ASC.Core.Common.EF.Context;
 using ASC.Core.Common.Notify.Push;
 
 namespace ASC.Web.Core.Mobile
@@ -40,12 +43,12 @@ namespace ASC.Web.Core.Mobile
 
         private TenantManager TenantManager { get; }
 
-        public CachedMobileAppInstallRegistrator(IMobileAppInstallRegistrator registrator, TenantManager tenantManager)
+        public CachedMobileAppInstallRegistrator(MobileAppInstallRegistrator registrator, TenantManager tenantManager)
             : this(registrator, TimeSpan.FromMinutes(30), tenantManager)
         {
         }
 
-        public CachedMobileAppInstallRegistrator(IMobileAppInstallRegistrator registrator, TimeSpan cacheExpiration, TenantManager tenantManager)
+        public CachedMobileAppInstallRegistrator(MobileAppInstallRegistrator registrator, TimeSpan cacheExpiration, TenantManager tenantManager)
         {
             TenantManager = tenantManager;
             this.registrator = registrator ?? throw new ArgumentNullException("registrator");
@@ -82,6 +85,22 @@ namespace ASC.Web.Core.Mobile
             var cacheKey = appType.HasValue ? userEmail + "/" + appType.ToString() : userEmail;
 
             return string.Format("{0}:mobile:{1}", TenantManager.GetCurrentTenant().TenantId, cacheKey);
+        }
+    }
+
+    public static class CachedMobileAppInstallRegistratorExtension
+    {
+        public static DIHelper AddCachedMobileAppInstallRegistrator(this DIHelper services)
+        {
+            if (services.TryAddScoped<MobileAppInstallRegistrator>())
+            {
+                services.TryAddScoped<IMobileAppInstallRegistrator, CachedMobileAppInstallRegistrator>();
+                return services
+                    .AddTenantManagerService()
+                    .AddDbContextManagerService<DbContext>();
+            }
+
+            return services;
         }
     }
 }

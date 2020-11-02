@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
 
@@ -33,9 +34,9 @@ namespace ASC.Files
 
             services.AddMemoryCache();
 
-            var diHelper = new DIHelper(services);
+            base.ConfigureServices(services);
 
-            diHelper
+            DIHelper
                 .AddApiProductEntryPointService()
                 .AddDocumentsControllerService()
                 .AddPrivacyRoomApiService()
@@ -44,8 +45,6 @@ namespace ASC.Files
                 .AddThirdPartyAppHandlerService()
                 .AddDocuSignHandlerService()
                 .AddNotifyConfiguration();
-
-            base.ConfigureServices(services);
         }
 
         public override void Configure(IApplicationBuilder app, IWebHostEnvironment env)

@@ -1,9 +1,9 @@
 import React from "react";
 import styled from "styled-components";
+import { isIOS } from "react-device-detect";
 
 const StyledMain = styled.main`
-  height: calc(100vh - 56px);
-  height: calc(var(--vh, 1vh) * 100 - 56px);
+  height: ${isIOS ? "calc(var(--vh, 1vh) * 100)" : "calc(100vh - 56px)"};
   width: 100vw;
   z-index: 0;
   display: flex;
@@ -12,7 +12,7 @@ const StyledMain = styled.main`
 `;
 
 const Main = React.memo((props) => {
-  const vh = window.innerHeight * 0.01;
+  const vh = (window.innerHeight - 57) * 0.01;
   document.documentElement.style.setProperty("--vh", `${vh}px`);
   //console.log("Main render");
   return <StyledMain {...props} />;

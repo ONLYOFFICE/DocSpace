@@ -73,6 +73,7 @@ namespace ASC.Socket.IO.Svc
                 .ConfigureServices((hostContext, services) =>
                 {
                     var diHelper = new DIHelper(services);
+
                     diHelper.AddNLogManager("ASC.Socket.IO.Svc");
                     services.AddHostedService<SocketServiceLauncher>();
                     diHelper.AddSocketServiceLauncher();

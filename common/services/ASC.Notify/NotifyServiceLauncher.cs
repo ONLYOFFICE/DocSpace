@@ -42,21 +42,6 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Notify
 {
-    public class ConfigureCommonLinkUtilitySettings : IConfigureOptions<CommonLinkUtilitySettings>
-    {
-        public ConfigureCommonLinkUtilitySettings(IOptions<NotifyServiceCfg> notifyServiceCfg)
-        {
-            NotifyServiceCfg = notifyServiceCfg.Value;
-        }
-
-        public NotifyServiceCfg NotifyServiceCfg { get; }
-
-        public void Configure(CommonLinkUtilitySettings clu)
-        {
-            clu.ServerUri = NotifyServiceCfg.ServerRoot;
-        }
-    }
-
     public class NotifyServiceLauncher : IHostedService
     {
         public NotifyServiceCfg NotifyServiceCfg { get; }

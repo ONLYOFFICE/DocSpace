@@ -22,15 +22,13 @@ namespace ASC.Data.Backup
 
         public override void ConfigureServices(IServiceCollection services)
         {
-            var diHelper = new DIHelper(services);
-
-            diHelper
+            base.ConfigureServices(services);
+            DIHelper
                 .AddBackupServiceLauncher()
                 .AddBackupController()
                 .AddProgressQueue<BaseBackupProgressItem>(1, (int)TimeSpan.FromMinutes(5).TotalMilliseconds, true, false, 0);
 
             services.AddHostedService<BackupServiceLauncher>();
-            base.ConfigureServices(services);
         }
     }
 }

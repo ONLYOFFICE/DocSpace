@@ -6,10 +6,11 @@ import {
   Row,
   Avatar,
   EmptyScreenContainer,
-  Icons,
+  IconButton,
   Link,
   RowContainer,
   utils,
+  Box,
 } from "asc-web-components";
 import UserContent from "./userContent";
 import {
@@ -32,6 +33,7 @@ import {
   DeleteProfileEverDialog,
 } from "../../../../dialogs";
 import { createI18N } from "../../../../../helpers/i18n";
+import { isMobile } from "react-device-detect";
 
 const i18n = createI18N({
   page: "Home",
@@ -44,6 +46,7 @@ const { resendUserInvites } = api.people;
 const { EmployeeStatus } = constants;
 
 const isRefetchPeople = true;
+
 class SectionBodyContent extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -374,11 +377,12 @@ class SectionBodyContent extends React.PureComponent {
       widthProp,
       isMobile,
       selectGroup,
+      isLoading
     } = this.props;
 
     const { dialogsVisible, user } = this.state;
 
-    return !isLoaded ? (
+    return !isLoaded || (isMobile && isLoading) ? (
       <Loaders.Rows />
     ) : peopleList.length > 0 ? (
       <>
@@ -475,13 +479,29 @@ class SectionBodyContent extends React.PureComponent {
         imageAlt="Empty Screen Filter image"
         headerText={t("NotFoundTitle")}
         descriptionText={t("NotFoundDescription")}
-        widthProp={widthProp}
         buttons={
           <>
-            <Icons.CrossIcon size="small" style={{ marginRight: "4px" }} />
-            <Link type="action" isHovered={true} onClick={this.onResetFilter}>
+            <Box displayProp="inline-block" marginProp="0 8px 0 0">
+              <IconButton
+                className="empty-folder_container-icon"
+                size="12"
+                onClick={this.onResetFilter}
+                iconName="CrossIcon"
+                isFill
+                color="#657077"
+              />
+            </Box>
+            <Box displayProp="inline-block" marginProp="14px 0 0 0">
+            <Link
+              type="action"
+              isHovered={true}
+              fontWeight="600"
+              color="#555f65"
+              onClick={this.onResetFilter}
+            >
               {t("ClearButton")}
             </Link>
+            </Box>
           </>
         }
       />
@@ -491,10 +511,11 @@ class SectionBodyContent extends React.PureComponent {
 
 const mapStateToProps = (state) => {
   const { isLoaded } = state.auth;
-  const { filter } = state.people;
+  const { filter, isLoading } = state.people;
   return {
     isLoaded,
     filter,
+    isLoading,
     peopleList: getPeopleList(state),
     settings: getSettings(state),
   };

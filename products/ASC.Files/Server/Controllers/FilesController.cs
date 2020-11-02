@@ -55,6 +55,7 @@ using ASC.Web.Files.Services.DocumentService;
 using ASC.Web.Files.Services.WCFService;
 using ASC.Web.Files.Services.WCFService.FileOperations;
 using ASC.Web.Files.Utils;
+using ASC.Web.Studio.Core;
 using ASC.Web.Studio.Utility;
 
 using Microsoft.AspNetCore.Http;
@@ -101,6 +102,8 @@ namespace ASC.Api.Documents
         private ConsumerFactory ConsumerFactory { get; }
         private EasyBibHelper EasyBibHelper { get; }
         private ProductEntryPoint ProductEntryPoint { get; }
+        public TenantManager TenantManager { get; }
+        public FileUtility FileUtility { get; }
 
         /// <summary>
         /// </summary>
@@ -128,7 +131,9 @@ namespace ASC.Api.Documents
             WordpressHelper wordpressHelper,
             ConsumerFactory consumerFactory,
             EasyBibHelper easyBibHelper,
-            ProductEntryPoint productEntryPoint)
+            ProductEntryPoint productEntryPoint,
+            TenantManager tenantManager,
+            FileUtility fileUtility)
         {
             FilesControllerHelperString = filesControllerHelperString;
             FilesControllerHelperInt = filesControllerHelperInt;
@@ -156,6 +161,8 @@ namespace ASC.Api.Documents
             WordpressHelper = wordpressHelper;
             EasyBibHelper = easyBibHelper;
             ProductEntryPoint = productEntryPoint;
+            TenantManager = tenantManager;
+            FileUtility = fileUtility;
         }
 
         [Read("info")]
@@ -163,6 +170,61 @@ namespace ASC.Api.Documents
         {
             ProductEntryPoint.Init();
             return new Module(ProductEntryPoint, true);
+        }
+
+        [Read("@root")]
+        public IEnumerable<FolderContentWrapper<int>> GetRootFolders(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders, bool withoutTrash, bool withoutAdditionalFolder)
+        {
+            var IsVisitor = UserManager.GetUsers(SecurityContext.CurrentAccount.ID).IsVisitor(UserManager);
+            var result = new SortedSet<int>();
+
+            if (!IsVisitor)
+            {
+                result.Add(GlobalFolderHelper.FolderMy);
+            }
+
+            if (!CoreBaseSettings.Personal && !UserManager.GetUsers(SecurityContext.CurrentAccount.ID).IsOutsider(UserManager))
+            {
+                result.Add(GlobalFolderHelper.FolderShare);
+            }
+
+            if (!IsVisitor && !withoutAdditionalFolder)
+            {
+                if (FilesSettingsHelper.FavoritesSection)
+                {
+                    result.Add(GlobalFolderHelper.FolderFavorites);
+                }
+
+                if (FilesSettingsHelper.RecentSection)
+                {
+                    result.Add(GlobalFolderHelper.FolderRecent);
+                }
+
+                if (PrivacyRoomSettings.IsAvailable(TenantManager))
+                {
+                    result.Add(GlobalFolderHelper.FolderPrivacy);
+                }
+            }
+
+            if (!CoreBaseSettings.Personal)
+            {
+                result.Add(GlobalFolderHelper.FolderCommon);
+            }
+
+            if (!IsVisitor
+               && !withoutAdditionalFolder
+               && FileUtility.ExtsWebTemplate.Any()
+               && FilesSettingsHelper.TemplatesSection)
+            {
+                result.Add(GlobalFolderHelper.FolderTemplates);
+            }
+
+            if (!withoutTrash)
+            {
+                result.Add((int)GlobalFolderHelper.FolderTrash);
+            }
+
+            return result.Select(r => FilesControllerHelperInt.GetFolder(r, userIdOrGroupId, filterType, withsubfolders));
         }
 
         /// <summary>
@@ -509,15 +571,15 @@ namespace ASC.Api.Documents
         /// <category>Files</category>
         /// <returns></returns>
         [Create("file/{fileId}/startedit", DisableFormat = true)]
-        public object StartEdit(string fileId, bool editingAlone, string doc)
+        public object StartEdit(string fileId, StartEditModel model)
         {
-            return FilesControllerHelperString.StartEdit(fileId, editingAlone, doc);
+            return FilesControllerHelperString.StartEdit(fileId, model.EditingAlone, model.Doc);
         }
 
         [Create("file/{fileId:int}/startedit")]
-        public object StartEdit(int fileId, bool editingAlone, string doc)
+        public object StartEdit(int fileId, StartEditModel model)
         {
-            return FilesControllerHelperInt.StartEdit(fileId, editingAlone, doc);
+            return FilesControllerHelperInt.StartEdit(fileId, model.EditingAlone, model.Doc);
         }
 
         /// <summary>
