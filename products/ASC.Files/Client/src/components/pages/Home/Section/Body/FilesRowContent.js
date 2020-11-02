@@ -405,11 +405,11 @@ class FilesRowContent extends React.PureComponent {
       fileAction,
       isTrashFolder,
       folders,
-      widthProp,
       isLoading,
       isMobile,
       canWebEdit,
       canConvert,
+      sectionWidth,
     } = this.props;
     const {
       itemTitle,
@@ -473,7 +473,7 @@ class FilesRowContent extends React.PureComponent {
           />
         )}
         <SimpleFilesRowContent
-          widthProp={widthProp}
+          sectionWidth={sectionWidth}
           isMobile={isMobile}
           sideColor={sideColor}
           isFile={fileExst}
@@ -505,7 +505,7 @@ class FilesRowContent extends React.PureComponent {
                 >
                   {fileExst}
                 </Text>
-                {canConvert && (
+                {canConvert && !isTrashFolder && (
                   <IconButton
                     onClick={this.setConvertDialogVisible}
                     iconName="FileActionsConvertIcon"
@@ -513,14 +513,18 @@ class FilesRowContent extends React.PureComponent {
                     size="small"
                     isfill={true}
                     color="#A3A9AE"
+                    hoverColor="#3B72A7"
                   />
                 )}
-                {canWebEdit && (
-                  <Icons.AccessEditIcon
+                {canWebEdit && !isTrashFolder && (
+                  <IconButton
+                    onClick={this.onFilesClick}
+                    iconName="AccessEditIcon"
                     className="badge"
                     size="small"
                     isfill={true}
                     color="#A3A9AE"
+                    hoverColor="#3B72A7"
                   />
                 )}
                 {fileStatus === 32 && !isTrashFolder && (

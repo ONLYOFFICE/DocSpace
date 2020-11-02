@@ -16,8 +16,7 @@ const StyledGroupButtonsMenu = styled.div`
   height: 57px;
   list-style: none;
   padding: 0 18px 19px 0;
-  width: ${(props) =>
-    props.containerWidth ? props.containerWidth + "px" : "100%"};
+  width: 100%;
   white-space: nowrap;
   display: ${(props) => (props.visible ? "block" : "none")};
   z-index: 189;
@@ -77,7 +76,7 @@ class GroupButtonsMenu extends React.Component {
       visible: props.visible,
     };
 
-    this.throttledResize = throttle(this.updateMenu, 300);
+    this.throttledResize = throttle(this.updateMenu, 200);
   }
 
   closeMenu = (e) => {
@@ -129,6 +128,7 @@ class GroupButtonsMenu extends React.Component {
     }
 
     if (
+      this.props.sectionWidth !== prevProps.sectionWidth ||
       this.state.priorityItems.length !== prevState.priorityItems.length ||
       this.state.moreItems.length !== prevState.moreItems.length
     ) {
@@ -150,17 +150,20 @@ class GroupButtonsMenu extends React.Component {
   };
 
   updateMenu = () => {
-    const moreMenuElement = document.getElementById("moreMenu");
-    const groupMenuOuterElement = document.getElementById("groupMenuOuter");
+    const { sectionWidth } = this.props;
+    let groupMenuOuterWidth = sectionWidth;
 
-    const screenWidth = window.innerWidth;
-    const groupMenuOuterValues =
-      groupMenuOuterElement && groupMenuOuterElement.getBoundingClientRect();
+    if (!sectionWidth) {
+      const groupMenuOuterElement = document.getElementById("groupMenuOuter");
+      const groupMenuOuterValues =
+        groupMenuOuterElement && groupMenuOuterElement.getBoundingClientRect();
+      const screenWidth = window.innerWidth;
+      const xWidth = groupMenuOuterValues && groupMenuOuterValues.x;
+      groupMenuOuterWidth = screenWidth - xWidth;
+    }
+    const moreMenuElement = document.getElementById("moreMenu");
     const moreMenuWidth =
       moreMenuElement && moreMenuElement.getBoundingClientRect().width;
-    const xWidth = groupMenuOuterValues && groupMenuOuterValues.x;
-    const groupMenuOuterWidth = screenWidth - xWidth;
-
     const visibleItemsCount = this.countMenuItems(
       this.widthsArray,
       groupMenuOuterWidth,
@@ -177,7 +180,6 @@ class GroupButtonsMenu extends React.Component {
     this.setState({
       priorityItems: priorityItems,
       moreItems: moreItems,
-      width: groupMenuOuterWidth,
     });
   };
 
@@ -196,14 +198,10 @@ class GroupButtonsMenu extends React.Component {
       isIndeterminate,
       onChange,
     } = this.props;
-    const { priorityItems, moreItems, visible, width } = this.state;
+    const { priorityItems, moreItems, visible } = this.state;
 
     return (
-      <StyledGroupButtonsMenu
-        id="groupMenuOuter"
-        visible={visible}
-        containerWidth={width}
-      >
+      <StyledGroupButtonsMenu id="groupMenuOuter" visible={visible}>
         <GroupMenuWrapper id="groupMenu">
           {priorityItems.map((item, i) => (
             <GroupButton
@@ -261,6 +259,7 @@ GroupButtonsMenu.propTypes = {
   visible: PropTypes.bool,
   moreLabel: PropTypes.string,
   closeTitle: PropTypes.string,
+  sectionWidth: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
 };
 
 GroupButtonsMenu.defaultProps = {

@@ -39,6 +39,7 @@ const i18n = createI18N({
   page: "Home",
   localesPath: "pages/Home",
 });
+const { Consumer } = utils.context;
 const { isArrayEqual } = utils.array;
 const { getSettings } = store.auth.selectors;
 const { setIsLoaded } = store.auth.actions;
@@ -356,6 +357,9 @@ class SectionBodyContent extends React.PureComponent {
     if (currentProps.status !== nextProps.status) {
       return true;
     }
+    if (currentProps.sectionWidth !== nextProps.sectionWidth) {
+      return true;
+    }
     if (!isEqual(currentProps.data, nextProps.data)) {
       return true;
     }
@@ -377,7 +381,7 @@ class SectionBodyContent extends React.PureComponent {
       widthProp,
       isMobile,
       selectGroup,
-      isLoading
+      isLoading,
     } = this.props;
 
     const { dialogsVisible, user } = this.state;
@@ -386,58 +390,65 @@ class SectionBodyContent extends React.PureComponent {
       <Loaders.Rows />
     ) : peopleList.length > 0 ? (
       <>
-        <RowContainer useReactWindow={false}>
-          {peopleList.map((man) => {
-            const {
-              checked,
-              role,
-              displayName,
-              avatar,
-              id,
-              status,
-              options,
-            } = man;
+        <Consumer>
+          {(context) => (
+            <RowContainer useReactWindow={false}>
+              {peopleList.map((man) => {
+                const {
+                  checked,
+                  role,
+                  displayName,
+                  avatar,
+                  id,
+                  status,
+                  options,
+                } = man;
+                const sectionWidth = context.sectionWidth;
+                const contextOptionsProps =
+                  options && options.length > 0
+                    ? {
+                        contextOptions: this.getUserContextOptions(options, id),
+                      }
+                    : {};
 
-            const contextOptionsProps =
-              options && options.length > 0
-                ? { contextOptions: this.getUserContextOptions(options, id) }
-                : {};
+                const checkedProps = checked !== null ? { checked } : {};
 
-            const checkedProps = checked !== null ? { checked } : {};
+                const element = (
+                  <Avatar
+                    size="small"
+                    role={role}
+                    userName={displayName}
+                    source={avatar}
+                  />
+                );
 
-            const element = (
-              <Avatar
-                size="small"
-                role={role}
-                userName={displayName}
-                source={avatar}
-              />
-            );
-
-            return (
-              <Row
-                key={id}
-                status={status}
-                data={man}
-                element={element}
-                onSelect={this.onContentRowSelect}
-                {...checkedProps}
-                {...contextOptionsProps}
-                needForUpdate={this.needForUpdate}
-                widthProp={widthProp}
-              >
-                <UserContent
-                  isMobile={isMobile}
-                  widthProp={widthProp}
-                  user={man}
-                  history={history}
-                  settings={settings}
-                  selectGroup={selectGroup}
-                />
-              </Row>
-            );
-          })}
-        </RowContainer>
+                return (
+                  <Row
+                    key={id}
+                    status={status}
+                    data={man}
+                    element={element}
+                    onSelect={this.onContentRowSelect}
+                    {...checkedProps}
+                    {...contextOptionsProps}
+                    needForUpdate={this.needForUpdate}
+                    sectionWidth={sectionWidth}
+                  >
+                    <UserContent
+                      isMobile={isMobile}
+                      widthProp={widthProp}
+                      user={man}
+                      history={history}
+                      settings={settings}
+                      selectGroup={selectGroup}
+                      sectionWidth={sectionWidth}
+                    />
+                  </Row>
+                );
+              })}
+            </RowContainer>
+          )}
+        </Consumer>
 
         {dialogsVisible.changeEmail && (
           <ChangeEmailDialog
@@ -492,15 +503,15 @@ class SectionBodyContent extends React.PureComponent {
               />
             </Box>
             <Box displayProp="inline-block" marginProp="14px 0 0 0">
-            <Link
-              type="action"
-              isHovered={true}
-              fontWeight="600"
-              color="#555f65"
-              onClick={this.onResetFilter}
-            >
-              {t("ClearButton")}
-            </Link>
+              <Link
+                type="action"
+                isHovered={true}
+                fontWeight="600"
+                color="#555f65"
+                onClick={this.onResetFilter}
+              >
+                {t("ClearButton")}
+              </Link>
             </Box>
           </>
         }

@@ -118,7 +118,7 @@ class Row extends React.Component {
       indeterminate,
       onSelect,
       selectItem,
-      widthProp,
+      sectionWidth,
     } = this.props;
 
     const renderCheckbox = Object.prototype.hasOwnProperty.call(
@@ -133,7 +133,7 @@ class Row extends React.Component {
 
     const renderContentElement =
       Object.prototype.hasOwnProperty.call(this.props, "contentElement") &&
-      widthProp > 500;
+      sectionWidth > 500;
 
     const renderContext =
       Object.prototype.hasOwnProperty.call(this.props, "contextOptions") &&
@@ -192,7 +192,7 @@ Row.propTypes = {
   checked: PropTypes.bool,
   children: PropTypes.element,
   className: PropTypes.string,
-  contentElement: PropTypes.element,
+  contentElement: PropTypes.any,
   contextButtonSpacerWidth: PropTypes.string,
   contextOptions: PropTypes.array,
   data: PropTypes.object,
@@ -203,7 +203,7 @@ Row.propTypes = {
   onSelect: PropTypes.func,
   selectItem: PropTypes.func,
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
-  widthProp: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  sectionWidth: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 };
 
 Row.defaultProps = {
