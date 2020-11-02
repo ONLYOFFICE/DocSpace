@@ -227,6 +227,20 @@ namespace ASC.Api.Documents
             return result.Select(r => FilesControllerHelperInt.GetFolder(r, userIdOrGroupId, filterType, withsubfolders));
         }
 
+
+        [Read("@privacy")]
+        public FolderContentWrapper<int> GetPrivacyFolder(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
+        {
+            if (!IsAvailablePrivacyRoomSettings()) throw new System.Security.SecurityException();
+            return FilesControllerHelperInt.GetFolder(GlobalFolderHelper.FolderPrivacy, userIdOrGroupId, filterType, withsubfolders);
+        }
+
+        [Read("@privacy/available")]
+        public bool IsAvailablePrivacyRoomSettings()
+        {
+            return PrivacyRoomSettings.IsAvailable(TenantManager);
+        }
+
         /// <summary>
         /// Returns the detailed list of files and folders located in the current user 'My Documents' section
         /// </summary>
@@ -571,15 +585,15 @@ namespace ASC.Api.Documents
         /// <category>Files</category>
         /// <returns></returns>
         [Create("file/{fileId}/startedit", DisableFormat = true)]
-        public object StartEdit(string fileId, bool editingAlone, string doc)
+        public object StartEdit(string fileId, StartEditModel model)
         {
-            return FilesControllerHelperString.StartEdit(fileId, editingAlone, doc);
+            return FilesControllerHelperString.StartEdit(fileId, model.EditingAlone, model.Doc);
         }
 
         [Create("file/{fileId:int}/startedit")]
-        public object StartEdit(int fileId, bool editingAlone, string doc)
+        public object StartEdit(int fileId, StartEditModel model)
         {
-            return FilesControllerHelperInt.StartEdit(fileId, editingAlone, doc);
+            return FilesControllerHelperInt.StartEdit(fileId, model.EditingAlone, model.Doc);
         }
 
         /// <summary>

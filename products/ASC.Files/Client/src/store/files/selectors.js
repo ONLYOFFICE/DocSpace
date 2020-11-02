@@ -1081,3 +1081,13 @@ export const getOnlyFoldersSelected = createSelector(
 export const getAccessedSelected = createSelector(getSelection, (selection) => {
   return selection.every((x) => x.access === 1 || x.access === 0);
 });
+
+export const getOperationsFolders = createSelector(
+  getTreeFolders, (treeFolders) => {
+    return treeFolders.filter(folder => (
+      folder.rootFolderType === FolderType.USER ||
+      folder.rootFolderType === FolderType.COMMON ||
+      folder.rootFolderType === FolderType.Projects
+    ) && folder);
+  }
+)
