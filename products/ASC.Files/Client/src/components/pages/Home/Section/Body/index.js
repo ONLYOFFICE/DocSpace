@@ -1458,6 +1458,7 @@ class SectionBodyContent extends React.Component {
   };
 
   renderFileMoveTooltip = () => {
+    console.log("renderTooltip");
     const { selection } = this.props;
     const { title, icon } = selection[0];
 
@@ -1524,6 +1525,16 @@ class SectionBodyContent extends React.Component {
       isLoading,
     };
 
+    let fileMoveTooltip;
+    if (dragging) {
+      fileMoveTooltip = tooltipValue
+        ? selection.length === 1 &&
+          tooltipValue.label === "TooltipElementMoveMessage"
+          ? this.renderFileMoveTooltip()
+          : t(tooltipValue.label, { element: tooltipValue.filesCount })
+        : "";
+    }
+
     const items = filesList;
 
     if (fileAction && fileAction.type === FileAction.Create) {
@@ -1580,14 +1591,7 @@ class SectionBodyContent extends React.Component {
             onClose={this.onCopyAction}
           />
         )}
-        <CustomTooltip ref={this.tooltipRef}>
-          {tooltipValue
-            ? selection.length === 1 &&
-              tooltipValue.label === "TooltipElementMoveMessage"
-              ? this.renderFileMoveTooltip()
-              : t(tooltipValue.label, { element: tooltipValue.filesCount })
-            : ""}
-        </CustomTooltip>
+        <CustomTooltip ref={this.tooltipRef}>{fileMoveTooltip}</CustomTooltip>
 
         {viewAs === "tile" ? (
           <TileContainer
