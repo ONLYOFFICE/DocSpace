@@ -15,14 +15,23 @@ namespace ASC.Common
         public List<string> Scoped { get; set; }
         public List<string> Transient { get; set; }
         public List<string> Configured { get; set; }
-        public IServiceCollection ServiceCollection { get; }
+        public IServiceCollection ServiceCollection { get; private set; }
 
-        public DIHelper(IServiceCollection serviceCollection)
+        public DIHelper()
         {
             Singleton = new List<string>();
             Scoped = new List<string>();
             Transient = new List<string>();
             Configured = new List<string>();
+        }
+
+        public DIHelper(IServiceCollection serviceCollection) : this()
+        {
+            ServiceCollection = serviceCollection;
+        }
+
+        public void Configure(IServiceCollection serviceCollection)
+        {
             ServiceCollection = serviceCollection;
         }
 

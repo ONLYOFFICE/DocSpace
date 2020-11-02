@@ -8,13 +8,16 @@ using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Billing;
+using ASC.Core.Common.Notify.Push;
 using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.MessagingSystem;
 using ASC.Security.Cryptography;
+using ASC.Web.Api.Models;
 using ASC.Web.Api.Routing;
 using ASC.Web.Core;
+using ASC.Web.Core.Mobile;
 using ASC.Web.Core.Utility;
 using ASC.Web.Studio.Core;
 using ASC.Web.Studio.Core.Notify;
@@ -35,7 +38,7 @@ namespace ASC.Web.Api.Controllers
     public class PortalController : ControllerBase
     {
 
-        public Tenant Tenant { get { return ApiContext.Tenant; } }
+        private Tenant Tenant { get { return ApiContext.Tenant; } }
 
         private ApiContext ApiContext { get; }
         private UserManager UserManager { get; }
@@ -47,6 +50,7 @@ namespace ASC.Web.Api.Controllers
         private WebItemSecurity WebItemSecurity { get; }
         private SecurityContext SecurityContext { get; }
         private SettingsManager SettingsManager { get; }
+        private IMobileAppInstallRegistrator MobileAppInstallRegistrator { get; }
         private IConfiguration Configuration { get; set; }
         private TenantExtra TenantExtra { get; set; }
         public ILog Log { get; }
@@ -64,8 +68,9 @@ namespace ASC.Web.Api.Controllers
             WebItemSecurity webItemSecurity,
             SecurityContext securityContext,
             SettingsManager settingsManager,
-            IConfiguration configuration,
-            TenantExtra tenantExtra
+            IMobileAppInstallRegistrator mobileAppInstallRegistrator,
+            TenantExtra tenantExtra,
+            IConfiguration configuration
             )
         {
             Log = options.CurrentValue;
@@ -79,6 +84,7 @@ namespace ASC.Web.Api.Controllers
             WebItemSecurity = webItemSecurity;
             SecurityContext = securityContext;
             SettingsManager = settingsManager;
+            MobileAppInstallRegistrator = mobileAppInstallRegistrator;
             Configuration = configuration;
             TenantExtra = tenantExtra;
         }
@@ -215,6 +221,13 @@ namespace ASC.Web.Api.Controllers
                 Log.Error("MarkPresentAsReaded", ex);
             }
         }
+
+        [Create("mobile/registration")]
+        public void RegisterMobileAppInstall(MobileAppModel model)
+        {
+            var currentUser = UserManager.GetUsers(SecurityContext.CurrentAccount.ID);
+            MobileAppInstallRegistrator.RegisterInstall(currentUser.Email, model.Type);
+    }
     }
 
     public static class PortalControllerExtension
@@ -236,6 +249,7 @@ namespace ASC.Web.Api.Controllers
                 .AddAuthContextService()
                 .AddWebItemSecurity()
                 .AddSecurityContextService()
+                .AddCachedMobileAppInstallRegistrator()
                 .AddTenantExtraService();
         }
     }

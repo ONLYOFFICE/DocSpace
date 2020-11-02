@@ -50,8 +50,6 @@ namespace ASC.Data.Storage.Migration
 
                     diHelper.AddNLogManager("ASC.Data.Storage.Migration", "ASC.Migration");
 
-                    diHelper.TryAddSingleton<CommonLinkUtilitySettings>();
-
                     diHelper.AddMigrationServiceLauncher();
                     services.AddHostedService<MigrationServiceLauncher>();
 

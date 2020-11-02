@@ -51,6 +51,7 @@ namespace ASC.Files.Service
                 .ConfigureServices((hostContext, services) =>
                 {
                     var diHelper = new DIHelper(services);
+
                     diHelper.AddNLogManager("ASC.Files");
                     services.AddHostedService<ServiceLauncher>();
                     diHelper

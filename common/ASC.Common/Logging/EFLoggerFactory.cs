@@ -8,11 +8,15 @@ namespace ASC.Common.Logging
 {
     public class EFLoggerFactory : ILoggerFactory
     {
+        Dictionary<string, ILogger> Loggers { get; set; }
+        Lazy<ILogger> Logger { get; set; }
         ILoggerProvider LoggerProvider { get; set; }
 
         public EFLoggerFactory(EFLoggerProvider loggerProvider)
         {
             LoggerProvider = loggerProvider;
+            Loggers = new Dictionary<string, ILogger>();
+            Logger = new Lazy<ILogger>(() => LoggerProvider.CreateLogger(""));
         }
 
         public void AddProvider(ILoggerProvider provider)
@@ -22,7 +26,7 @@ namespace ASC.Common.Logging
 
         public ILogger CreateLogger(string categoryName)
         {
-            return LoggerProvider.CreateLogger(categoryName);
+            return Logger.Value;
         }
 
         public void Dispose()

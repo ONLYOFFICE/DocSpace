@@ -6,7 +6,6 @@ import store from "../../store";
 import { withTranslation } from "react-i18next";
 import i18n from "./i18n";
 import { ARTICLE_PINNED_KEY } from "../../constants";
-
 import Article from "./sub-components/article";
 import SubArticleHeader from "./sub-components/article-header";
 import SubArticleMainButton from "./sub-components/article-main-button";
@@ -21,8 +20,10 @@ import SubSectionPaging from "./sub-components/section-paging";
 import SectionToggler from "./sub-components/section-toggler";
 import { changeLanguage } from "../../utils";
 import ReactResizeDetector from "react-resize-detector";
+
 const { getLanguage } = store.auth.selectors;
 const { size } = utils.device;
+const { Provider } = utils.context;
 
 function ArticleHeader() {
   return null;
@@ -105,6 +106,8 @@ class PageLayoutComponent extends React.Component {
   }
 
   orientationChangeHandler = () => {
+    this.updateMainHeight();
+
     const isValueExist = !!localStorage.getItem(ARTICLE_PINNED_KEY);
     const isEnoughWidth = screen.availWidth > size.smallTablet;
 
@@ -114,6 +117,41 @@ class PageLayoutComponent extends React.Component {
     if (isEnoughWidth && isValueExist) {
       this.pinArticle();
     }
+  };
+
+  updateMainHeight = () => {
+    const intervalTime = 100;
+    const endTimeoutTime = 1000;
+
+    let interval, timeout, lastInnerHeight, noChangeCount;
+
+    const updateHeight = () => {
+      clearInterval(interval);
+      clearTimeout(timeout);
+
+      interval = null;
+      timeout = null;
+
+      const vh = (window.innerHeight - 57) * 0.01;
+      document.documentElement.style.setProperty("--vh", `${vh}px`);
+    };
+
+    interval = setInterval(() => {
+      if (window.innerHeight === lastInnerHeight) {
+        noChangeCount++;
+
+        if (noChangeCount === intervalTime) {
+          updateHeight();
+        }
+      } else {
+        lastInnerHeight = window.innerHeight;
+        noChangeCount = 0;
+      }
+    });
+
+    timeout = setTimeout(() => {
+      updateHeight();
+    }, endTimeoutTime);
   };
 
   backdropClick = () => {
@@ -152,10 +190,6 @@ class PageLayoutComponent extends React.Component {
     });
   };
 
-  onResize = (width, height) => {
-    //console.log(`onResize height: ${height}, width: ${width}`);
-  };
-
   render() {
     const {
       onDrop,
@@ -169,6 +203,7 @@ class PageLayoutComponent extends React.Component {
       withBodyAutoFocus,
       withBodyScroll,
       children,
+      isLoaded,
     } = this.props;
 
     let articleHeaderContent = null;
@@ -245,6 +280,7 @@ class PageLayoutComponent extends React.Component {
           <Article
             visible={this.state.isArticleVisible}
             pinned={this.state.isArticlePinned}
+            isLoaded={isLoaded}
           >
             {isArticleHeaderAvailable && (
               <SubArticleHeader>
@@ -278,80 +314,83 @@ class PageLayoutComponent extends React.Component {
         )}
         {isSectionAvailable && (
           <ReactResizeDetector
-            onResize={this.onResize}
-            refreshRate={200}
+            refreshRate={100}
             refreshMode="debounce"
+            refreshOptions={{ trailing: true }}
           >
             {({ width }) => (
-              <Section widthProp={width}>
-                {isSectionHeaderAvailable && (
-                  <SubSectionHeader
-                    isArticlePinned={this.state.isArticlePinned}
-                  >
-                    {sectionHeaderContent
-                      ? sectionHeaderContent.props.children
-                      : null}
-                  </SubSectionHeader>
-                )}
-                {isSectionFilterAvailable && (
-                  <SubSectionFilter className="section-header_filter">
-                    {sectionFilterContent
-                      ? sectionFilterContent.props.children
-                      : null}
-                  </SubSectionFilter>
-                )}
-                {isSectionBodyAvailable && (
-                  <>
-                    <SubSectionBody
-                      onDrop={onDrop}
-                      uploadFiles={uploadFiles}
-                      setSelections={setSelections}
-                      withScroll={withBodyScroll}
-                      autoFocus={withBodyAutoFocus}
-                      pinned={this.state.isArticlePinned}
-                      viewAs={viewAs}
+              <Provider
+                value={{
+                  sectionWidth: width,
+                }}
+              >
+                <Section widthProp={width}>
+                  {isSectionHeaderAvailable && (
+                    <SubSectionHeader
+                      isArticlePinned={this.state.isArticlePinned}
                     >
-                      {isSectionFilterAvailable && (
-                        <SubSectionFilter className="section-body_filter">
-                          {sectionFilterContent
-                            ? sectionFilterContent.props.children
+                      {sectionHeaderContent
+                        ? sectionHeaderContent.props.children
+                        : null}
+                    </SubSectionHeader>
+                  )}
+                  {isSectionFilterAvailable && (
+                    <SubSectionFilter className="section-header_filter">
+                      {sectionFilterContent
+                        ? sectionFilterContent.props.children
+                        : null}
+                    </SubSectionFilter>
+                  )}
+                  {isSectionBodyAvailable && (
+                    <>
+                      <SubSectionBody
+                        onDrop={onDrop}
+                        uploadFiles={uploadFiles}
+                        setSelections={setSelections}
+                        withScroll={withBodyScroll}
+                        autoFocus={withBodyAutoFocus}
+                        pinned={this.state.isArticlePinned}
+                        viewAs={viewAs}
+                      >
+                        {isSectionFilterAvailable && (
+                          <SubSectionFilter className="section-body_filter">
+                            {sectionFilterContent
+                              ? sectionFilterContent.props.children
+                              : null}
+                          </SubSectionFilter>
+                        )}
+                        <SubSectionBodyContent>
+                          {sectionBodyContent
+                            ? sectionBodyContent.props.children
                             : null}
-                        </SubSectionFilter>
+                        </SubSectionBodyContent>
+                        {isSectionPagingAvailable && (
+                          <SubSectionPaging>
+                            {sectionPagingContent
+                              ? sectionPagingContent.props.children
+                              : null}
+                          </SubSectionPaging>
+                        )}
+                      </SubSectionBody>
+                      {showProgressBar && (
+                        <ProgressBar
+                          className="layout-progress-bar"
+                          label={progressBarLabel}
+                          percent={progressBarValue}
+                          dropDownContent={progressBarDropDownContent}
+                        />
                       )}
-                      <SubSectionBodyContent>
-                        {sectionBodyContent
-                          ? React.cloneElement(
-                              sectionBodyContent.props.children,
-                              { widthProp: width }
-                            )
-                          : null}
-                      </SubSectionBodyContent>
-                      {isSectionPagingAvailable && (
-                        <SubSectionPaging>
-                          {sectionPagingContent
-                            ? sectionPagingContent.props.children
-                            : null}
-                        </SubSectionPaging>
-                      )}
-                    </SubSectionBody>
-                    {showProgressBar && (
-                      <ProgressBar
-                        className="layout-progress-bar"
-                        label={progressBarLabel}
-                        percent={progressBarValue}
-                        dropDownContent={progressBarDropDownContent}
-                      />
-                    )}
-                  </>
-                )}
+                    </>
+                  )}
 
-                {isArticleAvailable && (
-                  <SectionToggler
-                    visible={!this.state.isArticleVisible}
-                    onClick={this.showArticle}
-                  />
-                )}
-              </Section>
+                  {isArticleAvailable && (
+                    <SectionToggler
+                      visible={!this.state.isArticleVisible}
+                      onClick={this.showArticle}
+                    />
+                  )}
+                </Section>
+              </Provider>
             )}
           </ReactResizeDetector>
         )}
@@ -365,7 +404,6 @@ PageLayoutComponent.propTypes = {
   withBodyScroll: PropTypes.bool,
   withBodyAutoFocus: PropTypes.bool,
   t: PropTypes.func,
-
   showProgressBar: PropTypes.bool,
   progressBarValue: PropTypes.number,
   progressBarDropDownContent: PropTypes.any,
@@ -374,6 +412,8 @@ PageLayoutComponent.propTypes = {
   setSelections: PropTypes.func,
   uploadFiles: PropTypes.bool,
   hideAside: PropTypes.bool,
+  isLoaded: PropTypes.bool,
+  viewAs: PropTypes.string,
 };
 
 PageLayoutComponent.defaultProps = {

@@ -48,7 +48,19 @@ namespace ASC.Web.Api.Controllers
         }
 
         [Create(false)]
-        public AuthenticationTokenData AuthenticateMe([FromBody] AuthModel auth)
+        public AuthenticationTokenData AuthenticateMeFromBody([FromBody] AuthModel auth)
+        {
+            return AuthenticateMe(auth);
+        }
+
+        [Create(false)]
+        [Consumes("application/x-www-form-urlencoded")]
+        public AuthenticationTokenData AuthenticateMeFromForm([FromForm] AuthModel auth)
+        {
+            return AuthenticateMe(auth);
+        }
+
+        public AuthenticationTokenData AuthenticateMe(AuthModel auth)
         {
             var tenant = TenantManager.GetCurrentTenant();
             var user = GetUser(tenant.TenantId, auth);
