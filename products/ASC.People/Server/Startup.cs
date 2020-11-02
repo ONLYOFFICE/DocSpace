@@ -3,9 +3,12 @@ using System;
 
 using ASC.Api.Core;
 using ASC.Common;
+using ASC.Common.DependencyInjection;
 using ASC.Data.Reassigns;
 using ASC.Employee.Core.Controllers;
 using ASC.Web.Core.Users;
+
+using Autofac;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -33,6 +36,11 @@ namespace ASC.People
             DIHelper
                 .AddPeopleController()
                 .AddGroupController();
+        }
+
+        public void ConfigureContainer(ContainerBuilder builder)
+        {
+            builder.Register(Configuration, HostEnvironment.ContentRootPath);
         }
     }
 }

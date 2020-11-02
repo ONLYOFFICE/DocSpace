@@ -2,14 +2,12 @@
 
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.Settings;
-using ASC.FederatedLogin;
 using ASC.FederatedLogin.LoginProviders;
 using ASC.Web.Api.Models;
 using ASC.Web.Api.Routing;

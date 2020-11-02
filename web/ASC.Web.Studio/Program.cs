@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.IO;
 
+using Autofac.Extensions.DependencyInjection;
+
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -17,6 +19,7 @@ namespace ASC.Web.Studio
         public static IHostBuilder CreateWebHostBuilder(string[] args)
         {
             return Host.CreateDefaultBuilder(args)
+                .UseServiceProviderFactory(new AutofacServiceProviderFactory())
                 .ConfigureWebHostDefaults(w =>
                 {
                     w.UseStartup<Startup>();
@@ -33,7 +36,7 @@ namespace ASC.Web.Studio
                     config
                     .AddInMemoryCollection(new Dictionary<string, string>
                     {
-                                            {"pathToConf", path}
+                        {"pathToConf", path}
                     })
                     .AddJsonFile("appsettings.json")
                     .AddJsonFile($"appsettings.{hostingContext.HostingEnvironment.EnvironmentName}.json", true)

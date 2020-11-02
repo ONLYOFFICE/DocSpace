@@ -5,10 +5,12 @@ using System.Threading.Tasks;
 using ASC.Common;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
-using ASC.Core.Common;
 using ASC.Core.Notify;
 using ASC.Core.Notify.Senders;
 using ASC.Notify.Config;
+
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,6 +24,7 @@ namespace ASC.Notify
         public static async Task Main(string[] args)
         {
             var host = Host.CreateDefaultBuilder(args)
+                .UseServiceProviderFactory(new AutofacServiceProviderFactory())
                 .ConfigureAppConfiguration((hostContext, config) =>
                 {
                     var buided = config.Build();
@@ -65,8 +68,10 @@ namespace ASC.Notify
                     .AddSmtpSenderService()
                     .AddAWSSenderService()
                     .AddEmailSenderSinkService();
-
-                    services.AddAutofac(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
+                })
+                .ConfigureContainer<ContainerBuilder>((context, builder) =>
+                {
+                    builder.Register(context.Configuration, context.HostingEnvironment.ContentRootPath);
                 })
                 .UseConsoleLifetime()
                 .Build();

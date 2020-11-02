@@ -48,7 +48,7 @@ namespace ASC.ElasticSearch
         private ICacheNotify<AscCacheItem> Notify { get; }
         private ICacheNotify<IndexAction> IndexNotify { get; }
         private IServiceProvider ServiceProvider { get; }
-        public IContainer Container { get; }
+        public ILifetimeScope Container { get; }
         private bool IsStarted { get; set; }
         private CancellationTokenSource CancellationTokenSource { get; set; }
         private Timer Timer { get; set; }
@@ -59,7 +59,7 @@ namespace ASC.ElasticSearch
             ICacheNotify<AscCacheItem> notify,
             ICacheNotify<IndexAction> indexNotify,
             IServiceProvider serviceProvider,
-            IContainer container,
+            ILifetimeScope container,
             Settings settings)
         {
             Log = options.Get("ASC.Indexer");
