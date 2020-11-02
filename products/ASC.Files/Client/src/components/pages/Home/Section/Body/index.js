@@ -89,6 +89,7 @@ import {
   getTooltipLabel,
   getIsPrivacyFolder,
   getPrivacyInstructionsLink,
+  getIconOfDraggedFile,
 } from "../../../../../store/files/selectors";
 import { SharingPanel, OperationsPanel } from "../../../../panels";
 const {
@@ -1458,9 +1459,8 @@ class SectionBodyContent extends React.Component {
   };
 
   renderFileMoveTooltip = () => {
-    console.log("renderTooltip");
-    const { selection } = this.props;
-    const { title, icon } = selection[0];
+    const { selection, iconOfDraggedFile } = this.props;
+    const { title } = selection[0];
 
     const reg = /^([^\\]*)\.(\w+)/;
     const matches = title.match(reg);
@@ -1475,7 +1475,13 @@ class SectionBodyContent extends React.Component {
 
     return (
       <div className="tooltip-moved-obj-wrapper">
-        <img className="tooltip-moved-obj-icon" src={`${icon}`} alt="" />
+        {iconOfDraggedFile ? (
+          <img
+            className="tooltip-moved-obj-icon"
+            src={`${iconOfDraggedFile}`}
+            alt=""
+          />
+        ) : null}
         {nameOfMovedObj}
         {fileExtension ? (
           <span className="tooltip-moved-obj-extension">.{fileExtension}</span>
@@ -1832,6 +1838,7 @@ const mapStateToProps = (state) => {
     viewAs: getViewAs(state),
     viewer: getCurrentUser(state),
     tooltipValue: getTooltipLabel(state),
+    iconOfDraggedFile: getIconOfDraggedFile(state)(state),
   };
 };
 

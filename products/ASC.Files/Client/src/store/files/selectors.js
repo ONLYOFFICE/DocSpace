@@ -842,6 +842,7 @@ export const getFilesList = (state) => {
           webUrl,
           providerKey,
         } = item;
+
         const canOpenPlayer = isMediaOrImage(item.fileExst)(state);
         const contextOptions = getFilesContextOptions(
           item,
@@ -862,24 +863,9 @@ export const getFilesList = (state) => {
 
         let value = fileExst ? `file_${id}` : `folder_${id}`;
 
-        const isArchiveItem = isArchive(item.fileExst)(state);
-        const isImageItem = isImage(item.fileExst)(state);
-        const isSoundItem = isSound(item.fileExst)(state);
-        const isEbookItem = isEbook(item.fileExst)(state);
-        const isHtmlItem = isHtml(item.fileExst)(state);
         const isCanWebEdit = canWebEdit(item.fileExst)(state);
 
-        const icon = fileExst
-          ? getFileIcon(
-              fileExst,
-              24,
-              isArchiveItem,
-              isImageItem,
-              isSoundItem,
-              isEbookItem,
-              isHtmlItem
-            )
-          : getFolderIcon(providerKey, 24);
+        const icon = getIcon(state, 24, fileExst, providerKey);
 
         value += draggable ? "_draggable" : "";
 
@@ -1094,3 +1080,40 @@ export const getOperationsFolders = createSelector(
     );
   }
 );
+const getIcon = (state, size = 24, fileExst = null, providerKey = null) => {
+  if (fileExst) {
+    const isArchiveItem = isArchive(fileExst)(state);
+    const isImageItem = isImage(fileExst)(state);
+    const isSoundItem = isSound(fileExst)(state);
+    const isEbookItem = isEbook(fileExst)(state);
+    const isHtmlItem = isHtml(fileExst)(state);
+
+    return getFileIcon(
+      fileExst,
+      size,
+      isArchiveItem,
+      isImageItem,
+      isSoundItem,
+      isEbookItem,
+      isHtmlItem
+    );
+  } else {
+    return getFolderIcon(providerKey, size);
+  }
+};
+
+export const getIconOfDraggedFile = (state) => {
+  return createSelector(getSelection, (selection) => {
+    if (selection.length === 1) {
+      const icon = getIcon(
+        state,
+        24,
+        selection[0].fileExst,
+        selection[0].providerKey
+      );
+
+      return icon;
+    }
+    return;
+  });
+};
