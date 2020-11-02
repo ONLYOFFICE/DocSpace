@@ -571,15 +571,15 @@ namespace ASC.Api.Documents
         /// <category>Files</category>
         /// <returns></returns>
         [Create("file/{fileId}/startedit", DisableFormat = true)]
-        public object StartEdit(string fileId, bool editingAlone, string doc)
+        public object StartEdit(string fileId, StartEditModel model)
         {
-            return FilesControllerHelperString.StartEdit(fileId, editingAlone, doc);
+            return FilesControllerHelperString.StartEdit(fileId, model.EditingAlone, model.Doc);
         }
 
         [Create("file/{fileId:int}/startedit")]
-        public object StartEdit(int fileId, bool editingAlone, string doc)
+        public object StartEdit(int fileId, StartEditModel model)
         {
-            return FilesControllerHelperInt.StartEdit(fileId, editingAlone, doc);
+            return FilesControllerHelperInt.StartEdit(fileId, model.EditingAlone, model.Doc);
         }
 
         /// <summary>

@@ -57,9 +57,6 @@ namespace ASC.Notify
                     services.Configure<NotifyServiceCfg>(hostContext.Configuration.GetSection("notify"));
                     diHelper.AddSingleton<IConfigureOptions<NotifyServiceCfg>, ConfigureNotifyServiceCfg>();
 
-                    diHelper.TryAddSingleton<CommonLinkUtilitySettings>();
-                    diHelper.AddSingleton<IConfigureOptions<CommonLinkUtilitySettings>, ConfigureCommonLinkUtilitySettings>();
-
                     diHelper.AddNotifyServiceLauncher();
                     services.AddHostedService<NotifyServiceLauncher>();
 
