@@ -47,7 +47,7 @@ namespace ASC.ApiSystem.Models
         [StringLength(255)]
         public string FirstName { get; set; }
 
-        [Email]
+        //todo  [Email]
         [StringLength(255)]
         public string Email { get; set; }
 
