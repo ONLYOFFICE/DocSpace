@@ -1,29 +1,31 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { Loader } from "asc-web-components";
-import { PageLayout, utils } from "asc-web-common";
+import { PageLayout, utils, store } from "asc-web-common";
 import {
   ArticleHeaderContent,
   ArticleMainButtonContent,
-  ArticleBodyContent
+  ArticleBodyContent,
 } from "../../Article";
 import { SectionHeaderContent, SectionBodyContent } from "./Section";
 import { I18nextProvider, withTranslation } from "react-i18next";
 import { fetchGroup, resetGroup } from "../../../store/group/actions";
 import { createI18N } from "../../../helpers/i18n";
+import { setDocumentTitle } from "../../../helpers/utils";
+import { withRouter } from "react-router";
 const i18n = createI18N({
   page: "GroupAction",
-  localesPath: "pages/GroupAction"
+  localesPath: "pages/GroupAction",
 });
 const { changeLanguage } = utils;
+const { isAdmin } = store.auth.selectors;
 
 class GroupAction extends React.Component {
   componentDidMount() {
     const { match, fetchGroup, t } = this.props;
     const { groupId } = match.params;
 
-    document.title = `${t("GroupAction")} – ${t("People")}`;
-
+    setDocumentTitle(t("GroupAction"));
     changeLanguage(i18n);
 
     if (groupId) {
@@ -44,7 +46,7 @@ class GroupAction extends React.Component {
   render() {
     console.log("GroupAction render");
 
-    const { group, match } = this.props;
+    const { group, match, isAdmin } = this.props;
 
     return (
       <I18nextProvider i18n={i18n}>
@@ -54,9 +56,11 @@ class GroupAction extends React.Component {
               <ArticleHeaderContent />
             </PageLayout.ArticleHeader>
 
-            <PageLayout.ArticleMainButton>
-              <ArticleMainButtonContent />
-            </PageLayout.ArticleMainButton>
+            {isAdmin && (
+              <PageLayout.ArticleMainButton>
+                <ArticleMainButtonContent />
+              </PageLayout.ArticleMainButton>
+            )}
 
             <PageLayout.ArticleBody>
               <ArticleBodyContent />
@@ -76,9 +80,11 @@ class GroupAction extends React.Component {
               <ArticleHeaderContent />
             </PageLayout.ArticleHeader>
 
-            <PageLayout.ArticleMainButton>
-              <ArticleMainButtonContent />
-            </PageLayout.ArticleMainButton>
+            {isAdmin && (
+              <PageLayout.ArticleMainButton>
+                <ArticleMainButtonContent />
+              </PageLayout.ArticleMainButton>
+            )}
 
             <PageLayout.ArticleBody>
               <ArticleBodyContent />
@@ -94,9 +100,9 @@ class GroupAction extends React.Component {
   }
 }
 
-const GroupActionWrapper = withTranslation()(GroupAction);
+const GroupActionWrapper = withTranslation()(withRouter(GroupAction));
 
-const GroupActionContainer = props => {
+const GroupActionContainer = (props) => {
   useEffect(() => {
     changeLanguage(i18n);
   }, []);
@@ -110,14 +116,12 @@ const GroupActionContainer = props => {
 function mapStateToProps(state) {
   return {
     settings: state.auth.settings,
-    group: state.group.targetGroup
+    group: state.group.targetGroup,
+    isAdmin: isAdmin(state),
   };
 }
 
-export default connect(
-  mapStateToProps,
-  {
-    fetchGroup,
-    resetGroup
-  }
-)(GroupActionContainer);
+export default connect(mapStateToProps, {
+  fetchGroup,
+  resetGroup,
+})(GroupActionContainer);

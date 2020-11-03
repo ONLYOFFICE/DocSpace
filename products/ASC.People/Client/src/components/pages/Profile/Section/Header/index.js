@@ -3,21 +3,23 @@ import { connect } from "react-redux";
 import {
   IconButton,
   ContextMenuButton,
-  toastr,
-  AvatarEditor
+  AvatarEditor,
 } from "asc-web-components";
-import { Headline } from "asc-web-common";
+import { Headline, toastr } from "asc-web-common";
 import { withRouter } from "react-router";
 import {
   getUserStatus,
-  toEmployeeWrapper
+  toEmployeeWrapper,
 } from "../../../../../store/people/selectors";
 import { withTranslation, Trans } from "react-i18next";
-import { updateUserStatus } from "../../../../../store/people/actions";
+import {
+  updateUserStatus,
+  setFilter,
+} from "../../../../../store/people/actions";
 import { updateProfile } from "../../../../../store/profile/actions";
 import {
   fetchProfile,
-  getUserPhoto
+  getUserPhoto,
 } from "../../../../../store/profile/actions";
 import styled from "styled-components";
 import { store, api, constants } from "asc-web-common";
@@ -25,19 +27,19 @@ import {
   DeleteSelfProfileDialog,
   ChangePasswordDialog,
   ChangeEmailDialog,
-  DeleteProfileEverDialog
+  DeleteProfileEverDialog,
 } from "../../../../dialogs";
 import { createI18N } from "../../../../../helpers/i18n";
 const i18n = createI18N({
   page: "Profile",
-  localesPath: "pages/Profile"
+  localesPath: "pages/Profile",
 });
 const { isAdmin, isMe } = store.auth.selectors;
 const {
   resendUserInvites,
   createThumbnailsAvatar,
   loadAvatar,
-  deleteAvatar
+  deleteAvatar,
 } = api.people;
 const { EmployeeStatus } = constants;
 
@@ -86,7 +88,7 @@ class SectionHeaderContent extends React.PureComponent {
     }
   }
 
-  mapPropsToState = props => {
+  mapPropsToState = (props) => {
     let profile = toEmployeeWrapper(props.profile);
 
     const newState = {
@@ -96,21 +98,21 @@ class SectionHeaderContent extends React.PureComponent {
         tmpFile: "",
         image: null,
         defaultWidth: 0,
-        defaultHeight: 0
+        defaultHeight: 0,
       },
       dialogsVisible: {
         deleteSelfProfile: false,
         changePassword: false,
         changeEmail: false,
-        deleteProfileEver: false
-      }
+        deleteProfileEver: false,
+      },
     };
 
     return newState;
   };
 
   openAvatarEditor = () => {
-    getUserPhoto(this.state.profile.id).then(userPhotoData => {
+    getUserPhoto(this.state.profile.id).then((userPhotoData) => {
       if (userPhotoData.original) {
         let avatarDefaultSizes = /_(\d*)-(\d*)./g.exec(userPhotoData.original);
         if (avatarDefaultSizes !== null && avatarDefaultSizes.length > 2) {
@@ -123,9 +125,9 @@ class SectionHeaderContent extends React.PureComponent {
                 ? userPhotoData.original.indexOf("default_user_photo") !== -1
                   ? null
                   : userPhotoData.original
-                : null
+                : null,
             },
-            visibleAvatarEditor: true
+            visibleAvatarEditor: true,
           });
         } else {
           this.setState({
@@ -133,9 +135,9 @@ class SectionHeaderContent extends React.PureComponent {
               tmpFile: this.state.avatar.tmpFile,
               defaultWidth: 0,
               defaultHeight: 0,
-              image: null
+              image: null,
             },
-            visibleAvatarEditor: true
+            visibleAvatarEditor: true,
           });
         }
       }
@@ -156,55 +158,59 @@ class SectionHeaderContent extends React.PureComponent {
             tmpFile: response.data,
             image: response.data,
             defaultWidth: img.width,
-            defaultHeight: img.height
-          }
+            defaultHeight: img.height,
+          };
           _this.setState(stateCopy);
-          if (typeof callback === 'function') callback();
+          if (typeof callback === "function") callback();
         };
         img.src = response.data;
       })
       .catch((error) => toastr.error(error));
-  }
+  };
 
   onSaveAvatar = (isUpdate, result) => {
     if (isUpdate) {
       createThumbnailsAvatar(this.state.profile.id, {
-        x: Math.round(result.x * this.state.avatar.defaultWidth - result.width / 2),
-        y: Math.round(result.y * this.state.avatar.defaultHeight - result.height / 2),
+        x: Math.round(
+          result.x * this.state.avatar.defaultWidth - result.width / 2
+        ),
+        y: Math.round(
+          result.y * this.state.avatar.defaultHeight - result.height / 2
+        ),
         width: result.width,
         height: result.height,
-        tmpFile: this.state.avatar.tmpFile
+        tmpFile: this.state.avatar.tmpFile,
       })
-        .then(response => {
+        .then((response) => {
           let stateCopy = Object.assign({}, this.state);
           stateCopy.visibleAvatarEditor = false;
           stateCopy.avatar.tmpFile = "";
           stateCopy.profile.avatarMax =
-            response.max
-            + "?_="
-            + Math.floor(Math.random() * Math.floor(10000));
+            response.max +
+            "?_=" +
+            Math.floor(Math.random() * Math.floor(10000));
           toastr.success(this.props.t("ChangesApplied"));
           this.setState(stateCopy);
         })
-        .catch(error => toastr.error(error))
+        .catch((error) => toastr.error(error))
         .then(() => this.props.updateProfile(this.props.profile))
-        .then(() => this.props.fetchProfile(this.state.profile.id))
+        .then(() => this.props.fetchProfile(this.state.profile.id));
     } else {
       deleteAvatar(this.state.profile.id)
-        .then(response => {
+        .then((response) => {
           let stateCopy = Object.assign({}, this.state);
           stateCopy.visibleAvatarEditor = false;
           stateCopy.profile.avatarMax = response.big;
           toastr.success(this.props.t("ChangesApplied"));
           this.setState(stateCopy);
         })
-        .catch(error => toastr.error(error));
+        .catch((error) => toastr.error(error));
     }
   };
 
   onCloseAvatarEditor = () => {
     this.setState({
-      visibleAvatarEditor: false
+      visibleAvatarEditor: false,
     });
   };
 
@@ -212,16 +218,16 @@ class SectionHeaderContent extends React.PureComponent {
     this.setState({
       dialogsVisible: {
         ...this.state.dialogsVisible,
-        changePassword: !this.state.dialogsVisible.changePassword
-      }
+        changePassword: !this.state.dialogsVisible.changePassword,
+      },
     });
 
   toggleChangeEmailDialog = () =>
     this.setState({
       dialogsVisible: {
         ...this.state.dialogsVisible,
-        changeEmail: !this.state.dialogsVisible.changeEmail
-      }
+        changeEmail: !this.state.dialogsVisible.changeEmail,
+      },
     });
 
   onEditClick = () => {
@@ -236,7 +242,7 @@ class SectionHeaderContent extends React.PureComponent {
       .then(() => this.props.updateProfile(this.props.profile))
       .then(() => fetchProfile(userId))
       .then(() => toastr.success(t("SuccessChangeUserStatus")))
-      .catch(error => toastr.error(error));
+      .catch((error) => toastr.error(error));
   };
 
   onDisableClick = () =>
@@ -245,7 +251,7 @@ class SectionHeaderContent extends React.PureComponent {
   onEnableClick = () =>
     this.onUpdateUserStatus(EmployeeStatus.Active, this.state.profile.id);
 
-  onReassignDataClick = user => {
+  onReassignDataClick = (user) => {
     const { history, settings } = this.props;
     history.push(`${settings.homepage}/reassign/${user.userName}`);
   };
@@ -258,16 +264,16 @@ class SectionHeaderContent extends React.PureComponent {
     this.setState({
       dialogsVisible: {
         ...this.state.dialogsVisible,
-        deleteProfileEver: !this.state.dialogsVisible.deleteProfileEver
-      }
+        deleteProfileEver: !this.state.dialogsVisible.deleteProfileEver,
+      },
     });
 
   toggleDeleteSelfProfileDialog = () => {
     this.setState({
       dialogsVisible: {
         ...this.state.dialogsVisible,
-        deleteSelfProfile: !this.state.dialogsVisible.deleteSelfProfile
-      }
+        deleteSelfProfile: !this.state.dialogsVisible.deleteSelfProfile,
+      },
     });
   };
 
@@ -284,7 +290,7 @@ class SectionHeaderContent extends React.PureComponent {
           </Trans>
         )
       )
-      .catch(error => toastr.error(error));
+      .catch((error) => toastr.error(error));
   };
 
   getUserContextOptions = (user, viewer) => {
@@ -302,99 +308,84 @@ class SectionHeaderContent extends React.PureComponent {
           {
             key: "edit",
             label: t("EditUserDialogTitle"),
-            onClick: this.onEditClick
+            onClick: this.onEditClick,
           },
           {
             key: "change-password",
             label: t("PasswordChangeButton"),
-            onClick: this.toggleChangePasswordDialog
+            onClick: this.toggleChangePasswordDialog,
           },
           {
             key: "change-email",
             label: t("EmailChangeButton"),
-            onClick: this.toggleChangeEmailDialog
-          },
-          {
-            key: "edit-photo",
-            label: t("EditPhoto"),
-            onClick: this.openAvatarEditor
+            onClick: this.toggleChangeEmailDialog,
           },
           isMe(user, viewer.userName)
             ? viewer.isOwner
               ? {}
               : {
-                key: "delete-profile",
-                label: t("DeleteSelfProfile"),
-                onClick: this.toggleDeleteSelfProfileDialog
-              }
+                  key: "delete-profile",
+                  label: t("DeleteSelfProfile"),
+                  onClick: this.toggleDeleteSelfProfileDialog,
+                }
             : {
-              key: "disable",
-              label: t("DisableUserButton"),
-              onClick: this.onDisableClick
-            }
+                key: "disable",
+                label: t("DisableUserButton"),
+                onClick: this.onDisableClick,
+              },
         ];
       case "disabled":
         return [
           {
             key: "enable",
             label: t("EnableUserButton"),
-            onClick: this.onEnableClick
-          },
-          {
-            key: "edit-photo",
-            label: t("EditPhoto"),
-            onClick: this.openAvatarEditor
+            onClick: this.onEnableClick,
           },
           {
             key: "reassign-data",
             label: t("ReassignData"),
-            onClick: this.onReassignDataClick.bind(this, user)
+            onClick: this.onReassignDataClick.bind(this, user),
           },
           {
             key: "delete-personal-data",
             label: t("RemoveData"),
-            onClick: this.onDeletePersonalDataClick
+            onClick: this.onDeletePersonalDataClick,
           },
           {
             key: "delete-profile",
             label: t("DeleteSelfProfile"),
-            onClick: this.toggleDeleteProfileEverDialog
-          }
+            onClick: this.toggleDeleteProfileEverDialog,
+          },
         ];
       case "pending":
         return [
           {
             key: "edit",
             label: t("EditButton"),
-            onClick: this.onEditClick
+            onClick: this.onEditClick,
           },
           {
             key: "invite-again",
             label: t("InviteAgainLbl"),
-            onClick: this.onInviteAgainClick
-          },
-          {
-            key: "edit-photo",
-            label: t("EditPhoto"),
-            onClick: this.openAvatarEditor
+            onClick: this.onInviteAgainClick,
           },
           !isMe(user, viewer.userName) &&
-          (user.status === EmployeeStatus.Active
-            ? {
-              key: "disable",
-              label: t("DisableUserButton"),
-              onClick: this.onDisableClick
-            }
-            : {
-              key: "enable",
-              label: t("EnableUserButton"),
-              onClick: this.onEnableClick
-            }),
+            (user.status === EmployeeStatus.Active
+              ? {
+                  key: "disable",
+                  label: t("DisableUserButton"),
+                  onClick: this.onDisableClick,
+                }
+              : {
+                  key: "enable",
+                  label: t("EnableUserButton"),
+                  onClick: this.onEnableClick,
+                }),
           isMe(user, viewer.userName) && {
             key: "delete-profile",
             label: t("DeleteSelfProfile"),
-            onClick: this.toggleDeleteSelfProfileDialog
-          }
+            onClick: this.toggleDeleteSelfProfileDialog,
+          },
         ];
       default:
         return [];
@@ -402,9 +393,9 @@ class SectionHeaderContent extends React.PureComponent {
   };
 
   onClickBack = () => {
-    const { history, settings } = this.props;
-
-    history.push(settings.homepage);
+    const { filter, setFilter } = this.props;
+    setFilter(filter);
+    //history.push(settings.homepage);
   };
 
   render() {
@@ -415,7 +406,7 @@ class SectionHeaderContent extends React.PureComponent {
       t,
       filter,
       settings,
-      history
+      history,
     } = this.props;
     const { avatar, visibleAvatarEditor, dialogsVisible } = this.state;
     const contextOptions = () => this.getUserContextOptions(profile, viewer);
@@ -455,8 +446,8 @@ class SectionHeaderContent extends React.PureComponent {
           onSave={this.onSaveAvatar}
           onLoadFile={this.onLoadFileAvatar}
           headerLabel={t("editAvatar")}
-          chooseFileLabel={t("chooseFileLabel")}
-          chooseMobileFileLabel={t("chooseMobileFileLabel")}
+          selectNewPhotoLabel={t("selectNewPhotoLabel")}
+          orDropFileHereLabel={t("orDropFileHereLabel")}
           unknownTypeError={t("ErrorUnknownFileImageType")}
           maxSizeFileError={t("maxSizeFileError")}
           unknownError={t("Error")}
@@ -502,17 +493,19 @@ class SectionHeaderContent extends React.PureComponent {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     settings: state.auth.settings,
     profile: state.profile.targetUser,
     viewer: state.auth.user,
-    isAdmin: isAdmin(state.auth.user),
-    filter: state.people.filter
+    isAdmin: isAdmin(state),
+    filter: state.people.filter,
   };
 };
 
-export default connect(
-  mapStateToProps,
-  { updateUserStatus, fetchProfile, updateProfile }
-)(withRouter(withTranslation()(SectionHeaderContent)));
+export default connect(mapStateToProps, {
+  updateUserStatus,
+  fetchProfile,
+  updateProfile,
+  setFilter,
+})(withRouter(withTranslation()(SectionHeaderContent)));

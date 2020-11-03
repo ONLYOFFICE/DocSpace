@@ -13,16 +13,17 @@
 
 	<ItemGroup>
 	  <None Remove="protos\BackupProgress.proto" />
+	  <None Remove="protos\DeleteSchedule.proto" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="Google.Protobuf" Version="3.12.3" />
-	  <PackageReference Include="Grpc" Version="2.30.0" />
-	  <PackageReference Include="Grpc.Tools" Version="2.30.0">
+	  <PackageReference Include="Google.Protobuf" Version="3.13.0" />
+	  <PackageReference Include="Grpc" Version="2.32.0" />
+	  <PackageReference Include="Grpc.Tools" Version="2.32.0">
 	    <PrivateAssets>all</PrivateAssets>
 	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	  </PackageReference>
-	  <PackageReference Include="SharpCompress" Version="0.25.0" />
+	  <PackageReference Include="SharpCompress" Version="0.26.0" />
 	</ItemGroup>
 	<ItemGroup>
 	  <ProjectReference Include="..\..\..\products\ASC.Files\Core\ASC.Files.Core.csproj" />
@@ -32,6 +33,7 @@
 	  <ProjectReference Include="..\..\ASC.Data.Storage\ASC.Data.Storage.csproj" />
 	</ItemGroup>
 	<ItemGroup>
+	  <Protobuf Include="protos\DeleteSchedule.proto" />
 	  <Protobuf Include="protos\BackupProgress.proto" />
 	</ItemGroup>
 	<Target Name="ChangeAliasesOfStrongNameAssemblies" BeforeTargets="FindReferenceAssembliesForReferences;ResolveReferences">

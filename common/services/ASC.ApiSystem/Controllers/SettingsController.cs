@@ -28,7 +28,6 @@ using ASC.ApiSystem.Models;
 using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
-using ASC.Core.Tenants;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -73,7 +72,7 @@ namespace ASC.ApiSystem.Controllers
         [Authorize(AuthenticationSchemes = "auth.allowskip")]
         public IActionResult GetSettings([FromQuery] SettingsModel model)
         {
-            if (!GetTenant(model, out int tenantId, out object error))
+            if (!GetTenant(model, out var tenantId, out var error))
             {
                 return BadRequest(error);
             }
@@ -99,7 +98,7 @@ namespace ASC.ApiSystem.Controllers
         [Authorize(AuthenticationSchemes = "auth.allowskip")]
         public IActionResult SaveSettings([FromBody] SettingsModel model)
         {
-            if (!GetTenant(model, out int tenantId, out object error))
+            if (!GetTenant(model, out var tenantId, out var error))
             {
                 return BadRequest(error);
             }
@@ -162,7 +161,7 @@ namespace ASC.ApiSystem.Controllers
                 return true;
             }
 
-            if (!CommonMethods.GetTenant(model, out Tenant tenant))
+            if (!CommonMethods.GetTenant(model, out var tenant))
             {
                 error = new
                 {

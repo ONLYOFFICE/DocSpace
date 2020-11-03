@@ -1,12 +1,10 @@
-import React, {forwardRef} from "react";
-import PropTypes from 'prop-types';
-import StyledGrid from './styledGrid';
+import React, { forwardRef } from "react";
+import PropTypes from "prop-types";
+import StyledGrid from "./styledGrid";
 
 const Grid = forwardRef(({ tag, as, ...rest }, ref) => {
   //console.log("Grid render", rest)
-  return (
-    <StyledGrid as={!as && tag ? tag : as} ref={ref} {...rest} />
-  );
+  return <StyledGrid as={!as && tag ? tag : as} ref={ref} {...rest} />;
 });
 
 Grid.propTypes = {
@@ -15,7 +13,11 @@ Grid.propTypes = {
   alignItems: PropTypes.string,
   alignSelf: PropTypes.string,
   areasProp: PropTypes.array,
-  columnsProp: PropTypes.oneOfType([PropTypes.string, PropTypes.array, PropTypes.object]),
+  columnsProp: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.array,
+    PropTypes.object,
+  ]),
   gridArea: PropTypes.string,
   gridColumnGap: PropTypes.string,
   gridGap: PropTypes.string,
@@ -28,12 +30,12 @@ Grid.propTypes = {
   paddingProp: PropTypes.string,
   rowsProp: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
   tag: PropTypes.string,
-  widthProp: PropTypes.string
-}
+  widthProp: PropTypes.string,
+};
 
 Grid.defaultProps = {
-  heightProp: '100%',
-  widthProp: '100%'
+  heightProp: "100%",
+  widthProp: "100%",
 };
 
 Grid.displayName = "Grid";

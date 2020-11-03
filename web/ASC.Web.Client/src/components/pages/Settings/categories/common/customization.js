@@ -6,31 +6,32 @@ import styled from "styled-components";
 import { store, utils } from "asc-web-common";
 import {
   setLanguageAndTime,
-  getPortalTimezones
+  getPortalTimezones,
 } from "../../../../../store/settings/actions";
 import { default as clientStore } from "../../../../../store/store";
-
+import { setDocumentTitle } from "../../../../../helpers/utils";
+const { getLanguage } = store.auth.selectors;
 const { changeLanguage } = utils;
 const {
   getPortalCultures,
   getModules,
-  getCurrentCustomSchema
+  getCurrentCustomSchema,
 } = store.auth.actions;
 
 const mapCulturesToArray = (cultures, t) => {
-  return cultures.map(culture => {
+  return cultures.map((culture) => {
     return { key: culture, label: t(`Culture_${culture}`) };
   });
 };
 
-const mapTimezonesToArray = timezones => {
-  return timezones.map(timezone => {
+const mapTimezonesToArray = (timezones) => {
+  return timezones.map((timezone) => {
     return { key: timezone.id, label: timezone.displayName };
   });
 };
 
 const findSelectedItemByKey = (items, selectedItemKey) => {
-  return items.find(item => item.key === selectedItemKey);
+  return items.find((item) => item.key === selectedItemKey);
 };
 
 const StyledComponent = styled.div`
@@ -95,12 +96,13 @@ class Customization extends React.Component {
       portalTimeZoneId,
       rawCultures,
       rawTimezones,
-      t
+      organizationName,
+      t,
     } = props;
     const languages = mapCulturesToArray(rawCultures, t);
     const timezones = mapTimezonesToArray(rawTimezones);
 
-    document.title = `${t("Customization")} – ${t("OrganizationName")}`;
+    setDocumentTitle(t("Customization"));
 
     this.state = {
       isLoadedData: false,
@@ -116,7 +118,7 @@ class Customization extends React.Component {
         portalLanguage || languages[0]
       ),
       isLoadingGreetingSave: false,
-      isLoadingGreetingRestore: false
+      isLoadingGreetingRestore: false,
     };
   }
 
@@ -126,7 +128,7 @@ class Customization extends React.Component {
       portalLanguage,
       portalTimeZoneId,
       t,
-      getPortalTimezones
+      getPortalTimezones,
     } = this.props;
     const { timezones, languages, isLoadedData } = this.state;
 
@@ -162,7 +164,7 @@ class Customization extends React.Component {
     }
     if (language !== prevProps.language) {
       changeLanguage(i18n)
-        .then(t => {
+        .then((t) => {
           const newLocaleLanguages = mapCulturesToArray(
             this.props.rawCultures,
             t
@@ -175,7 +177,7 @@ class Customization extends React.Component {
 
           this.setState({
             languages: newLocaleLanguages,
-            language: newLocaleSelectedLanguage
+            language: newLocaleSelectedLanguage,
           });
         })
         .then(() => getModules(clientStore.dispatch))
@@ -183,26 +185,26 @@ class Customization extends React.Component {
     }
   }
 
-  onLanguageSelect = language => {
+  onLanguageSelect = (language) => {
     this.setState({ language });
   };
 
-  onTimezoneSelect = timezone => {
+  onTimezoneSelect = (timezone) => {
     this.setState({ timezone });
   };
 
   onSaveLngTZSettings = () => {
     const { setLanguageAndTime, i18n } = this.props;
-    this.setState({ isLoading: true }, function() {
+    this.setState({ isLoading: true }, function () {
       setLanguageAndTime(this.state.language.key, this.state.timezone.key)
         .then(() => changeLanguage(i18n))
-        .then(t => toastr.success(t("SuccessfullySaveSettingsMessage")))
-        .catch(error => toastr.error(error))
+        .then((t) => toastr.success(t("SuccessfullySaveSettingsMessage")))
+        .catch((error) => toastr.error(error))
         .finally(() => this.setState({ isLoading: false }));
     });
   };
 
-  onClickLink = e => {
+  onClickLink = (e) => {
     e.preventDefault();
     const { history } = this.props;
     history.push(e.target.pathname);
@@ -268,22 +270,27 @@ class Customization extends React.Component {
 }
 
 function mapStateToProps(state) {
+  const {
+    culture,
+    timezone,
+    timezones,
+    cultures,
+    nameSchemaId,
+    organizationName,
+  } = state.auth.settings;
   return {
-    portalLanguage: state.auth.settings.culture,
-    portalTimeZoneId: state.auth.settings.timezone,
-    language:
-      state.auth.user.cultureName || state.auth.settings.culture || "en-US",
-    rawTimezones: state.auth.settings.timezones,
-    rawCultures: state.auth.settings.cultures,
-    nameSchemaId: state.auth.settings.nameSchemaId
+    portalLanguage: culture,
+    portalTimeZoneId: timezone,
+    language: getLanguage(state),
+    rawTimezones: timezones,
+    rawCultures: cultures,
+    nameSchemaId: nameSchemaId,
+    organizationName,
   };
 }
 
-export default connect(
-  mapStateToProps,
-  {
-    getPortalCultures,
-    setLanguageAndTime,
-    getPortalTimezones
-  }
-)(withTranslation()(Customization));
+export default connect(mapStateToProps, {
+  getPortalCultures,
+  setLanguageAndTime,
+  getPortalTimezones,
+})(withTranslation()(Customization));

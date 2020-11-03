@@ -41,7 +41,11 @@ class HelpButton extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = { isOpen: false, displayType: this.getTypeByWidth(), hideTooltip: false };
+    this.state = {
+      isOpen: false,
+      displayType: this.getTypeByWidth(),
+      hideTooltip: false,
+    };
     this.ref = React.createRef();
     this.refTooltip = React.createRef();
     this.id = this.props.id || uniqueId();
@@ -56,7 +60,7 @@ class HelpButton extends React.Component {
       handleAnyClick(true, this.handleClick);
     });
 
-    if(this.state.hideTooltip) {
+    if (this.state.hideTooltip) {
       this.refTooltip.current.hideTooltip();
     }
   };
@@ -70,7 +74,7 @@ class HelpButton extends React.Component {
     }
   };
 
-  handleClick = e => {
+  handleClick = (e) => {
     //console.log(`handleClick ${this.props.tooltipId} isOpen=${this.state.isOpen}`, this.ref, e);
 
     if (!this.ref.current.contains(e.target)) {
@@ -121,7 +125,7 @@ class HelpButton extends React.Component {
 
   onClick = () => {
     let state = false;
-    if(this.state.displayType === "aside") {
+    if (this.state.displayType === "aside") {
       state = true;
     }
     this.setState({ isOpen: !this.state.isOpen, hideTooltip: state });
@@ -143,7 +147,7 @@ class HelpButton extends React.Component {
       getContent,
       className,
       dataTip,
-      style
+      style,
     } = this.props;
 
     return (
@@ -212,7 +216,7 @@ class HelpButton extends React.Component {
 HelpButton.propTypes = {
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
-    PropTypes.node
+    PropTypes.node,
   ]),
   tooltipContent: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   offsetRight: PropTypes.number,
@@ -231,7 +235,7 @@ HelpButton.propTypes = {
   getContent: PropTypes.func,
   className: PropTypes.string,
   id: PropTypes.string,
-  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 };
 
 HelpButton.defaultProps = {
@@ -243,7 +247,7 @@ HelpButton.defaultProps = {
   zIndex: 310,
   displayType: "auto",
   className: "icon-button",
-  iconName: "QuestionIcon"
+  iconName: "QuestionIcon",
 };
 
 export default HelpButton;

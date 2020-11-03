@@ -41,6 +41,8 @@ namespace ASC.Api.Settings
 
         public string MailServer { get; set; }
 
+        public string XmppServer { get; set; }
+
         [JsonIgnore]
         private IConfiguration Configuration { get; }
 
@@ -54,6 +56,8 @@ namespace ASC.Api.Settings
             CommunityServer = GetCommunityVersion();
             DocumentServer = GetDocumentVersion();
             MailServer = GetMailServerVersion();
+            XmppServer = GetXmppServerVersion();
+
             return this;
         }
 
@@ -94,6 +98,23 @@ namespace ASC.Api.Settings
             }
 
             return null;*/
+        }
+
+        private static string GetXmppServerVersion()
+        {
+            //try
+            //{
+            //    if (ConfigurationManagerExtension.AppSettings["web.talk"] != "true")
+            //        return null;
+
+            //    return GetCommunityVersion();
+            //}
+            //catch (Exception e)
+            //{
+            //    LogManager.GetLogger("ASC").Warn(e.Message, e);
+            //}
+
+            return null;
         }
     }
 

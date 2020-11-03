@@ -12,38 +12,39 @@ import {
   Text,
   Link,
   Button,
-  toastr
 } from "asc-web-components";
 import { withTranslation } from "react-i18next";
-import { utils as commonUtils, api } from "asc-web-common";
+import { utils as commonUtils, api, toastr } from "asc-web-common";
 import { ReactSVG } from "react-svg";
 import {
   StyledAsidePanel,
   StyledContent,
   StyledHeaderContent,
   StyledBody,
-  StyledFooter
+  StyledFooter,
 } from "../StyledPanels";
 import {
   getFileIcon,
   getFolderIcon,
-  canWebEdit,
-  isImage,
-  isSound,
-  isVideo
+  getFilter,
+  getFiles,
+  getFolders,
+  getTreeFolders,
+  getSelectedFolder,
 } from "../../../store/files/selectors";
 import {
   fetchFiles,
   setMediaViewerData,
   setTreeFolders,
-  setNewTreeFilesBadge,
-  setNewRowItems
+  setUpdateTree,
+  setNewRowItems,
+  setIsLoading,
+  addFileToRecentlyViewed,
 } from "../../../store/files/actions";
-import store from "../../../store/store";
 import { createI18N } from "../../../helpers/i18n";
 const i18n = createI18N({
   page: "NewFilesPanel",
-  localesPath: "panels/NewFilesPanel"
+  localesPath: "panels/NewFilesPanel",
 });
 
 const { changeLanguage } = commonUtils;
@@ -58,13 +59,13 @@ class NewFilesPanelComponent extends React.Component {
   }
 
   componentDidMount() {
-    const { folderId, onLoading } = this.props;
-    onLoading(true);
+    const { folderId, setIsLoading } = this.props;
+    setIsLoading(true);
     api.files
       .getNewFiles(folderId[folderId.length - 1])
-      .then(files => this.setState({ files }))
-      .catch(err => toastr.error(err))
-      .finally(() => onLoading(false));
+      .then((files) => this.setState({ files }))
+      .catch((err) => toastr.error(err))
+      .finally(() => setIsLoading(false));
   }
 
   getItemIcon = (item, isEdit) => {
@@ -75,7 +76,7 @@ class NewFilesPanelComponent extends React.Component {
 
     return (
       <ReactSVG
-        beforeInjection={svg => {
+        beforeInjection={(svg) => {
           svg.setAttribute("style", "margin-top: 4px");
           isEdit && svg.setAttribute("style", "margin-left: 24px");
         }}
@@ -105,16 +106,15 @@ class NewFilesPanelComponent extends React.Component {
     api.files
       .markAsRead(folderIds, fileIds)
       .then(() => {
-        this.props.setNewTreeFilesBadge(true);
         this.setNewFilesCount(folderId, markAsReadFiles);
         this.props.setNewRowItems(itemsIds);
       })
-      .catch(err => toastr.error(err))
+      .catch((err) => toastr.error(err))
       .finally(() => onClose());
   };
 
-  onNewFilesClick = item => {
-    const { onClose, /*onLoading,*/ folderId } = this.props;
+  onNewFilesClick = (item) => {
+    const { onClose, /*setIsLoading,*/ folderId } = this.props;
     const folderIds = [];
     const fileId = [];
     const isFile = item.fileExst;
@@ -124,30 +124,39 @@ class NewFilesPanelComponent extends React.Component {
     api.files
       .markAsRead(folderIds, fileId)
       .then(() => {
-        this.props.setNewTreeFilesBadge(true);
+        this.props.setUpdateTree(true);
         this.setNewFilesCount(folderId, false, item);
         this.onFilesClick(item);
       })
-      .catch(err => toastr.error(err))
+      .catch((err) => toastr.error(err))
       .finally(() => {
         !isFile && onClose();
       });
   };
 
-  onFilesClick = item => {
-    const { id, fileExst, viewUrl } = item;
-    const { filter, setMediaViewerData } = this.props;
+  onFilesClick = (item) => {
+    const { id, fileExst, viewUrl, fileType } = item;
+    const {
+      filter,
+      setMediaViewerData,
+      fetchFiles,
+      addFileToRecentlyViewed,
+    } = this.props;
 
     if (!fileExst) {
-      fetchFiles(id, filter, store.dispatch).catch(err => toastr.error(err));
+      fetchFiles(id, filter).catch((err) => toastr.error(err));
     } else {
-      if (canWebEdit(fileExst)) {
-        return window.open(`./doceditor?fileId=${id}`, "_blank");
+      const canEdit = [5, 6, 7].includes(fileType); //TODO: maybe dirty
+      const isMedia = [2, 3, 4].includes(fileType);
+
+      if (canEdit) {
+        return addFileToRecentlyViewed(id)
+          .then(() => console.log("Pushed to recently viewed"))
+          .catch((e) => console.error(e))
+          .finally(window.open(`./doceditor?fileId=${id}`, "_blank"));
       }
 
-      const isOpenMedia =
-        isImage(fileExst) || isSound(fileExst) || isVideo(fileExst);
-      if (isOpenMedia) {
+      if (isMedia) {
         const mediaItem = { visible: true, id };
         setMediaViewerData(mediaItem);
         return;
@@ -158,15 +167,21 @@ class NewFilesPanelComponent extends React.Component {
   };
 
   setNewFilesCount = (folderPath, markAsReadAll, item) => {
-    const { treeFolders, setTreeFolders, folders, files } = this.props;
+    const {
+      treeFolders,
+      setTreeFolders,
+      folders,
+      files,
+      setUpdateTree,
+    } = this.props;
 
     const data = treeFolders;
     let dataItem;
 
     const loop = (index, newData) => {
-      dataItem = newData.find(x => x.id === folderPath[index]);
+      dataItem = newData.find((x) => x.id === folderPath[index]);
       if (index === folderPath.length - 1) {
-        const rootItem = data.find(x => x.id === folderPath[0]);
+        const rootItem = data.find((x) => x.id === folderPath[0]);
         const newFilesCounter = dataItem.newItems
           ? dataItem.newItems
           : dataItem.new;
@@ -184,28 +199,29 @@ class NewFilesPanelComponent extends React.Component {
     if (folderPath.length > 1) {
       loop(0, data);
     } else {
-      dataItem = data.find(x => x.id === +folderPath[0]);
+      dataItem = data.find((x) => x.id === +folderPath[0]);
       dataItem.newItems = markAsReadAll ? 0 : dataItem.newItems - 1;
 
       if (item && item.fileExst) {
-        const fileItem = files.find(x => x.id === item.id && x.fileExst);
+        const fileItem = files.find((x) => x.id === item.id && x.fileExst);
         if (fileItem) {
           fileItem.new = markAsReadAll ? 0 : fileItem.new - 1;
         } else {
-          const filesFolder = folders.find(x => x.id === item.folderId);
+          const filesFolder = folders.find((x) => x.id === item.folderId);
           if (filesFolder) {
             filesFolder.new = markAsReadAll ? 0 : filesFolder.new - 1;
           }
         }
         this.props.setNewRowItems([`${item.id}`]);
       } else if (item && !item.fileExst) {
-        const folderItem = folders.find(x => x.id === item.id && !x.fileExst);
+        const folderItem = folders.find((x) => x.id === item.id && !x.fileExst);
         if (folderItem) {
           folderItem.new = markAsReadAll ? 0 : folderItem.new - 1;
         }
       }
     }
 
+    setUpdateTree(true);
     setTreeFolders(data);
   };
 
@@ -227,7 +243,7 @@ class NewFilesPanelComponent extends React.Component {
             </StyledHeaderContent>
             <StyledBody className="files-operations-body">
               <RowContainer useReactWindow manualHeight="83vh">
-                {files.map(file => {
+                {files.map((file) => {
                   const element = this.getItemIcon(file);
                   return (
                     <Row key={file.id} element={element}>
@@ -279,23 +295,33 @@ class NewFilesPanelComponent extends React.Component {
 
 NewFilesPanelComponent.propTypes = {
   onClose: PropTypes.func,
-  visible: PropTypes.bool
+  visible: PropTypes.bool,
 };
 
 const NewFilesPanelContainerTranslated = withTranslation()(
   NewFilesPanelComponent
 );
 
-const NewFilesPanel = props => (
+const NewFilesPanel = (props) => (
   <NewFilesPanelContainerTranslated i18n={i18n} {...props} />
 );
 
-const mapStateToProps = state => {
-  const { filter, files, folders, treeFolders, selectedFolder } = state.files;
-  return { filter, files, folders, treeFolders, selectedFolder };
+const mapStateToProps = (state) => {
+  return {
+    filter: getFilter(state),
+    files: getFiles(state),
+    folders: getFolders(state),
+    treeFolders: getTreeFolders(state),
+    selectedFolder: getSelectedFolder(state),
+  };
 };
 
-export default connect(
-  mapStateToProps,
-  { setMediaViewerData, setTreeFolders, setNewTreeFilesBadge, setNewRowItems }
-)(withRouter(NewFilesPanel));
+export default connect(mapStateToProps, {
+  setMediaViewerData,
+  setTreeFolders,
+  setUpdateTree,
+  setNewRowItems,
+  fetchFiles,
+  addFileToRecentlyViewed,
+  setIsLoading,
+})(withRouter(NewFilesPanel));

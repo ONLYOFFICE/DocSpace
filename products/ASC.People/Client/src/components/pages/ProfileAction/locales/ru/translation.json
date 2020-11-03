@@ -9,6 +9,7 @@
   "Location": "Местоположение",
   "Comments": "Комментарии",
   "SaveButton": "Сохранить",
+  "UpdatingProcess": "Обновление...",
   "CancelButton": "Отмена",
   "CopyEmailAndPassword": "Копировать email и пароль",
   "UserType": "Тип",
@@ -40,7 +41,7 @@
   "ErrorPasswordNoUpperCase": "заглавные буквы",
   "ErrorPasswordNoSpecialSymbols": "специальные символы",
   "ErrorPasswordLength": "от {{from}} до {{to}} символов",
-  
+
   "CustomCreation": "{{user}} (создание)",
 
   "ActivationLink": "Ссылка для активации",
@@ -51,8 +52,8 @@
   "Phone": "Телефон",
   "ChangesSavedSuccessfully": "Изменения успешно сохранены",
   "SearchDepartments": "Поиск группы",
-  "chooseFileLabel":  "Перетащите файл сюда или нажмите, чтобы выбрать файл",
-  "chooseMobileFileLabel": "Нажмите сюда, чтобы выбрать файл",
+  "selectNewPhotoLabel": "Выбрать новое фото",
+  "orDropFileHereLabel": "или перетащите файл сюда",
   "maxSizeFileError": "Превышен максимальный размер файла",
   "editAvatar": "Изменить",
   "CalendarSelectDate": "Выберите дату",

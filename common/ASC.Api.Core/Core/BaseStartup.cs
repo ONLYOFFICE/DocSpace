@@ -4,7 +4,6 @@ using ASC.Api.Core.Auth;
 using ASC.Api.Core.Core;
 using ASC.Api.Core.Middleware;
 using ASC.Common;
-using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
 
 using Microsoft.AspNetCore.Authentication;
@@ -29,18 +28,20 @@ namespace ASC.Api.Core
         public virtual JsonConverter[] Converters { get; }
         public virtual bool AddControllers { get; } = true;
         public virtual bool ConfirmAddScheme { get; } = false;
+        protected DIHelper DIHelper { get; }
 
         public BaseStartup(IConfiguration configuration, IHostEnvironment hostEnvironment)
         {
             Configuration = configuration;
             HostEnvironment = hostEnvironment;
+            DIHelper = new DIHelper();
         }
 
         public virtual void ConfigureServices(IServiceCollection services)
         {
             services.AddHttpContextAccessor();
 
-            var diHelper = new DIHelper(services);
+            DIHelper.Configure(services);
 
             if (AddControllers)
             {
@@ -62,7 +63,7 @@ namespace ASC.Api.Core
                     });
             }
 
-            diHelper
+            DIHelper
                 .AddCultureMiddleware()
                 .AddIpSecurityFilter()
                 .AddPaymentFilter()
@@ -85,7 +86,7 @@ namespace ASC.Api.Core
                 config.OutputFormatters.Add(new XmlOutputFormatter());
             });
 
-            diHelper.AddCookieAuthHandler();
+            DIHelper.AddCookieAuthHandler();
             var authBuilder = services.AddAuthentication("cookie")
                 .AddScheme<AuthenticationSchemeOptions, CookieAuthHandler>("cookie", a => { });
 
@@ -96,10 +97,8 @@ namespace ASC.Api.Core
 
             if (LogParams != null)
             {
-                diHelper.AddNLogManager(LogParams);
+                DIHelper.AddNLogManager(LogParams);
             }
-
-            services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
         }
 
         public virtual void Configure(IApplicationBuilder app, IWebHostEnvironment env)

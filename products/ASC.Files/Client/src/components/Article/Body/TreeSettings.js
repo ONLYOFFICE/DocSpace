@@ -3,18 +3,28 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { TreeMenu, TreeNode, Icons } from "asc-web-components";
 import styled from "styled-components";
-import { history, utils } from "asc-web-common";
+import { history, utils, store as initStore } from "asc-web-common";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import { createI18N } from "../../../helpers/i18n";
 
 import {
   setSelectedNode,
-  setExpandSettingsTree
+  setExpandSettingsTree,
+  getFilesSettings,
+  setSelectedFolder,
 } from "../../../store/files/actions";
+import {
+  getIsLoading,
+  getSettingsSelectedTreeNode,
+  getExpandedSetting,
+  getEnableThirdParty,
+  getSelectedTreeNode,
+} from "../../../store/files/selectors";
+const { isAdmin } = initStore.auth.selectors;
 
 const i18n = createI18N({
   page: "Settings",
-  localesPath: "pages/Settings"
+  localesPath: "pages/Settings",
 });
 
 const { changeLanguage } = utils;
@@ -26,20 +36,47 @@ const StyledTreeMenu = styled(TreeMenu)`
     background: #dfe2e3 !important;
   }
 
-  .settings-node {
-    margin-left: 8px !important;
+  .rc-tree-treenode-disabled > span:not(.rc-tree-switcher),
+  .rc-tree-treenode-disabled > a,
+  .rc-tree-treenode-disabled > a span {
+    cursor: wait;
+  }
+
+  .rc-tree-child-tree .rc-tree-node-content-wrapper > .rc-tree-title {
+    width: 99% !important;
+    padding-left: 4px !important;
+  }
+
+  .rc-tree-child-tree {
+    margin-left: 24px;
   }
 `;
 
-const PureTreeSettings = props => {
+const PureTreeSettings = ({
+  match,
+  enableThirdParty,
+  isAdmin,
+  selectedTreeNode,
+  expandedSetting,
+  isLoading,
+  setSelectedNode,
+  setExpandSettingsTree,
+  getFilesSettings,
+  setSelectedFolder,
+  selectedFolder,
+  t,
+}) => {
   useEffect(() => {
-    const { match, setSelectedNode, setExpandSettingsTree } = props;
     const { setting } = match.params;
-    setSelectedNode([setting]);
-    if (setting) setExpandSettingsTree(["settings"]);
-  }, [props.match.setting]);
+    if (selectedTreeNode[0] !== setting) setSelectedNode([setting]);
+    if (setting && !expandedSetting) setExpandSettingsTree(["settings"]);
+  }, [match]);
 
-  const switcherIcon = obj => {
+  useEffect(() => {
+    getFilesSettings();
+  }, []);
+
+  const switcherIcon = (obj) => {
     if (obj.isLeaf) {
       return null;
     }
@@ -50,32 +87,34 @@ const PureTreeSettings = props => {
     }
   };
 
-  const onSelect = section => {
-    const { setSelectedNode, setExpandSettingsTree } = props;
+  const onSelect = (section) => {
     const path = section[0];
+
+    if (selectedFolder) setSelectedFolder({});
 
     if (path === "settings") {
       setSelectedNode(["common"]);
-      setExpandSettingsTree(section);
+      if (!expandedSetting || expandedSetting[0] !== "settings")
+        setExpandSettingsTree(section);
       return history.push("/products/files/settings/common");
     }
 
-    setSelectedNode(section);
-    return history.push(`/products/files/settings/${path}`);
+    if (selectedTreeNode[0] !== path) {
+      setSelectedNode(section);
+      return history.push(`/products/files/settings/${path}`);
+    }
   };
 
-  const onExpand = data => {
-    const { setExpandSettingsTree } = props;
+  const onExpand = (data) => {
     setExpandSettingsTree(data);
   };
 
   const renderTreeNode = () => {
-    const { t, enableThirdParty, isAdmin } = props;
     return (
       <TreeNode
         id="settings"
         key="settings"
-        title={t("treeSettingsMenuTitle")}
+        title={t("TreeSettingsMenuTitle")}
         isLeaf={false}
         icon={<Icons.SettingsIcon size="scale" isfill color="dimgray" />}
       >
@@ -84,7 +123,7 @@ const PureTreeSettings = props => {
           id="common-settings"
           key="common"
           isLeaf={true}
-          title={t("treeSettingsCommonSettings")}
+          title={t("TreeSettingsCommonSettings")}
         />
         {isAdmin ? (
           <TreeNode
@@ -92,7 +131,7 @@ const PureTreeSettings = props => {
             id="admin-settings"
             key="admin"
             isLeaf={true}
-            title={t("treeSettingsAdminSettings")}
+            title={t("TreeSettingsAdminSettings")}
           />
         ) : null}
         {enableThirdParty ? (
@@ -102,14 +141,13 @@ const PureTreeSettings = props => {
             id="connected-clouds"
             key="thirdParty"
             isLeaf={true}
-            title={t("treeSettingsConnectedCloud")}
+            title={t("TreeSettingsConnectedCloud")}
           />
         ) : null}
       </TreeNode>
     );
   };
 
-  const { selectedTreeNode, expandedSetting } = props;
   const nodes = renderTreeNode();
 
   return (
@@ -117,11 +155,15 @@ const PureTreeSettings = props => {
       expandedKeys={expandedSetting}
       selectedKeys={selectedTreeNode}
       defaultExpandParent={false}
+      disabled={isLoading}
       className="settings-tree-menu"
       switcherIcon={switcherIcon}
       onSelect={onSelect}
       showIcon={true}
       onExpand={onExpand}
+      isFullFillSelection={false}
+      gapBetweenNodes="22"
+      gapBetweenNodesTablet="26"
     >
       {nodes}
     </StyledTreeMenu>
@@ -130,7 +172,7 @@ const PureTreeSettings = props => {
 
 const TreeSettingsContainer = withTranslation()(PureTreeSettings);
 
-const TreeSettings = props => {
+const TreeSettings = (props) => {
   useEffect(() => {
     changeLanguage(i18n);
   }, []);
@@ -142,24 +184,19 @@ const TreeSettings = props => {
 };
 
 function mapStateToProps(state) {
-  const { selectedTreeNode, settingsTree } = state.files;
-
-  const { isAdmin } = state.auth.user;
-
-  const { expandedSetting, enableThirdParty } = settingsTree;
-
   return {
-    selectedTreeNode,
-    expandedSetting,
-    enableThirdParty,
-    isAdmin
+    selectedTreeNode: getSettingsSelectedTreeNode(state),
+    expandedSetting: getExpandedSetting(state),
+    enableThirdParty: getEnableThirdParty(state),
+    isAdmin: isAdmin(state),
+    isLoading: getIsLoading(state),
+    selectedFolder: getSelectedTreeNode(state),
   };
 }
 
-export default connect(
-  mapStateToProps,
-  {
-    setSelectedNode,
-    setExpandSettingsTree
-  }
-)(withRouter(TreeSettings));
+export default connect(mapStateToProps, {
+  setSelectedNode,
+  setExpandSettingsTree,
+  getFilesSettings,
+  setSelectedFolder,
+})(withRouter(TreeSettings));

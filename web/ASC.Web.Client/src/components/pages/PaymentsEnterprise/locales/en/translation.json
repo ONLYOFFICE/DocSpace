@@ -1,0 +1,29 @@
+{
+  "PaymentsTitle": "Payments",
+
+  "ContactEmail": "For any purchase questions, contact us at ",
+  "ContactUrl": "For for solving technical issues, use",
+
+  "SubscriptionRenewedLicense": "Renew subscription to get:",
+
+  "AdvantageEditor": "{{organizationName}} editors with pro features",
+  "AdvantagePrivateRooom": "Private Rooom for encrypted collaboretion",
+  "AdvantageWebEditors": "Mobile web editors",
+  "AdvantageUpdates": "Regular functionality and security updates during 1 year",
+  "AdvantageProfessionalTechSupport": "1 year of professional tech support service",
+
+  "HeaderLicense": "You are using {{organizationName}} Enterprise Edition",
+  "HeaderExpiredTrialLicense": "Free trial period has expired",
+
+  "AccessSubscription": "Your subscription for support and updates expires on",
+  "ExpiryPaidLicense": "Support is no longer available for your license since",
+  "ExpiryTrialLicense": "Thank you for having checked out {{organizationName}}!",
+  "RenewalLicense": "If you have already purchased the renewal, upload the license file.",
+
+  "ButtonBuyLicense": "Buy now",
+  "ButtonUploadLicense": "Upload license",
+
+  "ErrorLicense": "Licence  is not valid",
+  "ErrorLoadingLicense": "Make sure you choose the right file",
+  "SuccessLoadingLicense": "License activated successfully"
+}

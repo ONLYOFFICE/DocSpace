@@ -1,23 +1,13 @@
-import React from 'react';
-import styled from "styled-components";
-import { Headline } from 'asc-web-common';
-import { utils } from "asc-web-components";
+import React from "react";
+import { Headline } from "asc-web-common";
 
-const { tablet, desktop } = utils.device;
-
-const StyledContainer = styled.div`
-
-`;
-
-const SectionHeaderContent = ({title}) => {
+const SectionHeaderContent = ({ setting, t }) => {
+  const title = setting[0].toUpperCase() + setting.slice(1);
   return (
-    <Headline 
-      className='headline-header' 
-      type="content" 
-      truncate={true}>
-        {title}
+    <Headline className="headline-header" type="content" truncate={true}>
+      {t(`${title}`)}
     </Headline>
   );
-}
+};
 
 export default SectionHeaderContent;

@@ -54,7 +54,7 @@ namespace ASC.Core.ChunkedUploader
 
         public string CultureName { get; set; }
 
-        public readonly Dictionary<string, object> Items = new Dictionary<string, object>();
+        public Dictionary<string, object> Items = new Dictionary<string, object>();
 
         private const string TempPathKey = "TempPath";
         public string TempPath
@@ -88,7 +88,7 @@ namespace ASC.Core.ChunkedUploader
 
         public T GetItemOrDefault<T>(string key)
         {
-            return Items.ContainsKey(key) && Items[key] is T ? (T)Items[key] : default;
+            return Items.ContainsKey(key) && Items[key] is T t ? t : default;
         }
 
         public Stream Serialize()

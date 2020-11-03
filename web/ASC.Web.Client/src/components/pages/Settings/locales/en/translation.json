@@ -79,7 +79,6 @@
   "ThirdPartyBottomDescription": "If you still have some questions on how to connect this service or need technical assistance, please feel free to contact our <2>Support Team.</2>",
   "ThirdPartyEnableButton": "Enable",
   "ThirdPartyProcessSending": "Sending...",
-
   "ProjectsUserCapabilityView": "View projects and take part in discussions",
   "ProjectsUserCapabilityCreate": "Create and edit milestones, tasks, discussions, documents",
   "ProjectsUserCapabilityTrack": "Track time for tasks, generate reports",
@@ -106,7 +105,6 @@
   "DirectionAscLabel": "A-Z",
   "DirectionDescLabel": "Z-A",
   "MeLabel": "Me",
-  "OrganizationName": "ONLYOFFICE",
   "YouHaveUnsavedChanges": "You have unsaved changes",
   "CustomTitles": "Custom titles",
   "LanguageAndTimeZoneSettingsDescription": "Language and time zone settings is a way to change the language of the whole portal for all portal users and to configure the time zone so that all the events of the portal will be shown with the correct date and time.",

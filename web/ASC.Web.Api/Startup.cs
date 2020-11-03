@@ -5,7 +5,7 @@ using ASC.Common;
 using ASC.Common.DependencyInjection;
 using ASC.Web.Api.Controllers;
 
-using Autofac.Extensions.DependencyInjection;
+using Autofac;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,20 +25,24 @@ namespace ASC.Web.Api
 
         public override void ConfigureServices(IServiceCollection services)
         {
+            base.ConfigureServices(services);
+
             services.AddMemoryCache();
 
-            var diHelper = new DIHelper(services);
+            services.AddOptions();
 
-            diHelper
+            DIHelper
                 .AddAuthenticationController()
                 .AddModulesController()
                 .AddPortalController()
                 .AddSettingsController()
+                .AddSecurityController()
                 .AddSmtpSettingsController();
+        }
 
-            base.ConfigureServices(services);
-            services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
-
+        public void ConfigureContainer(ContainerBuilder builder)
+        {
+            builder.Register(Configuration, HostEnvironment.ContentRootPath);
         }
     }
 }

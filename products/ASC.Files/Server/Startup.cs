@@ -1,4 +1,3 @@
-
 using System.Text;
 using System.Text.Json.Serialization;
 
@@ -7,6 +6,7 @@ using ASC.Api.Documents;
 using ASC.Common;
 using ASC.Web.Files;
 using ASC.Web.Files.HttpHandlers;
+using ASC.Web.Studio.Core.Notify;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -33,18 +33,17 @@ namespace ASC.Files
 
             services.AddMemoryCache();
 
-            var diHelper = new DIHelper(services);
+            base.ConfigureServices(services);
 
-            diHelper
+            DIHelper
                 .AddApiProductEntryPointService()
                 .AddDocumentsControllerService()
-                .AddEncryptionControllerService()
+                .AddPrivacyRoomApiService()
                 .AddFileHandlerService()
                 .AddChunkedUploaderHandlerService()
                 .AddThirdPartyAppHandlerService()
-                .AddDocuSignHandlerService();
-
-            base.ConfigureServices(services);
+                .AddDocuSignHandlerService()
+                .AddNotifyConfiguration();
         }
 
         public override void Configure(IApplicationBuilder app, IWebHostEnvironment env)

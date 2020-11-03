@@ -5,9 +5,12 @@ using System.Threading.Tasks;
 using ASC.Common;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
-using ASC.Core.Common;
+using ASC.Core.Notify;
 using ASC.Core.Notify.Senders;
 using ASC.Notify.Config;
+
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,6 +24,7 @@ namespace ASC.Notify
         public static async Task Main(string[] args)
         {
             var host = Host.CreateDefaultBuilder(args)
+                .UseServiceProviderFactory(new AutofacServiceProviderFactory())
                 .ConfigureAppConfiguration((hostContext, config) =>
                 {
                     var buided = config.Build();
@@ -56,18 +60,18 @@ namespace ASC.Notify
                     services.Configure<NotifyServiceCfg>(hostContext.Configuration.GetSection("notify"));
                     diHelper.AddSingleton<IConfigureOptions<NotifyServiceCfg>, ConfigureNotifyServiceCfg>();
 
-                    diHelper.TryAddSingleton<CommonLinkUtilitySettings>();
-                    diHelper.AddSingleton<IConfigureOptions<CommonLinkUtilitySettings>, ConfigureCommonLinkUtilitySettings>();
-
                     diHelper.AddNotifyServiceLauncher();
                     services.AddHostedService<NotifyServiceLauncher>();
 
                     diHelper
                     .AddJabberSenderService()
                     .AddSmtpSenderService()
-                    .AddAWSSenderService();
-
-                    services.AddAutofac(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
+                    .AddAWSSenderService()
+                    .AddEmailSenderSinkService();
+                })
+                .ConfigureContainer<ContainerBuilder>((context, builder) =>
+                {
+                    builder.Register(context.Configuration, context.HostingEnvironment.ContentRootPath);
                 })
                 .UseConsoleLifetime()
                 .Build();

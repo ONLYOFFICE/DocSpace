@@ -261,7 +261,7 @@ namespace ASC.Data.Backup.Tasks.Modules
             {
                 value = Regex.Replace(
                     Convert.ToString(value),
-                    @"(?<=""message_id"":|/products/crm/httphandlers/filehandler\.ashx\?action=mailmessage&message_id=)\d+",
+                    @"(?<=""message_id"":|/Products/CRM/HttpHandlers/filehandler\.ashx\?action=mailmessage&message_id=)\d+",
                     match =>
                     {
                         var mappedMessageId = Convert.ToString(columnMapper.GetMapping(relation.ParentTable, relation.ParentColumn, match.Value));

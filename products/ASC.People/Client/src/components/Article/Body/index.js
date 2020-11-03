@@ -1,30 +1,50 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { utils, TreeMenu, TreeNode, Icons, Link } from "asc-web-components";
-import { history } from "asc-web-common";
-import { selectGroup } from "../../../store/people/actions";
+import {
+  selectGroup,
+  setIsVisibleDataLossDialog,
+  setIsLoading,
+} from "../../../store/people/actions";
 import { getSelectedGroup } from "../../../store/people/selectors";
 import { withTranslation, I18nextProvider } from "react-i18next";
-import { utils as commonUtils } from "asc-web-common";
-
+import {
+  history,
+  utils as commonUtils,
+  store as initStore,
+  Loaders,
+} from "asc-web-common";
 import { createI18N } from "../../../helpers/i18n";
+import styled, { css } from "styled-components";
+import { setDocumentTitle } from "../../../helpers/utils";
+
 const i18n = createI18N({
   page: "Article",
-  localesPath: "Article"
+  localesPath: "Article",
 });
 
 const { changeLanguage } = commonUtils;
+const { isAdmin } = initStore.auth.selectors;
 
-const getItems = data => {
-  return data.map(item => {
-    if (item.children && item.children.length) {
+const StyledTreeMenu = styled(TreeMenu)`
+  ${(props) =>
+    props.isAdmin &&
+    css`
+      margin-top: 19px;
+    `}
+`;
+
+const getItems = (data) => {
+  return data.map((item) => {
+    if (item.children) {
       return (
         <TreeNode
+          className="root-folder"
           title={item.title}
           key={item.key}
           icon={
             item.root ? (
-              <Icons.CatalogDepartmentsIcon
+              <Icons.DepartmentsGroupIcon
                 size="scale"
                 isfill={true}
                 color="#657077"
@@ -38,11 +58,39 @@ const getItems = data => {
         </TreeNode>
       );
     }
-    return <TreeNode key={item.key} title={item.title} />;
+    return (
+      <TreeNode
+        className="inner-folder"
+        key={item.key}
+        title={item.title}
+        icon={
+          <Icons.CatalogFolderIcon size="scale" isfill={true} color="#657077" />
+        }
+      />
+    );
   });
 };
 
 class ArticleBodyContent extends React.Component {
+  componentDidMount() {
+    this.changeTitleDocument();
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.selectedKeys[0] !== this.props.selectedKeys[0]) {
+      this.changeTitleDocument();
+    }
+  }
+
+  changeTitleDocument(data = null) {
+    const { groups, selectedKeys } = this.props;
+
+    const currentGroup = getSelectedGroup(
+      groups,
+      data ? data[0] : selectedKeys[0]
+    );
+    currentGroup ? setDocumentTitle(currentGroup.name) : setDocumentTitle();
+  }
   shouldComponentUpdate(nextProps) {
     if (
       !utils.array.isArrayEqual(nextProps.selectedKeys, this.props.selectedKeys)
@@ -56,20 +104,27 @@ class ArticleBodyContent extends React.Component {
 
     return false;
   }
+  onSelectHandler = (data) => {
+    const { editingForm, setIsVisibleDataLossDialog } = this.props;
 
-  onSelect = data => {
-    const { selectGroup, groups, t } = this.props;
-
-    const currentGroup = getSelectedGroup(groups, data[0]);
-    document.title = currentGroup
-      ? `${currentGroup.name} – ${t("People")}`
-      : `${t("People")} – ${t("OrganizationName")}`;
-    selectGroup(
-      data && data.length === 1 && data[0] !== "root" ? data[0] : null
-    );
+    if (editingForm.isEdit) {
+      setIsVisibleDataLossDialog(true, this.onSelect(data));
+    } else {
+      this.onSelect(data)();
+    }
   };
-
-  switcherIcon = obj => {
+  onSelect = (data) => {
+    const { setIsLoading } = this.props
+    return () => {
+      const { selectGroup } = this.props;
+      setIsLoading(true);
+      this.changeTitleDocument(data);
+      selectGroup(
+        data && data.length === 1 && data[0] !== "root" ? data[0] : null
+      ).finally(() => setIsLoading(false))
+    };
+  };
+  switcherIcon = (obj) => {
     if (obj.isLeaf) {
       return null;
     }
@@ -85,11 +140,13 @@ class ArticleBodyContent extends React.Component {
   };
 
   render() {
-    const { data, selectedKeys } = this.props;
+    const { isLoaded, data, selectedKeys, isAdmin } = this.props;
 
     //console.log("PeopleTreeMenu", this.props);
-    return (
-      <TreeMenu
+    return !isLoaded ? (
+      <Loaders.TreeFolders />
+    ) : (
+      <StyledTreeMenu
         className="people-tree-menu"
         checkable={false}
         draggable={false}
@@ -98,11 +155,16 @@ class ArticleBodyContent extends React.Component {
         showIcon={true}
         defaultExpandAll={true}
         switcherIcon={this.switcherIcon}
-        onSelect={this.onSelect}
+        onSelect={this.onSelectHandler}
         selectedKeys={selectedKeys}
+        isFullFillSelection={false}
+        gapBetweenNodes="22"
+        gapBetweenNodesTablet="26"
+        isEmptyRootNode={getItems(data).length > 0}
+        isAdmin={isAdmin}
       >
         {getItems(data)}
-      </TreeMenu>
+      </StyledTreeMenu>
     );
   }
 }
@@ -111,7 +173,7 @@ const getTreeGroups = (groups, departments) => {
   const linkProps = { fontSize: "14px", fontWeight: 600, noHover: true };
   const link = history.location.search.slice(1);
   let newLink = link.split("&");
-  const index = newLink.findIndex(x => x.includes("group"));
+  const index = newLink.findIndex((x) => x.includes("group"));
   index && newLink.splice(1, 1);
   newLink = newLink.join("&");
 
@@ -133,7 +195,7 @@ const getTreeGroups = (groups, departments) => {
       ),
       root: true,
       children:
-        groups.map(g => {
+        groups.map((g) => {
           return {
             key: g.id,
             title: (
@@ -144,10 +206,10 @@ const getTreeGroups = (groups, departments) => {
                 {g.name}
               </Link>
             ),
-            root: false
+            root: false,
           };
-        }) || []
-    }
+        }) || [],
+    },
   ];
 
   return treeData;
@@ -155,7 +217,7 @@ const getTreeGroups = (groups, departments) => {
 
 const ArticleBodyContentWrapper = withTranslation()(ArticleBodyContent);
 
-const BodyContent = props => {
+const BodyContent = (props) => {
   useEffect(() => {
     changeLanguage(i18n);
   }, []);
@@ -169,18 +231,25 @@ const BodyContent = props => {
 
 function mapStateToProps(state) {
   const groups = state.people.groups;
-  const { groupsCaption } = state.auth.settings.customNames;
+  const { isLoaded, settings } = state.auth;
+  const { customNames } = settings;
+  const { groupsCaption } = customNames;
+  const { editingForm } = state.people;
 
   return {
     data: getTreeGroups(groups, groupsCaption),
     selectedKeys: state.people.selectedGroup
       ? [state.people.selectedGroup]
       : ["root"],
-    groups
+    groups,
+    isAdmin: isAdmin(state),
+    isLoaded,
+    editingForm,
   };
 }
 
-export default connect(
-  mapStateToProps,
-  { selectGroup }
-)(BodyContent);
+export default connect(mapStateToProps, {
+  selectGroup,
+  setIsVisibleDataLossDialog,
+  setIsLoading,
+})(BodyContent);

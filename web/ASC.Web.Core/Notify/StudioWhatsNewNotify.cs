@@ -82,10 +82,8 @@ namespace ASC.Web.Studio.Core.Notify
                 try
                 {
                     using var scope = ServiceProvider.CreateScope();
-                    var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-                    var paymentManager = scope.ServiceProvider.GetService<PaymentManager>();
-                    var tenantUtil = scope.ServiceProvider.GetService<TenantUtil>();
-
+                    var scopeClass = scope.ServiceProvider.GetService<StudioWhatsNewNotifyScope>();
+                    var (tenantManager, paymentManager, tenantUtil, studioNotifyHelper, userManager, securityContext, authContext, authManager, commonLinkUtility, displayUserSettingsHelper, feedAggregateDataProvider, coreSettings) = scopeClass;
                     var tenant = tenantManager.GetTenant(tenantid);
                     if (tenant == null ||
                         tenant.Status != TenantStatus.Active ||
@@ -96,16 +94,6 @@ namespace ASC.Web.Studio.Core.Notify
                     }
 
                     tenantManager.SetCurrentTenant(tenant);
-
-                    var studioNotifyHelper = scope.ServiceProvider.GetService<StudioNotifyHelper>();
-                    var userManager = scope.ServiceProvider.GetService<UserManager>();
-                    var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
-                    var authContext = scope.ServiceProvider.GetService<AuthContext>();
-                    var authentication = scope.ServiceProvider.GetService<AuthManager>();
-                    var commonLinkUtility = scope.ServiceProvider.GetService<CommonLinkUtility>();
-                    var displayUserSettingsHelper = scope.ServiceProvider.GetService<DisplayUserSettingsHelper>();
-                    var feedAggregateDataProvider = scope.ServiceProvider.GetService<FeedAggregateDataProvider>();
-                    var coreSettings = scope.ServiceProvider.GetService<CoreSettings>();
                     var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifyHelper.NotifySource, scope);
 
                     log.InfoFormat("Start send whats new in {0} ({1}).", tenant.GetTenantDomain(coreSettings), tenantid);
@@ -116,7 +104,7 @@ namespace ASC.Web.Studio.Core.Notify
                             continue;
                         }
 
-                        securityContext.AuthenticateMe(authentication.GetAccountByID(tenant.TenantId, user.ID));
+                        securityContext.AuthenticateMe(authManager.GetAccountByID(tenant.TenantId, user.ID));
 
                         var culture = string.IsNullOrEmpty(user.CultureName) ? tenant.GetCulture() : user.GetCulture();
 
@@ -154,7 +142,7 @@ namespace ASC.Web.Studio.Core.Notify
                                 Title = HtmlUtil.GetText(f.Title, 512),
                                 URL = commonLinkUtility.GetFullAbsolutePath(f.ItemUrl),
                                 BreadCrumbs = new string[0],
-                                Action = getWhatsNewActionText(f)
+                                Action = GetWhatsNewActionText(f)
                             }).ToList());
 
 
@@ -177,7 +165,7 @@ namespace ASC.Web.Studio.Core.Notify
                                             Title = HtmlUtil.GetText(prawbc.Title, 512),
                                             URL = commonLinkUtility.GetFullAbsolutePath(prawbc.ItemUrl),
                                             BreadCrumbs = new string[0],
-                                            Action = getWhatsNewActionText(prawbc)
+                                            Action = GetWhatsNewActionText(prawbc)
                                         });
                         }
 
@@ -197,7 +185,7 @@ namespace ASC.Web.Studio.Core.Notify
                                         Title = HtmlUtil.GetText(ls.Title, 512),
                                         URL = commonLinkUtility.GetFullAbsolutePath(ls.ItemUrl),
                                         BreadCrumbs = i == 0 ? new string[1] { gr.Key } : new string[0],
-                                        Action = getWhatsNewActionText(ls)
+                                        Action = GetWhatsNewActionText(ls)
                                     });
                             }
                         }
@@ -226,7 +214,7 @@ namespace ASC.Web.Studio.Core.Notify
             }
         }
 
-        private static string getWhatsNewActionText(FeedMin feed)
+        private static string GetWhatsNewActionText(FeedMin feed)
         {
 
             if (feed.Module == ASC.Feed.Constants.BookmarksModule)
@@ -305,12 +293,82 @@ namespace ASC.Web.Studio.Core.Notify
         }
     }
 
+    public class StudioWhatsNewNotifyScope
+    {
+        private TenantManager TenantManager { get; }
+        private PaymentManager PaymentManager { get; }
+        private TenantUtil TenantUtil { get; }
+        private StudioNotifyHelper StudioNotifyHelper { get; }
+        private UserManager UserManager { get; }
+        private SecurityContext SecurityContext { get; }
+        private AuthContext AuthContext { get; }
+        private AuthManager AuthManager { get; }
+        private CommonLinkUtility CommonLinkUtility { get; }
+        private DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
+        private FeedAggregateDataProvider FeedAggregateDataProvider { get; }
+        private CoreSettings CoreSettings { get; }
+
+        public StudioWhatsNewNotifyScope(TenantManager tenantManager,
+            PaymentManager paymentManager,
+            TenantUtil tenantUtil,
+            StudioNotifyHelper studioNotifyHelper,
+            UserManager userManager,
+            SecurityContext securityContext,
+            AuthContext authContext,
+            AuthManager authManager,
+            CommonLinkUtility commonLinkUtility,
+            DisplayUserSettingsHelper displayUserSettingsHelper,
+            FeedAggregateDataProvider feedAggregateDataProvider,
+            CoreSettings coreSettings)
+        {
+            TenantManager = tenantManager;
+            PaymentManager = paymentManager;
+            TenantUtil = tenantUtil;
+            StudioNotifyHelper = studioNotifyHelper;
+            UserManager = userManager;
+            SecurityContext = securityContext;
+            AuthContext = authContext;
+            AuthManager = authManager;
+            CommonLinkUtility = commonLinkUtility;
+            DisplayUserSettingsHelper = displayUserSettingsHelper;
+            FeedAggregateDataProvider = feedAggregateDataProvider;
+            CoreSettings = coreSettings;
+        }
+
+        public void Deconstruct(out TenantManager tenantManager,
+            out PaymentManager paymentManager,
+            out TenantUtil tenantUtil,
+            out StudioNotifyHelper studioNotifyHelper,
+            out UserManager userManager,
+            out SecurityContext securityContext,
+            out AuthContext authContext,
+            out AuthManager authManager,
+            out CommonLinkUtility commonLinkUtility,
+            out DisplayUserSettingsHelper displayUserSettingsHelper,
+            out FeedAggregateDataProvider feedAggregateDataProvider,
+            out CoreSettings coreSettings)
+        {
+            tenantManager = TenantManager;
+            paymentManager = PaymentManager;
+            tenantUtil = TenantUtil;
+            studioNotifyHelper = StudioNotifyHelper;
+            userManager = UserManager;
+            securityContext = SecurityContext;
+            authContext = AuthContext;
+            authManager = AuthManager;
+            commonLinkUtility = CommonLinkUtility;
+            displayUserSettingsHelper = DisplayUserSettingsHelper;
+            feedAggregateDataProvider = FeedAggregateDataProvider;
+            coreSettings = CoreSettings;
+        }
+    }
+
     public static class StudioWhatsNewNotifyExtension
     {
         public static DIHelper AddStudioWhatsNewNotify(this DIHelper services)
         {
             services.TryAddSingleton<StudioWhatsNewNotify>();
-
+            services.TryAddScoped<StudioWhatsNewNotifyScope>();
             return services
                 .AddWebItemManager()
                 .AddFeedAggregateDataProvider()

@@ -11,12 +11,9 @@
         "AllRightsReservedCustomMode",
         "AboutTitle"
       ],
-      "UserControlsCommonResource": [
-        "LicensedUnder"
-      ]
+      "UserControlsCommonResource": ["LicensedUnder"]
     },
-    "Home": {
-    },
+    "Home": {},
     "Login": {
       "Resource": [
         "LoadingProcessing",
@@ -112,14 +109,8 @@
         "CommunityProduct",
         "DocumentsProduct"
       ],
-      "PeopleResource": [
-        "Settings",
-        "ProductUserOpportunities"
-      ],
-      "AuditResource": [
-        "LoginHistoryNav",
-        "AuditTrailNav"
-      ],
+      "PeopleResource": ["Settings", "ProductUserOpportunities"],
+      "AuditResource": ["LoginHistoryNav", "AuditTrailNav"],
       "WhiteLabelResource": [
         "LogoSettings",
         "CompanyNameForCanvasLogo",
@@ -130,20 +121,11 @@
         "BrowserNoCanvasSupport",
         "LogoDocsEditor"
       ],
-      "UserControlsCommonResource": [
-        "NextPage",
-        "PreviousPage"
-      ],
-      "ResourceJS": [
-        "ChooseOwner"
-      ]
+      "UserControlsCommonResource": ["NextPage", "PreviousPage"],
+      "ResourceJS": ["ChooseOwner"]
     }
   },
   "Layout": {
-    "Resource": [
-      "Profile",
-      "AboutCompanyTitle",
-      "LogoutButton"
-    ]
+    "Resource": ["Profile", "AboutCompanyTitle", "LogoutButton"]
   }
 }

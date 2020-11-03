@@ -106,7 +106,7 @@ namespace ASC.Web.Files
                     {
                         item.Name = FilesUCResource.CorporateFiles;
                         item.ImgUrl = PathProvider.GetImagePath("corporatefiles_big.png");
-                        item.Url = PathProvider.GetFolderUrl(GlobalFolderHelper.FolderCommon);
+                        item.Url = PathProvider.GetFolderUrlById(GlobalFolderHelper.FolderCommon);
                     }
                     else
                     {
@@ -164,7 +164,15 @@ namespace ASC.Web.Files
                     .AddDisplayUserSettingsService()
                     .AddCommonLinkUtilityService()
                     .AddFilesDbContextService()
-                    .AddPathProviderService();
+                    .AddPathProviderService()
+                    .AddFeedDbService()
+                    .AddNotifyDbContext()
+                    .AddDbContextService()
+                    .AddResourceDbService()
+                    .AddVoipDbContextService()
+                    .AddMailDbContextService()
+                    .AddMessagesContextService();
+
             }
 
             return services;

@@ -1,35 +1,37 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import styled, { css } from 'styled-components';
-import { Icons } from '../icons';
-import Text from '../text';
+import React from "react";
+import PropTypes from "prop-types";
+import styled, { css } from "styled-components";
+import { Icons } from "../icons";
+import Text from "../text";
 
-const disableColor = '#A3A9AE';
+const disableColor = "#A3A9AE";
 const hoverColor = disableColor;
-const internalCircleDisabledColor = '#D0D5DA';
-const externalCircleDisabledColor = '#eceef1';
+const internalCircleDisabledColor = "#D0D5DA";
+const externalCircleDisabledColor = "#eceef1";
 
 // eslint-disable-next-line react/prop-types, no-unused-vars
-const ClearLabel = ({ spacing, isDisabled, orientation, ...props }) => <label {...props} />
+const ClearLabel = ({ spacing, isDisabled, orientation, ...props }) => (
+  <label {...props} />
+);
 const Label = styled(ClearLabel)`
   display: flex;
   align-items: center;
   position: relative;
   margin: 0;
   user-select: none;
-  cursor: ${props => !props.isDisabled && 'pointer'};
+  cursor: ${(props) => !props.isDisabled && "pointer"};
 
   .radiobutton {
-    margin-right: 4px;  
+    margin-right: 4px;
   }
 
-  ${props =>
+  ${(props) =>
     props.isDisabled
       ? css`
           cursor: default;
           path:first-child {
             stroke: ${externalCircleDisabledColor};
-              }
+          }
           path:nth-child(even) {
             fill: ${internalCircleDisabledColor};
           }
@@ -47,13 +49,19 @@ const Label = styled(ClearLabel)`
         `}
 
   &:not(:first-child) {
-    ${props =>
-    (props.orientation === 'horizontal' && css`margin-left: ${props.spacing};`)};
+    ${(props) =>
+      props.orientation === "horizontal" &&
+      css`
+        margin-left: ${props.spacing};
+      `};
   }
 
   &:not(:last-child) {
-    ${props =>
-    (props.orientation === 'vertical' && css`margin-bottom: ${props.spacing};`)};
+    ${(props) =>
+      props.orientation === "vertical" &&
+      css`
+        margin-bottom: ${props.spacing};
+      `};
   }
 `;
 
@@ -65,13 +73,11 @@ const Input = styled.input`
 
 // eslint-disable-next-line react/prop-types
 const RadiobuttonIcon = ({ isChecked, isDisabled }) => {
-  const iconName = isChecked
-    ? "RadiobuttonCheckedIcon"
-    : "RadiobuttonIcon";
+  const iconName = isChecked ? "RadiobuttonCheckedIcon" : "RadiobuttonIcon";
 
   let newProps = {
     size: "medium",
-    className: "radiobutton"
+    className: "radiobutton",
   };
 
   if (isDisabled) {
@@ -83,13 +89,11 @@ const RadiobuttonIcon = ({ isChecked, isDisabled }) => {
 };
 
 class RadioButton extends React.Component {
-
   constructor(props) {
     super(props);
 
     this.state = {
-      isChecked: this.props.isChecked
-
+      isChecked: this.props.isChecked,
     };
   }
 
@@ -100,7 +104,6 @@ class RadioButton extends React.Component {
   }
 
   render() {
-
     const colorProps = this.props.isDisabled ? { color: disableColor } : {};
 
     return (
@@ -110,19 +113,26 @@ class RadioButton extends React.Component {
         isDisabled={this.props.isDisabled}
         id={this.props.id}
         className={this.props.className}
-        style={this.props.style}>
-        <Input type='radio'
+        style={this.props.style}
+      >
+        <Input
+          type="radio"
           name={this.props.name}
           value={this.props.value}
           checked={this.props.isChecked}
-          onChange={this.props.onChange ? this.props.onChange : (e) => {
-            this.setState({ isChecked: true })
-            this.props.onClick && this.props.onClick(e);
-          }}
-          disabled={this.props.isDisabled} />
+          onChange={
+            this.props.onChange
+              ? this.props.onChange
+              : (e) => {
+                  this.setState({ isChecked: true });
+                  this.props.onClick && this.props.onClick(e);
+                }
+          }
+          disabled={this.props.isDisabled}
+        />
         <RadiobuttonIcon {...this.props} />
         <Text
-          as='span'
+          as="span"
           fontSize={this.props.fontSize}
           fontWeight={this.props.fontWeight}
           {...colorProps}
@@ -148,12 +158,12 @@ RadioButton.propTypes = {
   className: PropTypes.string,
   id: PropTypes.string,
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
-  orientation: PropTypes.oneOf(['horizontal', 'vertical'])
-}
+  orientation: PropTypes.oneOf(["horizontal", "vertical"]),
+};
 
 RadioButton.defaultProps = {
   isChecked: false,
   isDisabled: false,
-}
+};
 
 export default RadioButton;

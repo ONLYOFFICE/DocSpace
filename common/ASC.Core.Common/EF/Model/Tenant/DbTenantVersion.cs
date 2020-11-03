@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Microsoft.EntityFrameworkCore;
+
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ASC.Core.Common.EF.Model
 {
@@ -12,5 +14,69 @@ namespace ASC.Core.Common.EF.Model
         [Column("default_version")]
         public int DefaultVersion { get; set; }
         public bool Visible { get; set; }
+    }
+    public static class DbTenantVersionExtension
+    {
+        public static ModelBuilderWrapper AddDbTenantVersion(this ModelBuilderWrapper modelBuilder)
+        {
+            modelBuilder
+                .Add(MySqlAddDbTenantVersion, Provider.MySql)
+                .Add(PgSqlAddDbTenantVersion, Provider.Postgre);
+            return modelBuilder;
+        }
+        public static void MySqlAddDbTenantVersion(this ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<DbTenantVersion>(entity =>
+            {
+                entity.ToTable("tenants_version");
+
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.DefaultVersion).HasColumnName("default_version");
+
+                entity.Property(e => e.Url)
+                    .IsRequired()
+                    .HasColumnName("url")
+                    .HasColumnType("varchar(64)")
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+
+                entity.Property(e => e.Version)
+                    .IsRequired()
+                    .HasColumnName("version")
+                    .HasColumnType("varchar(64)")
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+
+                entity.Property(e => e.Visible).HasColumnName("visible");
+            });
+
+        }
+        public static void PgSqlAddDbTenantVersion(this ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<DbTenantVersion>(entity =>
+            {
+                entity.ToTable("tenants_version", "onlyoffice");
+
+                entity.Property(e => e.Id)
+                    .HasColumnName("id")
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.DefaultVersion).HasColumnName("default_version");
+
+                entity.Property(e => e.Url)
+                    .IsRequired()
+                    .HasColumnName("url")
+                    .HasMaxLength(64);
+
+                entity.Property(e => e.Version)
+                    .IsRequired()
+                    .HasColumnName("version")
+                    .HasMaxLength(64);
+
+                entity.Property(e => e.Visible).HasColumnName("visible");
+            });
+
+        }
     }
 }

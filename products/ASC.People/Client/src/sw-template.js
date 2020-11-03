@@ -7,15 +7,11 @@ if ("function" === typeof importScripts) {
     console.log("Workbox is loaded");
 
     // Force development builds -> { debug: true } or production builds { debug: false }
-    workbox.setConfig({ debug: true });
+    workbox.setConfig({ debug: false });
 
-    //`generateSW` and `generateSWString` provide the option
-    // to force update an exiting service worker.
-    // Since we're using `injectManifest` to build SW,
-    // manually overriding the skipWaiting();
-    self.addEventListener("install", event => {
-      self.skipWaiting();
-    });
+    // Updating SW lifecycle to update the app after user triggered refresh
+    workbox.core.skipWaiting();
+    workbox.core.clientsClaim();
 
     /* injection point for manifest files.  */
     workbox.precaching.precacheAndRoute(self.__WB_MANIFEST);
@@ -35,9 +31,9 @@ if ("function" === typeof importScripts) {
             // Cache only 60 images.
             maxEntries: 60,
             // Cache for a maximum of a month.
-            maxAgeSeconds: 30 * 24 * 60 * 60 // 30 Days
-          })
-        ]
+            maxAgeSeconds: 30 * 24 * 60 * 60, // 30 Days
+          }),
+        ],
       })
     );
 
@@ -51,9 +47,9 @@ if ("function" === typeof importScripts) {
             // Cache only 60 images.
             maxEntries: 60,
             // Cache for a maximum of a month.
-            maxAgeSeconds: 30 * 24 * 60 * 60 // 30 Days
-          })
-        ]
+            maxAgeSeconds: 30 * 24 * 60 * 60, // 30 Days
+          }),
+        ],
       })
     );
 
@@ -64,7 +60,7 @@ if ("function" === typeof importScripts) {
       // Use cache but update in the background.
       new workbox.strategies.StaleWhileRevalidate({
         // Use a custom cache name.
-        cacheName: "css-cache"
+        cacheName: "css-cache",
       })
     );
 
@@ -75,7 +71,7 @@ if ("function" === typeof importScripts) {
       // Use cache but update in the background.
       new workbox.strategies.StaleWhileRevalidate({
         // Use a custom cache name.
-        cacheName: "script-cache"
+        cacheName: "script-cache",
       })
     );
 
@@ -85,7 +81,7 @@ if ("function" === typeof importScripts) {
       // Use cache but update in the background.
       new workbox.strategies.StaleWhileRevalidate({
         // Use a custom cache name.
-        cacheName: "translation-cache"
+        cacheName: "translation-cache",
       })
     );
 
@@ -97,9 +93,9 @@ if ("function" === typeof importScripts) {
         plugins: [
           new workbox.expiration.ExpirationPlugin({
             maxEntries: 100,
-            maxAgeSeconds: 30 * 60 // 30 Minutes
-          })
-        ]
+            maxAgeSeconds: 30 * 60, // 30 Minutes
+          }),
+        ],
       })
     );
   } else {

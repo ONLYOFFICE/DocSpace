@@ -47,6 +47,12 @@ namespace ASC.Files.Thirdparty.ProviderDao
         {
         }
 
+        public IEnumerable<Tag> GetTags(Guid subject, TagType tagType, IEnumerable<FileEntry<string>> fileEntries)
+        {
+            return TagDao.GetTags(subject, tagType, fileEntries);
+        }
+
+
         public IEnumerable<Tag> GetTags(TagType tagType, IEnumerable<FileEntry<string>> fileEntries)
         {
             return TagDao.GetTags(tagType, fileEntries);
@@ -123,20 +129,19 @@ namespace ASC.Files.Thirdparty.ProviderDao
         }
 
         #endregion
-
-        public void Dispose()
-        {
-        }
     }
 
     public static class ProviderTagDaoExtention
     {
         public static DIHelper AddProviderTagDaoService(this DIHelper services)
         {
-            services.TryAddScoped<ITagDao<string>, ProviderTagDao>();
+            if (services.TryAddScoped<ITagDao<string>, ProviderTagDao>())
+            {
+                return services
+                    .AddProviderDaoBaseService();
+            }
 
-            return services
-                .AddProviderDaoBaseService();
+            return services;
         }
     }
 }

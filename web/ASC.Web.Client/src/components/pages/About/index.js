@@ -5,11 +5,12 @@ import { useTranslation } from "react-i18next";
 import version from "../../../../package.json";
 import styled from "styled-components";
 import { Trans } from "react-i18next";
-
 import { createI18N } from "../../../helpers/i18n";
+import { setDocumentTitle } from "../../../helpers/utils";
+
 const i18n = createI18N({
   page: "About",
-  localesPath: "pages/About"
+  localesPath: "pages/About",
 });
 
 const { changeLanguage } = utils;
@@ -84,8 +85,8 @@ const Body = () => {
 
   useEffect(() => {
     changeLanguage(i18n);
-    document.title = `${t("AboutTitle")} – ${t("People")}`;
-  }, [t]);
+    setDocumentTitle(t("AboutTitle")); //TODO: implement the ability to read the current module in redux to implement the template `${t("AboutTitle")} – ${t("People")}`
+  }, [t, setDocumentTitle]);
 
   const gitHub = "GitHub";
   const license = "AGPL-3.0";

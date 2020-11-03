@@ -1,4 +1,4 @@
-export const getUserRole = user => {
+export const getUserRole = (user) => {
   if (user.isOwner) return "owner";
   else if (user.isAdmin) return "admin";
   else if (

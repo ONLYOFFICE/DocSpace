@@ -29,6 +29,7 @@ using System.Data.Common;
 using System.IO;
 using System.Linq;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core.Tenants;
 using ASC.Data.Backup.Extensions;
@@ -194,46 +195,42 @@ namespace ASC.Data.Backup.Tasks
 
         private void SaveTenant(DbFactory dbFactory, string alias, TenantStatus status, string newAlias = null, string whereCondition = null)
         {
-            using (var connection = dbFactory.OpenConnection())
+            using var connection = dbFactory.OpenConnection();
+            if (newAlias == null)
             {
-                if (newAlias == null)
-                {
-                    newAlias = alias;
-                }
-                else if (newAlias != alias)
-                {
-                    newAlias = GetUniqAlias(connection, newAlias);
-                }
-
-                var commandText = string.Format(
-                    "update tenants_tenants " +
-                    "set " +
-                    "  status={0}, " +
-                    "  alias = '{1}', " +
-                    "  last_modified='{2}', " +
-                    "  statuschanged='{2}' " +
-                    "where alias = '{3}'",
-                    status.ToString("d"),
-                    newAlias,
-                    DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"),
-                    alias);
-
-                if (!string.IsNullOrEmpty(whereCondition))
-                    commandText += (" and " + whereCondition);
-                var command = connection.CreateCommand();
-                command.CommandText = commandText;
-                command.WithTimeout(120).ExecuteNonQuery();
+                newAlias = alias;
             }
+            else if (newAlias != alias)
+            {
+                newAlias = GetUniqAlias(connection, newAlias);
+            }
+
+            var commandText = string.Format(
+                "update tenants_tenants " +
+                "set " +
+                "  status={0}, " +
+                "  alias = '{1}', " +
+                "  last_modified='{2}', " +
+                "  statuschanged='{2}' " +
+                "where alias = '{3}'",
+                status.ToString("d"),
+                newAlias,
+                DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"),
+                alias);
+
+            if (!string.IsNullOrEmpty(whereCondition))
+                commandText += (" and " + whereCondition);
+            var command = connection.CreateCommand();
+            command.CommandText = commandText;
+            command.WithTimeout(120).ExecuteNonQuery();
         }
 
         private string GetTenantAlias(DbFactory dbFactory)
         {
-            using (var connection = dbFactory.OpenConnection())
-            {
-                var command = connection.CreateCommand();
-                command.CommandText = "select alias from tenants_tenants where id = " + TenantId;
-                return (string)command.WithTimeout(120).ExecuteScalar();
-            }
+            using var connection = dbFactory.OpenConnection();
+            var command = connection.CreateCommand();
+            command.CommandText = "select alias from tenants_tenants where id = " + TenantId;
+            return (string)command.WithTimeout(120).ExecuteScalar();
         }
 
         private static string GetUniqAlias(DbConnection connection, string alias)
@@ -249,6 +246,20 @@ namespace ASC.Data.Backup.Tasks
                 Directory.CreateDirectory(BackupDirectory ?? DefaultDirectoryName);
 
             return Path.Combine(BackupDirectory ?? DefaultDirectoryName, tenantAlias + DateTime.UtcNow.ToString("(yyyy-MM-dd HH-mm-ss)") + ".backup");
+        }
+
+    }
+
+    public static class TransferPortalTaskExtension
+    {
+        public static DIHelper AddTransferPortalTaskService(this DIHelper services)
+        {
+            services.TryAddScoped<TransferPortalTask>();
+            return services
+                .AddStorageFactoryConfigService()
+                .AddBackupPortalTaskService()
+                .AddDbFactoryService()
+                .AddRestorePortalTaskService();
         }
     }
 }

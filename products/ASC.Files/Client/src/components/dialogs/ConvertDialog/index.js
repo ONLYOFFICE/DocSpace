@@ -5,11 +5,15 @@ import ModalDialogContainer from "../ModalDialogContainer";
 import { ModalDialog, Button, Text, Checkbox } from "asc-web-components";
 import { withTranslation } from "react-i18next";
 import { utils } from "asc-web-common";
-import { setTreeFolders, getProgress } from "../../../store/files/actions";
+import {
+  setTreeFolders,
+  setDialogVisible,
+  onConvert,
+} from "../../../store/files/actions";
 import { createI18N } from "../../../helpers/i18n";
 const i18n = createI18N({
   page: "ConvertDialog",
-  localesPath: "dialogs/ConvertDialog"
+  localesPath: "dialogs/ConvertDialog",
 });
 
 const { changeLanguage } = utils;
@@ -21,7 +25,7 @@ class ConvertDialogComponent extends React.Component {
 
     this.state = {
       saveOriginalFormat: true,
-      hideMessage: false
+      hideMessage: false,
     };
   }
 
@@ -46,21 +50,23 @@ class ConvertDialogComponent extends React.Component {
     return false;
   }
 
+  onConvert = () => this.props.onConvert(this.props.t);
+  onClose = () => this.props.setDialogVisible(this.props.t);
+
   render() {
-    const { t, visible, onClose, onConvert } = this.props;
+    const { t, visible } = this.props;
     const { saveOriginalFormat, hideMessage } = this.state;
 
     return (
       <ModalDialogContainer>
-        <ModalDialog
-          visible={visible}
-          onClose={onClose}
-          headerContent={t("ConversionTitle")}
-          bodyContent={
+        <ModalDialog visible={visible} onClose={this.onClose}>
+          <ModalDialog.Header>{t("ConversionTitle")}</ModalDialog.Header>
+          <ModalDialog.Body>
             <div className="convert_dialog_content">
               <img
                 className="convert_dialog_image"
                 src="images/convert_alert.png"
+                alt="convert alert image"
               />
               <div className="convert_dialog-content">
                 <Text>{t("ConversionMessage")}</Text>
@@ -78,8 +84,8 @@ class ConvertDialogComponent extends React.Component {
                 />
               </div>
             </div>
-          }
-          footerContent={
+          </ModalDialog.Body>
+          <ModalDialog.Footer>
             <div className="convert_dialog_footer">
               <Button
                 className="convert_dialog_button-accept"
@@ -87,18 +93,18 @@ class ConvertDialogComponent extends React.Component {
                 label={t("ContinueButton")}
                 size="medium"
                 primary
-                onClick={onConvert}
+                onClick={this.onConvert}
               />
               <Button
                 className="convert_dialog_button"
                 key="CloseButton"
                 label={t("CloseButton")}
                 size="medium"
-                onClick={onClose}
+                onClick={this.onClose}
               />
             </div>
-          }
-        />
+          </ModalDialog.Footer>
+        </ModalDialog>
       </ModalDialogContainer>
     );
   }
@@ -108,15 +114,16 @@ const ModalDialogContainerTranslated = withTranslation()(
   ConvertDialogComponent
 );
 
-const ConvertDialog = props => (
+const ConvertDialog = (props) => (
   <ModalDialogContainerTranslated i18n={i18n} {...props} />
 );
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {};
 };
 
-export default connect(
-  mapStateToProps,
-  { setTreeFolders, getProgress }
-)(withRouter(ConvertDialog));
+export default connect(mapStateToProps, {
+  setTreeFolders,
+  setDialogVisible,
+  onConvert,
+})(withRouter(ConvertDialog));

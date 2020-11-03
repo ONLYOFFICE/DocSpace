@@ -1,3 +1,3 @@
 export const getFromSessionStorage = (key) => {
-    return JSON.parse(sessionStorage.getItem(key));
-}
+  return JSON.parse(sessionStorage.getItem(key));
+};

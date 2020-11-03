@@ -45,12 +45,12 @@
   "LblInvited": "Invited",
   "LblSetActive": "Set active",
   "LblSetDisabled": "Set disabled",
-  "DirectionAscLabel":"A-Z",
-  "DirectionDescLabel":"Z-A",
+  "DirectionAscLabel": "A-Z",
+  "DirectionDescLabel": "Z-A",
   "MakeInvitationLink": "Make invitation link",
   "SuccessfullyRemovedUsers": "Users have been removed successfully",
   "SendEmailAction": "Send e-mail action",
   "SuccessfullyRemovedGroup": "Group has been removed successfully",
-  "OrganizationName": "ONLYOFFICE",
-  "AddFilter": "Add filter"
+  "AddFilter": "Add filter",
+  "SuccessChangeUserStatus": "The user status was successfully changed"
 }

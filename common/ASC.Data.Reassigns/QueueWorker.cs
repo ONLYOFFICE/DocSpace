@@ -32,7 +32,6 @@ using ASC.Common.Threading.Progress;
 using ASC.Core.Users;
 
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
 
 namespace ASC.Data.Reassigns
@@ -146,9 +145,7 @@ namespace ASC.Data.Reassigns
         {
             if (services.TryAddScoped<QueueWorkerRemove>())
             {
-                services.TryAddSingleton<ProgressQueueOptionsManager<RemoveProgressItem>>();
-                services.TryAddSingleton<ProgressQueue<RemoveProgressItem>>();
-                services.AddSingleton<IPostConfigureOptions<ProgressQueue<RemoveProgressItem>>, ConfigureProgressQueue<RemoveProgressItem>>();
+                services.AddRemoveProgressItemService();
             }
 
             return services;
@@ -157,11 +154,8 @@ namespace ASC.Data.Reassigns
         {
             if (services.TryAddScoped<QueueWorkerReassign>())
             {
-                services.TryAddSingleton<ProgressQueueOptionsManager<ReassignProgressItem>>();
-                services.TryAddSingleton<ProgressQueue<ReassignProgressItem>>();
-                services.AddSingleton<IPostConfigureOptions<ProgressQueue<ReassignProgressItem>>, ConfigureProgressQueue<ReassignProgressItem>>();
-
                 return services
+                    .AddReassignProgressItemService()
                     .AddQueueWorkerRemoveService();
             }
 

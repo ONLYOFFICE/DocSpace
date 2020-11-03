@@ -4,5 +4,6 @@
   "SaveOriginalFormatMessage": "Save the file copy in the original format as well",
   "HideMessage": "Do not show this message again",
   "ContinueButton": "Continue",
-  "CloseButton": "Close"
+  "CloseButton": "Close",
+  "UploadingLabel": "Uploading files: {{file}} of {{totalFiles}}"
 }

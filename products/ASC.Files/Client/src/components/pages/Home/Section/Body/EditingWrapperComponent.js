@@ -1,4 +1,4 @@
-import React, { memo, useState } from "react";
+import React, { memo } from "react";
 import styled from "styled-components";
 import { TextInput, Button } from "asc-web-components";
 
@@ -8,7 +8,7 @@ const EditingWrapper = styled.div`
   align-items: center;
 
   @media (max-width: 1024px) {
-  height: 56px;
+    height: 56px;
   }
   .edit-text {
     height: 30px;
@@ -16,7 +16,7 @@ const EditingWrapper = styled.div`
     outline: 0 !important;
     font-weight: 600;
     margin: 0;
-    font-family: 'Open Sans',sans-serif,Arial;
+    font-family: "Open Sans", sans-serif, Arial;
     text-align: left;
     color: #333333;
   }
@@ -38,60 +38,66 @@ const EditingWrapper = styled.div`
   }
 `;
 
-const EditingWrapperComponent = props => {
-    const { itemTitle, itemId, okIcon, cancelIcon, renameTitle, onClickUpdateItem, cancelUpdateItem } = props;
-    const [loading, setLoading] = useState(false);
+const EditingWrapperComponent = (props) => {
+  const {
+    itemTitle,
+    itemId,
+    okIcon,
+    cancelIcon,
+    renameTitle,
+    onClickUpdateItem,
+    cancelUpdateItem,
+    isLoading,
+  } = props;
 
-    const onUpdate = () => {
-      setLoading(true);
-      onClickUpdateItem();
+  const onUpdate = (e) => {
+    onClickUpdateItem(e);
+  };
+
+  const onCancel = (e) => {
+    cancelUpdateItem(e);
+  };
+
+  const onKeyUpUpdateItem = (e) => {
+    if (e.keyCode === 13) {
+      onClickUpdateItem(e);
     }
 
-    const onCancel = (e) => {
-      setLoading(true);
-      cancelUpdateItem(e);
-    }
+    if (e.keyCode === 27) return cancelUpdateItem(e);
+  };
 
-    const onKeyUpUpdateItem = e => {
-      if (e.keyCode === 13) {
-        setLoading(true);
-        onClickUpdateItem();
-      }
-  
-      if (e.keyCode === 27)
-        return cancelUpdateItem();
-    }
-
-    return(
-      <EditingWrapper>
-        <TextInput
-          className='edit-text'
-          name='title'
-          scale={true}
-          value={itemTitle}
-          tabIndex={1}
-          isAutoFocussed={true}
-          onChange={renameTitle}
-          onKeyUp={onKeyUpUpdateItem}
-          isDisabled={loading}
-        />
-        <Button
-          className='edit-button'
-          size='medium'
-          isDisabled={loading}
-          onClick={onUpdate}
-          icon={okIcon}
-        />
-        <Button
-          className='edit-button'
-          size='medium'
-          isDisabled={loading}
-          onClick={onCancel}
-          icon={cancelIcon}
-          data-itemid={itemId}
-        />
-      </EditingWrapper>
-    )
-}
+  return (
+    <EditingWrapper>
+      <TextInput
+        className="edit-text"
+        name="title"
+        scale={true}
+        value={itemTitle}
+        tabIndex={1}
+        isAutoFocussed={true}
+        onChange={renameTitle}
+        onKeyUp={onKeyUpUpdateItem}
+        isDisabled={isLoading}
+        data-itemid={itemId}
+      />
+      <Button
+        className="edit-button"
+        size="medium"
+        isDisabled={isLoading}
+        onClick={onUpdate}
+        icon={okIcon}
+        data-itemid={itemId}
+      />
+      <Button
+        className="edit-button"
+        size="medium"
+        isDisabled={isLoading}
+        onClick={onCancel}
+        icon={cancelIcon}
+        data-itemid={itemId}
+      />
+    </EditingWrapper>
+  );
+};
 
 export default memo(EditingWrapperComponent);

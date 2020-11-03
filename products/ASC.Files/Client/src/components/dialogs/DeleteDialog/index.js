@@ -3,29 +3,34 @@ import { withRouter } from "react-router";
 import { connect } from "react-redux";
 import ModalDialogContainer from "../ModalDialogContainer";
 import {
-  toastr,
   ModalDialog,
   Button,
   Text,
   Checkbox,
-  Scrollbar
+  Scrollbar,
 } from "asc-web-components";
 import { withTranslation } from "react-i18next";
-import { api, utils } from "asc-web-common";
+import { api, utils, toastr } from "asc-web-common";
 import {
   fetchFiles,
   setTreeFolders,
-  getProgress,
   setProgressBarData,
   clearProgressData,
-  setNewTreeFilesBadge
+  setUpdateTree,
 } from "../../../store/files/actions";
-import { loopTreeFolders } from "../../../store/files/selectors";
-import store from "../../../store/store";
+import {
+  loopTreeFolders,
+  getSelectedFolderId,
+  getFilter,
+  getTreeFolders,
+  getIsLoading,
+  getIsRecycleBinFolder,
+  getSelection,
+} from "../../../store/files/selectors";
 import { createI18N } from "../../../helpers/i18n";
 const i18n = createI18N({
   page: "DeleteDialog",
-  localesPath: "dialogs/DeleteDialog"
+  localesPath: "dialogs/DeleteDialog",
 });
 
 const { files } = api;
@@ -54,57 +59,66 @@ class DeleteDialogComponent extends React.Component {
     this.state = { foldersList, filesList, selection };
   }
 
-  loopDeleteOperation = id => {
+  loopDeleteOperation = (id) => {
     const {
       currentFolderId,
       filter,
       treeFolders,
       setTreeFolders,
       isRecycleBinFolder,
-      getProgress,
       setProgressBarData,
-      t
+      clearProgressData,
+      t,
+      fetchFiles,
+      setUpdateTree,
     } = this.props;
     const successMessage = "Files and folders was deleted";
-    getProgress()
-      .then(res => {
-        const currentProcess = res.find(x => x.id === id);
+    api.files
+      .getProgress()
+      .then((res) => {
+        const currentProcess = res.find((x) => x.id === id);
         if (currentProcess && currentProcess.progress !== 100) {
           setProgressBarData({
             percent: currentProcess.progress,
             label: t("DeleteOperation"),
-            visible: true
+            visible: true,
           });
           setTimeout(() => this.loopDeleteOperation(id), 1000);
         } else {
           setProgressBarData({
             percent: 100,
             label: t("DeleteOperation"),
-            visible: true
+            visible: true,
           });
-          setTimeout(() => clearProgressData(store.dispatch), 5000);
-          fetchFiles(currentFolderId, filter, store.dispatch).then(data => {
-            if (!isRecycleBinFolder) {
+          setTimeout(() => clearProgressData(), 5000);
+          fetchFiles(currentFolderId, filter).then((data) => {
+            if (!isRecycleBinFolder && !!this.state.foldersList.length) {
               const path = data.selectedFolder.pathParts.slice(0);
               const newTreeFolders = treeFolders;
               const folders = data.selectedFolder.folders;
               const foldersCount = data.selectedFolder.foldersCount;
               loopTreeFolders(path, newTreeFolders, folders, foldersCount);
-              this.props.setNewTreeFilesBadge(true);
+              setUpdateTree(true);
               setTreeFolders(newTreeFolders);
             }
             toastr.success(successMessage);
           });
         }
       })
-      .catch(err => {
+      .catch((err) => {
         toastr.error(err);
-        clearProgressData(store.dispatch);
+        clearProgressData();
       });
   };
 
   onDelete = () => {
-    const { isRecycleBinFolder, onClose, t, setProgressBarData } = this.props;
+    const {
+      isRecycleBinFolder,
+      onClose,
+      t,
+      setProgressBarData,
+      clearProgressData,
+    } = this.props;
     const { selection } = this.state;
 
     const deleteAfter = true; //Delete after finished
@@ -128,23 +142,23 @@ class DeleteDialogComponent extends React.Component {
       setProgressBarData({
         visible: true,
         label: t("DeleteOperation"),
-        percent: 0
+        percent: 0,
       });
 
       files
         .removeFiles(folderIds, fileIds, deleteAfter, immediately)
-        .then(res => {
+        .then((res) => {
           const id = res[0] && res[0].id ? res[0].id : null;
           this.loopDeleteOperation(id);
         })
-        .catch(err => {
+        .catch((err) => {
           toastr.error(err);
-          clearProgressData(store.dispatch);
+          clearProgressData();
         });
     }
   };
 
-  onChange = event => {
+  onChange = (event) => {
     const value = event.target.value.split("/");
     const fileType = value[0];
     const id = Number(value[1]);
@@ -152,11 +166,11 @@ class DeleteDialogComponent extends React.Component {
     const newSelection = this.state.selection;
 
     if (fileType !== "undefined") {
-      const a = newSelection.find(x => x.id === id && x.fileExst);
+      const a = newSelection.find((x) => x.id === id && x.fileExst);
       a.checked = !a.checked;
       this.setState({ selection: newSelection });
     } else {
-      const a = newSelection.find(x => x.id === id && !x.fileExst);
+      const a = newSelection.find((x) => x.id === id && !x.fileExst);
       a.checked = !a.checked;
       this.setState({ selection: newSelection });
     }
@@ -166,7 +180,7 @@ class DeleteDialogComponent extends React.Component {
     const { onClose, visible, t, isLoading } = this.props;
     const { filesList, foldersList, selection } = this.state;
 
-    const checkedSelections = selection.filter(x => x.checked === true);
+    const checkedSelections = selection.filter((x) => x.checked === true);
 
     const questionMessage =
       checkedSelections.length === 1
@@ -189,77 +203,68 @@ class DeleteDialogComponent extends React.Component {
 
     return (
       <ModalDialogContainer>
-        <ModalDialog
-          visible={visible}
-          onClose={onClose}
-          headerContent={t("ConfirmationTitle")}
-          bodyContent={
-            <>
-              <div className="modal-dialog-content">
-                <Text className="delete_dialog-header-text">
-                  {questionMessage}
-                </Text>
-                <Scrollbar
-                  style={{ height, maxHeight: 330 }}
-                  stype="mediumBlack"
-                >
-                  {foldersList.length > 0 && (
-                    <Text isBold>{t("FoldersModule")}:</Text>
-                  )}
-                  {foldersList.map((item, index) => (
-                    <Checkbox
-                      truncate
-                      className="modal-dialog-checkbox"
-                      value={`${item.fileExst}/${item.id}`}
-                      onChange={this.onChange}
-                      key={`checkbox_${index}`}
-                      isChecked={item.checked}
-                      label={item.title}
-                    />
-                  ))}
+        <ModalDialog visible={visible} onClose={onClose}>
+          <ModalDialog.Header>{t("ConfirmationTitle")}</ModalDialog.Header>
+          <ModalDialog.Body>
+            <div className="modal-dialog-content">
+              <Text className="delete_dialog-header-text">
+                {questionMessage}
+              </Text>
+              <Scrollbar style={{ height, maxHeight: 330 }} stype="mediumBlack">
+                {foldersList.length > 0 && (
+                  <Text isBold>{t("FoldersModule")}:</Text>
+                )}
+                {foldersList.map((item, index) => (
+                  <Checkbox
+                    truncate
+                    className="modal-dialog-checkbox"
+                    value={`${item.fileExst}/${item.id}`}
+                    onChange={this.onChange}
+                    key={`checkbox_${index}`}
+                    isChecked={item.checked}
+                    label={item.title}
+                  />
+                ))}
 
-                  {filesList.length > 0 && (
-                    <Text isBold className="delete_dialog-text">
-                      {t("FilesModule")}:
-                    </Text>
-                  )}
-                  {filesList.map((item, index) => (
-                    <Checkbox
-                      truncate
-                      className="modal-dialog-checkbox"
-                      value={`${item.fileExst}/${item.id}`}
-                      onChange={this.onChange}
-                      key={`checkbox_${index}`}
-                      isChecked={item.checked}
-                      label={item.title}
-                    />
-                  ))}
-                </Scrollbar>
-              </div>
-            </>
-          }
-          footerContent={
-            <>
-              <Button
-                className="button-dialog-accept"
-                key="OkButton"
-                label={t("OKButton")}
-                size="medium"
-                primary
-                onClick={this.onDelete}
-                isLoading={isLoading}
-              />
-              <Button
-                className="button-dialog"
-                key="CancelButton"
-                label={t("CancelButton")}
-                size="medium"
-                onClick={onClose}
-                isLoading={isLoading}
-              />
-            </>
-          }
-        />
+                {filesList.length > 0 && (
+                  <Text isBold className="delete_dialog-text">
+                    {t("FilesModule")}:
+                  </Text>
+                )}
+                {filesList.map((item, index) => (
+                  <Checkbox
+                    truncate
+                    className="modal-dialog-checkbox"
+                    value={`${item.fileExst}/${item.id}`}
+                    onChange={this.onChange}
+                    key={`checkbox_${index}`}
+                    isChecked={item.checked}
+                    label={item.title}
+                  />
+                ))}
+              </Scrollbar>
+            </div>
+          </ModalDialog.Body>
+          <ModalDialog.Footer>
+            <Button
+              className="button-dialog-accept"
+              key="OkButton"
+              label={t("OKButton")}
+              size="medium"
+              primary
+              onClick={this.onDelete}
+              isLoading={isLoading}
+            />
+            <Button
+              className="button-dialog"
+              key="CancelButton"
+              label={t("CancelButton")}
+              size="medium"
+              onClick={onClose}
+              isLoading={isLoading}
+            />
+          </ModalDialog.Footer>
+        </ModalDialog>
       </ModalDialogContainer>
     );
   }
@@ -267,20 +272,25 @@ class DeleteDialogComponent extends React.Component {
 
 const ModalDialogContainerTranslated = withTranslation()(DeleteDialogComponent);
 
-const DeleteDialog = props => (
+const DeleteDialog = (props) => (
   <ModalDialogContainerTranslated i18n={i18n} {...props} />
 );
 
-const mapStateToProps = state => {
-  const { selectedFolder, filter, treeFolders } = state.files;
+const mapStateToProps = (state) => {
   return {
-    currentFolderId: selectedFolder.id,
-    filter,
-    treeFolders
+    currentFolderId: getSelectedFolderId(state),
+    filter: getFilter(state),
+    treeFolders: getTreeFolders(state),
+    isLoading: getIsLoading(state),
+    isRecycleBinFolder: getIsRecycleBinFolder(state),
+    selection: getSelection(state),
   };
 };
 
-export default connect(
-  mapStateToProps,
-  { setTreeFolders, getProgress, setProgressBarData, setNewTreeFilesBadge }
-)(withRouter(DeleteDialog));
+export default connect(mapStateToProps, {
+  setTreeFolders,
+  setProgressBarData,
+  clearProgressData,
+  setUpdateTree,
+  fetchFiles,
+})(withRouter(DeleteDialog));

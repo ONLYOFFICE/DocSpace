@@ -65,7 +65,6 @@ namespace ASC.Web.Files.Configuration
 
         private FileSecurity FileSecurity { get; }
         private IDaoFactory DaoFactory { get; }
-        private Global Global { get; }
         private EntryManager EntryManager { get; }
         private GlobalFolderHelper GlobalFolderHelper { get; }
         private FilesSettingsHelper FilesSettingsHelper { get; }
@@ -77,7 +76,6 @@ namespace ASC.Web.Files.Configuration
         public SearchHandler(
             FileSecurity fileSecurity,
             IDaoFactory daoFactory,
-            Global global,
             EntryManager entryManager,
             GlobalFolderHelper globalFolderHelper,
             FilesSettingsHelper filesSettingsHelper,
@@ -88,7 +86,6 @@ namespace ASC.Web.Files.Configuration
         {
             FileSecurity = fileSecurity;
             DaoFactory = daoFactory;
-            Global = global;
             EntryManager = entryManager;
             GlobalFolderHelper = globalFolderHelper;
             FilesSettingsHelper = filesSettingsHelper;
@@ -113,7 +110,7 @@ namespace ASC.Web.Files.Configuration
             result = folderDao.Search(text).Where(security.CanRead);
 
             if (ThirdpartyConfiguration.SupportInclusion
-                && (Global.IsAdministrator || FilesSettingsHelper.EnableThirdParty))
+                && FilesSettingsHelper.EnableThirdParty)
             {
                 var id = GlobalFolderHelper.FolderMy;
                 if (!Equals(id, 0))

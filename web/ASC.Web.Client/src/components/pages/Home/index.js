@@ -2,15 +2,17 @@ import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
-import { Loader, toastr, Text } from "asc-web-components";
-import { ModuleTile, PageLayout, utils } from "asc-web-common";
+import { Text } from "asc-web-components";
+import { toastr, ModuleTile, PageLayout, utils } from "asc-web-common";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 
 import { createI18N } from "../../../helpers/i18n";
+import { setDocumentTitle } from "../../../helpers/utils";
+
 const i18n = createI18N({
   page: "Home",
-  localesPath: "pages/Home"
+  localesPath: "pages/Home",
 });
 
 const { changeLanguage } = utils;
@@ -53,11 +55,11 @@ const HomeContainer = styled.div`
 const Tiles = ({ modules, isPrimary }) => {
   let index = 0;
 
-  const mapped = modules.filter(m => m.isPrimary === isPrimary);
+  const mapped = modules.filter((m) => m.isPrimary === isPrimary);
 
   return mapped.length > 0 ? (
     <div className="home-modules">
-      {mapped.map(module => (
+      {mapped.map((module) => (
         <div className="home-module" key={++index}>
           <ModuleTile
             {...module}
@@ -73,14 +75,14 @@ const Tiles = ({ modules, isPrimary }) => {
 
 Tiles.propTypes = {
   modules: PropTypes.array.isRequired,
-  isPrimary: PropTypes.bool.isRequired
+  isPrimary: PropTypes.bool.isRequired,
 };
 
-const Body = ({ modules, match, isLoaded }) => {
+const Body = ({ modules, match, isLoaded, organizationName }) => {
   const { t } = useTranslation("translation", { i18n });
   const { error } = match.params;
 
-  document.title = `${t("OrganizationName")}`;
+  setDocumentTitle();
 
   useEffect(() => error && toastr.error(error), [error]);
 
@@ -89,7 +91,7 @@ const Body = ({ modules, match, isLoaded }) => {
   }, []);
 
   return !isLoaded ? (
-    <Loader className="pageLoader" type="rombs" size="40px" />
+    <></>
   ) : (
     <HomeContainer>
       <Tiles modules={modules} isPrimary={true} />
@@ -104,7 +106,7 @@ const Body = ({ modules, match, isLoaded }) => {
   );
 };
 
-const Home = props => (
+const Home = (props) => (
   <PageLayout>
     <PageLayout.SectionBody>
       <Body {...props} />
@@ -114,13 +116,16 @@ const Home = props => (
 
 Home.propTypes = {
   modules: PropTypes.array.isRequired,
-  isLoaded: PropTypes.bool
+  isLoaded: PropTypes.bool,
 };
 
 function mapStateToProps(state) {
+  const { modules, isLoaded, settings } = state.auth;
+  const { organizationName } = settings;
   return {
-    modules: state.auth.modules,
-    isLoaded: state.auth.isLoaded
+    modules,
+    isLoaded,
+    organizationName,
   };
 }
 

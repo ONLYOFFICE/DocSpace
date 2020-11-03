@@ -7,8 +7,8 @@ import {
   Icons,
   DropDownItem,
   LinkWithDropdown,
-  toastr,
 } from "asc-web-components";
+import { toastr } from "asc-web-common";
 import copy from "copy-to-clipboard";
 
 const SharingRow = (props) => {
@@ -32,7 +32,9 @@ const SharingRow = (props) => {
   const linkVisible = selection && selection.length === 1 && item.shareLink;
 
   const onCopyInternalLink = () => {
-    const internalLink = selection.webUrl ? selection.webUrl : selection[0].webUrl;
+    const internalLink = selection.webUrl
+      ? selection.webUrl
+      : selection[0].webUrl;
     copy(internalLink);
     toastr.success(t("LinkCopySuccess"));
   };
@@ -109,7 +111,7 @@ const SharingRow = (props) => {
   const onCopyClick = () => {
     toastr.success(t("LinkCopySuccess"));
     copy(item.shareLink);
-  }
+  };
 
   const onShareEmail = () => {
     const itemName = selection.title ? selection.title : selection[0].title;
@@ -117,14 +119,13 @@ const SharingRow = (props) => {
     const body = `You have been granted access to the ${itemName} document. Click the link below to open the document right now: 111${item.shareLink}111`;
 
     window.open(`mailto:?subject=${subject}&body=${body}`);
-  }
+  };
 
   const onShareTwitter = () =>
     window.open(`https://twitter.com/intent/tweet?text=${item.shareLink}`);
 
-  const onShareFacebook = () =>
-    window.open(`https://www.facebook.com`);
-    /*window.open(`https://www.facebook.com/dialog/feed?app_id=645528132139019&display=popup&link=${item.shareLink}`);*/
+  const onShareFacebook = () => window.open(`https://www.facebook.com`);
+  /*window.open(`https://www.facebook.com/dialog/feed?app_id=645528132139019&display=popup&link=${item.shareLink}`);*/
 
   const options = [
     {
@@ -183,7 +184,7 @@ const SharingRow = (props) => {
     {
       key: "linkItem_0",
       label: t("CopyExternalLink"),
-      onClick: onCopyClick
+      onClick: onCopyClick,
     },
     {
       key: "linkItem_1",
@@ -192,7 +193,7 @@ const SharingRow = (props) => {
     {
       key: "linkItem_2",
       label: `${t("ShareVia")} e-mail`,
-      onClick: onShareEmail
+      onClick: onShareEmail,
     },
     {
       key: "linkItem_3",
@@ -202,12 +203,12 @@ const SharingRow = (props) => {
     {
       key: "linkItem_4",
       label: `${t("ShareVia")} Facebook`,
-      onClick: onShareFacebook
+      onClick: onShareFacebook,
     },
     {
       key: "linkItem_5",
       label: `${t("ShareVia")} Twitter`,
-      onClick: onShareTwitter
+      onClick: onShareTwitter,
     },
     {
       key: "linkItem_6",
@@ -254,8 +255,7 @@ const SharingRow = (props) => {
             size="content"
             onSelect={(option) => console.log("selected", option)}
           />
-          */
-        }
+          */}
       </>
     </Row>
   );

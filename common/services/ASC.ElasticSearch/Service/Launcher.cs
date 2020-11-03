@@ -48,7 +48,7 @@ namespace ASC.ElasticSearch
         private ICacheNotify<AscCacheItem> Notify { get; }
         private ICacheNotify<IndexAction> IndexNotify { get; }
         private IServiceProvider ServiceProvider { get; }
-        public IContainer Container { get; }
+        public ILifetimeScope Container { get; }
         private bool IsStarted { get; set; }
         private CancellationTokenSource CancellationTokenSource { get; set; }
         private Timer Timer { get; set; }
@@ -59,7 +59,7 @@ namespace ASC.ElasticSearch
             ICacheNotify<AscCacheItem> notify,
             ICacheNotify<IndexAction> indexNotify,
             IServiceProvider serviceProvider,
-            IContainer container,
+            ILifetimeScope container,
             Settings settings)
         {
             Log = options.Get("ASC.Indexer");
@@ -92,9 +92,8 @@ namespace ASC.ElasticSearch
             var task = new Task(async () =>
             {
                 using var scope = ServiceProvider.CreateScope();
-                var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer>();
-                var service = scope.ServiceProvider.GetService<Service.Service>();
-
+                var scopeClass = scope.ServiceProvider.GetService<ServiceLauncherScope>();
+                var (factoryIndexer, service) = scopeClass;
                 while (!factoryIndexer.CheckState(false))
                 {
                     if (CancellationTokenSource.IsCancellationRequested)
@@ -181,12 +180,32 @@ namespace ASC.ElasticSearch
         }
     }
 
+    public class ServiceLauncherScope
+    {
+        private FactoryIndexer FactoryIndexer { get; }
+        private Service.Service Service { get; }
+
+        public ServiceLauncherScope(FactoryIndexer factoryIndexer, Service.Service service)
+        {
+            FactoryIndexer = factoryIndexer;
+            Service = service;
+        }
+
+        public void Deconstruct(out FactoryIndexer factoryIndexer, out Service.Service service)
+        {
+            factoryIndexer = FactoryIndexer;
+            service = Service;
+        }
+    }
+
     public static class ServiceLauncherExtension
     {
         public static DIHelper AddServiceLauncher(this DIHelper services)
         {
             services.TryAddSingleton<ServiceLauncher>();
+            services.TryAddScoped<ServiceLauncherScope>();
             services.TryAddSingleton<Service.Service>();
+            services.TryAddScoped<ServiceScope>();
 
             return services
                 .AddSettingsService()

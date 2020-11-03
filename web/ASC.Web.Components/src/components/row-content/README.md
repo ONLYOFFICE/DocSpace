@@ -10,33 +10,33 @@ import { RowContent } from "asc-web-components";
 
 ```jsx
 <RowContent>
-  <Link type="page" title="Demo" isBold={true} fontSize='15px' color="#333333">
+  <Link type="page" title="Demo" isBold={true} fontSize="15px" color="#333333">
     Demo
   </Link>
   <>
     <Icons.SendClockIcon size="small" isfill={true} color="#3B72A7" />
     <Icons.CatalogSpamIcon size="small" isfill={true} color="#3B72A7" />
   </>
-  <Link type="page" title="Demo" fontSize='12px' color="#A3A9AE">
+  <Link type="page" title="Demo" fontSize="12px" color="#A3A9AE">
     Demo
   </Link>
   <Link
     containerWidth="160px"
     type="action"
     title="Demo"
-    fontSize='12px'
+    fontSize="12px"
     color="#A3A9AE"
   >
     Demo
   </Link>
-  <Link type="page" title="0 000 0000000" fontSize='12px' color="#A3A9AE">
+  <Link type="page" title="0 000 0000000" fontSize="12px" color="#A3A9AE">
     0 000 0000000
   </Link>
   <Link
     containerWidth="160px"
     type="page"
     title="demo@demo.com"
-    fontSize='12px'
+    fontSize="12px"
     color="#A3A9AE"
   >
     demo@demo.com

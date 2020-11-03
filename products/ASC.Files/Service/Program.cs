@@ -11,6 +11,9 @@ using ASC.Feed.Aggregator;
 using ASC.Web.Files.Core.Search;
 using ASC.Web.Files.Utils;
 
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -22,6 +25,7 @@ namespace ASC.Files.Service
         public static async Task Main(string[] args)
         {
             var host = Host.CreateDefaultBuilder(args)
+                .UseServiceProviderFactory(new AutofacServiceProviderFactory())
                 .ConfigureAppConfiguration((hostContext, config) =>
                 {
                     var buided = config.Build();
@@ -51,6 +55,7 @@ namespace ASC.Files.Service
                 .ConfigureServices((hostContext, services) =>
                 {
                     var diHelper = new DIHelper(services);
+
                     diHelper.AddNLogManager("ASC.Files");
                     services.AddHostedService<ServiceLauncher>();
                     diHelper
@@ -64,8 +69,10 @@ namespace ASC.Files.Service
                     services.AddHostedService<FeedAggregatorService>();
                     diHelper
                         .AddFeedAggregatorService();
-
-                    services.AddAutofac(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath, true, false, "search.json", "feed.json");
+                })
+                .ConfigureContainer<ContainerBuilder>((context, builder) =>
+                {
+                    builder.Register(context.Configuration, context.HostingEnvironment.ContentRootPath, true, false, "search.json", "feed.json");
                 })
                 .UseConsoleLifetime()
                 .Build();

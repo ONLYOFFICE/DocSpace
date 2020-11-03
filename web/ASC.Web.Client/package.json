@@ -25,11 +25,13 @@
     "react-router-dom": "5.1.2",
     "redux": "4.0.5",
     "redux-thunk": "2.3.0",
+    "reselect": "^4.0.0",
     "styled-components": "^5.0.0"
   },
   "devDependencies": {
     "copy-webpack-plugin": "^5.1.1",
     "cross-env": "^6.0.3",
+    "prettier": "2.1.2",
     "react-app-rewired": "^2.1.6",
     "react-scripts": "3.4.3",
     "redux-devtools-extension": "^2.13.8",

@@ -97,18 +97,10 @@ namespace ASC.Data.Reassigns
         public void RunJob()
         {
             using var scope = ServiceProvider.CreateScope();
-            var logger = ServiceProvider.GetService<IOptionsMonitor<ILog>>().Get("ASC.Web");
-            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+            var scopeClass = scope.ServiceProvider.GetService<RemoveProgressItemScope>();
+            var (tenantManager, coreBaseSettings, messageService, studioNotifyService, securityContext, userManager, messageTarget, webItemManagerSecurity, storageFactory, userFormatter, options) = scopeClass;
+            var logger = options.Get("ASC.Web");
             var tenant = tenantManager.SetCurrentTenant(_tenantId);
-
-            var messageService = scope.ServiceProvider.GetService<MessageService>();
-            var studioNotifyService = scope.ServiceProvider.GetService<StudioNotifyService>();
-            var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
-            var webItemManagerSecurity = scope.ServiceProvider.GetService<WebItemManagerSecurity>();
-            var storageFactory = scope.ServiceProvider.GetService<StorageFactory>();
-            var coreSettings = scope.ServiceProvider.GetService<CoreBaseSettings>();
-            var userFormatter = scope.ServiceProvider.GetService<UserFormatter>();
-            var messageTarget = scope.ServiceProvider.GetService<MessageTarget>();
             var userName = userFormatter.GetUserName(User, DisplayUserNameFormat.Default);
 
             try
@@ -128,7 +120,7 @@ namespace ASC.Data.Reassigns
                 Percentage = 25;
                 //_docService.DeleteStorage(_userId);
 
-                if (!coreSettings.CustomMode)
+                if (!coreBaseSettings.CustomMode)
                 {
                     logger.Info("deleting of data from crm");
 
@@ -254,13 +246,78 @@ namespace ASC.Data.Reassigns
         }
     }
 
+    public class RemoveProgressItemScope
+    {
+        private TenantManager TenantManager { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
+        private MessageService MessageService { get; }
+        private StudioNotifyService StudioNotifyService { get; }
+        private SecurityContext SecurityContext { get; }
+        private UserManager UserManager { get; }
+        private MessageTarget MessageTarget { get; }
+        private WebItemManagerSecurity WebItemManagerSecurity { get; }
+        private StorageFactory StorageFactory { get; }
+        private UserFormatter UserFormatter { get; }
+        private IOptionsMonitor<ILog> Options { get; }
+
+        public RemoveProgressItemScope(TenantManager tenantManager,
+            CoreBaseSettings coreBaseSettings,
+            MessageService messageService,
+            StudioNotifyService studioNotifyService,
+            SecurityContext securityContext,
+            UserManager userManager,
+            MessageTarget messageTarget,
+            WebItemManagerSecurity webItemManagerSecurity,
+            StorageFactory storageFactory,
+            UserFormatter userFormatter,
+            IOptionsMonitor<ILog> options)
+        {
+            TenantManager = tenantManager;
+            CoreBaseSettings = coreBaseSettings;
+            MessageService = messageService;
+            StudioNotifyService = studioNotifyService;
+            SecurityContext = securityContext;
+            UserManager = userManager;
+            MessageTarget = messageTarget;
+            WebItemManagerSecurity = webItemManagerSecurity;
+            StorageFactory = storageFactory;
+            UserFormatter = userFormatter;
+            Options = options;
+        }
+
+        public void Deconstruct(out TenantManager tenantManager,
+            out CoreBaseSettings coreBaseSettings,
+            out MessageService messageService,
+            out StudioNotifyService studioNotifyService,
+            out SecurityContext securityContext,
+            out UserManager userManager,
+            out MessageTarget messageTarget,
+            out WebItemManagerSecurity webItemManagerSecurity,
+            out StorageFactory storageFactory,
+            out UserFormatter userFormatter,
+            out IOptionsMonitor<ILog> optionsMonitor)
+        {
+            tenantManager = TenantManager;
+            coreBaseSettings = CoreBaseSettings;
+            messageService = MessageService;
+            studioNotifyService = StudioNotifyService;
+            securityContext = SecurityContext;
+            userManager = UserManager;
+            messageTarget = MessageTarget;
+            webItemManagerSecurity = WebItemManagerSecurity;
+            storageFactory = StorageFactory;
+            userFormatter = UserFormatter;
+            optionsMonitor = Options;
+        }
+    }
+
     public static class RemoveProgressItemExtension
     {
         public static DIHelper AddRemoveProgressItemService(this DIHelper services)
         {
-
             services.TryAddSingleton<ProgressQueueOptionsManager<RemoveProgressItem>>();
             services.TryAddSingleton<ProgressQueue<RemoveProgressItem>>();
+            services.TryAddScoped<RemoveProgressItemScope>();
             services.AddSingleton<IPostConfigureOptions<ProgressQueue<RemoveProgressItem>>, ConfigureProgressQueue<RemoveProgressItem>>();
             return services;
         }

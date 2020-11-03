@@ -17,11 +17,11 @@ import {
   Text,
   Tooltip,
   CustomScrollbarsVirtualList,
-  HelpButton
+  HelpButton,
 } from "asc-web-components";
 import StyledSelector from "./StyledSelector";
 
-const convertGroups = items => {
+const convertGroups = (items) => {
   if (!items) return [];
 
   const wrappedGroups = items.map(convertGroup);
@@ -29,21 +29,21 @@ const convertGroups = items => {
   return wrappedGroups;
 };
 
-const convertGroup = group => {
+const convertGroup = (group) => {
   return {
     key: group.key,
     label: `${group.label} (${group.total})`,
     total: group.total,
-    selected: 0
+    selected: 0,
   };
 };
 
-const getCurrentGroup = items => {
-  const currentGroup = items.length > 0 ? items[0] : "No groups";
+const getCurrentGroup = (items) => {
+  const currentGroup = items.length > 0 ? items[0] : {};
   return currentGroup;
 };
 
-const Selector = props => {
+const Selector = (props) => {
   const {
     displayType,
     groups,
@@ -68,7 +68,7 @@ const Selector = props => {
     onGroupChanged,
     size,
     allowGroupSelection,
-    embeddedComponent
+    embeddedComponent,
   } = props;
 
   //console.log("options", options);
@@ -79,7 +79,8 @@ const Selector = props => {
   const listGroupsRef = useRef(null);
 
   useEffect(() => {
-    currentGroup === "No groups" && setCurrentGroup(getCurrentGroup(convertGroups(groups)));
+    Object.keys(currentGroup).length === 0 &&
+      setCurrentGroup(getCurrentGroup(convertGroups(groups)));
     resetCache();
   }, [searchValue, currentGroup, hasNextPage]);
 
@@ -100,18 +101,18 @@ const Selector = props => {
 
   // Every row is loaded except for our loading indicator row.
   const isItemLoaded = useCallback(
-    index => {
+    (index) => {
       return !hasNextPage || index < options.length;
     },
     [hasNextPage, options]
   );
 
   const onOptionChange = useCallback(
-    e => {
+    (e) => {
       const option = options[+e.target.value];
       const newSelected = e.target.checked
         ? [option, ...selectedOptionList]
-        : selectedOptionList.filter(el => el.key !== option.key);
+        : selectedOptionList.filter((el) => el.key !== option.key);
       setSelectedOptionList(newSelected);
 
       if (!option.groups) return;
@@ -120,31 +121,31 @@ const Selector = props => {
       const removedSelectedGroups = [];
 
       if (e.target.checked) {
-        option.groups.forEach(g => {
-          let index = selectedGroupList.findIndex(sg => sg.key === g);
+        option.groups.forEach((g) => {
+          let index = selectedGroupList.findIndex((sg) => sg.key === g);
           if (index > -1) {
             // exists
             const selectedGroup = selectedGroupList[index];
             const newSelected = selectedGroup.selected + 1;
             newSelectedGroups.push(
               Object.assign({}, selectedGroup, {
-                selected: newSelected
+                selected: newSelected,
               })
             );
           } else {
-            index = groups.findIndex(sg => sg.key === g);
+            index = groups.findIndex((sg) => sg.key === g);
             if (index < 0) return;
             const notSelectedGroup = convertGroup(groups[index]);
             newSelectedGroups.push(
               Object.assign({}, notSelectedGroup, {
-                selected: 1
+                selected: 1,
               })
             );
           }
         });
       } else {
-        option.groups.forEach(g => {
-          let index = selectedGroupList.findIndex(sg => sg.key === g);
+        option.groups.forEach((g) => {
+          let index = selectedGroupList.findIndex((sg) => sg.key === g);
           if (index > -1) {
             // exists
             const selectedGroup = selectedGroupList[index];
@@ -152,13 +153,13 @@ const Selector = props => {
             if (newSelected > 0) {
               newSelectedGroups.push(
                 Object.assign({}, selectedGroup, {
-                  selected: newSelected
+                  selected: newSelected,
                 })
               );
             } else {
               removedSelectedGroups.push(
                 Object.assign({}, selectedGroup, {
-                  selected: newSelected
+                  selected: newSelected,
                 })
               );
             }
@@ -166,12 +167,12 @@ const Selector = props => {
         });
       }
 
-      selectedGroupList.forEach(g => {
-        const indexNew = newSelectedGroups.findIndex(sg => sg.key === g.key);
+      selectedGroupList.forEach((g) => {
+        const indexNew = newSelectedGroups.findIndex((sg) => sg.key === g.key);
 
         if (indexNew === -1) {
           const indexRemoved = removedSelectedGroups.findIndex(
-            sg => sg.key === g.key
+            (sg) => sg.key === g.key
           );
 
           if (indexRemoved === -1) {
@@ -186,12 +187,12 @@ const Selector = props => {
   );
 
   const onGroupChange = useCallback(
-    e => {
+    (e) => {
       const group = convertGroup(groups[+e.target.value]);
       group.selected = e.target.checked ? group.total : 0;
       const newSelectedGroups = e.target.checked
         ? [group, ...selectedGroupList]
-        : selectedGroupList.filter(el => el.key !== group.key);
+        : selectedGroupList.filter((el) => el.key !== group.key);
       //console.log("onGroupChange", item);
       setSelectedGroupList(newSelectedGroups);
 
@@ -214,7 +215,7 @@ const Selector = props => {
   }, [listOptionsRef]);
 
   const onGroupSelect = useCallback(
-    group => {
+    (group) => {
       if (!currentGroup || !group || currentGroup.key === group.key) {
         return;
       }
@@ -243,12 +244,12 @@ const Selector = props => {
     group.selected = checked ? group.total : 0;
     const newSelectedGroups = checked
       ? [group, ...selectedGroupList]
-      : selectedGroupList.filter(el => el.key !== group.key);
+      : selectedGroupList.filter((el) => el.key !== group.key);
 
     setSelectedGroupList(newSelectedGroups);
   }, [selectedAll, currentGroup, selectedGroupList]);
 
-  const onSearchChange = useCallback(value => {
+  const onSearchChange = useCallback((value) => {
     setSearchValue(value);
     onSearchChanged && onSearchChanged(value);
   });
@@ -257,17 +258,19 @@ const Selector = props => {
     onSearchChanged && onSearchChange("");
   });
 
-  const onSelectOptions = items => {
+  const onSelectOptions = (items) => {
     onSelect && onSelect(items);
   };
 
   const isOptionChecked = useCallback(
-    option => {
+    (option) => {
       const checked =
-        selectedOptionList.findIndex(el => el.key === option.key) > -1 ||
+        selectedOptionList.findIndex((el) => el.key === option.key) > -1 ||
         (option.groups &&
-          option.groups.filter(gKey => {
-            const selectedGroup = selectedGroupList.find(sg => sg.key === gKey);
+          option.groups.filter((gKey) => {
+            const selectedGroup = selectedGroupList.find(
+              (sg) => sg.key === gKey
+            );
 
             if (!selectedGroup) return false;
 
@@ -280,7 +283,7 @@ const Selector = props => {
   );
 
   const onLinkClick = useCallback(
-    e => {
+    (e) => {
       const index = e.target.dataset.index;
       if (!index) return;
 
@@ -300,76 +303,76 @@ const Selector = props => {
   const renderOptionItem = useCallback(
     (index, style, option, isChecked, tooltipProps) => {
       return isMultiSelect ? (
-              <div style={style} className="row-option" {...tooltipProps}>
-                <Checkbox
-                  id={option.key}
-                  value={`${index}`}
-                  label={option.label}
-                  isChecked={isChecked}
-                  className="option_checkbox"
-                  truncate={true}
-                  title={option.label}
-                  onChange={onOptionChange}
-                />
-                {displayType === "aside" && getOptionTooltipContent && (
-                  <HelpButton
-                    id={`info-${option.key}`}
-                    className="option-info"
-                    iconName="InfoIcon"
-                    color="#D8D8D8"
-                    getContent={getOptionTooltipContent}
-                    place="top"
-                    offsetLeft={150}
-                    offsetRight={0}
-                    offsetTop={60}
-                    offsetBottom={0}
-                    dataTip={`${index}`}
-                    displayType="dropdown"
-                  />
-                )}
-              </div>
-            ) : (
-              <Link
-                key={option.key}
-                data-index={index}
-                isTextOverflow={true}
-                style={style} 
-                className="row-option" 
-                {...tooltipProps}
-                onClick={onLinkClick}
-                noHover
-              >
-                {option.label}
-                {displayType === "aside" && getOptionTooltipContent && (
-                  <HelpButton
-                    id={`info-${option.key}`}
-                    className="option-info"
-                    iconName="InfoIcon"
-                    color="#D8D8D8"
-                    getContent={getOptionTooltipContent}
-                    place="top"
-                    offsetLeft={150}
-                    offsetRight={0}
-                    offsetTop={60}
-                    offsetBottom={0}
-                    dataTip={`${index}`}
-                    displayType="dropdown"
-                  />
-                )}
-              </Link>
-            );
+        <div style={style} className="row-option" {...tooltipProps}>
+          <Checkbox
+            id={option.key}
+            value={`${index}`}
+            label={option.label}
+            isChecked={isChecked}
+            className="option_checkbox"
+            truncate={true}
+            title={option.label}
+            onChange={onOptionChange}
+          />
+          {displayType === "aside" && getOptionTooltipContent && (
+            <HelpButton
+              id={`info-${option.key}`}
+              className="option-info"
+              iconName="InfoIcon"
+              color="#D8D8D8"
+              getContent={getOptionTooltipContent}
+              place="top"
+              offsetLeft={150}
+              offsetRight={0}
+              offsetTop={60}
+              offsetBottom={0}
+              dataTip={`${index}`}
+              displayType="dropdown"
+            />
+          )}
+        </div>
+      ) : (
+        <Link
+          key={option.key}
+          data-index={index}
+          isTextOverflow={true}
+          style={style}
+          className="row-option"
+          {...tooltipProps}
+          onClick={onLinkClick}
+          noHover
+        >
+          {option.label}
+          {displayType === "aside" && getOptionTooltipContent && (
+            <HelpButton
+              id={`info-${option.key}`}
+              className="option-info"
+              iconName="InfoIcon"
+              color="#D8D8D8"
+              getContent={getOptionTooltipContent}
+              place="top"
+              offsetLeft={150}
+              offsetRight={0}
+              offsetTop={60}
+              offsetBottom={0}
+              dataTip={`${index}`}
+              displayType="dropdown"
+            />
+          )}
+        </Link>
+      );
     },
     [
       isMultiSelect,
       onOptionChange,
       onLinkClick,
       displayType,
-      getOptionTooltipContent
+      getOptionTooltipContent,
     ]
   );
 
   const renderOptionLoader = useCallback(
-    style => {
+    (style) => {
       return (
         <div style={style} className="row-option">
           <div key="loader">
@@ -378,7 +381,7 @@ const Selector = props => {
               size="16px"
               style={{
                 display: "inline",
-                marginRight: "10px"
+                marginRight: "10px",
               }}
             />
             <Text as="span">{loadingLabel}</Text>
@@ -421,21 +424,21 @@ const Selector = props => {
       isMultiSelect,
       onOptionChange,
       onLinkClick,
-      getOptionTooltipContent
+      getOptionTooltipContent,
     ]
   );
 
   const isGroupChecked = useCallback(
-    group => {
-      const selectedGroup = selectedGroupList.find(g => g.key === group.key);
+    (group) => {
+      const selectedGroup = selectedGroupList.find((g) => g.key === group.key);
       return !!selectedGroup;
     },
     [selectedGroupList]
   );
 
   const isGroupIndeterminate = useCallback(
-    group => {
-      const selectedGroup = selectedGroupList.find(g => g.key === group.key);
+    (group) => {
+      const selectedGroup = selectedGroupList.find((g) => g.key === group.key);
       return (
         selectedGroup &&
         selectedGroup.selected > 0 &&
@@ -446,8 +449,8 @@ const Selector = props => {
   );
 
   const getGroupSelected = useCallback(
-    group => {
-      const selectedGroup = selectedGroupList.find(g => g.key === group.key);
+    (group) => {
+      const selectedGroup = selectedGroupList.find((g) => g.key === group.key);
       return isGroupIndeterminate(group)
         ? selectedGroup.selected
         : isGroupChecked(group)
@@ -458,7 +461,7 @@ const Selector = props => {
   );
 
   const getGroupLabel = useCallback(
-    group => {
+    (group) => {
       const selected = getGroupSelected(group);
       return isMultiSelect && allowGroupSelection
         ? `${group.label} (${group.total}/${selected})`
@@ -468,11 +471,11 @@ const Selector = props => {
   );
 
   const getSelectorGroups = useCallback(
-    groups => {
-      return groups.map(group => {
+    (groups) => {
+      return groups.map((group) => {
         return {
           ...group,
-          label: getGroupLabel(group)
+          label: getGroupLabel(group),
         };
       });
     },
@@ -480,7 +483,7 @@ const Selector = props => {
   );
 
   const onLinkGroupClick = useCallback(
-    e => {
+    (e) => {
       const index = e.target.dataset.index;
       if (!index) return;
 
@@ -525,7 +528,7 @@ const Selector = props => {
               onChange={onGroupChange}
             />
           )}
-            {label}
+          {label}
         </Link>
       );
     },
@@ -534,7 +537,7 @@ const Selector = props => {
       currentGroup,
       isMultiSelect,
       selectedGroupList,
-      allowGroupSelection
+      allowGroupSelection,
     ]
   );
 
@@ -548,13 +551,13 @@ const Selector = props => {
   // Only load 1 page of items at a time.
   // Pass an empty callback to InfiniteLoader in case it asks us to load more than once.
   const loadMoreItems = useCallback(
-    startIndex => {
+    (startIndex) => {
       if (isNextPageLoading) return;
 
       const options = {
         startIndex: startIndex || 0,
         searchValue: searchValue,
-        currentGroup: currentGroup ? currentGroup.key : null
+        currentGroup: currentGroup ? currentGroup.key : null,
       };
 
       //setLastIndex(startIndex);
@@ -664,7 +667,11 @@ const Selector = props => {
       {displayType === "dropdown" && groups && groups.length > 0 && (
         <>
           <div className="splitter"></div>
-          <Column className="column-groups" displayType={displayType} size={size}>
+          <Column
+            className="column-groups"
+            displayType={displayType}
+            size={size}
+          >
             <Header className="header-groups">
               <Text
                 as="p"
@@ -739,11 +746,11 @@ Selector.propTypes = {
   onGroupChanged: PropTypes.func,
   getOptionTooltipContent: PropTypes.func,
 
-  embeddedComponent: PropTypes.any
+  embeddedComponent: PropTypes.any,
 };
 
 Selector.defaultProps = {
-  size: "full"
+  size: "full",
 };
 
 export default Selector;

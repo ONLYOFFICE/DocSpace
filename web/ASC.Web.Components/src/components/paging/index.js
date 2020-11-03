@@ -1,9 +1,9 @@
-import React from 'react'
-import styled from 'styled-components'
-import PropTypes from 'prop-types'
+import React from "react";
+import styled from "styled-components";
+import PropTypes from "prop-types";
 
-import Button from '../button'
-import ComboBox from '../combobox'
+import Button from "../button";
+import ComboBox from "../combobox";
 
 const StyledPaging = styled.div`
   display: flex;
@@ -46,36 +46,47 @@ const StyledPage = styled.div`
   }
 `;
 
-const Paging = props => {
+const Paging = (props) => {
   //console.log("Paging render");
-  const { previousLabel, nextLabel, previousAction, nextAction, pageItems, countItems,
-    openDirection, disablePrevious, disableNext, selectedPageItem, selectedCountItem,
-    id, className, style } = props;
+  const {
+    previousLabel,
+    nextLabel,
+    previousAction,
+    nextAction,
+    pageItems,
+    countItems,
+    openDirection,
+    disablePrevious,
+    disableNext,
+    selectedPageItem,
+    selectedCountItem,
+    id,
+    className,
+    style,
+  } = props;
 
   const onSelectPageAction = (option) => {
     props.onSelectPage(option);
-  }
+  };
 
   const onSelectCountAction = (option) => {
-    props.onSelectCount(option)
-  }
+    props.onSelectCount(option);
+  };
 
-  const setDropDownMaxHeight = pageItems && pageItems.length > 6 ? { dropDownMaxHeight: 200 } : {};
+  const setDropDownMaxHeight =
+    pageItems && pageItems.length > 6 ? { dropDownMaxHeight: 200 } : {};
 
   return (
-    <StyledPaging
-      id={id}
-      className={className}
-      style={style}
-    >
+    <StyledPaging id={id} className={className} style={style}>
       <Button
         className="buttonCustomStyle"
-        size='medium'
+        size="medium"
         scale={true}
         label={previousLabel}
         onClick={previousAction}
-        isDisabled={disablePrevious} />
-      {pageItems &&
+        isDisabled={disablePrevious}
+      />
+      {pageItems && (
         <StyledPage>
           <ComboBox
             className="manualWidth"
@@ -84,27 +95,30 @@ const Paging = props => {
             onSelect={onSelectPageAction}
             scaledOptions={pageItems.length > 6}
             selectedOption={selectedPageItem}
-            {...setDropDownMaxHeight} />
+            {...setDropDownMaxHeight}
+          />
         </StyledPage>
-      }
+      )}
       <Button
         className="buttonCustomStyle"
-        size='medium'
+        size="medium"
         scale={true}
         label={nextLabel}
         onClick={nextAction}
-        isDisabled={disableNext} />
-      {countItems &&
+        isDisabled={disableNext}
+      />
+      {countItems && (
         <StyledOnPage>
           <ComboBox
             className="hideDisabled"
             directionY={openDirection}
-            directionX='right'
+            directionX="right"
             options={countItems}
             onSelect={onSelectCountAction}
-            selectedOption={selectedCountItem} />
+            selectedOption={selectedCountItem}
+          />
         </StyledOnPage>
-      }
+      )}
     </StyledPaging>
   );
 };
@@ -128,16 +142,16 @@ Paging.propTypes = {
   pageItems: PropTypes.array,
   countItems: PropTypes.array,
 
-  openDirection: PropTypes.oneOf(['bottom', 'top']),
+  openDirection: PropTypes.oneOf(["bottom", "top"]),
 
   className: PropTypes.string,
   id: PropTypes.string,
-  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
-}
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+};
 
 Paging.defaultProps = {
   disablePrevious: false,
-  disableNext: false
-}
+  disableNext: false,
+};
 
 export default Paging;

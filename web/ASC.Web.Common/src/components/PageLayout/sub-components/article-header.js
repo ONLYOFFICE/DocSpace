@@ -10,7 +10,7 @@ const StyledArticleHeader = styled.div`
 
   @media ${tablet} {
     display: none;
-    }
+  }
 `;
 
 class ArticleHeader extends React.Component {

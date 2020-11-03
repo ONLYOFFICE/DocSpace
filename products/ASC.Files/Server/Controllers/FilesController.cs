@@ -47,7 +47,6 @@ using ASC.Files.Helpers;
 using ASC.Files.Model;
 using ASC.MessagingSystem;
 using ASC.Web.Api.Routing;
-using ASC.Web.Core;
 using ASC.Web.Core.Files;
 using ASC.Web.Files.Classes;
 using ASC.Web.Files.Configuration;
@@ -56,6 +55,7 @@ using ASC.Web.Files.Services.DocumentService;
 using ASC.Web.Files.Services.WCFService;
 using ASC.Web.Files.Services.WCFService.FileOperations;
 using ASC.Web.Files.Utils;
+using ASC.Web.Studio.Core;
 using ASC.Web.Studio.Utility;
 
 using Microsoft.AspNetCore.Http;
@@ -75,7 +75,6 @@ namespace ASC.Api.Documents
     [ApiController]
     public class FilesController : ControllerBase
     {
-        private readonly ApiContext ApiContext;
         private readonly FileStorageService<string> FileStorageService;
 
         private FilesControllerHelper<string> FilesControllerHelperString { get; }
@@ -89,29 +88,24 @@ namespace ASC.Api.Documents
         private FileOperationWraperHelper FileOperationWraperHelper { get; }
         private EntryManager EntryManager { get; }
         private UserManager UserManager { get; }
-        private WebItemSecurity WebItemSecurity { get; }
         private CoreBaseSettings CoreBaseSettings { get; }
         private ThirdpartyConfiguration ThirdpartyConfiguration { get; }
-        private BoxLoginProvider BoxLoginProvider { get; }
-        private DropboxLoginProvider DropboxLoginProvider { get; }
-        private GoogleLoginProvider GoogleLoginProvider { get; }
-        private OneDriveLoginProvider OneDriveLoginProvider { get; }
         private MessageService MessageService { get; }
         private CommonLinkUtility CommonLinkUtility { get; }
         private DocumentServiceConnector DocumentServiceConnector { get; }
-        private FolderContentWrapperHelper FolderContentWrapperHelper { get; }
         private WordpressToken WordpressToken { get; }
         private WordpressHelper WordpressHelper { get; }
         private ConsumerFactory ConsumerFactory { get; }
         private EasyBibHelper EasyBibHelper { get; }
         private ProductEntryPoint ProductEntryPoint { get; }
+        public TenantManager TenantManager { get; }
+        public FileUtility FileUtility { get; }
 
         /// <summary>
         /// </summary>
         /// <param name="context"></param>
         /// <param name="fileStorageService"></param>
         public FilesController(
-            ApiContext context,
             FilesControllerHelper<string> filesControllerHelperString,
             FilesControllerHelper<int> filesControllerHelperInt,
             FileStorageService<string> fileStorageService,
@@ -124,20 +118,19 @@ namespace ASC.Api.Documents
             FileOperationWraperHelper fileOperationWraperHelper,
             EntryManager entryManager,
             UserManager userManager,
-            WebItemSecurity webItemSecurity,
             CoreBaseSettings coreBaseSettings,
             ThirdpartyConfiguration thirdpartyConfiguration,
             MessageService messageService,
             CommonLinkUtility commonLinkUtility,
             DocumentServiceConnector documentServiceConnector,
-            FolderContentWrapperHelper folderContentWrapperHelper,
             WordpressToken wordpressToken,
             WordpressHelper wordpressHelper,
             ConsumerFactory consumerFactory,
             EasyBibHelper easyBibHelper,
-            ProductEntryPoint productEntryPoint)
+            ProductEntryPoint productEntryPoint,
+            TenantManager tenantManager,
+            FileUtility fileUtility)
         {
-            ApiContext = context;
             FilesControllerHelperString = filesControllerHelperString;
             FilesControllerHelperInt = filesControllerHelperInt;
             FileStorageService = fileStorageService;
@@ -150,22 +143,18 @@ namespace ASC.Api.Documents
             FileOperationWraperHelper = fileOperationWraperHelper;
             EntryManager = entryManager;
             UserManager = userManager;
-            WebItemSecurity = webItemSecurity;
             CoreBaseSettings = coreBaseSettings;
             ThirdpartyConfiguration = thirdpartyConfiguration;
             ConsumerFactory = consumerFactory;
-            BoxLoginProvider = ConsumerFactory.Get<BoxLoginProvider>();
-            DropboxLoginProvider = ConsumerFactory.Get<DropboxLoginProvider>();
-            GoogleLoginProvider = ConsumerFactory.Get<GoogleLoginProvider>();
-            OneDriveLoginProvider = ConsumerFactory.Get<OneDriveLoginProvider>();
             MessageService = messageService;
             CommonLinkUtility = commonLinkUtility;
             DocumentServiceConnector = documentServiceConnector;
-            FolderContentWrapperHelper = folderContentWrapperHelper;
             WordpressToken = wordpressToken;
             WordpressHelper = wordpressHelper;
             EasyBibHelper = easyBibHelper;
             ProductEntryPoint = productEntryPoint;
+            TenantManager = tenantManager;
+            FileUtility = fileUtility;
         }
 
         [Read("info")]
@@ -173,6 +162,75 @@ namespace ASC.Api.Documents
         {
             ProductEntryPoint.Init();
             return new Module(ProductEntryPoint, true);
+        }
+
+        [Read("@root")]
+        public IEnumerable<FolderContentWrapper<int>> GetRootFolders(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders, bool withoutTrash, bool withoutAdditionalFolder)
+        {
+            var IsVisitor = UserManager.GetUsers(SecurityContext.CurrentAccount.ID).IsVisitor(UserManager);
+            var result = new SortedSet<int>();
+
+            if (!IsVisitor)
+            {
+                result.Add(GlobalFolderHelper.FolderMy);
+            }
+
+            if (!CoreBaseSettings.Personal && !UserManager.GetUsers(SecurityContext.CurrentAccount.ID).IsOutsider(UserManager))
+            {
+                result.Add(GlobalFolderHelper.FolderShare);
+            }
+
+            if (!IsVisitor && !withoutAdditionalFolder)
+            {
+                if (FilesSettingsHelper.FavoritesSection)
+                {
+                    result.Add(GlobalFolderHelper.FolderFavorites);
+                }
+
+                if (FilesSettingsHelper.RecentSection)
+                {
+                    result.Add(GlobalFolderHelper.FolderRecent);
+                }
+
+                if (PrivacyRoomSettings.IsAvailable(TenantManager))
+                {
+                    result.Add(GlobalFolderHelper.FolderPrivacy);
+                }
+            }
+
+            if (!CoreBaseSettings.Personal)
+            {
+                result.Add(GlobalFolderHelper.FolderCommon);
+            }
+
+            if (!IsVisitor
+               && !withoutAdditionalFolder
+               && FileUtility.ExtsWebTemplate.Any()
+               && FilesSettingsHelper.TemplatesSection)
+            {
+                result.Add(GlobalFolderHelper.FolderTemplates);
+            }
+
+            if (!withoutTrash)
+            {
+                result.Add((int)GlobalFolderHelper.FolderTrash);
+            }
+
+            return result.Select(r => FilesControllerHelperInt.GetFolder(r, userIdOrGroupId, filterType, withsubfolders));
+        }
+
+
+        [Read("@privacy")]
+        public FolderContentWrapper<int> GetPrivacyFolder(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
+        {
+            if (!IsAvailablePrivacyRoomSettings()) throw new System.Security.SecurityException();
+            return FilesControllerHelperInt.GetFolder(GlobalFolderHelper.FolderPrivacy, userIdOrGroupId, filterType, withsubfolders);
+        }
+
+        [Read("@privacy/available")]
+        public bool IsAvailablePrivacyRoomSettings()
+        {
+            return PrivacyRoomSettings.IsAvailable(TenantManager);
         }
 
         /// <summary>
@@ -230,6 +288,54 @@ namespace ASC.Api.Documents
         public FolderContentWrapper<int> GetShareFolder(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
         {
             return FilesControllerHelperInt.GetFolder(GlobalFolderHelper.FolderShare, userIdOrGroupId, filterType, withsubfolders);
+        }
+
+        /// <summary>
+        /// Returns the detailed list of recent files
+        /// </summary>
+        /// <short>Section Recent</short>
+        /// <category>Folders</category>
+        /// <returns>Recent contents</returns>
+        [Read("@recent")]
+        public FolderContentWrapper<int> GetRecentFolder(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
+        {
+            return FilesControllerHelperInt.GetFolder(GlobalFolderHelper.FolderRecent, userIdOrGroupId, filterType, withsubfolders);
+        }
+
+        [Create("file/{fileId}/recent", order: int.MaxValue)]
+        public FileWrapper<string> AddToRecent(string fileId)
+        {
+            return FilesControllerHelperString.AddToRecent(fileId);
+        }
+
+        [Create("file/{fileId:int}/recent", order: int.MaxValue - 1)]
+        public FileWrapper<int> AddToRecent(int fileId)
+        {
+            return FilesControllerHelperInt.AddToRecent(fileId);
+        }
+
+        /// <summary>
+        /// Returns the detailed list of favorites files
+        /// </summary>
+        /// <short>Section Favorite</short>
+        /// <category>Folders</category>
+        /// <returns>Favorites contents</returns>
+        [Read("@favorites")]
+        public FolderContentWrapper<int> GetFavoritesFolder(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
+        {
+            return FilesControllerHelperInt.GetFolder(GlobalFolderHelper.FolderFavorites, userIdOrGroupId, filterType, withsubfolders);
+        }
+
+        /// <summary>
+        /// Returns the detailed list of templates files
+        /// </summary>
+        /// <short>Section Template</short>
+        /// <category>Folders</category>
+        /// <returns>Templates contents</returns>
+        [Read("@templates")]
+        public FolderContentWrapper<int> GetTemplatesFolder(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
+        {
+            return FilesControllerHelperInt.GetFolder(GlobalFolderHelper.FolderTemplates, userIdOrGroupId, filterType, withsubfolders);
         }
 
         /// <summary>
@@ -427,15 +533,15 @@ namespace ASC.Api.Documents
         /// <returns></returns>
         /// <visible>false</visible>
         [Update("{fileId}/update", DisableFormat = true)]
-        public FileWrapper<string> UpdateFileStream(Stream file, string fileId, bool encrypted = false)
+        public FileWrapper<string> UpdateFileStream(Stream file, string fileId, bool encrypted = false, bool forcesave = false)
         {
-            return FilesControllerHelperString.UpdateFileStream(file, fileId, encrypted);
+            return FilesControllerHelperString.UpdateFileStream(file, fileId, encrypted, forcesave);
         }
 
         [Update("{fileId:int}/update")]
-        public FileWrapper<int> UpdateFileStream(Stream file, int fileId, bool encrypted = false)
+        public FileWrapper<int> UpdateFileStream(Stream file, int fileId, bool encrypted = false, bool forcesave = false)
         {
-            return FilesControllerHelperInt.UpdateFileStream(file, fileId, encrypted);
+            return FilesControllerHelperInt.UpdateFileStream(file, fileId, encrypted, forcesave);
         }
 
 
@@ -471,15 +577,15 @@ namespace ASC.Api.Documents
         /// <category>Files</category>
         /// <returns></returns>
         [Create("file/{fileId}/startedit", DisableFormat = true)]
-        public string StartEdit(string fileId, bool editingAlone, string doc)
+        public object StartEdit(string fileId, StartEditModel model)
         {
-            return FilesControllerHelperString.StartEdit(fileId, editingAlone, doc);
+            return FilesControllerHelperString.StartEdit(fileId, model.EditingAlone, model.Doc);
         }
 
         [Create("file/{fileId:int}/startedit")]
-        public string StartEdit(int fileId, bool editingAlone, string doc)
+        public object StartEdit(int fileId, StartEditModel model)
         {
-            return FilesControllerHelperInt.StartEdit(fileId, editingAlone, doc);
+            return FilesControllerHelperInt.StartEdit(fileId, model.EditingAlone, model.Doc);
         }
 
         /// <summary>
@@ -701,7 +807,7 @@ namespace ASC.Api.Documents
         /// <remarks>In case the extension for the file title differs from DOCX/XLSX/PPTX and belongs to one of the known text, spreadsheet or presentation formats, it will be changed to DOCX/XLSX/PPTX accordingly. If the file extension is not set or is unknown, the DOCX extension will be added to the file title.</remarks>
         /// <returns>New file info</returns>
         [Create("@my/file")]
-        public FileWrapper<int> CreateFile(CreateFileModel model)
+        public FileWrapper<int> CreateFile(CreateFileModel<int> model)
         {
             return CreateFile(GlobalFolderHelper.FolderMy, model);
         }
@@ -716,15 +822,15 @@ namespace ASC.Api.Documents
         /// <remarks>In case the extension for the file title differs from DOCX/XLSX/PPTX and belongs to one of the known text, spreadsheet or presentation formats, it will be changed to DOCX/XLSX/PPTX accordingly. If the file extension is not set or is unknown, the DOCX extension will be added to the file title.</remarks>
         /// <returns>New file info</returns>
         [Create("{folderId}/file", DisableFormat = true)]
-        public FileWrapper<string> CreateFile(string folderId, CreateFileModel model)
+        public FileWrapper<string> CreateFile(string folderId, CreateFileModel<string> model)
         {
-            return FilesControllerHelperString.CreateFile(folderId, model.Title);
+            return FilesControllerHelperString.CreateFile(folderId, model.Title, model.TemplateId);
         }
 
         [Create("{folderId:int}/file")]
-        public FileWrapper<int> CreateFile(int folderId, CreateFileModel model)
+        public FileWrapper<int> CreateFile(int folderId, CreateFileModel<int> model)
         {
-            return FilesControllerHelperInt.CreateFile(folderId, model.Title);
+            return FilesControllerHelperInt.CreateFile(folderId, model.Title, model.TemplateId);
         }
 
         /// <summary>
@@ -1211,13 +1317,13 @@ namespace ASC.Api.Documents
         /// <category>Files</category>
         /// <returns>Shared file link</returns>
         [Update("{fileId}/sharedlink", DisableFormat = true)]
-        public string GenerateSharedLink(string fileId, FileShare share)
+        public object GenerateSharedLink(string fileId, FileShare share)
         {
             return FilesControllerHelperString.GenerateSharedLink(fileId, share);
         }
 
         [Update("{fileId:int}/sharedlink")]
-        public string GenerateSharedLink(int fileId, FileShare share)
+        public object GenerateSharedLink(int fileId, FileShare share)
         {
             return FilesControllerHelperInt.GenerateSharedLink(fileId, share);
         }
@@ -1235,9 +1341,7 @@ namespace ASC.Api.Documents
             var result = new List<List<string>>();
 
             if (UserManager.GetUsers(SecurityContext.CurrentAccount.ID).IsVisitor(UserManager)
-                || (!UserManager.IsUserInGroup(SecurityContext.CurrentAccount.ID, Constants.GroupAdmin.ID)
-                    && !WebItemSecurity.IsProductAdministrator(ProductEntryPoint.ID, SecurityContext.CurrentAccount.ID)
-                    && !FilesSettingsHelper.EnableThirdParty
+                    || (!FilesSettingsHelper.EnableThirdParty
                     && !CoreBaseSettings.Personal))
             {
                 return result;
@@ -1245,23 +1349,33 @@ namespace ASC.Api.Documents
 
             if (ThirdpartyConfiguration.SupportBoxInclusion)
             {
-                result.Add(new List<string> { "Box", BoxLoginProvider.ClientID, BoxLoginProvider.RedirectUri });
+                var boxLoginProvider = ConsumerFactory.Get<BoxLoginProvider>();
+                result.Add(new List<string> { "Box", boxLoginProvider.ClientID, boxLoginProvider.RedirectUri });
             }
             if (ThirdpartyConfiguration.SupportDropboxInclusion)
             {
-                result.Add(new List<string> { "DropboxV2", DropboxLoginProvider.ClientID, DropboxLoginProvider.RedirectUri });
+                var dropboxLoginProvider = ConsumerFactory.Get<DropboxLoginProvider>();
+                result.Add(new List<string> { "DropboxV2", dropboxLoginProvider.ClientID, dropboxLoginProvider.RedirectUri });
             }
+
             if (ThirdpartyConfiguration.SupportGoogleDriveInclusion)
             {
-                result.Add(new List<string> { "GoogleDrive", GoogleLoginProvider.ClientID, GoogleLoginProvider.RedirectUri });
+                var googleLoginProvider = ConsumerFactory.Get<GoogleLoginProvider>();
+                result.Add(new List<string> { "GoogleDrive", googleLoginProvider.ClientID, googleLoginProvider.RedirectUri });
             }
+
             if (ThirdpartyConfiguration.SupportOneDriveInclusion)
             {
-                result.Add(new List<string> { "OneDrive", OneDriveLoginProvider.ClientID, OneDriveLoginProvider.RedirectUri });
+                var oneDriveLoginProvider = ConsumerFactory.Get<OneDriveLoginProvider>();
+                result.Add(new List<string> { "OneDrive", oneDriveLoginProvider.ClientID, oneDriveLoginProvider.RedirectUri });
             }
             if (ThirdpartyConfiguration.SupportSharePointInclusion)
             {
                 result.Add(new List<string> { "SharePoint" });
+            }
+            if (ThirdpartyConfiguration.SupportkDriveInclusion)
+            {
+                result.Add(new List<string> { "kDrive" });
             }
             if (ThirdpartyConfiguration.SupportYandexInclusion)
             {
@@ -1375,6 +1489,65 @@ namespace ASC.Api.Documents
         //    return files.Concat(folders);
         //}
 
+        /// <summary>
+        /// Adding files to favorite list
+        /// </summary>
+        /// <short>Favorite add</short>
+        /// <category>Files</category>
+        /// <param name="folderIds" visible="false"></param>
+        /// <param name="fileIds">File IDs</param>
+        /// <returns></returns>
+        [Create("favorites")]
+        public bool AddFavorites(BaseBatchModel<JsonElement> model)
+        {
+            FileStorageServiceInt.AddToFavorites(model.FolderIds.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()), model.FileIds.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()));
+            FileStorageService.AddToFavorites(model.FolderIds.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()), model.FileIds.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()));
+            return true;
+        }
+
+        /// <summary>
+        /// Removing files from favorite list
+        /// </summary>
+        /// <short>Favorite delete</short>
+        /// <category>Files</category>
+        /// <param name="folderIds" visible="false"></param>
+        /// <param name="fileIds">File IDs</param>
+        /// <returns></returns>
+        [Delete("favorites")]
+        public bool DeleteFavorites(BaseBatchModel<JsonElement> model)
+        {
+            FileStorageServiceInt.DeleteFavorites(model.FolderIds.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()), model.FileIds.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()));
+            FileStorageService.DeleteFavorites(model.FolderIds.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()), model.FileIds.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()));
+            return true;
+        }
+
+        /// <summary>
+        /// Adding files to template list
+        /// </summary>
+        /// <short>Template add</short>
+        /// <category>Files</category>
+        /// <param name="fileIds">File IDs</param>
+        /// <returns></returns>
+        [Create("templates")]
+        public bool AddTemplates(IEnumerable<int> fileIds)
+        {
+            FileStorageServiceInt.AddToTemplates(fileIds);
+            return true;
+        }
+
+        /// <summary>
+        /// Removing files from template list
+        /// </summary>
+        /// <short>Template delete</short>
+        /// <category>Files</category>
+        /// <param name="fileIds">File IDs</param>
+        /// <returns></returns>
+        [Delete("templates")]
+        public bool DeleteTemplates(IEnumerable<int> fileIds)
+        {
+            FileStorageServiceInt.DeleteTemplates(fileIds);
+            return true;
+        }
 
         /// <summary>
         /// 
@@ -1471,6 +1644,42 @@ namespace ASC.Api.Documents
         public bool ChangeAccessToThirdparty(SettingsModel model)
         {
             return FileStorageService.ChangeAccessToThirdparty(model.Set);
+        }
+
+        /// <summary>
+        /// Display recent folder
+        /// </summary>
+        /// <param name="set"></param>
+        /// <category>Settings</category>
+        /// <returns></returns>
+        [Update(@"displayRecent")]
+        public bool DisplayRecent(bool set)
+        {
+            return FileStorageService.DisplayRecent(set);
+        }
+
+        /// <summary>
+        /// Display favorite folder
+        /// </summary>
+        /// <param name="set"></param>
+        /// <category>Settings</category>
+        /// <returns></returns>
+        [Update(@"settings/favorites")]
+        public bool DisplayFavorite(bool set)
+        {
+            return FileStorageService.DisplayFavorite(set);
+        }
+
+        /// <summary>
+        /// Display template folder
+        /// </summary>
+        /// <param name="set"></param>
+        /// <category>Settings</category>
+        /// <returns></returns>
+        [Update(@"settings/templates")]
+        public bool DisplayTemplates(bool set)
+        {
+            return FileStorageService.DisplayTemplates(set);
         }
 
         /// <summary>

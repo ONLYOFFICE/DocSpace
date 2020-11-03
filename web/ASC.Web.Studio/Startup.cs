@@ -6,6 +6,8 @@ using ASC.Data.Storage.Configuration;
 using ASC.Data.Storage.DiscStorage;
 using ASC.FederatedLogin;
 
+using Autofac;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -29,17 +31,20 @@ namespace ASC.Web.Studio
         {
             services.AddCors();
 
-            var diHelper = new DIHelper(services);
-            diHelper
+            base.ConfigureServices(services);
+
+            DIHelper
                 .AddStorage()
                 .AddPathUtilsService()
                 .AddStorageHandlerService()
                 .AddLoginHandlerService();
 
             services.AddMemoryCache();
+        }
 
-            base.ConfigureServices(services);
-            services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
+        public void ConfigureContainer(ContainerBuilder builder)
+        {
+            builder.Register(Configuration, HostEnvironment.ContentRootPath);
         }
 
         public override void Configure(IApplicationBuilder app, IWebHostEnvironment env)

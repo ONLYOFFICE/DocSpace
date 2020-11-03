@@ -4,8 +4,8 @@ import { withTranslation } from "react-i18next";
 import { RowContainer } from "asc-web-components";
 import VersionRow from "./VersionRow";
 
-const SectionBodyContent = props => {
-  const { versions, culture, onLoading, getFileVersions } = props;
+const SectionBodyContent = (props) => {
+  const { versions, culture, getFileVersions } = props;
   console.log("VersionHistory SectionBodyContent render()", versions);
 
   let itemVersion = null;
@@ -28,7 +28,6 @@ const SectionBodyContent = props => {
             info={info}
             index={index}
             culture={culture}
-            onLoading={onLoading}
           />
         );
       })}

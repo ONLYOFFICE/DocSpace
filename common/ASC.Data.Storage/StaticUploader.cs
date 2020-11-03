@@ -112,9 +112,9 @@ namespace ASC.Data.Storage
             var task = new Task<string>(() =>
             {
                 using var scope = ServiceProvider.CreateScope();
-                var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+                var scopeClass = scope.ServiceProvider.GetService<StaticUploaderScope>();
+                var (tenantManager, staticUploader, _, _, _) = scopeClass;
                 tenantManager.SetCurrentTenant(tenantId);
-                var staticUploader = scope.ServiceProvider.GetService<StaticUploader>();
                 return staticUploader.UploadFile(relativePath, mappedPath, onComplete);
             }, TaskCreationOptions.LongRunning);
 
@@ -125,7 +125,7 @@ namespace ASC.Data.Storage
             return task;
         }
 
-        public async void UploadDir(string relativePath, string mappedPath)
+        public async Task UploadDir(string relativePath, string mappedPath)
         {
             if (!CanUpload()) return;
             if (!Directory.Exists(mappedPath)) return;
@@ -208,16 +208,13 @@ namespace ASC.Data.Storage
             try
             {
                 using var scope = ServiceProvider.CreateScope();
-                var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+                var scopeClass = scope.ServiceProvider.GetService<StaticUploaderScope>();
+                var (tenantManager, _, securityContext, settingsManager, storageSettingsHelper) = scopeClass;
                 var tenant = tenantManager.GetTenant(tenantId);
                 tenantManager.SetCurrentTenant(tenant);
+                securityContext.AuthenticateMe(tenant.OwnerId);
 
-                var SecurityContext = scope.ServiceProvider.GetService<SecurityContext>();
-                var SettingsManager = scope.ServiceProvider.GetService<SettingsManager>();
-                var StorageSettingsHelper = scope.ServiceProvider.GetService<StorageSettingsHelper>();
-                SecurityContext.AuthenticateMe(tenant.OwnerId);
-
-                var dataStore = StorageSettingsHelper.DataStore(SettingsManager.Load<CdnStorageSettings>());
+                var dataStore = storageSettingsHelper.DataStore(settingsManager.Load<CdnStorageSettings>());
 
                 if (File.Exists(mappedPath))
                 {
@@ -246,7 +243,6 @@ namespace ASC.Data.Storage
         private readonly string mappedPath;
         private readonly IEnumerable<string> directoryFiles;
 
-        private IServiceProvider ServiceProvider { get; }
         private StaticUploader StaticUploader { get; }
 
         public UploadOperationProgress(StaticUploader staticUploader, string relativePath, string mappedPath)
@@ -287,15 +283,47 @@ namespace ASC.Data.Storage
         }
     }
 
+    public class StaticUploaderScope
+    {
+        private TenantManager TenantManager { get; }
+        private StaticUploader StaticUploader { get; }
+        private SecurityContext SecurityContext { get; }
+        private SettingsManager SettingsManager { get; }
+        private StorageSettingsHelper StorageSettingsHelper { get; }
+
+        public StaticUploaderScope(TenantManager tenantManager,
+            StaticUploader staticUploader,
+            SecurityContext securityContext,
+            SettingsManager settingsManager,
+            StorageSettingsHelper storageSettingsHelper)
+        {
+            TenantManager = tenantManager;
+            StaticUploader = staticUploader;
+            SecurityContext = securityContext;
+            SettingsManager = settingsManager;
+            StorageSettingsHelper = storageSettingsHelper;
+        }
+
+        public void Deconstruct(out TenantManager tenantManager, out StaticUploader staticUploader, out SecurityContext securityContext, out SettingsManager settingsManager, out StorageSettingsHelper storageSettingsHelper)
+        {
+            tenantManager = TenantManager;
+            staticUploader = StaticUploader;
+            securityContext = SecurityContext;
+            settingsManager = SettingsManager;
+            storageSettingsHelper = StorageSettingsHelper;
+        }
+    }
+
     public static class StaticUploaderExtension
     {
         public static DIHelper AddStaticUploaderService(this DIHelper services)
         {
             if (services.TryAddScoped<StaticUploader>())
             {
+                services.TryAddScoped<StaticUploaderScope>();
                 return services
                     .AddTenantManagerService()
-                    .AddCdnStorageSettingsService();
+                    .AddStorageSettingsService();
             }
 
             return services;

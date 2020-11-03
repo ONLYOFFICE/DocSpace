@@ -14,17 +14,67 @@ namespace ASC.Core.Common.EF.Model
         [Column("user_id")]
         public Guid UserId { get; set; }
 
-        public override object[] GetKeys() => new object[] { FeedId, UserId };
+        public override object[] GetKeys()
+        {
+            return new object[] { FeedId, UserId };
+        }
     }
 
     public static class FeedUsersExtension
     {
-        public static ModelBuilder AddFeedUsers(this ModelBuilder modelBuilder)
+        public static ModelBuilderWrapper AddFeedUsers(this ModelBuilderWrapper modelBuilder)
         {
-            modelBuilder.Entity<FeedUsers>()
-                .HasKey(c => new { c.FeedId, c.UserId });
-
+            modelBuilder
+                .Add(MySqlAddFeedUsers, Provider.MySql)
+                .Add(PgSqlAddFeedUsers, Provider.Postgre);
             return modelBuilder;
+        }
+        public static void MySqlAddFeedUsers(this ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<FeedUsers>(entity =>
+            {
+                entity.HasKey(e => new { e.FeedId, e.UserId })
+                    .HasName("PRIMARY");
+
+                entity.ToTable("feed_users");
+
+                entity.HasIndex(e => e.UserId)
+                    .HasName("user_id");
+
+                entity.Property(e => e.FeedId)
+                    .HasColumnName("feed_id")
+                    .HasColumnType("varchar(88)")
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+
+                entity.Property(e => e.UserId)
+                    .HasColumnName("user_id")
+                    .HasColumnType("char(38)")
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+            });
+        }
+        public static void PgSqlAddFeedUsers(this ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<FeedUsers>(entity =>
+            {
+                entity.HasKey(e => new { e.FeedId, e.UserId })
+                    .HasName("feed_users_pkey");
+
+                entity.ToTable("feed_users", "onlyoffice");
+
+                entity.HasIndex(e => e.UserId)
+                    .HasName("user_id_feed_users");
+
+                entity.Property(e => e.FeedId)
+                    .HasColumnName("feed_id")
+                    .HasMaxLength(88);
+
+                entity.Property(e => e.UserId)
+                    .HasColumnName("user_id")
+                    .HasMaxLength(38)
+                    .IsFixedLength();
+            });
         }
     }
 }

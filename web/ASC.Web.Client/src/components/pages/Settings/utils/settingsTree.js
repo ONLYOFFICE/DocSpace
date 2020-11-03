@@ -69,8 +69,7 @@ export const settingsTree = [
         isCategory: true,
       },
     ],
-  },
-];
+  },];
 
 /**
 * Array for generation full settings tree, old structure.

@@ -43,7 +43,7 @@ namespace ASC.Web.Files.Services.FFmpegService
             {
                 process.Start();
 
-                var _ = StreamCopyToAsync(inputStream, process.StandardInput.BaseStream, closeDst: true);
+                StreamCopyToAsync(inputStream, process.StandardInput.BaseStream, closeDst: true);
 
                 ProcessLog(process.StandardError.BaseStream);
 
@@ -147,7 +147,7 @@ namespace ASC.Web.Files.Services.FFmpegService
             return total;
         }
 
-        private async void ProcessLog(Stream stream)
+        private async Task ProcessLog(Stream stream)
         {
             using var reader = new StreamReader(stream, Encoding.UTF8);
             string line;

@@ -1,40 +1,37 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { Loader, toastr } from "asc-web-components";
-import { PageLayout, utils } from "asc-web-common";
+import { Loader } from "asc-web-components";
+import { PageLayout, utils, store, toastr, Loaders } from "asc-web-common";
 import {
   ArticleHeaderContent,
   ArticleMainButtonContent,
-  ArticleBodyContent
+  ArticleBodyContent,
 } from "../../Article";
 import { SectionHeaderContent, SectionBodyContent } from "./Section";
 import { fetchProfile, resetProfile } from "../../../store/profile/actions";
 import { I18nextProvider, withTranslation } from "react-i18next";
 import { createI18N } from "../../../helpers/i18n";
+import { setDocumentTitle } from "../../../helpers/utils";
+import { withRouter } from "react-router";
+
 const i18n = createI18N({
   page: "Profile",
-  localesPath: "pages/Profile"
+  localesPath: "pages/Profile",
 });
 const { changeLanguage } = utils;
+const { isAdmin, isVisitor, getLanguage } = store.auth.selectors;
 
 class PureProfile extends React.Component {
-  constructor(props) {
-    super(props);
-
-    document.title = `${props.t("Profile")} – ${props.t("People")}`;
-
-    this.state = {
-      queryString: `${props.location.search.slice(1)}`
-    };
-  }
-
   componentDidMount() {
-    const { match, fetchProfile, t } = this.props;
+    const { match, fetchProfile, profile, location, t } = this.props;
     const { userId } = match.params;
 
-    const queryParams = this.state.queryString.split("&");
-    const arrayOfQueryParams = queryParams.map(queryParam =>
+    setDocumentTitle(t("Profile"));
+
+    const queryString = ((location && location.search) || "").slice(1);
+    const queryParams = queryString.split("&");
+    const arrayOfQueryParams = queryParams.map((queryParam) =>
       queryParam.split("=")
     );
     const linkParams = Object.fromEntries(arrayOfQueryParams);
@@ -42,8 +39,9 @@ class PureProfile extends React.Component {
     if (linkParams.email_change && linkParams.email_change === "success") {
       toastr.success(t("ChangeEmailSuccess"));
     }
-
-    fetchProfile(userId);
+    if (!profile) {
+      fetchProfile(userId);
+    }
   }
 
   componentDidUpdate(prevProps) {
@@ -62,7 +60,7 @@ class PureProfile extends React.Component {
 
   render() {
     //console.log("Profile render")
-    const { profile, isVisitor } = this.props;
+    const { profile, isVisitor, isAdmin } = this.props;
 
     return (
       <PageLayout withBodyAutoFocus={true}>
@@ -71,7 +69,7 @@ class PureProfile extends React.Component {
             <ArticleHeaderContent />
           </PageLayout.ArticleHeader>
         )}
-        {!isVisitor && (
+        {!isVisitor && isAdmin && (
           <PageLayout.ArticleMainButton>
             <ArticleMainButtonContent />
           </PageLayout.ArticleMainButton>
@@ -82,34 +80,28 @@ class PureProfile extends React.Component {
           </PageLayout.ArticleBody>
         )}
 
-        {profile && (
-          <PageLayout.SectionHeader>
-            <SectionHeaderContent />
-          </PageLayout.SectionHeader>
-        )}
+        <PageLayout.SectionHeader>
+          {profile ? <SectionHeaderContent /> : <Loaders.Headline />}
+        </PageLayout.SectionHeader>
 
         <PageLayout.SectionBody>
-          {profile ? (
-            <SectionBodyContent />
-          ) : (
-            <Loader className="pageLoader" type="rombs" size="40px" />
-          )}
+          {profile ? <SectionBodyContent /> : <Loaders.ProfileView />}
         </PageLayout.SectionBody>
       </PageLayout>
     );
   }
 }
 
-const ProfileContainer = withTranslation()(PureProfile);
+const ProfileContainer = withTranslation()(withRouter(PureProfile));
 
-const Profile = props => {
+const Profile = ({ language, ...rest }) => {
   useEffect(() => {
-    changeLanguage(i18n);
-  }, []);
+    changeLanguage(i18n, language);
+  }, [language]);
 
   return (
     <I18nextProvider i18n={i18n}>
-      <ProfileContainer {...props} />
+      <ProfileContainer {...rest} />
     </I18nextProvider>
   );
 };
@@ -119,20 +111,24 @@ Profile.propTypes = {
   history: PropTypes.object.isRequired,
   isLoaded: PropTypes.bool,
   match: PropTypes.object.isRequired,
-  profile: PropTypes.object
+  profile: PropTypes.object,
+  isAdmin: PropTypes.bool,
+  language: PropTypes.string,
 };
 
 function mapStateToProps(state) {
+  const { isLoaded } = state.auth;
+  const { targetUser } = state.profile;
   return {
-    isVisitor: state.auth.user.isVisitor,
-    profile: state.profile.targetUser
+    profile: targetUser,
+    isLoaded,
+    isVisitor: isVisitor(state),
+    isAdmin: isAdmin(state),
+    language: getLanguage(state),
   };
 }
 
-export default connect(
-  mapStateToProps,
-  {
-    fetchProfile,
-    resetProfile
-  }
-)(Profile);
+export default connect(mapStateToProps, {
+  fetchProfile,
+  resetProfile,
+})(Profile);

@@ -447,7 +447,7 @@ namespace ASC.ElasticSearch
 
     public class FactoryIndexer
     {
-        private static ICache cache = AscCache.Memory;
+        private static readonly ICache cache = AscCache.Memory;
 
         private FactoryIndexerHelper FactoryIndexerHelper { get; }
         internal ILifetimeScope Builder { get; set; }
@@ -461,18 +461,9 @@ namespace ASC.ElasticSearch
             FactoryIndexerHelper factoryIndexerHelper,
             Client client,
             IOptionsMonitor<ILog> options,
-            CoreBaseSettings coreBaseSettings) : this(null, factoryIndexerHelper, client, options, coreBaseSettings)
-        {
-            Builder = container;
-        }
-
-        public FactoryIndexer(
-            IContainer container,
-            FactoryIndexerHelper factoryIndexerHelper,
-            Client client,
-            IOptionsMonitor<ILog> options,
             CoreBaseSettings coreBaseSettings)
         {
+            Builder = container;
             FactoryIndexerHelper = factoryIndexerHelper;
             Client = client;
             CoreBaseSettings = coreBaseSettings;

@@ -2,29 +2,29 @@ import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
-import { MainButton, DropDownItem, toastr } from "asc-web-components";
+import { store } from "asc-web-common";
+import { MainButton, DropDownItem } from "asc-web-components";
 import { InviteDialog } from "./../../dialogs";
 import { withTranslation, I18nextProvider } from "react-i18next";
-import { store, utils } from "asc-web-common";
+import { utils, toastr, Loaders } from "asc-web-common";
 import { createI18N } from "../../../helpers/i18n";
-
+const { getLanguage, getSettings } = store.auth.selectors;
 const i18n = createI18N({
   page: "Article",
-  localesPath: "Article"
+  localesPath: "Article",
 });
 
 const { changeLanguage } = utils;
-const { isAdmin } = store.auth.selectors;
 
 class PureArticleMainButtonContent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      dialogVisible: false
+      dialogVisible: false,
     };
   }
 
-  onDropDownItemClick = link => {
+  onDropDownItemClick = (link) => {
     this.props.history.push(link);
   };
 
@@ -43,7 +43,7 @@ class PureArticleMainButtonContent extends React.Component {
     history.push(`${settings.homepage}/group/create`);
   };
 
-  onNotImplementedClick = text => {
+  onNotImplementedClick = (text) => {
     toastr.success(text);
   };
 
@@ -51,11 +51,13 @@ class PureArticleMainButtonContent extends React.Component {
     this.setState({ dialogVisible: !this.state.dialogVisible });
 
   render() {
-    console.log("People ArticleMainButtonContent render");
-    const { isAdmin, settings, t } = this.props;
+    //console.log("People ArticleMainButtonContent render");
+    const { settings, t, isLoaded } = this.props;
     const { userCaption, guestCaption, groupCaption } = settings.customNames;
     const { dialogVisible } = this.state;
-    return isAdmin ? (
+    return !isLoaded ? (
+      <Loaders.Filter />
+    ) : (
       <>
         <MainButton isDisabled={false} isDropdown={true} text={t("Actions")}>
           <DropDownItem
@@ -103,8 +105,6 @@ class PureArticleMainButtonContent extends React.Component {
           />
         )}
       </>
-    ) : (
-      <></>
     );
   }
 }
@@ -113,26 +113,29 @@ const ArticleMainButtonContentContainer = withTranslation()(
   PureArticleMainButtonContent
 );
 
-const ArticleMainButtonContent = props => {
+const ArticleMainButtonContent = ({ language, ...rest }) => {
   useEffect(() => {
-    changeLanguage(i18n);
-  }, []);
+    changeLanguage(i18n, language);
+  }, [language]);
+
   return (
     <I18nextProvider i18n={i18n}>
-      <ArticleMainButtonContentContainer {...props} />
+      <ArticleMainButtonContentContainer {...rest} />
     </I18nextProvider>
   );
 };
 
 ArticleMainButtonContent.propTypes = {
-  isAdmin: PropTypes.bool.isRequired,
-  history: PropTypes.object.isRequired
+  history: PropTypes.object.isRequired,
+  language: PropTypes.string,
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
+  const { isLoaded } = state.auth;
   return {
-    isAdmin: isAdmin(state.auth.user),
-    settings: state.auth.settings
+    isLoaded,
+    settings: getSettings(state),
+    language: getLanguage(state),
   };
 };
 

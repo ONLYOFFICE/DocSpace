@@ -19,23 +19,24 @@ const StyledSection = styled.section`
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  min-width: 344px;
-
+  /*width: ${(props) => `${props.widthProp}px`};*/
   .layout-progress-bar {
+    bottom: 0;
     position: sticky;
-    margin-left: -16px;
+    margin-left: -24px;
+
+    @media ${tablet} {
+      margin-left: -16px;
+    }
   }
 
   .section-header_filter {
-      display: block;
-    }
+    display: block;
+  }
 
-    .section-body_filter {
-      display: none;
-    }
-
-  /*${props => props.widthProp < 738 && tabletProps};*/
-
+  .section-body_filter {
+    display: none;
+  }
   @media ${tablet} {
     padding: 0 0 0 16px;
     ${tabletProps};

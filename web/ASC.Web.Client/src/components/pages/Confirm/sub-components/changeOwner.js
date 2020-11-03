@@ -78,7 +78,7 @@ class Form extends React.PureComponent {
               alt="Logo"
             />
             <Text className="owner-title">{greetingTitle}</Text>
-            <Text className="owner-confirm_text" fontSize='18px'>
+            <Text className="owner-confirm_text" fontSize="18px">
               {t("ConfirmOwnerPortalTitle", { newOwner: "NEW OWNER" })}
             </Text>
             {this.state.showButtons ? (
@@ -102,10 +102,10 @@ class Form extends React.PureComponent {
                 />
               </>
             ) : (
-                <Text className="owner-confirm-message" fontSize='12px'>
-                  {t("ConfirmOwnerPortalSuccessMessage")}
-                </Text>
-              )}
+              <Text className="owner-confirm-message" fontSize="12px">
+                {t("ConfirmOwnerPortalSuccessMessage")}
+              </Text>
+            )}
           </div>
         </div>
       </BodyStyle>
@@ -117,7 +117,7 @@ Form.propTypes = {};
 
 Form.defaultProps = {};
 
-const ChangePasswordForm = props => (
+const ChangePasswordForm = (props) => (
   <PageLayout>
     <PageLayout.SectionBody>
       <Form {...props} />

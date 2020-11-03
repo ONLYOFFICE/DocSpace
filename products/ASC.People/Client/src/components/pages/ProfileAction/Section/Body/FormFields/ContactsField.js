@@ -20,7 +20,7 @@ const getOptions = (patterns, keyPrefix) => {
       key: keyPrefix + index,
       label: item.type, //from resource
       icon: item.icon,
-      value: item.type
+      value: item.type,
     };
   });
 };
@@ -37,7 +37,7 @@ const renderItems = (
     const prefix = contact.id + "_";
     const itemOptions = getOptions(pattern, prefix);
     const itemSelectedOption = itemOptions.filter(
-      option => option.value === contact.type
+      (option) => option.value === contact.type
     )[0];
 
     return (
@@ -76,7 +76,7 @@ class ContactsField extends React.Component {
       onItemTypeChange,
       onItemTextChange,
       onItemRemove,
-      isDisabled
+      isDisabled,
     } = this.props;
 
     const existItems = renderItems(
@@ -101,7 +101,7 @@ class ContactsField extends React.Component {
             key: prefix,
             label: addItemText,
             value: "",
-            default: true
+            default: true,
           }}
           isDisabled={isDisabled}
           scaled={true}

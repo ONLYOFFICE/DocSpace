@@ -154,15 +154,12 @@ namespace ASC.Web.Files.Services.DocumentService
         public void GenerateReport(DistributedTask task, CancellationToken cancellationToken)
         {
             using var scope = ServiceProvider.CreateScope();
-            var logger = scope.ServiceProvider.GetService<IOptionsMonitor<ILog>>().CurrentValue;
-
+            var scopeClass = scope.ServiceProvider.GetService<ReportStateScope>();
+            var (options, tenantManager, authContext, securityContext, documentServiceConnector) = scopeClass;
+            var logger = options.CurrentValue;
             try
             {
-                var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
                 tenantManager.SetCurrentTenant(TenantId);
-                var authContext = scope.ServiceProvider.GetService<AuthContext>();
-                var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
-                var documentServiceConnector = scope.ServiceProvider.GetService<DocumentServiceConnector>();
 
                 Status = ReportStatus.Started;
                 PublishTaskInfo(logger);
@@ -357,8 +354,55 @@ namespace ASC.Web.Files.Services.DocumentService
         private int TenantId { get; set; }
         private Guid UserId { get; set; }
 
-        public void Enqueue(ReportState state) => DocbuilderReportsUtility.Enqueue(state);
-        public void Terminate(ReportOrigin origin) => DocbuilderReportsUtility.Terminate(origin, TenantId, UserId);
-        public ReportState Status(ReportOrigin origin) => DocbuilderReportsUtility.Status(origin, HttpContextAccessor, TenantId, UserId);
+        public void Enqueue(ReportState state)
+        {
+            DocbuilderReportsUtility.Enqueue(state);
+        }
+
+        public void Terminate(ReportOrigin origin)
+        {
+            DocbuilderReportsUtility.Terminate(origin, TenantId, UserId);
+        }
+
+        public ReportState Status(ReportOrigin origin)
+        {
+            return DocbuilderReportsUtility.Status(origin, HttpContextAccessor, TenantId, UserId);
+        }
+    }
+
+    public class ReportStateScope
+    {
+        private IOptionsMonitor<ILog> Options { get; }
+        private TenantManager TenantManager { get; }
+        private AuthContext AuthContext { get; }
+        private SecurityContext SecurityContext { get; }
+        private DocumentServiceConnector DocumentServiceConnector { get; }
+
+        public ReportStateScope(
+            IOptionsMonitor<ILog> options,
+            TenantManager tenantManager,
+            AuthContext authContext,
+            SecurityContext securityContext,
+            DocumentServiceConnector documentServiceConnector)
+        {
+            Options = options;
+            TenantManager = tenantManager;
+            AuthContext = authContext;
+            SecurityContext = securityContext;
+            DocumentServiceConnector = documentServiceConnector;
+        }
+
+        public void Deconstruct(out IOptionsMonitor<ILog> optionsMonitor,
+            out TenantManager tenantManager,
+            out AuthContext authContext,
+            out SecurityContext securityContext,
+            out DocumentServiceConnector documentServiceConnector)
+        {
+            optionsMonitor = Options;
+            tenantManager = TenantManager;
+            authContext = AuthContext;
+            securityContext = SecurityContext;
+            documentServiceConnector = DocumentServiceConnector;
+        }
     }
 }

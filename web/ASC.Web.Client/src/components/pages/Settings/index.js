@@ -2,7 +2,6 @@ import React, { lazy, Suspense } from "react";
 import { Route, Switch, Redirect } from "react-router-dom";
 import { withRouter } from "react-router";
 import Layout from "./Layout";
-import { Loader } from "asc-web-components";
 
 const SecuritySettings = lazy(() => import("./categories/security"));
 const CustomizationSettings = lazy(() =>
@@ -23,9 +22,7 @@ const Settings = () => {
 
   return (
     <Layout key="1">
-      <Suspense
-        fallback={<Loader className="pageLoader" type="rombs" size="40px" />}
-      >
+      <Suspense fallback={null}>
         <Switch>
           <Route
             exact

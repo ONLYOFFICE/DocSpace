@@ -82,6 +82,7 @@ namespace ASC.Employee.Core.Controllers
         private EmployeeWraperFullHelper EmployeeWraperFullHelper { get; }
         private EmployeeWraperHelper EmployeeWraperHelper { get; }
         private UserFormatter UserFormatter { get; }
+        public PasswordHasher PasswordHasher { get; }
         public ILog Log { get; }
 
         public PeopleController(
@@ -116,7 +117,8 @@ namespace ASC.Employee.Core.Controllers
             IOptionsSnapshot<AccountLinker> accountLinker,
             EmployeeWraperFullHelper employeeWraperFullHelper,
             EmployeeWraperHelper employeeWraperHelper,
-            UserFormatter userFormatter)
+            UserFormatter userFormatter,
+            PasswordHasher passwordHasher)
         {
             Log = option.Get("ASC.Api");
             MessageService = messageService;
@@ -150,6 +152,7 @@ namespace ASC.Employee.Core.Controllers
             EmployeeWraperFullHelper = employeeWraperFullHelper;
             EmployeeWraperHelper = employeeWraperHelper;
             UserFormatter = userFormatter;
+            PasswordHasher = passwordHasher;
         }
 
         [Read("info")]
@@ -186,7 +189,7 @@ namespace ASC.Employee.Core.Controllers
         }
 
         [Read("email")]
-        public EmployeeWraperFull GetByEmail([FromQuery]string email)
+        public EmployeeWraperFull GetByEmail([FromQuery] string email)
         {
             if (CoreBaseSettings.Personal && !UserManager.GetUsers(SecurityContext.CurrentAccount.ID).IsOwner(Tenant))
                 throw new MethodAccessException("Method not available");
@@ -246,13 +249,13 @@ namespace ASC.Employee.Core.Controllers
         }
 
         [Read("search")]
-        public IEnumerable<EmployeeWraperFull> GetPeopleSearch([FromQuery]string query)
+        public IEnumerable<EmployeeWraperFull> GetPeopleSearch([FromQuery] string query)
         {
             return GetSearch(query);
         }
 
         [Read("status/{status}/search")]
-        public IEnumerable<EmployeeWraperFull> GetAdvanced(EmployeeStatus status, [FromQuery]string query)
+        public IEnumerable<EmployeeWraperFull> GetAdvanced(EmployeeStatus status, [FromQuery] string query)
         {
             if (CoreBaseSettings.Personal) throw new MethodAccessException("Method not available");
             try
@@ -402,10 +405,22 @@ namespace ASC.Employee.Core.Controllers
 
             PermissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
 
-            if (string.IsNullOrEmpty(memberModel.Password))
-                memberModel.Password = UserManagerWrapper.GeneratePassword();
+            memberModel.PasswordHash = (memberModel.PasswordHash ?? "").Trim();
+            if (string.IsNullOrEmpty(memberModel.PasswordHash))
+            {
+                memberModel.Password = (memberModel.Password ?? "").Trim();
 
-            memberModel.Password = memberModel.Password.Trim();
+                if (string.IsNullOrEmpty(memberModel.Password))
+                {
+                    memberModel.Password = UserManagerWrapper.GeneratePassword();
+                }
+                else
+                {
+                    UserManagerWrapper.CheckPasswordPolicy(memberModel.Password);
+                }
+
+                memberModel.PasswordHash = PasswordHasher.GetClientPassword(memberModel.Password);
+            }
 
             var user = new UserInfo();
 
@@ -427,7 +442,7 @@ namespace ASC.Employee.Core.Controllers
 
             UpdateContacts(memberModel.Contacts, user);
 
-            user = UserManagerWrapper.AddUser(user, memberModel.Password, false, true, memberModel.IsVisitor);
+            user = UserManagerWrapper.AddUser(user, memberModel.PasswordHash, false, true, memberModel.IsVisitor);
 
             var messageAction = memberModel.IsVisitor ? MessageAction.GuestCreated : MessageAction.UserCreated;
             MessageService.Send(messageAction, MessageTarget.Create(user.ID), user.DisplayUserName(false, DisplayUserSettingsHelper));
@@ -449,8 +464,22 @@ namespace ASC.Employee.Core.Controllers
 
             var user = new UserInfo();
 
-            if (string.IsNullOrEmpty(memberModel.Password))
-                memberModel.Password = UserManagerWrapper.GeneratePassword();
+            memberModel.PasswordHash = (memberModel.PasswordHash ?? "").Trim();
+            if (string.IsNullOrEmpty(memberModel.PasswordHash))
+            {
+                memberModel.Password = (memberModel.Password ?? "").Trim();
+
+                if (string.IsNullOrEmpty(memberModel.Password))
+                {
+                    memberModel.Password = UserManagerWrapper.GeneratePassword();
+                }
+                else
+                {
+                    UserManagerWrapper.CheckPasswordPolicy(memberModel.Password);
+                }
+
+                memberModel.PasswordHash = PasswordHasher.GetClientPassword(memberModel.Password);
+            }
 
             //Validate email
             var address = new MailAddress(memberModel.Email);
@@ -470,7 +499,7 @@ namespace ASC.Employee.Core.Controllers
 
             UpdateContacts(memberModel.Contacts, user);
 
-            user = UserManagerWrapper.AddUser(user, memberModel.Password, false, false, memberModel.IsVisitor);
+            user = UserManagerWrapper.AddUser(user, memberModel.PasswordHash, false, false, memberModel.IsVisitor);
 
             user.ActivationStatus = EmployeeActivationStatus.Activated;
 
@@ -617,7 +646,7 @@ namespace ASC.Employee.Core.Controllers
                 }
             }
 
-            UserManager.SaveUserInfo(user, memberModel.IsVisitor);
+            UserManager.SaveUserInfo(user);
             MessageService.Send(MessageAction.UserUpdated, MessageTarget.Create(user.ID), user.DisplayUserName(false, DisplayUserSettingsHelper));
 
             if (memberModel.Disable.HasValue && memberModel.Disable.Value)
@@ -672,7 +701,7 @@ namespace ASC.Employee.Core.Controllers
             if (user.IsLDAP())
                 throw new SecurityException();
 
-            _ = SecurityContext.AuthenticateMe(ASC.Core.Configuration.Constants.CoreSystem);
+            SecurityContext.AuthenticateMe(ASC.Core.Configuration.Constants.CoreSystem);
 
             user.Status = EmployeeStatus.Terminated;
 
@@ -920,11 +949,15 @@ namespace ASC.Employee.Core.Controllers
 
         [AllowAnonymous]
         [Create("password", false)]
-        public string SendUserPassword(MemberModel memberModel)
+        public object SendUserPassword(MemberModel memberModel)
         {
-            var userInfo = UserManagerWrapper.SendUserPassword(memberModel.Email);
+            string error;
+            if (!string.IsNullOrEmpty(error = UserManagerWrapper.SendUserPassword(memberModel.Email)))
+            {
+                Log.ErrorFormat("Password recovery ({0}): {1}", memberModel.Email, error);
+            }
 
-            return string.Format(Resource.MessageYourPasswordSuccessfullySendedToEmail, userInfo.Email);
+            return string.Format(Resource.MessageYourPasswordSendedToEmail, memberModel.Email);
         }
 
         [Update("{userid}/password")]
@@ -952,9 +985,20 @@ namespace ASC.Employee.Core.Controllers
                 }
             }
 
-            if (!string.IsNullOrEmpty(memberModel.Password))
+            memberModel.PasswordHash = (memberModel.PasswordHash ?? "").Trim();
+            if (string.IsNullOrEmpty(memberModel.PasswordHash))
             {
-                SecurityContext.SetUserPassword(userid, memberModel.Password);
+                memberModel.Password = (memberModel.Password ?? "").Trim();
+
+                if (!string.IsNullOrEmpty(memberModel.Password))
+                {
+                    memberModel.PasswordHash = PasswordHasher.GetClientPassword(memberModel.Password);
+                }
+            }
+
+            if (!string.IsNullOrEmpty(memberModel.PasswordHash))
+            {
+                SecurityContext.SetUserPasswordHash(userid, memberModel.PasswordHash);
                 MessageService.Send(MessageAction.UserUpdatedPassword);
 
                 CookiesManager.ResetUserCookie(userid);
@@ -966,7 +1010,7 @@ namespace ASC.Employee.Core.Controllers
 
 
         [Create("email", false)]
-        public string SendEmailChangeInstructions(UpdateMemberModel model)
+        public object SendEmailChangeInstructions(UpdateMemberModel model)
         {
             Guid.TryParse(model.UserId, out var userid);
 
@@ -1193,7 +1237,7 @@ namespace ASC.Employee.Core.Controllers
 
 
         [Update("self/delete")]
-        public string SendInstructionsToDelete()
+        public object SendInstructionsToDelete()
         {
             var user = UserManager.GetUsers(SecurityContext.CurrentAccount.ID);
 
@@ -1497,7 +1541,8 @@ namespace ASC.Employee.Core.Controllers
                 .AddSettingsManagerService()
                 .AddEmployeeWraperFull()
                 .AddEmployeeWraper()
-                .AddUserFormatter();
+                .AddUserFormatter()
+                .AddPasswordHasherService();
         }
     }
 }

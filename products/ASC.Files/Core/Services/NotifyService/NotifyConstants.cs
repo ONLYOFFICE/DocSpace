@@ -26,7 +26,7 @@
 
 using ASC.Notify.Model;
 
-namespace ASC.Web.Files.Services.NotifyService
+namespace ASC.Files.Core.Services.NotifyService
 {
     public static class NotifyConstants
     {

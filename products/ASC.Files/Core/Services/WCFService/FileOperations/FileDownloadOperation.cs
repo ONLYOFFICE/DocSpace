@@ -76,14 +76,13 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             get { return FileOperationType.Download; }
         }
 
-        public override void RunJob(DistributedTask _, CancellationToken cancellationToken)
+        public override void RunJob(DistributedTask distributedTask, CancellationToken cancellationToken)
         {
-            base.RunJob(_, cancellationToken);
+            base.RunJob(distributedTask, cancellationToken);
 
             using var scope = ThirdPartyOperation.CreateScope();
-            var globalStore = scope.ServiceProvider.GetService<GlobalStore>();
-            var filesLinkUtility = scope.ServiceProvider.GetService<FilesLinkUtility>();
-
+            var scopeClass = scope.ServiceProvider.GetService<FileDownloadOperationScope>();
+            var (globalStore, filesLinkUtility, _, _, _) = scopeClass;
             using var stream = TempStream.Create();
             using (var zip = new ZipOutputStream(stream, true)
             {
@@ -135,7 +134,6 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             Compress = compress;
         }
 
-
         protected override void Do(IServiceScope scope)
         {
             if (!Compress && !Files.Any() && !Folders.Any()) return;
@@ -151,9 +149,8 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 throw new DirectoryNotFoundException(FilesCommonResource.ErrorMassage_FolderNotFound);
             }
 
-            var globalStore = scope.ServiceProvider.GetService<GlobalStore>();
-            var filesLinkUtility = scope.ServiceProvider.GetService<FilesLinkUtility>();
-
+            var scopeClass = scope.ServiceProvider.GetService<FileDownloadOperationScope>();
+            var (globalStore, filesLinkUtility, _, _, _) = scopeClass;
             ReplaceLongPath(entriesPathId);
 
             if (Compress)
@@ -265,9 +262,8 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         internal void CompressToZip(ZipOutputStream zip, Stream stream, IServiceScope scope)
         {
             if (entriesPathId == null) return;
-            var setupInfo = scope.ServiceProvider.GetService<SetupInfo>();
-            var fileConverter = scope.ServiceProvider.GetService<FileConverter>();
-            var filesMessageService = scope.ServiceProvider.GetService<FilesMessageService>();
+            var scopeClass = scope.ServiceProvider.GetService<FileDownloadOperationScope>();
+            var (_, _, setupInfo, fileConverter, filesMessageService) = scopeClass;
             var FileDao = scope.ServiceProvider.GetService<IFileDao<T>>();
 
             foreach (var path in entriesPathId.AllKeys)
@@ -439,4 +435,32 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             dic.Remove(name);
         }
     }
+
+    public class FileDownloadOperationScope
+    {
+        private GlobalStore GlobalStore { get; }
+        private FilesLinkUtility FilesLinkUtility { get; }
+        private SetupInfo SetupInfo { get; }
+        private FileConverter FileConverter { get; }
+        private FilesMessageService FilesMessageService { get; }
+
+        public FileDownloadOperationScope(GlobalStore globalStore, FilesLinkUtility filesLinkUtility, SetupInfo setupInfo, FileConverter fileConverter, FilesMessageService filesMessageService)
+        {
+            GlobalStore = globalStore;
+            FilesLinkUtility = filesLinkUtility;
+            SetupInfo = setupInfo;
+            FileConverter = fileConverter;
+            FilesMessageService = filesMessageService;
+        }
+
+        public void Deconstruct(out GlobalStore globalStore, out FilesLinkUtility filesLinkUtility, out SetupInfo setupInfo, out FileConverter fileConverter, out FilesMessageService filesMessageService)
+        {
+            globalStore = GlobalStore;
+            filesLinkUtility = FilesLinkUtility;
+            setupInfo = SetupInfo;
+            fileConverter = FileConverter;
+            filesMessageService = FilesMessageService;
+        }
+    }
+
 }

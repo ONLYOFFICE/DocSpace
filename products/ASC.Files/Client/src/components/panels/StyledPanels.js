@@ -29,6 +29,7 @@ const StyledAsidePanel = styled.div`
   }
 
   .header_aside-panel {
+    transition: unset;
     transform: translateX(${(props) => (props.visible ? "0" : "500px")});
     width: 500px;
     overflow-y: hidden;
@@ -202,7 +203,7 @@ const StyledSharingHeaderContent = styled.div`
       position: relative;
 
       .sharing_panel-drop-down {
-        padding: 8px 16px;
+        padding: 0px;
       }
       .sharing_panel-plus-icon {
         margin-right: 12px;
@@ -320,5 +321,5 @@ export {
   StyledBody,
   StyledSharingHeaderContent,
   StyledSharingBody,
-  StyledFooter
+  StyledFooter,
 };

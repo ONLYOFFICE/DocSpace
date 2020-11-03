@@ -1,64 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!-- 
-    Microsoft ResX Schema 
-    
-    Version 2.0
-    
-    The primary goals of this format is to allow a simple XML format 
-    that is mostly human readable. The generation and parsing of the 
-    various data types are done through the TypeConverter classes 
-    associated with the data types.
-    
-    Example:
-    
-    ... ado.net/XML headers & schema ...
-    <resheader name="resmimetype">text/microsoft-resx</resheader>
-    <resheader name="version">2.0</resheader>
-    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
-    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
-    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
-    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
-    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
-        <value>[base64 mime encoded serialized .NET Framework object]</value>
-    </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
-        <comment>This is a comment</comment>
-    </data>
-                
-    There are any number of "resheader" rows that contain simple 
-    name/value pairs.
-    
-    Each data row contains a name, and value. The row also contains a 
-    type or mimetype. Type corresponds to a .NET class that support 
-    text/value conversion through the TypeConverter architecture. 
-    Classes that don't support this are serialized and stored with the 
-    mimetype set.
-    
-    The mimetype is used for serialized objects, and tells the 
-    ResXResourceReader how to depersist the object. This is currently not 
-    extensible. For a given mimetype the value must be set accordingly:
-    
-    Note - application/x-microsoft.net.object.binary.base64 is the format 
-    that the ResXResourceWriter will generate, however the reader can 
-    read any of the formats listed below.
-    
-    mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with 
-            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
-            : and then encoded with base64 encoding.
-    
-    mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with 
-            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
-            : and then encoded with base64 encoding.
-
-    mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array 
-            : using a System.ComponentModel.TypeConverter
-            : and then encoded with base64 encoding.
-    -->
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
@@ -162,6 +103,9 @@
   <data name="ConsumersBitlyInstruction" xml:space="preserve">
     <value>Si Usted añade el servicio Bitly, Usted podrá recibir los enlaces acortados para invitar a nuevos usuarios al portal ONLYOFFICE™ y los enlaces acortados para los documentos en el módulo 'Documentos' compartidos con los usuarios externos.</value>
   </data>
+  <data name="ConsumersBitlyInstructionV11" xml:space="preserve">
+    <value>Habilite esta aplicación para acortar los enlaces de invitación y de documentos. {0}Inserte su login de Bitly y su clave de la API a continuación:</value>
+  </data>
   <data name="ConsumersBox" xml:space="preserve">
     <value>Clave Box</value>
   </data>
@@ -177,6 +121,9 @@
   <data name="ConsumersBoxInstruction" xml:space="preserve">
     <value>Si Usted añade la aplicación del servicio Box, Usted podrá conectar su cuenta de Box en el módulo 'Documentos'. Este permite cargar y crear unos archivos nuevos en Box, editar unos archivos existentes, copiar y eliminarlos, compartir los archivos y carpetas con los usuarios de portal ONLYOFFICE™.</value>
   </data>
+  <data name="ConsumersBoxInstructionV11" xml:space="preserve">
+    <value>Habilite esta aplicación para conectar su cuenta de Box al módulo Documentos. Podrá gestionar, editar y compartir archivos de Box con los usuarios de ONLYOFFICE. {0}Acceda a su cuenta en la página de desarrolladores de Box y cree una nueva aplicación para la integración de ONLYOFFICE. Inserte los datos que recibió a continuación:</value>
+  </data>
   <data name="ConsumersClickatell" xml:space="preserve">
     <value>Clickatell</value>
   </data>
@@ -188,6 +135,9 @@
   </data>
   <data name="ConsumersClickatellInstruction" xml:space="preserve">
     <value>Al añadir la aplicación del servicio Clickatell usted podrá habilitar la autenticación de dos factores y recibir un SMS con un código que le permite ingresar al portal ONLYOFFICE.</value>
+  </data>
+  <data name="ConsumersClickatellInstructionV11" xml:space="preserve">
+    <value>Utilice esta aplicación para habilitar la autenticación de dos factores con el servicio Clickatell. {0}Acceda a su cuenta de la Plataforma SMS y cree una nueva integración de ONLYOFFICE. Copie la apiKey e insértela a continuación:</value>
   </data>
   <data name="ConsumersDocuSign" xml:space="preserve">
     <value>DocuSign</value>
@@ -207,6 +157,9 @@
   <data name="ConsumersDocuSignInstruction" xml:space="preserve">
     <value>Si Usted añade la aplicación del servicio DocuSign, Usted podrá firmar los documentos del módulo 'Documentos'. Este permite enviar el archivo para recibir una firma electrónica a los empleados de portal ONLYOFFICE™ por medio del servicio DocuSugn. El archivo firmado será guardado en el módulo 'Documentos' de portal ONLYOFFICE™.</value>
   </data>
+  <data name="ConsumersDocuSignInstructionV11" xml:space="preserve">
+    <value>Habilite esta aplicación para firmar digitalmente documentos usando DocuSign. {0}Vaya a la consola de administración de DocuSign y añada la integración de ONLYOFFICE. Inserte los datos que recibió a continuación:</value>
+  </data>
   <data name="ConsumersDropBox" xml:space="preserve">
     <value>Dropbox</value>
   </data>
@@ -215,6 +168,9 @@
   </data>
   <data name="ConsumersDropBoxInstruction" xml:space="preserve">
     <value>Si Usted añade la aplicación del servicio Dropbox, Usted podrá conectar su cuenta de Dropbox en el módulo 'Documentos'. Este permite cargar y crear unos archivos nuevos en Dropbox, editar unos archivos existentes, copiar y eliminarlos, compartir los archivos y carpetas con los usuarios de portal ONLYOFFICE™.</value>
+  </data>
+  <data name="ConsumersDropBoxInstructionV11" xml:space="preserve">
+    <value>Habilite esta aplicación para conectar su cuenta de Dropbox con el módulo Documentos. Podrá administrar, editar y compartir archivos de Dropbox con los usuarios de ONLYOFFICE. {0}Inicie sesión en su cuenta en la página web de desarrolladores de Dropbox y cree una nueva aplicación para la integración de ONLYOFFICE. Inserte los datos que recibió a continuación:</value>
   </data>
   <data name="ConsumersDropBoxKey" xml:space="preserve">
     <value>ID de Dropbox</value>
@@ -251,6 +207,9 @@
   </data>
   <data name="ConsumersFacebookInstruction" xml:space="preserve">
     <value>Si Usted añade la aplicación del servicio Facebook, Usted podrá conectar el acceso al portal ONLYOFFICE™ en la página de su perfil con ayuda de la cuenta Facebook. También Usted podrá encontrar y enlazar la cuenta de Facebook en la página de 'Editar persona/empresa' en el módulo CRM.</value>
+  </data>
+  <data name="ConsumersFacebookInstructionV11" xml:space="preserve">
+    <value>Habilite esta aplicación para permitir a sus usuarios iniciar sesión en ONLYOFFICE usando Facebook y vincular las cuentas de Facebook de sus clientes al módulo CRM. {0}Vaya al Portal de Desarrolladores de Facebook y cree una nueva aplicación de integración de ONLYOFFICE. Inserte los datos que recibió a continuación:</value>
   </data>
   <data name="ConsumersFirebase" xml:space="preserve">
     <value>Firebase</value>
@@ -300,6 +259,9 @@
   <data name="ConsumersGoogleInstruction" xml:space="preserve">
     <value>Si Usted añade un proyecto del servicio Google, Usted podrá conectar el acceso a su portal ONLYOFFICE™ con ayuda de la cuenta Google y conectar su cuenta de Google Drive en el módulo 'Documentos'. Este permite cargar y crear unos archivos nuevos en Google Drive, editar unos archivos existentes, copiar y eliminarlos, compartir los archivos y carpetas con los usuarios de portal ONLYOFFICE™.</value>
   </data>
+  <data name="ConsumersGoogleInstructionV11" xml:space="preserve">
+    <value>Habilite esta aplicación para conectar su cuenta de Google Drive al módulo Documentos. Podrá administrar, editar y compartir archivos de Google Drive con los usuarios de ONLYOFFICE. {0}Vaya a la consola de las APIs de Google y cree un nuevo proyecto para la integración de ONLYOFFICE. Inserte los datos que recibió a continuación:</value>
+  </data>
   <data name="ConsumersLinkedIn" xml:space="preserve">
     <value>Clave de Linkedin</value>
   </data>
@@ -309,11 +271,29 @@
   <data name="ConsumersLinkedInInstruction" xml:space="preserve">
     <value>Si Usted añade la aplicación del servicio LinkedIn, Usted podrá conectar el acceso al portal ONLYOFFICE™ en la página de su perfil con ayuda de la cuenta LinkedIn.</value>
   </data>
+  <data name="ConsumersLinkedInInstructionV11" xml:space="preserve">
+    <value>Habilite esta aplicación para permitir a sus usuarios iniciar sesión en ONLYOFFICE usando sus cuentas de LinkedIn. {0}Vaya al sitio web de LinkedIn Developers y cree una nueva aplicación de integración de ONLYOFFICE. Inserte los datos que recibió a continuación:</value>
+  </data>
   <data name="ConsumersLinkedInKey" xml:space="preserve">
     <value>ID de Linkedin</value>
   </data>
   <data name="ConsumersLinkedInSecret" xml:space="preserve">
     <value>Clave de Linkedin</value>
+  </data>
+  <data name="ConsumersMailru" xml:space="preserve">
+    <value>Mail.ru</value>
+  </data>
+  <data name="ConsumersMailruClientId" xml:space="preserve">
+    <value>Id.</value>
+  </data>
+  <data name="ConsumersMailruClientSecret" xml:space="preserve">
+    <value>Clave secreta</value>
+  </data>
+  <data name="ConsumersMailruDescription" xml:space="preserve">
+    <value>Habilite la aplicación para acceder al portal utilizando una cuenta de Mail.ru.</value>
+  </data>
+  <data name="ConsumersMailruInstruction" xml:space="preserve">
+    <value>Cuando añada la aplicación Mail.ru, podrá habilitar el inicio de sesión en el portal mediante la cuenta Mail.ru en su página de perfil.</value>
   </data>
   <data name="ConsumersRackspace" xml:space="preserve">
     <value>Rackspace Cloud Storage</value>
@@ -354,11 +334,11 @@
   <data name="ConsumersSelectelauthUser" xml:space="preserve">
     <value>Nombre de usuario para autorización</value>
   </data>
-  <data name="ConsumersSelectelInstruction" xml:space="preserve">
-    <value>Cuando Usted agrega el servicio Selectel Cloud Storage a su portal, puede usarlo para crear copias de seguridad de su portal asegurándose de que no se perderá ningún dato. También úselo para almacenar datos y contenido estático de su portal.</value>
-  </data>
   <data name="ConsumersSelectelDescription" xml:space="preserve">
     <value>Conecte el servicio Selectel Cloud Storage para crear copia de seguridad y almacenar datos de su portal.</value>
+  </data>
+  <data name="ConsumersSelectelInstruction" xml:space="preserve">
+    <value>Cuando Usted agrega el servicio Selectel Cloud Storage a su portal, puede usarlo para crear copias de seguridad de su portal asegurándose de que no se perderá ningún dato. También úselo para almacenar datos y contenido estático de su portal.</value>
   </data>
   <data name="ConsumersSelectelprivate_container" xml:space="preserve">
     <value>Contenedor privado</value>
@@ -381,6 +361,9 @@
   <data name="ConsumersSkyDriveInstruction" xml:space="preserve">
     <value>Si Usted añade la aplicación del servicio OneDrive, Usted podrá conectar su cuenta de OneDrive en el módulo 'Documentos'. Este permite cargar y crear unos archivos nuevos en OneDrive, editar unos archivos existentes, copiar y eliminarlos, compartir los archivos y carpetas con los usuarios de portal ONLYOFFICE™.</value>
   </data>
+  <data name="ConsumersSkyDriveInstructionV11" xml:space="preserve">
+    <value>Habilite esta aplicación para conectar su cuenta de OneDrive al módulo Documentos. Podrá administrar, editar y compartir archivos de OneDrive con los usuarios de ONLYOFFICE. {0}Acceda a su cuenta en el Centro de Desarrolladores de Live Connect y cree una nueva aplicación para la integración de ONLYOFFICE. Inserte los datos que recibió a continuación:</value>
+  </data>
   <data name="ConsumersSmsc" xml:space="preserve">
     <value>Centro SMS</value>
   </data>
@@ -389,6 +372,9 @@
   </data>
   <data name="ConsumersSmscInstruction" xml:space="preserve">
     <value>Al añadir la aplicación del servicio Centro SMS usted podrá habilitar la autenticación de dos factores y recibir un SMS con un código que le permite ingresar al portal ONLYOFFICE. La aplicación Centro SMS es útil como proveedor para paises CIS.</value>
+  </data>
+  <data name="ConsumersSmscInstructionV11" xml:space="preserve">
+    <value>Utilice esta aplicación para habilitar la autenticación de dos factores con el servicio SMS Center. {0}Inserte el nombre de su cuenta smsc y su contraseña (o la contraseña MD5 hash) en minúsculas:</value>
   </data>
   <data name="Consumerssmsclogin" xml:space="preserve">
     <value>Ingreso</value>
@@ -411,6 +397,9 @@
   <data name="ConsumersTwilioInstruction" xml:space="preserve">
     <value>Después de añadir Twilio Usted podrá llamar a cualquier contacto del módulo CRM directamente de su navegador.</value>
   </data>
+  <data name="ConsumersTwilioInstructionV11" xml:space="preserve">
+    <value>Habilite esta aplicación para permitir a sus usuarios llamar a sus contactos desde el módulo CRM usando Twilio. {0}Vaya a la consola Twilio y pegue los siguientes datos:</value>
+  </data>
   <data name="Consumerstwiliosender" xml:space="preserve">
     <value>Número telefónico de Twilio (se requiere para la autenticación SMS)</value>
   </data>
@@ -429,6 +418,9 @@
   <data name="ConsumersTwitterInstruction" xml:space="preserve">
     <value>Si Usted añade la aplicación del servicio Twitter, Usted podrá conectar el acceso al portal ONLYOFFICE™ en la página de su perfil con ayuda de la cuenta Twitter. También Usted podrá enlazar la cuenta Twitter y leer noticias en la página de 'Editar persona/empresa' en el módulo CRM.</value>
   </data>
+  <data name="ConsumersTwitterInstructionV11" xml:space="preserve">
+    <value>Habilite esta aplicación para permitir a sus usuarios iniciar sesión en ONLYOFFICE usando su Twitter y vincular las cuentas de Twitter de sus clientes al módulo CRM. {0}Vaya al Portal de Desarrolladores de Twitter y cree una nueva aplicación de integración de ONLYOFFICE. Inserte los datos que recibió a continuación:</value>
+  </data>
   <data name="ConsumersTwitterKey" xml:space="preserve">
     <value>ID de Twitter </value>
   </data>
@@ -437,6 +429,21 @@
   </data>
   <data name="Consumersusername" xml:space="preserve">
     <value>Nombre de usuario de Rackspace</value>
+  </data>
+  <data name="ConsumersVk" xml:space="preserve">
+    <value>VK</value>
+  </data>
+  <data name="ConsumersVkClientId" xml:space="preserve">
+    <value>Id. de aplicación</value>
+  </data>
+  <data name="ConsumersVkClientSecret" xml:space="preserve">
+    <value>Clave segura</value>
+  </data>
+  <data name="ConsumersVkDescription" xml:space="preserve">
+    <value>Habilite la aplicación para acceder al portal con una cuenta de VK.</value>
+  </data>
+  <data name="ConsumersVkInstruction" xml:space="preserve">
+    <value>Cuando añada la aplicación VK, podrá habilitar el inicio de sesión en el portal utilizando la cuenta VK en su página de perfil.</value>
   </data>
   <data name="ConsumersWordpress" xml:space="preserve">
     <value>WordPress</value>
@@ -467,6 +474,24 @@
   </data>
   <data name="ConsumersYahooInstruction" xml:space="preserve">
     <value>Al añadir la aplicación del servicio Yahoo podrá añadir usuarios al portal ONLYOFFICE de la lista de contactos.</value>
+  </data>
+  <data name="ConsumersYahooInstructionV11" xml:space="preserve">
+    <value>Habilite esta aplicación para añadir nuevos usuarios del portal desde su lista de contactos de Yahoo. {0}Vaya a la página Crear Aplicación en la Red de Desarrolladores de Yahoo y cree una nueva aplicación para la integración de ONLYOFFICE. Inserte los datos que recibió a continuación:</value>
+  </data>
+  <data name="ConsumersYandex" xml:space="preserve">
+    <value>Yandex</value>
+  </data>
+  <data name="ConsumersYandexClientId" xml:space="preserve">
+    <value>Id.</value>
+  </data>
+  <data name="ConsumersYandexClientSecret" xml:space="preserve">
+    <value>Contraseña</value>
+  </data>
+  <data name="ConsumersYandexDescription" xml:space="preserve">
+    <value>Habilite la aplicación para iniciar sesión en el portal con una cuenta de Yandex.</value>
+  </data>
+  <data name="ConsumersYandexInstruction" xml:space="preserve">
+    <value>Cuando añada la aplicación Yandex, podrá habilitar el inicio de sesión en el portal utilizando la cuenta Yandex en su página de perfil.</value>
   </data>
   <data name="CouldNotRecoverPasswordForLdapUser" xml:space="preserve">
     <value>Operación de recuperación de contraseña está prohibida para un usuario LDAP</value>
@@ -603,6 +628,9 @@
   <data name="MessageEmailChangeInstuctionsSentOnEmail" xml:space="preserve">
     <value>Las instrucciones para cambiar el correo electrónico se han enviado con éxito</value>
   </data>
+  <data name="MessageYourPasswordSendedToEmail" xml:space="preserve">
+    <value>Si existe un usuario con el correo electrónico {0}, la instrucción para cambiar la contraseña se ha enviado a esta dirección de correo electrónico.</value>
+  </data>
   <data name="MessageYourPasswordSuccessfullySendedToEmail" xml:space="preserve">
     <value>La contraseña de usuario ha sido enviada al e-mail {0}</value>
   </data>
@@ -674,6 +702,9 @@
   </data>
   <data name="TfaTooMuchError" xml:space="preserve">
     <value>Usted ha enviado demasiados mensajes de texto. Por favor, intente de nuevo más tarde.</value>
+  </data>
+  <data name="Trial" xml:space="preserve">
+    <value>Periodo de prueba</value>
   </data>
   <data name="UsServerRegion" xml:space="preserve">
     <value>Región EE.UU. Oeste (Oregón)</value>

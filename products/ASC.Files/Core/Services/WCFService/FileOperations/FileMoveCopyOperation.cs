@@ -172,8 +172,8 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
             if (folderIds.Count == 0) return needToMark;
 
-            var filesMessageService = scope.ServiceProvider.GetService<FilesMessageService>();
-            var fileMarker = scope.ServiceProvider.GetService<FileMarker>();
+            var scopeClass = scope.ServiceProvider.GetService<FileMoveCopyOperationScope>();
+            var (filesMessageService, fileMarker, _, _, _) = scopeClass;
             var folderDao = scope.ServiceProvider.GetService<IFolderDao<TTo>>();
 
             var toFolderId = toFolder.ID;
@@ -193,12 +193,19 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 {
                     Error = FilesCommonResource.ErrorMassage_SecurityException_ReadFolder;
                 }
+                else if (folder.RootFolderType == FolderType.Privacy
+                    && (copy || toFolder.RootFolderType != FolderType.Privacy))
+                {
+                    Error = FilesCommonResource.ErrorMassage_SecurityException_MoveFolder;
+                }
                 else if (!Equals((folder.ParentFolderID ?? default).ToString(), toFolderId.ToString()) || _resolveType == FileConflictResolveType.Duplicate)
                 {
                     try
                     {
                         //if destination folder contains folder with same name then merge folders
-                        var conflictFolder = folderDao.GetFolder(folder.Title, toFolderId);
+                        var conflictFolder = folder.RootFolderType == FolderType.Privacy
+                            ? null
+                            : folderDao.GetFolder(folder.Title, toFolderId);
                         Folder<TTo> newFolder;
 
                         if (copy || conflictFolder != null)
@@ -354,11 +361,8 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
             if (fileIds.Count == 0) return needToMark;
 
-            var filesMessageService = scope.ServiceProvider.GetService<FilesMessageService>();
-            var fileMarker = scope.ServiceProvider.GetService<FileMarker>();
-            var fileUtility = scope.ServiceProvider.GetService<FileUtility>();
-            var global = scope.ServiceProvider.GetService<Global>();
-            var entryManager = scope.ServiceProvider.GetService<EntryManager>();
+            var scopeClass = scope.ServiceProvider.GetService<FileMoveCopyOperationScope>();
+            var (filesMessageService, fileMarker, fileUtility, global, entryManager) = scopeClass;
             var fileDao = scope.ServiceProvider.GetService<IFileDao<TTo>>();
 
             var toFolderId = toFolder.ID;
@@ -375,6 +379,11 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 {
                     Error = FilesCommonResource.ErrorMassage_SecurityException_ReadFile;
                 }
+                else if (file.RootFolderType == FolderType.Privacy
+                    && (copy || toFolder.RootFolderType != FolderType.Privacy))
+                {
+                    Error = FilesCommonResource.ErrorMassage_SecurityException_MoveFile;
+                }
                 else if (global.EnableUploadFilter
                          && !fileUtility.ExtsUploadable.Contains(FileUtility.GetFileExtension(file.Title)))
                 {
@@ -386,6 +395,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                     try
                     {
                         var conflict = _resolveType == FileConflictResolveType.Duplicate
+                            || file.RootFolderType == FolderType.Privacy
                                            ? null
                                            : fileDao.GetFile(toFolderId, file.Title);
                         if (conflict == null)
@@ -572,6 +582,33 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 }
             }
             return false;
+        }
+    }
+
+    public class FileMoveCopyOperationScope
+    {
+        private FilesMessageService FilesMessageService { get; }
+        private FileMarker FileMarker { get; }
+        private FileUtility FileUtility { get; }
+        private Global Global { get; }
+        private EntryManager EntryManager { get; }
+
+        public FileMoveCopyOperationScope(FilesMessageService filesMessageService, FileMarker fileMarker, FileUtility fileUtility, Global global, EntryManager entryManager)
+        {
+            FilesMessageService = filesMessageService;
+            FileMarker = fileMarker;
+            FileUtility = fileUtility;
+            Global = global;
+            EntryManager = entryManager;
+        }
+
+        public void Deconstruct(out FilesMessageService filesMessageService, out FileMarker fileMarker, out FileUtility fileUtility, out Global global, out EntryManager entryManager)
+        {
+            filesMessageService = FilesMessageService;
+            fileMarker = FileMarker;
+            fileUtility = FileUtility;
+            global = Global;
+            entryManager = EntryManager;
         }
     }
 }

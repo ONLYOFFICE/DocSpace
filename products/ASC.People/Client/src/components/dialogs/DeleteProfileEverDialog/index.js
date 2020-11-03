@@ -2,15 +2,15 @@ import React from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import PropTypes from "prop-types";
-import { toastr, ModalDialog, Button, Text } from "asc-web-components";
+import { ModalDialog, Button, Text } from "asc-web-components";
 import { withTranslation, Trans } from "react-i18next";
-import { api, utils } from "asc-web-common";
+import { api, utils, toastr } from "asc-web-common";
 import { fetchPeople } from "../../../store/people/actions";
 import ModalDialogContainer from "../ModalDialogContainer";
 import { createI18N } from "../../../helpers/i18n";
 const i18n = createI18N({
   page: "DeleteProfileEverDialog",
-  localesPath: "dialogs/DeleteProfileEverDialog"
+  localesPath: "dialogs/DeleteProfileEverDialog",
 });
 
 const { deleteUser } = api.people;
@@ -22,7 +22,7 @@ class DeleteProfileEverDialogComponent extends React.Component {
     super(props);
 
     this.state = {
-      isRequestRunning: false
+      isRequestRunning: false,
     };
 
     changeLanguage(i18n);
@@ -31,11 +31,11 @@ class DeleteProfileEverDialogComponent extends React.Component {
     const { onClose, filter, fetchPeople, user, t } = this.props;
     this.setState({ isRequestRunning: true }, () => {
       deleteUser(user.id)
-        .then(res => {
+        .then((res) => {
           toastr.success(t("SuccessfullyDeleteUserInfoMessage"));
           return fetchPeople(filter);
         })
-        .catch(error => toastr.error(error))
+        .catch((error) => toastr.error(error))
         .finally(() => {
           this.setState({ isRequestRunning: false }, () => onClose());
         });
@@ -54,46 +54,40 @@ class DeleteProfileEverDialogComponent extends React.Component {
 
     return (
       <ModalDialogContainer>
-        <ModalDialog
-          visible={visible}
-          onClose={onClose}
-          headerContent={t("Confirmation")}
-          bodyContent={
-            <>
-              <Text>
-                <Trans i18nKey="DeleteUserConfirmation" i18n={i18n}>
-                  {{ userCaption }}{" "}
-                  <strong>{{ user: user.displayName }}</strong> will be deleted.
-                </Trans>
-              </Text>
-              <Text>{t("NotBeUndone")}</Text>
-              <Text color="#c30" fontSize="18px" className="warning-text">
-                {t("Warning")}
-              </Text>
-              <Text>{t("DeleteUserDataConfirmation")}</Text>
-            </>
-          }
-          footerContent={
-            <>
-              <Button
-                key="OKBtn"
-                label={t("OKButton")}
-                size="medium"
-                primary={true}
-                onClick={this.onDeleteProfileEver}
-                isLoading={isRequestRunning}
-              />
-              <Button
-                className="button-dialog"
-                key="ReassignBtn"
-                label={t("ReassignData")}
-                size="medium"
-                onClick={this.onReassignDataClick}
-                isDisabled={isRequestRunning}
-              />
-            </>
-          }
-        />
+        <ModalDialog visible={visible} onClose={onClose}>
+          <ModalDialog.Header>{t("Confirmation")}</ModalDialog.Header>
+          <ModalDialog.Body>
+            <Text>
+              <Trans i18nKey="DeleteUserConfirmation" i18n={i18n}>
+                {{ userCaption }} <strong>{{ user: user.displayName }}</strong>{" "}
+                will be deleted.
+              </Trans>
+            </Text>
+            <Text>{t("NotBeUndone")}</Text>
+            <Text color="#c30" fontSize="18px" className="warning-text">
+              {t("Warning")}
+            </Text>
+            <Text>{t("DeleteUserDataConfirmation")}</Text>
+          </ModalDialog.Body>
+          <ModalDialog.Footer>
+            <Button
+              key="OKBtn"
+              label={t("OKButton")}
+              size="medium"
+              primary={true}
+              onClick={this.onDeleteProfileEver}
+              isLoading={isRequestRunning}
+            />
+            <Button
+              className="button-dialog"
+              key="ReassignBtn"
+              label={t("ReassignData")}
+              size="medium"
+              onClick={this.onReassignDataClick}
+              isDisabled={isRequestRunning}
+            />
+          </ModalDialog.Footer>
+        </ModalDialog>
       </ModalDialogContainer>
     );
   }
@@ -103,7 +97,7 @@ const DeleteProfileEverDialogTranslated = withTranslation()(
   DeleteProfileEverDialogComponent
 );
 
-const DeleteProfileEverDialog = props => (
+const DeleteProfileEverDialog = (props) => (
   <DeleteProfileEverDialogTranslated i18n={i18n} {...props} />
 );
 
@@ -114,16 +108,15 @@ DeleteProfileEverDialog.propTypes = {
   filter: PropTypes.instanceOf(Filter).isRequired,
   fetchPeople: PropTypes.func.isRequired,
   settings: PropTypes.object.isRequired,
-  history: PropTypes.object.isRequired
+  history: PropTypes.object.isRequired,
 };
 
 function mapStateToProps(state) {
   return {
-    userCaption: state.auth.settings.customNames.userCaption
+    userCaption: state.auth.settings.customNames.userCaption,
   };
 }
 
-export default connect(
-  mapStateToProps,
-  { fetchPeople }
-)(withRouter(DeleteProfileEverDialog));
+export default connect(mapStateToProps, { fetchPeople })(
+  withRouter(DeleteProfileEverDialog)
+);

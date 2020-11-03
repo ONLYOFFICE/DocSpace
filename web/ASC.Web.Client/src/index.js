@@ -1,42 +1,14 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
-import axios from "axios";
 import store from "./store/store";
 import "./custom.scss";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
-import { store as commonStore, constants, ErrorBoundary } from "asc-web-common";
+import { ErrorBoundary, utils } from "asc-web-common";
+const { redirectToDefaultPage } = utils;
 
-const {
-  getUser,
-  getPortalSettings,
-  getModules,
-  setIsLoaded
-} = commonStore.auth.actions;
-
-const { AUTH_KEY } = constants;
-
-const token = localStorage.getItem(AUTH_KEY);
-
-const requests = [];
-
-if (!token) {
-  requests.push(getPortalSettings(store.dispatch));
-} else if (!window.location.pathname.includes("confirm/EmailActivation")) {
-  requests.push(getUser(store.dispatch));
-  requests.push(getPortalSettings(store.dispatch));
-  requests.push(getModules(store.dispatch));
-}
-
-if (requests.length > 0) {
-  axios
-    .all(requests)
-    .catch(e => {
-      console.log("INIT REQUESTS FAILED", e);
-    })
-    .finally(() => store.dispatch(setIsLoaded(true)));
-}
+redirectToDefaultPage();
 
 ReactDOM.render(
   <Provider store={store}>

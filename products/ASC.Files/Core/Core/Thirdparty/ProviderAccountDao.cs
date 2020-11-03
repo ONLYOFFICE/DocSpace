@@ -68,6 +68,7 @@ namespace ASC.Files.Thirdparty
         SharePoint,
         SkyDrive,
         WebDav,
+        kDrive,
         Yandex,
     }
 
@@ -314,42 +315,40 @@ namespace ASC.Files.Thirdparty
 
         public virtual void RemoveProviderInfo(int linkId)
         {
-            using (var tx = FilesDbContext.Database.BeginTransaction())
-            {
-                var folderId = GetProviderInfo(linkId).RootFolderId.ToString();
+            using var tx = FilesDbContext.Database.BeginTransaction();
+            var folderId = GetProviderInfo(linkId).RootFolderId.ToString();
 
-                var entryIDs = FilesDbContext.ThirdpartyIdMapping
-                    .Where(r => r.TenantId == TenantID)
-                    .Where(r => r.Id.StartsWith(folderId))
-                    .Select(r => r.HashId)
-                    .ToList();
+            var entryIDs = FilesDbContext.ThirdpartyIdMapping
+                .Where(r => r.TenantId == TenantID)
+                .Where(r => r.Id.StartsWith(folderId))
+                .Select(r => r.HashId)
+                .ToList();
 
-                var forDelete = FilesDbContext.Security
-                    .Where(r => r.TenantId == TenantID)
-                    .Where(r => entryIDs.Any(a => a == r.EntryId))
-                    .ToList();
+            var forDelete = FilesDbContext.Security
+                .Where(r => r.TenantId == TenantID)
+                .Where(r => entryIDs.Any(a => a == r.EntryId))
+                .ToList();
 
-                FilesDbContext.Security.RemoveRange(forDelete);
-                FilesDbContext.SaveChanges();
+            FilesDbContext.Security.RemoveRange(forDelete);
+            FilesDbContext.SaveChanges();
 
-                var linksForDelete = FilesDbContext.TagLink
-                    .Where(r => r.TenantId == TenantID)
-                    .Where(r => entryIDs.Any(e => e == r.EntryId))
-                    .ToList();
+            var linksForDelete = FilesDbContext.TagLink
+                .Where(r => r.TenantId == TenantID)
+                .Where(r => entryIDs.Any(e => e == r.EntryId))
+                .ToList();
 
-                FilesDbContext.TagLink.RemoveRange(linksForDelete);
-                FilesDbContext.SaveChanges();
+            FilesDbContext.TagLink.RemoveRange(linksForDelete);
+            FilesDbContext.SaveChanges();
 
-                var accountsForDelete = FilesDbContext.ThirdpartyAccount
-                    .Where(r => r.Id == linkId)
-                    .Where(r => r.TenantId == TenantID)
-                    .ToList();
+            var accountsForDelete = FilesDbContext.ThirdpartyAccount
+                .Where(r => r.Id == linkId)
+                .Where(r => r.TenantId == TenantID)
+                .ToList();
 
-                FilesDbContext.ThirdpartyAccount.RemoveRange(accountsForDelete);
-                FilesDbContext.SaveChanges();
+            FilesDbContext.ThirdpartyAccount.RemoveRange(accountsForDelete);
+            FilesDbContext.SaveChanges();
 
-                tx.Commit();
-            }
+            tx.Commit();
         }
 
         private IProviderInfo ToProviderInfo(int id, ProviderTypes providerKey, string customerTitle, AuthData authData, Guid owner, FolderType type, DateTime createOn)

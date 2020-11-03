@@ -1,17 +1,28 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { Row, Link, Text, Box, Textarea, Button, ModalDialog, toastr, utils } from "asc-web-components";
+import {
+  Row,
+  Link,
+  Text,
+  Box,
+  Textarea,
+  Button,
+  ModalDialog,
+  utils,
+} from "asc-web-components";
 import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
 import { connect } from "react-redux";
-import { api } from "asc-web-common";
-import { fetchFiles } from '../../../../../store/files/actions';
-import store from "../../../../../store/store";
+import { api, toastr } from "asc-web-common";
+import { setIsLoading } from "../../../../../store/files/actions";
+import {
+  getFilter,
+  getSelectedFolderId,
+} from "../../../../../store/files/selectors";
 
 const { tablet } = utils.device;
 
 const StyledRow = styled(Row)`
-
   .version_badge {
     cursor: pointer;
 
@@ -47,7 +58,7 @@ const StyledRow = styled(Row)`
   }
 
   .version_link {
-    display: ${props => props.showEditPanel ? "none" : "block"};
+    display: ${(props) => (props.showEditPanel ? "none" : "block")};
     text-decoration: underline dashed;
     white-space: break-spaces;
 
@@ -99,8 +110,18 @@ const StyledRow = styled(Row)`
   }
 `;
 
-const VersionRow = props => {
-  const { info, index, culture, selectedFolderId, filter, onLoading, isVersion, t, getFileVersions } = props;
+const VersionRow = (props) => {
+  const {
+    info,
+    index,
+    culture,
+    selectedFolderId,
+    filter,
+    setIsLoading,
+    isVersion,
+    t,
+    getFileVersions,
+  } = props;
   const [showEditPanel, setShowEditPanel] = useState(false);
   const [commentValue, setCommentValue] = useState(info.comment);
   const [displayComment, setDisplayComment] = useState(info.comment);
@@ -114,8 +135,8 @@ const VersionRow = props => {
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
         stroke={isVersion ? "none" : "#A3A9AE"}
-        strokeDasharray={isVersion ? "none" : '2px'}
-        strokeWidth={isVersion ? "none" : '2px'}
+        strokeDasharray={isVersion ? "none" : "2px"}
+        strokeWidth={isVersion ? "none" : "2px"}
       >
         <path
           fillRule="evenodd"
@@ -124,12 +145,7 @@ const VersionRow = props => {
           fill={!isVersion ? "#FFF" : index === 0 ? "#A3A9AE" : "#ED7309"}
         />
       </svg>
-      <Text
-        className="version_badge-text"
-        color="#FFF"
-        isBold
-        fontSize="12px"
-      >
+      <Text className="version_badge-text" color="#FFF" isBold fontSize="12px">
         {isVersion && `Ver.${info.versionGroup}`}
       </Text>
     </Box>
@@ -141,10 +157,11 @@ const VersionRow = props => {
 
   const linkStyles = { isHovered: true, type: "action" };
 
-  const onDownloadAction = () => window.open(`${info.viewUrl}&version=${info.version}`);
+  const onDownloadAction = () =>
+    window.open(`${info.viewUrl}&version=${info.version}`);
   const onEditComment = () => setShowEditPanel(!showEditPanel);
 
-  const onChange = e => setCommentValue(e.target.value);
+  const onChange = (e) => setCommentValue(e.target.value);
 
   const onSaveClick = () =>
     api.files
@@ -156,32 +173,35 @@ const VersionRow = props => {
   const onCancelClick = () => {
     setCommentValue(info.comment);
     setShowEditPanel(!showEditPanel);
-  }
+  };
   const onOpenFile = () => window.open(info.webUrl);
 
   const onRestoreClick = () => {
-    onLoading(true);
+    setIsLoading(true);
     api.files
       .versionRestore(info.id, info.version)
       .then(() => getFileVersions(info.id))
       .catch((err) => toastr.error(err))
-      .finally(() => onLoading(false));
-  }
+      .finally(() => setIsLoading(false));
+  };
 
   const onVersionClick = () => {
-    onLoading(true);
+    setIsLoading(true);
     api.files
       .markAsVersion(info.id, isVersion, info.version)
       .then(() => getFileVersions(info.id))
       .catch((err) => toastr.error(err))
-      .finally(() => onLoading(false));
-  }
-
+      .finally(() => setIsLoading(false));
+  };
 
   const contextOptions = [
-    { key: 'edit', label: t('EditComment'), onClick: onEditComment },
-    { key: 'restore', label: t('Restore'), onClick: onRestoreClick },
-    { key: 'download', label: `${t('Download')}(${info.contentLength})`, onClick: onDownloadAction },
+    { key: "edit", label: t("EditComment"), onClick: onEditComment },
+    { key: "restore", label: t("Restore"), onClick: onRestoreClick },
+    {
+      key: "download",
+      label: `${t("Download")}(${info.contentLength})`,
+      onClick: onDownloadAction,
+    },
   ];
 
   return (
@@ -189,7 +209,12 @@ const VersionRow = props => {
       <>
         <Box displayProp="flex">
           <VersionBadge className="version_badge" onClick={onVersionClick} />
-          <Link onClick={onOpenFile} fontWeight={600} fontSize="14px" title={title}>
+          <Link
+            onClick={onOpenFile}
+            fontWeight={600}
+            fontSize="14px"
+            title={title}
+          >
             {title}
           </Link>
           <Text
@@ -202,43 +227,44 @@ const VersionRow = props => {
         </Box>
         <Box marginProp="0 0 0 70px" displayProp="flex">
           <>
-          {showEditPanel && (
-            <>
-              <Textarea
-                className="version_edit-comment"
-                style={{margin: '8px 24px 8px 0'}}
-                //placeholder="Add comment"
-                onChange={onChange}
-                value={commentValue}
-              />
-              <Box className="version_modal-dialog">
-                <ModalDialog
-                  displayType="aside"
-                  visible={showEditPanel}
-                  onClose={onEditComment}
-                  headerContent={t('EditComment')}
-                  bodyContent={
-                    <Textarea
-                      //className="version_edit-comment"
-                      style={{margin: '8px 24px 8px 0'}}
-                      //placeholder="Add comment"
-                      onChange={onChange}
-                      value={commentValue}
-                    />
-                  }
-                  footerContent={
-                    <Button
-                      className="version_save-button"
-                      label={t('AddButton')}
-                      size="medium"
-                      primary
-                      onClick={onSaveClick}
-                    />
-                  }
+            {showEditPanel && (
+              <>
+                <Textarea
+                  className="version_edit-comment"
+                  style={{ margin: "8px 24px 8px 0" }}
+                  //placeholder="Add comment"
+                  onChange={onChange}
+                  value={commentValue}
                 />
-              </Box>
-            </>
-          )}
+                <Box className="version_modal-dialog">
+                  <ModalDialog
+                    displayType="aside"
+                    visible={showEditPanel}
+                    onClose={onEditComment}
+                  >
+                    <ModalDialog.Header>{t("EditComment")}</ModalDialog.Header>
+                    <ModalDialog.Body>
+                      <Textarea
+                        //className="version_edit-comment"
+                        style={{ margin: "8px 24px 8px 0" }}
+                        //placeholder="Add comment"
+                        onChange={onChange}
+                        value={commentValue}
+                      />
+                    </ModalDialog.Body>
+                    <ModalDialog.Footer>
+                      <Button
+                        className="version_save-button"
+                        label={t("AddButton")}
+                        size="medium"
+                        primary
+                        onClick={onSaveClick}
+                      />
+                    </ModalDialog.Footer>
+                  </ModalDialog>
+                </Box>
+              </>
+            )}
             <Link onClick={onEditComment} className="version_link">
               {displayComment}
             </Link>
@@ -250,35 +276,44 @@ const VersionRow = props => {
             {...linkStyles}
             className="version_link-action"
           >
-            {t('Restore')}
+            {t("Restore")}
           </Link>
           <Link
             onClick={onDownloadAction}
             {...linkStyles}
             className="version_link-action"
           >
-            {t('Download')}
+            {t("Download")}
           </Link>
         </Box>
         {showEditPanel && (
-            <Box className="version_edit-comment" marginProp='8px 0 16px 70px'>
-              <Button size='medium' primary style={{marginRight: '8px'}} onClick={onSaveClick} label={t('AddButton')}/>
-              <Button size='medium' onClick={onCancelClick} label={t('CancelButton')} />
-            </Box>
+          <Box className="version_edit-comment" marginProp="8px 0 16px 70px">
+            <Button
+              size="medium"
+              primary
+              style={{ marginRight: "8px" }}
+              onClick={onSaveClick}
+              label={t("AddButton")}
+            />
+            <Button
+              size="medium"
+              onClick={onCancelClick}
+              label={t("CancelButton")}
+            />
+          </Box>
         )}
       </>
     </StyledRow>
   );
 };
 
-const mapStateToProps = state => {
-  const { selectedFolder } = state.files;
-  const { id } = selectedFolder;
-
+const mapStateToProps = (state) => {
   return {
-    filter: state.files.filter,
-    selectedFolderId: id,
+    filter: getFilter(state),
+    selectedFolderId: getSelectedFolderId(state),
   };
 };
 
-export default connect(mapStateToProps, { })(withRouter(withTranslation()(VersionRow)));
+export default connect(mapStateToProps, {
+  setIsLoading,
+})(withRouter(withTranslation()(VersionRow)));

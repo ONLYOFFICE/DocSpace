@@ -9,7 +9,7 @@ import {
   PageLayout,
   ErrorContainer,
   history,
-  utils as commonUtils
+  utils as commonUtils,
 } from "asc-web-common";
 import { Loader, utils } from "asc-web-components";
 
@@ -28,17 +28,19 @@ import {
   getIsRequiredLicense,
   setPortalOwner,
   setLicense,
-  resetLicenseUploaded
+  resetLicenseUploaded,
 } from "../../../store/wizard/actions";
 
 import { createI18N } from "../../../helpers/i18n";
+import { setDocumentTitle } from "../../../helpers/utils";
+
 const i18n = createI18N({
   page: "Wizard",
-  localesPath: "pages/Wizard"
+  localesPath: "pages/Wizard",
 });
 
 const { tablet } = utils.device;
-const { changeLanguage } = commonUtils;
+const { changeLanguage, createPasswordHash } = commonUtils;
 
 const { EmailSettings } = utils.email;
 const emailSettings = new EmailSettings();
@@ -47,7 +49,7 @@ emailSettings.allowDomainPunycode = true;
 const WizardContainer = styled.div`
   width: 960px;
   margin: 0 auto;
-  margin-top: 120px;
+  margin-top: 60px;
 
   .wizard-form {
     margin-top: 32px;
@@ -63,7 +65,7 @@ const WizardContainer = styled.div`
 
   @media (max-width: 520px) {
     width: calc(100% - 32px);
-    margin-top: 72px;
+    margin-top: 12px;
   }
 `;
 
@@ -97,10 +99,10 @@ class Body extends Component {
       hasErrorPass: false,
       hasErrorLicense: false,
 
-      checkingMessages: []
+      checkingMessages: [],
     };
 
-    document.title = t("wizardTitle");
+    setDocumentTitle(t("WizardTitle"));
   }
 
   async componentDidMount() {
@@ -113,7 +115,7 @@ class Body extends Component {
       setIsWizardLoaded,
       getMachineName,
       getIsRequiredLicense,
-      history
+      history,
     } = this.props;
 
     window.addEventListener("keyup", this.onKeyPressHandler);
@@ -128,34 +130,34 @@ class Body extends Component {
         getPortalTimezones(wizardToken).then(() => {
           const { timezones, timezone } = this.props;
           const zones = this.mapTimezonesToArray(timezones);
-          const select = zones.filter(zone => zone.key === timezone);
+          const select = zones.filter((zone) => zone.key === timezone);
           this.setState({
             timezones: zones,
             selectTimezone: {
               key: select[0].key,
-              label: select[0].label
-            }
+              label: select[0].label,
+            },
           });
         }),
         getPortalCultures().then(() => {
           const { cultures, culture } = this.props;
           const languages = this.mapCulturesToArray(cultures, t);
-          let select = languages.filter(lang => lang.key === culture);
+          let select = languages.filter((lang) => lang.key === culture);
           if (!select.length)
-            select = languages.filter(lang => lang.key === "en-US");
+            select = languages.filter((lang) => lang.key === "en-US");
           this.setState({
             languages: languages,
             selectLanguage: {
               key: select[0].key,
-              label: select[0].label
-            }
+              label: select[0].label,
+            },
           });
-        })
+        }),
       ])
         .then(() => setIsWizardLoaded(true))
-        .catch(e => {
+        .catch((e) => {
           this.setState({
-            errorInitWizard: e
+            errorInitWizard: e,
           });
         });
     }
@@ -176,41 +178,41 @@ class Body extends Component {
     window.removeEventListener("keyup", this.onKeyPressHandler);
   }
 
-  mapTimezonesToArray = timezones => {
-    return timezones.map(timezone => {
+  mapTimezonesToArray = (timezones) => {
+    return timezones.map((timezone) => {
       return { key: timezone.id, label: timezone.displayName };
     });
   };
 
   mapCulturesToArray = (cultures, t) => {
-    return cultures.map(culture => {
+    return cultures.map((culture) => {
       return { key: culture, label: t(`Culture_${culture}`) };
     });
   };
 
-  onKeyPressHandler = e => {
+  onKeyPressHandler = (e) => {
     if (e.key === "Enter") this.onContinueHandler();
   };
 
-  isValidPassHandler = val => this.setState({ isValidPass: val });
+  isValidPassHandler = (val) => this.setState({ isValidPass: val });
 
-  onChangePassword = e =>
+  onChangePassword = (e) =>
     this.setState({ password: e.target.value, hasErrorPass: false });
 
   onClickChangeEmail = () => this.setState({ visibleModal: true });
 
-  onEmailChangeHandler = result => {
+  onEmailChangeHandler = (result) => {
     const { emailNeeded } = this.state;
 
     emailNeeded
       ? this.setState({
           emailValid: result.isValid,
           email: result.value,
-          hasErrorEmail: false
+          hasErrorEmail: false,
         })
       : this.setState({
           emailValid: result.isValid,
-          changeEmail: result.value
+          changeEmail: result.value,
         });
   };
 
@@ -220,14 +222,14 @@ class Body extends Component {
     const valid = this.checkingValid();
 
     if (valid) {
-      const { setPortalOwner, wizardToken } = this.props;
+      const { setPortalOwner, wizardToken, hashSettings } = this.props;
 
       const {
         password,
         email,
         selectLanguage,
         selectTimezone,
-        emailOwner
+        emailOwner,
       } = this.state;
 
       this.setState({ sending: true });
@@ -236,21 +238,22 @@ class Body extends Component {
       const analytics = true;
 
       // console.log(emailTrim, password, selectLanguage.key, selectTimezone.key, analytics, wizardToken);
+      const hash = createPasswordHash(password, hashSettings);
 
       setPortalOwner(
         emailTrim,
-        password,
+        hash,
         selectLanguage.key,
         selectTimezone.key,
         wizardToken,
         analytics
       )
         .then(() => history.push("/login"))
-        .catch(e =>
+        .catch((e) =>
           this.setState({
             errorLoading: true,
             sending: false,
-            errorMessage: e
+            errorMessage: e,
           })
         );
     } else {
@@ -264,20 +267,20 @@ class Body extends Component {
 
     let checkingMessages = [];
     if (!isValidPass) {
-      checkingMessages.push(t("errorPassword"));
+      checkingMessages.push(t("ErrorPassword"));
       this.setState({ hasErrorPass: true, checkingMessages: checkingMessages });
     }
     if (!license) {
-      checkingMessages.push(t("errorLicenseRead"));
+      checkingMessages.push(t("ErrorLicenseRead"));
       this.setState({ checkingMessages: checkingMessages });
     }
 
     if (emailNeeded && !isLicenseRequired) {
       if (!emailValid) {
-        checkingMessages.push(t("errorEmail"));
+        checkingMessages.push(t("ErrorEmail"));
         this.setState({
           hasErrorEmail: true,
-          checkingMessages: checkingMessages
+          checkingMessages: checkingMessages,
         });
       }
 
@@ -288,18 +291,18 @@ class Body extends Component {
 
     if (emailNeeded && isLicenseRequired) {
       if (!emailValid) {
-        checkingMessages.push(t("errorEmail"));
+        checkingMessages.push(t("ErrorEmail"));
         this.setState({
           hasErrorEmail: true,
-          checkingMessages: checkingMessages
+          checkingMessages: checkingMessages,
         });
       }
 
       if (!licenseUpload) {
-        checkingMessages.push(t("errorUploadLicenseFile"));
+        checkingMessages.push(t("ErrorUploadLicenseFile"));
         this.setState({
           hasErrorLicense: true,
-          checkingMessages: checkingMessages
+          checkingMessages: checkingMessages,
         });
       }
 
@@ -310,10 +313,10 @@ class Body extends Component {
 
     if (!emailNeeded && isLicenseRequired) {
       if (!licenseUpload) {
-        checkingMessages.push(t("errorUploadLicenseFile"));
+        checkingMessages.push(t("ErrorUploadLicenseFile"));
         this.setState({
           hasErrorLicense: true,
-          checkingMessages: checkingMessages
+          checkingMessages: checkingMessages,
         });
       }
 
@@ -337,26 +340,26 @@ class Body extends Component {
     this.setState({
       visibleModal: false,
       errorLoading: false,
-      errorMessage: null
+      errorMessage: null,
     });
   };
 
-  onSelectTimezoneHandler = el => this.setState({ selectTimezone: el });
+  onSelectTimezoneHandler = (el) => this.setState({ selectTimezone: el });
 
-  onSelectLanguageHandler = lang =>
+  onSelectLanguageHandler = (lang) =>
     this.setState({
       selectLanguage: {
         key: lang.key,
-        label: lang.label
-      }
+        label: lang.label,
+      },
     });
 
-  onInputFileHandler = file => {
+  onInputFileHandler = (file) => {
     const {
       setLicense,
       wizardToken,
       licenseUpload,
-      resetLicenseUploaded
+      resetLicenseUploaded,
     } = this.props;
 
     if (licenseUpload) resetLicenseUploaded();
@@ -366,11 +369,11 @@ class Body extends Component {
     let fd = new FormData();
     fd.append("files", file);
 
-    setLicense(wizardToken, fd).catch(e =>
+    setLicense(wizardToken, fd).catch((e) =>
       this.setState({
         errorLoading: true,
         errorMessage: e,
-        hasErrorLicense: true
+        hasErrorLicense: true,
       })
     );
   };
@@ -383,7 +386,7 @@ class Body extends Component {
       passwordSettings,
       culture,
       isLicenseRequired,
-      urlLicense
+      urlLicense,
     } = this.props;
 
     const {
@@ -405,7 +408,7 @@ class Body extends Component {
       hasErrorEmail,
       hasErrorPass,
       hasErrorLicense,
-      checkingMessages
+      checkingMessages,
     } = this.state;
 
     console.log("wizard render");
@@ -413,9 +416,9 @@ class Body extends Component {
     if (errorInitWizard) {
       return (
         <ErrorContainer
-          headerText={t("errorInitWizardHeader")}
-          bodyText={t("errorInitWizard")}
-          buttonText={t("errorInitWizardButton")}
+          headerText={t("ErrorInitWizardHeader")}
+          bodyText={t("ErrorInitWizard")}
+          buttonText={t("ErrorInitWizardButton")}
           buttonUrl="/"
         />
       );
@@ -440,7 +443,6 @@ class Body extends Component {
           <form className="wizard-form">
             <InputContainer
               t={t}
-              s
               settingsPassword={passwordSettings}
               emailNeeded={emailNeeded}
               password={password}
@@ -497,12 +499,12 @@ Body.propTypes = {
   cultures: PropTypes.array.isRequired,
   timezones: PropTypes.array.isRequired,
   timezone: PropTypes.string.isRequired,
-  licenseUpload: PropTypes.string
+  licenseUpload: PropTypes.string,
 };
 
 const WizardWrapper = withTranslation()(Body);
 
-const WizardPage = props => {
+const WizardPage = (props) => {
   const { isLoaded } = props;
 
   useEffect(() => {
@@ -522,7 +524,7 @@ const WizardPage = props => {
 
 WizardPage.propTypes = {
   culture: PropTypes.string.isRequired,
-  isLoaded: PropTypes.bool
+  isLoaded: PropTypes.bool,
 };
 
 function mapStateToProps({ wizard, auth }) {
@@ -530,7 +532,7 @@ function mapStateToProps({ wizard, auth }) {
     isWizardLoaded,
     machineName,
     isLicenseRequired,
-    licenseUpload
+    licenseUpload,
   } = wizard;
 
   const {
@@ -540,7 +542,8 @@ function mapStateToProps({ wizard, auth }) {
     cultures,
     timezones,
     timezone,
-    urlLicense
+    urlLicense,
+    hashSettings,
   } = auth.settings;
 
   return {
@@ -555,21 +558,19 @@ function mapStateToProps({ wizard, auth }) {
     timezone,
     urlLicense,
     isLicenseRequired,
-    licenseUpload
+    licenseUpload,
+    hashSettings,
   };
 }
 
-export default connect(
-  mapStateToProps,
-  {
-    getPortalPasswordSettings,
-    getPortalCultures,
-    getPortalTimezones,
-    setIsWizardLoaded,
-    getMachineName,
-    getIsRequiredLicense,
-    setPortalOwner,
-    setLicense,
-    resetLicenseUploaded
-  }
-)(withRouter(WizardPage));
+export default connect(mapStateToProps, {
+  getPortalPasswordSettings,
+  getPortalCultures,
+  getPortalTimezones,
+  setIsWizardLoaded,
+  getMachineName,
+  getIsRequiredLicense,
+  setPortalOwner,
+  setLicense,
+  resetLicenseUploaded,
+})(withRouter(WizardPage));
