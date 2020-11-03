@@ -147,23 +147,7 @@ const TreeNodeMenu = styled(TreeNode)`
 
     left: 0;
   }
-  ${(props) =>
-    props.dragging &&
-    css`
-      span.draggable {
-        background: #f8f7bf;
-        border-radius: 3px;
-        ${(props) =>
-          !props.fullFillSelection && "width: min-content !important;"}
-        padding-right: 4px;
-        :hover {
-          background: #efefb2;
-        }
-      }
-      .rc-tree-title {
-        width: 85% !important;
-      }
-    `}
+
   span.rc-tree-switcher,
   span.rc-tree-iconEle {
     line-height: 0;

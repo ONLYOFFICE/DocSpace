@@ -46,7 +46,28 @@ const StyledTreeMenu = styled(Tree)`
       span.rc-tree-node-selected {
         width: min-content !important;
         padding-right: 4px;
-        max-width: 85%;
+      }
+    `}
+
+  ${(props) =>
+    props.dragging &&
+    css`
+      span.draggable {
+        background: #f8f7bf;
+        border-radius: 3px;
+        ${(props) =>
+          !props.isFullFillSelection &&
+          `
+            width: min-content !important; 
+            padding-right: 4px;
+          `}
+
+        :hover {
+          background: #efefb2;
+        }
+        .rc-tree-title {
+          width: 85% !important;
+        }
       }
     `}
 
@@ -150,6 +171,7 @@ const TreeMenu = React.forwardRef((props, ref) => {
     multiple,
     disabled,
     draggable,
+    dragging,
     checkable,
     children,
     switcherIcon,
@@ -182,7 +204,7 @@ const TreeMenu = React.forwardRef((props, ref) => {
     gapBetweenNodesTablet,
     isEmptyRootNode,
   } = props;
-
+  console.log(props);
   const expandedKeysProp = expandedKeys ? { expandedKeys: expandedKeys } : {};
 
   const onTreeNodeSelect = (data, e) => {
@@ -236,6 +258,7 @@ const TreeMenu = React.forwardRef((props, ref) => {
         loadData={loadData}
         checkable={!!checkable}
         draggable={!!draggable}
+        dragging={dragging}
         disabled={!!disabled}
         multiple={!!multiple}
         showLine={!!showLine}
