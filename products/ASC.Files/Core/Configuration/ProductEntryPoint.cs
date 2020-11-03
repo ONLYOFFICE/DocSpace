@@ -31,6 +31,7 @@ using System.Reflection;
 
 using ASC.Common;
 using ASC.Core;
+using ASC.Core.Notify;
 using ASC.Files.Core.Resources;
 using ASC.Web.Core;
 using ASC.Web.Core.PublicResources;
@@ -190,7 +191,8 @@ namespace ASC.Web.Files.Configuration
                     .AddUserManagerService()
                     .AddGlobalService()
                     .AddFilesSubscriptionManagerService()
-                    .AddFactoryIndexerFileService();
+                    .AddFactoryIndexerFileService()
+                    .AddEmailSenderSinkService();
             }
 
             return services;

@@ -53,6 +53,7 @@ import {
 const { isAdmin } = store.auth.selectors;
 const { FilterType, FileAction } = constants;
 const { tablet, desktop } = utils.device;
+const { Consumer } = utils.context;
 
 const StyledContainer = styled.div`
   @media ${desktop} {
@@ -117,9 +118,9 @@ const StyledContainer = styled.div`
     @media ${tablet} {
       & > div:first-child {
         ${(props) =>
-          props.isArticlePinned &&
+          props.width &&
           css`
-            width: calc(100% - 240px);
+            width: ${props.width + 16 + "px"};
           `}
         position: absolute;
         top: 56px;
@@ -490,137 +491,145 @@ class SectionHeaderContent extends React.Component {
     const menuItems = this.getMenuItems();
 
     return (
-      <StyledContainer isHeaderVisible={isHeaderVisible}>
-        {isHeaderVisible ? (
-          <div className="group-button-menu-container">
-            <GroupButtonsMenu
-              checked={isHeaderChecked}
-              isIndeterminate={isHeaderIndeterminate}
-              onChange={this.onCheck}
-              menuItems={menuItems}
-              visible={isHeaderVisible}
-              moreLabel={t("More")}
-              closeTitle={t("CloseButton")}
-              onClose={this.onClose}
-              selected={menuItems[0].label}
-            />
-          </div>
-        ) : (
-          <div className="header-container">
-            {!title ? (
-              <Loaders.Headline />
+      <Consumer>
+        {(context) => (
+          <StyledContainer
+            isHeaderVisible={isHeaderVisible}
+            width={context.sectionWidth}
+          >
+            {isHeaderVisible ? (
+              <div className="group-button-menu-container">
+                <GroupButtonsMenu
+                  checked={isHeaderChecked}
+                  isIndeterminate={isHeaderIndeterminate}
+                  onChange={this.onCheck}
+                  menuItems={menuItems}
+                  visible={isHeaderVisible}
+                  moreLabel={t("More")}
+                  closeTitle={t("CloseButton")}
+                  onClose={this.onClose}
+                  selected={menuItems[0].label}
+                  sectionWidth={context.sectionWidth}
+                />
+              </div>
             ) : (
-              <>
-                {!isRootFolder && (
-                  <IconButton
-                    iconName="ArrowPathIcon"
-                    size="17"
-                    color="#A3A9AE"
-                    hoverColor="#657077"
-                    isFill={true}
-                    onClick={this.onBackToParentFolder}
-                    className="arrow-button"
-                  />
-                )}
-                <Headline
-                  className="headline-header"
-                  type="content"
-                  truncate={true}
-                >
-                  {title}
-                </Headline>
-                {!isRootFolder && canCreate ? (
-                  <>
-                    <ContextMenuButton
-                      className="add-button"
-                      directionX="right"
-                      iconName="PlusIcon"
-                      size={17}
-                      color="#A3A9AE"
-                      hoverColor="#657077"
-                      isFill
-                      getData={this.getContextOptionsPlus}
-                      isDisabled={false}
-                    />
-                    <ContextMenuButton
-                      className="option-button"
-                      directionX="right"
-                      iconName="VerticalDotsIcon"
-                      size={17}
-                      color="#A3A9AE"
-                      hoverColor="#657077"
-                      isFill
-                      getData={this.getContextOptionsFolder}
-                      isDisabled={false}
-                    />
-                  </>
+              <div className="header-container">
+                {!title ? (
+                  <Loaders.Headline />
                 ) : (
-                  canCreate && (
-                    <ContextMenuButton
-                      className="add-button"
-                      directionX="right"
-                      iconName="PlusIcon"
-                      size={17}
-                      color="#A3A9AE"
-                      hoverColor="#657077"
-                      isFill
-                      getData={this.getContextOptionsPlus}
-                      isDisabled={false}
-                    />
-                  )
+                  <>
+                    {!isRootFolder && (
+                      <IconButton
+                        iconName="ArrowPathIcon"
+                        size="17"
+                        color="#A3A9AE"
+                        hoverColor="#657077"
+                        isFill={true}
+                        onClick={this.onBackToParentFolder}
+                        className="arrow-button"
+                      />
+                    )}
+                    <Headline
+                      className="headline-header"
+                      type="content"
+                      truncate={true}
+                    >
+                      {title}
+                    </Headline>
+                    {!isRootFolder && canCreate ? (
+                      <>
+                        <ContextMenuButton
+                          className="add-button"
+                          directionX="right"
+                          iconName="PlusIcon"
+                          size={17}
+                          color="#A3A9AE"
+                          hoverColor="#657077"
+                          isFill
+                          getData={this.getContextOptionsPlus}
+                          isDisabled={false}
+                        />
+                        <ContextMenuButton
+                          className="option-button"
+                          directionX="right"
+                          iconName="VerticalDotsIcon"
+                          size={17}
+                          color="#A3A9AE"
+                          hoverColor="#657077"
+                          isFill
+                          getData={this.getContextOptionsFolder}
+                          isDisabled={false}
+                        />
+                      </>
+                    ) : (
+                      canCreate && (
+                        <ContextMenuButton
+                          className="add-button"
+                          directionX="right"
+                          iconName="PlusIcon"
+                          size={17}
+                          color="#A3A9AE"
+                          hoverColor="#657077"
+                          isFill
+                          getData={this.getContextOptionsPlus}
+                          isDisabled={false}
+                        />
+                      )
+                    )}
+                  </>
                 )}
-              </>
+              </div>
             )}
-          </div>
-        )}
 
-        {showDeleteDialog && (
-          <DeleteDialog
-            isRecycleBin={isRecycleBin}
-            visible={showDeleteDialog}
-            onClose={this.onDeleteAction}
-            selection={selection}
-          />
-        )}
+            {showDeleteDialog && (
+              <DeleteDialog
+                isRecycleBin={isRecycleBin}
+                visible={showDeleteDialog}
+                onClose={this.onDeleteAction}
+                selection={selection}
+              />
+            )}
 
-        {showEmptyTrashDialog && (
-          <EmptyTrashDialog
-            visible={showEmptyTrashDialog}
-            onClose={this.onEmptyTrashAction}
-          />
-        )}
+            {showEmptyTrashDialog && (
+              <EmptyTrashDialog
+                visible={showEmptyTrashDialog}
+                onClose={this.onEmptyTrashAction}
+              />
+            )}
 
-        {showSharingPanel && (
-          <SharingPanel
-            onClose={this.onOpenSharingPanel}
-            visible={showSharingPanel}
-          />
-        )}
+            {showSharingPanel && (
+              <SharingPanel
+                onClose={this.onOpenSharingPanel}
+                visible={showSharingPanel}
+              />
+            )}
 
-        {showMoveToPanel && (
-          <OperationsPanel
-            isCopy={false}
-            visible={showMoveToPanel}
-            onClose={this.onMoveAction}
-          />
-        )}
+            {showMoveToPanel && (
+              <OperationsPanel
+                isCopy={false}
+                visible={showMoveToPanel}
+                onClose={this.onMoveAction}
+              />
+            )}
 
-        {showCopyPanel && (
-          <OperationsPanel
-            isCopy={true}
-            visible={showCopyPanel}
-            onClose={this.onCopyAction}
-          />
-        )}
+            {showCopyPanel && (
+              <OperationsPanel
+                isCopy={true}
+                visible={showCopyPanel}
+                onClose={this.onCopyAction}
+              />
+            )}
 
-        {showDownloadDialog && (
-          <DownloadDialog
-            visible={showDownloadDialog}
-            onClose={this.downloadAsAction}
-            onDownloadProgress={this.loop}
-          />
+            {showDownloadDialog && (
+              <DownloadDialog
+                visible={showDownloadDialog}
+                onClose={this.downloadAsAction}
+                onDownloadProgress={this.loop}
+              />
+            )}
+          </StyledContainer>
         )}
-      </StyledContainer>
+      </Consumer>
     );
   }
 }

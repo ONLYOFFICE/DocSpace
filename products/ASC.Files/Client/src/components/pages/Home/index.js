@@ -35,6 +35,7 @@ import {
   getViewAs,
   getIsLoading,
   getIsRecycleBinFolder,
+  getDragging,
 } from "../../../store/files/selectors";
 
 import { ConvertDialog } from "../../dialogs";
@@ -46,19 +47,9 @@ const i18n = createI18N({
 });
 const { changeLanguage } = utils;
 const { FilesFilter } = api;
-const { getSettingsHomepage } = store.auth.selectors;
+const { getSettingsHomepage, getIsLoaded } = store.auth.selectors;
 
 class PureHome extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      overwriteSetting: false,
-      uploadOriginalFormatSetting: false,
-      hideWindowSetting: false,
-    };
-  }
-
   componentDidMount() {
     const { fetchFiles, homepage, setIsLoading, setFirstLoad } = this.props;
 
@@ -150,23 +141,18 @@ class PureHome extends React.Component {
   }
 
   onDrop = (files, uploadToFolder) => {
-    const { t, currentFolderId, startUpload, setDragging } = this.props;
+    const {
+      t,
+      currentFolderId,
+      startUpload,
+      setDragging,
+      dragging,
+    } = this.props;
     const folderId = uploadToFolder ? uploadToFolder : currentFolderId;
 
-    setDragging(false);
+    dragging && setDragging(false);
     startUpload(files, folderId, t);
   };
-
-  onChangeOverwrite = () =>
-    this.setState({ overwriteSetting: !this.state.overwriteSetting });
-
-  onChangeOriginalFormat = () =>
-    this.setState({
-      uploadOriginalFormatSetting: !this.state.uploadOriginalFormatSetting,
-    });
-
-  onChangeWindowVisible = () =>
-    this.setState({ hideWindowSetting: !this.state.hideWindowSetting });
 
   componentDidUpdate(prevProps) {
     if (this.props.isLoading !== prevProps.isLoading) {
@@ -181,52 +167,19 @@ class PureHome extends React.Component {
   render() {
     console.log("Home render");
     const {
-      // overwriteSetting,
-      // uploadOriginalFormatSetting,
-      // hideWindowSetting
-    } = this.state;
-    const {
       progressData,
       viewAs,
       convertDialogVisible,
       fileActionId,
       isRecycleBin,
+      isLoaded,
     } = this.props;
-
-    // const progressBarContent = (
-    //   <div>
-    //     <Checkbox
-    //       onChange={this.onChangeOverwrite}
-    //       isChecked={overwriteSetting}
-    //       label={t("OverwriteSetting")}
-    //     />
-    //     <Checkbox
-    //       onChange={this.onChangeOriginalFormat}
-    //       isChecked={uploadOriginalFormatSetting}
-    //       label={t("UploadOriginalFormatSetting")}
-    //     />
-    //     <Checkbox
-    //       onChange={this.onChangeWindowVisible}
-    //       isChecked={hideWindowSetting}
-    //       label={t("HideWindowSetting")}
-    //     />
-    //   </div>
-    // );
 
     return (
       <>
         {convertDialogVisible && (
           <ConvertDialog visible={convertDialogVisible} />
         )}
-        {/* <RequestLoader
-          visible={isLoading}
-          zIndex={256}
-          loaderSize="16px"
-          loaderColor={"#999"}
-          label={`${t("LoadingProcessing")} ${t("LoadingDescription")}`}
-          fontSize="12px"
-          fontColor={"#999"}
-        /> */}
         <PageLayout
           withBodyScroll
           withBodyAutoFocus={!isMobile}
@@ -240,6 +193,7 @@ class PureHome extends React.Component {
           progressBarLabel={progressData.label}
           viewAs={viewAs}
           hideAside={!!fileActionId || progressData.visible}
+          isLoaded={isLoaded}
         >
           <PageLayout.ArticleHeader>
             <ArticleHeaderContent />
@@ -306,6 +260,8 @@ function mapStateToProps(state) {
     viewAs: getViewAs(state),
     isLoading: getIsLoading(state),
     homepage: getSettingsHomepage(state),
+    dragging: getDragging(state),
+    isLoaded: getIsLoaded(state),
   };
 }
 

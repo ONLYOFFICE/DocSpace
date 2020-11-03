@@ -4,21 +4,20 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { ModalDialog } from "asc-web-components";
 import { withTranslation } from "react-i18next";
-import { utils as commonUtils, toastr, api } from "asc-web-common";
+import { utils as commonUtils, toastr } from "asc-web-common";
 import { StyledAsidePanel } from "../StyledPanels";
 import TreeFolders from "../../Article/Body/TreeFolders";
 import {
   setProgressBarData,
-  clearProgressData,
-  loopFilesOperations,
+  itemOperationToFolder
 } from "../../../store/files/actions";
 import {
-  getTreeFolders,
   getFilter,
   getSelection,
   getPathParts,
   getSelectedFolderId,
   getIsRecycleBinFolder,
+  getOperationsFolders,
 } from "../../../store/files/selectors";
 import { createI18N } from "../../../helpers/i18n";
 const i18n = createI18N({
@@ -40,9 +39,10 @@ class OperationsPanelComponent extends React.Component {
       t,
       isCopy,
       selection,
-      loopFilesOperations,
       setProgressBarData,
-      clearProgressData,
+      currentFolderId,
+      onClose,
+      itemOperationToFolder
     } = this.props;
 
     const destFolderId = Number(e);
@@ -51,61 +51,26 @@ class OperationsPanelComponent extends React.Component {
     const folderIds = [];
     const fileIds = [];
 
-    for (let item of selection) {
-      if (item.fileExst) {
-        fileIds.push(item.id);
-      } else if (item.id === destFolderId) {
-        toastr.error(t("MoveToFolderMessage"));
-      } else {
-        folderIds.push(item.id);
-      }
+    if (currentFolderId === destFolderId) {
+      return onClose();
     }
-    this.props.onClose();
-
-    if (isCopy) {
+    else {
+      for (let item of selection) {
+        if (item.fileExst) {
+          fileIds.push(item.id);
+        } else if (item.id === destFolderId) {
+          toastr.error(t("MoveToFolderMessage"));
+        } else {
+          folderIds.push(item.id);
+        }
+      }
+      onClose();
       setProgressBarData({
         visible: true,
         percent: 0,
-        label: t("CopyOperation"),
+        label: isCopy ? t("CopyOperation") : t("MoveToOperation"),
       });
-      api.files
-        .copyToFolder(
-          destFolderId,
-          folderIds,
-          fileIds,
-          conflictResolveType,
-          deleteAfter
-        )
-        .then((res) => {
-          const id = res[0] && res[0].id ? res[0].id : null;
-          loopFilesOperations(id, destFolderId, isCopy);
-        })
-        .catch((err) => {
-          toastr.error(err);
-          clearProgressData();
-        });
-    } else {
-      setProgressBarData({
-        visible: true,
-        percent: 0,
-        label: t("MoveToOperation"),
-      });
-      api.files
-        .moveToFolder(
-          destFolderId,
-          folderIds,
-          fileIds,
-          conflictResolveType,
-          deleteAfter
-        )
-        .then((res) => {
-          const id = res[0] && res[0].id ? res[0].id : null;
-          loopFilesOperations(id, destFolderId, false);
-        })
-        .catch((err) => {
-          toastr.error(err);
-          clearProgressData();
-        });
+      itemOperationToFolder(destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter, isCopy)
     }
   };
 
@@ -114,14 +79,13 @@ class OperationsPanelComponent extends React.Component {
     const {
       t,
       filter,
-      treeFolders,
       isCopy,
       isRecycleBin,
       visible,
       onClose,
+      operationsFolders
     } = this.props;
     const zIndex = 310;
-    const data = treeFolders.slice(0, 3);
     const expandedKeys = this.props.expandedKeys.map((item) => item.toString());
 
     return (
@@ -138,7 +102,7 @@ class OperationsPanelComponent extends React.Component {
           <ModalDialog.Body>
             <TreeFolders
               expandedKeys={expandedKeys}
-              data={data}
+              data={operationsFolders}
               filter={filter}
               onSelect={this.onSelect}
               needUpdate={false}
@@ -165,17 +129,16 @@ const OperationsPanel = (props) => (
 
 const mapStateToProps = (state) => {
   return {
-    treeFolders: getTreeFolders(state),
     filter: getFilter(state),
     selection: getSelection(state),
     expandedKeys: getPathParts(state),
     currentFolderId: getSelectedFolderId(state),
     isRecycleBin: getIsRecycleBinFolder(state),
+    operationsFolders: getOperationsFolders(state)
   };
 };
 
 export default connect(mapStateToProps, {
   setProgressBarData,
-  clearProgressData,
-  loopFilesOperations,
+  itemOperationToFolder
 })(withRouter(OperationsPanel));

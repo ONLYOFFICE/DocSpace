@@ -32,6 +32,7 @@ using System.Threading;
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Core;
+using ASC.Core.Common;
 using ASC.Core.Configuration;
 using ASC.Notify.Model;
 using ASC.Notify.Patterns;
@@ -61,6 +62,8 @@ namespace ASC.Web.Studio.Core.Notify
         public void OnMessage(NotifyItem item)
         {
             using var scope = ServiceProvider.CreateScope();
+            var commonLinkUtilitySettings = scope.ServiceProvider.GetService<CommonLinkUtilitySettings>();
+            commonLinkUtilitySettings.ServerUri = item.BaseUrl;
             var scopeClass = scope.ServiceProvider.GetService<StudioNotifyServiceSenderScope>();
             var (tenantManager, userManager, securityContext, studioNotifyHelper, _, _) = scopeClass;
             tenantManager.SetCurrentTenant(item.TenantId);

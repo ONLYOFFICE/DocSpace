@@ -13,7 +13,7 @@ import { connect } from "react-redux";
 const getFormattedGroups = (user, selectGroup) => {
   let temp = [];
   const groups = user.groups;
-  const linkColor = "#A3A9AE";
+  const linkColor = user.statusType === "pending" ? "#D0D5DA" : "#A3A9AE";
 
   if (!groups) temp.push({ key: 0, label: "" });
 
@@ -67,6 +67,7 @@ const UserContent = ({
   selectGroup,
   widthProp,
   isMobile,
+  sectionWidth,
 }) => {
   const { userName, displayName, title, mobilePhone, email, statusType } = user;
   const groups = getFormattedGroups(user, selectGroup);
@@ -87,14 +88,15 @@ const UserContent = ({
     email,
   ]);
 
-  const nameColor = "#333";
-  const sideInfoColor = "#A3A9AE";
+  const nameColor = statusType === "pending" ? "#A3A9AE" : "#333333";
+  const sideInfoColor = statusType === "pending" ? "#D0D5DA" : "#A3A9AE";
 
   return (
     <RowContent
       widthProp={widthProp}
       isMobile={isMobile}
       sideColor={sideInfoColor}
+      sectionWidth={sectionWidth}
     >
       <Link
         containerWidth="28%"
