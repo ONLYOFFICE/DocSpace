@@ -172,8 +172,21 @@ const SimpleFilesRow = styled(Row)`
     }
   }
 
+  @media (max-width: 1024px) {
+    .share-button {
+      display: none;
+    }
+  }
+
   .styled-element {
     margin-right: 0;
+  }
+
+  .row_context-menu-wrapper {
+    margin-right: -9px;
+    @media (max-width: 1024px) {
+      margin-right: -8px;
+    }
   }
 `;
 
@@ -1708,12 +1721,8 @@ class SectionBodyContent extends React.Component {
                     isRecycleBin || isEdit || item.id <= 0 || sectionWidth < 500
                       ? null
                       : this.getSharedButton();
-                  const displayShareButton =
-                    sectionWidth < 500
-                      ? "26px"
-                      : isRecycleBin
-                      ? "38px"
-                      : "96px";
+                  const displayShareButton = "";
+                  //sectionWidth < 500 ? "26px" : isRecycleBin ? "38px" : "";
                   let classNameProp =
                     isFolder && item.access < 2 && !isRecycleBin
                       ? { className: " dropable" }
