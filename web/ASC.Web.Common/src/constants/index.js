@@ -119,3 +119,9 @@ export const i18nBaseSettings = {
     useSuspense: true,
   },
 };
+
+export const LoaderStyle = {
+  background:
+    "linear-gradient(270deg, rgba(0, 0, 0, 0) 23.13%, rgba(0, 0, 0, 0.07) 50.52%, rgba(0, 0, 0, 0) 78.12%), rgba(0, 0, 0, 0.05)",
+  borderRadius: "3px",
+};
