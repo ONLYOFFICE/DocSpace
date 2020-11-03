@@ -891,7 +891,7 @@ namespace ASC.Api.Settings
 
         ///<visible>false</visible>
         [Create("whitelabel/save")]
-        public bool SaveWhiteLabelSettings([FromBody]WhiteLabelModel model, [FromQuery]WhiteLabelQuery query)
+        public bool SaveWhiteLabelSettings([FromBody] WhiteLabelModel model, [FromQuery] WhiteLabelQuery query)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -945,7 +945,7 @@ namespace ASC.Api.Settings
 
         ///<visible>false</visible>
         [Create("whitelabel/savefromfiles")]
-        public bool SaveWhiteLabelSettingsFromFiles([FromForm]WhiteLabelModel1 model, [FromQuery]WhiteLabelQuery query)
+        public bool SaveWhiteLabelSettingsFromFiles([FromQuery] WhiteLabelQuery query)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -954,7 +954,7 @@ namespace ASC.Api.Settings
                 throw new BillingException(Resource.ErrorNotAllowedOption, "WhiteLabel");
             }
 
-            if (model.Attachments == null || !model.Attachments.Any())
+            if (HttpContext.Request.Form?.Files == null || !HttpContext.Request.Form.Files.Any())
             {
                 throw new InvalidOperationException("No input files");
             }
@@ -962,33 +962,33 @@ namespace ASC.Api.Settings
             if (query.IsDefault)
             {
                 DemandRebrandingPermission();
-                SaveWhiteLabelSettingsFromFilesForDefaultTenant(model);
+                SaveWhiteLabelSettingsFromFilesForDefaultTenant();
             }
             else
             {
-                SaveWhiteLabelSettingsFromFilesForCurrentTenant(model);
+                SaveWhiteLabelSettingsFromFilesForCurrentTenant();
             }
             return true;
         }
 
-        private void SaveWhiteLabelSettingsFromFilesForCurrentTenant(WhiteLabelModel1 model)
+        private void SaveWhiteLabelSettingsFromFilesForCurrentTenant()
         {
             var settings = SettingsManager.Load<TenantWhiteLabelSettings>();
 
-            SaveWhiteLabelSettingsFromFilesForTenant(settings, null, Tenant.TenantId, model);
+            SaveWhiteLabelSettingsFromFilesForTenant(settings, null, Tenant.TenantId);
         }
 
-        private void SaveWhiteLabelSettingsFromFilesForDefaultTenant(WhiteLabelModel1 model)
+        private void SaveWhiteLabelSettingsFromFilesForDefaultTenant()
         {
             var settings = SettingsManager.LoadForDefaultTenant<TenantWhiteLabelSettings>();
             var storage = StorageFactory.GetStorage(string.Empty, "static_partnerdata");
 
-            SaveWhiteLabelSettingsFromFilesForTenant(settings, storage, Tenant.DEFAULT_TENANT, model);
+            SaveWhiteLabelSettingsFromFilesForTenant(settings, storage, Tenant.DEFAULT_TENANT);
         }
 
-        private void SaveWhiteLabelSettingsFromFilesForTenant(TenantWhiteLabelSettings settings, IDataStore storage, int tenantId, WhiteLabelModel1 model)
+        private void SaveWhiteLabelSettingsFromFilesForTenant(TenantWhiteLabelSettings settings, IDataStore storage, int tenantId)
         {
-            foreach (var f in model.Attachments)
+            foreach (var f in HttpContext.Request.Form.Files)
             {
                 var parts = f.FileName.Split('.');
                 var logoType = (WhiteLabelLogoTypeEnum)(Convert.ToInt32(parts[0]));
@@ -2080,10 +2080,10 @@ namespace ASC.Api.Settings
         public List<StorageWrapper> GetAllBackupStorages()
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-        if (CoreBaseSettings.Standalone)
-        {
-            TenantExtra.DemandControlPanelPermission();
-        }
+            if (CoreBaseSettings.Standalone)
+            {
+                TenantExtra.DemandControlPanelPermission();
+            }
             var schedule = BackupAjaxHandler.GetSchedule();
             var current = new StorageSettings();
 
@@ -2132,7 +2132,7 @@ namespace ASC.Api.Settings
 
         ///<visible>false</visible>
         [Create("rebranding/company")]
-        public bool SaveCompanyWhiteLabelSettings(CompanyWhiteLabelSettingsWrapper  companyWhiteLabelSettingsWrapper)
+        public bool SaveCompanyWhiteLabelSettings(CompanyWhiteLabelSettingsWrapper companyWhiteLabelSettingsWrapper)
         {
             if (companyWhiteLabelSettingsWrapper.Settings == null) throw new ArgumentNullException("settings");
 
