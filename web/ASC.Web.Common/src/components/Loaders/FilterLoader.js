@@ -1,17 +1,28 @@
 import React from "react";
-import ContentLoader from "react-content-loader";
+import styled from "styled-components";
+import RectangleLoader from "./RectangleLoader";
+import { utils } from "asc-web-components";
+const { mobile } = utils.device;
 
-const FilterLoader = (props) => (
-  <ContentLoader
-    speed={2}
-    width={"100%"}
-    height={32}
-    backgroundColor="#f3f3f3"
-    foregroundColor="#ecebeb"
-    {...props}
-  >
-    <rect x="0" y="0" rx="3" ry="3" width="100vw" height="32" />
-  </ContentLoader>
-);
+const StyledFilter = styled.div`
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 95px;
+  grid-template-rows: 1fr;
+  grid-column-gap: 8px;
+
+  @media ${mobile} {
+    grid-template-columns: 1fr 47px;
+  }
+`;
+
+const FilterLoader = () => {
+  return (
+    <StyledFilter>
+      <RectangleLoader width="100%" height="32px" />
+      <RectangleLoader width="100%" height="32px" />
+    </StyledFilter>
+  );
+};
 
 export default FilterLoader;
