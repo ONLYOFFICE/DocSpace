@@ -562,7 +562,7 @@ namespace ASC.Data.Backup.Service
                         restoredTenant.MappedDomain = tenant.MappedDomain;
                     }
                     tenantManager.SaveTenant(restoredTenant);
-
+                    tenantManager.SetCurrentTenant(restoredTenant);
                     // sleep until tenants cache expires
                     Thread.Sleep(TimeSpan.FromMinutes(2));
 
