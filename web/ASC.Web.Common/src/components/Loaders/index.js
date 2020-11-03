@@ -5,6 +5,7 @@ import Text from "./TextLoader";
 import Filter from "./FilterLoader";
 import ProfileView from "./ProfileViewLoader";
 import SettingsFiles from "./SettingsFilesLoader";
+import Rectangle from "./RectangleLoader";
 
 export default {
   Headline,
@@ -14,4 +15,5 @@ export default {
   Filter,
   ProfileView,
   SettingsFiles,
+  Rectangle
 };
