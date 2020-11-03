@@ -72,6 +72,7 @@ class SectionBody extends React.Component {
 
     this.focusRef = React.createRef();
     this.scrollRef = React.createRef();
+    this.windowWidth = window.matchMedia( "(max-width: 1024px)" );
   }
 
   shouldComponentUpdate(nextProps) {
@@ -96,6 +97,7 @@ class SectionBody extends React.Component {
       uploadFiles,
       viewAs,
       withScroll,
+      widthProp
     } = this.props;
 
     const focusProps = autoFocus
@@ -115,11 +117,11 @@ class SectionBody extends React.Component {
         withScroll={withScroll}
         viewAs={viewAs}
       >
+      
         {withScroll ? (
-
-          !isMobile ? (
+        
+          (!isMobile && !this.windowWidth.matches ) ? (
             <Scrollbar {...scrollProp} stype="mediumBlack" >
-              {console.log("Scroll ref in section", this.scrollRef)}
               <SelectedFrame
                 viewAs={viewAs}
                 scrollRef={this.scrollRef}
@@ -141,8 +143,10 @@ class SectionBody extends React.Component {
                     scrollRef={value}
                     setSelections={setSelections}
                   >
+                     
                     <div className="section-wrapper">
                       <div className="section-wrapper-content" {...focusProps}>
+                  
                         {children}
                         <StyledSpacer pinned={pinned} />
                       </div>
