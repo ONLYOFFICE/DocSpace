@@ -49,28 +49,6 @@ const StyledTreeMenu = styled(Tree)`
       }
     `}
 
-  ${(props) =>
-    props.dragging &&
-    css`
-      span.draggable {
-        background: #f8f7bf;
-        border-radius: 3px;
-        ${(props) =>
-          !props.isFullFillSelection &&
-          `
-            width: min-content !important; 
-            padding-right: 4px;
-          `}
-
-        :hover {
-          background: #efefb2;
-        }
-        .rc-tree-title {
-          width: 85% !important;
-        }
-      }
-    `}
-
   & .rc-tree-node-selected .rc-tree-title {
     ${(props) => !props.isFullFillSelection && "width: 85%;"}
   }

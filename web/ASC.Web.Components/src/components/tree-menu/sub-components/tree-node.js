@@ -107,6 +107,27 @@ const TreeNodeMenu = styled(TreeNode)`
   -ms-user-select: none;
   user-select: none;
 
+  ${(props) =>
+    props.dragging &&
+    css`
+      span.draggable {
+        background: #f8f7bf;
+        border-radius: 3px;
+        ${(props) =>
+          !props.isFullFillSelection &&
+          `
+            width: min-content !important; 
+            padding-right: 4px;
+          `}
+
+        :hover {
+          background: #efefb2;
+        }
+        .rc-tree-title {
+          width: 85% !important;
+        }
+      }
+    `}
   .draggable {
     color: #333;
     /* Required to make elements draggable in old WebKit */
