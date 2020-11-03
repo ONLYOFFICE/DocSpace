@@ -14,7 +14,7 @@ const CircleLoader = (props) => (
     foregroundOpacity={props.foregroundOpacity}
     {...props}
   >
-    <circle cx="10" cy="12" r={props.radius} />
+    <circle cx="3" cy="12" r={props.radius} />
   </ContentLoader>
 );
 
