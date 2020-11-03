@@ -2,6 +2,8 @@
 using System.IO;
 using System.Threading.Tasks;
 
+using Autofac.Extensions.DependencyInjection;
+
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -13,6 +15,7 @@ namespace ASC.Data.Backup
         public static async Task Main(string[] args)
         {
             await Host.CreateDefaultBuilder(args)
+                .UseServiceProviderFactory(new AutofacServiceProviderFactory())
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();

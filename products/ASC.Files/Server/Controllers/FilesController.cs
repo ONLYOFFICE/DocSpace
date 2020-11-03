@@ -90,10 +90,6 @@ namespace ASC.Api.Documents
         private UserManager UserManager { get; }
         private CoreBaseSettings CoreBaseSettings { get; }
         private ThirdpartyConfiguration ThirdpartyConfiguration { get; }
-        private BoxLoginProvider BoxLoginProvider { get; }
-        private DropboxLoginProvider DropboxLoginProvider { get; }
-        private GoogleLoginProvider GoogleLoginProvider { get; }
-        private OneDriveLoginProvider OneDriveLoginProvider { get; }
         private MessageService MessageService { get; }
         private CommonLinkUtility CommonLinkUtility { get; }
         private DocumentServiceConnector DocumentServiceConnector { get; }
@@ -150,10 +146,6 @@ namespace ASC.Api.Documents
             CoreBaseSettings = coreBaseSettings;
             ThirdpartyConfiguration = thirdpartyConfiguration;
             ConsumerFactory = consumerFactory;
-            BoxLoginProvider = ConsumerFactory.Get<BoxLoginProvider>();
-            DropboxLoginProvider = ConsumerFactory.Get<DropboxLoginProvider>();
-            GoogleLoginProvider = ConsumerFactory.Get<GoogleLoginProvider>();
-            OneDriveLoginProvider = ConsumerFactory.Get<OneDriveLoginProvider>();
             MessageService = messageService;
             CommonLinkUtility = commonLinkUtility;
             DocumentServiceConnector = documentServiceConnector;
@@ -1357,19 +1349,25 @@ namespace ASC.Api.Documents
 
             if (ThirdpartyConfiguration.SupportBoxInclusion)
             {
-                result.Add(new List<string> { "Box", BoxLoginProvider.ClientID, BoxLoginProvider.RedirectUri });
+                var boxLoginProvider = ConsumerFactory.Get<BoxLoginProvider>();
+                result.Add(new List<string> { "Box", boxLoginProvider.ClientID, boxLoginProvider.RedirectUri });
             }
             if (ThirdpartyConfiguration.SupportDropboxInclusion)
             {
-                result.Add(new List<string> { "DropboxV2", DropboxLoginProvider.ClientID, DropboxLoginProvider.RedirectUri });
+                var dropboxLoginProvider = ConsumerFactory.Get<DropboxLoginProvider>();
+                result.Add(new List<string> { "DropboxV2", dropboxLoginProvider.ClientID, dropboxLoginProvider.RedirectUri });
             }
+
             if (ThirdpartyConfiguration.SupportGoogleDriveInclusion)
             {
-                result.Add(new List<string> { "GoogleDrive", GoogleLoginProvider.ClientID, GoogleLoginProvider.RedirectUri });
+                var googleLoginProvider = ConsumerFactory.Get<GoogleLoginProvider>();
+                result.Add(new List<string> { "GoogleDrive", googleLoginProvider.ClientID, googleLoginProvider.RedirectUri });
             }
+
             if (ThirdpartyConfiguration.SupportOneDriveInclusion)
             {
-                result.Add(new List<string> { "OneDrive", OneDriveLoginProvider.ClientID, OneDriveLoginProvider.RedirectUri });
+                var oneDriveLoginProvider = ConsumerFactory.Get<OneDriveLoginProvider>();
+                result.Add(new List<string> { "OneDrive", oneDriveLoginProvider.ClientID, oneDriveLoginProvider.RedirectUri });
             }
             if (ThirdpartyConfiguration.SupportSharePointInclusion)
             {

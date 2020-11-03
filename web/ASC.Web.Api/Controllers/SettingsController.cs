@@ -351,7 +351,7 @@ namespace ASC.Api.Settings
 
             MessageService.Send(MessageAction.AdministratorMessageSettingsUpdated);
 
-            return  Resource.SuccessfullySaveSettingsMessage;
+            return Resource.SuccessfullySaveSettingsMessage;
         }
 
         [AllowAnonymous]
@@ -446,23 +446,23 @@ namespace ASC.Api.Settings
                 switch (Tenant.TrustedDomainsType)
                 {
                     case TenantTrustedDomainsType.Custom:
-                        {
-                            var address = new MailAddress(email);
-                            if (Tenant.TrustedDomains.Any(d => address.Address.EndsWith("@" + d, StringComparison.InvariantCultureIgnoreCase)))
-                            {
-                                StudioNotifyService.SendJoinMsg(email, emplType);
-                                MessageService.Send(MessageInitiator.System, MessageAction.SentInviteInstructions, email);
-                                return Resource.FinishInviteJoinEmailMessage;
-                            }
-
-                            throw new Exception(Resource.ErrorEmailDomainNotAllowed);
-                        }
-                    case TenantTrustedDomainsType.All:
+                    {
+                        var address = new MailAddress(email);
+                        if (Tenant.TrustedDomains.Any(d => address.Address.EndsWith("@" + d, StringComparison.InvariantCultureIgnoreCase)))
                         {
                             StudioNotifyService.SendJoinMsg(email, emplType);
                             MessageService.Send(MessageInitiator.System, MessageAction.SentInviteInstructions, email);
-                            return Resource.FinishInviteJoinEmailMessage ;
+                            return Resource.FinishInviteJoinEmailMessage;
                         }
+
+                        throw new Exception(Resource.ErrorEmailDomainNotAllowed);
+                    }
+                    case TenantTrustedDomainsType.All:
+                    {
+                        StudioNotifyService.SendJoinMsg(email, emplType);
+                        MessageService.Send(MessageInitiator.System, MessageAction.SentInviteInstructions, email);
+                        return Resource.FinishInviteJoinEmailMessage;
+                    }
                     default:
                         throw new Exception(Resource.ErrorNotCorrectEmail);
                 }

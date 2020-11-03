@@ -2,8 +2,11 @@
 
 using ASC.Api.Core;
 using ASC.Common;
+using ASC.Common.DependencyInjection;
 using ASC.Data.Backup.Controllers;
 using ASC.Data.Backup.Service;
+
+using Autofac;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,6 +32,11 @@ namespace ASC.Data.Backup
                 .AddProgressQueue<BaseBackupProgressItem>(1, (int)TimeSpan.FromMinutes(5).TotalMilliseconds, true, false, 0);
 
             services.AddHostedService<BackupServiceLauncher>();
+        }
+
+        public void ConfigureContainer(ContainerBuilder builder)
+        {
+            builder.Register(Configuration, HostEnvironment.ContentRootPath);
         }
     }
 }

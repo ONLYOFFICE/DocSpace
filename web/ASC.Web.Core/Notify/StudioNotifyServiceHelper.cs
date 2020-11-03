@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Web;
+﻿using System.Linq;
 
 using ASC.Common;
 using ASC.Common.Caching;
@@ -10,8 +8,6 @@ using ASC.Notify.Patterns;
 using ASC.Notify.Recipients;
 using ASC.Web.Studio.Core.Notify;
 using ASC.Web.Studio.Utility;
-
-using Microsoft.AspNetCore.Http;
 
 namespace ASC.Web.Core.Notify
 {
