@@ -46,4 +46,24 @@ export class Desktop {
   static encryptionUploadDialog() {
     return {};
   }
+
+  static cloudCryptoCommand() {
+    const cryptoCommand = (window.cloudCryptoCommand = (
+      type,
+      params,
+      callback
+    ) => {
+      switch (type) {
+        case "encryptionKeys":
+          return this.setEncryptionKeys();
+        case "relogin":
+          return {};
+        case "getsharingkeys":
+          return {};
+        default:
+          return;
+      }
+    });
+    return cryptoCommand;
+  }
 }
