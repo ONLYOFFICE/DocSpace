@@ -13,7 +13,7 @@ const StyledGroupButtonsMenu = styled.div`
   top: 0;
   background: #ffffff;
   box-shadow: 0px 10px 18px -8px rgba(0, 0, 0, 0.100306);
-  height: 57px;
+  height: 56px;
   list-style: none;
   padding: 0 18px 19px 0;
   width: 100%;
@@ -24,14 +24,14 @@ const StyledGroupButtonsMenu = styled.div`
 
 const CloseButton = styled.div`
   position: absolute;
-  right: 12px;
+  right: 11px;
   top: 10px;
   width: 20px;
   height: 20px;
   padding: 8px;
 
   @media ${tablet} {
-    right: 4px;
+    right: 3px;
   }
 
   &:hover {
@@ -138,7 +138,7 @@ class GroupButtonsMenu extends React.Component {
 
   countMenuItems = (array, outerWidth, moreWidth) => {
     const itemsArray = array || [];
-    let total = (moreWidth || 0) + 80;
+    let total = (moreWidth || 0) + 10;
 
     for (let i = 0, len = itemsArray.length; i < len; i++) {
       if (total + itemsArray[i] > outerWidth) {
