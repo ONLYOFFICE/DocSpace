@@ -60,8 +60,9 @@ const initialState = {
       guestsCaption: "Guests",
     },
     isEncryptionSupport:
-      window["AscDesktopEditor"] &&
-      typeof window.AscDesktopEditor.cloudCryptoCommand === "function",
+      (window["AscDesktopEditor"] &&
+        typeof window.AscDesktopEditor.cloudCryptoCommand === "function") ||
+      false,
     isDesktopClient: window["AscDesktopEditor"] !== undefined,
   },
 };

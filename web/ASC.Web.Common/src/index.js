@@ -5,3 +5,4 @@ export * from "./components";
 export * as constants from "./constants";
 export * as utils from "./utils";
 export * from "./pages";
+export * from "./desktop";

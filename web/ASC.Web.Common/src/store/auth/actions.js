@@ -1,5 +1,6 @@
 import { default as api } from "../../api";
 import { isDesktopClient } from "./selectors";
+import { Desktop } from "../../desktop/";
 
 export const LOGIN_POST = "LOGIN_POST";
 export const SET_CURRENT_USER = "SET_CURRENT_USER";
@@ -126,15 +127,7 @@ export function getUser(dispatch) {
     .getUser()
     .then((user) => {
       window.AscDesktopEditor &&
-        window.AscDesktopEditor.execCommand(
-          "portal:login",
-          JSON.stringify({
-            displayName: user.displayName,
-            email: user.email,
-            domain: window.location.origin,
-            provider: "AppServer",
-          })
-        );
+        Desktop.regDesktop(user.displayName, user.email);
       dispatch(setCurrentUser(user));
     })
     .catch((err) => dispatch(setCurrentUser({})));
@@ -193,14 +186,7 @@ export function logout() {
     return api.user
       .logout()
       .then(() => {
-        isDesktop &&
-          window.AscDesktopEditor.execCommand(
-            "portal:logout",
-            JSON.stringify({
-              domain: window.location.origin,
-            })
-          );
-
+        isDesktop && Desktop.logout();
         dispatch(setLogout());
       })
       .then(() => dispatch(setIsLoaded(true)));
