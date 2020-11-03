@@ -12,7 +12,7 @@ const StyledFilter = styled.div`
   grid-column-gap: 8px;
 
   @media ${mobile} {
-    grid-template-columns: 1fr 47px;
+    grid-template-columns: 1fr 50px;
   }
 `;
 
