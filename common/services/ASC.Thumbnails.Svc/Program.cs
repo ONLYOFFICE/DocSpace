@@ -33,6 +33,9 @@ using ASC.Common.Caching;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
 
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -45,6 +48,7 @@ namespace ASC.Thumbnails.Svc
         public static async Task Main(string[] args)
         {
             var host = Host.CreateDefaultBuilder(args)
+                .UseServiceProviderFactory(new AutofacServiceProviderFactory())
                 .ConfigureAppConfiguration((hostContext, config) =>
                 {
                     var buided = config.Build();
@@ -79,8 +83,10 @@ namespace ASC.Thumbnails.Svc
                     LogNLogExtension.ConfigureLog(diHelper, "ASC.Thumbnails.Svc");
                     services.AddHostedService<ThumbnailsServiceLauncher>();
                     diHelper.TryAdd<ThumbnailsServiceLauncher>();
-
-                    services.AddAutofac(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath, false, false);
+                })
+                .ConfigureContainer<ContainerBuilder>((context, builder) =>
+                {
+                    builder.Register(context.Configuration, context.HostingEnvironment.ContentRootPath, false, false);
                 })
                 .UseConsoleLifetime()
                 .Build();

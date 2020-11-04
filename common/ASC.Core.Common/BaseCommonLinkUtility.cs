@@ -60,7 +60,7 @@ namespace ASC.Core.Common
             CoreSettings coreSettings,
             TenantManager tenantManager,
             IOptionsMonitor<ILog> options,
-            IOptions<CommonLinkUtilitySettings> settings)
+            CommonLinkUtilitySettings settings)
             : this(null, coreBaseSettings, coreSettings, tenantManager, options, settings)
         {
         }
@@ -71,14 +71,14 @@ namespace ASC.Core.Common
             CoreSettings coreSettings,
             TenantManager tenantManager,
             IOptionsMonitor<ILog> options,
-            IOptions<CommonLinkUtilitySettings> settings)
+            CommonLinkUtilitySettings settings)
         {
-            var serverUri = settings.Value.ServerUri;
+            var serverUri = settings.ServerUri;
 
             if (!string.IsNullOrEmpty(serverUri))
             {
                 var uri = new Uri(serverUri.Replace('*', 'x').Replace('+', 'x'));
-                _serverRoot = new UriBuilder(uri.Scheme, LOCALHOST, uri.Port);
+                _serverRoot = new UriBuilder(uri.Scheme, uri.Host != "x" ? uri.Host : LOCALHOST, uri.Port);
                 _vpath = "/" + uri.AbsolutePath.Trim('/');
             }
             else

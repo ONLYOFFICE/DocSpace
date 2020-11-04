@@ -59,6 +59,7 @@ const initialState = {
       guestCaption: "Guest",
       guestsCaption: "Guests",
     },
+    isEncryptionSupport: false // TODO: should switch to "true", when desktop editors client uses
   },
 };
 

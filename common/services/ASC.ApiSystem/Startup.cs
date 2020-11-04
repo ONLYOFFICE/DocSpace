@@ -31,6 +31,8 @@ using ASC.Common.Caching;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
 
+using Autofac;
+
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -84,8 +86,6 @@ namespace ASC.ApiSystem
                 .AddScheme<AuthenticationSchemeOptions, AuthHandler>("auth.allowskip.registerportal", _ => { });
 
             LogNLogExtension.ConfigureLog(diHelper, "ASC.Apisystem");
-
-            services.AddAutofac(Configuration, HostEnvironment.ContentRootPath, false);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -117,6 +117,11 @@ namespace ASC.ApiSystem
             {
                 endpoints.MapControllers();
             });
+        }
+
+        public void ConfigureContainer(ContainerBuilder builder)
+        {
+            builder.Register(Configuration, HostEnvironment.ContentRootPath, false);
         }
     }
 }

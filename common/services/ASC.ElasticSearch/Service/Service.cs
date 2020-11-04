@@ -44,11 +44,11 @@ namespace ASC.ElasticSearch.Service
     [Singletone(Additional = typeof(ServiceExtension))]
     public class Service
     {
-        public IContainer Container { get; }
+        private ILifetimeScope Container { get; }
         private IServiceProvider ServiceProvider { get; }
         private ICacheNotify<ReIndexAction> CacheNotify { get; }
 
-        public Service(IContainer container, IServiceProvider serviceProvider, ICacheNotify<ReIndexAction> cacheNotify)
+        public Service(ILifetimeScope container, IServiceProvider serviceProvider, ICacheNotify<ReIndexAction> cacheNotify)
         {
             Container = container;
             ServiceProvider = serviceProvider;

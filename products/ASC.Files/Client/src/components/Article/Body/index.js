@@ -51,6 +51,11 @@ class ArticleBodyContent extends React.Component {
     }
   }
 
+  componentDidMount() {
+    const currentId = [this.props.currentId + ""];
+    this.props.setSelectedNode(currentId);
+  }
+
   onSelect = (data, e) => {
     const {
       filter,

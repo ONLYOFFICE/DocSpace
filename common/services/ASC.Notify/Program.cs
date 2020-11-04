@@ -6,9 +6,12 @@ using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
-using ASC.Core.Common;
+using ASC.Core.Notify;
 using ASC.Core.Notify.Senders;
 using ASC.Notify.Config;
+
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,6 +25,7 @@ namespace ASC.Notify
         public static async Task Main(string[] args)
         {
             var host = Host.CreateDefaultBuilder(args)
+                .UseServiceProviderFactory(new AutofacServiceProviderFactory())
                 .ConfigureAppConfiguration((hostContext, config) =>
                 {
                     var buided = config.Build();
@@ -57,8 +61,6 @@ namespace ASC.Notify
 
                     services.Configure<NotifyServiceCfg>(hostContext.Configuration.GetSection("notify"));
 
-                    diHelper.TryAdd(typeof(CommonLinkUtilitySettings));
-                    diHelper.TryAdd(typeof(IConfigureOptions<CommonLinkUtilitySettings>), typeof(ConfigureCommonLinkUtilitySettings));
                     diHelper.TryAdd<NotifyServiceLauncher>();
 
                     diHelper.TryAdd<JabberSender>();
@@ -66,8 +68,10 @@ namespace ASC.Notify
                     diHelper.TryAdd<AWSSender>(); // fix private
 
                     services.AddHostedService<NotifyServiceLauncher>();
-
-                    services.AddAutofac(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
+                })
+                .ConfigureContainer<ContainerBuilder>((context, builder) =>
+                {
+                    builder.Register(context.Configuration, context.HostingEnvironment.ContentRootPath);
                 })
                 .UseConsoleLifetime()
                 .Build();

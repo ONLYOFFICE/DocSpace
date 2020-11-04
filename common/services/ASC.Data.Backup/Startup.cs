@@ -2,9 +2,12 @@
 
 using ASC.Api.Core;
 using ASC.Common;
+using ASC.Common.DependencyInjection;
 using ASC.Data.Backup.Controllers;
 using ASC.Data.Backup.Service;
 using ASC.Web.Studio.Core.Notify;
+
+using Autofac;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -32,6 +35,11 @@ namespace ASC.Data.Backup
             NotifyConfigurationExtension.Register(DIHelper);
 
             services.AddHostedService<BackupServiceLauncher>();
+        }
+
+        public void ConfigureContainer(ContainerBuilder builder)
+        {
+            builder.Register(Configuration, HostEnvironment.ContentRootPath);
         }
     }
 }

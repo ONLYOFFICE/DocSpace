@@ -4,7 +4,7 @@ using ASC.Api.Settings;
 using ASC.Common.DependencyInjection;
 using ASC.Web.Api.Controllers;
 
-using Autofac.Extensions.DependencyInjection;
+using Autofac;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,14 +28,17 @@ namespace ASC.Web.Api
 
             services.AddMemoryCache();
 
-            services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
-
             DIHelper.TryAdd<AuthenticationController>();
             DIHelper.TryAdd<ModulesController>();
             DIHelper.TryAdd<PortalController>();
             DIHelper.TryAdd<SettingsController>();
             DIHelper.TryAdd<SecurityController>();
             DIHelper.TryAdd<SmtpSettingsController>();
+        }
+        public void ConfigureContainer(ContainerBuilder builder)
+        {
+            builder.Register(Configuration, HostEnvironment.ContentRootPath);
+
         }
     }
 }

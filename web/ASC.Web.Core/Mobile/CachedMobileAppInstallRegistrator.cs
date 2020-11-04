@@ -26,8 +26,11 @@
 
 using System;
 
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Core;
+using ASC.Core.Common.EF;
+using ASC.Core.Common.EF.Context;
 using ASC.Core.Common.Notify.Push;
 
 namespace ASC.Web.Core.Mobile

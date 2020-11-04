@@ -12,11 +12,14 @@ using ASC.Core.Common.Notify.Push;
 using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
+using ASC.Web.Api.Models;
 using ASC.Web.Api.Routing;
 using ASC.Web.Core;
 using ASC.Web.Core.Mobile;
 using ASC.Web.Core.Utility;
 using ASC.Web.Studio.Core;
+using ASC.Web.Studio.UserControls.Management;
+using ASC.Web.Studio.UserControls.Statistics;
 using ASC.Web.Studio.Utility;
 
 using Microsoft.AspNetCore.Mvc;
@@ -33,7 +36,7 @@ namespace ASC.Web.Api.Controllers
     public class PortalController : ControllerBase
     {
 
-        public Tenant Tenant { get { return ApiContext.Tenant; } }
+        private Tenant Tenant { get { return ApiContext.Tenant; } }
 
         private ApiContext ApiContext { get; }
         private UserManager UserManager { get; }
@@ -45,8 +48,9 @@ namespace ASC.Web.Api.Controllers
         private WebItemSecurity WebItemSecurity { get; }
         private SecurityContext SecurityContext { get; }
         private SettingsManager SettingsManager { get; }
-        public IMobileAppInstallRegistrator MobileAppInstallRegistrator { get; }
+        private IMobileAppInstallRegistrator MobileAppInstallRegistrator { get; }
         private IConfiguration Configuration { get; set; }
+        private TenantExtra TenantExtra { get; set; }
         public ILog Log { get; }
 
 
@@ -63,6 +67,7 @@ namespace ASC.Web.Api.Controllers
             SecurityContext securityContext,
             SettingsManager settingsManager,
             IMobileAppInstallRegistrator mobileAppInstallRegistrator,
+            TenantExtra tenantExtra,
             IConfiguration configuration
             )
         {
@@ -79,6 +84,7 @@ namespace ASC.Web.Api.Controllers
             SettingsManager = settingsManager;
             MobileAppInstallRegistrator = mobileAppInstallRegistrator;
             Configuration = configuration;
+            TenantExtra = tenantExtra;
         }
 
         [Read("")]
@@ -117,6 +123,20 @@ namespace ASC.Web.Api.Controllers
                 Log.Error("getshortenlink", ex);
                 return link;
             }
+        }
+
+        [Read("tenantextra")]
+        public object GetTenantExtra()
+        {
+            return new
+            {
+                opensource = TenantExtra.Opensource,
+                enterprise = TenantExtra.Enterprise,
+                tariff = TenantExtra.GetCurrentTariff(),
+                quota = TenantExtra.GetTenantQuota(),
+                notPaid = TenantExtra.IsNotPaid(),
+                licenseAccept = SettingsManager.LoadForCurrentUser<TariffSettings>().LicenseAcceptSetting
+            };
         }
 
 
@@ -198,6 +218,13 @@ namespace ASC.Web.Api.Controllers
             {
                 Log.Error("MarkPresentAsReaded", ex);
             }
+        }
+
+        [Create("mobile/registration")]
+        public void RegisterMobileAppInstall(MobileAppModel model)
+        {
+            var currentUser = UserManager.GetUsers(SecurityContext.CurrentAccount.ID);
+            MobileAppInstallRegistrator.RegisterInstall(currentUser.Email, model.Type);
         }
 
         [Create("mobile/registration")]

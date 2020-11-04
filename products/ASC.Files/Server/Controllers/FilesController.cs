@@ -55,6 +55,7 @@ using ASC.Web.Files.Services.DocumentService;
 using ASC.Web.Files.Services.WCFService;
 using ASC.Web.Files.Services.WCFService.FileOperations;
 using ASC.Web.Files.Utils;
+using ASC.Web.Studio.Core;
 using ASC.Web.Studio.Utility;
 
 using Microsoft.AspNetCore.Http;
@@ -90,10 +91,6 @@ namespace ASC.Api.Documents
         private UserManager UserManager { get; }
         private CoreBaseSettings CoreBaseSettings { get; }
         private ThirdpartyConfiguration ThirdpartyConfiguration { get; }
-        private BoxLoginProvider BoxLoginProvider { get; }
-        private DropboxLoginProvider DropboxLoginProvider { get; }
-        private GoogleLoginProvider GoogleLoginProvider { get; }
-        private OneDriveLoginProvider OneDriveLoginProvider { get; }
         private MessageService MessageService { get; }
         private CommonLinkUtility CommonLinkUtility { get; }
         private DocumentServiceConnector DocumentServiceConnector { get; }
@@ -102,6 +99,8 @@ namespace ASC.Api.Documents
         private ConsumerFactory ConsumerFactory { get; }
         private EasyBibHelper EasyBibHelper { get; }
         private ProductEntryPoint ProductEntryPoint { get; }
+        public TenantManager TenantManager { get; }
+        public FileUtility FileUtility { get; }
 
         /// <summary>
         /// </summary>
@@ -129,7 +128,9 @@ namespace ASC.Api.Documents
             WordpressHelper wordpressHelper,
             ConsumerFactory consumerFactory,
             EasyBibHelper easyBibHelper,
-            ProductEntryPoint productEntryPoint)
+            ProductEntryPoint productEntryPoint,
+            TenantManager tenantManager,
+            FileUtility fileUtility)
         {
             FilesControllerHelperString = filesControllerHelperString;
             FilesControllerHelperInt = filesControllerHelperInt;
@@ -146,10 +147,6 @@ namespace ASC.Api.Documents
             CoreBaseSettings = coreBaseSettings;
             ThirdpartyConfiguration = thirdpartyConfiguration;
             ConsumerFactory = consumerFactory;
-            BoxLoginProvider = ConsumerFactory.Get<BoxLoginProvider>();
-            DropboxLoginProvider = ConsumerFactory.Get<DropboxLoginProvider>();
-            GoogleLoginProvider = ConsumerFactory.Get<GoogleLoginProvider>();
-            OneDriveLoginProvider = ConsumerFactory.Get<OneDriveLoginProvider>();
             MessageService = messageService;
             CommonLinkUtility = commonLinkUtility;
             DocumentServiceConnector = documentServiceConnector;
@@ -157,6 +154,8 @@ namespace ASC.Api.Documents
             WordpressHelper = wordpressHelper;
             EasyBibHelper = easyBibHelper;
             ProductEntryPoint = productEntryPoint;
+            TenantManager = tenantManager;
+            FileUtility = fileUtility;
         }
 
         [Read("info")]
@@ -164,6 +163,75 @@ namespace ASC.Api.Documents
         {
             ProductEntryPoint.Init();
             return new Module(ProductEntryPoint, true);
+        }
+
+        [Read("@root")]
+        public IEnumerable<FolderContentWrapper<int>> GetRootFolders(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders, bool withoutTrash, bool withoutAdditionalFolder)
+        {
+            var IsVisitor = UserManager.GetUsers(SecurityContext.CurrentAccount.ID).IsVisitor(UserManager);
+            var result = new SortedSet<int>();
+
+            if (!IsVisitor)
+            {
+                result.Add(GlobalFolderHelper.FolderMy);
+            }
+
+            if (!CoreBaseSettings.Personal && !UserManager.GetUsers(SecurityContext.CurrentAccount.ID).IsOutsider(UserManager))
+            {
+                result.Add(GlobalFolderHelper.FolderShare);
+            }
+
+            if (!IsVisitor && !withoutAdditionalFolder)
+            {
+                if (FilesSettingsHelper.FavoritesSection)
+                {
+                    result.Add(GlobalFolderHelper.FolderFavorites);
+                }
+
+                if (FilesSettingsHelper.RecentSection)
+                {
+                    result.Add(GlobalFolderHelper.FolderRecent);
+                }
+
+                if (PrivacyRoomSettings.IsAvailable(TenantManager))
+                {
+                    result.Add(GlobalFolderHelper.FolderPrivacy);
+                }
+            }
+
+            if (!CoreBaseSettings.Personal)
+            {
+                result.Add(GlobalFolderHelper.FolderCommon);
+            }
+
+            if (!IsVisitor
+               && !withoutAdditionalFolder
+               && FileUtility.ExtsWebTemplate.Any()
+               && FilesSettingsHelper.TemplatesSection)
+            {
+                result.Add(GlobalFolderHelper.FolderTemplates);
+            }
+
+            if (!withoutTrash)
+            {
+                result.Add((int)GlobalFolderHelper.FolderTrash);
+            }
+
+            return result.Select(r => FilesControllerHelperInt.GetFolder(r, userIdOrGroupId, filterType, withsubfolders));
+        }
+
+
+        [Read("@privacy")]
+        public FolderContentWrapper<int> GetPrivacyFolder(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
+        {
+            if (!IsAvailablePrivacyRoomSettings()) throw new System.Security.SecurityException();
+            return FilesControllerHelperInt.GetFolder(GlobalFolderHelper.FolderPrivacy, userIdOrGroupId, filterType, withsubfolders);
+        }
+
+        [Read("@privacy/available")]
+        public bool IsAvailablePrivacyRoomSettings()
+        {
+            return PrivacyRoomSettings.IsAvailable(TenantManager);
         }
 
         /// <summary>
@@ -510,15 +578,15 @@ namespace ASC.Api.Documents
         /// <category>Files</category>
         /// <returns></returns>
         [Create("file/{fileId}/startedit", DisableFormat = true)]
-        public object StartEdit(string fileId, bool editingAlone, string doc)
+        public object StartEdit(string fileId, StartEditModel model)
         {
-            return FilesControllerHelperString.StartEdit(fileId, editingAlone, doc);
+            return FilesControllerHelperString.StartEdit(fileId, model.EditingAlone, model.Doc);
         }
 
         [Create("file/{fileId:int}/startedit")]
-        public object StartEdit(int fileId, bool editingAlone, string doc)
+        public object StartEdit(int fileId, StartEditModel model)
         {
-            return FilesControllerHelperInt.StartEdit(fileId, editingAlone, doc);
+            return FilesControllerHelperInt.StartEdit(fileId, model.EditingAlone, model.Doc);
         }
 
         /// <summary>
@@ -1282,19 +1350,25 @@ namespace ASC.Api.Documents
 
             if (ThirdpartyConfiguration.SupportBoxInclusion)
             {
-                result.Add(new List<string> { "Box", BoxLoginProvider.ClientID, BoxLoginProvider.RedirectUri });
+                var boxLoginProvider = ConsumerFactory.Get<BoxLoginProvider>();
+                result.Add(new List<string> { "Box", boxLoginProvider.ClientID, boxLoginProvider.RedirectUri });
             }
             if (ThirdpartyConfiguration.SupportDropboxInclusion)
             {
-                result.Add(new List<string> { "DropboxV2", DropboxLoginProvider.ClientID, DropboxLoginProvider.RedirectUri });
+                var dropboxLoginProvider = ConsumerFactory.Get<DropboxLoginProvider>();
+                result.Add(new List<string> { "DropboxV2", dropboxLoginProvider.ClientID, dropboxLoginProvider.RedirectUri });
             }
+
             if (ThirdpartyConfiguration.SupportGoogleDriveInclusion)
             {
-                result.Add(new List<string> { "GoogleDrive", GoogleLoginProvider.ClientID, GoogleLoginProvider.RedirectUri });
+                var googleLoginProvider = ConsumerFactory.Get<GoogleLoginProvider>();
+                result.Add(new List<string> { "GoogleDrive", googleLoginProvider.ClientID, googleLoginProvider.RedirectUri });
             }
+
             if (ThirdpartyConfiguration.SupportOneDriveInclusion)
             {
-                result.Add(new List<string> { "OneDrive", OneDriveLoginProvider.ClientID, OneDriveLoginProvider.RedirectUri });
+                var oneDriveLoginProvider = ConsumerFactory.Get<OneDriveLoginProvider>();
+                result.Add(new List<string> { "OneDrive", oneDriveLoginProvider.ClientID, oneDriveLoginProvider.RedirectUri });
             }
             if (ThirdpartyConfiguration.SupportSharePointInclusion)
             {

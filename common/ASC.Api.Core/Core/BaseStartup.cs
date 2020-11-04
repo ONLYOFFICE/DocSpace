@@ -5,7 +5,6 @@ using ASC.Api.Core.Core;
 using ASC.Api.Core.Middleware;
 using ASC.Common;
 using ASC.Common.Caching;
-using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
 
 using Microsoft.AspNetCore.Authentication;
@@ -104,8 +103,6 @@ namespace ASC.Api.Core
             {
                 LogNLogExtension.ConfigureLog(DIHelper, LogParams);
             }
-
-            services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
         }
 
         public virtual void Configure(IApplicationBuilder app, IWebHostEnvironment env)

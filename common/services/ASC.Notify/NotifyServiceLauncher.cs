@@ -31,7 +31,6 @@ using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Logging;
-using ASC.Core.Common;
 using ASC.Notify.Config;
 using ASC.Web.Core;
 using ASC.Web.Studio.Core.Notify;
@@ -41,22 +40,6 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Notify
 {
-    [Singletone]
-    public class ConfigureCommonLinkUtilitySettings : IConfigureOptions<CommonLinkUtilitySettings>
-    {
-        public ConfigureCommonLinkUtilitySettings(IOptions<NotifyServiceCfg> notifyServiceCfg)
-        {
-            NotifyServiceCfg = notifyServiceCfg.Value;
-        }
-
-        public NotifyServiceCfg NotifyServiceCfg { get; }
-
-        public void Configure(CommonLinkUtilitySettings clu)
-        {
-            clu.ServerUri = NotifyServiceCfg.ServerRoot;
-        }
-    }
-
     [Singletone]
     public class NotifyServiceLauncher : IHostedService
     {

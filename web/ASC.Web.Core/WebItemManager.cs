@@ -118,19 +118,12 @@ namespace ASC.Web.Core
             }
         }
 
-        public WebItemManager(IContainer container, IConfiguration configuration, IOptionsMonitor<ILog> options)
+        public WebItemManager(ILifetimeScope container, IConfiguration configuration, IOptionsMonitor<ILog> options)
         {
             Container = container;
             Configuration = configuration;
             log = options.Get("ASC.Web");
             disableItem = (Configuration["web:disabled-items"] ?? "").Split(",").ToList();
-            LoadItems();
-        }
-
-        public WebItemManager(ILifetimeScope container, IConfiguration configuration, IOptionsMonitor<ILog> options)
-            : this(null, configuration, options)
-        {
-            Container = container;
             LoadItems();
         }
 

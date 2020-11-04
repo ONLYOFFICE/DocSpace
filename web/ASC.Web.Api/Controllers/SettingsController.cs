@@ -36,6 +36,8 @@ using System.ServiceModel.Security;
 using System.Text.RegularExpressions;
 using System.Web;
 
+using ARSoft.Tools.Net.Dns;
+
 using ASC.Api.Collections;
 using ASC.Api.Core;
 using ASC.Api.Utils;
@@ -51,6 +53,7 @@ using ASC.Core.Common.Notify;
 using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
+using ASC.Data.Backup;
 using ASC.Data.Backup.Contracts;
 using ASC.Data.Backup.Service;
 using ASC.Data.Storage;
@@ -167,6 +170,7 @@ namespace ASC.Api.Settings
         private PasswordHasher PasswordHasher { get; }
         private ILog Log { get; set; }
         private TelegramHelper TelegramHelper { get; }
+        private BackupAjaxHandler BackupAjaxHandler { get; }
 
         public SettingsController(
             IOptionsMonitor<ILog> option,
@@ -228,7 +232,8 @@ namespace ASC.Api.Settings
             BackupServiceNotifier backupServiceNotifier,
             ICacheNotify<DeleteSchedule> cacheDeleteSchedule,
             EncryptionServiceNotifier encryptionServiceNotifier,
-            PasswordHasher passwordHasher)
+            PasswordHasher passwordHasher,
+            BackupAjaxHandler backupAjaxHandler)
         {
             Log = option.Get("ASC.Api");
             WebHostEnvironment = webHostEnvironment;
@@ -290,6 +295,7 @@ namespace ASC.Api.Settings
             StorageFactory = storageFactory;
             UrlShortener = urlShortener;
             TelegramHelper = telegramHelper;
+            BackupAjaxHandler = backupAjaxHandler;
         }
 
         [Read("", Check = false)]
@@ -886,7 +892,7 @@ namespace ASC.Api.Settings
 
         ///<visible>false</visible>
         [Create("whitelabel/save")]
-        public void SaveWhiteLabelSettings(WhiteLabelModel model)
+        public bool SaveWhiteLabelSettings([FromBody] WhiteLabelModel model, [FromQuery] WhiteLabelQuery query)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -895,7 +901,7 @@ namespace ASC.Api.Settings
                 throw new BillingException(Resource.ErrorNotAllowedOption, "WhiteLabel");
             }
 
-            if (model.IsDefault)
+            if (query.IsDefault)
             {
                 DemandRebrandingPermission();
                 SaveWhiteLabelSettingsForDefaultTenant(model);
@@ -904,6 +910,7 @@ namespace ASC.Api.Settings
             {
                 SaveWhiteLabelSettingsForCurrentTenant(model);
             }
+            return true;
         }
 
         private void SaveWhiteLabelSettingsForCurrentTenant(WhiteLabelModel model)
@@ -926,7 +933,7 @@ namespace ASC.Api.Settings
             if (model.Logo != null)
             {
                 var logoDict = new Dictionary<int, string>();
-                model.Logo.ToList().ForEach(n => logoDict.Add(n.Key, n.Value));
+                model.Logo.ToList().ForEach(n => logoDict.Add(Int32.Parse(n.Key), n.Value));
 
                 TenantWhiteLabelSettingsHelper.SetLogo(settings, logoDict, storage);
             }
@@ -939,7 +946,7 @@ namespace ASC.Api.Settings
 
         ///<visible>false</visible>
         [Create("whitelabel/savefromfiles")]
-        public void SaveWhiteLabelSettingsFromFiles(WhiteLabelModel model)
+        public bool SaveWhiteLabelSettingsFromFiles([FromQuery] WhiteLabelQuery query)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -948,40 +955,41 @@ namespace ASC.Api.Settings
                 throw new BillingException(Resource.ErrorNotAllowedOption, "WhiteLabel");
             }
 
-            if (model.Attachments == null || !model.Attachments.Any())
+            if (HttpContext.Request.Form?.Files == null || !HttpContext.Request.Form.Files.Any())
             {
                 throw new InvalidOperationException("No input files");
             }
 
-            if (model.IsDefault)
+            if (query.IsDefault)
             {
                 DemandRebrandingPermission();
-                SaveWhiteLabelSettingsFromFilesForDefaultTenant(model);
+                SaveWhiteLabelSettingsFromFilesForDefaultTenant();
             }
             else
             {
-                SaveWhiteLabelSettingsFromFilesForCurrentTenant(model);
+                SaveWhiteLabelSettingsFromFilesForCurrentTenant();
             }
+            return true;
         }
 
-        private void SaveWhiteLabelSettingsFromFilesForCurrentTenant(WhiteLabelModel model)
+        private void SaveWhiteLabelSettingsFromFilesForCurrentTenant()
         {
             var settings = SettingsManager.Load<TenantWhiteLabelSettings>();
 
-            SaveWhiteLabelSettingsFromFilesForTenant(settings, null, Tenant.TenantId, model);
+            SaveWhiteLabelSettingsFromFilesForTenant(settings, null, Tenant.TenantId);
         }
 
-        private void SaveWhiteLabelSettingsFromFilesForDefaultTenant(WhiteLabelModel model)
+        private void SaveWhiteLabelSettingsFromFilesForDefaultTenant()
         {
             var settings = SettingsManager.LoadForDefaultTenant<TenantWhiteLabelSettings>();
             var storage = StorageFactory.GetStorage(string.Empty, "static_partnerdata");
 
-            SaveWhiteLabelSettingsFromFilesForTenant(settings, storage, Tenant.DEFAULT_TENANT, model);
+            SaveWhiteLabelSettingsFromFilesForTenant(settings, storage, Tenant.DEFAULT_TENANT);
         }
 
-        private void SaveWhiteLabelSettingsFromFilesForTenant(TenantWhiteLabelSettings settings, IDataStore storage, int tenantId, WhiteLabelModel model)
+        private void SaveWhiteLabelSettingsFromFilesForTenant(TenantWhiteLabelSettings settings, IDataStore storage, int tenantId)
         {
-            foreach (var f in model.Attachments)
+            foreach (var f in HttpContext.Request.Form.Files)
             {
                 var parts = f.FileName.Split('.');
                 var logoType = (WhiteLabelLogoTypeEnum)(Convert.ToInt32(parts[0]));
@@ -1018,7 +1026,7 @@ namespace ASC.Api.Settings
 
         ///<visible>false</visible>
         [Read("whitelabel/logos")]
-        public Dictionary<int, string> GetWhiteLabelLogos(WhiteLabelModel model)
+        public Dictionary<string, string> GetWhiteLabelLogos([FromQuery] WhiteLabelQuery query)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -1027,30 +1035,30 @@ namespace ASC.Api.Settings
                 throw new BillingException(Resource.ErrorNotAllowedOption, "WhiteLabel");
             }
 
-            Dictionary<int, string> result;
+            Dictionary<string, string> result;
 
-            if (model.IsDefault)
+            if (query.IsDefault)
             {
                 DemandRebrandingPermission();
 
-                result = new Dictionary<int, string>
+                result = new Dictionary<string, string>
                 {
-                    { (int)WhiteLabelLogoTypeEnum.LightSmall, CommonLinkUtility.GetFullAbsolutePath(TenantWhiteLabelSettingsHelper.GetAbsoluteDefaultLogoPath(WhiteLabelLogoTypeEnum.LightSmall, !model.IsRetina)) },
-                    { (int)WhiteLabelLogoTypeEnum.Dark, CommonLinkUtility.GetFullAbsolutePath(TenantWhiteLabelSettingsHelper.GetAbsoluteDefaultLogoPath(WhiteLabelLogoTypeEnum.Dark, !model.IsRetina)) },
-                    { (int)WhiteLabelLogoTypeEnum.Favicon, CommonLinkUtility.GetFullAbsolutePath(TenantWhiteLabelSettingsHelper.GetAbsoluteDefaultLogoPath(WhiteLabelLogoTypeEnum.Favicon, !model.IsRetina)) },
-                    { (int)WhiteLabelLogoTypeEnum.DocsEditor, CommonLinkUtility.GetFullAbsolutePath(TenantWhiteLabelSettingsHelper.GetAbsoluteDefaultLogoPath(WhiteLabelLogoTypeEnum.DocsEditor, !model.IsRetina)) }
+                    { ((int)WhiteLabelLogoTypeEnum.LightSmall).ToString(), CommonLinkUtility.GetFullAbsolutePath(TenantWhiteLabelSettingsHelper.GetAbsoluteDefaultLogoPath(WhiteLabelLogoTypeEnum.LightSmall, !query.IsRetina)) },
+                    { ((int)WhiteLabelLogoTypeEnum.Dark).ToString(), CommonLinkUtility.GetFullAbsolutePath(TenantWhiteLabelSettingsHelper.GetAbsoluteDefaultLogoPath(WhiteLabelLogoTypeEnum.Dark, !query.IsRetina)) },
+                    { ((int)WhiteLabelLogoTypeEnum.Favicon).ToString(), CommonLinkUtility.GetFullAbsolutePath(TenantWhiteLabelSettingsHelper.GetAbsoluteDefaultLogoPath(WhiteLabelLogoTypeEnum.Favicon, !query.IsRetina)) },
+                    { ((int)WhiteLabelLogoTypeEnum.DocsEditor).ToString(), CommonLinkUtility.GetFullAbsolutePath(TenantWhiteLabelSettingsHelper.GetAbsoluteDefaultLogoPath(WhiteLabelLogoTypeEnum.DocsEditor, !query.IsRetina)) }
                 };
             }
             else
             {
                 var _tenantWhiteLabelSettings = SettingsManager.Load<TenantWhiteLabelSettings>();
 
-                result = new Dictionary<int, string>
+                result = new Dictionary<string, string>
                     {
-                        { (int)WhiteLabelLogoTypeEnum.LightSmall, CommonLinkUtility.GetFullAbsolutePath(TenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.LightSmall, !model.IsRetina)) },
-                        { (int)WhiteLabelLogoTypeEnum.Dark, CommonLinkUtility.GetFullAbsolutePath(TenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.Dark, !model.IsRetina)) },
-                        { (int)WhiteLabelLogoTypeEnum.Favicon, CommonLinkUtility.GetFullAbsolutePath(TenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.Favicon, !model.IsRetina)) },
-                        { (int)WhiteLabelLogoTypeEnum.DocsEditor, CommonLinkUtility.GetFullAbsolutePath(TenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.DocsEditor, !model.IsRetina)) }
+                        { ((int)WhiteLabelLogoTypeEnum.LightSmall).ToString(), CommonLinkUtility.GetFullAbsolutePath(TenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.LightSmall, !query.IsRetina)) },
+                        { ((int)WhiteLabelLogoTypeEnum.Dark).ToString(), CommonLinkUtility.GetFullAbsolutePath(TenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.Dark, !query.IsRetina)) },
+                        { ((int)WhiteLabelLogoTypeEnum.Favicon).ToString(), CommonLinkUtility.GetFullAbsolutePath(TenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.Favicon, !query.IsRetina)) },
+                        { ((int)WhiteLabelLogoTypeEnum.DocsEditor).ToString(), CommonLinkUtility.GetFullAbsolutePath(TenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.DocsEditor, !query.IsRetina)) }
                     };
             }
 
@@ -1059,7 +1067,7 @@ namespace ASC.Api.Settings
 
         ///<visible>false</visible>
         [Read("whitelabel/logotext")]
-        public object GetWhiteLabelLogoText(WhiteLabelModel model)
+        public object GetWhiteLabelLogoText([FromQuery] WhiteLabelQuery query)
         {
             if (!TenantLogoManager.WhiteLabelEnabled)
             {
@@ -1067,12 +1075,12 @@ namespace ASC.Api.Settings
             }
 
 
-            if (model.IsDefault)
+            if (query.IsDefault)
             {
                 DemandRebrandingPermission();
             }
 
-            var settings = model.IsDefault ? SettingsManager.LoadForDefaultTenant<TenantWhiteLabelSettings>() : SettingsManager.Load<TenantWhiteLabelSettings>();
+            var settings = query.IsDefault ? SettingsManager.LoadForDefaultTenant<TenantWhiteLabelSettings>() : SettingsManager.Load<TenantWhiteLabelSettings>();
 
             return settings.LogoText ?? TenantWhiteLabelSettings.DefaultLogoText;
         }
@@ -1080,7 +1088,7 @@ namespace ASC.Api.Settings
 
         ///<visible>false</visible>
         [Update("whitelabel/restore")]
-        public void RestoreWhiteLabelOptions(WhiteLabelModel model)
+        public bool RestoreWhiteLabelOptions(WhiteLabelQuery query)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -1088,7 +1096,7 @@ namespace ASC.Api.Settings
             {
                 throw new BillingException(Resource.ErrorNotAllowedOption, "WhiteLabel");
             }
-            if (model.IsDefault)
+            if (query.IsDefault)
             {
                 DemandRebrandingPermission();
                 RestoreWhiteLabelOptionsForDefaultTenant();
@@ -1097,6 +1105,7 @@ namespace ASC.Api.Settings
             {
                 RestoreWhiteLabelOptionsForCurrentTenant();
             }
+            return true;
         }
 
         private void RestoreWhiteLabelOptionsForCurrentTenant()
@@ -1777,23 +1786,10 @@ namespace ASC.Api.Settings
             return ServiceClient.GetProgress(Tenant.TenantId);
         }
 
-        [Read("encryption")]
-        public void StartEncryption(EncryptionSettingsModel settings)
-        {
-            var encryptionSettingsProto = new EncryptionSettingsProto
-            {
-                NotifyUsers = settings.NotifyUsers,
-                Password = settings.Password,
-                Status = settings.Status,
-                ServerRootPath = settings.ServerRootPath
-            };
-            EncryptionServiceClient.Start(encryptionSettingsProto);
-        }
-
         public readonly object Locker = new object();
 
         [Create("encryption/start")]
-        public void StartStorageEncryption(StorageEncryptionModel storageEncryption)
+        public bool StartStorageEncryption(StorageEncryptionModel storageEncryption)
         {
             lock (Locker)
             {
@@ -1804,6 +1800,7 @@ namespace ASC.Api.Settings
                     StartEncryption(storageEncryption.NotifyUsers);
                 }
             }
+            return true;
         }
 
         private void StartEncryption(bool notifyUsers)
@@ -2080,29 +2077,29 @@ namespace ASC.Api.Settings
             StorageSettingsHelper.Clear(SettingsManager.Load<CdnStorageSettings>());
         }
 
-        //[Read("storage/backup")]
-        //public List<StorageWrapper> GetAllBackupStorages()
-        //{
-        //    PermissionContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
-        //if (CoreContext.Configuration.Standalone)
-        //{
-        //    TenantExtra.DemandControlPanelPermission();
-        //}
-        //    var schedule = new BackupAjaxHandler().GetSchedule();
-        //    var current = new StorageSettings();
+        [Read("storage/backup")]
+        public List<StorageWrapper> GetAllBackupStorages()
+        {
+            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+            if (CoreBaseSettings.Standalone)
+            {
+                TenantExtra.DemandControlPanelPermission();
+            }
+            var schedule = BackupAjaxHandler.GetSchedule();
+            var current = new StorageSettings();
 
-        //    if (schedule != null && schedule.StorageType == Contracts.BackupStorageType.ThirdPartyConsumer)
-        //    {
-        //        current = new StorageSettings
-        //        {
-        //            Module = schedule.StorageParams["module"],
-        //            Props = schedule.StorageParams.Where(r => r.Key != "module").ToDictionary(r => r.Key, r => r.Value)
-        //        };
-        //    }
+            if (schedule != null && schedule.StorageType == BackupStorageType.ThirdPartyConsumer)
+            {
+                current = new StorageSettings
+                {
+                    Module = schedule.StorageParams["module"],
+                    Props = schedule.StorageParams.Where(r => r.Key != "module").ToDictionary(r => r.Key, r => r.Value)
+                };
+            }
 
-        //    var consumers = ConsumerFactory.GetAll<DataStoreConsumer>().ToList();
-        //    return consumers.Select(consumer => new StorageWrapper(consumer, current)).ToList();
-        //}
+            var consumers = ConsumerFactory.GetAll<DataStoreConsumer>().ToList();
+            return consumers.Select(consumer => new StorageWrapper(consumer, current)).ToList();
+        }
 
         private void StartMigrate(StorageSettings settings)
         {
@@ -2136,15 +2133,16 @@ namespace ASC.Api.Settings
 
         ///<visible>false</visible>
         [Create("rebranding/company")]
-        public void SaveCompanyWhiteLabelSettings(CompanyWhiteLabelSettings settings)
+        public bool SaveCompanyWhiteLabelSettings(CompanyWhiteLabelSettingsWrapper companyWhiteLabelSettingsWrapper)
         {
-            if (settings == null) throw new ArgumentNullException("settings");
+            if (companyWhiteLabelSettingsWrapper.Settings == null) throw new ArgumentNullException("settings");
 
             DemandRebrandingPermission();
 
-            settings.IsLicensorSetting = false; //TODO: CoreContext.TenantManager.GetTenantQuota(TenantProvider.CurrentTenantID).Branding && settings.IsLicensor
+            companyWhiteLabelSettingsWrapper.Settings.IsLicensorSetting = false; //TODO: CoreContext.TenantManager.GetTenantQuota(TenantProvider.CurrentTenantID).Branding && settings.IsLicensor
 
-            SettingsManager.SaveForDefaultTenant(settings);
+            SettingsManager.SaveForDefaultTenant(companyWhiteLabelSettingsWrapper.Settings);
+            return true;
         }
 
         ///<visible>false</visible>
@@ -2169,13 +2167,14 @@ namespace ASC.Api.Settings
 
         ///<visible>false</visible>
         [Create("rebranding/additional")]
-        public void SaveAdditionalWhiteLabelSettings(AdditionalWhiteLabelSettings settings)
+        public bool SaveAdditionalWhiteLabelSettings(AdditionalWhiteLabelSettingsWrapper wrapper)
         {
-            if (settings == null) throw new ArgumentNullException("settings");
+            if (wrapper.Settings == null) throw new ArgumentNullException("settings");
 
             DemandRebrandingPermission();
 
-            SettingsManager.SaveForDefaultTenant(settings);
+            SettingsManager.SaveForDefaultTenant(wrapper.Settings);
+            return true;
         }
 
         ///<visible>false</visible>
@@ -2200,18 +2199,19 @@ namespace ASC.Api.Settings
 
         ///<visible>false</visible>
         [Create("rebranding/mail")]
-        public void SaveMailWhiteLabelSettings(MailWhiteLabelSettings settings)
+        public bool SaveMailWhiteLabelSettings(MailWhiteLabelSettings settings)
         {
             if (settings == null) throw new ArgumentNullException("settings");
 
             DemandRebrandingPermission();
 
             SettingsManager.SaveForDefaultTenant(settings);
+            return true;
         }
 
         ///<visible>false</visible>
         [Update("rebranding/mail")]
-        public void UpdateMailWhiteLabelSettings(bool footerEnabled)
+        public bool UpdateMailWhiteLabelSettings(bool footerEnabled)
         {
             DemandRebrandingPermission();
 
@@ -2220,6 +2220,8 @@ namespace ASC.Api.Settings
             settings.FooterEnabled = footerEnabled;
 
             SettingsManager.SaveForDefaultTenant(settings);
+
+            return true;
         }
 
         ///<visible>false</visible>

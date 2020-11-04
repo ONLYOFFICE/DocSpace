@@ -89,7 +89,7 @@ namespace ASC.Web.Studio.Utility
             WebItemManager webItemManager,
             EmailValidationKeyProvider emailValidationKeyProvider,
             IOptionsMonitor<ILog> options,
-            IOptions<CommonLinkUtilitySettings> settings) :
+            CommonLinkUtilitySettings settings) :
             this(null, coreBaseSettings, coreSettings, tenantManager, userManager, webItemManagerSecurity, webItemManager, emailValidationKeyProvider, options, settings)
         {
         }
@@ -104,7 +104,7 @@ namespace ASC.Web.Studio.Utility
             WebItemManager webItemManager,
             EmailValidationKeyProvider emailValidationKeyProvider,
             IOptionsMonitor<ILog> options,
-            IOptions<CommonLinkUtilitySettings> settings) :
+            CommonLinkUtilitySettings settings) :
             base(httpContextAccessor, coreBaseSettings, coreSettings, tenantManager, options, settings) =>
             (UserManager, WebItemManagerSecurity, WebItemManager, EmailValidationKeyProvider) = (userManager, webItemManagerSecurity, webItemManager, emailValidationKeyProvider);
 

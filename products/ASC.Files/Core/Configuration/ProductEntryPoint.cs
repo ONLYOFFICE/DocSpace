@@ -31,6 +31,7 @@ using System.Reflection;
 
 using ASC.Common;
 using ASC.Core;
+using ASC.Core.Notify;
 using ASC.Files.Core.Resources;
 using ASC.Web.Core;
 using ASC.Web.Core.PublicResources;

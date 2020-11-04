@@ -2088,6 +2088,9 @@ $GreenButton
   <data name="subject_opensource_user_activation_v11" xml:space="preserve">
     <value>Приглашение на портал ${__VirtualRootPath}</value>
   </data>
+  <data name="subject_opensource_user_docs_tips_v11" xml:space="preserve">
+    <value>6 полезных советов для эффективной работы с документами</value>
+  </data>
   <data name="subject_opensource_user_welcome_v11" xml:space="preserve">
     <value>Добро пожаловать в виртуальный офис</value>
   </data>

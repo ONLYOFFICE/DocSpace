@@ -5,6 +5,8 @@ using ASC.Data.Storage;
 using ASC.Data.Storage.DiscStorage;
 using ASC.FederatedLogin;
 
+using Autofac;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -31,17 +33,18 @@ namespace ASC.Web.Studio
             base.ConfigureServices(services);
 
             services.AddMemoryCache();
-
-            services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
-
             DIHelper.TryAdd<Login>();
             DIHelper.TryAdd<PathUtils>();
             DIHelper.TryAdd<StorageHandlerScope>();
         }
 
+        public void ConfigureContainer(ContainerBuilder builder)
+        {
+            builder.Register(Configuration, HostEnvironment.ContentRootPath);
+        }
+
         public override void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto

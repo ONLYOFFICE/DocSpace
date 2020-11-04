@@ -10,7 +10,7 @@ const EmptyFolderWrapper = styled.div`
 
     .empty-folder_container-links {
       display: grid;
-      margin: 8px 0;
+      margin: 13px 0;
       grid-template-columns: 12px 1fr;
       grid-column-gap: 8px;
     }
@@ -20,14 +20,14 @@ const EmptyFolderWrapper = styled.div`
       flex-wrap: wrap;
     }
 
-    .empty-folder_container_up-image {
-      margin: 1px 8px 0 0;
+    .empty-folder_container_up-image,
+    .empty-folder_container_plus-image {
+      margin: 4px 8px 0 0;
       cursor: pointer;
     }
 
     .empty-folder_container_plus-image {
       display: flex;
-      margin: -10px 8px 0 0;
       line-height: unset;
     }
 
@@ -35,6 +35,7 @@ const EmptyFolderWrapper = styled.div`
       height: 20px;
       width: 12px;
       margin-right: 4px;
+      cursor: pointer;
     }
   }
 `;
