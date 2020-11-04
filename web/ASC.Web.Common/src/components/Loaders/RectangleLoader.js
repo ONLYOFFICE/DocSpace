@@ -1,6 +1,6 @@
 import React from "react";
 import ContentLoader from "react-content-loader";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 import { LoaderStyle } from "../../constants/index";
 
 const RectangleLoader = (props) => (
@@ -14,11 +14,20 @@ const RectangleLoader = (props) => (
     foregroundOpacity={props.foregroundOpacity}
     {...props}
   >
-    <rect x="0" y="0" rx={props.borderRadius} ry={props.borderRadius} width={props.width} height={props.height} />
+    <rect
+      x={props.x}
+      y={props.y}
+      rx={props.borderRadius}
+      ry={props.borderRadius}
+      width={props.width}
+      height={props.height}
+    />
   </ContentLoader>
 );
 
 RectangleLoader.PropTypes = {
+  x: PropTypes.string,
+  y: PropTypes.string,
   width: PropTypes.string,
   height: PropTypes.string,
   borderRadius: PropTypes.string,
@@ -26,10 +35,12 @@ RectangleLoader.PropTypes = {
   foregroundColor: PropTypes.string,
   backgroundOpacity: PropTypes.number,
   foregroundOpacity: PropTypes.number,
-  speed: PropTypes.number
+  speed: PropTypes.number,
 };
 
 RectangleLoader.defaultProps = {
+  x: 0,
+  y: 0,
   width: "100%",
   height: "32",
   borderRadius: LoaderStyle.borderRadius,
@@ -37,7 +48,7 @@ RectangleLoader.defaultProps = {
   foregroundColor: LoaderStyle.foregroundColor,
   backgroundOpacity: LoaderStyle.backgroundOpacity,
   foregroundOpacity: LoaderStyle.foregroundOpacity,
-  speed: LoaderStyle.speed
+  speed: LoaderStyle.speed,
 };
 
 export default RectangleLoader;
