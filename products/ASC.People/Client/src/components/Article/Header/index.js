@@ -9,7 +9,7 @@ const ArticleHeaderContent = ({ currentModuleName }) => {
   return currentModuleName ? (
     <Headline type="menu">{currentModuleName}</Headline>
   ) : (
-    <Loaders.Headline />
+    <Loaders.Head />
   );
 };
 
