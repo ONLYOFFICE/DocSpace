@@ -8,11 +8,13 @@ using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Billing;
+using ASC.Core.Common.Notify.Push;
 using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.Web.Api.Routing;
 using ASC.Web.Core;
+using ASC.Web.Core.Mobile;
 using ASC.Web.Core.Utility;
 using ASC.Web.Studio.Core;
 using ASC.Web.Studio.Utility;
@@ -43,6 +45,7 @@ namespace ASC.Web.Api.Controllers
         private WebItemSecurity WebItemSecurity { get; }
         private SecurityContext SecurityContext { get; }
         private SettingsManager SettingsManager { get; }
+        public IMobileAppInstallRegistrator MobileAppInstallRegistrator { get; }
         private IConfiguration Configuration { get; set; }
         public ILog Log { get; }
 
@@ -59,6 +62,7 @@ namespace ASC.Web.Api.Controllers
             WebItemSecurity webItemSecurity,
             SecurityContext securityContext,
             SettingsManager settingsManager,
+            IMobileAppInstallRegistrator mobileAppInstallRegistrator,
             IConfiguration configuration
             )
         {
@@ -73,6 +77,7 @@ namespace ASC.Web.Api.Controllers
             WebItemSecurity = webItemSecurity;
             SecurityContext = securityContext;
             SettingsManager = settingsManager;
+            MobileAppInstallRegistrator = mobileAppInstallRegistrator;
             Configuration = configuration;
         }
 
@@ -193,6 +198,13 @@ namespace ASC.Web.Api.Controllers
             {
                 Log.Error("MarkPresentAsReaded", ex);
             }
+        }
+
+        [Create("mobile/registration")]
+        public void RegisterMobileAppInstall(MobileAppType type)
+        {
+            var currentUser = UserManager.GetUsers(SecurityContext.CurrentAccount.ID);
+            MobileAppInstallRegistrator.RegisterInstall(currentUser.Email, type);
         }
     }
 }
