@@ -1,17 +1,39 @@
 import React from "react";
-import ContentLoader from "react-content-loader";
+import styled from "styled-components";
+import RectangleLoader from "./RectangleLoader";
 
-const HeadlineLoader = () => (
-  <ContentLoader
-    speed={2}
-    width={264}
-    height={56}
-    viewBox="0 0 264 56"
-    backgroundColor="#f3f3f3"
-    foregroundColor="#ecebeb"
-  >
-    <rect x="0" y="21" rx="0" ry="0" width="216" height="23" />
-  </ContentLoader>
-);
+import { utils } from "asc-web-components";
+import { ShareAccessRights } from "../../constants";
+const { desktop } = utils.device;
+
+const StyledContainer = styled.div`
+  width: 100%;
+  display: grid;
+  grid-template-columns: 17px 67px 17px 17px;
+  grid-template-rows: 1fr;
+  grid-column-gap: 16px;
+  margin-top: 20px;
+  margin-bottom: 18px;
+`;
+
+const StyledBox = styled.div`
+  display: grid;
+  grid-template-columns: 17px 17px;
+  grid-template-rows: 1fr;
+  grid-column-gap: 8px;
+`;
+
+const HeadlineLoader = () => {
+  return (
+    <StyledContainer>
+      <RectangleLoader width="17" height="17" />
+      <RectangleLoader width="67" height="17" />
+      <StyledBox>
+        <RectangleLoader width="17" height="17" />
+        <RectangleLoader width="17" height="17" />
+      </StyledBox>
+    </StyledContainer>
+  );
+};
 
 export default HeadlineLoader;
