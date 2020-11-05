@@ -31,16 +31,16 @@ const { tablet } = utils.device;
 const { FileAction } = constants;
 
 const StyledMainButton = styled(MainButton)`
-  .main-button_drop-down{
+  .main-button_drop-down {
     line-height: 36px;
   }
 
   @media ${tablet} {
-    .main-button_drop-down{
+    .main-button_drop-down {
       line-height: 40px;
     }
   }
-`
+`;
 
 class PureArticleMainButtonContent extends React.Component {
   onCreate = (e) => {

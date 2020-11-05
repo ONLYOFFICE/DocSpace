@@ -5,7 +5,7 @@ const PanelStyles = css`
   .panel_combo-box {
     margin-left: 10px;
 
-    .optionalBlock{
+    .optionalBlock {
       margin-right: 4px;
     }
 
@@ -15,7 +15,7 @@ const PanelStyles = css`
         width: 5px;
         margin-top: 16px;
       }
-    } 
+    }
 
     .combo-button {
       height: 36px;
@@ -29,8 +29,8 @@ const PanelStyles = css`
 
 const StyledAsidePanel = styled.div`
   z-index: 310;
-  .sharing_panel-header{
-    font-weight:700;
+  .sharing_panel-header {
+    font-weight: 700;
     margin: 14px 0;
   }
   .modal-dialog-aside {
@@ -219,7 +219,7 @@ const StyledSharingHeaderContent = styled.div`
       position: relative;
 
       .sharing_panel-drop-down {
-        padding: 0px;
+        padding: 4px 0;
       }
       .sharing_panel-plus-icon {
         //margin-right: 12px;
@@ -232,7 +232,7 @@ const StyledSharingBody = styled(Scrollbar)`
   position: relative;
   padding: 16px 0;
 
-  .row_content{
+  .row_content {
     overflow: visible;
   }
 
@@ -332,9 +332,9 @@ const StyledFooter = styled.div`
   background-color: #fff;
   border-top: 1px solid #eceef1;
 
-  .sharing_panel-checkbox{
+  .sharing_panel-checkbox {
     span {
-      font-weight:600;
+      font-weight: 600;
     }
 
     .checkbox {
