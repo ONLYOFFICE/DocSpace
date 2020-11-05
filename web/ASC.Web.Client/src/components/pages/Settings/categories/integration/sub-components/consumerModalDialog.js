@@ -102,54 +102,48 @@ class ConsumerModalDialog extends React.Component {
     </Trans>
   );
 
+  setConsumerData = (key) => {
+    const { consumers, selectedConsumer, isLoading } = this.props;
+    const { onChangeHandler, state } = this;
+    return key === "props"
+      ? consumers
+          .find((consumer) => consumer.name === selectedConsumer)
+          [key].map((prop, i) => (
+            <React.Fragment key={i}>
+              <Box
+                displayProp="flex"
+                flexDirection="column"
+                marginProp="0 0 16px 0"
+              >
+                <Box marginProp="0 0 4px 0">
+                  <Text isBold>{prop.title}:</Text>
+                </Box>
+                <Box>
+                  <TextInput
+                    scale
+                    name={prop.name}
+                    placeholder={prop.title}
+                    isAutoFocussed={i === 0}
+                    tabIndex={1}
+                    value={Object.values(state)[i]}
+                    isDisabled={isLoading}
+                    onChange={onChangeHandler}
+                  />
+                </Box>
+              </Box>
+            </React.Fragment>
+          ))
+      : consumers.find((consumer) => consumer.name === selectedConsumer)[key];
+  };
+
   render() {
+    const { onModalClose, dialogVisible, isLoading, t } = this.props;
     const {
-      consumers,
-      selectedConsumer,
-      onModalClose,
-      dialogVisible,
-      isLoading,
-      t,
-    } = this.props;
-    const {
-      state,
-      onChangeHandler,
+      setConsumerData,
       updateConsumerValues,
       bodyDescription,
       bottomDescription,
     } = this;
-
-    const setConsumerData = (key) => {
-      return key === "props"
-        ? consumers
-            .find((consumer) => consumer.name === selectedConsumer)
-            [key].map((prop, i) => (
-              <React.Fragment key={i}>
-                <Box
-                  displayProp="flex"
-                  flexDirection="column"
-                  marginProp="0 0 16px 0"
-                >
-                  <Box marginProp="0 0 4px 0">
-                    <Text isBold={true}>{prop.title}:</Text>
-                  </Box>
-                  <Box>
-                    <TextInput
-                      scale
-                      name={prop.name}
-                      placeholder={prop.title}
-                      isAutoFocussed={i === 0 && true}
-                      tabIndex={1}
-                      value={Object.values(state)[i]}
-                      isDisabled={isLoading}
-                      onChange={onChangeHandler}
-                    />
-                  </Box>
-                </Box>
-              </React.Fragment>
-            ))
-        : consumers.find((consumer) => consumer.name === selectedConsumer)[key];
-    };
 
     return (
       <ModalDialogContainer>
