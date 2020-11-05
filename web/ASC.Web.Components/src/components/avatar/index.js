@@ -86,7 +86,8 @@ const NamedAvatar = styled.div`
     (props.size === "max" && "72px") ||
     (props.size === "big" && "34px") ||
     (props.size === "medium" && "20px") ||
-    (props.size === "small" && "12px")};
+    (props.size === "small" && "12px") ||
+    (props.size === "min" && "12px")};
   color: ${whiteColor};
 
   ${noneUserSelect}
@@ -208,7 +209,7 @@ const Avatar = memo((props) => {
 });
 
 Avatar.propTypes = {
-  size: PropTypes.oneOf(["max", "big", "medium", "small"]),
+  size: PropTypes.oneOf(["max", "big", "medium", "small, min"]),
   role: PropTypes.oneOf(["owner", "admin", "guest", "user"]),
   source: PropTypes.string,
   editLabel: PropTypes.string,
