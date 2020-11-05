@@ -12,7 +12,7 @@ const LanguageAndTimeZoneSettings = lazy(() =>
 );
 const CustomTitles = lazy(() => import("./categories/common/custom-titles"));
 const ThirdPartyServices = lazy(() =>
-  import("./categories/integration/ThirdPartyServices-Settings")
+  import("./categories/integration/thirdPartyServicesSettings")
 );
 
 //const WhiteLabel = lazy(() => import("./categories/common/whitelabel"));
