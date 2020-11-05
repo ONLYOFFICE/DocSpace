@@ -1,16 +1,20 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
-import { utils, Scrollbar, DragAndDrop } from "asc-web-components";
+import { utils, Scrollbar, DragAndDrop, Box } from "asc-web-components";
 import SelectedFrame from "./SelectedFrame";
 import isEqual from "lodash/isEqual";
 import { isMobile } from "react-device-detect";
 import {RefContextConsumer} from "asc-web-common"
-const { tablet } = utils.device;
+const { tablet, mobile } = utils.device;
 
 const commonStyles = css`
   flex-grow: 1;
   height: 100%;
+
+  @media ${tablet} {
+      width:100%;
+    }
 
   .section-wrapper-content {
     flex: 1 0 auto;
@@ -48,6 +52,7 @@ const StyledDropZoneBody = styled(DragAndDrop)`
   .drag-and-drop {
     user-select: none;
     height: 100%;
+    
   }
 
   ${(props) =>
@@ -143,7 +148,6 @@ class SectionBody extends React.Component {
                     scrollRef={value}
                     setSelections={setSelections}
                   >
-                     
                     <div className="section-wrapper">
                       <div className="section-wrapper-content" {...focusProps}>
                         {children}

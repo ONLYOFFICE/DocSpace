@@ -16,6 +16,7 @@ const StyledMain = styled.main`
   @media ${tablet} {
     height: auto;
     min-height: 100%;
+    width:100%;
   }
 
   @media ${smallTablet} {

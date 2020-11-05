@@ -39,6 +39,7 @@ const StyledSection = styled.section`
   }
   @media ${tablet} {
     padding: 0 0 0 16px;
+    width:100%;
     ${tabletProps};
   }
 `;
