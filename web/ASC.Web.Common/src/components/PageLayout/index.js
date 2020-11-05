@@ -204,6 +204,7 @@ class PageLayoutComponent extends React.Component {
       withBodyScroll,
       children,
       isLoaded,
+      isHeaderVisible
     } = this.props;
    
     let articleHeaderContent = null;
@@ -328,6 +329,7 @@ class PageLayoutComponent extends React.Component {
                   {isSectionHeaderAvailable && (
                     <SubSectionHeader
                       isArticlePinned={this.state.isArticlePinned}
+                      isHeaderVisible={isHeaderVisible}
                     >
                       {sectionHeaderContent
                         ? sectionHeaderContent.props.children

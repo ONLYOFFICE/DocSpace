@@ -30,7 +30,8 @@ const StyledSectionHeader = styled.div`
       width: 100%;
       background-color: #fff; 
       position: fixed; 
-      top: 56px; 
+      
+      top: ${props => !props.isHeaderVisible ? "56px" : "0"} ; 
       padding-right:100%;
       transition: top 0.3s;
       z-index:1;
@@ -75,10 +76,10 @@ class SectionHeader extends React.Component {
 
     //console.log("PageLayout SectionHeader render");
     // eslint-disable-next-line react/prop-types
-    const { isArticlePinned, ...rest } = this.props;
+    const { isArticlePinned, isHeaderVisible,  ...rest } = this.props;
     return (
       
-      <StyledSectionHeader  isArticlePinned={isArticlePinned}>
+      <StyledSectionHeader  isArticlePinned={isArticlePinned} isHeaderVisible={isHeaderVisible}>
        <IsVisibleContextConsumer>
        { value => 
         <div id="scroll"  className={classnames("section-header", {

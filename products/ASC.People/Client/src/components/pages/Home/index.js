@@ -108,6 +108,7 @@ class PureHome extends React.Component {
         withBodyScroll={true}
         withBodyAutoFocus={!isMobile}
         isLoaded={isLoaded}
+        isHeaderVisible={isHeaderVisible}
       >
         <PageLayout.ArticleHeader>
           <ArticleHeaderContent />

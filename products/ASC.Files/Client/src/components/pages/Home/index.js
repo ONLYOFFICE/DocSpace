@@ -25,6 +25,7 @@ import {
   startUpload,
   setSelections,
 } from "../../../store/files/actions";
+
 import {
   getConvertDialogVisible,
   getSelectedFolderId,
@@ -36,6 +37,7 @@ import {
   getIsLoading,
   getIsRecycleBinFolder,
   getDragging,
+  getHeaderVisible
 } from "../../../store/files/selectors";
 
 import { ConvertDialog } from "../../dialogs";
@@ -173,6 +175,7 @@ class PureHome extends React.Component {
       fileActionId,
       isRecycleBin,
       isLoaded,
+      isHeaderVisible
     } = this.props;
 
     return (
@@ -194,7 +197,9 @@ class PureHome extends React.Component {
           viewAs={viewAs}
           hideAside={!!fileActionId || progressData.visible}
           isLoaded={isLoaded}
+          isHeaderVisible={isHeaderVisible}
         >
+           
           <PageLayout.ArticleHeader>
             <ArticleHeaderContent />
           </PageLayout.ArticleHeader>
@@ -262,6 +267,7 @@ function mapStateToProps(state) {
     homepage: getSettingsHomepage(state),
     dragging: getDragging(state),
     isLoaded: getIsLoaded(state),
+    isHeaderVisible: getHeaderVisible(state),
   };
 }
 
