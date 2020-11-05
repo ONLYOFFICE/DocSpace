@@ -22,12 +22,14 @@ const StyledAvatar = styled.div`
     (props.size === "max" && "160px") ||
     (props.size === "big" && "82px") ||
     (props.size === "medium" && "48px") ||
-    (props.size === "small" && "36px")};
+    (props.size === "small" && "36px") ||
+    (props.size === "min" && "32px")};
   height: ${(props) =>
     (props.size === "max" && "160px") ||
     (props.size === "big" && "82px") ||
     (props.size === "medium" && "48px") ||
-    (props.size === "small" && "36px")};
+    (props.size === "small" && "36px") ||
+    (props.size === "min" && "32px")};
 
   font-family: "Open Sans", sans-serif, Arial;
   font-style: normal;
@@ -39,12 +41,14 @@ const RoleWrapper = styled.div`
     (props.size === "max" && "0px") ||
     (props.size === "big" && "0px") ||
     (props.size === "medium" && "-2px") ||
-    (props.size === "small" && "-2px")};
+    (props.size === "small" && "-2px") ||
+    (props.size === "min" && "-2px")};
   bottom: ${(props) =>
     (props.size === "max" && "0px") ||
     (props.size === "big" && "5px") ||
     (props.size === "medium" && "3px") ||
-    (props.size === "small" && "3px")};
+    (props.size === "small" && "3px") ||
+    (props.size === "min" && "3px")};
   width: ${(props) => (props.size === "max" && "24px") || "12px"};
   height: ${(props) => (props.size === "max" && "24px") || "12px"};
 `;
