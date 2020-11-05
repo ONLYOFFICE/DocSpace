@@ -18,12 +18,12 @@ namespace ASC.Files.Tests
 
         public static IEnumerable<TestCaseData> GetFolderInfoItems()
         {
-            yield return new TestCaseData(1, "FolderOne");
+            yield return new TestCaseData(34, "FolderTwo");
         }
 
         public static IEnumerable<TestCaseData> GetRenameFolderItems()
         {
-            yield return new TestCaseData(1, "FoldTest");
+            yield return new TestCaseData(23, "FoldTest");
         }
 
         public static IEnumerable<TestCaseData> GetDeleteFolderItems()
@@ -33,18 +33,18 @@ namespace ASC.Files.Tests
 
         public static IEnumerable<TestCaseData> GetCreateFileItems()
         {
-            yield return new TestCaseData("FileOne.docx");
-            yield return new TestCaseData("FileTwo.docx");
+            yield return new TestCaseData("FileOne.docs");
+            yield return new TestCaseData("FileTwo.docs");
         }
 
         public static IEnumerable<TestCaseData> GetFileInfoItems()
         {
-            yield return new TestCaseData(1, "FileOne.docx");
+            yield return new TestCaseData(1, "FileTest.mp3");
         }
 
         public static IEnumerable<TestCaseData> GetUpdateFileItems()
         {
-            yield return new TestCaseData(1, "FileTest", 3);
+            yield return new TestCaseData(1, "FileTest.mp3", 3);
         }
 
         public static IEnumerable<TestCaseData> GetDeleteFileItems()

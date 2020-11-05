@@ -52,10 +52,9 @@ namespace ASC.Files.Tests
             SecurityContext = TestServer.Services.GetService<SecurityContext>();
             UserOptions = TestServer.Services.GetService<IOptions<UserOptions>>().Value;
             CurrentTenant = SetAndGetCurrentTenant();
-            User = GetUser();
-            Account = GetAccount();
+            //User = GetUser();
 
-            SecurityContext.AuthenticateMe(Account);
+            SecurityContext.AuthenticateMe(CurrentTenant.OwnerId);
         }
 
         private void Configure(WebHostBuilderContext hostingContext, IConfigurationBuilder config)
@@ -100,11 +99,7 @@ namespace ASC.Files.Tests
             return user;
         }
 
-        private IAccount GetAccount()
-        {
-            return new Account(CurrentTenant.OwnerId, "di.vahomik22@gmail.com", true);
-        }
-
+        
         public BatchModel GetBatchModel(string text)
         {
             var json = text;
