@@ -60,6 +60,7 @@ const RowsLoader = () => {
       <Row />
       <Row />
       <Row />
+      <Row />
     </div>
   );
 };
