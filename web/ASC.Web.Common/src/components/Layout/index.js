@@ -9,7 +9,7 @@ const StyledContainer = styled.div`
 width:100%;
 height:100vh;
 `
-class LayoutBody extends Component{
+class Layout extends Component{
   constructor(props) {
     super(props);
     this.state = {
@@ -33,7 +33,7 @@ class LayoutBody extends Component{
   scrolledTheVerticalAxis = () => {
     const { prevScrollPosition } = this.state;
     const currentScrollPosition =  document.getElementById("scroll").scrollTop || window.pageYOffset ;
-    const visibleContent = prevScrollPosition > currentScrollPosition;
+    const visibleContent = prevScrollPosition >= currentScrollPosition;
 
     this.setState({
       prevScrollPosition: currentScrollPosition,
@@ -63,12 +63,6 @@ class LayoutBody extends Component{
     )
   }
 }
-
-const Layout = (props) => {
-
-
-  return <LayoutBody  {...props} />;
-};
 
 
 export default Layout;
