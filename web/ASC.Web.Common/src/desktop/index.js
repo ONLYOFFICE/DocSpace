@@ -1,10 +1,12 @@
 const domain = window.location.origin;
 const provider = "AppServer";
+const isDesktop = window["AscDesktopEditor"] || false;
+const isEncryptionSupport =
+  (window["AscDesktopEditor"] &&
+    typeof window.AscDesktopEditor.cloudCryptoCommand === "function") ||
+  false;
 
-if (
-  window["AscDesktopEditor"] &&
-  typeof window.AscDesktopEditor.cloudCryptoCommand === "function"
-) {
+if (isDesktop && isEncryptionSupport) {
   window.cloudCryptoCommand = (type, params, callback) => {
     switch (type) {
       case "encryptionKeys":
@@ -28,6 +30,10 @@ export class Desktop {
       provider,
       userId,
     };
+    if (isEncryptionSupport) {
+      data.cryptoEngineId = "{FFF0E1EB-13DB-4678-B67D-FF0A41DBBCEF}";
+    }
+
     const execCommand = window.AscDesktopEditor.execCommand(
       "portal:login",
       JSON.stringify(data)
