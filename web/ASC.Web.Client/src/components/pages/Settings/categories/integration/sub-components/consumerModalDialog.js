@@ -42,17 +42,18 @@ class ConsumerModalDialog extends React.Component {
       sendConsumerNewProps,
       onModalClose,
     } = this.props;
+    const { state } = this;
 
     onChangeLoading(true);
 
     const prop = [];
 
     let i = 0;
-    let stateLength = Object.keys(this.state).length;
+    let stateLength = Object.keys(state).length;
     for (i = 0; i < stateLength; i++) {
       prop.push({
-        name: Object.keys(this.state)[i],
-        value: Object.values(this.state)[i],
+        name: Object.keys(state)[i],
+        value: Object.values(state)[i],
       });
     }
     const data = {
@@ -111,6 +112,7 @@ class ConsumerModalDialog extends React.Component {
       t,
     } = this.props;
     const {
+      state,
       onChangeHandler,
       updateConsumerValues,
       bodyDescription,
@@ -138,7 +140,7 @@ class ConsumerModalDialog extends React.Component {
                       placeholder={prop.title}
                       isAutoFocussed={i === 0 && true}
                       tabIndex={1}
-                      value={Object.values(this.state)[i]}
+                      value={Object.values(state)[i]}
                       isDisabled={isLoading}
                       onChange={onChangeHandler}
                     />
