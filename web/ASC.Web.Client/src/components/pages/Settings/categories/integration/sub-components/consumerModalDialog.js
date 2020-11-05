@@ -75,6 +75,32 @@ class ConsumerModalDialog extends React.Component {
     this.mapTokenNameToState();
   }
 
+  bodyDescription = (
+    <Box marginProp="44px 0 16px 0">
+      <Box marginProp="0 0 16px 0">
+        <Text isBold fontSize="15px">
+          {this.props.t("ThirdPartyHowItWorks")}
+        </Text>
+      </Box>
+      <Text>{this.props.t("ThirdPartyBodyDescription")}</Text>
+    </Box>
+  );
+
+  bottomDescription = (
+    <Trans i18nKey="ThirdPartyBottomDescription" i18n={this.i18n}>
+      If you still have some questions on how to connect this service or need
+      technical assistance, please feel free to contact our{" "}
+      <Link
+        color="#316DAA"
+        isHovered={false}
+        target="_blank"
+        href="http://support.onlyoffice.com/"
+      >
+        Support Team
+      </Link>
+    </Trans>
+  );
+
   render() {
     const {
       consumers,
@@ -83,35 +109,13 @@ class ConsumerModalDialog extends React.Component {
       dialogVisible,
       isLoading,
       t,
-      i18n,
     } = this.props;
-    const { onChangeHandler, updateConsumerValues } = this;
-
-    const bodyDescription = (
-      <Box marginProp="44px 0 16px 0">
-        <Box marginProp="0 0 16px 0">
-          <Text isBold={true} fontSize="15px">
-            {t("ThirdPartyHowItWorks")}
-          </Text>
-        </Box>
-        <Text>{t("ThirdPartyBodyDescription")}</Text>
-      </Box>
-    );
-
-    const bottomDescription = (
-      <Trans i18nKey="ThirdPartyBottomDescription" i18n={i18n}>
-        If you still have some questions on how to connect this service or need
-        technical assistance, please feel free to contact our{" "}
-        <Link
-          color="#316DAA"
-          isHovered={false}
-          target="_blank"
-          href="http://support.onlyoffice.com/"
-        >
-          Support Team
-        </Link>
-      </Trans>
-    );
+    const {
+      onChangeHandler,
+      updateConsumerValues,
+      bodyDescription,
+      bottomDescription,
+    } = this;
 
     const setConsumerData = (key) => {
       return key === "props"
