@@ -76,7 +76,7 @@ export function setLogoUrls(urls) {
 export function setConsumers(consumers) {
   return {
     type: SET_CONSUMERS,
-    consumers
+    consumers,
   };
 }
 
@@ -196,17 +196,17 @@ export function restoreGreetingTitle() {
 }
 
 export function getConsumers() {
-  return dispatch => {
-    return api.settings.getConsumersList().then(res =>
-      dispatch(setConsumers(res))
-    )
-  }
+  return (dispatch) => {
+    return api.settings
+      .getConsumersList()
+      .then((res) => dispatch(setConsumers(res)));
+  };
 }
 
-export function sendConsumerNewProps(NewProps) {
-  return dispatch => {
-    return api.settings.updateConsumerProps(NewProps).then(() =>
-      dispatch(getConsumers())
-    )
-  }
+export function sendConsumerNewProps(newProps) {
+  return (dispatch) => {
+    return api.settings
+      .updateConsumerProps(newProps)
+      .then(() => dispatch(getConsumers()));
+  };
 }
