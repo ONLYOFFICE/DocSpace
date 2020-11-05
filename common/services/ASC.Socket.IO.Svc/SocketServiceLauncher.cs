@@ -40,8 +40,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 
-using WebSocketSharp;
-
 namespace ASC.Socket.IO.Svc
 {
     public class SocketServiceLauncher : IHostedService
