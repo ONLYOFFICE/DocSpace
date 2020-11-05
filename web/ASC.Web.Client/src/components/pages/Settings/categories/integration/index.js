@@ -3,22 +3,28 @@ import { Route, Switch } from "react-router-dom";
 import { withRouter } from "react-router";
 import { Loader } from "asc-web-components";
 
-const ThirdPartyServices = lazy(() => import("./third-party-services"));
+const ThirdPartyServices = lazy(() => import("./ThirdPartyServicesSettings"));
 
 const Integration = ({ match }) => {
-    const basePath = '/settings/integration';
+  const basePath = "/settings/integration";
 
-    return (
-        <Suspense fallback={<Loader className="pageLoader" type="rombs" size='40px' />}>
-            <Switch>
-                <Route
-                    exact
-                    path={[`${basePath}/third-party-services`, '/integration', match.path]}
-                    component={ThirdPartyServices}
-                />
-            </Switch>
-        </Suspense>
-    );
+  return (
+    <Suspense
+      fallback={<Loader className="pageLoader" type="rombs" size="40px" />}
+    >
+      <Switch>
+        <Route
+          exact
+          path={[
+            `${basePath}/third-party-services`,
+            "/integration",
+            match.path,
+          ]}
+          component={ThirdPartyServices}
+        />
+      </Switch>
+    </Suspense>
+  );
 };
 
 export default withRouter(Integration);
