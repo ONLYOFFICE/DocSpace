@@ -2,6 +2,7 @@ import React from "react";
 import { withRouter } from "react-router";
 import { connect } from "react-redux";
 import { withTranslation, Trans } from "react-i18next";
+import styled from "styled-components";
 import {
   Row,
   Avatar,
@@ -47,6 +48,12 @@ const { resendUserInvites } = api.people;
 const { EmployeeStatus } = constants;
 
 const isRefetchPeople = true;
+
+const StyledRow = styled(Row)`
+  @media (min-width: 1313px) {
+    height: 47px;
+  }
+`;
 
 class SectionBodyContent extends React.PureComponent {
   constructor(props) {
@@ -392,7 +399,7 @@ class SectionBodyContent extends React.PureComponent {
       <>
         <Consumer>
           {(context) => (
-            <RowContainer useReactWindow={false}>
+            <RowContainer className="people-row" useReactWindow={false}>
               {peopleList.map((man) => {
                 const {
                   checked,
@@ -423,7 +430,7 @@ class SectionBodyContent extends React.PureComponent {
                 );
 
                 return (
-                  <Row
+                  <StyledRow
                     key={id}
                     status={status}
                     data={man}
@@ -443,7 +450,7 @@ class SectionBodyContent extends React.PureComponent {
                       selectGroup={selectGroup}
                       sectionWidth={sectionWidth}
                     />
-                  </Row>
+                  </StyledRow>
                 );
               })}
             </RowContainer>

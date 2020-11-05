@@ -9,7 +9,7 @@ import { tablet } from "../../utils/device";
 const StyledRow = styled.div`
   cursor: default;
 
-  min-height: 45px;
+  min-height: 47px;
   width: 100%;
   border-bottom: 1px solid #eceef1;
 
@@ -64,8 +64,11 @@ const StyledOptionButton = styled.div`
   width: ${(props) => props.spacerWidth && props.spacerWidth};
 
   .expandButton > div:first-child {
-    padding: 8px 8px 8px 7px;
+    padding: 8px 0px 9px 7px;
 
+    @media (min-width: 1024px) {
+      margin-right: -1px;
+    }
     @media (max-width: 516px) {
       padding-left: 10px;
     }
