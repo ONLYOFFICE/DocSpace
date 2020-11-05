@@ -37,7 +37,7 @@ class ConsumerToggle extends React.Component {
       }
 
       const data = {
-        name: this.props.consumer.name,
+        name: consumer.name,
         props: prop,
       };
 
@@ -81,8 +81,8 @@ ConsumerToggle.propTypes = {
     description: PropTypes.string,
     instruction: PropTypes.string,
     canSet: PropTypes.bool,
-    props: PropTypes.arrayOf(PropTypes.object)
+    props: PropTypes.arrayOf(PropTypes.object),
   }).isRequired,
   onModalOpen: PropTypes.func.isRequired,
-  sendConsumerNewProps: PropTypes.func.isRequired
-}
+  sendConsumerNewProps: PropTypes.func.isRequired,
+};
