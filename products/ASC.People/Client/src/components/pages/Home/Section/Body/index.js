@@ -415,7 +415,7 @@ class SectionBodyContent extends React.PureComponent {
 
                 const element = (
                   <Avatar
-                    size="small"
+                    size="min"
                     role={role}
                     userName={displayName}
                     source={avatar}
