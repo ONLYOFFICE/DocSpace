@@ -683,7 +683,7 @@ class SectionBodyContent extends React.Component {
           return {
             key: option,
             label: t("MoveTo"),
-            icon: "DownloadAsIcon",
+            icon: "MoveToIcon",
             onClick: this.onMoveAction,
             disabled: false,
           };
