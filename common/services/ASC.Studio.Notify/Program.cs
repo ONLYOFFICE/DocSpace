@@ -8,6 +8,9 @@ using ASC.Common.Logging;
 using ASC.Core.Notify;
 using ASC.Notify;
 
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -19,6 +22,7 @@ namespace ASC.Studio.Notify
         public static async Task Main(string[] args)
         {
             var host = Host.CreateDefaultBuilder(args)
+                .UseServiceProviderFactory(new AutofacServiceProviderFactory())
                 .ConfigureAppConfiguration((hostContext, config) =>
                 {
                     var buided = config.Build();
@@ -52,7 +56,10 @@ namespace ASC.Studio.Notify
                     services.AddHostedService<ServiceLauncher>();
                     diHelper.AddServiceLauncher();
                     diHelper.AddEmailSenderSinkService();
-                    services.AddAutofac(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
+                })
+                .ConfigureContainer<ContainerBuilder>((context, builder) =>
+                {
+                    builder.Register(context.Configuration, context.HostingEnvironment.ContentRootPath);
                 })
                 .UseConsoleLifetime()
                 .Build();

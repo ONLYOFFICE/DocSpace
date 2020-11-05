@@ -63,12 +63,12 @@ namespace ASC.Feed.Aggregator
 
         private IConfiguration Configuration { get; }
         private IServiceProvider ServiceProvider { get; }
-        public IContainer Container { get; }
+        public ILifetimeScope Container { get; }
 
         public FeedAggregatorService(
             IConfiguration configuration,
             IServiceProvider serviceProvider,
-            IContainer container,
+            ILifetimeScope container,
             IOptionsMonitor<ILog> optionsMonitor,
             SignalrServiceClient signalrServiceClient,
             IConfigureNamedOptions<SignalrServiceClient> configureOptions)

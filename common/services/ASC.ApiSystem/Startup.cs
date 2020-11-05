@@ -30,6 +30,8 @@ using ASC.Common;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
 
+using Autofac;
+
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -81,8 +83,6 @@ namespace ASC.ApiSystem
                 .AddRegistrationController()
                 .AddSettingsController()
                 .AddTariffController();
-
-            services.AddAutofac(Configuration, HostEnvironment.ContentRootPath, false);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -114,6 +114,10 @@ namespace ASC.ApiSystem
             {
                 endpoints.MapControllers();
             });
+        }
+        public void ConfigureContainer(ContainerBuilder builder)
+        {
+            builder.Register(Configuration, HostEnvironment.ContentRootPath, false);
         }
     }
 }
