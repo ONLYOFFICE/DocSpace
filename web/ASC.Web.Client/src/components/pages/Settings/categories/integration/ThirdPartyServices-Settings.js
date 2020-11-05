@@ -101,7 +101,7 @@ class ThirdPartyServices extends React.Component {
     for (i = 0; i < objLength; i++) {
       prop.push({
         name: isFill ? Object.keys(obj)[i] : obj.props[i].name,
-        value: isFill ? Object.values(obj)[i] : ""
+        value: isFill ? Object.values(obj)[i] : "",
       });
     }
 
@@ -110,31 +110,25 @@ class ThirdPartyServices extends React.Component {
       props: prop,
     };
 
-    this.props.sendConsumerNewProps(data)
+    this.props
+      .sendConsumerNewProps(data)
       .then(() => {
         isFill && this.onChangeLoading(false);
         isFill
-          ?
-          toastr.success("Consumer properties successfully update")
-          :
-          toastr.success("Consumer successfully deactivated")
+          ? toastr.success("Consumer properties successfully update")
+          : toastr.success("Consumer successfully deactivated");
       })
       .catch((error) => {
         isFill && this.onChangeLoading(false);
         toastr.error(error);
       })
       .finally(isFill && this.onModalClose());
-  }
+  };
 
   render() {
     const { t, i18n, consumers, sendConsumerNewProps } = this.props;
     const { selectedConsumer, dialogVisible, isLoading } = this.state;
-    const {
-      onModalClose,
-      onModalOpen,
-      setConsumer,
-      onChangeLoading,
-    } = this;
+    const { onModalClose, onModalOpen, setConsumer, onChangeLoading } = this;
 
     return (
       <>
@@ -210,7 +204,7 @@ ThirdPartyServices.propTypes = {
   i18n: PropTypes.object.isRequired,
   consumers: PropTypes.arrayOf(PropTypes.object).isRequired,
   sendConsumerNewProps: PropTypes.func.isRequired,
-}
+};
 
 const mapStateToProps = (state) => {
   const { consumers } = state.settings.integration;

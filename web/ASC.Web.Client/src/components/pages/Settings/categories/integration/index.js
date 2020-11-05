@@ -3,7 +3,7 @@ import { Route, Switch } from "react-router-dom";
 import { withRouter } from "react-router";
 import { Loader } from "asc-web-components";
 
-const ThirdPartyServices = lazy(() => import("./ThirdPartyServicesSettings"));
+const ThirdPartyServices = lazy(() => import("./ThirdPartyServices-Settings"));
 
 const Integration = ({ match }) => {
   const basePath = "/settings/integration";
