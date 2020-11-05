@@ -146,7 +146,6 @@ class SectionBody extends React.Component {
                      
                     <div className="section-wrapper">
                       <div className="section-wrapper-content" {...focusProps}>
-                  
                         {children}
                         <StyledSpacer pinned={pinned} />
                       </div>
@@ -161,7 +160,6 @@ class SectionBody extends React.Component {
               setSelections={setSelections}
             >
               <div className="section-wrapper">
-
                 {children}
                 <StyledSpacer pinned={pinned} />
 
@@ -172,7 +170,7 @@ class SectionBody extends React.Component {
     ) : (
         <StyledSectionBody viewAs={viewAs} withScroll={withScroll}>
           {withScroll ? (
-            !isMobile ? (
+               (!isMobile && !this.windowWidth.matches )  ? (
               <Scrollbar {...scrollProp} stype="mediumBlack">
                 <div className="section-wrapper">
                   <div className="section-wrapper-content" {...focusProps}>
