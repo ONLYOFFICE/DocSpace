@@ -9,6 +9,7 @@ import {
   Button,
   ModalDialog,
   utils,
+  Icons,
 } from "asc-web-components";
 import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
@@ -51,6 +52,16 @@ const StyledRow = styled(Row)`
 
   .version-link-file {
     margin-top: ${(props) => (props.showEditPanel ? "12px" : "-3px")};
+    @media ${tablet} {
+      margin-top: -1px;
+    }
+  }
+
+  .icon-link {
+    width: 10px;
+    height: 10px;
+    margin-left: 9px;
+    margin-top: ${(props) => (props.showEditPanel ? "11px" : "-3px")};
     @media ${tablet} {
       margin-top: -1px;
     }
@@ -273,6 +284,9 @@ const VersionRow = (props) => {
             className="version-link-file"
           >
             {title}
+          </Link>
+          <Link className="icon-link" onClick={onOpenFile}>
+            <Icons.ExternalLinkIcon color="#333333" size="scale" />
           </Link>
           <Text
             className="version_content-length"
