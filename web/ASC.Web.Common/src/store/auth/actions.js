@@ -127,7 +127,7 @@ export function getUser(dispatch) {
     .getUser()
     .then((user) => {
       window.AscDesktopEditor &&
-        Desktop.regDesktop(user.displayName, user.email);
+        Desktop.regDesktop(user.displayName, user.email, user.id);
       dispatch(setCurrentUser(user));
     })
     .catch((err) => dispatch(setCurrentUser({})));
@@ -167,7 +167,10 @@ export function getUserInfo(dispatch) {
 }
 
 export function login(user, hash) {
-  return (dispatch) => {
+  return (dispatch, getState) => {
+    const state = getState();
+    const isDesktop = isDesktopClient(state);
+    isDesktop && Desktop.checkPwd();
     return api.user
       .login(user, hash)
       .then(() => {
