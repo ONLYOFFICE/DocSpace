@@ -515,7 +515,7 @@ class SectionHeaderContent extends React.Component {
             ) : (
               <div className="header-container">
                 {!title ? (
-                  <Loaders.Headline />
+                  <Loaders.SectionHeader />
                 ) : (
                   <>
                     {!isRootFolder && (
