@@ -79,11 +79,11 @@ class ConsumerModalDialog extends React.Component {
   bodyDescription = (
     <Box marginProp="44px 0 16px 0">
       <Box marginProp="0 0 16px 0">
-        <Text isBold fontSize="15px">
+        <Text as="div" isBold fontSize="15px">
           {this.props.t("ThirdPartyHowItWorks")}
         </Text>
       </Box>
-      <Text>{this.props.t("ThirdPartyBodyDescription")}</Text>
+      <Text as="div">{this.props.t("ThirdPartyBodyDescription")}</Text>
     </Box>
   );
 
@@ -156,8 +156,8 @@ class ConsumerModalDialog extends React.Component {
         <ModalDialog visible={dialogVisible} onClose={onModalClose}>
           <ModalDialog.Header>{setConsumerData("name")}</ModalDialog.Header>
           <ModalDialog.Body>
-            <Text>{setConsumerData("instruction")}</Text>
-            <Text>{bodyDescription}</Text>
+            <Text as="div">{setConsumerData("instruction")}</Text>
+            <Text as="div">{bodyDescription}</Text>
             <React.Fragment>{setConsumerData("props")}</React.Fragment>
             <Text>{bottomDescription}</Text>
           </ModalDialog.Body>
