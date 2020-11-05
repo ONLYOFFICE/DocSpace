@@ -2,17 +2,17 @@ import React from "react";
 import styled from "styled-components";
 import RectangleLoader from "./RectangleLoader";
 
-const StyledHead = styled.div`
+const StyledContainer = styled.div`
   margin-top: 13px;
   margin-bottom: 10px;
 `;
 
-const HeadLoader = () => {
+const ArticleHeaderLoader = () => {
   return (
-    <StyledHead>
+    <StyledContainer>
       <RectangleLoader />
-    </StyledHead>
+    </StyledContainer>
   );
 };
 
-export default HeadLoader;
+export default ArticleHeaderLoader;

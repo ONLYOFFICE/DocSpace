@@ -1,5 +1,5 @@
-import Headline from "./HeadlineLoader";
-import Head from "./HeadLoader";
+import SectionHeader from "./SectionHeaderLoader";
+import ArticleHeader from "./ArticleHeaderLoader";
 import TreeFolders from "./TreeFolderLoader";
 import Rows from "./RowsLoader";
 import Text from "./TextLoader";
@@ -9,8 +9,8 @@ import SettingsFiles from "./SettingsFilesLoader";
 import Rectangle from "./RectangleLoader";
 
 export default {
-  Headline,
-  Head,
+  SectionHeader,
+  ArticleHeader,
   TreeFolders,
   Rows,
   Text,
