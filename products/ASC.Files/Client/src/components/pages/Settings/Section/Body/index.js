@@ -28,7 +28,7 @@ const { isAdmin } = store.auth.selectors;
 
 const StyledSettings = styled.div`
   display: grid;
-  grid-gap: 10px;
+  grid-gap: 12px;
 
   .toggle-btn {
     position: relative;
