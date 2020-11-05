@@ -134,20 +134,20 @@ namespace ASC.Web.Api.Controllers
         }
 
         [Create("audit/settings/lifetime")]
-        public TenantAuditSettings SetAuditSettings(TenantAuditSettings settings)
+        public TenantAuditSettings SetAuditSettings(TenantAuditSettingsWrapper wrapper)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-            if (settings.LoginHistoryLifeTime <= 0 || settings.LoginHistoryLifeTime > TenantAuditSettings.MaxLifeTime)
+            if (wrapper.settings.LoginHistoryLifeTime <= 0 || wrapper.settings.LoginHistoryLifeTime > TenantAuditSettings.MaxLifeTime)
                 throw new ArgumentException("LoginHistoryLifeTime");
 
-            if (settings.AuditTrailLifeTime <= 0 || settings.AuditTrailLifeTime > TenantAuditSettings.MaxLifeTime)
+            if (wrapper.settings.AuditTrailLifeTime <= 0 || wrapper.settings.AuditTrailLifeTime > TenantAuditSettings.MaxLifeTime)
                 throw new ArgumentException("AuditTrailLifeTime");
 
-            SettingsManager.SaveForTenant(settings, TenantManager.GetCurrentTenant().TenantId);
+            SettingsManager.SaveForTenant(wrapper.settings, TenantManager.GetCurrentTenant().TenantId);
             MessageService.Send(MessageAction.AuditSettingsUpdated);
 
-            return settings;
+            return wrapper.settings;
         }
     }
 
