@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
-import { MainButton, DropDownItem, utils } from "asc-web-components";
+import { MainButton, DropDownItem } from "asc-web-components";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import { setAction, startUpload } from "../../../store/files/actions";
 import {
@@ -18,7 +18,6 @@ import {
   Loaders,
 } from "asc-web-common";
 import { createI18N } from "../../../helpers/i18n";
-import styled from "styled-components";
 
 const { getSettings } = initStore.auth.selectors;
 const i18n = createI18N({
@@ -27,20 +26,7 @@ const i18n = createI18N({
 });
 
 const { changeLanguage } = commonUtils;
-const { tablet } = utils.device;
 const { FileAction } = constants;
-
-const StyledMainButton = styled(MainButton)`
-  .main-button_drop-down {
-    line-height: 36px;
-  }
-
-  @media ${tablet} {
-    .main-button_drop-down {
-      line-height: 40px;
-    }
-  }
-`;
 
 class PureArticleMainButtonContent extends React.Component {
   onCreate = (e) => {
@@ -84,7 +70,7 @@ class PureArticleMainButtonContent extends React.Component {
     return firstLoad ? (
       <Loaders.Filter />
     ) : (
-      <StyledMainButton
+      <MainButton
         isDisabled={isDisabled ? isDisabled : !canCreate}
         isDropdown={true}
         text={t("Actions")}
@@ -150,7 +136,7 @@ class PureArticleMainButtonContent extends React.Component {
           ref={(input) => (this.inputFolderElement = input)}
           style={{ display: "none" }}
         />
-      </StyledMainButton>
+      </MainButton>
     );
   }
 }
