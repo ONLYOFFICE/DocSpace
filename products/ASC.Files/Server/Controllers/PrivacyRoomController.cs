@@ -86,7 +86,19 @@ namespace ASC.Api.Documents
         /// </summary>
         /// <visible>false</visible>
         [Update("keys")]
-        public object SetKeys(PrivacyRoomModel model)
+        public object SetKeysFromBody([FromBody]PrivacyRoomModel model)
+        {
+            return SetKeys(model);
+        }
+
+        [Update("keys")]
+        /*pfv*/
+        public object SetKeysFromForm([FromForm]PrivacyRoomModel model)
+        {
+            return SetKeys(model);
+        }
+
+        private object SetKeys(PrivacyRoomModel model)
         {
             PermissionContext.DemandPermissions(new UserSecurityProvider(AuthContext.CurrentAccount.ID), Constants.Action_EditUser);
 
@@ -152,7 +164,19 @@ namespace ASC.Api.Documents
         /// <returns></returns>
         /// <visible>false</visible>
         [Update("")]
-        public bool SetPrivacyRoom(PrivacyRoomModel model)
+        public bool SetPrivacyRoomFromBody([FromBody]PrivacyRoomModel model)
+        {
+            return SetPrivacyRoom(model);
+        }
+
+        [Update("")]
+        /*pfv*/
+        public bool SetPrivacyRoomFromForm([FromForm]PrivacyRoomModel model)
+        {
+            return SetPrivacyRoom(model);
+        }
+
+        private bool SetPrivacyRoom(PrivacyRoomModel model)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
