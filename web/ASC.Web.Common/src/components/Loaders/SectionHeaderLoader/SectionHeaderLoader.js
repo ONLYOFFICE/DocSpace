@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import RectangleLoader from "./RectangleLoader";
+import RectangleLoader from "../RectangleLoader/index";
 
 import { utils } from "asc-web-components";
 const { mobile, tablet } = utils.device;

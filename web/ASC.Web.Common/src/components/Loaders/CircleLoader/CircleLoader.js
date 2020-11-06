@@ -1,7 +1,7 @@
 import React from "react";
 import ContentLoader from "react-content-loader";
 import PropTypes from "prop-types";
-import { LoaderStyle } from "../../constants/index";
+import { LoaderStyle } from "../../../constants/index";
 
 const CircleLoader = ({ x, y, radius, width, height, ...rest }) => (
   <ContentLoader width={width} height={height} {...rest}>

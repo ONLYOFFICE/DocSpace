@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import RectangleLoader from "./RectangleLoader";
+import RectangleLoader from "../RectangleLoader/index";
 
 import { utils } from "asc-web-components";
 const { isMobile, isTablet } = utils.device;
@@ -27,9 +27,7 @@ const StyledBox = styled.div`
 `;
 
 const RowBlock = () => {
-  const numberLines = !isMobile() && !isTablet() ? 1 : 2;
-
-  if (numberLines === 1) {
+  if (!isMobile() && !isTablet()) {
     return <RectangleLoader width="100%" height="16" />;
   } else {
     return (

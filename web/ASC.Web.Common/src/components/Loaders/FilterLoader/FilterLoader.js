@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import RectangleLoader from "./RectangleLoader";
+import RectangleLoader from "../RectangleLoader/index";
 import { utils } from "asc-web-components";
 const { mobile } = utils.device;
 
@@ -16,11 +16,11 @@ const StyledFilter = styled.div`
   }
 `;
 
-const FilterLoader = () => {
+const FilterLoader = (props) => {
   return (
     <StyledFilter>
-      <RectangleLoader width="100%" height="32px" />
-      <RectangleLoader width="100%" height="32px" />
+      <RectangleLoader width={props.width} height={props.height} {...props} />
+      <RectangleLoader width={props.width} height={props.height} {...props} />
     </StyledFilter>
   );
 };

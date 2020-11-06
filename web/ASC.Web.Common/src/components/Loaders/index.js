@@ -1,14 +1,17 @@
-import SectionHeader from "./SectionHeaderLoader";
-import ArticleHeader from "./ArticleHeaderLoader";
-import TreeFolders from "./TreeFolderLoader";
-import Rows from "./RowsLoader";
+import SectionHeader from "./SectionHeaderLoader/index";
+import ArticleHeader from "./ArticleHeaderLoader/index";
+import TreeFolders from "./TreeFolderLoader/index";
+import Rows from "./RowsLoader/index";
 import Text from "./TextLoader";
-import Filter from "./FilterLoader";
+import Filter from "./FilterLoader/index";
 import ProfileView from "./ProfileViewLoader";
 import SettingsFiles from "./SettingsFilesLoader";
-import Rectangle from "./RectangleLoader";
+import Rectangle from "./RectangleLoader/index";
+import Circle from "./CircleLoader/index";
 
 export default {
+  Rectangle,
+  Circle,
   SectionHeader,
   ArticleHeader,
   TreeFolders,
@@ -17,5 +20,4 @@ export default {
   Filter,
   ProfileView,
   SettingsFiles,
-  Rectangle,
 };

@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import RectangleLoader from "./RectangleLoader";
-import CircleLoader from "./CircleLoader";
+import RectangleLoader from "../RectangleLoader/index";
+import CircleLoader from "../CircleLoader/index";
 
 const StyledTreeFolder = styled.div`
   width: 100%;
@@ -20,25 +20,25 @@ const TreeFolderLoader = () => {
   return (
     <div>
       <StyledTreeFolder>
-        <CircleLoader radius="3" />
+        <CircleLoader radius="3" height="32" />
         <RectangleLoader width="100%" height="24" />
-        <CircleLoader radius="3" />
+        <CircleLoader radius="3" height="32" />
         <RectangleLoader width="100%" height="24" />
-        <CircleLoader radius="3" />
-        <RectangleLoader width="100%" height="24" />
-      </StyledTreeFolder>
-
-      <StyledTreeFolder>
-        <CircleLoader radius="3" />
-        <RectangleLoader width="100%" height="24" />
-        <CircleLoader radius="3" />
-        <RectangleLoader width="100%" height="24" />
-        <CircleLoader radius="3" />
+        <CircleLoader radius="3" height="32" />
         <RectangleLoader width="100%" height="24" />
       </StyledTreeFolder>
 
       <StyledTreeFolder>
-        <CircleLoader radius="3" />
+        <CircleLoader radius="3" height="32" />
+        <RectangleLoader width="100%" height="24" />
+        <CircleLoader radius="3" height="32" />
+        <RectangleLoader width="100%" height="24" />
+        <CircleLoader radius="3" height="32" />
+        <RectangleLoader width="100%" height="24" />
+      </StyledTreeFolder>
+
+      <StyledTreeFolder>
+        <CircleLoader radius="3" height="32" />
         <RectangleLoader width="100%" height="24" />
       </StyledTreeFolder>
 
