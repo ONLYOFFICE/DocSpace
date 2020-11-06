@@ -27,16 +27,14 @@ const StyledBox = styled.div`
 `;
 
 const RowBlock = (props) => {
-  if (!isMobile() && !isTablet()) {
-    return <RectangleLoader width="100%" height="16" {...props} />;
-  } else {
-    return (
-      <StyledBox>
-        <RectangleLoader width="80%" height="16" {...props} />
-        <RectangleLoader width="100%" height="12" {...props} />
-      </StyledBox>
-    );
-  }
+  return !isMobile() && !isTablet() ? (
+    <RectangleLoader width="100%" height="16" {...props} />
+  ) : (
+    <StyledBox>
+      <RectangleLoader width="80%" height="16" {...props} />
+      <RectangleLoader width="100%" height="12" {...props} />
+    </StyledBox>
+  );
 };
 
 const Row = (props) => {
