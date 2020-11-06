@@ -130,10 +130,12 @@ export function getUser(dispatch) {
 export function getPortalSettings(dispatch) {
   return api.settings.getSettings().then((settings) => {
     const { passwordHash: hashSettings, ...otherSettings } = settings;
-
+    const logoSettings = { logoUrl: "images/nav.logo.opened.react.svg" };
     dispatch(
       setSettings(
-        hashSettings ? { ...otherSettings, hashSettings } : otherSettings
+        hashSettings
+          ? { ...logoSettings, ...otherSettings, hashSettings }
+          : { ...logoSettings, ...otherSettings }
       )
     );
 
