@@ -984,7 +984,7 @@ namespace ASC.Employee.Core.Controllers
             return UpdateMemberPhoto(userid, model);
         }
 
-        public ThumbnailsDataWrapper UpdateMemberPhoto(string userid, UpdateMemberModel model)
+        private ThumbnailsDataWrapper UpdateMemberPhoto(string userid, UpdateMemberModel model)
         {
             var user = GetUserInfo(userid);
 
