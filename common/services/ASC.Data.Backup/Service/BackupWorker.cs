@@ -512,6 +512,7 @@ namespace ASC.Data.Backup.Service
             try
             {
                 tenant = tenantManager.GetTenant(TenantId);
+                tenantManager.SetCurrentTenant(tenant);
                 notifyHelper.SendAboutRestoreStarted(tenant, Notify);
                 var storage = backupStorageFactory.GetBackupStorage(StorageType, TenantId, StorageParams);
                 storage.Download(StoragePath, tempFile);
@@ -561,7 +562,7 @@ namespace ASC.Data.Backup.Service
                         restoredTenant.MappedDomain = tenant.MappedDomain;
                     }
                     tenantManager.SaveTenant(restoredTenant);
-
+                    tenantManager.SetCurrentTenant(restoredTenant);
                     // sleep until tenants cache expires
                     Thread.Sleep(TimeSpan.FromMinutes(2));
 
@@ -592,6 +593,7 @@ namespace ASC.Data.Backup.Service
             {
                 try
                 {
+                    IsCompleted = true;
                     backupWorker.PublishProgress(this);
                 }
                 catch (Exception error)
@@ -603,7 +605,6 @@ namespace ASC.Data.Backup.Service
                 {
                     File.Delete(tempFile);
                 }
-                IsCompleted = true;
             }
         }
 
@@ -702,6 +703,8 @@ namespace ASC.Data.Backup.Service
             {
                 try
                 {
+
+                    IsCompleted = true;
                     backupWorker.PublishProgress(this);
                 }
                 catch (Exception error)
@@ -713,7 +716,6 @@ namespace ASC.Data.Backup.Service
                 {
                     File.Delete(tempFile);
                 }
-                IsCompleted = true;
             }
         }
 

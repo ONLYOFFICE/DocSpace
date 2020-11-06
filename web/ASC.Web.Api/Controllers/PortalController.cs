@@ -20,6 +20,8 @@ using ASC.Web.Core.Mobile;
 using ASC.Web.Core.Utility;
 using ASC.Web.Studio.Core;
 using ASC.Web.Studio.Core.Notify;
+using ASC.Web.Studio.UserControls.Management;
+using ASC.Web.Studio.UserControls.Statistics;
 using ASC.Web.Studio.Utility;
 
 using Microsoft.AspNetCore.Mvc;
@@ -49,7 +51,8 @@ namespace ASC.Web.Api.Controllers
         private SettingsManager SettingsManager { get; }
         private IMobileAppInstallRegistrator MobileAppInstallRegistrator { get; }
         private IConfiguration Configuration { get; set; }
-        private ILog Log { get; }
+        private TenantExtra TenantExtra { get; set; }
+        public ILog Log { get; }
 
 
         public PortalController(
@@ -65,6 +68,7 @@ namespace ASC.Web.Api.Controllers
             SecurityContext securityContext,
             SettingsManager settingsManager,
             IMobileAppInstallRegistrator mobileAppInstallRegistrator,
+            TenantExtra tenantExtra,
             IConfiguration configuration
             )
         {
@@ -81,6 +85,7 @@ namespace ASC.Web.Api.Controllers
             SettingsManager = settingsManager;
             MobileAppInstallRegistrator = mobileAppInstallRegistrator;
             Configuration = configuration;
+            TenantExtra = tenantExtra;
         }
 
         [Read("")]
@@ -119,6 +124,20 @@ namespace ASC.Web.Api.Controllers
                 Log.Error("getshortenlink", ex);
                 return link;
             }
+        }
+
+        [Read("tenantextra")]
+        public object GetTenantExtra()
+        {
+            return new
+            {
+                opensource = TenantExtra.Opensource,
+                enterprise = TenantExtra.Enterprise,
+                tariff = TenantExtra.GetCurrentTariff(),
+                quota = TenantExtra.GetTenantQuota(),
+                notPaid = TenantExtra.IsNotPaid(),
+                licenseAccept = SettingsManager.LoadForCurrentUser<TariffSettings>().LicenseAcceptSetting
+            };
         }
 
 
@@ -207,7 +226,7 @@ namespace ASC.Web.Api.Controllers
         {
             var currentUser = UserManager.GetUsers(SecurityContext.CurrentAccount.ID);
             MobileAppInstallRegistrator.RegisterInstall(currentUser.Email, model.Type);
-        }
+    }
     }
 
     public static class PortalControllerExtension
@@ -229,7 +248,8 @@ namespace ASC.Web.Api.Controllers
                 .AddAuthContextService()
                 .AddWebItemSecurity()
                 .AddSecurityContextService()
-                .AddCachedMobileAppInstallRegistrator();
+                .AddCachedMobileAppInstallRegistrator()
+                .AddTenantExtraService();
         }
     }
 }
