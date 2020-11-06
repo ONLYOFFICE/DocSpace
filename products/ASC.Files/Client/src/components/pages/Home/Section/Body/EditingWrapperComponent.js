@@ -75,6 +75,14 @@ const EditingWrapperComponent = (props) => {
     if (e.keyCode === 27) return cancelUpdateItem(e);
   };
 
+  const setIsHoveredOkHandler = () => {
+    setIsHoveredOk(!OkIconIsHovered);
+  };
+
+  const setIsHoveredCancelHandler = () => {
+    setIsHoveredCancel(!CancelIconIsHovered);
+  };
+
   return (
     <EditingWrapper>
       <TextInput
@@ -96,8 +104,8 @@ const EditingWrapperComponent = (props) => {
         onClick={onUpdate}
         icon={okIcon}
         data-itemid={itemId}
-        onMouseEnter={() => setIsHoveredOk(true)}
-        onMouseLeave={() => setIsHoveredOk(false)}
+        onMouseEnter={setIsHoveredOkHandler}
+        onMouseLeave={setIsHoveredOkHandler}
         isHovered={OkIconIsHovered}
       />
       <Button
@@ -107,8 +115,8 @@ const EditingWrapperComponent = (props) => {
         onClick={onCancel}
         icon={cancelIcon}
         data-itemid={itemId}
-        onMouseEnter={() => setIsHoveredCancel(true)}
-        onMouseLeave={() => setIsHoveredCancel(false)}
+        onMouseEnter={setIsHoveredCancelHandler}
+        onMouseLeave={setIsHoveredCancelHandler}
         isHovered={CancelIconIsHovered}
       />
     </EditingWrapper>
