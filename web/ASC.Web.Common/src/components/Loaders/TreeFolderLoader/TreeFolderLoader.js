@@ -16,34 +16,34 @@ const StyledContainer = styled.div`
   margin-top: 48px;
 `;
 
-const TreeFolderLoader = () => {
+const TreeFolderLoader = (props) => {
   return (
     <div>
       <StyledTreeFolder>
-        <CircleLoader radius="3" height="32" />
-        <RectangleLoader width="100%" height="24" />
-        <CircleLoader radius="3" height="32" />
-        <RectangleLoader width="100%" height="24" />
-        <CircleLoader radius="3" height="32" />
-        <RectangleLoader width="100%" height="24" />
+        <CircleLoader radius="3" height="32" {...props} />
+        <RectangleLoader width="100%" height="24" {...props} />
+        <CircleLoader radius="3" height="32" {...props} />
+        <RectangleLoader width="100%" height="24" {...props} />
+        <CircleLoader radius="3" height="32" {...props} />
+        <RectangleLoader width="100%" height="24" {...props} />
       </StyledTreeFolder>
 
       <StyledTreeFolder>
-        <CircleLoader radius="3" height="32" />
-        <RectangleLoader width="100%" height="24" />
-        <CircleLoader radius="3" height="32" />
-        <RectangleLoader width="100%" height="24" />
-        <CircleLoader radius="3" height="32" />
-        <RectangleLoader width="100%" height="24" />
+        <CircleLoader radius="3" height="32" {...props} />
+        <RectangleLoader width="100%" height="24" {...props} />
+        <CircleLoader radius="3" height="32" {...props} />
+        <RectangleLoader width="100%" height="24" {...props} />
+        <CircleLoader radius="3" height="32" {...props} />
+        <RectangleLoader width="100%" height="24" {...props} />
       </StyledTreeFolder>
 
       <StyledTreeFolder>
-        <CircleLoader radius="3" height="32" />
-        <RectangleLoader width="100%" height="24" />
+        <CircleLoader radius="3" height="32" {...props} />
+        <RectangleLoader width="100%" height="24" {...props} />
       </StyledTreeFolder>
 
       <StyledContainer>
-        <RectangleLoader width="100%" height="48" />
+        <RectangleLoader width="100%" height="48" {...props} />
       </StyledContainer>
     </div>
   );
