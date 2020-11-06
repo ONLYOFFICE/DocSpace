@@ -104,7 +104,7 @@
     <value>Wenn Sie den Bitly-Dienst hinzufügen, erhalten Sie verkürzte Links, um neue Nutzer zum ONLYOFFICE ™ -Portal einzuladen und verkürzte Links zu dem Modul "Dokumente", der mit externen Benutzern geteilt wurde.</value>
   </data>
   <data name="ConsumersBitlyInstructionV11" xml:space="preserve">
-    <value>Verbinden Sie Bitly Service, um Einladungslinks und freigegebene Links zu dem Modul "Dokumente" zu verkürzen. Fügen Sie Ihr Bitly-Login und API-Schlüssel unten ein:</value>
+    <value>Verbinden Sie Bitly Service, um Einladungslinks und freigegebene Links zu dem Modul "Dokumente" zu verkürzen. {0}Fügen Sie Ihr Bitly-Login und API-Schlüssel unten ein:</value>
   </data>
   <data name="ConsumersBox" xml:space="preserve">
     <value>Box Schlüssel</value>
@@ -122,7 +122,7 @@
     <value>Wenn man die Anwendung des Box-Dienstes hinzufügt, kann man sein Box-Konto mit dem Modul "Dokumente" verknüpfen. Dies  ermöglicht das Hochladen und Erstellen neuer Dateien in Box, Bearbeiten der bestehenden Dateien, Kopieren und Löschen, Freigabe von Dateien oder Ordnern mit ONLYOFFICE ™ Portalbenutzer.</value>
   </data>
   <data name="ConsumersBoxInstructionV11" xml:space="preserve">
-    <value>Erlauben Sie dieser App, die Verbindung von Box mit dem Modul Dokumente zu ermöglichen. Dadurch können Sie Dateien aus Ihrem Box-Konto verwalten, bearbeiten und für ONLYOFFICE-Benutzer freigeben. Melden Sie bei Ihrem Konto auf der Box-Seite für Entwickler an, erstellen Sie eine neue App für die Integration mit ONLYOFFICE. Fügen Sie die erhaltenen Daten unten ein:</value>
+    <value>Erlauben Sie dieser App, die Verbindung von Box mit dem Modul Dokumente zu ermöglichen. Dadurch können Sie Dateien aus Ihrem Box-Konto verwalten, bearbeiten und für ONLYOFFICE-Benutzer freigeben. {0}Melden Sie bei Ihrem Konto auf der Box-Seite für Entwickler an, erstellen Sie eine neue App für die Integration mit ONLYOFFICE. Fügen Sie die erhaltenen Daten unten ein:</value>
   </data>
   <data name="ConsumersClickatell" xml:space="preserve">
     <value>Clickatell</value>
@@ -137,7 +137,7 @@
     <value>Durch Hinzufügen der Clickatell-Dienstanwendung können Sie die Zwei-Faktor-Authentifizierung aktivieren und eine SMS mit einem Code empfangen, der es dem Benutzer ermöglicht, das ONLYOFFICE-Portal zu betreten.</value>
   </data>
   <data name="ConsumersClickatellInstructionV11" xml:space="preserve">
-    <value>Benutzen Sie diese App, um die Zwei-Faktor-Authentifizierung über Clickatell zu ermöglichen. Melden Sie bei Ihrer SMS-Plattform an und erstellen Sie eine neue Integration mit ONLYOFFICE. Kopieren Sie den API-Schlüssel und fügen Sie diesen unten ein:</value>
+    <value>Benutzen Sie diese App, um die Zwei-Faktor-Authentifizierung über Clickatell zu ermöglichen. {0}Melden Sie bei Ihrer SMS-Plattform an und erstellen Sie eine neue Integration mit ONLYOFFICE. Kopieren Sie den API-Schlüssel und fügen Sie diesen unten ein:</value>
   </data>
   <data name="ConsumersDocuSign" xml:space="preserve">
     <value>DocuSign</value>
@@ -159,7 +159,7 @@
 </value>
   </data>
   <data name="ConsumersDocuSignInstructionV11" xml:space="preserve">
-    <value>Erlauben Sie dieser App, Dokumente mit DocuSign digital zu unterschreiben. Öffnen Sie Ihre DocuSign Admin-Konsole und ermöglichen Sie die Integration mit ONLYOFFICE. Fügen Sie die erhaltenen Daten unten ein:</value>
+    <value>Erlauben Sie dieser App, Dokumente mit DocuSign digital zu unterschreiben. {0}Öffnen Sie Ihre DocuSign Admin-Konsole und ermöglichen Sie die Integration mit ONLYOFFICE. Fügen Sie die erhaltenen Daten unten ein:</value>
   </data>
   <data name="ConsumersDropBox" xml:space="preserve">
     <value>Dropbox</value>
@@ -171,7 +171,7 @@
     <value>Wenn man die Anwendung des Dropbox-Dienstes hinzufügt, kann man sein Dropbox -Konto mit dem Modul "Dokumente" verknüpfen. Dies  ermöglicht das Hochladen und Erstellen neuer Dateien in Dropbox, Bearbeiten der bestehenden Dateien, Kopieren und Löschen, Freigabe von Dateien oder Ordnern mit ONLYOFFICE ™ Portalbenutzer.</value>
   </data>
   <data name="ConsumersDropBoxInstructionV11" xml:space="preserve">
-    <value>Erlauben Sie dieser App, die Verbindung von Dropbox mit dem Modul Dokumente zu ermöglichen. Dadurch können Sie Dateien aus Ihrem Dropbox-Konto verwalten, bearbeiten und für ONLYOFFICE-Benutzer freigeben. Melden Sie bei Ihrem Konto auf der Dropbox-Seite für Entwickler an, erstellen Sie eine neue App für die Integration mit ONLYOFFICE. Fügen Sie die erhaltenen Daten unten ein:</value>
+    <value>Erlauben Sie dieser App, die Verbindung von Dropbox mit dem Modul Dokumente zu ermöglichen. Dadurch können Sie Dateien aus Ihrem Dropbox-Konto verwalten, bearbeiten und für ONLYOFFICE-Benutzer freigeben. {0}Melden Sie bei Ihrem Konto auf der Dropbox-Seite für Entwickler an, erstellen Sie eine neue App für die Integration mit ONLYOFFICE. Fügen Sie die erhaltenen Daten unten ein:</value>
   </data>
   <data name="ConsumersDropBoxKey" xml:space="preserve">
     <value>Dropbox ID</value>
@@ -212,7 +212,7 @@
 </value>
   </data>
   <data name="ConsumersFacebookInstructionV11" xml:space="preserve">
-    <value>Erlauben Sie dieser App, Einloggen bei ONLYOFFICE über Facebook und Import von Facebook-Kontakten ins CRM-Modul zu ermöglichen. Öffnen Sie das Facebook-Portal für Entwickler und erstellen Sie eine neue App für die Integration mit ONLYOFFICE. Fügen Sie die erhaltenen Daten unten ein:</value>
+    <value>Erlauben Sie dieser App, Einloggen bei ONLYOFFICE über Facebook und Import von Facebook-Kontakten ins CRM-Modul zu ermöglichen. {0}Öffnen Sie das Facebook-Portal für Entwickler und erstellen Sie eine neue App für die Integration mit ONLYOFFICE. Fügen Sie die erhaltenen Daten unten ein:</value>
   </data>
   <data name="ConsumersFirebase" xml:space="preserve">
     <value>Firebase</value>
@@ -270,7 +270,7 @@
 </value>
   </data>
   <data name="ConsumersGoogleInstructionV11" xml:space="preserve">
-    <value>Erlauben Sie dieser App, die Verbindung von Google Drive mit dem Modul Dokumente zu ermöglichen. Dadurch können Sie Dateien aus Ihrem Google Drive-Konto verwalten, bearbeiten und für ONLYOFFICE-Benutzer freigeben. Öffnen Sie Google APIs Console und erstellen Sie ein neues Projekt für die Integration mit ONLYOFFICE. Fügen Sie die erhaltenen Daten unten ein:</value>
+    <value>Erlauben Sie dieser App, die Verbindung von Google Drive mit dem Modul Dokumente zu ermöglichen. Dadurch können Sie Dateien aus Ihrem Google Drive-Konto verwalten, bearbeiten und für ONLYOFFICE-Benutzer freigeben. {0}Öffnen Sie Google APIs Console und erstellen Sie ein neues Projekt für die Integration mit ONLYOFFICE. Fügen Sie die erhaltenen Daten unten ein:</value>
   </data>
   <data name="ConsumersLinkedIn" xml:space="preserve">
     <value>Linkedin-Schlüssel</value>
@@ -282,7 +282,7 @@
     <value>Wenn man die Anwendung des LinkedIn-Dienstes hinzufügt, kann man sein LinkedIn-Konto mit der Profilseite verknüpfen. So meldet man sich ins ONLYOFFICE™ Portal mit eigenen LinkedIn-Login-Daten an. </value>
   </data>
   <data name="ConsumersLinkedInInstructionV11" xml:space="preserve">
-    <value>Erlauben Sie dieser App, Einloggen bei ONLYOFFICE über LinkedIn-Konten zu ermöglichen. Öffnen Sie die LinkedIn-Seite für Entwickler (LinkedIn Developers) und erstellen Sie eine neue App für die Integration mit ONLYOFFICE. Fügen Sie die erhaltenen Daten unten ein:</value>
+    <value>Erlauben Sie dieser App, Einloggen bei ONLYOFFICE über LinkedIn-Konten zu ermöglichen. {0}Öffnen Sie die LinkedIn-Seite für Entwickler (LinkedIn Developers) und erstellen Sie eine neue App für die Integration mit ONLYOFFICE. Fügen Sie die erhaltenen Daten unten ein:</value>
   </data>
   <data name="ConsumersLinkedInKey" xml:space="preserve">
     <value>Linkedin ID</value>
@@ -399,7 +399,7 @@
     <value>Wenn man die Anwendung des OneDrive-Dienstes hinzufügt, kann man sein OneDrive-Konto mit dem Modul "Dokumente" verknüpfen. Dies ermöglicht das Hochladen und Erstellen neuer Dateien in OneDrive, Bearbeiten der bestehenden Dateien, Kopieren und Löschen, Freigabe von Dateien oder Ordnern mit ONLYOFFICE ™ Portalbenutzer.</value>
   </data>
   <data name="ConsumersSkyDriveInstructionV11" xml:space="preserve">
-    <value>Erlauben Sie dieser App, die Verbindung von OneDrive mit dem Modul Dokumente zu ermöglichen. Dadurch können Sie Dateien aus Ihrem OneDrive-Konto verwalten, bearbeiten und für ONLYOFFICE-Benutzer freigeben. Melden Sie bei Ihrem Microsoft Azure-Konto an und erstellen Sie eine neue App für die Integration mit ONLYOFFICE. Fügen Sie die erhaltenen Daten unten ein:</value>
+    <value>Erlauben Sie dieser App, die Verbindung von OneDrive mit dem Modul Dokumente zu ermöglichen. Dadurch können Sie Dateien aus Ihrem OneDrive-Konto verwalten, bearbeiten und für ONLYOFFICE-Benutzer freigeben. {0}Melden Sie bei Ihrem Microsoft Azure-Konto an und erstellen Sie eine neue App für die Integration mit ONLYOFFICE. Fügen Sie die erhaltenen Daten unten ein:</value>
   </data>
   <data name="ConsumersSmsc" xml:space="preserve">
     <value>SMS-Center</value>
@@ -411,7 +411,7 @@
     <value>Durch Hinzufügen der SMS-Center-Dienstanwendung können Sie die Zwei-Faktor-Authentifizierung aktivieren und eine SMS mit einem Code empfangen, der es dem Benutzer ermöglicht, das ONLYOFFICE-Portal zu betreten. SMS-Center-Anwendung ist als Anbieter für die GUS-Staaten nützlich.</value>
   </data>
   <data name="ConsumersSmscInstructionV11" xml:space="preserve">
-    <value>Benutzen Sie diese App, um die Zwei-Faktor-Authentifizierung über SMS Center zu ermöglichen. Geben Sie Ihre SMSC Anmeldedaten (Login und Passwort bzw. MD5-Passwort) unten ein:</value>
+    <value>Benutzen Sie diese App, um die Zwei-Faktor-Authentifizierung über SMS Center zu ermöglichen. {0}Geben Sie Ihre SMSC Anmeldedaten (Login und Passwort bzw. MD5-Passwort) unten ein:</value>
   </data>
   <data name="Consumerssmsclogin" xml:space="preserve">
     <value>Login</value>
@@ -435,7 +435,7 @@
     <value>Nachdem Sie Twilio hinzugefügt haben, können Sie jeden CRM-Kontakt direkt aus dem Browser anrufen.</value>
   </data>
   <data name="ConsumersTwilioInstructionV11" xml:space="preserve">
-    <value>Erlauben Sie dieser App, Anrufe aus dem CRM-Modul mit Twilio zu ermöglichen. Öffnen Sie die Twilio-Konsole und fügen Sie die folgenden Daten unten ein:</value>
+    <value>Erlauben Sie dieser App, Anrufe aus dem CRM-Modul mit Twilio zu ermöglichen. {0}Öffnen Sie die Twilio-Konsole und fügen Sie die folgenden Daten unten ein:</value>
   </data>
   <data name="Consumerstwiliosender" xml:space="preserve">
     <value>Telefonnummer von Twilio (erforderlich für die SMS-Autorisierung)</value>
@@ -456,7 +456,7 @@
     <value>Wenn man die Anwendung des Twitter-Dienstes hinzufügt, kann man sein Twitter-Konto mit der Profilseite verknüpfen. So meldet man sich ins ONLYOFFICE™ Portal mit eigenen Twitter-Login-Daten an. Sie können auch ein Facebook-Konto der Person im CRM-Modul finden und mit "Person / Firma bearbeiten" verknüpfen und Twitter-Newsfeedaktualisierungen durchschauen.</value>
   </data>
   <data name="ConsumersTwitterInstructionV11" xml:space="preserve">
-    <value>Erlauben Sie dieser App, Einloggen bei ONLYOFFICE über Twitter und Import von Twitter-Kontakten ins CRM-Modul zu ermöglichen. Öffnen Sie das Twitter-Portal für Entwickler (Twitter Developer) und erstellen Sie eine neue App für die Integration mit ONLYOFFICE. Fügen Sie die erhaltenen Daten unten ein:</value>
+    <value>Erlauben Sie dieser App, Einloggen bei ONLYOFFICE über Twitter und Import von Twitter-Kontakten ins CRM-Modul zu ermöglichen. {0}Öffnen Sie das Twitter-Portal für Entwickler (Twitter Developer) und erstellen Sie eine neue App für die Integration mit ONLYOFFICE. Fügen Sie die erhaltenen Daten unten ein:</value>
   </data>
   <data name="ConsumersTwitterKey" xml:space="preserve">
     <value>Twitter ID</value>
@@ -513,7 +513,7 @@
     <value>Durch Hinzufügen der Yahoo-Dienstanwendung können Sie neue Benutzer des ONLYOFFICE-Portals aus der Kontaktliste hinzufügen.</value>
   </data>
   <data name="ConsumersYahooInstructionV11" xml:space="preserve">
-    <value>Erlauben Sie dieser App, neue Portal-Benutzer aus Ihren Yahoo-Kontaktlisten hinzuzufügen. Öffnen Sie die Seite Create Application (App erstellen) in Yahoo Developer Network und erstellen Sie eine neue App für die Integration mit ONLYOFFICE. Fügen Sie die erhaltenen Daten unten ein:</value>
+    <value>Erlauben Sie dieser App, neue Portal-Benutzer aus Ihren Yahoo-Kontaktlisten hinzuzufügen. {0}Öffnen Sie die Seite Create Application (App erstellen) in Yahoo Developer Network und erstellen Sie eine neue App für die Integration mit ONLYOFFICE. Fügen Sie die erhaltenen Daten unten ein:</value>
   </data>
   <data name="ConsumersYandex" xml:space="preserve">
     <value>Yandex</value>
