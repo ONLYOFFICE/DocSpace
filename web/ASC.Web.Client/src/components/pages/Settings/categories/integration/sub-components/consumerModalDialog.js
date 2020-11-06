@@ -136,6 +136,23 @@ class ConsumerModalDialog extends React.Component {
       : consumers.find((consumer) => consumer.name === selectedConsumer)[key];
   };
 
+  intructionsSeparator = (<Box marginProp="4px 0" />);
+
+  intructionsText = (
+    <Text as="div">
+      {this.setConsumerData("instruction")
+        .split("{0}")
+        .map(
+          (str, i) =>
+            (i === 0 && (
+              <React.Fragment key={str}>
+                {str} {this.intructionsSeparator}
+              </React.Fragment>
+            )) || <React.Fragment key={str}> {str} </React.Fragment>
+        )}
+    </Text>
+  );
+
   render() {
     const { onModalClose, dialogVisible, isLoading, t } = this.props;
     const {
@@ -143,6 +160,7 @@ class ConsumerModalDialog extends React.Component {
       updateConsumerValues,
       bodyDescription,
       bottomDescription,
+      intructionsText,
     } = this;
 
     return (
@@ -150,7 +168,7 @@ class ConsumerModalDialog extends React.Component {
         <ModalDialog visible={dialogVisible} onClose={onModalClose}>
           <ModalDialog.Header>{setConsumerData("name")}</ModalDialog.Header>
           <ModalDialog.Body>
-            <Text as="div">{setConsumerData("instruction")}</Text>
+            {intructionsText}
             <Text as="div">{bodyDescription}</Text>
             <React.Fragment>{setConsumerData("props")}</React.Fragment>
             <Text>{bottomDescription}</Text>
