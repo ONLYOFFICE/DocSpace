@@ -1088,7 +1088,7 @@ const getIcon = (state, size = 24, fileExst = null, providerKey = null) => {
     const isEbookItem = isEbook(fileExst)(state);
     const isHtmlItem = isHtml(fileExst)(state);
 
-    return getFileIcon(
+    const icon = getFileIcon(
       fileExst,
       size,
       isArchiveItem,
@@ -1097,6 +1097,8 @@ const getIcon = (state, size = 24, fileExst = null, providerKey = null) => {
       isEbookItem,
       isHtmlItem
     );
+
+    return icon;
   } else {
     return getFolderIcon(providerKey, size);
   }
