@@ -1575,6 +1575,43 @@ namespace ASC.Employee.Core.Controllers
 
         //#endregion
 
+        #region Remove user data
+
+
+        [Read(@"remove/progress")]
+        public RemoveProgressItem GetRemoveProgress(Guid userId)
+        {
+            PermissionContext.DemandPermissions(Constants.Action_EditUser);
+
+            return QueueWorkerRemove.GetProgressItemStatus(Tenant.TenantId, userId);
+        }
+
+        [Update(@"remove/terminate")]
+        public void TerminateRemove(Guid userId)
+        {
+            PermissionContext.DemandPermissions(Constants.Action_EditUser);
+
+            QueueWorkerRemove.Terminate(Tenant.TenantId, userId);
+        }
+
+        [Create(@"remove/start")]
+        public RemoveProgressItem StartRemove(Guid userId)
+        {
+            PermissionContext.DemandPermissions(Constants.Action_EditUser);
+
+            var user = UserManager.GetUsers(userId);
+
+            if (user == null || user.ID == Constants.LostUser.ID)
+                throw new ArgumentException("User with id = " + userId + " not found");
+
+            if (user.IsOwner(Tenant) || user.IsMe(AuthContext) || user.Status != EmployeeStatus.Terminated)
+                throw new ArgumentException("Can not delete user with id = " + userId);
+
+            return QueueWorkerRemove.Start(Tenant.TenantId, user, SecurityContext.CurrentAccount.ID, true);
+        }
+
+        #endregion
+
         private void UpdateDepartments(IEnumerable<Guid> department, UserInfo user)
         {
             if (!PermissionContext.CheckPermissions(Constants.Action_EditGroups)) return;
