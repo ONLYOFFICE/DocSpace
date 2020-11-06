@@ -36,17 +36,17 @@ const StyledBox2 = styled.div`
 
 const StyledSpacer = styled.div``;
 
-const SectionHeaderLoader = () => {
+const SectionHeaderLoader = (props) => {
   return (
     <StyledContainer>
       <StyledBox1>
-        <RectangleLoader width="17" height="17" />
-        <RectangleLoader width="67" height="17" />
+        <RectangleLoader width="17" height="17" {...props} />
+        <RectangleLoader width="67" height="17" {...props} />
       </StyledBox1>
       <StyledSpacer />
       <StyledBox2>
-        <RectangleLoader width="17" height="17" />
-        <RectangleLoader width="17" height="17" />
+        <RectangleLoader width="17" height="17" {...props} />
+        <RectangleLoader width="17" height="17" {...props} />
       </StyledBox2>
     </StyledContainer>
   );
