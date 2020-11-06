@@ -303,8 +303,6 @@ const VersionRow = (props) => {
               <>
                 <Textarea
                   className="version_edit-comment textarea-desktop"
-                  //style={{ margin: "8px 24px 8px 0" }}
-                  //placeholder="Add comment"
                   onChange={onChange}
                   fontSize={12}
                   heightTextArea={54}
