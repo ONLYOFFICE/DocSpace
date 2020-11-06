@@ -198,7 +198,7 @@ class FilterInput extends React.Component {
         this.props.getFilterData(),
         cloneObjectsArray(this.props.selectedFilterData.filterValues)
       );
-      this.updateFilter(internalFilterData);
+      //this.updateFilter(internalFilterData);
     }
   }
   shouldComponentUpdate(nextProps, nextState) {
@@ -330,11 +330,7 @@ class FilterInput extends React.Component {
 
   resize = () => {
     this.isResizeUpdate = true;
-    this.setState({
-      filterValues: this.state.filterValues,
-      openFilterItems: this.state.filterValues,
-      hideFilterItems: [],
-    });
+    this.updateFilter();
   };
   onChangeSortDirection(key) {
     this.onFilter(
@@ -428,13 +424,63 @@ class FilterInput extends React.Component {
       ""
     );
   }
+
+  calcHiddenItems = (searchWidth, currentFilterItems) => {
+    const { hideFilterItems } = this.state;
+    if (
+      !searchWidth ||
+      currentFilterItems.length === 0 ||
+      searchWidth > this.minWidth
+    )
+      return hideFilterItems.length;
+
+    let newSearchWidth = searchWidth;
+    let numberOfHiddenItems = hideFilterItems.length;
+
+    for (let i = 0; i < currentFilterItems.length; i++) {
+      if (currentFilterItems[i].id === "styled-hide-filter") continue;
+      const filterItemWidth = currentFilterItems[i].getBoundingClientRect()
+        .width;
+      newSearchWidth = newSearchWidth + filterItemWidth;
+      numberOfHiddenItems++;
+      if (newSearchWidth > this.minWidth) break;
+    }
+
+    return numberOfHiddenItems;
+  };
+
   updateFilter(inputFilterItems) {
     const currentFilterItems =
       inputFilterItems || cloneObjectsArray(this.state.filterValues);
     const fullWidth = this.searchWrapper.current.getBoundingClientRect().width;
     const filterWidth = this.filterWrapper.current.getBoundingClientRect()
       .width;
+
     const filterArr = Array.from(
+      Array.from(this.filterWrapper.current.children).find(
+        (x) => x.id === "filter-items-container"
+      ).children
+    );
+
+    const searchWidth = fullWidth - filterWidth;
+
+    const numberOfHiddenItems = this.calcHiddenItems(searchWidth, filterArr);
+    console.log("numberOfHiddenItems: ", numberOfHiddenItems);
+    if (searchWidth !== 0 && currentFilterItems.length > 0) {
+      this.setState({
+        openFilterItems: numberOfHiddenItems
+          ? currentFilterItems.slice(
+              0,
+              currentFilterItems.length - numberOfHiddenItems
+            )
+          : currentFilterItems.slice(),
+        hideFilterItems: numberOfHiddenItems
+          ? currentFilterItems.slice(-numberOfHiddenItems)
+          : [],
+      });
+    }
+
+    /*const filterArr = Array.from(
       Array.from(this.filterWrapper.current.children).find(
         (x) => x.id === "filter-items-container"
       ).children
@@ -495,7 +541,7 @@ class FilterInput extends React.Component {
         openFilterItems: currentFilterItems.slice(),
         hideFilterItems: [],
       });
-    }
+    }*/
   }
   onDeleteFilterItem(key) {
     const currentFilterItems = this.state.filterValues.slice();
@@ -554,7 +600,8 @@ class FilterInput extends React.Component {
         .width;
       const filterWidth = this.filterWrapper.current.getBoundingClientRect()
         .width;
-      if (fullWidth <= this.minWidth || filterWidth > fullWidth / 2)
+      const searchWidth = fullWidth - filterWidth;
+      if (searchWidth !== 0 && searchWidth <= this.minWidth)
         this.updateFilter();
     }
   }
@@ -775,7 +822,7 @@ class FilterInput extends React.Component {
         id={id}
         style={style}
       >
-        <div className="styled-search-input" ref={this.searchWrapper}>
+        <div className="styled-search-input test" ref={this.searchWrapper}>
           <SearchInput
             id={id}
             isDisabled={isDisabled}

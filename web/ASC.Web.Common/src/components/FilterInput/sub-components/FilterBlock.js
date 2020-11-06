@@ -266,12 +266,6 @@ class FilterBlock extends React.Component {
       hideFilterItems: hideFilterItems || [],
       openFilterItems: openFilterItems || [],
     };
-
-    this.throttledRender = throttle(this.onRender, 100);
-  }
-
-  componentDidUpdate() {
-    this.throttledRender();
   }
 
   shouldComponentUpdate(nextProps, nextState) {
