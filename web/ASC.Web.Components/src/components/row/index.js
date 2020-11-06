@@ -49,12 +49,10 @@ const StyledElement = styled.div`
 `;
 
 const StyledContentElement = styled.div`
-  margin-left: 18px;
   margin-top: 4px;
-  margin-right: -2px;
+
   user-select: none;
   @media ${tablet} {
-    margin-left: 17px;
     margin-top: 6px;
   }
 `;
