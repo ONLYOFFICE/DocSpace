@@ -203,7 +203,7 @@ export function getConsumers() {
   };
 }
 
-export function sendConsumerNewProps(newProps) {
+export function updateConsumerProps(newProps) {
   return (dispatch) => {
     return api.settings
       .updateConsumerProps(newProps)

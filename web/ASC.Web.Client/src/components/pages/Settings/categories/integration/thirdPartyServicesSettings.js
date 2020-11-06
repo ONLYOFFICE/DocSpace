@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import {
   getConsumers,
-  sendConsumerNewProps,
+  updateConsumerProps,
 } from "../../../../../store/settings/actions";
 import { withTranslation } from "react-i18next";
 import styled from "styled-components";
@@ -111,7 +111,7 @@ class ThirdPartyServices extends React.Component {
     };
 
     this.props
-      .sendConsumerNewProps(data)
+      .updateConsumerProps(data)
       .then(() => {
         isFill && this.onChangeLoading(false);
         isFill
@@ -126,7 +126,7 @@ class ThirdPartyServices extends React.Component {
   };
 
   render() {
-    const { t, i18n, consumers, sendConsumerNewProps } = this.props;
+    const { t, i18n, consumers, updateConsumerProps } = this.props;
     const { selectedConsumer, dialogVisible, isLoading } = this.state;
     const { onModalClose, onModalOpen, setConsumer, onChangeLoading } = this;
 
@@ -174,7 +174,7 @@ class ThirdPartyServices extends React.Component {
                     onModalClose={onModalClose}
                     onModalOpen={onModalOpen}
                     setConsumer={setConsumer}
-                    sendConsumerNewProps={sendConsumerNewProps}
+                    updateConsumerProps={updateConsumerProps}
                   />
                 </Box>
               </StyledConsumer>
@@ -191,7 +191,7 @@ class ThirdPartyServices extends React.Component {
             isLoading={isLoading}
             onModalClose={onModalClose}
             onChangeLoading={onChangeLoading}
-            sendConsumerNewProps={sendConsumerNewProps}
+            updateConsumerProps={updateConsumerProps}
           />
         )}
       </>
@@ -203,7 +203,7 @@ ThirdPartyServices.propTypes = {
   t: PropTypes.func.isRequired,
   i18n: PropTypes.object.isRequired,
   consumers: PropTypes.arrayOf(PropTypes.object).isRequired,
-  sendConsumerNewProps: PropTypes.func.isRequired,
+  updateConsumerProps: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => {
@@ -211,6 +211,6 @@ const mapStateToProps = (state) => {
   return { consumers };
 };
 
-export default connect(mapStateToProps, { getConsumers, sendConsumerNewProps })(
+export default connect(mapStateToProps, { getConsumers, updateConsumerProps })(
   withTranslation()(ThirdPartyServices)
 );

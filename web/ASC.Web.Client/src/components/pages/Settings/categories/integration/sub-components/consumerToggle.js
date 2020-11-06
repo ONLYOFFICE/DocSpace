@@ -16,7 +16,7 @@ class ConsumerToggle extends React.Component {
   }
 
   onToggleClick = (e) => {
-    const { consumer, onModalOpen, sendConsumerNewProps } = this.props;
+    const { consumer, onModalOpen, updateConsumerProps } = this.props;
 
     if (e.currentTarget.checked) {
       onModalOpen();
@@ -41,7 +41,7 @@ class ConsumerToggle extends React.Component {
         props: prop,
       };
 
-      sendConsumerNewProps(data)
+      updateConsumerProps(data)
         .then(() => {
           toastr.success("Consumer successfully deactivated");
         })
@@ -84,5 +84,5 @@ ConsumerToggle.propTypes = {
     props: PropTypes.arrayOf(PropTypes.object),
   }).isRequired,
   onModalOpen: PropTypes.func.isRequired,
-  sendConsumerNewProps: PropTypes.func.isRequired,
+  updateConsumerProps: PropTypes.func.isRequired,
 };

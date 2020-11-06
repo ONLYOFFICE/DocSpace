@@ -39,7 +39,7 @@ class ConsumerModalDialog extends React.Component {
     const {
       onChangeLoading,
       selectedConsumer,
-      sendConsumerNewProps,
+      updateConsumerProps,
       onModalClose,
     } = this.props;
     const { state } = this;
@@ -60,7 +60,7 @@ class ConsumerModalDialog extends React.Component {
       name: selectedConsumer,
       props: prop,
     };
-    sendConsumerNewProps(data)
+    updateConsumerProps(data)
       .then(() => {
         onChangeLoading(false);
         toastr.success("Consumer properties successfully update");
@@ -188,5 +188,5 @@ ConsumerModalDialog.propTypes = {
   dialogVisible: PropTypes.bool.isRequired,
   isLoading: PropTypes.bool.isRequired,
   onChangeLoading: PropTypes.func.isRequired,
-  sendConsumerNewProps: PropTypes.func.isRequired,
+  updateConsumerProps: PropTypes.func.isRequired,
 };

@@ -9,16 +9,14 @@ class ConsumerItem extends React.Component {
       consumer,
       onModalOpen,
       setConsumer,
-      sendConsumerNewProps,
+      updateConsumerProps,
     } = this.props;
 
     const logo = `/images/thirdparties/${consumer.name.toLowerCase()}.svg`;
 
     return (
       <>
-        <Box displayProp="flex"
-          flexDirection="column"
-          widthProp="100%">
+        <Box displayProp="flex" flexDirection="column" widthProp="100%">
           <Box
             displayProp="flex"
             justifyContent="space-between"
@@ -33,14 +31,12 @@ class ConsumerItem extends React.Component {
               <ConsumerToggle
                 consumer={consumer}
                 onModalOpen={onModalOpen}
-                sendConsumerNewProps={sendConsumerNewProps}
+                updateConsumerProps={updateConsumerProps}
               />
             </Box>
           </Box>
           <Box displayProp="flex" marginProp="21px 0 0 0">
-            <Text>
-              {consumer.description}
-            </Text>
+            <Text>{consumer.description}</Text>
           </Box>
         </Box>
       </>
@@ -57,9 +53,9 @@ ConsumerItem.propTypes = {
     description: PropTypes.string,
     instruction: PropTypes.string,
     canSet: PropTypes.bool,
-    props: PropTypes.arrayOf(PropTypes.object)
+    props: PropTypes.arrayOf(PropTypes.object),
   }).isRequired,
   onModalOpen: PropTypes.func.isRequired,
   setConsumer: PropTypes.func.isRequired,
-  sendConsumerNewProps: PropTypes.func.isRequired
-}
+  updateConsumerProps: PropTypes.func.isRequired,
+};
