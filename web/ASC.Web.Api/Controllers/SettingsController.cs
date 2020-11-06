@@ -853,7 +853,7 @@ namespace ASC.Api.Settings
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
             WebItemSecurity.SetSecurity(model.Id, model.Enabled, model.Subjects?.ToArray());
-            var securityInfo = GetWebItemSecurityInfo( new List<string> { model.Id } );
+            var securityInfo = GetWebItemSecurityInfo(new List<string> { model.Id });
 
             if (model.Subjects == null) return securityInfo;
 
@@ -949,22 +949,10 @@ namespace ASC.Api.Settings
         }
 
         [Read("security/administrator")]
-        public object IsProductAdministratorFromBody([FromBody]SecurityModel model)
+        public object IsProductAdministrator(Guid productid, Guid userid)
         {
-            return IsProductAdministrator(model);
-        }
-
-        [Read("security/administrator")]
-        [Consumes("application/x-www-form-urlencoded")]
-        public object IsProductAdministratorFromForm([FromForm]SecurityModel model)
-        {
-            return IsProductAdministrator(model);
-        }
-
-        private object IsProductAdministrator(SecurityModel model)
-        {
-            var result = WebItemSecurity.IsProductAdministrator(model.ProductId, model.UserId);
-            return new { ProductId = model.ProductId, UserId = model.UserId, Administrator = result, };
+            var result = WebItemSecurity.IsProductAdministrator(productid, userid);
+            return new { ProductId = productid, UserId = userid, Administrator = result };
         }
 
         [Update("security/administrator")]
