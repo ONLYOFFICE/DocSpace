@@ -69,9 +69,6 @@ const StyledContainer = styled.div`
     display: flex;
     align-items: center;
     max-width: calc(100vw - 32px);
-    @media ${desktop} {
-      margin-top: -1px;
-    }
 
     @media ${tablet} {
       .headline-header {

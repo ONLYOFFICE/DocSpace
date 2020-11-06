@@ -9,6 +9,7 @@ const StyledSectionHeader = styled.div`
   border-bottom: 1px solid #eceef1;
   height: 55px;
   margin-right: 24px;
+  margin-top: -1px;
 
   @media ${tablet} {
     margin-right: 16px;
