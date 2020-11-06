@@ -22,5 +22,21 @@
   "KeepIntermediateVersion": "Хранить промежуточные версии при редактировании",
 
   "LoadingProcessing": "Загрузка...",
-  "LoadingDescription": "Пожалуйста, подождите..."
+  "LoadingDescription": "Пожалуйста, подождите...",
+
+  "ConnectAccounts": "Подключенные облака",
+  "ConnectAccountsSubTitle": "Вы еще не подключили сторонние облачные сервисы",
+  "AddAccount": "Подключить",
+  "ConnectingAccount": "Подключение аккаунта",
+  "ConnectDescription": "Вы можете подключить следующие сервисы к вашему аккаунту ONLYOFFICE. Они будут отображаться в папке 'Мои документы' и Вы сможете редактировать и сохранять все свои документы в едином рабочем пространстве.",
+  "ConnectAdminDescription": "Для успешного подключения введите нужные данные на <1>этой странице</1>.",
+  "ConnextOtherAccount": "Другой аккаунт",
+  "ConnectedCloud": "Подключить облако",
+  "SaveButton": "Сохранить",
+  "CancelButton": "Отмена",
+  "Login": "Логин",
+  "Password": "Пароль",
+  "ConnectFolderTitle": "Название папки",
+  "ConnectMakeShared": "Сделать доступным и поместить в папку 'Общие'",
+  "ConnectionUrl": "URL-адрес подключения"
 }

@@ -130,7 +130,8 @@ class ArticleBodyContent extends React.Component {
               onBadgeClick={this.onShowNewFilesPanel}
               onTreeDrop={onTreeDrop}
             />
-            <TreeSettings />{" "}
+            <TreeSettings />
+            КНОПКА
           </>
         )}
       </>
