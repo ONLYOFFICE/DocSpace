@@ -9639,6 +9639,11 @@ react-scripts@3.4.3:
   optionalDependencies:
     fsevents "2.1.2"
 
+react-string-format@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/react-string-format/-/react-string-format-0.1.0.tgz#a815c2400eff74559ba72d76af50024d157d9e29"
+  integrity sha512-xkIhnh2t1YmS4r8Zz92qs0Ia8EMbBoRlMEvvMtC0sQBSxxBmBujfssSA4PYYi0w2WvJYSEktgilB+320/mlsOQ==
+
 react-svg@^11.0.9:
   version "11.1.0"
   resolved "https://registry.yarnpkg.com/react-svg/-/react-svg-11.1.0.tgz#365cae0121bc5ae06c97081a9f0079a2a1bd8ad9"
