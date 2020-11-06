@@ -227,7 +227,7 @@ namespace ASC.Web.Files.Services.WCFService
             }
         }
 
-        public ItemList<T> GetPath(T folderId)
+        public ItemList<object> GetPath(T folderId)
         {
             var folderDao = GetFolderDao();
             var folder = folderDao.GetFolder(folderId);
@@ -235,7 +235,12 @@ namespace ASC.Web.Files.Services.WCFService
             ErrorIf(folder == null, FilesCommonResource.ErrorMassage_FolderNotFound);
             ErrorIf(!FileSecurity.CanRead(folder), FilesCommonResource.ErrorMassage_SecurityException_ViewFolder);
 
-            return new ItemList<T>(EntryManager.GetBreadCrumbs(folderId, folderDao).Select(f => f.ID));
+            return new ItemList<object>(EntryManager.GetBreadCrumbs(folderId, folderDao).Select(f =>
+            {
+                if (f is Folder<string> f1) return (object)f1.ID;
+                if (f is Folder<int> f2) return f2.ID;
+                return 0;
+            }));
         }
 
         public DataWrapper<T> GetFolderItems(T parentId, int from, int count, FilterType filter, bool subjectGroup, string ssubject, string searchText, bool searchInContent, bool withSubfolders, OrderBy orderBy)
@@ -296,7 +301,8 @@ namespace ASC.Web.Files.Services.WCFService
             var prevVisible = breadCrumbs.ElementAtOrDefault(breadCrumbs.Count() - 2);
             if (prevVisible != null)
             {
-                parent.ParentFolderID = prevVisible.ID;
+                if (prevVisible is Folder<string> f1) parent.ParentFolderID = (T)Convert.ChangeType(f1.ID, typeof(T));
+                if (prevVisible is Folder<int> f2) parent.ParentFolderID = (T)Convert.ChangeType(f2.ID, typeof(T));
             }
 
             parent.Shareable = FileSharing.CanSetAccess(parent)
@@ -309,7 +315,12 @@ namespace ASC.Web.Files.Services.WCFService
             {
                 Total = total,
                 Entries = new ItemList<FileEntry>(entries.ToList()),
-                FolderPathParts = new ItemList<T>(breadCrumbs.Select(f => f.ID)),
+                FolderPathParts = new ItemList<object>(breadCrumbs.Select(f =>
+                {
+                    if (f is Folder<string> f1) return (object)f1.ID;
+                    if (f is Folder<int> f2) return f2.ID;
+                    return 0;
+                })),
                 FolderInfo = parent,
                 New = FileMarker.GetRootFoldersIdMarkedAsNew(parentId)
             };
@@ -579,27 +590,27 @@ namespace ASC.Web.Files.Services.WCFService
 
             if (fileWrapper.TemplateId.Equals(default(T)))
             {
-            var culture = UserManager.GetUsers(AuthContext.CurrentAccount.ID).GetCulture();
-            var storeTemplate = GetStoreTemplate();
+                var culture = UserManager.GetUsers(AuthContext.CurrentAccount.ID).GetCulture();
+                var storeTemplate = GetStoreTemplate();
 
-            var path = FileConstant.NewDocPath + culture + "/";
-            if (!storeTemplate.IsDirectory(path))
-            {
-                path = FileConstant.NewDocPath + "default/";
-            }
+                var path = FileConstant.NewDocPath + culture + "/";
+                if (!storeTemplate.IsDirectory(path))
+                {
+                    path = FileConstant.NewDocPath + "default/";
+                }
 
-            path += "new" + fileExt;
+                path += "new" + fileExt;
 
-            try
-            {
-                using var stream = storeTemplate.GetReadStream("", path);
-                file.ContentLength = stream.CanSeek ? stream.Length : storeTemplate.GetFileSize(path);
-                file = fileDao.SaveFile(file, stream);
-            }
-            catch (Exception e)
-            {
-                throw GenerateException(e);
-            }
+                try
+                {
+                    using var stream = storeTemplate.GetReadStream("", path);
+                    file.ContentLength = stream.CanSeek ? stream.Length : storeTemplate.GetFileSize(path);
+                    file = fileDao.SaveFile(file, stream);
+                }
+                catch (Exception e)
+                {
+                    throw GenerateException(e);
+                }
             }
             else
             {
@@ -2253,46 +2264,46 @@ namespace ASC.Web.Files.Services.WCFService
         {
             if (services.TryAddScoped<FileStorageService<string>>())
             {
-            services.TryAddScoped<FileStorageService<int>>();
-            //services.TryAddScoped<IFileStorageService, FileStorageService>();
-            return services
-                .AddGlobalService()
-                .AddGlobalStoreService()
-                .AddGlobalFolderHelperService()
-                .AddAuthContextService()
-                .AddUserManagerService()
-                .AddFilesLinkUtilityService()
-                .AddBaseCommonLinkUtilityService()
-                .AddCoreBaseSettingsService()
-                .AddCustomNamingPeopleService()
-                .AddDisplayUserSettingsService()
-                .AddPathProviderService()
-                .AddDaoFactoryService()
-                .AddFileMarkerService()
-                .AddFilesSettingsHelperService()
-                .AddFileUtilityService()
-                .AddFileSecurityService()
-                .AddFilesMessageService()
-                .AddFileShareLinkService()
-                .AddDocumentServiceConnectorService()
-                .AddEntryManagerService()
-                .AddDocumentServiceHelperService()
-                .AddThirdpartyConfigurationService()
-                .AddUrlShortener()
-                .AddDocuSignHelperService()
-                .AddDocuSignTokenService()
-                .AddFileConverterService()
-                .AddNotifyClientService()
-                .AddFileSharingService()
-                .AddDocumentServiceTrackerHelperService()
-                .AddSocketManagerService()
-                .AddFileOperationsManagerHelperService()
-                    .AddFileSharingAceHelperService()
-                    .AddTenantManagerService();
-        }
+                services.TryAddScoped<FileStorageService<int>>();
+                //services.TryAddScoped<IFileStorageService, FileStorageService>();
+                return services
+                    .AddGlobalService()
+                    .AddGlobalStoreService()
+                    .AddGlobalFolderHelperService()
+                    .AddAuthContextService()
+                    .AddUserManagerService()
+                    .AddFilesLinkUtilityService()
+                    .AddBaseCommonLinkUtilityService()
+                    .AddCoreBaseSettingsService()
+                    .AddCustomNamingPeopleService()
+                    .AddDisplayUserSettingsService()
+                    .AddPathProviderService()
+                    .AddDaoFactoryService()
+                    .AddFileMarkerService()
+                    .AddFilesSettingsHelperService()
+                    .AddFileUtilityService()
+                    .AddFileSecurityService()
+                    .AddFilesMessageService()
+                    .AddFileShareLinkService()
+                    .AddDocumentServiceConnectorService()
+                    .AddEntryManagerService()
+                    .AddDocumentServiceHelperService()
+                    .AddThirdpartyConfigurationService()
+                    .AddUrlShortener()
+                    .AddDocuSignHelperService()
+                    .AddDocuSignTokenService()
+                    .AddFileConverterService()
+                    .AddNotifyClientService()
+                    .AddFileSharingService()
+                    .AddDocumentServiceTrackerHelperService()
+                    .AddSocketManagerService()
+                    .AddFileOperationsManagerHelperService()
+                        .AddFileSharingAceHelperService()
+                        .AddTenantManagerService();
+            }
 
             return services;
-    }
+        }
     }
 
     public class FileModel<T>
