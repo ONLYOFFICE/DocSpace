@@ -173,7 +173,7 @@ const SimpleFilesRow = styled(Row)`
   }
 
   .styled-element {
-    margin-right: 0;
+    margin-right: 1px;
     margin-bottom: 2px;
   }
 `;
