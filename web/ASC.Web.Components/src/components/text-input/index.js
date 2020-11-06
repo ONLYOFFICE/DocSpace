@@ -55,7 +55,7 @@ const StyledInput = styled(Input).attrs((props) => ({
     (props.size === "huge" && "21px") ||
     (props.size === "large" && "20px")};
   font-size: ${(props) =>
-    (props.size === "base" && "13px") ||
+    (props.size === "base" && "14px") ||
     (props.size === "middle" && "14px") ||
     (props.size === "big" && "16px") ||
     (props.size === "huge" && "18px") ||
@@ -69,7 +69,7 @@ const StyledInput = styled(Input).attrs((props) => ({
   overflow: hidden;
   opacity: 1;
   padding: ${(props) =>
-    (props.size === "base" && "5px 7px") ||
+    (props.size === "base" && "5px 6px") ||
     (props.size === "middle" && "8px 12px") ||
     (props.size === "big" && "8px 16px") ||
     (props.size === "huge" && "8px 20px") ||

@@ -25,7 +25,7 @@ const StyledComboButton = styled.div`
   -ms-user-select: none;
   user-select: none;
 
-  padding-left: 10px;
+  padding-left: 8px;
 
   background: ${(props) => (!props.noBorder ? "#FFFFFF" : "none")};
 
@@ -199,7 +199,10 @@ class ComboButton extends React.Component {
           {(withOptions || withAdvancedOptions) &&
             React.createElement(Icons["ExpanderDownIcon"], {
               size: "scale",
-              color: selectedOption.arrowIconColor && !isDisabled ? selectedOption.arrowIconColor : arrowIconColor,
+              color:
+                selectedOption.arrowIconColor && !isDisabled
+                  ? selectedOption.arrowIconColor
+                  : arrowIconColor,
               isfill: true,
             })}
         </StyledArrowIcon>
