@@ -34,7 +34,7 @@ const StyledInput = styled(SimpleInput)`
     padding-right: 8px;
   }
 
-  .prepend > div {
+  .prepend-children {
     padding: 0;
   }
 
