@@ -26,39 +26,43 @@ const StyledBox = styled.div`
   align-items: left;
 `;
 
-const RowBlock = () => {
+const RowBlock = (props) => {
   if (!isMobile() && !isTablet()) {
-    return <RectangleLoader width="100%" height="16" />;
+    return <RectangleLoader width="100%" height="16" {...props} />;
   } else {
     return (
       <StyledBox>
-        <RectangleLoader width="80%" height="16" />
-        <RectangleLoader width="100%" height="12" />
+        <RectangleLoader width="80%" height="16" {...props} />
+        <RectangleLoader width="100%" height="12" {...props} />
       </StyledBox>
     );
   }
 };
 
-const Row = () => {
+const Row = (props) => {
   const rectangleSize = !isMobile() && !isTablet() ? 22 : 32;
   return (
     <StyledRow>
-      <RectangleLoader width="16" height="16" />
-      <RectangleLoader width={rectangleSize} height={rectangleSize} />
-      <RowBlock />
+      <RectangleLoader width="16" height="16" {...props} />
+      <RectangleLoader
+        width={rectangleSize}
+        height={rectangleSize}
+        {...props}
+      />
+      <RowBlock {...props} />
     </StyledRow>
   );
 };
 
-const RowsLoader = () => {
+const RowsLoader = (props) => {
   return (
     <div>
-      <Row />
-      <Row />
-      <Row />
-      <Row />
-      <Row />
-      <Row />
+      <Row {...props} />
+      <Row {...props} />
+      <Row {...props} />
+      <Row {...props} />
+      <Row {...props} />
+      <Row {...props} />
     </div>
   );
 };
