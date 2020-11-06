@@ -783,7 +783,7 @@ namespace ASC.Api.Settings
         }
 
         [Read("security")]
-        private IEnumerable<SecurityWrapper> GetWebItemSecurityInfo(IEnumerable<string> ids)
+        public IEnumerable<SecurityWrapper> GetWebItemSecurityInfo(IEnumerable<string> ids)
         {
             if (ids == null || !ids.Any())
             {
@@ -937,7 +937,7 @@ namespace ASC.Api.Settings
 
             MessageService.Send(MessageAction.ProductsListUpdated);
 
-            return GetWebItemSecurityInfo( itemList.Keys.ToList() );
+            return GetWebItemSecurityInfo(itemList.Keys.ToList());
         }
 
         [Read("security/administrator/{productid}")]
@@ -1074,6 +1074,7 @@ namespace ASC.Api.Settings
         }
 
         ///<visible>false</visible>
+        [Create("whitelabel/savefromfiles")]
         public bool SaveWhiteLabelSettingsFromFiles([FromQuery] WhiteLabelQuery query)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
@@ -1938,20 +1939,9 @@ namespace ASC.Api.Settings
         }
 
         [Update("emailactivation")]
-        public EmailActivationSettings UpdateEmailActivationSettingsFromBody([FromBody] EmailActivationSettings settings)
+        public EmailActivationSettings UpdateEmailActivationSettings(bool show)
         {
-            return UpdateEmailActivationSettings(settings);
-        }
-
-        [Update("emailactivation")]
-        [Consumes("application/x-www-form-urlencoded")]
-        public EmailActivationSettings UpdateEmailActivationSettingsFromForm([FromForm] EmailActivationSettings settings)
-        {
-            return UpdateEmailActivationSettings(settings);
-        }
-
-        private EmailActivationSettings UpdateEmailActivationSettings(EmailActivationSettings settings)
-        {
+            var settings = new EmailActivationSettings { Show = show };
             SettingsManager.SaveForCurrentUser(settings);
             return settings;
         }
@@ -2566,7 +2556,7 @@ namespace ASC.Api.Settings
 
         ///<visible>false</visible>
         [Update("rebranding/mail")]
-        private bool UpdateMailWhiteLabelSettings(bool footerEnabled)
+        public bool UpdateMailWhiteLabelSettings(bool footerEnabled)
         {
             DemandRebrandingPermission();
 
