@@ -121,10 +121,14 @@ export const i18nBaseSettings = {
 };
 
 export const LoaderStyle = {
-  backgroundColor: "#f3f3f3",
-  foregroundColor: "#ecebeb",
-  backgroundOpacity: 25,
-  foregroundOpacity: 50,
+  width: "100%",
+  height: "32",
+  backgroundColor: "#000000",
+  foregroundColor: "#000000",
+  backgroundOpacity: 0.1,
+  foregroundOpacity: 0.25,
   borderRadius: 3,
+  radius: 3,
   speed: 2,
+  animate: true,
 };
