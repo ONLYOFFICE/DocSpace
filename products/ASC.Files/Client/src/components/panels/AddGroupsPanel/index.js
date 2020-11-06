@@ -130,12 +130,12 @@ class AddGroupsPanelComponent extends React.Component {
               >
                 {t("AddGroupsForSharingButton")}
               </Heading>
-              <IconButton
+              {/*<IconButton
                 size="16"
                 iconName="PlusIcon"
                 className="header_aside-panel-plus-icon"
                 onClick={this.onPLusClick}
-              />
+              />*/}
             </StyledHeaderContent>
 
             <StyledBody ref={this.scrollRef}>

@@ -69,6 +69,9 @@ const StyledAddUsersPanelPanel = styled.div`
     }
   }
   ${PanelStyles}
+  .combo-button-label {
+    font-size: 14px;
+  }
 `;
 
 const StyledAddGroupsPanel = styled.div`
@@ -82,6 +85,9 @@ const StyledAddGroupsPanel = styled.div`
     }
   }
   ${PanelStyles}
+  .combo-button-label {
+    font-size: 14px;
+  }
 `;
 
 const StyledEmbeddingPanel = styled.div`
