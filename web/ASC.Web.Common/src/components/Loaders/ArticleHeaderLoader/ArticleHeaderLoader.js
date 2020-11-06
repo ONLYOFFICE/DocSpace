@@ -7,10 +7,10 @@ const StyledContainer = styled.div`
   margin-bottom: 10px;
 `;
 
-const ArticleHeaderLoader = () => {
+const ArticleHeaderLoader = (props) => {
   return (
     <StyledContainer>
-      <RectangleLoader />
+      <RectangleLoader {...props} />
     </StyledContainer>
   );
 };
