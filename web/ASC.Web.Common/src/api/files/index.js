@@ -561,6 +561,14 @@ export function thirdParty(val) {
   return request({ method: "put", url: "files/thirdparty", data });
 }
 
+export function getThirdPartyList() {
+  return request({ method: "get", url: "files/thirdparty" });
+}
+
+export function getThirdPartyCapabilities() {
+  return request({ method: "get", url: "files/thirdparty/capabilities" });
+}
+
 export function getSettingsFiles() {
   return request({ method: "get", url: `/files/settings` });
 }
