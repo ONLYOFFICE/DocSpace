@@ -209,7 +209,7 @@ const Avatar = memo((props) => {
 });
 
 Avatar.propTypes = {
-  size: PropTypes.oneOf(["max", "big", "medium", "small, min"]),
+  size: PropTypes.oneOf(["max", "big", "medium", "small", "min"]),
   role: PropTypes.oneOf(["owner", "admin", "guest", "user"]),
   source: PropTypes.string,
   editLabel: PropTypes.string,
