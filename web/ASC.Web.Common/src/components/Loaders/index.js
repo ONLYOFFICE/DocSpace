@@ -1,3 +1,6 @@
+import Rectangle from "./RectangleLoader/index";
+import Circle from "./CircleLoader/index";
+import Header from "./HeaderLoader/index";
 import SectionHeader from "./SectionHeaderLoader/index";
 import ArticleHeader from "./ArticleHeaderLoader/index";
 import TreeFolders from "./TreeFolderLoader/index";
@@ -6,12 +9,11 @@ import Text from "./TextLoader";
 import Filter from "./FilterLoader/index";
 import ProfileView from "./ProfileViewLoader";
 import SettingsFiles from "./SettingsFilesLoader";
-import Rectangle from "./RectangleLoader/index";
-import Circle from "./CircleLoader/index";
 
 export default {
   Rectangle,
   Circle,
+  Header,
   SectionHeader,
   ArticleHeader,
   TreeFolders,
