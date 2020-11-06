@@ -291,7 +291,7 @@ const StyledSharingBody = styled(Scrollbar)`
   }
 
   .sharing_panel-owner-icon {
-    padding-right: 24px;
+    padding-right: 12px;
   }
 
   .sharing_panel-remove-icon {
