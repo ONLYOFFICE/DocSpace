@@ -196,7 +196,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable this app to shorten the invitation and document links. {0}Insert your Bitly login and API key below:.
+        ///   Looks up a localized string similar to Enable this app to shorten the invitation and document links. Insert your Bitly login and API key below:.
         /// </summary>
         public static string ConsumersBitlyInstructionV11 {
             get {
@@ -250,7 +250,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable this app to connect your Box account to the Documents module. You’ll be able to manage, edit, and share files from Box with ONLYOFFICE users. {0}Sign in to your account on the Box developers page and create a new app for ONLYOFFICE integration. Insert the data you received below:.
+        ///   Looks up a localized string similar to Enable this app to connect your Box account to the Documents module. You’ll be able to manage, edit, and share files from Box with ONLYOFFICE users. Sign in to your account on the Box developers page and create a new app for ONLYOFFICE integration. Insert the data you received below:.
         /// </summary>
         public static string ConsumersBoxInstructionV11 {
             get {
@@ -295,7 +295,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use this app to enable two-factor authentication with Clickatell service. {0}Sign in to your SMS Platform account and create a new integration for ONLYOFFICE. Copy an apiKey and insert it below:.
+        ///   Looks up a localized string similar to Use this app to enable two-factor authentication with Clickatell service. Sign in to your SMS Platform account and create a new integration for ONLYOFFICE. Copy an apiKey and insert it below:.
         /// </summary>
         public static string ConsumersClickatellInstructionV11 {
             get {
@@ -358,7 +358,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable this app to digitally sign documents using DocuSign. {0}Go to your DocuSign Admin Console and add ONLYOFFICE integration. Insert the data you received below:.
+        ///   Looks up a localized string similar to Enable this app to digitally sign documents using DocuSign. Go to your DocuSign Admin Console and add ONLYOFFICE integration. Insert the data you received below:.
         /// </summary>
         public static string ConsumersDocuSignInstructionV11 {
             get {
@@ -394,7 +394,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable this app to connect your Dropbox account to the Documents module. You’ll be able to manage, edit, and share files from Dropbox with ONLYOFFICE users. {0}Sign in to your account on the Dropbox Developers website and create a new app for ONLYOFFICE integration. Insert the data you received below:.
+        ///   Looks up a localized string similar to Enable this app to connect your Dropbox account to the Documents module. You’ll be able to manage, edit, and share files from Dropbox with ONLYOFFICE users. Sign in to your account on the Dropbox Developers website and create a new app for ONLYOFFICE integration. Insert the data you received below:.
         /// </summary>
         public static string ConsumersDropBoxInstructionV11 {
             get {
@@ -511,7 +511,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable this app to allow your users to sign in to ONLYOFFICE using Facebook and link their customers’ Facebook accounts to the CRM module. {0}Go to Facebook Developers Portal and create a new app ONLYOFFICE integration. Insert the data you received below:.
+        ///   Looks up a localized string similar to Enable this app to allow your users to sign in to ONLYOFFICE using Facebook and link their customers’ Facebook accounts to the CRM module. Go to Facebook Developers Portal and create a new app ONLYOFFICE integration. Insert the data you received below:.
         /// </summary>
         public static string ConsumersFacebookInstructionV11 {
             get {
@@ -682,7 +682,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable this app to connect your Google Drive account to the Documents module. You’ll be able to manage, edit, and share files from Google Drive with ONLYOFFICE users. {0}Go to Google APIs console and create a new project for ONLYOFFICE integration. Insert the data you received below:.
+        ///   Looks up a localized string similar to Enable this app to connect your Google Drive account to the Documents module. You’ll be able to manage, edit, and share files from Google Drive with ONLYOFFICE users. Go to Google APIs console and create a new project for ONLYOFFICE integration. Insert the data you received below:.
         /// </summary>
         public static string ConsumersGoogleInstructionV11 {
             get {
@@ -718,7 +718,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable this app to allow your users to sign in to ONLYOFFICE using their LinkedIn accounts. {0}Go to the  LinkedIn Developers website and create a new app ONLYOFFICE integration. Insert the data you received below:.
+        ///   Looks up a localized string similar to Enable this app to allow your users to sign in to ONLYOFFICE using their LinkedIn accounts. Go to the  LinkedIn Developers website and create a new app ONLYOFFICE integration. Insert the data you received below:.
         /// </summary>
         public static string ConsumersLinkedInInstructionV11 {
             get {
@@ -1069,7 +1069,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable this app to connect your OneDrive account to the Documents module. You’ll be able to manage, edit, and share files from OneDrive with ONLYOFFICE users. {0}Sign in to your Microsoft Azure account and create a new app for ONLYOFFICE integration. Insert the data you received below:.
+        ///   Looks up a localized string similar to Enable this app to connect your OneDrive account to the Documents module. You’ll be able to manage, edit, and share files from OneDrive with ONLYOFFICE users. Sign in to your Microsoft Azure account and create a new app for ONLYOFFICE integration. Insert the data you received below:.
         /// </summary>
         public static string ConsumersSkyDriveInstructionV11 {
             get {
@@ -1105,7 +1105,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use this app to enable two-factor authentication with SMS Center service. {0}Insert your smsc account login and your password (or password MD5 hash) in lower case:.
+        ///   Looks up a localized string similar to Use this app to enable two-factor authentication with SMS Center service. Insert your smsc account login and your password (or password MD5 hash) in lower case:.
         /// </summary>
         public static string ConsumersSmscInstructionV11 {
             get {
@@ -1177,7 +1177,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable this app to allow your users to call their contacts from the CRM module using Twilio. {0}Go to Twilio Console and paste the following data below:.
+        ///   Looks up a localized string similar to Enable this app to allow your users to call their contacts from the CRM module using Twilio. Go to Twilio Console and paste the following data below:.
         /// </summary>
         public static string ConsumersTwilioInstructionV11 {
             get {
@@ -1240,7 +1240,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable this app to allow your users to sign in to ONLYOFFICE using their Twitter and link their customers’ Twitter accounts to the CRM module. {0}Go to Twitter Developers Portal and create a new app ONLYOFFICE integration. Insert the data you received below:.
+        ///   Looks up a localized string similar to Enable this app to allow your users to sign in to ONLYOFFICE using their Twitter and link their customers’ Twitter accounts to the CRM module. Go to Twitter Developers Portal and create a new app ONLYOFFICE integration. Insert the data you received below:.
         /// </summary>
         public static string ConsumersTwitterInstructionV11 {
             get {
@@ -1411,7 +1411,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable this app to add new portal users from your Yahoo contact list. {0}Go to the Create Application page in the Yahoo Developer Network and create a new app for ONLYOFFICE integration. Insert the data you received below:.
+        ///   Looks up a localized string similar to Enable this app to add new portal users from your Yahoo contact list. Go to the Create Application page in the Yahoo Developer Network and create a new app for ONLYOFFICE integration. Insert the data you received below:.
         /// </summary>
         public static string ConsumersYahooInstructionV11 {
             get {
