@@ -5,6 +5,7 @@ import NavItem from "./nav-item";
 import Headline from "../../Headline";
 import Nav from "./nav";
 import NavLogoItem from "./nav-logo-item";
+import Loaders from "../../Loaders/index";
 
 import { utils } from "asc-web-components";
 import { connect } from "react-redux";
@@ -15,6 +16,7 @@ import {
   getDefaultPage,
   getMainModules,
   getTotalNotificationsCount,
+  getIsLoaded,
 } from "../../../store/auth/selectors";
 
 const { desktop } = utils.device;
@@ -80,11 +82,12 @@ const HeaderComponent = ({
   isNavOpened,
   currentProductId,
   toggleAside,
+  isLoaded,
+  ...props
 }) => {
   //console.log("Header render");
 
   const isNavAvailable = mainModules.length > 0;
-
   const onLogoClick = () => {
     window.open(defaultPage, "_self");
   };
@@ -101,23 +104,23 @@ const HeaderComponent = ({
   return (
     <>
       <Header module={currentProductName}>
-        <NavItem
-          iconName="MenuIcon"
-          badgeNumber={totalNotifications}
-          onClick={onClick}
-          noHover={true}
-        />
+        {isLoaded ? (
+          <>
+            <NavItem
+              iconName="MenuIcon"
+              badgeNumber={totalNotifications}
+              onClick={onClick}
+              noHover={true}
+            />
 
-        <a className="header-logo-wrapper" href={defaultPage}>
-          <img
-            className="header-logo-min_icon"
-            src="images/nav.logo.react.svg"
-          />
-          <img
-            className="header-logo-icon"
-            src="images/nav.logo.opened.react.svg"
-          />
-        </a>
+            <a className="header-logo-wrapper" href={defaultPage}>
+              <img className="header-logo-icon" src={props.logoUrl} />
+            </a>
+          </>
+        ) : (
+          <Loaders.Header />
+        )}
+
         <Headline className="header-module-title" type="header" color="#FFF">
           {currentProductName}
         </Headline>
@@ -179,12 +182,16 @@ HeaderComponent.propTypes = {
 };
 
 const mapStateToProps = (state) => {
+  const { logoUrl } = state.auth.settings;
+
   return {
     defaultPage: getDefaultPage(state),
     totalNotifications: getTotalNotificationsCount(state),
     mainModules: getMainModules(state),
     currentProductName: getCurrentProductName(state),
     currentProductId: getCurrentProductId(state),
+    isLoaded: getIsLoaded(state),
+    logoUrl,
   };
 };
 
