@@ -880,13 +880,13 @@ namespace ASC.Api.Documents
         /// <category>Folders</category>
         /// <returns>Parent folders</returns>
         [Read("folder/{folderId}/path", DisableFormat = true)]
-        public IEnumerable<FolderWrapper<string>> GetFolderPath(string folderId)
+        public IEnumerable<FileEntryWrapper> GetFolderPath(string folderId)
         {
             return FilesControllerHelperString.GetFolderPath(folderId);
         }
 
         [Read("folder/{folderId:int}/path")]
-        public IEnumerable<FolderWrapper<int>> GetFolderPath(int folderId)
+        public IEnumerable<FileEntryWrapper> GetFolderPath(int folderId)
         {
             return FilesControllerHelperInt.GetFolderPath(folderId);
         }

@@ -84,7 +84,9 @@ namespace ASC.Files.Core
                                          Logger.ErrorFormat("GetBreadCrumbs {0} with null", session.FolderId);
                                          return default;
                                      }
-                                     return f.ID;
+                                     if (f is Folder<string> f1) return (T)Convert.ChangeType(f1.ID, typeof(T));
+                                     if (f is Folder<int> f2) return (T)Convert.ChangeType(f2.ID, typeof(T));
+                                     return (T)Convert.ChangeType(0, typeof(T));
                                  })
                                  : new List<T> { session.FolderId };
 

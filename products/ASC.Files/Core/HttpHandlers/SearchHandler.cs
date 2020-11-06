@@ -140,7 +140,7 @@ namespace ASC.Web.Files.Configuration
                                 Additional = new Dictionary<string, object>
                                 {
                                     { "Author", r.CreateByString.HtmlEncode() },
-                                    { "Path", FolderPathBuilder(EntryManager.GetBreadCrumbs(r.FolderID, folderDao)) },
+                                    { "Path", FolderPathBuilder<int>(EntryManager.GetBreadCrumbs(r.FolderID, folderDao)) },
                                     { "Size", FileSizeComment.FilesSizeToString(r.ContentLength) }
                                 }
                             }
@@ -157,7 +157,7 @@ namespace ASC.Web.Files.Configuration
                             Additional = new Dictionary<string, object>
                                     {
                                             { "Author", f.CreateByString.HtmlEncode() },
-                                            { "Path", FolderPathBuilder(EntryManager.GetBreadCrumbs(f.ID, folderDao)) },
+                                            { "Path", FolderPathBuilder<int>(EntryManager.GetBreadCrumbs(f.ID, folderDao)) },
                                             { "IsFolder", true }
                                     }
                         });
@@ -165,7 +165,7 @@ namespace ASC.Web.Files.Configuration
             return result.Concat(resultFolder).ToArray();
         }
 
-        private static string FolderPathBuilder<T>(IEnumerable<Folder<T>> folders)
+        private static string FolderPathBuilder<T>(IEnumerable<FileEntry> folders)
         {
             var titles = folders.Select(f => f.Title).ToList();
             const string separator = " \\ ";
