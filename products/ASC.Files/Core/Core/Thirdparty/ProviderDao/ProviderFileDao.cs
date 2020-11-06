@@ -529,7 +529,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
         {
             if (services.TryAddScoped<ProviderFileDao>())
             {
-                services.TryAddScoped<File<string>>();
+                services.TryAddTransient<File<string>>();
                 services.TryAddScoped<IFileDao<string>, ProviderFileDao>();
 
                 return services
