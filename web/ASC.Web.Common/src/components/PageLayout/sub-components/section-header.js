@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { utils } from "asc-web-components";
+import { utils} from "asc-web-components";
 import isEqual from "lodash/isEqual";
 import classnames from "classnames";
 import {IsVisibleContextConsumer} from "asc-web-common"
@@ -22,17 +22,16 @@ const StyledSectionHeader = styled.div`
   }
 
 
-
   .section-header {
     width: calc(100% - 76px);
 
     @media ${tablet} {
-      width: 100%;
+      width: ${(props) =>
+          props.isArticlePinned ? `calc(100% - 272px)` : "100%"};
       background-color: #fff; 
       position: fixed; 
       
       top: ${props => !props.isHeaderVisible ? "56px" : "0"} ; 
-      padding-right:100%;
       transition: top 0.3s;
       z-index:1;
     }
@@ -80,13 +79,15 @@ class SectionHeader extends React.Component {
     return (
       
       <StyledSectionHeader  isArticlePinned={isArticlePinned} isHeaderVisible={isHeaderVisible}>
-       <IsVisibleContextConsumer>
-       { value => 
-        <div id="scroll"  className={classnames("section-header", {
-          "section-header--hidden": !value
-        })} {...rest}/>
-        }
-         </IsVisibleContextConsumer>
+      
+          <IsVisibleContextConsumer>
+            { value => 
+              <div id="scroll"  className={classnames("section-header", {
+                "section-header--hidden": !value
+              })} {...rest}/>
+              }
+            </IsVisibleContextConsumer>
+        
       </StyledSectionHeader>
       
 

@@ -1,12 +1,14 @@
 import React from "react";
 import styled, { css } from "styled-components";
 import PropTypes from "prop-types";
-import { utils } from "asc-web-components";
+import { utils} from "asc-web-components";
 import { Resizable } from "re-resizable";
 import { isMobile } from "react-device-detect";
+
 const { tablet } = utils.device;
 
 const StyledArticle = styled.article`
+
   @media ${tablet} {
 
     ${(props) =>
@@ -39,8 +41,9 @@ const StyledArticle = styled.article`
           ? props.pinned
             ? `
             min-width: 240px;
-            margin-top: 50px;
-            z-index: 400;
+            margin-top: 56px;
+  
+            //z-index: 400;
           `
             : `
             position: fixed !important;
@@ -59,7 +62,9 @@ const StyledArticle = styled.article`
           : `
           display: none;
           `}
+         
     }
+
   }
 `;
 
@@ -74,15 +79,18 @@ class Article extends React.Component {
       left: false,
     };
     return (
-      <StyledArticle {...rest}>
+    
+      <StyledArticle {...rest} >
         <Resizable
           enable={enable}
           className="resizable-block"
           handleWrapperClass="resizable-border"
+          
         >
           {children}
         </Resizable>
       </StyledArticle>
+             
     );
   }
 }

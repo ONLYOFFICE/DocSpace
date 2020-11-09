@@ -6,14 +6,26 @@ import SelectedFrame from "./SelectedFrame";
 import isEqual from "lodash/isEqual";
 import { isMobile } from "react-device-detect";
 import {RefContextConsumer} from "asc-web-common"
-const { tablet, mobile } = utils.device;
+
+const { tablet, smallTablet } = utils.device;
 
 const commonStyles = css`
   flex-grow: 1;
   height: 100%;
 
+.wrapper-container{
+  position: relative;
+    width: 100%;
+    height: 100%; 
+    z-index:0;
+
+}
+.inner-container{
+ position:absolute; 
+  width:100%; 
+}
   @media ${tablet} {
-      width:100%;
+      //width:100%;
     }
 
   .section-wrapper-content {
@@ -24,9 +36,14 @@ const commonStyles = css`
 
     @media ${tablet} {
       padding: 16px 0 16px 24px;
-       margin-top: 53px; 
+      margin-top: 59px; 
+      
     }
-
+    @media ${smallTablet} {
+     
+      margin-top: 79px; 
+      
+    }
     .section-wrapper {
       display: flex;
       flex-direction: column;
@@ -102,6 +119,7 @@ class SectionBody extends React.Component {
       uploadFiles,
       viewAs,
       withScroll,
+     
       widthProp
     } = this.props;
 
@@ -122,7 +140,7 @@ class SectionBody extends React.Component {
         withScroll={withScroll}
         viewAs={viewAs}
       >
-      
+   
         {withScroll ? (
         
           (!isMobile && !this.windowWidth.matches ) ? (
@@ -141,22 +159,29 @@ class SectionBody extends React.Component {
               </SelectedFrame>
             </Scrollbar>)
             : (
+              
+              <Box className="wrapper-container">
+              <Box  className="inner-container">
               <RefContextConsumer>
                 {value => 
                   <SelectedFrame
                     viewAs={viewAs}
                     scrollRef={value}
                     setSelections={setSelections}
-                  >
-                    <div className="section-wrapper">
-                      <div className="section-wrapper-content" {...focusProps}>
-                        {children}
-                        <StyledSpacer pinned={pinned} />
-                      </div>
-                    </div>
+                  > 
+                        <div className="section-wrapper">
+                          <div className="section-wrapper-content" {...focusProps}>
+                            {children}
+                            <StyledSpacer pinned={pinned} />
+                          </div>
+                        </div>
+                        
+      
                   </SelectedFrame>
                   }
-              </RefContextConsumer>)
+              </RefContextConsumer>
+              </Box>
+              </Box>)
         ) : (
             <SelectedFrame
               viewAs={viewAs}
@@ -184,12 +209,16 @@ class SectionBody extends React.Component {
                 </div>
               </Scrollbar>)
               : (
+                <Box className="wrapper-container">
+                <Box  className="inner-container">
                 <div className="section-wrapper">
                   <div className="section-wrapper-content" {...focusProps}>
                     {children}
                     <StyledSpacer pinned={pinned} />
                   </div>
                 </div>
+                </Box>
+                </Box>
               )
           ) : (
               <div className="section-wrapper">

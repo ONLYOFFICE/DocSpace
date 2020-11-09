@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { utils, Icons, Text } from "asc-web-components";
+import { utils, Icons, Text, Box } from "asc-web-components";
 const { tablet, smallTablet } = utils.device;
 
 const StyledArticlePinPanel = styled.div`
@@ -13,10 +13,10 @@ const StyledArticlePinPanel = styled.div`
 
   @media ${tablet} {
     display: block;
-    //position: fixed;
+    position: fixed;
     bottom: 0;
     width: 208px;
-    z-index: 2;
+    z-index: 10;
     background-color: #f8f9f9;
   }
 
@@ -50,10 +50,12 @@ const ArticlePinPanel = React.memo((props) => {
   return (
     <StyledArticlePinPanel>
       {pinned ? (
+    
         <div onClick={onUnpin}>
           <Icons.CatalogUnpinIcon size="medium" />
           <Text {...textStyles}>{unpinText}</Text>
         </div>
+
       ) : (
         <div onClick={onPin}>
           <Icons.CatalogPinIcon size="medium" />

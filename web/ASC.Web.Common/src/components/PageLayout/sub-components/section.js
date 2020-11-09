@@ -1,7 +1,7 @@
 import React from "react";
 import styled, { css } from "styled-components";
 import { utils } from "asc-web-components";
-const { tablet } = utils.device;
+const { tablet} = utils.device;
 
 const tabletProps = css`
   .section-header_filter {
@@ -39,9 +39,11 @@ const StyledSection = styled.section`
   }
   @media ${tablet} {
     padding: 0 0 0 16px;
-    width:100%;
+    //width:100%;
+     //overflow: hidden; 
     ${tabletProps};
   }
+
 `;
 
 class Section extends React.Component {
