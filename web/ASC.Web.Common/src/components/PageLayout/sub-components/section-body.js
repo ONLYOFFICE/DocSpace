@@ -13,7 +13,7 @@ const commonStyles = css`
   flex-grow: 1;
   height: 100%;
 
-.wrapper-container{
+/* .wrapper-container{
   position: relative;
     width: 100%;
     height: 100%; 
@@ -23,9 +23,10 @@ const commonStyles = css`
 .inner-container{
  position:absolute; 
   width:100%; 
-}
+} */
   @media ${tablet} {
       //width:100%;
+    
     }
 
   .section-wrapper-content {
@@ -36,14 +37,10 @@ const commonStyles = css`
 
     @media ${tablet} {
       padding: 16px 0 16px 24px;
-      margin-top: 59px; 
-      
+      margin-top: 58px; 
+      width: ${(props) => (props.pinned ? `calc(100vw - 272px)` : `calc(100vw - 30px)`)};
     }
-    @media ${smallTablet} {
-     
-      margin-top: 79px; 
-      
-    }
+
     .section-wrapper {
       display: flex;
       flex-direction: column;
@@ -55,7 +52,12 @@ const commonStyles = css`
 
 const StyledSectionBody = styled.div`
   ${commonStyles}
+  .section-wrapper-content {
+      @media ${tablet} {
 
+        width: ${(props) => (props.pinned ? `calc(100vw - 272px)` : `calc(100vw - 30px)`)};
+      }
+    }
   ${(props) =>
     props.withScroll &&
     `
@@ -139,8 +141,9 @@ class SectionBody extends React.Component {
         onDrop={onDrop}
         withScroll={withScroll}
         viewAs={viewAs}
+        pinned={pinned} 
       >
-   
+
         {withScroll ? (
         
           (!isMobile && !this.windowWidth.matches ) ? (
@@ -197,7 +200,8 @@ class SectionBody extends React.Component {
           )}
       </StyledDropZoneBody>
     ) : (
-        <StyledSectionBody viewAs={viewAs} withScroll={withScroll}>
+        <StyledSectionBody viewAs={viewAs} withScroll={withScroll} pinned={pinned}>
+          {   console.log("PINNED", pinned)}
           {withScroll ? (
                (!isMobile && !this.windowWidth.matches )  ? (
               <Scrollbar {...scrollProp} stype="mediumBlack">
@@ -212,7 +216,7 @@ class SectionBody extends React.Component {
                 <Box className="wrapper-container">
                 <Box  className="inner-container">
                 <div className="section-wrapper">
-                  <div className="section-wrapper-content" {...focusProps}>
+                  <div className="section-wrapper-content" {...focusProps} >
                     {children}
                     <StyledSpacer pinned={pinned} />
                   </div>

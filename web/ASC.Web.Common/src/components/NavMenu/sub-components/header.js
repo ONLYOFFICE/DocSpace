@@ -30,7 +30,7 @@ const Header = styled.header`
 
   @media ${tablet} {
       position:fixed;
-      z-index:100;
+      z-index:160;
       transition: top 0.3s;
       top: ${props => props.valueTop ? "0" : "-56px"}
     }

@@ -120,11 +120,12 @@ const StyledContainer = styled.div`
         ${(props) =>
           props.width &&
           css`
-            width: ${props.width + 16 + "px"};
+            width: ${props.width + 32 + "px"};
           `}
         position: absolute;
         top: 56px;
         z-index: 180;
+        transition: top 0.3s;
       }
     }
 
