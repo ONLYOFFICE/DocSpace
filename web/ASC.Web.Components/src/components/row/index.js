@@ -49,20 +49,19 @@ const StyledElement = styled.div`
 `;
 
 const StyledContentElement = styled.div`
-  margin-top: 4px;
-
+  margin-top: 6px;
   user-select: none;
-  @media ${tablet} {
-    margin-top: 6px;
-  }
 `;
 
 const StyledOptionButton = styled.div`
   display: flex;
   width: ${(props) => props.spacerWidth && props.spacerWidth};
+  justify-content: flex-end;
 
   .expandButton > div:first-child {
     padding: 8px 0px 9px 7px;
+
+    margin-right: 0px;
 
     @media (min-width: 1024px) {
       margin-right: -1px;
@@ -72,7 +71,7 @@ const StyledOptionButton = styled.div`
     }
   }
 
-  margin-top: -1px;
+  //margin-top: -1px;
   @media ${tablet} {
     margin-top: unset;
   }
