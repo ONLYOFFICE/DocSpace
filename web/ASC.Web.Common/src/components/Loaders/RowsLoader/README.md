@@ -12,11 +12,16 @@ import { Loaders } from "asc-web-common";
 <Loaders.Rows />
 ```
 
+```jsx
+<Loaders.Rows isRectangle={true} />
+```
+
 ### Properties
 
 | Props               |   Type   | Required | Values |  Default  | Description                                      |
 | ------------------- | :------: | :------: | :----: | :-------: | ------------------------------------------------ |
 | `title`             | `string` |    -     |   -    |    ``     | It's used to describe what element it is.        |
+| `isRectangle`       |  `bool`  |    -     |   -    |   true    | Show rectangle or circle?                        |
 | `backgroundColor`   | `string` |    -     |   -    | `#000000` | Used as background of animation                  |
 | `foregroundColor`   | `string` |    -     |   -    | `#000000` | Used as the foreground of animation              |
 | `backgroundOpacity` | `number` |    -     |   -    |    0.2    | Background opacity (0 = transparent, 1 = opaque) |
