@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 import RectangleLoader from "../RectangleLoader/index";
-import CircleLoader from "../CircleLoader/index";
 
 const StyledHeader = styled.div`
   width: 100%;
@@ -22,6 +21,8 @@ const HeaderLoader = (props) => {
         height="24"
         backgroundColor="#fff"
         foregroundColor="#fff"
+        backgroundOpacity={0.2}
+        foregroundOpacity={0.25}
         {...props}
       />
       <RectangleLoader
@@ -29,6 +30,8 @@ const HeaderLoader = (props) => {
         height="24"
         backgroundColor="#fff"
         foregroundColor="#fff"
+        backgroundOpacity={0.2}
+        foregroundOpacity={0.25}
         {...props}
       />
       <StyledSpacer />
@@ -37,6 +40,8 @@ const HeaderLoader = (props) => {
         height="24"
         backgroundColor="#fff"
         foregroundColor="#fff"
+        backgroundOpacity={0.2}
+        foregroundOpacity={0.25}
         {...props}
       />
       <StyledSpacer />
