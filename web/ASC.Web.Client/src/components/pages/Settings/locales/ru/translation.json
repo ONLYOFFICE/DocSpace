@@ -75,6 +75,8 @@
   "ThirdPartyHowItWorks": "Как это работает?",
   "ThirdPartySupportTeam": "Службу техподдержки",
   "ThirdPartyBottomDescription": "Если у вас остались вопросы по подключению этого сервиса или вам требуется помощь, вы всегда можете обратиться в нашу <2>Службу поддержки</2>.",
+  "ThirdPartyPropsActivated": "Настройки сервиса успешно обновлены",
+  "ThirdPartyPropsDeactivated": "Сервис был успешно отключен",
   "ThirdPartyEnableButton": "Включить",
   "ThirdPartyProcessSending": "Отправка...",
 

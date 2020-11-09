@@ -77,8 +77,11 @@
   "ThirdPartySupportTeam": "Support Team",
   "ThirdPartyHowItWorks": "How It Works?",
   "ThirdPartyBottomDescription": "If you still have some questions on how to connect this service or need technical assistance, please feel free to contact our <2>Support Team.</2>",
+  "ThirdPartyPropsActivated": "Consumer properties successfully update",
+  "ThirdPartyPropsDeactivated": "Consumer successfully deactivated",
   "ThirdPartyEnableButton": "Enable",
   "ThirdPartyProcessSending": "Sending...",
+
   "ProjectsUserCapabilityView": "View projects and take part in discussions",
   "ProjectsUserCapabilityCreate": "Create and edit milestones, tasks, discussions, documents",
   "ProjectsUserCapabilityTrack": "Track time for tasks, generate reports",

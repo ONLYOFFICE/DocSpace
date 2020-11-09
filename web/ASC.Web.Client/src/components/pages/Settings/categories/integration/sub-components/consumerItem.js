@@ -10,6 +10,7 @@ class ConsumerItem extends React.Component {
       onModalOpen,
       setConsumer,
       updateConsumerProps,
+      t,
     } = this.props;
 
     const logo = `/images/thirdparties/${consumer.name.toLowerCase()}.svg`;
@@ -32,6 +33,7 @@ class ConsumerItem extends React.Component {
                 consumer={consumer}
                 onModalOpen={onModalOpen}
                 updateConsumerProps={updateConsumerProps}
+                t={t}
               />
             </Box>
           </Box>

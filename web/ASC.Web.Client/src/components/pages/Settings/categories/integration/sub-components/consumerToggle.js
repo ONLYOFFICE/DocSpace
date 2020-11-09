@@ -16,7 +16,7 @@ class ConsumerToggle extends React.Component {
   }
 
   onToggleClick = (e) => {
-    const { consumer, onModalOpen, updateConsumerProps } = this.props;
+    const { consumer, onModalOpen, updateConsumerProps, t } = this.props;
 
     if (e.currentTarget.checked) {
       onModalOpen();
@@ -43,7 +43,7 @@ class ConsumerToggle extends React.Component {
 
       updateConsumerProps(data)
         .then(() => {
-          toastr.success("Consumer successfully deactivated");
+          toastr.success(t("ThirdPartyPropsDeactivated"));
         })
         .catch((error) => {
           toastr.error(error);

@@ -114,8 +114,8 @@ class ThirdPartyServices extends React.Component {
       .then(() => {
         isFill && this.onChangeLoading(false);
         isFill
-          ? toastr.success("Consumer properties successfully update")
-          : toastr.success("Consumer successfully deactivated");
+          ? toastr.success(this.props.t("ThirdPartyPropsActivated"))
+          : toastr.success(this.props.t("ThirdPartyPropsDeactivated"));
       })
       .catch((error) => {
         isFill && this.onChangeLoading(false);
@@ -173,6 +173,7 @@ class ThirdPartyServices extends React.Component {
                     onModalOpen={onModalOpen}
                     setConsumer={setConsumer}
                     updateConsumerProps={updateConsumerProps}
+                    t={t}
                   />
                 </Box>
               </StyledConsumer>

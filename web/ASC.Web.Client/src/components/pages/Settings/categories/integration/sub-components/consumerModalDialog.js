@@ -47,6 +47,7 @@ class ConsumerModalDialog extends React.Component {
       selectedConsumer,
       updateConsumerProps,
       onModalClose,
+      t,
     } = this.props;
     const { state } = this;
 
@@ -69,7 +70,7 @@ class ConsumerModalDialog extends React.Component {
     updateConsumerProps(data)
       .then(() => {
         onChangeLoading(false);
-        toastr.success("Consumer properties successfully update");
+        toastr.success(t("ThirdPartyPropsActivated"));
       })
       .catch((error) => {
         onChangeLoading(false);
