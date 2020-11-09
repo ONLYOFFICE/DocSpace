@@ -37,7 +37,6 @@ const StyledContent = styled.div`
 
 const StyledCheckbox = styled.div`
   flex: 0 0 16px;
-  margin-right: 2px;
 `;
 
 const StyledElement = styled.div`

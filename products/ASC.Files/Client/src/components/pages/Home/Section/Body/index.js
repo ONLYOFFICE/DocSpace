@@ -775,16 +775,10 @@ class SectionBodyContent extends React.Component {
   svgLoader = () => <div style={{ width: "24px" }}></div>;
 
   getItemIcon = (item, isEdit) => {
-    let needSetViewBox = false;
-    const reg = /folder\.svg$/;
-    const matches = item.icon.match(reg);
-    if (!matches) needSetViewBox = true;
-
     return (
       <ReactSVG
         beforeInjection={(svg) => {
           svg.setAttribute("style", "margin-top: 4px");
-          if (needSetViewBox) svg.setAttribute("viewBox", "2 0 24 24");
           isEdit && svg.setAttribute("style", "margin: 4px 0 0 28px");
         }}
         src={item.icon}
