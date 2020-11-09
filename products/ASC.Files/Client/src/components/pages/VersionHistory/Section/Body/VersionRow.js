@@ -169,10 +169,10 @@ const StyledRow = styled(Row)`
   .version_edit-comment-button-second {
     width: 87px;
   }
-  .version_modal-dialog > div > aside > div > div > div > div:first-child {
+  .version_modal-dialog .modal-dialog-aside-header {
     border-bottom: unset;
   }
-  .version_modal-dialog > div > aside > div > div > div > div:nth-child(2) {
+  .version_modal-dialog .modal-dialog-aside-body {
     margin-top: -24px;
   }
 `;
@@ -314,10 +314,12 @@ const VersionRow = (props) => {
                     visible={showEditPanel}
                     onClose={onEditComment}
                   >
-                    <ModalDialog.Header>{t("EditComment")}</ModalDialog.Header>
+                    <ModalDialog.Header className="header-version-modal-dialog">
+                      {t("EditComment")}
+                    </ModalDialog.Header>
                     <ModalDialog.Body>
                       <Textarea
-                        //className="version_edit-comment"
+                        className="text-area-mobile-edit-comment"
                         style={{ margin: "8px 24px 8px 0" }}
                         //placeholder="Add comment"
                         onChange={onChange}
