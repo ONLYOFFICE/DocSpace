@@ -12,8 +12,11 @@ import styled from "styled-components";
 
 import { Box, Text, Link, toastr } from "asc-web-components";
 import { utils } from "asc-web-components";
+import { store as commonStore } from "asc-web-common";
 import ConsumerItem from "./sub-components/consumerItem";
 import ConsumerModalDialog from "./sub-components/consumerModalDialog";
+
+const { getUrlAuthKeys } = commonStore.auth.selectors;
 
 const tablet = utils.device.tablet;
 const mobile = utils.device.mobile;
@@ -125,7 +128,7 @@ class ThirdPartyServices extends React.Component {
   };
 
   render() {
-    const { t, i18n, consumers, updateConsumerProps } = this.props;
+    const { t, i18n, consumers, updateConsumerProps, urlAuthKeys } = this.props;
     const { dialogVisible, isLoading } = this.state;
     const { onModalClose, onModalOpen, setConsumer, onChangeLoading } = this;
 
@@ -143,7 +146,7 @@ class ThirdPartyServices extends React.Component {
                 color="#316DAA"
                 isHovered={false}
                 target="_blank"
-                href="https://helpcenter.onlyoffice.com/ru/server/windows/community/authorization-keys.aspx"
+                href={urlAuthKeys}
               >
                 {t("LearnMore")}
               </Link>
@@ -200,6 +203,7 @@ ThirdPartyServices.propTypes = {
   t: PropTypes.func.isRequired,
   i18n: PropTypes.object.isRequired,
   consumers: PropTypes.arrayOf(PropTypes.object).isRequired,
+  urlAuthKeys: PropTypes.string,
   getConsumers: PropTypes.func.isRequired,
   updateConsumerProps: PropTypes.func.isRequired,
   setSelectedConsumer: PropTypes.func.isRequired,
@@ -208,6 +212,7 @@ ThirdPartyServices.propTypes = {
 const mapStateToProps = (state) => {
   return {
     consumers: getConsumersList(state),
+    urlAuthKeys: getUrlAuthKeys(state),
   };
 };
 
