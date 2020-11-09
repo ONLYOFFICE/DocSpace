@@ -8,12 +8,15 @@ import {
   color,
 } from "@storybook/addon-knobs/react";
 import Section from "../../../../.storybook/decorators/section";
+import withReadme from "storybook-readme/with-readme";
+import Readme from "./README.md";
 
 import Loaders from "..";
 import { LoaderStyle } from "../../../constants/index";
 
 storiesOf("Components|Loaders", module)
   .addDecorator(withKnobs)
+  .addDecorator(withReadme(Readme))
   .add("rectangle loader", () => (
     <Section>
       <h1>Rectangle Loader</h1>

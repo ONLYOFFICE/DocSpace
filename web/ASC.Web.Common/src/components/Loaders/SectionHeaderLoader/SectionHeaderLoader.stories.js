@@ -10,9 +10,12 @@ import Section from "../../../../.storybook/decorators/section";
 
 import Loaders from "..";
 import { LoaderStyle } from "../../../constants/index";
+import withReadme from "storybook-readme/with-readme";
+import Readme from "./README.md";
 
 storiesOf("Components|Loaders", module)
   .addDecorator(withKnobs)
+  .addDecorator(withReadme(Readme))
   .add("section header loader", () => (
     <Section>
       <h1>Section Header Loader</h1>

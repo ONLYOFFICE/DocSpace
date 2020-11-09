@@ -11,9 +11,12 @@ import Section from "../../../../.storybook/decorators/section";
 
 import Loaders from "..";
 import { LoaderStyle } from "../../../constants/index";
+import withReadme from "storybook-readme/with-readme";
+import Readme from "./README.md";
 
 storiesOf("Components|Loaders", module)
   .addDecorator(withKnobs)
+  .addDecorator(withReadme(Readme))
   .add("filter loader", () => (
     <Section>
       <h1>Filter Loader</h1>

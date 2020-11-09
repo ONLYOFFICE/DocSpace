@@ -11,6 +11,8 @@ import Section from "../../../../.storybook/decorators/sectionBlue";
 import Loaders from "..";
 import { LoaderStyle } from "../../../constants/index";
 import styled from "styled-components";
+import withReadme from "storybook-readme/with-readme";
+import Readme from "./README.md";
 
 const StyledH1 = styled.h1`
   padding-left: 16px;
@@ -18,6 +20,7 @@ const StyledH1 = styled.h1`
 
 storiesOf("Components|Loaders", module)
   .addDecorator(withKnobs)
+  .addDecorator(withReadme(Readme))
   .add("header loader", () => (
     <Section>
       <StyledH1>Header Loader</StyledH1>
