@@ -281,7 +281,6 @@ Icon.defaultProps = {
 
 const Button = React.forwardRef((props, ref) => {
   const { primary, size, isLoading, icon, label, isHovered } = props;
-  console.log(icon);
   const iconProps = { primary, size, icon, isHovered };
   return (
     <StyledButton innerRef={ref} {...props}>

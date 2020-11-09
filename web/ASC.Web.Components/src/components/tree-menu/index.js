@@ -183,7 +183,6 @@ const TreeMenu = React.forwardRef((props, ref) => {
     gapBetweenNodesTablet,
     isEmptyRootNode,
   } = props;
-  console.log(props);
   const expandedKeysProp = expandedKeys ? { expandedKeys: expandedKeys } : {};
 
   const onTreeNodeSelect = (data, e) => {

@@ -10,7 +10,7 @@ import { tablet, desktop } from "../../utils/device";
 const StyledGroupButtonsMenu = styled.div`
   box-sizing: border-box;
   position: sticky;
-  top: 1px;
+  top: 0;
   background: #ffffff;
   box-shadow: 0px 10px 18px -8px rgba(0, 0, 0, 0.100306);
   height: 56px;

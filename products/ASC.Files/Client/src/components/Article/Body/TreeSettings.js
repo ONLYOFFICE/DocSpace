@@ -83,11 +83,17 @@ const PureTreeSettings = ({
     const { setting } = match.params;
     if (selectedTreeNode[0] !== setting) setSelectedNode([setting]);
     if (setting && !expandedSetting) setExpandSettingsTree(["settings"]);
-  }, [match]);
+  }, [
+    match,
+    selectedTreeNode,
+    expandedSetting,
+    setExpandSettingsTree,
+    setSelectedNode,
+  ]);
 
   useEffect(() => {
     getFilesSettings();
-  }, []);
+  }, [getFilesSettings]);
 
   const switcherIcon = (obj) => {
     if (obj.isLeaf) {

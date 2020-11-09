@@ -44,7 +44,7 @@ const PureSettings = ({
         setFirstLoad(false);
       });
     }
-  }, [getFilesSettings, setIsLoading, setFirstLoad]);
+  }, [getFilesSettings, setIsLoading, setFirstLoad, settingsTree]);
 
   useEffect(() => {
     if (isLoading) {
