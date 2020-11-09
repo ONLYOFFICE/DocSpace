@@ -38,7 +38,7 @@ const RowBlock = (props) => {
 };
 
 const Row = (props) => {
-  const rectangleSize = !isMobile() && !isTablet() ? 22 : 32;
+  const rectangleSize = !isMobile() && !isTablet() ? "22" : "32";
   return (
     <StyledRow>
       <RectangleLoader width="16" height="16" {...props} />
