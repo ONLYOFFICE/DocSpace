@@ -22,6 +22,7 @@ storiesOf("Components|Loaders", module)
       <h1>Rows Loader</h1>
       <Loaders.Rows
         title={text("title", LoaderStyle.title)}
+        isRectangle={boolean("isRectangle", true)}
         backgroundColor={color("backgroundColor", LoaderStyle.backgroundColor)}
         foregroundColor={color("foregroundColor", LoaderStyle.foregroundColor)}
         backgroundOpacity={number(

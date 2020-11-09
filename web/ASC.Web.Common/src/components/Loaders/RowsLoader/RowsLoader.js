@@ -1,6 +1,8 @@
 import React from "react";
 import styled from "styled-components";
 import RectangleLoader from "../RectangleLoader/index";
+import CircleLoader from "../CircleLoader/index";
+import PropTypes from "prop-types";
 
 import { utils } from "asc-web-components";
 const { isMobile, isTablet } = utils.device;
@@ -39,14 +41,20 @@ const RowBlock = (props) => {
 
 const Row = (props) => {
   const rectangleSize = !isMobile() && !isTablet() ? "22" : "32";
+  let isRectangle = props.isRectangle;
+
   return (
     <StyledRow>
       <RectangleLoader width="16" height="16" {...props} />
-      <RectangleLoader
-        width={rectangleSize}
-        height={rectangleSize}
-        {...props}
-      />
+      {isRectangle ? (
+        <RectangleLoader
+          width={rectangleSize}
+          height={rectangleSize}
+          {...props}
+        />
+      ) : (
+        <CircleLoader width="32" height="32" x="16" y="16" radius="16" />
+      )}
       <RowBlock {...props} />
     </StyledRow>
   );
@@ -63,6 +71,14 @@ const RowsLoader = (props) => {
       <Row {...props} />
     </div>
   );
+};
+
+Row.propTypes = {
+  isRectangle: PropTypes.bool,
+};
+
+Row.defaultProps = {
+  isRectangle: true,
 };
 
 export default RowsLoader;
