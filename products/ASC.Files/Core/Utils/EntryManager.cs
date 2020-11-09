@@ -112,18 +112,18 @@ namespace ASC.Web.Files.Utils
             AuthContext = authContext;
         }
 
-        public List<Folder<T>> GetBreadCrumbs<T>(T folderId)
+        public List<FileEntry> GetBreadCrumbs<T>(T folderId)
         {
             var folderDao = DaoFactory.GetFolderDao<T>();
             return GetBreadCrumbs(folderId, folderDao);
         }
 
-        public List<Folder<T>> GetBreadCrumbs<T>(T folderId, IFolderDao<T> folderDao)
+        public List<FileEntry> GetBreadCrumbs<T>(T folderId, IFolderDao<T> folderDao)
         {
-            if (folderId == null) return new List<Folder<T>>();
-            var breadCrumbs = FileSecurity.FilterRead(folderDao.GetParentFolders(folderId)).ToList();
+            if (folderId == null) return new List<FileEntry>();
+            var breadCrumbs = FileSecurity.FilterRead(folderDao.GetParentFolders(folderId)).Cast<FileEntry>().ToList();
 
-            var firstVisible = breadCrumbs.ElementAtOrDefault(0);
+            var firstVisible = breadCrumbs.ElementAtOrDefault(0) as Folder<T>;
 
             var rootId = 0;
             if (firstVisible == null)
@@ -161,9 +161,11 @@ namespace ASC.Web.Files.Utils
                 }
             }
 
+            var folderDaoInt = DaoFactory.GetFolderDao<int>();
+
             if (rootId != 0)
             {
-                breadCrumbs.Insert(0, folderDao.GetFolder((T)Convert.ChangeType(rootId, typeof(T))));
+                breadCrumbs.Insert(0, folderDaoInt.GetFolder(rootId));
             }
 
             return breadCrumbs;
@@ -715,12 +717,12 @@ namespace ASC.Web.Files.Utils
         }
 
 
-        public List<Folder<T>> GetBreadCrumbs<T>(T folderId)
+        public List<FileEntry> GetBreadCrumbs<T>(T folderId)
         {
             return BreadCrumbsManager.GetBreadCrumbs(folderId);
         }
 
-        public List<Folder<T>> GetBreadCrumbs<T>(T folderId, IFolderDao<T> folderDao)
+        public List<FileEntry> GetBreadCrumbs<T>(T folderId, IFolderDao<T> folderDao)
         {
             return BreadCrumbsManager.GetBreadCrumbs(folderId, folderDao);
         }

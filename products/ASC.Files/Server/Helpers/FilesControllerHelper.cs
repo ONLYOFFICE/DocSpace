@@ -340,9 +340,18 @@ namespace ASC.Files.Helpers
             return FolderWrapperHelper.Get(folder);
         }
 
-        public IEnumerable<FolderWrapper<T>> GetFolderPath(T folderId)
+        public IEnumerable<FileEntryWrapper> GetFolderPath(T folderId)
         {
-            return EntryManager.GetBreadCrumbs(folderId).Select(FolderWrapperHelper.Get);
+            return EntryManager.GetBreadCrumbs(folderId).Select(r =>
+            {
+                if (r is Folder<string> f1)
+                    return FolderWrapperHelper.Get(f1);
+
+                if (r is Folder<int> f2)
+                    return FolderWrapperHelper.Get(f2);
+
+                return default(FileEntryWrapper);
+            });
         }
 
         public FileWrapper<T> GetFileInfo(T fileId, int version = -1)
