@@ -21,6 +21,7 @@ storiesOf("Components|Loaders", module)
     <Section>
       <h1>Circle Loader</h1>
       <CircleLoader
+        title={text("title", LoaderStyle.title)}
         x={text("x", "32")}
         y={text("y", "32")}
         radius={number("radius", "32")}

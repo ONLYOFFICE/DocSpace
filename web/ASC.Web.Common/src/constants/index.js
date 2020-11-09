@@ -121,6 +121,7 @@ export const i18nBaseSettings = {
 };
 
 export const LoaderStyle = {
+  title: "",
   width: "100%",
   height: "32",
   backgroundColor: "#000000",

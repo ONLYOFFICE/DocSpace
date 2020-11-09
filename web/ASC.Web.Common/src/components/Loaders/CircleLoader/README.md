@@ -13,13 +13,14 @@ import { Loaders } from "asc-web-common";
 ```
 
 ```jsx
-<Loaders.Circle x="15" y="15" radius="15" animate="false" />
+<Loaders.Circle x="15" y="15" radius="15" animate="false" title="Loading..." />
 ```
 
 ### Properties
 
 | Props               |   Type   | Required | Values |  Default  | Description                                      |
 | ------------------- | :------: | :------: | :----: | :-------: | ------------------------------------------------ |
+| `title`             | `string` |    -     |   -    |    ``     | It's used to describe what element it is.        |
 | `x`                 | `string` |    -     |   -    |    `3`    | Sets the x offset                                |
 | `y`                 | `string` |    -     |   -    |    `3`    | Sets the y offset                                |
 | `width`             | `string` |    -     |   -    |  `100%`   | Sets the width                                   |

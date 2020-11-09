@@ -3,13 +3,14 @@ import ContentLoader from "react-content-loader";
 import PropTypes from "prop-types";
 import { LoaderStyle } from "../../../constants/index";
 
-const CircleLoader = ({ x, y, radius, width, height, ...rest }) => (
-  <ContentLoader width={width} height={height} {...rest}>
+const CircleLoader = ({ title, x, y, radius, width, height, ...rest }) => (
+  <ContentLoader title={title} width={width} height={height} {...rest}>
     <circle cx={x} cy={y} r={radius} />
   </ContentLoader>
 );
 
 CircleLoader.propTypes = {
+  title: PropTypes.string,
   x: PropTypes.string,
   y: PropTypes.string,
   width: PropTypes.string,
@@ -24,6 +25,7 @@ CircleLoader.propTypes = {
 };
 
 CircleLoader.defaultProps = {
+  title: LoaderStyle.title,
   x: "3",
   y: "12",
   radius: "12",

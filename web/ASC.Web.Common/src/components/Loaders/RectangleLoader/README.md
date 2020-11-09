@@ -13,13 +13,20 @@ import { Loaders } from "asc-web-common";
 ```
 
 ```jsx
-<Loaders.Rectangle width="100" height="50" borderRadius="5" animate="false" />
+<Loaders.Rectangle
+  width="100"
+  height="50"
+  borderRadius="5"
+  animate="false"
+  title="Loading..."
+/>
 ```
 
 ### Properties
 
 | Props               |   Type   | Required | Values |  Default  | Description                                      |
 | ------------------- | :------: | :------: | :----: | :-------: | ------------------------------------------------ |
+| `title`             | `string` |    -     |   -    |    ``     | It's used to describe what element it is.        |
 | `x`                 | `string` |    -     |   -    |    `0`    | Sets the x offset                                |
 | `y`                 | `string` |    -     |   -    |    `0`    | Sets the y offset                                |
 | `width`             | `string` |    -     |   -    |  `100%`   | Sets the width                                   |

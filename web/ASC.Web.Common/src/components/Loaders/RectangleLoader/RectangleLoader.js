@@ -3,8 +3,16 @@ import ContentLoader from "react-content-loader";
 import PropTypes from "prop-types";
 import { LoaderStyle } from "../../../constants/index";
 
-const RectangleLoader = ({ x, y, borderRadius, width, height, ...rest }) => (
-  <ContentLoader width={width} height={height} {...rest}>
+const RectangleLoader = ({
+  title,
+  x,
+  y,
+  borderRadius,
+  width,
+  height,
+  ...rest
+}) => (
+  <ContentLoader title={title} width={width} height={height} {...rest}>
     <rect
       x={x}
       y={y}
@@ -17,6 +25,7 @@ const RectangleLoader = ({ x, y, borderRadius, width, height, ...rest }) => (
 );
 
 RectangleLoader.propTypes = {
+  title: PropTypes.string,
   x: PropTypes.string,
   y: PropTypes.string,
   width: PropTypes.string,
@@ -31,6 +40,7 @@ RectangleLoader.propTypes = {
 };
 
 RectangleLoader.defaultProps = {
+  title: LoaderStyle.title,
   x: "0",
   y: "0",
   width: "100%",

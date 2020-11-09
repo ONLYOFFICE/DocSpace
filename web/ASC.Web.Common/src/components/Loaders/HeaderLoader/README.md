@@ -16,6 +16,7 @@ import { Loaders } from "asc-web-common";
 
 | Props               |   Type   | Required | Values | Default | Description                                      |
 | ------------------- | :------: | :------: | :----: | :-----: | ------------------------------------------------ |
+| `title`             | `string` |    -     |   -    |   ``    | It's used to describe what element it is.        |
 | `width`             | `string` |    -     |   -    | `100%`  | Sets the width                                   |
 | `height`            | `string` |    -     |   -    |  `32`   | Sets the height                                  |
 | `backgroundColor`   | `string` |    -     |   -    | `#fff`  | Used as background of animation                  |

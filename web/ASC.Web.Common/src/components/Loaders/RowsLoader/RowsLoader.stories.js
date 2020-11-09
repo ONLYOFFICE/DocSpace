@@ -2,6 +2,7 @@ import React from "react";
 import { storiesOf } from "@storybook/react";
 import {
   withKnobs,
+  text,
   boolean,
   color,
   number,
@@ -20,6 +21,7 @@ storiesOf("Components|Loaders", module)
     <Section>
       <h1>Rows Loader</h1>
       <Loaders.Rows
+        title={text("title", LoaderStyle.title)}
         backgroundColor={color("backgroundColor", LoaderStyle.backgroundColor)}
         foregroundColor={color("foregroundColor", LoaderStyle.foregroundColor)}
         backgroundOpacity={number(

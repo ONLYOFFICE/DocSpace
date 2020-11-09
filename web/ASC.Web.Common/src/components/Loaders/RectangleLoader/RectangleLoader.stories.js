@@ -21,6 +21,7 @@ storiesOf("Components|Loaders", module)
     <Section>
       <h1>Rectangle Loader</h1>
       <Loaders.Rectangle
+        title={text("title", LoaderStyle.title)}
         x={text("x", "0")}
         y={text("y", "0")}
         width={text("width", LoaderStyle.width)}
