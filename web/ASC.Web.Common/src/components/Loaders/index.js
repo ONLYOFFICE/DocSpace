@@ -7,7 +7,7 @@ import TreeFolders from "./TreeFolderLoader/index";
 import Rows from "./RowsLoader/index";
 import Text from "./TextLoader";
 import Filter from "./FilterLoader/index";
-import ProfileView from "./ProfileViewLoader";
+import ProfileView from "./ProfileViewLoader/index";
 import SettingsFiles from "./SettingsFilesLoader";
 
 export default {
