@@ -111,14 +111,15 @@ class ConsumerModalDialog extends React.Component {
 
   instructionsText = (
     <Text as="div">
-      {this.props.selectedConsumer.instruction.split("{0}").map(
-        (str, i) =>
-          (i === 0 && (
-            <React.Fragment key={str}>
-              {str} {this.instructionsSeparator}
-            </React.Fragment>
-          )) || <React.Fragment key={str}> {str} </React.Fragment>
-      )}
+      {this.props.selectedConsumer.instruction &&
+        this.props.selectedConsumer.instruction.split(/\s?\{[^}]+\}/g).map(
+          (str, i) =>
+            (i === 0 && (
+              <React.Fragment key={str}>
+                {str} {this.instructionsSeparator}
+              </React.Fragment>
+            )) || <React.Fragment key={str}> {str} </React.Fragment>
+        )}
     </Text>
   );
 
