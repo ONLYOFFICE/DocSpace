@@ -323,15 +323,36 @@ class FilterInput extends React.Component {
     );
   };
 
-  calcHiddenItems = (searchWidth, currentFilterItems) => {
-    const { hideFilterItems } = this.state;
-    if (
-      !searchWidth ||
-      currentFilterItems.length === 0 ||
-      searchWidth > this.minWidth
-    )
-      return hideFilterItems.length;
+  calcHiddenItemWidth = (item) => {
+    if (!item) return;
+    const numberOfLetters = item.groupLabel.length + item.label.length;
+    return numberOfLetters * 6.7 + 60; // 60 - sum of padding
+  };
 
+  AddItems = (searchWidth) => {
+    const { hideFilterItems } = this.state;
+    let newSearchWidth = searchWidth;
+    let numberOfHiddenItems = hideFilterItems.length;
+
+    for (let i = 0; i < hideFilterItems.length; i++) {
+      const hiddenItemWidth = this.calcHiddenItemWidth(
+        hideFilterItems[hideFilterItems.length - i - 1] // last hidden element
+      );
+
+      newSearchWidth = newSearchWidth - hiddenItemWidth;
+      if (newSearchWidth >= this.minWidth) {
+        console.log(hiddenItemWidth);
+        numberOfHiddenItems--;
+      } else {
+        break;
+      }
+    }
+
+    return numberOfHiddenItems;
+  };
+
+  HideItems = (searchWidth, currentFilterItems) => {
+    const { hideFilterItems } = this.state;
     let newSearchWidth = searchWidth;
     let numberOfHiddenItems = hideFilterItems.length;
 
@@ -343,6 +364,23 @@ class FilterInput extends React.Component {
       numberOfHiddenItems++;
       if (newSearchWidth > this.minWidth) break;
     }
+
+    return numberOfHiddenItems;
+  };
+
+  calcHiddenItems = (searchWidth, currentFilterItems) => {
+    const { hideFilterItems } = this.state;
+    let numberOfHiddenItems = 0;
+
+    debugger;
+
+    if (!searchWidth || currentFilterItems.length === 0)
+      return hideFilterItems.length;
+
+    numberOfHiddenItems =
+      searchWidth < this.minWidth
+        ? this.HideItems(searchWidth, currentFilterItems)
+        : this.AddItems(searchWidth);
 
     return numberOfHiddenItems;
   };
