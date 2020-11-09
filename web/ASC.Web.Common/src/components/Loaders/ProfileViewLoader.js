@@ -1,5 +1,6 @@
 import React from "react";
 import ContentLoader from "react-content-loader";
+import { LoaderStyle } from "../../constants/index";
 
 const ProfileViewLoader = () => (
   <div style={{ width: "100%", height: "100%" }}>
@@ -7,8 +8,10 @@ const ProfileViewLoader = () => (
       speed={2}
       width={"100%"}
       height={235}
-      backgroundColor="#f3f3f3"
-      foregroundColor="#ecebeb"
+      backgroundColor={LoaderStyle.backgroundColor}
+      foregroundColor={LoaderStyle.foregroundColor}
+      backgroundOpacity={LoaderStyle.backgroundOpacity}
+      foregroundOpacity={LoaderStyle.foregroundOpacity}
     >
       <circle cx="80" cy="80" r="80" />
       <rect x="0" y="176" rx="5" ry="5" width="160" height="36" />

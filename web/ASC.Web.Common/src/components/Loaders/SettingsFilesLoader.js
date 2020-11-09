@@ -1,5 +1,6 @@
 import React from "react";
 import ContentLoader from "react-content-loader";
+import { LoaderStyle } from "../../constants/index";
 
 const SettingsFilesLoader = () => (
   <div style={{ width: "100%", height: "100%" }}>
@@ -7,8 +8,10 @@ const SettingsFilesLoader = () => (
       speed={2}
       width={"100%"}
       height={235}
-      backgroundColor="#f3f3f3"
-      foregroundColor="#ecebeb"
+      backgroundColor={LoaderStyle.backgroundColor}
+      foregroundColor={LoaderStyle.foregroundColor}
+      backgroundOpacity={LoaderStyle.backgroundOpacity}
+      foregroundOpacity={LoaderStyle.foregroundOpacity}
     >
       <rect x="0" y="5" rx="6" ry="6" width="24" height="14" />
       <rect x="33" y="5" rx="3" ry="3" width="310" height="14" />
