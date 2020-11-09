@@ -5,12 +5,12 @@ import GroupButton from "../group-button";
 import DropDownItem from "../drop-down-item";
 import throttle from "lodash/throttle";
 import { isArrayEqual } from "../../utils/array";
-import { tablet } from "../../utils/device";
+import { tablet, desktop } from "../../utils/device";
 
 const StyledGroupButtonsMenu = styled.div`
   box-sizing: border-box;
   position: sticky;
-  top: 0;
+  top: 1px;
   background: #ffffff;
   box-shadow: 0px 10px 18px -8px rgba(0, 0, 0, 0.100306);
   height: 56px;
@@ -18,8 +18,13 @@ const StyledGroupButtonsMenu = styled.div`
   padding: 0 18px 19px 0;
   width: 100%;
   white-space: nowrap;
+
   display: ${(props) => (props.visible ? "block" : "none")};
   z-index: 189;
+
+  @media ${desktop} {
+    margin-top: 1px;
+  }
 `;
 
 const CloseButton = styled.div`
