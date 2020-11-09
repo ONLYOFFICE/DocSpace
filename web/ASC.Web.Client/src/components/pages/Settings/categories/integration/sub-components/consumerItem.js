@@ -25,7 +25,7 @@ class ConsumerItem extends React.Component {
             heightProp="56px"
           >
             <Box>
-              <img src={logo} />
+              <img src={logo} alt={consumer.name} />
             </Box>
             <Box onClick={setConsumer} data-consumer={consumer.name}>
               <ConsumerToggle

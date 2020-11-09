@@ -14,3 +14,6 @@ export const getUserRole = (user) => {
 };
 
 export const getConsumersList = (state) => state.settings.integration.consumers;
+
+export const getSelectedConsumer = (state) =>
+  state.settings.integration.selectedConsumer;

@@ -11,6 +11,8 @@ import {
 } from "asc-web-components";
 import ModalDialogContainer from "./modalDialogContainer";
 import { Trans } from "react-i18next";
+import { connect } from "react-redux";
+import { getSelectedConsumer } from "../../../../../../store/settings/selectors";
 
 class ConsumerModalDialog extends React.Component {
   constructor(props) {
@@ -19,14 +21,12 @@ class ConsumerModalDialog extends React.Component {
   }
 
   mapTokenNameToState = () => {
-    const { consumers, selectedConsumer } = this.props;
-    consumers
-      .find((consumer) => consumer.name === selectedConsumer)
-      .props.map((p) =>
-        this.setState({
-          [`${p.name}`]: p.value,
-        })
-      );
+    const { selectedConsumer } = this.props;
+    selectedConsumer.props.map((prop) =>
+      this.setState({
+        [`${prop.name}`]: prop.value,
+      })
+    );
   };
 
   onChangeHandler = (e) => {
@@ -57,7 +57,7 @@ class ConsumerModalDialog extends React.Component {
       });
     }
     const data = {
-      name: selectedConsumer,
+      name: selectedConsumer.name,
       props: prop,
     };
     updateConsumerProps(data)
@@ -71,6 +71,11 @@ class ConsumerModalDialog extends React.Component {
       })
       .finally(onModalClose());
   };
+
+  // shouldComponentUpdate(nextProps, nextState) {
+  //   console.log("this.state: ", this.state, "nextState: ", nextState);
+  //   return nextState !== this.state;
+  // }
 
   componentDidMount() {
     this.mapTokenNameToState();
@@ -102,75 +107,70 @@ class ConsumerModalDialog extends React.Component {
     </Trans>
   );
 
-  setConsumerData = (key) => {
-    const { consumers, selectedConsumer, isLoading } = this.props;
-    const { onChangeHandler, state } = this;
-    return key === "props"
-      ? consumers
-          .find((consumer) => consumer.name === selectedConsumer)
-          [key].map((prop, i) => (
-            <React.Fragment key={i}>
-              <Box
-                displayProp="flex"
-                flexDirection="column"
-                marginProp="0 0 16px 0"
-              >
-                <Box marginProp="0 0 4px 0">
-                  <Text isBold>{prop.title}:</Text>
-                </Box>
-                <Box>
-                  <TextInput
-                    scale
-                    name={prop.name}
-                    placeholder={prop.title}
-                    isAutoFocussed={i === 0}
-                    tabIndex={1}
-                    value={Object.values(state)[i]}
-                    isDisabled={isLoading}
-                    onChange={onChangeHandler}
-                  />
-                </Box>
-              </Box>
-            </React.Fragment>
-          ))
-      : consumers.find((consumer) => consumer.name === selectedConsumer)[key];
-  };
+  instructionsSeparator = (<Box marginProp="4px 0" />);
 
-  intructionsSeparator = (<Box marginProp="4px 0" />);
-
-  intructionsText = (
+  instructionsText = (
     <Text as="div">
-      {this.setConsumerData("instruction")
-        .split("{0}")
-        .map(
-          (str, i) =>
-            (i === 0 && (
-              <React.Fragment key={str}>
-                {str} {this.intructionsSeparator}
-              </React.Fragment>
-            )) || <React.Fragment key={str}> {str} </React.Fragment>
-        )}
+      {this.props.selectedConsumer.instruction.split("{0}").map(
+        (str, i) =>
+          (i === 0 && (
+            <React.Fragment key={str}>
+              {str} {this.instructionsSeparator}
+            </React.Fragment>
+          )) || <React.Fragment key={str}> {str} </React.Fragment>
+      )}
     </Text>
   );
 
   render() {
-    const { onModalClose, dialogVisible, isLoading, t } = this.props;
     const {
-      setConsumerData,
+      selectedConsumer,
+      onModalClose,
+      dialogVisible,
+      isLoading,
+      t,
+    } = this.props;
+    const {
       updateConsumerValues,
       bodyDescription,
       bottomDescription,
-      intructionsText,
+      instructionsText,
     } = this;
 
     return (
       <ModalDialogContainer>
         <ModalDialog visible={dialogVisible} onClose={onModalClose}>
-          <ModalDialog.Header>{setConsumerData("name")}</ModalDialog.Header>
+          <ModalDialog.Header>{selectedConsumer.name}</ModalDialog.Header>
           <ModalDialog.Body>
-            {intructionsText}
+            {instructionsText}
             <Text as="div">{bodyDescription}</Text>
-            <React.Fragment>{setConsumerData("props")}</React.Fragment>
+            <React.Fragment>
+              {selectedConsumer.props.map((prop, i) => (
+                <React.Fragment key={prop.name}>
+                  <Box
+                    displayProp="flex"
+                    flexDirection="column"
+                    marginProp="0 0 16px 0"
+                  >
+                    <Box marginProp="0 0 4px 0">
+                      <Text isBold>{prop.title}:</Text>
+                    </Box>
+                    <Box>
+                      <TextInput
+                        scale
+                        name={prop.name}
+                        placeholder={prop.title}
+                        isAutoFocussed={i === 0}
+                        tabIndex={1}
+                        value={Object.values(this.state)[i]}
+                        isDisabled={this.props.isLoading}
+                        onChange={this.onChangeHandler}
+                      />
+                    </Box>
+                  </Box>
+                </React.Fragment>
+              ))}
+            </React.Fragment>
             <Text>{bottomDescription}</Text>
           </ModalDialog.Body>
           <ModalDialog.Footer>
@@ -195,16 +195,21 @@ class ConsumerModalDialog extends React.Component {
   }
 }
 
-export default ConsumerModalDialog;
-
 ConsumerModalDialog.propTypes = {
   t: PropTypes.func.isRequired,
   i18n: PropTypes.object.isRequired,
-  consumers: PropTypes.arrayOf(PropTypes.object).isRequired,
-  selectedConsumer: PropTypes.string,
+  selectedConsumer: PropTypes.object,
   onModalClose: PropTypes.func.isRequired,
   dialogVisible: PropTypes.bool.isRequired,
   isLoading: PropTypes.bool.isRequired,
   onChangeLoading: PropTypes.func.isRequired,
   updateConsumerProps: PropTypes.func.isRequired,
 };
+
+const mapStateToProps = (state) => {
+  return {
+    selectedConsumer: getSelectedConsumer(state),
+  };
+};
+
+export default connect(mapStateToProps, null)(ConsumerModalDialog);

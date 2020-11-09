@@ -16,6 +16,7 @@ export const SET_LOGO_TEXT = "SET_LOGO_TEXT";
 export const SET_LOGO_SIZES = "SET_LOGO_SIZES";
 export const SET_LOGO_URLS = "SET_LOGO_URLS";
 export const SET_CONSUMERS = "SET_CONSUMERS";
+export const SET_SELECTED_CONSUMER = "SET_SELECTED_CONSUMER";
 
 export function setOptions(options) {
   return {
@@ -77,6 +78,13 @@ export function setConsumers(consumers) {
   return {
     type: SET_CONSUMERS,
     consumers,
+  };
+}
+
+export function setSelectedConsumer(selectedConsumer) {
+  return {
+    type: SET_SELECTED_CONSUMER,
+    selectedConsumer,
   };
 }
 

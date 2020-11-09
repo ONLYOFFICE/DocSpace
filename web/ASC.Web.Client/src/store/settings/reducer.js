@@ -7,7 +7,8 @@ import {
   SET_LOGO_TEXT,
   SET_LOGO_SIZES,
   SET_LOGO_URLS,
-  SET_CONSUMERS
+  SET_CONSUMERS,
+  SET_SELECTED_CONSUMER,
 } from "./actions";
 import { api } from "asc-web-common";
 const { Filter } = api;
@@ -30,8 +31,9 @@ const initialState = {
     },
   },
   integration: {
-    consumers: []
-  }
+    consumers: [],
+    selectedConsumer: {},
+  },
 };
 
 const peopleReducer = (state = initialState, action) => {
@@ -106,9 +108,21 @@ const peopleReducer = (state = initialState, action) => {
         ...state,
         integration: {
           ...state.integration,
-          consumers: action.consumers
-        }
-      }
+          consumers: action.consumers,
+        },
+      };
+
+    case SET_SELECTED_CONSUMER:
+      return {
+        ...state,
+        integration: {
+          ...state.integration,
+          selectedConsumer:
+            state.integration.consumers.find(
+              (c) => c.name === action.selectedConsumer
+            ) || {},
+        },
+      };
 
     default:
       return state;

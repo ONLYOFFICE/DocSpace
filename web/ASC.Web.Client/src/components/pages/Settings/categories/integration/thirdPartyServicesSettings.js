@@ -3,9 +3,13 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import {
   getConsumers,
+  setSelectedConsumer,
   updateConsumerProps,
 } from "../../../../../store/settings/actions";
-import { getConsumersList } from "../../../../../store/settings/selectors";
+import {
+  getConsumersList,
+  getSelectedConsumer,
+} from "../../../../../store/settings/selectors";
 import { withTranslation } from "react-i18next";
 import styled from "styled-components";
 
@@ -56,7 +60,6 @@ class ThirdPartyServices extends React.Component {
     )}`;
 
     this.state = {
-      selectedConsumer: "",
       dialogVisible: false,
       isLoading: false,
     };
@@ -82,14 +85,12 @@ class ThirdPartyServices extends React.Component {
   onModalClose = () => {
     this.setState({
       dialogVisible: false,
-      selectedConsumer: "",
     });
+    this.props.setSelectedConsumer();
   };
 
   setConsumer = (e) => {
-    this.setState({
-      selectedConsumer: e.currentTarget.dataset.consumer,
-    });
+    this.props.setSelectedConsumer(e.currentTarget.dataset.consumer);
   };
 
   updateConsumerValues = (obj, isFill) => {
@@ -169,7 +170,6 @@ class ThirdPartyServices extends React.Component {
                   <ConsumerItem
                     consumer={consumer}
                     dialogVisible={dialogVisible}
-                    selectedConsumer={selectedConsumer}
                     isLoading={isLoading}
                     onChangeLoading={onChangeLoading}
                     onModalClose={onModalClose}
@@ -187,8 +187,6 @@ class ThirdPartyServices extends React.Component {
             t={t}
             i18n={i18n}
             dialogVisible={dialogVisible}
-            consumers={consumers}
-            selectedConsumer={selectedConsumer}
             isLoading={isLoading}
             onModalClose={onModalClose}
             onChangeLoading={onChangeLoading}
@@ -204,13 +202,21 @@ ThirdPartyServices.propTypes = {
   t: PropTypes.func.isRequired,
   i18n: PropTypes.object.isRequired,
   consumers: PropTypes.arrayOf(PropTypes.object).isRequired,
+  selectedConsumer: PropTypes.object,
+  getConsumers: PropTypes.func.isRequired,
   updateConsumerProps: PropTypes.func.isRequired,
+  setSelectedConsumer: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => {
-  return { consumers: getConsumersList(state) };
+  return {
+    consumers: getConsumersList(state),
+    selectedConsumer: getSelectedConsumer(state),
+  };
 };
 
-export default connect(mapStateToProps, { getConsumers, updateConsumerProps })(
-  withTranslation()(ThirdPartyServices)
-);
+export default connect(mapStateToProps, {
+  getConsumers,
+  updateConsumerProps,
+  setSelectedConsumer,
+})(withTranslation()(ThirdPartyServices));
