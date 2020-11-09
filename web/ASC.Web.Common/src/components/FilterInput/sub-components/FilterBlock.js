@@ -268,6 +268,17 @@ class FilterBlock extends React.Component {
     };
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    debugger;
+    if (
+      !isEqual(prevState.openFilterItems, this.state.openFilterItems) ||
+      !isEqual(prevState.hideFilterItems, this.state.hideFilterItems)
+    ) {
+      console.log("onFilterRender");
+      this.props.onFilterRender();
+    }
+  }
+
   shouldComponentUpdate(nextProps, nextState) {
     const { hideFilterItems, openFilterItems } = nextProps;
 
@@ -284,9 +295,7 @@ class FilterBlock extends React.Component {
       }
       return true;
     }
-    if (this.props.isResizeUpdate) {
-      return true;
-    }
+
     return !isEqual(this.state, nextState);
   }
 
@@ -414,9 +423,6 @@ class FilterBlock extends React.Component {
     return result;
   };
 
-  onRender = () => {
-    this.props.onRender();
-  };
   render() {
     const _this = this;
     const filterItems = this.getFilterItems();

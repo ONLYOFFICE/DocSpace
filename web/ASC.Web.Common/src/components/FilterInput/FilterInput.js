@@ -123,15 +123,18 @@ class FilterInput extends React.Component {
     window.removeEventListener("resize", this.throttledResize);
   }
   componentDidUpdate(prevProps, prevState) {
+    const { selectedFilterData } = this.props;
+    const { filterWidth } = this.state;
+
     if (
       this.props.needForUpdate &&
       this.props.needForUpdate(prevProps, this.props)
     ) {
       let internalFilterData = convertToInternalData(
         this.props.getFilterData(),
-        cloneObjectsArray(this.props.selectedFilterData.filterValues)
+        cloneObjectsArray(selectedFilterData.filterValues)
       );
-      //this.updateFilter(internalFilterData);
+      this.updateFilter(internalFilterData);
     }
   }
   shouldComponentUpdate(nextProps, nextState) {
@@ -341,7 +344,6 @@ class FilterInput extends React.Component {
 
       newSearchWidth = newSearchWidth - hiddenItemWidth;
       if (newSearchWidth >= this.minWidth) {
-        console.log(hiddenItemWidth);
         numberOfHiddenItems--;
       } else {
         break;
@@ -372,8 +374,6 @@ class FilterInput extends React.Component {
     const { hideFilterItems } = this.state;
     let numberOfHiddenItems = 0;
 
-    debugger;
-
     if (!searchWidth || currentFilterItems.length === 0)
       return hideFilterItems.length;
 
@@ -393,13 +393,13 @@ class FilterInput extends React.Component {
     const filterWidth = this.filterWrapper.current.getBoundingClientRect()
       .width;
 
+    const searchWidth = fullWidth - filterWidth;
+
     const filterArr = Array.from(
       Array.from(this.filterWrapper.current.children).find(
         (x) => x.id === "filter-items-container"
       ).children
     );
-
-    const searchWidth = fullWidth - filterWidth;
 
     const numberOfHiddenItems = this.calcHiddenItems(searchWidth, filterArr);
     if (searchWidth !== 0 && currentFilterItems.length > 0) {
@@ -415,70 +415,8 @@ class FilterInput extends React.Component {
           : [],
       });
     }
-
-    /*const filterArr = Array.from(
-      Array.from(this.filterWrapper.current.children).find(
-        (x) => x.id === "filter-items-container"
-      ).children
-    );
-    const searchFilterButton = Array.from(
-      this.filterWrapper.current.children
-    ).find((x) => x.id != "filter-items-container");
-
-    const filterButton = searchFilterButton
-      ? Array.from(searchFilterButton.children)[0]
-      : null;
-
-    if (fullWidth <= this.minWidth && fullWidth > 0) {
-      this.setState({
-        openFilterItems: [],
-        hideFilterItems: cloneObjectsArray(currentFilterItems),
-      });
-    } else if (filterWidth > fullWidth / 2) {
-      let newOpenFilterItems = cloneObjectsArray(currentFilterItems);
-      let newHideFilterItems = [];
-
-      let elementsWidth = 0;
-      Array.from(filterArr).forEach((element) => {
-        elementsWidth = elementsWidth + element.getBoundingClientRect().width;
-      });
-
-      if (
-        filterButton !== null &&
-        elementsWidth >=
-          fullWidth / 3 - filterButton.getBoundingClientRect().width
-      ) {
-        for (let i = 0; i < filterArr.length; i++) {
-          if (
-            elementsWidth >
-            fullWidth / 3 - filterButton.getBoundingClientRect().width
-          ) {
-            elementsWidth =
-              elementsWidth - filterArr[i].getBoundingClientRect().width;
-            const hiddenItem = currentFilterItems.find(
-              (x) => x.key === filterArr[i].getAttribute("id")
-            );
-            if (hiddenItem) newHideFilterItems.push(hiddenItem);
-            newOpenFilterItems.splice(
-              newOpenFilterItems.findIndex(
-                (x) => x.key === filterArr[i].getAttribute("id")
-              ),
-              1
-            );
-          }
-        }
-      }
-      this.setState({
-        openFilterItems: newOpenFilterItems,
-        hideFilterItems: newHideFilterItems,
-      });
-    } else {
-      this.setState({
-        openFilterItems: currentFilterItems.slice(),
-        hideFilterItems: [],
-      });
-    }*/
   };
+
   onDeleteFilterItem = (key) => {
     const currentFilterItems = this.state.filterValues.slice();
     const indexFilterItem = currentFilterItems.findIndex((x) => x.key === key);
@@ -531,15 +469,7 @@ class FilterInput extends React.Component {
       this.isResizeUpdate = false;
     }
 
-    if (this.searchWrapper.current && this.filterWrapper.current) {
-      const fullWidth = this.searchWrapper.current.getBoundingClientRect()
-        .width;
-      const filterWidth = this.filterWrapper.current.getBoundingClientRect()
-        .width;
-      const searchWidth = fullWidth - filterWidth;
-      if (searchWidth !== 0 && searchWidth <= this.minWidth)
-        this.updateFilter();
-    }
+    this.updateFilter();
   };
   onClickFilterItem = (event, filterItem) => {
     const currentFilterItems = cloneObjectsArray(this.state.filterValues);
@@ -785,7 +715,7 @@ class FilterInput extends React.Component {
                 onClickFilterItem={this.onClickFilterItem}
                 onDeleteFilterItem={this.onDeleteFilterItem}
                 isResizeUpdate={this.isResizeUpdate}
-                onRender={this.onFilterRender}
+                onFilterRender={this.onFilterRender}
                 isDisabled={isDisabled}
                 columnCount={filterColumnCount}
               />
