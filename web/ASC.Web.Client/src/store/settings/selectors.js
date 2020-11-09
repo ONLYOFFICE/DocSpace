@@ -1,3 +1,6 @@
+import { format } from "react-string-format";
+import { createSelector } from "reselect";
+
 export const getUserRole = (user) => {
   if (user.isOwner) return "owner";
   else if (user.isAdmin) return "admin";
@@ -9,3 +12,5 @@ export const getUserRole = (user) => {
   else if (user.isVisitor) return "guest";
   else return "user";
 };
+
+export const getConsumersList = (state) => state.settings.integration.consumers;

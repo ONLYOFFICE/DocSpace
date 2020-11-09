@@ -5,6 +5,7 @@ import {
   getConsumers,
   updateConsumerProps,
 } from "../../../../../store/settings/actions";
+import { getConsumersList } from "../../../../../store/settings/selectors";
 import { withTranslation } from "react-i18next";
 import styled from "styled-components";
 
@@ -157,10 +158,10 @@ class ThirdPartyServices extends React.Component {
             flexWrap="wrap"
             marginProp="32px 176px 40px 0"
           >
-            {consumers.map((consumer, i) => (
+            {consumers.map((consumer) => (
               <StyledConsumer
                 className="consumer-item-wrapper"
-                key={i}
+                key={consumer.name}
                 marginProp="0 24px 24px 0"
               >
                 <Separator />
@@ -207,8 +208,7 @@ ThirdPartyServices.propTypes = {
 };
 
 const mapStateToProps = (state) => {
-  const { consumers } = state.settings.integration;
-  return { consumers };
+  return { consumers: getConsumersList(state) };
 };
 
 export default connect(mapStateToProps, { getConsumers, updateConsumerProps })(
