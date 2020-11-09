@@ -107,6 +107,7 @@ class FilterInput extends React.Component {
       filterValues,
       openFilterItems: [],
       hideFilterItems: [],
+      needUpdateFilter: false,
     };
 
     this.searchWrapper = React.createRef();
@@ -124,7 +125,6 @@ class FilterInput extends React.Component {
   }
   componentDidUpdate(prevProps, prevState) {
     const { selectedFilterData } = this.props;
-    const { filterWidth } = this.state;
 
     if (
       this.props.needForUpdate &&
@@ -469,10 +469,18 @@ class FilterInput extends React.Component {
       this.isResizeUpdate = false;
     }
 
+    this.setState({
+      needUpdateFilter: false,
+    });
+
     this.updateFilter();
   };
   onClickFilterItem = (event, filterItem) => {
     const currentFilterItems = cloneObjectsArray(this.state.filterValues);
+
+    this.setState({
+      needUpdateFilter: true,
+    });
 
     if (filterItem.isSelector) {
       const indexFilterItem = currentFilterItems.findIndex(
@@ -718,6 +726,7 @@ class FilterInput extends React.Component {
                 onFilterRender={this.onFilterRender}
                 isDisabled={isDisabled}
                 columnCount={filterColumnCount}
+                needUpdateFilter={this.state.needUpdateFilter}
               />
             </div>
           </SearchInput>

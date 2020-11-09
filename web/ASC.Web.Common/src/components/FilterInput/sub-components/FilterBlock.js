@@ -39,6 +39,7 @@ class FilterItem extends React.Component {
       isOpen: false,
       isOpenSelector: !isOpenSelector,
       selectedOption,
+      needUpdate: false,
     };
   }
 
@@ -67,6 +68,11 @@ class FilterItem extends React.Component {
         selectedOption,
       });
     }
+
+    if (this.state.needUpdate) {
+      this.props.onFilterRender();
+      this.setNeedUpdate(false);
+    }
   }
 
   onSelect = (option) => {
@@ -77,6 +83,7 @@ class FilterItem extends React.Component {
       group,
       inSubgroup: !!inSubgroup,
     });
+    this.setNeedUpdate(true);
   };
   onClick = () => {
     const { isDisabled, id, onClose } = this.props;
@@ -84,6 +91,12 @@ class FilterItem extends React.Component {
   };
 
   toggleCombobox = (e, isOpen) => this.setState({ isOpen });
+
+  setNeedUpdate = (needUpdate) => {
+    this.setState({
+      needUpdate,
+    });
+  };
 
   onCancelSelector = (e) => {
     if (
@@ -265,17 +278,20 @@ class FilterBlock extends React.Component {
     this.state = {
       hideFilterItems: hideFilterItems || [],
       openFilterItems: openFilterItems || [],
+      needUpdate: false,
     };
   }
 
   componentDidUpdate(prevProps, prevState) {
-    debugger;
+    const { needUpdate } = this.state;
+    const { needUpdateFilter } = this.props;
     if (
-      !isEqual(prevState.openFilterItems, this.state.openFilterItems) ||
-      !isEqual(prevState.hideFilterItems, this.state.hideFilterItems)
+      (needUpdate || needUpdateFilter) &&
+      (!isEqual(prevState.openFilterItems, this.state.openFilterItems) ||
+        !isEqual(prevState.hideFilterItems, this.state.hideFilterItems))
     ) {
-      console.log("onFilterRender");
       this.props.onFilterRender();
+      this.setNeedUpdate(false);
     }
   }
 
@@ -301,6 +317,13 @@ class FilterBlock extends React.Component {
 
   onDeleteFilterItem = (key) => {
     this.props.onDeleteFilterItem(key);
+    this.setNeedUpdate(true);
+  };
+
+  setNeedUpdate = (needUpdate) => {
+    this.setState({
+      needUpdate,
+    });
   };
   getFilterItems = () => {
     const { openFilterItems, hideFilterItems } = this.state;
@@ -342,6 +365,7 @@ class FilterBlock extends React.Component {
             defaultOption={defaultOption}
             defaultSelectLabel={defaultSelectLabel}
             selectedItem={selectedItem}
+            onFilterRender={_this.props.onFilterRender}
           ></FilterItem>
         );
       });
@@ -382,6 +406,7 @@ class FilterBlock extends React.Component {
             defaultOption={defaultOption}
             defaultSelectLabel={defaultSelectLabel}
             selectedItem={selectedItem}
+            onFilterRender={_this.props.onFilterRender}
           ></FilterItem>
         );
       });
