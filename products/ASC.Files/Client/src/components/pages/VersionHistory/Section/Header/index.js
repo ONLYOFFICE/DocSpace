@@ -14,10 +14,8 @@ const StyledContainer = styled.div`
   align-items: center;
 
   .arrow-button {
-    @media ${desktop} {
-      display: none;
-    }
-    margin-right: 15px;
+    margin-left: -8px;
+    margin-right: 24px;
     min-width: 17px;
 
     @media (max-width: 1024px) {
