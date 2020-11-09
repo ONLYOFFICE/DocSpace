@@ -41,6 +41,7 @@ const StyledArticle = styled.article`
           ? props.pinned
             ? `
             min-width: 240px;
+            margin-top: 56px;
           `
             : `
             position: fixed !important;
