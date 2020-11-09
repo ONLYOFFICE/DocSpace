@@ -10,7 +10,6 @@ import Loaders from "../../Loaders/index";
 import { utils } from "asc-web-components";
 import { connect } from "react-redux";
 import {
-  getCurrentProduct,
   getCurrentProductId,
   getCurrentProductName,
   getDefaultPage,
@@ -83,6 +82,7 @@ const HeaderComponent = ({
   currentProductId,
   toggleAside,
   isLoaded,
+  isAuthenticated,
   ...props
 }) => {
   //console.log("Header render");
@@ -117,8 +117,10 @@ const HeaderComponent = ({
               <img className="header-logo-icon" src={props.logoUrl} />
             </a>
           </>
-        ) : (
+        ) : isAuthenticated ? (
           <Loaders.Header />
+        ) : (
+          <></>
         )}
 
         <Headline className="header-module-title" type="header" color="#FFF">
@@ -179,10 +181,14 @@ HeaderComponent.propTypes = {
   onNavMouseEnter: PropTypes.func,
   onNavMouseLeave: PropTypes.func,
   toggleAside: PropTypes.func,
+  logoUrl: PropTypes.string,
+  isLoaded: PropTypes.bool,
+  isAuthenticated: PropTypes.bool,
 };
 
 const mapStateToProps = (state) => {
   const { logoUrl } = state.auth.settings;
+  const { isAuthenticated } = state.auth;
 
   return {
     defaultPage: getDefaultPage(state),
@@ -192,6 +198,7 @@ const mapStateToProps = (state) => {
     currentProductId: getCurrentProductId(state),
     isLoaded: getIsLoaded(state),
     logoUrl,
+    isAuthenticated,
   };
 };
 

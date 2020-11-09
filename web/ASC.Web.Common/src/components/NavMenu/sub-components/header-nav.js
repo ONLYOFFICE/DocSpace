@@ -108,7 +108,7 @@ const HeaderNav = React.memo(
               />
             )}
           </>
-        ) : (
+        ) : isAuthenticated && user ? (
           <Loaders.Circle
             x="34"
             y="18"
@@ -118,6 +118,8 @@ const HeaderNav = React.memo(
             backgroundColor="#fff"
             foregroundColor="#fff"
           />
+        ) : (
+          <></>
         )}
       </StyledNav>
     );
