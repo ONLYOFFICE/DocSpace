@@ -260,7 +260,7 @@ const Icon = ({ size, primary, icon, isHovered }) => (
         size: size === "large" ? "large" : size === "big" ? "medium" : "small",
         color: icon.props.color
           ? isHovered
-            ? icon.props.hoveredColor
+            ? icon.props.hoveredcolor
             : icon.props.color
           : primary
           ? "#FFFFFF"
@@ -281,6 +281,7 @@ Icon.defaultProps = {
 
 const Button = React.forwardRef((props, ref) => {
   const { primary, size, isLoading, icon, label, isHovered } = props;
+  console.log(icon);
   const iconProps = { primary, size, icon, isHovered };
   return (
     <StyledButton innerRef={ref} {...props}>
