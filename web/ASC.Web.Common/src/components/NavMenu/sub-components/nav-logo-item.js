@@ -36,6 +36,7 @@ NavLogoItem.displayName = "NavLogoItem";
 NavLogoItem.propTypes = {
   opened: PropTypes.bool,
   onClick: PropTypes.func,
+  logoUrl: PropTypes.string,
 };
 
 const mapStateToProps = (state) => {

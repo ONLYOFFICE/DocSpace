@@ -133,6 +133,7 @@ HeaderNav.propTypes = {
   user: PropTypes.object,
   logout: PropTypes.func,
   isAuthenticated: PropTypes.bool,
+  isLoaded: PropTypes.bool,
 };
 
 function mapStateToProps(state) {
