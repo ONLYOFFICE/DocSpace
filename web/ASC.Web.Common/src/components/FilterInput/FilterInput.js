@@ -136,6 +136,17 @@ class FilterInput extends React.Component {
       );
       this.updateFilter(internalFilterData);
     }
+
+    if (
+      !isEqual(prevProps.selectedFilterData, selectedFilterData) &&
+      selectedFilterData.filterValues &&
+      (selectedFilterData.filterValues.length === 0 ||
+        (selectedFilterData.filterValues.length === 1 &&
+          selectedFilterData.filterValues[0].key === "null")) &&
+      !selectedFilterData.inputValue
+    ) {
+      this.clearFilter();
+    }
   }
   shouldComponentUpdate(nextProps, nextState) {
     const {
