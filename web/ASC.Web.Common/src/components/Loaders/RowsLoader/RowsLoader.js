@@ -12,7 +12,7 @@ const StyledRow = styled.div`
   display: grid;
   grid-template-columns: 16px 22px 1fr;
   grid-template-rows: 1fr;
-  grid-column-gap: 8px;
+  grid-column-gap: ${(props) => props.gap || "8px"};
   margin-bottom: 32px;
   justify-items: center;
   align-items: center;
@@ -44,7 +44,7 @@ const Row = (props) => {
   let isRectangle = props.isRectangle;
 
   return (
-    <StyledRow>
+    <StyledRow gap={isRectangle ? "8px" : "16px"}>
       <RectangleLoader width="16" height="16" {...props} />
       {isRectangle ? (
         <RectangleLoader
