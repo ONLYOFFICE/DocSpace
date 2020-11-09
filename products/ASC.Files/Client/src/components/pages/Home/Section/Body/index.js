@@ -65,7 +65,6 @@ import {
   getFolderIcon,
   getSelectedFolderId,
   getFolders,
-  getIsLoading,
   getMediaViewerId,
   getMediaViewerVisibility,
   getSelectedFolderParentId,
@@ -1443,8 +1442,6 @@ class SectionBodyContent extends React.Component {
       settings,
       selection,
       fileAction,
-      setIsLoading,
-      isLoading,
       currentFolderCount,
       isRecycleBin,
       isPrivacy,
@@ -1468,11 +1465,6 @@ class SectionBodyContent extends React.Component {
       showMoveToPanel,
       showCopyPanel,
     } = this.state;
-
-    const operationsPanelProps = {
-      setIsLoading,
-      isLoading,
-    };
 
     const items = filesList;
 
@@ -1515,7 +1507,6 @@ class SectionBodyContent extends React.Component {
       <>
         {showMoveToPanel && (
           <OperationsPanel
-            {...operationsPanelProps}
             isCopy={false}
             visible={showMoveToPanel}
             onClose={this.onMoveAction}
@@ -1524,7 +1515,6 @@ class SectionBodyContent extends React.Component {
 
         {showCopyPanel && (
           <OperationsPanel
-            {...operationsPanelProps}
             isCopy={true}
             visible={showCopyPanel}
             onClose={this.onCopyAction}
@@ -1753,7 +1743,6 @@ const mapStateToProps = (state) => {
     isCommon: getIsCommonFolder(state),
     isEncryptionSupport: isEncryptionSupport(state),
     isFavorites: getIsFavoritesFolder(state),
-    isLoading: getIsLoading(state),
     isMy: getIsMyFolder(state),
     isRecycleBin: getIsRecycleBinFolder(state),
     isRecent: getIsRecentFolder(state),
