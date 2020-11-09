@@ -6,10 +6,7 @@ import {
   setSelectedConsumer,
   updateConsumerProps,
 } from "../../../../../store/settings/actions";
-import {
-  getConsumersList,
-  getSelectedConsumer,
-} from "../../../../../store/settings/selectors";
+import { getConsumersList } from "../../../../../store/settings/selectors";
 import { withTranslation } from "react-i18next";
 import styled from "styled-components";
 
@@ -129,7 +126,7 @@ class ThirdPartyServices extends React.Component {
 
   render() {
     const { t, i18n, consumers, updateConsumerProps } = this.props;
-    const { selectedConsumer, dialogVisible, isLoading } = this.state;
+    const { dialogVisible, isLoading } = this.state;
     const { onModalClose, onModalOpen, setConsumer, onChangeLoading } = this;
 
     return (
@@ -202,7 +199,6 @@ ThirdPartyServices.propTypes = {
   t: PropTypes.func.isRequired,
   i18n: PropTypes.object.isRequired,
   consumers: PropTypes.arrayOf(PropTypes.object).isRequired,
-  selectedConsumer: PropTypes.object,
   getConsumers: PropTypes.func.isRequired,
   updateConsumerProps: PropTypes.func.isRequired,
   setSelectedConsumer: PropTypes.func.isRequired,
@@ -211,7 +207,6 @@ ThirdPartyServices.propTypes = {
 const mapStateToProps = (state) => {
   return {
     consumers: getConsumersList(state),
-    selectedConsumer: getSelectedConsumer(state),
   };
 };
 
