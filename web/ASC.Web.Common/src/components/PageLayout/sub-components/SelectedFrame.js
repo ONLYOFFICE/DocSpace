@@ -72,7 +72,7 @@ class SelectedFrame extends React.Component {
         ? 0
         : filterContainerHeight;
 
-    const smallPadding = -3;
+    const smallPadding = -4;
     const bigPadding = 24;
 
     if (this.props.viewAs === "tile") {
@@ -224,7 +224,7 @@ class SelectedFrame extends React.Component {
       frame.style.visibility = "visible";
       frame.style.display = "block";
 
-      const smallPadding = -3;
+      const smallPadding = -4;
       const bigPadding = 24;
 
       const selectedItems = [];
