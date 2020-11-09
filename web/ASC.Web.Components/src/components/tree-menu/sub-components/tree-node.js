@@ -110,7 +110,7 @@ const TreeNodeMenu = styled(TreeNode)`
   ${(props) =>
     props.dragging &&
     css`
-      span.draggable {
+      .draggable {
         background: #f8f7bf;
         border-radius: 3px;
         ${(props) =>

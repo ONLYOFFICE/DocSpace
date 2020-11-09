@@ -31,4 +31,4 @@ import { Textarea } from "asc-web-components";
 | `style`          | `obj`, `array` |    -     |   -    |    -    | Accepts css style                                        |
 | `value`          |    `string`    |    -     |   -    |    -    | Value for Textarea                                       |
 | `fontSize`       |    `number`    |    -     |   -    |   13    | Value for font-size                                      |
-| `heightTextArea` |    `number`    |    -     |   -    |    -    | Valuer for height text-area                              |
+| `heightTextArea` |    `number`    |    -     |   -    |    -    | Value for height text-area                               |
