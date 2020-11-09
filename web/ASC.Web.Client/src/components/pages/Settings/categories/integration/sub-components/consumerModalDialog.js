@@ -94,7 +94,21 @@ class ConsumerModalDialog extends React.Component {
           {this.props.t("ThirdPartyHowItWorks")}
         </Text>
       </Box>
-      <Text as="div">{this.props.t("ThirdPartyBodyDescription")}</Text>
+      <Text as="div">
+        <Trans i18nKey="ThirdPartyBodyDescription" i18n={this.i18n}>
+          For more detailed instructions about connecting this service, please
+          refer to our{" "}
+          <Link
+            color="#316DAA"
+            isHovered={false}
+            target="_blank"
+            href={`https://helpcenter.onlyoffice.com/server/windows/community/authorization-keys.aspx#${this.props.selectedConsumer.name}`}
+          >
+            Help Center
+          </Link>{" "}
+          that provides all the necessary information.
+        </Trans>
+      </Text>
     </Box>
   );
 
