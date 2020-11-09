@@ -1,3 +1,5 @@
+import React from "react";
+import { Box } from "asc-web-components";
 import { format } from "react-string-format";
 import { createSelector } from "reselect";
 
@@ -17,3 +19,13 @@ export const getConsumersList = (state) => state.settings.integration.consumers;
 
 export const getSelectedConsumer = (state) =>
   state.settings.integration.selectedConsumer;
+
+export const getConsumerInstruction = createSelector(
+  getSelectedConsumer,
+  (consumer) => {
+    return (
+      consumer.instruction &&
+      format(consumer.instruction, <Box marginProp="4px 0" />)
+    );
+  }
+);

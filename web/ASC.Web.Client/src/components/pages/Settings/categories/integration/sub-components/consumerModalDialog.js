@@ -12,7 +12,13 @@ import {
 import ModalDialogContainer from "./modalDialogContainer";
 import { Trans } from "react-i18next";
 import { connect } from "react-redux";
-import { getSelectedConsumer } from "../../../../../../store/settings/selectors";
+import {
+  getSelectedConsumer,
+  getConsumerInstruction,
+} from "../../../../../../store/settings/selectors";
+import { store as commonStore } from "asc-web-common";
+
+const { getUrlSupport } = commonStore.auth.selectors;
 
 class ConsumerModalDialog extends React.Component {
   constructor(props) {
@@ -82,7 +88,7 @@ class ConsumerModalDialog extends React.Component {
   }
 
   bodyDescription = (
-    <Box marginProp="44px 0 16px 0">
+    <Box marginProp={`${this.props.consumerInstruction ? "44px" : 0} 0 16px 0`}>
       <Box marginProp="0 0 16px 0">
         <Text as="div" isBold fontSize="15px">
           {this.props.t("ThirdPartyHowItWorks")}
@@ -100,42 +106,28 @@ class ConsumerModalDialog extends React.Component {
         color="#316DAA"
         isHovered={false}
         target="_blank"
-        href="http://support.onlyoffice.com/"
+        href={this.props.urlSupport}
       >
         Support Team
       </Link>
     </Trans>
   );
 
-  instructionsSeparator = (<Box marginProp="4px 0" />);
-
-  instructionsText = (
-    <Text as="div">
-      {this.props.selectedConsumer.instruction &&
-        this.props.selectedConsumer.instruction.split(/\s?\{[^}]+\}/g).map(
-          (str, i) =>
-            (i === 0 && (
-              <React.Fragment key={str}>
-                {str} {this.instructionsSeparator}
-              </React.Fragment>
-            )) || <React.Fragment key={str}> {str} </React.Fragment>
-        )}
-    </Text>
-  );
-
   render() {
     const {
       selectedConsumer,
+      consumerInstruction,
       onModalClose,
       dialogVisible,
       isLoading,
       t,
     } = this.props;
     const {
+      state,
+      onChangeHandler,
       updateConsumerValues,
       bodyDescription,
       bottomDescription,
-      instructionsText,
     } = this;
 
     return (
@@ -143,7 +135,7 @@ class ConsumerModalDialog extends React.Component {
         <ModalDialog visible={dialogVisible} onClose={onModalClose}>
           <ModalDialog.Header>{selectedConsumer.name}</ModalDialog.Header>
           <ModalDialog.Body>
-            {instructionsText}
+            <Text as="div">{consumerInstruction}</Text>
             <Text as="div">{bodyDescription}</Text>
             <React.Fragment>
               {selectedConsumer.props.map((prop, i) => (
@@ -163,9 +155,9 @@ class ConsumerModalDialog extends React.Component {
                         placeholder={prop.title}
                         isAutoFocussed={i === 0}
                         tabIndex={1}
-                        value={Object.values(this.state)[i]}
-                        isDisabled={this.props.isLoading}
-                        onChange={this.onChangeHandler}
+                        value={Object.values(state)[i]}
+                        isDisabled={isLoading}
+                        onChange={onChangeHandler}
                       />
                     </Box>
                   </Box>
@@ -205,11 +197,14 @@ ConsumerModalDialog.propTypes = {
   isLoading: PropTypes.bool.isRequired,
   onChangeLoading: PropTypes.func.isRequired,
   updateConsumerProps: PropTypes.func.isRequired,
+  urlSupport: PropTypes.string,
 };
 
 const mapStateToProps = (state) => {
   return {
     selectedConsumer: getSelectedConsumer(state),
+    consumerInstruction: getConsumerInstruction(state),
+    urlSupport: getUrlSupport(state),
   };
 };
 

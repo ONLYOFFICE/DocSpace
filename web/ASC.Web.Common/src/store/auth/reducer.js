@@ -47,6 +47,7 @@ const initialState = {
     greetingSettings: "Web Office Applications",
     enableAdmMess: false,
     urlLicense: "https://gnu.org/licenses/gpl-3.0.html",
+    urlSupport: "http://support.onlyoffice.com/",
     customNames: {
       id: "Common",
       userCaption: "User",
@@ -59,7 +60,7 @@ const initialState = {
       guestCaption: "Guest",
       guestsCaption: "Guests",
     },
-    isEncryptionSupport: false // TODO: should switch to "true", when desktop editors client uses
+    isEncryptionSupport: false, // TODO: should switch to "true", when desktop editors client uses
   },
 };
 
