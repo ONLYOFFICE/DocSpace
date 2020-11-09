@@ -282,6 +282,10 @@ class FilterBlock extends React.Component {
     };
   }
 
+  componentDidMount() {
+    this.setNeedUpdate(true);
+  }
+
   componentDidUpdate(prevProps, prevState) {
     const { needUpdate } = this.state;
     const { needUpdateFilter } = this.props;
