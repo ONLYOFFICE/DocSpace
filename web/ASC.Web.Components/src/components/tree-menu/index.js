@@ -46,6 +46,7 @@ const StyledTreeMenu = styled(Tree)`
       span.rc-tree-node-selected {
         width: min-content !important;
         padding-right: 4px;
+        max-width: 98%;
       }
     `}
 

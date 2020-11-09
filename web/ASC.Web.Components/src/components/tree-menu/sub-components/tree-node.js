@@ -118,6 +118,7 @@ const TreeNodeMenu = styled(TreeNode)`
           `
             width: min-content !important; 
             padding-right: 4px;
+            max-width: 98%;
           `}
 
         :hover {

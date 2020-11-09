@@ -50,6 +50,10 @@ const StyledTreeMenu = styled(TreeMenu)`
     padding-left: 4px !important;
   }
 
+  .rc-tree-child-tree span.rc-tree-node-selected {
+    max-width: 106%;
+  }
+
   .rc-tree-child-tree {
     margin-left: 22px;
   }
