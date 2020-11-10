@@ -302,6 +302,10 @@ export const getSelectedFolderParentId = (state) => {
   return state.files.selectedFolder.parentId;
 };
 
+export const getSelectedFolderProviderItem = (state) => {
+  return state.files.selectedFolder.providerItem;
+};
+
 export const getSelectedFolderNew = (state) => {
   return state.files.selectedFolder.new;
 };
@@ -835,7 +839,7 @@ export const getFilesList = (state) => {
           shared,
           title,
           updated,
-          updatedBu,
+          updatedBy,
           version,
           versionGroup,
           viewUrl,
@@ -909,7 +913,7 @@ export const getFilesList = (state) => {
           shared,
           title,
           updated,
-          updatedBu,
+          updatedBy,
           value,
           version,
           versionGroup,
@@ -983,7 +987,7 @@ export const getFilterSelectedItem = (state) => {
 
 export const getPrivacyInstructionsLink = (state) => {
   return state.files.privacyInstructions;
-}
+};
 
 export const getHeaderVisible = createSelector(
   getSelectionLength,
@@ -1083,11 +1087,14 @@ export const getAccessedSelected = createSelector(getSelection, (selection) => {
 });
 
 export const getOperationsFolders = createSelector(
-  getTreeFolders, (treeFolders) => {
-    return treeFolders.filter(folder => (
-      folder.rootFolderType === FolderType.USER ||
-      folder.rootFolderType === FolderType.COMMON ||
-      folder.rootFolderType === FolderType.Projects
-    ) && folder);
+  getTreeFolders,
+  (treeFolders) => {
+    return treeFolders.filter(
+      (folder) =>
+        (folder.rootFolderType === FolderType.USER ||
+          folder.rootFolderType === FolderType.COMMON ||
+          folder.rootFolderType === FolderType.Projects) &&
+        folder
+    );
   }
-)
+);
