@@ -63,22 +63,7 @@ namespace ASC.Files.Helpers
         private FileShareWrapperHelper FileShareWrapperHelper { get; }
         private FileShareParamsHelper FileShareParamsHelper { get; }
         private EntryManager EntryManager { get; }
-        private UserManager UserManager { get; }
-        private WebItemSecurity WebItemSecurity { get; }
-        private CoreBaseSettings CoreBaseSettings { get; }
-        private ThirdpartyConfiguration ThirdpartyConfiguration { get; }
-        private BoxLoginProvider BoxLoginProvider { get; }
-        private DropboxLoginProvider DropboxLoginProvider { get; }
-        private GoogleLoginProvider GoogleLoginProvider { get; }
-        private OneDriveLoginProvider OneDriveLoginProvider { get; }
-        private MessageService MessageService { get; }
-        private CommonLinkUtility CommonLinkUtility { get; }
-        private DocumentServiceConnector DocumentServiceConnector { get; }
         private FolderContentWrapperHelper FolderContentWrapperHelper { get; }
-        private WordpressToken WordpressToken { get; }
-        private WordpressHelper WordpressHelper { get; }
-        private ConsumerFactory ConsumerFactory { get; }
-        private EasyBibHelper EasyBibHelper { get; }
         private ChunkedUploadSessionHelper ChunkedUploadSessionHelper { get; }
         public ILog Logger { get; set; }
 
@@ -101,18 +86,7 @@ namespace ASC.Files.Helpers
             FileShareWrapperHelper fileShareWrapperHelper,
             FileShareParamsHelper fileShareParamsHelper,
             EntryManager entryManager,
-            UserManager userManager,
-            WebItemSecurity webItemSecurity,
-            CoreBaseSettings coreBaseSettings,
-            ThirdpartyConfiguration thirdpartyConfiguration,
-            MessageService messageService,
-            CommonLinkUtility commonLinkUtility,
-            DocumentServiceConnector documentServiceConnector,
             FolderContentWrapperHelper folderContentWrapperHelper,
-            WordpressToken wordpressToken,
-            WordpressHelper wordpressHelper,
-            ConsumerFactory consumerFactory,
-            EasyBibHelper easyBibHelper,
             ChunkedUploadSessionHelper chunkedUploadSessionHelper,
             IOptionsMonitor<ILog> optionMonitor)
         {
@@ -130,22 +104,7 @@ namespace ASC.Files.Helpers
             FileShareWrapperHelper = fileShareWrapperHelper;
             FileShareParamsHelper = fileShareParamsHelper;
             EntryManager = entryManager;
-            UserManager = userManager;
-            WebItemSecurity = webItemSecurity;
-            CoreBaseSettings = coreBaseSettings;
-            ThirdpartyConfiguration = thirdpartyConfiguration;
-            ConsumerFactory = consumerFactory;
-            BoxLoginProvider = ConsumerFactory.Get<BoxLoginProvider>();
-            DropboxLoginProvider = ConsumerFactory.Get<DropboxLoginProvider>();
-            GoogleLoginProvider = ConsumerFactory.Get<GoogleLoginProvider>();
-            OneDriveLoginProvider = ConsumerFactory.Get<OneDriveLoginProvider>();
-            MessageService = messageService;
-            CommonLinkUtility = commonLinkUtility;
-            DocumentServiceConnector = documentServiceConnector;
             FolderContentWrapperHelper = folderContentWrapperHelper;
-            WordpressToken = wordpressToken;
-            WordpressHelper = wordpressHelper;
-            EasyBibHelper = easyBibHelper;
             ChunkedUploadSessionHelper = chunkedUploadSessionHelper;
             Logger = optionMonitor.Get("ASC.Files");
         }
@@ -639,88 +598,6 @@ namespace ASC.Files.Helpers
             return sharedInfo.Link;
         }
 
-        public List<List<string>> Capabilities()
-        {
-            var result = new List<List<string>>();
-
-            if (UserManager.GetUsers(SecurityContext.CurrentAccount.ID).IsVisitor(UserManager)
-                || (!UserManager.IsUserInGroup(SecurityContext.CurrentAccount.ID, Constants.GroupAdmin.ID)
-                    && !WebItemSecurity.IsProductAdministrator(ProductEntryPoint.ID, SecurityContext.CurrentAccount.ID)
-                    && !FilesSettingsHelper.EnableThirdParty
-                    && !CoreBaseSettings.Personal))
-            {
-                return result;
-            }
-
-            if (ThirdpartyConfiguration.SupportBoxInclusion)
-            {
-                result.Add(new List<string> { "Box", BoxLoginProvider.ClientID, BoxLoginProvider.RedirectUri });
-            }
-            if (ThirdpartyConfiguration.SupportDropboxInclusion)
-            {
-                result.Add(new List<string> { "DropboxV2", DropboxLoginProvider.ClientID, DropboxLoginProvider.RedirectUri });
-            }
-            if (ThirdpartyConfiguration.SupportGoogleDriveInclusion)
-            {
-                result.Add(new List<string> { "GoogleDrive", GoogleLoginProvider.ClientID, GoogleLoginProvider.RedirectUri });
-            }
-            if (ThirdpartyConfiguration.SupportOneDriveInclusion)
-            {
-                result.Add(new List<string> { "OneDrive", OneDriveLoginProvider.ClientID, OneDriveLoginProvider.RedirectUri });
-            }
-            if (ThirdpartyConfiguration.SupportSharePointInclusion)
-            {
-                result.Add(new List<string> { "SharePoint" });
-            }
-            if (ThirdpartyConfiguration.SupportYandexInclusion)
-            {
-                result.Add(new List<string> { "Yandex" });
-            }
-            if (ThirdpartyConfiguration.SupportWebDavInclusion)
-            {
-                result.Add(new List<string> { "WebDav" });
-            }
-
-            //Obsolete BoxNet, DropBox, Google, SkyDrive,
-
-            return result;
-        }
-
-        public FolderWrapper<T> SaveThirdParty(
-            string url,
-            string login,
-            string password,
-            string token,
-            bool isCorporate,
-            string customerTitle,
-            string providerKey,
-            string providerId)
-        {
-            var thirdPartyParams = new ThirdPartyParams
-            {
-                AuthData = new AuthData(url, login, password, token),
-                Corporate = isCorporate,
-                CustomerTitle = customerTitle,
-                ProviderId = providerId,
-                ProviderKey = providerKey,
-            };
-
-            var folder = FileStorageService.SaveThirdParty(thirdPartyParams);
-
-            return FolderWrapperHelper.Get(folder);
-        }
-
-        public IEnumerable<ThirdPartyParams> GetThirdPartyAccounts()
-        {
-            return FileStorageService.GetThirdParty();
-        }
-
-        public object DeleteThirdParty(int providerId)
-        {
-            return FileStorageService.DeleteThirdParty(providerId.ToString(CultureInfo.InvariantCulture));
-
-        }
-
         ///// <summary>
         ///// 
         ///// </summary>
@@ -735,63 +612,6 @@ namespace ASC.Files.Helpers
 
         //    return files.Concat(folders);
         //}
-
-        public bool StoreOriginal(bool set)
-        {
-            return FileStorageService.StoreOriginal(set);
-        }
-
-        public bool HideConfirmConvert(bool save)
-        {
-            return FileStorageService.HideConfirmConvert(save);
-        }
-
-        public bool UpdateIfExist(bool set)
-        {
-            return FileStorageService.UpdateIfExist(set);
-        }
-
-        public IEnumerable<string> CheckDocServiceUrl(string docServiceUrl, string docServiceUrlInternal, string docServiceUrlPortal)
-        {
-            FilesLinkUtility.DocServiceUrl = docServiceUrl;
-            FilesLinkUtility.DocServiceUrlInternal = docServiceUrlInternal;
-            FilesLinkUtility.DocServicePortalUrl = docServiceUrlPortal;
-
-            MessageService.Send(MessageAction.DocumentServiceLocationSetting);
-
-            var https = new Regex(@"^https://", RegexOptions.IgnoreCase);
-            var http = new Regex(@"^http://", RegexOptions.IgnoreCase);
-            if (https.IsMatch(CommonLinkUtility.GetFullAbsolutePath("")) && http.IsMatch(FilesLinkUtility.DocServiceUrl))
-            {
-                throw new Exception("Mixed Active Content is not allowed. HTTPS address for Document Server is required.");
-            }
-
-            DocumentServiceConnector.CheckDocServiceUrl();
-
-            return new[]
-                {
-                    FilesLinkUtility.DocServiceUrl,
-                    FilesLinkUtility.DocServiceUrlInternal,
-                    FilesLinkUtility.DocServicePortalUrl
-                };
-        }
-
-        public object GetDocServiceUrl(bool version)
-        {
-            var url = CommonLinkUtility.GetFullAbsolutePath(FilesLinkUtility.DocServiceApiUrl);
-            if (!version)
-            {
-                return url;
-            }
-
-            var dsVersion = DocumentServiceConnector.GetVersion();
-
-            return new
-            {
-                version = dsVersion,
-                docServiceUrlApi = url,
-            };
-        }
 
 
         private FolderContentWrapper<T> ToFolderContentWrapper(T folderId, Guid userIdOrGroupId, FilterType filterType, bool withSubFolders)
@@ -814,190 +634,6 @@ namespace ASC.Files.Helpers
                                                                                new OrderBy(sortBy, !ApiContext.SortDescending)),
                                             startIndex);
         }
-
-        #region wordpress
-
-        public object GetWordpressInfo()
-        {
-            var token = WordpressToken.GetToken();
-            if (token != null)
-            {
-                var meInfo = WordpressHelper.GetWordpressMeInfo(token.AccessToken);
-                var blogId = JObject.Parse(meInfo).Value<string>("token_site_id");
-                var wordpressUserName = JObject.Parse(meInfo).Value<string>("username");
-
-                var blogInfo = RequestHelper.PerformRequest(WordpressLoginProvider.WordpressSites + blogId, "", "GET", "");
-                var jsonBlogInfo = JObject.Parse(blogInfo);
-                jsonBlogInfo.Add("username", wordpressUserName);
-
-                blogInfo = jsonBlogInfo.ToString();
-                return new
-                {
-                    success = true,
-                    data = blogInfo
-                };
-            }
-            return new
-            {
-                success = false
-            };
-        }
-
-        public object DeleteWordpressInfo()
-        {
-            var token = WordpressToken.GetToken();
-            if (token != null)
-            {
-                WordpressToken.DeleteToken(token);
-                return new
-                {
-                    success = true
-                };
-            }
-            return new
-            {
-                success = false
-            };
-        }
-
-        public object WordpressSave(string code)
-        {
-            if (code == "")
-            {
-                return new
-                {
-                    success = false
-                };
-            }
-            try
-            {
-                var token = OAuth20TokenHelper.GetAccessToken<WordpressLoginProvider>(ConsumerFactory, code);
-                WordpressToken.SaveToken(token);
-                var meInfo = WordpressHelper.GetWordpressMeInfo(token.AccessToken);
-                var blogId = JObject.Parse(meInfo).Value<string>("token_site_id");
-
-                var wordpressUserName = JObject.Parse(meInfo).Value<string>("username");
-
-                var blogInfo = RequestHelper.PerformRequest(WordpressLoginProvider.WordpressSites + blogId, "", "GET", "");
-                var jsonBlogInfo = JObject.Parse(blogInfo);
-                jsonBlogInfo.Add("username", wordpressUserName);
-
-                blogInfo = jsonBlogInfo.ToString();
-                return new
-                {
-                    success = true,
-                    data = blogInfo
-                };
-            }
-            catch (Exception)
-            {
-                return new
-                {
-                    success = false
-                };
-            }
-        }
-
-        public bool CreateWordpressPost(string code, string title, string content, int status)
-        {
-            try
-            {
-                var token = WordpressToken.GetToken();
-                var meInfo = WordpressHelper.GetWordpressMeInfo(token.AccessToken);
-                var parser = JObject.Parse(meInfo);
-                if (parser == null) return false;
-                var blogId = parser.Value<string>("token_site_id");
-
-                if (blogId != null)
-                {
-                    var createPost = WordpressHelper.CreateWordpressPost(title, content, status, blogId, token);
-                    return createPost;
-                }
-                return false;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-        }
-
-        #endregion
-
-        #region easybib
-
-        public object GetEasybibCitationList(int source, string data)
-        {
-            try
-            {
-                var citationList = EasyBibHelper.GetEasyBibCitationsList(source, data);
-                return new
-                {
-                    success = true,
-                    citations = citationList
-                };
-            }
-            catch (Exception)
-            {
-                return new
-                {
-                    success = false
-                };
-            }
-
-        }
-
-        public object GetEasybibStyles()
-        {
-            try
-            {
-                var data = EasyBibHelper.GetEasyBibStyles();
-                return new
-                {
-                    success = true,
-                    styles = data
-                };
-            }
-            catch (Exception)
-            {
-                return new
-                {
-                    success = false
-                };
-            }
-        }
-
-        public object EasyBibCitationBook(string citationData)
-        {
-            try
-            {
-                var citat = EasyBibHelper.GetEasyBibCitation(citationData);
-                if (citat != null)
-                {
-                    return new
-                    {
-                        success = true,
-                        citation = citat
-                    };
-                }
-                else
-                {
-                    return new
-                    {
-                        success = false
-                    };
-                }
-
-            }
-            catch (Exception)
-            {
-                return new
-                {
-                    success = false
-                };
-            }
-        }
-
-        #endregion
     }
 
     public static class FilesControllerHelperExtention

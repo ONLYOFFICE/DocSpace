@@ -107,6 +107,28 @@ const TreeNodeMenu = styled(TreeNode)`
   -ms-user-select: none;
   user-select: none;
 
+  ${(props) =>
+    props.dragging &&
+    css`
+      .draggable {
+        background: #f8f7bf;
+        border-radius: 3px;
+        ${(props) =>
+          !props.isFullFillSelection &&
+          `
+            width: min-content !important; 
+            padding-right: 4px;
+            max-width: 98%;
+          `}
+
+        :hover {
+          background: #efefb2;
+        }
+        .rc-tree-title {
+          width: 85% !important;
+        }
+      }
+    `}
   .draggable {
     color: #333;
     /* Required to make elements draggable in old WebKit */
@@ -138,7 +160,7 @@ const TreeNodeMenu = styled(TreeNode)`
     display: inline-block;
     position: relative;
     /*min-width: ${(props) => (props.disableSwitch ? "160px" : "190px")};*/
-    overflow: hidden;
+    // overflow: hidden;
 
     cursor: pointer;
     height: 24px;
@@ -146,12 +168,8 @@ const TreeNodeMenu = styled(TreeNode)`
     vertical-align: top;
 
     left: 0;
-    background: ${(props) => (props.dragging ? "#F8F7BF" : "none")};
-
-    :hover {
-      background: ${(props) => (props.dragging ? "#EFEFB2" : "none")};
-    }
   }
+
   span.rc-tree-switcher,
   span.rc-tree-iconEle {
     line-height: 0;
@@ -301,11 +319,23 @@ const TreeNodeMenu = styled(TreeNode)`
     }
     overflow: visible;
   }
+
   .newItem {
     position: absolute;
     right: -30px;
     top: 2px;
+    @media (max-width: 1024px) {
+      right: -29px;
+    }
   }
+  ${(props) =>
+    props.needTopMargin &&
+    css`
+      margin-top: 18px !important;
+      @media (max-width: 1024px) {
+        margin-top: 14px !important;
+      }
+    `}
 `;
 
 TreeNodeMenu.propTypes = {
