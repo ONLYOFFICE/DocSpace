@@ -221,11 +221,19 @@ namespace ASC.Web.Api.Controllers
         }
 
         [Create("mobile/registration")]
-        public void RegisterMobileAppInstall(MobileAppModel model)
+        public void RegisterMobileAppInstallFromBody([FromBody]MobileAppModel model)
         {
             var currentUser = UserManager.GetUsers(SecurityContext.CurrentAccount.ID);
             MobileAppInstallRegistrator.RegisterInstall(currentUser.Email, model.Type);
-    }
+        }
+
+        [Create("mobile/registration")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public void RegisterMobileAppInstallFromForm([FromForm]MobileAppModel model)
+        {
+            var currentUser = UserManager.GetUsers(SecurityContext.CurrentAccount.ID);
+            MobileAppInstallRegistrator.RegisterInstall(currentUser.Email, model.Type);
+        }
     }
 
     public static class PortalControllerExtension

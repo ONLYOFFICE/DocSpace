@@ -1470,9 +1470,21 @@ namespace ASC.Employee.Core.Controllers
 
 
         [Update("thirdparty/linkaccount")]
-        public void LinkAccount(string serializedProfile)
+        public void LinkAccountFromBody([FromBody]LinkAccountModel model)
         {
-            var profile = new LoginProfile(Signature, InstanceCrypto, serializedProfile);
+            LinkAccount(model);
+        }
+
+        [Update("thirdparty/linkaccount")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public void LinkAccountFromForm([FromForm]LinkAccountModel model)
+        {
+            LinkAccount(model);
+        }
+
+        public void LinkAccount(LinkAccountModel model)
+        {
+            var profile = new LoginProfile(Signature, InstanceCrypto, model.SerializedProfile);
 
             if (string.IsNullOrEmpty(profile.AuthorizationError))
             {

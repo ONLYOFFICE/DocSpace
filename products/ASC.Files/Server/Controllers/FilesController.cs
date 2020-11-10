@@ -64,8 +64,6 @@ using Microsoft.AspNetCore.Mvc.ActionConstraints;
 
 using Newtonsoft.Json.Linq;
 
-using FileShare = ASC.Files.Core.Security.FileShare;
-
 namespace ASC.Api.Documents
 {
     /// <summary>
@@ -512,9 +510,16 @@ namespace ASC.Api.Documents
         /// <category>Uploads</category>
         /// <returns></returns>
         [Create("@my/insert")]
-        public FileWrapper<int> InsertFileToMy(Stream file, string title, bool? createNewIfExist, bool keepConvertStatus = false)
+        public FileWrapper<int> InsertFileToMyFromBody([FromBody]InsertFileModel model)
         {
-            return InsertFile(GlobalFolderHelper.FolderMy, file, title, createNewIfExist, keepConvertStatus);
+            return InsertFile(GlobalFolderHelper.FolderMy, model);
+        }
+
+        [Create("@my/insert")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public FileWrapper<int> InsertFileToMyFromForm([FromForm]InsertFileModel model)
+        {
+            return InsertFile(GlobalFolderHelper.FolderMy, model);
         }
 
         /// <summary>
@@ -527,9 +532,16 @@ namespace ASC.Api.Documents
         /// <category>Uploads</category>
         /// <returns></returns>
         [Create("@common/insert")]
-        public FileWrapper<int> InsertFileToCommon(Stream file, string title, bool? createNewIfExist, bool keepConvertStatus = false)
+        public FileWrapper<int> InsertFileToCommonFromBody([FromBody]InsertFileModel model)
         {
-            return InsertFile(GlobalFolderHelper.FolderCommon, file, title, createNewIfExist, keepConvertStatus);
+            return InsertFile(GlobalFolderHelper.FolderCommon, model);
+        }
+
+        [Create("@common/insert")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public FileWrapper<int> InsertFileToCommonFromForm([FromForm]InsertFileModel model)
+        {
+            return InsertFile(GlobalFolderHelper.FolderCommon, model);
         }
 
         /// <summary>
@@ -543,15 +555,38 @@ namespace ASC.Api.Documents
         /// <category>Uploads</category>
         /// <returns></returns>
         [Create("{folderId}/insert", DisableFormat = true)]
-        public FileWrapper<string> InsertFile(string folderId, Stream file, string title, bool? createNewIfExist, bool keepConvertStatus = false)
+        public FileWrapper<string> InsertFileFromBody(string folderId, [FromBody]InsertFileModel model)
         {
-            return FilesControllerHelperString.InsertFile(folderId, file, title, createNewIfExist, keepConvertStatus);
+            return InsertFile(folderId, model);
+        }
+
+        [Create("{folderId}/insert", DisableFormat = true)]
+        [Consumes("application/x-www-form-urlencoded")]
+        public FileWrapper<string> InsertFileFromForm(string folderId, [FromForm]InsertFileModel model)
+        {
+            return InsertFile(folderId, model);
+        }
+
+        private FileWrapper<string> InsertFile(string folderId, InsertFileModel model)
+        {
+            return FilesControllerHelperString.InsertFile(folderId, model.File, model.Title, model.CreateNewIfExist, model.KeepConvertStatus);
         }
 
         [Create("{folderId:int}/insert")]
-        public FileWrapper<int> InsertFile(int folderId, Stream file, string title, bool? createNewIfExist, bool keepConvertStatus = false)
+        public FileWrapper<int> InsertFileFromBody(int folderId, [FromBody]InsertFileModel model)
         {
-            return FilesControllerHelperInt.InsertFile(folderId, file, title, createNewIfExist, keepConvertStatus);
+            return InsertFile(folderId, model);
+        }
+
+        [Create("{folderId:int}/insert")]
+        public FileWrapper<int> InsertFileFromForm(int folderId, [FromForm]InsertFileModel model)
+        {
+            return InsertFile(folderId, model);
+        }
+
+        private FileWrapper<int> InsertFile(int folderId, InsertFileModel model)
+        {
+            return FilesControllerHelperInt.InsertFile(folderId, model.File, model.Title, model.CreateNewIfExist, model.KeepConvertStatus);
         }
 
         /// <summary>
@@ -563,15 +598,29 @@ namespace ASC.Api.Documents
         /// <returns></returns>
         /// <visible>false</visible>
         [Update("{fileId}/update", DisableFormat = true)]
-        public FileWrapper<string> UpdateFileStream(Stream file, string fileId, bool encrypted = false, bool forcesave = false)
+        public FileWrapper<string> UpdateFileStreamFromBody(string fileId, [FromBody]FileStreamModel model)
         {
-            return FilesControllerHelperString.UpdateFileStream(file, fileId, encrypted, forcesave);
+            return FilesControllerHelperString.UpdateFileStream(model.File, fileId, model.Encrypted, model.Forcesave);
+        }
+
+        [Update("{fileId}/update", DisableFormat = true)]
+        [Consumes("application/x-www-form-urlencoded")]
+        public FileWrapper<string> UpdateFileStreamFromForm(string fileId, [FromForm]FileStreamModel model)
+        {
+            return FilesControllerHelperString.UpdateFileStream(model.File, fileId, model.Encrypted, model.Forcesave);
         }
 
         [Update("{fileId:int}/update")]
-        public FileWrapper<int> UpdateFileStream(Stream file, int fileId, bool encrypted = false, bool forcesave = false)
+        public FileWrapper<int> UpdateFileStreamFromBody(int fileId, [FromBody]FileStreamModel model)
         {
-            return FilesControllerHelperInt.UpdateFileStream(file, fileId, encrypted, forcesave);
+            return FilesControllerHelperInt.UpdateFileStream(model.File, fileId, model.Encrypted, model.Forcesave);
+        }
+
+        [Update("{fileId:int}/update")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public FileWrapper<int> UpdateFileStreamFromForm(int fileId, [FromForm]FileStreamModel model)
+        {
+            return FilesControllerHelperInt.UpdateFileStream(model.File, fileId, model.Encrypted, model.Forcesave);
         }
 
 
@@ -587,15 +636,29 @@ namespace ASC.Api.Documents
         /// <category>Files</category>
         /// <returns></returns>
         [Update("file/{fileId}/saveediting", DisableFormat = true)]
-        public FileWrapper<string> SaveEditing(string fileId, string fileExtension, string downloadUri, Stream stream, string doc, bool forcesave)
+        public FileWrapper<string> SaveEditingFromBody(string fileId, [FromBody]SaveEditingModel model)
         {
-            return FilesControllerHelperString.SaveEditing(fileId, fileExtension, downloadUri, stream, doc, forcesave);
+            return FilesControllerHelperString.SaveEditing(fileId, model.FileExtension, model.DownloadUri, model.Stream, model.Doc, model.Forcesave);
+        }
+
+        [Update("file/{fileId}/saveediting", DisableFormat = true)]
+        [Consumes("application/x-www-form-urlencoded")]
+        public FileWrapper<string> SaveEditingFromForm(string fileId, [FromForm]SaveEditingModel model)
+        {
+            return FilesControllerHelperString.SaveEditing(fileId, model.FileExtension, model.DownloadUri, model.Stream, model.Doc, model.Forcesave);
         }
 
         [Update("file/{fileId:int}/saveediting")]
-        public FileWrapper<int> SaveEditing(int fileId, string fileExtension, string downloadUri, Stream stream, string doc, bool forcesave)
+        public FileWrapper<int> SaveEditingFromBody(int fileId, [FromBody]SaveEditingModel model)
         {
-            return FilesControllerHelperInt.SaveEditing(fileId, fileExtension, downloadUri, stream, doc, forcesave);
+            return FilesControllerHelperInt.SaveEditing(fileId, model.FileExtension, model.DownloadUri, model.Stream, model.Doc, model.Forcesave);
+        }
+
+        [Update("file/{fileId:int}/saveediting")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public FileWrapper<int> SaveEditingFromForm(int fileId, [FromForm]SaveEditingModel model)
+        {
+            return FilesControllerHelperInt.SaveEditing(fileId, model.FileExtension, model.DownloadUri, model.Stream, model.Doc, model.Forcesave);
         }
 
         /// <summary>
@@ -742,9 +805,16 @@ namespace ASC.Api.Documents
         /// <param name="content">File contents</param>
         /// <returns>Folder contents</returns>
         [Create("@my/text")]
-        public FileWrapper<int> CreateTextFileInMy(string title, string content)
+        public FileWrapper<int> CreateTextFileInMyFromBody([FromBody]CreateTextOrHtmlFileModel model)
         {
-            return CreateTextFile(GlobalFolderHelper.FolderMy, title, content);
+            return CreateTextFile(GlobalFolderHelper.FolderMy, model);
+        }
+
+        [Create("@my/text")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public FileWrapper<int> CreateTextFileInMyFromForm([FromForm]CreateTextOrHtmlFileModel model)
+        {
+            return CreateTextFile(GlobalFolderHelper.FolderMy, model);
         }
 
         /// <summary>
@@ -756,9 +826,16 @@ namespace ASC.Api.Documents
         /// <param name="content">File contents</param>
         /// <returns>Folder contents</returns>
         [Create("@common/text")]
-        public FileWrapper<int> CreateTextFileInCommon(string title, string content)
+        public FileWrapper<int> CreateTextFileInCommonFromBody([FromBody]CreateTextOrHtmlFileModel model)
         {
-            return CreateTextFile(GlobalFolderHelper.FolderCommon, title, content);
+            return CreateTextFile(GlobalFolderHelper.FolderCommon, model);
+        }
+
+        [Create("@common/text")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public FileWrapper<int> CreateTextFileInCommonFromForm([FromForm]CreateTextOrHtmlFileModel model)
+        {
+            return CreateTextFile(GlobalFolderHelper.FolderCommon, model);
         }
 
         /// <summary>
@@ -771,15 +848,38 @@ namespace ASC.Api.Documents
         /// <param name="content">File contents</param>
         /// <returns>Folder contents</returns>
         [Create("{folderId}/text", DisableFormat = true)]
-        public FileWrapper<string> CreateTextFile(string folderId, string title, string content)
+        public FileWrapper<string> CreateTextFileFromBody(string folderId, [FromBody]CreateTextOrHtmlFileModel model)
         {
-            return FilesControllerHelperString.CreateTextFile(folderId, title, content);
+            return CreateTextFile(folderId, model);
+        }
+
+        [Create("{folderId}/text", DisableFormat = true)]
+        [Consumes("application/x-www-form-urlencoded")]
+        public FileWrapper<string> CreateTextFileFromForm(string folderId, [FromForm]CreateTextOrHtmlFileModel model)
+        {
+            return CreateTextFile(folderId, model);
+        }
+
+        private FileWrapper<string> CreateTextFile(string folderId, CreateTextOrHtmlFileModel model)
+        {
+            return FilesControllerHelperString.CreateTextFile(folderId, model.Title, model.Content);
         }
 
         [Create("{folderId:int}/text")]
-        public FileWrapper<int> CreateTextFile(int folderId, string title, string content)
+        public FileWrapper<int> CreateTextFileFromBody(int folderId, [FromBody]CreateTextOrHtmlFileModel model)
         {
-            return FilesControllerHelperInt.CreateTextFile(folderId, title, content);
+            return CreateTextFile(folderId, model);
+        }
+
+        [Create("{folderId:int}/text")]
+        public FileWrapper<int> CreateTextFileFromForm(int folderId, [FromForm]CreateTextOrHtmlFileModel model)
+        {
+            return CreateTextFile(folderId, model);
+        }
+
+        private FileWrapper<int> CreateTextFile(int folderId, CreateTextOrHtmlFileModel model)
+        {
+            return FilesControllerHelperInt.CreateTextFile(folderId, model.Title, model.Content);
         }
 
         /// <summary>
@@ -792,15 +892,39 @@ namespace ASC.Api.Documents
         /// <param name="content">File contents</param>
         /// <returns>Folder contents</returns>
         [Create("{folderId}/html", DisableFormat = true)]
-        public FileWrapper<string> CreateHtmlFile(string folderId, string title, string content)
+        public FileWrapper<string> CreateHtmlFileFromBody(string folderId, [FromBody]CreateTextOrHtmlFileModel model)
         {
-            return FilesControllerHelperString.CreateHtmlFile(folderId, title, content);
+            return CreateHtmlFile(folderId, model);
+        }
+
+        [Create("{folderId}/html", DisableFormat = true)]
+        [Consumes("application/x-www-form-urlencoded")]
+        public FileWrapper<string> CreateHtmlFileFromForm(string folderId, [FromForm]CreateTextOrHtmlFileModel model)
+        {
+            return CreateHtmlFile(folderId, model);
+        }
+
+        private FileWrapper<string> CreateHtmlFile(string folderId, CreateTextOrHtmlFileModel model)
+        {
+            return FilesControllerHelperString.CreateHtmlFile(folderId, model.Title, model.Content);
         }
 
         [Create("{folderId:int}/html")]
-        public FileWrapper<int> CreateHtmlFile(int folderId, string title, string content)
+        public FileWrapper<int> CreateHtmlFileFromBody(int folderId, [FromBody]CreateTextOrHtmlFileModel model)
         {
-            return FilesControllerHelperInt.CreateHtmlFile(folderId, title, content);
+            return CreateHtmlFile(folderId, model);
+        }
+
+        [Create("{folderId:int}/html")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public FileWrapper<int> CreateHtmlFileFromForm(int folderId, [FromForm] CreateTextOrHtmlFileModel model)
+        {
+            return CreateHtmlFile(folderId, model);
+        }
+
+        private FileWrapper<int> CreateHtmlFile(int folderId,  CreateTextOrHtmlFileModel model)
+        {
+            return FilesControllerHelperInt.CreateHtmlFile(folderId, model.Title, model.Content);
         }
 
         /// <summary>
@@ -812,11 +936,17 @@ namespace ASC.Api.Documents
         /// <param name="content">File contents</param>
         /// <returns>Folder contents</returns>
         [Create("@my/html")]
-        public FileWrapper<int> CreateHtmlFileInMy(string title, string content)
+        public FileWrapper<int> CreateHtmlFileInMyFromBody([FromBody]CreateTextOrHtmlFileModel model)
         {
-            return CreateHtmlFile(GlobalFolderHelper.FolderMy, title, content);
+            return CreateHtmlFile(GlobalFolderHelper.FolderMy, model);
         }
 
+        [Create("@my/html")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public FileWrapper<int> CreateHtmlFileInMyFromForm([FromForm]CreateTextOrHtmlFileModel model)
+        {
+            return CreateHtmlFile(GlobalFolderHelper.FolderMy, model);
+        }
 
         /// <summary>
         /// Creates an html (.html) file in 'Common Documents' section with the title and contents sent in the request
@@ -827,11 +957,17 @@ namespace ASC.Api.Documents
         /// <param name="content">File contents</param>
         /// <returns>Folder contents</returns>        
         [Create("@common/html")]
-        public FileWrapper<int> CreateHtmlFileInCommon(string title, string content)
+        public FileWrapper<int> CreateHtmlFileInCommonFromBody([FromBody]CreateTextOrHtmlFileModel model)
         {
-            return CreateHtmlFile(GlobalFolderHelper.FolderCommon, title, content);
+            return CreateHtmlFile(GlobalFolderHelper.FolderCommon, model);
         }
 
+        [Create("@common/html")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public FileWrapper<int> CreateHtmlFileInCommonFromForm([FromForm]CreateTextOrHtmlFileModel model)
+        {
+            return CreateHtmlFile(GlobalFolderHelper.FolderCommon, model);
+        }
 
         /// <summary>
         /// Creates a new folder with the title sent in the request. The ID of a parent folder can be also specified.
@@ -1551,15 +1687,29 @@ namespace ASC.Api.Documents
         /// <category>Files</category>
         /// <returns>Shared file link</returns>
         [Update("{fileId}/sharedlink", DisableFormat = true)]
-        public object GenerateSharedLink(string fileId, FileShare share)
+        public object GenerateSharedLinkFromBody(string fileId, [FromBody]GenerateSharedLinkModel model)
         {
-            return FilesControllerHelperString.GenerateSharedLink(fileId, share);
+            return FilesControllerHelperString.GenerateSharedLink(fileId, model.Share);
+        }
+
+        [Update("{fileId}/sharedlink", DisableFormat = true)]
+        [Consumes("application/x-www-form-urlencoded")]
+        public object GenerateSharedLinkFromForm(string fileId, [FromForm]GenerateSharedLinkModel model)
+        {
+            return FilesControllerHelperString.GenerateSharedLink(fileId, model.Share);
         }
 
         [Update("{fileId:int}/sharedlink")]
-        public object GenerateSharedLink(int fileId, FileShare share)
+        public object GenerateSharedLinkFromBody(int fileId, [FromBody]GenerateSharedLinkModel model)
         {
-            return FilesControllerHelperInt.GenerateSharedLink(fileId, share);
+            return FilesControllerHelperInt.GenerateSharedLink(fileId, model.Share);
+        }
+
+        [Update("{fileId:int}/sharedlink")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public object GenerateSharedLinkFromForm(int fileId, [FromForm] GenerateSharedLinkModel model)
+        {
+            return FilesControllerHelperInt.GenerateSharedLink(fileId, model.Share);
         }
 
         /// <summary>
@@ -1642,23 +1792,27 @@ namespace ASC.Api.Documents
         /// <remarks>List of provider key: DropboxV2, Box, WebDav, Yandex, OneDrive, SharePoint, GoogleDrive</remarks>
         /// <exception cref="ArgumentException"></exception>
         [Create("thirdparty")]
-        public FolderWrapper<string> SaveThirdParty(
-            string url,
-            string login,
-            string password,
-            string token,
-            bool isCorporate,
-            string customerTitle,
-            string providerKey,
-            string providerId)
+        public FolderWrapper<string> SaveThirdPartyFromBody([FromBody]ThirdPartyModel model)
+        {
+            return SaveThirdParty(model);
+        }
+
+        [Create("thirdparty")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public FolderWrapper<string> SaveThirdPartyFromForm([FromForm]ThirdPartyModel model)
+        {
+            return SaveThirdParty(model);
+        }
+
+        private FolderWrapper<string> SaveThirdParty(ThirdPartyModel model)
         {
             var thirdPartyParams = new ThirdPartyParams
             {
-                AuthData = new AuthData(url, login, password, token),
-                Corporate = isCorporate,
-                CustomerTitle = customerTitle,
-                ProviderId = providerId,
-                ProviderKey = providerKey,
+                AuthData = new AuthData(model.Url, model.Login, model.Password, model.Token),
+                Corporate = model.IsCorporate,
+                CustomerTitle = model.CustomerTitle,
+                ProviderId = model.ProviderId,
+                ProviderKey = model.ProviderKey,
             };
 
             var folder = FileStorageService.SaveThirdParty(thirdPartyParams);
@@ -1775,9 +1929,17 @@ namespace ASC.Api.Documents
         /// <param name="fileIds">File IDs</param>
         /// <returns></returns>
         [Create("templates")]
-        public bool AddTemplates(IEnumerable<int> fileIds)
+        public bool AddTemplatesFromBody([FromBody]TemplatesModel model)
         {
-            FileStorageServiceInt.AddToTemplates(fileIds);
+            FileStorageServiceInt.AddToTemplates(model.FileIds);
+            return true;
+        }
+
+        [Create("templates")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public bool AddTemplatesFromForm([FromForm]TemplatesModel model)
+        {
+            FileStorageServiceInt.AddToTemplates(model.FileIds);
             return true;
         }
 
@@ -1936,11 +2098,23 @@ namespace ASC.Api.Documents
         /// <param name="docServiceUrlPortal">Community Server Address</param>
         /// <returns></returns>
         [Update("docservice")]
-        public IEnumerable<string> CheckDocServiceUrl(string docServiceUrl, string docServiceUrlInternal, string docServiceUrlPortal)
+        public IEnumerable<string> CheckDocServiceUrlFromBody([FromBody]CheckDocServiceUrlModel model)
         {
-            FilesLinkUtility.DocServiceUrl = docServiceUrl;
-            FilesLinkUtility.DocServiceUrlInternal = docServiceUrlInternal;
-            FilesLinkUtility.DocServicePortalUrl = docServiceUrlPortal;
+            return CheckDocServiceUrl(model);
+        }
+
+        [Update("docservice")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public IEnumerable<string> CheckDocServiceUrlFromForm([FromForm]CheckDocServiceUrlModel model)
+        {
+            return CheckDocServiceUrl(model);
+        }
+
+        public IEnumerable<string> CheckDocServiceUrl(CheckDocServiceUrlModel model)
+        {
+            FilesLinkUtility.DocServiceUrl = model.DocServiceUrl;
+            FilesLinkUtility.DocServiceUrlInternal = model.DocServiceUrlInternal;
+            FilesLinkUtility.DocServicePortalUrl = model.DocServiceUrlPortal;
 
             MessageService.Send(MessageAction.DocumentServiceLocationSetting);
 
@@ -2031,9 +2205,21 @@ namespace ASC.Api.Documents
 
         /// <visible>false</visible>
         [Create("wordpress-save")]
-        public object WordpressSave(string code)
+        public object WordpressSaveFromBody([FromBody]WordpressSaveModel model)
         {
-            if (code == "")
+            return WordpressSave(model);
+        }
+
+        [Create("wordpress-save")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public object WordpressSaveFromForm([FromForm]WordpressSaveModel model)
+        {
+            return WordpressSave(model);
+        }
+
+        private object WordpressSave(WordpressSaveModel model)
+        {
+            if (model.Code == "")
             {
                 return new
                 {
@@ -2042,7 +2228,7 @@ namespace ASC.Api.Documents
             }
             try
             {
-                var token = OAuth20TokenHelper.GetAccessToken<WordpressLoginProvider>(ConsumerFactory, code);
+                var token = OAuth20TokenHelper.GetAccessToken<WordpressLoginProvider>(ConsumerFactory, model.Code);
                 WordpressToken.SaveToken(token);
                 var meInfo = WordpressHelper.GetWordpressMeInfo(token.AccessToken);
                 var blogId = JObject.Parse(meInfo).Value<string>("token_site_id");
@@ -2071,7 +2257,19 @@ namespace ASC.Api.Documents
 
         /// <visible>false</visible>
         [Create("wordpress")]
-        public bool CreateWordpressPost(string code, string title, string content, int status)
+        public bool CreateWordpressPostFromBody([FromBody]CreateWordpressPostModel model)
+        {
+            return CreateWordpressPost(model);
+        }
+
+        [Create("wordpress")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public bool CreateWordpressPostFromForm([FromForm]CreateWordpressPostModel model)
+        {
+            return CreateWordpressPost(model);
+        }
+
+        private bool CreateWordpressPost(CreateWordpressPostModel model)
         {
             try
             {
@@ -2083,7 +2281,7 @@ namespace ASC.Api.Documents
 
                 if (blogId != null)
                 {
-                    var createPost = WordpressHelper.CreateWordpressPost(title, content, status, blogId, token);
+                    var createPost = WordpressHelper.CreateWordpressPost(model.Title, model.Content, model.Status, blogId, token);
                     return createPost;
                 }
                 return false;
@@ -2145,11 +2343,23 @@ namespace ASC.Api.Documents
 
         /// <visible>false</visible>
         [Create("easybib-citation")]
-        public object EasyBibCitationBook(string citationData)
+        public object EasyBibCitationBookFromBody([FromBody]EasyBibCitationBookModel model)
+        {
+            return EasyBibCitationBook(model);
+        }
+
+        [Create("easybib-citation")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public object EasyBibCitationBookFromForm([FromForm]EasyBibCitationBookModel model)
+        {
+            return EasyBibCitationBook(model);
+        }
+
+        private object EasyBibCitationBook(EasyBibCitationBookModel model)
         {
             try
             {
-                var citat = EasyBibHelper.GetEasyBibCitation(citationData);
+                var citat = EasyBibHelper.GetEasyBibCitation(model.CitationData);
                 if (citat != null)
                 {
                     return new

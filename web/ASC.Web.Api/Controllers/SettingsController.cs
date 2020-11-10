@@ -1927,9 +1927,16 @@ namespace ASC.Api.Settings
         }
 
         [Update("emailactivation")]
-        public EmailActivationSettings UpdateEmailActivationSettings(bool show)
+        public EmailActivationSettings UpdateEmailActivationSettingsFromBody([FromBody]EmailActivationSettings settings)
         {
-            var settings = new EmailActivationSettings { Show = show };
+            SettingsManager.SaveForCurrentUser(settings);
+            return settings;
+        }
+
+        [Update("emailactivation")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public EmailActivationSettings UpdateEmailActivationSettingsFromForm([FromForm]EmailActivationSettings settings)
+        {
             SettingsManager.SaveForCurrentUser(settings);
             return settings;
         }
@@ -2544,13 +2551,25 @@ namespace ASC.Api.Settings
 
         ///<visible>false</visible>
         [Update("rebranding/mail")]
-        public bool UpdateMailWhiteLabelSettings(bool footerEnabled)
+        public bool UpdateMailWhiteLabelSettingsFromBody([FromBody]MailWhiteLabelSettingsModel model)
+        {
+            return UpdateMailWhiteLabelSettings(model);
+        }
+
+        [Update("rebranding/mail")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public bool UpdateMailWhiteLabelSettingsFromForm([FromForm]MailWhiteLabelSettingsModel model)
+        {
+            return UpdateMailWhiteLabelSettings(model);
+        }
+
+        private bool UpdateMailWhiteLabelSettings(MailWhiteLabelSettingsModel model)
         {
             DemandRebrandingPermission();
 
             var settings = SettingsManager.LoadForDefaultTenant<MailWhiteLabelSettings>();
 
-            settings.FooterEnabled = footerEnabled;
+            settings.FooterEnabled = model.FooterEnabled;
 
             SettingsManager.SaveForDefaultTenant(settings);
 

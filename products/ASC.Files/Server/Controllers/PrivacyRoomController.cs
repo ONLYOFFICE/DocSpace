@@ -92,7 +92,7 @@ namespace ASC.Api.Documents
         }
 
         [Update("keys")]
-        /*pfv*/
+        [Consumes("application/x-www-form-urlencoded")]
         public object SetKeysFromForm([FromForm]PrivacyRoomModel model)
         {
             return SetKeys(model);
@@ -170,7 +170,7 @@ namespace ASC.Api.Documents
         }
 
         [Update("")]
-        /*pfv*/
+        [Consumes("application/x-www-form-urlencoded")]
         public bool SetPrivacyRoomFromForm([FromForm]PrivacyRoomModel model)
         {
             return SetPrivacyRoom(model);
