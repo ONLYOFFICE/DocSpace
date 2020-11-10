@@ -191,6 +191,10 @@ export const getOrganizationName = createSelector([getSettings], (settings) => {
   return organizationName;
 });
 
+export const getUrlSupport = (state) => state.auth.settings.urlSupport;
+
+export const getUrlAuthKeys = (state) => state.auth.settings.urlAuthKeys;
+
 export const isDesktopClient = createSelector([getSettings], (settings) => {
   const { isDesktopClient } = settings;
   return isDesktopClient || false;
