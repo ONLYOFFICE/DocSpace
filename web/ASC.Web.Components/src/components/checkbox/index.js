@@ -19,7 +19,7 @@ const Label = styled.label`
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
   .checkbox {
-    margin-right: 8px;
+    margin-right: 12px;
   }
 
   ${(props) =>

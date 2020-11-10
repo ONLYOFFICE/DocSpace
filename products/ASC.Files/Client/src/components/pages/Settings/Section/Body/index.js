@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import styled from "styled-components";
 import { connect } from "react-redux";
 import { Heading, ToggleButton } from "asc-web-components";
@@ -22,22 +22,25 @@ import {
   getSettingsTreeEnableThirdParty,
   getSettingsTree,
 } from "../../../../../store/files/selectors";
-import { setDocumentTitle } from "../../../../../helpers/utils";
 import ConnectClouds from "./ConnectedClouds";
 
 const { isAdmin } = store.auth.selectors;
 
 const StyledSettings = styled.div`
   display: grid;
-  grid-gap: 10px;
+  grid-gap: 12px;
 
   .toggle-btn {
     position: relative;
   }
 
   .heading {
-    margin-bottom: 0;
-    margin-top: 22px;
+    margin-bottom: 1px;
+    margin-top: 26px;
+  }
+
+  .toggle-btn:first-child {
+    margin-top: -3px;
   }
 `;
 
@@ -59,13 +62,9 @@ const SectionBodyContent = ({
   isAdmin,
   isErrorSettings,
   settingsTree,
+
   t,
 }) => {
-  useEffect(() => {
-    const title = setting[0].toUpperCase() + setting.slice(1);
-    setDocumentTitle(t(`${title}`));
-  }, [setting, t]);
-
   const onChangeStoreForceSave = () => {
     setStoreForceSave(!storeForceSave, "storeForceSave");
   };

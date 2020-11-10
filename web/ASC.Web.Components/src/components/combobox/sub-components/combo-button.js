@@ -194,11 +194,15 @@ class ComboButton extends React.Component {
           needDisplay={withOptions || withAdvancedOptions}
           noBorder={noBorder}
           isOpen={isOpen}
+          className="combo-buttons_arrow-icon"
         >
           {(withOptions || withAdvancedOptions) &&
             React.createElement(Icons["ExpanderDownIcon"], {
               size: "scale",
-              color: arrowIconColor,
+              color:
+                selectedOption.arrowIconColor && !isDisabled
+                  ? selectedOption.arrowIconColor
+                  : arrowIconColor,
               isfill: true,
             })}
         </StyledArrowIcon>

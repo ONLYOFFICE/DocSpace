@@ -30,7 +30,10 @@ const i18n = createI18N({
 const { changeLanguage } = utils;
 
 const StyledTreeMenu = styled(TreeMenu)`
-  margin-top: 20px !important;
+  margin-top: 18px !important;
+  @media (max-width: 1024px) {
+    margin-top: 14px !important;
+  }
 
   .rc-tree-node-selected {
     background: #dfe2e3 !important;
@@ -47,8 +50,18 @@ const StyledTreeMenu = styled(TreeMenu)`
     padding-left: 4px !important;
   }
 
+  .rc-tree-child-tree span.rc-tree-node-selected {
+    max-width: 106%;
+  }
+
   .rc-tree-child-tree {
-    margin-left: 24px;
+    margin-left: 22px;
+  }
+
+  @media (max-width: 1024px) {
+    .settings-node {
+      margin-left: 18px !important;
+    }
   }
 `;
 
@@ -68,13 +81,12 @@ const PureTreeSettings = ({
 }) => {
   useEffect(() => {
     const { setting } = match.params;
-    if (selectedTreeNode[0] !== setting) setSelectedNode([setting]);
     if (setting && !expandedSetting) setExpandSettingsTree(["settings"]);
-  }, [match]);
+  }, [match, expandedSetting, setExpandSettingsTree]);
 
   useEffect(() => {
     getFilesSettings();
-  }, []);
+  }, [getFilesSettings]);
 
   const switcherIcon = (obj) => {
     if (obj.isLeaf) {
