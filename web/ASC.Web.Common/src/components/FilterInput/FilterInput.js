@@ -89,7 +89,7 @@ class FilterInput extends React.Component {
     const { sortDirection, sortId, inputValue } = selectedFilterData;
     const sortData = getSortData();
 
-    this.minWidth = 190;
+    this.minWidth = 120;
 
     const filterValues = selectedFilterData ? this.getDefaultFilterData() : [];
 
@@ -358,7 +358,7 @@ class FilterInput extends React.Component {
   calcHiddenItemWidth = (item) => {
     if (!item) return;
     const numberOfLetters = item.groupLabel.length + item.label.length;
-    return numberOfLetters * 6.7 + 60; // 60 - sum of padding
+    return numberOfLetters * 6.5 + 60; // 60 - sum of padding
   };
 
   AddItems = (searchWidth) => {
