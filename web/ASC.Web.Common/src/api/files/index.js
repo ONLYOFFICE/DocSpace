@@ -592,3 +592,11 @@ export function removeFromFavorite(ids) {
 export function getDocServiceUrl() {
   return request({ method: "get", url: `/files/docservice` });
 }
+
+export function setEncryptionKeys(keys) {
+  return request({
+    method: "put",
+    url: "privacyroom/keys",
+    data: keys,
+  });
+}
