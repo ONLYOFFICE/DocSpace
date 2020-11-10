@@ -34,6 +34,9 @@ const StyledSectionHeader = styled.div`
       top: ${props => !props.isHeaderVisible ? "56px" : "0"} ; 
       transition: top 0.3s;
       z-index:155;
+      
+    padding-right: 16px;
+
     }
 
     h1,
