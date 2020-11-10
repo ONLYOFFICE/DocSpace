@@ -23,6 +23,9 @@ const StyledConnectedDialog = styled.div`
       flex-direction: column;
       margin-bottom: 8px;
     }
+    .dialog-form-input {
+      width: 100%;
+    }
   }
   .dialog-form-text {
     line-height: 32px;
@@ -104,11 +107,9 @@ const ConnectedDialog = (props) => {
               <div className="dialog-form-container">
                 <Text className="dialog-form-text">{t("Password")}</Text>
                 <PasswordInput
-                  hideNewPasswordButton
-                  isDisableTooltip
-                  isTextTooltipVisible
+                  className="dialog-form-input"
+                  simpleView
                   passwordSettings={{ minLength: 0 }}
-                  scale
                   value={passwordValue}
                   onChange={onChangePassword}
                 />
