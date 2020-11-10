@@ -3125,7 +3125,7 @@ arrify@^1.0.1:
   integrity sha1-iYUI2iIm84DfkEcoRWhJwVAaSw0=
 
 "asc-web-components@file:../../packages/asc-web-components":
-  version "1.0.474"
+  version "1.0.475"
   dependencies:
     email-addresses "^3.1.0"
     html-to-react "^1.4.2"
@@ -10570,9 +10570,9 @@ react-draggable@^4.0.3:
     prop-types "^15.6.0"
 
 react-dropzone@^11.2.1:
-  version "11.2.1"
-  resolved "https://registry.yarnpkg.com/react-dropzone/-/react-dropzone-11.2.1.tgz#7544439ed2e27d1e4ac8efff5c6290b758cc29f5"
-  integrity sha512-AVWKQKKd4M8vIYzRC7QvvyzsGMrz6UAtAYW2WvSlEmstHKXhHL3CAq9LUzALfzMcDd2mxmntSNcpxij0w7U4qA==
+  version "11.2.3"
+  resolved "https://registry.yarnpkg.com/react-dropzone/-/react-dropzone-11.2.3.tgz#8a49e9fc7ab75eaccf748c382a790092c035cef1"
+  integrity sha512-D99BhHm7H1h7ztUH/FLDo4wDy7VzXMbHoS/tUZHtoaY37Y55uadq0kUKqoaJ8PXl+niqdb5t6GankuEaAL6Vwg==
   dependencies:
     attr-accept "^2.2.1"
     file-selector "^0.2.2"
@@ -10888,9 +10888,9 @@ react-window-infinite-loader@^1.0.5:
   integrity sha512-IcPIq8lADK3zsAcqoLqQGyduicqR6jWkiK2VUX5sKSI9X/rou6OWlOEexnGyujdNTG7hSG8OVBFEhLSDs4qrxg==
 
 react-window@^1.8.5:
-  version "1.8.5"
-  resolved "https://registry.yarnpkg.com/react-window/-/react-window-1.8.5.tgz#a56b39307e79979721021f5d06a67742ecca52d1"
-  integrity sha512-HeTwlNa37AFa8MDZFZOKcNEkuF2YflA0hpGPiTT9vR7OawEt+GZbfM6wqkBahD3D3pUjIabQYzsnY/BSJbgq6Q==
+  version "1.8.6"
+  resolved "https://registry.yarnpkg.com/react-window/-/react-window-1.8.6.tgz#d011950ac643a994118632665aad0c6382e2a112"
+  integrity sha512-8VwEEYyjz6DCnGBsd+MgkD0KJ2/OXFULyDtorIiTz+QzwoP94tBoA7CnbtyXMm+cCeAUER5KJcPtWl9cpKbOBg==
   dependencies:
     "@babel/runtime" "^7.0.0"
     memoize-one ">=3.1.1 <6"

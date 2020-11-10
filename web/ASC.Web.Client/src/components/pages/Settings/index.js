@@ -11,6 +11,9 @@ const LanguageAndTimeZoneSettings = lazy(() =>
   import("./categories/common/language-and-time-zone")
 );
 const CustomTitles = lazy(() => import("./categories/common/custom-titles"));
+const ThirdPartyServices = lazy(() =>
+  import("./categories/integration/thirdPartyServicesSettings")
+);
 
 //const WhiteLabel = lazy(() => import("./categories/common/whitelabel"));
 
@@ -46,6 +49,11 @@ const Settings = () => {
             component={WhiteLabel}
           /> */}
           <Route path={`${basePath}/security`} component={SecuritySettings} />
+          <Route
+            exact
+            path={`${basePath}/integration/third-party-services`}
+            component={ThirdPartyServices}
+          />
           <Redirect
             to={{
               pathname: "/error/404",

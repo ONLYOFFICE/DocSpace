@@ -127,6 +127,7 @@ namespace ASC.Files.Thirdparty
         {
             if (services.TryAddScoped<IProviderDao, ProviderAccountDao>())
             {
+                services.TryAddScoped<CachedProviderAccountDao>();
                 services.TryAddSingleton<CachedProviderAccountDaoNotify>();
 
                 return services

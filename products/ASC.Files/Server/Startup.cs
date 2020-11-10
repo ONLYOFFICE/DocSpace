@@ -4,9 +4,12 @@ using System.Text.Json.Serialization;
 using ASC.Api.Core;
 using ASC.Api.Documents;
 using ASC.Common;
+using ASC.Common.DependencyInjection;
 using ASC.Web.Files;
 using ASC.Web.Files.HttpHandlers;
 using ASC.Web.Studio.Core.Notify;
+
+using Autofac;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -83,6 +86,11 @@ namespace ASC.Files
                 {
                     appBranch.UseDocuSignHandler();
                 });
+        }
+
+        public void ConfigureContainer(ContainerBuilder builder)
+        {
+            builder.Register(Configuration, HostEnvironment.ContentRootPath);
         }
     }
 }

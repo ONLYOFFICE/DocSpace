@@ -93,7 +93,6 @@ namespace ASC.Api.Documents
         private DocumentServiceConnector DocumentServiceConnector { get; }
         private WordpressToken WordpressToken { get; }
         private WordpressHelper WordpressHelper { get; }
-        private ConsumerFactory ConsumerFactory { get; }
         private EasyBibHelper EasyBibHelper { get; }
         private ProductEntryPoint ProductEntryPoint { get; }
         public TenantManager TenantManager { get; }
@@ -123,7 +122,6 @@ namespace ASC.Api.Documents
             DocumentServiceConnector documentServiceConnector,
             WordpressToken wordpressToken,
             WordpressHelper wordpressHelper,
-            ConsumerFactory consumerFactory,
             EasyBibHelper easyBibHelper,
             ProductEntryPoint productEntryPoint,
             TenantManager tenantManager,
@@ -143,7 +141,6 @@ namespace ASC.Api.Documents
             UserManager = userManager;
             CoreBaseSettings = coreBaseSettings;
             ThirdpartyConfiguration = thirdpartyConfiguration;
-            ConsumerFactory = consumerFactory;
             MessageService = messageService;
             CommonLinkUtility = commonLinkUtility;
             DocumentServiceConnector = documentServiceConnector;
@@ -1122,13 +1119,13 @@ namespace ASC.Api.Documents
         /// <category>Folders</category>
         /// <returns>Parent folders</returns>
         [Read("folder/{folderId}/path", DisableFormat = true)]
-        public IEnumerable<FolderWrapper<string>> GetFolderPath(string folderId)
+        public IEnumerable<FileEntryWrapper> GetFolderPath(string folderId)
         {
             return FilesControllerHelperString.GetFolderPath(folderId);
         }
 
         [Read("folder/{folderId:int}/path")]
-        public IEnumerable<FolderWrapper<int>> GetFolderPath(int folderId)
+        public IEnumerable<FileEntryWrapper> GetFolderPath(int folderId)
         {
             return FilesControllerHelperInt.GetFolderPath(folderId);
         }
@@ -1671,8 +1668,8 @@ namespace ASC.Api.Documents
         [Delete("share")]
         public bool RemoveSecurityInfo(BaseBatchModel<object> model)
         {
-            FileStorageService.RemoveAce(model.FileIds.OfType<string>().ToList(), model.FolderIds.OfType<string>().ToList());
-            FileStorageServiceInt.RemoveAce(model.FileIds.OfType<long>().Select(r => Convert.ToInt32(r)).ToList(), model.FolderIds.OfType<long>().Select(r => Convert.ToInt32(r)).ToList());
+            FilesControllerHelperInt.RemoveSecurityInfo(model.FileIds.OfType<long>().Select(r => Convert.ToInt32(r)).ToList(), model.FolderIds.OfType<long>().Select(r => Convert.ToInt32(r)).ToList());
+            FilesControllerHelperString.RemoveSecurityInfo(model.FileIds.OfType<string>().ToList(), model.FolderIds.OfType<string>().ToList());
             return true;
         }
 
@@ -1731,48 +1728,7 @@ namespace ASC.Api.Documents
                 return result;
             }
 
-            if (ThirdpartyConfiguration.SupportBoxInclusion)
-            {
-                var boxLoginProvider = ConsumerFactory.Get<BoxLoginProvider>();
-                result.Add(new List<string> { "Box", boxLoginProvider.ClientID, boxLoginProvider.RedirectUri });
-            }
-            if (ThirdpartyConfiguration.SupportDropboxInclusion)
-            {
-                var dropboxLoginProvider = ConsumerFactory.Get<DropboxLoginProvider>();
-                result.Add(new List<string> { "DropboxV2", dropboxLoginProvider.ClientID, dropboxLoginProvider.RedirectUri });
-            }
-
-            if (ThirdpartyConfiguration.SupportGoogleDriveInclusion)
-            {
-                var googleLoginProvider = ConsumerFactory.Get<GoogleLoginProvider>();
-                result.Add(new List<string> { "GoogleDrive", googleLoginProvider.ClientID, googleLoginProvider.RedirectUri });
-            }
-
-            if (ThirdpartyConfiguration.SupportOneDriveInclusion)
-            {
-                var oneDriveLoginProvider = ConsumerFactory.Get<OneDriveLoginProvider>();
-                result.Add(new List<string> { "OneDrive", oneDriveLoginProvider.ClientID, oneDriveLoginProvider.RedirectUri });
-            }
-            if (ThirdpartyConfiguration.SupportSharePointInclusion)
-            {
-                result.Add(new List<string> { "SharePoint" });
-            }
-            if (ThirdpartyConfiguration.SupportkDriveInclusion)
-            {
-                result.Add(new List<string> { "kDrive" });
-            }
-            if (ThirdpartyConfiguration.SupportYandexInclusion)
-            {
-                result.Add(new List<string> { "Yandex" });
-            }
-            if (ThirdpartyConfiguration.SupportWebDavInclusion)
-            {
-                result.Add(new List<string> { "WebDav" });
-            }
-
-            //Obsolete BoxNet, DropBox, Google, SkyDrive,
-
-            return result;
+            return ThirdpartyConfiguration.GetProviders();
         }
 
         /// <summary>
@@ -2228,8 +2184,7 @@ namespace ASC.Api.Documents
             }
             try
             {
-                var token = OAuth20TokenHelper.GetAccessToken<WordpressLoginProvider>(ConsumerFactory, model.Code);
-                WordpressToken.SaveToken(token);
+                var token = WordpressToken.SaveTokenFromCode(model.Code);
                 var meInfo = WordpressHelper.GetWordpressMeInfo(token.AccessToken);
                 var blogId = JObject.Parse(meInfo).Value<string>("token_site_id");
 

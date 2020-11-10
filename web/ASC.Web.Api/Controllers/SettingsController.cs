@@ -2720,11 +2720,11 @@ namespace ASC.Api.Settings
         [Read("telegramlink")]
         public object TelegramLink()
         {
-            var currentLink = TelegramHelper.CurrentRegistrationLink(AuthContext.CurrentAccount.ID, TenantManager.CurrentTenant.TenantId);
+            var currentLink = TelegramHelper.CurrentRegistrationLink(AuthContext.CurrentAccount.ID, Tenant.TenantId);
 
             if (string.IsNullOrEmpty(currentLink))
             {
-                var url = TelegramHelper.RegisterUser(AuthContext.CurrentAccount.ID, TenantManager.CurrentTenant.TenantId);
+                var url = TelegramHelper.RegisterUser(AuthContext.CurrentAccount.ID, Tenant.TenantId);
                 return url;
             }
             else
@@ -2740,7 +2740,7 @@ namespace ASC.Api.Settings
         [Read("telegramisconnected")]
         public object TelegramIsConnected()
         {
-            return (int)TelegramHelper.UserIsConnected(AuthContext.CurrentAccount.ID, TenantManager.CurrentTenant.TenantId);
+            return (int)TelegramHelper.UserIsConnected(AuthContext.CurrentAccount.ID, Tenant.TenantId);
         }
 
         /// <summary>
@@ -2749,7 +2749,7 @@ namespace ASC.Api.Settings
         [Delete("telegramdisconnect")]
         public void TelegramDisconnect()
         {
-            TelegramHelper.Disconnect(AuthContext.CurrentAccount.ID, TenantManager.CurrentTenant.TenantId);
+            TelegramHelper.Disconnect(AuthContext.CurrentAccount.ID, Tenant.TenantId);
         }
 
         private readonly int maxCount = 10;
