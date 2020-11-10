@@ -1327,7 +1327,7 @@ namespace ASC.Web.Files.Services.WCFService
         {
             ErrorIf(!folders.Any() && !files.Any(), FilesCommonResource.ErrorMassage_BadRequest);
 
-            return FileOperationsManager.Download(AuthContext.CurrentAccount.ID, TenantManager.CurrentTenant, folders, files, GetHttpHeaders());
+            return FileOperationsManager.Download(AuthContext.CurrentAccount.ID, TenantManager.GetCurrentTenant(), folders, files, GetHttpHeaders());
         }
 
 
@@ -1431,7 +1431,7 @@ namespace ASC.Web.Files.Services.WCFService
             ItemList<FileOperationResult> result;
             if (foldersId.Any() || filesId.Any())
             {
-                result = FileOperationsManager.MoveOrCopy(AuthContext.CurrentAccount.ID, TenantManager.CurrentTenant, foldersId, filesId, destFolderId, ic, resolve, !deleteAfter, GetHttpHeaders());
+                result = FileOperationsManager.MoveOrCopy(AuthContext.CurrentAccount.ID, TenantManager.GetCurrentTenant(), foldersId, filesId, destFolderId, ic, resolve, !deleteAfter, GetHttpHeaders());
             }
             else
             {
@@ -1443,16 +1443,16 @@ namespace ASC.Web.Files.Services.WCFService
 
         public ItemList<FileOperationResult> DeleteFile(string action, T fileId, bool ignoreException = false, bool deleteAfter = false, bool immediately = false)
         {
-            return FileOperationsManager.Delete(AuthContext.CurrentAccount.ID, TenantManager.CurrentTenant, new List<T>(), new List<T>() { fileId }, ignoreException, !deleteAfter, immediately, GetHttpHeaders());
+            return FileOperationsManager.Delete(AuthContext.CurrentAccount.ID, TenantManager.GetCurrentTenant(), new List<T>(), new List<T>() { fileId }, ignoreException, !deleteAfter, immediately, GetHttpHeaders());
         }
         public ItemList<FileOperationResult> DeleteFolder(string action, T folderId, bool ignoreException = false, bool deleteAfter = false, bool immediately = false)
         {
-            return FileOperationsManager.Delete(AuthContext.CurrentAccount.ID, TenantManager.CurrentTenant, new List<T>() { folderId }, new List<T>(), ignoreException, !deleteAfter, immediately, GetHttpHeaders());
+            return FileOperationsManager.Delete(AuthContext.CurrentAccount.ID, TenantManager.GetCurrentTenant(), new List<T>() { folderId }, new List<T>(), ignoreException, !deleteAfter, immediately, GetHttpHeaders());
         }
 
         public ItemList<FileOperationResult> DeleteItems(string action, List<JsonElement> files, List<JsonElement> folders, bool ignoreException = false, bool deleteAfter = false, bool immediately = false)
         {
-            return FileOperationsManager.Delete(AuthContext.CurrentAccount.ID, TenantManager.CurrentTenant, folders, files, ignoreException, !deleteAfter, immediately, GetHttpHeaders());
+            return FileOperationsManager.Delete(AuthContext.CurrentAccount.ID, TenantManager.GetCurrentTenant(), folders, files, ignoreException, !deleteAfter, immediately, GetHttpHeaders());
         }
 
         public ItemList<FileOperationResult> EmptyTrash()
@@ -1463,7 +1463,7 @@ namespace ASC.Web.Files.Services.WCFService
             var foldersId = folderDao.GetFolders(trashId).Select(f => f.ID).ToList();
             var filesId = fileDao.GetFiles(trashId).ToList();
 
-            return FileOperationsManager.Delete(AuthContext.CurrentAccount.ID, TenantManager.CurrentTenant, foldersId, filesId, false, true, false, GetHttpHeaders());
+            return FileOperationsManager.Delete(AuthContext.CurrentAccount.ID, TenantManager.GetCurrentTenant(), foldersId, filesId, false, true, false, GetHttpHeaders());
         }
 
         public ItemList<FileOperationResult> CheckConversion(ItemList<ItemList<string>> filesInfoJSON)
