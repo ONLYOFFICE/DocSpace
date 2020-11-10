@@ -42,6 +42,7 @@ const StyledArticle = styled.article`
             ? `
             min-width: 240px;
             margin-top: 56px;
+            height: calc(100% - 56px)!important;
           `
             : `
             position: fixed !important;
