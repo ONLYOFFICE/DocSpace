@@ -69,6 +69,7 @@ import {
   getMediaViewerId,
   getMediaViewerVisibility,
   getSelectedFolderParentId,
+  getSelectedFolderProviderItem,
   getSelected,
   getSelectedFolderTitle,
   getSelection,
@@ -1438,7 +1439,7 @@ class SectionBodyContent extends React.Component {
   };
 
   render() {
-    console.log("Files Home SectionBodyContent render", this.props);
+    //console.log("Files Home SectionBodyContent render", this.props);
 
     const {
       viewer,
@@ -1464,6 +1465,7 @@ class SectionBodyContent extends React.Component {
       mediaViewerImageFormats,
       mediaViewerMediaFormats,
       tooltipValue,
+      providerItem,
     } = this.props;
 
     const {
@@ -1501,7 +1503,8 @@ class SectionBodyContent extends React.Component {
       });
     }
 
-    return (!fileAction.id && currentFolderCount === 0) || null ? (
+    return (!fileAction.id && currentFolderCount === 0 && !providerItem) ||
+      null ? (
       parentId === 0 ? (
         this.renderEmptyRootFolderContainer()
       ) : (
@@ -1769,6 +1772,7 @@ const mapStateToProps = (state) => {
     myDocumentsId: getMyFolderId(state),
     organizationName: getOrganizationName(state),
     parentId: getSelectedFolderParentId(state),
+    providerItem: getSelectedFolderProviderItem(state),
     privacyInstructions: getPrivacyInstructionsLink(state),
     selected: getSelected(state),
     selectedFolderId: getSelectedFolderId(state),
