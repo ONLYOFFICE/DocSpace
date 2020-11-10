@@ -217,3 +217,15 @@ export function getPortalPasswordSettings(dispatch, confirmKey = null) {
 export const reloadPortalSettings = () => {
   return (dispatch) => getPortalSettings(dispatch);
 };
+
+export function setEncryptionKeys(keys) {
+  return (dispatch) => {
+    return api.files.setEncryptionKeys(keys);
+  };
+}
+
+export function getEncryptionAccess(fileId) {
+  return (dispatch) => {
+    return api.files.getEncryptionAccess(fileId);
+  };
+}
