@@ -111,7 +111,7 @@ class ProfileAction extends React.Component {
                 <UpdateUserForm />
               )
             ) : (
-              <Loaders.ProfileView isEditBtn={false} />
+              <Loaders.ProfileView isEdit={false} />
             )}
           </PageLayout.SectionBody>
         </PageLayout>
