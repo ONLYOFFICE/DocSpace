@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { Loader } from "asc-web-components";
-import { PageLayout, utils, store } from "asc-web-common";
+import { PageLayout, utils, store, Loaders } from "asc-web-common";
 import {
   ArticleHeaderContent,
   ArticleMainButtonContent,
@@ -111,7 +111,7 @@ class ProfileAction extends React.Component {
                 <UpdateUserForm />
               )
             ) : (
-              <Loader className="pageLoader" type="rombs" size="40px" />
+              <Loaders.ProfileView isEditBtn={false} />
             )}
           </PageLayout.SectionBody>
         </PageLayout>
