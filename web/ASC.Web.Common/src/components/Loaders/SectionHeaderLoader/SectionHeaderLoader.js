@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import styled from "styled-components";
 import RectangleLoader from "../RectangleLoader/index";
 
@@ -36,20 +37,97 @@ const StyledBox2 = styled.div`
 
 const StyledSpacer = styled.div``;
 
-const SectionHeaderLoader = (props) => {
+const SectionHeaderLoader = ({ id, className, style, ...rest }) => {
+  const {
+    title,
+    x,
+    y,
+    borderRadius,
+    backgroundColor,
+    foregroundColor,
+    backgroundOpacity,
+    foregroundOpacity,
+    speed,
+    animate,
+  } = rest;
+
   return (
-    <StyledContainer>
+    <StyledContainer id={id} className={className} style={style}>
       <StyledBox1>
-        <RectangleLoader width="17" height="17" {...props} />
-        <RectangleLoader width="67" height="17" {...props} />
+        <RectangleLoader
+          title={title}
+          x={x}
+          y={y}
+          width="17"
+          height="17"
+          borderRadius={borderRadius}
+          backgroundColor={backgroundColor}
+          foregroundColor={foregroundColor}
+          backgroundOpacity={backgroundOpacity}
+          foregroundOpacity={foregroundOpacity}
+          speed={speed}
+          animate={animate}
+        />
+        <RectangleLoader
+          title={title}
+          x={x}
+          y={y}
+          width="67"
+          height="17"
+          borderRadius={borderRadius}
+          backgroundColor={backgroundColor}
+          foregroundColor={foregroundColor}
+          backgroundOpacity={backgroundOpacity}
+          foregroundOpacity={foregroundOpacity}
+          speed={speed}
+          animate={animate}
+        />
       </StyledBox1>
       <StyledSpacer />
       <StyledBox2>
-        <RectangleLoader width="17" height="17" {...props} />
-        <RectangleLoader width="17" height="17" {...props} />
+        <RectangleLoader
+          title={title}
+          x={x}
+          y={y}
+          width="17"
+          height="17"
+          borderRadius={borderRadius}
+          backgroundColor={backgroundColor}
+          foregroundColor={foregroundColor}
+          backgroundOpacity={backgroundOpacity}
+          foregroundOpacity={foregroundOpacity}
+          speed={speed}
+          animate={animate}
+        />
+        <RectangleLoader
+          title={title}
+          x={x}
+          y={y}
+          width="17"
+          height="17"
+          borderRadius={borderRadius}
+          backgroundColor={backgroundColor}
+          foregroundColor={foregroundColor}
+          backgroundOpacity={backgroundOpacity}
+          foregroundOpacity={foregroundOpacity}
+          speed={speed}
+          animate={animate}
+        />
       </StyledBox2>
     </StyledContainer>
   );
+};
+
+SectionHeaderLoader.propTypes = {
+  id: PropTypes.string,
+  className: PropTypes.string,
+  style: PropTypes.object,
+};
+
+SectionHeaderLoader.defaultProps = {
+  id: undefined,
+  className: undefined,
+  style: undefined,
 };
 
 export default SectionHeaderLoader;

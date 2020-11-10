@@ -1,13 +1,12 @@
 import React from "react";
+import PropTypes from "prop-types";
 import styled from "styled-components";
 import RectangleLoader from "../RectangleLoader/index";
 import CircleLoader from "../CircleLoader/index";
-import PropTypes from "prop-types";
 
 import { utils } from "asc-web-components";
 
-const { desktop, mobile } = utils.device;
-const { isSmallTablet, isTablet, isMobile } = utils.device;
+const { desktop, tablet, mobile } = utils.device;
 
 const StyledBox1 = styled.div`
   display: grid;
@@ -19,7 +18,7 @@ const StyledBox1 = styled.div`
     grid-template-columns: 1fr;
     grid-template-rows: 1fr 1fr;
   }
-  margin-bottom: 12px;
+  padding-bottom: 12px;
 `;
 
 const StyledBox2 = styled.div`
@@ -50,11 +49,20 @@ const StyledBox4 = styled.div`
   grid-column-gap: 16px;
   padding-top: 40px;
   padding-bottom: 40px;
+
   @media ${desktop} {
     grid-template-columns: repeat(3, 200px);
   }
+  @media ${tablet} {
+    .row-content__tablet {
+      display: none;
+    }
+  }
   @media ${mobile} {
     grid-template-columns: 200px;
+    .row-content__mobile {
+      display: none;
+    }
   }
 `;
 
@@ -62,73 +70,296 @@ const StyledSpacer = styled.div`
   padding-bottom: 40px;
 `;
 
-const ProfileViewLoader = (props) => {
+const ProfileViewLoader = ({ id, className, style, isEdit, ...rest }) => {
+  const {
+    title,
+    borderRadius,
+    backgroundColor,
+    foregroundColor,
+    backgroundOpacity,
+    foregroundOpacity,
+    speed,
+    animate,
+  } = rest;
+
   return (
-    <div>
+    <div id={id} className={className} style={style}>
       <StyledBox1>
         <StyledBox2>
-          <CircleLoader x="80" y="80" radius="80" {...props} />
-          {props.isEditBtn ? (
-            <RectangleLoader width="160" height="36" {...props} />
+          <CircleLoader
+            title={title}
+            x="80"
+            y="80"
+            radius="80"
+            backgroundColor={backgroundColor}
+            foregroundColor={foregroundColor}
+            backgroundOpacity={backgroundOpacity}
+            foregroundOpacity={foregroundOpacity}
+            speed={speed}
+            animate={animate}
+          />
+          {isEdit ? (
+            <RectangleLoader
+              title={title}
+              width="160"
+              height="36"
+              borderRadius={borderRadius}
+              backgroundColor={backgroundColor}
+              foregroundColor={foregroundColor}
+              backgroundOpacity={backgroundOpacity}
+              foregroundOpacity={foregroundOpacity}
+              speed={speed}
+              animate={animate}
+            />
           ) : (
             <></>
           )}
         </StyledBox2>
         <StyledBox3>
-          <RectangleLoader width="231" height="16" {...props} />
-          <RectangleLoader width="231" height="16" {...props} />
-          <RectangleLoader width="231" height="16" {...props} />
-          <RectangleLoader width="231" height="16" {...props} />
-          <RectangleLoader width="231" height="16" {...props} />
-          <RectangleLoader width="231" height="16" {...props} />
-          <RectangleLoader width="231" height="16" {...props} />
-          <RectangleLoader width="231" height="16" {...props} />
-          <RectangleLoader width="111" height="16" {...props} />
+          <RectangleLoader
+            title={title}
+            width="231"
+            height="16"
+            borderRadius={borderRadius}
+            backgroundColor={backgroundColor}
+            foregroundColor={foregroundColor}
+            backgroundOpacity={backgroundOpacity}
+            foregroundOpacity={foregroundOpacity}
+            speed={speed}
+            animate={animate}
+          />
+          <RectangleLoader
+            title={title}
+            width="231"
+            height="16"
+            borderRadius={borderRadius}
+            backgroundColor={backgroundColor}
+            foregroundColor={foregroundColor}
+            backgroundOpacity={backgroundOpacity}
+            foregroundOpacity={foregroundOpacity}
+            speed={speed}
+            animate={animate}
+          />
+          <RectangleLoader
+            title={title}
+            width="231"
+            height="16"
+            borderRadius={borderRadius}
+            backgroundColor={backgroundColor}
+            foregroundColor={foregroundColor}
+            backgroundOpacity={backgroundOpacity}
+            foregroundOpacity={foregroundOpacity}
+            speed={speed}
+            animate={animate}
+          />
+          <RectangleLoader
+            title={title}
+            width="231"
+            height="16"
+            borderRadius={borderRadius}
+            backgroundColor={backgroundColor}
+            foregroundColor={foregroundColor}
+            backgroundOpacity={backgroundOpacity}
+            foregroundOpacity={foregroundOpacity}
+            speed={speed}
+            animate={animate}
+          />
+          <RectangleLoader
+            title={title}
+            width="231"
+            height="16"
+            borderRadius={borderRadius}
+            backgroundColor={backgroundColor}
+            foregroundColor={foregroundColor}
+            backgroundOpacity={backgroundOpacity}
+            foregroundOpacity={foregroundOpacity}
+            speed={speed}
+            animate={animate}
+          />
+          <RectangleLoader
+            title={title}
+            width="231"
+            height="16"
+            borderRadius={borderRadius}
+            backgroundColor={backgroundColor}
+            foregroundColor={foregroundColor}
+            backgroundOpacity={backgroundOpacity}
+            foregroundOpacity={foregroundOpacity}
+            speed={speed}
+            animate={animate}
+          />
+          <RectangleLoader
+            title={title}
+            width="231"
+            height="16"
+            borderRadius={borderRadius}
+            backgroundColor={backgroundColor}
+            foregroundColor={foregroundColor}
+            backgroundOpacity={backgroundOpacity}
+            foregroundOpacity={foregroundOpacity}
+            speed={speed}
+            animate={animate}
+          />
+          <RectangleLoader
+            title={title}
+            width="231"
+            height="16"
+            borderRadius={borderRadius}
+            backgroundColor={backgroundColor}
+            foregroundColor={foregroundColor}
+            backgroundOpacity={backgroundOpacity}
+            foregroundOpacity={foregroundOpacity}
+            speed={speed}
+            animate={animate}
+          />
+          <RectangleLoader
+            title={title}
+            width="111"
+            height="16"
+            borderRadius={borderRadius}
+            backgroundColor={backgroundColor}
+            foregroundColor={foregroundColor}
+            backgroundOpacity={backgroundOpacity}
+            foregroundOpacity={foregroundOpacity}
+            speed={speed}
+            animate={animate}
+          />
         </StyledBox3>
-        <RectangleLoader width="200" height="24" {...props} />
+        <RectangleLoader
+          title={title}
+          width="200"
+          height="24"
+          borderRadius={borderRadius}
+          backgroundColor={backgroundColor}
+          foregroundColor={foregroundColor}
+          backgroundOpacity={backgroundOpacity}
+          foregroundOpacity={foregroundOpacity}
+          speed={speed}
+          animate={animate}
+        />
       </StyledBox1>
-      <RectangleLoader width="100%" height="80" {...props} />
+      <RectangleLoader
+        title={title}
+        width="100%"
+        height="80"
+        borderRadius={borderRadius}
+        backgroundColor={backgroundColor}
+        foregroundColor={foregroundColor}
+        backgroundOpacity={backgroundOpacity}
+        foregroundOpacity={foregroundOpacity}
+        speed={speed}
+        animate={animate}
+      />
       <StyledSpacer />
 
-      <RectangleLoader width="200" height="24" {...props} />
+      <RectangleLoader
+        title={title}
+        width="200"
+        height="24"
+        borderRadius={borderRadius}
+        backgroundColor={backgroundColor}
+        foregroundColor={foregroundColor}
+        backgroundOpacity={backgroundOpacity}
+        foregroundOpacity={foregroundOpacity}
+        speed={speed}
+        animate={animate}
+      />
       <StyledBox4>
-        {isMobile() || isSmallTablet() ? (
-          <RectangleLoader width="200" height="80" {...props} />
-        ) : isTablet() ? (
-          <>
-            <RectangleLoader width="200" height="80" {...props} />
-            <RectangleLoader width="200" height="80" {...props} />
-          </>
-        ) : (
-          <>
-            <RectangleLoader width="200" height="80" {...props} />
-            <RectangleLoader width="200" height="80" {...props} />{" "}
-            <RectangleLoader width="200" height="80" {...props} />
-          </>
-        )}
+        <RectangleLoader
+          title={title}
+          width="200"
+          height="80"
+          borderRadius={borderRadius}
+          backgroundColor={backgroundColor}
+          foregroundColor={foregroundColor}
+          backgroundOpacity={backgroundOpacity}
+          foregroundOpacity={foregroundOpacity}
+          speed={speed}
+          animate={animate}
+        />
+        <RectangleLoader
+          className="row-content__mobile"
+          title={title}
+          width="200"
+          height="80"
+          borderRadius={borderRadius}
+          backgroundColor={backgroundColor}
+          foregroundColor={foregroundColor}
+          backgroundOpacity={backgroundOpacity}
+          foregroundOpacity={foregroundOpacity}
+          speed={speed}
+          animate={animate}
+        />
+        <RectangleLoader
+          className="row-content__tablet row-content__mobile"
+          title={title}
+          width="200"
+          height="80"
+          borderRadius={borderRadius}
+          backgroundColor={backgroundColor}
+          foregroundColor={foregroundColor}
+          backgroundOpacity={backgroundOpacity}
+          foregroundOpacity={foregroundOpacity}
+          speed={speed}
+          animate={animate}
+        />
       </StyledBox4>
 
-      <RectangleLoader width="200" height="24" {...props} />
+      <RectangleLoader
+        title={title}
+        width="200"
+        height="24"
+        borderRadius={borderRadius}
+        backgroundColor={backgroundColor}
+        foregroundColor={foregroundColor}
+        backgroundOpacity={backgroundOpacity}
+        foregroundOpacity={foregroundOpacity}
+        speed={speed}
+        animate={animate}
+      />
       <StyledBox4>
-        {isMobile() || isSmallTablet() ? (
-          <RectangleLoader width="200" height="80" {...props} />
-        ) : (
-          <>
-            <RectangleLoader width="200" height="80" {...props} />
-            <RectangleLoader width="200" height="80" {...props} />
-          </>
-        )}
+        <RectangleLoader
+          title={title}
+          width="200"
+          height="80"
+          borderRadius={borderRadius}
+          backgroundColor={backgroundColor}
+          foregroundColor={foregroundColor}
+          backgroundOpacity={backgroundOpacity}
+          foregroundOpacity={foregroundOpacity}
+          speed={speed}
+          animate={animate}
+        />
+        <RectangleLoader
+          className="row-content__mobile"
+          title={title}
+          width="200"
+          height="80"
+          borderRadius={borderRadius}
+          backgroundColor={backgroundColor}
+          foregroundColor={foregroundColor}
+          backgroundOpacity={backgroundOpacity}
+          foregroundOpacity={foregroundOpacity}
+          speed={speed}
+          animate={animate}
+        />
       </StyledBox4>
     </div>
   );
 };
 
 ProfileViewLoader.propTypes = {
-  isEditBtn: PropTypes.bool,
+  id: PropTypes.string,
+  className: PropTypes.string,
+  style: PropTypes.object,
+  isEdit: PropTypes.bool,
 };
 
 ProfileViewLoader.defaultProps = {
-  isEditBtn: true,
+  id: undefined,
+  className: undefined,
+  style: undefined,
+  isEdit: true,
 };
 
 export default ProfileViewLoader;
