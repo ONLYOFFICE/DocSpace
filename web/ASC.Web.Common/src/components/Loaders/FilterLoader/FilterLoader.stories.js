@@ -22,7 +22,6 @@ storiesOf("Components|Loaders", module)
       <h1>Filter Loader</h1>
       <Loaders.Filter
         title={text("title", LoaderStyle.title)}
-        width={text("width", "100%")}
         height={text("height", "32px")}
         backgroundColor={color("backgroundColor", LoaderStyle.backgroundColor)}
         foregroundColor={color("foregroundColor", LoaderStyle.foregroundColor)}

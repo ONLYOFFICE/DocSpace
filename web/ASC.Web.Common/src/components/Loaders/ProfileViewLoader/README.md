@@ -13,7 +13,7 @@ import { Loaders } from "asc-web-common";
 ```
 
 ```jsx
-<Loaders.ProfileView isEditBtn={false} />
+<Loaders.ProfileView isEdit={false} />
 ```
 
 ### Properties
@@ -21,7 +21,7 @@ import { Loaders } from "asc-web-common";
 | Props               |   Type   | Required | Values |  Default  | Description                                      |
 | ------------------- | :------: | :------: | :----: | :-------: | ------------------------------------------------ |
 | `title`             | `string` |    -     |   -    |    ``     | It's used to describe what element it is.        |
-| `isEditBtn`         |  `bool`  |    -     |   -    |  `true`   | Show loader of Edit button?                      |
+| `isEdit`            |  `bool`  |    -     |   -    |  `true`   | Show loader of Edit button?                      |
 | `backgroundColor`   | `string` |    -     |   -    | `#000000` | Used as background of animation                  |
 | `foregroundColor`   | `string` |    -     |   -    | `#000000` | Used as the foreground of animation              |
 | `backgroundOpacity` | `number` |    -     |   -    |    0.2    | Background opacity (0 = transparent, 1 = opaque) |

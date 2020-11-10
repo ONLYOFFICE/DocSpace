@@ -22,7 +22,7 @@ storiesOf("Components|Loaders", module)
       <h1>Profile View Loader</h1>
       <Loaders.ProfileView
         title={text("title", LoaderStyle.title)}
-        isEditBtn={boolean("isEditBtn", true)}
+        isEdit={boolean("isEdit", true)}
         backgroundColor={color("backgroundColor", LoaderStyle.backgroundColor)}
         foregroundColor={color("foregroundColor", LoaderStyle.foregroundColor)}
         backgroundOpacity={number(
