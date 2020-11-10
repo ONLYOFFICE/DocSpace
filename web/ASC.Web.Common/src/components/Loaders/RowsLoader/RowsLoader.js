@@ -1,14 +1,14 @@
 import React from "react";
-import Loaders from "..";
+import RowLoader from "../RowLoader/index";
 const RowsLoader = (props) => {
   return (
     <div>
-      <Loaders.Row {...props} />
-      <Loaders.Row {...props} />
-      <Loaders.Row {...props} />
-      <Loaders.Row {...props} />
-      <Loaders.Row {...props} />
-      <Loaders.Row {...props} />
+      <RowLoader {...props} />
+      <RowLoader {...props} />
+      <RowLoader {...props} />
+      <RowLoader {...props} />
+      <RowLoader {...props} />
+      <RowLoader {...props} />
     </div>
   );
 };
