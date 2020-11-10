@@ -268,6 +268,37 @@ class ConnectClouds extends React.Component {
       });
   };
 
+  getThirdPartyIcon = (iconName) => {
+    switch (iconName) {
+      case "Box":
+        return <Icons.BoxIcon size="big" />;
+      case "DropboxV2":
+        return <Icons.DropBoxIcon size="big" />;
+      case "GoogleDrive":
+        return <Icons.GoogleDriveIcon size="big" />;
+      case "OneDrive":
+        return <Icons.OneDriveIcon size="big" />;
+      case "SharePoint":
+        return <Icons.SharePointIcon size="big" />;
+      case "kDrive":
+        return <Icons.KDriveIcon size="big" />;
+      case "Yandex":
+        return <Icons.YandexDiskIcon size="big" />;
+      /*--------------------------------------------*/
+      case "OwnCloud":
+        return <Icons.OwnCloudIcon size="big" />;
+      case "NextCloud":
+        return <Icons.NextCloudIcon size="big" />;
+      case "OneDriveForBusiness":
+        return <Icons.OneDriveIcon size="big" />;
+      case "WebDav":
+        return <Icons.WebDavIcon size="big" />;
+
+      default:
+        return;
+    }
+  };
+
   render() {
     const {
       connectDialogVisible,
@@ -316,10 +347,11 @@ class ConnectClouds extends React.Component {
               primary
             />
             {providers.map((item, index) => {
+              const element = this.getThirdPartyIcon(item.provider_key);
               return (
                 <Row
                   key={index}
-                  element={<Icons.NavLogoIcon size="big" />}
+                  element={element}
                   contextOptions={[
                     {
                       "data-key": item.provider_key,
