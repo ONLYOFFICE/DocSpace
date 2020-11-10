@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import styled from "styled-components";
 import { connect } from "react-redux";
 import { Heading, ToggleButton } from "asc-web-components";
@@ -22,7 +22,6 @@ import {
   getSettingsTreeEnableThirdParty,
   getSettingsTree,
 } from "../../../../../store/files/selectors";
-import { setDocumentTitle } from "../../../../../helpers/utils";
 
 const { isAdmin } = store.auth.selectors;
 
@@ -62,13 +61,9 @@ const SectionBodyContent = ({
   isAdmin,
   isErrorSettings,
   settingsTree,
+
   t,
 }) => {
-  useEffect(() => {
-    const title = setting[0].toUpperCase() + setting.slice(1);
-    setDocumentTitle(t(`${title}`));
-  }, [setting, t]);
-
   const onChangeStoreForceSave = () => {
     setStoreForceSave(!storeForceSave, "storeForceSave");
   };
@@ -175,9 +170,9 @@ const SectionBodyContent = ({
 
   if (setting === "admin" && isAdmin) content = renderAdminSettings();
   if (setting === "common") content = renderCommonSettings();
-  if (setting === "thirdParty" && enableThirdParty) content = renderClouds();
+  if (setting === "thirdparty" && enableThirdParty) content = renderClouds();
 
-  return isLoading ? null : (!enableThirdParty && setting === "thirdParty") ||
+  return isLoading ? null : (!enableThirdParty && setting === "thirdparty") ||
     (!isAdmin && setting === "admin") ? (
     <Error403 />
   ) : isErrorSettings ? (

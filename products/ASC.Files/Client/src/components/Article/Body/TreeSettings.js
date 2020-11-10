@@ -81,15 +81,8 @@ const PureTreeSettings = ({
 }) => {
   useEffect(() => {
     const { setting } = match.params;
-    if (selectedTreeNode[0] !== setting) setSelectedNode([setting]);
     if (setting && !expandedSetting) setExpandSettingsTree(["settings"]);
-  }, [
-    match,
-    selectedTreeNode,
-    expandedSetting,
-    setExpandSettingsTree,
-    setSelectedNode,
-  ]);
+  }, [match, expandedSetting, setExpandSettingsTree]);
 
   useEffect(() => {
     getFilesSettings();
@@ -158,7 +151,7 @@ const PureTreeSettings = ({
             selectable={true}
             className="settings-node"
             id="connected-clouds"
-            key="thirdParty"
+            key="thirdparty"
             isLeaf={true}
             title={t("TreeSettingsConnectedCloud")}
           />

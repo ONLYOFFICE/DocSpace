@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { PageLayout, utils, Loaders } from "asc-web-common";
@@ -14,8 +14,11 @@ import {
   getFilesSettings,
   setIsLoading,
   setFirstLoad,
+  setSelectedNode,
 } from "../../../store/files/actions";
 import { getSettingsTree, getIsLoading } from "../../../store/files/selectors";
+
+import { setDocumentTitle } from "../../../helpers/utils";
 
 const i18n = createI18N({
   page: "Settings",
@@ -32,19 +35,44 @@ const PureSettings = ({
   getFilesSettings,
   setIsLoading,
   setFirstLoad,
+  setSelectedNode,
 }) => {
-  //console.log("Settings render()");
+  const [title, setTitle] = useState("");
   const { setting } = match.params;
 
+  useEffect(() => {
+    switch (setting) {
+      case "common":
+        setTitle("CommonSettings");
+        break;
+      case "admin":
+        setTitle("AdminSettings");
+        break;
+      case "thirdparty":
+        setTitle("ThirdPartySettings");
+        break;
+      default:
+        setTitle("CommonSettings");
+        break;
+    }
+  }, [setting]);
   useEffect(() => {
     if (Object.keys(settingsTree).length === 0) {
       setIsLoading(true);
       getFilesSettings().then(() => {
         setIsLoading(false);
         setFirstLoad(false);
+        setSelectedNode([setting]);
       });
     }
-  }, [getFilesSettings, setIsLoading, setFirstLoad, settingsTree]);
+  }, [
+    setting,
+    getFilesSettings,
+    setIsLoading,
+    setFirstLoad,
+    settingsTree,
+    setSelectedNode,
+  ]);
 
   useEffect(() => {
     if (isLoading) {
@@ -55,6 +83,10 @@ const PureSettings = ({
   }, [isLoading]);
 
   //console.log("render settings");
+
+  useEffect(() => {
+    setDocumentTitle(t(`${title}`));
+  }, [title, t]);
 
   return (
     <>
@@ -75,7 +107,7 @@ const PureSettings = ({
           {Object.keys(settingsTree).length === 0 && isLoading ? (
             <Loaders.Headline />
           ) : (
-            <SectionHeaderContent setting={setting} t={t} />
+            <SectionHeaderContent title={t(`${title}`)} />
           )}
         </PageLayout.SectionHeader>
 
@@ -116,6 +148,7 @@ const mapDispatchToProps = (dispatch) => {
     setIsLoading: (isLoading) => dispatch(setIsLoading(isLoading)),
     getFilesSettings: () => dispatch(getFilesSettings()),
     setFirstLoad: (firstLoad) => dispatch(setFirstLoad(firstLoad)),
+    setSelectedNode: (node) => dispatch(setSelectedNode(node)),
   };
 };
 

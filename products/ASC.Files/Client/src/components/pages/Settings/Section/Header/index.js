@@ -1,11 +1,10 @@
 import React from "react";
 import { Headline } from "asc-web-common";
 
-const SectionHeaderContent = ({ setting, t }) => {
-  const title = setting[0].toUpperCase() + setting.slice(1);
+const SectionHeaderContent = ({ title }) => {
   return (
     <Headline className="headline-header" type="content" truncate={true}>
-      {t(`${title}Settings`)}
+      {title}
     </Headline>
   );
 };
