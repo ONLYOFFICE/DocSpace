@@ -190,3 +190,7 @@ export const getOrganizationName = createSelector([getSettings], (settings) => {
   const { organizationName } = settings;
   return organizationName;
 });
+
+export const getUrlSupport = (state) => state.auth.settings.urlSupport;
+
+export const getUrlAuthKeys = (state) => state.auth.settings.urlAuthKeys;
