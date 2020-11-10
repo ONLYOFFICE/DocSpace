@@ -41,7 +41,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Notify
 {
-    class EmailSenderSink : Sink
+    public class EmailSenderSink : Sink
     {
         private static readonly string senderName = ASC.Core.Configuration.Constants.NotifyEMailSenderSysName;
         private readonly INotifySender sender;

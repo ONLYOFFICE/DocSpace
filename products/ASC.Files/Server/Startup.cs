@@ -3,9 +3,12 @@ using System.Text.Json.Serialization;
 
 using ASC.Api.Core;
 using ASC.Api.Documents;
+using ASC.Common.DependencyInjection;
 using ASC.Web.Files;
 using ASC.Web.Files.HttpHandlers;
 using ASC.Web.Studio.Core.Notify;
+
+using Autofac;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -35,7 +38,7 @@ namespace ASC.Files
             base.ConfigureServices(services);
 
             DIHelper.TryAdd<FilesController>();
-            DIHelper.TryAdd<PrivacyRoomApi>();
+            DIHelper.TryAdd<PrivacyRoomController>();
             DIHelper.TryAdd<FileHandlerService>();
             DIHelper.TryAdd<ChunkedUploaderHandlerService>();
             DIHelper.TryAdd<DocuSignHandlerService>();
@@ -81,6 +84,11 @@ namespace ASC.Files
                 {
                     appBranch.UseDocuSignHandler();
                 });
+        }
+
+        public void ConfigureContainer(ContainerBuilder builder)
+        {
+            builder.Register(Configuration, HostEnvironment.ContentRootPath);
         }
     }
 }

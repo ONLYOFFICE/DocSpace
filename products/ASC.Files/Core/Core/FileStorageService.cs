@@ -226,7 +226,7 @@ namespace ASC.Web.Files.Services.WCFService
             }
         }
 
-        public ItemList<T> GetPath(T folderId)
+        public ItemList<object> GetPath(T folderId)
         {
             var folderDao = GetFolderDao();
             var folder = folderDao.GetFolder(folderId);
@@ -234,7 +234,12 @@ namespace ASC.Web.Files.Services.WCFService
             ErrorIf(folder == null, FilesCommonResource.ErrorMassage_FolderNotFound);
             ErrorIf(!FileSecurity.CanRead(folder), FilesCommonResource.ErrorMassage_SecurityException_ViewFolder);
 
-            return new ItemList<T>(EntryManager.GetBreadCrumbs(folderId, folderDao).Select(f => f.ID));
+            return new ItemList<object>(EntryManager.GetBreadCrumbs(folderId, folderDao).Select(f =>
+            {
+                if (f is Folder<string> f1) return (object)f1.ID;
+                if (f is Folder<int> f2) return f2.ID;
+                return 0;
+            }));
         }
 
         public DataWrapper<T> GetFolderItems(T parentId, int from, int count, FilterType filter, bool subjectGroup, string ssubject, string searchText, bool searchInContent, bool withSubfolders, OrderBy orderBy)
@@ -295,7 +300,8 @@ namespace ASC.Web.Files.Services.WCFService
             var prevVisible = breadCrumbs.ElementAtOrDefault(breadCrumbs.Count() - 2);
             if (prevVisible != null)
             {
-                parent.ParentFolderID = prevVisible.ID;
+                if (prevVisible is Folder<string> f1) parent.ParentFolderID = (T)Convert.ChangeType(f1.ID, typeof(T));
+                if (prevVisible is Folder<int> f2) parent.ParentFolderID = (T)Convert.ChangeType(f2.ID, typeof(T));
             }
 
             parent.Shareable = FileSharing.CanSetAccess(parent)
@@ -308,7 +314,12 @@ namespace ASC.Web.Files.Services.WCFService
             {
                 Total = total,
                 Entries = new ItemList<FileEntry>(entries.ToList()),
-                FolderPathParts = new ItemList<T>(breadCrumbs.Select(f => f.ID)),
+                FolderPathParts = new ItemList<object>(breadCrumbs.Select(f =>
+                {
+                    if (f is Folder<string> f1) return (object)f1.ID;
+                    if (f is Folder<int> f2) return f2.ID;
+                    return 0;
+                })),
                 FolderInfo = parent,
                 New = FileMarker.GetRootFoldersIdMarkedAsNew(parentId)
             };
@@ -1315,7 +1326,7 @@ namespace ASC.Web.Files.Services.WCFService
         {
             ErrorIf(!folders.Any() && !files.Any(), FilesCommonResource.ErrorMassage_BadRequest);
 
-            return FileOperationsManager.Download(AuthContext.CurrentAccount.ID, TenantManager.CurrentTenant, folders, files, GetHttpHeaders());
+            return FileOperationsManager.Download(AuthContext.CurrentAccount.ID, TenantManager.GetCurrentTenant(), folders, files, GetHttpHeaders());
         }
 
 
@@ -1419,7 +1430,7 @@ namespace ASC.Web.Files.Services.WCFService
             ItemList<FileOperationResult> result;
             if (foldersId.Any() || filesId.Any())
             {
-                result = FileOperationsManager.MoveOrCopy(AuthContext.CurrentAccount.ID, TenantManager.CurrentTenant, foldersId, filesId, destFolderId, ic, resolve, !deleteAfter, GetHttpHeaders());
+                result = FileOperationsManager.MoveOrCopy(AuthContext.CurrentAccount.ID, TenantManager.GetCurrentTenant(), foldersId, filesId, destFolderId, ic, resolve, !deleteAfter, GetHttpHeaders());
             }
             else
             {
@@ -1431,16 +1442,16 @@ namespace ASC.Web.Files.Services.WCFService
 
         public ItemList<FileOperationResult> DeleteFile(string action, T fileId, bool ignoreException = false, bool deleteAfter = false, bool immediately = false)
         {
-            return FileOperationsManager.Delete(AuthContext.CurrentAccount.ID, TenantManager.CurrentTenant, new List<T>(), new List<T>() { fileId }, ignoreException, !deleteAfter, immediately, GetHttpHeaders());
+            return FileOperationsManager.Delete(AuthContext.CurrentAccount.ID, TenantManager.GetCurrentTenant(), new List<T>(), new List<T>() { fileId }, ignoreException, !deleteAfter, immediately, GetHttpHeaders());
         }
         public ItemList<FileOperationResult> DeleteFolder(string action, T folderId, bool ignoreException = false, bool deleteAfter = false, bool immediately = false)
         {
-            return FileOperationsManager.Delete(AuthContext.CurrentAccount.ID, TenantManager.CurrentTenant, new List<T>() { folderId }, new List<T>(), ignoreException, !deleteAfter, immediately, GetHttpHeaders());
+            return FileOperationsManager.Delete(AuthContext.CurrentAccount.ID, TenantManager.GetCurrentTenant(), new List<T>() { folderId }, new List<T>(), ignoreException, !deleteAfter, immediately, GetHttpHeaders());
         }
 
         public ItemList<FileOperationResult> DeleteItems(string action, List<JsonElement> files, List<JsonElement> folders, bool ignoreException = false, bool deleteAfter = false, bool immediately = false)
         {
-            return FileOperationsManager.Delete(AuthContext.CurrentAccount.ID, TenantManager.CurrentTenant, folders, files, ignoreException, !deleteAfter, immediately, GetHttpHeaders());
+            return FileOperationsManager.Delete(AuthContext.CurrentAccount.ID, TenantManager.GetCurrentTenant(), folders, files, ignoreException, !deleteAfter, immediately, GetHttpHeaders());
         }
 
         public ItemList<FileOperationResult> EmptyTrash()
@@ -1451,7 +1462,7 @@ namespace ASC.Web.Files.Services.WCFService
             var foldersId = folderDao.GetFolders(trashId).Select(f => f.ID).ToList();
             var filesId = fileDao.GetFiles(trashId).ToList();
 
-            return FileOperationsManager.Delete(AuthContext.CurrentAccount.ID, TenantManager.CurrentTenant, foldersId, filesId, false, true, false, GetHttpHeaders());
+            return FileOperationsManager.Delete(AuthContext.CurrentAccount.ID, TenantManager.GetCurrentTenant(), foldersId, filesId, false, true, false, GetHttpHeaders());
         }
 
         public ItemList<FileOperationResult> CheckConversion(ItemList<ItemList<string>> filesInfoJSON)

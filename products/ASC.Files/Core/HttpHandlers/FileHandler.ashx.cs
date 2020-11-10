@@ -289,7 +289,7 @@ namespace ASC.Web.Files
             }
             else
             {
-                await DownloadFile(context, q);
+                await DownloadFile(context, q.FirstOrDefault() ?? "");
             }
         }
 
@@ -542,25 +542,23 @@ namespace ASC.Web.Files
 
         private async Task<bool> SendStreamByChunksAsync(HttpContext context, long toRead, string title, Stream fileStream, bool flushed)
         {
-            var cl = 0;
             //context.Response.Buffer = false;
             context.Response.Headers.Add("Connection", "Keep-Alive");
+            context.Response.ContentLength = toRead;
             context.Response.Headers.Add("Content-Disposition", ContentDispositionUtil.GetHeaderValue(title));
             context.Response.ContentType = MimeMapping.GetMimeMapping(title);
 
-            var bufferSize = Convert.ToInt32(Math.Min(Convert.ToInt64(32 * 1024), toRead)); // 32KB
+            var bufferSize = Convert.ToInt32(Math.Min(32 * 1024, toRead)); // 32KB
             var buffer = new byte[bufferSize];
             while (toRead > 0)
             {
                 var length = await fileStream.ReadAsync(buffer, 0, bufferSize);
-                cl += length;
                 await context.Response.Body.WriteAsync(buffer, 0, length, context.RequestAborted);
                 await context.Response.Body.FlushAsync();
                 flushed = true;
                 toRead -= length;
             }
 
-            context.Response.Headers.Add("Content-Length", cl.ToString(CultureInfo.InvariantCulture));
 
             return flushed;
         }
@@ -575,7 +573,7 @@ namespace ASC.Web.Files
             }
             else
             {
-                await StreamFile(context, q);
+                await StreamFile(context, q.FirstOrDefault() ?? "");
             }
         }
 
@@ -864,7 +862,7 @@ namespace ASC.Web.Files
             }
             else
             {
-                await DifferenceFile(context, q);
+                await DifferenceFile(context, q.FirstOrDefault() ?? "");
             }
         }
 
@@ -1107,7 +1105,7 @@ namespace ASC.Web.Files
             }
             else
             {
-                Redirect(context, q, q1);
+                Redirect(context, q.FirstOrDefault() ?? "", q1.FirstOrDefault() ?? "");
             }
         }
 

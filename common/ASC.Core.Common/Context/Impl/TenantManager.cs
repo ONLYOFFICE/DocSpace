@@ -93,33 +93,7 @@ namespace ASC.Core
     [Scope(typeof(ConfigureTenantManager))]
     public class TenantManager
     {
-        private class TenantHolder
-        {
-            public Tenant Tenant;
-        }
-
-        private static readonly AsyncLocal<TenantHolder> currentTenant = new AsyncLocal<TenantHolder>();
-
-        public Tenant CurrentTenant
-        {
-            get
-            {
-                return currentTenant.Value?.Tenant;
-            }
-            set
-            {
-                var holder = currentTenant.Value;
-                if (holder != null)
-                {
-                    holder.Tenant = null;
-                }
-
-                if (value != null)
-                {
-                    currentTenant.Value = new TenantHolder { Tenant = value };
-                }
-            }
-        }
+        private Tenant CurrentTenant { get; set; }
 
         public const string CURRENT_TENANT = "CURRENT_TENANT";
         internal ITenantService TenantService { get; set; }
@@ -253,11 +227,12 @@ namespace ASC.Core
 
         public Tenant GetCurrentTenant(bool throwIfNotFound, HttpContext context)
         {
-            Tenant tenant = null;
             if (CurrentTenant != null)
             {
                 return CurrentTenant;
             }
+
+            Tenant tenant = null;
 
             if (context != null)
             {
@@ -268,10 +243,7 @@ namespace ASC.Core
                     context.Items[CURRENT_TENANT] = tenant;
                 }
             }
-            if (tenant == null)
-            {
-                tenant = CallContext.GetData(CURRENT_TENANT) as Tenant;
-            }
+
             if (tenant == null && throwIfNotFound)
             {
                 throw new Exception("Could not resolve current tenant :-(.");

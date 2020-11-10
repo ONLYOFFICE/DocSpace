@@ -468,42 +468,41 @@ namespace ASC.Files.Thirdparty.ProviderDao
 
         public void ReassignFiles(string[] fileIds, Guid newOwnerId)
         {
-            throw new NotImplementedException();
         }
 
         public List<File<string>> GetFiles(string[] parentIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
         {
-            throw new NotImplementedException();
+            return new List<File<string>>();
         }
 
         public IEnumerable<File<string>> Search(string text, bool bunch)
         {
-            throw new NotImplementedException();
+            return null;
         }
 
         public bool IsExistOnStorage(File<string> file)
         {
-            throw new NotImplementedException();
+            return true;
         }
 
         public void SaveEditHistory(File<string> file, string changes, Stream differenceStream)
         {
-            throw new NotImplementedException();
+            //Do nothing
         }
 
         public List<EditHistory> GetEditHistory(DocumentServiceHelper documentServiceHelper, string fileId, int fileVersion)
         {
-            throw new NotImplementedException();
+            return null;
         }
 
         public Stream GetDifferenceStream(File<string> file)
         {
-            throw new NotImplementedException();
+            return null;
         }
 
         public bool ContainChanges(string fileId, int fileVersion)
         {
-            throw new NotImplementedException();
+            return false;
         }
 
         public string GetUniqFilePath(File<string> file, string fileTitle)

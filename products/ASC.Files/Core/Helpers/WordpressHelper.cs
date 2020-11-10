@@ -28,7 +28,9 @@ using System;
 
 using ASC.Common;
 using ASC.Common.Logging;
+using ASC.Core.Common.Configuration;
 using ASC.FederatedLogin;
+using ASC.FederatedLogin.Helpers;
 using ASC.FederatedLogin.LoginProviders;
 using ASC.Web.Files.ThirdPartyApp;
 
@@ -41,13 +43,15 @@ namespace ASC.Web.Files.Helpers
     {
         public ILog Log { get; set; }
         private TokenHelper TokenHelper { get; }
+        public ConsumerFactory ConsumerFactory { get; }
 
         public const string AppAttr = "wordpress";
 
-        public WordpressToken(IOptionsMonitor<ILog> optionsMonitor, TokenHelper tokenHelper)
+        public WordpressToken(IOptionsMonitor<ILog> optionsMonitor, TokenHelper tokenHelper, ConsumerFactory consumerFactory)
         {
             Log = optionsMonitor.CurrentValue;
             TokenHelper = tokenHelper;
+            ConsumerFactory = consumerFactory;
         }
 
         public OAuth20Token GetToken()
@@ -59,6 +63,14 @@ namespace ASC.Web.Files.Helpers
         {
             if (token == null) throw new ArgumentNullException("token");
             TokenHelper.SaveToken(new Token(token, AppAttr));
+        }
+
+        public OAuth20Token SaveTokenFromCode(string code)
+        {
+            var token = OAuth20TokenHelper.GetAccessToken<WordpressLoginProvider>(ConsumerFactory, code);
+            if (token == null) throw new ArgumentNullException("token");
+            TokenHelper.SaveToken(new Token(token, AppAttr));
+            return token;
         }
 
         public void DeleteToken(OAuth20Token token)

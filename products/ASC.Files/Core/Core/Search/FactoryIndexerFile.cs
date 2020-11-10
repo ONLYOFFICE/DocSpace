@@ -96,7 +96,6 @@ namespace ASC.Web.Files.Core.Search
                     {
                         TenantManager.SetCurrentTenant(r.TenantId);
                         fileDao.InitDocument(r);
-                        TenantManager.CurrentTenant = null;
                     });
                     Index(data);
                 }
