@@ -89,6 +89,7 @@ import {
   getTooltipLabel,
   getIsPrivacyFolder,
   getPrivacyInstructionsLink,
+  getIconOfDraggedFile,
 } from "../../../../../store/files/selectors";
 import { SharingPanel, OperationsPanel } from "../../../../panels";
 const {
@@ -123,14 +124,28 @@ const CustomTooltip = styled.div`
   z-index: 150;
   background: #fff;
   border-radius: 6px;
+  font-size: 15px;
+  font-weight: 600;
   -moz-border-radius: 6px;
   -webkit-border-radius: 6px;
   box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.13);
   -moz-box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.13);
   -webkit-box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.13);
+
+  .tooltip-moved-obj-wrapper {
+    display: flex;
+    align-items: center;
+  }
+  .tooltip-moved-obj-icon {
+    margin-right: 6px;
+  }
+  .tooltip-moved-obj-extension {
+    color: #a3a9ae;
+  }
 `;
 
 const SimpleFilesRow = styled(Row)`
+  margin-top: -2px;
   ${(props) =>
     !props.contextOptions &&
     `
@@ -138,9 +153,9 @@ const SimpleFilesRow = styled(Row)`
         width: 0px;
       }
   `}
-
   .share-button-icon {
-    margin-right: 8px;
+    margin-right: 7px;
+    margin-top: -1px;
   }
 
   .share-button,
@@ -149,6 +164,17 @@ const SimpleFilesRow = styled(Row)`
     div {
       color: "#657077";
     }
+  }
+
+  @media (max-width: 1312px) {
+    .share-button {
+      padding-top: 3px;
+    }
+  }
+
+  .styled-element {
+    margin-right: 1px;
+    margin-bottom: 2px;
   }
 `;
 
@@ -661,7 +687,7 @@ class SectionBodyContent extends React.Component {
           return {
             key: option,
             label: t("MoveTo"),
-            icon: "DownloadAsIcon",
+            icon: "MoveToIcon",
             onClick: this.onMoveAction,
             disabled: false,
           };
@@ -757,7 +783,7 @@ class SectionBodyContent extends React.Component {
       <ReactSVG
         beforeInjection={(svg) => {
           svg.setAttribute("style", "margin-top: 4px");
-          isEdit && svg.setAttribute("style", "margin: 4px 0 0 24px");
+          isEdit && svg.setAttribute("style", "margin: 4px 0 0 28px");
         }}
         src={item.icon}
         loading={this.svgLoader}
@@ -1420,7 +1446,7 @@ class SectionBodyContent extends React.Component {
         as="span"
         title={this.props.t("Share")}
         fontSize="12px"
-        fontWeight={400}
+        fontWeight={600}
         color="#A3A9AE"
         display="inline-flex"
         onClick={this.onClickShare}
@@ -1429,11 +1455,43 @@ class SectionBodyContent extends React.Component {
           className="share-button-icon"
           color="#a3a9ae"
           hoverColor="#657077"
-          size={16}
+          size={18}
           iconName="CatalogSharedIcon"
         />
         {this.props.t("Share")}
       </Text>
+    );
+  };
+
+  renderFileMoveTooltip = () => {
+    const { selection, iconOfDraggedFile } = this.props;
+    const { title } = selection[0];
+
+    const reg = /^([^\\]*)\.(\w+)/;
+    const matches = title.match(reg);
+
+    let nameOfMovedObj, fileExtension;
+    if (matches) {
+      nameOfMovedObj = matches[1];
+      fileExtension = matches.pop();
+    } else {
+      nameOfMovedObj = title;
+    }
+
+    return (
+      <div className="tooltip-moved-obj-wrapper">
+        {iconOfDraggedFile ? (
+          <img
+            className="tooltip-moved-obj-icon"
+            src={`${iconOfDraggedFile}`}
+            alt=""
+          />
+        ) : null}
+        {nameOfMovedObj}
+        {fileExtension ? (
+          <span className="tooltip-moved-obj-extension">.{fileExtension}</span>
+        ) : null}
+      </div>
     );
   };
 
@@ -1477,6 +1535,16 @@ class SectionBodyContent extends React.Component {
       setIsLoading,
       isLoading,
     };
+
+    let fileMoveTooltip;
+    if (dragging) {
+      fileMoveTooltip = tooltipValue
+        ? selection.length === 1 &&
+          tooltipValue.label === "TooltipElementMoveMessage"
+          ? this.renderFileMoveTooltip()
+          : t(tooltipValue.label, { element: tooltipValue.filesCount })
+        : "";
+    }
 
     const items = filesList;
 
@@ -1534,11 +1602,7 @@ class SectionBodyContent extends React.Component {
             onClose={this.onCopyAction}
           />
         )}
-        <CustomTooltip ref={this.tooltipRef}>
-          {tooltipValue
-            ? t(tooltipValue.label, { element: tooltipValue.filesCount })
-            : ""}
-        </CustomTooltip>
+        <CustomTooltip ref={this.tooltipRef}>{fileMoveTooltip}</CustomTooltip>
 
         {viewAs === "tile" ? (
           <TileContainer
@@ -1779,6 +1843,7 @@ const mapStateToProps = (state) => {
     viewAs: getViewAs(state),
     viewer: getCurrentUser(state),
     tooltipValue: getTooltipLabel(state),
+    iconOfDraggedFile: getIconOfDraggedFile(state)(state),
   };
 };
 

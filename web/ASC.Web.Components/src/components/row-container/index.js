@@ -15,6 +15,7 @@ const StyledRowContainer = styled.div`
         : "100%"
       : "auto"};
   position: relative;
+  margin-top:-18px;
 `;
 
 class RowContainer extends React.PureComponent {

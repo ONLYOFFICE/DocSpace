@@ -9,7 +9,7 @@ import { tablet } from "../../utils/device";
 const StyledRow = styled.div`
   cursor: default;
 
-  min-height: 50px;
+  min-height: 47px;
   width: 100%;
   border-bottom: 1px solid #eceef1;
 
@@ -48,8 +48,6 @@ const StyledElement = styled.div`
 `;
 
 const StyledContentElement = styled.div`
-  margin-right: 8px;
-  margin-left: 8px;
   margin-top: 6px;
   user-select: none;
 `;
@@ -57,9 +55,24 @@ const StyledContentElement = styled.div`
 const StyledOptionButton = styled.div`
   display: flex;
   width: ${(props) => props.spacerWidth && props.spacerWidth};
+  justify-content: flex-end;
 
   .expandButton > div:first-child {
-    padding: 8px 8px 8px 8px;
+    padding: 8px 0px 9px 7px;
+
+    margin-right: 0px;
+
+    @media (min-width: 1024px) {
+      margin-right: -1px;
+    }
+    @media (max-width: 516px) {
+      padding-left: 10px;
+    }
+  }
+
+  //margin-top: -1px;
+  @media ${tablet} {
+    margin-top: unset;
   }
 `;
 
@@ -142,7 +155,9 @@ class Row extends React.Component {
             />
           </StyledCheckbox>
         )}
-        {renderElement && <StyledElement>{element}</StyledElement>}
+        {renderElement && (
+          <StyledElement className="styled-element">{element}</StyledElement>
+        )}
         <StyledContent className="row_content">{children}</StyledContent>
         <StyledOptionButton
           className="row_context-menu-wrapper"

@@ -46,11 +46,15 @@ const Body = styled.div`
   flex-direction: column;
 
   .context-menu-button_link {
-    margin-top: 16px;
+    margin-top: 17px;
+  }
+
+  .context-menu-button_link-header{
+    text-transform:uppercase;
   }
 
   .context-menu-button_link-header:not(:first-child) {
-    margin-top: 32px;
+    margin-top: 50px;
   }
 `;
 

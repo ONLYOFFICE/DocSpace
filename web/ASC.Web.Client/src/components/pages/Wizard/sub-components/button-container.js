@@ -9,6 +9,7 @@ const { tablet } = utils.device;
 const StyledContainer = styled(Box)`
   width: 311px;
   margin: 0 auto;
+  margin-top: 1px;
 
   @media ${tablet} {
     width: 100%;

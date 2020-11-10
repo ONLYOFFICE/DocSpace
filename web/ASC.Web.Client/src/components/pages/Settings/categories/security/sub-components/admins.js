@@ -440,7 +440,7 @@ class PureAdminsSettings extends Component {
                       {admins.map((user) => {
                         const element = (
                           <Avatar
-                            size="small"
+                            size="min"
                             role={getUserRole(user)}
                             userName={user.displayName}
                             source={user.avatar}

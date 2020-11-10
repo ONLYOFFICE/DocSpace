@@ -392,7 +392,7 @@ class SectionBodyContent extends React.PureComponent {
       <>
         <Consumer>
           {(context) => (
-            <RowContainer useReactWindow={false}>
+            <RowContainer className="people-row" useReactWindow={false}>
               {peopleList.map((man) => {
                 const {
                   checked,
@@ -415,7 +415,7 @@ class SectionBodyContent extends React.PureComponent {
 
                 const element = (
                   <Avatar
-                    size="small"
+                    size="min"
                     role={role}
                     userName={displayName}
                     source={avatar}
