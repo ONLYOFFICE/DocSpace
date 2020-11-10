@@ -169,13 +169,15 @@ class FilesRowContent extends React.PureComponent {
 
     if (itemTitle.trim() === "") return this.completeAction(itemId);
 
+    let tab = item.fileExst ? window.open("about:blank", "_blank") : null;
+
     !item.fileExst
       ? createFolder(item.parentId, itemTitle)
           .then(() => this.completeAction(itemId))
           .finally(() => setIsLoading(false))
       : createFile(item.parentId, `${itemTitle}.${item.fileExst}`)
           .then((file) => {
-            openDocEditor(file.id);
+            openDocEditor(file.id, tab, file.webUrl);
             this.completeAction(itemId);
           })
           .finally(() => setIsLoading(false));

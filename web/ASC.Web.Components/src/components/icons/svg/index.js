@@ -198,6 +198,8 @@ import OrigRecentIcon from "./catalog.recent.react.svg";
 import OrigCatalogPrivateRoomIcon from "./catalog.private.react.svg";
 import OrigMoveToIcon from "./move.react.svg";
 
+import OrigIntegrationIcon from "./integration.react.svg";
+
 export const AZSortingIcon = createStyledIcon(
   OrigAZSortingIcon,
   "AZSortingIcon"
@@ -769,3 +771,7 @@ export const CatalogPrivateRoomIcon = createStyledIcon(
 );
 
 export const MoveToIcon = createStyledIcon(OrigMoveToIcon, "MoveToIcon");
+export const IntegrationIcon = createStyledIcon(
+  OrigIntegrationIcon,
+  "IntegrationIcon"
+);
