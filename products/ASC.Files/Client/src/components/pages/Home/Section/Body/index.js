@@ -451,12 +451,16 @@ class SectionBodyContent extends React.Component {
     return window.open(this.props.selection[0].viewUrl, "_blank");
   };
 
-  openDocEditor = (id) => {
+  openDocEditor = (id, tab = null, url = null) => {
     return this.props
       .addFileToRecentlyViewed(id)
       .then(() => console.log("Pushed to recently viewed"))
       .catch((e) => console.error(e))
-      .finally(window.open(`./doceditor?fileId=${id}`, "_blank"));
+      .finally(
+        tab
+          ? (tab.location = url)
+          : window.open(`./doceditor?fileId=${id}`, "_blank")
+      );
   };
 
   onClickLinkEdit = (e) => {

@@ -21,7 +21,6 @@ const StyledHeader = styled.div`
   grid-template-columns: 1fr;
   grid-template-rows: min-content min-content;
   grid-row-gap: 8px;
-
   .payments-header {
     font-style: normal;
     line-height: 32px;
@@ -30,7 +29,6 @@ const StyledHeader = styled.div`
     margin-bottom: 40px;
     line-height: 20px;
   }
-
   @media (max-width: 632px) {
     .payments-header-additional_support {
       margin-bottom: 16px;
