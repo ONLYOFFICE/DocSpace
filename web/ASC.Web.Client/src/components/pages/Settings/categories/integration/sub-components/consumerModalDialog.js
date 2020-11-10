@@ -18,7 +18,7 @@ import {
 } from "../../../../../../store/settings/selectors";
 import { store as commonStore } from "asc-web-common";
 
-const { getUrlSupport } = commonStore.auth.selectors;
+const { getUrlSupport, getUrlAuthKeys } = commonStore.auth.selectors;
 
 class ConsumerModalDialog extends React.Component {
   constructor(props) {
@@ -103,7 +103,7 @@ class ConsumerModalDialog extends React.Component {
             color="#316DAA"
             isHovered={false}
             target="_blank"
-            href={`https://helpcenter.onlyoffice.com/server/windows/community/authorization-keys.aspx#${this.props.selectedConsumer.name}`}
+            href={`${this.props.urlAuthKeys}#${this.props.selectedConsumer.name}`}
           >
             Help Center
           </Link>{" "}
@@ -220,6 +220,7 @@ const mapStateToProps = (state) => {
     selectedConsumer: getSelectedConsumer(state),
     consumerInstruction: getConsumerInstruction(state),
     urlSupport: getUrlSupport(state),
+    urlAuthKeys: getUrlAuthKeys(state),
   };
 };
 
