@@ -485,7 +485,6 @@ FilterBlock.propTypes = {
   hideFilterItems: PropTypes.array,
   iconSize: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   isDisabled: PropTypes.bool,
-  isResizeUpdate: PropTypes.bool,
   onDeleteFilterItem: PropTypes.func,
   onRender: PropTypes.func,
   openFilterItems: PropTypes.array,

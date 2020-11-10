@@ -89,7 +89,6 @@ class FilterInput extends React.Component {
     const { sortDirection, sortId, inputValue } = selectedFilterData;
     const sortData = getSortData();
 
-    this.isResizeUpdate = false;
     this.minWidth = 190;
 
     const filterValues = selectedFilterData ? this.getDefaultFilterData() : [];
@@ -108,6 +107,7 @@ class FilterInput extends React.Component {
       openFilterItems: [],
       hideFilterItems: [],
       needUpdateFilter: false,
+      windowWidth: 0,
     };
 
     this.searchWrapper = React.createRef();
@@ -125,6 +125,7 @@ class FilterInput extends React.Component {
   }
   componentDidUpdate(prevProps, prevState) {
     const { selectedFilterData } = this.props;
+    const { filterValues, searchText } = this.state;
 
     if (
       this.props.needForUpdate &&
@@ -138,7 +139,22 @@ class FilterInput extends React.Component {
     }
 
     if (
-      !isEqual(prevProps.selectedFilterData, selectedFilterData) &&
+      (!isEqual(selectedFilterData.filterValues, filterValues) ||
+        selectedFilterData.inputValue !== searchText) &&
+      this.state.windowWidth !== prevState.windowWidth
+    ) {
+      const filterValues = this.getDefaultFilterData();
+      this.setState({
+        filterValues: filterValues,
+        searchText: selectedFilterData.inputValue,
+      });
+    }
+
+    if (
+      !isEqual(
+        prevProps.selectedFilterData.filterValues,
+        selectedFilterData.filterValues
+      ) &&
       selectedFilterData.filterValues &&
       (selectedFilterData.filterValues.length === 0 ||
         (selectedFilterData.filterValues.length === 1 &&
@@ -179,7 +195,9 @@ class FilterInput extends React.Component {
   }
 
   resize = () => {
-    this.isResizeUpdate = true;
+    this.setState({
+      windowWidth: window.innerWidth,
+    });
     this.updateFilter();
   };
   onChangeSortDirection = (key) => {
@@ -476,10 +494,6 @@ class FilterInput extends React.Component {
     );
   };
   onFilterRender = () => {
-    if (this.isResizeUpdate) {
-      this.isResizeUpdate = false;
-    }
-
     this.setState({
       needUpdateFilter: false,
     });
@@ -733,7 +747,6 @@ class FilterInput extends React.Component {
                 getFilterData={getFilterData}
                 onClickFilterItem={this.onClickFilterItem}
                 onDeleteFilterItem={this.onDeleteFilterItem}
-                isResizeUpdate={this.isResizeUpdate}
                 onFilterRender={this.onFilterRender}
                 isDisabled={isDisabled}
                 columnCount={filterColumnCount}
