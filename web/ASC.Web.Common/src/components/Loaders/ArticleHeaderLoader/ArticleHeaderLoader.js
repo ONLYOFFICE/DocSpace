@@ -1,12 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
-import styled from "styled-components";
+import StyledContainer from "./StyledArticleHeader";
 import RectangleLoader from "../RectangleLoader/index";
-
-const StyledContainer = styled.div`
-  padding-top: 13px;
-  padding-bottom: 10px;
-`;
 
 const ArticleHeaderLoader = ({ id, className, style, ...rest }) => {
   const {
