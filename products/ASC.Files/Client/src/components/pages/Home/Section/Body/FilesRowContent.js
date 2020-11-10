@@ -62,7 +62,7 @@ const SimpleFilesRowContent = styled(RowContent)`
   .badge {
     height: 14px;
     width: 14px;
-    margin-right: 8px;
+    margin-right: 6px;
   }
 
   .badges {
@@ -91,6 +91,7 @@ const okIcon = (
     size="scale"
     isfill={true}
     color="#A3A9AE"
+    hoveredcolor="#657077"
   />
 );
 
@@ -100,6 +101,7 @@ const cancelIcon = (
     size="scale"
     isfill={true}
     color="#A3A9AE"
+    hoveredcolor="#657077"
   />
 );
 

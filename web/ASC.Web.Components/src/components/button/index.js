@@ -152,14 +152,14 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
             ? "3px 20px 5px 20px"
             : "3px 5px 5px 5px"
           : props.label
-          ? "4.5px 12px 4.5px 12px"
+          ? "4px 12px 5px 12px"
           : "0px"
         : props.icon
         ? props.label
           ? "3px 20px 5px 20px"
           : "3px 5px 5px 5px"
         : props.label
-        ? "4.5px 12px 4.5px 12px"
+        ? "4px 12px 5px 12px"
         : "0px"))};
 
   ${(props) => (props.minwidth ? `min-width: ${props.minwidth};` : null)}
@@ -252,13 +252,19 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
     `}
 `;
 
-const Icon = ({ size, primary, icon }) => (
+const Icon = ({ size, primary, icon, isHovered }) => (
   <div className="btnIcon">
     {icon &&
       React.cloneElement(icon, {
         isfill: true,
         size: size === "large" ? "large" : size === "big" ? "medium" : "small",
-        color: primary ? "#FFFFFF" : "#333333",
+        color: icon.props.color
+          ? isHovered
+            ? icon.props.hoveredcolor
+            : icon.props.color
+          : primary
+          ? "#FFFFFF"
+          : "#333333",
       })}
   </div>
 );
@@ -274,8 +280,8 @@ Icon.defaultProps = {
 };
 
 const Button = React.forwardRef((props, ref) => {
-  const { primary, size, isLoading, icon, label } = props;
-  const iconProps = { primary, size, icon };
+  const { primary, size, isLoading, icon, label, isHovered } = props;
+  const iconProps = { primary, size, icon, isHovered };
   return (
     <StyledButton innerRef={ref} {...props}>
       {isLoading || icon ? (

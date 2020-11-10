@@ -37,7 +37,9 @@ const ToggleButtonContainer = styled.label`
           `
         : ""}
   }
-
+  .toggle-button {
+    min-width: 28px;
+  }
   .toggleText {
     margin-top: 2px;
   }
@@ -52,7 +54,9 @@ const HiddenInput = styled.input`
 
 const ToggleIcon = ({ isChecked }) => {
   const iconName = isChecked ? "ToggleButtonCheckedIcon" : "ToggleButtonIcon";
-  return <>{React.createElement(Icons[iconName])}</>;
+  return (
+    <>{React.createElement(Icons[iconName], { className: "toggle-button" })}</>
+  );
 };
 
 class ToggleButton extends Component {
