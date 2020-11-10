@@ -131,7 +131,7 @@ class ArticleBodyContent extends React.Component {
               onTreeDrop={onTreeDrop}
             />
             <TreeSettings />
-            КНОПКА
+            Add account
           </>
         )}
       </>

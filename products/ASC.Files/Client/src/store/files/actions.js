@@ -612,6 +612,32 @@ export function setEnableThirdParty(data, setting) {
   };
 }
 
+export function deleteThirdParty(id) {
+  return files.deleteThirdParty(id);
+}
+
+export function saveThirdParty(
+  url,
+  login,
+  password,
+  token,
+  isCorporate,
+  customerTitle,
+  providerKey,
+  providerId
+) {
+  return files.saveThirdParty(
+    url,
+    login,
+    password,
+    token,
+    isCorporate,
+    customerTitle,
+    providerKey,
+    providerId
+  );
+}
+
 export function setForceSave(data, setting) {
   return (dispatch) => {
     return files

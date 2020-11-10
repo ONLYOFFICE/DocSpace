@@ -1,4 +1,5 @@
 import React from "react";
+import { connect } from "react-redux";
 import styled from "styled-components";
 import {
   Box,
@@ -8,12 +9,20 @@ import {
   Button,
   Row,
   Icons,
+  toastr,
 } from "asc-web-components";
+import { Loaders, store } from "asc-web-common";
+import { withTranslation } from "react-i18next";
 import EmptyFolderContainer from "../../../Home/Section/Body/EmptyFolderContainer";
 import { createI18N } from "../../../../../helpers/i18n";
 import { Trans } from "react-i18next";
-import { getConnectedCloud } from "../../../../../store/files/actions";
+import {
+  getConnectedCloud,
+  deleteThirdParty,
+} from "../../../../../store/files/actions";
 import ConnectedDialog from "./ConnectedDialog";
+
+const { isAdmin } = store.auth.selectors;
 
 const i18n = createI18N({
   page: "SectionBodyContent",
@@ -53,26 +62,19 @@ const ServiceItem = (props) => {
   const capabilityAuthKey = capability[1];
   const capabilityLink = capability[2] ? capability[2] : "";
 
-  /*
-   <img
-   src="images/services/logo_nextcloud.svg"
-   alt=""
-   {...imageProps}
-   />
-   <img
-   src="images/services/logo_owncloud.svg"
-   alt=""
-   {...imageProps}
-   />
-*/
+  const dataProps = {
+    "data-link": capabilityLink,
+    "data-auth_key": capabilityAuthKey,
+    "data-title": capabilityName,
+  };
+
   switch (capabilityName) {
     case "Box":
       return (
         <img
           src="images/services/logo_box.svg"
-          data-link={`${capabilityLink}`}
-          data-title={`${capabilityName}`}
           alt=""
+          {...dataProps}
           {...rest}
         />
       );
@@ -81,9 +83,8 @@ const ServiceItem = (props) => {
       return (
         <img
           src="images/services/logo_dropbox.svg"
-          data-link={`${capabilityLink}`}
-          data-title={`${capabilityName}`}
           alt=""
+          {...dataProps}
           {...rest}
         />
       );
@@ -92,9 +93,8 @@ const ServiceItem = (props) => {
       return (
         <img
           src="images/services/logo_google-drive.svg"
-          data-link={`${capabilityLink}`}
-          data-title={`${capabilityName}`}
           alt=""
+          {...dataProps}
           {...rest}
         />
       );
@@ -103,9 +103,8 @@ const ServiceItem = (props) => {
       return (
         <img
           src="images/services/logo_onedrive.svg"
-          data-link={`${capabilityLink}`}
-          data-title={`${capabilityName}`}
           alt=""
+          {...dataProps}
           {...rest}
         />
       );
@@ -115,16 +114,14 @@ const ServiceItem = (props) => {
         <>
           <img
             src="images/services/logo_onedrive-for-business.svg"
-            data-link={`${capabilityLink}`}
-            data-title={`${capabilityName}`}
             alt=""
+            {...dataProps}
             {...rest}
           />
           <img
             src="images/services/logo_sharepoint.svg"
-            data-link={`${capabilityLink}`}
-            data-title={`${capabilityName}`}
             alt=""
+            {...dataProps}
             {...rest}
           />
         </>
@@ -134,9 +131,8 @@ const ServiceItem = (props) => {
       return (
         <img
           src="images/services/logo_kdrive.svg"
-          data-link={`${capabilityLink}`}
-          data-title={`${capabilityName}`}
           alt=""
+          {...dataProps}
           {...rest}
         />
       );
@@ -145,23 +141,31 @@ const ServiceItem = (props) => {
       return (
         <img
           src="images/services/logo_yandex_ru.svg"
-          data-link={`${capabilityLink}`}
-          data-title={`${capabilityName}`}
           alt=""
+          {...dataProps}
           {...rest}
         />
       );
 
     case "WebDav":
       return (
-        <Text
-          data-link={`${capabilityLink}`}
-          data-title={`${capabilityName}`}
-          {...rest}
-          className="service-item service-text"
-        >
-          {t("ConnextOtherAccount")}
-        </Text>
+        <>
+          <img
+            src="images/services/logo_nextcloud.svg"
+            alt=""
+            {...dataProps}
+            {...rest}
+          />
+          <img
+            src="images/services/logo_owncloud.svg"
+            alt=""
+            {...dataProps}
+            {...rest}
+          />
+          <Text {...dataProps} {...rest} className="service-item service-text">
+            {t("ConnextOtherAccount")}
+          </Text>
+        </>
       );
 
     default:
@@ -176,12 +180,15 @@ class ConnectClouds extends React.Component {
     this.state = {
       connectDialogVisible: false,
       showAccountSettingDialog: false,
+      showDeleteDialog: false,
       providers: [],
       capabilities: [],
       loginValue: "",
       passwordValue: "",
       folderNameValue: "",
-      selectedService: "",
+      selectedServiceData: null,
+      removeItemId: null,
+      providersLoading: true,
     };
   }
 
@@ -190,16 +197,25 @@ class ConnectClouds extends React.Component {
       this.setState({
         providers: res.providers,
         capabilities: res.capabilities,
+        providersLoading: false,
       });
     });
   }
 
   onShowService = (e) => {
+    const selectedServiceData = e.currentTarget.dataset;
     const showAccountSettingDialog = !e.currentTarget.dataset.link;
+    if (!showAccountSettingDialog) {
+      window.open(
+        selectedServiceData.link,
+        selectedServiceData.title,
+        "width=1020,height=600"
+      );
+    }
     this.setState({
       connectDialogVisible: !this.state.connectDialogVisible,
-      selectedService: e.currentTarget.dataset.title,
       showAccountSettingDialog,
+      selectedServiceData,
     });
   };
 
@@ -210,7 +226,46 @@ class ConnectClouds extends React.Component {
   onShowAccountSettingDialog = () => {
     this.setState({
       showAccountSettingDialog: !this.state.showAccountSettingDialog,
+      selectedServiceData: null,
     });
+  };
+
+  onShowDeleteDialog = (e) => {
+    const removeItemId = e.currentTarget.dataset.id;
+
+    this.setState({
+      showDeleteDialog: !this.state.showDeleteDialog,
+      removeItemId,
+    });
+  };
+
+  onChangeThirdPartyInfo = (e) => {
+    const key = e.currentTarget.dataset.key;
+    const capabilitiesItem = this.state.capabilities.find((x) => x[0] === key);
+    const providerItem = this.state.providers.find(
+      (x) => x.provider_key === key
+    );
+
+    const selectedServiceData = {
+      title: capabilitiesItem[0],
+      auth_key: capabilitiesItem[1],
+      link: capabilitiesItem[2],
+      corporate: providerItem.corporate,
+      provider_id: providerItem.provider_id,
+      provider_key: key,
+    };
+    this.setState({ selectedServiceData, showAccountSettingDialog: true });
+  };
+
+  onDeleteThirdParty = () => {
+    const id = this.state.removeItemId;
+    const providers = this.state.providers.filter((x) => x.id === id);
+    deleteThirdParty(+id)
+      .then(() => this.setState({ showDeleteDialog: false, providers }))
+      .catch((err) => {
+        toastr(err);
+        this.setState({ showDeleteDialog: false });
+      });
   };
 
   render() {
@@ -219,7 +274,9 @@ class ConnectClouds extends React.Component {
       providers,
       capabilities,
       showAccountSettingDialog,
-      selectedService,
+      showDeleteDialog,
+      selectedServiceData,
+      providersLoading,
     } = this.state;
     const { t, isAdmin } = this.props;
 
@@ -230,11 +287,6 @@ class ConnectClouds extends React.Component {
       color: "#555f65",
       className: "empty-folder_link",
       display: "flex",
-    };
-
-    const imageProps = {
-      onClick: this.onShowService,
-      className: "service-item",
     };
 
     const buttons = (
@@ -266,16 +318,18 @@ class ConnectClouds extends React.Component {
             {providers.map((item, index) => {
               return (
                 <Row
-                  key={index} //item.provider.id
+                  key={index}
                   element={<Icons.NavLogoIcon size="big" />}
                   contextOptions={[
                     {
-                      label: "Change connection settings",
-                      onClick: () => console.log("Change connection settings"),
+                      "data-key": item.provider_key,
+                      label: t("ThirdPartyInfo"),
+                      onClick: this.onChangeThirdPartyInfo,
                     },
                     {
-                      label: "Disconnect third party",
-                      onClick: () => console.log("Disconnect third party"),
+                      "data-id": item.provider_id,
+                      label: t("DeleteThirdParty"),
+                      onClick: this.onShowDeleteDialog,
                     },
                   ]}
                 >
@@ -314,6 +368,8 @@ class ConnectClouds extends React.Component {
               );
             })}
           </>
+        ) : providersLoading ? (
+          <Loaders.Rows />
         ) : (
           <EmptyFolderContainer
             headerText={t("ConnectAccounts")}
@@ -351,7 +407,8 @@ class ConnectClouds extends React.Component {
                 {capabilities.map((capability, key) => (
                   <ServiceItem
                     capability={capability}
-                    {...imageProps}
+                    onClick={this.onShowService}
+                    className="service-item"
                     t={t}
                     key={key}
                   />
@@ -360,18 +417,42 @@ class ConnectClouds extends React.Component {
             </ModalDialog.Body>
           </ModalDialog>
         )}
-
         {showAccountSettingDialog && (
           <ConnectedDialog
             visible={showAccountSettingDialog}
             onClose={this.onShowAccountSettingDialog}
             t={t}
-            selectedService={selectedService}
+            item={selectedServiceData}
           />
+        )}
+
+        {showDeleteDialog && (
+          <ModalDialog
+            visible={showDeleteDialog}
+            zIndex={310}
+            onClose={this.onShowDeleteDialog}
+          >
+            <ModalDialog.Header>{t("DeleteThirdParty")}</ModalDialog.Header>
+            <ModalDialog.Body>{t("DeleteThirdPartyAlert")}</ModalDialog.Body>
+            <ModalDialog.Footer>
+              <Button
+                label={t("SaveButton")}
+                size="big"
+                primary
+                onClick={this.onDeleteThirdParty}
+              />
+            </ModalDialog.Footer>
+          </ModalDialog>
         )}
       </>
     );
   }
 }
 
-export default ConnectClouds;
+function mapStateToProps(state) {
+  return {
+    isAdmin: isAdmin(state),
+  };
+}
+
+export default connect(mapStateToProps, {})(withTranslation()(ConnectClouds));

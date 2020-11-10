@@ -565,6 +565,33 @@ export function getThirdPartyList() {
   return request({ method: "get", url: "files/thirdparty" });
 }
 
+export function saveThirdParty(
+  url,
+  login,
+  password,
+  token,
+  isCorporate,
+  customerTitle,
+  providerKey,
+  providerId
+) {
+  const data = {
+    url,
+    login,
+    password,
+    token,
+    isCorporate,
+    customerTitle,
+    providerKey,
+    providerId,
+  };
+  return request({ method: "post", url: "files/thirdparty", data });
+}
+
+export function deleteThirdParty(providerId) {
+  return request({ method: "delete", url: `files/thirdparty/${providerId}` });
+}
+
 export function getThirdPartyCapabilities() {
   return request({ method: "get", url: "files/thirdparty/capabilities" });
 }

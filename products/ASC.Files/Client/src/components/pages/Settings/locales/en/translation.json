@@ -38,5 +38,11 @@
   "Password": "Password",
   "ConnectFolderTitle": "Folder title",
   "ConnectMakeShared": "Make shared and put into the 'Common' folder",
-  "ConnectionUrl": "Connection url"
+  "ConnectionUrl": "Connection url",
+  "DeleteThirdParty": "Delete third party",
+  "ThirdPartyInfo": "Change the third party info",
+  "DeleteThirdPartyAlert": "Are you sure you want to remove the Google directory from the 'Documents' module? This will not affect your google.com account in any way.",
+  "Account": "Account",
+  "Reconnect": "Reconnect",
+  "Directory": "directory"
 }
