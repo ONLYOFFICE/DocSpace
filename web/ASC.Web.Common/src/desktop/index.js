@@ -1,5 +1,9 @@
+import { toastr } from "asc-web-common";
+import { setEncryptionKeys, getEncryptionAccess } from "../store/auth/actions";
+
 const domain = window.location.origin;
 const provider = "AppServer";
+
 const isDesktop = window["AscDesktopEditor"] || false;
 const isEncryptionSupport =
   (window["AscDesktopEditor"] &&
@@ -10,13 +14,38 @@ if (isDesktop && isEncryptionSupport) {
   window.cloudCryptoCommand = (type, params, callback) => {
     switch (type) {
       case "encryptionKeys":
-        return Desktop.setEncryptionKeys(params);
+        Desktop.setEncryptionKeys(params);
+        break;
       case "relogin":
-        return Desktop.relogin();
+        Desktop.relogin();
+        break;
       case "getsharingkeys":
-        return {};
+        Desktop.setAccess();
+        break;
       default:
-        return;
+        break;
+    }
+  };
+
+  window.onSystemMessage = (e) => {
+    let message = e.opMessage;
+    switch (e.type) {
+      case "operation":
+        if (!message) {
+          switch (e.opType) {
+            case 0:
+              message = "Preparing file for encryption";
+              break;
+            case 1:
+              message = "Encrypting file";
+              break;
+            default:
+              message = "Loading...";
+          }
+        }
+        return toastr.info(message);
+      default:
+        break;
     }
   };
 }
@@ -31,7 +60,10 @@ export class Desktop {
       userId,
     };
     if (isEncryptionSupport) {
-      data.cryptoEngineId = "{FFF0E1EB-13DB-4678-B67D-FF0A41DBBCEF}";
+      data.encryptionKeys.cryptoEngineId =
+        "{FFF0E1EB-13DB-4678-B67D-FF0A41DBBCEF}";
+    } else {
+      return;
     }
 
     const execCommand = window.AscDesktopEditor.execCommand(
@@ -56,6 +88,7 @@ export class Desktop {
   }
 
   static relogin() {
+    toastr.info("Encryption keys must be re-entered");
     const data = {
       domain,
       onsuccess: "reload",
@@ -80,38 +113,22 @@ export class Desktop {
     return execCommand;
   }
 
-  static setEncryptionKeys() {
-    return {
-      // publicKey: encryptionKeys.publicKey,
-      // privateKeyEnc: encryptionKeys.privateKeyEnc
+  static setEncryptionKeys(encryptionKeys) {
+    if (!encryptionKeys.publicKey || !encryptionKeys.privateKeyEnc) {
+      return toastr.info("Empty encryption keys");
+    }
+    const data = {
+      publicKey: encryptionKeys.publicKey,
+      privateKeyEnc: encryptionKeys.privateKeyEnc,
     };
+    return setEncryptionKeys(data);
   }
 
-  static setAccess() {
-    return {};
+  static setAccess(fileId) {
+    return getEncryptionAccess(fileId);
   }
 
   static encryptionUploadDialog() {
     return {};
-  }
-
-  static cloudCryptoCommand() {
-    const cryptoCommand = (window.cloudCryptoCommand = (
-      type,
-      params,
-      callback
-    ) => {
-      switch (type) {
-        case "encryptionKeys":
-          return this.setEncryptionKeys(params);
-        case "relogin":
-          return this.relogin();
-        case "getsharingkeys":
-          return {};
-        default:
-          return;
-      }
-    });
-    return cryptoCommand;
   }
 }
