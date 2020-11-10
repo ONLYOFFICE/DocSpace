@@ -600,3 +600,11 @@ export function setEncryptionKeys(keys) {
     data: keys,
   });
 }
+
+export function getEncryptionAccess(fileId) {
+  return request({
+    method: "get",
+    url: `privacyroom/access/${fileId}`,
+    data: fileId,
+  });
+}
