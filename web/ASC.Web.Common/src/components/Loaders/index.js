@@ -4,7 +4,7 @@ import Header from "./HeaderLoader/index";
 import SectionHeader from "./SectionHeaderLoader/index";
 import ArticleHeader from "./ArticleHeaderLoader/index";
 import TreeFolders from "./TreeFolderLoader/index";
-import Row from "./RowsLoader/RowLoader";
+import Row from "./RowLoader/index";
 import Rows from "./RowsLoader/index";
 import Text from "./TextLoader";
 import Filter from "./FilterLoader/index";

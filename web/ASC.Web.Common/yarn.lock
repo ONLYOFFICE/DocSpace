@@ -10807,6 +10807,11 @@ react-sizeme@^2.5.2, react-sizeme@^2.6.7:
     shallowequal "^1.1.0"
     throttle-debounce "^2.1.0"
 
+react-string-format@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/react-string-format/-/react-string-format-0.1.0.tgz#a815c2400eff74559ba72d76af50024d157d9e29"
+  integrity sha512-xkIhnh2t1YmS4r8Zz92qs0Ia8EMbBoRlMEvvMtC0sQBSxxBmBujfssSA4PYYi0w2WvJYSEktgilB+320/mlsOQ==
+
 react-svg@^11.0.9:
   version "11.1.1"
   resolved "https://registry.yarnpkg.com/react-svg/-/react-svg-11.1.1.tgz#0e9b11fbf0efc7df347d8f268e8d77fd9d022a3a"
