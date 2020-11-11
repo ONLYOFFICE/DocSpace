@@ -136,6 +136,7 @@ namespace ASC.FederatedLogin.LoginProviders
         {
             //services.TryAddScoped<DocuSignLoginProvider>();
             return services
+                .AddOAuth20TokenHelperService()
                 .AddConsumerFactoryService()
                 .AddKafkaService()
                 .AddTenantManagerService()

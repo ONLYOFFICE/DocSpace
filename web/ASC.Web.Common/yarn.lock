@@ -3126,7 +3126,7 @@ arrify@^1.0.1:
   integrity sha1-iYUI2iIm84DfkEcoRWhJwVAaSw0=
 
 "asc-web-components@file:../../packages/asc-web-components":
-  version "1.0.483"
+  version "1.0.484"
   dependencies:
     email-addresses "^3.1.0"
     html-to-react "^1.4.2"
