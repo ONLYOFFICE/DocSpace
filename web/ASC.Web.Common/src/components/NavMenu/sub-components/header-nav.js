@@ -4,7 +4,6 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import NavItem from "./nav-item";
 import ProfileActions from "./profile-actions";
-import Loaders from "../../Loaders/index";
 
 import { useTranslation } from "react-i18next";
 import { utils } from "asc-web-components";
@@ -47,7 +46,7 @@ const StyledNav = styled.nav`
   }
 `;
 const HeaderNav = React.memo(
-  ({ history, homepage, modules, user, logout, isAuthenticated, isLoaded }) => {
+  ({ history, homepage, modules, user, logout, isAuthenticated }) => {
     const { t } = useTranslation();
     const onProfileClick = useCallback(() => {
       if (homepage == "/products/people") {
@@ -100,20 +99,8 @@ const HeaderNav = React.memo(
           />
         ))}
 
-        {isLoaded && isAuthenticated ? (
+        {isAuthenticated && user ? (
           <ProfileActions userActions={getCurrentUserActions()} user={user} />
-        ) : !isLoaded && isAuthenticated ? (
-          <Loaders.Circle
-            x="34"
-            y="18"
-            radius="18"
-            width="52"
-            height="36"
-            backgroundColor="#fff"
-            foregroundColor="#fff"
-            backgroundOpacity={0.25}
-            foregroundOpacity={0.2}
-          />
         ) : (
           <></>
         )}

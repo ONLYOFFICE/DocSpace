@@ -82,8 +82,6 @@ const HeaderComponent = ({
   isNavOpened,
   currentProductId,
   toggleAside,
-  isLoaded,
-  isAuthenticated,
   ...props
 }) => {
   //console.log("Header render");
@@ -105,38 +103,29 @@ const HeaderComponent = ({
   return (
     <>
       <Header module={currentProductName}>
-        {isLoaded && isAuthenticated ? (
-          <>
-            <NavItem
-              iconName="MenuIcon"
-              badgeNumber={totalNotifications}
-              onClick={onClick}
-              noHover={true}
-            />
+        <NavItem
+          iconName="MenuIcon"
+          badgeNumber={totalNotifications}
+          onClick={onClick}
+          noHover={true}
+        />
 
-            <a className="header-logo-wrapper" href={defaultPage}>
-              <ReactSVG
-                className="header-logo-icon"
-                loading={() => (
-                  <Loaders.Rectangle
-                    width="168"
-                    height="24"
-                    backgroundColor="#fff"
-                    foregroundColor="#fff"
-                    backgroundOpacity={0.25}
-                    foregroundOpacity={0.2}
-                  />
-                )}
-                src={props.logoUrl}
+        <a className="header-logo-wrapper" href={defaultPage}>
+          <ReactSVG
+            className="header-logo-icon"
+            loading={() => (
+              <Loaders.Rectangle
+                width="168"
+                height="24"
+                backgroundColor="#fff"
+                foregroundColor="#fff"
+                backgroundOpacity={0.25}
+                foregroundOpacity={0.2}
               />
-            </a>
-          </>
-        ) : !isLoaded && isAuthenticated ? (
-          <Loaders.Header />
-        ) : (
-          <></>
-        )}
-
+            )}
+            src={props.logoUrl}
+          />
+        </a>
         <Headline className="header-module-title" type="header" color="#FFF">
           {currentProductName}
         </Headline>
