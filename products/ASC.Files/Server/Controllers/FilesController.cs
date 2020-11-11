@@ -1919,7 +1919,14 @@ namespace ASC.Api.Documents
         /// <param name="set"></param>
         /// <returns></returns>
         [Update(@"storeoriginal")]
-        public bool StoreOriginal(SettingsModel model)
+        public bool StoreOriginalFromBody([FromBody]SettingsModel model)
+        {
+            return FileStorageService.StoreOriginal(model.Set);
+        }
+
+        [Update(@"storeoriginal")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public bool StoreOriginalFromForm([FromForm]SettingsModel model)
         {
             return FileStorageService.StoreOriginal(model.Set);
         }
@@ -1949,11 +1956,17 @@ namespace ASC.Api.Documents
         /// <visible>false</visible>
         /// <returns></returns>
         [Update(@"hideconfirmconvert")]
-        public bool HideConfirmConvert(bool save)
+        public bool HideConfirmConvertFromBody([FromBody]HideConfirmConvertModel model)
         {
-            return FileStorageService.HideConfirmConvert(save);
+            return FileStorageService.HideConfirmConvert(model.Save);
         }
 
+        [Update(@"hideconfirmconvert")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public bool HideConfirmConvertFromForm([FromForm]HideConfirmConvertModel model)
+        {
+            return FileStorageService.HideConfirmConvert(model.Save);
+        }
 
         /// <summary>
         /// 
@@ -1961,7 +1974,14 @@ namespace ASC.Api.Documents
         /// <param name="set"></param>
         /// <returns></returns>
         [Update(@"updateifexist")]
-        public bool UpdateIfExist(SettingsModel model)
+        public bool UpdateIfExistFromBody([FromBody]SettingsModel model)
+        {
+            return FileStorageService.UpdateIfExist(model.Set);
+        }
+
+        [Update(@"updateifexist")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public bool UpdateIfExistFromForm([FromForm]SettingsModel model)
         {
             return FileStorageService.UpdateIfExist(model.Set);
         }
@@ -1972,7 +1992,14 @@ namespace ASC.Api.Documents
         /// <param name="set"></param>
         /// <returns></returns>
         [Update(@"changedeleteconfrim")]
-        public bool ChangeDeleteConfrim(SettingsModel model)
+        public bool ChangeDeleteConfrimFromBody([FromBody]SettingsModel model)
+        {
+            return FileStorageService.ChangeDeleteConfrim(model.Set);
+        }
+
+        [Update(@"changedeleteconfrim")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public bool ChangeDeleteConfrimFromForm([FromForm]SettingsModel model)
         {
             return FileStorageService.ChangeDeleteConfrim(model.Set);
         }
@@ -1983,7 +2010,14 @@ namespace ASC.Api.Documents
         /// <param name="set"></param>
         /// <returns></returns>
         [Update(@"storeforcesave")]
-        public bool StoreForcesave(SettingsModel model)
+        public bool StoreForcesaveFromBody([FromBody]SettingsModel model)
+        {
+            return FileStorageService.StoreForcesave(model.Set);
+        }
+
+        [Update(@"storeforcesave")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public bool StoreForcesaveFromForm([FromForm]SettingsModel model)
         {
             return FileStorageService.StoreForcesave(model.Set);
         }
@@ -1994,7 +2028,14 @@ namespace ASC.Api.Documents
         /// <param name="set"></param>
         /// <returns></returns>
         [Update(@"forcesave")]
-        public bool Forcesave(SettingsModel model)
+        public bool ForcesaveFromBody([FromBody]SettingsModel model)
+        {
+            return FileStorageService.Forcesave(model.Set);
+        }
+
+        [Update(@"forcesave")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public bool ForcesaveFromForm([FromForm]SettingsModel model)
         {
             return FileStorageService.Forcesave(model.Set);
         }
@@ -2005,7 +2046,14 @@ namespace ASC.Api.Documents
         /// <param name="set"></param>
         /// <returns></returns>
         [Update(@"thirdparty")]
-        public bool ChangeAccessToThirdparty(SettingsModel model)
+        public bool ChangeAccessToThirdpartyFromBody([FromBody]SettingsModel model)
+        {
+            return FileStorageService.ChangeAccessToThirdparty(model.Set);
+        }
+
+        [Update(@"thirdparty")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public bool ChangeAccessToThirdpartyFromForm([FromForm]SettingsModel model)
         {
             return FileStorageService.ChangeAccessToThirdparty(model.Set);
         }
@@ -2017,9 +2065,16 @@ namespace ASC.Api.Documents
         /// <category>Settings</category>
         /// <returns></returns>
         [Update(@"displayRecent")]
-        public bool DisplayRecent(bool set)
+        public bool DisplayRecentFromBody([FromBody]DisplayModel model)
         {
-            return FileStorageService.DisplayRecent(set);
+            return FileStorageService.DisplayRecent(model.Set);
+        }
+
+        [Update(@"displayRecent")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public bool DisplayRecentFromForm([FromForm]DisplayModel model)
+        {
+            return FileStorageService.DisplayRecent(model.Set);
         }
 
         /// <summary>
@@ -2029,9 +2084,16 @@ namespace ASC.Api.Documents
         /// <category>Settings</category>
         /// <returns></returns>
         [Update(@"settings/favorites")]
-        public bool DisplayFavorite(bool set)
+        public bool DisplayFavoriteFromBody([FromBody]DisplayModel model)
         {
-            return FileStorageService.DisplayFavorite(set);
+            return FileStorageService.DisplayFavorite(model.Set);
+        }
+
+        [Update(@"settings/favorites")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public bool DisplayFavoriteFromForm([FromForm]DisplayModel model)
+        {
+            return FileStorageService.DisplayFavorite(model.Set);
         }
 
         /// <summary>
@@ -2041,9 +2103,16 @@ namespace ASC.Api.Documents
         /// <category>Settings</category>
         /// <returns></returns>
         [Update(@"settings/templates")]
-        public bool DisplayTemplates(bool set)
+        public bool DisplayTemplatesFromBody([FromBody]DisplayModel model)
         {
-            return FileStorageService.DisplayTemplates(set);
+            return FileStorageService.DisplayTemplates(model.Set);
+        }
+
+        [Update(@"settings/templates")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public bool DisplayTemplatesFromForm([FromForm]DisplayModel model)
+        {
+            return FileStorageService.DisplayTemplates(model.Set);
         }
 
         /// <summary>

@@ -1541,35 +1541,56 @@ namespace ASC.Employee.Core.Controllers
         }
 
         [Update(@"reassign/terminate")]
-        public void TerminateReassign(Guid userId)
+        public void TerminateReassignFromBody([FromBody]TerminateModel model)
         {
             PermissionContext.DemandPermissions(Constants.Action_EditUser);
 
-            QueueWorkerReassign.Terminate(Tenant.TenantId, userId);
+            QueueWorkerReassign.Terminate(Tenant.TenantId, model.UserId);
+        }
+
+        [Update(@"reassign/terminate")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public void TerminateReassignFromForm([FromForm]TerminateModel model)
+        {
+            PermissionContext.DemandPermissions(Constants.Action_EditUser);
+
+            QueueWorkerReassign.Terminate(Tenant.TenantId, model.UserId);
         }
 
         [Create(@"reassign/start")]
-        public ReassignProgressItem StartReassign(Guid fromUserId, Guid toUserId, bool deleteProfile)
+        public ReassignProgressItem StartReassignFromBody([FromBody]StartReassignModel model)
+        {
+            return StartReassign(model);
+        }
+
+        [Create(@"reassign/start")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public ReassignProgressItem StartReassignFromForm([FromForm]StartReassignModel model)
+        {
+            return StartReassign(model);
+        }
+
+        private ReassignProgressItem StartReassign(StartReassignModel model)
         {
             PermissionContext.DemandPermissions(Constants.Action_EditUser);
 
-            var fromUser = UserManager.GetUsers(fromUserId);
+            var fromUser = UserManager.GetUsers(model.FromUserId);
 
             if (fromUser == null || fromUser.ID == Constants.LostUser.ID)
-                throw new ArgumentException("User with id = " + fromUserId + " not found");
+                throw new ArgumentException("User with id = " + model.FromUserId + " not found");
 
             if (fromUser.IsOwner(Tenant) || fromUser.IsMe(AuthContext) || fromUser.Status != EmployeeStatus.Terminated)
-                throw new ArgumentException("Can not delete user with id = " + fromUserId);
+                throw new ArgumentException("Can not delete user with id = " + model.FromUserId);
 
-            var toUser = UserManager.GetUsers(toUserId);
+            var toUser = UserManager.GetUsers(model.ToUserId);
 
             if (toUser == null || toUser.ID == Constants.LostUser.ID)
-                throw new ArgumentException("User with id = " + toUserId + " not found");
+                throw new ArgumentException("User with id = " + model.ToUserId + " not found");
 
             if (toUser.IsVisitor(UserManager) || toUser.Status == EmployeeStatus.Terminated)
-                throw new ArgumentException("Can not reassign data to user with id = " + toUserId);
+                throw new ArgumentException("Can not reassign data to user with id = " + model.ToUserId);
 
-            return QueueWorkerReassign.Start(Tenant.TenantId, fromUserId, toUserId, SecurityContext.CurrentAccount.ID, deleteProfile);
+            return QueueWorkerReassign.Start(Tenant.TenantId, model.FromUserId, model.ToUserId, SecurityContext.CurrentAccount.ID, model.DeleteProfile);
         }
 
         private void CheckReassignProccess(IEnumerable<Guid> userIds)
@@ -1599,25 +1620,46 @@ namespace ASC.Employee.Core.Controllers
         }
 
         [Update(@"remove/terminate")]
-        public void TerminateRemove(Guid userId)
+        public void TerminateRemoveFromBody([FromBody]TerminateModel model)
         {
             PermissionContext.DemandPermissions(Constants.Action_EditUser);
 
-            QueueWorkerRemove.Terminate(Tenant.TenantId, userId);
+            QueueWorkerRemove.Terminate(Tenant.TenantId, model.UserId);
+        }
+
+        [Update(@"remove/terminate")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public void TerminateRemoveFromForm([FromForm]TerminateModel model)
+        {
+            PermissionContext.DemandPermissions(Constants.Action_EditUser);
+
+            QueueWorkerRemove.Terminate(Tenant.TenantId, model.UserId);
         }
 
         [Create(@"remove/start")]
-        public RemoveProgressItem StartRemove(Guid userId)
+        public RemoveProgressItem StartRemoveFromBody([FromBody]TerminateModel model)
+        {
+            return StartRemove(model);
+        }
+
+        [Create(@"remove/start")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public RemoveProgressItem StartRemoveFromForm([FromForm]TerminateModel model)
+        {
+            return StartRemove(model);
+        }
+
+        private RemoveProgressItem StartRemove(TerminateModel model)
         {
             PermissionContext.DemandPermissions(Constants.Action_EditUser);
 
-            var user = UserManager.GetUsers(userId);
+            var user = UserManager.GetUsers(model.UserId);
 
             if (user == null || user.ID == Constants.LostUser.ID)
-                throw new ArgumentException("User with id = " + userId + " not found");
+                throw new ArgumentException("User with id = " + model.UserId + " not found");
 
             if (user.IsOwner(Tenant) || user.IsMe(AuthContext) || user.Status != EmployeeStatus.Terminated)
-                throw new ArgumentException("Can not delete user with id = " + userId);
+                throw new ArgumentException("Can not delete user with id = " + model.UserId);
 
             return QueueWorkerRemove.Start(Tenant.TenantId, user, SecurityContext.CurrentAccount.ID, true);
         }
