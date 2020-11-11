@@ -107,14 +107,13 @@ const StyledFilterInput = styled.div`
     margin-left: 8px;
 
     ${(props) =>
-      props.isMobile ||
-      (props.smallSectionWidth &&
-        `
+      (props.isMobile || props.smallSectionWidth) &&
+      `
           width: 50px;
           .optionalBlock ~ div:first-child{
               opacity: 0
           }
-      `)}
+      `}
 
     .combo-button-label {
       color: #a3a9ae;
