@@ -1,16 +1,14 @@
 import { toastr } from "asc-web-common";
 import { setEncryptionKeys, getEncryptionAccess } from "../store/auth/actions";
+import { isDesktopClient, isEncryptionSupport } from "../store/auth/selectors";
 
 const domain = window.location.origin;
 const provider = "AppServer";
+const guid = "{FFF0E1EB-13DB-4678-B67D-FF0A41DBBCEF}";
+const desktop = isDesktopClient;
+const encryption = isEncryptionSupport;
 
-const isDesktop = window["AscDesktopEditor"] || false;
-const isEncryptionSupport =
-  (window["AscDesktopEditor"] &&
-    typeof window.AscDesktopEditor.cloudCryptoCommand === "function") ||
-  false;
-
-if (isDesktop && isEncryptionSupport) {
+if (desktop && encryption) {
   window.cloudCryptoCommand = (type, params, callback) => {
     switch (type) {
       case "encryptionKeys":
@@ -60,8 +58,7 @@ export class Desktop {
       userId,
     };
     if (isEncryptionSupport) {
-      data.encryptionKeys.cryptoEngineId =
-        "{FFF0E1EB-13DB-4678-B67D-FF0A41DBBCEF}";
+      data.encryptionKeys.cryptoEngineId = guid;
     } else {
       return;
     }
