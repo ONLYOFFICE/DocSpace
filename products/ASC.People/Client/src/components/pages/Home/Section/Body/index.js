@@ -41,8 +41,8 @@ const i18n = createI18N({
 });
 const { Consumer } = utils.context;
 const { isArrayEqual } = utils.array;
-const { getSettings } = store.auth.selectors;
-const { setIsLoaded } = store.auth.actions;
+const { getSettings, getIsLoadedSection } = store.auth.selectors;
+const { setIsLoadedSection } = store.auth.actions;
 const { resendUserInvites } = api.people;
 const { EmployeeStatus } = constants;
 
@@ -68,19 +68,19 @@ class SectionBodyContent extends React.PureComponent {
       isLoaded,
       fetchPeople,
       filter,
-      setIsLoaded,
+      setIsLoadedSection,
       peopleList,
     } = this.props;
     if (!isLoaded) return;
 
-    if (peopleList.length <= 0) setIsLoaded();
+    if (peopleList.length <= 0) setIsLoadedSection();
 
-    setIsLoaded(false);
+    setIsLoadedSection(false);
 
     fetchPeople(filter)
-      .then(() => isLoaded && setIsLoaded(true))
+      .then(() => isLoaded && setIsLoadedSection(true))
       .catch((error) => {
-        isLoaded && setIsLoaded(true);
+        isLoaded && setIsLoadedSection(true);
         toastr.error(error);
       });
   }
@@ -373,6 +373,7 @@ class SectionBodyContent extends React.PureComponent {
     //console.log("Home SectionBodyContent render()");
     const {
       isLoaded,
+      isLoadedSection,
       peopleList,
       history,
       settings,
@@ -386,7 +387,7 @@ class SectionBodyContent extends React.PureComponent {
 
     const { dialogsVisible, user } = this.state;
 
-    return !isLoaded || (isMobile && isLoading) ? (
+    return !isLoaded || (isMobile && isLoading) || !isLoadedSection ? (
       <Loaders.Rows />
     ) : peopleList.length > 0 ? (
       <>
@@ -525,6 +526,7 @@ const mapStateToProps = (state) => {
   const { filter, isLoading } = state.people;
   return {
     isLoaded,
+    isLoadedSection: getIsLoadedSection(state),
     filter,
     isLoading,
     peopleList: getPeopleList(state),
@@ -540,5 +542,5 @@ export default connect(mapStateToProps, {
   resetFilter,
   fetchPeople,
   selectGroup,
-  setIsLoaded,
+  setIsLoadedSection,
 })(withRouter(withTranslation()(SectionBodyContent)));
