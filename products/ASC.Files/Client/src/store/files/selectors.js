@@ -26,6 +26,10 @@ export const getConvertedFormats = (state) => {
   return state.files.docservice.convertDocs;
 };
 
+export const getEncryptedFormats = (state) => {
+  return state.files.docservice.encryptedDocs;
+};
+
 export const getArchiveFormats = (state) => {
   return state.files.formats.archive;
 };
