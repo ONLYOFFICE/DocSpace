@@ -191,9 +191,11 @@ class SectionBodyContent extends React.Component {
       showSharingPanel: false,
       showMoveToPanel: false,
       showCopyPanel: false,
-      showVersionHistoryPanel: false,
       isDrag: false,
       canDrag: true,
+      versionHistory: {
+        showVersionHistoryPanel: false,
+      },
     };
 
     this.tooltipRef = React.createRef();
@@ -242,8 +244,11 @@ class SectionBodyContent extends React.Component {
       showMoveToPanel,
       showCopyPanel,
       isDrag,
-      showVersionHistoryPanel,
+      versionHistory,
     } = this.state;
+
+    const { showVersionHistoryPanel } = versionHistory;
+
     if (this.state.showSharingPanel !== nextState.showSharingPanel) {
       return true;
     }
@@ -512,15 +517,22 @@ class SectionBodyContent extends React.Component {
     const { settings, history, isMobile } = this.props;
     const fileId = e.currentTarget.dataset.id;
     if (!isMobile) {
-      this.setState({ showVersionHistoryPanel: true });
+      this.setState({
+        versionHistory: {
+          showVersionHistoryPanel: true,
+          fileId: fileId,
+        },
+      });
     } else {
       history.push(`${settings.homepage}/${fileId}/history`);
     }
   };
 
   onHistoryAction = () => {
-    const { showVersionHistoryPanel } = this.state;
-    this.setState({ showVersionHistoryPanel: !showVersionHistoryPanel });
+    const { showVersionHistoryPanel } = this.state.versionHistory;
+    this.setState({
+      versionHistory: { showVersionHistoryPanel: !showVersionHistoryPanel },
+    });
   };
 
   lockFile = () => {
@@ -1551,8 +1563,10 @@ class SectionBodyContent extends React.Component {
       showSharingPanel,
       showMoveToPanel,
       showCopyPanel,
-      showVersionHistoryPanel,
+      versionHistory,
     } = this.state;
+
+    const { showVersionHistoryPanel, fileId } = versionHistory;
 
     const operationsPanelProps = {
       setIsLoading,
@@ -1627,8 +1641,8 @@ class SectionBodyContent extends React.Component {
         )}
         {showVersionHistoryPanel && (
           <VersionHistoryPanel
+            fileId={fileId}
             visible={showVersionHistoryPanel}
-            history={{}}
             onClose={this.onHistoryAction}
           />
         )}

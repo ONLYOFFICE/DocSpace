@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
 import { Backdrop, Heading, Aside } from "asc-web-components";
-import { utils } from "asc-web-common";
+import { api, utils, store } from "asc-web-common";
 
 import { withTranslation, I18nextProvider } from "react-i18next";
 import { createI18N } from "../../../helpers/i18n";
@@ -15,6 +15,8 @@ import {
   StyledBody,
 } from "../StyledPanels";
 
+import { SectionBodyContent } from "../../pages/VersionHistory/Section/";
+
 const i18n = createI18N({
   page: "VersionHistory",
   localesPath: "pages/VersionHistory",
@@ -22,40 +24,69 @@ const i18n = createI18N({
 
 const { changeLanguage } = utils;
 
+const { getSettings } = store.auth.selectors;
+
 class PureVersionHistoryPanel extends React.Component {
   constructor(props) {
     super(props);
+    this.state = { isLoading: true };
   }
 
-  onClosePanel = () => {
+  componentDidMount() {
+    const { fileId } = this.props;
+    if (fileId) {
+      this.getFileVersions(fileId);
+    }
+  }
+
+  getFileVersions = (fileId) => {
+    api.files.getFileVersionInfo(fileId).then((versions) => {
+      console.log(versions);
+      this.setState({ versions: versions, isLoading: false });
+    });
+  };
+
+  onClosePanelHandler = () => {
     this.props.onClose();
   };
 
   render() {
-    const { visible } = this.props;
+    const { isLoading, versions } = this.state;
+    const { visible, settings } = this.props;
     const zIndex = 310;
     return (
-      <StyledVersionHistoryPanel visible={visible}>
+      <StyledVersionHistoryPanel
+        className="modal-dialog-aside"
+        visible={visible}
+      >
         <Backdrop
-          onClick={this.onClosePanel}
+          onClick={this.onClosePanelHandler}
           visible={visible}
           zIndex={zIndex}
-        />
-        <Aside className="header_aside-panel version-history-panel">
-          <StyledContent>
-            <StyledHeaderContent>
-              <Heading
-                className="header_aside-panel-header"
-                size="medium"
-                truncate
-              >
-                Header
-              </Heading>
-            </StyledHeaderContent>
+        />{" "}
+        {!isLoading ? (
+          <Aside className="header_aside-panel">
+            <StyledContent>
+              <StyledHeaderContent>
+                <Heading
+                  className="header_aside-panel-header"
+                  size="medium"
+                  truncate
+                >
+                  {this.state.versions && this.state.versions[0].title}
+                </Heading>
+              </StyledHeaderContent>
 
-            <StyledBody>Body</StyledBody>
-          </StyledContent>
-        </Aside>
+              <StyledBody>
+                <SectionBodyContent
+                  getFileVersions={this.getFileVersions}
+                  versions={versions}
+                  culture={settings.culture}
+                />
+              </StyledBody>
+            </StyledContent>
+          </Aside>
+        ) : null}
       </StyledVersionHistoryPanel>
     );
   }
@@ -75,12 +106,13 @@ const VersionHistoryPanel = (props) => {
 };
 
 VersionHistoryPanelContainer.propTypes = {
-  history: PropTypes.object.isRequired,
   isLoaded: PropTypes.bool,
 };
 
 function mapStateToProps(state) {
-  return {};
+  return {
+    settings: getSettings(state),
+  };
 }
 
 export default connect(mapStateToProps)(VersionHistoryPanel);
