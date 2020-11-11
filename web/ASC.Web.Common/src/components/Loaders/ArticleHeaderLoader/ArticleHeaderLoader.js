@@ -6,8 +6,6 @@ import RectangleLoader from "../RectangleLoader/index";
 const ArticleHeaderLoader = ({ id, className, style, ...rest }) => {
   const {
     title,
-    x,
-    y,
     width,
     height,
     borderRadius,
@@ -22,8 +20,6 @@ const ArticleHeaderLoader = ({ id, className, style, ...rest }) => {
     <StyledContainer id={id} className={className} style={style}>
       <RectangleLoader
         title={title}
-        x={x}
-        y={y}
         width={width}
         height={height}
         borderRadius={borderRadius}

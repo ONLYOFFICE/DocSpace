@@ -24,6 +24,7 @@ storiesOf("Components|Loaders", module)
         title={text("title", LoaderStyle.title)}
         width={text("width", "100%")}
         height={text("height", "32px")}
+        borderRadius={text("border radius", "3")}
         backgroundColor={color("backgroundColor", LoaderStyle.backgroundColor)}
         foregroundColor={color("foregroundColor", LoaderStyle.foregroundColor)}
         backgroundOpacity={number(

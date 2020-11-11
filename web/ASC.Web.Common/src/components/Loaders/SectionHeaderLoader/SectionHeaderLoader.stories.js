@@ -22,6 +22,7 @@ storiesOf("Components|Loaders", module)
       <h1>Section Header Loader</h1>
       <Loaders.SectionHeader
         title={text("title", LoaderStyle.title)}
+        borderRadius={text("borderRadius", "3")}
         backgroundColor={color("backgroundColor", LoaderStyle.backgroundColor)}
         foregroundColor={color("foregroundColor", LoaderStyle.foregroundColor)}
         backgroundOpacity={number(

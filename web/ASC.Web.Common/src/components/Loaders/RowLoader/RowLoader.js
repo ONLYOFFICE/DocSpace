@@ -7,8 +7,6 @@ import CircleLoader from "../CircleLoader/index";
 const RowLoader = ({ id, className, style, isRectangle, ...rest }) => {
   const {
     title,
-    x,
-    y,
     borderRadius,
     backgroundColor,
     foregroundColor,
@@ -27,8 +25,6 @@ const RowLoader = ({ id, className, style, isRectangle, ...rest }) => {
     >
       <RectangleLoader
         title={title}
-        x={x}
-        y={y}
         width="16"
         height="16"
         borderRadius={borderRadius}
@@ -44,8 +40,6 @@ const RowLoader = ({ id, className, style, isRectangle, ...rest }) => {
           <RectangleLoader
             className="rectangle-content"
             title={title}
-            x={x}
-            y={y}
             width="100%"
             height="100%"
             borderRadius={borderRadius}
@@ -77,8 +71,6 @@ const RowLoader = ({ id, className, style, isRectangle, ...rest }) => {
         <RectangleLoader
           className="first-row-content__mobile"
           title={title}
-          x={x}
-          y={y}
           height="16px"
           borderRadius={borderRadius}
           backgroundColor={backgroundColor}
@@ -91,8 +83,6 @@ const RowLoader = ({ id, className, style, isRectangle, ...rest }) => {
         <RectangleLoader
           className="second-row-content__mobile"
           title={title}
-          x={x}
-          y={y}
           height="12px"
           borderRadius={borderRadius}
           backgroundColor={backgroundColor}

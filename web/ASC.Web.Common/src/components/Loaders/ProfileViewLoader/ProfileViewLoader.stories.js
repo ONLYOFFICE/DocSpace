@@ -23,6 +23,7 @@ storiesOf("Components|Loaders", module)
       <Loaders.ProfileView
         title={text("title", LoaderStyle.title)}
         isEdit={boolean("isEdit", true)}
+        borderRadius={text("borderRadius", "3")}
         backgroundColor={color("backgroundColor", LoaderStyle.backgroundColor)}
         foregroundColor={color("foregroundColor", LoaderStyle.foregroundColor)}
         backgroundOpacity={number(

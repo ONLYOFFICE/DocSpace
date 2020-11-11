@@ -6,8 +6,6 @@ import RectangleLoader from "../RectangleLoader/index";
 const HeaderLoader = ({ id, className, style, ...rest }) => {
   const {
     title,
-    x,
-    y,
     borderRadius,
     backgroundColor,
     foregroundColor,
@@ -21,8 +19,6 @@ const HeaderLoader = ({ id, className, style, ...rest }) => {
     <StyledHeader id={id} className={className} style={style}>
       <RectangleLoader
         title={title}
-        x={x}
-        y={y}
         width="24"
         height="24"
         borderRadius={borderRadius}
@@ -35,8 +31,6 @@ const HeaderLoader = ({ id, className, style, ...rest }) => {
       />
       <RectangleLoader
         title={title}
-        x={x}
-        y={y}
         width="168"
         height="24"
         borderRadius={borderRadius}
@@ -50,8 +44,6 @@ const HeaderLoader = ({ id, className, style, ...rest }) => {
       <StyledSpacer />
       <RectangleLoader
         title={title}
-        x={x}
-        y={y}
         width="24"
         height="24"
         borderRadius={borderRadius}

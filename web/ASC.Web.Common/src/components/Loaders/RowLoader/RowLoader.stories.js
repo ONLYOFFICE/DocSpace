@@ -23,6 +23,7 @@ storiesOf("Components|Loaders", module)
       <Loaders.Row
         title={text("title", LoaderStyle.title)}
         isRectangle={boolean("isRectangle", true)}
+        borderRadius={text("borderRadius", "3")}
         backgroundColor={color("backgroundColor", LoaderStyle.backgroundColor)}
         foregroundColor={color("foregroundColor", LoaderStyle.foregroundColor)}
         backgroundOpacity={number(

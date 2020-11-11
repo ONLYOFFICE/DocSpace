@@ -6,8 +6,6 @@ import RectangleLoader from "../RectangleLoader/index";
 const FilterLoader = ({ id, className, style, ...rest }) => {
   const {
     title,
-    x,
-    y,
     height,
     borderRadius,
     backgroundColor,
@@ -22,8 +20,6 @@ const FilterLoader = ({ id, className, style, ...rest }) => {
     <StyledFilter id={id} className={className} style={style}>
       <RectangleLoader
         title={title}
-        x={x}
-        y={y}
         height={height}
         borderRadius={borderRadius}
         backgroundColor={backgroundColor}
@@ -35,8 +31,6 @@ const FilterLoader = ({ id, className, style, ...rest }) => {
       />
       <RectangleLoader
         title={title}
-        x={x}
-        y={y}
         height={height}
         borderRadius={borderRadius}
         backgroundColor={backgroundColor}

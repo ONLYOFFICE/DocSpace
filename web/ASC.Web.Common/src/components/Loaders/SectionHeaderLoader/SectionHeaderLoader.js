@@ -11,8 +11,6 @@ import RectangleLoader from "../RectangleLoader/index";
 const SectionHeaderLoader = ({ id, className, style, ...rest }) => {
   const {
     title,
-    x,
-    y,
     borderRadius,
     backgroundColor,
     foregroundColor,
@@ -27,8 +25,6 @@ const SectionHeaderLoader = ({ id, className, style, ...rest }) => {
       <StyledBox1>
         <RectangleLoader
           title={title}
-          x={x}
-          y={y}
           width="17"
           height="17"
           borderRadius={borderRadius}
@@ -41,8 +37,6 @@ const SectionHeaderLoader = ({ id, className, style, ...rest }) => {
         />
         <RectangleLoader
           title={title}
-          x={x}
-          y={y}
           width="67"
           height="17"
           borderRadius={borderRadius}
@@ -58,8 +52,6 @@ const SectionHeaderLoader = ({ id, className, style, ...rest }) => {
       <StyledBox2>
         <RectangleLoader
           title={title}
-          x={x}
-          y={y}
           width="17"
           height="17"
           borderRadius={borderRadius}
@@ -72,8 +64,6 @@ const SectionHeaderLoader = ({ id, className, style, ...rest }) => {
         />
         <RectangleLoader
           title={title}
-          x={x}
-          y={y}
           width="17"
           height="17"
           borderRadius={borderRadius}

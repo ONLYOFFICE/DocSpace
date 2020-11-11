@@ -23,6 +23,7 @@ storiesOf("Components|Loaders", module)
       <Loaders.Filter
         title={text("title", LoaderStyle.title)}
         height={text("height", "32px")}
+        borderRadius={text("borderRadius", "3")}
         backgroundColor={color("backgroundColor", LoaderStyle.backgroundColor)}
         foregroundColor={color("foregroundColor", LoaderStyle.foregroundColor)}
         backgroundOpacity={number(
