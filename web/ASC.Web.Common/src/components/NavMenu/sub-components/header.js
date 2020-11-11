@@ -117,8 +117,10 @@ const HeaderComponent = ({
               <img className="header-logo-icon" src={props.logoUrl} />
             </a>
           </>
-        ) : (
+        ) : !isLoaded && isAuthenticated ? (
           <Loaders.Header />
+        ) : (
+          <></>
         )}
 
         <Headline className="header-module-title" type="header" color="#FFF">
