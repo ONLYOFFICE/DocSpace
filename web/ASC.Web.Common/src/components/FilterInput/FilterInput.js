@@ -107,7 +107,6 @@ class FilterInput extends React.Component {
       openFilterItems: [],
       hideFilterItems: [],
       needUpdateFilter: false,
-      windowWidth: 0,
     };
 
     this.searchWrapper = React.createRef();
@@ -134,7 +133,7 @@ class FilterInput extends React.Component {
     }
 
     if (sectionWidth !== prevProps.sectionWidth) {
-      this.resize();
+      this.updateFilter();
     }
 
     if (
@@ -198,12 +197,6 @@ class FilterInput extends React.Component {
     return !isEqual(this.state, nextState);
   }
 
-  resize = () => {
-    this.setState({
-      windowWidth: window.innerWidth,
-    });
-    this.updateFilter();
-  };
   onChangeSortDirection = (key) => {
     this.onFilter(
       this.state.filterValues,
