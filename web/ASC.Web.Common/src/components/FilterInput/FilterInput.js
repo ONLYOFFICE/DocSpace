@@ -684,6 +684,7 @@ class FilterInput extends React.Component {
       viewAs,
       contextMenuHeader,
       isMobile,
+      sectionWidth,
     } = this.props;
     /* eslint-enable react/prop-types */
 
@@ -695,6 +696,8 @@ class FilterInput extends React.Component {
       sortId,
       sortDirection,
     } = this.state;
+
+    const smallSectionWidth = sectionWidth ? sectionWidth < 900 : false;
 
     // console.log("filter input render, openFilterItems", openFilterItems, 'hideFilterItems', hideFilterItems);
     let iconSize = 30;
@@ -712,6 +715,7 @@ class FilterInput extends React.Component {
     }
     return (
       <StyledFilterInput
+        smallSectionWidth={smallSectionWidth}
         isMobile={isMobile}
         viewAs={viewAs}
         className={className}
