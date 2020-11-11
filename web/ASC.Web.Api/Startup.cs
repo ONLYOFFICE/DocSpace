@@ -37,7 +37,8 @@ namespace ASC.Web.Api
                 .AddPortalController()
                 .AddSettingsController()
                 .AddSecurityController()
-                .AddSmtpSettingsController();
+                .AddSmtpSettingsController()
+                .AddThirdPartyController();
         }
 
         public void ConfigureContainer(ContainerBuilder builder)
