@@ -10,6 +10,7 @@ import Text from "./TextLoader";
 import Filter from "./FilterLoader/index";
 import ProfileView from "./ProfileViewLoader/index";
 import SettingsFiles from "./SettingsFilesLoader";
+import Group from "./GroupLoader/index";
 
 export default {
   Rectangle,
@@ -24,4 +25,5 @@ export default {
   Filter,
   ProfileView,
   SettingsFiles,
+  Group,
 };
