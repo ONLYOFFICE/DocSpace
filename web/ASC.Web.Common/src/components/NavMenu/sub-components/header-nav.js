@@ -117,6 +117,8 @@ const HeaderNav = React.memo(
             height="36"
             backgroundColor="#fff"
             foregroundColor="#fff"
+            backgroundOpacity={0.25}
+            foregroundOpacity={0.2}
           />
         ) : (
           <></>
