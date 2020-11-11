@@ -7,13 +7,20 @@ const { tablet } = utils.device;
 
 const StyledSectionHeader = styled.div`
   border-bottom: 1px solid #eceef1;
-  height: 56px;
+  height: 55px;
   margin-right: 24px;
+  margin-top: -1px;
 
   @media ${tablet} {
     margin-right: 16px;
     border-bottom: none;
-    height: 44px;
+    ${(props) =>
+      props.borderBottom &&
+      `
+      border-bottom: 1px solid #eceef1;
+      padding-bottom: 16px
+    `};
+    height: 49px;
   }
 
   .section-header {
@@ -21,6 +28,7 @@ const StyledSectionHeader = styled.div`
 
     @media ${tablet} {
       width: 100%;
+      padding-top: 4px;
     }
 
     h1,
@@ -47,9 +55,13 @@ class SectionHeader extends React.Component {
   render() {
     //console.log("PageLayout SectionHeader render");
     // eslint-disable-next-line react/prop-types
-    const { isArticlePinned, ...rest } = this.props;
+    const { isArticlePinned, borderBottom, ...rest } = this.props;
+
     return (
-      <StyledSectionHeader isArticlePinned={isArticlePinned}>
+      <StyledSectionHeader
+        isArticlePinned={isArticlePinned}
+        borderBottom={borderBottom}
+      >
         <div className="section-header" {...rest} />
       </StyledSectionHeader>
     );

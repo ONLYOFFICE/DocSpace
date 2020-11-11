@@ -78,7 +78,11 @@ class PureVersionHistory extends React.Component {
           fontColor={"#999"}
         /> */}
         {versions ? (
-          <PageLayout withBodyScroll={true} withBodyAutoFocus={true}>
+          <PageLayout
+            withBodyScroll={true}
+            withBodyAutoFocus={true}
+            headerBorderBottom={true}
+          >
             <PageLayout.ArticleHeader>
               <ArticleHeaderContent />
             </PageLayout.ArticleHeader>

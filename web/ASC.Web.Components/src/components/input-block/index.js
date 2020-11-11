@@ -127,7 +127,9 @@ class InputBlock extends React.Component {
         style={style}
       >
         <div className="prepend">
-          <StyledChildrenBlock>{children}</StyledChildrenBlock>
+          <StyledChildrenBlock className="prepend-children">
+            {children}
+          </StyledChildrenBlock>
         </div>
         <TextInput
           id={id}
