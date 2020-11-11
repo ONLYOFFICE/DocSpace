@@ -112,19 +112,14 @@ class FilterInput extends React.Component {
 
     this.searchWrapper = React.createRef();
     this.filterWrapper = React.createRef();
-
-    this.throttledResize = throttle(this.resize, 300);
   }
 
   componentDidMount() {
-    window.addEventListener("resize", this.throttledResize);
     if (this.state.filterValues.length > 0) this.updateFilter();
   }
-  componentWillUnmount() {
-    window.removeEventListener("resize", this.throttledResize);
-  }
+
   componentDidUpdate(prevProps, prevState) {
-    const { selectedFilterData } = this.props;
+    const { selectedFilterData, sectionWidth } = this.props;
     const { filterValues, searchText } = this.state;
 
     if (
@@ -138,10 +133,14 @@ class FilterInput extends React.Component {
       this.updateFilter(internalFilterData);
     }
 
+    if (sectionWidth !== prevProps.sectionWidth) {
+      this.resize();
+    }
+
     if (
       (!isEqual(selectedFilterData.filterValues, filterValues) ||
         selectedFilterData.inputValue !== searchText) &&
-      this.state.windowWidth !== prevState.windowWidth
+      sectionWidth !== prevProps.sectionWidth
     ) {
       const filterValues = this.getDefaultFilterData();
       this.setState({
