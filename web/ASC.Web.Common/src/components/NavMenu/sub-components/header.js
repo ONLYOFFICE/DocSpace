@@ -104,7 +104,7 @@ const HeaderComponent = ({
   return (
     <>
       <Header module={currentProductName}>
-        {isLoaded ? (
+        {isLoaded && isAuthenticated ? (
           <>
             <NavItem
               iconName="MenuIcon"
@@ -117,10 +117,8 @@ const HeaderComponent = ({
               <img className="header-logo-icon" src={props.logoUrl} />
             </a>
           </>
-        ) : isAuthenticated ? (
-          <Loaders.Header />
         ) : (
-          <></>
+          <Loaders.Header />
         )}
 
         <Headline className="header-module-title" type="header" color="#FFF">

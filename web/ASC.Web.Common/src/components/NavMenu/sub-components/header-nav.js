@@ -99,16 +99,10 @@ const HeaderNav = React.memo(
             noHover={true}
           />
         ))}
-        {isLoaded ? (
-          <>
-            {isAuthenticated && user && (
-              <ProfileActions
-                userActions={getCurrentUserActions()}
-                user={user}
-              />
-            )}
-          </>
-        ) : isAuthenticated && user ? (
+
+        {isLoaded && isAuthenticated ? (
+          <ProfileActions userActions={getCurrentUserActions()} user={user} />
+        ) : (
           <Loaders.Circle
             x="34"
             y="18"
@@ -120,8 +114,6 @@ const HeaderNav = React.memo(
             backgroundOpacity={0.25}
             foregroundOpacity={0.2}
           />
-        ) : (
-          <></>
         )}
       </StyledNav>
     );
