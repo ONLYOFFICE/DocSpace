@@ -70,13 +70,19 @@ const StyledContainer = styled.div`
     align-items: center;
     max-width: calc(100vw - 32px);
 
+    @media ${tablet} {
+      .headline-header {
+        margin-left: -1px;
+      }
+    }
     .arrow-button {
-      margin-right: 16px;
+      margin-right: 15px;
       min-width: 17px;
 
       @media ${tablet} {
         padding: 8px 0 8px 8px;
         margin-left: -8px;
+        margin-right: 16px;
       }
     }
 

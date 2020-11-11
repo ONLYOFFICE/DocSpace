@@ -10,13 +10,20 @@ const StyledSectionHeader = styled.div`
 
  
   border-bottom: 1px solid #eceef1;
-  height: 56px;
+  height: 55px;
   margin-right: 24px;
+  margin-top: -1px;
 
   @media ${tablet} {
     margin-right: 16px;
     border-bottom: none;
-    height: 44px;
+    ${(props) =>
+      props.borderBottom &&
+      `
+      border-bottom: 1px solid #eceef1;
+      padding-bottom: 16px
+    `};
+    height: 49px;
 
  
   }
@@ -37,6 +44,7 @@ const StyledSectionHeader = styled.div`
       
     padding-right: 16px;
 
+      padding-top: 4px;
     }
 
     h1,
@@ -78,19 +86,23 @@ class SectionHeader extends React.Component {
 
     //console.log("PageLayout SectionHeader render");
     // eslint-disable-next-line react/prop-types
-    const { isArticlePinned, isHeaderVisible,  ...rest } = this.props;
+
+    const { isArticlePinned, borderBottom, isHeaderVisible, ...rest } = this.props;
+
     return (
       
-      <StyledSectionHeader  isArticlePinned={isArticlePinned} isHeaderVisible={isHeaderVisible}>
-      
-          <IsVisibleContextConsumer>
+      <StyledSectionHeader
+		    isHeaderVisible={isHeaderVisible}
+        isArticlePinned={isArticlePinned}
+        borderBottom={borderBottom}
+      >
+       <IsVisibleContextConsumer>
             { value => 
               <div id="scroll"  className={classnames("section-header", {
                 "section-header--hidden": !value
               })} {...rest}/>
               }
-            </IsVisibleContextConsumer>
-        
+        </IsVisibleContextConsumer>
       </StyledSectionHeader>
       
 

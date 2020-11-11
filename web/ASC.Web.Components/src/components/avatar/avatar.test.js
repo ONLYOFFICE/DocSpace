@@ -49,6 +49,12 @@ describe("<Avatar />", () => {
     expect(wrapper.prop("size")).toEqual("small");
   });
 
+  it("render min avatar", () => {
+    const wrapper = mount(<Avatar {...baseProps} size="min" />);
+
+    expect(wrapper.prop("size")).toEqual("min");
+  });
+
   it("render empty avatar", () => {
     const wrapper = mount(<Avatar {...baseProps} userName="" source="" />);
 

@@ -203,13 +203,16 @@ class ModalDialog extends React.Component {
           className="modal-dialog-aside"
         >
           <Content contentHeight={contentHeight} contentWidth={contentWidth}>
-            <StyledHeader>
+            <StyledHeader className="modal-dialog-aside-header">
               <Heading className="heading" size="medium" truncate={true}>
                 {header ? header.props.children : null}
               </Heading>
               {scale ? <CloseButton onClick={onClose}></CloseButton> : ""}
             </StyledHeader>
-            <BodyBox paddingProp={bodyPadding}>
+            <BodyBox
+              className="modal-dialog-aside-body"
+              paddingProp={bodyPadding}
+            >
               {body ? body.props.children : null}
             </BodyBox>
             <Box className="modal-dialog-aside-footer">

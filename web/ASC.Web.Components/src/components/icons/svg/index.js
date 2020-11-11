@@ -196,6 +196,9 @@ import OrigFavoriteIcon from "./favorite.react.svg";
 import OrigRecentIcon from "./catalog.recent.react.svg";
 
 import OrigCatalogPrivateRoomIcon from "./catalog.private.react.svg";
+import OrigMoveToIcon from "./move.react.svg";
+
+import OrigIntegrationIcon from "./integration.react.svg";
 
 export const AZSortingIcon = createStyledIcon(
   OrigAZSortingIcon,
@@ -752,18 +755,12 @@ export const RotateRightIcon = createStyledIcon(
   OrigRotateRight,
   "RotateRightIcon"
 );
-export const FavoritesIcon = createStyledIcon(
-  OrigFavorites,
-  "FavoritesIcon"
-);
+export const FavoritesIcon = createStyledIcon(OrigFavorites, "FavoritesIcon");
 export const CatalogFavoritesIcon = createStyledIcon(
   OrigCatalogFavoritesIcon,
   "CatalogFavoritesIcon"
 );
-export const FavoriteIcon = createStyledIcon(
-  OrigFavoriteIcon,
-  "FavoriteIcon"
-);
+export const FavoriteIcon = createStyledIcon(OrigFavoriteIcon, "FavoriteIcon");
 export const CatalogRecentIcon = createStyledIcon(
   OrigRecentIcon,
   "CatalogRecentIcon"
@@ -771,4 +768,10 @@ export const CatalogRecentIcon = createStyledIcon(
 export const CatalogPrivateRoomIcon = createStyledIcon(
   OrigCatalogPrivateRoomIcon,
   "CatalogPrivateRoomIcon"
+);
+
+export const MoveToIcon = createStyledIcon(OrigMoveToIcon, "MoveToIcon");
+export const IntegrationIcon = createStyledIcon(
+  OrigIntegrationIcon,
+  "IntegrationIcon"
 );

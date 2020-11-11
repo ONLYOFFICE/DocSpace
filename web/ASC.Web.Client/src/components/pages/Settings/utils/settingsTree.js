@@ -54,7 +54,22 @@ export const settingsTree = [
       },
     ],
   },
-];
+  {
+    key: "3",
+    icon: "IntegrationIcon",
+    link: "integration",
+    tKey: "ManagementCategoryIntegration",
+    isHeader: true,
+    children: [
+      {
+        key: "3-0",
+        icon: "",
+        link: "third-party-services",
+        tKey: "ThirdPartyAuthorization",
+        isCategory: true,
+      },
+    ],
+  },];
 
 /**
 * Array for generation full settings tree, old structure.

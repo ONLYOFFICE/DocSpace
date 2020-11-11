@@ -3,7 +3,19 @@ import { Scrollbar } from "asc-web-components";
 
 const PanelStyles = css`
   .panel_combo-box {
-    margin-left: 8px;
+    margin-left: 10px;
+
+    .optionalBlock {
+      margin-right: 4px;
+    }
+
+    &.add-groups {
+      .combo-buttons_arrow-icon {
+        flex: 0 0 5px;
+        width: 5px;
+        margin-top: 16px;
+      }
+    }
 
     .combo-button {
       height: 36px;
@@ -17,6 +29,10 @@ const PanelStyles = css`
 
 const StyledAsidePanel = styled.div`
   z-index: 310;
+  .sharing_panel-header {
+    font-weight: 700;
+    margin: 14px 0;
+  }
   .modal-dialog-aside {
     padding: 0;
     transform: translateX(${(props) => (props.visible ? "0" : "500px")});
@@ -53,6 +69,9 @@ const StyledAddUsersPanelPanel = styled.div`
     }
   }
   ${PanelStyles}
+  .combo-button-label {
+    font-size: 14px;
+  }
 `;
 
 const StyledAddGroupsPanel = styled.div`
@@ -66,6 +85,9 @@ const StyledAddGroupsPanel = styled.div`
     }
   }
   ${PanelStyles}
+  .combo-button-label {
+    font-size: 14px;
+  }
 `;
 
 const StyledEmbeddingPanel = styled.div`
@@ -95,7 +117,7 @@ const StyledContent = styled.div`
   .header_aside-panel-header {
     max-width: 500px;
     margin: 0 0 0 16px;
-    line-height: 56px;
+    line-height: 57px;
     font-weight: 700;
   }
 
@@ -203,10 +225,10 @@ const StyledSharingHeaderContent = styled.div`
       position: relative;
 
       .sharing_panel-drop-down {
-        padding: 0px;
+        padding: 4px 0;
       }
       .sharing_panel-plus-icon {
-        margin-right: 12px;
+        //margin-right: 12px;
       }
     }
   }
@@ -215,6 +237,10 @@ const StyledSharingHeaderContent = styled.div`
 const StyledSharingBody = styled(Scrollbar)`
   position: relative;
   padding: 16px 0;
+
+  .row_content {
+    overflow: visible;
+  }
 
   .nav-thumb-vertical {
     opacity: 0;
@@ -229,11 +255,17 @@ const StyledSharingBody = styled(Scrollbar)`
 
   .sharing_panel-text {
     line-height: 24px;
+    font-weight: 600;
+    font-size: 14px;
   }
 
   .sharing_panel-link {
     a {
       text-decoration: none !important;
+
+      span {
+        font-weight: 600;
+      }
     }
   }
 
@@ -259,12 +291,15 @@ const StyledSharingBody = styled(Scrollbar)`
   }
 
   .sharing_panel-owner-icon {
-    padding: 0px 24px 0px 8px;
+    padding-right: 12px;
   }
 
   .sharing_panel-remove-icon {
     margin-left: auto;
     line-height: 24px;
+    display: flex;
+    align-items: center;
+    flex-direction: row-reverse;
 
     svg {
       width: 16px;
@@ -273,7 +308,7 @@ const StyledSharingBody = styled(Scrollbar)`
   }
 
   .panel_combo-box {
-    margin-left: 8px;
+    margin-left: 0px;
 
     .combo-button {
       height: 30px;
@@ -299,11 +334,23 @@ const StyledFooter = styled.div`
   position: fixed;
   bottom: 0;
   padding: 16px 0;
-  width: 94%;
+  width: calc(100% - 32px);
   background-color: #fff;
+  border-top: 1px solid #eceef1;
+
+  .sharing_panel-checkbox {
+    span {
+      font-weight: 600;
+    }
+
+    .checkbox {
+      margin-right: 6px;
+    }
+  }
 
   .sharing_panel-button {
     margin-left: auto;
+    padding: 8px 27px;
   }
 
   @media (max-width: 550px) {
