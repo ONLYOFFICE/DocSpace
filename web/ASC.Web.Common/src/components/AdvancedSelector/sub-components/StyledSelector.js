@@ -144,13 +144,14 @@ const StyledSelector = styled(Container)`
 
     .header-options {
       grid-area: header-options;
+      margin-right: 2px;
       /* background-color: white; */
 
       ${(props) =>
         props.displayType === "aside" &&
         css`
           display: grid;
-          grid-row-gap: 12px;
+          grid-row-gap: 17px;
           grid-template-columns: 1fr;
           grid-template-rows: 30px 30px ${(props) =>
               props.isMultiSelect &&
@@ -206,6 +207,7 @@ const StyledSelector = styled(Container)`
     .body-options {
       grid-area: body-options;
       margin-left: -8px;
+      margin-top: 5px;
 
       @media ${tablet} {
         width: 290px;

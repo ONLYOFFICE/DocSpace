@@ -37,9 +37,9 @@ class PureEditor extends React.Component {
       files
         .openEdit(fileId)
         .then((config) => {
-          // if (window.innerWidth < 720) {
-          //   config.type = "mobile";
-          // }
+          if (window.innerWidth < 720) {
+            config.type = "mobile";
+          }
           if (!window.DocsAPI) throw new Error("DocsAPI is not defined");
 
           console.log("Trying to open file with DocsAPI", fileId);

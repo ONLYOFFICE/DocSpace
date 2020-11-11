@@ -78,35 +78,41 @@ class PureArticleMainButtonContent extends React.Component {
         text={t("Actions")}
       >
         <DropDownItem
+          className="main-button_drop-down"
           icon="ActionsDocumentsIcon"
           label={t("NewDocument")}
           onClick={this.onCreate}
           data-format="docx"
         />
         <DropDownItem
+          className="main-button_drop-down"
           icon="SpreadsheetIcon"
           label={t("NewSpreadsheet")}
           onClick={this.onCreate}
           data-format="xlsx"
         />
         <DropDownItem
+          className="main-button_drop-down"
           icon="ActionsPresentationIcon"
           label={t("NewPresentation")}
           onClick={this.onCreate}
           data-format="pptx"
         />
         <DropDownItem
+          className="main-button_drop-down"
           icon="CatalogFolderIcon"
           label={t("NewFolder")}
           onClick={this.onCreate}
         />
         <DropDownItem isSeparator />
         <DropDownItem
+          className="main-button_drop-down"
           icon="ActionsUploadIcon"
           label={t("UploadFiles")}
           onClick={this.onUploadFileClick}
         />
         <DropDownItem
+          className="main-button_drop-down"
           icon="ActionsUploadIcon"
           label={t("UploadFolder")}
           disabled={isPrivacy}

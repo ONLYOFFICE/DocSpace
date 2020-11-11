@@ -1,5 +1,5 @@
 import React from "react";
-import { TreeMenu, TreeNode, Icons, Badge } from "asc-web-components";
+import { TreeMenu, TreeNode, Icons } from "asc-web-components";
 import styled from "styled-components";
 import isEqual from "lodash/isEqual";
 import { api, constants, toastr, store as initStore } from "asc-web-common";
@@ -106,7 +106,9 @@ class TreeFolders extends React.Component {
       case FolderType.Recent:
         return <Icons.CatalogRecentIcon size="scale" isfill color="#657077" />;
       case FolderType.Privacy:
-        return <Icons.CatalogPrivateRoomIcon size="scale" isfill color="#657077" />;
+        return (
+          <Icons.CatalogPrivateRoomIcon size="scale" isfill color="#657077" />
+        );
 
       case FolderType.TRASH:
         return <Icons.CatalogTrashIcon size="scale" isfill color="#657077" />;
@@ -196,6 +198,7 @@ class TreeFolders extends React.Component {
           id={item.id}
           key={item.id}
           title={item.title}
+          needTopMargin={item.key === "0-5" ? true : false}
           dragging={dragging}
           isLeaf={item.foldersCount ? false : true}
           icon={this.getFolderIcon(item)}

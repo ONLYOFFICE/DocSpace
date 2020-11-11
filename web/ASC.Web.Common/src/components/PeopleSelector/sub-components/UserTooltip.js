@@ -8,7 +8,7 @@ const UserTooltip = ({ avatarUrl, label, email, position }) => (
     <div className="block-avatar">
       <Avatar
         className="user-avatar"
-        size="small"
+        size="min"
         role="user"
         source={avatarUrl}
         userName=""

@@ -42,11 +42,11 @@ namespace ASC.Web.Files.Helpers
     {
         private IConfiguration Configuration { get; }
         private IDaoFactory DaoFactory { get; }
-        private BoxLoginProvider BoxLoginProvider { get; }
-        private DropboxLoginProvider DropboxLoginProvider { get; }
-        private OneDriveLoginProvider OneDriveLoginProvider { get; }
-        private DocuSignLoginProvider DocuSignLoginProvider { get; }
-        private GoogleLoginProvider GoogleLoginProvider { get; }
+        private Lazy<BoxLoginProvider> BoxLoginProvider { get; }
+        private Lazy<DropboxLoginProvider> DropboxLoginProvider { get; }
+        private Lazy<OneDriveLoginProvider> OneDriveLoginProvider { get; }
+        private Lazy<DocuSignLoginProvider> DocuSignLoginProvider { get; }
+        private Lazy<GoogleLoginProvider> GoogleLoginProvider { get; }
 
         public ThirdpartyConfiguration(
             IConfiguration configuration,
@@ -55,11 +55,11 @@ namespace ASC.Web.Files.Helpers
         {
             Configuration = configuration;
             DaoFactory = daoFactory;
-            BoxLoginProvider = consumerFactory.Get<BoxLoginProvider>();
-            DropboxLoginProvider = consumerFactory.Get<DropboxLoginProvider>();
-            OneDriveLoginProvider = consumerFactory.Get<OneDriveLoginProvider>();
-            DocuSignLoginProvider = consumerFactory.Get<DocuSignLoginProvider>();
-            GoogleLoginProvider = consumerFactory.Get<GoogleLoginProvider>();
+            BoxLoginProvider = new Lazy<BoxLoginProvider>(() => consumerFactory.Get<BoxLoginProvider>());
+            DropboxLoginProvider = new Lazy<DropboxLoginProvider>(() => consumerFactory.Get<DropboxLoginProvider>());
+            OneDriveLoginProvider = new Lazy<OneDriveLoginProvider>(() => consumerFactory.Get<OneDriveLoginProvider>());
+            DocuSignLoginProvider = new Lazy<DocuSignLoginProvider>(() => consumerFactory.Get<DocuSignLoginProvider>());
+            GoogleLoginProvider = new Lazy<GoogleLoginProvider>(() => consumerFactory.Get<GoogleLoginProvider>());
         }
 
         public IEnumerable<string> ThirdPartyProviders
@@ -82,7 +82,7 @@ namespace ASC.Web.Files.Helpers
         {
             get
             {
-                return ThirdPartyProviders.Contains("box") && BoxLoginProvider.IsEnabled;
+                return ThirdPartyProviders.Contains("box") && BoxLoginProvider.Value.IsEnabled;
             }
         }
 
@@ -90,7 +90,7 @@ namespace ASC.Web.Files.Helpers
         {
             get
             {
-                return ThirdPartyProviders.Contains("dropboxv2") && DropboxLoginProvider.IsEnabled;
+                return ThirdPartyProviders.Contains("dropboxv2") && DropboxLoginProvider.Value.IsEnabled;
             }
         }
 
@@ -98,7 +98,7 @@ namespace ASC.Web.Files.Helpers
         {
             get
             {
-                return ThirdPartyProviders.Contains("onedrive") && OneDriveLoginProvider.IsEnabled;
+                return ThirdPartyProviders.Contains("onedrive") && OneDriveLoginProvider.Value.IsEnabled;
             }
         }
 
@@ -134,19 +134,19 @@ namespace ASC.Web.Files.Helpers
 
         public string DropboxAppKey
         {
-            get { return DropboxLoginProvider["dropboxappkey"]; }
+            get { return DropboxLoginProvider.Value["dropboxappkey"]; }
         }
 
         public string DropboxAppSecret
         {
-            get { return DropboxLoginProvider["dropboxappsecret"]; }
+            get { return DropboxLoginProvider.Value["dropboxappsecret"]; }
         }
 
         public bool SupportDocuSignInclusion
         {
             get
             {
-                return ThirdPartyProviders.Contains("docusign") && DocuSignLoginProvider.IsEnabled;
+                return ThirdPartyProviders.Contains("docusign") && DocuSignLoginProvider.Value.IsEnabled;
             }
         }
 
@@ -154,8 +154,57 @@ namespace ASC.Web.Files.Helpers
         {
             get
             {
-                return ThirdPartyProviders.Contains("google") && GoogleLoginProvider.IsEnabled;
+                return ThirdPartyProviders.Contains("google") && GoogleLoginProvider.Value.IsEnabled;
             }
+        }
+
+        public List<List<string>> GetProviders()
+        {
+            var result = new List<List<string>>();
+
+            if (SupportBoxInclusion)
+            {
+                result.Add(new List<string> { "Box", BoxLoginProvider.Value.ClientID, BoxLoginProvider.Value.RedirectUri });
+            }
+
+            if (SupportDropboxInclusion)
+            {
+                result.Add(new List<string> { "DropboxV2", DropboxLoginProvider.Value.ClientID, DropboxLoginProvider.Value.RedirectUri });
+            }
+
+            if (SupportGoogleDriveInclusion)
+            {
+                result.Add(new List<string> { "GoogleDrive", GoogleLoginProvider.Value.ClientID, GoogleLoginProvider.Value.RedirectUri });
+            }
+
+            if (SupportOneDriveInclusion)
+            {
+                result.Add(new List<string> { "OneDrive", OneDriveLoginProvider.Value.ClientID, OneDriveLoginProvider.Value.RedirectUri });
+            }
+
+            if (SupportSharePointInclusion)
+            {
+                result.Add(new List<string> { "SharePoint" });
+            }
+
+            if (SupportkDriveInclusion)
+            {
+                result.Add(new List<string> { "kDrive" });
+            }
+
+            if (SupportYandexInclusion)
+            {
+                result.Add(new List<string> { "Yandex" });
+            }
+
+            if (SupportWebDavInclusion)
+            {
+                result.Add(new List<string> { "WebDav" });
+            }
+
+            //Obsolete BoxNet, DropBox, Google, SkyDrive,
+
+            return result;
         }
     }
     public static class ThirdpartyConfigurationExtension
