@@ -42,19 +42,6 @@ const HeaderLoader = ({ id, className, style, ...rest }) => {
         animate={animate}
       />
       <StyledSpacer />
-      <RectangleLoader
-        title={title}
-        width="24"
-        height="24"
-        borderRadius={borderRadius}
-        backgroundColor={backgroundColor}
-        foregroundColor={foregroundColor}
-        backgroundOpacity={backgroundOpacity}
-        foregroundOpacity={foregroundOpacity}
-        speed={speed}
-        animate={animate}
-      />
-      <StyledSpacer />
     </StyledHeader>
   );
 };
