@@ -146,6 +146,7 @@ class FilterInput extends React.Component {
         filterValues: filterValues,
         searchText: selectedFilterData.inputValue,
       });
+      this.updateFilter(filterValues);
     }
 
     if (
