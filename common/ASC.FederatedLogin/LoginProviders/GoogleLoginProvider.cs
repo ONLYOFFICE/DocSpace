@@ -190,6 +190,7 @@ namespace ASC.FederatedLogin.LoginProviders
         {
             //services.TryAddScoped<GoogleLoginProvider>();
             return services
+                .AddOAuth20TokenHelperService()
                 .AddConsumerFactoryService()
                 .AddKafkaService()
                 .AddTenantManagerService()
