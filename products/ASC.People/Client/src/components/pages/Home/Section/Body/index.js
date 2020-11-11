@@ -75,8 +75,6 @@ class SectionBodyContent extends React.PureComponent {
 
     if (peopleList.length <= 0) setIsLoadedSection();
 
-    setIsLoadedSection(false);
-
     fetchPeople(filter)
       .then(() => isLoaded && setIsLoadedSection(true))
       .catch((error) => {
