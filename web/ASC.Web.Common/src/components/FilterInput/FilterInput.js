@@ -89,7 +89,7 @@ class FilterInput extends React.Component {
     const { sortDirection, sortId, inputValue } = selectedFilterData;
     const sortData = getSortData();
 
-    this.minWidth = 120;
+    this.minWidth = 170;
 
     const filterValues = selectedFilterData ? this.getDefaultFilterData() : [];
 
@@ -353,10 +353,32 @@ class FilterInput extends React.Component {
     );
   };
 
+  getTextWidth = (text, font) => {
+    var canvas =
+      this.getTextWidth.canvas ||
+      (this.getTextWidth.canvas = document.createElement("canvas"));
+    var context = canvas.getContext("2d");
+    context.font = font;
+    var metrics = context.measureText(text);
+    return metrics.width;
+  };
+
   calcHiddenItemWidth = (item) => {
     if (!item) return;
-    const numberOfLetters = item.groupLabel.length + item.label.length;
-    return numberOfLetters * 6.5 + 60; // 60 - sum of padding
+    let label = "";
+    if (item.selectedItem) {
+      label = item.selectedItem.label
+        ? item.selectedItem.label
+        : item.defaultSelectLabel;
+    } else {
+      label = item.label;
+    }
+    const itemWidth =
+      this.getTextWidth(
+        item.groupLabel + " " + label,
+        "bolder 13px sans-serif"
+      ) + 60; // paddings + margin
+    return itemWidth;
   };
 
   AddItems = (searchWidth) => {
