@@ -115,6 +115,20 @@ namespace ASC.Api.Documents
         /// 
         /// </summary>
         /// <visible>false</visible>
+        [Read("keys")]
+        public EncryptionKeyPair GetKeys()
+        {
+            PermissionContext.DemandPermissions(new UserSecurityProvider(AuthContext.CurrentAccount.ID), Constants.Action_EditUser);
+
+            if (!PrivacyRoomSettings.GetEnabled(SettingsManager)) throw new System.Security.SecurityException();
+
+            return EncryptionKeyPairHelper.GetKeyPair();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <visible>false</visible>
         [Read("access/{fileId}")]
         public IEnumerable<EncryptionKeyPair> GetPublicKeysWithAccess(string fileId)
         {
