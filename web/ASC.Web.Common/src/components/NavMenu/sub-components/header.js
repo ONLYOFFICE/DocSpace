@@ -6,6 +6,7 @@ import Headline from "../../Headline";
 import Nav from "./nav";
 import NavLogoItem from "./nav-logo-item";
 import Loaders from "../../Loaders/index";
+import { ReactSVG } from "react-svg";
 
 import { utils } from "asc-web-components";
 import { connect } from "react-redux";
@@ -60,7 +61,7 @@ const Header = styled.header`
     width: 146px;
     height: 24px;
     position: relative;
-    padding: 4px 20px 0 6px;
+    padding: 0 20px 0 6px;
     cursor: pointer;
 
     @media (max-width: 620px) {
@@ -114,7 +115,20 @@ const HeaderComponent = ({
             />
 
             <a className="header-logo-wrapper" href={defaultPage}>
-              <img className="header-logo-icon" src={props.logoUrl} />
+              <ReactSVG
+                className="header-logo-icon"
+                loading={() => (
+                  <Loaders.Rectangle
+                    width="168"
+                    height="24"
+                    backgroundColor="#fff"
+                    foregroundColor="#fff"
+                    backgroundOpacity={0.25}
+                    foregroundOpacity={0.2}
+                  />
+                )}
+                src={props.logoUrl}
+              />
             </a>
           </>
         ) : !isLoaded && isAuthenticated ? (
