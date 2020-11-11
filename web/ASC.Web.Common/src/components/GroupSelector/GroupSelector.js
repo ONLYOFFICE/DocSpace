@@ -5,7 +5,7 @@ import i18n from "./i18n";
 import AdvancedSelector from "../AdvancedSelector";
 import { getGroupList } from "../../api/groups";
 import { changeLanguage } from "../../utils";
-
+import { isMobile } from "react-device-detect";
 class GroupSelector extends React.Component {
   constructor(props) {
     super(props);
@@ -16,13 +16,16 @@ class GroupSelector extends React.Component {
 
   componentDidMount() {
     changeLanguage(i18n);
-
+    
     getGroupList(this.props.useFake)
       .then((groups) => this.setState({ groups: this.convertGroups(groups) }))
       .catch((error) => console.log(error));
+
+      isMobile && document.getElementById('scroll') && document.getElementById('scroll').scrollTo(0,0)  
   }
 
   componentDidUpdate(prevProps) {
+   
     if (this.props.isOpen !== prevProps.isOpen)
       this.setState({ isOpen: this.props.isOpen });
   }

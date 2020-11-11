@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React from "react";
+import React, { useEffect } from "react";
 import { Redirect, Route } from "react-router-dom";
 import { connect } from "react-redux";
 //import { Loader } from "asc-web-components";
@@ -8,7 +8,7 @@ import { getCurrentUser, isAdmin, isMe } from "../../store/auth/selectors.js";
 import { AUTH_KEY } from "../../constants";
 import { Error401, Error404 } from "../../pages/errors";
 import isEmpty from "lodash/isEmpty";
-
+import { isMobile } from "react-device-detect";
 const PrivateRoute = ({ component: Component, ...rest }) => {
   const {
     isAdmin,
@@ -20,6 +20,10 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
   } = rest;
   const { userId } = computedMatch.params;
 
+  useEffect(() => {
+    isMobile && document.getElementById('scroll') && document.getElementById('scroll').scrollTo(0,0)
+  })
+  
   const renderComponent = (props) => {
     if (!isAuthenticated) {
       console.log("PrivateRoute render Redirect to login", rest);

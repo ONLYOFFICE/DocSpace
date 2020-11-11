@@ -1,7 +1,7 @@
 
-import React, { Component, createRef, useEffect} from "react"
+import React, { Component, createRef} from "react"
 import styled from "styled-components";
-import {  Scrollbar } from "asc-web-components";
+import {  Scrollbar, utils} from "asc-web-components";
 import { isMobile } from "react-device-detect";
 import {RefContextProvider, IsVisibleContextProvider} from "./context"
 
@@ -22,44 +22,51 @@ class Layout extends Component{
   }
 
   componentDidMount() {
+
     (isMobile || this.windowWidth.matches ) && document.getElementById("scroll").addEventListener("scroll", this.scrolledTheVerticalAxis,false);
   }
-
 
   componentWillUnmount() {
     (isMobile || this.windowWidth.matches ) && document.getElementById("scroll").removeEventListener("scroll", this.scrolledTheVerticalAxis,false);
   }
 
+
   scrolledTheVerticalAxis = () => {
+
     const { prevScrollPosition } = this.state;
     const currentScrollPosition =  document.getElementById("scroll").scrollTop || window.pageYOffset ;
-    const visibleContent = prevScrollPosition >= currentScrollPosition;
+    let visibleContent = prevScrollPosition >= currentScrollPosition;
 
-    this.setState({
+    if (!visibleContent && (document.getElementById("scroll").scrollHeight - document.getElementById("scroll").clientHeight < 57)) {
+      visibleContent = true
+    }
+
+     this.setState({
       prevScrollPosition: currentScrollPosition,
       visibleContent
     });
   };
+
   render() {  
   const scrollProp =  { ref: this.scrollRefPage } ;
   const { children } = this.props
 
     return(
-      <StyledContainer className="Layout" >
-           {  (isMobile || this.windowWidth.matches )  
-            ? <Scrollbar {...scrollProp} stype="mediumBlack">
-                <RefContextProvider value={this.scrollRefPage}>
-                  <IsVisibleContextProvider value={this.state.visibleContent}>
-                 
-                    { children }
-                    </IsVisibleContextProvider>
-                </RefContextProvider>
-              </Scrollbar>
-      
-           :  children
-            }
+        
+          <StyledContainer className="Layout" >
+  
+              {(isMobile || (!isMobile && this.windowWidth.matches) ) 
+                ? <Scrollbar {...scrollProp} stype="mediumBlack">
+                    <RefContextProvider value={this.scrollRefPage}>
+                      <IsVisibleContextProvider value={this.state.visibleContent}>
+                        { children }
+                        </IsVisibleContextProvider>
+                    </RefContextProvider>
+                  </Scrollbar>
+          
+              :  children
+                }
           </StyledContainer>
-
     )
   }
 }
