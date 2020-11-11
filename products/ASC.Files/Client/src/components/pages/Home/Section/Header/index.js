@@ -131,7 +131,13 @@ const StyledContainer = styled.div`
         position: absolute;
         top: 56px;
         z-index: 180;
-        transition: top 0.3s;
+
+        transition: top 0.3s cubic-bezier(0.0,0.0,0.8,1);
+        -moz-transition:  top 0.3s cubic-bezier(0.0,0.0,0.8,1);
+        -ms-transition:  top 0.3s cubic-bezier(0.0,0.0,0.8,1);
+        -webkit-transition:  top 0.3s cubic-bezier(0.0,0.0,0.8,1);
+        -o-transition:  top 0.3s cubic-bezier(0.0,0.0,0.8,1);
+        
       }
     }
 

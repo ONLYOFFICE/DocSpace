@@ -37,12 +37,17 @@ const StyledSectionHeader = styled.div`
           props.isArticlePinned ? `calc(100% - 272px)` : "100%"};
       background-color: #fff; 
       position: fixed; 
-      
       top: ${props => !props.isHeaderVisible ? "56px" : "0"} ; 
-      transition: top 0.3s;
       z-index:155;
-      
-    padding-right: 16px;
+
+      transition: top 0.3s cubic-bezier(0.0,0.0,0.8,1);
+      -moz-transition:  top 0.3s cubic-bezier(0.0,0.0,0.8,1);
+      -ms-transition:  top 0.3s cubic-bezier(0.0,0.0,0.8,1);
+      -webkit-transition:  top 0.3s cubic-bezier(0.0,0.0,0.8,1);
+      -o-transition:  top 0.3s cubic-bezier(0.0,0.0,0.8,1);
+
+
+      padding-right: 16px;
 
       padding-top: 4px;
     }
@@ -64,7 +69,12 @@ const StyledSectionHeader = styled.div`
 
   .section-header--hidden {
     @media ${tablet} {
-      top: -50px;
+      top: -61px;
+      transition: top 0.3s cubic-bezier(0.0,0.0,0.8,1);
+      -moz-transition:  top 0.3s cubic-bezier(0.0,0.0,0.8,1);
+      -ms-transition:  top 0.3s cubic-bezier(0.0,0.0,0.8,1);
+      -webkit-transition:  top 0.3s cubic-bezier(0.0,0.0,0.8,1);
+      -o-transition:  top 0.3s cubic-bezier(0.0,0.0,0.8,1);
     }
   }
 `;
