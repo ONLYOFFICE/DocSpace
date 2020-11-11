@@ -91,7 +91,11 @@ import {
   getPrivacyInstructionsLink,
   getIconOfDraggedFile,
 } from "../../../../../store/files/selectors";
-import { SharingPanel, OperationsPanel } from "../../../../panels";
+import {
+  SharingPanel,
+  OperationsPanel,
+  VersionHistoryPanel,
+} from "../../../../panels";
 const {
   isAdmin,
   getSettings,
@@ -187,6 +191,7 @@ class SectionBodyContent extends React.Component {
       showSharingPanel: false,
       showMoveToPanel: false,
       showCopyPanel: false,
+      showVersionHistoryPanel: false,
       isDrag: false,
       canDrag: true,
     };
@@ -233,7 +238,12 @@ class SectionBodyContent extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
     if (this.props && this.props.firstLoad) return true;
 
-    const { showMoveToPanel, showCopyPanel, isDrag } = this.state;
+    const {
+      showMoveToPanel,
+      showCopyPanel,
+      isDrag,
+      showVersionHistoryPanel,
+    } = this.state;
     if (this.state.showSharingPanel !== nextState.showSharingPanel) {
       return true;
     }
@@ -254,6 +264,10 @@ class SectionBodyContent extends React.Component {
     }
 
     if (isDrag !== nextState.isDrag) {
+      return true;
+    }
+
+    if (showVersionHistoryPanel !== nextState.showVersionHistoryPanel) {
       return true;
     }
 
@@ -495,10 +509,18 @@ class SectionBodyContent extends React.Component {
   };
 
   showVersionHistory = (e) => {
-    const { settings, history } = this.props;
+    const { settings, history, isMobile } = this.props;
     const fileId = e.currentTarget.dataset.id;
+    if (!isMobile) {
+      this.setState({ showVersionHistoryPanel: true });
+    } else {
+      history.push(`${settings.homepage}/${fileId}/history`);
+    }
+  };
 
-    history.push(`${settings.homepage}/${fileId}/history`);
+  onHistoryAction = () => {
+    const { showVersionHistoryPanel } = this.state;
+    this.setState({ showVersionHistoryPanel: !showVersionHistoryPanel });
   };
 
   lockFile = () => {
@@ -1529,6 +1551,7 @@ class SectionBodyContent extends React.Component {
       showSharingPanel,
       showMoveToPanel,
       showCopyPanel,
+      showVersionHistoryPanel,
     } = this.state;
 
     const operationsPanelProps = {
@@ -1600,6 +1623,13 @@ class SectionBodyContent extends React.Component {
             isCopy={true}
             visible={showCopyPanel}
             onClose={this.onCopyAction}
+          />
+        )}
+        {showVersionHistoryPanel && (
+          <VersionHistoryPanel
+            visible={showVersionHistoryPanel}
+            history={{}}
+            onClose={this.onHistoryAction}
           />
         )}
         <CustomTooltip ref={this.tooltipRef}>{fileMoveTooltip}</CustomTooltip>

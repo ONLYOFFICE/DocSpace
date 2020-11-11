@@ -58,6 +58,15 @@ const StyledAsidePanel = styled.div`
   ${PanelStyles}
 `;
 
+const StyledVersionHistoryPanel = styled.div`
+  .header_aside-panel {
+    width: 720px;
+  }
+  .aside-wrapper {
+    width: 720px;
+  }
+`;
+
 const StyledAddUsersPanelPanel = styled.div`
   .header_aside-panel {
     transform: translateX(${(props) => (props.visible ? "0" : "500px")});
@@ -363,6 +372,7 @@ export {
   StyledAddGroupsPanel,
   StyledAddUsersPanelPanel,
   StyledEmbeddingPanel,
+  StyledVersionHistoryPanel,
   StyledContent,
   StyledHeaderContent,
   StyledBody,
