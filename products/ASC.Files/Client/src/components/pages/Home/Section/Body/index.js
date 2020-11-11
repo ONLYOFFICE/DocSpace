@@ -516,7 +516,7 @@ class SectionBodyContent extends React.Component {
   showVersionHistory = (e) => {
     const { settings, history, isMobile } = this.props;
     const fileId = e.currentTarget.dataset.id;
-    if (!isMobile) {
+    if (!isMobile && window.innerWidth > 1024) {
       this.setState({
         versionHistory: {
           showVersionHistoryPanel: true,

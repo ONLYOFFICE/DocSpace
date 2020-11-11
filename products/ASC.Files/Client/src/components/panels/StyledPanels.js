@@ -64,6 +64,7 @@ const StyledVersionHistoryPanel = styled.div`
     width: 720px;
   }
   .header_aside-panel {
+    margin-left: 0px !important;
     transform: translateX(${(props) => (props.visible ? "0" : "720px")});
     width: 720px;
   }
