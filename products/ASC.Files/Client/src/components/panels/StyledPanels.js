@@ -59,10 +59,12 @@ const StyledAsidePanel = styled.div`
 `;
 
 const StyledVersionHistoryPanel = styled.div`
-  .header_aside-panel {
+  .modal-dialog-aside {
+    transform: translateX(${(props) => (props.visible ? "0" : "720px")});
     width: 720px;
   }
-  .aside-wrapper {
+  .header_aside-panel {
+    transform: translateX(${(props) => (props.visible ? "0" : "720px")});
     width: 720px;
   }
 `;
