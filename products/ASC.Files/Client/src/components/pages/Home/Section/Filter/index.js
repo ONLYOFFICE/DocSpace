@@ -17,8 +17,11 @@ import result from "lodash/result";
 import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
 import { constants, FilterInput, store, Loaders } from "asc-web-common";
+import { utils } from "asc-web-components";
 import isEqual from "lodash/isEqual";
 import { isMobileOnly } from "react-device-detect";
+
+const { Consumer } = utils.context;
 
 const {
   getCurrentUser,
@@ -300,23 +303,28 @@ class SectionFilterContent extends React.Component {
     return firstLoad ? (
       <Loaders.Filter />
     ) : (
-      <FilterInput
-        getFilterData={this.getData}
-        getSortData={this.getSortData}
-        selectedFilterData={selectedFilterData}
-        onFilter={this.onFilter}
-        onChangeViewAs={this.onChangeViewAs}
-        viewAs={false} // TODO: include viewSelector after adding method getThumbnail - this.props.viewAs
-        directionAscLabel={t("DirectionAscLabel")}
-        directionDescLabel={t("DirectionDescLabel")}
-        placeholder={t("Search")}
-        needForUpdate={this.needForUpdate}
-        language={language}
-        isReady={this.state.isReady}
-        {...filterColumnCount}
-        contextMenuHeader={t("AddFilter")}
-        isMobile={isMobileOnly}
-      />
+      <Consumer>
+        {(context) => (
+          <FilterInput
+            sectionWidth={context.sectionWidth}
+            getFilterData={this.getData}
+            getSortData={this.getSortData}
+            selectedFilterData={selectedFilterData}
+            onFilter={this.onFilter}
+            onChangeViewAs={this.onChangeViewAs}
+            viewAs={false} // TODO: include viewSelector after adding method getThumbnail - this.props.viewAs
+            directionAscLabel={t("DirectionAscLabel")}
+            directionDescLabel={t("DirectionDescLabel")}
+            placeholder={t("Search")}
+            needForUpdate={this.needForUpdate}
+            language={language}
+            isReady={this.state.isReady}
+            {...filterColumnCount}
+            contextMenuHeader={t("AddFilter")}
+            isMobile={isMobileOnly}
+          />
+        )}
+      </Consumer>
     );
   }
 }

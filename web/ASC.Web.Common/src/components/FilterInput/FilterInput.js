@@ -172,6 +172,7 @@ class FilterInput extends React.Component {
       isDisabled,
       size,
       placeholder,
+      sectionWidth,
     } = this.props;
 
     if (
@@ -179,6 +180,10 @@ class FilterInput extends React.Component {
       this.props.viewAs !== nextProps.viewAs ||
       this.props.widthProp !== nextProps.widthProp
     ) {
+      return true;
+    }
+
+    if (sectionWidth !== nextProps.sectionWidth) {
       return true;
     }
 
@@ -799,6 +804,7 @@ FilterInput.protoTypes = {
   filterColumnCount: PropTypes.number,
   onChangeViewAs: PropTypes.func,
   contextMenuHeader: PropTypes.string,
+  sectionWidth: PropTypes.number,
 };
 
 FilterInput.defaultProps = {
