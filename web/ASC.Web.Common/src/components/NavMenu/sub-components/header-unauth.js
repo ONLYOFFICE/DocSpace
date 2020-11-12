@@ -48,7 +48,12 @@ const Header = styled.header`
   }
 `;
 
-const HeaderUnAuth = ({ enableAdmMess, wizardToken, isAuthenticated }) => {
+const HeaderUnAuth = ({
+  enableAdmMess,
+  wizardToken,
+  isAuthenticated,
+  isLoaded,
+}) => {
   //console.log("HeaderUnAuth render");
 
   const { t } = useTranslation();
@@ -61,7 +66,7 @@ const HeaderUnAuth = ({ enableAdmMess, wizardToken, isAuthenticated }) => {
         alignItems="center"
         className="header-items-wrapper"
       >
-        {!isAuthenticated ? (
+        {!isAuthenticated && isLoaded ? (
           <div>
             <a className="header-logo-wrapper" href="/">
               <img
@@ -90,16 +95,18 @@ HeaderUnAuth.propTypes = {
   enableAdmMess: PropTypes.bool,
   wizardToken: PropTypes.string,
   isAuthenticated: PropTypes.bool,
+  isLoaded: PropTypes.bool,
 };
 
 const mapStateToProps = (state) => {
-  const { isAuthenticated, settings } = state.auth;
+  const { isAuthenticated, isLoaded, settings } = state.auth;
   const { enableAdmMess, wizardToken } = settings;
 
   return {
     enableAdmMess,
     wizardToken,
     isAuthenticated,
+    isLoaded,
   };
 };
 
