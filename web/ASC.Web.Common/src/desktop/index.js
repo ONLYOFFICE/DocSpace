@@ -1,31 +1,36 @@
 import { toastr } from "asc-web-common";
 import {
   setEncryptionKeys as setKeys,
-  getEncryptionAccess,
+  //getEncryptionAccess,
 } from "../store/auth/actions";
-import { isDesktopClient, isEncryptionSupport } from "../store/auth/selectors";
+import { assign, isEmpty } from "lodash";
+
+// const { isDesktopClient, isEncryptionSupport } = store.auth.selectors;
+
+// const state = store.getState();
 
 const domain = window.location.origin;
 const provider = "AppServer";
 const guid = "{FFF0E1EB-13DB-4678-B67D-FF0A41DBBCEF}";
-const desktop = isDesktopClient;
-const encryption = isEncryptionSupport;
-const encryptionKeyPair = {
-  privateKeyEnc: "WL0scvx5V3AF9BiD",
-  publicKey: "&#xAMIIBIjANBgkq",
-};
+const desktop = window["AscDesktopEditor"] !== undefined;
+const encryption =
+  (desktop &&
+    typeof window.AscDesktopEditor.cloudCryptoCommand === "function") ||
+  false;
+
+const encryptionKeyPair = {};
 
 if (encryption) {
   window.cloudCryptoCommand = (type, params, callback) => {
+    console.log("cloudCryptoCommand", params);
     switch (type) {
       case "encryptionKeys":
         setEncryptionKeys(params);
         break;
       case "relogin":
-        Desktop.relogin();
+        relogin();
         break;
       case "getsharingkeys":
-        Desktop.setAccess();
         break;
       default:
         break;
@@ -63,12 +68,19 @@ export function regDesktop(displayName, email, userId) {
     provider,
     userId,
   };
+
   if (encryption) {
-    if (encryptionKeyPair) {
-      data.encryptionKeys.cryptoEngineId = guid;
-      data.encryptionKeys = encryptionKeyPair;
+    if (!isEmpty(encryptionKeyPair)) {
+      assign(data, {
+        encryptionKeys: {
+          cryptoEngineId: guid,
+          privateKeyEnc: encryptionKeyPair.privateKeyEnc,
+          publicKey: encryptionKeyPair.publicKey,
+        },
+      });
     }
   }
+
   const execCommand = window.AscDesktopEditor.execCommand(
     "portal:login",
     JSON.stringify(data)
@@ -89,6 +101,7 @@ export function relogin() {
 }
 
 export function setEncryptionKeys(encryptionKeys) {
+  console.log("encryptionKeys: ", encryptionKeys);
   if (!encryptionKeys.publicKey || !encryptionKeys.privateKeyEnc) {
     return toastr.info("Empty encryption keys");
   }
