@@ -625,13 +625,17 @@ const getFilesContextOptions = (
     options.push("separator0");
 
     if (isFile) {
-      options.push("show-version-history");
-      options.push("finalize-version");
-      options.push("block-unblock-version");
-      options.push("separator1");
+      if (!item.providerKey && !canOpenPlayer) {
+        options.push("show-version-history");
+        options.push("finalize-version");
+        options.push("block-unblock-version");
+        options.push("separator1");
+      }
+
       if (isRecent) {
         options.push("open-location");
       }
+
       if (!isFavorite) {
         options.push("mark-as-favorite");
       }
@@ -645,7 +649,6 @@ const getFilesContextOptions = (
 
       options.push("download");
     }
-
     options.push("move");
     options.push("copy");
 
@@ -654,8 +657,10 @@ const getFilesContextOptions = (
     }
 
     options.push("rename");
+    options.push("separator3");
     options.push("delete");
   }
+
   if (isFavorite && !isRecycleBin) {
     options.push("remove-from-favorites");
   }

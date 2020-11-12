@@ -598,6 +598,7 @@ class SectionBodyContent extends React.Component {
         case "separator0":
         case "separator1":
         case "separator2":
+        case "separator3":
           return { key: option, isSeparator: true };
         case "open-location":
           return {
