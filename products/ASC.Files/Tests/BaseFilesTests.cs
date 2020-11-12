@@ -83,7 +83,6 @@ namespace ASC.Files.Tests
                 .AddJsonFile("storage.json")
                 .AddJsonFile("kafka.json")
                 .AddJsonFile($"kafka.{hostingContext.HostingEnvironment.EnvironmentName}.json", true)
-                .AddJsonFile("filesTests.json")
                 .AddEnvironmentVariables();
 
             Configuration = config.Build();
