@@ -111,6 +111,7 @@ class FilterInput extends React.Component {
 
     this.searchWrapper = React.createRef();
     this.filterWrapper = React.createRef();
+    this.rectComboBoxRef = React.createRef();
   }
 
   componentDidMount() {
@@ -383,14 +384,18 @@ class FilterInput extends React.Component {
 
   AddItems = (searchWidth) => {
     const { hideFilterItems } = this.state;
+    if (hideFilterItems.length === 0) return 0;
+
     let newSearchWidth = searchWidth;
     let numberOfHiddenItems = hideFilterItems.length;
 
     for (let i = 0; i < hideFilterItems.length; i++) {
-      const hiddenItemWidth = this.calcHiddenItemWidth(
-        hideFilterItems[hideFilterItems.length - i - 1] // last hidden element
+      let hiddenItemWidth = this.calcHiddenItemWidth(
+        hideFilterItems[i] // last hidden element
       );
 
+      if (hiddenItemWidth > 260) hiddenItemWidth = 260;
+      console.log("hiddenItemWidth!!!!!: ", hiddenItemWidth);
       newSearchWidth = newSearchWidth - hiddenItemWidth;
       if (newSearchWidth >= this.minWidth) {
         numberOfHiddenItems--;
@@ -407,12 +412,14 @@ class FilterInput extends React.Component {
     let newSearchWidth = searchWidth;
     let numberOfHiddenItems = hideFilterItems.length;
 
-    for (let i = 0; i < currentFilterItems.length; i++) {
+    for (let i = currentFilterItems.length - 1; i >= 0; i--) {
       if (currentFilterItems[i].id === "styled-hide-filter") continue;
       const filterItemWidth = currentFilterItems[i].getBoundingClientRect()
         .width;
       newSearchWidth = newSearchWidth + filterItemWidth;
       numberOfHiddenItems++;
+      if (numberOfHiddenItems === 1) newSearchWidth - 40; // subtract the width of hidden block
+
       if (newSearchWidth > this.minWidth) break;
     }
 
@@ -425,7 +432,6 @@ class FilterInput extends React.Component {
 
     if (!searchWidth || currentFilterItems.length === 0)
       return hideFilterItems.length;
-
     numberOfHiddenItems =
       searchWidth < this.minWidth
         ? this.HideItems(searchWidth, currentFilterItems)
@@ -435,21 +441,25 @@ class FilterInput extends React.Component {
   };
 
   updateFilter = (inputFilterItems) => {
+    const { sectionWidth } = this.props;
     const currentFilterItems = inputFilterItems
       ? cloneObjectsArray(inputFilterItems)
       : cloneObjectsArray(this.state.filterValues);
     const fullWidth = this.searchWrapper.current.getBoundingClientRect().width;
     const filterWidth = this.filterWrapper.current.getBoundingClientRect()
       .width;
+    const comboBoxWidth = this.rectComboBoxRef.current.getBoundingClientRect()
+      .width;
 
-    const searchWidth = fullWidth - filterWidth;
+    const searchWidth = sectionWidth
+      ? sectionWidth - filterWidth - comboBoxWidth - 48 // 48 - paddings
+      : fullWidth - filterWidth;
 
     const filterArr = Array.from(
       Array.from(this.filterWrapper.current.children).find(
         (x) => x.id === "filter-items-container"
       ).children
     );
-
     const numberOfHiddenItems = this.calcHiddenItems(searchWidth, filterArr);
     if (searchWidth !== 0 && currentFilterItems.length > 0) {
       this.setState({
@@ -779,24 +789,25 @@ class FilterInput extends React.Component {
             </div>
           </SearchInput>
         </div>
-
-        <SortComboBox
-          options={getSortData()}
-          isDisabled={isDisabled}
-          onChangeSortId={this.onClickSortItem}
-          onChangeView={this.onClickViewSelector}
-          onChangeSortDirection={this.onChangeSortDirection}
-          selectedOption={
-            getSortData().length > 0
-              ? getSortData().find((x) => x.key === sortId)
-              : {}
-          }
-          onButtonClick={this.onSortDirectionClick}
-          viewAs={viewAs}
-          sortDirection={+sortDirection}
-          directionAscLabel={directionAscLabel}
-          directionDescLabel={directionDescLabel}
-        />
+        <div ref={this.rectComboBoxRef}>
+          <SortComboBox
+            options={getSortData()}
+            isDisabled={isDisabled}
+            onChangeSortId={this.onClickSortItem}
+            onChangeView={this.onClickViewSelector}
+            onChangeSortDirection={this.onChangeSortDirection}
+            selectedOption={
+              getSortData().length > 0
+                ? getSortData().find((x) => x.key === sortId)
+                : {}
+            }
+            onButtonClick={this.onSortDirectionClick}
+            viewAs={viewAs}
+            sortDirection={+sortDirection}
+            directionAscLabel={directionAscLabel}
+            directionDescLabel={directionDescLabel}
+          />
+        </div>
         {viewAs && (
           <ViewSelector
             isDisabled={isDisabled}
