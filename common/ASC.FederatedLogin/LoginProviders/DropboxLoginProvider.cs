@@ -30,6 +30,7 @@ using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Core;
 using ASC.Core.Common.Configuration;
+using ASC.FederatedLogin.Helpers;
 
 using Microsoft.Extensions.Configuration;
 
@@ -74,6 +75,7 @@ namespace ASC.FederatedLogin.LoginProviders
         {
             //services.TryAddScoped<DropboxLoginProvider>();
             return services
+                .AddOAuth20TokenHelperService()
                 .AddConsumerFactoryService()
                 .AddKafkaService()
                 .AddTenantManagerService()

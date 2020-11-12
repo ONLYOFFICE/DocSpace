@@ -340,7 +340,12 @@ class AvatarEditorBody extends React.Component {
       var img = new Image();
       img.onload = function () {
         var canvas = resizeImage.resize2Canvas(img, img.width, img.height);
-        var data = resizeImage.resize(canvas, img.width, img.height, resizeImage.JPEG);
+        var data = resizeImage.resize(
+          canvas,
+          img.width,
+          img.height,
+          resizeImage.JPEG
+        );
         _this.setState({
           image: data,
           rotate: 0,
@@ -689,7 +694,7 @@ class AvatarEditorBody extends React.Component {
                         />
                         <Box className="avatar-mini-preview">
                           <Avatar
-                            size="small"
+                            size="min"
                             role={role}
                             source={this.state.croppedImage}
                             editing={false}

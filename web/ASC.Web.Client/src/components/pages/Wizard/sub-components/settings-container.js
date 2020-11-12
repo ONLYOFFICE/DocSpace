@@ -24,7 +24,7 @@ const StyledContainer = styled(Box)`
   }
 
   .drop-down {
-    margin-left: 8px;
+    margin-left: 6px;
   }
 
   @media ${tablet} {

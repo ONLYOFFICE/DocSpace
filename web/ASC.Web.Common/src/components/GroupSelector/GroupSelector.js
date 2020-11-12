@@ -96,6 +96,7 @@ class GroupSelector extends React.Component {
       displayType,
       withoutAside,
       embeddedComponent,
+      showCounter,
     } = this.props;
 
     return (
@@ -126,6 +127,7 @@ class GroupSelector extends React.Component {
         onCancel={onCancel}
         withoutAside={withoutAside}
         embeddedComponent={embeddedComponent}
+        showCounter={showCounter}
       />
     );
   }
