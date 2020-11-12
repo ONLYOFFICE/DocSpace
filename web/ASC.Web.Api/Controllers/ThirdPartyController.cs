@@ -52,7 +52,7 @@ namespace ASC.Web.Api.Controllers
         }
 
         [Read("{provider}")]
-        public string Get(LoginProviderEnum provider)
+        public object Get(LoginProviderEnum provider)
         {
             switch (provider)
             {
