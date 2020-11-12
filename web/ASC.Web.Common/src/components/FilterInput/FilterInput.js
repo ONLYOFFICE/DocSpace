@@ -145,7 +145,7 @@ class FilterInput extends React.Component {
       const filterValues = this.getDefaultFilterData();
       this.setState({
         filterValues: filterValues,
-        searchText: selectedFilterData.inputValue,
+        searchText: selectedFilterData.inputValue || "",
       });
       this.updateFilter(filterValues);
     }
@@ -395,7 +395,6 @@ class FilterInput extends React.Component {
       );
 
       if (hiddenItemWidth > 260) hiddenItemWidth = 260;
-      console.log("hiddenItemWidth!!!!!: ", hiddenItemWidth);
       newSearchWidth = newSearchWidth - hiddenItemWidth;
       if (newSearchWidth >= this.minWidth) {
         numberOfHiddenItems--;
