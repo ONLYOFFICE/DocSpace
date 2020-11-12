@@ -15,7 +15,7 @@ const StyledContainer = styled.div`
 
   .arrow-button {
     margin-left: -8px;
-    margin-right: 24px;
+    margin-right: 15px;
     min-width: 17px;
 
     @media (max-width: 1024px) {
@@ -96,9 +96,7 @@ const SectionHeaderContent = (props) => {
         className="arrow-button"
       />
 
-      <Headline className="headline-header" type="content" truncate={true}>
-        {title}
-      </Headline>
+      <Headline className="headline-header">{title}</Headline>
     </StyledContainer>
   );
 };

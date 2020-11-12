@@ -95,7 +95,7 @@ class PureVersionHistory extends React.Component {
               <ArticleBodyContent />
             </PageLayout.ArticleBody>
 
-            <PageLayout.SectionHeader>
+            <PageLayout.SectionHeader borderBottom={true}>
               <SectionHeaderContent title={versions && versions[0].title} />
             </PageLayout.SectionHeader>
 

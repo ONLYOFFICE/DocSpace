@@ -34,11 +34,13 @@ const StyledRow = styled(Row)`
 
     .version_badge-text {
       position: absolute;
-      left: -2px;
+      left: 6px;
+      @media ${tablet} {
+        left: -2px;
+      }
     }
 
-    margin-left: -8px;
-    margin-right: 16px;
+    margin-left: 0px;
     margin-top: ${(props) => (props.showEditPanel ? "13px" : "-2px")};
 
     @media ${tablet} {
