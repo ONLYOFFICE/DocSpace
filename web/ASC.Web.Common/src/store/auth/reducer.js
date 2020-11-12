@@ -3,6 +3,7 @@ import {
   SET_MODULES,
   SET_SETTINGS,
   SET_IS_LOADED,
+  SET_IS_LOADED_SECTION,
   LOGOUT,
   SET_PASSWORD_SETTINGS,
   SET_NEW_EMAIL,
@@ -21,6 +22,7 @@ import { LANGUAGE, AUTH_KEY } from "../../constants";
 const initialState = {
   isAuthenticated: false,
   isLoaded: false,
+  isLoadedSection: true,
   user: {},
   modules: [],
   settings: {
@@ -105,6 +107,10 @@ const authReducer = (state = initialState, action) => {
     case SET_IS_LOADED:
       return Object.assign({}, state, {
         isLoaded: action.isLoaded,
+      });
+    case SET_IS_LOADED_SECTION:
+      return Object.assign({}, state, {
+        isLoadedSection: action.isLoadedSection,
       });
     case SET_NEW_EMAIL:
       return Object.assign({}, state, {
