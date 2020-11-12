@@ -28,26 +28,58 @@ const i18n = createI18N({
 });
 
 const StyledThirdParty = styled.div`
-  margin-top: 60px;
+  margin-top: 42px;
 
   .tree-thirdparty-list {
+    padding-top: 3px;
     display: flex;
+    max-width: 200px;
 
     div {
       height: 26px;
       width: 100%;
       background: #eceef1;
-      margin-right: 1px;
       text-align: center;
+      margin-right: 1px;
       color: #818b91;
+      :first-of-type {
+        border-radius: 3px 0 0 3px;
+      }
+      :last-of-type {
+        border-radius: 0 3px 3px 0;
 
-      &:hover {
-        cursor: pointer;
+        img {
+          margin-top: 4px;
+        }
       }
 
       img {
-        padding: 0 5px;
-        margin-top: 4px;
+        padding: 4px 4px 0 4px;
+      }
+
+      @media (max-width: 1024px) {
+        height: 32px;
+        margin-right: 0px;
+        :first-of-type {
+          border-radius: 3px 0 0 3px;
+          padding-left: 5px;
+        }
+        :last-of-type {
+          border-radius: 0 3px 3px 0;
+          padding-right: 5px;
+
+          img {
+            margin-top: 7px;
+          }
+        }
+
+        img {
+          padding: 7px 4px 0 4px;
+        }
+      }
+
+      &:hover {
+        cursor: pointer;
       }
     }
   }
