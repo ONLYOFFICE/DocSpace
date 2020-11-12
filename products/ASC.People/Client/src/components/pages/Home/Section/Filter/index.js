@@ -7,6 +7,7 @@ import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
 import { getFilterByLocation } from "../../../../../helpers/converters";
 import { store, FilterInput, Loaders } from "asc-web-common";
+import { utils } from "asc-web-components";
 import { isMobileOnly } from "react-device-detect";
 import { getFilter, getGroups } from "../../../../../store/people/selectors";
 const {
@@ -16,6 +17,8 @@ const {
   getSettings,
   getIsLoaded,
 } = store.auth.selectors;
+
+const { Consumer } = utils.context;
 
 const getEmployeeStatus = (filterValues) => {
   const employeeStatus = result(
@@ -250,19 +253,24 @@ class SectionFilterContent extends React.Component {
     const selectedFilterData = this.getSelectedFilterData();
     const { t, language, isLoaded } = this.props;
     return isLoaded ? (
-      <FilterInput
-        getFilterData={this.getData}
-        getSortData={this.getSortData}
-        selectedFilterData={selectedFilterData}
-        onFilter={this.onFilter}
-        directionAscLabel={t("DirectionAscLabel")}
-        directionDescLabel={t("DirectionDescLabel")}
-        placeholder={t("Search")}
-        needForUpdate={this.needForUpdate}
-        language={language}
-        contextMenuHeader={t("AddFilter")}
-        isMobile={isMobileOnly}
-      />
+      <Consumer>
+        {(context) => (
+          <FilterInput
+            sectionWidth={context.sectionWidth}
+            getFilterData={this.getData}
+            getSortData={this.getSortData}
+            selectedFilterData={selectedFilterData}
+            onFilter={this.onFilter}
+            directionAscLabel={t("DirectionAscLabel")}
+            directionDescLabel={t("DirectionDescLabel")}
+            placeholder={t("Search")}
+            needForUpdate={this.needForUpdate}
+            language={language}
+            contextMenuHeader={t("AddFilter")}
+            isMobile={isMobileOnly}
+          />
+        )}
+      </Consumer>
     ) : (
       <Loaders.Filter />
     );
