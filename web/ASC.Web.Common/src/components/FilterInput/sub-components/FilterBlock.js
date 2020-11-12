@@ -83,7 +83,6 @@ class FilterItem extends React.Component {
       group,
       inSubgroup: !!inSubgroup,
     });
-    this.setNeedUpdate(true);
   };
   onClick = () => {
     const { isDisabled, id, onClose } = this.props;
