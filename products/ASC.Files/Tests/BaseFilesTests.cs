@@ -46,13 +46,18 @@ namespace ASC.Files.Tests
                     Configure(hostingContext, config);
                 }));
 
-            FilesControllerHelper = TestServer.Services.GetService<FilesControllerHelper<T>>();
-            GlobalFolderHelper = TestServer.Services.GetService<GlobalFolderHelper>();
-            UserManager = TestServer.Services.GetService<UserManager>();
-            SecurityContext = TestServer.Services.GetService<SecurityContext>();
-            UserOptions = TestServer.Services.GetService<IOptions<UserOptions>>().Value;
-            CurrentTenant = SetAndGetCurrentTenant();
-            //User = GetUser();
+            var scope = TestServer.Services.CreateScope();
+
+            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+            var tenant = tenantManager.GetTenant(1);
+            tenantManager.SetCurrentTenant(tenant);
+            CurrentTenant = tenant;
+
+            FilesControllerHelper = scope.ServiceProvider.GetService<FilesControllerHelper<T>>();
+            GlobalFolderHelper = scope.ServiceProvider.GetService<GlobalFolderHelper>();
+            UserManager = scope.ServiceProvider.GetService<UserManager>();
+            SecurityContext = scope.ServiceProvider.GetService<SecurityContext>();
+            UserOptions = scope.ServiceProvider.GetService<IOptions<UserOptions>>().Value;
 
             SecurityContext.AuthenticateMe(CurrentTenant.OwnerId);
         }
@@ -60,6 +65,7 @@ namespace ASC.Files.Tests
         private void Configure(WebHostBuilderContext hostingContext, IConfigurationBuilder config)
         {
             var path = "..\\..\\..\\..\\..\\..\\config";
+
 
             if (!Path.IsPathRooted(path))
             {
@@ -83,23 +89,6 @@ namespace ASC.Files.Tests
             Configuration = config.Build();
         }
 
-
-        private Tenant SetAndGetCurrentTenant()
-        {
-            var tenantManager = TestServer.Services.GetService<TenantManager>();
-            var tenant = tenantManager.GetTenant(UserOptions.TenantId);
-            tenantManager.SetCurrentTenant(tenant);
-
-            return tenantManager.CurrentTenant;
-        }
-
-        private UserInfo GetUser()
-        {
-            var user = UserManager.GetUsers(UserOptions.Id);
-            return user;
-        }
-
-        
         public BatchModel GetBatchModel(string text)
         {
             var json = text;

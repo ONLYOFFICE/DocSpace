@@ -8,7 +8,7 @@ using System;
 namespace ASC.Files.Tests
 {
     [TestFixture]
-    public class FilesControllerHelperIntTests : BaseFilesTests<int>
+    public class MyDocuments : BaseFilesTests<int>
     {
         [SetUp]
         public override void SetUp()
@@ -23,19 +23,6 @@ namespace ASC.Files.Tests
             var folderWrapper = FilesControllerHelper.CreateFolder(GlobalFolderHelper.FolderMy, folderTitle);
             Assert.IsNotNull(folderWrapper);
             Assert.AreEqual(folderTitle, folderWrapper.Title);
-        }
-
-        [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetCreateFolderItems))]
-        [Category("section 'Shared Documents'")]
-        public void CreateSharedFolderReturnsFolderWrapperTest(string folderTitle)
-        {
-            const string exception = "You don't have enough permission to create";
-            try
-            {
-                var folderWrapper = FilesControllerHelper.CreateFolder(GlobalFolderHelper.FolderShare, folderTitle);
-                Assert.Fail(exception, folderWrapper.Title);
-            }
-            catch(Exception ex){ Assert.AreEqual(exception, ex.Message); }
         }
 
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetFolderItems))]
@@ -75,22 +62,6 @@ namespace ASC.Files.Tests
             Assert.AreEqual(folderTitle, folderWrapper.Title);
         }
 
-        [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetRenameFolderItems))]
-        [Category("section 'Shared Documents'")]
-        public void RenameSharedFolderReturnsFolderWrapperTest(int folderId, string folderTitle)
-        {
-            const string exception = "You don't have enough permission to rename the folder";
-            try
-            {
-                var folderWrapper = FilesControllerHelper.RenameFolder(folderId, folderTitle);
-                Assert.Fail(exception, folderWrapper.Title);
-            }
-            catch(Exception ex)
-            {
-                Assert.AreEqual(exception, ex.Message);
-            }
-        }
-
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetDeleteFolderItems))]
         [Category("section 'My Documents'")]
         public void DeleteFolderTest(int folderId, bool deleteAfter, bool immediately)
@@ -114,54 +85,16 @@ namespace ASC.Files.Tests
             Assert.AreEqual(statusDelete, status.OperationType);
         }
 
-        [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetDeleteFolderItems))]
-        [Category("section 'Shared Documents'")]
-        public void DeleteSharedFolderTest(int folderId, bool deleteAfter, bool immediately)
-        {
-            
-                var statuses = FilesControllerHelper.DeleteFolder(
-                    folderId,
-                    deleteAfter,
-                    immediately);
-
-                FileOperationWraper status = null;
-                foreach (var item in statuses)
-                {
-                    if (item.OperationType == FileOperationType.Delete)
-                    {
-                        status = item;
-                    }
-                }
-
-                var statusDelete = FileOperationType.Delete;
-
-            Assert.IsNotNull(status);
-            Assert.AreEqual(statusDelete, status.OperationType);
-        }
-
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetCreateFileItems))]
         [Category("section 'My Documents'")]
         public void CreateFileReturnsFileWrapperTest(string fileTitle)
         {
             var fileWrapper = FilesControllerHelper.CreateFile(GlobalFolderHelper.FolderMy, fileTitle);
-
+            
             Assert.IsNotNull(fileWrapper);
             Assert.AreEqual(fileTitle, fileWrapper.Title);
         }
-
-        [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetCreateFileItems))]
-        [Category("section 'Shared Documents'")]
-        public void CreateSharedFileReturnsFileWrapperTest(string fileTitle)
-        {
-            const string exception = "You don't have enough permission to create";
-            try
-            {
-                var fileWrapper = FilesControllerHelper.CreateFile(GlobalFolderHelper.FolderShare, fileTitle);
-                Assert.Fail(exception, fileWrapper.Title);
-            }
-            catch (Exception ex) { Assert.AreEqual(exception, ex.Message); }
-
-        }
+        
 
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetFileInfoItems))]
         [Category("section 'My Documents'")]
