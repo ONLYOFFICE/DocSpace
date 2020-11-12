@@ -1606,33 +1606,23 @@ class SectionBodyContent extends React.Component {
             headingFiles={t("Files")}
           >
             {items.map((item) => {
+              const { checked, isFolder, value, contextOptions } = item;
               const isEdit =
                 !!fileAction.type &&
                 editingId === item.id &&
                 item.fileExst === fileAction.extension;
-              const contextOptions = this.getFilesContextOptions(
-                item,
-                viewer
-              ).filter((o) => o);
               const contextOptionsProps =
-                !contextOptions.length || isEdit ? {} : { contextOptions };
-              const checked = isFileSelected(selection, item.id, item.parentId);
+                !isEdit && contextOptions && contextOptions.length > 0
+                  ? {
+                      contextOptions: this.getFilesContextOptions(
+                        contextOptions,
+                        item
+                      ),
+                    }
+                  : {};
               const checkedProps = isEdit || item.id <= 0 ? {} : { checked };
               const element = this.getItemIcon(item, isEdit || item.id <= 0);
 
-              const selectedItem = selection.find(
-                (x) => x.id === item.id && x.fileExst === item.fileExst
-              );
-              const isFolder = selectedItem
-                ? false
-                : item.fileExst
-                ? false
-                : true;
-              const draggable = selectedItem && !isRecycleBin;
-              let value = item.fileExst
-                ? `file_${item.id}`
-                : `folder_${item.id}`;
-              value += draggable ? "_draggable" : "";
               let classNameProp =
                 isFolder && item.access < 2 && !isRecycleBin
                   ? { className: " dropable" }
@@ -1649,7 +1639,7 @@ class SectionBodyContent extends React.Component {
                   key={`dnd-key_${item.id}`}
                   {...contextOptionsProps}
                   value={value}
-                  isFolder={!item.fileExst}
+                  isFolder={isFolder}
                 >
                   <Tile
                     key={item.id}
