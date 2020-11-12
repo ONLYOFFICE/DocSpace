@@ -8,7 +8,7 @@
 <path d="M57 11H20V18H57V11Z" fill="#BFBFBF"/>
 <path d="M57 22H20V29H57V22Z" fill="#BFBFBF"/>
 <path d="M76 33H20V40H76V33Z" fill="#BFBFBF"/>
-<path d="M20 44H76V51H20V44Z" fill="#BFBFBF"/>
+<path d="M20 44H61V51H20V44Z" fill="#BFBFBF"/>
 <path opacity="0.3" d="M56 30V1H57V29H86L87 30H56Z" fill="black"/>
 </g>
 <defs>

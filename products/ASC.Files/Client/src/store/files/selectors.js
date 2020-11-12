@@ -420,7 +420,11 @@ export const getFolderIcon = (providerKey, size = 32) => {
     case "SharePoint":
       return `${folderPath}/folder/sharepoint.svg`;
     case "Yandex":
-      return `${folderPath}/Folder/yandex.svg`;
+      return `${folderPath}/folder/yandex.svg`;
+    case "kDrive":
+      return `${folderPath}/folder/kdrive.svg`;
+    case "WebDav":
+      return `${folderPath}/folder/webdaw.svg`;
     default:
       return `${folderPath}/folder.svg`;
   }
@@ -460,12 +464,18 @@ export const getFileIcon = (
       return `${folderPath}/docx.svg`;
     case ".dvd":
       return `${folderPath}/dvd.svg`;
+    case ".epub":
+      return `${folderPath}/epub.svg`;
+    case ".pb2":
+      return `${folderPath}/fb2.svg`;
     case ".flv":
       return `${folderPath}/flv.svg`;
     case ".iaf":
       return `${folderPath}/iaf.svg`;
     case ".m2ts":
       return `${folderPath}/m2ts.svg`;
+    case ".mht":
+      return `${folderPath}/mht.svg`;
     case ".mkv":
       return `${folderPath}/mkv.svg`;
     case ".mov":
@@ -502,6 +512,8 @@ export const getFileIcon = (
       return `${folderPath}/xlsx.svg`;
     case ".xps":
       return `${folderPath}/xps.svg`;
+    case ".xml":
+      return `${folderPath}/xml.svg`;
     default:
       return `${folderPath}/file.svg`;
   }
