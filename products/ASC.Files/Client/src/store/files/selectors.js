@@ -424,7 +424,7 @@ export const getFolderIcon = (providerKey, size = 32) => {
     case "kDrive":
       return `${folderPath}/folder/kdrive.svg`;
     case "WebDav":
-      return `${folderPath}/folder/webdaw.svg`;
+      return `${folderPath}/folder/webdav.svg`;
     default:
       return `${folderPath}/folder.svg`;
   }
@@ -436,18 +436,15 @@ export const getFileIcon = (
   archive = false,
   image = false,
   sound = false,
-  ebook = false,
   html = false
 ) => {
   const folderPath = `images/icons/${size}`;
 
-  if (archive) return `${folderPath}/file_archive.svg`;
+  if (archive) return `${folderPath}/file_arcive.svg`;
 
   if (image) return `${folderPath}/image.svg`;
 
   if (sound) return `${folderPath}/sound.svg`;
-
-  if (ebook) return `${folderPath}/ebook.svg`;
 
   if (html) return `${folderPath}/html.svg`;
 
@@ -1106,7 +1103,6 @@ const getIcon = (state, size = 24, fileExst = null, providerKey = null) => {
     const isArchiveItem = isArchive(fileExst)(state);
     const isImageItem = isImage(fileExst)(state);
     const isSoundItem = isSound(fileExst)(state);
-    const isEbookItem = isEbook(fileExst)(state);
     const isHtmlItem = isHtml(fileExst)(state);
 
     const icon = getFileIcon(
@@ -1115,7 +1111,6 @@ const getIcon = (state, size = 24, fileExst = null, providerKey = null) => {
       isArchiveItem,
       isImageItem,
       isSoundItem,
-      isEbookItem,
       isHtmlItem
     );
 
