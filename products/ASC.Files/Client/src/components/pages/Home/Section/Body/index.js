@@ -158,13 +158,15 @@ const SimpleFilesRow = styled(Row)`
     margin-top: -1px;
   }
 
-  .share-button,
+  .share-button:hover,
   .share-button-icon:hover {
     cursor: pointer;
-    div {
-      color: "#657077";
+    color: #657077;
+    path {
+      fill: #657077;
     }
   }
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
   @media (max-width: 1312px) {
     .share-button {
@@ -1440,7 +1442,8 @@ class SectionBodyContent extends React.Component {
     });
   };
 
-  getSharedButton = () => {
+  getSharedButton = (shared) => {
+    const color = shared ? "#657077" : "#a3a9ae";
     return (
       <Text
         className="share-button"
@@ -1448,13 +1451,13 @@ class SectionBodyContent extends React.Component {
         title={this.props.t("Share")}
         fontSize="12px"
         fontWeight={600}
-        color="#A3A9AE"
+        color={color}
         display="inline-flex"
         onClick={this.onClickShare}
       >
         <IconButton
           className="share-button-icon"
-          color="#a3a9ae"
+          color={color}
           hoverColor="#657077"
           size={18}
           iconName="CatalogSharedIcon"
@@ -1696,7 +1699,7 @@ class SectionBodyContent extends React.Component {
                   const sharedButton =
                     isRecycleBin || isEdit || item.id <= 0 || sectionWidth < 500
                       ? null
-                      : this.getSharedButton();
+                      : this.getSharedButton(item.shared);
                   const displayShareButton =
                     sectionWidth < 500
                       ? "26px"
