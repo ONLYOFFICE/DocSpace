@@ -596,6 +596,10 @@ export function getThirdPartyCapabilities() {
   return request({ method: "get", url: "files/thirdparty/capabilities" });
 }
 
+export function openConnectWindow(service) {
+  return request({ method: "get", url: `thirdparty/${service}` });
+}
+
 export function getSettingsFiles() {
   return request({ method: "get", url: `/files/settings` });
 }

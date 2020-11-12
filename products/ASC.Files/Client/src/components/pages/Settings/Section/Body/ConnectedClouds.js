@@ -19,7 +19,23 @@ import { Trans } from "react-i18next";
 import {
   getConnectedCloud,
   deleteThirdParty,
+  openConnectWindow,
+  setConnectItem,
 } from "../../../../../store/files/actions";
+import {
+  getCapabilities,
+  getGoogleConnect,
+  getBoxConnect,
+  getDropboxConnect,
+  getOneDriveConnect,
+  getNextCloudConnect,
+  getSharePointConnect,
+  getkDriveConnect,
+  getYandexConnect,
+  getOwnCloudConnect,
+  getWebDavConnect,
+  getConnectItem,
+} from "../../../../../store/files/selectors";
 import ConnectedDialog from "./ConnectedDialog";
 
 const { isAdmin } = store.auth.selectors;
@@ -39,6 +55,16 @@ const StyledServicesBlock = styled.div`
   padding-top: 24px;
 
   .service-item {
+    border: 1px solid #d1d1d1;
+    width: 158px;
+    height: 40px;
+
+    :hover {
+      cursor: pointer;
+    }
+  }
+
+  img {
     border: 1px solid #d1d1d1;
     width: 158px;
     height: 40px;
@@ -68,109 +94,7 @@ const ServiceItem = (props) => {
     "data-title": capabilityName,
   };
 
-  switch (capabilityName) {
-    case "Box":
-      return (
-        <img
-          src="images/services/logo_box.svg"
-          alt=""
-          {...dataProps}
-          {...rest}
-        />
-      );
-
-    case "DropboxV2":
-      return (
-        <img
-          src="images/services/logo_dropbox.svg"
-          alt=""
-          {...dataProps}
-          {...rest}
-        />
-      );
-
-    case "GoogleDrive":
-      return (
-        <img
-          src="images/services/logo_google-drive.svg"
-          alt=""
-          {...dataProps}
-          {...rest}
-        />
-      );
-
-    case "OneDrive":
-      return (
-        <img
-          src="images/services/logo_onedrive.svg"
-          alt=""
-          {...dataProps}
-          {...rest}
-        />
-      );
-
-    case "SharePoint":
-      return (
-        <>
-          <img
-            src="images/services/logo_onedrive-for-business.svg"
-            alt=""
-            {...dataProps}
-            {...rest}
-          />
-          <img
-            src="images/services/logo_sharepoint.svg"
-            alt=""
-            {...dataProps}
-            {...rest}
-          />
-        </>
-      );
-
-    case "kDrive":
-      return (
-        <img
-          src="images/services/logo_kdrive.svg"
-          alt=""
-          {...dataProps}
-          {...rest}
-        />
-      );
-
-    case "Yandex":
-      return (
-        <img
-          src="images/services/logo_yandex_ru.svg"
-          alt=""
-          {...dataProps}
-          {...rest}
-        />
-      );
-
-    case "WebDav":
-      return (
-        <>
-          <img
-            src="images/services/logo_nextcloud.svg"
-            alt=""
-            {...dataProps}
-            {...rest}
-          />
-          <img
-            src="images/services/logo_owncloud.svg"
-            alt=""
-            {...dataProps}
-            {...rest}
-          />
-          <Text {...dataProps} {...rest} className="service-item service-text">
-            {t("ConnextOtherAccount")}
-          </Text>
-        </>
-      );
-
-    default:
-      return;
-  }
+  return <img {...dataProps} {...rest} alt="" />;
 };
 
 class ConnectClouds extends React.Component {
@@ -179,39 +103,45 @@ class ConnectClouds extends React.Component {
 
     this.state = {
       connectDialogVisible: false,
-      showAccountSettingDialog: false,
+      showAccountSettingDialog: !!props.connectItem,
       showDeleteDialog: false,
       providers: [],
-      capabilities: [],
       loginValue: "",
       passwordValue: "",
       folderNameValue: "",
-      selectedServiceData: null,
+      selectedServiceData: props.connectItem, //connectItem
       removeItemId: null,
       providersLoading: true,
     };
   }
 
   componentDidMount() {
-    getConnectedCloud().then((res) => {
+    getConnectedCloud().then((providers) => {
       this.setState({
-        providers: res.providers,
-        capabilities: res.capabilities,
+        providers,
         providersLoading: false,
       });
     });
   }
 
+  componentDidUpdate(prevProps) {
+    const visible = !!this.props.connectItem;
+    const prevVisible = !!prevProps.connectItem;
+
+    if (visible !== prevVisible) {
+      visible &&
+        this.setState({
+          showAccountSettingDialog: true,
+          selectedServiceData: this.props.connectItem,
+        });
+    }
+  }
+
   onShowService = (e) => {
     const selectedServiceData = e.currentTarget.dataset;
     const showAccountSettingDialog = !e.currentTarget.dataset.link;
-    if (!showAccountSettingDialog) {
-      window.open(
-        selectedServiceData.link,
-        selectedServiceData.title,
-        "width=1020,height=600"
-      );
-    }
+    !showAccountSettingDialog && openConnectWindow(selectedServiceData.title);
+
     this.setState({
       connectDialogVisible: !this.state.connectDialogVisible,
       showAccountSettingDialog,
@@ -224,10 +154,13 @@ class ConnectClouds extends React.Component {
   };
 
   onShowAccountSettingDialog = () => {
-    this.setState({
-      showAccountSettingDialog: !this.state.showAccountSettingDialog,
-      selectedServiceData: null,
-    });
+    this.setState(
+      {
+        showAccountSettingDialog: !this.state.showAccountSettingDialog,
+        selectedServiceData: null,
+      },
+      () => this.props.connectItem && this.props.setConnectItem(null)
+    );
   };
 
   onShowDeleteDialog = (e) => {
@@ -241,7 +174,7 @@ class ConnectClouds extends React.Component {
 
   onChangeThirdPartyInfo = (e) => {
     const key = e.currentTarget.dataset.key;
-    const capabilitiesItem = this.state.capabilities.find((x) => x[0] === key);
+    const capabilitiesItem = this.props.capabilities.find((x) => x[0] === key);
     const providerItem = this.state.providers.find(
       (x) => x.provider_key === key
     );
@@ -303,13 +236,25 @@ class ConnectClouds extends React.Component {
     const {
       connectDialogVisible,
       providers,
-      capabilities,
       showAccountSettingDialog,
       showDeleteDialog,
       selectedServiceData,
       providersLoading,
     } = this.state;
-    const { t, isAdmin } = this.props;
+    const {
+      t,
+      isAdmin,
+      googleConnectItem,
+      boxConnectItem,
+      dropboxConnectItem,
+      sharePointConnectItem,
+      oneDriveConnectItem,
+      nextCloudConnectItem,
+      ownCloudConnectItem,
+      kDriveConnectItem,
+      yandexConnectItem,
+      webDavConnectItem,
+    } = this.props;
 
     const linkStyles = {
       isHovered: true,
@@ -436,15 +381,93 @@ class ConnectClouds extends React.Component {
                 )}
               </Text>
               <StyledServicesBlock>
-                {capabilities.map((capability, key) => (
+                {googleConnectItem && (
                   <ServiceItem
-                    capability={capability}
+                    capability={googleConnectItem}
                     onClick={this.onShowService}
-                    className="service-item"
-                    t={t}
-                    key={key}
+                    src="images/services/logo_google-drive.svg"
                   />
-                ))}
+                )}
+
+                {boxConnectItem && (
+                  <ServiceItem
+                    capability={boxConnectItem}
+                    onClick={this.onShowService}
+                    src="images/services/logo_box.svg"
+                  />
+                )}
+
+                {dropboxConnectItem && (
+                  <ServiceItem
+                    capability={dropboxConnectItem}
+                    onClick={this.onShowService}
+                    src="images/services/logo_dropbox.svg"
+                  />
+                )}
+
+                {sharePointConnectItem && (
+                  <ServiceItem
+                    capability={sharePointConnectItem}
+                    onClick={this.onShowService}
+                    src="images/services/logo_sharepoint.svg"
+                  />
+                )}
+
+                {oneDriveConnectItem && (
+                  <ServiceItem
+                    capability={oneDriveConnectItem}
+                    onClick={this.onShowService}
+                    src="images/services/logo_onedrive.svg"
+                  />
+                )}
+
+                {sharePointConnectItem && (
+                  <ServiceItem
+                    capability={sharePointConnectItem}
+                    onClick={this.onShowService}
+                    src="images/services/logo_onedrive-for-business.svg"
+                  />
+                )}
+
+                {nextCloudConnectItem && (
+                  <ServiceItem
+                    capability={webDavConnectItem}
+                    onClick={this.onShowService}
+                    src="images/services/logo_nextcloud.svg"
+                  />
+                )}
+
+                {ownCloudConnectItem && (
+                  <ServiceItem
+                    capability={webDavConnectItem}
+                    onClick={this.onShowService}
+                    src="images/services/logo_owncloud.svg"
+                  />
+                )}
+
+                {kDriveConnectItem && (
+                  <ServiceItem
+                    capability={kDriveConnectItem}
+                    onClick={this.onShowService}
+                    src="images/services/logo_kdrive.svg"
+                  />
+                )}
+                {yandexConnectItem && (
+                  <ServiceItem
+                    capability={yandexConnectItem}
+                    onClick={this.onShowService}
+                    src="images/services/logo_yandex_ru.svg"
+                  />
+                )}
+                {webDavConnectItem && (
+                  <Text
+                    onClick={this.onShowService}
+                    className="service-item service-text"
+                    data-title={webDavConnectItem[0]}
+                  >
+                    {t("ConnextOtherAccount")}
+                  </Text>
+                )}
               </StyledServicesBlock>
             </ModalDialog.Body>
           </ModalDialog>
@@ -484,7 +507,21 @@ class ConnectClouds extends React.Component {
 function mapStateToProps(state) {
   return {
     isAdmin: isAdmin(state),
+    capabilities: getCapabilities(state),
+    googleConnectItem: getGoogleConnect(state),
+    boxConnectItem: getBoxConnect(state),
+    dropboxConnectItem: getDropboxConnect(state),
+    oneDriveConnectItem: getOneDriveConnect(state),
+    nextCloudConnectItem: getNextCloudConnect(state),
+    sharePointConnectItem: getSharePointConnect(state),
+    kDriveConnectItem: getkDriveConnect(state),
+    yandexConnectItem: getYandexConnect(state),
+    ownCloudConnectItem: getOwnCloudConnect(state),
+    webDavConnectItem: getWebDavConnect(state),
+    connectItem: getConnectItem(state),
   };
 }
 
-export default connect(mapStateToProps, {})(withTranslation()(ConnectClouds));
+export default connect(mapStateToProps, { setConnectItem })(
+  withTranslation()(ConnectClouds)
+);

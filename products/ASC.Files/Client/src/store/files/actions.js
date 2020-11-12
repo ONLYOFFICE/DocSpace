@@ -61,6 +61,8 @@ export const SET_FILES_SETTING = "SET_FILES_SETTING";
 export const SET_IS_ERROR_SETTINGS = "SET_IS_ERROR_SETTINGS";
 export const SET_FIRST_LOAD = "SET_FIRST_LOAD";
 export const SET_UPLOAD_DATA = "SET_UPLOAD_DATA";
+export const SET_CAPABILITIES = "SET_CAPABILITIES";
+export const SET_CONNECT_ITEM = "SET_CONNECT_ITEM";
 
 export function setFile(file) {
   return {
@@ -265,6 +267,21 @@ export function setUploadData(uploadData) {
     uploadData,
   };
 }
+
+export function setCapabilities(capabilities) {
+  return {
+    type: SET_CAPABILITIES,
+    capabilities,
+  };
+}
+
+export function setConnectItem(connectItem) {
+  return {
+    type: SET_CONNECT_ITEM,
+    connectItem,
+  };
+}
+
 export function setFilterUrl(filter) {
   const defaultFilter = FilesFilter.getDefault();
   const params = [];
@@ -1226,7 +1243,6 @@ export const loopFilesOperations = (id, destFolderId, isCopy) => {
                       }
                     })
                     .catch((err) => {
-                      console.log("ERROR_1", err);
                       toastr.error(err);
                       dispatch(clearProgressData());
                     })
@@ -1247,14 +1263,12 @@ export const loopFilesOperations = (id, destFolderId, isCopy) => {
                 }
               })
               .catch((err) => {
-                console.log("ERROR_2", err);
                 toastr.error(err);
                 dispatch(clearProgressData());
               });
           }
         })
         .catch((err) => {
-          console.log("ERROR_3", err);
           toastr.error(err);
           dispatch(clearProgressData());
         });
@@ -1322,9 +1336,34 @@ export function itemOperationToFolder(
 }
 
 export function getConnectedCloud() {
-  return axios
-    .all([api.files.getThirdPartyList(), api.files.getThirdPartyCapabilities()])
-    .then((res) => {
-      return { providers: res[0], capabilities: res[1] };
-    });
+  return api.files.getThirdPartyList();
+}
+
+export function fetchThirdPartyCapabilities(dispatch) {
+  return files
+    .getThirdPartyCapabilities()
+    .then((capabilities) => dispatch(setCapabilities(capabilities)));
+}
+
+const convertServiceName = (serviceName) => {
+  //Docusign, OneDrive, Wordpress
+  switch (serviceName) {
+    case "GoogleDrive":
+      return "google";
+    case "Box":
+      return "box";
+    case "DropboxV2":
+      return "dropbox";
+    case "OneDrive":
+      return "onedrive";
+    default:
+      return "";
+  }
+};
+
+export function openConnectWindow(serviceName) {
+  const service = convertServiceName(serviceName);
+  return api.files.openConnectWindow(service).then((link) => {
+    window.open(link, "", "width=1020,height=600");
+  });
 }
