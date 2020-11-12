@@ -9,7 +9,10 @@ import {
   Text,
   utils,
 } from "asc-web-components";
-import { saveThirdParty } from "../../../../../store/files/actions";
+import {
+  saveThirdParty,
+  openConnectWindow,
+} from "../../../../../store/files/actions";
 
 const { tablet } = utils.device;
 
@@ -70,7 +73,7 @@ const ConnectedDialog = (props) => {
   };
 
   const onReconnect = () => {
-    window.open(link, title, "width=1020,height=600");
+    openConnectWindow(title);
   };
 
   const isAccount = !!link;

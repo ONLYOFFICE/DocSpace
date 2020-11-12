@@ -18,6 +18,7 @@ import {
 } from "../../../store/files/selectors";
 import { NewFilesPanel } from "../../panels";
 import { setDocumentTitle } from "../../../helpers/utils";
+import ThirdPartyList from "./ThirdPartyList";
 
 class ArticleBodyContent extends React.Component {
   constructor(props) {
@@ -106,7 +107,6 @@ class ArticleBodyContent extends React.Component {
     const { treeFolders, filter, onTreeDrop, selectedTreeNode } = this.props;
     const { showNewFilesPanel, expandedKeys, newFolderId } = this.state;
 
-    //console.log("Article Body render", this.props, this.state.expandedKeys);
     console.log("Article Body render");
     return (
       <>
@@ -133,7 +133,7 @@ class ArticleBodyContent extends React.Component {
               onTreeDrop={onTreeDrop}
             />
             <TreeSettings />
-            Add account
+            <ThirdPartyList />
           </>
         )}
       </>

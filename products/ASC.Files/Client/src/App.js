@@ -5,7 +5,10 @@ import Home from "./components/pages/Home";
 import DocEditor from "./components/pages/DocEditor";
 import Settings from "./components/pages/Settings";
 import VersionHistory from "./components/pages/VersionHistory";
-import { fetchTreeFolders } from "./store/files/actions";
+import {
+  fetchTreeFolders,
+  fetchThirdPartyCapabilities,
+} from "./store/files/actions";
 import config from "../package.json";
 
 import {
@@ -52,6 +55,7 @@ class App extends React.Component {
       getModules,
       getPortalCultures,
       fetchTreeFolders,
+      fetchThirdPartyCapabilities,
       setIsLoaded,
     } = this.props;
 
@@ -71,6 +75,7 @@ class App extends React.Component {
           getModules(),
           getPortalCultures(),
           fetchTreeFolders(),
+          fetchThirdPartyCapabilities(),
         ];
 
     Promise.all(requests)
@@ -149,6 +154,7 @@ const mapDispatchToProps = (dispatch) => {
     getModules: () => getModules(dispatch),
     getPortalCultures: () => getPortalCultures(dispatch),
     fetchTreeFolders: () => fetchTreeFolders(dispatch),
+    fetchThirdPartyCapabilities: () => fetchThirdPartyCapabilities(dispatch),
     setIsLoaded: () => dispatch(setIsLoaded(true)),
   };
 };

@@ -29,6 +29,8 @@ import {
   SET_IS_ERROR_SETTINGS,
   SET_FIRST_LOAD,
   SET_UPLOAD_DATA,
+  SET_CAPABILITIES,
+  SET_CONNECT_ITEM,
 } from "./actions";
 import { api } from "asc-web-common";
 import { isFileSelected, skipFile, getFilesBySelected } from "./selectors";
@@ -371,6 +373,8 @@ const initialState = {
     ],
   },
   privacyInstructions: "https://www.onlyoffice.com/private-rooms.aspx",
+  capabilities: [],
+  connectItem: null,
 };
 
 const filesReducer = (state = initialState, action) => {
@@ -540,6 +544,14 @@ const filesReducer = (state = initialState, action) => {
     case SET_UPLOAD_DATA:
       return Object.assign({}, state, {
         uploadData: action.uploadData,
+      });
+    case SET_CAPABILITIES:
+      return Object.assign({}, state, {
+        capabilities: action.capabilities,
+      });
+    case SET_CONNECT_ITEM:
+      return Object.assign({}, state, {
+        connectItem: action.connectItem,
       });
     default:
       return state;

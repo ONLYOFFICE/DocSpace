@@ -1140,3 +1140,80 @@ export const getIconOfDraggedFile = (state) => {
     return;
   });
 };
+
+export const getCapabilities = (state) => {
+  return state.files.capabilities;
+};
+
+export const getGoogleConnect = createSelector(
+  getCapabilities,
+  (capabilities) => {
+    return capabilities.find((x) => x[0] === "GoogleDrive");
+  }
+);
+
+export const getBoxConnect = createSelector(getCapabilities, (capabilities) => {
+  return capabilities.find((x) => x[0] === "Box");
+});
+
+export const getDropboxConnect = createSelector(
+  getCapabilities,
+  (capabilities) => {
+    return capabilities.find((x) => x[0] === "DropboxV2");
+  }
+);
+export const getOneDriveConnect = createSelector(
+  getCapabilities,
+  (capabilities) => {
+    return capabilities.find((x) => x[0] === "OneDrive");
+  }
+);
+
+export const getSharePointConnect = createSelector(
+  getCapabilities,
+  (capabilities) => {
+    return capabilities.find((x) => x[0] === "SharePoint");
+  }
+);
+
+export const getkDriveConnect = createSelector(
+  getCapabilities,
+  (capabilities) => {
+    return capabilities.find((x) => x[0] === "kDrive");
+  }
+);
+
+export const getYandexConnect = createSelector(
+  getCapabilities,
+  (capabilities) => {
+    return capabilities.find((x) => x[0] === "Yandex");
+  }
+);
+
+export const getWebDavConnect = createSelector(
+  getCapabilities,
+  (capabilities) => {
+    return capabilities.find((x) => x[0] === "WebDav");
+  }
+);
+
+// TODO: remove WebDav get NextCloud
+export const getNextCloudConnect = createSelector(
+  getCapabilities,
+  (capabilities) => {
+    return capabilities.find((x) => x[0] === "WebDav");
+    //return capabilities.find((x) => x[0] === "NextCloud");
+  }
+);
+// TODO:remove WebDav get OwnCloud
+export const getOwnCloudConnect = createSelector(
+  getCapabilities,
+  (capabilities) => {
+    return capabilities.find((x) => x[0] === "WebDav");
+    //return capabilities.find((x) => x[0] === "OwnCloud");
+  }
+);
+
+export const getConnectItem = (state) => {
+  return state.files.connectItem;
+};
