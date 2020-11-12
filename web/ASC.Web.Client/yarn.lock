@@ -2165,7 +2165,7 @@ asap@~2.0.6:
   integrity sha1-5QNHYR1+aQlDIIu9r+vLwvuGbUY=
 
 "asc-web-common@file:../../packages/asc-web-common":
-  version "1.0.278"
+  version "1.0.279"
   dependencies:
     axios "^0.19.1"
     history "4.10.1"
