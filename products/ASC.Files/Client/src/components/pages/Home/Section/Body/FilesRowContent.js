@@ -432,6 +432,7 @@ class FilesRowContent extends React.PureComponent {
       id,
       versionGroup,
       locked,
+      providerKey,
     } = item;
     const titleWithoutExt = getTitleWithoutExst(item);
     const fileOwner =
@@ -627,7 +628,7 @@ class FilesRowContent extends React.PureComponent {
             color={sideColor}
             className="row_update-text"
           >
-            {updatedDate && updatedDate}
+            {(fileExst || !providerKey) && updatedDate && updatedDate}
           </Text>
           <Text
             containerMinWidth="90px"
@@ -641,9 +642,11 @@ class FilesRowContent extends React.PureComponent {
           >
             {fileExst
               ? contentLength
-              : `${t("TitleDocuments")}: ${filesCount} | ${t(
+              : !providerKey
+              ? `${t("TitleDocuments")}: ${filesCount} | ${t(
                   "TitleSubfolders"
-                )}: ${foldersCount}`}
+                )}: ${foldersCount}`
+              : ""}
           </Text>
         </SimpleFilesRowContent>
       </>
