@@ -56,20 +56,20 @@ class PureVersionHistoryPanel extends React.Component {
     const zIndex = 310;
     return (
       <StyledVersionHistoryPanel
-        className="modal-dialog-aside"
+        className="version-history-modal-dialog"
         visible={visible}
       >
         <Backdrop
           onClick={this.onClosePanelHandler}
           visible={visible}
           zIndex={zIndex}
-        />{" "}
+        />
         {!isLoading ? (
-          <Aside className="header_aside-panel">
+          <Aside className="version-history-aside-panel">
             <StyledContent>
-              <StyledHeaderContent>
+              <StyledHeaderContent className="version-history-panel-header">
                 <Heading
-                  className="header_aside-panel-header"
+                  className="version-history-panel-heading"
                   size="medium"
                   truncate
                 >
@@ -77,7 +77,7 @@ class PureVersionHistoryPanel extends React.Component {
                 </Heading>
               </StyledHeaderContent>
 
-              <StyledBody>
+              <StyledBody className="version-history-panel-body">
                 <SectionBodyContent
                   getFileVersions={this.getFileVersions}
                   versions={versions}

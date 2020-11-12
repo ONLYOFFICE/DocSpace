@@ -59,14 +59,28 @@ const StyledAsidePanel = styled.div`
 `;
 
 const StyledVersionHistoryPanel = styled.div`
-  .modal-dialog-aside {
+  .version-history-modal-dialog {
     transform: translateX(${(props) => (props.visible ? "0" : "720px")});
     width: 720px;
   }
-  .header_aside-panel {
-    margin-left: 0px !important;
+  .version-history-aside-panel {
     transform: translateX(${(props) => (props.visible ? "0" : "720px")});
     width: 720px;
+  }
+  .version-history-panel-header {
+    margin-left: 0px;
+    border-bottom: 1px solid #eceef1;
+    .version-history-panel-heading {
+      font-weight: 700;
+      margin-bottom: 13px;
+      margin-top: 12px;
+    }
+  }
+  .version-history-panel-body {
+    margin-top: 18px;
+  }
+  .version-comment-wrapper {
+    margin-left: 79px;
   }
 `;
 

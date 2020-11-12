@@ -31,6 +31,7 @@ const StyledRow = styled(Row)`
   }
   .version_badge {
     cursor: pointer;
+    margin-right: 16px;
 
     .version_badge-text {
       position: absolute;
@@ -94,7 +95,6 @@ const StyledRow = styled(Row)`
     display: block;
     margin-left: auto;
     margin-top: ${(props) => (props.showEditPanel ? "12px" : "-3px")};
-    margin-right: -7px;
 
     @media ${tablet} {
       display: none;
@@ -131,7 +131,6 @@ const StyledRow = styled(Row)`
 
     :last-child {
       margin-left: 8px;
-      margin-right: -7px;
     }
 
     @media ${tablet} {
@@ -299,7 +298,11 @@ const VersionRow = (props) => {
             {info.contentLength}
           </Text>
         </Box>
-        <Box marginProp="0 0 0 70px" displayProp="flex">
+        <Box
+          className="version-comment-wrapper"
+          marginProp="0 0 0 70px"
+          displayProp="flex"
+        >
           <>
             {showEditPanel && (
               <>

@@ -96,7 +96,9 @@ const SectionHeaderContent = (props) => {
         className="arrow-button"
       />
 
-      <Headline className="headline-header">{title}</Headline>
+      <Headline className="headline-header" type="content" truncate={true}>
+        {title}
+      </Headline>
     </StyledContainer>
   );
 };
