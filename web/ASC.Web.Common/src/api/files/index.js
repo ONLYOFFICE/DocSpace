@@ -601,6 +601,14 @@ export function setEncryptionKeys(keys) {
   });
 }
 
+export function getEncryptionKeys(keys) {
+  return request({
+    method: "get",
+    url: "privacyroom/keys",
+    data: keys,
+  });
+}
+
 export function getEncryptionAccess(fileId) {
   return request({
     method: "get",
