@@ -1,5 +1,8 @@
 import { toastr } from "asc-web-common";
-import { setEncryptionKeys, getEncryptionAccess } from "../store/auth/actions";
+import {
+  setEncryptionKeys as setKeys,
+  getEncryptionAccess,
+} from "../store/auth/actions";
 import { isDesktopClient, isEncryptionSupport } from "../store/auth/selectors";
 
 const domain = window.location.origin;
@@ -7,12 +10,16 @@ const provider = "AppServer";
 const guid = "{FFF0E1EB-13DB-4678-B67D-FF0A41DBBCEF}";
 const desktop = isDesktopClient;
 const encryption = isEncryptionSupport;
+const encryptionKeyPair = {
+  privateKeyEnc: "WL0scvx5V3AF9BiD",
+  publicKey: "&#xAMIIBIjANBgkq",
+};
 
-if (desktop && encryption) {
+if (encryption) {
   window.cloudCryptoCommand = (type, params, callback) => {
     switch (type) {
       case "encryptionKeys":
-        Desktop.setEncryptionKeys(params);
+        setEncryptionKeys(params);
         break;
       case "relogin":
         Desktop.relogin();
@@ -48,84 +55,71 @@ if (desktop && encryption) {
   };
 }
 
-export class Desktop {
-  static regDesktop(displayName, email, userId) {
-    const data = {
-      displayName,
-      email,
-      domain,
-      provider,
-      userId,
-    };
-    if (isEncryptionSupport) {
+export function regDesktop(displayName, email, userId) {
+  const data = {
+    displayName,
+    email,
+    domain,
+    provider,
+    userId,
+  };
+  if (encryption) {
+    if (encryptionKeyPair) {
       data.encryptionKeys.cryptoEngineId = guid;
-    } else {
-      return;
+      data.encryptionKeys = encryptionKeyPair;
     }
-
-    const execCommand = window.AscDesktopEditor.execCommand(
-      "portal:login",
-      JSON.stringify(data)
-    );
-    return execCommand;
   }
+  const execCommand = window.AscDesktopEditor.execCommand(
+    "portal:login",
+    JSON.stringify(data)
+  );
+  return execCommand;
+}
 
-  static checkPwd() {
-    const data = {
-      domain,
-      emailInput: "login",
-      pwdInput: "password",
-    };
-    const execCommand = window.AscDesktopEditor.execCommand(
-      "portal:checkpwd",
-      JSON.stringify(data)
-    );
+export function relogin() {
+  toastr.info("Encryption keys must be re-entered");
+  const data = {
+    domain,
+    onsuccess: "reload",
+  };
+  const execCommand = setTimeout(() => {
+    window.AscDesktopEditor.execCommand("portal:logout", JSON.stringify(data));
+  }, 1000);
+  return execCommand;
+}
 
-    return execCommand;
+export function setEncryptionKeys(encryptionKeys) {
+  if (!encryptionKeys.publicKey || !encryptionKeys.privateKeyEnc) {
+    return toastr.info("Empty encryption keys");
   }
+  const data = {
+    publicKey: encryptionKeys.publicKey,
+    privateKeyEnc: encryptionKeys.privateKeyEnc,
+  };
+  return setKeys(data);
+}
 
-  static relogin() {
-    toastr.info("Encryption keys must be re-entered");
-    const data = {
-      domain,
-      onsuccess: "reload",
-    };
-    const execCommand = setTimeout(() => {
-      window.AscDesktopEditor.execCommand(
-        "portal:logout",
-        JSON.stringify(data)
-      );
-    }, 1000);
-    return execCommand;
-  }
+export function checkPwd() {
+  const data = {
+    domain,
+    emailInput: "login",
+    pwdInput: "password",
+  };
+  const execCommand = window.AscDesktopEditor.execCommand(
+    "portal:checkpwd",
+    JSON.stringify(data)
+  );
 
-  static logout() {
-    const data = {
-      domain,
-    };
-    const execCommand = window.AscDesktopEditor.execCommand(
-      "portal:logout",
-      JSON.stringify(data)
-    );
-    return execCommand;
-  }
+  return execCommand;
+}
 
-  static setEncryptionKeys(encryptionKeys) {
-    if (!encryptionKeys.publicKey || !encryptionKeys.privateKeyEnc) {
-      return toastr.info("Empty encryption keys");
-    }
-    const data = {
-      publicKey: encryptionKeys.publicKey,
-      privateKeyEnc: encryptionKeys.privateKeyEnc,
-    };
-    return setEncryptionKeys(data);
-  }
-
-  static setAccess(fileId) {
-    return getEncryptionAccess(fileId);
-  }
-
-  static encryptionUploadDialog() {
-    return {};
-  }
+export function logout() {
+  const data = {
+    domain,
+  };
+  const execCommand = window.AscDesktopEditor.execCommand(
+    "portal:logout",
+    JSON.stringify(data)
+  );
+  return execCommand;
 }
