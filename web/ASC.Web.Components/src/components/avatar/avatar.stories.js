@@ -7,7 +7,7 @@ import Avatar from ".";
 import Section from "../../../.storybook/decorators/section";
 
 const roleOptions = ["owner", "admin", "guest", "user"];
-const sizeOptions = ["max", "big", "medium", "small"];
+const sizeOptions = ["max", "big", "medium", "small", "min"];
 
 const editAction = () => console.log("Edit action");
 

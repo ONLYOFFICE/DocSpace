@@ -9,6 +9,7 @@ import {
   Button,
   ModalDialog,
   utils,
+  Icons,
 } from "asc-web-components";
 import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
@@ -23,12 +24,46 @@ import {
 const { tablet } = utils.device;
 
 const StyledRow = styled(Row)`
+  min-height: 70px;
+
+  @media ${tablet} {
+    min-height: 69px;
+  }
   .version_badge {
     cursor: pointer;
 
     .version_badge-text {
       position: absolute;
-      left: 16px;
+      left: -2px;
+    }
+
+    margin-left: -8px;
+    margin-right: 16px;
+    margin-top: ${(props) => (props.showEditPanel ? "13px" : "-2px")};
+
+    @media ${tablet} {
+      margin-left: 0px;
+      margin-top: 0px;
+      .version_badge-text {
+        left: 6px;
+      }
+    }
+  }
+
+  .version-link-file {
+    margin-top: ${(props) => (props.showEditPanel ? "12px" : "-3px")};
+    @media ${tablet} {
+      margin-top: -1px;
+    }
+  }
+
+  .icon-link {
+    width: 10px;
+    height: 10px;
+    margin-left: 9px;
+    margin-top: ${(props) => (props.showEditPanel ? "11px" : "-3px")};
+    @media ${tablet} {
+      margin-top: -1px;
     }
   }
 
@@ -42,15 +77,22 @@ const StyledRow = styled(Row)`
 
   .version_edit-comment {
     display: block;
+    margin-left: 63px;
 
     @media ${tablet} {
       display: none;
     }
   }
 
+  .textarea-desktop {
+    margin: 9px 23px 1px -7px;
+  }
+
   .version_content-length {
     display: block;
     margin-left: auto;
+    margin-top: ${(props) => (props.showEditPanel ? "12px" : "-3px")};
+    margin-right: -7px;
 
     @media ${tablet} {
       display: none;
@@ -61,6 +103,8 @@ const StyledRow = styled(Row)`
     display: ${(props) => (props.showEditPanel ? "none" : "block")};
     text-decoration: underline dashed;
     white-space: break-spaces;
+    margin-left: -7px;
+    margin-top: 4px;
 
     @media ${tablet} {
       display: none;
@@ -73,15 +117,19 @@ const StyledRow = styled(Row)`
 
     @media ${tablet} {
       display: block;
+      margin-left: 1px;
+      margin-top: 5px;
     }
   }
 
   .version_link-action {
     display: block;
     margin-left: auto;
+    margin-top: 5px;
 
     :last-child {
       margin-left: 8px;
+      margin-right: -7px;
     }
 
     @media ${tablet} {
@@ -107,6 +155,25 @@ const StyledRow = styled(Row)`
     .version_save-button {
       width: 100%;
     }
+  }
+
+  .row_context-menu-wrapper {
+    margin-right: -3px;
+    margin-top: -25px;
+  }
+
+  .version_edit-comment-button-primary {
+    margin-right: 8px;
+    width: 87px;
+  }
+  .version_edit-comment-button-second {
+    width: 87px;
+  }
+  .version_modal-dialog .modal-dialog-aside-header {
+    border-bottom: unset;
+  }
+  .version_modal-dialog .modal-dialog-aside-body {
+    margin-top: -24px;
   }
 `;
 
@@ -199,7 +266,7 @@ const VersionRow = (props) => {
     { key: "restore", label: t("Restore"), onClick: onRestoreClick },
     {
       key: "download",
-      label: `${t("Download")}(${info.contentLength})`,
+      label: `${t("Download")} (${info.contentLength})`,
       onClick: onDownloadAction,
     },
   ];
@@ -214,13 +281,18 @@ const VersionRow = (props) => {
             fontWeight={600}
             fontSize="14px"
             title={title}
+            className="version-link-file"
           >
             {title}
+          </Link>
+          <Link className="icon-link" onClick={onOpenFile}>
+            <Icons.ExternalLinkIcon color="#333333" size="scale" />
           </Link>
           <Text
             className="version_content-length"
             fontWeight={600}
             color="#A3A9AE"
+            fontSize="14px"
           >
             {info.contentLength}
           </Text>
@@ -230,10 +302,10 @@ const VersionRow = (props) => {
             {showEditPanel && (
               <>
                 <Textarea
-                  className="version_edit-comment"
-                  style={{ margin: "8px 24px 8px 0" }}
-                  //placeholder="Add comment"
+                  className="version_edit-comment textarea-desktop"
                   onChange={onChange}
+                  fontSize={12}
+                  heightTextArea={54}
                   value={commentValue}
                 />
                 <Box className="version_modal-dialog">
@@ -242,13 +314,16 @@ const VersionRow = (props) => {
                     visible={showEditPanel}
                     onClose={onEditComment}
                   >
-                    <ModalDialog.Header>{t("EditComment")}</ModalDialog.Header>
+                    <ModalDialog.Header className="header-version-modal-dialog">
+                      {t("EditComment")}
+                    </ModalDialog.Header>
                     <ModalDialog.Body>
                       <Textarea
-                        //className="version_edit-comment"
+                        className="text-area-mobile-edit-comment"
                         style={{ margin: "8px 24px 8px 0" }}
                         //placeholder="Add comment"
                         onChange={onChange}
+                        heightTextArea={298}
                         value={commentValue}
                       />
                     </ModalDialog.Body>
@@ -256,7 +331,7 @@ const VersionRow = (props) => {
                       <Button
                         className="version_save-button"
                         label={t("AddButton")}
-                        size="medium"
+                        size="big"
                         primary
                         onClick={onSaveClick}
                       />
@@ -288,18 +363,29 @@ const VersionRow = (props) => {
         </Box>
         {showEditPanel && (
           <Box className="version_edit-comment" marginProp="8px 0 16px 70px">
-            <Button
-              size="medium"
-              primary
-              style={{ marginRight: "8px" }}
-              onClick={onSaveClick}
-              label={t("AddButton")}
-            />
-            <Button
-              size="medium"
-              onClick={onCancelClick}
-              label={t("CancelButton")}
-            />
+            <Box
+              className="version_edit-comment-button-primary"
+              displayProp="inline-block"
+            >
+              <Button
+                size="base"
+                scale={true}
+                primary
+                onClick={onSaveClick}
+                label={t("AddButton")}
+              />
+            </Box>
+            <Box
+              className="version_edit-comment-button-second"
+              displayProp="inline-block"
+            >
+              <Button
+                size="base"
+                scale={true}
+                onClick={onCancelClick}
+                label={t("CancelButton")}
+              />
+            </Box>
           </Box>
         )}
       </>

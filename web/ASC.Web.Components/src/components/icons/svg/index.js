@@ -196,6 +196,7 @@ import OrigFavoriteIcon from "./favorite.react.svg";
 import OrigRecentIcon from "./catalog.recent.react.svg";
 
 import OrigCatalogPrivateRoomIcon from "./catalog.private.react.svg";
+import OrigMoveToIcon from "./move.react.svg";
 
 import OrigIntegrationIcon from "./integration.react.svg";
 
@@ -768,6 +769,8 @@ export const CatalogPrivateRoomIcon = createStyledIcon(
   OrigCatalogPrivateRoomIcon,
   "CatalogPrivateRoomIcon"
 );
+
+export const MoveToIcon = createStyledIcon(OrigMoveToIcon, "MoveToIcon");
 export const IntegrationIcon = createStyledIcon(
   OrigIntegrationIcon,
   "IntegrationIcon"

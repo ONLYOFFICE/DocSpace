@@ -5,7 +5,7 @@ import GroupButton from "../group-button";
 import DropDownItem from "../drop-down-item";
 import throttle from "lodash/throttle";
 import { isArrayEqual } from "../../utils/array";
-import { tablet } from "../../utils/device";
+import { tablet, desktop } from "../../utils/device";
 
 const StyledGroupButtonsMenu = styled.div`
   box-sizing: border-box;
@@ -13,25 +13,30 @@ const StyledGroupButtonsMenu = styled.div`
   top: 0;
   background: #ffffff;
   box-shadow: 0px 10px 18px -8px rgba(0, 0, 0, 0.100306);
-  height: 57px;
+  height: 56px;
   list-style: none;
   padding: 0 18px 19px 0;
   width: 100%;
   white-space: nowrap;
+
   display: ${(props) => (props.visible ? "block" : "none")};
   z-index: 189;
+
+  @media ${desktop} {
+    margin-top: 1px;
+  }
 `;
 
 const CloseButton = styled.div`
   position: absolute;
-  right: 12px;
+  right: 11px;
   top: 10px;
   width: 20px;
   height: 20px;
   padding: 8px;
 
   @media ${tablet} {
-    right: 4px;
+    right: 3px;
   }
 
   &:hover {
@@ -138,7 +143,7 @@ class GroupButtonsMenu extends React.Component {
 
   countMenuItems = (array, outerWidth, moreWidth) => {
     const itemsArray = array || [];
-    let total = (moreWidth || 0) + 80;
+    let total = (moreWidth || 0) + 10;
 
     for (let i = 0, len = itemsArray.length; i < len; i++) {
       if (total + itemsArray[i] > outerWidth) {
