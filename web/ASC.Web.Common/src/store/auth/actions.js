@@ -1,6 +1,6 @@
 import { default as api } from "../../api";
 import { isDesktopClient } from "./selectors";
-import { Desktop } from "../../desktop/";
+import { checkPwd, regDesktop, logout as logoutDesktop } from "../../desktop/";
 
 export const LOGIN_POST = "LOGIN_POST";
 export const SET_CURRENT_USER = "SET_CURRENT_USER";
@@ -127,10 +127,13 @@ export function getUser(dispatch) {
     .getUser()
     .then((user) => {
       window.AscDesktopEditor &&
-        Desktop.regDesktop(user.displayName, user.email, user.id);
+        regDesktop(user.displayName, user.email, user.id);
       dispatch(setCurrentUser(user));
     })
-    .catch((err) => dispatch(setCurrentUser({})));
+    .catch((err) => {
+      console.error(err);
+      dispatch(setCurrentUser({}));
+    });
 }
 
 export function getPortalSettings(dispatch) {
@@ -170,7 +173,7 @@ export function login(user, hash) {
   return (dispatch, getState) => {
     const state = getState();
     const isDesktop = isDesktopClient(state);
-    isDesktop && Desktop.checkPwd();
+    isDesktop && checkPwd();
     return api.user
       .login(user, hash)
       .then(() => {
@@ -189,7 +192,7 @@ export function logout() {
     return api.user
       .logout()
       .then(() => {
-        isDesktop && Desktop.logout();
+        isDesktop && logoutDesktop();
         dispatch(setLogout());
       })
       .then(() => dispatch(setIsLoaded(true)));
@@ -221,6 +224,12 @@ export const reloadPortalSettings = () => {
 export function setEncryptionKeys(keys) {
   return (dispatch) => {
     return api.files.setEncryptionKeys(keys);
+  };
+}
+
+export function getEncryptionKeys(keys) {
+  return (dispatch) => {
+    return api.files.getEncryptionKeys(keys);
   };
 }
 
