@@ -177,7 +177,9 @@ class TreeFolders extends React.Component {
         ? item.newItems > 0 && this.props.needUpdate
         : false;
 
-      if (item.folders && item.folders.length > 0) {
+      //TODO: fix service folders
+      const serviceFolder = typeof item.id === "string";
+      if ((item.folders && item.folders.length > 0) || serviceFolder) {
         return (
           <TreeNode
             id={item.id}
@@ -189,7 +191,7 @@ class TreeFolders extends React.Component {
             onBadgeClick={this.onBadgeClick}
             showBadge={showBadge}
           >
-            {this.getItems(item.folders)}
+            {this.getItems(item.folders ? item.folders : [])}
           </TreeNode>
         );
       }
