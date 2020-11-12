@@ -724,7 +724,7 @@ class UpdateUserForm extends React.Component {
               inputValue={profile.firstName}
               inputIsDisabled={isLoading}
               inputOnChange={this.onInputChange}
-              inputAutoFocussed={true}
+              inputAutoFocussed={!isMobile}
               inputTabIndex={4}
               maxLength={50}
             />
