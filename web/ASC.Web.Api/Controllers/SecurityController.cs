@@ -134,7 +134,19 @@ namespace ASC.Web.Api.Controllers
         }
 
         [Create("audit/settings/lifetime")]
-        public TenantAuditSettings SetAuditSettings(TenantAuditSettingsWrapper wrapper)
+        public TenantAuditSettings SetAuditSettingsFromBody([FromBody] TenantAuditSettingsWrapper wrapper)
+        {
+            return SetAuditSettings(wrapper);
+        }
+
+        [Create("audit/settings/lifetime")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public TenantAuditSettings SetAuditSettingsFromForm([FromForm] TenantAuditSettingsWrapper wrapper)
+        {
+            return SetAuditSettings(wrapper);
+        }
+
+        private TenantAuditSettings SetAuditSettings(TenantAuditSettingsWrapper wrapper)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
