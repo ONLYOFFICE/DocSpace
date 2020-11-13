@@ -84,7 +84,7 @@ const StyledVersionHistoryPanel = styled.div`
     margin-left: 79px;
   }
   .version_edit-comment {
-    margin-left: 70px;
+    margin-left: 72px;
   }
 `;
 
