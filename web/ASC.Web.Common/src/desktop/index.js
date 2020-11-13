@@ -16,18 +16,19 @@ const domain = window.location.origin;
 const provider = "AppServer";
 const guid = "{FFF0E1EB-13DB-4678-B67D-FF0A41DBBCEF}";
 const desktop = window["AscDesktopEditor"] !== undefined;
-const encryption =
-  (desktop &&
-    typeof window.AscDesktopEditor.cloudCryptoCommand === "function") ||
-  false;
+// const encryption =
+//   (desktop &&
+//     typeof window.AscDesktopEditor.cloudCryptoCommand === "function") ||
+//   false;
 
 const encryptionKeyPair = {
-  privateKeyEnc: "1",
-  publicKey: "2",
+  // privateKeyEnc: "1",
+  // publicKey: "2",
 };
 
 export function regDesktop(user, isEncryption) {
   if (!desktop) return;
+
   const data = {
     displayName: user.displayName,
     email: user.email,
@@ -51,9 +52,9 @@ export function regDesktop(user, isEncryption) {
           publicKey: encryptionKeyPair.publicKey,
         },
       });
-    } else assign(data, {});
+    }
+    //else assign(data, {});
   }
-  console.log("regdesktop");
 
   window.AscDesktopEditor.execCommand("portal:login", JSON.stringify(data));
 
@@ -74,7 +75,8 @@ export function regDesktop(user, isEncryption) {
               message = "Loading...";
           }
         }
-        return toastr.info(message);
+        toastr.info(message);
+        break;
       default:
         break;
     }
@@ -84,12 +86,15 @@ export function regDesktop(user, isEncryption) {
     window.cloudCryptoCommand = (type, params, callback) => {
       console.log("cloudCryptoCommand", params);
       switch (type) {
-        case "encryptionKeys":
+        case "encryptionKeys": {
           setEncryptionKeys(params);
           break;
-        case "relogin":
+        }
+        case "relogin": {
+          toastr.info("Encryption keys must be re-entered");
           relogin();
           break;
+        }
         case "getsharingkeys":
           break;
         default:
@@ -100,21 +105,21 @@ export function regDesktop(user, isEncryption) {
 }
 
 export function relogin() {
-  toastr.info("Encryption keys must be re-entered");
-  const data = {
-    domain,
-    onsuccess: "reload",
-  };
-  const execCommand = setTimeout(() => {
+  setTimeout(() => {
+    const data = {
+      domain,
+      onsuccess: "reload",
+    };
     window.AscDesktopEditor.execCommand("portal:logout", JSON.stringify(data));
   }, 1000);
-  return execCommand;
 }
 
 export function setEncryptionKeys(encryptionKeys) {
   console.log("encryptionKeys: ", encryptionKeys);
+
   if (!encryptionKeys.publicKey || !encryptionKeys.privateKeyEnc) {
-    return toastr.info("Empty encryption keys");
+    toastr.info("Empty encryption keys");
+    return;
   }
   const data = {
     publicKey: encryptionKeys.publicKey,
@@ -129,21 +134,12 @@ export function checkPwd() {
     emailInput: "login",
     pwdInput: "password",
   };
-  const execCommand = window.AscDesktopEditor.execCommand(
-    "portal:checkpwd",
-    JSON.stringify(data)
-  );
-
-  return execCommand;
+  window.AscDesktopEditor.execCommand("portal:checkpwd", JSON.stringify(data));
 }
 
 export function logout() {
   const data = {
     domain,
   };
-  const execCommand = window.AscDesktopEditor.execCommand(
-    "portal:logout",
-    JSON.stringify(data)
-  );
-  return execCommand;
+  window.AscDesktopEditor.execCommand("portal:logout", JSON.stringify(data));
 }
