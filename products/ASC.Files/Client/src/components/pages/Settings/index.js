@@ -105,7 +105,7 @@ const PureSettings = ({
 
         <PageLayout.SectionHeader>
           {Object.keys(settingsTree).length === 0 && isLoading ? (
-            <Loaders.Headline />
+            <Loaders.SectionHeader />
           ) : (
             <SectionHeaderContent title={t(`${title}`)} />
           )}

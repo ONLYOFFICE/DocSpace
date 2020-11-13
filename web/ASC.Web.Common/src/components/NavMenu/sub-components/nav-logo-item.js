@@ -1,4 +1,5 @@
 import React from "react";
+import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 
@@ -24,7 +25,7 @@ const NavLogoItem = React.memo((props) => {
   return (
     <LogoItem opened={props.opened}>
       <a className="nav-logo-wrapper" href="/">
-        <img className="nav-logo-icon" src="images/nav.logo.opened.react.svg" />
+        <img className="nav-logo-icon" src={props.logoUrl} />
       </a>
     </LogoItem>
   );
@@ -35,6 +36,15 @@ NavLogoItem.displayName = "NavLogoItem";
 NavLogoItem.propTypes = {
   opened: PropTypes.bool,
   onClick: PropTypes.func,
+  logoUrl: PropTypes.string,
 };
 
-export default NavLogoItem;
+const mapStateToProps = (state) => {
+  const { logoUrl } = state.auth.settings;
+
+  return {
+    logoUrl,
+  };
+};
+
+export default connect(mapStateToProps)(NavLogoItem);
