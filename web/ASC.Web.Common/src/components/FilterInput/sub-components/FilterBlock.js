@@ -272,10 +272,10 @@ class FilterBlock extends React.Component {
   constructor(props) {
     super(props);
 
-    const { hideFilterItems, openFilterItems } = props;
+    const { hiddenFilterItems, openFilterItems } = props;
 
     this.state = {
-      hideFilterItems: hideFilterItems || [],
+      hiddenFilterItems: hiddenFilterItems || [],
       openFilterItems: openFilterItems || [],
       needUpdate: false,
     };
@@ -291,7 +291,7 @@ class FilterBlock extends React.Component {
     if (
       (needUpdate || needUpdateFilter) &&
       (!isEqual(prevState.openFilterItems, this.state.openFilterItems) ||
-        !isEqual(prevState.hideFilterItems, this.state.hideFilterItems))
+        !isEqual(prevState.hiddenFilterItems, this.state.hiddenFilterItems))
     ) {
       this.props.onFilterRender();
       this.setNeedUpdate(false);
@@ -299,15 +299,15 @@ class FilterBlock extends React.Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    const { hideFilterItems, openFilterItems } = nextProps;
+    const { hiddenFilterItems, openFilterItems } = nextProps;
 
     if (!isEqual(this.props, nextProps)) {
       if (
-        !isEqual(this.props.hideFilterItems, hideFilterItems) ||
+        !isEqual(this.props.hiddenFilterItems, hiddenFilterItems) ||
         !isEqual(this.props.openFilterItems, openFilterItems)
       ) {
         this.setState({
-          hideFilterItems,
+          hiddenFilterItems,
           openFilterItems,
         });
         return false;
@@ -329,7 +329,7 @@ class FilterBlock extends React.Component {
     });
   };
   getFilterItems = () => {
-    const { openFilterItems, hideFilterItems } = this.state;
+    const { openFilterItems, hiddenFilterItems } = this.state;
     const _this = this;
     let result = [];
     let openItems = [];
@@ -373,9 +373,9 @@ class FilterBlock extends React.Component {
         );
       });
     }
-    if (hideFilterItems.length > 0) {
+    if (hiddenFilterItems.length > 0) {
       let open = false;
-      let hideFilterItemsList = hideFilterItems.map(function (item) {
+      let hideFilterItemsList = hiddenFilterItems.map(function (item) {
         const {
           key,
           group,
@@ -416,7 +416,7 @@ class FilterBlock extends React.Component {
       hideItems.push(
         <HideFilter
           key="hide-filter"
-          count={hideFilterItems.length}
+          count={hiddenFilterItems.length}
           isDisabled={this.props.isDisabled}
           open={open}
         >
@@ -481,7 +481,7 @@ class FilterBlock extends React.Component {
 }
 FilterBlock.propTypes = {
   getFilterData: PropTypes.func,
-  hideFilterItems: PropTypes.array,
+  hiddenFilterItems: PropTypes.array,
   iconSize: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   isDisabled: PropTypes.bool,
   onDeleteFilterItem: PropTypes.func,

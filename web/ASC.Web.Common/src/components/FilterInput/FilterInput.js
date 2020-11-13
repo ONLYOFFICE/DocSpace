@@ -81,6 +81,11 @@ const convertToInternalData = function (fullDataArray, inputDataArray) {
   return filterItems;
 };
 
+const minWidth = 170;
+const filterItemPadding = 60;
+const maxFilterItemWidth = 260;
+const itemsContainerWidth = 40;
+
 class FilterInput extends React.Component {
   constructor(props) {
     super(props);
@@ -88,8 +93,6 @@ class FilterInput extends React.Component {
     const { selectedFilterData, getSortData, value } = props;
     const { sortDirection, sortId, inputValue } = selectedFilterData;
     const sortData = getSortData();
-
-    this.minWidth = 170;
 
     const filterValues = selectedFilterData ? this.getDefaultFilterData() : [];
 
@@ -105,7 +108,7 @@ class FilterInput extends React.Component {
 
       filterValues,
       openFilterItems: [],
-      hideFilterItems: [],
+      hiddenFilterItems: [],
       needUpdateFilter: false,
     };
 
@@ -178,12 +181,9 @@ class FilterInput extends React.Component {
     if (
       !isEqual(selectedFilterData, nextProps.selectedFilterData) ||
       this.props.viewAs !== nextProps.viewAs ||
-      this.props.widthProp !== nextProps.widthProp
+      this.props.widthProp !== nextProps.widthProp ||
+      sectionWidth !== nextProps.sectionWidth
     ) {
-      return true;
-    }
-
-    if (sectionWidth !== nextProps.sectionWidth) {
       return true;
     }
 
@@ -344,7 +344,7 @@ class FilterInput extends React.Component {
       searchText: "",
       filterValues: [],
       openFilterItems: [],
-      hideFilterItems: [],
+      hiddenFilterItems: [],
     });
     this.onFilter(
       [],
@@ -366,37 +366,30 @@ class FilterInput extends React.Component {
 
   calcHiddenItemWidth = (item) => {
     if (!item) return;
-    let label = "";
-    if (item.selectedItem) {
-      label = item.selectedItem.label
-        ? item.selectedItem.label
-        : item.defaultSelectLabel;
-    } else {
-      label = item.label;
-    }
+    let label = this.getItemLabel(item);
+
     const itemWidth =
       this.getTextWidth(
         item.groupLabel + " " + label,
         "bolder 13px sans-serif"
-      ) + 60; // paddings + margin
+      ) + filterItemPadding;
     return itemWidth;
   };
 
   AddItems = (searchWidth) => {
-    const { hideFilterItems } = this.state;
-    if (hideFilterItems.length === 0) return 0;
+    const { hiddenFilterItems } = this.state;
+    if (hiddenFilterItems.length === 0) return 0;
 
     let newSearchWidth = searchWidth;
-    let numberOfHiddenItems = hideFilterItems.length;
+    let numberOfHiddenItems = hiddenFilterItems.length;
 
-    for (let i = 0; i < hideFilterItems.length; i++) {
-      let hiddenItemWidth = this.calcHiddenItemWidth(
-        hideFilterItems[i] // last hidden element
-      );
+    for (let i = 0; i < hiddenFilterItems.length; i++) {
+      let hiddenItemWidth = this.calcHiddenItemWidth(hiddenFilterItems[i]);
 
-      if (hiddenItemWidth > 260) hiddenItemWidth = 260;
+      if (hiddenItemWidth > maxFilterItemWidth)
+        hiddenItemWidth = maxFilterItemWidth;
       newSearchWidth = newSearchWidth - hiddenItemWidth;
-      if (newSearchWidth >= this.minWidth) {
+      if (newSearchWidth >= minWidth) {
         numberOfHiddenItems--;
       } else {
         break;
@@ -407,9 +400,9 @@ class FilterInput extends React.Component {
   };
 
   HideItems = (searchWidth, currentFilterItems) => {
-    const { hideFilterItems } = this.state;
+    const { hiddenFilterItems } = this.state;
     let newSearchWidth = searchWidth;
-    let numberOfHiddenItems = hideFilterItems.length;
+    let numberOfHiddenItems = hiddenFilterItems.length;
 
     for (let i = currentFilterItems.length - 1; i >= 0; i--) {
       if (currentFilterItems[i].id === "styled-hide-filter") continue;
@@ -417,22 +410,21 @@ class FilterInput extends React.Component {
         .width;
       newSearchWidth = newSearchWidth + filterItemWidth;
       numberOfHiddenItems++;
-      if (numberOfHiddenItems === 1) newSearchWidth - 40; // subtract the width of hidden block
+      if (numberOfHiddenItems === 1) newSearchWidth - itemsContainerWidth; // subtract the width of hidden block
 
-      if (newSearchWidth > this.minWidth) break;
+      if (newSearchWidth > minWidth) break;
     }
 
     return numberOfHiddenItems;
   };
 
   calcHiddenItems = (searchWidth, currentFilterItems) => {
-    const { hideFilterItems } = this.state;
-    let numberOfHiddenItems = 0;
+    const { hiddenFilterItems } = this.state;
 
     if (!searchWidth || currentFilterItems.length === 0)
-      return hideFilterItems.length;
-    numberOfHiddenItems =
-      searchWidth < this.minWidth
+      return hiddenFilterItems.length;
+    const numberOfHiddenItems =
+      searchWidth < minWidth
         ? this.HideItems(searchWidth, currentFilterItems)
         : this.AddItems(searchWidth);
 
@@ -468,11 +460,24 @@ class FilterInput extends React.Component {
               currentFilterItems.length - numberOfHiddenItems
             )
           : currentFilterItems.slice(),
-        hideFilterItems: numberOfHiddenItems
+        hiddenFilterItems: numberOfHiddenItems
           ? currentFilterItems.slice(-numberOfHiddenItems)
           : [],
       });
     }
+  };
+
+  getItemLabel = (item) => {
+    let label = "";
+
+    if (item.selectedItem) {
+      label = item.selectedItem.label
+        ? item.selectedItem.label
+        : item.defaultSelectLabel;
+    } else {
+      label = item.label;
+    }
+    return label;
   };
 
   onDeleteFilterItem = (key) => {
@@ -484,7 +489,7 @@ class FilterInput extends React.Component {
     this.setState({
       filterValues: currentFilterItems,
       openFilterItems: currentFilterItems,
-      hideFilterItems: [],
+      hiddenFilterItems: [],
     });
     let filterValues = cloneObjectsArray(currentFilterItems);
     filterValues = filterValues.map(function (item) {
@@ -576,7 +581,7 @@ class FilterInput extends React.Component {
       this.setState({
         filterValues: currentFilterItems,
         openFilterItems: currentFilterItems,
-        hideFilterItems: [],
+        hiddenFilterItems: [],
       });
 
       if (selectFilterItem.selectedItem.key) {
@@ -622,7 +627,7 @@ class FilterInput extends React.Component {
         this.setState({
           filterValues: currentFilterItems,
           openFilterItems: currentFilterItems,
-          hideFilterItems: [],
+          hiddenFilterItems: [],
         });
       } else if (subgroupItems.length === 1) {
         const selectFilterItem = {
@@ -653,7 +658,7 @@ class FilterInput extends React.Component {
         this.setState({
           filterValues: currentFilterItems,
           openFilterItems: currentFilterItems,
-          hideFilterItems: [],
+          hiddenFilterItems: [],
         });
       }
     } else {
@@ -680,7 +685,7 @@ class FilterInput extends React.Component {
       this.setState({
         filterValues: currentFilterItems,
         openFilterItems: currentFilterItems,
-        hideFilterItems: [],
+        hiddenFilterItems: [],
       });
 
       const clone = cloneObjectsArray(
@@ -724,14 +729,13 @@ class FilterInput extends React.Component {
       searchText,
       filterValues,
       openFilterItems,
-      hideFilterItems,
+      hiddenFilterItems,
       sortId,
       sortDirection,
     } = this.state;
 
     const smallSectionWidth = sectionWidth ? sectionWidth < 900 : false;
 
-    // console.log("filter input render, openFilterItems", openFilterItems, 'hideFilterItems', hideFilterItems);
     let iconSize = 30;
     switch (size) {
       case "base":
@@ -775,7 +779,7 @@ class FilterInput extends React.Component {
               <FilterBlock
                 contextMenuHeader={contextMenuHeader}
                 openFilterItems={openFilterItems}
-                hideFilterItems={hideFilterItems}
+                hiddenFilterItems={hiddenFilterItems}
                 iconSize={iconSize}
                 getFilterData={getFilterData}
                 onClickFilterItem={this.onClickFilterItem}
