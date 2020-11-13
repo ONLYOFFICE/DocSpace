@@ -972,7 +972,11 @@ export const getPrivacyInstructionsLink = (state) => {
 };
 
 export const getVisibilityVersionHistoryPanel = (state) => {
-  return state.files.visibilityVersionHistoryPanel;
+  return state.files.versionHistory.isVisible;
+};
+
+export const getVersionHistoryFileId = (state) => {
+  return state.files.versionHistory.fileId;
 };
 
 export const getHeaderVisible = createSelector(

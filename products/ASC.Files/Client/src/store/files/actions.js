@@ -63,6 +63,7 @@ export const SET_FIRST_LOAD = "SET_FIRST_LOAD";
 export const SET_UPLOAD_DATA = "SET_UPLOAD_DATA";
 export const SET_VISIBILITY_VERSION_HISTORY_PANEL =
   "SET_VISIBILITY_VERSION_HISTORY_PANEL";
+export const SET_VERSION_HISTORY_FILE_ID = "SET_VERSION_HISTORY_FILE_ID";
 
 export function setFile(file) {
   return {
@@ -272,6 +273,13 @@ export function setVisibilityVersionHistoryPanel(isVisible) {
   return {
     type: SET_VISIBILITY_VERSION_HISTORY_PANEL,
     isVisible,
+  };
+}
+
+export function setVersionHistoryFileId(fileId) {
+  return {
+    type: SET_VERSION_HISTORY_FILE_ID,
+    fileId,
   };
 }
 

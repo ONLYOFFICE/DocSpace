@@ -30,6 +30,7 @@ import {
   SET_FIRST_LOAD,
   SET_UPLOAD_DATA,
   SET_VISIBILITY_VERSION_HISTORY_PANEL,
+  SET_VERSION_HISTORY_FILE_ID,
 } from "./actions";
 import { api } from "asc-web-common";
 import { isFileSelected, skipFile, getFilesBySelected } from "./selectors";
@@ -372,7 +373,7 @@ const initialState = {
     ],
   },
   privacyInstructions: "https://www.onlyoffice.com/private-rooms.aspx",
-  visibilityVersionHistoryPanel: false,
+  versionHistory: { isVisible: false, fileId: null },
 };
 
 const filesReducer = (state = initialState, action) => {
@@ -546,8 +547,19 @@ const filesReducer = (state = initialState, action) => {
 
     case SET_VISIBILITY_VERSION_HISTORY_PANEL:
       return Object.assign({}, state, {
-        visibilityVersionHistoryPanel: action.isVisible,
+        versionHistory: {
+          ...state.versionHistory,
+          isVisible: action.isVisible,
+        },
       });
+    case SET_VERSION_HISTORY_FILE_ID: {
+      return Object.assign({}, state, {
+        versionHistory: {
+          ...state.versionHistory,
+          fileId: action.fileId,
+        },
+      });
+    }
     default:
       return state;
   }
