@@ -29,6 +29,7 @@ import {
   SET_IS_ERROR_SETTINGS,
   SET_FIRST_LOAD,
   SET_UPLOAD_DATA,
+  SET_VISIBILITY_VERSION_HISTORY_PANEL,
 } from "./actions";
 import { api } from "asc-web-common";
 import { isFileSelected, skipFile, getFilesBySelected } from "./selectors";
@@ -371,6 +372,7 @@ const initialState = {
     ],
   },
   privacyInstructions: "https://www.onlyoffice.com/private-rooms.aspx",
+  visibilityVersionHistoryPanel: false,
 };
 
 const filesReducer = (state = initialState, action) => {
@@ -540,6 +542,11 @@ const filesReducer = (state = initialState, action) => {
     case SET_UPLOAD_DATA:
       return Object.assign({}, state, {
         uploadData: action.uploadData,
+      });
+
+    case SET_VISIBILITY_VERSION_HISTORY_PANEL:
+      return Object.assign({}, state, {
+        visibilityVersionHistoryPanel: action.isVisible,
       });
     default:
       return state;
