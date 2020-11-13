@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React, { memo, useState } from "react";
 import styled from "styled-components";
 import { TextInput, Button } from "asc-web-components";
 
@@ -11,7 +11,7 @@ const EditingWrapper = styled.div`
     height: 56px;
   }
   .edit-text {
-    height: 30px;
+    height: 32px;
     font-size: 15px;
     outline: 0 !important;
     font-weight: 600;
@@ -19,10 +19,16 @@ const EditingWrapper = styled.div`
     font-family: "Open Sans", sans-serif, Arial;
     text-align: left;
     color: #333333;
+    margin-left: 6px;
   }
   .edit-button {
     margin-left: 8px;
-    height: 30px;
+    height: 32px;
+    padding: 8px 7px 7px 7px;
+
+    &:last-child {
+      margin-left: 4px;
+    }
   }
 
   .edit-ok-icon {
@@ -50,6 +56,9 @@ const EditingWrapperComponent = (props) => {
     isLoading,
   } = props;
 
+  const [OkIconIsHovered, setIsHoveredOk] = useState(false);
+  const [CancelIconIsHovered, setIsHoveredCancel] = useState(false);
+
   const onUpdate = (e) => {
     onClickUpdateItem(e);
   };
@@ -64,6 +73,14 @@ const EditingWrapperComponent = (props) => {
     }
 
     if (e.keyCode === 27) return cancelUpdateItem(e);
+  };
+
+  const setIsHoveredOkHandler = () => {
+    setIsHoveredOk(!OkIconIsHovered);
+  };
+
+  const setIsHoveredCancelHandler = () => {
+    setIsHoveredCancel(!CancelIconIsHovered);
   };
 
   return (
@@ -87,6 +104,9 @@ const EditingWrapperComponent = (props) => {
         onClick={onUpdate}
         icon={okIcon}
         data-itemid={itemId}
+        onMouseEnter={setIsHoveredOkHandler}
+        onMouseLeave={setIsHoveredOkHandler}
+        isHovered={OkIconIsHovered}
       />
       <Button
         className="edit-button"
@@ -95,6 +115,9 @@ const EditingWrapperComponent = (props) => {
         onClick={onCancel}
         icon={cancelIcon}
         data-itemid={itemId}
+        onMouseEnter={setIsHoveredCancelHandler}
+        onMouseLeave={setIsHoveredCancelHandler}
+        isHovered={CancelIconIsHovered}
       />
     </EditingWrapper>
   );

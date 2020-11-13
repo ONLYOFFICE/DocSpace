@@ -347,7 +347,7 @@ namespace ASC.Common
 
         private bool Register(Type service, Type implementation = null)
         {
-            if (service.IsSubclassOf(typeof(ControllerBase)) || service.GetInterfaces().Contains(typeof(IResourceFilter))) return true;
+            if (service.IsSubclassOf(typeof(ControllerBase))|| service.GetInterfaces().Contains(typeof(IResourceFilter)) || service.GetInterfaces().Contains(typeof(IDictionary<string, string>))) return true;
             var c = service.IsGenericType && (
                 service.GetGenericTypeDefinition() == typeof(IConfigureOptions<>) ||
                 service.GetGenericTypeDefinition() == typeof(IPostConfigureOptions<>) ||

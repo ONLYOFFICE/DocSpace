@@ -239,6 +239,8 @@ const SharingRow = (props) => {
           color="black"
           dropdownType="alwaysDashed"
           data={data}
+          fontSize="14px"
+          fontWeight={600}
         >
           {t(linkText)}
         </LinkWithDropdown>
@@ -293,7 +295,7 @@ const SharingRow = (props) => {
             {item.rights.isOwner ? (
               <Text
                 className="sharing_panel-remove-icon"
-                //color="#A3A9AE"
+                color="#A3A9AE"
               >
                 {t("Owner")}
               </Text>
@@ -310,6 +312,7 @@ const SharingRow = (props) => {
                   iconName="RemoveIcon"
                   onClick={() => onRemoveUserClick(item)}
                   className="sharing_panel-remove-icon"
+                  color="#A3A9AE"
                 />
               )
             )}

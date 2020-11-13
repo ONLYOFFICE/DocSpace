@@ -34,6 +34,7 @@ namespace ASC.Web.Api
             DIHelper.TryAdd<SettingsController>();
             DIHelper.TryAdd<SecurityController>();
             DIHelper.TryAdd<SmtpSettingsController>();
+            DIHelper.TryAdd<ThirdPartyController>();
         }
         public void ConfigureContainer(ContainerBuilder builder)
         {

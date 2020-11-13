@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Core;
 using ASC.Core.Common.Configuration;
@@ -37,9 +38,11 @@ using Microsoft.Extensions.Configuration;
 
 namespace ASC.FederatedLogin.LoginProviders
 {
+    [Scope]
     public class DocuSignLoginProvider : Consumer, IOAuthProvider
     {
-        public string Scopes { get { return "signature"; } }
+        public static string DocuSignLoginProviderScopes { get { return "signature"; } }
+        public string Scopes { get { return DocuSignLoginProviderScopes; } }
         public string CodeUrl { get { return DocuSignHost + "/oauth/auth"; } }
         public string AccessTokenUrl { get { return DocuSignHost + "/oauth/token"; } }
         public string RedirectUri { get { return this["docuSignRedirectUrl"]; } }

@@ -37,7 +37,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace ASC.Web.Files.Helpers
 {
-    [Scope]
+    [Scope(Additional = typeof(ThirdpartyConfigurationExtension))]
     public class ThirdpartyConfiguration
     {
         private IConfiguration Configuration { get; }
@@ -205,6 +205,18 @@ namespace ASC.Web.Files.Helpers
             //Obsolete BoxNet, DropBox, Google, SkyDrive,
 
             return result;
+        }
+    }
+
+    public class ThirdpartyConfigurationExtension
+    {
+        public static void Register(DIHelper services)
+        {
+            services.TryAdd<BoxLoginProvider>();
+            services.TryAdd<DropboxLoginProvider>();
+            services.TryAdd<OneDriveLoginProvider>();
+            services.TryAdd<DocuSignLoginProvider>();
+            services.TryAdd<GoogleLoginProvider>();
         }
     }
 }

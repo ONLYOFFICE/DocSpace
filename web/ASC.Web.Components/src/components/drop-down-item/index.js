@@ -57,11 +57,11 @@ const StyledDropdownItem = styled.div`
 
   ${(props) =>
     props.isSeparator &&
-    `
+    `   
         padding: 0px 16px;
-        border: 1px solid #ECEEF1;
+        border-bottom: 1px solid #ECEEF1;
         cursor: default;
-        margin: 6px 16px 6px;
+        margin: 4px 16px 4px;
         line-height: 1px;
         height: 1px;
         width: calc(100% - 32px);
@@ -96,7 +96,15 @@ const IconWrapper = styled.div`
 
 const DropDownItem = (props) => {
   //console.log("DropDownItem render");
-  const { isSeparator, label, icon, children, disabled, onClick } = props;
+  const {
+    isSeparator,
+    label,
+    icon,
+    children,
+    disabled,
+    onClick,
+    className,
+  } = props;
   const color = disabled ? "#A3A9AE" : "#333333";
 
   const onClickAction = (e) => {
@@ -104,7 +112,11 @@ const DropDownItem = (props) => {
   };
 
   return (
-    <StyledDropdownItem {...props} onClick={onClickAction}>
+    <StyledDropdownItem
+      {...props}
+      className={className}
+      onClick={onClickAction}
+    >
       {icon && (
         <IconWrapper>
           {React.createElement(Icons[icon], {

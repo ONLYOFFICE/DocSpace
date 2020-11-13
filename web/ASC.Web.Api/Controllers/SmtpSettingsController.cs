@@ -81,7 +81,19 @@ namespace ASC.Api.Settings
         }
 
         [Create("smtp")]
-        public SmtpSettingsWrapper SaveSmtpSettings(SmtpSettingsWrapper smtpSettings)
+        public SmtpSettingsWrapper SaveSmtpSettingsFromBody([FromBody]SmtpSettingsWrapper smtpSettings)
+        {
+            return SaveSmtpSettings(smtpSettings);
+        }
+
+        [Create("smtp")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public SmtpSettingsWrapper SaveSmtpSettingsFromForm([FromForm] SmtpSettingsWrapper smtpSettings)
+        {
+            return SaveSmtpSettings(smtpSettings);
+        }
+
+        private SmtpSettingsWrapper SaveSmtpSettings(SmtpSettingsWrapper smtpSettings)
         {
             CheckSmtpPermissions();
 

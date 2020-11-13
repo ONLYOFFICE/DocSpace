@@ -19,7 +19,6 @@ using ASC.Web.Core.Mobile;
 using ASC.Web.Core.Utility;
 using ASC.Web.Studio.Core;
 using ASC.Web.Studio.UserControls.Management;
-using ASC.Web.Studio.UserControls.Statistics;
 using ASC.Web.Studio.Utility;
 
 using Microsoft.AspNetCore.Mvc;
@@ -221,7 +220,15 @@ namespace ASC.Web.Api.Controllers
         }
 
         [Create("mobile/registration")]
-        public void RegisterMobileAppInstall(MobileAppModel model)
+        public void RegisterMobileAppInstallFromBody([FromBody]MobileAppModel model)
+        {
+            var currentUser = UserManager.GetUsers(SecurityContext.CurrentAccount.ID);
+            MobileAppInstallRegistrator.RegisterInstall(currentUser.Email, model.Type);
+        }
+
+        [Create("mobile/registration")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public void RegisterMobileAppInstallFromForm([FromForm]MobileAppModel model)
         {
             var currentUser = UserManager.GetUsers(SecurityContext.CurrentAccount.ID);
             MobileAppInstallRegistrator.RegisterInstall(currentUser.Email, model.Type);

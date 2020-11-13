@@ -26,6 +26,7 @@
 
 using System.Collections.Generic;
 
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Core;
 using ASC.Core.Common.Configuration;
@@ -34,12 +35,14 @@ using Microsoft.Extensions.Configuration;
 
 namespace ASC.FederatedLogin.LoginProviders
 {
+    [Scope]
     public class OneDriveLoginProvider : Consumer, IOAuthProvider
     {
         private const string OneDriveOauthUrl = "https://login.live.com/";
         public const string OneDriveApiUrl = "https://api.onedrive.com";
 
-        public string Scopes { get { return "wl.signin wl.skydrive_update wl.offline_access"; } }
+        public static string OneDriveLoginProviderScopes { get { return "wl.signin wl.skydrive_update wl.offline_access"; } }
+        public string Scopes { get { return OneDriveLoginProviderScopes; } }
         public string CodeUrl { get { return OneDriveOauthUrl + "oauth20_authorize.srf"; } }
         public string AccessTokenUrl { get { return OneDriveOauthUrl + "oauth20_token.srf"; } }
         public string RedirectUri { get { return this["skydriveRedirectUrl"]; } }

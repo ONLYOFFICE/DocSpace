@@ -573,9 +573,9 @@ class SharingPanelComponent extends React.Component {
       <ComboBox
         advancedOptions={advancedOptions}
         options={[]}
-        selectedOption={{ key: 0 }}
+        selectedOption={{ key: 0, arrowIconColor: "#333333" }}
         size="content"
-        className="panel_combo-box"
+        className="panel_combo-box add-groups"
         scaled={false}
         directionX="right"
         //isDisabled={isDisabled}
@@ -600,10 +600,11 @@ class SharingPanelComponent extends React.Component {
               <div className="sharing_panel-icons-container">
                 <div ref={this.ref} className="sharing_panel-drop-down-wrapper">
                   <IconButton
-                    size="16"
+                    size="17"
                     iconName="PlusIcon"
                     className="sharing_panel-plus-icon"
                     onClick={this.onPlusClick}
+                    color="A3A9AE"
                   />
 
                   <DropDown
@@ -634,7 +635,7 @@ class SharingPanelComponent extends React.Component {
             <StyledSharingBody
               ref={this.scrollRef}
               stype="mediumBlack"
-              style={{ height: `calc(100vh - 170px)` }}
+              style={{ height: `calc(100vh - 157px)` }}
             >
               {shareDataItems.map((item, index) => (
                 <SharingRow
@@ -670,6 +671,7 @@ class SharingPanelComponent extends React.Component {
                 isChecked={isNotifyUsers}
                 label={t("Notify users")}
                 onChange={this.onNotifyUsersChange}
+                className="sharing_panel-checkbox"
               />
               <Button
                 className="sharing_panel-button"

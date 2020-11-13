@@ -6,7 +6,6 @@ using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
-using ASC.Core.Notify;
 using ASC.Core.Notify.Senders;
 using ASC.Notify.Config;
 
@@ -16,7 +15,6 @@ using Autofac.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
 
 namespace ASC.Notify
 {
