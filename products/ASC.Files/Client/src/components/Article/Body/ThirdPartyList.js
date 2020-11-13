@@ -55,7 +55,7 @@ const StyledThirdParty = styled.div`
       }
 
       img {
-        padding: 4px 4px 0 4px;
+        padding: 4px 6px 0 4px;
       }
 
       @media (max-width: 1024px) {
