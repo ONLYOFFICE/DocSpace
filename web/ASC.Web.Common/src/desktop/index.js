@@ -3,11 +3,14 @@ import {
   setEncryptionKeys as setKeys,
   //getEncryptionAccess,
 } from "../store/auth/actions";
-import { assign, isEmpty } from "lodash";
+import assign from "lodash/assign";
+import isEmpty from "lodash/isEmpty";
+
+//import { store } from "asc-web-common";
 
 // const { isDesktopClient, isEncryptionSupport } = store.auth.selectors;
 
-// const state = store.getState();
+//const state = store.getState();
 
 const domain = window.location.origin;
 const provider = "AppServer";
@@ -18,26 +21,44 @@ const encryption =
     typeof window.AscDesktopEditor.cloudCryptoCommand === "function") ||
   false;
 
-const encryptionKeyPair = {};
+const encryptionKeyPair = {
+  privateKeyEnc: "1",
+  publicKey: "2",
+};
 
-if (encryption) {
-  window.cloudCryptoCommand = (type, params, callback) => {
-    console.log("cloudCryptoCommand", params);
-    switch (type) {
-      case "encryptionKeys":
-        setEncryptionKeys(params);
-        break;
-      case "relogin":
-        relogin();
-        break;
-      case "getsharingkeys":
-        break;
-      default:
-        break;
-    }
+export function regDesktop(user, isEncryption) {
+  if (!desktop) return;
+  const data = {
+    displayName: user.displayName,
+    email: user.email,
+    domain,
+    provider,
+    userId: user.id,
   };
 
+  if (isEncryption) {
+    assign(data, {
+      encryptionKeys: {
+        cryptoEngineId: guid,
+      },
+    });
+
+    if (!isEmpty(encryptionKeyPair)) {
+      assign(data, {
+        encryptionKeys: {
+          cryptoEngineId: guid,
+          privateKeyEnc: encryptionKeyPair.privateKeyEnc,
+          publicKey: encryptionKeyPair.publicKey,
+        },
+      });
+    } else assign(data, {});
+  }
+  console.log("regdesktop");
+
+  window.AscDesktopEditor.execCommand("portal:login", JSON.stringify(data));
+
   window.onSystemMessage = (e) => {
+    console.log("onSystemMessage: ", e);
     let message = e.opMessage;
     switch (e.type) {
       case "operation":
@@ -58,40 +79,24 @@ if (encryption) {
         break;
     }
   };
-}
 
-export function regDesktop(displayName, email, userId) {
-  const data = {
-    displayName,
-    email,
-    domain,
-    provider,
-    userId,
-  };
-
-  if (encryption) {
-    assign(data, {
-      encryptionKeys: {
-        cryptoEngineId: guid,
-      },
-    });
-    if (!isEmpty(encryptionKeyPair)) {
-      assign(data, {
-        encryptionKeys: {
-          cryptoEngineId: guid,
-          privateKeyEnc: encryptionKeyPair.privateKeyEnc,
-          publicKey: encryptionKeyPair.publicKey,
-        },
-      });
-    } else assign(data, {});
+  if (isEncryption) {
+    window.cloudCryptoCommand = (type, params, callback) => {
+      console.log("cloudCryptoCommand", params);
+      switch (type) {
+        case "encryptionKeys":
+          setEncryptionKeys(params);
+          break;
+        case "relogin":
+          relogin();
+          break;
+        case "getsharingkeys":
+          break;
+        default:
+          break;
+      }
+    };
   }
-
-  const execCommand = window.AscDesktopEditor.execCommand(
-    "portal:login",
-    JSON.stringify(data)
-  );
-  console.log("regdesktop", data);
-  return execCommand;
 }
 
 export function relogin() {

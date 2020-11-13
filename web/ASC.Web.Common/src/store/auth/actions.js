@@ -18,6 +18,7 @@ export const SET_CURRENT_PRODUCT_HOME_PAGE = "SET_CURRENT_PRODUCT_HOME_PAGE";
 export const SET_GREETING_SETTINGS = "SET_GREETING_SETTINGS";
 export const SET_CUSTOM_NAMES = "SET_CUSTOM_NAMES";
 export const SET_WIZARD_COMPLETED = "SET_WIZARD_COMPLETED";
+export const GET_ENCRYPTION_KEYS = "GET_ENCRYPTION_KEYS";
 
 export function setCurrentUser(user) {
   return {
@@ -122,12 +123,18 @@ export function setWizardComplete() {
   };
 }
 
+export function getEncryptionKeysData(keys) {
+  return {
+    type: GET_ENCRYPTION_KEYS,
+    keys,
+  };
+}
+
 export function getUser(dispatch) {
   return api.people
     .getUser()
     .then((user) => {
-      window.AscDesktopEditor &&
-        regDesktop(user.displayName, user.email, user.id);
+      //window.AscDesktopEditor && regDesktop(user, true);
       dispatch(setCurrentUser(user));
     })
     .catch((err) => {
@@ -170,10 +177,7 @@ export function getUserInfo(dispatch) {
 }
 
 export function login(user, hash) {
-  return (dispatch, getState) => {
-    // const state = getState();
-    // const isDesktop = isDesktopClient(state);
-    // isDesktop && checkPwd();
+  return (dispatch) => {
     return api.user
       .login(user, hash)
       .then(() => {
@@ -181,6 +185,7 @@ export function login(user, hash) {
       })
       .then(() => {
         getUserInfo(dispatch);
+        getEncryptionKeys(dispatch);
       });
   };
 }
@@ -229,7 +234,9 @@ export function setEncryptionKeys(keys) {
 
 export function getEncryptionKeys(keys) {
   return (dispatch) => {
-    return api.files.getEncryptionKeys(keys);
+    return api.files
+      .getEncryptionKeys(keys)
+      .then((res) => dispatch(getEncryptionKeysData(res)));
   };
 }
 

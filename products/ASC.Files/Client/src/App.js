@@ -22,6 +22,7 @@ import {
   Main,
   utils,
   toastr,
+  regDesktop,
 } from "asc-web-common";
 
 const {
@@ -33,6 +34,7 @@ const {
   setCurrentProductHomePage,
   getPortalCultures,
 } = commonStore.auth.actions;
+const { getCurrentUser, isEncryptionSupport } = commonStore.auth.selectors;
 const { AUTH_KEY } = constants;
 
 class App extends React.Component {
@@ -40,6 +42,7 @@ class App extends React.Component {
     super(props);
 
     this.isEditor = window.location.pathname.indexOf("doceditor") !== -1;
+    this.isDesktopInit = false;
   }
 
   componentDidMount() {
@@ -74,12 +77,25 @@ class App extends React.Component {
         ];
 
     Promise.all(requests)
+      .then(() => {
+        if (this.isEditor) return Promise.resolve();
+      })
       .catch((e) => {
         toastr.error(e);
       })
       .finally(() => {
         setIsLoaded();
       });
+  }
+
+  componentDidUpdate(prevProps) {
+    const { isAuthenticated, user, isEncryption } = this.props;
+
+    if (isAuthenticated && !this.isDesktopInit) {
+      this.isDesktopInit = true;
+      debugger;
+      regDesktop(user, isEncryption);
+    }
   }
 
   render() {
@@ -135,6 +151,9 @@ const mapStateToProps = (state) => {
   const { homepage } = settings;
   return {
     homepage: homepage || config.homepage,
+    user: getCurrentUser(state),
+    isAuthenticated: state.auth.isAuthenticated,
+    isEncryption: isEncryptionSupport(state),
   };
 };
 
