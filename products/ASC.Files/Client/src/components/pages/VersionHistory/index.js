@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import { /*RequestLoader,*/ Loader } from "asc-web-components";
-import { PageLayout, utils, api, store } from "asc-web-common";
+import { PageLayout, utils, api } from "asc-web-common";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import {
   ArticleHeaderContent,
@@ -21,7 +21,6 @@ const i18n = createI18N({
 });
 
 const { changeLanguage } = utils;
-const { getIsLoaded } = store.auth.selectors;
 
 class PureVersionHistory extends React.Component {
   constructor(props) {
@@ -68,66 +67,53 @@ class PureVersionHistory extends React.Component {
   render() {
     const { versions } = this.state;
 
-    return (
-      <>
-        {/* <RequestLoader
-          visible={isLoading}
-          zIndex={256}
-          loaderSize="16px"
-          loaderColor={"#999"}
-          label={`${t("LoadingProcessing")} ${t("LoadingDescription")}`}
-          fontSize="12px"
-          fontColor={"#999"}
-        /> */}
-        {versions ? (
-          <PageLayout
-            withBodyScroll={true}
-            withBodyAutoFocus={true}
-            headerBorderBottom={true}
-          >
-            <PageLayout.ArticleHeader>
-              <ArticleHeaderContent />
-            </PageLayout.ArticleHeader>
+    return versions ? (
+      <PageLayout
+        withBodyScroll={true}
+        withBodyAutoFocus={true}
+        headerBorderBottom={true}
+      >
+        <PageLayout.ArticleHeader>
+          <ArticleHeaderContent />
+        </PageLayout.ArticleHeader>
 
-            <PageLayout.ArticleMainButton>
-              <ArticleMainButtonContent />
-            </PageLayout.ArticleMainButton>
+        <PageLayout.ArticleMainButton>
+          <ArticleMainButtonContent />
+        </PageLayout.ArticleMainButton>
 
-            <PageLayout.ArticleBody>
-              <ArticleBodyContent />
-            </PageLayout.ArticleBody>
+        <PageLayout.ArticleBody>
+          <ArticleBodyContent />
+        </PageLayout.ArticleBody>
 
-            <PageLayout.SectionHeader borderBottom={true}>
-              <SectionHeaderContent title={versions && versions[0].title} />
-            </PageLayout.SectionHeader>
+        <PageLayout.SectionHeader borderBottom={true}>
+          <SectionHeaderContent title={versions && versions[0].title} />
+        </PageLayout.SectionHeader>
 
-            <PageLayout.SectionBody>
-              <SectionBodyContent
-                getFileVersions={this.getFileVersions}
-                versions={versions}
-              />
-            </PageLayout.SectionBody>
-          </PageLayout>
-        ) : (
-          <PageLayout>
-            <PageLayout.ArticleHeader>
-              <ArticleHeaderContent />
-            </PageLayout.ArticleHeader>
+        <PageLayout.SectionBody>
+          <SectionBodyContent
+            getFileVersions={this.getFileVersions}
+            versions={versions}
+          />
+        </PageLayout.SectionBody>
+      </PageLayout>
+    ) : (
+      <PageLayout>
+        <PageLayout.ArticleHeader>
+          <ArticleHeaderContent />
+        </PageLayout.ArticleHeader>
 
-            <PageLayout.ArticleMainButton>
-              <ArticleMainButtonContent />
-            </PageLayout.ArticleMainButton>
+        <PageLayout.ArticleMainButton>
+          <ArticleMainButtonContent />
+        </PageLayout.ArticleMainButton>
 
-            <PageLayout.ArticleBody>
-              <ArticleBodyContent />
-            </PageLayout.ArticleBody>
+        <PageLayout.ArticleBody>
+          <ArticleBodyContent />
+        </PageLayout.ArticleBody>
 
-            <PageLayout.SectionBody>
-              <Loader className="pageLoader" type="rombs" size="40px" />
-            </PageLayout.SectionBody>
-          </PageLayout>
-        )}
-      </>
+        <PageLayout.SectionBody>
+          <Loader className="pageLoader" type="rombs" size="40px" />
+        </PageLayout.SectionBody>
+      </PageLayout>
     );
   }
 }
@@ -147,12 +133,10 @@ const VersionHistory = (props) => {
 
 VersionHistory.propTypes = {
   history: PropTypes.object.isRequired,
-  isLoaded: PropTypes.bool,
 };
 
 function mapStateToProps(state) {
   return {
-    isLoaded: getIsLoaded(state),
     isLoading: getIsLoading(state),
   };
 }

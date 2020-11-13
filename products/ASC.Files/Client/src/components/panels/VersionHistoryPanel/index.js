@@ -42,7 +42,6 @@ class PureVersionHistoryPanel extends React.Component {
 
   getFileVersions = (fileId) => {
     const { setIsLoading } = this.props;
-    setIsLoading(true);
     api.files.getFileVersionInfo(fileId).then((versions) => {
       this.setState({ versions: versions }, () => setIsLoading(false));
     });
@@ -53,11 +52,13 @@ class PureVersionHistoryPanel extends React.Component {
   };
 
   render() {
-    console.log("render versionHistoryPanel:::::", this.props);
+    console.log("render versionHistoryPanel", this.props);
+
     const { versions } = this.state;
     const { visible, isLoading } = this.props;
     const zIndex = 310;
-    return (
+
+    return !isLoading && Object.keys(versions).length > 0 ? (
       <StyledVersionHistoryPanel
         className="version-history-modal-dialog"
         visible={visible}
@@ -67,30 +68,28 @@ class PureVersionHistoryPanel extends React.Component {
           visible={visible}
           zIndex={zIndex}
         />
-        {!isLoading && Object.keys(versions).length > 0 ? (
-          <Aside className="version-history-aside-panel">
-            <StyledContent>
-              <StyledHeaderContent className="version-history-panel-header">
-                <Heading
-                  className="version-history-panel-heading"
-                  size="medium"
-                  truncate
-                >
-                  {versions && versions[0].title}
-                </Heading>
-              </StyledHeaderContent>
+        <Aside className="version-history-aside-panel">
+          <StyledContent>
+            <StyledHeaderContent className="version-history-panel-header">
+              <Heading
+                className="version-history-panel-heading"
+                size="medium"
+                truncate
+              >
+                {versions && versions[0].title}
+              </Heading>
+            </StyledHeaderContent>
 
-              <StyledBody className="version-history-panel-body">
-                <SectionBodyContent
-                  getFileVersions={this.getFileVersions}
-                  versions={versions}
-                />
-              </StyledBody>
-            </StyledContent>
-          </Aside>
-        ) : null}
+            <StyledBody className="version-history-panel-body">
+              <SectionBodyContent
+                getFileVersions={this.getFileVersions}
+                versions={versions}
+              />
+            </StyledBody>
+          </StyledContent>
+        </Aside>
       </StyledVersionHistoryPanel>
-    );
+    ) : null;
   }
 }
 
