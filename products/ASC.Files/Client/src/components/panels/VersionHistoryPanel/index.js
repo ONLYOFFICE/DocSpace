@@ -9,7 +9,10 @@ import { withTranslation, I18nextProvider } from "react-i18next";
 import { createI18N } from "../../../helpers/i18n";
 
 import { setIsLoading } from "../../../store/files/actions";
-import { getIsLoading } from "../../../store/files/selectors";
+import {
+  getIsLoading,
+  getVersionHistoryFileId,
+} from "../../../store/files/selectors";
 
 import {
   StyledVersionHistoryPanel,
@@ -113,6 +116,7 @@ VersionHistoryPanelContainer.propTypes = {
 function mapStateToProps(state) {
   return {
     isLoading: getIsLoading(state),
+    fileId: getVersionHistoryFileId(state),
   };
 }
 

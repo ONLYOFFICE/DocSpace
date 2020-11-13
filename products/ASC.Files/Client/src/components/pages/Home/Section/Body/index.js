@@ -52,6 +52,8 @@ import {
   setTreeFolders,
   getFileInfo,
   addFileToRecentlyViewed,
+  setVisibilityVersionHistoryPanel,
+  setVersionHistoryFileId,
 } from "../../../../../store/files/actions";
 import {
   getCurrentFolderCount,
@@ -90,6 +92,7 @@ import {
   getIsPrivacyFolder,
   getPrivacyInstructionsLink,
   getIconOfDraggedFile,
+  getVisibilityVersionHistoryPanel,
 } from "../../../../../store/files/selectors";
 import {
   SharingPanel,
@@ -193,9 +196,7 @@ class SectionBodyContent extends React.Component {
       showCopyPanel: false,
       isDrag: false,
       canDrag: true,
-      versionHistory: {
-        showVersionHistoryPanel: false,
-      },
+      versionHistory: {},
     };
 
     this.tooltipRef = React.createRef();
@@ -240,14 +241,9 @@ class SectionBodyContent extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
     if (this.props && this.props.firstLoad) return true;
 
-    const {
-      showMoveToPanel,
-      showCopyPanel,
-      isDrag,
-      versionHistory,
-    } = this.state;
+    const { showMoveToPanel, showCopyPanel, isDrag } = this.state;
 
-    const { showVersionHistoryPanel } = versionHistory;
+    const { isVisibleVersionHistoryPanel } = this.props;
 
     if (this.state.showSharingPanel !== nextState.showSharingPanel) {
       return true;
@@ -272,7 +268,9 @@ class SectionBodyContent extends React.Component {
       return true;
     }
 
-    if (showVersionHistoryPanel !== nextState.showVersionHistoryPanel) {
+    if (
+      isVisibleVersionHistoryPanel !== nextProps.isVisibleVersionHistoryPanel
+    ) {
       return true;
     }
 
@@ -514,26 +512,33 @@ class SectionBodyContent extends React.Component {
   };
 
   showVersionHistory = (e) => {
-    const { settings, history, isMobile, setIsLoading } = this.props;
+    const {
+      settings,
+      history,
+      isMobile,
+      setIsLoading,
+      setVisibilityVersionHistoryPanel,
+      setVersionHistoryFileId,
+    } = this.props;
+
     const fileId = e.currentTarget.dataset.id;
+
     if (!isMobile && window.innerWidth > 1024) {
       setIsLoading(true);
-      this.setState({
-        versionHistory: {
-          showVersionHistoryPanel: true,
-          fileId: fileId,
-        },
-      });
+      setVersionHistoryFileId(fileId);
+      setVisibilityVersionHistoryPanel(true);
     } else {
       history.push(`${settings.homepage}/${fileId}/history`);
     }
   };
 
   onHistoryAction = () => {
-    const { showVersionHistoryPanel } = this.state.versionHistory;
-    this.setState({
-      versionHistory: { showVersionHistoryPanel: !showVersionHistoryPanel },
-    });
+    const {
+      isVisibleVersionHistoryPanel,
+      setVisibilityVersionHistoryPanel,
+    } = this.props;
+
+    setVisibilityVersionHistoryPanel(!isVisibleVersionHistoryPanel);
   };
 
   lockFile = () => {
@@ -1557,6 +1562,7 @@ class SectionBodyContent extends React.Component {
       mediaViewerImageFormats,
       mediaViewerMediaFormats,
       tooltipValue,
+      isVisibleVersionHistoryPanel,
     } = this.props;
 
     const {
@@ -1567,7 +1573,7 @@ class SectionBodyContent extends React.Component {
       versionHistory,
     } = this.state;
 
-    const { showVersionHistoryPanel, fileId } = versionHistory;
+    const { fileId } = versionHistory;
 
     const operationsPanelProps = {
       setIsLoading,
@@ -1640,10 +1646,9 @@ class SectionBodyContent extends React.Component {
             onClose={this.onCopyAction}
           />
         )}
-        {showVersionHistoryPanel && (
+        {isVisibleVersionHistoryPanel && (
           <VersionHistoryPanel
-            fileId={fileId}
-            visible={showVersionHistoryPanel}
+            visible={isVisibleVersionHistoryPanel}
             onClose={this.onHistoryAction}
           />
         )}
@@ -1889,6 +1894,7 @@ const mapStateToProps = (state) => {
     viewer: getCurrentUser(state),
     tooltipValue: getTooltipLabel(state),
     iconOfDraggedFile: getIconOfDraggedFile(state)(state),
+    isVisibleVersionHistoryPanel: getVisibilityVersionHistoryPanel(state),
   };
 };
 
@@ -1914,4 +1920,6 @@ export default connect(mapStateToProps, {
   getFileInfo,
   addFileToRecentlyViewed,
   loopFilesOperations,
+  setVisibilityVersionHistoryPanel,
+  setVersionHistoryFileId,
 })(withRouter(withTranslation()(SectionBodyContent)));

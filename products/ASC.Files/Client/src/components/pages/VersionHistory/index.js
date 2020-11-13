@@ -2,8 +2,9 @@ import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
-import { /*RequestLoader,*/ Loader } from "asc-web-components";
-import { PageLayout, utils, api } from "asc-web-common";
+import { isMobile } from "react-device-detect";
+import { Loader } from "asc-web-components";
+import { PageLayout, utils, api, store } from "asc-web-common";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import {
   ArticleHeaderContent,
@@ -13,7 +14,11 @@ import {
 import { SectionHeaderContent, SectionBodyContent } from "./Section";
 import { createI18N } from "../../../helpers/i18n";
 //import { setDocumentTitle } from "../../../helpers/utils";
-import { setFirstLoad } from "../../../store/files/actions";
+import {
+  setFirstLoad,
+  setVisibilityVersionHistoryPanel,
+  setVersionHistoryFileId,
+} from "../../../store/files/actions";
 import { getIsLoading } from "../../../store/files/selectors";
 const i18n = createI18N({
   page: "VersionHistory",
@@ -21,7 +26,7 @@ const i18n = createI18N({
 });
 
 const { changeLanguage } = utils;
-
+const { getSettingsHomepage } = store.auth.selectors;
 class PureVersionHistory extends React.Component {
   constructor(props) {
     super(props);
@@ -36,13 +41,24 @@ class PureVersionHistory extends React.Component {
   }
 
   componentDidMount() {
-    const { match } = this.props;
+    const {
+      match,
+      history,
+      homepage,
+      setVisibilityVersionHistoryPanel,
+      setVersionHistoryFileId,
+    } = this.props;
     const { fileId } = match.params;
 
     //setDocumentTitle(t("GroupAction"));
-
     if (fileId) {
-      this.getFileVersions(fileId);
+      if (!isMobile && window.innerWidth > 1024) {
+        setVisibilityVersionHistoryPanel(true);
+        setVersionHistoryFileId(fileId);
+        history.push(`${homepage}`);
+      } else {
+        this.getFileVersions(fileId);
+      }
     }
   }
 
@@ -138,12 +154,17 @@ VersionHistory.propTypes = {
 function mapStateToProps(state) {
   return {
     isLoading: getIsLoading(state),
+    homepage: getSettingsHomepage(state),
   };
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
     setFirstLoad: (firstLoad) => dispatch(setFirstLoad(firstLoad)),
+    setVisibilityVersionHistoryPanel: (isVisible) =>
+      dispatch(setVisibilityVersionHistoryPanel(isVisible)),
+    setVersionHistoryFileId: (fileId) =>
+      dispatch(setVersionHistoryFileId(fileId)),
   };
 };
 
