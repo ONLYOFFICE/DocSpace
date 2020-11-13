@@ -171,9 +171,9 @@ export function getUserInfo(dispatch) {
 
 export function login(user, hash) {
   return (dispatch, getState) => {
-    const state = getState();
-    const isDesktop = isDesktopClient(state);
-    isDesktop && checkPwd();
+    // const state = getState();
+    // const isDesktop = isDesktopClient(state);
+    // isDesktop && checkPwd();
     return api.user
       .login(user, hash)
       .then(() => {

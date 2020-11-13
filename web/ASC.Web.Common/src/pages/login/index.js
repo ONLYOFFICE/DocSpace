@@ -30,6 +30,8 @@ import Register from "./sub-components/register-container";
 import { createPasswordHash } from "../../utils";
 //import history from "../../history";
 import { redirectToDefaultPage } from "../../utils";
+import { isDesktopClient } from "../../store/auth/selectors";
+import { checkPwd } from "../../desktop";
 const { getLanguage } = store.auth.selectors;
 const LoginContainer = styled.div`
   display: flex;
@@ -205,7 +207,14 @@ class Form extends Component {
 
   onSubmit = () => {
     const { errorText, identifier, password } = this.state;
-    const { login, setIsLoaded, history, hashSettings, homepage } = this.props;
+    const {
+      login,
+      setIsLoaded,
+      history,
+      hashSettings,
+      homepage,
+      isDesktop,
+    } = this.props;
 
     errorText && this.setState({ errorText: "" });
     let hasError = false;
@@ -228,6 +237,8 @@ class Form extends Component {
 
     this.setState({ isLoading: true });
     const hash = createPasswordHash(pass, hashSettings);
+
+    isDesktop && checkPwd();
 
     login(userName, hash)
       .then(() => {
@@ -496,6 +507,7 @@ function mapStateToProps(state) {
 
   return {
     isLoaded,
+    isDesktop: isDesktopClient(state),
     enabledJoin,
     organizationName,
     language: getLanguage(state),

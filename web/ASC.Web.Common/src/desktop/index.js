@@ -70,6 +70,11 @@ export function regDesktop(displayName, email, userId) {
   };
 
   if (encryption) {
+    assign(data, {
+      encryptionKeys: {
+        cryptoEngineId: guid,
+      },
+    });
     if (!isEmpty(encryptionKeyPair)) {
       assign(data, {
         encryptionKeys: {
@@ -78,13 +83,14 @@ export function regDesktop(displayName, email, userId) {
           publicKey: encryptionKeyPair.publicKey,
         },
       });
-    }
+    } else assign(data, {});
   }
 
   const execCommand = window.AscDesktopEditor.execCommand(
     "portal:login",
     JSON.stringify(data)
   );
+  console.log("regdesktop", data);
   return execCommand;
 }
 
