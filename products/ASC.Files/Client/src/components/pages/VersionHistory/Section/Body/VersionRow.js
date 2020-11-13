@@ -36,20 +36,13 @@ const StyledRow = styled(Row)`
     .version_badge-text {
       position: absolute;
       left: 6px;
-      @media ${tablet} {
-        left: -2px;
-      }
     }
 
     margin-left: 0px;
     margin-top: ${(props) => (props.showEditPanel ? "13px" : "-2px")};
 
     @media ${tablet} {
-      margin-left: 0px;
       margin-top: 0px;
-      .version_badge-text {
-        left: 6px;
-      }
     }
   }
 
@@ -80,10 +73,10 @@ const StyledRow = styled(Row)`
 
   .version_edit-comment {
     display: block;
-    margin-left: 63px;
 
     @media ${tablet} {
       display: none;
+      margin-left: 63px;
     }
   }
 

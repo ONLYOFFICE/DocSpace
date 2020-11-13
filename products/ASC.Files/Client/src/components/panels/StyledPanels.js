@@ -59,6 +59,7 @@ const StyledAsidePanel = styled.div`
 `;
 
 const StyledVersionHistoryPanel = styled.div`
+  ${PanelStyles}
   .version-history-modal-dialog {
     transform: translateX(${(props) => (props.visible ? "0" : "720px")});
     width: 720px;
@@ -81,6 +82,9 @@ const StyledVersionHistoryPanel = styled.div`
   }
   .version-comment-wrapper {
     margin-left: 79px;
+  }
+  .version_edit-comment {
+    margin-left: 70px;
   }
 `;
 
