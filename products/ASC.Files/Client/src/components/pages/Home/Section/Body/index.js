@@ -196,7 +196,6 @@ class SectionBodyContent extends React.Component {
       showCopyPanel: false,
       isDrag: false,
       canDrag: true,
-      versionHistory: {},
     };
 
     this.tooltipRef = React.createRef();
@@ -1570,10 +1569,7 @@ class SectionBodyContent extends React.Component {
       showSharingPanel,
       showMoveToPanel,
       showCopyPanel,
-      versionHistory,
     } = this.state;
-
-    const { fileId } = versionHistory;
 
     const operationsPanelProps = {
       setIsLoading,
