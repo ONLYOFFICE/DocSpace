@@ -21,7 +21,7 @@ const i18n = createI18N({
 });
 
 const { changeLanguage } = utils;
-const { getSettings, getIsLoaded } = store.auth.selectors;
+const { getIsLoaded } = store.auth.selectors;
 
 class PureVersionHistory extends React.Component {
   constructor(props) {
@@ -67,7 +67,6 @@ class PureVersionHistory extends React.Component {
 
   render() {
     const { versions } = this.state;
-    const { settings } = this.props;
 
     return (
       <>
@@ -106,7 +105,6 @@ class PureVersionHistory extends React.Component {
               <SectionBodyContent
                 getFileVersions={this.getFileVersions}
                 versions={versions}
-                culture={settings.culture}
               />
             </PageLayout.SectionBody>
           </PageLayout>
@@ -154,7 +152,6 @@ VersionHistory.propTypes = {
 
 function mapStateToProps(state) {
   return {
-    settings: getSettings(state),
     isLoaded: getIsLoaded(state),
     isLoading: getIsLoading(state),
   };

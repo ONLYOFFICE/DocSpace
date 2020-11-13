@@ -3,10 +3,13 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
 import { Backdrop, Heading, Aside } from "asc-web-components";
-import { api, utils, store } from "asc-web-common";
+import { api, utils } from "asc-web-common";
 
 import { withTranslation, I18nextProvider } from "react-i18next";
 import { createI18N } from "../../../helpers/i18n";
+
+import { setIsLoading } from "../../../store/files/actions";
+import { getIsLoading } from "../../../store/files/selectors";
 
 import {
   StyledVersionHistoryPanel,
@@ -24,12 +27,10 @@ const i18n = createI18N({
 
 const { changeLanguage } = utils;
 
-const { getSettings } = store.auth.selectors;
-
 class PureVersionHistoryPanel extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { isLoading: true };
+    this.state = { versions: {} };
   }
 
   componentDidMount() {
@@ -40,9 +41,10 @@ class PureVersionHistoryPanel extends React.Component {
   }
 
   getFileVersions = (fileId) => {
+    const { setIsLoading } = this.props;
+    setIsLoading(true);
     api.files.getFileVersionInfo(fileId).then((versions) => {
-      console.log(versions);
-      this.setState({ versions: versions, isLoading: false });
+      this.setState({ versions: versions }, () => setIsLoading(false));
     });
   };
 
@@ -51,8 +53,9 @@ class PureVersionHistoryPanel extends React.Component {
   };
 
   render() {
-    const { isLoading, versions } = this.state;
-    const { visible, settings } = this.props;
+    console.log("render versionHistoryPanel:::::", this.props);
+    const { versions } = this.state;
+    const { visible, isLoading } = this.props;
     const zIndex = 310;
     return (
       <StyledVersionHistoryPanel
@@ -64,7 +67,7 @@ class PureVersionHistoryPanel extends React.Component {
           visible={visible}
           zIndex={zIndex}
         />
-        {!isLoading ? (
+        {!isLoading && Object.keys(versions).length > 0 ? (
           <Aside className="version-history-aside-panel">
             <StyledContent>
               <StyledHeaderContent className="version-history-panel-header">
@@ -73,7 +76,7 @@ class PureVersionHistoryPanel extends React.Component {
                   size="medium"
                   truncate
                 >
-                  {this.state.versions && this.state.versions[0].title}
+                  {versions && versions[0].title}
                 </Heading>
               </StyledHeaderContent>
 
@@ -81,7 +84,6 @@ class PureVersionHistoryPanel extends React.Component {
                 <SectionBodyContent
                   getFileVersions={this.getFileVersions}
                   versions={versions}
-                  culture={settings.culture}
                 />
               </StyledBody>
             </StyledContent>
@@ -111,8 +113,17 @@ VersionHistoryPanelContainer.propTypes = {
 
 function mapStateToProps(state) {
   return {
-    settings: getSettings(state),
+    isLoading: getIsLoading(state),
   };
 }
 
-export default connect(mapStateToProps)(VersionHistoryPanel);
+function mapDispatchToProps(dispatch) {
+  return {
+    setIsLoading: (isLoading) => dispatch(setIsLoading(isLoading)),
+  };
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(VersionHistoryPanel);

@@ -14,13 +14,14 @@ import {
 import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
 import { connect } from "react-redux";
-import { api, toastr } from "asc-web-common";
+import { api, toastr, store } from "asc-web-common";
 import { setIsLoading } from "../../../../../store/files/actions";
 import {
   getFilter,
   getSelectedFolderId,
 } from "../../../../../store/files/selectors";
 
+const { getLanguage } = store.auth.selectors;
 const { tablet } = utils.device;
 
 const StyledRow = styled(Row)`
@@ -395,6 +396,7 @@ const mapStateToProps = (state) => {
   return {
     filter: getFilter(state),
     selectedFolderId: getSelectedFolderId(state),
+    culture: getLanguage(state),
   };
 };
 
