@@ -13,6 +13,7 @@ import {
 import { SectionHeaderContent, SectionBodyContent } from "./Section";
 import { createI18N } from "../../../helpers/i18n";
 //import { setDocumentTitle } from "../../../helpers/utils";
+import { setFirstLoad } from "../../../store/files/actions";
 import { getIsLoading } from "../../../store/files/selectors";
 const i18n = createI18N({
   page: "VersionHistory",
@@ -57,9 +58,11 @@ class PureVersionHistory extends React.Component {
   }
 
   getFileVersions = (fileId) => {
-    api.files
-      .getFileVersionInfo(fileId)
-      .then((versions) => this.setState({ versions }));
+    const { setFirstLoad } = this.props;
+    api.files.getFileVersionInfo(fileId).then((versions) => {
+      setFirstLoad(false);
+      this.setState({ versions });
+    });
   };
 
   render() {
@@ -157,4 +160,13 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, {})(withRouter(VersionHistory));
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setFirstLoad: (firstLoad) => dispatch(setFirstLoad(firstLoad)),
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withRouter(VersionHistory));
