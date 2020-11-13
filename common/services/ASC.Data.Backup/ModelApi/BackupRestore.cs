@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 
 using ASC.Api.Collections;
-using ASC.Data.Backup.Contracts;
 
 namespace ASC.Data.Backup.Models
 {
