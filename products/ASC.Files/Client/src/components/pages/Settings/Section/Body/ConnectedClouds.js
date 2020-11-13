@@ -192,7 +192,7 @@ class ConnectClouds extends React.Component {
 
   onDeleteThirdParty = () => {
     const id = this.state.removeItemId;
-    const providers = this.state.providers.filter((x) => x.id === id);
+    const providers = this.state.providers.filter((x) => x.provider_id !== id);
     deleteThirdParty(+id)
       .then(() => this.setState({ showDeleteDialog: false, providers }))
       .catch((err) => {
@@ -491,7 +491,7 @@ class ConnectClouds extends React.Component {
             <ModalDialog.Body>{t("DeleteThirdPartyAlert")}</ModalDialog.Body>
             <ModalDialog.Footer>
               <Button
-                label={t("SaveButton")}
+                label={t("OKButton")}
                 size="big"
                 primary
                 onClick={this.onDeleteThirdParty}

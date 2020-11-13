@@ -74,7 +74,6 @@ import {
   getSelection,
   getTreeFolders,
   getViewAs,
-  isFileSelected,
   loopTreeFolders,
   getFilesList,
   getMediaViewerImageFormats,

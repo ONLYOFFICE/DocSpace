@@ -23,7 +23,7 @@
   "ConnectAccountsSubTitle": "No connected accounts",
   "AddAccount": "Add account",
   "ConnectingAccount": "Connecting account",
-  "ConnectDescription": "You can connect the following accounts to the ONLYOFFICE™ Documents. They will be displayed in 'My Documents' folder and you will be able to edit and save them right on the portal all in one place.",
+  "ConnectDescription": "You can connect the following accounts to the ONLYOFFICEï¿½ Documents. They will be displayed in 'My Documents' folder and you will be able to edit and save them right on the portal all in one place.",
   "ConnectAdminDescription": "For successful connection enter the necessary data at <1>this page</1>.",
   "ConnextOtherAccount": "Other account",
   "ConnectedCloud": "Connected cloud",
@@ -39,5 +39,6 @@
   "DeleteThirdPartyAlert": "Are you sure you want to remove the Google directory from the 'Documents' module? This will not affect your google.com account in any way.",
   "Account": "Account",
   "Reconnect": "Reconnect",
-  "Directory": "directory"
+  "Directory": "directory",
+  "OKButton": "OK"
 }

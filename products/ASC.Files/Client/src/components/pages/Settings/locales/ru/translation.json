@@ -39,5 +39,6 @@
   "DeleteThirdPartyAlert": "Вы действительно хотите удалить Каталог Google из модуля 'Документы'? Это никак не повлияет на Ваш аккаунт Google Drive.",
   "Account": "Аккаунт",
   "Reconnect": "Подключить повторно",
-  "Directory": "каталог"
+  "Directory": "каталог",
+  "OKButton": "ОК"
 }
