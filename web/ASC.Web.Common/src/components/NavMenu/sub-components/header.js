@@ -5,16 +5,18 @@ import NavItem from "./nav-item";
 import Headline from "../../Headline";
 import Nav from "./nav";
 import NavLogoItem from "./nav-logo-item";
+import Loaders from "../../Loaders/index";
+import { ReactSVG } from "react-svg";
 
 import { utils } from "asc-web-components";
 import { connect } from "react-redux";
 import {
-  getCurrentProduct,
   getCurrentProductId,
   getCurrentProductName,
   getDefaultPage,
   getMainModules,
   getTotalNotificationsCount,
+  getIsLoaded,
 } from "../../../store/auth/selectors";
 
 const { desktop } = utils.device;
@@ -59,7 +61,7 @@ const Header = styled.header`
     width: 146px;
     height: 24px;
     position: relative;
-    padding: 4px 20px 0 6px;
+    padding: 0 20px 0 6px;
     cursor: pointer;
 
     @media (max-width: 620px) {
@@ -80,11 +82,11 @@ const HeaderComponent = ({
   isNavOpened,
   currentProductId,
   toggleAside,
+  ...props
 }) => {
   //console.log("Header render");
 
   const isNavAvailable = mainModules.length > 0;
-
   const onLogoClick = () => {
     window.open(defaultPage, "_self");
   };
@@ -109,13 +111,19 @@ const HeaderComponent = ({
         />
 
         <a className="header-logo-wrapper" href={defaultPage}>
-          <img
-            className="header-logo-min_icon"
-            src="images/nav.logo.react.svg"
-          />
-          <img
+          <ReactSVG
             className="header-logo-icon"
-            src="images/nav.logo.opened.react.svg"
+            loading={() => (
+              <Loaders.Rectangle
+                width="168"
+                height="24"
+                backgroundColor="#fff"
+                foregroundColor="#fff"
+                backgroundOpacity={0.25}
+                foregroundOpacity={0.2}
+              />
+            )}
+            src={props.logoUrl}
           />
         </a>
         <Headline className="header-module-title" type="header" color="#FFF">
@@ -176,15 +184,24 @@ HeaderComponent.propTypes = {
   onNavMouseEnter: PropTypes.func,
   onNavMouseLeave: PropTypes.func,
   toggleAside: PropTypes.func,
+  logoUrl: PropTypes.string,
+  isLoaded: PropTypes.bool,
+  isAuthenticated: PropTypes.bool,
 };
 
 const mapStateToProps = (state) => {
+  const { logoUrl } = state.auth.settings;
+  const { isAuthenticated } = state.auth;
+
   return {
     defaultPage: getDefaultPage(state),
     totalNotifications: getTotalNotificationsCount(state),
     mainModules: getMainModules(state),
     currentProductName: getCurrentProductName(state),
     currentProductId: getCurrentProductId(state),
+    isLoaded: getIsLoaded(state),
+    logoUrl,
+    isAuthenticated,
   };
 };
 

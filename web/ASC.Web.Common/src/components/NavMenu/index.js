@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import PropTypes from "prop-types";
+import styled from "styled-components";
 import { Backdrop, Toast, Aside } from "asc-web-components";
 import Header from "./sub-components/header";
 import HeaderNav from "./sub-components/header-nav";
@@ -12,6 +13,14 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router";
 
 import { getLanguage } from "../../store/auth/selectors";
+import Loaders from "../Loaders";
+
+const backgroundColor = "#0F4071";
+
+const StyledContainer = styled.header`
+  align-items: center;
+  background-color: ${backgroundColor};
+`;
 
 class NavMenu extends React.Component {
   constructor(props) {
@@ -98,23 +107,26 @@ class NavMenu extends React.Component {
     console.log("NavMenu render", this.state, this.props);
 
     return (
-      <>
+      <StyledContainer>
         <Toast />
 
         <Backdrop visible={isBackdropVisible} onClick={this.backdropClick} />
 
-        <HeaderNav />
-
-        {!isAuthenticated && isLoaded ? (
-          <HeaderUnAuth />
+        {isLoaded && isAuthenticated ? (
+          <>
+            <HeaderNav />
+            <Header
+              isNavOpened={isNavOpened}
+              onClick={this.showNav}
+              onNavMouseEnter={this.handleNavMouseEnter}
+              onNavMouseLeave={this.handleNavMouseLeave}
+              toggleAside={this.toggleAside}
+            />
+          </>
+        ) : !isLoaded && isAuthenticated ? (
+          <Loaders.Header />
         ) : (
-          <Header
-            isNavOpened={isNavOpened}
-            onClick={this.showNav}
-            onNavMouseEnter={this.handleNavMouseEnter}
-            onNavMouseLeave={this.handleNavMouseLeave}
-            toggleAside={this.toggleAside}
-          />
+          <HeaderUnAuth />
         )}
 
         {isAsideAvailable && (
@@ -122,7 +134,7 @@ class NavMenu extends React.Component {
             {asideContent}
           </Aside>
         )}
-      </>
+      </StyledContainer>
     );
   }
 }
