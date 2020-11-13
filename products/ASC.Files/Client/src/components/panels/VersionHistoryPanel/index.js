@@ -110,7 +110,11 @@ const VersionHistoryPanel = (props) => {
 };
 
 VersionHistoryPanelContainer.propTypes = {
-  isLoaded: PropTypes.bool,
+  isLoading: PropTypes.bool,
+  fileId: PropTypes.string,
+  visible: PropTypes.bool,
+  setIsLoading: PropTypes.func,
+  onClose: PropTypes.func,
 };
 
 function mapStateToProps(state) {
