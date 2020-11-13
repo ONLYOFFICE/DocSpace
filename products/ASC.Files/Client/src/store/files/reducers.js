@@ -31,6 +31,7 @@ import {
   SET_UPLOAD_DATA,
   SET_CAPABILITIES,
   SET_CONNECT_ITEM,
+  SET_SHOW_THIRDPARTY_PANEL,
 } from "./actions";
 import { api } from "asc-web-common";
 import { isFileSelected, skipFile, getFilesBySelected } from "./selectors";
@@ -375,6 +376,7 @@ const initialState = {
   privacyInstructions: "https://www.onlyoffice.com/private-rooms.aspx",
   capabilities: [],
   connectItem: null,
+  showThirdPartyPanel: false,
 };
 
 const filesReducer = (state = initialState, action) => {
@@ -552,6 +554,10 @@ const filesReducer = (state = initialState, action) => {
     case SET_CONNECT_ITEM:
       return Object.assign({}, state, {
         connectItem: action.connectItem,
+      });
+    case SET_SHOW_THIRDPARTY_PANEL:
+      return Object.assign({}, state, {
+        showThirdPartyPanel: action.showThirdPartyPanel,
       });
     default:
       return state;

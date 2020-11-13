@@ -18,6 +18,7 @@ import {
   setConnectItem,
   setSelectedNode,
   setSelectedFolder,
+  setShowThirdPartyPanel,
 } from "../../../store/files/actions";
 
 const { changeLanguage } = utils;
@@ -114,24 +115,39 @@ const PureThirdPartyListContainer = ({
   nextCloudConnectItem,
   webDavConnectItem,
   setConnectItem,
+  setShowThirdPartyPanel,
   setSelectedNode,
   setSelectedFolder,
 }) => {
-  const onConnect = (e) => {
-    const data = e.currentTarget.dataset;
-    data.link ? openConnectWindow(data.title) : setConnectItem(data);
-
+  const redirectAction = () => {
     const thirdPartyUrl = "/products/files/settings/thirdParty";
     if (history.location.pathname !== thirdPartyUrl) {
-      setSelectedNode("thirdParty");
+      setSelectedNode(["thirdParty"]);
       setSelectedFolder({});
       return history.push(thirdPartyUrl);
     }
   };
 
+  const onConnect = (e) => {
+    const data = e.currentTarget.dataset;
+    data.link ? openConnectWindow(data.title) : setConnectItem(data);
+
+    redirectAction();
+  };
+
+  const onShowConnectPanel = () => {
+    setShowThirdPartyPanel(true);
+    redirectAction();
+  };
+
   return (
     <StyledThirdParty>
-      <Link color="#555F65" fontSize="14px" fontWeight={600}>
+      <Link
+        color="#555F65"
+        fontSize="14px"
+        fontWeight={600}
+        onClick={onShowConnectPanel}
+      >
         {t("AddAccount")}
       </Link>
       <div className="tree-thirdparty-list">
@@ -210,4 +226,5 @@ export default connect(mapStateToProps, {
   setConnectItem,
   setSelectedNode,
   setSelectedFolder,
+  setShowThirdPartyPanel,
 })(ThirdPartyList);

@@ -63,6 +63,7 @@ export const SET_FIRST_LOAD = "SET_FIRST_LOAD";
 export const SET_UPLOAD_DATA = "SET_UPLOAD_DATA";
 export const SET_CAPABILITIES = "SET_CAPABILITIES";
 export const SET_CONNECT_ITEM = "SET_CONNECT_ITEM";
+export const SET_SHOW_THIRDPARTY_PANEL = "SET_SHOW_THIRDPARTY_PANEL";
 
 export function setFile(file) {
   return {
@@ -279,6 +280,13 @@ export function setConnectItem(connectItem) {
   return {
     type: SET_CONNECT_ITEM,
     connectItem,
+  };
+}
+
+export function setShowThirdPartyPanel(showThirdPartyPanel) {
+  return {
+    type: SET_SHOW_THIRDPARTY_PANEL,
+    showThirdPartyPanel,
   };
 }
 

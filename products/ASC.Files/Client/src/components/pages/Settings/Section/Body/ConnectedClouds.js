@@ -21,6 +21,7 @@ import {
   deleteThirdParty,
   openConnectWindow,
   setConnectItem,
+  setShowThirdPartyPanel,
 } from "../../../../../store/files/actions";
 import {
   getCapabilities,
@@ -35,6 +36,7 @@ import {
   getOwnCloudConnect,
   getWebDavConnect,
   getConnectItem,
+  getShowThirdPartyPanel,
 } from "../../../../../store/files/selectors";
 import ConnectedDialog from "./ConnectedDialog";
 
@@ -102,14 +104,14 @@ class ConnectClouds extends React.Component {
     super(props);
 
     this.state = {
-      connectDialogVisible: false,
+      showThirdPartyDialog: props.showThirdPartyPanel,
       showAccountSettingDialog: !!props.connectItem,
       showDeleteDialog: false,
       providers: [],
       loginValue: "",
       passwordValue: "",
       folderNameValue: "",
-      selectedServiceData: props.connectItem, //connectItem
+      selectedServiceData: props.connectItem,
       removeItemId: null,
       providersLoading: true,
     };
@@ -128,6 +130,13 @@ class ConnectClouds extends React.Component {
     const visible = !!this.props.connectItem;
     const prevVisible = !!prevProps.connectItem;
 
+    if (this.props.showThirdPartyPanel !== prevProps.showThirdPartyPanel) {
+      this.props.showThirdPartyPanel &&
+        this.setState({
+          showThirdPartyDialog: true,
+        });
+    }
+
     if (visible !== prevVisible) {
       visible &&
         this.setState({
@@ -143,14 +152,19 @@ class ConnectClouds extends React.Component {
     !showAccountSettingDialog && openConnectWindow(selectedServiceData.title);
 
     this.setState({
-      connectDialogVisible: !this.state.connectDialogVisible,
+      showThirdPartyDialog: !this.state.showThirdPartyDialog,
       showAccountSettingDialog,
       selectedServiceData,
     });
   };
 
-  onShowConnectDialog = () => {
-    this.setState({ connectDialogVisible: !this.state.connectDialogVisible });
+  onShowThirdPartyDialog = () => {
+    this.setState(
+      { showThirdPartyDialog: !this.state.showThirdPartyDialog },
+      () =>
+        this.props.showThirdPartyPanel &&
+        this.props.setShowThirdPartyPanel(false)
+    );
   };
 
   onShowAccountSettingDialog = () => {
@@ -234,7 +248,7 @@ class ConnectClouds extends React.Component {
 
   render() {
     const {
-      connectDialogVisible,
+      showThirdPartyDialog,
       providers,
       showAccountSettingDialog,
       showDeleteDialog,
@@ -270,11 +284,11 @@ class ConnectClouds extends React.Component {
         <img
           className="empty-folder_container_plus-image"
           src="images/plus.svg"
-          onClick={this.onShowConnectDialog}
+          onClick={this.onShowThirdPartyDialog}
           alt="plus_icon"
         />
         <Box className="flex-wrapper_container">
-          <Link onClick={this.onShowConnectDialog} {...linkStyles}>
+          <Link onClick={this.onShowThirdPartyDialog} {...linkStyles}>
             {t("AddAccount")},
           </Link>
         </Box>
@@ -287,7 +301,7 @@ class ConnectClouds extends React.Component {
           <>
             <Button
               size="base"
-              onClick={this.onShowConnectDialog}
+              onClick={this.onShowThirdPartyDialog}
               label={t("ConnectedCloud")}
               primary
             />
@@ -356,13 +370,13 @@ class ConnectClouds extends React.Component {
           />
         )}
 
-        {connectDialogVisible && (
+        {showThirdPartyDialog && (
           <ModalDialog
-            visible={connectDialogVisible}
+            visible={showThirdPartyDialog}
             scale={false}
             displayType="auto"
             zIndex={310}
-            onClose={this.onShowConnectDialog}
+            onClose={this.onShowThirdPartyDialog}
           >
             <ModalDialog.Header>{t("ConnectingAccount")}</ModalDialog.Header>
             <ModalDialog.Body>
@@ -519,9 +533,11 @@ function mapStateToProps(state) {
     ownCloudConnectItem: getOwnCloudConnect(state),
     webDavConnectItem: getWebDavConnect(state),
     connectItem: getConnectItem(state),
+    showThirdPartyPanel: getShowThirdPartyPanel(state),
   };
 }
 
-export default connect(mapStateToProps, { setConnectItem })(
-  withTranslation()(ConnectClouds)
-);
+export default connect(mapStateToProps, {
+  setConnectItem,
+  setShowThirdPartyPanel,
+})(withTranslation()(ConnectClouds));

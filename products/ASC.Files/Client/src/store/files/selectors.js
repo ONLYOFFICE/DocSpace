@@ -1212,3 +1212,7 @@ export const getOwnCloudConnect = createSelector(
 export const getConnectItem = (state) => {
   return state.files.connectItem;
 };
+
+export const getShowThirdPartyPanel = (state) => {
+  return state.files.showThirdPartyPanel;
+};
