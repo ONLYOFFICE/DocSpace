@@ -43,6 +43,15 @@ const StyledArticle = styled.article`
             min-width: 240px;
             margin-top: 56px;
             height: calc(100% - 56px)!important;
+            .increaseHeight {
+              position: fixed;
+              height: 100%;
+              top: 0;
+              left: 0;
+              min-width: 240px;
+              background: #f8f9f9;
+              z-index: 0;
+            }
           `
             : `
             position: fixed !important;
@@ -87,6 +96,7 @@ class Article extends React.Component {
           
         >
           {children}
+          <div className="increaseHeight"></div>
         </Resizable>
       </StyledArticle>
              

@@ -14,7 +14,7 @@ const StyledArticleBody = styled.div`
     height: calc(100% - 104px);
     display: table;
     width: 100%;
-
+    z-index: 5;
     .custom-scrollbar {
       display: table-cell;
     }
