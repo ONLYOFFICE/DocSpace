@@ -5,7 +5,7 @@ import NavItem from "./nav-item";
 import Headline from "../../Headline";
 import Nav from "./nav";
 import NavLogoItem from "./nav-logo-item";
-import {IsVisibleContextConsumer} from "asc-web-common"
+import {LayoutContextConsumer} from "asc-web-common"
 import { utils } from "asc-web-components";
 import { connect } from "react-redux";
 import {
@@ -116,9 +116,9 @@ const HeaderComponent = ({
 
   return (
     <>
-    <IsVisibleContextConsumer>
+    <LayoutContextConsumer>
       {value =>
-      <Header module={currentProductName} valueTop={value} >
+      <Header module={currentProductName} valueTop={value.isVisible} >
         <NavItem
           iconName="MenuIcon"
           badgeNumber={totalNotifications}
@@ -140,7 +140,7 @@ const HeaderComponent = ({
           {currentProductName}
         </Headline>
       </Header>}
-      </IsVisibleContextConsumer>
+      </LayoutContextConsumer>
       {isNavAvailable && (
         <Nav
           opened={isNavOpened}

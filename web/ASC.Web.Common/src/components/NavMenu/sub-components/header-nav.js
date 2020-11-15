@@ -6,7 +6,7 @@ import NavItem from "./nav-item";
 import ProfileActions from "./profile-actions";
 import { useTranslation } from "react-i18next";
 import { utils } from "asc-web-components";
-import {IsVisibleContextConsumer} from "asc-web-common"
+import {LayoutContextConsumer} from "asc-web-common"
 const { tablet } = utils.device;
 import { logout } from "../../../store/auth/actions";
 
@@ -100,9 +100,9 @@ const HeaderNav = React.memo(
 
     //console.log("HeaderNav render");
     return (
-      <IsVisibleContextConsumer>
+      <LayoutContextConsumer>
       {value =>
-        <StyledNav valueTop={value}>
+        <StyledNav valueTop={value.isVisible}>
         {modules.map((module) => (
           
           <NavItem
@@ -120,7 +120,7 @@ const HeaderNav = React.memo(
         )}
       </StyledNav>
       }
-      </IsVisibleContextConsumer>
+      </LayoutContextConsumer>
     );
   }
 );

@@ -1,43 +1,49 @@
 
-import React, { Component, createRef} from "react"
+import React, { Component, createRef, useRef, useEffect} from "react"
 import styled from "styled-components";
-import {  Scrollbar, utils} from "asc-web-components";
-import { isMobile } from "react-device-detect";
-import {RefContextProvider, IsVisibleContextProvider} from "./context"
+import {  Scrollbar} from "asc-web-components";
+
+import {LayoutContextProvider} from "./context"
+
 
 const StyledContainer = styled.div`
 width:100%;
 height:100vh;
 `
-class Layout extends Component{
+class ExpandLayout extends Component{
   constructor(props) {
     super(props);
-    this.state = {
 
-      prevScrollPosition:  window.pageYOffset ,
-      visibleContent: true
-    };
-    this.scrollRefPage = createRef();
     this.windowWidth = window.matchMedia( "(max-width: 1024px)" );
+
+    this.state = {
+      isTablet: window.innerWidth < 1024,
+      prevScrollPosition:  window.pageYOffset,
+      visibleContent: true,
+    };
+
+    this.scrollRefPage = createRef();
   }
 
-  componentDidMount() {
 
-    (isMobile || this.windowWidth.matches ) && document.getElementById("scroll").addEventListener("scroll", this.scrolledTheVerticalAxis,false);
+  componentDidMount() {
+  this.getElementById = document.getElementById("scroll");
+
+  this.getElementById.addEventListener("scroll", this.scrolledTheVerticalAxis);
   }
 
   componentWillUnmount() {
-    (isMobile || this.windowWidth.matches ) && document.getElementById("scroll").removeEventListener("scroll", this.scrolledTheVerticalAxis,false);
-  }
 
+     this.getElementById.removeEventListener("scroll", this.scrolledTheVerticalAxis);
+  }
 
   scrolledTheVerticalAxis = () => {
 
     const { prevScrollPosition } = this.state;
-    const currentScrollPosition =  document.getElementById("scroll").scrollTop || window.pageYOffset ;
+    const currentScrollPosition = this.getElementById.scrollTop || window.pageYOffset ;
     let visibleContent = prevScrollPosition >= currentScrollPosition;
 
-    if (!visibleContent && (document.getElementById("scroll").scrollHeight - document.getElementById("scroll").clientHeight < 57)) {
+    if (!visibleContent && (this.getElementById.scrollHeight - this.getElementById.clientHeight < 57)) {
       visibleContent = true
     }
 
@@ -49,27 +55,42 @@ class Layout extends Component{
 
   render() {  
   const scrollProp =  { ref: this.scrollRefPage } ;
-  const { children } = this.props
-
+  const { children, windowWidth } = this.props
     return(
-        
-          <StyledContainer className="Layout" >
-  
-              {(isMobile || (!isMobile && this.windowWidth.matches) ) 
+            <StyledContainer className="Layout">
+              {windowWidth && windowWidth.matches 
                 ? <Scrollbar {...scrollProp} stype="mediumBlack">
-                    <RefContextProvider value={this.scrollRefPage}>
-                      <IsVisibleContextProvider value={this.state.visibleContent}>
-                        { children }
-                        </IsVisibleContextProvider>
-                    </RefContextProvider>
+                    <LayoutContextProvider value={{scrollRefLayout: this.scrollRefPage, isVisible:this.state.visibleContent}}>
+                          { children }
+                    </LayoutContextProvider>
                   </Scrollbar>
           
               :  children
                 }
-          </StyledContainer>
+              </StyledContainer>
+          
+         
     )
   }
 }
 
+const Layout = (props) => {
+  // const scrollRefPage = useRef(null)
+  // const scrollProp =  { ref: scrollRefPage } ;
 
+  const isTablet = window.innerWidth < 1024;
+
+  const [windowWidth, setWindowWidth] = React.useState({
+    matches: isTablet,
+  });
+
+  useEffect(() => {
+    let mediaQuery = window.matchMedia("(max-width: 1024px)");
+    mediaQuery.addListener(setWindowWidth);
+
+    return () => mediaQuery.removeListener(setWindowWidth);
+  }, []);
+
+  return <ExpandLayout windowWidth={windowWidth} {...props}/>;
+}
 export default Layout;

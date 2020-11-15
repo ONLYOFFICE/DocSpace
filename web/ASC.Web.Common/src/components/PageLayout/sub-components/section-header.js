@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { utils} from "asc-web-components";
 import isEqual from "lodash/isEqual";
 import classnames from "classnames";
-import {IsVisibleContextConsumer} from "asc-web-common"
+import {LayoutContextConsumer} from "asc-web-common"
 const { tablet } = utils.device;
 
 const StyledSectionHeader = styled.div`
@@ -106,13 +106,13 @@ class SectionHeader extends React.Component {
         isArticlePinned={isArticlePinned}
         borderBottom={borderBottom}
       >
-       <IsVisibleContextConsumer>
+       <LayoutContextConsumer>
             { value => 
               <div id="scroll"  className={classnames("section-header", {
-                "section-header--hidden": !value
+                "section-header--hidden": !value.isVisible
               })} {...rest}/>
               }
-        </IsVisibleContextConsumer>
+        </LayoutContextConsumer>
       </StyledSectionHeader>
       
 
