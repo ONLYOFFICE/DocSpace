@@ -56,7 +56,7 @@ class PureVersionHistoryPanel extends React.Component {
   };
 
   render() {
-    console.log("render versionHistoryPanel", this.props);
+    console.log("render versionHistoryPanel");
 
     const { versions } = this.state;
     const { visible, isLoading } = this.props;
@@ -75,7 +75,7 @@ class PureVersionHistoryPanel extends React.Component {
         <Aside className="version-history-aside-panel">
           <StyledContent>
             <StyledHeaderContent className="version-history-panel-header">
-              {!isLoading ? (
+              {!isLoading && Object.keys(versions).length > 0 ? (
                 <Heading
                   className="version-history-panel-heading"
                   size="medium"
@@ -93,7 +93,7 @@ class PureVersionHistoryPanel extends React.Component {
             </StyledHeaderContent>
 
             <StyledBody className="version-history-panel-body">
-              {!isLoading ? (
+              {!isLoading && Object.keys(versions).length > 0 ? (
                 <SectionBodyContent
                   getFileVersions={this.getFileVersions}
                   versions={versions}
