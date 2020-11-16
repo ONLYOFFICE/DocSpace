@@ -60,7 +60,7 @@ const StyledRow = styled.div`
   .history-loader-file-date {
     margin-left: 16px;
   }
-  .history-loader-file-size,
+  .history-loader-options,
   .history-loader-restore-btn,
   .history-loader-download-btn {
     justify-self: end;
