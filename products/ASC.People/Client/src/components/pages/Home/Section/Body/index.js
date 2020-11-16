@@ -386,7 +386,7 @@ class SectionBodyContent extends React.PureComponent {
     const { dialogsVisible, user } = this.state;
 
     return !isLoaded || (isMobile && isLoading) || !isLoadedSection ? (
-      <Loaders.Rows />
+      <Loaders.Rows isRectangle={false} />
     ) : peopleList.length > 0 ? (
       <>
         <Consumer>

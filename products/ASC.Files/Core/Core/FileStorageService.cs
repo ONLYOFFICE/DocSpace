@@ -587,7 +587,7 @@ namespace ASC.Web.Files.Services.WCFService
                 file.Title = FileUtility.ReplaceFileExtension(fileWrapper.Title, fileExt);
             }
 
-            if (fileWrapper.TemplateId.Equals(default(T)))
+            if (fileWrapper.TemplateId == null || fileWrapper.TemplateId.Equals(default(T)))
             {
                 var culture = UserManager.GetUsers(AuthContext.CurrentAccount.ID).GetCulture();
                 var storeTemplate = GetStoreTemplate();
