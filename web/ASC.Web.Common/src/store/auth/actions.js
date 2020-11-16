@@ -123,7 +123,7 @@ export function setWizardComplete() {
   };
 }
 
-export function getEncryptionKeysData(keys) {
+export function receiveEncryptionKeys(keys) {
   return {
     type: GET_ENCRYPTION_KEYS,
     keys,
@@ -232,12 +232,14 @@ export function setEncryptionKeys(keys) {
   };
 }
 
-export function getEncryptionKeys(keys) {
-  return (dispatch) => {
-    return api.files
-      .getEncryptionKeys(keys)
-      .then((res) => dispatch(getEncryptionKeysData(res)));
-  };
+export function getEncryptionKeys(dispatch) {
+  return api.files
+    .getEncryptionKeys()
+    .then((res) => {
+      (res && dispatch(receiveEncryptionKeys(res))) ||
+        dispatch(receiveEncryptionKeys({}));
+    })
+    .catch((err) => console.error(err));
 }
 
 export function getEncryptionAccess(fileId) {

@@ -67,7 +67,7 @@ const initialState = {
       (window["AscDesktopEditor"] &&
         typeof window.AscDesktopEditor.cloudCryptoCommand === "function") ||
       false,
-    encryptionKeys: {},
+    encryptionKeys: null,
     isDesktopClient: window["AscDesktopEditor"] !== undefined,
   },
 };

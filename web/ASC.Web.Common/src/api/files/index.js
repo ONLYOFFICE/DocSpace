@@ -601,11 +601,10 @@ export function setEncryptionKeys(keys) {
   });
 }
 
-export function getEncryptionKeys(keys) {
+export function getEncryptionKeys() {
   return request({
     method: "get",
     url: "privacyroom/keys",
-    data: keys,
   });
 }
 
