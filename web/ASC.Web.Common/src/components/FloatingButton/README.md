@@ -13,12 +13,13 @@ import { FloatingButton } from "asc-web-common";
 ```
 
 ```jsx
-<FloatingButton icon="trash" alert={true} />
+<FloatingButton icon="trash" alert={true} percent={45} />
 ```
 
 ### Properties
 
-| Props   |  Type   | Required |                     Values                     | Default  | Description                 |
-| ------- | :-----: | :------: | :--------------------------------------------: | :------: | --------------------------- |
-| `icon`  | `oneOf` |    -     | `upload`, `file`, `trash`, `move`, `duplicate` | `upload` | Sets the icon on the button |
-| `alert` | `bool`  |    -     |                       -                        | `false`  | Shows the alert             |
+| Props     |   Type   | Required |                     Values                     | Default  | Description                 |
+| --------- | :------: | :------: | :--------------------------------------------: | :------: | --------------------------- |
+| `icon`    | `oneOf`  |    -     | `upload`, `file`, `trash`, `move`, `duplicate` | `upload` | Sets the icon on the button |
+| `alert`   |  `bool`  |    -     |                       -                        | `false`  | Shows the alert             |
+| `percent` | `number` |    -     |                       -                        |   `0`    | Load fullness               |

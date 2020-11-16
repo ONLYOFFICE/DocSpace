@@ -4,7 +4,7 @@ import { StyledFloatingButton, StyledAlertIcon } from "./StyledFloatingButton";
 import { Icons } from "asc-web-components";
 
 const FloatingButton = ({ id, className, style, ...rest }) => {
-  const { icon, alert } = rest;
+  const { icon, alert, percent } = rest;
 
   return (
     <StyledFloatingButton
@@ -12,21 +12,34 @@ const FloatingButton = ({ id, className, style, ...rest }) => {
       className={className}
       style={style}
       icon={icon}
+      percent={percent}
     >
-      {icon == "upload" ? (
-        <Icons.ButtonUploadIcon />
-      ) : icon == "file" ? (
-        <Icons.ButtonFileIcon />
-      ) : icon == "trash" ? (
-        <Icons.ButtonTrashIcon />
-      ) : icon == "move" ? (
-        <Icons.ButtonMoveIcon />
-      ) : (
-        <Icons.ButtonDuplicateIcon />
-      )}
-      <StyledAlertIcon>
-        {alert ? <Icons.ButtonAlertIcon size="medium" /> : <></>}
-      </StyledAlertIcon>
+      <div className="circle-wrap">
+        <div className="circle">
+          <div className="mask full">
+            <div className="fill"></div>
+          </div>
+          <div className="mask half">
+            <div className="fill"></div>
+          </div>
+          <div className="inside-circle">
+            {icon == "upload" ? (
+              <Icons.ButtonUploadIcon />
+            ) : icon == "file" ? (
+              <Icons.ButtonFileIcon />
+            ) : icon == "trash" ? (
+              <Icons.ButtonTrashIcon />
+            ) : icon == "move" ? (
+              <Icons.ButtonMoveIcon />
+            ) : (
+              <Icons.ButtonDuplicateIcon />
+            )}
+            <StyledAlertIcon>
+              {alert ? <Icons.ButtonAlertIcon size="medium" /> : <></>}
+            </StyledAlertIcon>
+          </div>
+        </div>
+      </div>
     </StyledFloatingButton>
   );
 };
@@ -37,6 +50,7 @@ FloatingButton.propTypes = {
   style: PropTypes.object,
   icon: PropTypes.oneOf(["upload", "file", "trash", "move", "duplicate"]),
   alert: PropTypes.bool,
+  percent: PropTypes.number,
 };
 
 FloatingButton.defaultProps = {
@@ -45,6 +59,7 @@ FloatingButton.defaultProps = {
   style: undefined,
   icon: "upload",
   alert: false,
+  percent: 0,
 };
 
 export default FloatingButton;
