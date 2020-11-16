@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
 import { Backdrop, Heading, Aside } from "asc-web-components";
-import { api, utils } from "asc-web-common";
+import { api, utils, Loaders } from "asc-web-common";
 
 import { withTranslation, I18nextProvider } from "react-i18next";
 import { createI18N } from "../../../helpers/i18n";
@@ -45,6 +45,7 @@ class PureVersionHistoryPanel extends React.Component {
 
   getFileVersions = (fileId) => {
     const { setIsLoading } = this.props;
+
     api.files.getFileVersionInfo(fileId).then((versions) => {
       this.setState({ versions: versions }, () => setIsLoading(false));
     });
@@ -61,7 +62,7 @@ class PureVersionHistoryPanel extends React.Component {
     const { visible, isLoading } = this.props;
     const zIndex = 310;
 
-    return !isLoading && Object.keys(versions).length > 0 ? (
+    return (
       <StyledVersionHistoryPanel
         className="version-history-modal-dialog"
         visible={visible}
@@ -74,25 +75,37 @@ class PureVersionHistoryPanel extends React.Component {
         <Aside className="version-history-aside-panel">
           <StyledContent>
             <StyledHeaderContent className="version-history-panel-header">
-              <Heading
-                className="version-history-panel-heading"
-                size="medium"
-                truncate
-              >
-                {versions && versions[0].title}
-              </Heading>
+              {!isLoading ? (
+                <Heading
+                  className="version-history-panel-heading"
+                  size="medium"
+                  truncate
+                >
+                  {versions && versions[0].title}
+                </Heading>
+              ) : (
+                <Loaders.ArticleHeader
+                  height="28"
+                  width="688"
+                  title="version-history-header-loader"
+                />
+              )}
             </StyledHeaderContent>
 
             <StyledBody className="version-history-panel-body">
-              <SectionBodyContent
-                getFileVersions={this.getFileVersions}
-                versions={versions}
-              />
+              {!isLoading ? (
+                <SectionBodyContent
+                  getFileVersions={this.getFileVersions}
+                  versions={versions}
+                />
+              ) : (
+                <Loaders.HistoryRows title="version-history-body-loader" />
+              )}
             </StyledBody>
           </StyledContent>
         </Aside>
       </StyledVersionHistoryPanel>
-    ) : null;
+    );
   }
 }
 

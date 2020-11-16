@@ -3,8 +3,7 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import { isMobile } from "react-device-detect";
-import { Loader } from "asc-web-components";
-import { PageLayout, utils, api, store } from "asc-web-common";
+import { PageLayout, Loaders, utils, api, store } from "asc-web-common";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import {
   ArticleHeaderContent,
@@ -126,8 +125,12 @@ class PureVersionHistory extends React.Component {
           <ArticleBodyContent />
         </PageLayout.ArticleBody>
 
+        <PageLayout.SectionHeader borderBottom={true}>
+          <Loaders.SectionHeader title="version-history-title-loader" />
+        </PageLayout.SectionHeader>
+
         <PageLayout.SectionBody>
-          <Loader className="pageLoader" type="rombs" size="40px" />
+          <Loaders.HistoryRows title="version-history-body-loader" />
         </PageLayout.SectionBody>
       </PageLayout>
     );

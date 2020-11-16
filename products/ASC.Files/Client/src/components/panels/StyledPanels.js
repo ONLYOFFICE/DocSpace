@@ -69,6 +69,7 @@ const StyledVersionHistoryPanel = styled.div`
     width: 720px;
   }
   .version-history-panel-header {
+    height: 53px;
     margin-left: 0px;
     border-bottom: 1px solid #eceef1;
     .version-history-panel-heading {
