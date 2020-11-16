@@ -54,6 +54,7 @@ namespace ASC.FederatedLogin.LoginProviders
 
         public FacebookLoginProvider() { }
         public FacebookLoginProvider(
+            OAuth20TokenHelper oAuth20TokenHelper,
             TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
@@ -63,7 +64,7 @@ namespace ASC.FederatedLogin.LoginProviders
             Signature signature,
             InstanceCrypto instanceCrypto,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, signature, instanceCrypto, name, order, props, additional) { }
+            : base(oAuth20TokenHelper, tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, signature, instanceCrypto, name, order, props, additional) { }
 
         public override LoginProfile GetLoginProfile(string accessToken)
         {

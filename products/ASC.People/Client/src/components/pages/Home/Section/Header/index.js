@@ -424,7 +424,7 @@ const SectionHeaderContent = (props) => {
           ) : (
             <div className="header-container">
               {!isLoaded ? (
-                <Loaders.Headline />
+                <Loaders.SectionHeader />
               ) : group ? (
                 <>
                   <Headline

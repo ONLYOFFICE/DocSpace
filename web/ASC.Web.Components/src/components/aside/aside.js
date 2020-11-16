@@ -20,7 +20,7 @@ const StyledAside = styled(Container)`
   right: 0;
   top: 0;
   transform: translateX(
-    ${(props) => (props.visible ? "0" : props.scale ? "100%" : "320px")}
+    ${(props) => (props.visible ? "0" : props.scale ? "100%" : "325px")}
   );
   transition: transform 0.3s ease-in-out;
   width: ${(props) => (props.scale ? "100%" : "325px")};

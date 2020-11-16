@@ -5,6 +5,7 @@ export const SET_CURRENT_USER = "SET_CURRENT_USER";
 export const SET_MODULES = "SET_MODULES";
 export const SET_SETTINGS = "SET_SETTINGS";
 export const SET_IS_LOADED = "SET_IS_LOADED";
+export const SET_IS_LOADED_SECTION = "SET_IS_LOADED_SECTION";
 export const LOGOUT = "LOGOUT";
 export const SET_PASSWORD_SETTINGS = "SET_PASSWORD_SETTINGS";
 export const SET_NEW_EMAIL = "SET_NEW_EMAIL";
@@ -42,6 +43,13 @@ export function setIsLoaded(isLoaded) {
   return {
     type: SET_IS_LOADED,
     isLoaded,
+  };
+}
+
+export function setIsLoadedSection(isLoadedSection) {
+  return {
+    type: SET_IS_LOADED_SECTION,
+    isLoadedSection,
   };
 }
 
@@ -130,10 +138,12 @@ export function getUser(dispatch) {
 export function getPortalSettings(dispatch) {
   return api.settings.getSettings().then((settings) => {
     const { passwordHash: hashSettings, ...otherSettings } = settings;
-
+    const logoSettings = { logoUrl: "images/nav.logo.opened.react.svg" };
     dispatch(
       setSettings(
-        hashSettings ? { ...otherSettings, hashSettings } : otherSettings
+        hashSettings
+          ? { ...logoSettings, ...otherSettings, hashSettings }
+          : { ...logoSettings, ...otherSettings }
       )
     );
 

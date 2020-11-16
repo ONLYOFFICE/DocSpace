@@ -69,7 +69,9 @@ namespace ASC.FederatedLogin.LoginProviders
         public override string Scopes { get { return "https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email"; } }
 
         public GoogleLoginProvider() { }
-        public GoogleLoginProvider(TenantManager tenantManager,
+        public GoogleLoginProvider(
+            OAuth20TokenHelper oAuth20TokenHelper,
+            TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
             IConfiguration configuration,
@@ -78,7 +80,7 @@ namespace ASC.FederatedLogin.LoginProviders
             Signature signature,
             InstanceCrypto instanceCrypto,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, signature, instanceCrypto, name, order, props, additional) { }
+            : base(oAuth20TokenHelper, tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, signature, instanceCrypto, name, order, props, additional) { }
 
         public override LoginProfile GetLoginProfile(string accessToken)
         {
@@ -188,6 +190,7 @@ namespace ASC.FederatedLogin.LoginProviders
         {
             //services.TryAddScoped<GoogleLoginProvider>();
             return services
+                .AddOAuth20TokenHelperService()
                 .AddConsumerFactoryService()
                 .AddKafkaService()
                 .AddTenantManagerService()

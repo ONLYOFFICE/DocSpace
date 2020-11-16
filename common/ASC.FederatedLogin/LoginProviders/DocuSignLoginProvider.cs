@@ -40,7 +40,8 @@ namespace ASC.FederatedLogin.LoginProviders
 {
     public class DocuSignLoginProvider : Consumer, IOAuthProvider
     {
-        public string Scopes { get { return "signature"; } }
+        public static string DocuSignLoginProviderScopes { get { return "signature"; } }
+        public string Scopes { get { return DocuSignLoginProviderScopes; } }
         public string CodeUrl { get { return DocuSignHost + "/oauth/auth"; } }
         public string AccessTokenUrl { get { return DocuSignHost + "/oauth/token"; } }
         public string RedirectUri { get { return this["docuSignRedirectUrl"]; } }
@@ -135,6 +136,7 @@ namespace ASC.FederatedLogin.LoginProviders
         {
             //services.TryAddScoped<DocuSignLoginProvider>();
             return services
+                .AddOAuth20TokenHelperService()
                 .AddConsumerFactoryService()
                 .AddKafkaService()
                 .AddTenantManagerService()
