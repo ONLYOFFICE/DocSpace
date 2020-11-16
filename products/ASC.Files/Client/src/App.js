@@ -33,6 +33,7 @@ const {
   setCurrentProductId,
   setCurrentProductHomePage,
   getPortalCultures,
+  getEncryptionKeys,
 } = commonStore.auth.actions;
 const { getCurrentUser, isEncryptionSupport } = commonStore.auth.selectors;
 const { AUTH_KEY } = constants;
@@ -89,12 +90,19 @@ class App extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { isAuthenticated, user, isEncryption } = this.props;
+    const {
+      isAuthenticated,
+      user,
+      isEncryption,
+      keys,
+      getEncryptionKeys,
+    } = this.props;
 
     if (isAuthenticated && !this.isDesktopInit) {
-      this.isDesktopInit = true;
       debugger;
-      regDesktop(user, isEncryption);
+      isEncryption && getEncryptionKeys();
+      this.isDesktopInit = true;
+      regDesktop(user, isEncryption, keys);
     }
   }
 
@@ -154,6 +162,7 @@ const mapStateToProps = (state) => {
     user: getCurrentUser(state),
     isAuthenticated: state.auth.isAuthenticated,
     isEncryption: isEncryptionSupport(state),
+    keys: settings.encryptionKeys,
   };
 };
 
@@ -169,6 +178,7 @@ const mapDispatchToProps = (dispatch) => {
     getPortalCultures: () => getPortalCultures(dispatch),
     fetchTreeFolders: () => fetchTreeFolders(dispatch),
     setIsLoaded: () => dispatch(setIsLoaded(true)),
+    getEncryptionKeys: () => getEncryptionKeys(dispatch),
   };
 };
 
