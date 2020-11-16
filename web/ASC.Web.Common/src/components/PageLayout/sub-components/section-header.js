@@ -108,7 +108,7 @@ class SectionHeader extends React.Component {
       >
        <LayoutContextConsumer>
             { value => 
-              <div id="scroll"  className={classnames("section-header", {
+              <div className={classnames("section-header", {
                 "section-header--hidden": !value.isVisible
               })} {...rest}/>
               }

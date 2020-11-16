@@ -50,7 +50,7 @@ const StyledArticle = styled.article`
               left: 0;
               min-width: 240px;
               background: #f8f9f9;
-              z-index: 0;
+              z-index: -1;
             }
           `
             : `
