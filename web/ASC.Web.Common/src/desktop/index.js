@@ -3,7 +3,6 @@ import {
   setEncryptionKeys as setKeys,
   //getEncryptionAccess,
 } from "../store/auth/actions";
-import assign from "lodash/assign";
 import isEmpty from "lodash/isEmpty";
 
 const domain = window.location.origin;
@@ -22,26 +21,28 @@ export function regDesktop(user, isEncryption, keys) {
     userId: user.id,
   };
 
+  let extendedData = { ...data };
+
   if (isEncryption) {
-    assign(data, {
+    extendedData = {
+      ...data,
       encryptionKeys: {
         cryptoEngineId: guid,
       },
-    });
+    };
 
     if (!isEmpty(keys)) {
-      assign(data, {
-        encryptionKeys: {
-          cryptoEngineId: guid,
-          privateKeyEnc: keys.privateKeyEnc,
-          publicKey: keys.publicKey,
-        },
-      });
+      extendedData = {
+        ...extendedData,
+        encryptionKeys: { ...extendedData.encryptionKeys, ...keys },
+      };
     }
-    //else assign(data, {});
   }
 
-  window.AscDesktopEditor.execCommand("portal:login", JSON.stringify(data));
+  window.AscDesktopEditor.execCommand(
+    "portal:login",
+    JSON.stringify(extendedData)
+  );
 
   window.onSystemMessage = (e) => {
     console.log("onSystemMessage: ", e);
