@@ -38,12 +38,14 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Common
 {
+    [Singletone]
     public class CommonLinkUtilitySettings
     {
         public string ServerUri { get; set; }
     }
 
 
+    [Scope]
     public class BaseCommonLinkUtility
     {
         private const string LOCALHOST = "localhost";
@@ -241,23 +243,6 @@ namespace ASC.Core.Common
             var uri = new Uri(serverUri.Replace('*', 'x').Replace('+', 'x'));
             _serverRoot = new UriBuilder(uri.Scheme, LOCALHOST, uri.Port);
             _vpath = "/" + uri.AbsolutePath.Trim('/');
-        }
-    }
-
-    public static class BaseCommonLinkUtilityExtension
-    {
-        public static DIHelper AddBaseCommonLinkUtilityService(this DIHelper services)
-        {
-            if (services.TryAddScoped<BaseCommonLinkUtility>())
-            {
-                services.TryAddScoped<CommonLinkUtilitySettings>();
-                return services
-                    .AddCoreBaseSettingsService()
-                    .AddCoreSettingsService()
-                    .AddTenantManagerService();
-            }
-
-            return services;
         }
     }
 }

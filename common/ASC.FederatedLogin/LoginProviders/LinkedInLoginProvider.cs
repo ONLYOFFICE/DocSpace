@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Utils;
 using ASC.Core;
@@ -41,6 +42,7 @@ using Newtonsoft.Json.Linq;
 
 namespace ASC.FederatedLogin.LoginProviders
 {
+    [Scope]
     public class LinkedInLoginProvider : BaseLoginProvider<LinkedInLoginProvider>
     {
         private const string LinkedInProfileUrl = "https://api.linkedin.com/v2/me";

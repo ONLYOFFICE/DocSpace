@@ -9,7 +9,6 @@ using ASC.Common.Logging;
 using ASC.ElasticSearch;
 using ASC.Feed.Aggregator;
 using ASC.Web.Files.Core.Search;
-using ASC.Web.Files.Utils;
 
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
@@ -56,19 +55,17 @@ namespace ASC.Files.Service
                 {
                     var diHelper = new DIHelper(services);
 
-                    diHelper.AddNLogManager("ASC.Files");
+                    diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
                     services.AddHostedService<ServiceLauncher>();
-                    diHelper
-                        .AddServiceLauncher()
-                        .AddFileConverterService()
-                        .AddKafkaService()
-                        .AddFactoryIndexerFileService()
-                        .AddFactoryIndexerFolderService();
+                    diHelper.TryAdd<ServiceLauncher>();
 
-                    diHelper.AddNLogManager("ASC.Feed.Agregator");
                     services.AddHostedService<FeedAggregatorService>();
-                    diHelper
-                        .AddFeedAggregatorService();
+                    diHelper.TryAdd<FeedAggregatorService>();
+
+                    LogNLogExtension.ConfigureLog(diHelper, "ASC.Files", "ASC.Feed.Agregator");
+                    //diHelper.TryAdd<FileConverter>();
+                    diHelper.TryAdd<FactoryIndexerFile>();
+                    diHelper.TryAdd<FactoryIndexerFolder>();
                 })
                 .ConfigureContainer<ContainerBuilder>((context, builder) =>
                 {

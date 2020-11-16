@@ -29,17 +29,15 @@ using System.Threading;
 using System.Web;
 
 using ASC.Common;
-using ASC.Core.Common.Configuration;
 using ASC.FederatedLogin.Helpers;
 using ASC.FederatedLogin.LoginProviders;
-using ASC.Web.Api.Models;
 using ASC.Web.Api.Routing;
 
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ASC.Web.Api.Controllers
 {
+    [Scope(Additional = typeof(ThirdPartyControllerExtension))]
     [DefaultRoute]
     [ApiController]
     public class ThirdPartyController : ControllerBase
@@ -143,11 +141,16 @@ namespace ASC.Web.Api.Controllers
         }
     }
 
-    public static class ThirdPartyControllerExtension
+    public class ThirdPartyControllerExtension
     {
-        public static DIHelper AddThirdPartyController(this DIHelper services)
+        public static void Register(DIHelper services)
         {
-            return services.AddOAuth20TokenHelperService();
+            services.TryAdd<BoxLoginProvider>();
+            services.TryAdd<DropboxLoginProvider>();
+            services.TryAdd<OneDriveLoginProvider>();
+            services.TryAdd<DocuSignLoginProvider>();
+            services.TryAdd<GoogleLoginProvider>();
+            services.TryAdd<WordpressLoginProvider>();
         }
     }
 }

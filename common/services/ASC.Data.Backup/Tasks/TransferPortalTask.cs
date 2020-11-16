@@ -41,6 +41,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Backup.Tasks
 {
+    [Scope]
     public class TransferPortalTask : PortalTaskBase
     {
         public const string DefaultDirectoryName = "backup";
@@ -248,18 +249,5 @@ namespace ASC.Data.Backup.Tasks
             return Path.Combine(BackupDirectory ?? DefaultDirectoryName, tenantAlias + DateTime.UtcNow.ToString("(yyyy-MM-dd HH-mm-ss)") + ".backup");
         }
 
-    }
-
-    public static class TransferPortalTaskExtension
-    {
-        public static DIHelper AddTransferPortalTaskService(this DIHelper services)
-        {
-            services.TryAddScoped<TransferPortalTask>();
-            return services
-                .AddStorageFactoryConfigService()
-                .AddBackupPortalTaskService()
-                .AddDbFactoryService()
-                .AddRestorePortalTaskService();
-        }
     }
 }

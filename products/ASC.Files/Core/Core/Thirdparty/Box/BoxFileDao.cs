@@ -49,6 +49,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Files.Thirdparty.Box
 {
+    [Scope]
     internal class BoxFileDao : BoxDaoBase, IFileDao<string>
     {
         private CrossDao CrossDao { get; }
@@ -605,15 +606,5 @@ namespace ASC.Files.Thirdparty.Box
         }
 
         #endregion
-    }
-
-    public static class BoxFileDaoExtention
-    {
-        public static DIHelper AddBoxFileDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<BoxFileDao>();
-
-            return services;
-        }
     }
 }

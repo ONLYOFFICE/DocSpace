@@ -18,9 +18,9 @@ using ASC.Web.Studio.Utility;
 
 namespace ASC.Data.Backup
 {
+    [Scope]
     public class BackupAjaxHandler
     {
-
         private TenantManager TenantManager { get; }
         private MessageService MessageService { get; }
         private CoreBaseSettings CoreBaseSettings { get; }
@@ -397,28 +397,6 @@ namespace ASC.Data.Backup
             EveryDay = 0,
             EveryWeek = 1,
             EveryMonth = 2
-        }
-    }
-    public static class BackupAjaxHandlerExtension
-    {
-        public static DIHelper AddBackupAjaxHandler(this DIHelper services)
-        {
-            if (services.TryAddScoped<BackupAjaxHandler>())
-            {
-                return services
-                    .AddTenantManagerService()
-                    .AddCoreBaseSettingsService()
-                    .AddMessageServiceService()
-                    .AddCoreSettingsService()
-                    .AddPermissionContextService()
-                    .AddSecurityContextService()
-                    .AddUserManagerService()
-                    .AddTenantExtraService()
-                    .AddConsumerFactoryService()
-                    .AddBackupHelperService();
-            }
-
-            return services;
         }
     }
 }

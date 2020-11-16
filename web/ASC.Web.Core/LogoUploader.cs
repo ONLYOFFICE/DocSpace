@@ -106,6 +106,7 @@ namespace ASC.Web.Studio.UserControls.CustomNavigation
     //    }
     //}
 
+    [Scope]
     public class StorageHelper
     {
         private const string StorageName = "customnavigation";
@@ -183,22 +184,6 @@ namespace ASC.Web.Studio.UserControls.CustomNavigation
             using var stream = new MemoryStream(data);
             stream.Seek(0, SeekOrigin.Begin);
             return store.Save(fileName, stream).ToString();
-        }
-    }
-
-    public static class StorageHelperExtension
-    {
-        public static DIHelper AddStorageHelperService(this DIHelper services)
-        {
-            if (services.TryAddScoped<StorageHelper>())
-            {
-                return services
-                    .AddUserPhotoManagerService()
-                    .AddStorageFactoryService()
-                    .AddTenantManagerService();
-            }
-
-            return services;
         }
     }
 }

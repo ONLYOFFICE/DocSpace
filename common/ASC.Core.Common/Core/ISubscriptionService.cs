@@ -26,8 +26,13 @@
 
 using System.Collections.Generic;
 
+using ASC.Common;
+using ASC.Core.Caching;
+using ASC.Core.Data;
+
 namespace ASC.Core
 {
+    [Scope(typeof(DbSubscriptionService), typeof(CachedSubscriptionService))]
     public interface ISubscriptionService
     {
         IEnumerable<SubscriptionRecord> GetSubscriptions(int tenant, string sourceId, string actionId);

@@ -83,6 +83,7 @@ namespace ASC.Web.Studio.Core.TFA
         }
     }
 
+    [Scope]
     public class TfaManager
     {
         private static readonly TwoFactorAuthenticator Tfa = new TwoFactorAuthenticator();
@@ -212,25 +213,6 @@ namespace ASC.Web.Studio.Core.TFA
             var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
 
             return encodedToken.Substring(0, 10);
-        }
-    }
-
-    public static class TfaManagerExtension
-    {
-        public static DIHelper AddTfaManagerService(this DIHelper services)
-        {
-            if (services.TryAddScoped<TfaManager>())
-            {
-
-                return services
-                    .AddSettingsManagerService()
-                    .AddSetupInfo()
-                    .AddSignatureService()
-                    .AddCookiesManagerService()
-                    .AddSecurityContextService();
-            }
-
-            return services;
         }
     }
 }

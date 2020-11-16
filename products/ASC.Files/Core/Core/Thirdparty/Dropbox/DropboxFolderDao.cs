@@ -45,6 +45,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Files.Thirdparty.Dropbox
 {
+    [Scope]
     internal class DropboxFolderDao : DropboxDaoBase, IFolderDao<string>
     {
         private CrossDao CrossDao { get; }
@@ -528,15 +529,5 @@ namespace ASC.Files.Thirdparty.Dropbox
         }
 
         #endregion
-    }
-
-    public static class DropboxFolderDaoExtention
-    {
-        public static DIHelper AddDropboxFolderDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<DropboxFolderDao>();
-
-            return services;
-        }
     }
 }

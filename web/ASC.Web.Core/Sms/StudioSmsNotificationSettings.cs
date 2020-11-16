@@ -52,6 +52,7 @@ namespace ASC.Web.Studio.Core.SMS
         public bool EnableSetting { get; set; }
     }
 
+    [Scope]
     public class StudioSmsNotificationSettingsHelper
     {
         private TenantExtra TenantExtra { get; }
@@ -93,22 +94,6 @@ namespace ASC.Web.Studio.Core.SMS
                 settings.EnableSetting = value;
                 SettingsManager.Save<StudioSmsNotificationSettings>(settings);
             }
-        }
-    }
-
-    public static class StudioSmsNotificationSettingsExtension
-    {
-        public static DIHelper AddStudioSmsNotificationSettingsService(this DIHelper services)
-        {
-            if (services.TryAddScoped<StudioSmsNotificationSettingsHelper>())
-            {
-                return services
-                    .AddTenantExtraService()
-                    .AddCoreBaseSettingsService()
-                    .AddSetupInfo();
-            }
-
-            return services;
         }
     }
 }

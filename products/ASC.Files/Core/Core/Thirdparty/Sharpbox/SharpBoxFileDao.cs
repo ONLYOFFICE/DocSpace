@@ -52,6 +52,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Files.Thirdparty.Sharpbox
 {
+    [Scope]
     internal class SharpBoxFileDao : SharpBoxDaoBase, IFileDao<string>
     {
         private CrossDao CrossDao { get; }
@@ -707,15 +708,5 @@ namespace ASC.Files.Thirdparty.Sharpbox
         }
 
         #endregion
-    }
-
-    public static class SharpBoxFileDaoExtention
-    {
-        public static DIHelper AddSharpBoxFileDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<SharpBoxFileDao>();
-
-            return services;
-        }
     }
 }

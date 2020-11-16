@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 
 using ASC.Common;
-using ASC.Common.Logging;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
@@ -66,6 +65,7 @@ namespace ASC.Core.Common.EF
         }
     }
 
+    [Scope(typeof(ConfigureDbContext<>))]
     public class DbContextManager<T> : BaseDbContextManager<T> where T : BaseDbContext, new()
     {
         public DbContextManager(IOptionsFactory<T> factory, IConfiguration configuration) : base(factory, configuration)
@@ -84,13 +84,9 @@ namespace ASC.Core.Common.EF
     {
         public static DIHelper AddDbContextManagerService<T>(this DIHelper services) where T : BaseDbContext, new()
         {
-            if (services.TryAddScoped<DbContextManager<T>>())
-            {
-                services.TryAddScoped<MultiRegionalDbContextManager<T>>();
-                services.TryAddScoped<IConfigureOptions<T>, ConfigureDbContext>();
-                services.TryAddScoped<IConfigureOptions<MultiRegionalDbContext<T>>, ConfigureMultiRegionalDbContext<T>>();
-                return services.AddLoggerService();
-            }
+            //TODO
+            //services.TryAddScoped<MultiRegionalDbContextManager<T>>();
+            //services.TryAddScoped<IConfigureOptions<MultiRegionalDbContext<T>>, ConfigureMultiRegionalDbContext<T>>();
             return services;
         }
     }

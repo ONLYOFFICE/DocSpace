@@ -29,7 +29,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
-using ASC.Common;
 using ASC.Core;
 using ASC.Files.Core;
 using ASC.Files.Core.Data;
@@ -164,25 +163,6 @@ namespace ASC.Files.Thirdparty.ProviderDao
         public void Dispose()
         {
             Selectors.ForEach(r => r.Dispose());
-        }
-    }
-
-    public static class ProviderDaoBaseExtention
-    {
-        public static DIHelper AddProviderDaoBaseService(this DIHelper services)
-        {
-            if (services.TryAddScoped<CrossDao>())
-            {
-                return services
-                    .AddSharpBoxDaoSelectorService()
-                    .AddSharePointSelectorService()
-                    .AddOneDriveSelectorService()
-                    .AddGoogleDriveSelectorService()
-                    .AddDropboxDaoSelectorService()
-                    .AddBoxDaoSelectorService();
-            }
-
-            return services;
         }
     }
 }

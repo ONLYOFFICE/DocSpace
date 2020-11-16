@@ -107,6 +107,7 @@ namespace ASC.Web.Files.Classes
         }
     }
 
+    [Scope]
     public class FilesSettingsHelper
     {
         private SettingsManager SettingsManager { get; }
@@ -275,21 +276,6 @@ namespace ASC.Web.Files.Classes
         private void SaveForCurrentUser(FilesSettings settings)
         {
             SettingsManager.SaveForCurrentUser(settings);
-        }
-    }
-
-    public static class FilesSettingsHelperExtention
-    {
-        public static DIHelper AddFilesSettingsHelperService(this DIHelper services)
-        {
-            if (services.TryAddScoped<FilesSettingsHelper>())
-            {
-                return services
-                    .AddSettingsManagerService()
-                    .AddCoreBaseSettingsService();
-            }
-
-            return services;
         }
     }
 }

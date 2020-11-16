@@ -16,6 +16,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Common.Caching
 {
+    [Singletone]
     public class KafkaCache<T> : IDisposable, ICacheNotify<T> where T : IMessage<T>, new()
     {
         private ClientConfig ClientConfig { get; set; }
@@ -236,16 +237,6 @@ namespace ASC.Common.Caching
         private string GetKey(CacheNotifyAction cacheNotifyAction)
         {
             return $"{typeof(T).Name}{cacheNotifyAction}";
-        }
-    }
-
-    public static class KafkaExtention
-    {
-        public static DIHelper AddKafkaService(this DIHelper services)
-        {
-            services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
-
-            return services;
         }
     }
 }

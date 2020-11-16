@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq.Expressions;
 
+using ASC.Common;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Model;
 using ASC.ElasticSearch;
@@ -14,6 +15,7 @@ using ColumnAttribute = System.ComponentModel.DataAnnotations.Schema.ColumnAttri
 
 namespace ASC.Files.Core.EF
 {
+    [Transient]
     [ElasticsearchType(RelationName = Tables.Folder)]
     [Table("files_folder")]
     public class DbFolder : IDbFile, IDbSearch, ISearchItem

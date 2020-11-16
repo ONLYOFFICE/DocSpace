@@ -46,6 +46,7 @@ using Newtonsoft.Json;
 
 namespace ASC.Data.Backup.Service
 {
+    [Singletone]
     public class BackupServiceNotifier
     {
         private ICacheNotify<BackupProgress> СacheBackupProgress { get; }
@@ -84,6 +85,7 @@ namespace ASC.Data.Backup.Service
         }
     }
 
+    [Scope]
     public class BackupService : IBackupService
     {
         private ILog Log { get; set; }
@@ -289,22 +291,6 @@ namespace ASC.Data.Backup.Service
             {
                 return null;
             }
-        }
-    }
-    public static class BackupServiceExtension
-    {
-        public static DIHelper AddBackupService(this DIHelper services)
-        {
-            if (services.TryAddScoped<BackupService>())
-            {
-                services.TryAddSingleton<BackupServiceNotifier>();
-                return services
-                    .AddBackupWorkerService()
-                    .AddBackupStorageFactory()
-                    .AddBackupRepositoryService();
-            }
-
-            return services;
         }
     }
 }

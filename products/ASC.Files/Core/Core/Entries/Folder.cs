@@ -27,6 +27,7 @@
 using System;
 using System.Diagnostics;
 
+using ASC.Common;
 using ASC.Web.Files.Classes;
 
 namespace ASC.Files.Core
@@ -46,6 +47,7 @@ namespace ASC.Files.Core
         Privacy = 13,
     }
 
+    [Transient]
     [DebuggerDisplay("{Title} ({ID})")]
     public class Folder<T> : FileEntry<T>
     {

@@ -42,6 +42,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Files.Thirdparty.SharePoint
 {
+    [Scope]
     internal class SharePointSecurityDao : SharePointDaoBase, ISecurityDao<string>
     {
         public SharePointSecurityDao(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor, FileUtility fileUtility) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility)
@@ -88,16 +89,6 @@ namespace ASC.Files.Thirdparty.SharePoint
         public bool IsShared(object entryId, FileEntryType type)
         {
             throw new NotImplementedException();
-        }
-    }
-
-    public static class SharePointSecurityDaoExtention
-    {
-        public static DIHelper AddSharePointSecurityDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<SharePointSecurityDao>();
-
-            return services;
         }
     }
 }

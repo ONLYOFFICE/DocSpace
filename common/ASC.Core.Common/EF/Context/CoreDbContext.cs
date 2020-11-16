@@ -1,11 +1,10 @@
 ﻿
-using ASC.Common;
+using System;
+using System.Collections.Generic;
+
 using ASC.Core.Common.EF.Model;
 
 using Microsoft.EntityFrameworkCore;
-
-using System;
-using System.Collections.Generic;
 
 namespace ASC.Core.Common.EF
 {
@@ -38,15 +37,6 @@ namespace ASC.Core.Common.EF
                   .AddDbQuotaRow()
                   .AddDbQuota()
                   .AddDbTariff();
-        }
-    }
-
-
-    public static class CoreDbExtension
-    {
-        public static DIHelper AddCoreDbContextService(this DIHelper services)
-        {
-            return services.AddDbContextManagerService<CoreDbContext>();
         }
     }
 }
