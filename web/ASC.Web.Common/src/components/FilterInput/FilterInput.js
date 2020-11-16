@@ -85,6 +85,7 @@ const minWidth = 170;
 const filterItemPadding = 60;
 const maxFilterItemWidth = 260;
 const itemsContainerWidth = 40;
+const sectionPaddings = 48;
 
 class FilterInput extends React.Component {
   constructor(props) {
@@ -122,8 +123,9 @@ class FilterInput extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { selectedFilterData, sectionWidth } = this.props;
+    const { selectedFilterData, sectionWidth, getSortData } = this.props;
     const { filterValues, searchText } = this.state;
+    const { sortDirection, sortId, inputValue } = selectedFilterData;
 
     if (
       this.props.needForUpdate &&
@@ -142,11 +144,19 @@ class FilterInput extends React.Component {
 
     if (
       (!isEqual(selectedFilterData.filterValues, filterValues) ||
-        selectedFilterData.inputValue !== searchText) &&
+        inputValue !== searchText) &&
       sectionWidth !== prevProps.sectionWidth
     ) {
+      const sortData = getSortData();
       const filterValues = this.getDefaultFilterData();
       this.setState({
+        sortDirection: sortDirection === "desc" ? true : false,
+        sortId:
+          sortData.findIndex((x) => x.key === sortId) != -1
+            ? sortId
+            : sortData.length > 0
+            ? sortData[0].key
+            : "",
         filterValues: filterValues,
         searchText: selectedFilterData.inputValue || "",
       });
@@ -443,7 +453,7 @@ class FilterInput extends React.Component {
       .width;
 
     const searchWidth = sectionWidth
-      ? sectionWidth - filterWidth - comboBoxWidth - 48 // 48 - paddings
+      ? sectionWidth - filterWidth - comboBoxWidth - sectionPaddings
       : fullWidth - filterWidth;
 
     const filterArr = Array.from(
