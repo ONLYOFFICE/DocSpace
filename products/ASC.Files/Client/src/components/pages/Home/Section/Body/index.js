@@ -96,6 +96,7 @@ const {
   isAdmin,
   getSettings,
   getCurrentUser,
+  isDesktopClient,
   isEncryptionSupport,
   getOrganizationName,
 } = store.auth.selectors;
@@ -832,6 +833,8 @@ class SectionBodyContent extends React.Component {
       isFavorites,
       isRecent,
       isPrivacy,
+      isDesktop,
+      isEncryptionSupport,
       organizationName,
       privacyInstructions,
       title,
@@ -869,15 +872,17 @@ class SectionBodyContent extends React.Component {
             </Box>
           ))}
         </Text>
-        <Text fontSize="12px">
-          <Trans i18nKey="PrivateRoomSupport" i18n={i18n}>
-            Work in Private Room is available via {{ organizationName }} desktop
-            app.
-            <Link isBold isHovered color="#116d9d" href={privacyInstructions}>
-              Instructions
-            </Link>
-          </Trans>
-        </Text>
+        {!isDesktop && (
+          <Text fontSize="12px">
+            <Trans i18nKey="PrivateRoomSupport" i18n={i18n}>
+              Work in Private Room is available via {{ organizationName }}
+              desktop app.
+              <Link isBold isHovered color="#116d9d" href={privacyInstructions}>
+                Instructions
+              </Link>
+            </Trans>
+          </Text>
+        )}
       </>
     );
 
@@ -996,6 +1001,7 @@ class SectionBodyContent extends React.Component {
           headerText={privateRoomHeader}
           descriptionText={privateRoomDescription}
           imageSrc="images/empty_screen_privacy.png"
+          buttons={isDesktop && isEncryptionSupport && commonButtons}
         />
       );
     } else {
@@ -1819,6 +1825,7 @@ const mapStateToProps = (state) => {
     folders: getFolders(state),
     isAdmin: isAdmin(state),
     isCommon: getIsCommonFolder(state),
+    isDesktop: isDesktopClient(state),
     isEncryptionSupport: isEncryptionSupport(state),
     isFavorites: getIsFavoritesFolder(state),
     isLoading: getIsLoading(state),
