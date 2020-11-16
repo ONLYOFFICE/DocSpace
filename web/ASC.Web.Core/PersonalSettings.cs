@@ -56,6 +56,8 @@ namespace ASC.Web.Studio.Core
             };
         }
     }
+
+    [Scope]
     public class PersonalSettingsHelper
     {
         public PersonalSettingsHelper(SettingsManager settingsManager)
@@ -86,18 +88,5 @@ namespace ASC.Web.Studio.Core
         }
 
         private SettingsManager SettingsManager { get; }
-    }
-
-    public static class PersonalSettingsExtention
-    {
-        public static DIHelper AddTenantCookieSettingsService(this DIHelper services)
-        {
-            if (services.TryAddScoped<PersonalSettingsHelper>())
-            {
-                return services.AddSettingsManagerService();
-            }
-
-            return services;
-        }
     }
 }

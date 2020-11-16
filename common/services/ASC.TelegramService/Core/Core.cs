@@ -32,10 +32,9 @@ using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Logging;
-using ASC.TelegramService.Commands;
 
-using Microsoft.Extensions.Options;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 using Telegram.Bot;
 using Telegram.Bot.Types;
@@ -59,6 +58,7 @@ namespace ASC.TelegramService.Core
         }
     }
 
+    [Singletone]
     public class CommandModule
     {
         private ILog Log { get; }
@@ -190,14 +190,5 @@ namespace ASC.TelegramService.Core
 
         public override abstract object FromString(string arg);
         public override abstract string ToString(object arg);
-    }
-
-    public static class CommandModuleExtension
-    {
-        public static DIHelper AddCommandModuleService(this DIHelper services)
-        {
-            services.TryAddSingleton<CommandModule>();
-            return services.AddUserCommandsService();
-        }
     }
 }

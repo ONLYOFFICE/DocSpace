@@ -49,6 +49,7 @@ using DriveFile = Google.Apis.Drive.v3.Data.File;
 
 namespace ASC.Files.Thirdparty.GoogleDrive
 {
+    [Scope]
     internal class GoogleDriveFileDao : GoogleDriveDaoBase, IFileDao<string>
     {
         private CrossDao CrossDao { get; }
@@ -651,15 +652,5 @@ namespace ASC.Files.Thirdparty.GoogleDrive
         }
 
         #endregion
-    }
-
-    public static class GoogleDriveFilrDaoExtention
-    {
-        public static DIHelper AddGoogleDriveFileDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<GoogleDriveFileDao>();
-
-            return services;
-        }
     }
 }

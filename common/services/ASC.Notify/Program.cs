@@ -3,9 +3,9 @@ using System.IO;
 using System.Threading.Tasks;
 
 using ASC.Common;
+using ASC.Common.Caching;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
-using ASC.Core.Notify;
 using ASC.Core.Notify.Senders;
 using ASC.Notify.Config;
 
@@ -15,7 +15,6 @@ using Autofac.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
 
 namespace ASC.Notify
 {
@@ -55,19 +54,18 @@ namespace ASC.Notify
                 {
                     var diHelper = new DIHelper(services);
 
-                    diHelper.AddNLogManager("ASC.Notify", "ASC.Notify.Messages");
+                    LogNLogExtension.ConfigureLog(diHelper, "ASC.Notify", "ASC.Notify.Messages");
+                    diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
 
                     services.Configure<NotifyServiceCfg>(hostContext.Configuration.GetSection("notify"));
-                    diHelper.AddSingleton<IConfigureOptions<NotifyServiceCfg>, ConfigureNotifyServiceCfg>();
 
-                    diHelper.AddNotifyServiceLauncher();
+                    diHelper.TryAdd<NotifyServiceLauncher>();
+
+                    diHelper.TryAdd<JabberSender>();
+                    diHelper.TryAdd<SmtpSender>();
+                    diHelper.TryAdd<AWSSender>(); // fix private
+
                     services.AddHostedService<NotifyServiceLauncher>();
-
-                    diHelper
-                    .AddJabberSenderService()
-                    .AddSmtpSenderService()
-                    .AddAWSSenderService()
-                    .AddEmailSenderSinkService();
                 })
                 .ConfigureContainer<ContainerBuilder>((context, builder) =>
                 {

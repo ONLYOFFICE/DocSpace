@@ -35,6 +35,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Backup.Tasks.Modules
 {
+    [Scope]
     public class ModuleProvider
     {
         public List<IModuleSpecifics> AllModules;
@@ -70,20 +71,6 @@ namespace ASC.Data.Backup.Tasks.Modules
                 "mailaggregator" => AllModules.FirstOrDefault(m => m.ModuleName == ModuleName.Mail),
                 _ => null,
             };
-        }
-    }
-    public static class ModuleProviderExtension
-    {
-        public static DIHelper AddModuleProvider(this DIHelper services)
-        {
-            if (services.TryAddScoped<ModuleProvider>())
-            {
-                return services
-                    .AddCoreSettingsService()
-                    .AddHelpers();
-            }
-
-            return services;
         }
     }
 }

@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Utils;
 using ASC.Core;
@@ -40,6 +41,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace ASC.FederatedLogin.LoginProviders
 {
+    [Scope]
     public class YahooLoginProvider : BaseLoginProvider<YahooLoginProvider>
     {
         public const string YahooUrlUserGuid = "https://social.yahooapis.com/v1/me/guid";

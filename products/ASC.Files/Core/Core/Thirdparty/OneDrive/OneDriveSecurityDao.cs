@@ -42,6 +42,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Files.Thirdparty.OneDrive
 {
+    [Scope]
     internal class OneDriveSecurityDao : OneDriveDaoBase, ISecurityDao<string>
     {
         public OneDriveSecurityDao(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor, FileUtility fileUtility) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility)
@@ -88,16 +89,6 @@ namespace ASC.Files.Thirdparty.OneDrive
         public bool IsShared(object entryId, FileEntryType type)
         {
             throw new NotImplementedException();
-        }
-    }
-
-    public static class OneDriveSecurityDaoExtention
-    {
-        public static DIHelper AddOneDriveSecurityDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<OneDriveSecurityDao>();
-
-            return services;
         }
     }
 }

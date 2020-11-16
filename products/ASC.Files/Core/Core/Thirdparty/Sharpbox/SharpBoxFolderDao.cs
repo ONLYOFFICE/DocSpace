@@ -34,7 +34,6 @@ using System.Threading;
 using AppLimit.CloudComputing.SharpBox;
 using AppLimit.CloudComputing.SharpBox.Exceptions;
 
-using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -551,15 +550,5 @@ namespace ASC.Files.Thirdparty.Sharpbox
         }
 
         #endregion
-    }
-
-    public static class SharpBoxFolderDaoExtention
-    {
-        public static DIHelper AddSharpBoxFolderDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<SharpBoxFileDao>();
-
-            return services;
-        }
     }
 }

@@ -38,6 +38,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Files.Utils
 {
+    [Scope]
     public class ChunkedUploadSessionHolder
     {
         public static readonly TimeSpan SlidingExpiration = TimeSpan.FromHours(12);
@@ -117,21 +118,6 @@ namespace ASC.Web.Files.Utils
         private CommonChunkedUploadSessionHolder CommonSessionHolder(bool currentTenant = true)
         {
             return new CommonChunkedUploadSessionHolder(Options, GlobalStore.GetStore(currentTenant), FileConstant.StorageDomainTmp, SetupInfo.ChunkUploadSize);
-        }
-    }
-
-    public static class ChunkedUploadSessionHolderExtention
-    {
-        public static DIHelper AddChunkedUploadSessionHolderService(this DIHelper services)
-        {
-            if (services.TryAddScoped<ChunkedUploadSessionHolder>())
-            {
-                return services
-                    .AddGlobalStoreService()
-                    .AddSetupInfo();
-            }
-
-            return services;
         }
     }
 }

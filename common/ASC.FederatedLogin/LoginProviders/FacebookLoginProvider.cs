@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Utils;
 using ASC.Core;
@@ -41,6 +42,7 @@ using Newtonsoft.Json.Linq;
 
 namespace ASC.FederatedLogin.LoginProviders
 {
+    [Scope]
     public class FacebookLoginProvider : BaseLoginProvider<FacebookLoginProvider>
     {
         private const string FacebookProfileUrl = "https://graph.facebook.com/v2.7/me?fields=email,id,birthday,link,first_name,last_name,gender,timezone,locale";

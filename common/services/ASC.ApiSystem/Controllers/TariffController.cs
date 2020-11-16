@@ -41,6 +41,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.ApiSystem.Controllers
 {
+    [Scope]
     [ApiController]
     [Route("[controller]")]
     public class TariffController : ControllerBase
@@ -215,16 +216,5 @@ namespace ASC.ApiSystem.Controllers
         }
 
         #endregion
-    }
-
-    public static class TariffControllerExtention
-    {
-        public static DIHelper AddTariffController(this DIHelper services)
-        {
-            return services
-                .AddCommonMethods()
-                .AddHostedSolutionService()
-                .AddCoreSettingsService();
-        }
     }
 }

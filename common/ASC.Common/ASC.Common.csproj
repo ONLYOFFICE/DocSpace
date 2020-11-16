@@ -45,10 +45,12 @@
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Extensions" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="3.1.9" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
     <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.9" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="3.1.9" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.9" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="3.1.9" />
     <PackageReference Include="Microsoft.Windows.Compatibility" Version="3.1.1" />
 <!-- <PackageReference Include="Microsoft.CodeQuality.Analyzers" Version="2.9.4">
       <PrivateAssets>all</PrivateAssets>

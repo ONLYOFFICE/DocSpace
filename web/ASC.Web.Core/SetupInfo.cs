@@ -40,6 +40,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace ASC.Web.Studio.Core
 {
+    [Singletone]
     public class SetupInfo
     {
         private static string web_autotest_secret_email;
@@ -249,16 +250,6 @@ namespace ASC.Web.Studio.Core
                 }
             }
             return defaultValue;
-        }
-    }
-
-    public static class SetupInfoExtension
-    {
-        public static DIHelper AddSetupInfo(this DIHelper services)
-        {
-            services.TryAddSingleton<SetupInfo>();
-
-            return services;
         }
     }
 }

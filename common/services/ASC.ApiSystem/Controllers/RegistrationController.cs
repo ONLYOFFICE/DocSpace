@@ -54,6 +54,7 @@ using Newtonsoft.Json.Linq;
 
 namespace ASC.ApiSystem.Controllers
 {
+    [Scope]
     [Obsolete("Registration is deprecated, please use PortalController or TariffController instead.")]
     [ApiController]
     [Route("[controller]")]
@@ -783,25 +784,5 @@ namespace ASC.ApiSystem.Controllers
         }
 
         #endregion
-    }
-
-    public static class RegistrationControllerExtention
-    {
-        public static DIHelper AddRegistrationController(this DIHelper services)
-        {
-            return services
-                .AddCommonMethods()
-                .AddTimeZonesProvider()
-                .AddCommonConstants()
-                .AddUserManagerService()
-                .AddUserFormatter()
-                .AddCoreSettingsService()
-                .AddHostedSolutionService()
-                .AddApiSystemHelper()
-                .AddSettingsManagerService()
-                .AddTenantManagerService()
-                .AddSecurityContextService()
-                ;
-        }
     }
 }

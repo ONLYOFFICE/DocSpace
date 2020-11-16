@@ -35,6 +35,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Data.Storage.Encryption
 {
+    [Singletone]
     public class EncryptionWorker
     {
         private CancellationTokenSource TokenSource { get; set; }
@@ -86,6 +87,7 @@ namespace ASC.Data.Storage.Encryption
         }
     }
 
+    [Singletone(Additional = typeof(FactoryOperationExtension))]
     public class FactoryOperation
     {
         private IServiceProvider ServiceProvider { get; set; }
@@ -103,13 +105,11 @@ namespace ASC.Data.Storage.Encryption
         }
     }
 
-    public static class EncryptionWorkerExtension
+    public class FactoryOperationExtension
     {
-        public static DIHelper AddEncryptionWorkerService(this DIHelper services)
+        public static void Register(DIHelper dIHelper)
         {
-            services.TryAddSingleton<EncryptionWorker>();
-            services.TryAddSingleton<FactoryOperation>();
-            return services.AddEncryptionOperationService();
+            dIHelper.TryAdd<EncryptionOperation>();
         }
     }
 }

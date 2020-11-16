@@ -1,12 +1,8 @@
 ﻿
-using System;
-
 using ASC.Api.Core;
 using ASC.Common;
 using ASC.Common.DependencyInjection;
-using ASC.Data.Reassigns;
 using ASC.Employee.Core.Controllers;
-using ASC.Web.Core.Users;
 
 using Autofac;
 
@@ -29,13 +25,8 @@ namespace ASC.People
         {
             base.ConfigureServices(services);
 
-            DIHelper.AddProgressQueue<RemoveProgressItem>(1, (int)TimeSpan.FromMinutes(5).TotalMilliseconds, true, false, 0);
-            DIHelper.AddProgressQueue<ReassignProgressItem>(1, (int)TimeSpan.FromMinutes(5).TotalMilliseconds, true, false, 0);
-            DIHelper.AddWorkerQueue<ResizeWorkerItem>(2, (int)TimeSpan.FromMinutes(30).TotalMilliseconds, true, 1);
-
-            DIHelper
-                .AddPeopleController()
-                .AddGroupController();
+            DIHelper.TryAdd<PeopleController>();
+            DIHelper.TryAdd<GroupController>();
         }
 
         public void ConfigureContainer(ContainerBuilder builder)

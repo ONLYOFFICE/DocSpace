@@ -29,11 +29,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 
+using ASC.Common;
 using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
 
 namespace ASC.Core.Data
 {
+    [Scope]
     class DbAzService : IAzService
     {
         public Expression<Func<Acl, AzRecord>> FromAclToAzRecord { get; set; }

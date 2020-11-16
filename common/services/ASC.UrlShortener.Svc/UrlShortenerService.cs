@@ -41,6 +41,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.UrlShortener.Svc
 {
+    [Singletone]
     public class UrlShortenerService : IServiceController
     {
         private readonly ILog log;
@@ -143,16 +144,6 @@ namespace ASC.UrlShortener.Svc
             startInfo.EnvironmentVariables.Add("logPath", Path.GetFullPath(Path.Combine(hostEnvironment.ContentRootPath, log.LogDirectory, "web.urlshortener.log")));
 
             return startInfo;
-        }
-    }
-
-    public static class UrlShortenerServiceExtension
-    {
-        public static DIHelper AddUrlShortenerService(this DIHelper services)
-        {
-            services.TryAddSingleton<UrlShortenerService>();
-
-            return services;
         }
     }
 }

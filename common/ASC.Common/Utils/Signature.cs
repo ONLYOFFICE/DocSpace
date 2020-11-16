@@ -36,6 +36,7 @@ using Newtonsoft.Json;
 
 namespace ASC.Common.Utils
 {
+    [Singletone]
     public class Signature
     {
         public Signature(MachinePseudoKeys machinePseudoKeys)
@@ -89,15 +90,6 @@ namespace ASC.Common.Utils
         {
             using var md5 = MD5.Create();
             return Convert.ToBase64String(md5.ComputeHash(Encoding.UTF8.GetBytes(str)));
-        }
-    }
-
-    public static class SignatureExtension
-    {
-        public static DIHelper AddSignatureService(this DIHelper services)
-        {
-            services.TryAddSingleton<Signature>();
-            return services.AddMachinePseudoKeysService();
         }
     }
 }

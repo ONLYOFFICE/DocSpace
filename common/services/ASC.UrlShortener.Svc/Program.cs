@@ -76,9 +76,9 @@ namespace ASC.UrlShortener.Svc
                 .ConfigureServices((hostContext, services) =>
                 {
                     var diHelper = new DIHelper(services);
-                    diHelper.AddNLogManager("ASC.UrlShortener.Svc");
+                    LogNLogExtension.ConfigureLog(diHelper, "ASC.UrlShortener.Svc");
                     services.AddHostedService<UrlShortenerServiceLauncher>();
-                    diHelper.AddUrlShortenerServiceLauncher();
+                    diHelper.TryAdd<UrlShortenerServiceLauncher>();
                 })
                 .ConfigureContainer<ContainerBuilder>((context, builder) =>
                 {

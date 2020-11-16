@@ -46,6 +46,7 @@ using DriveFile = Google.Apis.Drive.v3.Data.File;
 
 namespace ASC.Files.Thirdparty.GoogleDrive
 {
+    [Scope]
     [DebuggerDisplay("{CustomerTitle}")]
     internal class GoogleDriveProviderInfo : IProviderInfo
     {
@@ -180,6 +181,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
         }
     }
 
+    [Scope(Additional = typeof(GoogleDriveProviderInfoExtention))]
     internal class GoogleDriveStorageDisposableWrapper : IDisposable
     {
         internal GoogleDriveStorage Storage { get; set; }
@@ -223,6 +225,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
         }
     }
 
+    [Singletone]
     public class GoogleDriveProviderInfoHelper
     {
         private readonly TimeSpan CacheExpiration;
@@ -364,18 +367,11 @@ namespace ASC.Files.Thirdparty.GoogleDrive
         }
     }
 
-    public static class GoogleDriveProviderInfoExtension
+    public class GoogleDriveProviderInfoExtention
     {
-        public static DIHelper AddGoogleDriveProviderInfoService(this DIHelper services)
+        public static void Register(DIHelper dIHelper)
         {
-            if (services.TryAddScoped<GoogleDriveProviderInfo>())
-            {
-                services.TryAddScoped<GoogleDriveStorageDisposableWrapper>();
-                services.TryAddScoped<GoogleDriveStorage>();
-                services.TryAddSingleton<GoogleDriveProviderInfoHelper>();
-            }
-
-            return services;
+            dIHelper.TryAdd<GoogleDriveStorage>();
         }
     }
 }

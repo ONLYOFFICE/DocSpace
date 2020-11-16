@@ -16,6 +16,7 @@ using static ASC.Security.Cryptography.EmailValidationKeyProvider;
 
 namespace ASC.Web.Api.Controllers
 {
+    [Scope]
     [DefaultRoute]
     [ApiController]
     [AllowAnonymous]
@@ -158,19 +159,6 @@ namespace ASC.Web.Api.Controllers
                 Tfa = false,
                 TfaKey = null
             };
-        }
-    }
-
-    public static class AuthenticationControllerExtension
-    {
-        public static DIHelper AddAuthenticationController(this DIHelper services)
-        {
-            return services
-                .AddUserManagerService()
-                .AddTenantManagerService()
-                .AddSecurityContextService()
-                .AddTenantCookieSettingsService()
-                .AddPasswordHasherService();
         }
     }
 }

@@ -39,6 +39,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Notify
 {
+    [Singletone]
     public class NotifySender
     {
         private readonly ILog log;
@@ -145,17 +146,6 @@ namespace ASC.Notify
             {
                 log.Error(e);
             }
-        }
-    }
-
-    public static class NotifySenderExtension
-    {
-        public static DIHelper AddNotifySender(this DIHelper services)
-        {
-            services.TryAddSingleton<NotifySender>();
-
-            return services
-                .AddDbWorker();
         }
     }
 }

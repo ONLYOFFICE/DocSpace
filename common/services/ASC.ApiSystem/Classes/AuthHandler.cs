@@ -50,6 +50,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.ApiSystem.Classes
 {
+    [Scope]
     public class AuthHandler : AuthenticationHandler<AuthenticationSchemeOptions>
     {
         public AuthHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock) :
@@ -170,14 +171,6 @@ namespace ASC.ApiSystem.Classes
             Log.InfoFormat("Auth success {0}", Scheme.Name);
             if (HttpContextAccessor?.HttpContext != null) HttpContextAccessor.HttpContext.User = new CustomClaimsPrincipal(new ClaimsIdentity(Scheme.Name), identity);
             return Task.FromResult(AuthenticateResult.Success(new AuthenticationTicket(Context.User, new AuthenticationProperties(), Scheme.Name)));
-        }
-    }
-
-    public static class AuthAllowskipHandlerExtension
-    {
-        public static DIHelper AddAuthAllowskipHandler(this DIHelper services)
-        {
-            return services.AddApiSystemHelper();
         }
     }
 }

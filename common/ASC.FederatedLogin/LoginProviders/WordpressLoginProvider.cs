@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Web;
 
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Utils;
 using ASC.Core;
@@ -40,6 +41,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace ASC.FederatedLogin.LoginProviders
 {
+    [Scope]
     public class WordpressLoginProvider : BaseLoginProvider<WordpressLoginProvider>
     {
         public const string WordpressMeInfoUrl = "https://public-api.wordpress.com/rest/v1/me";

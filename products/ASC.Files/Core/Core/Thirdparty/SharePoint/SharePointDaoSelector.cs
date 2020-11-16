@@ -32,6 +32,7 @@ using ASC.Files.Core.Security;
 
 namespace ASC.Files.Thirdparty.SharePoint
 {
+    [Scope(Additional = typeof(SharePointDaoSelectorExtension))]
     internal class SharePointDaoSelector : RegexDaoSelectorBase<SharePointProviderInfo>, IDaoSelector
     {
         protected internal override string Name { get => "sharepoint"; }
@@ -76,20 +77,14 @@ namespace ASC.Files.Thirdparty.SharePoint
         }
     }
 
-    public static class SharePointDaoSelectorExtention
+    public class SharePointDaoSelectorExtension
     {
-        public static DIHelper AddSharePointSelectorService(this DIHelper services)
+        public static void Register(DIHelper services)
         {
-            if (services.TryAddScoped<SharePointDaoSelector>())
-            {
-                return services
-                    .AddSharePointSecurityDaoService()
-                    .AddSharePointTagDaoService()
-                    .AddSharePointFolderDaoService()
-                    .AddSharePointFileDaoService();
-            }
-
-            return services;
+            services.TryAdd<SharePointFileDao>();
+            services.TryAdd<SharePointFolderDao>();
+            services.TryAdd<SharePointTagDao>();
+            services.TryAdd<SharePointSecurityDao>();
         }
     }
 }

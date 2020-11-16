@@ -33,6 +33,7 @@ using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 
+using ASC.Common;
 using ASC.Core.Common.Configuration;
 using ASC.FederatedLogin;
 using ASC.FederatedLogin.Helpers;
@@ -45,6 +46,7 @@ using Newtonsoft.Json.Linq;
 
 namespace ASC.Files.Thirdparty.OneDrive
 {
+    [Scope]
     internal class OneDriveStorage
     {
         public OneDriveStorage(ConsumerFactory consumerFactory)

@@ -46,6 +46,7 @@ using Newtonsoft.Json;
 
 namespace ASC.Notify
 {
+    [Singletone(Additional = typeof(DbWorkerExtension))]
     public class DbWorker
     {
         private readonly string dbid;
@@ -223,14 +224,11 @@ namespace ASC.Notify
         }
     }
 
-    public static class DbWorkerExtension
+    public class DbWorkerExtension
     {
-        public static DIHelper AddDbWorker(this DIHelper services)
+        public static void Register(DIHelper services)
         {
-            services.TryAddSingleton<DbWorker>();
-
-            return services
-                .AddNotifyDbContext();
+            services.TryAdd<DbContextManager<NotifyDbContext>>();
         }
     }
 }
