@@ -6,27 +6,12 @@ import {
 import assign from "lodash/assign";
 import isEmpty from "lodash/isEmpty";
 
-//import { store } from "asc-web-common";
-
-// const { isDesktopClient, isEncryptionSupport } = store.auth.selectors;
-
-//const state = store.getState();
-
 const domain = window.location.origin;
 const provider = "AppServer";
 const guid = "{FFF0E1EB-13DB-4678-B67D-FF0A41DBBCEF}";
 const desktop = window["AscDesktopEditor"] !== undefined;
-// const encryption =
-//   (desktop &&
-//     typeof window.AscDesktopEditor.cloudCryptoCommand === "function") ||
-//   false;
 
-const encryptionKeyPair = {
-  // privateKeyEnc: "1",
-  // publicKey: "2",
-};
-
-export function regDesktop(user, isEncryption) {
+export function regDesktop(user, isEncryption, keys) {
   if (!desktop) return;
 
   const data = {
@@ -44,12 +29,12 @@ export function regDesktop(user, isEncryption) {
       },
     });
 
-    if (!isEmpty(encryptionKeyPair)) {
+    if (!isEmpty(keys)) {
       assign(data, {
         encryptionKeys: {
           cryptoEngineId: guid,
-          privateKeyEnc: encryptionKeyPair.privateKeyEnc,
-          publicKey: encryptionKeyPair.publicKey,
+          privateKeyEnc: keys.privateKeyEnc,
+          publicKey: keys.publicKey,
         },
       });
     }
