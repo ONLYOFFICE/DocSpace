@@ -15,6 +15,7 @@ import {
   SET_CUSTOM_NAMES,
   SET_WIZARD_COMPLETED,
   GET_ENCRYPTION_KEYS,
+  SET_IS_ENCRYPTION_SUPPORT,
 } from "./actions";
 import isEmpty from "lodash/isEmpty";
 import { LANGUAGE, AUTH_KEY } from "../../constants";
@@ -63,12 +64,9 @@ const initialState = {
       guestCaption: "Guest",
       guestsCaption: "Guests",
     },
-    isEncryptionSupport:
-      (window["AscDesktopEditor"] &&
-        typeof window.AscDesktopEditor.cloudCryptoCommand === "function") ||
-      false,
-    encryptionKeys: null,
     isDesktopClient: window["AscDesktopEditor"] !== undefined,
+    isEncryptionSupport: false,
+    encryptionKeys: null,
   },
 };
 
@@ -164,6 +162,14 @@ const authReducer = (state = initialState, action) => {
         settings: {
           ...state.settings,
           encryptionKeys: action.keys || {},
+        },
+      };
+    case SET_IS_ENCRYPTION_SUPPORT:
+      return {
+        ...state,
+        settings: {
+          ...state.settings,
+          isEncryptionSupport: action.isSupport,
         },
       };
     default:

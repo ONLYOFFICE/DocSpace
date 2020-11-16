@@ -593,6 +593,13 @@ export function getDocServiceUrl() {
   return request({ method: "get", url: `/files/docservice` });
 }
 
+export function getEncryptionSupport() {
+  return request({
+    method: "get",
+    url: "/files/@privacy/available",
+  });
+}
+
 export function setEncryptionKeys(keys) {
   return request({
     method: "put",

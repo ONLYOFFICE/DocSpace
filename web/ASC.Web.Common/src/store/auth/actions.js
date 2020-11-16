@@ -19,6 +19,7 @@ export const SET_GREETING_SETTINGS = "SET_GREETING_SETTINGS";
 export const SET_CUSTOM_NAMES = "SET_CUSTOM_NAMES";
 export const SET_WIZARD_COMPLETED = "SET_WIZARD_COMPLETED";
 export const GET_ENCRYPTION_KEYS = "GET_ENCRYPTION_KEYS";
+export const SET_IS_ENCRYPTION_SUPPORT = "SET_IS_ENCRYPTION_SUPPORT";
 
 export function setCurrentUser(user) {
   return {
@@ -127,6 +128,13 @@ export function receiveEncryptionKeys(keys) {
   return {
     type: GET_ENCRYPTION_KEYS,
     keys,
+  };
+}
+
+export function setIsEncryptionSupport(isSupport) {
+  return {
+    type: SET_IS_ENCRYPTION_SUPPORT,
+    isSupport,
   };
 }
 
@@ -246,4 +254,11 @@ export function getEncryptionAccess(fileId) {
   return (dispatch) => {
     return api.files.getEncryptionAccess(fileId);
   };
+}
+
+export function getEncryptionSupport(dispatch) {
+  return api.files
+    .getEncryptionSupport()
+    .then((res) => dispatch(setIsEncryptionSupport(res)))
+    .catch((err) => console.error(err));
 }
