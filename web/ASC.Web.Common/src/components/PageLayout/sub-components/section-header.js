@@ -56,7 +56,6 @@ class SectionHeader extends React.Component {
     //console.log("PageLayout SectionHeader render");
     // eslint-disable-next-line react/prop-types
     const { isArticlePinned, borderBottom, ...rest } = this.props;
-    console.log(borderBottom);
 
     return (
       <StyledSectionHeader
