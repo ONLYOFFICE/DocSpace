@@ -35,7 +35,7 @@ FloatingButton.propTypes = {
   id: PropTypes.string,
   className: PropTypes.string,
   style: PropTypes.object,
-  icon: PropTypes.string,
+  icon: PropTypes.oneOf(["upload", "file", "trash", "move", "duplicate"]),
   alert: PropTypes.bool,
 };
 
