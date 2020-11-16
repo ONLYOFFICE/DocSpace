@@ -61,16 +61,6 @@ class PureVersionHistory extends React.Component {
     }
   }
 
-  componentDidUpdate(prevProps) {
-    if (this.props.isLoading !== prevProps.isLoading) {
-      if (this.props.isLoading) {
-        utils.showLoader();
-      } else {
-        utils.hideLoader();
-      }
-    }
-  }
-
   getFileVersions = (fileId) => {
     const { setFirstLoad } = this.props;
     api.files.getFileVersionInfo(fileId).then((versions) => {
@@ -101,7 +91,7 @@ class PureVersionHistory extends React.Component {
         </PageLayout.ArticleBody>
 
         <PageLayout.SectionHeader borderBottom={true}>
-          <SectionHeaderContent title={versions && versions[0].title} />
+          <SectionHeaderContent title={versions[0].title} />
         </PageLayout.SectionHeader>
 
         <PageLayout.SectionBody>
