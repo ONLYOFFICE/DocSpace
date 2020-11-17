@@ -16,12 +16,11 @@ import find from "lodash/find";
 import result from "lodash/result";
 import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
-import { constants, FilterInput, store, Loaders } from "asc-web-common";
-import { utils } from "asc-web-components";
+import { constants, FilterInput, store, Loaders, utils } from "asc-web-common";
 import isEqual from "lodash/isEqual";
 import { isMobileOnly } from "react-device-detect";
 
-const { Consumer } = utils.context;
+const { withLayoutSize } = utils;
 
 const {
   getCurrentUser,
@@ -290,41 +289,39 @@ class SectionFilterContent extends React.Component {
       this.props.selectedFolderId !== nextProps.selectedFolderId ||
       this.state.isReady !== nextState.isReady ||
       this.props.viewAs !== nextProps.viewAs ||
-      this.props.firstLoad !== nextProps.firstLoad
+      this.props.firstLoad !== nextProps.firstLoad ||
+      !isEqual(this.props.context, nextProps.context)
     );
   }
 
   render() {
     console.log("Filter render");
     const selectedFilterData = this.getSelectedFilterData();
-    const { t, language, firstLoad } = this.props;
+    const { t, language, firstLoad, context } = this.props;
+    const { sectionWidth } = context;
     const filterColumnCount =
       window.innerWidth < 500 ? {} : { filterColumnCount: 3 };
     return firstLoad ? (
       <Loaders.Filter />
     ) : (
-      <Consumer>
-        {(context) => (
-          <FilterInput
-            sectionWidth={context.sectionWidth}
-            getFilterData={this.getData}
-            getSortData={this.getSortData}
-            selectedFilterData={selectedFilterData}
-            onFilter={this.onFilter}
-            onChangeViewAs={this.onChangeViewAs}
-            viewAs={false} // TODO: include viewSelector after adding method getThumbnail - this.props.viewAs
-            directionAscLabel={t("DirectionAscLabel")}
-            directionDescLabel={t("DirectionDescLabel")}
-            placeholder={t("Search")}
-            needForUpdate={this.needForUpdate}
-            language={language}
-            isReady={this.state.isReady}
-            {...filterColumnCount}
-            contextMenuHeader={t("AddFilter")}
-            isMobile={isMobileOnly}
-          />
-        )}
-      </Consumer>
+      <FilterInput
+        sectionWidth={sectionWidth}
+        getFilterData={this.getData}
+        getSortData={this.getSortData}
+        selectedFilterData={selectedFilterData}
+        onFilter={this.onFilter}
+        onChangeViewAs={this.onChangeViewAs}
+        viewAs={false} // TODO: include viewSelector after adding method getThumbnail - this.props.viewAs
+        directionAscLabel={t("DirectionAscLabel")}
+        directionDescLabel={t("DirectionDescLabel")}
+        placeholder={t("Search")}
+        needForUpdate={this.needForUpdate}
+        language={language}
+        isReady={this.state.isReady}
+        {...filterColumnCount}
+        contextMenuHeader={t("AddFilter")}
+        isMobile={isMobileOnly}
+      />
     );
   }
 }
@@ -346,4 +343,4 @@ export default connect(mapStateToProps, {
   fetchFiles,
   setViewAs,
   setIsLoading,
-})(withRouter(withTranslation()(SectionFilterContent)));
+})(withRouter(withLayoutSize(withTranslation()(SectionFilterContent))));
