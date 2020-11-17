@@ -49,8 +49,8 @@ const Body = styled.div`
     margin-top: 17px;
   }
 
-  .context-menu-button_link-header{
-    text-transform:uppercase;
+  .context-menu-button_link-header {
+    text-transform: uppercase;
   }
 
   .context-menu-button_link-header:not(:first-child) {
@@ -98,6 +98,8 @@ class ContextMenuButton extends React.Component {
 
   componentWillUnmount() {
     window.removeEventListener("resize", this.throttledResize);
+    window.removeEventListener("popstate", this.popstate, false);
+    this.throttledResize.cancel();
   }
 
   stopAction = (e) => e.preventDefault();
