@@ -831,7 +831,7 @@ class FilterInput extends React.Component {
   }
 }
 
-FilterInput.protoTypes = {
+FilterInput.propTypes = {
   size: PropTypes.oneOf(["base", "middle", "big", "huge"]),
   autoRefresh: PropTypes.bool,
   selectedFilterData: PropTypes.object,

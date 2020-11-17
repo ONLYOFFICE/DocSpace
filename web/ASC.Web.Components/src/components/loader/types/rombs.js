@@ -69,7 +69,7 @@ const Romb = styled.div`
     2s ease-in-out 0s infinite;
 `;
 
-Romb.protoTypes = {
+Romb.propTypes = {
   width: PropTypes.string.isRequired,
   height: PropTypes.string.isRequired,
 };
@@ -83,7 +83,7 @@ const Rombs = ({ size }) => (
   </>
 );
 
-Rombs.protoTypes = {
+Rombs.propTypes = {
   size: PropTypes.string.isRequired,
 };
 
