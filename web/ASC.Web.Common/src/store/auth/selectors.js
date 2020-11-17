@@ -196,3 +196,8 @@ export const getOrganizationName = createSelector([getSettings], (settings) => {
 export const getUrlSupport = (state) => state.auth.settings.urlSupport;
 
 export const getUrlAuthKeys = (state) => state.auth.settings.urlAuthKeys;
+
+export const getHeaderVisible = createSelector([getSettings], (settings) => {
+  const { isHeaderVisible } = settings;
+  return isHeaderVisible;
+});

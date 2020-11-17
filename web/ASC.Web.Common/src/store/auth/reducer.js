@@ -15,9 +15,10 @@ import {
   SET_GREETING_SETTINGS,
   SET_CUSTOM_NAMES,
   SET_WIZARD_COMPLETED,
+  SET_HEADER_VISIBLE,
 } from "./actions";
 import isEmpty from "lodash/isEmpty";
-import { LANGUAGE, AUTH_KEY } from "../../constants";
+import { LANGUAGE, AUTH_KEY, HEADER_VISIBLE_KEY } from "../../constants";
 
 const initialState = {
   isAuthenticated: false,
@@ -63,6 +64,7 @@ const initialState = {
       guestsCaption: "Guests",
     },
     isEncryptionSupport: false, // TODO: should switch to "true", when desktop editors client uses
+    isHeaderVisible: false,
   },
 };
 
@@ -157,6 +159,13 @@ const authReducer = (state = initialState, action) => {
         settings: { ...state.settings, wizardCompleted: true },
       });
 
+    case SET_HEADER_VISIBLE:
+      return Object.assign({}, state, {
+        settings: {
+          ...state.settings,
+          isHeaderVisible: action.isHeaderVisible,
+        },
+      });
     default:
       return state;
   }

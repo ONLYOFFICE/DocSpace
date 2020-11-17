@@ -17,6 +17,7 @@ export const SET_CURRENT_PRODUCT_HOME_PAGE = "SET_CURRENT_PRODUCT_HOME_PAGE";
 export const SET_GREETING_SETTINGS = "SET_GREETING_SETTINGS";
 export const SET_CUSTOM_NAMES = "SET_CUSTOM_NAMES";
 export const SET_WIZARD_COMPLETED = "SET_WIZARD_COMPLETED";
+export const SET_HEADER_VISIBLE = "SET_HEADER_VISIBLE";
 
 export function setCurrentUser(user) {
   return {
@@ -210,3 +211,10 @@ export function getPortalPasswordSettings(dispatch, confirmKey = null) {
 export const reloadPortalSettings = () => {
   return (dispatch) => getPortalSettings(dispatch);
 };
+
+export function setHeaderVisible(isHeaderVisible) {
+  return {
+    type: SET_HEADER_VISIBLE,
+    isHeaderVisible,
+  };
+}

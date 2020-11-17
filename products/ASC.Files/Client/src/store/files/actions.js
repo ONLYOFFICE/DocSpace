@@ -304,7 +304,7 @@ export function setFilterUrl(filter) {
 }
 
 // TODO: similar to fetchFolder, remove one
-export function fetchFiles(folderId, filter) {
+export function fetchFiles(folderId, filter, isResize) {
   return (dispatch, getState) => {
     const filterData = filter ? filter.clone() : FilesFilter.getDefault();
     filterData.folder = folderId;
@@ -338,7 +338,7 @@ export function fetchFiles(folderId, filter) {
       }
     }
 
-    return files.getFolder(folderId, filter).then((data) => {
+    return files.getFolder(folderId, filter, isResize).then((data) => {
       const isPrivacyFolder =
         data.current.rootFolderType === FolderType.Privacy;
       filterData.treeFolders = createTreeFolders(data.pathParts, filterData);
@@ -350,7 +350,7 @@ export function fetchFiles(folderId, filter) {
       dispatch(
         setFiles(isPrivacyFolder && !isEncryptionSupport ? [] : data.files)
       );
-      dispatch(setSelected("close"));
+      if (typeof isResize === "undefined") dispatch(setSelected("close"));
       return dispatch(
         setSelectedFolder({
           folders: data.folders,

@@ -49,12 +49,13 @@ const i18n = createI18N({
 });
 const { changeLanguage } = utils;
 const { FilesFilter } = api;
-const { getSettingsHomepage, getIsLoaded } = store.auth.selectors;
-
+const { getSettingsHomepage, getIsLoaded} = store.auth.selectors;
+const { setHeaderVisible } = store.auth.actions;
 class PureHome extends React.Component {
   componentDidMount() {
     const { fetchFiles, homepage, setIsLoading, setFirstLoad } = this.props;
 
+    this.isResize = true;
     const reg = new RegExp(`${homepage}((/?)$|/filter)`, "gm"); //TODO: Always find?
     const match = window.location.pathname.match(reg);
     let filterObj = null;
@@ -110,6 +111,7 @@ class PureHome extends React.Component {
     }
 
     setIsLoading(true);
+   
     Promise.all(requests)
       .catch((err) => {
         Promise.resolve(FilesFilter.getDefault());
@@ -131,7 +133,7 @@ class PureHome extends React.Component {
         if (filter) {
           const folderId = filter.folder;
           console.log("filter", filter);
-          return fetchFiles(folderId, filter);
+          return fetchFiles(folderId, filter, this.isResize);
         }
 
         return Promise.resolve();
@@ -140,6 +142,7 @@ class PureHome extends React.Component {
         setIsLoading(false);
         setFirstLoad(false);
       });
+
   }
 
   onDrop = (files, uploadToFolder) => {
@@ -164,6 +167,10 @@ class PureHome extends React.Component {
         utils.hideLoader();
       }
     }
+
+     if (this.props.isHeaderVisible !== prevProps.isHeaderVisible){
+      this.props.setHeaderVisible(this.props.isHeaderVisible);
+     }
   }
 
   render() {
@@ -178,6 +185,7 @@ class PureHome extends React.Component {
       isHeaderVisible
     } = this.props;
 
+ 
     return (
       <>
         {convertDialogVisible && (
@@ -254,6 +262,7 @@ Home.propTypes = {
 };
 
 function mapStateToProps(state) {
+
   return {
     convertDialogVisible: getConvertDialogVisible(state),
     currentFolderId: getSelectedFolderId(state),
@@ -278,8 +287,9 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(startUpload(files, folderId, t)),
     setIsLoading: (isLoading) => dispatch(setIsLoading(isLoading)),
     setFirstLoad: (firstLoad) => dispatch(setFirstLoad(firstLoad)),
-    fetchFiles: (folderId, filter) => dispatch(fetchFiles(folderId, filter)),
+    fetchFiles: (folderId, filter, isResize) => dispatch(fetchFiles(folderId, filter, isResize)),
     setSelections: (items) => dispatch(setSelections(items)),
+    setHeaderVisible: (isHeaderVisible) => dispatch(setHeaderVisible(isHeaderVisible)),
   };
 };
 
