@@ -59,7 +59,7 @@ namespace ASC.Core.Common.EF
             switch (Provider)
             {
                 case Provider.MySql:
-                    optionsBuilder.UseMySql(ConnectionStringSettings.ConnectionString);
+                    optionsBuilder.UseMySql(ConnectionStringSettings.ConnectionString, ServerVersion.AutoDetect(ConnectionStringSettings.ConnectionString));
                     break;
                 case Provider.Postgre:
                     optionsBuilder.UseNpgsql(ConnectionStringSettings.ConnectionString);
