@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 
+using ASC.Common;
 using ASC.Core.Tenants;
 using ASC.Files.Core;
 using ASC.Files.Core.Resources;
@@ -585,6 +586,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         }
     }
 
+    [Scope]
     public class FileMoveCopyOperationScope
     {
         private FilesMessageService FilesMessageService { get; }

@@ -107,3 +107,5 @@ export function showLoader() {
     document.body.classList.add("loading");
   }, 1000);
 }
+
+export { withLayoutSize } from "./withLayoutSize";

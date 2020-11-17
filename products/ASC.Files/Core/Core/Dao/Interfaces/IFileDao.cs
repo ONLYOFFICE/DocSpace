@@ -28,11 +28,13 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
+using ASC.Common;
 using ASC.Files.Core.Security;
 using ASC.Web.Files.Services.DocumentService;
 
 namespace ASC.Files.Core
 {
+    [Scope]
     public interface IFileDao<T>
     {
         /// <summary>

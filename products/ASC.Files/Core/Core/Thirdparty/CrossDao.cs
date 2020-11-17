@@ -2,8 +2,15 @@
 using System.Linq;
 using System.Threading;
 
+using ASC.Common;
 using ASC.Files.Core.Data;
 using ASC.Files.Core.Resources;
+using ASC.Files.Thirdparty.Box;
+using ASC.Files.Thirdparty.Dropbox;
+using ASC.Files.Thirdparty.GoogleDrive;
+using ASC.Files.Thirdparty.OneDrive;
+using ASC.Files.Thirdparty.SharePoint;
+using ASC.Files.Thirdparty.Sharpbox;
 using ASC.Web.Files.Utils;
 using ASC.Web.Studio.Core;
 
@@ -11,7 +18,8 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Files.Core.Thirdparty
 {
-    internal class CrossDao
+    [Scope(Additional = typeof(CrossDaoExtension))]
+    internal class CrossDao //Additional SharpBox
     {
         private IServiceProvider ServiceProvider { get; }
         private SetupInfo SetupInfo { get; }
@@ -175,6 +183,19 @@ namespace ASC.Files.Core.Thirdparty
             if (copyException != null) throw copyException;
 
             return toFolderDao.GetFolder(toConverter(toFolderId));
+        }
+    }
+
+    public class CrossDaoExtension
+    {
+        public static void Register(DIHelper services)
+        {
+            services.TryAdd<SharpBoxDaoSelector>();
+            services.TryAdd<SharePointDaoSelector>();
+            services.TryAdd<OneDriveDaoSelector>();
+            services.TryAdd<GoogleDriveDaoSelector>();
+            services.TryAdd<DropboxDaoSelector>();
+            services.TryAdd<BoxDaoSelector>();
         }
     }
 }

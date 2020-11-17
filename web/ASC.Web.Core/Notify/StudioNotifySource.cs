@@ -34,6 +34,7 @@ using ASC.Web.Core.PublicResources;
 
 namespace ASC.Web.Studio.Core.Notify
 {
+    [Scope]
     public class StudioNotifySource : NotifySource
     {
         public StudioNotifySource(UserManager userManager, IRecipientProvider recipientsProvider, SubscriptionManager subscriptionManager)
@@ -269,23 +270,6 @@ namespace ASC.Web.Studio.Core.Notify
                     return action;
                 }
             }
-        }
-    }
-
-    public static class StudioNotifySourceExtension
-    {
-        public static DIHelper AddStudioNotifySourceService(this DIHelper services)
-        {
-            if (services.TryAddScoped<StudioNotifySource>())
-            {
-
-                return services
-                    .AddUserManagerService()
-                    .AddRecipientProviderImplService()
-                    .AddSubscriptionManagerService();
-            }
-
-            return services;
         }
     }
 }

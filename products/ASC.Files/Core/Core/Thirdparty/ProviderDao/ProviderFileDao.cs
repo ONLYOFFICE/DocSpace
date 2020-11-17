@@ -39,6 +39,7 @@ using ASC.Web.Files.Services.DocumentService;
 
 namespace ASC.Files.Thirdparty.ProviderDao
 {
+    [Scope]
     internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
     {
         public ProviderFileDao(
@@ -520,22 +521,5 @@ namespace ASC.Files.Thirdparty.ProviderDao
         }
 
         #endregion
-    }
-
-    public static class ProviderFileDaoExtention
-    {
-        public static DIHelper AddProviderFileDaoService(this DIHelper services)
-        {
-            if (services.TryAddScoped<ProviderFileDao>())
-            {
-                services.TryAddTransient<File<string>>();
-                services.TryAddScoped<IFileDao<string>, ProviderFileDao>();
-
-                return services
-                    .AddProviderDaoBaseService();
-            }
-
-            return services;
-        }
     }
 }

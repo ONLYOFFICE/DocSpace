@@ -278,6 +278,7 @@ namespace TMResourceData
         }
     }
 
+    [Singletone]
     public class WhiteLabelHelper
     {
         private readonly ILog log;
@@ -364,15 +365,6 @@ namespace TMResourceData
             }
 
             return resourceValue;
-        }
-    }
-
-    public static class WhiteLabelHelperExtension
-    {
-        public static DIHelper AddWhiteLabelHelperService(this DIHelper services)
-        {
-            services.TryAddSingleton<WhiteLabelHelper>();
-            return services;
         }
     }
 }

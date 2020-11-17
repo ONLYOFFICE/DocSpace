@@ -39,6 +39,7 @@ using Newtonsoft.Json;
 
 namespace ASC.AuditTrail
 {
+    [Scope]
     public class AuditEventsRepository
     {
         private MessageTarget MessageTarget { get; set; }
@@ -150,19 +151,6 @@ namespace ASC.AuditTrail
             }
 
             return null;
-        }
-    }
-
-    public static class AuditEventsRepositoryExtension
-    {
-        public static DIHelper AddAuditEventsRepositoryService(this DIHelper services)
-        {
-            _ = services.TryAddScoped<AuditEventsRepository>();
-            return services
-                .AddUserFormatter()
-                .AddAuditTrailContextService()
-                .AddMessageTargetService()
-                .AddAuditActionMapperService();
         }
     }
 }

@@ -27,8 +27,11 @@
 using System;
 using System.Collections.Generic;
 
+using ASC.Common;
+
 namespace ASC.Files.Core.Security
 {
+    [Scope(typeof(FileSecurity))]
     public interface IFileSecurity
     {
         bool CanRead<T>(FileEntry<T> entry, Guid userId);

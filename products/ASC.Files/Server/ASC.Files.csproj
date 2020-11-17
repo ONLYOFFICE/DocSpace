@@ -10,6 +10,7 @@
     <Product>ASC.Files</Product>
     <Copyright>(c) Ascensio System SIA. All rights reserved</Copyright>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <EnableNETAnalyzers>false</EnableNETAnalyzers>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>full</DebugType>
@@ -18,26 +19,6 @@
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
   </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="AppLimit.CloudComputing.SharpBox" Version="1.1.0.451" />
-    <PackageReference Include="Box.V2.Core" Version="3.24.0" />
-    <PackageReference Include="DocuSign.eSign.dll" Version="4.4.1" />
-    <PackageReference Include="DotNetZip" Version="1.13.8" />
-    <PackageReference Include="Dropbox.Api" Version="4.10.0" />
-    <PackageReference Include="Google.Apis.Drive.v3" Version="1.49.0.2111" />
-    <PackageReference Include="Grpc.Tools" Version="2.32.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.9">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.OneDriveSDK" Version="2.0.7.5" />
-    <PackageReference Include="Microsoft.SharePoint.Client" Version="14.0.4762.1000" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.4" />
-    <PackageReference Include="System.Text.Encoding.CodePages" Version="4.7.1" />
-  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\common\ASC.Api.Core\ASC.Api.Core.csproj" />
     <ProjectReference Include="..\..\..\common\ASC.Common\ASC.Common.csproj" />

@@ -44,6 +44,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Studio.Core.Notify
 {
+    [Scope]
     public class StudioNotifyHelper
     {
         public readonly string Helplink;
@@ -245,28 +246,6 @@ namespace ASC.Web.Studio.Core.Notify
             {
                 SubscriptionProvider.UnSubscribe(notifyAction, null, recipient);
             }
-        }
-    }
-
-    public static class StudioNotifyHelperExtension
-    {
-        public static DIHelper AddStudioNotifyHelperService(this DIHelper services)
-        {
-            if (services.TryAddScoped<StudioNotifyHelper>())
-            {
-                return services
-                    .AddStudioNotifySourceService()
-                    .AddUserManagerService()
-                    .AddAdditionalWhiteLabelSettingsService()
-                    .AddCommonLinkUtilityService()
-                    .AddTenantManagerService()
-                    .AddSetupInfo()
-                    .AddTenantExtraService()
-                    .AddCoreBaseSettingsService()
-                    .AddWebImageSupplierService();
-            }
-
-            return services;
         }
     }
 }

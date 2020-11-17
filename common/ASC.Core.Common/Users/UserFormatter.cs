@@ -35,6 +35,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace ASC.Core.Users
 {
+    [Singletone]
     public class UserFormatter : IComparer<UserInfo>
     {
         private readonly DisplayUserNameFormat format;
@@ -145,14 +146,6 @@ namespace ASC.Core.Users
         public bool IsValidUserName(string firstName, string lastName)
         {
             return UserNameRegex.IsMatch(firstName + lastName);
-        }
-    }
-    public static class UserFormatterExtension
-    {
-        public static DIHelper AddUserFormatter(this DIHelper services)
-        {
-            services.TryAddSingleton<UserFormatter>();
-            return services;
         }
     }
 }

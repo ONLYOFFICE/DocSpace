@@ -51,6 +51,7 @@ using Newtonsoft.Json;
 
 namespace ASC.Data.Backup.Tasks
 {
+    [Scope]
     public class BackupPortalTask : PortalTaskBase
     {
         private const int MaxLength = 250;
@@ -676,24 +677,6 @@ namespace ASC.Data.Backup.Tasks
                 }
             }
             return list;
-        }
-    }
-    public static class BackupPortalTaskExtension
-    {
-        public static DIHelper AddBackupPortalTaskService(this DIHelper services)
-        {
-            if (services.TryAddScoped<BackupPortalTask>())
-            {
-                return services
-                    .AddCoreConfigurationService()
-                    .AddStorageFactoryService()
-                    .AddModuleProvider()
-                    .AddBackupsContext()
-                    .AddTenantManagerService()
-                    .AddDbFactoryService();
-            }
-
-            return services;
         }
     }
 }

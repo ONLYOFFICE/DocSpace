@@ -12,12 +12,12 @@ namespace ASC.Data.Storage.Configuration
 {
     public static class StorageConfigExtension
     {
-        public static DIHelper AddStorage(this DIHelper services)
+        public static void Register(DIHelper services)
         {
             services.TryAddSingleton(r => r.GetService<IConfiguration>().GetSetting<Storage>("Storage"));
-            return services;
         }
     }
+
 
     public class Storage
     {

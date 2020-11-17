@@ -28,10 +28,13 @@ using System;
 using System.IO;
 using System.Security.Cryptography;
 
+using ASC.Common;
+
 using Microsoft.Extensions.Configuration;
 
 namespace ASC.Data.Storage.Encryption
 {
+    [Transient]
     public class Crypt : ICrypt
     {
         private string Storage { get; set; }

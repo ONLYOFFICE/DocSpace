@@ -27,9 +27,11 @@
 using System.Collections.Generic;
 
 using ASC.Common.Security.Authorizing;
+using ASC.Core.Security.Authorizing;
 
 namespace ASC.Common.Security
 {
+    [Scope(typeof(PermissionProvider))]
     public interface IPermissionProvider
     {
         IEnumerable<Ace> GetAcl(ISubject subject, IAction action, ISecurityObjectId objectId, ISecurityObjectProvider secObjProvider);
