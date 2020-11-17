@@ -45,10 +45,12 @@ using ASC.Web.Files.Helpers;
 using ASC.Web.Files.Utils;
 using ASC.Web.Studio.Core;
 
-using Ionic.Zip;
-
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Primitives;
+
+using SharpCompress.Common;
+using SharpCompress.Writers;
+using SharpCompress.Writers.Zip;
 
 namespace ASC.Web.Files.Services.WCFService.FileOperations
 {
@@ -85,12 +87,12 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             var scopeClass = scope.ServiceProvider.GetService<FileDownloadOperationScope>();
             var (globalStore, filesLinkUtility, _, _, _) = scopeClass;
             using var stream = TempStream.Create();
-            using (var zip = new ZipOutputStream(stream, true)
-            {
-                CompressionLevel = Ionic.Zlib.CompressionLevel.Level3,
-                AlternateEncodingUsage = ZipOption.AsNecessary,
-                AlternateEncoding = Encoding.UTF8,
-            })
+
+            var writerOptions = new ZipWriterOptions(CompressionType.Deflate);
+            writerOptions.ArchiveEncoding.Default = Encoding.UTF8;
+            writerOptions.DeflateCompressionLevel = SharpCompress.Compressors.Deflate.CompressionLevel.Level3;
+
+            using (var zip = WriterFactory.Open(stream, ArchiveType.Zip, writerOptions))
             {
                 (ThirdPartyOperation as FileDownloadOperation<string>).CompressToZip(zip, stream, scope);
                 (DaoOperation as FileDownloadOperation<int>).CompressToZip(zip, stream, scope);
@@ -125,19 +127,16 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             get { return FileOperationType.Download; }
         }
 
-        public bool Compress { get; }
-
-        public FileDownloadOperation(IServiceProvider serviceProvider, FileDownloadOperationData<T> fileDownloadOperationData, bool compress = true)
+        public FileDownloadOperation(IServiceProvider serviceProvider, FileDownloadOperationData<T> fileDownloadOperationData)
             : base(serviceProvider, fileDownloadOperationData)
         {
             files = fileDownloadOperationData.FilesDownload;
             headers = fileDownloadOperationData.Headers;
-            Compress = compress;
         }
 
         protected override void Do(IServiceScope scope)
         {
-            if (!Compress && !Files.Any() && !Folders.Any()) return;
+            if (!Files.Any() && !Folders.Any()) return;
 
             entriesPathId = GetEntriesPathId(scope);
             if (entriesPathId == null || entriesPathId.Count == 0)
@@ -150,36 +149,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 throw new DirectoryNotFoundException(FilesCommonResource.ErrorMassage_FolderNotFound);
             }
 
-            var scopeClass = scope.ServiceProvider.GetService<FileDownloadOperationScope>();
-            var (globalStore, filesLinkUtility, _, _, _) = scopeClass;
             ReplaceLongPath(entriesPathId);
-
-            if (Compress)
-            {
-                using var stream = TempStream.Create();
-                using var zip = new ZipOutputStream(stream, true)
-                {
-                    CompressionLevel = Ionic.Zlib.CompressionLevel.Level3,
-                    AlternateEncodingUsage = ZipOption.AsNecessary,
-                    AlternateEncoding = Encoding.UTF8
-                };
-
-                CompressToZip(zip, stream, scope);
-
-                if (stream != null)
-                {
-                    stream.Position = 0;
-                    const string fileName = FileConstant.DownloadTitle + ".zip";
-                    var store = globalStore.GetStore();
-                    store.Save(
-                        FileConstant.StorageDomainTmp,
-                        string.Format(@"{0}\{1}", ((IAccount)Thread.CurrentPrincipal.Identity).ID, fileName),
-                        stream,
-                        "application/zip",
-                        "attachment; filename=\"" + fileName + "\"");
-                    Status = string.Format("{0}?{1}=bulk", filesLinkUtility.FileHandlerPath, FilesLinkUtility.Action);
-                }
-            }
         }
 
         private ItemNameValueCollection<T> ExecPathFromFile(IServiceScope scope, File<T> file, string path)
@@ -260,7 +230,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             return entriesPathId;
         }
 
-        internal void CompressToZip(ZipOutputStream zip, Stream stream, IServiceScope scope)
+        internal void CompressToZip(IWriter zip, Stream stream, IServiceScope scope)
         {
             if (entriesPathId == null) return;
             var scopeClass = scope.ServiceProvider.GetService<FileDownloadOperationScope>();
@@ -325,17 +295,17 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                         }
                     }
 
-                    zip.PutNextEntry(newtitle);
-
                     if (!entryId.Equals(default(T)) && file != null)
                     {
+                        Stream readStream = null;
+
                         try
                         {
                             if (fileConverter.EnableConvert(file, convertToExt))
                             {
                                 //Take from converter
-                                using var readStream = fileConverter.Exec(file, convertToExt);
-                                readStream.CopyTo(zip);
+                                readStream = fileConverter.Exec(file, convertToExt);
+                                
                                 if (!string.IsNullOrEmpty(convertToExt))
                                 {
                                     filesMessageService.Send(file, headers, MessageAction.FileDownloadedAs, file.Title, convertToExt);
@@ -347,15 +317,24 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                             }
                             else
                             {
-                                using var readStream = FileDao.GetFileStream(file);
-                                readStream.CopyTo(zip);
+                                readStream = FileDao.GetFileStream(file);
                                 filesMessageService.Send(file, headers, MessageAction.FileDownloaded, file.Title);
                             }
+
+                            zip.Write(newtitle, readStream);
                         }
                         catch (Exception ex)
                         {
                             Error = ex.Message;
                             Logger.Error(Error, ex);
+                        }
+                        finally
+                        {
+                            if (readStream != null)
+                            {
+                                readStream.Close();
+                                readStream.Dispose();
+                            }
                         }
                     }
                     counter++;
