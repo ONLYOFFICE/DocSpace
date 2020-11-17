@@ -33,7 +33,6 @@ using ASC.Common;
 using ASC.Core;
 using ASC.Core.Users;
 using ASC.Files.Core;
-using ASC.Files.Core.Data;
 using ASC.Files.Core.Resources;
 using ASC.Files.Core.Security;
 using ASC.Web.Files.Services.WCFService;
@@ -48,6 +47,7 @@ namespace ASC.Web.Files.Core.Entries
         public Guid UserId { get; set; }
     }
 
+    [Scope]
     public class EncryptionKeyPairHelper
     {
         private UserManager UserManager { get; }
@@ -130,24 +130,6 @@ namespace ASC.Web.Files.Core.Entries
                 .Where(keyPair => keyPair != null);
 
             return fileKeysPair;
-        }
-    }
-
-    public static class EncryptionKeyPairHelperExtention
-    {
-        public static DIHelper AddEncryptionKeyPairHelperService(this DIHelper services)
-        {
-            if (services.TryAddScoped<EncryptionKeyPairHelper>())
-            {
-                services
-                    .AddAuthContextService()
-                    .AddUserManagerService()
-                    .AddEncryptionLoginProviderService()
-                    .AddFileSecurityService()
-                    .AddDaoFactoryService();
-            }
-
-            return services;
         }
     }
 }

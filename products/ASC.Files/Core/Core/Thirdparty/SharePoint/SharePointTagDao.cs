@@ -43,6 +43,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Files.Thirdparty.SharePoint
 {
+    [Scope]
     internal class SharePointTagDao : SharePointDaoBase, ITagDao<string>
     {
         public SharePointTagDao(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor, FileUtility fileUtility) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility)
@@ -165,16 +166,6 @@ namespace ASC.Files.Thirdparty.SharePoint
         public IEnumerable<Tag> GetTags(string entryID, FileEntryType entryType, TagType tagType)
         {
             return new List<Tag>();
-        }
-    }
-
-    public static class SharePointTagDaoExtention
-    {
-        public static DIHelper AddSharePointTagDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<SharePointTagDao>();
-
-            return services;
         }
     }
 }

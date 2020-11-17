@@ -34,6 +34,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace ASC.UrlShortener.Svc
 {
+    [Singletone]
     public class UrlShortenerServiceLauncher : IHostedService
     {
         private UrlShortenerService UrlShortenerService { get; }
@@ -55,14 +56,6 @@ namespace ASC.UrlShortener.Svc
             UrlShortenerService.Stop();
 
             return Task.CompletedTask;
-        }
-    }
-
-    public static class UrlShortenerServiceLauncherExtension
-    {
-        public static DIHelper AddUrlShortenerServiceLauncher(this DIHelper services)
-        {
-            return services.AddUrlShortenerService();
         }
     }
 }

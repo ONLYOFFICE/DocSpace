@@ -26,11 +26,8 @@
 
 using System;
 
-using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Core;
-using ASC.Core.Common.EF;
-using ASC.Core.Common.EF.Context;
 using ASC.Core.Common.Notify.Push;
 
 namespace ASC.Web.Core.Mobile
@@ -85,22 +82,6 @@ namespace ASC.Web.Core.Mobile
             var cacheKey = appType.HasValue ? userEmail + "/" + appType.ToString() : userEmail;
 
             return string.Format("{0}:mobile:{1}", TenantManager.GetCurrentTenant().TenantId, cacheKey);
-        }
-    }
-
-    public static class CachedMobileAppInstallRegistratorExtension
-    {
-        public static DIHelper AddCachedMobileAppInstallRegistrator(this DIHelper services)
-        {
-            if (services.TryAddScoped<MobileAppInstallRegistrator>())
-            {
-                services.TryAddScoped<IMobileAppInstallRegistrator, CachedMobileAppInstallRegistrator>();
-                return services
-                    .AddTenantManagerService()
-                    .AddDbContextManagerService<DbContext>();
-            }
-
-            return services;
         }
     }
 }

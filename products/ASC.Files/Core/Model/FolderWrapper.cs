@@ -31,7 +31,6 @@ using ASC.Api.Utils;
 using ASC.Common;
 using ASC.Core;
 using ASC.Files.Core;
-using ASC.Files.Core.Data;
 using ASC.Files.Core.Security;
 using ASC.Web.Api.Models;
 using ASC.Web.Files.Classes;
@@ -91,6 +90,7 @@ namespace ASC.Api.Documents
         }
     }
 
+    [Scope]
     public class FolderWrapperHelper : FileEntryWrapperHelper
     {
         private AuthContext AuthContext { get; }
@@ -134,24 +134,6 @@ namespace ASC.Api.Documents
             result.New = folder.NewForMe;
 
             return result;
-        }
-    }
-
-    public static class FolderWrapperHelperExtention
-    {
-        public static DIHelper AddFolderWrapperHelperService(this DIHelper services)
-        {
-            if (services.TryAddScoped<FolderWrapperHelper>())
-            {
-                return services
-                    .AddFileEntryWrapperHelperService()
-                    .AddAuthContextService()
-                    .AddDaoFactoryService()
-                    .AddFileSecurityService()
-                    .AddGlobalFolderHelperService();
-            }
-
-            return services;
         }
     }
 }

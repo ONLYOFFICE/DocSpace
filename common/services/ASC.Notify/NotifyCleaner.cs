@@ -40,6 +40,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Notify
 {
+    [Singletone]
     public class NotifyCleaner
     {
         private readonly ILog log;
@@ -105,16 +106,6 @@ namespace ASC.Notify
                     break;
                 }
             }
-        }
-    }
-
-    public static class NotifyCleanerExtension
-    {
-        public static DIHelper AddNotifyCleaner(this DIHelper services)
-        {
-            services.TryAddSingleton<NotifyCleaner>();
-
-            return services.AddNotifyDbContext();
         }
     }
 }

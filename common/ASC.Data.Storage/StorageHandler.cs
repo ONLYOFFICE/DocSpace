@@ -153,6 +153,7 @@ namespace ASC.Data.Storage.DiscStorage
         }
     }
 
+    [Scope]
     public class StorageHandlerScope
     {
         private TenantManager TenantManager { get; }
@@ -200,15 +201,6 @@ namespace ASC.Data.Storage.DiscStorage
             }
 
             return builder;
-        }
-        public static DIHelper AddStorageHandlerService(this DIHelper services)
-        {
-            services.TryAddScoped<StorageHandlerScope>();
-            return services
-                .AddTenantManagerService()
-                .AddSecurityContextService()
-                .AddStorageFactoryService()
-                .AddEmailValidationKeyProviderService();
         }
     }
 }

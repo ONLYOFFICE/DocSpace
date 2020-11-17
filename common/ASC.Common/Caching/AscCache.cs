@@ -34,6 +34,7 @@ using Google.Protobuf;
 
 namespace ASC.Common.Caching
 {
+    [Singletone]
     public class AscCacheNotify
     {
         private ICacheNotify<AscCacheItem> CacheNotify { get; }

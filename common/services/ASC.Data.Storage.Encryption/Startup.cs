@@ -48,7 +48,7 @@ namespace ASC.Data.Storage.Encryption
         {
             base.ConfigureServices(services);
 
-            DIHelper.AddEncryptionServiceLauncher();
+            DIHelper.TryAdd<EncryptionServiceLauncher>();
 
             services.AddHostedService<EncryptionServiceLauncher>();
         }

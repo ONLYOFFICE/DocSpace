@@ -23,8 +23,12 @@
  *
 */
 
+using ASC.Common;
+using ASC.Core.Notify;
+
 namespace ASC.Notify.Recipients
 {
+    [Scope(typeof(RecipientProviderImpl))]
     public interface IRecipientProvider
     {
         IRecipient GetRecipient(string id);

@@ -30,12 +30,12 @@ using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Core;
 using ASC.Core.Common.Configuration;
-using ASC.FederatedLogin.Helpers;
 
 using Microsoft.Extensions.Configuration;
 
 namespace ASC.FederatedLogin.LoginProviders
 {
+    [Scope]
     public class BoxLoginProvider : Consumer, IOAuthProvider
     {
         public string Scopes { get { return ""; } }
@@ -67,21 +67,6 @@ namespace ASC.FederatedLogin.LoginProviders
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
             : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, name, order, props, additional)
         {
-        }
-    }
-
-    public static class BoxLoginProviderExtension
-    {
-        public static DIHelper AddBoxLoginProviderService(this DIHelper services)
-        {
-            //services.TryAddScoped<BoxLoginProvider>();
-            return services
-                .AddOAuth20TokenHelperService()
-                .AddConsumerFactoryService()
-                .AddKafkaService()
-                .AddTenantManagerService()
-                .AddCoreBaseSettingsService()
-                .AddCoreSettingsService();
         }
     }
 }

@@ -26,7 +26,6 @@
 
 using System.Collections.Generic;
 
-using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Core;
 using ASC.Core.Common.Configuration;
@@ -93,17 +92,6 @@ namespace ASC.FederatedLogin.LoginProviders
             {
                 return TelegramHelper.CreateClient(TenantManager.GetCurrentTenant().TenantId, TelegramBotToken, TelegramAuthTokenLifespan, TelegramProxy);
             }
-        }
-    }
-
-    public static class TelegramLoginProviderExtension
-    {
-        public static DIHelper AddTelegramLoginProviderService(this DIHelper services)
-        {
-            return services.AddTelegramHelperSerivce()
-                .AddTenantManagerService()
-                .AddCoreBaseSettingsService()
-                .AddCoreSettingsService();
         }
     }
 }

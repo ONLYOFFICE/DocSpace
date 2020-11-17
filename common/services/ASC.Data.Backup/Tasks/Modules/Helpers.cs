@@ -36,6 +36,7 @@ using UserConstants = ASC.Core.Users.Constants;
 
 namespace ASC.Data.Backup.Tasks.Modules
 {
+    [Scope]
     public class Helpers
     {
 
@@ -90,19 +91,6 @@ namespace ASC.Data.Backup.Tasks.Modules
         public string CreateHash2(string s)
         {
             return !string.IsNullOrEmpty(s) ? "S|" + Crypto.GetV(instanceCrypto.Decrypt(s), 1, true) : s;
-        }
-    }
-    public static class HelpersExtension
-    {
-        public static DIHelper AddHelpers(this DIHelper services)
-        {
-            if (services.TryAddScoped<Helpers>())
-            {
-                return services
-                    .AddInstanceCryptoService();
-            }
-
-            return services;
         }
     }
 }

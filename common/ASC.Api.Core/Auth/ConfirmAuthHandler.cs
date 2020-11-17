@@ -17,6 +17,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Api.Core.Auth
 {
+    [Scope(Additional = typeof(ConfirmAuthHandlerExtension))]
     public class ConfirmAuthHandler : AuthenticationHandler<AuthenticationSchemeOptions>
     {
         public ConfirmAuthHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock) : base(options, logger, encoder, clock)
@@ -96,12 +97,11 @@ namespace ASC.Api.Core.Auth
         }
     }
 
-    public static class ConfirmAuthHandlerExtension
+    public class ConfirmAuthHandlerExtension
     {
-        public static DIHelper AddConfirmAuthHandler(this DIHelper services)
+        public static void Register(DIHelper services)
         {
-            return services
-                .AddSecurityContextService();
+            services.TryAdd<EmailValidationKeyModelHelper>();
         }
     }
 }

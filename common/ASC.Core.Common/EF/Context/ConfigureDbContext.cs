@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Utils;
 
@@ -9,7 +10,8 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Common.EF
 {
-    public class ConfigureDbContext : IConfigureNamedOptions<BaseDbContext>
+    [Scope]
+    public class ConfigureDbContext<T> : IConfigureNamedOptions<T> where T : BaseDbContext, new()
     {
         public const string baseName = "default";
         private EFLoggerFactory LoggerFactory { get; }
@@ -21,13 +23,13 @@ namespace ASC.Core.Common.EF
             Configuration = configuration;
         }
 
-        public void Configure(string name, BaseDbContext context)
+        public void Configure(string name, T context)
         {
             context.LoggerFactory = LoggerFactory;
             context.ConnectionStringSettings = Configuration.GetConnectionStrings(name) ?? Configuration.GetConnectionStrings(baseName);
         }
 
-        public void Configure(BaseDbContext context)
+        public void Configure(T context)
         {
             Configure(baseName, context);
         }

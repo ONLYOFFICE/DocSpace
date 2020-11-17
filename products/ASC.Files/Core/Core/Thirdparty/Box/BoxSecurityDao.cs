@@ -42,6 +42,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Files.Thirdparty.Box
 {
+    [Scope]
     internal class BoxSecurityDao : BoxDaoBase, ISecurityDao<string>
     {
         public BoxSecurityDao(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor, FileUtility fileUtility) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility)
@@ -88,16 +89,6 @@ namespace ASC.Files.Thirdparty.Box
         public bool IsShared(object entryId, FileEntryType type)
         {
             throw new NotImplementedException();
-        }
-    }
-
-    public static class BoxSecurityDaoExtention
-    {
-        public static DIHelper AddBoxSecurityDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<BoxSecurityDao>();
-
-            return services;
         }
     }
 }

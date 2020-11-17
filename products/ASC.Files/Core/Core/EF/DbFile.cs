@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq.Expressions;
 
+using ASC.Common;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Model;
 using ASC.ElasticSearch;
@@ -22,6 +23,7 @@ namespace ASC.Files.Core.EF
         public const string Folder = "folder";
     }
 
+    [Transient]
     [ElasticsearchType(RelationName = Tables.File)]
     [Table("files_file")]
     public class DbFile : BaseEntity, IDbFile, IDbSearch, ISearchItemDocument

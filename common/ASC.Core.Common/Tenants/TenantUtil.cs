@@ -33,6 +33,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Tenants
 {
+    [Scope]
     class ConfigureTenantUtil : IConfigureNamedOptions<TenantUtil>
     {
         private IOptionsSnapshot<TenantManager> TenantManager { get; }
@@ -60,6 +61,7 @@ namespace ASC.Core.Tenants
         }
     }
 
+    [Scope(typeof(ConfigureTenantUtil))]
     public class TenantUtil
     {
         internal TenantManager TenantManager { get; set; }
@@ -144,20 +146,6 @@ namespace ASC.Core.Tenants
         public DateTime DateTimeNow(string timeZone)
         {
             return DateTimeNow(TimeZoneConverter.GetTimeZone(timeZone));
-        }
-    }
-
-    public static class TenantUtilExtention
-    {
-        public static DIHelper AddTenantUtilService(this DIHelper services)
-        {
-            if (services.TryAddScoped<TenantUtil>())
-            {
-                services.TryAddScoped<IConfigureOptions<TenantUtil>, ConfigureTenantUtil>();
-                return services.AddTenantManagerService();
-            }
-
-            return services;
         }
     }
 }

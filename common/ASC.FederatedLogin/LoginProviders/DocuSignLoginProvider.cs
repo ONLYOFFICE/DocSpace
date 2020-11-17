@@ -38,6 +38,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace ASC.FederatedLogin.LoginProviders
 {
+    [Scope]
     public class DocuSignLoginProvider : Consumer, IOAuthProvider
     {
         public static string DocuSignLoginProviderScopes { get { return "signature"; } }
@@ -128,20 +129,6 @@ namespace ASC.FederatedLogin.LoginProviders
             refreshed.RedirectUri = RedirectUri;
             refreshed.RefreshToken ??= refreshToken;
             return refreshed;
-        }
-    }
-    public static class DocuSignLoginProviderExtension
-    {
-        public static DIHelper AddDocuSignLoginProviderService(this DIHelper services)
-        {
-            //services.TryAddScoped<DocuSignLoginProvider>();
-            return services
-                .AddOAuth20TokenHelperService()
-                .AddConsumerFactoryService()
-                .AddKafkaService()
-                .AddTenantManagerService()
-                .AddCoreBaseSettingsService()
-                .AddCoreSettingsService();
         }
     }
 }

@@ -8,18 +8,16 @@ using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Billing;
+using ASC.Core.Common.Notify.Push;
 using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
-using ASC.MessagingSystem;
-using ASC.Security.Cryptography;
 using ASC.Web.Api.Models;
 using ASC.Web.Api.Routing;
 using ASC.Web.Core;
 using ASC.Web.Core.Mobile;
 using ASC.Web.Core.Utility;
 using ASC.Web.Studio.Core;
-using ASC.Web.Studio.Core.Notify;
 using ASC.Web.Studio.UserControls.Management;
 using ASC.Web.Studio.Utility;
 
@@ -31,6 +29,7 @@ using SecurityContext = ASC.Core.SecurityContext;
 
 namespace ASC.Web.Api.Controllers
 {
+    [Scope]
     [DefaultRoute]
     [ApiController]
     public class PortalController : ControllerBase
@@ -234,29 +233,12 @@ namespace ASC.Web.Api.Controllers
             var currentUser = UserManager.GetUsers(SecurityContext.CurrentAccount.ID);
             MobileAppInstallRegistrator.RegisterInstall(currentUser.Email, model.Type);
         }
-    }
 
-    public static class PortalControllerExtension
-    {
-        public static DIHelper AddPortalController(this DIHelper services)
+        [Create("mobile/registration")]
+        public void RegisterMobileAppInstall(MobileAppType type)
         {
-            return services
-                .AddUrlShortener()
-                .AddMessageServiceService()
-                .AddStudioNotifyServiceService()
-                .AddApiContextService()
-                .AddUserManagerService()
-                .AddAuthContextService()
-                .AddAuthContextService()
-                .AddTenantManagerService()
-                .AddEmailValidationKeyProviderService()
-                .AddPaymentManagerService()
-                .AddCommonLinkUtilityService()
-                .AddAuthContextService()
-                .AddWebItemSecurity()
-                .AddSecurityContextService()
-                .AddCachedMobileAppInstallRegistrator()
-                .AddTenantExtraService();
+            var currentUser = UserManager.GetUsers(SecurityContext.CurrentAccount.ID);
+            MobileAppInstallRegistrator.RegisterInstall(currentUser.Email, type);
         }
     }
 }

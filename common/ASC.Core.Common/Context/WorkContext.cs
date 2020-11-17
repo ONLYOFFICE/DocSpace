@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Core.Common.Notify;
@@ -104,13 +105,12 @@ namespace ASC.Core
                 var cacheNotify = serviceProvider.GetService<ICacheNotify<NotifyMessage>>();
                 var cacheInvoke = serviceProvider.GetService<ICacheNotify<NotifyInvoke>>();
                 var options = serviceProvider.GetService<IOptionsMonitor<ILog>>();
-                var telegramHelper = serviceProvider.GetService<TelegramHelper>();
 
                 NotifyContext = new NotifyContext(serviceProvider);
 
                 INotifySender jabberSender = new NotifyServiceSender(cacheNotify, cacheInvoke);
                 INotifySender emailSender = new NotifyServiceSender(cacheNotify, cacheInvoke);
-                INotifySender telegramSender = new TelegramSender(options, telegramHelper);
+                INotifySender telegramSender = new TelegramSender(options, serviceProvider);
 
                 var postman = configuration["core:notify:postman"];
 
@@ -168,6 +168,16 @@ namespace ASC.Core
                 var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
                 tenantManager.SetCurrentTenant(tenant);
             }
+        }
+    }
+
+    public class WorkContextExtension
+    {
+        public static void Register(DIHelper dIHelper)
+        {
+            dIHelper.TryAdd<TelegramHelper>();
+            dIHelper.TryAdd<EmailSenderSinkScope>();
+            dIHelper.TryAdd<JabberSenderSinkScope>();
         }
     }
 }

@@ -44,6 +44,7 @@ using Newtonsoft.Json;
 
 namespace ASC.Core.Notify.Signalr
 {
+    [Scope]
     public class ConfigureSignalrServiceClient : IConfigureNamedOptions<SignalrServiceClient>
     {
         internal TenantManager TenantManager { get; }
@@ -101,6 +102,7 @@ namespace ASC.Core.Notify.Signalr
         }
     }
 
+    [Scope(typeof(ConfigureSignalrServiceClient))]
     public class SignalrServiceClient
     {
         private static readonly TimeSpan Timeout;
@@ -392,24 +394,6 @@ namespace ASC.Core.Notify.Signalr
             var now = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
             var hash = Convert.ToBase64String(hasher.ComputeHash(Encoding.UTF8.GetBytes(string.Join("\n", now, pkey))));
             return string.Format("ASC {0}:{1}:{2}", pkey, now, hash);
-        }
-    }
-
-    public static class SignalrServiceClientExtension
-    {
-        public static DIHelper AddSignalrServiceClient(this DIHelper services)
-        {
-            if (services.TryAddScoped<SignalrServiceClient>())
-            {
-                services.TryAddScoped<IConfigureNamedOptions<SignalrServiceClient>, ConfigureSignalrServiceClient>();
-
-                return services
-                    .AddTenantManagerService()
-                    .AddCoreSettingsService()
-                    .AddMachinePseudoKeysService();
-            }
-
-            return services;
         }
     }
 }

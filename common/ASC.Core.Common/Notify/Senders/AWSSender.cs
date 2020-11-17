@@ -46,7 +46,8 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Notify.Senders
 {
-    class AWSSender : SmtpSender
+    [Singletone(Additional = typeof(AWSSenderExtension))]
+    public class AWSSender : SmtpSender
     {
         private readonly object locker = new object();
         private AmazonSimpleEmailServiceClient ses;
@@ -230,6 +231,7 @@ namespace ASC.Core.Notify.Senders
         }
     }
 
+    [Scope]
     public class AWSSenderScope
     {
         private TenantManager TenantManager { get; }
@@ -247,15 +249,11 @@ namespace ASC.Core.Notify.Senders
         }
     }
 
-    public static class AWSSenderExtension
+    public class AWSSenderExtension
     {
-        public static DIHelper AddAWSSenderService(this DIHelper services)
+        public static void Register(DIHelper services)
         {
-            services.TryAddSingleton<AWSSender>();
-            services.TryAddScoped<AWSSenderScope>();
-            return services
-                .AddTenantManagerService()
-                .AddCoreSettingsService();
+            services.TryAdd<AWSSenderScope>();
         }
     }
 }

@@ -30,7 +30,6 @@ using System.Linq;
 
 using ASC.Common;
 using ASC.Common.Caching;
-using ASC.Core.Common.EF;
 using ASC.Core.Data;
 using ASC.Core.Tenants;
 
@@ -39,6 +38,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Caching
 {
+    [Singletone]
     class QuotaServiceCache
     {
         internal const string KEY_QUOTA = "quota";
@@ -79,6 +79,7 @@ namespace ASC.Core.Caching
         }
     }
 
+    [Scope]
     class ConfigureCachedQuotaService : IConfigureNamedOptions<CachedQuotaService>
     {
         private IOptionsSnapshot<DbQuotaService> Service { get; }
@@ -107,6 +108,7 @@ namespace ASC.Core.Caching
         }
     }
 
+    [Scope]
     class CachedQuotaService : IQuotaService
     {
         internal IQuotaService Service { get; set; }
@@ -235,27 +237,6 @@ namespace ASC.Core.Caching
                 }
                 return list.ToList();
             }
-        }
-    }
-
-    public static class QuotaConfigExtension
-    {
-        public static DIHelper AddQuotaService(this DIHelper services)
-        {
-            if (services.TryAddScoped<DbQuotaService>())
-            {
-                services.TryAddScoped<IQuotaService, CachedQuotaService>();
-
-                services.TryAddScoped<IConfigureOptions<DbQuotaService>, ConfigureDbQuotaService>();
-                services.TryAddScoped<IConfigureOptions<CachedQuotaService>, ConfigureCachedQuotaService>();
-
-                services.AddCoreDbContextService();
-
-                services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
-                services.TryAddSingleton<QuotaServiceCache>();
-            }
-
-            return services;
         }
     }
 }

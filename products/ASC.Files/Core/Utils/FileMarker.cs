@@ -36,7 +36,6 @@ using ASC.Common.Threading.Workers;
 using ASC.Core;
 using ASC.Core.Users;
 using ASC.Files.Core;
-using ASC.Files.Core.Data;
 using ASC.Files.Core.Resources;
 using ASC.Files.Core.Security;
 using ASC.Web.Files.Classes;
@@ -47,6 +46,7 @@ using Microsoft.Extensions.Options;
 namespace ASC.Web.Files.Utils
 {
 
+    [Singletone]
     public class FileMarkerHelper<T>
     {
         private IServiceProvider ServiceProvider { get; }
@@ -95,6 +95,7 @@ namespace ASC.Web.Files.Utils
         }
     }
 
+    [Scope(Additional = typeof(FileMarkerExtention))]
     public class FileMarker
     {
         private readonly ICache cache;
@@ -730,6 +731,7 @@ namespace ASC.Web.Files.Utils
         }
     }
 
+    [Transient]
     public class AsyncTaskData<T>
     {
         public AsyncTaskData(TenantManager tenantManager, AuthContext authContext)
@@ -747,35 +749,17 @@ namespace ASC.Web.Files.Utils
         public Guid CurrentAccountId { get; set; }
     }
 
-    public static class FileMarkerExtention
+    public class FileMarkerExtention
     {
-        public static DIHelper AddFileMarkerService(this DIHelper services)
+        public static void Register(DIHelper services)
         {
-            return services
-                .AddFileMarkerService<string>()
-                .AddFileMarkerService<int>()
-                ;
-        }
+            services.TryAdd<AsyncTaskData<int>>();
+            services.TryAdd<FileMarkerHelper<int>>();
+            services.AddWorkerQueue<AsyncTaskData<int>>(1, (int)TimeSpan.FromSeconds(60).TotalMilliseconds, false, 1);
 
-        public static DIHelper AddFileMarkerService<T>(this DIHelper services)
-        {
-            services.TryAddTransient<AsyncTaskData<T>>();
-            services.TryAddScoped<FileMarker>();
-            services.TryAddSingleton<FileMarkerHelper<T>>();
-            services.TryAddSingleton<WorkerQueueOptionsManager<AsyncTaskData<T>>>();
-            services.TryAddSingleton<WorkerQueue<AsyncTaskData<T>>>();
-            services.AddSingleton<IConfigureOptions<WorkerQueue<AsyncTaskData<T>>>, ConfigureWorkerQueue<AsyncTaskData<T>>>();
-
-            services.AddWorkerQueue<AsyncTaskData<T>>(1, (int)TimeSpan.FromSeconds(60).TotalMilliseconds, false, 1);
-
-            return services
-                .AddTenantManagerService()
-                .AddUserManagerService()
-                .AddDaoFactoryService()
-                .AddGlobalFolderService()
-                .AddFileSecurityService()
-                .AddCoreBaseSettingsService()
-                .AddAuthContextService();
+            services.TryAdd<AsyncTaskData<string>>();
+            services.TryAdd<FileMarkerHelper<string>>();
+            services.AddWorkerQueue<AsyncTaskData<string>>(1, (int)TimeSpan.FromSeconds(60).TotalMilliseconds, false, 1);
         }
     }
 }

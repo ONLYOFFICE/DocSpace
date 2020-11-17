@@ -48,6 +48,7 @@ namespace ASC.Web.Core
         All = Normal | Disabled
     }
 
+    [Singletone]
     public class WebItemManager
     {
         private readonly ILog log;
@@ -208,6 +209,7 @@ namespace ASC.Web.Core
         }
     }
 
+    [Scope]
     public class WebItemManagerSecurity
     {
         private WebItemSecurity WebItemSecurity { get; }
@@ -254,27 +256,6 @@ namespace ASC.Web.Core
                                                             .Where(p => p.ProjectId == parentItemID)
                                                             .Cast<IWebItem>()
                                                             .ToList();
-        }
-    }
-
-    public static class WebItemManagerExtension
-    {
-        public static DIHelper AddWebItemManager(this DIHelper services)
-        {
-            services.TryAddSingleton<WebItemManager>();
-            return services;
-        }
-        public static DIHelper AddWebItemManagerSecurity(this DIHelper services)
-        {
-            if (services.TryAddScoped<WebItemManagerSecurity>())
-            {
-                return services
-                    .AddAuthContextService()
-                    .AddWebItemSecurity()
-                    .AddWebItemManager();
-            }
-
-            return services;
         }
     }
 }
