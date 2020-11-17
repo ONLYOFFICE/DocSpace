@@ -228,6 +228,96 @@ namespace ASC.Files.Thirdparty
             throw new NotImplementedException();
         }
 
+        public void ReassignFolders(string[] folderIds, Guid newOwnerId)
+        {
+        }
+
+        public IEnumerable<Folder<string>> SearchFolders(string text, bool bunch)
+        {
+            return null;
+        }
+
+        public string GetFolderID(string module, string bunch, string data, bool createIfNotExists)
+        {
+            return null;
+        }
+
+        public IEnumerable<string> GetFolderIDs(string module, string bunch, IEnumerable<string> data, bool createIfNotExists)
+        {
+            return new List<string>();
+        }
+
+        public string GetFolderIDCommon(bool createIfNotExists)
+        {
+            return null;
+        }
+
+        public string GetFolderIDUser(bool createIfNotExists, Guid? userId)
+        {
+            return null;
+        }
+
+        public string GetFolderIDShare(bool createIfNotExists)
+        {
+            return null;
+        }
+
+        public string GetFolderIDRecent(bool createIfNotExists)
+        {
+            return null;
+        }
+
+        public string GetFolderIDFavorites(bool createIfNotExists)
+        {
+            return null;
+        }
+
+        public string GetFolderIDTemplates(bool createIfNotExists)
+        {
+            return null;
+        }
+
+        public string GetFolderIDPrivacy(bool createIfNotExists, Guid? userId)
+        {
+            return null;
+        }
+
+        public string GetFolderIDTrash(bool createIfNotExists, Guid? userId)
+        {
+            return null;
+        }
+
+
+        public string GetFolderIDPhotos(bool createIfNotExists)
+        {
+            return null;
+        }
+
+        public string GetFolderIDProjects(bool createIfNotExists)
+        {
+            return null;
+        }
+
+        public string GetBunchObjectID(string folderID)
+        {
+            return null;
+        }
+
+        public Dictionary<string, string> GetBunchObjectIDs(List<string> folderIDs)
+        {
+            return null;
+        }
+
+        public IEnumerable<(Folder<string>, SmallShareRecord)> GetFeedsForFolders(int tenant, DateTime from, DateTime to)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<string> GetTenantsWithFeedsForFolders(DateTime fromTime)
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
 
         public void Dispose()

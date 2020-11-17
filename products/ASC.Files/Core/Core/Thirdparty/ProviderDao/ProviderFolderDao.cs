@@ -358,7 +358,7 @@ filterType, subjectGroup, subjectID, searchText, searchSubfolders, checkShare);
             throw new NotImplementedException();
         }
 
-        public IEnumerable<Folder<string>> Search(string text, bool bunch)
+        public IEnumerable<Folder<string>> SearchFolders(string text, bool bunch)
         {
             throw new NotImplementedException();
         }
@@ -434,12 +434,12 @@ filterType, subjectGroup, subjectID, searchText, searchSubfolders, checkShare);
             throw new NotImplementedException();
         }
 
-        public IEnumerable<(Folder<string>, SmallShareRecord)> GetFeeds(int tenant, DateTime from, DateTime to)
+        public IEnumerable<(Folder<string>, SmallShareRecord)> GetFeedsForFolders(int tenant, DateTime from, DateTime to)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<string> GetTenantsWithFeeds(DateTime fromTime)
+        public IEnumerable<string> GetTenantsWithFeedsForFolders(DateTime fromTime)
         {
             throw new NotImplementedException();
         }
