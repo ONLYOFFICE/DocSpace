@@ -250,8 +250,7 @@ class SectionFilterContent extends React.Component {
 
   render() {
     const selectedFilterData = this.getSelectedFilterData();
-    const { t, language, isLoaded, context } = this.props;
-    const { sectionWidth } = context;
+    const { t, language, isLoaded, sectionWidth } = this.props;
     return isLoaded ? (
       <FilterInput
         sectionWidth={sectionWidth}

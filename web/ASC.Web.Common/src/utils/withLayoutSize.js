@@ -7,7 +7,7 @@ export function withLayoutSize(Component) {
     return (
       <Consumer>
         {(context) => {
-          return <Component {...props} context={context} />;
+          return <Component {...props} {...context} />;
         }}
       </Consumer>
     );

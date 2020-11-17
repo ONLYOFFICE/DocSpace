@@ -290,15 +290,14 @@ class SectionFilterContent extends React.Component {
       this.state.isReady !== nextState.isReady ||
       this.props.viewAs !== nextProps.viewAs ||
       this.props.firstLoad !== nextProps.firstLoad ||
-      !isEqual(this.props.context, nextProps.context)
+      this.props.sectionWidth !== nextProps.sectionWidth
     );
   }
 
   render() {
     console.log("Filter render");
     const selectedFilterData = this.getSelectedFilterData();
-    const { t, language, firstLoad, context } = this.props;
-    const { sectionWidth } = context;
+    const { t, language, firstLoad, sectionWidth } = this.props;
     const filterColumnCount =
       window.innerWidth < 500 ? {} : { filterColumnCount: 3 };
     return firstLoad ? (
