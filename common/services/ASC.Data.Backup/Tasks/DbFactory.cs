@@ -38,6 +38,7 @@ using MySql.Data.MySqlClient;
 
 namespace ASC.Data.Backup.Tasks
 {
+    [Scope]
     public class DbFactory
     {
         public const string DefaultConnectionStringName = "default";
@@ -134,14 +135,6 @@ namespace ASC.Data.Backup.Tasks
                 connectionString = connectionString.TrimEnd(';') + ";Connection Timeout=90";
             }
             return connectionString;
-        }
-    }
-    public static class DbFactoryExtension
-    {
-        public static DIHelper AddDbFactoryService(this DIHelper services)
-        {
-            services.TryAddScoped<DbFactory>();
-            return services;
         }
     }
 }

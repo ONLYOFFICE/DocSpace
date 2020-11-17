@@ -43,6 +43,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Billing
 {
+    [Singletone]
     public class TariffServiceStorage
     {
         public ICache Cache { get; }
@@ -76,6 +77,7 @@ namespace ASC.Core.Billing
         }
     }
 
+    [Scope]
     class ConfigureTariffService : IConfigureNamedOptions<TariffService>
     {
         public ConfigureTariffService(
@@ -684,21 +686,6 @@ namespace ASC.Core.Billing
                     Log.Error(error.Message);
                 }
             }
-        }
-    }
-
-    public static class TariffConfigExtension
-    {
-        public static DIHelper AddTariffService(this DIHelper services)
-        {
-            if (services.TryAddScoped<ITariffService, TariffService>())
-            {
-                services.AddCoreDbContextService();
-                services.TryAddSingleton<TariffServiceStorage>();
-                services.TryAddScoped<IConfigureOptions<TariffService>, ConfigureTariffService>();
-            }
-
-            return services;
         }
     }
 }

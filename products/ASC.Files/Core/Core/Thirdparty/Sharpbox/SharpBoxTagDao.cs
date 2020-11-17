@@ -43,6 +43,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Files.Thirdparty.Sharpbox
 {
+    [Scope]
     internal class SharpBoxTagDao : SharpBoxDaoBase, ITagDao<string>
     {
         public SharpBoxTagDao(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor, FileUtility fileUtility) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility)
@@ -174,15 +175,5 @@ namespace ASC.Files.Thirdparty.Sharpbox
         }
 
         #endregion
-    }
-
-    public static class SharpBoxTagDaoExtention
-    {
-        public static DIHelper AddSharpBoxTagDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<SharpBoxTagDao>();
-
-            return services;
-        }
     }
 }

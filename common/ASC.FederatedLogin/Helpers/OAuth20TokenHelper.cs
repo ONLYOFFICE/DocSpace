@@ -38,6 +38,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ASC.FederatedLogin.Helpers
 {
+    [Scope]
     public class OAuth20TokenHelper
     {
         private IHttpContextAccessor HttpContextAccessor { get; }
@@ -154,17 +155,6 @@ namespace ASC.FederatedLogin.Helpers
         private static bool CanRefresh(OAuth20Token token)
         {
             return !string.IsNullOrEmpty(token.ClientID) && !string.IsNullOrEmpty(token.ClientSecret);
-        }
-    }
-
-    public static class OAuth20TokenHelperExtension
-    {
-        public static DIHelper AddOAuth20TokenHelperService(this DIHelper services)
-        {
-            services.TryAddScoped<OAuth20TokenHelper>();
-
-            return services
-                .AddConsumerFactoryService();
         }
     }
 }

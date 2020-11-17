@@ -42,6 +42,7 @@ using ASC.Web.Studio.Utility;
 
 namespace ASC.Web.Files
 {
+    [Scope]
     public class FilesSpaceUsageStatManager : SpaceUsageStatManager
     {
         private ASC.Files.Core.EF.FilesDbContext FilesDbContext { get; }
@@ -123,6 +124,7 @@ namespace ASC.Web.Files
         }
     }
 
+    [Scope]
     public class FilesUserSpaceUsage : IUserSpaceUsage
     {
         private ASC.Files.Core.EF.FilesDbContext FilesDbContext { get; }
@@ -148,46 +150,6 @@ namespace ASC.Web.Files
                 .GroupBy(r => r.file.CreateBy)
                 .Select(r => r.Sum(f => f.file.ContentLength))
                 .FirstOrDefault();
-        }
-    }
-
-    public static class FilesSpaceUsageStatManagerExtention
-    {
-        public static DIHelper AddFilesSpaceUsageStatManagerService(this DIHelper services)
-        {
-            if (services.TryAddScoped<FilesSpaceUsageStatManager>())
-            {
-                return services
-                    .AddTenantManagerService()
-                    .AddUserManagerService()
-                    .AddUserPhotoManagerService()
-                    .AddDisplayUserSettingsService()
-                    .AddCommonLinkUtilityService()
-                    .AddFilesDbContextService()
-                    .AddPathProviderService()
-                    .AddFeedDbService()
-                    .AddNotifyDbContext()
-                    .AddDbContextService()
-                    .AddResourceDbService()
-                    .AddVoipDbContextService()
-                    .AddMailDbContextService()
-                    .AddMessagesContextService();
-
-            }
-
-            return services;
-        }
-
-        public static DIHelper AddFilesUserSpaceUsageService(this DIHelper services)
-        {
-            if (services.TryAddScoped<FilesUserSpaceUsage>())
-            {
-                return services
-                    .AddTenantManagerService()
-                    .AddFilesDbContextService();
-            }
-
-            return services;
         }
     }
 }

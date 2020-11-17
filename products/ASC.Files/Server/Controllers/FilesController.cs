@@ -69,6 +69,7 @@ namespace ASC.Api.Documents
     /// <summary>
     /// Provides access to documents
     /// </summary>
+    [Scope]
     [DefaultRoute]
     [ApiController]
     public class FilesController : ControllerBase
@@ -122,10 +123,10 @@ namespace ASC.Api.Documents
             DocumentServiceConnector documentServiceConnector,
             WordpressToken wordpressToken,
             WordpressHelper wordpressHelper,
-            EasyBibHelper easyBibHelper,
             ProductEntryPoint productEntryPoint,
             TenantManager tenantManager,
-            FileUtility fileUtility)
+            FileUtility fileUtility,
+            ConsumerFactory consumerFactory)
         {
             FilesControllerHelperString = filesControllerHelperString;
             FilesControllerHelperInt = filesControllerHelperInt;
@@ -146,7 +147,7 @@ namespace ASC.Api.Documents
             DocumentServiceConnector = documentServiceConnector;
             WordpressToken = wordpressToken;
             WordpressHelper = wordpressHelper;
-            EasyBibHelper = easyBibHelper;
+            EasyBibHelper = consumerFactory.Get<EasyBibHelper>();
             ProductEntryPoint = productEntryPoint;
             TenantManager = tenantManager;
             FileUtility = fileUtility;
@@ -2453,14 +2454,6 @@ namespace ASC.Api.Documents
             /// Is operation processed.
             /// </summary>
             public string Processed { get; set; }
-        }
-    }
-
-    public static class DocumentsControllerExtention
-    {
-        public static DIHelper AddDocumentsControllerService(this DIHelper services)
-        {
-            return services.AddFilesControllerHelperService();
         }
     }
 

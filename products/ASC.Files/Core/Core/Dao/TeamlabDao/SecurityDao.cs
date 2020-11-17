@@ -42,6 +42,7 @@ using ASC.Web.Studio.Utility;
 
 namespace ASC.Files.Core.Data
 {
+    [Scope]
     internal class SecurityDao<T> : AbstractDao, ISecurityDao<T>
     {
         public SecurityDao(UserManager userManager,
@@ -371,32 +372,5 @@ namespace ASC.Files.Core.Data
     {
         public DbFilesSecurity DbFilesSecurity { get; set; }
         public DbFolderTree DbFolderTree { get; set; }
-    }
-
-    public static class SecurityDaoExtention
-    {
-        public static DIHelper AddSecurityDaoService(this DIHelper services)
-        {
-            if (services.TryAddScoped<SecurityDao<int>>())
-            {
-                services.TryAddScoped<SecurityDao<string>>();
-                services.TryAddScoped<ISecurityDao<int>, SecurityDao<int>>();
-
-                return services
-                    .AddUserManagerService()
-                    .AddFilesDbContextService()
-                    .AddTenantManagerService()
-                    .AddTenantUtilService()
-                    .AddSetupInfo()
-                    .AddTenantExtraService()
-                    .AddTenantStatisticsProviderService()
-                    .AddCoreBaseSettingsService()
-                    .AddCoreConfigurationService()
-                    .AddSettingsManagerService()
-                    .AddAuthContextService();
-            }
-
-            return services;
-        }
     }
 }

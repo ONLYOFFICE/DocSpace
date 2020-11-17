@@ -53,6 +53,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Files.Core.Data
 {
+    [Scope]
     internal class FolderDao : AbstractDao, IFolderDao<int>
     {
         private const string my = "my";
@@ -65,14 +66,14 @@ namespace ASC.Files.Core.Data
         private const string trash = "trash";
         private const string projects = "projects";
 
-        private FactoryIndexer<DbFolder> FactoryIndexer { get; }
+        private FactoryIndexerFolder FactoryIndexer { get; }
         private GlobalSpace GlobalSpace { get; }
         private IDaoFactory DaoFactory { get; }
         private ProviderFolderDao ProviderFolderDao { get; }
         private CrossDao CrossDao { get; }
 
         public FolderDao(
-            FactoryIndexer<DbFolder> factoryIndexer,
+            FactoryIndexerFolder factoryIndexer,
             UserManager userManager,
             DbContextManager<FilesDbContext> dbContextManager,
             TenantManager tenantManager,
@@ -1279,34 +1280,5 @@ namespace ASC.Files.Core.Data
     {
         public DbFolderQuery DbFolderQuery { get; set; }
         public DbFilesSecurity Security { get; set; }
-    }
-
-    public static class FolderDaoExtention
-    {
-        public static DIHelper AddFolderDaoService(this DIHelper services)
-        {
-            if (services.TryAddScoped<IFolderDao<int>, FolderDao>())
-            {
-                services.TryAddTransient<Folder<int>>();
-                services.TryAddTransient<Folder<string>>();
-
-                return services
-                    .AddFactoryIndexerFolderService()
-                    .AddTenantManagerService()
-                    .AddUserManagerService()
-                    .AddFilesDbContextService()
-                    .AddTenantUtilService()
-                    .AddSetupInfo()
-                    .AddTenantExtraService()
-                    .AddTenantStatisticsProviderService()
-                    .AddCoreBaseSettingsService()
-                    .AddCoreConfigurationService()
-                    .AddSettingsManagerService()
-                    .AddAuthContextService()
-                    .AddGlobalSpaceService();
-            }
-
-            return services;
-        }
     }
 }

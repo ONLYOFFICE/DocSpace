@@ -27,8 +27,13 @@
 using System;
 using System.Collections.Generic;
 
+using ASC.Common;
+using ASC.Core.Caching;
+using ASC.Core.Data;
+
 namespace ASC.Core
 {
+    [Scope(typeof(DbAzService), typeof(CachedAzService))]
     public interface IAzService
     {
         IEnumerable<AzRecord> GetAces(int tenant, DateTime from);

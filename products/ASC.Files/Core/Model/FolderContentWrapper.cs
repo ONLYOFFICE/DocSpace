@@ -102,6 +102,7 @@ namespace ASC.Api.Documents
         }
     }
 
+    [Scope]
     public class FolderContentWrapperHelper
     {
         private FileWrapperHelper FileWrapperHelper { get; }
@@ -149,21 +150,6 @@ namespace ASC.Api.Documents
             return result;
         }
     }
-    public static class FolderContentWrapperHelperExtention
-    {
-        public static DIHelper AddFolderContentWrapperHelperService(this DIHelper services)
-        {
-            if (services.TryAddScoped<FolderContentWrapperHelper>())
-            {
-                return services
-                    .AddFileWrapperHelperService()
-                    .AddFolderWrapperHelperService();
-            }
-
-            return services;
-        }
-    }
-
 
     public class FileEntryWrapperConverter : JsonConverter<FileEntryWrapper>
     {

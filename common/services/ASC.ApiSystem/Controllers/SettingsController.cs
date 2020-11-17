@@ -35,6 +35,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.ApiSystem.Controllers
 {
+    [Scope]
     [ApiController]
     [Route("[controller]")]
     public class SettingsController : ControllerBase
@@ -192,15 +193,5 @@ namespace ASC.ApiSystem.Controllers
         }
 
         #endregion
-    }
-
-    public static class SettingsControllerExtention
-    {
-        public static DIHelper AddSettingsController(this DIHelper services)
-        {
-            return services
-                .AddCommonMethods()
-                .AddCoreSettingsService();
-        }
     }
 }

@@ -35,6 +35,7 @@ using ASC.Data.Storage.Configuration;
 
 namespace ASC.Data.Backup.Storage
 {
+    [Scope]
     public class ConsumerBackupStorage : IBackupStorage
     {
         private IDataStore Store { get; set; }
@@ -80,19 +81,6 @@ namespace ASC.Data.Backup.Storage
         public string GetPublicLink(string storagePath)
         {
             return Store.GetInternalUri(Domain, storagePath, TimeSpan.FromDays(1), null).AbsoluteUri;
-        }
-    }
-    public static class ConsumerBackupStorageExtension
-    {
-        public static DIHelper AddConsumerBackupStorage(this DIHelper services)
-        {
-            if (services.TryAddScoped<ConsumerBackupStorage>())
-            {
-                return services
-                    .AddStorageSettingsService();
-            }
-
-            return services;
         }
     }
 }

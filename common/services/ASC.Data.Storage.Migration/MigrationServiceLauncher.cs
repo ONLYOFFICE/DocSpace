@@ -33,6 +33,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace ASC.Data.Storage.Migration
 {
+    [Singletone]
     public class MigrationServiceLauncher : IHostedService
     {
         public MigrationService MigrationService { get; }
@@ -60,15 +61,6 @@ namespace ASC.Data.Storage.Migration
             }
 
             return Task.CompletedTask;
-        }
-    }
-
-    public static class MigrationServiceLauncherExtension
-    {
-        public static DIHelper AddMigrationServiceLauncher(this DIHelper services)
-        {
-            return services
-                .AddMigrationService();
         }
     }
 }

@@ -47,6 +47,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.ApiSystem.Controllers
 {
+    [Scope]
     [ApiController]
     [Route("[controller]")]
     public class CalDavController : ControllerBase
@@ -362,18 +363,6 @@ namespace ASC.ApiSystem.Controllers
         {
             public string User { get; set; }
             public string Password { get; set; }
-        }
-    }
-
-    public static class CalDavControllerExtention
-    {
-        public static DIHelper AddCalDavController(this DIHelper services)
-        {
-            return services
-                .AddCommonMethods()
-                .AddEmailValidationKeyProviderService()
-                .AddCommonConstants()
-                .AddCoreSettingsService();
         }
     }
 }

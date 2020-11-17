@@ -40,6 +40,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace ASC.Core
 {
+    [Singletone]
     public class UserManagerConstants
     {
         public IDictionary<Guid, UserInfo> SystemUsers { get; }
@@ -55,6 +56,7 @@ namespace ASC.Core
         }
     }
 
+    [Scope]
     public class UserManager
     {
         private IDictionary<Guid, UserInfo> SystemUsers { get => UserManagerConstants.SystemUsers; }
@@ -650,25 +652,6 @@ namespace ASC.Core
                 CategoryId = g.CategoryID,
                 Sid = g.Sid
             };
-        }
-    }
-
-    public static class UserManagerConfigExtension
-    {
-        public static DIHelper AddUserManagerService(this DIHelper services)
-        {
-            if (services.TryAddScoped<UserManager>())
-            {
-                services.TryAddSingleton<UserManagerConstants>();
-
-                return services
-                    .AddUserService()
-                    .AddTenantManagerService()
-                    .AddConstantsService()
-                    .AddPermissionContextService();
-            }
-
-            return services;
         }
     }
 }

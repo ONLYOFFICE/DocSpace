@@ -31,6 +31,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 
+using ASC.Common;
 using ASC.Common.Security.Authentication;
 using ASC.Common.Threading;
 using ASC.Core.Tenants;
@@ -436,6 +437,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         }
     }
 
+    [Scope]
     public class FileDownloadOperationScope
     {
         private GlobalStore GlobalStore { get; }

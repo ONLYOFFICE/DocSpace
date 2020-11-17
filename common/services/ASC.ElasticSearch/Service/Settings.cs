@@ -31,6 +31,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace ASC.ElasticSearch.Service
 {
+    [Singletone]
     public class Settings
     {
         public Settings()
@@ -57,14 +58,5 @@ namespace ASC.ElasticSearch.Service
         public int? Period { get; set; }
 
         public long? MemoryLimit { get; set; }
-    }
-
-    public static class SettingsExtention
-    {
-        public static DIHelper AddSettingsService(this DIHelper services)
-        {
-            services.TryAddSingleton<Settings>();
-            return services;
-        }
     }
 }

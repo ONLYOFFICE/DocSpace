@@ -45,6 +45,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Files.Thirdparty.OneDrive
 {
+    [Scope]
     internal class OneDriveFolderDao : OneDriveDaoBase, IFolderDao<string>
     {
         private CrossDao CrossDao { get; }
@@ -531,15 +532,5 @@ namespace ASC.Files.Thirdparty.OneDrive
         }
 
         #endregion
-    }
-
-    public static class OneDriveFolderDaoExtention
-    {
-        public static DIHelper AddOneDriveFolderDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<OneDriveFolderDao>();
-
-            return services;
-        }
     }
 }

@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using ASC.Api.Core.Middleware;
 using ASC.Common;
 using ASC.Core;
 using ASC.Data.Backup.Contracts;
@@ -18,6 +17,7 @@ using static ASC.Data.Backup.BackupAjaxHandler;
 
 namespace ASC.Data.Backup.Controllers
 {
+    [Scope]
     [DefaultRoute]
     [ApiController]
     public class BackupController
@@ -266,17 +266,6 @@ namespace ASC.Data.Backup.Controllers
             }
 
             return BackupHandler.GetTmpFolder();
-        }
-    }
-    public static class BackupControllerExtension
-    {
-        public static DIHelper AddBackupController(this DIHelper services)
-        {
-            return services
-                .AddBackupAjaxHandler()
-                .AddIpSecurityFilter()
-                .AddCoreBaseSettingsService()
-                .AddTenantExtraService();
         }
     }
 }

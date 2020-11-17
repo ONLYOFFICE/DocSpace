@@ -33,6 +33,7 @@ using System.Security.Principal;
 using System.Threading;
 using System.Threading.Tasks;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Security.Authentication;
 using ASC.Common.Security.Authorizing;
@@ -392,6 +393,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         }
     }
 
+    [Scope]
     public class FileOperationScope
     {
         private TenantManager TenantManager { get; }
