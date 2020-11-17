@@ -15,6 +15,7 @@ import {
   Main,
   utils,
   toastr,
+  Layout
 } from "asc-web-common";
 import Home from "./components/pages/Home";
 
@@ -61,6 +62,7 @@ class App extends React.Component {
 
   render() {
     return navigator.onLine ? (
+      <Layout>
       <Router history={history}>
         <NavMenu />
         <Main>
@@ -95,6 +97,7 @@ class App extends React.Component {
           </Suspense>
         </Main>
       </Router>
+      </Layout>
     ) : (
       <Offline />
     );
