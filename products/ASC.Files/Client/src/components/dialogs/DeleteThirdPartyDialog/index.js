@@ -3,7 +3,7 @@ import { withRouter } from "react-router";
 import { connect } from "react-redux";
 import { ModalDialog, Button } from "asc-web-components";
 import { withTranslation } from "react-i18next";
-import { utils, toastr } from "asc-web-common";
+import { utils, toastr, api } from "asc-web-common";
 import {
   deleteThirdParty,
   setThirdPartyProviders,
@@ -16,6 +16,8 @@ import {
   getSelectedFolderId,
   loopTreeFolders,
   getTreeFolders,
+  getCommonFolderId,
+  getMyFolderId,
 } from "../../../store/files/selectors";
 import { createI18N } from "../../../helpers/i18n";
 const i18n = createI18N({
@@ -38,12 +40,16 @@ class DeleteThirdPartyDialogComponent extends React.Component {
       providers,
       onClose,
       fetchFiles,
-      currentFolder,
+      currentFolderId,
       treeFolders,
       setUpdateTree,
       setTreeFolders,
       t,
+      commonId,
+      myId,
     } = this.props;
+
+    const providerItem = providers.find((x) => x.provider_id === removeItem.id);
     const newProviders = providers.filter(
       (x) => x.provider_id !== removeItem.id
     );
@@ -51,17 +57,31 @@ class DeleteThirdPartyDialogComponent extends React.Component {
     deleteThirdParty(+removeItem.id)
       .then(() => {
         setThirdPartyProviders(newProviders);
-        fetchFiles(currentFolder).then((data) => {
-          const path = data.selectedFolder.pathParts;
-          const newTreeFolders = treeFolders;
-          const folders = data.selectedFolder.folders;
-          loopTreeFolders(path, newTreeFolders, folders, null);
+        if (currentFolderId) {
+          fetchFiles(currentFolderId).then((data) => {
+            console.log(data);
+            const path = data.selectedFolder.pathParts;
+            const newTreeFolders = treeFolders;
+            const folders = data.selectedFolder.folders;
+            loopTreeFolders(path, newTreeFolders, folders, null);
+            setUpdateTree(true);
+            setTreeFolders(newTreeFolders);
+            toastr.success(
+              t("SuccessDeleteThirdParty", { service: removeItem.title })
+            );
+          });
+        } else {
+          const folderId = providerItem.corporate ? commonId : myId;
+          api.files.getFolder(folderId).then((data) => {
+            const newTreeFolders = treeFolders;
+            const folders = data.folders;
+            loopTreeFolders([folderId], newTreeFolders, folders, null);
+            setUpdateTree(true);
+            setTreeFolders(newTreeFolders);
+          });
+
           setUpdateTree(true);
-          setTreeFolders(newTreeFolders);
-          toastr.success(
-            t("SuccessDeleteThirdParty", { service: removeItem.title })
-          );
-        });
+        }
       })
       .catch((err) => toastr(err))
       .finally(() => onClose());
@@ -100,8 +120,10 @@ const DeleteThirdPartyDialog = (props) => (
 const mapStateToProps = (state) => {
   return {
     providers: getThirdPartyProviders(state),
-    currentFolder: getSelectedFolderId(state),
+    currentFolderId: getSelectedFolderId(state),
     treeFolders: getTreeFolders(state),
+    commonId: getCommonFolderId(state),
+    myId: getMyFolderId(state),
   };
 };
 
