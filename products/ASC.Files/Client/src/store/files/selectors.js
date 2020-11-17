@@ -335,19 +335,22 @@ export const getRootFolderId = (state) => {
     return state.files.selectedFolder.rootFolderType;
 };
 
+export const isRootFolder = createSelector(getPathParts, (pathParts) => {
+  return pathParts && pathParts.length <= 1;
+});
+
 export const canCreate = createSelector(
   getSelectedFolderRootFolderType,
   isAdmin,
-  getPathParts,
+  isRootFolder,
   getSelectedFolderAccess,
-  (folderType, isAdmin, pathParts, access) => {
+  (folderType, isAdmin, isRootFolder, access) => {
     switch (folderType) {
       case FolderType.USER:
         return true;
       case FolderType.SHARE:
-        const isNotRootFolder = pathParts.length > 1;
         const canCreateInSharedFolder = access === 1;
-        return isNotRootFolder && canCreateInSharedFolder;
+        return !isRootFolder && canCreateInSharedFolder;
       case FolderType.COMMON:
         return isAdmin;
       case FolderType.TRASH:
@@ -1136,57 +1139,64 @@ export const getIconOfDraggedFile = (state) => {
   });
 };
 
-export const getCapabilities = (state) => {
+export const getThirdPartyCapabilities = (state) => {
   return state.files.capabilities;
 };
 
+export const getThirdPartyProviders = (state) => {
+  return state.files.providers;
+};
+
 export const getGoogleConnect = createSelector(
-  getCapabilities,
+  getThirdPartyCapabilities,
   (capabilities) => {
     return capabilities.find((x) => x[0] === "GoogleDrive");
   }
 );
 
-export const getBoxConnect = createSelector(getCapabilities, (capabilities) => {
-  return capabilities.find((x) => x[0] === "Box");
-});
+export const getBoxConnect = createSelector(
+  getThirdPartyCapabilities,
+  (capabilities) => {
+    return capabilities.find((x) => x[0] === "Box");
+  }
+);
 
 export const getDropboxConnect = createSelector(
-  getCapabilities,
+  getThirdPartyCapabilities,
   (capabilities) => {
     return capabilities.find((x) => x[0] === "DropboxV2");
   }
 );
 export const getOneDriveConnect = createSelector(
-  getCapabilities,
+  getThirdPartyCapabilities,
   (capabilities) => {
     return capabilities.find((x) => x[0] === "OneDrive");
   }
 );
 
 export const getSharePointConnect = createSelector(
-  getCapabilities,
+  getThirdPartyCapabilities,
   (capabilities) => {
     return capabilities.find((x) => x[0] === "SharePoint");
   }
 );
 
 export const getkDriveConnect = createSelector(
-  getCapabilities,
+  getThirdPartyCapabilities,
   (capabilities) => {
     return capabilities.find((x) => x[0] === "kDrive");
   }
 );
 
 export const getYandexConnect = createSelector(
-  getCapabilities,
+  getThirdPartyCapabilities,
   (capabilities) => {
     return capabilities.find((x) => x[0] === "Yandex");
   }
 );
 
 export const getWebDavConnect = createSelector(
-  getCapabilities,
+  getThirdPartyCapabilities,
   (capabilities) => {
     return capabilities.find((x) => x[0] === "WebDav");
   }
@@ -1194,7 +1204,7 @@ export const getWebDavConnect = createSelector(
 
 // TODO: remove WebDav get NextCloud
 export const getNextCloudConnect = createSelector(
-  getCapabilities,
+  getThirdPartyCapabilities,
   (capabilities) => {
     return capabilities.find((x) => x[0] === "WebDav");
     //return capabilities.find((x) => x[0] === "NextCloud");
@@ -1202,7 +1212,7 @@ export const getNextCloudConnect = createSelector(
 );
 // TODO:remove WebDav get OwnCloud
 export const getOwnCloudConnect = createSelector(
-  getCapabilities,
+  getThirdPartyCapabilities,
   (capabilities) => {
     return capabilities.find((x) => x[0] === "WebDav");
     //return capabilities.find((x) => x[0] === "OwnCloud");

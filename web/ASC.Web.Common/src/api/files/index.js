@@ -143,6 +143,7 @@ export function getFoldersTree() {
                   access: folder.access,
                   foldersCount: folder.foldersCount,
                   rootFolderType: folder.rootFolderType,
+                  providerKey: folder.providerKey,
                   newItems: folder.new,
                 };
               })

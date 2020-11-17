@@ -8,6 +8,7 @@ import VersionHistory from "./components/pages/VersionHistory";
 import {
   fetchTreeFolders,
   fetchThirdPartyCapabilities,
+  fetchThirdPartyProviders,
 } from "./store/files/actions";
 import config from "../package.json";
 
@@ -56,6 +57,7 @@ class App extends React.Component {
       getPortalCultures,
       fetchTreeFolders,
       fetchThirdPartyCapabilities,
+      fetchThirdPartyProviders,
       setIsLoaded,
     } = this.props;
 
@@ -76,6 +78,7 @@ class App extends React.Component {
           getPortalCultures(),
           fetchTreeFolders(),
           fetchThirdPartyCapabilities(),
+          fetchThirdPartyProviders(),
         ];
 
     Promise.all(requests)
@@ -155,6 +158,7 @@ const mapDispatchToProps = (dispatch) => {
     getPortalCultures: () => getPortalCultures(dispatch),
     fetchTreeFolders: () => fetchTreeFolders(dispatch),
     fetchThirdPartyCapabilities: () => fetchThirdPartyCapabilities(dispatch),
+    fetchThirdPartyProviders: () => fetchThirdPartyProviders(dispatch),
     setIsLoaded: () => dispatch(setIsLoaded(true)),
   };
 };

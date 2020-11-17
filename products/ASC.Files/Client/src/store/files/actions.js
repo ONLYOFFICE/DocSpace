@@ -61,7 +61,8 @@ export const SET_FILES_SETTING = "SET_FILES_SETTING";
 export const SET_IS_ERROR_SETTINGS = "SET_IS_ERROR_SETTINGS";
 export const SET_FIRST_LOAD = "SET_FIRST_LOAD";
 export const SET_UPLOAD_DATA = "SET_UPLOAD_DATA";
-export const SET_CAPABILITIES = "SET_CAPABILITIES";
+export const SET_THIRDPARTY_CAPABILITIES = "SET_THIRDPARTY_CAPABILITIES";
+export const SET_THIRDPARTY_PROVIDERS = "SET_THIRDPARTY_PROVIDERS";
 export const SET_CONNECT_ITEM = "SET_CONNECT_ITEM";
 export const SET_SHOW_THIRDPARTY_PANEL = "SET_SHOW_THIRDPARTY_PANEL";
 
@@ -269,10 +270,17 @@ export function setUploadData(uploadData) {
   };
 }
 
-export function setCapabilities(capabilities) {
+export function setThirdPartyCapabilities(capabilities) {
   return {
-    type: SET_CAPABILITIES,
+    type: SET_THIRDPARTY_CAPABILITIES,
     capabilities,
+  };
+}
+
+export function setThirdPartyProviders(providers) {
+  return {
+    type: SET_THIRDPARTY_PROVIDERS,
+    providers,
   };
 }
 
@@ -1343,14 +1351,16 @@ export function itemOperationToFolder(
   };
 }
 
-export function getConnectedCloud() {
-  return api.files.getThirdPartyList();
-}
-
 export function fetchThirdPartyCapabilities(dispatch) {
   return files
     .getThirdPartyCapabilities()
-    .then((capabilities) => dispatch(setCapabilities(capabilities)));
+    .then((data) => dispatch(setThirdPartyCapabilities(data)));
+}
+
+export function fetchThirdPartyProviders(dispatch) {
+  return files.getThirdPartyList().then((data) => {
+    dispatch(setThirdPartyProviders(data));
+  });
 }
 
 const convertServiceName = (serviceName) => {

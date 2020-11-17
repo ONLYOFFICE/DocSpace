@@ -108,5 +108,6 @@
   "Duplicate": "Create a copy",
   "CopyOperation": "Copying",
   "UnblockVersion": "Unblock/Check-in",
-  "AddFilter": "Add filter"
+  "AddFilter": "Add filter",
+  "DeleteThirdParty": "Delete third party"
 }

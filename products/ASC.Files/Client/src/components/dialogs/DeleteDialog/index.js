@@ -166,12 +166,12 @@ class DeleteDialogComponent extends React.Component {
     const newSelection = this.state.selection;
 
     if (fileType !== "undefined") {
-      const a = newSelection.find((x) => x.id === id && x.fileExst);
-      a.checked = !a.checked;
+      const selection = newSelection.find((x) => x.id === id && x.fileExst);
+      selection.checked = !selection.checked;
       this.setState({ selection: newSelection });
     } else {
-      const a = newSelection.find((x) => x.id === id && !x.fileExst);
-      a.checked = !a.checked;
+      const selection = newSelection.find((x) => x.id === id && !x.fileExst);
+      selection.checked = !selection.checked;
       this.setState({ selection: newSelection });
     }
   };

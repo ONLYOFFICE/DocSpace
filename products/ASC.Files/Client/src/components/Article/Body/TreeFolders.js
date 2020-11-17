@@ -57,7 +57,7 @@ class TreeFolders extends React.Component {
     super(props);
 
     const { data, expandedKeys } = props;
-    this.state = { treeData: data, expandedKeys };
+    this.state = { treeData: data, expandedKeys, isExpand: false };
   }
 
   componentDidUpdate(prevProps) {
@@ -178,7 +178,7 @@ class TreeFolders extends React.Component {
         : false;
 
       //TODO: fix service folders
-      const serviceFolder = typeof item.id === "string";
+      const serviceFolder = !!item.providerKey;
       if ((item.folders && item.folders.length > 0) || serviceFolder) {
         return (
           <TreeNode
@@ -188,6 +188,7 @@ class TreeFolders extends React.Component {
             icon={this.getFolderIcon(item)}
             dragging={dragging}
             newItems={item.newItems}
+            providerKey={item.providerKey}
             onBadgeClick={this.onBadgeClick}
             showBadge={showBadge}
           >
@@ -205,6 +206,7 @@ class TreeFolders extends React.Component {
           isLeaf={item.foldersCount ? false : true}
           icon={this.getFolderIcon(item)}
           newItems={item.newItems}
+          providerKey={item.providerKey}
           onBadgeClick={this.onBadgeClick}
           showBadge={showBadge}
         />
@@ -300,9 +302,14 @@ class TreeFolders extends React.Component {
       .catch((err) => toastr.error("Something went wrong", err));
   };
 
-  onLoadData = (treeNode) => {
+  onLoadData = (treeNode, isExpand) => {
+    isExpand && this.setState({ isExpand: true });
     this.props.setIsLoading && this.props.setIsLoading(true);
     //console.log("load data...", treeNode);
+
+    if (this.state.isExpand && !isExpand) {
+      return Promise.resolve();
+    }
 
     return this.generateTreeNodes(treeNode)
       .then((data) => {
@@ -316,13 +323,16 @@ class TreeFolders extends React.Component {
         this.setState({ treeData });
       })
       .catch((err) => toastr.error(err))
-      .finally(() => this.props.setIsLoading && this.props.setIsLoading(false));
+      .finally(() => {
+        this.setState({ isExpand: false });
+        this.props.setIsLoading && this.props.setIsLoading(false);
+      });
   };
 
   onExpand = (data, treeNode) => {
     if (treeNode.node && !treeNode.node.props.children) {
       if (treeNode.expanded) {
-        this.onLoadData(treeNode.node);
+        this.onLoadData(treeNode.node, true);
       }
     }
     if (this.props.needUpdate) {

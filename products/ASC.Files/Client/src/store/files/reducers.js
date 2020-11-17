@@ -29,7 +29,8 @@ import {
   SET_IS_ERROR_SETTINGS,
   SET_FIRST_LOAD,
   SET_UPLOAD_DATA,
-  SET_CAPABILITIES,
+  SET_THIRDPARTY_CAPABILITIES,
+  SET_THIRDPARTY_PROVIDERS,
   SET_CONNECT_ITEM,
   SET_SHOW_THIRDPARTY_PANEL,
 } from "./actions";
@@ -375,6 +376,7 @@ const initialState = {
   },
   privacyInstructions: "https://www.onlyoffice.com/private-rooms.aspx",
   capabilities: [],
+  providers: [],
   connectItem: null,
   showThirdPartyPanel: false,
 };
@@ -547,9 +549,13 @@ const filesReducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         uploadData: action.uploadData,
       });
-    case SET_CAPABILITIES:
+    case SET_THIRDPARTY_CAPABILITIES:
       return Object.assign({}, state, {
         capabilities: action.capabilities,
+      });
+    case SET_THIRDPARTY_PROVIDERS:
+      return Object.assign({}, state, {
+        providers: action.providers,
       });
     case SET_CONNECT_ITEM:
       return Object.assign({}, state, {

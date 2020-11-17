@@ -9,22 +9,19 @@ import {
   Button,
   Row,
   Icons,
-  toastr,
 } from "asc-web-components";
-import { Loaders, store } from "asc-web-common";
+import { store } from "asc-web-common";
 import { withTranslation } from "react-i18next";
 import EmptyFolderContainer from "../../../Home/Section/Body/EmptyFolderContainer";
 import { createI18N } from "../../../../../helpers/i18n";
 import { Trans } from "react-i18next";
 import {
-  getConnectedCloud,
-  deleteThirdParty,
   openConnectWindow,
   setConnectItem,
   setShowThirdPartyPanel,
 } from "../../../../../store/files/actions";
 import {
-  getCapabilities,
+  getThirdPartyCapabilities,
   getGoogleConnect,
   getBoxConnect,
   getDropboxConnect,
@@ -37,8 +34,10 @@ import {
   getWebDavConnect,
   getConnectItem,
   getShowThirdPartyPanel,
+  getThirdPartyProviders,
 } from "../../../../../store/files/selectors";
 import ConnectedDialog from "./ConnectedDialog";
+import { DeleteThirdPartyDialog } from "../../../../dialogs";
 
 const { isAdmin } = store.auth.selectors;
 
@@ -107,23 +106,12 @@ class ConnectClouds extends React.Component {
       showThirdPartyDialog: props.showThirdPartyPanel,
       showAccountSettingDialog: !!props.connectItem,
       showDeleteDialog: false,
-      providers: [],
       loginValue: "",
       passwordValue: "",
       folderNameValue: "",
       selectedServiceData: props.connectItem,
-      removeItemId: null,
-      providersLoading: true,
+      removeItem: null,
     };
-  }
-
-  componentDidMount() {
-    getConnectedCloud().then((providers) => {
-      this.setState({
-        providers,
-        providersLoading: false,
-      });
-    });
   }
 
   componentDidUpdate(prevProps) {
@@ -177,19 +165,24 @@ class ConnectClouds extends React.Component {
     );
   };
 
-  onShowDeleteDialog = (e) => {
-    const removeItemId = e.currentTarget.dataset.id;
+  onDeleteThirdParty = (e) => {
+    const { id, title } = e.currentTarget.dataset;
+    const removeItem = { id, title };
 
     this.setState({
       showDeleteDialog: !this.state.showDeleteDialog,
-      removeItemId,
+      removeItem,
     });
+  };
+
+  onShowDeleteDialog = () => {
+    this.setState({ showDeleteDialog: !this.state.showDeleteDialog });
   };
 
   onChangeThirdPartyInfo = (e) => {
     const key = e.currentTarget.dataset.key;
     const capabilitiesItem = this.props.capabilities.find((x) => x[0] === key);
-    const providerItem = this.state.providers.find(
+    const providerItem = this.props.providers.find(
       (x) => x.provider_key === key
     );
 
@@ -202,17 +195,6 @@ class ConnectClouds extends React.Component {
       provider_key: key,
     };
     this.setState({ selectedServiceData, showAccountSettingDialog: true });
-  };
-
-  onDeleteThirdParty = () => {
-    const id = this.state.removeItemId;
-    const providers = this.state.providers.filter((x) => x.provider_id !== id);
-    deleteThirdParty(+id)
-      .then(() => this.setState({ showDeleteDialog: false, providers }))
-      .catch((err) => {
-        toastr(err);
-        this.setState({ showDeleteDialog: false });
-      });
   };
 
   getThirdPartyIcon = (iconName) => {
@@ -249,14 +231,14 @@ class ConnectClouds extends React.Component {
   render() {
     const {
       showThirdPartyDialog,
-      providers,
       showAccountSettingDialog,
       showDeleteDialog,
       selectedServiceData,
-      providersLoading,
+      removeItem,
     } = this.state;
     const {
       t,
+      providers,
       isAdmin,
       googleConnectItem,
       boxConnectItem,
@@ -319,8 +301,10 @@ class ConnectClouds extends React.Component {
                     },
                     {
                       "data-id": item.provider_id,
+                      "data-title": item.customer_title,
+                      //"data-provider-key": item.provider_key
                       label: t("DeleteThirdParty"),
-                      onClick: this.onShowDeleteDialog,
+                      onClick: this.onDeleteThirdParty,
                     },
                   ]}
                 >
@@ -359,8 +343,6 @@ class ConnectClouds extends React.Component {
               );
             })}
           </>
-        ) : providersLoading ? (
-          <Loaders.Rows />
         ) : (
           <EmptyFolderContainer
             headerText={t("ConnectAccounts")}
@@ -496,22 +478,11 @@ class ConnectClouds extends React.Component {
         )}
 
         {showDeleteDialog && (
-          <ModalDialog
-            visible={showDeleteDialog}
-            zIndex={310}
+          <DeleteThirdPartyDialog
             onClose={this.onShowDeleteDialog}
-          >
-            <ModalDialog.Header>{t("DeleteThirdParty")}</ModalDialog.Header>
-            <ModalDialog.Body>{t("DeleteThirdPartyAlert")}</ModalDialog.Body>
-            <ModalDialog.Footer>
-              <Button
-                label={t("OKButton")}
-                size="big"
-                primary
-                onClick={this.onDeleteThirdParty}
-              />
-            </ModalDialog.Footer>
-          </ModalDialog>
+            visible={showDeleteDialog}
+            removeItem={removeItem}
+          />
         )}
       </>
     );
@@ -521,7 +492,7 @@ class ConnectClouds extends React.Component {
 function mapStateToProps(state) {
   return {
     isAdmin: isAdmin(state),
-    capabilities: getCapabilities(state),
+    capabilities: getThirdPartyCapabilities(state),
     googleConnectItem: getGoogleConnect(state),
     boxConnectItem: getBoxConnect(state),
     dropboxConnectItem: getDropboxConnect(state),
@@ -534,6 +505,7 @@ function mapStateToProps(state) {
     webDavConnectItem: getWebDavConnect(state),
     connectItem: getConnectItem(state),
     showThirdPartyPanel: getShowThirdPartyPanel(state),
+    providers: getThirdPartyProviders(state),
   };
 }
 

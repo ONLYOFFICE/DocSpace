@@ -1,0 +1,6 @@
+{
+  "OKButton": "OK",
+  "DeleteThirdParty": "Delete third party",
+  "DeleteThirdPartyAlert": "Are you sure you want to remove the {{service}} from the 'Documents' module? This will not affect your {{account}} account in any way.",
+  "SuccessDeleteThirdParty": "Third Party {{service}} is deleted"
+}

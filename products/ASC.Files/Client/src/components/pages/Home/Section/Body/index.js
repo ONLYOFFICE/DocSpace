@@ -89,8 +89,10 @@ import {
   getIsPrivacyFolder,
   getPrivacyInstructionsLink,
   getIconOfDraggedFile,
+  isRootFolder,
 } from "../../../../../store/files/selectors";
 import { SharingPanel, OperationsPanel } from "../../../../panels";
+import { DeleteThirdPartyDialog } from "../../../../dialogs";
 const {
   isAdmin,
   getSettings,
@@ -188,8 +190,10 @@ class SectionBodyContent extends React.Component {
       showSharingPanel: false,
       showMoveToPanel: false,
       showCopyPanel: false,
+      showDeleteThirdPartyDialog: false,
       isDrag: false,
       canDrag: true,
+      removeItem: null,
     };
 
     this.tooltipRef = React.createRef();
@@ -234,7 +238,12 @@ class SectionBodyContent extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
     if (this.props && this.props.firstLoad) return true;
 
-    const { showMoveToPanel, showCopyPanel, isDrag } = this.state;
+    const {
+      showMoveToPanel,
+      showCopyPanel,
+      isDrag,
+      showDeleteThirdPartyDialog,
+    } = this.state;
     if (this.state.showSharingPanel !== nextState.showSharingPanel) {
       return true;
     }
@@ -255,6 +264,10 @@ class SectionBodyContent extends React.Component {
     }
 
     if (isDrag !== nextState.isDrag) {
+      return true;
+    }
+
+    if (showDeleteThirdPartyDialog !== nextState.showDeleteThirdPartyDialog) {
       return true;
     }
 
@@ -356,7 +369,18 @@ class SectionBodyContent extends React.Component {
     });
   };
 
-  onClickDelete = () => {
+  onClickDelete = (e) => {
+    const { isThirdParty, id, title } = e.currentTarget.dataset;
+    const splitItem = id.split("-");
+
+    if (isThirdParty) {
+      this.setState({
+        showDeleteThirdPartyDialog: true,
+        removeItem: { id: splitItem[splitItem.length - 1], title },
+      });
+      return;
+    }
+
     const item = this.props.selection[0];
     item.fileExst
       ? this.onDeleteFile(item.id, item.folderId)
@@ -570,10 +594,17 @@ class SectionBodyContent extends React.Component {
     );
   };
 
+  onShowDeleteThirdParty = () =>
+    this.setState({
+      showDeleteThirdPartyDialog: !this.state.showDeleteThirdPartyDialog,
+      removeItem: null,
+    });
+
   getFilesContextOptions = (options, item) => {
-    const { t } = this.props;
+    const { t, isRootFolder } = this.props;
 
     const isSharable = item.access !== 1 && item.access !== 0;
+    const isThirdPartyFolder = item.providerKey && isRootFolder;
 
     return options.map((option) => {
       switch (option) {
@@ -720,10 +751,13 @@ class SectionBodyContent extends React.Component {
         case "delete":
           return {
             key: option,
-            label: t("Delete"),
+            label: isThirdPartyFolder ? t("DeleteThirdParty") : t("Delete"),
             icon: "CatalogTrashIcon",
             onClick: this.onClickDelete,
             disabled: false,
+            "data-is-third-party": isThirdPartyFolder ? true : false,
+            "data-id": item.id,
+            "data-title": item.title,
           };
         case "remove-from-favorites":
           return {
@@ -1531,6 +1565,8 @@ class SectionBodyContent extends React.Component {
       showSharingPanel,
       showMoveToPanel,
       showCopyPanel,
+      showDeleteThirdPartyDialog,
+      removeItem,
     } = this.state;
 
     let fileMoveTooltip;
@@ -1598,6 +1634,15 @@ class SectionBodyContent extends React.Component {
             onClose={this.onCopyAction}
           />
         )}
+
+        {showDeleteThirdPartyDialog && (
+          <DeleteThirdPartyDialog
+            onClose={this.onShowDeleteThirdParty}
+            visible={showDeleteThirdPartyDialog}
+            removeItem={removeItem}
+          />
+        )}
+
         <CustomTooltip ref={this.tooltipRef}>{fileMoveTooltip}</CustomTooltip>
 
         {viewAs === "tile" ? (
@@ -1830,6 +1875,7 @@ const mapStateToProps = (state) => {
     viewer: getCurrentUser(state),
     tooltipValue: getTooltipLabel(state),
     iconOfDraggedFile: getIconOfDraggedFile(state)(state),
+    isRootFolder: isRootFolder(state),
   };
 };
 
