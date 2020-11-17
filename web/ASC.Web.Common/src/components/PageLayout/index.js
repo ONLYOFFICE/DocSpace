@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { Backdrop, ProgressBar, utils } from "asc-web-components";
+import { Backdrop, utils } from "asc-web-components";
 import store from "../../store";
 import { withTranslation } from "react-i18next";
 import i18n from "./i18n";
@@ -20,6 +20,7 @@ import SubSectionPaging from "./sub-components/section-paging";
 import SectionToggler from "./sub-components/section-toggler";
 import { changeLanguage } from "../../utils";
 import ReactResizeDetector from "react-resize-detector";
+import FloatingButton from "../FloatingButton";
 
 const { getLanguage } = store.auth.selectors;
 const { size } = utils.device;
@@ -194,7 +195,7 @@ class PageLayoutComponent extends React.Component {
     const {
       onDrop,
       progressBarDropDownContent,
-      progressBarLabel,
+      progressBarIcon,
       progressBarValue,
       setSelections,
       showProgressBar,
@@ -373,11 +374,10 @@ class PageLayoutComponent extends React.Component {
                         )}
                       </SubSectionBody>
                       {showProgressBar && (
-                        <ProgressBar
+                        <FloatingButton
                           className="layout-progress-bar"
-                          label={progressBarLabel}
+                          icon={progressBarIcon}
                           percent={progressBarValue}
-                          dropDownContent={progressBarDropDownContent}
                         />
                       )}
                     </>
@@ -407,7 +407,7 @@ PageLayoutComponent.propTypes = {
   showProgressBar: PropTypes.bool,
   progressBarValue: PropTypes.number,
   progressBarDropDownContent: PropTypes.any,
-  progressBarLabel: PropTypes.string,
+  progressBarIcon: PropTypes.string,
   onDrop: PropTypes.func,
   setSelections: PropTypes.func,
   uploadFiles: PropTypes.bool,
