@@ -21,12 +21,12 @@ const StyledSection = styled.section`
   flex-direction: column;
   /*width: ${(props) => `${props.widthProp}px`};*/
   .layout-progress-bar {
-    bottom: 0;
+    bottom: 21px;
+    padding-left: calc(100% - 65px);
     position: sticky;
-    margin-left: -24px;
 
     @media ${tablet} {
-      margin-left: -16px;
+      bottom: 72px;
     }
   }
 
