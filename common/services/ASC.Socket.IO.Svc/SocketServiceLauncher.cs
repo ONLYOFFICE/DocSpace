@@ -42,6 +42,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Socket.IO.Svc
 {
+    [Scope]
     public class SocketServiceLauncher : IHostedService
     {
         private const int PingInterval = 10000;
@@ -57,16 +58,19 @@ namespace ASC.Socket.IO.Svc
         private SignalrServiceClient SignalrServiceClient { get; set; }
         private IHostEnvironment HostEnvironment { get; set; }
 
-        public SocketServiceLauncher(IOptionsMonitor<ILog> options, IConfiguration configuration, CoreBaseSettings coreBaseSettings, SignalrServiceClient signalrServiceClient, IHostEnvironment hostEnvironment, IConfigureNamedOptions<SignalrServiceClient> configureOptions)
+        public SocketServiceLauncher(
+            IOptionsMonitor<ILog> options,
+            IConfiguration configuration,
+            CoreBaseSettings coreBaseSettings,
+            IOptionsSnapshot<SignalrServiceClient> signalrServiceClient,
+            IHostEnvironment hostEnvironment)
         {
             Logger = options.CurrentValue;
             //CancellationTokenSource = new CancellationTokenSource();
             Configuration = configuration;
             CoreBaseSettings = coreBaseSettings;
-            SignalrServiceClient = signalrServiceClient;
+            SignalrServiceClient = signalrServiceClient.Value;
             HostEnvironment = hostEnvironment;
-
-            configureOptions.Configure(SignalrServiceClient);
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
@@ -236,16 +240,5 @@ namespace ASC.Socket.IO.Svc
         //        Logger.Error("Ping failed stop");
         //    }
         //}
-    }
-
-    public static class SocketServiceLauncherExtension
-    {
-        public static DIHelper AddSocketServiceLauncher(this DIHelper services)
-        {
-            services.TryAddScoped<SocketServiceLauncher>();
-            return services
-                .AddCoreBaseSettingsService()
-                .AddSignalrServiceClient();
-        }
     }
 }

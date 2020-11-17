@@ -35,6 +35,7 @@ using ASC.Core.Caching;
 
 namespace ASC.Core
 {
+    [Scope]
     public class AuthorizationManager
     {
         private readonly IAzService service;
@@ -126,21 +127,6 @@ namespace ASC.Core
             return aces is AzRecordStore store ?
                 store.Get(objId).Where(a => (a.SubjectId == subjectId || subjectId == Guid.Empty) && (a.ActionId == actionId || actionId == Guid.Empty)) :
                 aces.Where(a => (a.SubjectId == subjectId || subjectId == Guid.Empty) && (a.ActionId == actionId || actionId == Guid.Empty) && a.ObjectId == objId);
-        }
-    }
-
-    public static class AuthorizationManagerConfigExtension
-    {
-        public static DIHelper AddAuthorizationManagerService(this DIHelper services)
-        {
-            if (services.TryAddScoped<AuthorizationManager>())
-            {
-                return services
-                    .AddAzService()
-                    .AddTenantManagerService();
-            }
-
-            return services;
         }
     }
 }

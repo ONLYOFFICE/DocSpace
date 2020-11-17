@@ -48,7 +48,12 @@ const Header = styled.header`
   }
 `;
 
-const HeaderUnAuth = ({ enableAdmMess, wizardToken }) => {
+const HeaderUnAuth = ({
+  enableAdmMess,
+  wizardToken,
+  isAuthenticated,
+  isLoaded,
+}) => {
   //console.log("HeaderUnAuth render");
 
   const { t } = useTranslation();
@@ -61,18 +66,22 @@ const HeaderUnAuth = ({ enableAdmMess, wizardToken }) => {
         alignItems="center"
         className="header-items-wrapper"
       >
-        <div>
-          <a className="header-logo-wrapper" href="/">
-            <img
-              className="header-logo-min_icon"
-              src="images/nav.logo.react.svg"
-            />
-            <img
-              className="header-logo-icon"
-              src="images/nav.logo.opened.react.svg"
-            />
-          </a>
-        </div>
+        {!isAuthenticated && isLoaded ? (
+          <div>
+            <a className="header-logo-wrapper" href="/">
+              <img
+                className="header-logo-min_icon"
+                src="images/nav.logo.react.svg"
+              />
+              <img
+                className="header-logo-icon"
+                src="images/nav.logo.opened.react.svg"
+              />
+            </a>
+          </div>
+        ) : (
+          <></>
+        )}
 
         <div>{enableAdmMess && !wizardToken && <RecoverAccess t={t} />}</div>
       </Box>
@@ -85,15 +94,19 @@ HeaderUnAuth.displayName = "Header";
 HeaderUnAuth.propTypes = {
   enableAdmMess: PropTypes.bool,
   wizardToken: PropTypes.string,
+  isAuthenticated: PropTypes.bool,
+  isLoaded: PropTypes.bool,
 };
 
 const mapStateToProps = (state) => {
-  const { settings } = state.auth;
+  const { isAuthenticated, isLoaded, settings } = state.auth;
   const { enableAdmMess, wizardToken } = settings;
 
   return {
     enableAdmMess,
     wizardToken,
+    isAuthenticated,
+    isLoaded,
   };
 };
 

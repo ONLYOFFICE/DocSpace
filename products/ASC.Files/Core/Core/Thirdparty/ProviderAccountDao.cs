@@ -72,6 +72,7 @@ namespace ASC.Files.Thirdparty
         Yandex,
     }
 
+    [Scope]
     internal class ProviderAccountDao : IProviderDao
     {
         private int tenantID;
@@ -584,25 +585,16 @@ namespace ASC.Files.Thirdparty
         }
     }
 
-    public static class ProviderAccountDaoExtention
+    public class ProviderAccountDaoExtension
     {
-        public static DIHelper AddProviderAccountDaoService(this DIHelper services)
+        public static void Register(DIHelper services)
         {
-            //services.TryAddScoped<IProviderDao, ProviderAccountDao>();
-
-            return services
-                .AddSharpBoxProviderInfoService()
-                .AddSharePointProviderInfoService()
-                .AddOneDriveProviderInfoService()
-                .AddGoogleDriveProviderInfoService()
-                .AddBoxProviderInfoService()
-                .AddDropboxProviderInfoService()
-                .AddTenantUtilService()
-                .AddTenantManagerService()
-                .AddInstanceCryptoService()
-                .AddSecurityContextService()
-                .AddConsumerFactoryService()
-                .AddDbContextManagerService<FilesDbContext>();
+            services.TryAdd<BoxProviderInfo>();
+            services.TryAdd<DropboxProviderInfo>();
+            services.TryAdd<SharePointProviderInfo>();
+            services.TryAdd<GoogleDriveProviderInfo>();
+            services.TryAdd<OneDriveProviderInfo>();
+            services.TryAdd<SharpBoxProviderInfo>();
         }
     }
 }

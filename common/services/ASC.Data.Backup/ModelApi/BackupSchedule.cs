@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 using ASC.Api.Collections;
-using ASC.Data.Backup.Contracts;
-
-using static ASC.Data.Backup.BackupAjaxHandler;
 
 namespace ASC.Data.Backup.ModelApi
 {

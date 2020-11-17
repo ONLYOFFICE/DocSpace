@@ -30,7 +30,6 @@ using System.Linq;
 
 using ASC.Common;
 using ASC.Common.Caching;
-using ASC.Core.Common.EF.Context;
 using ASC.Core.Common.EF.Model;
 
 using Microsoft.Extensions.Options;
@@ -63,6 +62,7 @@ namespace ASC.Core.Common.Notify.Telegram
         }
     }
 
+    [Scope(typeof(ConfigureCachedTelegramDao))]
     public class CachedTelegramDao
     {
         public TelegramDao TgDao { get; set; }
@@ -115,25 +115,6 @@ namespace ASC.Core.Common.Notify.Telegram
 
             var key = string.Format(PairKeyFormat, userId, tenantId);
             Cache.Insert(key, new TelegramUser { PortalUserId = userId, TenantId = tenantId, TelegramUserId = telegramId }, Expiration);
-        }
-    }
-
-    public static class CachedTelegramDaoExtension
-    {
-        public static DIHelper AddCachedTelegramDaoService(this DIHelper services)
-        {
-            if (services.TryAddScoped<TelegramDao>())
-            {
-
-                services.TryAddScoped<IConfigureOptions<TelegramDao>, ConfigureTelegramDaoService>();
-                services.TryAddScoped<IConfigureOptions<CachedTelegramDao>, ConfigureCachedTelegramDao>();
-
-                services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
-
-                return services.AddTelegramDbContextService();
-            }
-
-            return services;
         }
     }
 }

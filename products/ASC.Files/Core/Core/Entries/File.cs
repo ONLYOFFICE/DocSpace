@@ -28,6 +28,7 @@ using System;
 using System.Diagnostics;
 using System.Text.Json.Serialization;
 
+using ASC.Common;
 using ASC.Web.Core.Files;
 using ASC.Web.Files.Classes;
 using ASC.Web.Files.Utils;
@@ -55,6 +56,7 @@ namespace ASC.Files.Core
         IsTemplate = 0x40
     }
 
+    [Transient]
     [Serializable]
     [DebuggerDisplay("{Title} ({ID} v{Version})")]
     public class File<T> : FileEntry<T>

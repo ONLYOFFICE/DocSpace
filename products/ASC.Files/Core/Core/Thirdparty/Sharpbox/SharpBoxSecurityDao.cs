@@ -42,6 +42,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Files.Thirdparty.Sharpbox
 {
+    [Scope]
     internal class SharpBoxSecurityDao : SharpBoxDaoBase, ISecurityDao<string>
     {
         public SharpBoxSecurityDao(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor, FileUtility fileUtility) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility)
@@ -88,16 +89,6 @@ namespace ASC.Files.Thirdparty.Sharpbox
         public bool IsShared(object entryId, FileEntryType type)
         {
             throw new NotImplementedException();
-        }
-    }
-
-    public static class SharpBoxSecurityDaoExtention
-    {
-        public static DIHelper AddSharpBoxSecurityDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<SharpBoxSecurityDao>();
-
-            return services;
         }
     }
 }

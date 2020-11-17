@@ -29,6 +29,7 @@ using System.IO;
 using System.Threading.Tasks;
 
 using ASC.Common;
+using ASC.Common.Caching;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
 
@@ -77,9 +78,11 @@ namespace ASC.Thumbnails.Svc
                 .ConfigureServices((hostContext, services) =>
                 {
                     var diHelper = new DIHelper(services);
-                    diHelper.AddNLogManager("ASC.Thumbnails.Svc");
+
+                    diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+                    LogNLogExtension.ConfigureLog(diHelper, "ASC.Thumbnails.Svc");
                     services.AddHostedService<ThumbnailsServiceLauncher>();
-                    diHelper.AddThumbnailsServiceLauncher();
+                    diHelper.TryAdd<ThumbnailsServiceLauncher>();
                 })
                 .ConfigureContainer<ContainerBuilder>((context, builder) =>
                 {

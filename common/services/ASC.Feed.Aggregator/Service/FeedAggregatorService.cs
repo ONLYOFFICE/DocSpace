@@ -49,6 +49,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Feed.Aggregator
 {
+    [Singletone(Additional = typeof(FeedAggregatorServiceExtension))]
     public class FeedAggregatorService : IHostedService
     {
         private ILog Log { get; set; }
@@ -70,15 +71,13 @@ namespace ASC.Feed.Aggregator
             IServiceProvider serviceProvider,
             ILifetimeScope container,
             IOptionsMonitor<ILog> optionsMonitor,
-            SignalrServiceClient signalrServiceClient,
-            IConfigureNamedOptions<SignalrServiceClient> configureOptions)
+            IOptionsSnapshot<SignalrServiceClient> optionsSnapshot)
         {
             Configuration = configuration;
             ServiceProvider = serviceProvider;
             Container = container;
             Log = optionsMonitor.Get("ASC.Feed.Agregator");
-            SignalrServiceClient = signalrServiceClient;
-            configureOptions.Configure("counters", SignalrServiceClient);
+            SignalrServiceClient = optionsSnapshot.Get("counters");
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
@@ -288,6 +287,7 @@ namespace ASC.Feed.Aggregator
         }
     }
 
+    [Scope]
     public class FeedAggregatorServiceScope
     {
         private BaseCommonLinkUtility BaseCommonLinkUtility { get; }
@@ -328,21 +328,11 @@ namespace ASC.Feed.Aggregator
         }
     }
 
-    public static class FeedAggregatorServiceExtension
+    public class FeedAggregatorServiceExtension
     {
-        public static DIHelper AddFeedAggregatorService(this DIHelper services)
+        public static void Register(DIHelper services)
         {
-            services.TryAddSingleton<FeedAggregatorService>();
-            services.TryAddScoped<FeedAggregatorServiceScope>();
-
-            return services
-                .AddBaseCommonLinkUtilityService()
-                .AddTenantManagerService()
-                .AddUserManagerService()
-                .AddSecurityContextService()
-                .AddAuthManager()
-                .AddFeedAggregateDataProvider()
-                .AddSignalrServiceClient();
+            services.TryAdd<FeedAggregatorServiceScope>();
         }
     }
 }

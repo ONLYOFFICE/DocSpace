@@ -81,7 +81,7 @@ class PureProfile extends React.Component {
         )}
 
         <PageLayout.SectionHeader>
-          {profile ? <SectionHeaderContent /> : <Loaders.Headline />}
+          {profile ? <SectionHeaderContent /> : <Loaders.SectionHeader />}
         </PageLayout.SectionHeader>
 
         <PageLayout.SectionBody>

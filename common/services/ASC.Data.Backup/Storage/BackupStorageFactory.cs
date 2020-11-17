@@ -34,7 +34,6 @@ using ASC.Data.Backup.Contracts;
 using ASC.Data.Backup.EF.Model;
 using ASC.Data.Backup.Service;
 using ASC.Data.Backup.Utils;
-using ASC.Web.Files.Utils;
 
 using Microsoft.Extensions.Configuration;
 
@@ -42,6 +41,7 @@ using Newtonsoft.Json;
 
 namespace ASC.Data.Backup.Storage
 {
+    [Scope]
     public class BackupStorageFactory
     {
         private IConfiguration Configuration { get; }
@@ -97,24 +97,6 @@ namespace ASC.Data.Backup.Storage
                 default:
                     throw new InvalidOperationException("Unknown storage type.");
             }
-        }
-    }
-    public static class BackupStorageFactoryExtension
-    {
-        public static DIHelper AddBackupStorageFactory(this DIHelper services)
-        {
-            if (services.TryAddScoped<BackupStorageFactory>())
-            {
-                return services
-                    .AddTenantManagerService()
-                    .AddDocumentsBackupStorage()
-                    .AddDataStoreBackupStorage()
-                    .AddLocalBackupStorage()
-                    .AddConsumerBackupStorage()
-                    .AddFileConverterService();
-            }
-
-            return services;
         }
     }
 }

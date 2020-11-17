@@ -33,6 +33,7 @@ using System.Text;
 using System.Threading;
 using System.Web;
 
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Utils;
 using ASC.Core;
@@ -50,6 +51,7 @@ using Newtonsoft.Json.Linq;
 
 namespace ASC.FederatedLogin.LoginProviders
 {
+    [Scope]
     public class GosUslugiLoginProvider : BaseLoginProvider<GosUslugiLoginProvider>
     {
         public string BaseDomain

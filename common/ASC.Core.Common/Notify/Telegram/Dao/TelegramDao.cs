@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using ASC.Common;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Context;
 using ASC.Core.Common.EF.Model;
@@ -58,6 +59,7 @@ namespace ASC.Core.Common.Notify.Telegram
         }
     }
 
+    [Scope(typeof(ConfigureTelegramDaoService))]
     public class TelegramDao
     {
         public TelegramDbContext TelegramDbContext { get; set; }

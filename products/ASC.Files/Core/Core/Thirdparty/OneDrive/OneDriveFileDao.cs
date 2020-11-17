@@ -48,6 +48,7 @@ using Microsoft.OneDrive.Sdk;
 
 namespace ASC.Files.Thirdparty.OneDrive
 {
+    [Scope]
     internal class OneDriveFileDao : OneDriveDaoBase, IFileDao<string>
     {
         private CrossDao CrossDao { get; }
@@ -652,15 +653,5 @@ namespace ASC.Files.Thirdparty.OneDrive
         }
 
         #endregion
-    }
-
-    public static class OneDriveFileDaoExtention
-    {
-        public static DIHelper AddOneDriveFileDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<OneDriveFileDao>();
-
-            return services;
-        }
     }
 }

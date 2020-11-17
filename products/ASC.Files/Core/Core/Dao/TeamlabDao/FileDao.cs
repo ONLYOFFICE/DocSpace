@@ -56,12 +56,13 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Files.Core.Data
 {
+    [Scope]
     internal class FileDao : AbstractDao, IFileDao<int>
     {
         public const long MaxContentLength = 2 * 1024 * 1024 * 1024L;
 
         private static readonly object syncRoot = new object();
-        private FactoryIndexer<DbFile> FactoryIndexer { get; }
+        private FactoryIndexerFile FactoryIndexer { get; }
         private GlobalStore GlobalStore { get; }
         private GlobalSpace GlobalSpace { get; }
         private GlobalFolder GlobalFolder { get; }
@@ -71,7 +72,7 @@ namespace ASC.Files.Core.Data
         private CrossDao CrossDao { get; }
 
         public FileDao(
-            FactoryIndexer<DbFile> factoryIndexer,
+            FactoryIndexerFile factoryIndexer,
             UserManager userManager,
             DbContextManager<FilesDbContext> dbContextManager,
             TenantManager tenantManager,
@@ -468,15 +469,15 @@ namespace ASC.Files.Core.Data
                 {
                     try
                     {
-                    if (isNew)
-                    {
-                        var stored = GlobalStore.GetStore().IsDirectory(GetUniqFileDirectory(file.ID));
-                        DeleteFile(file.ID, stored);
-                    }
-                    else if (!IsExistOnStorage(file))
-                    {
-                        DeleteVersion(file);
-                    }
+                        if (isNew)
+                        {
+                            var stored = GlobalStore.GetStore().IsDirectory(GetUniqFileDirectory(file.ID));
+                            DeleteFile(file.ID, stored);
+                        }
+                        else if (!IsExistOnStorage(file))
+                        {
+                            DeleteVersion(file);
+                        }
                     }
                     catch (Exception deleteException)
                     {
@@ -959,10 +960,10 @@ namespace ASC.Files.Core.Data
             if (!uploadSession.UseChunks)
             {
                 using var streamToSave = ChunkedUploadSessionHolder.UploadSingleChunk(uploadSession, stream, chunkLength);
-                    if (streamToSave != Stream.Null)
-                    {
-                        uploadSession.File = SaveFile(GetFileForCommit(uploadSession), streamToSave);
-                    }
+                if (streamToSave != Stream.Null)
+                {
+                    uploadSession.File = SaveFile(GetFileForCommit(uploadSession), streamToSave);
+                }
 
                 return;
             }
@@ -1435,37 +1436,5 @@ namespace ASC.Files.Core.Data
     {
         public DbFileQuery DbFileQuery { get; set; }
         public DbFilesSecurity Security { get; set; }
-    }
-
-    public static class FileDaoExtention
-    {
-        public static DIHelper AddFileDaoService(this DIHelper services)
-        {
-            if (services.TryAddScoped<IFileDao<int>, FileDao>())
-            {
-            services.TryAddTransient<File<int>>();
-
-            return services
-                .AddFilesDbContextService()
-                .AddUserManagerService()
-                .AddTenantManagerService()
-                .AddTenantUtilService()
-                .AddSetupInfo()
-                .AddTenantExtraService()
-                .AddTenantStatisticsProviderService()
-                .AddCoreBaseSettingsService()
-                .AddCoreConfigurationService()
-                .AddSettingsManagerService()
-                .AddAuthContextService()
-                .AddGlobalStoreService()
-                .AddGlobalSpaceService()
-                .AddFactoryIndexerFileService()
-                .AddGlobalFolderService()
-                .AddChunkedUploadSessionHolderService()
-                .AddFolderDaoService();
-        }
-
-            return services;
-    }
     }
 }

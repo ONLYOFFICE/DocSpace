@@ -31,7 +31,6 @@ using System.Linq;
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Users;
-using ASC.Files.Core.Data;
 using ASC.Web.Core;
 using ASC.Web.Files.Api;
 using ASC.Web.Files.Classes;
@@ -39,6 +38,7 @@ using ASC.Web.Files.Configuration;
 
 namespace ASC.Files.Core.Security
 {
+    [Scope]
     public class FileSecurityCommon
     {
         private UserManager UserManager { get; }
@@ -57,6 +57,7 @@ namespace ASC.Files.Core.Security
         }
     }
 
+    [Scope]
     public class FileSecurity : IFileSecurity
     {
         private readonly IDaoFactory daoFactory;
@@ -952,40 +953,6 @@ namespace ASC.Files.Core.Security
             Edit,
             Delete,
             CustomFilter
-        }
-    }
-
-    public static class FileSecurityExtention
-    {
-        public static DIHelper AddFileSecurityCommonService(this DIHelper services)
-        {
-            if (services.TryAddScoped<FileSecurityCommon>())
-            {
-                return services
-                    .AddUserManagerService()
-                    .AddWebItemSecurity();
-            }
-
-            return services;
-        }
-
-        public static DIHelper AddFileSecurityService(this DIHelper services)
-        {
-            if (services.TryAddScoped<FileSecurity>())
-            {
-                services.TryAddScoped<IFileSecurity, FileSecurity>();
-
-                return services
-                    .AddDaoFactoryService()
-                    .AddUserManagerService()
-                    .AddTenantManagerService()
-                    .AddAuthContextService()
-                    .AddAuthManager()
-                    .AddGlobalFolderService()
-                    .AddFileSecurityCommonService();
-            }
-
-            return services;
         }
     }
 }

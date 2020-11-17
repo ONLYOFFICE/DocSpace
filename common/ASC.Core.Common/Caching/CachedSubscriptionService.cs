@@ -30,11 +30,11 @@ using System.Linq;
 
 using ASC.Common;
 using ASC.Common.Caching;
-using ASC.Core.Common.EF;
 using ASC.Core.Data;
 
 namespace ASC.Core.Caching
 {
+    [Singletone]
     class SubscriptionServiceCache
     {
         internal ICache Cache { get; }
@@ -102,6 +102,7 @@ namespace ASC.Core.Caching
         }
     }
 
+    [Scope]
     class CachedSubscriptionService : ISubscriptionService
     {
         private readonly ISubscriptionService service;
@@ -283,22 +284,6 @@ namespace ASC.Core.Caching
         private void BuildMethodsIndex(IEnumerable<SubscriptionMethod> methods)
         {
             methodsByRec = methods.GroupBy(r => r.RecipientId).ToDictionary(g => g.Key, g => g.ToList());
-        }
-    }
-
-    public static class SubscriptionConfigExtension
-    {
-        public static DIHelper AddSubscriptionService(this DIHelper services)
-        {
-            if (services.TryAddScoped<DbSubscriptionService>())
-            {
-                services.TryAddScoped<ISubscriptionService, CachedSubscriptionService>();
-                services.TryAddSingleton<SubscriptionServiceCache>();
-                services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
-                services.AddUserDbContextService();
-            }
-
-            return services;
         }
     }
 }

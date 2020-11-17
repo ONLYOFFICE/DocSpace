@@ -38,6 +38,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace ASC.Web.Core.Files
 {
+    [Scope]
     public class FileUtility
     {
         private DbContextManager<FilesDbContext> FilesDbContext { get; set; }
@@ -468,20 +469,5 @@ namespace ASC.Web.Core.Files
         }
 
         #endregion
-    }
-
-    public static class FileUtilityExtention
-    {
-        public static DIHelper AddFileUtilityService(this DIHelper services)
-        {
-            if (services.TryAddScoped<FileUtility>())
-            {
-                return services
-                    .AddFilesLinkUtilityService()
-                    .AddFilesDbContextService();
-            }
-
-            return services;
-        }
     }
 }

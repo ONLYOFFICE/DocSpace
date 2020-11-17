@@ -33,6 +33,7 @@ using ASC.Migration;
 
 namespace ASC.Data.Storage.Migration
 {
+    [Singletone]
     public class ServiceClientListener
     {
         public ICacheNotify<MigrationProgress> ProgressMigrationNotify { get; }
@@ -78,6 +79,7 @@ namespace ASC.Data.Storage.Migration
         }
     }
 
+    [Scope]
     public class ServiceClient : IService
     {
         public ServiceClientListener ServiceClientListener { get; }
@@ -133,17 +135,6 @@ namespace ASC.Data.Storage.Migration
         public void StopMigrate()
         {
             CacheMigrationNotify.Publish(new MigrationCache(), CacheNotifyAction.InsertOrUpdate);
-        }
-    }
-
-    public static class ServiceClientExtension
-    {
-        public static DIHelper AddServiceClient(this DIHelper services)
-        {
-            services.TryAddScoped<ServiceClient>();
-            services.TryAddSingleton<ServiceClientListener>();
-
-            return services;
         }
     }
 }

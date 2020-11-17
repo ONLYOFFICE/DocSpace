@@ -119,3 +119,17 @@ export const i18nBaseSettings = {
     useSuspense: true,
   },
 };
+
+export const LoaderStyle = {
+  title: "",
+  width: "100%",
+  height: "32",
+  backgroundColor: "#000000",
+  foregroundColor: "#000000",
+  backgroundOpacity: 0.1,
+  foregroundOpacity: 0.15,
+  borderRadius: "3",
+  radius: "3",
+  speed: 2,
+  animate: true,
+};
