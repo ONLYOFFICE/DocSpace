@@ -841,7 +841,7 @@ FilterInput.propTypes = {
   className: PropTypes.string,
   id: PropTypes.string,
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
-  needForUpdate: PropTypes.bool,
+  needForUpdate: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
   filterColumnCount: PropTypes.number,
   onChangeViewAs: PropTypes.func,
   contextMenuHeader: PropTypes.string,
