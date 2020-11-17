@@ -44,6 +44,7 @@ using Newtonsoft.Json.Linq;
 
 namespace ASC.FederatedLogin.LoginProviders
 {
+    [Scope]
     public class GoogleLoginProvider : BaseLoginProvider<GoogleLoginProvider>
     {
         public const string GoogleScopeContacts = "https://www.googleapis.com/auth/contacts.readonly";
@@ -181,23 +182,6 @@ namespace ASC.FederatedLogin.LoginProviders
         private class GoogleMetadata
         {
             public bool primary = false;
-        }
-    }
-
-    public static class GoogleLoginProviderExtension
-    {
-        public static DIHelper AddGoogleLoginProviderService(this DIHelper services)
-        {
-            //services.TryAddScoped<GoogleLoginProvider>();
-            return services
-                .AddOAuth20TokenHelperService()
-                .AddConsumerFactoryService()
-                .AddKafkaService()
-                .AddTenantManagerService()
-                .AddCoreBaseSettingsService()
-                .AddCoreSettingsService()
-                .AddSignatureService()
-                .AddInstanceCryptoService();
         }
     }
 }

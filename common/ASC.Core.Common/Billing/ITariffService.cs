@@ -27,8 +27,11 @@
 using System;
 using System.Collections.Generic;
 
+using ASC.Common;
+
 namespace ASC.Core.Billing
 {
+    [Scope(typeof(ConfigureTariffService))]
     public interface ITariffService
     {
         Tariff GetTariff(int tenantId, bool withRequestToPaymentSystem = true);

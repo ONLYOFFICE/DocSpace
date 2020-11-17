@@ -42,6 +42,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ASC.Api.Settings
 {
+    [Scope]
     [DefaultRoute]
     [ApiController]
     public class SmtpSettingsController : ControllerBase
@@ -234,19 +235,6 @@ namespace ASC.Api.Settings
             {
                 throw new BillingException(Resource.ErrorNotAllowedOption, "Smtp");
             }
-        }
-    }
-
-    public static class SmtpSettingsControllerExtension
-    {
-        public static DIHelper AddSmtpSettingsController(this DIHelper services)
-        {
-            return services
-                .AddApiContextService()
-                .AddPermissionContextService()
-                .AddCoreConfigurationService()
-                .AddCoreBaseSettingsService()
-                ;
         }
     }
 }

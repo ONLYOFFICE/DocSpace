@@ -1,7 +1,6 @@
 ﻿
 using ASC.Api.Core;
 using ASC.Api.Settings;
-using ASC.Common;
 using ASC.Common.DependencyInjection;
 using ASC.Web.Api.Controllers;
 
@@ -29,21 +28,18 @@ namespace ASC.Web.Api
 
             services.AddMemoryCache();
 
-            services.AddOptions();
-
-            DIHelper
-                .AddAuthenticationController()
-                .AddModulesController()
-                .AddPortalController()
-                .AddSettingsController()
-                .AddSecurityController()
-                .AddSmtpSettingsController()
-                .AddThirdPartyController();
+            DIHelper.TryAdd<AuthenticationController>();
+            DIHelper.TryAdd<ModulesController>();
+            DIHelper.TryAdd<PortalController>();
+            DIHelper.TryAdd<SettingsController>();
+            DIHelper.TryAdd<SecurityController>();
+            DIHelper.TryAdd<SmtpSettingsController>();
+            DIHelper.TryAdd<ThirdPartyController>();
         }
-
         public void ConfigureContainer(ContainerBuilder builder)
         {
             builder.Register(Configuration, HostEnvironment.ContentRootPath);
+
         }
     }
 }

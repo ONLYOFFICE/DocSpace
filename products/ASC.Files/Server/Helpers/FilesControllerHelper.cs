@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -16,22 +15,14 @@ using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Web;
 using ASC.Core;
-using ASC.Core.Common.Configuration;
-using ASC.Core.Users;
 using ASC.FederatedLogin.Helpers;
-using ASC.FederatedLogin.LoginProviders;
 using ASC.Files.Core;
 using ASC.Files.Model;
-using ASC.MessagingSystem;
-using ASC.Web.Core;
 using ASC.Web.Core.Files;
 using ASC.Web.Files.Classes;
-using ASC.Web.Files.Configuration;
-using ASC.Web.Files.Helpers;
 using ASC.Web.Files.Services.DocumentService;
 using ASC.Web.Files.Services.WCFService;
 using ASC.Web.Files.Utils;
-using ASC.Web.Studio.Utility;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
@@ -46,6 +37,7 @@ using SortedByType = ASC.Files.Core.SortedByType;
 
 namespace ASC.Files.Helpers
 {
+    [Scope]
     public class FilesControllerHelper<T>
     {
         private readonly ApiContext ApiContext;
@@ -633,53 +625,6 @@ namespace ASC.Files.Helpers
                                                                                withSubFolders,
                                                                                new OrderBy(sortBy, !ApiContext.SortDescending)),
                                             startIndex);
-        }
-    }
-
-    public static class FilesControllerHelperExtention
-    {
-        public static DIHelper AddFilesControllerHelperService(this DIHelper services)
-        {
-            if (services.TryAddScoped<FilesControllerHelper<string>>())
-            {
-                services.TryAddScoped<FilesControllerHelper<int>>();
-
-                return services
-                    .AddEasyBibHelperService()
-                    .AddWordpressTokenService()
-                    .AddWordpressHelperService()
-                    .AddFolderContentWrapperHelperService()
-                    .AddFileUploaderService()
-                    .AddFileShareParamsService()
-                    .AddFileShareWrapperService()
-                    .AddFileOperationWraperHelperService()
-                    .AddFileWrapperHelperService()
-                    .AddFolderWrapperHelperService()
-                    .AddConsumerFactoryService()
-                    .AddDocumentServiceConnectorService()
-                    .AddCommonLinkUtilityService()
-                    .AddMessageServiceService()
-                    .AddThirdpartyConfigurationService()
-                    .AddCoreBaseSettingsService()
-                    .AddWebItemSecurity()
-                    .AddUserManagerService()
-                    .AddEntryManagerService()
-                    .AddTenantManagerService()
-                    .AddSecurityContextService()
-                    .AddDocumentServiceHelperService()
-                    .AddFilesLinkUtilityService()
-                    .AddApiContextService()
-                    .AddFileStorageService()
-                    .AddFilesSettingsHelperService()
-                    .AddBoxLoginProviderService()
-                    .AddDropboxLoginProviderService()
-                    .AddOneDriveLoginProviderService()
-                    .AddGoogleLoginProviderService()
-                    .AddChunkedUploadSessionHelperService()
-                    ;
-            }
-
-            return services;
         }
     }
 }

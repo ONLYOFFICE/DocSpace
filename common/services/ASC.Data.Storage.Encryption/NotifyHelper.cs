@@ -34,6 +34,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Storage.Encryption
 {
+    [Scope]
     public class NotifyHelper
     {
         private const string NotifyService = "ASC.Web.Studio.Core.Notify.StudioNotifyService, ASC.Web.Core";
@@ -100,17 +101,6 @@ namespace ASC.Data.Storage.Encryption
             {
                 Log.Warn("Error while sending notification", error);
             }
-        }
-    }
-
-    public static class NotifyHelperExtension
-    {
-        public static DIHelper AddNotifyHelperService(this DIHelper services)
-        {
-            services.TryAddScoped<NotifyHelper>();
-            services.TryAddScoped<NotifyServiceClient>();
-            return services;
-
         }
     }
 }

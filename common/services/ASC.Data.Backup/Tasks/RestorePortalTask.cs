@@ -45,6 +45,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Backup.Tasks
 {
+    [Scope]
     public class RestorePortalTask : PortalTaskBase
     {
         private ColumnMapper ColumnMapper { get; set; }
@@ -379,26 +380,6 @@ namespace ASC.Data.Backup.Tasks
                 tenantId);
 
             connection.CreateCommand().WithTimeout(120).ExecuteNonQuery();
-        }
-    }
-
-    public static class RestorePortalTaskExtension
-    {
-        public static DIHelper AddRestorePortalTaskService(this DIHelper services)
-        {
-            if (services.TryAddScoped<RestorePortalTask>())
-            {
-                services.TryAddSingleton<AscCacheNotify>();
-                return services
-                    .AddCoreConfigurationService()
-                    .AddStorageFactoryService()
-                    .AddStorageFactoryConfigService()
-                    .AddModuleProvider()
-                    .AddCoreBaseSettingsService()
-                    .AddLicenseReaderService();
-            }
-
-            return services;
         }
     }
 }

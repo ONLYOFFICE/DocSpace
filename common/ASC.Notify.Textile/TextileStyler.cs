@@ -48,6 +48,7 @@ using Textile.Blocks;
 
 namespace ASC.Notify.Textile
 {
+    [Scope]
     public class TextileStyler : IPatternStyler
     {
         private static readonly Regex VelocityArguments = new Regex(NVelocityPatternFormatter.NoStylePreffix + "(?<arg>.*?)" + NVelocityPatternFormatter.NoStyleSuffix, RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled);
@@ -323,19 +324,6 @@ namespace ASC.Notify.Textile
                                  WebEncoders.Base64UrlEncode(
                                      InstanceCrypto.Encrypt(
                                          Encoding.UTF8.GetBytes(mail.ToLowerInvariant()))));
-        }
-    }
-
-    public static class TextileStylerExtension
-    {
-        public static DIHelper AddTextileStylerService(this DIHelper services)
-        {
-            if (services.TryAddScoped<TextileStyler>())
-            {
-                return services.AddStylerService();
-            }
-
-            return services;
         }
     }
 }

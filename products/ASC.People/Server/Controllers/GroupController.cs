@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using ASC.Api.Core;
 using ASC.Api.Utils;
 using ASC.Common;
 using ASC.Common.Web;
@@ -12,13 +11,12 @@ using ASC.MessagingSystem;
 using ASC.People.Models;
 using ASC.Web.Api.Models;
 using ASC.Web.Api.Routing;
-using ASC.Web.Core.Users;
-using ASC.Web.Studio.Utility;
 
 using Microsoft.AspNetCore.Mvc;
 
 namespace ASC.Employee.Core.Controllers
 {
+    [Scope]
     [DefaultRoute]
     [ApiController]
     public class GroupController : ControllerBase
@@ -289,24 +287,6 @@ namespace ASC.Employee.Core.Controllers
                 UserManager.SetDepartmentManager(@group.ID, userId);
             }
             UserManager.AddUserIntoGroup(userId, @group.ID);
-        }
-    }
-
-    public static class GroupControllerExtention
-    {
-        public static DIHelper AddGroupController(this DIHelper services)
-        {
-            return services
-                .AddGroupWraperFull()
-                .AddMessageServiceService()
-                .AddApiContextService()
-                .AddUserManagerService()
-                .AddUserPhotoManagerService()
-                .AddSecurityContextService()
-                .AddPermissionContextService()
-                .AddCommonLinkUtilityService()
-                .AddDisplayUserSettingsService()
-                .AddMessageTargetService();
         }
     }
 }

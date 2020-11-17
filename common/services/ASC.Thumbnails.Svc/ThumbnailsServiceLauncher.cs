@@ -40,6 +40,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Thumbnails.Svc
 {
+    [Scope]
     public class ThumbnailsServiceLauncher : IHostedService
     {
         private ProcessStartInfo StartInfo { get; set; }
@@ -114,14 +115,6 @@ namespace ASC.Thumbnails.Svc
         {
             StopAsync(cancellationToken);
             Proc = Process.Start(StartInfo);
-        }
-    }
-    public static class ThumbnailsServiceLauncherExtension
-    {
-        public static DIHelper AddThumbnailsServiceLauncher(this DIHelper services)
-        {
-            services.TryAddScoped<ThumbnailsServiceLauncher>();
-            return services;
         }
     }
 }

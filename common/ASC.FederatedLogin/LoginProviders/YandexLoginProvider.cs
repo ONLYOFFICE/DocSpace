@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Utils;
 using ASC.Core;
@@ -43,6 +44,7 @@ using Newtonsoft.Json.Linq;
 
 namespace ASC.FederatedLogin.LoginProviders
 {
+    [Scope]
     public class YandexLoginProvider : BaseLoginProvider<YandexLoginProvider>
     {
         public override string CodeUrl

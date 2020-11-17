@@ -14,6 +14,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Api.Core.Middleware
 {
+    [Scope]
     public class PaymentFilter : IResourceFilter
     {
         private readonly ILog log;
@@ -47,15 +48,6 @@ namespace ASC.Api.Core.Middleware
                     log.WarnFormat("Payment Required {0}.", context.HttpContext.Request.Url());
                 }
             }
-        }
-    }
-
-    public static class PaymentFilterExtension
-    {
-        public static DIHelper AddPaymentFilter(this DIHelper services)
-        {
-            return services
-                .AddTenantExtraService();
         }
     }
 }

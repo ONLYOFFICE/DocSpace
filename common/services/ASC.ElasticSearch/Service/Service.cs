@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Core;
 using ASC.Core.Common.Settings;
@@ -40,6 +41,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.ElasticSearch.Service
 {
+    [Singletone(Additional = typeof(ServiceExtension))]
     public class Service
     {
         private ILifetimeScope Container { get; }
@@ -103,6 +105,7 @@ namespace ASC.ElasticSearch.Service
         //}
     }
 
+    [Scope]
     public class ServiceScope
     {
         private TenantManager TenantManager { get; }
@@ -118,6 +121,14 @@ namespace ASC.ElasticSearch.Service
         {
             tenantManager = TenantManager;
             settingsManager = SettingsManager;
+        }
+    }
+
+    internal class ServiceExtension
+    {
+        public static void Register(DIHelper services)
+        {
+            services.TryAdd<ServiceScope>();
         }
     }
 }

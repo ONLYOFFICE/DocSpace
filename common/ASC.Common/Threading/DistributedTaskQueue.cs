@@ -36,6 +36,7 @@ using ASC.Common.Caching;
 
 namespace ASC.Common.Threading
 {
+    [Singletone]
     public class DistributedTaskCacheNotify
     {
         public ConcurrentDictionary<string, CancellationTokenSource> Cancelations { get; }

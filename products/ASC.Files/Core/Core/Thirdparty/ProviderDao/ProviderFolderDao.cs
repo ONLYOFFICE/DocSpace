@@ -38,6 +38,7 @@ using ASC.Files.Core.Thirdparty;
 
 namespace ASC.Files.Thirdparty.ProviderDao
 {
+    [Scope]
     internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
     {
         public ProviderFolderDao(
@@ -444,22 +445,5 @@ filterType, subjectGroup, subjectID, searchText, searchSubfolders, checkShare);
         }
 
         #endregion
-    }
-
-    public static class ProviderFolderDaoExtention
-    {
-        public static DIHelper AddProviderFolderDaoService(this DIHelper services)
-        {
-            if (services.TryAddScoped<ProviderFolderDao>())
-            {
-                services.TryAddScoped<Folder<string>>();
-                services.TryAddScoped<IFolderDao<string>, ProviderFolderDao>();
-
-                return services
-                    .AddProviderDaoBaseService();
-            }
-
-            return services;
-        }
     }
 }

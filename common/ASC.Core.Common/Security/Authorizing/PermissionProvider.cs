@@ -28,7 +28,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using ASC.Common;
 using ASC.Common.Security;
 using ASC.Common.Security.Authorizing;
 
@@ -51,15 +50,6 @@ namespace ASC.Core.Security.Authorizing
             return AuthorizationManager
                 .GetAcesWithInherits(subject.ID, action.ID, objectId, secObjProvider)
                 .Select(r => new Ace(r.ActionId, r.Reaction));
-        }
-    }
-
-    public static class PermissionProviderConfigExtension
-    {
-        public static DIHelper AddPermissionProviderService(this DIHelper services)
-        {
-            services.TryAddScoped(typeof(IPermissionProvider), typeof(PermissionProvider));
-            return services.AddAuthorizationManagerService();
         }
     }
 }

@@ -41,7 +41,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Notify
 {
-    class EmailSenderSink : Sink
+    public class EmailSenderSink : Sink
     {
         private static readonly string senderName = ASC.Core.Configuration.Constants.NotifyEMailSenderSysName;
         private readonly INotifySender sender;
@@ -167,6 +167,7 @@ namespace ASC.Core.Notify
         }
     }
 
+    [Scope]
     public class EmailSenderSinkScope
     {
         private TenantManager TenantManager { get; }
@@ -183,15 +184,6 @@ namespace ASC.Core.Notify
         public void Deconstruct(out TenantManager tenantManager, out CoreConfiguration coreConfiguration, out IOptionsMonitor<ILog> optionsMonitor)
         {
             (tenantManager, coreConfiguration, optionsMonitor) = (TenantManager, CoreConfiguration, Options);
-        }
-    }
-
-    public static class EmailSenderSinkExtension
-    {
-        public static DIHelper AddEmailSenderSinkService(this DIHelper services)
-        {
-            services.TryAddScoped<EmailSenderSinkScope>();
-            return services;
         }
     }
 }

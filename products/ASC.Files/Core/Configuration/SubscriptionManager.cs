@@ -30,12 +30,13 @@ using System.Collections.Generic;
 using ASC.Common;
 using ASC.Core;
 using ASC.Files.Core.Resources;
+using ASC.Files.Core.Services.NotifyService;
 using ASC.Notify.Model;
 using ASC.Web.Core.Subscriptions;
-using ASC.Files.Core.Services.NotifyService;
 
 namespace ASC.Web.Files.Classes
 {
+    [Scope]
     public class SubscriptionManager : IProductSubscriptionManager
     {
         private readonly Guid _subscrTypeDocuSignComplete = new Guid("{0182E476-D63D-46ED-B928-104861507811}");
@@ -135,21 +136,6 @@ namespace ASC.Web.Files.Classes
         public List<SubscriptionGroup> GetSubscriptionGroups()
         {
             return new List<SubscriptionGroup>();
-        }
-    }
-
-    public static class FilesSubscriptionManagerExtention
-    {
-        public static DIHelper AddFilesSubscriptionManagerService(this DIHelper services)
-        {
-            if (services.TryAddScoped<SubscriptionManager>())
-            {
-                return services
-                    .AddFilesNotifySourceService()
-                    .AddCoreBaseSettingsService();
-            }
-
-            return services;
         }
     }
 }

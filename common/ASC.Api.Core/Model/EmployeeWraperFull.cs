@@ -131,6 +131,7 @@ namespace ASC.Web.Api.Models
         }
     }
 
+    [Scope]
     public class EmployeeWraperFullHelper : EmployeeWraperHelper
     {
         private ApiContext Context { get; }
@@ -286,24 +287,6 @@ namespace ASC.Web.Api.Models
             {
                 employeeWraperFull.Contacts = contacts;
             }
-        }
-    }
-
-    public static class EmployeeWraperFullExtension
-    {
-        public static DIHelper AddEmployeeWraperFull(this DIHelper services)
-        {
-            if (services.TryAddScoped<EmployeeWraperFullHelper>())
-            {
-                return services
-                    .AddTenantManagerService()
-                    .AddWebItemSecurity()
-                    .AddUserManagerService()
-                    .AddEmployeeWraper()
-                    .AddApiDateTimeHelper();
-            }
-
-            return services;
         }
     }
 }

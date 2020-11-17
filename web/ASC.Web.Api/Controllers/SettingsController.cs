@@ -97,6 +97,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Api.Settings
 {
+    [Scope]
     [DefaultRoute]
     [ApiController]
     public partial class SettingsController : ControllerBase
@@ -2764,71 +2765,6 @@ namespace ASC.Api.Settings
             }
 
             MemoryCache.Set(key, ++count, TimeSpan.FromMinutes(expirationMinutes));
-        }
-    }
-
-    public static class SettingsControllerExtension
-    {
-        public static DIHelper AddSettingsController(this DIHelper services)
-        {
-            return services
-                .AddMessageTargetService()
-                .AddCoreConfigurationService()
-                .AddIPRestrictionsService()
-                .AddDisplayUserSettingsService()
-                .AddSetupInfo()
-                .AddCommonLinkUtilityService()
-                .AddCoreBaseSettingsService()
-                .AddTenantUtilService()
-                .AddEmailValidationKeyProviderService()
-                .AddMessageServiceService()
-                .AddStudioNotifyServiceService()
-                .AddApiContextService()
-                .AddUserManagerService()
-                .AddTenantManagerService()
-                .AddTenantExtraService()
-                .AddTenantStatisticsProviderService()
-                .AddUserPhotoManagerService()
-                .AddAuthContextService()
-                .AddCookiesManagerService()
-                .AddWebItemSecurity()
-                .AddStudioNotifyHelperService()
-                .AddLicenseReaderService()
-                .AddPermissionContextService()
-                .AddWebItemManager()
-                .AddWebItemManagerSecurity()
-                .AddStorageSettingsService()
-                .AddStorageFactoryService()
-                .AddStorageFactoryConfigService()
-                .AddSettingsManagerService()
-                .AddTenantInfoSettingsService()
-                .AddColorThemesSettingsHelperService()
-                .AddTenantWhiteLabelSettingsService()
-                .AddStudioSmsNotificationSettingsService()
-                .AddTfaManagerService()
-                .AddStorageHelperService()
-                .AddTenantLogoManagerService()
-                .AddBuildVersionService()
-                .AddStatisticManagerService()
-                .AddEmployeeWraper()
-                .AddConsumerFactoryService()
-                .AddSmsProviderManagerService()
-                .AddCustomNamingPeopleService()
-                .AddProviderManagerService()
-                .AddAccountLinker()
-                .AddMobileDetectorService()
-                .AddFirstTimeTenantSettings()
-                .AddServiceClient()
-                .AddTwilioProviderService()
-                .AddEncryptionServiceClient()
-                .AddEncryptionSettingsHelperService()
-                .AddStorageFactoryService()
-                .AddBackupService()
-                .AddEncryptionServiceNotifierService()
-                .AddTelegramLoginProviderService()
-                .AddTelegramHelperSerivce()
-                .AddPasswordHasherService()
-                .AddBackupAjaxHandler();
         }
     }
 }

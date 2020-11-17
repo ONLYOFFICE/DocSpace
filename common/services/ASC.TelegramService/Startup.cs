@@ -48,7 +48,7 @@ namespace ASC.TelegramService
         {
             base.ConfigureServices(services);
 
-            DIHelper.AddTelegramLauncher();
+            DIHelper.TryAdd<TelegramLauncher>();
 
             services.AddHostedService<TelegramLauncher>();
         }

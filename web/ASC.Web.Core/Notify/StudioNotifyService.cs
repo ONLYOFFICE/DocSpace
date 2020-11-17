@@ -53,6 +53,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Studio.Core.Notify
 {
+    [Scope(Additional = typeof(StudioNotifyServiceExtension))]
     public class StudioNotifyService
     {
         private readonly StudioNotifyServiceHelper client;
@@ -1011,6 +1012,7 @@ namespace ASC.Web.Studio.Core.Notify
         #endregion
     }
 
+    [Scope]
     public class StudioNotifyServiceScope
     {
         private TenantManager TenantManager { get; }
@@ -1031,29 +1033,9 @@ namespace ASC.Web.Studio.Core.Notify
 
     public static class StudioNotifyServiceExtension
     {
-        public static DIHelper AddStudioNotifyServiceService(this DIHelper services)
+        public static void Register(DIHelper services)
         {
-            if (services.TryAddScoped<StudioNotifyService>())
-            {
-                services.TryAddScoped<StudioNotifyServiceScope>();
-                return services
-                    .AddDisplayUserSettingsService()
-                    .AddMailWhiteLabelSettingsService()
-                    .AddAdditionalWhiteLabelSettingsService()
-                    .AddStudioNotifyServiceHelper()
-                    .AddUserManagerService()
-                    .AddStudioNotifyHelperService()
-                    .AddTenantExtraService()
-                    .AddAuthManager()
-                    .AddAuthContextService()
-                    .AddTenantManagerService()
-                    .AddCoreBaseSettingsService()
-                    .AddCommonLinkUtilityService()
-                    .AddSetupInfo()
-                    .AddWebItemSecurity();
-            }
-
-            return services;
+            services.TryAdd<StudioNotifyServiceScope>();
         }
     }
 }

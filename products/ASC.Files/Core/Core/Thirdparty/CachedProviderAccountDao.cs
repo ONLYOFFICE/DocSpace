@@ -43,6 +43,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Files.Thirdparty
 {
+    [Singletone]
     internal class CachedProviderAccountDaoNotify
     {
         public ConcurrentDictionary<string, IProviderInfo> Cache { get; private set; }
@@ -60,12 +61,13 @@ namespace ASC.Files.Thirdparty
         }
     }
 
+    [Scope]
     internal class CachedProviderAccountDao : ProviderAccountDao
     {
         private readonly ConcurrentDictionary<string, IProviderInfo> cache;
         private readonly ICacheNotify<ProviderAccountCacheItem> cacheNotify;
 
-        private readonly string _rootKey;
+        private string _rootKey { get => TenantID.ToString(CultureInfo.InvariantCulture); }
 
         public CachedProviderAccountDao(
             IServiceProvider serviceProvider,
@@ -81,7 +83,6 @@ namespace ASC.Files.Thirdparty
         {
             cache = cachedProviderAccountDaoNotify.Cache;
             cacheNotify = cachedProviderAccountDaoNotify.CacheNotify;
-            _rootKey = tenantManager.GetCurrentTenant().TenantId.ToString(CultureInfo.InvariantCulture);
         }
 
         public override IProviderInfo GetProviderInfo(int linkId)
@@ -119,22 +120,6 @@ namespace ASC.Files.Thirdparty
             var key = _rootKey + linkId.ToString(CultureInfo.InvariantCulture);
             cacheNotify.Publish(new ProviderAccountCacheItem { Key = key }, CacheNotifyAction.Any);
             return result;
-        }
-    }
-    public static class CachedProviderAccountDaoExtention
-    {
-        public static DIHelper AddCachedProviderAccountDaoService(this DIHelper services)
-        {
-            if (services.TryAddScoped<IProviderDao, ProviderAccountDao>())
-            {
-                services.TryAddScoped<CachedProviderAccountDao>();
-                services.TryAddSingleton<CachedProviderAccountDaoNotify>();
-
-                return services
-                    .AddProviderAccountDaoService();
-            }
-
-            return services;
         }
     }
 }

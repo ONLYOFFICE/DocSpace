@@ -74,6 +74,7 @@ namespace ASC.Web.Files.HttpHandlers
         }
     }
 
+    [Scope]
     public class ChunkedUploaderHandlerService
     {
         private TenantManager TenantManager { get; }
@@ -399,25 +400,6 @@ namespace ASC.Web.Files.HttpHandlers
 
     public static class ChunkedUploaderHandlerExtention
     {
-        public static DIHelper AddChunkedUploaderHandlerService(this DIHelper services)
-        {
-            if (services.TryAddScoped<ChunkedUploaderHandlerService>())
-            {
-                return services
-                    .AddTenantManagerService()
-                    .AddFileUploaderService()
-                    .AddFilesMessageService()
-                    .AddAuthManager()
-                    .AddSecurityContextService()
-                    .AddSetupInfo()
-                    .AddInstanceCryptoService()
-                    .AddChunkedUploadSessionHolderService()
-                    .AddChunkedUploadSessionHelperService();
-            }
-
-            return services;
-        }
-
         public static IApplicationBuilder UseChunkedUploaderHandler(this IApplicationBuilder builder)
         {
             return builder.UseMiddleware<ChunkedUploaderHandler>();

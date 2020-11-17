@@ -27,8 +27,11 @@
 using System;
 using System.Collections.Generic;
 
+using ASC.Common;
+
 namespace ASC.Files.Core
 {
+    [Scope]
     public interface ITagDao<T>
     {
         IEnumerable<Tag> GetTags(Guid subject, TagType tagType, IEnumerable<FileEntry<T>> fileEntries);

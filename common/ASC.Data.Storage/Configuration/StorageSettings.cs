@@ -40,6 +40,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Storage.Configuration
 {
+    [Singletone(Additional = typeof(StorageSettingsExtension))]
     public class BaseStorageSettingsListener
     {
         private IServiceProvider ServiceProvider { get; }
@@ -112,6 +113,7 @@ namespace ASC.Data.Storage.Configuration
         }
     }
 
+    [Scope]
     [Serializable]
     public class CdnStorageSettings : BaseStorageSettings<CdnStorageSettings>
     {
@@ -123,6 +125,7 @@ namespace ASC.Data.Storage.Configuration
         public override Func<DataStoreConsumer, DataStoreConsumer> Switch { get { return d => d.Cdn; } }
     }
 
+    [Scope]
     public class StorageSettingsHelper
     {
         private StorageFactoryConfig StorageFactoryConfig { get; }
@@ -224,6 +227,7 @@ namespace ASC.Data.Storage.Configuration
         }
     }
 
+    [Scope]
     public class BaseStorageSettingsListenerScope
     {
         private StorageSettingsHelper StorageSettingsHelper { get; }
@@ -245,24 +249,11 @@ namespace ASC.Data.Storage.Configuration
         }
     }
 
-    public static class StorageSettingsExtension
+    public class StorageSettingsExtension
     {
-        public static DIHelper AddStorageSettingsService(this DIHelper services)
+        public static void Register(DIHelper services)
         {
-            if (services.TryAddScoped<StorageSettingsHelper>())
-            {
-                services.TryAddSingleton<BaseStorageSettingsListener>();
-                services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
-                services.TryAddScoped<BaseStorageSettingsListenerScope>();
-                services.TryAddScoped<CdnStorageSettings>();
-                return services
-                    .AddSettingsManagerService()
-                    .AddConsumerFactoryService()
-                    .AddStorageFactoryConfigService()
-                    .AddPathUtilsService();
-            }
-
-            return services;
+            services.TryAdd<BaseStorageSettingsListenerScope>();
         }
     }
 }

@@ -45,6 +45,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Files.Thirdparty.GoogleDrive
 {
+    [Scope]
     internal class GoogleDriveFolderDao : GoogleDriveDaoBase, IFolderDao<string>
     {
         private CrossDao CrossDao { get; }
@@ -520,15 +521,5 @@ namespace ASC.Files.Thirdparty.GoogleDrive
         }
 
         #endregion
-    }
-
-    public static class GoogleDriveFolderDaoExtention
-    {
-        public static DIHelper AddGoogleDriveFolderDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<GoogleDriveFolderDao>();
-
-            return services;
-        }
     }
 }
