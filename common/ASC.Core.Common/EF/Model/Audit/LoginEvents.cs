@@ -25,10 +25,10 @@ namespace ASC.Core.Common.EF.Model
                 entity.ToTable("login_events");
 
                 entity.HasIndex(e => e.Date)
-                    .HasName("date");
+                    .HasDatabaseName("date");
 
                 entity.HasIndex(e => new { e.TenantId, e.UserId })
-                    .HasName("tenant_id");
+                    .HasDatabaseName("tenant_id");
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
@@ -91,10 +91,10 @@ namespace ASC.Core.Common.EF.Model
                 entity.ToTable("login_events", "onlyoffice");
 
                 entity.HasIndex(e => e.Date)
-                    .HasName("date_login_events");
+                    .HasDatabaseName("date_login_events");
 
                 entity.HasIndex(e => new { e.UserId, e.TenantId })
-                    .HasName("tenant_id_login_events");
+                    .HasDatabaseName("tenant_id_login_events");
 
                 entity.Property(e => e.Id).HasColumnName("id");
 

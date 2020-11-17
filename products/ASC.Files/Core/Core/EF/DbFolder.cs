@@ -80,10 +80,10 @@ namespace ASC.Files.Core.EF
                 entity.ToTable("files_folder");
 
                 entity.HasIndex(e => e.ModifiedOn)
-                    .HasName("modified_on");
+                    .HasDatabaseName("modified_on");
 
                 entity.HasIndex(e => new { e.TenantId, e.ParentId })
-                    .HasName("parent_id");
+                    .HasDatabaseName("parent_id");
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
@@ -134,10 +134,10 @@ namespace ASC.Files.Core.EF
                 entity.ToTable("files_folder", "onlyoffice");
 
                 entity.HasIndex(e => e.ModifiedOn)
-                    .HasName("modified_on_files_folder");
+                    .HasDatabaseName("modified_on_files_folder");
 
                 entity.HasIndex(e => new { e.TenantId, e.ParentId })
-                    .HasName("parent_id");
+                    .HasDatabaseName("parent_id");
 
                 entity.Property(e => e.Id).HasColumnName("id");
 

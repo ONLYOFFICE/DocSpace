@@ -51,10 +51,10 @@ namespace ASC.Files.Core.EF
                 entity.ToTable("files_security");
 
                 entity.HasIndex(e => e.Owner)
-                    .HasName("owner");
+                    .HasDatabaseName("owner");
 
                 entity.HasIndex(e => new { e.TenantId, e.EntryType, e.EntryId, e.Owner })
-                    .HasName("tenant_id");
+                    .HasDatabaseName("tenant_id");
 
                 entity.Property(e => e.TenantId).HasColumnName("tenant_id");
 
@@ -98,10 +98,10 @@ namespace ASC.Files.Core.EF
                 entity.ToTable("files_security", "onlyoffice");
 
                 entity.HasIndex(e => e.Owner)
-                    .HasName("owner");
+                    .HasDatabaseName("owner");
 
                 entity.HasIndex(e => new { e.EntryId, e.TenantId, e.EntryType, e.Owner })
-                    .HasName("tenant_id_files_security");
+                    .HasDatabaseName("tenant_id_files_security");
 
                 entity.Property(e => e.TenantId).HasColumnName("tenant_id");
 

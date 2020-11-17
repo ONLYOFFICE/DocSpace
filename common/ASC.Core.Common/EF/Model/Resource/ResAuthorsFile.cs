@@ -31,7 +31,7 @@ namespace ASC.Core.Common.EF.Model.Resource
                 entity.ToTable("res_authorsfile");
 
                 entity.HasIndex(e => e.FileId)
-                    .HasName("res_authorsfile_FK2");
+                    .HasDatabaseName("res_authorsfile_FK2");
 
                 entity.Property(e => e.AuthorLogin)
                     .HasColumnName("authorLogin")
@@ -54,7 +54,7 @@ namespace ASC.Core.Common.EF.Model.Resource
                 entity.ToTable("res_authorsfile", "onlyoffice");
 
                 entity.HasIndex(e => e.FileId)
-                    .HasName("res_authorsfile_FK2");
+                    .HasDatabaseName("res_authorsfile_FK2");
 
                 entity.Property(e => e.AuthorLogin)
                     .HasColumnName("authorLogin")

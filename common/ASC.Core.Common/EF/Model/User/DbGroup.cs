@@ -42,10 +42,10 @@ namespace ASC.Core.Common.EF
                 entity.ToTable("core_group");
 
                 entity.HasIndex(e => e.LastModified)
-                    .HasName("last_modified");
+                    .HasDatabaseName("last_modified");
 
                 entity.HasIndex(e => new { e.Tenant, e.ParentId })
-                    .HasName("parentid");
+                    .HasDatabaseName("parentid");
 
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
@@ -95,10 +95,10 @@ namespace ASC.Core.Common.EF
                 entity.ToTable("core_group");
 
                 entity.HasIndex(e => e.LastModified)
-                    .HasName("last_modified");
+                    .HasDatabaseName("last_modified");
 
                 entity.HasIndex(e => new { e.Tenant, e.ParentId })
-                    .HasName("parentid");
+                    .HasDatabaseName("parentid");
 
                 entity.Property(e => e.Id)
                     .HasColumnName("id")

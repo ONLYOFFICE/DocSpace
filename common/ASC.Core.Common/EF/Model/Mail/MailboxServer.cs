@@ -546,7 +546,7 @@ namespace ASC.Core.Common.EF.Model.Mail
                 entity.ToTable("mail_mailbox_server");
 
                 entity.HasIndex(e => e.IdProvider)
-                    .HasName("id_provider");
+                    .HasDatabaseName("id_provider");
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
@@ -600,7 +600,7 @@ namespace ASC.Core.Common.EF.Model.Mail
                 entity.ToTable("mail_mailbox_server", "onlyoffice");
 
                 entity.HasIndex(e => e.IdProvider)
-                    .HasName("id_provider_mail_mailbox_server");
+                    .HasDatabaseName("id_provider_mail_mailbox_server");
 
                 entity.Property(e => e.Id).HasColumnName("id");
 

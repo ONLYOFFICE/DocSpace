@@ -57,10 +57,10 @@ namespace ASC.Files.Core.EF
                 entity.ToTable("files_tag_link");
 
                 entity.HasIndex(e => e.CreateOn)
-                    .HasName("create_on");
+                    .HasDatabaseName("create_on");
 
                 entity.HasIndex(e => new { e.TenantId, e.EntryId, e.EntryType })
-                    .HasName("entry_id");
+                    .HasDatabaseName("entry_id");
 
                 entity.Property(e => e.TenantId).HasColumnName("tenant_id");
 
@@ -97,10 +97,10 @@ namespace ASC.Files.Core.EF
                 entity.ToTable("files_tag_link", "onlyoffice");
 
                 entity.HasIndex(e => e.CreateOn)
-                    .HasName("create_on_files_tag_link");
+                    .HasDatabaseName("create_on_files_tag_link");
 
                 entity.HasIndex(e => new { e.TenantId, e.EntryType, e.EntryId })
-                    .HasName("entry_id");
+                    .HasDatabaseName("entry_id");
 
                 entity.Property(e => e.TenantId).HasColumnName("tenant_id");
 

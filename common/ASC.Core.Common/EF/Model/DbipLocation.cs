@@ -59,7 +59,7 @@ namespace ASC.Core.Common.EF.Model
                 entity.ToTable("dbip_location");
 
                 entity.HasIndex(e => e.IPStart)
-                    .HasName("ip_start");
+                    .HasDatabaseName("ip_start");
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
@@ -145,7 +145,7 @@ namespace ASC.Core.Common.EF.Model
                 entity.ToTable("dbip_location", "onlyoffice");
 
                 entity.HasIndex(e => e.IPStart)
-                    .HasName("ip_start");
+                    .HasDatabaseName("ip_start");
 
                 entity.Property(e => e.Id).HasColumnName("id");
 

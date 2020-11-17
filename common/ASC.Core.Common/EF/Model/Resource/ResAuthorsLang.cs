@@ -30,7 +30,7 @@ namespace ASC.Core.Common.EF.Model.Resource
                 entity.ToTable("res_authorslang");
 
                 entity.HasIndex(e => e.CultureTitle)
-                    .HasName("res_authorslang_FK2");
+                    .HasDatabaseName("res_authorslang_FK2");
 
                 entity.Property(e => e.AuthorLogin)
                     .HasColumnName("authorLogin")
@@ -55,7 +55,7 @@ namespace ASC.Core.Common.EF.Model.Resource
                 entity.ToTable("res_authorslang", "onlyoffice");
 
                 entity.HasIndex(e => e.CultureTitle)
-                    .HasName("res_authorslang_FK2");
+                    .HasDatabaseName("res_authorslang_FK2");
 
                 entity.Property(e => e.AuthorLogin)
                     .HasColumnName("authorLogin")

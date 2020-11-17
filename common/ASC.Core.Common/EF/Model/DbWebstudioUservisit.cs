@@ -43,7 +43,7 @@ namespace ASC.Core.Common.EF.Model
                 entity.ToTable("webstudio_uservisit");
 
                 entity.HasIndex(e => e.VisitDate)
-                    .HasName("visitdate");
+                    .HasDatabaseName("visitdate");
 
                 entity.Property(e => e.TenantId).HasColumnName("tenantid");
 
@@ -84,7 +84,7 @@ namespace ASC.Core.Common.EF.Model
                 entity.ToTable("webstudio_uservisit", "onlyoffice");
 
                 entity.HasIndex(e => e.VisitDate)
-                    .HasName("visitdate");
+                    .HasDatabaseName("visitdate");
 
                 entity.Property(e => e.TenantId).HasColumnName("tenantid");
 

@@ -32,7 +32,7 @@ namespace ASC.Core.Common.EF.Model.Resource
                 entity.ToTable("res_files");
 
                 entity.HasIndex(e => e.ResName)
-                    .HasName("resname")
+                    .HasDatabaseName("resname")
                     .IsUnique();
 
                 entity.Property(e => e.Id).HasColumnName("id");
@@ -79,7 +79,7 @@ namespace ASC.Core.Common.EF.Model.Resource
                 entity.ToTable("res_files", "onlyoffice");
 
                 entity.HasIndex(e => e.ResName)
-                    .HasName("resname")
+                    .HasDatabaseName("resname")
                     .IsUnique();
 
                 entity.Property(e => e.Id).HasColumnName("id");

@@ -58,10 +58,10 @@ namespace ASC.Core.Common.EF
                 entity.ToTable("core_usersecurity");
 
                 entity.HasIndex(e => e.PwdHash)
-                    .HasName("pwdhash");
+                    .HasDatabaseName("pwdhash");
 
                 entity.HasIndex(e => e.Tenant)
-                    .HasName("tenant");
+                    .HasDatabaseName("tenant");
 
                 entity.Property(e => e.UserId)
                     .HasColumnName("userid")
@@ -99,10 +99,10 @@ namespace ASC.Core.Common.EF
                 entity.ToTable("core_usersecurity", "onlyoffice");
 
                 entity.HasIndex(e => e.PwdHash)
-                    .HasName("pwdhash");
+                    .HasDatabaseName("pwdhash");
 
                 entity.HasIndex(e => e.Tenant)
-                    .HasName("tenant_core_usersecurity");
+                    .HasDatabaseName("tenant_core_usersecurity");
 
                 entity.Property(e => e.UserId)
                     .HasColumnName("userid")

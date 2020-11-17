@@ -38,7 +38,7 @@ namespace ASC.Files.Core.EF
                 entity.ToTable("files_tag");
 
                 entity.HasIndex(e => new { e.TenantId, e.Owner, e.Name, e.Flag })
-                    .HasName("name");
+                    .HasDatabaseName("name");
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
@@ -68,7 +68,7 @@ namespace ASC.Files.Core.EF
                 entity.ToTable("files_tag", "onlyoffice");
 
                 entity.HasIndex(e => new { e.TenantId, e.Owner, e.Name, e.Flag })
-                    .HasName("name_files_tag");
+                    .HasDatabaseName("name_files_tag");
 
                 entity.Property(e => e.Id).HasColumnName("id");
 

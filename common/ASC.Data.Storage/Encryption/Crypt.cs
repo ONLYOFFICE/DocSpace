@@ -119,7 +119,6 @@ namespace ASC.Data.Storage.Encryption
             }
 
             var ecryptedFilePath = GetUniqFileName(filePath, ".enc");
-
             try
             {
                 var metadata = EncryptionFactory.GetMetadata();
@@ -152,14 +151,14 @@ namespace ASC.Data.Storage.Encryption
 
                 ReplaceFile(ecryptedFilePath, filePath);
             }
-            catch (Exception exception)
+            catch (Exception)
             {
                 if (File.Exists(ecryptedFilePath))
                 {
                     File.Delete(ecryptedFilePath);
                 }
 
-                throw exception;
+                throw;
             }
         }
 
@@ -206,14 +205,14 @@ namespace ASC.Data.Storage.Encryption
 
                 ReplaceFile(decryptedFilePath, filePath);
             }
-            catch (Exception exception)
+            catch (Exception)
             {
                 if (File.Exists(decryptedFilePath))
                 {
                     File.Delete(decryptedFilePath);
                 }
 
-                throw exception;
+                throw;
             }
         }
 
@@ -315,10 +314,10 @@ namespace ASC.Data.Storage.Encryption
             {
                 File.Move(modifiedFilePath, originalFilePath);
             }
-            catch (Exception exception)
+            catch (Exception)
             {
                 File.Move(tempFilePath, originalFilePath);
-                throw exception;
+                throw;
             }
             finally
             {

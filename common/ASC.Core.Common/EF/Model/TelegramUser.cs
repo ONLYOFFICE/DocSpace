@@ -42,7 +42,7 @@ namespace ASC.Core.Common.EF.Model
                 entity.ToTable("telegram_users");
 
                 entity.HasIndex(e => e.TelegramUserId)
-                    .HasName("tgId");
+                    .HasDatabaseName("tgId");
 
                 entity.Property(e => e.TenantId).HasColumnName("tenant_id");
 
@@ -65,7 +65,7 @@ namespace ASC.Core.Common.EF.Model
                 entity.ToTable("telegram_users", "onlyoffice");
 
                 entity.HasIndex(e => e.TelegramUserId)
-                    .HasName("tgId");
+                    .HasDatabaseName("tgId");
 
                 entity.Property(e => e.TenantId).HasColumnName("tenant_id");
 

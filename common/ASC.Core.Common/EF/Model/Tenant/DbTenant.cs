@@ -84,13 +84,13 @@ namespace ASC.Core.Common.EF.Model
                 entity.ToTable("tenants_tenants");
 
                 entity.HasIndex(e => e.LastModified)
-                    .HasName("last_modified");
+                    .HasDatabaseName("last_modified");
 
                 entity.HasIndex(e => e.MappedDomain)
-                    .HasName("mappeddomain");
+                    .HasDatabaseName("mappeddomain");
 
                 entity.HasIndex(e => e.Version)
-                    .HasName("version");
+                    .HasDatabaseName("version");
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
@@ -199,17 +199,17 @@ namespace ASC.Core.Common.EF.Model
                 entity.ToTable("tenants_tenants", "onlyoffice");
 
                 entity.HasIndex(e => e.Alias)
-                    .HasName("alias")
+                    .HasDatabaseName("alias")
                     .IsUnique();
 
                 entity.HasIndex(e => e.LastModified)
-                    .HasName("last_modified_tenants_tenants");
+                    .HasDatabaseName("last_modified_tenants_tenants");
 
                 entity.HasIndex(e => e.MappedDomain)
-                    .HasName("mappeddomain");
+                    .HasDatabaseName("mappeddomain");
 
                 entity.HasIndex(e => e.Version)
-                    .HasName("version");
+                    .HasDatabaseName("version");
 
                 entity.Property(e => e.Id).HasColumnName("id");
 

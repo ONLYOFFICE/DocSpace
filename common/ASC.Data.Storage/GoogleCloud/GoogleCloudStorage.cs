@@ -787,14 +787,14 @@ namespace ASC.Data.Storage.GoogleCloud
                     }
 
                     if (status != 308)
-                        throw (ex);
+                        throw;
 
                     break;
                 }
-                catch (Exception ex)
+                catch
                 {
                     AbortChunkedUpload(domain, path, uploadUri);
-                    throw (ex);
+                    throw;
                 }
             }
 

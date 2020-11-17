@@ -31,7 +31,7 @@ namespace ASC.Core.Common.EF.Model
                 entity.ToTable("crm_voip_number");
 
                 entity.HasIndex(e => e.TenantId)
-                    .HasName("tenant_id");
+                    .HasDatabaseName("tenant_id");
 
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
@@ -68,7 +68,7 @@ namespace ASC.Core.Common.EF.Model
                 entity.ToTable("crm_voip_number", "onlyoffice");
 
                 entity.HasIndex(e => e.TenantId)
-                    .HasName("tenant_id_crm_voip_number");
+                    .HasDatabaseName("tenant_id_crm_voip_number");
 
                 entity.Property(e => e.Id)
                     .HasColumnName("id")

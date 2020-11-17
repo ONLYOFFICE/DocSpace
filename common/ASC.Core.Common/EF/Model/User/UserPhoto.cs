@@ -42,7 +42,7 @@ namespace ASC.Core.Common.EF
                 entity.ToTable("core_userphoto");
 
                 entity.HasIndex(e => e.Tenant)
-                    .HasName("tenant");
+                    .HasDatabaseName("tenant");
 
                 entity.Property(e => e.UserId)
                     .HasColumnName("userid")
@@ -68,7 +68,7 @@ namespace ASC.Core.Common.EF
                 entity.ToTable("core_userphoto", "onlyoffice");
 
                 entity.HasIndex(e => e.Tenant)
-                    .HasName("tenant_core_userphoto");
+                    .HasDatabaseName("tenant_core_userphoto");
 
                 entity.Property(e => e.UserId)
                     .HasColumnName("userid")

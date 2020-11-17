@@ -39,7 +39,7 @@ namespace ASC.Core.Common.EF.Model
                 entity.ToTable("feed_users");
 
                 entity.HasIndex(e => e.UserId)
-                    .HasName("user_id");
+                    .HasDatabaseName("user_id");
 
                 entity.Property(e => e.FeedId)
                     .HasColumnName("feed_id")
@@ -64,7 +64,7 @@ namespace ASC.Core.Common.EF.Model
                 entity.ToTable("feed_users", "onlyoffice");
 
                 entity.HasIndex(e => e.UserId)
-                    .HasName("user_id_feed_users");
+                    .HasDatabaseName("user_id_feed_users");
 
                 entity.Property(e => e.FeedId)
                     .HasColumnName("feed_id")

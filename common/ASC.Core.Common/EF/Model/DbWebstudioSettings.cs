@@ -42,7 +42,7 @@ namespace ASC.Core.Common.EF.Model
                 entity.ToTable("webstudio_settings");
 
                 entity.HasIndex(e => e.Id)
-                    .HasName("ID");
+                    .HasDatabaseName("ID");
 
                 entity.Property(e => e.TenantId).HasColumnName("TenantID");
 
@@ -75,7 +75,7 @@ namespace ASC.Core.Common.EF.Model
                 entity.ToTable("webstudio_settings", "onlyoffice");
 
                 entity.HasIndex(e => e.Id)
-                    .HasName("ID");
+                    .HasDatabaseName("ID");
 
                 entity.Property(e => e.TenantId).HasColumnName("TenantID");
 

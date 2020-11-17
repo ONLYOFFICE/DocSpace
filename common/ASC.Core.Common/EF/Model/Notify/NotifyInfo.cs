@@ -38,7 +38,7 @@ namespace ASC.Core.Common.EF.Model
                 entity.ToTable("notify_info");
 
                 entity.HasIndex(e => e.State)
-                    .HasName("state");
+                    .HasDatabaseName("state");
 
                 entity.Property(e => e.NotifyId).HasColumnName("notify_id");
 
@@ -63,7 +63,7 @@ namespace ASC.Core.Common.EF.Model
                 entity.ToTable("notify_info", "onlyoffice");
 
                 entity.HasIndex(e => e.State)
-                    .HasName("state");
+                    .HasDatabaseName("state");
 
                 entity.Property(e => e.NotifyId)
                     .HasColumnName("notify_id")

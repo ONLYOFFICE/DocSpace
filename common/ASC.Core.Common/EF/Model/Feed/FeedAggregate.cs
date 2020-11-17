@@ -52,13 +52,13 @@ namespace ASC.Core.Common.EF.Model
                 entity.ToTable("feed_aggregate");
 
                 entity.HasIndex(e => new { e.Tenant, e.AggregateDate })
-                    .HasName("aggregated_date");
+                    .HasDatabaseName("aggregated_date");
 
                 entity.HasIndex(e => new { e.Tenant, e.ModifiedDate })
-                    .HasName("modified_date");
+                    .HasDatabaseName("modified_date");
 
                 entity.HasIndex(e => new { e.Tenant, e.Product })
-                    .HasName("product");
+                    .HasDatabaseName("product");
 
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
@@ -135,13 +135,13 @@ namespace ASC.Core.Common.EF.Model
                 entity.ToTable("feed_aggregate", "onlyoffice");
 
                 entity.HasIndex(e => new { e.Tenant, e.AggregateDate })
-                    .HasName("aggregated_date");
+                    .HasDatabaseName("aggregated_date");
 
                 entity.HasIndex(e => new { e.Tenant, e.ModifiedDate })
-                    .HasName("modified_date");
+                    .HasDatabaseName("modified_date");
 
                 entity.HasIndex(e => new { e.Tenant, e.Product })
-                    .HasName("product");
+                    .HasDatabaseName("product");
 
                 entity.Property(e => e.Id)
                     .HasColumnName("id")

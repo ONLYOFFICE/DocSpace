@@ -48,7 +48,7 @@ namespace ASC.Files.Core.EF
                 entity.ToTable("files_folder_tree");
 
                 entity.HasIndex(e => e.FolderId)
-                    .HasName("folder_id");
+                    .HasDatabaseName("folder_id");
 
                 entity.Property(e => e.ParentId).HasColumnName("parent_id");
 
@@ -67,7 +67,7 @@ namespace ASC.Files.Core.EF
                 entity.ToTable("files_folder_tree", "onlyoffice");
 
                 entity.HasIndex(e => e.FolderId)
-                    .HasName("folder_id_files_folder_tree");
+                    .HasDatabaseName("folder_id_files_folder_tree");
 
                 entity.Property(e => e.ParentId).HasColumnName("parent_id");
 
