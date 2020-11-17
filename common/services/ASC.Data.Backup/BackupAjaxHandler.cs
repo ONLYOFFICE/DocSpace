@@ -177,7 +177,7 @@ namespace ASC.Data.Backup
                 LastBackupTime = response.LastBackupTime
             };
 
-            if ((BackupStorageType)response.StorageType == BackupStorageType.CustomCloud)
+            if (response.StorageType == BackupStorageType.CustomCloud)
             {
                 var amazonSettings = CoreConfiguration.GetSection<AmazonS3Settings>();
 
@@ -208,7 +208,7 @@ namespace ASC.Data.Backup
                 BackupService.CreateSchedule(Schedule);
 
             }
-            else if ((BackupStorageType)response.StorageType != BackupStorageType.ThirdPartyConsumer)
+            else if (response.StorageType != BackupStorageType.ThirdPartyConsumer)
             {
                 schedule.StorageParams["folderId"] = response.StorageBasePath;
             }

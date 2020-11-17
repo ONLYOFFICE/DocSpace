@@ -1,9 +1,9 @@
-﻿using ASC.Core.Common.EF.Model;
+﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
+
+using ASC.Core.Common.EF.Model;
 
 using Microsoft.EntityFrameworkCore;
-
-using System;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ASC.Core.Common.EF
 {

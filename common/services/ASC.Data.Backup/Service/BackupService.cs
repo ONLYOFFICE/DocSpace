@@ -185,7 +185,7 @@ namespace ASC.Data.Backup.Service
 
         public void StartRestore(StartRestoreRequest request)
         {
-            if ((BackupStorageType)request.StorageType == BackupStorageType.Local)
+            if (request.StorageType == BackupStorageType.Local)
             {
                 if (string.IsNullOrEmpty(request.FilePathOrId) || !File.Exists(request.FilePathOrId))
                 {

@@ -1,11 +1,11 @@
-﻿using ASC.Common;
+﻿using System;
+using System.Collections.Generic;
+
+using ASC.Common;
 using ASC.Core.Common.EF.Model;
 using ASC.Core.Common.EF.Model.Resource;
 
 using Microsoft.EntityFrameworkCore;
-
-using System;
-using System.Collections.Generic;
 
 namespace ASC.Core.Common.EF.Context
 {

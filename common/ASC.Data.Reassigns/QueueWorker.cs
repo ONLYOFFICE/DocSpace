@@ -68,7 +68,7 @@ namespace ASC.Data.Reassigns
         public T GetProgressItemStatus(int tenantId, Guid userId)
         {
             var id = GetProgressItemId(tenantId, userId);
-            return Queue.GetStatus(id) as T;
+            return Queue.GetStatus(id);
         }
 
         public void Terminate(int tenantId, Guid userId)

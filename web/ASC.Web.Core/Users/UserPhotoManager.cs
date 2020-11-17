@@ -608,25 +608,25 @@ namespace ASC.Web.Core.Users
 
                         if (width > height)
                         {
-                            height = (int)((double)height * (double)maxWidth / (double)width + 0.5);
+                            height = (int)(height * (double)maxWidth / width + 0.5);
                             width = maxWidth;
                         }
                         else
                         {
-                            width = (int)((double)width * (double)maxHeight / (double)height + 0.5);
+                            width = (int)(width * (double)maxHeight / height + 0.5);
                             height = maxHeight;
                         }
                     }
 
                     if (width > maxWidth && height <= maxHeight)
                     {
-                        height = (int)((double)height * (double)maxWidth / (double)width + 0.5);
+                        height = (int)(height * (double)maxWidth / width + 0.5);
                         width = maxWidth;
                     }
 
                     if (width <= maxWidth && height > maxHeight)
                     {
-                        width = (int)((double)width * (double)maxHeight / (double)height + 0.5);
+                        width = (int)(width * (double)maxHeight / height + 0.5);
                         height = maxHeight;
                     }
 

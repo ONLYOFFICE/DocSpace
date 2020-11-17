@@ -353,13 +353,13 @@ namespace ASC.Files.Core.Data
 
                 //full path to root
                 var oldTree = FilesDbContext.Tree
-                    .Where(r => r.FolderId == (int)folder.ParentFolderID);
+                    .Where(r => r.FolderId == folder.ParentFolderID);
 
                 foreach (var o in oldTree)
                 {
                     var treeToAdd = new DbFolderTree
                     {
-                        FolderId = (int)folder.ID,
+                        FolderId = folder.ID,
                         ParentId = o.ParentId,
                         Level = o.Level + 1
                     };

@@ -241,7 +241,7 @@ namespace ASC.Data.Storage.GoogleCloud
         {
             var contentDisposition = string.Format("attachment; filename={0};",
                                                  HttpUtility.UrlPathEncode(attachmentFileName));
-            if (attachmentFileName.Any(c => (int)c >= 0 && (int)c <= 127))
+            if (attachmentFileName.Any(c => c >= 0 && c <= 127))
             {
                 contentDisposition = string.Format("attachment; filename*=utf-8''{0};",
                                                    HttpUtility.UrlPathEncode(attachmentFileName));
@@ -786,7 +786,7 @@ namespace ASC.Data.Storage.GoogleCloud
                         continue;
                     }
 
-                    if ((int)status != 308)
+                    if (status != 308)
                         throw (ex);
 
                     break;

@@ -151,7 +151,7 @@ namespace ASC.Data.Storage.Encryption
 
             for (var i = 0; i < length; i++)
             {
-                var num2 = (int)array[i] % 87;
+                var num2 = array[i] % 87;
                 if (num2 < 10)
                 {
                     array2[i] = (char)(48 + num2);

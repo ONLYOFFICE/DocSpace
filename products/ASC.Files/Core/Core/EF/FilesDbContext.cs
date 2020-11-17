@@ -1,11 +1,11 @@
-﻿using ASC.Common;
+﻿using System;
+using System.Collections.Generic;
+
+using ASC.Common;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Model;
 
 using Microsoft.EntityFrameworkCore;
-
-using System;
-using System.Collections.Generic;
 
 namespace ASC.Files.Core.EF
 {
