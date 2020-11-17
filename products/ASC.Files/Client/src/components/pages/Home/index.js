@@ -190,7 +190,7 @@ class PureHome extends React.Component {
           showProgressBar={progressData.visible}
           progressBarValue={progressData.percent}
           //progressBarDropDownContent={progressBarContent}
-          progressBarLabel={progressData.label}
+          progressBarIcon={progressData.label}
           viewAs={viewAs}
           hideAside={!!fileActionId || progressData.visible}
           isLoaded={isLoaded}

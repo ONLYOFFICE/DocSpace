@@ -701,10 +701,7 @@ const startUploadFiles = (
 ) => {
   if (filesLength > 0 || convertFilesLength > 0) {
     const progressData = { visible: true, percent: 0, label: "" };
-    progressData.label = t("UploadingLabel", {
-      file: 0,
-      totalFiles: filesLength + convertFilesLength,
-    });
+    progressData.label = "upload";
     dispatch(setProgressBarData(progressData));
     startSessionFunc(0, t, dispatch, getState);
   }
@@ -741,8 +738,8 @@ const startSessionFunc = (indexOfFile, t, dispatch, getState) => {
   const relativePath = file.path
     ? file.path.slice(1, -file.name.length)
     : file.webkitRelativePath
-      ? file.webkitRelativePath.slice(0, -file.name.length)
-      : "";
+    ? file.webkitRelativePath.slice(0, -file.name.length)
+    : "";
 
   let location;
   const requestsDataArray = [];
@@ -818,10 +815,7 @@ const sendChunk = (
         if (index + 1 !== requestsDataArray.length) {
           dispatch(
             setProgressBarData({
-              label: t("UploadingLabel", {
-                file: uploadedFiles,
-                totalFiles: files.length,
-              }),
+              label: "upload",
               newPercent,
               visible: true,
             })
@@ -1013,7 +1007,7 @@ const updateConvertProgress = (uploadData, t, dispatch) => {
 
   dispatch(
     setProgressBarData({
-      label: t("UploadingLabel", { file, totalFiles }),
+      label: "upload",
       percent,
       visible: true,
     })
@@ -1035,10 +1029,7 @@ export const setDialogVisible = (t) => {
     } = uploadData;
 
     dispatch(setConvertDialogVisible(false));
-    const label = t("UploadingLabel", {
-      file: uploadedFiles,
-      totalFiles: files.length,
-    });
+    const label = "upload";
 
     if (uploadStatus === null) {
       dispatch(setProgressBarData({ label, percent: 100, visible: true }));
@@ -1238,25 +1229,59 @@ export const loopFilesOperations = (id, destFolderId, isCopy) => {
   };
 };
 
-export function selectItemOperation(destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter, isCopy) {
+export function selectItemOperation(
+  destFolderId,
+  folderIds,
+  fileIds,
+  conflictResolveType,
+  deleteAfter,
+  isCopy
+) {
   return (dispatch) => {
-    return isCopy ?
-      files.copyToFolder(destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter)
-      :
-      files.moveToFolder(destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter)
-  }
+    return isCopy
+      ? files.copyToFolder(
+          destFolderId,
+          folderIds,
+          fileIds,
+          conflictResolveType,
+          deleteAfter
+        )
+      : files.moveToFolder(
+          destFolderId,
+          folderIds,
+          fileIds,
+          conflictResolveType,
+          deleteAfter
+        );
+  };
 }
 
-export function itemOperationToFolder(destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter, isCopy) {
+export function itemOperationToFolder(
+  destFolderId,
+  folderIds,
+  fileIds,
+  conflictResolveType,
+  deleteAfter,
+  isCopy
+) {
   return (dispatch) => {
-    return dispatch(selectItemOperation(destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter, isCopy))
+    return dispatch(
+      selectItemOperation(
+        destFolderId,
+        folderIds,
+        fileIds,
+        conflictResolveType,
+        deleteAfter,
+        isCopy
+      )
+    )
       .then((res) => {
         const id = res[0] && res[0].id ? res[0].id : null;
-        dispatch(loopFilesOperations(id, destFolderId, isCopy))
+        dispatch(loopFilesOperations(id, destFolderId, isCopy));
       })
       .catch((err) => {
         toastr.error(err);
-        dispatch(clearProgressData())
-      })
+        dispatch(clearProgressData());
+      });
   };
 }

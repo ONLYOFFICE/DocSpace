@@ -80,14 +80,14 @@ class DeleteDialogComponent extends React.Component {
         if (currentProcess && currentProcess.progress !== 100) {
           setProgressBarData({
             percent: currentProcess.progress,
-            label: t("DeleteOperation"),
+            label: "trash",
             visible: true,
           });
           setTimeout(() => this.loopDeleteOperation(id), 1000);
         } else {
           setProgressBarData({
             percent: 100,
-            label: t("DeleteOperation"),
+            label: "trash",
             visible: true,
           });
           setTimeout(() => clearProgressData(), 5000);
@@ -141,7 +141,7 @@ class DeleteDialogComponent extends React.Component {
     if (folderIds.length || fileIds.length) {
       setProgressBarData({
         visible: true,
-        label: t("DeleteOperation"),
+        label: "trash",
         percent: 0,
       });
 
