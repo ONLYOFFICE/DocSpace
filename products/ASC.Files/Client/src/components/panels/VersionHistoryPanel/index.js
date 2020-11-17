@@ -9,10 +9,7 @@ import { withTranslation, I18nextProvider } from "react-i18next";
 import { createI18N } from "../../../helpers/i18n";
 
 import { setIsLoading } from "../../../store/files/actions";
-import {
-  getIsLoading,
-  getVersionHistoryFileId,
-} from "../../../store/files/selectors";
+import { getVersionHistoryFileId } from "../../../store/files/selectors";
 
 import {
   StyledVersionHistoryPanel,
@@ -59,7 +56,7 @@ class PureVersionHistoryPanel extends React.Component {
     //console.log("render versionHistoryPanel");
 
     const { versions } = this.state;
-    const { visible, isLoading } = this.props;
+    const { visible } = this.props;
     const zIndex = 310;
 
     return (
@@ -73,7 +70,7 @@ class PureVersionHistoryPanel extends React.Component {
           zIndex={zIndex}
         />
         <Aside className="version-history-aside-panel">
-          {!isLoading && Object.keys(versions).length > 0 ? (
+          {Object.keys(versions).length > 0 ? (
             <StyledContent>
               <StyledHeaderContent className="version-history-panel-header">
                 <Heading
@@ -126,7 +123,6 @@ const VersionHistoryPanel = (props) => {
 };
 
 VersionHistoryPanelContainer.propTypes = {
-  isLoading: PropTypes.bool,
   fileId: PropTypes.string,
   visible: PropTypes.bool,
   setIsLoading: PropTypes.func,
@@ -135,7 +131,6 @@ VersionHistoryPanelContainer.propTypes = {
 
 function mapStateToProps(state) {
   return {
-    isLoading: getIsLoading(state),
     fileId: getVersionHistoryFileId(state),
   };
 }
