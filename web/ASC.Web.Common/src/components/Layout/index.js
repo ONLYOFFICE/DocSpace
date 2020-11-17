@@ -1,18 +1,14 @@
-
-import React, { useEffect, useState} from "react"
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-
-import MobileLayout from "./MobileLayout"
-
+import MobileLayout from "./MobileLayout";
 
 const StyledContainer = styled.div`
-width:100%;
-height:100vh;
-`
+  width: 100%;
+  height: 100vh;
+`;
 
 const Layout = (props) => {
-
-  const { children } = props
+  const { children } = props;
   const isTablet = window.innerWidth < 1024;
 
   const [windowWidth, setWindowWidth] = useState({
@@ -26,14 +22,14 @@ const Layout = (props) => {
     return () => mediaQuery.removeListener(setWindowWidth);
   }, []);
 
-  return( 
-
+  return (
     <StyledContainer className="Layout">
-              {windowWidth && windowWidth.matches 
-                ? <MobileLayout  {...props}/>
-                : children
-              }
+      {windowWidth && windowWidth.matches ? (
+        <MobileLayout {...props} />
+      ) : (
+        children
+      )}
     </StyledContainer>
   );
-}
+};
 export default Layout;

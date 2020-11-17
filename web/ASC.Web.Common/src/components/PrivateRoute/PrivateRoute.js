@@ -8,7 +8,7 @@ import { getCurrentUser, isAdmin, isMe } from "../../store/auth/selectors.js";
 import { AUTH_KEY } from "../../constants";
 import { Error401, Error404 } from "../../pages/errors";
 import isEmpty from "lodash/isEmpty";
-import { isMobile } from "react-device-detect";
+
 const PrivateRoute = ({ component: Component, ...rest }) => {
   const {
     isAdmin,
@@ -19,11 +19,14 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
     computedMatch,
   } = rest;
   const { userId } = computedMatch.params;
+  const isTablet = window.innerWidth < 1024;
 
   useEffect(() => {
-    isMobile && document.getElementById('scroll') && document.getElementById('scroll').scrollTo(0,0)
-  })
-  
+    isTablet &&
+      document.getElementById("scroll") &&
+      document.getElementById("scroll").scrollTo(0, 0);
+  });
+
   const renderComponent = (props) => {
     if (!isAuthenticated) {
       console.log("PrivateRoute render Redirect to login", rest);

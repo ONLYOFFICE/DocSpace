@@ -7,7 +7,7 @@ import ProfileActions from "./profile-actions";
 
 import { useTranslation } from "react-i18next";
 import { utils } from "asc-web-components";
-import {LayoutContextConsumer} from "asc-web-common"
+import { LayoutContextConsumer } from "asc-web-common";
 const { tablet } = utils.device;
 import { logout } from "../../../store/auth/actions";
 
@@ -54,7 +54,7 @@ const StyledNav = styled.nav`
       -webkit-transition:  top 0.3s cubic-bezier(0.0,0.0,0.8,1);
       -o-transition:  top 0.3s cubic-bezier(0.0,0.0,0.8,1);
       
-    top: ${props => props.valueTop ? "0" : "-56px"}
+    top: ${(props) => (props.valueTop ? "0" : "-56px")}
   }
 
   
@@ -102,28 +102,30 @@ const HeaderNav = React.memo(
     //console.log("HeaderNav render");
     return (
       <LayoutContextConsumer>
-      {value =>
-        <StyledNav valueTop={value.isVisible}>
-        {modules.map((module) => (
-          
-          <NavItem
-            key={module.id}
-            iconName={module.iconName}
-            iconUrl={module.iconUrl}
-            badgeNumber={module.notifications}
-            onClick={module.onClick}
-            onBadgeClick={module.onBadgeClick}
-            noHover={true}
-          />
-        ))}
+        {(value) => (
+          <StyledNav valueTop={value.isVisible}>
+            {modules.map((module) => (
+              <NavItem
+                key={module.id}
+                iconName={module.iconName}
+                iconUrl={module.iconUrl}
+                badgeNumber={module.notifications}
+                onClick={module.onClick}
+                onBadgeClick={module.onBadgeClick}
+                noHover={true}
+              />
+            ))}
 
-        {isAuthenticated && user ? (
-          <ProfileActions userActions={getCurrentUserActions()} user={user} />
-        ) : (
-          <></>
+            {isAuthenticated && user ? (
+              <ProfileActions
+                userActions={getCurrentUserActions()}
+                user={user}
+              />
+            ) : (
+              <></>
+            )}
+          </StyledNav>
         )}
-      </StyledNav>
-      }
       </LayoutContextConsumer>
     );
   }

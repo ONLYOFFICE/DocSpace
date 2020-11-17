@@ -86,7 +86,7 @@ class App extends React.Component {
     const { homepage } = this.props;
     
     return navigator.onLine ? (
-      <Layout >
+      <Layout>
           <Router history={history}>
             {!this.isEditor && <NavMenu />}
             <Main >

@@ -1,14 +1,13 @@
 import React from "react";
 import styled from "styled-components";
-import { utils} from "asc-web-components";
+import { utils } from "asc-web-components";
 import isEqual from "lodash/isEqual";
 import classnames from "classnames";
-import {LayoutContextConsumer} from "asc-web-common"
+import { LayoutContextConsumer } from "asc-web-common";
+
 const { tablet } = utils.device;
 
 const StyledSectionHeader = styled.div`
-
- 
   border-bottom: 1px solid #eceef1;
   height: 55px;
   margin-right: 24px;
@@ -24,28 +23,18 @@ const StyledSectionHeader = styled.div`
       padding-bottom: 16px
     `};
     height: 49px;
-
- 
   }
-
 
   .section-header {
     width: calc(100% - 76px);
 
     @media ${tablet} {
       width: ${(props) =>
-          props.isArticlePinned ? `calc(100% - 272px)` : "100%"};
-      background-color: #fff; 
-      position: fixed; 
-      top: ${props => !props.isHeaderVisible ? "56px" : "0"} ; 
-      z-index:155;
-
-      transition: top 0.3s cubic-bezier(0.0,0.0,0.8,1);
-      -moz-transition:  top 0.3s cubic-bezier(0.0,0.0,0.8,1);
-      -ms-transition:  top 0.3s cubic-bezier(0.0,0.0,0.8,1);
-      -webkit-transition:  top 0.3s cubic-bezier(0.0,0.0,0.8,1);
-      -o-transition:  top 0.3s cubic-bezier(0.0,0.0,0.8,1);
-
+        props.isArticlePinned ? `calc(100% - 272px)` : "100%"};
+      background-color: #fff;
+      position: fixed;
+      top: ${(props) => (!props.isHeaderVisible ? "56px" : "0")};
+      z-index: 155;
 
       padding-right: 16px;
 
@@ -67,14 +56,20 @@ const StyledSectionHeader = styled.div`
     }
   }
 
+  .section-header,
+  .section-header--hidden {
+    @media ${tablet} {
+      transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
+      -moz-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
+      -ms-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
+      -webkit-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
+      -o-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
+    }
+  }
+
   .section-header--hidden {
     @media ${tablet} {
       top: -61px;
-      transition: top 0.3s cubic-bezier(0.0,0.0,0.8,1);
-      -moz-transition:  top 0.3s cubic-bezier(0.0,0.0,0.8,1);
-      -ms-transition:  top 0.3s cubic-bezier(0.0,0.0,0.8,1);
-      -webkit-transition:  top 0.3s cubic-bezier(0.0,0.0,0.8,1);
-      -o-transition:  top 0.3s cubic-bezier(0.0,0.0,0.8,1);
     }
   }
 `;
@@ -82,40 +77,42 @@ const StyledSectionHeader = styled.div`
 class SectionHeader extends React.Component {
   constructor(props) {
     super(props);
-    
+
     this.focusRef = React.createRef();
   }
-
-
 
   shouldComponentUpdate(nextProps) {
     return !isEqual(this.props, nextProps);
   }
 
   render() {
-
     //console.log("PageLayout SectionHeader render");
     // eslint-disable-next-line react/prop-types
 
-    const { isArticlePinned, borderBottom, isHeaderVisible, ...rest } = this.props;
+    const {
+      isArticlePinned,
+      borderBottom,
+      isHeaderVisible,
+      ...rest
+    } = this.props;
 
     return (
-      
       <StyledSectionHeader
-		    isHeaderVisible={isHeaderVisible}
+        isHeaderVisible={isHeaderVisible}
         isArticlePinned={isArticlePinned}
         borderBottom={borderBottom}
       >
-       <LayoutContextConsumer>
-            { value => 
-              <div className={classnames("section-header", {
-                "section-header--hidden": !value.isVisible
-              })} {...rest}/>
-              }
+        <LayoutContextConsumer>
+          {(value) => (
+            <div
+              className={classnames("section-header", {
+                "section-header--hidden": !value.isVisible,
+              })}
+              {...rest}
+            />
+          )}
         </LayoutContextConsumer>
       </StyledSectionHeader>
-      
-
     );
   }
 }
