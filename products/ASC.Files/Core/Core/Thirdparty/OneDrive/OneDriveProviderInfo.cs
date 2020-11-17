@@ -157,7 +157,7 @@ namespace ASC.Files.Thirdparty.OneDrive
 
         public OneDriveStorage CreateStorage(OAuth20Token token, int id)
         {
-            if (Storage != null) return Storage;
+            if (Storage != null && Storage.IsOpened) return Storage;
 
             var onedriveStorage = ServiceProvider.GetService<OneDriveStorage>();
 
@@ -174,7 +174,7 @@ namespace ASC.Files.Thirdparty.OneDrive
             {
                 token = OAuth20TokenHelper.RefreshToken<OneDriveLoginProvider>(ConsumerFactory, token);
 
-                var dbDao = ServiceProvider.GetService<CachedProviderAccountDao>();
+                var dbDao = ServiceProvider.GetService<ProviderAccountDao>();
                 var authData = new AuthData(token: token.ToJson());
                 dbDao.UpdateProviderInfo(id, authData);
             }
