@@ -6,8 +6,7 @@ import result from "lodash/result";
 import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
 import { getFilterByLocation } from "../../../../../helpers/converters";
-import { store, FilterInput, Loaders } from "asc-web-common";
-import { utils } from "asc-web-components";
+import { store, FilterInput, Loaders, utils } from "asc-web-common";
 import { isMobileOnly } from "react-device-detect";
 import { getFilter, getGroups } from "../../../../../store/people/selectors";
 const {
@@ -18,7 +17,7 @@ const {
   getIsLoaded,
 } = store.auth.selectors;
 
-const { Consumer } = utils.context;
+const { withLayoutSize } = utils;
 
 const getEmployeeStatus = (filterValues) => {
   const employeeStatus = result(
@@ -251,26 +250,23 @@ class SectionFilterContent extends React.Component {
 
   render() {
     const selectedFilterData = this.getSelectedFilterData();
-    const { t, language, isLoaded } = this.props;
+    const { t, language, isLoaded, context } = this.props;
+    const { sectionWidth } = context;
     return isLoaded ? (
-      <Consumer>
-        {(context) => (
-          <FilterInput
-            sectionWidth={context.sectionWidth}
-            getFilterData={this.getData}
-            getSortData={this.getSortData}
-            selectedFilterData={selectedFilterData}
-            onFilter={this.onFilter}
-            directionAscLabel={t("DirectionAscLabel")}
-            directionDescLabel={t("DirectionDescLabel")}
-            placeholder={t("Search")}
-            needForUpdate={this.needForUpdate}
-            language={language}
-            contextMenuHeader={t("AddFilter")}
-            isMobile={isMobileOnly}
-          />
-        )}
-      </Consumer>
+      <FilterInput
+        sectionWidth={sectionWidth}
+        getFilterData={this.getData}
+        getSortData={this.getSortData}
+        selectedFilterData={selectedFilterData}
+        onFilter={this.onFilter}
+        directionAscLabel={t("DirectionAscLabel")}
+        directionDescLabel={t("DirectionDescLabel")}
+        placeholder={t("Search")}
+        needForUpdate={this.needForUpdate}
+        language={language}
+        contextMenuHeader={t("AddFilter")}
+        isMobile={isMobileOnly}
+      />
     ) : (
       <Loaders.Filter />
     );
@@ -290,5 +286,5 @@ function mapStateToProps(state) {
 }
 
 export default connect(mapStateToProps, { fetchPeople })(
-  withRouter(withTranslation()(SectionFilterContent))
+  withRouter(withLayoutSize(withTranslation()(SectionFilterContent)))
 );
