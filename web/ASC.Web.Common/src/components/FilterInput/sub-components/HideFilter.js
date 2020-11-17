@@ -39,6 +39,7 @@ class HideFilter extends React.Component {
         className="styled-hide-filter"
         onClick={this.onClick.bind(this, !popoverOpen)}
         ref={this.ref}
+        id="styled-hide-filter"
       >
         <StyledHideFilterButton id="PopoverLegacy" isDisabled={isDisabled}>
           {count}
