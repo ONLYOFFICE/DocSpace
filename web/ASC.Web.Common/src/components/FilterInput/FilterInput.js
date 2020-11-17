@@ -2,7 +2,6 @@ import React from "react";
 import PropTypes from "prop-types";
 import { SearchInput } from "asc-web-components";
 import isEqual from "lodash/isEqual";
-import throttle from "lodash/throttle";
 import FilterBlock from "./sub-components/FilterBlock";
 import SortComboBox from "./sub-components/SortComboBox";
 import ViewSelector from "./sub-components/ViewSelector";
@@ -327,7 +326,6 @@ class FilterInput extends React.Component {
     return filterItems;
   };
   getFilterData = () => {
-    const _this = this;
     const d = this.props.getFilterData();
     const result = [];
     d.forEach((element) => {
@@ -386,7 +384,7 @@ class FilterInput extends React.Component {
     return itemWidth;
   };
 
-  AddItems = (searchWidth) => {
+  addItems = (searchWidth) => {
     const { hiddenFilterItems } = this.state;
     if (hiddenFilterItems.length === 0) return 0;
 
@@ -409,7 +407,7 @@ class FilterInput extends React.Component {
     return numberOfHiddenItems;
   };
 
-  HideItems = (searchWidth, currentFilterItems) => {
+  hideItems = (searchWidth, currentFilterItems) => {
     const { hiddenFilterItems } = this.state;
     let newSearchWidth = searchWidth;
     let numberOfHiddenItems = hiddenFilterItems.length;
@@ -435,8 +433,8 @@ class FilterInput extends React.Component {
       return hiddenFilterItems.length;
     const numberOfHiddenItems =
       searchWidth < minWidth
-        ? this.HideItems(searchWidth, currentFilterItems)
-        : this.AddItems(searchWidth);
+        ? this.hideItems(searchWidth, currentFilterItems)
+        : this.addItems(searchWidth);
 
     return numberOfHiddenItems;
   };
@@ -848,6 +846,8 @@ FilterInput.protoTypes = {
   onChangeViewAs: PropTypes.func,
   contextMenuHeader: PropTypes.string,
   sectionWidth: PropTypes.number,
+  getSortData: PropTypes.func,
+  value: PropTypes.string,
 };
 
 FilterInput.defaultProps = {

@@ -49,7 +49,6 @@ class FilterItem extends React.Component {
     if (
       selectedItem &&
       selectedItem.key !== this.state.selectedOption.key &&
-      selectedItem.key !== this.state.selectedOption.key &&
       selectedItem.key !== prevProps.selectedItem.key
     ) {
       const selectedOption = selectedItem.key
