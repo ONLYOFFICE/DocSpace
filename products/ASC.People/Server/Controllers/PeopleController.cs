@@ -864,21 +864,8 @@ namespace ASC.Employee.Core.Controllers
             return new ThumbnailsDataWrapper(user.ID, UserPhotoManager);
         }
 
-
         [Create("{userid}/photo")]
-        public FileUploadResult UploadMemberPhotoFromBody(string userid, [FromBody]IFormCollection model)
-        {
-            return UploadMemberPhoto(userid, model);
-        }
-
-        [Create("{userid}/photo")]
-        [Consumes("application/x-www-form-urlencoded")]
-        public FileUploadResult UploadMemberPhotoFromForm(string userid, [FromForm] IFormCollection model)
-        {
-            return UploadMemberPhoto(userid, model);
-        }
-
-        private FileUploadResult UploadMemberPhoto(string userid, IFormCollection model)
+        public FileUploadResult UploadMemberPhoto(string userid, IFormCollection model)
         {
             var result = new People.Models.FileUploadResult();
             var autosave = bool.Parse(model["Autosave"]);
