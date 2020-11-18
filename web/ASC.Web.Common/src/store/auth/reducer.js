@@ -14,7 +14,7 @@ import {
   SET_GREETING_SETTINGS,
   SET_CUSTOM_NAMES,
   SET_WIZARD_COMPLETED,
-  GET_ENCRYPTION_KEYS,
+  FETCH_ENCRYPTION_KEYS,
   SET_IS_ENCRYPTION_SUPPORT,
 } from "./actions";
 import isEmpty from "lodash/isEmpty";
@@ -156,7 +156,7 @@ const authReducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         settings: { ...state.settings, wizardCompleted: true },
       });
-    case GET_ENCRYPTION_KEYS:
+    case FETCH_ENCRYPTION_KEYS:
       return {
         ...state,
         settings: {
