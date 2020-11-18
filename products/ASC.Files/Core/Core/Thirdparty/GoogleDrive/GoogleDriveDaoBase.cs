@@ -226,7 +226,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             }
         }
 
-        protected IEnumerable<string> GetChildren(object folderId)
+        protected override IEnumerable<string> GetChildren(string folderId)
         {
             return GetDriveEntries(folderId).Select(entry => MakeId(entry.Id));
         }

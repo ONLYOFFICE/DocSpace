@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -177,52 +178,6 @@ namespace ASC.Files.Thirdparty
         }
 
         #endregion
-
-        #region SecurityDao
-
-        public void SetShare(FileShareRecord r)
-        {
-        }
-
-        public IEnumerable<FileShareRecord> GetShares(IEnumerable<Guid> subjects)
-        {
-            return null;
-        }
-
-        public IEnumerable<FileShareRecord> GetShares(IEnumerable<FileEntry<string>> entry)
-        {
-            return null;
-        }
-
-        public IEnumerable<FileShareRecord> GetShares(FileEntry<string> entry)
-        {
-            return null;
-        }
-
-        public void RemoveSubject(Guid subject)
-        {
-        }
-
-        public IEnumerable<FileShareRecord> GetPureShareRecords(IEnumerable<FileEntry<string>> entries)
-        {
-            return null;
-        }
-
-        public IEnumerable<FileShareRecord> GetPureShareRecords(FileEntry<string> entry)
-        {
-            return null;
-        }
-
-        public void DeleteShareRecords(IEnumerable<FileShareRecord> records)
-        {
-        }
-
-        public bool IsShared(object entryId, FileEntryType type)
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
     }
 
     internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDisposable where T : class, IProviderInfo
@@ -370,7 +325,182 @@ namespace ASC.Files.Thirdparty
             fileEntry.Error = entry.Error;
         }
 
+
         protected abstract string MakeId(string path = null);
+
+
+        #region SecurityDao
+
+        public void SetShare(FileShareRecord r)
+        {
+        }
+
+        public IEnumerable<FileShareRecord> GetShares(IEnumerable<Guid> subjects)
+        {
+            return null;
+        }
+
+        public IEnumerable<FileShareRecord> GetShares(IEnumerable<FileEntry<string>> entry)
+        {
+            return null;
+        }
+
+        public IEnumerable<FileShareRecord> GetShares(FileEntry<string> entry)
+        {
+            return null;
+        }
+
+        public void RemoveSubject(Guid subject)
+        {
+        }
+
+        public IEnumerable<FileShareRecord> GetPureShareRecords(IEnumerable<FileEntry<string>> entries)
+        {
+            return null;
+        }
+
+        public IEnumerable<FileShareRecord> GetPureShareRecords(FileEntry<string> entry)
+        {
+            return null;
+        }
+
+        public void DeleteShareRecords(IEnumerable<FileShareRecord> records)
+        {
+        }
+
+        public bool IsShared(object entryId, FileEntryType type)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region TagDao
+
+        public IEnumerable<Tag> GetTags(Guid subject, TagType tagType, IEnumerable<FileEntry<string>> fileEntries)
+        {
+            return new List<Tag>();
+        }
+
+        public IEnumerable<Tag> GetTags(TagType tagType, IEnumerable<FileEntry<string>> fileEntries)
+        {
+            return new List<Tag>();
+        }
+
+        public IEnumerable<Tag> GetTags(Guid owner, TagType tagType)
+        {
+            return new List<Tag>();
+        }
+
+        public IEnumerable<Tag> GetTags(string name, TagType tagType)
+        {
+            return new List<Tag>();
+        }
+
+        public IEnumerable<Tag> GetTags(string[] names, TagType tagType)
+        {
+            return new List<Tag>();
+        }
+
+
+
+        public IEnumerable<Tag> GetNewTags(Guid subject, IEnumerable<FileEntry<string>> fileEntries)
+        {
+            return new List<Tag>();
+        }
+
+        public IEnumerable<Tag> GetNewTags(Guid subject, FileEntry<string> fileEntry)
+        {
+            return new List<Tag>();
+        }
+
+        public IEnumerable<Tag> SaveTags(IEnumerable<Tag> tag)
+        {
+            return new List<Tag>();
+        }
+
+        public IEnumerable<Tag> SaveTags(Tag tag)
+        {
+            return new List<Tag>();
+        }
+
+        public void UpdateNewTags(IEnumerable<Tag> tag)
+        {
+        }
+
+        public void UpdateNewTags(Tag tag)
+        {
+        }
+
+        public void RemoveTags(IEnumerable<Tag> tag)
+        {
+        }
+
+        public void RemoveTags(Tag tag)
+        {
+        }
+
+        public IEnumerable<Tag> GetTags(string entryID, FileEntryType entryType, TagType tagType)
+        {
+            return new List<Tag>();
+        }
+
+        public void MarkAsNew(Guid subject, FileEntry<string> fileEntry)
+        {
+        }
+
+        public IEnumerable<Tag> GetNewTags(Guid subject, Folder<string> parentFolder, bool deepSearch)
+        {
+            var folderId = DaoSelector.ConvertId(parentFolder.ID);
+
+            var entryIDs = FilesDbContext.ThirdpartyIdMapping
+                       .Where(r => r.Id.StartsWith(parentFolder.ID))
+                       .Select(r => r.HashId)
+                       .ToList();
+
+            if (!entryIDs.Any()) return new List<Tag>();
+
+            var q = FilesDbContext.Tag
+                .Join(FilesDbContext.TagLink.DefaultIfEmpty(),
+                r => new TagLink { TenantId = r.TenantId, Id = r.Id },
+                r => new TagLink { TenantId = r.TenantId, Id = r.TagId },
+                (tag, tagLink) => new { tag, tagLink },
+                new TagLinkComparer())
+                .Where(r => r.tag.TenantId == TenantID)
+                .Where(r => r.tag.Flag == TagType.New)
+                .Where(r => r.tagLink.TenantId == TenantID)
+                .Where(r => entryIDs.Any(a => a == r.tagLink.EntryId));
+
+            if (subject != Guid.Empty)
+            {
+                q = q.Where(r => r.tag.Owner == subject);
+            }
+
+            var tags = q
+                .ToList()
+                .Select(r => new Tag
+                {
+                    TagName = r.tag.Name,
+                    TagType = r.tag.Flag,
+                    Owner = r.tag.Owner,
+                    EntryId = MappingID(r.tagLink.EntryId),
+                    EntryType = r.tagLink.EntryType,
+                    Count = r.tagLink.TagCount,
+                    Id = r.tag.Id
+                });
+
+
+            if (deepSearch) return tags;
+
+            var folderFileIds = new[] { parentFolder.ID }
+                .Concat(GetChildren(folderId));
+
+            return tags.Where(tag => folderFileIds.Contains(tag.EntryId.ToString()));
+        }
+
+        protected abstract IEnumerable<string> GetChildren(string folderId);
+
+        #endregion
 
         public void Dispose()
         {
@@ -392,6 +522,25 @@ namespace ASC.Files.Thirdparty
         {
             Error = error;
             ErrorId = errorId;
+        }
+    }
+
+    public class TagLink
+    {
+        public int TenantId { get; set; }
+        public int Id { get; set; }
+    }
+
+    public class TagLinkComparer : IEqualityComparer<TagLink>
+    {
+        public bool Equals([AllowNull] TagLink x, [AllowNull] TagLink y)
+        {
+            return x.Id == y.Id && x.TenantId == y.TenantId;
+        }
+
+        public int GetHashCode([DisallowNull] TagLink obj)
+        {
+            return obj.Id.GetHashCode() + obj.TenantId.GetHashCode();
         }
     }
 }

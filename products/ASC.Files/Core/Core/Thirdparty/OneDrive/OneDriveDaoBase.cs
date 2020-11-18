@@ -202,7 +202,7 @@ namespace ASC.Files.Thirdparty.OneDrive
             }
         }
 
-        protected IEnumerable<string> GetChildren(string folderId)
+        protected override IEnumerable<string> GetChildren(string folderId)
         {
             return GetOneDriveItems(folderId).Select(entry => MakeId(entry.Id));
         }

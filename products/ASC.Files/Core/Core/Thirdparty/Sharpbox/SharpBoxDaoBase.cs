@@ -451,6 +451,13 @@ namespace ASC.Files.Thirdparty.Sharpbox
             return requestTitle;
         }
 
+        protected override IEnumerable<string> GetChildren(string folderId)
+        {
+            var subFolders = GetFolderSubfolders(folderId).Select(x => MakeId(x));
+            var files = GetFolderFiles(folderId).Select(x => MakeId(x));
+            return subFolders.Concat(files);
+        }
+
         private static string MatchEvaluator(Match match)
         {
             var index = Convert.ToInt32(match.Groups[2].Value);
