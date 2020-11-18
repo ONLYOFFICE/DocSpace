@@ -33,6 +33,22 @@ class DeleteThirdPartyDialogComponent extends React.Component {
     changeLanguage(i18n);
   }
 
+  updateTree = (path, folders) => {
+    const {
+      t,
+      treeFolders,
+      removeItem,
+      setTreeFolders,
+      setUpdateTree,
+    } = this.props;
+
+    const newTreeFolders = treeFolders;
+    loopTreeFolders(path, newTreeFolders, folders, null);
+    setTreeFolders(newTreeFolders);
+    setUpdateTree(true);
+    toastr.success(t("SuccessDeleteThirdParty", { service: removeItem.title }));
+  };
+
   onDeleteThirdParty = () => {
     const {
       setThirdPartyProviders,
@@ -41,10 +57,6 @@ class DeleteThirdPartyDialogComponent extends React.Component {
       onClose,
       fetchFiles,
       currentFolderId,
-      treeFolders,
-      setUpdateTree,
-      setTreeFolders,
-      t,
       commonId,
       myId,
     } = this.props;
@@ -59,28 +71,16 @@ class DeleteThirdPartyDialogComponent extends React.Component {
         setThirdPartyProviders(newProviders);
         if (currentFolderId) {
           fetchFiles(currentFolderId).then((data) => {
-            console.log(data);
             const path = data.selectedFolder.pathParts;
-            const newTreeFolders = treeFolders;
             const folders = data.selectedFolder.folders;
-            loopTreeFolders(path, newTreeFolders, folders, null);
-            setUpdateTree(true);
-            setTreeFolders(newTreeFolders);
-            toastr.success(
-              t("SuccessDeleteThirdParty", { service: removeItem.title })
-            );
+            this.updateTree(path, folders);
           });
         } else {
           const folderId = providerItem.corporate ? commonId : myId;
           api.files.getFolder(folderId).then((data) => {
-            const newTreeFolders = treeFolders;
-            const folders = data.folders;
-            loopTreeFolders([folderId], newTreeFolders, folders, null);
-            setUpdateTree(true);
-            setTreeFolders(newTreeFolders);
+            const path = [folderId];
+            this.updateTree(path, data.folders);
           });
-
-          setUpdateTree(true);
         }
       })
       .catch((err) => toastr(err))

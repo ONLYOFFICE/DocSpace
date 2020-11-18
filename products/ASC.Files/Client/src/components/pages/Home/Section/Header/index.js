@@ -48,6 +48,8 @@ import {
   getHeaderChecked,
   getOnlyFoldersSelected,
   getAccessedSelected,
+  getSelectionLength,
+  getIsThirdPartySelection,
 } from "../../../../../store/files/selectors";
 
 const { isAdmin } = store.auth.selectors;
@@ -367,6 +369,7 @@ class SectionHeaderContent extends React.Component {
       isOnlyFoldersSelected,
       deleteDialogVisible,
       isRecycleBin,
+      isThirdPartySelection,
     } = this.props;
 
     let menu = [
@@ -438,7 +441,7 @@ class SectionHeaderContent extends React.Component {
       },
       {
         label: t("MoveTo"),
-        disabled: !isItemsSelected,
+        disabled: !isItemsSelected || isThirdPartySelection,
         onClick: this.onMoveAction,
       },
       {
@@ -448,7 +451,8 @@ class SectionHeaderContent extends React.Component {
       },
       {
         label: t("Delete"),
-        disabled: !isItemsSelected || !deleteDialogVisible,
+        disabled:
+          !isItemsSelected || !deleteDialogVisible || isThirdPartySelection,
         onClick: this.onDeleteAction,
       },
     ];
@@ -641,14 +645,12 @@ class SectionHeaderContent extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-  const selection = getSelection(state);
-
   return {
     isRootFolder: getIsRootFolder(state),
     isAdmin: isAdmin(state),
     isRecycleBin: getIsRecycleBinFolder(state),
     parentId: getSelectedFolderParentId(state),
-    selection,
+    selection: getSelection(state),
     title: getSelectedFolderTitle(state),
     filter: getFilter(state),
     deleteDialogVisible: isCanBeDeleted(state),
@@ -659,7 +661,8 @@ const mapStateToProps = (state) => {
     isHeaderChecked: getHeaderChecked(state),
     isAccessedSelected: getAccessedSelected(state),
     isOnlyFoldersSelected: getOnlyFoldersSelected(state),
-    isItemsSelected: selection.length,
+    isItemsSelected: getSelectionLength(state),
+    isThirdPartySelection: getIsThirdPartySelection(state),
   };
 };
 

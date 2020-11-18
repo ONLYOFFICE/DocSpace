@@ -177,7 +177,7 @@ class FilesRowContent extends React.PureComponent {
           .finally(() => setIsLoading(false))
       : createFile(item.parentId, `${itemTitle}.${item.fileExst}`)
           .then((file) => {
-            openDocEditor(file.id, tab, file.webUrl);
+            openDocEditor(file.id, file.providerKey, tab, file.webUrl);
             this.completeAction(itemId);
           })
           .finally(() => setIsLoading(false));
@@ -230,7 +230,7 @@ class FilesRowContent extends React.PureComponent {
       isTrashFolder,
       openDocEditor,
     } = this.props;
-    const { id, fileExst, viewUrl } = item;
+    const { id, fileExst, viewUrl, providerKey } = item;
 
     if (isTrashFolder) return;
 
@@ -250,7 +250,7 @@ class FilesRowContent extends React.PureComponent {
         .finally(() => setIsLoading(false));
     } else {
       if (canWebEdit) {
-        return openDocEditor(id);
+        return openDocEditor(id, providerKey);
       }
 
       if (isImage || isSound || isVideo) {

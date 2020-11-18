@@ -1226,3 +1226,13 @@ export const getConnectItem = (state) => {
 export const getShowThirdPartyPanel = (state) => {
   return state.files.showThirdPartyPanel;
 };
+
+export const getIsThirdPartySelection = createSelector(
+  getSelectionSelector,
+  isRootFolder,
+  (selection, isRootItem) =>
+    selection &&
+    selection.length === 1 &&
+    isRootItem &&
+    !!selection[0].providerKey
+);

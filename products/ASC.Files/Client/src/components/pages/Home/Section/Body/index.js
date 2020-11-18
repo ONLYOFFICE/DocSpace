@@ -373,7 +373,7 @@ class SectionBodyContent extends React.Component {
     const { isThirdParty, id, title } = e.currentTarget.dataset;
     const splitItem = id.split("-");
 
-    if (isThirdParty) {
+    if (+isThirdParty) {
       this.setState({
         showDeleteThirdPartyDialog: true,
         removeItem: { id: splitItem[splitItem.length - 1], title },
@@ -502,21 +502,27 @@ class SectionBodyContent extends React.Component {
     return window.open(this.props.selection[0].viewUrl, "_blank");
   };
 
-  openDocEditor = (id, tab = null, url = null) => {
-    return this.props
-      .addFileToRecentlyViewed(id)
-      .then(() => console.log("Pushed to recently viewed"))
-      .catch((e) => console.error(e))
-      .finally(
-        tab
-          ? (tab.location = url)
-          : window.open(`./doceditor?fileId=${id}`, "_blank")
-      );
+  openDocEditor = (id, providerKey = null, tab = null, url = null) => {
+    if (providerKey) {
+      tab
+        ? (tab.location = url)
+        : window.open(`./doceditor?fileId=${id}`, "_blank");
+    } else {
+      return this.props
+        .addFileToRecentlyViewed(id)
+        .then(() => console.log("Pushed to recently viewed"))
+        .catch((e) => console.error(e))
+        .finally(
+          tab
+            ? (tab.location = url)
+            : window.open(`./doceditor?fileId=${id}`, "_blank")
+        );
+    }
   };
 
   onClickLinkEdit = (e) => {
-    const id = e.currentTarget.dataset.id;
-    return this.openDocEditor(id);
+    const { id, providerKey } = e.currentTarget.dataset;
+    return this.openDocEditor(id, providerKey);
   };
 
   showVersionHistory = (e) => {
@@ -690,6 +696,7 @@ class SectionBodyContent extends React.Component {
             onClick: this.onClickLinkEdit,
             disabled: false,
             "data-id": item.id,
+            "data-provider-key": item.providerKey,
           };
         case "preview":
           return {
@@ -699,6 +706,7 @@ class SectionBodyContent extends React.Component {
             onClick: this.onClickLinkEdit,
             disabled: true,
             "data-id": item.id,
+            "data-provider-key": item.providerKey,
           };
         case "view":
           return {
@@ -717,13 +725,15 @@ class SectionBodyContent extends React.Component {
             disabled: false,
           };
         case "move":
-          return {
-            key: option,
-            label: t("MoveTo"),
-            icon: "MoveToIcon",
-            onClick: this.onMoveAction,
-            disabled: false,
-          };
+          return (
+            !isThirdPartyFolder && {
+              key: option,
+              label: t("MoveTo"),
+              icon: "MoveToIcon",
+              onClick: this.onMoveAction,
+              disabled: false,
+            }
+          );
         case "copy":
           return {
             key: option,
