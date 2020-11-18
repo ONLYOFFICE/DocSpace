@@ -1,46 +1,45 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { StyledFloatingButton, StyledAlertIcon } from "./StyledFloatingButton";
+import {
+  StyledFloatingButton,
+  StyledAlertIcon,
+  StyledCircleWrap,
+  StyledCircle,
+} from "./StyledFloatingButton";
 import { Icons } from "asc-web-components";
 
 const FloatingButton = ({ id, className, style, ...rest }) => {
   const { icon, alert, percent } = rest;
 
   return (
-    <StyledFloatingButton
-      id={id}
-      className={className}
-      style={style}
-      icon={icon}
-      percent={percent}
-    >
-      <div className="circle-wrap">
-        <div className="circle">
-          <div className="mask full">
-            <div className="fill"></div>
-          </div>
-          <div className="mask half">
-            <div className="fill"></div>
-          </div>
-          <div className="inside-circle">
-            {icon == "upload" ? (
-              <Icons.ButtonUploadIcon />
-            ) : icon == "file" ? (
-              <Icons.ButtonFileIcon />
-            ) : icon == "trash" ? (
-              <Icons.ButtonTrashIcon />
-            ) : icon == "move" ? (
-              <Icons.ButtonMoveIcon />
-            ) : (
-              <Icons.ButtonDuplicateIcon />
-            )}
-            <StyledAlertIcon>
-              {alert ? <Icons.ButtonAlertIcon size="medium" /> : <></>}
-            </StyledAlertIcon>
-          </div>
+    <StyledCircleWrap id={id} className={className} style={style} icon={icon}>
+      <StyledCircle percent={percent}>
+        <div className="styled-circle__mask styled-circle__full">
+          <div className="styled_circle__fill"></div>
         </div>
-      </div>
-    </StyledFloatingButton>
+        <div className="styled-circle__mask">
+          <div className="styled_circle__fill"></div>
+        </div>
+
+        <StyledFloatingButton>
+          {icon == "upload" ? (
+            <Icons.ButtonUploadIcon />
+          ) : icon == "file" ? (
+            <Icons.ButtonFileIcon />
+          ) : icon == "trash" ? (
+            <Icons.ButtonTrashIcon />
+          ) : icon == "move" ? (
+            <Icons.ButtonMoveIcon />
+          ) : (
+            <Icons.ButtonDuplicateIcon />
+          )}
+
+          <StyledAlertIcon>
+            {alert ? <Icons.ButtonAlertIcon size="medium" /> : <></>}
+          </StyledAlertIcon>
+        </StyledFloatingButton>
+      </StyledCircle>
+    </StyledCircleWrap>
   );
 };
 
