@@ -1,8 +1,8 @@
 import { toastr } from "asc-web-common";
-import {
-  setEncryptionKeys as setKeys,
-  //getEncryptionAccess,
-} from "../store/auth/actions";
+// import {
+//setEncryptionKeys,
+//getEncryptionAccess,
+// } from "../store/auth/actions";
 import isEmpty from "lodash/isEmpty";
 
 const domain = window.location.origin;
@@ -21,7 +21,7 @@ export function regDesktop(user, isEncryption, keys) {
     userId: user.id,
   };
 
-  let extendedData = { ...data };
+  let extendedData;
 
   if (isEncryption) {
     extendedData = {
@@ -37,12 +37,35 @@ export function regDesktop(user, isEncryption, keys) {
         encryptionKeys: { ...extendedData.encryptionKeys, ...keys },
       };
     }
+  } else {
+    extendedData = { ...data };
   }
 
   window.AscDesktopEditor.execCommand(
     "portal:login",
     JSON.stringify(extendedData)
   );
+
+  // if (isEncryption) {
+  //   window.cloudCryptoCommand = (type, params, callback) => {
+  //     switch (type) {
+  //       case "encryptionKeys": {
+  //         console.log("EncryptionKeys case type and params: ", params);
+  //         setKeys(params);
+  //         break;
+  //       }
+  //       case "relogin": {
+  //         toastr.info("Encryption keys must be re-entered");
+  //         relogin();
+  //         break;
+  //       }
+  //       case "getsharingkeys":
+  //         break;
+  //       default:
+  //         break;
+  //     }
+  //   };
+  // }
 
   window.onSystemMessage = (e) => {
     console.log("onSystemMessage: ", e);
@@ -67,27 +90,6 @@ export function regDesktop(user, isEncryption, keys) {
         break;
     }
   };
-
-  if (isEncryption) {
-    window.cloudCryptoCommand = (type, params, callback) => {
-      console.log("cloudCryptoCommand", params);
-      switch (type) {
-        case "encryptionKeys": {
-          setEncryptionKeys(params);
-          break;
-        }
-        case "relogin": {
-          toastr.info("Encryption keys must be re-entered");
-          relogin();
-          break;
-        }
-        case "getsharingkeys":
-          break;
-        default:
-          break;
-      }
-    };
-  }
 }
 
 export function relogin() {
@@ -100,19 +102,20 @@ export function relogin() {
   }, 1000);
 }
 
-export function setEncryptionKeys(encryptionKeys) {
-  console.log("encryptionKeys: ", encryptionKeys);
+// export function setEncryptionKeys(encryptionKeys) {
+//   console.log("encryptionKeys: ", encryptionKeys);
 
-  if (!encryptionKeys.publicKey || !encryptionKeys.privateKeyEnc) {
-    toastr.info("Empty encryption keys");
-    return;
-  }
-  const data = {
-    publicKey: encryptionKeys.publicKey,
-    privateKeyEnc: encryptionKeys.privateKeyEnc,
-  };
-  return setKeys(data);
-}
+//   if (!encryptionKeys.publicKey || !encryptionKeys.privateKeyEnc) {
+//     toastr.info("Empty encryption keys");
+//     return;
+//   }
+//   const data = {
+//     publicKey: encryptionKeys.publicKey,
+//     privateKeyEnc: encryptionKeys.privateKeyEnc,
+//   };
+//   console.log("encryptionKeys data:", data);
+//   return setKeys(encryptionKeys);
+// }
 
 export function checkPwd() {
   const data = {

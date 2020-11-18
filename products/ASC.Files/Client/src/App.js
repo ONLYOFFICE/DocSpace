@@ -33,6 +33,7 @@ const {
   setCurrentProductId,
   setCurrentProductHomePage,
   getPortalCultures,
+  setEncryptionKeys,
   getEncryptionKeys,
   getEncryptionSupport,
 } = commonStore.auth.actions;
@@ -98,14 +99,41 @@ class App extends React.Component {
       user,
       isEncryption,
       keys,
-      getEncryptionKeys,
+      setEncryptionKeys,
+      //getEncryptionKeys,
     } = this.props;
     if (isAuthenticated && isEncryption && !this.isDesktopInit) {
       this.isDesktopInit = true;
-      getEncryptionKeys();
+
+      if (isEncryption) {
+        window.cloudCryptoCommand = (type, params, callback) => {
+          switch (type) {
+            case "encryptionKeys": {
+              setEncryptionKeys(params);
+              break;
+            }
+            case "relogin": {
+              toastr.info("Encryption keys must be re-entered");
+              //relogin();
+              break;
+            }
+            case "getsharingkeys":
+              break;
+            default:
+              break;
+          }
+        };
+      }
       regDesktop(user, isEncryption, keys);
+      //getEncryptionKeys();
+      console.log("%c%s", "font: 1.1em/1 bold;", "Current keys is: ", keys);
     }
   }
+
+  // shouldComponentUpdate(nextProps, nextState) {
+  //   console.log("nextProps: ", nextProps.keys, this.props.keys);
+  //   return nextProps.keys !== this.props.keys;
+  // }
 
   render() {
     const { homepage } = this.props;
@@ -180,7 +208,7 @@ const mapDispatchToProps = (dispatch) => {
     fetchTreeFolders: () => fetchTreeFolders(dispatch),
     setIsLoaded: () => dispatch(setIsLoaded(true)),
     getEncryptionSupport: () => getEncryptionSupport(dispatch),
-    getEncryptionKeys: () => getEncryptionKeys(dispatch),
+    setEncryptionKeys: (keys) => dispatch(setEncryptionKeys(keys)),
   };
 };
 
