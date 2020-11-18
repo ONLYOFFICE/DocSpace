@@ -787,7 +787,7 @@ namespace ASC.Files.Core.Data
         }
 
 
-        public IEnumerable<Folder<int>> Search(string text, bool bunch)
+        public IEnumerable<Folder<int>> SearchFolders(string text, bool bunch)
         {
             return Search(text).Where(f => bunch
                                                ? f.RootFolderType == FolderType.BUNCH
@@ -1168,7 +1168,7 @@ namespace ASC.Files.Core.Data
                 .ToDictionary(r => r.LeftNode, r => r.RightNode);
         }
 
-        public IEnumerable<(Folder<int>, SmallShareRecord)> GetFeeds(int tenant, DateTime from, DateTime to)
+        public IEnumerable<(Folder<int>, SmallShareRecord)> GetFeedsForFolders(int tenant, DateTime from, DateTime to)
         {
             var q1 = FilesDbContext.Folders
                 .Where(r => r.TenantId == tenant)
@@ -1192,7 +1192,7 @@ namespace ASC.Files.Core.Data
             return q2.Select(ToFolderWithShare).ToList().Union(q4.Select(ToFolderWithShare).ToList());
         }
 
-        public IEnumerable<int> GetTenantsWithFeeds(DateTime fromTime)
+        public IEnumerable<int> GetTenantsWithFeedsForFolders(DateTime fromTime)
         {
             var q1 = FilesDbContext.Files
                 .Where(r => r.ModifiedOn > fromTime)
