@@ -188,6 +188,7 @@ class DownloadDialogComponent extends React.Component {
 
     if (fileConvertIds.length || folderIds.length) {
       setProgressBarData({
+        icon: "file",
         visible: true,
         percent: 0,
         label: t("ArchivingData"),

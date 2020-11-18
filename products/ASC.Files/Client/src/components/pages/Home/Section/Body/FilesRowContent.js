@@ -363,6 +363,7 @@ class FilesRowContent extends React.PureComponent {
     api.files.getConvertFile(fileId).then((res) => {
       if (res && res[0] && res[0].progress !== 100) {
         setProgressBarData({
+          icon: "file",
           visible: true,
           percent: res[0].progress,
           label: t("Convert"),
@@ -374,6 +375,7 @@ class FilesRowContent extends React.PureComponent {
           clearProgressData();
         } else {
           setProgressBarData({
+            icon: "file",
             visible: true,
             percent: 100,
             label: t("Convert"),
@@ -390,7 +392,12 @@ class FilesRowContent extends React.PureComponent {
 
   onConvert = () => {
     const { item, t, setProgressBarData } = this.props;
-    setProgressBarData({ visible: true, percent: 0, label: t("Convert") });
+    setProgressBarData({
+      icon: "file",
+      visible: true,
+      percent: 0,
+      label: t("Convert"),
+    });
     this.setState({ showConvertDialog: false }, () =>
       api.files.convertFile(item.id).then((convertRes) => {
         if (convertRes && convertRes[0] && convertRes[0].progress !== 100) {

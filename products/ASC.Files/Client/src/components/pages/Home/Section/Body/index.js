@@ -365,6 +365,7 @@ class SectionBodyContent extends React.Component {
   onDeleteFile = (fileId, currentFolderId) => {
     const { t, setProgressBarData, clearProgressData } = this.props;
     setProgressBarData({
+      icon: "trash",
       visible: true,
       percent: 0,
       label: t("DeleteOperation"),
@@ -396,6 +397,7 @@ class SectionBodyContent extends React.Component {
       const deleteProgress = res.find((x) => x.id === id);
       if (deleteProgress && deleteProgress.progress !== 100) {
         setProgressBarData({
+          icon: "trash",
           visible: true,
           percent: deleteProgress.progress,
           label: t("DeleteOperation"),
@@ -403,6 +405,7 @@ class SectionBodyContent extends React.Component {
         setTimeout(() => this.loopDeleteProgress(id, folderId, isFolder), 1000);
       } else {
         setProgressBarData({
+          icon: "trash",
           visible: true,
           percent: 100,
           label: t("DeleteOperation"),
@@ -436,7 +439,12 @@ class SectionBodyContent extends React.Component {
   onDeleteFolder = (folderId, currentFolderId) => {
     const { t, setProgressBarData, clearProgressData } = this.props;
     const progressLabel = t("DeleteOperation");
-    setProgressBarData({ visible: true, percent: 0, label: progressLabel });
+    setProgressBarData({
+      icon: "trash",
+      visible: true,
+      percent: 0,
+      label: progressLabel,
+    });
     api.files
       .deleteFolder(folderId, currentFolderId)
       .then((res) => {
@@ -556,6 +564,7 @@ class SectionBodyContent extends React.Component {
     const deleteAfter = false;
 
     setProgressBarData({
+      icon: "duplicate",
       visible: true,
       percent: 0,
       label: t("CopyOperation"),
@@ -1313,6 +1322,7 @@ class SectionBodyContent extends React.Component {
     const deleteAfter = true;
 
     setProgressBarData({
+      icon: "move",
       visible: true,
       percent: 0,
       label: t("MoveToOperation"),

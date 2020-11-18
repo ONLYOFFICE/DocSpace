@@ -51,6 +51,7 @@ const EmptyTrashDialogComponent = (props) => {
           const currentProcess = res.find((x) => x.id === id);
           if (currentProcess && currentProcess.progress !== 100) {
             const newProgressData = {
+              icon: "trash",
               visible: true,
               percent: currentProcess.progress,
               label: t("DeleteOperation"),
@@ -61,6 +62,7 @@ const EmptyTrashDialogComponent = (props) => {
             fetchFiles(currentFolderId, filter)
               .then(() => {
                 setProgressBarData({
+                  icon: "trash",
                   visible: true,
                   percent: 100,
                   label: t("DeleteOperation"),
@@ -91,6 +93,7 @@ const EmptyTrashDialogComponent = (props) => {
 
   const onEmptyTrash = useCallback(() => {
     const newProgressData = {
+      icon: "trash",
       visible: true,
       percent: 0,
       label: t("DeleteOperation"),

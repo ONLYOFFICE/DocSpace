@@ -229,6 +229,7 @@ class SectionHeaderContent extends React.Component {
       .then((res) => {
         if (!url) {
           this.props.setProgressBarData({
+            icon: "file",
             visible: true,
             percent: res[0].progress,
             label: this.props.t("ArchivingData"),
@@ -262,6 +263,7 @@ class SectionHeaderContent extends React.Component {
     }
 
     setProgressBarData({
+      icon: "file",
       visible: true,
       percent: 0,
       label: t("ArchivingData"),
