@@ -45,7 +45,7 @@ namespace ASC.Files.Thirdparty.SharePoint
 {
     internal class SharePointDaoBase : ThirdPartyProviderDao<SharePointProviderInfo>
     {
-        public override string Id { get => "spoint"; }
+        protected override string Id { get => "spoint"; }
 
         public SharePointDaoBase(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor, FileUtility fileUtility) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility)
         {

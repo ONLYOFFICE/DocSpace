@@ -48,7 +48,7 @@ namespace ASC.Files.Thirdparty.Dropbox
 {
     internal abstract class DropboxDaoBase : ThirdPartyProviderDao<DropboxProviderInfo>
     {
-        public override string Id { get => "dropbox"; }
+        protected override string Id { get => "dropbox"; }
 
         public DropboxDaoBase(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor, FileUtility fileUtility) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility)
         {

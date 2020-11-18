@@ -188,14 +188,14 @@ namespace ASC.Files.Thirdparty
         protected TenantUtil TenantUtil { get; }
         protected FilesDbContext FilesDbContext { get; }
         protected SetupInfo SetupInfo { get; }
-        public ILog Log { get; }
+        protected ILog Log { get; }
         protected FileUtility FileUtility { get; }
 
-        public RegexDaoSelectorBase<T> DaoSelector { get; set; }
-        public T ProviderInfo { get; set; }
-        public string PathPrefix { get; private set; }
+        protected RegexDaoSelectorBase<T> DaoSelector { get; set; }
+        protected T ProviderInfo { get; set; }
+        protected string PathPrefix { get; private set; }
 
-        public abstract string Id { get; }
+        protected abstract string Id { get; }
 
         public ThirdPartyProviderDao(
             IServiceProvider serviceProvider,

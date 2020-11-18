@@ -6,7 +6,7 @@ import result from "lodash/result";
 import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
 import { getFilterByLocation } from "../../../../../helpers/converters";
-import { store, FilterInput, Loaders } from "asc-web-common";
+import { store, FilterInput, Loaders, utils } from "asc-web-common";
 import { isMobileOnly } from "react-device-detect";
 import { getFilter, getGroups } from "../../../../../store/people/selectors";
 const {
@@ -16,6 +16,8 @@ const {
   getSettings,
   getIsLoaded,
 } = store.auth.selectors;
+
+const { withLayoutSize } = utils;
 
 const getEmployeeStatus = (filterValues) => {
   const employeeStatus = result(
@@ -248,9 +250,10 @@ class SectionFilterContent extends React.Component {
 
   render() {
     const selectedFilterData = this.getSelectedFilterData();
-    const { t, language, isLoaded } = this.props;
+    const { t, language, isLoaded, sectionWidth } = this.props;
     return isLoaded ? (
       <FilterInput
+        sectionWidth={sectionWidth}
         getFilterData={this.getData}
         getSortData={this.getSortData}
         selectedFilterData={selectedFilterData}
@@ -282,5 +285,5 @@ function mapStateToProps(state) {
 }
 
 export default connect(mapStateToProps, { fetchPeople })(
-  withRouter(withTranslation()(SectionFilterContent))
+  withRouter(withLayoutSize(withTranslation()(SectionFilterContent)))
 );
