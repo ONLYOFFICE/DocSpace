@@ -18,7 +18,7 @@ export const SET_CURRENT_PRODUCT_HOME_PAGE = "SET_CURRENT_PRODUCT_HOME_PAGE";
 export const SET_GREETING_SETTINGS = "SET_GREETING_SETTINGS";
 export const SET_CUSTOM_NAMES = "SET_CUSTOM_NAMES";
 export const SET_WIZARD_COMPLETED = "SET_WIZARD_COMPLETED";
-export const GET_ENCRYPTION_KEYS = "GET_ENCRYPTION_KEYS";
+export const FETCH_ENCRYPTION_KEYS = "FETCH_ENCRYPTION_KEYS";
 export const SET_IS_ENCRYPTION_SUPPORT = "SET_IS_ENCRYPTION_SUPPORT";
 
 export function setCurrentUser(user) {
@@ -124,9 +124,9 @@ export function setWizardComplete() {
   };
 }
 
-export function receiveEncryptionKeys(keys) {
+export function fetchEncryptionKeys(keys) {
   return {
-    type: GET_ENCRYPTION_KEYS,
+    type: FETCH_ENCRYPTION_KEYS,
     keys,
   };
 }
@@ -236,18 +236,36 @@ export const reloadPortalSettings = () => {
 
 export function setEncryptionKeys(keys) {
   return (dispatch) => {
-    return api.files.setEncryptionKeys(keys);
+    return api.files
+      .setEncryptionKeys(keys)
+      .then(() => {
+        console.log(
+          "%c%s",
+          "color: green; font: 1.1em/1 bold;",
+          "Encryption keys successfully set"
+        );
+        debugger;
+        dispatch(getEncryptionKeys());
+      })
+      .catch((err) => console.error(err));
   };
 }
 
-export function getEncryptionKeys(dispatch) {
-  return api.files
-    .getEncryptionKeys()
-    .then((res) => {
-      (res && dispatch(receiveEncryptionKeys(res))) ||
-        dispatch(receiveEncryptionKeys({}));
-    })
-    .catch((err) => console.error(err));
+export function getEncryptionKeys() {
+  return (dispatch) => {
+    return api.files
+      .getEncryptionKeys()
+      .then((res) => {
+        console.log(
+          "%c%s",
+          "color: green; font: 1.1em/1 bold;",
+          "Fetching encryption keys...",
+          res
+        );
+        dispatch(fetchEncryptionKeys(res ?? {}));
+      })
+      .catch((err) => console.error(err));
+  };
 }
 
 export function getEncryptionAccess(fileId) {

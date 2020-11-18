@@ -601,10 +601,14 @@ export function getEncryptionSupport() {
 }
 
 export function setEncryptionKeys(keys) {
+  const data = {
+    publicKey: keys.publicKey,
+    privateKeyEnc: keys.privateKeyEnc,
+  };
   return request({
     method: "put",
     url: "privacyroom/keys",
-    data: keys,
+    data,
   });
 }
 
