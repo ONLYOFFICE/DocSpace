@@ -11,29 +11,29 @@ const StyledCircleWrap = styled.div`
 `;
 
 const StyledCircle = styled.div`
-  .styled-circle__mask,
-  .styled_circle__fill {
+  .circle__mask,
+  .circle__fill {
     width: 54px;
     height: 54px;
     position: absolute;
     border-radius: 50%;
   }
 
-  .styled-circle__mask {
+  .circle__mask {
     clip: rect(0px, 54px, 54px, 27px);
   }
 
-  .styled_circle__fill {
+  .circle__fill {
     animation: fill-rotate ease-in-out 3s;
     transform: rotate(${(props) => props.percent * 1.8}deg);
   }
 
-  .styled-circle__mask .styled_circle__fill {
+  .circle__mask .circle__fill {
     clip: rect(0px, 27px, 54px, 0px);
     background-color: ${color};
   }
 
-  .styled-circle__mask.styled-circle__full {
+  .circle__mask.circle__full {
     animation: fill-rotate ease-in-out 3s;
     transform: rotate(${(props) => props.percent * 1.8}deg);
   }

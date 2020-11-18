@@ -14,11 +14,11 @@ const FloatingButton = ({ id, className, style, ...rest }) => {
   return (
     <StyledCircleWrap id={id} className={className} style={style} icon={icon}>
       <StyledCircle percent={percent}>
-        <div className="styled-circle__mask styled-circle__full">
-          <div className="styled_circle__fill"></div>
+        <div className="circle__mask circle__full">
+          <div className="circle__fill"></div>
         </div>
-        <div className="styled-circle__mask">
-          <div className="styled_circle__fill"></div>
+        <div className="circle__mask">
+          <div className="circle__fill"></div>
         </div>
 
         <StyledFloatingButton>
