@@ -14,7 +14,7 @@ class GroupSelector extends React.Component {
 
     const { isOpen } = props;
     this.state = this.getDefaultState(isOpen, []);
-    this.isTablet = window.innerWidth < size.tablet;
+    this.isTablet = window.innerWidth <= size.tablet;
   }
 
   componentDidMount() {

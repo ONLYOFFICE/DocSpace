@@ -21,7 +21,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
     computedMatch,
   } = rest;
   const { userId } = computedMatch.params;
-  const isTablet = window.innerWidth < size.tablet;
+  const isTablet = window.innerWidth <= size.tablet;
 
   useEffect(() => {
     isTablet &&

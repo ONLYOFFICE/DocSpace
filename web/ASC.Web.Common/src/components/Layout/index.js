@@ -12,7 +12,7 @@ const StyledContainer = styled.div`
 
 const Layout = (props) => {
   const { children } = props;
-  const isTablet = window.innerWidth < size.tablet;
+  const isTablet = window.innerWidth <= size.tablet;
 
   const [windowWidth, setWindowWidth] = useState({
     matches: isTablet,

@@ -111,7 +111,7 @@ class SectionBody extends React.Component {
       : {};
 
     const scrollProp = uploadFiles ? { ref: this.scrollRef } : {};
-    const isTablet = window.innerWidth < size.tablet;
+    const isTablet = window.innerWidth <= size.tablet;
 
     return uploadFiles ? (
       <StyledDropZoneBody
