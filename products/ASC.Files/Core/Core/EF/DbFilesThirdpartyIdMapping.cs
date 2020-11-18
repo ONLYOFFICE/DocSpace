@@ -19,7 +19,7 @@ namespace ASC.Files.Core.EF
 
         public override object[] GetKeys()
         {
-            return new object[] { Id };
+            return new object[] { HashId };
         }
     }
 
