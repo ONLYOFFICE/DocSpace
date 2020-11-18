@@ -44,7 +44,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Files.Thirdparty.ProviderDao
 {
-    internal class ProviderDaoBase : IDisposable
+    internal class ProviderDaoBase : ThirdPartyProviderDao, IDisposable
     {
         private readonly List<IDaoSelector> Selectors;
 
