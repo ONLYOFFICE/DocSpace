@@ -27,7 +27,7 @@ class FilterButton extends React.PureComponent {
         size={iconSize}
         title="Actions"
         columnCount={columnCount}
-        displayType="auto"
+        displayType={searchWidth && searchWidth < 350 ? "aside" : "auto"}
         asideHeader={asideHeader}
       ></ContextMenuButton>
     );
