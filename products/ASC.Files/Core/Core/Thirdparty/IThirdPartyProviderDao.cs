@@ -27,7 +27,7 @@ namespace ASC.Files.Thirdparty
 {
     internal abstract class ThirdPartyProviderDao 
     {
-        #region Only in TMFileDao
+        #region FileDao
 
         public void ReassignFiles(string[] fileIds, Guid newOwnerId)
         {
@@ -82,6 +82,9 @@ namespace ASC.Files.Thirdparty
         {
             throw new NotImplementedException();
         }
+
+        #endregion
+        #region FolderDao
 
         public void ReassignFolders(string[] folderIds, Guid newOwnerId)
         {
@@ -169,6 +172,52 @@ namespace ASC.Files.Thirdparty
         }
 
         public IEnumerable<string> GetTenantsWithFeedsForFolders(DateTime fromTime)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region SecurityDao
+
+        public void SetShare(FileShareRecord r)
+        {
+        }
+
+        public IEnumerable<FileShareRecord> GetShares(IEnumerable<Guid> subjects)
+        {
+            return null;
+        }
+
+        public IEnumerable<FileShareRecord> GetShares(IEnumerable<FileEntry<string>> entry)
+        {
+            return null;
+        }
+
+        public IEnumerable<FileShareRecord> GetShares(FileEntry<string> entry)
+        {
+            return null;
+        }
+
+        public void RemoveSubject(Guid subject)
+        {
+        }
+
+        public IEnumerable<FileShareRecord> GetPureShareRecords(IEnumerable<FileEntry<string>> entries)
+        {
+            return null;
+        }
+
+        public IEnumerable<FileShareRecord> GetPureShareRecords(FileEntry<string> entry)
+        {
+            return null;
+        }
+
+        public void DeleteShareRecords(IEnumerable<FileShareRecord> records)
+        {
+        }
+
+        public bool IsShared(object entryId, FileEntryType type)
         {
             throw new NotImplementedException();
         }
