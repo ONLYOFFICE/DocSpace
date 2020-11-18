@@ -183,7 +183,7 @@ namespace ASC.Files.Thirdparty.Box
 
         internal BoxStorage CreateStorage(OAuth20Token token, int id)
         {
-            if (Storage != null) return Storage;
+            if (Storage != null && Storage.IsOpened) return Storage;
 
             var boxStorage = new BoxStorage();
             CheckToken(token, id);
@@ -199,7 +199,7 @@ namespace ASC.Files.Thirdparty.Box
             {
                 token = OAuth20TokenHelper.RefreshToken<BoxLoginProvider>(ConsumerFactory, token);
 
-                var dbDao = ServiceProvider.GetService<CachedProviderAccountDao>();
+                var dbDao = ServiceProvider.GetService<ProviderAccountDao>();
                 dbDao.UpdateProviderInfo(id, new AuthData(token: token.ToJson()));
             }
         }
