@@ -88,7 +88,6 @@ class IconButton extends React.PureComponent {
       iconHoverName,
       iconName,
       color,
-      onClick,
       onMouseUp,
     } = this.props;
 
@@ -103,7 +102,6 @@ class IconButton extends React.PureComponent {
           currentIconColor: iconHoverName || color,
         });
 
-        onClick && onClick(e);
         onMouseUp && onMouseUp(e);
         break;
       case 3: //Right click
@@ -113,6 +111,12 @@ class IconButton extends React.PureComponent {
         break;
     }
   }
+
+  onClick = (e) => {
+    const { onClick } = this.props;
+    onClick && onClick(e);
+  };
+
   componentDidUpdate(prevProps) {
     const { iconName, color } = this.props;
 
@@ -150,6 +154,7 @@ class IconButton extends React.PureComponent {
         onMouseLeave={this.onMouseLeave}
         onMouseDown={this.onMouseDown}
         onMouseUp={this.onMouseUp}
+        onClick={this.onClick}
         isClickable={typeof onClick === "function" || isClickable}
         data-tip={dataTip}
         data-event="click focus"
