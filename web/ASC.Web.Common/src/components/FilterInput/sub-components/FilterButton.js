@@ -11,6 +11,7 @@ class FilterButton extends React.PureComponent {
       iconSize,
       columnCount,
       asideHeader,
+      searchWidth,
     } = this.props;
     //console.log('render FilterButton)
     return (
@@ -39,5 +40,6 @@ FilterButton.propTypes = {
   isDisabled: PropTypes.bool,
   columnCount: PropTypes.number,
   asideHeader: PropTypes.string,
+  searchWidth: PropTypes.number,
 };
 export default FilterButton;

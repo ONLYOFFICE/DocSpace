@@ -1,7 +1,6 @@
 import React from "react";
 import FilterButton from "./FilterButton";
 import HideFilter from "./HideFilter";
-import throttle from "lodash/throttle";
 import { ComboBox } from "asc-web-components";
 import CloseButton from "./CloseButton";
 import isEqual from "lodash/isEqual";
@@ -454,7 +453,7 @@ class FilterBlock extends React.Component {
     const _this = this;
     const filterItems = this.getFilterItems();
     const filterData = this.props.getFilterData();
-    const { iconSize, isDisabled, contextMenuHeader } = this.props;
+    const { iconSize, isDisabled, contextMenuHeader, searchWidth } = this.props;
     return (
       <>
         <div
@@ -472,6 +471,7 @@ class FilterBlock extends React.Component {
             getData={_this.getData}
             isDisabled={isDisabled}
             asideHeader={contextMenuHeader}
+            searchWidth={searchWidth}
           />
         )}
       </>
@@ -488,6 +488,7 @@ FilterBlock.propTypes = {
   openFilterItems: PropTypes.array,
   columnCount: PropTypes.number,
   contextMenuHeader: PropTypes.string,
+  searchWidth: PropTypes.number,
 };
 
 export default FilterBlock;
