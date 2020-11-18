@@ -18,8 +18,11 @@ import { FloatingButton } from "asc-web-common";
 
 ### Properties
 
-| Props     |   Type   | Required |                     Values                     | Default  | Description                 |
-| --------- | :------: | :------: | :--------------------------------------------: | :------: | --------------------------- |
-| `icon`    | `oneOf`  |    -     | `upload`, `file`, `trash`, `move`, `duplicate` | `upload` | Sets the icon on the button |
-| `alert`   |  `bool`  |    -     |                       -                        | `false`  | Shows the alert             |
-| `percent` | `number` |    -     |                       -                        |   `0`    | Load fullness               |
+| Props       |      Type      | Required |                     Values                     | Default  | Description                 |
+| ----------- | :------------: | :------: | :--------------------------------------------: | :------: | --------------------------- |
+| `alert`     |     `bool`     |    -     |                       -                        | `false`  | Shows the alert             |
+| `className` |    `string`    |    -     |                       -                        |    -     | Accepts class               |
+| `icon`      |    `oneOf`     |    -     | `upload`, `file`, `trash`, `move`, `duplicate` | `upload` | Sets the icon on the button |
+| `id`        |    `string`    |    -     |                       -                        |    -     | Accepts id                  |
+| `percent`   |    `number`    |    -     |                       -                        |   `0`    | Load fullness               |
+| `style`     | `obj`, `array` |    -     |                       -                        |    -     | Accepts css style           |
