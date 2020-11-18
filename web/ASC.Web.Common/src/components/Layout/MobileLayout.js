@@ -32,7 +32,10 @@ class MobileLayout extends Component {
   scrolledTheVerticalAxis = () => {
     const { prevScrollPosition } = this.state;
     const currentScrollPosition =
-      this.documentElement.scrollTop || window.pageYOffset;
+      this.documentElement.scrollTop > 0
+        ? this.documentElement.scrollTop
+        : window.pageYOffset;
+
     let visibleContent = prevScrollPosition >= currentScrollPosition;
 
     if (
