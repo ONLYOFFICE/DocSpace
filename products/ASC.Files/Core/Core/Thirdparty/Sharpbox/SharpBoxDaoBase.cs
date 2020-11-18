@@ -50,7 +50,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
 {
     internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProviderInfo>
     {
-        public override string Id { get => "sbox"; }
+        protected override string Id { get => "sbox"; }
 
         public SharpBoxDaoBase(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor, FileUtility fileUtility) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility)
         {

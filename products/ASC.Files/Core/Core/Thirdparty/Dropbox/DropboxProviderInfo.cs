@@ -162,7 +162,7 @@ namespace ASC.Files.Thirdparty.Dropbox
 
         public DropboxStorage CreateStorage(OAuth20Token token)
         {
-            if (Storage != null) return Storage;
+            if (Storage != null && Storage.IsOpened) return Storage;
 
             var dropboxStorage = new DropboxStorage();
             dropboxStorage.Open(token);
