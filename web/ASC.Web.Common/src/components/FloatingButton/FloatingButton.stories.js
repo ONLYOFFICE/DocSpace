@@ -23,7 +23,7 @@ storiesOf("Components|Floating Button", module)
         <FloatingButton
           icon={select("icon", iconVariables, "upload")}
           alert={boolean("alert", false)}
-          percent={number("percent", 0)}
+          percent={number("percent", 50)}
         />
       </Section>
     );
