@@ -6,7 +6,7 @@ import SelectedFrame from "./SelectedFrame";
 import isEqual from "lodash/isEqual";
 import { LayoutContextConsumer } from "asc-web-common";
 
-const { tablet } = utils.device;
+const { tablet, size } = utils.device;
 
 const commonStyles = css`
   flex-grow: 1;
@@ -111,7 +111,7 @@ class SectionBody extends React.Component {
       : {};
 
     const scrollProp = uploadFiles ? { ref: this.scrollRef } : {};
-    const isTablet = window.innerWidth < 1024;
+    const isTablet = window.innerWidth < size.tablet;
 
     return uploadFiles ? (
       <StyledDropZoneBody

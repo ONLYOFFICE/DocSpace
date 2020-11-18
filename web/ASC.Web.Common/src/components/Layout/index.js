@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import MobileLayout from "./MobileLayout";
+import { utils } from "asc-web-components";
+
+const { size } = utils.device;
 
 const StyledContainer = styled.div`
   width: 100%;
@@ -9,7 +12,7 @@ const StyledContainer = styled.div`
 
 const Layout = (props) => {
   const { children } = props;
-  const isTablet = window.innerWidth < 1024;
+  const isTablet = window.innerWidth < size.tablet;
 
   const [windowWidth, setWindowWidth] = useState({
     matches: isTablet,

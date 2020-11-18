@@ -5,14 +5,16 @@ import i18n from "./i18n";
 import AdvancedSelector from "../AdvancedSelector";
 import { getGroupList } from "../../api/groups";
 import { changeLanguage } from "../../utils";
+import { utils } from "asc-web-components";
 
+const { size } = utils.device;
 class GroupSelector extends React.Component {
   constructor(props) {
     super(props);
 
     const { isOpen } = props;
     this.state = this.getDefaultState(isOpen, []);
-    this.isTablet = window.innerWidth < 1024;
+    this.isTablet = window.innerWidth < size.tablet;
   }
 
   componentDidMount() {

@@ -8,7 +8,9 @@ import { getCurrentUser, isAdmin, isMe } from "../../store/auth/selectors.js";
 import { AUTH_KEY } from "../../constants";
 import { Error401, Error404 } from "../../pages/errors";
 import isEmpty from "lodash/isEmpty";
+import { utils } from "asc-web-components";
 
+const { size } = utils.device;
 const PrivateRoute = ({ component: Component, ...rest }) => {
   const {
     isAdmin,
@@ -19,7 +21,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
     computedMatch,
   } = rest;
   const { userId } = computedMatch.params;
-  const isTablet = window.innerWidth < 1024;
+  const isTablet = window.innerWidth < size.tablet;
 
   useEffect(() => {
     isTablet &&
