@@ -551,7 +551,9 @@ export function getShareUsers(folderIds, fileIds) {
 
 export function clearProgressData() {
   return (dispatch) => {
-    dispatch(setProgressBarData({ visible: false, percent: 0, label: "" }));
+    dispatch(
+      setProgressBarData({ visible: false, percent: 0, label: "", icon: "" })
+    );
   };
 }
 
@@ -700,8 +702,16 @@ const startUploadFiles = (
   getState
 ) => {
   if (filesLength > 0 || convertFilesLength > 0) {
-    const progressData = { visible: true, percent: 0, label: "" };
-    progressData.label = "upload";
+    const progressData = {
+      visible: true,
+      percent: 0,
+      label: "",
+      icon: "upload",
+    };
+    progressData.label = t("UploadingLabel", {
+      file: 0,
+      totalFiles: filesLength + convertFilesLength,
+    });
     dispatch(setProgressBarData(progressData));
     startSessionFunc(0, t, dispatch, getState);
   }
@@ -815,8 +825,12 @@ const sendChunk = (
         if (index + 1 !== requestsDataArray.length) {
           dispatch(
             setProgressBarData({
-              label: "upload",
-              newPercent,
+              icon: "upload",
+              label: t("UploadingLabel", {
+                file: uploadedFiles,
+                totalFiles: files.length,
+              }),
+              percent: newPercent,
               visible: true,
             })
           );
@@ -1007,7 +1021,8 @@ const updateConvertProgress = (uploadData, t, dispatch) => {
 
   dispatch(
     setProgressBarData({
-      label: "upload",
+      icon: "upload",
+      label: t("UploadingLabel", { file, totalFiles }),
       percent,
       visible: true,
     })
@@ -1029,10 +1044,20 @@ export const setDialogVisible = (t) => {
     } = uploadData;
 
     dispatch(setConvertDialogVisible(false));
-    const label = "upload";
+    const label = t("UploadingLabel", {
+      file: uploadedFiles,
+      totalFiles: files.length,
+    });
 
     if (uploadStatus === null) {
-      dispatch(setProgressBarData({ label, percent: 100, visible: true }));
+      dispatch(
+        setProgressBarData({
+          icon: "upload",
+          label,
+          percent: 100,
+          visible: true,
+        })
+      );
       uploadData.uploadedFiles = 0;
       uploadData.percent = 0;
       dispatch(setUploadData(uploadData));
@@ -1040,7 +1065,9 @@ export const setDialogVisible = (t) => {
     } else if (!files.length) {
       dispatch(clearProgressData());
     } else {
-      dispatch(setProgressBarData({ label, percent, visible: true }));
+      dispatch(
+        setProgressBarData({ icon: "upload", label, percent, visible: true })
+      );
       uploadData.uploadStatus = "cancel";
       dispatch(setUploadData(uploadData));
     }
@@ -1149,6 +1176,7 @@ export const loopFilesOperations = (id, destFolderId, isCopy) => {
           if (currentItem && currentItem.progress !== 100) {
             dispatch(
               setProgressBarData({
+                icon: "upload",
                 label: progressData.label,
                 percent: currentItem.progress,
                 visible: true,
@@ -1158,6 +1186,7 @@ export const loopFilesOperations = (id, destFolderId, isCopy) => {
           } else {
             dispatch(
               setProgressBarData({
+                icon: "upload",
                 label: progressData.label,
                 percent: 100,
                 visible: true,
@@ -1201,6 +1230,7 @@ export const loopFilesOperations = (id, destFolderId, isCopy) => {
                 } else {
                   dispatch(
                     setProgressBarData({
+                      icon: "upload",
                       label: progressData.label,
                       percent: 100,
                       visible: true,
