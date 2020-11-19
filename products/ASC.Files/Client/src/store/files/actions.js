@@ -559,7 +559,7 @@ export function getShareUsers(folderIds, fileIds) {
   return axios.all(requests).then((res) => res);
 }
 
-export function clearProgressData() {
+export function clearPrimaryProgressData() {
   return (dispatch) => {
     dispatch(
       setPrimaryProgressBarData({
@@ -570,6 +570,11 @@ export function clearProgressData() {
         icon: "",
       })
     );
+  };
+}
+
+export function clearSecondaryProgressData() {
+  return (dispatch) => {
     dispatch(
       setSecondaryProgressBarData({
         operationType: "",
@@ -809,7 +814,7 @@ const startSessionFunc = (indexOfFile, t, dispatch, getState) => {
     )
     .catch((err) => {
       toastr.error(err);
-      dispatch(clearProgressData());
+      dispatch(clearPrimaryProgressData());
     });
 };
 
@@ -958,7 +963,7 @@ const updateFiles = (folderId, dispatch, getState) => {
       .catch((err) => toastr.error(err))
       .finally(() =>
         setTimeout(() => {
-          dispatch(clearProgressData());
+          dispatch(clearPrimaryProgressData());
           dispatch(setUploadData(uploadData));
         }, 5000)
       );
@@ -977,7 +982,7 @@ const updateFiles = (folderId, dispatch, getState) => {
       .catch((err) => toastr.error(err))
       .finally(() =>
         setTimeout(() => {
-          dispatch(clearProgressData());
+          dispatch(clearPrimaryProgressData());
           dispatch(setUploadData(uploadData));
         }, 5000)
       );
@@ -1056,7 +1061,7 @@ const updateConvertProgress = (uploadData, t, dispatch) => {
     })
   );
   if (!progressVisible) {
-    setTimeout(() => dispatch(clearProgressData()), 5000);
+    setTimeout(() => dispatch(clearPrimaryProgressData()), 5000);
   }
 };
 
@@ -1092,7 +1097,7 @@ export const setDialogVisible = (t) => {
       dispatch(setUploadData(uploadData));
       updateFiles(uploadToFolder, dispatch, getState);
     } else if (!files.length) {
-      dispatch(clearProgressData());
+      dispatch(clearPrimaryProgressData());
     } else {
       dispatch(
         setPrimaryProgressBarData({
@@ -1259,10 +1264,13 @@ export const loopFilesOperations = (id, destFolderId, isCopy) => {
                     .catch((err) => {
                       console.log("ERROR_1", err);
                       toastr.error(err);
-                      dispatch(clearProgressData());
+                      dispatch(clearPrimaryProgressData());
                     })
                     .finally(() =>
-                      setTimeout(() => dispatch(clearProgressData()), 5000)
+                      setTimeout(
+                        () => dispatch(clearPrimaryProgressData()),
+                        5000
+                      )
                     );
                 } else {
                   dispatch(
@@ -1274,7 +1282,10 @@ export const loopFilesOperations = (id, destFolderId, isCopy) => {
                       visible: true,
                     })
                   );
-                  setTimeout(() => dispatch(clearProgressData()), 5000);
+                  setTimeout(
+                    () => dispatch(clearSecondaryProgressData()),
+                    5000
+                  );
                   dispatch(setUpdateTree(true));
                   dispatch(setTreeFolders(newTreeFolders));
                 }
@@ -1282,14 +1293,14 @@ export const loopFilesOperations = (id, destFolderId, isCopy) => {
               .catch((err) => {
                 console.log("ERROR_2", err);
                 toastr.error(err);
-                dispatch(clearProgressData());
+                dispatch(clearSecondaryProgressData());
               });
           }
         })
         .catch((err) => {
           console.log("ERROR_3", err);
           toastr.error(err);
-          dispatch(clearProgressData());
+          dispatch(clearSecondaryProgressData());
         });
     };
 
@@ -1349,7 +1360,8 @@ export function itemOperationToFolder(
       })
       .catch((err) => {
         toastr.error(err);
-        dispatch(clearProgressData());
+        dispatch(clearPrimaryProgressData());
+        dispatch(clearSecondaryProgressData());
       });
   };
 }

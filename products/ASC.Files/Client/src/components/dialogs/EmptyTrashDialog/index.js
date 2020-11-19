@@ -8,7 +8,7 @@ import { api, utils, toastr } from "asc-web-common";
 import {
   fetchFiles,
   setSecondaryProgressBarData,
-  clearProgressData,
+  clearSecondaryProgressData,
 } from "../../../store/files/actions";
 import {
   getSelectedFolderId,
@@ -34,7 +34,7 @@ const EmptyTrashDialogComponent = (props) => {
     currentFolderId,
     setSecondaryProgressBarData,
     isLoading,
-    clearProgressData,
+    clearSecondaryProgressData,
     fetchFiles,
   } = props;
 
@@ -69,18 +69,18 @@ const EmptyTrashDialogComponent = (props) => {
                   percent: 100,
                   label: t("DeleteOperation"),
                 });
-                setTimeout(() => clearProgressData(), 5000);
+                setTimeout(() => clearSecondaryProgressData(), 5000);
                 toastr.success(successMessage);
               })
               .catch((err) => {
                 toastr.error(err);
-                clearProgressData();
+                clearSecondaryProgressData();
               });
           }
         })
         .catch((err) => {
           toastr.error(err);
-          clearProgressData();
+          clearSecondaryProgressData();
         });
     },
     [
@@ -88,7 +88,7 @@ const EmptyTrashDialogComponent = (props) => {
       currentFolderId,
       filter,
       setSecondaryProgressBarData,
-      clearProgressData,
+      clearSecondaryProgressData,
       fetchFiles,
     ]
   );
@@ -111,14 +111,14 @@ const EmptyTrashDialogComponent = (props) => {
       })
       .catch((err) => {
         toastr.error(err);
-        clearProgressData();
+        clearSecondaryProgressData();
       });
   }, [
     onClose,
     loopEmptyTrash,
     setSecondaryProgressBarData,
     t,
-    clearProgressData,
+    clearSecondaryProgressData,
   ]);
 
   return (
@@ -170,6 +170,6 @@ const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps, {
   setSecondaryProgressBarData,
-  clearProgressData,
+  clearSecondaryProgressData,
   fetchFiles,
 })(withRouter(EmptyTrashDialog));

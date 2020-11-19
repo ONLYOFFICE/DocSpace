@@ -31,7 +31,7 @@ import {
   store,
 } from "asc-web-common";
 import {
-  clearProgressData,
+  clearSecondaryProgressData,
   loopFilesOperations,
   markItemAsFavorite,
   removeItemFromFavorite,
@@ -363,7 +363,11 @@ class SectionBodyContent extends React.Component {
   };
 
   onDeleteFile = (fileId, currentFolderId) => {
-    const { t, setSecondaryProgressBarData, clearProgressData } = this.props;
+    const {
+      t,
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
+    } = this.props;
     setSecondaryProgressBarData({
       operationType: "Secondary",
       icon: "trash",
@@ -379,7 +383,7 @@ class SectionBodyContent extends React.Component {
       })
       .catch((err) => {
         toastr.error(err);
-        clearProgressData();
+        clearSecondaryProgressData();
       });
   };
 
@@ -430,17 +434,21 @@ class SectionBodyContent extends React.Component {
           })
           .catch((err) => {
             toastr.error(err);
-            this.props.clearProgressData();
+            this.props.clearSecondaryProgressData();
           })
           .finally(() =>
-            setTimeout(() => this.props.clearProgressData(), 5000)
+            setTimeout(() => this.props.clearSecondaryProgressData(), 5000)
           );
       }
     });
   };
 
   onDeleteFolder = (folderId, currentFolderId) => {
-    const { t, setSecondaryProgressBarData, clearProgressData } = this.props;
+    const {
+      t,
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
+    } = this.props;
     const progressLabel = t("DeleteOperation");
     setSecondaryProgressBarData({
       operationType: "Secondary",
@@ -457,7 +465,7 @@ class SectionBodyContent extends React.Component {
       })
       .catch((err) => {
         toastr.error(err);
-        clearProgressData();
+        clearSecondaryProgressData();
       });
   };
 
@@ -1392,7 +1400,7 @@ class SectionBodyContent extends React.Component {
     conflictResolveType,
     deleteAfter
   ) => {
-    const { loopFilesOperations, clearProgressData } = this.props;
+    const { loopFilesOperations, clearSecondaryProgressData } = this.props;
 
     api.files
       .copyToFolder(
@@ -1408,7 +1416,7 @@ class SectionBodyContent extends React.Component {
       })
       .catch((err) => {
         toastr.error(err);
-        clearProgressData();
+        clearSecondaryProgressData();
       });
   };
 
@@ -1419,7 +1427,7 @@ class SectionBodyContent extends React.Component {
     conflictResolveType,
     deleteAfter
   ) => {
-    const { loopFilesOperations, clearProgressData } = this.props;
+    const { loopFilesOperations, clearSecondaryProgressData } = this.props;
 
     api.files
       .moveToFolder(
@@ -1435,7 +1443,7 @@ class SectionBodyContent extends React.Component {
       })
       .catch((err) => {
         toastr.error(err);
-        clearProgressData();
+        clearSecondaryProgressData();
       });
   };
 
@@ -1883,7 +1891,7 @@ export default connect(mapStateToProps, {
   setSelected,
   setUpdateTree,
   setIsLoading,
-  clearProgressData,
+  clearSecondaryProgressData,
   markItemAsFavorite,
   removeItemFromFavorite,
   fetchFavoritesFolder,

@@ -13,7 +13,7 @@ import {
 } from "asc-web-components";
 import { constants, api, toastr, store as initStore } from "asc-web-common";
 import {
-  clearProgressData,
+  clearSecondaryProgressData,
   createFile,
   createFolder,
   fetchFiles,
@@ -357,7 +357,7 @@ class FilesRowContent extends React.PureComponent {
       setIsLoading,
       setSecondaryProgressBarData,
       t,
-      clearProgressData,
+      clearSecondaryProgressData,
       fetchFiles,
     } = this.props;
     api.files.getConvertFile(fileId).then((res) => {
@@ -373,7 +373,7 @@ class FilesRowContent extends React.PureComponent {
       } else {
         if (res[0].error) {
           toastr.error(res[0].error);
-          clearProgressData();
+          clearSecondaryProgressData();
         } else {
           setSecondaryProgressBarData({
             operationType: "Secondary",
@@ -382,7 +382,7 @@ class FilesRowContent extends React.PureComponent {
             percent: 100,
             label: t("Convert"),
           });
-          setTimeout(() => clearProgressData(), 5000);
+          setTimeout(() => clearSecondaryProgressData(), 5000);
           const newFilter = filter.clone();
           fetchFiles(selectedFolder.id, newFilter)
             .catch((err) => toastr.error(err))
@@ -695,6 +695,6 @@ export default connect(mapStateToProps, {
   setUpdateTree,
   setNewRowItems,
   setIsLoading,
-  clearProgressData,
+  clearSecondaryProgressData,
   fetchFiles,
 })(withRouter(withTranslation()(FilesRowContent)));

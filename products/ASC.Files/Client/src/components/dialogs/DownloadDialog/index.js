@@ -23,7 +23,7 @@ import {
 } from "../../../store/files/selectors";
 import {
   setSecondaryProgressBarData,
-  clearProgressData,
+  clearSecondaryProgressData,
 } from "../../../store/files/actions";
 import DownloadContent from "./DownloadContent";
 import { createI18N } from "../../../helpers/i18n";
@@ -179,7 +179,7 @@ class DownloadDialogComponent extends React.Component {
       onClose,
       t,
       setSecondaryProgressBarData,
-      clearProgressData,
+      clearSecondaryProgressData,
     } = this.props;
 
     const downloadItems = this.getDownloadItems();
@@ -202,7 +202,7 @@ class DownloadDialogComponent extends React.Component {
         })
         .catch((err) => {
           toastr.error(err);
-          clearProgressData();
+          clearSecondaryProgressData();
         });
     }
   };
@@ -632,5 +632,5 @@ const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps, {
   setSecondaryProgressBarData,
-  clearProgressData,
+  clearSecondaryProgressData,
 })(withRouter(DownloadDialog));

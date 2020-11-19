@@ -15,7 +15,8 @@ import {
   fetchFiles,
   setTreeFolders,
   setSecondaryProgressBarData,
-  clearProgressData,
+  clearPrimaryProgressData,
+  clearSecondaryProgressData,
   setUpdateTree,
 } from "../../../store/files/actions";
 import {
@@ -67,7 +68,7 @@ class DeleteDialogComponent extends React.Component {
       setTreeFolders,
       isRecycleBinFolder,
       setSecondaryProgressBarData,
-      clearProgressData,
+      clearSecondaryProgressData,
       t,
       fetchFiles,
       setUpdateTree,
@@ -94,7 +95,7 @@ class DeleteDialogComponent extends React.Component {
             label: t("DeleteOperation"),
             visible: true,
           });
-          setTimeout(() => clearProgressData(), 5000);
+          setTimeout(() => clearSecondaryProgressData(), 5000);
           fetchFiles(currentFolderId, filter).then((data) => {
             if (!isRecycleBinFolder && !!this.state.foldersList.length) {
               const path = data.selectedFolder.pathParts.slice(0);
@@ -111,7 +112,7 @@ class DeleteDialogComponent extends React.Component {
       })
       .catch((err) => {
         toastr.error(err);
-        clearProgressData();
+        clearSecondaryProgressData();
       });
   };
 
@@ -121,7 +122,7 @@ class DeleteDialogComponent extends React.Component {
       onClose,
       t,
       setSecondaryProgressBarData,
-      clearProgressData,
+      clearSecondaryProgressData,
     } = this.props;
     const { selection } = this.state;
 
@@ -159,7 +160,7 @@ class DeleteDialogComponent extends React.Component {
         })
         .catch((err) => {
           toastr.error(err);
-          clearProgressData();
+          clearSecondaryProgressData();
         });
     }
   };
@@ -296,7 +297,7 @@ const mapStateToProps = (state) => {
 export default connect(mapStateToProps, {
   setTreeFolders,
   setSecondaryProgressBarData,
-  clearProgressData,
+  clearSecondaryProgressData,
   setUpdateTree,
   fetchFiles,
 })(withRouter(DeleteDialog));

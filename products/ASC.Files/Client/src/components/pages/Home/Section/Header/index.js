@@ -23,7 +23,7 @@ import {
   fetchFiles,
   setAction,
   setSecondaryProgressBarData,
-  clearProgressData,
+  clearSecondaryProgressData,
   setIsLoading,
   setSelected,
 } from "../../../../../store/files/actions";
@@ -237,13 +237,13 @@ class SectionHeaderContent extends React.Component {
           });
           setTimeout(() => this.loop(res[0].url), 1000);
         } else {
-          setTimeout(() => this.props.clearProgressData(), 5000);
+          setTimeout(() => this.props.clearSecondaryProgressData(), 5000);
           return window.open(url, "_blank");
         }
       })
       .catch((err) => {
         toastr.error(err);
-        this.props.clearProgressData();
+        this.props.clearSecondaryProgressData();
       });
   };
 
@@ -252,7 +252,7 @@ class SectionHeaderContent extends React.Component {
       t,
       selection,
       setSecondaryProgressBarData,
-      clearProgressData,
+      clearSecondaryProgressData,
     } = this.props;
     const fileIds = [];
     const folderIds = [];
@@ -283,7 +283,7 @@ class SectionHeaderContent extends React.Component {
       })
       .catch((err) => {
         toastr.error(err);
-        clearProgressData();
+        clearSecondaryProgressData();
       });
   };
 
@@ -676,7 +676,7 @@ export default connect(mapStateToProps, {
   setAction,
   setSecondaryProgressBarData,
   setIsLoading,
-  clearProgressData,
+  clearSecondaryProgressData,
   fetchFiles,
   setSelected,
 })(withTranslation()(withRouter(SectionHeaderContent)));
