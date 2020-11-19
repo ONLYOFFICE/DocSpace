@@ -725,15 +725,13 @@ class SectionBodyContent extends React.Component {
             disabled: false,
           };
         case "move":
-          return (
-            !isThirdPartyFolder && {
-              key: option,
-              label: t("MoveTo"),
-              icon: "MoveToIcon",
-              onClick: this.onMoveAction,
-              disabled: false,
-            }
-          );
+          return {
+            key: option,
+            label: t("MoveTo"),
+            icon: "MoveToIcon",
+            onClick: this.onMoveAction,
+            disabled: false,
+          };
         case "copy":
           return {
             key: option,
@@ -758,6 +756,16 @@ class SectionBodyContent extends React.Component {
             onClick: this.onClickRename,
             disabled: false,
           };
+
+        case "change-thirdparty-info":
+          return {
+            key: option,
+            label: t("Rename"),
+            icon: "RenameIcon",
+            onClick: this.onClickRename,
+            disabled: true,
+          };
+
         case "delete":
           return {
             key: option,

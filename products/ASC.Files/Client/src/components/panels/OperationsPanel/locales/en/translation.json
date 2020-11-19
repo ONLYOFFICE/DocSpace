@@ -4,5 +4,9 @@
   "CopyOperation": "Copying",
   "MoveToOperation": "Moving",
   "Restore": "Restore",
-  "MoveToFolderMessage": "You cannot move the folder to its subfolder"
+  "CancelButton": "Cancel",
+  "MoveToFolderMessage": "You cannot move the folder to its subfolder",
+  "MoveConfirmation": "Move confirmation",
+  "MoveConfirmationMessage": "You are about to move elements from the {{provider}} directory. In such a case, they will be deleted from your {{provider}} account and will no longer be accessible to other users, in case these elements have previously been shared.",
+  "MoveConfirmationAlert": "Are you sure you want to move the elements?"
 }

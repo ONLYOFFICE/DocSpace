@@ -611,12 +611,14 @@ const getFilesContextOptions = (
   item,
   isRecycleBin,
   isRecent,
-  canOpenPlayer
+  canOpenPlayer,
+  isRootFolder
 ) => {
   const options = [];
 
   const isFile = !!item.fileExst;
   const isFavorite = item.fileStatus === 32;
+  const isThirdPartyFolder = item.providerKey && isRootFolder;
 
   if (item.id <= 0) return [];
 
@@ -661,7 +663,7 @@ const getFilesContextOptions = (
 
       options.push("download");
     }
-    options.push("move");
+    !isThirdPartyFolder && options.push("move");
     options.push("copy");
 
     if (isFile) {
@@ -670,6 +672,9 @@ const getFilesContextOptions = (
 
     options.push("rename");
     options.push("separator3");
+
+    isThirdPartyFolder && options.push("change-thirdparty-info");
+
     options.push("delete");
   }
 
@@ -833,8 +838,9 @@ export const getFilesList = (state) => {
       getIsRecycleBinFolder,
       getIsRecentFolder,
       getFileActionId,
+      isRootFolder,
     ],
-    (items, selection, isRecycleBin, isRecent, actionId) => {
+    (items, selection, isRecycleBin, isRecent, actionId, isRootFolder) => {
       return items.map((item) => {
         const {
           access,
@@ -869,7 +875,8 @@ export const getFilesList = (state) => {
           item,
           isRecycleBin,
           isRecent,
-          canOpenPlayer
+          canOpenPlayer,
+          isRootFolder
         );
         const checked = isFileSelected(selection, id, parentId);
 

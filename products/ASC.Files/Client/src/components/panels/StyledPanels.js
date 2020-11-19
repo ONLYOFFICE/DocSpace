@@ -358,6 +358,12 @@ const StyledFooter = styled.div`
   }
 `;
 
+export const StyledOperationDialog = styled.div`
+  .operation-button {
+    margin-right: 8px;
+  }
+`;
+
 export {
   StyledAsidePanel,
   StyledAddGroupsPanel,
