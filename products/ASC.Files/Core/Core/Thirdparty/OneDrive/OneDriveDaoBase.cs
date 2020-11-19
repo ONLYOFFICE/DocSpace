@@ -47,7 +47,7 @@ namespace ASC.Files.Thirdparty.OneDrive
 {
     internal abstract class OneDriveDaoBase : ThirdPartyProviderDao<OneDriveProviderInfo>
     {
-        public override string Id { get => "onedrive"; }
+        protected override string Id { get => "onedrive"; }
 
         public OneDriveDaoBase(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor, FileUtility fileUtility) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility)
         {
@@ -202,7 +202,7 @@ namespace ASC.Files.Thirdparty.OneDrive
             }
         }
 
-        protected IEnumerable<string> GetChildren(string folderId)
+        protected override IEnumerable<string> GetChildren(string folderId)
         {
             return GetOneDriveItems(folderId).Select(entry => MakeId(entry.Id));
         }

@@ -3,8 +3,8 @@ using System.Linq;
 using System.Threading;
 
 using ASC.Common;
-using ASC.Files.Core.Data;
 using ASC.Files.Core.Resources;
+using ASC.Files.Core.Security;
 using ASC.Files.Thirdparty.Box;
 using ASC.Files.Thirdparty.Dropbox;
 using ASC.Files.Thirdparty.GoogleDrive;
@@ -49,8 +49,8 @@ namespace ASC.Files.Core.Thirdparty
                                                   FileSizeComment.FilesSizeToString(SetupInfo.AvailableFileSize)));
             }
 
-            var securityDao = ServiceProvider.GetService<SecurityDao<TFrom>>();
-            var tagDao = ServiceProvider.GetService<TagDao<TFrom>>();
+            var securityDao = ServiceProvider.GetService<ISecurityDao<TFrom>>();
+            var tagDao = ServiceProvider.GetService<ITagDao<TFrom>>();
 
             var fromFileShareRecords = securityDao.GetPureShareRecords(fromFile).Where(x => x.EntryType == FileEntryType.File);
             var fromFileNewTags = tagDao.GetNewTags(Guid.Empty, fromFile).ToList();
@@ -153,7 +153,7 @@ namespace ASC.Files.Core.Thirdparty
 
             if (deleteSourceFolder)
             {
-                var securityDao = ServiceProvider.GetService<SecurityDao<TFrom>>();
+                var securityDao = ServiceProvider.GetService<ISecurityDao<TFrom>>();
                 var fromFileShareRecords = securityDao.GetPureShareRecords(fromFolder)
                     .Where(x => x.EntryType == FileEntryType.Folder);
 
@@ -166,7 +166,7 @@ namespace ASC.Files.Core.Thirdparty
                     });
                 }
 
-                var tagDao = ServiceProvider.GetService<TagDao<TFrom>>();
+                var tagDao = ServiceProvider.GetService<ITagDao<TFrom>>();
                 var fromFileNewTags = tagDao.GetNewTags(Guid.Empty, fromFolder).ToList();
 
                 if (fromFileNewTags.Any())
