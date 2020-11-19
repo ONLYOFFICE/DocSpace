@@ -30,7 +30,8 @@ import {
   getSelectedFolderId,
   getFileActionId,
   getFilter,
-  getProgressData,
+  getPrimaryProgressData,
+  getSecondaryProgressData,
   getTreeFolders,
   getViewAs,
   getIsLoading,
@@ -167,7 +168,8 @@ class PureHome extends React.Component {
   render() {
     console.log("Home render");
     const {
-      progressData,
+      primaryProgressData,
+      secondaryProgressData,
       viewAs,
       convertDialogVisible,
       fileActionId,
@@ -187,12 +189,18 @@ class PureHome extends React.Component {
           onDrop={this.onDrop}
           setSelections={this.props.setSelections}
           onMouseMove={this.onMouseMove}
-          showProgressBar={progressData.visible}
-          progressBarValue={progressData.percent}
-          //progressBarDropDownContent={progressBarContent}
-          progressBarIcon={progressData.icon}
+          showPrimaryProgressBar={primaryProgressData.visible}
+          primaryProgressBarValue={primaryProgressData.percent}
+          primaryProgressBarIcon={primaryProgressData.icon}
+          showSecondaryProgressBar={secondaryProgressData.visible}
+          secondaryProgressBarValue={secondaryProgressData.percent}
+          secondaryProgressBarIcon={secondaryProgressData.icon}
           viewAs={viewAs}
-          hideAside={!!fileActionId || progressData.visible}
+          hideAside={
+            !!fileActionId ||
+            primaryProgressData.visible ||
+            secondaryProgressData.visible
+          }
           isLoaded={isLoaded}
         >
           <PageLayout.ArticleHeader>
@@ -255,7 +263,8 @@ function mapStateToProps(state) {
     fileActionId: getFileActionId(state),
     filter: getFilter(state),
     isRecycleBin: getIsRecycleBinFolder(state),
-    progressData: getProgressData(state),
+    primaryProgressData: getPrimaryProgressData(state),
+    secondaryProgressData: getSecondaryProgressData(state),
     treeFolders: getTreeFolders(state),
     viewAs: getViewAs(state),
     isLoading: getIsLoading(state),

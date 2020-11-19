@@ -46,7 +46,7 @@ import {
   setIsLoading,
   setMediaViewerData,
   setUpdateTree,
-  setProgressBarData,
+  setSecondaryProgressBarData,
   setSelected,
   setSelection,
   setTreeFolders,
@@ -363,8 +363,9 @@ class SectionBodyContent extends React.Component {
   };
 
   onDeleteFile = (fileId, currentFolderId) => {
-    const { t, setProgressBarData, clearProgressData } = this.props;
-    setProgressBarData({
+    const { t, setSecondaryProgressBarData, clearProgressData } = this.props;
+    setSecondaryProgressBarData({
+      operationType: "Secondary",
       icon: "trash",
       visible: true,
       percent: 0,
@@ -389,14 +390,15 @@ class SectionBodyContent extends React.Component {
       setTreeFolders,
       isRecycleBin,
       t,
-      setProgressBarData,
+      setSecondaryProgressBarData,
       fetchFiles,
       setUpdateTree,
     } = this.props;
     api.files.getProgress().then((res) => {
       const deleteProgress = res.find((x) => x.id === id);
       if (deleteProgress && deleteProgress.progress !== 100) {
-        setProgressBarData({
+        setSecondaryProgressBarData({
+          operationType: "Secondary",
           icon: "trash",
           visible: true,
           percent: deleteProgress.progress,
@@ -404,7 +406,8 @@ class SectionBodyContent extends React.Component {
         });
         setTimeout(() => this.loopDeleteProgress(id, folderId, isFolder), 1000);
       } else {
-        setProgressBarData({
+        setSecondaryProgressBarData({
+          operationType: "Secondary",
           icon: "trash",
           visible: true,
           percent: 100,
@@ -437,9 +440,10 @@ class SectionBodyContent extends React.Component {
   };
 
   onDeleteFolder = (folderId, currentFolderId) => {
-    const { t, setProgressBarData, clearProgressData } = this.props;
+    const { t, setSecondaryProgressBarData, clearProgressData } = this.props;
     const progressLabel = t("DeleteOperation");
-    setProgressBarData({
+    setSecondaryProgressBarData({
+      operationType: "Secondary",
       icon: "trash",
       visible: true,
       percent: 0,
@@ -554,7 +558,12 @@ class SectionBodyContent extends React.Component {
   onCopyAction = () =>
     this.setState({ showCopyPanel: !this.state.showCopyPanel });
   onDuplicate = () => {
-    const { selection, selectedFolderId, setProgressBarData, t } = this.props;
+    const {
+      selection,
+      selectedFolderId,
+      setSecondaryProgressBarData,
+      t,
+    } = this.props;
     const folderIds = [];
     const fileIds = [];
     selection[0].fileExst
@@ -563,7 +572,8 @@ class SectionBodyContent extends React.Component {
     const conflictResolveType = 0; //Skip = 0, Overwrite = 1, Duplicate = 2
     const deleteAfter = false;
 
-    setProgressBarData({
+    setSecondaryProgressBarData({
+      operationType: "Secondary",
       icon: "duplicate",
       visible: true,
       percent: 0,
@@ -1314,14 +1324,15 @@ class SectionBodyContent extends React.Component {
       isShare,
       isCommon,
       isAdmin,
-      setProgressBarData,
+      setSecondaryProgressBarData,
     } = this.props;
     const folderIds = [];
     const fileIds = [];
     const conflictResolveType = 0; //Skip = 0, Overwrite = 1, Duplicate = 2
     const deleteAfter = true;
 
-    setProgressBarData({
+    setSecondaryProgressBarData({
+      operationType: "Secondary",
       icon: "move",
       visible: true,
       percent: 0,
@@ -1867,7 +1878,7 @@ export default connect(mapStateToProps, {
   setDragging,
   setDragItem,
   setMediaViewerData,
-  setProgressBarData,
+  setSecondaryProgressBarData,
   setSelection,
   setSelected,
   setUpdateTree,

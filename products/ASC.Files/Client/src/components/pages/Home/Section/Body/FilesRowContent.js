@@ -20,7 +20,7 @@ import {
   renameFolder,
   setIsLoading,
   setNewRowItems,
-  setProgressBarData,
+  setSecondaryProgressBarData,
   setTreeFolders,
   setUpdateTree,
   updateFile,
@@ -355,14 +355,15 @@ class FilesRowContent extends React.PureComponent {
       selectedFolder,
       filter,
       setIsLoading,
-      setProgressBarData,
+      setSecondaryProgressBarData,
       t,
       clearProgressData,
       fetchFiles,
     } = this.props;
     api.files.getConvertFile(fileId).then((res) => {
       if (res && res[0] && res[0].progress !== 100) {
-        setProgressBarData({
+        setSecondaryProgressBarData({
+          operationType: "Secondary",
           icon: "file",
           visible: true,
           percent: res[0].progress,
@@ -374,7 +375,8 @@ class FilesRowContent extends React.PureComponent {
           toastr.error(res[0].error);
           clearProgressData();
         } else {
-          setProgressBarData({
+          setSecondaryProgressBarData({
+            operationType: "Secondary",
             icon: "file",
             visible: true,
             percent: 100,
@@ -391,8 +393,9 @@ class FilesRowContent extends React.PureComponent {
   };
 
   onConvert = () => {
-    const { item, t, setProgressBarData } = this.props;
-    setProgressBarData({
+    const { item, t, setSecondaryProgressBarData } = this.props;
+    setSecondaryProgressBarData({
+      operationType: "Secondary",
       icon: "file",
       visible: true,
       percent: 0,
@@ -688,7 +691,7 @@ export default connect(mapStateToProps, {
   updateFile,
   renameFolder,
   setTreeFolders,
-  setProgressBarData,
+  setSecondaryProgressBarData,
   setUpdateTree,
   setNewRowItems,
   setIsLoading,

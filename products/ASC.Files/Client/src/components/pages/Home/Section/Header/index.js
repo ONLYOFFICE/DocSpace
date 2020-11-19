@@ -22,7 +22,7 @@ import {
 import {
   fetchFiles,
   setAction,
-  setProgressBarData,
+  setSecondaryProgressBarData,
   clearProgressData,
   setIsLoading,
   setSelected,
@@ -228,7 +228,8 @@ class SectionHeaderContent extends React.Component {
       .getProgress()
       .then((res) => {
         if (!url) {
-          this.props.setProgressBarData({
+          this.props.setSecondaryProgressBarData({
+            operationType: "Secondary",
             icon: "file",
             visible: true,
             percent: res[0].progress,
@@ -247,7 +248,12 @@ class SectionHeaderContent extends React.Component {
   };
 
   downloadAction = () => {
-    const { t, selection, setProgressBarData, clearProgressData } = this.props;
+    const {
+      t,
+      selection,
+      setSecondaryProgressBarData,
+      clearProgressData,
+    } = this.props;
     const fileIds = [];
     const folderIds = [];
     const items = [];
@@ -262,7 +268,8 @@ class SectionHeaderContent extends React.Component {
       }
     }
 
-    setProgressBarData({
+    setSecondaryProgressBarData({
+      operationType: "Secondary",
       icon: "file",
       visible: true,
       percent: 0,
@@ -667,7 +674,7 @@ const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps, {
   setAction,
-  setProgressBarData,
+  setSecondaryProgressBarData,
   setIsLoading,
   clearProgressData,
   fetchFiles,

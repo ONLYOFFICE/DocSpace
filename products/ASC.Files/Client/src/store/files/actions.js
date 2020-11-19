@@ -21,7 +21,8 @@ import {
   getSelectedFolderId,
   getFilter,
   getIsRecycleBinFolder,
-  getProgressData,
+  getPrimaryProgressData,
+  getSecondaryProgressData,
   getTreeFolders,
   getSettingsTree,
   getPrivacyFolder,
@@ -47,7 +48,9 @@ export const SET_ACTION = "SET_ACTION";
 export const SET_DRAGGING = "SET_DRAGGING";
 export const SET_DRAG_ITEM = "SET_DRAG_ITEM";
 export const SET_MEDIA_VIEWER_VISIBLE = "SET_MEDIA_VIEWER_VISIBLE";
-export const SET_PROGRESS_BAR_DATA = "SET_PROGRESS_BAR_DATA";
+export const SET_PRIMARY_PROGRESS_BAR_DATA = "SET_PRIMARY_PROGRESS_BAR_DATA";
+export const SET_SECONDARY_PROGRESS_BAR_DATA =
+  "SET_SECONDARY_PROGRESS_BAR_DATA";
 export const SET_VIEW_AS = "SET_VIEW_AS";
 export const SET_CONVERT_DIALOG_VISIBLE = "SET_CONVERT_DIALOG_VISIBLE";
 export const SET_UPDATE_TREE = "SET_UPDATE_TREE";
@@ -181,10 +184,17 @@ export function setMediaViewerData(mediaViewerData) {
   };
 }
 
-export function setProgressBarData(progressData) {
+export function setPrimaryProgressBarData(primaryProgressData) {
   return {
-    type: SET_PROGRESS_BAR_DATA,
-    progressData,
+    type: SET_PRIMARY_PROGRESS_BAR_DATA,
+    primaryProgressData,
+  };
+}
+
+export function setSecondaryProgressBarData(secondaryProgressData) {
+  return {
+    type: SET_SECONDARY_PROGRESS_BAR_DATA,
+    secondaryProgressData,
   };
 }
 
@@ -552,7 +562,22 @@ export function getShareUsers(folderIds, fileIds) {
 export function clearProgressData() {
   return (dispatch) => {
     dispatch(
-      setProgressBarData({ visible: false, percent: 0, label: "", icon: "" })
+      setPrimaryProgressBarData({
+        operationType: "",
+        visible: false,
+        percent: 0,
+        label: "",
+        icon: "",
+      })
+    );
+    dispatch(
+      setSecondaryProgressBarData({
+        operationType: "",
+        visible: false,
+        percent: 0,
+        label: "",
+        icon: "",
+      })
     );
   };
 }
@@ -703,6 +728,7 @@ const startUploadFiles = (
 ) => {
   if (filesLength > 0 || convertFilesLength > 0) {
     const progressData = {
+      operationType: "Primary",
       visible: true,
       percent: 0,
       label: "",
@@ -712,7 +738,7 @@ const startUploadFiles = (
       file: 0,
       totalFiles: filesLength + convertFilesLength,
     });
-    dispatch(setProgressBarData(progressData));
+    dispatch(setPrimaryProgressBarData(progressData));
     startSessionFunc(0, t, dispatch, getState);
   }
 };
@@ -824,7 +850,8 @@ const sendChunk = (
 
         if (index + 1 !== requestsDataArray.length) {
           dispatch(
-            setProgressBarData({
+            setPrimaryProgressBarData({
+              operationType: "Primary",
               icon: "upload",
               label: t("UploadingLabel", {
                 file: uploadedFiles,
@@ -1020,7 +1047,8 @@ const updateConvertProgress = (uploadData, t, dispatch) => {
   dispatch(setUploadData(uploadData));
 
   dispatch(
-    setProgressBarData({
+    setPrimaryProgressBarData({
+      operationType: "Primary",
       icon: "upload",
       label: t("UploadingLabel", { file, totalFiles }),
       percent,
@@ -1051,7 +1079,8 @@ export const setDialogVisible = (t) => {
 
     if (uploadStatus === null) {
       dispatch(
-        setProgressBarData({
+        setPrimaryProgressBarData({
+          operationType: "Primary",
           icon: "upload",
           label,
           percent: 100,
@@ -1066,7 +1095,13 @@ export const setDialogVisible = (t) => {
       dispatch(clearProgressData());
     } else {
       dispatch(
-        setProgressBarData({ icon: "upload", label, percent, visible: true })
+        setPrimaryProgressBarData({
+          operationType: "Primary",
+          icon: "upload",
+          label,
+          percent,
+          visible: true,
+        })
       );
       uploadData.uploadStatus = "cancel";
       dispatch(setUploadData(uploadData));
@@ -1165,7 +1200,7 @@ export const loopFilesOperations = (id, destFolderId, isCopy) => {
     const currentFolderId = getSelectedFolderId(state);
     const filter = getFilter(state);
     const isRecycleBin = getIsRecycleBinFolder(state);
-    const progressData = getProgressData(state);
+    const progressData = getSecondaryProgressData(state);
     const treeFolders = getTreeFolders(state);
 
     const loopOperation = () => {
@@ -1175,7 +1210,8 @@ export const loopFilesOperations = (id, destFolderId, isCopy) => {
           const currentItem = res.find((x) => x.id === id);
           if (currentItem && currentItem.progress !== 100) {
             dispatch(
-              setProgressBarData({
+              setSecondaryProgressBarData({
+                operationType: "Secondary",
                 icon: "move",
                 label: progressData.label,
                 percent: currentItem.progress,
@@ -1185,7 +1221,8 @@ export const loopFilesOperations = (id, destFolderId, isCopy) => {
             setTimeout(() => loopOperation(), 1000);
           } else {
             dispatch(
-              setProgressBarData({
+              setSecondaryProgressBarData({
+                operationType: "Secondary",
                 icon: "move",
                 label: progressData.label,
                 percent: 100,
@@ -1229,7 +1266,8 @@ export const loopFilesOperations = (id, destFolderId, isCopy) => {
                     );
                 } else {
                   dispatch(
-                    setProgressBarData({
+                    setSecondaryProgressBarData({
+                      operationType: "Secondary",
                       icon: "duplicate",
                       label: progressData.label,
                       percent: 100,

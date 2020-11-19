@@ -14,7 +14,7 @@ import { api, utils, toastr } from "asc-web-common";
 import {
   fetchFiles,
   setTreeFolders,
-  setProgressBarData,
+  setSecondaryProgressBarData,
   clearProgressData,
   setUpdateTree,
 } from "../../../store/files/actions";
@@ -66,7 +66,7 @@ class DeleteDialogComponent extends React.Component {
       treeFolders,
       setTreeFolders,
       isRecycleBinFolder,
-      setProgressBarData,
+      setSecondaryProgressBarData,
       clearProgressData,
       t,
       fetchFiles,
@@ -78,7 +78,8 @@ class DeleteDialogComponent extends React.Component {
       .then((res) => {
         const currentProcess = res.find((x) => x.id === id);
         if (currentProcess && currentProcess.progress !== 100) {
-          setProgressBarData({
+          setSecondaryProgressBarData({
+            operationType: "Secondary",
             icon: "trash",
             percent: currentProcess.progress,
             label: t("DeleteOperation"),
@@ -86,7 +87,8 @@ class DeleteDialogComponent extends React.Component {
           });
           setTimeout(() => this.loopDeleteOperation(id), 1000);
         } else {
-          setProgressBarData({
+          setSecondaryProgressBarData({
+            operationType: "Secondary",
             icon: "trash",
             percent: 100,
             label: t("DeleteOperation"),
@@ -118,7 +120,7 @@ class DeleteDialogComponent extends React.Component {
       isRecycleBinFolder,
       onClose,
       t,
-      setProgressBarData,
+      setSecondaryProgressBarData,
       clearProgressData,
     } = this.props;
     const { selection } = this.state;
@@ -141,7 +143,8 @@ class DeleteDialogComponent extends React.Component {
 
     onClose();
     if (folderIds.length || fileIds.length) {
-      setProgressBarData({
+      setSecondaryProgressBarData({
+        operationType: "Secondary",
         icon: "trash",
         visible: true,
         label: t("DeleteOperation"),
@@ -292,7 +295,7 @@ const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps, {
   setTreeFolders,
-  setProgressBarData,
+  setSecondaryProgressBarData,
   clearProgressData,
   setUpdateTree,
   fetchFiles,

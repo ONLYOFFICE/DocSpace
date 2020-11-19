@@ -22,7 +22,7 @@ import {
   getSelection,
 } from "../../../store/files/selectors";
 import {
-  setProgressBarData,
+  setSecondaryProgressBarData,
   clearProgressData,
 } from "../../../store/files/actions";
 import DownloadContent from "./DownloadContent";
@@ -178,7 +178,7 @@ class DownloadDialogComponent extends React.Component {
       onDownloadProgress,
       onClose,
       t,
-      setProgressBarData,
+      setSecondaryProgressBarData,
       clearProgressData,
     } = this.props;
 
@@ -187,7 +187,8 @@ class DownloadDialogComponent extends React.Component {
     const folderIds = downloadItems[1];
 
     if (fileConvertIds.length || folderIds.length) {
-      setProgressBarData({
+      setSecondaryProgressBarData({
+        operationType: "Secondary",
         icon: "file",
         visible: true,
         percent: 0,
@@ -630,6 +631,6 @@ const mapStateToProps = (state) => {
 };
 
 export default connect(mapStateToProps, {
-  setProgressBarData,
+  setSecondaryProgressBarData,
   clearProgressData,
 })(withRouter(DownloadDialog));

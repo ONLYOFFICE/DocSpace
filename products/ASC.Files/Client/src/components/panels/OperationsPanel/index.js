@@ -8,7 +8,7 @@ import { utils as commonUtils, toastr } from "asc-web-common";
 import { StyledAsidePanel } from "../StyledPanels";
 import TreeFolders from "../../Article/Body/TreeFolders";
 import {
-  setProgressBarData,
+  setSecondaryProgressBarData,
   itemOperationToFolder,
 } from "../../../store/files/actions";
 import {
@@ -39,7 +39,7 @@ class OperationsPanelComponent extends React.Component {
       t,
       isCopy,
       selection,
-      setProgressBarData,
+      setSecondaryProgressBarData,
       currentFolderId,
       onClose,
       itemOperationToFolder,
@@ -64,7 +64,8 @@ class OperationsPanelComponent extends React.Component {
         }
       }
       onClose();
-      setProgressBarData({
+      setSecondaryProgressBarData({
+        operationType: "Secondary",
         icon: isCopy ? "duplicate" : "move",
         visible: true,
         percent: 0,
@@ -146,6 +147,6 @@ const mapStateToProps = (state) => {
 };
 
 export default connect(mapStateToProps, {
-  setProgressBarData,
+  setSecondaryProgressBarData,
   itemOperationToFolder,
 })(withRouter(OperationsPanel));

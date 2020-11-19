@@ -7,7 +7,7 @@ import { withTranslation } from "react-i18next";
 import { api, utils, toastr } from "asc-web-common";
 import {
   fetchFiles,
-  setProgressBarData,
+  setSecondaryProgressBarData,
   clearProgressData,
 } from "../../../store/files/actions";
 import {
@@ -32,7 +32,7 @@ const EmptyTrashDialogComponent = (props) => {
     t,
     filter,
     currentFolderId,
-    setProgressBarData,
+    setSecondaryProgressBarData,
     isLoading,
     clearProgressData,
     fetchFiles,
@@ -51,17 +51,19 @@ const EmptyTrashDialogComponent = (props) => {
           const currentProcess = res.find((x) => x.id === id);
           if (currentProcess && currentProcess.progress !== 100) {
             const newProgressData = {
+              operationType: "Secondary",
               icon: "trash",
               visible: true,
               percent: currentProcess.progress,
               label: t("DeleteOperation"),
             };
-            setProgressBarData(newProgressData);
+            setSecondaryProgressBarData(newProgressData);
             setTimeout(() => loopEmptyTrash(id), 1000);
           } else {
             fetchFiles(currentFolderId, filter)
               .then(() => {
-                setProgressBarData({
+                setSecondaryProgressBarData({
+                  operationType: "Secondary",
                   icon: "trash",
                   visible: true,
                   percent: 100,
@@ -85,7 +87,7 @@ const EmptyTrashDialogComponent = (props) => {
       t,
       currentFolderId,
       filter,
-      setProgressBarData,
+      setSecondaryProgressBarData,
       clearProgressData,
       fetchFiles,
     ]
@@ -93,12 +95,13 @@ const EmptyTrashDialogComponent = (props) => {
 
   const onEmptyTrash = useCallback(() => {
     const newProgressData = {
+      operationType: "Secondary",
       icon: "trash",
       visible: true,
       percent: 0,
       label: t("DeleteOperation"),
     };
-    setProgressBarData(newProgressData);
+    setSecondaryProgressBarData(newProgressData);
     onClose();
     files
       .emptyTrash()
@@ -110,7 +113,13 @@ const EmptyTrashDialogComponent = (props) => {
         toastr.error(err);
         clearProgressData();
       });
-  }, [onClose, loopEmptyTrash, setProgressBarData, t, clearProgressData]);
+  }, [
+    onClose,
+    loopEmptyTrash,
+    setSecondaryProgressBarData,
+    t,
+    clearProgressData,
+  ]);
 
   return (
     <ModalDialogContainer>
@@ -160,7 +169,7 @@ const mapStateToProps = (state) => {
 };
 
 export default connect(mapStateToProps, {
-  setProgressBarData,
+  setSecondaryProgressBarData,
   clearProgressData,
   fetchFiles,
 })(withRouter(EmptyTrashDialog));
