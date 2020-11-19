@@ -747,7 +747,7 @@ class FilterInput extends React.Component {
     let iconSize = 30;
     switch (size) {
       case "base":
-        iconSize = 30;
+        iconSize = 32;
         break;
       case "middle":
       case "big":
