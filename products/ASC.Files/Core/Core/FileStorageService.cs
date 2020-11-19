@@ -308,7 +308,9 @@ namespace ASC.Web.Files.Services.WCFService
                 || parent.FolderType == FolderType.SHARE
                 || parent.RootFolderType == FolderType.Privacy;
 
-            entries = entries.Where(x => x.FileEntryType == FileEntryType.Folder || !FileConverter.IsConverting((File<T>)x));
+            entries = entries.Where(x => x.FileEntryType == FileEntryType.Folder || 
+            (x is File<string> f1 && !FileConverter.IsConverting(f1) ||
+             x is File<int> f2 && !FileConverter.IsConverting(f2)));
 
             var result = new DataWrapper<T>
             {
