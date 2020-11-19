@@ -90,7 +90,7 @@ const ServiceItem = (props) => {
 
   const dataProps = {
     "data-link": capabilityLink,
-    "data-auth_key": capabilityAuthKey,
+    "data-token": capabilityAuthKey,
     "data-title": capabilityName,
   };
 
@@ -217,7 +217,7 @@ class ConnectClouds extends React.Component {
 
     const selectedServiceData = {
       title: capabilitiesItem[0],
-      auth_key: capabilitiesItem[1],
+      token: capabilitiesItem[1],
       link: capabilitiesItem[2],
       corporate: providerItem.corporate,
       provider_id: providerItem.provider_id,

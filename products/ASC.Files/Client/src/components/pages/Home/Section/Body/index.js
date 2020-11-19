@@ -346,7 +346,7 @@ class SectionBodyContent extends React.Component {
     );
     const capability = {
       title: capabilityItem[0],
-      auth_key: capabilityItem[1],
+      token: capabilityItem[1],
       link: capabilityItem[2],
     };
 

@@ -95,7 +95,7 @@ const ServiceItem = (props) => {
 
   const dataProps = {
     "data-link": capabilityLink,
-    //"data-auth_key": capabilityAuthKey,
+    //"data-token": capabilityAuthKey,
     "data-title": capabilityName,
   };
 
