@@ -14,7 +14,6 @@ namespace ASC.Files.Tests
         private FolderWrapper<int> TestFolder { get; set; }
         private FileWrapper<int> TestFile { get; set; }
 
-        //private FileWrapper<int> TestFile;
 
         [SetUp]
         public override void SetUp()
