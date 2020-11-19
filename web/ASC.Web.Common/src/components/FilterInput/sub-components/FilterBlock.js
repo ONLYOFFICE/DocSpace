@@ -159,6 +159,7 @@ class FilterItem extends React.Component {
       defaultOptionLabel,
       groupsCaption,
       defaultOption,
+      asideView,
     } = this.props;
     return (
       <StyledFilterItem key={id} id={id} block={block} opened={opened}>
@@ -185,7 +186,7 @@ class FilterItem extends React.Component {
                 isMultiSelect={false}
                 onCancel={this.onCancelSelector}
                 onSelect={this.onSelectGroup}
-                displayType={"auto"}
+                displayType={asideView ? "aside" : "auto"}
               />
             </>
           )}
@@ -213,7 +214,7 @@ class FilterItem extends React.Component {
                 defaultOptionLabel={defaultOptionLabel}
                 onCancel={this.onCancelSelector}
                 onSelect={this.onSelectGroup}
-                displayType={"auto"}
+                displayType={asideView ? "aside" : "auto"}
               />
             </>
           )}
@@ -330,6 +331,7 @@ class FilterBlock extends React.Component {
   };
   getFilterItems = () => {
     const { openFilterItems, hiddenFilterItems } = this.state;
+    const { asideView } = this.props;
     const _this = this;
     let result = [];
     let openItems = [];
@@ -369,6 +371,7 @@ class FilterBlock extends React.Component {
             defaultSelectLabel={defaultSelectLabel}
             selectedItem={selectedItem}
             onFilterRender={_this.props.onFilterRender}
+            asideView={asideView}
           ></FilterItem>
         );
       });
@@ -410,6 +413,7 @@ class FilterBlock extends React.Component {
             defaultSelectLabel={defaultSelectLabel}
             selectedItem={selectedItem}
             onFilterRender={_this.props.onFilterRender}
+            asideView={asideView}
           ></FilterItem>
         );
       });
