@@ -26,7 +26,17 @@ const StyledSection = styled.section`
     position: sticky;
 
     @media ${tablet} {
-      bottom: 72px;
+      bottom: 83px;
+    }
+  }
+
+  .layout-progress-second-bar {
+    bottom: 105px;
+    padding-left: calc(100% - 65px);
+    position: sticky;
+
+    @media ${tablet} {
+      bottom: 145px;
     }
   }
 

@@ -195,10 +195,13 @@ class PageLayoutComponent extends React.Component {
     const {
       onDrop,
       progressBarDropDownContent,
-      progressBarIcon,
-      progressBarValue,
+      primaryProgressBarIcon,
+      primaryProgressBarValue,
+      showSecondaryProgressBar,
+      secondaryProgressBarValue,
+      secondaryProgressBarIcon,
       setSelections,
-      showProgressBar,
+      showPrimaryProgressBar,
       uploadFiles,
       viewAs,
       withBodyAutoFocus,
@@ -373,11 +376,18 @@ class PageLayoutComponent extends React.Component {
                           </SubSectionPaging>
                         )}
                       </SubSectionBody>
-                      {showProgressBar && (
+                      {showPrimaryProgressBar && (
                         <FloatingButton
                           className="layout-progress-bar"
-                          icon={progressBarIcon}
-                          percent={progressBarValue}
+                          icon={primaryProgressBarIcon}
+                          percent={primaryProgressBarValue}
+                        />
+                      )}
+                      {showSecondaryProgressBar && (
+                        <FloatingButton
+                          className="layout-progress-second-bar"
+                          icon={secondaryProgressBarIcon}
+                          percent={secondaryProgressBarValue}
                         />
                       )}
                     </>
@@ -404,10 +414,13 @@ PageLayoutComponent.propTypes = {
   withBodyScroll: PropTypes.bool,
   withBodyAutoFocus: PropTypes.bool,
   t: PropTypes.func,
-  showProgressBar: PropTypes.bool,
-  progressBarValue: PropTypes.number,
+  showPrimaryProgressBar: PropTypes.bool,
+  primaryProgressBarValue: PropTypes.number,
   progressBarDropDownContent: PropTypes.any,
-  progressBarIcon: PropTypes.string,
+  primaryProgressBarIcon: PropTypes.string,
+  showSecondaryProgressBar: PropTypes.bool,
+  secondaryProgressBarValue: PropTypes.number,
+  secondaryProgressBarIcon: PropTypes.string,
   onDrop: PropTypes.func,
   setSelections: PropTypes.func,
   uploadFiles: PropTypes.bool,
