@@ -5,6 +5,8 @@ import { utils, Scrollbar, DragAndDrop } from "asc-web-components";
 import SelectedFrame from "./SelectedFrame";
 import isEqual from "lodash/isEqual";
 import { LayoutContextConsumer } from "../../Layout/context";
+import { getIsLoaded } from "../../../store/auth/selectors";
+import { connect } from "react-redux";
 
 const { tablet, size } = utils.device;
 
@@ -221,6 +223,7 @@ SectionBody.propTypes = {
     PropTypes.any,
   ]),
   viewAs: PropTypes.string,
+  isLoaded: PropTypes.bool,
 };
 
 SectionBody.defaultProps = {
@@ -230,4 +233,9 @@ SectionBody.defaultProps = {
   withScroll: true,
 };
 
-export default SectionBody;
+const mapStateToProps = (state) => {
+  return {
+    isLoaded: getIsLoaded(state),
+  };
+};
+export default connect(mapStateToProps)(SectionBody);

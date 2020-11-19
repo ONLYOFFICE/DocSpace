@@ -4,6 +4,8 @@ import PropTypes from "prop-types";
 import { utils } from "asc-web-components";
 import { Resizable } from "re-resizable";
 import { isMobile } from "react-device-detect";
+import { connect } from "react-redux";
+import { getIsLoaded } from "../../../store/auth/selectors";
 
 const { tablet } = utils.device;
 
@@ -100,6 +102,11 @@ class Article extends React.Component {
 
 Article.propTypes = {
   children: PropTypes.any,
+  isLoaded: PropTypes.bool,
 };
-
-export default Article;
+const mapStateToProps = (state) => {
+  return {
+    isLoaded: getIsLoaded(state),
+  };
+};
+export default connect(mapStateToProps)(Article);

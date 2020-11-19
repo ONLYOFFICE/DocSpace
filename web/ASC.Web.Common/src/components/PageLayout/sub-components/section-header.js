@@ -4,7 +4,11 @@ import { utils } from "asc-web-components";
 import isEqual from "lodash/isEqual";
 import classnames from "classnames";
 import { isSafari } from "react-device-detect";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
 import { LayoutContextConsumer } from "../../Layout/context";
+
+import { getIsLoaded } from "../../../store/auth/selectors";
 
 const { tablet } = utils.device;
 
@@ -108,6 +112,7 @@ class SectionHeader extends React.Component {
       isArticlePinned,
       borderBottom,
       isHeaderVisible,
+      dispatch,
       isLoaded,
       ...rest
     } = this.props;
@@ -136,5 +141,13 @@ class SectionHeader extends React.Component {
 }
 
 SectionHeader.displayName = "SectionHeader";
+SectionHeader.propTypes = {
+  isLoaded: PropTypes.bool,
+};
 
-export default SectionHeader;
+const mapStateToProps = (state) => {
+  return {
+    isLoaded: getIsLoaded(state),
+  };
+};
+export default connect(mapStateToProps)(SectionHeader);
