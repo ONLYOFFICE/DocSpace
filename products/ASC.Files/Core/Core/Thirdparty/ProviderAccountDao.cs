@@ -28,6 +28,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using AppLimit.CloudComputing.SharpBox;
+using AppLimit.CloudComputing.SharpBox.StorageProvider.DropBox;
+
 using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
@@ -48,6 +51,7 @@ using ASC.Files.Thirdparty.SharePoint;
 using ASC.Files.Thirdparty.Sharpbox;
 using ASC.Security.Cryptography;
 using ASC.Web.Files.Classes;
+using ASC.Web.Files.Helpers;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -85,6 +89,7 @@ namespace ASC.Files.Thirdparty
         private InstanceCrypto InstanceCrypto { get; }
         private SecurityContext SecurityContext { get; }
         private ConsumerFactory ConsumerFactory { get; }
+        public ThirdpartyConfiguration ThirdpartyConfiguration { get; }
 
         public ProviderAccountDao(
             IServiceProvider serviceProvider,
@@ -93,6 +98,7 @@ namespace ASC.Files.Thirdparty
             InstanceCrypto instanceCrypto,
             SecurityContext securityContext,
             ConsumerFactory consumerFactory,
+            ThirdpartyConfiguration thirdpartyConfiguration,
             DbContextManager<FilesDbContext> dbContextManager,
             IOptionsMonitor<ILog> options)
         {
@@ -104,6 +110,7 @@ namespace ASC.Files.Thirdparty
             InstanceCrypto = instanceCrypto;
             SecurityContext = securityContext;
             ConsumerFactory = consumerFactory;
+            ThirdpartyConfiguration = thirdpartyConfiguration;
         }
 
         public virtual IProviderInfo GetProviderInfo(int linkId)
@@ -475,83 +482,78 @@ namespace ASC.Files.Thirdparty
 
         private AuthData GetEncodedAccesToken(AuthData authData, ProviderTypes provider)
         {
+            string code;
+            OAuth20Token token;
+
             switch (provider)
             {
-                //case ProviderTypes.GoogleDrive:
-
-                //    var code = authData.Token;
-
-                //    var token = OAuth20TokenHelper.GetAccessToken<GoogleLoginProvider>(code);
-
-                //    if (token == null) throw new UnauthorizedAccessException(string.Format(FilesCommonResource.ErrorMassage_SecurityException_Auth, provider));
-
-                //    return new AuthData(token: token.ToJson());
-
-                //case ProviderTypes.Box:
-
-                //    code = authData.Token;
-
-                //    token = OAuth20TokenHelper.GetAccessToken<BoxLoginProvider>(code);
-
-                //    if (token == null) throw new UnauthorizedAccessException(string.Format(FilesCommonResource.ErrorMassage_SecurityException_Auth, provider));
-
-                //    return new AuthData(token: token.ToJson());
-
-                case ProviderTypes.DropboxV2:
-
-                    var code = authData.Token;
-
-                    var token = OAuth20TokenHelper.GetAccessToken<DropboxLoginProvider>(ConsumerFactory, code);
+                case ProviderTypes.GoogleDrive:
+                    code = authData.Token;
+                    token = OAuth20TokenHelper.GetAccessToken<GoogleLoginProvider>(ConsumerFactory, code);
 
                     if (token == null) throw new UnauthorizedAccessException(string.Format(FilesCommonResource.ErrorMassage_SecurityException_Auth, provider));
 
                     return new AuthData(token: token.ToJson());
 
-                //case ProviderTypes.DropBox:
+                case ProviderTypes.Box:
+                    code = authData.Token;
+                    token = OAuth20TokenHelper.GetAccessToken<BoxLoginProvider>(ConsumerFactory, code);
 
-                //    var dropBoxRequestToken = DropBoxRequestToken.Parse(authData.Token);
+                    if (token == null) throw new UnauthorizedAccessException(string.Format(FilesCommonResource.ErrorMassage_SecurityException_Auth, provider));
 
-                //    var config = CloudStorage.GetCloudConfigurationEasy(nSupportedCloudConfigurations.DropBox);
-                //    var accessToken = DropBoxStorageProviderTools.ExchangeDropBoxRequestTokenIntoAccessToken(config as DropBoxConfiguration,
-                //                                                                                             ThirdpartyConfiguration.DropboxAppKey,
-                //                                                                                             ThirdpartyConfiguration.DropboxAppSecret,
-                //                                                                                             dropBoxRequestToken);
+                    return new AuthData(token: token.ToJson());
 
-                //    var base64Token = new CloudStorage().SerializeSecurityTokenToBase64Ex(accessToken, config.GetType(), new Dictionary<string, string>());
+                case ProviderTypes.DropboxV2:
+                    code = authData.Token;
+                    token = OAuth20TokenHelper.GetAccessToken<DropboxLoginProvider>(ConsumerFactory, code);
 
-                //    return new AuthData(token: base64Token);
+                    if (token == null) throw new UnauthorizedAccessException(string.Format(FilesCommonResource.ErrorMassage_SecurityException_Auth, provider));
 
-                //case ProviderTypes.OneDrive:
+                    return new AuthData(token: token.ToJson());
 
-                //    code = authData.Token;
+                case ProviderTypes.DropBox:
 
-                //    token = OAuth20TokenHelper.GetAccessToken<OneDriveLoginProvider>(code);
+                    var dropBoxRequestToken = DropBoxRequestToken.Parse(authData.Token);
 
-                //    if (token == null) throw new UnauthorizedAccessException(string.Format(FilesCommonResource.ErrorMassage_SecurityException_Auth, provider));
+                    var config = CloudStorage.GetCloudConfigurationEasy(nSupportedCloudConfigurations.DropBox);
+                    var accessToken = DropBoxStorageProviderTools.ExchangeDropBoxRequestTokenIntoAccessToken(config as DropBoxConfiguration,
+                                                                                                             ThirdpartyConfiguration.DropboxAppKey,
+                                                                                                             ThirdpartyConfiguration.DropboxAppSecret,
+                                                                                                             dropBoxRequestToken);
 
-                //    return new AuthData(token: token.ToJson());
+                    var base64Token = new CloudStorage().SerializeSecurityTokenToBase64Ex(accessToken, config.GetType(), new Dictionary<string, string>());
 
-                //case ProviderTypes.SkyDrive:
+                    return new AuthData(token: base64Token);
 
-                //    code = authData.Token;
+                case ProviderTypes.OneDrive:
+                    code = authData.Token;
+                    token = OAuth20TokenHelper.GetAccessToken<OneDriveLoginProvider>(ConsumerFactory, code);
 
-                //    token = OAuth20TokenHelper.GetAccessToken<OneDriveLoginProvider>(code);
+                    if (token == null) throw new UnauthorizedAccessException(string.Format(FilesCommonResource.ErrorMassage_SecurityException_Auth, provider));
 
-                //    if (token == null) throw new UnauthorizedAccessException(string.Format(FilesCommonResource.ErrorMassage_SecurityException_Auth, provider));
+                    return new AuthData(token: token.ToJson());
 
-                //    accessToken = AppLimit.CloudComputing.SharpBox.Common.Net.oAuth20.OAuth20Token.FromJson(token.ToJson());
+                case ProviderTypes.SkyDrive:
 
-                //    if (accessToken == null) throw new UnauthorizedAccessException(string.Format(FilesCommonResource.ErrorMassage_SecurityException_Auth, provider));
+                    code = authData.Token;
 
-                //    config = CloudStorage.GetCloudConfigurationEasy(nSupportedCloudConfigurations.SkyDrive);
-                //    var storage = new CloudStorage();
-                //    base64Token = storage.SerializeSecurityTokenToBase64Ex(accessToken, config.GetType(), new Dictionary<string, string>());
+                    token = OAuth20TokenHelper.GetAccessToken<OneDriveLoginProvider>(ConsumerFactory, code);
 
-                //    return new AuthData(token: base64Token);
+                    if (token == null) throw new UnauthorizedAccessException(string.Format(FilesCommonResource.ErrorMassage_SecurityException_Auth, provider));
 
-                //case ProviderTypes.SharePoint:
-                //case ProviderTypes.WebDav:
-                //    break;
+                    accessToken = AppLimit.CloudComputing.SharpBox.Common.Net.oAuth20.OAuth20Token.FromJson(token.ToJson());
+
+                    if (accessToken == null) throw new UnauthorizedAccessException(string.Format(FilesCommonResource.ErrorMassage_SecurityException_Auth, provider));
+
+                    config = CloudStorage.GetCloudConfigurationEasy(nSupportedCloudConfigurations.SkyDrive);
+                    var storage = new CloudStorage();
+                    base64Token = storage.SerializeSecurityTokenToBase64Ex(accessToken, config.GetType(), new Dictionary<string, string>());
+
+                    return new AuthData(token: base64Token);
+
+                case ProviderTypes.SharePoint:
+                case ProviderTypes.WebDav:
+                    break;
 
                 default:
                     authData.Url = null;

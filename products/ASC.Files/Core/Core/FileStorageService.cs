@@ -1167,13 +1167,14 @@ namespace ASC.Web.Files.Services.WCFService
 
         public Folder<T> SaveThirdParty(ThirdPartyParams thirdPartyParams)
         {
+            var folderDaoInt = DaoFactory.GetFolderDao<int>();
             var folderDao = GetFolderDao();
             var providerDao = GetProviderDao();
 
             if (providerDao == null) return null;
 
             ErrorIf(thirdPartyParams == null, FilesCommonResource.ErrorMassage_BadRequest);
-            var parentFolder = folderDao.GetFolder(thirdPartyParams.Corporate && !CoreBaseSettings.Personal ? GlobalFolderHelper.GetFolderCommon<T>() : GlobalFolderHelper.GetFolderMy<T>());
+            var parentFolder = folderDaoInt.GetFolder(thirdPartyParams.Corporate && !CoreBaseSettings.Personal ? GlobalFolderHelper.FolderCommon : GlobalFolderHelper.FolderMy);
             ErrorIf(!FileSecurity.CanCreate(parentFolder), FilesCommonResource.ErrorMassage_SecurityException_Create);
             ErrorIf(!FilesSettingsHelper.EnableThirdParty, FilesCommonResource.ErrorMassage_SecurityException_Create);
 
