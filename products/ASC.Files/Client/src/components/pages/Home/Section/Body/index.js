@@ -90,9 +90,11 @@ import {
   getPrivacyInstructionsLink,
   getIconOfDraggedFile,
   isRootFolder,
+  getThirdPartyProviders,
+  getThirdPartyCapabilities,
 } from "../../../../../store/files/selectors";
 import { SharingPanel, OperationsPanel } from "../../../../panels";
-import { DeleteThirdPartyDialog } from "../../../../dialogs";
+import { DeleteThirdPartyDialog, ConnectDialog } from "../../../../dialogs";
 const {
   isAdmin,
   getSettings,
@@ -191,9 +193,11 @@ class SectionBodyContent extends React.Component {
       showMoveToPanel: false,
       showCopyPanel: false,
       showDeleteThirdPartyDialog: false,
+      connectDialogVisible: false,
       isDrag: false,
       canDrag: true,
       removeItem: null,
+      connectItem: null,
     };
 
     this.tooltipRef = React.createRef();
@@ -243,6 +247,7 @@ class SectionBodyContent extends React.Component {
       showCopyPanel,
       isDrag,
       showDeleteThirdPartyDialog,
+      connectDialogVisible,
     } = this.state;
     if (this.state.showSharingPanel !== nextState.showSharingPanel) {
       return true;
@@ -268,6 +273,10 @@ class SectionBodyContent extends React.Component {
     }
 
     if (showDeleteThirdPartyDialog !== nextState.showDeleteThirdPartyDialog) {
+      return true;
+    }
+
+    if (connectDialogVisible !== nextState.connectDialogVisible) {
       return true;
     }
 
@@ -325,6 +334,24 @@ class SectionBodyContent extends React.Component {
         id,
       });
     });
+  };
+
+  onChangeThirdPartyInfo = (e) => {
+    const providerKey = e.currentTarget.dataset.providerKey;
+    const provider = this.props.providers.find(
+      (x) => x.providerKey === providerKey
+    );
+    const capabilityItem = this.props.capabilities.find(
+      (x) => x[0] === providerKey
+    );
+    const capability = {
+      title: capabilityItem[0],
+      auth_key: capabilityItem[1],
+      link: capabilityItem[2],
+    };
+
+    const connectItem = { ...provider, ...capability };
+    this.setState({ connectItem, connectDialogVisible: true });
   };
 
   onEditComplete = (id, isFolder) => {
@@ -606,6 +633,13 @@ class SectionBodyContent extends React.Component {
       removeItem: null,
     });
 
+  onCloseConnectDialog = () => {
+    this.setState({
+      connectItem: null,
+      connectDialogVisible: !this.state.connectDialogVisible,
+    });
+  };
+
   getFilesContextOptions = (options, item) => {
     const { t, isRootFolder } = this.props;
 
@@ -760,10 +794,11 @@ class SectionBodyContent extends React.Component {
         case "change-thirdparty-info":
           return {
             key: option,
-            label: t("Rename"),
-            icon: "RenameIcon",
-            onClick: this.onClickRename,
-            disabled: true,
+            label: t("ThirdPartyInfo"),
+            icon: "AccessEditIcon",
+            onClick: this.onChangeThirdPartyInfo,
+            disabled: false,
+            "data-provider-key": item.providerKey,
           };
 
         case "delete":
@@ -1584,7 +1619,9 @@ class SectionBodyContent extends React.Component {
       showMoveToPanel,
       showCopyPanel,
       showDeleteThirdPartyDialog,
+      connectDialogVisible,
       removeItem,
+      connectItem,
     } = this.state;
 
     let fileMoveTooltip;
@@ -1658,6 +1695,14 @@ class SectionBodyContent extends React.Component {
             onClose={this.onShowDeleteThirdParty}
             visible={showDeleteThirdPartyDialog}
             removeItem={removeItem}
+          />
+        )}
+
+        {connectDialogVisible && (
+          <ConnectDialog
+            visible={connectDialogVisible}
+            item={connectItem}
+            onClose={this.onCloseConnectDialog}
           />
         )}
 
@@ -1894,6 +1939,8 @@ const mapStateToProps = (state) => {
     tooltipValue: getTooltipLabel(state),
     iconOfDraggedFile: getIconOfDraggedFile(state)(state),
     isRootFolder: isRootFolder(state),
+    providers: getThirdPartyProviders(state),
+    capabilities: getThirdPartyCapabilities(state),
   };
 };
 

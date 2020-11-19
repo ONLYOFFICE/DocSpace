@@ -671,10 +671,10 @@ const getFilesContextOptions = (
     }
 
     options.push("rename");
-    options.push("separator3");
 
     isThirdPartyFolder && options.push("change-thirdparty-info");
 
+    options.push("separator3");
     options.push("delete");
   }
 

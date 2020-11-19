@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import {
   ModalDialog,
@@ -9,11 +9,20 @@ import {
   Text,
   utils,
 } from "asc-web-components";
+import { utils as commonUtils } from "asc-web-common";
 import {
   saveThirdParty,
   openConnectWindow,
-} from "../../../../../store/files/actions";
+} from "../../../store/files/actions";
+import { withTranslation, I18nextProvider } from "react-i18next";
+import { createI18N } from "../../../helpers/i18n";
 
+const i18n = createI18N({
+  page: "ConnectDialog",
+  localesPath: "dialogs/ConnectDialog",
+});
+
+const { changeLanguage } = commonUtils;
 const { tablet } = utils.device;
 
 const StyledConnectedDialog = styled.div`
@@ -43,7 +52,7 @@ const StyledConnectedDialog = styled.div`
   }
 `;
 
-const ConnectedDialog = (props) => {
+const PureConnectDialogContainer = (props) => {
   const { onClose, visible, t, item } = props;
   const { corporate, title, link, auth_key, provider_id, provider_key } = item;
 
@@ -145,4 +154,17 @@ const ConnectedDialog = (props) => {
   );
 };
 
-export default ConnectedDialog;
+const ConnectDialogContainer = withTranslation()(PureConnectDialogContainer);
+
+const ConnectDialog = (props) => {
+  useEffect(() => {
+    changeLanguage(i18n);
+  }, []);
+  return (
+    <I18nextProvider i18n={i18n}>
+      <ConnectDialogContainer {...props} />
+    </I18nextProvider>
+  );
+};
+
+export default ConnectDialog;

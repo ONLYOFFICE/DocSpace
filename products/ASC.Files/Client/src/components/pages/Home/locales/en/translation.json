@@ -109,5 +109,6 @@
   "CopyOperation": "Copying",
   "UnblockVersion": "Unblock/Check-in",
   "AddFilter": "Add filter",
-  "DeleteThirdParty": "Delete third party"
+  "DeleteThirdParty": "Delete third party",
+  "ThirdPartyInfo": "Change the third party info"
 }

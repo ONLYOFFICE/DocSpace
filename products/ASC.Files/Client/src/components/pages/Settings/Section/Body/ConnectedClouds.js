@@ -36,8 +36,7 @@ import {
   getShowThirdPartyPanel,
   getThirdPartyProviders,
 } from "../../../../../store/files/selectors";
-import ConnectedDialog from "./ConnectedDialog";
-import { DeleteThirdPartyDialog } from "../../../../dialogs";
+import { DeleteThirdPartyDialog, ConnectDialog } from "../../../../dialogs";
 
 const { isAdmin } = store.auth.selectors;
 
@@ -469,10 +468,9 @@ class ConnectClouds extends React.Component {
           </ModalDialog>
         )}
         {showAccountSettingDialog && (
-          <ConnectedDialog
+          <ConnectDialog
             visible={showAccountSettingDialog}
             onClose={this.onShowAccountSettingDialog}
-            t={t}
             item={selectedServiceData}
           />
         )}
