@@ -742,7 +742,7 @@ class FilterInput extends React.Component {
       sortDirection,
     } = this.state;
 
-    const smallSectionWidth = sectionWidth ? sectionWidth < 900 : false;
+    const smallSectionWidth = sectionWidth <= 500;
 
     let iconSize = 30;
     switch (size) {
