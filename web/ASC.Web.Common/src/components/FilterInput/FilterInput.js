@@ -110,7 +110,7 @@ class FilterInput extends React.Component {
       openFilterItems: [],
       hiddenFilterItems: [],
       needUpdateFilter: false,
-      searchWidth: null,
+      asideView: false,
     };
 
     this.searchWrapper = React.createRef();
@@ -455,9 +455,13 @@ class FilterInput extends React.Component {
       ? sectionWidth - filterWidth - comboBoxWidth - sectionPaddings
       : fullWidth - filterWidth;
 
-    this.setState({
-      searchWidth,
-    });
+    if (searchWidth) {
+      const asideView = searchWidth && searchWidth < 350;
+
+      this.setState({
+        asideView,
+      });
+    }
 
     const filterArr = Array.from(
       Array.from(this.filterWrapper.current.children).find(
@@ -745,7 +749,7 @@ class FilterInput extends React.Component {
       hiddenFilterItems,
       sortId,
       sortDirection,
-      searchWidth,
+      asideView,
       needUpdateFilter,
     } = this.state;
 
@@ -803,7 +807,7 @@ class FilterInput extends React.Component {
                 isDisabled={isDisabled}
                 columnCount={filterColumnCount}
                 needUpdateFilter={needUpdateFilter}
-                searchWidth={searchWidth}
+                asideView={asideView}
               />
             </div>
           </SearchInput>

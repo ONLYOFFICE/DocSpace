@@ -185,6 +185,7 @@ class FilterItem extends React.Component {
                 isMultiSelect={false}
                 onCancel={this.onCancelSelector}
                 onSelect={this.onSelectGroup}
+                displayType={"auto"}
               />
             </>
           )}
@@ -212,6 +213,7 @@ class FilterItem extends React.Component {
                 defaultOptionLabel={defaultOptionLabel}
                 onCancel={this.onCancelSelector}
                 onSelect={this.onSelectGroup}
+                displayType={"auto"}
               />
             </>
           )}
@@ -453,7 +455,7 @@ class FilterBlock extends React.Component {
     const _this = this;
     const filterItems = this.getFilterItems();
     const filterData = this.props.getFilterData();
-    const { iconSize, isDisabled, contextMenuHeader, searchWidth } = this.props;
+    const { iconSize, isDisabled, contextMenuHeader, asideView } = this.props;
     return (
       <>
         <div
@@ -471,7 +473,7 @@ class FilterBlock extends React.Component {
             getData={_this.getData}
             isDisabled={isDisabled}
             asideHeader={contextMenuHeader}
-            searchWidth={searchWidth}
+            asideView={asideView}
           />
         )}
       </>
@@ -488,7 +490,7 @@ FilterBlock.propTypes = {
   openFilterItems: PropTypes.array,
   columnCount: PropTypes.number,
   contextMenuHeader: PropTypes.string,
-  searchWidth: PropTypes.number,
+  asideView: PropTypes.bool,
 };
 
 export default FilterBlock;
