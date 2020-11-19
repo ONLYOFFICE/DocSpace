@@ -3,17 +3,27 @@ using ASC.Files.Core;
 using ASC.Files.Tests.Infrastructure;
 using ASC.Web.Files.Services.WCFService.FileOperations;
 using NUnit.Framework;
-using System;
 
 namespace ASC.Files.Tests
 {
     [TestFixture]
-    public class MyDocuments : BaseFilesTests<int>
+
+    //private 
+    public class MyDocuments : BaseFilesTests
     {
+        private FolderWrapper<int> TestFolder { get; set; }
+        private FileWrapper<int> TestFile { get; set; }
+
+        //private FileWrapper<int> TestFile;
+
         [SetUp]
         public override void SetUp()
         {
             base.SetUp();
+            TestFolder = FilesControllerHelper.CreateFolder(GlobalFolderHelper.FolderMy, "TestFolder");
+
+            //TestFile = FilesControllerHelper.CreateFile(GlobalFolderHelper.FolderMy, "TestFile");
+
         }
 
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetCreateFolderItems))]
@@ -27,10 +37,10 @@ namespace ASC.Files.Tests
 
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetFolderItems))]
         [Category("section 'My Documents'")]
-        public void GetFolderReturnsFolderContentWrapperTest(int folderId, bool withSubFolders,int filesCountExpected,int foldersCountExpected)
+        public void GetFolderReturnsFolderContentWrapperTest(bool withSubFolders,int filesCountExpected,int foldersCountExpected)
         {
             var folderContentWrapper = FilesControllerHelper.GetFolder(
-                 folderId,
+                 TestFolder.Id,
                  UserOptions.Id,
                  FilterType.None,
                  withSubFolders);
@@ -44,9 +54,9 @@ namespace ASC.Files.Tests
 
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetFolderInfoItems))]
         [Category("section 'My Documents'")]
-        public void GetFolderInfoReturnsFolderWrapperTest(int folderId, string folderTitleExpected)
+        public void GetFolderInfoReturnsFolderWrapperTest(string folderTitleExpected)
         {
-            var folderWrapper = FilesControllerHelper.GetFolderInfo(folderId);
+            var folderWrapper = FilesControllerHelper.GetFolderInfo(TestFolder.Id);
 
             Assert.IsNotNull(folderWrapper);
             Assert.AreEqual(folderTitleExpected, folderWrapper.Title);
@@ -54,9 +64,9 @@ namespace ASC.Files.Tests
 
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetRenameFolderItems))]
         [Category("section 'My Documents'")]
-        public void RenameFolderReturnsFolderWrapperTest(int folderId, string folderTitle)
+        public void RenameFolderReturnsFolderWrapperTest(string folderTitle)
         {
-            var folderWrapper = FilesControllerHelper.RenameFolder(folderId, folderTitle);
+            var folderWrapper = FilesControllerHelper.RenameFolder(TestFolder.Id, folderTitle);
 
             Assert.IsNotNull(folderWrapper);
             Assert.AreEqual(folderTitle, folderWrapper.Title);
@@ -64,10 +74,10 @@ namespace ASC.Files.Tests
 
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetDeleteFolderItems))]
         [Category("section 'My Documents'")]
-        public void DeleteFolderTest(int folderId, bool deleteAfter, bool immediately)
+        public void DeleteFolderTest(bool deleteAfter, bool immediately)
         {
             var statuses = FilesControllerHelper.DeleteFolder(
-                folderId,
+                TestFolder.Id,
                 deleteAfter,
                 immediately);
 
@@ -92,39 +102,39 @@ namespace ASC.Files.Tests
             var fileWrapper = FilesControllerHelper.CreateFile(GlobalFolderHelper.FolderMy, fileTitle);
             
             Assert.IsNotNull(fileWrapper);
-            Assert.AreEqual(fileTitle, fileWrapper.Title);
+            Assert.AreEqual(fileTitle + ".docx", fileWrapper.Title);
         }
         
 
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetFileInfoItems))]
         [Category("section 'My Documents'")]
-        public void GetFileInfoReturnsFilesWrapperTest(int fileId, string fileTitleExpected)
+        public void GetFileInfoReturnsFilesWrapperTest(string fileTitleExpected)
         {
-            var fileWrapper = FilesControllerHelper.GetFileInfo(fileId);
+            var fileWrapper = FilesControllerHelper.GetFileInfo(TestFile.Id);
 
             Assert.IsNotNull(fileWrapper);
-            Assert.AreEqual(fileTitleExpected, fileWrapper.Title);
+            Assert.AreEqual(fileTitleExpected + ".docx", fileWrapper.Title);
         }
 
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetUpdateFileItems))]
         [Category("section 'My Documents'")]
-        public void UpdateFileReturnsFileWrapperTest(int fileId, string fileTitle, int lastVersion)
+        public void UpdateFileReturnsFileWrapperTest(string fileTitle, int lastVersion)
         {
             var fileWrapper = FilesControllerHelper.UpdateFile(
-                fileId,
+                TestFile.Id,
                 fileTitle,
                 lastVersion);
 
             Assert.IsNotNull(fileWrapper);
-            Assert.AreEqual(fileTitle, fileWrapper.Title);
+            Assert.AreEqual(fileTitle + ".docx", fileWrapper.Title);
         }
 
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetDeleteFileItems))]
         [Category("section 'My Documents'")]
-        public void DeleteFileTest(int fileId, bool deleteAfter, bool immediately)
+        public void DeleteFileTest(bool deleteAfter, bool immediately)
         {
             var statuses = FilesControllerHelper.DeleteFile(
-                fileId,
+                TestFile.Id,
                 deleteAfter,
                 immediately);
 

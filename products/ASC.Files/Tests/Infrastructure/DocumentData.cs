@@ -12,42 +12,42 @@ namespace ASC.Files.Tests
         }
         public static IEnumerable<TestCaseData> GetFolderItems()
         {
-            yield return new TestCaseData(14, true, 0, 0);
+            yield return new TestCaseData(true, 0, 0);
         }
 
         public static IEnumerable<TestCaseData> GetFolderInfoItems()
         {
-            yield return new TestCaseData(34, "FolderTwo");
+            yield return new TestCaseData("TestFolder");
         }
 
         public static IEnumerable<TestCaseData> GetRenameFolderItems()
         {
-            yield return new TestCaseData(23, "FoldTest");
+            yield return new TestCaseData("FoldTest");
         }
 
         public static IEnumerable<TestCaseData> GetDeleteFolderItems()
         {
-            yield return new TestCaseData(1, false, true);
+            yield return new TestCaseData(false, true);
         }
 
         public static IEnumerable<TestCaseData> GetCreateFileItems()
         {
-            yield return new TestCaseData("FileOne.docs");
+            yield return new TestCaseData("FileOne");
         }
 
         public static IEnumerable<TestCaseData> GetFileInfoItems()
         {
-            yield return new TestCaseData(1, "FileTest.mp3");
+            yield return new TestCaseData("FileTest");
         }
 
         public static IEnumerable<TestCaseData> GetUpdateFileItems()
         {
-            yield return new TestCaseData(1, "FileTest.mp3", 3);
+            yield return new TestCaseData("FileTest", 3);
         }
 
         public static IEnumerable<TestCaseData> GetDeleteFileItems()
         {
-            yield return new TestCaseData(1, false, true);
+            yield return new TestCaseData(false, true);
         }
 
         public static IEnumerable<TestCaseData> GetMoveBatchItems()
@@ -58,6 +58,11 @@ namespace ASC.Files.Tests
         public static IEnumerable<TestCaseData> GetCopyBatchItems()
         {
             yield return new TestCaseData(" [ { \"folderIds\": [ 6 ] }, { \"fileIds\": [ 4 , 5 ] }, { \"destFolderId\": 5 } ]");
+        }
+
+        public static IEnumerable<TestCaseData> ShareParamToFolder()
+        {
+            yield return new TestCaseData(true, "folder_test");
         }
     }
 }

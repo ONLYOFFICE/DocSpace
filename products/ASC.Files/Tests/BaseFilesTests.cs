@@ -2,6 +2,8 @@
 using ASC.Core;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
+using ASC.Files.Core;
+using ASC.Files.Core.Data;
 using ASC.Files.Helpers;
 using ASC.Files.Model;
 using ASC.Files.Tests.Infrastructure;
@@ -20,9 +22,9 @@ using System.Text.Json;
 
 namespace ASC.Files.Tests
 {
-    public class BaseFilesTests<T>
+    public class BaseFilesTests
     {
-        protected FilesControllerHelper<T> FilesControllerHelper { get; set; }
+        protected FilesControllerHelper<int> FilesControllerHelper { get; set; }
         protected TestServer TestServer { get; set; }
         protected GlobalFolderHelper GlobalFolderHelper { get; set; }
         protected UserManager UserManager { get; set; }
@@ -53,7 +55,7 @@ namespace ASC.Files.Tests
             tenantManager.SetCurrentTenant(tenant);
             CurrentTenant = tenant;
 
-            FilesControllerHelper = scope.ServiceProvider.GetService<FilesControllerHelper<T>>();
+            FilesControllerHelper = scope.ServiceProvider.GetService<FilesControllerHelper<int>>();
             GlobalFolderHelper = scope.ServiceProvider.GetService<GlobalFolderHelper>();
             UserManager = scope.ServiceProvider.GetService<UserManager>();
             SecurityContext = scope.ServiceProvider.GetService<SecurityContext>();
