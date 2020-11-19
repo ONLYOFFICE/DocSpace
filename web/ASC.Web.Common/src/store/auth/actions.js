@@ -244,8 +244,8 @@ export function setEncryptionKeys(keys) {
           "color: green; font: 1.1em/1 bold;",
           "Encryption keys successfully set"
         );
-        debugger;
-        dispatch(getEncryptionKeys());
+        //dispatch(getEncryptionKeys());
+        dispatch(fetchEncryptionKeys(keys ?? {}));
       })
       .catch((err) => console.error(err));
   };
@@ -262,7 +262,13 @@ export function getEncryptionKeys() {
           "Fetching encryption keys...",
           res
         );
+        //debugger;
         dispatch(fetchEncryptionKeys(res ?? {}));
+        console.log(
+          "%c%s",
+          "color: green; font: 1.1em/1 bold;",
+          "Encryption keys has been received "
+        );
       })
       .catch((err) => console.error(err));
   };

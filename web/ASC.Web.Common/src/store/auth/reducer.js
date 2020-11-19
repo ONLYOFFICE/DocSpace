@@ -20,6 +20,10 @@ import {
 import isEmpty from "lodash/isEmpty";
 import { LANGUAGE, AUTH_KEY } from "../../constants";
 
+const desktop = window["AscDesktopEditor"] !== undefined;
+const desktopEncryption =
+  desktop && typeof window.AscDesktopEditor.cloudCryptoCommand === "function";
+
 const initialState = {
   isAuthenticated: false,
   isLoaded: false,
@@ -64,7 +68,8 @@ const initialState = {
       guestCaption: "Guest",
       guestsCaption: "Guests",
     },
-    isDesktopClient: window["AscDesktopEditor"] !== undefined,
+    isDesktopClient: desktop,
+    //isDesktopEncryption: desktopEncryption,
     isEncryptionSupport: false,
     encryptionKeys: null,
   },
@@ -161,7 +166,7 @@ const authReducer = (state = initialState, action) => {
         ...state,
         settings: {
           ...state.settings,
-          encryptionKeys: action.keys || {},
+          encryptionKeys: action.keys,
         },
       };
     case SET_IS_ENCRYPTION_SUPPORT:
@@ -170,6 +175,7 @@ const authReducer = (state = initialState, action) => {
         settings: {
           ...state.settings,
           isEncryptionSupport: action.isSupport,
+          //isEncryptionSupport: state.isDesktopEncryption && action.isSupport,
         },
       };
     default:

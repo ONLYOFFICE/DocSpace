@@ -1,18 +1,11 @@
 import { toastr } from "asc-web-common";
-// import {
-//setEncryptionKeys,
-//getEncryptionAccess,
-// } from "../store/auth/actions";
 import isEmpty from "lodash/isEmpty";
 
 const domain = window.location.origin;
 const provider = "AppServer";
 const guid = "{FFF0E1EB-13DB-4678-B67D-FF0A41DBBCEF}";
-const desktop = window["AscDesktopEditor"] !== undefined;
 
-export function regDesktop(user, isEncryption, keys) {
-  if (!desktop) return;
-
+export function regDesktop(user, isEncryption, keys, setEncryptionKeys) {
   const data = {
     displayName: user.displayName,
     email: user.email,
@@ -46,29 +39,27 @@ export function regDesktop(user, isEncryption, keys) {
     JSON.stringify(extendedData)
   );
 
-  // if (isEncryption) {
-  //   window.cloudCryptoCommand = (type, params, callback) => {
-  //     switch (type) {
-  //       case "encryptionKeys": {
-  //         console.log("EncryptionKeys case type and params: ", params);
-  //         setKeys(params);
-  //         break;
-  //       }
-  //       case "relogin": {
-  //         toastr.info("Encryption keys must be re-entered");
-  //         relogin();
-  //         break;
-  //       }
-  //       case "getsharingkeys":
-  //         break;
-  //       default:
-  //         break;
-  //     }
-  //   };
-  // }
+  if (isEncryption) {
+    window.cloudCryptoCommand = (type, params, callback) => {
+      switch (type) {
+        case "encryptionKeys": {
+          setEncryptionKeys(params);
+          break;
+        }
+        case "relogin": {
+          toastr.info("Encryption keys must be re-entered");
+          //relogin();
+          break;
+        }
+        case "getsharingkeys":
+          break;
+        default:
+          break;
+      }
+    };
+  }
 
   window.onSystemMessage = (e) => {
-    console.log("onSystemMessage: ", e);
     let message = e.opMessage;
     switch (e.type) {
       case "operation":

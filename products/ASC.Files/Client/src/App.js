@@ -34,10 +34,14 @@ const {
   setCurrentProductHomePage,
   getPortalCultures,
   setEncryptionKeys,
-  getEncryptionKeys,
   getEncryptionSupport,
 } = commonStore.auth.actions;
-const { getCurrentUser, isEncryptionSupport } = commonStore.auth.selectors;
+const {
+  getCurrentUser,
+  isEncryptionSupport,
+  isDesktopClient,
+  getIsLoaded,
+} = commonStore.auth.selectors;
 const { AUTH_KEY } = constants;
 
 class App extends React.Component {
@@ -60,6 +64,7 @@ class App extends React.Component {
       fetchTreeFolders,
       setIsLoaded,
       getEncryptionSupport,
+      isDesktop,
     } = this.props;
 
     setModuleInfo();
@@ -70,16 +75,18 @@ class App extends React.Component {
       return setIsLoaded();
     }
 
-    const requests = this.isEditor
-      ? [getUser()]
-      : [
-          getUser(),
-          getPortalSettings(),
-          getModules(),
-          getPortalCultures(),
-          fetchTreeFolders(),
-          getEncryptionSupport(),
-        ];
+    const requests = [getUser()];
+    if (!this.isEditor) {
+      requests.push(
+        getPortalSettings(),
+        getModules(),
+        getPortalCultures(),
+        fetchTreeFolders()
+      );
+      if (isDesktop) {
+        requests.push(getEncryptionSupport());
+      }
+    }
 
     Promise.all(requests)
       .then(() => {
@@ -100,40 +107,15 @@ class App extends React.Component {
       isEncryption,
       keys,
       setEncryptionKeys,
-      //getEncryptionKeys,
+      isLoaded,
     } = this.props;
-    if (isAuthenticated && isEncryption && !this.isDesktopInit) {
+    console.log("componentDidUpdate: ", this.props);
+    if (isAuthenticated && !this.isDesktopInit && isEncryption && isLoaded) {
       this.isDesktopInit = true;
-
-      if (isEncryption) {
-        window.cloudCryptoCommand = (type, params, callback) => {
-          switch (type) {
-            case "encryptionKeys": {
-              setEncryptionKeys(params);
-              break;
-            }
-            case "relogin": {
-              toastr.info("Encryption keys must be re-entered");
-              //relogin();
-              break;
-            }
-            case "getsharingkeys":
-              break;
-            default:
-              break;
-          }
-        };
-      }
-      regDesktop(user, isEncryption, keys);
-      //getEncryptionKeys();
+      regDesktop(user, isEncryption, keys, setEncryptionKeys);
       console.log("%c%s", "font: 1.1em/1 bold;", "Current keys is: ", keys);
     }
   }
-
-  // shouldComponentUpdate(nextProps, nextState) {
-  //   console.log("nextProps: ", nextProps.keys, this.props.keys);
-  //   return nextProps.keys !== this.props.keys;
-  // }
 
   render() {
     const { homepage } = this.props;
@@ -190,8 +172,11 @@ const mapStateToProps = (state) => {
     homepage: homepage || config.homepage,
     user: getCurrentUser(state),
     isAuthenticated: state.auth.isAuthenticated,
+    isLoaded: getIsLoaded(state),
     isEncryption: isEncryptionSupport(state),
+    isDesktop: isDesktopClient(state),
     keys: settings.encryptionKeys,
+    settings: settings,
   };
 };
 
