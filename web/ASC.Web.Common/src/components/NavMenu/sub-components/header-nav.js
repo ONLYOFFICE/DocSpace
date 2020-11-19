@@ -7,7 +7,7 @@ import ProfileActions from "./profile-actions";
 
 import { useTranslation } from "react-i18next";
 import { utils } from "asc-web-components";
-import { LayoutContextConsumer } from "asc-web-common";
+import { LayoutContextConsumer } from "../../Layout/context";
 const { tablet } = utils.device;
 import { logout } from "../../../store/auth/actions";
 

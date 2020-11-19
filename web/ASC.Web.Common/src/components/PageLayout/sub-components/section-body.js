@@ -4,7 +4,7 @@ import styled, { css } from "styled-components";
 import { utils, Scrollbar, DragAndDrop } from "asc-web-components";
 import SelectedFrame from "./SelectedFrame";
 import isEqual from "lodash/isEqual";
-import { LayoutContextConsumer } from "asc-web-common";
+import { LayoutContextConsumer } from "../../Layout/context";
 
 const { tablet, size } = utils.device;
 
