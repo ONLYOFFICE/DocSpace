@@ -152,11 +152,10 @@ namespace ASC.Files.Thirdparty.ProviderDao
         protected Folder<int> PerformCrossDaoFolderCopy(string fromFolderId, int toRootFolderId, bool deleteSourceFolder, CancellationToken? cancellationToken)
         {
             var fromSelector = GetSelector(fromFolderId);
-            using var scope = ServiceProvider.CreateScope();
 
             return CrossDao.PerformCrossDaoFolderCopy(
                 fromFolderId, fromSelector.GetFolderDao(fromFolderId), fromSelector.GetFileDao(fromFolderId), fromSelector.ConvertId,
-                toRootFolderId, scope.ServiceProvider.GetService<FolderDao>(), scope.ServiceProvider.GetService<IFileDao<int>>(), r => r,
+                toRootFolderId, ServiceProvider.GetService<IFolderDao<int>>(), ServiceProvider.GetService<IFileDao<int>>(), r => r,
                 deleteSourceFolder, cancellationToken);
         }
 
