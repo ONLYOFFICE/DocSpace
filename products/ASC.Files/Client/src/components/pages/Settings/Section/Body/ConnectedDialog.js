@@ -45,7 +45,7 @@ const StyledConnectedDialog = styled.div`
 
 const ConnectedDialog = (props) => {
   const { onClose, visible, t, item } = props;
-  const { corporate, title, link, auth_key, provider_id, provider_key } = item;
+  const { corporate, title, link, token, provider_id, provider_key } = item;
 
   const [urlValue, setUrlValue] = useState("");
   const [loginValue, setLoginValue] = useState("");
@@ -64,7 +64,7 @@ const ConnectedDialog = (props) => {
       urlValue,
       loginValue,
       passwordValue,
-      auth_key,
+      token,
       isCorporate,
       customerTitle,
       provider_key,

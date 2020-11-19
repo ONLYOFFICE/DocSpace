@@ -1382,6 +1382,20 @@ const convertServiceName = (serviceName) => {
 export function openConnectWindow(serviceName) {
   const service = convertServiceName(serviceName);
   return api.files.openConnectWindow(service).then((link) => {
-    window.open(link, "", "width=1020,height=600");
+    return oAuthPopup(link);
   });
+}
+
+export function oAuthPopup(url) {
+  let newWindow;
+
+  try {
+    let params =
+      "height=600,width=1020,resizable=0,status=0,toolbar=0,menubar=0,location=1";
+    newWindow = window.open(url, "Authorization", params);
+  } catch (err) {
+    newWindow = window.open(url, "Authorization");
+  }
+
+  return newWindow;
 }
