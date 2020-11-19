@@ -1,8 +1,9 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { utils } from "asc-web-components";
 import isEqual from "lodash/isEqual";
 import classnames from "classnames";
+import { isSafari } from "react-device-detect";
 import { LayoutContextConsumer } from "../../Layout/context";
 
 const { tablet } = utils.device;
@@ -32,9 +33,21 @@ const StyledSectionHeader = styled.div`
       width: ${(props) =>
         props.isArticlePinned ? `calc(100% - 272px)` : "100%"};
       background-color: #fff;
-      position: fixed;
 
-      top: ${(props) => (!props.isHeaderVisible ? "56px" : "0")};
+      ${(props) =>
+        isSafari
+          ? props.isLoaded
+            ? css`
+                position: fixed;
+                top: ${(props) => (!props.isHeaderVisible ? "56px" : "0")};
+              `
+            : css`
+                margin-top: 2px;
+              `
+          : css`
+              position: fixed;
+              top: ${(props) => (!props.isHeaderVisible ? "56px" : "0")};
+            `};
 
       z-index: 155;
 
@@ -95,6 +108,7 @@ class SectionHeader extends React.Component {
       isArticlePinned,
       borderBottom,
       isHeaderVisible,
+      isLoaded,
       ...rest
     } = this.props;
 
@@ -103,7 +117,9 @@ class SectionHeader extends React.Component {
         isHeaderVisible={isHeaderVisible}
         isArticlePinned={isArticlePinned}
         borderBottom={borderBottom}
+        isLoaded={isLoaded}
       >
+        {console.log("isLoaded", isLoaded)}
         <LayoutContextConsumer>
           {(value) => (
             <div

@@ -204,9 +204,9 @@ class PageLayoutComponent extends React.Component {
       withBodyScroll,
       children,
       isLoaded,
-      isHeaderVisible
+      isHeaderVisible,
     } = this.props;
-   
+
     let articleHeaderContent = null;
     let articleMainButtonContent = null;
     let articleBodyContent = null;
@@ -330,6 +330,7 @@ class PageLayoutComponent extends React.Component {
                     <SubSectionHeader
                       isArticlePinned={this.state.isArticlePinned}
                       isHeaderVisible={isHeaderVisible}
+                      isLoaded={isLoaded}
                     >
                       {sectionHeaderContent
                         ? sectionHeaderContent.props.children
@@ -353,6 +354,7 @@ class PageLayoutComponent extends React.Component {
                         autoFocus={withBodyAutoFocus}
                         pinned={this.state.isArticlePinned}
                         viewAs={viewAs}
+                        isLoaded={isLoaded}
                       >
                         {isSectionFilterAvailable && (
                           <SubSectionFilter className="section-body_filter">
