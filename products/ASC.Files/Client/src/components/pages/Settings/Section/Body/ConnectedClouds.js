@@ -133,10 +133,40 @@ class ConnectClouds extends React.Component {
     }
   }
 
+  showOAuthModal = (token, serviceData) => {
+    this.setState({
+      showAccountSettingDialog: true,
+      selectedServiceData: {
+        title: serviceData.title,
+        provider_key: serviceData.title,
+        link: serviceData.link,
+        token,
+      },
+    });
+  };
+
+  getOAuthToken = (modal, serviceData) => {
+    let t = setInterval(() => {
+      try {
+        if (modal.json) {
+          clearInterval(t);
+          const token = modal.json.response;
+          modal.close();
+          this.showOAuthModal(token, serviceData);
+        }
+      } catch {
+        return;
+      }
+    }, 1000);
+  };
+
   onShowService = (e) => {
     const selectedServiceData = e.currentTarget.dataset;
     const showAccountSettingDialog = !e.currentTarget.dataset.link;
-    !showAccountSettingDialog && openConnectWindow(selectedServiceData.title);
+    !showAccountSettingDialog &&
+      openConnectWindow(selectedServiceData.title).then((modal) =>
+        this.getOAuthToken(modal, selectedServiceData)
+      );
 
     this.setState({
       showThirdPartyDialog: !this.state.showThirdPartyDialog,
