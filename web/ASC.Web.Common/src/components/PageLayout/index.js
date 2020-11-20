@@ -375,21 +375,21 @@ class PageLayoutComponent extends React.Component {
                               : null}
                           </SubSectionPaging>
                         )}
+                        {showPrimaryProgressBar && (
+                          <FloatingButton
+                            className="layout-progress-bar"
+                            icon={primaryProgressBarIcon}
+                            percent={primaryProgressBarValue}
+                          />
+                        )}
+                        {showSecondaryProgressBar && (
+                          <FloatingButton
+                            className="layout-progress-second-bar"
+                            icon={secondaryProgressBarIcon}
+                            percent={secondaryProgressBarValue}
+                          />
+                        )}
                       </SubSectionBody>
-                      {showPrimaryProgressBar && (
-                        <FloatingButton
-                          className="layout-progress-bar"
-                          icon={primaryProgressBarIcon}
-                          percent={primaryProgressBarValue}
-                        />
-                      )}
-                      {showSecondaryProgressBar && (
-                        <FloatingButton
-                          className="layout-progress-second-bar"
-                          icon={secondaryProgressBarIcon}
-                          percent={secondaryProgressBarValue}
-                        />
-                      )}
                     </>
                   )}
 

@@ -21,9 +21,9 @@ const StyledSection = styled.section`
   flex-direction: column;
   /*width: ${(props) => `${props.widthProp}px`};*/
   .layout-progress-bar {
-    bottom: 21px;
-    padding-left: calc(100% - 65px);
-    position: sticky;
+    bottom: 24px;
+    padding-left: calc(100% - 90px);
+    position: absolute;
 
     @media ${tablet} {
       bottom: 83px;
@@ -31,9 +31,9 @@ const StyledSection = styled.section`
   }
 
   .layout-progress-second-bar {
-    bottom: 105px;
-    padding-left: calc(100% - 65px);
-    position: sticky;
+    bottom: 86px;
+    padding-left: calc(100% - 90px);
+    position: absolute;
 
     @media ${tablet} {
       bottom: 145px;
