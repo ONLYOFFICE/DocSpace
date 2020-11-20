@@ -89,7 +89,7 @@ namespace ASC.Files.Thirdparty
         private InstanceCrypto InstanceCrypto { get; }
         private SecurityContext SecurityContext { get; }
         private ConsumerFactory ConsumerFactory { get; }
-        public ThirdpartyConfiguration ThirdpartyConfiguration { get; }
+        private ThirdpartyConfiguration ThirdpartyConfiguration { get; }
 
         public ProviderAccountDao(
             IServiceProvider serviceProvider,
