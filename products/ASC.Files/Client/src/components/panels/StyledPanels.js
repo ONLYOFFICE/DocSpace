@@ -350,7 +350,6 @@ const StyledFooter = styled.div`
 
   .sharing_panel-button {
     margin-left: auto;
-    padding: 8px 27px;
   }
 
   @media (max-width: 550px) {
