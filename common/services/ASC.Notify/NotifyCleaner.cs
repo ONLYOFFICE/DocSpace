@@ -41,7 +41,7 @@ using Microsoft.Extensions.Options;
 namespace ASC.Notify
 {
     [Singletone]
-    public class NotifyCleaner
+    public class NotifyCleaner : IDisposable
     {
         private readonly ILog log;
         private readonly ManualResetEvent stop = new ManualResetEvent(false);
@@ -105,6 +105,14 @@ namespace ASC.Notify
                 {
                     break;
                 }
+            }
+        }
+
+        public void Dispose()
+        {
+            if (CancellationTokenSource != null)
+            {
+                CancellationTokenSource.Dispose();
             }
         }
     }
