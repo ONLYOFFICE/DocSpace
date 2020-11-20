@@ -1186,7 +1186,7 @@ namespace ASC.Web.Files.Services.WCFService
             MessageAction messageAction;
             if (string.IsNullOrEmpty(thirdPartyParams.ProviderId))
             {
-                ErrorIf(!ThirdpartyConfiguration.SupportInclusion
+                ErrorIf(!ThirdpartyConfiguration.SupportInclusion(DaoFactory)
                         ||
                         (!FilesSettingsHelper.EnableThirdParty
                          && !CoreBaseSettings.Personal)
