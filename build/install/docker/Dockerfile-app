@@ -7,7 +7,7 @@ ARG VERSION="8.9.0.190"
 ARG SOURCE_REPO_URL="deb http://static.teamlab.com.s3.amazonaws.com/repo/debian squeeze main"
 ARG DEBIAN_FRONTEND=noninteractive
 #ARG GIT_BRANCH="05bc905831f1be9623df1510e75286e61d632665"
-ARG GIT_BRANCH="master"
+ARG GIT_BRANCH="develop"
 
 LABEL onlyoffice.community.release-date="${RELEASE_DATE}" \
       onlyoffice.community.version="${VERSION}" \
@@ -173,19 +173,18 @@ COPY --from=develop /app/onlyoffice/config/ /app/onlyoffice/config/
 RUN mkdir -p /var/log/onlyoffice && \
     mkdir -p /app/onlyoffice/data && \
     mkdir -p /var/www/services/backup && \
-    groupadd -g 1001 appuser && \
-    useradd -r -u 1001 -g appuser appuser && \
-    chown appuser:appuser /app/onlyoffice -R && \
-    chown appuser:appuser /var/log -R  && \
-    chown appuser:appuser /var/www -R 
+    addgroup --system --gid 107 onlyoffice && \
+    adduser -uid 104 --quiet --home /var/www/onlyoffice --system --gid 107 onlyoffice && \
+    chown onlyoffice:onlyoffice /app/onlyoffice -R && \
+    chown onlyoffice:onlyoffice /var/log -R  && \
+    chown onlyoffice:onlyoffice /var/www -R 
 RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \ 
     apt-get -y update && \
     apt-get -y upgrade && \
     apt-get install -yq nano &&\
     apt-get install -yq jq
     
-    
-#USER appuser    
+USER onlyoffice    
 EXPOSE 5050
 
 ENTRYPOINT ["./docker-entrypoint.sh"]
@@ -229,10 +228,10 @@ FROM builder AS backup
 
 WORKDIR /var/www/services/backup/
 
-COPY --chown=appuser:appuser docker-entrypoint.sh .
-COPY --from=develop --chown=appuser:appuser /var/www/services/backup/ .
-COPY --from=develop --chown=appuser:appuser /var/www/products/ASC.People/server/ASC.People.dll /var/www/products/ASC.People/server/
-COPY --from=develop --chown=appuser:appuser /var/www/products/ASC.Files/server/ASC.Files*.dll /var/www/products/ASC.Files/server/
+COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
+COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/services/backup/ .
+COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.People/server/ASC.People.dll /var/www/products/ASC.People/server/
+COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.Files/server/ASC.Files*.dll /var/www/products/ASC.Files/server/
 
 CMD ["ASC.Data.Backup.dll", "backup", "core:products:folder=/var/www/products/", "core:products:subfolder=server"]
 
@@ -241,10 +240,10 @@ FROM builder AS api
 
 WORKDIR /var/www/studio/api/
 
-COPY --chown=appuser:appuser docker-entrypoint.sh .
-COPY --from=develop --chown=appuser:appuser /var/www/studio/api .
-COPY --from=develop --chown=appuser:appuser /var/www/products/ASC.People/server/ASC.People.dll /var/www/products/ASC.People/server/
-COPY --from=develop --chown=appuser:appuser /var/www/products/ASC.Files/server/ASC.Files*.dll /var/www/products/ASC.Files/server/
+COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
+COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/studio/api .
+COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.People/server/ASC.People.dll /var/www/products/ASC.People/server/
+COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.Files/server/ASC.Files*.dll /var/www/products/ASC.Files/server/
 
 CMD ["ASC.Web.Api.dll", "api"]
 
@@ -253,8 +252,8 @@ FROM builder AS api_system
 
 WORKDIR /var/www/services/apisystem/
 
-COPY --chown=appuser:appuser docker-entrypoint.sh .
-COPY --from=develop --chown=appuser:appuser /var/www/services/apisystem/ .
+COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
+COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/services/apisystem/ .
 
 CMD ["ASC.ApiSystem.dll", "api_system"]
 
@@ -263,8 +262,8 @@ FROM builder AS urlshortener
 
 WORKDIR /services/urlshortener/service/ 
 
-COPY --chown=appuser:appuser docker-entrypoint.sh .
-COPY --from=develop --chown=appuser:appuser /services/urlshortener/service/ .
+COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
+COPY --from=develop --chown=onlyoffice:onlyoffice /services/urlshortener/service/ .
 CMD ["ASC.UrlShortener.Svc.dll", "urlshortener"]
 
 
@@ -273,10 +272,10 @@ FROM builder AS studio.notify
 
 WORKDIR /var/www/services/studio.notify/
 
-COPY --chown=appuser:appuser docker-entrypoint.sh .
+COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
 COPY --from=develop /var/www/services/studio.notify/ .
-COPY --from=develop --chown=appuser:appuser /var/www/products/ASC.People/server/ASC.People.dll /var/www/products/ASC.People/server/
-COPY --from=develop --chown=appuser:appuser /var/www/products/ASC.Files/server/ASC.Files*.dll /var/www/products/ASC.Files/server/
+COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.People/server/ASC.People.dll /var/www/products/ASC.People/server/
+COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.Files/server/ASC.Files*.dll /var/www/products/ASC.Files/server/
 
 CMD ["ASC.Studio.Notify.dll", "studio.notify", "core:products:folder=/var/www/products/", "core:products:subfolder=server"]
 
@@ -286,10 +285,10 @@ FROM builder AS notify
 
 WORKDIR /var/www/services/notify/
 
-COPY --chown=appuser:appuser docker-entrypoint.sh .
+COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
 COPY --from=develop /var/www/services/notify/ .
-COPY --from=develop --chown=appuser:appuser /var/www/products/ASC.People/server/ASC.People.dll /var/www/products/ASC.People/server/
-COPY --from=develop --chown=appuser:appuser /var/www/products/ASC.Files/server/ASC.Files*.dll /var/www/products/ASC.Files/server/
+COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.People/server/ASC.People.dll /var/www/products/ASC.People/server/
+COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.Files/server/ASC.Files*.dll /var/www/products/ASC.Files/server/
 
 CMD ["ASC.Notify.dll", "notify", "core:products:folder=/var/www/products/", "core:products:subfolder=server"]
 
@@ -298,9 +297,9 @@ FROM builder AS people.server
 
 WORKDIR /var/www/products/ASC.People/server/
 
-COPY --chown=appuser:appuser docker-entrypoint.sh .
-COPY --from=develop --chown=appuser:appuser /var/www/products/ASC.People/server/ .
-COPY --from=develop --chown=appuser:appuser /var/www/products/ASC.Files/server/ASC.Files*.dll /var/www/products/ASC.Files/server/
+COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
+COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.People/server/ .
+COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.Files/server/ASC.Files*.dll /var/www/products/ASC.Files/server/
 
 CMD ["ASC.People.dll", "people.server"]
 
@@ -309,9 +308,9 @@ FROM builder AS files
 
 WORKDIR /var/www/products/ASC.Files/server/
 
-COPY --chown=appuser:appuser docker-entrypoint.sh .
-COPY --from=develop --chown=appuser:appuser /var/www/products/ASC.Files/server/ .
-COPY --from=develop --chown=appuser:appuser /var/www/products/ASC.People/server/ASC.People.dll /var/www/products/ASC.People/server/
+COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
+COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.Files/server/ .
+COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.People/server/ASC.People.dll /var/www/products/ASC.People/server/
 
 CMD ["ASC.Files.dll", "files"]
 
@@ -320,10 +319,10 @@ FROM builder AS files_services
 
 WORKDIR /var/www/products/ASC.Files/service/
 
-COPY --chown=appuser:appuser docker-entrypoint.sh .
-COPY --from=develop --chown=appuser:appuser /var/www/products/ASC.Files/service/ .
-COPY --from=develop --chown=appuser:appuser /var/www/products/ASC.Files/server/ASC.Files*.dll /var/www/products/ASC.Files/server/
-COPY --from=develop --chown=appuser:appuser /var/www/products/ASC.People/server/ASC.People*.dll /var/www/products/ASC.People/server/
+COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
+COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.Files/service/ .
+COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.Files/server/ASC.Files*.dll /var/www/products/ASC.Files/server/
+COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.People/server/ASC.People*.dll /var/www/products/ASC.People/server/
 
 CMD ["ASC.Files.Service.dll", "files_services", "core:products:folder=/var/www/products/", "core:products:subfolder=server"]
 
@@ -332,9 +331,9 @@ FROM builder AS studio
 
 WORKDIR /var/www/studio/server/
 
-COPY --chown=appuser:appuser docker-entrypoint.sh .
-COPY --from=develop --chown=appuser:appuser /var/www/studio/server/ .
-COPY --from=develop --chown=appuser:appuser /var/www/products/ASC.Files/server/ASC.Files*.dll /var/www/products/ASC.Files/server/
-COPY --from=develop --chown=appuser:appuser /var/www/products/ASC.People/server/ASC.People.dll /var/www/products/ASC.People/server/
+COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
+COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/studio/server/ .
+COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.Files/server/ASC.Files*.dll /var/www/products/ASC.Files/server/
+COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.People/server/ASC.People.dll /var/www/products/ASC.People/server/
 
 CMD ["ASC.Web.Studio.dll", "studio"]

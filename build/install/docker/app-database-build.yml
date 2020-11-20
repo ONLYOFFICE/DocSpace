@@ -24,11 +24,6 @@ services:
       - ./config/onlyoffice.sql:/docker-entrypoint-initdb.d/02_onlyoffice.sql
       - ./config/onlyoffice.data.sql:/docker-entrypoint-initdb.d/03_onlyoffice.data.sql
       - ./config/onlyoffice.resources.sql:/docker-entrypoint-initdb.d/04_onlyoffice.resources.sql
-      #- ../../../sql/onlyoffice.upgradev110.sql:/docker-entrypoint-initdb.d/05_onlyoffice.upgradev110.sql.sql
-      #- ../../../sql/app.sql:/docker-entrypoint-initdb.d/02_app.sql
-      #- ../../../sql/app.data.sql:/docker-entrypoint-initdb.d/03_app.data.sql
-      #- ../../../sql/alter_priv.sql:/docker-entrypoint-initdb.d/04_alter_priv.sql
-      #- ./config/mysql/dotnet_dump.sql:/docker-entrypoint-initdb.d/021_dotnet_dump.sql
     networks:
       - ${NETWORK_NAME:-onlyoffice} 
 

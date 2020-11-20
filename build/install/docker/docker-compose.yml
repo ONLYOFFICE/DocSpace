@@ -11,11 +11,19 @@ x-service:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      APP_DOTNET_ENV: ${APP_DOTNET_ENV:-products}
+      APP_CORE_BASE_DOMAIN: ${APP_CORE_BASE_DOMAIN:-localhost}
+      APP_CORE_MACHINEKEY: ${APP_CORE_MACHINEKEY:-""}
+      APP_SECRET_VALUE: ${APP_SECRET_VALUE:-""}
+      APP_SECRET_HEADER: ${APP_SECRET_HEADER:-""}
+      APP_URL_PUBLIC: ${APP_URL_PUBLIC:-/ds-vpath/}
+      APP_URL_INTERNAL: ${APP_URL_INTERNAL:-http://onlyoffice-document-server/}
+      APP_URL_PORTAL: ${APP_URL_PORTAL:-http://onlyoffice-community-server}
+      APP_URL_CONVERTER: ${APP_URL_CONVERTER:-/ds-vpath/ConvertService.ashx}
+      APP_STORAGE_ROOT: ${APP_STORAGE_ROOT-""}
       KAFKA_HOST: ${KAFKA_HOST:-kafka}
     volumes:
-    - app_data:/app/onlyoffice/data/
-    - document_data:/var/www/onlyoffice/DocumentServerData
-    - ./config/appsettings.test.json:/app/onlyoffice/config/appsettings.test.json
+    - /app/onlyoffice/CommunityServer/data:/app/onlyoffice/data/
 
 services: 
   onlyoffice-elasticsearch:
@@ -80,56 +88,56 @@ services:
 
   onlyoffice-api:
     <<: *x-service-base
-    image: "${REPO:-onlyoffice}/${STATUS:-onlyoffice-}appserver-api:${TAG_SRV:-latest}"
+    image: "${REPO:-onlyoffice}/${STATUS:-}appserver-api:${TAG_SRV:-latest}"
     container_name: onlyoffice-api
 
   onlyoffice-api_system:
     <<: *x-service-base
-    image: "${REPO:-onlyoffice}/${STATUS:-onlyoffice-}appserver-api_system:${TAG_SRV:-latest}"
+    image: "${REPO:-onlyoffice}/${STATUS:-}appserver-api_system:${TAG_SRV:-latest}"
     container_name: onlyoffice-api_system
      
   onlyoffice-urlshortener:
     <<: *x-service-base
-    image: "${REPO:-onlyoffice}/${STATUS:-onlyoffice-}appserver-urlshortener:${TAG_SRV:-latest}"
+    image: "${REPO:-onlyoffice}/${STATUS:-}appserver-urlshortener:${TAG_SRV:-latest}"
     container_name: onlyoffice-urlshortener
    
   onlyoffice-studio.notify:
     <<: *x-service-base
-    image: "${REPO:-onlyoffice}/${STATUS:-onlyoffice-}appserver-studio.notify:${TAG_SRV:-latest}"
+    image: "${REPO:-onlyoffice}/${STATUS:-}appserver-studio.notify:${TAG_SRV:-latest}"
     container_name: onlyoffice-studio.notify
     
   onlyoffice-notify:
     <<: *x-service-base
-    image: "${REPO:-onlyoffice}/${STATUS:-onlyoffice-}appserver-notify:${TAG_SRV:-latest}"
+    image: "${REPO:-onlyoffice}/${STATUS:-}appserver-notify:${TAG_SRV:-latest}"
     container_name: onlyoffice-notify
 
   onlyoffice-people.server:
     <<: *x-service-base
-    image: "${REPO:-onlyoffice}/${STATUS:-onlyoffice-}appserver-people.server:${TAG_SRV:-latest}"
+    image: "${REPO:-onlyoffice}/${STATUS:-}appserver-people.server:${TAG_SRV:-latest}"
     container_name: onlyoffice-people.server
     
   onlyoffice-files:
     <<: *x-service-base
-    image: "${REPO:-onlyoffice}/${STATUS:-onlyoffice-}appserver-files:${TAG_SRV:-latest}"
+    image: "${REPO:-onlyoffice}/${STATUS:-}appserver-files:${TAG_SRV:-latest}"
     container_name: onlyoffice-files
     
   onlyoffice-files_services:
     <<: *x-service-base
-    image: "${REPO:-onlyoffice}/${STATUS:-onlyoffice-}appserver-files_services:${TAG_SRV:-latest}"
+    image: "${REPO:-onlyoffice}/${STATUS:-}appserver-files_services:${TAG_SRV:-latest}"
     container_name: onlyoffice-files_services
     
   onlyoffice-studio:
     <<: *x-service-base
-    image: "${REPO:-onlyoffice}/${STATUS:-onlyoffice-}appserver-studio:${TAG_SRV:-latest}"
+    image: "${REPO:-onlyoffice}/${STATUS:-}appserver-studio:${TAG_SRV:-latest}"
     container_name: onlyoffice-studio
    
   onlyoffice-backup:
     <<: *x-service-base
-    image: "${REPO:-onlyoffice}/${STATUS:-onlyoffice-}appserver-backup:${TAG_SRV:-latest}"
+    image: "${REPO:-onlyoffice}/${STATUS:-}appserver-backup:${TAG_SRV:-latest}"
     container_name: onlyoffice-backup
     
   onlyoffice-nginx:
-    image: "${REPO:-onlyoffice}/${STATUS:-onlyoffice-}appserver-nginx:${TAG_Web:-latest}"
+    image: "${REPO:-onlyoffice}/${STATUS:-}appserver-nginx:${TAG_Web:-latest}"
     container_name: ${NGINX_HOST:-nginx}
     restart: always
     ports:
@@ -174,4 +182,3 @@ volumes:
   nginx_log:
   app_data:
   es_data:
-  document_data:

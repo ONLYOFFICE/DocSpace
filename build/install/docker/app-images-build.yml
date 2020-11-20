@@ -24,11 +24,12 @@ x-service:
       APP_URL_INTERNAL: ${APP_URL_INTERNAL:-http://onlyoffice-document-server/}
       APP_URL_PORTAL: ${APP_URL_PORTAL:-http://onlyoffice-community-server}
       APP_URL_CONVERTER: ${APP_URL_CONVERTER:-/ds-vpath/ConvertService.ashx}
+      APP_STORAGE_ROOT: ${APP_STORAGE_ROOT-""}
       KAFKA_HOST: ${KAFKA_HOST:-kafka}
     volumes:
-    - app_data:/app/onlyoffice/data/
+    - /app/onlyoffice/CommunityServer/data:/app/onlyoffice/data/
     networks:
-      - ${NETWORK_NAME:-onlyoffice}
+    - ${NETWORK_NAME:-onlyoffice}
 
 services: 
   onlyoffice-elasticsearch:
@@ -99,7 +100,7 @@ services:
       context: ./
       dockerfile: Dockerfile-app
       target: api
-    image: "${REPO:-onlyoffice}/${STATUS:-onlyoffice-}appserver-api:${TAG_SRV:-latest}"
+    image: "${REPO:-onlyoffice}/${STATUS:-}appserver-api:${TAG_SRV:-latest}"
     container_name: onlyoffice-api
 
   onlyoffice-api_system:
@@ -108,7 +109,7 @@ services:
       context: ./
       dockerfile: Dockerfile-app
       target: api_system
-    image: "${REPO:-onlyoffice}/${STATUS:-onlyoffice-}appserver-api_system:${TAG_SRV:-latest}"
+    image: "${REPO:-onlyoffice}/${STATUS:-}appserver-api_system:${TAG_SRV:-latest}"
     container_name: onlyoffice-api_system
      
   onlyoffice-urlshortener:
@@ -117,7 +118,7 @@ services:
       context: ./
       dockerfile: Dockerfile-app
       target: urlshortener
-    image: "${REPO:-onlyoffice}/${STATUS:-onlyoffice-}appserver-urlshortener:${TAG_SRV:-latest}"
+    image: "${REPO:-onlyoffice}/${STATUS:-}appserver-urlshortener:${TAG_SRV:-latest}"
     container_name: onlyoffice-urlshortener
    
   onlyoffice-studio.notify:
@@ -126,7 +127,7 @@ services:
       context: ./
       dockerfile: Dockerfile-app
       target: studio.notify
-    image: "${REPO:-onlyoffice}/${STATUS:-onlyoffice-}appserver-studio.notify:${TAG_SRV:-latest}"
+    image: "${REPO:-onlyoffice}/${STATUS:-}appserver-studio.notify:${TAG_SRV:-latest}"
     container_name: onlyoffice-studio.notify
     
   onlyoffice-notify:
@@ -135,7 +136,7 @@ services:
       context: ./
       dockerfile: Dockerfile-app
       target: notify
-    image: "${REPO:-onlyoffice}/${STATUS:-onlyoffice-}appserver-notify:${TAG_SRV:-latest}"
+    image: "${REPO:-onlyoffice}/${STATUS:-}appserver-notify:${TAG_SRV:-latest}"
     container_name: onlyoffice-notify
 
   onlyoffice-people.server:
@@ -144,7 +145,7 @@ services:
       context: ./
       dockerfile: Dockerfile-app
       target: people.server
-    image: "${REPO:-onlyoffice}/${STATUS:-onlyoffice-}appserver-people.server:${TAG_SRV:-latest}"
+    image: "${REPO:-onlyoffice}/${STATUS:-}appserver-people.server:${TAG_SRV:-latest}"
     container_name: onlyoffice-people.server
     
   onlyoffice-files:
@@ -153,7 +154,7 @@ services:
       context: ./
       dockerfile: Dockerfile-app
       target: files
-    image: "${REPO:-onlyoffice}/${STATUS:-onlyoffice-}appserver-files:${TAG_SRV:-latest}"
+    image: "${REPO:-onlyoffice}/${STATUS:-}appserver-files:${TAG_SRV:-latest}"
     container_name: onlyoffice-files
     
   onlyoffice-files_services:
@@ -162,7 +163,7 @@ services:
       context: ./
       dockerfile: Dockerfile-app
       target: files_services
-    image: "${REPO:-onlyoffice}/${STATUS:-onlyoffice-}appserver-files_services:${TAG_SRV:-latest}"
+    image: "${REPO:-onlyoffice}/${STATUS:-}appserver-files_services:${TAG_SRV:-latest}"
     container_name: onlyoffice-files_services
     
   onlyoffice-studio:
@@ -171,7 +172,7 @@ services:
       context: ./
       dockerfile: Dockerfile-app
       target: studio
-    image: "${REPO:-onlyoffice}/${STATUS:-onlyoffice-}appserver-studio:${TAG_SRV:-latest}"
+    image: "${REPO:-onlyoffice}/${STATUS:-}appserver-studio:${TAG_SRV:-latest}"
     container_name: onlyoffice-studio
    
   onlyoffice-backup:
@@ -180,7 +181,7 @@ services:
       context: ./
       dockerfile: Dockerfile-app
       target: backup
-    image: "${REPO:-onlyoffice}/${STATUS:-onlyoffice-}appserver-backup:${TAG_SRV:-latest}"
+    image: "${REPO:-onlyoffice}/${STATUS:-}appserver-backup:${TAG_SRV:-latest}"
     container_name: onlyoffice-backup
     
   onlyoffice-nginx:
@@ -189,7 +190,7 @@ services:
       dockerfile: Dockerfile-app
       target: web
       dockerfile: Dockerfile-app
-    image: "${REPO:-onlyoffice}/${STATUS:-onlyoffice-}appserver-nginx:${TAG_Web:-latest}"
+    image: "${REPO:-onlyoffice}/${STATUS:-}appserver-nginx:${TAG_Web:-latest}"
     container_name: ${NGINX_HOST:-nginx}
     restart: always
     ports:
