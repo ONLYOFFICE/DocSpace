@@ -138,7 +138,7 @@ const StyledBody = styled.div`
 
   .selector-wrapper {
     position: fixed;
-    height: 94%;
+    height: calc(100% - 57px);
 
     .column-options {
       padding: 0 0 16px 0;
