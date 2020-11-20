@@ -217,7 +217,9 @@ namespace ASC.Files.Thirdparty
                 Url = authData.Url ?? ""
             };
 
-            return FilesDbContext.AddOrUpdate(r => r.ThirdpartyAccount, dbFilesThirdpartyAccount).Id;
+            var res = FilesDbContext.AddOrUpdate(r => r.ThirdpartyAccount, dbFilesThirdpartyAccount);
+            FilesDbContext.SaveChanges();
+            return res.Id;
         }
 
         public bool CheckProviderInfo(IProviderInfo providerInfo)

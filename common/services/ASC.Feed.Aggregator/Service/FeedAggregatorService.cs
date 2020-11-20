@@ -50,7 +50,7 @@ using Microsoft.Extensions.Options;
 namespace ASC.Feed.Aggregator
 {
     [Singletone(Additional = typeof(FeedAggregatorServiceExtension))]
-    public class FeedAggregatorService : IHostedService
+    public class FeedAggregatorService : IHostedService, IDisposable
     {
         private ILog Log { get; set; }
         private SignalrServiceClient SignalrServiceClient { get; }
@@ -283,6 +283,19 @@ namespace ASC.Feed.Aggregator
             catch
             {
                 return false;
+            }
+        }
+
+        public void Dispose()
+        {
+            if (aggregateTimer != null)
+            {
+                aggregateTimer.Dispose();
+            }
+
+            if (removeTimer != null)
+            {
+                removeTimer.Dispose();
             }
         }
     }

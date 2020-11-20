@@ -24,7 +24,7 @@ const Dot = styled.div`
   animation-delay: ${(props) => props.delay};
 `;
 
-Dot.protoTypes = {
+Dot.propTypes = {
   delay: PropTypes.string.isRequired,
   color: PropTypes.string.isRequired,
   size: PropTypes.number.isRequired,
