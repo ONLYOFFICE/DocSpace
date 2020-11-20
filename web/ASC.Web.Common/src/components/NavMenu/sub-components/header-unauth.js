@@ -22,7 +22,7 @@ const Header = styled.header`
 
   @media ${tablet} {
     position: fixed;
-
+    z-index: 160;
     transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
     -moz-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
     -ms-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
