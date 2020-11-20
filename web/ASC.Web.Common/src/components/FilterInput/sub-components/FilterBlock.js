@@ -1,7 +1,6 @@
 import React from "react";
 import FilterButton from "./FilterButton";
 import HideFilter from "./HideFilter";
-import throttle from "lodash/throttle";
 import { ComboBox } from "asc-web-components";
 import CloseButton from "./CloseButton";
 import isEqual from "lodash/isEqual";
@@ -160,6 +159,7 @@ class FilterItem extends React.Component {
       defaultOptionLabel,
       groupsCaption,
       defaultOption,
+      asideView,
     } = this.props;
     return (
       <StyledFilterItem key={id} id={id} block={block} opened={opened}>
@@ -186,6 +186,7 @@ class FilterItem extends React.Component {
                 isMultiSelect={false}
                 onCancel={this.onCancelSelector}
                 onSelect={this.onSelectGroup}
+                displayType={asideView ? "aside" : "auto"}
               />
             </>
           )}
@@ -213,6 +214,7 @@ class FilterItem extends React.Component {
                 defaultOptionLabel={defaultOptionLabel}
                 onCancel={this.onCancelSelector}
                 onSelect={this.onSelectGroup}
+                displayType={asideView ? "aside" : "auto"}
               />
             </>
           )}
@@ -329,6 +331,7 @@ class FilterBlock extends React.Component {
   };
   getFilterItems = () => {
     const { openFilterItems, hiddenFilterItems } = this.state;
+    const { asideView } = this.props;
     const _this = this;
     let result = [];
     let openItems = [];
@@ -368,6 +371,7 @@ class FilterBlock extends React.Component {
             defaultSelectLabel={defaultSelectLabel}
             selectedItem={selectedItem}
             onFilterRender={_this.props.onFilterRender}
+            asideView={asideView}
           ></FilterItem>
         );
       });
@@ -409,6 +413,7 @@ class FilterBlock extends React.Component {
             defaultSelectLabel={defaultSelectLabel}
             selectedItem={selectedItem}
             onFilterRender={_this.props.onFilterRender}
+            asideView={asideView}
           ></FilterItem>
         );
       });
@@ -454,7 +459,7 @@ class FilterBlock extends React.Component {
     const _this = this;
     const filterItems = this.getFilterItems();
     const filterData = this.props.getFilterData();
-    const { iconSize, isDisabled, contextMenuHeader } = this.props;
+    const { iconSize, isDisabled, contextMenuHeader, asideView } = this.props;
     return (
       <>
         <div
@@ -472,6 +477,7 @@ class FilterBlock extends React.Component {
             getData={_this.getData}
             isDisabled={isDisabled}
             asideHeader={contextMenuHeader}
+            asideView={asideView}
           />
         )}
       </>
@@ -488,6 +494,7 @@ FilterBlock.propTypes = {
   openFilterItems: PropTypes.array,
   columnCount: PropTypes.number,
   contextMenuHeader: PropTypes.string,
+  asideView: PropTypes.bool,
 };
 
 export default FilterBlock;
