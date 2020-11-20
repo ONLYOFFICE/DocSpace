@@ -67,7 +67,7 @@ namespace ASC.FederatedLogin.Helpers
             if (!string.IsNullOrEmpty(redirectUri)) query += "&redirect_uri=" + HttpUtility.UrlEncode(redirectUri);
             if (!string.IsNullOrEmpty(scope)) query += "&scope=" + HttpUtility.UrlEncode(scope);
 
-            query += "&state=" + HttpUtility.UrlEncode(HttpContextAccessor.HttpContext.Request.GetUrlRewriter().AbsoluteUri) + "/code";
+            query += "&state=" + HttpUtility.UrlEncode(HttpContextAccessor.HttpContext.Request.GetUrlRewriter().AbsoluteUri.TrimEnd('/')) + "/code";
 
             if (additionalArgs != null)
             {
