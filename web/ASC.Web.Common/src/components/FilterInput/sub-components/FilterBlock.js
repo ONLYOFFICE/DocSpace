@@ -235,7 +235,7 @@ class FilterItem extends React.Component {
                   opened={opened}
                   directionX="left"
                   toggleAction={this.toggleCombobox}
-                  dropDownMaxHeight={200}
+                  dropDownMaxHeight={300}
                 ></ComboBox>
               ) : (
                 <span className="styled-filter-name">{label}</span>
