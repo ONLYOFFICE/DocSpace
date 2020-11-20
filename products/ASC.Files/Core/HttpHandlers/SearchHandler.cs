@@ -109,7 +109,7 @@ namespace ASC.Web.Files.Configuration
             var folderDao = DaoFactory.GetFolderDao<int>();
             result = folderDao.SearchFolders(text).Where(security.CanRead);
 
-            if (ThirdpartyConfiguration.SupportInclusion
+            if (ThirdpartyConfiguration.SupportInclusion(DaoFactory)
                 && FilesSettingsHelper.EnableThirdParty)
             {
                 var id = GlobalFolderHelper.FolderMy;
