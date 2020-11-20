@@ -81,14 +81,12 @@ const HeaderUnAuth = ({
   isAuthenticated,
   isLoaded,
 }) => {
-  //console.log("HeaderUnAuth render");
-
   const { t } = useTranslation();
 
   return (
     <LayoutContextConsumer>
       {(value) => (
-        <Header valueTop={value.isVisible}>
+        <Header isLoaded={isLoaded} valueTop={value.isVisible}>
           <Box
             displayProp="flex"
             justifyContent="space-between"
