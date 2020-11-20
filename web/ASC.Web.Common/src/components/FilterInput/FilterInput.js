@@ -753,7 +753,7 @@ class FilterInput extends React.Component {
       needUpdateFilter,
     } = this.state;
 
-    const smallSectionWidth = sectionWidth <= 500;
+    const smallSectionWidth = sectionWidth ? sectionWidth <= 500 : false;
 
     let iconSize = 30;
     switch (size) {
