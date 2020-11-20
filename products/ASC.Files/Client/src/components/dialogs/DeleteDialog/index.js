@@ -50,7 +50,7 @@ class DeleteDialogComponent extends React.Component {
       if (selection[i].fileExst) {
         filesList.push(selection[i]);
       } else {
-        foldersList.push(selection[i]);
+        !selection[i].providerKey && foldersList.push(selection[i]);
       }
       i++;
     }

@@ -400,7 +400,7 @@ class SectionBodyContent extends React.Component {
     const { isThirdParty, id, title } = e.currentTarget.dataset;
     const splitItem = id.split("-");
 
-    if (+isThirdParty) {
+    if (isThirdParty === "true") {
       this.setState({
         showDeleteThirdPartyDialog: true,
         removeItem: { id: splitItem[splitItem.length - 1], title },
