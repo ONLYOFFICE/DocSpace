@@ -53,6 +53,8 @@ namespace ASC.Files.Thirdparty.ProviderDao
         public Folder<string> GetFolder(string folderId)
         {
             var selector = GetSelector(folderId);
+            if (selector == null) return null;
+
             var folderDao = selector.GetFolderDao(folderId);
             var result = folderDao.GetFolder(selector.ConvertId(folderId));
 

@@ -115,7 +115,6 @@ namespace ASC.Files.Thirdparty.OneDrive
             if (Wrapper != null)
             {
                 Wrapper.Dispose();
-                Wrapper = null;
             }
 
             CacheReset();
