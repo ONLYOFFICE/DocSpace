@@ -754,6 +754,10 @@ class FilterInput extends React.Component {
     } = this.state;
 
     const smallSectionWidth = sectionWidth ? sectionWidth <= 500 : false;
+    const isAllItemsHide =
+      openFilterItems.length === 0 && hiddenFilterItems.length > 0
+        ? true
+        : false;
 
     let iconSize = 30;
     switch (size) {
@@ -776,6 +780,7 @@ class FilterInput extends React.Component {
         className={className}
         id={id}
         style={style}
+        isAllItemsHide={isAllItemsHide}
       >
         <div className="styled-search-input test" ref={this.searchWrapper}>
           <SearchInput
