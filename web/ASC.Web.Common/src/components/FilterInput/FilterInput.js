@@ -110,6 +110,7 @@ class FilterInput extends React.Component {
       openFilterItems: [],
       hiddenFilterItems: [],
       needUpdateFilter: false,
+      asideView: false,
     };
 
     this.searchWrapper = React.createRef();
@@ -454,6 +455,14 @@ class FilterInput extends React.Component {
       ? sectionWidth - filterWidth - comboBoxWidth - sectionPaddings
       : fullWidth - filterWidth;
 
+    if (searchWidth) {
+      const asideView = searchWidth && searchWidth < 350;
+
+      this.setState({
+        asideView,
+      });
+    }
+
     const filterArr = Array.from(
       Array.from(this.filterWrapper.current.children).find(
         (x) => x.id === "filter-items-container"
@@ -740,6 +749,8 @@ class FilterInput extends React.Component {
       hiddenFilterItems,
       sortId,
       sortDirection,
+      asideView,
+      needUpdateFilter,
     } = this.state;
 
     const smallSectionWidth = sectionWidth <= 500;
@@ -795,7 +806,8 @@ class FilterInput extends React.Component {
                 onFilterRender={this.onFilterRender}
                 isDisabled={isDisabled}
                 columnCount={filterColumnCount}
-                needUpdateFilter={this.state.needUpdateFilter}
+                needUpdateFilter={needUpdateFilter}
+                asideView={asideView}
               />
             </div>
           </SearchInput>
@@ -831,7 +843,7 @@ class FilterInput extends React.Component {
   }
 }
 
-FilterInput.protoTypes = {
+FilterInput.propTypes = {
   size: PropTypes.oneOf(["base", "middle", "big", "huge"]),
   autoRefresh: PropTypes.bool,
   selectedFilterData: PropTypes.object,
@@ -841,7 +853,7 @@ FilterInput.protoTypes = {
   className: PropTypes.string,
   id: PropTypes.string,
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
-  needForUpdate: PropTypes.bool,
+  needForUpdate: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
   filterColumnCount: PropTypes.number,
   onChangeViewAs: PropTypes.func,
   contextMenuHeader: PropTypes.string,
