@@ -220,7 +220,7 @@ namespace ASC.Files.Thirdparty.Dropbox
             }
         }
 
-        protected IEnumerable<string> GetChildren(object folderId)
+        protected override IEnumerable<string> GetChildren(string folderId)
         {
             return GetDropboxItems(folderId).Select(MakeId);
         }

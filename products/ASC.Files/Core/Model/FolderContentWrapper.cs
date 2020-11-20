@@ -42,7 +42,7 @@ namespace ASC.Api.Documents
     {
         /// <summary>
         /// </summary>
-        public List<FileWrapper<T>> Files { get; set; }
+        public List<FileEntryWrapper> Files { get; set; }
 
         /// <summary>
         /// </summary>
@@ -87,7 +87,7 @@ namespace ASC.Api.Documents
             return new FolderContentWrapper<int>
             {
                 Current = FolderWrapper<int>.GetSample(),
-                Files = new List<FileWrapper<int>>(new[] { FileWrapper<int>.GetSample(), FileWrapper<int>.GetSample() }),
+                Files = new List<FileEntryWrapper>(new[] { FileWrapper<int>.GetSample(), FileWrapper<int>.GetSample() }),
                 Folders = new List<FileEntryWrapper>(new[] { FolderWrapper<int>.GetSample(), FolderWrapper<int>.GetSample() }),
                 PathParts = new
                 {
@@ -120,7 +120,24 @@ namespace ASC.Api.Documents
         {
             var result = new FolderContentWrapper<T>
             {
-                Files = folderItems.Entries.OfType<File<T>>().Select(FileWrapperHelper.Get).ToList(),
+                Files = folderItems.Entries
+                .Where(r => r.FileEntryType == FileEntryType.File)
+                .Select(r =>
+                {
+                    FileEntryWrapper wrapper = null;
+                    if (r is File<int> fol1)
+                    {
+                        wrapper = FileWrapperHelper.Get(fol1);
+                    }
+                    if (r is File<string> fol2)
+                    {
+                        wrapper = FileWrapperHelper.Get(fol2);
+                    }
+
+                    return wrapper;
+                }
+                )
+                .ToList(),
                 Folders = folderItems.Entries
                 .Where(r => r.FileEntryType == FileEntryType.Folder)
                 .Select(r =>

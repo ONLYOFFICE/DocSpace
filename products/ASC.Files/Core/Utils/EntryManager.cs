@@ -372,7 +372,7 @@ namespace ASC.Web.Files.Utils
             else if (parent.FolderType == FolderType.SHARE)
             {
                 //share
-                var shared = (IEnumerable<FileEntry<T>>)fileSecurity.GetSharesForMe<T>(filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders);
+                var shared = fileSecurity.GetSharesForMe(filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders);
 
                 entries = entries.Concat(shared);
 
