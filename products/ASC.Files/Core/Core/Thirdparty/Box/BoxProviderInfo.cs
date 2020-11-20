@@ -131,7 +131,6 @@ namespace ASC.Files.Thirdparty.Box
             if (Wrapper != null)
             {
                 Wrapper.Dispose();
-                Wrapper = null;
             }
 
             CacheReset();
