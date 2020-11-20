@@ -228,7 +228,7 @@ namespace ASC.Files.Thirdparty.Box
             }
         }
 
-        protected IEnumerable<string> GetChildren(string folderId)
+        protected override IEnumerable<string> GetChildren(string folderId)
         {
             return GetBoxItems(folderId).Select(entry => MakeId(entry.Id));
         }

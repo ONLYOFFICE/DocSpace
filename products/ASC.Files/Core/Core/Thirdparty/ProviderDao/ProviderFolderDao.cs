@@ -33,7 +33,6 @@ using ASC.Common;
 using ASC.Core;
 using ASC.Files.Core;
 using ASC.Files.Core.Data;
-using ASC.Files.Core.Security;
 using ASC.Files.Core.Thirdparty;
 
 namespace ASC.Files.Thirdparty.ProviderDao
@@ -350,100 +349,5 @@ filterType, subjectGroup, subjectID, searchText, searchSubfolders, checkShare);
 
             return storageMaxUploadSize;
         }
-
-        #region Only for TMFolderDao
-
-        public void ReassignFolders(string[] folderIds, Guid newOwnerId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<Folder<string>> Search(string text, bool bunch)
-        {
-            throw new NotImplementedException();
-        }
-
-        public string GetFolderID(string module, string bunch, string data, bool createIfNotExists)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<string> GetFolderIDs(string module, string bunch, IEnumerable<string> data, bool createIfNotExists)
-        {
-            throw new NotImplementedException();
-        }
-
-        public string GetFolderIDCommon(bool createIfNotExists)
-        {
-            throw new NotImplementedException();
-        }
-
-        public string GetFolderIDProjects(bool createIfNotExists)
-        {
-            throw new NotImplementedException();
-        }
-
-        public string GetFolderIDPhotos(bool createIfNotExists)
-        {
-            throw new NotImplementedException();
-        }
-
-        public string GetBunchObjectID(string folderID)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Dictionary<string, string> GetBunchObjectIDs(List<string> folderIDs)
-        {
-            throw new NotImplementedException();
-        }
-
-        public string GetFolderIDUser(bool createIfNotExists, Guid? userId = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        public string GetFolderIDShare(bool createIfNotExists)
-        {
-            throw new NotImplementedException();
-        }
-
-        public string GetFolderIDRecent(bool createIfNotExists)
-        {
-            throw new NotImplementedException();
-        }
-
-        public string GetFolderIDFavorites(bool createIfNotExists)
-        {
-            throw new NotImplementedException();
-        }
-
-        public string GetFolderIDTemplates(bool createIfNotExists)
-        {
-            throw new NotImplementedException();
-        }
-
-        public string GetFolderIDPrivacy(bool createIfNotExists, Guid? userId = null)
-        {
-            throw new NotImplementedException();
-        }
-
-
-        public string GetFolderIDTrash(bool createIfNotExists, Guid? userId = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<(Folder<string>, SmallShareRecord)> GetFeeds(int tenant, DateTime from, DateTime to)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<string> GetTenantsWithFeeds(DateTime fromTime)
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
     }
 }

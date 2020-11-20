@@ -694,17 +694,26 @@ namespace ASC.Files.Core.Security
             return daoFactory.GetSecurityDao<T>().GetShares(entry);
         }
 
-        public List<FileEntry<T>> GetSharesForMe<T>(FilterType filterType, bool subjectGroup, Guid subjectID, string searchText = "", bool searchInContent = false, bool withSubfolders = false)
+        public List<FileEntry> GetSharesForMe(FilterType filterType, bool subjectGroup, Guid subjectID, string searchText = "", bool searchInContent = false, bool withSubfolders = false)
+        {
+            var securityDao = daoFactory.GetSecurityDao<int>();
+            var subjects = GetUserSubjects(AuthContext.CurrentAccount.ID);
+            var records = securityDao.GetShares(subjects);
+
+            var result = new List<FileEntry>();
+            result.AddRange(GetSharesForMe<int>(records.Where(r=> r.EntryId.GetType() == typeof(int)), subjects, filterType, subjectGroup, subjectID, searchText, searchInContent, withSubfolders));
+            result.AddRange(GetSharesForMe<string>(records.Where(r => r.EntryId.GetType() == typeof(string)), subjects, filterType, subjectGroup, subjectID, searchText, searchInContent, withSubfolders));
+            return result;
+        }
+
+        private List<FileEntry> GetSharesForMe<T>(IEnumerable<FileShareRecord> records, List<Guid> subjects, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText = "", bool searchInContent = false, bool withSubfolders = false)
         {
             var folderDao = daoFactory.GetFolderDao<T>();
             var fileDao = daoFactory.GetFileDao<T>();
             var securityDao = daoFactory.GetSecurityDao<T>();
-            var subjects = GetUserSubjects(AuthContext.CurrentAccount.ID);
 
-            var records = securityDao.GetShares(subjects);
-
-            var fileIds = new Dictionary<object, FileShare>();
-            var folderIds = new Dictionary<object, FileShare>();
+            var fileIds = new Dictionary<T, FileShare>();
+            var folderIds = new Dictionary<T, FileShare>();
 
             var recordGroup = records.GroupBy(r => new { r.EntryId, r.EntryType }, (key, group) => new
             {
@@ -717,13 +726,13 @@ namespace ASC.Files.Core.Security
             {
                 if (r.firstRecord.EntryType == FileEntryType.Folder)
                 {
-                    if (!folderIds.ContainsKey(r.firstRecord.EntryId))
-                        folderIds.Add(r.firstRecord.EntryId, r.firstRecord.Share);
+                    if (!folderIds.ContainsKey((T)r.firstRecord.EntryId))
+                        folderIds.Add((T)r.firstRecord.EntryId, r.firstRecord.Share);
                 }
                 else
                 {
-                    if (!fileIds.ContainsKey(r.firstRecord.EntryId))
-                        fileIds.Add(r.firstRecord.EntryId, r.firstRecord.Share);
+                    if (!fileIds.ContainsKey((T)r.firstRecord.EntryId))
+                        fileIds.Add((T)r.firstRecord.EntryId, r.firstRecord.Share);
                 }
             }
 
@@ -731,7 +740,7 @@ namespace ASC.Files.Core.Security
 
             if (filterType != FilterType.FoldersOnly)
             {
-                var files = fileDao.GetFilesFiltered(fileIds.Keys.Select(r => (T)r).ToArray(), filterType, subjectGroup, subjectID, searchText, searchInContent);
+                var files = fileDao.GetFilesFiltered(fileIds.Keys.Select(r => r).ToArray(), filterType, subjectGroup, subjectID, searchText, searchInContent);
 
                 files.ForEach(x =>
                     {
@@ -747,7 +756,7 @@ namespace ASC.Files.Core.Security
 
             if (filterType == FilterType.None || filterType == FilterType.FoldersOnly)
             {
-                var folders = folderDao.GetFolders(folderIds.Keys.Select(r => (T)r).ToArray(), filterType, subjectGroup, subjectID, searchText, withSubfolders, false);
+                var folders = folderDao.GetFolders(folderIds.Keys.Select(r => r).ToArray(), filterType, subjectGroup, subjectID, searchText, withSubfolders, false);
 
                 if (withSubfolders)
                 {
@@ -767,7 +776,7 @@ namespace ASC.Files.Core.Security
 
             if (filterType != FilterType.FoldersOnly && withSubfolders)
             {
-                var filesInSharedFolders = fileDao.GetFiles(folderIds.Keys.Select(r => (T)r).ToArray(), filterType, subjectGroup, subjectID, searchText, searchInContent);
+                var filesInSharedFolders = fileDao.GetFiles(folderIds.Keys.Select(r => r).ToArray(), filterType, subjectGroup, subjectID, searchText, searchInContent);
                 filesInSharedFolders = FilterRead(filesInSharedFolders).ToList();
                 entries.AddRange(filesInSharedFolders);
                 entries = entries.Distinct().ToList();
@@ -802,7 +811,7 @@ namespace ASC.Files.Core.Security
                 securityDao.DeleteShareRecords(failedRecords);
             }
 
-            return entries.Where(x => string.IsNullOrEmpty(x.Error)).ToList();
+            return entries.Where(x => string.IsNullOrEmpty(x.Error)).Cast<FileEntry>().ToList();
         }
 
         public List<FileEntry<T>> GetPrivacyForMe<T>(FilterType filterType, bool subjectGroup, Guid subjectID, string searchText = "", bool searchInContent = false, bool withSubfolders = false)
