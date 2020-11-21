@@ -1,0 +1,6 @@
+{
+  "version": "0.1.0",
+  "npmClient": "yarn",
+  "packages": ["web/ASC.Web.Components", "web/ASC.Web.Common", "web/ASC.Web.Client", "products/ASC.People/Client", "products/ASC.Files/Client"],
+  "useWorkspaces": true
+}
