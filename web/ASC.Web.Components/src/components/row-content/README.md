@@ -5,7 +5,7 @@ Required for formatted output of elements inside Row
 ### Usage
 
 ```js
-import { RowContent } from "asc-web-components";
+import { RowContent } from "@appserver/components";
 ```
 
 ```jsx

@@ -5,7 +5,7 @@ Used to display custom calendar
 ### Usage
 
 ```js
-import { Calendar } from "asc-web-components";
+import { Calendar } from "@appserver/components";
 ```
 
 ```jsx

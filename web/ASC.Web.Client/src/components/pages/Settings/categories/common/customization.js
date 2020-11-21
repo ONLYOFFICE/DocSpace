@@ -1,9 +1,9 @@
 import React from "react";
 import { connect } from "react-redux";
 import { withTranslation } from "react-i18next";
-import { Text, Loader, toastr, Link, Icons } from "asc-web-components";
+import { Text, Loader, toastr, Link, Icons } from "@appserver/components";
 import styled from "styled-components";
-import { store, utils } from "asc-web-common";
+import { store, utils } from "@appserver/common";
 import {
   setLanguageAndTime,
   getPortalTimezones,

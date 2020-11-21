@@ -8,9 +8,9 @@ import {
   Text,
   Checkbox,
   Scrollbar,
-} from "asc-web-components";
+} from "@appserver/components";
 import { withTranslation } from "react-i18next";
-import { api, utils, toastr } from "asc-web-common";
+import { api, utils, toastr } from "@appserver/common";
 import {
   fetchFiles,
   setTreeFolders,

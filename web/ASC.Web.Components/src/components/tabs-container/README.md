@@ -5,7 +5,7 @@ Custom Tabs menu
 ### Usage
 
 ```js
-import { TabContainer } from "asc-web-components";
+import { TabContainer } from "@appserver/components";
 ```
 
 ```js

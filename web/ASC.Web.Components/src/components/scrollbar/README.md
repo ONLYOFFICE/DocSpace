@@ -5,7 +5,7 @@ Scrollbar is used for displaying custom scrollbar
 ### Usage
 
 ```js
-import { Scrollbar } from "asc-web-components";
+import { Scrollbar } from "@appserver/components";
 ```
 
 ```jsx

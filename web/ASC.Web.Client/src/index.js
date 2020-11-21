@@ -5,7 +5,7 @@ import store from "./store/store";
 import "./custom.scss";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
-import { ErrorBoundary, utils } from "asc-web-common";
+import { ErrorBoundary, utils } from "@appserver/common";
 const { redirectToDefaultPage } = utils;
 
 redirectToDefaultPage();

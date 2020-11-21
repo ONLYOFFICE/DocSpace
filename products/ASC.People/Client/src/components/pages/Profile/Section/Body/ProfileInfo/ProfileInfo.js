@@ -7,9 +7,9 @@ import {
   Link,
   ComboBox,
   HelpButton,
-} from "asc-web-components";
+} from "@appserver/components";
 import styled from "styled-components";
-import { history, api, store, toastr, Loaders } from "asc-web-common";
+import { history, api, store, toastr, Loaders } from "@appserver/common";
 import { connect } from "react-redux";
 import { updateProfileCulture } from "../../../../../../store/profile/actions";
 

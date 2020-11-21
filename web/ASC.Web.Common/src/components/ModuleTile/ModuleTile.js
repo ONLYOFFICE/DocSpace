@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Text } from "asc-web-components";
+import { Text } from "@appserver/components";
 import StyledModuleTile from "./StyledModuleTile";
 
 const ModuleTile = (props) => {

@@ -1,8 +1,8 @@
 import React from "react";
 import styled from "styled-components";
 import { withRouter } from "react-router";
-import { Headline } from "asc-web-common";
-import { IconButton, utils } from "asc-web-components";
+import { Headline } from "@appserver/common";
+import { IconButton, utils } from "@appserver/components";
 import { withTranslation } from "react-i18next";
 import {
   getKeyByLink,

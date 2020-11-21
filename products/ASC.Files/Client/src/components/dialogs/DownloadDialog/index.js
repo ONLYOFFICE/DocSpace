@@ -9,10 +9,10 @@ import {
   Row,
   RowContent,
   RowContainer,
-} from "asc-web-components";
+} from "@appserver/components";
 import { ReactSVG } from "react-svg";
 import { withTranslation } from "react-i18next";
-import { utils, api, toastr } from "asc-web-common";
+import { utils, api, toastr } from "@appserver/common";
 import {
   getFileIcon,
   getFolderIcon,

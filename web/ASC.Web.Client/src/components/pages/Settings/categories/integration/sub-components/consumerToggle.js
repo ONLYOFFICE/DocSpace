@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { ToggleButton, toastr } from "asc-web-components";
+import { ToggleButton, toastr } from "@appserver/components";
 import styled from "styled-components";
 
 const StyledToggle = styled(ToggleButton)`

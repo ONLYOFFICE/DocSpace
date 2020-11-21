@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import isEqual from "lodash/isEqual";
-import { ComboBox, TextInput, IconButton } from "asc-web-components";
+import { ComboBox, TextInput, IconButton } from "@appserver/components";
 
 const Container = styled.div`
   display: flex;

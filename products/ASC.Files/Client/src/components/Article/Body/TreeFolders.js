@@ -1,8 +1,8 @@
 import React from "react";
-import { TreeMenu, TreeNode, Icons } from "asc-web-components";
+import { TreeMenu, TreeNode, Icons } from "@appserver/components";
 import styled from "styled-components";
 import isEqual from "lodash/isEqual";
-import { api, constants, toastr, store as initStore } from "asc-web-common";
+import { api, constants, toastr, store as initStore } from "@appserver/common";
 import { connect } from "react-redux";
 import {
   setFilter,

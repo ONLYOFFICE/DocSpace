@@ -4,8 +4,8 @@ import {
   FieldContainer,
   SelectorAddButton,
   SelectedItem,
-} from "asc-web-components";
-import { GroupSelector } from "asc-web-common";
+} from "@appserver/components";
+import { GroupSelector } from "@appserver/common";
 
 class DepartmentField extends React.Component {
   shouldComponentUpdate(nextProps) {

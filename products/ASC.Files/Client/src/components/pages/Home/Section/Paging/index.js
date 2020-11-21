@@ -5,7 +5,7 @@ import {
   getFilter,
   getSelectedFolderId,
 } from "../../../../../store/files/selectors";
-import { Paging } from "asc-web-components";
+import { Paging } from "@appserver/components";
 import { useTranslation } from "react-i18next";
 
 const SectionPagingContent = ({

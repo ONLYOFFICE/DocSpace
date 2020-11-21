@@ -6,7 +6,7 @@ import {
   Text,
   ModalDialog,
   FieldContainer,
-} from "asc-web-components";
+} from "@appserver/components";
 import ModalDialogContainer from "./modal-dialog-container";
 
 class ForgotPasswordModalDialog extends React.Component {

@@ -11,7 +11,7 @@ import {
   RowContainer,
   utils,
   Box,
-} from "asc-web-components";
+} from "@appserver/components";
 import UserContent from "./userContent";
 import {
   selectUser,
@@ -25,7 +25,7 @@ import {
 import { getPeopleList } from "../../../../../store/people/selectors";
 
 import isEqual from "lodash/isEqual";
-import { store, api, constants, toastr, Loaders } from "asc-web-common";
+import { store, api, constants, toastr, Loaders } from "@appserver/common";
 import {
   ChangeEmailDialog,
   ChangePasswordDialog,

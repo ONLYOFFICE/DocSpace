@@ -1,11 +1,9 @@
 {
-  "name": "asc-people-client",
+  "name": "@appserver/people",
   "version": "0.1.0",
   "private": true,
   "homepage": "/products/people",
   "dependencies": {
-    "asc-web-common": "file:../../../packages/asc-web-common",
-    "asc-web-components": "file:../../../packages/asc-web-components",
     "connected-react-router": "6.6.1",
     "copy-to-clipboard": "^3.2.0",
     "history": "4.10.1",
@@ -31,11 +29,14 @@
     "redux": "4.0.5",
     "redux-thunk": "2.3.0",
     "reselect": "^4.0.0",
-    "styled-components": "^5.0.0"
+    "styled-components": "^5.0.0",
+    "@appserver/components": "^1.0.485",
+    "@appserver/common": "^1.0.277"
   },
   "devDependencies": {
     "copy-webpack-plugin": "^5.1.1",
     "cross-env": "^6.0.3",
+    "customize-cra": "^1.0.0",
     "prettier": "2.1.2",
     "react-app-rewired": "^2.1.6",
     "react-scripts": "3.4.3",

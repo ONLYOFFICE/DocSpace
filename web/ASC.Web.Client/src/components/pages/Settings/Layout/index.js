@@ -1,10 +1,10 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
-import { PageLayout } from "asc-web-common";
+import { PageLayout } from "@appserver/common";
 import { I18nextProvider } from "react-i18next";
 import { ArticleHeaderContent, ArticleBodyContent } from "./Article";
 import { SectionHeaderContent } from "./Section";
-import { store, utils } from "asc-web-common";
+import { store, utils } from "@appserver/common";
 
 import { createI18N } from "../../../../helpers/i18n";
 

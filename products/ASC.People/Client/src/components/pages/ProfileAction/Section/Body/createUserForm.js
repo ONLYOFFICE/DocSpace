@@ -8,7 +8,7 @@ import {
   AvatarEditor,
   Text,
   utils,
-} from "asc-web-components";
+} from "@appserver/components";
 import { withTranslation, Trans } from "react-i18next";
 import {
   toEmployeeWrapper,
@@ -47,7 +47,7 @@ import DepartmentField from "./FormFields/DepartmentField";
 import ContactsField from "./FormFields/ContactsField";
 import InfoFieldContainer from "./FormFields/InfoFieldContainer";
 import { DataLossWarningDialog } from "../../../../dialogs";
-import { api, toastr } from "asc-web-common";
+import { api, toastr } from "@appserver/common";
 import { isMobile } from "react-device-detect";
 const { createThumbnailsAvatar, loadAvatar } = api.people;
 const { isTablet } = utils.device;

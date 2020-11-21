@@ -5,7 +5,7 @@ List of all available icons
 ### Usage
 
 ```js
-import { Icons } from "asc-web-components";
+import { Icons } from "@appserver/components";
 ```
 
 ```jsx

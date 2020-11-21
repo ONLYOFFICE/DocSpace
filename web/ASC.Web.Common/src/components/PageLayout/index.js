@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { Backdrop, ProgressBar, utils } from "asc-web-components";
+import { Backdrop, ProgressBar, utils } from "@appserver/components";
 import store from "../../store";
 import { withTranslation } from "react-i18next";
 import i18n from "./i18n";

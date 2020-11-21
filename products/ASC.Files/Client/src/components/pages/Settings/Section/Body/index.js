@@ -1,8 +1,8 @@
 import React from "react";
 import styled from "styled-components";
 import { connect } from "react-redux";
-import { Heading, ToggleButton } from "asc-web-components";
-import { Error403, Error520, store } from "asc-web-common";
+import { Heading, ToggleButton } from "@appserver/components";
+import { Error403, Error520, store } from "@appserver/common";
 import {
   setUpdateIfExist,
   setStoreOriginal,

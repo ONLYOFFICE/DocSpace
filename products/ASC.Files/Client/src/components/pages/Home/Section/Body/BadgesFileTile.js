@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import styled from "styled-components";
-import { Icons, Badge } from "asc-web-components";
+import { Icons, Badge } from "@appserver/components";
 import { canWebEdit, canConvert } from "../../../../../store/files/selectors";
 
 const StyledBadgesFileTile = styled.div`

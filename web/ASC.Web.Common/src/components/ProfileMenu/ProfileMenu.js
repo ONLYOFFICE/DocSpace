@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Avatar, DropDown } from "asc-web-components";
+import { Avatar, DropDown } from "@appserver/components";
 import {
   AvatarContainer,
   LabelContainer,

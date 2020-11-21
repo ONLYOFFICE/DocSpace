@@ -1,5 +1,5 @@
 import React from "react";
-import { IconButton } from "asc-web-components";
+import { IconButton } from "@appserver/components";
 import PropTypes from "prop-types";
 import { StyledViewSelector } from "../StyledFilterInput";
 

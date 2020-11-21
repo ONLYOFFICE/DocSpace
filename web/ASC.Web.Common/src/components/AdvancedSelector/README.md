@@ -3,7 +3,7 @@
 ## Usage
 
 ```js
-import { AdvancedSelector } from "asc-web-common";
+import { AdvancedSelector } from "@appserver/common";
 ```
 
 #### Description

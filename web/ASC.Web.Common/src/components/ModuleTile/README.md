@@ -5,7 +5,7 @@ Module tile is used for navigation to module page
 ### Usage
 
 ```js
-import { ModuleTile } from "asc-web-common";
+import { ModuleTile } from "@appserver/common";
 ```
 
 ```jsx

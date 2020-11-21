@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Backdrop, Heading, Aside, IconButton } from "asc-web-components";
-import { GroupSelector, utils } from "asc-web-common";
+import { Backdrop, Heading, Aside, IconButton } from "@appserver/components";
+import { GroupSelector, utils } from "@appserver/common";
 import { withTranslation } from "react-i18next";
 import {
   StyledAddGroupsPanel,

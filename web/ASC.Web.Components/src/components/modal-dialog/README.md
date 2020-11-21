@@ -5,7 +5,7 @@ ModalDialog is used for displaying modal dialogs
 ### Usage
 
 ```js
-import { ModalDialog } from "asc-web-components";
+import { ModalDialog } from "@appserver/components";
 ```
 
 ```jsx

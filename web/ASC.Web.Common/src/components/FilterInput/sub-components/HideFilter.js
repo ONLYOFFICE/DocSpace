@@ -1,5 +1,5 @@
 import React from "react";
-import { Icons, DropDown } from "asc-web-components";
+import { Icons, DropDown } from "@appserver/components";
 import PropTypes from "prop-types";
 import { Caret, StyledHideFilterButton } from "../StyledFilterInput";
 

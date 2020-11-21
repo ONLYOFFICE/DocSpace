@@ -8,12 +8,12 @@ import {
   PasswordInput,
   toastr,
   Loader,
-} from "asc-web-components";
-import { PageLayout } from "asc-web-common";
+} from "@appserver/components";
+import { PageLayout } from "@appserver/common";
 import styled from "styled-components";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { constants, utils as commonUtils } from "asc-web-common";
+import { constants, utils as commonUtils } from "@appserver/common";
 import {
   getConfirmationInfo,
   activateConfirmUser,

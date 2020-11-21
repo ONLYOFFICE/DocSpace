@@ -5,7 +5,7 @@ Drag And Drop component can be used as Dropzone
 #### See documentation: https://github.com/react-dropzone/react-dropzone
 
 ```js
-import { DragAndDrop } from "asc-web-components";
+import { DragAndDrop } from "@appserver/components";
 ```
 
 ```jsx

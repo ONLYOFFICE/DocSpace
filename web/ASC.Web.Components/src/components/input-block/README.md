@@ -5,7 +5,7 @@ InputBlock description
 ### Usage
 
 ```js
-import { InputBlock } from "asc-web-components";
+import { InputBlock } from "@appserver/components";
 ```
 
 ```js

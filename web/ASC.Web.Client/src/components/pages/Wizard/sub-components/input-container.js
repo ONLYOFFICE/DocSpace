@@ -10,7 +10,7 @@ import {
   Link,
   Checkbox,
   utils,
-} from "asc-web-components";
+} from "@appserver/components";
 
 const { tablet } = utils.device;
 

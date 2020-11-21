@@ -5,7 +5,7 @@ Menu for group actions on a page.
 ### Usage
 
 ```js
-import { GroupButtonsMenu } from "asc-web-components";
+import { GroupButtonsMenu } from "@appserver/components";
 ```
 
 ```jsx

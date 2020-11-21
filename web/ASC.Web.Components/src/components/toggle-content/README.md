@@ -5,7 +5,7 @@ ToggleContent allow you to adding information, which you may hide/show by clicki
 ### Usage
 
 ```js
-import { ToggleContent } from "asc-web-components";
+import { ToggleContent } from "@appserver/components";
 ```
 
 ```jsx

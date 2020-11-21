@@ -10,7 +10,7 @@ import {
   AUTHOR_TYPE,
   FOLDER,
 } from "./constants";
-import { api, utils } from "asc-web-common";
+import { api, utils } from "@appserver/common";
 const { FilesFilter } = api;
 const { getObjectByLocation } = utils;
 

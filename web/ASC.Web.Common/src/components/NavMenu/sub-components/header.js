@@ -8,7 +8,7 @@ import NavLogoItem from "./nav-logo-item";
 import Loaders from "../../Loaders/index";
 import { ReactSVG } from "react-svg";
 
-import { utils } from "asc-web-components";
+import { utils } from "@appserver/components";
 import { connect } from "react-redux";
 import {
   getCurrentProductId,

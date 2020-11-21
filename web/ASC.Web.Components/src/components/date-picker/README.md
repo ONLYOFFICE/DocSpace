@@ -5,7 +5,7 @@ Base DatePicker component
 ### Usage
 
 ```js
-import { DatePicker } from "asc-web-components";
+import { DatePicker } from "@appserver/components";
 ```
 
 ```jsx

@@ -2,9 +2,9 @@ import React from "react";
 import { withRouter } from "react-router";
 import { connect } from "react-redux";
 import ModalDialogContainer from "../ModalDialogContainer";
-import { ModalDialog, Button, Text, Checkbox } from "asc-web-components";
+import { ModalDialog, Button, Text, Checkbox } from "@appserver/components";
 import { withTranslation } from "react-i18next";
-import { utils } from "asc-web-common";
+import { utils } from "@appserver/common";
 import {
   setTreeFolders,
   setDialogVisible,

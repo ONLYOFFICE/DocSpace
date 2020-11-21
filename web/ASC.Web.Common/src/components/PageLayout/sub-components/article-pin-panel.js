@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { utils, Icons, Text } from "asc-web-components";
+import { utils, Icons, Text } from "@appserver/components";
 const { tablet, smallTablet } = utils.device;
 
 const StyledArticlePinPanel = styled.div`

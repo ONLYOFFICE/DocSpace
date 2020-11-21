@@ -5,7 +5,7 @@ Custom checkbox input
 ### Usage
 
 ```js
-import { Checkbox } from "asc-web-components";
+import { Checkbox } from "@appserver/components";
 ```
 
 ```jsx

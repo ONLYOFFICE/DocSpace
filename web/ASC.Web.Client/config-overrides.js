@@ -1,6 +1,8 @@
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const path = require("path");
-module.exports = (config) => {
+const { override, babelInclude } = require("customize-cra");
+
+module.exports = (config, env) => {
   config.plugins.push(
     new CopyWebpackPlugin([
       {
@@ -38,5 +40,15 @@ module.exports = (config) => {
     ])
   );
 
-  return config;
+  return Object.assign(
+    config,
+    override(
+      babelInclude([
+        /* transpile (converting to es5) code in src/ and shared component library */
+        path.resolve("src"),
+        path.resolve("../components"),
+        path.resolve("../common"),
+      ])
+    )(config, env)
+  );
 };

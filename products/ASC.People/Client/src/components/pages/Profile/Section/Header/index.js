@@ -4,8 +4,8 @@ import {
   IconButton,
   ContextMenuButton,
   AvatarEditor,
-} from "asc-web-components";
-import { Headline, toastr } from "asc-web-common";
+} from "@appserver/components";
+import { Headline, toastr } from "@appserver/common";
 import { withRouter } from "react-router";
 import {
   getUserStatus,
@@ -22,7 +22,7 @@ import {
   getUserPhoto,
 } from "../../../../../store/profile/actions";
 import styled from "styled-components";
-import { store, api, constants } from "asc-web-common";
+import { store, api, constants } from "@appserver/common";
 import {
   DeleteSelfProfileDialog,
   ChangePasswordDialog,

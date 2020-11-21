@@ -9,11 +9,11 @@ import {
   toastr,
   Loader,
   EmailInput,
-} from "asc-web-components";
+} from "@appserver/components";
 import styled from "styled-components";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { store, PageLayout, utils as commonUtils } from "asc-web-common";
+import { store, PageLayout, utils as commonUtils } from "@appserver/common";
 import {
   getConfirmationInfo,
   createConfirmUser,

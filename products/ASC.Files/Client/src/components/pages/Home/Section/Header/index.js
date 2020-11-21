@@ -9,7 +9,7 @@ import {
   api,
   toastr,
   Loaders,
-} from "asc-web-common";
+} from "@appserver/common";
 import { connect } from "react-redux";
 import { withTranslation } from "react-i18next";
 import {
@@ -18,7 +18,7 @@ import {
   GroupButtonsMenu,
   IconButton,
   utils,
-} from "asc-web-components";
+} from "@appserver/components";
 import {
   fetchFiles,
   setAction,

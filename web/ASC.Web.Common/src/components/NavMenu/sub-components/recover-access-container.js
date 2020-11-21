@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Text, Icons, toastr } from "asc-web-components";
+import { Box, Text, Icons, toastr } from "@appserver/components";
 import RecoverAccessModalDialog from "./recover-access-modal-dialog";
 import styled from "styled-components";
 import PropTypes from "prop-types";

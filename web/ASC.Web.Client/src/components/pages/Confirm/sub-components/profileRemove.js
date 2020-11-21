@@ -1,11 +1,11 @@
 import React from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
-import { Button, Text } from "asc-web-components";
+import { Button, Text } from "@appserver/components";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import { withTranslation } from "react-i18next";
-import { store, api, PageLayout } from "asc-web-common";
+import { store, api, PageLayout } from "@appserver/common";
 const { logout } = store.auth.actions;
 const { deleteSelf } = api.people;
 

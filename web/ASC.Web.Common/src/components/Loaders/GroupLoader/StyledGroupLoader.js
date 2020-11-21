@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { utils } from "asc-web-components";
+import { utils } from "@appserver/components";
 const { mobile, smallTablet } = utils.device;
 
 const StyledGroup = styled.div`

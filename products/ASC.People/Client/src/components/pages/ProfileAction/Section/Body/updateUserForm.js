@@ -9,7 +9,7 @@ import {
   AvatarEditor,
   Link,
   utils,
-} from "asc-web-components";
+} from "@appserver/components";
 import { withTranslation, Trans } from "react-i18next";
 import {
   toEmployeeWrapper,
@@ -47,7 +47,7 @@ import ContactsField from "./FormFields/ContactsField";
 import InfoFieldContainer from "./FormFields/InfoFieldContainer";
 import styled from "styled-components";
 import { DataLossWarningDialog } from "../../../../dialogs";
-import { api, toastr } from "asc-web-common";
+import { api, toastr } from "@appserver/common";
 import {
   ChangeEmailDialog,
   ChangePasswordDialog,

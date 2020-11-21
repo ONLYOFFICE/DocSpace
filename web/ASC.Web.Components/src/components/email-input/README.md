@@ -5,7 +5,7 @@ Email entry field with advanced capabilities for validation based on settings
 ### Usage
 
 ```js
-import { EmailInput, utils } from "asc-web-components";
+import { EmailInput, utils } from "@appserver/components";
 
 const { EmailSettings } = utils.email;
 
@@ -75,7 +75,7 @@ const emailSettings = {
 or instance of `EmailSettings` class:
 
 ```js
-import { EmailInput, utils } from "asc-web-components";
+import { EmailInput, utils } from "@appserver/components";
 const { EmailSettings } = utils.email;
 
 const emailSettings = new EmailSettings();
@@ -125,7 +125,7 @@ Base colors:
 
 ```js
 import React from "react";
-import { EmailInput } from "asc-web-components";
+import { EmailInput } from "@appserver/components";
 
 const onChange = (e) => {
   // your event handling

@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import Viewer from "react-viewer";
-import { Icons } from "asc-web-components";
+import { Icons } from "@appserver/components";
 import styled from "styled-components";
 import MediaScrollButton from "./scroll-button";
 import ControlBtn from "./control-btn";

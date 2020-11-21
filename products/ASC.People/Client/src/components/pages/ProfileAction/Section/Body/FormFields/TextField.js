@@ -1,6 +1,6 @@
 import React from "react";
 import isEqual from "lodash/isEqual";
-import { FieldContainer, TextInput } from "asc-web-components";
+import { FieldContainer, TextInput } from "@appserver/components";
 
 class TextField extends React.Component {
   shouldComponentUpdate(nextProps) {

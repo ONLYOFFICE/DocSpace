@@ -4,8 +4,8 @@ import { withRouter } from "react-router";
 //import i18n from "../../../i18n";
 import { I18nextProvider, withTranslation } from "react-i18next";
 import styled from "styled-components";
-import { Text, ToggleContent, RadioButtonGroup } from "asc-web-components";
-//import { utils } from "asc-web-common";
+import { Text, ToggleContent, RadioButtonGroup } from "@appserver/components";
+//import { utils } from "@appserver/common";
 
 import { createI18N } from "../../../../../../helpers/i18n";
 

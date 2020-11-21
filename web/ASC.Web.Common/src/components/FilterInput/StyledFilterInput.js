@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components";
-import { utils } from "asc-web-components";
+import { utils } from "@appserver/components";
 
 const { mobile } = utils.device;
 

@@ -8,7 +8,7 @@ import {
   ContextMenu,
   CustomScrollbarsVirtualList,
   Heading,
-} from "asc-web-components";
+} from "@appserver/components";
 
 const StyledGridWrapper = styled.div`
   display: grid;

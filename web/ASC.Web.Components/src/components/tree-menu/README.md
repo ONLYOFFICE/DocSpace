@@ -5,7 +5,7 @@ Tree menu description
 ### Usage
 
 ```js
-import { TreeMenu } from "asc-web-components";
+import { TreeMenu } from "@appserver/components";
 ```
 
 ```jsx

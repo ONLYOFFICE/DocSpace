@@ -20,7 +20,7 @@ import {
   NavMenu,
   Main,
   toastr,
-} from "asc-web-common";
+} from "@appserver/common";
 import { getFilterByLocation } from "./helpers/converters";
 import { fetchGroups, fetchPeople } from "./store/people/actions";
 import config from "../package.json";

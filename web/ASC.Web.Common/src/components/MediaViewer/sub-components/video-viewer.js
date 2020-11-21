@@ -9,7 +9,7 @@ import Duration from "./duration";
 import Progress from "./progress";
 
 import styled from "styled-components";
-import { Icons } from "asc-web-components";
+import { Icons } from "@appserver/components";
 
 const controlsHeight = 40;
 const StyledControls = styled.div`

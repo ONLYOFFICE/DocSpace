@@ -7,7 +7,7 @@ import {
   ModalDialog,
   Textarea,
   FieldContainer,
-} from "asc-web-components";
+} from "@appserver/components";
 import styled from "styled-components";
 
 const ModalDialogContainer = styled.div`

@@ -16,7 +16,13 @@ import find from "lodash/find";
 import result from "lodash/result";
 import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
-import { constants, FilterInput, store, Loaders, utils } from "asc-web-common";
+import {
+  constants,
+  FilterInput,
+  store,
+  Loaders,
+  utils,
+} from "@appserver/common";
 import isEqual from "lodash/isEqual";
 import { isMobileOnly } from "react-device-detect";
 

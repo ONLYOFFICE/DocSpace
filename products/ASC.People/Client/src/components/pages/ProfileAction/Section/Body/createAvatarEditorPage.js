@@ -3,8 +3,8 @@ import { withRouter } from "react-router";
 import { connect } from "react-redux";
 import styled from "styled-components";
 import { withTranslation } from "react-i18next";
-import { AvatarEditor, utils, Loader } from "asc-web-components";
-import { api, toastr } from "asc-web-common";
+import { AvatarEditor, utils, Loader } from "@appserver/components";
+import { api, toastr } from "@appserver/common";
 import {
   fetchProfile,
   updateProfile,

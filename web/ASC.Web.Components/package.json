@@ -1,11 +1,9 @@
 {
-  "name": "asc-web-components",
+  "name": "@appserver/components",
   "version": "1.0.485",
+  "private": true,
   "description": "Ascensio System SIA component library",
   "license": "AGPL-3.0",
-  "main": "dist/asc-web-components.js",
-  "module": "dist/asc-web-components.esm.js",
-  "jsnext:main": "dist/asc-web-components.es.js",
   "files": [
     "dist",
     "README.md",
@@ -17,9 +15,6 @@
     "npm": ">=5"
   },
   "scripts": {
-    "build": "rimraf dist && cross-env NODE_ENV=production rollup -c",
-    "start": "cross-env NODE_ENV=development rollup -c -w",
-    "prepare": "yarn run build",
     "lint": "eslint .",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -82,18 +77,6 @@
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react-values": "^0.3.3",
-    "rollup": "^1.29.0",
-    "rollup-plugin-babel": "^4.3.3",
-    "rollup-plugin-cleanup": "^3.1.1",
-    "rollup-plugin-commonjs": "^10.1.0",
-    "rollup-plugin-copy": "^3.1.0",
-    "rollup-plugin-generate-package-json": "^3.2.0",
-    "rollup-plugin-json": "^4.0.0",
-    "rollup-plugin-node-resolve": "^5.2.0",
-    "rollup-plugin-peer-deps-external": "^2.2.0",
-    "rollup-plugin-postcss": "^2.0.3",
-    "rollup-plugin-replace": "^2.2.0",
-    "rollup-plugin-url": "^3.0.1",
     "storybook-readme": "^5.0.8",
     "styled-components": "^5.0.0",
     "svg-inline-loader": "^0.8.0"

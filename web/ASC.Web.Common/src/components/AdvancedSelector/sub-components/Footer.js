@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Button } from "asc-web-components";
+import { Button } from "@appserver/components";
 import StyledFooter from "./StyledFooter";
 
 const Footer = (props) => {
@@ -25,7 +25,9 @@ const Footer = (props) => {
         className="add_members_btn"
         primary={true}
         size="big"
-        label={`${selectButtonLabel} ${(selectedLength && showCounter) ? `(${selectedLength})` : ""}`}
+        label={`${selectButtonLabel} ${
+          selectedLength && showCounter ? `(${selectedLength})` : ""
+        }`}
         scale={true}
         isDisabled={isDisabled}
         onClick={onClick}

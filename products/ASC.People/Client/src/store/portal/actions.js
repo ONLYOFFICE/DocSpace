@@ -1,4 +1,4 @@
-import { api } from "asc-web-common";
+import { api } from "@appserver/common";
 
 export const SET_INVITE_LINKS = "SET_INVITE_LINKS";
 

@@ -5,7 +5,7 @@ Textarea is used for displaying custom textarea
 ### Usage
 
 ```js
-import { Textarea } from "asc-web-components";
+import { Textarea } from "@appserver/components";
 ```
 
 ```jsx

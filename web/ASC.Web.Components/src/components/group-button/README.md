@@ -5,7 +5,7 @@ Base Button is used for a group action on a page
 ### Usage
 
 ```js
-import { GroupButton } from "asc-web-components";
+import { GroupButton } from "@appserver/components";
 ```
 
 ```jsx

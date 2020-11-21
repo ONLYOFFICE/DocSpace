@@ -2,14 +2,14 @@ import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
-import { ModalDialog } from "asc-web-components";
+import { ModalDialog } from "@appserver/components";
 import { withTranslation } from "react-i18next";
-import { utils as commonUtils, toastr } from "asc-web-common";
+import { utils as commonUtils, toastr } from "@appserver/common";
 import { StyledAsidePanel } from "../StyledPanels";
 import TreeFolders from "../../Article/Body/TreeFolders";
 import {
   setProgressBarData,
-  itemOperationToFolder
+  itemOperationToFolder,
 } from "../../../store/files/actions";
 import {
   getFilter,
@@ -42,7 +42,7 @@ class OperationsPanelComponent extends React.Component {
       setProgressBarData,
       currentFolderId,
       onClose,
-      itemOperationToFolder
+      itemOperationToFolder,
     } = this.props;
 
     const destFolderId = Number(e);
@@ -53,8 +53,7 @@ class OperationsPanelComponent extends React.Component {
 
     if (currentFolderId === destFolderId) {
       return onClose();
-    }
-    else {
+    } else {
       for (let item of selection) {
         if (item.fileExst) {
           fileIds.push(item.id);
@@ -70,7 +69,14 @@ class OperationsPanelComponent extends React.Component {
         percent: 0,
         label: isCopy ? t("CopyOperation") : t("MoveToOperation"),
       });
-      itemOperationToFolder(destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter, isCopy)
+      itemOperationToFolder(
+        destFolderId,
+        folderIds,
+        fileIds,
+        conflictResolveType,
+        deleteAfter,
+        isCopy
+      );
     }
   };
 
@@ -83,7 +89,7 @@ class OperationsPanelComponent extends React.Component {
       isRecycleBin,
       visible,
       onClose,
-      operationsFolders
+      operationsFolders,
     } = this.props;
     const zIndex = 310;
     const expandedKeys = this.props.expandedKeys.map((item) => item.toString());
@@ -134,11 +140,11 @@ const mapStateToProps = (state) => {
     expandedKeys: getPathParts(state),
     currentFolderId: getSelectedFolderId(state),
     isRecycleBin: getIsRecycleBinFolder(state),
-    operationsFolders: getOperationsFolders(state)
+    operationsFolders: getOperationsFolders(state),
   };
 };
 
 export default connect(mapStateToProps, {
   setProgressBarData,
-  itemOperationToFolder
+  itemOperationToFolder,
 })(withRouter(OperationsPanel));

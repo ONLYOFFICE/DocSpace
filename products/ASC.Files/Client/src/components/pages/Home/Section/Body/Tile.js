@@ -1,4 +1,4 @@
-import { Checkbox, ContextMenuButton } from "asc-web-components";
+import { Checkbox, ContextMenuButton } from "@appserver/components";
 import PropTypes from "prop-types";
 import React from "react";
 import isEqual from "lodash/isEqual";

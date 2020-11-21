@@ -10,8 +10,8 @@ import {
   Icons,
   IconButton,
   Badge,
-} from "asc-web-components";
-import { constants, api, toastr, store as initStore } from "asc-web-common";
+} from "@appserver/components";
+import { constants, api, toastr, store as initStore } from "@appserver/common";
 import {
   clearProgressData,
   createFile,

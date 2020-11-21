@@ -12,11 +12,16 @@ import {
   Textarea,
   ComboBox,
   Icons,
-} from "asc-web-components";
+} from "@appserver/components";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
-import { utils as commonUtils, constants, toastr, store } from "asc-web-common";
+import {
+  utils as commonUtils,
+  constants,
+  toastr,
+  store,
+} from "@appserver/common";
 import { getShareUsers, setShareFiles } from "../../../store/files/actions";
 import { getAccessOption, getSelection } from "../../../store/files/selectors";
 import {

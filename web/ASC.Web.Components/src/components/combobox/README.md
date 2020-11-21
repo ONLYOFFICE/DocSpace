@@ -5,7 +5,7 @@ Custom combo box input
 ### Usage
 
 ```js
-import { ComboBox } from "asc-web-components";
+import { ComboBox } from "@appserver/components";
 ```
 
 ```js

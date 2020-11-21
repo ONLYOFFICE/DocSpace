@@ -11,9 +11,9 @@ import {
   Loader,
   toastr,
   Heading,
-} from "asc-web-components";
-import { PageLayout } from "asc-web-common";
-import { store, utils as commonUtils } from "asc-web-common";
+} from "@appserver/components";
+import { PageLayout } from "@appserver/common";
+import { store, utils as commonUtils } from "@appserver/common";
 import {
   getConfirmationInfo,
   changePassword,

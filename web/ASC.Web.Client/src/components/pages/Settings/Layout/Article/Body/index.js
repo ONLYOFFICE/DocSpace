@@ -6,7 +6,7 @@ import {
   Link,
   Text,
   utils,
-} from "asc-web-components";
+} from "@appserver/components";
 import { withRouter } from "react-router";
 import styled from "styled-components";
 import { withTranslation } from "react-i18next";

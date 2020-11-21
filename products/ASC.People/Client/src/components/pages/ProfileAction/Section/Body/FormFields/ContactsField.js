@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import isEqual from "lodash/isEqual";
 import ContactField from "./ContactField";
-import { ComboBox } from "asc-web-components";
+import { ComboBox } from "@appserver/components";
 
 const Container = styled.div`
   width: 100%;

@@ -1,4 +1,4 @@
-import { api, store } from "asc-web-common";
+import { api, store } from "@appserver/common";
 import axios from "axios";
 const { Filter } = api;
 const {

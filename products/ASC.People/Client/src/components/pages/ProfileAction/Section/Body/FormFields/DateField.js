@@ -1,6 +1,6 @@
 import React from "react";
 import isEqual from "lodash/isEqual";
-import { FieldContainer, DatePicker } from "asc-web-components";
+import { FieldContainer, DatePicker } from "@appserver/components";
 
 class DateField extends React.Component {
   shouldComponentUpdate(nextProps) {

@@ -30,7 +30,7 @@ import {
   SET_FIRST_LOAD,
   SET_UPLOAD_DATA,
 } from "./actions";
-import { api } from "asc-web-common";
+import { api } from "@appserver/common";
 import { isFileSelected, skipFile, getFilesBySelected } from "./selectors";
 const { FilesFilter } = api;
 

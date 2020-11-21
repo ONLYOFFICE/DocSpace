@@ -7,7 +7,7 @@ Custom tooltip
 ### Usage with IconButton
 
 ```js
-import { Tooltip, IconButton, Text } from "asc-web-components";
+import { Tooltip, IconButton, Text } from "@appserver/components";
 ```
 
 ```jsx
@@ -33,7 +33,7 @@ import { Tooltip, IconButton, Text } from "asc-web-components";
 ### Usage with array
 
 ```js
-import { Tooltip, Link, Text } from "asc-web-components";
+import { Tooltip, Link, Text } from "@appserver/components";
 ```
 
 ```js

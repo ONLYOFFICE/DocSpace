@@ -1,5 +1,5 @@
 import { updateUserList } from "../people/actions";
-import { store, api } from "asc-web-common";
+import { store, api } from "@appserver/common";
 const { setCurrentUser } = store.auth.actions;
 const { isMe } = store.auth.selectors;
 

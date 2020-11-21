@@ -5,7 +5,7 @@ Used to filter tables
 ### Usage
 
 ```js
-import { FilterInput } from "asc-web-common";
+import { FilterInput } from "@appserver/common";
 ```
 
 ```jsx

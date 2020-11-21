@@ -5,7 +5,7 @@ ContextMenuButton is used for displaying context menu actions on a list's item
 ### Usage
 
 ```js
-import { ContextMenuButton } from "asc-web-components";
+import { ContextMenuButton } from "@appserver/components";
 ```
 
 ```jsx

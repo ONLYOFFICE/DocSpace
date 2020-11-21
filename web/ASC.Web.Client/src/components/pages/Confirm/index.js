@@ -2,7 +2,7 @@ import React, { Suspense, lazy, useEffect } from "react";
 import { Route, Switch } from "react-router-dom";
 import ConfirmRoute from "../../../helpers/confirmRoute";
 import { I18nextProvider } from "react-i18next";
-import { Error404, utils } from "asc-web-common";
+import { Error404, utils } from "@appserver/common";
 
 import { createI18N } from "../../../helpers/i18n";
 const i18n = createI18N({

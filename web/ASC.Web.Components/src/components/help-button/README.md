@@ -5,7 +5,7 @@ HelpButton is used for a action on a page
 ### Usage
 
 ```js
-import { HelpButton } from "asc-web-components";
+import { HelpButton } from "@appserver/components";
 ```
 
 ```jsx

@@ -5,7 +5,7 @@ Container for Row component
 ### Usage
 
 ```js
-import { RowContainer } from "asc-web-components";
+import { RowContainer } from "@appserver/components";
 ```
 
 ```jsx

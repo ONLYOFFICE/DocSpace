@@ -3,7 +3,7 @@
 ### Usage
 
 ```js
-import { ProfileMenu } from "asc-web-common";
+import { ProfileMenu } from "@appserver/common";
 ```
 
 ```jsx

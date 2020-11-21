@@ -4,7 +4,7 @@ import {
   FieldContainer,
   RadioButtonGroup,
   PasswordInput,
-} from "asc-web-components";
+} from "@appserver/components";
 
 class PasswordField extends React.Component {
   shouldComponentUpdate(nextProps) {

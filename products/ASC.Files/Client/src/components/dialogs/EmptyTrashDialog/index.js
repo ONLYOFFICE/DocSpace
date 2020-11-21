@@ -2,9 +2,9 @@ import React, { useCallback, useEffect } from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import ModalDialogContainer from "../ModalDialogContainer";
-import { ModalDialog, Button, Text } from "asc-web-components";
+import { ModalDialog, Button, Text } from "@appserver/components";
 import { withTranslation } from "react-i18next";
-import { api, utils, toastr } from "asc-web-common";
+import { api, utils, toastr } from "@appserver/common";
 import {
   fetchFiles,
   setProgressBarData,

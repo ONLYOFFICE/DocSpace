@@ -5,7 +5,7 @@ Used to open media files
 ### Usage
 
 ```js
-import { MediaViewer } from "asc-web-common";
+import { MediaViewer } from "@appserver/common";
 ```
 
 ```jsx

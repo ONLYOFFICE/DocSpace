@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
-import { PageLayout, utils, Loaders } from "asc-web-common";
+import { PageLayout, utils, Loaders } from "@appserver/common";
 import {
   ArticleHeaderContent,
   ArticleBodyContent,

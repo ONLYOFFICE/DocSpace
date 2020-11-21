@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import isEqual from "lodash/isEqual";
 
-import { utils } from "asc-web-components";
+import { utils } from "@appserver/components";
 
 const { tablet } = utils.device;
 

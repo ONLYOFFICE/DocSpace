@@ -8,7 +8,7 @@ import {
   TextInput,
   Link,
   SaveCancelButtons,
-} from "asc-web-components";
+} from "@appserver/components";
 import styled from "styled-components";
 import {
   setGreetingTitle,

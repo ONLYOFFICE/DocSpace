@@ -5,7 +5,7 @@ SearchInput description
 ### Usage
 
 ```js
-import { SearchInput } from "asc-web-components";
+import { SearchInput } from "@appserver/components";
 ```
 
 ```jsx

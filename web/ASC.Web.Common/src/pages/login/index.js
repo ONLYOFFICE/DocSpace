@@ -1,7 +1,7 @@
 import React, { Component, useEffect } from "react";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
-import { store } from "asc-web-common";
+import { store } from "@appserver/common";
 import {
   Box,
   Button,
@@ -13,7 +13,7 @@ import {
   HelpButton,
   PasswordInput,
   FieldContainer,
-} from "asc-web-components";
+} from "@appserver/components";
 import PageLayout from "../../components/PageLayout";
 import { connect } from "react-redux";
 import styled from "styled-components";

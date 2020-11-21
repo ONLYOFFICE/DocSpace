@@ -1,6 +1,6 @@
 import React from "react";
 import isEqual from "lodash/isEqual";
-import { FieldContainer, EmailInput } from "asc-web-components";
+import { FieldContainer, EmailInput } from "@appserver/components";
 
 class EmailField extends React.Component {
   shouldComponentUpdate(nextProps) {

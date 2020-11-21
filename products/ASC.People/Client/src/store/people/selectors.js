@@ -1,6 +1,6 @@
 import { find, filter, cloneDeep } from "lodash";
 import { createSelector } from "reselect";
-import { store, constants } from "asc-web-common";
+import { store, constants } from "@appserver/common";
 import { isMobileOnly } from "react-device-detect";
 const { isAdmin, isMe, getCurrentUser } = store.auth.selectors;
 const { EmployeeActivationStatus, EmployeeStatus } = constants;

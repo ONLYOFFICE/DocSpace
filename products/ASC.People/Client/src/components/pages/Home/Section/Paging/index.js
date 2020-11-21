@@ -1,10 +1,10 @@
 import React, { useCallback, useMemo } from "react";
 import { connect } from "react-redux";
 import { fetchPeople } from "../../../../../store/people/actions";
-import { Paging } from "asc-web-components";
+import { Paging } from "@appserver/components";
 import { useTranslation } from "react-i18next";
 import { getFilter } from "../../../../../store/people/selectors";
-import { store, Loaders } from "asc-web-common";
+import { store, Loaders } from "@appserver/common";
 const { getIsLoaded } = store.auth.selectors;
 
 const SectionPagingContent = ({

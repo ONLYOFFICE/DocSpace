@@ -6,7 +6,7 @@ import result from "lodash/result";
 import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
 import { getFilterByLocation } from "../../../../../helpers/converters";
-import { store, FilterInput, Loaders, utils } from "asc-web-common";
+import { store, FilterInput, Loaders, utils } from "@appserver/common";
 import { isMobileOnly } from "react-device-detect";
 import { getFilter, getGroups } from "../../../../../store/people/selectors";
 const {

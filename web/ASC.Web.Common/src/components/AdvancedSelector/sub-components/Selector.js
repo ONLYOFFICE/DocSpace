@@ -18,7 +18,7 @@ import {
   Tooltip,
   CustomScrollbarsVirtualList,
   HelpButton,
-} from "asc-web-components";
+} from "@appserver/components";
 import StyledSelector from "./StyledSelector";
 
 const convertGroups = (items) => {

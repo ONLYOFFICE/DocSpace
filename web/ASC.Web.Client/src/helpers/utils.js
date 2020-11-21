@@ -1,4 +1,4 @@
-import { store as commonStore } from "asc-web-common";
+import { store as commonStore } from "@appserver/common";
 import store from "../store/store";
 
 const { getCurrentProduct } = commonStore.auth.selectors;

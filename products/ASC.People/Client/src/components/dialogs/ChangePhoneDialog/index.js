@@ -1,8 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { ModalDialog, Button, Text } from "asc-web-components";
+import { ModalDialog, Button, Text } from "@appserver/components";
 import { withTranslation } from "react-i18next";
-import { utils, toastr } from "asc-web-common";
+import { utils, toastr } from "@appserver/common";
 
 import { createI18N } from "../../../helpers/i18n";
 const i18n = createI18N({

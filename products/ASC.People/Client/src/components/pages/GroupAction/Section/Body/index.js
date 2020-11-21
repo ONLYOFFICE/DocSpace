@@ -7,13 +7,13 @@ import {
   SelectedItem,
   TextInput,
   utils,
-} from "asc-web-components";
+} from "@appserver/components";
 import {
   PeopleSelector,
   store as initStore,
   toastr,
   Loaders,
-} from "asc-web-common";
+} from "@appserver/common";
 import {
   createGroup,
   resetGroup,

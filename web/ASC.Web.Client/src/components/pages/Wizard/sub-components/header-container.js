@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 
-import { Box, Heading, Text, utils } from "asc-web-components";
+import { Box, Heading, Text, utils } from "@appserver/components";
 
 const { tablet } = utils.device;
 

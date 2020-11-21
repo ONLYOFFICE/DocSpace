@@ -10,11 +10,11 @@ import {
   ModalDialog,
   utils,
   Icons,
-} from "asc-web-components";
+} from "@appserver/components";
 import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
 import { connect } from "react-redux";
-import { api, toastr } from "asc-web-common";
+import { api, toastr } from "@appserver/common";
 import { setIsLoading } from "../../../../../store/files/actions";
 import {
   getFilter,

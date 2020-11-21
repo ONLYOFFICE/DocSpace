@@ -1,7 +1,7 @@
 import React from "react";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
-import { RowContainer } from "asc-web-components";
+import { RowContainer } from "@appserver/components";
 import VersionRow from "./VersionRow";
 
 const SectionBodyContent = (props) => {

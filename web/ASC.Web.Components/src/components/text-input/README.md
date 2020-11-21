@@ -5,7 +5,7 @@ Input field for single-line strings
 ### Usage
 
 ```js
-import { TextInput } from "asc-web-components";
+import { TextInput } from "@appserver/components";
 ```
 
 ```js

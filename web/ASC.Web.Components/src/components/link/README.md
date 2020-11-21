@@ -8,7 +8,7 @@ It is a link with 2 types:
 ### Usage
 
 ```js
-import { Link } from "asc-web-components";
+import { Link } from "@appserver/components";
 ```
 
 ```jsx

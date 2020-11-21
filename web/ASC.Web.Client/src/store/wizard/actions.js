@@ -1,4 +1,4 @@
-import { store, api } from "asc-web-common";
+import { store, api } from "@appserver/common";
 const {
   setPasswordSettings,
   setTimezones,

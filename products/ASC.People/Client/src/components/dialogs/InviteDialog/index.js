@@ -8,11 +8,11 @@ import {
   Button,
   Textarea,
   Text,
-} from "asc-web-components";
+} from "@appserver/components";
 import { withTranslation } from "react-i18next";
 import ModalDialogContainer from "../ModalDialogContainer";
 import copy from "copy-to-clipboard";
-import { api, utils } from "asc-web-common";
+import { api, utils } from "@appserver/common";
 import { createI18N } from "../../../helpers/i18n";
 import { getPortalInviteLinks } from "../../../store/portal/actions";
 const i18n = createI18N({

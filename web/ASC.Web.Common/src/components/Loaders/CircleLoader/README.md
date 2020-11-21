@@ -5,7 +5,7 @@ Component that displays circle loader
 ### Usage
 
 ```js
-import { Loaders } from "asc-web-common";
+import { Loaders } from "@appserver/common";
 ```
 
 ```jsx

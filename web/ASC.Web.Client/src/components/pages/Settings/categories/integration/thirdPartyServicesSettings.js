@@ -10,9 +10,9 @@ import { getConsumersList } from "../../../../../store/settings/selectors";
 import { withTranslation } from "react-i18next";
 import styled from "styled-components";
 
-import { Box, Text, Link, toastr } from "asc-web-components";
-import { utils } from "asc-web-components";
-import { store as commonStore } from "asc-web-common";
+import { Box, Text, Link, toastr } from "@appserver/components";
+import { utils } from "@appserver/components";
+import { store as commonStore } from "@appserver/common";
 import ConsumerItem from "./sub-components/consumerItem";
 import ConsumerModalDialog from "./sub-components/consumerModalDialog";
 

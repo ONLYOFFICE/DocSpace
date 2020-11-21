@@ -5,7 +5,7 @@ RadioButtonGroup allow you to add group radiobutton
 ### Usage
 
 ```js
-import { RadioButtonGroup } from "asc-web-components";
+import { RadioButtonGroup } from "@appserver/components";
 ```
 
 ```jsx

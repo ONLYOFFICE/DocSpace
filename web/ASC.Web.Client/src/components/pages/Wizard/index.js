@@ -10,8 +10,8 @@ import {
   ErrorContainer,
   history,
   utils as commonUtils,
-} from "asc-web-common";
-import { Loader, utils } from "asc-web-components";
+} from "@appserver/common";
+import { Loader, utils } from "@appserver/components";
 
 import HeaderContainer from "./sub-components/header-container";
 import ButtonContainer from "./sub-components/button-container";

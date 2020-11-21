@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import isEqual from "lodash/isEqual";
-import { Scrollbar, utils } from "asc-web-components";
+import { Scrollbar, utils } from "@appserver/components";
 const { tablet, smallTablet } = utils.device;
 
 const StyledArticleBody = styled.div`

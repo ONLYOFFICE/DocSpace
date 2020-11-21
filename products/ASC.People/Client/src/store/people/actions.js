@@ -1,4 +1,4 @@
-import { api, history, constants } from "asc-web-common";
+import { api, history, constants } from "@appserver/common";
 import config from "../../../package.json";
 import {
   EMPLOYEE_STATUS,

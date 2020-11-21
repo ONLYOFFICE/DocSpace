@@ -5,7 +5,7 @@ Default page layout
 ### Usage
 
 ```js
-import { PageLayout } from "asc-web-common";
+import { PageLayout } from "@appserver/common";
 ```
 
 ```jsx

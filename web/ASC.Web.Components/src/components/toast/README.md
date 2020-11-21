@@ -9,7 +9,7 @@ Toast allow you to add notification to your page with ease.
 ### Usage
 
 ```js
-import { Toast, toastr } from "asc-web-components";
+import { Toast, toastr } from "@appserver/components";
 ```
 
 ```jsx

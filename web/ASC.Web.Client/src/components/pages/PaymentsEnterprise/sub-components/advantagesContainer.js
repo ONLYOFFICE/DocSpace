@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import styled from "styled-components";
-import { utils } from "asc-web-common";
-import { Text, utils as Utils, Box } from "asc-web-components";
+import { utils } from "@appserver/common";
+import { Text, utils as Utils, Box } from "@appserver/components";
 import { createI18N } from "../../../../helpers/i18n";
 import { useTranslation, Trans } from "react-i18next";
 

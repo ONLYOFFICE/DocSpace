@@ -5,7 +5,7 @@ File entry field
 ### Usage
 
 ```js
-import { FileInput } from "asc-web-components";
+import { FileInput } from "@appserver/components";
 ```
 
 ```jsx

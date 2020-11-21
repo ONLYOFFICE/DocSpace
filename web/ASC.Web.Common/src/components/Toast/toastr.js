@@ -1,4 +1,4 @@
-import { toastr as Toastr } from "asc-web-components";
+import { toastr as Toastr } from "@appserver/components";
 import i18n from "./i18n";
 import { LANGUAGE } from "../../constants";
 import { changeLanguage } from "../../utils";

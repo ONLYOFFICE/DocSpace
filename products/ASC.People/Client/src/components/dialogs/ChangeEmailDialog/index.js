@@ -6,10 +6,10 @@ import {
   Text,
   EmailInput,
   FieldContainer,
-} from "asc-web-components";
+} from "@appserver/components";
 import { withTranslation } from "react-i18next";
 import ModalDialogContainer from "../ModalDialogContainer";
-import { api, utils, toastr } from "asc-web-common";
+import { api, utils, toastr } from "@appserver/common";
 
 import { createI18N } from "../../../helpers/i18n";
 const i18n = createI18N({

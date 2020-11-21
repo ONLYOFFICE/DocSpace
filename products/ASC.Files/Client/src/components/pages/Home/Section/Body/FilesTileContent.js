@@ -3,8 +3,8 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import styled from "styled-components";
-import { Link, Text, Icons, Badge } from "asc-web-components";
-import { constants, api, toastr, store as initStore } from "asc-web-common";
+import { Link, Text, Icons, Badge } from "@appserver/components";
+import { constants, api, toastr, store as initStore } from "@appserver/common";
 import {
   createFile,
   createFolder,

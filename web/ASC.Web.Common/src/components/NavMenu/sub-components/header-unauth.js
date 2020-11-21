@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Box } from "asc-web-components";
+import { Box } from "@appserver/components";
 import styled from "styled-components";
 import RecoverAccess from "./recover-access-container";
 import { connect } from "react-redux";

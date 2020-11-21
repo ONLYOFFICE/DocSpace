@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { utils } from "asc-web-components";
+import { utils } from "@appserver/components";
 const { mobile } = utils.device;
 
 const StyledFilter = styled.div`

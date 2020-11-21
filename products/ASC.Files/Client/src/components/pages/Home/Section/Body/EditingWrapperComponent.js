@@ -1,6 +1,6 @@
 import React, { memo, useState } from "react";
 import styled from "styled-components";
-import { TextInput, Button } from "asc-web-components";
+import { TextInput, Button } from "@appserver/components";
 
 const EditingWrapper = styled.div`
   width: 100%;

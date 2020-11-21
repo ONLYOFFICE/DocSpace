@@ -1,4 +1,4 @@
-# asc-web-components
+# @appserver/components
 
 >
 
@@ -9,7 +9,7 @@
 ```jsx
 import React, { Component } from "react";
 
-import Button from "asc-web-components";
+import Button from "@appserver/components";
 
 class Example extends Component {
   render() {

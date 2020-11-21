@@ -15,7 +15,7 @@ import {
   Main,
   utils,
   toastr,
-} from "asc-web-common";
+} from "@appserver/common";
 import Home from "./components/pages/Home";
 
 const About = lazy(() => import("./components/pages/About"));

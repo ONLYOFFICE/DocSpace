@@ -6,7 +6,7 @@ import NavItem from "./nav-item";
 import ProfileActions from "./profile-actions";
 
 import { useTranslation } from "react-i18next";
-import { utils } from "asc-web-components";
+import { utils } from "@appserver/components";
 const { tablet } = utils.device;
 import { logout } from "../../../store/auth/actions";
 

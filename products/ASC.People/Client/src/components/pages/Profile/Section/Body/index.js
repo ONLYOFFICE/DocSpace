@@ -5,7 +5,7 @@ import {
   Text,
   ToggleContent,
   Link,
-} from "asc-web-components";
+} from "@appserver/components";
 import {
   getUserContacts,
   getUserRole,
@@ -14,7 +14,7 @@ import {
 import ProfileInfo from "./ProfileInfo/ProfileInfo";
 import React from "react";
 import { connect } from "react-redux";
-import { store } from "asc-web-common";
+import { store } from "@appserver/common";
 import styled from "styled-components";
 
 import { withRouter } from "react-router";

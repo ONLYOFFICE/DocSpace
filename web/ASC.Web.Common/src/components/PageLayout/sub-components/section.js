@@ -1,6 +1,6 @@
 import React from "react";
 import styled, { css } from "styled-components";
-import { utils } from "asc-web-components";
+import { utils } from "@appserver/components";
 const { tablet } = utils.device;
 
 const tabletProps = css`

@@ -2,8 +2,8 @@ import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
-//import { RequestLoader } from "asc-web-components";
-import { PageLayout, utils, store } from "asc-web-common";
+//import { RequestLoader } from "@appserver/components";
+import { PageLayout, utils, store } from "@appserver/common";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import {
   ArticleHeaderContent,

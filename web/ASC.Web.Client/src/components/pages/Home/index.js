@@ -2,8 +2,8 @@ import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
-import { Text } from "asc-web-components";
-import { toastr, ModuleTile, PageLayout, utils } from "asc-web-common";
+import { Text } from "@appserver/components";
+import { toastr, ModuleTile, PageLayout, utils } from "@appserver/common";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 

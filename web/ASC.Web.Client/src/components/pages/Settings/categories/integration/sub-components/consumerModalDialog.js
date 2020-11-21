@@ -8,7 +8,7 @@ import {
   Box,
   Link,
   toastr,
-} from "asc-web-components";
+} from "@appserver/components";
 import ModalDialogContainer from "./modalDialogContainer";
 import { Trans } from "react-i18next";
 import { connect } from "react-redux";
@@ -16,7 +16,7 @@ import {
   getSelectedConsumer,
   getConsumerInstruction,
 } from "../../../../../../store/settings/selectors";
-import { store as commonStore } from "asc-web-common";
+import { store as commonStore } from "@appserver/common";
 
 const { getUrlSupport, getUrlAuthKeys } = commonStore.auth.selectors;
 

@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import { connect } from "react-redux";
-import { IconButton } from "asc-web-components";
-import { Headline } from "asc-web-common";
+import { IconButton } from "@appserver/components";
+import { Headline } from "@appserver/common";
 import { withRouter } from "react-router";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";

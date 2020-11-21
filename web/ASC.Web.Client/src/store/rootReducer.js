@@ -1,7 +1,7 @@
 import { combineReducers } from "redux";
 import settingsReducer from "./settings/reducer";
 import confirmReducer from "./confirm/reducer";
-import { store } from "asc-web-common";
+import { store } from "@appserver/common";
 import wizardReducer from "./wizard/reducer";
 import paymentsReducer from "./payments/reducer";
 

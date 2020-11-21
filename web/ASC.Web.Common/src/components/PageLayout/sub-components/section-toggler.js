@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { utils, Icons } from "asc-web-components";
+import { utils, Icons } from "@appserver/components";
 const { tablet } = utils.device;
 
 const StyledSectionToggler = styled.div`

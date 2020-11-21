@@ -1,6 +1,6 @@
 import { combineReducers } from "redux";
 import filesReducer from "./files/reducers";
-import { store } from "asc-web-common";
+import { store } from "@appserver/common";
 const { reducer: authReducer } = store.auth;
 
 const rootReducer = combineReducers({

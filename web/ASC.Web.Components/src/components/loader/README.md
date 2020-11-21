@@ -5,7 +5,7 @@ Loader component is used for displaying loading actions on a page
 ### Usage
 
 ```js
-import { Loader } from "asc-web-components";
+import { Loader } from "@appserver/components";
 ```
 
 ```jsx

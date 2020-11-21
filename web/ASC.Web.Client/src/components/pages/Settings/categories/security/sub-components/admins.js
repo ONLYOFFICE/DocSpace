@@ -25,8 +25,8 @@ import {
   Loader,
   EmptyScreenContainer,
   Icons,
-} from "asc-web-components";
-import { FilterInput, PeopleSelector } from "asc-web-common";
+} from "@appserver/components";
+import { FilterInput, PeopleSelector } from "@appserver/common";
 import { getUserRole } from "../../../../../../store/settings/selectors";
 import isEmpty from "lodash/isEmpty";
 

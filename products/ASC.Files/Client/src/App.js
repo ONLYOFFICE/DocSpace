@@ -22,7 +22,7 @@ import {
   Main,
   utils,
   toastr,
-} from "asc-web-common";
+} from "@appserver/common";
 
 const {
   setIsLoaded,

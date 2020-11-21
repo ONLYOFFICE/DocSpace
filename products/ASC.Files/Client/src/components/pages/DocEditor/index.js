@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { withRouter } from "react-router";
-import { /*RequestLoader,*/ Box } from "asc-web-components";
-import { utils, api, toastr } from "asc-web-common";
+import { /*RequestLoader,*/ Box } from "@appserver/components";
+import { utils, api, toastr } from "@appserver/common";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import { createI18N } from "../../../helpers/i18n";
 

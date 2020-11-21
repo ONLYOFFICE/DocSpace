@@ -1,4 +1,4 @@
-# asc-web-common
+# @appserver/common
 
 # Common components and solutions to build your product
 

@@ -14,8 +14,8 @@ import {
   Button,
   RequestLoader,
   Loader,
-} from "asc-web-components";
-import { PeopleSelector } from "asc-web-common";
+} from "@appserver/components";
+import { PeopleSelector } from "@appserver/common";
 import isEmpty from "lodash/isEmpty";
 
 import { createI18N } from "../../../../../../helpers/i18n";

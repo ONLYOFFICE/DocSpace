@@ -3,8 +3,8 @@ import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import { connect } from "react-redux";
 import styled from "styled-components";
-import { Button, Text, toastr } from "asc-web-components";
-import { PageLayout } from "asc-web-common";
+import { Button, Text, toastr } from "@appserver/components";
+import { PageLayout } from "@appserver/common";
 
 const BodyStyle = styled.div`
   margin-top: 70px;

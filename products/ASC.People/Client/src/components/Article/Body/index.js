@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
-import { utils, TreeMenu, TreeNode, Icons, Link } from "asc-web-components";
+import { utils, TreeMenu, TreeNode, Icons, Link } from "@appserver/components";
 import {
   selectGroup,
   setIsVisibleDataLossDialog,
@@ -13,7 +13,7 @@ import {
   utils as commonUtils,
   store as initStore,
   Loaders,
-} from "asc-web-common";
+} from "@appserver/common";
 import { createI18N } from "../../../helpers/i18n";
 import styled, { css } from "styled-components";
 import { setDocumentTitle } from "../../../helpers/utils";
@@ -114,14 +114,14 @@ class ArticleBodyContent extends React.Component {
     }
   };
   onSelect = (data) => {
-    const { setIsLoading } = this.props
+    const { setIsLoading } = this.props;
     return () => {
       const { selectGroup } = this.props;
       setIsLoading(true);
       this.changeTitleDocument(data);
       selectGroup(
         data && data.length === 1 && data[0] !== "root" ? data[0] : null
-      ).finally(() => setIsLoading(false))
+      ).finally(() => setIsLoading(false));
     };
   };
   switcherIcon = (obj) => {

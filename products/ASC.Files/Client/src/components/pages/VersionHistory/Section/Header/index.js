@@ -1,8 +1,8 @@
 import React from "react";
 import styled, { css } from "styled-components";
 import { withRouter } from "react-router";
-import { Headline, store } from "asc-web-common";
-import { IconButton, utils } from "asc-web-components";
+import { Headline, store } from "@appserver/common";
+import { IconButton, utils } from "@appserver/components";
 import { connect } from "react-redux";
 import { withTranslation } from "react-i18next";
 

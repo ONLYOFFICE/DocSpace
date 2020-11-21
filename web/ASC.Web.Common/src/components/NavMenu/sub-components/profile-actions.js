@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Avatar, DropDownItem, Link } from "asc-web-components";
+import { Avatar, DropDownItem, Link } from "@appserver/components";
 import ProfileMenu from "../../ProfileMenu";
 
 class ProfileActions extends React.PureComponent {

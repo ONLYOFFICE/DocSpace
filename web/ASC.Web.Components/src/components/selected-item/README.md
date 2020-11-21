@@ -3,7 +3,7 @@
 ### Usage
 
 ```js
-import { SelectedItem } from "asc-web-components";
+import { SelectedItem } from "@appserver/components";
 ```
 
 ```jsx

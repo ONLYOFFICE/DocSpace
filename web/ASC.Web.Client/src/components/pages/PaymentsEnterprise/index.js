@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
-import { PageLayout, utils, store } from "asc-web-common";
-import { Loader, utils as Utils } from "asc-web-components";
+import { PageLayout, utils, store } from "@appserver/common";
+import { Loader, utils as Utils } from "@appserver/components";
 import styled from "styled-components";
 import { withRouter } from "react-router";
 import { connect } from "react-redux";

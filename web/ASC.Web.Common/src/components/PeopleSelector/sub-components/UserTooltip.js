@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Avatar, Text } from "asc-web-components";
+import { Avatar, Text } from "@appserver/components";
 import StyledUserTooltip from "./StyledUserTooltip";
 
 const UserTooltip = ({ avatarUrl, label, email, position }) => (

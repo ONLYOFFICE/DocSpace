@@ -9,10 +9,10 @@ import {
   toastr,
   Link,
   SaveCancelButtons,
-} from "asc-web-components";
+} from "@appserver/components";
 import styled from "styled-components";
 import { Trans } from "react-i18next";
-import { store, utils } from "asc-web-common";
+import { store, utils } from "@appserver/common";
 import {
   setLanguageAndTime,
   getPortalTimezones,

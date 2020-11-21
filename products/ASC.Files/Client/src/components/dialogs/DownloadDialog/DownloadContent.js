@@ -5,7 +5,7 @@ import {
   RowContainer,
   Text,
   LinkWithDropdown,
-} from "asc-web-components";
+} from "@appserver/components";
 
 const DownloadContent = (props) => {
   const {

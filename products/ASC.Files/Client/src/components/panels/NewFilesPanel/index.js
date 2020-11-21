@@ -12,9 +12,9 @@ import {
   Text,
   Link,
   Button,
-} from "asc-web-components";
+} from "@appserver/components";
 import { withTranslation } from "react-i18next";
-import { utils as commonUtils, api, toastr } from "asc-web-common";
+import { utils as commonUtils, api, toastr } from "@appserver/common";
 import { ReactSVG } from "react-svg";
 import {
   StyledAsidePanel,

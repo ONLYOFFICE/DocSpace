@@ -16,7 +16,7 @@ import {
   Box,
   Text,
   utils,
-} from "asc-web-components";
+} from "@appserver/components";
 import EmptyFolderContainer from "./EmptyFolderContainer";
 import FilesRowContent from "./FilesRowContent";
 import FilesTileContent from "./FilesTileContent";
@@ -29,7 +29,7 @@ import {
   toastr,
   Loaders,
   store,
-} from "asc-web-common";
+} from "@appserver/common";
 import {
   clearProgressData,
   loopFilesOperations,

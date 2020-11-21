@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
-import { utils } from "asc-web-components";
-import { toastr, Loaders } from "asc-web-common";
+import { utils } from "@appserver/components";
+import { toastr, Loaders } from "@appserver/common";
 import TreeFolders from "./TreeFolders";
 import TreeSettings from "./TreeSettings";
 import isEmpty from "lodash/isEmpty";

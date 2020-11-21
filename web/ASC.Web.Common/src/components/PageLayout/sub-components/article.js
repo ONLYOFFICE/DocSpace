@@ -1,7 +1,7 @@
 import React from "react";
 import styled, { css } from "styled-components";
 import PropTypes from "prop-types";
-import { utils } from "asc-web-components";
+import { utils } from "@appserver/components";
 import { Resizable } from "re-resizable";
 import { isMobile } from "react-device-detect";
 const { tablet } = utils.device;

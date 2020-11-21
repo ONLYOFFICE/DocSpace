@@ -5,7 +5,7 @@ Button is used for sign up with help social networks
 ### Usage
 
 ```js
-import { SocialButton } from "asc-web-components";
+import { SocialButton } from "@appserver/components";
 ```
 
 ```jsx

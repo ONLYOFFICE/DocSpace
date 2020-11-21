@@ -1,5 +1,5 @@
 import React from "react";
-import { Box } from "asc-web-components";
+import { Box } from "@appserver/components";
 import { format } from "react-string-format";
 import { createSelector } from "reselect";
 

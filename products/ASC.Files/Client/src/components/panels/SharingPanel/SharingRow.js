@@ -7,8 +7,8 @@ import {
   Icons,
   DropDownItem,
   LinkWithDropdown,
-} from "asc-web-components";
-import { toastr } from "asc-web-common";
+} from "@appserver/components";
+import { toastr } from "@appserver/common";
 import copy from "copy-to-clipboard";
 
 const SharingRow = (props) => {
@@ -293,10 +293,7 @@ const SharingRow = (props) => {
               </Text>
             )}
             {item.rights.isOwner ? (
-              <Text
-                className="sharing_panel-remove-icon"
-                color="#A3A9AE"
-              >
+              <Text className="sharing_panel-remove-icon" color="#A3A9AE">
                 {t("Owner")}
               </Text>
             ) : item.id === isMyId ? (

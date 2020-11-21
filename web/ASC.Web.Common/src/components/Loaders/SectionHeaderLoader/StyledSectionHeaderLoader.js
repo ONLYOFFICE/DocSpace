@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-import { utils } from "asc-web-components";
+import { utils } from "@appserver/components";
 const { mobile, tablet } = utils.device;
 
 const StyledContainer = styled.div`

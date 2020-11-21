@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
-import { Loader } from "asc-web-components";
-import { PageLayout, utils, store } from "asc-web-common";
+import { Loader } from "@appserver/components";
+import { PageLayout, utils, store } from "@appserver/common";
 import {
   ArticleHeaderContent,
   ArticleMainButtonContent,

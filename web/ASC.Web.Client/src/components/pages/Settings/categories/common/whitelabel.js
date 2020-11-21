@@ -9,7 +9,7 @@ import {
   toastr,
   Link,
   TextInput,
-} from "asc-web-components";
+} from "@appserver/components";
 import {
   getWhiteLabelLogoText,
   getWhiteLabelLogoSizes,

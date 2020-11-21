@@ -5,7 +5,7 @@ A container that displays a process or operation as a progress bar
 ### Usage
 
 ```js
-import { ProgressBar } from "asc-web-components";
+import { ProgressBar } from "@appserver/components";
 ```
 
 ```jsx

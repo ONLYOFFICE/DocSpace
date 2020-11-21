@@ -7,7 +7,7 @@ import {
   Icons,
   Text,
   Box,
-} from "asc-web-components";
+} from "@appserver/components";
 import { connect } from "react-redux";
 
 const getFormattedGroups = (user, selectGroup) => {

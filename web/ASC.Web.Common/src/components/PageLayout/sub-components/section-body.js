@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
-import { utils, Scrollbar, DragAndDrop } from "asc-web-components";
+import { utils, Scrollbar, DragAndDrop } from "@appserver/components";
 import SelectedFrame from "./SelectedFrame";
 import isEqual from "lodash/isEqual";
 

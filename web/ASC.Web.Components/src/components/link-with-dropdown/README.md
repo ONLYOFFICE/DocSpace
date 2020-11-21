@@ -5,7 +5,7 @@ Link with dropdown
 ### Usage
 
 ```js
-import { LinkWithDropdown } from "asc-web-components";
+import { LinkWithDropdown } from "@appserver/components";
 ```
 
 ```jsx

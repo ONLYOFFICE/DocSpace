@@ -1,5 +1,5 @@
 import * as React from "react";
-import { utils } from "asc-web-components";
+import { utils } from "@appserver/components";
 const { Consumer } = utils.context;
 
 export function withLayoutSize(Component) {

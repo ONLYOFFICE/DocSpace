@@ -5,7 +5,7 @@ RequestLoader component is used for displaying loading actions on a page
 ### Usage
 
 ```js
-import { RequestLoader } from "asc-web-components";
+import { RequestLoader } from "@appserver/components";
 ```
 
 ```jsx

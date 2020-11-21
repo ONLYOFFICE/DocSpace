@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
-import { MainButton, DropDownItem } from "asc-web-components";
+import { MainButton, DropDownItem } from "@appserver/components";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import { setAction, startUpload } from "../../../store/files/actions";
 import {
@@ -16,7 +16,7 @@ import {
   constants,
   store as initStore,
   Loaders,
-} from "asc-web-common";
+} from "@appserver/common";
 import { createI18N } from "../../../helpers/i18n";
 
 const { getSettings } = initStore.auth.selectors;

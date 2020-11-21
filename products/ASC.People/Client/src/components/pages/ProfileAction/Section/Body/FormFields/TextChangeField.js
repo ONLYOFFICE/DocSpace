@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import isEqual from "lodash/isEqual";
-import { FieldContainer, TextInput, Button } from "asc-web-components";
+import { FieldContainer, TextInput, Button } from "@appserver/components";
 
 const InputContainer = styled.div`
   width: 100%;

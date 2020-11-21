@@ -1,5 +1,5 @@
 import { find, filter } from "lodash";
-import { constants, store } from "asc-web-common";
+import { constants, store } from "@appserver/common";
 import { createSelector } from "reselect";
 
 const { FileType, FilterType, FolderType } = constants;

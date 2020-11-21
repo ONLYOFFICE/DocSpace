@@ -1,4 +1,4 @@
-import { api } from "asc-web-common";
+import { api } from "@appserver/common";
 
 export const SET_PAYMENTS_SETTINGS = "SET_PAYMENTS_SETTINGS";
 
