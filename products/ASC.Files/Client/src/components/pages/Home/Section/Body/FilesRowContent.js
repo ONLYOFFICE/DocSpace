@@ -25,6 +25,7 @@ import {
   setUpdateTree,
   updateFile,
 } from "../../../../../store/files/actions";
+import { TIMEOUT } from "../../../../../helpers/constants";
 import {
   canConvert,
   canWebEdit,
@@ -380,7 +381,7 @@ class FilesRowContent extends React.PureComponent {
             percent: 100,
             label: t("Convert"),
           });
-          setTimeout(() => clearSecondaryProgressData(), 5000);
+          setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
           const newFilter = filter.clone();
           fetchFiles(selectedFolder.id, newFilter)
             .catch((err) => toastr.error(err))

@@ -12,6 +12,7 @@ import {
   SORT_ORDER,
   FOLDER,
   PREVIEW,
+  TIMEOUT,
 } from "../../helpers/constants";
 import config from "../../../package.json";
 import {
@@ -961,7 +962,7 @@ const updateFiles = (folderId, dispatch, getState) => {
         setTimeout(() => {
           dispatch(clearPrimaryProgressData());
           dispatch(setUploadData(uploadData));
-        }, 5000)
+        }, TIMEOUT)
       );
   } else {
     return api.files
@@ -980,7 +981,7 @@ const updateFiles = (folderId, dispatch, getState) => {
         setTimeout(() => {
           dispatch(clearPrimaryProgressData());
           dispatch(setUploadData(uploadData));
-        }, 5000)
+        }, TIMEOUT)
       );
   }
 };
@@ -1056,7 +1057,7 @@ const updateConvertProgress = (uploadData, t, dispatch) => {
     })
   );
   if (!progressVisible) {
-    setTimeout(() => dispatch(clearPrimaryProgressData()), 5000);
+    setTimeout(() => dispatch(clearPrimaryProgressData()), TIMEOUT);
   }
 };
 
@@ -1260,7 +1261,7 @@ export const loopFilesOperations = (id, destFolderId, isCopy) => {
                     .finally(() =>
                       setTimeout(
                         () => dispatch(clearPrimaryProgressData()),
-                        5000
+                        TIMEOUT
                       )
                     );
                 } else {
@@ -1274,7 +1275,7 @@ export const loopFilesOperations = (id, destFolderId, isCopy) => {
                   );
                   setTimeout(
                     () => dispatch(clearSecondaryProgressData()),
-                    5000
+                    TIMEOUT
                   );
                   dispatch(setUpdateTree(true));
                   dispatch(setTreeFolders(newTreeFolders));

@@ -53,6 +53,7 @@ import {
   getFileInfo,
   addFileToRecentlyViewed,
 } from "../../../../../store/files/actions";
+import { TIMEOUT } from "../../../../../helpers/constants";
 import {
   getCurrentFolderCount,
   getDragging,
@@ -434,7 +435,7 @@ class SectionBodyContent extends React.Component {
             this.props.clearSecondaryProgressData();
           })
           .finally(() =>
-            setTimeout(() => this.props.clearSecondaryProgressData(), 5000)
+            setTimeout(() => this.props.clearSecondaryProgressData(), TIMEOUT)
           );
       }
     });

@@ -10,6 +10,7 @@ import {
   setSecondaryProgressBarData,
   clearSecondaryProgressData,
 } from "../../../store/files/actions";
+import { TIMEOUT } from "../../../helpers/constants";
 import {
   getSelectedFolderId,
   getFilter,
@@ -67,7 +68,7 @@ const EmptyTrashDialogComponent = (props) => {
                   percent: 100,
                   label: t("DeleteOperation"),
                 });
-                setTimeout(() => clearSecondaryProgressData(), 5000);
+                setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
                 toastr.success(successMessage);
               })
               .catch((err) => {

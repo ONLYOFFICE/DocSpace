@@ -27,6 +27,7 @@ import {
   setIsLoading,
   setSelected,
 } from "../../../../../store/files/actions";
+import { TIMEOUT } from "../../../../../helpers/constants";
 import {
   EmptyTrashDialog,
   DeleteDialog,
@@ -236,7 +237,7 @@ class SectionHeaderContent extends React.Component {
           });
           setTimeout(() => this.loop(res[0].url), 1000);
         } else {
-          setTimeout(() => this.props.clearSecondaryProgressData(), 5000);
+          setTimeout(() => this.props.clearSecondaryProgressData(), TIMEOUT);
           return window.open(url, "_blank");
         }
       })

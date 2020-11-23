@@ -15,10 +15,10 @@ import {
   fetchFiles,
   setTreeFolders,
   setSecondaryProgressBarData,
-  clearPrimaryProgressData,
   clearSecondaryProgressData,
   setUpdateTree,
 } from "../../../store/files/actions";
+import { TIMEOUT } from "../../../helpers/constants";
 import {
   loopTreeFolders,
   getSelectedFolderId,
@@ -93,7 +93,7 @@ class DeleteDialogComponent extends React.Component {
             label: t("DeleteOperation"),
             visible: true,
           });
-          setTimeout(() => clearSecondaryProgressData(), 5000);
+          setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
           fetchFiles(currentFolderId, filter).then((data) => {
             if (!isRecycleBinFolder && !!this.state.foldersList.length) {
               const path = data.selectedFolder.pathParts.slice(0);
