@@ -19,6 +19,7 @@ import {
   Loaders,
 } from "asc-web-common";
 import { createI18N } from "../../../helpers/i18n";
+import { encryptionUploadDialog } from "../../../helpers/desktop";
 
 const { getSettings } = initStore.auth.selectors;
 const i18n = createI18N({
@@ -40,7 +41,21 @@ class PureArticleMainButtonContent extends React.Component {
     });
   };
 
-  onUploadFileClick = () => this.inputFilesElement.click();
+  onUploadFileClick = () => {
+    if (this.props.isPrivacy) {
+      //debugger;
+
+      encryptionUploadDialog((encryptedFile, encrypted) => {
+        const { selectedFolder, startUpload, t } = this.props;
+        encryptedFile.encrypted = encrypted;
+        this.goToHomePage();
+        startUpload([encryptedFile], selectedFolder.id, t);
+      });
+    } else {
+      this.inputFilesElement.click();
+    }
+  };
+
   onUploadFolderClick = () => this.inputFolderElement.click();
 
   goToHomePage = () => {
@@ -51,10 +66,10 @@ class PureArticleMainButtonContent extends React.Component {
 
   onFileChange = (e) => {
     const { selectedFolder, startUpload, t } = this.props;
-
     this.goToHomePage();
     startUpload(e.target.files, selectedFolder.id, t);
   };
+
   onInputClick = (e) => (e.target.value = null);
 
   shouldComponentUpdate(nextProps, nextState) {

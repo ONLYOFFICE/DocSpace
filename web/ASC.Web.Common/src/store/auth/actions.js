@@ -251,28 +251,34 @@ export function setEncryptionKeys(keys) {
   };
 }
 
-export function getEncryptionKeys() {
-  return (dispatch) => {
-    return api.files
-      .getEncryptionKeys()
-      .then((res) => {
-        console.log(
-          "%c%s",
-          "color: green; font: 1.1em/1 bold;",
-          "Fetching encryption keys...",
-          res
-        );
-        //debugger;
-        dispatch(fetchEncryptionKeys(res ?? {}));
-        console.log(
-          "%c%s",
-          "color: green; font: 1.1em/1 bold;",
-          "Encryption keys has been received "
-        );
-      })
-      .catch((err) => console.error(err));
-  };
+export function getEncryptionKeys(dispatch) {
+  return api.files
+    .getEncryptionKeys()
+    .then((res) => dispatch(fetchEncryptionKeys(res ?? {})))
+    .catch((err) => console.error(err));
 }
+
+// export function getEncryptionKeys() {
+//   return (dispatch) => {
+//     return api.files
+//       .getEncryptionKeys()
+//       .then((res) => {
+//         console.log(
+//           "%c%s",
+//           "color: green; font: 1.1em/1 bold;",
+//           "Fetching encryption keys...",
+//           res
+//         );
+//         dispatch(fetchEncryptionKeys(res ?? {}));
+//         console.log(
+//           "%c%s",
+//           "color: green; font: 1.1em/1 bold;",
+//           "Encryption keys has been received "
+//         );
+//       })
+//       .catch((err) => console.error(err));
+//   };
+// }
 
 export function getEncryptionAccess(fileId) {
   return (dispatch) => {

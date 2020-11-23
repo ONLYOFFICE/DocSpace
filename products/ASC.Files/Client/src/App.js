@@ -35,6 +35,7 @@ const {
   getPortalCultures,
   setEncryptionKeys,
   getEncryptionSupport,
+  getEncryptionKeys,
 } = commonStore.auth.actions;
 const {
   getCurrentUser,
@@ -53,6 +54,7 @@ class App extends React.Component {
   }
 
   componentDidMount() {
+    debugger;
     utils.removeTempContent();
 
     const {
@@ -64,6 +66,7 @@ class App extends React.Component {
       fetchTreeFolders,
       setIsLoaded,
       getEncryptionSupport,
+      getEncryptionKeys,
       isDesktop,
     } = this.props;
 
@@ -84,7 +87,7 @@ class App extends React.Component {
         fetchTreeFolders()
       );
       if (isDesktop) {
-        requests.push(getEncryptionSupport());
+        requests.push(getEncryptionSupport(), getEncryptionKeys());
       }
     }
 
@@ -105,15 +108,20 @@ class App extends React.Component {
       isAuthenticated,
       user,
       isEncryption,
-      keys,
+      encryptionKeys,
       setEncryptionKeys,
       isLoaded,
     } = this.props;
     console.log("componentDidUpdate: ", this.props);
     if (isAuthenticated && !this.isDesktopInit && isEncryption && isLoaded) {
       this.isDesktopInit = true;
-      regDesktop(user, isEncryption, keys, setEncryptionKeys);
-      console.log("%c%s", "font: 1.1em/1 bold;", "Current keys is: ", keys);
+      regDesktop(user, isEncryption, encryptionKeys, setEncryptionKeys);
+      console.log(
+        "%c%s",
+        "color: green; font: 1.2em bold;",
+        "Current keys is: ",
+        encryptionKeys
+      );
     }
   }
 
@@ -175,8 +183,7 @@ const mapStateToProps = (state) => {
     isLoaded: getIsLoaded(state),
     isEncryption: isEncryptionSupport(state),
     isDesktop: isDesktopClient(state),
-    keys: settings.encryptionKeys,
-    settings: settings,
+    encryptionKeys: settings.encryptionKeys,
   };
 };
 
@@ -193,6 +200,7 @@ const mapDispatchToProps = (dispatch) => {
     fetchTreeFolders: () => fetchTreeFolders(dispatch),
     setIsLoaded: () => dispatch(setIsLoaded(true)),
     getEncryptionSupport: () => getEncryptionSupport(dispatch),
+    getEncryptionKeys: () => getEncryptionKeys(dispatch),
     setEncryptionKeys: (keys) => dispatch(setEncryptionKeys(keys)),
   };
 };

@@ -1,5 +1,6 @@
 import { toastr } from "asc-web-common";
 import isEmpty from "lodash/isEmpty";
+import omit from "lodash/omit";
 
 const domain = window.location.origin;
 const provider = "AppServer";
@@ -25,9 +26,10 @@ export function regDesktop(user, isEncryption, keys, setEncryptionKeys) {
     };
 
     if (!isEmpty(keys)) {
+      const filteredKeys = omit(keys, ["userId"]);
       extendedData = {
         ...extendedData,
-        encryptionKeys: { ...extendedData.encryptionKeys, ...keys },
+        encryptionKeys: { ...extendedData.encryptionKeys, ...filteredKeys },
       };
     }
   } else {
