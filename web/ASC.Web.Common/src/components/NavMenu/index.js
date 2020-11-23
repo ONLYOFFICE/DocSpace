@@ -25,7 +25,8 @@ const StyledContainer = styled.header`
     props.isTablet &&
     !props.isLoaded &&
     css`
-      margin-right: -16px;
+      margin-right: -16px; /* It is a opposite value of padding-right of custom scroll bar,
+       so that there is no white bar in the header on loading. (padding-right: 16px)*/
     `}
 `;
 
