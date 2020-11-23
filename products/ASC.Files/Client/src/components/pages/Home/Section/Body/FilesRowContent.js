@@ -363,7 +363,6 @@ class FilesRowContent extends React.PureComponent {
     api.files.getConvertFile(fileId).then((res) => {
       if (res && res[0] && res[0].progress !== 100) {
         setSecondaryProgressBarData({
-          operationType: "Secondary",
           icon: "file",
           visible: true,
           percent: res[0].progress,
@@ -376,7 +375,6 @@ class FilesRowContent extends React.PureComponent {
           clearSecondaryProgressData();
         } else {
           setSecondaryProgressBarData({
-            operationType: "Secondary",
             icon: "file",
             visible: true,
             percent: 100,
@@ -395,7 +393,6 @@ class FilesRowContent extends React.PureComponent {
   onConvert = () => {
     const { item, t, setSecondaryProgressBarData } = this.props;
     setSecondaryProgressBarData({
-      operationType: "Secondary",
       icon: "file",
       visible: true,
       percent: 0,

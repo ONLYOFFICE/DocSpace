@@ -229,7 +229,6 @@ class SectionHeaderContent extends React.Component {
       .then((res) => {
         if (!url) {
           this.props.setSecondaryProgressBarData({
-            operationType: "Secondary",
             icon: "file",
             visible: true,
             percent: res[0].progress,
@@ -269,7 +268,6 @@ class SectionHeaderContent extends React.Component {
     }
 
     setSecondaryProgressBarData({
-      operationType: "Secondary",
       icon: "file",
       visible: true,
       percent: 0,

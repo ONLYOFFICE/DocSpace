@@ -188,7 +188,6 @@ class DownloadDialogComponent extends React.Component {
 
     if (fileConvertIds.length || folderIds.length) {
       setSecondaryProgressBarData({
-        operationType: "Secondary",
         icon: "file",
         visible: true,
         percent: 0,

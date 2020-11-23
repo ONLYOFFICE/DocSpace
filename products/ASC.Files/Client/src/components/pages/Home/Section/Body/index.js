@@ -369,7 +369,6 @@ class SectionBodyContent extends React.Component {
       clearSecondaryProgressData,
     } = this.props;
     setSecondaryProgressBarData({
-      operationType: "Secondary",
       icon: "trash",
       visible: true,
       percent: 0,
@@ -402,7 +401,6 @@ class SectionBodyContent extends React.Component {
       const deleteProgress = res.find((x) => x.id === id);
       if (deleteProgress && deleteProgress.progress !== 100) {
         setSecondaryProgressBarData({
-          operationType: "Secondary",
           icon: "trash",
           visible: true,
           percent: deleteProgress.progress,
@@ -411,7 +409,6 @@ class SectionBodyContent extends React.Component {
         setTimeout(() => this.loopDeleteProgress(id, folderId, isFolder), 1000);
       } else {
         setSecondaryProgressBarData({
-          operationType: "Secondary",
           icon: "trash",
           visible: true,
           percent: 100,
@@ -451,7 +448,6 @@ class SectionBodyContent extends React.Component {
     } = this.props;
     const progressLabel = t("DeleteOperation");
     setSecondaryProgressBarData({
-      operationType: "Secondary",
       icon: "trash",
       visible: true,
       percent: 0,
@@ -581,7 +577,6 @@ class SectionBodyContent extends React.Component {
     const deleteAfter = false;
 
     setSecondaryProgressBarData({
-      operationType: "Secondary",
       icon: "duplicate",
       visible: true,
       percent: 0,
@@ -1340,7 +1335,6 @@ class SectionBodyContent extends React.Component {
     const deleteAfter = true;
 
     setSecondaryProgressBarData({
-      operationType: "Secondary",
       icon: "move",
       visible: true,
       percent: 0,

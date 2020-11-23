@@ -563,7 +563,6 @@ export function clearPrimaryProgressData() {
   return (dispatch) => {
     dispatch(
       setPrimaryProgressBarData({
-        operationType: "",
         visible: false,
         percent: 0,
         label: "",
@@ -577,7 +576,6 @@ export function clearSecondaryProgressData() {
   return (dispatch) => {
     dispatch(
       setSecondaryProgressBarData({
-        operationType: "",
         visible: false,
         percent: 0,
         label: "",
@@ -733,7 +731,6 @@ const startUploadFiles = (
 ) => {
   if (filesLength > 0 || convertFilesLength > 0) {
     const progressData = {
-      operationType: "Primary",
       visible: true,
       percent: 0,
       label: "",
@@ -856,7 +853,6 @@ const sendChunk = (
         if (index + 1 !== requestsDataArray.length) {
           dispatch(
             setPrimaryProgressBarData({
-              operationType: "Primary",
               icon: "upload",
               label: t("UploadingLabel", {
                 file: uploadedFiles,
@@ -1053,7 +1049,6 @@ const updateConvertProgress = (uploadData, t, dispatch) => {
 
   dispatch(
     setPrimaryProgressBarData({
-      operationType: "Primary",
       icon: "upload",
       label: t("UploadingLabel", { file, totalFiles }),
       percent,
@@ -1085,7 +1080,6 @@ export const setDialogVisible = (t) => {
     if (uploadStatus === null) {
       dispatch(
         setPrimaryProgressBarData({
-          operationType: "Primary",
           icon: "upload",
           label,
           percent: 100,
@@ -1101,7 +1095,6 @@ export const setDialogVisible = (t) => {
     } else {
       dispatch(
         setPrimaryProgressBarData({
-          operationType: "Primary",
           icon: "upload",
           label,
           percent,
@@ -1216,7 +1209,6 @@ export const loopFilesOperations = (id, destFolderId, isCopy) => {
           if (currentItem && currentItem.progress !== 100) {
             dispatch(
               setSecondaryProgressBarData({
-                operationType: "Secondary",
                 icon: "move",
                 label: progressData.label,
                 percent: currentItem.progress,
@@ -1227,7 +1219,6 @@ export const loopFilesOperations = (id, destFolderId, isCopy) => {
           } else {
             dispatch(
               setSecondaryProgressBarData({
-                operationType: "Secondary",
                 icon: "move",
                 label: progressData.label,
                 percent: 100,
@@ -1275,7 +1266,6 @@ export const loopFilesOperations = (id, destFolderId, isCopy) => {
                 } else {
                   dispatch(
                     setSecondaryProgressBarData({
-                      operationType: "Secondary",
                       icon: "duplicate",
                       label: progressData.label,
                       percent: 100,

@@ -65,7 +65,6 @@ class OperationsPanelComponent extends React.Component {
       }
       onClose();
       setSecondaryProgressBarData({
-        operationType: "Secondary",
         icon: isCopy ? "duplicate" : "move",
         visible: true,
         percent: 0,
