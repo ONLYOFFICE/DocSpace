@@ -95,7 +95,6 @@ namespace ASC.Files.Thirdparty.SharePoint
             if (clientContext != null)
             {
                 clientContext.Dispose();
-                clientContext = null;
             }
 
             SharePointProviderInfoHelper.Invalidate();

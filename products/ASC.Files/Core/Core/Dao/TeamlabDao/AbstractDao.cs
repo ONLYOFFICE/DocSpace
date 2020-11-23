@@ -162,7 +162,8 @@ namespace ASC.Files.Core.Data
                 var newItem = new DbFilesThirdpartyIdMapping
                 {
                     Id = id.ToString(),
-                    HashId = result.ToString()
+                    HashId = result.ToString(),
+                    TenantId = TenantID
                 };
 
                 FilesDbContext.AddOrUpdate(r => r.ThirdpartyIdMapping, newItem);

@@ -308,7 +308,9 @@ namespace ASC.Web.Files.Services.WCFService
                 || parent.FolderType == FolderType.SHARE
                 || parent.RootFolderType == FolderType.Privacy;
 
-            entries = entries.Where(x => x.FileEntryType == FileEntryType.Folder || !FileConverter.IsConverting((File<T>)x));
+            entries = entries.Where(x => x.FileEntryType == FileEntryType.Folder || 
+            (x is File<string> f1 && !FileConverter.IsConverting(f1) ||
+             x is File<int> f2 && !FileConverter.IsConverting(f2)));
 
             var result = new DataWrapper<T>
             {
@@ -1165,13 +1167,14 @@ namespace ASC.Web.Files.Services.WCFService
 
         public Folder<T> SaveThirdParty(ThirdPartyParams thirdPartyParams)
         {
+            var folderDaoInt = DaoFactory.GetFolderDao<int>();
             var folderDao = GetFolderDao();
             var providerDao = GetProviderDao();
 
             if (providerDao == null) return null;
 
             ErrorIf(thirdPartyParams == null, FilesCommonResource.ErrorMassage_BadRequest);
-            var parentFolder = folderDao.GetFolder(thirdPartyParams.Corporate && !CoreBaseSettings.Personal ? GlobalFolderHelper.GetFolderCommon<T>() : GlobalFolderHelper.GetFolderMy<T>());
+            var parentFolder = folderDaoInt.GetFolder(thirdPartyParams.Corporate && !CoreBaseSettings.Personal ? GlobalFolderHelper.FolderCommon : GlobalFolderHelper.FolderMy);
             ErrorIf(!FileSecurity.CanCreate(parentFolder), FilesCommonResource.ErrorMassage_SecurityException_Create);
             ErrorIf(!FilesSettingsHelper.EnableThirdParty, FilesCommonResource.ErrorMassage_SecurityException_Create);
 
@@ -1183,7 +1186,7 @@ namespace ASC.Web.Files.Services.WCFService
             MessageAction messageAction;
             if (string.IsNullOrEmpty(thirdPartyParams.ProviderId))
             {
-                ErrorIf(!ThirdpartyConfiguration.SupportInclusion
+                ErrorIf(!ThirdpartyConfiguration.SupportInclusion(DaoFactory)
                         ||
                         (!FilesSettingsHelper.EnableThirdParty
                          && !CoreBaseSettings.Personal)

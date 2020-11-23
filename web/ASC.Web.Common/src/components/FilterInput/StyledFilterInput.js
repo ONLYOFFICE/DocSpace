@@ -91,10 +91,17 @@ const StyledFilterInput = styled.div`
   .styled-hide-filter {
     display: inline-block;
     height: 100%;
+
+    .hide-filter-drop-down {
+      .combo-button-label {
+        ${(props) => (props.isAllItemsHide ? "margin-top: 2px;" : null)}
+      }
+    }
   }
 
   .dropdown-style {
     position: relative;
+    z-index: 190;
 
     .drop-down {
       padding: 16px;
@@ -169,7 +176,7 @@ export const StyledFilterItem = styled.div`
   display: ${(props) => (props.block ? "flex" : "inline-block")};
   margin-bottom: ${(props) => (props.block ? "8px" : "0")};
   position: relative;
-  height: 24px;
+  height: 26px;
   margin-right: 2px;
   border: 1px solid #eceef1;
   border-radius: 3px;
