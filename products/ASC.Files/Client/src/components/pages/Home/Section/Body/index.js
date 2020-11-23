@@ -94,7 +94,11 @@ import {
   getThirdPartyCapabilities,
 } from "../../../../../store/files/selectors";
 import { SharingPanel, OperationsPanel } from "../../../../panels";
-import { DeleteThirdPartyDialog, ConnectDialog } from "../../../../dialogs";
+import {
+  DeleteThirdPartyDialog,
+  ConnectDialog,
+  ThirdPartyMoveDialog,
+} from "../../../../dialogs";
 const {
   isAdmin,
   getSettings,
@@ -194,6 +198,7 @@ class SectionBodyContent extends React.Component {
       showCopyPanel: false,
       showDeleteThirdPartyDialog: false,
       connectDialogVisible: false,
+      showThirdPartyMoveDialog: false,
       isDrag: false,
       canDrag: true,
       removeItem: null,
@@ -248,6 +253,7 @@ class SectionBodyContent extends React.Component {
       isDrag,
       showDeleteThirdPartyDialog,
       connectDialogVisible,
+      showThirdPartyMoveDialog,
     } = this.state;
     if (this.state.showSharingPanel !== nextState.showSharingPanel) {
       return true;
@@ -277,6 +283,10 @@ class SectionBodyContent extends React.Component {
     }
 
     if (connectDialogVisible !== nextState.connectDialogVisible) {
+      return true;
+    }
+
+    if (showThirdPartyMoveDialog !== nextState.showThirdPartyMoveDialog) {
       return true;
     }
 
@@ -604,27 +614,8 @@ class SectionBodyContent extends React.Component {
   onCopyAction = () =>
     this.setState({ showCopyPanel: !this.state.showCopyPanel });
   onDuplicate = () => {
-    const { selection, selectedFolderId, setProgressBarData, t } = this.props;
-    const folderIds = [];
-    const fileIds = [];
-    selection[0].fileExst
-      ? fileIds.push(selection[0].id)
-      : folderIds.push(selection[0].id);
-    const conflictResolveType = 0; //Skip = 0, Overwrite = 1, Duplicate = 2
-    const deleteAfter = false;
-
-    setProgressBarData({
-      visible: true,
-      percent: 0,
-      label: t("CopyOperation"),
-    });
-    this.copyTo(
-      selectedFolderId,
-      folderIds,
-      fileIds,
-      conflictResolveType,
-      deleteAfter
-    );
+    const { selectedFolderId } = this.props;
+    this.copyTo(selectedFolderId);
   };
 
   onShowDeleteThirdParty = () =>
@@ -637,6 +628,12 @@ class SectionBodyContent extends React.Component {
     this.setState({
       connectItem: null,
       connectDialogVisible: !this.state.connectDialogVisible,
+    });
+  };
+
+  onCloseThirdPartyMoveDialog = () => {
+    this.setState({
+      showThirdPartyMoveDialog: !this.state.showThirdPartyMoveDialog,
     });
   };
 
@@ -1274,16 +1271,24 @@ class SectionBodyContent extends React.Component {
     if (!value) {
       return;
     }
-    const splitValue = value.split("_");
+    let splitValue = value.split("_");
     let item = null;
     if (splitValue[0] === "folder") {
-      item = selection.find(
-        (x) => x.id === Number(splitValue[1]) && !x.fileExst
-      );
+      splitValue.splice(0, 1);
+      if (splitValue[splitValue.length - 1] === "draggable") {
+        splitValue.splice(-1, 1);
+      }
+      splitValue = splitValue.join("_");
+
+      item = selection.find((x) => x.id + "" === splitValue && !x.fileExst);
     } else {
-      item = selection.find(
-        (x) => x.id === Number(splitValue[1]) && x.fileExst
-      );
+      splitValue.splice(0, 1);
+      if (splitValue[splitValue.length - 1] === "draggable") {
+        splitValue.splice(-1, 1);
+      }
+      splitValue = splitValue.join("_");
+
+      item = selection.find((x) => x.id + "" === splitValue && x.fileExst);
     }
     if (item) {
       this.setState({ isDrag: true });
@@ -1291,13 +1296,7 @@ class SectionBodyContent extends React.Component {
   };
 
   onMouseUp = (e) => {
-    const {
-      selection,
-      dragging,
-      setDragging,
-      dragItem,
-      setDragItem,
-    } = this.props;
+    const { selection, dragging, setDragging, dragItem } = this.props;
 
     document.body.classList.remove("drag-cursor");
 
@@ -1322,12 +1321,16 @@ class SectionBodyContent extends React.Component {
         setDragging(false);
         return;
       }
-      const splitValue = value.split("_");
+      let splitValue = value.split("_");
       let item = null;
       if (splitValue[0] === "folder") {
-        item = selection.find(
-          (x) => x.id === Number(splitValue[1]) && !x.fileExst
-        );
+        splitValue.splice(0, 1);
+        if (splitValue[splitValue.length - 1] === "draggable") {
+          splitValue.splice(-1, 1);
+        }
+        splitValue = splitValue.join("_");
+
+        item = selection.find((x) => x.id + "" === splitValue && !x.fileExst);
       } else {
         return;
       }
@@ -1336,14 +1339,13 @@ class SectionBodyContent extends React.Component {
         return;
       } else {
         setDragging(false);
-        this.onMoveTo(Number(splitValue[1]));
+        this.onMoveTo(splitValue);
         return;
       }
     } else {
       setDragging(false);
       if (dragItem) {
         this.onMoveTo(dragItem);
-        setDragItem(null);
         return;
       }
       return;
@@ -1387,25 +1389,64 @@ class SectionBodyContent extends React.Component {
     }
   };
 
-  onMoveTo = (destFolderId) => {
+  onMoveTo = (folderId) => {
     const {
-      selection,
-      t,
       isShare,
       isCommon,
       isAdmin,
-      setProgressBarData,
+      selection,
+      isRootFolder,
+      //providerItem,
     } = this.props;
+
+    const destFolderId = !isNaN(+folderId) ? +folderId : folderId;
+    const isProvider =
+      selection[0].providerKey && !isRootFolder && !isNaN(+folderId);
+
+    if (isAdmin) {
+      if (isShare) {
+        this.copyTo(destFolderId);
+      } else {
+        if (isProvider) {
+          this.onCloseThirdPartyMoveDialog();
+        } else {
+          this.moveTo(destFolderId);
+        }
+      }
+    } else {
+      if (isShare || isCommon) {
+        this.copyTo(destFolderId);
+      } else {
+        if (isProvider) {
+          this.onCloseThirdPartyMoveDialog();
+        } else {
+          this.moveTo(destFolderId);
+        }
+      }
+    }
+  };
+
+  copyTo = (destFolderId) => {
+    const {
+      selection,
+      t,
+      setProgressBarData,
+      loopFilesOperations,
+      clearProgressData,
+      setDragItem,
+    } = this.props;
+
+    setProgressBarData({
+      visible: true,
+      percent: 0,
+      label: t("CopyOperation"),
+    });
+
     const folderIds = [];
     const fileIds = [];
     const conflictResolveType = 0; //Skip = 0, Overwrite = 1, Duplicate = 2
     const deleteAfter = true;
 
-    setProgressBarData({
-      visible: true,
-      percent: 0,
-      label: t("MoveToOperation"),
-    });
     for (let item of selection) {
       if (item.fileExst) {
         fileIds.push(item.id);
@@ -1413,54 +1454,6 @@ class SectionBodyContent extends React.Component {
         folderIds.push(item.id);
       }
     }
-
-    if (isAdmin) {
-      if (isShare) {
-        this.copyTo(
-          destFolderId,
-          folderIds,
-          fileIds,
-          conflictResolveType,
-          deleteAfter
-        );
-      } else {
-        this.moveTo(
-          destFolderId,
-          folderIds,
-          fileIds,
-          conflictResolveType,
-          deleteAfter
-        );
-      }
-    } else {
-      if (isShare || isCommon) {
-        this.copyTo(
-          destFolderId,
-          folderIds,
-          fileIds,
-          conflictResolveType,
-          deleteAfter
-        );
-      } else {
-        this.moveTo(
-          destFolderId,
-          folderIds,
-          fileIds,
-          conflictResolveType,
-          deleteAfter
-        );
-      }
-    }
-  };
-
-  copyTo = (
-    destFolderId,
-    folderIds,
-    fileIds,
-    conflictResolveType,
-    deleteAfter
-  ) => {
-    const { loopFilesOperations, clearProgressData } = this.props;
 
     api.files
       .copyToFolder(
@@ -1473,6 +1466,7 @@ class SectionBodyContent extends React.Component {
       .then((res) => {
         const id = res[0] && res[0].id ? res[0].id : null;
         loopFilesOperations(id, destFolderId, true);
+        setDragItem(null);
       })
       .catch((err) => {
         toastr.error(err);
@@ -1480,14 +1474,39 @@ class SectionBodyContent extends React.Component {
       });
   };
 
-  moveTo = (
-    destFolderId,
-    folderIds,
-    fileIds,
-    conflictResolveType,
-    deleteAfter
-  ) => {
-    const { loopFilesOperations, clearProgressData } = this.props;
+  moveTo = (destFolderId) => {
+    const {
+      selection,
+      t,
+      setProgressBarData,
+      loopFilesOperations,
+      clearProgressData,
+      setDragItem,
+      isRootFolder,
+    } = this.props;
+
+    const folderIds = [];
+    const fileIds = [];
+    const conflictResolveType = 0; //Skip = 0, Overwrite = 1, Duplicate = 2
+    const deleteAfter = true;
+
+    for (let item of selection) {
+      if (item.fileExst) {
+        fileIds.push(item.id);
+      } else {
+        !(item.providerKey && isRootFolder) && folderIds.push(item.id);
+      }
+    }
+
+    if (!folderIds.length && !fileIds.length) {
+      return;
+    }
+
+    setProgressBarData({
+      visible: true,
+      percent: 0,
+      label: t("MoveToOperation"),
+    });
 
     api.files
       .moveToFolder(
@@ -1500,6 +1519,7 @@ class SectionBodyContent extends React.Component {
       .then((res) => {
         const id = res[0] && res[0].id ? res[0].id : null;
         loopFilesOperations(id, destFolderId, false);
+        setDragItem(null);
       })
       .catch((err) => {
         toastr.error(err);
@@ -1585,6 +1605,16 @@ class SectionBodyContent extends React.Component {
     );
   };
 
+  startMoveOperation = () => {
+    this.moveTo(this.props.dragItem);
+    this.onCloseThirdPartyMoveDialog();
+  };
+
+  startCopyOperation = () => {
+    this.copyTo(this.props.dragItem);
+    this.onCloseThirdPartyMoveDialog();
+  };
+
   render() {
     //console.log("Files Home SectionBodyContent render", this.props);
 
@@ -1620,6 +1650,7 @@ class SectionBodyContent extends React.Component {
       showCopyPanel,
       showDeleteThirdPartyDialog,
       connectDialogVisible,
+      showThirdPartyMoveDialog,
       removeItem,
       connectItem,
     } = this.state;
@@ -1703,6 +1734,16 @@ class SectionBodyContent extends React.Component {
             visible={connectDialogVisible}
             item={connectItem}
             onClose={this.onCloseConnectDialog}
+          />
+        )}
+
+        {showThirdPartyMoveDialog && (
+          <ThirdPartyMoveDialog
+            visible={showThirdPartyMoveDialog}
+            onClose={this.onCloseThirdPartyMoveDialog}
+            startMoveOperation={this.startMoveOperation}
+            startCopyOperation={this.startCopyOperation}
+            provider={selection[0].providerKey}
           />
         )}
 

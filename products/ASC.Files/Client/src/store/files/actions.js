@@ -1177,11 +1177,19 @@ export const setSelections = (items) => {
         let newFile = null;
         item = item.split("_");
         if (item[0] === "folder") {
-          newFile = folders.find(
-            (x) => x.id === Number(item[1]) && !x.fileExst
-          );
+          item.splice(0, 1);
+          if (item[item.length - 1] === "draggable") {
+            item[item.length - 1] = "";
+          }
+          item = item.join("_");
+          newFile = folders.find((x) => x.id + "" === item && !x.fileExst);
         } else if (item[0] === "file") {
-          newFile = files.find((x) => x.id === Number(item[1]) && x.fileExst);
+          item.splice(0, 1);
+          if (item[item.length - 1] === "draggable") {
+            item[item.length - 1] = "";
+          }
+          item = item.join("_");
+          newFile = files.find((x) => x.id + "" === item && x.fileExst);
         }
         if (newFile && fileActionId !== newFile.id) {
           const existItem = selection.find(

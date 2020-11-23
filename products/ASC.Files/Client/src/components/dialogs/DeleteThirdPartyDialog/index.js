@@ -83,7 +83,7 @@ class DeleteThirdPartyDialogComponent extends React.Component {
           });
         }
       })
-      .catch((err) => toastr(err))
+      .catch((err) => toastr.error(err))
       .finally(() => onClose());
   };
 

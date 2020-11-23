@@ -26,6 +26,7 @@ import {
   getIsLoading,
   getIsRecycleBinFolder,
   getSelection,
+  isRootFolder,
 } from "../../../store/files/selectors";
 import { createI18N } from "../../../helpers/i18n";
 const i18n = createI18N({
@@ -46,11 +47,14 @@ class DeleteDialogComponent extends React.Component {
 
     let i = 0;
     while (props.selection.length !== i) {
+      if (props.isRootFolder && props.selection[i].providerKey) {
+        break;
+      }
       selection.push({ ...props.selection[i], checked: true });
       if (selection[i].fileExst) {
         filesList.push(selection[i]);
       } else {
-        !selection[i].providerKey && foldersList.push(selection[i]);
+        foldersList.push(selection[i]);
       }
       i++;
     }
@@ -284,6 +288,7 @@ const mapStateToProps = (state) => {
     isLoading: getIsLoading(state),
     isRecycleBinFolder: getIsRecycleBinFolder(state),
     selection: getSelection(state),
+    isRootFolder: isRootFolder(state),
   };
 };
 

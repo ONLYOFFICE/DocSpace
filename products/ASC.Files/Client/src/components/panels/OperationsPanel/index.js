@@ -2,10 +2,10 @@ import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
-import { ModalDialog, Button, Text } from "asc-web-components";
+import { ModalDialog } from "asc-web-components";
 import { withTranslation } from "react-i18next";
 import { utils as commonUtils, toastr } from "asc-web-common";
-import { StyledAsidePanel, StyledOperationDialog } from "../StyledPanels";
+import { StyledAsidePanel } from "../StyledPanels";
 import TreeFolders from "../../Article/Body/TreeFolders";
 import {
   setProgressBarData,
@@ -19,6 +19,7 @@ import {
   getIsRecycleBinFolder,
   getOperationsFolders,
 } from "../../../store/files/selectors";
+import { ThirdPartyMoveDialog } from "../../dialogs";
 import { createI18N } from "../../../helpers/i18n";
 const i18n = createI18N({
   page: "OperationsPanel",
@@ -136,42 +137,13 @@ class OperationsPanelComponent extends React.Component {
     return (
       <>
         {showProviderDialog && (
-          <StyledOperationDialog>
-            <ModalDialog
-              visible={showProviderDialog}
-              zIndex={zIndex}
-              onClose={onClose}
-            >
-              <ModalDialog.Header>{t("MoveConfirmation")}</ModalDialog.Header>
-              <ModalDialog.Body>
-                <Text>{t("MoveConfirmationMessage", { provider })}</Text>
-                <br />
-                <Text>{t("MoveConfirmationAlert")}</Text>
-              </ModalDialog.Body>
-
-              <ModalDialog.Footer>
-                <Button
-                  className="operation-button"
-                  label={t("Move")}
-                  size="big"
-                  primary
-                  onClick={this.startMoveOperation}
-                />
-                <Button
-                  className="operation-button"
-                  label={t("Copy")}
-                  size="big"
-                  onClick={this.startCopyOperation}
-                />
-                <Button
-                  className="operation-button"
-                  label={t("CancelButton")}
-                  size="big"
-                  onClick={onClose}
-                />
-              </ModalDialog.Footer>
-            </ModalDialog>
-          </StyledOperationDialog>
+          <ThirdPartyMoveDialog
+            visible={showProviderDialog}
+            onClose={onClose}
+            startMoveOperation={this.startMoveOperation}
+            startCopyOperation={this.startCopyOperation}
+            provider={provider}
+          />
         )}
 
         <StyledAsidePanel visible={operationPanelVisible}>
