@@ -30,7 +30,6 @@ class CustomScrollbars extends React.Component {
         onScroll={onScroll}
         stype={stype}
         className={className}
-        id="scroll"
       >
         {children}
       </Scrollbar>
