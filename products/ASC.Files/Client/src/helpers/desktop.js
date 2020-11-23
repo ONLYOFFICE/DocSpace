@@ -3,7 +3,7 @@ import { getEncryptedFormats } from "../store/files/selectors";
 
 export function encryptionUploadDialog(callback) {
   const state = store.getState();
-  const filter = getEncryptedFormats(state);
+  const filter = getEncryptedFormats(state).map((f) => "*" + f);
   const data = {
     cryptoEngineId: "{FFF0E1EB-13DB-4678-B67D-FF0A41DBBCEF}",
     filter: filter,
