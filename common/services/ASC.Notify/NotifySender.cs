@@ -40,7 +40,7 @@ using Microsoft.Extensions.Options;
 namespace ASC.Notify
 {
     [Singletone]
-    public class NotifySender
+    public class NotifySender : IDisposable
     {
         private readonly ILog log;
 
@@ -145,6 +145,14 @@ namespace ASC.Notify
             catch (Exception e)
             {
                 log.Error(e);
+            }
+        }
+
+        public void Dispose()
+        {
+            if (cancellationToken != null)
+            {
+                cancellationToken.Dispose();
             }
         }
     }

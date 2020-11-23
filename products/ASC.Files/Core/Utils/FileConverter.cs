@@ -61,7 +61,7 @@ using SecurityContext = ASC.Core.SecurityContext;
 namespace ASC.Web.Files.Utils
 {
     [Singletone(Additional = typeof(FileConverterQueueExtension))]
-    internal class FileConverterQueue<T>
+    internal class FileConverterQueue<T> : IDisposable
     {
         private readonly object singleThread = new object();
         private readonly IDictionary<File<T>, ConvertFileOperationResult> conversionQueue;
@@ -398,6 +398,14 @@ namespace ASC.Web.Files.Utils
                                       FolderTitle = folderTitle ?? "",
                                       FileJson = JsonSerializer.Serialize(file, options)
                                   }, options);
+        }
+
+        public void Dispose()
+        {
+            if (timer != null)
+            {
+                timer.Dispose();
+            }
         }
     }
 
