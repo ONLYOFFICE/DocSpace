@@ -40,17 +40,23 @@ const RoleWrapper = styled.div`
   left: ${(props) =>
     (props.size === "max" && "0px") ||
     (props.size === "big" && "0px") ||
-    (props.size === "medium" && "-2px") ||
+    (props.size === "medium" && "-4px") ||
     (props.size === "small" && "-2px") ||
     (props.size === "min" && "-2px")};
   bottom: ${(props) =>
     (props.size === "max" && "0px") ||
     (props.size === "big" && "5px") ||
-    (props.size === "medium" && "3px") ||
+    (props.size === "medium" && "6px") ||
     (props.size === "small" && "3px") ||
     (props.size === "min" && "3px")};
-  width: ${(props) => (props.size === "max" && "24px") || "12px"};
-  height: ${(props) => (props.size === "max" && "24px") || "12px"};
+  width: ${(props) =>
+    (props.size === "max" && "24px") ||
+    (props.size === "medium" && "14px") ||
+    "12px"};
+  height: ${(props) =>
+    (props.size === "max" && "24px") ||
+    (props.size === "medium" && "14px") ||
+    "12px"};
 `;
 
 const ImageStyled = styled.img`
