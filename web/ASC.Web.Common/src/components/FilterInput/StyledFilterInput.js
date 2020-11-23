@@ -91,6 +91,12 @@ const StyledFilterInput = styled.div`
   .styled-hide-filter {
     display: inline-block;
     height: 100%;
+
+    .hide-filter-drop-down {
+      .combo-button-label {
+        ${(props) => (props.isAllItemsHide ? "margin-top: 2px;" : null)}
+      }
+    }
   }
 
   .dropdown-style {
