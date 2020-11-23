@@ -9,12 +9,26 @@ import {
   Text,
   utils,
 } from "asc-web-components";
-import { utils as commonUtils } from "asc-web-common";
+import { utils as commonUtils, toastr } from "asc-web-common";
 import {
   saveThirdParty,
   openConnectWindow,
+  fetchFiles,
+  setUpdateTree,
+  setTreeFolders,
+  fetchThirdPartyProviders,
+  fetchTreeFolders,
+  setIsLoading,
+  setSelectedNode,
 } from "../../../store/files/actions";
+import {
+  getTreeFolders,
+  loopTreeFolders,
+  getMyFolderId,
+  getCommonFolderId,
+} from "../../../store/files/selectors";
 import { withTranslation, I18nextProvider } from "react-i18next";
+import { connect } from "react-redux";
 import { createI18N } from "../../../helpers/i18n";
 
 const i18n = createI18N({
@@ -53,7 +67,22 @@ const StyledConnectedDialog = styled.div`
 `;
 
 const PureConnectDialogContainer = (props) => {
-  const { onClose, visible, t, item } = props;
+  const {
+    onClose,
+    visible,
+    t,
+    item,
+    fetchFiles,
+    treeFolders,
+    setUpdateTree,
+    setTreeFolders,
+    fetchThirdPartyProviders,
+    fetchTreeFolders,
+    myFolderId,
+    commonFolderId,
+    setIsLoading,
+    setSelectedNode,
+  } = props;
   const { corporate, title, link, token, provider_id, provider_key } = item;
 
   const [urlValue, setUrlValue] = useState("");
@@ -69,6 +98,8 @@ const PureConnectDialogContainer = (props) => {
   const onChangeMakeShared = (e) => setMakeShared(!isCorporate);
 
   const onSave = () => {
+    onClose();
+    setIsLoading(true);
     saveThirdParty(
       urlValue,
       loginValue,
@@ -78,7 +109,25 @@ const PureConnectDialogContainer = (props) => {
       customerTitle,
       provider_key,
       provider_id
-    );
+    )
+      .then((folderData) => {
+        const folderId = isCorporate ? commonFolderId : myFolderId;
+
+        fetchTreeFolders().then((data) => {
+          const treeFolder = data.treeFolders.find((x) => x.id === folderId);
+          const { pathParts, folders, foldersCount } = treeFolder;
+
+          const newTreeFolders = treeFolders;
+          loopTreeFolders(pathParts, newTreeFolders, folders, foldersCount);
+          setUpdateTree(true);
+          setTreeFolders(newTreeFolders);
+          fetchThirdPartyProviders();
+          setSelectedNode([`${folderData.id}`]);
+          fetchFiles(folderData.id);
+        });
+      })
+      .catch((err) => toastr.error(err))
+      .finally(() => setIsLoading(false));
   };
 
   const onReconnect = () => {
@@ -167,4 +216,20 @@ const ConnectDialog = (props) => {
   );
 };
 
-export default ConnectDialog;
+const mapStateToProps = (state) => {
+  return {
+    treeFolders: getTreeFolders(state),
+    myFolderId: getMyFolderId(state),
+    commonFolderId: getCommonFolderId(state),
+  };
+};
+
+export default connect(mapStateToProps, {
+  fetchFiles,
+  setUpdateTree,
+  setTreeFolders,
+  fetchThirdPartyProviders,
+  fetchTreeFolders,
+  setIsLoading,
+  setSelectedNode,
+})(ConnectDialog);

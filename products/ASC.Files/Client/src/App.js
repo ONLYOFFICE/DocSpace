@@ -156,9 +156,9 @@ const mapDispatchToProps = (dispatch) => {
     getPortalSettings: () => getPortalSettings(dispatch),
     getModules: () => getModules(dispatch),
     getPortalCultures: () => getPortalCultures(dispatch),
-    fetchTreeFolders: () => fetchTreeFolders(dispatch),
+    fetchTreeFolders: () => dispatch(fetchTreeFolders()),
     fetchThirdPartyCapabilities: () => fetchThirdPartyCapabilities(dispatch),
-    fetchThirdPartyProviders: () => fetchThirdPartyProviders(dispatch),
+    fetchThirdPartyProviders: () => dispatch(fetchThirdPartyProviders()),
     setIsLoaded: () => dispatch(setIsLoaded(true)),
   };
 };

@@ -1390,14 +1390,7 @@ class SectionBodyContent extends React.Component {
   };
 
   onMoveTo = (folderId) => {
-    const {
-      isShare,
-      isCommon,
-      isAdmin,
-      selection,
-      isRootFolder,
-      //providerItem,
-    } = this.props;
+    const { isShare, isCommon, isAdmin, selection, isRootFolder } = this.props;
 
     const destFolderId = !isNaN(+folderId) ? +folderId : folderId;
     const isProvider =

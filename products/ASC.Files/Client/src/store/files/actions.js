@@ -493,8 +493,9 @@ export function fetchSharedFolder(dispatch) {
   });
 }
 
-export function fetchTreeFolders(dispatch) {
-  return files.getFoldersTree().then((data) => dispatch(setTreeFolders(data)));
+export function fetchTreeFolders() {
+  return (dispatch) =>
+    files.getFoldersTree().then((data) => dispatch(setTreeFolders(data)));
 }
 
 /*export function testUpdateMyFolder(folders) {
@@ -1365,10 +1366,12 @@ export function fetchThirdPartyCapabilities(dispatch) {
     .then((data) => dispatch(setThirdPartyCapabilities(data)));
 }
 
-export function fetchThirdPartyProviders(dispatch) {
-  return files.getThirdPartyList().then((data) => {
-    dispatch(setThirdPartyProviders(data));
-  });
+export function fetchThirdPartyProviders() {
+  return (dispatch) => {
+    files.getThirdPartyList().then((data) => {
+      dispatch(setThirdPartyProviders(data));
+    });
+  };
 }
 
 const convertServiceName = (serviceName) => {
