@@ -1028,7 +1028,9 @@ export const getHeaderIndeterminate = createSelector(
   getSelectionLength,
   getItemsList,
   (headerVisible, selectionLength, items) => {
-    return headerVisible && selectionLength < items.length;
+    return headerVisible && selectionLength
+      ? selectionLength < items.length
+      : false;
   }
 );
 
