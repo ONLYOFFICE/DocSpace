@@ -1,7 +1,9 @@
 import React, { Component, createRef } from "react";
-import { Scrollbar } from "asc-web-components";
+import { Scrollbar, utils } from "asc-web-components";
 import { LayoutContextProvider } from "./context";
+import { isMobile } from "react-device-detect";
 
+const { isTouchDevice } = utils.device;
 class MobileLayout extends Component {
   constructor(props) {
     super(props);
@@ -16,10 +18,15 @@ class MobileLayout extends Component {
 
   componentDidMount() {
     this.documentElement = document.getElementById("customScrollBar");
+
+    this.documentElement.scrollTo(0, 0);
+
     this.documentElement.addEventListener(
       "scroll",
       this.scrolledTheVerticalAxis
     );
+
+    // this.setState({ visibleContent: true });
   }
 
   componentWillUnmount() {
@@ -30,32 +37,36 @@ class MobileLayout extends Component {
   }
 
   scrolledTheVerticalAxis = () => {
-    const { prevScrollPosition } = this.state;
+    const { prevScrollPosition, visibleContent } = this.state;
+
+    if (visibleContent && isMobile && !isTouchDevice) {
+      return;
+    }
+
     const currentScrollPosition =
       this.documentElement.scrollTop > 0
         ? this.documentElement.scrollTop
         : window.pageYOffset;
 
-    let visibleContent = prevScrollPosition >= currentScrollPosition;
+    let isVisible = prevScrollPosition >= currentScrollPosition;
 
     if (
       currentScrollPosition >=
-        this.documentElement.scrollHeight - this.documentElement.clientHeight &&
-      this.documentElement.scrollHeight !== this.documentElement.clientHeight
+      this.documentElement.scrollHeight - this.documentElement.clientHeight
     ) {
-      visibleContent = false;
+      isVisible = false;
     }
 
     if (
       !visibleContent &&
       this.documentElement.scrollHeight - this.documentElement.clientHeight < 57
     ) {
-      visibleContent = true;
+      isVisible = true;
     }
 
     this.setState({
       prevScrollPosition: currentScrollPosition,
-      visibleContent,
+      visibleContent: isVisible,
     });
   };
 
