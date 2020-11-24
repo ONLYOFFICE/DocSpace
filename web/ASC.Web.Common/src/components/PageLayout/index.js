@@ -194,14 +194,13 @@ class PageLayoutComponent extends React.Component {
   render() {
     const {
       onDrop,
-      progressBarDropDownContent,
+      showPrimaryProgressBar,
       primaryProgressBarIcon,
       primaryProgressBarValue,
       showSecondaryProgressBar,
       secondaryProgressBarValue,
       secondaryProgressBarIcon,
       setSelections,
-      showPrimaryProgressBar,
       uploadFiles,
       viewAs,
       withBodyAutoFocus,
@@ -375,22 +374,37 @@ class PageLayoutComponent extends React.Component {
                               : null}
                           </SubSectionPaging>
                         )}
-                        {showPrimaryProgressBar && (
-                          <FloatingButton
-                            className="layout-progress-bar"
-                            icon={primaryProgressBarIcon}
-                            percent={primaryProgressBarValue}
-                          />
-                        )}
-                        {showSecondaryProgressBar && (
-                          <FloatingButton
-                            className="layout-progress-second-bar"
-                            icon={secondaryProgressBarIcon}
-                            percent={secondaryProgressBarValue}
-                          />
-                        )}
                       </SubSectionBody>
                     </>
+                  )}
+
+                  {showPrimaryProgressBar && showSecondaryProgressBar ? (
+                    <>
+                      <FloatingButton
+                        className="layout-progress-bar"
+                        icon={primaryProgressBarIcon}
+                        percent={primaryProgressBarValue}
+                      />
+                      <FloatingButton
+                        className="layout-progress-second-bar"
+                        icon={secondaryProgressBarIcon}
+                        percent={secondaryProgressBarValue}
+                      />
+                    </>
+                  ) : showPrimaryProgressBar && !showSecondaryProgressBar ? (
+                    <FloatingButton
+                      className="layout-progress-bar"
+                      icon={primaryProgressBarIcon}
+                      percent={primaryProgressBarValue}
+                    />
+                  ) : !showPrimaryProgressBar && showSecondaryProgressBar ? (
+                    <FloatingButton
+                      className="layout-progress-bar"
+                      icon={secondaryProgressBarIcon}
+                      percent={secondaryProgressBarValue}
+                    />
+                  ) : (
+                    <></>
                   )}
 
                   {isArticleAvailable && (
