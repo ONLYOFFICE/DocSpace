@@ -1,0 +1,33 @@
+{
+	"folders": [
+        {
+			"name": "root"
+			"path": "./"
+		},
+        {
+			"name": "packages"
+			"path": "./packages"
+		},
+        {
+			"name": "ASC.Web.Login"
+			"path": "./web/ASC.Web.Login"
+		},
+        {
+			"name": "ASC.Web.Client"
+			"path": "./web/ASC.Web.Client"
+		},
+		{
+			"name": "ASC.People.Client"
+			"path": "./products/ASC.People/Client"
+		},
+		{
+			"name": "ASC.Files.Client"
+			"path": "./products/ASC.Files/Client"
+		}
+	],
+	"settings": {
+        "window.zoomLevel": 1,
+		"files.autoSave": "afterDelay",
+		"editor.formatOnSave": true
+    }
+}
