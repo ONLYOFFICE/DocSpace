@@ -14,10 +14,11 @@ import {
   getWebDavConnect,
 } from "../../../store/files/selectors";
 import {
+  getOAuthToken,
   openConnectWindow,
   setConnectItem,
-  setSelectedNode,
   setSelectedFolder,
+  setSelectedNode,
   setShowThirdPartyPanel,
 } from "../../../store/files/actions";
 
@@ -128,37 +129,20 @@ const PureThirdPartyListContainer = ({
     }
   };
 
-  const getOAuthToken = (modal, serviceData) => {
-    let t = setInterval(() => {
-      try {
-        if (modal.json) {
-          clearInterval(t);
-          const token = modal.json.response;
-          if (token) {
-            modal.close();
-
-            const data = {
-              title: serviceData.title,
-              provider_key: serviceData.title,
-              link: serviceData.link,
-              token,
-            };
-
-            setConnectItem(data);
-          }
-        }
-      } catch {
-        return;
-      }
-    }, 1000);
-  };
-
   const onConnect = (e) => {
     const data = e.currentTarget.dataset;
 
     data.link
       ? openConnectWindow(data.title).then((modal) =>
-          getOAuthToken(modal, data)
+          getOAuthToken(modal).then((token) => {
+            const serviceData = {
+              title: data.title,
+              provider_key: data.title,
+              link: data.link,
+              token,
+            };
+            setConnectItem(serviceData);
+          })
         )
       : setConnectItem(data);
 

@@ -1390,6 +1390,25 @@ const convertServiceName = (serviceName) => {
   }
 };
 
+export function getOAuthToken(modal) {
+  return new Promise((resolve) => {
+    const interval = setInterval(() => {
+      try {
+        if (modal.json) {
+          clearInterval(interval);
+          const token = modal.json.response;
+          if (token) {
+            modal.close();
+            return resolve(token);
+          }
+        }
+      } catch {
+        return;
+      }
+    }, 500);
+  });
+}
+
 export function openConnectWindow(serviceName) {
   const service = convertServiceName(serviceName);
   return api.files.openConnectWindow(service).then((link) => {

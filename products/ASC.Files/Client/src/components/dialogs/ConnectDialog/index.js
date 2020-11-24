@@ -11,15 +11,16 @@ import {
 } from "asc-web-components";
 import { utils as commonUtils, toastr } from "asc-web-common";
 import {
-  saveThirdParty,
-  openConnectWindow,
   fetchFiles,
-  setUpdateTree,
-  setTreeFolders,
   fetchThirdPartyProviders,
   fetchTreeFolders,
+  getOAuthToken,
+  openConnectWindow,
+  saveThirdParty,
   setIsLoading,
   setSelectedNode,
+  setTreeFolders,
+  setUpdateTree,
 } from "../../../store/files/actions";
 import {
   getTreeFolders,
@@ -90,6 +91,7 @@ const PureConnectDialogContainer = (props) => {
   const [passwordValue, setPasswordValue] = useState("");
   const [customerTitle, setCustomerTitleValue] = useState(title);
   const [isCorporate, setMakeShared] = useState(!!corporate);
+  const [oAuthToken, setToken] = useState(token);
 
   const onChangeUrl = (e) => setUrlValue(e.target.value);
   const onChangeLogin = (e) => setLoginValue(e.target.value);
@@ -104,7 +106,7 @@ const PureConnectDialogContainer = (props) => {
       urlValue,
       loginValue,
       passwordValue,
-      token,
+      oAuthToken,
       isCorporate,
       customerTitle,
       provider_key,
@@ -131,7 +133,9 @@ const PureConnectDialogContainer = (props) => {
   };
 
   const onReconnect = () => {
-    openConnectWindow(title);
+    openConnectWindow(title).then((modal) =>
+      getOAuthToken(modal).then((token) => setToken(token))
+    );
   };
 
   const isAccount = !!link;
