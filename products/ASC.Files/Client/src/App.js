@@ -54,7 +54,6 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    debugger;
     utils.removeTempContent();
 
     const {

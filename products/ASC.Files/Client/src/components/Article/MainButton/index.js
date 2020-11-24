@@ -43,8 +43,6 @@ class PureArticleMainButtonContent extends React.Component {
 
   onUploadFileClick = () => {
     if (this.props.isPrivacy) {
-      //debugger;
-
       encryptionUploadDialog((encryptedFile, encrypted) => {
         const { selectedFolder, startUpload, t } = this.props;
         encryptedFile.encrypted = encrypted;
