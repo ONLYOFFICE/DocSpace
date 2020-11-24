@@ -10,8 +10,6 @@
 /web/ASC.Web.Common/dist
 /build/deploy
 *.log
-/packages/asc-web-components
-/packages/asc-web-common
 /products/ASC.People/Data/
 Data/
 Logs/

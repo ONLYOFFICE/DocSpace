@@ -29,9 +29,7 @@
     "redux": "4.0.5",
     "redux-thunk": "2.3.0",
     "reselect": "^4.0.0",
-    "styled-components": "^5.0.0",
-    "@appserver/components": "^1.0.485",
-    "@appserver/common": "^1.0.277"
+    "styled-components": "^5.0.0"
   },
   "devDependencies": {
     "copy-webpack-plugin": "^5.1.1",

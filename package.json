@@ -1,16 +1,20 @@
 {
   "name": "appserver",
   "private": true,
-  "workspaces": ["web/ASC.Web.Components", "web/ASC.Web.Common", "web/ASC.Web.Client", "products/ASC.People/Client", "products/ASC.Files/Client", "web/cra-empty-test"],
+  "workspaces": [
+    "packages/asc-web-components",
+    "packages/asc-web-common",
+    "web/ASC.Web.Login",
+    "web/ASC.Web.Client",
+    "products/ASC.People/Client",
+    "products/ASC.Files/Client"
+  ],
   "scripts": {
+    "wipe": "rm -fr node_modules yarn.lock web/**/node_modules products/**/node_modules",
+    "start": "yarn workspace @appserver/login run start",
+    "build": "yarn workspace @appserver/login run build",
     "start:studio": "yarn workspace @appserver/studio run start",
-    "build:studio": "yarn workspace @appserver/studio run build",
-    "start:people": "yarn workspace @appserver/people run start",
-    "build:people": "yarn workspace @appserver/people run build",
-    "start:files": "yarn workspace @appserver/files run start",
-    "build:files": "yarn workspace @appserver/files run build",
-    "start:cra": "yarn workspace @appserver/cra-empty-test run start",
-    "build:cra": "yarn workspace @appserver/cra-empty-test run build"
+    "build:studio": "yarn workspace @appserver/studio run build"
   },
   "devDependencies": {
     "lerna": "^3.22.1"
