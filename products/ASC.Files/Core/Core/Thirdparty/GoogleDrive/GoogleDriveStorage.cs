@@ -60,7 +60,7 @@ using MimeMapping = ASC.Common.Web.MimeMapping;
 namespace ASC.Files.Thirdparty.GoogleDrive
 {
     [Scope]
-    internal class GoogleDriveStorage
+    internal class GoogleDriveStorage : IDisposable
     {
         public GoogleDriveStorage(
             ConsumerFactory consumerFactory,
@@ -475,6 +475,14 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             var about = request.Execute();
 
             return about.MaxUploadSize ?? MaxChunkedUploadFileSize;
+        }
+
+        public void Dispose()
+        {
+            if (_driveService != null)
+            {
+                _driveService.Dispose();
+            }
         }
     }
 
