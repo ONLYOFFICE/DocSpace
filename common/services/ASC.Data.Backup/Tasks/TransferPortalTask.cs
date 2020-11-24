@@ -79,8 +79,8 @@ namespace ASC.Data.Backup.Tasks
         public override void RunJob()
         {
             Logger.DebugFormat("begin transfer {0}", TenantId);
-            var fromDbFactory = new DbFactory(null);
-            var toDbFactory = new DbFactory(null);
+            var fromDbFactory = new DbFactory(null, null);
+            var toDbFactory = new DbFactory(null, null);
             var tenantAlias = GetTenantAlias(fromDbFactory);
             var backupFilePath = GetBackupFilePath(tenantAlias);
             var columnMapper = new ColumnMapper();

@@ -943,7 +943,7 @@ namespace ASC.Files.Core.Data
                        : null;
         }
 
-        private void RecalculateFilesCount(object folderId)
+        private void RecalculateFilesCount(int folderId)
         {
             GetRecalculateFilesCountUpdate(folderId);
         }

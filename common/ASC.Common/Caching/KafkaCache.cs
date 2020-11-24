@@ -11,7 +11,6 @@ using Confluent.Kafka;
 
 using Google.Protobuf;
 
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Common.Caching
@@ -32,7 +31,7 @@ namespace ASC.Common.Caching
         private IProducer<AscCacheItem, T> Producer { get; set; }
         private Guid Key { get; set; }
 
-        public KafkaCache(IConfiguration configuration, IOptionsMonitor<ILog> options)
+        public KafkaCache(ConfigurationExtension configuration, IOptionsMonitor<ILog> options)
         {
             Log = options.CurrentValue;
             Cts = new ConcurrentDictionary<string, CancellationTokenSource>();
