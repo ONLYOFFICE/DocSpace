@@ -32,6 +32,7 @@ const StyledAsidePanel = styled.div`
   .sharing_panel-header {
     font-weight: 700;
     margin: 14px 0;
+    padding-right: 10px;
   }
   .modal-dialog-aside {
     padding: 0;
