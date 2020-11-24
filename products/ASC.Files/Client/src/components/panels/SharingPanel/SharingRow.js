@@ -99,6 +99,7 @@ const SharingRow = (props) => {
       className="panel_combo-box"
       scaled={false}
       directionX="left"
+      disableIconClick={false}
       //isDisabled={isDisabled}
     >
       {React.createElement(Icons[item.rights.icon], {
@@ -293,10 +294,7 @@ const SharingRow = (props) => {
               </Text>
             )}
             {item.rights.isOwner ? (
-              <Text
-                className="sharing_panel-remove-icon"
-                color="#A3A9AE"
-              >
+              <Text className="sharing_panel-remove-icon" color="#A3A9AE">
                 {t("Owner")}
               </Text>
             ) : item.id === isMyId ? (
