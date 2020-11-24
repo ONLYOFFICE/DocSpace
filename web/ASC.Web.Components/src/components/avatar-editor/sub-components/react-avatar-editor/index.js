@@ -4,7 +4,7 @@ import React from "react";
 
 import loadImageURL from "./utils/load-image-url";
 import loadImageFile from "./utils/load-image-file";
-
+import { isTouchDevice } from "../../../../utils/device";
 const makeCancelable = (promise) => {
   let hasCanceled_ = false;
 
@@ -24,12 +24,6 @@ const makeCancelable = (promise) => {
     },
   };
 };
-
-const isTouchDevice = !!(
-  typeof window !== "undefined" &&
-  typeof navigator !== "undefined" &&
-  ("ontouchstart" in window || navigator.msMaxTouchPoints > 0)
-);
 
 const isFileAPISupported = typeof File !== "undefined";
 

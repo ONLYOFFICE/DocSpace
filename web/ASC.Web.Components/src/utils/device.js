@@ -28,3 +28,9 @@ export const isTablet = () => {
 export const isDesktop = () => {
   return window.innerWidth >= size.desktop;
 };
+
+export const isTouchDevice = !!(
+  typeof window !== "undefined" &&
+  typeof navigator !== "undefined" &&
+  ("ontouchstart" in window || navigator.msMaxTouchPoints > 0)
+);
