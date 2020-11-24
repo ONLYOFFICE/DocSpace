@@ -40,7 +40,8 @@ class MobileLayout extends Component {
 
     if (
       currentScrollPosition >=
-      this.documentElement.scrollHeight - this.documentElement.clientHeight
+        this.documentElement.scrollHeight - this.documentElement.clientHeight &&
+      this.documentElement.scrollHeight !== this.documentElement.clientHeight
     ) {
       visibleContent = false;
     }
