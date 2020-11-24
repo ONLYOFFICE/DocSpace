@@ -26,7 +26,7 @@ class PureProfile extends React.Component {
   componentDidMount() {
     const { match, fetchProfile, profile, location, t } = this.props;
     const { userId } = match.params;
-    const documentElement = document.getElementById("scroll");
+    const documentElement = document.getElementById("customScrollBar");
 
     documentElement && documentElement.scrollTo(0, 0);
 

@@ -196,7 +196,7 @@ class SectionBodyContent extends React.Component {
   }
 
   componentDidMount() {
-    this.documentElement = document.getElementById("scroll");
+    this.documentElement = document.getElementById("customScrollBar");
 
     let previewId = queryString.parse(this.props.location.search).preview;
 

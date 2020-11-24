@@ -15,7 +15,7 @@ class MobileLayout extends Component {
   }
 
   componentDidMount() {
-    this.documentElement = document.getElementById("scroll");
+    this.documentElement = document.getElementById("customScrollBar");
     this.documentElement.addEventListener(
       "scroll",
       this.scrolledTheVerticalAxis

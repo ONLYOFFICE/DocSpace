@@ -23,10 +23,8 @@ class GroupSelector extends React.Component {
     getGroupList(this.props.useFake)
       .then((groups) => this.setState({ groups: this.convertGroups(groups) }))
       .catch((error) => console.log(error));
-
-    this.isTablet &&
-      document.getElementById("scroll") &&
-      document.getElementById("scroll").scrollTo(0, 0);
+    const documentElement = document.getElementById("customScrollBar");
+    this.isTablet && documentElement && documentElement.scrollTo(0, 0);
   }
 
   componentDidUpdate(prevProps) {
