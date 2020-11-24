@@ -189,7 +189,7 @@ const VersionRow = (props) => {
           </Link>
         </Box>
         {showEditPanel && (
-          <Box className="version_edit-comment" marginProp="8px 0 16px 70px">
+          <Box className="version_edit-comment" marginProp="8px 0 2px 70px">
             <Box
               className="version_edit-comment-button-primary"
               displayProp="inline-block"

@@ -8,18 +8,24 @@ const StyledVersionRow = styled(Row)`
 
   @media ${tablet} {
     min-height: 69px;
+    position: relative;
   }
+
+  .row_content {
+    position: relative;
+    padding-top: 14px;
+    padding-bottom: 14px;
+  }
+
   .version_badge {
     cursor: pointer;
     margin-right: 16px;
+    margin-left: 0px;
 
     .version_badge-text {
       position: absolute;
       left: 6px;
     }
-
-    margin-left: 0px;
-    margin-top: ${(props) => (props.showEditPanel ? "13px" : "-2px")};
 
     @media ${tablet} {
       margin-top: 0px;
@@ -27,7 +33,6 @@ const StyledVersionRow = styled(Row)`
   }
 
   .version-link-file {
-    margin-top: ${(props) => (props.showEditPanel ? "12px" : "-3px")};
     @media ${tablet} {
       margin-top: -1px;
     }
@@ -37,7 +42,7 @@ const StyledVersionRow = styled(Row)`
     width: 10px;
     height: 10px;
     margin-left: 9px;
-    margin-top: ${(props) => (props.showEditPanel ? "11px" : "-3px")};
+
     @media ${tablet} {
       margin-top: -1px;
     }
@@ -67,7 +72,6 @@ const StyledVersionRow = styled(Row)`
   .version_content-length {
     display: block;
     margin-left: auto;
-    margin-top: ${(props) => (props.showEditPanel ? "12px" : "-3px")};
 
     @media ${tablet} {
       display: none;
@@ -91,7 +95,7 @@ const StyledVersionRow = styled(Row)`
     display: none;
 
     @media ${tablet} {
-      display: block;
+      display: inline-block;
       margin-left: 1px;
       margin-top: 5px;
     }
@@ -111,11 +115,18 @@ const StyledVersionRow = styled(Row)`
     }
   }
 
+  .version-comment-wrapper {
+    white-space: normal !important;
+  }
+
   .row_context-menu-wrapper {
     display: none;
 
     @media ${tablet} {
       display: block;
+      position: absolute;
+      right: 0px;
+      top: 6px;
     }
   }
 
@@ -129,11 +140,6 @@ const StyledVersionRow = styled(Row)`
     .version_save-button {
       width: 100%;
     }
-  }
-
-  .row_context-menu-wrapper {
-    margin-right: -3px;
-    margin-top: -25px;
   }
 
   .version_edit-comment-button-primary {
