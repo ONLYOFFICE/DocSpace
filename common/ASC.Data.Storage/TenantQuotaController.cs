@@ -26,7 +26,6 @@
 
 using System;
 using System.Linq;
-using System.Threading;
 
 using ASC.Core;
 using ASC.Core.Tenants;
@@ -36,7 +35,24 @@ namespace ASC.Data.Storage
     public class TenantQuotaController : IQuotaController
     {
         private readonly int tenant;
+        private Lazy<long> lazyCurrentSize;
+
         private long currentSize;
+        private long CurrentSize {
+            get
+            {
+                if (!lazyCurrentSize.IsValueCreated)
+                {
+                    return currentSize = lazyCurrentSize.Value;
+                }
+
+                return currentSize;
+            }
+            set
+            {
+                currentSize = value;
+            }
+        }
 
         private TenantManager TenantManager { get; }
 
@@ -44,9 +60,9 @@ namespace ASC.Data.Storage
         {
             this.tenant = tenant;
             TenantManager = tenantManager;
-            currentSize = TenantManager.FindTenantQuotaRows(new TenantQuotaRowQuery(tenant))
+            lazyCurrentSize = new Lazy<long>(() => TenantManager.FindTenantQuotaRows(new TenantQuotaRowQuery(tenant))
                 .Where(r => UsedInQuota(r.Tag))
-                .Sum(r => r.Counter);
+                .Sum(r => r.Counter));
         }
 
         #region IQuotaController Members
@@ -57,7 +73,7 @@ namespace ASC.Data.Storage
             if (UsedInQuota(dataTag))
             {
                 QuotaUsedCheck(size);
-                Interlocked.Add(ref currentSize, size);
+                CurrentSize += size;
             }
             SetTenantQuotaRow(module, domain, size, dataTag, true);
         }
@@ -67,7 +83,7 @@ namespace ASC.Data.Storage
             size = -Math.Abs(size);
             if (UsedInQuota(dataTag))
             {
-                Interlocked.Add(ref currentSize, size);
+                CurrentSize += size;
             }
             SetTenantQuotaRow(module, domain, size, dataTag, true);
         }
@@ -77,7 +93,7 @@ namespace ASC.Data.Storage
             size = Math.Max(0, size);
             if (UsedInQuota(dataTag))
             {
-                Interlocked.Exchange(ref currentSize, size);
+                CurrentSize += size;
             }
             SetTenantQuotaRow(module, domain, size, dataTag, false);
         }
@@ -99,7 +115,7 @@ namespace ASC.Data.Storage
                 {
                     throw new TenantQuotaException(string.Format("Exceeds the maximum file size ({0}MB)", BytesToMegabytes(quota.MaxFileSize)));
                 }
-                if (quota.MaxTotalSize != 0 && quota.MaxTotalSize < currentSize + size)
+                if (quota.MaxTotalSize != 0 && quota.MaxTotalSize < CurrentSize + size)
                 {
                     throw new TenantQuotaException(string.Format("Exceeded maximum amount of disk quota ({0}MB)", BytesToMegabytes(quota.MaxTotalSize)));
                 }
@@ -110,7 +126,7 @@ namespace ASC.Data.Storage
 
         public long QuotaCurrentGet()
         {
-            return currentSize;
+            return CurrentSize;
         }
 
         private void SetTenantQuotaRow(string module, string domain, long size, string dataTag, bool exchange)
