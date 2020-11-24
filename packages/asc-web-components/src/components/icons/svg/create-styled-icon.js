@@ -1,8 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import ReactDOMServer from "react-dom/server";
-import { Parser } from "html-to-react";
+//import ReactDOMServer from "react-dom/server";
+//import { Parser } from "html-to-react";
 
 const iconSizes = {
   small: 12,
@@ -63,23 +63,23 @@ export default function createStyledIcon(
         ...props
       } = this.props;
 
-      let svg = ReactDOMServer.renderToString(
-        <Component {...props}></Component>
-      );
-      const matchResult = svg.match(/\s*mask id="(\w*)"\s/);
-      const newId =
-        Math.random().toString(36).substring(2, 5) +
-        Math.random().toString(36).substring(2, 5);
+      // let svg = ReactDOMServer.renderToString(
+      //   <Component {...props}></Component>
+      // );
+      // const matchResult = svg.match(/\s*mask id="(\w*)"\s/);
+      // const newId =
+      //   Math.random().toString(36).substring(2, 5) +
+      //   Math.random().toString(36).substring(2, 5);
 
-      if (matchResult != null) {
-        if (matchResult.length > 1) {
-          svg = svg.replace(new RegExp(matchResult[1], "g"), newId);
+      // if (matchResult != null) {
+      //   if (matchResult.length > 1) {
+      //     svg = svg.replace(new RegExp(matchResult[1], "g"), newId);
 
-          const htmlToReactParser = new Parser();
-          const reactComponent = htmlToReactParser.parse(svg);
-          return reactComponent;
-        }
-      }
+      //     const htmlToReactParser = new Parser();
+      //     const reactComponent = htmlToReactParser.parse(svg);
+      //     return reactComponent;
+      //   }
+      // }
       return <Component {...props}></Component>;
     }
   }
