@@ -16,7 +16,7 @@ import {
   SectionFilterContent,
   SectionPagingContent,
 } from "./Section";
-import { setSelected, setIsLoading,  } from "../../../store/people/actions";
+import { setSelected, setIsLoading } from "../../../store/people/actions";
 import { createI18N } from "../../../helpers/i18n";
 import { isMobile } from "react-device-detect";
 import { getIsLoading } from "../../../store/people/selectors";
@@ -25,7 +25,12 @@ const i18n = createI18N({
   localesPath: "pages/Home",
 });
 const { changeLanguage } = utils;
-const { isAdmin, getIsLoaded, getOrganizationName, getHeaderVisible } = store.auth.selectors;
+const {
+  isAdmin,
+  getIsLoaded,
+  getOrganizationName,
+  getHeaderVisible,
+} = store.auth.selectors;
 const { setHeaderVisible } = store.auth.actions;
 class PureHome extends React.Component {
   constructor(props) {
@@ -35,10 +40,17 @@ class PureHome extends React.Component {
       isHeaderIndeterminate: false,
       isHeaderChecked: false,
     };
+    this.contextMenuClosed = false;
   }
 
   renderGroupButtonMenu = () => {
-    const { users, selection, selected, setSelected, setHeaderVisible } = this.props;
+    const {
+      users,
+      selection,
+      selected,
+      setSelected,
+      setHeaderVisible,
+    } = this.props;
 
     const headerVisible = selection.length > 0;
     const headerIndeterminate =
@@ -48,8 +60,9 @@ class PureHome extends React.Component {
     let newState = {};
 
     if (headerVisible || selected === "close") {
-      setHeaderVisible(headerVisible)
+      setHeaderVisible(headerVisible);
       if (selected === "close") {
+        this.contextMenuClosed = true;
         setSelected("none");
       }
     }
@@ -59,6 +72,9 @@ class PureHome extends React.Component {
     this.setState(newState);
   };
 
+  componentDidMount() {
+    this.documentElement = document.getElementById("scroll");
+  }
   componentDidUpdate(prevProps) {
     if (this.props.selection !== prevProps.selection) {
       this.renderGroupButtonMenu();
@@ -70,6 +86,11 @@ class PureHome extends React.Component {
       } else {
         utils.hideLoader();
       }
+    } else {
+      !this.props.selection.length > 0 &&
+        !this.contextMenuClosed &&
+        this.documentElement &&
+        this.documentElement.scrollTo(0, 0);
     }
   }
 
@@ -83,8 +104,9 @@ class PureHome extends React.Component {
 
   onClose = () => {
     const { setSelected, setHeaderVisible } = this.props;
+    this.contextMenuClosed = true;
     setSelected("none");
-    setHeaderVisible(false)
+    setHeaderVisible(false);
   };
 
   onLoading = (status) => {
@@ -92,14 +114,10 @@ class PureHome extends React.Component {
   };
 
   render() {
-    const {
-      isHeaderIndeterminate,
-      isHeaderChecked,
-      selected,
-    } = this.state;
-  
-    const { isAdmin, isLoaded, isHeaderVisible, } = this.props;
+    const { isHeaderIndeterminate, isHeaderChecked, selected } = this.state;
 
+    const { isAdmin, isLoaded, isHeaderVisible } = this.props;
+    console.log("Render Home at people", this.props);
     return (
       <PageLayout
         withBodyScroll={true}
@@ -187,11 +205,12 @@ function mapStateToProps(state) {
     isAdmin: isAdmin(state),
     isLoading: getIsLoading(state),
     isLoaded: getIsLoaded(state),
-    isHeaderVisible: getHeaderVisible(state)
+    isHeaderVisible: getHeaderVisible(state),
   };
 }
 
-
-export default connect(mapStateToProps,  { setSelected, setIsLoading, setHeaderVisible})(
-  withRouter(Home)
-);
+export default connect(mapStateToProps, {
+  setSelected,
+  setIsLoading,
+  setHeaderVisible,
+})(withRouter(Home));

@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useEffect } from "react";
+import React from "react";
 import { Redirect, Route } from "react-router-dom";
 import { connect } from "react-redux";
 //import { Loader } from "asc-web-components";
@@ -8,9 +8,7 @@ import { getCurrentUser, isAdmin, isMe } from "../../store/auth/selectors.js";
 import { AUTH_KEY } from "../../constants";
 import { Error401, Error404 } from "../../pages/errors";
 import isEmpty from "lodash/isEmpty";
-import { utils } from "asc-web-components";
 
-const { size } = utils.device;
 const PrivateRoute = ({ component: Component, ...rest }) => {
   const {
     isAdmin,
@@ -21,13 +19,6 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
     computedMatch,
   } = rest;
   const { userId } = computedMatch.params;
-  const isTablet = window.innerWidth <= size.tablet;
-
-  useEffect(() => {
-    isTablet &&
-      document.getElementById("scroll") &&
-      document.getElementById("scroll").scrollTo(0, 0);
-  });
 
   const renderComponent = (props) => {
     if (!isAuthenticated) {

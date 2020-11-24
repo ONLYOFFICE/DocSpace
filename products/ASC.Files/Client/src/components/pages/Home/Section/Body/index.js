@@ -196,6 +196,8 @@ class SectionBodyContent extends React.Component {
   }
 
   componentDidMount() {
+    this.documentElement = document.getElementById("scroll");
+
     let previewId = queryString.parse(this.props.location.search).preview;
 
     if (previewId) {
@@ -230,6 +232,16 @@ class SectionBodyContent extends React.Component {
   //   }
   // }
 
+  componentDidUpdate(prevProps) {
+    if (
+      prevProps.selected !== "none" &&
+      this.props.isLoading !== prevProps.isLoading
+    ) {
+      !this.props.isLoading &&
+        this.documentElement &&
+        this.documentElement.scrollTo(0, 0);
+    }
+  }
   shouldComponentUpdate(nextProps, nextState) {
     if (this.props && this.props.firstLoad) return true;
 
@@ -1523,6 +1535,7 @@ class SectionBodyContent extends React.Component {
       mediaViewerMediaFormats,
       tooltipValue,
     } = this.props;
+    console.log("Files Home SectionBodyContent render", this.props);
 
     const {
       editingId,

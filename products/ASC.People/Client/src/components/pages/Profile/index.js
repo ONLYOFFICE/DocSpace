@@ -26,6 +26,9 @@ class PureProfile extends React.Component {
   componentDidMount() {
     const { match, fetchProfile, profile, location, t } = this.props;
     const { userId } = match.params;
+    const documentElement = document.getElementById("scroll");
+
+    documentElement && documentElement.scrollTo(0, 0);
 
     setDocumentTitle(t("Profile"));
 
@@ -59,7 +62,8 @@ class PureProfile extends React.Component {
   }
 
   render() {
-    //console.log("Profile render")
+    //console.log("Profile render");
+
     const { profile, isVisitor, isAdmin } = this.props;
 
     return (
