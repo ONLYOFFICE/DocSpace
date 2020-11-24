@@ -24,7 +24,7 @@ const StyledCircle = styled.div`
   }
 
   .circle__fill {
-    animation: fill-rotate ease-in-out 5s;
+    animation: fill-rotate ease-in-out none;
     transform: rotate(${(props) => props.percent * 1.8}deg);
   }
 
@@ -34,7 +34,7 @@ const StyledCircle = styled.div`
   }
 
   .circle__mask.circle__full {
-    animation: fill-rotate ease-in-out 5s;
+    animation: fill-rotate ease-in-out none;
     transform: rotate(${(props) => props.percent * 1.8}deg);
   }
 
