@@ -16,6 +16,7 @@ import EmptyFolderContainer from "../../../Home/Section/Body/EmptyFolderContaine
 import { createI18N } from "../../../../../helpers/i18n";
 import { Trans } from "react-i18next";
 import {
+  getOAuthToken,
   openConnectWindow,
   setConnectItem,
   setShowThirdPartyPanel,
@@ -145,29 +146,14 @@ class ConnectClouds extends React.Component {
     });
   };
 
-  getOAuthToken = (modal, serviceData) => {
-    let t = setInterval(() => {
-      try {
-        if (modal.json) {
-          clearInterval(t);
-          const token = modal.json.response;
-          if (token) {
-            modal.close();
-            this.showOAuthModal(token, serviceData);
-          }
-        }
-      } catch {
-        return;
-      }
-    }, 1000);
-  };
-
   onShowService = (e) => {
     const selectedServiceData = e.currentTarget.dataset;
     const showAccountSettingDialog = !e.currentTarget.dataset.link;
     !showAccountSettingDialog &&
       openConnectWindow(selectedServiceData.title).then((modal) =>
-        this.getOAuthToken(modal, selectedServiceData)
+        getOAuthToken(modal).then((token) =>
+          this.showOAuthModal(token, selectedServiceData)
+        )
       );
 
     this.setState({
