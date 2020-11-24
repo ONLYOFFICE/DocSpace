@@ -566,12 +566,26 @@ export const getTreeFolders = (state) => {
   return state.files.treeFolders;
 };
 
-export const getCurrentFolderCount = (state) => {
+export const getServiceFilesCount = (state) => {
   const { files, folders } = state.files;
   const filesLength = files ? files.length : 0;
   const foldersLength = folders ? folders.length : 0;
   return filesLength + foldersLength;
 };
+
+export const getFilesCount = (state) => {
+  const { filesCount, foldersCount } = state.files.selectedFolder;
+  return filesCount + foldersCount;
+};
+
+export const getCurrentFilesCount = createSelector(
+  getSelectedFolderProviderItem,
+  getFilesCount,
+  getServiceFilesCount,
+  (providerItem, filesCount, serviceFilesCount) => {
+    return providerItem ? serviceFilesCount : filesCount;
+  }
+);
 
 export const getDragItem = (state) => {
   return state.files.dragItem;

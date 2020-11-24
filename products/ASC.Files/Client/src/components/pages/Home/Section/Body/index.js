@@ -54,7 +54,7 @@ import {
   addFileToRecentlyViewed,
 } from "../../../../../store/files/actions";
 import {
-  getCurrentFolderCount,
+  getCurrentFilesCount,
   getDragging,
   getDragItem,
   getFileAction,
@@ -68,7 +68,6 @@ import {
   getMediaViewerId,
   getMediaViewerVisibility,
   getSelectedFolderParentId,
-  getSelectedFolderProviderItem,
   getSelected,
   getSelectedFolderTitle,
   getSelection,
@@ -1633,7 +1632,6 @@ class SectionBodyContent extends React.Component {
       mediaViewerImageFormats,
       mediaViewerMediaFormats,
       tooltipValue,
-      providerItem,
     } = this.props;
 
     const {
@@ -1933,7 +1931,7 @@ SectionBodyContent.defaultProps = {
 
 const mapStateToProps = (state) => {
   return {
-    currentFolderCount: getCurrentFolderCount(state),
+    currentFolderCount: getCurrentFilesCount(state),
     currentMediaFileId: getMediaViewerId(state),
     dragging: getDragging(state),
     dragItem: getDragItem(state),
@@ -1959,7 +1957,6 @@ const mapStateToProps = (state) => {
     myDocumentsId: getMyFolderId(state),
     organizationName: getOrganizationName(state),
     parentId: getSelectedFolderParentId(state),
-    providerItem: getSelectedFolderProviderItem(state),
     privacyInstructions: getPrivacyInstructionsLink(state),
     selected: getSelected(state),
     selectedFolderId: getSelectedFolderId(state),
