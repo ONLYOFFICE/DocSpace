@@ -128,9 +128,39 @@ const PureThirdPartyListContainer = ({
     }
   };
 
+  const getOAuthToken = (modal, serviceData) => {
+    let t = setInterval(() => {
+      try {
+        if (modal.json) {
+          clearInterval(t);
+          const token = modal.json.response;
+          if (token) {
+            modal.close();
+
+            const data = {
+              title: serviceData.title,
+              provider_key: serviceData.title,
+              link: serviceData.link,
+              token,
+            };
+
+            setConnectItem(data);
+          }
+        }
+      } catch {
+        return;
+      }
+    }, 1000);
+  };
+
   const onConnect = (e) => {
     const data = e.currentTarget.dataset;
-    data.link ? openConnectWindow(data.title) : setConnectItem(data);
+
+    data.link
+      ? openConnectWindow(data.title).then((modal) =>
+          getOAuthToken(modal, data)
+        )
+      : setConnectItem(data);
 
     redirectAction();
   };

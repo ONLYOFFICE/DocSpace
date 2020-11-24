@@ -151,8 +151,10 @@ class ConnectClouds extends React.Component {
         if (modal.json) {
           clearInterval(t);
           const token = modal.json.response;
-          modal.close();
-          this.showOAuthModal(token, serviceData);
+          if (token) {
+            modal.close();
+            this.showOAuthModal(token, serviceData);
+          }
         }
       } catch {
         return;
