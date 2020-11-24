@@ -1681,8 +1681,7 @@ class SectionBodyContent extends React.Component {
       });
     }
 
-    return (!fileAction.id && currentFolderCount === 0 && !providerItem) ||
-      null ? (
+    return (!fileAction.id && currentFolderCount === 0) || null ? (
       parentId === 0 ? (
         this.renderEmptyRootFolderContainer()
       ) : (

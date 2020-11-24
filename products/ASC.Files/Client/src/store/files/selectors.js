@@ -567,8 +567,10 @@ export const getTreeFolders = (state) => {
 };
 
 export const getCurrentFolderCount = (state) => {
-  const { filesCount, foldersCount } = state.files.selectedFolder;
-  return filesCount + foldersCount;
+  const { files, folders } = state.files;
+  const filesLength = files ? files.length : 0;
+  const foldersLength = folders ? folders.length : 0;
+  return filesLength + foldersLength;
 };
 
 export const getDragItem = (state) => {
