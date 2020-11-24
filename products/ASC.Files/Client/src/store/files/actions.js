@@ -355,9 +355,9 @@ export function fetchFiles(folderId, filter) {
         );
         filterData.total = 0;
         dispatch(setFilesFilter(filterData));
-
         dispatch(setFolders([]));
         dispatch(setFiles([]));
+        dispatch(setAction({ type: null }));
         dispatch(setSelected("close"));
         dispatch(
           setSelectedFolder({
@@ -383,6 +383,7 @@ export function fetchFiles(folderId, filter) {
       dispatch(
         setFiles(isPrivacyFolder && !isEncryptionSupport ? [] : data.files)
       );
+      dispatch(setAction({ type: null }));
       dispatch(setSelected("close"));
       return dispatch(
         setSelectedFolder({
