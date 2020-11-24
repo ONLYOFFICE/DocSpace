@@ -37,7 +37,8 @@ import {
   getIsLoading,
   getIsRecycleBinFolder,
   getDragging,
-  getHeaderVisible
+  getHeaderVisible,
+  getFirstLoad,
 } from "../../../store/files/selectors";
 
 import { ConvertDialog } from "../../dialogs";
@@ -49,13 +50,20 @@ const i18n = createI18N({
 });
 const { changeLanguage } = utils;
 const { FilesFilter } = api;
-const { getSettingsHomepage, getIsLoaded} = store.auth.selectors;
+const { getSettingsHomepage, getIsLoaded } = store.auth.selectors;
 const { setHeaderVisible } = store.auth.actions;
 class PureHome extends React.Component {
   componentDidMount() {
-    const { fetchFiles, homepage, setIsLoading, setFirstLoad } = this.props;
+    const {
+      fetchFiles,
+      homepage,
+      setIsLoading,
+      setFirstLoad,
+      firstLoad,
+    } = this.props;
 
-    this.isResize = true;
+    if (!firstLoad) return;
+
     const reg = new RegExp(`${homepage}((/?)$|/filter)`, "gm"); //TODO: Always find?
     const match = window.location.pathname.match(reg);
     let filterObj = null;
@@ -111,7 +119,7 @@ class PureHome extends React.Component {
     }
 
     setIsLoading(true);
-   
+
     Promise.all(requests)
       .catch((err) => {
         Promise.resolve(FilesFilter.getDefault());
@@ -133,7 +141,7 @@ class PureHome extends React.Component {
         if (filter) {
           const folderId = filter.folder;
           console.log("filter", filter);
-          return fetchFiles(folderId, filter, this.isResize);
+          return fetchFiles(folderId, filter);
         }
 
         return Promise.resolve();
@@ -142,7 +150,6 @@ class PureHome extends React.Component {
         setIsLoading(false);
         setFirstLoad(false);
       });
-
   }
 
   onDrop = (files, uploadToFolder) => {
@@ -168,9 +175,9 @@ class PureHome extends React.Component {
       }
     }
 
-     if (this.props.isHeaderVisible !== prevProps.isHeaderVisible){
+    if (this.props.isHeaderVisible !== prevProps.isHeaderVisible) {
       this.props.setHeaderVisible(this.props.isHeaderVisible);
-     }
+    }
   }
 
   render() {
@@ -182,10 +189,9 @@ class PureHome extends React.Component {
       fileActionId,
       isRecycleBin,
       isLoaded,
-      isHeaderVisible
+      isHeaderVisible,
     } = this.props;
 
- 
     return (
       <>
         {convertDialogVisible && (
@@ -207,7 +213,6 @@ class PureHome extends React.Component {
           isLoaded={isLoaded}
           isHeaderVisible={isHeaderVisible}
         >
-           
           <PageLayout.ArticleHeader>
             <ArticleHeaderContent />
           </PageLayout.ArticleHeader>
@@ -262,7 +267,6 @@ Home.propTypes = {
 };
 
 function mapStateToProps(state) {
-
   return {
     convertDialogVisible: getConvertDialogVisible(state),
     currentFolderId: getSelectedFolderId(state),
@@ -276,6 +280,7 @@ function mapStateToProps(state) {
     homepage: getSettingsHomepage(state),
     dragging: getDragging(state),
     isLoaded: getIsLoaded(state),
+    firstLoad: getFirstLoad(state),
     isHeaderVisible: getHeaderVisible(state),
   };
 }
@@ -287,9 +292,10 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(startUpload(files, folderId, t)),
     setIsLoading: (isLoading) => dispatch(setIsLoading(isLoading)),
     setFirstLoad: (firstLoad) => dispatch(setFirstLoad(firstLoad)),
-    fetchFiles: (folderId, filter, isResize) => dispatch(fetchFiles(folderId, filter, isResize)),
+    fetchFiles: (folderId, filter) => dispatch(fetchFiles(folderId, filter)),
     setSelections: (items) => dispatch(setSelections(items)),
-    setHeaderVisible: (isHeaderVisible) => dispatch(setHeaderVisible(isHeaderVisible)),
+    setHeaderVisible: (isHeaderVisible) =>
+      dispatch(setHeaderVisible(isHeaderVisible)),
   };
 };
 
