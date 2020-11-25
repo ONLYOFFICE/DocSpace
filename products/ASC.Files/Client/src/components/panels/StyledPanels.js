@@ -358,6 +358,13 @@ const StyledFooter = styled.div`
   }
 `;
 
+const StyledLinkRow = styled.div`
+  .row_content {
+    display: grid;
+    grid-template-columns: 1fr 28px;
+  }
+`;
+
 export {
   StyledAsidePanel,
   StyledAddGroupsPanel,
@@ -369,4 +376,5 @@ export {
   StyledSharingHeaderContent,
   StyledSharingBody,
   StyledFooter,
+  StyledLinkRow,
 };

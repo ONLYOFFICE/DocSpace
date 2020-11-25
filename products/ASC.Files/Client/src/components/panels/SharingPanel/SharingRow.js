@@ -230,14 +230,14 @@ const SharingRow = (props) => {
           <LinkRow
             linkText="ExternalLink"
             data={externalLinkData}
-            index={index}
-            t={t}
+            embeddedComponentRender={embeddedComponentRender}
+            {...props}
           />
           <LinkRow
             linkText="InternalLink"
             data={internalLinkData}
-            index={index}
-            t={t}
+            embeddedComponentRender={embeddedComponentRender}
+            {...props}
           />
         </>
       )}
