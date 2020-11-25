@@ -3,7 +3,8 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 
 const StyledBackdrop = styled.div`
-  background-color: rgba(6, 22, 38, 0.1);
+  background-color: ${(props) =>
+    props.withBackdrop ? "rgba(6, 22, 38, 0.1)" : "unset"};
   display: ${(props) => (props.visible ? "block" : "none")};
   height: 100vh;
   position: fixed;
@@ -11,6 +12,7 @@ const StyledBackdrop = styled.div`
   z-index: ${(props) => props.zIndex};
   left: 0;
   top: 0;
+  cursor: ${(props) => (props.withBackdrop ? "pointer" : "default")}; ;
 `;
 
 const Backdrop = (props) => {
@@ -24,11 +26,13 @@ Backdrop.propTypes = {
   className: PropTypes.string,
   id: PropTypes.string,
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  withBackdrop: PropTypes.bool,
 };
 
 Backdrop.defaultProps = {
   visible: false,
   zIndex: 200,
+  withBackdrop: true,
 };
 
 export default Backdrop;
