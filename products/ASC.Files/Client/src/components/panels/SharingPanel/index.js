@@ -635,7 +635,10 @@ class SharingPanelComponent extends React.Component {
             <StyledSharingBody
               ref={this.scrollRef}
               stype="mediumBlack"
-              style={{ height: `calc(100vh - 157px)` }}
+              style={{
+                height: `calc(100vh - 157px)`,
+                width: `calc(100% + 17px)`,
+              }}
             >
               {shareDataItems.map((item, index) => (
                 <SharingRow
