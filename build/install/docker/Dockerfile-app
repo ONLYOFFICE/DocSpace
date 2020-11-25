@@ -6,7 +6,6 @@ ARG RELEASE_DATE_SIGN=""
 ARG VERSION="8.9.0.190"
 ARG SOURCE_REPO_URL="deb http://static.teamlab.com.s3.amazonaws.com/repo/debian squeeze main"
 ARG DEBIAN_FRONTEND=noninteractive
-#ARG GIT_BRANCH="05bc905831f1be9623df1510e75286e61d632665"
 ARG GIT_BRANCH="develop"
 
 LABEL onlyoffice.community.release-date="${RELEASE_DATE}" \

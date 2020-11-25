@@ -182,14 +182,11 @@ RUN cd /app/onlyoffice/src/ && \
 
 COPY config/mysql/conf.d/mysql.cnf /etc/mysql/conf.d/mysql.cnf
 COPY config/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-#COPY config/mysql/dotnet_dump.sql /app/onlyoffice/dotnet_dump.sql
 
 COPY config/createdb.sql /app/onlyoffice/createdb.sql
 COPY config/onlyoffice.sql /app/onlyoffice/onlyoffice.sql
 COPY config/onlyoffice.data.sql /app/onlyoffice/onlyoffice.data.sql
 COPY config/onlyoffice.resources.sql /app/onlyoffice/onlyoffice.resources.sql
-
-
 
 RUN sed -i 's/Server=.*;Port=/Server=127.0.0.1;Port=/' /app/onlyoffice/config/appsettings.test.json
 
