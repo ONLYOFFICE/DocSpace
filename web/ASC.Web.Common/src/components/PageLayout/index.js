@@ -197,9 +197,11 @@ class PageLayoutComponent extends React.Component {
       showPrimaryProgressBar,
       primaryProgressBarIcon,
       primaryProgressBarValue,
+      showPrimaryButtonAlert,
       showSecondaryProgressBar,
       secondaryProgressBarValue,
       secondaryProgressBarIcon,
+      showSecondaryButtonAlert,
       setSelections,
       uploadFiles,
       viewAs,
@@ -384,11 +386,13 @@ class PageLayoutComponent extends React.Component {
                         className="layout-progress-bar"
                         icon={primaryProgressBarIcon}
                         percent={primaryProgressBarValue}
+                        alert={showPrimaryButtonAlert}
                       />
                       <FloatingButton
                         className="layout-progress-second-bar"
                         icon={secondaryProgressBarIcon}
                         percent={secondaryProgressBarValue}
+                        alert={showSecondaryButtonAlert}
                       />
                     </>
                   ) : showPrimaryProgressBar && !showSecondaryProgressBar ? (
@@ -396,12 +400,14 @@ class PageLayoutComponent extends React.Component {
                       className="layout-progress-bar"
                       icon={primaryProgressBarIcon}
                       percent={primaryProgressBarValue}
+                      alert={showPrimaryButtonAlert}
                     />
                   ) : !showPrimaryProgressBar && showSecondaryProgressBar ? (
                     <FloatingButton
                       className="layout-progress-bar"
                       icon={secondaryProgressBarIcon}
                       percent={secondaryProgressBarValue}
+                      alert={showSecondaryButtonAlert}
                     />
                   ) : (
                     <></>
@@ -430,11 +436,13 @@ PageLayoutComponent.propTypes = {
   t: PropTypes.func,
   showPrimaryProgressBar: PropTypes.bool,
   primaryProgressBarValue: PropTypes.number,
+  showPrimaryButtonAlert: PropTypes.bool,
   progressBarDropDownContent: PropTypes.any,
   primaryProgressBarIcon: PropTypes.string,
   showSecondaryProgressBar: PropTypes.bool,
   secondaryProgressBarValue: PropTypes.number,
   secondaryProgressBarIcon: PropTypes.string,
+  showSecondaryButtonAlert: PropTypes.bool,
   onDrop: PropTypes.func,
   setSelections: PropTypes.func,
   uploadFiles: PropTypes.bool,
