@@ -62,7 +62,11 @@ namespace ASC.Files.Tests
 
         public static IEnumerable<TestCaseData> ShareParamToFolder()
         {
-            yield return new TestCaseData(true, "folder_test");
+            yield return new TestCaseData("FoldShareTest", true, "folder_test");
+        }
+        public static IEnumerable<TestCaseData> GetSharedInfo()
+        {
+            yield return new TestCaseData("test");
         }
     }
 }
