@@ -672,7 +672,7 @@ namespace ASC.Files.Core.Data
         protected List<Tag> FromQuery(IQueryable<TagLinkData> dbFilesTags)
         {
             return dbFilesTags
-                .ToList()
+                //.ToList()
                 .Select(ToTag)
                 .ToList();
         }
