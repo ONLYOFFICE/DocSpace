@@ -192,6 +192,7 @@ class DownloadDialogComponent extends React.Component {
         visible: true,
         percent: 0,
         label: t("ArchivingData"),
+        alert: false,
       });
       api.files
         .downloadFormatFiles(fileConvertIds, folderIds)
@@ -200,6 +201,11 @@ class DownloadDialogComponent extends React.Component {
           onDownloadProgress(false);
         })
         .catch((err) => {
+          dispatch(
+            setSecondaryProgressBarData({
+              alert: true,
+            })
+          );
           toastr.error(err);
           clearSecondaryProgressData();
         });

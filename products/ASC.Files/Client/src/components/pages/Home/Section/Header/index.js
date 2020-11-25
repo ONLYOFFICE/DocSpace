@@ -234,6 +234,7 @@ class SectionHeaderContent extends React.Component {
             visible: true,
             percent: res[0].progress,
             label: this.props.t("ArchivingData"),
+            alert: false,
           });
           setTimeout(() => this.loop(res[0].url), 1000);
         } else {
@@ -242,6 +243,11 @@ class SectionHeaderContent extends React.Component {
         }
       })
       .catch((err) => {
+        dispatch(
+          setSecondaryProgressBarData({
+            alert: true,
+          })
+        );
         toastr.error(err);
         this.props.clearSecondaryProgressData();
       });
@@ -273,6 +279,7 @@ class SectionHeaderContent extends React.Component {
       visible: true,
       percent: 0,
       label: t("ArchivingData"),
+      alert: false,
     });
 
     api.files
@@ -281,6 +288,11 @@ class SectionHeaderContent extends React.Component {
         this.loop(res[0].url);
       })
       .catch((err) => {
+        dispatch(
+          setSecondaryProgressBarData({
+            alert: true,
+          })
+        );
         toastr.error(err);
         clearSecondaryProgressData();
       });

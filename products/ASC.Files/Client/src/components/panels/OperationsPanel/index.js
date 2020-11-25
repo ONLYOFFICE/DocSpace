@@ -69,6 +69,7 @@ class OperationsPanelComponent extends React.Component {
         visible: true,
         percent: 0,
         label: isCopy ? t("CopyOperation") : t("MoveToOperation"),
+        alert: false,
       });
       itemOperationToFolder(
         destFolderId,

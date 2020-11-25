@@ -56,6 +56,7 @@ const EmptyTrashDialogComponent = (props) => {
               visible: true,
               percent: currentProcess.progress,
               label: t("DeleteOperation"),
+              alert: false,
             };
             setSecondaryProgressBarData(newProgressData);
             setTimeout(() => loopEmptyTrash(id), 1000);
@@ -67,11 +68,17 @@ const EmptyTrashDialogComponent = (props) => {
                   visible: true,
                   percent: 100,
                   label: t("DeleteOperation"),
+                  alert: false,
                 });
                 setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
                 toastr.success(successMessage);
               })
               .catch((err) => {
+                dispatch(
+                  setSecondaryProgressBarData({
+                    alert: true,
+                  })
+                );
                 toastr.error(err);
                 clearSecondaryProgressData();
               });
@@ -98,6 +105,7 @@ const EmptyTrashDialogComponent = (props) => {
       visible: true,
       percent: 0,
       label: t("DeleteOperation"),
+      alert: false,
     };
     setSecondaryProgressBarData(newProgressData);
     onClose();
@@ -108,6 +116,11 @@ const EmptyTrashDialogComponent = (props) => {
         loopEmptyTrash(id);
       })
       .catch((err) => {
+        dispatch(
+          setSecondaryProgressBarData({
+            alert: true,
+          })
+        );
         toastr.error(err);
         clearSecondaryProgressData();
       });

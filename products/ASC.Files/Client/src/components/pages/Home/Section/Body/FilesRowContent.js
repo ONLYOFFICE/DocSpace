@@ -368,10 +368,16 @@ class FilesRowContent extends React.PureComponent {
           visible: true,
           percent: res[0].progress,
           label: t("Convert"),
+          alert: false,
         });
         setTimeout(() => this.getConvertProgress(fileId), 1000);
       } else {
         if (res[0].error) {
+          dispatch(
+            setSecondaryProgressBarData({
+              alert: true,
+            })
+          );
           toastr.error(res[0].error);
           clearSecondaryProgressData();
         } else {
@@ -380,11 +386,19 @@ class FilesRowContent extends React.PureComponent {
             visible: true,
             percent: 100,
             label: t("Convert"),
+            alert: false,
           });
           setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
           const newFilter = filter.clone();
           fetchFiles(selectedFolder.id, newFilter)
-            .catch((err) => toastr.error(err))
+            .catch((err) => {
+              dispatch(
+                setSecondaryProgressBarData({
+                  alert: true,
+                })
+              );
+              toastr.error(err);
+            })
             .finally(() => setIsLoading(false));
         }
       }
@@ -398,6 +412,7 @@ class FilesRowContent extends React.PureComponent {
       visible: true,
       percent: 0,
       label: t("Convert"),
+      alert: false,
     });
     this.setState({ showConvertDialog: false }, () =>
       api.files.convertFile(item.id).then((convertRes) => {

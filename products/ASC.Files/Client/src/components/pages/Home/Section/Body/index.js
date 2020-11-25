@@ -374,6 +374,7 @@ class SectionBodyContent extends React.Component {
       visible: true,
       percent: 0,
       label: t("DeleteOperation"),
+      alert: false,
     });
     api.files
       .deleteFile(fileId)
@@ -382,6 +383,11 @@ class SectionBodyContent extends React.Component {
         this.loopDeleteProgress(id, currentFolderId, false);
       })
       .catch((err) => {
+        dispatch(
+          setSecondaryProgressBarData({
+            alert: true,
+          })
+        );
         toastr.error(err);
         clearSecondaryProgressData();
       });
@@ -406,6 +412,7 @@ class SectionBodyContent extends React.Component {
           visible: true,
           percent: deleteProgress.progress,
           label: t("DeleteOperation"),
+          alert: false,
         });
         setTimeout(() => this.loopDeleteProgress(id, folderId, isFolder), 1000);
       } else {
@@ -414,6 +421,7 @@ class SectionBodyContent extends React.Component {
           visible: true,
           percent: 100,
           label: t("DeleteOperation"),
+          alert: false,
         });
         fetchFiles(folderId, filter)
           .then((data) => {
@@ -431,6 +439,11 @@ class SectionBodyContent extends React.Component {
               : toastr.success(`File moved to recycle bin`);
           })
           .catch((err) => {
+            dispatch(
+              setSecondaryProgressBarData({
+                alert: true,
+              })
+            );
             toastr.error(err);
             this.props.clearSecondaryProgressData();
           })
@@ -453,6 +466,7 @@ class SectionBodyContent extends React.Component {
       visible: true,
       percent: 0,
       label: progressLabel,
+      alert: false,
     });
     api.files
       .deleteFolder(folderId, currentFolderId)
@@ -461,6 +475,11 @@ class SectionBodyContent extends React.Component {
         this.loopDeleteProgress(id, currentFolderId, true);
       })
       .catch((err) => {
+        dispatch(
+          setSecondaryProgressBarData({
+            alert: true,
+          })
+        );
         toastr.error(err);
         clearSecondaryProgressData();
       });
@@ -582,6 +601,7 @@ class SectionBodyContent extends React.Component {
       visible: true,
       percent: 0,
       label: t("CopyOperation"),
+      alert: false,
     });
     this.copyTo(
       selectedFolderId,
@@ -1340,6 +1360,7 @@ class SectionBodyContent extends React.Component {
       visible: true,
       percent: 0,
       label: t("MoveToOperation"),
+      alert: false,
     });
     for (let item of selection) {
       if (item.fileExst) {
@@ -1410,6 +1431,11 @@ class SectionBodyContent extends React.Component {
         loopFilesOperations(id, destFolderId, true);
       })
       .catch((err) => {
+        dispatch(
+          setSecondaryProgressBarData({
+            alert: true,
+          })
+        );
         toastr.error(err);
         clearSecondaryProgressData();
       });
@@ -1437,6 +1463,11 @@ class SectionBodyContent extends React.Component {
         loopFilesOperations(id, destFolderId, false);
       })
       .catch((err) => {
+        dispatch(
+          setSecondaryProgressBarData({
+            alert: true,
+          })
+        );
         toastr.error(err);
         clearSecondaryProgressData();
       });

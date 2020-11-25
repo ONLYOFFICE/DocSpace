@@ -84,6 +84,7 @@ class DeleteDialogComponent extends React.Component {
             percent: currentProcess.progress,
             label: t("DeleteOperation"),
             visible: true,
+            alert: false,
           });
           setTimeout(() => this.loopDeleteOperation(id), 1000);
         } else {
@@ -92,6 +93,7 @@ class DeleteDialogComponent extends React.Component {
             percent: 100,
             label: t("DeleteOperation"),
             visible: true,
+            alert: false,
           });
           setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
           fetchFiles(currentFolderId, filter).then((data) => {
@@ -109,6 +111,11 @@ class DeleteDialogComponent extends React.Component {
         }
       })
       .catch((err) => {
+        dispatch(
+          setSecondaryProgressBarData({
+            alert: true,
+          })
+        );
         toastr.error(err);
         clearSecondaryProgressData();
       });
@@ -147,6 +154,7 @@ class DeleteDialogComponent extends React.Component {
         visible: true,
         label: t("DeleteOperation"),
         percent: 0,
+        alert: false,
       });
 
       files
@@ -156,6 +164,11 @@ class DeleteDialogComponent extends React.Component {
           this.loopDeleteOperation(id);
         })
         .catch((err) => {
+          dispatch(
+            setSecondaryProgressBarData({
+              alert: true,
+            })
+          );
           toastr.error(err);
           clearSecondaryProgressData();
         });

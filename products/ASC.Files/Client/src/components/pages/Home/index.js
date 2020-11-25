@@ -192,9 +192,11 @@ class PureHome extends React.Component {
           showPrimaryProgressBar={primaryProgressData.visible}
           primaryProgressBarValue={primaryProgressData.percent}
           primaryProgressBarIcon={primaryProgressData.icon}
+          showPrimaryButtonAlert={primaryProgressData.alert}
           showSecondaryProgressBar={secondaryProgressData.visible}
           secondaryProgressBarValue={secondaryProgressData.percent}
           secondaryProgressBarIcon={secondaryProgressData.icon}
+          showSecondaryButtonAlert={secondaryProgressData.alert}
           viewAs={viewAs}
           hideAside={
             !!fileActionId ||

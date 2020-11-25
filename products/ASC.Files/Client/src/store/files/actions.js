@@ -568,6 +568,7 @@ export function clearPrimaryProgressData() {
         percent: 0,
         label: "",
         icon: "",
+        alert: false,
       })
     );
   };
@@ -581,6 +582,7 @@ export function clearSecondaryProgressData() {
         percent: 0,
         label: "",
         icon: "",
+        alert: false,
       })
     );
   };
@@ -736,6 +738,7 @@ const startUploadFiles = (
       percent: 0,
       label: "",
       icon: "upload",
+      alert: false,
     };
     progressData.label = t("UploadingLabel", {
       file: 0,
@@ -861,6 +864,7 @@ const sendChunk = (
               }),
               percent: newPercent,
               visible: true,
+              alert: false,
             })
           );
           sendRequestFunc(index + 1);
@@ -925,7 +929,14 @@ const sendChunk = (
           startSessionFunc(indexOfFile + 1, t, dispatch, getState);
         }
       })
-      .catch((err) => toastr.error(err));
+      .catch((err) => {
+        dispatch(
+          setPrimaryProgressBarData({
+            alert: true,
+          })
+        );
+        toastr.error(err);
+      });
   };
 
   sendRequestFunc(0);
@@ -957,7 +968,14 @@ const updateFiles = (folderId, dispatch, getState) => {
         dispatch(setTreeFolders(newTreeFolders));
         dispatch(setUpdateTree(true));
       })
-      .catch((err) => toastr.error(err))
+      .catch((err) => {
+        dispatch(
+          setPrimaryProgressBarData({
+            alert: true,
+          })
+        );
+        toastr.error(err);
+      })
       .finally(() =>
         setTimeout(() => {
           dispatch(clearPrimaryProgressData());
@@ -976,7 +994,14 @@ const updateFiles = (folderId, dispatch, getState) => {
         dispatch(setTreeFolders(newTreeFolders));
         dispatch(setUpdateTree(true));
       })
-      .catch((err) => toastr.error(err))
+      .catch((err) => {
+        dispatch(
+          setPrimaryProgressBarData({
+            alert: true,
+          })
+        );
+        toastr.error(err);
+      })
       .finally(() =>
         setTimeout(() => {
           dispatch(clearPrimaryProgressData());
@@ -1054,6 +1079,7 @@ const updateConvertProgress = (uploadData, t, dispatch) => {
       label: t("UploadingLabel", { file, totalFiles }),
       percent,
       visible: true,
+      alert: false,
     })
   );
   if (!progressVisible) {
@@ -1085,6 +1111,7 @@ export const setDialogVisible = (t) => {
           label,
           percent: 100,
           visible: true,
+          alert: false,
         })
       );
       uploadData.uploadedFiles = 0;
@@ -1100,6 +1127,7 @@ export const setDialogVisible = (t) => {
           label,
           percent,
           visible: true,
+          alert: false,
         })
       );
       uploadData.uploadStatus = "cancel";
@@ -1214,6 +1242,7 @@ export const loopFilesOperations = (id, destFolderId, isCopy) => {
                 label: progressData.label,
                 percent: currentItem.progress,
                 visible: true,
+                alert: false,
               })
             );
             setTimeout(() => loopOperation(), 1000);
@@ -1224,6 +1253,7 @@ export const loopFilesOperations = (id, destFolderId, isCopy) => {
                 label: progressData.label,
                 percent: 100,
                 visible: true,
+                alert: false,
               })
             );
             api.files
@@ -1255,6 +1285,11 @@ export const loopFilesOperations = (id, destFolderId, isCopy) => {
                     })
                     .catch((err) => {
                       console.log("ERROR_1", err);
+                      dispatch(
+                        setPrimaryProgressBarData({
+                          alert: true,
+                        })
+                      );
                       toastr.error(err);
                       dispatch(clearPrimaryProgressData());
                     })
@@ -1271,6 +1306,7 @@ export const loopFilesOperations = (id, destFolderId, isCopy) => {
                       label: progressData.label,
                       percent: 100,
                       visible: true,
+                      alert: false,
                     })
                   );
                   setTimeout(
@@ -1283,6 +1319,11 @@ export const loopFilesOperations = (id, destFolderId, isCopy) => {
               })
               .catch((err) => {
                 console.log("ERROR_2", err);
+                dispatch(
+                  setSecondaryProgressBarData({
+                    alert: true,
+                  })
+                );
                 toastr.error(err);
                 dispatch(clearSecondaryProgressData());
               });
@@ -1290,6 +1331,11 @@ export const loopFilesOperations = (id, destFolderId, isCopy) => {
         })
         .catch((err) => {
           console.log("ERROR_3", err);
+          dispatch(
+            setSecondaryProgressBarData({
+              alert: true,
+            })
+          );
           toastr.error(err);
           dispatch(clearSecondaryProgressData());
         });
