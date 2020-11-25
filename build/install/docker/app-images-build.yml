@@ -238,4 +238,3 @@ volumes:
   nginx_log:
   app_data:
   es_data:
-  
