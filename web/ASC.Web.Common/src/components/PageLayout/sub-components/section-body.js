@@ -23,8 +23,6 @@ const commonStyles = css`
     @media ${tablet} {
       padding: 16px 0 16px 24px;
       margin-top: ${(props) => (props.isLoaded ? "58px" : "2px")};
-      width: ${(props) =>
-        props.pinned ? `calc(100vw - 272px)` : `calc(100vw - 30px)`};
     }
 
     .section-wrapper {
@@ -37,12 +35,7 @@ const commonStyles = css`
 
 const StyledSectionBody = styled.div`
   ${commonStyles}
-  .section-wrapper-content {
-    @media ${tablet} {
-      width: ${(props) =>
-        props.pinned ? `calc(100vw - 272px)` : `calc(100vw - 30px)`};
-    }
-  }
+
   ${(props) =>
     props.withScroll &&
     `

@@ -43,7 +43,7 @@ const StyledArticle = styled.article`
             min-width: 240px;
             margin-top: ${props.isLoaded ? "56px" : "0"};
             height: calc(100% - 56px)!important;
-            
+            width: ${!props.isLoaded && "240px"} !important;
             .increaseHeight {
               position: fixed;
               height: 100%;

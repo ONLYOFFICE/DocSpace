@@ -34,8 +34,10 @@ const StyledSectionHeader = styled.div`
     width: calc(100% - 76px);
 
     @media ${tablet} {
+      max-width: calc(100vw - 32px);
       width: ${(props) =>
         props.isArticlePinned ? `calc(100% - 272px)` : "100%"};
+
       background-color: #fff;
 
       ${(props) =>
