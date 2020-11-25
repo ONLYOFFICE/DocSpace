@@ -10,6 +10,7 @@ import {
 } from "asc-web-components";
 import { toastr } from "asc-web-common";
 import copy from "copy-to-clipboard";
+import LinkRow from "./linkRow";
 
 const SharingRow = (props) => {
   const {
@@ -30,7 +31,6 @@ const SharingRow = (props) => {
   } = props;
 
   const linkVisible = selection && selection.length === 1 && item.shareLink;
-
   const onCopyInternalLink = () => {
     const internalLink = selection.webUrl
       ? selection.webUrl
@@ -222,52 +222,26 @@ const SharingRow = (props) => {
     },
   ];
 
-  const linksFunction = (linkText, data) => (
-    <Row
-      key={`${linkText}-key_${index}`}
-      //element={embeddedComponentRender(accessOptions, item)}
-      element={
-        <Icons.AccessEditIcon
-          size="medium"
-          className="sharing_panel-owner-icon"
-        />
-      }
-      contextButtonSpacerWidth="0px"
-    >
-      <>
-        <LinkWithDropdown
-          className="sharing_panel-link"
-          color="black"
-          dropdownType="alwaysDashed"
-          data={data}
-          fontSize="14px"
-          fontWeight={600}
-        >
-          {t(linkText)}
-        </LinkWithDropdown>
-        {/*
-          <ComboBox
-            className="sharing_panel-link-combo-box"
-            options={options}
-            isDisabled={false}
-            selectedOption={options[0]}
-            dropDownMaxHeight={200}
-            noBorder={false}
-            scaled={false}
-            scaledOptions
-            size="content"
-            onSelect={(option) => console.log("selected", option)}
-          />
-          */}
-      </>
-    </Row>
-  );
-
   //console.log("SharingRow render");
   return (
     <>
-      {linkVisible && linksFunction("ExternalLink", externalLinkData)}
-      {linkVisible && linksFunction("InternalLink", internalLinkData)}
+      {linkVisible && (
+        <>
+          <LinkRow
+            linkText="ExternalLink"
+            data={externalLinkData}
+            index={index}
+            t={t}
+          />
+          <LinkRow
+            linkText="InternalLink"
+            data={internalLinkData}
+            index={index}
+            t={t}
+          />
+        </>
+      )}
+
       {!item.shareLink && (
         <Row
           key={`internal-link-key_${index}`}
