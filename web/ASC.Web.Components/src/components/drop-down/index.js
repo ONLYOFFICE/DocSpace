@@ -5,7 +5,6 @@ import CustomScrollbarsVirtualList from "../scrollbar/custom-scrollbars-virtual-
 import DropDownItem from "../drop-down-item";
 import Backdrop from "../backdrop";
 import { VariableSizeList } from "react-window";
-import onClickOutside from "react-onclickoutside";
 
 const StyledDropdown = styled.div`
   font-family: "Open Sans", sans-serif, Arial;
@@ -97,23 +96,14 @@ class DropDown extends React.PureComponent {
 
   componentDidMount() {
     if (this.props.open) {
-      this.props.enableOnClickOutside();
-      console.log("in compdidM ");
       this.checkPosition();
     }
-  }
-
-  componentWillUnmount() {
-    this.props.disableOnClickOutside();
   }
 
   componentDidUpdate(prevProps) {
     if (this.props.open !== prevProps.open) {
       if (this.props.open) {
-        this.props.enableOnClickOutside();
         this.checkPosition();
-      } else {
-        this.props.disableOnClickOutside();
       }
     }
   }
@@ -163,7 +153,7 @@ class DropDown extends React.PureComponent {
   };
 
   render() {
-    const { maxHeight, children, withBackdrop, open } = this.props;
+    const { maxHeight, children, withBackdrop, open, isTablet } = this.props;
     const { directionX, directionY, width } = this.state;
     const rowHeights = React.Children.map(children, (child) =>
       this.getItemHeight(child)
@@ -176,14 +166,18 @@ class DropDown extends React.PureComponent {
       ? { height: calculatedHeight + "px" }
       : {};
     //console.log("DropDown render", this.props);
+
+    const needBackdrop = withBackdrop || isTablet ? true : false;
+
     return (
       <>
         <Backdrop
           visible={open}
-          withBackdrop={withBackdrop}
+          withBackdrop={needBackdrop}
           zIndex={149}
           onClick={this.toggleBackdrop}
         />
+
         <StyledDropdown
           ref={this.dropDownRef}
           {...this.props}
@@ -236,21 +230,11 @@ DropDown.defaultProps = {
   withBackdrop: false,
 };
 
-const EnhancedComponent = onClickOutside(DropDown);
-
 class DropDownContainer extends React.Component {
   render() {
-    const { withBackdrop = false } = this.props;
     const isTablet = window.innerWidth < 1024; //TODO: Make some better
 
-    return (
-      <EnhancedComponent
-        disableOnClickOutside={true}
-        {...this.props}
-        isTablet={isTablet}
-        withBackdrop={withBackdrop}
-      />
-    );
+    return <DropDown {...this.props} isTablet={isTablet} />;
   }
 }
 

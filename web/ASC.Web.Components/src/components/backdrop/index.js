@@ -4,7 +4,9 @@ import styled from "styled-components";
 
 const StyledBackdrop = styled.div`
   background-color: ${(props) =>
-    props.withBackdrop ? "rgba(6, 22, 38, 0.1)" : "unset"};
+    props.withBackdrop && !props.backdropExist
+      ? "rgba(6, 22, 38, 0.1)"
+      : "unset"};
   display: ${(props) => (props.visible ? "block" : "none")};
   height: 100vh;
   position: fixed;
@@ -15,10 +17,37 @@ const StyledBackdrop = styled.div`
   cursor: ${(props) => (props.withBackdrop ? "pointer" : "default")}; ;
 `;
 
-const Backdrop = (props) => {
-  //console.log("Backdrop render");
-  return <StyledBackdrop {...props} />;
-};
+class Backdrop extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      backdropExist: false,
+    };
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.visible !== this.props.visible) {
+      const isExist =
+        document.querySelectorAll("#backdrop-component").length > 1;
+      this.setState({ backdropExist: isExist });
+    }
+  }
+
+  render() {
+    const { backdropExist } = this.state;
+
+    console.log("backdropExist", backdropExist);
+
+    return this.props.visible ? (
+      <StyledBackdrop
+        id="backdrop-component"
+        {...this.props}
+        backdropExist={backdropExist}
+      />
+    ) : null;
+  }
+}
 
 Backdrop.propTypes = {
   visible: PropTypes.bool,
