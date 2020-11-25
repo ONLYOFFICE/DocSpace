@@ -1,4 +1,4 @@
-version: "3.4"
+version: "3.5"
 x-service: 
     &x-service-base
     build:
@@ -18,7 +18,7 @@ x-service:
       APP_DOTNET_ENV: ${APP_DOTNET_ENV:-products}
       APP_CORE_BASE_DOMAIN: ${APP_CORE_BASE_DOMAIN:-localhost}
       APP_CORE_MACHINEKEY: ${APP_CORE_MACHINEKEY:-""}
-      APP_SECRET_VALUE: ${APP_SECRET_VALUE:-""}
+      DOCUMENT_SERVER_JWT_SECRET: ${DOCUMENT_SERVER_JWT_SECRET:-""}
       APP_SECRET_HEADER: ${APP_SECRET_HEADER:-""}
       APP_URL_PUBLIC: ${APP_URL_PUBLIC:-/ds-vpath/}
       APP_URL_INTERNAL: ${APP_URL_INTERNAL:-http://onlyoffice-document-server/}
@@ -54,6 +54,7 @@ services:
       - es_data:/usr/share/elasticsearch/data
     expose:
       - "9200"
+      - "9300"
     networks:
       - ${NETWORK_NAME:-onlyoffice}
 
@@ -189,14 +190,14 @@ services:
       context:  ./
       dockerfile: Dockerfile-app
       target: web
-      dockerfile: Dockerfile-app
-    image: "${REPO:-onlyoffice}/${STATUS:-}appserver-nginx:${TAG_Web:-latest}"
+    image: "${REPO:-onlyoffice}/${STATUS:-}appserver-nginx:${TAG_SRV:-latest}"
     container_name: ${NGINX_HOST:-nginx}
     restart: always
+    expose:
+      - "8081"
+      - "8099"
     ports:
-      - 8092:8092 
-      - 8081:8081
-      - 8099:8099
+      - 8092:8092
     depends_on:
       - onlyoffice-api
       - onlyoffice-api_system
@@ -237,3 +238,4 @@ volumes:
   nginx_log:
   app_data:
   es_data:
+  
