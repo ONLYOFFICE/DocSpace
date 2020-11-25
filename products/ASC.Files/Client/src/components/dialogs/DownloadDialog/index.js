@@ -25,6 +25,7 @@ import {
   setSecondaryProgressBarData,
   clearSecondaryProgressData,
 } from "../../../store/files/actions";
+import { TIMEOUT } from "../../../helpers/constants";
 import DownloadContent from "./DownloadContent";
 import { createI18N } from "../../../helpers/i18n";
 const i18n = createI18N({
@@ -201,13 +202,12 @@ class DownloadDialogComponent extends React.Component {
           onDownloadProgress(false);
         })
         .catch((err) => {
-          dispatch(
-            setSecondaryProgressBarData({
-              alert: true,
-            })
-          );
-          toastr.error(err);
-          clearSecondaryProgressData();
+          setSecondaryProgressBarData({
+            visible: true,
+            alert: true,
+          });
+          //toastr.error(err);
+          setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
         });
     }
   };

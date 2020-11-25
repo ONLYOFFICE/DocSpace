@@ -74,19 +74,22 @@ const EmptyTrashDialogComponent = (props) => {
                 toastr.success(successMessage);
               })
               .catch((err) => {
-                dispatch(
-                  setSecondaryProgressBarData({
-                    alert: true,
-                  })
-                );
-                toastr.error(err);
-                clearSecondaryProgressData();
+                setSecondaryProgressBarData({
+                  visible: true,
+                  alert: true,
+                });
+                //toastr.error(err);
+                setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
               });
           }
         })
         .catch((err) => {
-          toastr.error(err);
-          clearSecondaryProgressData();
+          setSecondaryProgressBarData({
+            visible: true,
+            alert: true,
+          });
+          //toastr.error(err);
+          setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
         });
     },
     [
@@ -116,13 +119,12 @@ const EmptyTrashDialogComponent = (props) => {
         loopEmptyTrash(id);
       })
       .catch((err) => {
-        dispatch(
-          setSecondaryProgressBarData({
-            alert: true,
-          })
-        );
-        toastr.error(err);
-        clearSecondaryProgressData();
+        setSecondaryProgressBarData({
+          visible: true,
+          alert: true,
+        });
+        //toastr.error(err);
+        setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
       });
   }, [
     onClose,

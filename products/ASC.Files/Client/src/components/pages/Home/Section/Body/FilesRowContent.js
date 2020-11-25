@@ -373,13 +373,12 @@ class FilesRowContent extends React.PureComponent {
         setTimeout(() => this.getConvertProgress(fileId), 1000);
       } else {
         if (res[0].error) {
-          dispatch(
-            setSecondaryProgressBarData({
-              alert: true,
-            })
-          );
+          setSecondaryProgressBarData({
+            visible: true,
+            alert: true,
+          });
           toastr.error(res[0].error);
-          clearSecondaryProgressData();
+          setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
         } else {
           setSecondaryProgressBarData({
             icon: "file",
@@ -392,12 +391,12 @@ class FilesRowContent extends React.PureComponent {
           const newFilter = filter.clone();
           fetchFiles(selectedFolder.id, newFilter)
             .catch((err) => {
-              dispatch(
-                setSecondaryProgressBarData({
-                  alert: true,
-                })
-              );
-              toastr.error(err);
+              setSecondaryProgressBarData({
+                visible: true,
+                alert: true,
+              });
+              //toastr.error(err);
+              setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
             })
             .finally(() => setIsLoading(false));
         }

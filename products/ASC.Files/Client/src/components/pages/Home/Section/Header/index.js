@@ -243,13 +243,12 @@ class SectionHeaderContent extends React.Component {
         }
       })
       .catch((err) => {
-        dispatch(
-          setSecondaryProgressBarData({
-            alert: true,
-          })
-        );
-        toastr.error(err);
-        this.props.clearSecondaryProgressData();
+        setSecondaryProgressBarData({
+          visible: true,
+          alert: true,
+        });
+        //toastr.error(err);
+        setTimeout(() => this.props.clearSecondaryProgressData(), TIMEOUT);
       });
   };
 
@@ -288,13 +287,12 @@ class SectionHeaderContent extends React.Component {
         this.loop(res[0].url);
       })
       .catch((err) => {
-        dispatch(
-          setSecondaryProgressBarData({
-            alert: true,
-          })
-        );
-        toastr.error(err);
-        clearSecondaryProgressData();
+        setSecondaryProgressBarData({
+          visible: true,
+          alert: true,
+        });
+        //toastr.error(err);
+        setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
       });
   };
 

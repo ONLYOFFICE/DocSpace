@@ -690,7 +690,14 @@ export const startUpload = (uploadFiles, folderId, t) => {
           filesSize += item.size;
         }
       } else {
-        toastr.error(t("ErrorUploadMessage"));
+        dispatch(
+          setPrimaryProgressBarData({
+            visible: true,
+            alert: true,
+          })
+        );
+        setTimeout(() => dispatch(clearPrimaryProgressData()), TIMEOUT);
+        //toastr.error(t("ErrorUploadMessage"));
       }
     }
 
@@ -814,8 +821,14 @@ const startSessionFunc = (indexOfFile, t, dispatch, getState) => {
       )
     )
     .catch((err) => {
-      toastr.error(err);
-      dispatch(clearPrimaryProgressData());
+      dispatch(
+        setPrimaryProgressBarData({
+          visible: true,
+          alert: true,
+        })
+      );
+      //toastr.error(err);
+      setTimeout(() => dispatch(clearPrimaryProgressData()), TIMEOUT);
     });
 };
 
@@ -932,10 +945,12 @@ const sendChunk = (
       .catch((err) => {
         dispatch(
           setPrimaryProgressBarData({
+            visible: true,
             alert: true,
           })
         );
-        toastr.error(err);
+        //toastr.error(err);
+        setTimeout(() => dispatch(clearPrimaryProgressData()), TIMEOUT);
       });
   };
 
@@ -972,9 +987,11 @@ const updateFiles = (folderId, dispatch, getState) => {
         dispatch(
           setPrimaryProgressBarData({
             alert: true,
+            visible: true,
           })
         );
-        toastr.error(err);
+        setTimeout(() => dispatch(clearPrimaryProgressData()), TIMEOUT);
+        //toastr.error(err);
       })
       .finally(() =>
         setTimeout(() => {
@@ -997,10 +1014,12 @@ const updateFiles = (folderId, dispatch, getState) => {
       .catch((err) => {
         dispatch(
           setPrimaryProgressBarData({
+            visible: true,
             alert: true,
           })
         );
-        toastr.error(err);
+        setTimeout(() => dispatch(clearPrimaryProgressData()), TIMEOUT);
+        //toastr.error(err);
       })
       .finally(() =>
         setTimeout(() => {
@@ -1042,7 +1061,14 @@ const getConvertProgress = (
       !isLatestFile && startSessionFunc(indexOfFile + 1, t, dispatch, getState);
 
       if (res[0].error) {
-        toastr.error(res[0].error);
+        dispatch(
+          setPrimaryProgressBarData({
+            visible: true,
+            alert: true,
+          })
+        );
+        setTimeout(() => dispatch(clearPrimaryProgressData()), TIMEOUT);
+        //toastr.error(res[0].error);
       }
       if (isLatestFile) {
         updateFiles(uploadToFolder, dispatch, getState);
@@ -1287,11 +1313,15 @@ export const loopFilesOperations = (id, destFolderId, isCopy) => {
                       console.log("ERROR_1", err);
                       dispatch(
                         setPrimaryProgressBarData({
+                          visible: true,
                           alert: true,
                         })
                       );
-                      toastr.error(err);
-                      dispatch(clearPrimaryProgressData());
+                      //toastr.error(err);
+                      setTimeout(
+                        () => dispatch(clearPrimaryProgressData()),
+                        TIMEOUT
+                      );
                     })
                     .finally(() =>
                       setTimeout(
@@ -1321,11 +1351,15 @@ export const loopFilesOperations = (id, destFolderId, isCopy) => {
                 console.log("ERROR_2", err);
                 dispatch(
                   setSecondaryProgressBarData({
+                    visible: true,
                     alert: true,
                   })
                 );
-                toastr.error(err);
-                dispatch(clearSecondaryProgressData());
+                //toastr.error(err);
+                setTimeout(
+                  () => dispatch(clearSecondaryProgressData()),
+                  TIMEOUT
+                );
               });
           }
         })
@@ -1333,11 +1367,12 @@ export const loopFilesOperations = (id, destFolderId, isCopy) => {
           console.log("ERROR_3", err);
           dispatch(
             setSecondaryProgressBarData({
+              visible: true,
               alert: true,
             })
           );
-          toastr.error(err);
-          dispatch(clearSecondaryProgressData());
+          //toastr.error(err);
+          setTimeout(() => dispatch(clearSecondaryProgressData()), TIMEOUT);
         });
     };
 
@@ -1396,9 +1431,15 @@ export function itemOperationToFolder(
         dispatch(loopFilesOperations(id, destFolderId, isCopy));
       })
       .catch((err) => {
-        toastr.error(err);
-        dispatch(clearPrimaryProgressData());
-        dispatch(clearSecondaryProgressData());
+        dispatch(
+          setPrimaryProgressBarData({
+            visible: true,
+            alert: true,
+          })
+        );
+        //toastr.error(err);
+        setTimeout(() => dispatch(clearPrimaryProgressData()), TIMEOUT);
+        setTimeout(() => dispatch(clearSecondaryProgressData()), TIMEOUT);
       });
   };
 }

@@ -111,13 +111,12 @@ class DeleteDialogComponent extends React.Component {
         }
       })
       .catch((err) => {
-        dispatch(
-          setSecondaryProgressBarData({
-            alert: true,
-          })
-        );
-        toastr.error(err);
-        clearSecondaryProgressData();
+        setSecondaryProgressBarData({
+          visible: true,
+          alert: true,
+        });
+        //toastr.error(err);
+        setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
       });
   };
 
@@ -164,13 +163,12 @@ class DeleteDialogComponent extends React.Component {
           this.loopDeleteOperation(id);
         })
         .catch((err) => {
-          dispatch(
-            setSecondaryProgressBarData({
-              alert: true,
-            })
-          );
-          toastr.error(err);
-          clearSecondaryProgressData();
+          setSecondaryProgressBarData({
+            visible: true,
+            alert: true,
+          });
+          //toastr.error(err);
+          setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
         });
     }
   };

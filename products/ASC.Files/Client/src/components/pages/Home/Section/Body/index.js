@@ -383,13 +383,12 @@ class SectionBodyContent extends React.Component {
         this.loopDeleteProgress(id, currentFolderId, false);
       })
       .catch((err) => {
-        dispatch(
-          setSecondaryProgressBarData({
-            alert: true,
-          })
-        );
-        toastr.error(err);
-        clearSecondaryProgressData();
+        setSecondaryProgressBarData({
+          visible: true,
+          alert: true,
+        });
+        //toastr.error(err);
+        setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
       });
   };
 
@@ -439,13 +438,12 @@ class SectionBodyContent extends React.Component {
               : toastr.success(`File moved to recycle bin`);
           })
           .catch((err) => {
-            dispatch(
-              setSecondaryProgressBarData({
-                alert: true,
-              })
-            );
-            toastr.error(err);
-            this.props.clearSecondaryProgressData();
+            setSecondaryProgressBarData({
+              visible: true,
+              alert: true,
+            });
+            //toastr.error(err);
+            setTimeout(() => this.props.clearSecondaryProgressData(), TIMEOUT);
           })
           .finally(() =>
             setTimeout(() => this.props.clearSecondaryProgressData(), TIMEOUT)
@@ -475,13 +473,12 @@ class SectionBodyContent extends React.Component {
         this.loopDeleteProgress(id, currentFolderId, true);
       })
       .catch((err) => {
-        dispatch(
-          setSecondaryProgressBarData({
-            alert: true,
-          })
-        );
-        toastr.error(err);
-        clearSecondaryProgressData();
+        setSecondaryProgressBarData({
+          visible: true,
+          alert: true,
+        });
+        //toastr.error(err);
+        setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
       });
   };
 
@@ -1431,13 +1428,12 @@ class SectionBodyContent extends React.Component {
         loopFilesOperations(id, destFolderId, true);
       })
       .catch((err) => {
-        dispatch(
-          setSecondaryProgressBarData({
-            alert: true,
-          })
-        );
-        toastr.error(err);
-        clearSecondaryProgressData();
+        setSecondaryProgressBarData({
+          visible: true,
+          alert: true,
+        });
+        //toastr.error(err);
+        setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
       });
   };
 
@@ -1463,13 +1459,12 @@ class SectionBodyContent extends React.Component {
         loopFilesOperations(id, destFolderId, false);
       })
       .catch((err) => {
-        dispatch(
-          setSecondaryProgressBarData({
-            alert: true,
-          })
-        );
-        toastr.error(err);
-        clearSecondaryProgressData();
+        setSecondaryProgressBarData({
+          visible: true,
+          alert: true,
+        });
+        //toastr.error(err);
+        setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
       });
   };
 
