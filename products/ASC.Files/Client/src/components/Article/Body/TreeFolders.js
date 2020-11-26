@@ -87,35 +87,76 @@ class TreeFolders extends React.Component {
   };
 
   getFolderIcon = (item) => {
-    if (item.parentId !== 0)
-      return <Icons.CatalogFolderIcon size="scale" isfill color="#657077" />;
+    let iconName = "CatalogFolderIcon";
 
     switch (item.rootFolderType) {
       case FolderType.USER:
-        return <Icons.CatalogUserIcon size="scale" isfill color="#657077" />;
+        iconName = "CatalogUserIcon";
+        break;
       case FolderType.SHARE:
-        return <Icons.CatalogSharedIcon size="scale" isfill color="#657077" />;
+        iconName = "CatalogSharedIcon";
+        break;
       case FolderType.COMMON:
-        return (
-          <Icons.CatalogPortfolioIcon size="scale" isfill color="#657077" />
-        );
+        iconName = "CatalogPortfolioIcon";
+        break;
       case FolderType.Favorites:
-        return (
-          <Icons.CatalogFavoritesIcon size="scale" isfill color="#657077" />
-        );
+        iconName = "CatalogFavoritesIcon";
+        break;
       case FolderType.Recent:
-        return <Icons.CatalogRecentIcon size="scale" isfill color="#657077" />;
+        iconName = "CatalogRecentIcon";
+        break;
       case FolderType.Privacy:
-        return (
-          <Icons.CatalogPrivateRoomIcon size="scale" isfill color="#657077" />
-        );
-
+        iconName = "CatalogPrivateRoomIcon";
+        break;
       case FolderType.TRASH:
-        return <Icons.CatalogTrashIcon size="scale" isfill color="#657077" />;
-
+        iconName = "CatalogTrashIcon";
+        break;
       default:
-        return <Icons.CatalogFolderIcon size="scale" isfill color="#657077" />;
+        break;
     }
+
+    if (item.parentId !== 0) iconName = "CatalogFolderIcon";
+
+    switch (item.providerKey) {
+      case "GoogleDrive":
+        iconName = "CloudServicesGoogleDriveIcon";
+        break;
+      case "Box":
+        iconName = "CloudServicesBoxIcon";
+        break;
+      case "DropboxV2":
+        iconName = "CloudServicesDropboxIcon";
+        break;
+      case "OneDrive":
+        iconName = "CloudServicesOneDriveIcon";
+        break;
+      case "SharePoint":
+        iconName = "CloudServicesOneDriveIcon";
+        break;
+      case "kDrive":
+        iconName = "CatalogFolderIcon";
+        break;
+      case "Yandex":
+        iconName = "CatalogFolderIcon";
+        break;
+      case "NextCloud":
+        iconName = "CloudServicesNextcloudIcon";
+        break;
+      case "OwnCloud":
+        iconName = "CatalogFolderIcon";
+        break;
+      case "WebDav":
+        iconName = "CatalogFolderIcon";
+        break;
+      default:
+        break;
+    }
+
+    return React.createElement(Icons[iconName], {
+      size: "scale",
+      isfill: true,
+      color: "#657077",
+    });
   };
 
   showDragItems = (item) => {
