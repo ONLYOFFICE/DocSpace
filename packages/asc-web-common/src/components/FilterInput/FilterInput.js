@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { SearchInput } from "@appserver/components";
+import SearchInput from "@appserver/components/src/components/search-input";
 import isEqual from "lodash/isEqual";
 import FilterBlock from "./sub-components/FilterBlock";
 import SortComboBox from "./sub-components/SortComboBox";

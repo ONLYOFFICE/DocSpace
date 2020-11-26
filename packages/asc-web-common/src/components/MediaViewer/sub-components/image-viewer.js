@@ -1,8 +1,15 @@
 import React from "react";
 import PropTypes from "prop-types";
-
 import Viewer from "react-viewer";
-import { Icons } from "@appserver/components";
+import {
+  MediaZoomInIcon,
+  MediaZoomOutIcon,
+  MediaResetIcon,
+  MediaRotateLeftIcon,
+  MediaRotateRightIcon,
+  MediaDeleteIcon,
+  MediaDownloadIcon,
+} from "@appserver/components/src/components/icons/svg";
 import styled from "styled-components";
 import MediaScrollButton from "./scroll-button";
 import ControlBtn from "./control-btn";
@@ -110,7 +117,7 @@ var customToolbar = [
     actionType: 1,
     render: (
       <div className="iconContainer zoomIn">
-        <Icons.MediaZoomInIcon size="scale" />
+        <MediaZoomInIcon size="scale" />
       </div>
     ),
   },
@@ -119,7 +126,7 @@ var customToolbar = [
     actionType: 2,
     render: (
       <div className="iconContainer zoomOut">
-        <Icons.MediaZoomOutIcon size="scale" />
+        <MediaZoomOutIcon size="scale" />
       </div>
     ),
   },
@@ -128,7 +135,7 @@ var customToolbar = [
     actionType: 7,
     render: (
       <div className="iconContainer reset">
-        <Icons.MediaResetIcon size="scale" />
+        <MediaResetIcon size="scale" />
       </div>
     ),
   },
@@ -137,7 +144,7 @@ var customToolbar = [
     actionType: 5,
     render: (
       <div className="iconContainer rotateLeft">
-        <Icons.MediaRotateLeftIcon size="scale" />
+        <MediaRotateLeftIcon size="scale" />
       </div>
     ),
   },
@@ -146,7 +153,7 @@ var customToolbar = [
     actionType: 6,
     render: (
       <div className="iconContainer rotateRight">
-        <Icons.MediaRotateRightIcon size="scale" />
+        <MediaRotateRightIcon size="scale" />
       </div>
     ),
   },
@@ -165,7 +172,7 @@ var customToolbar = [
     render: (
       <ControlBtn className="controlBtn">
         <div className="btnContainer">
-          <Icons.MediaDeleteIcon size="scale" />
+          <MediaDeleteIcon size="scale" />
         </div>
       </ControlBtn>
     ),
@@ -175,7 +182,7 @@ var customToolbar = [
     render: (
       <ControlBtn className="controlBtn">
         <div className="btnContainer">
-          <Icons.MediaDownloadIcon size="scale" />
+          <MediaDownloadIcon size="scale" />
         </div>
       </ControlBtn>
     ),

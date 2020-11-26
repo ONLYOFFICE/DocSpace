@@ -1,11 +1,12 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
-import { utils, Scrollbar, DragAndDrop } from "@appserver/components";
-import SelectedFrame from "./SelectedFrame";
 import isEqual from "lodash/isEqual";
 
-const { tablet } = utils.device;
+import Scrollbar from "@appserver/components/src/components/scrollbar";
+import DragAndDrop from "@appserver/components/src/components/drag-and-drop";
+import { tablet } from "@appserver/components/src/utils/device";
+import SelectedFrame from "./SelectedFrame";
 
 const commonStyles = css`
   flex-grow: 1;

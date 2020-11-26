@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Box } from "@appserver/components";
 import styled from "styled-components";
+import Box from "@appserver/components/src/components/box";
 import RecoverAccess from "./recover-access-container";
 import { connect } from "react-redux";
 import { useTranslation } from "react-i18next";

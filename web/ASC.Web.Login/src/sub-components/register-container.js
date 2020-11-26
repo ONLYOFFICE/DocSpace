@@ -1,9 +1,13 @@
 import React, { useState } from "react";
-import { Box, Text, toastr } from "@appserver/components";
+
+import Box from "@appserver/components/src/components/box";
+import Text from "@appserver/components/src/components/text";
+import toastr from "@appserver/components/src/components/toast/toastr";
+
 import RegisterModalDialog from "./register-modal-dialog";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import { sendRegisterRequest } from "../../../api/settings/index";
+import { sendRegisterRequest } from "@appserver/common/src/api/settings";
 
 const StyledRegister = styled(Box)`
   position: absolute;

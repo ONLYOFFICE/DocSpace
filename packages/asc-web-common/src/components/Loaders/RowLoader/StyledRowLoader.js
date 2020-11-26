@@ -1,7 +1,6 @@
 import styled from "styled-components";
 
-import { utils } from "@appserver/components";
-const { desktop } = utils.device;
+import { desktop } from "@appserver/components/src/utils/device";
 
 const StyledRow = styled.div`
   width: 100%;

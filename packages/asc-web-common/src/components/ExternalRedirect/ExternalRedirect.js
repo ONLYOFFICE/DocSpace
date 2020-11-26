@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { Loader } from "@appserver/components";
+import Loader from "@appserver/components/src/components/loader";
 import PageLayout from "../PageLayout";
 
 export class ExternalRedirect extends Component {

@@ -1,7 +1,11 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { Backdrop, ProgressBar, utils } from "@appserver/components";
+import Backdrop from "@appserver/components/src/components/backdrop";
+import ProgressBar from "@appserver/components/src/components/progress-bar";
+import { size } from "@appserver/components/src/utils/device";
+import { Provider } from "@appserver/components/src/utils/context";
+
 import store from "../../store";
 import { withTranslation } from "react-i18next";
 import i18n from "./i18n";
@@ -22,8 +26,6 @@ import { changeLanguage } from "../../utils";
 import ReactResizeDetector from "react-resize-detector";
 
 const { getLanguage } = store.auth.selectors;
-const { size } = utils.device;
-const { Provider } = utils.context;
 
 function ArticleHeader() {
   return null;

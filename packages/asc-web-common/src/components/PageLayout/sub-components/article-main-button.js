@@ -2,9 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import isEqual from "lodash/isEqual";
 
-import { utils } from "@appserver/components";
-
-const { tablet } = utils.device;
+import { tablet } from "@appserver/components/src/utils/device";
 
 const StyledArticleMainButton = styled.div`
   margin: 16px 0 0;

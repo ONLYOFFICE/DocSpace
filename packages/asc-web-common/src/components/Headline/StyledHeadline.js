@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Heading } from "@appserver/components";
+import Heading from "@appserver/components/src/components/heading";
 
 const size = {
   header: "28px",

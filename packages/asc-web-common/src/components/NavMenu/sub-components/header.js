@@ -8,7 +8,7 @@ import NavLogoItem from "./nav-logo-item";
 import Loaders from "../../Loaders/index";
 import { ReactSVG } from "react-svg";
 
-import { utils } from "@appserver/components";
+import { desktop } from "@appserver/components/src/utils/device";
 import { connect } from "react-redux";
 import {
   getCurrentProductId,
@@ -18,8 +18,6 @@ import {
   getTotalNotificationsCount,
   getIsLoaded,
 } from "../../../store/auth/selectors";
-
-const { desktop } = utils.device;
 
 const backgroundColor = "#0F4071";
 

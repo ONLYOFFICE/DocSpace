@@ -1,6 +1,9 @@
 import React from "react";
-import { Icons, DropDown } from "@appserver/components";
 import PropTypes from "prop-types";
+
+import DropDown from "@appserver/components/src/components/drop-down";
+import { ExpanderDownIcon } from "@appserver/components/src/components/icons/svg";
+
 import { Caret, StyledHideFilterButton } from "../StyledFilterInput";
 
 class HideFilter extends React.Component {
@@ -44,7 +47,7 @@ class HideFilter extends React.Component {
         <StyledHideFilterButton id="PopoverLegacy" isDisabled={isDisabled}>
           {count}
           <Caret isOpen={popoverOpen}>
-            <Icons.ExpanderDownIcon
+            <ExpanderDownIcon
               color="#A3A9AE"
               isfill={true}
               size="scale"

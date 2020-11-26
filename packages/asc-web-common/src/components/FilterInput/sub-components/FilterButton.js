@@ -1,5 +1,5 @@
 import React from "react";
-import { ContextMenuButton } from "@appserver/components";
+import ContextMenuButton from "@appserver/components/src/components/context-menu-button";
 import PropTypes from "prop-types";
 
 class FilterButton extends React.PureComponent {

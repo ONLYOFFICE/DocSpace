@@ -1,7 +1,6 @@
 import React from "react";
 import styled, { css } from "styled-components";
-import { utils } from "@appserver/components";
-const { tablet } = utils.device;
+import { tablet } from "@appserver/components/src/utils/device";
 
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */

@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { Scrollbar } from "@appserver/components";
+import Scrollbar from "@appserver/components/src/components/scrollbar";
 
 const backgroundColor = "#0F4071";
 

@@ -1,7 +1,9 @@
 import styled from "styled-components";
-import { utils } from "@appserver/components";
-
-const { desktop, tablet, mobile } = utils.device;
+import {
+  desktop,
+  tablet,
+  mobile,
+} from "@appserver/components/src/utils/device";
 
 const StyledBox1 = styled.div`
   display: grid;

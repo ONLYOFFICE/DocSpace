@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components";
-import { DropDownItem } from "@appserver/components";
+import DropDownItem from "@appserver/components/src/components/drop-down-item";
 
 const commonStyle = css`
   font-family: "Open Sans", sans-serif, Arial;

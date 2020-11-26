@@ -1,8 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { utils, Icons } from "@appserver/components";
-const { tablet } = utils.device;
+import { tablet } from "@appserver/components/src/utils/device";
+import { CatalogButtonIcon } from "@appserver/components/src/components/icons/svg";
 
 const StyledSectionToggler = styled.div`
   height: 64px;
@@ -43,7 +43,7 @@ const SectionToggler = React.memo((props) => {
   return (
     <StyledSectionToggler visible={visible}>
       <div onClick={onClick}>
-        <Icons.CatalogButtonIcon style={iconStyle} />
+        <CatalogButtonIcon style={iconStyle} />
       </div>
     </StyledSectionToggler>
   );

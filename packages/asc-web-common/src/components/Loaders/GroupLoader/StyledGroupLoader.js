@@ -1,6 +1,5 @@
 import styled from "styled-components";
-import { utils } from "@appserver/components";
-const { mobile, smallTablet } = utils.device;
+import { mobile, smallTablet } from "@appserver/components/src/utils/device";
 
 const StyledGroup = styled.div`
   width: 400px;

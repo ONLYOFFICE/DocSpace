@@ -1,7 +1,12 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { Icons, Text } from "@appserver/components";
+import Text from "@appserver/components/src/components/text";
+import {
+  CrossIcon,
+  MediaDeleteIcon,
+  MediaDownloadIcon,
+} from "@appserver/components/src/components/icons/svg";
 
 import ImageViewer from "./sub-components/image-viewer";
 import VideoViewer from "./sub-components/video-viewer";
@@ -421,7 +426,7 @@ class MediaViewer extends React.Component {
               onClick={this.props.onClose && this.props.onClose}
               className="mediaPlayerClose"
             >
-              <Icons.CrossIcon size="medium" isfill={true} color="#fff" />
+              <CrossIcon size="medium" isfill={true} color="#fff" />
             </ControlBtn>
           </div>
         </div>
@@ -451,14 +456,14 @@ class MediaViewer extends React.Component {
               {this.props.canDelete(currentFileId) && (
                 <ControlBtn onClick={this.onDelete}>
                   <div className="deleteBtnContainer">
-                    <Icons.MediaDeleteIcon size="scale" />
+                    <MediaDeleteIcon size="scale" />
                   </div>
                 </ControlBtn>
               )}
               {this.props.canDownload(currentFileId) && (
                 <ControlBtn onClick={this.onDownload}>
                   <div className="downloadBtnContainer">
-                    <Icons.MediaDownloadIcon size="scale" />
+                    <MediaDownloadIcon size="scale" />
                   </div>
                 </ControlBtn>
               )}

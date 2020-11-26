@@ -2,7 +2,7 @@
 import React from "react";
 import { Redirect, Route } from "react-router-dom";
 import { connect } from "react-redux";
-//import { Loader } from "@appserver/components";
+//import Loader from "@appserver/components/src/components/loader";
 //import PageLayout from "../PageLayout";
 import { getCurrentUser, isAdmin, isMe } from "../../store/auth/selectors.js";
 import { AUTH_KEY } from "../../constants";

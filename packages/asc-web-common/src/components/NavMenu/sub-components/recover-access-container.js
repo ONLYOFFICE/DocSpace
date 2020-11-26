@@ -1,8 +1,13 @@
 import React, { useState } from "react";
-import { Box, Text, Icons, toastr } from "@appserver/components";
-import RecoverAccessModalDialog from "./recover-access-modal-dialog";
 import styled from "styled-components";
 import PropTypes from "prop-types";
+
+import Box from "@appserver/components/src/components/box";
+import Text from "@appserver/components/src/components/text";
+import toastr from "@appserver/components/src/components/toast/toast";
+import { UnionIcon } from "@appserver/components/src/components/icons/svg";
+
+import RecoverAccessModalDialog from "./recover-access-modal-dialog";
 import { sendRecoverRequest } from "../../../api/settings/index";
 
 const RecoverContainer = styled(Box)`
@@ -85,7 +90,7 @@ const RecoverAccess = ({ t }) => {
           onClick={onRecoverClick}
         >
           <Box paddingProp="16px 8px 16px 16px" className="recover-icon">
-            <Icons.UnionIcon />
+            <UnionIcon />
           </Box>
           <Box
             paddingProp="18px 16px 18px 0px"

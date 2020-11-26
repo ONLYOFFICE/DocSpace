@@ -1,14 +1,13 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import {
-  Button,
-  TextInput,
-  Text,
-  ModalDialog,
-  Textarea,
-  FieldContainer,
-} from "@appserver/components";
 import styled from "styled-components";
+
+import Button from "@appserver/components/src/components/button";
+import TextInput from "@appserver/components/src/components/text-input";
+import Text from "@appserver/components/src/components/text";
+import ModalDialog from "@appserver/components/src/components/modal-dialog";
+import Textarea from "@appserver/components/src/components/textarea";
+import FieldContainer from "@appserver/components/src/components/field-container";
 
 const ModalDialogContainer = styled.div`
   .modal-dialog-aside-footer {

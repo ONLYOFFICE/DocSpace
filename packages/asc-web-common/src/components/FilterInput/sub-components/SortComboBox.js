@@ -1,12 +1,12 @@
 import React from "react";
-import isEqual from "lodash/isEqual";
-import {
-  ComboBox,
-  IconButton,
-  DropDownItem,
-  RadioButtonGroup,
-} from "@appserver/components";
 import PropTypes from "prop-types";
+import isEqual from "lodash/isEqual";
+
+import ComboBox from "@appserver/components/src/components/combobox";
+import IconButton from "@appserver/components/src/components/icon-button";
+import DropDownItem from "@appserver/components/src/components/drop-down-item";
+import RadioButtonGroup from "@appserver/components/src/components/radio-button-group";
+
 import { StyledIconButton } from "../StyledFilterInput";
 
 class SortComboBox extends React.Component {

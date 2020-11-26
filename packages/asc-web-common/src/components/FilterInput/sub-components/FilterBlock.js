@@ -1,7 +1,7 @@
 import React from "react";
 import FilterButton from "./FilterButton";
 import HideFilter from "./HideFilter";
-import { ComboBox } from "@appserver/components";
+import ComboBox from "@appserver/components/src/components/combobox";
 import CloseButton from "./CloseButton";
 import isEqual from "lodash/isEqual";
 import PropTypes from "prop-types";

@@ -1,7 +1,10 @@
 import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { Backdrop, Toast, Aside } from "@appserver/components";
+import Backdrop from "@appserver/components/src/components/backdrop";
+import Toast from "@appserver/components/src/components/toast";
+import Aside from "@appserver/components/src/components/aside";
+
 import Header from "./sub-components/header";
 import HeaderNav from "./sub-components/header-nav";
 import HeaderUnAuth from "./sub-components/header-unauth";

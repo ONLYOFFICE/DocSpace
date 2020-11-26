@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Avatar, DropDown } from "@appserver/components";
+import Avatar from "@appserver/components/src/components/avatar";
+import DropDown from "@appserver/components/src/components/drop-down";
 import {
   AvatarContainer,
   LabelContainer,
