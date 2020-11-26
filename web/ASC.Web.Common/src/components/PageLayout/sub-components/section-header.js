@@ -21,6 +21,22 @@ const StyledSectionHeader = styled.div`
   @media ${tablet} {
     margin-right: 16px;
     border-bottom: none;
+
+    ${(props) =>
+      isSafari
+        ? props.isLoaded
+          ? css`
+              position: absolute;
+              top: 56px;
+            `
+          : css`
+              position: none;
+            `
+        : css`
+            position: absolute;
+            top: 56px;
+          `};
+
     ${(props) =>
       props.borderBottom &&
       `

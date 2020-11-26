@@ -22,7 +22,7 @@ const commonStyles = css`
 
     @media ${tablet} {
       padding: 16px 0 16px 24px;
-      margin-top: ${(props) => (props.isLoaded ? "58px" : "2px")};
+      margin-top: ${(props) => (props.isLoaded ? "104px" : "2px")};
     }
 
     .section-wrapper {
