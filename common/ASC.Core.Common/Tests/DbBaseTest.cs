@@ -31,8 +31,6 @@ namespace ASC.Core.Common.Tests
 
     using ASC.Common.Utils;
 
-    using Microsoft.Extensions.Configuration;
-
     public class DbBaseTest<TDbService>
     {
         protected TDbService Service
@@ -47,7 +45,7 @@ namespace ASC.Core.Common.Tests
             private set;
         }
 
-        internal IConfiguration Configuration { get; set; }
+        internal ConfigurationExtension Configuration { get; set; }
 
         protected DbBaseTest()
         {

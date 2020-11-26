@@ -57,8 +57,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             var operations = tasks.GetTasks();
             var processlist = Process.GetProcesses();
 
-            foreach (var o in operations.Where(o => string.IsNullOrEmpty(o.InstanceId)
-                                                    || processlist.All(p => p.Id != int.Parse(o.InstanceId))))
+            foreach (var o in operations.Where(o => processlist.All(p => p.Id != o.InstanceId)))
             {
                 o.SetProperty(FileOperation.PROGRESS, 100);
                 tasks.RemoveTask(o.Id);
