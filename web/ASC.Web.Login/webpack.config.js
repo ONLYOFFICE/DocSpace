@@ -9,6 +9,9 @@ module.exports = {
 
   resolve: {
     extensions: [".jsx", ".js", ".json"],
+    fallback: {
+      crypto: false,
+    },
   },
 
   devServer: {
