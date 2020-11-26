@@ -48,6 +48,8 @@ class MobileLayout extends Component {
         ? this.documentElement.scrollTop
         : window.pageYOffset;
 
+    if (Math.abs(currentScrollPosition - prevScrollPosition) <= 104) return;
+
     let isVisible = prevScrollPosition >= currentScrollPosition;
 
     if (
