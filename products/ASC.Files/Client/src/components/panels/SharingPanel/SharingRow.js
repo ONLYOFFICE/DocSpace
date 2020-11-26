@@ -6,7 +6,6 @@ import {
   Text,
   Icons,
   DropDownItem,
-  LinkWithDropdown,
 } from "asc-web-components";
 import { toastr } from "asc-web-common";
 import copy from "copy-to-clipboard";
@@ -128,6 +127,10 @@ const SharingRow = (props) => {
   const onShareFacebook = () => window.open(`https://www.facebook.com`);
   /*window.open(`https://www.facebook.com/dialog/feed?app_id=645528132139019&display=popup&link=${item.shareLink}`);*/
 
+  const onChangeToggle = (e) => {
+    return e.target.checked;
+  };
+
   const options = [
     {
       key: 1,
@@ -231,10 +234,12 @@ const SharingRow = (props) => {
             linkText="ExternalLink"
             data={externalLinkData}
             embeddedComponentRender={embeddedComponentRender}
+            onChangeToggle={onChangeToggle}
             {...props}
           />
           <LinkRow
             linkText="InternalLink"
+            type="internal"
             data={internalLinkData}
             embeddedComponentRender={embeddedComponentRender}
             {...props}
@@ -244,6 +249,7 @@ const SharingRow = (props) => {
 
       {!item.shareLink && (
         <Row
+          className="sharing-row"
           key={`internal-link-key_${index}`}
           element={
             item.rights.isOwner || item.id === isMyId ? (

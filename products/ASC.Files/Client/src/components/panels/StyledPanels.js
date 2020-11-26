@@ -109,7 +109,6 @@ const StyledContent = styled.div`
   position: relative;
   width: 100%;
   background-color: #fff;
-  padding: 0 16px;
 
   .files-operations-panel {
     border-bottom: 1px solid #dee2e6;
@@ -217,6 +216,7 @@ const StyledSharingHeaderContent = styled.div`
   display: flex;
   align-items: center;
   border-bottom: 1px solid #dee2e6;
+  padding: 0 16px;
 
   .sharing_panel-icons-container {
     display: flex;
@@ -236,11 +236,14 @@ const StyledSharingHeaderContent = styled.div`
 `;
 
 const StyledSharingBody = styled(Scrollbar)`
-  position: relative;
-  padding: 16px 0;
-
   .row_content {
     overflow: visible;
+  }
+
+  .sharing-row {
+    margin: 0 16px;
+    width: calc(100% - 17px);
+    box-sizing: border-box;
   }
 
   .nav-thumb-vertical {
@@ -292,7 +295,7 @@ const StyledSharingBody = styled(Scrollbar)`
   }
 
   .sharing_panel-owner-icon {
-    padding-right: 12px;
+    padding-right: 19px;
   }
 
   .sharing_panel-remove-icon {
@@ -334,10 +337,11 @@ const StyledFooter = styled.div`
   display: flex;
   position: fixed;
   bottom: 0;
-  padding: 16px 0;
-  width: calc(100% - 32px);
+  padding: 16px;
+  width: 100%;
   background-color: #fff;
   border-top: 1px solid #eceef1;
+  box-sizing: border-box;
 
   .sharing_panel-checkbox {
     span {
@@ -359,9 +363,21 @@ const StyledFooter = styled.div`
 `;
 
 const StyledLinkRow = styled.div`
+  width: calc(100% + 17px);
+  padding: 0 16px;
+  box-sizing: border-box;
+  background-color: #f8f9f9;
+
+  .link-row {
+    ${(props) => props.type === "internal" && "border-bottom:none;"}
+  }
   .row_content {
     display: grid;
     grid-template-columns: 1fr 28px;
+  }
+
+  .combo-button {
+    background: transparent;
   }
 `;
 

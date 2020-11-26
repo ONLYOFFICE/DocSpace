@@ -6,8 +6,17 @@ class LinkRow extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {};
+    this.state = {
+      isChecked: false,
+    };
   }
+
+  onChangeToggle = (e) => {
+    const isChecked = this.props.onChangeToggle(e);
+    this.setState({
+      isChecked: isChecked,
+    });
+  };
 
   render() {
     const {
@@ -18,11 +27,15 @@ class LinkRow extends React.Component {
       embeddedComponentRender,
       accessOptions,
       item,
+      type,
     } = this.props;
 
+    const { isChecked } = this.state;
+
     return (
-      <StyledLinkRow>
+      <StyledLinkRow type={type}>
         <Row
+          className="link-row"
           key={`${linkText}-key_${index}`}
           element={embeddedComponentRender(accessOptions, item)}
           contextButtonSpacerWidth="0px"
@@ -38,9 +51,14 @@ class LinkRow extends React.Component {
             >
               {t(linkText)}
             </LinkWithDropdown>
-            <div>
-              <ToggleButton />
-            </div>
+            {type !== "internal" && (
+              <div>
+                <ToggleButton
+                  isChecked={isChecked}
+                  onChange={this.onChangeToggle}
+                />
+              </div>
+            )}
           </>
         </Row>
       </StyledLinkRow>
