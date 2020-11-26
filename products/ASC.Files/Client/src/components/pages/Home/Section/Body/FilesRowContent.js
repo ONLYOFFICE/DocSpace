@@ -33,6 +33,7 @@ import {
   getFilter,
   getFolders,
   getIsLoading,
+  getIsPrivacyFolder,
   getIsRecycleBinFolder,
   getNewRowItems,
   getRootFolderId,
@@ -48,10 +49,12 @@ import {
 import { NewFilesPanel } from "../../../../panels";
 import { ConvertDialog } from "../../../../dialogs";
 import EditingWrapperComponent from "./EditingWrapperComponent";
+import { setEncryptionAccess } from "../../../../../helpers/desktop";
 
 const { FileAction } = constants;
 const sideColor = "#A3A9AE";
 const { getSettings } = initStore.auth.selectors;
+const { getEncryptionAccess } = initStore.auth.actions;
 
 const SimpleFilesRowContent = styled(RowContent)`
   .badge-ext {
@@ -160,6 +163,8 @@ class FilesRowContent extends React.PureComponent {
       item,
       setIsLoading,
       openDocEditor,
+      isPrivacy,
+      getEncryptionAccess,
     } = this.props;
     const { itemTitle } = this.state;
 
@@ -666,6 +671,7 @@ function mapStateToProps(state, props) {
     newRowItems: getNewRowItems(state),
     dragging: getDragging(state),
     isLoading: getIsLoading(state),
+    isPrivacy: getIsPrivacyFolder(state),
 
     canWebEdit: canWebEdit(props.item.fileExst)(state),
     canConvert: canConvert(props.item.fileExst)(state),
@@ -687,4 +693,5 @@ export default connect(mapStateToProps, {
   setIsLoading,
   clearProgressData,
   fetchFiles,
+  getEncryptionAccess,
 })(withRouter(withTranslation()(FilesRowContent)));
