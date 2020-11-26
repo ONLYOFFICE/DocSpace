@@ -1,4 +1,7 @@
 import React, { Component, useEffect } from "react";
+import { connect } from "react-redux";
+import styled from "styled-components";
+import { withTranslation } from "react-i18next";
 import PropTypes from "prop-types";
 //import { withRouter } from "react-router";
 import Box from "@appserver/components/src/components/box";
@@ -6,29 +9,29 @@ import Button from "@appserver/components/src/components/button";
 import Text from "@appserver/components/src/components/text";
 import TextInput from "@appserver/components/src/components/text-input";
 import Link from "@appserver/components/src/components/link";
-import toastr from "@appserver/components/src/components/toast";
+import toastr from "@appserver/components/src/components/toast/toastr";
 import Checkbox from "@appserver/components/src/components/checkbox";
 import HelpButton from "@appserver/components/src/components/help-button";
 import PasswordInput from "@appserver/components/src/components/password-input";
 import FieldContainer from "@appserver/components/src/components/field-container";
+import PageLayout from "@appserver/common/src/components/PageLayout";
 
-//import PageLayout from "../../components/PageLayout";
-//import { connect } from "react-redux";
-import styled from "styled-components";
-import { withTranslation } from "react-i18next";
 import i18n from "./i18n";
-//import ForgotPasswordModalDialog from "./sub-components/forgot-password-modal-dialog";
-// import {
-//   login,
-//   setIsLoaded,
-//   reloadPortalSettings,
-// } from "../../store/auth/actions";
-//import { getLanguage } from "../../store/auth/selectors";
-//import { sendInstructionsToChangePassword } from "../../api/people";
-//import Register from "./sub-components/register-container";
-//import { createPasswordHash } from "../../utils";
-//import history from "../../history";
-//import { redirectToDefaultPage } from "../../utils";
+import ForgotPasswordModalDialog from "./sub-components/forgot-password-modal-dialog";
+import Register from "./sub-components/register-container";
+
+import {
+  login,
+  setIsLoaded,
+  reloadPortalSettings,
+} from "@appserver/common/src/store/auth/actions";
+
+import { getLanguage } from "@appserver/common/src/store/auth/selectors";
+import { sendInstructionsToChangePassword } from "@appserver/common/src/api/people";
+import {
+  createPasswordHash,
+  redirectToDefaultPage,
+} from "@appserver/common/src/utils";
 
 const LoginContainer = styled.div`
   display: flex;
@@ -379,7 +382,7 @@ class Form extends Component {
               </Link>
             </div>
 
-            {/* {openDialog && (
+            {openDialog && (
               <ForgotPasswordModalDialog
                 openDialog={openDialog}
                 isLoading={isLoading}
@@ -390,7 +393,7 @@ class Form extends Component {
                 onDialogClose={this.onDialogClose}
                 t={t}
               />
-            )} */}
+            )}
 
             <Button
               id="button"
@@ -456,64 +459,60 @@ const LoginForm = (props) => <FormWrapper i18n={i18n} {...props} />;
 
 export default LoginForm;
 
-// const RegisterWrapper = withTranslation()(Register);
+/*const RegisterWrapper = withTranslation()(Register);
 
-// const LoginForm = (props) => {
-//   const { language, isLoaded, enabledJoin } = props;
+const LoginForm = (props) => {
+  const { language, isLoaded, enabledJoin } = props;
 
-//   useEffect(() => {
-//     i18n.changeLanguage(language);
-//   }, [language]);
+  useEffect(() => {
+    i18n.changeLanguage(language);
+  }, [language]);
 
-//   return (
-//     <>
-//       {isLoaded && (
-//         <>
-//           <PageLayout>
-//             <PageLayout.SectionBody>
-//               <>
-//                 <FormWrapper i18n={i18n} {...props} />
-//                 {enabledJoin && <RegisterWrapper i18n={i18n} {...props} />}
-//               </>
-//             </PageLayout.SectionBody>
-//           </PageLayout>
-//         </>
-//       )}
-//     </>
-//   );
-// };
+  return (
+    <>
+      {isLoaded && (
+        <>
+          <PageLayout>
+            <PageLayout.SectionBody>
+              <>
+                <FormWrapper i18n={i18n} {...props} />
+                {enabledJoin && <RegisterWrapper i18n={i18n} {...props} />}
+              </>
+            </PageLayout.SectionBody>
+          </PageLayout>
+        </>
+      )}
+    </>
+  );
+};
 
-// LoginForm.defaultProps = {
-//   language: "en",
-// };
+LoginForm.propTypes = {
+  language: PropTypes.string.isRequired,
+  isLoaded: PropTypes.bool,
+  enabledJoin: PropTypes.bool,
+};
 
-// LoginForm.propTypes = {
-//   language: PropTypes.string.isRequired,
-//   isLoaded: PropTypes.bool,
-//   enabledJoin: PropTypes.bool,
-// };
+function mapStateToProps(state) {
+  const { isLoaded, settings } = state.auth;
+  const {
+    greetingSettings,
+    enabledJoin,
+    organizationName,
+    hashSettings,
+  } = settings;
 
-// function mapStateToProps(state) {
-//   const { isLoaded, settings } = state.auth;
-//   const {
-//     greetingSettings,
-//     enabledJoin,
-//     organizationName,
-//     hashSettings,
-//   } = settings;
+  return {
+    isLoaded,
+    enabledJoin,
+    organizationName,
+    language: getLanguage(state),
+    greetingTitle: greetingSettings,
+    hashSettings,
+  };
+}
 
-//   return {
-//     isLoaded,
-//     enabledJoin,
-//     organizationName,
-//     language: getLanguage(state),
-//     greetingTitle: greetingSettings,
-//     hashSettings,
-//   };
-// }
-
-// export default connect(mapStateToProps, {
-//   login,
-//   setIsLoaded,
-//   reloadPortalSettings,
-// })(withRouter(LoginForm));
+export default connect(mapStateToProps, {
+  login,
+  setIsLoaded,
+  reloadPortalSettings,
+})(withRouter(LoginForm));*/
