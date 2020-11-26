@@ -1,11 +1,10 @@
 ﻿
-using System;
-
 using ASC.Api.Core;
 using ASC.Common;
-using ASC.Data.Reassigns;
+using ASC.Common.DependencyInjection;
 using ASC.Employee.Core.Controllers;
-using ASC.Web.Core.Users;
+
+using Autofac;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,17 +23,15 @@ namespace ASC.People
 
         public override void ConfigureServices(IServiceCollection services)
         {
-            var diHelper = new DIHelper(services);
-
-            diHelper.AddProgressQueue<RemoveProgressItem>(1, (int)TimeSpan.FromMinutes(5).TotalMilliseconds, true, false, 0);
-            diHelper.AddProgressQueue<ReassignProgressItem>(1, (int)TimeSpan.FromMinutes(5).TotalMilliseconds, true, false, 0);
-            diHelper.AddWorkerQueue<ResizeWorkerItem>(2, (int)TimeSpan.FromMinutes(30).TotalMilliseconds, true, 1);
-
-            diHelper
-                .AddPeopleController()
-                .AddGroupController();
-
             base.ConfigureServices(services);
+
+            DIHelper.TryAdd<PeopleController>();
+            DIHelper.TryAdd<GroupController>();
+        }
+
+        public void ConfigureContainer(ContainerBuilder builder)
+        {
+            builder.Register(Configuration, HostEnvironment.ContentRootPath);
         }
     }
 }

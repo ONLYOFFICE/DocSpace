@@ -1,100 +1,109 @@
-import React from 'react';
+import React from "react";
 import PropTypes from "prop-types";
-import styled from 'styled-components';
+import styled from "styled-components";
 
-import { 
-  ModalDialog, 
-  EmailInput, 
+import {
+  ModalDialog,
+  EmailInput,
   Button,
   Box,
   Text,
-  utils 
-} from 'asc-web-components';
+  utils,
+} from "asc-web-components";
 
 const { tablet } = utils.device;
 
 const BtnContainer = styled(Box)`
   width: 100px;
-  
+
   @media ${tablet} {
     width: 293px;
   }
 `;
 
 const BodyContainer = styled(Box)`
-  font: 13px 'Open Sans', normal;
+  font: 13px "Open Sans", normal;
   line-height: 20px;
 `;
 
-const ModalContainer = ({ 
-  t, 
-  errorLoading, 
-  visibleModal, 
-  errorMessage, 
+const ModalContainer = ({
+  t,
+  errorLoading,
+  visibleModal,
+  errorMessage,
   emailOwner,
   settings,
   onEmailChangeHandler,
   onSaveEmailHandler,
   onCloseModal,
-  checkingMessages
+  checkingMessages,
 }) => {
-
   let header, content, footer;
 
   const visible = errorLoading ? errorLoading : visibleModal;
 
-  if(errorLoading) {
-    header = t('errorLicenseTitle');
-    content = <BodyContainer> 
-        { errorMessage
-            ? errorMessage
-            : t('errorLicenseBody')}
-    </BodyContainer>;
+  if (errorLoading) {
+    header = t("ErrorLicenseTitle");
+    content = (
+      <BodyContainer>
+        {errorMessage ? errorMessage : t("ErrorLicenseBody")}
+      </BodyContainer>
+    );
+  } else if (visibleModal && checkingMessages.length < 1) {
+    header = t("ChangeEmailTitle");
 
-  } else if( visibleModal && checkingMessages.length < 1) {
-    header = t('changeEmailTitle');
-
-    content = <EmailInput
-      tabIndex={1}
-      scale={true}
-      size='base'
-      id="change-email"
-      name="email-wizard"
-      placeholder={t('placeholderEmail')}
-      emailSettings={settings}
-      value={emailOwner}
-      onValidateInput={onEmailChangeHandler}
-    />;
-
-    footer = <BtnContainer>
-      <Button
-        key="saveBtn"
-        label={t('changeEmailBtn')}
-        primary={true}
+    content = (
+      <EmailInput
+        tabIndex={1}
         scale={true}
-        size="big"
-        onClick={onSaveEmailHandler}
+        size="base"
+        id="change-email"
+        name="email-wizard"
+        placeholder={t("PlaceholderEmail")}
+        emailSettings={settings}
+        value={emailOwner}
+        onValidateInput={onEmailChangeHandler}
       />
-    </BtnContainer>;
-  } else if ( visibleModal && checkingMessages.length > 0) {
-    header = t('errorParamsTitle');
+    );
 
-    content = <>
-      <Text as="p">{ t('errorParamsBody') }</Text>
-      {
-        checkingMessages.map((el, index) => <Text key={index} as="p">- {el};</Text>)
-      }
-    </>;
+    footer = (
+      <BtnContainer>
+        <Button
+          key="saveBtn"
+          label={t("ChangeEmailBtn")}
+          primary={true}
+          scale={true}
+          size="big"
+          onClick={onSaveEmailHandler}
+        />
+      </BtnContainer>
+    );
+  } else if (visibleModal && checkingMessages.length > 0) {
+    header = t("ErrorParamsTitle");
 
-    footer = <BtnContainer>
-      <Button
-        key="saveBtn"
-        label={t('errorParamsFooter')}
-        primary={true}
-        scale={true}
-        size="big"
-        onClick={onCloseModal} />
-    </BtnContainer>;
+    content = (
+      <>
+        <Text as="p">{t("ErrorParamsBody")}</Text>
+        {checkingMessages.map((el, index) => (
+          <Text key={index} as="p">
+            - {el};
+          </Text>
+        ))}
+      </>
+    );
+
+    footer = (
+      <BtnContainer>
+        <Button
+          key="saveBtn"
+          label={t("ErrorParamsFooter")}
+          primary={true}
+          scale={true}
+          size="big"
+          onClick={onCloseModal}
+        />
+      </BtnContainer>
+    );
   }
 
   return (
@@ -102,13 +111,14 @@ const ModalContainer = ({
       visible={visible}
       displayType="auto"
       zIndex={310}
-      headerContent={header}
-      bodyContent={content}
-      footerContent={footer}
       onClose={onCloseModal}
-    />
+    >
+      <ModalDialog.Header>{header}</ModalDialog.Header>
+      <ModalDialog.Body>{content}</ModalDialog.Body>
+      <ModalDialog.Footer>{footer}</ModalDialog.Footer>
+    </ModalDialog>
   );
-}
+};
 
 ModalContainer.propTypes = {
   t: PropTypes.func.isRequired,
@@ -118,7 +128,7 @@ ModalContainer.propTypes = {
   settings: PropTypes.object.isRequired,
   onEmailChangeHandler: PropTypes.func.isRequired,
   onSaveEmailHandler: PropTypes.func.isRequired,
-  onCloseModal: PropTypes.func.isRequired
+  onCloseModal: PropTypes.func.isRequired,
 };
 
 export default ModalContainer;

@@ -1,14 +1,8 @@
-import React from 'react';
+import React from "react";
 import PropTypes from "prop-types";
-import styled from 'styled-components';
+import styled from "styled-components";
 
-import { 
-  Box, 
-  ComboBox,
-  Text, 
-  Link, 
-  utils 
-} from 'asc-web-components';
+import { Box, ComboBox, Text, Link, utils } from "asc-web-components";
 
 const { tablet } = utils.device;
 
@@ -30,7 +24,7 @@ const StyledContainer = styled(Box)`
   }
 
   .drop-down {
-    margin-left: 8px;
+    margin-left: 6px;
   }
 
   @media ${tablet} {
@@ -39,78 +33,80 @@ const StyledContainer = styled(Box)`
 `;
 
 const SettingsContainer = ({
-  selectLanguage, 
-  selectTimezone, 
-  languages, 
-  timezones, 
-  emailNeeded, 
-  email, 
+  selectLanguage,
+  selectTimezone,
+  languages,
+  timezones,
+  emailNeeded,
+  email,
   emailOwner,
-  t, 
-  machineName, 
-  onClickChangeEmail, 
-  onSelectLanguageHandler, 
-  onSelectTimezoneHandler
+  t,
+  machineName,
+  onClickChangeEmail,
+  onSelectLanguageHandler,
+  onSelectTimezoneHandler,
 }) => {
-  
-  const titleEmail = !emailNeeded 
-    ? <Text>{t('email')}</Text>
-    : null
-  
-  const contentEmail = !emailNeeded 
-    ? <Link 
-        className="email-value" 
-        type="action" 
-        fontSize="13px" 
-        fontWeight="600"
-        isHovered={true} 
-        onClick={onClickChangeEmail}
-      >
-        {email ? email : emailOwner}
-      </Link>
-    : null
-  
+  const titleEmail = !emailNeeded ? <Text>{t("Email")}</Text> : null;
+
+  const contentEmail = !emailNeeded ? (
+    <Link
+      className="email-value"
+      type="action"
+      fontSize="13px"
+      fontWeight="600"
+      isHovered={true}
+      onClick={onClickChangeEmail}
+    >
+      {email ? email : emailOwner}
+    </Link>
+  ) : null;
+
   return (
     <StyledContainer>
-      <Text fontSize="13px">{t('domain')}</Text>
-      <Text className="machine-name-value" fontSize="13px" fontWeight="600">{machineName}</Text>
+      <Text fontSize="13px">{t("Domain")}</Text>
+      <Text className="machine-name-value" fontSize="13px" fontWeight="600">
+        {machineName}
+      </Text>
 
       {titleEmail}
       {contentEmail}
 
-      <Text fontSize="13px">{t('language')}</Text>
-      <ComboBox 
-          className="drop-down" 
-          options={languages}
-          selectedOption={{
-            key: selectLanguage.key,
-            label: selectLanguage.label
-          }} 
-          noBorder={true}
-          scaled={false}
-          size='content'
-          dropDownMaxHeight={300} 
-          onSelect={onSelectLanguageHandler}
-        />
+      <Text fontSize="13px">{t("Language")}</Text>
+      <ComboBox
+        className="drop-down"
+        options={languages}
+        selectedOption={{
+          key: selectLanguage.key,
+          label: selectLanguage.label,
+        }}
+        noBorder={true}
+        scaled={false}
+        size="content"
+        dropDownMaxHeight={300}
+        onSelect={onSelectLanguageHandler}
+        textOverflow={true}
+      />
 
-      <Text className="title" fontSize="13px">{t('timezone')}</Text>
-      <ComboBox 
-          className="drop-down"
-          options={timezones}
-          selectedOption={{
-            key: selectTimezone.key,
-            label: selectTimezone.label 
-          }}
-          noBorder={true}
-          dropDownMaxHeight={300}
-          scaled={false}
-          size='content'
-          onSelect={onSelectTimezoneHandler}
-        />
-  
+      <Text className="title" fontSize="13px">
+        {t("Timezone")}
+      </Text>
+      <ComboBox
+        className="drop-down"
+        options={timezones}
+        selectedOption={{
+          key: selectTimezone.key,
+          label: selectTimezone.label,
+        }}
+        noBorder={true}
+        dropDownMaxHeight={300}
+        scaled={false}
+        size="content"
+        onSelect={onSelectTimezoneHandler}
+        textOverflow={true}
+      />
     </StyledContainer>
   );
-}
+};
 
 SettingsContainer.propTypes = {
   selectLanguage: PropTypes.object.isRequired,
@@ -124,7 +120,7 @@ SettingsContainer.propTypes = {
   email: PropTypes.string,
   onClickChangeEmail: PropTypes.func.isRequired,
   onSelectLanguageHandler: PropTypes.func.isRequired,
-  onSelectTimezoneHandler: PropTypes.func.isRequired
-}
+  onSelectTimezoneHandler: PropTypes.func.isRequired,
+};
 
 export default SettingsContainer;

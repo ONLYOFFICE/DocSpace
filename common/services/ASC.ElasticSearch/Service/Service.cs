@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Core;
 using ASC.Core.Common.Settings;
@@ -40,13 +41,14 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.ElasticSearch.Service
 {
+    [Singletone(Additional = typeof(ServiceExtension))]
     public class Service
     {
-        public IContainer Container { get; }
+        private ILifetimeScope Container { get; }
         private IServiceProvider ServiceProvider { get; }
         private ICacheNotify<ReIndexAction> CacheNotify { get; }
 
-        public Service(IContainer container, IServiceProvider serviceProvider, ICacheNotify<ReIndexAction> cacheNotify)
+        public Service(ILifetimeScope container, IServiceProvider serviceProvider, ICacheNotify<ReIndexAction> cacheNotify)
         {
             Container = container;
             ServiceProvider = serviceProvider;
@@ -103,6 +105,7 @@ namespace ASC.ElasticSearch.Service
         //}
     }
 
+    [Scope]
     public class ServiceScope
     {
         private TenantManager TenantManager { get; }
@@ -118,6 +121,14 @@ namespace ASC.ElasticSearch.Service
         {
             tenantManager = TenantManager;
             settingsManager = SettingsManager;
+        }
+    }
+
+    internal class ServiceExtension
+    {
+        public static void Register(DIHelper services)
+        {
+            services.TryAdd<ServiceScope>();
         }
     }
 }

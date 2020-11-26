@@ -23,7 +23,7 @@ class TextField extends React.Component {
       inputTabIndex,
       tooltipContent,
       helpButtonHeaderContent,
-      maxLength
+      maxLength,
     } = this.props;
 
     return (

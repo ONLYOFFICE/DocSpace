@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import { utils } from 'asc-web-components'
+import styled from "styled-components";
+import { utils } from "asc-web-components";
 
 const MainContainer = styled.div`
   display: flex;
@@ -15,7 +15,7 @@ const MainContainer = styled.div`
     display: flex;
 
     label:not(:first-child) {
-        margin-left: 33px;
+      margin-left: 33px;
     }
   }
 
@@ -47,4 +47,4 @@ const MainFieldsContainer = styled.div`
   flex-grow: 1;
 `;
 
-export { MainContainer, AvatarContainer, MainFieldsContainer }
+export { MainContainer, AvatarContainer, MainFieldsContainer };

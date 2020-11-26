@@ -1,10 +1,11 @@
+
 using ASC.Api.Core;
-using ASC.Common;
 using ASC.Common.DependencyInjection;
 using ASC.Data.Storage;
-using ASC.Data.Storage.Configuration;
 using ASC.Data.Storage.DiscStorage;
 using ASC.FederatedLogin;
+
+using Autofac;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -29,17 +30,17 @@ namespace ASC.Web.Studio
         {
             services.AddCors();
 
-            var diHelper = new DIHelper(services);
-            diHelper
-                .AddStorage()
-                .AddPathUtilsService()
-                .AddStorageHandlerService()
-                .AddLoginHandlerService();
+            base.ConfigureServices(services);
 
             services.AddMemoryCache();
+            DIHelper.TryAdd<Login>();
+            DIHelper.TryAdd<PathUtils>();
+            DIHelper.TryAdd<StorageHandlerScope>();
+        }
 
-            base.ConfigureServices(services);
-            services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
+        public void ConfigureContainer(ContainerBuilder builder)
+        {
+            builder.Register(Configuration, HostEnvironment.ContentRootPath);
         }
 
         public override void Configure(IApplicationBuilder app, IWebHostEnvironment env)

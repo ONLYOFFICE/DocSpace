@@ -35,6 +35,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Common.Threading.Workers
 {
+    [Singletone(typeof(ConfigureWorkerQueue<>))]
     public class WorkerQueueOptionsManager<T> : OptionsManager<WorkerQueue<T>>
     {
         public WorkerQueueOptionsManager(IOptionsFactory<WorkerQueue<T>> factory) : base(factory)
@@ -42,6 +43,7 @@ namespace ASC.Common.Threading.Workers
         }
     }
 
+    [Singletone]
     public class ConfigureWorkerQueue<T> : IConfigureOptions<WorkerQueue<T>>
     {
         public ConfigureWorkerQueue(IOptionsMonitor<ILog> log)
@@ -57,6 +59,7 @@ namespace ASC.Common.Threading.Workers
         }
     }
 
+    [Singletone]
     public class WorkerQueue<T>
     {
         internal ILog log;
@@ -269,9 +272,9 @@ namespace ASC.Common.Threading.Workers
             try
             {
                 var stopAfterFinsih = false;
-                if (state != null && state is bool)
+                if (state != null && state is bool b)
                 {
-                    stopAfterFinsih = (bool)state;
+                    stopAfterFinsih = b;
                 }
                 do
                 {

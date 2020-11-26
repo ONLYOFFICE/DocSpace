@@ -1,121 +1,164 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { Backdrop } from "asc-web-components";
-import { withTranslation } from 'react-i18next';
-import i18n from './i18n';
+import { Backdrop, ProgressBar, utils } from "asc-web-components";
+import store from "../../store";
+import { withTranslation } from "react-i18next";
+import i18n from "./i18n";
 import { ARTICLE_PINNED_KEY } from "../../constants";
-
 import Article from "./sub-components/article";
-import ArticleHeader from "./sub-components/article-header";
-import ArticleMainButton from "./sub-components/article-main-button";
-import ArticleBody from "./sub-components/article-body";
+import SubArticleHeader from "./sub-components/article-header";
+import SubArticleMainButton from "./sub-components/article-main-button";
+import SubArticleBody from "./sub-components/article-body";
 import ArticlePinPanel from "./sub-components/article-pin-panel";
 import Section from "./sub-components/section";
-import SectionHeader from "./sub-components/section-header";
-import SectionFilter from "./sub-components/section-filter";
-import SectionBody from "./sub-components/section-body";
-import SectionPaging from "./sub-components/section-paging";
+import SubSectionHeader from "./sub-components/section-header";
+import SubSectionFilter from "./sub-components/section-filter";
+import SubSectionBody from "./sub-components/section-body";
+import SubSectionBodyContent from "./sub-components/section-body-content";
+import SubSectionPaging from "./sub-components/section-paging";
 import SectionToggler from "./sub-components/section-toggler";
-import { changeLanguage } from '../../utils';
+import { changeLanguage } from "../../utils";
+import ReactResizeDetector from "react-resize-detector";
 
-class PageLayoutComponent extends React.PureComponent {
+const { getLanguage } = store.auth.selectors;
+const { size } = utils.device;
+const { Provider } = utils.context;
+
+function ArticleHeader() {
+  return null;
+}
+ArticleHeader.displayName = "ArticleHeader";
+
+function ArticleMainButton() {
+  return null;
+}
+ArticleMainButton.displayName = "ArticleMainButton";
+
+function ArticleBody() {
+  return null;
+}
+ArticleBody.displayName = "ArticleBody";
+
+function SectionHeader() {
+  return null;
+}
+SectionHeader.displayName = "SectionHeader";
+
+function SectionFilter() {
+  return null;
+}
+SectionFilter.displayName = "SectionFilter";
+
+function SectionBody() {
+  return null;
+}
+SectionBody.displayName = "SectionBody";
+
+function SectionPaging() {
+  return null;
+}
+SectionPaging.displayName = "SectionPaging";
+
+class PageLayoutComponent extends React.Component {
+  static ArticleHeader = ArticleHeader;
+  static ArticleMainButton = ArticleMainButton;
+  static ArticleBody = ArticleBody;
+  static SectionHeader = SectionHeader;
+  static SectionFilter = SectionFilter;
+  static SectionBody = SectionBody;
+  static SectionPaging = SectionPaging;
+
   constructor(props) {
     super(props);
-    this.state = this.mapPropsToState(props);
+
+    const isArticleVisibleAndPinned = !!localStorage.getItem(
+      ARTICLE_PINNED_KEY
+    );
+
+    this.state = {
+      isBackdropVisible: false,
+      isArticleVisible: isArticleVisibleAndPinned,
+      isArticlePinned: isArticleVisibleAndPinned,
+    };
+  }
+
+  componentDidUpdate(prevProps) {
+    if (
+      this.props.hideAside &&
+      !this.state.isArticlePinned &&
+      this.props.hideAside !== prevProps.hideAside
+    ) {
+      this.backdropClick();
+    }
   }
 
   componentDidMount() {
     window.addEventListener("orientationchange", this.orientationChangeHandler);
-    const articleElement = document.getElementsByTagName('article') && document.getElementsByTagName('article')[0];
-    articleElement && this.orientationChangeHandler();
+    this.orientationChangeHandler();
   }
 
   componentWillUnmount() {
-    window.removeEventListener("orientationchange", this.orientationChangeHandler);
+    window.removeEventListener(
+      "orientationchange",
+      this.orientationChangeHandler
+    );
   }
 
   orientationChangeHandler = () => {
-    const articleElement = document.getElementsByTagName('article')[0];
+    this.updateMainHeight();
 
-    if (!articleElement) return;
-
-    const isOrientationVertical = !(screen.orientation ? screen.orientation.angle % 180 :  window.matchMedia("(orientation: portrait)"));
     const isValueExist = !!localStorage.getItem(ARTICLE_PINNED_KEY);
-    const articleWidth = articleElement.offsetWidth;
-    const isArticleWide = articleWidth > screen.availWidth - articleWidth;
+    const isEnoughWidth = screen.availWidth > size.smallTablet;
 
-    if (isOrientationVertical && isArticleWide && isValueExist) {
+    if (!isEnoughWidth && isValueExist) {
       this.backdropClick();
     }
-    if (!isOrientationVertical && isValueExist) {
+    if (isEnoughWidth && isValueExist) {
       this.pinArticle();
     }
-  }
-
-  componentDidUpdate(prevProps) {
-    if (this.hasChanges(this.props, prevProps)) {
-      this.setState(this.mapPropsToState(this.props));
-    }
-  }
-
-  hasChanges = (currentProps, prevProps) => {
-    return (
-      currentProps.articleHeaderContent != prevProps.articleHeaderContent ||
-      currentProps.articleMainButtonContent != prevProps.articleMainButtonContent ||
-      currentProps.articleBodyContent != prevProps.articleBodyContent ||
-      currentProps.sectionHeaderContent != prevProps.sectionHeaderContent ||
-      currentProps.sectionFilterContent != prevProps.sectionFilterContent ||
-      currentProps.sectionBodyContent != prevProps.sectionBodyContent ||
-      currentProps.sectionPagingContent != prevProps.sectionPagingContent
-    );
   };
 
-  mapPropsToState = props => {
-    let isArticleHeaderAvailable = !!props.articleHeaderContent,
-      isArticleMainButtonAvailable = !!props.articleMainButtonContent,
-      isArticleBodyAvailable = !!props.articleBodyContent,
-      isArticleAvailable = isArticleHeaderAvailable || isArticleMainButtonAvailable || isArticleBodyAvailable,
-      isSectionHeaderAvailable = !!props.sectionHeaderContent,
-      isSectionFilterAvailable = !!props.sectionFilterContent,
-      isSectionPagingAvailable = !!props.sectionPagingContent,
-      isSectionBodyAvailable = !!props.sectionBodyContent || isSectionFilterAvailable || isSectionPagingAvailable,
-      isSectionAvailable = isSectionHeaderAvailable || isSectionFilterAvailable || isSectionBodyAvailable || isSectionPagingAvailable || isArticleAvailable,
-      isBackdropAvailable = isArticleAvailable,
-      isArticleVisibleAndPinned = !!localStorage.getItem(ARTICLE_PINNED_KEY);
+  updateMainHeight = () => {
+    const intervalTime = 100;
+    const endTimeoutTime = 1000;
 
-    let newState = {
-      isBackdropAvailable: isBackdropAvailable,
-      isArticleAvailable: isArticleAvailable,
-      isArticleHeaderAvailable: isArticleHeaderAvailable,
-      isArticleMainButtonAvailable: isArticleMainButtonAvailable,
-      isArticleBodyAvailable: isArticleBodyAvailable,
-      isSectionAvailable: isSectionAvailable,
-      isSectionHeaderAvailable: isSectionHeaderAvailable,
-      isSectionFilterAvailable: isSectionFilterAvailable,
-      isSectionBodyAvailable: isSectionBodyAvailable,
-      isSectionPagingAvailable: isSectionPagingAvailable,
+    let interval, timeout, lastInnerHeight, noChangeCount;
 
-      isBackdropVisible: false,
-      isArticleVisible: isArticleVisibleAndPinned,
-      isArticlePinned: isArticleVisibleAndPinned,
+    const updateHeight = () => {
+      clearInterval(interval);
+      clearTimeout(timeout);
 
-      articleHeaderContent: props.articleHeaderContent,
-      articleMainButtonContent: props.articleMainButtonContent,
-      articleBodyContent: props.articleBodyContent,
-      sectionHeaderContent: props.sectionHeaderContent,
-      sectionFilterContent: props.sectionFilterContent,
-      sectionBodyContent: props.sectionBodyContent,
-      sectionPagingContent: props.sectionPagingContent
+      interval = null;
+      timeout = null;
+
+      const vh = (window.innerHeight - 57) * 0.01;
+      document.documentElement.style.setProperty("--vh", `${vh}px`);
     };
 
-    return newState;
+    interval = setInterval(() => {
+      if (window.innerHeight === lastInnerHeight) {
+        noChangeCount++;
+
+        if (noChangeCount === intervalTime) {
+          updateHeight();
+        }
+      } else {
+        lastInnerHeight = window.innerHeight;
+        noChangeCount = 0;
+      }
+    });
+
+    timeout = setTimeout(() => {
+      updateHeight();
+    }, endTimeoutTime);
   };
 
   backdropClick = () => {
     this.setState({
       isBackdropVisible: false,
       isArticleVisible: false,
-      isArticlePinned: false
+      isArticlePinned: false,
     });
   };
 
@@ -123,7 +166,7 @@ class PageLayoutComponent extends React.PureComponent {
     this.setState({
       isBackdropVisible: false,
       isArticlePinned: true,
-      isArticleVisible: true
+      isArticleVisible: true,
     });
 
     localStorage.setItem(ARTICLE_PINNED_KEY, true);
@@ -133,7 +176,7 @@ class PageLayoutComponent extends React.PureComponent {
     this.setState({
       isBackdropVisible: true,
       isArticlePinned: false,
-      isArticleVisible: true
+      isArticleVisible: true,
     });
 
     localStorage.removeItem(ARTICLE_PINNED_KEY);
@@ -143,132 +186,268 @@ class PageLayoutComponent extends React.PureComponent {
     this.setState({
       isBackdropVisible: true,
       isArticleVisible: true,
-      isArticlePinned: false
+      isArticlePinned: false,
     });
   };
 
   render() {
+    const {
+      onDrop,
+      progressBarDropDownContent,
+      progressBarLabel,
+      progressBarValue,
+      setSelections,
+      showProgressBar,
+      uploadFiles,
+      viewAs,
+      withBodyAutoFocus,
+      withBodyScroll,
+      children,
+      isLoaded,
+    } = this.props;
+
+    let articleHeaderContent = null;
+    let articleMainButtonContent = null;
+    let articleBodyContent = null;
+    let sectionHeaderContent = null;
+    let sectionFilterContent = null;
+    let sectionPagingContent = null;
+    let sectionBodyContent = null;
+
+    React.Children.forEach(children, (child) => {
+      const childType =
+        child && child.type && (child.type.displayName || child.type.name);
+
+      switch (childType) {
+        case ArticleHeader.displayName:
+          articleHeaderContent = child;
+          break;
+        case ArticleMainButton.displayName:
+          articleMainButtonContent = child;
+          break;
+        case ArticleBody.displayName:
+          articleBodyContent = child;
+          break;
+        case SectionHeader.displayName:
+          sectionHeaderContent = child;
+          break;
+        case SectionFilter.displayName:
+          sectionFilterContent = child;
+          break;
+        case SectionPaging.displayName:
+          sectionPagingContent = child;
+          break;
+        case SectionBody.displayName:
+          sectionBodyContent = child;
+          break;
+        default:
+          break;
+      }
+    });
+
+    const isArticleHeaderAvailable = !!articleHeaderContent,
+      isArticleMainButtonAvailable = !!articleMainButtonContent,
+      isArticleBodyAvailable = !!articleBodyContent,
+      isArticleAvailable =
+        isArticleHeaderAvailable ||
+        isArticleMainButtonAvailable ||
+        isArticleBodyAvailable,
+      isSectionHeaderAvailable = !!sectionHeaderContent,
+      isSectionFilterAvailable = !!sectionFilterContent,
+      isSectionPagingAvailable = !!sectionPagingContent,
+      isSectionBodyAvailable =
+        !!sectionBodyContent ||
+        isSectionFilterAvailable ||
+        isSectionPagingAvailable,
+      isSectionAvailable =
+        isSectionHeaderAvailable ||
+        isSectionFilterAvailable ||
+        isSectionBodyAvailable ||
+        isSectionPagingAvailable ||
+        isArticleAvailable,
+      isBackdropAvailable = isArticleAvailable;
+
     return (
       <>
-        {this.state.isBackdropAvailable && (
+        {isBackdropAvailable && (
           <Backdrop
             zIndex={400}
             visible={this.state.isBackdropVisible}
             onClick={this.backdropClick}
           />
         )}
-        {this.state.isArticleAvailable && (
+        {isArticleAvailable && (
           <Article
             visible={this.state.isArticleVisible}
             pinned={this.state.isArticlePinned}
+            isLoaded={isLoaded}
           >
-            {this.state.isArticleHeaderAvailable && (
-              <ArticleHeader>
-                {this.state.articleHeaderContent}
-              </ArticleHeader>
+            {isArticleHeaderAvailable && (
+              <SubArticleHeader>
+                {articleHeaderContent
+                  ? articleHeaderContent.props.children
+                  : null}
+              </SubArticleHeader>
             )}
-            {this.state.isArticleMainButtonAvailable && (
-              <ArticleMainButton>
-                {this.state.articleMainButtonContent}
-              </ArticleMainButton>
+            {isArticleMainButtonAvailable && (
+              <SubArticleMainButton>
+                {articleMainButtonContent
+                  ? articleMainButtonContent.props.children
+                  : null}
+              </SubArticleMainButton>
             )}
-            {this.state.isArticleBodyAvailable && (
-              <ArticleBody>{this.state.articleBodyContent}</ArticleBody>
+            {isArticleBodyAvailable && (
+              <SubArticleBody>
+                {articleBodyContent ? articleBodyContent.props.children : null}
+              </SubArticleBody>
             )}
-            {this.state.isArticleBodyAvailable && (
+            {isArticleBodyAvailable && (
               <ArticlePinPanel
                 pinned={this.state.isArticlePinned}
-                pinText={this.props.t('Pin')}
+                pinText={this.props.t("Pin")}
                 onPin={this.pinArticle}
-                unpinText={this.props.t('Unpin')}
+                unpinText={this.props.t("Unpin")}
                 onUnpin={this.unpinArticle}
               />
             )}
           </Article>
         )}
-        {this.state.isSectionAvailable && (
-          <Section>
-            {this.state.isSectionHeaderAvailable && (
-              <SectionHeader isArticlePinned={this.state.isArticlePinned}>{this.state.sectionHeaderContent}</SectionHeader>
-            )}
-            {this.state.isSectionFilterAvailable && (
-              <SectionFilter className="section-header_filter">{this.state.sectionFilterContent}</SectionFilter>
-            )}
-            {this.state.isSectionBodyAvailable && (
-              <SectionBody withScroll={this.props.withBodyScroll} autoFocus={this.props.withBodyAutoFocus} pinned={this.state.isArticlePinned}>
-                {this.state.isSectionFilterAvailable && (
-              <SectionFilter className="section-body_filter">{this.state.sectionFilterContent}</SectionFilter>
-            )}
-                {this.state.sectionBodyContent}
-                {this.state.isSectionPagingAvailable && (
-                  <SectionPaging>{this.state.sectionPagingContent}</SectionPaging>
-                )}
-              </SectionBody>
-            )}
+        {isSectionAvailable && (
+          <ReactResizeDetector
+            refreshRate={100}
+            refreshMode="debounce"
+            refreshOptions={{ trailing: true }}
+          >
+            {({ width }) => (
+              <Provider
+                value={{
+                  sectionWidth: width,
+                }}
+              >
+                <Section widthProp={width}>
+                  {isSectionHeaderAvailable && (
+                    <SubSectionHeader
+                      isArticlePinned={this.state.isArticlePinned}
+                    >
+                      {sectionHeaderContent
+                        ? sectionHeaderContent.props.children
+                        : null}
+                    </SubSectionHeader>
+                  )}
+                  {isSectionFilterAvailable && (
+                    <SubSectionFilter className="section-header_filter">
+                      {sectionFilterContent
+                        ? sectionFilterContent.props.children
+                        : null}
+                    </SubSectionFilter>
+                  )}
+                  {isSectionBodyAvailable && (
+                    <>
+                      <SubSectionBody
+                        onDrop={onDrop}
+                        uploadFiles={uploadFiles}
+                        setSelections={setSelections}
+                        withScroll={withBodyScroll}
+                        autoFocus={withBodyAutoFocus}
+                        pinned={this.state.isArticlePinned}
+                        viewAs={viewAs}
+                      >
+                        {isSectionFilterAvailable && (
+                          <SubSectionFilter className="section-body_filter">
+                            {sectionFilterContent
+                              ? sectionFilterContent.props.children
+                              : null}
+                          </SubSectionFilter>
+                        )}
+                        <SubSectionBodyContent>
+                          {sectionBodyContent
+                            ? sectionBodyContent.props.children
+                            : null}
+                        </SubSectionBodyContent>
+                        {isSectionPagingAvailable && (
+                          <SubSectionPaging>
+                            {sectionPagingContent
+                              ? sectionPagingContent.props.children
+                              : null}
+                          </SubSectionPaging>
+                        )}
+                      </SubSectionBody>
+                      {showProgressBar && (
+                        <ProgressBar
+                          className="layout-progress-bar"
+                          label={progressBarLabel}
+                          percent={progressBarValue}
+                          dropDownContent={progressBarDropDownContent}
+                        />
+                      )}
+                    </>
+                  )}
 
-            {this.state.isArticleAvailable && (
-              <SectionToggler
-                visible={!this.state.isArticleVisible}
-                onClick={this.showArticle}
-              />
+                  {isArticleAvailable && (
+                    <SectionToggler
+                      visible={!this.state.isArticleVisible}
+                      onClick={this.showArticle}
+                    />
+                  )}
+                </Section>
+              </Provider>
             )}
-          </Section>
+          </ReactResizeDetector>
         )}
       </>
     );
   }
 }
 
-const PageLayoutTranslated = withTranslation()(PageLayoutComponent);
-const PageLayout = props => {
-  changeLanguage(i18n);
-
-  return <PageLayoutTranslated i18n={i18n} {...props} />
-}
-
-PageLayout.propTypes = {
-  language: PropTypes.string,
-}
-
 PageLayoutComponent.propTypes = {
-  articleHeaderContent: PropTypes.oneOfType([
-    PropTypes.arrayOf(PropTypes.node),
-    PropTypes.node
-  ]),
-  articleMainButtonContent: PropTypes.oneOfType([
-    PropTypes.arrayOf(PropTypes.node),
-    PropTypes.node
-  ]),
-  articleBodyContent: PropTypes.oneOfType([
-    PropTypes.arrayOf(PropTypes.node),
-    PropTypes.node
-  ]),
-  sectionHeaderContent: PropTypes.oneOfType([
-    PropTypes.arrayOf(PropTypes.node),
-    PropTypes.node
-  ]),
-  sectionFilterContent: PropTypes.oneOfType([
-    PropTypes.arrayOf(PropTypes.node),
-    PropTypes.node
-  ]),
-  sectionBodyContent: PropTypes.oneOfType([
-    PropTypes.arrayOf(PropTypes.node),
-    PropTypes.node
-  ]),
-  sectionPagingContent: PropTypes.oneOfType([
-    PropTypes.arrayOf(PropTypes.node),
-    PropTypes.node
-  ]),
-
+  children: PropTypes.any,
   withBodyScroll: PropTypes.bool,
   withBodyAutoFocus: PropTypes.bool,
   t: PropTypes.func,
+  showProgressBar: PropTypes.bool,
+  progressBarValue: PropTypes.number,
+  progressBarDropDownContent: PropTypes.any,
+  progressBarLabel: PropTypes.string,
+  onDrop: PropTypes.func,
+  setSelections: PropTypes.func,
+  uploadFiles: PropTypes.bool,
+  hideAside: PropTypes.bool,
+  isLoaded: PropTypes.bool,
+  viewAs: PropTypes.string,
 };
 
 PageLayoutComponent.defaultProps = {
   withBodyScroll: true,
-  withBodyAutoFocus: false
+  withBodyAutoFocus: false,
 };
 
+const PageLayoutTranslated = withTranslation()(PageLayoutComponent);
 
-export default PageLayout;
+const PageLayout = ({ language, ...rest }) => {
+  useEffect(() => {
+    changeLanguage(i18n, language);
+  }, [language]);
+
+  return <PageLayoutTranslated i18n={i18n} {...rest} />;
+};
+
+PageLayout.ArticleHeader = ArticleHeader;
+PageLayout.ArticleMainButton = ArticleMainButton;
+PageLayout.ArticleBody = ArticleBody;
+PageLayout.SectionHeader = SectionHeader;
+PageLayout.SectionFilter = SectionFilter;
+PageLayout.SectionBody = SectionBody;
+PageLayout.SectionPaging = SectionPaging;
+
+PageLayout.propTypes = {
+  language: PropTypes.string,
+  children: PropTypes.any,
+};
+
+function mapStateToProps(state) {
+  return {
+    language: getLanguage(state),
+  };
+}
+
+export default connect(mapStateToProps)(PageLayout);

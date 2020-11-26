@@ -111,6 +111,19 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to $PersonalHeaderStart Connect your favorite cloud storage to ONLYOFFICE $PersonalHeaderEnd
+        ///
+        ///It has been a week since you created your cloud office, so we believe it&apos;s time to unveil some beneficial features you might have missed.
+        ///
+        ///Connect *Dropbox*, *Google Drive*, *Box*, *OneDrive*, *Nextcloud*, *ownCloud*, *kDrive* or *Yandex.Disk* to ONLYOFFICE and create a single document management space for all your documents. You&apos;ll be able to edit external files in ONLYOFFICE and save them to the storage you keep [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string pattern_personal_custom_mode_after_registration8 {
+            get {
+                return ResourceManager.GetString("pattern_personal_custom_mode_after_registration8", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You have requested to change your email address used to enter the ${LetterLogoText} portal.
         ///
         ///Please follow the link below to change your email address:
@@ -201,6 +214,22 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to h3.New portal has been registered
+        ///
+        ///# Portal url: &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;
+        ///# First name: $UserName
+        ///# Last name: $UserLastName
+        ///# Email: $UserEmail
+        ///# Phone: $Phone
+        ///# Creation date: $Date.
+        /// </summary>
+        public static string pattern_saas_custom_mode_reg_data {
+            get {
+                return ResourceManager.GetString("pattern_saas_custom_mode_reg_data", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Do the same as a user|Link Dropbox, Box and other accounts in the &apos;Common Documents&apos; section|Set up access rights to the documents and folders in the &apos;Common Documents&apos; section.
         /// </summary>
         public static string ProductAdminOpportunitiesCustomMode {
@@ -278,6 +307,15 @@ namespace ASC.Web.Core.PublicResources {
         public static string subject_remove_user_data_completed_custom_mode {
             get {
                 return ResourceManager.GetString("subject_remove_user_data_completed_custom_mode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New portal has been registered.
+        /// </summary>
+        public static string subject_saas_custom_mode_reg_data {
+            get {
+                return ResourceManager.GetString("subject_saas_custom_mode_reg_data", resourceCulture);
             }
         }
     }

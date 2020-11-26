@@ -86,7 +86,7 @@ describe("DatePicker tests", () => {
     const onChange = jest.fn();
     const props = {
       value: "03/03/2000",
-      onChange
+      onChange,
     };
     const wrapper = mount(<DatePicker {...props} />).find("input");
     wrapper.simulate("change", { target: { value: "09/09/2019" } });
@@ -108,7 +108,7 @@ describe("DatePicker tests", () => {
     const props = {
       value: "03/03/2000",
       isOpen: true,
-      onChange
+      onChange,
     };
     const wrapper = mount(<DatePicker {...props} />);
 
@@ -156,7 +156,7 @@ describe("DatePicker tests", () => {
       isReadOnly: false,
       hasError: false,
       themeColor: "#ED7309",
-      locale: "en"
+      locale: "en",
     };
 
     var date = new Date();
@@ -184,35 +184,34 @@ describe("DatePicker tests", () => {
     expect(wrapper2.state).toBe(wrapper2.state);
   });
 
-  it('componentWillUnmount() lifecycle  test', () => {
+  it("componentWillUnmount() lifecycle  test", () => {
     const wrapper = mount(<DatePicker isOpen={true} />);
-    const componentWillUnmount = jest.spyOn(wrapper.instance(), 'componentWillUnmount');
+    const componentWillUnmount = jest.spyOn(
+      wrapper.instance(),
+      "componentWillUnmount"
+    );
 
     wrapper.unmount();
     expect(componentWillUnmount).toHaveBeenCalled();
   });
 
-  it('accepts id', () => {
-    const wrapper = mount(
-      <DatePicker isOpen={true} id="testId" />
-    );
+  it("accepts id", () => {
+    const wrapper = mount(<DatePicker isOpen={true} id="testId" />);
 
-    expect(wrapper.prop('id')).toEqual('testId');
+    expect(wrapper.prop("id")).toEqual("testId");
   });
 
-  it('accepts className', () => {
-    const wrapper = mount(
-      <DatePicker isOpen={true} className="test" />
-    );
+  it("accepts className", () => {
+    const wrapper = mount(<DatePicker isOpen={true} className="test" />);
 
-    expect(wrapper.prop('className')).toEqual('test');
+    expect(wrapper.prop("className")).toEqual("test");
   });
 
-  it('accepts style', () => {
+  it("accepts style", () => {
     const wrapper = mount(
-      <DatePicker isOpen={true} style={{ color: 'red' }} />
+      <DatePicker isOpen={true} style={{ color: "red" }} />
     );
 
-    expect(wrapper.getDOMNode().style).toHaveProperty('color', 'red');
+    expect(wrapper.getDOMNode().style).toHaveProperty("color", "red");
   });
 });

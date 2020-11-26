@@ -1,64 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!-- 
-    Microsoft ResX Schema 
-    
-    Version 2.0
-    
-    The primary goals of this format is to allow a simple XML format 
-    that is mostly human readable. The generation and parsing of the 
-    various data types are done through the TypeConverter classes 
-    associated with the data types.
-    
-    Example:
-    
-    ... ado.net/XML headers & schema ...
-    <resheader name="resmimetype">text/microsoft-resx</resheader>
-    <resheader name="version">2.0</resheader>
-    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
-    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
-    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
-    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
-    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
-        <value>[base64 mime encoded serialized .NET Framework object]</value>
-    </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
-        <comment>This is a comment</comment>
-    </data>
-                
-    There are any number of "resheader" rows that contain simple 
-    name/value pairs.
-    
-    Each data row contains a name, and value. The row also contains a 
-    type or mimetype. Type corresponds to a .NET class that support 
-    text/value conversion through the TypeConverter architecture. 
-    Classes that don't support this are serialized and stored with the 
-    mimetype set.
-    
-    The mimetype is used for serialized objects, and tells the 
-    ResXResourceReader how to depersist the object. This is currently not 
-    extensible. For a given mimetype the value must be set accordingly:
-    
-    Note - application/x-microsoft.net.object.binary.base64 is the format 
-    that the ResXResourceWriter will generate, however the reader can 
-    read any of the formats listed below.
-    
-    mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with 
-            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
-            : and then encoded with base64 encoding.
-    
-    mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with 
-            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
-            : and then encoded with base64 encoding.
-
-    mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array 
-            : using a System.ComponentModel.TypeConverter
-            : and then encoded with base64 encoding.
-    -->
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
@@ -162,6 +103,9 @@
   <data name="ConsumersBitlyInstruction" xml:space="preserve">
     <value>If you add the Bitly service you will get shortened links to invite new users to the ONLYOFFICE™ portal and shortened links to documents in the Documents module that have been shared with external users.</value>
   </data>
+  <data name="ConsumersBitlyInstructionV11" xml:space="preserve">
+    <value>Enable this app to shorten the invitation and document links. {0}Insert your Bitly login and API key below:</value>
+  </data>
   <data name="ConsumersBox" xml:space="preserve">
     <value>Box Key</value>
   </data>
@@ -177,6 +121,9 @@
   <data name="ConsumersBoxInstruction" xml:space="preserve">
     <value>If you add an application of the Box service you will be able to connect your Box account in the Documents module. This will allow to upload and create new files in Box, edit existing ones, copy and delete them, share files and folders with ONLYOFFICE™ portal users.</value>
   </data>
+  <data name="ConsumersBoxInstructionV11" xml:space="preserve">
+    <value>Enable this app to connect your Box account to the Documents module. You’ll be able to manage, edit, and share files from Box with ONLYOFFICE users. {0}Sign in to your account on the Box developers page and create a new app for ONLYOFFICE integration. Insert the data you received below:</value>
+  </data>
   <data name="ConsumersClickatell" xml:space="preserve">
     <value>Clickatell</value>
   </data>
@@ -188,6 +135,9 @@
   </data>
   <data name="ConsumersClickatellInstruction" xml:space="preserve">
     <value>Adding the Clickatell service application you will be able to enable the two-factor authentication and receive an SMS with a code allowing the user to enter ONLYOFFICE portal.</value>
+  </data>
+  <data name="ConsumersClickatellInstructionV11" xml:space="preserve">
+    <value>Use this app to enable two-factor authentication with Clickatell service. {0}Sign in to your SMS Platform account and create a new integration for ONLYOFFICE. Copy an apiKey and insert it below:</value>
   </data>
   <data name="ConsumersDocuSign" xml:space="preserve">
     <value>DocuSign</value>
@@ -207,6 +157,9 @@
   <data name="ConsumersDocuSignInstruction" xml:space="preserve">
     <value>If you add an application of the DocuSign service you will be able to sign files from the Documents module. This will allow to send a file for electronic signature to the ONLYOFFICE™ portal employees via the DocuSugn service. The signed file will be saved in the ONLYOFFICE™ Documents module.</value>
   </data>
+  <data name="ConsumersDocuSignInstructionV11" xml:space="preserve">
+    <value>Enable this app to digitally sign documents using DocuSign. {0}Go to your DocuSign Admin Console and add ONLYOFFICE integration. Insert the data you received below:</value>
+  </data>
   <data name="ConsumersDropBox" xml:space="preserve">
     <value>DropBox</value>
   </data>
@@ -215,6 +168,9 @@
   </data>
   <data name="ConsumersDropBoxInstruction" xml:space="preserve">
     <value>If you add an application of the Dropbox service you will be able to connect your Dropbox account in the Documents module. This will allow to upload and create new files in Dropbox, edit existing ones, copy and delete them, share files and folders with ONLYOFFICE™ portal users.</value>
+  </data>
+  <data name="ConsumersDropBoxInstructionV11" xml:space="preserve">
+    <value>Enable this app to connect your Dropbox account to the Documents module. You’ll be able to manage, edit, and share files from Dropbox with ONLYOFFICE users. {0}Sign in to your account on the Dropbox Developers website and create a new app for ONLYOFFICE integration. Insert the data you received below:</value>
   </data>
   <data name="ConsumersDropBoxKey" xml:space="preserve">
     <value>DropBox ID</value>
@@ -251,6 +207,9 @@
   </data>
   <data name="ConsumersFacebookInstruction" xml:space="preserve">
     <value>If you add an application of the Facebook service you will be able to connect your Facebook account on your profile page so that you can sign in to the ONLYOFFICE™ portal using it. You will also be able to find a Facebook account of a contact in the CRM module and link it on the 'Edit person/company' page.</value>
+  </data>
+  <data name="ConsumersFacebookInstructionV11" xml:space="preserve">
+    <value>Enable this app to allow your users to sign in to ONLYOFFICE using Facebook and link their customers’ Facebook accounts to the CRM module. {0}Go to Facebook Developers Portal and create a new app ONLYOFFICE integration. Insert the data you received below:</value>
   </data>
   <data name="ConsumersFirebase" xml:space="preserve">
     <value>Firebase</value>
@@ -306,6 +265,9 @@
   <data name="ConsumersGoogleInstruction" xml:space="preserve">
     <value>If you add a project of the Google service you will be able to connect your Google account on your profile page so that you can sign in to the ONLYOFFICE™ portal using it as well as connect your Google Drive account in the Documents module. This will allow to upload and create new files in Google Drive, edit existing ones, copy and delete them, share files and folders with ONLYOFFICE™ portal users.</value>
   </data>
+  <data name="ConsumersGoogleInstructionV11" xml:space="preserve">
+    <value>Enable this app to connect your Google Drive account to the Documents module. You’ll be able to manage, edit, and share files from Google Drive with ONLYOFFICE users. {0}Go to Google APIs console and create a new project for ONLYOFFICE integration. Insert the data you received below:</value>
+  </data>
   <data name="ConsumersLinkedIn" xml:space="preserve">
     <value>Linkedin Key</value>
   </data>
@@ -314,6 +276,9 @@
   </data>
   <data name="ConsumersLinkedInInstruction" xml:space="preserve">
     <value>If you add an application of the LinkedIn service you will be able to connect your LinkedIn account on your profile page so that you can sign in to the ONLYOFFICE™ portal using it.</value>
+  </data>
+  <data name="ConsumersLinkedInInstructionV11" xml:space="preserve">
+    <value>Enable this app to allow your users to sign in to ONLYOFFICE using their LinkedIn accounts. {0}Go to the  LinkedIn Developers website and create a new app ONLYOFFICE integration. Insert the data you received below:</value>
   </data>
   <data name="ConsumersLinkedInKey" xml:space="preserve">
     <value>Linkedin ID</value>
@@ -396,11 +361,11 @@
   <data name="ConsumersSelectelauthUser" xml:space="preserve">
     <value>Auth User</value>
   </data>
-  <data name="ConsumersSelectelInstruction" xml:space="preserve">
-    <value>When you add Selectel Cloud Storage service to your portal, you can use it to create backups of your portal making sure no data will be ever lost. Use it also to store data and static content from your portal.</value>
-  </data>
   <data name="ConsumersSelectelDescription" xml:space="preserve">
     <value>Connect Selectel Cloud Storage service to backup and store data from your portal.</value>
+  </data>
+  <data name="ConsumersSelectelInstruction" xml:space="preserve">
+    <value>When you add Selectel Cloud Storage service to your portal, you can use it to create backups of your portal making sure no data will be ever lost. Use it also to store data and static content from your portal.</value>
   </data>
   <data name="ConsumersSelectelprivate_container" xml:space="preserve">
     <value>Private container</value>
@@ -429,6 +394,9 @@
   <data name="ConsumersSkyDriveInstruction" xml:space="preserve">
     <value>If you add an application of the OneDrive service you will be able to connect your OneDrive account in the Documents module. This will allow to upload and create new files in OneDrive, edit existing ones, copy and delete them, share files and folders with ONLYOFFICE™ portal users.</value>
   </data>
+  <data name="ConsumersSkyDriveInstructionV11" xml:space="preserve">
+    <value>Enable this app to connect your OneDrive account to the Documents module. You’ll be able to manage, edit, and share files from OneDrive with ONLYOFFICE users. {0}Sign in to your Microsoft Azure account and create a new app for ONLYOFFICE integration. Insert the data you received below:</value>
+  </data>
   <data name="ConsumersSmsc" xml:space="preserve">
     <value>SMS Center</value>
   </data>
@@ -437,6 +405,9 @@
   </data>
   <data name="ConsumersSmscInstruction" xml:space="preserve">
     <value>Adding the SMS Center service application you will be able to enable the two-factor authentication and receive an SMS with a code allowing the user to enter ONLYOFFICE portal. SMS Center application is useful as a provider for CIS countries.</value>
+  </data>
+  <data name="ConsumersSmscInstructionV11" xml:space="preserve">
+    <value>Use this app to enable two-factor authentication with SMS Center service. {0}Insert your smsc account login and your password (or password MD5 hash) in lower case:</value>
   </data>
   <data name="Consumerssmsclogin" xml:space="preserve">
     <value>Login</value>
@@ -459,6 +430,9 @@
   <data name="ConsumersTwilioInstruction" xml:space="preserve">
     <value>After you add Twilio, you will be able to call any CRM contact right from the browser.</value>
   </data>
+  <data name="ConsumersTwilioInstructionV11" xml:space="preserve">
+    <value>Enable this app to allow your users to call their contacts from the CRM module using Twilio. {0}Go to Twilio Console and paste the following data below:</value>
+  </data>
   <data name="Consumerstwiliosender" xml:space="preserve">
     <value>Phone number from Twilio (required for SMS authorization)</value>
   </data>
@@ -476,6 +450,9 @@
   </data>
   <data name="ConsumersTwitterInstruction" xml:space="preserve">
     <value>If you add an application of the Twitter service you will be able to connect your Twitter account on your profile page so that you can sign in to the ONLYOFFICE™ portal using it. You will also be able to find a Twitter account of a person in the CRM module and link it on the 'Edit person/company' page and then view Twitter news feed.</value>
+  </data>
+  <data name="ConsumersTwitterInstructionV11" xml:space="preserve">
+    <value>Enable this app to allow your users to sign in to ONLYOFFICE using their Twitter and link their customers’ Twitter accounts to the CRM module. {0}Go to Twitter Developers Portal and create a new app ONLYOFFICE integration. Insert the data you received below:</value>
   </data>
   <data name="ConsumersTwitterKey" xml:space="preserve">
     <value>Twitter ID</value>
@@ -530,6 +507,9 @@
   </data>
   <data name="ConsumersYahooInstruction" xml:space="preserve">
     <value>Adding the Yahoo service application you will be able to add ONLYOFFICE portal new users from the contact list.</value>
+  </data>
+  <data name="ConsumersYahooInstructionV11" xml:space="preserve">
+    <value>Enable this app to add new portal users from your Yahoo contact list. {0}Go to the Create Application page in the Yahoo Developer Network and create a new app for ONLYOFFICE integration. Insert the data you received below:</value>
   </data>
   <data name="ConsumersYandex" xml:space="preserve">
     <value>Yandex</value>
@@ -681,6 +661,9 @@
   <data name="MessageEmailChangeInstuctionsSentOnEmail" xml:space="preserve">
     <value>The email change instructions have been successfuly sent</value>
   </data>
+  <data name="MessageYourPasswordSendedToEmail" xml:space="preserve">
+    <value>If a user with the {0} email exists, the password change instruction has been sent to this email address.</value>
+  </data>
   <data name="MessageYourPasswordSuccessfullySendedToEmail" xml:space="preserve">
     <value>The password change instructions have been sent to the {0} email address.</value>
   </data>
@@ -752,6 +735,9 @@
   </data>
   <data name="TfaTooMuchError" xml:space="preserve">
     <value>You have sent too many text messages. Please try again later.</value>
+  </data>
+  <data name="Trial" xml:space="preserve">
+    <value>Trial</value>
   </data>
   <data name="UsServerRegion" xml:space="preserve">
     <value>US West (Oregon) Region</value>

@@ -27,8 +27,11 @@
 using System;
 using System.Collections.Generic;
 
+using ASC.Common;
+
 namespace ASC.Files.Core.Security
 {
+    [Scope(typeof(FileSecurity))]
     public interface IFileSecurity
     {
         bool CanRead<T>(FileEntry<T> entry, Guid userId);
@@ -36,6 +39,8 @@ namespace ASC.Files.Core.Security
         bool CanComment<T>(FileEntry<T> entry, Guid userId);
 
         bool CanReview<T>(FileEntry<T> entry, Guid userId);
+
+        bool CanCustomFilterEdit<T>(FileEntry<T> entry, Guid userId);
 
         bool CanFillForms<T>(FileEntry<T> entry, Guid userId);
 

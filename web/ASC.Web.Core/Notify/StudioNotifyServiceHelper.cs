@@ -7,21 +7,30 @@ using ASC.Notify.Model;
 using ASC.Notify.Patterns;
 using ASC.Notify.Recipients;
 using ASC.Web.Studio.Core.Notify;
+using ASC.Web.Studio.Utility;
 
 namespace ASC.Web.Core.Notify
 {
+    [Scope]
     public class StudioNotifyServiceHelper
     {
         private ICacheNotify<NotifyItem> Cache { get; }
         private StudioNotifyHelper StudioNotifyHelper { get; }
         private AuthContext AuthContext { get; }
         private TenantManager TenantManager { get; }
+        public CommonLinkUtility CommonLinkUtility { get; }
 
-        public StudioNotifyServiceHelper(StudioNotifyHelper studioNotifyHelper, AuthContext authContext, TenantManager tenantManager, ICacheNotify<NotifyItem> cache)
+        public StudioNotifyServiceHelper(
+            StudioNotifyHelper studioNotifyHelper,
+            AuthContext authContext,
+            TenantManager tenantManager,
+            CommonLinkUtility commonLinkUtility,
+            ICacheNotify<NotifyItem> cache)
         {
             StudioNotifyHelper = studioNotifyHelper;
             AuthContext = authContext;
             TenantManager = tenantManager;
+            CommonLinkUtility = commonLinkUtility;
             Cache = cache;
         }
 
@@ -70,7 +79,8 @@ namespace ASC.Web.Core.Notify
                 TenantId = TenantManager.GetCurrentTenant().TenantId,
                 UserId = AuthContext.CurrentAccount.ID.ToString(),
                 Action = (NotifyAction)action,
-                CheckSubsciption = checkSubsciption
+                CheckSubsciption = checkSubsciption,
+                BaseUrl = CommonLinkUtility.GetFullAbsolutePath("")
             };
 
             if (objectID != null)
@@ -109,24 +119,6 @@ namespace ASC.Web.Core.Notify
             }
 
             Cache.Publish(item, CacheNotifyAction.Any);
-        }
-    }
-
-    public static class StudioNotifyServiceHelperExtension
-    {
-        public static DIHelper AddStudioNotifyServiceHelper(this DIHelper services)
-        {
-            if (services.TryAddScoped<StudioNotifyServiceHelper>())
-            {
-                services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
-
-                return services
-                    .AddAuthContextService()
-                    .AddStudioNotifyHelperService()
-                    .AddTenantManagerService();
-            }
-
-            return services;
         }
     }
 }

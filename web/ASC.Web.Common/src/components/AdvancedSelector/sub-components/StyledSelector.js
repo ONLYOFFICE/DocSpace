@@ -1,5 +1,7 @@
 import React from "react";
 import styled, { css } from "styled-components";
+import { utils } from "asc-web-components";
+const { tablet } = utils.device;
 
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
@@ -17,12 +19,15 @@ const Container = ({
 
 const dropdownStyles = css`
   grid-auto-rows: max-content;
-  
-  ${props =>
-      props.groups && props.groups.length > 0 
-        ? css`grid-template-areas: "column-options splitter column-groups" "footer footer footer"`
-        : css`grid-template-areas: "column-options column-groups" "footer footer"`
-   };
+
+  ${(props) =>
+    props.groups && props.groups.length > 0
+      ? css`
+          grid-template-areas: "column-options splitter column-groups" "footer footer footer";
+        `
+      : css`
+          grid-template-areas: "column-options column-groups" "footer footer";
+        `};
 
   .column-groups {
     box-sizing: border-box;
@@ -39,6 +44,10 @@ const dropdownStyles = css`
 
     .header-groups {
       grid-area: header-groups;
+
+      .group_header {
+        line-height: 30px;
+      }
       /* background-color: white; */
     }
 
@@ -46,6 +55,10 @@ const dropdownStyles = css`
       grid-area: body-groups;
       margin-left: -8px;
       /* background-color: white; */
+
+      .row-group:first-child {
+        font-weight: 700;
+      }
 
       .row-group {
         box-sizing: border-box;
@@ -59,7 +72,7 @@ const dropdownStyles = css`
         }
 
         &:hover {
-          background-color: #f8f9f9;
+          background-color: #eceef1;
           border-radius: 3px;
         }
       }
@@ -71,22 +84,22 @@ const dropdownStyles = css`
     }
   }
 
-  ${props =>
-      props.groups && props.groups.length > 0 && 
-      css `
-        .splitter {
-          grid-area: splitter;
-          border-left: 1px solid #eceef1;
-          margin-top: 16px;
-        }
-      `
-  }
+  ${(props) =>
+    props.groups &&
+    props.groups.length > 0 &&
+    css`
+      .splitter {
+        grid-area: splitter;
+        border-left: 1px solid #eceef1;
+        margin-top: 16px;
+      }
+    `}
 `;
 
 const asideStyles = css`
   height: 100%;
   grid-template-columns: 1fr;
-  ${props =>
+  ${(props) =>
     props.isMultiSelect && props.hasSelected
       ? css`
           grid-template-rows: 1fr 69px;
@@ -101,7 +114,8 @@ const asideStyles = css`
 const StyledSelector = styled(Container)`
   display: grid;
 
-  ${props => (props.displayType === "dropdown" ? dropdownStyles : asideStyles)}
+  ${(props) =>
+    props.displayType === "dropdown" ? dropdownStyles : asideStyles}
 
   .column-options {
     grid-area: column-options;
@@ -113,35 +127,38 @@ const StyledSelector = styled(Container)`
     grid-row-gap: 2px;
 
     grid-template-columns: 1fr;
-    grid-template-rows: ${props =>
+    grid-template-rows: ${(props) =>
         props.displayType === "aside"
-          ? props.isMultiSelect && props.allowGroupSelection && props.options && props.options.length > 0
+          ? props.isMultiSelect &&
+            props.allowGroupSelection &&
+            props.options &&
+            props.options.length > 0
             ? props.groups && props.groups.length > 0
               ? "100px"
               : "30px"
-            :  
-              props.groups && props.groups.length > 0
-                ? "70px"
-                : "30px"
+            : props.groups && props.groups.length > 0
+            ? "70px"
+            : "30px"
           : "30px"} 1fr;
     grid-template-areas: "header-options" "body-options";
 
     .header-options {
       grid-area: header-options;
+      margin-right: 2px;
       /* background-color: white; */
 
-      ${props =>
+      ${(props) =>
         props.displayType === "aside" &&
         css`
           display: grid;
-          grid-row-gap: 12px;
+          grid-row-gap: 17px;
           grid-template-columns: 1fr;
-          grid-template-rows: 30px 30px ${props =>
+          grid-template-rows: 30px 30px ${(props) =>
               props.isMultiSelect &&
               props.options &&
               props.options.length > 0 &&
               "30px"};
-          ${props =>
+          ${(props) =>
             props.isMultiSelect && props.options && props.options.length > 0
               ? css`
                   grid-template-areas: "options_searcher" "options_group_selector" "options_group_select_all";
@@ -158,7 +175,7 @@ const StyledSelector = styled(Container)`
             grid-area: options_group_selector;
           }
 
-          ${props =>
+          ${(props) =>
             props.isMultiSelect &&
             props.options &&
             props.options.length > 0 &&
@@ -169,28 +186,33 @@ const StyledSelector = styled(Container)`
             `}
         `}
 
-        .options_searcher {
+      .options_searcher {
+        div:first-child {
+          :hover {
+            border-color: #d0d5da;
+          }
 
-          div:first-child {
-            
-            :hover {
-              border-color: #D0D5DA;
-            }
-  
-            :focus, :focus-within {
-              border-color: #2DA7DB;
-            }
+          :focus,
+          :focus-within {
+            border-color: #2da7db;
+          }
 
-            & > input::placeholder {
-              color: #A3A9AE;
-            }
+          & > input::placeholder {
+            color: #a3a9ae;
           }
         }
+      }
     }
 
     .body-options {
       grid-area: body-options;
       margin-left: -8px;
+      margin-top: 5px;
+
+      @media ${tablet} {
+        width: 290px;
+      }
+
       /* background-color: white; */
 
       .row-option {
@@ -198,7 +220,13 @@ const StyledSelector = styled(Container)`
         padding-top: 8px;
         box-sizing: border-box;
         height: 32px;
+        margin-top: 16px;
         cursor: pointer;
+
+        &:hover {
+          background-color: #eceef1;
+          border-radius: 3px;
+        }
 
         .option_checkbox {
           width: 265px;
@@ -206,7 +234,7 @@ const StyledSelector = styled(Container)`
 
         .option-info {
           position: absolute;
-          top: 10px;
+          top: 12px;
           right: 10px;
           padding: 8px 0 8px 8px;
           margin-top: -8px;

@@ -11,11 +11,11 @@ using Confluent.Kafka;
 
 using Google.Protobuf;
 
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Common.Caching
 {
+    [Singletone]
     public class KafkaCache<T> : IDisposable, ICacheNotify<T> where T : IMessage<T>, new()
     {
         private ClientConfig ClientConfig { get; set; }
@@ -31,7 +31,7 @@ namespace ASC.Common.Caching
         private IProducer<AscCacheItem, T> Producer { get; set; }
         private Guid Key { get; set; }
 
-        public KafkaCache(IConfiguration configuration, IOptionsMonitor<ILog> options)
+        public KafkaCache(ConfigurationExtension configuration, IOptionsMonitor<ILog> options)
         {
             Log = options.CurrentValue;
             Cts = new ConcurrentDictionary<string, CancellationTokenSource>();
@@ -130,11 +130,11 @@ namespace ASC.Common.Caching
                         try
                         {
                             var cr = c.Consume(Cts[channelName].Token);
-                            if (cr != null && cr.Value != null && !(new Guid(cr.Key.Id.ToByteArray())).Equals(Key) && Actions.TryGetValue(channelName, out var act))
+                            if (cr != null && cr.Message != null && cr.Message.Value != null && !(new Guid(cr.Message.Key.Id.ToByteArray())).Equals(Key) && Actions.TryGetValue(channelName, out var act))
                             {
                                 try
                                 {
-                                    act(cr.Value);
+                                    act(cr.Message.Value);
                                 }
                                 catch (Exception e)
                                 {
@@ -236,16 +236,6 @@ namespace ASC.Common.Caching
         private string GetKey(CacheNotifyAction cacheNotifyAction)
         {
             return $"{typeof(T).Name}{cacheNotifyAction}";
-        }
-    }
-
-    public static class KafkaExtention
-    {
-        public static DIHelper AddKafkaService(this DIHelper services)
-        {
-            services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
-
-            return services;
         }
     }
 }

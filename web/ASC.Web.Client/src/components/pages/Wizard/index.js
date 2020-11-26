@@ -1,69 +1,72 @@
-import React, { Component } from 'react';
-import { withRouter } from 'react-router';
+import React, { Component, useEffect } from "react";
+import { withRouter } from "react-router";
 import styled from "styled-components";
-import i18n from './i18n';
-import { withTranslation } from 'react-i18next';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
+import { withTranslation } from "react-i18next";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
 
-import { 
-  PageLayout, 
-  ErrorContainer, 
-  history, 
-  constants,
-  utils as commonUtils 
+import {
+  PageLayout,
+  ErrorContainer,
+  history,
+  utils as commonUtils,
 } from "asc-web-common";
-import { 
-  Loader, 
-  utils 
-} from 'asc-web-components';
+import { Loader, utils } from "asc-web-components";
 
-import HeaderContainer from './sub-components/header-container';
-import ButtonContainer from './sub-components/button-container';
-import SettingsContainer from './sub-components/settings-container';
-import InputContainer from './sub-components/input-container';
-import ModalContainer from './sub-components/modal-dialog-container';
+import HeaderContainer from "./sub-components/header-container";
+import ButtonContainer from "./sub-components/button-container";
+import SettingsContainer from "./sub-components/settings-container";
+import InputContainer from "./sub-components/input-container";
+import ModalContainer from "./sub-components/modal-dialog-container";
 
-import { 
-  getPortalPasswordSettings, 
-  getPortalTimezones, 
-  getPortalCultures, 
-  setIsWizardLoaded, 
+import {
+  getPortalPasswordSettings,
+  getPortalTimezones,
+  getPortalCultures,
+  setIsWizardLoaded,
   getMachineName,
-  getIsRequiredLicense, 
+  getIsRequiredLicense,
   setPortalOwner,
   setLicense,
-  resetLicenseUploaded 
-} from '../../../store/wizard/actions';
+  resetLicenseUploaded,
+} from "../../../store/wizard/actions";
+
+import { createI18N } from "../../../helpers/i18n";
+import { setDocumentTitle } from "../../../helpers/utils";
+
+const i18n = createI18N({
+  page: "Wizard",
+  localesPath: "pages/Wizard",
+});
 
 const { tablet } = utils.device;
-const { changeLanguage } = commonUtils;
+const { changeLanguage, createPasswordHash } = commonUtils;
 
 const { EmailSettings } = utils.email;
 const emailSettings = new EmailSettings();
 emailSettings.allowDomainPunycode = true;
 
 const WizardContainer = styled.div`
-    width: 960px;
-    margin: 0 auto;
-    margin-top: 120px;   
+  width: 960px;
+  margin: 0 auto;
+  margin-top: 63px;
 
-    .wizard-form {
-      margin-top: 32px;
-      display: grid;
-      grid-template-columns: 1fr;
-      grid-row-gap: 32px;
-    }
+  .wizard-form {
+    margin-top: 33px;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-row-gap: 32px;
+  }
 
-    @media ${tablet} {
-      width: 100%;
-      max-width: 480px;
-    }
+  @media ${tablet} {
+    width: 100%;
+    max-width: 480px;
+  }
 
-    @media(max-width: 520px) {
-      width: calc(100% - 32px);
-      margin-top: 72px
-    }
+  @media (max-width: 520px) {
+    width: calc(100% - 32px);
+    margin-top: 12px;
+  }
 `;
 
 class Body extends Component {
@@ -73,7 +76,7 @@ class Body extends Component {
     const { t } = props;
 
     this.state = {
-      password: '',
+      password: "",
       isValidPass: false,
       errorLoading: false,
       errorMessage: null,
@@ -81,8 +84,8 @@ class Body extends Component {
       sending: false,
       visibleModal: false,
       emailValid: false,
-      email: '',
-      changeEmail: '',
+      email: "",
+      changeEmail: "",
       license: false,
       languages: null,
       timezones: null,
@@ -90,74 +93,81 @@ class Body extends Component {
       selectTimezone: null,
 
       emailNeeded: true,
-      emailOwner: 'fake@mail.com',
+      emailOwner: "fake@mail.com",
 
       hasErrorEmail: false,
-      hasErrorPass: false, 
+      hasErrorPass: false,
       hasErrorLicense: false,
 
-      checkingMessages: []
-    }
+      checkingMessages: [],
+    };
 
-    document.title = t('wizardTitle');
+    setDocumentTitle(t("WizardTitle"));
   }
 
   async componentDidMount() {
-    const { 
-      t, wizardToken, 
-      getPortalPasswordSettings, getPortalCultures, 
-      getPortalTimezones, setIsWizardLoaded, 
-      getMachineName, getIsRequiredLicense, history
+    const {
+      t,
+      wizardToken,
+      getPortalPasswordSettings,
+      getPortalCultures,
+      getPortalTimezones,
+      setIsWizardLoaded,
+      getMachineName,
+      getIsRequiredLicense,
+      history,
     } = this.props;
 
     window.addEventListener("keyup", this.onKeyPressHandler);
-    localStorage.setItem(constants.WIZARD_KEY, true);
 
-    if(!wizardToken) { 
-      history.push('/');
+    if (!wizardToken) {
+      history.push("/");
     } else {
       await Promise.all([
         getPortalPasswordSettings(wizardToken),
         getMachineName(wizardToken),
         getIsRequiredLicense(),
-        getPortalTimezones(wizardToken)
-          .then(() => {
-            const { timezones, timezone } = this.props;
-            const zones = this.mapTimezonesToArray(timezones);
-            const select = zones.filter(zone => zone.key === timezone);
-            this.setState({
-              timezones: zones,
-              selectTimezone: {
-                key: select[0].key,
-                label: select[0].label
-              }
-            });
-          }),
-        getPortalCultures()
-          .then(() => {
-            const { cultures, culture } = this.props;
-            const languages = this.mapCulturesToArray(cultures, t);
-            let select = languages.filter(lang => lang.key === culture );
-            if (!select.length) select =  languages.filter(lang => lang.key === 'en-US' )
-            this.setState({ 
-              languages: languages, 
-              selectLanguage: { 
-                key: select[0].key, 
-                label: select[0].label 
-              }
-            })
-          })
+        getPortalTimezones(wizardToken).then(() => {
+          const { timezones, timezone } = this.props;
+          const zones = this.mapTimezonesToArray(timezones);
+          const select = zones.filter((zone) => zone.key === timezone);
+          this.setState({
+            timezones: zones,
+            selectTimezone: {
+              key: select[0].key,
+              label: select[0].label,
+            },
+          });
+        }),
+        getPortalCultures().then(() => {
+          const { cultures, culture } = this.props;
+          const languages = this.mapCulturesToArray(cultures, t);
+          let select = languages.filter((lang) => lang.key === culture);
+          if (!select.length)
+            select = languages.filter((lang) => lang.key === "en-US");
+          this.setState({
+            languages: languages,
+            selectLanguage: {
+              key: select[0].key,
+              label: select[0].label,
+            },
+          });
+        }),
       ])
-      .then(() => setIsWizardLoaded(true))
-      .catch((e) => { 
-        this.setState({
-          errorInitWizard: e
-      })}); 
+        .then(() => setIsWizardLoaded(true))
+        .catch((e) => {
+          this.setState({
+            errorInitWizard: e,
+          });
+        });
     }
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    if(nextProps.isWizardLoaded === true || nextState.errorInitWizard !== null) {
+    if (
+      nextProps.isWizardLoaded === true ||
+      nextState.errorInitWizard !== null
+    ) {
       return true;
     } else {
       return false;
@@ -166,57 +176,60 @@ class Body extends Component {
 
   componentWillUnmount() {
     window.removeEventListener("keyup", this.onKeyPressHandler);
-    localStorage.removeItem(constants.WIZARD_KEY);
   }
 
   mapTimezonesToArray = (timezones) => {
-    return timezones.map((timezone) => {  
+    return timezones.map((timezone) => {
       return { key: timezone.id, label: timezone.displayName };
     });
   };
-  
+
   mapCulturesToArray = (cultures, t) => {
     return cultures.map((culture) => {
-       return { key: culture, label: t(`Culture_${culture}`) };
+      return { key: culture, label: t(`Culture_${culture}`) };
     });
   };
 
-  onKeyPressHandler = e => {
+  onKeyPressHandler = (e) => {
     if (e.key === "Enter") this.onContinueHandler();
-  }
+  };
 
-  isValidPassHandler = val => this.setState({ isValidPass: val });
-  
-  onChangePassword = e => this.setState({ password: e.target.value, hasErrorPass: false });
+  isValidPassHandler = (val) => this.setState({ isValidPass: val });
+
+  onChangePassword = (e) =>
+    this.setState({ password: e.target.value, hasErrorPass: false });
 
   onClickChangeEmail = () => this.setState({ visibleModal: true });
 
-  onEmailChangeHandler = result => {
+  onEmailChangeHandler = (result) => {
     const { emailNeeded } = this.state;
 
-    emailNeeded 
-      ? this.setState({ 
+    emailNeeded
+      ? this.setState({
           emailValid: result.isValid,
           email: result.value,
-          hasErrorEmail: false
+          hasErrorEmail: false,
         })
-      : this.setState({ 
+      : this.setState({
           emailValid: result.isValid,
-          changeEmail: result.value
-        })
-  }
+          changeEmail: result.value,
+        });
+  };
 
   onChangeLicense = () => this.setState({ license: !this.state.license });
 
   onContinueHandler = () => {
     const valid = this.checkingValid();
 
-    if (valid) { 
-      const { setPortalOwner, wizardToken } = this.props;
+    if (valid) {
+      const { setPortalOwner, wizardToken, hashSettings } = this.props;
 
-      const { password, email,
-        selectLanguage, selectTimezone,
-        emailOwner
+      const {
+        password,
+        email,
+        selectLanguage,
+        selectTimezone,
+        emailOwner,
       } = this.state;
 
       this.setState({ sending: true });
@@ -225,137 +238,167 @@ class Body extends Component {
       const analytics = true;
 
       // console.log(emailTrim, password, selectLanguage.key, selectTimezone.key, analytics, wizardToken);
-      
-      setPortalOwner(emailTrim, password, selectLanguage.key, selectTimezone.key, wizardToken, analytics)
-        .then(() => history.push('/login'))
-        .catch( e => this.setState({
+      const hash = createPasswordHash(password, hashSettings);
+
+      setPortalOwner(
+        emailTrim,
+        hash,
+        selectLanguage.key,
+        selectTimezone.key,
+        wizardToken,
+        analytics
+      )
+        .then(() => history.push("/login"))
+        .catch((e) =>
+          this.setState({
             errorLoading: true,
             sending: false,
-            errorMessage: e
-        }))
+            errorMessage: e,
+          })
+        );
     } else {
-      this.setState({ visibleModal: true })
+      this.setState({ visibleModal: true });
     }
-  }
+  };
 
   checkingValid = () => {
     const { t, isLicenseRequired, licenseUpload } = this.props;
     const { isValidPass, emailValid, license, emailNeeded } = this.state;
 
     let checkingMessages = [];
-    if(!isValidPass) {
-      checkingMessages.push(t('errorPassword'));
-      this.setState({hasErrorPass: true, checkingMessages: checkingMessages });
+    if (!isValidPass) {
+      checkingMessages.push(t("ErrorPassword"));
+      this.setState({ hasErrorPass: true, checkingMessages: checkingMessages });
     }
-    if(!license) {
-      checkingMessages.push(t('errorLicenseRead'));
+    if (!license) {
+      checkingMessages.push(t("ErrorLicenseRead"));
       this.setState({ checkingMessages: checkingMessages });
     }
 
-    if ( emailNeeded && !isLicenseRequired) {
-      if(!emailValid) { 
-        checkingMessages.push(t('errorEmail'));
-        this.setState({ hasErrorEmail: true, checkingMessages: checkingMessages });
+    if (emailNeeded && !isLicenseRequired) {
+      if (!emailValid) {
+        checkingMessages.push(t("ErrorEmail"));
+        this.setState({
+          hasErrorEmail: true,
+          checkingMessages: checkingMessages,
+        });
       }
 
-      if( isValidPass && emailValid && license ) {
+      if (isValidPass && emailValid && license) {
         return true;
       }
     }
 
     if (emailNeeded && isLicenseRequired) {
-      if(!emailValid) {
-        checkingMessages.push(t('errorEmail'));
-        this.setState({ hasErrorEmail: true, checkingMessages: checkingMessages });
+      if (!emailValid) {
+        checkingMessages.push(t("ErrorEmail"));
+        this.setState({
+          hasErrorEmail: true,
+          checkingMessages: checkingMessages,
+        });
       }
 
-      if(!licenseUpload) {
-        checkingMessages.push(t('errorUploadLicenseFile'));
-        this.setState({ hasErrorLicense: true,  checkingMessages: checkingMessages });
+      if (!licenseUpload) {
+        checkingMessages.push(t("ErrorUploadLicenseFile"));
+        this.setState({
+          hasErrorLicense: true,
+          checkingMessages: checkingMessages,
+        });
       }
 
-      if( isValidPass && emailValid && license && licenseUpload) {
+      if (isValidPass && emailValid && license && licenseUpload) {
         return true;
       }
     }
 
     if (!emailNeeded && isLicenseRequired) {
-      if(!licenseUpload) {
-        checkingMessages.push(t('errorUploadLicenseFile'));
-        this.setState({ hasErrorLicense: true, checkingMessages: checkingMessages });
+      if (!licenseUpload) {
+        checkingMessages.push(t("ErrorUploadLicenseFile"));
+        this.setState({
+          hasErrorLicense: true,
+          checkingMessages: checkingMessages,
+        });
       }
 
-      if( isValidPass && license && licenseUpload) { 
-        return true; 
+      if (isValidPass && license && licenseUpload) {
+        return true;
       }
     }
 
-    return false; 
-  }
+    return false;
+  };
 
-  onSaveEmailHandler = () => { 
+  onSaveEmailHandler = () => {
     const { changeEmail, emailValid } = this.state;
-    if( emailValid && changeEmail ) {
-      this.setState({ email: changeEmail})
+    if (emailValid && changeEmail) {
+      this.setState({ email: changeEmail });
     }
-    this.setState({ visibleModal: false })
-  }
+    this.setState({ visibleModal: false });
+  };
 
   onCloseModal = () => {
-    this.setState({ 
-      visibleModal: false, 
-      errorLoading: false, 
-      errorMessage: null
+    this.setState({
+      visibleModal: false,
+      errorLoading: false,
+      errorMessage: null,
     });
-  }
+  };
 
-  onSelectTimezoneHandler = el => this.setState({ selectTimezone: el });
+  onSelectTimezoneHandler = (el) => this.setState({ selectTimezone: el });
 
-  onSelectLanguageHandler = lang => this.setState({ 
+  onSelectLanguageHandler = (lang) =>
+    this.setState({
       selectLanguage: {
         key: lang.key,
-        label: lang.label 
-      }});
+        label: lang.label,
+      },
+    });
 
-  onInputFileHandler = file => { 
-    const { setLicense, wizardToken, licenseUpload, resetLicenseUploaded } = this.props;
+  onInputFileHandler = (file) => {
+    const {
+      setLicense,
+      wizardToken,
+      licenseUpload,
+      resetLicenseUploaded,
+    } = this.props;
 
     if (licenseUpload) resetLicenseUploaded();
 
     this.setState({ hasErrorLicense: false });
 
     let fd = new FormData();
-    fd.append("files", file );
+    fd.append("files", file);
 
-    setLicense(wizardToken, fd)
-      .catch( e => this.setState({
-          errorLoading: true,
-          errorMessage: e,
-          hasErrorLicense: true 
-      }))
+    setLicense(wizardToken, fd).catch((e) =>
+      this.setState({
+        errorLoading: true,
+        errorMessage: e,
+        hasErrorLicense: true,
+      })
+    );
   };
 
   render() {
-    const { 
+    const {
       t,
-      isWizardLoaded,  
-      machineName, 
+      isWizardLoaded,
+      machineName,
       passwordSettings,
-      culture, 
+      culture,
       isLicenseRequired,
-      urlLicense
+      urlLicense,
     } = this.props;
 
-    const { 
-      sending, 
-      selectLanguage, 
+    const {
+      sending,
+      selectLanguage,
       license,
-      selectTimezone, 
-      languages, 
-      timezones, 
-      emailNeeded, 
-      email, 
-      emailOwner, 
+      selectTimezone,
+      languages,
+      timezones,
+      emailNeeded,
+      email,
+      emailOwner,
       password,
       errorLoading,
       visibleModal,
@@ -363,22 +406,27 @@ class Body extends Component {
       errorInitWizard,
       changeEmail,
       hasErrorEmail,
-      hasErrorPass, 
+      hasErrorPass,
       hasErrorLicense,
-      checkingMessages
+      checkingMessages,
     } = this.state;
-  
-    console.log('wizard render');
+
+    console.log("wizard render");
 
     if (errorInitWizard) {
-      return <ErrorContainer 
-              headerText={t('errorInitWizardHeader')}
-              bodyText={t('errorInitWizard')}
-              buttonText={t('errorInitWizardButton')}
-              buttonUrl="/" /> 
+      return (
+        <ErrorContainer
+          headerText={t("ErrorInitWizardHeader")}
+          bodyText={t("ErrorInitWizard")}
+          buttonText={t("ErrorInitWizardButton")}
+          buttonUrl="/"
+        />
+      );
     } else if (isWizardLoaded) {
-      return <WizardContainer>
-          <ModalContainer t={t}
+      return (
+        <WizardContainer>
+          <ModalContainer
+            t={t}
             errorLoading={errorLoading}
             visibleModal={visibleModal}
             errorMessage={errorMessage}
@@ -388,12 +436,13 @@ class Body extends Component {
             onEmailChangeHandler={this.onEmailChangeHandler}
             onSaveEmailHandler={this.onSaveEmailHandler}
             onCloseModal={this.onCloseModal}
-            />
+          />
 
           <HeaderContainer t={t} />
-          
-          <form className='wizard-form'>
-            <InputContainer t={t}s
+
+          <form className="wizard-form">
+            <InputContainer
+              t={t}
               settingsPassword={passwordSettings}
               emailNeeded={emailNeeded}
               password={password}
@@ -411,27 +460,32 @@ class Body extends Component {
               onEmailChangeHandler={this.onEmailChangeHandler}
             />
 
-            <SettingsContainer t={t} 
+            <SettingsContainer
+              t={t}
               selectLanguage={selectLanguage}
               selectTimezone={selectTimezone}
               languages={languages}
               timezones={timezones}
               emailNeeded={emailNeeded}
-              emailOwner={emailOwner} 
+              emailOwner={emailOwner}
               email={email}
               machineName={machineName}
               portalCulture={culture}
               onClickChangeEmail={this.onClickChangeEmail}
               onSelectLanguageHandler={this.onSelectLanguageHandler}
-              onSelectTimezoneHandler={this.onSelectTimezoneHandler} />
+              onSelectTimezoneHandler={this.onSelectTimezoneHandler}
+            />
 
-            <ButtonContainer t={t} 
-              sending={sending} 
-              onContinueHandler={this.onContinueHandler} />
+            <ButtonContainer
+              t={t}
+              sending={sending}
+              onContinueHandler={this.onContinueHandler}
+            />
           </form>
-      </WizardContainer>
+        </WizardContainer>
+      );
     }
-    return <Loader className="pageLoader" type="rombs" size='40px' />;
+    return <Loader className="pageLoader" type="rombs" size="40px" />;
   }
 }
 
@@ -445,52 +499,56 @@ Body.propTypes = {
   cultures: PropTypes.array.isRequired,
   timezones: PropTypes.array.isRequired,
   timezone: PropTypes.string.isRequired,
-  licenseUpload: PropTypes.string
-}
+  licenseUpload: PropTypes.string,
+};
 
 const WizardWrapper = withTranslation()(Body);
 
-const WizardPage = props => {
+const WizardPage = (props) => {
   const { isLoaded } = props;
 
-  changeLanguage(i18n);
+  useEffect(() => {
+    changeLanguage(i18n);
+  }, []);
 
   return (
-    <>
-      { isLoaded && <PageLayout 
-          sectionBodyContent={<WizardWrapper i18n={i18n} {...props} />} 
-        />
-      }
-    </>
+    isLoaded && (
+      <PageLayout>
+        <PageLayout.SectionBody>
+          <WizardWrapper i18n={i18n} {...props} />
+        </PageLayout.SectionBody>
+      </PageLayout>
+    )
   );
-}
+};
 
 WizardPage.propTypes = {
   culture: PropTypes.string.isRequired,
-  isLoaded: PropTypes.bool
-}
+  isLoaded: PropTypes.bool,
+};
 
 function mapStateToProps({ wizard, auth }) {
   const {
     isWizardLoaded,
-    machineName, 
-    isLicenseRequired, 
-    licenseUpload 
+    machineName,
+    isLicenseRequired,
+    licenseUpload,
   } = wizard;
 
-  const { 
-    culture, 
-    wizardToken, 
-    passwordSettings, 
-    cultures, 
-    timezones, 
-    timezone, 
-    urlLicense 
+  const {
+    culture,
+    wizardToken,
+    passwordSettings,
+    cultures,
+    timezones,
+    timezone,
+    urlLicense,
+    hashSettings,
   } = auth.settings;
 
   return {
     isLoaded: auth.isLoaded,
-    isWizardLoaded, 
+    isWizardLoaded,
     machineName,
     culture,
     wizardToken,
@@ -500,18 +558,19 @@ function mapStateToProps({ wizard, auth }) {
     timezone,
     urlLicense,
     isLicenseRequired,
-    licenseUpload
+    licenseUpload,
+    hashSettings,
   };
 }
 
-export default connect(mapStateToProps, {  
-  getPortalPasswordSettings, 
-  getPortalCultures, 
-  getPortalTimezones, 
-  setIsWizardLoaded, 
-  getMachineName, 
+export default connect(mapStateToProps, {
+  getPortalPasswordSettings,
+  getPortalCultures,
+  getPortalTimezones,
+  setIsWizardLoaded,
+  getMachineName,
   getIsRequiredLicense,
   setPortalOwner,
   setLicense,
-  resetLicenseUploaded 
-})(withRouter(WizardPage)); 
+  resetLicenseUploaded,
+})(withRouter(WizardPage));

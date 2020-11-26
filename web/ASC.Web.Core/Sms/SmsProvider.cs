@@ -51,6 +51,7 @@ using Twilio.Types;
 
 namespace ASC.Web.Core.Sms
 {
+    [Scope(Additional = typeof(TwilioProviderExtention))]
     public class SmsProviderManager
     {
         public SmscProvider SmscProvider { get => ConsumerFactory.Get<SmscProvider>(); }
@@ -114,23 +115,11 @@ namespace ASC.Web.Core.Sms
             return provider.SendMessage(number, message);
         }
     }
-    public static class SmsProviderManagerExtension
-    {
-        public static DIHelper AddSmsProviderManagerService(this DIHelper services)
-        {
-            if (services.TryAddScoped<SmsProviderManager>())
-            {
-                return services.AddConsumerFactoryService();
-            }
-
-            return services;
-        }
-    }
 
     public abstract class SmsProvider : Consumer
     {
         protected readonly ILog Log;
-        protected static readonly ICache Cache = AscCache.Memory;
+        protected static readonly ICache MemoryCache = AscCache.Memory;
 
         protected virtual string SendMessageUrlFormat { get; set; }
         protected virtual string GetBalanceUrlFormat { get; set; }
@@ -256,9 +245,9 @@ namespace ASC.Web.Core.Sms
             var tenantCache = tenant == null ? Tenant.DEFAULT_TENANT : tenant.TenantId;
 
             var key = "sms/smsc/" + tenantCache;
-            if (eraseCache) Cache.Remove(key);
+            if (eraseCache) MemoryCache.Remove(key);
 
-            var balance = Cache.Get<string>(key);
+            var balance = MemoryCache.Get<string>(key);
 
             if (string.IsNullOrEmpty(balance))
             {
@@ -287,7 +276,7 @@ namespace ASC.Web.Core.Sms
                     balance = string.Empty;
                 }
 
-                Cache.Insert(key, balance, TimeSpan.FromMinutes(1));
+                MemoryCache.Insert(key, balance, TimeSpan.FromMinutes(1));
             }
 
             return balance;
@@ -375,6 +364,7 @@ namespace ASC.Web.Core.Sms
         }
     }
 
+    [Scope]
     public class TwilioProvider : SmsProvider, IValidateKeysProvider
     {
         protected override string Key
@@ -479,6 +469,7 @@ namespace ASC.Web.Core.Sms
         }
     }
 
+    [Scope]
     public class TwilioSaaSProvider : TwilioProvider
     {
         public TwilioSaaSProvider()
@@ -504,6 +495,7 @@ namespace ASC.Web.Core.Sms
         }
     }
 
+    [Scope]
     public class TwilioProviderCleaner
     {
         private VoipDao VoipDao { get; }
@@ -512,7 +504,7 @@ namespace ASC.Web.Core.Sms
         private SecurityContext SecurityContext { get; }
         private BaseCommonLinkUtility BaseCommonLinkUtility { get; }
 
-        public TwilioProviderCleaner(VoipDao voipDao, AuthContext authContext, TenantUtil tenantUtil, SecurityContext securityContext, TenantManager tenantManager, BaseCommonLinkUtility baseCommonLinkUtility, VoipDaoCache voipDaoCache)
+        public TwilioProviderCleaner(VoipDao voipDao, AuthContext authContext, TenantUtil tenantUtil, SecurityContext securityContext, BaseCommonLinkUtility baseCommonLinkUtility)
         {
             VoipDao = voipDao;
             AuthContext = authContext;
@@ -538,20 +530,9 @@ namespace ASC.Web.Core.Sms
 
     public static class TwilioProviderExtention
     {
-        public static DIHelper AddTwilioProviderService(this DIHelper services)
+        public static void Register(DIHelper services)
         {
-            if (services.TryAddScoped<TwilioProvider>())
-            {
-                services.TryAddScoped<TwilioProviderCleaner>();
-                services.TryAddScoped<TwilioSaaSProvider>();
-                return services
-                    .AddVoipDaoService()
-                    .AddTenantManagerService()
-                    .AddCoreBaseSettingsService()
-                    .AddCoreSettingsService();
-            }
-
-            return services;
+            services.TryAdd<TwilioSaaSProvider>();
         }
     }
 }

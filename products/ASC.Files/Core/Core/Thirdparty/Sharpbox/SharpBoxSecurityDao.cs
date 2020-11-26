@@ -25,14 +25,12 @@
 
 
 using System;
-using System.Collections.Generic;
 
 using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
-using ASC.Files.Core;
 using ASC.Files.Core.EF;
 using ASC.Files.Core.Security;
 using ASC.Web.Core.Files;
@@ -42,62 +40,11 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Files.Thirdparty.Sharpbox
 {
+    [Scope]
     internal class SharpBoxSecurityDao : SharpBoxDaoBase, ISecurityDao<string>
     {
         public SharpBoxSecurityDao(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor, FileUtility fileUtility) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility)
         {
-        }
-
-        public void SetShare(FileShareRecord r)
-        {
-        }
-
-        public IEnumerable<FileShareRecord> GetShares(IEnumerable<Guid> subjects)
-        {
-            return null;
-        }
-
-        public IEnumerable<FileShareRecord> GetShares(IEnumerable<FileEntry<string>> entry)
-        {
-            return null;
-        }
-
-        public IEnumerable<FileShareRecord> GetShares(FileEntry<string> entry)
-        {
-            return null;
-        }
-
-        public void RemoveSubject(Guid subject)
-        {
-        }
-
-        public IEnumerable<FileShareRecord> GetPureShareRecords(IEnumerable<FileEntry<string>> entries)
-        {
-            return null;
-        }
-
-        public IEnumerable<FileShareRecord> GetPureShareRecords(FileEntry<string> entry)
-        {
-            return null;
-        }
-
-        public void DeleteShareRecords(IEnumerable<FileShareRecord> records)
-        {
-        }
-
-        public bool IsShared(object entryId, FileEntryType type)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    public static class SharpBoxSecurityDaoExtention
-    {
-        public static DIHelper AddSharpBoxSecurityDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<SharpBoxSecurityDao>();
-
-            return services;
         }
     }
 }

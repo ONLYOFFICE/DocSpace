@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React from "react";
 import Scrollbar from "../scrollbar";
 
@@ -17,12 +18,12 @@ class CustomScrollbars extends React.Component {
       style,
       children,
       className,
-      stype
+      stype,
     } = this.props;
     //console.log("CustomScrollbars", this.props);
     return (
       <Scrollbar
-        ref={scrollbarsRef =>
+        ref={(scrollbarsRef) =>
           this.refSetter.bind(this, scrollbarsRef, forwardedRef)
         }
         style={{ ...style, overflow: "hidden" }}
@@ -37,7 +38,7 @@ class CustomScrollbars extends React.Component {
 }
 
 CustomScrollbars.defaultProps = {
-  stype: "mediumBlack"
+  stype: "smallBlack",
 };
 
 const CustomScrollbarsVirtualList = React.forwardRef((props, ref) => (

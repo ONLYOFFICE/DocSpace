@@ -41,6 +41,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Files.Core.Search
 {
+    [Scope(Additional = typeof(FactoryIndexerFileExtension))]
     public class FactoryIndexerFile : FactoryIndexer<DbFile>
     {
         private IDaoFactory DaoFactory { get; }
@@ -95,7 +96,6 @@ namespace ASC.Web.Files.Core.Search
                     {
                         TenantManager.SetCurrentTenant(r.TenantId);
                         fileDao.InitDocument(r);
-                        TenantManager.CurrentTenant = null;
                     });
                     Index(data);
                 }
@@ -113,15 +113,12 @@ namespace ASC.Web.Files.Core.Search
             get { return FilesCommonResource.IndexTitle; }
         }
     }
-    public static class FactoryIndexerFileExtention
-    {
-        public static DIHelper AddFactoryIndexerFileService(this DIHelper services)
-        {
-            services.TryAddTransient<DbFile>();
-            services.TryAddScoped<FactoryIndexer<DbFile>, FactoryIndexerFile>();
 
-            return services
-                .AddFactoryIndexerService<DbFile>(false);
+    public class FactoryIndexerFileExtension
+    {
+        public static void Register(DIHelper services)
+        {
+            services.TryAdd<DbFile>();
         }
     }
 }

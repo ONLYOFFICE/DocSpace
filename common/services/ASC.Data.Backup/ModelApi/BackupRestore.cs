@@ -1,14 +1,14 @@
 ﻿using System.Collections.Generic;
 
-using ASC.Data.Backup.Contracts;
+using ASC.Api.Collections;
 
 namespace ASC.Data.Backup.Models
 {
     public class BackupRestore
     {
         public string BackupId { get; set; }
-        public BackupStorageType StorageType { get; set; }
-        public Dictionary<string, string> StorageParams { get; set; }
+        public object StorageType { get; set; }
+        public IEnumerable<ItemKeyValuePair<object, object>> StorageParams { get; set; }
         public bool Notify { get; set; }
     }
 }

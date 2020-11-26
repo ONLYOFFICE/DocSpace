@@ -40,12 +40,12 @@ namespace ASC.Web.Core.Mobile
 
         private TenantManager TenantManager { get; }
 
-        public CachedMobileAppInstallRegistrator(IMobileAppInstallRegistrator registrator, TenantManager tenantManager)
+        public CachedMobileAppInstallRegistrator(MobileAppInstallRegistrator registrator, TenantManager tenantManager)
             : this(registrator, TimeSpan.FromMinutes(30), tenantManager)
         {
         }
 
-        public CachedMobileAppInstallRegistrator(IMobileAppInstallRegistrator registrator, TimeSpan cacheExpiration, TenantManager tenantManager)
+        public CachedMobileAppInstallRegistrator(MobileAppInstallRegistrator registrator, TimeSpan cacheExpiration, TenantManager tenantManager)
         {
             TenantManager = tenantManager;
             this.registrator = registrator ?? throw new ArgumentNullException("registrator");

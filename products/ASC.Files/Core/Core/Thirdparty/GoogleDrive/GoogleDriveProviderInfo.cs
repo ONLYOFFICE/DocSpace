@@ -46,6 +46,7 @@ using DriveFile = Google.Apis.Drive.v3.Data.File;
 
 namespace ASC.Files.Thirdparty.GoogleDrive
 {
+    [Scope]
     [DebuggerDisplay("{CustomerTitle}")]
     internal class GoogleDriveProviderInfo : IProviderInfo
     {
@@ -143,7 +144,6 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             if (Wrapper != null)
             {
                 Wrapper.Dispose();
-                Wrapper = null;
             }
 
             CacheReset();
@@ -180,6 +180,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
         }
     }
 
+    [Scope(Additional = typeof(GoogleDriveProviderInfoExtention))]
     internal class GoogleDriveStorageDisposableWrapper : IDisposable
     {
         internal GoogleDriveStorage Storage { get; set; }
@@ -194,7 +195,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
 
         public GoogleDriveStorage CreateStorage(OAuth20Token token, int id)
         {
-            if (Storage != null) return Storage;
+            if (Storage != null && Storage.IsOpened) return Storage;
 
             var driveStorage = ServiceProvider.GetService<GoogleDriveStorage>();
 
@@ -211,7 +212,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             {
                 token = OAuth20TokenHelper.RefreshToken<GoogleLoginProvider>(ConsumerFactory, token);
 
-                var dbDao = ServiceProvider.GetService<CachedProviderAccountDao>();
+                var dbDao = ServiceProvider.GetService<ProviderAccountDao>();
                 var authData = new AuthData(token: token.ToJson());
                 dbDao.UpdateProviderInfo(id, authData);
             }
@@ -223,6 +224,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
         }
     }
 
+    [Singletone]
     public class GoogleDriveProviderInfoHelper
     {
         private readonly TimeSpan CacheExpiration;
@@ -253,7 +255,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
                 }
                 if (i.ResetChilds)
                 {
-                    if (!i.ChildFolder || !i.ChildFolder)
+                    if (!i.ChildFolderExist || !i.ChildFolder)
                     {
                         CacheChildFiles.Remove("drivef-" + i.Key);
                     }
@@ -364,18 +366,11 @@ namespace ASC.Files.Thirdparty.GoogleDrive
         }
     }
 
-    public static class GoogleDriveProviderInfoExtension
+    public class GoogleDriveProviderInfoExtention
     {
-        public static DIHelper AddGoogleDriveProviderInfoService(this DIHelper services)
+        public static void Register(DIHelper dIHelper)
         {
-            if (services.TryAddScoped<GoogleDriveProviderInfo>())
-            {
-                services.TryAddScoped<GoogleDriveStorageDisposableWrapper>();
-                services.TryAddScoped<GoogleDriveStorage>();
-                services.TryAddSingleton<GoogleDriveProviderInfoHelper>();
-            }
-
-            return services;
+            dIHelper.TryAdd<GoogleDriveStorage>();
         }
     }
 }

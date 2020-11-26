@@ -96,7 +96,7 @@ namespace ASC.Core.Common.Tests
             var ceo = users[0];
             var u1 = users[1];
             var u2 = users[2];
-            _ = userManager.GetCompanyCEO();
+            userManager.GetCompanyCEO();
             userManager.SetCompanyCEO(ceo.ID);
             var ceoTemp = userManager.GetCompanyCEO();
             Assert.AreEqual(ceo, ceoTemp);

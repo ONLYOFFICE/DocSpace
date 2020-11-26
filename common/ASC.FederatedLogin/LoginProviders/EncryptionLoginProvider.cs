@@ -26,12 +26,9 @@
 
 using System;
 using System.Linq;
-using System.Security;
 
 using ASC.Common;
 using ASC.Common.Utils;
-using ASC.Core;
-using ASC.Core.Users;
 using ASC.FederatedLogin;
 using ASC.FederatedLogin.Profile;
 using ASC.Security.Cryptography;
@@ -42,86 +39,55 @@ using SecurityContext = ASC.Core.SecurityContext;
 
 namespace ASC.Web.Studio.Core
 {
+    [Scope]
     public class EncryptionLoginProvider
     {
-        private UserManager UserManager { get; }
-        private TenantManager TenantManager { get; }
         private SecurityContext SecurityContext { get; }
         private Signature Signature { get; }
         private InstanceCrypto InstanceCrypto { get; }
         private IOptionsSnapshot<AccountLinker> Snapshot { get; }
 
         public EncryptionLoginProvider(
-            UserManager userManager,
-            TenantManager tenantManager,
             SecurityContext securityContext,
             Signature signature,
             InstanceCrypto instanceCrypto,
             IOptionsSnapshot<AccountLinker> snapshot)
         {
-            UserManager = userManager;
-            TenantManager = tenantManager;
             SecurityContext = securityContext;
             Signature = signature;
             InstanceCrypto = instanceCrypto;
             Snapshot = snapshot;
         }
 
-        public void UpdateAddress(string account)
+
+        public void SetKeys(Guid userId, string keys)
         {
-            var tenant = TenantManager.GetCurrentTenant();
-            var user = UserManager.GetUsers(SecurityContext.CurrentAccount.ID);
-            if (!SecurityContext.IsAuthenticated || user.IsVisitor(UserManager)) throw new SecurityException();
+            if (string.IsNullOrEmpty(keys)) return;
 
             var loginProfile = new LoginProfile(Signature, InstanceCrypto)
             {
                 Provider = ProviderConstants.Encryption,
+                Name = InstanceCrypto.Encrypt(keys)
             };
 
             var linker = Snapshot.Get("webstudio");
-            if (string.IsNullOrEmpty(account))
-            {
-                linker.RemoveLink(user.ID.ToString(), loginProfile);
-            }
-            else
-            {
-                loginProfile.Name = Crypto.GetV(account, 1, true);
-                linker.AddLink(user.ID.ToString(), loginProfile);
-            }
+            linker.AddLink(userId.ToString(), loginProfile);
         }
 
 
-        public string GetAddress()
+        public string GetKeys()
         {
-            return GetAddress(SecurityContext.CurrentAccount.ID);
+            return GetKeys(SecurityContext.CurrentAccount.ID);
         }
 
-        public string GetAddress(Guid userId)
+        public string GetKeys(Guid userId)
         {
             var linker = Snapshot.Get("webstudio");
             var profile = linker.GetLinkedProfiles(userId.ToString(), ProviderConstants.Encryption).FirstOrDefault();
             if (profile == null) return null;
 
-            var account = Crypto.GetV(profile.Name, 1, false);
-            return account;
-        }
-    }
-    public static class EncryptionLoginProviderExtension
-    {
-        public static DIHelper AddEncryptionLoginProviderService(this DIHelper services)
-        {
-            if (services.TryAddScoped<EncryptionLoginProvider>())
-            {
-                return services
-                    .AddUserManagerService()
-                    .AddTenantManagerService()
-                    .AddSecurityContextService()
-                    .AddSignatureService()
-                    .AddInstanceCryptoService()
-                    .AddAccountLinker();
-            }
-
-            return services;
+            var keys = InstanceCrypto.Decrypt(profile.Name);
+            return keys;
         }
     }
 }

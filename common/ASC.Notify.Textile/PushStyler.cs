@@ -29,36 +29,15 @@ using System.Text.RegularExpressions;
 
 using ASC.Common;
 using ASC.Common.Notify.Patterns;
-using ASC.Core;
 using ASC.Notify.Messages;
 using ASC.Notify.Patterns;
-using ASC.Security.Cryptography;
-using ASC.Web.Core.WhiteLabel;
-
-using Microsoft.Extensions.Configuration;
 
 namespace ASC.Notify.Textile
 {
+    [Scope]
     public class PushStyler : IPatternStyler
     {
         private static readonly Regex VelocityArgumentsRegex = new Regex(NVelocityPatternFormatter.NoStylePreffix + "(?'arg'.*?)" + NVelocityPatternFormatter.NoStyleSuffix, RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled);
-
-        public PushStyler(
-            CoreBaseSettings coreBaseSettings,
-            IConfiguration configuration,
-            InstanceCrypto instanceCrypto,
-            MailWhiteLabelSettingsHelper mailWhiteLabelSettingsHelper)
-        {
-            CoreBaseSettings = coreBaseSettings;
-            Configuration = configuration;
-            InstanceCrypto = instanceCrypto;
-            MailWhiteLabelSettingsHelper = mailWhiteLabelSettingsHelper;
-        }
-
-        private CoreBaseSettings CoreBaseSettings { get; }
-        private IConfiguration Configuration { get; }
-        private InstanceCrypto InstanceCrypto { get; }
-        private MailWhiteLabelSettingsHelper MailWhiteLabelSettingsHelper { get; }
 
         public void ApplyFormating(NoticeMessage message)
         {
@@ -72,18 +51,6 @@ namespace ASC.Notify.Textile
                 message.Body = VelocityArgumentsRegex.Replace(message.Body, m => m.Groups["arg"].Value);
                 message.Body = message.Body.Replace(Environment.NewLine, " ").Trim();
             }
-        }
-    }
-    public static class PushStylerExtension
-    {
-        public static DIHelper AddPushStylerService(this DIHelper services)
-        {
-            if (services.TryAddScoped<PushStyler>())
-            {
-                return services.AddStylerService();
-            }
-
-            return services;
         }
     }
 }

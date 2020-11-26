@@ -28,7 +28,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Context;
@@ -124,17 +123,6 @@ namespace ASC.Feed.Data
         private Guid GetUser()
         {
             return AuthContext.CurrentAccount.ID;
-        }
-    }
-
-    public static class FeedReadedDataProviderExtension
-    {
-        public static DIHelper AddFeedReadedDataProvider(this DIHelper services)
-        {
-            return services
-                .AddAuthContextService()
-                .AddTenantManagerService()
-                .AddFeedDbService();
         }
     }
 }

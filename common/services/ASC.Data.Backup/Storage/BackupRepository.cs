@@ -38,6 +38,7 @@ using Microsoft.EntityFrameworkCore.Internal;
 
 namespace ASC.Data.Backup.Storage
 {
+    [Scope]
     public class BackupRepository : IBackupRepository
     {
         private BackupsContext BackupContext { get; }
@@ -113,20 +114,6 @@ namespace ASC.Data.Backup.Storage
         public BackupSchedule GetBackupSchedule(int tenantId)
         {
             return BackupContext.Schedules.SingleOrDefault(s => s.TenantId == tenantId);
-        }
-    }
-
-    public static class BackupRepositoryExtension
-    {
-        public static DIHelper AddBackupRepositoryService(this DIHelper services)
-        {
-            if (services.TryAddScoped<BackupRepository>())
-            {
-                return services
-                    .AddBackupsContext();
-            }
-
-            return services;
         }
     }
 }

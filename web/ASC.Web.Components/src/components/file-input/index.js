@@ -1,50 +1,64 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import styled, { css } from 'styled-components';
+import styled from "styled-components";
 import isEqual from "lodash/isEqual";
 
-import IconButton from '../icon-button';
-import TextInput from '../text-input';
-
+import IconButton from "../icon-button";
+import TextInput from "../text-input";
 
 const StyledFileInput = styled.div`
   display: flex;
   position: relative;
   outline: none;
-  width: ${props =>
-        (props.scale && '100%') ||
-        (props.size === 'base' && '173px') ||
-        (props.size === 'middle' && '300px') ||
-        (props.size === 'big' && '350px') ||
-        (props.size === 'huge' && '500px') ||
-        (props.size === 'large' && '550px')
-    };
+  width: ${(props) =>
+    (props.scale && "100%") ||
+    (props.size === "base" && "173px") ||
+    (props.size === "middle" && "300px") ||
+    (props.size === "big" && "350px") ||
+    (props.size === "huge" && "500px") ||
+    (props.size === "large" && "550px")};
 
-  .text-input { 
-    border-color: ${props => (props.hasError && '#c30') || (props.hasWarning && '#f1ca92') || (props.isDisabled && '#ECEEF1')|| '#D0D5DA'};
+  .text-input {
+    border-color: ${(props) =>
+      (props.hasError && "#c30") ||
+      (props.hasWarning && "#f1ca92") ||
+      (props.isDisabled && "#ECEEF1") ||
+      "#D0D5DA"};
     text-overflow: ellipsis;
     padding-right: 40px;
-    padding-right: ${ props => props.size === 'large' ? '64px' 
-      : props.size === 'huge' ? '58px'
-        : props.size === 'big' ? '53px'
-          : props.size === 'middle' ? '48px'
-            : '37px'
-    };
-    cursor: ${props => props.isDisabled ? 'default' : 'pointer'};
+    padding-right: ${(props) =>
+      props.size === "large"
+        ? "64px"
+        : props.size === "huge"
+        ? "58px"
+        : props.size === "big"
+        ? "53px"
+        : props.size === "middle"
+        ? "48px"
+        : "37px"};
+    cursor: ${(props) => (props.isDisabled ? "default" : "pointer")};
   }
 
-  :hover{
+  :hover {
     .icon {
-      border-color: ${props => (props.hasError && '#c30') || (props.hasWarning && '#f1ca92') || (props.isDisabled && '#ECEEF1')|| '#A3A9AE'};
+      border-color: ${(props) =>
+        (props.hasError && "#c30") ||
+        (props.hasWarning && "#f1ca92") ||
+        (props.isDisabled && "#ECEEF1") ||
+        "#A3A9AE"};
     }
   }
 
   :active {
     .icon {
-      border-color: ${props => (props.hasError && '#c30') || (props.hasWarning && '#f1ca92') || (props.isDisabled && '#ECEEF1')|| '#2DA7DB'};
+      border-color: ${(props) =>
+        (props.hasError && "#c30") ||
+        (props.hasWarning && "#f1ca92") ||
+        (props.isDisabled && "#ECEEF1") ||
+        "#2DA7DB"};
     }
   }
-    
+
   .icon {
     display: flex;
     align-items: center;
@@ -53,120 +67,135 @@ const StyledFileInput = styled.div`
     position: absolute;
     right: 0;
 
-    width: ${props => props.size === 'large' ? '48px'
-      : props.size === 'huge' ? '38px'
-        : props.size === 'big' ? '37px'
-          : props.size === 'middle' ? '36px'
-            : '30px'
-    };
+    width: ${(props) =>
+      props.size === "large"
+        ? "48px"
+        : props.size === "huge"
+        ? "38px"
+        : props.size === "big"
+        ? "37px"
+        : props.size === "middle"
+        ? "36px"
+        : "30px"};
 
-    height: ${props => props.size === 'large' ? '43px'
-      : props.size === 'huge' ? '37px'
-        : props.size === 'big' ? '36px'
-          : props.size === 'middle' ? '36px'
-            : '30px'
-    };
+    height: ${(props) =>
+      props.size === "large"
+        ? "43px"
+        : props.size === "huge"
+        ? "37px"
+        : props.size === "big"
+        ? "36px"
+        : props.size === "middle"
+        ? "36px"
+        : "30px"};
 
     margin: 0;
     border: 1px solid;
     border-radius: 0 3px 3px 0;
 
-    border-color: ${props => (props.hasError && '#c30') || (props.hasWarning && '#f1ca92') || (props.isDisabled && '#ECEEF1')|| '#D0D5DA'};
-    cursor: ${props => (props.isDisabled ? 'default' : 'pointer')}
+    border-color: ${(props) =>
+      (props.hasError && "#c30") ||
+      (props.hasWarning && "#f1ca92") ||
+      (props.isDisabled && "#ECEEF1") ||
+      "#D0D5DA"};
+    cursor: ${(props) => (props.isDisabled ? "default" : "pointer")};
   }
 
   .icon-button {
-    cursor: ${props => props.isDisabled ? 'default' : 'pointer'}
+    cursor: ${(props) => (props.isDisabled ? "default" : "pointer")};
   }
 `;
 
-class FileInput extends Component { 
+class FileInput extends Component {
   constructor(props) {
     super(props);
 
     this.inputRef = React.createRef();
 
     this.state = {
-      fileName: '',
-      file: null
-    }
+      fileName: "",
+      file: null,
+    };
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    return (!isEqual(this.props, nextProps) || !isEqual(this.state, nextState));
+    return !isEqual(this.props, nextProps) || !isEqual(this.state, nextState);
   }
 
-  onIconFileClick = e => {
+  onIconFileClick = (e) => {
     const { isDisabled } = this.props;
-    
-    if(isDisabled) {  
+
+    if (isDisabled) {
       return false;
     }
     e.target.blur();
     this.inputRef.current.click();
-  }
+  };
 
-  onChangeHandler = e => {
+  onChangeHandler = (e) => {
     this.setState({
-      fileName: e.target.value
-    })
-  }
+      fileName: e.target.value,
+    });
+  };
 
   onInputFile = () => {
-    const { onInput, isDisabled } = this.props;
+    const { onInput } = this.props;
 
-    if ( this.inputRef.current.files.length > 0 ) {
-      this.setState({
-        fileName: this.inputRef.current.files[0].name,
-        file: this.inputRef.current.files[0]
-      }, () => {
-        if(onInput) { 
-          this.inputRef.current.value = '';
-          onInput(this.state.file);
-        };
-      });
-
-    } 
-  }
+    if (this.inputRef.current.files.length > 0) {
+      this.setState(
+        {
+          fileName: this.inputRef.current.files[0].name,
+          file: this.inputRef.current.files[0],
+        },
+        () => {
+          if (onInput) {
+            this.inputRef.current.value = "";
+            onInput(this.state.file);
+          }
+        }
+      );
+    }
+  };
 
   render() {
     //console.log('render FileInput');
     const { fileName } = this.state;
-    const { 
-      size, 
+    const {
+      size,
       placeholder,
-      isDisabled, 
-      scale, 
+      isDisabled,
+      scale,
       hasError,
       hasWarning,
       accept,
-      onInput,
-      ...rest 
+      id,
+      onInput, // eslint-disable-line no-unused-vars
+      ...rest
     } = this.props;
 
     let iconSize = 0;
 
     switch (size) {
-      case 'base':
+      case "base":
         iconSize = 15;
         break;
-      case 'middle':
+      case "middle":
         iconSize = 15;
         break;
-      case 'big':
+      case "big":
         iconSize = 16;
         break;
-      case 'huge':
+      case "huge":
         iconSize = 16;
         break;
-      case 'large': 
+      case "large":
         iconSize = 16;
         break;
     }
-    
-    return( 
-      <StyledFileInput 
-        size={size} 
+
+    return (
+      <StyledFileInput
+        size={size}
         scale={scale ? 1 : 0}
         hasError={hasError}
         hasWarning={hasWarning}
@@ -187,17 +216,15 @@ class FileInput extends Component {
         />
         <input
           type="file"
+          id={id}
           ref={this.inputRef}
-          style={{ display: 'none' }}
+          style={{ display: "none" }}
           accept={accept}
           onInput={this.onInputFile}
         />
-        <div 
-          className="icon" 
-          onClick={this.onIconFileClick}
-        >
-          <IconButton 
-            className='icon-button'
+        <div className="icon" onClick={this.onIconFileClick}>
+          <IconButton
+            className="icon-button"
             iconName={"CatalogFolderIcon"}
             color={"#A3A9AE"}
             size={iconSize}
@@ -205,14 +232,14 @@ class FileInput extends Component {
           />
         </div>
       </StyledFileInput>
-    )
+    );
   }
 }
 
 FileInput.propTypes = {
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   placeholder: PropTypes.string,
-  size: PropTypes.oneOf(['base', 'middle', 'big', 'huge', 'large']),
+  size: PropTypes.oneOf(["base", "middle", "big", "huge", "large"]),
   scale: PropTypes.bool,
   className: PropTypes.string,
   hasError: PropTypes.bool,
@@ -221,16 +248,16 @@ FileInput.propTypes = {
   isDisabled: PropTypes.bool,
   name: PropTypes.string,
   onInput: PropTypes.func,
-  accept: PropTypes.string
+  accept: PropTypes.string,
 };
 
 FileInput.defaultProps = {
-  size: 'base',
+  size: "base",
   scale: false,
   hasWarning: false,
   hasError: false,
   isDisabled: false,
-  accept: ''
-}
+  accept: "",
+};
 
 export default FileInput;

@@ -38,10 +38,12 @@ using ASC.FederatedLogin.Profile;
 using ASC.Security.Cryptography;
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
 namespace ASC.FederatedLogin
 {
+    [Singletone]
     public class AccountLinkerStorage
     {
         private readonly ICache cache;
@@ -68,20 +70,25 @@ namespace ASC.FederatedLogin
             return profiles;
         }
     }
+
+    [Scope]
     public class ConfigureAccountLinker : IConfigureNamedOptions<AccountLinker>
     {
         private Signature Signature { get; }
+        public IConfiguration Configuration { get; }
         private InstanceCrypto InstanceCrypto { get; }
         private AccountLinkerStorage AccountLinkerStorage { get; }
         private DbContextManager<AccountLinkContext> DbContextManager { get; }
 
         public ConfigureAccountLinker(
             Signature signature,
+            IConfiguration configuration,
             InstanceCrypto instanceCrypto,
             AccountLinkerStorage accountLinkerStorage,
             DbContextManager<AccountLinkContext> dbContextManager)
         {
             Signature = signature;
+            Configuration = configuration;
             InstanceCrypto = instanceCrypto;
             AccountLinkerStorage = accountLinkerStorage;
             DbContextManager = dbContextManager;
@@ -102,6 +109,7 @@ namespace ASC.FederatedLogin
         }
     }
 
+    [Scope(typeof(ConfigureAccountLinker))]
     public class AccountLinker
     {
         public string DbId { get; set; }
@@ -212,36 +220,6 @@ namespace ASC.FederatedLogin
 
             tr.Commit();
             AccountLinkerStorage.RemoveFromCache(obj);
-        }
-    }
-
-    public static class AccountLinkerStorageExtension
-    {
-        public static DIHelper AddAccountLinkerStorageService(this DIHelper services)
-        {
-            services.TryAddSingleton<AccountLinkerStorage>();
-            services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
-
-            return services;
-        }
-    }
-
-    public static class AccountLinkerExtension
-    {
-        public static DIHelper AddAccountLinker(this DIHelper services)
-        {
-            if (services.TryAddScoped<AccountLinker>())
-            {
-                services.TryAddScoped<IConfigureOptions<AccountLinker>, ConfigureAccountLinker>();
-
-                return services
-                    .AddAccountLinkContextService()
-                    .AddSignatureService()
-                    .AddInstanceCryptoService()
-                    .AddAccountLinkerStorageService();
-            }
-
-            return services;
         }
     }
 }

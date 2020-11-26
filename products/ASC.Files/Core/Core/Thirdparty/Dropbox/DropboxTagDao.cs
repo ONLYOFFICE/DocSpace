@@ -25,9 +25,6 @@
 
 
 using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 
 using ASC.Common;
 using ASC.Common.Logging;
@@ -43,157 +40,11 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Files.Thirdparty.Dropbox
 {
+    [Scope]
     internal class DropboxTagDao : DropboxDaoBase, ITagDao<string>
     {
         public DropboxTagDao(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor, FileUtility fileUtility) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility)
         {
-        }
-
-        #region ITagDao Members
-
-        public IEnumerable<Tag> GetTags(TagType tagType, IEnumerable<FileEntry<string>> fileEntries)
-        {
-            return null;
-        }
-
-        public IEnumerable<Tag> GetTags(Guid owner, TagType tagType)
-        {
-            return null;
-        }
-
-        public IEnumerable<Tag> GetTags(string name, TagType tagType)
-        {
-            return null;
-        }
-
-        public IEnumerable<Tag> GetTags(string[] names, TagType tagType)
-        {
-            return null;
-        }
-
-        public IEnumerable<Tag> GetNewTags(Guid subject, Folder<string> parentFolder, bool deepSearch)
-        {
-            var folderId = DaoSelector.ConvertId(parentFolder.ID);
-            var fakeFolderId = parentFolder.ID.ToString();
-
-            var entryIDs = FilesDbContext.ThirdpartyIdMapping
-                .Where(r => r.Id.StartsWith(fakeFolderId))
-                .Select(r => r.HashId)
-                .ToList();
-
-            if (!entryIDs.Any()) return new List<Tag>();
-
-            var q = FilesDbContext.Tag
-                .Join(FilesDbContext.TagLink.DefaultIfEmpty(),
-                r => new TagLink { TenantId = r.TenantId, Id = r.Id },
-                r => new TagLink { TenantId = r.TenantId, Id = r.TagId },
-                (tag, tagLink) => new { tag, tagLink },
-                new TagLinkComparer())
-                .Where(r => r.tag.TenantId == TenantID)
-                .Where(r => r.tag.Flag == TagType.New)
-                .Where(r => r.tagLink.TenantId == TenantID)
-                .Where(r => entryIDs.Any(a => a == r.tagLink.EntryId));
-
-            if (subject != Guid.Empty)
-            {
-                q = q.Where(r => r.tag.Owner == subject);
-            }
-
-            var tags = q
-                .ToList()
-                .Select(r => new Tag
-                {
-                    TagName = r.tag.Name,
-                    TagType = r.tag.Flag,
-                    Owner = r.tag.Owner,
-                    EntryId = MappingID(r.tagLink.EntryId),
-                    EntryType = r.tagLink.EntryType,
-                    Count = r.tagLink.TagCount,
-                    Id = r.tag.Id
-                });
-
-            if (deepSearch) return tags;
-
-            var folderFileIds = new[] { fakeFolderId }
-                .Concat(GetChildren(folderId));
-
-            return tags.Where(tag => folderFileIds.Contains(tag.EntryId.ToString()));
-        }
-
-        public IEnumerable<Tag> GetNewTags(Guid subject, IEnumerable<FileEntry<string>> fileEntries)
-        {
-            return null;
-        }
-
-        public IEnumerable<Tag> GetNewTags(Guid subject, FileEntry<string> fileEntry)
-        {
-            return null;
-        }
-
-        public IEnumerable<Tag> SaveTags(IEnumerable<Tag> tag)
-        {
-            return null;
-        }
-
-        public IEnumerable<Tag> SaveTags(Tag tag)
-        {
-            return null;
-        }
-
-        public void UpdateNewTags(IEnumerable<Tag> tag)
-        {
-        }
-
-        public void UpdateNewTags(Tag tag)
-        {
-        }
-
-        public void RemoveTags(IEnumerable<Tag> tag)
-        {
-        }
-
-        public void RemoveTags(Tag tag)
-        {
-        }
-
-        public IEnumerable<Tag> GetTags(string entryID, FileEntryType entryType, TagType tagType)
-        {
-            return null;
-        }
-
-        public void MarkAsNew(Guid subject, FileEntry<string> fileEntry)
-        {
-        }
-
-        #endregion
-    }
-
-    public class TagLink
-    {
-        public int TenantId { get; set; }
-        public int Id { get; set; }
-    }
-
-    public class TagLinkComparer : IEqualityComparer<TagLink>
-    {
-        public bool Equals([AllowNull] TagLink x, [AllowNull] TagLink y)
-        {
-            return x.Id == y.Id && x.TenantId == y.TenantId;
-        }
-
-        public int GetHashCode([DisallowNull] TagLink obj)
-        {
-            return obj.Id.GetHashCode() + obj.TenantId.GetHashCode();
-        }
-    }
-
-    public static class DropboxTagDaoExtention
-    {
-        public static DIHelper AddDropboxTagDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<DropboxTagDao>();
-
-            return services;
         }
     }
 }

@@ -32,7 +32,6 @@ using System.Threading;
 
 using ASC.Common;
 using ASC.Common.Caching;
-using ASC.Common.Logging;
 using ASC.Core.Common.EF;
 using ASC.Core.Data;
 using ASC.Core.Tenants;
@@ -42,6 +41,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Caching
 {
+    [Singletone]
     public class UserServiceCache
     {
         public const string USERS = "users";
@@ -137,6 +137,7 @@ namespace ASC.Core.Caching
         }
     }
 
+    [Scope]
     class ConfigureCachedUserService : IConfigureNamedOptions<CachedUserService>
     {
         internal IOptionsSnapshot<EFUserService> Service { get; }
@@ -173,6 +174,7 @@ namespace ASC.Core.Caching
         }
     }
 
+    [Scope]
     public class CachedUserService : IUserService, ICachedService
     {
         internal IUserService Service { get; set; }
@@ -283,9 +285,9 @@ namespace ASC.Core.Caching
             return user;
         }
 
-        public UserInfo GetUser(int tenant, string login, string passwordHash)
+        public UserInfo GetUserByPasswordHash(int tenant, string login, string passwordHash)
         {
-            return Service.GetUser(tenant, login, passwordHash);
+            return Service.GetUserByPasswordHash(tenant, login, passwordHash);
         }
 
         public UserInfo SaveUser(int tenant, UserInfo user)
@@ -318,15 +320,16 @@ namespace ASC.Core.Caching
             CacheUserPhotoItem.Publish(new UserPhotoCacheItem { Key = UserServiceCache.GetUserPhotoCacheKey(tenant, id) }, CacheNotifyAction.Remove);
         }
 
-        public string GetUserPassword(int tenant, Guid id)
+        public DateTime GetUserPasswordStamp(int tenant, Guid id)
         {
-            return Service.GetUserPassword(tenant, id);
+            return Service.GetUserPasswordStamp(tenant, id);
         }
 
-        public void SetUserPassword(int tenant, Guid id, string password)
+        public void SetUserPasswordHash(int tenant, Guid id, string passwordHash)
         {
-            Service.SetUserPassword(tenant, id, password);
+            Service.SetUserPasswordHash(tenant, id, passwordHash);
         }
+
 
 
         public IDictionary<Guid, Group> GetGroups(int tenant, DateTime from)
@@ -516,29 +519,6 @@ namespace ASC.Core.Caching
         class UserPhoto
         {
             public string Key { get; set; }
-        }
-    }
-    public static class UserConfigExtension
-    {
-        public static DIHelper AddUserService(this DIHelper services)
-        {
-            if (services.TryAddScoped<EFUserService>())
-            {
-                services.TryAddScoped<IUserService, CachedUserService>();
-
-                services.TryAddScoped<IConfigureOptions<EFUserService>, ConfigureEFUserService>();
-                services.TryAddScoped<IConfigureOptions<CachedUserService>, ConfigureCachedUserService>();
-
-                services.TryAddSingleton<UserServiceCache>();
-                services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
-
-                services
-                    .AddCoreSettingsService()
-                    .AddLoggerService()
-                    .AddUserDbContextService();
-            }
-
-            return services;
         }
     }
 }

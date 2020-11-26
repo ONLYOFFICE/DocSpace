@@ -1,6 +1,6 @@
 import React from "react";
-import PropTypes from 'prop-types';
-import styled, { keyframes } from 'styled-components';
+import PropTypes from "prop-types";
+import styled, { keyframes } from "styled-components";
 
 const BounceAnimation = keyframes`
   0% { margin-bottom: 0; display: none; }
@@ -14,59 +14,59 @@ const DotWrapper = styled.div`
 `;
 
 const Dot = styled.div`
-  background-color: ${props => props.color};
+  background-color: ${(props) => props.color};
   border-radius: 50%;
-  width: ${props => props.size / 9 }px;
-  height: ${props => props.size / 9 }px;
+  width: ${(props) => props.size / 9}px;
+  height: ${(props) => props.size / 9}px;
   margin-right: 2px;
   /* Animation */
   animation: ${BounceAnimation} 0.5s linear infinite;
-  animation-delay: ${props => props.delay};
+  animation-delay: ${(props) => props.delay};
 `;
 
-Dot.protoTypes = {
-    delay: PropTypes.string.isRequired,
-    color: PropTypes.string.isRequired,
-    size: PropTypes.number.isRequired,
+Dot.propTypes = {
+  delay: PropTypes.string.isRequired,
+  color: PropTypes.string.isRequired,
+  size: PropTypes.number.isRequired,
 };
 
 const LoadingWrapper = styled.div`
   display: flex;
   align-items: baseline;
-  
-  color: ${props => props.color};
-  font-size: ${props => props.size}px;
+
+  color: ${(props) => props.color};
+  font-size: ${(props) => props.size}px;
 `;
 
 const LoadingLabel = styled.span`
-    margin-right: 2px;
+  margin-right: 2px;
 `;
 
-const LoadingDots = props => {
-    const { label } = props;
+const LoadingDots = (props) => {
+  const { label } = props;
 
-    return (
-        <LoadingWrapper {...props}>
-            <LoadingLabel>{label}</LoadingLabel>
-            <DotWrapper>
-                <Dot {...props} delay="0s" />
-                <Dot {...props} delay=".2s" />
-                <Dot {...props} delay=".4s" />
-            </DotWrapper>
-        </LoadingWrapper>
-    )
+  return (
+    <LoadingWrapper {...props}>
+      <LoadingLabel>{label}</LoadingLabel>
+      <DotWrapper>
+        <Dot {...props} delay="0s" />
+        <Dot {...props} delay=".2s" />
+        <Dot {...props} delay=".4s" />
+      </DotWrapper>
+    </LoadingWrapper>
+  );
 };
 
 LoadingDots.propTypes = {
-    color: PropTypes.string,
-    size: PropTypes.number.isRequired,
-    label: PropTypes.string.isRequired
+  color: PropTypes.string,
+  size: PropTypes.number.isRequired,
+  label: PropTypes.string.isRequired,
 };
 
 LoadingDots.defaultProps = {
-    color: "#63686a",
-    size: 18,
-    label: "Loading content, please wait"
-}
+  color: "#63686a",
+  size: 18,
+  label: "Loading content, please wait",
+};
 
 export { LoadingDots };

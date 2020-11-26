@@ -12,7 +12,7 @@ const StyledIconBlock = styled.div`
   display: flex;
   align-items: center;
 
-  cursor: ${props =>
+  cursor: ${(props) =>
     props.isDisabled || !props.isClickable ? "default" : "pointer"};
   height: 100%;
   padding-right: 8px;
@@ -26,7 +26,7 @@ const StyledChildrenBlock = styled.div`
   padding: 2px 0px 2px 2px;
 `;
 
-// eslint-disable-next-line react/prop-types, no-unused-vars
+/* eslint-disable react/prop-types, no-unused-vars */
 const CustomInputGroup = ({
   isIconFill,
   hasError,
@@ -35,6 +35,7 @@ const CustomInputGroup = ({
   scale,
   ...props
 }) => <div {...props}></div>;
+/* eslint-enable react/prop-types, no-unused-vars */
 const StyledInputGroup = styled(CustomInputGroup)`
   display: flex;
 
@@ -55,11 +56,11 @@ class InputBlock extends React.Component {
   constructor(props) {
     super(props);
   }
-  onIconClick = e => {
+  onIconClick = (e) => {
     if (typeof this.props.onIconClick === "function" && !this.props.isDisabled)
       this.props.onIconClick(e);
   };
-  onChange = e => {
+  onChange = (e) => {
     if (typeof this.props.onChange === "function") this.props.onChange(e);
   };
 
@@ -93,7 +94,7 @@ class InputBlock extends React.Component {
       hoverColor,
       isIconFill,
       onIconClick,
-      iconSize
+      iconSize,
     } = this.props;
 
     if (typeof iconSize == "number" && iconSize > 0) {
@@ -126,7 +127,9 @@ class InputBlock extends React.Component {
         style={style}
       >
         <div className="prepend">
-          <StyledChildrenBlock>{children}</StyledChildrenBlock>
+          <StyledChildrenBlock className="prepend-children">
+            {children}
+          </StyledChildrenBlock>
         </div>
         <TextInput
           id={id}
@@ -208,11 +211,11 @@ InputBlock.propTypes = {
 
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
-    PropTypes.node
+    PropTypes.node,
   ]),
 
   className: PropTypes.string,
-  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 };
 
 InputBlock.defaultProps = {
@@ -231,7 +234,7 @@ InputBlock.defaultProps = {
   hoverColor: "#ffffff",
   isIconFill: false,
   isDisabled: false,
-  keepCharPositions: false
+  keepCharPositions: false,
 };
 
 export default InputBlock;

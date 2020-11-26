@@ -34,7 +34,6 @@ using System.Threading;
 using AppLimit.CloudComputing.SharpBox;
 using AppLimit.CloudComputing.SharpBox.Exceptions;
 
-using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -42,7 +41,6 @@ using ASC.Core.Tenants;
 using ASC.Files.Core;
 using ASC.Files.Core.EF;
 using ASC.Files.Core.Resources;
-using ASC.Files.Core.Security;
 using ASC.Files.Core.Thirdparty;
 using ASC.Web.Core.Files;
 using ASC.Web.Studio.Core;
@@ -129,25 +127,14 @@ namespace ASC.Files.Thirdparty.Sharpbox
 
             if (orderBy == null) orderBy = new OrderBy(SortedByType.DateAndTime, false);
 
-            switch (orderBy.SortedBy)
+            folders = orderBy.SortedBy switch
             {
-                case SortedByType.Author:
-                    folders = orderBy.IsAsc ? folders.OrderBy(x => x.CreateBy) : folders.OrderByDescending(x => x.CreateBy);
-                    break;
-                case SortedByType.AZ:
-                    folders = orderBy.IsAsc ? folders.OrderBy(x => x.Title) : folders.OrderByDescending(x => x.Title);
-                    break;
-                case SortedByType.DateAndTime:
-                    folders = orderBy.IsAsc ? folders.OrderBy(x => x.ModifiedOn) : folders.OrderByDescending(x => x.ModifiedOn);
-                    break;
-                case SortedByType.DateAndTimeCreation:
-                    folders = orderBy.IsAsc ? folders.OrderBy(x => x.CreateOn) : folders.OrderByDescending(x => x.CreateOn);
-                    break;
-                default:
-                    folders = orderBy.IsAsc ? folders.OrderBy(x => x.Title) : folders.OrderByDescending(x => x.Title);
-                    break;
-            }
-
+                SortedByType.Author => orderBy.IsAsc ? folders.OrderBy(x => x.CreateBy) : folders.OrderByDescending(x => x.CreateBy),
+                SortedByType.AZ => orderBy.IsAsc ? folders.OrderBy(x => x.Title) : folders.OrderByDescending(x => x.Title),
+                SortedByType.DateAndTime => orderBy.IsAsc ? folders.OrderBy(x => x.ModifiedOn) : folders.OrderByDescending(x => x.ModifiedOn),
+                SortedByType.DateAndTimeCreation => orderBy.IsAsc ? folders.OrderBy(x => x.CreateOn) : folders.OrderByDescending(x => x.CreateOn),
+                _ => orderBy.IsAsc ? folders.OrderBy(x => x.Title) : folders.OrderByDescending(x => x.Title),
+            };
             return folders.ToList();
         }
 
@@ -468,89 +455,6 @@ namespace ASC.Files.Thirdparty.Sharpbox
                 storageMaxUploadSize = long.MaxValue;
 
             return chunkedUpload ? storageMaxUploadSize : Math.Min(storageMaxUploadSize, SetupInfo.AvailableFileSize);
-        }
-
-        #region Only for TMFolderDao
-
-        public void ReassignFolders(string[] folderIds, Guid newOwnerId)
-        {
-        }
-
-        public IEnumerable<Folder<string>> Search(string text, bool bunch)
-        {
-            return null;
-        }
-
-        public string GetFolderID(string module, string bunch, string data, bool createIfNotExists)
-        {
-            return null;
-        }
-
-        public IEnumerable<string> GetFolderIDs(string module, string bunch, IEnumerable<string> data, bool createIfNotExists)
-        {
-            return new List<string>();
-        }
-
-        public string GetFolderIDCommon(bool createIfNotExists)
-        {
-            return null;
-        }
-
-        public string GetFolderIDUser(bool createIfNotExists, Guid? userId)
-        {
-            return null;
-        }
-
-        public string GetFolderIDShare(bool createIfNotExists)
-        {
-            return null;
-        }
-
-        public string GetFolderIDTrash(bool createIfNotExists, Guid? userId)
-        {
-            return null;
-        }
-
-
-        public string GetFolderIDPhotos(bool createIfNotExists)
-        {
-            return null;
-        }
-        public string GetFolderIDProjects(bool createIfNotExists)
-        {
-            return null;
-        }
-
-        public string GetBunchObjectID(string folderID)
-        {
-            return null;
-        }
-
-        public Dictionary<string, string> GetBunchObjectIDs(List<string> folderIDs)
-        {
-            return null;
-        }
-
-        public IEnumerable<(Folder<string>, SmallShareRecord)> GetFeeds(int tenant, DateTime from, DateTime to)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<string> GetTenantsWithFeeds(DateTime fromTime)
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
-    }
-
-    public static class SharpBoxFolderDaoExtention
-    {
-        public static DIHelper AddSharpBoxFolderDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<SharpBoxFileDao>();
-
-            return services;
         }
     }
 }

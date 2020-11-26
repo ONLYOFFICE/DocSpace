@@ -1,40 +1,47 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { Loader, toastr } from "asc-web-components";
-import { PageLayout, utils } from "asc-web-common";
-import { ArticleHeaderContent, ArticleMainButtonContent, ArticleBodyContent } from '../../Article';
-import { SectionHeaderContent, SectionBodyContent } from './Section';
-import { fetchProfile, resetProfile } from '../../../store/profile/actions';
-import i18n from "./i18n";
+import { Loader } from "asc-web-components";
+import { PageLayout, utils, store, toastr, Loaders } from "asc-web-common";
+import {
+  ArticleHeaderContent,
+  ArticleMainButtonContent,
+  ArticleBodyContent,
+} from "../../Article";
+import { SectionHeaderContent, SectionBodyContent } from "./Section";
+import { fetchProfile, resetProfile } from "../../../store/profile/actions";
 import { I18nextProvider, withTranslation } from "react-i18next";
+import { createI18N } from "../../../helpers/i18n";
+import { setDocumentTitle } from "../../../helpers/utils";
+import { withRouter } from "react-router";
+
+const i18n = createI18N({
+  page: "Profile",
+  localesPath: "pages/Profile",
+});
 const { changeLanguage } = utils;
+const { isAdmin, isVisitor, getLanguage } = store.auth.selectors;
 
 class PureProfile extends React.Component {
-
-  constructor(props) {
-    super(props);
-
-    document.title = `${props.t("Profile")} – ${props.t("People")}`;
-
-    this.state = {
-      queryString: `${props.location.search.slice(1)}`
-    };
-  }
-
   componentDidMount() {
-    const { match, fetchProfile, t } = this.props;
+    const { match, fetchProfile, profile, location, t } = this.props;
     const { userId } = match.params;
 
-    const queryParams = this.state.queryString.split('&');
-    const arrayOfQueryParams = queryParams.map(queryParam => queryParam.split('='));
-    const linkParams = Object.fromEntries(arrayOfQueryParams);
-    
-    if (linkParams.email_change && linkParams.email_change === "success"){
-      toastr.success(t('ChangeEmailSuccess'));
-    }
+    setDocumentTitle(t("Profile"));
 
-    fetchProfile(userId);
+    const queryString = ((location && location.search) || "").slice(1);
+    const queryParams = queryString.split("&");
+    const arrayOfQueryParams = queryParams.map((queryParam) =>
+      queryParam.split("=")
+    );
+    const linkParams = Object.fromEntries(arrayOfQueryParams);
+
+    if (linkParams.email_change && linkParams.email_change === "success") {
+      toastr.success(t("ChangeEmailSuccess"));
+    }
+    if (!profile) {
+      fetchProfile(userId);
+    }
   }
 
   componentDidUpdate(prevProps) {
@@ -47,56 +54,81 @@ class PureProfile extends React.Component {
     }
   }
 
-  componentWillUnmount(){
+  componentWillUnmount() {
     this.props.resetProfile();
   }
 
   render() {
     //console.log("Profile render")
+    const { profile, isVisitor, isAdmin } = this.props;
 
-    const { profile, isVisitor } = this.props;
+    return (
+      <PageLayout withBodyAutoFocus={true}>
+        {!isVisitor && (
+          <PageLayout.ArticleHeader>
+            <ArticleHeaderContent />
+          </PageLayout.ArticleHeader>
+        )}
+        {!isVisitor && isAdmin && (
+          <PageLayout.ArticleMainButton>
+            <ArticleMainButtonContent />
+          </PageLayout.ArticleMainButton>
+        )}
+        {!isVisitor && (
+          <PageLayout.ArticleBody>
+            <ArticleBodyContent />
+          </PageLayout.ArticleBody>
+        )}
 
-    const articleProps = isVisitor ? {} : {
-      articleHeaderContent: <ArticleHeaderContent />,
-      articleMainButtonContent: <ArticleMainButtonContent />,
-      articleBodyContent: <ArticleBodyContent />
-    };
+        <PageLayout.SectionHeader>
+          {profile ? <SectionHeaderContent /> : <Loaders.SectionHeader />}
+        </PageLayout.SectionHeader>
 
-    const sectionProps = profile ? {
-      sectionHeaderContent: <SectionHeaderContent />,
-      sectionBodyContent: <SectionBodyContent />
-    } : {
-      sectionBodyContent: <Loader className="pageLoader" type="rombs" size='40px' />
-    };
+        <PageLayout.SectionBody>
+          {profile ? <SectionBodyContent /> : <Loaders.ProfileView />}
+        </PageLayout.SectionBody>
+      </PageLayout>
+    );
+  }
+}
 
-    return <PageLayout {...articleProps} {...sectionProps} withBodyAutoFocus={true}/>;
-  };
-};
+const ProfileContainer = withTranslation()(withRouter(PureProfile));
 
-const ProfileContainer = withTranslation()(PureProfile);
+const Profile = ({ language, ...rest }) => {
+  useEffect(() => {
+    changeLanguage(i18n, language);
+  }, [language]);
 
-const Profile = (props) => { 
-
-  changeLanguage(i18n);
-
-  return <I18nextProvider i18n={i18n}><ProfileContainer {...props} /></I18nextProvider>
+  return (
+    <I18nextProvider i18n={i18n}>
+      <ProfileContainer {...rest} />
+    </I18nextProvider>
+  );
 };
 
 Profile.propTypes = {
+  fetchProfile: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
+  isLoaded: PropTypes.bool,
   match: PropTypes.object.isRequired,
   profile: PropTypes.object,
-  fetchProfile: PropTypes.func.isRequired,
-  isLoaded: PropTypes.bool
+  isAdmin: PropTypes.bool,
+  language: PropTypes.string,
 };
 
 function mapStateToProps(state) {
+  const { isLoaded } = state.auth;
+  const { targetUser } = state.profile;
   return {
-    profile: state.profile.targetUser,
-    isVisitor: state.auth.user.isVisitor,
+    profile: targetUser,
+    isLoaded,
+    isVisitor: isVisitor(state),
+    isAdmin: isAdmin(state),
+    language: getLanguage(state),
   };
 }
 
 export default connect(mapStateToProps, {
-  fetchProfile, resetProfile
+  fetchProfile,
+  resetProfile,
 })(Profile);

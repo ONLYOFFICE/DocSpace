@@ -43,6 +43,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Storage
 {
+    [Singletone]
     public class WebPathSettings
     {
         private readonly IEnumerable<Appender> Appenders;
@@ -141,6 +142,7 @@ namespace ASC.Data.Storage
         }
     }
 
+    [Scope]
     public class WebPath
     {
         private static readonly IDictionary<string, bool> Existing = new ConcurrentDictionary<string, bool>();
@@ -241,31 +243,6 @@ namespace ASC.Data.Storage
             {
                 return false;
             }
-        }
-    }
-
-    public static class WebPathExtension
-    {
-        public static DIHelper AddWebPathService(this DIHelper services)
-        {
-            if (services.TryAddScoped<WebPath>())
-            {
-
-                return services
-                    .AddStaticUploaderService()
-                    .AddCdnStorageSettingsService()
-                    .AddWebPathSettingsService()
-                    .AddCoreBaseSettingsService();
-            }
-
-            return services;
-        }
-
-        public static DIHelper AddWebPathSettingsService(this DIHelper services)
-        {
-            services.TryAddSingleton<WebPathSettings>();
-
-            return services.AddStorage();
         }
     }
 }

@@ -33,9 +33,7 @@ storiesOf("Components|Buttons", module)
             offsetBottom={number("offsetBottom", 0)}
             offsetLeft={number("offsetLeft", 0)}
             tooltipContent={
-              <Text fontSize='13px'>
-                Paste you tooltip content here
-              </Text>
+              <Text fontSize="13px">Paste you tooltip content here</Text>
             }
           />
           <HelpButton

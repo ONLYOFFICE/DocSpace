@@ -96,7 +96,7 @@ namespace ASC.Data.Reassigns
 
         public void RunJob()
         {
-            using var scope = ServiceProvider.CreateScope();   
+            using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<RemoveProgressItemScope>();
             var (tenantManager, coreBaseSettings, messageService, studioNotifyService, securityContext, userManager, messageTarget, webItemManagerSecurity, storageFactory, userFormatter, options) = scopeClass;
             var logger = options.Get("ASC.Web");
@@ -246,6 +246,7 @@ namespace ASC.Data.Reassigns
         }
     }
 
+    [Scope]
     public class RemoveProgressItemScope
     {
         private TenantManager TenantManager { get; }
@@ -287,15 +288,15 @@ namespace ASC.Data.Reassigns
 
         public void Deconstruct(out TenantManager tenantManager,
             out CoreBaseSettings coreBaseSettings,
-            out MessageService messageService, 
-            out StudioNotifyService studioNotifyService, 
-            out SecurityContext securityContext, 
-            out UserManager userManager, 
-            out MessageTarget messageTarget, 
+            out MessageService messageService,
+            out StudioNotifyService studioNotifyService,
+            out SecurityContext securityContext,
+            out UserManager userManager,
+            out MessageTarget messageTarget,
             out WebItemManagerSecurity webItemManagerSecurity,
-            out StorageFactory storageFactory, 
+            out StorageFactory storageFactory,
             out UserFormatter userFormatter,
-            out IOptionsMonitor<ILog>  optionsMonitor )
+            out IOptionsMonitor<ILog> optionsMonitor)
         {
             tenantManager = TenantManager;
             coreBaseSettings = CoreBaseSettings;
@@ -313,14 +314,10 @@ namespace ASC.Data.Reassigns
 
     public static class RemoveProgressItemExtension
     {
-        public static DIHelper AddRemoveProgressItemService(this DIHelper services)
+        public static void Register(DIHelper services)
         {
-
-            services.TryAddSingleton<ProgressQueueOptionsManager<RemoveProgressItem>>();
-            services.TryAddSingleton<ProgressQueue<RemoveProgressItem>>();
-            services.TryAddScoped<RemoveProgressItemScope>();
-            services.AddSingleton<IPostConfigureOptions<ProgressQueue<RemoveProgressItem>>, ConfigureProgressQueue<RemoveProgressItem>>();
-            return services;
+            services.TryAdd<RemoveProgressItemScope>();
+            services.AddProgressQueue<RemoveProgressItem>(1, (int)TimeSpan.FromMinutes(5).TotalMilliseconds, true, false, 0);
         }
     }
 }

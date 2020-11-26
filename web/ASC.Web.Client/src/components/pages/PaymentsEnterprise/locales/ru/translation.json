@@ -1,0 +1,29 @@
+{
+  "PaymentsTitle": "Платежи",
+
+  "ContactEmail": "По вопросам покупки свяжитесь с нами по адресу",
+  "ContactUrl": "Для решения технических проблем используйте",
+
+  "SubscriptionRenewedLicense": "Обновите подписку, чтобы получить:",
+
+  "AdvantageEditor": "Редакторы {{organizationName}} с профессиональными возможностями",
+  "AdvantagePrivateRooom": "Приватная комната для зашифрованной совместной работы",
+  "AdvantageWebEditors": "Мобильные веб-редакторы",
+  "AdvantageUpdates": "Регулярные обновления функциональных возможностей и безопасности в течение 1 года",
+  "AdvantageProfessionalTechSupport": "1 год услуг профессиональной технической поддержки",
+
+  "HeaderLicense": "Вы используете {{organizationName}} Enterprise Edition",
+  "HeaderExpiredTrialLicense": "Бесплатный пробный период истек",
+
+  "AccessSubscription": "Техническая поддержка и обновления недоступны для вашей лицензии с",
+  "ExpiryPaidLicense": "Техническая поддержка больше не доступна для вашей лицензии с",
+  "ExpiryTrialLicense": "Благодарим Вас за то, что опробовали {{organizationName}}!",
+  "RenewalLicense": " Если вы уже купили обновление, загрузите файл лицензии.",
+
+  "ButtonBuyLicense": "Купить сейчас",
+  "ButtonUploadLicense": "Загрузить лицензию",
+
+  "ErrorLicense": "Лицензия не действительна",
+  "ErrorLoadingLicense": "Проверьте загружаемый файл",
+  "SuccessLoadingLicense": "Лицензия успешно активирована"
+}

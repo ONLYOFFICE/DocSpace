@@ -55,12 +55,13 @@ const notDropdown = css`
 const GroupMainButton = styled.div`
   position: relative;
   display: grid;
-  grid-template-columns: ${props => (props.isDropdown ? "1fr" : "1fr 32px")};
-  ${props => !props.isDropdown && "grid-column-gap: 1px"};
+  grid-template-columns: ${(props) => (props.isDropdown ? "1fr" : "1fr 32px")};
+  ${(props) => !props.isDropdown && "grid-column-gap: 1px"};
 `;
 
 const StyledDropDown = styled(DropDown)`
   width: 100%;
+  top: 100%;
 `;
 
 const StyledMainButton = styled.div`
@@ -69,7 +70,7 @@ const StyledMainButton = styled.div`
   display: block;
   vertical-align: middle;
   box-sizing: border-box;
-  background-color: ${props =>
+  background-color: ${(props) =>
     props.isDisabled ? disableBackgroundColor : backgroundColor};
   padding: 5px 10px;
   border-radius: 3px;
@@ -81,8 +82,8 @@ const StyledMainButton = styled.div`
     ${arrowDropdown}
   }
 
-  ${props => !props.isDisabled && notDisableStyles}
-  ${props => !props.isDropdown && notDropdown}
+  ${(props) => !props.isDisabled && notDisableStyles}
+  ${(props) => !props.isDropdown && notDropdown}
 
     & > svg {
     display: block;
@@ -110,16 +111,18 @@ class MainButton extends React.PureComponent {
     this.iconNames = Object.keys(Icons);
 
     this.state = {
-      isOpen: props.opened
+      isOpen: props.opened,
     };
 
-    if(props.opened)
-      handleAnyClick(true, this.handleClick);
+    if (props.opened) handleAnyClick(true, this.handleClick);
   }
 
-  handleClick = e => this.state.isOpen && !this.ref.current.contains(e.target) && this.toggle(false);
-  stopAction = e => e.preventDefault();
-  toggle = isOpen => this.setState({ isOpen: isOpen });
+  handleClick = (e) =>
+    this.state.isOpen &&
+    !this.ref.current.contains(e.target) &&
+    this.toggle(false);
+  stopAction = (e) => e.preventDefault();
+  toggle = (isOpen) => this.setState({ isOpen: isOpen });
 
   componentWillUnmount() {
     handleAnyClick(false, this.handleClick);
@@ -132,7 +135,7 @@ class MainButton extends React.PureComponent {
       this.toggle(this.props.opened);
     }
 
-    if(this.state.isOpen !== prevState.isOpen) {
+    if (this.state.isOpen !== prevState.isOpen) {
       handleAnyClick(this.state.isOpen, this.handleClick);
     }
   }
@@ -167,7 +170,7 @@ class MainButton extends React.PureComponent {
     return (
       <GroupMainButton {...this.props} ref={this.ref}>
         <StyledMainButton {...this.props} onClick={this.onMainButtonClick}>
-          <Text fontSize='16px' fontWeight='bold' color="#fff">
+          <Text fontSize="16px" fontWeight="bold" color="#fff">
             {this.props.text}
           </Text>
         </StyledMainButton>
@@ -186,7 +189,7 @@ class MainButton extends React.PureComponent {
             {this.iconNames.includes(this.props.iconName) &&
               React.createElement(Icons[this.props.iconName], {
                 size: "medium",
-                color: "#ffffff"
+                color: "#ffffff",
               })}
           </StyledSecondaryButton>
         )}
@@ -202,18 +205,18 @@ MainButton.propTypes = {
   clickAction: PropTypes.func,
   clickActionSecondary: PropTypes.func,
   iconName: PropTypes.string,
-  opened: PropTypes.bool,  //TODO: Make us whole
+  opened: PropTypes.bool, //TODO: Make us whole
   onClick: PropTypes.func,
   className: PropTypes.string,
   id: PropTypes.string,
-  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 };
 
 MainButton.defaultProps = {
   text: "Button",
   isDisabled: false,
   isDropdown: true,
-  iconName: "PeopleIcon"
+  iconName: "PeopleIcon",
 };
 
 export default MainButton;

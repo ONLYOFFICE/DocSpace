@@ -27,6 +27,7 @@
 using System;
 using System.Diagnostics;
 
+using ASC.Common;
 using ASC.Web.Files.Classes;
 
 namespace ASC.Files.Core
@@ -39,11 +40,31 @@ namespace ASC.Files.Core
         TRASH = 3,
         USER = 5,
         SHARE = 6,
-        Projects = 8
+        Projects = 8,
+        Favorites = 10,
+        Recent = 11,
+        Templates = 12,
+        Privacy = 13,
     }
 
+    public interface IFolder
+    {
+        public FolderType FolderType { get; set; }
+
+        public int TotalFiles { get; set; }
+
+        public int TotalSubFolders { get; set; }
+
+        public bool Shareable { get; set; }
+
+        public int NewForMe { get; set; }
+
+        public string FolderUrl { get; set; }
+    }
+
+    [Transient]
     [DebuggerDisplay("{Title} ({ID})")]
-    public class Folder<T> : FileEntry<T>
+    public class Folder<T> : FileEntry<T>, IFolder
     {
         public FolderType FolderType { get; set; }
 

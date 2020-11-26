@@ -3,8 +3,13 @@ using ASC.Core.Common.EF.Model;
 
 using Microsoft.EntityFrameworkCore;
 
+using System;
+using System.Collections.Generic;
+
 namespace ASC.Core.Common.EF.Context
 {
+    public class MySqlTenantDbContext : TenantDbContext { }
+    public class PostgreSqlTenantDbContext : TenantDbContext { }
     public class TenantDbContext : BaseDbContext
     {
         public DbSet<DbTenant> Tenants { get; set; }
@@ -20,15 +25,31 @@ namespace ASC.Core.Common.EF.Context
         public TenantDbContext(DbContextOptions<TenantDbContext> options)
             : base(options)
         {
-        }
 
+        }
+        protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
+        {
+            get
+            {
+                return new Dictionary<Provider, Func<BaseDbContext>>()
+                {
+                    { Provider.MySql, () => new MySqlTenantDbContext() } ,
+                    { Provider.Postgre, () => new PostgreSqlTenantDbContext() } ,
+                };
+            }
+        }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.AddUser();
-
-            modelBuilder.AddCoreSettings();
-
-            modelBuilder.AddDbTenant();
+            ModelBuilderWrapper
+                .From(modelBuilder, Provider)
+                .AddUser()
+                .AddDbTenant()
+                .AddCoreSettings()
+                .AddUserSecurity()
+                .AddDbTenantForbiden()
+                .AddTenantIpRestrictions()
+                .AddDbTenantPartner()
+                .AddDbTenantVersion();
         }
     }
 

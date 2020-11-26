@@ -33,6 +33,7 @@ using ASC.Web.Studio.Utility;
 
 namespace ASC.Web.Studio.Core
 {
+    [Scope]
     public class FileSizeComment
     {
         private TenantExtra TenantExtra { get; }
@@ -157,21 +158,6 @@ namespace ASC.Web.Studio.Core
                 resultSize /= Math.Pow(1024d, power);
             }
             return string.Format("{0:#,0.##} {1}", resultSize, sizeNames[power]);
-        }
-    }
-
-    public static class FileSizeCommentExtension
-    {
-        public static DIHelper AddFileSizeCommentService(this DIHelper services)
-        {
-            if (services.TryAddScoped<FileSizeComment>())
-            {
-                return services
-                    .AddTenantExtraService()
-                    .AddSetupInfo();
-            }
-
-            return services;
         }
     }
 }

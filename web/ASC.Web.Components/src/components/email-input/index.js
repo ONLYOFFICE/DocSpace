@@ -2,10 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import isEqual from "lodash/isEqual";
 import TextInput from "../text-input";
-import {
-  EmailSettings,
-  parseAddress
-} from "../../utils/email/";
+import { EmailSettings, parseAddress } from "../../utils/email/";
 
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
@@ -13,6 +10,7 @@ const TextInputWrapper = ({
   onValidateInput,
   isValidEmail,
   emailSettings,
+  customValidate,
   ...props
 }) => <TextInput {...props}></TextInput>;
 /* eslint-enable react/prop-types */
@@ -29,7 +27,7 @@ class EmailInput extends React.Component {
     this.state = {
       isValidEmail,
       emailSettings: validatedSettings,
-      inputValue: value
+      inputValue: value,
     };
   }
 
@@ -58,10 +56,10 @@ class EmailInput extends React.Component {
     const isValidEmail = this.checkEmail(value);
     this.setState({
       inputValue: value,
-      isValidEmail
+      isValidEmail,
     });
     onValidateInput && onValidateInput(isValidEmail);
-  }
+  };
 
   checkEmail = (value, emailSettings = this.state.emailSettings) => {
     const { customValidate } = this.props;
@@ -72,17 +70,17 @@ class EmailInput extends React.Component {
       const isValidEmail = emailObj.isValid();
       const parsedErrors = emailObj.parseErrors;
       const errors = parsedErrors
-        ? parsedErrors.map(error => error.errorKey)
+        ? parsedErrors.map((error) => error.errorKey)
         : [];
       return {
         value,
         isValid: isValidEmail,
-        errors
+        errors,
       };
     }
   };
 
-  onChange = e => {
+  onChange = (e) => {
     const { onChange, onValidateInput } = this.props;
     onChange ? onChange(e) : this.setState({ inputValue: e.target.value });
 
@@ -95,10 +93,7 @@ class EmailInput extends React.Component {
   render() {
     //console.log('EmailInput render()');
     // eslint-disable-next-line no-unused-vars
-    const {
-      onValidateInput,
-      hasError
-    } = this.props;
+    const { onValidateInput, hasError } = this.props;
 
     const { isValidEmail, inputValue } = this.state;
     const isError =
@@ -124,14 +119,14 @@ EmailInput.propTypes = {
   customValidate: PropTypes.func,
   emailSettings: PropTypes.oneOfType([
     PropTypes.instanceOf(EmailSettings),
-    PropTypes.objectOf(PropTypes.bool)
+    PropTypes.objectOf(PropTypes.bool),
   ]),
   hasError: PropTypes.bool,
   id: PropTypes.string,
   onChange: PropTypes.func,
   onValidateInput: PropTypes.func,
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
-  value: PropTypes.string
+  value: PropTypes.string,
 };
 
 EmailInput.defaultProps = {
@@ -150,7 +145,7 @@ EmailInput.defaultProps = {
   value: "",
   withBorder: true,
 
-  emailSettings: new EmailSettings()
+  emailSettings: new EmailSettings(),
 };
 
 export default EmailInput;

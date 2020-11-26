@@ -1,0 +1,9 @@
+{
+  "OKButton": "ОК",
+  "CancelButton": "Отмена",
+  "ConfirmationTitle": "Подтверждение удаления",
+
+  "EmptyTrashDialogQuestion": "Вы уверены, что хотите очистить корзину?",
+  "EmptyTrashDialogMessage": "Замечание: Это действие не может быть отменено.",
+  "DeleteOperation": "Удаление"
+}

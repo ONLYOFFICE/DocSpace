@@ -43,6 +43,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Billing
 {
+    [Singletone]
     public class TariffServiceStorage
     {
         public ICache Cache { get; }
@@ -76,6 +77,7 @@ namespace ASC.Core.Billing
         }
     }
 
+    [Scope]
     class ConfigureTariffService : IConfigureNamedOptions<TariffService>
     {
         public ConfigureTariffService(
@@ -112,7 +114,7 @@ namespace ASC.Core.Billing
             Configure(options);
             options.QuotaService = QuotaService.Get(name);
             options.TenantService = TenantService.Get(name);
-            options.CoreDbContext = CoreDbContextManager.Get(name);
+            options.LazyCoreDbContext = new Lazy<CoreDbContext>(() => CoreDbContextManager.Get(name));
         }
 
         public void Configure(TariffService options)
@@ -131,7 +133,7 @@ namespace ASC.Core.Billing
 
             options.QuotaService = QuotaService.Value;
             options.TenantService = TenantService.Value;
-            options.CoreDbContext = CoreDbContextManager.Value;
+            options.LazyCoreDbContext = new Lazy<CoreDbContext>(() => CoreDbContextManager.Value);
         }
     }
 
@@ -155,7 +157,8 @@ namespace ASC.Core.Billing
         internal CoreBaseSettings CoreBaseSettings { get; set; }
         internal CoreSettings CoreSettings { get; set; }
         internal IConfiguration Configuration { get; set; }
-        internal CoreDbContext CoreDbContext { get; set; }
+        internal CoreDbContext CoreDbContext { get => LazyCoreDbContext.Value; }
+        internal Lazy<CoreDbContext> LazyCoreDbContext { get; set; }
         internal TariffServiceStorage TariffServiceStorage { get; set; }
         internal IOptionsMonitor<ILog> Options { get; set; }
 
@@ -191,7 +194,7 @@ namespace ASC.Core.Billing
 
             Cache = TariffServiceStorage.Cache;
             Notify = TariffServiceStorage.Notify;
-            CoreDbContext = coreDbContextManager.Value;
+            LazyCoreDbContext = new Lazy<CoreDbContext>(() => coreDbContextManager.Value);
         }
 
         public Tariff GetTariff(int tenantId, bool withRequestToPaymentSystem = true)
@@ -219,33 +222,33 @@ namespace ASC.Core.Billing
                 if (billingConfigured && withRequestToPaymentSystem)
                 {
                     Task.Run(() =>
-                    {
-                        try
-                        {
-                            using var client = GetBillingClient();
-                            var p = client.GetLastPayment(GetPortalId(tenantId));
-                            var quota = QuotaService.GetTenantQuotas().SingleOrDefault(q => q.AvangateId == p.ProductId);
-                            if (quota == null)
-                            {
-                                throw new InvalidOperationException(string.Format("Quota with id {0} not found for portal {1}.", p.ProductId, GetPortalId(tenantId)));
-                            }
-                            var asynctariff = Tariff.CreateDefault();
-                            asynctariff.QuotaId = quota.Id;
-                            asynctariff.Autorenewal = p.Autorenewal;
-                            asynctariff.DueDate = 9999 <= p.EndDate.Year ? DateTime.MaxValue : p.EndDate;
+                      {
+                          try
+                          {
+                              using var client = GetBillingClient();
+                              var p = client.GetLastPayment(GetPortalId(tenantId));
+                              var quota = QuotaService.GetTenantQuotas().SingleOrDefault(q => q.AvangateId == p.ProductId);
+                              if (quota == null)
+                              {
+                                  throw new InvalidOperationException(string.Format("Quota with id {0} not found for portal {1}.", p.ProductId, GetPortalId(tenantId)));
+                              }
+                              var asynctariff = Tariff.CreateDefault();
+                              asynctariff.QuotaId = quota.Id;
+                              asynctariff.Autorenewal = p.Autorenewal;
+                              asynctariff.DueDate = 9999 <= p.EndDate.Year ? DateTime.MaxValue : p.EndDate;
 
-                            if (SaveBillingInfo(tenantId, Tuple.Create(asynctariff.QuotaId, asynctariff.DueDate), false))
-                            {
-                                asynctariff = CalculateTariff(tenantId, asynctariff);
-                                ClearCache(tenantId);
-                                Cache.Insert(key, asynctariff, DateTime.UtcNow.Add(GetCacheExpiration()));
-                            }
-                        }
-                        catch (Exception error)
-                        {
-                            LogError(error);
-                        }
-                    });
+                              if (SaveBillingInfo(tenantId, Tuple.Create(asynctariff.QuotaId, asynctariff.DueDate), false))
+                              {
+                                  asynctariff = CalculateTariff(tenantId, asynctariff);
+                                  ClearCache(tenantId);
+                                  Cache.Insert(key, asynctariff, DateTime.UtcNow.Add(GetCacheExpiration()));
+                              }
+                          }
+                          catch (Exception error)
+                          {
+                              LogError(error);
+                          }
+                      });
                 }
             }
 
@@ -465,7 +468,7 @@ namespace ASC.Core.Billing
             var r = CoreDbContext.Tariffs
                 .Where(r => r.Tenant == tenant)
                 .OrderByDescending(r => r.Id)
-                .SingleOrDefault();
+                .FirstOrDefault();
 
             return r != null ? Tuple.Create(r.Tariff, r.Stamp.Year < 9999 ? r.Stamp : DateTime.MaxValue) : null;
         }
@@ -577,16 +580,17 @@ namespace ASC.Core.Billing
             {
                 tariff.State = TariffState.NotPaid;
 
-                if ((q == null || !q.Trial) && CoreBaseSettings.Standalone)
+                if (CoreBaseSettings.Standalone)
                 {
                     if (q != null)
                     {
                         var defaultQuota = QuotaService.GetTenantQuota(Tenant.DEFAULT_TENANT);
-                        if (defaultQuota.CountPortals != q.CountPortals)
-                        {
-                            defaultQuota.CountPortals = q.CountPortals;
-                            QuotaService.SaveTenantQuota(defaultQuota);
-                        }
+                        defaultQuota.Name = "overdue";
+
+                        defaultQuota.Features = q.Features;
+                        defaultQuota.Support = false;
+
+                        QuotaService.SaveTenantQuota(defaultQuota);
                     }
 
                     var unlimTariff = Tariff.CreateDefault();
@@ -682,21 +686,6 @@ namespace ASC.Core.Billing
                     Log.Error(error.Message);
                 }
             }
-        }
-    }
-
-    public static class TariffConfigExtension
-    {
-        public static DIHelper AddTariffService(this DIHelper services)
-        {
-            services.AddCoreDbContextService();
-
-            services.TryAddSingleton<TariffServiceStorage>();
-
-            services.TryAddScoped<ITariffService, TariffService>();
-            services.TryAddScoped<IConfigureOptions<TariffService>, ConfigureTariffService>();
-
-            return services;
         }
     }
 }

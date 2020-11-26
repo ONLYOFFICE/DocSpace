@@ -27,10 +27,12 @@
 using System;
 using System.Collections.Generic;
 
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Common.Configuration;
+using ASC.FederatedLogin.Helpers;
 using ASC.FederatedLogin.Profile;
 using ASC.Security.Cryptography;
 
@@ -39,6 +41,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace ASC.FederatedLogin.LoginProviders
 {
+    [Scope]
     public class YahooLoginProvider : BaseLoginProvider<YahooLoginProvider>
     {
         public const string YahooUrlUserGuid = "https://social.yahooapis.com/v1/me/guid";
@@ -52,7 +55,9 @@ namespace ASC.FederatedLogin.LoginProviders
         public override string Scopes { get { return "sdct-r"; } }
 
         public YahooLoginProvider() { }
-        public YahooLoginProvider(TenantManager tenantManager,
+        public YahooLoginProvider(
+            OAuth20TokenHelper oAuth20TokenHelper,
+            TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
             IConfiguration configuration,
@@ -61,7 +66,7 @@ namespace ASC.FederatedLogin.LoginProviders
             Signature signature,
             InstanceCrypto instanceCrypto,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, signature, instanceCrypto, name, order, props, additional) { }
+            : base(oAuth20TokenHelper, tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, signature, instanceCrypto, name, order, props, additional) { }
 
         public OAuth20Token Auth(HttpContext context)
         {

@@ -1,135 +1,160 @@
-import React from 'react';
-import { utils } from 'asc-web-components';
-import { connect } from 'react-redux';
+import React from "react";
+import { connect } from "react-redux";
+import { utils } from "asc-web-components";
+import { toastr, Loaders } from "asc-web-common";
+import TreeFolders from "./TreeFolders";
+import TreeSettings from "./TreeSettings";
+import isEmpty from "lodash/isEmpty";
 import {
-  TreeMenu,
-  TreeNode,
-  Icons
-} from "asc-web-components";
-import { selectFolder } from '../../../store/files/actions';
-
-const getItems = data => {
-  return data.map(item => {
-    if (item.children && item.children.length) {
-      return (
-        <TreeNode
-          title={item.title}
-          key={item.key}
-          icon={
-            item.root ? (
-              <Icons.CatalogFolderIcon
-                size="scale"
-                isfill={true}
-                color="#657077"
-              />
-            ) : (
-                ""
-              )
-          }
-        >
-          {getItems(item.children)}
-        </TreeNode>
-      );
-    }
-    return (
-      <TreeNode
-        key={item.key}
-        title={item.title}
-        icon={
-          !item.root ? (
-            <Icons.CatalogFolderIcon
-              size="scale"
-              isfill={true}
-              color="#657077"
-            />
-          ) : (
-              ""
-            )
-        }
-      />
-    );
-  });
-};
+  fetchFiles,
+  setIsLoading,
+  setSelectedNode,
+} from "../../../store/files/actions";
+import {
+  getTreeFolders,
+  getFilter,
+  getSelectedFolderTitle,
+  getSelectedTreeNode,
+} from "../../../store/files/selectors";
+import { NewFilesPanel } from "../../panels";
+import { setDocumentTitle } from "../../../helpers/utils";
 
 class ArticleBodyContent extends React.Component {
+  constructor(props) {
+    super(props);
 
-  shouldComponentUpdate(nextProps) {
-    if(!utils.array.isArrayEqual(nextProps.selectedKeys, this.props.selectedKeys)) {
-      return true;
-    }
+    const { selectedFolderTitle, filter, treeFolders } = props;
 
-    if(!utils.array.isArrayEqual(nextProps.data, this.props.data)) {
-      return true;
-    }
+    selectedFolderTitle
+      ? setDocumentTitle(selectedFolderTitle)
+      : setDocumentTitle();
 
-    return false;
+    this.state = {
+      expandedKeys: filter.treeFolders,
+      data: treeFolders,
+      showNewFilesPanel: false,
+    };
   }
 
-  onSelect = data => {
-    this.props.selectFolder(data && data.length === 1 && data[0] !== "root" ? data[0] : null);
+  componentDidUpdate(prevProps) {
+    const { filter, treeFolders } = this.props;
+
+    if (
+      filter.treeFolders.length !== prevProps.filter.treeFolders.length ||
+      this.state.expandedKeys.length !== filter.treeFolders.length
+    ) {
+      this.setState({ expandedKeys: filter.treeFolders });
+    }
+
+    if (!utils.array.isArrayEqual(prevProps.treeFolders, treeFolders)) {
+      this.setState({ data: treeFolders });
+    }
+  }
+
+  componentDidMount() {
+    if (this.props.currentId) {
+      const currentId = [this.props.currentId + ""];
+      this.props.setSelectedNode(currentId);
+    }
+  }
+
+  onSelect = (data, e) => {
+    const {
+      filter,
+      setIsLoading,
+      selectedTreeNode,
+      setSelectedNode,
+      fetchFiles,
+    } = this.props;
+
+    if (!selectedTreeNode || selectedTreeNode[0] !== data[0]) {
+      setSelectedNode(data);
+      setIsLoading(true);
+      const newFilter = filter.clone();
+      newFilter.page = 0;
+      newFilter.startIndex = 0;
+
+      const selectedFolderTitle =
+        (e.node && e.node.props && e.node.props.title) || null;
+
+      selectedFolderTitle
+        ? setDocumentTitle(selectedFolderTitle)
+        : setDocumentTitle();
+
+      fetchFiles(data[0], newFilter)
+        .catch((err) => toastr.error(err))
+        .finally(() => setIsLoading(false));
+    }
   };
 
-  switcherIcon = obj => {
-    if (obj.isLeaf) {
-      return null;
-    }
-    if (obj.expanded) {
-      return (
-        <Icons.ExpanderDownIcon size="scale" isfill={true} color="dimgray" />
-      );
-    } else {
-      return (
-        <Icons.ExpanderRightIcon size="scale" isfill={true} color="dimgray" />
-      );
-    }
+  onShowNewFilesPanel = (folderId) => {
+    const { showNewFilesPanel } = this.state;
+    this.setState({
+      showNewFilesPanel: !showNewFilesPanel,
+      newFolderId: [folderId],
+    });
+  };
+
+  setNewFilesCount = (folderPath, filesCount) => {
+    const data = this.state.data;
+    const dataItem = data.find((x) => x.id === folderPath[0]);
+    dataItem.newItems = filesCount ? filesCount : dataItem.newItems - 1;
+    this.setState({ data });
   };
 
   render() {
-    const { data, selectedKeys } = this.props;
+    const { treeFolders, filter, onTreeDrop, selectedTreeNode } = this.props;
+    const { showNewFilesPanel, expandedKeys, newFolderId } = this.state;
 
-    //console.log("FilesTreeMenu", this.props);
-
+    //console.log("Article Body render", this.props, this.state.expandedKeys);
+    console.log("Article Body render");
     return (
-      <TreeMenu
-        className="files-tree-menu"
-        checkable={false}
-        draggable={false}
-        disabled={false}
-        multiple={false}
-        showIcon={true}
-        defaultExpandAll={true}
-        switcherIcon={this.switcherIcon}
-        onSelect={this.onSelect}
-        selectedKeys={selectedKeys}
-      >
-        {getItems(data)}
-      </TreeMenu>
+      <>
+        {showNewFilesPanel && (
+          <NewFilesPanel
+            visible={showNewFilesPanel}
+            onClose={this.onShowNewFilesPanel}
+            setNewFilesCount={this.setNewFilesCount}
+            folderId={newFolderId}
+            treeFolders={treeFolders}
+          />
+        )}
+        {isEmpty(treeFolders) ? (
+          <Loaders.TreeFolders />
+        ) : (
+          <>
+            <TreeFolders
+              selectedKeys={selectedTreeNode}
+              onSelect={this.onSelect}
+              data={treeFolders}
+              filter={filter}
+              expandedKeys={expandedKeys}
+              onBadgeClick={this.onShowNewFilesPanel}
+              onTreeDrop={onTreeDrop}
+            />
+            <TreeSettings />{" "}
+          </>
+        )}
+      </>
     );
-  };
-};
-
-const getTreeGroups = (groups, departments) => {
-  const treeData = [
-      {
-          key: "root",
-          title: departments,
-          root: true,
-          children: groups.map(g => {
-              return {
-                  key: g.id, title: g.name, root: false
-              };
-          }) || []
-      }
-  ];
-
-  return treeData;
-};
+  }
+}
 
 function mapStateToProps(state) {
   return {
-    data: getTreeGroups(state.files.folders, state.auth.settings.customNames.groupsCaption),
-    selectedKeys: state.files.selectedFolder ? [state.files.selectedFolder] : ["root"]
+    treeFolders: getTreeFolders(state),
+    filter: getFilter(state),
+    selectedTreeNode: getSelectedTreeNode(state),
+    selectedFolderTitle: getSelectedFolderTitle(state),
   };
 }
 
-export default connect(mapStateToProps, { selectFolder })(ArticleBodyContent);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setIsLoading: (isLoading) => dispatch(setIsLoading(isLoading)),
+    setSelectedNode: (node) => dispatch(setSelectedNode(node)),
+    fetchFiles: (folderId, filter) => dispatch(fetchFiles(folderId, filter)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ArticleBodyContent);

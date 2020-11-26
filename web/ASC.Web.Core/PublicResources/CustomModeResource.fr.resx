@@ -58,6 +58,42 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="pattern_personal_custom_mode_after_registration8" xml:space="preserve">
+    <value>$PersonalHeaderStart Connectez votre stockage en nuage préféré à ONLYOFFICE $PersonalHeaderEnd
+
+Cela fait une semaine que vous avez créé votre bureau en ligne, et nous pensons donc qu'il est temps de dévoiler certaines caractéristiques bénéfiques que vous avez peut-être manquées.
+
+Connectez *Dropbox*, *Google Drive*, *Box*, *OneDrive*, *Nextcloud*, *ownCloud*, *kDrive* ou *Yandex.Disk* à ONLYOFFICE et créez un espace de gestion de documents unique pour tous vos documents. Vous pourrez modifier des fichiers externes dans ONLYOFFICE et les enregistrer dans l'espace de stockage où vous conservez vos documents. Lisez les détails sur la connexion des stockages de fichiers à ONLYOFFICE "ici" : "${__HelpLink}/tipstricks/add-resource.aspx".
+
+Vous pouvez également intégrer les éditeurs ONLYOFFICE dans Google Drive en utilisant notre "application complémentaire" : "https://chrome.google.com/webstore/detail/onlyoffice-personal/iohfebkcjhlelaoibebeohcgkohkcgpn".
+
+Vous avez besoin de plus de gestion de documents ?
+
+h3.essayez ONLYOFFICE pour les entreprises "dans le nuage" : "https://www.onlyoffice.com/cloud-office.aspx" ou "sur votre serveur" : "https://www.onlyoffice.com/server-solutions.aspx" gratuitement pendant 30 jours et découvrez des possibilités étendues de gestion de documents ainsi qu'un ensemble d'outils pour les entreprises :
+
+- Gérer les documents de l'équipe dans le cadre de projets ;
+
+- Intégrer des documents avec le CRM et le courrier électronique ;
+
+- Partagez des fichiers avec des groupes d'utilisateurs ;
+
+- Optimisez votre flux de travail avec des outils de communication d'équipe.
+
+Intéressé ? En savoir plus sur "ONLYOFFICE for business" : "http://www.onlyoffice.com/document-management.aspx".
+
+Cordialement,
+L'équipe ONLYOFFICE</value>
+  </data>
+  <data name="pattern_saas_custom_mode_reg_data" xml:space="preserve">
+    <value>h3.Nouveau portail a été enregistré
+
+# URL du portail : "${__VirtualRootPath}":"${__VirtualRootPath}"
+# Nom : $UserName
+# Prénom : $UserLastName
+# Mail : $UserEmail
+# Téléphone : $Phone
+# Date de création : $Date</value>
+  </data>
   <data name="ProductAdminOpportunitiesCustomMode" xml:space="preserve">
     <value>Faire la même chose qu'un utilisateur|Lier Dropbox, Box et d'autres comptes dans la section 'Documents communs'|Définir les droits d'accès aux documents et aux dossiers dans la section 'Documents communs'</value>
   </data>
@@ -84,5 +120,8 @@
   </data>
   <data name="subject_remove_user_data_completed_custom_mode" xml:space="preserve">
     <value>${LetterLogoText}. Supprimer les données utilisateur est terminé</value>
+  </data>
+  <data name="subject_saas_custom_mode_reg_data" xml:space="preserve">
+    <value>Nouveau portail a été enregistré</value>
   </data>
 </root>

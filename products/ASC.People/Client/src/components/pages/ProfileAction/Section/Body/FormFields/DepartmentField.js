@@ -3,7 +3,7 @@ import isEqual from "lodash/isEqual";
 import {
   FieldContainer,
   SelectorAddButton,
-  SelectedItem
+  SelectedItem,
 } from "asc-web-components";
 import { GroupSelector } from "asc-web-common";
 
@@ -29,7 +29,7 @@ class DepartmentField extends React.Component {
 
       selectorIsVisible,
       selectorSelectedOptions,
-      selectorOnSelectGroups
+      selectorOnSelectGroups,
     } = this.props;
 
     return (
@@ -45,23 +45,23 @@ class DepartmentField extends React.Component {
           onClick={onShowGroupSelector}
           className="department-add-btn"
         />
-        <GroupSelector 
+        <GroupSelector
           isOpen={selectorIsVisible}
           isMultiSelect={true}
           onSelect={selectorOnSelectGroups}
           onCancel={onCloseGroupSelector}
         />
-        {selectorSelectedOptions.map(option => (
-            <SelectedItem
-              key={`department_${option.key}`}
-              text={option.label}
-              onClose={() => {
-                onRemoveGroup(option.key);
-              }}
-              isInline={true}
-              className="department-item"
-            />
-          ))}
+        {selectorSelectedOptions.map((option) => (
+          <SelectedItem
+            key={`department_${option.key}`}
+            text={option.label}
+            onClose={() => {
+              onRemoveGroup(option.key);
+            }}
+            isInline={true}
+            className="department-item"
+          />
+        ))}
       </FieldContainer>
     );
   }

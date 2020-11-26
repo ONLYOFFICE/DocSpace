@@ -41,14 +41,15 @@ using Newtonsoft.Json.Linq;
 
 namespace ASC.Web.Files.Helpers
 {
+    [Scope]
     public class EasyBibHelper : Consumer
     {
         public ILog Log { get; set; }
 
-        static string searchBookUrl = "https://worldcat.citation-api.com/query?search=",
+        static readonly string searchBookUrl = "https://worldcat.citation-api.com/query?search=",
                         searchJournalUrl = "https://crossref.citation-api.com/query?search=",
                         searchWebSiteUrl = "https://web.citation-api.com/query?search=",
-                        easyBibStyles = "http://easybib-csl.herokuapp.com/1.0/styles";
+                        easyBibStyles = "https://api.citation-api.com/2.1/rest/styles";
 
         public enum EasyBibSource
         {
@@ -155,24 +156,6 @@ namespace ASC.Web.Files.Helpers
                 throw;
             }
 
-        }
-    }
-
-    public static class EasyBibHelperExtension
-    {
-        public static DIHelper AddEasyBibHelperService(this DIHelper services)
-        {
-            if (services.TryAddScoped<EasyBibHelper>())
-            {
-                return services
-                    .AddConsumerFactoryService()
-                    .AddKafkaService()
-                    .AddTenantManagerService()
-                    .AddCoreBaseSettingsService()
-                    .AddCoreSettingsService();
-            }
-
-            return services;
         }
     }
 }

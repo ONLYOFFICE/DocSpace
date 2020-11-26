@@ -1,9 +1,9 @@
 import React, { useCallback } from "react";
 import { connect } from "react-redux";
 import { IconButton } from "asc-web-components";
-import { Headline } from 'asc-web-common';
+import { Headline } from "asc-web-common";
 import { withRouter } from "react-router";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 
 const Wrapper = styled.div`
@@ -20,10 +20,10 @@ const Wrapper = styled.div`
 
 const textStyle = {
   marginLeft: "16px",
-  marginRight: "16px"
+  marginRight: "16px",
 };
 
-const SectionHeaderContent = props => {
+const SectionHeaderContent = (props) => {
   const { history, settings } = props;
   const { t } = useTranslation();
 
@@ -33,11 +33,11 @@ const SectionHeaderContent = props => {
 
   return (
     <Wrapper>
-      <div style={{ width: "16px" }}>
+      <div style={{ width: "17px" }}>
         <IconButton
           iconName={"ArrowPathIcon"}
           color="#A3A9AE"
-          size="16"
+          size="17"
           hoverColor="#657077"
           isFill={true}
           onClick={onClickBack}
@@ -48,7 +48,7 @@ const SectionHeaderContent = props => {
         {/* {profile.displayName}
         {profile.isLDAP && ` (${t('LDAPLbl')})`}
         -  */}
-        {t('ReassignmentData')}
+        {t("ReassignmentData")}
       </Headline>
     </Wrapper>
   );
@@ -57,7 +57,7 @@ const SectionHeaderContent = props => {
 function mapStateToProps(state) {
   return {
     profile: state.profile.targetUser,
-    settings: state.auth.settings
+    settings: state.auth.settings,
   };
 }
 

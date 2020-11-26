@@ -40,6 +40,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace ASC.Core
 {
+    [Singletone]
     public class UserManagerConstants
     {
         public IDictionary<Guid, UserInfo> SystemUsers { get; }
@@ -55,6 +56,7 @@ namespace ASC.Core
         }
     }
 
+    [Scope]
     public class UserManager
     {
         private IDictionary<Guid, UserInfo> SystemUsers { get => UserManagerConstants.SystemUsers; }
@@ -67,7 +69,7 @@ namespace ASC.Core
         private Constants Constants { get; }
 
         private Tenant tenant;
-        private Tenant Tenant { get { return tenant ?? (tenant = TenantManager.GetCurrentTenant()); } }
+        private Tenant Tenant { get { return tenant ??= TenantManager.GetCurrentTenant(); } }
 
         public UserManager()
         {
@@ -205,9 +207,9 @@ namespace ASC.Core
             return u != null && !u.Removed ? u : Constants.LostUser;
         }
 
-        public UserInfo GetUsers(int tenant, string login, string passwordHash)
+        public UserInfo GetUsersByPasswordHash(int tenant, string login, string passwordHash)
         {
-            var u = UserService.GetUser(tenant, login, passwordHash);
+            var u = UserService.GetUserByPasswordHash(tenant, login, passwordHash);
             return u != null && !u.Removed ? u : Constants.LostUser;
         }
 
@@ -269,7 +271,7 @@ namespace ASC.Core
             return findUsers.ToArray();
         }
 
-        public UserInfo SaveUserInfo(UserInfo u, bool isVisitor = false)
+        public UserInfo SaveUserInfo(UserInfo u)
         {
             if (IsSystemUser(u.ID)) return SystemUsers[u.ID];
             if (u.ID == Guid.Empty) PermissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
@@ -650,25 +652,6 @@ namespace ASC.Core
                 CategoryId = g.CategoryID,
                 Sid = g.Sid
             };
-        }
-    }
-
-    public static class UserManagerConfigExtension
-    {
-        public static DIHelper AddUserManagerService(this DIHelper services)
-        {
-            if (services.TryAddScoped<UserManager>())
-            {
-                services.TryAddSingleton<UserManagerConstants>();
-
-                return services
-                    .AddUserService()
-                    .AddTenantManagerService()
-                    .AddConstantsService()
-                    .AddPermissionContextService();
-            }
-
-            return services;
         }
     }
 }

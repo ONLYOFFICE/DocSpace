@@ -20,10 +20,7 @@ storiesOf("Components|Tooltip", module)
     return (
       <Section>
         <div style={BodyStyle}>
-          <Link
-            data-for="link"
-            data-tip="Bob Johnston"
-          >
+          <Link data-for="link" data-tip="Bob Johnston">
             Bob Johnston
           </Link>
         </div>
@@ -36,15 +33,15 @@ storiesOf("Components|Tooltip", module)
           offsetRight={number("offsetRight", 0)}
           offsetBottom={number("offsetBottom", 0)}
           offsetLeft={number("offsetLeft", 0)}
-          getContent={dataTip => (
+          getContent={(dataTip) => (
             <div>
-              <Text isBold={true} fontSize='16px'>
+              <Text isBold={true} fontSize="16px">
                 {dataTip}
               </Text>
-              <Text color="#A3A9AE" fontSize='13px'>
+              <Text color="#A3A9AE" fontSize="13px">
                 BobJohnston@gmail.com
               </Text>
-              <Text fontSize='13px'>Developer</Text>
+              <Text fontSize="13px">Developer</Text>
             </div>
           )}
         />

@@ -1,16 +1,22 @@
-import React, { Suspense, lazy } from "react";
+import React, { Suspense, lazy, useEffect } from "react";
 import { Route, Switch } from "react-router-dom";
-import { Loader } from "asc-web-components";
 import ConfirmRoute from "../../../helpers/confirmRoute";
-import i18n from "./i18n";
 import { I18nextProvider } from "react-i18next";
 import { Error404, utils } from "asc-web-common";
+
+import { createI18N } from "../../../helpers/i18n";
+const i18n = createI18N({
+  page: "Confirm",
+  localesPath: "pages/Confirm",
+});
 
 const { changeLanguage } = utils;
 
 const ActivateUserForm = lazy(() => import("./sub-components/activateUser"));
 const CreateUserForm = lazy(() => import("./sub-components/createUser"));
-const ChangePasswordForm = lazy(() => import("./sub-components/changePassword"));
+const ChangePasswordForm = lazy(() =>
+  import("./sub-components/changePassword")
+);
 const ActivateEmailForm = lazy(() => import("./sub-components/activateEmail"));
 const ChangeEmailForm = lazy(() => import("./sub-components/changeEmail"));
 const ChangePhoneForm = lazy(() => import("./sub-components/changePhone"));
@@ -18,15 +24,14 @@ const ProfileRemoveForm = lazy(() => import("./sub-components/profileRemove"));
 const ChangeOwnerForm = lazy(() => import("./sub-components/changeOwner"));
 
 const Confirm = ({ match }) => {
-
-  changeLanguage(i18n);
+  useEffect(() => {
+    changeLanguage(i18n);
+  }, []);
 
   //console.log("Confirm render");
   return (
     <I18nextProvider i18n={i18n}>
-      <Suspense
-        fallback={<Loader className="pageLoader" type="rombs" size='40px' />}
-      >
+      <Suspense fallback={null}>
         <Switch>
           <ConfirmRoute
             forUnauthorized
@@ -71,7 +76,7 @@ const Confirm = ({ match }) => {
           <Route component={Error404} />
         </Switch>
       </Suspense>
-    </I18nextProvider >
+    </I18nextProvider>
   );
 };
 

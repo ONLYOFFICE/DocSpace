@@ -25,7 +25,7 @@
 
 
 using System;
-using System.Reflection;
+using System.Linq;
 
 using ASC.Common;
 using ASC.Common.Caching;
@@ -40,53 +40,61 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Notify
 {
+    [Singletone(Additional = typeof(NotifyServiceExtension))]
     public class NotifyService : INotifyService, IDisposable
     {
-        private readonly ILog log;
+        private ILog Log { get; }
 
-        private readonly ICacheNotify<NotifyMessage> cacheNotify;
-
-        private readonly DbWorker db;
-
+        private ICacheNotify<NotifyMessage> CacheNotify { get; }
+        private ICacheNotify<NotifyInvoke> CacheInvoke { get; }
+        private DbWorker Db { get; }
         private IServiceProvider ServiceProvider { get; }
 
-        public NotifyService(DbWorker db, IServiceProvider serviceProvider, ICacheNotify<NotifyMessage> cacheNotify, IOptionsMonitor<ILog> options)
+        public NotifyService(DbWorker db, IServiceProvider serviceProvider, ICacheNotify<NotifyMessage> cacheNotify, ICacheNotify<NotifyInvoke> cacheInvoke, IOptionsMonitor<ILog> options)
         {
-            this.db = db;
+            Db = db;
             ServiceProvider = serviceProvider;
-            this.cacheNotify = cacheNotify;
-            log = options.CurrentValue;
+            CacheNotify = cacheNotify;
+            CacheInvoke = cacheInvoke;
+            Log = options.CurrentValue;
         }
 
         public void Start()
         {
-            cacheNotify.Subscribe((n) => SendNotifyMessage(n), CacheNotifyAction.InsertOrUpdate);
+            CacheNotify.Subscribe((n) => SendNotifyMessage(n), CacheNotifyAction.InsertOrUpdate);
+            CacheInvoke.Subscribe((n) => InvokeSendMethod(n), CacheNotifyAction.InsertOrUpdate);
         }
 
         public void Stop()
         {
-            cacheNotify.Unsubscribe(CacheNotifyAction.InsertOrUpdate);
+            CacheNotify.Unsubscribe(CacheNotifyAction.InsertOrUpdate);
         }
 
         public void SendNotifyMessage(NotifyMessage notifyMessage)
         {
             try
             {
-                db.SaveMessage(notifyMessage);
+                Db.SaveMessage(notifyMessage);
             }
             catch (Exception e)
             {
-                log.Error(e);
+                Log.Error(e);
             }
         }
-        
 
-        public void InvokeSendMethod(string service, string method, int tenant, params object[] parameters)
+
+        public void InvokeSendMethod(NotifyInvoke notifyInvoke)
         {
-            var serviceType = Type.GetType(service, true);
-            var getinstance = serviceType.GetProperty("Instance", BindingFlags.Static | BindingFlags.Public);
+            var service = notifyInvoke.Service;
+            var method = notifyInvoke.Method;
+            var tenant = notifyInvoke.Tenant;
+            var parameters = notifyInvoke.Parameters;
 
-            var instance = getinstance.GetValue(serviceType, null);
+            var serviceType = Type.GetType(service, true);
+
+            using var scope = ServiceProvider.CreateScope();
+
+            var instance = scope.ServiceProvider.GetService(serviceType);
             if (instance == null)
             {
                 throw new Exception("Service instance not found.");
@@ -98,20 +106,21 @@ namespace ASC.Notify
                 throw new Exception("Method not found.");
             }
 
-            using var scope = ServiceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<NotifyServiceScope>();
             var (tenantManager, tenantWhiteLabelSettingsHelper, settingsManager) = scopeClass;
             tenantManager.SetCurrentTenant(tenant);
             tenantWhiteLabelSettingsHelper.Apply(settingsManager.Load<TenantWhiteLabelSettings>(), tenant);
-            methodInfo.Invoke(instance, parameters);
+            methodInfo.Invoke(instance, parameters.ToArray());
         }
 
         public void Dispose()
         {
-            cacheNotify.Unsubscribe(CacheNotifyAction.InsertOrUpdate);
+            CacheNotify.Unsubscribe(CacheNotifyAction.InsertOrUpdate);
+            CacheInvoke.Unsubscribe(CacheNotifyAction.InsertOrUpdate);
         }
     }
 
+    [Scope]
     public class NotifyServiceScope
     {
         private TenantManager TenantManager { get; }
@@ -133,16 +142,11 @@ namespace ASC.Notify
         }
     }
 
-    public static class NotifyServiceExtension
+    public class NotifyServiceExtension
     {
-        public static DIHelper AddNotifyService(this DIHelper services)
+        public static void Register(DIHelper services)
         {
-            services.TryAddSingleton<NotifyService>();
-            services.TryAddScoped<NotifyServiceScope>();
-            services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
-
-            return services
-                .AddDbWorker();
+            services.TryAdd<NotifyServiceScope>();
         }
     }
 }

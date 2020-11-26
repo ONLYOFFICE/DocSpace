@@ -16,14 +16,14 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="protos\SearchItem.proto" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Elasticsearch.Net" Version="7.7.1" />
-    <PackageReference Include="Grpc.Tools" Version="2.30.0">
+    <PackageReference Include="Grpc.Tools" Version="2.32.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

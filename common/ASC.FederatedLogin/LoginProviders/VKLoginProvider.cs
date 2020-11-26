@@ -30,6 +30,7 @@ using System.Linq;
 using System.Threading;
 using System.Web;
 
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Utils;
 using ASC.Core;
@@ -45,6 +46,7 @@ using Newtonsoft.Json.Linq;
 
 namespace ASC.FederatedLogin.LoginProviders
 {
+    [Scope]
     public class VKLoginProvider : BaseLoginProvider<VKLoginProvider>
     {
         public override string CodeUrl
@@ -77,14 +79,16 @@ namespace ASC.FederatedLogin.LoginProviders
             get { return (new[] { 4194304 }).Sum().ToString(); }
         }
 
-        private const string VKProfileUrl = "https://api.vk.com/method/users.get?v=5.80";
+        private const string VKProfileUrl = "https://api.vk.com/method/users.get?v=5.103";
 
 
         public VKLoginProvider()
         {
         }
 
-        public VKLoginProvider(TenantManager tenantManager,
+        public VKLoginProvider(
+            OAuth20TokenHelper oAuth20TokenHelper,
+            TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
             IConfiguration configuration,
@@ -93,7 +97,7 @@ namespace ASC.FederatedLogin.LoginProviders
             Signature signature,
             InstanceCrypto instanceCrypto,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, signature, instanceCrypto, name, order, props, additional)
+            : base(oAuth20TokenHelper, tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, signature, instanceCrypto, name, order, props, additional)
         {
         }
 

@@ -5,12 +5,9 @@ import Scrollbar from "../scrollbar";
 
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-const Container = ({
-  visible,
-  scale,
-  zIndex,
-  ...props
-}) => <aside {...props} />;
+const Container = ({ visible, scale, zIndex, ...props }) => (
+  <aside {...props} />
+);
 /* eslint-enable react/prop-types */
 /* eslint-enable no-unused-vars */
 
@@ -22,10 +19,12 @@ const StyledAside = styled(Container)`
   position: fixed;
   right: 0;
   top: 0;
-  transform: translateX(${props => (props.visible ? "0" : props.scale ? "100%" : "320px")});
+  transform: translateX(
+    ${(props) => (props.visible ? "0" : props.scale ? "100%" : "325px")}
+  );
   transition: transform 0.3s ease-in-out;
-  width: ${props => (props.scale ? "100%" : "320px")};
-  z-index: ${props => props.zIndex};
+  width: ${(props) => (props.scale ? "100%" : "325px")};
+  z-index: ${(props) => props.zIndex};
   box-sizing: border-box;
 
   &.modal-dialog-aside {
@@ -38,12 +37,17 @@ const StyledAside = styled(Container)`
   }
 `;
 
-const Aside = React.memo(props => {
+const Aside = React.memo((props) => {
   //console.log("Aside render");
-  const { visible, children, scale, zIndex, className} = props;
+  const { visible, children, scale, zIndex, className } = props;
 
   return (
-    <StyledAside visible={visible} scale={scale} zIndex={zIndex} className={className}>
+    <StyledAside
+      visible={visible}
+      scale={scale}
+      zIndex={zIndex}
+      className={className}
+    >
       <Scrollbar>{children}</Scrollbar>
     </StyledAside>
   );
@@ -58,12 +62,12 @@ Aside.propTypes = {
   zIndex: PropTypes.number,
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
-    PropTypes.node
-  ])
+    PropTypes.node,
+  ]),
 };
 Aside.defaultProps = {
   scale: false,
-  zIndex: 400
+  zIndex: 400,
 };
 
 export default Aside;

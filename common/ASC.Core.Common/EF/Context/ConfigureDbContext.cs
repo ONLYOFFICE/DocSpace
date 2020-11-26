@@ -1,33 +1,34 @@
 ﻿using System;
 using System.Linq;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Utils;
 
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Common.EF
 {
-    public class ConfigureDbContext : IConfigureNamedOptions<BaseDbContext>
+    [Scope]
+    public class ConfigureDbContext<T> : IConfigureNamedOptions<T> where T : BaseDbContext, new()
     {
-        const string baseName = "default";
+        public const string baseName = "default";
         private EFLoggerFactory LoggerFactory { get; }
-        private IConfiguration Configuration { get; }
+        private ConfigurationExtension Configuration { get; }
 
-        public ConfigureDbContext(EFLoggerFactory loggerFactory, IConfiguration configuration)
+        public ConfigureDbContext(EFLoggerFactory loggerFactory, ConfigurationExtension configuration)
         {
             LoggerFactory = loggerFactory;
             Configuration = configuration;
         }
 
-        public void Configure(string name, BaseDbContext context)
+        public void Configure(string name, T context)
         {
             context.LoggerFactory = LoggerFactory;
             context.ConnectionStringSettings = Configuration.GetConnectionStrings(name) ?? Configuration.GetConnectionStrings(baseName);
         }
 
-        public void Configure(BaseDbContext context)
+        public void Configure(T context)
         {
             Configure(baseName, context);
         }
@@ -35,11 +36,11 @@ namespace ASC.Core.Common.EF
 
     public class ConfigureMultiRegionalDbContext<T> : IConfigureNamedOptions<MultiRegionalDbContext<T>> where T : BaseDbContext, new()
     {
-        const string baseName = "default";
-        private IConfiguration Configuration { get; }
+        public string baseName = "default";
+        private ConfigurationExtension Configuration { get; }
         private DbContextManager<T> DbContext { get; }
 
-        public ConfigureMultiRegionalDbContext(IConfiguration configuration, DbContextManager<T> dbContext)
+        public ConfigureMultiRegionalDbContext(ConfigurationExtension configuration, DbContextManager<T> dbContext)
         {
             Configuration = configuration;
             DbContext = dbContext;

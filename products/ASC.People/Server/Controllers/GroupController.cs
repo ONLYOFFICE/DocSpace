@@ -12,17 +12,17 @@ using ASC.MessagingSystem;
 using ASC.People.Models;
 using ASC.Web.Api.Models;
 using ASC.Web.Api.Routing;
-using ASC.Web.Core.Users;
-using ASC.Web.Studio.Utility;
 
 using Microsoft.AspNetCore.Mvc;
 
 namespace ASC.Employee.Core.Controllers
 {
+    [Scope]
     [DefaultRoute]
     [ApiController]
     public class GroupController : ControllerBase
     {
+        public ApiContext ApiContext { get; }
         private MessageService MessageService { get; }
 
         private UserManager UserManager { get; }
@@ -31,12 +31,14 @@ namespace ASC.Employee.Core.Controllers
         private GroupWraperFullHelper GroupWraperFullHelper { get; }
 
         public GroupController(
+            ApiContext apiContext,
             MessageService messageService,
             UserManager userManager,
             PermissionContext permissionContext,
             MessageTarget messageTarget,
             GroupWraperFullHelper groupWraperFullHelper)
         {
+            ApiContext = apiContext;
             MessageService = messageService;
             UserManager = userManager;
             PermissionContext = permissionContext;
@@ -47,7 +49,12 @@ namespace ASC.Employee.Core.Controllers
         [Read]
         public IEnumerable<GroupWrapperSummary> GetAll()
         {
-            return UserManager.GetDepartments().Select(x => new GroupWrapperSummary(x, UserManager));
+            var result = UserManager.GetDepartments().Select(r => r);
+            if (!string.IsNullOrEmpty(ApiContext.FilterValue))
+            {
+                result = result.Where(r => r.Name.Contains(ApiContext.FilterValue));
+            }
+            return result.Select(x => new GroupWrapperSummary(x, UserManager));
         }
 
         [Read("{groupid}")]
@@ -63,7 +70,19 @@ namespace ASC.Employee.Core.Controllers
         }
 
         [Create]
-        public GroupWrapperFull AddGroup(GroupModel groupModel)
+        public GroupWrapperFull AddGroupFromBody([FromBody]GroupModel groupModel)
+        {
+            return AddGroup(groupModel);
+        }
+
+        [Create]
+        [Consumes("application/x-www-form-urlencoded")]
+        public GroupWrapperFull AddGroupFromForm([FromForm] GroupModel groupModel)
+        {
+            return AddGroup(groupModel);
+        }
+
+        private GroupWrapperFull AddGroup(GroupModel groupModel)
         {
             PermissionContext.DemandPermissions(Constants.Action_EditGroups, Constants.Action_AddRemoveUser);
 
@@ -84,7 +103,19 @@ namespace ASC.Employee.Core.Controllers
         }
 
         [Update("{groupid}")]
-        public GroupWrapperFull UpdateGroup(Guid groupid, GroupModel groupModel)
+        public GroupWrapperFull UpdateGroupFromBody(Guid groupid, [FromBody]GroupModel groupModel)
+        {
+            return UpdateGroup(groupid, groupModel);
+        }
+
+        [Update("{groupid}")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public GroupWrapperFull UpdateGroupFromForm(Guid groupid, [FromForm] GroupModel groupModel)
+        {
+            return UpdateGroup(groupid, groupModel);
+        }
+
+        private GroupWrapperFull UpdateGroup(Guid groupid, GroupModel groupModel)
         {
             PermissionContext.DemandPermissions(Constants.Action_EditGroups, Constants.Action_AddRemoveUser);
             var group = UserManager.GetGroups().SingleOrDefault(x => x.ID == groupid).NotFoundIfNull("group not found");
@@ -96,7 +127,7 @@ namespace ASC.Employee.Core.Controllers
             group.Name = groupModel.GroupName ?? group.Name;
             UserManager.SaveGroupInfo(group);
 
-            RemoveMembersFrom(new GroupModel { Groupid = groupid, Members = UserManager.GetUsersByGroup(groupid, EmployeeStatus.All).Select(u => u.ID).Where(id => !groupModel.Members.Contains(id)) });
+            RemoveMembersFrom(groupid, new GroupModel {Members = UserManager.GetUsersByGroup(groupid, EmployeeStatus.All).Select(u => u.ID).Where(id => !groupModel.Members.Contains(id)) });
 
             TransferUserToDepartment(groupModel.GroupManager, @group, true);
             if (groupModel.Members != null)
@@ -109,7 +140,7 @@ namespace ASC.Employee.Core.Controllers
 
             MessageService.Send(MessageAction.GroupUpdated, MessageTarget.Create(groupid), group.Name);
 
-            return GetById(groupModel.Groupid);
+            return GetById(groupid);
         }
 
         [Delete("{groupid}")]
@@ -135,34 +166,58 @@ namespace ASC.Employee.Core.Controllers
         }
 
         [Update("{groupid}/members/{newgroupid}")]
-        public GroupWrapperFull TransferMembersTo(TransferGroupMembersModel transferGroupMembersModel)
+        public GroupWrapperFull TransferMembersTo(Guid groupid, Guid newgroupid)
         {
             PermissionContext.DemandPermissions(Constants.Action_EditGroups, Constants.Action_AddRemoveUser);
-            var oldgroup = GetGroupInfo(transferGroupMembersModel.GroupId);
+            var oldgroup = GetGroupInfo(groupid);
 
-            var newgroup = GetGroupInfo(transferGroupMembersModel.NewGroupId);
+            var newgroup = GetGroupInfo(newgroupid);
 
             var users = UserManager.GetUsersByGroup(oldgroup.ID);
             foreach (var userInfo in users)
             {
                 TransferUserToDepartment(userInfo.ID, newgroup, false);
             }
-            return GetById(transferGroupMembersModel.NewGroupId);
+            return GetById(newgroupid);
         }
 
         [Create("{groupid}/members")]
-        public GroupWrapperFull SetMembersTo(GroupModel groupModel)
+        public GroupWrapperFull SetMembersToFromBody(Guid groupid, [FromBody]GroupModel groupModel)
         {
-            RemoveMembersFrom(new GroupModel { Groupid = groupModel.Groupid, Members = UserManager.GetUsersByGroup(groupModel.Groupid).Select(x => x.ID) });
-            AddMembersTo(groupModel);
-            return GetById(groupModel.Groupid);
+            return SetMembersTo(groupid, groupModel);
+        }
+
+        [Create("{groupid}/members")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public GroupWrapperFull SetMembersToFromForm(Guid groupid, [FromForm] GroupModel groupModel)
+        {
+            return SetMembersTo(groupid, groupModel);
+        }
+
+        private GroupWrapperFull SetMembersTo(Guid groupid, GroupModel groupModel)
+        {
+            RemoveMembersFrom(groupid, new GroupModel {Members = UserManager.GetUsersByGroup(groupid).Select(x => x.ID) });
+            AddMembersTo(groupid, groupModel);
+            return GetById(groupid);
         }
 
         [Update("{groupid}/members")]
-        public GroupWrapperFull AddMembersTo(GroupModel groupModel)
+        public GroupWrapperFull AddMembersToFromBody(Guid groupid, [FromBody]GroupModel groupModel)
+        {
+            return AddMembersTo(groupid, groupModel);
+        }
+
+        [Update("{groupid}/members")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public GroupWrapperFull AddMembersToFromForm(Guid groupid, [FromForm] GroupModel groupModel)
+        {
+            return AddMembersTo(groupid, groupModel);
+        }
+
+        private GroupWrapperFull AddMembersTo(Guid groupid, GroupModel groupModel)
         {
             PermissionContext.DemandPermissions(Constants.Action_EditGroups, Constants.Action_AddRemoveUser);
-            var group = GetGroupInfo(groupModel.Groupid);
+            var group = GetGroupInfo(groupid);
 
             foreach (var userId in groupModel.Members)
             {
@@ -172,9 +227,21 @@ namespace ASC.Employee.Core.Controllers
         }
 
         [Update("{groupid}/manager")]
-        public GroupWrapperFull SetManager(SetManagerModel setManagerModel)
+        public GroupWrapperFull SetManagerFromBody(Guid groupid, [FromBody]SetManagerModel setManagerModel)
         {
-            var group = GetGroupInfo(setManagerModel.GroupId);
+            return SetManager(groupid, setManagerModel);
+        }
+
+        [Update("{groupid}/manager")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public GroupWrapperFull SetManagerFromForm(Guid groupid, [FromForm] SetManagerModel setManagerModel)
+        {
+            return SetManager(groupid, setManagerModel);
+        }
+
+        private GroupWrapperFull SetManager(Guid groupid, SetManagerModel setManagerModel)
+        {
+            var group = GetGroupInfo(groupid);
             if (UserManager.UserExists(setManagerModel.UserId))
             {
                 UserManager.SetDepartmentManager(group.ID, setManagerModel.UserId);
@@ -183,14 +250,26 @@ namespace ASC.Employee.Core.Controllers
             {
                 throw new ItemNotFoundException("user not found");
             }
-            return GetById(setManagerModel.GroupId);
+            return GetById(groupid);
         }
 
         [Delete("{groupid}/members")]
-        public GroupWrapperFull RemoveMembersFrom(GroupModel groupModel)
+        public GroupWrapperFull RemoveMembersFromFromBody(Guid groupid, [FromBody]GroupModel groupModel)
+        {
+            return RemoveMembersFrom(groupid, groupModel);
+        }
+
+        [Delete("{groupid}/members")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public GroupWrapperFull RemoveMembersFromFromForm(Guid groupid, [FromForm] GroupModel groupModel)
+        {
+            return RemoveMembersFrom(groupid, groupModel);
+        }
+
+        private GroupWrapperFull RemoveMembersFrom(Guid groupid, GroupModel groupModel)
         {
             PermissionContext.DemandPermissions(Constants.Action_EditGroups, Constants.Action_AddRemoveUser);
-            var group = GetGroupInfo(groupModel.Groupid);
+            var group = GetGroupInfo(groupid);
 
             foreach (var userId in groupModel.Members)
             {
@@ -217,24 +296,6 @@ namespace ASC.Employee.Core.Controllers
                 UserManager.SetDepartmentManager(@group.ID, userId);
             }
             UserManager.AddUserIntoGroup(userId, @group.ID);
-        }
-    }
-
-    public static class GroupControllerExtention
-    {
-        public static DIHelper AddGroupController(this DIHelper services)
-        {
-            return services
-                .AddGroupWraperFull()
-                .AddMessageServiceService()
-                .AddApiContextService()
-                .AddUserManagerService()
-                .AddUserPhotoManagerService()
-                .AddSecurityContextService()
-                .AddPermissionContextService()
-                .AddCommonLinkUtilityService()
-                .AddDisplayUserSettingsService()
-                .AddMessageTargetService();
         }
     }
 }

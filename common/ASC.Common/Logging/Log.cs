@@ -41,6 +41,7 @@ using NLog;
 
 namespace ASC.Common.Logging
 {
+    [Singletone(typeof(ConfigureLogNLog), Additional = typeof(LogNLogExtension))]
     public interface ILog
     {
         bool IsDebugEnabled { get; }
@@ -372,20 +373,24 @@ namespace ASC.Common.Logging
         public string Dir { get; set; }
     }
 
+    [Singletone]
     public class ConfigureLogNLog : IConfigureNamedOptions<LogNLog>
     {
-        public ConfigureLogNLog(IConfiguration configuration)
+        private IConfiguration Configuration { get; }
+        private ConfigurationExtension ConfigurationExtension { get; }
+
+        public ConfigureLogNLog(IConfiguration configuration, ConfigurationExtension configurationExtension)
         {
             Configuration = configuration;
+            ConfigurationExtension = configurationExtension;
         }
-
-        private IConfiguration Configuration { get; }
 
         public void Configure(LogNLog options)
         {
-            LogManager.Configuration = new NLog.Config.XmlLoggingConfiguration(Path.Combine(Configuration["pathToConf"], "nlog.config"), true);
+            LogManager.Configuration = new NLog.Config.XmlLoggingConfiguration(Path.Combine(Configuration["pathToConf"], "nlog.config"));
+            LogManager.ThrowConfigExceptions = false;
 
-            var settings = Configuration.GetSetting<NLogSettings>("log");
+            var settings = ConfigurationExtension.GetSetting<NLogSettings>("log");
             if (!string.IsNullOrEmpty(settings.Name))
             {
                 LogManager.Configuration.Variables["name"] = settings.Name;
@@ -851,6 +856,7 @@ namespace ASC.Common.Logging
     }
 
 
+    [Singletone]
     public class LogManager<T> : OptionsMonitor<T> where T : class, ILog, new()
     {
         public LogManager(IOptionsFactory<T> factory, IEnumerable<IOptionsChangeTokenSource<T>> sources, IOptionsMonitorCache<T> cache) : base(factory, sources, cache)
@@ -870,30 +876,32 @@ namespace ASC.Common.Logging
         }
     }
 
-    public static class StudioNotifyHelperExtension
+    public class LoggerExtension<T> where T : class, ILog, new()
     {
-        public static DIHelper AddLogManager<T>(this DIHelper services, params string[] additionalLoggers) where T : class, ILog, new()
+        public static void RegisterLog(DIHelper services)
         {
             const string baseName = "ASC";
             var baseSqlName = $"{baseName}.SQL";
             services.Configure<T>(r => r.Name = baseName);
             services.Configure<T>(baseName, r => r.Name = baseName);
             services.Configure<T>(baseSqlName, r => r.Name = baseSqlName);
+            services.TryAdd(typeof(IOptionsMonitor<ILog>), typeof(LogManager<T>));
+        }
 
+        public static void ConfigureLog(DIHelper services, params string[] additionalLoggers)
+        {
             foreach (var l in additionalLoggers)
             {
                 services.Configure<T>(l, r => r.Name = l);
             }
-
-            services.TryAddSingleton(typeof(IOptionsMonitor<ILog>), typeof(LogManager<T>));
-            return services;
         }
+    }
 
-        public static DIHelper AddNLogManager(this DIHelper services, params string[] additionalLoggers)
+    public class LogNLogExtension : LoggerExtension<LogNLog>
+    {
+        public static void Register(DIHelper services)
         {
-            services.TryAddSingleton<IConfigureNamedOptions<LogNLog>, ConfigureLogNLog>();
-            services.TryAddSingleton<IConfigureOptions<LogNLog>, ConfigureLogNLog>();
-            return services.AddLogManager<LogNLog>(additionalLoggers);
+            RegisterLog(services);
         }
     }
 }

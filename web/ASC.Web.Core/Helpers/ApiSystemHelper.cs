@@ -35,6 +35,7 @@ using System.Web;
 
 using ASC.Common;
 using ASC.Core.Tenants;
+using ASC.Security.Cryptography;
 using ASC.Web.Studio.Utility;
 
 using Microsoft.AspNetCore.WebUtilities;
@@ -44,27 +45,28 @@ using Newtonsoft.Json.Linq;
 
 namespace ASC.Web.Core.Helpers
 {
+    [Scope]
     public class ApiSystemHelper
     {
         public string ApiSystemUrl { get; private set; }
 
         public string ApiCacheUrl { get; private set; }
 
-        private string Skey { get; set; }
+        private static byte[] Skey { get; set; }
         private CommonLinkUtility CommonLinkUtility { get; }
 
-        public ApiSystemHelper(IConfiguration configuration, CommonLinkUtility commonLinkUtility)
+        public ApiSystemHelper(IConfiguration configuration, CommonLinkUtility commonLinkUtility, MachinePseudoKeys machinePseudoKeys)
         {
             ApiSystemUrl = configuration["web:api-system"];
             ApiCacheUrl = configuration["web:api-cache"];
-            Skey = configuration["core:machinekey"];
             CommonLinkUtility = commonLinkUtility;
+            Skey = machinePseudoKeys.GetMachineConstant();
         }
 
 
         public string CreateAuthToken(string pkey)
         {
-            using var hasher = new HMACSHA1(Encoding.UTF8.GetBytes(Skey));
+            using var hasher = new HMACSHA1(Skey);
             var now = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
             var hash = WebEncoders.Base64UrlEncode(hasher.ComputeHash(Encoding.UTF8.GetBytes(string.Join("\n", now, pkey))));
             return string.Format("ASC {0}:{1}:{2}", pkey, now, hash);
@@ -167,15 +169,6 @@ namespace ASC.Web.Core.Helpers
             using var stream = response.GetResponseStream();
             using var reader = new StreamReader(stream, Encoding.UTF8);
             return reader.ReadToEnd();
-        }
-    }
-
-    public static class ApiSystemHelperExtension
-    {
-        public static DIHelper AddApiSystemHelper(this DIHelper services)
-        {
-            services.TryAddScoped<ApiSystemHelper>();
-            return services;
         }
     }
 }

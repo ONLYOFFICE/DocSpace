@@ -37,10 +37,8 @@ using ASC.Core.Tenants;
 using ASC.Files.Core;
 using ASC.Files.Core.EF;
 using ASC.Files.Core.Resources;
-using ASC.Files.Core.Security;
 using ASC.Files.Core.Thirdparty;
 using ASC.Web.Core.Files;
-using ASC.Web.Files.Services.DocumentService;
 using ASC.Web.Studio.Core;
 
 using Microsoft.Extensions.Options;
@@ -49,6 +47,7 @@ using DriveFile = Google.Apis.Drive.v3.Data.File;
 
 namespace ASC.Files.Thirdparty.GoogleDrive
 {
+    [Scope]
     internal class GoogleDriveFileDao : GoogleDriveDaoBase, IFileDao<string>
     {
         private CrossDao CrossDao { get; }
@@ -116,7 +115,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             return fileIds.Select(GetDriveEntry).Select(ToFile).ToList();
         }
 
-        public List<File<string>> GetFilesForShare(string[] fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
+        public List<File<string>> GetFilesFiltered(string[] fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
         {
             if (fileIds == null || fileIds.Length == 0 || filterType == FilterType.FoldersOnly) return new List<File<string>>();
 
@@ -225,25 +224,14 @@ namespace ASC.Files.Thirdparty.GoogleDrive
 
             if (orderBy == null) orderBy = new OrderBy(SortedByType.DateAndTime, false);
 
-            switch (orderBy.SortedBy)
+            files = orderBy.SortedBy switch
             {
-                case SortedByType.Author:
-                    files = orderBy.IsAsc ? files.OrderBy(x => x.CreateBy) : files.OrderByDescending(x => x.CreateBy);
-                    break;
-                case SortedByType.AZ:
-                    files = orderBy.IsAsc ? files.OrderBy(x => x.Title) : files.OrderByDescending(x => x.Title);
-                    break;
-                case SortedByType.DateAndTime:
-                    files = orderBy.IsAsc ? files.OrderBy(x => x.ModifiedOn) : files.OrderByDescending(x => x.ModifiedOn);
-                    break;
-                case SortedByType.DateAndTimeCreation:
-                    files = orderBy.IsAsc ? files.OrderBy(x => x.CreateOn) : files.OrderByDescending(x => x.CreateOn);
-                    break;
-                default:
-                    files = orderBy.IsAsc ? files.OrderBy(x => x.Title) : files.OrderByDescending(x => x.Title);
-                    break;
-            }
-
+                SortedByType.Author => orderBy.IsAsc ? files.OrderBy(x => x.CreateBy) : files.OrderByDescending(x => x.CreateBy),
+                SortedByType.AZ => orderBy.IsAsc ? files.OrderBy(x => x.Title) : files.OrderByDescending(x => x.Title),
+                SortedByType.DateAndTime => orderBy.IsAsc ? files.OrderBy(x => x.ModifiedOn) : files.OrderByDescending(x => x.ModifiedOn),
+                SortedByType.DateAndTimeCreation => orderBy.IsAsc ? files.OrderBy(x => x.CreateOn) : files.OrderByDescending(x => x.CreateOn),
+                _ => orderBy.IsAsc ? files.OrderBy(x => x.Title) : files.OrderByDescending(x => x.Title),
+            };
             return files.ToList();
         }
 
@@ -258,7 +246,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             ProviderInfo.CacheReset(driveId, true);
             var driveFile = GetDriveEntry(file.ID);
             if (driveFile == null) throw new ArgumentNullException("file", FilesCommonResource.ErrorMassage_FileNotFound);
-            if (driveFile is ErrorDriveEntry) throw new Exception(((ErrorDriveEntry)driveFile).Error);
+            if (driveFile is ErrorDriveEntry errorDriveEntry) throw new Exception(errorDriveEntry.Error);
 
             var fileStream = ProviderInfo.Storage.DownloadStream(driveFile, (int)offset);
 
@@ -392,10 +380,10 @@ namespace ASC.Files.Thirdparty.GoogleDrive
         public string MoveFile(string fileId, string toFolderId)
         {
             var driveFile = GetDriveEntry(fileId);
-            if (driveFile is ErrorDriveEntry) throw new Exception(((ErrorDriveEntry)driveFile).Error);
+            if (driveFile is ErrorDriveEntry errorDriveEntry) throw new Exception(errorDriveEntry.Error);
 
             var toDriveFolder = GetDriveEntry(toFolderId);
-            if (toDriveFolder is ErrorDriveEntry) throw new Exception(((ErrorDriveEntry)toDriveFolder).Error);
+            if (toDriveFolder is ErrorDriveEntry errorDriveEntry1) throw new Exception(errorDriveEntry1.Error);
 
             var fromFolderDriveId = GetParentDriveId(driveFile);
 
@@ -440,10 +428,10 @@ namespace ASC.Files.Thirdparty.GoogleDrive
         public File<string> CopyFile(string fileId, string toFolderId)
         {
             var driveFile = GetDriveEntry(fileId);
-            if (driveFile is ErrorDriveEntry) throw new Exception(((ErrorDriveEntry)driveFile).Error);
+            if (driveFile is ErrorDriveEntry errorDriveEntry) throw new Exception(errorDriveEntry.Error);
 
             var toDriveFolder = GetDriveEntry(toFolderId);
-            if (toDriveFolder is ErrorDriveEntry) throw new Exception(((ErrorDriveEntry)toDriveFolder).Error);
+            if (toDriveFolder is ErrorDriveEntry errorDriveEntry1) throw new Exception(errorDriveEntry1.Error);
 
             var newDriveFile = ProviderInfo.Storage.CopyEntry(toDriveFolder.Id, driveFile.Id);
 
@@ -552,10 +540,8 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             else
             {
                 var tempPath = uploadSession.GetItemOrDefault<string>("TempPath");
-                using (var fs = new FileStream(tempPath, FileMode.Append))
-                {
-                    stream.CopyTo(fs);
-                }
+                using var fs = new FileStream(tempPath, FileMode.Append);
+                stream.CopyTo(fs);
             }
 
             uploadSession.BytesUploaded += chunkLength;
@@ -583,10 +569,8 @@ namespace ASC.Files.Thirdparty.GoogleDrive
                 return ToFile(GetDriveEntry(googleDriveSession.FileId));
             }
 
-            using (var fs = new FileStream(uploadSession.GetItemOrDefault<string>("TempPath"), FileMode.Open, FileAccess.Read, System.IO.FileShare.None, 4096, FileOptions.DeleteOnClose))
-            {
-                return SaveFile(uploadSession.File, fs);
-            }
+            using var fs = new FileStream(uploadSession.GetItemOrDefault<string>("TempPath"), FileMode.Open, FileAccess.Read, System.IO.FileShare.None, 4096, FileOptions.DeleteOnClose);
+            return SaveFile(uploadSession.File, fs);
         }
 
         public void AbortUploadSession(ChunkedUploadSession<string> uploadSession)
@@ -607,74 +591,5 @@ namespace ASC.Files.Thirdparty.GoogleDrive
         }
 
         #endregion
-
-
-        #region Only in TMFileDao
-
-        public void ReassignFiles(string[] fileIds, Guid newOwnerId)
-        {
-        }
-
-        public List<File<string>> GetFiles(string[] parentIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
-        {
-            return new List<File<string>>();
-        }
-
-        public IEnumerable<File<string>> Search(string text, bool bunch)
-        {
-            return null;
-        }
-
-        public bool IsExistOnStorage(File<string> file)
-        {
-            return true;
-        }
-
-        public void SaveEditHistory(File<string> file, string changes, Stream differenceStream)
-        {
-            //Do nothing
-        }
-
-        public List<EditHistory> GetEditHistory(DocumentServiceHelper documentServiceHelper, string fileId, int fileVersion)
-        {
-            return null;
-        }
-
-        public Stream GetDifferenceStream(File<string> file)
-        {
-            return null;
-        }
-
-        public bool ContainChanges(string fileId, int fileVersion)
-        {
-            return false;
-        }
-
-        public string GetUniqFilePath(File<string> file, string fileTitle)
-        {
-            return null;
-        }
-
-        public IEnumerable<(File<int>, SmallShareRecord)> GetFeeds(int tenant, DateTime from, DateTime to)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<int> GetTenantsWithFeeds(DateTime fromTime)
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
-    }
-
-    public static class GoogleDriveFilrDaoExtention
-    {
-        public static DIHelper AddGoogleDriveFileDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<GoogleDriveFileDao>();
-
-            return services;
-        }
     }
 }

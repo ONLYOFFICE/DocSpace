@@ -33,19 +33,16 @@ using ASC.Core;
 using ASC.Core.Billing;
 using ASC.Core.Configuration;
 using ASC.Core.Tenants;
-using ASC.MessagingSystem;
 using ASC.Web.Api.Routing;
 using ASC.Web.Core.PublicResources;
 using ASC.Web.Studio.Core;
-using ASC.Web.Studio.Core.Notify;
 using ASC.Web.Studio.Utility;
 
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 
 namespace ASC.Api.Settings
 {
+    [Scope]
     [DefaultRoute]
     [ApiController]
     public class SmtpSettingsController : ControllerBase
@@ -55,43 +52,21 @@ namespace ASC.Api.Settings
         public Tenant Tenant { get { return ApiContext.Tenant; } }
 
         private ApiContext ApiContext { get; }
-        private UserManager UserManager { get; }
-        private SecurityContext SecurityContext { get; }
         private PermissionContext PermissionContext { get; }
-        private TenantManager TenantManager { get; }
-        private CoreSettings CoreSettings { get; }
         private CoreConfiguration CoreConfiguration { get; }
         private CoreBaseSettings CoreBaseSettings { get; }
-        private IConfiguration Configuration { get; }
-        private MessageService MessageService { get; }
-        private StudioNotifyService StudioNotifyService { get; }
-        private IWebHostEnvironment WebHostEnvironment { get; }
 
 
         public SmtpSettingsController(
-            MessageService messageService,
-            StudioNotifyService studioNotifyService,
             ApiContext apiContext,
-            UserManager userManager,
-            SecurityContext securityContext,
             PermissionContext permissionContext,
-            TenantManager tenantManager,
-            CoreSettings coreSettings,
             CoreConfiguration coreConfiguration,
-            CoreBaseSettings coreBaseSettings,
-            IConfiguration configuration)
+            CoreBaseSettings coreBaseSettings)
         {
-            MessageService = messageService;
-            StudioNotifyService = studioNotifyService;
             ApiContext = apiContext;
-            UserManager = userManager;
-            SecurityContext = securityContext;
             PermissionContext = permissionContext;
-            TenantManager = tenantManager;
-            CoreSettings = coreSettings;
             CoreConfiguration = coreConfiguration;
             CoreBaseSettings = coreBaseSettings;
-            Configuration = configuration;
         }
 
 
@@ -106,7 +81,19 @@ namespace ASC.Api.Settings
         }
 
         [Create("smtp")]
-        public SmtpSettingsWrapper SaveSmtpSettings(SmtpSettingsWrapper smtpSettings)
+        public SmtpSettingsWrapper SaveSmtpSettingsFromBody([FromBody]SmtpSettingsWrapper smtpSettings)
+        {
+            return SaveSmtpSettings(smtpSettings);
+        }
+
+        [Create("smtp")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public SmtpSettingsWrapper SaveSmtpSettingsFromForm([FromForm] SmtpSettingsWrapper smtpSettings)
+        {
+            return SaveSmtpSettings(smtpSettings);
+        }
+
+        private SmtpSettingsWrapper SaveSmtpSettings(SmtpSettingsWrapper smtpSettings)
         {
             CheckSmtpPermissions();
 
@@ -248,25 +235,6 @@ namespace ASC.Api.Settings
             {
                 throw new BillingException(Resource.ErrorNotAllowedOption, "Smtp");
             }
-        }
-    }
-
-    public static class SmtpSettingsControllerExtension
-    {
-        public static DIHelper AddSmtpSettingsController(this DIHelper services)
-        {
-            return services
-                .AddMessageServiceService()
-                .AddStudioNotifyServiceService()
-                .AddApiContextService()
-                .AddUserManagerService()
-                .AddSecurityContextService()
-                .AddPermissionContextService()
-                .AddTenantManagerService()
-                .AddCoreSettingsService()
-                .AddCoreConfigurationService()
-                .AddCoreBaseSettingsService()
-                ;
         }
     }
 }

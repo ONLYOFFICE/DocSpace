@@ -27,10 +27,13 @@
 using System;
 using System.Text.RegularExpressions;
 
+using ASC.Common;
+
 using Microsoft.Extensions.Configuration;
 
 namespace ASC.Core.Tenants
 {
+    [Singletone]
     public class TenantDomainValidator
     {
         private static readonly Regex ValidDomain = new Regex("^[a-z0-9]([a-z0-9-]){1,98}[a-z0-9]$",

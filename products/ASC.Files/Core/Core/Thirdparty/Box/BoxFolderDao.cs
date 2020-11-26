@@ -36,7 +36,6 @@ using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
 using ASC.Files.Core;
 using ASC.Files.Core.EF;
-using ASC.Files.Core.Security;
 using ASC.Files.Core.Thirdparty;
 using ASC.Web.Core.Files;
 using ASC.Web.Studio.Core;
@@ -47,6 +46,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Files.Thirdparty.Box
 {
+    [Scope]
     internal class BoxFolderDao : BoxDaoBase, IFolderDao<string>
     {
         private CrossDao CrossDao { get; }
@@ -119,25 +119,14 @@ namespace ASC.Files.Thirdparty.Box
 
             if (orderBy == null) orderBy = new OrderBy(SortedByType.DateAndTime, false);
 
-            switch (orderBy.SortedBy)
+            folders = orderBy.SortedBy switch
             {
-                case SortedByType.Author:
-                    folders = orderBy.IsAsc ? folders.OrderBy(x => x.CreateBy) : folders.OrderByDescending(x => x.CreateBy);
-                    break;
-                case SortedByType.AZ:
-                    folders = orderBy.IsAsc ? folders.OrderBy(x => x.Title) : folders.OrderByDescending(x => x.Title);
-                    break;
-                case SortedByType.DateAndTime:
-                    folders = orderBy.IsAsc ? folders.OrderBy(x => x.ModifiedOn) : folders.OrderByDescending(x => x.ModifiedOn);
-                    break;
-                case SortedByType.DateAndTimeCreation:
-                    folders = orderBy.IsAsc ? folders.OrderBy(x => x.CreateOn) : folders.OrderByDescending(x => x.CreateOn);
-                    break;
-                default:
-                    folders = orderBy.IsAsc ? folders.OrderBy(x => x.Title) : folders.OrderByDescending(x => x.Title);
-                    break;
-            }
-
+                SortedByType.Author => orderBy.IsAsc ? folders.OrderBy(x => x.CreateBy) : folders.OrderByDescending(x => x.CreateBy),
+                SortedByType.AZ => orderBy.IsAsc ? folders.OrderBy(x => x.Title) : folders.OrderByDescending(x => x.Title),
+                SortedByType.DateAndTime => orderBy.IsAsc ? folders.OrderBy(x => x.ModifiedOn) : folders.OrderByDescending(x => x.ModifiedOn),
+                SortedByType.DateAndTimeCreation => orderBy.IsAsc ? folders.OrderBy(x => x.CreateOn) : folders.OrderByDescending(x => x.CreateOn),
+                _ => orderBy.IsAsc ? folders.OrderBy(x => x.Title) : folders.OrderByDescending(x => x.Title),
+            };
             return folders.ToList();
         }
 
@@ -270,10 +259,10 @@ namespace ASC.Files.Thirdparty.Box
         public string MoveFolder(string folderId, string toFolderId, CancellationToken? cancellationToken)
         {
             var boxFolder = GetBoxFolder(folderId);
-            if (boxFolder is ErrorFolder) throw new Exception(((ErrorFolder)boxFolder).Error);
+            if (boxFolder is ErrorFolder errorFolder) throw new Exception(errorFolder.Error);
 
             var toBoxFolder = GetBoxFolder(toFolderId);
-            if (toBoxFolder is ErrorFolder) throw new Exception(((ErrorFolder)toBoxFolder).Error);
+            if (toBoxFolder is ErrorFolder errorFolder1) throw new Exception(errorFolder1.Error);
 
             var fromFolderId = GetParentFolderId(boxFolder);
 
@@ -330,10 +319,10 @@ namespace ASC.Files.Thirdparty.Box
         public Folder<string> CopyFolder(string folderId, string toFolderId, CancellationToken? cancellationToken)
         {
             var boxFolder = GetBoxFolder(folderId);
-            if (boxFolder is ErrorFolder) throw new Exception(((ErrorFolder)boxFolder).Error);
+            if (boxFolder is ErrorFolder errorFolder) throw new Exception(errorFolder.Error);
 
             var toBoxFolder = GetBoxFolder(toFolderId);
-            if (toBoxFolder is ErrorFolder) throw new Exception(((ErrorFolder)toBoxFolder).Error);
+            if (toBoxFolder is ErrorFolder errorFolder1) throw new Exception(errorFolder1.Error);
 
             var newTitle = GetAvailableTitle(boxFolder.Name, toBoxFolder.Id, IsExist);
             var newBoxFolder = ProviderInfo.Storage.CopyFolder(boxFolder.Id, newTitle, toBoxFolder.Id);
@@ -447,90 +436,6 @@ namespace ASC.Files.Thirdparty.Box
             var storageMaxUploadSize = ProviderInfo.Storage.GetMaxUploadSize();
 
             return chunkedUpload ? storageMaxUploadSize : Math.Min(storageMaxUploadSize, SetupInfo.AvailableFileSize);
-        }
-
-        #region Only for TMFolderDao
-
-        public void ReassignFolders(string[] folderIds, Guid newOwnerId)
-        {
-        }
-
-        public IEnumerable<Folder<string>> Search(string text, bool bunch)
-        {
-            return null;
-        }
-
-        public string GetFolderID(string module, string bunch, string data, bool createIfNotExists)
-        {
-            return null;
-        }
-
-        public IEnumerable<string> GetFolderIDs(string module, string bunch, IEnumerable<string> data, bool createIfNotExists)
-        {
-            return new List<string>();
-        }
-
-        public string GetFolderIDCommon(bool createIfNotExists)
-        {
-            return null;
-        }
-
-        public string GetFolderIDUser(bool createIfNotExists, Guid? userId)
-        {
-            return null;
-        }
-
-        public string GetFolderIDShare(bool createIfNotExists)
-        {
-            return null;
-        }
-
-        public string GetFolderIDTrash(bool createIfNotExists, Guid? userId)
-        {
-            return null;
-        }
-
-
-        public string GetFolderIDPhotos(bool createIfNotExists)
-        {
-            return null;
-        }
-
-        public string GetFolderIDProjects(bool createIfNotExists)
-        {
-            return null;
-        }
-
-        public string GetBunchObjectID(string folderID)
-        {
-            return null;
-        }
-
-        public Dictionary<string, string> GetBunchObjectIDs(List<string> folderIDs)
-        {
-            return null;
-        }
-
-        public IEnumerable<(Folder<string>, SmallShareRecord)> GetFeeds(int tenant, DateTime from, DateTime to)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<string> GetTenantsWithFeeds(DateTime fromTime)
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
-    }
-
-    public static class BoxFolderDaoExtention
-    {
-        public static DIHelper AddBoxFolderDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<BoxFolderDao>();
-
-            return services;
         }
     }
 }

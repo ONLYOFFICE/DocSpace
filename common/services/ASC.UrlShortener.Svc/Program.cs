@@ -32,6 +32,9 @@ using ASC.Common;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
 
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -44,6 +47,7 @@ namespace ASC.UrlShortener.Svc
         public static async Task Main(string[] args)
         {
             var host = Host.CreateDefaultBuilder(args)
+                .UseServiceProviderFactory(new AutofacServiceProviderFactory())
                 .ConfigureAppConfiguration((hostContext, config) =>
                 {
                     var buided = config.Build();
@@ -72,11 +76,13 @@ namespace ASC.UrlShortener.Svc
                 .ConfigureServices((hostContext, services) =>
                 {
                     var diHelper = new DIHelper(services);
-                    diHelper.AddNLogManager("ASC.UrlShortener.Svc");
+                    LogNLogExtension.ConfigureLog(diHelper, "ASC.UrlShortener.Svc");
                     services.AddHostedService<UrlShortenerServiceLauncher>();
-                    diHelper.AddUrlShortenerServiceLauncher();
-
-                    services.AddAutofac(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath, false, false);
+                    diHelper.TryAdd<UrlShortenerServiceLauncher>();
+                })
+                .ConfigureContainer<ContainerBuilder>((context, builder) =>
+                {
+                    builder.Register(context.Configuration, context.HostingEnvironment.ContentRootPath, false, false);
                 })
                 .UseConsoleLifetime()
                 .Build();

@@ -38,6 +38,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Security.Authentication
 {
+    [Scope]
     public class CookieStorage
     {
         private const string DateTimeFormat = "yyyy-MM-dd HH:mm:ss,fff";
@@ -67,12 +68,10 @@ namespace ASC.Core.Security.Authentication
             HttpContext = httpContextAccessor.HttpContext;
         }
 
-        public bool DecryptCookie(string cookie, out int tenant, out Guid userid, out string login, out string password, out int indexTenant, out DateTime expire, out int indexUser)
+        public bool DecryptCookie(string cookie, out int tenant, out Guid userid, out int indexTenant, out DateTime expire, out int indexUser)
         {
             tenant = Tenant.DEFAULT_TENANT;
             userid = Guid.Empty;
-            login = null;
-            password = null;
             indexTenant = 0;
             expire = DateTime.MaxValue;
             indexUser = 0;
@@ -87,9 +86,7 @@ namespace ASC.Core.Security.Authentication
                 cookie = (HttpUtility.UrlDecode(cookie) ?? "").Replace(' ', '+');
                 var s = InstanceCrypto.Decrypt(cookie).Split('$');
 
-                if (0 < s.Length) login = s[0];
                 if (1 < s.Length) tenant = int.Parse(s[1]);
-                if (2 < s.Length) password = s[2];
                 if (4 < s.Length) userid = new Guid(s[4]);
                 if (5 < s.Length) indexTenant = int.Parse(s[5]);
                 if (6 < s.Length) expire = DateTime.ParseExact(s[6], DateTimeFormat, CultureInfo.InvariantCulture);
@@ -99,27 +96,27 @@ namespace ASC.Core.Security.Authentication
             }
             catch (Exception err)
             {
-                Log.ErrorFormat("Authenticate error: cookie {0}, tenant {1}, userid {2}, login {3}, pass {4}, indexTenant {5}, expire {6}: {7}",
-                    cookie, tenant, userid, login, password, indexTenant, expire.ToString(DateTimeFormat), err);
+                Log.ErrorFormat("Authenticate error: cookie {0}, tenant {1}, userid {2}, indexTenant {3}, expire {4}: {5}",
+                            cookie, tenant, userid, indexTenant, expire.ToString(DateTimeFormat), err);
             }
             return false;
         }
 
 
-        public string EncryptCookie(int tenant, Guid userid, string login = null, string password = null)
+        public string EncryptCookie(int tenant, Guid userid)
         {
             var settingsTenant = TenantCookieSettingsHelper.GetForTenant(tenant);
             var expires = TenantCookieSettingsHelper.GetExpiresTime(tenant);
             var settingsUser = TenantCookieSettingsHelper.GetForUser(tenant, userid);
-            return EncryptCookie(tenant, userid, login, password, settingsTenant.Index, expires, settingsUser.Index);
+            return EncryptCookie(tenant, userid, settingsTenant.Index, expires, settingsUser.Index);
         }
 
-        public string EncryptCookie(int tenant, Guid userid, string login, string password, int indexTenant, DateTime expires, int indexUser)
+        public string EncryptCookie(int tenant, Guid userid, int indexTenant, DateTime expires, int indexUser)
         {
             var s = string.Format("{0}${1}${2}${3}${4}${5}${6}${7}",
-                (login ?? string.Empty).ToLowerInvariant(),
+                string.Empty, //login
                 tenant,
-                password,
+                string.Empty, //password
                 GetUserDepenencySalt(),
                 userid.ToString("N"),
                 indexTenant,
@@ -143,21 +140,6 @@ namespace ASC.Core.Security.Authentication
             }
             catch { }
             return Hasher.Base64Hash(data ?? string.Empty, HashAlg.SHA256);
-        }
-    }
-
-    public static class CookieStorageExtension
-    {
-        public static DIHelper AddCookieStorageService(this DIHelper services)
-        {
-            if (services.TryAddScoped<CookieStorage>())
-            {
-                return services
-                    .AddTenantCookieSettingsService()
-                    .AddInstanceCryptoService();
-            }
-
-            return services;
         }
     }
 }

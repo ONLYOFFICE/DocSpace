@@ -1,0 +1,18 @@
+{
+  "Owner": "Owner",
+  "SharingSettingsTitle": "Sharing settings",
+  "LinkText": "Add users",
+  "AddGroupsForSharingButton": "Add groups",
+  "AddButton": "Save",
+  "AccessRightsFullAccess": "Full access",
+  "AddShareMessage": "Add message",
+  "LinkCopySuccess": "Link has been copied to the clipboard",
+
+  "Notify users": "Notify users",
+  "CopyExternalLink": "Copy external link",
+  "CopyInternalLink": "Copy internal link",
+  "ShareVia": "Share via",
+  "Embedding": "Embedding",
+  "ExternalLink": "External link",
+  "InternalLink": "Internal link"
+}

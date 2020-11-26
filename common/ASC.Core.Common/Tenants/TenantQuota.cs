@@ -121,6 +121,12 @@ namespace ASC.Core.Tenants
             set { SetFeature("audit", value); }
         }
 
+        public bool DocsEdition
+        {
+            get { return GetFeature("docs"); }
+            set { SetFeature("docs", value); }
+        }
+
         public bool HasDomain
         {
             get { return GetFeature("domain"); }
@@ -151,6 +157,17 @@ namespace ASC.Core.Tenants
             set { SetFeature("sso", value); }
         }
 
+        public bool Branding
+        {
+            get { return GetFeature("branding"); }
+            set { SetFeature("branding", value); }
+        }
+
+        public bool SSBranding
+        {
+            get { return GetFeature("ssbranding"); }
+            set { SetFeature("ssbranding", value); }
+        }
 
         public bool WhiteLabel
         {
@@ -158,6 +175,23 @@ namespace ASC.Core.Tenants
             set { SetFeature("whitelabel", value); }
         }
 
+        public bool Customization
+        {
+            get { return GetFeature("customization"); }
+            set { SetFeature("customization", value); }
+        }
+
+        public bool DiscEncryption
+        {
+            get { return GetFeature("discencryption"); }
+            set { SetFeature("discencryption", value); }
+        }
+
+        public bool PrivacyRoom
+        {
+            get { return GetFeature("privacyroom"); }
+            set { SetFeature("privacyroom", value); }
+        }
         public int CountPortals
         {
             get

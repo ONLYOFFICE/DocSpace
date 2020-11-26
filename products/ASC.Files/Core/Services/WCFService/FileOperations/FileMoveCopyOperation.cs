@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 
+using ASC.Common;
 using ASC.Core.Tenants;
 using ASC.Files.Core;
 using ASC.Files.Core.Resources;
@@ -193,12 +194,19 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 {
                     Error = FilesCommonResource.ErrorMassage_SecurityException_ReadFolder;
                 }
+                else if (folder.RootFolderType == FolderType.Privacy
+                    && (copy || toFolder.RootFolderType != FolderType.Privacy))
+                {
+                    Error = FilesCommonResource.ErrorMassage_SecurityException_MoveFolder;
+                }
                 else if (!Equals((folder.ParentFolderID ?? default).ToString(), toFolderId.ToString()) || _resolveType == FileConflictResolveType.Duplicate)
                 {
                     try
                     {
                         //if destination folder contains folder with same name then merge folders
-                        var conflictFolder = folderDao.GetFolder(folder.Title, toFolderId);
+                        var conflictFolder = folder.RootFolderType == FolderType.Privacy
+                            ? null
+                            : folderDao.GetFolder(folder.Title, toFolderId);
                         Folder<TTo> newFolder;
 
                         if (copy || conflictFolder != null)
@@ -372,6 +380,11 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 {
                     Error = FilesCommonResource.ErrorMassage_SecurityException_ReadFile;
                 }
+                else if (file.RootFolderType == FolderType.Privacy
+                    && (copy || toFolder.RootFolderType != FolderType.Privacy))
+                {
+                    Error = FilesCommonResource.ErrorMassage_SecurityException_MoveFile;
+                }
                 else if (global.EnableUploadFilter
                          && !fileUtility.ExtsUploadable.Contains(FileUtility.GetFileExtension(file.Title)))
                 {
@@ -383,6 +396,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                     try
                     {
                         var conflict = _resolveType == FileConflictResolveType.Duplicate
+                            || file.RootFolderType == FolderType.Privacy
                                            ? null
                                            : fileDao.GetFile(toFolderId, file.Title);
                         if (conflict == null)
@@ -572,6 +586,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         }
     }
 
+    [Scope]
     public class FileMoveCopyOperationScope
     {
         private FilesMessageService FilesMessageService { get; }

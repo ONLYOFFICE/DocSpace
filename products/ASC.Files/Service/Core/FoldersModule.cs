@@ -30,7 +30,6 @@ namespace ASC.Files.Service.Core
         private FilesLinkUtility FilesLinkUtility { get; }
         private FileSecurity FileSecurity { get; }
 
-        private IFileDao<int> FileDao { get; }
         private IFolderDao<int> FolderDao { get; }
 
         public FoldersModule(
@@ -45,7 +44,6 @@ namespace ASC.Files.Service.Core
             UserManager = userManager;
             FilesLinkUtility = filesLinkUtility;
             FileSecurity = fileSecurity;
-            FileDao = daoFactory.GetFileDao<int>();
             FolderDao = daoFactory.GetFolderDao<int>();
         }
 
@@ -80,12 +78,12 @@ namespace ASC.Files.Service.Core
 
         public override IEnumerable<int> GetTenantsWithFeeds(DateTime fromTime)
         {
-            return FolderDao.GetTenantsWithFeeds(fromTime);
+            return FolderDao.GetTenantsWithFeedsForFolders(fromTime);
         }
 
         public override IEnumerable<Tuple<Feed.Aggregator.Feed, object>> GetFeeds(FeedFilter filter)
         {
-            var folders = FolderDao.GetFeeds(filter.Tenant, filter.Time.From, filter.Time.To)
+            var folders = FolderDao.GetFeedsForFolders(filter.Tenant, filter.Time.From, filter.Time.To)
                         .Where(f => f.Item1.RootFolderType != FolderType.TRASH && f.Item1.RootFolderType != FolderType.BUNCH)
                         .ToList();
 

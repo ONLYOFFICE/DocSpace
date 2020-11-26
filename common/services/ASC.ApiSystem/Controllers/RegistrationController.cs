@@ -38,6 +38,7 @@ using ASC.Core.Billing;
 using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
+using ASC.Security.Cryptography;
 using ASC.Web.Core.Helpers;
 using ASC.Web.Core.Users;
 using ASC.Web.Core.Utility;
@@ -53,6 +54,7 @@ using Newtonsoft.Json.Linq;
 
 namespace ASC.ApiSystem.Controllers
 {
+    [Scope]
     [Obsolete("Registration is deprecated, please use PortalController or TariffController instead.")]
     [ApiController]
     [Route("[controller]")]
@@ -72,6 +74,7 @@ namespace ASC.ApiSystem.Controllers
         private UserFormatter UserFormatter { get; }
         private UserManagerWrapper UserManagerWrapper { get; }
         private IConfiguration Configuration { get; }
+        public PasswordHasher PasswordHasher { get; }
         private ILog Log { get; }
 
         public RegistrationController(
@@ -89,7 +92,8 @@ namespace ASC.ApiSystem.Controllers
             UserFormatter userFormatter,
             UserManagerWrapper userManagerWrapper,
             IConfiguration configuration,
-            IOptionsMonitor<ILog> option)
+            IOptionsMonitor<ILog> option,
+            PasswordHasher passwordHasher)
         {
             CommonMethods = commonMethods;
             CommonConstants = commonConstants;
@@ -105,6 +109,7 @@ namespace ASC.ApiSystem.Controllers
             UserFormatter = userFormatter;
             UserManagerWrapper = userManagerWrapper;
             Configuration = configuration;
+            PasswordHasher = passwordHasher;
             Log = option.Get("ASC.ApiSystem");
         }
 
@@ -155,7 +160,7 @@ namespace ASC.ApiSystem.Controllers
 
             object error;
 
-            if (!string.IsNullOrEmpty(model.Password))
+            if (string.IsNullOrEmpty(model.PasswordHash) && !string.IsNullOrEmpty(model.Password))
             {
                 if (!CheckPasswordPolicy(model.Password, out error))
                 {
@@ -163,6 +168,7 @@ namespace ASC.ApiSystem.Controllers
 
                     return BadRequest(error);
                 }
+                model.PasswordHash = PasswordHasher.GetClientPassword(model.Password);
             }
 
             if (!CheckValidName(model.FirstName.Trim() + model.LastName.Trim(), out error))
@@ -262,19 +268,20 @@ namespace ASC.ApiSystem.Controllers
                 Culture = lang,
                 FirstName = model.FirstName.Trim(),
                 LastName = model.LastName.Trim(),
-                Password = string.IsNullOrEmpty(model.Password) ? null : model.Password,
+                PasswordHash = string.IsNullOrEmpty(model.PasswordHash) ? null : model.PasswordHash,
                 Email = model.Email.Trim(),
                 TimeZoneInfo = tz,
                 MobilePhone = string.IsNullOrEmpty(model.Phone) ? null : model.Phone.Trim(),
                 Industry = (TenantIndustry)model.Industry,
                 Spam = model.Spam,
                 Calls = model.Calls,
-                Analytics = model.Analytics
+                Analytics = model.Analytics,
+                LimitedControlPanel = model.LimitedControlPanel
             };
 
             if (!string.IsNullOrEmpty(model.PartnerId))
             {
-                if (Guid.TryParse(model.PartnerId, out Guid guid))
+                if (Guid.TryParse(model.PartnerId, out var guid))
                 {
                     // valid guid
                     info.PartnerId = model.PartnerId;
@@ -322,7 +329,7 @@ namespace ASC.ApiSystem.Controllers
 
             string sendCongratulationsAddress = null;
 
-            if (!string.IsNullOrEmpty(model.Password))
+            if (!string.IsNullOrEmpty(model.PasswordHash))
             {
                 isFirst = !CommonMethods.SendCongratulations(Request.Scheme, t, model.SkipWelcome, out sendCongratulationsAddress);
             }
@@ -777,25 +784,5 @@ namespace ASC.ApiSystem.Controllers
         }
 
         #endregion
-    }
-
-    public static class RegistrationControllerExtention
-    {
-        public static DIHelper AddRegistrationController(this DIHelper services)
-        {
-            return services
-                .AddCommonMethods()
-                .AddTimeZonesProvider()
-                .AddCommonConstants()
-                .AddUserManagerService()
-                .AddUserFormatter()
-                .AddCoreSettingsService()
-                .AddHostedSolutionService()
-                .AddApiSystemHelper()
-                .AddSettingsManagerService()
-                .AddTenantManagerService()
-                .AddSecurityContextService()
-                ;
-        }
     }
 }

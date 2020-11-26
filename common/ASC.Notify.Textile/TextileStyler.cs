@@ -48,6 +48,7 @@ using Textile.Blocks;
 
 namespace ASC.Notify.Textile
 {
+    [Scope]
     public class TextileStyler : IPatternStyler
     {
         private static readonly Regex VelocityArguments = new Regex(NVelocityPatternFormatter.NoStylePreffix + "(?<arg>.*?)" + NVelocityPatternFormatter.NoStyleSuffix, RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled);
@@ -242,7 +243,7 @@ namespace ASC.Notify.Textile
                     NotifyTemplateResource.FooterCommonV10
                                           .Replace("%SUPPORTURL%", MailWhiteLabelSettingsHelper.DefaultMailSupportUrl)
                                           .Replace("%SALESEMAIL%", MailWhiteLabelSettingsHelper.DefaultMailSalesEmail)
-                                          .Replace("%DEMOURL%", MailWhiteLabelSettingsHelper.DefaultMailDemotUrl);
+                                          .Replace("%DEMOURL%", MailWhiteLabelSettingsHelper.DefaultMailDemoUrl);
                 footerSocialContent = NotifyTemplateResource.SocialNetworksFooterV10;
 
             }
@@ -252,7 +253,7 @@ namespace ASC.Notify.Textile
                     NotifyTemplateResource.FooterCommonV10
                     .Replace("%SUPPORTURL%", string.IsNullOrEmpty(settings.SupportUrl) ? "mailto:" + settings.SalesEmail : settings.SupportUrl)
                     .Replace("%SALESEMAIL%", settings.SalesEmail)
-                    .Replace("%DEMOURL%", string.IsNullOrEmpty(settings.DemotUrl) ? "mailto:" + settings.SalesEmail : settings.DemotUrl);
+                    .Replace("%DEMOURL%", string.IsNullOrEmpty(settings.DemoUrl) ? "mailto:" + settings.SalesEmail : settings.DemoUrl);
                 footerSocialContent = settings.FooterSocialEnabled ? NotifyTemplateResource.SocialNetworksFooterV10 : string.Empty;
             }
         }
@@ -323,19 +324,6 @@ namespace ASC.Notify.Textile
                                  WebEncoders.Base64UrlEncode(
                                      InstanceCrypto.Encrypt(
                                          Encoding.UTF8.GetBytes(mail.ToLowerInvariant()))));
-        }
-    }
-
-    public static class TextileStylerExtension
-    {
-        public static DIHelper AddTextileStylerService(this DIHelper services)
-        {
-            if (services.TryAddScoped<TextileStyler>())
-            {
-                return services.AddStylerService();
-            }
-
-            return services;
         }
     }
 }

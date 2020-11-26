@@ -29,7 +29,9 @@ using System.Collections.Specialized;
 using System.Globalization;
 using System.IO;
 using System.Net;
+using System.Text;
 using System.Threading;
+using System.Web;
 
 using ASC.Common;
 using ASC.Common.Logging;
@@ -41,7 +43,6 @@ using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.MessagingSystem;
 using ASC.Web.Api.Models;
-using ASC.Web.Core;
 using ASC.Web.Core.PublicResources;
 using ASC.Web.Core.Users;
 using ASC.Web.Core.Utility.Settings;
@@ -55,24 +56,24 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Studio.UserControls.FirstTime
 {
+    [Transient]
     public class FirstTimeTenantSettings
     {
-        public ILog Log { get; }
-        public IConfiguration Configuration { get; }
-        public TenantManager TenantManager { get; }
-        public CoreSettings CoreSettings { get; }
-        public TenantExtra TenantExtra { get; }
-        public SettingsManager SettingsManager { get; }
-        public UserManager UserManager { get; }
-        public SetupInfo SetupInfo { get; }
-        public SecurityContext SecurityContext { get; }
-        public CookiesManager CookiesManager { get; }
-        public UserManagerWrapper UserManagerWrapper { get; }
-        public PaymentManager PaymentManager { get; }
-        public MessageService MessageService { get; }
-        public LicenseReader LicenseReader { get; }
-        public StudioNotifyService StudioNotifyService { get; }
-        public TimeZoneConverter TimeZoneConverter { get; }
+        private ILog Log { get; }
+        private IConfiguration Configuration { get; }
+        private TenantManager TenantManager { get; }
+        private CoreSettings CoreSettings { get; }
+        private TenantExtra TenantExtra { get; }
+        private SettingsManager SettingsManager { get; }
+        private UserManager UserManager { get; }
+        private SetupInfo SetupInfo { get; }
+        private SecurityContext SecurityContext { get; }
+        private PaymentManager PaymentManager { get; }
+        private MessageService MessageService { get; }
+        private LicenseReader LicenseReader { get; }
+        private StudioNotifyService StudioNotifyService { get; }
+        private TimeZoneConverter TimeZoneConverter { get; }
+        public CoreBaseSettings CoreBaseSettings { get; }
 
         public FirstTimeTenantSettings(
             IOptionsMonitor<ILog> options,
@@ -84,13 +85,12 @@ namespace ASC.Web.Studio.UserControls.FirstTime
             UserManager userManager,
             SetupInfo setupInfo,
             SecurityContext securityContext,
-            CookiesManager cookiesManager,
-            UserManagerWrapper userManagerWrapper,
             PaymentManager paymentManager,
             MessageService messageService,
             LicenseReader licenseReader,
             StudioNotifyService studioNotifyService,
-            TimeZoneConverter timeZoneConverter)
+            TimeZoneConverter timeZoneConverter,
+            CoreBaseSettings coreBaseSettings)
         {
             Log = options.CurrentValue;
             Configuration = configuration;
@@ -101,20 +101,19 @@ namespace ASC.Web.Studio.UserControls.FirstTime
             UserManager = userManager;
             SetupInfo = setupInfo;
             SecurityContext = securityContext;
-            CookiesManager = cookiesManager;
-            UserManagerWrapper = userManagerWrapper;
             PaymentManager = paymentManager;
             MessageService = messageService;
             LicenseReader = licenseReader;
             StudioNotifyService = studioNotifyService;
             TimeZoneConverter = timeZoneConverter;
+            CoreBaseSettings = coreBaseSettings;
         }
 
         public WizardSettings SaveData(WizardModel wizardModel)
         {
             try
             {
-                var (email, pwd, lng, timeZone, promocode, amiid, analytics) = wizardModel;
+                var (email, passwordHash, lng, timeZone, promocode, amiid, analytics, subscribeFromSite) = wizardModel;
 
                 var tenant = TenantManager.GetCurrentTenant();
                 var settings = SettingsManager.Load<WizardSettings>();
@@ -145,8 +144,10 @@ namespace ASC.Web.Studio.UserControls.FirstTime
                     throw new Exception(Resource.EmailAndPasswordIncorrectEmail);
                 }
 
-                UserManagerWrapper.CheckPasswordPolicy(pwd);
-                SecurityContext.SetUserPassword(currentUser.ID, pwd);
+                if (string.IsNullOrEmpty(passwordHash))
+                    throw new Exception(Resource.ErrorPasswordEmpty);
+
+                SecurityContext.SetUserPasswordHash(currentUser.ID, passwordHash);
 
                 email = email.Trim();
                 if (currentUser.Email != email)
@@ -191,7 +192,14 @@ namespace ASC.Web.Studio.UserControls.FirstTime
                 TenantManager.SaveTenant(tenant);
 
                 StudioNotifyService.SendCongratulations(currentUser);
+                StudioNotifyService.SendRegData(currentUser);
+
                 SendInstallInfo(currentUser);
+
+                if (subscribeFromSite && TenantExtra.Opensource && !CoreBaseSettings.CustomMode)
+                {
+                    SubscribeFromSite(currentUser);
+                }
 
                 return settings;
             }
@@ -272,6 +280,8 @@ namespace ASC.Web.Studio.UserControls.FirstTime
         {
             try
             {
+                StudioNotifyService.SendRegData(user);
+
                 var url = Configuration["web:install-url"];
                 if (string.IsNullOrEmpty(url)) return;
 
@@ -303,35 +313,49 @@ namespace ASC.Web.Studio.UserControls.FirstTime
             }
         }
 
+        private void SubscribeFromSite(UserInfo user)
+        {
+            try
+            {
+                var url = (SetupInfo.TeamlabSiteRedirect ?? "").Trim().TrimEnd('/');
+                if (string.IsNullOrEmpty(url)) return;
+
+                url += "/post.ashx";
+
+                var request = (HttpWebRequest)WebRequest.Create(url);
+                request.Method = "POST";
+                request.ContentType = "application/x-www-form-urlencoded";
+                request.Timeout = 10000;
+
+                var bodyString = string.Format("type=sendsubscription&email={0}", HttpUtility.UrlEncode(user.Email));
+                var bytes = Encoding.UTF8.GetBytes(bodyString);
+                request.ContentLength = bytes.Length;
+                using (var stream = request.GetRequestStream())
+                {
+                    stream.Write(bytes, 0, bytes.Length);
+                }
+
+                using (var response = request.GetResponse())
+                using (var stream = response.GetResponseStream())
+                {
+                    if (stream == null) throw new Exception("Response is null");
+
+                    using var reader = new StreamReader(stream);
+                    Log.Debug("Subscribe response: " + reader.ReadToEnd());
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Error("Subscribe request", e);
+            }
+        }
+
         private class MailQuery
         {
             public string Email { get; set; }
             public string Version { get; set; }
             public string Id { get; set; }
             public string Alias { get; set; }
-        }
-    }
-
-    public static class FirstTimeTenantSettingsExtension
-    {
-        public static DIHelper AddFirstTimeTenantSettings(this DIHelper services)
-        {
-            services.TryAddTransient<FirstTimeTenantSettings>();
-
-            return services
-                .AddTenantManagerService()
-                .AddCoreConfigurationService()
-                .AddCoreSettingsService()
-                .AddTenantExtraService()
-                .AddSettingsManagerService()
-                .AddSetupInfo()
-                .AddSecurityContextService()
-                .AddCookiesManagerService()
-                .AddUserManagerWrapperService()
-                .AddPaymentManagerService()
-                .AddMessageServiceService()
-                .AddLicenseReaderService()
-                .AddStudioNotifyServiceService();
         }
     }
 }

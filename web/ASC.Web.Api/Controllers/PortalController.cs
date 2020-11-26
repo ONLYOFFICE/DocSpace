@@ -8,14 +8,17 @@ using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Billing;
+using ASC.Core.Common.Notify.Push;
+using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
-using ASC.MessagingSystem;
-using ASC.Security.Cryptography;
+using ASC.Web.Api.Models;
 using ASC.Web.Api.Routing;
 using ASC.Web.Core;
+using ASC.Web.Core.Mobile;
 using ASC.Web.Core.Utility;
-using ASC.Web.Studio.Core.Notify;
+using ASC.Web.Studio.Core;
+using ASC.Web.Studio.UserControls.Management;
 using ASC.Web.Studio.Utility;
 
 using Microsoft.AspNetCore.Mvc;
@@ -26,12 +29,13 @@ using SecurityContext = ASC.Core.SecurityContext;
 
 namespace ASC.Web.Api.Controllers
 {
+    [Scope]
     [DefaultRoute]
     [ApiController]
     public class PortalController : ControllerBase
     {
 
-        public Tenant Tenant { get { return ApiContext.Tenant; } }
+        private Tenant Tenant { get { return ApiContext.Tenant; } }
 
         private ApiContext ApiContext { get; }
         private UserManager UserManager { get; }
@@ -42,7 +46,10 @@ namespace ASC.Web.Api.Controllers
         private AuthContext AuthContext { get; }
         private WebItemSecurity WebItemSecurity { get; }
         private SecurityContext SecurityContext { get; }
+        private SettingsManager SettingsManager { get; }
+        private IMobileAppInstallRegistrator MobileAppInstallRegistrator { get; }
         private IConfiguration Configuration { get; set; }
+        private TenantExtra TenantExtra { get; set; }
         public ILog Log { get; }
 
 
@@ -57,6 +64,9 @@ namespace ASC.Web.Api.Controllers
             AuthContext authContext,
             WebItemSecurity webItemSecurity,
             SecurityContext securityContext,
+            SettingsManager settingsManager,
+            IMobileAppInstallRegistrator mobileAppInstallRegistrator,
+            TenantExtra tenantExtra,
             IConfiguration configuration
             )
         {
@@ -70,7 +80,10 @@ namespace ASC.Web.Api.Controllers
             AuthContext = authContext;
             WebItemSecurity = webItemSecurity;
             SecurityContext = securityContext;
+            SettingsManager = settingsManager;
+            MobileAppInstallRegistrator = mobileAppInstallRegistrator;
             Configuration = configuration;
+            TenantExtra = tenantExtra;
         }
 
         [Read("")]
@@ -86,7 +99,7 @@ namespace ASC.Web.Api.Controllers
         }
 
         [Read("users/invite/{employeeType}")]
-        public string GeInviteLink(EmployeeType employeeType)
+        public object GeInviteLink(EmployeeType employeeType)
         {
             if (!WebItemSecurity.IsProductAdministrator(WebItemManager.PeopleProductID, AuthContext.CurrentAccount.ID))
             {
@@ -98,7 +111,7 @@ namespace ASC.Web.Api.Controllers
         }
 
         [Update("getshortenlink")]
-        public string GetShortenLink(string link)
+        public object GetShortenLink(string link)
         {
             try
             {
@@ -109,6 +122,20 @@ namespace ASC.Web.Api.Controllers
                 Log.Error("getshortenlink", ex);
                 return link;
             }
+        }
+
+        [Read("tenantextra")]
+        public object GetTenantExtra()
+        {
+            return new
+            {
+                opensource = TenantExtra.Opensource,
+                enterprise = TenantExtra.Enterprise,
+                tariff = TenantExtra.GetCurrentTariff(),
+                quota = TenantExtra.GetTenantQuota(),
+                notPaid = TenantExtra.IsNotPaid(),
+                licenseAccept = SettingsManager.LoadForCurrentUser<TariffSettings>().LicenseAcceptSetting
+            };
         }
 
 
@@ -155,7 +182,7 @@ namespace ASC.Web.Api.Controllers
 
 
         [Read("path")]
-        public string GetFullAbsolutePath(string virtualPath)
+        public object GetFullAbsolutePath(string virtualPath)
         {
             return CommonLinkUtility.GetFullAbsolutePath(virtualPath);
         }
@@ -176,27 +203,42 @@ namespace ASC.Web.Api.Controllers
             var type = wc.ResponseHeaders["Content-Type"] ?? "image/png";
             return File(bytes, type);
         }
-    }
 
-    public static class PortalControllerExtension
-    {
-        public static DIHelper AddPortalController(this DIHelper services)
+        [Create("present/mark")]
+        public void MarkPresentAsReaded()
         {
-            return services
-                .AddUrlShortener()
-                .AddMessageServiceService()
-                .AddStudioNotifyServiceService()
-                .AddApiContextService()
-                .AddUserManagerService()
-                .AddAuthContextService()
-                .AddAuthContextService()
-                .AddTenantManagerService()
-                .AddEmailValidationKeyProviderService()
-                .AddPaymentManagerService()
-                .AddCommonLinkUtilityService()
-                .AddAuthContextService()
-                .AddWebItemSecurity()
-                .AddSecurityContextService();
+            try
+            {
+                var settings = SettingsManager.LoadForCurrentUser<OpensourcePresentSettings>();
+                settings.Readed = true;
+                SettingsManager.SaveForCurrentUser(settings);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("MarkPresentAsReaded", ex);
+            }
+        }
+
+        [Create("mobile/registration")]
+        public void RegisterMobileAppInstallFromBody([FromBody]MobileAppModel model)
+        {
+            var currentUser = UserManager.GetUsers(SecurityContext.CurrentAccount.ID);
+            MobileAppInstallRegistrator.RegisterInstall(currentUser.Email, model.Type);
+        }
+
+        [Create("mobile/registration")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public void RegisterMobileAppInstallFromForm([FromForm]MobileAppModel model)
+        {
+            var currentUser = UserManager.GetUsers(SecurityContext.CurrentAccount.ID);
+            MobileAppInstallRegistrator.RegisterInstall(currentUser.Email, model.Type);
+        }
+
+        [Create("mobile/registration")]
+        public void RegisterMobileAppInstall(MobileAppType type)
+        {
+            var currentUser = UserManager.GetUsers(SecurityContext.CurrentAccount.ID);
+            MobileAppInstallRegistrator.RegisterInstall(currentUser.Email, type);
         }
     }
 }

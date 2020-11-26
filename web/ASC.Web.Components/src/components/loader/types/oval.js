@@ -1,5 +1,6 @@
 import React from "react";
 
+// eslint-disable-next-line react/prop-types
 export const Oval = ({ size, color, label }) => (
   <svg
     width={size}

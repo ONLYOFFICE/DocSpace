@@ -6,13 +6,18 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Common.Logging
 {
+    [Scope]
     public class EFLoggerFactory : ILoggerFactory
     {
+        Dictionary<string, ILogger> Loggers { get; set; }
+        Lazy<ILogger> Logger { get; set; }
         ILoggerProvider LoggerProvider { get; set; }
 
         public EFLoggerFactory(EFLoggerProvider loggerProvider)
         {
             LoggerProvider = loggerProvider;
+            Loggers = new Dictionary<string, ILogger>();
+            Logger = new Lazy<ILogger>(() => LoggerProvider.CreateLogger(""));
         }
 
         public void AddProvider(ILoggerProvider provider)
@@ -22,7 +27,7 @@ namespace ASC.Common.Logging
 
         public ILogger CreateLogger(string categoryName)
         {
-            return LoggerProvider.CreateLogger(categoryName);
+            return Logger.Value;
         }
 
         public void Dispose()
@@ -30,6 +35,7 @@ namespace ASC.Common.Logging
         }
     }
 
+    [Scope]
     public class EFLoggerProvider : ILoggerProvider
     {
         private IOptionsMonitor<ILog> Option { get; }
@@ -57,19 +63,22 @@ namespace ASC.Common.Logging
         }
 
         public IDisposable BeginScope<TState>(TState state) { return null; }
-        public bool IsEnabled(LogLevel logLevel) => logLevel switch
+        public bool IsEnabled(LogLevel logLevel)
         {
-            LogLevel.Trace => CustomLogger.IsTraceEnabled,
-            LogLevel.Information => CustomLogger.IsInfoEnabled,
-            LogLevel.None => false,
+            return logLevel switch
+            {
+                LogLevel.Trace => CustomLogger.IsTraceEnabled,
+                LogLevel.Information => CustomLogger.IsInfoEnabled,
+                LogLevel.None => false,
 
-            LogLevel.Debug => CustomLogger.IsDebugEnabled,
-            LogLevel.Warning => CustomLogger.IsWarnEnabled,
-            LogLevel.Error => CustomLogger.IsErrorEnabled,
-            LogLevel.Critical => CustomLogger.IsErrorEnabled,
+                LogLevel.Debug => CustomLogger.IsDebugEnabled,
+                LogLevel.Warning => CustomLogger.IsWarnEnabled,
+                LogLevel.Error => CustomLogger.IsErrorEnabled,
+                LogLevel.Critical => CustomLogger.IsErrorEnabled,
 
-            _ => true,
-        };
+                _ => true,
+            };
+        }
 
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
         {
@@ -99,7 +108,8 @@ namespace ASC.Common.Logging
                             new KeyValuePair<string, object>("sqlParams", parameters ?? "")
                         );
                     }
-                    string GetParam(KeyValuePair<string, object> keyValuePair, string key, string currentVal)
+
+                    static string GetParam(KeyValuePair<string, object> keyValuePair, string key, string currentVal)
                     {
                         return keyValuePair.Key == key ? keyValuePair.Value.ToString() : currentVal;
                     }
@@ -112,19 +122,6 @@ namespace ASC.Common.Logging
             return !string.IsNullOrEmpty(str) ?
                 str.Replace(Environment.NewLine, " ").Replace("\n", "").Replace("\r", "").Replace("\t", " ") :
                 string.Empty;
-        }
-    }
-
-    public static class LoggerExtension
-    {
-        public static DIHelper AddLoggerService(this DIHelper services)
-        {
-            if (services.TryAddScoped<EFLoggerFactory>())
-            {
-                services.TryAddScoped<EFLoggerProvider>();
-            }
-
-            return services;
         }
     }
 }

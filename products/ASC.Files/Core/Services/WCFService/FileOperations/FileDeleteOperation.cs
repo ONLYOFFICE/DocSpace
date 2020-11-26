@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
+using ASC.Common;
 using ASC.Core.Tenants;
 using ASC.Files.Core;
 using ASC.Files.Core.Resources;
@@ -120,7 +121,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             DeleteFiles(Files, scope);
             DeleteFolders(Folders, scope);
         }
-        
+
         private void DeleteFolders(IEnumerable<T> folderIds, IServiceScope scope)
         {
             var scopeClass = scope.ServiceProvider.GetService<FileDeleteOperationScope>();
@@ -276,6 +277,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         }
     }
 
+    [Scope]
     public class FileDeleteOperationScope
     {
         private FileMarker FileMarker { get; }
