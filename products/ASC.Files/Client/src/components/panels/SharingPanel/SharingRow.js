@@ -89,7 +89,7 @@ const SharingRow = (props) => {
     </>
   );
 
-  const embeddedComponentRender = () => (
+  const embeddedComponentRender = (accessOptions, item, isDisabled) => (
     <ComboBox
       advancedOptions={advancedOptionsRender()}
       options={[]}
@@ -99,7 +99,7 @@ const SharingRow = (props) => {
       scaled={false}
       directionX="left"
       disableIconClick={false}
-      //isDisabled={isDisabled}
+      isDisabled={isDisabled}
     >
       {React.createElement(Icons[item.rights.icon], {
         size: "medium",
@@ -235,11 +235,11 @@ const SharingRow = (props) => {
             data={externalLinkData}
             embeddedComponentRender={embeddedComponentRender}
             onChangeToggle={onChangeToggle}
+            withToggle={true}
             {...props}
           />
           <LinkRow
             linkText="InternalLink"
-            type="internal"
             data={internalLinkData}
             embeddedComponentRender={embeddedComponentRender}
             {...props}

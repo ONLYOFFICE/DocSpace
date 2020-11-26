@@ -27,31 +27,33 @@ class LinkRow extends React.Component {
       embeddedComponentRender,
       accessOptions,
       item,
-      type,
+      withToggle,
     } = this.props;
 
     const { isChecked } = this.state;
+    const isDisabled = withToggle ? !isChecked : false;
 
     return (
-      <StyledLinkRow type={type}>
+      <StyledLinkRow withToggle={withToggle} isDisabled={isDisabled}>
         <Row
           className="link-row"
           key={`${linkText}-key_${index}`}
-          element={embeddedComponentRender(accessOptions, item)}
+          element={embeddedComponentRender(accessOptions, item, isDisabled)}
           contextButtonSpacerWidth="0px"
         >
           <>
             <LinkWithDropdown
               className="sharing_panel-link"
-              color="black"
+              color="#333333"
               dropdownType="alwaysDashed"
               data={data}
               fontSize="14px"
               fontWeight={600}
+              isDisabled={isDisabled}
             >
               {t(linkText)}
             </LinkWithDropdown>
-            {type !== "internal" && (
+            {withToggle && (
               <div>
                 <ToggleButton
                   isChecked={isChecked}

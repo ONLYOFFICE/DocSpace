@@ -368,8 +368,14 @@ const StyledLinkRow = styled.div`
   box-sizing: border-box;
   background-color: #f8f9f9;
 
+  .sharing-access-combo-box-icon {
+    path {
+      fill: ${(props) => (props.isDisabled ? "#D0D5DA" : "#a3a9ae")};
+    }
+  }
+
   .link-row {
-    ${(props) => props.type === "internal" && "border-bottom:none;"}
+    ${(props) => !props.withToggle && "border-bottom:none;"}
   }
   .row_content {
     display: grid;
