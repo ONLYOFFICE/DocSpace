@@ -1,6 +1,11 @@
 import { default as api } from "../../api";
 import { isDesktopClient } from "./selectors";
-import { checkPwd, regDesktop, logout as logoutDesktop } from "../../desktop/";
+import {
+  checkPwd,
+  regDesktop,
+  logout as logoutDesktop,
+  setEncryptionAccess,
+} from "../../desktop/";
 
 export const LOGIN_POST = "LOGIN_POST";
 export const SET_CURRENT_USER = "SET_CURRENT_USER";
@@ -258,31 +263,19 @@ export function getEncryptionKeys(dispatch) {
     .catch((err) => console.error(err));
 }
 
-// export function getEncryptionKeys() {
-//   return (dispatch) => {
-//     return api.files
-//       .getEncryptionKeys()
-//       .then((res) => {
-//         console.log(
-//           "%c%s",
-//           "color: green; font: 1.1em/1 bold;",
-//           "Fetching encryption keys...",
-//           res
-//         );
-//         dispatch(fetchEncryptionKeys(res ?? {}));
-//         console.log(
-//           "%c%s",
-//           "color: green; font: 1.1em/1 bold;",
-//           "Encryption keys has been received "
-//         );
-//       })
-//       .catch((err) => console.error(err));
-//   };
-// }
-
-export function getEncryptionAccess(fileId) {
+export function getEncryptionAccess(file) {
   return (dispatch) => {
-    return api.files.getEncryptionAccess(fileId);
+    return api.files
+      .getEncryptionAccess(file.id)
+      .then((keys) => {
+        return Promise.resolve(keys);
+        // setEncryptionAccess(file, keys, (file) => {
+        //   if (file) {
+        //     console.log("Saving encrypted file", file);
+        //   }
+        // });
+      })
+      .catch((err) => console.error(err));
   };
 }
 
