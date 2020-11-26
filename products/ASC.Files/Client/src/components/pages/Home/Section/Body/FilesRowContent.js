@@ -284,7 +284,8 @@ class FilesRowContent extends React.PureComponent {
     const date = fileExst ? updated : created;
     const dateLabel = new Date(date).toLocaleString(culture);
 
-    return `${title}: ${dateLabel}`;
+    return dateLabel;
+    //return `${title}: ${dateLabel}`;
   };
 
   getDefaultName = (format) => {
