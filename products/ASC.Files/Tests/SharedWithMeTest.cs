@@ -1,10 +1,12 @@
-﻿using ASC.Api.Documents;
+﻿using System;
+using System.Collections.Generic;
+
+using ASC.Api.Documents;
 using ASC.Core;
 using ASC.Web.Api.Models;
 using ASC.Web.Files.Services.WCFService.FileOperations;
+
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
 
 namespace ASC.Files.Tests
 {
@@ -29,7 +31,7 @@ namespace ASC.Files.Tests
             TestFolder = FilesControllerHelper.CreateFolder(GlobalFolderHelper.FolderMy, "TestFolder");
             TestUser = new EmployeeWraperFull { Id = Guid.NewGuid(), Email = "test@mail.com", FirstName = "Test", LastName = "Test", IsAdmin = true };
             //Guid OwnerId = Guid.Parse("005bb3ff-7de3-47d2-9b3d-61b9ec8a76a5");
-            TestFolderParam = new FileShareParams { Access = Core.Security.FileShare.Read, ShareTo = TestUser.Id };
+            //TestFolderParam = new FileShareParams { Access = Core.Security.FileShare.Read, ShareTo = TestUser.Id };
 
             var TestFolderShare = (FolderWrapper<int>)FilesControllerHelper.SetFolderSecurityInfo(TestFolder.Id, TestFolderParam, true, "test");
         }

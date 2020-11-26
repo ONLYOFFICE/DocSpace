@@ -2,6 +2,7 @@
 using ASC.Files.Core;
 using ASC.Files.Tests.Infrastructure;
 using ASC.Web.Files.Services.WCFService.FileOperations;
+
 using NUnit.Framework;
 
 namespace ASC.Files.Tests
@@ -21,7 +22,7 @@ namespace ASC.Files.Tests
             base.SetUp();
             TestFolder = FilesControllerHelper.CreateFolder(GlobalFolderHelper.FolderMy, "TestFolder");
 
-            //TestFile = FilesControllerHelper.CreateFile(GlobalFolderHelper.FolderMy, "TestFile");
+            TestFile = FilesControllerHelper.CreateFile(GlobalFolderHelper.FolderMy, "TestFile", default);
 
         }
 
@@ -98,7 +99,7 @@ namespace ASC.Files.Tests
         [Category("section 'My Documents'")]
         public void CreateFileReturnsFileWrapperTest(string fileTitle)
         {
-            var fileWrapper = FilesControllerHelper.CreateFile(GlobalFolderHelper.FolderMy, fileTitle);
+            var fileWrapper = FilesControllerHelper.CreateFile(GlobalFolderHelper.FolderMy, fileTitle, default);
             
             Assert.IsNotNull(fileWrapper);
             Assert.AreEqual(fileTitle + ".docx", fileWrapper.Title);

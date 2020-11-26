@@ -1,9 +1,12 @@
-﻿using ASC.Common.Security.Authentication;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text.Json;
+
+using ASC.Common.Security.Authentication;
 using ASC.Core;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
-using ASC.Files.Core;
-using ASC.Files.Core.Data;
 using ASC.Files.Helpers;
 using ASC.Files.Model;
 using ASC.Files.Tests.Infrastructure;
@@ -15,10 +18,6 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text.Json;
 
 namespace ASC.Files.Tests
 {
@@ -37,18 +36,7 @@ namespace ASC.Files.Tests
 
         public virtual void SetUp()
         {
-            TestServer = new TestServer(new WebHostBuilder()
-                .UseStartup<Startup>()
-                .ConfigureServices(service =>
-                {
-                    service.Configure<UserOptions>(Configuration.GetSection(UserOptions.User));
-                })
-                .ConfigureAppConfiguration((hostingContext, config) =>
-                {
-                    Configure(hostingContext, config);
-                }));
-
-            var scope = TestServer.Services.CreateScope();
+            var scope = Program.CreateHostBuilder(new string[] { "--pathToConf" ,"..\\..\\..\\..\\..\\..\\config" }).Build().Services.CreateScope();
 
             var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
             var tenant = tenantManager.GetTenant(1);
@@ -114,7 +102,7 @@ namespace ASC.Files.Tests
 
         public virtual void TearDown()
         {
-            TestServer.Dispose();
+            //TestServer.Dispose();
         }
     }
 }
