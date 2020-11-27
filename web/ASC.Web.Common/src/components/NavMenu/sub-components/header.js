@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import NavItem from "./nav-item";
 import Headline from "../../Headline";
 import Nav from "./nav";
@@ -32,8 +32,7 @@ const Header = styled.header`
   height: 56px;
 
   @media ${tablet} {
-    position: fixed;
-    z-index: 160;
+    position: inherit;
 
     transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
     -moz-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
@@ -96,9 +95,11 @@ const HeaderComponent = ({
   isNavOpened,
   currentProductId,
   toggleAside,
+  isLoaded,
+  isAuthenticated,
   ...props
 }) => {
-  //console.log("Header render");
+  console.log("Header render", isLoaded);
 
   const isNavAvailable = mainModules.length > 0;
   const onLogoClick = () => {
@@ -118,7 +119,12 @@ const HeaderComponent = ({
     <>
       <LayoutContextConsumer>
         {(value) => (
-          <Header module={currentProductName} valueTop={value.isVisible}>
+          <Header
+            module={currentProductName}
+            valueTop={value.isVisible}
+            isLoaded={isLoaded}
+            isAuthenticated={isAuthenticated}
+          >
             <NavItem
               iconName="MenuIcon"
               badgeNumber={totalNotifications}
