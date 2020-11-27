@@ -469,6 +469,7 @@ const LoginForm = (props) => {
               <FormWrapper i18n={i18n} {...props} />
             </PageLayout.SectionBody>
           </PageLayout>
+          <Register />
         </>
       )}
     </>
