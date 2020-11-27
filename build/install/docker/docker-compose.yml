@@ -27,11 +27,9 @@ x-service:
 
 services: 
   onlyoffice-elasticsearch:
-    build:
-      args:
-         ELK_VERSION: ${ELK_VERSION:-latest}
-      context: elk/elasticsearch/
+    image: docker.elastic.co/elasticsearch/elasticsearch:${ELK_VERSION}
     container_name: elasticsearch
+    restart: always
     environment:
       - node.name=elasticsearch
       - discovery.type=single-node
@@ -86,56 +84,56 @@ services:
   onlyoffice-api:
     <<: *x-service-base
     image: "${REPO:-onlyoffice}/${STATUS:-}appserver-api:${TAG_SRV:-latest}"
-    container_name: onlyoffice-api
+    container_name: ${CONTAINER_PRIFIX:-onlyoffice}-api
 
   onlyoffice-api_system:
     <<: *x-service-base
     image: "${REPO:-onlyoffice}/${STATUS:-}appserver-api_system:${TAG_SRV:-latest}"
-    container_name: onlyoffice-api_system
+    container_name: ${CONTAINER_PRIFIX:-onlyoffice}-api_system
      
   onlyoffice-urlshortener:
     <<: *x-service-base
     image: "${REPO:-onlyoffice}/${STATUS:-}appserver-urlshortener:${TAG_SRV:-latest}"
-    container_name: onlyoffice-urlshortener
+    container_name: ${CONTAINER_PRIFIX:-onlyoffice}-urlshortener
    
   onlyoffice-studio.notify:
     <<: *x-service-base
     image: "${REPO:-onlyoffice}/${STATUS:-}appserver-studio.notify:${TAG_SRV:-latest}"
-    container_name: onlyoffice-studio.notify
+    container_name: ${CONTAINER_PRIFIX:-onlyoffice}-studio.notify
     
   onlyoffice-notify:
     <<: *x-service-base
     image: "${REPO:-onlyoffice}/${STATUS:-}appserver-notify:${TAG_SRV:-latest}"
-    container_name: onlyoffice-notify
+    container_name: ${CONTAINER_PRIFIX:-onlyoffice}-notify
 
   onlyoffice-people.server:
     <<: *x-service-base
     image: "${REPO:-onlyoffice}/${STATUS:-}appserver-people.server:${TAG_SRV:-latest}"
-    container_name: onlyoffice-people.server
+    container_name: ${CONTAINER_PRIFIX:-onlyoffice}-people.server
     
   onlyoffice-files:
     <<: *x-service-base
     image: "${REPO:-onlyoffice}/${STATUS:-}appserver-files:${TAG_SRV:-latest}"
-    container_name: onlyoffice-files
+    container_name: ${CONTAINER_PRIFIX:-onlyoffice}-files
     
   onlyoffice-files_services:
     <<: *x-service-base
     image: "${REPO:-onlyoffice}/${STATUS:-}appserver-files_services:${TAG_SRV:-latest}"
-    container_name: onlyoffice-files_services
+    container_name: ${CONTAINER_PRIFIX:-onlyoffice}-files_services
     
   onlyoffice-studio:
     <<: *x-service-base
     image: "${REPO:-onlyoffice}/${STATUS:-}appserver-studio:${TAG_SRV:-latest}"
-    container_name: onlyoffice-studio
+    container_name: ${CONTAINER_PRIFIX:-onlyoffice}-studio
    
   onlyoffice-backup:
     <<: *x-service-base
     image: "${REPO:-onlyoffice}/${STATUS:-}appserver-backup:${TAG_SRV:-latest}"
-    container_name: onlyoffice-backup
+    container_name: ${CONTAINER_PRIFIX:-onlyoffice}-backup
     
   onlyoffice-nginx:
     image: "${REPO:-onlyoffice}/${STATUS:-}appserver-nginx:${TAG_SRV:-latest}"
-    container_name: ${NGINX_HOST:-nginx}
+    container_name: ${CONTAINER_PRIFIX:-onlyoffice}-${NGINX_HOST:-nginx}
     restart: always
     expose:
       - "8081"
@@ -154,24 +152,24 @@ services:
       - ${CONTAINER_PRIFIX:-onlyoffice}-studio
       - ${CONTAINER_PRIFIX:-onlyoffice}-backup
     environment:
-      - SERVICE_API="onlyoffice-api:${SERVICE_PORT:-5050}"
-      - SERVICE_API_SYSTEM="onlyoffice-api_system:${SERVICE_PORT:-5050}"
-      - SERVICE_URLSHORYENER="onlyoffice-urlshortener:${SERVICE_PORT:-5050}"
-      - SERVICE_STUDIO_NOTIFY="onlyoffice-studio.notify:${SERVICE_PORT:-5050}"
-      - SERVICE_PEOPLE_SERVER="onlyoffice-people.server:${SERVICE_PORT:-5050}"
-      - SERVICE_FILES="onlyoffice-files:${SERVICE_PORT:-5050}"
-      - SERVICE_FILES_SERVICES="onlyoffice-files_services:${SERVICE_PORT:-5050}"
-      - SERVICE_STUDIO="onlyoffice-studio:${SERVICE_PORT:-5050}"
-      - SERVICE_BACKUP="onlyoffice-backup:${SERVICE_PORT:-5050}"
-      - DOCUMENT_SERVER="onlyoffice-document-server"
+      - SERVICE_API="${CONTAINER_PRIFIX:-onlyoffice}-api:${SERVICE_PORT:-5050}"
+      - SERVICE_API_SYSTEM="${CONTAINER_PRIFIX:-onlyoffice}-api_system:${SERVICE_PORT:-5050}"
+      - SERVICE_URLSHORYENER="${CONTAINER_PRIFIX:-onlyoffice}-urlshortener:${SERVICE_PORT:-5050}"
+      - SERVICE_STUDIO_NOTIFY="${CONTAINER_PRIFIX:-onlyoffice}-studio.notify:${SERVICE_PORT:-5050}"
+      - SERVICE_PEOPLE_SERVER="${CONTAINER_PRIFIX:-onlyoffice}-people.server:${SERVICE_PORT:-5050}"
+      - SERVICE_FILES="${CONTAINER_PRIFIX:-onlyoffice}-files:${SERVICE_PORT:-5050}"
+      - SERVICE_FILES_SERVICES="${CONTAINER_PRIFIX:-onlyoffice}-files_services:${SERVICE_PORT:-5050}"
+      - SERVICE_STUDIO="${CONTAINER_PRIFIX:-onlyoffice}-studio:${SERVICE_PORT:-5050}"
+      - SERVICE_BACKUP="${CONTAINER_PRIFIX:-onlyoffice}-backup:${SERVICE_PORT:-5050}"
+      - DOCUMENT_SERVER="${CONTAINER_PRIFIX:-onlyoffice}-document-server"
       - SERVICE_PORT=${SERVICE_PORT:-5050}
     volumes:
       - nginx_log:/var/log/nginx
 
 networks:
-  onlyoffice:
-    name: ${NETWORK_NAME:-onlyoffice}
-    driver: 'bridge'
+  default:
+    external:
+      name: ${NETWORK_NAME:-onlyoffice}
 
 volumes:
   kafka_data:
