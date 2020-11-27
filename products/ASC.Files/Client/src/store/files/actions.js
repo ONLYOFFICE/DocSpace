@@ -1131,6 +1131,17 @@ export const onConvert = (t) => {
   };
 };
 
+const convertSplitItem = (item) => {
+  let splitItem = item.split("_");
+  const fileExst = splitItem[0];
+  splitItem.splice(0, 1);
+  if (splitItem[splitItem.length - 1] === "draggable") {
+    splitItem.splice(-1, 1);
+  }
+  splitItem = splitItem.join("_");
+  return [fileExst, splitItem];
+};
+
 export const setSelections = (items) => {
   return (dispatch, getState) => {
     const {
@@ -1148,15 +1159,11 @@ export const setSelections = (items) => {
       for (let item of items) {
         if (!item) break; // temporary fall protection selection tile
 
-        item = item.split("_");
+        item = convertSplitItem(item);
         if (item[0] === "folder") {
-          newFile = selection.find(
-            (x) => x.id === Number(item[1]) && !x.fileExst
-          );
+          newFile = selection.find((x) => x.id + "" === item[1] && !x.fileExst);
         } else if (item[0] === "file") {
-          newFile = selection.find(
-            (x) => x.id === Number(item[1]) && x.fileExst
-          );
+          newFile = selection.find((x) => x.id + "" === item[1] && x.fileExst);
         }
         if (newFile) {
           newSelection.push(newFile);
@@ -1177,21 +1184,11 @@ export const setSelections = (items) => {
         if (!item) break; // temporary fall protection selection tile
 
         let newFile = null;
-        item = item.split("_");
+        item = convertSplitItem(item);
         if (item[0] === "folder") {
-          item.splice(0, 1);
-          if (item[item.length - 1] === "draggable") {
-            item[item.length - 1] = "";
-          }
-          item = item.join("_");
-          newFile = folders.find((x) => x.id + "" === item && !x.fileExst);
+          newFile = folders.find((x) => x.id + "" === item[1] && !x.fileExst);
         } else if (item[0] === "file") {
-          item.splice(0, 1);
-          if (item[item.length - 1] === "draggable") {
-            item[item.length - 1] = "";
-          }
-          item = item.join("_");
-          newFile = files.find((x) => x.id + "" === item && x.fileExst);
+          newFile = files.find((x) => x.id + "" === item[1] && x.fileExst);
         }
         if (newFile && fileActionId !== newFile.id) {
           const existItem = selection.find(
@@ -1202,6 +1199,44 @@ export const setSelections = (items) => {
             selected !== "none" && dispatch(setSelected("none"));
           }
         }
+      }
+    } else if (selection.length === items.length && items.length === 1) {
+      const item = convertSplitItem(items[0]);
+
+      if (item[1] !== selection[0].id) {
+        let addFile = null;
+        let delFile = null;
+        const newSelection = [];
+        if (item[0] === "folder") {
+          delFile = selection.find((x) => x.id + "" === item[1] && !x.fileExst);
+          addFile = folders.find((x) => x.id + "" === item[1] && !x.fileExst);
+        } else if (item[0] === "file") {
+          delFile = selection.find((x) => x.id + "" === item[1] && x.fileExst);
+          addFile = files.find((x) => x.id + "" === item[1] && x.fileExst);
+        }
+
+        const existItem = selection.find(
+          (x) => x.id === addFile.id && x.fileExst === addFile.fileExst
+        );
+        if (!existItem) {
+          dispatch(selectFile(addFile));
+          selected !== "none" && dispatch(setSelected("none"));
+        }
+
+        if (delFile) {
+          newSelection.push(delFile);
+        }
+
+        for (let item of selection) {
+          const element = newSelection.find(
+            (x) => x.id === item.id && x.fileExst === item.fileExst
+          );
+          if (!element) {
+            dispatch(deselectFile(item));
+          }
+        }
+      } else {
+        return;
       }
     } else {
       return;
