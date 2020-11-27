@@ -10,7 +10,6 @@ import { connect } from "react-redux";
 import i18n from "../i18n";
 
 const StyledRegister = styled(Box)`
-  position: absolute;
   z-index: 184;
   width: 100%;
   height: 66px;
