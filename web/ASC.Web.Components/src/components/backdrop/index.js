@@ -37,8 +37,6 @@ class Backdrop extends React.Component {
   render() {
     const { backdropExist } = this.state;
 
-    console.log("backdropExist", backdropExist);
-
     return this.props.visible ? (
       <StyledBackdrop
         id="backdrop-component"

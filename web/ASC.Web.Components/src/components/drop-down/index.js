@@ -169,6 +169,11 @@ class DropDown extends React.PureComponent {
 
     const needBackdrop = withBackdrop || isTablet ? true : false;
 
+    const enabledChildren = React.Children.map(children, (child) => {
+      console.log("crash");
+      if (child && !child.props.disabled) return child;
+    });
+
     return (
       <>
         <Backdrop
@@ -197,7 +202,7 @@ class DropDown extends React.PureComponent {
               {Row}
             </VariableSizeList>
           ) : (
-            children
+            enabledChildren
           )}
         </StyledDropdown>
       </>
