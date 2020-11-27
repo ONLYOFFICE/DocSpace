@@ -125,6 +125,12 @@ const LoginContainer = styled.div`
   }
 `;
 
+const LoginFormWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+`;
+
 class Form extends Component {
   constructor(props) {
     super(props);
@@ -463,14 +469,14 @@ const LoginForm = (props) => {
   return (
     <>
       {isLoaded && (
-        <>
+        <LoginFormWrapper>
           <PageLayout>
             <PageLayout.SectionBody>
               <FormWrapper i18n={i18n} {...props} />
             </PageLayout.SectionBody>
           </PageLayout>
           <Register />
-        </>
+        </LoginFormWrapper>
       )}
     </>
   );
