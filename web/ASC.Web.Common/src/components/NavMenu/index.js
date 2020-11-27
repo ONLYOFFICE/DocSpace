@@ -5,29 +5,35 @@ import { Backdrop, Toast, Aside, utils } from "asc-web-components";
 import Header from "./sub-components/header";
 import HeaderNav from "./sub-components/header-nav";
 import HeaderUnAuth from "./sub-components/header-unauth";
-
 import { I18nextProvider, withTranslation } from "react-i18next";
 import i18n from "./i18n";
 import { connect } from "react-redux";
-
 import { withRouter } from "react-router";
-
 import { getLanguage } from "../../store/auth/selectors";
 import Loaders from "../Loaders";
 
 const backgroundColor = "#0F4071";
-const { size } = utils.device;
+const { tablet } = utils.device;
+
 const StyledContainer = styled.header`
   align-items: center;
   background-color: ${backgroundColor};
 
-  ${(props) =>
-    props.isTablet &&
-    !props.isLoaded &&
-    css`
-      margin-right: -16px; /* It is a opposite value of padding-right of custom scroll bar,
+  @media ${tablet} {
+    ${(props) =>
+      !props.isLoaded
+        ? css`
+            position: static;
+
+            margin-right: -16px; /* It is a opposite value of padding-right of custom scroll bar,
        so that there is no white bar in the header on loading. (padding-right: 16px)*/
-    `}
+          `
+        : css`
+            position: fixed;
+            z-index: 160;
+            width: 100%;
+          `}
+  }
 `;
 
 class NavMenu extends React.Component {
@@ -112,12 +118,10 @@ class NavMenu extends React.Component {
 
     const isAsideAvailable = !!asideContent;
 
-    const isTablet = window.innerWidth <= size.tablet;
-
     console.log("NavMenu render", this.state, this.props);
 
     return (
-      <StyledContainer isLoaded={isLoaded} isTablet={isTablet}>
+      <StyledContainer isLoaded={isLoaded}>
         <Toast />
 
         <Backdrop visible={isBackdropVisible} onClick={this.backdropClick} />

@@ -22,28 +22,16 @@ const Header = styled.header`
   padding: 0 32px;
 
   @media ${tablet} {
-    z-index: 160;
     transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
     -moz-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
     -ms-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
     -webkit-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
     -o-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
 
-    ${(props) =>
-      isSafari
-        ? props.isLoaded
-          ? css`
-              position: fixed;
-              top: ${(props) => (props.valueTop ? "0" : "-56px")};
-            `
-          : css`
-              margin-top: 2px;
-            `
-        : css`
-            position: fixed;
-            top: ${(props) => (props.valueTop ? "0" : "-56px")};
-          `};
+    position: inherit;
+    top: ${(props) => (props.valueTop ? "0" : "-56px")};
   }
+
   .header-items-wrapper {
     width: 960px;
 

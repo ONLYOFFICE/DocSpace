@@ -32,8 +32,7 @@ const Header = styled.header`
   height: 56px;
 
   @media ${tablet} {
-    position: fixed;
-    z-index: 160;
+    position: inherit;
 
     transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
     -moz-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);

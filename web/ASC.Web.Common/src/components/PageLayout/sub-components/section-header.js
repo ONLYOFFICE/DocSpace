@@ -3,7 +3,6 @@ import styled, { css } from "styled-components";
 import { utils } from "asc-web-components";
 import isEqual from "lodash/isEqual";
 import classnames from "classnames";
-import { isSafari } from "react-device-detect";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { LayoutContextConsumer } from "../../Layout/context";
@@ -23,19 +22,11 @@ const StyledSectionHeader = styled.div`
     border-bottom: none;
 
     ${(props) =>
-      isSafari
-        ? props.isLoaded
-          ? css`
-              position: absolute;
-              top: 56px;
-            `
-          : css`
-              position: none;
-            `
-        : css`
-            position: absolute;
-            top: 56px;
-          `};
+      props.isLoaded &&
+      css`
+        position: absolute;
+        top: 56px;
+      `}
 
     ${(props) =>
       props.borderBottom &&
@@ -44,6 +35,7 @@ const StyledSectionHeader = styled.div`
       padding-bottom: 16px
     `};
     height: 49px;
+    width: ${(props) => !props.isLoaded && "100%"};
   }
 
   .section-header {
@@ -51,31 +43,19 @@ const StyledSectionHeader = styled.div`
 
     @media ${tablet} {
       max-width: calc(100vw - 32px);
-      width: ${(props) =>
-        props.isArticlePinned ? `calc(100% - 272px)` : "100%"};
-
-      background-color: #fff;
-
-      ${(props) =>
-        isSafari
-          ? props.isLoaded
-            ? css`
-                position: fixed;
-                top: ${(props) => (!props.isHeaderVisible ? "56px" : "0")};
-              `
-            : css`
-                margin-top: 2px;
-              `
-          : css`
-              position: fixed;
-              top: ${(props) => (!props.isHeaderVisible ? "56px" : "0")};
-            `};
-
-      z-index: 155;
-
-      padding-right: 16px;
-
+      width: 100%;
       padding-top: 4px;
+      ${(props) =>
+        props.isLoaded &&
+        css`
+          position: fixed;
+          top: ${(props) => (!props.isHeaderVisible ? "56px" : "0")};
+          width: ${(props) =>
+            props.isArticlePinned ? `calc(100% - 272px)` : "100%"};
+          background-color: #fff;
+          z-index: 155;
+          padding-right: 16px;
+        `}
     }
 
     h1,
@@ -142,7 +122,6 @@ class SectionHeader extends React.Component {
         borderBottom={borderBottom}
         isLoaded={isLoaded}
       >
-        {console.log("isLoaded", isLoaded)}
         <LayoutContextConsumer>
           {(value) => (
             <div
