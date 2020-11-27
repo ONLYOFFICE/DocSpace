@@ -102,13 +102,9 @@ const MainContainer = styled.div`
 `;
 
 const MainIcons = styled.div`
+  height: 19px;
   align-self: center;
   white-space: nowrap;
-
-  height: 18px;
-  @media ${tablet} {
-    height: 20px;
-  }
 `;
 
 const SideContainerWrapper = styled.div`
