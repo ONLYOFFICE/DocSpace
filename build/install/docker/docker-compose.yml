@@ -141,16 +141,16 @@ services:
     ports:
       - 8092:8092 
     depends_on:
-      - ${CONTAINER_PRIFIX:-onlyoffice}-api
-      - ${CONTAINER_PRIFIX:-onlyoffice}-api_system
-      - ${CONTAINER_PRIFIX:-onlyoffice}-urlshortener
-      - ${CONTAINER_PRIFIX:-onlyoffice}-studio.notify
-      - ${CONTAINER_PRIFIX:-onlyoffice}-notify
-      - ${CONTAINER_PRIFIX:-onlyoffice}-people.server
-      - ${CONTAINER_PRIFIX:-onlyoffice}-files
-      - ${CONTAINER_PRIFIX:-onlyoffice}-files_services
-      - ${CONTAINER_PRIFIX:-onlyoffice}-studio
-      - ${CONTAINER_PRIFIX:-onlyoffice}-backup
+      - onlyoffice-api
+      - onlyoffice-api_system
+      - onlyoffice-urlshortener
+      - onlyoffice-studio.notify
+      - onlyoffice-notify
+      - onlyoffice-people.server
+      - onlyoffice-files
+      - onlyoffice-files_services
+      - onlyoffice-studio
+      - onlyoffice-backup
     environment:
       - SERVICE_API="${CONTAINER_PRIFIX:-onlyoffice}-api:${SERVICE_PORT:-5050}"
       - SERVICE_API_SYSTEM="${CONTAINER_PRIFIX:-onlyoffice}-api_system:${SERVICE_PORT:-5050}"
