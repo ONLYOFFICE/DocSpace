@@ -15,6 +15,7 @@ import {
   Main,
   utils,
   toastr,
+  Register,
 } from "asc-web-common";
 import Home from "./components/pages/Home";
 
@@ -94,6 +95,7 @@ class App extends React.Component {
             </Switch>
           </Suspense>
         </Main>
+        <Register />
       </Router>
     ) : (
       <Offline />
