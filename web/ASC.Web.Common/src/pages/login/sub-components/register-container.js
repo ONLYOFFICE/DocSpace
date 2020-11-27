@@ -104,6 +104,12 @@ const RegisterWrapper = (props) => {
   );
 };
 
+RegisterWrapper.propTypes = {
+  language: PropTypes.string,
+  isAuthenticated: PropTypes.bool,
+  enabledJoin: PropTypes.bool,
+};
+
 function mapStateToProps(state) {
   const { isAuthenticated, settings } = state.auth;
   const { enabledJoin } = settings;
