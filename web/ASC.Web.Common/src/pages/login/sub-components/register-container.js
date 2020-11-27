@@ -97,7 +97,7 @@ const RegisterWrapper = (props) => {
 
   return (
     <I18nextProvider i18n={i18n}>
-      {!enabledJoin && !isAuthenticated && (
+      {enabledJoin && !isAuthenticated && (
         <RegisterTranslationWrapper {...props} />
       )}
     </I18nextProvider>
