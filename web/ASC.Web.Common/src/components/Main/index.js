@@ -5,7 +5,7 @@ import { isIOS, isFirefox } from "react-device-detect";
 const StyledMain = styled.main`
   height: ${isIOS && !isFirefox
     ? "calc(var(--vh, 1vh) * 100)"
-    : "calc(100vh - 122px)"};
+    : "calc(100vh - 56px)"};
   width: 100vw;
   z-index: 0;
   display: flex;
