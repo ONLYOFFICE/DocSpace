@@ -1,9 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Text, toastr } from "asc-web-components";
 import RegisterModalDialog from "./register-modal-dialog";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import { sendRegisterRequest } from "../../../api/settings/index";
+import { I18nextProvider, withTranslation } from "react-i18next";
+import { getLanguage } from "../../../store/auth/selectors";
+import { connect } from "react-redux";
+import i18n from "../i18n";
 
 const StyledRegister = styled(Box)`
   position: absolute;
@@ -82,4 +86,32 @@ Register.propTypes = {
   t: PropTypes.func.isRequired,
 };
 
-export default Register;
+const RegisterTranslationWrapper = withTranslation()(Register);
+
+const RegisterWrapper = (props) => {
+  const { language, isAuthenticated, enabledJoin } = props;
+
+  useEffect(() => {
+    i18n.changeLanguage(language);
+  }, [language]);
+
+  return (
+    <I18nextProvider i18n={i18n}>
+      {!enabledJoin && !isAuthenticated && (
+        <RegisterTranslationWrapper {...props} />
+      )}
+    </I18nextProvider>
+  );
+};
+
+function mapStateToProps(state) {
+  const { isAuthenticated, settings } = state.auth;
+  const { enabledJoin } = settings;
+  return {
+    language: getLanguage(state),
+    isAuthenticated,
+    enabledJoin,
+  };
+}
+
+export default connect(mapStateToProps, null)(RegisterWrapper);
