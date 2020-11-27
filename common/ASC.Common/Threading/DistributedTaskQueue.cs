@@ -91,7 +91,7 @@ namespace ASC.Common.Threading
 
     public class DistributedTaskQueue
     {
-        public static readonly string InstanceId;
+        public static readonly int InstanceId;
 
         private readonly string key;
         private readonly ICache cache;
@@ -102,7 +102,7 @@ namespace ASC.Common.Threading
 
         static DistributedTaskQueue()
         {
-            InstanceId = Process.GetCurrentProcess().Id.ToString();
+            InstanceId = Process.GetCurrentProcess().Id;
         }
 
 

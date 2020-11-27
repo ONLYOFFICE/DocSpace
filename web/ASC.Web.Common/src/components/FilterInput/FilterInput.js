@@ -753,12 +753,16 @@ class FilterInput extends React.Component {
       needUpdateFilter,
     } = this.state;
 
-    const smallSectionWidth = sectionWidth ? sectionWidth < 900 : false;
+    const smallSectionWidth = sectionWidth ? sectionWidth <= 500 : false;
+    const isAllItemsHide =
+      openFilterItems.length === 0 && hiddenFilterItems.length > 0
+        ? true
+        : false;
 
     let iconSize = 30;
     switch (size) {
       case "base":
-        iconSize = 30;
+        iconSize = 32;
         break;
       case "middle":
       case "big":
@@ -776,6 +780,7 @@ class FilterInput extends React.Component {
         className={className}
         id={id}
         style={style}
+        isAllItemsHide={isAllItemsHide}
       >
         <div className="styled-search-input test" ref={this.searchWrapper}>
           <SearchInput
