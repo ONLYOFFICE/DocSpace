@@ -35,7 +35,7 @@ const StyledSectionHeader = styled.div`
       padding-bottom: 16px
     `};
     height: 49px;
-    width: 100%;
+    width: ${(props) => !props.isLoaded && "100%"};
   }
 
   .section-header {
