@@ -2,15 +2,14 @@ import React, { Suspense, lazy, useEffect } from "react";
 import { Route, Switch } from "react-router-dom";
 import ConfirmRoute from "../../../helpers/confirmRoute";
 import { I18nextProvider } from "react-i18next";
-import { Error404, utils } from "@appserver/common";
+// import { Error404 } from "@appserver/common";
+import { changeLanguage } from "@appserver/common/src/utils";
 
 import { createI18N } from "../../../helpers/i18n";
 const i18n = createI18N({
   page: "Confirm",
   localesPath: "pages/Confirm",
 });
-
-const { changeLanguage } = utils;
 
 const ActivateUserForm = lazy(() => import("./sub-components/activateUser"));
 const CreateUserForm = lazy(() => import("./sub-components/createUser"));
@@ -73,7 +72,7 @@ const Confirm = ({ match }) => {
             path={`${match.path}/ownerchange`}
             component={ChangeOwnerForm}
           />
-          <Route component={Error404} />
+          {/* <Route component={Error404} /> */}
         </Switch>
       </Suspense>
     </I18nextProvider>

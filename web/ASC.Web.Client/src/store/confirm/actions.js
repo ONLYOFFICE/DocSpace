@@ -1,4 +1,5 @@
-import { api, store } from "@appserver/common";
+import api from "@appserver/common/src/api";
+import store from "@appserver/common/src/store";
 const {
   setCurrentUser,
   loadInitInfo,

@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 
 import Box from "@appserver/components/src/components/box";
 import Text from "@appserver/components/src/components/text";
-import toastr from "@appserver/components/src/components/toast/toast";
+import toastr from "@appserver/components/src/components/toast/toastr";
 import { UnionIcon } from "@appserver/components/src/components/icons/svg";
 
 import RecoverAccessModalDialog from "./recover-access-modal-dialog";

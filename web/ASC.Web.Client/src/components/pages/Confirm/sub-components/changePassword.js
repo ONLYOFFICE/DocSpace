@@ -4,16 +4,16 @@ import { withTranslation } from "react-i18next";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import {
-  Button,
-  Text,
-  PasswordInput,
-  Loader,
-  toastr,
-  Heading,
-} from "@appserver/components";
-import { PageLayout } from "@appserver/common";
-import { store, utils as commonUtils } from "@appserver/common";
+import Button from "@appserver/components/src/components/button";
+import Text from "@appserver/components/src/components/text";
+import PasswordInput from "@appserver/components/src/components/password-input"
+import Loader from "@appserver/components/src/components/loader";
+import toastr from "@appserver/components/src/components/toast/toastr";
+import Heading from "@appserver/components/src/components/heading"
+
+import PageLayout from "@appserver/common/src/components/PageLayout";
+import store from "@appserver/common/src/store";
+import commonUtils from "@appserver/common/src/utils";
 import {
   getConfirmationInfo,
   changePassword,

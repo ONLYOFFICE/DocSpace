@@ -2,11 +2,13 @@ import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
-import { Text } from "@appserver/components";
-import { toastr, ModuleTile, PageLayout, utils } from "@appserver/common";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
-
+import Text from "@appserver/components/src/components/text";
+import toastr from "@appserver/common/src/components/Toast/toastr";
+import ModuleTile from "@appserver/common/src/components/ModuleTile";
+import PageLayout from "@appserver/common/src/components/PageLayout";
+import utils from "@appserver/common/src/utils";
 import { createI18N } from "../../../helpers/i18n";
 import { setDocumentTitle } from "../../../helpers/utils";
 

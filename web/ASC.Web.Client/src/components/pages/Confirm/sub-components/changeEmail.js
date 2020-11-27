@@ -1,10 +1,10 @@
 import React from "react";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
-import { Loader } from "@appserver/components";
-import { PageLayout } from "@appserver/common";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
+import Loader from "@appserver/components/src/components/loader";
+import PageLayout from "@appserver/common/src/components/PageLayout";
 import { changeEmail } from "../../../../store/confirm/actions";
 
 class ChangeEmail extends React.PureComponent {

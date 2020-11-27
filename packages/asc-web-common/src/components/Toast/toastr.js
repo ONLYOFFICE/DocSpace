@@ -1,4 +1,4 @@
-import Toastr from "@appserver/components/src/components/toast/toast";
+import Toastr from "@appserver/components/src/components/toast/toastr";
 import i18n from "./i18n";
 import { LANGUAGE } from "../../constants";
 import { changeLanguage } from "../../utils";

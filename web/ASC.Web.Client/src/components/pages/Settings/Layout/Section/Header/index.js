@@ -1,17 +1,17 @@
 import React from "react";
 import styled from "styled-components";
 import { withRouter } from "react-router";
-import { Headline } from "@appserver/common";
-import { IconButton, utils } from "@appserver/components";
 import { withTranslation } from "react-i18next";
+import Headline from "@appserver/common/src/components/Headline";
+import IconButton from "@appserver/components/src/components/icon-button";
+import { tablet } from "@appserver/components/src/utils/device";
+
 import {
   getKeyByLink,
   settingsTree,
   getTKeyByKey,
   checkPropertyByLink,
 } from "../../../utils";
-
-const { tablet } = utils.device;
 
 const HeaderContainer = styled.div`
   position: relative;

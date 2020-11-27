@@ -1,7 +1,7 @@
 import React, { lazy, Suspense } from "react";
 import { Route, Switch } from "react-router-dom";
 import { withRouter } from "react-router";
-import { Loader } from "@appserver/components";
+import Loader from "@appserver/components/src/components/loader";
 
 const ThirdPartyServices = lazy(() => import("./thirdPartyServicesSettings"));
 

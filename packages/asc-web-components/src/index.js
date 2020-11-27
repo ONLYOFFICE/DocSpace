@@ -55,6 +55,6 @@ export { default as TreeMenu } from "./components/tree-menu";
 export { default as TreeNode } from "./components/tree-menu/sub-components/tree-node";
 export { default as ProgressBar } from "./components/progress-bar";
 export { default as utils } from "./utils";
-export { Icons } from "./components/icons";
+export { default as Icons } from "./components/icons";
 export { default as SaveCancelButtons } from "./components/save-cancel-buttons";
 export { default as DragAndDrop } from "./components/drag-and-drop";

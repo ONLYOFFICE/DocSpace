@@ -5,8 +5,8 @@ import store from "./store/store";
 import "./custom.scss";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
-import { ErrorBoundary, utils } from "@appserver/common";
-const { redirectToDefaultPage } = utils;
+import { redirectToDefaultPage } from "@appserver/common/src/utils";
+import ErrorBoundary from "@appserver/common/src/components/ErrorBoundary";
 
 redirectToDefaultPage();
 

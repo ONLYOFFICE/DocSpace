@@ -3,10 +3,12 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
-import { Text, Link } from "@appserver/components";
 import { useTranslation } from "react-i18next";
 import { createI18N } from "../../../../helpers/i18n";
-import { utils } from "@appserver/common";
+import utils from "@appserver/common/src/utils";
+import Text from "@appserver/components/src/components/text";
+import Link from "@appserver/components/src/components/link";
+
 const { changeLanguage } = utils;
 
 const i18n = createI18N({

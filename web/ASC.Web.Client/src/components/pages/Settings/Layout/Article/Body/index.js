@@ -1,15 +1,14 @@
 import React from "react";
-import {
-  TreeMenu,
-  TreeNode,
-  Icons,
-  Link,
-  Text,
-  utils,
-} from "@appserver/components";
 import { withRouter } from "react-router";
 import styled from "styled-components";
 import { withTranslation } from "react-i18next";
+import TreeMenu from "@appserver/components/src/components/tree-menu";
+import TreeNode from "@appserver/components/src/components/tree-menu/sub-components/tree-node";
+import Icons from "@appserver/components/src/components/icons";
+import Link from "@appserver/components/src/components/link";
+import Text from "@appserver/components/src/components/text";
+import {isArrayEqual} from "@appserver/components/src/utils/array";
+
 import {
   getKeyByLink,
   settingsTree,
@@ -120,7 +119,7 @@ class ArticleBodyContent extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (
-      !utils.array.isArrayEqual(prevState.selectedKeys, this.state.selectedKeys)
+      !isArrayEqual(prevState.selectedKeys, this.state.selectedKeys)
     ) {
       const { selectedKeys } = this.state;
       const { match, history } = this.props;
@@ -133,7 +132,7 @@ class ArticleBodyContent extends React.Component {
   onSelect = (value) => {
     const { selectedKeys } = this.state;
 
-    if (utils.array.isArrayEqual(value, selectedKeys)) {
+    if (isArrayEqual(value, selectedKeys)) {
       return;
     }
 

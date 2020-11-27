@@ -1,9 +1,14 @@
 import React from "react";
 import { connect } from "react-redux";
 import { withTranslation } from "react-i18next";
-import { Text, Loader, toastr, Link, Icons } from "@appserver/components";
 import styled from "styled-components";
-import { store, utils } from "@appserver/common";
+import Text from "@appserver/components/src/components/text";
+import Loader from "@appserver/components/src/components/loader";
+import toastr from "@appserver/components/src/components/toast/toastr";
+import Link from "@appserver/components/src/components/link";
+import { ArrowRightIcon } from "@appserver/components/src/components/icons/svg";
+import utils from "@appserver/common/src/utils";
+import store from "@appserver/common/src/store";
 import {
   setLanguageAndTime,
   getPortalTimezones,
@@ -228,7 +233,7 @@ class Customization extends React.Component {
               >
                 {t("StudioTimeLanguageSettings")}
               </Link>
-              <Icons.ArrowRightIcon
+              <ArrowRightIcon
                 size="small"
                 isfill={true}
                 color="#333333"
@@ -253,7 +258,7 @@ class Customization extends React.Component {
               >
                 {t("CustomTitles")}
               </Link>
-              <Icons.ArrowRightIcon
+              <ArrowRightIcon
                 size="small"
                 isfill={true}
                 color="#333333"

@@ -1,7 +1,6 @@
 import i18n from "i18next";
 import Backend from "i18next-xhr-backend";
-import { constants } from "@appserver/common";
-const { i18nBaseSettings } = constants;
+import { i18nBaseSettings } from "@appserver/common/src/constants";
 
 /**
  * @description create i18n instance

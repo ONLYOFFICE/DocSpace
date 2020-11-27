@@ -1,19 +1,19 @@
 import React from "react";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
-import {
-  Button,
-  TextInput,
-  Text,
-  PasswordInput,
-  toastr,
-  Loader,
-  EmailInput,
-} from "@appserver/components";
 import styled from "styled-components";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { store, PageLayout, utils as commonUtils } from "@appserver/common";
+import Button from "@appserver/components/src/components/button";
+import TextInput from "@appserver/components/src/components/text-input";
+import Text from "@appserver/components/src/components/text";
+import PasswordInput from "@appserver/components/src/components/password-input";
+import toastr from "@appserver/components/src/components/toast/toastr";
+import Loader from "@appserver/components/src/components/loader";
+import EmailInput from "@appserver/components/src/components/email-input";
+import PageLayout from "@appserver/common/src/components/PageLayout";
+import commonUtils from "@appserver/common/src/utils";
+import store from "@appserver/common/src/store";
 import {
   getConfirmationInfo,
   createConfirmUser,

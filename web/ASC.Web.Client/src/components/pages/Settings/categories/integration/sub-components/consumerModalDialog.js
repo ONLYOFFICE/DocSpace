@@ -1,22 +1,21 @@
 import React from "react";
 import PropTypes from "prop-types";
-import {
-  ModalDialog,
-  Text,
-  Button,
-  TextInput,
-  Box,
-  Link,
-  toastr,
-} from "@appserver/components";
-import ModalDialogContainer from "./modalDialogContainer";
 import { Trans } from "react-i18next";
 import { connect } from "react-redux";
+import ModalDialog from "@appserver/components/src/components/modal-dialog";
+import Text from "@appserver/components/src/components/text";
+import Button from "@appserver/components/src/components/button";
+import TextInput from "@appserver/components/src/components/text-input";
+import Box from "@appserver/components/src/components/box";
+import Link from "@appserver/components/src/components/link";
+import toastr from "@appserver/components/src/components/toast/toastr";
+import ModalDialogContainer from "./modalDialogContainer";
 import {
   getSelectedConsumer,
   getConsumerInstruction,
 } from "../../../../../../store/settings/selectors";
-import { store as commonStore } from "@appserver/common";
+
+import commonStore from "@appserver/common/src/store";
 
 const { getUrlSupport, getUrlAuthKeys } = commonStore.auth.selectors;
 

@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
-//import i18n from "../../../i18n";
 import { I18nextProvider, withTranslation } from "react-i18next";
 import styled from "styled-components";
-import { Text, ToggleContent, RadioButtonGroup } from "@appserver/components";
-//import { utils } from "@appserver/common";
+import Text from "@appserver/components/src/components/text";
+import ToggleContent from "@appserver/components/src/components/toggle-content";
+import RadioButtonGroup from "@appserver/components/src/components/radio-button-group";
 
 import { createI18N } from "../../../../../../helpers/i18n";
 
@@ -13,8 +13,6 @@ const i18n = createI18N({
   page: "Settings",
   localesPath: "pages/Settings",
 });
-
-//const { changeLanguage } = utils;
 
 const ProjectsContainer = styled.div`
   display: flex;

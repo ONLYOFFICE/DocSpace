@@ -3,8 +3,8 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
-import { Text } from "@appserver/components";
-import { utils } from "@appserver/common";
+import Text from "@appserver/components/src/components/text";
+import utils from "@appserver/common/src/utils";
 
 import { useTranslation, Trans } from "react-i18next";
 import { createI18N } from "../../../../helpers/i18n";

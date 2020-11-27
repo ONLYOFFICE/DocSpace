@@ -4,8 +4,9 @@ import { connect } from "react-redux";
 //import i18n from "../../i18n";
 import { I18nextProvider, withTranslation } from "react-i18next";
 import styled from "styled-components";
-import { TabContainer } from "@appserver/components";
-import { utils } from "@appserver/common";
+import TabContainer from "@appserver/components/src/components/tabs-container";
+
+import utils from "@appserver/common/src/utils";
 
 import OwnerSettings from "./sub-components/owner";
 import AdminsSettings from "./sub-components/admins";

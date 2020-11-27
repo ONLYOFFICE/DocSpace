@@ -1,6 +1,8 @@
 ﻿import React, { useEffect } from "react";
-import { Text, Link } from "@appserver/components";
-import { PageLayout, utils } from "@appserver/common";
+import Text from "@appserver/components/src/components/text";
+import Link from "@appserver/components/src/components/link";
+import PageLayout from "@appserver/common/src/components/PageLayout";
+import utils from "@appserver/common/src/utils";
 import { useTranslation } from "react-i18next";
 import version from "../../../../package.json";
 import styled from "styled-components";

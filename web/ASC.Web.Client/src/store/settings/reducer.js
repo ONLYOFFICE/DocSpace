@@ -10,7 +10,7 @@ import {
   SET_CONSUMERS,
   SET_SELECTED_CONSUMER,
 } from "./actions";
-import { api } from "@appserver/common";
+import api from "@appserver/common/src/api";
 const { Filter } = api;
 
 const initialState = {

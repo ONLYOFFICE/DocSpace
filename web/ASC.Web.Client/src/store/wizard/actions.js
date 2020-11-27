@@ -1,4 +1,5 @@
-import { store, api } from "@appserver/common";
+import api from "@appserver/common/src/api";
+import store from "@appserver/common/src/store";
 const {
   setPasswordSettings,
   setTimezones,

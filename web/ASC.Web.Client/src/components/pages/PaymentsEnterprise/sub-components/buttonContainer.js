@@ -2,14 +2,15 @@ import React, { useEffect, createRef } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { withRouter } from "react-router";
-import { Button, utils as Utils, toastr } from "@appserver/components";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import { createI18N } from "../../../../helpers/i18n";
-import { utils } from "@appserver/common";
+import Button from "@appserver/components/src/components/button";
+import { tablet } from "@appserver/components/src/utils/device";
+import toastr from "@appserver/components/src/components/toast/toastr";
+import utils from "@appserver/common/src/utils";
 import { setPaymentsLicense } from "../../../../store/payments/actions";
 const { changeLanguage } = utils;
-const { tablet } = Utils.device;
+
 const i18n = createI18N({
   page: "PaymentsEnterprise",
   localesPath: "pages/PaymentsEnterprise",

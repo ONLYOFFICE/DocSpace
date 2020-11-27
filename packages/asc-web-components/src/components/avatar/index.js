@@ -1,7 +1,7 @@
 import React, { memo } from "react";
 import styled, { css } from "styled-components";
 import PropTypes from "prop-types";
-import { Icons } from "../icons";
+import Icons from "../icons";
 import Link from "../link";
 
 const whiteColor = "#FFFFFF";

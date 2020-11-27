@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
 
 import Badge from "@appserver/components/src/components/badge";
-import Icons from "@appserver/components/src/components/icons/svg";
+import Icons from "@appserver/components/src/components/icons";
 import Link from "@appserver/components/src/components/link";
 import Text from "@appserver/components/src/components/text";
 

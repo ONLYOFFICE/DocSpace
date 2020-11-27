@@ -2,9 +2,10 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 
-import { Box, Heading, Text, utils } from "@appserver/components";
-
-const { tablet } = utils.device;
+import Box from "@appserver/components/src/components/box";
+import Heading from "@appserver/components/src/components/heading";
+import Text from "@appserver/components/src/components/text";
+import { tablet } from "@appserver/components/src/utils/device";
 
 const StyledHeaderContainer = styled(Box)`
   width: 100%;

@@ -2,9 +2,11 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 
-import { Box, ComboBox, Text, Link, utils } from "@appserver/components";
-
-const { tablet } = utils.device;
+import Box from "@appserver/components/src/components/box";
+import ComboBox from "@appserver/components/src/components/combobox";
+import Text from "@appserver/components/src/components/text";
+import Link from "@appserver/components/src/components/link";
+import { tablet } from "@appserver/components/src/utils/device";
 
 const StyledContainer = styled(Box)`
   width: 311px;

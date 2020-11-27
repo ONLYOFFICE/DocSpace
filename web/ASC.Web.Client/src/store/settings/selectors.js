@@ -1,7 +1,7 @@
 import React from "react";
-import { Box } from "@appserver/components";
 import { format } from "react-string-format";
 import { createSelector } from "reselect";
+import Box from "@appserver/components/src/components/box";
 
 export const getUserRole = (user) => {
   if (user.isOwner) return "owner";

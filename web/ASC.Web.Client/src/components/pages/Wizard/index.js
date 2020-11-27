@@ -5,13 +5,13 @@ import { withTranslation } from "react-i18next";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
-import {
-  PageLayout,
-  ErrorContainer,
-  history,
-  utils as commonUtils,
-} from "@appserver/common";
-import { Loader, utils } from "@appserver/components";
+import PageLayout from "@appserver/common/src/components/PageLayout";
+import ErrorContainer from "@appserver/common/src/components/ErrorContainer";
+import history from "@appserver/common/src/history";
+import commonUtils from "@appserver/common/src/utils";
+import Loader from "@appserver/components/src/components/loader";
+import { tablet } from "@appserver/components/src/utils/device";
+import { EmailSettings } from "@appserver/components/src/utils/email";
 
 import HeaderContainer from "./sub-components/header-container";
 import ButtonContainer from "./sub-components/button-container";
@@ -39,10 +39,8 @@ const i18n = createI18N({
   localesPath: "pages/Wizard",
 });
 
-const { tablet } = utils.device;
 const { changeLanguage, createPasswordHash } = commonUtils;
 
-const { EmailSettings } = utils.email;
 const emailSettings = new EmailSettings();
 emailSettings.allowDomainPunycode = true;
 

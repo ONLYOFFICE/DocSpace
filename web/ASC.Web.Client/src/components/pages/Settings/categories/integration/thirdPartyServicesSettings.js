@@ -10,16 +10,18 @@ import { getConsumersList } from "../../../../../store/settings/selectors";
 import { withTranslation } from "react-i18next";
 import styled from "styled-components";
 
-import { Box, Text, Link, toastr } from "@appserver/components";
-import { utils } from "@appserver/components";
-import { store as commonStore } from "@appserver/common";
+import Box from "@appserver/components/src/components/box";
+import Text from "@appserver/components/src/components/text";
+import Link from "@appserver/components/src/components/link";
+import toastr from "@appserver/components/src/components/toast/toastr";
+
+import { tablet, mobile } from "@appserver/components/src/utils/device";
+
+import commonStore from "@appserver/common/src/store";
 import ConsumerItem from "./sub-components/consumerItem";
 import ConsumerModalDialog from "./sub-components/consumerModalDialog";
 
 const { getUrlAuthKeys } = commonStore.auth.selectors;
-
-const tablet = utils.device.tablet;
-const mobile = utils.device.mobile;
 
 const RootContainer = styled(Box)`
   @media ${tablet} {

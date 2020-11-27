@@ -1,13 +1,13 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import styled from "styled-components";
-import { utils } from "@appserver/common";
-import { Text, utils as Utils, Box } from "@appserver/components";
+import utils from "@appserver/common/src/utils";
+import Text from "@appserver/components/src/components/text";
+import Box from "@appserver/components/src/components/box";
+import { tablet } from "@appserver/components/src/utils/device";
 import { createI18N } from "../../../../helpers/i18n";
 import { useTranslation, Trans } from "react-i18next";
-
 const { changeLanguage } = utils;
-const { tablet } = Utils.device;
 
 const i18n = createI18N({
   page: "PaymentsEnterprise",

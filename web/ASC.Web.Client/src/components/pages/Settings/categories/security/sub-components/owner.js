@@ -6,16 +6,14 @@ import { withRouter } from "react-router";
 import { I18nextProvider, withTranslation } from "react-i18next";
 import styled from "styled-components";
 import { getPortalOwner } from "../../../../../../store/settings/actions";
-import {
-  Text,
-  Avatar,
-  Link,
-  toastr,
-  Button,
-  RequestLoader,
-  Loader,
-} from "@appserver/components";
-import { PeopleSelector } from "@appserver/common";
+import Text from "@appserver/components/src/components/text";
+import Avatar from "@appserver/components/src/components/avatar";
+import Link from "@appserver/components/src/components/link";
+import toastr from "@appserver/components/src/components/toast/toastr";
+import Button from "@appserver/components/src/components/button";
+import RequestLoader from "@appserver/components/src/components/request-loader";
+import Loader from "@appserver/components/src/components/loader";
+import PeopleSelector from "@appserver/common/src/components/PeopleSelector";
 import isEmpty from "lodash/isEmpty";
 
 import { createI18N } from "../../../../../../helpers/i18n";

@@ -1,21 +1,21 @@
 import React, { Suspense, lazy } from "react";
 import { Router, Route, Switch } from "react-router-dom";
 import { connect } from "react-redux";
-import {
-  store as CommonStore,
-  constants,
-  history,
-  PrivateRoute,
-  PublicRoute,
-  Login,
-  Error404,
-  Offline,
-  ComingSoon,
-  NavMenu,
-  Main,
-  utils,
-  toastr,
-} from "@appserver/common";
+// import {
+//   Login,
+//   Error404,
+//   Offline,
+//   ComingSoon
+// } from "@appserver/common";
+import CommonStore from "@appserver/common/src/store";
+import constants from "@appserver/common/src/constants";
+import history from "@appserver/common/src/history";
+import PrivateRoute from "@appserver/common/src/components/PrivateRoute";
+import PublicRoute from "@appserver/common/src/components/PublicRoute";
+import NavMenu from "@appserver/common/src/components/NavMenu";
+import Main from "@appserver/common/src/components/Main";
+import toastr from "@appserver/common/src/components/Toast/toastr";
+
 import Home from "./components/pages/Home";
 
 const About = lazy(() => import("./components/pages/About"));

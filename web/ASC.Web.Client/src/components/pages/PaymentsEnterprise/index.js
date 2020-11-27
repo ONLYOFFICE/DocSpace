@@ -1,11 +1,14 @@
 import React, { useEffect } from "react";
-import { PageLayout, utils, store } from "@appserver/common";
-import { Loader, utils as Utils } from "@appserver/components";
 import styled from "styled-components";
 import { withRouter } from "react-router";
 import { connect } from "react-redux";
 import { withTranslation } from "react-i18next";
 import PropTypes from "prop-types";
+import PageLayout from "@appserver/common/src/components/PageLayout";
+import utils from "@appserver/common/src/utils";
+import store from "@appserver/common/src/store";
+import Loader from "@appserver/components/src/components/loader";
+import { tablet, size } from "@appserver/components/src/utils/device";
 import HeaderContainer from "./sub-components/headerContainer";
 import AdvantagesContainer from "./sub-components/advantagesContainer";
 import ButtonContainer from "./sub-components/buttonContainer";
@@ -19,7 +22,6 @@ const i18n = createI18N({
 });
 const { setCurrentProductId } = store.auth.actions;
 const { changeLanguage } = utils;
-const { tablet, size } = Utils.device;
 
 const StyledBody = styled.div`
   margin: 0 auto;
