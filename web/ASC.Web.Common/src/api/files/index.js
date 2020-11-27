@@ -394,6 +394,15 @@ export function getShareFiles(fileId) {
   });
 }
 
+export function setExternalAccess(fileId, accessType) {
+  const data = { accessType };
+  return request({
+    method: "put",
+    url: `/files/${fileId}/sharedlink`,
+    data,
+  });
+}
+
 export function setShareFolder(folderId, share, notify, sharingMessage) {
   const data = { share, notify, sharingMessage };
   return request({
