@@ -853,7 +853,7 @@ const sendChunk = (
     convertFilesSize,
   } = uploadData;
   const totalSize = convertFilesSize + filesSize;
-
+  let newPercent;
   const sendRequestFunc = (index) => {
     api.files
       .uploadFile(location, requestsDataArray[index])
@@ -861,10 +861,9 @@ const sendChunk = (
         //percent problem? use getState()
         const currentFile = files[indexOfFile];
         const fileId = res.data.data.id;
-        const newPercent = percent + (currentFile.size / totalSize) * 100;
 
         if (res.data.data && res.data.data.uploaded) {
-          //newState = { percent: newPercent };
+          newPercent = percent + (currentFile.size / totalSize) * 100;
         }
 
         if (index + 1 !== requestsDataArray.length) {
