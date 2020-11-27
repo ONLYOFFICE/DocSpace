@@ -1,3 +1,3 @@
 #!/bin/bash
 
-docker-compose -f app-images-build.yml build
+docker-compose -f build.yml build
