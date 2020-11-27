@@ -24,8 +24,6 @@ x-service:
       KAFKA_HOST: ${KAFKA_HOST:-kafka}
     volumes:
     - /app/onlyoffice/CommunityServer/data:/app/onlyoffice/data/
-    networks:
-      - ${NETWORK_NAME:-onlyoffice}
 
 services: 
   onlyoffice-elasticsearch:
@@ -51,8 +49,6 @@ services:
     expose:
       - "9200"
       - "9300"
-    networks:
-      - ${NETWORK_NAME:-onlyoffice}
 
   onlyoffice-zookeeper:
     image: zookeeper:latest
@@ -67,8 +63,6 @@ services:
     volumes:
     - zoo_data:/data
     - zoo_log:/datalog
-    networks:
-      - ${NETWORK_NAME:-onlyoffice}
 
   onlyoffice-kafka:
     image: confluentinc/cp-kafka:latest
@@ -88,8 +82,6 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: ${KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR}
     volumes:
     - kafka_data:/var/lib/kafka/data
-    networks:
-      - ${NETWORK_NAME:-onlyoffice}
 
   onlyoffice-api:
     <<: *x-service-base
@@ -151,16 +143,16 @@ services:
     ports:
       - 8092:8092 
     depends_on:
-      - onlyoffice-api
-      - onlyoffice-api_system
-      - onlyoffice-urlshortener
-      - onlyoffice-studio.notify
-      - onlyoffice-notify
-      - onlyoffice-people.server
-      - onlyoffice-files
-      - onlyoffice-files_services
-      - onlyoffice-studio
-      - onlyoffice-backup
+      - ${CONTAINER_PRIFIX:-onlyoffice}-api
+      - ${CONTAINER_PRIFIX:-onlyoffice}-api_system
+      - ${CONTAINER_PRIFIX:-onlyoffice}-urlshortener
+      - ${CONTAINER_PRIFIX:-onlyoffice}-studio.notify
+      - ${CONTAINER_PRIFIX:-onlyoffice}-notify
+      - ${CONTAINER_PRIFIX:-onlyoffice}-people.server
+      - ${CONTAINER_PRIFIX:-onlyoffice}-files
+      - ${CONTAINER_PRIFIX:-onlyoffice}-files_services
+      - ${CONTAINER_PRIFIX:-onlyoffice}-studio
+      - ${CONTAINER_PRIFIX:-onlyoffice}-backup
     environment:
       - SERVICE_API="onlyoffice-api:${SERVICE_PORT:-5050}"
       - SERVICE_API_SYSTEM="onlyoffice-api_system:${SERVICE_PORT:-5050}"
@@ -175,8 +167,6 @@ services:
       - SERVICE_PORT=${SERVICE_PORT:-5050}
     volumes:
       - nginx_log:/var/log/nginx
-    networks:
-      - ${NETWORK_NAME:-onlyoffice}
 
 networks:
   onlyoffice:
