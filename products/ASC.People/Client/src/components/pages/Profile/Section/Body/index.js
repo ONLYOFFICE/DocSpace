@@ -37,10 +37,6 @@ const AvatarWrapper = styled.div`
 const EditButtonWrapper = styled.div`
   margin-top: 16px;
   width: 160px;
-
-  & > button {
-    padding: 8px 20px 9px 20px;
-  }
 `;
 
 const ToggleWrapper = styled.div`
