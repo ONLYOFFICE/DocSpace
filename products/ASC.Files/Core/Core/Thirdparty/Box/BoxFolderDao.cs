@@ -184,9 +184,9 @@ namespace ASC.Files.Thirdparty.Box
                 return RenameFolder(folder, folder.Title);
             }
 
-            if (folder.ParentFolderID != null)
+            if (folder.FolderID != null)
             {
-                var boxFolderId = MakeBoxId(folder.ParentFolderID);
+                var boxFolderId = MakeBoxId(folder.FolderID);
 
                 folder.Title = GetAvailableTitle(folder.Title, boxFolderId, IsExist);
 

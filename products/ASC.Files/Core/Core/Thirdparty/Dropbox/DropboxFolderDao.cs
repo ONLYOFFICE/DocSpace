@@ -185,9 +185,9 @@ namespace ASC.Files.Thirdparty.Dropbox
                 return RenameFolder(folder, folder.Title);
             }
 
-            if (folder.ParentFolderID != null)
+            if (folder.FolderID != null)
             {
-                var dropboxFolderPath = MakeDropboxPath(folder.ParentFolderID);
+                var dropboxFolderPath = MakeDropboxPath(folder.FolderID);
 
                 folder.Title = GetAvailableTitle(folder.Title, dropboxFolderPath, IsExist);
 

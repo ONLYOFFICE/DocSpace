@@ -183,9 +183,9 @@ namespace ASC.Files.Thirdparty.SharePoint
                 return ProviderInfo.ToFolder(savedfolder).ID;
             }
 
-            if (folder.ParentFolderID != null)
+            if (folder.FolderID != null)
             {
-                var parentFolder = ProviderInfo.GetFolderById(folder.ParentFolderID);
+                var parentFolder = ProviderInfo.GetFolderById(folder.FolderID);
 
                 folder.Title = GetAvailableTitle(folder.Title, parentFolder, IsExist);
 

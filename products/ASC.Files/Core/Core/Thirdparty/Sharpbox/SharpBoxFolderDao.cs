@@ -186,9 +186,9 @@ namespace ASC.Files.Thirdparty.Sharpbox
                     var savedfolder = ProviderInfo.Storage.CreateFolder(MakePath(folder.ID));
                     return MakeId(savedfolder);
                 }
-                if (folder.ParentFolderID != null)
+                if (folder.FolderID != null)
                 {
-                    var parentFolder = GetFolderById(folder.ParentFolderID);
+                    var parentFolder = GetFolderById(folder.FolderID);
 
                     folder.Title = GetAvailableTitle(folder.Title, parentFolder, IsExist);
 
@@ -390,7 +390,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
             }
             else
             {
-                var parentFolder = GetFolderById(folder.ParentFolderID);
+                var parentFolder = GetFolderById(folder.FolderID);
                 newTitle = GetAvailableTitle(newTitle, parentFolder, IsExist);
 
                 //rename folder

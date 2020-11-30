@@ -181,9 +181,9 @@ namespace ASC.Files.Thirdparty.OneDrive
                 return RenameFolder(folder, folder.Title);
             }
 
-            if (folder.ParentFolderID != null)
+            if (folder.FolderID != null)
             {
-                var onedriveFolderId = MakeOneDriveId(folder.ParentFolderID);
+                var onedriveFolderId = MakeOneDriveId(folder.FolderID);
 
                 folder.Title = GetAvailableTitle(folder.Title, onedriveFolderId, IsExist);
 

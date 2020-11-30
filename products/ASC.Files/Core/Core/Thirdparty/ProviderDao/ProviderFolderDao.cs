@@ -156,14 +156,14 @@ filterType, subjectGroup, subjectID, searchText, searchSubfolders, checkShare);
                 folder.ID = folderId;
                 return newFolderId;
             }
-            if (folder.ParentFolderID != null)
+            if (folder.FolderID != null)
             {
-                var folderId = folder.ParentFolderID;
+                var folderId = folder.FolderID;
                 var selector = GetSelector(folderId);
-                folder.ParentFolderID = selector.ConvertId(folderId);
+                folder.FolderID = selector.ConvertId(folderId);
                 var folderDao = selector.GetFolderDao(folderId);
                 var newFolderId = folderDao.SaveFolder(folder);
-                folder.ParentFolderID = folderId;
+                folder.FolderID = folderId;
                 return newFolderId;
 
             }
@@ -277,7 +277,7 @@ filterType, subjectGroup, subjectID, searchText, searchSubfolders, checkShare);
             var folderId = folder.ID;
             var selector = GetSelector(folderId);
             folder.ID = selector.ConvertId(folderId);
-            folder.ParentFolderID = selector.ConvertId(folder.ParentFolderID);
+            folder.FolderID = selector.ConvertId(folder.FolderID);
             var folderDao = selector.GetFolderDao(folderId);
             return folderDao.RenameFolder(folder, newTitle);
         }

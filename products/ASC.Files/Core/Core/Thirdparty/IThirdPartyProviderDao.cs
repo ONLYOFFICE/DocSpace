@@ -280,7 +280,7 @@ namespace ASC.Files.Thirdparty
 
             InitFileEntryError(folder, entry);
 
-            folder.ParentFolderID = null;
+            folder.FolderID = null;
 
             return folder;
         }

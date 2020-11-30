@@ -300,8 +300,8 @@ namespace ASC.Web.Files.Services.WCFService
             var prevVisible = breadCrumbs.ElementAtOrDefault(breadCrumbs.Count() - 2);
             if (prevVisible != null)
             {
-                if (prevVisible is Folder<string> f1) parent.ParentFolderID = (T)Convert.ChangeType(f1.ID, typeof(T));
-                if (prevVisible is Folder<int> f2) parent.ParentFolderID = (T)Convert.ChangeType(f2.ID, typeof(T));
+                if (prevVisible is Folder<string> f1) parent.FolderID = (T)Convert.ChangeType(f1.ID, typeof(T));
+                if (prevVisible is Folder<int> f2) parent.FolderID = (T)Convert.ChangeType(f2.ID, typeof(T));
             }
 
             parent.Shareable = FileSharing.CanSetAccess(parent)
@@ -398,7 +398,7 @@ namespace ASC.Web.Files.Services.WCFService
             {
                 var newFolder = ServiceProvider.GetService<Folder<T>>();
                 newFolder.Title = title;
-                newFolder.ParentFolderID = parent.ID;
+                newFolder.FolderID = parent.ID;
 
                 var folderId = folderDao.SaveFolder(newFolder);
                 var folder = folderDao.GetFolder(folderId);
@@ -446,7 +446,7 @@ namespace ASC.Web.Files.Services.WCFService
 
             if (folder.RootFolderType == FolderType.USER
                 && !Equals(folder.RootFolderCreator, AuthContext.CurrentAccount.ID)
-                && !FileSecurity.CanRead(folderDao.GetFolder(folder.ParentFolderID)))
+                && !FileSecurity.CanRead(folderDao.GetFolder(folder.FolderID)))
             {
                 folder.FolderIdDisplay = GlobalFolderHelper.GetFolderShare<T>();
             }
@@ -1556,7 +1556,7 @@ namespace ASC.Web.Files.Services.WCFService
                     var folderIdToMy = folderDao.GetFolderIDUser(true, userTo.ID);
                     var newFolder = ServiceProvider.GetService<Folder<T>>();
                     newFolder.Title = string.Format(CustomNamingPeople.Substitute<FilesCommonResource>("TitleDeletedUserFolder"), userFrom.DisplayUserName(false, DisplayUserSettingsHelper));
-                    newFolder.ParentFolderID = folderIdToMy;
+                    newFolder.FolderID = folderIdToMy;
 
                     var newFolderTo = folderDao.SaveFolder(newFolder);
 

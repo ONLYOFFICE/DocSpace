@@ -199,7 +199,7 @@ namespace ASC.Api.Documents
             {
                 var folderDao = DaoFactory.GetFolderDao<T>();
                 return folderDao.GetFolders(folders.ToArray())
-                    .Select(FolderWrapperHelper.Get)
+                    .Select(r => FolderWrapperHelper.Get(r))
                     .Cast<FileEntryWrapper>();
             }
 
@@ -207,7 +207,7 @@ namespace ASC.Api.Documents
             {
                 var fileDao = DaoFactory.GetFileDao<T>();
                 return fileDao.GetFiles(files.ToArray())
-                    .Select(FilesWrapperHelper.Get)
+                    .Select(r => FilesWrapperHelper.Get(r))
                     .Cast<FileEntryWrapper>();
             }
         }

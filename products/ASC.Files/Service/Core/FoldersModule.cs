@@ -87,10 +87,10 @@ namespace ASC.Files.Service.Core
                         .Where(f => f.Item1.RootFolderType != FolderType.TRASH && f.Item1.RootFolderType != FolderType.BUNCH)
                         .ToList();
 
-            var parentFolderIDs = folders.Select(r => r.Item1.ParentFolderID).ToArray();
+            var parentFolderIDs = folders.Select(r => r.Item1.FolderID).ToArray();
             var parentFolders = FolderDao.GetFolders(parentFolderIDs, checkShare: false);
 
-            return folders.Select(f => new Tuple<Feed.Aggregator.Feed, object>(ToFeed(f, parentFolders.FirstOrDefault(r => r.ID.Equals(f.Item1.ParentFolderID))), f));
+            return folders.Select(f => new Tuple<Feed.Aggregator.Feed, object>(ToFeed(f, parentFolders.FirstOrDefault(r => r.ID.Equals(f.Item1.FolderID))), f));
         }
 
         private Feed.Aggregator.Feed ToFeed((Folder<int>, SmallShareRecord) tuple, Folder<int> rootFolder)
@@ -109,12 +109,12 @@ namespace ASC.Files.Service.Core
                     Module = Name,
                     Title = folder.Title,
                     ExtraLocation = rootFolder.FolderType == FolderType.DEFAULT ? rootFolder.Title : string.Empty,
-                    ExtraLocationUrl = rootFolder.FolderType == FolderType.DEFAULT ? FilesLinkUtility.GetFileRedirectPreviewUrl(folder.ParentFolderID, false) : string.Empty,
+                    ExtraLocationUrl = rootFolder.FolderType == FolderType.DEFAULT ? FilesLinkUtility.GetFileRedirectPreviewUrl(folder.FolderID, false) : string.Empty,
                     Keywords = string.Format("{0}", folder.Title),
                     HasPreview = false,
                     CanComment = false,
                     Target = shareRecord.ShareTo,
-                    GroupId = GetGroupId(sharedFolderItem, shareRecord.ShareBy, folder.ParentFolderID.ToString())
+                    GroupId = GetGroupId(sharedFolderItem, shareRecord.ShareBy, folder.FolderID.ToString())
                 };
 
                 return feed;
@@ -129,12 +129,12 @@ namespace ASC.Files.Service.Core
                 Module = Name,
                 Title = folder.Title,
                 ExtraLocation = rootFolder.FolderType == FolderType.DEFAULT ? rootFolder.Title : string.Empty,
-                ExtraLocationUrl = rootFolder.FolderType == FolderType.DEFAULT ? FilesLinkUtility.GetFileRedirectPreviewUrl(folder.ParentFolderID, false) : string.Empty,
+                ExtraLocationUrl = rootFolder.FolderType == FolderType.DEFAULT ? FilesLinkUtility.GetFileRedirectPreviewUrl(folder.FolderID, false) : string.Empty,
                 Keywords = string.Format("{0}", folder.Title),
                 HasPreview = false,
                 CanComment = false,
                 Target = null,
-                GroupId = GetGroupId(folderItem, folder.CreateBy, folder.ParentFolderID.ToString())
+                GroupId = GetGroupId(folderItem, folder.CreateBy, folder.FolderID.ToString())
             };
         }
     }

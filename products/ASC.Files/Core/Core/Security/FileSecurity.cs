@@ -112,6 +112,11 @@ namespace ASC.Files.Core.Security
             return Can(entry, userId, FilesSecurityActions.Read);
         }
 
+        public List<Tuple<FileEntry<T>, bool>> CanRead<T>(IEnumerable<FileEntry<T>> entry)
+        {
+            return Can(entry, AuthContext.CurrentAccount.ID, FilesSecurityActions.Read);
+        }
+
         public bool CanRead<T>(FileEntry<T> entry, Guid userId)
         {
             return Can(entry, userId, FilesSecurityActions.Read);

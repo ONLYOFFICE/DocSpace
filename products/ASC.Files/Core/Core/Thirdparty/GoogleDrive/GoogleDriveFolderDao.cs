@@ -181,9 +181,9 @@ namespace ASC.Files.Thirdparty.GoogleDrive
                 return RenameFolder(folder, folder.Title);
             }
 
-            if (folder.ParentFolderID != null)
+            if (folder.FolderID != null)
             {
-                var driveFolderId = MakeDriveId(folder.ParentFolderID);
+                var driveFolderId = MakeDriveId(folder.FolderID);
 
                 var driveFolder = ProviderInfo.Storage.InsertEntry(null, folder.Title, driveFolderId, true);
 

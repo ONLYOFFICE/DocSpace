@@ -697,7 +697,7 @@ namespace ASC.Web.Files.Utils
             //Fake folder. Don't send request to third party
             var folder = ServiceProvider.GetService<Folder<string>>();
 
-            folder.ParentFolderID = parentFolderId;
+            folder.FolderID = parentFolderId;
 
             folder.ID = providerInfo.RootFolderId;
             folder.CreateBy = providerInfo.Owner;

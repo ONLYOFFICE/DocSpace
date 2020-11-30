@@ -1799,7 +1799,7 @@ namespace ASC.Api.Documents
         public IEnumerable<FolderWrapper<string>> GetCommonThirdPartyFolders()
         {
             var parent = FileStorageServiceInt.GetFolder(GlobalFolderHelper.FolderCommon);
-            return EntryManager.GetThirpartyFolders(parent).Select(FolderWrapperHelper.Get).ToList();
+            return EntryManager.GetThirpartyFolders(parent).Select(r => FolderWrapperHelper.Get(r)).ToList();
         }
 
         /// <summary>
