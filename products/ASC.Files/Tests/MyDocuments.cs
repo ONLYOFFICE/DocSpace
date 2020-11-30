@@ -21,7 +21,7 @@ namespace ASC.Files.Tests
             base.SetUp();
             TestFolder = FilesControllerHelper.CreateFolder(GlobalFolderHelper.FolderMy, "TestFolder");
 
-            //TestFile = FilesControllerHelper.CreateFile(GlobalFolderHelper.FolderMy, "TestFile");
+            TestFile = FilesControllerHelper.CreateFile(GlobalFolderHelper.FolderMy, "TestFile");
 
         }
 

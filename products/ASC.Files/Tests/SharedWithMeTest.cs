@@ -29,7 +29,8 @@ namespace ASC.Files.Tests
             TestFolder = FilesControllerHelper.CreateFolder(GlobalFolderHelper.FolderMy, "TestFolder");
             TestUser = new EmployeeWraperFull { Id = Guid.NewGuid(), Email = "test@mail.com", FirstName = "Test", LastName = "Test", IsAdmin = true };
             //Guid OwnerId = Guid.Parse("005bb3ff-7de3-47d2-9b3d-61b9ec8a76a5");
-            TestFolderParam = new FileShareParams { Access = Core.Security.FileShare.Read, ShareTo = TestUser.Id };
+            UserManager.GetUsers(Guid.Parse("005bb3ff-7de3-47d2-9b3d-61b9ec8a76a5"));
+            TestFolderParam = new List<FileShareParams> { new FileShareParams { Access = Core.Security.FileShare.Read, ShareTo = TestUser.Id } };
 
             var TestFolderShare = (FolderWrapper<int>)FilesControllerHelper.SetFolderSecurityInfo(TestFolder.Id, TestFolderParam, true, "test");
         }
@@ -48,7 +49,7 @@ namespace ASC.Files.Tests
             var folderWrapper = FilesControllerHelper.CreateFolder(GlobalFolderHelper.FolderMy, folderTitle);
             var shareFolder = FilesControllerHelper.SetFolderSecurityInfo(folderWrapper.Id, TestFolderParam, notify, message);
             Assert.IsNotNull(shareFolder);
-            //Assert.AreEqual(folderWrapper.Id, shareFolder.);
+            Assert.AreEqual(folderWrapper.Id, shareFolder);
         }
 
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetFolderInfoItems))]
@@ -56,7 +57,7 @@ namespace ASC.Files.Tests
         public void GetSharedFolderInfo(string folderTitleExpected)
         {
             SecurityContext.AuthenticateMe(TestUser.Id);
-            var folderWrapper = FilesControllerHelper.GetFolderSecurityInfo(TestFolder.Id);
+            var folderWrapper = FilesControllerHelper.GetFolderInfo(TestFolder.Id);
             Assert.IsNotNull(folderWrapper);
             //Assert.AreEqual(folderTitleExpected, folderWrapper.Title);
 
