@@ -87,7 +87,7 @@ namespace ASC.Files.Service.Core
                         .Where(f => f.Item1.RootFolderType != FolderType.TRASH && f.Item1.RootFolderType != FolderType.BUNCH)
                         .ToList();
 
-            var parentFolderIDs = folders.Select(r => r.Item1.FolderID).ToArray();
+            var parentFolderIDs = folders.Select(r => r.Item1.FolderID).ToList();
             var parentFolders = FolderDao.GetFolders(parentFolderIDs, checkShare: false);
 
             return folders.Select(f => new Tuple<Feed.Aggregator.Feed, object>(ToFeed(f, parentFolders.FirstOrDefault(r => r.ID.Equals(f.Item1.FolderID))), f));

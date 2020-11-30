@@ -110,7 +110,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
             return result;
         }
 
-        public List<Folder<string>> GetFolders(string[] folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true)
+        public List<Folder<string>> GetFolders(IEnumerable<string> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true)
         {
             var result = Enumerable.Empty<Folder<string>>();
 
@@ -126,7 +126,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
                                                 {
                                                     var folderDao = selectorLocal.GetFolderDao(matchedId.FirstOrDefault());
                                                     return folderDao
-.GetFolders(matchedId.Select(selectorLocal.ConvertId).ToArray(),
+.GetFolders(matchedId.Select(selectorLocal.ConvertId).ToList(),
 filterType, subjectGroup, subjectID, searchText, searchSubfolders, checkShare);
                                                 })
                                                 .Where(r => r != null));

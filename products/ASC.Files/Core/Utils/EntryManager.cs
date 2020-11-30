@@ -340,7 +340,7 @@ namespace ASC.Web.Files.Utils
 
                             folders.RemoveAll(folder => rootKeys.Contains(folder.ID));
 
-                            var projectFolders = DaoFactory.GetFolderDao<int>().GetFolders(projectFolderIds.ToArray(), filter, subjectGroup, subjectId, null, false, false);
+                            var projectFolders = DaoFactory.GetFolderDao<int>().GetFolders(projectFolderIds.ToList(), filter, subjectGroup, subjectId, null, false, false);
                             folders.AddRange(projectFolders);
                         }
 
@@ -554,7 +554,7 @@ namespace ASC.Web.Files.Utils
 
             if (filter == FilterType.None || filter == FilterType.FoldersOnly)
             {
-                var folderIds = tags.Where(tag => tag.EntryType == FileEntryType.Folder).Select(tag => (T)Convert.ChangeType(tag.EntryId, typeof(T))).ToArray();
+                var folderIds = tags.Where(tag => tag.EntryType == FileEntryType.Folder).Select(tag => (T)Convert.ChangeType(tag.EntryId, typeof(T))).ToList();
                 folders = folderDao.GetFolders(folderIds, filter, subjectGroup, subjectId, searchText, false, false);
                 folders = folders.Where(folder => folder.RootFolderType != FolderType.TRASH).ToList();
 

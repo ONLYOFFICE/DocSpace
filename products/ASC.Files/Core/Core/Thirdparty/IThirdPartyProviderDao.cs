@@ -34,7 +34,7 @@ namespace ASC.Files.Thirdparty
         {
         }
 
-        public List<File<string>> GetFiles(string[] parentIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
+        public List<File<string>> GetFiles(IEnumerable<string> parentIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
         {
             return new List<File<string>>();
         }

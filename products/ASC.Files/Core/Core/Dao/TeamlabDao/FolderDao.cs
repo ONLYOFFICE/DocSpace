@@ -219,7 +219,7 @@ namespace ASC.Files.Core.Data
             return FromQueryWithShared(q).Select(ToFolder).ToList();
         }
 
-        public List<Folder<int>> GetFolders(int[] folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true)
+        public List<Folder<int>> GetFolders(IEnumerable<int> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true)
         {
             if (filterType == FilterType.FilesOnly || filterType == FilterType.ByExtension
                 || filterType == FilterType.DocumentsOnly || filterType == FilterType.ImagesOnly
@@ -243,7 +243,7 @@ namespace ASC.Files.Core.Data
                 if (FactoryIndexer.TrySelectIds(s =>
                                                     searchSubfolders
                                                         ? s.MatchAll(searchText)
-                                                        : s.MatchAll(searchText).In(r => r.Id, folderIds),
+                                                        : s.MatchAll(searchText).In(r => r.Id, folderIds.ToArray()),
                                                     out var searchIds))
                 {
                     q = q.Where(r => searchIds.Any(a => a == r.Id));

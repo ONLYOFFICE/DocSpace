@@ -348,11 +348,11 @@ namespace ASC.Web.Files.Services.WCFService
 
             var folderDao = DaoFactory.GetFolderDao<TId>();
             var fileDao = DaoFactory.GetFileDao<TId>();
-            var folders = folderDao.GetFolders(foldersId.ToArray());
+            var folders = folderDao.GetFolders(foldersId);
             folders = FileSecurity.FilterRead(folders).ToList();
             entries = entries.Concat(folders);
 
-            var files = fileDao.GetFiles(filesId.ToArray());
+            var files = fileDao.GetFiles(filesId);
             files = FileSecurity.FilterRead(files).ToList();
             entries = entries.Concat(files);
 
@@ -676,7 +676,7 @@ namespace ASC.Web.Files.Services.WCFService
             var result = new ItemDictionary<string, string>();
 
             var fileDao = GetFileDao();
-            var ids = filesId.Where(FileTracker.IsEditing).Select(id => id).ToArray();
+            var ids = filesId.Where(FileTracker.IsEditing).Select(id => id).ToList();
 
             foreach (var file in fileDao.GetFiles(ids))
             {
@@ -1394,7 +1394,7 @@ namespace ASC.Web.Files.Services.WCFService
                 }
             }
 
-            var folders = folderDao.GetFolders(foldersId.ToArray());
+            var folders = folderDao.GetFolders(foldersId);
             var foldersProject = folders.Where(folder => folder.FolderType == FolderType.BUNCH).ToList();
             if (foldersProject.Any())
             {
@@ -1608,7 +1608,7 @@ namespace ASC.Web.Files.Services.WCFService
                 rootFoldersId.Add(folderIdFromMy);
             }
 
-            var rootFolders = folderDao.GetFolders(rootFoldersId.ToArray());
+            var rootFolders = folderDao.GetFolders(rootFoldersId);
             foreach (var rootFolder in rootFolders)
             {
                 FileMarker.RemoveMarkAsNew(rootFolder, userId);
@@ -1646,11 +1646,11 @@ namespace ASC.Web.Files.Services.WCFService
             var folderDao = GetFolderDao();
             var entries = Enumerable.Empty<FileEntry<T>>();
 
-            var files = fileDao.GetFiles(filesId.ToArray());
+            var files = fileDao.GetFiles(filesId);
             files = FileSecurity.FilterRead(files).ToList();
             entries = entries.Concat(files);
 
-            var folders = folderDao.GetFolders(foldersId.ToArray());
+            var folders = folderDao.GetFolders(foldersId);
             folders = FileSecurity.FilterRead(folders).ToList();
             entries = entries.Concat(folders);
 
@@ -1668,11 +1668,11 @@ namespace ASC.Web.Files.Services.WCFService
             var folderDao = GetFolderDao();
             var entries = Enumerable.Empty<FileEntry<T>>();
 
-            var files = fileDao.GetFiles(filesId.ToArray());
+            var files = fileDao.GetFiles(filesId);
             files = FileSecurity.FilterRead(files).ToList();
             entries = entries.Concat(files);
 
-            var folders = folderDao.GetFolders(foldersId.ToArray());
+            var folders = folderDao.GetFolders(foldersId);
             folders = FileSecurity.FilterRead(folders).ToList();
             entries = entries.Concat(folders);
 
@@ -1693,7 +1693,7 @@ namespace ASC.Web.Files.Services.WCFService
 
             var tagDao = GetTagDao();
             var fileDao = GetFileDao();
-            var files = fileDao.GetFiles(filesId.ToArray());
+            var files = fileDao.GetFiles(filesId);
 
             files = FileSecurity.FilterRead(files)
                 .Where(file => FileUtility.ExtsWebTemplate.Contains(FileUtility.GetFileExtension(file.Title), StringComparer.CurrentCultureIgnoreCase))
@@ -1710,7 +1710,7 @@ namespace ASC.Web.Files.Services.WCFService
         {
             var tagDao = GetTagDao();
             var fileDao = GetFileDao();
-            var files = fileDao.GetFiles(filesId.ToArray());
+            var files = fileDao.GetFiles(filesId);
 
             files = FileSecurity.FilterRead(files).ToList();
 
@@ -2037,7 +2037,7 @@ namespace ASC.Web.Files.Services.WCFService
             var entries = new List<FileEntry<T>>();
 
             var folderDao = GetFolderDao();
-            var folders = folderDao.GetFolders(foldersId.ToArray());
+            var folders = folderDao.GetFolders(foldersId);
 
             foreach (var folder in folders)
             {
@@ -2062,7 +2062,7 @@ namespace ASC.Web.Files.Services.WCFService
             }
 
             var fileDao = GetFileDao();
-            var files = fileDao.GetFiles(filesId.ToArray());
+            var files = fileDao.GetFiles(filesId);
 
             foreach (var file in files)
             {
