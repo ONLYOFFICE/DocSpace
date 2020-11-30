@@ -76,8 +76,7 @@ const LoginContainer = styled.div`
       padding: 14px 0;
 
       .login-checkbox-wrapper {
-        position: absolute;
-        display: inline-flex;
+        display: flex;
 
         .login-checkbox {
           float: left;
@@ -85,23 +84,11 @@ const LoginContainer = styled.div`
             font-size: 12px;
           }
         }
-
-        .login-tooltip {
-          display: inline-flex;
-
-          @media (min-width: 1025px) {
-            margin-left: 8px;
-            margin-top: 4px;
-          }
-          @media (max-width: 1024px) {
-            padding: 4px 8px 8px 8px;
-          }
-        }
       }
 
       .login-link {
-        float: right;
-        line-height: 16px;
+        line-height: 18px;
+        margin-left: auto;
       }
     }
 
@@ -365,25 +352,24 @@ class Form extends Component {
                   onChange={this.onChangeCheckbox}
                   label={<Text fontSize="13px">{t("Remember")}</Text>}
                 />
-                <HelpButton
+                {/*<HelpButton
                   className="login-tooltip"
                   helpButtonHeaderContent={t("CookieSettingsTitle")}
                   tooltipContent={
                     <Text fontSize="12px">{t("RememberHelper")}</Text>
                   }
-                />
+                />*/}
+                <Link
+                  fontSize="13px"
+                  color="#316DAA"
+                  className="login-link"
+                  type="page"
+                  isHovered={false}
+                  onClick={this.onClick}
+                >
+                  {t("ForgotPassword")}
+                </Link>
               </div>
-
-              <Link
-                fontSize="13px"
-                color="#316DAA"
-                className="login-link"
-                type="page"
-                isHovered={false}
-                onClick={this.onClick}
-              >
-                {t("ForgotPassword")}
-              </Link>
             </div>
 
             {openDialog && (
