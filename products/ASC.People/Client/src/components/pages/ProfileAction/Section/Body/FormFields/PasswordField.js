@@ -66,7 +66,7 @@ class PasswordField extends React.Component {
           clipPasswordResource={`${t("Password")}: `}
           tooltipPasswordTitle={`${t("ErrorPasswordMessage")}:`}
           tooltipPasswordLength={t("ErrorPasswordLength", {
-            from: passwordSettings.minLength,
+            from: passwordSettings ? passwordSettings.minLength : 8,
             to: "30",
           })}
           tooltipPasswordDigits={t("ErrorPasswordNoDigits")}

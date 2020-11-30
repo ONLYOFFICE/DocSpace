@@ -123,13 +123,18 @@ namespace ASC.Files.Core.Data
         public File<int> GetFile(int fileId)
         {
             var query = GetFileQuery(r => r.Id == fileId && r.CurrentVersion).AsNoTracking();
-            return ToFile(FromQueryWithShared(query).SingleOrDefault());
+            return ToFile(
+                    FromQueryWithShared(query)
+                    .Take(1)
+                    .SingleOrDefault());
         }
 
         public File<int> GetFile(int fileId, int fileVersion)
         {
             var query = GetFileQuery(r => r.Id == fileId && r.Version == fileVersion).AsNoTracking();
-            return ToFile(FromQueryWithShared(query).SingleOrDefault());
+            return ToFile(FromQueryWithShared(query)
+                        .Take(1)
+                        .SingleOrDefault());
         }
 
         public File<int> GetFile(int parentId, string title)
@@ -1328,9 +1333,11 @@ namespace ASC.Files.Core.Data
                         .Where(x => x.tree.FolderId == r.FolderId)
                         .OrderByDescending(r => r.tree.Level)
                         .Select(r => r.folder)
+                        .Take(1)
                         .FirstOrDefault(),
                     Shared =
                      FilesDbContext.Security
+                        .Where(x=> x.TenantId == TenantID)
                         .Where(x => x.EntryType == FileEntryType.File)
                         .Where(x => x.EntryId == r.Id.ToString())
                         .Any()
@@ -1349,6 +1356,7 @@ namespace ASC.Files.Core.Data
                             .Where(x => x.tree.FolderId == r.FolderId)
                             .OrderByDescending(r => r.tree.Level)
                             .Select(r => r.folder)
+                            .Take(1)
                             .FirstOrDefault(),
                     Shared = true
                 });

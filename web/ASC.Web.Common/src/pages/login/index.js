@@ -125,6 +125,12 @@ const LoginContainer = styled.div`
   }
 `;
 
+const LoginFormWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+`;
+
 class Form extends Component {
   constructor(props) {
     super(props);
@@ -452,10 +458,9 @@ Form.defaultProps = {
 };
 
 const FormWrapper = withTranslation()(Form);
-const RegisterWrapper = withTranslation()(Register);
 
 const LoginForm = (props) => {
-  const { language, isLoaded, enabledJoin } = props;
+  const { language, isLoaded } = props;
 
   useEffect(() => {
     i18n.changeLanguage(language);
@@ -464,16 +469,14 @@ const LoginForm = (props) => {
   return (
     <>
       {isLoaded && (
-        <>
+        <LoginFormWrapper>
           <PageLayout>
             <PageLayout.SectionBody>
-              <>
-                <FormWrapper i18n={i18n} {...props} />
-                {enabledJoin && <RegisterWrapper i18n={i18n} {...props} />}
-              </>
+              <FormWrapper i18n={i18n} {...props} />
             </PageLayout.SectionBody>
           </PageLayout>
-        </>
+          <Register />
+        </LoginFormWrapper>
       )}
     </>
   );
@@ -487,16 +490,10 @@ LoginForm.propTypes = {
 
 function mapStateToProps(state) {
   const { isLoaded, settings } = state.auth;
-  const {
-    greetingSettings,
-    enabledJoin,
-    organizationName,
-    hashSettings,
-  } = settings;
+  const { greetingSettings, organizationName, hashSettings } = settings;
 
   return {
     isLoaded,
-    enabledJoin,
     organizationName,
     language: getLanguage(state),
     greetingTitle: greetingSettings,
