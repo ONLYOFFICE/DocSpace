@@ -74,6 +74,7 @@ class SectionBody extends React.Component {
     this.focusRef = React.createRef();
     this.scrollRef = React.createRef();
     this.isPageAutoScrolled = false;
+    this.isTablet = window.innerWidth <= size.tablet;
   }
 
   shouldComponentUpdate(nextProps) {
@@ -86,6 +87,7 @@ class SectionBody extends React.Component {
     this.focusRef.current.focus();
     this.documentElement = document.getElementById("customScrollBar");
     if (
+      this.isTablet &&
       isSafari &&
       this.documentElement &&
       this.documentElement.scrollTop !== 0
@@ -93,7 +95,7 @@ class SectionBody extends React.Component {
       this.isPageAutoScrolled = true;
   }
   componentDidUpdate() {
-    if (isSafari && this.isPageAutoScrolled)
+    if (this.isTablet && isSafari && this.isPageAutoScrolled)
       this.documentElement.scrollTo(0, 0);
   }
 
@@ -119,7 +121,6 @@ class SectionBody extends React.Component {
       : {};
 
     const scrollProp = uploadFiles ? { ref: this.scrollRef } : {};
-    const isTablet = window.innerWidth <= size.tablet;
 
     return uploadFiles ? (
       <StyledDropZoneBody
@@ -131,7 +132,7 @@ class SectionBody extends React.Component {
         isLoaded={isLoaded}
       >
         {withScroll ? (
-          !isTablet ? (
+          !this.isTablet ? (
             <Scrollbar {...scrollProp} stype="mediumBlack">
               <SelectedFrame
                 viewAs={viewAs}
@@ -185,7 +186,7 @@ class SectionBody extends React.Component {
         isLoaded={isLoaded}
       >
         {withScroll ? (
-          !isTablet ? (
+          !this.isTablet ? (
             <Scrollbar {...scrollProp} stype="mediumBlack">
               <div className="section-wrapper">
                 <div className="section-wrapper-content" {...focusProps}>
