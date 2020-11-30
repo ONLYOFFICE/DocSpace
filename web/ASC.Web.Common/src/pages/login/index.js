@@ -198,6 +198,7 @@ class Form extends Component {
 
   onSubmit = () => {
     const { errorText, identifier, password } = this.state;
+    // eslint-disable-next-line no-unused-vars, react/prop-types
     const { login, setIsLoaded, history, hashSettings, homepage } = this.props;
 
     errorText && this.setState({ errorText: "" });
@@ -229,7 +230,12 @@ class Form extends Component {
         }
       })
       .catch((error) => {
-        this.setState({ errorText: error, isLoading: false });
+        this.setState({
+          errorText: error,
+          identifierValid: !error,
+          passwordValid: !error,
+          isLoading: false,
+        });
       });
   };
 
@@ -237,8 +243,8 @@ class Form extends Component {
     const {
       match,
       t,
-      hashSettings,
-      reloadPortalSettings,
+      hashSettings, // eslint-disable-line react/prop-types
+      reloadPortalSettings, // eslint-disable-line react/prop-types
       organizationName,
     } = this.props;
     const { error, confirmedEmail } = match.params;
@@ -302,7 +308,7 @@ class Form extends Component {
               isVertical={true}
               labelVisible={false}
               hasError={!identifierValid}
-              errorMessage={t("RequiredFieldMessage")}
+              errorMessage={errorText ? errorText : t("RequiredFieldMessage")} //TODO: Add wrong login server error
             >
               <TextInput
                 id="login"
@@ -324,7 +330,7 @@ class Form extends Component {
               isVertical={true}
               labelVisible={false}
               hasError={!passwordValid}
-              errorMessage={t("RequiredFieldMessage")}
+              errorMessage={errorText ? "" : t("RequiredFieldMessage")} //TODO: Add wrong password server error
             >
               <PasswordInput
                 simpleView={true}
@@ -403,9 +409,11 @@ class Form extends Component {
                 {t("MessageEmailConfirmed")} {t("MessageAuthorize")}
               </Text>
             )}
+            {/* TODO: old error indication
+            
             <Text fontSize="14px" color="#c30">
               {errorText}
-            </Text>
+            </Text> */}
 
             {socialButtons.length ? (
               <Box displayProp="flex" alignItems="center">
