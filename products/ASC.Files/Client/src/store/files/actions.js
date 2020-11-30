@@ -862,12 +862,11 @@ const sendChunk = (
         const currentFile = files[indexOfFile];
         const fileId = res.data.data.id;
 
-        if (res.data.data && res.data.data.uploaded) {
-          newPercent = percent + (currentFile.size / totalSize) * 100;
+        if (newPercent < 100) {
+          newPercent = newPercent + 0.5 / files.length;
         }
-        if (newPercent < 100){
-          newPercent = newPercent + 0.5;
-          console.log(newPercent);
+        if (res.data.data && res.data.data.uploaded) {
+          newPercent = 100;
         }
         if (index + 1 !== requestsDataArray.length) {
           dispatch(
