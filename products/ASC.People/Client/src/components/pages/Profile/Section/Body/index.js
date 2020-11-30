@@ -58,6 +58,7 @@ const ContactWrapper = styled.div`
 
   .contact-link {
     padding: 0 8px;
+    line-height: 16px;
   }
 `;
 
