@@ -1,2 +1,1 @@
-import * as Icons from "./svg";
-export default { Icons };
+export * as Icons from "./svg";

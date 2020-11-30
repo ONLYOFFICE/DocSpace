@@ -8,7 +8,7 @@ import Text from "@appserver/components/src/components/text";
 import toastr from "@appserver/common/src/components/Toast/toastr";
 import ModuleTile from "@appserver/common/src/components/ModuleTile";
 import PageLayout from "@appserver/common/src/components/PageLayout";
-import utils from "@appserver/common/src/utils";
+import { changeLanguage } from "@appserver/common/src/utils";
 import { createI18N } from "../../../helpers/i18n";
 import { setDocumentTitle } from "../../../helpers/utils";
 
@@ -16,8 +16,6 @@ const i18n = createI18N({
   page: "Home",
   localesPath: "pages/Home",
 });
-
-const { changeLanguage } = utils;
 
 const HomeContainer = styled.div`
   padding: 62px 15px 0 15px;

@@ -4,7 +4,7 @@ const ModuleFederationPlugin = require("webpack/lib/container/ModuleFederationPl
 const deps = require("./package.json").dependencies;
 module.exports = {
   output: {
-    publicPath: "http://localhost:8080/",
+    publicPath: "http://localhost:5001/",
   },
 
   resolve: {
@@ -15,7 +15,7 @@ module.exports = {
   },
 
   devServer: {
-    port: 8080,
+    port: 5001,
   },
 
   module: {
@@ -59,10 +59,15 @@ module.exports = {
 
   plugins: [
     new ModuleFederationPlugin({
-      name: "login",
+      name: "home",
       filename: "remoteEntry.js",
-      remotes: {},
-      exposes: {},
+      remotes: {
+        home: "home@http://localhost:5001/remoteEntry.js",
+      },
+      exposes: {
+        "./Home": "./src/components/pages/Home",
+        "./Frame": "./src/Frame",
+      },
       shared: {
         ...deps,
         react: {
