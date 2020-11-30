@@ -590,6 +590,11 @@ namespace ASC.Files.Helpers
             return sharedInfo.Link;
         }
 
+        public bool SetAceLink(T fileId, FileShare share)
+        {
+            return FileStorageService.SetAceLink(fileId, share);
+        }
+
         ///// <summary>
         ///// 
         ///// </summary>
