@@ -853,7 +853,7 @@ const sendChunk = (
     convertFilesSize,
   } = uploadData;
   const totalSize = convertFilesSize + filesSize;
-  let newPercent;
+  let newPercent = 0;
   const sendRequestFunc = (index) => {
     api.files
       .uploadFile(location, requestsDataArray[index])
@@ -865,7 +865,10 @@ const sendChunk = (
         if (res.data.data && res.data.data.uploaded) {
           newPercent = percent + (currentFile.size / totalSize) * 100;
         }
-
+        if (newPercent < 100){
+          newPercent = newPercent + 0.5;
+          console.log(newPercent);
+        }
         if (index + 1 !== requestsDataArray.length) {
           dispatch(
             setPrimaryProgressBarData({
