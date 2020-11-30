@@ -456,7 +456,7 @@ const LoginForm = (props) => {
     <>
       {isLoaded && (
         <LoginFormWrapper>
-          <PageLayout withBodyScroll={false}>
+          <PageLayout>
             <PageLayout.SectionBody>
               <FormWrapper i18n={i18n} {...props} />
             </PageLayout.SectionBody>
