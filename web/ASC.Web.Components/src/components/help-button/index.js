@@ -248,6 +248,7 @@ HelpButton.defaultProps = {
   displayType: "auto",
   className: "icon-button",
   iconName: "QuestionIcon",
+  color: "#A3A9AE",
 };
 
 export default HelpButton;
