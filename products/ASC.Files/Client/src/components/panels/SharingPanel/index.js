@@ -16,7 +16,13 @@ import {
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
-import { utils as commonUtils, constants, toastr, store } from "asc-web-common";
+import {
+  utils as commonUtils,
+  constants,
+  toastr,
+  store,
+  api,
+} from "asc-web-common";
 import { getShareUsers, setShareFiles } from "../../../store/files/actions";
 import { getAccessOption, getSelection } from "../../../store/files/selectors";
 import {
@@ -33,13 +39,25 @@ const i18n = createI18N({
   page: "SharingPanel",
   localesPath: "panels/SharingPanel",
 });
-
+const { setExternalAccess } = api.files;
 const { changeLanguage } = commonUtils;
 const { ShareAccessRights } = constants;
 const {
   getCurrentUserId,
   getSettingsCustomNamesGroupsCaption,
 } = store.auth.selectors;
+
+const accessType = Object.freeze({
+  None: 0,
+  ReadWrite: 1,
+  Read: 2,
+  Restrict: 3,
+  Varies: 4,
+  Review: 5,
+  Comment: 6,
+  FillForms: 7,
+  CustomFilter: 8,
+});
 
 class SharingPanelComponent extends React.Component {
   constructor(props) {
@@ -429,6 +447,10 @@ class SharingPanelComponent extends React.Component {
     let error = null;
     let shareData = {};
 
+    setExternalAccess(fileId, accessType.none).then((res) => {
+      console.log(res);
+    });
+
     if (folderId.length !== 0 || fileId.length !== 0) {
       getShareUsers(folderId, fileId)
         .then((res) => {
@@ -648,6 +670,7 @@ class SharingPanelComponent extends React.Component {
                   index={index}
                   isMyId={isMyId}
                   accessOptions={accessOptions}
+                  accessRight={accessRight}
                   onFullAccessClick={this.onFullAccessItemClick}
                   onReadOnlyClick={this.onReadOnlyItemClick}
                   onReviewClick={this.onReviewItemClick}

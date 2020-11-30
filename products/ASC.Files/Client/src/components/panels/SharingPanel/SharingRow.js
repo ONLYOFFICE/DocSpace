@@ -27,6 +27,7 @@ const SharingRow = (props) => {
     onDenyAccessClick,
     onRemoveUserClick,
     onShowEmbeddingPanel,
+    accessRight,
   } = props;
 
   const linkVisible = selection && selection.length === 1 && item.shareLink;
@@ -37,6 +38,57 @@ const SharingRow = (props) => {
     copy(internalLink);
     toastr.success(t("LinkCopySuccess"));
   };
+
+  const advancedOptions = (
+    <>
+      {accessOptions.includes("FullAccess") && (
+        <DropDownItem
+          label="Full access"
+          icon="AccessEditIcon"
+          //onClick={props.onFullAccessClick}
+        />
+      )}
+
+      {accessOptions.includes("ReadOnly") && (
+        <DropDownItem
+          label="Read only"
+          icon="EyeIcon"
+          //onClick={props.onReadOnlyClick}
+        />
+      )}
+
+      {accessOptions.includes("Review") && (
+        <DropDownItem
+          label="Review"
+          icon="AccessReviewIcon"
+          //onClick={props.onReviewClick}
+        />
+      )}
+
+      {accessOptions.includes("Comment") && (
+        <DropDownItem
+          label="Comment"
+          icon="AccessCommentIcon"
+          //onClick={props.onCommentClick}
+        />
+      )}
+
+      {accessOptions.includes("FormFilling") && (
+        <DropDownItem
+          label="Form filling"
+          icon="AccessFormIcon"
+          //onClick={props.onFormFillingClick}
+        />
+      )}
+      {accessOptions.includes("DenyAccess") && (
+        <DropDownItem
+          label="Deny access"
+          icon="AccessNoneIcon"
+          //onClick={props.onDenyAccessClick}
+        />
+      )}
+    </>
+  );
 
   const advancedOptionsRender = () => (
     <>
@@ -87,6 +139,25 @@ const SharingRow = (props) => {
         />
       )}
     </>
+  );
+
+  const accessOptionsComboBox = (accessOptions, item, isDisabled) => (
+    <ComboBox
+      advancedOptions={advancedOptions}
+      options={[]}
+      selectedOption={{ key: 0 }}
+      size="content"
+      className="panel_combo-box"
+      scaled={false}
+      directionX="left"
+      disableIconClick={false}
+      isDisabled={isDisabled}
+    >
+      {React.createElement(Icons[accessRight.icon], {
+        size: "medium",
+        className: "sharing-access-combo-box-icon",
+      })}
+    </ComboBox>
   );
 
   const embeddedComponentRender = (accessOptions, item, isDisabled) => (
@@ -233,7 +304,7 @@ const SharingRow = (props) => {
           <LinkRow
             linkText="ExternalLink"
             data={externalLinkData}
-            embeddedComponentRender={embeddedComponentRender}
+            embeddedComponentRender={accessOptionsComboBox}
             onChangeToggle={onChangeToggle}
             withToggle={true}
             {...props}
