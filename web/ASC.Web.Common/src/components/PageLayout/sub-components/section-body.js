@@ -7,7 +7,7 @@ import isEqual from "lodash/isEqual";
 import { LayoutContextConsumer } from "../../Layout/context";
 import { getIsLoaded } from "../../../store/auth/selectors";
 import { connect } from "react-redux";
-
+import { isSafari } from "react-device-detect";
 const { tablet, size } = utils.device;
 
 const commonStyles = css`
@@ -73,6 +73,7 @@ class SectionBody extends React.Component {
 
     this.focusRef = React.createRef();
     this.scrollRef = React.createRef();
+    this.isPageAutoScrolled = false;
   }
 
   shouldComponentUpdate(nextProps) {
@@ -83,10 +84,21 @@ class SectionBody extends React.Component {
     if (!this.props.autoFocus) return;
 
     this.focusRef.current.focus();
+    this.documentElement = document.getElementById("customScrollBar");
+    if (
+      isSafari &&
+      this.documentElement &&
+      this.documentElement.scrollTop !== 0
+    )
+      this.isPageAutoScrolled = true;
+  }
+  componentDidUpdate() {
+    if (isSafari && this.isPageAutoScrolled)
+      this.documentElement.scrollTo(0, 0);
   }
 
   render() {
-    //console.log("PageLayout SectionBody render");
+    //console.log("PageLayout SectionBody render" );
     const {
       autoFocus,
       children,
