@@ -7,7 +7,6 @@ services:
       dockerfile: Dockerfile-app
       target: api
     image: "${REPO:-onlyoffice}/${STATUS:-}appserver-api:${TAG_SRV:-latest}"
-    container_name: ${CONTAINER_PRIFIX:-onlyoffice}-api
 
   onlyoffice-api_system:
     build:
@@ -15,7 +14,6 @@ services:
       dockerfile: Dockerfile-app
       target: api_system
     image: "${REPO:-onlyoffice}/${STATUS:-}appserver-api_system:${TAG_SRV:-latest}"
-    container_name: ${CONTAINER_PRIFIX:-onlyoffice}-api_system
      
   onlyoffice-urlshortener:
     build:
@@ -23,7 +21,6 @@ services:
       dockerfile: Dockerfile-app
       target: urlshortener
     image: "${REPO:-onlyoffice}/${STATUS:-}appserver-urlshortener:${TAG_SRV:-latest}"
-    container_name: ${CONTAINER_PRIFIX:-onlyoffice}-urlshortener
    
   onlyoffice-studio.notify:
     build:
@@ -31,7 +28,6 @@ services:
       dockerfile: Dockerfile-app
       target: studio.notify
     image: "${REPO:-onlyoffice}/${STATUS:-}appserver-studio.notify:${TAG_SRV:-latest}"
-    container_name: ${CONTAINER_PRIFIX:-onlyoffice}-studio.notify
     
   onlyoffice-notify:
     build:
@@ -39,7 +35,6 @@ services:
       dockerfile: Dockerfile-app
       target: notify
     image: "${REPO:-onlyoffice}/${STATUS:-}appserver-notify:${TAG_SRV:-latest}"
-    container_name: ${CONTAINER_PRIFIX:-onlyoffice}-notify
 
   onlyoffice-people.server:
     build:
@@ -47,7 +42,6 @@ services:
       dockerfile: Dockerfile-app
       target: people.server
     image: "${REPO:-onlyoffice}/${STATUS:-}appserver-people.server:${TAG_SRV:-latest}"
-    container_name: ${CONTAINER_PRIFIX:-onlyoffice}-people.server
     
   onlyoffice-files:
     build:
@@ -55,7 +49,6 @@ services:
       dockerfile: Dockerfile-app
       target: files
     image: "${REPO:-onlyoffice}/${STATUS:-}appserver-files:${TAG_SRV:-latest}"
-    container_name: ${CONTAINER_PRIFIX:-onlyoffice}-files
     
   onlyoffice-files_services:
     build:
@@ -63,7 +56,6 @@ services:
       dockerfile: Dockerfile-app
       target: files_services
     image: "${REPO:-onlyoffice}/${STATUS:-}appserver-files_services:${TAG_SRV:-latest}"
-    container_name: ${CONTAINER_PRIFIX:-onlyoffice}-files_services
     
   onlyoffice-studio:
     build:
@@ -71,7 +63,6 @@ services:
       dockerfile: Dockerfile-app
       target: studio
     image: "${REPO:-onlyoffice}/${STATUS:-}appserver-studio:${TAG_SRV:-latest}"
-    container_name: ${CONTAINER_PRIFIX:-onlyoffice}-studio
    
   onlyoffice-backup:
     build:
@@ -79,7 +70,6 @@ services:
       dockerfile: Dockerfile-app
       target: backup
     image: "${REPO:-onlyoffice}/${STATUS:-}appserver-backup:${TAG_SRV:-latest}"
-    container_name: ${CONTAINER_PRIFIX:-onlyoffice}-backup
     
   onlyoffice-nginx:
     build:
@@ -87,4 +77,3 @@ services:
       dockerfile: Dockerfile-app
       target: web
     image: "${REPO:-onlyoffice}/${STATUS:-}appserver-nginx:${TAG_SRV:-latest}"
-    container_name: ${CONTAINER_PRIFIX:-onlyoffice}-${NGINX_HOST:-nginx}
