@@ -42,7 +42,10 @@ class MobileLayout extends Component {
     if (visibleContent && isMobile && !isTouchDevice) {
       return;
     }
-
+    if (window.pageYOffset !== 0) {
+      window.scroll(0, 0);
+      return;
+    }
     const currentScrollPosition =
       this.documentElement.scrollTop > 0
         ? this.documentElement.scrollTop
