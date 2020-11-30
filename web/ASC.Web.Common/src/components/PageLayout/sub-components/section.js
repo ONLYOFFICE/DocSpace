@@ -19,7 +19,6 @@ const StyledSection = styled.section`
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  flex: 1 1 0%; // IOS fix, issue with flex-direction: column and empty height
   /*width: ${(props) => `${props.widthProp}px`};*/
   .layout-progress-bar {
     bottom: 0;
