@@ -40,7 +40,6 @@ using ASC.Core;
 using ASC.Core.Common.Settings;
 using ASC.Core.Users;
 using ASC.Files.Core;
-using ASC.Files.Core.Data;
 using ASC.Files.Core.Resources;
 using ASC.Files.Core.Security;
 using ASC.Web.Core.Files;
@@ -61,6 +60,7 @@ using FileShare = ASC.Files.Core.Security.FileShare;
 
 namespace ASC.Web.Files.Utils
 {
+    [Scope]
     public class LockerManager
     {
         private AuthContext AuthContext { get; }
@@ -93,6 +93,7 @@ namespace ASC.Web.Files.Utils
         }
     }
 
+    [Scope]
     public class BreadCrumbsManager
     {
         private IDaoFactory DaoFactory { get; }
@@ -172,6 +173,7 @@ namespace ASC.Web.Files.Utils
         }
     }
 
+    [Scope]
     public class EntryManager
     {
         private const string UPDATE_LIST = "filesUpdateList";
@@ -364,18 +366,18 @@ namespace ASC.Web.Files.Utils
                     }
                 }
 
-                parent.TotalFiles = entries.Aggregate(0, (a, f) => a + (f.FileEntryType == FileEntryType.Folder ? ((Folder<T>)f).TotalFiles : 1));
-                parent.TotalSubFolders = entries.Aggregate(0, (a, f) => a + (f.FileEntryType == FileEntryType.Folder ? ((Folder<T>)f).TotalSubFolders + 1 : 0));
+                parent.TotalFiles = entries.Aggregate(0, (a, f) => a + (f.FileEntryType == FileEntryType.Folder ? ((IFolder)f).TotalFiles : 1));
+                parent.TotalSubFolders = entries.Aggregate(0, (a, f) => a + (f.FileEntryType == FileEntryType.Folder ? ((IFolder)f).TotalSubFolders + 1 : 0));
             }
             else if (parent.FolderType == FolderType.SHARE)
             {
                 //share
-                var shared = (IEnumerable<FileEntry<T>>)fileSecurity.GetSharesForMe<T>(filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders);
+                var shared = fileSecurity.GetSharesForMe(filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders);
 
                 entries = entries.Concat(shared);
 
-                parent.TotalFiles = entries.Aggregate(0, (a, f) => a + (f.FileEntryType == FileEntryType.Folder ? ((Folder<T>)f).TotalFiles : 1));
-                parent.TotalSubFolders = entries.Aggregate(0, (a, f) => a + (f.FileEntryType == FileEntryType.Folder ? ((Folder<T>)f).TotalSubFolders + 1 : 0));
+                parent.TotalFiles = entries.Aggregate(0, (a, f) => a + (f.FileEntryType == FileEntryType.Folder ? ((IFolder)f).TotalFiles : 1));
+                parent.TotalSubFolders = entries.Aggregate(0, (a, f) => a + (f.FileEntryType == FileEntryType.Folder ? ((IFolder)f).TotalSubFolders + 1 : 0));
             }
             else if (parent.FolderType == FolderType.Recent)
             {
@@ -383,7 +385,7 @@ namespace ASC.Web.Files.Utils
                 var files = GetRecent(fileDao, filter, subjectGroup, subjectId, searchText, searchInContent);
                 entries = entries.Concat(files);
 
-                parent.TotalFiles = entries.Aggregate(0, (a, f) => a + (f.FileEntryType == FileEntryType.Folder ? ((Folder<T>)f).TotalFiles : 1));
+                parent.TotalFiles = entries.Aggregate(0, (a, f) => a + (f.FileEntryType == FileEntryType.Folder ? ((IFolder)f).TotalFiles : 1));
             }
             else if (parent.FolderType == FolderType.Favorites)
             {
@@ -395,8 +397,8 @@ namespace ASC.Web.Files.Utils
                 entries = entries.Concat(folders);
                 entries = entries.Concat(files);
 
-                parent.TotalFiles = entries.Aggregate(0, (a, f) => a + (f.FileEntryType == FileEntryType.Folder ? ((Folder<T>)f).TotalFiles : 1));
-                parent.TotalSubFolders = entries.Aggregate(0, (a, f) => a + (f.FileEntryType == FileEntryType.Folder ? ((Folder<T>)f).TotalSubFolders + 1 : 0));
+                parent.TotalFiles = entries.Aggregate(0, (a, f) => a + (f.FileEntryType == FileEntryType.Folder ? ((IFolder)f).TotalFiles : 1));
+                parent.TotalSubFolders = entries.Aggregate(0, (a, f) => a + (f.FileEntryType == FileEntryType.Folder ? ((IFolder)f).TotalSubFolders + 1 : 0));
             }
             else if (parent.FolderType == FolderType.Templates)
             {
@@ -404,7 +406,7 @@ namespace ASC.Web.Files.Utils
                 var files = GetTemplates(fileDao, filter, subjectGroup, subjectId, searchText, searchInContent);
                 entries = entries.Concat(files);
 
-                parent.TotalFiles = entries.Aggregate(0, (a, f) => a + (f.FileEntryType == FileEntryType.Folder ? ((Folder<T>)f).TotalFiles : 1));
+                parent.TotalFiles = entries.Aggregate(0, (a, f) => a + (f.FileEntryType == FileEntryType.Folder ? ((IFolder)f).TotalFiles : 1));
                 parent.TotalSubFolders = 0;
             }
             else if (parent.FolderType == FolderType.Privacy)
@@ -420,12 +422,12 @@ namespace ASC.Web.Files.Utils
                 entries = entries.Concat(files);
 
                 //share
-                var shared = (IEnumerable<FileEntry<T>>)fileSecurity.GetPrivacyForMe<T>(filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders);
+                var shared = fileSecurity.GetPrivacyForMe(filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders);
 
                 entries = entries.Concat(shared);
 
-                parent.TotalFiles = entries.Aggregate(0, (a, f) => a + (f.FileEntryType == FileEntryType.Folder ? ((Folder<T>)f).TotalFiles : 1));
-                parent.TotalSubFolders = entries.Aggregate(0, (a, f) => a + (f.FileEntryType == FileEntryType.Folder ? ((Folder<T>)f).TotalSubFolders + 1 : 0));
+                parent.TotalFiles = entries.Aggregate(0, (a, f) => a + (f.FileEntryType == FileEntryType.Folder ? ((IFolder)f).TotalFiles : 1));
+                parent.TotalSubFolders = entries.Aggregate(0, (a, f) => a + (f.FileEntryType == FileEntryType.Folder ? ((IFolder)f).TotalSubFolders + 1 : 0));
             }
             else
             {
@@ -495,7 +497,7 @@ namespace ASC.Web.Files.Utils
             var folderList = new List<Folder<string>>();
 
             if ((parent.ID.Equals(GlobalFolderHelper.FolderMy) || parent.ID.Equals(GlobalFolderHelper.FolderCommon))
-                && ThirdpartyConfiguration.SupportInclusion
+                && ThirdpartyConfiguration.SupportInclusion(DaoFactory)
                 && (FilesSettingsHelper.EnableThirdParty
                     || CoreBaseSettings.Personal))
             {
@@ -1198,71 +1200,6 @@ namespace ASC.Web.Files.Utils
                                      .Where(folder => folder.CreateBy == fromUserId).Select(folder => folder.ID);
 
             folderDao.ReassignFolders(folderIds.ToArray(), toUserId);
-        }
-    }
-
-    public static class EntryManagerExtension
-    {
-        public static DIHelper AddEntryManagerService(this DIHelper services)
-        {
-            if (services.TryAddScoped<EntryManager>())
-            {
-                return services
-                    .AddDaoFactoryService()
-                    .AddFileSecurityService()
-                    .AddGlobalFolderHelperService()
-                    .AddPathProviderService()
-                    .AddAuthContextService()
-                    .AddFileMarkerService()
-                    .AddFileUtilityService()
-                    .AddGlobalService()
-                    .AddGlobalStoreService()
-                    .AddCoreBaseSettingsService()
-                    .AddFilesSettingsHelperService()
-                    .AddUserManagerService()
-                    .AddFileShareLinkService()
-                    .AddDocumentServiceConnectorService()
-                    .AddDocumentServiceHelperService()
-                    .AddFilesIntegrationService()
-                    .AddThirdpartyConfigurationService()
-                    .AddLockerManagerService()
-                    .AddBreadCrumbsManagerService()
-                    ;
-            }
-
-            return services;
-        }
-    }
-
-    public static class LockerManagerExtension
-    {
-        public static DIHelper AddLockerManagerService(this DIHelper services)
-        {
-            if (services.TryAddScoped<LockerManager>())
-            {
-                return services
-                    .AddAuthContextService()
-                    .AddDaoFactoryService();
-            }
-
-            return services;
-        }
-    }
-
-    public static class BreadCrumbsManagerExtension
-    {
-        public static DIHelper AddBreadCrumbsManagerService(this DIHelper services)
-        {
-            if (services.TryAddScoped<BreadCrumbsManager>())
-            {
-                return services
-                    .AddDaoFactoryService()
-                    .AddFileSecurityService()
-                    .AddGlobalFolderHelperService()
-                    .AddAuthContextService();
-            }
-
-            return services;
         }
     }
 }

@@ -32,6 +32,7 @@ using ASC.Data.Storage;
 
 namespace ASC.Data.Backup.Storage
 {
+    [Scope]
     public class DataStoreBackupStorage : IBackupStorage
     {
         private string WebConfigPath { get; set; }
@@ -84,20 +85,6 @@ namespace ASC.Data.Backup.Storage
         protected virtual IDataStore GetDataStore()
         {
             return StorageFactory.GetStorage(WebConfigPath, Tenant.ToString(), "backup", null);
-        }
-
-
-    }
-
-    public static class DataStoreBackupStorageExtension
-    {
-        public static DIHelper AddDataStoreBackupStorage(this DIHelper services)
-        {
-            if (services.TryAddScoped<DataStoreBackupStorage>())
-            {
-                return services.AddStorageFactoryService();
-            }
-            return services;
         }
     }
 }

@@ -3,6 +3,7 @@ import {
   SET_MODULES,
   SET_SETTINGS,
   SET_IS_LOADED,
+  SET_IS_LOADED_SECTION,
   LOGOUT,
   SET_PASSWORD_SETTINGS,
   SET_NEW_EMAIL,
@@ -27,6 +28,7 @@ const desktopEncryption =
 const initialState = {
   isAuthenticated: false,
   isLoaded: false,
+  isLoadedSection: true,
   user: {},
   modules: [],
   settings: {
@@ -53,9 +55,7 @@ const initialState = {
     greetingSettings: "Web Office Applications",
     enableAdmMess: false,
     urlLicense: "https://gnu.org/licenses/gpl-3.0.html",
-    urlSupport: "http://support.onlyoffice.com/",
-    urlAuthKeys:
-      "https://helpcenter.onlyoffice.com/installation/groups-authorization-keys.aspx",
+    logoUrl: "",
     customNames: {
       id: "Common",
       userCaption: "User",
@@ -114,6 +114,10 @@ const authReducer = (state = initialState, action) => {
     case SET_IS_LOADED:
       return Object.assign({}, state, {
         isLoaded: action.isLoaded,
+      });
+    case SET_IS_LOADED_SECTION:
+      return Object.assign({}, state, {
+        isLoadedSection: action.isLoadedSection,
       });
     case SET_NEW_EMAIL:
       return Object.assign({}, state, {

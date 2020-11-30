@@ -38,6 +38,7 @@ using MySql.Data.MySqlClient;
 
 namespace ASC.Data.Backup.Tasks
 {
+    [Scope]
     public class DbFactory
     {
         public const string DefaultConnectionStringName = "default";
@@ -45,6 +46,7 @@ namespace ASC.Data.Backup.Tasks
 
         private DbProviderFactory dbProviderFactory;
         private IConfiguration Configuration { get; set; }
+        private ConfigurationExtension ConfigurationExtension { get; set; }
         private string ConnectionString { get; set; }
         private string Path { get; set; }
 
@@ -55,11 +57,11 @@ namespace ASC.Data.Backup.Tasks
 
                 if (string.IsNullOrEmpty(ConnectionString))
                 {
-                    return ConfigurationExtension.GetConnectionStrings(Configuration, DefaultConnectionStringName);
+                    return ConfigurationExtension.GetConnectionStrings(DefaultConnectionStringName);
                 }
                 else
                 {
-                    return ConfigurationExtension.GetConnectionStrings(Configuration, ConnectionString);
+                    return ConfigurationExtension.GetConnectionStrings(ConnectionString);
                 }
 
             }
@@ -78,9 +80,10 @@ namespace ASC.Data.Backup.Tasks
             }
         }
 
-        public DbFactory(IConfiguration configuration)
+        public DbFactory(IConfiguration configuration, ConfigurationExtension configurationExtension)
         {
             Configuration = configuration;
+            ConfigurationExtension = configurationExtension;
         }
 
         public DbConnection OpenConnection(string path = "default", string connectionString = DefaultConnectionStringName)//TODO
@@ -134,14 +137,6 @@ namespace ASC.Data.Backup.Tasks
                 connectionString = connectionString.TrimEnd(';') + ";Connection Timeout=90";
             }
             return connectionString;
-        }
-    }
-    public static class DbFactoryExtension
-    {
-        public static DIHelper AddDbFactoryService(this DIHelper services)
-        {
-            services.TryAddScoped<DbFactory>();
-            return services;
         }
     }
 }

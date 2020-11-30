@@ -37,16 +37,15 @@ using ASC.Core.Tenants;
 using ASC.Files.Core;
 using ASC.Files.Core.EF;
 using ASC.Files.Core.Resources;
-using ASC.Files.Core.Security;
 using ASC.Files.Core.Thirdparty;
 using ASC.Web.Core.Files;
-using ASC.Web.Files.Services.DocumentService;
 using ASC.Web.Studio.Core;
 
 using Microsoft.Extensions.Options;
 
 namespace ASC.Files.Thirdparty.SharePoint
 {
+    [Scope]
     internal class SharePointFileDao : SharePointDaoBase, IFileDao<string>
     {
         private CrossDao CrossDao { get; }
@@ -426,74 +425,6 @@ namespace ASC.Files.Thirdparty.SharePoint
                 file.FolderID = ProviderInfo.MakeId(file.FolderID);
 
             return file;
-        }
-
-        #region Only in TMFileDao
-
-        public void ReassignFiles(string[] fileIds, Guid newOwnerId)
-        {
-        }
-
-        public List<File<string>> GetFiles(string[] parentIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
-        {
-            return new List<File<string>>();
-        }
-
-        public IEnumerable<File<string>> Search(string text, bool bunch)
-        {
-            return null;
-        }
-
-        public bool IsExistOnStorage(File<string> file)
-        {
-            return true;
-        }
-
-        public void SaveEditHistory(File<string> file, string changes, Stream differenceStream)
-        {
-            //Do nothing
-        }
-
-        public List<EditHistory> GetEditHistory(DocumentServiceHelper documentServiceHelper, string fileId, int fileVersion)
-        {
-            return null;
-        }
-
-        public Stream GetDifferenceStream(File<string> file)
-        {
-            return null;
-        }
-
-        public bool ContainChanges(string fileId, int fileVersion)
-        {
-            return false;
-        }
-
-        public string GetUniqFilePath(File<string> file, string fileTitle)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<(File<int>, SmallShareRecord)> GetFeeds(int tenant, DateTime from, DateTime to)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<int> GetTenantsWithFeeds(DateTime fromTime)
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
-    }
-
-    public static class SharePointFileDaoExtention
-    {
-        public static DIHelper AddSharePointFileDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<SharePointFileDao>();
-
-            return services;
         }
     }
 }

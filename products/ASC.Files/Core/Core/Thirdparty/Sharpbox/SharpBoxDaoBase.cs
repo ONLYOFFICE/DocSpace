@@ -50,7 +50,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
 {
     internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProviderInfo>
     {
-        public override string Id { get => "sbox"; }
+        protected override string Id { get => "sbox"; }
 
         public SharpBoxDaoBase(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor, FileUtility fileUtility) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility)
         {
@@ -449,6 +449,13 @@ namespace ASC.Files.Thirdparty.Sharpbox
                 requestTitle = re.Replace(requestTitle, MatchEvaluator);
             }
             return requestTitle;
+        }
+
+        protected override IEnumerable<string> GetChildren(string folderId)
+        {
+            var subFolders = GetFolderSubfolders(folderId).Select(x => MakeId(x));
+            var files = GetFolderFiles(folderId).Select(x => MakeId(x));
+            return subFolders.Concat(files);
         }
 
         private static string MatchEvaluator(Match match)

@@ -38,6 +38,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace ASC.FederatedLogin.LoginProviders
 {
+    [Scope]
     public class ProviderManager
     {
         public static List<string> AuthProviders = new List<string>
@@ -98,22 +99,6 @@ namespace ASC.FederatedLogin.LoginProviders
                     .Select(GetLoginProvider)
                     .Any(loginProvider => loginProvider != null && loginProvider.IsEnabled);
             }
-        }
-    }
-
-    public static class ProviderManagerServiceExtension
-    {
-        public static DIHelper AddProviderManagerService(this DIHelper services)
-        {
-            if (services.TryAddScoped<ProviderManager>())
-            {
-                return services
-                    .AddSignatureService()
-                    .AddInstanceCryptoService()
-                    .AddConsumerFactoryService();
-            }
-
-            return services;
         }
     }
 }

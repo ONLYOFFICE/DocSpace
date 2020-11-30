@@ -53,6 +53,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Files.Core.Data
 {
+    [Scope]
     internal class FolderDao : AbstractDao, IFolderDao<int>
     {
         private const string my = "my";
@@ -65,14 +66,14 @@ namespace ASC.Files.Core.Data
         private const string trash = "trash";
         private const string projects = "projects";
 
-        private FactoryIndexer<DbFolder> FactoryIndexer { get; }
+        private FactoryIndexerFolder FactoryIndexer { get; }
         private GlobalSpace GlobalSpace { get; }
         private IDaoFactory DaoFactory { get; }
         private ProviderFolderDao ProviderFolderDao { get; }
         private CrossDao CrossDao { get; }
 
         public FolderDao(
-            FactoryIndexer<DbFolder> factoryIndexer,
+            FactoryIndexerFolder factoryIndexer,
             UserManager userManager,
             DbContextManager<FilesDbContext> dbContextManager,
             TenantManager tenantManager,
@@ -352,13 +353,13 @@ namespace ASC.Files.Core.Data
 
                 //full path to root
                 var oldTree = FilesDbContext.Tree
-                    .Where(r => r.FolderId == (int)folder.ParentFolderID);
+                    .Where(r => r.FolderId == folder.ParentFolderID);
 
                 foreach (var o in oldTree)
                 {
                     var treeToAdd = new DbFolderTree
                     {
-                        FolderId = (int)folder.ID,
+                        FolderId = folder.ID,
                         ParentId = o.ParentId,
                         Level = o.Level + 1
                     };
@@ -786,7 +787,7 @@ namespace ASC.Files.Core.Data
         }
 
 
-        public IEnumerable<Folder<int>> Search(string text, bool bunch)
+        public IEnumerable<Folder<int>> SearchFolders(string text, bool bunch)
         {
             return Search(text).Where(f => bunch
                                                ? f.RootFolderType == FolderType.BUNCH
@@ -1049,6 +1050,7 @@ namespace ASC.Files.Core.Data
                             .Take(1)
                             .FirstOrDefault(),
                     Shared = FilesDbContext.Security
+                            .Where(x => x.TenantId == TenantID)
                             .Where(r => r.EntryType == FileEntryType.Folder)
                             .Where(x => x.EntryId == r.Id.ToString())
                             .Any()
@@ -1167,7 +1169,7 @@ namespace ASC.Files.Core.Data
                 .ToDictionary(r => r.LeftNode, r => r.RightNode);
         }
 
-        public IEnumerable<(Folder<int>, SmallShareRecord)> GetFeeds(int tenant, DateTime from, DateTime to)
+        public IEnumerable<(Folder<int>, SmallShareRecord)> GetFeedsForFolders(int tenant, DateTime from, DateTime to)
         {
             var q1 = FilesDbContext.Folders
                 .Where(r => r.TenantId == tenant)
@@ -1191,7 +1193,7 @@ namespace ASC.Files.Core.Data
             return q2.Select(ToFolderWithShare).ToList().Union(q4.Select(ToFolderWithShare).ToList());
         }
 
-        public IEnumerable<int> GetTenantsWithFeeds(DateTime fromTime)
+        public IEnumerable<int> GetTenantsWithFeedsForFolders(DateTime fromTime)
         {
             var q1 = FilesDbContext.Files
                 .Where(r => r.ModifiedOn > fromTime)
@@ -1279,34 +1281,5 @@ namespace ASC.Files.Core.Data
     {
         public DbFolderQuery DbFolderQuery { get; set; }
         public DbFilesSecurity Security { get; set; }
-    }
-
-    public static class FolderDaoExtention
-    {
-        public static DIHelper AddFolderDaoService(this DIHelper services)
-        {
-            if (services.TryAddScoped<IFolderDao<int>, FolderDao>())
-            {
-                services.TryAddTransient<Folder<int>>();
-                services.TryAddTransient<Folder<string>>();
-
-                return services
-                    .AddFactoryIndexerFolderService()
-                    .AddTenantManagerService()
-                    .AddUserManagerService()
-                    .AddFilesDbContextService()
-                    .AddTenantUtilService()
-                    .AddSetupInfo()
-                    .AddTenantExtraService()
-                    .AddTenantStatisticsProviderService()
-                    .AddCoreBaseSettingsService()
-                    .AddCoreConfigurationService()
-                    .AddSettingsManagerService()
-                    .AddAuthContextService()
-                    .AddGlobalSpaceService();
-            }
-
-            return services;
-        }
     }
 }

@@ -45,6 +45,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Api.Documents
 {
+    [Scope]
     [DefaultRoute]
     [ApiController]
     public class PrivacyRoomController : ControllerBase
@@ -86,7 +87,19 @@ namespace ASC.Api.Documents
         /// </summary>
         /// <visible>false</visible>
         [Update("keys")]
-        public object SetKeys(PrivacyRoomModel model)
+        public object SetKeysFromBody([FromBody]PrivacyRoomModel model)
+        {
+            return SetKeys(model);
+        }
+
+        [Update("keys")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public object SetKeysFromForm([FromForm]PrivacyRoomModel model)
+        {
+            return SetKeys(model);
+        }
+
+        private object SetKeys(PrivacyRoomModel model)
         {
             PermissionContext.DemandPermissions(new UserSecurityProvider(AuthContext.CurrentAccount.ID), Constants.Action_EditUser);
 
@@ -166,7 +179,19 @@ namespace ASC.Api.Documents
         /// <returns></returns>
         /// <visible>false</visible>
         [Update("")]
-        public bool SetPrivacyRoom(PrivacyRoomModel model)
+        public bool SetPrivacyRoomFromBody([FromBody]PrivacyRoomModel model)
+        {
+            return SetPrivacyRoom(model);
+        }
+
+        [Update("")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public bool SetPrivacyRoomFromForm([FromForm]PrivacyRoomModel model)
+        {
+            return SetPrivacyRoom(model);
+        }
+
+        private bool SetPrivacyRoom(PrivacyRoomModel model)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -183,25 +208,6 @@ namespace ASC.Api.Documents
             MessageService.Send(model.Enable ? MessageAction.PrivacyRoomEnable : MessageAction.PrivacyRoomDisable);
 
             return model.Enable;
-        }
-    }
-
-    public static class PrivacyRoomApiExtention
-    {
-        public static DIHelper AddPrivacyRoomApiService(this DIHelper services)
-        {
-            if (services.TryAddScoped<PrivacyRoomController>())
-            {
-                services
-                    .AddAuthContextService()
-                    .AddPermissionContextService()
-                    .AddSettingsManagerService()
-                    .AddTenantManagerService()
-                    .AddMessageServiceService()
-                    .AddEncryptionKeyPairHelperService();
-            }
-
-            return services;
         }
     }
 }

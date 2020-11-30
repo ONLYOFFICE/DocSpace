@@ -32,7 +32,6 @@ using System.Text.Json;
 
 using ASC.Common;
 using ASC.Common.Threading;
-using ASC.Core;
 using ASC.Core.Tenants;
 using ASC.Files.Core.Resources;
 
@@ -40,6 +39,7 @@ using Microsoft.Extensions.Primitives;
 
 namespace ASC.Web.Files.Services.WCFService.FileOperations
 {
+    [Singletone(Additional = typeof(FileOperationsManagerHelperExtention))]
     public class FileOperationsManager
     {
         private readonly DistributedTaskQueue tasks;
@@ -57,8 +57,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             var operations = tasks.GetTasks();
             var processlist = Process.GetProcesses();
 
-            foreach (var o in operations.Where(o => string.IsNullOrEmpty(o.InstanceId)
-                                                    || processlist.All(p => p.Id != int.Parse(o.InstanceId))))
+            foreach (var o in operations.Where(o => processlist.All(p => p.Id != o.InstanceId)))
             {
                 o.SetProperty(FileOperation.PROGRESS, 100);
                 tasks.RemoveTask(o.Id);
@@ -122,8 +121,8 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 throw new InvalidOperationException(FilesCommonResource.ErrorMassage_ManyDownloads);
             }
 
-            var op1 = new FileDownloadOperation<int>(ServiceProvider, new FileDownloadOperationData<int>(folders.Where(r => r.Key.ValueKind == JsonValueKind.Number).ToDictionary(r => r.Key.GetInt32(), r => r.Value), files.Where(r => r.Key.ValueKind == JsonValueKind.Number).ToDictionary(r => r.Key.GetInt32(), r => r.Value), tenant, headers), false);
-            var op2 = new FileDownloadOperation<string>(ServiceProvider, new FileDownloadOperationData<string>(folders.Where(r => r.Key.ValueKind == JsonValueKind.String).ToDictionary(r => r.Key.GetString(), r => r.Value), files.Where(r => r.Key.ValueKind == JsonValueKind.String).ToDictionary(r => r.Key.GetString(), r => r.Value), tenant, headers), false);
+            var op1 = new FileDownloadOperation<int>(ServiceProvider, new FileDownloadOperationData<int>(folders.Where(r => r.Key.ValueKind == JsonValueKind.Number).ToDictionary(r => r.Key.GetInt32(), r => r.Value), files.Where(r => r.Key.ValueKind == JsonValueKind.Number).ToDictionary(r => r.Key.GetInt32(), r => r.Value), tenant, headers));
+            var op2 = new FileDownloadOperation<string>(ServiceProvider, new FileDownloadOperationData<string>(folders.Where(r => r.Key.ValueKind == JsonValueKind.String).ToDictionary(r => r.Key.GetString(), r => r.Value), files.Where(r => r.Key.ValueKind == JsonValueKind.String).ToDictionary(r => r.Key.GetString(), r => r.Value), tenant, headers));
             var op = new FileDownloadOperation(ServiceProvider, op2, op1);
 
             return QueueTask(userId, op);
@@ -167,23 +166,15 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         }
     }
 
-    public static class FileOperationsManagerHelperExtention
+    public class FileOperationsManagerHelperExtention
     {
-        public static DIHelper AddFileOperationsManagerHelperService(this DIHelper services)
+        public static void Register(DIHelper services)
         {
-            services.TryAddSingleton<DistributedTaskCacheNotify>();
-            services.TryAddSingleton<FileOperationsManager>();
-            services.TryAddScoped<FileDeleteOperationScope>();
-            services.TryAddScoped<FileMarkAsReadOperationScope>();
-            services.TryAddScoped<FileMoveCopyOperationScope>();
-            services.TryAddScoped<FileOperationScope>();
-            services.TryAddScoped<FileDownloadOperationScope>();
-
-            return services
-                .AddAuthContextService()
-                .AddTenantManagerService()
-                ;
-
+            services.TryAdd<FileDeleteOperationScope>();
+            services.TryAdd<FileMarkAsReadOperationScope>();
+            services.TryAdd<FileMoveCopyOperationScope>();
+            services.TryAdd<FileOperationScope>();
+            services.TryAdd<FileDownloadOperationScope>();
         }
     }
 }

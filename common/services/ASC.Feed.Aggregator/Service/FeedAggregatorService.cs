@@ -33,6 +33,7 @@ using System.Threading.Tasks;
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
+using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Common;
 using ASC.Core.Notify.Signalr;
@@ -42,14 +43,14 @@ using ASC.Feed.Data;
 
 using Autofac;
 
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Feed.Aggregator
 {
-    public class FeedAggregatorService : IHostedService
+    [Singletone(Additional = typeof(FeedAggregatorServiceExtension))]
+    public class FeedAggregatorService : IHostedService, IDisposable
     {
         private ILog Log { get; set; }
         private SignalrServiceClient SignalrServiceClient { get; }
@@ -61,24 +62,22 @@ namespace ASC.Feed.Aggregator
         private readonly object aggregateLock = new object();
         private readonly object removeLock = new object();
 
-        private IConfiguration Configuration { get; }
+        private ConfigurationExtension Configuration { get; }
         private IServiceProvider ServiceProvider { get; }
         public ILifetimeScope Container { get; }
 
         public FeedAggregatorService(
-            IConfiguration configuration,
+            ConfigurationExtension configuration,
             IServiceProvider serviceProvider,
             ILifetimeScope container,
             IOptionsMonitor<ILog> optionsMonitor,
-            SignalrServiceClient signalrServiceClient,
-            IConfigureNamedOptions<SignalrServiceClient> configureOptions)
+            IOptionsSnapshot<SignalrServiceClient> optionsSnapshot)
         {
             Configuration = configuration;
             ServiceProvider = serviceProvider;
             Container = container;
             Log = optionsMonitor.Get("ASC.Feed.Agregator");
-            SignalrServiceClient = signalrServiceClient;
-            configureOptions.Configure("counters", SignalrServiceClient);
+            SignalrServiceClient = optionsSnapshot.Get("counters");
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
@@ -286,8 +285,22 @@ namespace ASC.Feed.Aggregator
                 return false;
             }
         }
+
+        public void Dispose()
+        {
+            if (aggregateTimer != null)
+            {
+                aggregateTimer.Dispose();
+            }
+
+            if (removeTimer != null)
+            {
+                removeTimer.Dispose();
+            }
+        }
     }
 
+    [Scope]
     public class FeedAggregatorServiceScope
     {
         private BaseCommonLinkUtility BaseCommonLinkUtility { get; }
@@ -328,21 +341,11 @@ namespace ASC.Feed.Aggregator
         }
     }
 
-    public static class FeedAggregatorServiceExtension
+    public class FeedAggregatorServiceExtension
     {
-        public static DIHelper AddFeedAggregatorService(this DIHelper services)
+        public static void Register(DIHelper services)
         {
-            services.TryAddSingleton<FeedAggregatorService>();
-            services.TryAddScoped<FeedAggregatorServiceScope>();
-
-            return services
-                .AddBaseCommonLinkUtilityService()
-                .AddTenantManagerService()
-                .AddUserManagerService()
-                .AddSecurityContextService()
-                .AddAuthManager()
-                .AddFeedAggregateDataProvider()
-                .AddSignalrServiceClient();
+            services.TryAdd<FeedAggregatorServiceScope>();
         }
     }
 }

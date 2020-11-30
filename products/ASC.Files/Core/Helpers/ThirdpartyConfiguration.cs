@@ -32,16 +32,15 @@ using ASC.Common;
 using ASC.Core.Common.Configuration;
 using ASC.FederatedLogin.LoginProviders;
 using ASC.Files.Core;
-using ASC.Files.Core.Data;
 
 using Microsoft.Extensions.Configuration;
 
 namespace ASC.Web.Files.Helpers
 {
+    [Scope(Additional = typeof(ThirdpartyConfigurationExtension))]
     public class ThirdpartyConfiguration
     {
         private IConfiguration Configuration { get; }
-        private IDaoFactory DaoFactory { get; }
         private Lazy<BoxLoginProvider> BoxLoginProvider { get; }
         private Lazy<DropboxLoginProvider> DropboxLoginProvider { get; }
         private Lazy<OneDriveLoginProvider> OneDriveLoginProvider { get; }
@@ -50,11 +49,9 @@ namespace ASC.Web.Files.Helpers
 
         public ThirdpartyConfiguration(
             IConfiguration configuration,
-            IDaoFactory daoFactory,
             ConsumerFactory consumerFactory)
         {
             Configuration = configuration;
-            DaoFactory = daoFactory;
             BoxLoginProvider = new Lazy<BoxLoginProvider>(() => consumerFactory.Get<BoxLoginProvider>());
             DropboxLoginProvider = new Lazy<DropboxLoginProvider>(() => consumerFactory.Get<DropboxLoginProvider>());
             OneDriveLoginProvider = new Lazy<OneDriveLoginProvider>(() => consumerFactory.Get<OneDriveLoginProvider>());
@@ -67,15 +64,12 @@ namespace ASC.Web.Files.Helpers
             get { return (Configuration.GetSection("files:thirdparty:enable").Get<string[]>() ?? new string[] { }).ToList(); }
         }
 
-        public bool SupportInclusion
+        public bool SupportInclusion(IDaoFactory daoFactory)
         {
-            get
-            {
-                var providerDao = DaoFactory.ProviderDao;
-                if (providerDao == null) return false;
+            var providerDao = daoFactory.ProviderDao;
+            if (providerDao == null) return false;
 
-                return SupportBoxInclusion || SupportDropboxInclusion || SupportDocuSignInclusion || SupportGoogleDriveInclusion || SupportOneDriveInclusion || SupportSharePointInclusion || SupportWebDavInclusion || SupportNextcloudInclusion || SupportOwncloudInclusion || SupportkDriveInclusion || SupportYandexInclusion;
-            }
+            return SupportBoxInclusion || SupportDropboxInclusion || SupportDocuSignInclusion || SupportGoogleDriveInclusion || SupportOneDriveInclusion || SupportSharePointInclusion || SupportWebDavInclusion || SupportNextcloudInclusion || SupportOwncloudInclusion || SupportkDriveInclusion || SupportYandexInclusion;
         }
 
         public bool SupportBoxInclusion
@@ -207,23 +201,16 @@ namespace ASC.Web.Files.Helpers
             return result;
         }
     }
-    public static class ThirdpartyConfigurationExtension
-    {
-        public static DIHelper AddThirdpartyConfigurationService(this DIHelper services)
-        {
-            if (services.TryAddScoped<ThirdpartyConfiguration>())
-            {
-                return services
-                    .AddDaoFactoryService()
-                    .AddDocuSignLoginProviderService()
-                    .AddBoxLoginProviderService()
-                    .AddDropboxLoginProviderService()
-                    .AddOneDriveLoginProviderService()
-                    .AddGoogleLoginProviderService()
-                    ;
-            }
 
-            return services;
+    public class ThirdpartyConfigurationExtension
+    {
+        public static void Register(DIHelper services)
+        {
+            services.TryAdd<BoxLoginProvider>();
+            services.TryAdd<DropboxLoginProvider>();
+            services.TryAdd<OneDriveLoginProvider>();
+            services.TryAdd<DocuSignLoginProvider>();
+            services.TryAdd<GoogleLoginProvider>();
         }
     }
 }

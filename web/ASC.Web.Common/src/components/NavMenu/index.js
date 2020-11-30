@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import PropTypes from "prop-types";
+import styled from "styled-components";
 import { Backdrop, Toast, Aside } from "asc-web-components";
 import Header from "./sub-components/header";
 import HeaderNav from "./sub-components/header-nav";
@@ -12,6 +13,14 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router";
 
 import { getLanguage, isDesktopClient } from "../../store/auth/selectors";
+import Loaders from "../Loaders";
+
+const backgroundColor = "#0F4071";
+
+const StyledContainer = styled.header`
+  align-items: center;
+  background-color: ${backgroundColor};
+`;
 
 class NavMenu extends React.Component {
   constructor(props) {
@@ -98,26 +107,23 @@ class NavMenu extends React.Component {
       isDesktop,
     } = this.state;
 
-    const { isAuthenticated, isLoaded, asideContent } = this.props;
+    const { isAuthenticated, isLoaded, asideContent, history } = this.props;
 
     const isAsideAvailable = !!asideContent;
 
     console.log("NavMenu render", this.state, this.props);
 
     return (
-      <React.Fragment>
+      <StyledContainer>
         <Toast />
-        <HeaderNav />
-        {!isDesktop && (
-          <React.Fragment>
-            <Backdrop
-              visible={isBackdropVisible}
-              onClick={this.backdropClick}
-            />
 
-            {!isAuthenticated && isLoaded ? (
-              <HeaderUnAuth />
-            ) : (
+        <Backdrop visible={isBackdropVisible} onClick={this.backdropClick} />
+
+        {isLoaded && isAuthenticated ? (
+          <>
+            <HeaderNav history={history} />
+
+            {!isDesktop && (
               <Header
                 isNavOpened={isNavOpened}
                 onClick={this.showNav}
@@ -126,15 +132,19 @@ class NavMenu extends React.Component {
                 toggleAside={this.toggleAside}
               />
             )}
-
-            {isAsideAvailable && (
-              <Aside visible={isAsideVisible} onClick={this.backdropClick}>
-                {asideContent}
-              </Aside>
-            )}
-          </React.Fragment>
+          </>
+        ) : !isLoaded && isAuthenticated ? (
+          <Loaders.Header />
+        ) : (
+          !isDesktop && <HeaderUnAuth />
         )}
-      </React.Fragment>
+
+        {isAsideAvailable && (
+          <Aside visible={isAsideVisible} onClick={this.backdropClick}>
+            {asideContent}
+          </Aside>
+        )}
+      </StyledContainer>
     );
   }
 }

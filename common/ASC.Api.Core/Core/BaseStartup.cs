@@ -4,6 +4,7 @@ using ASC.Api.Core.Auth;
 using ASC.Api.Core.Core;
 using ASC.Api.Core.Middleware;
 using ASC.Common;
+using ASC.Common.Caching;
 using ASC.Common.Logging;
 
 using Microsoft.AspNetCore.Authentication;
@@ -63,12 +64,15 @@ namespace ASC.Api.Core
                     });
             }
 
-            DIHelper
-                .AddCultureMiddleware()
-                .AddIpSecurityFilter()
-                .AddPaymentFilter()
-                .AddProductSecurityFilter()
-                .AddTenantStatusFilter();
+            DIHelper.TryAdd<DisposeMiddleware>();
+            DIHelper.TryAdd<CultureMiddleware>();
+            DIHelper.TryAdd<IpSecurityFilter>();
+            DIHelper.TryAdd<PaymentFilter>();
+            DIHelper.TryAdd<ProductSecurityFilter>();
+            DIHelper.TryAdd<TenantStatusFilter>();
+            DIHelper.TryAdd<ConfirmAuthHandler>();
+
+            DIHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
 
             var builder = services.AddMvcCore(config =>
             {
@@ -86,7 +90,7 @@ namespace ASC.Api.Core
                 config.OutputFormatters.Add(new XmlOutputFormatter());
             });
 
-            DIHelper.AddCookieAuthHandler();
+
             var authBuilder = services.AddAuthentication("cookie")
                 .AddScheme<AuthenticationSchemeOptions, CookieAuthHandler>("cookie", a => { });
 
@@ -97,7 +101,7 @@ namespace ASC.Api.Core
 
             if (LogParams != null)
             {
-                DIHelper.AddNLogManager(LogParams);
+                LogNLogExtension.ConfigureLog(DIHelper, LogParams);
             }
         }
 

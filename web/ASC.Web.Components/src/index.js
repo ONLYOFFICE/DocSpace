@@ -18,6 +18,7 @@ export { default as EmailInput } from "./components/email-input";
 export { default as EmptyScreenContainer } from "./components/empty-screen-container";
 export { default as FieldContainer } from "./components/field-container";
 export { default as FileInput } from "./components/file-input";
+export { default as Grid } from "./components/grid";
 export { default as GroupButton } from "./components/group-button";
 export { default as GroupButtonsMenu } from "./components/group-buttons-menu";
 export { default as Heading } from "./components/heading";

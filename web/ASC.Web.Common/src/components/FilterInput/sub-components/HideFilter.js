@@ -39,6 +39,7 @@ class HideFilter extends React.Component {
         className="styled-hide-filter"
         onClick={this.onClick.bind(this, !popoverOpen)}
         ref={this.ref}
+        id="styled-hide-filter"
       >
         <StyledHideFilterButton id="PopoverLegacy" isDisabled={isDisabled}>
           {count}
@@ -53,7 +54,7 @@ class HideFilter extends React.Component {
 
         <div className="dropdown-style" ref={this.dropDownRef}>
           <DropDown
-            className="drop-down"
+            className="drop-down hide-filter-drop-down"
             clickOutsideAction={this.handleClickOutside}
             manualY="8px"
             open={popoverOpen}

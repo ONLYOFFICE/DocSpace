@@ -27,10 +27,14 @@
 using System;
 using System.Collections.Generic;
 
+using ASC.Common;
+using ASC.Core.Caching;
+using ASC.Core.Data;
 using ASC.Core.Tenants;
 
 namespace ASC.Core
 {
+    [Scope(typeof(ConfigureDbTenantService), typeof(ConfigureCachedTenantService))]
     public interface ITenantService
     {
         void ValidateDomain(string domain);

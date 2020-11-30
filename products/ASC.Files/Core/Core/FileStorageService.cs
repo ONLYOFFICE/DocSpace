@@ -48,7 +48,6 @@ using ASC.Data.Storage;
 using ASC.ElasticSearch;
 using ASC.FederatedLogin.LoginProviders;
 using ASC.Files.Core;
-using ASC.Files.Core.Data;
 using ASC.Files.Core.Resources;
 using ASC.Files.Core.Security;
 using ASC.Files.Core.Services.NotifyService;
@@ -56,7 +55,6 @@ using ASC.MessagingSystem;
 using ASC.Web.Core.Files;
 using ASC.Web.Core.PublicResources;
 using ASC.Web.Core.Users;
-using ASC.Web.Core.Utility;
 using ASC.Web.Files.Classes;
 using ASC.Web.Files.Core.Entries;
 using ASC.Web.Files.Helpers;
@@ -76,6 +74,7 @@ using UrlShortener = ASC.Web.Core.Utility.UrlShortener;
 
 namespace ASC.Web.Files.Services.WCFService
 {
+    [Scope]
     public class FileStorageService<T> //: IFileStorageService
     {
         private static readonly FileEntrySerializer serializer = new FileEntrySerializer();
@@ -309,7 +308,9 @@ namespace ASC.Web.Files.Services.WCFService
                 || parent.FolderType == FolderType.SHARE
                 || parent.RootFolderType == FolderType.Privacy;
 
-            entries = entries.Where(x => x.FileEntryType == FileEntryType.Folder || !FileConverter.IsConverting((File<T>)x));
+            entries = entries.Where(x => x.FileEntryType == FileEntryType.Folder || 
+            (x is File<string> f1 && !FileConverter.IsConverting(f1) ||
+             x is File<int> f2 && !FileConverter.IsConverting(f2)));
 
             var result = new DataWrapper<T>
             {
@@ -588,7 +589,7 @@ namespace ASC.Web.Files.Services.WCFService
                 file.Title = FileUtility.ReplaceFileExtension(fileWrapper.Title, fileExt);
             }
 
-            if (fileWrapper.TemplateId.Equals(default(T)))
+            if (fileWrapper.TemplateId == null || fileWrapper.TemplateId.Equals(default(T)))
             {
                 var culture = UserManager.GetUsers(AuthContext.CurrentAccount.ID).GetCulture();
                 var storeTemplate = GetStoreTemplate();
@@ -1166,13 +1167,14 @@ namespace ASC.Web.Files.Services.WCFService
 
         public Folder<T> SaveThirdParty(ThirdPartyParams thirdPartyParams)
         {
+            var folderDaoInt = DaoFactory.GetFolderDao<int>();
             var folderDao = GetFolderDao();
             var providerDao = GetProviderDao();
 
             if (providerDao == null) return null;
 
             ErrorIf(thirdPartyParams == null, FilesCommonResource.ErrorMassage_BadRequest);
-            var parentFolder = folderDao.GetFolder(thirdPartyParams.Corporate && !CoreBaseSettings.Personal ? GlobalFolderHelper.GetFolderCommon<T>() : GlobalFolderHelper.GetFolderMy<T>());
+            var parentFolder = folderDaoInt.GetFolder(thirdPartyParams.Corporate && !CoreBaseSettings.Personal ? GlobalFolderHelper.FolderCommon : GlobalFolderHelper.FolderMy);
             ErrorIf(!FileSecurity.CanCreate(parentFolder), FilesCommonResource.ErrorMassage_SecurityException_Create);
             ErrorIf(!FilesSettingsHelper.EnableThirdParty, FilesCommonResource.ErrorMassage_SecurityException_Create);
 
@@ -1184,7 +1186,7 @@ namespace ASC.Web.Files.Services.WCFService
             MessageAction messageAction;
             if (string.IsNullOrEmpty(thirdPartyParams.ProviderId))
             {
-                ErrorIf(!ThirdpartyConfiguration.SupportInclusion
+                ErrorIf(!ThirdpartyConfiguration.SupportInclusion(DaoFactory)
                         ||
                         (!FilesSettingsHelper.EnableThirdParty
                          && !CoreBaseSettings.Personal)
@@ -2255,54 +2257,6 @@ namespace ASC.Web.Files.Services.WCFService
         private IDictionary<string, StringValues> GetHttpHeaders()
         {
             return HttpContextAccessor?.HttpContext?.Request?.Headers;
-        }
-    }
-
-    public static class FileStorageServiceExtention
-    {
-        public static DIHelper AddFileStorageService(this DIHelper services)
-        {
-            if (services.TryAddScoped<FileStorageService<string>>())
-            {
-                services.TryAddScoped<FileStorageService<int>>();
-                //services.TryAddScoped<IFileStorageService, FileStorageService>();
-                return services
-                    .AddGlobalService()
-                    .AddGlobalStoreService()
-                    .AddGlobalFolderHelperService()
-                    .AddAuthContextService()
-                    .AddUserManagerService()
-                    .AddFilesLinkUtilityService()
-                    .AddBaseCommonLinkUtilityService()
-                    .AddCoreBaseSettingsService()
-                    .AddCustomNamingPeopleService()
-                    .AddDisplayUserSettingsService()
-                    .AddPathProviderService()
-                    .AddDaoFactoryService()
-                    .AddFileMarkerService()
-                    .AddFilesSettingsHelperService()
-                    .AddFileUtilityService()
-                    .AddFileSecurityService()
-                    .AddFilesMessageService()
-                    .AddFileShareLinkService()
-                    .AddDocumentServiceConnectorService()
-                    .AddEntryManagerService()
-                    .AddDocumentServiceHelperService()
-                    .AddThirdpartyConfigurationService()
-                    .AddUrlShortener()
-                    .AddDocuSignHelperService()
-                    .AddDocuSignTokenService()
-                    .AddFileConverterService()
-                    .AddNotifyClientService()
-                    .AddFileSharingService()
-                    .AddDocumentServiceTrackerHelperService()
-                    .AddSocketManagerService()
-                    .AddFileOperationsManagerHelperService()
-                        .AddFileSharingAceHelperService()
-                        .AddTenantManagerService();
-            }
-
-            return services;
         }
     }
 

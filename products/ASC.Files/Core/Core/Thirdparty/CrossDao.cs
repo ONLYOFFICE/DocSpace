@@ -2,8 +2,15 @@
 using System.Linq;
 using System.Threading;
 
-using ASC.Files.Core.Data;
+using ASC.Common;
 using ASC.Files.Core.Resources;
+using ASC.Files.Core.Security;
+using ASC.Files.Thirdparty.Box;
+using ASC.Files.Thirdparty.Dropbox;
+using ASC.Files.Thirdparty.GoogleDrive;
+using ASC.Files.Thirdparty.OneDrive;
+using ASC.Files.Thirdparty.SharePoint;
+using ASC.Files.Thirdparty.Sharpbox;
 using ASC.Web.Files.Utils;
 using ASC.Web.Studio.Core;
 
@@ -11,7 +18,8 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Files.Core.Thirdparty
 {
-    internal class CrossDao
+    [Scope(Additional = typeof(CrossDaoExtension))]
+    internal class CrossDao //Additional SharpBox
     {
         private IServiceProvider ServiceProvider { get; }
         private SetupInfo SetupInfo { get; }
@@ -41,8 +49,8 @@ namespace ASC.Files.Core.Thirdparty
                                                   FileSizeComment.FilesSizeToString(SetupInfo.AvailableFileSize)));
             }
 
-            var securityDao = ServiceProvider.GetService<SecurityDao<TFrom>>();
-            var tagDao = ServiceProvider.GetService<TagDao<TFrom>>();
+            var securityDao = ServiceProvider.GetService<ISecurityDao<TFrom>>();
+            var tagDao = ServiceProvider.GetService<ITagDao<TFrom>>();
 
             var fromFileShareRecords = securityDao.GetPureShareRecords(fromFile).Where(x => x.EntryType == FileEntryType.File);
             var fromFileNewTags = tagDao.GetNewTags(Guid.Empty, fromFile).ToList();
@@ -145,7 +153,7 @@ namespace ASC.Files.Core.Thirdparty
 
             if (deleteSourceFolder)
             {
-                var securityDao = ServiceProvider.GetService<SecurityDao<TFrom>>();
+                var securityDao = ServiceProvider.GetService<ISecurityDao<TFrom>>();
                 var fromFileShareRecords = securityDao.GetPureShareRecords(fromFolder)
                     .Where(x => x.EntryType == FileEntryType.Folder);
 
@@ -158,7 +166,7 @@ namespace ASC.Files.Core.Thirdparty
                     });
                 }
 
-                var tagDao = ServiceProvider.GetService<TagDao<TFrom>>();
+                var tagDao = ServiceProvider.GetService<ITagDao<TFrom>>();
                 var fromFileNewTags = tagDao.GetNewTags(Guid.Empty, fromFolder).ToList();
 
                 if (fromFileNewTags.Any())
@@ -175,6 +183,19 @@ namespace ASC.Files.Core.Thirdparty
             if (copyException != null) throw copyException;
 
             return toFolderDao.GetFolder(toConverter(toFolderId));
+        }
+    }
+
+    public class CrossDaoExtension
+    {
+        public static void Register(DIHelper services)
+        {
+            services.TryAdd<SharpBoxDaoSelector>();
+            services.TryAdd<SharePointDaoSelector>();
+            services.TryAdd<OneDriveDaoSelector>();
+            services.TryAdd<GoogleDriveDaoSelector>();
+            services.TryAdd<DropboxDaoSelector>();
+            services.TryAdd<BoxDaoSelector>();
         }
     }
 }

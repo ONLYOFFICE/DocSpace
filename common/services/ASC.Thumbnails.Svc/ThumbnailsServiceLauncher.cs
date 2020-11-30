@@ -34,21 +34,21 @@ using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Utils;
 
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Thumbnails.Svc
 {
+    [Scope]
     public class ThumbnailsServiceLauncher : IHostedService
     {
         private ProcessStartInfo StartInfo { get; set; }
         private Process Proc { get; set; }
         private ILog Logger { get; set; }
-        private IConfiguration Configuration { get; set; }
+        private ConfigurationExtension Configuration { get; set; }
         private IHostEnvironment HostEnvironment { get; set; }
 
-        public ThumbnailsServiceLauncher(IOptionsMonitor<ILog> options, IConfiguration configuration, IHostEnvironment hostEnvironment)
+        public ThumbnailsServiceLauncher(IOptionsMonitor<ILog> options, ConfigurationExtension configuration, IHostEnvironment hostEnvironment)
         {
             Logger = options.CurrentValue;
             Configuration = configuration;
@@ -114,14 +114,6 @@ namespace ASC.Thumbnails.Svc
         {
             StopAsync(cancellationToken);
             Proc = Process.Start(StartInfo);
-        }
-    }
-    public static class ThumbnailsServiceLauncherExtension
-    {
-        public static DIHelper AddThumbnailsServiceLauncher(this DIHelper services)
-        {
-            services.TryAddScoped<ThumbnailsServiceLauncher>();
-            return services;
         }
     }
 }

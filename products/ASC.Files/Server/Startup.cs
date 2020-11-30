@@ -3,7 +3,6 @@ using System.Text.Json.Serialization;
 
 using ASC.Api.Core;
 using ASC.Api.Documents;
-using ASC.Common;
 using ASC.Common.DependencyInjection;
 using ASC.Web.Files;
 using ASC.Web.Files.HttpHandlers;
@@ -38,15 +37,14 @@ namespace ASC.Files
 
             base.ConfigureServices(services);
 
-            DIHelper
-                .AddApiProductEntryPointService()
-                .AddDocumentsControllerService()
-                .AddPrivacyRoomApiService()
-                .AddFileHandlerService()
-                .AddChunkedUploaderHandlerService()
-                .AddThirdPartyAppHandlerService()
-                .AddDocuSignHandlerService()
-                .AddNotifyConfiguration();
+            DIHelper.TryAdd<FilesController>();
+            DIHelper.TryAdd<PrivacyRoomController>();
+            DIHelper.TryAdd<FileHandlerService>();
+            DIHelper.TryAdd<ChunkedUploaderHandlerService>();
+            DIHelper.TryAdd<DocuSignHandlerService>();
+            DIHelper.TryAdd<ThirdPartyAppHandlerService>();
+
+            NotifyConfigurationExtension.Register(DIHelper);
         }
 
         public override void Configure(IApplicationBuilder app, IWebHostEnvironment env)

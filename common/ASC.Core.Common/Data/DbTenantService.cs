@@ -30,6 +30,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 
+using ASC.Common;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Context;
 using ASC.Core.Common.EF.Model;
@@ -42,6 +43,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Data
 {
+    [Scope]
     public class ConfigureDbTenantService : IConfigureNamedOptions<DbTenantService>
     {
         private TenantDomainValidator TenantDomainValidator { get; }
@@ -68,19 +70,20 @@ namespace ASC.Core.Data
         }
     }
 
+    [Scope]
     public class DbTenantService : ITenantService
     {
         private List<string> forbiddenDomains;
 
         internal TenantDomainValidator TenantDomainValidator { get; set; }
-        public MachinePseudoKeys MachinePseudoKeys { get; }
+        private MachinePseudoKeys MachinePseudoKeys { get; }
         internal TenantDbContext TenantDbContext { get => LazyTenantDbContext.Value; }
         internal Lazy<TenantDbContext> LazyTenantDbContext { get; set; }
 
-        public Expression<Func<DbTenant, Tenant>> FromDbTenantToTenant { get; set; }
-        public Expression<Func<TenantUserSecurity, Tenant>> FromTenantUserToTenant { get; set; }
+        private static Expression<Func<DbTenant, Tenant>> FromDbTenantToTenant { get; set; }
+        private static Expression<Func<TenantUserSecurity, Tenant>> FromTenantUserToTenant { get; set; }
 
-        public DbTenantService()
+        static DbTenantService()
         {
             FromDbTenantToTenant = r => new Tenant
             {
@@ -102,21 +105,25 @@ namespace ASC.Core.Data
                 VersionChanged = r.VersionChanged,
                 TrustedDomainsRaw = r.TrustedDomains,
                 TrustedDomainsType = r.TrustedDomainsEnabled,
-                AffiliateId = r.Partner != null ? r.Partner.AffiliateId : null,
-                PartnerId = r.Partner != null ? r.Partner.PartnerId : null,
+                //AffiliateId = r.Partner != null ? r.Partner.AffiliateId : null,
+                //PartnerId = r.Partner != null ? r.Partner.PartnerId : null,
                 TimeZone = r.TimeZone,
-                Campaign = r.Partner != null ? r.Partner.Campaign : null
+                //Campaign = r.Partner != null ? r.Partner.Campaign : null
             };
 
             var fromDbTenantToTenant = FromDbTenantToTenant.Compile();
             FromTenantUserToTenant = r => fromDbTenantToTenant(r.DbTenant);
         }
 
+        public DbTenantService()
+        {
+
+        }
+
         public DbTenantService(
             DbContextManager<TenantDbContext> dbContextManager,
             TenantDomainValidator tenantDomainValidator,
             MachinePseudoKeys machinePseudoKeys)
-            : this()
         {
             LazyTenantDbContext = new Lazy<TenantDbContext>(() => dbContextManager.Value);
             TenantDomainValidator = tenantDomainValidator;
@@ -451,8 +458,7 @@ namespace ASC.Core.Data
 
         private IQueryable<DbTenant> TenantsQuery()
         {
-            return TenantDbContext.Tenants
-                .Include(r => r.Partner);
+            return TenantDbContext.Tenants;
         }
 
         private void ValidateDomain(string domain, int tenantId, bool validateCharacters)

@@ -1,7 +1,6 @@
 import React from "react";
 import FilterButton from "./FilterButton";
 import HideFilter from "./HideFilter";
-import throttle from "lodash/throttle";
 import { ComboBox } from "asc-web-components";
 import CloseButton from "./CloseButton";
 import isEqual from "lodash/isEqual";
@@ -39,6 +38,7 @@ class FilterItem extends React.Component {
       isOpen: false,
       isOpenSelector: !isOpenSelector,
       selectedOption,
+      needUpdate: false,
     };
   }
 
@@ -47,7 +47,6 @@ class FilterItem extends React.Component {
 
     if (
       selectedItem &&
-      selectedItem.key !== this.state.selectedOption.key &&
       selectedItem.key !== this.state.selectedOption.key &&
       selectedItem.key !== prevProps.selectedItem.key
     ) {
@@ -67,6 +66,11 @@ class FilterItem extends React.Component {
         selectedOption,
       });
     }
+
+    if (this.state.needUpdate) {
+      this.props.onFilterRender();
+      this.setNeedUpdate(false);
+    }
   }
 
   onSelect = (option) => {
@@ -84,6 +88,12 @@ class FilterItem extends React.Component {
   };
 
   toggleCombobox = (e, isOpen) => this.setState({ isOpen });
+
+  setNeedUpdate = (needUpdate) => {
+    this.setState({
+      needUpdate,
+    });
+  };
 
   onCancelSelector = (e) => {
     if (
@@ -149,6 +159,7 @@ class FilterItem extends React.Component {
       defaultOptionLabel,
       groupsCaption,
       defaultOption,
+      asideView,
     } = this.props;
     return (
       <StyledFilterItem key={id} id={id} block={block} opened={opened}>
@@ -175,6 +186,7 @@ class FilterItem extends React.Component {
                 isMultiSelect={false}
                 onCancel={this.onCancelSelector}
                 onSelect={this.onSelectGroup}
+                displayType={asideView ? "aside" : "auto"}
               />
             </>
           )}
@@ -202,6 +214,7 @@ class FilterItem extends React.Component {
                 defaultOptionLabel={defaultOptionLabel}
                 onCancel={this.onCancelSelector}
                 onSelect={this.onSelectGroup}
+                displayType={asideView ? "aside" : "auto"}
               />
             </>
           )}
@@ -224,7 +237,7 @@ class FilterItem extends React.Component {
                   opened={opened}
                   directionX="left"
                   toggleAction={this.toggleCombobox}
-                  dropDownMaxHeight={200}
+                  dropDownMaxHeight={300}
                 ></ComboBox>
               ) : (
                 <span className="styled-filter-name">{label}</span>
@@ -260,47 +273,65 @@ class FilterBlock extends React.Component {
   constructor(props) {
     super(props);
 
-    const { hideFilterItems, openFilterItems } = props;
+    const { hiddenFilterItems, openFilterItems } = props;
 
     this.state = {
-      hideFilterItems: hideFilterItems || [],
+      hiddenFilterItems: hiddenFilterItems || [],
       openFilterItems: openFilterItems || [],
+      needUpdate: false,
     };
-
-    this.throttledRender = throttle(this.onRender, 100);
   }
 
-  componentDidUpdate() {
-    this.throttledRender();
+  componentDidMount() {
+    this.setNeedUpdate(true);
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const { needUpdate } = this.state;
+    const { needUpdateFilter } = this.props;
+    if (
+      (needUpdate || needUpdateFilter) &&
+      (!isEqual(prevState.openFilterItems, this.state.openFilterItems) ||
+        !isEqual(prevState.hiddenFilterItems, this.state.hiddenFilterItems))
+    ) {
+      this.props.onFilterRender();
+      this.setNeedUpdate(false);
+    }
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    const { hideFilterItems, openFilterItems } = nextProps;
+    const { hiddenFilterItems, openFilterItems } = nextProps;
 
     if (!isEqual(this.props, nextProps)) {
       if (
-        !isEqual(this.props.hideFilterItems, hideFilterItems) ||
+        !isEqual(this.props.hiddenFilterItems, hiddenFilterItems) ||
         !isEqual(this.props.openFilterItems, openFilterItems)
       ) {
         this.setState({
-          hideFilterItems,
+          hiddenFilterItems,
           openFilterItems,
         });
         return false;
       }
       return true;
     }
-    if (this.props.isResizeUpdate) {
-      return true;
-    }
+
     return !isEqual(this.state, nextState);
   }
 
   onDeleteFilterItem = (key) => {
     this.props.onDeleteFilterItem(key);
+    this.setNeedUpdate(true);
+  };
+
+  setNeedUpdate = (needUpdate) => {
+    this.setState({
+      needUpdate,
+    });
   };
   getFilterItems = () => {
-    const { openFilterItems, hideFilterItems } = this.state;
+    const { openFilterItems, hiddenFilterItems } = this.state;
+    const { asideView } = this.props;
     const _this = this;
     let result = [];
     let openItems = [];
@@ -339,13 +370,15 @@ class FilterBlock extends React.Component {
             defaultOption={defaultOption}
             defaultSelectLabel={defaultSelectLabel}
             selectedItem={selectedItem}
+            onFilterRender={_this.props.onFilterRender}
+            asideView={asideView}
           ></FilterItem>
         );
       });
     }
-    if (hideFilterItems.length > 0) {
+    if (hiddenFilterItems.length > 0) {
       let open = false;
-      let hideFilterItemsList = hideFilterItems.map(function (item) {
+      let hideFilterItemsList = hiddenFilterItems.map(function (item) {
         const {
           key,
           group,
@@ -379,13 +412,15 @@ class FilterBlock extends React.Component {
             defaultOption={defaultOption}
             defaultSelectLabel={defaultSelectLabel}
             selectedItem={selectedItem}
+            onFilterRender={_this.props.onFilterRender}
+            asideView={asideView}
           ></FilterItem>
         );
       });
       hideItems.push(
         <HideFilter
           key="hide-filter"
-          count={hideFilterItems.length}
+          count={hiddenFilterItems.length}
           isDisabled={this.props.isDisabled}
           open={open}
         >
@@ -420,14 +455,11 @@ class FilterBlock extends React.Component {
     return result;
   };
 
-  onRender = () => {
-    this.props.onRender();
-  };
   render() {
     const _this = this;
     const filterItems = this.getFilterItems();
     const filterData = this.props.getFilterData();
-    const { iconSize, isDisabled, contextMenuHeader } = this.props;
+    const { iconSize, isDisabled, contextMenuHeader, asideView } = this.props;
     return (
       <>
         <div
@@ -445,6 +477,7 @@ class FilterBlock extends React.Component {
             getData={_this.getData}
             isDisabled={isDisabled}
             asideHeader={contextMenuHeader}
+            asideView={asideView}
           />
         )}
       </>
@@ -453,15 +486,15 @@ class FilterBlock extends React.Component {
 }
 FilterBlock.propTypes = {
   getFilterData: PropTypes.func,
-  hideFilterItems: PropTypes.array,
+  hiddenFilterItems: PropTypes.array,
   iconSize: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   isDisabled: PropTypes.bool,
-  isResizeUpdate: PropTypes.bool,
   onDeleteFilterItem: PropTypes.func,
   onRender: PropTypes.func,
   openFilterItems: PropTypes.array,
   columnCount: PropTypes.number,
   contextMenuHeader: PropTypes.string,
+  asideView: PropTypes.bool,
 };
 
 export default FilterBlock;

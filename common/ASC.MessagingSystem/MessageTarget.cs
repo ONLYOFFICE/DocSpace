@@ -35,6 +35,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.MessagingSystem
 {
+    [Singletone]
     public class MessageTarget
     {
         private IEnumerable<string> _items;
@@ -109,16 +110,6 @@ namespace ASC.MessagingSystem
         public override string ToString()
         {
             return string.Join(",", _items);
-        }
-    }
-
-    public static class MessageTargetExtension
-    {
-        public static DIHelper AddMessageTargetService(this DIHelper services)
-        {
-            services.TryAddSingleton<MessageTarget>();
-
-            return services;
         }
     }
 }

@@ -30,6 +30,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 
+using ASC.Common;
 using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
@@ -39,6 +40,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Data
 {
+    [Scope]
     public class ConfigureEFUserService : IConfigureNamedOptions<EFUserService>
     {
         private DbContextManager<UserDbContext> DbContextManager { get; }
@@ -63,15 +65,15 @@ namespace ASC.Core.Data
         }
     }
 
-
+    [Scope]
     public class EFUserService : IUserService
     {
-        public Expression<Func<User, UserInfo>> FromUserToUserInfo { get; set; }
-        public Func<UserInfo, User> FromUserInfoToUser { get; set; }
-        public Expression<Func<DbGroup, Group>> FromDbGroupToGroup { get; set; }
-        public Func<Group, DbGroup> FromGroupToDbGroup { get; set; }
-        public Expression<Func<UserGroup, UserGroupRef>> FromUserGroupToUserGroupRef { get; set; }
-        public Func<UserGroupRef, UserGroup> FromUserGroupRefToUserGroup { get; set; }
+        private static Expression<Func<User, UserInfo>> FromUserToUserInfo { get; set; }
+        private static Func<UserInfo, User> FromUserInfoToUser { get; set; }
+        private static Expression<Func<DbGroup, Group>> FromDbGroupToGroup { get; set; }
+        private static Func<Group, DbGroup> FromGroupToDbGroup { get; set; }
+        private static Expression<Func<UserGroup, UserGroupRef>> FromUserGroupToUserGroupRef { get; set; }
+        private static Func<UserGroupRef, UserGroup> FromUserGroupRefToUserGroup { get; set; }
 
         internal UserDbContext UserDbContext { get => LazyUserDbContext.Value; }
         internal Lazy<UserDbContext> LazyUserDbContext { get; set; }
@@ -80,7 +82,7 @@ namespace ASC.Core.Data
         public MachinePseudoKeys MachinePseudoKeys { get; }
         internal string DbId { get; set; }
 
-        public EFUserService()
+        static EFUserService()
         {
             FromUserToUserInfo = user => new UserInfo
             {
@@ -185,7 +187,12 @@ namespace ASC.Core.Data
             };
         }
 
-        public EFUserService(DbContextManager<UserDbContext> userDbContextManager, PasswordHasher passwordHasher, MachinePseudoKeys machinePseudoKeys) : this()
+        public EFUserService()
+        {
+
+        }
+
+        public EFUserService(DbContextManager<UserDbContext> userDbContextManager, PasswordHasher passwordHasher, MachinePseudoKeys machinePseudoKeys)
         {
             UserDbContextManager = userDbContextManager;
             PasswordHasher = passwordHasher;

@@ -83,7 +83,7 @@ class PureArticleMainButtonContent extends React.Component {
     const { t, canCreate, isDisabled, firstLoad, isPrivacy } = this.props;
 
     return firstLoad ? (
-      <Loaders.Filter />
+      <Loaders.Rectangle />
     ) : (
       <MainButton
         isDisabled={isDisabled ? isDisabled : !canCreate}

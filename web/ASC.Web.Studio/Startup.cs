@@ -1,8 +1,7 @@
+
 using ASC.Api.Core;
-using ASC.Common;
 using ASC.Common.DependencyInjection;
 using ASC.Data.Storage;
-using ASC.Data.Storage.Configuration;
 using ASC.Data.Storage.DiscStorage;
 using ASC.FederatedLogin;
 
@@ -33,13 +32,10 @@ namespace ASC.Web.Studio
 
             base.ConfigureServices(services);
 
-            DIHelper
-                .AddStorage()
-                .AddPathUtilsService()
-                .AddStorageHandlerService()
-                .AddLoginHandlerService();
-
             services.AddMemoryCache();
+            DIHelper.TryAdd<Login>();
+            DIHelper.TryAdd<PathUtils>();
+            DIHelper.TryAdd<StorageHandlerScope>();
         }
 
         public void ConfigureContainer(ContainerBuilder builder)

@@ -11,6 +11,7 @@ import {
   RowContainer,
   utils,
   Box,
+  Grid,
 } from "asc-web-components";
 import UserContent from "./userContent";
 import {
@@ -41,8 +42,8 @@ const i18n = createI18N({
 });
 const { Consumer } = utils.context;
 const { isArrayEqual } = utils.array;
-const { getSettings } = store.auth.selectors;
-const { setIsLoaded } = store.auth.actions;
+const { getSettings, getIsLoadedSection } = store.auth.selectors;
+const { setIsLoadedSection } = store.auth.actions;
 const { resendUserInvites } = api.people;
 const { EmployeeStatus } = constants;
 
@@ -68,19 +69,17 @@ class SectionBodyContent extends React.PureComponent {
       isLoaded,
       fetchPeople,
       filter,
-      setIsLoaded,
+      setIsLoadedSection,
       peopleList,
     } = this.props;
     if (!isLoaded) return;
 
-    if (peopleList.length <= 0) setIsLoaded();
-
-    setIsLoaded(false);
+    if (peopleList.length <= 0) setIsLoadedSection();
 
     fetchPeople(filter)
-      .then(() => isLoaded && setIsLoaded(true))
+      .then(() => isLoaded && setIsLoadedSection(true))
       .catch((error) => {
-        isLoaded && setIsLoaded(true);
+        isLoaded && setIsLoadedSection(true);
         toastr.error(error);
       });
   }
@@ -373,6 +372,7 @@ class SectionBodyContent extends React.PureComponent {
     //console.log("Home SectionBodyContent render()");
     const {
       isLoaded,
+      isLoadedSection,
       peopleList,
       history,
       settings,
@@ -386,8 +386,8 @@ class SectionBodyContent extends React.PureComponent {
 
     const { dialogsVisible, user } = this.state;
 
-    return !isLoaded || (isMobile && isLoading) ? (
-      <Loaders.Rows />
+    return !isLoaded || (isMobile && isLoading) || !isLoadedSection ? (
+      <Loaders.Rows isRectangle={false} />
     ) : peopleList.length > 0 ? (
       <>
         <Consumer>
@@ -491,8 +491,12 @@ class SectionBodyContent extends React.PureComponent {
         headerText={t("NotFoundTitle")}
         descriptionText={t("NotFoundDescription")}
         buttons={
-          <>
-            <Box displayProp="inline-block" marginProp="0 8px 0 0">
+          <Grid
+            marginProp="13px 0"
+            gridColumnGap="8px"
+            columnsProp={["12px 1fr"]}
+          >
+            <Box>
               <IconButton
                 className="empty-folder_container-icon"
                 size="12"
@@ -502,7 +506,7 @@ class SectionBodyContent extends React.PureComponent {
                 color="#657077"
               />
             </Box>
-            <Box displayProp="inline-block" marginProp="14px 0 0 0">
+            <Box marginProp="-4px 0 0 0">
               <Link
                 type="action"
                 isHovered={true}
@@ -513,7 +517,7 @@ class SectionBodyContent extends React.PureComponent {
                 {t("ClearButton")}
               </Link>
             </Box>
-          </>
+          </Grid>
         }
       />
     );
@@ -525,6 +529,7 @@ const mapStateToProps = (state) => {
   const { filter, isLoading } = state.people;
   return {
     isLoaded,
+    isLoadedSection: getIsLoadedSection(state),
     filter,
     isLoading,
     peopleList: getPeopleList(state),
@@ -540,5 +545,5 @@ export default connect(mapStateToProps, {
   resetFilter,
   fetchPeople,
   selectGroup,
-  setIsLoaded,
+  setIsLoadedSection,
 })(withRouter(withTranslation()(SectionBodyContent)));

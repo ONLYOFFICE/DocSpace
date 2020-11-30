@@ -61,6 +61,7 @@ namespace ASC.Web.Core.Utility
         }
     }
 
+    [Scope]
     public class ColorThemesSettingsHelper
     {
         private SettingsManager SettingsManager { get; }
@@ -137,19 +138,6 @@ namespace ASC.Web.Core.Utility
             {
 
             }
-        }
-    }
-
-    public static class ColorThemesSettingsHelperExtension
-    {
-        public static DIHelper AddColorThemesSettingsHelperService(this DIHelper services)
-        {
-            if (services.TryAddScoped<ColorThemesSettingsHelper>())
-            {
-                return services.AddSettingsManagerService();
-            }
-
-            return services;
         }
     }
 }

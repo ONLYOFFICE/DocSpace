@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using ASC.Api.Core.Middleware;
 using ASC.Common;
 using ASC.Core;
 using ASC.Data.Backup.Contracts;
@@ -18,6 +17,7 @@ using static ASC.Data.Backup.BackupAjaxHandler;
 
 namespace ASC.Data.Backup.Controllers
 {
+    [Scope]
     [DefaultRoute]
     [ApiController]
     public class BackupController
@@ -61,7 +61,19 @@ namespace ASC.Data.Backup.Controllers
         /// <param name="backupMail">Include mail in the backup</param>
         /// <category>Backup</category>
         [Create("createbackupschedule")]
-        public bool CreateBackupSchedule(BackupSchedule backupSchedule)
+        public bool CreateBackupScheduleFromBody([FromBody]BackupSchedule backupSchedule)
+        {
+            return CreateBackupSchedule(backupSchedule);
+        }
+
+        [Create("createbackupschedule")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public bool CreateBackupScheduleFromForm([FromForm]BackupSchedule backupSchedule)
+        {
+            return CreateBackupSchedule(backupSchedule);
+        }
+
+        private bool CreateBackupSchedule(BackupSchedule backupSchedule)
         {
             if (CoreBaseSettings.Standalone)
             {
@@ -106,7 +118,19 @@ namespace ASC.Data.Backup.Controllers
         /// <category>Backup</category>
         /// <returns>Backup Progress</returns>
         [Create("startbackup")]
-        public BackupProgress StartBackup(Models.Backup backup)
+        public BackupProgress StartBackupFromBody([FromBody]Models.Backup backup)
+        {
+            return StartBackup(backup);
+        }
+
+        [Create("startbackup")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public BackupProgress StartBackupFromForm([FromForm]Models.Backup backup)
+        {
+            return StartBackup(backup);
+        }
+
+        private BackupProgress StartBackup(Models.Backup backup)
         {
             if (CoreBaseSettings.Standalone)
             {
@@ -193,7 +217,19 @@ namespace ASC.Data.Backup.Controllers
         /// <category>Backup</category>
         /// <returns>Restore Progress</returns>
         [Create("startrestore")]
-        public BackupProgress StartBackupRestore(BackupRestore backupRestore)
+        public BackupProgress StartBackupRestoreFromBody([FromBody]BackupRestore backupRestore)
+        {
+            return StartBackupRestore(backupRestore);
+        }
+
+        [Create("startrestore")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public BackupProgress StartBackupRestoreFromForm([FromForm]BackupRestore backupRestore)
+        {
+            return StartBackupRestore(backupRestore);
+        }
+
+        private BackupProgress StartBackupRestore(BackupRestore backupRestore)
         {
             if (CoreBaseSettings.Standalone)
             {
@@ -230,17 +266,6 @@ namespace ASC.Data.Backup.Controllers
             }
 
             return BackupHandler.GetTmpFolder();
-        }
-    }
-    public static class BackupControllerExtension
-    {
-        public static DIHelper AddBackupController(this DIHelper services)
-        {
-            return services
-                .AddBackupAjaxHandler()
-                .AddIpSecurityFilter()
-                .AddCoreBaseSettingsService()
-                .AddTenantExtraService();
         }
     }
 }

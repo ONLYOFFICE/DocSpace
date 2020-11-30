@@ -32,6 +32,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Files.Utils
 {
+    [Scope]
     public class SocketManager
     {
         private readonly SignalrServiceClient _signalrServiceClient;
@@ -47,20 +48,6 @@ namespace ASC.Web.Files.Utils
         public void FilesChangeEditors(object fileId, bool finish = false)
         {
             _signalrServiceClient.FilesChangeEditors(TenantManager.GetCurrentTenant().TenantId, fileId.ToString(), finish);
-        }
-    }
-    public static class SocketManagerExtension
-    {
-        public static DIHelper AddSocketManagerService(this DIHelper services)
-        {
-            if (services.TryAddScoped<SocketManager>())
-            {
-                return services
-                    .AddTenantManagerService()
-                    .AddSignalrServiceClient();
-            }
-
-            return services;
         }
     }
 }

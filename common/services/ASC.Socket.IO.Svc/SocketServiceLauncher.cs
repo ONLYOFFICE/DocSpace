@@ -34,7 +34,6 @@ using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.Core;
-using ASC.Core.Notify.Signalr;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -42,9 +41,10 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Socket.IO.Svc
 {
+    [Scope]
     public class SocketServiceLauncher : IHostedService
     {
-        private const int PingInterval = 10000;
+        //private const int PingInterval = 10000;
 
         private Process Proc { get; set; }
         private ProcessStartInfo StartInfo { get; set; }
@@ -53,27 +53,33 @@ namespace ASC.Socket.IO.Svc
         private ILog Logger { get; set; }
         private string LogDir { get; set; }
         private IConfiguration Configuration { get; set; }
+        private ConfigurationExtension ConfigurationExtension { get; }
         private CoreBaseSettings CoreBaseSettings { get; set; }
-        private SignalrServiceClient SignalrServiceClient { get; set; }
+        //private SignalrServiceClient SignalrServiceClient { get; set; }
         private IHostEnvironment HostEnvironment { get; set; }
 
-        public SocketServiceLauncher(IOptionsMonitor<ILog> options, IConfiguration configuration, CoreBaseSettings coreBaseSettings, SignalrServiceClient signalrServiceClient, IHostEnvironment hostEnvironment, IConfigureNamedOptions<SignalrServiceClient> configureOptions)
+        public SocketServiceLauncher(
+            IOptionsMonitor<ILog> options,
+            IConfiguration configuration,
+            ConfigurationExtension configurationExtension,
+            CoreBaseSettings coreBaseSettings,
+            //IOptionsSnapshot<SignalrServiceClient> signalrServiceClient,
+            IHostEnvironment hostEnvironment)
         {
             Logger = options.CurrentValue;
             //CancellationTokenSource = new CancellationTokenSource();
             Configuration = configuration;
+            ConfigurationExtension = configurationExtension;
             CoreBaseSettings = coreBaseSettings;
-            SignalrServiceClient = signalrServiceClient;
+            //SignalrServiceClient = signalrServiceClient.Value;
             HostEnvironment = hostEnvironment;
-
-            configureOptions.Configure(SignalrServiceClient);
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
             try
             {
-                var settings = Configuration.GetSetting<SocketSettings>("socket");
+                var settings = ConfigurationExtension.GetSetting<SocketSettings>("socket");
 
                 StartInfo = new ProcessStartInfo
                 {
@@ -236,16 +242,5 @@ namespace ASC.Socket.IO.Svc
         //        Logger.Error("Ping failed stop");
         //    }
         //}
-    }
-
-    public static class SocketServiceLauncherExtension
-    {
-        public static DIHelper AddSocketServiceLauncher(this DIHelper services)
-        {
-            services.TryAddScoped<SocketServiceLauncher>();
-            return services
-                .AddCoreBaseSettingsService()
-                .AddSignalrServiceClient();
-        }
     }
 }

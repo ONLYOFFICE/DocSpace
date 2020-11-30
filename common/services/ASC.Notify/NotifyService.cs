@@ -40,6 +40,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Notify
 {
+    [Singletone(Additional = typeof(NotifyServiceExtension))]
     public class NotifyService : INotifyService, IDisposable
     {
         private ILog Log { get; }
@@ -119,6 +120,7 @@ namespace ASC.Notify
         }
     }
 
+    [Scope]
     public class NotifyServiceScope
     {
         private TenantManager TenantManager { get; }
@@ -140,16 +142,11 @@ namespace ASC.Notify
         }
     }
 
-    public static class NotifyServiceExtension
+    public class NotifyServiceExtension
     {
-        public static DIHelper AddNotifyService(this DIHelper services)
+        public static void Register(DIHelper services)
         {
-            services.TryAddSingleton<NotifyService>();
-            services.TryAddScoped<NotifyServiceScope>();
-            services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
-
-            return services
-                .AddDbWorker();
+            services.TryAdd<NotifyServiceScope>();
         }
     }
 }

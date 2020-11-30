@@ -54,6 +54,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Studio.Core.Notify
 {
+    [Singletone(Additional = typeof(StudioPeriodicNotifyExtension))]
     public class StudioPeriodicNotify
     {
         private IServiceProvider ServiceProvider { get; }
@@ -1130,6 +1131,7 @@ namespace ASC.Web.Studio.Core.Notify
         }
     }
 
+    [Scope]
     public class StudioPeriodicNotifyScope
     {
         private TenantManager TenantManager { get; }
@@ -1225,29 +1227,11 @@ namespace ASC.Web.Studio.Core.Notify
         }
     }
 
-    public static class StudioPeriodicNotifyExtension
+    public class StudioPeriodicNotifyExtension
     {
-        public static DIHelper AddStudioPeriodicNotify(this DIHelper services)
+        public static void Register(DIHelper services)
         {
-            services.TryAddSingleton<StudioPeriodicNotify>();
-            services.TryAddSingleton<CouponManager>();
-            services.TryAddScoped<StudioPeriodicNotifyScope>();
-
-            return services
-                .AddApiSystemHelper()
-                .AddTenantManagerService()
-                .AddUserManagerService()
-                .AddStudioNotifyHelperService()
-                .AddPaymentManagerService()
-                .AddTenantExtraService()
-                .AddAuthContextService()
-                .AddCommonLinkUtilityService()
-                .AddSetupInfo()
-                .AddFeedDbService()
-                .AddCoreBaseSettingsService()
-                .AddDisplayUserSettingsService()
-                .AddSecurityContextService()
-                .AddAuthManager();
+            services.TryAdd<StudioPeriodicNotifyScope>();
         }
     }
 }

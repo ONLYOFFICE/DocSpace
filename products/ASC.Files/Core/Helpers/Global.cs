@@ -38,7 +38,6 @@ using ASC.Core.Common.Settings;
 using ASC.Core.Users;
 using ASC.Data.Storage;
 using ASC.Files.Core;
-using ASC.Files.Core.Data;
 using ASC.Files.Core.Resources;
 using ASC.Files.Core.Security;
 using ASC.Web.Core;
@@ -54,6 +53,7 @@ using Constants = ASC.Core.Configuration.Constants;
 
 namespace ASC.Web.Files.Classes
 {
+    [Singletone]
     public class GlobalNotify
     {
         private ICacheNotify<AscCacheItem> Notify { get; set; }
@@ -100,6 +100,7 @@ namespace ASC.Web.Files.Classes
         }
     }
 
+    [Scope]
     public class Global
     {
         private IConfiguration Configuration { get; }
@@ -200,6 +201,7 @@ namespace ASC.Web.Files.Classes
         }
     }
 
+    [Scope]
     public class GlobalStore
     {
         private StorageFactory StorageFactory { get; }
@@ -222,6 +224,7 @@ namespace ASC.Web.Files.Classes
         }
     }
 
+    [Scope]
     public class GlobalSpace
     {
         private FilesUserSpaceUsage FilesUserSpaceUsage { get; }
@@ -244,6 +247,7 @@ namespace ASC.Web.Files.Classes
         }
     }
 
+    [Scope]
     public class GlobalFolder
     {
         private CoreBaseSettings CoreBaseSettings { get; }
@@ -600,6 +604,7 @@ namespace ASC.Web.Files.Classes
         }
     }
 
+    [Scope]
     public class GlobalFolderHelper
     {
         private FileMarker FileMarker { get; }
@@ -668,90 +673,6 @@ namespace ASC.Web.Files.Classes
             {
                 GlobalFolder.SetFolderTrash(value);
             }
-        }
-    }
-
-    public static class GlobalExtention
-    {
-        public static DIHelper AddGlobalNotifyService(this DIHelper services)
-        {
-            services.TryAddSingleton<GlobalNotify>();
-
-            return services
-                .AddKafkaService()
-                .AddCoreBaseSettingsService();
-        }
-
-        public static DIHelper AddGlobalService(this DIHelper services)
-        {
-            if (services.TryAddScoped<Global>())
-            {
-                return services
-                    .AddAuthContextService()
-                    .AddUserManagerService()
-                    .AddCoreSettingsService()
-                    .AddTenantManagerService()
-                    .AddDisplayUserSettingsService()
-                    .AddCustomNamingPeopleService()
-                    .AddFileSecurityCommonService();
-            }
-
-            return services;
-        }
-
-        public static DIHelper AddGlobalStoreService(this DIHelper services)
-        {
-            if (services.TryAddScoped<GlobalStore>())
-            {
-                return services
-                    .AddStorageFactoryService()
-                    .AddTenantManagerService();
-            }
-
-            return services;
-        }
-
-        public static DIHelper AddGlobalSpaceService(this DIHelper services)
-        {
-            if (services.TryAddScoped<GlobalSpace>())
-            {
-                return services
-                    .AddFilesUserSpaceUsageService()
-                    .AddAuthContextService();
-            }
-
-            return services;
-        }
-        public static DIHelper AddGlobalFolderService(this DIHelper services)
-        {
-            if (services.TryAddScoped<GlobalFolder>())
-            {
-                return services
-                    .AddCoreBaseSettingsService()
-                    .AddWebItemManager()
-                    .AddWebItemSecurity()
-                    .AddAuthContextService()
-                    .AddTenantManagerService()
-                    .AddUserManagerService()
-                    .AddSettingsManagerService()
-                    .AddGlobalStoreService();
-            }
-
-            return services;
-        }
-
-        public static DIHelper AddGlobalFolderHelperService(this DIHelper services)
-        {
-            if (services.TryAddScoped<GlobalFolderHelper>())
-            {
-                return services
-                    .AddGlobalFolderService()
-                    .AddDaoFactoryService()
-                    .AddFileMarkerService()
-                    ;
-            }
-
-            return services;
         }
     }
 }

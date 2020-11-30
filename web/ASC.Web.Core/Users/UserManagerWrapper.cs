@@ -35,7 +35,6 @@ using ASC.Core;
 using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
-using ASC.IPSecurity;
 using ASC.MessagingSystem;
 using ASC.Web.Core.PublicResources;
 using ASC.Web.Core.Utility;
@@ -46,6 +45,8 @@ namespace ASC.Web.Core.Users
     /// <summary>
     /// Web studio user manager helper
     /// </summary>
+    /// 
+    [Scope]
     public sealed class UserManagerWrapper
     {
         private StudioNotifyService StudioNotifyService { get; }
@@ -348,30 +349,6 @@ namespace ASC.Web.Core.Users
                                    + @"\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$";
             const RegexOptions options = RegexOptions.IgnoreCase | RegexOptions.Compiled;
             return new Regex(pattern, options).IsMatch(email);
-        }
-    }
-    public static class UserManagerWrapperExtension
-    {
-        public static DIHelper AddUserManagerWrapperService(this DIHelper services)
-        {
-            if (services.TryAddScoped<UserManagerWrapper>())
-            {
-
-                return services
-                    .AddIPSecurityService()
-                    .AddTenantUtilService()
-                    .AddCustomNamingPeopleService()
-                    .AddSettingsManagerService()
-                    .AddStudioNotifyServiceService()
-                    .AddUserManagerService()
-                    .AddSecurityContextService()
-                    .AddMessageServiceService()
-                    .AddDisplayUserSettingsService()
-                    .AddCoreBaseSettingsService()
-                    .AddUserFormatter();
-            }
-
-            return services;
         }
     }
 }

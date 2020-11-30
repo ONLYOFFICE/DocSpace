@@ -38,6 +38,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Files.Thirdparty.Sharpbox
 {
+    [Scope]
     internal class SharpBoxProviderInfo : IProviderInfo
     {
         public int ID { get; set; }
@@ -115,7 +116,6 @@ namespace ASC.Files.Thirdparty.Sharpbox
             if (Wrapper != null)
             {
                 Wrapper.Dispose();
-                Wrapper = null;
             }
         }
 
@@ -129,6 +129,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
         private SharpBoxStorageDisposableWrapper Wrapper { get; set; }
     }
 
+    [Scope]
     class SharpBoxStorageDisposableWrapper : IDisposable
     {
         public CloudStorage Storage { get; private set; }
@@ -175,17 +176,6 @@ namespace ASC.Files.Thirdparty.Sharpbox
                 Storage.Close();
                 Storage = null;
             }
-        }
-    }
-
-    public static class SharpBoxProviderInfoExtension
-    {
-        public static DIHelper AddSharpBoxProviderInfoService(this DIHelper services)
-        {
-            services.TryAddScoped<SharpBoxProviderInfo>();
-            services.TryAddScoped<SharpBoxStorageDisposableWrapper>();
-
-            return services;
         }
     }
 }

@@ -28,10 +28,12 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 
+using ASC.Common;
 using ASC.Files.Core.Security;
 
 namespace ASC.Files.Core
 {
+    [Scope]
     public interface IFolderDao<T>
     {
         /// <summary>
@@ -222,7 +224,7 @@ namespace ASC.Files.Core
         /// <param name="text"></param>
         /// <param name="bunch"></param>
         /// <returns></returns>
-        IEnumerable<Folder<T>> Search(string text, bool bunch = false);
+        IEnumerable<Folder<T>> SearchFolders(string text, bool bunch = false);
 
         /// <summary>
         /// Only in TMFolderDao
@@ -329,9 +331,9 @@ namespace ASC.Files.Core
         Dictionary<string, string> GetBunchObjectIDs(List<T> folderIDs);
 
 
-        IEnumerable<(Folder<T>, SmallShareRecord)> GetFeeds(int tenant, DateTime from, DateTime to);
+        IEnumerable<(Folder<T>, SmallShareRecord)> GetFeedsForFolders(int tenant, DateTime from, DateTime to);
 
-        IEnumerable<T> GetTenantsWithFeeds(DateTime fromTime);
+        IEnumerable<T> GetTenantsWithFeedsForFolders(DateTime fromTime);
 
         #endregion
     }

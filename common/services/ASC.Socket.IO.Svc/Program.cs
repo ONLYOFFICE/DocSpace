@@ -29,6 +29,7 @@ using System.IO;
 using System.Threading.Tasks;
 
 using ASC.Common;
+using ASC.Common.Caching;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
 
@@ -77,10 +78,10 @@ namespace ASC.Socket.IO.Svc
                 .ConfigureServices((hostContext, services) =>
                 {
                     var diHelper = new DIHelper(services);
-
-                    diHelper.AddNLogManager("ASC.Socket.IO.Svc");
+                    diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+                    LogNLogExtension.ConfigureLog(diHelper, "ASC.Socket.IO.Svc");
                     services.AddHostedService<SocketServiceLauncher>();
-                    diHelper.AddSocketServiceLauncher();
+                    diHelper.TryAdd<SocketServiceLauncher>();
                 })
                 .ConfigureContainer<ContainerBuilder>((context, builder) =>
                 {

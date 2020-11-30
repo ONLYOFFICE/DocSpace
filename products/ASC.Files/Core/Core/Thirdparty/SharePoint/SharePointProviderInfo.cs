@@ -48,6 +48,7 @@ using Folder = Microsoft.SharePoint.Client.Folder;
 
 namespace ASC.Files.Thirdparty.SharePoint
 {
+    [Scope]
     public class SharePointProviderInfo : IProviderInfo
     {
         private ClientContext clientContext;
@@ -94,7 +95,6 @@ namespace ASC.Files.Thirdparty.SharePoint
             if (clientContext != null)
             {
                 clientContext.Dispose();
-                clientContext = null;
             }
 
             SharePointProviderInfoHelper.Invalidate();
@@ -584,6 +584,7 @@ namespace ASC.Files.Thirdparty.SharePoint
         }
     }
 
+    [Singletone]
     public class SharePointProviderInfoHelper
     {
         private readonly TimeSpan CacheExpiration;
@@ -666,17 +667,6 @@ namespace ASC.Files.Thirdparty.SharePoint
         public void AddFile(string key, File file)
         {
             FileCache.Insert(key, file, DateTime.UtcNow.Add(CacheExpiration));
-        }
-    }
-
-    public static class SharePointProviderInfoExtension
-    {
-        public static DIHelper AddSharePointProviderInfoService(this DIHelper services)
-        {
-            services.TryAddScoped<SharePointProviderInfo>();
-            services.TryAddSingleton<SharePointProviderInfoHelper>();
-
-            return services;
         }
     }
 }

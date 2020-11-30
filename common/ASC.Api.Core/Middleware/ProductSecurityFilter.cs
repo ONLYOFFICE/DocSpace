@@ -17,6 +17,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Api.Core.Middleware
 {
+    [Scope]
     public class ProductSecurityFilter : IResourceFilter
     {
         private static readonly IDictionary<string, Guid> products;
@@ -114,16 +115,6 @@ namespace ASC.Api.Core.Middleware
                 return products[name];
             }
             return default;
-        }
-    }
-
-    public static class ProductSecurityFilterExtension
-    {
-        public static DIHelper AddProductSecurityFilter(this DIHelper services)
-        {
-            return services
-                .AddWebItemSecurity()
-                .AddAuthContextService();
         }
     }
 }

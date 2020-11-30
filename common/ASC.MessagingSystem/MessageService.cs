@@ -38,6 +38,7 @@ using Microsoft.Extensions.Primitives;
 
 namespace ASC.MessagingSystem
 {
+    [Scope]
     public class MessageService
     {
         private readonly ILog log;
@@ -295,23 +296,6 @@ namespace ASC.MessagingSystem
             if (!MessagePolicy.Check(message)) return;
 
             sender.Send(message);
-        }
-    }
-
-    public static class MessageServiceExtension
-    {
-        public static DIHelper AddMessageServiceService(this DIHelper services)
-        {
-            if (services.TryAddScoped<MessageService>())
-            {
-
-                return services
-                    .AddMessagePolicyService()
-                    .AddDbMessageSenderService()
-                    .AddMessageFactoryService();
-            }
-
-            return services;
         }
     }
 }
