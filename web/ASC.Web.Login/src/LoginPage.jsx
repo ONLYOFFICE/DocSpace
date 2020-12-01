@@ -1,14 +1,15 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import { Provider } from "react-redux";
+import store from "studio/store";
+import Frame from "studio/frame";
 
-import LoginContent from "./LoginContent.jsx";
 
 const LoginPage = () => {
   return (
-    <LoginContent />
-    //   <Provider store={store}>
-    //     <Frame page="checkout" />
-    //   </Provider>
+    <Provider store={store}>
+      <Frame page="login" />
+    </Provider>
   );
 };
 

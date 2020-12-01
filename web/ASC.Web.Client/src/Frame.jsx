@@ -6,6 +6,7 @@ import Main from "@appserver/common/src/components/Main";
 import Box from "@appserver/components/src/components/box";
 import PrivateRoute from "@appserver/common/src/components/PrivateRoute";
 import PublicRoute from "@appserver/common/src/components/PublicRoute";
+import ErrorBoundary from "@appserver/common/src/components/ErrorBoundary";
 import history from "@appserver/common/src/history";
 import toastr from "@appserver/common/src/components/Toast/toastr";
 import { AUTH_KEY } from "@appserver/common/src/constants";
@@ -21,14 +22,18 @@ const Home = React.lazy(() => import("studio/home"));
 const Login = React.lazy(() => import("login/page"));
 
 const HomeRoute = () => (
-  <React.Suspense fallback={<div />}>
-    <Home />
+  <React.Suspense fallback={null}>
+    <ErrorBoundary>
+      <Home />
+    </ErrorBoundary>
   </React.Suspense>
 );
 
 const LoginRoute = () => (
-  <React.Suspense fallback={<div />}>
-    <Login />
+  <React.Suspense fallback={null}>
+    <ErrorBoundary>
+      <Login />
+    </ErrorBoundary>
   </React.Suspense>
 );
 

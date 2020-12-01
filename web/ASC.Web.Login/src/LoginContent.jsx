@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import styled from "styled-components";
 import { withTranslation } from "react-i18next";
 import PropTypes from "prop-types";
-//import { withRouter } from "react-router";
+import { withRouter } from "react-router";
 import Box from "@appserver/components/src/components/box";
 import Button from "@appserver/components/src/components/button";
 import Text from "@appserver/components/src/components/text";
@@ -233,9 +233,9 @@ class Form extends Component {
 
     login(userName, hash)
       .then(() => {
-        if (!redirectToDefaultPage()) {
-          setIsLoaded(true);
-        }
+        //if (!redirectToDefaultPage()) {
+        setIsLoaded(true);
+        //}
       })
       .catch((error) => {
         this.setState({ errorText: error, isLoading: false });
@@ -250,7 +250,7 @@ class Form extends Component {
       reloadPortalSettings,
       organizationName,
     } = this.props;
-    const { error, confirmedEmail } = {}; //match.params;
+    const { error, confirmedEmail } = match.params;
 
     document.title = `${t("Authorization")} – ${organizationName}`; //TODO: implement the setDocumentTitle() utility in ASC.Web.Common
 
@@ -258,9 +258,9 @@ class Form extends Component {
     confirmedEmail && this.setState({ identifier: confirmedEmail });
     window.addEventListener("keyup", this.onKeyPress);
 
-    // if (!hashSettings) {
-    //   reloadPortalSettings();
-    // }
+    if (!hashSettings) {
+      reloadPortalSettings();
+    }
   }
 
   componentWillUnmount() {
@@ -290,7 +290,7 @@ class Form extends Component {
       errorText,
       socialButtons,
     } = this.state;
-    const { confirmedEmail } = {}; //match.params;
+    const { confirmedEmail } = match.params;
 
     //console.log("Login render");
 
@@ -433,19 +433,19 @@ class Form extends Component {
   }
 }
 
-// Form.propTypes = {
-//   login: PropTypes.func.isRequired,
-//   match: PropTypes.object.isRequired,
-//   //history: PropTypes.object.isRequired,
-//   setIsLoaded: PropTypes.func.isRequired,
-//   greetingTitle: PropTypes.string.isRequired,
-//   t: PropTypes.func.isRequired,
-//   i18n: PropTypes.object.isRequired,
-//   language: PropTypes.string.isRequired,
-//   socialButtons: PropTypes.array,
-//   organizationName: PropTypes.string,
-//   homepage: PropTypes.string,
-// };
+Form.propTypes = {
+  login: PropTypes.func.isRequired,
+  match: PropTypes.object.isRequired,
+  //history: PropTypes.object.isRequired,
+  setIsLoaded: PropTypes.func.isRequired,
+  greetingTitle: PropTypes.string.isRequired,
+  t: PropTypes.func.isRequired,
+  i18n: PropTypes.object.isRequired,
+  language: PropTypes.string.isRequired,
+  socialButtons: PropTypes.array,
+  organizationName: PropTypes.string,
+  homepage: PropTypes.string,
+};
 
 Form.defaultProps = {
   identifier: "",
@@ -455,11 +455,11 @@ Form.defaultProps = {
 
 const FormWrapper = withTranslation()(Form);
 
-const LoginForm = (props) => <FormWrapper i18n={i18n} {...props} />;
+// const LoginForm = (props) => <FormWrapper i18n={i18n} {...props} />;
 
-export default LoginForm;
+// export default LoginForm;
 
-/*const RegisterWrapper = withTranslation()(Register);
+const RegisterWrapper = withTranslation()(Register);
 
 const LoginForm = (props) => {
   const { language, isLoaded, enabledJoin } = props;
@@ -515,4 +515,4 @@ export default connect(mapStateToProps, {
   login,
   setIsLoaded,
   reloadPortalSettings,
-})(withRouter(LoginForm));*/
+})(withRouter(LoginForm));

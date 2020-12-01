@@ -80,6 +80,7 @@ module.exports = {
       exposes: {
         "./home": "./src/components/pages/Home",
         "./frame": "./src/Frame",
+        "./store": "./src/store/store",
       },
       shared: {
         ...deps,
