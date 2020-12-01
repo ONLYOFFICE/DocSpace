@@ -6,8 +6,7 @@
 *-lock.json
 **/node_modules/
 **/storybook-static/
-/web/ASC.Web.Components/dist
-/web/ASC.Web.Common/dist
+**/dist
 /build/deploy
 *.log
 /products/ASC.People/Data/
