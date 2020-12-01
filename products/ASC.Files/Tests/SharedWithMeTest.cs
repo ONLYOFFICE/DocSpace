@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 
 using ASC.Api.Documents;
 using ASC.Core;
@@ -35,15 +36,15 @@ namespace ASC.Files.Tests
 
         #region Shared Folder and File (Read)
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetCreateFolderItems))]
-        [Category("section 'Shared Documents'")]
-        public void CreateSharedFolderReturnsFolderWrapperTest(string folderTitle)
+        [Category("Folder")]
+        public void CreateSharedFolderReturnsFolderWrapper(string folderTitle)
         {
             var folderWrapper = Assert.Throws<InvalidOperationException>(() => FilesControllerHelper.CreateFolder(GlobalFolderHelper.FolderShare, folderTitle));
             Assert.That(folderWrapper.Message == "You don't have enough permission to create");
         }
 
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.ShareParamToFolder))]
-        [Category("section 'Shared Documents'")]
+        [Category("Folder")]
         public void ShareFolderToAnotherUser (string folderTitle, bool notify, string message)
         {
             var folderWrapper = FilesControllerHelper.CreateFolder(GlobalFolderHelper.FolderMy, folderTitle);
@@ -51,9 +52,9 @@ namespace ASC.Files.Tests
             Assert.IsNotNull(shareFolder);
         }
 
-        [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetSharedInfo))]
-        [Category("section 'Shared Documents'")]
-        public void GetSharedFolderInfo(string folderTitleExpected)
+        [Test]
+        [Category("Folder")]
+        public void GetSharedFolderInfoReturnsFolderWrapper()
         {
             SecurityContext.AuthenticateMe(NewUser.ID);
             var folderWrapper = Assert.Throws<InvalidOperationException>(() => FilesControllerHelper.GetFolderInfo(TestFolder.Id));
@@ -61,8 +62,8 @@ namespace ASC.Files.Tests
 
         }
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetRenameFolderItems))]
-        [Category("section 'Shared Documents'")]
-        public void RenameSharedFolderReturnsFolderWrapperTest(string folderTitle)
+        [Category("Folder")]
+        public void RenameSharedFolderReturnsFolderWrapper(string folderTitle)
         {
             SecurityContext.AuthenticateMe(NewUser.ID);
             var folderWrapper = Assert.Throws<InvalidOperationException>(() => FilesControllerHelper.RenameFolder(TestFolder.Id, folderTitle));
@@ -70,43 +71,40 @@ namespace ASC.Files.Tests
         }
 
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetDeleteFolderItems))]
-        [Category("section 'Shared Documents'")]
-        public void DeleteSharedFolderTest( bool deleteAfter, bool immediately)
+        [Category("Folder")]
+        public void DeleteSharedFolderReturnsFolderWrapper( bool deleteAfter, bool immediately)
         {
             SecurityContext.AuthenticateMe(NewUser.ID);
-            var statuses = FilesControllerHelper.DeleteFolder(
+            FilesControllerHelper.DeleteFolder(
                 TestFolder.Id,
                 deleteAfter,
                 immediately);
 
-            FileOperationWraper status = null;
-            foreach (var item in statuses)
+            while (true)
             {
-                if (item.OperationType == FileOperationType.Delete)
-                {
-                    status = item;
-                }
-            }
+                var statuses = FileStorageService.GetTasksStatuses();
 
-            var statusDelete = FileOperationType.Delete;
-            Assert.IsNotNull(status);
-            Assert.AreNotEqual(statusDelete, status.OperationType);
+                if (statuses.TrueForAll(r => r.Finished))
+                    break;
+                Thread.Sleep(100);
+            }
+            Assert.IsFalse(FileStorageService.GetTasksStatuses().TrueForAll(r => string.IsNullOrEmpty(r.Error)));
         }
 
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetCreateFileItems))]
-        [Category("section 'Shared Documents'")]
-        public void CreateSharedFileReturnsFolderWrapperTest(string fileTitle)
+        [Category("File")]
+        public void CreateSharedFileReturnsFolderWrapper(string fileTitle)
         {
-            var fileWrapper = FilesControllerHelper.CreateFile(GlobalFolderHelper.FolderShare, fileTitle, default);
+            /*var fileWrapper = FilesControllerHelper.CreateFile(GlobalFolderHelper.FolderShare, fileTitle, default);
 
             Assert.IsNotNull(fileWrapper);
-            Assert.AreEqual(fileTitle + ".docx", fileWrapper.Title);
-            /// var fileWrapper = Assert.Throws<InvalidOperationException>(() => FilesControllerHelper.CreateFile(GlobalFolderHelper.FolderShare, fileTitle, default ));
-            //Assert.That(fileWrapper.Message == "You don't have enough permission to create");
+            Assert.AreEqual(fileTitle + ".docx", fileWrapper.Title);*/
+            var fileWrapper = Assert.Throws<InvalidOperationException>(() => FilesControllerHelper.CreateFile(GlobalFolderHelper.FolderShare, fileTitle, default ));
+            Assert.That(fileWrapper.Message == "You don't have enough permission to create");
         }
 
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.ShareParamToFile))]
-        [Category("section 'Shared Documents'")]
+        [Category("File")]
         public void ShareFileToAnotherUser(string fileTitle, bool notify, string message)
         {
             var fileWrapper = FilesControllerHelper.CreateFolder(GlobalFolderHelper.FolderMy, fileTitle);
@@ -115,8 +113,8 @@ namespace ASC.Files.Tests
         }
 
         [Test]
-        [Category("section 'Shared Documents'")]
-        public void GetSharedFileInfo()
+        [Category("File")]
+        public void GetSharedFileInfoReturnsFolderWrapper()
         {
             SecurityContext.AuthenticateMe(NewUser.ID);
             var fileWrapper = Assert.Throws<InvalidOperationException>(() => FilesControllerHelper.GetFolderInfo(TestFile.Id));
@@ -124,8 +122,8 @@ namespace ASC.Files.Tests
 
         }
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetUpdateFileItems))]
-        [Category("section 'Shared Documents'")]
-        public void UpdateSharedFileReturnsFolderWrapperTest(string fileTitle, int lastVersion)
+        [Category("File")]
+        public void UpdateSharedFileReturnsFolderWrapper(string fileTitle, int lastVersion)
         {
             SecurityContext.AuthenticateMe(NewUser.ID);
             var fileWrapper = Assert.Throws<InvalidOperationException>(() => FilesControllerHelper.UpdateFile(TestFile.Id, fileTitle, lastVersion));
@@ -133,32 +131,24 @@ namespace ASC.Files.Tests
         }
 
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetDeleteFileItems))]
-        [Category("section 'Shared Documents'")]
-        public void DeleteSharedFileTest(bool deleteAfter, bool immediately)
+        [Category("File")]
+        public void DeleteSharedFileReturnsFolderWrapper(bool deleteAfter, bool immediately)
         {
             SecurityContext.AuthenticateMe(NewUser.ID);
-            var statuses = FilesControllerHelper.DeleteFolder(
+            FilesControllerHelper.DeleteFolder(
                 TestFolder.Id,
                 deleteAfter,
                 immediately);
 
-            FileOperationWraper status = null;
-            foreach (var item in statuses)
+            while (true)
             {
-                if (item.OperationType == FileOperationType.Delete)
-                {
-                    status = item;
-                }
-            }
+                var statuses = FileStorageService.GetTasksStatuses();
 
-            var statusDelete = FileOperationType.Delete;
-            Assert.IsNotNull(status);
-            Assert.AreNotEqual(statusDelete, status.OperationType);
-           /* var statuses = Assert.Throws<InvalidOperationException>(() => FilesControllerHelper.DeleteFolder(
-                TestFile.Id,
-                deleteAfter,
-                immediately));
-            Assert.That(statuses.Message == "You don't have enough permission to delete the folder");*/
+                if (statuses.TrueForAll(r => r.Finished))
+                    break;
+                Thread.Sleep(100);
+            }
+            Assert.IsFalse(FileStorageService.GetTasksStatuses().TrueForAll(r => string.IsNullOrEmpty(r.Error)));
         }
         #endregion
 
