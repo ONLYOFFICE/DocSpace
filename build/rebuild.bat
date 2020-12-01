@@ -4,6 +4,7 @@ call start\stop.bat
 PUSHD %~dp0..
 
 echo "Build FRONT-END"
+call yarn wipe
 call yarn install
 
 echo "ASC.UrlShortener"
