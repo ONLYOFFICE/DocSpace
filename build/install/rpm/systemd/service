@@ -1,0 +1,14 @@
+[Unit]
+Description=AppServer-${SERVICE_NAME}
+
+[Service]
+PIDFile=/run/appserver/appserver-${SERVICE_NAME}.pid
+Type=simple
+user=root
+WorkingDirectory=${WORK_DIR}
+ExecStart=${EXEC_START}
+TimeoutSec=300
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
