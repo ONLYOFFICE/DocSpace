@@ -128,7 +128,7 @@ class PureHome extends React.Component {
 
         if (filter) {
           const folderId = filter.folder;
-          console.log("filter", filter);
+          //console.log("filter", filter);
           return fetchFiles(folderId, filter);
         }
 
@@ -165,7 +165,7 @@ class PureHome extends React.Component {
   }
 
   render() {
-    console.log("Home render");
+    //console.log("Home render");
     const {
       progressData,
       viewAs,
