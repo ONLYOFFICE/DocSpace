@@ -3,7 +3,7 @@ import React from "react";
 import { connect } from "react-redux";
 //import { Cart } from "react-bootstrap-icons";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
-// import NavMenu from "@appserver/common/src/components/NavMenu";
+import NavMenu from "@appserver/common/src/components/NavMenu";
 import Main from "@appserver/common/src/components/Main";
 import Box from "@appserver/components/src/components/box";
 
@@ -30,7 +30,7 @@ const HomeRoute = () => (
 const Frame = ({ items = [], page = "home" }) => (
   <Router>
     <Box>
-      {/* <NavMenu /> */}
+      <NavMenu />
       <Main>
         <Switch>
           <Route path="/" exact>

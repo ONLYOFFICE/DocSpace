@@ -43,6 +43,7 @@
     "re-resizable": "^6.9.0",
     "react": "^16.14.0",
     "react-autosize-textarea": "^7.1.0",
+    "react-content-loader": "^5.1.4",
     "react-custom-scrollbars": "^4.2.1",
     "react-device-detect": "^1.14.0",
     "react-dom": "^16.14.0",

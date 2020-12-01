@@ -1,7 +1,12 @@
 import React, { memo } from "react";
 import styled, { css } from "styled-components";
 import PropTypes from "prop-types";
-import Icons from "../icons";
+import {
+  CameraIcon,
+  GuestIcon,
+  AdministratorIcon,
+  OwnerIcon,
+} from "@appserver/components/src/components/icons/svg";
 import Link from "../link";
 
 const whiteColor = "#FFFFFF";
@@ -111,7 +116,7 @@ const EditContainer = styled.div`
       : "transparent"};
 `;
 
-const EmptyIcon = styled(Icons.CameraIcon)`
+const EmptyIcon = styled(CameraIcon)`
   border-radius: 50%;
 `;
 
@@ -133,11 +138,11 @@ const EditLink = styled.div`
 const getRoleIcon = (role) => {
   switch (role) {
     case "guest":
-      return <Icons.GuestIcon size="scale" />;
+      return <GuestIcon size="scale" />;
     case "admin":
-      return <Icons.AdministratorIcon size="scale" />;
+      return <AdministratorIcon size="scale" />;
     case "owner":
-      return <Icons.OwnerIcon size="scale" />;
+      return <OwnerIcon size="scale" />;
     default:
       return null;
   }
