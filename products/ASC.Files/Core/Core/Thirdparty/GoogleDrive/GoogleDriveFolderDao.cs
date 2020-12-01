@@ -127,7 +127,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             return folders.ToList();
         }
 
-        public List<Folder<string>> GetFolders(string[] folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true)
+        public List<Folder<string>> GetFolders(IEnumerable<string> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true)
         {
             if (filterType == FilterType.FilesOnly || filterType == FilterType.ByExtension
                 || filterType == FilterType.DocumentsOnly || filterType == FilterType.ImagesOnly
@@ -181,9 +181,9 @@ namespace ASC.Files.Thirdparty.GoogleDrive
                 return RenameFolder(folder, folder.Title);
             }
 
-            if (folder.ParentFolderID != null)
+            if (folder.FolderID != null)
             {
-                var driveFolderId = MakeDriveId(folder.ParentFolderID);
+                var driveFolderId = MakeDriveId(folder.FolderID);
 
                 var driveFolder = ProviderInfo.Storage.InsertEntry(null, folder.Title, driveFolderId, true);
 
