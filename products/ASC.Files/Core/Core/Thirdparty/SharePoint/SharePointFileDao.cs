@@ -101,14 +101,14 @@ namespace ASC.Files.Thirdparty.SharePoint
             return new List<File<string>> { GetFile(fileId) };
         }
 
-        public List<File<string>> GetFiles(string[] fileIds)
+        public List<File<string>> GetFiles(IEnumerable<string> fileIds)
         {
             return fileIds.Select(fileId => ProviderInfo.ToFile(ProviderInfo.GetFileById(fileId))).ToList();
         }
 
-        public List<File<string>> GetFilesFiltered(string[] fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
+        public List<File<string>> GetFilesFiltered(IEnumerable<string> fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
         {
-            if (fileIds == null || fileIds.Length == 0 || filterType == FilterType.FoldersOnly) return new List<File<string>>();
+            if (fileIds == null || !fileIds.Any() || filterType == FilterType.FoldersOnly) return new List<File<string>>();
 
             var files = GetFiles(fileIds).AsEnumerable();
 
