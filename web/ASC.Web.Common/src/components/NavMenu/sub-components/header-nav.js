@@ -27,7 +27,6 @@ const StyledNav = styled.nav`
   height: 56px;
   z-index: 190;
 
-    
   .profile-menu {
     right: 12px;
     top: 66px;
@@ -41,24 +40,20 @@ const StyledNav = styled.nav`
     margin: 0 0 0 16px;
     padding: 0;
     min-width: 24px;
-
   }
 
   @media ${tablet} {
     padding: 0 16px;
-    position:fixed;
+    position: fixed;
 
-    transition: top 0.3s cubic-bezier(0.0,0.0,0.8,1);
-      -moz-transition:  top 0.3s cubic-bezier(0.0,0.0,0.8,1);
-      -ms-transition:  top 0.3s cubic-bezier(0.0,0.0,0.8,1);
-      -webkit-transition:  top 0.3s cubic-bezier(0.0,0.0,0.8,1);
-      -o-transition:  top 0.3s cubic-bezier(0.0,0.0,0.8,1);
-      
-    top: ${(props) => (props.valueTop ? "0" : "-56px")}
+    transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
+    -moz-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
+    -ms-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
+    -webkit-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
+    -o-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
+
+    top: ${(props) => (props.valueTop ? "0" : "-56px")};
   }
-
-  
-}
 `;
 const HeaderNav = React.memo(
   ({ history, homepage, modules, user, logout, isAuthenticated }) => {
