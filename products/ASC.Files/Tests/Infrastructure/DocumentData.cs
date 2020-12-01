@@ -10,14 +10,17 @@ namespace ASC.Files.Tests
         {
             yield return new TestCaseData("FolderOne");
         }
-        public static IEnumerable<TestCaseData> GetFolderItems()
+        public static IEnumerable<TestCaseData> GetFolderItemsEmpty()
         {
             yield return new TestCaseData(true, 0, 0);
         }
-
+        public static IEnumerable<TestCaseData> GetFolderItemsNotEmpty()
+        {
+            yield return new TestCaseData(true, 1, 1);
+        }
         public static IEnumerable<TestCaseData> GetFolderInfoItems()
         {
-            yield return new TestCaseData("TestFolder");
+            yield return new TestCaseData("TestFolder", 2);
         }
 
         public static IEnumerable<TestCaseData> GetRenameFolderItems()

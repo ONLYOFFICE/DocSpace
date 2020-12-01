@@ -11,6 +11,7 @@ using ASC.Files.Helpers;
 using ASC.Files.Model;
 using ASC.Files.Tests.Infrastructure;
 using ASC.Web.Files.Classes;
+using ASC.Web.Files.Services.WCFService;
 using ASC.Web.Files.Services.WCFService.FileOperations;
 
 using Microsoft.AspNetCore.Hosting;
@@ -26,6 +27,7 @@ namespace ASC.Files.Tests
         protected FilesControllerHelper<int> FilesControllerHelper { get; set; }
         protected TestServer TestServer { get; set; }
         protected GlobalFolderHelper GlobalFolderHelper { get; set; }
+        protected FileStorageService<int> FileStorageService { get; set; }
         protected UserManager UserManager { get; set; }
         protected Tenant CurrentTenant { get; set; }
         protected UserInfo User { get; set; }
@@ -48,6 +50,7 @@ namespace ASC.Files.Tests
             UserManager = scope.ServiceProvider.GetService<UserManager>();
             SecurityContext = scope.ServiceProvider.GetService<SecurityContext>();
             UserOptions = scope.ServiceProvider.GetService<IOptions<UserOptions>>().Value;
+            FileStorageService = scope.ServiceProvider.GetService<FileStorageService<int>>();
 
             SecurityContext.AuthenticateMe(CurrentTenant.OwnerId);
         }
