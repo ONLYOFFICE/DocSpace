@@ -1,51 +1,108 @@
-import React from "react";
-//import { Container, Nav, Navbar } from "react-bootstrap";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
-//import { Cart } from "react-bootstrap-icons";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { Router, Switch } from "react-router-dom";
 import NavMenu from "@appserver/common/src/components/NavMenu";
 import Main from "@appserver/common/src/components/Main";
 import Box from "@appserver/components/src/components/box";
+import PrivateRoute from "@appserver/common/src/components/PrivateRoute";
+import PublicRoute from "@appserver/common/src/components/PublicRoute";
+import history from "@appserver/common/src/history";
+import toastr from "@appserver/common/src/components/Toast/toastr";
+import { AUTH_KEY } from "@appserver/common/src/constants";
+import CommonStore from "@appserver/common/src/store";
+const {
+  setIsLoaded,
+  getUser,
+  getPortalSettings,
+  getModules,
+} = CommonStore.auth.actions;
 
-const Home = React.lazy(() => import("home/Home"));
-// const Search = React.lazy(() => import("search/Search"));
-// const Checkout = React.lazy(() => import("checkout/Checkout"));
+const Home = React.lazy(() => import("studio/home"));
+const Login = React.lazy(() => import("login/page"));
 
 const HomeRoute = () => (
   <React.Suspense fallback={<div />}>
     <Home />
   </React.Suspense>
 );
-// const SearchRoute = () => (
-//   <React.Suspense fallback={<div />}>
-//     <Search />
-//   </React.Suspense>
-// );
-// const CheckoutRoute = () => (
-//   <React.Suspense fallback={<div />}>
-//     <Checkout />
-//   </React.Suspense>
-// );
 
-const Frame = ({ items = [], page = "home" }) => (
-  <Router>
-    <Box>
-      <NavMenu />
-      <Main>
-        <Switch>
-          <Route path="/" exact>
-            <HomeRoute />
-          </Route>
-          {/* <Route path="/search">
-            <SearchRoute />
-          </Route>
-          <Route path="/checkout">
-            <CheckoutRoute />
-          </Route> */}
-        </Switch>
-      </Main>
-    </Box>
-  </Router>
+const LoginRoute = () => (
+  <React.Suspense fallback={<div />}>
+    <Login />
+  </React.Suspense>
 );
 
-export default connect((state) => state)(Frame);
+const Frame = ({ items = [], page = "home", ...rest }) => {
+  useEffect(() => {
+    //utils.removeTempContent();
+
+    const { getPortalSettings, getUser, getModules, setIsLoaded } = rest;
+
+    const token = localStorage.getItem(AUTH_KEY);
+
+    const requests = [];
+
+    if (!token) {
+      requests.push(getPortalSettings());
+    } else if (!window.location.pathname.includes("confirm/EmailActivation")) {
+      requests.push(getUser());
+      requests.push(getPortalSettings());
+      requests.push(getModules());
+    }
+
+    Promise.all(requests)
+      .catch((e) => {
+        toastr.error(e);
+      })
+      .finally(() => {
+        setIsLoaded();
+      });
+  }, []);
+
+  return (
+    <Router history={history}>
+      <Box>
+        <NavMenu />
+        <Main>
+          <Switch>
+            <PrivateRoute
+              exact
+              path={["/", "/error=:error"]}
+              component={HomeRoute}
+            />
+            <PublicRoute
+              exact
+              path={[
+                "/login",
+                "/login/error=:error",
+                "/login/confirmed-email=:confirmedEmail",
+              ]}
+              component={LoginRoute}
+            />
+          </Switch>
+        </Main>
+      </Box>
+    </Router>
+  );
+};
+
+const mapStateToProps = (state) => {
+  const { modules, isLoaded, settings } = state.auth;
+  const { organizationName } = settings;
+  return {
+    modules,
+    isLoaded,
+    organizationName,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    getPortalSettings: () => getPortalSettings(dispatch),
+    getUser: () => getUser(dispatch),
+    getModules: () => getModules(dispatch),
+    setIsLoaded: () => dispatch(setIsLoaded(true)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Frame);

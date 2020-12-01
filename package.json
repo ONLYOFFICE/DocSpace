@@ -9,12 +9,12 @@
   ],
   "scripts": {
     "wipe": "rm -fr node_modules yarn.lock web/**/node_modules products/**/node_modules",
-    "start": "yarn workspace @appserver/login run start",
-    "build": "yarn workspace @appserver/login run build",
-    "start:studio": "yarn workspace @appserver/studio run start",
-    "build:studio": "yarn workspace @appserver/studio run build"
+    "build": "yarn workspaces run build",
+    "start": "concurrently \"wsrun --parallel start\""
   },
   "devDependencies": {
-    "lerna": "^3.22.1"
+    "lerna": "^3.22.1",
+    "concurrently": "^5.3.0",
+    "wsrun": "^5.2.4"
   }
 }

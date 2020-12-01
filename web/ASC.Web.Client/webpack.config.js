@@ -16,6 +16,7 @@ module.exports = {
 
   devServer: {
     port: 5001,
+    openPage: "http://localhost:8092",
   },
 
   module: {
@@ -45,7 +46,7 @@ module.exports = {
           "css-loader",
           // Compiles Sass to CSS
           "sass-loader",
-        ]
+        ],
       },
       {
         test: /\.(js|jsx)$/,
@@ -70,14 +71,15 @@ module.exports = {
 
   plugins: [
     new ModuleFederationPlugin({
-      name: "home",
+      name: "studio",
       filename: "remoteEntry.js",
       remotes: {
-        home: "home@http://localhost:5001/remoteEntry.js",
+        studio: "studio@http://localhost:5001/remoteEntry.js",
+        login: "login@http://localhost:5010/remoteEntry.js",
       },
       exposes: {
-        "./Home": "./src/components/pages/Home",
-        "./Frame": "./src/Frame",
+        "./home": "./src/components/pages/Home",
+        "./frame": "./src/Frame",
       },
       shared: {
         ...deps,
