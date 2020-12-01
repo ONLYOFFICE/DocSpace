@@ -65,6 +65,8 @@
     "redux-thunk": "^2.3.0",
     "reselect": "^4.0.0",
     "resize-image": "^0.1.0",
+    "sass": "^1.29.0",
+    "sass-loader": "^10.1.0",
     "sjcl": "^1.0.8",
     "styled-components": "^5.2.1"
   }
