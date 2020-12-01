@@ -58,6 +58,7 @@ using ASC.Web.Files.Utils;
 using ASC.Web.Studio.Core;
 using ASC.Web.Studio.Utility;
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ActionConstraints;
@@ -723,12 +724,14 @@ namespace ASC.Api.Documents
         /// <param name="doc"></param>
         /// <category>Files</category>
         /// <returns></returns>
+        [AllowAnonymous]
         [Read("file/{fileId}/openedit", DisableFormat = true)]
         public Configuration<string> OpenEdit(string fileId, int version, string doc)
         {
             return FilesControllerHelperString.OpenEdit(fileId, version, doc);
         }
 
+        [AllowAnonymous]
         [Read("file/{fileId:int}/openedit")]
         public Configuration<int> OpenEdit(int fileId, int version, string doc)
         {
