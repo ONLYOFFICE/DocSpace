@@ -489,13 +489,13 @@ namespace ASC.Files.Helpers
         public IEnumerable<FileWrapper<T>> GetFileVersionInfo(T fileId)
         {
             var files = FileStorageService.GetFileHistory(fileId);
-            return files.Select(FileWrapperHelper.Get);
+            return files.Select(r=> FileWrapperHelper.Get(r));
         }
 
         public IEnumerable<FileWrapper<T>> ChangeHistory(T fileId, int version, bool continueVersion)
         {
             var history = FileStorageService.CompleteVersion(fileId, version, continueVersion).Value;
-            return history.Select(FileWrapperHelper.Get);
+            return history.Select(r=> FileWrapperHelper.Get(r));
         }
 
         public FileWrapper<T> LockFile(T fileId, bool lockFile)
