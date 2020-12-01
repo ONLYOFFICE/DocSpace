@@ -83,7 +83,7 @@ namespace ASC.Files.Tests
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetFolderInfoItems))]
         [Category("Folder")]
         [Order(4)]
-        public void GetFolderInfoReturnsFolderWrapper(string folderTitleExpected, int ParentIdExpected)
+        public void GetFolderInfoReturnsFolderWrapper(string folderTitleExpected)
         {
             var folderWrapper = FilesControllerHelper.GetFolderInfo(TestFolder.Id);
 

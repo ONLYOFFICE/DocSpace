@@ -20,7 +20,7 @@ namespace ASC.Files.Tests
         }
         public static IEnumerable<TestCaseData> GetFolderInfoItems()
         {
-            yield return new TestCaseData("TestFolder", 2);
+            yield return new TestCaseData("TestFolder");
         }
 
         public static IEnumerable<TestCaseData> GetRenameFolderItems()
