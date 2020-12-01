@@ -106,7 +106,7 @@ class PageLayoutComponent extends React.Component {
   }
 
   orientationChangeHandler = () => {
-    this.updateMainHeight();
+    //this.updateMainHeight();
 
     const isValueExist = !!localStorage.getItem(ARTICLE_PINNED_KEY);
     const isEnoughWidth = screen.availWidth > size.smallTablet;
