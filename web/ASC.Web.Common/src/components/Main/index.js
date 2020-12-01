@@ -1,12 +1,12 @@
 import React from "react";
 import styled from "styled-components";
 import { isIOS, isFirefox } from "react-device-detect";
-import { utils} from "asc-web-components";
-const { tablet,smallTablet } = utils.device;
+import { utils } from "asc-web-components";
+const { tablet, smallTablet } = utils.device;
 const StyledMain = styled.main`
-  height: ${isIOS && !isFirefox
+  /*height: ${isIOS && !isFirefox
     ? "calc(var(--vh, 1vh) * 100)"
-    : "calc(100vh - 56px)"};
+    : "calc(100vh - 56px)"};*/
   width: 100vw;
   z-index: 0;
   display: flex;
@@ -16,7 +16,7 @@ const StyledMain = styled.main`
   @media ${tablet} {
     height: auto;
     min-height: 100%;
-    width:100%;
+    width: 100%;
   }
 
   @media ${smallTablet} {
@@ -25,8 +25,8 @@ const StyledMain = styled.main`
 `;
 
 const Main = React.memo((props) => {
-  const vh = (window.innerHeight - 57) * 0.01;
-  document.documentElement.style.setProperty("--vh", `${vh}px`);
+  //const vh = (window.innerHeight - 57) * 0.01;
+  //document.documentElement.style.setProperty("--vh", `${vh}px`);
   //console.log("Main render");
   return <StyledMain {...props} />;
 });

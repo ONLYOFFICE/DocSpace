@@ -2,22 +2,20 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import MobileLayout from "./MobileLayout";
 import { utils } from "asc-web-components";
-import {
-  isIOS,
-  isMobileSafari,
-  isFirefox,
-  isChrome,
-} from "react-device-detect";
+import { isIOS, isFirefox, isChrome, isMobile } from "react-device-detect";
 
-const { size } = utils.device;
+const { size, tablet } = utils.device;
 
 const StyledContainer = styled.div`
   width: 100%;
   height: ${isIOS && !isFirefox
     ? !isChrome
       ? "calc(var(--vh, 1vh) * 100 + 57px)"
-      : "var(--vh, 100vh)"
+      : "calc(var(--vh, 1vh) * 100 + 57px)"
     : "100vh "};
+  @media ${tablet} {
+    margin: auto;
+  }
 `;
 
 const Layout = (props) => {
@@ -46,19 +44,44 @@ const Layout = (props) => {
   }, []);
 
   const resizeHandler = () => {
-    let vh;
-    if (isIOS) {
-      if (isMobileSafari) {
-        vh = (window.innerHeight - 57) * 0.01;
-      }
-      if (isChrome) {
-        vh = window.innerHeight;
-      }
-    } else {
-      vh = (window.innerHeight - 57) * 0.01;
-    }
+    if (!isMobile) return;
+    const intervalTime = 100;
+    const endTimeout = 300;
 
-    document.documentElement.style.setProperty("--vh", `${vh}px`);
+    let interval, timeout, lastInnerHeight, noChangeCount;
+
+    const updateHeight = () => {
+      let vh;
+      clearInterval(interval);
+      clearTimeout(timeout);
+
+      interval = null;
+      timeout = null;
+
+      vh = (window.innerHeight - 57) * 0.01;
+      if (isIOS && isChrome) {
+        if (window.innerHeight > window.innerWidth) {
+          document.documentElement.style.setProperty("--lm", "-40px");
+        }
+      }
+      document.documentElement.style.setProperty("--vh", `${vh}px`);
+    };
+    interval = setInterval(() => {
+      if (window.innerHeight === lastInnerHeight) {
+        noChangeCount++;
+
+        if (noChangeCount === intervalTime) {
+          updateHeight();
+        }
+      } else {
+        lastInnerHeight = window.innerHeight;
+        noChangeCount = 0;
+      }
+    });
+
+    timeout = setTimeout(() => {
+      updateHeight();
+    }, endTimeout);
   };
 
   return (
