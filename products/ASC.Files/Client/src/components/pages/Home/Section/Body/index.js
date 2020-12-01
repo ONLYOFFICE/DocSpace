@@ -105,6 +105,7 @@ const {
 const { FilesFilter } = api;
 const { FileAction } = constants;
 const { Consumer } = utils.context;
+const { size } = utils.device;
 
 const linkStyles = {
   isHovered: true,
@@ -193,6 +194,8 @@ class SectionBodyContent extends React.Component {
 
     this.tooltipRef = React.createRef();
     this.currentDroppable = null;
+    this.cancelScrollUp = false;
+    this.isTablet = window.innerWidth <= size.tablet;
   }
 
   componentDidMount() {
@@ -233,13 +236,18 @@ class SectionBodyContent extends React.Component {
   // }
 
   componentDidUpdate(prevProps) {
-    if (
-      prevProps.selected !== "none" &&
-      this.props.isLoading !== prevProps.isLoading
-    ) {
-      !this.props.isLoading &&
-        this.documentElement &&
-        this.documentElement.scrollTo(0, 0);
+    if (this.isTablet) {
+      if (
+        prevProps.selected !== "none" &&
+        this.props.isLoading !== prevProps.isLoading
+      ) {
+        !this.props.isLoading &&
+          !this.cancelScrollUp &&
+          this.documentElement &&
+          this.documentElement.scrollTo(0, 0);
+
+        if (this.cancelScrollUp) this.cancelScrollUp = false;
+      }
     }
   }
   shouldComponentUpdate(nextProps, nextState) {
@@ -522,7 +530,7 @@ class SectionBodyContent extends React.Component {
       fetchFiles,
     } = this.props;
     const file = selection[0];
-
+    this.cancelScrollUp = true;
     api.files.lockFile(file.id, !file.locked).then((res) => {
       /*const newFiles = files;
         const indexOfFile = newFiles.findIndex(x => x.id === res.id);
