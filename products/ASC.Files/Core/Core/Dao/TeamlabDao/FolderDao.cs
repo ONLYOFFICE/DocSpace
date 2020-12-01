@@ -219,7 +219,7 @@ namespace ASC.Files.Core.Data
             return FromQueryWithShared(q).Select(ToFolder).ToList();
         }
 
-        public List<Folder<int>> GetFolders(int[] folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true)
+        public List<Folder<int>> GetFolders(IEnumerable<int> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true)
         {
             if (filterType == FilterType.FilesOnly || filterType == FilterType.ByExtension
                 || filterType == FilterType.DocumentsOnly || filterType == FilterType.ImagesOnly
@@ -243,7 +243,7 @@ namespace ASC.Files.Core.Data
                 if (FactoryIndexer.TrySelectIds(s =>
                                                     searchSubfolders
                                                         ? s.MatchAll(searchText)
-                                                        : s.MatchAll(searchText).In(r => r.Id, folderIds),
+                                                        : s.MatchAll(searchText).In(r => r.Id, folderIds.ToArray()),
                                                     out var searchIds))
                 {
                     q = q.Where(r => searchIds.Any(a => a == r.Id));
@@ -325,7 +325,7 @@ namespace ASC.Files.Core.Data
                 var newFolder = new DbFolder
                 {
                     Id = 0,
-                    ParentId = folder.ParentFolderID,
+                    ParentId = folder.FolderID,
                     Title = folder.Title,
                     CreateOn = TenantUtil.DateTimeToUtc(folder.CreateOn),
                     CreateBy = folder.CreateBy,
@@ -353,7 +353,7 @@ namespace ASC.Files.Core.Data
 
                 //full path to root
                 var oldTree = FilesDbContext.Tree
-                    .Where(r => r.FolderId == folder.ParentFolderID);
+                    .Where(r => r.FolderId == folder.FolderID);
 
                 foreach (var o in oldTree)
                 {
@@ -569,7 +569,7 @@ namespace ASC.Files.Core.Data
                 folder.FolderType = FolderType.DEFAULT;
 
             var copy = ServiceProvider.GetService<Folder<int>>();
-            copy.ParentFolderID = toFolderId;
+            copy.FolderID = toFolderId;
             copy.RootFolderId = toFolder.RootFolderId;
             copy.RootFolderCreator = toFolder.RootFolderCreator;
             copy.RootFolderType = toFolder.RootFolderType;
@@ -912,7 +912,7 @@ namespace ASC.Files.Core.Data
             if (createIfNotExists)
             {
                 var folder = ServiceProvider.GetService<Folder<int>>();
-                folder.ParentFolderID = 0;
+                folder.FolderID = 0;
                 switch (bunch)
                 {
                     case my:
@@ -1080,7 +1080,7 @@ namespace ASC.Files.Core.Data
             if (r == null) return null;
             var result = ServiceProvider.GetService<Folder<int>>();
             result.ID = r.Folder.Id;
-            result.ParentFolderID = r.Folder.ParentId;
+            result.FolderID = r.Folder.ParentId;
             result.Title = r.Folder.Title;
             result.CreateOn = TenantUtil.DateTimeFromUtc(r.Folder.CreateOn);
             result.CreateBy = r.Folder.CreateBy;
@@ -1132,7 +1132,7 @@ namespace ASC.Files.Core.Data
                     break;
             }
 
-            if (result.FolderType != FolderType.DEFAULT && 0.Equals(result.ParentFolderID)) result.RootFolderType = result.FolderType;
+            if (result.FolderType != FolderType.DEFAULT && 0.Equals(result.FolderID)) result.RootFolderType = result.FolderType;
             if (result.FolderType != FolderType.DEFAULT && result.RootFolderCreator == default) result.RootFolderCreator = result.CreateBy;
             if (result.FolderType != FolderType.DEFAULT && 0.Equals(result.RootFolderId)) result.RootFolderId = result.ID;
 

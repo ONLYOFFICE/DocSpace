@@ -11,6 +11,7 @@ import {
   RowContainer,
   utils,
   Box,
+  Grid,
 } from "asc-web-components";
 import UserContent from "./userContent";
 import {
@@ -490,8 +491,12 @@ class SectionBodyContent extends React.PureComponent {
         headerText={t("NotFoundTitle")}
         descriptionText={t("NotFoundDescription")}
         buttons={
-          <>
-            <Box displayProp="inline-block" marginProp="0 8px 0 0">
+          <Grid
+            marginProp="13px 0"
+            gridColumnGap="8px"
+            columnsProp={["12px 1fr"]}
+          >
+            <Box>
               <IconButton
                 className="empty-folder_container-icon"
                 size="12"
@@ -501,7 +506,7 @@ class SectionBodyContent extends React.PureComponent {
                 color="#657077"
               />
             </Box>
-            <Box displayProp="inline-block" marginProp="14px 0 0 0">
+            <Box marginProp="-4px 0 0 0">
               <Link
                 type="action"
                 isHovered={true}
@@ -512,7 +517,7 @@ class SectionBodyContent extends React.PureComponent {
                 {t("ClearButton")}
               </Link>
             </Box>
-          </>
+          </Grid>
         }
       />
     );
