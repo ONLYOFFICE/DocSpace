@@ -1,10 +1,13 @@
 const HtmlWebPackPlugin = require("html-webpack-plugin");
 const ModuleFederationPlugin = require("webpack/lib/container/ModuleFederationPlugin");
+const path = require("path");
 
 const deps = require("./package.json").dependencies;
 module.exports = {
   output: {
     publicPath: "http://localhost:5001/",
+    filename: "bundle.js",
+    path: path.resolve(__dirname, "dist"),
   },
 
   resolve: {
@@ -75,7 +78,7 @@ module.exports = {
       filename: "remoteEntry.js",
       remotes: {
         studio: "studio@http://localhost:5001/remoteEntry.js",
-        login: "login@http://localhost:5010/remoteEntry.js",
+        login: "login@http://localhost:5020/remoteEntry.js",
       },
       exposes: {
         "./home": "./src/components/pages/Home",
