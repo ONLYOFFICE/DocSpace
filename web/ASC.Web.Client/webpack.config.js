@@ -20,6 +20,7 @@ module.exports = {
   devServer: {
     port: 5001,
     openPage: "http://localhost:8092",
+    contentBase: path.join(__dirname, "public"),
   },
 
   module: {
