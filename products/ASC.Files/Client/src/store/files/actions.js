@@ -742,9 +742,12 @@ const startUploadFiles = (
   getState
 ) => {
   if (filesLength > 0 || convertFilesLength > 0) {
+    const state = getState();
+    const percent = state.files.uploadData.percent;
+
     const progressData = {
       visible: true,
-      percent: 0,
+      percent,
       label: "",
       icon: "upload",
       alert: false,
@@ -855,7 +858,7 @@ const sendChunk = (
     convertFilesSize,
   } = uploadData;
   const totalSize = convertFilesSize + filesSize;
-  let newPercent = 0;
+  let newPercent = percent;
   const sendRequestFunc = (index) => {
     api.files
       .uploadFile(location, requestsDataArray[index])
