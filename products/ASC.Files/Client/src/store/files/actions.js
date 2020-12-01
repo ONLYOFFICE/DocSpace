@@ -672,7 +672,8 @@ export function getFilesSettings() {
 export const startUpload = (uploadFiles, folderId, t) => {
   return (dispatch, getState) => {
     const state = getState();
-    const newFiles = [];
+    console.log(state.files.uploadData);
+    let newFiles = state.files.uploadData.files;
     let filesSize = 0;
     const convertFiles = [];
     let convertFilesSize = 0;
@@ -704,6 +705,7 @@ export const startUpload = (uploadFiles, folderId, t) => {
     const uploadStatus = convertFiles.length ? "pending" : null;
     const uploadToFolder = folderId;
     const showConvertDialog = !!convertFiles.length;
+    const percent = state.files.uploadData.percent;
 
     const newUploadData = {
       files: newFiles,
@@ -713,7 +715,7 @@ export const startUpload = (uploadFiles, folderId, t) => {
       uploadStatus,
       uploadToFolder,
       uploadedFiles: 0,
-      percent: 0,
+      percent,
       uploaded: false,
     };
     dispatch(setUploadData(newUploadData));
