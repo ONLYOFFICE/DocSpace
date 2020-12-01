@@ -42,17 +42,15 @@ using ASC.Core;
 using ASC.Core.Common;
 using ASC.Core.Users;
 using ASC.Files.Core;
-using ASC.Files.Core.Data;
 using ASC.Files.Core.Resources;
+using ASC.Files.Core.Services.NotifyService;
 using ASC.MessagingSystem;
 using ASC.Security.Cryptography;
 using ASC.Web.Core.Files;
 using ASC.Web.Core.Users;
 using ASC.Web.Files.Classes;
 using ASC.Web.Files.Core;
-using ASC.Web.Files.Core.Entries;
 using ASC.Web.Files.Helpers;
-using ASC.Files.Core.Services.NotifyService;
 using ASC.Web.Files.ThirdPartyApp;
 using ASC.Web.Files.Utils;
 
@@ -150,8 +148,6 @@ namespace ASC.Web.Files.Services.DocumentService
 
             public string Message { get; set; }
 
-            public string[] Addresses { get; set; }
-
             public static string Serialize(TrackResponse response)
             {
                 return JsonSerializer.Serialize(response);
@@ -161,6 +157,7 @@ namespace ASC.Web.Files.Services.DocumentService
         #endregion
     }
 
+    [Scope]
     public class DocumentServiceTrackerHelper
     {
         private SecurityContext SecurityContext { get; }
@@ -177,7 +174,6 @@ namespace ASC.Web.Files.Services.DocumentService
         private EntryManager EntryManager { get; }
         private FileShareLink FileShareLink { get; }
         private FilesMessageService FilesMessageService { get; }
-        private EncryptionAddressHelper EncryptionAddressHelper { get; }
         private DocumentServiceConnector DocumentServiceConnector { get; }
         private NotifyClient NotifyClient { get; }
         private MailMergeTaskRunner MailMergeTaskRunner { get; }
@@ -199,7 +195,6 @@ namespace ASC.Web.Files.Services.DocumentService
             EntryManager entryManager,
             FileShareLink fileShareLink,
             FilesMessageService filesMessageService,
-            EncryptionAddressHelper encryptionAddressHelper,
             DocumentServiceConnector documentServiceConnector,
             NotifyClient notifyClient,
             MailMergeTaskRunner mailMergeTaskRunner)
@@ -218,7 +213,6 @@ namespace ASC.Web.Files.Services.DocumentService
             EntryManager = entryManager;
             FileShareLink = fileShareLink;
             FilesMessageService = filesMessageService;
-            EncryptionAddressHelper = encryptionAddressHelper;
             DocumentServiceConnector = documentServiceConnector;
             NotifyClient = notifyClient;
             MailMergeTaskRunner = mailMergeTaskRunner;
@@ -461,10 +455,6 @@ namespace ASC.Web.Files.Services.DocumentService
             SocketManager.FilesChangeEditors(fileId, !forcesave);
 
             var result = new TrackResponse { Message = saveMessage };
-            if (string.IsNullOrEmpty(saveMessage) && file != null && file.Encrypted)
-            {
-                result.Addresses = EncryptionAddressHelper.GetAddresses(file.ID.ToString()).ToArray();
-            }
             return result;
         }
 
@@ -645,36 +635,6 @@ namespace ASC.Web.Files.Services.DocumentService
             {
                 Logger.Error("DocService save history error", ex);
             }
-        }
-    }
-    public static class DocumentServiceTrackerHelperExtension
-    {
-        public static DIHelper AddDocumentServiceTrackerHelperService(this DIHelper services)
-        {
-            if (services.TryAddScoped<DocumentServiceTrackerHelper>())
-            {
-                return services
-                    .AddSecurityContextService()
-                    .AddUserManagerService()
-                    .AddTenantManagerService()
-                    .AddFilesLinkUtilityService()
-                    .AddEmailValidationKeyProviderService()
-                    .AddBaseCommonLinkUtilityService()
-                    .AddGlobalStoreService()
-                    .AddDisplayUserSettingsService()
-                    .AddDaoFactoryService()
-                    .AddDocumentServiceHelperService()
-                    .AddEntryManagerService()
-                    .AddFileShareLinkService()
-                    .AddFilesMessageService()
-                    .AddDocumentServiceConnectorService()
-                    .AddNotifyClientService()
-                    .AddEncryptionAddressHelperService()
-                    .AddSocketManagerService()
-                    .AddMailMergeTaskRunnerService();
-            }
-
-            return services;
         }
     }
 }

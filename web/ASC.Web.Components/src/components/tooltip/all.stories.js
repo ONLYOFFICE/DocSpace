@@ -15,32 +15,32 @@ const arrayUsers = [
     key: "user_1",
     name: "Bob",
     email: "Bob@gmail.com",
-    position: "developer"
+    position: "developer",
   },
   {
     key: "user_2",
     name: "John",
     email: "John@gmail.com",
-    position: "developer"
+    position: "developer",
   },
   {
     key: "user_3",
     name: "Kevin",
     email: "Kevin@gmail.com",
-    position: "developer"
+    position: "developer",
   },
   {
     key: "user_4",
     name: "Alex",
     email: "Alex@gmail.com",
-    position: "developer"
+    position: "developer",
   },
   {
     key: "user_5",
     name: "Tomas",
     email: "Tomas@gmail.com",
-    position: "developer"
-  }
+    position: "developer",
+  },
 ];
 
 storiesOf("Components|Tooltip", module)
@@ -56,13 +56,13 @@ storiesOf("Components|Tooltip", module)
         </div>
         <Tooltip id="link" offsetRight={90} effect="solid">
           <div>
-            <Text isBold={true} fontSize='16px'>
+            <Text isBold={true} fontSize="16px">
               Bob Johnston
             </Text>
-            <Text color="#A3A9AE" fontSize='13px'>
+            <Text color="#A3A9AE" fontSize="13px">
               BobJohnston@gmail.com
             </Text>
-            <Text fontSize='13px'>Developer</Text>
+            <Text fontSize="13px">Developer</Text>
           </div>
         </Tooltip>
 
@@ -92,18 +92,16 @@ storiesOf("Components|Tooltip", module)
         <Tooltip
           id="group"
           offsetRight={90}
-          getContent={dataTip =>
+          getContent={(dataTip) =>
             dataTip ? (
               <div>
-                <Text isBold={true} fontSize='16px'>
+                <Text isBold={true} fontSize="16px">
                   {arrayUsers[dataTip].name}
                 </Text>
-                <Text color="#A3A9AE" fontSize='13px'>
+                <Text color="#A3A9AE" fontSize="13px">
                   {arrayUsers[dataTip].email}
                 </Text>
-                <Text fontSize='13px'>
-                  {arrayUsers[dataTip].position}
-                </Text>
+                <Text fontSize="13px">{arrayUsers[dataTip].position}</Text>
               </div>
             ) : null
           }

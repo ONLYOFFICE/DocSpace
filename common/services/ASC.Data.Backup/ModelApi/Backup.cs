@@ -1,14 +1,15 @@
 ﻿
 using System.Collections.Generic;
 
-using ASC.Data.Backup.Contracts;
+using ASC.Api.Collections;
 
 namespace ASC.Data.Backup.Models
 {
     public class Backup
     {
-        public BackupStorageType StorageType { get; set; }
+
+        public string StorageType { get; set; }
         public bool BackupMail { get; set; }
-        public Dictionary<string, string> StorageParams { get; set; }
+        public IEnumerable<ItemKeyValuePair<object, object>> StorageParams { get; set; }
     }
 }

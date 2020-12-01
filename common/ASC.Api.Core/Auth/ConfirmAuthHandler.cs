@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using ASC.Common;
 using ASC.Core;
 using ASC.Security.Cryptography;
-using ASC.Web.Studio.Core;
 
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,6 +17,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Api.Core.Auth
 {
+    [Scope(Additional = typeof(ConfirmAuthHandlerExtension))]
     public class ConfirmAuthHandler : AuthenticationHandler<AuthenticationSchemeOptions>
     {
         public ConfirmAuthHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock) : base(options, logger, encoder, clock)
@@ -29,38 +29,22 @@ namespace ASC.Api.Core.Auth
             UrlEncoder encoder,
             ISystemClock clock,
             SecurityContext securityContext,
-            EmailValidationKeyProvider emailValidationKeyProvider,
-            SetupInfo setupInfo,
-            TenantManager tenantManager,
-            UserManager userManager,
-            AuthManager authManager,
-            AuthContext authContext,
             IServiceProvider serviceProvider) :
             base(options, logger, encoder, clock)
         {
             SecurityContext = securityContext;
-            EmailValidationKeyProvider = emailValidationKeyProvider;
-            SetupInfo = setupInfo;
-            TenantManager = tenantManager;
-            UserManager = userManager;
-            AuthManager = authManager;
-            AuthContext = authContext;
             ServiceProvider = serviceProvider;
         }
 
         private SecurityContext SecurityContext { get; }
-        private EmailValidationKeyProvider EmailValidationKeyProvider { get; }
-        private SetupInfo SetupInfo { get; }
-        private TenantManager TenantManager { get; }
-        private UserManager UserManager { get; }
-        private AuthManager AuthManager { get; }
-        private AuthContext AuthContext { get; }
         public IServiceProvider ServiceProvider { get; }
 
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
             using var scope = ServiceProvider.CreateScope();
-            var emailValidationKeyModel = scope.ServiceProvider.GetService<EmailValidationKeyModel>();
+
+            var emailValidationKeyHelper = scope.ServiceProvider.GetService<EmailValidationKeyModelHelper>();
+            var emailValidationKeyModel = emailValidationKeyHelper.GetModel();
 
             if (!emailValidationKeyModel.Type.HasValue)
             {
@@ -72,7 +56,7 @@ namespace ASC.Api.Core.Auth
             EmailValidationKeyProvider.ValidationResult checkKeyResult;
             try
             {
-                checkKeyResult = emailValidationKeyModel.Validate();
+                checkKeyResult = emailValidationKeyHelper.Validate(emailValidationKeyModel);
             }
             catch (ArgumentNullException)
             {
@@ -113,18 +97,11 @@ namespace ASC.Api.Core.Auth
         }
     }
 
-    public static class ConfirmAuthHandlerExtension
+    public class ConfirmAuthHandlerExtension
     {
-        public static DIHelper AddConfirmAuthHandler(this DIHelper services)
+        public static void Register(DIHelper services)
         {
-            return services
-                .AddSecurityContextService()
-                .AddEmailValidationKeyProviderService()
-                .AddSetupInfo()
-                .AddTenantManagerService()
-                .AddUserManagerService()
-                .AddAuthManager()
-                .AddAuthContextService();
+            services.TryAdd<EmailValidationKeyModelHelper>();
         }
     }
 }

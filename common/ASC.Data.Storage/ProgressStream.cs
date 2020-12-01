@@ -61,7 +61,7 @@ namespace ASC.Data.Storage
 
         public override long Length
         {
-            get { return stream.Length; }
+            get { return length; }
         }
 
         public override long Position

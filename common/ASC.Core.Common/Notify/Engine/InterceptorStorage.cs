@@ -38,7 +38,7 @@ namespace ASC.Notify.Engine
         private readonly Dictionary<string, ISendInterceptor> globalInterceptors = new Dictionary<string, ISendInterceptor>(10);
 
 
-        private Dictionary<string, ISendInterceptor> callInterceptors
+        private Dictionary<string, ISendInterceptor> CallInterceptors
         {
             get
             {
@@ -60,7 +60,7 @@ namespace ASC.Notify.Engine
             switch (interceptor.Lifetime)
             {
                 case InterceptorLifetime.Call:
-                    AddInternal(interceptor, callInterceptors);
+                    AddInternal(interceptor, CallInterceptors);
                     break;
                 case InterceptorLifetime.Global:
                     AddInternal(interceptor, globalInterceptors);
@@ -73,7 +73,7 @@ namespace ASC.Notify.Engine
         public ISendInterceptor Get(string name)
         {
             if (string.IsNullOrEmpty(name)) throw new ArgumentException("empty name", "name");
-            var result = GetInternal(name, callInterceptors);
+            var result = GetInternal(name, CallInterceptors);
             if (result == null) result = GetInternal(name, globalInterceptors);
             return result;
         }
@@ -82,7 +82,7 @@ namespace ASC.Notify.Engine
         {
             if (string.IsNullOrEmpty(name)) throw new ArgumentException("empty name", "name");
 
-            RemoveInternal(name, callInterceptors);
+            RemoveInternal(name, CallInterceptors);
             RemoveInternal(name, globalInterceptors);
         }
 
@@ -95,7 +95,7 @@ namespace ASC.Notify.Engine
         {
             lock (syncRoot)
             {
-                if ((lifetime & InterceptorLifetime.Call) == InterceptorLifetime.Call) callInterceptors.Clear();
+                if ((lifetime & InterceptorLifetime.Call) == InterceptorLifetime.Call) CallInterceptors.Clear();
                 if ((lifetime & InterceptorLifetime.Global) == InterceptorLifetime.Global) globalInterceptors.Clear();
             }
         }
@@ -103,7 +103,7 @@ namespace ASC.Notify.Engine
         public List<ISendInterceptor> GetAll()
         {
             var result = new List<ISendInterceptor>();
-            result.AddRange(callInterceptors.Values);
+            result.AddRange(CallInterceptors.Values);
             result.AddRange(globalInterceptors.Values);
             return result;
         }

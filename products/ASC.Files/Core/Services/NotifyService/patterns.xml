@@ -9,7 +9,11 @@
     <subject resource="|subject_DocuSignComplete|ASC.Files.Core.Services.NotifyService.FilesPatternResource,ASC.Files.Core" />
     <body styler="ASC.Notify.Textile.JabberStyler, ASC.Notify.Textile">$DocumentURL</body>
   </pattern>
-
+  <pattern id="DocuSignComplete" sender="telegram.sender">
+    <subject resource="|subject_DocuSignComplete_tg|ASC.Files.Core.Services.NotifyService.FilesPatternResource,ASC.Files.Core" />
+    <body styler="ASC.Notify.Textile.JabberStyler, ASC.Notify.Textile"></body>
+  </pattern>
+  
   <pattern id="DocuSignStatus" sender="email.sender">
     <subject resource="|subject_DocuSignStatus|ASC.Files.Core.Services.NotifyService.FilesPatternResource,ASC.Files.Core" />
     <body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_DocuSignStatus|ASC.Files.Core.Services.NotifyService.FilesPatternResource,ASC.Files.Core" />
@@ -18,7 +22,11 @@
     <subject resource="|subject_DocuSignStatus|ASC.Files.Core.Services.NotifyService.FilesPatternResource,ASC.Files.Core" />
     <body styler="ASC.Notify.Textile.JabberStyler, ASC.Notify.Textile">$Message: $DocumentTitle</body>
   </pattern>
-
+  <pattern id="DocuSignStatus" sender="telegram.sender">
+    <subject resource="|subject_DocuSignStatus|ASC.Files.Core.Services.NotifyService.FilesPatternResource,ASC.Files.Core" />
+    <body styler="ASC.Notify.Textile.JabberStyler, ASC.Notify.Textile">$Message: $DocumentTitle</body>
+  </pattern>
+  
   <pattern id="MailMergeEnd" sender="email.sender">
     <subject resource="|subject_MailMergeEnd|ASC.Files.Core.Services.NotifyService.FilesPatternResource,ASC.Files.Core" />
     <body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_MailMergeEnd|ASC.Files.Core.Services.NotifyService.FilesPatternResource,ASC.Files.Core" />
@@ -30,7 +38,15 @@
 $Message
     </body>
   </pattern>
+  <pattern id="MailMergeEnd" sender="telegram.sender">
+    <subject resource="|subject_MailMergeEnd|ASC.Files.Core.Services.NotifyService.FilesPatternResource,ASC.Files.Core" />
+    <body styler="ASC.Notify.Textile.JabberStyler, ASC.Notify.Textile">
+      $__AuthorName
 
+      $Message
+    </body>
+  </pattern>
+  
   <pattern id="ShareDocument" sender="email.sender">
     <subject resource="|subject_ShareDocument|ASC.Files.Core.Services.NotifyService.FilesPatternResource,ASC.Files.Core" />
     <body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_ShareDocument|ASC.Files.Core.Services.NotifyService.FilesPatternResource,ASC.Files.Core" />
@@ -46,6 +62,16 @@ $Message
 $DocumentURL
     </body>
   </pattern>
+  <pattern id="ShareDocument" sender="telegram.sender">
+    <subject resource="|subject_ShareDocument_tg|ASC.Files.Core.Services.NotifyService.FilesPatternResource,ASC.Files.Core" />
+    <body styler="ASC.Notify.Textile.JabberStyler, ASC.Notify.Textile">
+      $__AuthorName
+
+      $AccessRights
+
+      $Message
+    </body>
+  </pattern>
 
   <pattern id="ShareFolder" sender="email.sender">
     <subject resource="|subject_ShareFolder|ASC.Files.Core.Services.NotifyService.FilesPatternResource,ASC.Files.Core" />
@@ -59,10 +85,19 @@ $AccessRights
 
 $Message
 
-$__VirtualRootPath/products/files/#$FolderID
+$DocumentURL
     </body>
   </pattern>
+  <pattern id="ShareFolder" sender="telegram.sender">
+    <subject resource="|subject_ShareFolder_tg|ASC.Files.Core.Services.NotifyService.FilesPatternResource,ASC.Files.Core" />
+    <body styler="ASC.Notify.Textile.JabberStyler, ASC.Notify.Textile">$__AuthorName
 
+$AccessRights
+
+$Message
+    </body>
+  </pattern>
+  
   <pattern id="EditorMentions" sender="email.sender">
     <subject resource="|subject_EditorMentions|ASC.Files.Core.Services.NotifyService.FilesPatternResource,ASC.Files.Core" />
     <body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_EditorMentions|ASC.Files.Core.Services.NotifyService.FilesPatternResource,ASC.Files.Core" />

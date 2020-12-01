@@ -28,6 +28,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using AppLimit.CloudComputing.SharpBox;
+using AppLimit.CloudComputing.SharpBox.StorageProvider.DropBox;
+
 using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
@@ -48,6 +51,7 @@ using ASC.Files.Thirdparty.SharePoint;
 using ASC.Files.Thirdparty.Sharpbox;
 using ASC.Security.Cryptography;
 using ASC.Web.Files.Classes;
+using ASC.Web.Files.Helpers;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -68,9 +72,11 @@ namespace ASC.Files.Thirdparty
         SharePoint,
         SkyDrive,
         WebDav,
+        kDrive,
         Yandex,
     }
 
+    [Scope]
     internal class ProviderAccountDao : IProviderDao
     {
         private int tenantID;
@@ -83,6 +89,7 @@ namespace ASC.Files.Thirdparty
         private InstanceCrypto InstanceCrypto { get; }
         private SecurityContext SecurityContext { get; }
         private ConsumerFactory ConsumerFactory { get; }
+        private ThirdpartyConfiguration ThirdpartyConfiguration { get; }
 
         public ProviderAccountDao(
             IServiceProvider serviceProvider,
@@ -91,6 +98,7 @@ namespace ASC.Files.Thirdparty
             InstanceCrypto instanceCrypto,
             SecurityContext securityContext,
             ConsumerFactory consumerFactory,
+            ThirdpartyConfiguration thirdpartyConfiguration,
             DbContextManager<FilesDbContext> dbContextManager,
             IOptionsMonitor<ILog> options)
         {
@@ -102,6 +110,7 @@ namespace ASC.Files.Thirdparty
             InstanceCrypto = instanceCrypto;
             SecurityContext = securityContext;
             ConsumerFactory = consumerFactory;
+            ThirdpartyConfiguration = thirdpartyConfiguration;
         }
 
         public virtual IProviderInfo GetProviderInfo(int linkId)
@@ -208,7 +217,9 @@ namespace ASC.Files.Thirdparty
                 Url = authData.Url ?? ""
             };
 
-            return FilesDbContext.AddOrUpdate(r => r.ThirdpartyAccount, dbFilesThirdpartyAccount).Id;
+            var res = FilesDbContext.AddOrUpdate(r => r.ThirdpartyAccount, dbFilesThirdpartyAccount);
+            FilesDbContext.SaveChanges();
+            return res.Id;
         }
 
         public bool CheckProviderInfo(IProviderInfo providerInfo)
@@ -314,42 +325,40 @@ namespace ASC.Files.Thirdparty
 
         public virtual void RemoveProviderInfo(int linkId)
         {
-            using (var tx = FilesDbContext.Database.BeginTransaction())
-            {
-                var folderId = GetProviderInfo(linkId).RootFolderId.ToString();
+            using var tx = FilesDbContext.Database.BeginTransaction();
+            var folderId = GetProviderInfo(linkId).RootFolderId.ToString();
 
-                var entryIDs = FilesDbContext.ThirdpartyIdMapping
-                    .Where(r => r.TenantId == TenantID)
-                    .Where(r => r.Id.StartsWith(folderId))
-                    .Select(r => r.HashId)
-                    .ToList();
+            var entryIDs = FilesDbContext.ThirdpartyIdMapping
+                .Where(r => r.TenantId == TenantID)
+                .Where(r => r.Id.StartsWith(folderId))
+                .Select(r => r.HashId)
+                .ToList();
 
-                var forDelete = FilesDbContext.Security
-                    .Where(r => r.TenantId == TenantID)
-                    .Where(r => entryIDs.Any(a => a == r.EntryId))
-                    .ToList();
+            var forDelete = FilesDbContext.Security
+                .Where(r => r.TenantId == TenantID)
+                .Where(r => entryIDs.Any(a => a == r.EntryId))
+                .ToList();
 
-                FilesDbContext.Security.RemoveRange(forDelete);
-                FilesDbContext.SaveChanges();
+            FilesDbContext.Security.RemoveRange(forDelete);
+            FilesDbContext.SaveChanges();
 
-                var linksForDelete = FilesDbContext.TagLink
-                    .Where(r => r.TenantId == TenantID)
-                    .Where(r => entryIDs.Any(e => e == r.EntryId))
-                    .ToList();
+            var linksForDelete = FilesDbContext.TagLink
+                .Where(r => r.TenantId == TenantID)
+                .Where(r => entryIDs.Any(e => e == r.EntryId))
+                .ToList();
 
-                FilesDbContext.TagLink.RemoveRange(linksForDelete);
-                FilesDbContext.SaveChanges();
+            FilesDbContext.TagLink.RemoveRange(linksForDelete);
+            FilesDbContext.SaveChanges();
 
-                var accountsForDelete = FilesDbContext.ThirdpartyAccount
-                    .Where(r => r.Id == linkId)
-                    .Where(r => r.TenantId == TenantID)
-                    .ToList();
+            var accountsForDelete = FilesDbContext.ThirdpartyAccount
+                .Where(r => r.Id == linkId)
+                .Where(r => r.TenantId == TenantID)
+                .ToList();
 
-                FilesDbContext.ThirdpartyAccount.RemoveRange(accountsForDelete);
-                FilesDbContext.SaveChanges();
+            FilesDbContext.ThirdpartyAccount.RemoveRange(accountsForDelete);
+            FilesDbContext.SaveChanges();
 
-                tx.Commit();
-            }
+            tx.Commit();
         }
 
         private IProviderInfo ToProviderInfo(int id, ProviderTypes providerKey, string customerTitle, AuthData authData, Guid owner, FolderType type, DateTime createOn)
@@ -475,83 +484,78 @@ namespace ASC.Files.Thirdparty
 
         private AuthData GetEncodedAccesToken(AuthData authData, ProviderTypes provider)
         {
+            string code;
+            OAuth20Token token;
+
             switch (provider)
             {
-                //case ProviderTypes.GoogleDrive:
-
-                //    var code = authData.Token;
-
-                //    var token = OAuth20TokenHelper.GetAccessToken<GoogleLoginProvider>(code);
-
-                //    if (token == null) throw new UnauthorizedAccessException(string.Format(FilesCommonResource.ErrorMassage_SecurityException_Auth, provider));
-
-                //    return new AuthData(token: token.ToJson());
-
-                //case ProviderTypes.Box:
-
-                //    code = authData.Token;
-
-                //    token = OAuth20TokenHelper.GetAccessToken<BoxLoginProvider>(code);
-
-                //    if (token == null) throw new UnauthorizedAccessException(string.Format(FilesCommonResource.ErrorMassage_SecurityException_Auth, provider));
-
-                //    return new AuthData(token: token.ToJson());
-
-                case ProviderTypes.DropboxV2:
-
-                    var code = authData.Token;
-
-                    var token = OAuth20TokenHelper.GetAccessToken<DropboxLoginProvider>(ConsumerFactory, code);
+                case ProviderTypes.GoogleDrive:
+                    code = authData.Token;
+                    token = OAuth20TokenHelper.GetAccessToken<GoogleLoginProvider>(ConsumerFactory, code);
 
                     if (token == null) throw new UnauthorizedAccessException(string.Format(FilesCommonResource.ErrorMassage_SecurityException_Auth, provider));
 
                     return new AuthData(token: token.ToJson());
 
-                //case ProviderTypes.DropBox:
+                case ProviderTypes.Box:
+                    code = authData.Token;
+                    token = OAuth20TokenHelper.GetAccessToken<BoxLoginProvider>(ConsumerFactory, code);
 
-                //    var dropBoxRequestToken = DropBoxRequestToken.Parse(authData.Token);
+                    if (token == null) throw new UnauthorizedAccessException(string.Format(FilesCommonResource.ErrorMassage_SecurityException_Auth, provider));
 
-                //    var config = CloudStorage.GetCloudConfigurationEasy(nSupportedCloudConfigurations.DropBox);
-                //    var accessToken = DropBoxStorageProviderTools.ExchangeDropBoxRequestTokenIntoAccessToken(config as DropBoxConfiguration,
-                //                                                                                             ThirdpartyConfiguration.DropboxAppKey,
-                //                                                                                             ThirdpartyConfiguration.DropboxAppSecret,
-                //                                                                                             dropBoxRequestToken);
+                    return new AuthData(token: token.ToJson());
 
-                //    var base64Token = new CloudStorage().SerializeSecurityTokenToBase64Ex(accessToken, config.GetType(), new Dictionary<string, string>());
+                case ProviderTypes.DropboxV2:
+                    code = authData.Token;
+                    token = OAuth20TokenHelper.GetAccessToken<DropboxLoginProvider>(ConsumerFactory, code);
 
-                //    return new AuthData(token: base64Token);
+                    if (token == null) throw new UnauthorizedAccessException(string.Format(FilesCommonResource.ErrorMassage_SecurityException_Auth, provider));
 
-                //case ProviderTypes.OneDrive:
+                    return new AuthData(token: token.ToJson());
 
-                //    code = authData.Token;
+                case ProviderTypes.DropBox:
 
-                //    token = OAuth20TokenHelper.GetAccessToken<OneDriveLoginProvider>(code);
+                    var dropBoxRequestToken = DropBoxRequestToken.Parse(authData.Token);
 
-                //    if (token == null) throw new UnauthorizedAccessException(string.Format(FilesCommonResource.ErrorMassage_SecurityException_Auth, provider));
+                    var config = CloudStorage.GetCloudConfigurationEasy(nSupportedCloudConfigurations.DropBox);
+                    var accessToken = DropBoxStorageProviderTools.ExchangeDropBoxRequestTokenIntoAccessToken(config as DropBoxConfiguration,
+                                                                                                             ThirdpartyConfiguration.DropboxAppKey,
+                                                                                                             ThirdpartyConfiguration.DropboxAppSecret,
+                                                                                                             dropBoxRequestToken);
 
-                //    return new AuthData(token: token.ToJson());
+                    var base64Token = new CloudStorage().SerializeSecurityTokenToBase64Ex(accessToken, config.GetType(), new Dictionary<string, string>());
 
-                //case ProviderTypes.SkyDrive:
+                    return new AuthData(token: base64Token);
 
-                //    code = authData.Token;
+                case ProviderTypes.OneDrive:
+                    code = authData.Token;
+                    token = OAuth20TokenHelper.GetAccessToken<OneDriveLoginProvider>(ConsumerFactory, code);
 
-                //    token = OAuth20TokenHelper.GetAccessToken<OneDriveLoginProvider>(code);
+                    if (token == null) throw new UnauthorizedAccessException(string.Format(FilesCommonResource.ErrorMassage_SecurityException_Auth, provider));
 
-                //    if (token == null) throw new UnauthorizedAccessException(string.Format(FilesCommonResource.ErrorMassage_SecurityException_Auth, provider));
+                    return new AuthData(token: token.ToJson());
 
-                //    accessToken = AppLimit.CloudComputing.SharpBox.Common.Net.oAuth20.OAuth20Token.FromJson(token.ToJson());
+                case ProviderTypes.SkyDrive:
 
-                //    if (accessToken == null) throw new UnauthorizedAccessException(string.Format(FilesCommonResource.ErrorMassage_SecurityException_Auth, provider));
+                    code = authData.Token;
 
-                //    config = CloudStorage.GetCloudConfigurationEasy(nSupportedCloudConfigurations.SkyDrive);
-                //    var storage = new CloudStorage();
-                //    base64Token = storage.SerializeSecurityTokenToBase64Ex(accessToken, config.GetType(), new Dictionary<string, string>());
+                    token = OAuth20TokenHelper.GetAccessToken<OneDriveLoginProvider>(ConsumerFactory, code);
 
-                //    return new AuthData(token: base64Token);
+                    if (token == null) throw new UnauthorizedAccessException(string.Format(FilesCommonResource.ErrorMassage_SecurityException_Auth, provider));
 
-                //case ProviderTypes.SharePoint:
-                //case ProviderTypes.WebDav:
-                //    break;
+                    accessToken = AppLimit.CloudComputing.SharpBox.Common.Net.oAuth20.OAuth20Token.FromJson(token.ToJson());
+
+                    if (accessToken == null) throw new UnauthorizedAccessException(string.Format(FilesCommonResource.ErrorMassage_SecurityException_Auth, provider));
+
+                    config = CloudStorage.GetCloudConfigurationEasy(nSupportedCloudConfigurations.SkyDrive);
+                    var storage = new CloudStorage();
+                    base64Token = storage.SerializeSecurityTokenToBase64Ex(accessToken, config.GetType(), new Dictionary<string, string>());
+
+                    return new AuthData(token: base64Token);
+
+                case ProviderTypes.SharePoint:
+                case ProviderTypes.WebDav:
+                    break;
 
                 default:
                     authData.Url = null;
@@ -585,25 +589,16 @@ namespace ASC.Files.Thirdparty
         }
     }
 
-    public static class ProviderAccountDaoExtention
+    public class ProviderAccountDaoExtension
     {
-        public static DIHelper AddProviderAccountDaoService(this DIHelper services)
+        public static void Register(DIHelper services)
         {
-            //services.TryAddScoped<IProviderDao, ProviderAccountDao>();
-
-            return services
-                .AddSharpBoxProviderInfoService()
-                .AddSharePointProviderInfoService()
-                .AddOneDriveProviderInfoService()
-                .AddGoogleDriveProviderInfoService()
-                .AddBoxProviderInfoService()
-                .AddDropboxProviderInfoService()
-                .AddTenantUtilService()
-                .AddTenantManagerService()
-                .AddInstanceCryptoService()
-                .AddSecurityContextService()
-                .AddConsumerFactoryService()
-                .AddDbContextManagerService<FilesDbContext>();
+            services.TryAdd<BoxProviderInfo>();
+            services.TryAdd<DropboxProviderInfo>();
+            services.TryAdd<SharePointProviderInfo>();
+            services.TryAdd<GoogleDriveProviderInfo>();
+            services.TryAdd<OneDriveProviderInfo>();
+            services.TryAdd<SharpBoxProviderInfo>();
         }
     }
 }

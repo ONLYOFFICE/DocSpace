@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 import React from "react";
 import { storiesOf } from "@storybook/react";
 import { BooleanValue, StringValue } from "react-values";
@@ -14,7 +15,7 @@ import InputBlock from "../input-block";
 import RadioButtonGroup from "../radio-button-group";
 import TextInput from "../text-input";
 import Textarea from "../textarea";
-import ContextMenuButton from "../context-menu-button";
+//import ContextMenuButton from "../context-menu-button";
 import DatePicker from "../date-picker";
 import FieldContainer from "../field-container";
 import Heading from "../heading";
@@ -34,18 +35,18 @@ const array_items = [
   {
     key: "0",
     title: "Tab 1",
-    content: <div>Tab 1 content</div>
+    content: <div>Tab 1 content</div>,
   },
   {
     key: "1",
     title: "Tab 2",
-    content: <div>Tab 2 content</div>
+    content: <div>Tab 2 content</div>,
   },
   {
     key: "2",
     title: "Tab 3",
-    content: <div>Tab 3 content</div>
-  }
+    content: <div>Tab 3 content</div>,
+  },
 ];
 
 const options = [
@@ -54,29 +55,29 @@ const options = [
     icon: "CatalogEmployeeIcon", // optional item
     label: "Option 1",
     disabled: false, // optional item
-    onClick: () => {} // optional item
+    onClick: () => {}, // optional item
   },
   {
     key: 1,
     icon: "CatalogEmployeeIcon", // optional item
     label: "Option 2",
     disabled: false, // optional item
-    onClick: () => {} // optional item
+    onClick: () => {}, // optional item
   },
   {
     key: 2,
     icon: "CatalogEmployeeIcon", // optional item
     label: "Option 3",
     disabled: true, // optional item
-    onClick: () => {} // optional item
+    onClick: () => {}, // optional item
   },
   {
     key: 3,
     icon: "CatalogEmployeeIcon", // optional item
     label: "Option 4",
     disabled: false, // optional item
-    onClick: () => {} // optional item
-  }
+    onClick: () => {}, // optional item
+  },
 ];
 
 const arrayUsers = [
@@ -85,33 +86,31 @@ const arrayUsers = [
     key: "user_2",
     name: "John",
     email: "John@gmail.com",
-    position: "developer"
+    position: "developer",
   },
   {
     key: "user_3",
     name: "Kevin",
     email: "Kevin@gmail.com",
-    position: "developer"
-  }
+    position: "developer",
+  },
 ];
 
 const element = "Icon";
 
-const elementAvatar = (
-  <Avatar size="small" role="user" userName="Demo Avatar" />
-);
+const elementAvatar = <Avatar size="min" role="user" userName="Demo Avatar" />;
 const elementIcon = <Icons.CatalogFolderIcon size="big" />;
 const elementComboBox = (
   <ComboBox
     options={[
       { key: 1, icon: "ItemActiveIcon", label: "Open" },
-      { key: 2, icon: "CheckIcon", label: "Closed" }
+      { key: 2, icon: "CheckIcon", label: "Closed" },
     ]}
-    onSelect={option => console.log(option)}
+    onSelect={(option) => console.log(option)}
     selectedOption={{
       key: 0,
       icon: "ItemActiveIcon",
-      label: ""
+      label: "",
     }}
     scaled={false}
     size="content"
@@ -120,7 +119,7 @@ const elementComboBox = (
 );
 
 const checkedProps = { checked: false };
-const getElementProps = element =>
+const getElementProps = (element) =>
   element === "Avatar"
     ? { element: elementAvatar }
     : element === "Icon"
@@ -141,13 +140,13 @@ const rowContent = (
         {
           key: "key1",
           label: "Edit",
-          onClick: () => console.log("Context action: Edit")
+          onClick: () => console.log("Context action: Edit"),
         },
         {
           key: "key2",
           label: "Delete",
-          onClick: () => console.log("Context action: Delete")
-        }
+          onClick: () => console.log("Context action: Delete"),
+        },
       ]}
     >
       <Text truncate={true}>Sample text</Text>
@@ -171,7 +170,7 @@ storiesOf("Components|All", module)
           display: "grid",
           gridGap: 15,
           //gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))"
-          gridTemplateColumns: "repeat(auto-fill, 300px)"
+          gridTemplateColumns: "repeat(auto-fill, 300px)",
         }}
       >
         <div style={{ justifySelf: "center" }}>
@@ -216,16 +215,16 @@ storiesOf("Components|All", module)
             <Tooltip
               id="group"
               offsetRight={90}
-              getContent={dataTip =>
+              getContent={(dataTip) =>
                 dataTip ? (
                   <div>
-                    <Text isBold={true} fontSize='16px'>
+                    <Text isBold={true} fontSize="16px">
                       {arrayUsers[dataTip].name}
                     </Text>
-                    <Text color="#A3A9AE" fontSize='13px'>
+                    <Text color="#A3A9AE" fontSize="13px">
                       {arrayUsers[dataTip].email}
                     </Text>
-                    <Text fontSize='13px'>{arrayUsers[dataTip].position}</Text>
+                    <Text fontSize="13px">{arrayUsers[dataTip].position}</Text>
                   </div>
                 ) : null
               }
@@ -306,13 +305,13 @@ storiesOf("Components|All", module)
               isDisabled={false}
               selectedOption={{
                 key: 0,
-                label: "Select"
+                label: "Select",
               }}
               dropDownMaxHeight={200}
               noBorder={false}
               scaledOptions={true}
               size="content"
-              onSelect={option => console.log("selected", option)}
+              onSelect={(option) => console.log("selected", option)}
             />
           </div>
 
@@ -322,7 +321,7 @@ storiesOf("Components|All", module)
                 <TextInput
                   placeholder="Add input text"
                   value={value}
-                  onChange={e => set(e.target.value)}
+                  onChange={(e) => set(e.target.value)}
                 />
               )}
             </StringValue>
@@ -335,7 +334,7 @@ storiesOf("Components|All", module)
                   placeholder="Add input text"
                   iconName={"SearchIcon"}
                   onIconClick={() => {}}
-                  onChange={e => set(e.target.value)}
+                  onChange={(e) => set(e.target.value)}
                   value={value}
                 >
                   <Icons.SettingsIcon size="medium" />
@@ -346,7 +345,7 @@ storiesOf("Components|All", module)
 
           <div style={{ padding: "8px 0" }}>
             <DatePicker
-              onChange={date => {
+              onChange={(date) => {
                 console.log("Selected date", date);
               }}
               selectedDate={new Date()}
@@ -366,7 +365,7 @@ storiesOf("Components|All", module)
               {({ value, set }) => (
                 <Textarea
                   placeholder="Add comment"
-                  onChange={event => set(event.target.value)}
+                  onChange={(event) => set(event.target.value)}
                   value={value}
                 />
               )}
@@ -383,7 +382,7 @@ storiesOf("Components|All", module)
                 >
                   <TextInput
                     value={value}
-                    onChange={e => set(e.target.value)}
+                    onChange={(e) => set(e.target.value)}
                   />
                 </FieldContainer>
               )}
@@ -396,7 +395,7 @@ storiesOf("Components|All", module)
               options={[
                 { value: "apple", label: "Sweet apple" },
                 { value: "banana", label: "Banana" },
-                { value: "Mandarin" }
+                { value: "Mandarin" },
               ]}
             />
           </div>
@@ -413,7 +412,7 @@ storiesOf("Components|All", module)
                       isChecked={value}
                       isIndeterminate={false}
                       isDisabled={false}
-                      onChange={e => toggle(e.target.checked)}
+                      onChange={(e) => toggle(e.target.checked)}
                     />
                   </div>
                   <Checkbox
@@ -435,7 +434,7 @@ storiesOf("Components|All", module)
               {({ value, toggle }) => (
                 <ToggleButton
                   label="Toggle button"
-                  onChange={e => toggle(e.target.checked)}
+                  onChange={(e) => toggle(e.target.checked)}
                   isChecked={value}
                 />
               )}
@@ -478,13 +477,18 @@ storiesOf("Components|All", module)
         </div>
         <div style={{ justifySelf: "center" }}>
           <div style={{ padding: "8px 0" }}>
-            <Loader type="base" color="black" size='30px' label="Loading..." />
+            <Loader type="base" color="black" size="30px" label="Loading..." />
           </div>
           <div style={{ padding: "8px 0", marginLeft: 45 }}>
-            <Loader type="oval" color="black" size='30px' label="Loading" />
+            <Loader type="oval" color="black" size="30px" label="Loading" />
           </div>
           <div style={{ padding: "8px 0", marginLeft: 45 }}>
-            <Loader type="dual-ring" color="black" size='30px' label="Loading" />
+            <Loader
+              type="dual-ring"
+              color="black"
+              size="30px"
+              label="Loading"
+            />
           </div>
         </div>
         <div style={{ justifySelf: "center" }}>

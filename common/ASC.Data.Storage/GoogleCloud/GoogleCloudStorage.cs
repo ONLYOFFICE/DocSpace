@@ -318,11 +318,12 @@ namespace ASC.Data.Storage.GoogleCloud
 
         private PredefinedObjectAcl GetGoogleCloudAcl(ACL acl)
         {
-            return acl switch
-            {
-                ACL.Read => PredefinedObjectAcl.PublicRead,
-                _ => PredefinedObjectAcl.PublicRead,
-            };
+            return PredefinedObjectAcl.PublicRead;
+            //return acl switch
+            //{
+            //    ACL.Read => PredefinedObjectAcl.PublicRead,
+            //    _ => PredefinedObjectAcl.PublicRead,
+            //};
         }
 
         private PredefinedObjectAcl GetDomainACL(string domain)

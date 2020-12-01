@@ -1,6 +1,8 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
+using ASC.Core.Common.EF.Model;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF
@@ -24,12 +26,78 @@ namespace ASC.Core.Common.EF
 
     public static class DbQuotaRowExtension
     {
-        public static ModelBuilder AddDbQuotaRow(this ModelBuilder modelBuilder)
+        public static ModelBuilderWrapper AddDbQuotaRow(this ModelBuilderWrapper modelBuilder)
         {
-            modelBuilder.Entity<DbQuotaRow>()
-                .HasKey(c => new { c.Tenant, c.Path });
-
+            modelBuilder
+                .Add(MySqlAddDbQuotaRow, Provider.MySql)
+                .Add(PgSqlAddDbQuotaRow, Provider.Postgre);
             return modelBuilder;
+        }
+        public static void MySqlAddDbQuotaRow(this ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<DbQuotaRow>(entity =>
+            {
+                entity.HasKey(e => new { e.Tenant, e.Path })
+                    .HasName("PRIMARY");
+
+                entity.ToTable("tenants_quotarow");
+
+                entity.HasIndex(e => e.LastModified)
+                    .HasName("last_modified");
+
+                entity.Property(e => e.Tenant).HasColumnName("tenant");
+
+                entity.Property(e => e.Path)
+                    .HasColumnName("path")
+                    .HasColumnType("varchar(255)")
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+
+                entity.Property(e => e.Counter).HasColumnName("counter");
+
+                entity.Property(e => e.LastModified)
+                    .HasColumnName("last_modified")
+                    .HasColumnType("timestamp")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                entity.Property(e => e.Tag)
+                    .HasColumnName("tag")
+                    .HasColumnType("varchar(1024)")
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+            });
+        }
+        public static void PgSqlAddDbQuotaRow(this ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<DbQuotaRow>(entity =>
+            {
+                entity.HasKey(e => new { e.Tenant, e.Path })
+                    .HasName("tenants_quotarow_pkey");
+
+                entity.ToTable("tenants_quotarow", "onlyoffice");
+
+                entity.HasIndex(e => e.LastModified)
+                    .HasName("last_modified_tenants_quotarow");
+
+                entity.Property(e => e.Tenant).HasColumnName("tenant");
+
+                entity.Property(e => e.Path)
+                    .HasColumnName("path")
+                    .HasMaxLength(255);
+
+                entity.Property(e => e.Counter)
+                    .HasColumnName("counter")
+                    .HasDefaultValueSql("'0'");
+
+                entity.Property(e => e.LastModified)
+                    .HasColumnName("last_modified")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                entity.Property(e => e.Tag)
+                    .HasColumnName("tag")
+                    .HasMaxLength(1024)
+                    .HasDefaultValueSql("'0'");
+            });
         }
     }
 }

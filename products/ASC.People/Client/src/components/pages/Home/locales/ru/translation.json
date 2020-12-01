@@ -33,23 +33,22 @@
   "MessageEmailActivationInstuctionsSentOnEmail": "Инструкции по активации электронной почты были отправлены на адрес <1>{{email}}</1>",
   "Search": "Поиск",
   "SendInviteAgain": "Отправить приглашение ещё раз",
-
   "PageOfTotalPage": "{{page}} из {{totalPage}}",
   "CountPerPage": "{{count}} на странице",
   "ChangeToUser": "Изменить на {{userCaption}}",
   "ChangeToGuest": "Изменить на {{guestCaption}}",
-
   "LblInviteAgain": "Выслать прилашение ещё раз",
-  "ByFirstNameSorting": "По имени",
-  "ByLastNameSorting": "По фамилии",
+  "ByFirstNameSorting": "Имя",
+  "ByLastNameSorting": "Фамилия",
   "LblInvited": "Приглашен",
   "LblSetActive": "Разблокировать",
   "LblSetDisabled": "Заблокировать",
-  "DirectionAscLabel":"А-Я",
-  "DirectionDescLabel":"Я-А",
+  "DirectionAscLabel": "А-Я",
+  "DirectionDescLabel": "Я-А",
   "MakeInvitationLink": "Создать пригласительную ссылку",
   "SuccessfullyRemovedUsers": "Пользователи были успешно удалены",
   "SendEmailAction": "Действие отправки e-mail",
   "SuccessfullyRemovedGroup": "Группа была успешно удалена",
-  "OrganizationName": "ONLYOFFICE"
+  "AddFilter": "Добавить фильтр",
+  "SuccessChangeUserStatus": "Статус пользователя успешно изменен"
 }

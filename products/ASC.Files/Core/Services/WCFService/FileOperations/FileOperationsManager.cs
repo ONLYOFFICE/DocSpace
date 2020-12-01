@@ -32,13 +32,14 @@ using System.Text.Json;
 
 using ASC.Common;
 using ASC.Common.Threading;
-using ASC.Core;
+using ASC.Core.Tenants;
 using ASC.Files.Core.Resources;
 
 using Microsoft.Extensions.Primitives;
 
 namespace ASC.Web.Files.Services.WCFService.FileOperations
 {
+    [Singletone(Additional = typeof(FileOperationsManagerHelperExtention))]
     public class FileOperationsManager
     {
         private readonly DistributedTaskQueue tasks;
@@ -51,19 +52,18 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             ServiceProvider = serviceProvider;
         }
 
-        public ItemList<FileOperationResult> GetOperationResults(AuthContext authContext)
+        public ItemList<FileOperationResult> GetOperationResults(Guid userId)
         {
             var operations = tasks.GetTasks();
             var processlist = Process.GetProcesses();
 
-            foreach (var o in operations.Where(o => string.IsNullOrEmpty(o.InstanceId)
-                                                    || processlist.All(p => p.Id != int.Parse(o.InstanceId))))
+            foreach (var o in operations.Where(o => processlist.All(p => p.Id != o.InstanceId)))
             {
                 o.SetProperty(FileOperation.PROGRESS, 100);
                 tasks.RemoveTask(o.Id);
             }
 
-            operations = operations.Where(t => t.GetProperty<Guid>(FileOperation.OWNER) == authContext.CurrentAccount.ID);
+            operations = operations.Where(t => t.GetProperty<Guid>(FileOperation.OWNER) == userId);
             foreach (var o in operations.Where(o => o.Status > DistributedTaskStatus.Running))
             {
                 o.SetProperty(FileOperation.PROGRESS, 100);
@@ -88,33 +88,32 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             return new ItemList<FileOperationResult>(results);
         }
 
-        public ItemList<FileOperationResult> CancelOperations(AuthContext authContext)
+        public ItemList<FileOperationResult> CancelOperations(Guid userId)
         {
             var operations = tasks.GetTasks()
-                .Where(t => t.GetProperty<Guid>(FileOperation.OWNER) == authContext.CurrentAccount.ID);
+                .Where(t => t.GetProperty<Guid>(FileOperation.OWNER) == userId);
 
             foreach (var o in operations)
             {
                 tasks.CancelTask(o.Id);
             }
 
-            return GetOperationResults(authContext);
+            return GetOperationResults(userId);
         }
 
 
-        public ItemList<FileOperationResult> MarkAsRead(AuthContext authContext, TenantManager tenantManager, IEnumerable<JsonElement> folderIds, IEnumerable<JsonElement> fileIds)
+        public ItemList<FileOperationResult> MarkAsRead(Guid userId, Tenant tenant, IEnumerable<JsonElement> folderIds, IEnumerable<JsonElement> fileIds)
         {
-            var tenant = tenantManager.GetCurrentTenant();
             var op1 = new FileMarkAsReadOperation<int>(ServiceProvider, new FileMarkAsReadOperationData<int>(folderIds.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()), fileIds.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()), tenant));
             var op2 = new FileMarkAsReadOperation<string>(ServiceProvider, new FileMarkAsReadOperationData<string>(folderIds.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()), fileIds.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()), tenant));
             var op = new FileMarkAsReadOperation(ServiceProvider, op2, op1);
-            return QueueTask(authContext, op);
+            return QueueTask(userId, op);
         }
 
-        public ItemList<FileOperationResult> Download(AuthContext authContext, TenantManager tenantManager, Dictionary<JsonElement, string> folders, Dictionary<JsonElement, string> files, IDictionary<string, StringValues> headers)
+        public ItemList<FileOperationResult> Download(Guid userId, Tenant tenant, Dictionary<JsonElement, string> folders, Dictionary<JsonElement, string> files, IDictionary<string, StringValues> headers)
         {
             var operations = tasks.GetTasks()
-                .Where(t => t.GetProperty<Guid>(FileOperation.OWNER) == authContext.CurrentAccount.ID)
+                .Where(t => t.GetProperty<Guid>(FileOperation.OWNER) == userId)
                 .Where(t => t.GetProperty<FileOperationType>(FileOperation.OPERATION_TYPE) == FileOperationType.Download);
 
             if (operations.Any(o => o.Status <= DistributedTaskStatus.Running))
@@ -122,136 +121,60 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 throw new InvalidOperationException(FilesCommonResource.ErrorMassage_ManyDownloads);
             }
 
-            var tenant = tenantManager.GetCurrentTenant();
-            var op1 = new FileDownloadOperation<int>(ServiceProvider, new FileDownloadOperationData<int>(folders.Where(r => r.Key.ValueKind == JsonValueKind.Number).ToDictionary(r => r.Key.GetInt32(), r => r.Value), files.Where(r => r.Key.ValueKind == JsonValueKind.Number).ToDictionary(r => r.Key.GetInt32(), r => r.Value), tenant, headers), false);
-            var op2 = new FileDownloadOperation<string>(ServiceProvider, new FileDownloadOperationData<string>(folders.Where(r => r.Key.ValueKind == JsonValueKind.String).ToDictionary(r => r.Key.GetString(), r => r.Value), files.Where(r => r.Key.ValueKind == JsonValueKind.String).ToDictionary(r => r.Key.GetString(), r => r.Value), tenant, headers), false);
+            var op1 = new FileDownloadOperation<int>(ServiceProvider, new FileDownloadOperationData<int>(folders.Where(r => r.Key.ValueKind == JsonValueKind.Number).ToDictionary(r => r.Key.GetInt32(), r => r.Value), files.Where(r => r.Key.ValueKind == JsonValueKind.Number).ToDictionary(r => r.Key.GetInt32(), r => r.Value), tenant, headers));
+            var op2 = new FileDownloadOperation<string>(ServiceProvider, new FileDownloadOperationData<string>(folders.Where(r => r.Key.ValueKind == JsonValueKind.String).ToDictionary(r => r.Key.GetString(), r => r.Value), files.Where(r => r.Key.ValueKind == JsonValueKind.String).ToDictionary(r => r.Key.GetString(), r => r.Value), tenant, headers));
             var op = new FileDownloadOperation(ServiceProvider, op2, op1);
 
-            return QueueTask(authContext, op);
+            return QueueTask(userId, op);
         }
 
-        public ItemList<FileOperationResult> MoveOrCopy(AuthContext authContext, TenantManager tenantManager, IEnumerable<JsonElement> folders, IEnumerable<JsonElement> files, JsonElement destFolderId, bool copy, FileConflictResolveType resolveType, bool holdResult, IDictionary<string, StringValues> headers)
+        public ItemList<FileOperationResult> MoveOrCopy(Guid userId, Tenant tenant, IEnumerable<JsonElement> folders, IEnumerable<JsonElement> files, JsonElement destFolderId, bool copy, FileConflictResolveType resolveType, bool holdResult, IDictionary<string, StringValues> headers)
         {
-            var tenant = tenantManager.GetCurrentTenant();
             var op1 = new FileMoveCopyOperation<int>(ServiceProvider, new FileMoveCopyOperationData<int>(folders.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()), files.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()), tenant, destFolderId, copy, resolveType, holdResult, headers));
             var op2 = new FileMoveCopyOperation<string>(ServiceProvider, new FileMoveCopyOperationData<string>(folders.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()), files.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()), tenant, destFolderId, copy, resolveType, holdResult, headers));
             var op = new FileMoveCopyOperation(ServiceProvider, op2, op1);
 
-            return QueueTask(authContext, op);
+            return QueueTask(userId, op);
         }
 
-        public ItemList<FileOperationResult> Delete<T>(AuthContext authContext, TenantManager tenantManager, IEnumerable<T> folders, IEnumerable<T> files, bool ignoreException, bool holdResult, bool immediately, IDictionary<string, StringValues> headers)
+        public ItemList<FileOperationResult> Delete<T>(Guid userId, Tenant tenant, IEnumerable<T> folders, IEnumerable<T> files, bool ignoreException, bool holdResult, bool immediately, IDictionary<string, StringValues> headers)
         {
-            var op = new FileDeleteOperation<T>(ServiceProvider, new FileDeleteOperationData<T>(folders, files, tenantManager.GetCurrentTenant(), holdResult, ignoreException, immediately, headers));
-            return QueueTask(authContext, op);
+            var op = new FileDeleteOperation<T>(ServiceProvider, new FileDeleteOperationData<T>(folders, files, tenant, holdResult, ignoreException, immediately, headers));
+            return QueueTask(userId, op);
         }
 
-        public ItemList<FileOperationResult> Delete(AuthContext authContext, TenantManager tenantManager, IEnumerable<JsonElement> folders, IEnumerable<JsonElement> files, bool ignoreException, bool holdResult, bool immediately, IDictionary<string, StringValues> headers)
+        public ItemList<FileOperationResult> Delete(Guid userId, Tenant tenant, IEnumerable<JsonElement> folders, IEnumerable<JsonElement> files, bool ignoreException, bool holdResult, bool immediately, IDictionary<string, StringValues> headers)
         {
-            var op1 = new FileDeleteOperation<int>(ServiceProvider, new FileDeleteOperationData<int>(folders.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()), files.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()), tenantManager.GetCurrentTenant(), holdResult, ignoreException, immediately, headers));
-            var op2 = new FileDeleteOperation<string>(ServiceProvider, new FileDeleteOperationData<string>(folders.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()), files.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()), tenantManager.GetCurrentTenant(), holdResult, ignoreException, immediately, headers));
+            var op1 = new FileDeleteOperation<int>(ServiceProvider, new FileDeleteOperationData<int>(folders.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()), files.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()), tenant, holdResult, ignoreException, immediately, headers));
+            var op2 = new FileDeleteOperation<string>(ServiceProvider, new FileDeleteOperationData<string>(folders.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()), files.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()), tenant, holdResult, ignoreException, immediately, headers));
             var op = new FileDeleteOperation(ServiceProvider, op2, op1);
 
-            return QueueTask(authContext, op);
+            return QueueTask(userId, op);
         }
 
 
-        private ItemList<FileOperationResult> QueueTask(AuthContext authContext, FileOperation op)
+        private ItemList<FileOperationResult> QueueTask(Guid userId, FileOperation op)
         {
             tasks.QueueTask(op.RunJob, op.GetDistributedTask());
-            return GetOperationResults(authContext);
+            return GetOperationResults(userId);
         }
 
-        private ItemList<FileOperationResult> QueueTask<T, TId>(AuthContext authContext, FileOperation<T, TId> op) where T : FileOperationData<TId>
+        private ItemList<FileOperationResult> QueueTask<T, TId>(Guid userId, FileOperation<T, TId> op) where T : FileOperationData<TId>
         {
             tasks.QueueTask(op.RunJob, op.GetDistributedTask());
-            return GetOperationResults(authContext);
+            return GetOperationResults(userId);
         }
     }
 
-    public class FileOperationsManagerHelper
+    public class FileOperationsManagerHelperExtention
     {
-        private FileOperationsManager FileOperationsManager { get; }
-        private AuthContext AuthContext { get; }
-        private TenantManager TenantManager { get; }
-
-        public FileOperationsManagerHelper(
-            FileOperationsManager fileOperationsManager,
-            AuthContext authContext,
-            TenantManager tenantManager)
+        public static void Register(DIHelper services)
         {
-            FileOperationsManager = fileOperationsManager;
-            AuthContext = authContext;
-            TenantManager = tenantManager;
-        }
-
-        public ItemList<FileOperationResult> GetOperationResults()
-        {
-            return FileOperationsManager.GetOperationResults(AuthContext);
-        }
-
-        public ItemList<FileOperationResult> CancelOperations()
-        {
-            return FileOperationsManager.CancelOperations(AuthContext);
-        }
-
-        public ItemList<FileOperationResult> MarkAsRead(IEnumerable<JsonElement> folderIds, IEnumerable<JsonElement> fileIds)
-        {
-            return FileOperationsManager.MarkAsRead(AuthContext, TenantManager, folderIds, fileIds);
-        }
-
-        public ItemList<FileOperationResult> Download(Dictionary<JsonElement, string> folders, Dictionary<JsonElement, string> files, IDictionary<string, StringValues> headers)
-        {
-            return FileOperationsManager.Download(AuthContext, TenantManager, folders, files, headers);
-        }
-
-        public ItemList<FileOperationResult> MoveOrCopy(IEnumerable<JsonElement> folders, IEnumerable<JsonElement> files, JsonElement destFolderId, bool copy, FileConflictResolveType resolveType, bool holdResult, IDictionary<string, StringValues> headers)
-        {
-            return FileOperationsManager.MoveOrCopy(AuthContext, TenantManager, folders, files, destFolderId, copy, resolveType, holdResult, headers);
-        }
-
-        public ItemList<FileOperationResult> Delete(List<JsonElement> folders, List<JsonElement> files, bool ignoreException, bool holdResult, bool immediately, IDictionary<string, StringValues> headers)
-        {
-            return FileOperationsManager.Delete(AuthContext, TenantManager, folders, files, ignoreException, holdResult, immediately, headers);
-        }
-
-        public ItemList<FileOperationResult> Delete<T>(List<T> folders, List<T> files, bool ignoreException, bool holdResult, bool immediately, IDictionary<string, StringValues> headers)
-        {
-            return FileOperationsManager.Delete(AuthContext, TenantManager, folders, files, ignoreException, holdResult, immediately, headers);
-        }
-
-        public ItemList<FileOperationResult> DeleteFile<T>(T file, bool ignoreException, bool holdResult, bool immediately, IDictionary<string, StringValues> headers)
-        {
-            return Delete(new List<T>(), new List<T>() { file }, ignoreException, holdResult, immediately, headers);
-        }
-
-        public ItemList<FileOperationResult> DeleteFolder<T>(T folder, bool ignoreException, bool holdResult, bool immediately, IDictionary<string, StringValues> headers)
-        {
-            return Delete(new List<T>() { folder }, new List<T>(), ignoreException, holdResult, immediately, headers);
-        }
-    }
-
-    public static class FileOperationsManagerHelperExtention
-    {
-        public static DIHelper AddFileOperationsManagerHelperService(this DIHelper services)
-        {
-            if (services.TryAddScoped<FileOperationsManagerHelper>())
-            {
-                services.TryAddSingleton<DistributedTaskCacheNotify>();
-                services.TryAddSingleton<FileOperationsManager>();
-                services.TryAddScoped<FileDeleteOperationScope>();
-                services.TryAddScoped<FileMarkAsReadOperationScope>();
-                services.TryAddScoped<FileMoveCopyOperationScope>();
-                services.TryAddScoped<FileOperationScope>();
-                services.TryAddScoped<FileDownloadOperationScope>();
-
-                return services
-                    .AddAuthContextService()
-                    .AddTenantManagerService()
-                    ;
-            }
-
-            return services;
+            services.TryAdd<FileDeleteOperationScope>();
+            services.TryAdd<FileMarkAsReadOperationScope>();
+            services.TryAdd<FileMoveCopyOperationScope>();
+            services.TryAdd<FileOperationScope>();
+            services.TryAdd<FileDownloadOperationScope>();
         }
     }
 }

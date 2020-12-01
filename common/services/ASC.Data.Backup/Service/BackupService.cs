@@ -39,13 +39,13 @@ using ASC.Data.Backup.EF.Model;
 using ASC.Data.Backup.Storage;
 using ASC.Data.Backup.Utils;
 
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
 using Newtonsoft.Json;
 
 namespace ASC.Data.Backup.Service
 {
+    [Singletone]
     public class BackupServiceNotifier
     {
         private ICacheNotify<BackupProgress> СacheBackupProgress { get; }
@@ -78,9 +78,13 @@ namespace ASC.Data.Backup.Service
             return Cache.Get<BackupProgress>(GetCacheKey(tenantId, BackupProgressEnum.Restore));
         }
 
-        private string GetCacheKey(int tenantId, BackupProgressEnum backupProgressEnum) => $"{backupProgressEnum}backup{tenantId}";
+        private string GetCacheKey(int tenantId, BackupProgressEnum backupProgressEnum)
+        {
+            return $"{backupProgressEnum}backup{tenantId}";
+        }
     }
 
+    [Scope]
     public class BackupService : IBackupService
     {
         private ILog Log { get; set; }
@@ -88,7 +92,7 @@ namespace ASC.Data.Backup.Service
         private BackupWorker BackupWorker { get; set; }
         private BackupRepository BackupRepository { get; }
         private BackupServiceNotifier BackupServiceNotifier { get; }
-        private IConfiguration Configuration { get; }
+        private ConfigurationExtension Configuration { get; }
 
         public BackupService(
             IOptionsMonitor<ILog> options,
@@ -96,7 +100,7 @@ namespace ASC.Data.Backup.Service
             BackupWorker backupWorker,
             BackupRepository backupRepository,
             BackupServiceNotifier backupServiceNotifier,
-            IConfiguration configuration)
+            ConfigurationExtension configuration)
         {
             Log = options.CurrentValue;
             BackupStorageFactory = backupStorageFactory;
@@ -180,7 +184,7 @@ namespace ASC.Data.Backup.Service
 
         public void StartRestore(StartRestoreRequest request)
         {
-            if ((BackupStorageType)request.StorageType == BackupStorageType.Local)
+            if (request.StorageType == BackupStorageType.Local)
             {
                 if (string.IsNullOrEmpty(request.FilePathOrId) || !File.Exists(request.FilePathOrId))
                 {
@@ -286,20 +290,6 @@ namespace ASC.Data.Backup.Service
             {
                 return null;
             }
-        }
-    }
-    public static class BackupServiceExtension
-    {
-        public static DIHelper AddBackupService(this DIHelper services)
-        {
-            if (services.TryAddScoped<BackupService>())
-            {
-                services.TryAddSingleton<BackupServiceNotifier>();
-                return services
-                    .AddBackupWorkerService();
-            }
-
-            return services;
         }
     }
 }

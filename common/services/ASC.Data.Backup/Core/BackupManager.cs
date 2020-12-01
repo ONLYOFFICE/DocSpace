@@ -33,12 +33,13 @@ using ASC.Common;
 
 namespace ASC.Data.Backup
 {
+    [Singletone]
     public class BackupManager
     {
         private const string ROOT = "backup";
         private const string XML_NAME = "backupinfo.xml";
 
-        private IDictionary<string, IBackupProvider> providers;
+        private readonly IDictionary<string, IBackupProvider> providers;
         private readonly string backup;
         private readonly string[] configs;
 
@@ -118,15 +119,6 @@ namespace ASC.Data.Backup
         private void OnProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             ProgressChanged?.Invoke(this, e);
-        }
-    }
-
-    public static class BackupManagerExtension
-    {
-        public static DIHelper AddBackupManager(this DIHelper services)
-        {
-            services.TryAddSingleton<BackupManager>();
-            return services;
         }
     }
 }

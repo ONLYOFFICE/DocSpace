@@ -1,2 +1,8 @@
-export { parseAddress, Email, isEqualEmail, isValidDomainName, parseAddresses } from './email';
-export { EmailSettings } from './emailSettings';
+export {
+  parseAddress,
+  Email,
+  isEqualEmail,
+  isValidDomainName,
+  parseAddresses,
+} from "./email";
+export { EmailSettings } from "./emailSettings";

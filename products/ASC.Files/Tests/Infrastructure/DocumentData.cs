@@ -37,7 +37,7 @@ namespace ASC.Files.Tests
 
         public static IEnumerable<TestCaseData> GetFileInfoItems()
         {
-            yield return new TestCaseData("FileTest");
+            yield return new TestCaseData("TestFile");
         }
 
         public static IEnumerable<TestCaseData> GetUpdateFileItems()
@@ -62,7 +62,11 @@ namespace ASC.Files.Tests
 
         public static IEnumerable<TestCaseData> ShareParamToFolder()
         {
-            yield return new TestCaseData("FoldShareTest", true, "folder_test");
+            yield return new TestCaseData("FoldShareTest", false, "folder_test");
+        }
+        public static IEnumerable<TestCaseData> ShareParamToFile()
+        {
+            yield return new TestCaseData("FileShareTest", false, "folder_test");
         }
         public static IEnumerable<TestCaseData> GetSharedInfo()
         {

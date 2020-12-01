@@ -68,9 +68,11 @@ namespace ASC.Web.Studio.Utility
         FullTextSearch = 18,
         WhiteLabel = 19,
         MailService = 20,
-        Storage = 21
+        Storage = 21,
+        PrivacyRoom = 22
     }
 
+    [Scope]
     public class CommonLinkUtility : BaseCommonLinkUtility
     {
         private static readonly Regex RegFilePathTrim = new Regex("/[^/]*\\.aspx", RegexOptions.IgnoreCase | RegexOptions.Compiled);
@@ -87,7 +89,7 @@ namespace ASC.Web.Studio.Utility
             WebItemManager webItemManager,
             EmailValidationKeyProvider emailValidationKeyProvider,
             IOptionsMonitor<ILog> options,
-            IOptions<CommonLinkUtilitySettings> settings) :
+            CommonLinkUtilitySettings settings) :
             this(null, coreBaseSettings, coreSettings, tenantManager, userManager, webItemManagerSecurity, webItemManager, emailValidationKeyProvider, options, settings)
         {
         }
@@ -102,7 +104,7 @@ namespace ASC.Web.Studio.Utility
             WebItemManager webItemManager,
             EmailValidationKeyProvider emailValidationKeyProvider,
             IOptionsMonitor<ILog> options,
-            IOptions<CommonLinkUtilitySettings> settings) :
+            CommonLinkUtilitySettings settings) :
             base(httpContextAccessor, coreBaseSettings, coreSettings, tenantManager, options, settings) =>
             (UserManager, WebItemManagerSecurity, WebItemManager, EmailValidationKeyProvider) = (userManager, webItemManagerSecurity, webItemManager, emailValidationKeyProvider);
 
@@ -392,7 +394,7 @@ namespace ASC.Web.Studio.Utility
                 name = GetProductNameFromUrl(url);
                 if (string.IsNullOrEmpty(name))
                 {
-                    return GetAddonNameFromUrl(name);
+                    return GetAddonNameFromUrl(url);
                 }
 
             }
@@ -541,33 +543,10 @@ namespace ASC.Web.Studio.Utility
                 link += $"&uid={userId}";
             }
 
-            if (postfix != null)
-            {
-                link += "&p=1";
-            }
-
             return link;
         }
 
         #endregion
 
-    }
-
-    public static class CommonLinkUtilityExtension
-    {
-        public static DIHelper AddCommonLinkUtilityService(this DIHelper services)
-        {
-            if (services.TryAddScoped<CommonLinkUtility>())
-            {
-                return services
-                    .AddUserManagerService()
-                    .AddBaseCommonLinkUtilityService()
-                    .AddWebItemManagerSecurity()
-                    .AddWebItemManager()
-                    .AddEmailValidationKeyProviderService();
-            }
-
-            return services;
-        }
     }
 }

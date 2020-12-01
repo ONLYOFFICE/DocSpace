@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -16,22 +15,14 @@ using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Web;
 using ASC.Core;
-using ASC.Core.Common.Configuration;
-using ASC.Core.Users;
 using ASC.FederatedLogin.Helpers;
-using ASC.FederatedLogin.LoginProviders;
 using ASC.Files.Core;
 using ASC.Files.Model;
-using ASC.MessagingSystem;
-using ASC.Web.Core;
 using ASC.Web.Core.Files;
 using ASC.Web.Files.Classes;
-using ASC.Web.Files.Configuration;
-using ASC.Web.Files.Helpers;
 using ASC.Web.Files.Services.DocumentService;
 using ASC.Web.Files.Services.WCFService;
 using ASC.Web.Files.Utils;
-using ASC.Web.Studio.Utility;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
@@ -46,12 +37,12 @@ using SortedByType = ASC.Files.Core.SortedByType;
 
 namespace ASC.Files.Helpers
 {
+    [Scope]
     public class FilesControllerHelper<T>
     {
         private readonly ApiContext ApiContext;
         private readonly FileStorageService<T> FileStorageService;
 
-        private GlobalFolderHelper GlobalFolderHelper { get; }
         private FileWrapperHelper FileWrapperHelper { get; }
         private FilesSettingsHelper FilesSettingsHelper { get; }
         private FilesLinkUtility FilesLinkUtility { get; }
@@ -64,24 +55,8 @@ namespace ASC.Files.Helpers
         private FileShareWrapperHelper FileShareWrapperHelper { get; }
         private FileShareParamsHelper FileShareParamsHelper { get; }
         private EntryManager EntryManager { get; }
-        private UserManager UserManager { get; }
-        private WebItemSecurity WebItemSecurity { get; }
-        private CoreBaseSettings CoreBaseSettings { get; }
-        private ThirdpartyConfiguration ThirdpartyConfiguration { get; }
-        private BoxLoginProvider BoxLoginProvider { get; }
-        private DropboxLoginProvider DropboxLoginProvider { get; }
-        private GoogleLoginProvider GoogleLoginProvider { get; }
-        private OneDriveLoginProvider OneDriveLoginProvider { get; }
-        private MessageService MessageService { get; }
-        private CommonLinkUtility CommonLinkUtility { get; }
-        private DocumentServiceConnector DocumentServiceConnector { get; }
         private FolderContentWrapperHelper FolderContentWrapperHelper { get; }
-        private WordpressToken WordpressToken { get; }
-        private WordpressHelper WordpressHelper { get; }
-        private ConsumerFactory ConsumerFactory { get; }
-        private EasyBibHelper EasyBibHelper { get; }
         private ChunkedUploadSessionHelper ChunkedUploadSessionHelper { get; }
-        private ProductEntryPoint ProductEntryPoint { get; }
         public ILog Logger { get; set; }
 
         /// <summary>
@@ -91,7 +66,6 @@ namespace ASC.Files.Helpers
         public FilesControllerHelper(
             ApiContext context,
             FileStorageService<T> fileStorageService,
-            GlobalFolderHelper globalFolderHelper,
             FileWrapperHelper fileWrapperHelper,
             FilesSettingsHelper filesSettingsHelper,
             FilesLinkUtility filesLinkUtility,
@@ -104,25 +78,12 @@ namespace ASC.Files.Helpers
             FileShareWrapperHelper fileShareWrapperHelper,
             FileShareParamsHelper fileShareParamsHelper,
             EntryManager entryManager,
-            UserManager userManager,
-            WebItemSecurity webItemSecurity,
-            CoreBaseSettings coreBaseSettings,
-            ThirdpartyConfiguration thirdpartyConfiguration,
-            MessageService messageService,
-            CommonLinkUtility commonLinkUtility,
-            DocumentServiceConnector documentServiceConnector,
             FolderContentWrapperHelper folderContentWrapperHelper,
-            WordpressToken wordpressToken,
-            WordpressHelper wordpressHelper,
-            ConsumerFactory consumerFactory,
-            EasyBibHelper easyBibHelper,
             ChunkedUploadSessionHelper chunkedUploadSessionHelper,
-            ProductEntryPoint productEntryPoint,
             IOptionsMonitor<ILog> optionMonitor)
         {
             ApiContext = context;
             FileStorageService = fileStorageService;
-            GlobalFolderHelper = globalFolderHelper;
             FileWrapperHelper = fileWrapperHelper;
             FilesSettingsHelper = filesSettingsHelper;
             FilesLinkUtility = filesLinkUtility;
@@ -135,24 +96,8 @@ namespace ASC.Files.Helpers
             FileShareWrapperHelper = fileShareWrapperHelper;
             FileShareParamsHelper = fileShareParamsHelper;
             EntryManager = entryManager;
-            UserManager = userManager;
-            WebItemSecurity = webItemSecurity;
-            CoreBaseSettings = coreBaseSettings;
-            ThirdpartyConfiguration = thirdpartyConfiguration;
-            ConsumerFactory = consumerFactory;
-            BoxLoginProvider = ConsumerFactory.Get<BoxLoginProvider>();
-            DropboxLoginProvider = ConsumerFactory.Get<DropboxLoginProvider>();
-            GoogleLoginProvider = ConsumerFactory.Get<GoogleLoginProvider>();
-            OneDriveLoginProvider = ConsumerFactory.Get<OneDriveLoginProvider>();
-            MessageService = messageService;
-            CommonLinkUtility = commonLinkUtility;
-            DocumentServiceConnector = documentServiceConnector;
             FolderContentWrapperHelper = folderContentWrapperHelper;
-            WordpressToken = wordpressToken;
-            WordpressHelper = wordpressHelper;
-            EasyBibHelper = easyBibHelper;
             ChunkedUploadSessionHelper = chunkedUploadSessionHelper;
-            ProductEntryPoint = productEntryPoint;
             Logger = optionMonitor.Get("ASC.Files");
         }
 
@@ -215,11 +160,11 @@ namespace ASC.Files.Helpers
             }
         }
 
-        public FileWrapper<T> UpdateFileStream(Stream file, T fileId, bool encrypted = false)
+        public FileWrapper<T> UpdateFileStream(Stream file, T fileId, bool encrypted = false, bool forcesave = false)
         {
             try
             {
-                var resultFile = FileStorageService.UpdateFileStream(fileId, file, encrypted);
+                var resultFile = FileStorageService.UpdateFileStream(fileId, file, encrypted, forcesave);
                 return FileWrapperHelper.Get(resultFile);
             }
             catch (FileNotFoundException e)
@@ -308,13 +253,11 @@ namespace ASC.Files.Helpers
 
         private FileWrapper<T> CreateFile(T folderId, string title, string content, string extension)
         {
-            using (var memStream = new MemoryStream(Encoding.UTF8.GetBytes(content)))
-            {
-                var file = FileUploader.Exec(folderId,
-                                  title.EndsWith(extension, StringComparison.OrdinalIgnoreCase) ? title : (title + extension),
-                                  memStream.Length, memStream);
-                return FileWrapperHelper.Get(file);
-            }
+            using var memStream = new MemoryStream(Encoding.UTF8.GetBytes(content));
+            var file = FileUploader.Exec(folderId,
+                              title.EndsWith(extension, StringComparison.OrdinalIgnoreCase) ? title : (title + extension),
+                              memStream.Length, memStream);
+            return FileWrapperHelper.Get(file);
         }
 
         public FileWrapper<T> CreateHtmlFile(T folderId, string title, string content)
@@ -329,9 +272,9 @@ namespace ASC.Files.Helpers
             return FolderWrapperHelper.Get(folder);
         }
 
-        public FileWrapper<T> CreateFile(T folderId, string title)
+        public FileWrapper<T> CreateFile(T folderId, string title, T templateId)
         {
-            var file = FileStorageService.CreateNewFile(new FileModel<T> { ParentId = folderId, Title = title });
+            var file = FileStorageService.CreateNewFile(new FileModel<T> { ParentId = folderId, Title = title, TemplateId = templateId });
             return FileWrapperHelper.Get(file);
         }
 
@@ -348,14 +291,30 @@ namespace ASC.Files.Helpers
             return FolderWrapperHelper.Get(folder);
         }
 
-        public IEnumerable<FolderWrapper<T>> GetFolderPath(T folderId)
+        public IEnumerable<FileEntryWrapper> GetFolderPath(T folderId)
         {
-            return EntryManager.GetBreadCrumbs(folderId).Select(FolderWrapperHelper.Get);
+            return EntryManager.GetBreadCrumbs(folderId).Select(r =>
+            {
+                if (r is Folder<string> f1)
+                    return FolderWrapperHelper.Get(f1);
+
+                if (r is Folder<int> f2)
+                    return FolderWrapperHelper.Get(f2);
+
+                return default(FileEntryWrapper);
+            });
         }
 
         public FileWrapper<T> GetFileInfo(T fileId, int version = -1)
         {
             var file = FileStorageService.GetFile(fileId, version).NotFoundIfNull("File not found");
+            return FileWrapperHelper.Get(file);
+        }
+
+        public FileWrapper<T> AddToRecent(T fileId, int version = -1)
+        {
+            var file = FileStorageService.GetFile(fileId, version).NotFoundIfNull("File not found");
+            EntryManager.MarkAsRecent(file);
             return FileWrapperHelper.Get(file);
         }
 
@@ -444,23 +403,13 @@ namespace ASC.Files.Helpers
 
         public IEnumerable<FileOperationWraper> DeleteFolder(T folderId, bool deleteAfter, bool immediately)
         {
-            return FileStorageService.DeleteFile("delete", folderId, false, deleteAfter, immediately)
+            return FileStorageService.DeleteFolder("delete", folderId, false, deleteAfter, immediately)
                     .Select(FileOperationWraperHelper.Get);
         }
 
         public IEnumerable<FileEntryWrapper> MoveOrCopyBatchCheck(BatchModel batchModel)
         {
-            var checkedFiles = new List<object>();
-            var checkedFolders = new List<object>();
-
-            if (batchModel.DestFolderId.ValueKind == System.Text.Json.JsonValueKind.Number)
-            {
-                (checkedFiles, checkedFolders) = FileStorageService.MoveOrCopyFilesCheck(batchModel.FileIds, batchModel.FolderIds, batchModel.DestFolderId);
-            }
-            else
-            {
-                (checkedFiles, checkedFolders) = FileStorageService.MoveOrCopyFilesCheck(batchModel.FileIds, batchModel.FolderIds, batchModel.DestFolderId);
-            }
+            var (checkedFiles, checkedFolders) = FileStorageService.MoveOrCopyFilesCheck(batchModel.FileIds, batchModel.FolderIds, batchModel.DestFolderId);
 
             var entries = FileStorageService.GetItems(checkedFiles.OfType<int>().Select(Convert.ToInt32), checkedFiles.OfType<int>().Select(Convert.ToInt32), FilterType.FilesOnly, false, "", "");
 
@@ -605,14 +554,9 @@ namespace ASC.Files.Helpers
             return GetFolderSecurityInfo(folderId);
         }
 
-        public bool RemoveSecurityInfo(BaseBatchModel<T> model)
+        public bool RemoveSecurityInfo(List<T> fileIds, List<T> folderIds)
         {
-            var itemList = new ItemList<string>();
-
-            itemList.AddRange((model.FolderIds ?? new List<T>()).Select(x => "folder_" + x));
-            itemList.AddRange((model.FileIds ?? new List<T>()).Select(x => "file_" + x));
-
-            FileStorageService.RemoveAce(itemList);
+            FileStorageService.RemoveAce(fileIds, folderIds);
 
             return true;
         }
@@ -646,88 +590,6 @@ namespace ASC.Files.Helpers
             return sharedInfo.Link;
         }
 
-        public List<List<string>> Capabilities()
-        {
-            var result = new List<List<string>>();
-
-            if (UserManager.GetUsers(SecurityContext.CurrentAccount.ID).IsVisitor(UserManager)
-                || (!UserManager.IsUserInGroup(SecurityContext.CurrentAccount.ID, Constants.GroupAdmin.ID)
-                    && !WebItemSecurity.IsProductAdministrator(ProductEntryPoint.ID, SecurityContext.CurrentAccount.ID)
-                    && !FilesSettingsHelper.EnableThirdParty
-                    && !CoreBaseSettings.Personal))
-            {
-                return result;
-            }
-
-            if (ThirdpartyConfiguration.SupportBoxInclusion)
-            {
-                result.Add(new List<string> { "Box", BoxLoginProvider.ClientID, BoxLoginProvider.RedirectUri });
-            }
-            if (ThirdpartyConfiguration.SupportDropboxInclusion)
-            {
-                result.Add(new List<string> { "DropboxV2", DropboxLoginProvider.ClientID, DropboxLoginProvider.RedirectUri });
-            }
-            if (ThirdpartyConfiguration.SupportGoogleDriveInclusion)
-            {
-                result.Add(new List<string> { "GoogleDrive", GoogleLoginProvider.ClientID, GoogleLoginProvider.RedirectUri });
-            }
-            if (ThirdpartyConfiguration.SupportOneDriveInclusion)
-            {
-                result.Add(new List<string> { "OneDrive", OneDriveLoginProvider.ClientID, OneDriveLoginProvider.RedirectUri });
-            }
-            if (ThirdpartyConfiguration.SupportSharePointInclusion)
-            {
-                result.Add(new List<string> { "SharePoint" });
-            }
-            if (ThirdpartyConfiguration.SupportYandexInclusion)
-            {
-                result.Add(new List<string> { "Yandex" });
-            }
-            if (ThirdpartyConfiguration.SupportWebDavInclusion)
-            {
-                result.Add(new List<string> { "WebDav" });
-            }
-
-            //Obsolete BoxNet, DropBox, Google, SkyDrive,
-
-            return result;
-        }
-
-        public FolderWrapper<T> SaveThirdParty(
-            string url,
-            string login,
-            string password,
-            string token,
-            bool isCorporate,
-            string customerTitle,
-            string providerKey,
-            string providerId)
-        {
-            var thirdPartyParams = new ThirdPartyParams
-            {
-                AuthData = new AuthData(url, login, password, token),
-                Corporate = isCorporate,
-                CustomerTitle = customerTitle,
-                ProviderId = providerId,
-                ProviderKey = providerKey,
-            };
-
-            var folder = FileStorageService.SaveThirdParty(thirdPartyParams);
-
-            return FolderWrapperHelper.Get(folder);
-        }
-
-        public IEnumerable<ThirdPartyParams> GetThirdPartyAccounts()
-        {
-            return FileStorageService.GetThirdParty();
-        }
-
-        public object DeleteThirdParty(int providerId)
-        {
-            return FileStorageService.DeleteThirdParty(providerId.ToString(CultureInfo.InvariantCulture));
-
-        }
-
         ///// <summary>
         ///// 
         ///// </summary>
@@ -743,63 +605,6 @@ namespace ASC.Files.Helpers
         //    return files.Concat(folders);
         //}
 
-        public bool StoreOriginal(bool set)
-        {
-            return FileStorageService.StoreOriginal(set);
-        }
-
-        public bool HideConfirmConvert(bool save)
-        {
-            return FileStorageService.HideConfirmConvert(save);
-        }
-
-        public bool UpdateIfExist(bool set)
-        {
-            return FileStorageService.UpdateIfExist(set);
-        }
-
-        public IEnumerable<string> CheckDocServiceUrl(string docServiceUrl, string docServiceUrlInternal, string docServiceUrlPortal)
-        {
-            FilesLinkUtility.DocServiceUrl = docServiceUrl;
-            FilesLinkUtility.DocServiceUrlInternal = docServiceUrlInternal;
-            FilesLinkUtility.DocServicePortalUrl = docServiceUrlPortal;
-
-            MessageService.Send(MessageAction.DocumentServiceLocationSetting);
-
-            var https = new Regex(@"^https://", RegexOptions.IgnoreCase);
-            var http = new Regex(@"^http://", RegexOptions.IgnoreCase);
-            if (https.IsMatch(CommonLinkUtility.GetFullAbsolutePath("")) && http.IsMatch(FilesLinkUtility.DocServiceUrl))
-            {
-                throw new Exception("Mixed Active Content is not allowed. HTTPS address for Document Server is required.");
-            }
-
-            DocumentServiceConnector.CheckDocServiceUrl();
-
-            return new[]
-                {
-                    FilesLinkUtility.DocServiceUrl,
-                    FilesLinkUtility.DocServiceUrlInternal,
-                    FilesLinkUtility.DocServicePortalUrl
-                };
-        }
-
-        public object GetDocServiceUrl(bool version)
-        {
-            var url = CommonLinkUtility.GetFullAbsolutePath(FilesLinkUtility.DocServiceApiUrl);
-            if (!version)
-            {
-                return url;
-            }
-
-            var dsVersion = DocumentServiceConnector.GetVersion();
-
-            return new
-            {
-                version = dsVersion,
-                docServiceUrlApi = url,
-            };
-        }
-
 
         private FolderContentWrapper<T> ToFolderContentWrapper(T folderId, Guid userIdOrGroupId, FilterType filterType, bool withSubFolders)
         {
@@ -811,7 +616,7 @@ namespace ASC.Files.Helpers
             var startIndex = Convert.ToInt32(ApiContext.StartIndex);
             return FolderContentWrapperHelper.Get(FileStorageService.GetFolderItems(folderId,
                                                                                startIndex,
-                                                                               Convert.ToInt32(ApiContext.Count) - 1, //NOTE: in ApiContext +1
+                                                                               Convert.ToInt32(ApiContext.Count),
                                                                                filterType,
                                                                                filterType == FilterType.ByUser,
                                                                                userIdOrGroupId.ToString(),
@@ -820,239 +625,6 @@ namespace ASC.Files.Helpers
                                                                                withSubFolders,
                                                                                new OrderBy(sortBy, !ApiContext.SortDescending)),
                                             startIndex);
-        }
-
-        #region wordpress
-
-        public object GetWordpressInfo()
-        {
-            var token = WordpressToken.GetToken();
-            if (token != null)
-            {
-                var meInfo = WordpressHelper.GetWordpressMeInfo(token.AccessToken);
-                var blogId = JObject.Parse(meInfo).Value<string>("token_site_id");
-                var wordpressUserName = JObject.Parse(meInfo).Value<string>("username");
-
-                var blogInfo = RequestHelper.PerformRequest(WordpressLoginProvider.WordpressSites + blogId, "", "GET", "");
-                var jsonBlogInfo = JObject.Parse(blogInfo);
-                jsonBlogInfo.Add("username", wordpressUserName);
-
-                blogInfo = jsonBlogInfo.ToString();
-                return new
-                {
-                    success = true,
-                    data = blogInfo
-                };
-            }
-            return new
-            {
-                success = false
-            };
-        }
-
-        public object DeleteWordpressInfo()
-        {
-            var token = WordpressToken.GetToken();
-            if (token != null)
-            {
-                WordpressToken.DeleteToken(token);
-                return new
-                {
-                    success = true
-                };
-            }
-            return new
-            {
-                success = false
-            };
-        }
-
-        public object WordpressSave(string code)
-        {
-            if (code == "")
-            {
-                return new
-                {
-                    success = false
-                };
-            }
-            try
-            {
-                var token = OAuth20TokenHelper.GetAccessToken<WordpressLoginProvider>(ConsumerFactory, code);
-                WordpressToken.SaveToken(token);
-                var meInfo = WordpressHelper.GetWordpressMeInfo(token.AccessToken);
-                var blogId = JObject.Parse(meInfo).Value<string>("token_site_id");
-
-                var wordpressUserName = JObject.Parse(meInfo).Value<string>("username");
-
-                var blogInfo = RequestHelper.PerformRequest(WordpressLoginProvider.WordpressSites + blogId, "", "GET", "");
-                var jsonBlogInfo = JObject.Parse(blogInfo);
-                jsonBlogInfo.Add("username", wordpressUserName);
-
-                blogInfo = jsonBlogInfo.ToString();
-                return new
-                {
-                    success = true,
-                    data = blogInfo
-                };
-            }
-            catch (Exception)
-            {
-                return new
-                {
-                    success = false
-                };
-            }
-        }
-
-        public bool CreateWordpressPost(string code, string title, string content, int status)
-        {
-            try
-            {
-                var token = WordpressToken.GetToken();
-                var meInfo = WordpressHelper.GetWordpressMeInfo(token.AccessToken);
-                var parser = JObject.Parse(meInfo);
-                if (parser == null) return false;
-                var blogId = parser.Value<string>("token_site_id");
-
-                if (blogId != null)
-                {
-                    var createPost = WordpressHelper.CreateWordpressPost(title, content, status, blogId, token);
-                    return createPost;
-                }
-                return false;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-        }
-
-        #endregion
-
-        #region easybib
-
-        public object GetEasybibCitationList(int source, string data)
-        {
-            try
-            {
-                var citationList = EasyBibHelper.GetEasyBibCitationsList(source, data);
-                return new
-                {
-                    success = true,
-                    citations = citationList
-                };
-            }
-            catch (Exception)
-            {
-                return new
-                {
-                    success = false
-                };
-            }
-
-        }
-
-        public object GetEasybibStyles()
-        {
-            try
-            {
-                var data = EasyBibHelper.GetEasyBibStyles();
-                return new
-                {
-                    success = true,
-                    styles = data
-                };
-            }
-            catch (Exception)
-            {
-                return new
-                {
-                    success = false
-                };
-            }
-        }
-
-        public object EasyBibCitationBook(string citationData)
-        {
-            try
-            {
-                var citat = EasyBibHelper.GetEasyBibCitation(citationData);
-                if (citat != null)
-                {
-                    return new
-                    {
-                        success = true,
-                        citation = citat
-                    };
-                }
-                else
-                {
-                    return new
-                    {
-                        success = false
-                    };
-                }
-
-            }
-            catch (Exception)
-            {
-                return new
-                {
-                    success = false
-                };
-            }
-        }
-
-        #endregion
-    }
-
-    public static class FilesControllerHelperExtention
-    {
-        public static DIHelper AddFilesControllerHelperService(this DIHelper services)
-        {
-            if (services.TryAddScoped<FilesControllerHelper<string>>())
-            {
-                services.TryAddScoped<FilesControllerHelper<int>>();
-
-                return services
-                    .AddEasyBibHelperService()
-                    .AddWordpressTokenService()
-                    .AddWordpressHelperService()
-                    .AddFolderContentWrapperHelperService()
-                    .AddFileUploaderService()
-                    .AddFileShareParamsService()
-                    .AddFileShareWrapperService()
-                    .AddFileOperationWraperHelperService()
-                    .AddFileWrapperHelperService()
-                    .AddFolderWrapperHelperService()
-                    .AddConsumerFactoryService()
-                    .AddDocumentServiceConnectorService()
-                    .AddCommonLinkUtilityService()
-                    .AddMessageServiceService()
-                    .AddThirdpartyConfigurationService()
-                    .AddCoreBaseSettingsService()
-                    .AddWebItemSecurity()
-                    .AddUserManagerService()
-                    .AddEntryManagerService()
-                    .AddTenantManagerService()
-                    .AddSecurityContextService()
-                    .AddDocumentServiceHelperService()
-                    .AddFilesLinkUtilityService()
-                    .AddApiContextService()
-                    .AddFileStorageService()
-                    .AddGlobalFolderHelperService()
-                    .AddFilesSettingsHelperService()
-                    .AddBoxLoginProviderService()
-                    .AddDropboxLoginProviderService()
-                    .AddOneDriveLoginProviderService()
-                    .AddGoogleLoginProviderService()
-                    .AddChunkedUploadSessionHelperService()
-                    .AddProductEntryPointService()
-                    ;
-            }
-
-            return services;
         }
     }
 }

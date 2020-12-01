@@ -45,6 +45,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Backup.Tasks
 {
+    [Scope]
     public class RestorePortalTask : PortalTaskBase
     {
         private ColumnMapper ColumnMapper { get; set; }
@@ -56,14 +57,25 @@ namespace ASC.Data.Backup.Tasks
         public bool Dump { get; set; }
         private CoreBaseSettings CoreBaseSettings { get; set; }
         private LicenseReader LicenseReader { get; set; }
+        public TenantManager TenantManager { get; }
         private AscCacheNotify AscCacheNotify { get; set; }
         private IOptionsMonitor<ILog> Options { get; set; }
 
-        public RestorePortalTask(DbFactory dbFactory, IOptionsMonitor<ILog> options, StorageFactory storageFactory, StorageFactoryConfig storageFactoryConfig, CoreBaseSettings coreBaseSettings, LicenseReader licenseReader, AscCacheNotify ascCacheNotify, ModuleProvider moduleProvider)
+        public RestorePortalTask(
+            DbFactory dbFactory,
+            IOptionsMonitor<ILog> options,
+            StorageFactory storageFactory,
+            StorageFactoryConfig storageFactoryConfig,
+            CoreBaseSettings coreBaseSettings,
+            LicenseReader licenseReader,
+            TenantManager tenantManager,
+            AscCacheNotify ascCacheNotify,
+            ModuleProvider moduleProvider)
             : base(dbFactory, options, storageFactory, storageFactoryConfig, moduleProvider)
         {
             CoreBaseSettings = coreBaseSettings;
             LicenseReader = licenseReader;
+            TenantManager = tenantManager;
             AscCacheNotify = ascCacheNotify;
             Options = options;
         }
@@ -120,6 +132,12 @@ namespace ASC.Data.Backup.Tasks
 
                 if (ProcessStorage)
                 {
+                    if (CoreBaseSettings.Standalone)
+                    {
+                        Logger.Debug("clear cache");
+                        AscCacheNotify.ClearCache();
+                    }
+
                     DoRestoreStorage(dataReader);
                 }
                 if (UnblockPortalAfterCompleted)
@@ -161,6 +179,22 @@ namespace ASC.Data.Backup.Tasks
             var stepscount = keys.Count * 2 + upgrades.Count;
 
             SetStepsCount(ProcessStorage ? stepscount + 1 : stepscount);
+
+            if (ProcessStorage)
+            {
+                var storageModules = StorageFactoryConfig.GetModuleList(ConfigPath).Where(IsStorageModuleAllowed);
+                var tenants = TenantManager.GetTenants(false);
+
+                stepscount += storageModules.Count() * tenants.Count;
+
+                SetStepsCount(stepscount + 1);
+
+                DoDeleteStorage(storageModules, tenants);
+            }
+            else
+            {
+                SetStepsCount(stepscount);
+            }
 
             for (var i = 0; i < keys.Count; i += TasksLimit)
             {
@@ -254,16 +288,14 @@ namespace ASC.Data.Backup.Tasks
                             {
                                 key = Path.Combine(KeyHelper.GetStorage(), key);
                             }
-                            using (var stream = dataReader.GetEntry(key))
+                            using var stream = dataReader.GetEntry(key);
+                            try
                             {
-                                try
-                                {
-                                    storage.Save(file.Domain, adjustedPath, module != null ? module.PrepareData(key, stream, ColumnMapper) : stream);
-                                }
-                                catch (Exception error)
-                                {
-                                    Logger.WarnFormat("can't restore file ({0}:{1}): {2}", file.Module, file.Path, error);
-                                }
+                                storage.Save(file.Domain, adjustedPath, module != null ? module.PrepareData(key, stream, ColumnMapper) : stream);
+                            }
+                            catch (Exception error)
+                            {
+                                Logger.WarnFormat("can't restore file ({0}:{1}): {2}", file.Module, file.Path, error);
                             }
                         }
                     }
@@ -286,64 +318,68 @@ namespace ASC.Data.Backup.Tasks
             Logger.Debug("end restore storage");
         }
 
-        private IEnumerable<BackupFileInfo> GetFilesToProcess(IDataReadOperator dataReader)
+        private void DoDeleteStorage(IEnumerable<string> storageModules, IEnumerable<Tenant> tenants)
         {
-            using (var stream = dataReader.GetEntry(KeyHelper.GetStorageRestoreInfoZipKey()))
+            Logger.Debug("begin delete storage");
+
+            foreach (var tenant in tenants)
             {
-                if (stream == null)
+                foreach (var module in storageModules)
                 {
-                    return Enumerable.Empty<BackupFileInfo>();
+                    var storage = StorageFactory.GetStorage(ConfigPath, tenant.TenantId.ToString(), module);
+                    var domains = StorageFactoryConfig.GetDomainList(ConfigPath, module).ToList();
+
+                    domains.Add(string.Empty); //instead storage.DeleteFiles("\\", "*.*", true);
+
+                    foreach (var domain in domains)
+                    {
+                        ActionInvoker.Try(
+                            state =>
+                            {
+                                if (storage.IsDirectory((string)state))
+                                {
+                                    storage.DeleteFiles((string)state, "\\", "*.*", true);
+                                }
+                            },
+                            domain,
+                            5,
+                            onFailure: error => Logger.WarnFormat("Can't delete files for domain {0}: \r\n{1}", domain, error)
+                        );
+                    }
+
+                    SetStepCompleted();
                 }
-                var restoreInfo = XElement.Load(new StreamReader(stream));
-                return restoreInfo.Elements("file").Select(BackupFileInfo.FromXElement).ToList();
             }
+
+            Logger.Debug("end delete storage");
         }
 
-
-        protected override bool IsStorageModuleAllowed(string storageModuleName)
+        private IEnumerable<BackupFileInfo> GetFilesToProcess(IDataReadOperator dataReader)
         {
-            if (storageModuleName == "fckuploaders")
-                return false;
-            return base.IsStorageModuleAllowed(storageModuleName);
+            using var stream = dataReader.GetEntry(KeyHelper.GetStorageRestoreInfoZipKey());
+            if (stream == null)
+            {
+                return Enumerable.Empty<BackupFileInfo>();
+            }
+            var restoreInfo = XElement.Load(new StreamReader(stream));
+            return restoreInfo.Elements("file").Select(BackupFileInfo.FromXElement).ToList();
         }
 
         private void SetTenantActive(int tenantId)
         {
-            using (var connection = DbFactory.OpenConnection())
-            {
-                var commandText = string.Format(
-                    "update tenants_tenants " +
-                    "set " +
-                    "  status={0}, " +
-                    "  last_modified='{1}', " +
-                    "  statuschanged='{1}' " +
-                    "where id = '{2}'",
-                    (int)TenantStatus.Active,
-                    DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"),
-                    tenantId);
+            using var connection = DbFactory.OpenConnection();
+            var commandText = string.Format(
+                "update tenants_tenants " +
+                "set " +
+                "  status={0}, " +
+                "  last_modified='{1}', " +
+                "  statuschanged='{1}' " +
+                "where id = '{2}'",
+                (int)TenantStatus.Active,
+                DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"),
+                tenantId);
 
-                connection.CreateCommand().WithTimeout(120).ExecuteNonQuery();
-            }
-        }
-    }
-
-    public static class RestorePortalTaskExtension
-    {
-        public static DIHelper AddRestorePortalTaskService(this DIHelper services)
-        {
-            if (services.TryAddScoped<RestorePortalTask>())
-            {
-                services.TryAddScoped<AscCacheNotify>();
-                return services
-                    .AddCoreConfigurationService()
-                    .AddStorageFactoryService()
-                    .AddStorageFactoryConfigService()
-                    .AddModuleProvider()
-                    .AddCoreBaseSettingsService()
-                    .AddLicenseReaderService();
-            }
-
-            return services;
+            connection.CreateCommand().WithTimeout(120).ExecuteNonQuery();
         }
     }
 }

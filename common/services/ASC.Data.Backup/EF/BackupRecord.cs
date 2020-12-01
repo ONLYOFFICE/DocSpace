@@ -37,7 +37,10 @@ namespace ASC.Data.Backup.EF.Model
         [Column("storage_params")]
         public string StorageParams { get; set; }
 
-        public override object[] GetKeys() => new object[] { Id };
+        public override object[] GetKeys()
+        {
+            return new object[] { Id };
+        }
     }
 
 }

@@ -1,14 +1,11 @@
-import React from 'react';
-import { mount } from 'enzyme';
-import renderer from 'react-test-renderer'
-import 'jest-styled-components'
-import Grid from '.';
+import React from "react";
+import { mount } from "enzyme";
+import "jest-styled-components";
+import Grid from ".";
 
-describe('<Grid />', () => {
-  it('renders without error', () => {
-    const wrapper = mount(
-      <Grid />
-    );
+describe("<Grid />", () => {
+  it("renders without error", () => {
+    const wrapper = mount(<Grid />);
 
     expect(wrapper).toExist();
   });
@@ -34,9 +31,9 @@ describe('<Grid />', () => {
           { name: "navbar", start: [0, 1], end: [0, 1] },
           { name: "main", start: [1, 1], end: [1, 1] },
           { name: "sidebar", start: [2, 1], end: [2, 1] },
-          { name: "footer", start: [0, 2], end: [2, 2] }
+          { name: "footer", start: [0, 2], end: [2, 2] },
         ]}
-        columnsProp={[["100px","1fr"], "3fr", ["100px","1fr"]]}
+        columnsProp={[["100px", "1fr"], "3fr", ["100px", "1fr"]]}
         gridArea="grid"
         gridColumnGap="10px"
         gridGap="10px"
@@ -53,7 +50,6 @@ describe('<Grid />', () => {
       />
     );
 
-    
     expect(wrapper.props().alignContent).toEqual("center");
     expect(wrapper.props().alignItems).toEqual("center");
     expect(wrapper.props().alignSelf).toEqual("center");
@@ -134,7 +130,6 @@ describe('<Grid />', () => {
     expect(wrapper.props().tag).toEqual("div");
     expect(wrapper.props().widthProp).toEqual("100vw");
 
-
     const wrapper2 = mount(<Grid columnsProp={{ count: 3, size: "100px" }} />);
     expect(typeof wrapper.props().columnsProp).toEqual("object");
     expect(wrapper2.props().columnsProp.count).toEqual(3);
@@ -148,11 +143,15 @@ describe('<Grid />', () => {
     expect(typeof wrapper4.props().rowsProp).toEqual("string");
     expect(wrapper4.props().rowsProp).toEqual("50px");
 
-    const wrapper5 = mount(<Grid areasProp={[
-      ["header", "header", "header"],
-      ["navbar", "main", "sidebar"],
-      ["footer", "footer", "footer"]
-    ]} />);
+    const wrapper5 = mount(
+      <Grid
+        areasProp={[
+          ["header", "header", "header"],
+          ["navbar", "main", "sidebar"],
+          ["footer", "footer", "footer"],
+        ]}
+      />
+    );
     expect(Array.isArray(wrapper5.props().areasProp)).toEqual(true);
     expect(wrapper5.props().areasProp.length).toEqual(3);
     expect(Array.isArray(wrapper5.props().areasProp[0])).toEqual(true);
@@ -212,5 +211,4 @@ describe('<Grid />', () => {
     expect(tree8).toHaveStyleRule('grid-template-columns', 'minmax(100px,1fr) 3fr minmax(100px,1fr)');
     expect(tree8).toHaveStyleRule('grid-template-rows', 'auto 1fr auto');
   });  */
-
 });

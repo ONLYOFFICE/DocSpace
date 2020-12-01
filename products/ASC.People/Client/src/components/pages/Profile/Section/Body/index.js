@@ -4,18 +4,21 @@ import {
   IconButton,
   Text,
   ToggleContent,
-  Link
+  Link,
 } from "asc-web-components";
-import { getUserContacts, getUserRole } from "../../../../../store/people/selectors";
+import {
+  getUserContacts,
+  getUserRole,
+} from "../../../../../store/people/selectors";
 
 import ProfileInfo from "./ProfileInfo/ProfileInfo";
 import React from "react";
 import { connect } from "react-redux";
-import { store } from 'asc-web-common';
-import styled from 'styled-components';
-import { updateProfileCulture } from "../../../../../store/profile/actions";
+import { store } from "asc-web-common";
+import styled from "styled-components";
+
 import { withRouter } from "react-router";
-import { withTranslation } from 'react-i18next';
+import { withTranslation } from "react-i18next";
 
 const { isAdmin, isMe } = store.auth.selectors;
 
@@ -43,8 +46,8 @@ const EditButtonWrapper = styled.div`
 const ToggleWrapper = styled.div`
   width: 100%;
   min-width: 100%;
-  ${props => props.isSelf && `margin-bottom: 24px;`}
-  ${props => props.isContacts && `margin-top: 24px;`}
+  ${(props) => props.isSelf && `margin-bottom: 24px;`}
+  ${(props) => props.isContacts && `margin-top: 24px;`}
   max-width: 1024px;
 `;
 
@@ -62,7 +65,7 @@ const ContactWrapper = styled.div`
   }
 `;
 
-const createContacts = contacts => {
+const createContacts = (contacts) => {
   const styledContacts = contacts.map((contact, index) => {
     let url = null;
     if (contact.link && contact.link.length > 0) {
@@ -70,12 +73,14 @@ const createContacts = contacts => {
     }
     return (
       <ContactWrapper key={index}>
-        <IconButton className='icon-button' color="#333333" size={16} iconName={contact.icon} isFill={true} />
-        <Link
-          className='contact-link'
-          isTextOverflow
-          href={url}
-        >
+        <IconButton
+          className="icon-button"
+          color="#333333"
+          size={16}
+          iconName={contact.icon}
+          isFill={true}
+        />
+        <Link className="contact-link" isTextOverflow href={url}>
           {contact.value}
         </Link>
       </ContactWrapper>
@@ -85,20 +90,28 @@ const createContacts = contacts => {
   return styledContacts;
 };
 
-const stringFormat = (string, data) => string.replace(/\{(\d+)\}/g, (m, n) => data[n] || m);
+const stringFormat = (string, data) =>
+  string.replace(/\{(\d+)\}/g, (m, n) => data[n] || m);
 
 class SectionBodyContent extends React.PureComponent {
-
   onEditSubscriptionsClick = () => console.log("Edit subscriptions onClick()");
 
-  onEditProfileClick = () => this.props.history.push(`${this.props.settings.homepage}/edit/${this.props.profile.userName}`);
+  onEditProfileClick = () =>
+    this.props.history.push(
+      `${this.props.settings.homepage}/edit/${this.props.profile.userName}`
+    );
 
   render() {
-    const { profile, updateProfileCulture, settings, isAdmin, viewer, t } = this.props;
+    const { profile, settings, isAdmin, viewer, t } = this.props;
 
     const contacts = profile.contacts && getUserContacts(profile.contacts);
     const role = getUserRole(profile);
-    const socialContacts = (contacts && contacts.social && contacts.social.length > 0 && createContacts(contacts.social)) || null;
+    const socialContacts =
+      (contacts &&
+        contacts.social &&
+        contacts.social.length > 0 &&
+        createContacts(contacts.social)) ||
+      null;
     const infoContacts = contacts && createContacts(contacts.contact);
     const isSelf = isMe(viewer, profile.userName);
 
@@ -123,14 +136,21 @@ class SectionBodyContent extends React.PureComponent {
             </EditButtonWrapper>
           )}
         </AvatarWrapper>
-        <ProfileInfo profile={profile} updateProfileCulture={updateProfileCulture} isSelf={isSelf} isAdmin={isAdmin} t={t} cultures={settings.cultures} culture={settings.culture} />
-        {(isSelf && false) && (
-          <ToggleWrapper isSelf={true} >
-            <ToggleContent label={t('Subscriptions')} isOpen={true} >
+        <ProfileInfo
+          profile={profile}
+          isSelf={isSelf}
+          isAdmin={isAdmin}
+          t={t}
+          cultures={settings.cultures}
+          culture={settings.culture}
+        />
+        {isSelf && false && (
+          <ToggleWrapper isSelf={true}>
+            <ToggleContent label={t("Subscriptions")} isOpen={true}>
               <Text as="span">
                 <Button
                   size="big"
-                  label={t('EditSubscriptionsBtn')}
+                  label={t("EditSubscriptionsBtn")}
                   primary={true}
                   onClick={this.onEditSubscriptionsClick}
                 />
@@ -140,21 +160,21 @@ class SectionBodyContent extends React.PureComponent {
         )}
         {profile.notes && (
           <ToggleWrapper>
-            <ToggleContent label={t('Comments')} isOpen={true} >
+            <ToggleContent label={t("Comments")} isOpen={true}>
               <Text as="span">{profile.notes}</Text>
             </ToggleContent>
           </ToggleWrapper>
         )}
         {profile.contacts && (
-          <ToggleWrapper isContacts={true} >
-            <ToggleContent label={t('ContactInformation')} isOpen={true} >
+          <ToggleWrapper isContacts={true}>
+            <ToggleContent label={t("ContactInformation")} isOpen={true}>
               <Text as="span">{infoContacts}</Text>
             </ToggleContent>
           </ToggleWrapper>
         )}
         {socialContacts && (
-          <ToggleWrapper isContacts={true} >
-            <ToggleContent label={t('SocialProfiles')} isOpen={true} >
+          <ToggleWrapper isContacts={true}>
+            <ToggleContent label={t("SocialProfiles")} isOpen={true}>
               <Text as="span">{socialContacts}</Text>
             </ToggleContent>
           </ToggleWrapper>
@@ -164,13 +184,15 @@ class SectionBodyContent extends React.PureComponent {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     settings: state.auth.settings,
     profile: state.profile.targetUser,
-    isAdmin: isAdmin(state.auth.user),
-    viewer: state.auth.user
+    isAdmin: isAdmin(state),
+    viewer: state.auth.user,
   };
-}
+};
 
-export default connect(mapStateToProps, { updateProfileCulture })(withRouter(withTranslation()(SectionBodyContent)));
+export default connect(mapStateToProps)(
+  withRouter(withTranslation()(SectionBodyContent))
+);

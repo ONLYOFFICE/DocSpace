@@ -1,64 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!-- 
-    Microsoft ResX Schema 
-    
-    Version 2.0
-    
-    The primary goals of this format is to allow a simple XML format 
-    that is mostly human readable. The generation and parsing of the 
-    various data types are done through the TypeConverter classes 
-    associated with the data types.
-    
-    Example:
-    
-    ... ado.net/XML headers & schema ...
-    <resheader name="resmimetype">text/microsoft-resx</resheader>
-    <resheader name="version">2.0</resheader>
-    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
-    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
-    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
-    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
-    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
-        <value>[base64 mime encoded serialized .NET Framework object]</value>
-    </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
-        <comment>This is a comment</comment>
-    </data>
-                
-    There are any number of "resheader" rows that contain simple 
-    name/value pairs.
-    
-    Each data row contains a name, and value. The row also contains a 
-    type or mimetype. Type corresponds to a .NET class that support 
-    text/value conversion through the TypeConverter architecture. 
-    Classes that don't support this are serialized and stored with the 
-    mimetype set.
-    
-    The mimetype is used for serialized objects, and tells the 
-    ResXResourceReader how to depersist the object. This is currently not 
-    extensible. For a given mimetype the value must be set accordingly:
-    
-    Note - application/x-microsoft.net.object.binary.base64 is the format 
-    that the ResXResourceWriter will generate, however the reader can 
-    read any of the formats listed below.
-    
-    mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with 
-            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
-            : and then encoded with base64 encoding.
-    
-    mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with 
-            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
-            : and then encoded with base64 encoding.
-
-    mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array 
-            : using a System.ComponentModel.TypeConverter
-            : and then encoded with base64 encoding.
-    -->
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
@@ -162,6 +103,9 @@
   <data name="ConsumersBitlyInstruction" xml:space="preserve">
     <value>Добавив сервис Bitly, Вы будуте получать сокращенные ссылки для приглашения новых пользователей на портал ONLYOFFICE™ и сокращенные ссылки для документов в модуле 'Документы', к которым был предоставлен доступ для внешних пользователей.</value>
   </data>
+  <data name="ConsumersBitlyInstructionV11" xml:space="preserve">
+    <value>Подключите это приложение, чтобы сокращать пригласительные ссылки и ссылки на документы. {0}Вставьте ваш логин Bitly и ключ API ниже:</value>
+  </data>
   <data name="ConsumersBox" xml:space="preserve">
     <value>Ключ Box</value>
   </data>
@@ -177,6 +121,9 @@
   <data name="ConsumersBoxInstruction" xml:space="preserve">
     <value>Добавив приложение сервиса Box, Вы сможете подключить свой аккаунт Box в модуле 'Документы'. Это позволит загружать и создавать новые файлы в Box, редактировать существующие, копировать и удалять их, предоставлять доступ к файлам и папкам для пользователей портала ONLYOFFICE™.</value>
   </data>
+  <data name="ConsumersBoxInstructionV11" xml:space="preserve">
+    <value>Подключите это приложение, чтобы подключить свой аккаунт Box к модулю "Документы". Вы сможете управлять документами из Box, редактировать их и предоставлять к ним доступ для пользователей ONLYOFFICE. {0}Войдите в свою учетную запись на странице для разработчиков Box и создайте новое приложение для интеграции ONLYOFFICE. Вставьте полученные данные ниже:</value>
+  </data>
   <data name="ConsumersClickatell" xml:space="preserve">
     <value>Clickatell</value>
   </data>
@@ -188,6 +135,9 @@
   </data>
   <data name="ConsumersClickatellInstruction" xml:space="preserve">
     <value>Добавив приложение сервиса Clickatell, Вы сможете включить двухфакторную аутентификацию для получения SMS с кодом входа пользователя на портал ONLYOFFICE.</value>
+  </data>
+  <data name="ConsumersClickatellInstructionV11" xml:space="preserve">
+    <value>Используйте это приложение, чтобы включить двухфакторную аутентификацию с помощью сервиса Clickatell. {0}Войдите в аккаунт SMS Platform и создайте новую интеграцию для ONLYOFFICE. Скопируйте apiKey и вставьте его ниже:</value>
   </data>
   <data name="ConsumersDocuSign" xml:space="preserve">
     <value>DocuSign</value>
@@ -207,6 +157,9 @@
   <data name="ConsumersDocuSignInstruction" xml:space="preserve">
     <value>Добавив приложение сервиса DocuSign, Вы сможете подписывать файлы модуля 'Документы'. Это позволит Вам отправлять файл на получение электронной подписи сотрудникам портала ONLYOFFICE™ средствами сервиса DocuSugn. Подписанный файл будет сохранён в модуле 'Документы' портала ONLYOFFICE™.</value>
   </data>
+  <data name="ConsumersDocuSignInstructionV11" xml:space="preserve">
+    <value>Подключите это приложение, чтобы подписывать документы электронной подписью DocuSign. {0}Перейдите в консоль администратора DocuSign и добавьте интеграцию ONLYOFFICE. Вставьте полученные данные ниже:</value>
+  </data>
   <data name="ConsumersDropBox" xml:space="preserve">
     <value>Dropbox</value>
   </data>
@@ -215,6 +168,9 @@
   </data>
   <data name="ConsumersDropBoxInstruction" xml:space="preserve">
     <value>Добавив приложение сервиса Dropbox, Вы сможете подключить свой аккаунт Dropbox в модуле 'Документы'. Это позволит загружать и создавать новые файлы в Dropbox, редактировать существующие, копировать и удалять их, предоставлять доступ к файлам и папкам для пользователей портала ONLYOFFICE™.</value>
+  </data>
+  <data name="ConsumersDropBoxInstructionV11" xml:space="preserve">
+    <value>Подключите это приложение, чтобы подключить свой аккаунт Dropbox к модулю "Документы". Вы сможете управлять документами из Dropbox, редактировать их и предоставлять к ним доступ для пользователей ONLYOFFICE. {0}Войдите в свою учетную запись на сайте для разработчиков Dropbox Developers и создайте новое приложение для интеграции ONLYOFFICE. Вставьте полученные данные ниже:</value>
   </data>
   <data name="ConsumersDropBoxKey" xml:space="preserve">
     <value>Dropbox ID</value>
@@ -251,6 +207,9 @@
   </data>
   <data name="ConsumersFacebookInstruction" xml:space="preserve">
     <value>Добавив приложение сервиса Facebook, Вы сможете на странице своего профиля подключить вход на портал ONLYOFFICE™ с помощью аккаунта Facebook. Также Вы сможете на странице редактирования персоны или компании CRM находить и привязывать аккаунт Facebook.</value>
+  </data>
+  <data name="ConsumersFacebookInstructionV11" xml:space="preserve">
+    <value>Подключите это приложение, чтобы пользователи могли входить в ONLYOFFICE, используя Facebook, и привязывать Facebook-аккаунты клиентов в модуле CRM. {0}Перейдите на портал для разработчиков Facebook и создайте новое приложение для интеграции ONLYOFFICE. Вставьте полученные данные ниже:</value>
   </data>
   <data name="ConsumersFirebase" xml:space="preserve">
     <value>Firebase</value>
@@ -306,6 +265,9 @@
   <data name="ConsumersGoogleInstruction" xml:space="preserve">
     <value>Добавив проект сервиса Google, Вы сможете на странице своего профиля подключить вход на портал ONLYOFFICE™ с помощью аккаунта Google и подключить свой аккаунт Google Drive в модуле 'Документы'. Это позволит загружать и создавать новые файлы в Google Drive, редактировать существующие, копировать и удалять их, предоставлять доступ к файлам и папкам для пользователей портала ONLYOFFICE™.</value>
   </data>
+  <data name="ConsumersGoogleInstructionV11" xml:space="preserve">
+    <value>Подключите это приложение, чтобы подключить свой аккаунт Google Drive к модулю "Документы". Вы сможете управлять документами из Google Drive, редактировать их и предоставлять к ним доступ для пользователей ONLYOFFICE. {0}Перейдите в консоль API Google и создайте новый проект для интеграции ONLYOFFICE. Вставьте полученные данные ниже:</value>
+  </data>
   <data name="ConsumersLinkedIn" xml:space="preserve">
     <value>Ключ Linkedin</value>
   </data>
@@ -314,6 +276,9 @@
   </data>
   <data name="ConsumersLinkedInInstruction" xml:space="preserve">
     <value>Добавив приложение сервиса LinkedIn, Вы сможете на странице своего профиля подключить вход на портал ONLYOFFICE™ с помощью аккаунта LinkedIn.</value>
+  </data>
+  <data name="ConsumersLinkedInInstructionV11" xml:space="preserve">
+    <value>Подключите это приложение, чтобы пользователи могли входить в ONLYOFFICE, используя свои аккаунты в LinkedIn. {0}Перейдите на сайт Сеть разработчиков LinkedIn и создайте новое приложение для интеграции ONLYOFFICE. Вставьте полученные данные ниже:</value>
   </data>
   <data name="ConsumersLinkedInKey" xml:space="preserve">
     <value>Linkedin ID</value>
@@ -396,11 +361,11 @@
   <data name="ConsumersSelectelauthUser" xml:space="preserve">
     <value>Имя пользователя для авторизации</value>
   </data>
-  <data name="ConsumersSelectelInstruction" xml:space="preserve">
-    <value>Добавив сервис Selectel, вы сможете использовать его для создания резервных копий портала, чтобы предотвратить потерю данных. Также используйте его для хранения данных и статического содержимого портала.</value>
-  </data>
   <data name="ConsumersSelectelDescription" xml:space="preserve">
     <value>Подключите сервис Selectel Облачное хранилище для резервного копирования и хранения данных портала.</value>
+  </data>
+  <data name="ConsumersSelectelInstruction" xml:space="preserve">
+    <value>Добавив сервис Selectel, вы сможете использовать его для создания резервных копий портала, чтобы предотвратить потерю данных. Также используйте его для хранения данных и статического содержимого портала.</value>
   </data>
   <data name="ConsumersSelectelprivate_container" xml:space="preserve">
     <value>Приватный контейнер</value>
@@ -429,6 +394,9 @@
   <data name="ConsumersSkyDriveInstruction" xml:space="preserve">
     <value>Добавив приложение сервиса OneDrive, Вы сможете подключить свой аккаунт OneDrive в модуле 'Документы'. Это позволит загружать и создавать новые файлы в OneDrive, редактировать существующие, копировать и удалять их, предоставлять доступ к файлам и папкам для пользователей портала ONLYOFFICE™.</value>
   </data>
+  <data name="ConsumersSkyDriveInstructionV11" xml:space="preserve">
+    <value>Подключите это приложение, чтобы подключить свой аккаунт OneDrive к модулю "Документы". Вы сможете управлять документами из OneDrive, редактировать их и предоставлять к ним доступ для пользователей ONLYOFFICE. {0}Войдите в свою учетную запись Microsoft Azure и создайте новое приложение для интеграции ONLYOFFICE. Вставьте полученные данные ниже:</value>
+  </data>
   <data name="ConsumersSmsc" xml:space="preserve">
     <value>SMS-центр</value>
   </data>
@@ -437,6 +405,9 @@
   </data>
   <data name="ConsumersSmscInstruction" xml:space="preserve">
     <value>Добавив приложение сервиса SMS-центр, Вы сможете включить двухфакторную аутентификацию для получения SMS с кодом входа пользователя на портал ONLYOFFICE. SMS-центр удобно использовать как SMS-провайдер для стран СНГ.</value>
+  </data>
+  <data name="ConsumersSmscInstructionV11" xml:space="preserve">
+    <value>Используйте это приложение, чтобы включить двухфакторную аутентификацию с помощью сервиса SMS Center. {0}Вставьте логин от аккаунта smsc и пароль (или MD5 хэш от пароля) в нижнем регистре:</value>
   </data>
   <data name="Consumerssmsclogin" xml:space="preserve">
     <value>Логин</value>
@@ -459,6 +430,9 @@
   <data name="ConsumersTwilioInstruction" xml:space="preserve">
     <value>После добавления Twilio вы сможете звонить любому контакту CRM прямо из браузера.</value>
   </data>
+  <data name="ConsumersTwilioInstructionV11" xml:space="preserve">
+    <value>Подключите это приложение, чтобы пользователи могли звонить контактам из модуля CRM с помощью Twilio. {0}Перейдите в Консоль Twilio и вставьте следующие данные ниже:</value>
+  </data>
   <data name="Consumerstwiliosender" xml:space="preserve">
     <value>Номер телефона из Twilio (требуется для SMS-авторизации)</value>
   </data>
@@ -476,6 +450,9 @@
   </data>
   <data name="ConsumersTwitterInstruction" xml:space="preserve">
     <value>Добавив приложение сервиса Twitter, Вы сможете на странице своего профиля подключить вход на портал ONLYOFFICE™ с помощью аккаунта Twitter. Также Вы сможете на странице персоны или компании CRM привязывать аккаунт и читать новости Twitter.</value>
+  </data>
+  <data name="ConsumersTwitterInstructionV11" xml:space="preserve">
+    <value>Подключите это приложение, чтобы пользователи могли входить в ONLYOFFICE, используя Twitter, и привязывать Twitter-аккаунты клиентов в модуле CRM. {0}Перейдите на портал для разработчиков Twitter и создайте новое приложение для интеграции ONLYOFFICE. Вставьте полученные данные ниже:</value>
   </data>
   <data name="ConsumersTwitterKey" xml:space="preserve">
     <value>Twitter ID</value>
@@ -530,6 +507,9 @@
   </data>
   <data name="ConsumersYahooInstruction" xml:space="preserve">
     <value>Добавив приложение сервиса Yahoo, Вы сможете добавлять новых пользователей на портал ONLYOFFICE из списка контактов.</value>
+  </data>
+  <data name="ConsumersYahooInstructionV11" xml:space="preserve">
+    <value>Подключите это приложение, чтобы добавлять новых пользователей портала из вашего списка контактов Yahoo. {0}Перейдите на страницу создания приложения в сети разработчиков Yahoo Developer Network и создайте новое приложение для интеграции ONLYOFFICE. Вставьте полученные данные ниже:</value>
   </data>
   <data name="ConsumersYandex" xml:space="preserve">
     <value>Yandex</value>
@@ -681,6 +661,9 @@
   <data name="MessageEmailChangeInstuctionsSentOnEmail" xml:space="preserve">
     <value>Инструкции по изменению электронной почты были успешно отправлены</value>
   </data>
+  <data name="MessageYourPasswordSendedToEmail" xml:space="preserve">
+    <value>Если пользователь с почтой {0} существует, то на этот адрес была отправлена инструкция по смене пароля.</value>
+  </data>
   <data name="MessageYourPasswordSuccessfullySendedToEmail" xml:space="preserve">
     <value>Инструкции по изменению пароля были высланы на email {0}</value>
   </data>
@@ -752,6 +735,9 @@
   </data>
   <data name="TfaTooMuchError" xml:space="preserve">
     <value>Вы отправили слишком много текстовых сообщений. Повторите попытку позже.</value>
+  </data>
+  <data name="Trial" xml:space="preserve">
+    <value>Триал</value>
   </data>
   <data name="UsServerRegion" xml:space="preserve">
     <value>Запад США (Орегон)</value>

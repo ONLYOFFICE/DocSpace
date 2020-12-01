@@ -15,6 +15,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Files.Services.FFmpegService
 {
+    [Singletone]
     public class FFmpegService
     {
         public List<string> MustConvertable
@@ -43,7 +44,7 @@ namespace ASC.Web.Files.Services.FFmpegService
             {
                 process.Start();
 
-                var _ = StreamCopyToAsync(inputStream, process.StandardInput.BaseStream, closeDst: true);
+                StreamCopyToAsync(inputStream, process.StandardInput.BaseStream, closeDst: true);
 
                 ProcessLog(process.StandardError.BaseStream);
 
@@ -147,7 +148,7 @@ namespace ASC.Web.Files.Services.FFmpegService
             return total;
         }
 
-        private async void ProcessLog(Stream stream)
+        private async Task ProcessLog(Stream stream)
         {
             using var reader = new StreamReader(stream, Encoding.UTF8);
             string line;
@@ -155,14 +156,6 @@ namespace ASC.Web.Files.Services.FFmpegService
             {
                 logger.Info(line);
             }
-        }
-    }
-    public static class FFmpegServiceExtensions
-    {
-        public static DIHelper AddFFmpegServiceService(this DIHelper services)
-        {
-            services.TryAddSingleton<FFmpegService>();
-            return services;
         }
     }
 }

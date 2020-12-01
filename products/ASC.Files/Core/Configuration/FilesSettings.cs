@@ -70,6 +70,16 @@ namespace ASC.Web.Files.Classes
         [JsonPropertyName("StoreForcesave")]
         public bool StoreForcesaveSetting { get; set; }
 
+        [JsonPropertyName("HideRecent")]
+        public bool HideRecentSetting { get; set; }
+
+        [JsonPropertyName("HideFavorites")]
+        public bool HideFavoritesSetting { get; set; }
+
+        [JsonPropertyName("HideTemplates")]
+        public bool HideTemplatesSetting { get; set; }
+
+
         public ISettings GetDefault(IServiceProvider serviceProvider)
         {
             return new FilesSettings
@@ -84,7 +94,10 @@ namespace ASC.Web.Files.Classes
                 HideConfirmConvertSaveSetting = false,
                 HideConfirmConvertOpenSetting = false,
                 ForcesaveSetting = false,
-                StoreForcesaveSetting = false
+                StoreForcesaveSetting = false,
+                HideRecentSetting = false,
+                HideFavoritesSetting = false,
+                HideTemplatesSetting = false
             };
         }
 
@@ -94,6 +107,7 @@ namespace ASC.Web.Files.Classes
         }
     }
 
+    [Scope]
     public class FilesSettingsHelper
     {
         private SettingsManager SettingsManager { get; }
@@ -109,11 +123,11 @@ namespace ASC.Web.Files.Classes
         {
             set
             {
-                var setting = SettingsManager.LoadForCurrentUser<FilesSettings>();
+                var setting = LoadForCurrentUser();
                 setting.FastDeleteSetting = !value;
-                SettingsManager.SaveForCurrentUser(setting);
+                SaveForCurrentUser(setting);
             }
-            get { return !SettingsManager.LoadForCurrentUser<FilesSettings>().FastDeleteSetting; }
+            get { return !LoadForCurrentUser().FastDeleteSetting; }
         }
 
         public bool EnableThirdParty
@@ -131,69 +145,69 @@ namespace ASC.Web.Files.Classes
         {
             set
             {
-                var setting = SettingsManager.LoadForCurrentUser<FilesSettings>();
+                var setting = LoadForCurrentUser();
                 setting.StoreOriginalFilesSetting = value;
-                SettingsManager.SaveForCurrentUser(setting);
+                SaveForCurrentUser(setting);
             }
-            get { return SettingsManager.LoadForCurrentUser<FilesSettings>().StoreOriginalFilesSetting; }
+            get { return LoadForCurrentUser().StoreOriginalFilesSetting; }
         }
 
         public bool UpdateIfExist
         {
             set
             {
-                var setting = SettingsManager.LoadForCurrentUser<FilesSettings>();
+                var setting = LoadForCurrentUser();
                 setting.UpdateIfExistSetting = value;
-                SettingsManager.SaveForCurrentUser(setting);
+                SaveForCurrentUser(setting);
             }
-            get { return SettingsManager.LoadForCurrentUser<FilesSettings>().UpdateIfExistSetting; }
+            get { return LoadForCurrentUser().UpdateIfExistSetting; }
         }
 
         public bool ConvertNotify
         {
             set
             {
-                var setting = SettingsManager.LoadForCurrentUser<FilesSettings>();
+                var setting = LoadForCurrentUser();
                 setting.ConvertNotifySetting = value;
-                SettingsManager.SaveForCurrentUser(setting);
+                SaveForCurrentUser(setting);
             }
-            get { return SettingsManager.LoadForCurrentUser<FilesSettings>().ConvertNotifySetting; }
+            get { return LoadForCurrentUser().ConvertNotifySetting; }
         }
 
         public bool HideConfirmConvertSave
         {
             set
             {
-                var setting = SettingsManager.LoadForCurrentUser<FilesSettings>();
+                var setting = LoadForCurrentUser();
                 setting.HideConfirmConvertSaveSetting = value;
-                SettingsManager.SaveForCurrentUser(setting);
+                SaveForCurrentUser(setting);
             }
-            get { return SettingsManager.LoadForCurrentUser<FilesSettings>().HideConfirmConvertSaveSetting; }
+            get { return LoadForCurrentUser().HideConfirmConvertSaveSetting; }
         }
 
         public bool HideConfirmConvertOpen
         {
             set
             {
-                var setting = SettingsManager.LoadForCurrentUser<FilesSettings>();
+                var setting = LoadForCurrentUser();
                 setting.HideConfirmConvertOpenSetting = value;
-                SettingsManager.SaveForCurrentUser(setting);
+                SaveForCurrentUser(setting);
             }
-            get { return SettingsManager.LoadForCurrentUser<FilesSettings>().HideConfirmConvertOpenSetting; }
+            get { return LoadForCurrentUser().HideConfirmConvertOpenSetting; }
         }
 
         public OrderBy DefaultOrder
         {
             set
             {
-                var setting = SettingsManager.LoadForCurrentUser<FilesSettings>();
+                var setting = LoadForCurrentUser();
                 setting.DefaultSortedBySetting = value.SortedBy;
                 setting.DefaultSortedAscSetting = value.IsAsc;
-                SettingsManager.SaveForCurrentUser(setting);
+                SaveForCurrentUser(setting);
             }
             get
             {
-                var setting = SettingsManager.LoadForCurrentUser<FilesSettings>();
+                var setting = LoadForCurrentUser();
                 return new OrderBy(setting.DefaultSortedBySetting, setting.DefaultSortedAscSetting);
             }
         }
@@ -202,11 +216,11 @@ namespace ASC.Web.Files.Classes
         {
             set
             {
-                var setting = SettingsManager.LoadForCurrentUser<FilesSettings>();
+                var setting = LoadForCurrentUser();
                 setting.ForcesaveSetting = value;
-                SettingsManager.SaveForCurrentUser(setting);
+                SaveForCurrentUser(setting);
             }
-            get { return SettingsManager.LoadForCurrentUser<FilesSettings>().ForcesaveSetting; }
+            get { return LoadForCurrentUser().ForcesaveSetting; }
         }
 
         public bool StoreForcesave
@@ -220,19 +234,48 @@ namespace ASC.Web.Files.Classes
             }
             get { return !CoreBaseSettings.Personal && SettingsManager.Load<FilesSettings>().StoreForcesaveSetting; }
         }
-    }
-    public static class FilesSettingsHelperExtention
-    {
-        public static DIHelper AddFilesSettingsHelperService(this DIHelper services)
-        {
-            if (services.TryAddScoped<FilesSettingsHelper>())
-            {
-                return services
-                    .AddSettingsManagerService()
-                    .AddCoreBaseSettingsService();
-            }
 
-            return services;
+        public bool RecentSection
+        {
+            set
+            {
+                var setting = LoadForCurrentUser();
+                setting.HideRecentSetting = !value;
+                SaveForCurrentUser(setting);
+            }
+            get { return !LoadForCurrentUser().HideRecentSetting; }
+        }
+
+        public bool FavoritesSection
+        {
+            set
+            {
+                var setting = LoadForCurrentUser();
+                setting.HideFavoritesSetting = !value;
+                SaveForCurrentUser(setting);
+            }
+            get { return !LoadForCurrentUser().HideFavoritesSetting; }
+        }
+
+        public bool TemplatesSection
+        {
+            set
+            {
+                var setting = LoadForCurrentUser();
+                setting.HideTemplatesSetting = !value;
+                SaveForCurrentUser(setting);
+            }
+            get { return !LoadForCurrentUser().HideTemplatesSetting; }
+        }
+
+        private FilesSettings LoadForCurrentUser()
+        {
+            return SettingsManager.LoadForCurrentUser<FilesSettings>();
+        }
+
+        private void SaveForCurrentUser(FilesSettings settings)
+        {
+            SettingsManager.SaveForCurrentUser(settings);
         }
     }
 }

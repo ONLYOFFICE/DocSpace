@@ -38,10 +38,11 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Billing
 {
+    [Scope]
     public class LicenseReader
     {
         private readonly ILog Log;
-        private readonly string LicensePath;
+        public readonly string LicensePath;
         private readonly string LicensePathTemp;
 
         public const string CustomerIdKey = "CustomerId";
@@ -60,7 +61,7 @@ namespace ASC.Core.Billing
             PaymentManager = paymentManager;
             CoreSettings = coreSettings;
             Configuration = configuration;
-            LicensePath = Configuration["license:file:path"];
+            LicensePath = Configuration["license:file:path"] ?? "";
             LicensePathTemp = LicensePath + ".tmp";
             Log = options.CurrentValue;
         }
@@ -211,26 +212,36 @@ namespace ASC.Core.Billing
                 MaxFileSize = defaultQuota.MaxFileSize,
                 MaxTotalSize = defaultQuota.MaxTotalSize,
                 Name = "license",
+                DocsEdition = true,
                 HasDomain = true,
                 Audit = true,
                 ControlPanel = true,
                 HealthCheck = true,
                 Ldap = true,
                 Sso = true,
+                Customization = license.Customization,
                 WhiteLabel = license.WhiteLabel || license.Customization,
+                Branding = license.Branding,
+                SSBranding = license.SSBranding,
                 Update = true,
                 Support = true,
                 Trial = license.Trial,
                 CountPortals = license.PortalCount,
+                DiscEncryption = license.DiscEncryption ?? !license.Trial,
+                PrivacyRoom = !license.Trial,
             };
 
-            TenantManager.SaveTenantQuota(quota);
-
-            if (defaultQuota.CountPortals != license.PortalCount)
+            if (defaultQuota.Name != "overdue" && !defaultQuota.Trial)
             {
-                defaultQuota.CountPortals = license.PortalCount;
-                TenantManager.SaveTenantQuota(defaultQuota);
+                quota.WhiteLabel |= defaultQuota.WhiteLabel;
+                quota.Branding |= defaultQuota.Branding;
+                quota.SSBranding |= defaultQuota.SSBranding;
+                quota.DiscEncryption |= defaultQuota.DiscEncryption;
+
+                quota.CountPortals = Math.Max(defaultQuota.CountPortals, quota.CountPortals);
             }
+
+            TenantManager.SaveTenantQuota(quota);
 
             var tariff = new Tariff
             {
@@ -267,7 +278,7 @@ namespace ASC.Core.Billing
             }
         }
 
-        private static DateTime _date = DateTime.MinValue;
+        private static readonly DateTime _date = DateTime.MinValue;
 
         public DateTime VersionReleaseDate
         {
@@ -299,9 +310,9 @@ namespace ASC.Core.Billing
                 //    var date = splitted[1];
                 //    var orighash = splitted[2];
 
-                //    var skey = Configuration["core:machinekey"];
+                //var skey = MachinePseudoKeys.GetMachineConstant();
 
-                //    using (var hasher = new HMACSHA1(Encoding.UTF8.GetBytes(skey)))
+                //using (var hasher = new HMACSHA1(skey))
                 //    {
                 //        var data = string.Join("\n", date, pkey);
                 //        var hash = hasher.ComputeHash(Encoding.UTF8.GetBytes(data));
@@ -329,22 +340,5 @@ namespace ASC.Core.Billing
         private PaymentManager PaymentManager { get; }
         private CoreSettings CoreSettings { get; }
         private IConfiguration Configuration { get; }
-    }
-
-    public static class LicenseReaderExtension
-    {
-        public static DIHelper AddLicenseReaderService(this DIHelper services)
-        {
-            if (services.TryAddScoped<LicenseReader>())
-            {
-                return services
-                    .AddUserManagerService()
-                    .AddPaymentManagerService()
-                    .AddTenantManagerService()
-                    .AddCoreSettingsService();
-            }
-
-            return services;
-        }
     }
 }

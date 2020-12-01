@@ -48,6 +48,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.FederatedLogin
 {
+    [Scope]
     public class Login
     {
         private Dictionary<string, string> _params;
@@ -239,24 +240,12 @@ namespace ASC.FederatedLogin
             using var scope = ServiceProvider.CreateScope();
             var login = scope.ServiceProvider.GetService<Login>();
             await login.Invoke(context);
+            await Next.Invoke(context);
         }
     }
 
     public static class LoginHandlerExtensions
     {
-        public static DIHelper AddLoginHandlerService(this DIHelper services)
-        {
-            if (services.TryAddScoped<Login>())
-            {
-                return services
-                    .AddSignatureService()
-                    .AddInstanceCryptoService()
-                    .AddProviderManagerService();
-            }
-
-            return services;
-        }
-
         public static IApplicationBuilder UseLoginHandler(this IApplicationBuilder builder)
         {
             return builder.UseMiddleware<LoginHandler>();

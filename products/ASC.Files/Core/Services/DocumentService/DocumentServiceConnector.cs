@@ -49,6 +49,7 @@ using CommandMethod = ASC.Web.Core.Files.DocumentService.CommandMethod;
 
 namespace ASC.Web.Files.Services.DocumentService
 {
+    [Scope]
     public class DocumentServiceConnector
     {
         public ILog Logger { get; }
@@ -376,27 +377,6 @@ namespace ASC.Web.Files.Services.DocumentService
 
             Logger.Error("DocService error", ex);
             return new Exception(error, ex);
-        }
-    }
-    public static class DocumentServiceConnectorExtension
-    {
-        public static DIHelper AddDocumentServiceConnectorService(this DIHelper services)
-        {
-            if (services.TryAddScoped<DocumentServiceConnector>())
-            {
-
-                return services
-                    .AddFilesLinkUtilityService()
-                    .AddFileUtilityService()
-                    .AddPathProviderService()
-                    .AddGlobalStoreService()
-                    .AddBaseCommonLinkUtilityService()
-                    .AddTenantManagerService()
-                    .AddTenantExtraService()
-                    .AddCoreSettingsService();
-            }
-
-            return services;
         }
     }
 }

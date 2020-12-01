@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { withRouter } from "react-router";
-import { connect } from 'react-redux';
-import { withTranslation } from 'react-i18next';
+import { connect } from "react-redux";
+import { withTranslation } from "react-i18next";
 import styled from "styled-components";
 import { Button, TextInput, Text } from "asc-web-components";
 import { PageLayout } from "asc-web-common";
@@ -15,7 +15,7 @@ const BodyStyle = styled.div`
       max-width: 216px;
       max-height: 35px;
     }
-    
+
     .header-title {
       word-wrap: break-word;
       margin: 8px 0;
@@ -32,11 +32,9 @@ const BodyStyle = styled.div`
   .edit-input {
     margin-bottom: 24px;
   }
-   
-  
 `;
 
-const PhoneForm = props => {
+const PhoneForm = (props) => {
   const { t, currentPhone, greetingTitle } = props;
 
   const [phone, setPhone] = useState(currentPhone);
@@ -55,7 +53,7 @@ const PhoneForm = props => {
     console.log("onSubmit CHANGE");
   };
 
-  const onKeyPress = target => {
+  const onKeyPress = (target) => {
     if (target.code === "Enter") onSubmit();
   };
 
@@ -65,13 +63,17 @@ const PhoneForm = props => {
     <BodyStyle>
       <div className="edit-header">
         <img className="header-logo" src="images/dark_general.png" alt="Logo" />
-        <div className="header-title">
-          {greetingTitle}
-        </div>
+        <div className="header-title">{greetingTitle}</div>
       </div>
-      <Text className="edit-text" isBold fontSize='14px'>{subTitleTranslation}</Text>
-      <Text fontSize='13px'>{infoTranslation}: <b>+{currentPhone}</b></Text>
-      <Text className="edit-text" fontSize='13px'>{subInfoTranslation}</Text>
+      <Text className="edit-text" isBold fontSize="14px">
+        {subTitleTranslation}
+      </Text>
+      <Text fontSize="13px">
+        {infoTranslation}: <b>+{currentPhone}</b>
+      </Text>
+      <Text className="edit-text" fontSize="13px">
+        {subInfoTranslation}
+      </Text>
       <TextInput
         id="phone"
         name="phone"
@@ -82,14 +84,14 @@ const PhoneForm = props => {
         tabIndex={1}
         autocomple="off"
         placeholder={phonePlaceholder}
-        onChange={event => {
+        onChange={(event) => {
           setPhone(event.target.value);
           onKeyPress(event.target);
         }}
         value={phone}
         hasError={false}
         isDisabled={isLoading}
-        onKeyDown={event => onKeyPress(event.target)}
+        onKeyDown={(event) => onKeyPress(event.target)}
         guide={false}
         mask={simplePhoneMask}
         className="edit-input"
@@ -98,27 +100,33 @@ const PhoneForm = props => {
         primary
         size="big"
         tabIndex={3}
-        label={
-          isLoading ? t("LoadingProcessing") : buttonTranslation
-        }
+        label={isLoading ? t("LoadingProcessing") : buttonTranslation}
         isDisabled={isLoading}
         isLoading={isLoading}
         onClick={onSubmit}
       />
     </BodyStyle>
   );
-}
+};
 
-const ChangePhoneForm = props => {
-  return <PageLayout sectionBodyContent={<PhoneForm {...props} />} />;
+const ChangePhoneForm = (props) => {
+  return (
+    <PageLayout>
+      <PageLayout.SectionBody>
+        <PhoneForm {...props} />
+      </PageLayout.SectionBody>
+    </PageLayout>
+  );
 };
 
 function mapStateToProps(state) {
   return {
     isLoaded: state.auth.isLoaded,
     currentPhone: state.auth.user.mobilePhone,
-    greetingTitle: state.auth.settings.greetingSettings
+    greetingTitle: state.auth.settings.greetingSettings,
   };
 }
 
-export default connect(mapStateToProps)(withRouter(withTranslation()(ChangePhoneForm)));
+export default connect(mapStateToProps)(
+  withRouter(withTranslation()(ChangePhoneForm))
+);

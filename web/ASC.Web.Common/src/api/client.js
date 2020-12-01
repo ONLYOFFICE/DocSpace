@@ -1,5 +1,6 @@
 import axios from "axios";
-import { AUTH_KEY, WIZARD_KEY } from "../constants";
+import { AUTH_KEY } from "../constants";
+//import history from "../history";
 
 const PREFIX = "api";
 const VERSION = "2.0";
@@ -12,29 +13,31 @@ const baseURL = `${window.location.origin}/${PREFIX}/${VERSION}`;
 const client = axios.create({
   baseURL: baseURL,
   responseType: "json",
-  timeout: 30000 // default is `0` (no timeout)
+  timeout: 30000, // default is `0` (no timeout)
 });
 
 setAuthorizationToken(localStorage.getItem(AUTH_KEY));
 
 client.interceptors.response.use(
-  response => {
+  (response) => {
     return response;
   },
-  error => {
-    if(localStorage.getItem(WIZARD_KEY)) 
-      return;
-
-    if (error.response.status === 401) {
-      setAuthorizationToken();
-      window.location.href = "/login/error=unauthorized";
+  (error) => {
+    switch (true) {
+      case error.response.status === 401:
+        setAuthorizationToken();
+        window.location.href = "/login";
+        break;
+      case error.response.status === 402:
+        if (!window.location.pathname.includes("payments")) {
+          window.location.href = "/payments";
+        }
+        break;
+      default:
+        break;
     }
 
-    if (error.response.status === 502) {
-      // window.location.href = `/error/${error.response.status}`;
-    }
-
-    return error;
+    return Promise.reject(error);
   }
 );
 
@@ -48,24 +51,21 @@ export function setAuthorizationToken(token) {
 }
 
 export function setClientBasePath(path) {
-  if (!path)
-    return;
+  if (!path) return;
 
   client.defaults.baseURL = path;
 }
 
-const checkResponseError = res => {
-  if(!res) return;
+const getResponseError = (res) => {
+  if (!res) return;
 
   if (res.data && res.data.error) {
-    console.error(res.data.error);
-    throw new Error(res.data.error.message);
+    return res.data.error.message;
   }
 
-  if(res.isAxiosError && res.message) {
+  if (res.isAxiosError && res.message) {
     console.error(res.message);
-    //toastr.error(res.message);
-    throw new Error(res.message);
+    return res.message;
   }
 };
 
@@ -73,31 +73,28 @@ const checkResponseError = res => {
  * @description wrapper for making ajax requests
  * @param {object} object with method,url,data etc.
  */
-export const request = function(options) {
-  const onSuccess = function(response) {
-    checkResponseError(response);
-    
-    if(!response || !response.data || response.isAxiosError)
-      return null;
+export const request = function (options) {
+  const onSuccess = function (response) {
+    const error = getResponseError(response);
+    if (error) throw new Error(error);
 
-    if(response.data.hasOwnProperty("total"))
+    if (!response || !response.data || response.isAxiosError) return null;
+
+    if (response.data.hasOwnProperty("total"))
       return { total: +response.data.total, items: response.data.response };
 
     return response.data.response;
   };
-  const onError = function(error) {
-    console.error("Request Failed:", error.config);
-    if (error.response) {
-      console.error("Status:", error.response.status);
-      console.error("Data:", error.response.data);
-      console.error("Headers:", error.response.headers);
-    } else {
-      console.error("Error Message:", error.message);
-    }
-    return Promise.reject(error.response || error.message);
+
+  const onError = function (errorResponse) {
+    console.error("Request Failed:", errorResponse);
+
+    const errorText = errorResponse.response
+      ? getResponseError(errorResponse.response)
+      : errorResponse.message;
+
+    return Promise.reject(errorText || errorResponse);
   };
 
-  return client(options)
-    .then(onSuccess)
-    .catch(onError);
+  return client(options).then(onSuccess).catch(onError);
 };

@@ -1,43 +1,43 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import Text from '../text';
-import IconButton from '../icon-button';
+import Text from "../text";
+import IconButton from "../icon-button";
 
 const StyledSelectedItem = styled.div`
-    position: relative;
-    display: ${props => (props.isInline ? 'inline-grid' : 'grid')};
-    grid-template-columns: 1fr auto;
-    background: #F8F9F9;
-    border: 1px solid #ECEEF1;
-    box-sizing: border-box;
-    border-radius: 3px;
+  position: relative;
+  display: ${(props) => (props.isInline ? "inline-grid" : "grid")};
+  grid-template-columns: 1fr auto;
+  background: #f8f9f9;
+  border: 1px solid #eceef1;
+  box-sizing: border-box;
+  border-radius: 3px;
 `;
 
 const StyledSelectedTextBox = styled.div`
-    padding: 0 8px;
-    display: grid;
-    height: 32px;
-    align-items: center;
-    border-right: 1px solid #ECEEF1;
-    cursor: default;
+  padding: 0 8px;
+  display: grid;
+  height: 32px;
+  align-items: center;
+  border-right: 1px solid #eceef1;
+  cursor: default;
 `;
 
 const StyledCloseButton = styled.div`
-    display: flex;
-    align-items: center;
-    padding: 0 8px;
-    cursor: ${props => !props.isDisabled ? "pointer" : "default"};
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  cursor: ${(props) => (!props.isDisabled ? "pointer" : "default")};
 
-    &:hover{
-        path{
-            ${props => !props.isDisabled && "fill: #555F65;"} 
-        }
+  &:hover {
+    path {
+      ${(props) => !props.isDisabled && "fill: #555F65;"}
     }
+  }
 
-    &:active{
-        ${props => !props.isDisabled && "background-color: #ECEEF1;"}
-    }
+  &:active {
+    ${(props) => !props.isDisabled && "background-color: #ECEEF1;"}
+  }
 `;
 
 const SelectedItem = (props) => {
@@ -48,7 +48,7 @@ const SelectedItem = (props) => {
   return (
     <StyledSelectedItem {...props}>
       <StyledSelectedTextBox>
-        <Text as='span' truncate {...colorProps} fontWeight={600}>
+        <Text as="span" truncate {...colorProps} fontWeight={600}>
           {text}
         </Text>
       </StyledSelectedTextBox>
@@ -56,14 +56,14 @@ const SelectedItem = (props) => {
         <IconButton
           color="#979797"
           size={10}
-          iconName='CrossIcon'
+          iconName="CrossIcon"
           isFill={true}
           isDisabled={isDisabled}
         />
       </StyledCloseButton>
     </StyledSelectedItem>
   );
-}
+};
 
 SelectedItem.propTypes = {
   text: PropTypes.string,
@@ -72,12 +72,12 @@ SelectedItem.propTypes = {
   isDisabled: PropTypes.bool,
   className: PropTypes.string,
   id: PropTypes.string,
-  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 };
 
 SelectedItem.defaultProps = {
   isInline: true,
-  isDisabled: false
+  isDisabled: false,
 };
 
 export default SelectedItem;

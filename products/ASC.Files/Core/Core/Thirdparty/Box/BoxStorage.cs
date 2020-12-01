@@ -87,8 +87,7 @@ namespace ASC.Files.Thirdparty.Box
             }
             catch (Exception ex)
             {
-                var boxException = (BoxSDK.Exceptions.BoxException)ex.InnerException;
-                if (boxException != null && boxException.Error.Status == ((int)HttpStatusCode.NotFound).ToString())
+                if (ex.InnerException is BoxSDK.Exceptions.BoxException boxException && boxException.Error.Status == ((int)HttpStatusCode.NotFound).ToString())
                 {
                     return null;
                 }
@@ -104,8 +103,7 @@ namespace ASC.Files.Thirdparty.Box
             }
             catch (Exception ex)
             {
-                var boxException = (BoxSDK.Exceptions.BoxException)ex.InnerException;
-                if (boxException != null && boxException.Error.Status == ((int)HttpStatusCode.NotFound).ToString())
+                if (ex.InnerException is BoxSDK.Exceptions.BoxException boxException && boxException.Error.Status == ((int)HttpStatusCode.NotFound).ToString())
                 {
                     return null;
                 }
@@ -124,10 +122,10 @@ namespace ASC.Files.Thirdparty.Box
 
             if (offset > 0 && file.Size.HasValue)
             {
-                return _boxClient.FilesManager.DownloadStreamAsync(file.Id, startOffsetInBytes: offset, endOffsetInBytes: (int)file.Size - 1).Result;
+                return _boxClient.FilesManager.DownloadAsync(file.Id, startOffsetInBytes: offset, endOffsetInBytes: (int)file.Size - 1).Result;
             }
 
-            var str = _boxClient.FilesManager.DownloadStreamAsync(file.Id).Result;
+            var str = _boxClient.FilesManager.DownloadAsync(file.Id).Result;
             if (offset == 0)
             {
                 return str;
@@ -259,8 +257,8 @@ namespace ASC.Files.Thirdparty.Box
 
         public long GetMaxUploadSize()
         {
-            var boxUser = _boxClient.UsersManager.GetCurrentUserInformationAsync(new[] { "max_upload_size" }).Result;
-            var max = boxUser.MaxUploadSize.HasValue ? boxUser.MaxUploadSize.Value : MaxChunkedUploadFileSize;
+            var boxUser = _boxClient.UsersManager.GetCurrentUserInformationAsync(new List<string>() { "max_upload_size" }).Result;
+            var max = boxUser.MaxUploadSize ?? MaxChunkedUploadFileSize;
 
             //todo: without chunked uploader:
             return Math.Min(max, MaxChunkedUploadFileSize);

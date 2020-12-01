@@ -20,20 +20,23 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="protos\EncryptionSettingsProto.proto" />
+    <None Remove="protos\EncryptionStop.proto" />
     <None Remove="protos\MigrationCache.proto" />
     <None Remove="protos\MigrationProgress.proto" />
     <None Remove="protos\MigrationUploadCdn.proto" />
+    <None Remove="protos\ProgressEncryption.proto" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Google.Api.Gax" Version="3.0.0" />
-    <PackageReference Include="Google.Api.Gax.Rest" Version="3.0.0" />
-    <PackageReference Include="Google.Apis" Version="1.46.0" />
-    <PackageReference Include="Google.Apis.Auth" Version="1.46.0" />
-    <PackageReference Include="Google.Apis.Core" Version="1.46.0" />
-    <PackageReference Include="Google.Apis.Storage.v1" Version="1.46.0.1975" />
-    <PackageReference Include="Google.Cloud.Storage.V1" Version="3.1.0" />
-    <PackageReference Include="Grpc.Tools" Version="2.30.0">
+    <PackageReference Include="Google.Api.Gax" Version="3.2.0" />
+    <PackageReference Include="Google.Api.Gax.Rest" Version="3.2.0" />
+    <PackageReference Include="Google.Apis" Version="1.49.0" />
+    <PackageReference Include="Google.Apis.Auth" Version="1.49.0" />
+    <PackageReference Include="Google.Apis.Core" Version="1.49.0" />
+    <PackageReference Include="Google.Apis.Storage.v1" Version="1.49.0.2102" />
+    <PackageReference Include="Google.Cloud.Storage.V1" Version="3.3.0" />
+    <PackageReference Include="Grpc.Tools" Version="2.32.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -48,9 +51,12 @@
 
   <ItemGroup>
     <Protobuf Include="protos\DataStoreCacheItem.proto" />
+    <Protobuf Include="protos\EncryptionSettingsProto.proto" />
+    <Protobuf Include="protos\EncryptionStop.proto" />
     <Protobuf Include="protos\MigrationCache.proto" />
     <Protobuf Include="protos\MigrationProgress.proto" />
     <Protobuf Include="protos\MigrationUploadCdn.proto" />
+    <Protobuf Include="protos\ProgressEncryption.proto" />
   </ItemGroup>
   
 </Project>

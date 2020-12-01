@@ -23,6 +23,7 @@ namespace ASC.People.Models
         public IEnumerable<Contact> Contacts { get; set; }
         public string Files { get; set; }
         public string Password { get; set; }
+        public string PasswordHash { get; set; }
     }
 
     public class UpdateMemberModel : MemberModel

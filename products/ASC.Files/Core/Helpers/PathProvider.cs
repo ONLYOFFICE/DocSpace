@@ -34,7 +34,6 @@ using ASC.Common;
 using ASC.Common.Web;
 using ASC.Core.Common;
 using ASC.Files.Core;
-using ASC.Files.Core.Data;
 using ASC.Files.Core.Resources;
 using ASC.Security.Cryptography;
 using ASC.Web.Core.Files;
@@ -43,6 +42,7 @@ using ASC.Web.Studio.Utility;
 
 namespace ASC.Web.Files.Classes
 {
+    [Scope]
     public class PathProvider
     {
         public static readonly string ProjectVirtualPath = "~/Products/Projects/TMDocs.aspx";
@@ -88,17 +88,15 @@ namespace ASC.Web.Files.Classes
         public string GetFileStaticRelativePath(string fileName)
         {
             var ext = FileUtility.GetFileExtension(fileName);
-            switch (ext)
+            return ext switch
             {
-                case ".js": //Attention: Only for ResourceBundleControl
-                    return VirtualPathUtility.ToAbsolute("~/Products/Files/js/" + fileName);
-                case ".ascx":
-                    return BaseCommonLinkUtility.ToAbsolute("~/Products/Files/Controls/" + fileName);
-                case ".css": //Attention: Only for ResourceBundleControl
-                    return VirtualPathUtility.ToAbsolute("~/Products/Files/App_Themes/default/" + fileName);
-            }
-
-            return fileName;
+                //Attention: Only for ResourceBundleControl
+                ".js" => VirtualPathUtility.ToAbsolute("~/Products/Files/js/" + fileName),
+                ".ascx" => BaseCommonLinkUtility.ToAbsolute("~/Products/Files/Controls/" + fileName),
+                //Attention: Only for ResourceBundleControl
+                ".css" => VirtualPathUtility.ToAbsolute("~/Products/Files/App_Themes/default/" + fileName),
+                _ => fileName,
+            };
         }
 
         public string GetFileControlPath(string fileName)
@@ -131,7 +129,7 @@ namespace ASC.Web.Files.Classes
             }
         }
 
-        public string GetFolderUrl<T>(T folderId)
+        public string GetFolderUrlById<T>(T folderId)
         {
             var folder = DaoFactory.GetFolderDao<T>().GetFolder(folderId);
 
@@ -212,26 +210,6 @@ namespace ASC.Web.Files.Classes
             query += $"{FilesLinkUtility.FileTitle}={HttpUtility.UrlEncode(extension)}";
 
             return $"{uriBuilder.Uri}?{query}";
-        }
-    }
-
-    public static class PathProviderExtention
-    {
-        public static DIHelper AddPathProviderService(this DIHelper services)
-        {
-            if (services.TryAddScoped<PathProvider>())
-            {
-                return services
-                    .AddWebImageSupplierService()
-                    .AddCommonLinkUtilityService()
-                    .AddEmailValidationKeyProviderService()
-                    .AddGlobalStoreService()
-                    .AddBaseCommonLinkUtilityService()
-                    .AddFilesLinkUtilityService()
-                    .AddDaoFactoryService();
-            }
-
-            return services;
         }
     }
 }

@@ -533,15 +533,13 @@ namespace ASC.Web.Files.ThirdPartyApp
                 request.Method = "GET";
                 request.Headers.Add("Authorization", "Bearer " + token);
 
-                using (var response = request.GetResponse())
-                using (var stream = new ResponseStream(response))
-                {
-                    stream.CopyTo(context.Response.Body);
+                using var response = request.GetResponse();
+                using var stream = new ResponseStream(response);
+                stream.CopyTo(context.Response.Body);
 
-                    var contentLength = jsonFile.Value<string>("size");
-                    Logger.Debug("GoogleDriveApp: get file stream contentLength - " + contentLength);
-                    context.Response.Headers.Add("Content-Length", contentLength);
-                }
+                var contentLength = jsonFile.Value<string>("size");
+                Logger.Debug("GoogleDriveApp: get file stream contentLength - " + contentLength);
+                context.Response.Headers.Add("Content-Length", contentLength);
             }
             catch (Exception ex)
             {
@@ -743,10 +741,8 @@ namespace ASC.Web.Files.ThirdPartyApp
 
             var request = (HttpWebRequest)WebRequest.Create(contentUrl);
 
-            using (var content = new ResponseStream(request.GetResponse()))
-            {
-                return CreateFile(content, fileName, folderId, token);
-            }
+            using var content = new ResponseStream(request.GetResponse());
+            return CreateFile(content, fileName, folderId, token);
         }
 
         private string CreateFile(Stream content, string fileName, string folderId, Token token)
@@ -793,21 +789,17 @@ namespace ASC.Web.Files.ThirdPartyApp
 
             try
             {
-                using (var response = request.GetResponse())
-                using (var responseStream = response.GetResponseStream())
+                using var response = request.GetResponse();
+                using var responseStream = response.GetResponseStream();
+                string result = null;
+                if (responseStream != null)
                 {
-                    string result = null;
-                    if (responseStream != null)
-                    {
-                        using (var readStream = new StreamReader(responseStream))
-                        {
-                            result = readStream.ReadToEnd();
-                        }
-                    }
-
-                    Logger.Debug("GoogleDriveApp: create file response - " + result);
-                    return result;
+                    using var readStream = new StreamReader(responseStream);
+                    result = readStream.ReadToEnd();
                 }
+
+                Logger.Debug("GoogleDriveApp: create file response - " + result);
+                return result;
             }
             catch (WebException e)
             {
@@ -875,10 +867,8 @@ namespace ASC.Web.Files.ThirdPartyApp
                 Logger.Debug("GoogleDriveApp: download exportLink - " + downloadUrl);
                 try
                 {
-                    using (var fileStream = new ResponseStream(request.GetResponse()))
-                    {
-                        driveFile = CreateFile(fileStream, fileName, folderId, token);
-                    }
+                    using var fileStream = new ResponseStream(request.GetResponse());
+                    driveFile = CreateFile(fileStream, fileName, folderId, token);
                 }
                 catch (WebException e)
                 {
@@ -920,7 +910,7 @@ namespace ASC.Web.Files.ThirdPartyApp
 
             if (extTitle != correctExt)
             {
-                title = title + correctExt;
+                title += correctExt;
             }
             return title;
         }

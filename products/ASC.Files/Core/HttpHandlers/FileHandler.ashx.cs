@@ -39,7 +39,6 @@ using ASC.Common.Logging;
 using ASC.Common.Web;
 using ASC.Core;
 using ASC.Files.Core;
-using ASC.Files.Core.Data;
 using ASC.Files.Core.Resources;
 using ASC.Files.Core.Security;
 using ASC.MessagingSystem;
@@ -53,7 +52,6 @@ using ASC.Web.Files.Services.DocumentService;
 using ASC.Web.Files.Services.FFmpegService;
 using ASC.Web.Files.Utils;
 using ASC.Web.Studio.Core;
-using ASC.Web.Studio.UserControls.Statistics;
 using ASC.Web.Studio.Utility;
 
 using JWT;
@@ -91,6 +89,7 @@ namespace ASC.Web.Files
         }
     }
 
+    [Scope]
     public class FileHandlerService
     {
         public string FileHandlerPath
@@ -121,7 +120,6 @@ namespace ASC.Web.Files
         private UserManager UserManager { get; }
         public ILog Logger { get; }
         private CookiesManager CookiesManager { get; }
-        private TenantStatisticsProvider TenantStatisticsProvider { get; }
 
         public FileHandlerService(
             FilesLinkUtility filesLinkUtility,
@@ -291,7 +289,7 @@ namespace ASC.Web.Files
             }
             else
             {
-                await DownloadFile(context, q);
+                await DownloadFile(context, q.FirstOrDefault() ?? "");
             }
         }
 
@@ -544,25 +542,23 @@ namespace ASC.Web.Files
 
         private async Task<bool> SendStreamByChunksAsync(HttpContext context, long toRead, string title, Stream fileStream, bool flushed)
         {
-            var cl = 0;
             //context.Response.Buffer = false;
             context.Response.Headers.Add("Connection", "Keep-Alive");
+            context.Response.ContentLength = toRead;
             context.Response.Headers.Add("Content-Disposition", ContentDispositionUtil.GetHeaderValue(title));
             context.Response.ContentType = MimeMapping.GetMimeMapping(title);
 
-            var bufferSize = Convert.ToInt32(Math.Min(Convert.ToInt64(32 * 1024), toRead)); // 32KB
+            var bufferSize = Convert.ToInt32(Math.Min(32 * 1024, toRead)); // 32KB
             var buffer = new byte[bufferSize];
             while (toRead > 0)
             {
                 var length = await fileStream.ReadAsync(buffer, 0, bufferSize);
-                cl += length;
                 await context.Response.Body.WriteAsync(buffer, 0, length, context.RequestAborted);
                 await context.Response.Body.FlushAsync();
                 flushed = true;
                 toRead -= length;
             }
 
-            context.Response.Headers.Add("Content-Length", cl.ToString(CultureInfo.InvariantCulture));
 
             return flushed;
         }
@@ -577,7 +573,7 @@ namespace ASC.Web.Files
             }
             else
             {
-                await StreamFile(context, q);
+                await StreamFile(context, q.FirstOrDefault() ?? "");
             }
         }
 
@@ -866,7 +862,7 @@ namespace ASC.Web.Files
             }
             else
             {
-                await DifferenceFile(context, q);
+                await DifferenceFile(context, q.FirstOrDefault() ?? "");
             }
         }
 
@@ -927,11 +923,9 @@ namespace ASC.Web.Files
                 context.Response.Headers.Add("Content-Disposition", ContentDispositionUtil.GetHeaderValue(".zip"));
                 context.Response.ContentType = MimeMapping.GetMimeMapping(".zip");
 
-                using (var stream = fileDao.GetDifferenceStream(file))
-                {
-                    context.Response.Headers.Add("Content-Length", stream.Length.ToString(CultureInfo.InvariantCulture));
-                    await stream.CopyToAsync(context.Response.Body);
-                }
+                using var stream = fileDao.GetDifferenceStream(file);
+                context.Response.Headers.Add("Content-Length", stream.Length.ToString(CultureInfo.InvariantCulture));
+                await stream.CopyToAsync(context.Response.Body);
             }
             catch (Exception ex)
             {
@@ -960,6 +954,16 @@ namespace ASC.Web.Files
 
         private async Task CreateFile(HttpContext context)
         {
+            if (!SecurityContext.IsAuthenticated)
+            {
+                //var refererURL = context.Request.GetUrlRewriter().AbsoluteUri;
+
+                //context.Session["refererURL"] = refererURL;
+                var authUrl = "~/Auth.aspx";
+                context.Response.Redirect(authUrl, true);
+                return;
+            }
+
             var folderId = context.Request.Query[FilesLinkUtility.FolderId].FirstOrDefault();
             if (string.IsNullOrEmpty(folderId))
             {
@@ -1019,7 +1023,7 @@ namespace ASC.Web.Files
 
             context.Response.Redirect(
                 (context.Request.Query["openfolder"].FirstOrDefault() ?? "").Equals("true")
-                    ? PathProvider.GetFolderUrl(file.FolderID)
+                    ? PathProvider.GetFolderUrlById(file.FolderID)
                     : (FilesLinkUtility.GetFileWebEditorUrl(file.ID) + "#message/" + HttpUtility.UrlEncode(string.Format(FilesCommonResource.MessageFileCreated, folder.Title))));
         }
 
@@ -1101,7 +1105,7 @@ namespace ASC.Web.Files
             }
             else
             {
-                Redirect(context, q, q1);
+                Redirect(context, q.FirstOrDefault() ?? "", q1.FirstOrDefault() ?? "");
             }
         }
 
@@ -1117,7 +1121,7 @@ namespace ASC.Web.Files
             {
                 try
                 {
-                    urlRedirect = PathProvider.GetFolderUrl(folderId);
+                    urlRedirect = PathProvider.GetFolderUrlById(folderId);
                 }
                 catch (ArgumentNullException e)
                 {
@@ -1254,38 +1258,6 @@ namespace ASC.Web.Files
 
     public static class FileHandlerExtensions
     {
-        public static DIHelper AddFileHandlerService(this DIHelper services)
-        {
-            if (services.TryAddScoped<FileHandlerService>())
-            {
-                return services
-                    .AddFilesLinkUtilityService()
-                    .AddTenantExtraService()
-                    .AddCookiesManagerService()
-                    .AddAuthContextService()
-                    .AddSecurityContextService()
-                    .AddGlobalStoreService()
-                    .AddDaoFactoryService()
-                    .AddFileSecurityService()
-                    .AddFileMarkerService()
-                    .AddSetupInfo()
-                    .AddFileUtilityService()
-                    .AddGlobalService()
-                    .AddEmailValidationKeyProviderService()
-                    .AddCoreBaseSettingsService()
-                    .AddGlobalFolderHelperService()
-                    .AddPathProviderService()
-                    .AddUserManagerService()
-                    .AddDocumentServiceTrackerHelperService()
-                    .AddFilesMessageService()
-                    .AddFileConverterService()
-                    .AddFileShareLinkService()
-                    .AddFFmpegServiceService();
-            }
-
-            return services;
-        }
-
         public static IApplicationBuilder UseFileHandler(this IApplicationBuilder builder)
         {
             return builder.UseMiddleware<FileHandler>();

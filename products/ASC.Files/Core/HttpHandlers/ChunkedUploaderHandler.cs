@@ -74,6 +74,7 @@ namespace ASC.Web.Files.HttpHandlers
         }
     }
 
+    [Scope]
     public class ChunkedUploaderHandlerService
     {
         private TenantManager TenantManager { get; }
@@ -82,7 +83,6 @@ namespace ASC.Web.Files.HttpHandlers
         private AuthManager AuthManager { get; }
         private SecurityContext SecurityContext { get; }
         private SetupInfo SetupInfo { get; }
-        private EntryManager EntryManager { get; }
         private InstanceCrypto InstanceCrypto { get; }
         private ChunkedUploadSessionHolder ChunkedUploadSessionHolder { get; }
         private ChunkedUploadSessionHelper ChunkedUploadSessionHelper { get; }
@@ -96,7 +96,6 @@ namespace ASC.Web.Files.HttpHandlers
             AuthManager authManager,
             SecurityContext securityContext,
             SetupInfo setupInfo,
-            EntryManager entryManager,
             InstanceCrypto instanceCrypto,
             ChunkedUploadSessionHolder chunkedUploadSessionHolder,
             ChunkedUploadSessionHelper chunkedUploadSessionHelper)
@@ -107,7 +106,6 @@ namespace ASC.Web.Files.HttpHandlers
             AuthManager = authManager;
             SecurityContext = securityContext;
             SetupInfo = setupInfo;
-            EntryManager = entryManager;
             InstanceCrypto = instanceCrypto;
             ChunkedUploadSessionHolder = chunkedUploadSessionHolder;
             ChunkedUploadSessionHelper = chunkedUploadSessionHelper;
@@ -131,6 +129,12 @@ namespace ASC.Web.Files.HttpHandlers
         {
             try
             {
+                if (context.Request.Method == "OPTIONS")
+                {
+                    context.Response.StatusCode = 200;
+                    return;
+                }
+
                 var request = new ChunkedRequestHelper<T>(context.Request);
 
                 if (!TryAuthorize(request))
@@ -396,26 +400,6 @@ namespace ASC.Web.Files.HttpHandlers
 
     public static class ChunkedUploaderHandlerExtention
     {
-        public static DIHelper AddChunkedUploaderHandlerService(this DIHelper services)
-        {
-            if (services.TryAddScoped<ChunkedUploaderHandlerService>())
-            {
-                return services
-                    .AddTenantManagerService()
-                    .AddFileUploaderService()
-                    .AddFilesMessageService()
-                    .AddAuthManager()
-                    .AddSecurityContextService()
-                    .AddSetupInfo()
-                    .AddEntryManagerService()
-                    .AddInstanceCryptoService()
-                    .AddChunkedUploadSessionHolderService()
-                    .AddChunkedUploadSessionHelperService();
-            }
-
-            return services;
-        }
-
         public static IApplicationBuilder UseChunkedUploaderHandler(this IApplicationBuilder builder)
         {
             return builder.UseMiddleware<ChunkedUploaderHandler>();

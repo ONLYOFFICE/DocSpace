@@ -31,7 +31,6 @@ using System.Text.Json.Serialization;
 
 using ASC.Common;
 using ASC.Files.Core;
-using ASC.Files.Core.Data;
 using ASC.Web.Files.Services.WCFService.FileOperations;
 using ASC.Web.Studio.Utility;
 
@@ -104,6 +103,7 @@ namespace ASC.Api.Documents
         }
     }
 
+    [Scope]
     public class FileOperationWraperHelper
     {
         private FolderWrapperHelper FolderWrapperHelper { get; }
@@ -210,22 +210,6 @@ namespace ASC.Api.Documents
                     .Select(FilesWrapperHelper.Get)
                     .Cast<FileEntryWrapper>();
             }
-        }
-    }
-    public static class FileOperationWraperHelperExtention
-    {
-        public static DIHelper AddFileOperationWraperHelperService(this DIHelper services)
-        {
-            if (services.TryAddScoped<FileOperationWraperHelper>())
-            {
-                return services
-                    .AddFolderWrapperHelperService()
-                    .AddFileWrapperHelperService()
-                    .AddDaoFactoryService()
-                    .AddCommonLinkUtilityService();
-            }
-
-            return services;
         }
     }
 }

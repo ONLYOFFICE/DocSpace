@@ -7,6 +7,7 @@ using System.Web;
 using ASC.Common;
 using ASC.Core.Common.Configuration;
 using ASC.FederatedLogin.LoginProviders;
+using ASC.Security.Cryptography;
 using ASC.Web.Studio.Utility;
 
 using Microsoft.Extensions.Configuration;
@@ -18,6 +19,7 @@ namespace ASC.Web.Core.Utility
         string GetShortenLink(string shareLink);
     }
 
+    [Scope]
     public class UrlShortener
     {
         public bool Enabled { get { return !(Instance is NullShortener); } }
@@ -35,7 +37,7 @@ namespace ASC.Web.Core.Utility
                     }
                     else if (!string.IsNullOrEmpty(Configuration["web:url-shortener:value"]))
                     {
-                        _instance = new OnlyoShortener(Configuration, CommonLinkUtility);
+                        _instance = new OnlyoShortener(Configuration, CommonLinkUtility, MachinePseudoKeys);
                     }
                     else
                     {
@@ -45,17 +47,27 @@ namespace ASC.Web.Core.Utility
 
                 return _instance;
             }
+            set
+            {
+                _instance = value;
+            }
         }
 
         private IConfiguration Configuration { get; }
         private ConsumerFactory ConsumerFactory { get; }
         private CommonLinkUtility CommonLinkUtility { get; }
+        private MachinePseudoKeys MachinePseudoKeys { get; }
 
-        public UrlShortener(IConfiguration configuration, ConsumerFactory consumerFactory, CommonLinkUtility commonLinkUtility)
+        public UrlShortener(
+            IConfiguration configuration,
+            ConsumerFactory consumerFactory,
+            CommonLinkUtility commonLinkUtility,
+            MachinePseudoKeys machinePseudoKeys)
         {
             Configuration = configuration;
             ConsumerFactory = consumerFactory;
             CommonLinkUtility = commonLinkUtility;
+            MachinePseudoKeys = machinePseudoKeys;
         }
     }
 
@@ -78,13 +90,16 @@ namespace ASC.Web.Core.Utility
     {
         private readonly string url;
         private readonly string internalUrl;
-        private readonly string sKey;
+        private readonly byte[] sKey;
 
-        public OnlyoShortener(IConfiguration configuration, CommonLinkUtility commonLinkUtility)
+        public OnlyoShortener(
+            IConfiguration configuration,
+            CommonLinkUtility commonLinkUtility,
+            MachinePseudoKeys machinePseudoKeys)
         {
             url = configuration["web:url-shortener:value"];
             internalUrl = configuration["web:url-shortener:internal"];
-            sKey = configuration["core:machinekey"];
+            sKey = machinePseudoKeys.GetMachineConstant();
 
             if (!url.EndsWith("/"))
                 url += '/';
@@ -102,7 +117,7 @@ namespace ASC.Web.Core.Utility
 
         private string CreateAuthToken(string pkey = "urlShortener")
         {
-            using var hasher = new HMACSHA1(Encoding.UTF8.GetBytes(sKey));
+            using var hasher = new HMACSHA1(sKey);
             var now = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
             var hash = Convert.ToBase64String(hasher.ComputeHash(Encoding.UTF8.GetBytes(string.Join("\n", now, pkey))));
             return string.Format("ASC {0}:{1}:{2}", pkey, now, hash);
@@ -114,21 +129,6 @@ namespace ASC.Web.Core.Utility
         public string GetShortenLink(string shareLink)
         {
             return null;
-        }
-    }
-
-    public static class UrlShortenerExtension
-    {
-        public static DIHelper AddUrlShortener(this DIHelper services)
-        {
-            if (services.TryAddScoped<UrlShortener>())
-            {
-                return services
-                    .AddConsumerFactoryService()
-                    .AddCommonLinkUtilityService();
-            }
-
-            return services;
         }
     }
 }

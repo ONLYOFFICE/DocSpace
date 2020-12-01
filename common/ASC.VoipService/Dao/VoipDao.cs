@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common;
 using ASC.Core.Common.Configuration;
@@ -39,6 +40,7 @@ using ASC.VoipService.Twilio;
 
 namespace ASC.VoipService.Dao
 {
+    [Scope(typeof(CachedVoipDao))]
     public class VoipDao : AbstractDao
     {
         public VoipDao(
@@ -85,6 +87,14 @@ namespace ASC.VoipService.Dao
             var number = VoipDbContext.VoipNumbers.Where(r => r.Id == phoneId && r.TenantId == TenantID).FirstOrDefault();
             VoipDbContext.VoipNumbers.Remove(number);
             VoipDbContext.SaveChanges();
+        }
+
+        public virtual IEnumerable<VoipPhone> GetAllNumbers()
+        {
+            return VoipDbContext.VoipNumbers
+                .Where(r => r.TenantId == TenantID)
+                .ToList()
+                .ConvertAll(ToPhone);
         }
 
         public virtual IEnumerable<VoipPhone> GetNumbers(params string[] ids)

@@ -1,0 +1,21 @@
+{
+  "TreeSettingsMenuTitle": "Settings",
+  "TreeSettingsCommonSettings": "Common settings",
+  "TreeSettingsAdminSettings": "Admin settings",
+  "TreeSettingsConnectedCloud": "Connected clouds",
+  "CommonSettings": "Common settings",
+  "AdminSettings": "Admin settings",
+  "ThirdPartySettings": "Connected clouds",
+  "IntermediateVersion": "Keep all saved intermediate versions",
+  "ThirdPartyBtn": "Allow users to connect third-party storages",
+  "OriginalCopy": "Save the file copy in the original format as well",
+  "DisplayNotification": "Display notification when moving the element to the trash",
+  "DisplayRecent": "Display Recent",
+  "DisplayFavorites": "Display Favorites",
+  "DisplayTemplates": "Display Templates",
+  "StoringFileVersion": "Storing file versions",
+  "UpdateOrCreate": "Update the file version for the existing file with the same name. Otherwise, a copy of the file will be created.",
+  "KeepIntermediateVersion": "Keep intermediate versions when editing",
+  "LoadingProcessing": "Loading...",
+  "LoadingDescription": "Please wait..."
+}

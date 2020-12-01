@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-using ASC.Common;
 using ASC.Core;
 
 using Microsoft.AspNetCore.Builder;
@@ -50,14 +49,6 @@ namespace ASC.Api.Core.Middleware
         public static IApplicationBuilder UseCultureMiddleware(this IApplicationBuilder builder)
         {
             return builder.UseMiddleware<CultureMiddleware>();
-        }
-
-        public static DIHelper AddCultureMiddleware(this DIHelper services)
-        {
-            return services
-                .AddUserManagerService()
-                .AddTenantManagerService()
-                .AddAuthContextService();
         }
     }
 }

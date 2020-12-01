@@ -25,16 +25,21 @@
 
 
 using System;
+using System.Text.Json.Serialization;
 
 using ASC.Core;
 using ASC.Core.Common.Settings;
 
 using Microsoft.Extensions.DependencyInjection;
 
-using Newtonsoft.Json;
 
 namespace ASC.Web.Core.WhiteLabel
 {
+    public class CompanyWhiteLabelSettingsWrapper
+    {
+        public CompanyWhiteLabelSettings Settings { get; set; }
+    }
+
     [Serializable]
     public class CompanyWhiteLabelSettings : ISettings
     {
@@ -48,7 +53,15 @@ namespace ASC.Web.Core.WhiteLabel
 
         public string Phone { get; set; }
 
-        public bool IsLicensor { get; set; }
+        [JsonPropertyName("IsLicensor")]
+        public bool IsLicensorSetting { get; set; }
+
+        public bool GetIsLicensor(TenantManager tenantManager, CoreSettings coreSettings)
+        {
+            return IsLicensorSetting
+                && (IsDefault(coreSettings) || tenantManager.GetTenantQuota(tenantManager.GetCurrentTenant().TenantId).Branding);
+        }
+
 
         public bool IsDefault(CoreSettings coreSettings)
         {
@@ -59,7 +72,7 @@ namespace ASC.Web.Core.WhiteLabel
                     Email == defaultSettings.Email &&
                     Address == defaultSettings.Address &&
                     Phone == defaultSettings.Phone &&
-                    IsLicensor == defaultSettings.IsLicensor;
+                    IsLicensorSetting == defaultSettings.IsLicensorSetting;
         }
 
         #region ISettings Members
@@ -84,7 +97,7 @@ namespace ASC.Web.Core.WhiteLabel
 
             var settings = coreSettings.GetSetting("CompanyWhiteLabelSettings");
 
-            _default = string.IsNullOrEmpty(settings) ? new CompanyWhiteLabelSettings() : JsonConvert.DeserializeObject<CompanyWhiteLabelSettings>(settings);
+            _default = string.IsNullOrEmpty(settings) ? new CompanyWhiteLabelSettings() : Newtonsoft.Json.JsonConvert.DeserializeObject<CompanyWhiteLabelSettings>(settings);
 
             return _default;
         }

@@ -34,6 +34,7 @@ using ASC.Web.Core.PublicResources;
 
 namespace ASC.Web.Studio.Core.Notify
 {
+    [Scope]
     public class StudioNotifySource : NotifySource
     {
         public StudioNotifySource(UserManager userManager, IRecipientProvider recipientsProvider, SubscriptionManager subscriptionManager)
@@ -79,28 +80,33 @@ namespace ASC.Web.Studio.Core.Notify
                     Actions.SaasAdminActivationV10,
                     Actions.EnterpriseAdminActivationV10,
                     Actions.EnterpriseWhitelabelAdminActivationV10,
-                    Actions.OpensourceAdminActivation,
+                    Actions.OpensourceAdminActivationV11,
 
                     Actions.SaasAdminWelcomeV10,
                     Actions.EnterpriseAdminWelcomeV10,
                     Actions.EnterpriseWhitelabelAdminWelcomeV10,
+                    Actions.OpensourceAdminWelcomeV11,
 
                     Actions.SaasUserActivationV10,
                     Actions.EnterpriseUserActivationV10,
                     Actions.EnterpriseWhitelabelUserActivationV10,
+                    Actions.OpensourceUserActivationV11,
 
                     Actions.SaasUserWelcomeV10,
                     Actions.EnterpriseUserWelcomeV10,
                     Actions.EnterpriseWhitelabelUserWelcomeV10,
                     Actions.EnterpriseWhitelabelUserWelcomeCustomMode,
+                    Actions.OpensourceUserWelcomeV11,
 
                     Actions.SaasGuestActivationV10,
                     Actions.EnterpriseGuestActivationV10,
                     Actions.EnterpriseWhitelabelGuestActivationV10,
+                    Actions.OpensourceGuestActivationV11,
 
                     Actions.SaasGuestWelcomeV10,
                     Actions.EnterpriseGuestWelcomeV10,
                     Actions.EnterpriseWhitelabelGuestWelcomeV10,
+                    Actions.OpensourceGuestWelcomeV11,
 
                     Actions.EnterpriseAdminCustomizePortalV10,
                     Actions.EnterpriseWhitelabelAdminCustomizePortalV10,
@@ -134,8 +140,8 @@ namespace ASC.Web.Studio.Core.Notify
 
                     Actions.SaasAdminPaymentAfterMonthlySubscriptionsV10,
 
-                    Actions.OpensourceAdminSecurityTips,
-                    Actions.OpensourceAdminDocsTips,
+                    Actions.OpensourceAdminDocsTipsV11,
+                    Actions.OpensourceUserDocsTipsV11,
 
                     Actions.PersonalActivate,
                     Actions.PersonalAfterRegistration1,
@@ -159,7 +165,16 @@ namespace ASC.Web.Studio.Core.Notify
                     Actions.PersonalCustomModeConfirmation,
                     Actions.PersonalCustomModePasswordChange,
                     Actions.PersonalCustomModeEmailChange,
-                    Actions.PersonalCustomModeProfileDelete
+                    Actions.PersonalCustomModeProfileDelete,
+
+                    Actions.SaasCustomModeRegData,
+
+                    Actions.StorageEncryptionStart,
+                    Actions.StorageEncryptionSuccess,
+                    Actions.StorageEncryptionError,
+                    Actions.StorageDecryptionStart,
+                    Actions.StorageDecryptionSuccess,
+                    Actions.StorageDecryptionError
                 );
         }
 
@@ -255,23 +270,6 @@ namespace ASC.Web.Studio.Core.Notify
                     return action;
                 }
             }
-        }
-    }
-
-    public static class StudioNotifySourceExtension
-    {
-        public static DIHelper AddStudioNotifySourceService(this DIHelper services)
-        {
-            if (services.TryAddScoped<StudioNotifySource>())
-            {
-
-                return services
-                    .AddUserManagerService()
-                    .AddRecipientProviderImplService()
-                    .AddSubscriptionManagerService();
-            }
-
-            return services;
         }
     }
 }

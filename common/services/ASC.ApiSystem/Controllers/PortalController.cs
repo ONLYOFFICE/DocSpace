@@ -36,9 +36,11 @@ using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.Core;
+using ASC.Core.Billing;
 using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
+using ASC.Security.Cryptography;
 using ASC.Web.Core.Helpers;
 using ASC.Web.Core.Users;
 using ASC.Web.Core.Utility;
@@ -55,6 +57,7 @@ using Newtonsoft.Json.Linq;
 
 namespace ASC.ApiSystem.Controllers
 {
+    [Scope]
     [ApiController]
     [Route("[controller]")]
     public class PortalController : ControllerBase
@@ -73,6 +76,7 @@ namespace ASC.ApiSystem.Controllers
         private CommonConstants CommonConstants { get; }
         private TimeZonesProvider TimeZonesProvider { get; }
         private TimeZoneConverter TimeZoneConverter { get; }
+        public PasswordHasher PasswordHasher { get; }
         private ILog Log { get; }
 
         public PortalController(
@@ -90,7 +94,8 @@ namespace ASC.ApiSystem.Controllers
             CommonConstants commonConstants,
             IOptionsMonitor<ILog> option,
             TimeZonesProvider timeZonesProvider,
-            TimeZoneConverter timeZoneConverter)
+            TimeZoneConverter timeZoneConverter,
+            PasswordHasher passwordHasher)
         {
             Configuration = configuration;
             SecurityContext = securityContext;
@@ -106,6 +111,7 @@ namespace ASC.ApiSystem.Controllers
             CommonConstants = commonConstants;
             TimeZonesProvider = timeZonesProvider;
             TimeZoneConverter = timeZoneConverter;
+            PasswordHasher = passwordHasher;
             Log = option.Get("ASC.ApiSystem");
         }
 
@@ -156,17 +162,24 @@ namespace ASC.ApiSystem.Controllers
 
             var sw = Stopwatch.StartNew();
 
-            if (!CheckPasswordPolicy(model.Password, out object error))
+            if (string.IsNullOrEmpty(model.PasswordHash))
             {
-                sw.Stop();
+                if (!CheckPasswordPolicy(model.Password, out var error1))
+                {
+                    sw.Stop();
+                    return BadRequest(error1);
+                }
 
-                return BadRequest(error);
+                if (!string.IsNullOrEmpty(model.Password))
+                {
+                    model.PasswordHash = PasswordHasher.GetClientPassword(model.Password);
+                }
+
             }
-
             model.FirstName = (model.FirstName ?? "").Trim();
             model.LastName = (model.LastName ?? "").Trim();
 
-            if (!CheckValidName(model.FirstName + model.LastName, out error))
+            if (!CheckValidName(model.FirstName + model.LastName, out var error))
             {
                 sw.Stop();
 
@@ -229,14 +242,15 @@ namespace ASC.ApiSystem.Controllers
                 Culture = lang,
                 FirstName = model.FirstName,
                 LastName = model.LastName,
-                Password = string.IsNullOrEmpty(model.Password) ? null : model.Password,
+                PasswordHash = string.IsNullOrEmpty(model.PasswordHash) ? null : model.PasswordHash,
                 Email = (model.Email ?? "").Trim(),
                 TimeZoneInfo = tz,
                 MobilePhone = string.IsNullOrEmpty(model.Phone) ? null : model.Phone.Trim(),
                 Industry = (TenantIndustry)model.Industry,
                 Spam = model.Spam,
                 Calls = model.Calls,
-                Analytics = model.Analytics
+                Analytics = model.Analytics,
+                LimitedControlPanel = model.LimitedControlPanel
             };
 
             if (!string.IsNullOrEmpty(model.PartnerId))
@@ -290,10 +304,31 @@ namespace ASC.ApiSystem.Controllers
                 });
             }
 
+            var trialQuota = Configuration["trial-quota"];
+            if (!string.IsNullOrEmpty(trialQuota))
+            {
+                if (int.TryParse(trialQuota, out var trialQuotaId))
+                {
+                    var dueDate = DateTime.MaxValue;
+                    if (int.TryParse(Configuration["trial-due"], out var dueTrial))
+                    {
+                        dueDate = DateTime.UtcNow.AddDays(dueTrial);
+                    }
+
+                    var tariff = new Tariff
+                    {
+                        QuotaId = trialQuotaId,
+                        DueDate = dueDate
+                    };
+                    HostedSolution.SetTariff(t.TenantId, tariff);
+                }
+            }
+
+
             var isFirst = true;
             string sendCongratulationsAddress = null;
 
-            if (!string.IsNullOrEmpty(model.Password))
+            if (!string.IsNullOrEmpty(model.PasswordHash))
             {
                 isFirst = !CommonMethods.SendCongratulations(Request.Scheme, t, model.SkipWelcome, out sendCongratulationsAddress);
             }
@@ -335,7 +370,7 @@ namespace ASC.ApiSystem.Controllers
         [Authorize(AuthenticationSchemes = "auth.allowskip")]
         public IActionResult Remove([FromQuery] TenantModel model)
         {
-            if (!CommonMethods.GetTenant(model, out Tenant tenant))
+            if (!CommonMethods.GetTenant(model, out var tenant))
             {
                 Log.Error("Model without tenant");
 
@@ -370,7 +405,7 @@ namespace ASC.ApiSystem.Controllers
         [Authorize(AuthenticationSchemes = "auth.allowskip")]
         public IActionResult ChangeStatus(TenantModel model)
         {
-            if (!CommonMethods.GetTenant(model, out Tenant tenant))
+            if (!CommonMethods.GetTenant(model, out var tenant))
             {
                 Log.Error("Model without tenant");
 
@@ -422,7 +457,7 @@ namespace ASC.ApiSystem.Controllers
                 });
             }
 
-            if (!CheckExistingNamePortal((model.PortalName ?? "").Trim(), out object error))
+            if (!CheckExistingNamePortal((model.PortalName ?? "").Trim(), out var error))
             {
                 return BadRequest(error);
             }
@@ -661,25 +696,5 @@ namespace ASC.ApiSystem.Controllers
         #endregion
 
         #endregion
-    }
-
-    public static class PortalControllerExtention
-    {
-        public static DIHelper AddPortalController(this DIHelper services)
-        {
-            return services
-                .AddCommonMethods()
-                .AddTimeZonesProvider()
-                .AddCommonConstants()
-                .AddUserManagerService()
-                .AddUserFormatter()
-                .AddCoreSettingsService()
-                .AddHostedSolutionService()
-                .AddApiSystemHelper()
-                .AddSettingsManagerService()
-                .AddTenantManagerService()
-                .AddSecurityContextService()
-                ;
-        }
     }
 }

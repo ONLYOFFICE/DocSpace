@@ -30,6 +30,7 @@ namespace ASC.Resource.Manager
             diHelper.AddDbContextManagerService<ResourceDbContext>();
             diHelper.AddLoggerService();
             diHelper.AddNLogManager();
-            diHelper.TryAddSingleton(Configuration);        }
+            diHelper.TryAddSingleton(Configuration);
+        }
     }
 }

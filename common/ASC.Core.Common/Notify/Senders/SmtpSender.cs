@@ -46,7 +46,8 @@ using MimeKit;
 
 namespace ASC.Core.Notify.Senders
 {
-    internal class SmtpSender : INotifySender
+    [Singletone(Additional = typeof(SmtpSenderExtension))]
+    public class SmtpSender : INotifySender
     {
         private const string HTML_FORMAT =
             @"<!DOCTYPE html PUBLIC ""-//W3C//DTD HTML 4.01 Transitional//EN"">
@@ -65,7 +66,7 @@ namespace ASC.Core.Notify.Senders
         private int Port { get; set; }
         private bool Ssl { get; set; }
         private ICredentials Credentials { get; set; }
-        protected bool _useCoreSettings { get; set; }
+        protected bool UseCoreSettings { get; set; }
         const int NETWORK_TIMEOUT = 30000;
 
         public SmtpSender(
@@ -81,7 +82,7 @@ namespace ASC.Core.Notify.Senders
         {
             if (properties.ContainsKey("useCoreSettings") && bool.Parse(properties["useCoreSettings"]))
             {
-                _useCoreSettings = true;
+                UseCoreSettings = true;
             }
             else
             {
@@ -122,7 +123,7 @@ namespace ASC.Core.Notify.Senders
             {
                 try
                 {
-                    if (_useCoreSettings)
+                    if (UseCoreSettings)
                         InitUseCoreSettings(configuration);
 
                     var mail = BuildMailMessage(m);
@@ -269,7 +270,7 @@ namespace ASC.Core.Notify.Senders
                 mimeMessage.ReplyTo.Add(MailboxAddress.Parse(ParserOptions.Default, m.ReplyTo));
             }
 
-            mimeMessage.Headers.Add("Auto-Submitted", "auto-generated");
+            mimeMessage.Headers.Add("Auto-Submitted", string.IsNullOrEmpty(m.AutoSubmitted) ? "auto-generated" : m.AutoSubmitted);
 
             return mimeMessage;
         }
@@ -322,6 +323,7 @@ namespace ASC.Core.Notify.Senders
         }
     }
 
+    [Scope]
     public class SmtpSenderScope
     {
         private TenantManager TenantManager { get; }
@@ -334,18 +336,16 @@ namespace ASC.Core.Notify.Senders
         }
 
         public void Deconstruct(out TenantManager tenantManager, out CoreConfiguration coreConfiguration)
-            => (tenantManager, coreConfiguration) = (TenantManager, CoreConfiguration);
+        {
+            (tenantManager, coreConfiguration) = (TenantManager, CoreConfiguration);
+        }
     }
 
-    public static class SmtpSenderExtension
+    public class SmtpSenderExtension
     {
-        public static DIHelper AddSmtpSenderService(this DIHelper services)
+        public static void Register(DIHelper services)
         {
-            services.TryAddSingleton<SmtpSender>();
-            services.TryAddScoped<SmtpSenderScope>();
-            return services
-                .AddTenantManagerService()
-                .AddCoreSettingsService();
+            services.TryAdd<SmtpSenderScope>();
         }
     }
 }

@@ -1,6 +1,10 @@
 {
-  "InviteLinkTitle": "Пригласительная ссылка",
-  "ImportPeople": "Импортировать людей",
   "Actions": "Действия",
-  "LblInviteAgain": "Отправить приглашение ещё раз"
+  "NewDocument": "Новый документ",
+  "NewSpreadsheet": "Новая таблица",
+  "NewPresentation": "Новая презентация",
+  "NewFolder": "Новая папка",
+  "UploadFiles": "Загрузить файлы",
+  "UploadFolder": "Загрузить папку",
+  "UploadingLabel": "Загружено файлов: {{file}} из {{totalFiles}}"
 }

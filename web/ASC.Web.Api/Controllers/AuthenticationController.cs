@@ -16,6 +16,7 @@ using static ASC.Security.Cryptography.EmailValidationKeyProvider;
 
 namespace ASC.Web.Api.Controllers
 {
+    [Scope]
     [DefaultRoute]
     [ApiController]
     [AllowAnonymous]
@@ -25,36 +26,45 @@ namespace ASC.Web.Api.Controllers
         private TenantManager TenantManager { get; }
         private SecurityContext SecurityContext { get; }
         private TenantCookieSettingsHelper TenantCookieSettingsHelper { get; }
-        private EmailValidationKeyProvider EmailValidationKeyProvider { get; }
-        private AuthContext AuthContext { get; }
-        private AuthManager AuthManager { get; }
         private CookiesManager CookiesManager { get; }
+        public PasswordHasher PasswordHasher { get; }
+        public EmailValidationKeyModelHelper EmailValidationKeyModelHelper { get; }
 
         public AuthenticationController(
             UserManager userManager,
             TenantManager tenantManager,
             SecurityContext securityContext,
             TenantCookieSettingsHelper tenantCookieSettingsHelper,
-            EmailValidationKeyProvider emailValidationKeyProvider,
-            AuthContext authContext,
-            AuthManager authManager,
-            CookiesManager cookiesManager)
+            CookiesManager cookiesManager,
+            PasswordHasher passwordHasher,
+            EmailValidationKeyModelHelper emailValidationKeyModelHelper)
         {
             UserManager = userManager;
             TenantManager = tenantManager;
             SecurityContext = securityContext;
             TenantCookieSettingsHelper = tenantCookieSettingsHelper;
-            EmailValidationKeyProvider = emailValidationKeyProvider;
-            AuthContext = authContext;
-            AuthManager = authManager;
             CookiesManager = cookiesManager;
+            PasswordHasher = passwordHasher;
+            EmailValidationKeyModelHelper = emailValidationKeyModelHelper;
         }
 
         [Create(false)]
-        public AuthenticationTokenData AuthenticateMe([FromBody] AuthModel auth)
+        public AuthenticationTokenData AuthenticateMeFromBody([FromBody] AuthModel auth)
+        {
+            return AuthenticateMe(auth);
+        }
+
+        [Create(false)]
+        [Consumes("application/x-www-form-urlencoded")]
+        public AuthenticationTokenData AuthenticateMeFromForm([FromForm] AuthModel auth)
+        {
+            return AuthenticateMe(auth);
+        }
+
+        private AuthenticationTokenData AuthenticateMe(AuthModel auth)
         {
             var tenant = TenantManager.GetCurrentTenant();
-            var user = GetUser(tenant.TenantId, auth.UserName, auth.Password);
+            var user = GetUser(tenant.TenantId, auth);
 
             try
             {
@@ -83,17 +93,37 @@ namespace ASC.Web.Api.Controllers
 
         [AllowAnonymous]
         [Create("confirm", false)]
-        public ValidationResult CheckConfirm([FromBody] EmailValidationKeyModel model)
+        public ValidationResult CheckConfirmFromBody([FromBody] EmailValidationKeyModel model)
         {
-            return model.Validate();
+            return EmailValidationKeyModelHelper.Validate(model);
         }
 
-        private UserInfo GetUser(int tenantId, string userName, string password)
+        [AllowAnonymous]
+        [Create("confirm", false)]
+        [Consumes("application/x-www-form-urlencoded")]
+        public ValidationResult CheckConfirmFromForm([FromForm] EmailValidationKeyModel model)
         {
-            var user = UserManager.GetUsers(
-                        tenantId,
-                        userName,
-                        Hasher.Base64Hash(password, HashAlg.SHA256));
+            return EmailValidationKeyModelHelper.Validate(model);
+        }
+
+        private UserInfo GetUser(int tenantId, AuthModel memberModel)
+        {
+            memberModel.PasswordHash = (memberModel.PasswordHash ?? "").Trim();
+
+            if (string.IsNullOrEmpty(memberModel.PasswordHash))
+            {
+                memberModel.Password = (memberModel.Password ?? "").Trim();
+
+                if (!string.IsNullOrEmpty(memberModel.Password))
+                {
+                    memberModel.PasswordHash = PasswordHasher.GetClientPassword(memberModel.Password);
+                }
+            }
+
+            var user = UserManager.GetUsersByPasswordHash(
+                tenantId,
+                memberModel.UserName,
+                memberModel.PasswordHash);
 
             if (user == null || !UserManager.UserExists(user))
             {
@@ -129,21 +159,6 @@ namespace ASC.Web.Api.Controllers
                 Tfa = false,
                 TfaKey = null
             };
-        }
-    }
-
-    public static class AuthenticationControllerExtension
-    {
-        public static DIHelper AddAuthenticationController(this DIHelper services)
-        {
-            return services
-                .AddUserManagerService()
-                .AddTenantManagerService()
-                .AddSecurityContextService()
-                .AddTenantCookieSettingsService()
-                .AddEmailValidationKeyProviderService()
-                .AddAuthContextService()
-                .AddAuthManager();
         }
     }
 }

@@ -41,16 +41,15 @@ using ASC.Common.Security.Authorizing;
 using ASC.Core.Billing;
 using ASC.Core.Common.Security;
 using ASC.Core.Security.Authentication;
-using ASC.Core.Security.Authorizing;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
-using ASC.Security.Cryptography;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Core
 {
+    [Scope]
     public class SecurityContext
     {
         private readonly ILog log;
@@ -112,13 +111,13 @@ namespace ASC.Core
         }
 
 
-        public string AuthenticateMe(string login, string password)
+        public string AuthenticateMe(string login, string passwordHash)
         {
             if (login == null) throw new ArgumentNullException("login");
-            if (password == null) throw new ArgumentNullException("password");
+            if (passwordHash == null) throw new ArgumentNullException("passwordHash");
 
             var tenantid = TenantManager.GetCurrentTenant().TenantId;
-            var u = UserManager.GetUsers(tenantid, login, Hasher.Base64Hash(password, HashAlg.SHA256));
+            var u = UserManager.GetUsersByPasswordHash(tenantid, login, passwordHash);
 
             return AuthenticateMe(new UserAccount(u, tenantid, UserFormatter));
         }
@@ -140,7 +139,7 @@ namespace ASC.Core
                     }
                     log.InfoFormat("Empty Bearer cookie: {0} {1}", ipFrom, address);
                 }
-                else if (CookieStorage.DecryptCookie(cookie, out var tenant, out var userid, out var login, out var password, out var indexTenant, out var expire, out var indexUser))
+                else if (CookieStorage.DecryptCookie(cookie, out var tenant, out var userid, out var indexTenant, out var expire, out var indexUser))
                 {
                     if (tenant != TenantManager.GetCurrentTenant().TenantId)
                     {
@@ -160,36 +159,27 @@ namespace ASC.Core
 
                     try
                     {
-                        if (userid != Guid.Empty)
+                        var settingsUser = TenantCookieSettingsHelper.GetForUser(userid);
+                        if (indexUser != settingsUser.Index)
                         {
-                            var settingsUser = TenantCookieSettingsHelper.GetForUser(userid);
-                            if (indexUser != settingsUser.Index)
-                            {
-                                return false;
-                            }
+                            return false;
+                        }
 
-                            AuthenticateMe(new UserAccount(new UserInfo { ID = userid }, tenant, UserFormatter));
-                        }
-                        else
-                        {
-                            AuthenticateMe(login, password);
-                        }
+                        AuthenticateMe(new UserAccount(new UserInfo { ID = userid }, tenant, UserFormatter));
+
                         return true;
                     }
                     catch (InvalidCredentialException ice)
                     {
-                        log.DebugFormat("{0}: cookie {1}, tenant {2}, userid {3}, login {4}, pass {5}",
-                                        ice.Message, cookie, tenant, userid, login, password);
+                        log.DebugFormat("{0}: cookie {1}, tenant {2}, userid {3}", ice.Message, cookie, tenant, userid);
                     }
                     catch (SecurityException se)
                     {
-                        log.DebugFormat("{0}: cookie {1}, tenant {2}, userid {3}, login {4}, pass {5}",
-                                        se.Message, cookie, tenant, userid, login, password);
+                        log.DebugFormat("{0}: cookie {1}, tenant {2}, userid {3}", se.Message, cookie, tenant, userid);
                     }
                     catch (Exception err)
                     {
-                        log.ErrorFormat("Authenticate error: cookie {0}, tenant {1}, userid {2}, login {3}, pass {4}: {5}",
-                                        cookie, tenant, userid, login, password, err);
+                        log.ErrorFormat("Authenticate error: cookie {0}, tenant {1}, userid {2}, : {3}", cookie, tenant, userid, err);
                     }
                 }
                 else
@@ -280,12 +270,27 @@ namespace ASC.Core
             AuthContext.Logout();
         }
 
-        public void SetUserPassword(Guid userID, string password)
+        public void SetUserPasswordHash(Guid userID, string passwordHash)
         {
-            Authentication.SetUserPassword(TenantManager.GetCurrentTenant().TenantId, userID, password);
+            var tenantid = TenantManager.GetCurrentTenant().TenantId;
+            var u = UserManager.GetUsersByPasswordHash(tenantid, userID.ToString(), passwordHash);
+            if (!Equals(u, Users.Constants.LostUser))
+            {
+                throw new PasswordException("A new password must be used");
+            }
+
+            Authentication.SetUserPasswordHash(userID, passwordHash);
+        }
+
+        public class PasswordException : Exception
+        {
+            public PasswordException(string message) : base(message)
+            {
+            }
         }
     }
 
+    [Scope]
     public class PermissionContext
     {
         public IPermissionResolver PermissionResolver { get; set; }
@@ -328,6 +333,7 @@ namespace ASC.Core
         }
     }
 
+    [Scope]
     public class AuthContext
     {
         private IHttpContextAccessor HttpContextAccessor { get; }
@@ -365,43 +371,6 @@ namespace ASC.Core
                 Thread.CurrentPrincipal = value;
                 if (HttpContextAccessor?.HttpContext != null) HttpContextAccessor.HttpContext.User = value;
             }
-        }
-    }
-
-    public static class AuthContextConfigExtension
-    {
-        public static DIHelper AddSecurityContextService(this DIHelper services)
-        {
-            if (services.TryAddScoped<SecurityContext>())
-            {
-                return services
-                    .AddCookieStorageService()
-                    .AddTenantCookieSettingsService()
-                    .AddAuthManager()
-                    .AddUserFormatter()
-                    .AddAuthContextService()
-                    .AddUserManagerService()
-                    .AddTenantManagerService();
-            }
-
-            return services;
-        }
-        public static DIHelper AddAuthContextService(this DIHelper services)
-        {
-            services.TryAddScoped<AuthContext>();
-            return services;
-        }
-
-        public static DIHelper AddPermissionContextService(this DIHelper services)
-        {
-            if (services.TryAddScoped<PermissionContext>())
-            {
-                return services
-                    .AddAuthContextService()
-                    .AddPermissionResolverService();
-            }
-
-            return services;
         }
     }
 }

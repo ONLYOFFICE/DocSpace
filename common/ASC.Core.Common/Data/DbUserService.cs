@@ -28,7 +28,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Text;
 
+using ASC.Common;
 using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
@@ -38,6 +40,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Data
 {
+    [Scope]
     public class ConfigureEFUserService : IConfigureNamedOptions<EFUserService>
     {
         private DbContextManager<UserDbContext> DbContextManager { get; }
@@ -51,33 +54,35 @@ namespace ASC.Core.Data
         public void Configure(string name, EFUserService options)
         {
             DbId = name;
-            options.UserDbContext = DbContextManager.Get(name);
+            options.LazyUserDbContext = new Lazy<UserDbContext>(() => DbContextManager.Get(name));
             options.UserDbContextManager = DbContextManager;
         }
 
         public void Configure(EFUserService options)
         {
-            options.UserDbContext = DbContextManager.Value;
+            options.LazyUserDbContext = new Lazy<UserDbContext>(() => DbContextManager.Value);
             options.UserDbContextManager = DbContextManager;
         }
     }
 
-
+    [Scope]
     public class EFUserService : IUserService
     {
-        public Expression<Func<User, UserInfo>> FromUserToUserInfo { get; set; }
-        public Func<UserInfo, User> FromUserInfoToUser { get; set; }
-        public Expression<Func<DbGroup, Group>> FromDbGroupToGroup { get; set; }
-        public Func<Group, DbGroup> FromGroupToDbGroup { get; set; }
-        public Expression<Func<UserGroup, UserGroupRef>> FromUserGroupToUserGroupRef { get; set; }
-        public Func<UserGroupRef, UserGroup> FromUserGroupRefToUserGroup { get; set; }
+        private static Expression<Func<User, UserInfo>> FromUserToUserInfo { get; set; }
+        private static Func<UserInfo, User> FromUserInfoToUser { get; set; }
+        private static Expression<Func<DbGroup, Group>> FromDbGroupToGroup { get; set; }
+        private static Func<Group, DbGroup> FromGroupToDbGroup { get; set; }
+        private static Expression<Func<UserGroup, UserGroupRef>> FromUserGroupToUserGroupRef { get; set; }
+        private static Func<UserGroupRef, UserGroup> FromUserGroupRefToUserGroup { get; set; }
 
-        internal UserDbContext UserDbContext { get; set; }
+        internal UserDbContext UserDbContext { get => LazyUserDbContext.Value; }
+        internal Lazy<UserDbContext> LazyUserDbContext { get; set; }
         internal DbContextManager<UserDbContext> UserDbContextManager { get; set; }
-
+        private PasswordHasher PasswordHasher { get; }
+        public MachinePseudoKeys MachinePseudoKeys { get; }
         internal string DbId { get; set; }
 
-        public EFUserService()
+        static EFUserService()
         {
             FromUserToUserInfo = user => new UserInfo
             {
@@ -141,8 +146,8 @@ namespace ASC.Core.Data
             {
                 Id = group.Id,
                 Name = group.Name,
-                CategoryId = group.CategoryId.HasValue ? group.CategoryId.Value : Guid.Empty,
-                ParentId = group.ParentId.HasValue ? group.ParentId.Value : Guid.Empty,
+                CategoryId = group.CategoryId ?? Guid.Empty,
+                ParentId = group.ParentId ?? Guid.Empty,
                 Sid = group.Sid,
                 Removed = group.Removed,
                 LastModified = group.LastModified,
@@ -182,10 +187,17 @@ namespace ASC.Core.Data
             };
         }
 
-        public EFUserService(DbContextManager<UserDbContext> userDbContextManager) : this()
+        public EFUserService()
+        {
+
+        }
+
+        public EFUserService(DbContextManager<UserDbContext> userDbContextManager, PasswordHasher passwordHasher, MachinePseudoKeys machinePseudoKeys)
         {
             UserDbContextManager = userDbContextManager;
-            UserDbContext = UserDbContextManager.Value;
+            PasswordHasher = passwordHasher;
+            MachinePseudoKeys = machinePseudoKeys;
+            LazyUserDbContext = new Lazy<UserDbContext>(() => UserDbContextManager.Value);
         }
 
         public Group GetGroup(int tenant, Guid id)
@@ -211,28 +223,78 @@ namespace ASC.Core.Data
                 .FirstOrDefault();
         }
 
-        public UserInfo GetUser(int tenant, string login, string passwordHash)
+        public UserInfo GetUserByPasswordHash(int tenant, string login, string passwordHash)
         {
             if (string.IsNullOrEmpty(login)) throw new ArgumentNullException("login");
-            var q = UserDbContext.Users
-                .Where(r => !r.Removed)
-                .Where(r => r.UserSecurity.PwdHash == passwordHash);
 
-            if (login.Contains('@'))
+            if (Guid.TryParse(login, out var userId))
             {
-                q = q.Where(r => r.Email == login);
-            }
-            else if (Guid.TryParse(login, out var userId))
-            {
-                q = q.Where(r => r.Id == userId);
-            }
+                RegeneratePassword(tenant, userId);
 
-            if (tenant != Tenant.DEFAULT_TENANT)
-            {
-                q = q.Where(r => r.Tenant == tenant);
-            }
+                var pwdHash = GetPasswordHash(userId, passwordHash);
+                var oldHash = Hasher.Base64Hash(passwordHash, HashAlg.SHA256);
 
-            return q.Select(FromUserToUserInfo).FirstOrDefault();
+                var q = UserDbContext.Users
+                    .Where(r => !r.Removed)
+                    .Where(r => r.Id == userId)
+                    .Join(UserDbContext.UserSecurity, r => r.Id, r => r.UserId, (user, security) => new DbUserSecurity
+                    {
+                        User = user,
+                        UserSecurity = security
+                    })
+                    .Where(r => r.UserSecurity.PwdHash == pwdHash || r.UserSecurity.PwdHash == oldHash)  //todo: remove old scheme
+                    ;
+
+                if (tenant != Tenant.DEFAULT_TENANT)
+                {
+                    q = q.Where(r => r.User.Tenant == tenant);
+                }
+
+                return q.Select(r => r.User).Select(FromUserToUserInfo).FirstOrDefault();
+            }
+            else
+            {
+                var q = UserDbContext.Users
+                    .Where(r => !r.Removed)
+                    .Where(r => r.Email == login)
+                    ;
+                if (tenant != Tenant.DEFAULT_TENANT)
+                {
+                    q = q.Where(r => r.Tenant == tenant);
+                }
+                var user = q.Select(FromUserToUserInfo).FirstOrDefault();
+                if (user != null)
+                {
+                    RegeneratePassword(tenant, user.ID);
+
+                    var pwdHash = GetPasswordHash(user.ID, passwordHash);
+                    var oldHash = Hasher.Base64Hash(passwordHash, HashAlg.SHA256);
+
+                    var count = UserDbContext.UserSecurity
+                        .Where(r => r.UserId == user.ID)
+                        .Where(r => r.PwdHash == pwdHash || r.PwdHash == oldHash)
+                        .Count();//todo: remove old scheme
+
+                    if (count > 0) return user;
+                }
+
+                return null;
+            }
+        }
+
+        //todo: remove
+        private void RegeneratePassword(int tenant, Guid userId)
+        {
+            var h2 = UserDbContext.UserSecurity
+                .Where(r => r.Tenant == tenant)
+                .Where(r => r.UserId == userId)
+                .Select(r => r.PwdHashSha512)
+                .FirstOrDefault();
+            if (string.IsNullOrEmpty(h2)) return;
+
+            var password = Crypto.GetV(h2, 1, false);
+            var passwordHash = PasswordHasher.GetClientPassword(password);
+            SetUserPasswordHash(tenant, userId, passwordHash);
         }
 
         public IDictionary<string, UserGroupRef> GetUserGroupRefs(int tenant, DateTime from)
@@ -252,14 +314,15 @@ namespace ASC.Core.Data
             return q.Select(FromUserGroupToUserGroupRef).ToDictionary(r => r.CreateKey(), r => r);
         }
 
-        public string GetUserPassword(int tenant, Guid id)
+        public DateTime GetUserPasswordStamp(int tenant, Guid id)
         {
-            var h2 = UserDbContext.UserSecurity
+            var stamp = UserDbContext.UserSecurity
                 .Where(r => r.Tenant == tenant)
-                .Select(r => r.PwdHashSha512)
+                .Where(r => r.UserId == id)
+                .Select(r => r.LastModified)
                 .FirstOrDefault();
 
-            return !string.IsNullOrEmpty(h2) ? Crypto.GetV(h2, 1, false) : null;
+            return stamp ?? DateTime.MinValue;
         }
 
         public byte[] GetUserPhoto(int tenant, Guid id)
@@ -508,16 +571,17 @@ namespace ASC.Core.Data
             return r;
         }
 
-        public void SetUserPassword(int tenant, Guid id, string password)
+        public void SetUserPasswordHash(int tenant, Guid id, string passwordHash)
         {
-            var h1 = !string.IsNullOrEmpty(password) ? Hasher.Base64Hash(password, HashAlg.SHA256) : null;
-            var h2 = !string.IsNullOrEmpty(password) ? Crypto.GetV(password, 1, true) : null;
+            var h1 = GetPasswordHash(id, passwordHash);
 
             var us = new UserSecurity
             {
+                Tenant = tenant,
                 UserId = id,
                 PwdHash = h1,
-                PwdHashSha512 = h2
+                PwdHashSha512 = null,//todo: remove
+                LastModified = DateTime.UtcNow
             };
 
             UserDbContext.AddOrUpdate(r => r.UserSecurity, us);
@@ -693,5 +757,16 @@ namespace ASC.Core.Data
                     .Select(exp ?? FromUserToUserInfo)
                     .FirstOrDefault();
         }
+
+        protected string GetPasswordHash(Guid userId, string password)
+        {
+            return Hasher.Base64Hash(password + userId + Encoding.UTF8.GetString(MachinePseudoKeys.GetMachineConstant()), HashAlg.SHA512);
+        }
+    }
+
+    public class DbUserSecurity
+    {
+        public User User { get; set; }
+        public UserSecurity UserSecurity { get; set; }
     }
 }

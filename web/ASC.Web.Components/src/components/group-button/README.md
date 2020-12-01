@@ -17,11 +17,11 @@ import { GroupButton } from "asc-web-components";
 />
 ```
 
-It can be used as selector with checkbox for this following properties are combined: *isDropdown*, *isSeparator*.
+It can be used as selector with checkbox for this following properties are combined: _isDropdown_, _isSeparator_.
 
-*isSeparator* will add vertical bar after button.
+_isSeparator_ will add vertical bar after button.
 
-*isDropdown* allows adding items to dropdown list in children.
+_isDropdown_ allows adding items to dropdown list in children.
 
 For health of checkbox, button inherits part of properties of this component.
 

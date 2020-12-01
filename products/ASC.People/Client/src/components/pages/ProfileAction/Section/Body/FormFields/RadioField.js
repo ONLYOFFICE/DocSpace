@@ -22,7 +22,7 @@ class RadioField extends React.Component {
       radioOnChange,
 
       tooltipContent,
-      helpButtonHeaderContent
+      helpButtonHeaderContent,
     } = this.props;
 
     return (
@@ -40,7 +40,7 @@ class RadioField extends React.Component {
           isDisabled={radioIsDisabled}
           onClick={radioOnChange}
           className="radio-group"
-          spacing='33px'
+          spacing="33px"
         />
       </FieldContainer>
     );

@@ -31,7 +31,6 @@ using System.Linq;
 using ASC.Common.Utils;
 using ASC.FederatedLogin.Profile;
 
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
 namespace ASC.FederatedLogin
@@ -55,7 +54,7 @@ namespace ASC.FederatedLogin
         }
 
 
-        public MultiRegionAccountLinker(string databaseId, IConfiguration configuration, IOptionsSnapshot<AccountLinker> snapshot)
+        public MultiRegionAccountLinker(string databaseId, ConfigurationExtension configuration, IOptionsSnapshot<AccountLinker> snapshot)
         {
             foreach (var connection in configuration.GetConnectionStrings())
             {

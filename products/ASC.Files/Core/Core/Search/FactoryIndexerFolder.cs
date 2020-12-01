@@ -41,6 +41,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Files.Core.Search
 {
+    [Scope(Additional = typeof(FactoryIndexerFolderExtension))]
     public class FactoryIndexerFolder : FactoryIndexer<DbFolder>
     {
         private IDaoFactory DaoFactory { get; }
@@ -101,16 +102,11 @@ namespace ASC.Web.Files.Core.Search
         }
     }
 
-    public static class FactoryIndexerFolderExtention
+    public class FactoryIndexerFolderExtension
     {
-        public static DIHelper AddFactoryIndexerFolderService(this DIHelper services)
+        public static void Register(DIHelper services)
         {
-            services.TryAddTransient<DbFolder>();
-            services.TryAddScoped<FactoryIndexer<DbFolder>, FactoryIndexerFolder>();
-
-            return services
-                .AddFactoryIndexerService<DbFolder>(false)
-                .AddDaoFactoryService();
+            services.TryAdd<DbFolder>();
         }
     }
 }

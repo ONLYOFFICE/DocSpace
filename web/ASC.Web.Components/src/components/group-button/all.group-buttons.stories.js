@@ -17,7 +17,7 @@ storiesOf("Components|GroupButton", module)
         style={{
           padding: "8px 0 0 40px",
           display: "grid",
-          gridTemplateColumns: "1fr 1fr 1fr 1fr"
+          gridTemplateColumns: "1fr 1fr 1fr 1fr",
         }}
       >
         <div style={rowStyle}>

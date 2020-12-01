@@ -40,7 +40,6 @@ using ASC.Core.Users;
 using ASC.Notify.Model;
 using ASC.Notify.Patterns;
 using ASC.Notify.Recipients;
-using ASC.Security.Cryptography;
 using ASC.Web.Core;
 using ASC.Web.Core.Notify;
 using ASC.Web.Core.PublicResources;
@@ -54,6 +53,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Studio.Core.Notify
 {
+    [Scope(Additional = typeof(StudioNotifyServiceExtension))]
     public class StudioNotifyService
     {
         private readonly StudioNotifyServiceHelper client;
@@ -74,7 +74,6 @@ namespace ASC.Web.Studio.Core.Notify
         private DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
         private SettingsManager SettingsManager { get; }
         private WebItemSecurity WebItemSecurity { get; }
-        private WebItemManager WebItemManager { get; }
         private ILog Log { get; }
 
         public StudioNotifyService(
@@ -93,7 +92,6 @@ namespace ASC.Web.Studio.Core.Notify
             DisplayUserSettingsHelper displayUserSettingsHelper,
             SettingsManager settingsManager,
             WebItemSecurity webItemSecurity,
-            WebItemManager webItemManager,
             IOptionsMonitor<ILog> option)
         {
             Log = option.Get("ASC.Notify");
@@ -110,7 +108,6 @@ namespace ASC.Web.Studio.Core.Notify
             DisplayUserSettingsHelper = displayUserSettingsHelper;
             SettingsManager = settingsManager;
             WebItemSecurity = webItemSecurity;
-            WebItemManager = webItemManager;
             UserManager = userManager;
             StudioNotifyHelper = studioNotifyHelper;
         }
@@ -141,8 +138,9 @@ namespace ASC.Web.Studio.Core.Notify
             csize = (csize ?? "").Trim();
             if (string.IsNullOrEmpty(csize)) throw new ArgumentNullException("csize");
             site = (site ?? "").Trim();
-            if (string.IsNullOrEmpty(site)) throw new ArgumentNullException("site");
+            if (string.IsNullOrEmpty(site) && !CoreBaseSettings.CustomMode) throw new ArgumentNullException("site");
             message = (message ?? "").Trim();
+            if (string.IsNullOrEmpty(message) && !CoreBaseSettings.CustomMode) throw new ArgumentNullException("message");
 
             var salesEmail = SettingsManager.LoadForDefaultTenant<AdditionalWhiteLabelSettings>().SalesEmail ?? SetupInfo.SalesEmail;
 
@@ -180,8 +178,8 @@ namespace ASC.Web.Studio.Core.Notify
 
         public void UserPasswordChange(UserInfo userInfo)
         {
-            var hash = Hasher.Base64Hash(Authentication.GetUserPasswordHash(TenantManager.GetCurrentTenant().TenantId, userInfo.ID));
-            var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(userInfo.Email, ConfirmType.PasswordChange, hash + userInfo.ID, userInfo.ID);
+            var hash = Authentication.GetUserPasswordStamp(userInfo.ID).ToString("s");
+            var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(userInfo.Email, ConfirmType.PasswordChange, hash, userInfo.ID);
 
             static string greenButtonText() => WebstudioNotifyPatternResource.ButtonChangePassword;
 
@@ -368,6 +366,11 @@ namespace ASC.Web.Studio.Core.Notify
                                          : Actions.EnterpriseWhitelabelUserWelcomeV10;
                 footer = null;
             }
+            else if (TenantExtra.Opensource)
+            {
+                notifyAction = Actions.OpensourceUserWelcomeV11;
+                footer = "opensource";
+            }
             else
             {
                 notifyAction = Actions.SaasUserWelcomeV10;
@@ -403,6 +406,11 @@ namespace ASC.Web.Studio.Core.Notify
                 var defaultRebranding = MailWhiteLabelSettings.IsDefault(SettingsManager, Configuration);
                 notifyAction = defaultRebranding ? Actions.EnterpriseGuestWelcomeV10 : Actions.EnterpriseWhitelabelGuestWelcomeV10;
                 footer = null;
+            }
+            else if (TenantExtra.Opensource)
+            {
+                notifyAction = Actions.OpensourceGuestWelcomeV11;
+                footer = "opensource";
             }
             else
             {
@@ -441,6 +449,11 @@ namespace ASC.Web.Studio.Core.Notify
                 notifyAction = defaultRebranding ? Actions.EnterpriseUserActivationV10 : Actions.EnterpriseWhitelabelUserActivationV10;
                 footer = null;
             }
+            else if (TenantExtra.Opensource)
+            {
+                notifyAction = Actions.OpensourceUserActivationV11;
+                footer = "opensource";
+            }
             else
             {
                 notifyAction = Actions.SaasUserActivationV10;
@@ -455,6 +468,7 @@ namespace ASC.Web.Studio.Core.Notify
                 notifyAction,
                 StudioNotifyHelper.RecipientFromEmail(newUserInfo.Email, false),
                 new[] { EMailSenderName },
+                new TagValue(Tags.ActivateUrl, confirmationUrl),
                 TagValues.GreenButton(greenButtonText, confirmationUrl),
                 new TagValue(Tags.UserName, newUserInfo.FirstName.HtmlEncode()),
                 new TagValue(CommonTags.Footer, footer),
@@ -476,6 +490,11 @@ namespace ASC.Web.Studio.Core.Notify
                 notifyAction = defaultRebranding ? Actions.EnterpriseGuestActivationV10 : Actions.EnterpriseWhitelabelGuestActivationV10;
                 footer = null;
             }
+            else if (TenantExtra.Opensource)
+            {
+                notifyAction = Actions.OpensourceGuestActivationV11;
+                footer = "opensource";
+            }
             else
             {
                 notifyAction = Actions.SaasGuestActivationV10;
@@ -490,6 +509,7 @@ namespace ASC.Web.Studio.Core.Notify
                 notifyAction,
                 StudioNotifyHelper.RecipientFromEmail(newUserInfo.Email, false),
                 new[] { EMailSenderName },
+                new TagValue(Tags.ActivateUrl, confirmationUrl),
                 TagValues.GreenButton(greenButtonText, confirmationUrl),
                 new TagValue(Tags.UserName, newUserInfo.FirstName.HtmlEncode()),
                 new TagValue(CommonTags.Footer, footer),
@@ -619,7 +639,13 @@ namespace ASC.Web.Studio.Core.Notify
                 var defaultRebranding = MailWhiteLabelSettings.IsDefault(SettingsManager, Configuration);
                 notifyAction = defaultRebranding ? Actions.EnterpriseAdminWelcomeV10 : Actions.EnterpriseWhitelabelAdminWelcomeV10;
 
-                tagValues.Add(TagValues.GreenButton(() => WebstudioNotifyPatternResource.ButtonAccessControlPanel, CommonLinkUtility.GetFullAbsolutePath("~" + SetupInfo.ControlPanelUrl)));
+                tagValues.Add(TagValues.GreenButton(() => WebstudioNotifyPatternResource.ButtonAccessControlPanel, CommonLinkUtility.GetFullAbsolutePath(SetupInfo.ControlPanelUrl)));
+            }
+            else if (TenantExtra.Opensource)
+            {
+                notifyAction = Actions.OpensourceAdminWelcomeV11;
+                tagValues.Add(new TagValue(CommonTags.Footer, "opensource"));
+                tagValues.Add(new TagValue(Tags.ControlPanelUrl, CommonLinkUtility.GetFullAbsolutePath(SetupInfo.ControlPanelUrl).TrimEnd('/')));
             }
             else
             {
@@ -747,7 +773,7 @@ namespace ASC.Web.Studio.Core.Notify
                 }
                 else if (TenantExtra.Opensource)
                 {
-                    notifyAction = Actions.OpensourceAdminActivation;
+                    notifyAction = Actions.OpensourceAdminActivationV11;
                     footer = "opensource";
                 }
                 else
@@ -768,6 +794,7 @@ namespace ASC.Web.Studio.Core.Notify
                     new[] { EMailSenderName },
                     new TagValue(Tags.UserName, u.FirstName.HtmlEncode()),
                     new TagValue(Tags.MyStaffLink, GetMyStaffLink()),
+                    new TagValue(Tags.ActivateUrl, confirmationUrl),
                     TagValues.GreenButton(greenButtonText, confirmationUrl),
                     new TagValue(CommonTags.Footer, footer),
                     new TagValue(CommonTags.Analytics, analytics));
@@ -879,9 +906,113 @@ namespace ASC.Web.Studio.Core.Notify
 
             return confirmUrl + $"&firstname={HttpUtility.UrlEncode(user.FirstName)}&lastname={HttpUtility.UrlEncode(user.LastName)}";
         }
+
+
+        public void SendRegData(UserInfo u)
+        {
+            try
+            {
+                if (!TenantExtra.Saas || !CoreBaseSettings.CustomMode) return;
+
+                var settings = SettingsManager.LoadForDefaultTenant<AdditionalWhiteLabelSettings>();
+                var salesEmail = settings.SalesEmail ?? SetupInfo.SalesEmail;
+
+                if (string.IsNullOrEmpty(salesEmail)) return;
+
+                var recipient = new DirectRecipient(salesEmail, null, new[] { salesEmail }, false);
+
+                client.SendNoticeToAsync(
+                    Actions.SaasCustomModeRegData,
+                    null,
+                    new IRecipient[] { recipient },
+                    new[] { EMailSenderName },
+                    null,
+                    new TagValue(Tags.UserName, u.FirstName.HtmlEncode()),
+                    new TagValue(Tags.UserLastName, u.LastName.HtmlEncode()),
+                    new TagValue(Tags.UserEmail, u.Email.HtmlEncode()),
+                    new TagValue(Tags.Phone, u.MobilePhone != null ? u.MobilePhone.HtmlEncode() : "-"),
+                    new TagValue(Tags.Date, u.CreateDate.ToShortDateString() + " " + u.CreateDate.ToShortTimeString()),
+                    new TagValue(CommonTags.Footer, null),
+                    TagValues.WithoutUnsubscribe());
+            }
+            catch (Exception error)
+            {
+                Log.Error(error);
+            }
+        }
+
+        #endregion
+
+        #region Storage encryption
+
+        public void SendStorageEncryptionStart(string serverRootPath)
+        {
+            SendStorageEncryptionNotify(Actions.StorageEncryptionStart, false, serverRootPath);
+        }
+
+        public void SendStorageEncryptionSuccess(string serverRootPath)
+        {
+            SendStorageEncryptionNotify(Actions.StorageEncryptionSuccess, false, serverRootPath);
+        }
+
+        public void SendStorageEncryptionError(string serverRootPath)
+        {
+            SendStorageEncryptionNotify(Actions.StorageEncryptionError, true, serverRootPath);
+        }
+
+        public void SendStorageDecryptionStart(string serverRootPath)
+        {
+            SendStorageEncryptionNotify(Actions.StorageDecryptionStart, false, serverRootPath);
+        }
+
+        public void SendStorageDecryptionSuccess(string serverRootPath)
+        {
+            SendStorageEncryptionNotify(Actions.StorageDecryptionSuccess, false, serverRootPath);
+        }
+
+        public void SendStorageDecryptionError(string serverRootPath)
+        {
+            SendStorageEncryptionNotify(Actions.StorageDecryptionError, true, serverRootPath);
+        }
+
+        private void SendStorageEncryptionNotify(INotifyAction action, bool notifyAdminsOnly, string serverRootPath)
+        {
+            var users = notifyAdminsOnly
+                    ? UserManager.GetUsersByGroup(Constants.GroupAdmin.ID)
+                    : UserManager.GetUsers().Where(u => u.ActivationStatus.HasFlag(EmployeeActivationStatus.Activated));
+
+            foreach (var u in users)
+            {
+                client.SendNoticeToAsync(
+                    action,
+                    null,
+                    new[] { StudioNotifyHelper.ToRecipient(u.ID) },
+                    new[] { EMailSenderName },
+                    null,
+                    new TagValue(Tags.UserName, u.FirstName.HtmlEncode()),
+                    new TagValue(Tags.PortalUrl, serverRootPath),
+                    new TagValue(Tags.ControlPanelUrl, GetControlPanelUrl(serverRootPath)));
+            }
+        }
+
+        private string GetControlPanelUrl(string serverRootPath)
+        {
+            var controlPanelUrl = SetupInfo.ControlPanelUrl;
+
+            if (string.IsNullOrEmpty(controlPanelUrl))
+                return string.Empty;
+
+            if (controlPanelUrl.StartsWith("http://", StringComparison.InvariantCultureIgnoreCase) ||
+                controlPanelUrl.StartsWith("https://", StringComparison.InvariantCultureIgnoreCase))
+                return controlPanelUrl;
+
+            return serverRootPath + "/" + controlPanelUrl.TrimStart('~', '/').TrimEnd('/');
+        }
+
         #endregion
     }
 
+    [Scope]
     public class StudioNotifyServiceScope
     {
         private TenantManager TenantManager { get; }
@@ -902,30 +1033,9 @@ namespace ASC.Web.Studio.Core.Notify
 
     public static class StudioNotifyServiceExtension
     {
-        public static DIHelper AddStudioNotifyServiceService(this DIHelper services)
+        public static void Register(DIHelper services)
         {
-            if (services.TryAddScoped<StudioNotifyService>())
-            {
-                services.TryAddScoped<StudioNotifyServiceScope>();
-                return services
-                    .AddDisplayUserSettingsService()
-                    .AddMailWhiteLabelSettingsService()
-                    .AddAdditionalWhiteLabelSettingsService()
-                    .AddStudioNotifyServiceHelper()
-                    .AddUserManagerService()
-                    .AddStudioNotifyHelperService()
-                    .AddTenantExtraService()
-                    .AddAuthManager()
-                    .AddAuthContextService()
-                    .AddTenantManagerService()
-                    .AddCoreBaseSettingsService()
-                    .AddCommonLinkUtilityService()
-                    .AddSetupInfo()
-                    .AddWebItemSecurity()
-                    .AddWebItemManager();
-            }
-
-            return services;
+            services.TryAdd<StudioNotifyServiceScope>();
         }
     }
 }

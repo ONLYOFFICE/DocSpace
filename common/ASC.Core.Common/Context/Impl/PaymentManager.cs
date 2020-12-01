@@ -36,7 +36,6 @@ using System.Web;
 
 using ASC.Common;
 using ASC.Core.Billing;
-using ASC.Core.Caching;
 
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
@@ -46,6 +45,7 @@ using Newtonsoft.Json;
 
 namespace ASC.Core
 {
+    [Scope]
     public class PaymentManager
     {
         private readonly ITariffService tariffService;
@@ -93,6 +93,11 @@ namespace ASC.Core
         public Invoice GetPaymentInvoice(string paymentId)
         {
             return tariffService.GetInvoice(paymentId);
+        }
+
+        public IDictionary<string, IEnumerable<Tuple<string, decimal>>> GetProductPriceInfo(params string[] productIds)
+        {
+            return tariffService.GetProductPriceInfo(productIds);
         }
 
         public Uri GetShoppingUri(int tenant, int quotaId, string currency = null, string language = null, string customerId = null)
@@ -175,22 +180,6 @@ namespace ASC.Core
             public string exceptionMessage = null;
             public string exceptionType = null;
             public string stackTrace = null;
-        }
-    }
-
-    public static class PaymentManagerExtension
-    {
-        public static DIHelper AddPaymentManagerService(this DIHelper services)
-        {
-            if (services.TryAddScoped<PaymentManager>())
-            {
-                return services
-                    .AddTenantManagerService()
-                    .AddQuotaService()
-                    .AddTariffService();
-            }
-
-            return services;
         }
     }
 }

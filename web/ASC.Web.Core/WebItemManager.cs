@@ -48,6 +48,7 @@ namespace ASC.Web.Core
         All = Normal | Disabled
     }
 
+    [Singletone]
     public class WebItemManager
     {
         private readonly ILog log;
@@ -117,19 +118,12 @@ namespace ASC.Web.Core
             }
         }
 
-        public WebItemManager(IContainer container, IConfiguration configuration, IOptionsMonitor<ILog> options)
+        public WebItemManager(ILifetimeScope container, IConfiguration configuration, IOptionsMonitor<ILog> options)
         {
             Container = container;
             Configuration = configuration;
             log = options.Get("ASC.Web");
             disableItem = (Configuration["web:disabled-items"] ?? "").Split(",").ToList();
-            LoadItems();
-        }
-
-        public WebItemManager(ILifetimeScope container, IConfiguration configuration, IOptionsMonitor<ILog> options)
-            : this(null, configuration, options)
-        {
-            Container = container;
             LoadItems();
         }
 
@@ -162,13 +156,13 @@ namespace ASC.Web.Core
             {
                 if (webitem != null && this[webitem.ID] == null)
                 {
-                    if (webitem is IAddon)
+                    if (webitem is IAddon addon)
                     {
-                        ((IAddon)webitem).Init();
+                        addon.Init();
                     }
-                    if (webitem is IProduct)
+                    if (webitem is IProduct product)
                     {
-                        ((IProduct)webitem).Init();
+                        product.Init();
                     }
 
                     if (webitem is IModule module)
@@ -215,6 +209,7 @@ namespace ASC.Web.Core
         }
     }
 
+    [Scope]
     public class WebItemManagerSecurity
     {
         private WebItemSecurity WebItemSecurity { get; }
@@ -261,27 +256,6 @@ namespace ASC.Web.Core
                                                             .Where(p => p.ProjectId == parentItemID)
                                                             .Cast<IWebItem>()
                                                             .ToList();
-        }
-    }
-
-    public static class WebItemManagerExtension
-    {
-        public static DIHelper AddWebItemManager(this DIHelper services)
-        {
-            services.TryAddSingleton<WebItemManager>();
-            return services;
-        }
-        public static DIHelper AddWebItemManagerSecurity(this DIHelper services)
-        {
-            if (services.TryAddScoped<WebItemManagerSecurity>())
-            {
-                return services
-                    .AddAuthContextService()
-                    .AddWebItemSecurity()
-                    .AddWebItemManager();
-            }
-
-            return services;
         }
     }
 }

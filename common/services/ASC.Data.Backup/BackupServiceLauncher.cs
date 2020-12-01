@@ -24,48 +24,52 @@
 */
 
 
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Utils;
+using ASC.Data.Backup.Listerners;
 using ASC.Web.Studio.Core.Notify;
 
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 
 namespace ASC.Data.Backup.Service
 {
+    [Singletone]
     internal class BackupServiceLauncher : IHostedService
     {
-        private IServiceProvider ServiceProvider { get; }
         private BackupCleanerService CleanerService { get; set; }
         private BackupSchedulerService SchedulerService { get; set; }
         private BackupWorker BackupWorker { get; set; }
-        private IConfiguration Configuration { get; set; }
+        private ConfigurationExtension Configuration { get; set; }
+        private BackupListener BackupListener { get; set; }
+        public NotifyConfiguration NotifyConfiguration { get; }
 
         public BackupServiceLauncher(
-            IServiceProvider serviceProvider,
             BackupCleanerService cleanerService,
             BackupSchedulerService schedulerService,
             BackupWorker backupWorker,
-            IConfiguration configuration)
+            ConfigurationExtension configuration,
+            BackupListener backupListener,
+            NotifyConfiguration notifyConfiguration)
         {
-            ServiceProvider = serviceProvider;
             CleanerService = cleanerService;
             SchedulerService = schedulerService;
             BackupWorker = backupWorker;
             Configuration = configuration;
+            BackupListener = backupListener;
+            NotifyConfiguration = notifyConfiguration;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            NotifyConfiguration.Configure(ServiceProvider);
+            NotifyConfiguration.Configure();
 
             var settings = Configuration.GetSetting<BackupSettings>("backup");
 
             BackupWorker.Start(settings);
+            BackupListener.Start();
 
             CleanerService.Period = settings.Cleaner.Period;
             CleanerService.Start();
@@ -79,6 +83,7 @@ namespace ASC.Data.Backup.Service
         public Task StopAsync(CancellationToken cancellationToken)
         {
             BackupWorker.Stop();
+            BackupListener.Stop();
             if (CleanerService != null)
             {
                 CleanerService.Stop();
@@ -90,18 +95,6 @@ namespace ASC.Data.Backup.Service
                 SchedulerService = null;
             }
             return Task.CompletedTask;
-        }
-    }
-    public static class BackupServiceLauncherExtension
-    {
-        public static DIHelper AddBackupServiceLauncher(this DIHelper services)
-        {
-            services.TryAddSingleton<BackupServiceLauncher>();
-            return services
-                .AddBackupCleanerService()
-                .AddBackupSchedulerService()
-                .AddBackupWorkerService()
-                .AddBackupService();
         }
     }
 }

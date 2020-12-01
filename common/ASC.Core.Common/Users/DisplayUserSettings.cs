@@ -25,12 +25,15 @@
 
 
 using System;
+using System.Reflection;
 using System.Web;
 
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.Settings;
 using ASC.Core.Users;
+
+using Microsoft.Extensions.Configuration;
 
 namespace ASC.Web.Core.Users
 {
@@ -53,12 +56,15 @@ namespace ASC.Web.Core.Users
         }
     }
 
+    [Scope]
     public class DisplayUserSettingsHelper
     {
-        public DisplayUserSettingsHelper(UserManager userManager, UserFormatter userFormatter)
+        private readonly string RemovedProfileName;
+        public DisplayUserSettingsHelper(UserManager userManager, UserFormatter userFormatter, IConfiguration configuration)
         {
             UserManager = userManager;
             UserFormatter = userFormatter;
+            RemovedProfileName = configuration["web:removed-profile-name"] ?? "profile removed";
         }
 
         private UserManager UserManager { get; }
@@ -82,7 +88,18 @@ namespace ASC.Web.Core.Users
             }
             if (!userInfo.ID.Equals(Guid.Empty) && !UserManager.UserExists(userInfo))
             {
-                return "profile removed";
+                try
+                {
+                    var resourceType = Type.GetType("ASC.Web.Core.PublicResources.Resources.Resource, ASC.Web.Core");
+                    var resourceProperty = resourceType.GetProperty("ProfileRemoved", BindingFlags.Static | BindingFlags.Public);
+                    var resourceValue = (string)resourceProperty.GetValue(null);
+
+                    return string.IsNullOrEmpty(resourceValue) ? RemovedProfileName : resourceValue;
+                }
+                catch (Exception)
+                {
+                    return RemovedProfileName;
+                }
             }
             var result = UserFormatter.GetUserName(userInfo, format);
             return withHtmlEncode ? HtmlEncode(result) : result;
@@ -90,21 +107,6 @@ namespace ASC.Web.Core.Users
         public string HtmlEncode(string str)
         {
             return !string.IsNullOrEmpty(str) ? HttpUtility.HtmlEncode(str) : str;
-        }
-    }
-
-    public static class DisplayUserSettingsExtention
-    {
-        public static DIHelper AddDisplayUserSettingsService(this DIHelper services)
-        {
-            if (services.TryAddScoped<DisplayUserSettingsHelper>())
-            {
-                return services
-                    .AddUserFormatter()
-                    .AddUserManagerService();
-            }
-
-            return services;
         }
     }
 }
