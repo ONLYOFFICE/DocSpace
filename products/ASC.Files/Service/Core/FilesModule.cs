@@ -118,7 +118,7 @@ namespace ASC.Files.Service.Core
                 .Where(f => f.Item1.RootFolderType != FolderType.TRASH && f.Item1.RootFolderType != FolderType.BUNCH)
                 .ToList();
 
-            var folderIDs = files.Select(r => r.Item1.FolderID).ToArray();
+            var folderIDs = files.Select(r => r.Item1.FolderID).ToList();
             var folders = FolderDao.GetFolders(folderIDs, checkShare: false);
 
             return files.Select(f => new Tuple<Feed.Aggregator.Feed, object>(ToFeed(f, folders.FirstOrDefault(r => r.ID.Equals(f.Item1.FolderID))), f));

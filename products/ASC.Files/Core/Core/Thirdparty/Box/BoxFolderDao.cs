@@ -130,7 +130,7 @@ namespace ASC.Files.Thirdparty.Box
             return folders.ToList();
         }
 
-        public List<Folder<string>> GetFolders(string[] folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true)
+        public List<Folder<string>> GetFolders(IEnumerable<string> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true)
         {
             if (filterType == FilterType.FilesOnly || filterType == FilterType.ByExtension
                 || filterType == FilterType.DocumentsOnly || filterType == FilterType.ImagesOnly
@@ -184,9 +184,9 @@ namespace ASC.Files.Thirdparty.Box
                 return RenameFolder(folder, folder.Title);
             }
 
-            if (folder.ParentFolderID != null)
+            if (folder.FolderID != null)
             {
-                var boxFolderId = MakeBoxId(folder.ParentFolderID);
+                var boxFolderId = MakeBoxId(folder.FolderID);
 
                 folder.Title = GetAvailableTitle(folder.Title, boxFolderId, IsExist);
 

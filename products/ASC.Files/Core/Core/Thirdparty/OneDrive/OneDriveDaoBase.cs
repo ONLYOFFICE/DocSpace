@@ -123,7 +123,7 @@ namespace ASC.Files.Thirdparty.OneDrive
             var folder = GetFolder();
 
             folder.ID = MakeId(isRoot ? string.Empty : onedriveFolder.Id);
-            folder.ParentFolderID = isRoot ? null : MakeId(GetParentFolderId(onedriveFolder));
+            folder.FolderID = isRoot ? null : MakeId(GetParentFolderId(onedriveFolder));
             folder.CreateOn = isRoot ? ProviderInfo.CreateOn : (onedriveFolder.CreatedDateTime.HasValue ? TenantUtil.DateTimeFromUtc(onedriveFolder.CreatedDateTime.Value.DateTime) : default);
             folder.ModifiedOn = isRoot ? ProviderInfo.CreateOn : (onedriveFolder.LastModifiedDateTime.HasValue ? TenantUtil.DateTimeFromUtc(onedriveFolder.LastModifiedDateTime.Value.DateTime) : default);
 
