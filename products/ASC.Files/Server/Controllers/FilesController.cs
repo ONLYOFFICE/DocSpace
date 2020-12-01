@@ -97,8 +97,8 @@ namespace ASC.Api.Documents
         private WordpressHelper WordpressHelper { get; }
         private EasyBibHelper EasyBibHelper { get; }
         private ProductEntryPoint ProductEntryPoint { get; }
-        public TenantManager TenantManager { get; }
-        public FileUtility FileUtility { get; }
+        private TenantManager TenantManager { get; }
+        private FileUtility FileUtility { get; }
 
         /// <summary>
         /// </summary>
@@ -1096,6 +1096,27 @@ namespace ASC.Api.Documents
         public FolderWrapper<int> RenameFolderFromForm(int folderId, [FromForm]CreateFolderModel folderModel)
         {
             return FilesControllerHelperInt.RenameFolder(folderId, folderModel.Title);
+        }
+
+        [Create("owner")]
+        public IEnumerable<FileEntryWrapper> ChangeOwnerFromBody([FromBody] ChangeOwnerModel model)
+        {
+            return ChangeOwner(model);
+        }
+
+        [Create("owner")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public IEnumerable<FileEntryWrapper> ChangeOwnerFromForm([FromForm] ChangeOwnerModel model)
+        {
+            return ChangeOwner(model);
+        }
+
+        public IEnumerable<FileEntryWrapper> ChangeOwner(ChangeOwnerModel model)
+        {
+            var result = new List<FileEntry>();
+            result.AddRange(FileStorageServiceInt.ChangeOwner(model.FolderIds.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()).ToList(), model.FileIds.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()).ToList(), model.UserId));
+            result.AddRange(FileStorageService.ChangeOwner(model.FolderIds.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()).ToList(), model.FileIds.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()).ToList(), model.UserId));
+            return result.Select(FilesControllerHelperInt.GetFileEntryWrapper);
         }
 
         /// <summary>

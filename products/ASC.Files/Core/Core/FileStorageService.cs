@@ -2027,14 +2027,12 @@ namespace ASC.Web.Files.Services.WCFService
             //return new ItemList<string>(accounts);
         }
 
-        public ItemList<FileEntry<T>> ChangeOwner(ItemList<string> items, Guid userId)
+        public IEnumerable<FileEntry> ChangeOwner(IEnumerable<T> foldersId, IEnumerable<T> filesId, Guid userId)
         {
             var userInfo = UserManager.GetUsers(userId);
             ErrorIf(Equals(userInfo, Constants.LostUser) || userInfo.IsVisitor(UserManager), FilesCommonResource.ErrorMassage_ChangeOwner);
 
-            ParseArrayItems(items, out var foldersId, out var filesId);
-
-            var entries = new List<FileEntry<T>>();
+            var entries = new List<FileEntry>();
 
             var folderDao = GetFolderDao();
             var folders = folderDao.GetFolders(foldersId);
@@ -2103,7 +2101,7 @@ namespace ASC.Web.Files.Services.WCFService
                 entries.Add(newFile);
             }
 
-            return new ItemList<FileEntry<T>>(entries);
+            return entries;
         }
 
         public bool StoreOriginal(bool set)
@@ -2222,18 +2220,6 @@ namespace ASC.Web.Files.Services.WCFService
         private ISecurityDao<T> GetSecurityDao()
         {
             return DaoFactory.GetSecurityDao<T>();
-        }
-
-        private static void ParseArrayItems(IEnumerable<string> data, out List<T> foldersId, out List<T> filesId)
-        {
-            //TODO:!!!!Fix
-            foldersId = new List<T>();
-            filesId = new List<T>();
-            foreach (var id in data)
-            {
-                if (id.StartsWith("file_")) filesId.Add((T)Convert.ChangeType(id.Substring("file_".Length), typeof(T)));
-                if (id.StartsWith("folder_")) foldersId.Add((T)Convert.ChangeType(id.Substring("folder_".Length), typeof(T)));
-            }
         }
 
         private static void ErrorIf(bool condition, string errorMessage)
