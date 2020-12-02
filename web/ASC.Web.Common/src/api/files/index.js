@@ -593,7 +593,7 @@ export function getDocServiceUrl() {
   return request({ method: "get", url: `/files/docservice` });
 }
 
-export function getEncryptionSupport() {
+export function getIsEncryptionSupport() {
   return request({
     method: "get",
     url: "/files/@privacy/available",
@@ -624,5 +624,14 @@ export function getEncryptionAccess(fileId) {
     method: "get",
     url: `privacyroom/access/${fileId}`,
     data: fileId,
+  });
+}
+
+export function updateFileStream(file, fileId, encrypted, forcesave) {
+  debugger
+  return request({
+    method: "put",
+    url: `/files/${fileId}/update?encrypted=${encrypted}&forcesave=${forcesave}`,
+    data: file,
   });
 }
