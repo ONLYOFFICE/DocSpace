@@ -4,18 +4,13 @@ import MobileLayout from "./MobileLayout";
 import { utils } from "asc-web-components";
 import { isIOS, isFirefox, isChrome, isMobile } from "react-device-detect";
 
-const { size, tablet } = utils.device;
+const { size } = utils.device;
 
 const StyledContainer = styled.div`
   width: 100%;
   height: ${isIOS && !isFirefox
-    ? !isChrome
-      ? "calc(var(--vh, 1vh) * 100 + 57px)"
-      : "calc(var(--vh, 1vh) * 100 + 57px)"
-    : "100vh "};
-  @media ${tablet} {
-    margin: auto;
-  }
+    ? "calc(var(--vh, 1vh) * 100 + 57px)"
+    : "100vh"};
 `;
 
 const Layout = (props) => {
@@ -34,36 +29,34 @@ const Layout = (props) => {
   }, []);
 
   useEffect(() => {
-    window.addEventListener("resize", resizeHandler);
+    if (isMobile) {
+      window.addEventListener("resize", resizeHandler);
 
-    resizeHandler();
+      resizeHandler();
+    }
 
     return () => {
-      window.removeEventListener("resize", resizeHandler);
+      if (isMobile) {
+        window.removeEventListener("resize", resizeHandler);
+      }
     };
   }, []);
 
   const resizeHandler = () => {
-    if (!isMobile) return;
     const intervalTime = 100;
-    const endTimeout = 300;
+    const endTimeout = 500;
 
     let interval, timeout, lastInnerHeight, noChangeCount;
 
     const updateHeight = () => {
-      let vh;
       clearInterval(interval);
       clearTimeout(timeout);
 
       interval = null;
       timeout = null;
 
-      vh = (window.innerHeight - 57) * 0.01;
-      if (isIOS && isChrome) {
-        if (window.innerHeight > window.innerWidth) {
-          document.documentElement.style.setProperty("--lm", "-40px");
-        }
-      }
+      const vh = (window.innerHeight - 57) * 0.01;
+
       document.documentElement.style.setProperty("--vh", `${vh}px`);
     };
     interval = setInterval(() => {
@@ -87,7 +80,7 @@ const Layout = (props) => {
   return (
     <StyledContainer className="Layout">
       {windowWidth && windowWidth.matches ? (
-        <MobileLayout {...props} className="mobile-layout" />
+        <MobileLayout {...props} />
       ) : (
         children
       )}
