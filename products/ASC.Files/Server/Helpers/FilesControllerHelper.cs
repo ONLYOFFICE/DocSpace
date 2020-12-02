@@ -293,16 +293,7 @@ namespace ASC.Files.Helpers
 
         public IEnumerable<FileEntryWrapper> GetFolderPath(T folderId)
         {
-            return EntryManager.GetBreadCrumbs(folderId).Select(r =>
-            {
-                if (r is Folder<string> f1)
-                    return FolderWrapperHelper.Get(f1);
-
-                if (r is Folder<int> f2)
-                    return FolderWrapperHelper.Get(f2);
-
-                return default(FileEntryWrapper);
-            });
+            return EntryManager.GetBreadCrumbs(folderId).Select(GetFileEntryWrapper);
         }
 
         public FileWrapper<T> GetFileInfo(T fileId, int version = -1)
@@ -321,28 +312,7 @@ namespace ASC.Files.Helpers
         public List<FileEntryWrapper> GetNewItems(T folderId)
         {
             return FileStorageService.GetNewItems(folderId)
-                .Select(r =>
-                 {
-                     FileEntryWrapper wrapper = null;
-                     if (r is Folder<int> fol1)
-                     {
-                         wrapper = FolderWrapperHelper.Get(fol1);
-                     }
-                     else if (r is Folder<string> fol2)
-                     {
-                         wrapper = FolderWrapperHelper.Get(fol2);
-                     }
-                     else if (r is File<int> file1)
-                     {
-                         wrapper = FileWrapperHelper.Get(file1);
-                     }
-                     else if (r is File<string> file2)
-                     {
-                         wrapper = FileWrapperHelper.Get(file2);
-                     }
-
-                     return wrapper;
-                 })
+                .Select(GetFileEntryWrapper)
                 .ToList();
         }
 
@@ -415,20 +385,7 @@ namespace ASC.Files.Helpers
 
             entries.AddRange(FileStorageService.GetItems(checkedFiles.OfType<string>(), checkedFiles.OfType<string>(), FilterType.FilesOnly, false, "", ""));
 
-            return entries.Select(r =>
-            {
-                FileEntryWrapper wrapper = null;
-                if (r is Folder<int> fol1)
-                {
-                    wrapper = FolderWrapperHelper.Get(fol1);
-                }
-                if (r is Folder<string> fol2)
-                {
-                    wrapper = FolderWrapperHelper.Get(fol2);
-                }
-
-                return wrapper;
-            });
+            return entries.Select(GetFileEntryWrapper);
         }
 
         public IEnumerable<FileOperationWraper> MoveBatchItems(BatchModel batchModel)
@@ -625,6 +582,29 @@ namespace ASC.Files.Helpers
                                                                                withSubFolders,
                                                                                new OrderBy(sortBy, !ApiContext.SortDescending)),
                                             startIndex);
+        }
+
+        internal FileEntryWrapper GetFileEntryWrapper(FileEntry r)
+        {
+            FileEntryWrapper wrapper = null;
+            if (r is Folder<int> fol1)
+            {
+                wrapper = FolderWrapperHelper.Get(fol1);
+            }
+            else if (r is Folder<string> fol2)
+            {
+                wrapper = FolderWrapperHelper.Get(fol2);
+            }
+            else if (r is File<int> file1)
+            {
+                wrapper = FileWrapperHelper.Get(file1);
+            }
+            else if (r is File<string> file2)
+            {
+                wrapper = FileWrapperHelper.Get(file2);
+            }
+
+            return wrapper;
         }
     }
 }
