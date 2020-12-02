@@ -1,6 +1,7 @@
 import store from "../store/store";
 import { store as commonStore } from "asc-web-common";
 import { getEncryptedFormats } from "../store/files/selectors";
+import { Log } from "oidc-client";
 
 const domain = window.location.origin;
 const guid = "{FFF0E1EB-13DB-4678-B67D-FF0A41DBBCEF}";
@@ -29,8 +30,13 @@ export function encryptionUploadDialog(callback) {
 }
 
 export function setEncryptionAccess(file, callback) {
-  debugger;
   getEncryptionAccess(file.id).then((keys) => {
+    console.log(
+      "%c%s",
+      "color: green; font: 1.1em/1 bold;",
+      "Fetch keys: ",
+      keys
+    );
     window.AscDesktopEditor.cloudCryptoCommand(
       "share",
       {
@@ -45,13 +51,24 @@ export function setEncryptionAccess(file, callback) {
         ],
       },
       (obj) => {
+        console.log(
+          "%c%s",
+          "color: green; font: 1.1em/1 bold;",
+          "obj item: ",
+          obj
+        );
         let fileItem = null;
         if (obj.isCrypto !== false) {
           let bytes = obj.bytes;
-          let filename = "temp_name";
+          let filename = file.title;
           fileItem = new File([bytes], filename);
         }
-
+        console.log(
+          "%c%s",
+          "color: green; font: 1.1em/1 bold;",
+          "File item: ",
+          fileItem
+        );
         if (typeof callback == "function") {
           callback(fileItem);
         }

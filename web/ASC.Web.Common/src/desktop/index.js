@@ -55,6 +55,11 @@ export function regDesktop(user, isEncryption, keys, setEncryptionKeys) {
           break;
         }
         case "getsharingkeys":
+          console.log(
+            "%c%s",
+            "color: green; font: 1.1em/1 bold;",
+            "Get sharing keys"
+          );
           toastr.info("get sharing keys");
           break;
         default:
@@ -114,8 +119,13 @@ export function logout() {
 }
 
 export function setEncryptionAccess(file, callback) {
-  debugger;
   getEncryptionAccess(file.id).then((keys) => {
+    console.log(
+      "%c%s",
+      "color: green; font: 1.1em/1 bold;",
+      "Fetch keys: ",
+      keys
+    );
     window.AscDesktopEditor.cloudCryptoCommand(
       "share",
       {
@@ -130,13 +140,24 @@ export function setEncryptionAccess(file, callback) {
         ],
       },
       (obj) => {
+        console.log(
+          "%c%s",
+          "color: green; font: 1.1em/1 bold;",
+          "obj item: ",
+          obj
+        );
         let fileItem = null;
         if (obj.isCrypto !== false) {
           let bytes = obj.bytes;
-          let filename = "temp_name";
+          let filename = file.title;
           fileItem = new File([bytes], filename);
         }
-
+        console.log(
+          "%c%s",
+          "color: green; font: 1.1em/1 bold;",
+          "File item: ",
+          fileItem
+        );
         if (typeof callback == "function") {
           callback(fileItem);
         }
