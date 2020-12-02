@@ -1,6 +1,6 @@
 import React, { Suspense } from "react";
 import { connect } from "react-redux";
-import { Router, Switch, Redirect } from "react-router-dom";
+import { Router, Switch, Redirect, Route } from "react-router-dom";
 import Home from "./components/pages/Home";
 import DocEditor from "./components/pages/DocEditor";
 import Settings from "./components/pages/Settings";
@@ -97,7 +97,7 @@ class App extends React.Component {
                 path={`${homepage}/settings/:setting`}
                 component={Settings}
               />
-              <PrivateRoute
+              <Route
                 exact
                 path={`${homepage}/doceditor`}
                 component={DocEditor}
