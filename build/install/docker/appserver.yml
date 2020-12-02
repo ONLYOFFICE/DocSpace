@@ -13,25 +13,25 @@ x-service:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       APP_DOTNET_ENV: ${APP_DOTNET_ENV:-products}
       APP_CORE_BASE_DOMAIN: ${APP_CORE_BASE_DOMAIN:-localhost}
-      APP_CORE_MACHINEKEY: ${APP_CORE_MACHINEKEY:-""}
-      DOCUMENT_SERVER_JWT_SECRET: ${DOCUMENT_SERVER_JWT_SECRET:-""}
-      APP_SECRET_HEADER: ${APP_SECRET_HEADER:-""}
-      APP_URL_PUBLIC: ${APP_URL_PUBLIC:-/ds-vpath/}
-      APP_URL_INTERNAL: ${APP_URL_INTERNAL:-http://onlyoffice-document-server/}
       APP_URL_PORTAL: ${APP_URL_PORTAL:-http://onlyoffice-community-server}
-      APP_URL_CONVERTER: ${APP_URL_CONVERTER:-/ds-vpath/ConvertService.ashx}
-      APP_STORAGE_ROOT: ${APP_STORAGE_ROOT-""}
+      YOUR_CORE_MACHINEKEY: ${YOUR_CORE_MACHINEKEY:-""}
+      DOCUMENT_SERVER_JWT_SECRET: ${DOCUMENT_SERVER_JWT_SECRET:-""}
+      DOCUMENT_SERVER_JWT_HEADER: ${DOCUMENT_SERVER_JWT_HEADER:-""}
+      DOCUMENT_SERVER_URL_PUBLIC: ${DOCUMENT_SERVER_URL_PUBLIC:-/ds-vpath/}
+      DOCUMENT_SERVER_URL_INTERNAL: ${DOCUMENT_SERVER_URL_INTERNAL:-http://onlyoffice-document-server/}
+      DOCUMENT_SERVER_URL_CONVERTER: ${DOCUMENT_SERVER_URL_CONVERTER:-/ds-vpath/ConvertService.ashx}
       KAFKA_HOST: ${KAFKA_HOST:-kafka}
+      ELK_HOST: ${ELK_HOST:-elasticsearch}
     volumes:
     - /app/onlyoffice/CommunityServer/data:/app/onlyoffice/data/
 
 services: 
   onlyoffice-elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:${ELK_VERSION}
-    container_name: elasticsearch
+    container_name: ${ELK_HOST:-elasticsearch}
     restart: always
     environment:
-      - node.name=elasticsearch
+      - node.name=${ELK_HOST:-elasticsearch}
       - discovery.type=single-node
       - bootstrap.memory_lock=true
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
