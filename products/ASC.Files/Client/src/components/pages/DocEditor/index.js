@@ -25,7 +25,7 @@ class PureEditor extends React.Component {
 
     showLoader();
 
-    //let docApiUrl = await files.getDocServiceUrl();
+    let docApiUrl = await files.getDocServiceUrl();
 
     const script = document.createElement("script");
     script.setAttribute("type", "text/javascript");
@@ -33,8 +33,9 @@ class PureEditor extends React.Component {
 
     script.onload = function () {
       console.log("PureEditor script.onload", fileId, window.DocsAPI);
+
       files
-        .openEdit(fileId, null, urlParams.doc)
+        .openEdit(fileId)
         .then((config) => {
           if (window.innerWidth < 720) {
             config.type = "mobile";
@@ -50,8 +51,7 @@ class PureEditor extends React.Component {
         });
     };
 
-    script.src =
-      "http://localhost/discbundle/common/javascript/head-snvdnBHTni4RCNYKbRM_iQ2.js?ver=10.5.793";
+    script.src = docApiUrl;
     script.async = true;
 
     console.log("PureEditor componentDidMount: added script");
