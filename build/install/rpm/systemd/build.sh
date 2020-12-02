@@ -9,9 +9,6 @@ APP_URLS="http://0.0.0.0"
 ENVIRONMENT=" --ENVIRONMENT=test"
 
 service_name=(
-	mysqld
-	kafka
-	kafka_zookeeper
 	api
 	api_system
 	urlshortener
@@ -22,8 +19,7 @@ service_name=(
 	files
 	files_service
 	studio
-	backup
-	nginx)
+	backup)
 
 SERVICE_PORT="" 
 SERVICE_NAME=""
@@ -105,28 +101,7 @@ reassign_values (){
 	;;
   esac
   
-  EXEC_START="${DOTNET_RUN} ${WORK_DIR}${EXEC_FILE} --urls=${APP_URLS}:${SERVICE_PORT} --pathToConf=${PATH_TO_CONF} --\$STORAGE_ROOT=/app/onlyoffice/data/ --log:dir=${LOG_DIR} --log:name=${SERVICE_NAME}${CORE}${ENVIRONMENT}"
-  
-  case $1 in
-	nginx )
-		SERVICE_NAME="$1"
-		EXEC_START='/usr/sbin/nginx -g "daemon off;"'
-	;;
-	mysqld )	
-		EXEC_START="/usr/bin/pidproxy /var/mysqld/mysqld.pid /usr/bin/mysqld_safe"
-	;;
-	kafka )
-		SERVICE_NAME="$1"
-		WORK_DIR="/root/kafka_2.12-2.5.0/"
-		EXEC_START="/root/kafka_2.12-2.5.0/bin/kafka-server-start.sh /root/kafka_2.12-2.5.0/config/server.properties"
-	;;
-	kafka_zookeeper )
-		SERVICE_NAME="$1"
-		WORK_DIR="/root/kafka_2.12-2.5.0/"
-		EXEC_START="/root/kafka_2.12-2.5.0/bin/zookeeper-server-start.sh /root/kafka_2.12-2.5.0/config/zookeeper.properties"
-	;;
-  
-  esac
+  EXEC_START="${DOTNET_RUN} ${WORK_DIR}${EXEC_FILE} --urls=${APP_URLS}:${SERVICE_PORT} --pathToConf=${PATH_TO_CONF} --'\$STORAGE_ROOT'=/app/onlyoffice/data/ --log:dir=${LOG_DIR} --log:name=${SERVICE_NAME}${CORE}${ENVIRONMENT}"
 }
 
 write_to_file () {
@@ -135,10 +110,8 @@ write_to_file () {
 }
 
 mkdir -p modules
-touch modules/modules
 
 for i in ${!service_name[@]}; do
-  echo ${service_name[$i]} >> modules/modules
   cp service ./modules/appserver-${service_name[$i]}.service
   reassign_values "${service_name[$i]}"
   write_to_file $i

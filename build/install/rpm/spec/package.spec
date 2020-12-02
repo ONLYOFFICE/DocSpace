@@ -3,10 +3,10 @@ Summary:        backup
 Group:          Applications/Internet
 %description    backup
 
-%package        config
-Summary:        config
+%package        common
+Summary:        common
 Group:          Applications/Internet
-%description    config
+%description    common
 
 %package        files_services
 Summary:        files_services
