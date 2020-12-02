@@ -260,7 +260,6 @@ export function setEncryptionKeys(keys) {
           "color: green; font: 1.1em/1 bold;",
           "Encryption keys successfully set"
         );
-        //dispatch(getEncryptionKeys());
         dispatch(fetchEncryptionKeys(keys ?? {}));
       })
       .catch((err) => console.error(err));
@@ -274,25 +273,37 @@ export function getEncryptionKeys(dispatch) {
     .catch((err) => console.error(err));
 }
 
-export function getEncryptionAccess(file) {
-  return (dispatch) => {
-    return api.files
-      .getEncryptionAccess(file.id)
-      .then((keys) => {
-        return Promise.resolve(keys);
-        // setEncryptionAccess(file, keys, (file) => {
-        //   if (file) {
-        //     console.log("Saving encrypted file", file);
-        //   }
-        // });
-      })
-      .catch((err) => console.error(err));
-  };
+export function getEncryptionAccess(fileId) {
+  return api.files
+    .getEncryptionAccess(fileId)
+    .then((keys) => {
+      return Promise.resolve(keys);
+    })
+    .catch((err) => console.error(err));
 }
 
-export function getEncryptionSupport(dispatch) {
+export function getIsEncryptionSupport(dispatch) {
   return api.files
-    .getEncryptionSupport()
+    .getIsEncryptionSupport()
     .then((res) => dispatch(setIsEncryptionSupport(res)))
+    .catch((err) => console.error(err));
+}
+
+export function replaceFileStream(
+  fileId,
+  fileTitle,
+  file,
+  encrypted,
+  forcesave
+) {
+  //debugger
+  return api.files
+    .updateFileStream(file, fileId, encrypted, forcesave)
+    .then(() => {
+      if (forcesave) {
+        return;
+      }
+      return Promise.resolve();
+    })
     .catch((err) => console.error(err));
 }
