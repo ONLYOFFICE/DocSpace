@@ -19,6 +19,7 @@ const SimpleLinkWithDropdown = ({
   title,
   dropdownType,
   data,
+  isDisabled,
   ...props
 }) => <a {...props}></a>;
 
