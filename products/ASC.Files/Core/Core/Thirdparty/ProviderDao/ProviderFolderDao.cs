@@ -110,7 +110,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
             return result;
         }
 
-        public List<Folder<string>> GetFolders(string[] folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true)
+        public List<Folder<string>> GetFolders(IEnumerable<string> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true)
         {
             var result = Enumerable.Empty<Folder<string>>();
 
@@ -126,7 +126,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
                                                 {
                                                     var folderDao = selectorLocal.GetFolderDao(matchedId.FirstOrDefault());
                                                     return folderDao
-.GetFolders(matchedId.Select(selectorLocal.ConvertId).ToArray(),
+.GetFolders(matchedId.Select(selectorLocal.ConvertId).ToList(),
 filterType, subjectGroup, subjectID, searchText, searchSubfolders, checkShare);
                                                 })
                                                 .Where(r => r != null));
@@ -156,14 +156,14 @@ filterType, subjectGroup, subjectID, searchText, searchSubfolders, checkShare);
                 folder.ID = folderId;
                 return newFolderId;
             }
-            if (folder.ParentFolderID != null)
+            if (folder.FolderID != null)
             {
-                var folderId = folder.ParentFolderID;
+                var folderId = folder.FolderID;
                 var selector = GetSelector(folderId);
-                folder.ParentFolderID = selector.ConvertId(folderId);
+                folder.FolderID = selector.ConvertId(folderId);
                 var folderDao = selector.GetFolderDao(folderId);
                 var newFolderId = folderDao.SaveFolder(folder);
-                folder.ParentFolderID = folderId;
+                folder.FolderID = folderId;
                 return newFolderId;
 
             }
@@ -277,7 +277,7 @@ filterType, subjectGroup, subjectID, searchText, searchSubfolders, checkShare);
             var folderId = folder.ID;
             var selector = GetSelector(folderId);
             folder.ID = selector.ConvertId(folderId);
-            folder.ParentFolderID = selector.ConvertId(folder.ParentFolderID);
+            folder.FolderID = selector.ConvertId(folder.FolderID);
             var folderDao = selector.GetFolderDao(folderId);
             return folderDao.RenameFolder(folder, newTitle);
         }

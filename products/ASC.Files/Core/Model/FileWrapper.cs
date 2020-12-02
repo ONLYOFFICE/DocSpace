@@ -25,7 +25,9 @@
 
 
 using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 
 using ASC.Api.Core;
 using ASC.Api.Utils;
@@ -171,25 +173,46 @@ namespace ASC.Api.Documents
             FileUtility = fileUtility;
         }
 
-        public FileWrapper<T> Get<T>(File<T> file)
+        public FileWrapper<T> Get<T>(File<T> file, List<Tuple<FileEntry<T>, bool>> folders = null)
         {
-            var result = Get<FileWrapper<T>, T>(file);
+            var result = GetFileWrapper(file);
+
             result.FolderId = file.FolderID;
             if (file.RootFolderType == FolderType.USER
                 && !Equals(file.RootFolderCreator, AuthContext.CurrentAccount.ID))
             {
                 result.RootFolderType = FolderType.SHARE;
                 var folderDao = DaoFactory.GetFolderDao<T>();
-                var parentFolder = folderDao.GetFolder(file.FolderID);
-                if (!FileSecurity.CanRead(parentFolder))
+                FileEntry<T> parentFolder;
+
+                if(folders != null)
                 {
-                    result.FolderId = GlobalFolderHelper.GetFolderShare<T>();
+                    var folderWithRight = folders.FirstOrDefault(f => f.Item1.ID.Equals(file.FolderID));
+                    if (folderWithRight == null || !folderWithRight.Item2)
+                    {
+                        result.FolderId = GlobalFolderHelper.GetFolderShare<T>();
+                    }
+                }
+                else
+                {
+                    parentFolder = folderDao.GetFolder(file.FolderID);
+                    if (!FileSecurity.CanRead(parentFolder))
+                    {
+                        result.FolderId = GlobalFolderHelper.GetFolderShare<T>();
+                    }
                 }
             }
 
+
+            return result;
+        }
+
+        private FileWrapper<T> GetFileWrapper<T>(File<T> file)
+        {
+            var result = Get<FileWrapper<T>, T>(file);
+
             result.FileExst = FileUtility.GetFileExtension(file.Title);
             result.FileType = FileUtility.GetFileTypeByExtention(result.FileExst);
-
             result.Version = file.Version;
             result.VersionGroup = file.VersionGroup;
             result.ContentLength = file.ContentLengthString;

@@ -300,8 +300,8 @@ namespace ASC.Web.Files.Services.WCFService
             var prevVisible = breadCrumbs.ElementAtOrDefault(breadCrumbs.Count() - 2);
             if (prevVisible != null)
             {
-                if (prevVisible is Folder<string> f1) parent.ParentFolderID = (T)Convert.ChangeType(f1.ID, typeof(T));
-                if (prevVisible is Folder<int> f2) parent.ParentFolderID = (T)Convert.ChangeType(f2.ID, typeof(T));
+                if (prevVisible is Folder<string> f1) parent.FolderID = (T)Convert.ChangeType(f1.ID, typeof(T));
+                if (prevVisible is Folder<int> f2) parent.FolderID = (T)Convert.ChangeType(f2.ID, typeof(T));
             }
 
             parent.Shareable = FileSharing.CanSetAccess(parent)
@@ -348,11 +348,11 @@ namespace ASC.Web.Files.Services.WCFService
 
             var folderDao = DaoFactory.GetFolderDao<TId>();
             var fileDao = DaoFactory.GetFileDao<TId>();
-            var folders = folderDao.GetFolders(foldersId.ToArray());
+            var folders = folderDao.GetFolders(foldersId);
             folders = FileSecurity.FilterRead(folders).ToList();
             entries = entries.Concat(folders);
 
-            var files = fileDao.GetFiles(filesId.ToArray());
+            var files = fileDao.GetFiles(filesId);
             files = FileSecurity.FilterRead(files).ToList();
             entries = entries.Concat(files);
 
@@ -398,7 +398,7 @@ namespace ASC.Web.Files.Services.WCFService
             {
                 var newFolder = ServiceProvider.GetService<Folder<T>>();
                 newFolder.Title = title;
-                newFolder.ParentFolderID = parent.ID;
+                newFolder.FolderID = parent.ID;
 
                 var folderId = folderDao.SaveFolder(newFolder);
                 var folder = folderDao.GetFolder(folderId);
@@ -446,7 +446,7 @@ namespace ASC.Web.Files.Services.WCFService
 
             if (folder.RootFolderType == FolderType.USER
                 && !Equals(folder.RootFolderCreator, AuthContext.CurrentAccount.ID)
-                && !FileSecurity.CanRead(folderDao.GetFolder(folder.ParentFolderID)))
+                && !FileSecurity.CanRead(folderDao.GetFolder(folder.FolderID)))
             {
                 folder.FolderIdDisplay = GlobalFolderHelper.GetFolderShare<T>();
             }
@@ -676,7 +676,7 @@ namespace ASC.Web.Files.Services.WCFService
             var result = new ItemDictionary<string, string>();
 
             var fileDao = GetFileDao();
-            var ids = filesId.Where(FileTracker.IsEditing).Select(id => id).ToArray();
+            var ids = filesId.Where(FileTracker.IsEditing).Select(id => id).ToList();
 
             foreach (var file in fileDao.GetFiles(ids))
             {
@@ -1394,7 +1394,7 @@ namespace ASC.Web.Files.Services.WCFService
                 }
             }
 
-            var folders = folderDao.GetFolders(foldersId.ToArray());
+            var folders = folderDao.GetFolders(foldersId);
             var foldersProject = folders.Where(folder => folder.FolderType == FolderType.BUNCH).ToList();
             if (foldersProject.Any())
             {
@@ -1556,7 +1556,7 @@ namespace ASC.Web.Files.Services.WCFService
                     var folderIdToMy = folderDao.GetFolderIDUser(true, userTo.ID);
                     var newFolder = ServiceProvider.GetService<Folder<T>>();
                     newFolder.Title = string.Format(CustomNamingPeople.Substitute<FilesCommonResource>("TitleDeletedUserFolder"), userFrom.DisplayUserName(false, DisplayUserSettingsHelper));
-                    newFolder.ParentFolderID = folderIdToMy;
+                    newFolder.FolderID = folderIdToMy;
 
                     var newFolderTo = folderDao.SaveFolder(newFolder);
 
@@ -1608,7 +1608,7 @@ namespace ASC.Web.Files.Services.WCFService
                 rootFoldersId.Add(folderIdFromMy);
             }
 
-            var rootFolders = folderDao.GetFolders(rootFoldersId.ToArray());
+            var rootFolders = folderDao.GetFolders(rootFoldersId);
             foreach (var rootFolder in rootFolders)
             {
                 FileMarker.RemoveMarkAsNew(rootFolder, userId);
@@ -1646,11 +1646,11 @@ namespace ASC.Web.Files.Services.WCFService
             var folderDao = GetFolderDao();
             var entries = Enumerable.Empty<FileEntry<T>>();
 
-            var files = fileDao.GetFiles(filesId.ToArray());
+            var files = fileDao.GetFiles(filesId);
             files = FileSecurity.FilterRead(files).ToList();
             entries = entries.Concat(files);
 
-            var folders = folderDao.GetFolders(foldersId.ToArray());
+            var folders = folderDao.GetFolders(foldersId);
             folders = FileSecurity.FilterRead(folders).ToList();
             entries = entries.Concat(folders);
 
@@ -1668,11 +1668,11 @@ namespace ASC.Web.Files.Services.WCFService
             var folderDao = GetFolderDao();
             var entries = Enumerable.Empty<FileEntry<T>>();
 
-            var files = fileDao.GetFiles(filesId.ToArray());
+            var files = fileDao.GetFiles(filesId);
             files = FileSecurity.FilterRead(files).ToList();
             entries = entries.Concat(files);
 
-            var folders = folderDao.GetFolders(foldersId.ToArray());
+            var folders = folderDao.GetFolders(foldersId);
             folders = FileSecurity.FilterRead(folders).ToList();
             entries = entries.Concat(folders);
 
@@ -1693,7 +1693,7 @@ namespace ASC.Web.Files.Services.WCFService
 
             var tagDao = GetTagDao();
             var fileDao = GetFileDao();
-            var files = fileDao.GetFiles(filesId.ToArray());
+            var files = fileDao.GetFiles(filesId);
 
             files = FileSecurity.FilterRead(files)
                 .Where(file => FileUtility.ExtsWebTemplate.Contains(FileUtility.GetFileExtension(file.Title), StringComparer.CurrentCultureIgnoreCase))
@@ -1710,7 +1710,7 @@ namespace ASC.Web.Files.Services.WCFService
         {
             var tagDao = GetTagDao();
             var fileDao = GetFileDao();
-            var files = fileDao.GetFiles(filesId.ToArray());
+            var files = fileDao.GetFiles(filesId);
 
             files = FileSecurity.FilterRead(files).ToList();
 
@@ -2027,17 +2027,15 @@ namespace ASC.Web.Files.Services.WCFService
             //return new ItemList<string>(accounts);
         }
 
-        public ItemList<FileEntry<T>> ChangeOwner(ItemList<string> items, Guid userId)
+        public IEnumerable<FileEntry> ChangeOwner(IEnumerable<T> foldersId, IEnumerable<T> filesId, Guid userId)
         {
             var userInfo = UserManager.GetUsers(userId);
             ErrorIf(Equals(userInfo, Constants.LostUser) || userInfo.IsVisitor(UserManager), FilesCommonResource.ErrorMassage_ChangeOwner);
 
-            ParseArrayItems(items, out var foldersId, out var filesId);
-
-            var entries = new List<FileEntry<T>>();
+            var entries = new List<FileEntry>();
 
             var folderDao = GetFolderDao();
-            var folders = folderDao.GetFolders(foldersId.ToArray());
+            var folders = folderDao.GetFolders(foldersId);
 
             foreach (var folder in folders)
             {
@@ -2062,7 +2060,7 @@ namespace ASC.Web.Files.Services.WCFService
             }
 
             var fileDao = GetFileDao();
-            var files = fileDao.GetFiles(filesId.ToArray());
+            var files = fileDao.GetFiles(filesId);
 
             foreach (var file in files)
             {
@@ -2103,7 +2101,7 @@ namespace ASC.Web.Files.Services.WCFService
                 entries.Add(newFile);
             }
 
-            return new ItemList<FileEntry<T>>(entries);
+            return entries;
         }
 
         public bool StoreOriginal(bool set)
@@ -2222,18 +2220,6 @@ namespace ASC.Web.Files.Services.WCFService
         private ISecurityDao<T> GetSecurityDao()
         {
             return DaoFactory.GetSecurityDao<T>();
-        }
-
-        private static void ParseArrayItems(IEnumerable<string> data, out List<T> foldersId, out List<T> filesId)
-        {
-            //TODO:!!!!Fix
-            foldersId = new List<T>();
-            filesId = new List<T>();
-            foreach (var id in data)
-            {
-                if (id.StartsWith("file_")) filesId.Add((T)Convert.ChangeType(id.Substring("file_".Length), typeof(T)));
-                if (id.StartsWith("folder_")) foldersId.Add((T)Convert.ChangeType(id.Substring("folder_".Length), typeof(T)));
-            }
         }
 
         private static void ErrorIf(bool condition, string errorMessage)

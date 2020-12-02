@@ -138,7 +138,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
             return folders.ToList();
         }
 
-        public List<Folder<string>> GetFolders(string[] folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true)
+        public List<Folder<string>> GetFolders(IEnumerable<string> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true)
         {
             if (filterType == FilterType.FilesOnly || filterType == FilterType.ByExtension
                 || filterType == FilterType.DocumentsOnly || filterType == FilterType.ImagesOnly
@@ -186,9 +186,9 @@ namespace ASC.Files.Thirdparty.Sharpbox
                     var savedfolder = ProviderInfo.Storage.CreateFolder(MakePath(folder.ID));
                     return MakeId(savedfolder);
                 }
-                if (folder.ParentFolderID != null)
+                if (folder.FolderID != null)
                 {
-                    var parentFolder = GetFolderById(folder.ParentFolderID);
+                    var parentFolder = GetFolderById(folder.FolderID);
 
                     folder.Title = GetAvailableTitle(folder.Title, parentFolder, IsExist);
 
@@ -390,7 +390,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
             }
             else
             {
-                var parentFolder = GetFolderById(folder.ParentFolderID);
+                var parentFolder = GetFolderById(folder.FolderID);
                 newTitle = GetAvailableTitle(newTitle, parentFolder, IsExist);
 
                 //rename folder
