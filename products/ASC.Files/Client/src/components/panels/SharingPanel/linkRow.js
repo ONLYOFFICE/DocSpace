@@ -1,22 +1,14 @@
 import React from "react";
 import { Row, LinkWithDropdown, ToggleButton } from "asc-web-components";
 import { StyledLinkRow } from "../StyledPanels";
+import { constants } from "asc-web-common";
+
+const { ShareAceLink } = constants;
 
 class LinkRow extends React.Component {
   constructor(props) {
     super(props);
-
-    this.state = {
-      isChecked: false,
-    };
   }
-
-  onChangeToggle = (e) => {
-    const isChecked = this.props.onChangeToggle(e);
-    this.setState({
-      isChecked: isChecked,
-    });
-  };
 
   render() {
     const {
@@ -28,9 +20,10 @@ class LinkRow extends React.Component {
       accessOptions,
       item,
       withToggle,
+      onToggleLink,
     } = this.props;
 
-    const { isChecked } = this.state;
+    const isChecked = item.rights.accessNumber !== ShareAceLink.None;
     const isDisabled = withToggle ? !isChecked : false;
 
     return (
@@ -57,7 +50,7 @@ class LinkRow extends React.Component {
               <div>
                 <ToggleButton
                   isChecked={isChecked}
-                  onChange={this.onChangeToggle}
+                  onChange={() => onToggleLink(item)}
                 />
               </div>
             )}

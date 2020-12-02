@@ -41,23 +41,11 @@ const i18n = createI18N({
 });
 const { setExternalAccess } = api.files;
 const { changeLanguage } = commonUtils;
-const { ShareAccessRights } = constants;
+const { ShareAccessRights, ShareAceLink } = constants;
 const {
   getCurrentUserId,
   getSettingsCustomNamesGroupsCaption,
 } = store.auth.selectors;
-
-const accessType = Object.freeze({
-  None: 0,
-  ReadWrite: 1,
-  Read: 2,
-  Restrict: 3,
-  Varies: 4,
-  Review: 5,
-  Comment: 6,
-  FillForms: 7,
-  CustomFilter: 8,
-});
 
 class SharingPanelComponent extends React.Component {
   constructor(props) {
@@ -95,6 +83,20 @@ class SharingPanelComponent extends React.Component {
   onCloseActionPanel = (e) => {
     if (this.ref.current.contains(e.target)) return;
     this.setState({ showActionPanel: !this.state.showActionPanel });
+  };
+
+  onToggleLink = (item) => {
+    const accessType =
+      item.rights.accessNumber !== ShareAceLink.None
+        ? ShareAceLink.None
+        : ShareAccessRights.Read;
+
+    const returnValue = this.getData();
+    const fileId = returnValue[1];
+
+    setExternalAccess(fileId, accessType).then((res) => {
+      console.log(res);
+    });
   };
 
   //onKeyClick = () => console.log("onKeyClick");
@@ -447,9 +449,6 @@ class SharingPanelComponent extends React.Component {
     let error = null;
     let shareData = {};
 
-    setExternalAccess(fileId, accessType.none).then((res) => {
-      console.log(res);
-    });
 
     if (folderId.length !== 0 || fileId.length !== 0) {
       getShareUsers(folderId, fileId)
@@ -679,6 +678,7 @@ class SharingPanelComponent extends React.Component {
                   onDenyAccessClick={this.onDenyAccessItemClick}
                   onRemoveUserClick={this.onRemoveUserItemClick}
                   onShowEmbeddingPanel={this.onShowEmbeddingPanel}
+                  onToggleLink={this.onToggleLink}
                 />
               ))}
               {isNotifyUsers && (

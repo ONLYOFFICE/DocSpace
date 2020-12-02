@@ -27,6 +27,7 @@ const SharingRow = (props) => {
     onDenyAccessClick,
     onRemoveUserClick,
     onShowEmbeddingPanel,
+    onToggleLink,
     accessRight,
   } = props;
 
@@ -305,7 +306,7 @@ const SharingRow = (props) => {
             linkText="ExternalLink"
             data={externalLinkData}
             embeddedComponentRender={accessOptionsComboBox}
-            onChangeToggle={onChangeToggle}
+            onToggleLink={onToggleLink}
             withToggle={true}
             {...props}
           />
