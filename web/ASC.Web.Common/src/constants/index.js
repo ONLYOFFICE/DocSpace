@@ -101,6 +101,18 @@ export const ShareAccessRights = Object.freeze({
   FormFilling: 7,
 });
 
+export const ShareAceLink = Object.freeze({
+  None: 0,
+  ReadWrite: 1,
+  Read: 2,
+  Restrict: 3,
+  Varies: 4,
+  Review: 5,
+  Comment: 6,
+  FillForms: 7,
+  CustomFilter: 8,
+});
+
 export const i18nBaseSettings = {
   lng: localStorage.getItem(LANGUAGE) || "en",
   supportedLngs: ["en", "ru"],
