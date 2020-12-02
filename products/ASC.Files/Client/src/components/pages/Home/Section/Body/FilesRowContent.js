@@ -55,7 +55,7 @@ import { setEncryptionAccess } from "../../../../../helpers/desktop";
 const { FileAction } = constants;
 const sideColor = "#A3A9AE";
 const { getSettings } = initStore.auth.selectors;
-const { getEncryptionAccess } = initStore.auth.actions;
+const { getEncryptionAccess, replaceFileStream } = initStore.auth.actions;
 
 const SimpleFilesRowContent = styled(RowContent)`
   .badge-ext {
@@ -166,6 +166,7 @@ class FilesRowContent extends React.PureComponent {
       openDocEditor,
       isPrivacy,
       getEncryptionAccess,
+      replaceFileStream,
     } = this.props;
     const { itemTitle } = this.state;
 
@@ -176,16 +177,29 @@ class FilesRowContent extends React.PureComponent {
     if (itemTitle.trim() === "") return this.completeAction(itemId);
 
     let tab = item.fileExst ? window.open("about:blank", "_blank") : null;
-
+    //debugger;
     !item.fileExst
       ? createFolder(item.parentId, itemTitle)
           .then(() => this.completeAction(itemId))
           .finally(() => setIsLoading(false))
       : createFile(item.parentId, `${itemTitle}.${item.fileExst}`)
           .then((file) => {
-            openDocEditor(file.id, tab, file.webUrl);
-            this.completeAction(itemId);
+            if (isPrivacy) {
+              setEncryptionAccess(file, (encryptedFile) => {
+                if (encryptedFile) {
+                  replaceFileStream(
+                    file.id,
+                    itemTitle,
+                    encryptedFile,
+                    true,
+                    false
+                  );
+                }
+              });
+            }
+            //openDocEditor(file.id, tab, file.webUrl);
           })
+          .then(() => this.completeAction(itemId))
           .finally(() => setIsLoading(false));
   };
 
@@ -696,4 +710,5 @@ export default connect(mapStateToProps, {
   clearProgressData,
   fetchFiles,
   getEncryptionAccess,
+  replaceFileStream,
 })(withRouter(withTranslation()(FilesRowContent)));
