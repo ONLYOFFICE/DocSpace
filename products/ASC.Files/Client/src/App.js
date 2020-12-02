@@ -34,7 +34,7 @@ const {
   setCurrentProductHomePage,
   getPortalCultures,
   setEncryptionKeys,
-  getEncryptionSupport,
+  getIsEncryptionSupport,
   getEncryptionKeys,
 } = commonStore.auth.actions;
 const {
@@ -64,7 +64,7 @@ class App extends React.Component {
       getPortalCultures,
       fetchTreeFolders,
       setIsLoaded,
-      getEncryptionSupport,
+      getIsEncryptionSupport,
       getEncryptionKeys,
       isDesktop,
     } = this.props;
@@ -86,7 +86,7 @@ class App extends React.Component {
         fetchTreeFolders()
       );
       if (isDesktop) {
-        requests.push(getEncryptionSupport(), getEncryptionKeys());
+        requests.push(getIsEncryptionSupport(), getEncryptionKeys());
       }
     }
 
@@ -198,7 +198,7 @@ const mapDispatchToProps = (dispatch) => {
     getPortalCultures: () => getPortalCultures(dispatch),
     fetchTreeFolders: () => fetchTreeFolders(dispatch),
     setIsLoaded: () => dispatch(setIsLoaded(true)),
-    getEncryptionSupport: () => getEncryptionSupport(dispatch),
+    getIsEncryptionSupport: () => getIsEncryptionSupport(dispatch),
     getEncryptionKeys: () => getEncryptionKeys(dispatch),
     setEncryptionKeys: (keys) => dispatch(setEncryptionKeys(keys)),
   };
