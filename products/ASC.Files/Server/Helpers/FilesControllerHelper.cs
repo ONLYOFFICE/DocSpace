@@ -468,13 +468,19 @@ namespace ASC.Files.Helpers
 
         public IEnumerable<FileShareWrapper> GetFileSecurityInfo(T fileId)
         {
-            var fileShares = FileStorageService.GetSharedInfo(new ItemList<string> { string.Format("file_{0}", fileId) });
+            var fileShares = FileStorageService.GetSharedInfo(new List<T> { fileId }, new List<T> { });
             return fileShares.Select(FileShareWrapperHelper.Get);
         }
 
         public IEnumerable<FileShareWrapper> GetFolderSecurityInfo(T folderId)
         {
-            var fileShares = FileStorageService.GetSharedInfo(new ItemList<string> { string.Format("folder_{0}", folderId) });
+            var fileShares = FileStorageService.GetSharedInfo(new List<T> { }, new List<T> { folderId });
+            return fileShares.Select(FileShareWrapperHelper.Get);
+        }
+
+        public IEnumerable<FileShareWrapper> GetSecurityInfo(IEnumerable<T> fileIds, IEnumerable<T> folderIds)
+        {
+            var fileShares = FileStorageService.GetSharedInfo(fileIds, folderIds);
             return fileShares.Select(FileShareWrapperHelper.Get);
         }
 
@@ -483,9 +489,9 @@ namespace ASC.Files.Helpers
             if (share != null && share.Any())
             {
                 var list = new ItemList<AceWrapper>(share.Select(FileShareParamsHelper.ToAceObject));
-                var aceCollection = new AceCollection
+                var aceCollection = new AceCollection<T>
                 {
-                    Entries = new ItemList<string> { "file_" + fileId },
+                    Files = new List<T> {fileId },
                     Aces = list,
                     Message = sharingMessage
                 };
@@ -499,9 +505,9 @@ namespace ASC.Files.Helpers
             if (share != null && share.Any())
             {
                 var list = new ItemList<AceWrapper>(share.Select(FileShareParamsHelper.ToAceObject));
-                var aceCollection = new AceCollection
+                var aceCollection = new AceCollection<T>
                 {
-                    Entries = new ItemList<string> { "folder_" + folderId },
+                    Folders = new List<T> { folderId },
                     Aces = list,
                     Message = sharingMessage
                 };
@@ -522,8 +528,7 @@ namespace ASC.Files.Helpers
         {
             var file = GetFileInfo(fileId);
 
-            var objectId = "file_" + file.Id;
-            var sharedInfo = FileStorageService.GetSharedInfo(new ItemList<string> { objectId }).Find(r => r.SubjectId == FileConstant.ShareLinkId);
+            var sharedInfo = FileStorageService.GetSharedInfo(new List<T> { fileId }, new List<T> { }).Find(r => r.SubjectId == FileConstant.ShareLinkId);
             if (sharedInfo == null || sharedInfo.Share != share)
             {
                 var list = new ItemList<AceWrapper>
@@ -535,13 +540,13 @@ namespace ASC.Files.Helpers
                                 Share = share
                             }
                     };
-                var aceCollection = new AceCollection
+                var aceCollection = new AceCollection<T>
                 {
-                    Entries = new ItemList<string> { objectId },
+                    Files = new List<T> { fileId },
                     Aces = list
                 };
                 FileStorageService.SetAceObject(aceCollection, false);
-                sharedInfo = FileStorageService.GetSharedInfo(new ItemList<string> { objectId }).Find(r => r.SubjectId == FileConstant.ShareLinkId);
+                sharedInfo = FileStorageService.GetSharedInfo(new List<T> { fileId }, new List<T> { }).Find(r => r.SubjectId == FileConstant.ShareLinkId);
             }
 
             return sharedInfo.Link;
