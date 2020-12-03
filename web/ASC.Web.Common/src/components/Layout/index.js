@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import MobileLayout from "./MobileLayout";
 import { utils } from "asc-web-components";
-import { isIOS, isFirefox } from "react-device-detect";
+import { isIOS, isFirefox, isChrome, isSafari } from "react-device-detect";
 
 const { size } = utils.device;
 
@@ -30,13 +30,16 @@ const Layout = (props) => {
 
   useEffect(() => {
     if (isIOS && !isFirefox) {
-      window.addEventListener("resize", resizeHandler);
+      if (isSafari) window.addEventListener("resize", resizeHandler);
+      if (isChrome) window.addEventListener("orientationchange", resizeHandler);
       resizeHandler();
     }
 
     return () => {
       if (isIOS && !isFirefox) {
-        window.removeEventListener("resize", resizeHandler);
+        if (isSafari) window.removeEventListener("resize", resizeHandler);
+        if (isChrome)
+          window.removeEventListener("orientationchange", resizeHandler);
       }
     };
   }, []);
@@ -54,7 +57,13 @@ const Layout = (props) => {
       interval = null;
       timeout = null;
 
-      const vh = (window.innerHeight - 57) * 0.01;
+      let vh = (window.innerHeight - 57) * 0.01;
+
+      if (isChrome) {
+        if (window.innerHeight < window.innerWidth) {
+          vh = (window.innerHeight + 57) * 0.01;
+        }
+      }
       document.documentElement.style.setProperty("--vh", `${vh}px`);
     };
     interval = setInterval(() => {

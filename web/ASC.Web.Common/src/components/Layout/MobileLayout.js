@@ -1,7 +1,7 @@
 import React, { Component, createRef } from "react";
 import { Scrollbar, utils } from "asc-web-components";
 import { LayoutContextProvider } from "./context";
-import { isMobile, isSafari, isIOS } from "react-device-detect";
+import { isMobile, isSafari, isIOS, isChrome } from "react-device-detect";
 
 const { isTouchDevice } = utils.device;
 class MobileLayout extends Component {
@@ -19,7 +19,7 @@ class MobileLayout extends Component {
   componentDidMount() {
     this.documentElement = document.getElementById("customScrollBar");
 
-    this.documentElement.scrollTo(0, 0);
+    if (!isChrome) this.documentElement.scrollTo(0, 0);
 
     this.documentElement.addEventListener(
       "scroll",
