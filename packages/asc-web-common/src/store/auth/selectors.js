@@ -1,5 +1,6 @@
 import { createSelector } from "reselect";
 import isEmpty from "lodash/isEmpty";
+import history from "../../history";
 
 export function isMe(user, userName) {
   return (
@@ -17,7 +18,8 @@ const toModuleWrapper = (item, iconName) => {
     url: item.link,
     onClick: (e) => {
       if (e) {
-        window.open(item.link, "_self");
+        //window.open(item.link, "_self");
+        history.push(item.link);
         e.preventDefault();
       }
     },

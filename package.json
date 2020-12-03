@@ -5,7 +5,8 @@
     "packages/asc-web-components",
     "packages/asc-web-common",
     "web/ASC.Web.Login",
-    "web/ASC.Web.Client"
+    "web/ASC.Web.Client",
+    "products/ASC.People/Client"
   ],
   "scripts": {
     "wipe": "rm -fr node_modules yarn.lock web/**/node_modules products/**/node_modules",

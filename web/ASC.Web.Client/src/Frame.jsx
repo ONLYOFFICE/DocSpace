@@ -20,6 +20,7 @@ const {
 
 const Home = React.lazy(() => import("studio/home"));
 const Login = React.lazy(() => import("login/page"));
+const People = React.lazy(() => import("people/page"));
 
 const HomeRoute = () => (
   <React.Suspense fallback={null}>
@@ -33,6 +34,14 @@ const LoginRoute = () => (
   <React.Suspense fallback={null}>
     <ErrorBoundary>
       <Login />
+    </ErrorBoundary>
+  </React.Suspense>
+);
+
+const PeopleRoute = () => (
+  <React.Suspense fallback={null}>
+    <ErrorBoundary>
+      <People />
     </ErrorBoundary>
   </React.Suspense>
 );
@@ -74,6 +83,10 @@ const Frame = ({ items = [], page = "home", ...rest }) => {
               exact
               path={["/", "/error=:error"]}
               component={HomeRoute}
+            />
+            <PrivateRoute
+              path={["/products/people", "/products/people/filter"]}
+              component={PeopleRoute}
             />
             <PublicRoute
               exact
