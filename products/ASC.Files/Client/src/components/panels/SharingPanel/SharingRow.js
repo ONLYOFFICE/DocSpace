@@ -29,6 +29,7 @@ const SharingRow = (props) => {
     onShowEmbeddingPanel,
     onToggleLink,
     accessRight,
+    externalLinkData,
   } = props;
 
   const linkVisible = selection && selection.length === 1 && item.shareLink;
@@ -256,7 +257,7 @@ const SharingRow = (props) => {
     },
   ];
 
-  const externalLinkData = [
+  const externalLinkOptions = [
     {
       key: "linkItem_0",
       label: t("CopyExternalLink"),
@@ -304,7 +305,8 @@ const SharingRow = (props) => {
         <>
           <LinkRow
             linkText="ExternalLink"
-            data={externalLinkData}
+            options={externalLinkOptions}
+            externalLinkData={externalLinkData}
             embeddedComponentRender={accessOptionsComboBox}
             onToggleLink={onToggleLink}
             withToggle={true}
@@ -312,7 +314,7 @@ const SharingRow = (props) => {
           />
           <LinkRow
             linkText="InternalLink"
-            data={internalLinkData}
+            options={internalLinkData}
             embeddedComponentRender={embeddedComponentRender}
             {...props}
           />

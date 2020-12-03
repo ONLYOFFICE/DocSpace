@@ -525,7 +525,8 @@ export function setShareFiles(
   fileIds,
   share,
   notify,
-  sharingMessage
+  sharingMessage,
+  externalAccess
 ) {
   const foldersRequests = folderIds.map((id) =>
     files.setShareFolder(id, share, notify, sharingMessage)
@@ -535,7 +536,19 @@ export function setShareFiles(
     files.setShareFiles(id, share, notify, sharingMessage)
   );
 
-  const requests = [...foldersRequests, ...filesRequests];
+  let externalAccessRequest = [];
+
+  if (fileIds.length === 1 && externalAccess !== null) {
+    externalAccessRequest = fileIds.map((id) =>
+      files.setExternalAccess(id, externalAccess)
+    );
+  }
+
+  const requests = [
+    ...foldersRequests,
+    ...filesRequests,
+    ...externalAccessRequest,
+  ];
   return axios.all(requests);
 }
 
@@ -741,8 +754,8 @@ const startSessionFunc = (indexOfFile, t, dispatch, getState) => {
   const relativePath = file.path
     ? file.path.slice(1, -file.name.length)
     : file.webkitRelativePath
-      ? file.webkitRelativePath.slice(0, -file.name.length)
-      : "";
+    ? file.webkitRelativePath.slice(0, -file.name.length)
+    : "";
 
   let location;
   const requestsDataArray = [];
@@ -1238,25 +1251,59 @@ export const loopFilesOperations = (id, destFolderId, isCopy) => {
   };
 };
 
-export function selectItemOperation(destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter, isCopy) {
+export function selectItemOperation(
+  destFolderId,
+  folderIds,
+  fileIds,
+  conflictResolveType,
+  deleteAfter,
+  isCopy
+) {
   return (dispatch) => {
-    return isCopy ?
-      files.copyToFolder(destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter)
-      :
-      files.moveToFolder(destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter)
-  }
+    return isCopy
+      ? files.copyToFolder(
+          destFolderId,
+          folderIds,
+          fileIds,
+          conflictResolveType,
+          deleteAfter
+        )
+      : files.moveToFolder(
+          destFolderId,
+          folderIds,
+          fileIds,
+          conflictResolveType,
+          deleteAfter
+        );
+  };
 }
 
-export function itemOperationToFolder(destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter, isCopy) {
+export function itemOperationToFolder(
+  destFolderId,
+  folderIds,
+  fileIds,
+  conflictResolveType,
+  deleteAfter,
+  isCopy
+) {
   return (dispatch) => {
-    return dispatch(selectItemOperation(destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter, isCopy))
+    return dispatch(
+      selectItemOperation(
+        destFolderId,
+        folderIds,
+        fileIds,
+        conflictResolveType,
+        deleteAfter,
+        isCopy
+      )
+    )
       .then((res) => {
         const id = res[0] && res[0].id ? res[0].id : null;
-        dispatch(loopFilesOperations(id, destFolderId, isCopy))
+        dispatch(loopFilesOperations(id, destFolderId, isCopy));
       })
       .catch((err) => {
         toastr.error(err);
-        dispatch(clearProgressData())
-      })
+        dispatch(clearProgressData());
+      });
   };
 }

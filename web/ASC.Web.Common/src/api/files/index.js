@@ -397,7 +397,7 @@ export function getShareFiles(fileId) {
 }
 
 export function setExternalAccess(fileId, accessType) {
-  const data = { accessType };
+  const data = { share: accessType };
   return request({
     method: "put",
     url: `/files/${fileId}/setacelink`,

@@ -39,7 +39,6 @@ const i18n = createI18N({
   page: "SharingPanel",
   localesPath: "panels/SharingPanel",
 });
-const { setExternalAccess } = api.files;
 const { changeLanguage } = commonUtils;
 const { ShareAccessRights, ShareAceLink } = constants;
 const {
@@ -86,20 +85,19 @@ class SharingPanelComponent extends React.Component {
   };
 
   onToggleLink = (item) => {
+    const { shareDataItems } = this.state;
+
     const accessType =
-      item.rights.accessNumber !== ShareAceLink.None
-        ? ShareAceLink.None
-        : ShareAccessRights.Read;
+      item.access !== ShareAceLink.Restrict && item.access !== ShareAceLink.None
+        ? ShareAceLink.Restrict
+        : ShareAceLink.Read;
+    const newDataItems = shareDataItems.slice();
+    newDataItems[0].access = accessType;
 
-    const returnValue = this.getData();
-    const fileId = returnValue[1];
-
-    setExternalAccess(fileId, accessType).then((res) => {
-      console.log(res);
+    this.setState({
+      shareDataItems: newDataItems,
     });
   };
-
-  //onKeyClick = () => console.log("onKeyClick");
 
   onSaveClick = () => {
     const {
@@ -112,8 +110,10 @@ class SharingPanelComponent extends React.Component {
 
     const folderIds = [];
     const fileIds = [];
-
     const share = [];
+
+    let externalAccess = null;
+
     for (let item of shareDataItems) {
       const baseItem = baseShareData.find((x) => x.id === item.id);
       if (
@@ -121,6 +121,10 @@ class SharingPanelComponent extends React.Component {
         !baseItem
       ) {
         share.push({ shareTo: item.id, access: item.rights.accessNumber });
+      }
+
+      if (item.shareLink && item.access !== baseItem.access) {
+        externalAccess = item.access;
       }
     }
 
@@ -139,7 +143,14 @@ class SharingPanelComponent extends React.Component {
       }
     }
 
-    setShareFiles(folderIds, fileIds, share, isNotifyUsers, message)
+    setShareFiles(
+      folderIds,
+      fileIds,
+      share,
+      isNotifyUsers,
+      message,
+      externalAccess
+    )
       .catch((err) => toastr.error(err))
       .finally(() => onClose());
   };
@@ -373,7 +384,6 @@ class SharingPanelComponent extends React.Component {
       newItems.push(stash);
       stash = [];
     }
-
     stash = null;
     for (let item of arrayItems) {
       let length = newItems.length;
@@ -404,6 +414,11 @@ class SharingPanelComponent extends React.Component {
           }
           length--;
         }
+      } else {
+        const returnValue = this.getData();
+        const fileId = returnValue[1][0];
+        item.fileId = fileId;
+        item.access = items[0][0].access;
       }
     }
 
@@ -448,7 +463,6 @@ class SharingPanelComponent extends React.Component {
     const fileId = returnValue[1];
     let error = null;
     let shareData = {};
-
 
     if (folderId.length !== 0 || fileId.length !== 0) {
       getShareUsers(folderId, fileId)

@@ -13,7 +13,7 @@ class LinkRow extends React.Component {
   render() {
     const {
       linkText,
-      data,
+      options,
       index,
       t,
       embeddedComponentRender,
@@ -23,7 +23,10 @@ class LinkRow extends React.Component {
       onToggleLink,
     } = this.props;
 
-    const isChecked = item.rights.accessNumber !== ShareAceLink.None;
+    const isChecked =
+      item.access !== ShareAceLink.Restrict &&
+      item.access !== ShareAceLink.None;
+
     const isDisabled = withToggle ? !isChecked : false;
 
     return (
@@ -39,7 +42,7 @@ class LinkRow extends React.Component {
               className="sharing_panel-link"
               color="#333333"
               dropdownType="alwaysDashed"
-              data={data}
+              data={options}
               fontSize="14px"
               fontWeight={600}
               isDisabled={isDisabled}
