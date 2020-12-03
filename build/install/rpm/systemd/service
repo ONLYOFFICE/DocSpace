@@ -4,7 +4,7 @@ Description=AppServer-${SERVICE_NAME}
 [Service]
 PIDFile=/run/appserver/appserver-${SERVICE_NAME}.pid
 Type=simple
-user=root
+user=onlyoffice
 WorkingDirectory=${WORK_DIR}
 ExecStart=${EXEC_START}
 TimeoutSec=300
