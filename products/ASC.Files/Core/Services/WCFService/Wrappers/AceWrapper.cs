@@ -25,6 +25,7 @@
 
 
 using System;
+using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 using ASC.Files.Core;
@@ -33,9 +34,10 @@ using ASC.Files.Core.Security;
 
 namespace ASC.Web.Files.Services.WCFService
 {
-    public class AceCollection
+    public class AceCollection<T>
     {
-        public ItemList<string> Entries { get; set; }
+        public IEnumerable<T> Files { get; set; }
+        public IEnumerable<T> Folders { get; set; }
 
         public ItemList<AceWrapper> Aces { get; set; }
 

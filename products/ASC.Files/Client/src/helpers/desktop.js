@@ -29,50 +29,33 @@ export function encryptionUploadDialog(callback) {
   });
 }
 
-export function setEncryptionAccess(file, callback) {
-  getEncryptionAccess(file.id).then((keys) => {
-    console.log(
-      "%c%s",
-      "color: green; font: 1.1em/1 bold;",
-      "Fetch keys: ",
-      keys
-    );
-    window.AscDesktopEditor.cloudCryptoCommand(
-      "share",
-      {
-        "cryptoEngineId": guid,
-        "file": [file.viewUrl],
-        "keys": [
-          {
-            "publicKey":
-              "-----BEGIN PUBLIC KEY-----&#xAMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEApEKtEiSlig1Ue3JF6ajv&#xAtlWXEDdd/zcBmKUpkVtgi3gvCbGFB2VnUZRgOBWLQ8Bx+VU5beFlg0+/jUNSIzs1&#xAMwjGFa17CV8CxaZmtwTZjDwkfozWopttwxHfRIaOV8t2ZFB2V2qoGBCC4vxeF2/t&#xAMkNOgAnhVjH8Pq3uy5oOwzlZgU5u93ly12Jpa/bl2xGiXAqJpPH8s7ceSWBe/0Ky&#xAiDRz1DtRMs2elWQ6ag+tZwBk3Ee+j+ffK62d2n/B6ksY9oZ/joyzaHzjgeKI4+3E&#xAxW0Wh4zt/EEuypc6ySVd6+3WafRRqvQm+tXpolX6NL9oeCsyj0YrQGVcg6qm7BXn&#xABQIDAQAB&#xA-----END PUBLIC KEY-----&#xA",
-            "userId": "66faa6e4-f133-11ea-b126-00ffeec8b4ef",
-          },
-        ],
-      },
-      (obj) => {
-        console.log(
-          "%c%s",
-          "color: green; font: 1.1em/1 bold;",
-          "obj item: ",
-          obj
-        );
-        let fileItem = null;
-        if (obj.isCrypto !== false) {
-          let bytes = obj.bytes;
-          let filename = file.title;
-          fileItem = new File([bytes], filename);
+export function setEncryptionAccess(file) {
+  return getEncryptionAccess(file.id).then((keys) => {
+    let promise = new Promise((resolve, reject) => {
+      window.AscDesktopEditor.cloudCryptoCommand(
+        "share",
+        {
+          "cryptoEngineId": guid,
+          "file": [file.viewUrl],
+          "keys": [
+            {
+              "publicKey":
+                "-----BEGIN PUBLIC KEY-----&#xAMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEApEKtEiSlig1Ue3JF6ajv&#xAtlWXEDdd/zcBmKUpkVtgi3gvCbGFB2VnUZRgOBWLQ8Bx+VU5beFlg0+/jUNSIzs1&#xAMwjGFa17CV8CxaZmtwTZjDwkfozWopttwxHfRIaOV8t2ZFB2V2qoGBCC4vxeF2/t&#xAMkNOgAnhVjH8Pq3uy5oOwzlZgU5u93ly12Jpa/bl2xGiXAqJpPH8s7ceSWBe/0Ky&#xAiDRz1DtRMs2elWQ6ag+tZwBk3Ee+j+ffK62d2n/B6ksY9oZ/joyzaHzjgeKI4+3E&#xAxW0Wh4zt/EEuypc6ySVd6+3WafRRqvQm+tXpolX6NL9oeCsyj0YrQGVcg6qm7BXn&#xABQIDAQAB&#xA-----END PUBLIC KEY-----&#xA",
+              "userId": "66faa6e4-f133-11ea-b126-00ffeec8b4ef",
+            },
+          ],
+        },
+        (obj) => {
+          let bytes = [];
+          if (obj.isCrypto) {
+            bytes = obj.bytes;
+          }
+          resolve(bytes);
+          reject((e) => console.log("error: ", e));
         }
-        console.log(
-          "%c%s",
-          "color: green; font: 1.1em/1 bold;",
-          "File item: ",
-          fileItem
-        );
-        if (typeof callback == "function") {
-          callback(fileItem);
-        }
-      }
-    );
+      );
+    });
+    return promise;
   });
+  // .catch((e) => console.log(e));
 }

@@ -289,21 +289,6 @@ export function getIsEncryptionSupport(dispatch) {
     .catch((err) => console.error(err));
 }
 
-export function replaceFileStream(
-  fileId,
-  fileTitle,
-  file,
-  encrypted,
-  forcesave
-) {
-  //debugger
-  return api.files
-    .updateFileStream(file, fileId, encrypted, forcesave)
-    .then(() => {
-      if (forcesave) {
-        return;
-      }
-      return Promise.resolve();
-    })
-    .catch((err) => console.error(err));
+export function replaceFileStream(fileId, file, encrypted, forcesave) {
+  return api.files.updateFileStream(file, fileId, encrypted, forcesave);
 }

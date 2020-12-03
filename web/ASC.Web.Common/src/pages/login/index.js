@@ -16,7 +16,7 @@ import {
 } from "asc-web-components";
 import PageLayout from "../../components/PageLayout";
 import { connect } from "react-redux";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { withTranslation } from "react-i18next";
 import i18n from "./i18n";
 import ForgotPasswordModalDialog from "./sub-components/forgot-password-modal-dialog";
@@ -28,7 +28,6 @@ import {
 import { sendInstructionsToChangePassword } from "../../api/people";
 import Register from "./sub-components/register-container";
 import { createPasswordHash } from "../../utils";
-//import history from "../../history";
 import { redirectToDefaultPage } from "../../utils";
 import { isDesktopClient } from "../../store/auth/selectors";
 import { checkPwd } from "../../desktop";
@@ -128,9 +127,10 @@ const LoginContainer = styled.div`
 `;
 
 const LoginFormWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-rows: ${props => props.enabledJoin ? css`1fr 66px` : css`1fr`};
   width: 100%;
+  height: calc(100vh-56px);
 `;
 
 class Form extends Component {
@@ -213,14 +213,7 @@ class Form extends Component {
 
   onSubmit = () => {
     const { errorText, identifier, password } = this.state;
-    const {
-      login,
-      setIsLoaded,
-      history,
-      hashSettings,
-      homepage,
-      isDesktop,
-    } = this.props;
+    const { login, setIsLoaded, hashSettings, isDesktop } = this.props;
 
     errorText && this.setState({ errorText: "" });
     let hasError = false;
@@ -451,7 +444,8 @@ class Form extends Component {
 Form.propTypes = {
   login: PropTypes.func.isRequired,
   match: PropTypes.object.isRequired,
-  //history: PropTypes.object.isRequired,
+  hashSettings: PropTypes.object,
+  reloadPortalSettings: PropTypes.func,
   setIsLoaded: PropTypes.func.isRequired,
   greetingTitle: PropTypes.string.isRequired,
   t: PropTypes.func.isRequired,
@@ -471,25 +465,21 @@ Form.defaultProps = {
 const FormWrapper = withTranslation()(Form);
 
 const LoginForm = (props) => {
-  const { language, isLoaded } = props;
+  const { language, enabledJoin } = props;
 
   useEffect(() => {
     i18n.changeLanguage(language);
   }, [language]);
 
   return (
-    <>
-      {isLoaded && (
-        <LoginFormWrapper>
-          <PageLayout>
-            <PageLayout.SectionBody>
-              <FormWrapper i18n={i18n} {...props} />
-            </PageLayout.SectionBody>
-          </PageLayout>
-          <Register />
-        </LoginFormWrapper>
-      )}
-    </>
+    <LoginFormWrapper enabledJoin={enabledJoin}>
+      <PageLayout>
+        <PageLayout.SectionBody>
+            <FormWrapper i18n={i18n} {...props} />
+        </PageLayout.SectionBody>
+      </PageLayout>
+      <Register />
+    </LoginFormWrapper>
   );
 };
 
@@ -500,7 +490,7 @@ LoginForm.propTypes = {
 
 function mapStateToProps(state) {
   const { isLoaded, settings } = state.auth;
-  const { greetingSettings, organizationName, hashSettings } = settings;
+  const { greetingSettings, organizationName, hashSettings, enabledJoin } = settings;
 
   return {
     isLoaded,
@@ -509,6 +499,7 @@ function mapStateToProps(state) {
     language: getLanguage(state),
     greetingTitle: greetingSettings,
     hashSettings,
+    enabledJoin
   };
 }
 

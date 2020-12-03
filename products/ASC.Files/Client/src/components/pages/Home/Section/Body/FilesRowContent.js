@@ -184,22 +184,23 @@ class FilesRowContent extends React.PureComponent {
           .finally(() => setIsLoading(false))
       : createFile(item.parentId, `${itemTitle}.${item.fileExst}`)
           .then((file) => {
+            //debugger;
             if (isPrivacy) {
-              setEncryptionAccess(file, (encryptedFile) => {
-                if (encryptedFile) {
-                  replaceFileStream(
-                    file.id,
-                    itemTitle,
-                    encryptedFile,
-                    true,
-                    false
-                  );
-                }
+              return setEncryptionAccess(file).then((encryptedFile) => {
+                //debugger;
+                if (!encryptedFile) return Promise.resolve();
+                return replaceFileStream(
+                  file.id,
+                  encryptedFile,
+                  true,
+                  false
+                ).then(() => toastr.info(`File ${itemTitle} created`));
               });
             }
-            //openDocEditor(file.id, tab, file.webUrl);
+            return openDocEditor(file.id, tab, file.webUrl);
           })
           .then(() => this.completeAction(itemId))
+          .catch((err) => toastr.error(err))
           .finally(() => setIsLoading(false));
   };
 

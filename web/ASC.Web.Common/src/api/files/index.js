@@ -628,10 +628,11 @@ export function getEncryptionAccess(fileId) {
 }
 
 export function updateFileStream(file, fileId, encrypted, forcesave) {
-  debugger
+  const data = { file, encrypted, forcesave };
+  console.log("updateFileStream: ", data);
   return request({
     method: "put",
-    url: `/files/${fileId}/update?encrypted=${encrypted}&forcesave=${forcesave}`,
-    data: file,
+    url: `/files/${fileId}/update`,
+    data,
   });
 }
