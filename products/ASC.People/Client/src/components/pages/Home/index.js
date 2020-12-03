@@ -75,7 +75,6 @@ class PureHome extends React.Component {
   };
 
   componentDidMount() {
-    console.log(" componentDidMount ");
     this.documentElement = document.getElementById("customScrollBar");
   }
   componentDidUpdate(prevProps) {
