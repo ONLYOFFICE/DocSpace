@@ -372,6 +372,8 @@ export const isCanBeDeleted = createSelector(
         return false;
       case FolderType.COMMON:
         return isAdmin;
+      case FolderType.Privacy:
+        return true;
       case FolderType.TRASH:
         return true;
       default:

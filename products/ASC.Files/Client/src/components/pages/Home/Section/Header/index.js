@@ -48,6 +48,7 @@ import {
   getHeaderChecked,
   getOnlyFoldersSelected,
   getAccessedSelected,
+  getIsPrivacyFolder,
 } from "../../../../../store/files/selectors";
 
 const { isAdmin } = store.auth.selectors;
@@ -367,6 +368,7 @@ class SectionHeaderContent extends React.Component {
       isOnlyFoldersSelected,
       deleteDialogVisible,
       isRecycleBin,
+      isPrivacy,
     } = this.props;
 
     let menu = [
@@ -465,6 +467,11 @@ class SectionHeaderContent extends React.Component {
       });
 
       menu.splice(1, 1);
+    }
+
+    if (isPrivacy) {
+      menu.splice(3, 1);
+      menu.splice(4, 1);
     }
 
     return menu;
@@ -647,6 +654,7 @@ const mapStateToProps = (state) => {
     isRootFolder: getIsRootFolder(state),
     isAdmin: isAdmin(state),
     isRecycleBin: getIsRecycleBinFolder(state),
+    isPrivacy: getIsPrivacyFolder(state),
     parentId: getSelectedFolderParentId(state),
     selection,
     title: getSelectedFolderTitle(state),
