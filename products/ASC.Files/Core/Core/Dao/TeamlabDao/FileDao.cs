@@ -123,13 +123,18 @@ namespace ASC.Files.Core.Data
         public File<int> GetFile(int fileId)
         {
             var query = GetFileQuery(r => r.Id == fileId && r.CurrentVersion).AsNoTracking();
-            return ToFile(FromQueryWithShared(query).SingleOrDefault());
+            return ToFile(
+                    FromQueryWithShared(query)
+                    .Take(1)
+                    .SingleOrDefault());
         }
 
         public File<int> GetFile(int fileId, int fileVersion)
         {
             var query = GetFileQuery(r => r.Id == fileId && r.Version == fileVersion).AsNoTracking();
-            return ToFile(FromQueryWithShared(query).SingleOrDefault());
+            return ToFile(FromQueryWithShared(query)
+                        .Take(1)
+                        .SingleOrDefault());
         }
 
         public File<int> GetFile(int parentId, string title)
@@ -165,9 +170,9 @@ namespace ASC.Files.Core.Data
             return FromQueryWithShared(query).Select(ToFile).ToList();
         }
 
-        public List<File<int>> GetFiles(int[] fileIds)
+        public List<File<int>> GetFiles(IEnumerable<int> fileIds)
         {
-            if (fileIds == null || fileIds.Length == 0) return new List<File<int>>();
+            if (fileIds == null || !fileIds.Any()) return new List<File<int>>();
 
             var query = GetFileQuery(r => fileIds.Any(a => a == r.Id) && r.CurrentVersion)
                 .AsNoTracking();
@@ -175,9 +180,9 @@ namespace ASC.Files.Core.Data
             return FromQueryWithShared(query).Select(ToFile).ToList();
         }
 
-        public List<File<int>> GetFilesFiltered(int[] fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
+        public List<File<int>> GetFilesFiltered(IEnumerable<int> fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
         {
-            if (fileIds == null || fileIds.Length == 0 || filterType == FilterType.FoldersOnly) return new List<File<int>>();
+            if (fileIds == null || !fileIds.Any() || filterType == FilterType.FoldersOnly) return new List<File<int>>();
 
             var query = GetFileQuery(r => fileIds.Any(a => a == r.Id) && r.CurrentVersion).AsNoTracking();
 
@@ -185,7 +190,7 @@ namespace ASC.Files.Core.Data
             {
                 var func = GetFuncForSearch(null, null, filterType, subjectGroup, subjectID, searchText, searchInContent, false);
 
-                if (FactoryIndexer.TrySelectIds(s => func(s).In(r => r.Id, fileIds), out var searchIds))
+                if (FactoryIndexer.TrySelectIds(s => func(s).In(r => r.Id, fileIds.ToArray()), out var searchIds))
                 {
                     query = query.Where(r => searchIds.Any(b => b == r.Id));
                 }
@@ -943,7 +948,7 @@ namespace ASC.Files.Core.Data
                        : null;
         }
 
-        private void RecalculateFilesCount(object folderId)
+        private void RecalculateFilesCount(int folderId)
         {
             GetRecalculateFilesCountUpdate(folderId);
         }
@@ -1032,9 +1037,9 @@ namespace ASC.Files.Core.Data
             FilesDbContext.SaveChanges();
         }
 
-        public List<File<int>> GetFiles(int[] parentIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
+        public List<File<int>> GetFiles(IEnumerable<int> parentIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
         {
-            if (parentIds == null || parentIds.Length == 0 || filterType == FilterType.FoldersOnly) return new List<File<int>>();
+            if (parentIds == null || !parentIds.Any() || filterType == FilterType.FoldersOnly) return new List<File<int>>();
 
             var q = GetFileQuery(r => r.CurrentVersion)
                 .AsNoTracking()
@@ -1328,9 +1333,11 @@ namespace ASC.Files.Core.Data
                         .Where(x => x.tree.FolderId == r.FolderId)
                         .OrderByDescending(r => r.tree.Level)
                         .Select(r => r.folder)
+                        .Take(1)
                         .FirstOrDefault(),
                     Shared =
                      FilesDbContext.Security
+                        .Where(x=> x.TenantId == TenantID)
                         .Where(x => x.EntryType == FileEntryType.File)
                         .Where(x => x.EntryId == r.Id.ToString())
                         .Any()
@@ -1349,6 +1356,7 @@ namespace ASC.Files.Core.Data
                             .Where(x => x.tree.FolderId == r.FolderId)
                             .OrderByDescending(r => r.tree.Level)
                             .Select(r => r.folder)
+                            .Take(1)
                             .FirstOrDefault(),
                     Shared = true
                 });
