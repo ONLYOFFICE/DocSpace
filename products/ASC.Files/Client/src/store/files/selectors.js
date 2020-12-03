@@ -1093,14 +1093,21 @@ export const getAccessedSelected = createSelector(getSelection, (selection) => {
 
 export const getOperationsFolders = createSelector(
   getTreeFolders,
-  (treeFolders) => {
-    return treeFolders.filter(
-      (folder) =>
-        (folder.rootFolderType === FolderType.USER ||
-          folder.rootFolderType === FolderType.COMMON ||
-          folder.rootFolderType === FolderType.Projects) &&
-        folder
-    );
+  getIsPrivacyFolder,
+  (treeFolders, isPrivacy) => {
+    if (isPrivacy) {
+      return treeFolders.filter(
+        (folder) => folder.rootFolderType === FolderType.Privacy && folder
+      );
+    } else {
+      return treeFolders.filter(
+        (folder) =>
+          (folder.rootFolderType === FolderType.USER ||
+            folder.rootFolderType === FolderType.COMMON ||
+            folder.rootFolderType === FolderType.Projects) &&
+          folder
+      );
+    }
   }
 );
 const getIcon = (state, size = 24, fileExst = null, providerKey = null) => {
