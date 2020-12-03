@@ -1604,7 +1604,7 @@ namespace ASC.Api.Documents
             return FilesControllerHelperInt.GetFolderSecurityInfo(folderId);
         }
 
-        [Read("share")]
+        [Create("share")]
         public IEnumerable<FileShareWrapper> GetSecurityInfoFromBody([FromBody] BaseBatchModel<JsonElement> model)
         {
             var result = new List<FileShareWrapper>();
@@ -1613,7 +1613,7 @@ namespace ASC.Api.Documents
             return result;
         }
 
-        [Read("share")]
+        [Create("share")]
         [Consumes("application/x-www-form-urlencoded")]
         public IEnumerable<FileShareWrapper> GetSecurityInfoFromForm([FromForm] BaseBatchModel<JsonElement> model)
         {
