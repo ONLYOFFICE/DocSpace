@@ -1,7 +1,7 @@
 import React, { Component, createRef } from "react";
 import { Scrollbar, utils } from "asc-web-components";
 import { LayoutContextProvider } from "./context";
-import { isMobile, isSafari, isIOS, isChrome } from "react-device-detect";
+import { isMobile, isSafari, isIOS } from "react-device-detect";
 
 const { isTouchDevice } = utils.device;
 class MobileLayout extends Component {
@@ -44,12 +44,10 @@ class MobileLayout extends Component {
         ? this.documentElement.scrollTop
         : window.pageYOffset;
 
-    let isVisible;
-
     if (visibleContent && isMobile && !isTouchDevice) {
       return;
     }
-    if (window.pageYOffset !== 0) {
+    if (!isIOS && window.pageYOffset !== 0) {
       window.scroll(0, 0);
       return;
     }
@@ -65,7 +63,7 @@ class MobileLayout extends Component {
       }
     }
 
-    isVisible = prevScrollPosition >= currentScrollPosition;
+    let isVisible = prevScrollPosition >= currentScrollPosition;
 
     if (
       (isSafari || isIOS) &&
