@@ -187,7 +187,7 @@ class FilesRowContent extends React.PureComponent {
             //debugger;
             if (isPrivacy) {
               return setEncryptionAccess(file).then((encryptedFile) => {
-                //debugger;
+                debugger;
                 if (!encryptedFile) return Promise.resolve();
                 return replaceFileStream(
                   file.id,
@@ -200,7 +200,10 @@ class FilesRowContent extends React.PureComponent {
             return openDocEditor(file.id, tab, file.webUrl);
           })
           .then(() => this.completeAction(itemId))
-          .catch((err) => toastr.error(err))
+          .catch((err) => {
+            debugger;
+            toastr.error(err);
+          })
           .finally(() => setIsLoading(false));
   };
 
