@@ -599,27 +599,27 @@ namespace ASC.Api.Documents
         [Update("{fileId}/update", DisableFormat = true)]
         public FileWrapper<string> UpdateFileStreamFromBody(string fileId, [FromBody]FileStreamModel model)
         {
-            return FilesControllerHelperString.UpdateFileStream(model.File, fileId, model.Encrypted, model.Forcesave);
+            return FilesControllerHelperString.UpdateFileStream(model.File.OpenReadStream(), fileId, model.Encrypted, model.Forcesave);
         }
 
         [Update("{fileId}/update", DisableFormat = true)]
         [Consumes("application/x-www-form-urlencoded")]
         public FileWrapper<string> UpdateFileStreamFromForm(string fileId, [FromForm]FileStreamModel model)
         {
-            return FilesControllerHelperString.UpdateFileStream(model.File, fileId, model.Encrypted, model.Forcesave);
+            return FilesControllerHelperString.UpdateFileStream(model.File.OpenReadStream(), fileId, model.Encrypted, model.Forcesave);
         }
 
         [Update("{fileId:int}/update")]
         public FileWrapper<int> UpdateFileStreamFromBody(int fileId, [FromBody]FileStreamModel model)
         {
-            return FilesControllerHelperInt.UpdateFileStream(model.File, fileId, model.Encrypted, model.Forcesave);
+            return FilesControllerHelperInt.UpdateFileStream(model.File.OpenReadStream(), fileId, model.Encrypted, model.Forcesave);
         }
 
         [Update("{fileId:int}/update")]
         [Consumes("application/x-www-form-urlencoded")]
         public FileWrapper<int> UpdateFileStreamFromForm(int fileId, [FromForm]FileStreamModel model)
         {
-            return FilesControllerHelperInt.UpdateFileStream(model.File, fileId, model.Encrypted, model.Forcesave);
+            return FilesControllerHelperInt.UpdateFileStream(model.File.OpenReadStream(), fileId, model.Encrypted, model.Forcesave);
         }
 
 
