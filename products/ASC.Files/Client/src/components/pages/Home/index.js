@@ -166,7 +166,7 @@ class PureHome extends React.Component {
   }
 
   render() {
-    console.log("Home render");
+    //console.log("Home render");
     const {
       primaryProgressData,
       secondaryProgressData,
