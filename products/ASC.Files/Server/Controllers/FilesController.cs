@@ -1662,6 +1662,27 @@ namespace ASC.Api.Documents
             return FilesControllerHelperInt.SetFileSecurityInfo(fileId, model.Share, model.Notify, model.SharingMessage);
         }
 
+        [Update("share")]
+        public IEnumerable<FileShareWrapper> SetSecurityInfoFromBody([FromBody]SecurityInfoModel model)
+        {
+            return SetSecurityInfo(model);
+        }
+
+        [Update("share")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public IEnumerable<FileShareWrapper> SetSecurityInfoFromForm([FromForm]SecurityInfoModel model)
+        {
+            return SetSecurityInfo(model);
+        }        
+        
+        public IEnumerable<FileShareWrapper> SetSecurityInfo(SecurityInfoModel model)
+        {
+            var result = new List<FileShareWrapper>();
+            result.AddRange(FilesControllerHelperInt.SetSecurityInfo(model.FileIds.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()).ToList(), model.FolderIds.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()).ToList(), model.Share, model.Notify, model.SharingMessage));
+            result.AddRange(FilesControllerHelperString.SetSecurityInfo(model.FileIds.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()).ToList(), model.FolderIds.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()).ToList(), model.Share, model.Notify, model.SharingMessage));
+            return result;
+        }
+
         /// <summary>
         /// Sets sharing settings for the folder with the ID specified in the request
         /// </summary>
