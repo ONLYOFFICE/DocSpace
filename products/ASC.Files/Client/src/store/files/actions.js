@@ -866,13 +866,13 @@ const sendChunk = (
         const newState = getState();
         const newFilesLength = newState.files.uploadData.files.length;
         let isLatestFile = indexOfFile === newFilesLength - 1;
-
         const currentFile = files[indexOfFile];
         const fileId = res.data.data.id;
 
-        if (newPercent < 100) {
-          newPercent = newPercent + 0.5 / files.length;
+        if (index < requestsDataArray.length) {
+          newPercent = (index / requestsDataArray.length) * 100;
         }
+
         if (res.data.data && res.data.data.uploaded) {
           newPercent = 100;
         }
