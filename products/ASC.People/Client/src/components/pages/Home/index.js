@@ -40,7 +40,8 @@ class PureHome extends React.Component {
       isHeaderIndeterminate: false,
       isHeaderChecked: false,
     };
-    this.contextMenuClosed = false;
+    this.isCancelScrollUp = false;
+    this.isCloseContextMenu = false;
   }
 
   renderGroupButtonMenu = () => {
@@ -62,7 +63,8 @@ class PureHome extends React.Component {
     if (headerVisible || selected === "close") {
       setHeaderVisible(headerVisible);
       if (selected === "close") {
-        this.contextMenuClosed = true;
+        this.isCancelScrollUp = true;
+        this.isCloseContextMenu = true;
         setSelected("none");
       }
     }
@@ -73,6 +75,7 @@ class PureHome extends React.Component {
   };
 
   componentDidMount() {
+    console.log(" componentDidMount ");
     this.documentElement = document.getElementById("customScrollBar");
   }
   componentDidUpdate(prevProps) {
@@ -86,9 +89,20 @@ class PureHome extends React.Component {
       } else {
         utils.hideLoader();
       }
+
+      if (this.isCancelScrollUp && !this.props.isLoading)
+        this.isCancelScrollUp = false;
+
+      if (this.isCancelScrollUp && this.isDeleteProfile)
+        this.isCancelScrollUp = false;
+
+      if (this.isCancelScrollUp && this.isCloseContextMenu) {
+        this.isCancelScrollUp = false;
+        this.isCloseContextMenu = false;
+      }
     } else {
       !this.props.selection.length > 0 &&
-        !this.contextMenuClosed &&
+        !this.isCancelScrollUp &&
         this.documentElement &&
         this.documentElement.scrollTo(0, 0);
     }
@@ -104,15 +118,21 @@ class PureHome extends React.Component {
 
   onClose = () => {
     const { setSelected, setHeaderVisible } = this.props;
-    this.contextMenuClosed = true;
+    this.isCancelScrollUp = true;
+    this.isCloseContextMenu = true;
     setSelected("none");
     setHeaderVisible(false);
   };
 
   onLoading = (status) => {
+    console.log("Set is loading", status);
     this.props.setIsLoading(status);
   };
 
+  onCancelScrollUp = (value, isDeleteProfile) => {
+    this.isCancelScrollUp = value;
+    this.isDeleteProfile = isDeleteProfile;
+  };
   render() {
     const { isHeaderIndeterminate, isHeaderChecked, selected } = this.state;
 
@@ -160,6 +180,7 @@ class PureHome extends React.Component {
             isMobile={isMobile}
             selected={selected}
             onLoading={this.onLoading}
+            onCancelScrollUp={this.onCancelScrollUp}
             onChange={this.onRowChange}
           />
         </PageLayout.SectionBody>

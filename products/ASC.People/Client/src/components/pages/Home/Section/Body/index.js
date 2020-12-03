@@ -104,8 +104,9 @@ class SectionBodyContent extends React.PureComponent {
 
   onDisableClick = (e) => {
     const user = this.findUserById(e.currentTarget.dataset.id);
-    const { updateUserStatus, onLoading, t } = this.props;
+    const { updateUserStatus, onLoading, t, onCancelScrollUp } = this.props;
 
+    onCancelScrollUp(true);
     onLoading(true);
     updateUserStatus(EmployeeStatus.Disabled, [user.id], isRefetchPeople)
       .then(() => toastr.success(t("SuccessChangeUserStatus")))
@@ -115,8 +116,9 @@ class SectionBodyContent extends React.PureComponent {
 
   onEnableClick = (e) => {
     const user = this.findUserById(e.currentTarget.dataset.id);
-    const { updateUserStatus, onLoading, t } = this.props;
+    const { updateUserStatus, onLoading, t, onCancelScrollUp } = this.props;
 
+    onCancelScrollUp(true);
     onLoading(true);
     updateUserStatus(EmployeeStatus.Active, [user.id], isRefetchPeople)
       .then(() => toastr.success(t("SuccessChangeUserStatus")))
@@ -198,6 +200,7 @@ class SectionBodyContent extends React.PureComponent {
   toggleDeleteProfileEverDialog = (e) => {
     this.onCloseDialog();
 
+    this.props.onCancelScrollUp(true, true);
     const user = this.findUserById(e.currentTarget.dataset.id);
 
     if (!user) return;
@@ -217,7 +220,8 @@ class SectionBodyContent extends React.PureComponent {
 
   onInviteAgainClick = (e) => {
     const user = this.findUserById(e.currentTarget.dataset.id);
-    const { onLoading } = this.props;
+    const { onLoading, onCancelScrollUp } = this.props;
+    onCancelScrollUp(true);
     onLoading(true);
     resendUserInvites([user.id])
       .then(() =>
@@ -369,7 +373,7 @@ class SectionBodyContent extends React.PureComponent {
   };
 
   render() {
-    //console.log("Home SectionBodyContent render()");
+    // console.log("Home SectionBodyContent render()");
     const {
       isLoaded,
       isLoadedSection,
