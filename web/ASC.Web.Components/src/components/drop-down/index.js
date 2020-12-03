@@ -108,17 +108,9 @@ class DropDown extends React.PureComponent {
     }
   }
 
-  handleClickOutside = (e) => {
-    this.toggleDropDown(e);
-  };
-
   toggleDropDown = (e) => {
     this.props.clickOutsideAction &&
       this.props.clickOutsideAction(e, !this.props.open);
-  };
-
-  toggleBackdrop = (e) => {
-    this.toggleDropDown(e);
   };
 
   checkPosition = () => {
@@ -179,7 +171,7 @@ class DropDown extends React.PureComponent {
           visible={open}
           withBackdrop={needBackdrop}
           zIndex={149}
-          onClick={this.toggleBackdrop}
+          onClick={this.toggleDropDown}
         />
 
         <StyledDropdown

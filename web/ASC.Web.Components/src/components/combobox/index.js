@@ -48,7 +48,11 @@ class ComboBox extends React.Component {
   setIsOpen = (isOpen) => this.setState({ isOpen: isOpen });
 
   handleClickOutside = (e) => {
-    if (this.ref.current.contains(e.target)) return;
+    if (
+      this.ref.current.contains(e.target) &&
+      !e.target.closest("#backdrop-active")
+    )
+      return;
 
     this.setState({ isOpen: !this.state.isOpen }, () => {
       this.props.toggleAction && this.props.toggleAction(e, this.state.isOpen);
