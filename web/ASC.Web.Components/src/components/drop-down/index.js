@@ -117,8 +117,8 @@ class DropDown extends React.PureComponent {
       this.props.clickOutsideAction(e, !this.props.open);
   };
 
-  toggleBackdrop = () => {
-    this.toggleDropDown({});
+  toggleBackdrop = (e) => {
+    this.toggleDropDown(e);
   };
 
   checkPosition = () => {
@@ -170,7 +170,6 @@ class DropDown extends React.PureComponent {
     const needBackdrop = withBackdrop || isTablet ? true : false;
 
     const enabledChildren = React.Children.map(children, (child) => {
-      console.log("crash");
       if (child && !child.props.disabled) return child;
     });
 
