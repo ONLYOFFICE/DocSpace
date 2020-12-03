@@ -129,6 +129,7 @@ const StyledContent = styled.div`
 const StyledHeaderContent = styled.div`
   display: flex;
   align-items: center;
+  padding: 0 16px;
 `;
 
 const StyledBody = styled.div`
@@ -139,10 +140,12 @@ const StyledBody = styled.div`
   .selector-wrapper {
     position: fixed;
     height: calc(100% - 57px);
+    width: 100%;
 
     .column-options {
-      padding: 0 0 16px 0;
-      width: 470px;
+      padding: 0px 16px;
+      padding-bottom: 16px;
+      width: 100%;
 
       .header-options {
         .combo-button-label {
