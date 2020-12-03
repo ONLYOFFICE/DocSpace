@@ -194,7 +194,7 @@ class SectionBodyContent extends React.Component {
 
     this.tooltipRef = React.createRef();
     this.currentDroppable = null;
-    this.cancelScrollUp = false;
+    this.isCancelScrollUp = false;
     this.isTablet = window.innerWidth <= size.tablet;
   }
 
@@ -242,11 +242,11 @@ class SectionBodyContent extends React.Component {
         this.props.isLoading !== prevProps.isLoading
       ) {
         !this.props.isLoading &&
-          !this.cancelScrollUp &&
+          !this.isCancelScrollUp &&
           this.documentElement &&
           this.documentElement.scrollTo(0, 0);
 
-        if (this.cancelScrollUp) this.cancelScrollUp = false;
+        if (this.isCancelScrollUp) this.isCancelScrollUp = false;
       }
     }
   }
@@ -530,7 +530,7 @@ class SectionBodyContent extends React.Component {
       fetchFiles,
     } = this.props;
     const file = selection[0];
-    this.cancelScrollUp = true;
+    this.isCancelScrollUp = true;
     api.files.lockFile(file.id, !file.locked).then((res) => {
       /*const newFiles = files;
         const indexOfFile = newFiles.findIndex(x => x.id === res.id);
