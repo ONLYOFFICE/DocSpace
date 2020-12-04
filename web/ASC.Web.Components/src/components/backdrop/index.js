@@ -26,6 +26,13 @@ class Backdrop extends React.Component {
     };
   }
 
+  componentDidMount() {
+    if (this.props.visible) {
+      const isExist = document.querySelectorAll(".backdrop-active").length > 1;
+      this.setState({ backdropExist: isExist });
+    }
+  }
+
   componentDidUpdate(prevProps) {
     if (prevProps.visible !== this.props.visible) {
       const isExist = document.querySelectorAll(".backdrop-active").length > 1;
