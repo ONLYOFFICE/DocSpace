@@ -30,9 +30,25 @@ export function createConfirmUser(registerData, loginData, key) {
   return (dispatch) => {
     return api.people
       .createUser(data, key)
-      .then((user) => dispatch(setCurrentUser(user)))
-      .then(() => api.user.login(loginData.userName, loginData.passwordHash))
-      .then(() => loadInitInfo(dispatch));
+      .then((user) => { 
+        dispatch(setCurrentUser(user));
+
+      })
+      .then(() => { 
+        const promise = new Promise((resolve, reject) => {
+          setTimeout(() => {
+            login(loginData.userName, loginData.passwordHash)(dispatch)
+              .then(() => {
+                resolve(loadInitInfo(dispatch));
+              }) 
+              .catch((e) => {
+                reject(e);
+              })
+            }, 1000);
+        });
+        
+        return promise;
+      });
   };
 }
 

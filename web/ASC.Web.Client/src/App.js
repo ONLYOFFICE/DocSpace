@@ -39,8 +39,7 @@ class App extends React.Component {
       getUser,
       getModules,
       setIsLoaded,
-      getIsAuthenticated,
-      //defaultPage
+      getIsAuthenticated
     } = this.props;
 
     getIsAuthenticated()
@@ -49,11 +48,6 @@ class App extends React.Component {
       if (!isAuthenticated) {
         requests.push(getPortalSettings());
       } else if (!window.location.pathname.includes("confirm/EmailActivation")) {
-
-        // debugger;
-        // if(utils.tryRedirectTo(defaultPage)) //TODO: Re-write redirect to defaultPage after get settings
-        //   return;
-
         requests.push(getUser());
         requests.push(getPortalSettings());
         requests.push(getModules());
@@ -114,12 +108,11 @@ class App extends React.Component {
 
 const mapStateToProps = (state) => {
   const { modules, isLoaded, settings } = state.auth;
-  const { organizationName, defaultPage } = settings;
+  const { organizationName } = settings;
   return {
     modules,
     isLoaded,
-    organizationName,
-    defaultPage
+    organizationName
   };
 };
 

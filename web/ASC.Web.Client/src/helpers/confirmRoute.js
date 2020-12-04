@@ -4,7 +4,8 @@ import { ValidationResult } from "./../helpers/constants";
 import { Loader } from "asc-web-components";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
-import { api, utils, PageLayout } from "asc-web-common";
+import { api, utils, PageLayout, store } from "asc-web-common";
+const { isAuthenticated } = store.auth.selectors;
 const { checkConfirmLink } = api.user;
 const { getObjectByLocation } = utils;
 
@@ -99,7 +100,7 @@ class ConfirmRoute extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    isAuthenticated: state.auth.isAuthenticated,
+    isAuthenticated: isAuthenticated(state)
   };
 }
 

@@ -38,7 +38,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
       return (
             <PageLayout>
               <PageLayout.SectionBody>
-                <RectangleLoader  height="80vh"/>
+                <RectangleLoader  height="90vh"/>
               </PageLayout.SectionBody>
             </PageLayout>
           );

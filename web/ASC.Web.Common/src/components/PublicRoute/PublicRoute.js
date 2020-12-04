@@ -2,11 +2,24 @@
 import React from "react";
 import { Redirect, Route } from "react-router-dom";
 import { connect } from "react-redux";
+import { getIsLoaded, isAuthenticated } from "../../store/auth/selectors";
+import PageLayout from "../PageLayout";
+import RectangleLoader from "../Loaders/RectangleLoader/RectangleLoader";
 
 export const PublicRoute = ({ component: Component, ...rest }) => {
-  const { wizardToken, wizardCompleted, isAuthenticated } = rest;
+  const { wizardToken, wizardCompleted, isAuthenticated, isLoaded } = rest;
 
   const renderComponent = (props) => {
+    if(!isLoaded) {
+      return (
+        <PageLayout>
+          <PageLayout.SectionBody>
+            <RectangleLoader  height="90vh"/>
+          </PageLayout.SectionBody>
+        </PageLayout>
+      );
+    }
+
     if (isAuthenticated) {
       return (
         <Redirect
@@ -35,10 +48,14 @@ export const PublicRoute = ({ component: Component, ...rest }) => {
 };
 
 function mapStateToProps(state) {
+  const { settings } = state.auth;
+  const {wizardToken, wizardCompleted} = settings;
   return {
-    isAuthenticated: state.auth.isAuthenticated,
-    wizardToken: state.auth.settings.wizardToken,
-    wizardCompleted: state.auth.settings.wizardCompleted,
+    isAuthenticated: isAuthenticated(state),
+    isLoaded: getIsLoaded(state),
+
+    wizardToken,
+    wizardCompleted,
   };
 }
 
