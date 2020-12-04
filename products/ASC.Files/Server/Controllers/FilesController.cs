@@ -596,30 +596,17 @@ namespace ASC.Api.Documents
         /// <param name="encrypted"></param>
         /// <returns></returns>
         /// <visible>false</visible>
-        [Update("{fileId}/update", DisableFormat = true)]
-        public FileWrapper<string> UpdateFileStreamFromBody(string fileId, [FromBody]FileStreamModel model)
-        {
-            return FilesControllerHelperString.UpdateFileStream(model.File, fileId, model.Encrypted, model.Forcesave);
-        }
 
         [Update("{fileId}/update", DisableFormat = true)]
-        [Consumes("application/x-www-form-urlencoded")]
         public FileWrapper<string> UpdateFileStreamFromForm(string fileId, [FromForm]FileStreamModel model)
         {
-            return FilesControllerHelperString.UpdateFileStream(model.File, fileId, model.Encrypted, model.Forcesave);
+            return FilesControllerHelperString.UpdateFileStream(model.File.OpenReadStream(), fileId, model.Encrypted, model.Forcesave);
         }
 
         [Update("{fileId:int}/update")]
-        public FileWrapper<int> UpdateFileStreamFromBody(int fileId, [FromBody]FileStreamModel model)
-        {
-            return FilesControllerHelperInt.UpdateFileStream(model.File, fileId, model.Encrypted, model.Forcesave);
-        }
-
-        [Update("{fileId:int}/update")]
-        [Consumes("application/x-www-form-urlencoded")]
         public FileWrapper<int> UpdateFileStreamFromForm(int fileId, [FromForm]FileStreamModel model)
         {
-            return FilesControllerHelperInt.UpdateFileStream(model.File, fileId, model.Encrypted, model.Forcesave);
+            return FilesControllerHelperInt.UpdateFileStream(model.File.OpenReadStream(), fileId, model.Encrypted, model.Forcesave);
         }
 
 
@@ -1604,7 +1591,7 @@ namespace ASC.Api.Documents
             return FilesControllerHelperInt.GetFolderSecurityInfo(folderId);
         }
 
-        [Read("share")]
+        [Create("share")]
         public IEnumerable<FileShareWrapper> GetSecurityInfoFromBody([FromBody] BaseBatchModel<JsonElement> model)
         {
             var result = new List<FileShareWrapper>();
@@ -1613,7 +1600,7 @@ namespace ASC.Api.Documents
             return result;
         }
 
-        [Read("share")]
+        [Create("share")]
         [Consumes("application/x-www-form-urlencoded")]
         public IEnumerable<FileShareWrapper> GetSecurityInfoFromForm([FromForm] BaseBatchModel<JsonElement> model)
         {
@@ -1660,6 +1647,27 @@ namespace ASC.Api.Documents
         public IEnumerable<FileShareWrapper> SetFileSecurityInfoFromForm(int fileId, [FromForm]SecurityInfoModel model)
         {
             return FilesControllerHelperInt.SetFileSecurityInfo(fileId, model.Share, model.Notify, model.SharingMessage);
+        }
+
+        [Update("share")]
+        public IEnumerable<FileShareWrapper> SetSecurityInfoFromBody([FromBody]SecurityInfoModel model)
+        {
+            return SetSecurityInfo(model);
+        }
+
+        [Update("share")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public IEnumerable<FileShareWrapper> SetSecurityInfoFromForm([FromForm]SecurityInfoModel model)
+        {
+            return SetSecurityInfo(model);
+        }        
+        
+        public IEnumerable<FileShareWrapper> SetSecurityInfo(SecurityInfoModel model)
+        {
+            var result = new List<FileShareWrapper>();
+            result.AddRange(FilesControllerHelperInt.SetSecurityInfo(model.FileIds.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()).ToList(), model.FolderIds.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()).ToList(), model.Share, model.Notify, model.SharingMessage));
+            result.AddRange(FilesControllerHelperString.SetSecurityInfo(model.FileIds.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()).ToList(), model.FolderIds.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()).ToList(), model.Share, model.Notify, model.SharingMessage));
+            return result;
         }
 
         /// <summary>

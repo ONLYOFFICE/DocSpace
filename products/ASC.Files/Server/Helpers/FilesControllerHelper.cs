@@ -468,14 +468,12 @@ namespace ASC.Files.Helpers
 
         public IEnumerable<FileShareWrapper> GetFileSecurityInfo(T fileId)
         {
-            var fileShares = FileStorageService.GetSharedInfo(new List<T> { fileId }, new List<T> { });
-            return fileShares.Select(FileShareWrapperHelper.Get);
+            return GetSecurityInfo(new List<T> { fileId }, new List<T> { });
         }
 
         public IEnumerable<FileShareWrapper> GetFolderSecurityInfo(T folderId)
         {
-            var fileShares = FileStorageService.GetSharedInfo(new List<T> { }, new List<T> { folderId });
-            return fileShares.Select(FileShareWrapperHelper.Get);
+            return GetSecurityInfo(new List<T> { }, new List<T> { folderId });
         }
 
         public IEnumerable<FileShareWrapper> GetSecurityInfo(IEnumerable<T> fileIds, IEnumerable<T> folderIds)
@@ -486,35 +484,30 @@ namespace ASC.Files.Helpers
 
         public IEnumerable<FileShareWrapper> SetFileSecurityInfo(T fileId, IEnumerable<FileShareParams> share, bool notify, string sharingMessage)
         {
-            if (share != null && share.Any())
-            {
-                var list = new ItemList<AceWrapper>(share.Select(FileShareParamsHelper.ToAceObject));
-                var aceCollection = new AceCollection<T>
-                {
-                    Files = new List<T> {fileId },
-                    Aces = list,
-                    Message = sharingMessage
-                };
-                FileStorageService.SetAceObject(aceCollection, notify);
-            }
-            return GetFileSecurityInfo(fileId);
+            return SetSecurityInfo(new List<T> { fileId }, new List<T>(), share, notify, sharingMessage);
         }
 
         public IEnumerable<FileShareWrapper> SetFolderSecurityInfo(T folderId, IEnumerable<FileShareParams> share, bool notify, string sharingMessage)
+        {
+            return SetSecurityInfo(new List<T>(), new List<T> { folderId}, share, notify, sharingMessage);
+        }
+
+        public IEnumerable<FileShareWrapper> SetSecurityInfo(IEnumerable<T> fileIds, IEnumerable<T> folderIds, IEnumerable<FileShareParams> share, bool notify, string sharingMessage)
         {
             if (share != null && share.Any())
             {
                 var list = new ItemList<AceWrapper>(share.Select(FileShareParamsHelper.ToAceObject));
                 var aceCollection = new AceCollection<T>
                 {
-                    Folders = new List<T> { folderId },
+                    Files = fileIds,
+                    Folders = folderIds,
                     Aces = list,
                     Message = sharingMessage
                 };
                 FileStorageService.SetAceObject(aceCollection, notify);
             }
 
-            return GetFolderSecurityInfo(folderId);
+            return GetSecurityInfo(fileIds, folderIds);
         }
 
         public bool RemoveSecurityInfo(List<T> fileIds, List<T> folderIds)
