@@ -1,5 +1,5 @@
 import React from "react";
-import { Row, LinkWithDropdown, ToggleButton } from "asc-web-components";
+import { Row, LinkWithDropdown, ToggleButton, Icons } from "asc-web-components";
 import { StyledLinkRow } from "../StyledPanels";
 import { constants } from "asc-web-common";
 
@@ -24,7 +24,6 @@ class LinkRow extends React.Component {
     } = this.props;
 
     const isChecked = item.rights.accessNumber !== ShareAccessRights.DenyAccess;
-
     const isDisabled = withToggle ? !isChecked : false;
 
     return (
@@ -32,7 +31,16 @@ class LinkRow extends React.Component {
         <Row
           className="link-row"
           key={`${linkText}-key_${index}`}
-          element={embeddedComponentRender(accessOptions, item, isDisabled)}
+          element={
+            withToggle ? (
+              embeddedComponentRender(accessOptions, item, isDisabled)
+            ) : (
+              <Icons.AccessEditIcon
+                size="medium"
+                className="sharing_panel-owner-icon"
+              />
+            )
+          }
           contextButtonSpacerWidth="0px"
         >
           <>

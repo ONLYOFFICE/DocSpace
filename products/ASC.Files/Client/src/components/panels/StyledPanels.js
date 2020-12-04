@@ -137,6 +137,10 @@ const StyledBody = styled.div`
     padding: 0 16px;
   }
 
+  .embedding-panel_body {
+    padding: 0 16px;
+  }
+
   .selector-wrapper {
     position: fixed;
     height: calc(100% - 57px);
