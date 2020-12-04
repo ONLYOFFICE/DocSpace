@@ -1,3 +1,5 @@
+%files
+
 %files api
 %defattr(-, onlyoffice, onlyoffice, -)
 /var/www/studio/api/*
@@ -14,7 +16,8 @@
 
 %files common
 %defattr(-, onlyoffice, onlyoffice, -)
-/app/onlyoffice/config/*
+/app/onlyoffice/*
+/var/log/onlyoffice/
 
 %files files_services
 %defattr(-, onlyoffice, onlyoffice, -)
@@ -50,7 +53,7 @@
 /etc/nginx/conf.d/*
 /var/www/services/urlshortener/client/*
 /var/www/services/thumb/client/*
-#/etc/nginx/templates/upstream.conf.template #???
+/etc/nginx/templates/upstream.conf.template
 
 %files studio.notify
 %defattr(-, onlyoffice, onlyoffice, -)
