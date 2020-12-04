@@ -165,7 +165,6 @@ class FilesRowContent extends React.PureComponent {
       setIsLoading,
       openDocEditor,
       isPrivacy,
-      getEncryptionAccess,
       replaceFileStream,
     } = this.props;
     const { itemTitle } = this.state;
@@ -177,17 +176,15 @@ class FilesRowContent extends React.PureComponent {
     if (itemTitle.trim() === "") return this.completeAction(itemId);
 
     let tab = item.fileExst ? window.open("about:blank", "_blank") : null;
-    //debugger;
+
     !item.fileExst
       ? createFolder(item.parentId, itemTitle)
           .then(() => this.completeAction(itemId))
           .finally(() => setIsLoading(false))
       : createFile(item.parentId, `${itemTitle}.${item.fileExst}`)
           .then((file) => {
-            //debugger;
             if (isPrivacy) {
               return setEncryptionAccess(file).then((encryptedFile) => {
-                debugger;
                 if (!encryptedFile) return Promise.resolve();
                 return replaceFileStream(
                   file.id,
@@ -201,7 +198,6 @@ class FilesRowContent extends React.PureComponent {
           })
           .then(() => this.completeAction(itemId))
           .catch((err) => {
-            debugger;
             toastr.error(err);
           })
           .finally(() => setIsLoading(false));
