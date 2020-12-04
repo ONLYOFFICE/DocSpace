@@ -130,7 +130,7 @@ services:
     container_name: ${CONTAINER_PRIFIX:-onlyoffice}-backup
     
   onlyoffice-nginx:
-    image: "${REPO:-onlyoffice}/${STATUS:-}${NGINX_HOST}:${TAG_SRV:-latest}"
+    image: "${REPO:-onlyoffice}/${STATUS:-}${NGINX_HOST:-nginx}:${TAG_SRV:-latest}"
     container_name: ${CONTAINER_PRIFIX:-onlyoffice}-${NGINX_HOST:-nginx}
     restart: always
     expose:
