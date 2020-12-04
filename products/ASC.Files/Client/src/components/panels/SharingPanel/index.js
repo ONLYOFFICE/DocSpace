@@ -367,6 +367,7 @@ class SharingPanelComponent extends React.Component {
   };
 
   getShareDataItems = (items) => {
+    const { getAccessOption, selectedItems } = this.props;
     let arrayItems = [];
     const newItems = [];
     let stash = [];
@@ -425,7 +426,7 @@ class SharingPanelComponent extends React.Component {
     arrayItems = this.removeDuplicateShareData(arrayItems);
     const baseShareData = JSON.parse(JSON.stringify(arrayItems));
 
-    const accessOptions = getAccessOption(this.props.selectedItems);
+    const accessOptions = getAccessOption(selectedItems);
 
     return { baseShareData, shareDataItems: arrayItems, accessOptions };
   };
@@ -776,6 +777,7 @@ const SharingPanel = (props) => (
 
 const mapStateToProps = (state) => {
   return {
+    getAccessOption: (selectedItems) => getAccessOption(state, selectedItems),
     isMyId: getCurrentUserId(state),
     selectedItems: getSelection(state),
     groupsCaption: getSettingsCustomNamesGroupsCaption(state),

@@ -373,13 +373,13 @@ export const isCanBeDeleted = createSelector(
 );
 
 //TODO: Get the whole list of extensions
-export const getAccessOption = (selection) => {
+export const getAccessOption = (state, selection) => {
   const isFolder = selection.find((x) => x.fileExst === undefined);
-  const isMedia = selection.find(
-    (x) => isSound(x.fileExst) || isVideo(x.fileExst)
-  );
+  const isMedia = selection.find((x) => {
+    isSound(x.fileExst)(state) || isVideo(x.fileExst)(state);
+  });
   const isPresentationOrTable = selection.find(
-    (x) => isSpreadsheet(x.fileExst) || isPresentation(x.fileExst)
+    (x) => isSpreadsheet(x.fileExst)(state) || isPresentation(x.fileExst)(state)
   );
 
   if (isFolder || isMedia) {
