@@ -290,5 +290,7 @@ export function getIsEncryptionSupport(dispatch) {
 }
 
 export function replaceFileStream(fileId, file, encrypted, forcesave) {
-  return api.files.updateFileStream(file, fileId, encrypted, forcesave);
+  return (dispatch) => {
+    return api.files.updateFileStream(file, fileId, encrypted, forcesave);
+  };
 }
