@@ -26,6 +26,11 @@ const commonStyles = css`
       flex-direction: column;
       min-height: 100%;
     }
+
+    .people-row-container,
+    .files-row-container {
+      margin-top: -22px;
+    }
   }
 `;
 
