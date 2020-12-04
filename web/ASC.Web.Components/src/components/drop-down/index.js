@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import CustomScrollbarsVirtualList from "../scrollbar/custom-scrollbars-virtual-list";
 import DropDownItem from "../drop-down-item";
 import Backdrop from "../backdrop";
+import Box from "../box";
 import { VariableSizeList } from "react-window";
 
 const StyledDropdown = styled.div`
@@ -145,7 +146,14 @@ class DropDown extends React.PureComponent {
   };
 
   render() {
-    const { maxHeight, children, withBackdrop, open, isTablet } = this.props;
+    const {
+      maxHeight,
+      children,
+      withBackdrop,
+      open,
+      isTablet,
+      style,
+    } = this.props;
     const { directionX, directionY, width } = this.state;
     const rowHeights = React.Children.map(children, (child) =>
       this.getItemHeight(child)
@@ -166,7 +174,7 @@ class DropDown extends React.PureComponent {
     });
 
     return (
-      <>
+      <Box style={style}>
         <Backdrop
           visible={open}
           withBackdrop={needBackdrop}
@@ -196,7 +204,7 @@ class DropDown extends React.PureComponent {
             enabledChildren
           )}
         </StyledDropdown>
-      </>
+      </Box>
     );
   }
 }
