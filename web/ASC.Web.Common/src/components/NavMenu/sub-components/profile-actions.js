@@ -41,7 +41,7 @@ class ProfileActions extends React.PureComponent {
   onClose = (e) => {
     if (
       this.ref.current.contains(e.target) &&
-      !e.target.closest("#backdrop-active")
+      !e.target.closest(".backdrop-active")
     )
       return;
 

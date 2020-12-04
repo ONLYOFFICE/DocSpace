@@ -28,23 +28,26 @@ class Backdrop extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps.visible !== this.props.visible) {
-      const isExist = document.querySelectorAll("#backdrop-active").length > 1;
+      const isExist = document.querySelectorAll(".backdrop-active").length > 1;
       this.setState({ backdropExist: isExist });
     }
   }
 
   render() {
     const { backdropExist } = this.state;
+    const { className } = this.props;
 
-    return this.props.visible ? (
+    const classNameStr = this.props.visible
+      ? this.props.className
+        ? `backdrop-active ${className}`
+        : "backdrop-active"
+      : this.props.className
+      ? `backdrop-active ${className}`
+      : "backdrop-inactive";
+
+    return (
       <StyledBackdrop
-        id="backdrop-active"
-        {...this.props}
-        backdropExist={backdropExist}
-      />
-    ) : (
-      <StyledBackdrop
-        id="backdrop-inactive"
+        className={classNameStr}
         {...this.props}
         backdropExist={backdropExist}
       />

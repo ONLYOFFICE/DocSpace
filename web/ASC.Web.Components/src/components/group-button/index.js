@@ -139,7 +139,7 @@ class GroupButton extends React.Component {
 
   clickOutsideAction = (e) => {
     (this.state.isOpen && !this.ref.current.contains(e.target)) ||
-      e.target.closest("#backdrop-active");
+      e.target.closest(".backdrop-active");
     this.setIsOpen(false);
   };
 

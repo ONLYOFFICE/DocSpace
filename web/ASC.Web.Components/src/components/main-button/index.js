@@ -121,7 +121,7 @@ class MainButton extends React.PureComponent {
     if (
       !this.state.isOpen &&
       this.ref.current.contains(e.target) &&
-      !e.target.closest("#backdrop-active")
+      !e.target.closest(".backdrop-active")
     )
       return;
     this.toggle(false);
