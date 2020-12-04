@@ -3,7 +3,7 @@ import { Row, LinkWithDropdown, ToggleButton } from "asc-web-components";
 import { StyledLinkRow } from "../StyledPanels";
 import { constants } from "asc-web-common";
 
-const { ShareAceLink } = constants;
+const { ShareAccessRights } = constants;
 
 class LinkRow extends React.Component {
   constructor(props) {
@@ -23,9 +23,7 @@ class LinkRow extends React.Component {
       onToggleLink,
     } = this.props;
 
-    const isChecked =
-      item.access !== ShareAceLink.Restrict &&
-      item.access !== ShareAceLink.None;
+    const isChecked = item.rights.accessNumber !== ShareAccessRights.DenyAccess;
 
     const isDisabled = withToggle ? !isChecked : false;
 

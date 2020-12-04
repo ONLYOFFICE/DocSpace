@@ -333,6 +333,9 @@ const StyledSharingBody = styled(Scrollbar)`
     position: fixed;
     bottom: 70px;
     width: 94%;
+    left: 0;
+    right: 0;
+    margin: auto;
   }
 `;
 

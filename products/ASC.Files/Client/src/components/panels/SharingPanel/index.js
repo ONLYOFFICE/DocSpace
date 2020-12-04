@@ -16,13 +16,7 @@ import {
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
-import {
-  utils as commonUtils,
-  constants,
-  toastr,
-  store,
-  api,
-} from "asc-web-common";
+import { utils as commonUtils, constants, toastr, store } from "asc-web-common";
 import { getShareUsers, setShareFiles } from "../../../store/files/actions";
 import { getAccessOption, getSelection } from "../../../store/files/selectors";
 import {
@@ -40,7 +34,7 @@ const i18n = createI18N({
   localesPath: "panels/SharingPanel",
 });
 const { changeLanguage } = commonUtils;
-const { ShareAccessRights, ShareAceLink } = constants;
+const { ShareAccessRights } = constants;
 const {
   getCurrentUserId,
   getSettingsCustomNamesGroupsCaption,
@@ -87,13 +81,13 @@ class SharingPanelComponent extends React.Component {
   onToggleLink = (item) => {
     const { shareDataItems } = this.state;
 
-    const accessType =
-      item.access !== ShareAceLink.Restrict && item.access !== ShareAceLink.None
-        ? ShareAceLink.Restrict
-        : ShareAceLink.Read;
-    const newDataItems = shareDataItems.slice();
-    newDataItems[0].access = accessType;
+    const rights =
+      item.rights.accessNumber !== ShareAccessRights.DenyAccess
+        ? this.getItemAccess(ShareAccessRights.DenyAccess)
+        : this.getItemAccess(ShareAccessRights.ReadOnly);
+    const newDataItems = JSON.parse(JSON.stringify(shareDataItems));
 
+    newDataItems[0].rights = { ...rights };
     this.setState({
       shareDataItems: newDataItems,
     });
@@ -117,14 +111,19 @@ class SharingPanelComponent extends React.Component {
     for (let item of shareDataItems) {
       const baseItem = baseShareData.find((x) => x.id === item.id);
       if (
-        (baseItem && baseItem.rights.rights !== item.rights.rights) ||
+        (baseItem &&
+          baseItem.rights.rights !== item.rights.rights &&
+          !item.shareLink) ||
         !baseItem
       ) {
         share.push({ shareTo: item.id, access: item.rights.accessNumber });
       }
 
-      if (item.shareLink && item.access !== baseItem.access) {
-        externalAccess = item.access;
+      if (
+        item.shareLink &&
+        item.rights.accessNumber !== baseItem.rights.accessNumber
+      ) {
+        externalAccess = item.rights.accessNumber;
       }
     }
 
@@ -313,17 +312,14 @@ class SharingPanelComponent extends React.Component {
     }
   };
 
-  getItemAccess = (item) => {
+  getItemAccess = (accessType, isOwner = false) => {
     const fullAccessRights = {
       icon: "AccessEditIcon",
       rights: "FullAccess",
       accessNumber: ShareAccessRights.FullAccess,
-      isOwner: item.isOwner,
+      isOwner: isOwner,
     };
-    if (item.sharedTo.shareLink) {
-      return fullAccessRights;
-    }
-    switch (item.access) {
+    switch (accessType) {
       case 1:
         return fullAccessRights;
       case 2:
@@ -374,7 +370,7 @@ class SharingPanelComponent extends React.Component {
 
     for (let array of items) {
       for (let item of array) {
-        const rights = this.getItemAccess(item);
+        const rights = this.getItemAccess(item.access, item.isOwner);
 
         if (rights) {
           item.sharedTo = { ...item.sharedTo, ...{ rights } };
@@ -416,10 +412,9 @@ class SharingPanelComponent extends React.Component {
           length--;
         }
       } else {
-        const returnValue = this.getData();
-        const fileId = returnValue[1][0];
-        item.fileId = fileId;
-        item.access = items[0][0].access;
+        const externalLinkAccess = items[0][0].access;
+        item.access = externalLinkAccess;
+        item.rights = this.getItemAccess(externalLinkAccess);
       }
     }
 
@@ -684,7 +679,6 @@ class SharingPanelComponent extends React.Component {
                   index={index}
                   isMyId={isMyId}
                   accessOptions={accessOptions}
-                  accessRight={accessRight}
                   onFullAccessClick={this.onFullAccessItemClick}
                   onReadOnlyClick={this.onReadOnlyItemClick}
                   onReviewClick={this.onReviewItemClick}
