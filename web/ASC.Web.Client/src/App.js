@@ -41,13 +41,14 @@ class App extends React.Component {
       getModules,
       setIsLoaded,
       getIsAuthenticated,
+      isAuthenticated,
     } = this.props;
 
     getIsAuthenticated();
 
     const requests = [];
 
-    if (!getIsAuthenticated) {
+    if (!isAuthenticated) {
       requests.push(getPortalSettings());
     } else if (!window.location.pathname.includes("confirm/EmailActivation")) {
       requests.push(getUser());
