@@ -1,16 +1,13 @@
 /* eslint-disable react/prop-types */
 import React from "react";
 import { Redirect, Route } from "react-router-dom";
-import { AUTH_KEY } from "../../constants";
 import { connect } from "react-redux";
 
 export const PublicRoute = ({ component: Component, ...rest }) => {
-  const token = localStorage.getItem(AUTH_KEY);
-
-  const { wizardToken, wizardCompleted } = rest;
+  const { wizardToken, wizardCompleted, isAuthenticated } = rest;
 
   const renderComponent = (props) => {
-    if (token) {
+    if (isAuthenticated) {
       return (
         <Redirect
           to={{
@@ -39,6 +36,7 @@ export const PublicRoute = ({ component: Component, ...rest }) => {
 
 function mapStateToProps(state) {
   return {
+    isAuthenticated: state.auth.isAuthenticated,
     wizardToken: state.auth.settings.wizardToken,
     wizardCompleted: state.auth.settings.wizardCompleted,
   };

@@ -1,4 +1,4 @@
-import { request, setAuthorizationToken } from "../client";
+import { request, setWithCredentialsStatus } from "../client";
 
 export function login(userName, passwordHash) {
   const data = {
@@ -11,7 +11,7 @@ export function login(userName, passwordHash) {
     url: "/authentication.json",
     data,
   }).then((tokenData) => {
-    setAuthorizationToken(true);
+    setWithCredentialsStatus(true);
     return Promise.resolve(tokenData);
   });
 }
@@ -21,7 +21,7 @@ export function logout() {
     method: "post",
     url: "/authentication/logout",
   }).then(() => {
-    setAuthorizationToken();
+    setWithCredentialsStatus(false);
     return Promise.resolve();
   });
 }
@@ -31,5 +31,16 @@ export function checkConfirmLink(data) {
     method: "post",
     url: "/authentication/confirm.json",
     data,
+  });
+}
+
+export function checkIsAuthenticated() {
+  return request({
+    method: "get",
+    url: "/authentication",
+    withCredentials: true,
+  }).then((state) => {
+    setWithCredentialsStatus(state);
+    return Promise.resolve();
   });
 }

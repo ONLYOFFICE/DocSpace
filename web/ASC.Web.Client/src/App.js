@@ -28,21 +28,26 @@ const {
   getUser,
   getPortalSettings,
   getModules,
+  getIsAuthenticated,
 } = CommonStore.auth.actions;
 
 class App extends React.Component {
   componentDidMount() {
     utils.removeTempContent();
 
-    const { getPortalSettings, getUser, getModules, setIsLoaded } = this.props;
+    const {
+      getPortalSettings,
+      getUser,
+      getModules,
+      setIsLoaded,
+      getIsAuthenticated,
+    } = this.props;
 
-    const { AUTH_KEY } = constants;
-
-    const token = localStorage.getItem(AUTH_KEY);
+    getIsAuthenticated();
 
     const requests = [];
 
-    if (!token) {
+    if (!getIsAuthenticated) {
       requests.push(getPortalSettings());
     } else if (!window.location.pathname.includes("confirm/EmailActivation")) {
       requests.push(getUser());
@@ -102,9 +107,10 @@ class App extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-  const { modules, isLoaded, settings } = state.auth;
+  const { modules, isLoaded, settings, isAuthenticated } = state.auth;
   const { organizationName } = settings;
   return {
+    isAuthenticated,
     modules,
     isLoaded,
     organizationName,
@@ -113,6 +119,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    getIsAuthenticated: () => getIsAuthenticated(dispatch),
     getPortalSettings: () => getPortalSettings(dispatch),
     getUser: () => getUser(dispatch),
     getModules: () => getModules(dispatch),

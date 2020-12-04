@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 //import { Loader } from "asc-web-components";
 //import PageLayout from "../PageLayout";
 import { getCurrentUser, isAdmin, isMe } from "../../store/auth/selectors.js";
-import { AUTH_KEY } from "../../constants";
+import { getIsAuthenticated } from "../../store/auth/actions.js";
 import { Error401, Error404 } from "../../pages/errors";
 import isEmpty from "lodash/isEmpty";
 
@@ -17,8 +17,11 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
     allowForMe,
     user,
     computedMatch,
+    getIsAuthenticated,
   } = rest;
   const { userId } = computedMatch.params;
+
+  //getIsAuthenticated();
 
   const renderComponent = (props) => {
     if (!isAuthenticated) {
@@ -76,15 +79,18 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
 };
 
 function mapStateToProps(state) {
-  const { isLoaded, isAuthenticated } = state.auth;
+  const { isAuthenticated } = state.auth;
   return {
     isAdmin: isAdmin(state),
     user: getCurrentUser(state),
-    isAuthenticated: !(
-      !localStorage.getItem(AUTH_KEY) ||
-      (isLoaded && !isAuthenticated)
-    ),
+    isAuthenticated: isAuthenticated,
   };
 }
 
-export default connect(mapStateToProps)(PrivateRoute);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    getIsAuthenticated: () => getIsAuthenticated(dispatch),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(PrivateRoute);

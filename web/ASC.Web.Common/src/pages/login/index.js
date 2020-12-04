@@ -24,11 +24,12 @@ import {
   login,
   setIsLoaded,
   reloadPortalSettings,
+  getIsAuthenticated,
+  redirectToDefaultPage,
 } from "../../store/auth/actions";
 import { sendInstructionsToChangePassword } from "../../api/people";
 import Register from "./sub-components/register-container";
 import { createPasswordHash } from "../../utils";
-import { redirectToDefaultPage } from "../../utils";
 const { getLanguage } = store.auth.selectors;
 const LoginContainer = styled.div`
   display: flex;
@@ -113,7 +114,8 @@ const LoginContainer = styled.div`
 
 const LoginFormWrapper = styled.div`
   display: grid;
-  grid-template-rows: ${props => props.enabledJoin ? css`1fr 66px` : css`1fr`};
+  grid-template-rows: ${(props) =>
+    props.enabledJoin ? css`1fr 66px` : css`1fr`};
   width: 100%;
   height: calc(100vh-56px);
 `;
@@ -198,7 +200,12 @@ class Form extends Component {
 
   onSubmit = () => {
     const { errorText, identifier, password } = this.state;
-    const { login, setIsLoaded, hashSettings } = this.props;
+    const {
+      login,
+      setIsLoaded,
+      hashSettings,
+      redirectToDefaultPage,
+    } = this.props;
 
     errorText && this.setState({ errorText: "" });
     let hasError = false;
@@ -464,7 +471,7 @@ const LoginForm = (props) => {
     <LoginFormWrapper enabledJoin={enabledJoin}>
       <PageLayout>
         <PageLayout.SectionBody>
-            <FormWrapper i18n={i18n} {...props} />
+          <FormWrapper i18n={i18n} {...props} />
         </PageLayout.SectionBody>
       </PageLayout>
       <Register />
@@ -479,16 +486,22 @@ LoginForm.propTypes = {
 };
 
 function mapStateToProps(state) {
-  const { isLoaded, settings } = state.auth;
-  const { greetingSettings, organizationName, hashSettings, enabledJoin } = settings;
+  const { isLoaded, settings, isAuthenticated } = state.auth;
+  const {
+    greetingSettings,
+    organizationName,
+    hashSettings,
+    enabledJoin,
+  } = settings;
 
   return {
+    isAuthenticated,
     isLoaded,
     organizationName,
     language: getLanguage(state),
     greetingTitle: greetingSettings,
     hashSettings,
-    enabledJoin
+    enabledJoin,
   };
 }
 
@@ -496,4 +509,6 @@ export default connect(mapStateToProps, {
   login,
   setIsLoaded,
   reloadPortalSettings,
+  getIsAuthenticated,
+  redirectToDefaultPage,
 })(withRouter(LoginForm));

@@ -1,4 +1,5 @@
 import { default as api } from "../../api";
+import { setWithCredentialsStatus } from "../../api/client";
 
 export const LOGIN_POST = "LOGIN_POST";
 export const SET_CURRENT_USER = "SET_CURRENT_USER";
@@ -17,6 +18,7 @@ export const SET_CURRENT_PRODUCT_HOME_PAGE = "SET_CURRENT_PRODUCT_HOME_PAGE";
 export const SET_GREETING_SETTINGS = "SET_GREETING_SETTINGS";
 export const SET_CUSTOM_NAMES = "SET_CUSTOM_NAMES";
 export const SET_WIZARD_COMPLETED = "SET_WIZARD_COMPLETED";
+export const SET_IS_AUTHENTICATED = "SET_IS_AUTHENTICATED";
 
 export function setCurrentUser(user) {
   return {
@@ -128,11 +130,25 @@ export function setWizardComplete() {
   };
 }
 
+export function setIsAuthenticated(isAuthenticated) {
+  return {
+    type: SET_IS_AUTHENTICATED,
+    isAuthenticated,
+  };
+}
+
 export function getUser(dispatch) {
   return api.people
     .getUser()
     .then((user) => dispatch(setCurrentUser(user)))
+    .then(() => dispatch(setIsAuthenticated(true)))
     .catch((err) => dispatch(setCurrentUser({})));
+}
+
+export function getIsAuthenticated(dispatch) {
+  return api.user
+    .checkIsAuthenticated()
+    .then((res) => dispatch(setIsAuthenticated(res)));
 }
 
 export function getPortalSettings(dispatch) {
@@ -176,16 +192,20 @@ export function login(user, hash) {
     return api.user
       .login(user, hash)
       .then(() => dispatch(setIsLoaded(false)))
+      .then(() => {
+        setWithCredentialsStatus(true);
+        return dispatch(setIsAuthenticated(true));
+      })
       .then(() => getUserInfo(dispatch));
   };
 }
 
 export function logout() {
   return (dispatch) => {
-    return api.user
-      .logout()
-      .then(() => dispatch(setLogout()))
-      .then(() => dispatch(setIsLoaded(true)));
+    return api.user.logout().then(() => {
+      setWithCredentialsStatus(false);
+      return dispatch(setLogout());
+    });
   };
 }
 
@@ -210,3 +230,10 @@ export function getPortalPasswordSettings(dispatch, confirmKey = null) {
 export const reloadPortalSettings = () => {
   return (dispatch) => getPortalSettings(dispatch);
 };
+
+export function redirectToDefaultPage() {
+  return (_, getState) => {
+    const defaultPage = getState().settings.defaultPage;
+    setTimeout(() => window.location.replace(defaultPage), 0);
+  };
+}

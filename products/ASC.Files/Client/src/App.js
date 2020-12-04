@@ -10,7 +10,6 @@ import config from "../package.json";
 
 import {
   store as commonStore,
-  constants,
   history,
   PrivateRoute,
   PublicRoute,
@@ -32,8 +31,8 @@ const {
   setCurrentProductId,
   setCurrentProductHomePage,
   getPortalCultures,
+  getIsAuthenticated,
 } = commonStore.auth.actions;
-const { AUTH_KEY } = constants;
 
 class App extends React.Component {
   constructor(props) {
@@ -53,13 +52,14 @@ class App extends React.Component {
       getPortalCultures,
       fetchTreeFolders,
       setIsLoaded,
+      getIsAuthenticated,
+      isAuthenticated,
     } = this.props;
 
     setModuleInfo();
+    getIsAuthenticated();
 
-    const token = localStorage.getItem(AUTH_KEY);
-
-    if (!token) {
+    if (!isAuthenticated) {
       return setIsLoaded();
     }
 
@@ -131,15 +131,17 @@ class App extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-  const { settings } = state.auth;
+  const { settings, isAuthenticated } = state.auth;
   const { homepage } = settings;
   return {
+    isAuthenticated,
     homepage: homepage || config.homepage,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    getIsAuthenticated: () => getIsAuthenticated(dispatch),
     setModuleInfo: () => {
       dispatch(setCurrentProductHomePage(config.homepage));
       dispatch(setCurrentProductId("e67be73d-f9ae-4ce1-8fec-1880cb518cb4"));

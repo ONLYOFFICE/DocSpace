@@ -15,9 +15,10 @@ import {
   SET_GREETING_SETTINGS,
   SET_CUSTOM_NAMES,
   SET_WIZARD_COMPLETED,
+  SET_IS_AUTHENTICATED,
 } from "./actions";
 import isEmpty from "lodash/isEmpty";
-import { LANGUAGE, AUTH_KEY } from "../../constants";
+import { LANGUAGE } from "../../constants";
 
 const initialState = {
   isAuthenticated: false,
@@ -73,9 +74,11 @@ const authReducer = (state = initialState, action) => {
         localStorage.getItem(LANGUAGE) !== action.user.cultureName &&
         localStorage.setItem(LANGUAGE, action.user.cultureName);
       return Object.assign({}, state, {
-        isAuthenticated:
-          !isEmpty(action.user) || localStorage.getItem(AUTH_KEY),
         user: action.user,
+      });
+    case SET_IS_AUTHENTICATED:
+      return Object.assign({}, state, {
+        isAuthenticated: action.isAuthenticated,
       });
     case SET_MODULES:
       return Object.assign({}, state, {

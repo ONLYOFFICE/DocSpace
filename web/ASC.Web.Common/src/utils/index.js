@@ -1,4 +1,4 @@
-import { AUTH_KEY, LANGUAGE } from "../constants";
+import { LANGUAGE } from "../constants";
 import sjcl from "sjcl";
 import { isMobile } from "react-device-detect";
 
@@ -42,20 +42,6 @@ export function changeLanguage(
       ? i18n.changeLanguage(currentLng)
       : Promise.resolve((...args) => i18n.t(...args))
     : i18n.changeLanguage("en");
-}
-
-export function redirectToDefaultPage() {
-  if (
-    (window.location.pathname === "/" ||
-      window.location.pathname === "" ||
-      window.location.pathname === "/login") &&
-    localStorage.getItem(AUTH_KEY) !== null
-  ) {
-    setTimeout(() => window.location.replace("/products/files"), 0);
-    return true;
-  }
-
-  return false;
 }
 
 export function createPasswordHash(password, hashSettings) {

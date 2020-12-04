@@ -16,7 +16,6 @@ import {
   Offline,
   utils,
   store as commonStore,
-  constants,
   NavMenu,
   Main,
   toastr,
@@ -34,8 +33,8 @@ const {
   setCurrentProductHomePage,
   getPortalPasswordSettings,
   getPortalCultures,
+  getIsAuthenticated,
 } = commonStore.auth.actions;
-const { AUTH_KEY } = constants;
 
 /*const Profile = lazy(() => import("./components/pages/Profile"));
 const ProfileAction = lazy(() => import("./components/pages/ProfileAction"));
@@ -55,13 +54,14 @@ class App extends React.Component {
       fetchGroups,
       fetchPeople,
       setIsLoaded,
+      isAuthenticated,
+      getIsAuthenticated,
     } = this.props;
 
     setModuleInfo();
+    getIsAuthenticated();
 
-    const token = localStorage.getItem(AUTH_KEY);
-
-    if (!token) {
+    if (!isAuthenticated) {
       return setIsLoaded();
     }
 
@@ -147,15 +147,17 @@ class App extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-  const { settings } = state.auth;
+  const { settings, isAuthenticated } = state.auth;
   const { homepage } = settings;
   return {
+    isAuthenticated,
     homepage: homepage || config.homepage,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    getIsAuthenticated: () => getIsAuthenticated(dispatch),
     setModuleInfo: () => {
       dispatch(setCurrentProductHomePage(config.homepage));
       dispatch(setCurrentProductId("f4d98afd-d336-4332-8778-3c6945c81ea0"));

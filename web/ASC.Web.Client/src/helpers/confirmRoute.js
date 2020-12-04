@@ -4,9 +4,8 @@ import { ValidationResult } from "./../helpers/constants";
 import { Loader } from "asc-web-components";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
-import { api, constants, utils, PageLayout } from "asc-web-common";
+import { api, utils, PageLayout } from "asc-web-common";
 const { checkConfirmLink } = api.user;
-const { AUTH_KEY } = constants;
 const { getObjectByLocation } = utils;
 
 class ConfirmRoute extends React.Component {
@@ -19,14 +18,14 @@ class ConfirmRoute extends React.Component {
   }
 
   componentDidMount() {
-    const { forUnauthorized, history } = this.props;
+    const { forUnauthorized, history, isAuthenticated } = this.props;
 
-    if (forUnauthorized && localStorage.getItem(AUTH_KEY))
+    if (forUnauthorized && isAuthenticated)
       return history.push(
         `/error=Access error. You should be unauthorized for performing this action`
       );
 
-    const { location, isAuthenticated } = this.props;
+    const { location } = this.props;
     const { search } = location;
 
     const queryParams = getObjectByLocation(location);
