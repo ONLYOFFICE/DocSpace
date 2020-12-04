@@ -14,7 +14,7 @@ x-service:
       APP_DOTNET_ENV: ${APP_DOTNET_ENV:-products}
       APP_CORE_BASE_DOMAIN: ${APP_CORE_BASE_DOMAIN:-localhost}
       APP_URL_PORTAL: ${APP_URL_PORTAL:-http://onlyoffice-community-server}
-      YOUR_CORE_MACHINEKEY: ${YOUR_CORE_MACHINEKEY:-""}
+      APP_CORE_MACHINEKEY: ${APP_CORE_MACHINEKEY:-""}
       DOCUMENT_SERVER_JWT_SECRET: ${DOCUMENT_SERVER_JWT_SECRET:-""}
       DOCUMENT_SERVER_JWT_HEADER: ${DOCUMENT_SERVER_JWT_HEADER:-""}
       DOCUMENT_SERVER_URL_PUBLIC: ${DOCUMENT_SERVER_URL_PUBLIC:-/ds-vpath/}
@@ -132,7 +132,7 @@ services:
     container_name: ${CONTAINER_PRIFIX:-onlyoffice}-backup
     
   onlyoffice-nginx:
-    image: "${REPO:-onlyoffice}/${STATUS:-}appserver-nginx:${TAG_SRV:-latest}"
+    image: "${REPO:-onlyoffice}/${STATUS:-}${NGINX_HOST}:${TAG_SRV:-latest}"
     container_name: ${CONTAINER_PRIFIX:-onlyoffice}-${NGINX_HOST:-nginx}
     restart: always
     expose:

@@ -62,5 +62,5 @@ upstream  service_backup {
 upstream  document_server {
   server $DOCUMENT_SERVER;
 
-  server localhost:8080 backup;
+  server localhost backup;
 }

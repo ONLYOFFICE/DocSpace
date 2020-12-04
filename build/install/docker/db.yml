@@ -3,12 +3,14 @@ version: "3.5"
 services: 
   
   onlyoffice-mysql-server:
+    
     image: mysql:${TAG_MYSQL:-latest}
     command: --default-authentication-plugin=mysql_native_password
     cap_add:
       - SYS_NICE
     container_name: ${CONTAINER_PRIFIX:-onlyoffice}-${MYSQL_HOST:-mysql}
     restart: always
+    tty: true
     expose:
       - "3306"
     environment:
@@ -18,7 +20,8 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     volumes:
       - mysql_data:/var/lib/mysql
-      - ./config/mysql/conf.d:/etc/mysql/conf.d
+      - ./config/mysql/conf.d/error.log:/var/log/mysql/error.log:rw
+      - ./config/mysql/conf.d/:/etc/mysql/conf.d
       - ./config/createdb.sql:/docker-entrypoint-initdb.d/01_createdb.sql
       - ./config/onlyoffice.sql:/docker-entrypoint-initdb.d/02_onlyoffice.sql
       - ./config/onlyoffice.data.sql:/docker-entrypoint-initdb.d/03_onlyoffice.data.sql
