@@ -171,18 +171,8 @@ const StyledBody = styled.div`
         }
       }
 
-      @media (max-width: 550px) {
-        width: 320px;
-        padding: 0 28px 16px 0;
-      }
-
       .body-options {
         width: 100%;
-      }
-    }
-    .footer {
-      @media (max-width: 550px) {
-        padding: 16px 28px 16px 0;
       }
     }
   }
@@ -249,7 +239,7 @@ const StyledSharingBody = styled(Scrollbar)`
 
   .sharing-row {
     margin: 0 16px;
-    width: calc(100% - 17px);
+    width: calc(100% - 16px);
     box-sizing: border-box;
   }
 
@@ -366,14 +356,10 @@ const StyledFooter = styled.div`
   .sharing_panel-button {
     margin-left: auto;
   }
-
-  @media (max-width: 550px) {
-    width: 90%;
-  }
 `;
 
 const StyledLinkRow = styled.div`
-  width: calc(100% + 17px);
+  width: calc(100% + 16px);
   padding: 0 16px;
   box-sizing: border-box;
   background-color: #f8f9f9;
