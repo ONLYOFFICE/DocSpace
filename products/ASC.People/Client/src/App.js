@@ -54,12 +54,11 @@ class App extends React.Component {
       fetchGroups,
       fetchPeople,
       setIsLoaded,
-      isAuthenticated,
       getIsAuthenticated,
     } = this.props;
 
     setModuleInfo();
-    getIsAuthenticated();
+    getIsAuthenticated().then((isAuthenticated) => {
 
     if (!isAuthenticated) {
       return setIsLoaded();
@@ -82,6 +81,7 @@ class App extends React.Component {
       .finally(() => {
         setIsLoaded();
       });
+    });
   }
 
   render() {
@@ -147,10 +147,9 @@ class App extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-  const { settings, isAuthenticated } = state.auth;
+  const { settings } = state.auth;
   const { homepage } = settings;
   return {
-    isAuthenticated,
     homepage: homepage || config.homepage,
   };
 };

@@ -3,7 +3,6 @@ import { Router, Route, Switch } from "react-router-dom";
 import { connect } from "react-redux";
 import {
   store as CommonStore,
-  constants,
   history,
   PrivateRoute,
   PublicRoute,
@@ -28,7 +27,7 @@ const {
   getUser,
   getPortalSettings,
   getModules,
-  getIsAuthenticated,
+  getIsAuthenticated
 } = CommonStore.auth.actions;
 
 class App extends React.Component {
@@ -41,28 +40,34 @@ class App extends React.Component {
       getModules,
       setIsLoaded,
       getIsAuthenticated,
-      isAuthenticated,
+      //defaultPage
     } = this.props;
 
-    getIsAuthenticated();
+    getIsAuthenticated()
+    .then((isAuthenticated) => {
+      const requests = [];
+      if (!isAuthenticated) {
+        requests.push(getPortalSettings());
+      } else if (!window.location.pathname.includes("confirm/EmailActivation")) {
 
-    const requests = [];
+        // debugger;
+        // if(utils.tryRedirectTo(defaultPage)) //TODO: Re-write redirect to defaultPage after get settings
+        //   return;
 
-    if (!isAuthenticated) {
-      requests.push(getPortalSettings());
-    } else if (!window.location.pathname.includes("confirm/EmailActivation")) {
-      requests.push(getUser());
-      requests.push(getPortalSettings());
-      requests.push(getModules());
-    }
-
-    Promise.all(requests)
-      .catch((e) => {
-        toastr.error(e);
-      })
-      .finally(() => {
-        setIsLoaded();
-      });
+        requests.push(getUser());
+        requests.push(getPortalSettings());
+        requests.push(getModules());
+      }
+  
+      Promise.all(requests)
+        .catch((e) => {
+          toastr.error(e);
+        })
+        .finally(() => {
+          setIsLoaded();
+        });
+    })
+    .catch((err) => toastr.error(err));
   }
 
   render() {
@@ -108,13 +113,13 @@ class App extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-  const { modules, isLoaded, settings, isAuthenticated } = state.auth;
-  const { organizationName } = settings;
+  const { modules, isLoaded, settings } = state.auth;
+  const { organizationName, defaultPage } = settings;
   return {
-    isAuthenticated,
     modules,
     isLoaded,
     organizationName,
+    defaultPage
   };
 };
 
@@ -124,7 +129,7 @@ const mapDispatchToProps = (dispatch) => {
     getPortalSettings: () => getPortalSettings(dispatch),
     getUser: () => getUser(dispatch),
     getModules: () => getModules(dispatch),
-    setIsLoaded: () => dispatch(setIsLoaded(true)),
+    setIsLoaded: () => dispatch(setIsLoaded(true))
   };
 };
 

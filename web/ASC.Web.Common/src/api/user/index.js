@@ -10,9 +10,6 @@ export function login(userName, passwordHash) {
     method: "post",
     url: "/authentication.json",
     data,
-  }).then((tokenData) => {
-    setWithCredentialsStatus(true);
-    return Promise.resolve(tokenData);
   });
 }
 
@@ -20,9 +17,6 @@ export function logout() {
   return request({
     method: "post",
     url: "/authentication/logout",
-  }).then(() => {
-    setWithCredentialsStatus(false);
-    return Promise.resolve();
   });
 }
 
@@ -41,6 +35,6 @@ export function checkIsAuthenticated() {
     withCredentials: true,
   }).then((state) => {
     setWithCredentialsStatus(state);
-    return Promise.resolve();
+    return state;
   });
 }

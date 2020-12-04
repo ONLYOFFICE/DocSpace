@@ -95,3 +95,13 @@ export function showLoader() {
 }
 
 export { withLayoutSize } from "./withLayoutSize";
+
+export function tryRedirectTo(page) {
+  
+  if(window.location && window.location.pathname && window.location.pathname.indexOf(page) !== -1)
+    return false;
+    //TODO: check if we already on default page
+    window.location.replace(page);
+
+    return true;
+}

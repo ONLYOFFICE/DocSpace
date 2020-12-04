@@ -1,5 +1,6 @@
 import { default as api } from "../../api";
 import { setWithCredentialsStatus } from "../../api/client";
+import history from "../../history";
 
 export const LOGIN_POST = "LOGIN_POST";
 export const SET_CURRENT_USER = "SET_CURRENT_USER";
@@ -148,7 +149,10 @@ export function getUser(dispatch) {
 export function getIsAuthenticated(dispatch) {
   return api.user
     .checkIsAuthenticated()
-    .then((res) => dispatch(setIsAuthenticated(res)));
+    .then((success) => { 
+      dispatch(setIsAuthenticated(success));
+      return success;
+    });
 }
 
 export function getPortalSettings(dispatch) {
@@ -204,7 +208,9 @@ export function logout() {
   return (dispatch) => {
     return api.user.logout().then(() => {
       setWithCredentialsStatus(false);
-      return dispatch(setLogout());
+      dispatch(setLogout());
+
+      history.push("/login");
     });
   };
 }
@@ -230,10 +236,3 @@ export function getPortalPasswordSettings(dispatch, confirmKey = null) {
 export const reloadPortalSettings = () => {
   return (dispatch) => getPortalSettings(dispatch);
 };
-
-export function redirectToDefaultPage() {
-  return (_, getState) => {
-    const defaultPage = getState().settings.defaultPage;
-    setTimeout(() => window.location.replace(defaultPage), 0);
-  };
-}

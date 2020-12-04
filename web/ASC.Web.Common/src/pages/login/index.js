@@ -10,9 +10,8 @@ import {
   Link,
   toastr,
   Checkbox,
-  HelpButton,
   PasswordInput,
-  FieldContainer,
+  FieldContainer
 } from "asc-web-components";
 import PageLayout from "../../components/PageLayout";
 import { connect } from "react-redux";
@@ -23,13 +22,11 @@ import ForgotPasswordModalDialog from "./sub-components/forgot-password-modal-di
 import {
   login,
   setIsLoaded,
-  reloadPortalSettings,
-  getIsAuthenticated,
-  redirectToDefaultPage,
+  reloadPortalSettings
 } from "../../store/auth/actions";
 import { sendInstructionsToChangePassword } from "../../api/people";
 import Register from "./sub-components/register-container";
-import { createPasswordHash } from "../../utils";
+import { createPasswordHash, tryRedirectTo } from "../../utils";
 const { getLanguage } = store.auth.selectors;
 const LoginContainer = styled.div`
   display: flex;
@@ -204,7 +201,7 @@ class Form extends Component {
       login,
       setIsLoaded,
       hashSettings,
-      redirectToDefaultPage,
+      defaultPage
     } = this.props;
 
     errorText && this.setState({ errorText: "" });
@@ -231,7 +228,7 @@ class Form extends Component {
 
     login(userName, hash)
       .then(() => {
-        if (!redirectToDefaultPage()) {
+        if (!tryRedirectTo(defaultPage)) {
           setIsLoaded(true);
         }
       })
@@ -450,6 +447,7 @@ Form.propTypes = {
   socialButtons: PropTypes.array,
   organizationName: PropTypes.string,
   homepage: PropTypes.string,
+  defaultPage: PropTypes.string,
 };
 
 Form.defaultProps = {
@@ -492,6 +490,7 @@ function mapStateToProps(state) {
     organizationName,
     hashSettings,
     enabledJoin,
+    defaultPage
   } = settings;
 
   return {
@@ -502,13 +501,12 @@ function mapStateToProps(state) {
     greetingTitle: greetingSettings,
     hashSettings,
     enabledJoin,
+    defaultPage
   };
 }
 
 export default connect(mapStateToProps, {
   login,
   setIsLoaded,
-  reloadPortalSettings,
-  getIsAuthenticated,
-  redirectToDefaultPage,
+  reloadPortalSettings
 })(withRouter(LoginForm));

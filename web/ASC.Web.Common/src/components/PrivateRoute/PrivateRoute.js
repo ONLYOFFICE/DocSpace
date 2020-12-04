@@ -3,28 +3,26 @@ import React from "react";
 import { Redirect, Route } from "react-router-dom";
 import { connect } from "react-redux";
 //import { Loader } from "asc-web-components";
-//import PageLayout from "../PageLayout";
-import { getCurrentUser, isAdmin, isMe } from "../../store/auth/selectors.js";
-import { getIsAuthenticated } from "../../store/auth/actions.js";
+import PageLayout from "../PageLayout";
+import { getCurrentUser, getIsLoaded, isAdmin, isAuthenticated, isMe } from "../../store/auth/selectors.js";
 import { Error401, Error404 } from "../../pages/errors";
-import isEmpty from "lodash/isEmpty";
+import RectangleLoader from "../Loaders/RectangleLoader/RectangleLoader";
+//import isEmpty from "lodash/isEmpty";
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
   const {
     isAdmin,
     isAuthenticated,
+    isLoaded,
     restricted,
     allowForMe,
     user,
     computedMatch,
-    getIsAuthenticated,
   } = rest;
   const { userId } = computedMatch.params;
 
-  //getIsAuthenticated();
-
   const renderComponent = (props) => {
-    if (!isAuthenticated) {
+    if (isLoaded && !isAuthenticated) {
       console.log("PrivateRoute render Redirect to login", rest);
       return (
         <Redirect
@@ -36,10 +34,20 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
       );
     }
 
-    const userLoaded = !isEmpty(user);
-    if (!userLoaded) {
-      return <Component {...props} />;
+    if(!isLoaded) {
+      return (
+            <PageLayout>
+              <PageLayout.SectionBody>
+                <RectangleLoader  height="80vh"/>
+              </PageLayout.SectionBody>
+            </PageLayout>
+          );
     }
+
+    // const userLoaded = !isEmpty(user);
+    // if (!userLoaded) {
+    //   return <Component {...props} />;
+    // }
 
     // if (!userLoaded) {
     //   console.log("PrivateRoute render Loader", rest);
@@ -79,18 +87,12 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
 };
 
 function mapStateToProps(state) {
-  const { isAuthenticated } = state.auth;
   return {
     isAdmin: isAdmin(state),
     user: getCurrentUser(state),
-    isAuthenticated: isAuthenticated,
+    isAuthenticated: isAuthenticated(state),
+    isLoaded: getIsLoaded(state)
   };
 }
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    getIsAuthenticated: () => getIsAuthenticated(dispatch),
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(PrivateRoute);
+export default connect(mapStateToProps)(PrivateRoute);

@@ -17,7 +17,6 @@ import {
   SET_WIZARD_COMPLETED,
   SET_IS_AUTHENTICATED,
 } from "./actions";
-import isEmpty from "lodash/isEmpty";
 import { LANGUAGE } from "../../constants";
 
 const initialState = {
@@ -153,6 +152,7 @@ const authReducer = (state = initialState, action) => {
       });
     case LOGOUT:
       return Object.assign({}, initialState, {
+        isLoaded: true,
         settings: state.settings,
       });
     case SET_WIZARD_COMPLETED:
