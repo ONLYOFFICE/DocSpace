@@ -7,6 +7,8 @@ echo "##########################################################"
 PRODUCT="onlyoffice"
 BASE_DIR="/app/${PRODUCT}"
 PARAMETERS=""
+CONTAINER_PRIFIX=${CONTAINER_PRIFIX:-"onlyoffice"}
+NGINX_HOST=${NGINX_HOST:-"appproxy"}
 
 URLS=${URLS:-"http://0.0.0.0:${SERVICE_PORT:-5050}"}
 PATH_TO_CONF="${BASE_DIR}/config"
@@ -21,7 +23,7 @@ CONTAINER_PRIFIX=${CONTAINER_PRIFIX:-"onlyoffice"}
 
 APP_DOTNET_ENV=${APP_DOTNET_ENV:-"test"}
 APP_CORE_BASE_DOMAIN=${APP_CORE_BASE_DOMAIN:-"localhost"}
-APP_URL_PORTAL=${APP_URL_PORTAL:-"http://onlyoffice-community-server"}
+APP_URL_PORTAL="${CONTAINER_PRIFIX}-${NGINX_HOST}:8092"
 
 APP_CORE_MACHINEKEY=${APP_CORE_MACHINEKEY:-"your_core_machinekey"}
 DOCUMENT_SERVER_JWT_SECRET=${DOCUMENT_SERVER_JWT_SECRET:-"your_jwd_secret_value"}
@@ -56,7 +58,7 @@ while [ "$1" != "" ]; do
 	shift
 done
 
-sed -i "s!Server=.*;Pooling=!Server=${CONTAINER_PRIFIX}-$MYSQL_HOST;Port=3306;Database=${MYSQL_DATABASE};User ID=${MYSQL_USER};Password=${MYSQL_PASSWORD};Pooling=!g" ${PATH_TO_CONF}/appsettings.${APP_DOTNET_ENV}.json
+sed -i "s!Server=.*;Pooling=!Server=${CONTAINER_PRIFIX}-${MYSQL_HOST};Port=3306;Database=${MYSQL_DATABASE};User ID=${MYSQL_USER};Password=${MYSQL_PASSWORD};Pooling=!g" ${PATH_TO_CONF}/appsettings.${APP_DOTNET_ENV}.json
 sed -i "s!\"base-domain\".*,!\"base-domain\": \"${APP_CORE_BASE_DOMAIN}\",!g" ${PATH_TO_CONF}/appsettings.${APP_DOTNET_ENV}.json
 sed -i "s!\"machinekey\".*,!\"machinekey\": \"${APP_CORE_MACHINEKEY}\",!g" ${PATH_TO_CONF}/appsettings.${APP_DOTNET_ENV}.json
 sed -i "s!\"public\".*,!\"public\": \"${DOCUMENT_SERVER_URL_PUBLIC}\",!g" ${PATH_TO_CONF}/appsettings.${APP_DOTNET_ENV}.json
