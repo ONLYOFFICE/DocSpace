@@ -144,7 +144,6 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             if (Wrapper != null)
             {
                 Wrapper.Dispose();
-                Wrapper = null;
             }
 
             CacheReset();
@@ -196,7 +195,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
 
         public GoogleDriveStorage CreateStorage(OAuth20Token token, int id)
         {
-            if (Storage != null) return Storage;
+            if (Storage != null && Storage.IsOpened) return Storage;
 
             var driveStorage = ServiceProvider.GetService<GoogleDriveStorage>();
 
@@ -213,7 +212,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             {
                 token = OAuth20TokenHelper.RefreshToken<GoogleLoginProvider>(ConsumerFactory, token);
 
-                var dbDao = ServiceProvider.GetService<CachedProviderAccountDao>();
+                var dbDao = ServiceProvider.GetService<ProviderAccountDao>();
                 var authData = new AuthData(token: token.ToJson());
                 dbDao.UpdateProviderInfo(id, authData);
             }

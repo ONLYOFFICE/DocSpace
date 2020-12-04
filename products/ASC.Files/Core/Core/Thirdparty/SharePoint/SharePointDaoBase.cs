@@ -25,6 +25,7 @@
 
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -44,7 +45,7 @@ namespace ASC.Files.Thirdparty.SharePoint
 {
     internal class SharePointDaoBase : ThirdPartyProviderDao<SharePointProviderInfo>
     {
-        public override string Id { get => "spoint"; }
+        protected override string Id { get => "spoint"; }
 
         public SharePointDaoBase(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor, FileUtility fileUtility) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility)
         {
@@ -143,6 +144,13 @@ namespace ASC.Files.Thirdparty.SharePoint
         protected override string MakeId(string path = null)
         {
             return path;
+        }
+
+        protected override IEnumerable<string> GetChildren(string folderId)
+        {
+            var subFolders = ProviderInfo.GetFolderFolders(folderId).Select(x => ProviderInfo.MakeId(x.ServerRelativeUrl));
+            var files = ProviderInfo.GetFolderFiles(folderId).Select(x => ProviderInfo.MakeId(x.ServerRelativeUrl));
+            return subFolders.Concat(files);
         }
     }
 }

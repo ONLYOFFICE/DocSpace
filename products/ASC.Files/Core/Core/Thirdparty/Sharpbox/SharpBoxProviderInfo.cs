@@ -116,7 +116,6 @@ namespace ASC.Files.Thirdparty.Sharpbox
             if (Wrapper != null)
             {
                 Wrapper.Dispose();
-                Wrapper = null;
             }
         }
 

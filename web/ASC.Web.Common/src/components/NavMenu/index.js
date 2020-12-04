@@ -100,7 +100,7 @@ class NavMenu extends React.Component {
   render() {
     const { isBackdropVisible, isNavOpened, isAsideVisible } = this.state;
 
-    const { isAuthenticated, isLoaded, asideContent } = this.props;
+    const { isAuthenticated, isLoaded, asideContent, history } = this.props;
 
     const isAsideAvailable = !!asideContent;
 
@@ -114,7 +114,7 @@ class NavMenu extends React.Component {
 
         {isLoaded && isAuthenticated ? (
           <>
-            <HeaderNav />
+            <HeaderNav history={history} />
             <Header
               isNavOpened={isNavOpened}
               onClick={this.showNav}

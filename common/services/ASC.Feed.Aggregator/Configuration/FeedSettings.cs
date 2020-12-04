@@ -2,8 +2,6 @@
 
 using ASC.Common.Utils;
 
-using Microsoft.Extensions.Configuration;
-
 namespace ASC.Feed.Configuration
 {
     public class FeedSettings
@@ -16,7 +14,7 @@ namespace ASC.Feed.Configuration
 
         public TimeSpan RemovePeriod { get; set; }
 
-        public static FeedSettings GetInstance(IConfiguration configuration)
+        public static FeedSettings GetInstance(ConfigurationExtension configuration)
         {
             var result = configuration.GetSetting<FeedSettings>("feed");
 

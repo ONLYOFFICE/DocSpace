@@ -47,13 +47,26 @@ namespace ASC.Files.Core
         Privacy = 13,
     }
 
-    [Transient]
-    [DebuggerDisplay("{Title} ({ID})")]
-    public class Folder<T> : FileEntry<T>
+    public interface IFolder
     {
         public FolderType FolderType { get; set; }
 
-        public T ParentFolderID { get; set; }
+        public int TotalFiles { get; set; }
+
+        public int TotalSubFolders { get; set; }
+
+        public bool Shareable { get; set; }
+
+        public int NewForMe { get; set; }
+
+        public string FolderUrl { get; set; }
+    }
+
+    [Transient]
+    [DebuggerDisplay("{Title} ({ID})")]
+    public class Folder<T> : FileEntry<T>, IFolder
+    {
+        public FolderType FolderType { get; set; }
 
         public int TotalFiles { get; set; }
 
@@ -69,19 +82,6 @@ namespace ASC.Files.Core
         {
             get { return Convert.ToBoolean(NewForMe); }
             set { NewForMe = Convert.ToInt32(value); }
-        }
-
-        private T _folderIdDisplay;
-
-        public override T FolderIdDisplay
-        {
-            get
-            {
-                if (_folderIdDisplay != null) return _folderIdDisplay;
-
-                return ParentFolderID;
-            }
-            set { _folderIdDisplay = value; }
         }
 
         public Folder(Global global)

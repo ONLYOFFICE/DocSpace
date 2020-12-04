@@ -424,7 +424,7 @@ namespace ASC.Web.Files.Utils
             return result;
         }
 
-        public ItemList<AceWrapper> GetSharedInfo<T>(ItemList<string> objectIds)
+        public ItemList<AceWrapper> GetSharedInfo<T>(IEnumerable<T> fileIds, IEnumerable<T> folderIds)
         {
             if (!AuthContext.IsAuthenticated)
             {
@@ -433,23 +433,16 @@ namespace ASC.Web.Files.Utils
 
             var result = new List<AceWrapper>();
 
-            var folderDao = DaoFactory.GetFolderDao<T>();
             var fileDao = DaoFactory.GetFileDao<T>();
+            var files = fileDao.GetFiles(fileIds);
 
-            foreach (var objectId in objectIds)
+            var folderDao = DaoFactory.GetFolderDao<T>();
+            var folders = folderDao.GetFolders(folderIds);
+
+            var entries = files.Cast<FileEntry<T>>().Concat(folders.Cast<FileEntry<T>>());
+
+            foreach (var entry in entries)
             {
-                if (string.IsNullOrEmpty(objectId))
-                {
-                    throw new InvalidOperationException(FilesCommonResource.ErrorMassage_BadRequest);
-                }
-
-                var entryType = objectId.StartsWith("file_") ? FileEntryType.File : FileEntryType.Folder;
-                var entryId = (T)Convert.ChangeType(objectId.Substring((entryType == FileEntryType.File ? "file_" : "folder_").Length), typeof(T));
-
-                var entry = entryType == FileEntryType.File
-                                ? fileDao.GetFile(entryId)
-                                : (FileEntry<T>)folderDao.GetFolder(entryId);
-
                 IEnumerable<AceWrapper> acesForObject;
                 try
                 {
@@ -516,7 +509,7 @@ namespace ASC.Web.Files.Utils
             result.Remove(meAce);
 
             AceWrapper linkAce = null;
-            if (objectIds.Count > 1)
+            if (entries.Any())
             {
                 result.RemoveAll(ace => ace.SubjectId == FileConstant.ShareLinkId);
             }
@@ -544,13 +537,25 @@ namespace ASC.Web.Files.Utils
             return new ItemList<AceWrapper>(result);
         }
 
-        public ItemList<AceShortWrapper> GetSharedInfoShort<T>(string objectId)
+        public ItemList<AceShortWrapper> GetSharedInfoShortFile<T>(T fileID)
         {
-            var aces = GetSharedInfo<T>(new ItemList<string> { objectId });
+            var aces = GetSharedInfo(new List<T> { fileID}, new List<T>());
 
-            return new ItemList<AceShortWrapper>(
-                aces.Where(aceWrapper => !aceWrapper.SubjectId.Equals(FileConstant.ShareLinkId) || aceWrapper.Share != FileShare.Restrict)
-                    .Select(aceWrapper => new AceShortWrapper(aceWrapper)));
+            return GetAceShortWrappers(aces);
+        }
+
+        public ItemList<AceShortWrapper> GetSharedInfoShortFolder<T>(T folderId)
+        {
+            var aces = GetSharedInfo(new List<T>(), new List<T> { folderId });
+
+            return GetAceShortWrappers(aces);
+        }
+
+        private ItemList<AceShortWrapper> GetAceShortWrappers(ItemList<AceWrapper> aces)
+        {
+            return new ItemList<AceShortWrapper>(aces
+                .Where(aceWrapper => !aceWrapper.SubjectId.Equals(FileConstant.ShareLinkId) || aceWrapper.Share != FileShare.Restrict)
+                .Select(aceWrapper => new AceShortWrapper(aceWrapper)));
         }
     }
 }

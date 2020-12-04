@@ -37,10 +37,8 @@ using ASC.Core.Tenants;
 using ASC.Files.Core;
 using ASC.Files.Core.EF;
 using ASC.Files.Core.Resources;
-using ASC.Files.Core.Security;
 using ASC.Files.Core.Thirdparty;
 using ASC.Web.Core.Files;
-using ASC.Web.Files.Services.DocumentService;
 using ASC.Web.Studio.Core;
 
 using Microsoft.Extensions.Options;
@@ -110,15 +108,15 @@ namespace ASC.Files.Thirdparty.OneDrive
             return new List<File<string>> { GetFile(fileId) };
         }
 
-        public List<File<string>> GetFiles(string[] fileIds)
+        public List<File<string>> GetFiles(IEnumerable<string> fileIds)
         {
-            if (fileIds == null || fileIds.Length == 0) return new List<File<string>>();
+            if (fileIds == null || !fileIds.Any()) return new List<File<string>>();
             return fileIds.Select(GetOneDriveItem).Select(ToFile).ToList();
         }
 
-        public List<File<string>> GetFilesFiltered(string[] fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
+        public List<File<string>> GetFilesFiltered(IEnumerable<string> fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
         {
-            if (fileIds == null || fileIds.Length == 0 || filterType == FilterType.FoldersOnly) return new List<File<string>>();
+            if (fileIds == null || !fileIds.Any() || filterType == FilterType.FoldersOnly) return new List<File<string>>();
 
             var files = GetFiles(fileIds).AsEnumerable();
 
@@ -591,65 +589,6 @@ namespace ASC.Files.Thirdparty.OneDrive
             {
                 System.IO.File.Delete(uploadSession.GetItemOrDefault<string>("TempPath"));
             }
-        }
-
-        #endregion
-
-
-        #region Only in TMFileDao
-
-        public void ReassignFiles(string[] fileIds, Guid newOwnerId)
-        {
-        }
-
-        public List<File<string>> GetFiles(string[] parentIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
-        {
-            return new List<File<string>>();
-        }
-
-        public IEnumerable<File<string>> Search(string text, bool bunch)
-        {
-            return null;
-        }
-
-        public bool IsExistOnStorage(File<string> file)
-        {
-            return true;
-        }
-
-        public void SaveEditHistory(File<string> file, string changes, Stream differenceStream)
-        {
-            //Do nothing
-        }
-
-        public List<EditHistory> GetEditHistory(DocumentServiceHelper documentServiceHelper, string fileId, int fileVersion)
-        {
-            return null;
-        }
-
-        public Stream GetDifferenceStream(File<string> file)
-        {
-            return null;
-        }
-
-        public bool ContainChanges(string fileId, int fileVersion)
-        {
-            return false;
-        }
-
-        public string GetUniqFilePath(File<string> file, string fileTitle)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<(File<int>, SmallShareRecord)> GetFeeds(int tenant, DateTime from, DateTime to)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<int> GetTenantsWithFeeds(DateTime fromTime)
-        {
-            throw new NotImplementedException();
         }
 
         #endregion

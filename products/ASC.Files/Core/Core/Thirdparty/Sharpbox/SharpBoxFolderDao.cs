@@ -41,7 +41,6 @@ using ASC.Core.Tenants;
 using ASC.Files.Core;
 using ASC.Files.Core.EF;
 using ASC.Files.Core.Resources;
-using ASC.Files.Core.Security;
 using ASC.Files.Core.Thirdparty;
 using ASC.Web.Core.Files;
 using ASC.Web.Studio.Core;
@@ -139,7 +138,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
             return folders.ToList();
         }
 
-        public List<Folder<string>> GetFolders(string[] folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true)
+        public List<Folder<string>> GetFolders(IEnumerable<string> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true)
         {
             if (filterType == FilterType.FilesOnly || filterType == FilterType.ByExtension
                 || filterType == FilterType.DocumentsOnly || filterType == FilterType.ImagesOnly
@@ -187,9 +186,9 @@ namespace ASC.Files.Thirdparty.Sharpbox
                     var savedfolder = ProviderInfo.Storage.CreateFolder(MakePath(folder.ID));
                     return MakeId(savedfolder);
                 }
-                if (folder.ParentFolderID != null)
+                if (folder.FolderID != null)
                 {
-                    var parentFolder = GetFolderById(folder.ParentFolderID);
+                    var parentFolder = GetFolderById(folder.FolderID);
 
                     folder.Title = GetAvailableTitle(folder.Title, parentFolder, IsExist);
 
@@ -391,7 +390,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
             }
             else
             {
-                var parentFolder = GetFolderById(folder.ParentFolderID);
+                var parentFolder = GetFolderById(folder.FolderID);
                 newTitle = GetAvailableTitle(newTitle, parentFolder, IsExist);
 
                 //rename folder
@@ -457,98 +456,5 @@ namespace ASC.Files.Thirdparty.Sharpbox
 
             return chunkedUpload ? storageMaxUploadSize : Math.Min(storageMaxUploadSize, SetupInfo.AvailableFileSize);
         }
-
-        #region Only for TMFolderDao
-
-        public void ReassignFolders(string[] folderIds, Guid newOwnerId)
-        {
-        }
-
-        public IEnumerable<Folder<string>> Search(string text, bool bunch)
-        {
-            return null;
-        }
-
-        public string GetFolderID(string module, string bunch, string data, bool createIfNotExists)
-        {
-            return null;
-        }
-
-        public IEnumerable<string> GetFolderIDs(string module, string bunch, IEnumerable<string> data, bool createIfNotExists)
-        {
-            return new List<string>();
-        }
-
-        public string GetFolderIDCommon(bool createIfNotExists)
-        {
-            return null;
-        }
-
-        public string GetFolderIDUser(bool createIfNotExists, Guid? userId)
-        {
-            return null;
-        }
-
-        public string GetFolderIDShare(bool createIfNotExists)
-        {
-            return null;
-        }
-
-        public string GetFolderIDRecent(bool createIfNotExists)
-        {
-            throw new NotImplementedException();
-        }
-
-        public string GetFolderIDFavorites(bool createIfNotExists)
-        {
-            throw new NotImplementedException();
-        }
-
-        public string GetFolderIDTemplates(bool createIfNotExists)
-        {
-            throw new NotImplementedException();
-        }
-
-        public string GetFolderIDPrivacy(bool createIfNotExists, Guid? userId = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        public string GetFolderIDTrash(bool createIfNotExists, Guid? userId)
-        {
-            return null;
-        }
-
-
-        public string GetFolderIDPhotos(bool createIfNotExists)
-        {
-            return null;
-        }
-        public string GetFolderIDProjects(bool createIfNotExists)
-        {
-            return null;
-        }
-
-        public string GetBunchObjectID(string folderID)
-        {
-            return null;
-        }
-
-        public Dictionary<string, string> GetBunchObjectIDs(List<string> folderIDs)
-        {
-            return null;
-        }
-
-        public IEnumerable<(Folder<string>, SmallShareRecord)> GetFeeds(int tenant, DateTime from, DateTime to)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<string> GetTenantsWithFeeds(DateTime fromTime)
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
     }
 }

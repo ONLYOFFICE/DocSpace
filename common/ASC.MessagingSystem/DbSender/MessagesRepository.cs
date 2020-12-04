@@ -50,7 +50,7 @@ using IsolationLevel = System.Data.IsolationLevel;
 namespace ASC.MessagingSystem.DbSender
 {
     [Singletone(Additional = typeof(MessagesRepositoryExtension))]
-    public class MessagesRepository
+    public class MessagesRepository: IDisposable
     {
         private static DateTime lastSave = DateTime.UtcNow;
         private readonly TimeSpan CacheTime;
@@ -314,6 +314,19 @@ namespace ASC.MessagingSystem.DbSender
                 ef.SaveChanges();
 
             } while (ids.Any());
+        }
+
+        public void Dispose()
+        {
+            if (Timer != null)
+            {
+                Timer.Dispose();
+            }
+
+            if (ClearTimer != null)
+            {
+                ClearTimer.Dispose();
+            }
         }
     }
 

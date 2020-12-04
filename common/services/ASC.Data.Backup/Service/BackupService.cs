@@ -39,7 +39,6 @@ using ASC.Data.Backup.EF.Model;
 using ASC.Data.Backup.Storage;
 using ASC.Data.Backup.Utils;
 
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
 using Newtonsoft.Json;
@@ -93,7 +92,7 @@ namespace ASC.Data.Backup.Service
         private BackupWorker BackupWorker { get; set; }
         private BackupRepository BackupRepository { get; }
         private BackupServiceNotifier BackupServiceNotifier { get; }
-        private IConfiguration Configuration { get; }
+        private ConfigurationExtension Configuration { get; }
 
         public BackupService(
             IOptionsMonitor<ILog> options,
@@ -101,7 +100,7 @@ namespace ASC.Data.Backup.Service
             BackupWorker backupWorker,
             BackupRepository backupRepository,
             BackupServiceNotifier backupServiceNotifier,
-            IConfiguration configuration)
+            ConfigurationExtension configuration)
         {
             Log = options.CurrentValue;
             BackupStorageFactory = backupStorageFactory;

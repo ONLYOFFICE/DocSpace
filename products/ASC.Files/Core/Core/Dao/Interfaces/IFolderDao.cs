@@ -95,7 +95,7 @@ namespace ASC.Files.Core
         /// <param name="searchSubfolders"></param>
         /// <param name="checkShare"></param>
         /// <returns></returns>
-        List<Folder<T>> GetFolders(T[] folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true);
+        List<Folder<T>> GetFolders(IEnumerable<T> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true);
 
         /// <summary>
         ///     Get folder, contains folder with id
@@ -224,7 +224,7 @@ namespace ASC.Files.Core
         /// <param name="text"></param>
         /// <param name="bunch"></param>
         /// <returns></returns>
-        IEnumerable<Folder<T>> Search(string text, bool bunch = false);
+        IEnumerable<Folder<T>> SearchFolders(string text, bool bunch = false);
 
         /// <summary>
         /// Only in TMFolderDao
@@ -331,9 +331,9 @@ namespace ASC.Files.Core
         Dictionary<string, string> GetBunchObjectIDs(List<T> folderIDs);
 
 
-        IEnumerable<(Folder<T>, SmallShareRecord)> GetFeeds(int tenant, DateTime from, DateTime to);
+        IEnumerable<(Folder<T>, SmallShareRecord)> GetFeedsForFolders(int tenant, DateTime from, DateTime to);
 
-        IEnumerable<T> GetTenantsWithFeeds(DateTime fromTime);
+        IEnumerable<T> GetTenantsWithFeedsForFolders(DateTime fromTime);
 
         #endregion
     }

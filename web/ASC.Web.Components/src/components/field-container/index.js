@@ -57,7 +57,7 @@ function getVerticalCss() {
     .icon-button {
       position: relative;
       margin: 0;
-      padding: 1px 8px;
+      padding: 0px 8px;
       width: 13px;
       height: 13px;
     }

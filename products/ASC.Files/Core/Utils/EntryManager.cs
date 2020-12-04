@@ -340,7 +340,7 @@ namespace ASC.Web.Files.Utils
 
                             folders.RemoveAll(folder => rootKeys.Contains(folder.ID));
 
-                            var projectFolders = DaoFactory.GetFolderDao<int>().GetFolders(projectFolderIds.ToArray(), filter, subjectGroup, subjectId, null, false, false);
+                            var projectFolders = DaoFactory.GetFolderDao<int>().GetFolders(projectFolderIds.ToList(), filter, subjectGroup, subjectId, null, false, false);
                             folders.AddRange(projectFolders);
                         }
 
@@ -366,18 +366,18 @@ namespace ASC.Web.Files.Utils
                     }
                 }
 
-                parent.TotalFiles = entries.Aggregate(0, (a, f) => a + (f.FileEntryType == FileEntryType.Folder ? ((Folder<T>)f).TotalFiles : 1));
-                parent.TotalSubFolders = entries.Aggregate(0, (a, f) => a + (f.FileEntryType == FileEntryType.Folder ? ((Folder<T>)f).TotalSubFolders + 1 : 0));
+                parent.TotalFiles = entries.Aggregate(0, (a, f) => a + (f.FileEntryType == FileEntryType.Folder ? ((IFolder)f).TotalFiles : 1));
+                parent.TotalSubFolders = entries.Aggregate(0, (a, f) => a + (f.FileEntryType == FileEntryType.Folder ? ((IFolder)f).TotalSubFolders + 1 : 0));
             }
             else if (parent.FolderType == FolderType.SHARE)
             {
                 //share
-                var shared = (IEnumerable<FileEntry<T>>)fileSecurity.GetSharesForMe<T>(filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders);
+                var shared = fileSecurity.GetSharesForMe(filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders);
 
                 entries = entries.Concat(shared);
 
-                parent.TotalFiles = entries.Aggregate(0, (a, f) => a + (f.FileEntryType == FileEntryType.Folder ? ((Folder<T>)f).TotalFiles : 1));
-                parent.TotalSubFolders = entries.Aggregate(0, (a, f) => a + (f.FileEntryType == FileEntryType.Folder ? ((Folder<T>)f).TotalSubFolders + 1 : 0));
+                parent.TotalFiles = entries.Aggregate(0, (a, f) => a + (f.FileEntryType == FileEntryType.Folder ? ((IFolder)f).TotalFiles : 1));
+                parent.TotalSubFolders = entries.Aggregate(0, (a, f) => a + (f.FileEntryType == FileEntryType.Folder ? ((IFolder)f).TotalSubFolders + 1 : 0));
             }
             else if (parent.FolderType == FolderType.Recent)
             {
@@ -385,7 +385,7 @@ namespace ASC.Web.Files.Utils
                 var files = GetRecent(fileDao, filter, subjectGroup, subjectId, searchText, searchInContent);
                 entries = entries.Concat(files);
 
-                parent.TotalFiles = entries.Aggregate(0, (a, f) => a + (f.FileEntryType == FileEntryType.Folder ? ((Folder<T>)f).TotalFiles : 1));
+                parent.TotalFiles = entries.Aggregate(0, (a, f) => a + (f.FileEntryType == FileEntryType.Folder ? ((IFolder)f).TotalFiles : 1));
             }
             else if (parent.FolderType == FolderType.Favorites)
             {
@@ -397,8 +397,8 @@ namespace ASC.Web.Files.Utils
                 entries = entries.Concat(folders);
                 entries = entries.Concat(files);
 
-                parent.TotalFiles = entries.Aggregate(0, (a, f) => a + (f.FileEntryType == FileEntryType.Folder ? ((Folder<T>)f).TotalFiles : 1));
-                parent.TotalSubFolders = entries.Aggregate(0, (a, f) => a + (f.FileEntryType == FileEntryType.Folder ? ((Folder<T>)f).TotalSubFolders + 1 : 0));
+                parent.TotalFiles = entries.Aggregate(0, (a, f) => a + (f.FileEntryType == FileEntryType.Folder ? ((IFolder)f).TotalFiles : 1));
+                parent.TotalSubFolders = entries.Aggregate(0, (a, f) => a + (f.FileEntryType == FileEntryType.Folder ? ((IFolder)f).TotalSubFolders + 1 : 0));
             }
             else if (parent.FolderType == FolderType.Templates)
             {
@@ -406,7 +406,7 @@ namespace ASC.Web.Files.Utils
                 var files = GetTemplates(fileDao, filter, subjectGroup, subjectId, searchText, searchInContent);
                 entries = entries.Concat(files);
 
-                parent.TotalFiles = entries.Aggregate(0, (a, f) => a + (f.FileEntryType == FileEntryType.Folder ? ((Folder<T>)f).TotalFiles : 1));
+                parent.TotalFiles = entries.Aggregate(0, (a, f) => a + (f.FileEntryType == FileEntryType.Folder ? ((IFolder)f).TotalFiles : 1));
                 parent.TotalSubFolders = 0;
             }
             else if (parent.FolderType == FolderType.Privacy)
@@ -422,12 +422,12 @@ namespace ASC.Web.Files.Utils
                 entries = entries.Concat(files);
 
                 //share
-                var shared = (IEnumerable<FileEntry<T>>)fileSecurity.GetPrivacyForMe<T>(filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders);
+                var shared = fileSecurity.GetPrivacyForMe(filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders);
 
                 entries = entries.Concat(shared);
 
-                parent.TotalFiles = entries.Aggregate(0, (a, f) => a + (f.FileEntryType == FileEntryType.Folder ? ((Folder<T>)f).TotalFiles : 1));
-                parent.TotalSubFolders = entries.Aggregate(0, (a, f) => a + (f.FileEntryType == FileEntryType.Folder ? ((Folder<T>)f).TotalSubFolders + 1 : 0));
+                parent.TotalFiles = entries.Aggregate(0, (a, f) => a + (f.FileEntryType == FileEntryType.Folder ? ((IFolder)f).TotalFiles : 1));
+                parent.TotalSubFolders = entries.Aggregate(0, (a, f) => a + (f.FileEntryType == FileEntryType.Folder ? ((IFolder)f).TotalSubFolders + 1 : 0));
             }
             else
             {
@@ -497,7 +497,7 @@ namespace ASC.Web.Files.Utils
             var folderList = new List<Folder<string>>();
 
             if ((parent.ID.Equals(GlobalFolderHelper.FolderMy) || parent.ID.Equals(GlobalFolderHelper.FolderCommon))
-                && ThirdpartyConfiguration.SupportInclusion
+                && ThirdpartyConfiguration.SupportInclusion(DaoFactory)
                 && (FilesSettingsHelper.EnableThirdParty
                     || CoreBaseSettings.Personal))
             {
@@ -554,7 +554,7 @@ namespace ASC.Web.Files.Utils
 
             if (filter == FilterType.None || filter == FilterType.FoldersOnly)
             {
-                var folderIds = tags.Where(tag => tag.EntryType == FileEntryType.Folder).Select(tag => (T)Convert.ChangeType(tag.EntryId, typeof(T))).ToArray();
+                var folderIds = tags.Where(tag => tag.EntryType == FileEntryType.Folder).Select(tag => (T)Convert.ChangeType(tag.EntryId, typeof(T))).ToList();
                 folders = folderDao.GetFolders(folderIds, filter, subjectGroup, subjectId, searchText, false, false);
                 folders = folders.Where(folder => folder.RootFolderType != FolderType.TRASH).ToList();
 
@@ -697,7 +697,7 @@ namespace ASC.Web.Files.Utils
             //Fake folder. Don't send request to third party
             var folder = ServiceProvider.GetService<Folder<string>>();
 
-            folder.ParentFolderID = parentFolderId;
+            folder.FolderID = parentFolderId;
 
             folder.ID = providerInfo.RootFolderId;
             folder.CreateBy = providerInfo.Owner;
