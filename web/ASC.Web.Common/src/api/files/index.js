@@ -628,16 +628,14 @@ export function getEncryptionAccess(fileId) {
 }
 
 export function updateFileStream(file, fileId, encrypted, forcesave) {
-  let bodyFormData = new FormData();
-  bodyFormData.append("file", file);
-  bodyFormData.append("encrypted", encrypted);
-  bodyFormData.append("forcesave", forcesave);
+  let fd = new FormData();
+  fd.append("file", file);
+  fd.append("encrypted", encrypted);
+  fd.append("forcesave", forcesave);
 
   return request({
     method: "put",
-    url: `/files/${fileId}/update.json?encrypted=${encrypted}&forcesave=${forcesave}`,
-    // url: `/files/${fileId}/update.json?encrypted=${encrypted}&forcesave=${forcesave}`,
-    data: bodyFormData,
-    headers: { "Content-Type": "multipart/form-data" },
+    url: `/files/${fileId}/update`,
+    data: fd,
   });
 }
