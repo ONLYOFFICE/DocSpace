@@ -1,7 +1,7 @@
 import { updateUserList } from "../people/actions";
-import { store, api } from "@appserver/common";
-const { setCurrentUser } = store.auth.actions;
-const { isMe } = store.auth.selectors;
+import api from "@appserver/common/src/api";
+import { setCurrentUser } from "@appserver/common/src/store/auth/actions";
+import { isMe } from "@appserver/common/src/store/auth/selectors";
 
 export const SET_PROFILE = "SET_PROFILE";
 export const CLEAN_PROFILE = "CLEAN_PROFILE";

@@ -1,21 +1,41 @@
 import { createStore, applyMiddleware } from "redux";
-import { composeWithDevTools } from "redux-devtools-extension/logOnlyInProduction";
-import rootReducer from "./rootReducer";
 import thunk from "redux-thunk";
+import { composeWithDevTools } from "redux-devtools-extension/logOnlyInProduction";
+import dynostore, {
+  combineReducers,
+  dynamicReducers,
+} from "@redux-dynostore/core";
+//import { createReducerManager } from "./reducerManager";
 
-/* eslint-disable no-underscore-dangle */
-const composeEnhancers = composeWithDevTools({
-  // options like actionSanitizer, stateSanitizer
+import authReducer from "@appserver/common/src/store/auth/reducer";
+import settingsReducer from "./settings/reducer";
+import confirmReducer from "./confirm/reducer";
+import wizardReducer from "./wizard/reducer";
+import paymentsReducer from "./payments/reducer";
+
+const rootReducer = combineReducers({
+  auth: authReducer,
+  settings: settingsReducer,
+  confirm: confirmReducer,
+  wizard: wizardReducer,
+  payments: paymentsReducer,
 });
 
-const configureStore = (prelodedState) =>
-  createStore(
-    rootReducer,
-    prelodedState,
-    composeEnhancers(applyMiddleware(thunk))
-  );
-/* eslint-enable */
+/* eslint-disable no-underscore-dangle */
+// const composeEnhancers = composeWithDevTools({
+//   // options like actionSanitizer, stateSanitizer
+// });
 
-const store = configureStore({});
+//const reducerManager = createReducerManager(staticReducers);
+
+// Create a store with the root reducer function being the one exposed by the manager.
+const store = createStore(
+  //reducerManager.reduce,
+  rootReducer,
+  composeWithDevTools(applyMiddleware(thunk), dynostore(dynamicReducers()))
+);
+
+// Optional: Put the reducer manager on the store so it is easily accessible
+//store.reducerManager = reducerManager;
 
 export default store;

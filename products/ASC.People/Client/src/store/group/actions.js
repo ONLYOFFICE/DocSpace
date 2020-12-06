@@ -1,5 +1,5 @@
 import { setGroups, fetchPeople } from "../people/actions";
-import { api } from "@appserver/common";
+import api from "@appserver/common/src/api";
 
 export const SET_GROUP = "SET_GROUP";
 export const CLEAN_GROUP = "CLEAN_GROUP";

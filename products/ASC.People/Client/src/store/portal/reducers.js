@@ -4,7 +4,7 @@ const initialState = {
   inviteLinks: {},
 };
 
-const profileReducer = (state = initialState, action) => {
+const portalReducer = (state = initialState, action) => {
   switch (action.type) {
     case SET_INVITE_LINKS:
       return Object.assign({}, state, {
@@ -15,4 +15,4 @@ const profileReducer = (state = initialState, action) => {
   }
 };
 
-export default profileReducer;
+export default portalReducer;

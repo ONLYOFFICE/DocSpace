@@ -1,4 +1,6 @@
-import { api, history, constants } from "@appserver/common";
+import api from "@appserver/common/src/api";
+import history from "@appserver/common/src/history";
+import constants from "@appserver/common/src/constants";
 import config from "../../../package.json";
 import {
   EMPLOYEE_STATUS,

@@ -28,6 +28,7 @@
 	"settings": {
         "window.zoomLevel": 1,
 		"files.autoSave": "afterDelay",
-		"editor.formatOnSave": true
+		"editor.formatOnSave": true,
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
     }
 }

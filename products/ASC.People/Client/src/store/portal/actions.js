@@ -1,4 +1,4 @@
-import { api } from "@appserver/common";
+import { getInvitationLinks } from "@appserver/common/src/api/portal";
 
 export const SET_INVITE_LINKS = "SET_INVITE_LINKS";
 
@@ -17,7 +17,7 @@ export function getPortalInviteLinks() {
     const { auth } = getState();
     if (!auth.user.isAdmin) return Promise.resolve();
 
-    return api.portal.getInvitationLinks().then((data) => {
+    return getInvitationLinks().then((data) => {
       dispatch(setInviteLinks(data.userLink, data.guestLink));
     });
   };

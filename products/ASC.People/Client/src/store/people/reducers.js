@@ -15,8 +15,7 @@ import {
   TOGGLE_AVATAR_EDITOR,
 } from "./actions";
 import { isUserSelected, skipUser, getUsersBySelected } from "./selectors";
-import { api } from "@appserver/common";
-const { Filter } = api;
+import Filter from "@appserver/common/src/api/people/filter";
 
 const initialState = {
   users: null,

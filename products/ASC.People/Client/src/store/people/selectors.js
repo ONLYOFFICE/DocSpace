@@ -1,9 +1,15 @@
 import { find, filter, cloneDeep } from "lodash";
 import { createSelector } from "reselect";
-import { store, constants } from "@appserver/common";
 import { isMobileOnly } from "react-device-detect";
-const { isAdmin, isMe, getCurrentUser } = store.auth.selectors;
-const { EmployeeActivationStatus, EmployeeStatus } = constants;
+import {
+  isAdmin,
+  isMe,
+  getCurrentUser,
+} from "@appserver/common/src/store/auth/selectors";
+import {
+  EmployeeActivationStatus,
+  EmployeeStatus,
+} from "@appserver/common/src/constants";
 
 export function getSelectedUser(selection, userId) {
   return find(selection, function (obj) {
