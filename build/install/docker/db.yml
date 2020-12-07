@@ -20,7 +20,7 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     volumes:
       - mysql_data:/var/lib/mysql
-      - ./config/mysql/conf.d/error.log:/var/log/mysql/error.log:rw
+      - mysql_error:/var/log/mysql
       - ./config/mysql/conf.d/:/etc/mysql/conf.d
       - ./config/createdb.sql:/docker-entrypoint-initdb.d/01_createdb.sql
       - ./config/onlyoffice.sql:/docker-entrypoint-initdb.d/02_onlyoffice.sql
@@ -36,3 +36,4 @@ networks:
 
 volumes:
   mysql_data:
+  mysql_error:
