@@ -26,6 +26,11 @@ const commonStyles = css`
       flex-direction: column;
       min-height: 100%;
     }
+
+    .people-row-container,
+    .files-row-container {
+      margin-top: -22px;
+    }
   }
 `;
 
@@ -79,6 +84,11 @@ class SectionBody extends React.Component {
     if (!this.props.autoFocus) return;
 
     this.focusRef.current.focus();
+  }
+
+  componentWillUnmount() {
+    this.focusRef = null;
+    this.scrollRef = null;
   }
 
   render() {

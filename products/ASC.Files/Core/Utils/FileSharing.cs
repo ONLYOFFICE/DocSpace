@@ -509,7 +509,7 @@ namespace ASC.Web.Files.Utils
             result.Remove(meAce);
 
             AceWrapper linkAce = null;
-            if (entries.Any())
+            if (entries.Count() > 1)
             {
                 result.RemoveAll(ace => ace.SubjectId == FileConstant.ShareLinkId);
             }

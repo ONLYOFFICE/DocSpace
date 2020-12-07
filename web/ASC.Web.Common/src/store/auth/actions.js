@@ -6,6 +6,8 @@ import {
   logout as logoutDesktop,
   setEncryptionAccess,
 } from "../../desktop/";
+import { setWithCredentialsStatus } from "../../api/client";
+import history from "../../history";
 
 export const LOGIN_POST = "LOGIN_POST";
 export const SET_CURRENT_USER = "SET_CURRENT_USER";
@@ -26,6 +28,7 @@ export const SET_CUSTOM_NAMES = "SET_CUSTOM_NAMES";
 export const SET_WIZARD_COMPLETED = "SET_WIZARD_COMPLETED";
 export const FETCH_ENCRYPTION_KEYS = "FETCH_ENCRYPTION_KEYS";
 export const SET_IS_ENCRYPTION_SUPPORT = "SET_IS_ENCRYPTION_SUPPORT";
+export const SET_IS_AUTHENTICATED = "SET_IS_AUTHENTICATED";
 
 export function setCurrentUser(user) {
   return {
@@ -151,16 +154,27 @@ export function setIsEncryptionSupport(isSupport) {
   };
 }
 
+export function setIsAuthenticated(isAuthenticated) {
+  return {
+    type: SET_IS_AUTHENTICATED,
+    isAuthenticated,
+  };
+}
+
 export function getUser(dispatch) {
   return api.people
     .getUser()
-    .then((user) => {
-      //window.AscDesktopEditor && regDesktop(user, true);
-      dispatch(setCurrentUser(user));
-    })
-    .catch((err) => {
-      console.error(err);
-      dispatch(setCurrentUser({}));
+    .then((user) => dispatch(setCurrentUser(user)))
+    .then(() => dispatch(setIsAuthenticated(true)))
+    .catch((err) => dispatch(setCurrentUser({})));
+}
+
+export function getIsAuthenticated(dispatch) {
+  return api.user
+    .checkIsAuthenticated()
+    .then((success) => { 
+      dispatch(setIsAuthenticated(success));
+      return success;
     });
 }
 
@@ -204,13 +218,15 @@ export function login(user, hash) {
   return (dispatch) => {
     return api.user
       .login(user, hash)
+      .then(() => dispatch(setIsLoaded(false)))
       .then(() => {
-        dispatch(setIsLoaded(false));
+        setWithCredentialsStatus(true);
+        return dispatch(setIsAuthenticated(true));
       })
       .then(() => {
-        getUserInfo(dispatch);
-        getEncryptionKeys(dispatch);
-      });
+         getUserInfo(dispatch);
+         getEncryptionKeys(dispatch);
+       });
   };
 }
 
@@ -218,13 +234,13 @@ export function logout() {
   return (dispatch, getState) => {
     const state = getState();
     const isDesktop = isDesktopClient(state);
-    return api.user
-      .logout()
-      .then(() => {
-        isDesktop && logoutDesktop();
-        dispatch(setLogout());
-      })
-      .then(() => dispatch(setIsLoaded(true)));
+    return api.user.logout().then(() => {
+      setWithCredentialsStatus(false);
+      isDesktop && logoutDesktop();
+      dispatch(setLogout());
+
+      history.push("/login");
+    });
   };
 }
 

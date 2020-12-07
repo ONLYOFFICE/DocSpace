@@ -27,7 +27,7 @@ import {
   StyledAsidePanel,
   StyledContent,
   StyledFooter,
-  StyledSharingHeaderContent,
+  StyledHeaderContent,
   StyledSharingBody,
 } from "../StyledPanels";
 import { AddUsersPanel, AddGroupsPanel, EmbeddingPanel } from "../index";
@@ -614,7 +614,7 @@ class SharingPanelComponent extends React.Component {
         <Backdrop onClick={this.onClose} visible={visible} zIndex={zIndex} />
         <Aside className="header_aside-panel" visible={visible}>
           <StyledContent>
-            <StyledSharingHeaderContent>
+            <StyledHeaderContent>
               <Heading className="sharing_panel-header" size="medium" truncate>
                 {t("SharingSettingsTitle")}
               </Heading>
@@ -652,12 +652,8 @@ class SharingPanelComponent extends React.Component {
                   onClick={this.onKeyClick}
                 />*/}
               </div>
-            </StyledSharingHeaderContent>
-            <StyledSharingBody
-              ref={this.scrollRef}
-              stype="mediumBlack"
-              style={{ height: `calc(100vh - 157px)` }}
-            >
+            </StyledHeaderContent>
+            <StyledSharingBody ref={this.scrollRef} stype="mediumBlack">
               {shareDataItems.map((item, index) => (
                 <SharingRow
                   key={index}

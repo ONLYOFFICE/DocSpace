@@ -17,9 +17,9 @@ import {
   SET_WIZARD_COMPLETED,
   FETCH_ENCRYPTION_KEYS,
   SET_IS_ENCRYPTION_SUPPORT,
+  SET_IS_AUTHENTICATED
 } from "./actions";
-import isEmpty from "lodash/isEmpty";
-import { LANGUAGE, AUTH_KEY } from "../../constants";
+import { LANGUAGE } from "../../constants";
 
 const desktop = window["AscDesktopEditor"] !== undefined;
 const desktopEncryption =
@@ -82,9 +82,11 @@ const authReducer = (state = initialState, action) => {
         localStorage.getItem(LANGUAGE) !== action.user.cultureName &&
         localStorage.setItem(LANGUAGE, action.user.cultureName);
       return Object.assign({}, state, {
-        isAuthenticated:
-          !isEmpty(action.user) || localStorage.getItem(AUTH_KEY),
         user: action.user,
+      });
+    case SET_IS_AUTHENTICATED:
+      return Object.assign({}, state, {
+        isAuthenticated: action.isAuthenticated,
       });
     case SET_MODULES:
       return Object.assign({}, state, {
@@ -159,6 +161,7 @@ const authReducer = (state = initialState, action) => {
       });
     case LOGOUT:
       return Object.assign({}, initialState, {
+        isLoaded: true,
         settings: state.settings,
       });
     case SET_WIZARD_COMPLETED:

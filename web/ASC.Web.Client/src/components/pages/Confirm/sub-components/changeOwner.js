@@ -4,7 +4,8 @@ import { withTranslation } from "react-i18next";
 import { connect } from "react-redux";
 import styled from "styled-components";
 import { Button, Text, toastr } from "asc-web-components";
-import { PageLayout } from "asc-web-common";
+import { PageLayout, utils as commonUtils } from "asc-web-common";
+const { tryRedirectTo } = commonUtils;
 
 const BodyStyle = styled.div`
   margin-top: 70px;
@@ -58,11 +59,11 @@ class Form extends React.PureComponent {
   };
 
   onRedirect = () => {
-    this.props.history.push("/");
+    tryRedirectTo(this.props.defaultPage);
   };
 
   onCancelClick = () => {
-    this.props.history.push("/");
+    tryRedirectTo(this.props.defaultPage);
   };
 
   render() {
@@ -126,7 +127,10 @@ const ChangePasswordForm = (props) => (
 );
 
 function mapStateToProps(state) {
-  return { greetingTitle: state.auth.settings.greetingSettings };
+  return {
+    greetingTitle: state.auth.settings.greetingSettings,
+    defaultPage: state.auth.settings.defaultPage,
+  };
 }
 
 export default connect(

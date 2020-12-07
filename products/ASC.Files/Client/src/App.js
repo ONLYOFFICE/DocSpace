@@ -10,7 +10,6 @@ import config from "../package.json";
 
 import {
   store as commonStore,
-  constants,
   history,
   PrivateRoute,
   PublicRoute,
@@ -36,6 +35,7 @@ const {
   setEncryptionKeys,
   getIsEncryptionSupport,
   getEncryptionKeys,
+  getIsAuthenticated,
 } = commonStore.auth.actions;
 const {
   getCurrentUser,
@@ -43,7 +43,6 @@ const {
   isDesktopClient,
   getIsLoaded,
 } = commonStore.auth.selectors;
-const { AUTH_KEY } = constants;
 
 class App extends React.Component {
   constructor(props) {
@@ -54,8 +53,6 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    utils.removeTempContent();
-
     const {
       setModuleInfo,
       getUser,
@@ -67,39 +64,43 @@ class App extends React.Component {
       getIsEncryptionSupport,
       getEncryptionKeys,
       isDesktop,
+      getIsAuthenticated,
     } = this.props;
 
     setModuleInfo();
-
-    const token = localStorage.getItem(AUTH_KEY);
-
-    if (!token) {
-      return setIsLoaded();
-    }
-
-    const requests = [getUser()];
-    if (!this.isEditor) {
-      requests.push(
-        getPortalSettings(),
-        getModules(),
-        getPortalCultures(),
-        fetchTreeFolders()
-      );
-      if (isDesktop) {
-        requests.push(getIsEncryptionSupport(), getEncryptionKeys());
+    getIsAuthenticated().then((isAuthenticated) => {
+      if (!isAuthenticated) {
+        utils.updateTempContent();
+        return setIsLoaded();
+      } else {
+        utils.updateTempContent(isAuthenticated);
       }
-    }
 
-    Promise.all(requests)
-      .then(() => {
-        if (this.isEditor) return Promise.resolve();
-      })
-      .catch((e) => {
-        toastr.error(e);
-      })
-      .finally(() => {
-        setIsLoaded();
-      });
+      const requests = [getUser()];
+      if (!this.isEditor) {
+        requests.push(
+          getPortalSettings(),
+          getModules(),
+          getPortalCultures(),
+          fetchTreeFolders()
+        );
+        if (isDesktop) {
+          requests.push(getIsEncryptionSupport(), getEncryptionKeys());
+        }
+      }
+
+      Promise.all(requests)
+        .then(() => {
+          if (this.isEditor) return Promise.resolve();
+        })
+        .catch((e) => {
+          toastr.error(e);
+        })
+        .finally(() => {
+          utils.updateTempContent();
+          setIsLoaded();
+        });
+    });
   }
 
   componentDidUpdate(prevProps) {
@@ -188,6 +189,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    getIsAuthenticated: () => getIsAuthenticated(dispatch),
     setModuleInfo: () => {
       dispatch(setCurrentProductHomePage(config.homepage));
       dispatch(setCurrentProductId("e67be73d-f9ae-4ce1-8fec-1880cb518cb4"));

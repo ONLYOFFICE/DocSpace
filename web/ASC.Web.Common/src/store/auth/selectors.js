@@ -45,6 +45,8 @@ const getCustomModules = (isAdmin) => {
 
 export const getCurrentUser = (state) => state.auth.user;
 
+export const isAuthenticated = (state) => state.auth.isAuthenticated;
+
 export const getCurrentUserId = (state) => state.auth.user;
 
 export const getModules = (state) => state.auth.modules;

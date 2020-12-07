@@ -1,16 +1,26 @@
 /* eslint-disable react/prop-types */
 import React from "react";
 import { Redirect, Route } from "react-router-dom";
-import { AUTH_KEY } from "../../constants";
 import { connect } from "react-redux";
+import { getIsLoaded, isAuthenticated } from "../../store/auth/selectors";
+import PageLayout from "../PageLayout";
+import RectangleLoader from "../Loaders/RectangleLoader/RectangleLoader";
 
 export const PublicRoute = ({ component: Component, ...rest }) => {
-  const token = localStorage.getItem(AUTH_KEY);
-
-  const { wizardToken, wizardCompleted } = rest;
+  const { wizardToken, wizardCompleted, isAuthenticated, isLoaded } = rest;
 
   const renderComponent = (props) => {
-    if (token) {
+    if(!isLoaded) {
+      return (
+        <PageLayout>
+          <PageLayout.SectionBody>
+            <RectangleLoader  height="90vh"/>
+          </PageLayout.SectionBody>
+        </PageLayout>
+      );
+    }
+
+    if (isAuthenticated) {
       return (
         <Redirect
           to={{
@@ -38,9 +48,14 @@ export const PublicRoute = ({ component: Component, ...rest }) => {
 };
 
 function mapStateToProps(state) {
+  const { settings } = state.auth;
+  const {wizardToken, wizardCompleted} = settings;
   return {
-    wizardToken: state.auth.settings.wizardToken,
-    wizardCompleted: state.auth.settings.wizardCompleted,
+    isAuthenticated: isAuthenticated(state),
+    isLoaded: getIsLoaded(state),
+
+    wizardToken,
+    wizardCompleted,
   };
 }
 
