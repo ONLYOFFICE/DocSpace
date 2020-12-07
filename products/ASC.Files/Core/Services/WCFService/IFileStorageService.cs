@@ -172,7 +172,7 @@ namespace ASC.Web.Files.Services.WCFService
 
         ItemList<AceShortWrapper> GetSharedInfoShort(string objectId);
 
-        ItemList<string> SetAceObject(AceCollection aceCollection, bool notify);
+        List<T> SetAceObject(AceCollection<T> aceCollection, bool notify);
 
         void RemoveAce(ItemList<string> items);
 

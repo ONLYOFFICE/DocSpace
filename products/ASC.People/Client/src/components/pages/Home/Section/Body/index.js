@@ -392,7 +392,10 @@ class SectionBodyContent extends React.PureComponent {
       <>
         <Consumer>
           {(context) => (
-            <RowContainer className="people-row" useReactWindow={false}>
+            <RowContainer
+              className="people-row-container"
+              useReactWindow={false}
+            >
               {peopleList.map((man) => {
                 const {
                   checked,

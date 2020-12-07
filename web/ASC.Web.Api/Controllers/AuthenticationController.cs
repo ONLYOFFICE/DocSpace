@@ -19,6 +19,7 @@ namespace ASC.Web.Api.Controllers
     [Scope]
     [DefaultRoute]
     [ApiController]
+    [AllowAnonymous]
     public class AuthenticationController : ControllerBase
     {
         private UserManager UserManager { get; }
@@ -54,14 +55,12 @@ namespace ASC.Web.Api.Controllers
             return SecurityContext.IsAuthenticated;
         }
 
-        [AllowAnonymous]
         [Create(false)]
         public AuthenticationTokenData AuthenticateMeFromBody([FromBody] AuthModel auth)
         {
             return AuthenticateMe(auth);
         }
 
-        [AllowAnonymous]
         [Create(false)]
         [Consumes("application/x-www-form-urlencoded")]
         public AuthenticationTokenData AuthenticateMeFromForm([FromForm] AuthModel auth)
@@ -76,14 +75,12 @@ namespace ASC.Web.Api.Controllers
             CookiesManager.ClearCookies(CookiesType.SocketIO);
         }
 
-        [AllowAnonymous]
         [Create("confirm", false)]
         public ValidationResult CheckConfirmFromBody([FromBody] EmailValidationKeyModel model)
         {
             return EmailValidationKeyModelHelper.Validate(model);
         }
 
-        [AllowAnonymous]
         [Create("confirm", false)]
         [Consumes("application/x-www-form-urlencoded")]
         public ValidationResult CheckConfirmFromForm([FromForm] EmailValidationKeyModel model)

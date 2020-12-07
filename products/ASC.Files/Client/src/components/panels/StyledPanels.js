@@ -29,10 +29,7 @@ const PanelStyles = css`
 
 const StyledAsidePanel = styled.div`
   z-index: 310;
-  .sharing_panel-header {
-    font-weight: 700;
-    margin: 14px 0;
-  }
+
   .modal-dialog-aside {
     padding: 0;
     transform: translateX(${(props) => (props.visible ? "0" : "500px")});
@@ -110,10 +107,6 @@ const StyledContent = styled.div`
   background-color: #fff;
   padding: 0 16px;
 
-  .files-operations-panel {
-    border-bottom: 1px solid #dee2e6;
-  }
-
   .header_aside-panel-header {
     max-width: 500px;
     margin: 0 0 0 16px;
@@ -129,6 +122,28 @@ const StyledContent = styled.div`
 const StyledHeaderContent = styled.div`
   display: flex;
   align-items: center;
+
+  .sharing_panel-icons-container {
+    display: flex;
+    margin-left: auto;
+
+    .sharing_panel-drop-down-wrapper {
+      position: relative;
+
+      .sharing_panel-drop-down {
+        padding: 4px 0;
+      }
+      .sharing_panel-plus-icon {
+        //margin-right: 12px;
+      }
+    }
+  }
+
+  .files-operations-header,
+  .sharing_panel-header {
+    font-weight: 700;
+    margin: 14px 0;
+  }
 `;
 
 const StyledBody = styled.div`
@@ -212,31 +227,10 @@ const StyledBody = styled.div`
   }
 `;
 
-const StyledSharingHeaderContent = styled.div`
-  display: flex;
-  align-items: center;
-  border-bottom: 1px solid #dee2e6;
-
-  .sharing_panel-icons-container {
-    display: flex;
-    margin-left: auto;
-
-    .sharing_panel-drop-down-wrapper {
-      position: relative;
-
-      .sharing_panel-drop-down {
-        padding: 4px 0;
-      }
-      .sharing_panel-plus-icon {
-        //margin-right: 12px;
-      }
-    }
-  }
-`;
-
 const StyledSharingBody = styled(Scrollbar)`
   position: relative;
   padding: 16px 0;
+  height: calc(100vh - 157px) !important;
 
   .row_content {
     overflow: visible;
@@ -366,7 +360,6 @@ export {
   StyledContent,
   StyledHeaderContent,
   StyledBody,
-  StyledSharingHeaderContent,
   StyledSharingBody,
   StyledFooter,
 };
