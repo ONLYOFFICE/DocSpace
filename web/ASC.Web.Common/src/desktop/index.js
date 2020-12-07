@@ -1,4 +1,4 @@
-import { toastr } from "asc-web-common";
+import toastr from "../components/Toast/toastr";
 import isEmpty from "lodash/isEmpty";
 import omit from "lodash/omit";
 //import { getEncryptionAccess } from "../store/auth/actions";

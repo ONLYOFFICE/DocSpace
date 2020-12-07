@@ -1,10 +1,10 @@
 import { default as api } from "../../api";
 import { isDesktopClient } from "./selectors";
 import {
-  checkPwd,
-  regDesktop,
+  // checkPwd,
+  // regDesktop,
   logout as logoutDesktop,
-  setEncryptionAccess,
+  //setEncryptionAccess,
 } from "../../desktop/";
 import { setWithCredentialsStatus } from "../../api/client";
 import history from "../../history";
