@@ -140,6 +140,7 @@ class EmbeddingPanelComponent extends React.Component {
                 size="16"
                 iconName="ArrowPathIcon"
                 onClick={this.onArrowClick}
+                color="#A3A9AE"
               />
               <Heading
                 className="header_aside-panel-header"
@@ -207,7 +208,7 @@ class EmbeddingPanelComponent extends React.Component {
                     color="#333"
                     onClick={this.onCopyLink}
                   />
-                  <Textarea isReadOnly value={link} />
+                  <Textarea color="#AEAEAE" isReadOnly value={link} />
                 </div>
               </div>
             </StyledBody>
