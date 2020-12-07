@@ -83,12 +83,12 @@ class Row extends React.Component {
     this.rowRef = React.createRef();
   }
 
-  shouldComponentUpdate(nextProps) {
+  /*shouldComponentUpdate(nextProps) {
     if (this.props.needForUpdate) {
       return this.props.needForUpdate(this.props, nextProps);
     }
     return !isEqual(this.props, nextProps);
-  }
+  }*/
 
   componentDidMount() {
     if (this.props.selectItem) {
