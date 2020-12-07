@@ -220,6 +220,10 @@ const StyledBody = styled.div`
     }
   }
 
+  .embedding-panel_code-container {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  }
+
   .embedding-panel_text {
     padding: 8px 0 4px 0;
   }
@@ -379,6 +383,7 @@ const StyledLinkRow = styled.div`
   .row_content {
     display: grid;
     grid-template-columns: 1fr 28px;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   }
 
   .combo-button {

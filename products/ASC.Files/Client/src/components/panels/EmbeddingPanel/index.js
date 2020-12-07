@@ -197,7 +197,7 @@ class EmbeddingPanelComponent extends React.Component {
                     />
                   </div>
                 </div>
-                <div>
+                <div className="embedding-panel_code-container">
                   <Text className="embedding-panel_text">
                     {t("EmbedCode")}:
                   </Text>
