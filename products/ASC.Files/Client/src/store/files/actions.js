@@ -29,6 +29,8 @@ import {
   getPrivacyFolder,
 } from "./selectors";
 
+import sumBy from "lodash/sumBy";
+
 const { files, FilesFilter } = api;
 const { FolderType } = constants;
 const { isEncryptionSupport } = store.auth.selectors;
@@ -814,7 +816,8 @@ const startSessionFunc = (indexOfFile, t, dispatch, getState) => {
         chunk++;
       }
     })
-    .then(() =>
+    .then(() => {
+      refreshFiles(uploadToFolder, dispatch, getState);
       sendChunk(
         currentFiles,
         location,
@@ -823,8 +826,8 @@ const startSessionFunc = (indexOfFile, t, dispatch, getState) => {
         t,
         dispatch,
         getState
-      )
-    )
+      );
+    })
     .catch((err) => {
       dispatch(
         setPrimaryProgressBarData({
@@ -856,7 +859,7 @@ const sendChunk = (
     filesSize,
     convertFilesSize,
   } = uploadData;
-  const totalSize = convertFilesSize + filesSize;
+  //const totalSize = convertFilesSize + filesSize;
   let newPercent = percent;
   const sendRequestFunc = (index) => {
     api.files
@@ -865,17 +868,30 @@ const sendChunk = (
         //percent problem? use getState()
         const newState = getState();
         const newFilesLength = newState.files.uploadData.files.length;
+        const newTotalSize = sumBy(newState.files.uploadData.files, "size");
+        //console.log("newTotalSize ", newTotalSize);
         let isLatestFile = indexOfFile === newFilesLength - 1;
         const currentFile = files[indexOfFile];
         const fileId = res.data.data.id;
+        const totalUploadedFiles = newState.files.uploadData.files.filter(
+          (_, i) => i < indexOfFile
+        );
+
+        //console.log("indexOfFile ", indexOfFile);
+        //console.log("totalUploadedFiles ", totalUploadedFiles);
+        const totalUploadedSize = sumBy(totalUploadedFiles, "size");
+        //console.log("totalUploadedSize ", totalUploadedSize);
 
         if (index < requestsDataArray.length) {
-          newPercent = (index / requestsDataArray.length) * 100;
+          //newPercent = (index / requestsDataArray.length) * 100;
+          newPercent =
+            ((index * chunkSize + totalUploadedSize) / newTotalSize) * 100;
         }
 
-        if (res.data.data && res.data.data.uploaded) {
-          newPercent = 100;
-        }
+        /*if (res.data.data && res.data.data.uploaded) {
+          newPercent = (currentFile.size / newTotalSize) * 100;
+        }*/
+        //console.log("newPercent", newPercent);
 
         if (index + 1 !== requestsDataArray.length) {
           dispatch(
@@ -1038,6 +1054,34 @@ const updateFiles = (folderId, dispatch, getState) => {
           dispatch(setUploadData(uploadData));
         }, TIMEOUT)
       );
+  }
+};
+
+const refreshFiles = (folderId, dispatch, getState) => {
+  const { files } = getState();
+  const { filter, treeFolders, selectedFolder } = files;
+  if (selectedFolder.id === folderId) {
+    return dispatch(fetchFiles(selectedFolder.id, filter.clone())).then(
+      (data) => {
+        const path = data.selectedFolder.pathParts;
+        const newTreeFolders = treeFolders;
+        const folders = data.selectedFolder.folders;
+        const foldersCount = data.selectedFolder.foldersCount;
+        loopTreeFolders(path, newTreeFolders, folders, foldersCount);
+        dispatch(setTreeFolders(newTreeFolders));
+        dispatch(setUpdateTree(true));
+      }
+    );
+  } else {
+    return api.files.getFolder(folderId, filter.clone()).then((data) => {
+      const path = data.pathParts;
+      const newTreeFolders = treeFolders;
+      const folders = data.folders;
+      const foldersCount = data.count;
+      loopTreeFolders(path, newTreeFolders, folders, foldersCount);
+      dispatch(setTreeFolders(newTreeFolders));
+      dispatch(setUpdateTree(true));
+    });
   }
 };
 
