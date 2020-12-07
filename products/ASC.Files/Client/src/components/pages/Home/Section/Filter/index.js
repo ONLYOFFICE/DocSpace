@@ -295,7 +295,7 @@ class SectionFilterContent extends React.Component {
   }
 
   render() {
-    console.log("Filter render");
+    //console.log("Filter render");
     const selectedFilterData = this.getSelectedFilterData();
     const { t, language, firstLoad, sectionWidth } = this.props;
     const filterColumnCount =
