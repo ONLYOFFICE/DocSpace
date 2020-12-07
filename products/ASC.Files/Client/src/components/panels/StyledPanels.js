@@ -33,8 +33,7 @@ const StyledAsidePanel = styled.div`
     font-weight: 700;
     margin: 14px 0;
     padding-right: 10px;
-  }
-  .modal-dialog-aside {
+  }  .modal-dialog-aside {
     padding: 0;
     transform: translateX(${(props) => (props.visible ? "0" : "500px")});
     width: 500px;
@@ -110,10 +109,6 @@ const StyledContent = styled.div`
   width: 100%;
   background-color: #fff;
 
-  .files-operations-panel {
-    border-bottom: 1px solid #dee2e6;
-  }
-
   .header_aside-panel-header {
     max-width: 500px;
     margin: 0 0 0 16px;
@@ -130,7 +125,33 @@ const StyledHeaderContent = styled.div`
   display: flex;
   align-items: center;
   padding: 0 16px;
-`;
+
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #dee2e6;
+  padding: 0 16px;
+
+  .sharing_panel-icons-container {
+    display: flex;
+    margin-left: auto;
+
+    .sharing_panel-drop-down-wrapper {
+      position: relative;
+
+      .sharing_panel-drop-down {
+        padding: 4px 0;
+      }
+      .sharing_panel-plus-icon {
+        //margin-right: 12px;
+      }
+    }
+  }
+
+  .files-operations-header,
+  .sharing_panel-header {
+    font-weight: 700;
+    margin: 14px 0;
+  }`;
 
 const StyledBody = styled.div`
   .files-operations-body {
@@ -209,31 +230,10 @@ const StyledBody = styled.div`
   }
 `;
 
-const StyledSharingHeaderContent = styled.div`
-  display: flex;
-  align-items: center;
-  border-bottom: 1px solid #dee2e6;
-  padding: 0 16px;
-
-  .sharing_panel-icons-container {
-    display: flex;
-    margin-left: auto;
-
-    .sharing_panel-drop-down-wrapper {
-      position: relative;
-
-      .sharing_panel-drop-down {
-        padding: 4px 0;
-      }
-      .sharing_panel-plus-icon {
-        //margin-right: 12px;
-      }
-    }
-  }
-`;
-
 const StyledSharingBody = styled(Scrollbar)`
-  .row_content {
+  position: relative;
+  padding: 16px 0;
+  height: calc(100vh - 157px) !important;  .row_content {
     overflow: visible;
   }
 
@@ -391,7 +391,6 @@ export {
   StyledContent,
   StyledHeaderContent,
   StyledBody,
-  StyledSharingHeaderContent,
   StyledSharingBody,
   StyledFooter,
   StyledLinkRow,

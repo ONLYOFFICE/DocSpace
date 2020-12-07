@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Data.Storage.Configuration;
@@ -40,6 +41,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Storage.DiscStorage
 {
+    [Scope]
     public class DiscDataStore : BaseStorage
     {
         private readonly Dictionary<string, MappedPath> _mappedPaths = new Dictionary<string, MappedPath>();
