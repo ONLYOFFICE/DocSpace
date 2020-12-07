@@ -32,6 +32,7 @@ const ClearTextareaAutosize = ({
   isDisabled,
   heightScale,
   hasError,
+  color,
   ...props
 }) => <TextareaAutosize {...props} />;
 const StyledTextarea = styled(ClearTextareaAutosize)`
@@ -99,6 +100,7 @@ class Textarea extends React.PureComponent {
       value,
       fontSize,
       heightTextArea,
+      color,
     } = this.props;
     return (
       <StyledScrollbar
@@ -122,6 +124,7 @@ class Textarea extends React.PureComponent {
           readOnly={isReadOnly}
           value={value}
           fontSize={fontSize}
+          color={color}
         />
       </StyledScrollbar>
     );
@@ -144,6 +147,7 @@ Textarea.propTypes = {
   value: PropTypes.string,
   fontSize: PropTypes.number,
   heightTextArea: PropTypes.number,
+  color: PropTypes.string,
 };
 
 Textarea.defaultProps = {
@@ -156,6 +160,7 @@ Textarea.defaultProps = {
   tabIndex: -1,
   value: "",
   fontSize: 13,
+  color: "#333333",
 };
 
 export default Textarea;
