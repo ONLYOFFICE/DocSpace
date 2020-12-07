@@ -317,7 +317,7 @@ export function setFilterUrl(filter) {
 }
 
 // TODO: similar to fetchFolder, remove one
-export function fetchFiles(folderId, filter, isSelected) {
+export function fetchFiles(folderId, filter, clearFilter = false) {
   return (dispatch, getState) => {
     const filterData = filter ? filter.clone() : FilesFilter.getDefault();
     filterData.folder = folderId;
@@ -335,7 +335,7 @@ export function fetchFiles(folderId, filter, isSelected) {
         );
         filterData.total = 0;
         dispatch(setFilesFilter(filterData));
-        if (!isSelected) {
+        if (!clearFilter) {
           dispatch(setFolders([]));
           dispatch(setFiles([]));
           dispatch(setSelected("close"));
@@ -364,7 +364,7 @@ export function fetchFiles(folderId, filter, isSelected) {
       dispatch(
         setFiles(isPrivacyFolder && !isEncryptionSupport ? [] : data.files)
       );
-      if (!isSelected) {
+      if (!clearFilter) {
         dispatch(setSelected("close"));
       }
       return dispatch(

@@ -96,7 +96,7 @@ class DeleteDialogComponent extends React.Component {
             alert: false,
           });
           setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
-          fetchFiles(currentFolderId, filter, false).then((data) => {
+          fetchFiles(currentFolderId, filter).then((data) => {
             if (!isRecycleBinFolder && !!this.state.foldersList.length) {
               const path = data.selectedFolder.pathParts.slice(0);
               const newTreeFolders = treeFolders;
