@@ -30,23 +30,25 @@ export function createConfirmUser(registerData, loginData, key) {
   return (dispatch) => {
     return api.people
       .createUser(data, key)
-      .then((user) => { 
+      .then((user) => {
         dispatch(setCurrentUser(user));
-
       })
-      .then(() => { 
+      .then(() => {
         const promise = new Promise((resolve, reject) => {
           setTimeout(() => {
-            login(loginData.userName, loginData.passwordHash)(dispatch)
+            login(
+              loginData.userName,
+              loginData.passwordHash
+            )(dispatch)
               .then(() => {
                 resolve(loadInitInfo(dispatch));
-              }) 
+              })
               .catch((e) => {
                 reject(e);
-              })
-            }, 1000);
+              });
+          }, 1000);
         });
-        
+
         return promise;
       });
   };
@@ -72,7 +74,22 @@ export function activateConfirmUser(
         return api.people.updateActivationStatus(activationStatus, userId, key);
       })
       .then((data) => {
-        return dispatch(login(loginData.userName, loginData.passwordHash));
+        const promise = new Promise((resolve, reject) => {
+          setTimeout(() => {
+            login(
+              data.userName,
+              data.passwordHash
+            )(dispatch)
+              .then(() => {
+                resolve(loadInitInfo(dispatch));
+              })
+              .catch((e) => {
+                reject(e);
+              });
+          }, 1000);
+        });
+
+        return promise;
       })
       .then((data) => {
         return api.people.updateUser(changedData);
