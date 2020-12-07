@@ -10,6 +10,9 @@ import { connect } from "react-redux";
 import i18n from "../i18n";
 
 const StyledRegister = styled(Box)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   z-index: 184;
   width: 100%;
   height: 66px;
@@ -60,9 +63,7 @@ const Register = ({ t }) => {
   return (
     <>
       <StyledRegister onClick={onRegisterClick}>
-        <Text color="#316DAA" textAlign="center">
-          {t("Register")}
-        </Text>
+        <Text color="#316DAA">{t("Register")}</Text>
       </StyledRegister>
 
       {visible && (

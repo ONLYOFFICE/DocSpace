@@ -16,7 +16,6 @@ import {
   Offline,
   utils,
   store as commonStore,
-  constants,
   NavMenu,
   Main,
   toastr,
@@ -34,8 +33,8 @@ const {
   setCurrentProductHomePage,
   getPortalPasswordSettings,
   getPortalCultures,
+  getIsAuthenticated,
 } = commonStore.auth.actions;
-const { AUTH_KEY } = constants;
 
 /*const Profile = lazy(() => import("./components/pages/Profile"));
 const ProfileAction = lazy(() => import("./components/pages/ProfileAction"));
@@ -43,8 +42,6 @@ const GroupAction = lazy(() => import("./components/pages/GroupAction"));*/
 
 class App extends React.Component {
   componentDidMount() {
-    utils.removeTempContent();
-
     const {
       setModuleInfo,
       getUser,
@@ -55,33 +52,37 @@ class App extends React.Component {
       fetchGroups,
       fetchPeople,
       setIsLoaded,
+      getIsAuthenticated,
     } = this.props;
 
     setModuleInfo();
+    getIsAuthenticated().then((isAuthenticated) => {
+      if (!isAuthenticated) {
+        utils.updateTempContent();
+        return setIsLoaded();
+      } else {
+        utils.updateTempContent(isAuthenticated);
+      }
 
-    const token = localStorage.getItem(AUTH_KEY);
+      const requests = [
+        getUser(),
+        getPortalSettings(),
+        getModules(),
+        getPortalPasswordSettings(),
+        getPortalCultures(),
+        fetchGroups(),
+        fetchPeople(),
+      ];
 
-    if (!token) {
-      return setIsLoaded();
-    }
-
-    const requests = [
-      getUser(),
-      getPortalSettings(),
-      getModules(),
-      getPortalPasswordSettings(),
-      getPortalCultures(),
-      fetchGroups(),
-      fetchPeople(),
-    ];
-
-    Promise.all(requests)
-      .catch((e) => {
-        toastr.error(e);
-      })
-      .finally(() => {
-        setIsLoaded();
-      });
+      Promise.all(requests)
+        .catch((e) => {
+          toastr.error(e);
+        })
+        .finally(() => {
+          utils.updateTempContent();
+          setIsLoaded();
+        });
+    });
   }
 
   render() {
@@ -156,6 +157,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    getIsAuthenticated: () => getIsAuthenticated(dispatch),
     setModuleInfo: () => {
       dispatch(setCurrentProductHomePage(config.homepage));
       dispatch(setCurrentProductId("f4d98afd-d336-4332-8778-3c6945c81ea0"));

@@ -82,6 +82,9 @@ class PageLayoutComponent extends React.Component {
       isArticleVisible: isArticleVisibleAndPinned,
       isArticlePinned: isArticleVisibleAndPinned,
     };
+
+    this.timeoutHandler = null;
+    this.intervalHandler = null;
   }
 
   componentDidUpdate(prevProps) {
@@ -104,6 +107,11 @@ class PageLayoutComponent extends React.Component {
       "orientationchange",
       this.orientationChangeHandler
     );
+
+    if(this.intervalHandler)
+        clearInterval(this.intervalHandler);
+      if(this.timeoutHandler)
+        clearTimeout(this.timeoutHandler);
   }
 
   orientationChangeHandler = () => {
@@ -124,20 +132,22 @@ class PageLayoutComponent extends React.Component {
     const intervalTime = 100;
     const endTimeoutTime = 1000;
 
-    let interval, timeout, lastInnerHeight, noChangeCount;
+    let lastInnerHeight, noChangeCount;
 
     const updateHeight = () => {
-      clearInterval(interval);
-      clearTimeout(timeout);
+      if(this.intervalHandler)
+        clearInterval(this.intervalHandler);
+      if(this.timeoutHandler)
+        clearTimeout(this.timeoutHandler);
 
-      interval = null;
-      timeout = null;
+        this.intervalHandler = null;
+        this.timeoutHandler = null;
 
       const vh = (window.innerHeight - 57) * 0.01;
       document.documentElement.style.setProperty("--vh", `${vh}px`);
     };
 
-    interval = setInterval(() => {
+    this.intervalHandler = setInterval(() => {
       if (window.innerHeight === lastInnerHeight) {
         noChangeCount++;
 
@@ -150,7 +160,7 @@ class PageLayoutComponent extends React.Component {
       }
     });
 
-    timeout = setTimeout(() => {
+    this.timeoutHandler = setTimeout(() => {
       updateHeight();
     }, endTimeoutTime);
   };
