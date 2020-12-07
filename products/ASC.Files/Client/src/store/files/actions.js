@@ -686,10 +686,10 @@ export const startUpload = (uploadFiles, folderId, t) => {
         const parts = item.name.split(".");
         const ext = parts.length > 1 ? "." + parts.pop() : "";
         if (canConvert(ext)(state)) {
-          convertFiles.push(item);
+          convertFiles.push({ file: item, toFolderId: folderId });
           convertFilesSize += item.size;
         } else {
-          newFiles.push(item);
+          newFiles.push({ file: item, toFolderId: folderId });
           filesSize += item.size;
         }
       } else {
@@ -705,18 +705,16 @@ export const startUpload = (uploadFiles, folderId, t) => {
     }
 
     const uploadStatus = convertFiles.length ? "pending" : null;
-    const uploadToFolder = folderId;
     const showConvertDialog = !!convertFiles.length;
     const percent = state.files.uploadData.percent;
     const uploadedFiles = state.files.uploadData.uploadedFiles;
-
+    console.log("newFiles: ", newFiles);
     const newUploadData = {
       files: newFiles,
       filesSize,
       convertFiles,
       convertFilesSize,
       uploadStatus,
-      uploadToFolder,
       uploadedFiles,
       percent,
       uploaded: false,
@@ -768,7 +766,7 @@ const chunkSize = 1024 * 1023; //~0.999mb
 const startSessionFunc = (indexOfFile, t, dispatch, getState) => {
   const state = getState();
   const { uploadData } = state.files;
-  const { uploaded, uploadToFolder, files, convertFiles } = uploadData;
+  const { uploaded, files, convertFiles } = uploadData;
 
   const currentFiles = uploaded ? convertFiles : files;
   console.log("START UPLOAD SESSION FUNC", uploadData);
@@ -777,20 +775,22 @@ const startSessionFunc = (indexOfFile, t, dispatch, getState) => {
     dispatch(setUploadData(uploadData));
     return;
   }
+  let item = files[indexOfFile] || { file: null, toFolderId: null };
+  let { file, toFolderId } = item;
 
-  let file = files[indexOfFile];
   //let isLatestFile = indexOfFile === files.length - 1;
 
   if (uploaded) {
     if (convertFiles.length) {
-      file = convertFiles[indexOfFile];
+      let item = convertFiles[indexOfFile] || { file: null, toFolderId: null };
+      file = item.file;
+      toFolderId = item.toFolderId;
       //isLatestFile = indexOfFile === convertFiles.length - 1;
     } else {
       //Test return empty convert files
       return;
     }
   }
-
   const fileName = file.name;
   const fileSize = file.size;
   const relativePath = file.path
@@ -805,7 +805,7 @@ const startSessionFunc = (indexOfFile, t, dispatch, getState) => {
   let chunk = 0;
 
   api.files
-    .startUploadSession(uploadToFolder, fileName, fileSize, relativePath)
+    .startUploadSession(toFolderId, fileName, fileSize, relativePath)
     .then((res) => {
       location = res.data.location;
       while (chunk < chunks) {
@@ -817,7 +817,7 @@ const startSessionFunc = (indexOfFile, t, dispatch, getState) => {
       }
     })
     .then(() => {
-      refreshFiles(uploadToFolder, dispatch, getState);
+      refreshFiles(toFolderId, dispatch, getState);
       sendChunk(
         currentFiles,
         location,
@@ -855,12 +855,12 @@ const sendChunk = (
     uploaded,
     percent,
     uploadedFiles,
-    uploadToFolder,
     filesSize,
     convertFilesSize,
   } = uploadData;
   //const totalSize = convertFilesSize + filesSize;
   let newPercent = percent;
+  const toFolderId = uploadData.files[indexOfFile].toFolderId;
   const sendRequestFunc = (index) => {
     api.files
       .uploadFile(location, requestsDataArray[index])
@@ -868,10 +868,12 @@ const sendChunk = (
         //percent problem? use getState()
         const newState = getState();
         const newFilesLength = newState.files.uploadData.files.length;
-        const newTotalSize = sumBy(newState.files.uploadData.files, "size");
+        const newTotalSize = sumBy(
+          newState.files.uploadData.files,
+          (f) => f.file.size
+        );
         //console.log("newTotalSize ", newTotalSize);
         let isLatestFile = indexOfFile === newFilesLength - 1;
-        const currentFile = files[indexOfFile];
         const fileId = res.data.data.id;
         const totalUploadedFiles = newState.files.uploadData.files.filter(
           (_, i) => i < indexOfFile
@@ -879,7 +881,7 @@ const sendChunk = (
 
         //console.log("indexOfFile ", indexOfFile);
         //console.log("totalUploadedFiles ", totalUploadedFiles);
-        const totalUploadedSize = sumBy(totalUploadedFiles, "size");
+        const totalUploadedSize = sumBy(totalUploadedFiles, (f) => f.file.size);
         //console.log("totalUploadedSize ", totalUploadedSize);
 
         if (index < requestsDataArray.length) {
@@ -924,7 +926,7 @@ const sendChunk = (
           });
         } else if (isLatestFile) {
           if (uploaded) {
-            updateFiles(uploadToFolder, dispatch, getState);
+            updateFiles(toFolderId, dispatch, getState);
           } else {
             const uploadStatus = getState().files.uploadData.uploadStatus;
             if (uploadStatus === "convert") {
@@ -956,7 +958,7 @@ const sendChunk = (
                 ...{ uploadedFiles: uploadedFiles + 1, percent: newPercent },
               };
               updateConvertProgress(newUploadData, t, dispatch);
-              updateFiles(uploadToFolder, dispatch, getState);
+              updateFiles(toFolderId, dispatch, getState);
             }
           }
         } else {
@@ -985,6 +987,7 @@ const sendChunk = (
 };
 
 const updateFiles = (folderId, dispatch, getState) => {
+  //console.log("folderId ", folderId);
   const { files } = getState();
   const { filter, treeFolders, selectedFolder } = files;
   const uploadData = {
@@ -993,7 +996,6 @@ const updateFiles = (folderId, dispatch, getState) => {
     convertFiles: [],
     convertFilesSize: 0,
     uploadStatus: null,
-    uploadToFolder: null,
     uploadedFiles: 0,
     percent: 0,
     uploaded: true,
@@ -1094,7 +1096,7 @@ const getConvertProgress = (
   dispatch,
   getState
 ) => {
-  const { uploadedFiles, uploadToFolder } = uploadData;
+  const { uploadedFiles } = uploadData;
   api.files.getConvertFile(fileId).then((res) => {
     if (res && res[0] && res[0].progress !== 100) {
       setTimeout(
@@ -1126,7 +1128,8 @@ const getConvertProgress = (
         //toastr.error(res[0].error);
       }
       if (isLatestFile) {
-        updateFiles(uploadToFolder, dispatch, getState);
+        const toFolderId = uploadData.files[indexOfFile].toFolderId;
+        updateFiles(toFolderId, dispatch, getState);
         return;
       }
     }
@@ -1171,13 +1174,7 @@ const updateConvertProgress = (uploadData, t, dispatch) => {
 export const setDialogVisible = (t) => {
   return (dispatch, getState) => {
     const { uploadData } = getState().files;
-    const {
-      files,
-      uploadStatus,
-      uploadToFolder,
-      uploadedFiles,
-      percent,
-    } = uploadData;
+    const { files, uploadStatus, uploadedFiles, percent } = uploadData;
 
     dispatch(setConvertDialogVisible(false));
     const label = t("UploadingLabel", {
@@ -1198,7 +1195,6 @@ export const setDialogVisible = (t) => {
       uploadData.uploadedFiles = 0;
       uploadData.percent = 0;
       dispatch(setUploadData(uploadData));
-      updateFiles(uploadToFolder, dispatch, getState);
     } else if (!files.length) {
       dispatch(clearPrimaryProgressData());
     } else {
