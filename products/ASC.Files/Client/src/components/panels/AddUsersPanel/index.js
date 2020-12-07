@@ -114,7 +114,7 @@ class AddUsersPanelComponent extends React.Component {
         />
         <Aside className="header_aside-panel">
           <StyledContent>
-            <StyledHeaderContent>
+            <StyledHeaderContent disableBorder={true}>
               <IconButton
                 size="16"
                 iconName="ArrowPathIcon"
