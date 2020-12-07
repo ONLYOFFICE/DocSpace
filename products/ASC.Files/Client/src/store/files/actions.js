@@ -317,7 +317,7 @@ export function setFilterUrl(filter) {
 }
 
 // TODO: similar to fetchFolder, remove one
-export function fetchFiles(folderId, filter, clearFilter = false) {
+export function fetchFiles(folderId, filter, clearFilter = true) {
   return (dispatch, getState) => {
     const filterData = filter ? filter.clone() : FilesFilter.getDefault();
     filterData.folder = folderId;
@@ -335,7 +335,7 @@ export function fetchFiles(folderId, filter, clearFilter = false) {
         );
         filterData.total = 0;
         dispatch(setFilesFilter(filterData));
-        if (!clearFilter) {
+        if (clearFilter) {
           dispatch(setFolders([]));
           dispatch(setFiles([]));
           dispatch(setSelected("close"));
@@ -364,7 +364,7 @@ export function fetchFiles(folderId, filter, clearFilter = false) {
       dispatch(
         setFiles(isPrivacyFolder && !isEncryptionSupport ? [] : data.files)
       );
-      if (!clearFilter) {
+      if (clearFilter) {
         dispatch(setSelected("close"));
       }
       return dispatch(
@@ -991,8 +991,6 @@ const sendChunk = (
 
 const updateFiles = (folderId, dispatch, getState) => {
   //console.log("folderId ", folderId);
-  const { files } = getState();
-  const { filter, treeFolders, selectedFolder } = files;
   const uploadData = {
     files: [],
     filesSize: 0,
@@ -1003,70 +1001,30 @@ const updateFiles = (folderId, dispatch, getState) => {
     percent: 0,
     uploaded: true,
   };
-
-  if (selectedFolder.id === folderId) {
-    return dispatch(fetchFiles(selectedFolder.id, filter.clone(), true))
-      .then((data) => {
-        const path = data.selectedFolder.pathParts;
-        const newTreeFolders = treeFolders;
-        const folders = data.selectedFolder.folders;
-        const foldersCount = data.selectedFolder.foldersCount;
-        loopTreeFolders(path, newTreeFolders, folders, foldersCount);
-        dispatch(setTreeFolders(newTreeFolders));
-        dispatch(setUpdateTree(true));
-      })
-      .catch((err) => {
-        dispatch(
-          setPrimaryProgressBarData({
-            alert: true,
-            visible: true,
-          })
-        );
-        setTimeout(() => dispatch(clearPrimaryProgressData()), TIMEOUT);
-        //toastr.error(err);
-      })
-      .finally(() =>
-        setTimeout(() => {
-          dispatch(clearPrimaryProgressData());
-          dispatch(setUploadData(uploadData));
-        }, TIMEOUT)
+  return refreshFiles(folderId, dispatch, getState)
+    .catch((err) => {
+      dispatch(
+        setPrimaryProgressBarData({
+          alert: true,
+          visible: true,
+        })
       );
-  } else {
-    return api.files
-      .getFolder(folderId, filter.clone())
-      .then((data) => {
-        const path = data.pathParts;
-        const newTreeFolders = treeFolders;
-        const folders = data.folders;
-        const foldersCount = data.count;
-        loopTreeFolders(path, newTreeFolders, folders, foldersCount);
-        dispatch(setTreeFolders(newTreeFolders));
-        dispatch(setUpdateTree(true));
-      })
-      .catch((err) => {
-        dispatch(
-          setPrimaryProgressBarData({
-            visible: true,
-            alert: true,
-          })
-        );
-        setTimeout(() => dispatch(clearPrimaryProgressData()), TIMEOUT);
-        //toastr.error(err);
-      })
-      .finally(() =>
-        setTimeout(() => {
-          dispatch(clearPrimaryProgressData());
-          dispatch(setUploadData(uploadData));
-        }, TIMEOUT)
-      );
-  }
+      setTimeout(() => dispatch(clearPrimaryProgressData()), TIMEOUT);
+      //toastr.error(err);
+    })
+    .finally(() =>
+      setTimeout(() => {
+        dispatch(clearPrimaryProgressData());
+        dispatch(setUploadData(uploadData));
+      }, TIMEOUT)
+    );
 };
 
 const refreshFiles = (folderId, dispatch, getState) => {
   const { files } = getState();
   const { filter, treeFolders, selectedFolder } = files;
   if (selectedFolder.id === folderId) {
-    return dispatch(fetchFiles(selectedFolder.id, filter.clone(), true)).then(
+    return dispatch(fetchFiles(selectedFolder.id, filter.clone(), false)).then(
       (data) => {
         const path = data.selectedFolder.pathParts;
         const newTreeFolders = treeFolders;
@@ -1346,7 +1304,7 @@ export const loopFilesOperations = (id, destFolderId, isCopy) => {
                 loopTreeFolders(path, newTreeFolders, folders, foldersCount);
 
                 if (!isCopy || destFolderId === currentFolderId) {
-                  dispatch(fetchFiles(currentFolderId, filter, true))
+                  dispatch(fetchFiles(currentFolderId, filter))
                     .then((data) => {
                       if (!isRecycleBin) {
                         newTreeFolders = treeFolders;
