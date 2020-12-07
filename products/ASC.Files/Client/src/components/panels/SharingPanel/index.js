@@ -609,6 +609,7 @@ class SharingPanelComponent extends React.Component {
         className="panel_combo-box add-groups"
         scaled={false}
         directionX="right"
+        disableIconClick={false}
         //isDisabled={isDisabled}
       >
         {React.createElement(Icons[accessRight.icon], {
