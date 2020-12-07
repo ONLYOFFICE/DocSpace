@@ -129,7 +129,7 @@ class PureHome extends React.Component {
 
         if (filter) {
           const folderId = filter.folder;
-          console.log("filter", filter);
+          //console.log("filter", filter);
           return fetchFiles(folderId, filter);
         }
 

@@ -50,7 +50,7 @@ const PhoneForm = (props) => {
   const buttonTranslation = `Enter number`;
 
   const onSubmit = () => {
-    console.log("onSubmit CHANGE");
+    console.log("onSubmit CHANGE"); //TODO: Why do nothing?
   };
 
   const onKeyPress = (target) => {

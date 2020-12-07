@@ -10,7 +10,6 @@ import config from "../package.json";
 
 import {
   store as commonStore,
-  constants,
   history,
   PrivateRoute,
   PublicRoute,
@@ -32,8 +31,8 @@ const {
   setCurrentProductId,
   setCurrentProductHomePage,
   getPortalCultures,
+  getIsAuthenticated,
 } = commonStore.auth.actions;
-const { AUTH_KEY } = constants;
 
 class App extends React.Component {
   constructor(props) {
@@ -43,8 +42,6 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    utils.removeTempContent();
-
     const {
       setModuleInfo,
       getUser,
@@ -53,33 +50,37 @@ class App extends React.Component {
       getPortalCultures,
       fetchTreeFolders,
       setIsLoaded,
+      getIsAuthenticated,
     } = this.props;
 
     setModuleInfo();
+    getIsAuthenticated().then((isAuthenticated) => {
+      if (!isAuthenticated) {
+        utils.updateTempContent();
+        return setIsLoaded();
+      } else {
+        utils.updateTempContent(isAuthenticated);
+      }
 
-    const token = localStorage.getItem(AUTH_KEY);
+      const requests = this.isEditor
+        ? [getUser()]
+        : [
+            getUser(),
+            getPortalSettings(),
+            getModules(),
+            getPortalCultures(),
+            fetchTreeFolders(),
+          ];
 
-    if (!token) {
-      return setIsLoaded();
-    }
-
-    const requests = this.isEditor
-      ? [getUser()]
-      : [
-          getUser(),
-          getPortalSettings(),
-          getModules(),
-          getPortalCultures(),
-          fetchTreeFolders(),
-        ];
-
-    Promise.all(requests)
-      .catch((e) => {
-        toastr.error(e);
-      })
-      .finally(() => {
-        setIsLoaded();
-      });
+      Promise.all(requests)
+        .catch((e) => {
+          toastr.error(e);
+        })
+        .finally(() => {
+          utils.updateTempContent();
+          setIsLoaded();
+        });
+    });
   }
 
   render() {
@@ -140,6 +141,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    getIsAuthenticated: () => getIsAuthenticated(dispatch),
     setModuleInfo: () => {
       dispatch(setCurrentProductHomePage(config.homepage));
       dispatch(setCurrentProductId("e67be73d-f9ae-4ce1-8fec-1880cb518cb4"));
