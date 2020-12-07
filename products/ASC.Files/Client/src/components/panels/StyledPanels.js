@@ -25,6 +25,14 @@ const PanelStyles = css`
       margin: 0;
     }
   }
+
+  .footer {
+    padding: 16px 0;
+    width: calc(100% - 32px);
+    margin: auto;
+    left: 0;
+    right: 0;
+  }
 `;
 
 const StyledAsidePanel = styled.div`
@@ -239,7 +247,6 @@ const StyledBody = styled.div`
 const StyledSharingBody = styled(Scrollbar)`
   position: relative;
   padding: 16px 0;
-  height: calc(100vh - 157px) !important;
   .row_content {
     overflow: visible;
   }
@@ -344,8 +351,11 @@ const StyledFooter = styled.div`
   display: flex;
   position: fixed;
   bottom: 0;
-  padding: 16px;
-  width: 100%;
+  padding: 16px 0;
+  width: calc(100% - 32px);
+  margin: auto;
+  left: 0;
+  right: 0;
   background-color: #fff;
   border-top: 1px solid #eceef1;
   box-sizing: border-box;

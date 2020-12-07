@@ -40,6 +40,8 @@ const {
   getSettingsCustomNamesGroupsCaption,
 } = store.auth.selectors;
 
+const SharingBodyStyle = { height: `calc(100vh - 156px)` };
+
 class SharingPanelComponent extends React.Component {
   constructor(props) {
     super(props);
@@ -667,10 +669,10 @@ class SharingPanelComponent extends React.Component {
             <StyledSharingBody
               ref={this.scrollRef}
               stype="mediumBlack"
-              style={{
-                height: `calc(100vh - 125px)`,
-              }}
-            >              {shareDataItems.map((item, index) => (
+              style={SharingBodyStyle}
+            >
+              {" "}
+              {shareDataItems.map((item, index) => (
                 <SharingRow
                   key={index}
                   t={t}
