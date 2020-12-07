@@ -26,7 +26,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -1745,37 +1744,40 @@ namespace ASC.Web.Files.Services.WCFService
 
         #endregion
 
-        public ItemList<AceWrapper> GetSharedInfo(ItemList<string> objectIds)
+        public ItemList<AceWrapper> GetSharedInfo(IEnumerable<T> fileIds, IEnumerable<T> folderIds)
         {
-            return FileSharing.GetSharedInfo<T>(objectIds);
+            return FileSharing.GetSharedInfo(fileIds, folderIds);
         }
 
-        public ItemList<AceShortWrapper> GetSharedInfoShort(string objectId)
+        public ItemList<AceShortWrapper> GetSharedInfoShortFile(T fileId)
         {
-            return FileSharing.GetSharedInfoShort<T>(objectId);
+            return FileSharing.GetSharedInfoShortFile(fileId);
         }
 
-        public ItemList<string> SetAceObject(AceCollection aceCollection, bool notify)
+        public ItemList<AceShortWrapper> GetSharedInfoShortFolder(T folderId)
+        {
+            return FileSharing.GetSharedInfoShortFolder(folderId);
+        }
+
+        public List<T> SetAceObject(AceCollection<T> aceCollection, bool notify)
         {
             var fileDao = GetFileDao();
             var folderDao = GetFolderDao();
-            var result = new ItemList<string>();
-            foreach (var objectId in aceCollection.Entries)
-            {
-                Debug.Assert(objectId != null, "objectId != null");
-                var entryType = objectId.StartsWith("file_") ? FileEntryType.File : FileEntryType.Folder;
-                var entryId = (T)Convert.ChangeType(objectId.Substring((entryType == FileEntryType.File ? "file_" : "folder_").Length), typeof(T));
-                var entry = entryType == FileEntryType.File
-                                ? fileDao.GetFile(entryId)
-                                : (FileEntry<T>)folderDao.GetFolder(entryId);
+            var result = new List<T>();
 
+            var entries = new List<FileEntry<T>>();
+            entries.AddRange(aceCollection.Files.Select(fileId => fileDao.GetFile(fileId)));
+            entries.AddRange(aceCollection.Folders.Select(folderDao.GetFolder));
+
+            foreach (var entry in entries)
+            {
                 try
                 {
                     var changed = FileSharingAceHelper.SetAceObject(aceCollection.Aces, entry, notify, aceCollection.Message);
                     if (changed)
                     {
                         FilesMessageService.Send(entry, GetHttpHeaders(),
-                                                    entryType == FileEntryType.Folder ? MessageAction.FolderUpdatedAccess : MessageAction.FileUpdatedAccess,
+                                                    entry.FileEntryType == FileEntryType.Folder ? MessageAction.FolderUpdatedAccess : MessageAction.FileUpdatedAccess,
                                                     entry.Title);
                     }
                 }
@@ -1785,9 +1787,9 @@ namespace ASC.Web.Files.Services.WCFService
                 }
 
                 var securityDao = GetSecurityDao();
-                if (securityDao.IsShared(entry.ID, entryType))
+                if (securityDao.IsShared(entry.ID, entry.FileEntryType))
                 {
-                    result.Add(objectId);
+                    result.Add(entry.ID);
                 }
             }
             return result;
@@ -1987,7 +1989,7 @@ namespace ASC.Web.Files.Services.WCFService
 
             NotifyClient.SendEditorMentions(file, fileLink, recipients, message);
 
-            return showSharingSettings ? GetSharedInfoShort("file_" + fileId) : null;
+            return showSharingSettings ? GetSharedInfoShortFile(fileId) : null;
         }
 
         public ItemList<EncryptionKeyPair> GetEncryptionAccess(T fileId)
@@ -2027,14 +2029,12 @@ namespace ASC.Web.Files.Services.WCFService
             //return new ItemList<string>(accounts);
         }
 
-        public ItemList<FileEntry<T>> ChangeOwner(ItemList<string> items, Guid userId)
+        public IEnumerable<FileEntry> ChangeOwner(IEnumerable<T> foldersId, IEnumerable<T> filesId, Guid userId)
         {
             var userInfo = UserManager.GetUsers(userId);
             ErrorIf(Equals(userInfo, Constants.LostUser) || userInfo.IsVisitor(UserManager), FilesCommonResource.ErrorMassage_ChangeOwner);
 
-            ParseArrayItems(items, out var foldersId, out var filesId);
-
-            var entries = new List<FileEntry<T>>();
+            var entries = new List<FileEntry>();
 
             var folderDao = GetFolderDao();
             var folders = folderDao.GetFolders(foldersId);
@@ -2103,7 +2103,7 @@ namespace ASC.Web.Files.Services.WCFService
                 entries.Add(newFile);
             }
 
-            return new ItemList<FileEntry<T>>(entries);
+            return entries;
         }
 
         public bool StoreOriginal(bool set)
@@ -2222,18 +2222,6 @@ namespace ASC.Web.Files.Services.WCFService
         private ISecurityDao<T> GetSecurityDao()
         {
             return DaoFactory.GetSecurityDao<T>();
-        }
-
-        private static void ParseArrayItems(IEnumerable<string> data, out List<T> foldersId, out List<T> filesId)
-        {
-            //TODO:!!!!Fix
-            foldersId = new List<T>();
-            filesId = new List<T>();
-            foreach (var id in data)
-            {
-                if (id.StartsWith("file_")) filesId.Add((T)Convert.ChangeType(id.Substring("file_".Length), typeof(T)));
-                if (id.StartsWith("folder_")) foldersId.Add((T)Convert.ChangeType(id.Substring("folder_".Length), typeof(T)));
-            }
         }
 
         private static void ErrorIf(bool condition, string errorMessage)

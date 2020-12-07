@@ -110,7 +110,7 @@ namespace ASC.Web.Files.Core.Entries
             if (!FileSecurity.CanEdit(file)) throw new System.Security.SecurityException(FilesCommonResource.ErrorMassage_SecurityException_EditFile);
             if (file.RootFolderType != FolderType.Privacy) throw new NotSupportedException();
 
-            var fileShares = FileStorageService.GetSharedInfo(new ItemList<string> { string.Format("file_{0}", fileId) }).ToList();
+            var fileShares = FileStorageService.GetSharedInfo(new List<T> { fileId }, new List<T> { }).ToList();
             fileShares = fileShares.Where(share => !share.SubjectGroup
                                             && !share.SubjectId.Equals(FileConstant.ShareLinkId)
                                             && share.Share == FileShare.ReadWrite).ToList();

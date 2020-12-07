@@ -41,6 +41,7 @@ using Amazon.S3.Model;
 using Amazon.S3.Transfer;
 using Amazon.Util;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Data.Storage.Configuration;
@@ -53,6 +54,7 @@ using MimeMapping = ASC.Common.Web.MimeMapping;
 
 namespace ASC.Data.Storage.S3
 {
+    [Scope]
     public class S3Storage : BaseStorage
     {
         private readonly List<string> _domains = new List<string>();
@@ -190,7 +192,7 @@ namespace ASC.Data.Storage.S3
         {
             var contentDisposition = string.Format("attachment; filename={0};",
                                                    HttpUtility.UrlPathEncode(attachmentFileName));
-            if (attachmentFileName.Any(c => (int)c >= 0 && (int)c <= 127))
+            if (attachmentFileName.Any(c => c >= 0 && c <= 127))
             {
                 contentDisposition = string.Format("attachment; filename*=utf-8''{0};",
                                                    HttpUtility.UrlPathEncode(attachmentFileName));

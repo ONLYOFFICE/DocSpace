@@ -1686,7 +1686,11 @@ class SectionBodyContent extends React.Component {
         ) : (
           <Consumer>
             {(context) => (
-              <RowContainer draggable useReactWindow={false}>
+              <RowContainer
+                className="files-row-container"
+                draggable
+                useReactWindow={false}
+              >
                 {items.map((item) => {
                   const { checked, isFolder, value, contextOptions } = item;
                   const sectionWidth = context.sectionWidth;
