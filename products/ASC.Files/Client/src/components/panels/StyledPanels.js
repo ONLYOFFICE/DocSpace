@@ -129,7 +129,6 @@ const StyledHeaderContent = styled.div`
 
   display: flex;
   align-items: center;
-  ${(props) => !props.disableBorder && "border-bottom: 1px solid #dee2e6;"}
 
   padding: 0 16px;
 

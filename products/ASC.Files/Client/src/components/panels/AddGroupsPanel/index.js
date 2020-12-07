@@ -116,7 +116,7 @@ class AddGroupsPanelComponent extends React.Component {
         />
         <Aside className="header_aside-panel">
           <StyledContent>
-            <StyledHeaderContent disableBorder={true}>
+            <StyledHeaderContent>
               <IconButton
                 size="16"
                 iconName="ArrowPathIcon"
