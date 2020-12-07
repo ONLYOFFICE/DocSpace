@@ -5,7 +5,7 @@ import { Icons } from "../icons";
 import Link from "../link";
 
 const whiteColor = "#FFFFFF";
-const avatarBackground = "#ECEEF1";
+const avatarBackground = "#D0D5DA";
 const namedAvatarBackground = "#2DA7DB";
 
 const noneUserSelect = css`

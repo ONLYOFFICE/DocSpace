@@ -107,7 +107,7 @@ class ArticleBodyContent extends React.Component {
     const { showNewFilesPanel, expandedKeys, newFolderId } = this.state;
 
     //console.log("Article Body render", this.props, this.state.expandedKeys);
-    console.log("Article Body render");
+    //console.log("Article Body render");
     return (
       <>
         {showNewFilesPanel && (
