@@ -68,10 +68,20 @@ export function createPasswordHash(password, hashSettings) {
   return hash;
 }
 
-export function removeTempContent() {
-  const tempElm = document.getElementById("temp-content");
-  if (tempElm) {
-    tempElm.outerHTML = "";
+export function updateTempContent(isAuth = false) {
+  if (isAuth) {
+    let el = document.getElementById("burger-loader-svg");
+    let el1 = document.getElementById("logo-loader-svg");
+    let el2 = document.getElementById("avatar-loader-svg");
+
+    el.style.display = "block";
+    el1.style.display = "block";
+    el2.style.display = "block";
+  } else {
+    const tempElm = document.getElementById("temp-content");
+    if (tempElm) {
+      tempElm.outerHTML = "";
+    }
   }
 }
 
@@ -97,11 +107,14 @@ export function showLoader() {
 export { withLayoutSize } from "./withLayoutSize";
 
 export function tryRedirectTo(page) {
-  
-  if(window.location && window.location.pathname && window.location.pathname.indexOf(page) !== -1)
+  if (
+    window.location &&
+    window.location.pathname &&
+    window.location.pathname.indexOf(page) !== -1
+  )
     return false;
-    //TODO: check if we already on default page
-    window.location.replace(page);
+  //TODO: check if we already on default page
+  window.location.replace(page);
 
-    return true;
+  return true;
 }

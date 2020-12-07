@@ -42,8 +42,6 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    utils.removeTempContent();
-
     const {
       setModuleInfo,
       getUser,
@@ -57,28 +55,31 @@ class App extends React.Component {
 
     setModuleInfo();
     getIsAuthenticated().then((isAuthenticated) => {
+      if (!isAuthenticated) {
+        utils.updateTempContent();
+        return setIsLoaded();
+      } else {
+        utils.updateTempContent(isAuthenticated);
+      }
 
-    if (!isAuthenticated) {
-      return setIsLoaded();
-    }
+      const requests = this.isEditor
+        ? [getUser()]
+        : [
+            getUser(),
+            getPortalSettings(),
+            getModules(),
+            getPortalCultures(),
+            fetchTreeFolders(),
+          ];
 
-    const requests = this.isEditor
-      ? [getUser()]
-      : [
-          getUser(),
-          getPortalSettings(),
-          getModules(),
-          getPortalCultures(),
-          fetchTreeFolders(),
-        ];
-
-    Promise.all(requests)
-      .catch((e) => {
-        toastr.error(e);
-      })
-      .finally(() => {
-        setIsLoaded();
-      });
+      Promise.all(requests)
+        .catch((e) => {
+          toastr.error(e);
+        })
+        .finally(() => {
+          utils.updateTempContent();
+          setIsLoaded();
+        });
     });
   }
 

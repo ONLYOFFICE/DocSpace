@@ -42,8 +42,6 @@ const GroupAction = lazy(() => import("./components/pages/GroupAction"));*/
 
 class App extends React.Component {
   componentDidMount() {
-    utils.removeTempContent();
-
     const {
       setModuleInfo,
       getUser,
@@ -59,28 +57,31 @@ class App extends React.Component {
 
     setModuleInfo();
     getIsAuthenticated().then((isAuthenticated) => {
+      if (!isAuthenticated) {
+        utils.updateTempContent();
+        return setIsLoaded();
+      } else {
+        utils.updateTempContent(isAuthenticated);
+      }
 
-    if (!isAuthenticated) {
-      return setIsLoaded();
-    }
+      const requests = [
+        getUser(),
+        getPortalSettings(),
+        getModules(),
+        getPortalPasswordSettings(),
+        getPortalCultures(),
+        fetchGroups(),
+        fetchPeople(),
+      ];
 
-    const requests = [
-      getUser(),
-      getPortalSettings(),
-      getModules(),
-      getPortalPasswordSettings(),
-      getPortalCultures(),
-      fetchGroups(),
-      fetchPeople(),
-    ];
-
-    Promise.all(requests)
-      .catch((e) => {
-        toastr.error(e);
-      })
-      .finally(() => {
-        setIsLoaded();
-      });
+      Promise.all(requests)
+        .catch((e) => {
+          toastr.error(e);
+        })
+        .finally(() => {
+          utils.updateTempContent();
+          setIsLoaded();
+        });
     });
   }
 

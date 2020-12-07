@@ -27,41 +27,43 @@ const {
   getUser,
   getPortalSettings,
   getModules,
-  getIsAuthenticated
+  getIsAuthenticated,
 } = CommonStore.auth.actions;
 
 class App extends React.Component {
   componentDidMount() {
-    utils.removeTempContent();
-
     const {
       getPortalSettings,
       getUser,
       getModules,
       setIsLoaded,
-      getIsAuthenticated
+      getIsAuthenticated,
     } = this.props;
 
     getIsAuthenticated()
-    .then((isAuthenticated) => {
-      const requests = [];
-      if (!isAuthenticated) {
-        requests.push(getPortalSettings());
-      } else if (!window.location.pathname.includes("confirm/EmailActivation")) {
-        requests.push(getUser());
-        requests.push(getPortalSettings());
-        requests.push(getModules());
-      }
-  
-      Promise.all(requests)
-        .catch((e) => {
-          toastr.error(e);
-        })
-        .finally(() => {
-          setIsLoaded();
-        });
-    })
-    .catch((err) => toastr.error(err));
+      .then((isAuthenticated) => {
+        if (isAuthenticated) utils.updateTempContent(isAuthenticated);
+        const requests = [];
+        if (!isAuthenticated) {
+          requests.push(getPortalSettings());
+        } else if (
+          !window.location.pathname.includes("confirm/EmailActivation")
+        ) {
+          requests.push(getUser());
+          requests.push(getPortalSettings());
+          requests.push(getModules());
+        }
+
+        Promise.all(requests)
+          .catch((e) => {
+            toastr.error(e);
+          })
+          .finally(() => {
+            utils.updateTempContent();
+            setIsLoaded();
+          });
+      })
+      .catch((err) => toastr.error(err));
   }
 
   render() {
@@ -112,7 +114,7 @@ const mapStateToProps = (state) => {
   return {
     modules,
     isLoaded,
-    organizationName
+    organizationName,
   };
 };
 
@@ -122,7 +124,7 @@ const mapDispatchToProps = (dispatch) => {
     getPortalSettings: () => getPortalSettings(dispatch),
     getUser: () => getUser(dispatch),
     getModules: () => getModules(dispatch),
-    setIsLoaded: () => dispatch(setIsLoaded(true))
+    setIsLoaded: () => dispatch(setIsLoaded(true)),
   };
 };
 
