@@ -18,7 +18,11 @@ import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import { utils as commonUtils, constants, toastr, store } from "asc-web-common";
 import { getShareUsers, setShareFiles } from "../../../store/files/actions";
-import { getAccessOption, getSelection } from "../../../store/files/selectors";
+import {
+  getAccessOption,
+  getIsPrivacyFolder,
+  getSelection,
+} from "../../../store/files/selectors";
 import {
   StyledAsidePanel,
   StyledContent,
@@ -29,6 +33,7 @@ import {
 import { AddUsersPanel, AddGroupsPanel, EmbeddingPanel } from "../index";
 import SharingRow from "./SharingRow";
 import { createI18N } from "../../../helpers/i18n";
+import { setEncryptionAccess } from "../../../helpers/desktop";
 const i18n = createI18N({
   page: "SharingPanel",
   localesPath: "panels/SharingPanel",
@@ -36,6 +41,7 @@ const i18n = createI18N({
 
 const { changeLanguage } = commonUtils;
 const { ShareAccessRights } = constants;
+const { replaceFileStream } = store.auth.actions;
 const {
   getCurrentUserId,
   getSettingsCustomNamesGroupsCaption,
@@ -88,7 +94,7 @@ class SharingPanelComponent extends React.Component {
       message,
       shareDataItems,
     } = this.state;
-    const { selectedItems, onClose } = this.props;
+    const { selectedItems, onClose, isPrivacy, replaceFileStream } = this.props;
 
     const folderIds = [];
     const fileIds = [];
@@ -118,8 +124,23 @@ class SharingPanelComponent extends React.Component {
         folderIds.push(item.id);
       }
     }
-
+    //debugger;
     setShareFiles(folderIds, fileIds, share, isNotifyUsers, message)
+      .then(() => {
+        if (isPrivacy) {
+          debugger;
+          return setEncryptionAccess(selectedItems).then((encryptedFile) => {
+            if (!encryptedFile) return Promise.resolve();
+            return replaceFileStream(
+              selectedItems[0].id,
+              encryptedFile,
+              true,
+              true
+            ).then(() => toastr.info(`File ${selectedItems[0].title} created`));
+          });
+        }
+        return Promise.resolve();
+      })
       .catch((err) => toastr.error(err))
       .finally(() => onClose());
   };
@@ -738,9 +759,12 @@ const SharingPanel = (props) => (
 const mapStateToProps = (state) => {
   return {
     isMyId: getCurrentUserId(state),
+    isPrivacy: getIsPrivacyFolder(state),
     selectedItems: getSelection(state),
     groupsCaption: getSettingsCustomNamesGroupsCaption(state),
   };
 };
 
-export default connect(mapStateToProps)(withRouter(SharingPanel));
+export default connect(mapStateToProps, { replaceFileStream })(
+  withRouter(SharingPanel)
+);
