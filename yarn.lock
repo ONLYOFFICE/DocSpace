@@ -1896,6 +1896,13 @@
   resolved "https://registry.yarnpkg.com/@redux-dynostore/core/-/core-3.1.1.tgz#50fad2ea470d26e4d1525532dbfe3e9eb252ccea"
   integrity sha512-7tenoqwDr2DQ4L1i9PyAWhs2SZmmrIhq7bBeFXys3D52bxMx6uJ1hMlyyqT/D7VH+6+LifsdVFcnkR3kB8VDUA==
 
+"@redux-dynostore/react-redux-subspace@^3.1.1":
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/@redux-dynostore/react-redux-subspace/-/react-redux-subspace-3.1.1.tgz#a6186bc0ce0a6ea23658dd85a9030d6f11d0317e"
+  integrity sha512-BxUeP5e9nRQ0aCcF5qvCJyT7yGltru7hG0Jr/XStOEffKhEIGya7xX8xBa0RdruumXS3EXrNP+xsQtz3UfUZdw==
+  dependencies:
+    react-redux-subspace "^6.1.0"
+
 "@redux-dynostore/react-redux@^3.1.1":
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/@redux-dynostore/react-redux/-/react-redux-3.1.1.tgz#e469e49ccfefb3a49bb1a8167c6b08dd7e86497d"
@@ -1904,6 +1911,14 @@
     "@redux-dynostore/core" "^3.1.1"
     hoist-non-react-statics "^3.3.0"
     recompose "^0.30.0"
+
+"@redux-dynostore/redux-subspace@^3.1.1":
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/@redux-dynostore/redux-subspace/-/redux-subspace-3.1.1.tgz#5976d101435a5ff6dcf6cd571cfedbd3bd377b2d"
+  integrity sha512-GvzV1DJ3/V6w2Nzycy5EqtGUPrwk6xJB295gYSIQAxXWRf6dU0YJnQwEazJgiPf4d64PY0Fp8htf2qaUFw7fYg==
+  dependencies:
+    "@redux-dynostore/core" "^3.1.1"
+    redux-subspace "^6.1.0"
 
 "@svgr/babel-plugin-add-jsx-attribute@^5.4.0":
   version "5.4.0"
@@ -2049,6 +2064,14 @@
     "@types/minimatch" "*"
     "@types/node" "*"
 
+"@types/hoist-non-react-statics@^3.3.0":
+  version "3.3.1"
+  resolved "https://registry.yarnpkg.com/@types/hoist-non-react-statics/-/hoist-non-react-statics-3.3.1.tgz#1124aafe5118cb591977aeb1ceaaed1070eb039f"
+  integrity sha512-iMIqiko6ooLrTh1joXodJK5X9xeEALT1kM5G3ZLhD3hszxBdIEd5C75U834D9mLcINgD4OyZf5uQXjkuYydWvA==
+  dependencies:
+    "@types/react" "*"
+    hoist-non-react-statics "^3.3.0"
+
 "@types/html-minifier-terser@^5.0.0":
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/@types/html-minifier-terser/-/html-minifier-terser-5.1.1.tgz#3c9ee980f1a10d6021ae6632ca3e79ca2ec4fb50"
@@ -2104,10 +2127,33 @@
   resolved "https://registry.yarnpkg.com/@types/parse-json/-/parse-json-4.0.0.tgz#2f8bb441434d163b35fb8ffdccd7138927ffb8c0"
   integrity sha512-//oorEZjL6sbPcKUaCdIGlIUeH26mgzimjBB77G6XRgnDl/L5wOnpyBGRe/Mmf5CVW3PwEBE1NjiMZ/ssFh4wA==
 
+"@types/prop-types@*":
+  version "15.7.3"
+  resolved "https://registry.yarnpkg.com/@types/prop-types/-/prop-types-15.7.3.tgz#2ab0d5da2e5815f94b0b9d4b95d1e5f243ab2ca7"
+  integrity sha512-KfRL3PuHmqQLOG+2tGpRO26Ctg+Cq1E01D2DMriKEATHgWLfeNDmq9e29Q9WIky0dQ3NPkd1mzYH8Lm936Z9qw==
+
 "@types/q@^1.5.1":
   version "1.5.4"
   resolved "https://registry.yarnpkg.com/@types/q/-/q-1.5.4.tgz#15925414e0ad2cd765bfef58842f7e26a7accb24"
   integrity sha512-1HcDas8SEj4z1Wc696tH56G8OlRaH/sqZOynNNB+HF0WOeXPaxTtbYzJY2oEfiUxjSKjhCKr+MvR7dCHcEelug==
+
+"@types/react-redux@^7.1.1":
+  version "7.1.11"
+  resolved "https://registry.yarnpkg.com/@types/react-redux/-/react-redux-7.1.11.tgz#a18e8ab3651e8e8cc94798934927937c66021217"
+  integrity sha512-OjaFlmqy0CRbYKBoaWF84dub3impqnLJUrz4u8PRjDzaa4n1A2cVmjMV81shwXyAD5x767efhA8STFGJz/r1Zg==
+  dependencies:
+    "@types/hoist-non-react-statics" "^3.3.0"
+    "@types/react" "*"
+    hoist-non-react-statics "^3.3.0"
+    redux "^4.0.0"
+
+"@types/react@*", "@types/react@^17.0.0":
+  version "17.0.0"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-17.0.0.tgz#5af3eb7fad2807092f0046a1302b7823e27919b8"
+  integrity sha512-aj/L7RIMsRlWML3YB6KZiXB3fV2t41+5RBGYF8z+tAKU43Px8C3cYUZsDvf1/+Bm4FK21QWBrDutu8ZJ/70qOw==
+  dependencies:
+    "@types/prop-types" "*"
+    csstype "^3.0.2"
 
 "@types/source-list-map@*":
   version "0.1.2"
@@ -7585,6 +7631,17 @@ react-onclickoutside@^6.9.0:
   resolved "https://registry.yarnpkg.com/react-onclickoutside/-/react-onclickoutside-6.9.0.tgz#a54bc317ae8cf6131a5d78acea55a11067f37a1f"
   integrity sha512-8ltIY3bC7oGhj2nPAvWOGi+xGFybPNhJM0V1H8hY/whNcXgmDeaeoCMPPd8VatrpTsUWjb/vGzrmu6SrXVty3A==
 
+react-redux-subspace@^6.1.0:
+  version "6.2.0"
+  resolved "https://registry.yarnpkg.com/react-redux-subspace/-/react-redux-subspace-6.2.0.tgz#13a5dbb9c1c89802592ffa31e4e8ab01c2e98732"
+  integrity sha512-rQWLuopllXsLudS7jaW+eU6OHb9CXs4qD8Tyw1L8PMxOi1aDc5L/ho7xE4eyJwjP/ufAlZZk043CMjM4wCeneA==
+  dependencies:
+    "@types/react" "^17.0.0"
+    "@types/react-redux" "^7.1.1"
+    hoist-non-react-statics "^3.3.0"
+    prop-types "^15.7.2"
+    redux-subspace "^6.2.0"
+
 react-redux@^7.2.2:
   version "7.2.2"
   resolved "https://registry.yarnpkg.com/react-redux/-/react-redux-7.2.2.tgz#03862e803a30b6b9ef8582dadcc810947f74b736"
@@ -7894,12 +7951,17 @@ redux-devtools-extension@^2.13.8:
   resolved "https://registry.yarnpkg.com/redux-devtools-extension/-/redux-devtools-extension-2.13.8.tgz#37b982688626e5e4993ff87220c9bbb7cd2d96e1"
   integrity sha512-8qlpooP2QqPtZHQZRhx3x3OP5skEV1py/zUdMY28WNAocbafxdG2tRD1MWE7sp8obGMNYuLWanhhQ7EQvT1FBg==
 
+redux-subspace@^6.1.0, redux-subspace@^6.2.0:
+  version "6.2.0"
+  resolved "https://registry.yarnpkg.com/redux-subspace/-/redux-subspace-6.2.0.tgz#cb39919bfaa00f807f19d206a1dd3f2d277468ac"
+  integrity sha512-Hi4Pmg7BUcIbw6xB+w2GeG+BS6EXTG/sk15Xs5jYKk2txXJstsGgD57Zn38HzomPslqTiLTHw3MA/rjhbmFV4Q==
+
 redux-thunk@^2.3.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/redux-thunk/-/redux-thunk-2.3.0.tgz#51c2c19a185ed5187aaa9a2d08b666d0d6467622"
   integrity sha512-km6dclyFnmcvxhAcrQV2AkZmPQjzPDjgVlQtR0EQjxZPyJ0BnMf3in1ryuR8A2qU0HldVRfxYXbFSKlI3N7Slw==
 
-redux@^4.0.5:
+redux@^4.0.0, redux@^4.0.5:
   version "4.0.5"
   resolved "https://registry.yarnpkg.com/redux/-/redux-4.0.5.tgz#4db5de5816e17891de8a80c424232d06f051d93f"
   integrity sha512-VSz1uMAH24DM6MF72vcojpYPtrTUu3ByVWfPL1nPfVRb5mZVTve5GnNCUV53QM/BZ66xfWrm0CTWoM+Xlz8V1w==

@@ -6,7 +6,8 @@
     "packages/asc-web-common",
     "web/ASC.Web.Login",
     "web/ASC.Web.Client",
-    "products/ASC.People/Client"
+    "products/ASC.People/Client",
+    "products/ASC.Files/Client"
   ],
   "useWorkspaces": true
 }

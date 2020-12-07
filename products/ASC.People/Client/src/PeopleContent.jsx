@@ -7,12 +7,10 @@ import portalReducer from "./store/portal/reducers";
 const PeopleContent = (props) => {
   const store = useStore();
 
-  // useEffect(() => {
-  //   console.log("Store object", store);
-  //   store.reducerManager.add("portal", portalReducer);
-
-  //   return store.reducerManager.remove("portal");
-  // }, []);
+  useEffect(() => {
+    console.log("Store object", store);
+    return store.detachReducers(["portal"]);
+  }, []);
 
   return <div>PEOPLE PAGE</div>;
 };

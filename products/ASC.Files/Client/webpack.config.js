@@ -5,7 +5,7 @@ const path = require("path");
 const deps = require("./package.json").dependencies;
 module.exports = {
   output: {
-    publicPath: "http://localhost:5001/",
+    publicPath: "http://localhost:5008/",
     filename: "bundle.js",
     path: path.resolve(__dirname, "dist"),
   },
@@ -18,8 +18,7 @@ module.exports = {
   },
 
   devServer: {
-    port: 5001,
-    openPage: "http://localhost:8092",
+    port: 5008,
     contentBase: path.join(__dirname, "public"),
   },
 
@@ -75,18 +74,14 @@ module.exports = {
 
   plugins: [
     new ModuleFederationPlugin({
-      name: "studio",
+      name: "files",
       filename: "remoteEntry.js",
       remotes: {
         studio: "studio@http://localhost:5001/remoteEntry.js",
-        people: "people@http://localhost:5002/remoteEntry.js",
         files: "files@http://localhost:5008/remoteEntry.js",
-        login: "login@http://localhost:5020/remoteEntry.js",
       },
       exposes: {
-        "./home": "./src/components/pages/Home",
-        "./frame": "./src/Frame",
-        "./store": "./src/store/store",
+        "./page": "./src/FilesContent.jsx",
       },
       shared: {
         ...deps,

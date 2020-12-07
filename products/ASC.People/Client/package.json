@@ -35,6 +35,8 @@
     "@babel/runtime": "^7.12.5",
     "@redux-dynostore/core": "^3.1.1",
     "@redux-dynostore/react-redux": "^3.1.1",
+    "@redux-dynostore/react-redux-subspace": "^3.1.1",
+    "@redux-dynostore/redux-subspace": "^3.1.1",
     "attr-accept": "^2.2.2",
     "axios": "^0.21.0",
     "email-addresses": "^3.1.0",
