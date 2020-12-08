@@ -86,6 +86,11 @@ class SectionBody extends React.Component {
     this.focusRef.current.focus();
   }
 
+  componentWillUnmount() {
+    this.focusRef = null;
+    this.scrollRef = null;
+  }
+
   render() {
     //console.log("PageLayout SectionBody render");
     const {

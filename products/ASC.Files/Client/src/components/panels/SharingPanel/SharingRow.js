@@ -129,55 +129,6 @@ const SharingRow = (props) => {
   const onShareFacebook = () => window.open(`https://www.facebook.com`);
   /*window.open(`https://www.facebook.com/dialog/feed?app_id=645528132139019&display=popup&link=${item.shareLink}`);*/
 
-  /*const onChangeToggle = (e) => {
-    return e.target.checked;
-  };
-
-  const options = [
-    {
-      key: 1,
-      label: "Disabled",
-      disabled: false,
-      onClick: () => console.log("Disabled"),
-    },
-    {
-      key: 2,
-      label: "1 hour",
-      disabled: false,
-      onClick: () => console.log("1 hour"),
-    },
-    {
-      key: 3,
-      label: "1 day",
-      disabled: false,
-      onClick: () => console.log("1 day"),
-    },
-    {
-      key: 4,
-      label: "1 week",
-      disabled: false,
-      onClick: () => console.log("1 week"),
-    },
-    {
-      key: 5,
-      label: "1 month",
-      disabled: false,
-      onClick: () => console.log("1 month"),
-    },
-    {
-      key: 6,
-      label: "1 year",
-      disabled: false,
-      onClick: () => console.log("1 year"),
-    },
-    {
-      key: 7,
-      label: "Timeless",
-      disabled: false,
-      onClick: () => console.log("Timeless"),
-    },
-  ];*/
-
   const internalLinkData = [
     {
       key: "linkItem",
