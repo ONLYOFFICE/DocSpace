@@ -151,15 +151,15 @@ services:
       - onlyoffice-studio
       - onlyoffice-backup
     environment:
-      - SERVICE_API="${API_HOST:-api}:${SERVICE_PORT:-5050}"
-      - SERVICE_API_SYSTEM="${API_SYSTEM_HOST:-api_system}:${SERVICE_PORT:-5050}"
-      - SERVICE_URLSHORYENER="${URLSHORTENER_HOST:-urlshortener}:${SERVICE_PORT:-5050}"
-      - SERVICE_STUDIO_NOTIFY="${STUDIO_NOYIFY_HOST:-studio.notify}:${SERVICE_PORT:-5050}"
-      - SERVICE_PEOPLE_SERVER="${PEOPLE_SERVER_HOST:-people.server}:${SERVICE_PORT:-5050}"
-      - SERVICE_FILES="${FILES_HOST:-files}:${SERVICE_PORT:-5050}"
-      - SERVICE_FILES_SERVICES="${FILES_SERVICES_HOST:-files_services}:${SERVICE_PORT:-5050}"
-      - SERVICE_STUDIO="${STUDIO_HOST:-studio}:${SERVICE_PORT:-5050}"
-      - SERVICE_BACKUP="${BACKUP_HOST:-backup}:${SERVICE_PORT:-5050}"
+      - SERVICE_API="${SERVICE_API:-api:5050}"
+      - SERVICE_API_SYSTEM="${SERVICE_API_SYSTEM:-api_system:5050}"
+      - SERVICE_URLSHORYENER="${SERVICE_URLSHORYENER:-urlshortener:5050}"
+      - SERVICE_STUDIO_NOTIFY="${SERVICE_STUDIO_NOTIFY:-studio.notify:-5050}"
+      - SERVICE_PEOPLE_SERVER="${SERVICE_PEOPLE_SERVER:-people.server:-5050}"
+      - SERVICE_FILES="${SERVICE_FILES:-files:-5050}"
+      - SERVICE_FILES_SERVICES="${SERVICE_FILES_SERVICES:-files_services:-5050}"
+      - SERVICE_STUDIO="${SERVICE_STUDIO:-studio:-5050}"
+      - SERVICE_BACKUP="${SERVICE_BACKUP:-backup:-5050}"
       - DOCUMENT_SERVER="${DOCUMENT_SERVER_HOST:-document-server}"
       - SERVICE_PORT=${SERVICE_PORT:-5050}
     volumes:
