@@ -10,6 +10,12 @@ class LinkRow extends React.Component {
     super(props);
   }
 
+  onToggleButtonChange = () => {
+    const { onToggleLink, item } = this.props;
+
+    onToggleLink(item);
+  };
+
   render() {
     const {
       linkText,
@@ -20,7 +26,6 @@ class LinkRow extends React.Component {
       accessOptions,
       item,
       withToggle,
-      onToggleLink,
     } = this.props;
 
     const isChecked = item.rights.accessNumber !== ShareAccessRights.DenyAccess;
@@ -59,7 +64,7 @@ class LinkRow extends React.Component {
               <div>
                 <ToggleButton
                   isChecked={isChecked}
-                  onChange={() => onToggleLink(item)}
+                  onChange={this.onToggleButtonChange}
                 />
               </div>
             )}
