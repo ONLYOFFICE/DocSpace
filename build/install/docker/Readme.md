@@ -1,9 +1,9 @@
-== Getting Started
+# Getting Started
 
 * Download App run:	git clone git clone https://github.com/ONLYOFFICE/AppServer.git
 * cd ./AppServer/build/install/docker/
 
-=== Installation
+# Installation
 
 * Build Appserver docker microservices run: docker-compose -f build.yml build
 * In file .env (for checking values run: docker exec -it onlyoffice-community-server env)
