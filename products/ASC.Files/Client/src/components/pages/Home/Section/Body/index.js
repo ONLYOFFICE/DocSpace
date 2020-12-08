@@ -179,6 +179,15 @@ const SimpleFilesRow = styled(Row)`
   }
 `;
 
+const EncryptedFile = styled.div`
+  background: url("images/security.svg") no-repeat 0 0 / 16px 16px transparent;
+  height: 16px;
+  position: absolute;
+  width: 16px;
+  margin-top: 14px;
+  margin-left: 12px;
+`;
+
 class SectionBodyContent extends React.Component {
   constructor(props) {
     super(props);
@@ -781,14 +790,17 @@ class SectionBodyContent extends React.Component {
 
   getItemIcon = (item, isEdit) => {
     return (
-      <ReactSVG
-        beforeInjection={(svg) => {
-          svg.setAttribute("style", "margin-top: 4px");
-          isEdit && svg.setAttribute("style", "margin: 4px 0 0 28px");
-        }}
-        src={item.icon}
-        loading={this.svgLoader}
-      />
+      <>
+        <ReactSVG
+          beforeInjection={(svg) => {
+            svg.setAttribute("style", "margin-top: 4px");
+            isEdit && svg.setAttribute("style", "margin: 4px 0 0 28px");
+          }}
+          src={item.icon}
+          loading={this.svgLoader}
+        />
+        {this.props.isPrivacy && item.fileExst && <EncryptedFile />}
+      </>
     );
   };
 
