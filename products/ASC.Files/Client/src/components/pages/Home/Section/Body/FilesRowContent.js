@@ -186,6 +186,7 @@ class FilesRowContent extends React.PureComponent {
             if (isPrivacy) {
               return setEncryptionAccess(file).then((encryptedFile) => {
                 if (!encryptedFile) return Promise.resolve();
+                toastr.success("Saving encrypted file");
                 return replaceFileStream(
                   file.id,
                   encryptedFile,

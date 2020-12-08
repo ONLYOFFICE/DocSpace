@@ -131,6 +131,7 @@ class SharingPanelComponent extends React.Component {
           selectedItems.forEach((item) => {
             return setEncryptionAccess(item).then((encryptedFile) => {
               if (!encryptedFile) return Promise.resolve();
+              toastr.success("Saving encrypted file");
               return replaceFileStream(
                 item.id,
                 encryptedFile,
