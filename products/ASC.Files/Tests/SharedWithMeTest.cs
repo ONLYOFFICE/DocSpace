@@ -6,6 +6,7 @@ using ASC.Api.Documents;
 using ASC.Core;
 using ASC.Core.Users;
 using ASC.Web.Api.Models;
+using ASC.Web.Files.Services.WCFService;
 using ASC.Web.Files.Services.WCFService.FileOperations;
 
 using NUnit.Framework;
@@ -91,15 +92,17 @@ namespace ASC.Files.Tests
                 deleteAfter,
                 immediately);
 
+            ItemList<FileOperationResult> statuses;
+
             while (true)
             {
-                var statuses = FileStorageService.GetTasksStatuses();
+                statuses = FileStorageService.GetTasksStatuses();
 
                 if (statuses.TrueForAll(r => r.Finished))
                     break;
                 Thread.Sleep(100);
             }
-            Assert.IsFalse(FileStorageService.GetTasksStatuses().TrueForAll(r => string.IsNullOrEmpty(r.Error)));
+            Assert.IsFalse(statuses.TrueForAll(r => string.IsNullOrEmpty(r.Error)));
         }
 
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetCreateFileItems))]
@@ -107,12 +110,8 @@ namespace ASC.Files.Tests
         [Order(1)]
         public void CreateSharedFileReturnsFolderWrapper(string fileTitle)
         {
-            /*var fileWrapper = FilesControllerHelper.CreateFile(GlobalFolderHelper.FolderShare, fileTitle, default);
-
-            Assert.IsNotNull(fileWrapper);
-            Assert.AreEqual(fileTitle + ".docx", fileWrapper.Title);*/
-            var fileWrapper = Assert.Throws<InvalidOperationException>(() => FilesControllerHelper.CreateFile(GlobalFolderHelper.FolderShare, fileTitle, default ));
-            Assert.That(fileWrapper.Message == "You don't have enough permission to create");
+            var fileWrapper = FilesControllerHelper.CreateFile(GlobalFolderHelper.FolderShare, fileTitle, default);
+            Assert.AreEqual(fileWrapper.FolderId, GlobalFolderHelper.FolderMy);
         }
 
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.ShareParamToFile))]
@@ -131,7 +130,7 @@ namespace ASC.Files.Tests
         public void GetSharedFileInfoReturnsFolderWrapper()
         {
             SecurityContext.AuthenticateMe(NewUser.ID);
-            var fileWrapper = Assert.Throws<InvalidOperationException>(() => FilesControllerHelper.GetFolderInfo(TestFile.Id));
+            var fileWrapper = Assert.Throws<InvalidOperationException>(() => FilesControllerHelper.GetFolderInfo(TestFolder.Id));
             Assert.That(fileWrapper.Message == "You don't have enough permission to view the folder content");
 
         }
@@ -142,7 +141,7 @@ namespace ASC.Files.Tests
         {
             SecurityContext.AuthenticateMe(NewUser.ID);
             var fileWrapper = Assert.Throws<InvalidOperationException>(() => FilesControllerHelper.UpdateFile(TestFile.Id, fileTitle, lastVersion));
-            Assert.That(fileWrapper.Message == "You don't have enough permission to rename the folder");
+            Assert.That(fileWrapper.Message == "You don't have enough permission to rename the file");
         }
 
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetDeleteFileItems))]
@@ -156,15 +155,17 @@ namespace ASC.Files.Tests
                 deleteAfter,
                 immediately);
 
+            ItemList<FileOperationResult> statuses;
+
             while (true)
             {
-                var statuses = FileStorageService.GetTasksStatuses();
+                statuses = FileStorageService.GetTasksStatuses();
 
                 if (statuses.TrueForAll(r => r.Finished))
                     break;
                 Thread.Sleep(100);
             }
-            Assert.IsFalse(FileStorageService.GetTasksStatuses().TrueForAll(r => string.IsNullOrEmpty(r.Error)));
+            Assert.IsFalse(statuses.TrueForAll(r => string.IsNullOrEmpty(r.Error)));
         }
         #endregion
 
