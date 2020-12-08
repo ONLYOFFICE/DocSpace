@@ -30,6 +30,7 @@ import {
 } from "./selectors";
 
 import sumBy from "lodash/sumBy";
+import throttle from "lodash/throttle";
 
 const { files, FilesFilter } = api;
 const { FolderType } = constants;
@@ -766,6 +767,10 @@ const startUploadFiles = (
 };
 const chunkSize = 1024 * 1023; //~0.999mb
 
+const throttleRefreshFiles = throttle((toFolderId, dispatch, getState) => {
+  refreshFiles(toFolderId, dispatch, getState);
+}, 10000);
+
 const startSessionFunc = (indexOfFile, t, dispatch, getState) => {
   const state = getState();
   const { uploadData } = state.files;
@@ -820,7 +825,8 @@ const startSessionFunc = (indexOfFile, t, dispatch, getState) => {
       }
     })
     .then(() => {
-      refreshFiles(toFolderId, dispatch, getState);
+      throttleRefreshFiles(toFolderId, dispatch, getState);
+      //TODO: rewrite to async function
       sendChunk(
         currentFiles,
         location,
@@ -1023,7 +1029,10 @@ const updateFiles = (folderId, dispatch, getState) => {
 const refreshFiles = (folderId, dispatch, getState) => {
   const { files } = getState();
   const { filter, treeFolders, selectedFolder } = files;
-  if (selectedFolder.id === folderId) {
+  if (
+    selectedFolder.id === folderId &&
+    window.location.pathname.indexOf("/history") === -1
+  ) {
     return dispatch(fetchFiles(selectedFolder.id, filter.clone(), false)).then(
       (data) => {
         const path = data.selectedFolder.pathParts;
