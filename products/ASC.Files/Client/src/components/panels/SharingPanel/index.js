@@ -137,7 +137,9 @@ class SharingPanelComponent extends React.Component {
                 encryptedFile,
                 true,
                 true
-              ).then(() => toastr.info(`File ${item.title} created`));
+              ).then(() =>
+                toastr.info(`File ${item.title} succesfully shared`)
+              );
             });
           });
         }
