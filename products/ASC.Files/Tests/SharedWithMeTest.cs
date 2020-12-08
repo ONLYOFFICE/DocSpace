@@ -23,7 +23,7 @@ namespace ASC.Files.Tests
         public TenantManager tenantManager { get; private set; }
         public EmployeeWraperFull TestUser { get; private set; }
        
-        [SetUp]
+        [OneTimeSetUp]
         public override void SetUp()
         {
             base.SetUp();
@@ -33,10 +33,16 @@ namespace ASC.Files.Tests
             TestFolderParam = new List<FileShareParams> { new FileShareParams { Access = Core.Security.FileShare.Read, ShareTo = NewUser.ID } };
 
         }
+        [TearDown]
+        public override void TearDown()
+        {
+            base.TearDown();
+        }
 
         #region Shared Folder and File (Read)
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetCreateFolderItems))]
         [Category("Folder")]
+        [Order(1)]
         public void CreateSharedFolderReturnsFolderWrapper(string folderTitle)
         {
             var folderWrapper = Assert.Throws<InvalidOperationException>(() => FilesControllerHelper.CreateFolder(GlobalFolderHelper.FolderShare, folderTitle));
@@ -45,6 +51,7 @@ namespace ASC.Files.Tests
 
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.ShareParamToFolder))]
         [Category("Folder")]
+        [Order(2)]
         public void ShareFolderToAnotherUser (string folderTitle, bool notify, string message)
         {
             var folderWrapper = FilesControllerHelper.CreateFolder(GlobalFolderHelper.FolderMy, folderTitle);
@@ -54,6 +61,7 @@ namespace ASC.Files.Tests
 
         [Test]
         [Category("Folder")]
+        [Order(3)]
         public void GetSharedFolderInfoReturnsFolderWrapper()
         {
             SecurityContext.AuthenticateMe(NewUser.ID);
@@ -63,6 +71,7 @@ namespace ASC.Files.Tests
         }
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetRenameFolderItems))]
         [Category("Folder")]
+        [Order(4)]
         public void RenameSharedFolderReturnsFolderWrapper(string folderTitle)
         {
             SecurityContext.AuthenticateMe(NewUser.ID);
@@ -72,9 +81,11 @@ namespace ASC.Files.Tests
 
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetDeleteFolderItems))]
         [Category("Folder")]
+        [Order(5)]
         public void DeleteSharedFolderReturnsFolderWrapper( bool deleteAfter, bool immediately)
         {
             SecurityContext.AuthenticateMe(NewUser.ID);
+
             FilesControllerHelper.DeleteFolder(
                 TestFolder.Id,
                 deleteAfter,
@@ -93,6 +104,7 @@ namespace ASC.Files.Tests
 
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetCreateFileItems))]
         [Category("File")]
+        [Order(1)]
         public void CreateSharedFileReturnsFolderWrapper(string fileTitle)
         {
             /*var fileWrapper = FilesControllerHelper.CreateFile(GlobalFolderHelper.FolderShare, fileTitle, default);
@@ -105,6 +117,7 @@ namespace ASC.Files.Tests
 
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.ShareParamToFile))]
         [Category("File")]
+        [Order(2)]
         public void ShareFileToAnotherUser(string fileTitle, bool notify, string message)
         {
             var fileWrapper = FilesControllerHelper.CreateFolder(GlobalFolderHelper.FolderMy, fileTitle);
@@ -114,6 +127,7 @@ namespace ASC.Files.Tests
 
         [Test]
         [Category("File")]
+        [Order(3)]
         public void GetSharedFileInfoReturnsFolderWrapper()
         {
             SecurityContext.AuthenticateMe(NewUser.ID);
@@ -123,6 +137,7 @@ namespace ASC.Files.Tests
         }
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetUpdateFileItems))]
         [Category("File")]
+        [Order(4)]
         public void UpdateSharedFileReturnsFolderWrapper(string fileTitle, int lastVersion)
         {
             SecurityContext.AuthenticateMe(NewUser.ID);
@@ -132,6 +147,7 @@ namespace ASC.Files.Tests
 
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetDeleteFileItems))]
         [Category("File")]
+        [Order(5)]
         public void DeleteSharedFileReturnsFolderWrapper(bool deleteAfter, bool immediately)
         {
             SecurityContext.AuthenticateMe(NewUser.ID);
@@ -152,11 +168,5 @@ namespace ASC.Files.Tests
         }
         #endregion
 
-
-        [TearDown]
-        public override void TearDown()
-        {
-            base.TearDown();
-        }
     }
 }
