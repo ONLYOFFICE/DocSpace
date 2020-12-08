@@ -3,7 +3,7 @@ import DropDown from "../drop-down";
 import DropDownItem from "../drop-down-item";
 import PropTypes from "prop-types";
 import React from "react";
-import isEqual from "lodash/isEqual";
+import equal from "fast-deep-equal/react";
 import styled from "styled-components";
 
 const StyledComboBox = styled.div`
@@ -38,7 +38,7 @@ class ComboBox extends React.Component {
 
   shouldComponentUpdate(nextProps, nextState) {
     const needUpdate =
-      !isEqual(this.props, nextProps) || !isEqual(this.state, nextState);
+      !equal(this.props, nextProps) || !equal(this.state, nextState);
 
     return needUpdate;
   }

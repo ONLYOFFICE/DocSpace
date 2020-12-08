@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import isEqual from "lodash/isEqual";
+import equal from "fast-deep-equal/react";
 import { FieldContainer, TextInput, Button } from "asc-web-components";
 
 const InputContainer = styled.div`
@@ -12,7 +12,7 @@ const InputContainer = styled.div`
 
 class TextChangeField extends React.Component {
   shouldComponentUpdate(nextProps) {
-    return !isEqual(this.props, nextProps);
+    return !equal(this.props, nextProps);
   }
 
   render() {

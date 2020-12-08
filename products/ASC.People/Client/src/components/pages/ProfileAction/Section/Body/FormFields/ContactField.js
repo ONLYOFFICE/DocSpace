@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import isEqual from "lodash/isEqual";
+import equal from "fast-deep-equal/react";
 import { ComboBox, TextInput, IconButton } from "asc-web-components";
 
 const Container = styled.div`
@@ -15,7 +15,7 @@ const Container = styled.div`
 
 class ContactField extends React.Component {
   shouldComponentUpdate(nextProps) {
-    return !isEqual(this.props, nextProps);
+    return !equal(this.props, nextProps);
   }
 
   render() {
