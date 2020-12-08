@@ -76,4 +76,4 @@ services:
       context:  ./
       dockerfile: Dockerfile-app
       target: web
-    image: "${REPO:-onlyoffice}/${STATUS:-}${PROXY_HOST:-appserver-proxy}:${TAG_SRV:-latest}"
+    image: "${REPO:-onlyoffice}/${STATUS:-}appserver-proxy:${TAG_SRV:-latest}"

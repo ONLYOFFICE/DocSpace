@@ -130,7 +130,7 @@ services:
     container_name: ${BACKUP_HOST:-backup}
     
   onlyoffice-nginx:
-    image: "${REPO:-onlyoffice}/${STATUS:-}${PROXY_HOST:-appserver-proxy}:${TAG_SRV:-latest}"
+    image: "${REPO:-onlyoffice}/${STATUS:-}appserver-proxy:${TAG_SRV:-latest}"
     container_name: ${PROXY_HOST:-proxy}
     restart: always
     expose:
@@ -150,16 +150,16 @@ services:
       - onlyoffice-studio
       - onlyoffice-backup
     environment:
-      - SERVICE_API="${CONTAINER_PRIFIX:-onlyoffice}-api:${SERVICE_PORT:-5050}"
-      - SERVICE_API_SYSTEM="${CONTAINER_PRIFIX:-onlyoffice}-api_system:${SERVICE_PORT:-5050}"
-      - SERVICE_URLSHORYENER="${CONTAINER_PRIFIX:-onlyoffice}-urlshortener:${SERVICE_PORT:-5050}"
-      - SERVICE_STUDIO_NOTIFY="${CONTAINER_PRIFIX:-onlyoffice}-studio.notify:${SERVICE_PORT:-5050}"
-      - SERVICE_PEOPLE_SERVER="${CONTAINER_PRIFIX:-onlyoffice}-people.server:${SERVICE_PORT:-5050}"
-      - SERVICE_FILES="${CONTAINER_PRIFIX:-onlyoffice}-files:${SERVICE_PORT:-5050}"
-      - SERVICE_FILES_SERVICES="${CONTAINER_PRIFIX:-onlyoffice}-files_services:${SERVICE_PORT:-5050}"
-      - SERVICE_STUDIO="${CONTAINER_PRIFIX:-onlyoffice}-studio:${SERVICE_PORT:-5050}"
-      - SERVICE_BACKUP="${CONTAINER_PRIFIX:-onlyoffice}-backup:${SERVICE_PORT:-5050}"
-      - DOCUMENT_SERVER="${CONTAINER_PRIFIX:-onlyoffice}-document-server"
+      - SERVICE_API="${API_HOST:-api}:${SERVICE_PORT:-5050}"
+      - SERVICE_API_SYSTEM="${API_SYSTEM_HOST:-api_system}:${SERVICE_PORT:-5050}"
+      - SERVICE_URLSHORYENER="${URLSHORTENER_HOST:-urlshortener}:${SERVICE_PORT:-5050}"
+      - SERVICE_STUDIO_NOTIFY="${STUDIO_NOYIFY_HOST:-studio.notify}:${SERVICE_PORT:-5050}"
+      - SERVICE_PEOPLE_SERVER="${PEOPLE_SERVER:-people.server}:${SERVICE_PORT:-5050}"
+      - SERVICE_FILES="${FILES_HOST:-files}:${SERVICE_PORT:-5050}"
+      - SERVICE_FILES_SERVICES="${FILES_SERVICES_HOST:-files_services}:${SERVICE_PORT:-5050}"
+      - SERVICE_STUDIO="${STUDIO_HOST:-studio}:${SERVICE_PORT:-5050}"
+      - SERVICE_BACKUP="${BACKUP_HOST:-backup}:${SERVICE_PORT:-5050}"
+      - DOCUMENT_SERVER="${DOCUMENT_SERVER_HOST:-document-server}"
       - SERVICE_PORT=${SERVICE_PORT:-5050}
     volumes:
       - nginx_log:/var/log/nginx
