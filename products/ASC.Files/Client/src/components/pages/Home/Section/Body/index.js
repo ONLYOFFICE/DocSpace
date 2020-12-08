@@ -3,7 +3,7 @@ import { withRouter } from "react-router";
 import { connect } from "react-redux";
 import { ReactSVG } from "react-svg";
 import { withTranslation, Trans } from "react-i18next";
-import isEqual from "lodash/isEqual";
+import equal from "fast-deep-equal/react";
 import copy from "copy-to-clipboard";
 import styled from "styled-components";
 import queryString from "query-string";
@@ -243,7 +243,7 @@ class SectionBodyContent extends React.Component {
       return false;
     }
 
-    if (!isEqual(this.props, nextProps)) {
+    if (!equal(this.props, nextProps)) {
       return true;
     }
 
@@ -756,7 +756,7 @@ class SectionBodyContent extends React.Component {
     if (currentProps.sectionWidth !== nextProps.sectionWidth) {
       return true;
     }
-    if (!isEqual(currentProps.data, nextProps.data)) {
+    if (!equal(currentProps.data, nextProps.data)) {
       return true;
     }
     if (currentProps.viewAs !== nextProps.viewAs) {

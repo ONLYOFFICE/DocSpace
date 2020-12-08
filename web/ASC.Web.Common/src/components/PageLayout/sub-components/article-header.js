@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { utils } from "asc-web-components";
-import isEqual from "lodash/isEqual";
+import equal from "fast-deep-equal/react";
 const { tablet } = utils.device;
 
 const StyledArticleHeader = styled.div`
@@ -15,7 +15,7 @@ const StyledArticleHeader = styled.div`
 
 class ArticleHeader extends React.Component {
   shouldComponentUpdate(nextProps) {
-    return !isEqual(this.props, nextProps);
+    return !equal(this.props, nextProps);
   }
 
   render() {

@@ -5,7 +5,7 @@ import { Icons } from "../icons";
 import DropDown from "../drop-down";
 import DropDownItem from "../drop-down-item";
 import Text from "../text";
-import isEqual from "lodash/isEqual";
+import equal from "fast-deep-equal/react";
 
 // eslint-disable-next-line no-unused-vars
 const SimpleLinkWithDropdown = ({
@@ -178,7 +178,7 @@ class LinkWithDropdown extends React.Component {
   };
 
   shouldComponentUpdate(nextProps, nextState) {
-    return !isEqual(this.props, nextProps) || !isEqual(this.state, nextState);
+    return !equal(this.props, nextProps) || !equal(this.state, nextState);
   }
 
   render() {

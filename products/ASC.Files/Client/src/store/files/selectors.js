@@ -984,7 +984,9 @@ export const getHeaderIndeterminate = createSelector(
   getSelectionLength,
   getItemsList,
   (headerVisible, selectionLength, items) => {
-    return headerVisible && selectionLength < items.length;
+    return headerVisible && selectionLength
+      ? selectionLength < items.length
+      : false;
   }
 );
 
@@ -1064,9 +1066,16 @@ export const getOnlyFoldersSelected = createSelector(
   }
 );
 
-export const getAccessedSelected = createSelector(getSelection, (selection) => {
-  return selection.every((x) => x.access === 1 || x.access === 0);
-});
+export const getAccessedSelected = createSelector(
+  getSelection,
+  getSelectionLength,
+  (selection, selectionLength) => {
+    return (
+      selectionLength &&
+      selection.every((x) => x.access === 1 || x.access === 0)
+    );
+  }
+);
 
 export const getOperationsFolders = createSelector(
   getTreeFolders,
