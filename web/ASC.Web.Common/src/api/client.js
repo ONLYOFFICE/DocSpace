@@ -1,5 +1,4 @@
 import axios from "axios";
-import { AUTH_KEY } from "../constants";
 //import history from "../history";
 
 const PREFIX = "api";
@@ -16,8 +15,6 @@ const client = axios.create({
   timeout: 30000, // default is `0` (no timeout)
 });
 
-setAuthorizationToken(localStorage.getItem(AUTH_KEY));
-
 client.interceptors.response.use(
   (response) => {
     return response;
@@ -25,7 +22,7 @@ client.interceptors.response.use(
   (error) => {
     switch (true) {
       case error.response.status === 401:
-        setAuthorizationToken();
+        setWithCredentialsStatus(false);
         window.location.href = "/login";
         break;
       case error.response.status === 402:
@@ -41,13 +38,8 @@ client.interceptors.response.use(
   }
 );
 
-export function setAuthorizationToken(token) {
-  client.defaults.withCredentials = true;
-  if (token) {
-    localStorage.setItem(AUTH_KEY, true);
-  } else {
-    localStorage.clear();
-  }
+export function setWithCredentialsStatus(state) {
+  client.defaults.withCredentials = state;
 }
 
 export function setClientBasePath(path) {

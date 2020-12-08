@@ -104,7 +104,7 @@ class NavMenu extends React.Component {
 
     const isAsideAvailable = !!asideContent;
 
-    console.log("NavMenu render", this.state, this.props);
+    //console.log("NavMenu render", this.state, this.props);
 
     return (
       <StyledContainer>

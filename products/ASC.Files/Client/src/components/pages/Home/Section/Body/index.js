@@ -1496,7 +1496,7 @@ class SectionBodyContent extends React.Component {
   };
 
   render() {
-    console.log("Files Home SectionBodyContent render", this.props);
+    //console.log("Files Home SectionBodyContent render", this.props);
 
     const {
       viewer,

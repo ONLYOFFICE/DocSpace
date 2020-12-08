@@ -1,7 +1,7 @@
 import React, { Component, useEffect } from "react";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
-import { store } from "asc-web-common";
+import { getLanguage } from "../../store/auth/selectors";
 import {
   Box,
   Button,
@@ -10,7 +10,6 @@ import {
   Link,
   toastr,
   Checkbox,
-  HelpButton,
   PasswordInput,
   FieldContainer,
 } from "asc-web-components";
@@ -27,9 +26,8 @@ import {
 } from "../../store/auth/actions";
 import { sendInstructionsToChangePassword } from "../../api/people";
 import Register from "./sub-components/register-container";
-import { createPasswordHash } from "../../utils";
-import { redirectToDefaultPage } from "../../utils";
-const { getLanguage } = store.auth.selectors;
+import { createPasswordHash, tryRedirectTo } from "../../utils";
+
 const LoginContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -75,8 +73,7 @@ const LoginContainer = styled.div`
       padding: 14px 0;
 
       .login-checkbox-wrapper {
-        position: absolute;
-        display: inline-flex;
+        display: flex;
 
         .login-checkbox {
           float: left;
@@ -84,23 +81,11 @@ const LoginContainer = styled.div`
             font-size: 12px;
           }
         }
-
-        .login-tooltip {
-          display: inline-flex;
-
-          @media (min-width: 1025px) {
-            margin-left: 8px;
-            margin-top: 4px;
-          }
-          @media (max-width: 1024px) {
-            padding: 4px 8px 8px 8px;
-          }
-        }
       }
 
       .login-link {
-        float: right;
-        line-height: 16px;
+        line-height: 18px;
+        margin-left: auto;
       }
     }
 
@@ -126,7 +111,8 @@ const LoginContainer = styled.div`
 
 const LoginFormWrapper = styled.div`
   display: grid;
-  grid-template-rows: ${props => props.enabledJoin ? css`1fr 66px` : css`1fr`};
+  grid-template-rows: ${(props) =>
+    props.enabledJoin ? css`1fr 66px` : css`1fr`};
   width: 100%;
   height: calc(100vh-56px);
 `;
@@ -211,7 +197,7 @@ class Form extends Component {
 
   onSubmit = () => {
     const { errorText, identifier, password } = this.state;
-    const { login, setIsLoaded, hashSettings } = this.props;
+    const { login, setIsLoaded, hashSettings, defaultPage } = this.props;
 
     errorText && this.setState({ errorText: "" });
     let hasError = false;
@@ -237,12 +223,17 @@ class Form extends Component {
 
     login(userName, hash)
       .then(() => {
-        if (!redirectToDefaultPage()) {
+        if (!tryRedirectTo(defaultPage)) {
           setIsLoaded(true);
         }
       })
       .catch((error) => {
-        this.setState({ errorText: error, isLoading: false });
+        this.setState({
+          errorText: error,
+          identifierValid: !error,
+          passwordValid: !error,
+          isLoading: false,
+        });
       });
   };
 
@@ -250,8 +241,8 @@ class Form extends Component {
     const {
       match,
       t,
-      hashSettings,
-      reloadPortalSettings,
+      hashSettings, // eslint-disable-line react/prop-types
+      reloadPortalSettings, // eslint-disable-line react/prop-types
       organizationName,
     } = this.props;
     const { error, confirmedEmail } = match.params;
@@ -315,7 +306,7 @@ class Form extends Component {
               isVertical={true}
               labelVisible={false}
               hasError={!identifierValid}
-              errorMessage={t("RequiredFieldMessage")}
+              errorMessage={errorText ? errorText : t("RequiredFieldMessage")} //TODO: Add wrong login server error
             >
               <TextInput
                 id="login"
@@ -337,7 +328,7 @@ class Form extends Component {
               isVertical={true}
               labelVisible={false}
               hasError={!passwordValid}
-              errorMessage={t("RequiredFieldMessage")}
+              errorMessage={errorText ? "" : t("RequiredFieldMessage")} //TODO: Add wrong password server error
             >
               <PasswordInput
                 simpleView={true}
@@ -365,25 +356,24 @@ class Form extends Component {
                   onChange={this.onChangeCheckbox}
                   label={<Text fontSize="13px">{t("Remember")}</Text>}
                 />
-                <HelpButton
+                {/*<HelpButton
                   className="login-tooltip"
                   helpButtonHeaderContent={t("CookieSettingsTitle")}
                   tooltipContent={
                     <Text fontSize="12px">{t("RememberHelper")}</Text>
                   }
-                />
+                />*/}
+                <Link
+                  fontSize="13px"
+                  color="#316DAA"
+                  className="login-link"
+                  type="page"
+                  isHovered={false}
+                  onClick={this.onClick}
+                >
+                  {t("ForgotPassword")}
+                </Link>
               </div>
-
-              <Link
-                fontSize="13px"
-                color="#316DAA"
-                className="login-link"
-                type="page"
-                isHovered={false}
-                onClick={this.onClick}
-              >
-                {t("ForgotPassword")}
-              </Link>
             </div>
 
             {openDialog && (
@@ -417,9 +407,11 @@ class Form extends Component {
                 {t("MessageEmailConfirmed")} {t("MessageAuthorize")}
               </Text>
             )}
+            {/* TODO: old error indication
+            
             <Text fontSize="14px" color="#c30">
               {errorText}
-            </Text>
+            </Text> */}
 
             {socialButtons.length ? (
               <Box displayProp="flex" alignItems="center">
@@ -450,6 +442,7 @@ Form.propTypes = {
   socialButtons: PropTypes.array,
   organizationName: PropTypes.string,
   homepage: PropTypes.string,
+  defaultPage: PropTypes.string,
 };
 
 Form.defaultProps = {
@@ -471,7 +464,7 @@ const LoginForm = (props) => {
     <LoginFormWrapper enabledJoin={enabledJoin}>
       <PageLayout>
         <PageLayout.SectionBody>
-            <FormWrapper i18n={i18n} {...props} />
+          <FormWrapper i18n={i18n} {...props} />
         </PageLayout.SectionBody>
       </PageLayout>
       <Register />
@@ -486,16 +479,24 @@ LoginForm.propTypes = {
 };
 
 function mapStateToProps(state) {
-  const { isLoaded, settings } = state.auth;
-  const { greetingSettings, organizationName, hashSettings, enabledJoin } = settings;
+  const { isLoaded, settings, isAuthenticated } = state.auth;
+  const {
+    greetingSettings,
+    organizationName,
+    hashSettings,
+    enabledJoin,
+    defaultPage,
+  } = settings;
 
   return {
+    isAuthenticated,
     isLoaded,
     organizationName,
     language: getLanguage(state),
     greetingTitle: greetingSettings,
     hashSettings,
-    enabledJoin
+    enabledJoin,
+    defaultPage,
   };
 }
 

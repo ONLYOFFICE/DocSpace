@@ -57,25 +57,31 @@ const StyledTextarea = styled(ClearTextareaAutosize)`
   }
 
   ::-webkit-input-placeholder {
-    color: ${(props) => (props.isDisabled ? "#D0D5DA" : "#D0D5DA")};
+    color: "#A3A9AE";
     font-family: "Open Sans", sans-serif;
     user-select: none;
   }
 
   :-moz-placeholder {
-    color: ${(props) => (props.isDisabled ? "#D0D5DA" : "#D0D5DA")};
+    color: "#A3A9AE";
     font-family: "Open Sans", sans-serif;
     user-select: none;
   }
 
   ::-moz-placeholder {
-    color: ${(props) => (props.isDisabled ? "#D0D5DA" : "#D0D5DA")};
+    color: "#A3A9AE";
     font-family: "Open Sans", sans-serif;
     user-select: none;
   }
 
   :-ms-input-placeholder {
-    color: ${(props) => (props.isDisabled ? "#D0D5DA" : "#D0D5DA")};
+    color: "#A3A9AE";
+    font-family: "Open Sans", sans-serif;
+    user-select: none;
+  }
+
+  ::placeholder {
+    color: "#A3A9AE";
     font-family: "Open Sans", sans-serif;
     user-select: none;
   }
