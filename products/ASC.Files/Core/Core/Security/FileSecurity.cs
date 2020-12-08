@@ -112,6 +112,11 @@ namespace ASC.Files.Core.Security
             return Can(entry, userId, FilesSecurityActions.Read);
         }
 
+        public List<Tuple<FileEntry<T>, bool>> CanRead<T>(IEnumerable<FileEntry<T>> entry)
+        {
+            return Can(entry, AuthContext.CurrentAccount.ID, FilesSecurityActions.Read);
+        }
+
         public bool CanRead<T>(FileEntry<T> entry, Guid userId)
         {
             return Can(entry, userId, FilesSecurityActions.Read);
@@ -575,7 +580,7 @@ namespace ASC.Files.Core.Security
                 var filteredEntries = entries.Where(filter).ToList();
                 var roots = filteredEntries
                         .Select(r => r.RootFolderId)
-                        .ToArray();
+                        .ToList();
 
                 var rootsFolders = folderDao.GetFolders(roots);
                 var bunches = folderDao.GetBunchObjectIDs(rootsFolders.Select(r => r.ID).ToList());
@@ -756,7 +761,7 @@ namespace ASC.Files.Core.Security
 
             if (filterType == FilterType.None || filterType == FilterType.FoldersOnly)
             {
-                var folders = folderDao.GetFolders(folderIds.Keys.ToArray(), filterType, subjectGroup, subjectID, searchText, withSubfolders, false);
+                var folders = folderDao.GetFolders(folderIds.Keys, filterType, subjectGroup, subjectID, searchText, withSubfolders, false);
 
                 if (withSubfolders)
                 {
@@ -776,7 +781,7 @@ namespace ASC.Files.Core.Security
 
             if (filterType != FilterType.FoldersOnly && withSubfolders)
             {
-                var filesInSharedFolders = fileDao.GetFiles(folderIds.Keys.ToArray(), filterType, subjectGroup, subjectID, searchText, searchInContent);
+                var filesInSharedFolders = fileDao.GetFiles(folderIds.Keys, filterType, subjectGroup, subjectID, searchText, searchInContent);
                 filesInSharedFolders = FilterRead(filesInSharedFolders).ToList();
                 entries.AddRange(filesInSharedFolders);
                 entries = entries.Distinct().ToList();
@@ -875,7 +880,7 @@ namespace ASC.Files.Core.Security
 
             if (filterType == FilterType.None || filterType == FilterType.FoldersOnly)
             {
-                var folders = folderDao.GetFolders(folderIds.Keys.ToArray(), filterType, subjectGroup, subjectID, searchText, withSubfolders, false);
+                var folders = folderDao.GetFolders(folderIds.Keys, filterType, subjectGroup, subjectID, searchText, withSubfolders, false);
 
                 if (withSubfolders)
                 {
@@ -895,7 +900,7 @@ namespace ASC.Files.Core.Security
 
             if (filterType != FilterType.FoldersOnly && withSubfolders)
             {
-                var filesInSharedFolders = fileDao.GetFiles(folderIds.Keys.ToArray(), filterType, subjectGroup, subjectID, searchText, searchInContent);
+                var filesInSharedFolders = fileDao.GetFiles(folderIds.Keys, filterType, subjectGroup, subjectID, searchText, searchInContent);
                 filesInSharedFolders = FilterRead(filesInSharedFolders).ToList();
                 entries.AddRange(filesInSharedFolders);
                 entries = entries.Distinct().ToList();

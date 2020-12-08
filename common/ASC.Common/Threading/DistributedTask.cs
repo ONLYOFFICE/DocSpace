@@ -26,8 +26,7 @@
 
 using System;
 using System.Linq;
-
-using Newtonsoft.Json;
+using System.Text.Json;
 
 namespace ASC.Common.Threading
 {
@@ -37,7 +36,7 @@ namespace ASC.Common.Threading
 
         public DistributedTaskCache DistributedTaskCache { get; internal set; }
 
-        public string InstanceId
+        public int InstanceId
         {
             get
             {
@@ -45,7 +44,7 @@ namespace ASC.Common.Threading
             }
             set
             {
-                DistributedTaskCache.InstanceId = value?.ToString() ?? "";
+                DistributedTaskCache.InstanceId = value;
             }
         }
         public string Id
@@ -99,9 +98,24 @@ namespace ASC.Common.Threading
 
         public T GetProperty<T>(string name)
         {
-            return DistributedTaskCache.Props.Any(r => r.Key == name) ?
-                JsonConvert.DeserializeObject<T>(DistributedTaskCache.Props.Single(r => r.Key == name).Value) :
-                default;
+            var val = DistributedTaskCache.Props.FirstOrDefault(r => r.Key == name);
+
+            if (val == null) return default;
+
+            var resType = typeof(T);
+            object result = val.Value;
+
+            if(resType == typeof(Guid))
+            {
+                result = Guid.Parse(val.Value.Trim('"'));
+            }
+            else if(resType.IsEnum)
+            {
+                Enum.TryParse(resType, val.Value, out var e);
+                result = e;
+            }
+
+            return (T)Convert.ChangeType(result, resType);
         }
 
         public void SetProperty(string name, object value)
@@ -109,7 +123,7 @@ namespace ASC.Common.Threading
             var prop = new DistributedTaskCache.Types.DistributedTaskCacheProp()
             {
                 Key = name,
-                Value = JsonConvert.SerializeObject(value)
+                Value = JsonSerializer.Serialize(value)
             };
 
             var current = DistributedTaskCache.Props.SingleOrDefault(r => r.Key == name);

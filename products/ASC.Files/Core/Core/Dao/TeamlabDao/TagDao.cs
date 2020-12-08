@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 using ASC.Common;
 using ASC.Core;
@@ -457,15 +458,15 @@ namespace ASC.Files.Core.Data
                 var shareQuery =
                     new Func<IQueryable<TagLinkData>>(() => getBaseSqlQuery().Where(
                         r => FilesDbContext.Security
-                        .Where(a => a.TenantId == r.Link.TenantId)
+                        .Where(a => a.TenantId == TenantID)
                         .Where(a => a.EntryId == r.Link.EntryId)
                         .Where(a => a.EntryType == r.Link.EntryType)
                         .Any()));
 
                 var tmpShareFileTags =
                     shareQuery()
-                    .Join(FilesDbContext.Files, r => r.Link.EntryId, f => f.Id.ToString(), (tagLink, file) => new { tagLink, file })
-                    .Where(r => r.file.TenantId == r.tagLink.Link.TenantId)
+                    .Join(FilesDbContext.Files, r => Regex.IsMatch(r.Link.EntryId, "^[0-9]+$") ? Convert.ToInt32(r.Link.EntryId) : -1, f => f.Id, (tagLink, file) => new { tagLink, file })
+                    .Where(r => r.file.TenantId == TenantID)
                     .Where(r => r.file.CreateBy != subject)
                     .Where(r => r.tagLink.Link.EntryType == FileEntryType.File)
                     .Select(r => new
@@ -473,10 +474,11 @@ namespace ASC.Files.Core.Data
                         r.tagLink,
                         root = FilesDbContext.Folders
                             .Join(FilesDbContext.Tree, a => a.Id, b => b.ParentId, (folder, tree) => new { folder, tree })
-                            .Where(x => x.folder.TenantId == r.file.TenantId)
+                            .Where(x => x.folder.TenantId == TenantID)
                             .Where(x => x.tree.FolderId == r.file.FolderId)
                             .OrderByDescending(r => r.tree.Level)
                             .Select(r => r.folder)
+                            .Take(1)
                             .FirstOrDefault()
                     })
                     .Where(r => r.root.FolderType == FolderType.USER)
@@ -487,8 +489,8 @@ namespace ASC.Files.Core.Data
 
                 var tmpShareFolderTags =
                     shareQuery()
-                    .Join(FilesDbContext.Folders, r => r.Link.EntryId, f => f.Id.ToString(), (tagLink, folder) => new { tagLink, folder })
-                    .Where(r => r.folder.TenantId == r.tagLink.Link.TenantId)
+                    .Join(FilesDbContext.Folders, r => Regex.IsMatch(r.Link.EntryId, "^[0-9]+$") ? Convert.ToInt32(r.Link.EntryId) : -1, f => f.Id, (tagLink, folder) => new { tagLink, folder })
+                    .Where(r => r.folder.TenantId == TenantID)
                     .Where(r => r.folder.CreateBy != subject)
                     .Where(r => r.tagLink.Link.EntryType == FileEntryType.Folder)
                     .Select(r => new
@@ -496,10 +498,11 @@ namespace ASC.Files.Core.Data
                         r.tagLink,
                         root = FilesDbContext.Folders
                             .Join(FilesDbContext.Tree, a => a.Id, b => b.ParentId, (folder, tree) => new { folder, tree })
-                            .Where(x => x.folder.TenantId == r.folder.TenantId)
+                            .Where(x => x.folder.TenantId ==TenantID)
                             .Where(x => x.tree.FolderId == r.folder.ParentId)
                             .OrderByDescending(r => r.tree.Level)
                             .Select(r => r.folder)
+                            .Take(1)
                             .FirstOrDefault()
                     })
                     .Where(r => r.root.FolderType == FolderType.USER)
@@ -531,15 +534,15 @@ namespace ASC.Files.Core.Data
                 var shareQuery =
                     new Func<IQueryable<TagLinkData>>(() => getBaseSqlQuery().Where(
                         r => FilesDbContext.Security
-                        .Where(a => a.TenantId == r.Link.TenantId)
+                        .Where(a => a.TenantId == TenantID)
                         .Where(a => a.EntryId == r.Link.EntryId)
                         .Where(a => a.EntryType == r.Link.EntryType)
                         .Any()));
 
                 var tmpShareFileTags =
                     shareQuery()
-                    .Join(FilesDbContext.Files, r => r.Link.EntryId, f => f.Id.ToString(), (tagLink, file) => new { tagLink, file })
-                    .Where(r => r.file.TenantId == r.tagLink.Link.TenantId)
+                    .Join(FilesDbContext.Files, r => Regex.IsMatch(r.Link.EntryId, "^[0-9]+$") ? Convert.ToInt32(r.Link.EntryId) : -1, f => f.Id, (tagLink, file) => new { tagLink, file })
+                    .Where(r => r.file.TenantId == TenantID)
                     .Where(r => r.file.CreateBy != subject)
                     .Where(r => r.tagLink.Link.EntryType == FileEntryType.File)
                     .Select(r => new
@@ -547,10 +550,11 @@ namespace ASC.Files.Core.Data
                         r.tagLink,
                         root = FilesDbContext.Folders
                             .Join(FilesDbContext.Tree, a => a.Id, b => b.ParentId, (folder, tree) => new { folder, tree })
-                            .Where(x => x.folder.TenantId == r.file.TenantId)
+                            .Where(x => x.folder.TenantId == TenantID)
                             .Where(x => x.tree.FolderId == r.file.FolderId)
                             .OrderByDescending(r => r.tree.Level)
                             .Select(r => r.folder)
+                            .Take(1)
                             .FirstOrDefault()
                     })
                     .Where(r => r.root.FolderType == FolderType.Privacy)
@@ -561,8 +565,8 @@ namespace ASC.Files.Core.Data
 
                 var tmpShareFolderTags =
                                     shareQuery()
-                                    .Join(FilesDbContext.Folders, r => r.Link.EntryId, f => f.Id.ToString(), (tagLink, folder) => new { tagLink, folder })
-                                    .Where(r => r.folder.TenantId == r.tagLink.Link.TenantId)
+                                    .Join(FilesDbContext.Folders, r => Regex.IsMatch(r.Link.EntryId, "^[0-9]+$") ? Convert.ToInt32(r.Link.EntryId) : -1, f => f.Id, (tagLink, folder) => new { tagLink, folder })
+                                    .Where(r => r.folder.TenantId == TenantID)
                                     .Where(r => r.folder.CreateBy != subject)
                                     .Where(r => r.tagLink.Link.EntryType == FileEntryType.Folder)
                                     .Select(r => new
@@ -570,10 +574,11 @@ namespace ASC.Files.Core.Data
                                         r.tagLink,
                                         root = FilesDbContext.Folders
                                             .Join(FilesDbContext.Tree, a => a.Id, b => b.ParentId, (folder, tree) => new { folder, tree })
-                                            .Where(x => x.folder.TenantId == r.folder.TenantId)
+                                            .Where(x => x.folder.TenantId == TenantID)
                                             .Where(x => x.tree.FolderId == r.folder.ParentId)
                                             .OrderByDescending(r => r.tree.Level)
                                             .Select(r => r.folder)
+                                            .Take(1)
                                             .FirstOrDefault()
                                     })
                                     .Where(r => r.root.FolderType == FolderType.Privacy)
@@ -626,7 +631,7 @@ namespace ASC.Files.Core.Data
 
             var newTagsForFiles =
                 getBaseSqlQuery()
-                .Join(FilesDbContext.Files, r => r.Link.EntryId, r => r.Id.ToString(), (tagLink, file) => new { tagLink, file })
+                .Join(FilesDbContext.Files, r => Regex.IsMatch(r.Link.EntryId, "^[0-9]+$") ? Convert.ToInt32(r.Link.EntryId) : -1, r => r.Id, (tagLink, file) => new { tagLink, file })
                 .Where(r => r.file.TenantId == r.tagLink.Link.TenantId)
                 .Where(r => where.Any(a => r.file.FolderId.ToString() == a))
                 .Where(r => r.tagLink.Link.EntryType == FileEntryType.File)
@@ -657,7 +662,7 @@ namespace ASC.Files.Core.Data
 
                 var newTagsForSBox = getBaseSqlQuery()
                     .Join(FilesDbContext.ThirdpartyIdMapping, r => r.Link.EntryId, r => r.HashId, (tagLink, mapping) => new { tagLink, mapping })
-                    .Where(r => r.mapping.TenantId == r.tagLink.Link.TenantId)
+                    .Where(r => r.mapping.TenantId == TenantID)
                     .Where(r => thirdpartyFolderIds.Any(a => r.mapping.Id == a))
                     .Where(r => r.tagLink.Tag.Owner == subject)
                     .Where(r => r.tagLink.Link.EntryType == FileEntryType.Folder)

@@ -1535,7 +1535,7 @@ class SectionBodyContent extends React.Component {
   };
 
   render() {
-    console.log("Files Home SectionBodyContent render", this.props);
+    //console.log("Files Home SectionBodyContent render", this.props);
 
     const {
       viewer,
@@ -1732,7 +1732,11 @@ class SectionBodyContent extends React.Component {
         ) : (
           <Consumer>
             {(context) => (
-              <RowContainer draggable useReactWindow={false}>
+              <RowContainer
+                className="files-row-container"
+                draggable
+                useReactWindow={false}
+              >
                 {items.map((item) => {
                   const { checked, isFolder, value, contextOptions } = item;
                   const sectionWidth = context.sectionWidth;

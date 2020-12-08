@@ -49,7 +49,7 @@ namespace ASC.Core.Common.EF.Model
         public bool Spam { get; set; }
         public bool Calls { get; set; }
 
-        public DbTenantPartner Partner { get; set; }
+//        public DbTenantPartner Partner { get; set; }
     }
 
     public static class DbTenantExtension
@@ -74,10 +74,10 @@ namespace ASC.Core.Common.EF.Model
 
         public static void MySqlAddDbTenant(this ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<DbTenant>()
-                .HasOne(r => r.Partner)
-                .WithOne(r => r.Tenant)
-                .HasPrincipalKey<DbTenant>(r => new { r.Id });
+            //modelBuilder.Entity<DbTenant>()
+            //    .HasOne(r => r.Partner)
+            //    .WithOne(r => r.Tenant)
+            //    .HasPrincipalKey<DbTenant>(r => new { r.Id });
 
             modelBuilder.Entity<DbTenant>(entity =>
             {

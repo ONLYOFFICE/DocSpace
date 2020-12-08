@@ -6,6 +6,7 @@ import { ComboBox, TextInput, IconButton } from "asc-web-components";
 const Container = styled.div`
   display: flex;
   margin: 0 0 16px 0;
+  align-items: center;
 
   .remove_icon {
     padding-left: 8px;
@@ -61,6 +62,7 @@ class ContactField extends React.Component {
           iconName={"CatalogTrashIcon"}
           isFill={true}
           isClickable={true}
+          color="#A3A9AE"
         />
       </Container>
     );
