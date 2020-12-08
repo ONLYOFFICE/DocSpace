@@ -23,6 +23,7 @@ import {
 } from "../../../store/files/actions";
 import {
   getAccessOption,
+  getExternalAccessOption,
   getSelection,
   getSharePanelVisible,
 } from "../../../store/files/selectors";
@@ -372,7 +373,11 @@ class SharingPanelComponent extends React.Component {
   };
 
   getShareDataItems = (items) => {
-    const { getAccessOption, selectedItems } = this.props;
+    const {
+      getAccessOption,
+      getExternalAccessOption,
+      selectedItems,
+    } = this.props;
     let arrayItems = [];
     const newItems = [];
     let stash = [];
@@ -431,8 +436,14 @@ class SharingPanelComponent extends React.Component {
     const baseShareData = JSON.parse(JSON.stringify(arrayItems));
 
     const accessOptions = getAccessOption(selectedItems);
+    const externalAccessOptions = getExternalAccessOption(selectedItems);
 
-    return { baseShareData, shareDataItems: arrayItems, accessOptions };
+    return {
+      baseShareData,
+      shareDataItems: arrayItems,
+      accessOptions,
+      externalAccessOptions,
+    };
   };
 
   removeDuplicateShareData = (shareDataItems) => {
@@ -554,6 +565,7 @@ class SharingPanelComponent extends React.Component {
       shareLink,
       showPanel,
       accessOptions,
+      externalAccessOptions,
     } = this.state;
 
     const visible = showPanel;
@@ -689,6 +701,7 @@ class SharingPanelComponent extends React.Component {
                   index={index}
                   isMyId={isMyId}
                   accessOptions={accessOptions}
+                  externalAccessOptions={externalAccessOptions}
                   onFullAccessClick={this.onFullAccessItemClick}
                   onReadOnlyClick={this.onReadOnlyItemClick}
                   onReviewClick={this.onReviewItemClick}
@@ -777,6 +790,8 @@ const SharingPanel = (props) => (
 const mapStateToProps = (state) => {
   return {
     getAccessOption: (selectedItems) => getAccessOption(state, selectedItems),
+    getExternalAccessOption: (selectedItems) =>
+      getExternalAccessOption(state, selectedItems),
     isMyId: getCurrentUserId(state),
     selectedItems: getSelection(state),
     groupsCaption: getSettingsCustomNamesGroupsCaption(state),

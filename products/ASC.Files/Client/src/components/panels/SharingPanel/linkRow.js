@@ -23,7 +23,7 @@ class LinkRow extends React.Component {
       index,
       t,
       embeddedComponentRender,
-      accessOptions,
+      externalAccessOptions,
       item,
       withToggle,
     } = this.props;
@@ -38,7 +38,7 @@ class LinkRow extends React.Component {
           key={`${linkText}-key_${index}`}
           element={
             withToggle ? (
-              embeddedComponentRender(accessOptions, item, isDisabled)
+              embeddedComponentRender(externalAccessOptions, item, isDisabled)
             ) : (
               <Icons.AccessEditIcon
                 size="medium"

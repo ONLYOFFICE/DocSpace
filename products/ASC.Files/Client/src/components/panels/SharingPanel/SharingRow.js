@@ -40,7 +40,7 @@ const SharingRow = (props) => {
     toastr.success(t("LinkCopySuccess"));
   };
 
-  const advancedOptionsRender = () => (
+  const advancedOptionsRender = (accessOptions) => (
     <>
       {accessOptions.includes("FullAccess") && (
         <DropDownItem
@@ -91,9 +91,13 @@ const SharingRow = (props) => {
     </>
   );
 
-  const embeddedComponentRender = (accessOptions, item, isDisabled) => (
+  const embeddedComponentRender = (
+    accessOptions = this.props.accessOptions,
+    item,
+    isDisabled
+  ) => (
     <ComboBox
-      advancedOptions={advancedOptionsRender()}
+      advancedOptions={advancedOptionsRender(accessOptions)}
       options={[]}
       selectedOption={{ key: 0 }}
       size="content"
