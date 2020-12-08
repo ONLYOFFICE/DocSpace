@@ -6,9 +6,6 @@ import { constants } from "asc-web-common";
 const { ShareAccessRights } = constants;
 
 class LinkRow extends React.Component {
-  constructor(props) {
-    super(props);
-  }
 
   render() {
     const {

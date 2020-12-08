@@ -129,7 +129,7 @@ const SharingRow = (props) => {
   const onShareFacebook = () => window.open(`https://www.facebook.com`);
   /*window.open(`https://www.facebook.com/dialog/feed?app_id=645528132139019&display=popup&link=${item.shareLink}`);*/
 
-  const onChangeToggle = (e) => {
+  /*const onChangeToggle = (e) => {
     return e.target.checked;
   };
 
@@ -176,7 +176,7 @@ const SharingRow = (props) => {
       disabled: false,
       onClick: () => console.log("Timeless"),
     },
-  ];
+  ];*/
 
   const internalLinkData = [
     {
