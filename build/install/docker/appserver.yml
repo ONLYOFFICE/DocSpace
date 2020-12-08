@@ -48,14 +48,14 @@ services:
 
   onlyoffice-zookeeper:
     image: zookeeper:latest
-    container_name: zookeeper
+    container_name: ${ZOO_HOST:-zookeeper}
     restart: always
     expose:
       - "2181"
     environment:
       ZOO_MY_ID: 1
-      ZOO_PORT: 2181
-      ZOO_SERVER: server.1=zookeeper-zookeeper:2888:3888
+      ZOO_PORT: ${ZOO_PORT:-2181}
+      ZOO_SERVER: ${ZOO_SERVER}
     volumes:
     - zoo_data:/data
     - zoo_log:/datalog
@@ -82,56 +82,56 @@ services:
   onlyoffice-api:
     <<: *x-service-base
     image: "${REPO:-onlyoffice}/${STATUS:-}appserver-api:${TAG_SRV:-latest}"
-    container_name: ${CONTAINER_PRIFIX:-onlyoffice}-api
+    container_name: ${API_HOST:-api}
 
   onlyoffice-api_system:
     <<: *x-service-base
     image: "${REPO:-onlyoffice}/${STATUS:-}appserver-api_system:${TAG_SRV:-latest}"
-    container_name: ${CONTAINER_PRIFIX:-onlyoffice}-api_system
+    container_name: ${API_SYSTEM_HOST:-api_system}
      
   onlyoffice-urlshortener:
     <<: *x-service-base
     image: "${REPO:-onlyoffice}/${STATUS:-}appserver-urlshortener:${TAG_SRV:-latest}"
-    container_name: ${CONTAINER_PRIFIX:-onlyoffice}-urlshortener
+    container_name: ${URLSHORTENER_HOST:-urlshortener}
    
   onlyoffice-studio.notify:
     <<: *x-service-base
     image: "${REPO:-onlyoffice}/${STATUS:-}appserver-studio.notify:${TAG_SRV:-latest}"
-    container_name: ${CONTAINER_PRIFIX:-onlyoffice}-studio.notify
+    container_name: ${STUDIO_NOYIFY_HOST:-studio.notify}
     
   onlyoffice-notify:
     <<: *x-service-base
     image: "${REPO:-onlyoffice}/${STATUS:-}appserver-notify:${TAG_SRV:-latest}"
-    container_name: ${CONTAINER_PRIFIX:-onlyoffice}-notify
+    container_name: ${NOTIFY_HOST:-notify}
 
   onlyoffice-people.server:
     <<: *x-service-base
     image: "${REPO:-onlyoffice}/${STATUS:-}appserver-people.server:${TAG_SRV:-latest}"
-    container_name: ${CONTAINER_PRIFIX:-onlyoffice}-people.server
+    container_name: ${PEOPLE_SERVER:-people.server}
     
   onlyoffice-files:
     <<: *x-service-base
     image: "${REPO:-onlyoffice}/${STATUS:-}appserver-files:${TAG_SRV:-latest}"
-    container_name: ${CONTAINER_PRIFIX:-onlyoffice}-files
+    container_name: ${FILES_HOST:-files}
     
   onlyoffice-files_services:
     <<: *x-service-base
     image: "${REPO:-onlyoffice}/${STATUS:-}appserver-files_services:${TAG_SRV:-latest}"
-    container_name: ${CONTAINER_PRIFIX:-onlyoffice}-files_services
+    container_name: ${FILES_SERVICES_HOST:-files_services}
     
   onlyoffice-studio:
     <<: *x-service-base
     image: "${REPO:-onlyoffice}/${STATUS:-}appserver-studio:${TAG_SRV:-latest}"
-    container_name: ${CONTAINER_PRIFIX:-onlyoffice}-studio
+    container_name: ${STUDIO_HOST:-studio}
    
   onlyoffice-backup:
     <<: *x-service-base
     image: "${REPO:-onlyoffice}/${STATUS:-}appserver-backup:${TAG_SRV:-latest}"
-    container_name: ${CONTAINER_PRIFIX:-onlyoffice}-backup
+    container_name: ${BACKUP_HOST:-backup}
     
   onlyoffice-nginx:
-    image: "${REPO:-onlyoffice}/${STATUS:-}${NGINX_HOST:-nginx}:${TAG_SRV:-latest}"
-    container_name: ${CONTAINER_PRIFIX:-onlyoffice}-${NGINX_HOST:-nginx}
+    image: "${REPO:-onlyoffice}/${STATUS:-}${PROXY_HOST:-appserver-proxy}:${TAG_SRV:-latest}"
+    container_name: ${PROXY_HOST:-proxy}
     restart: always
     expose:
       - "8081"
