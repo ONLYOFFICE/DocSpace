@@ -21,6 +21,7 @@ x-service:
       DOCUMENT_SERVER_URL_CONVERTER: ${DOCUMENT_SERVER_URL_CONVERTER:-/ds-vpath/ConvertService.ashx}
       KAFKA_HOST: ${KAFKA_HOST:-kafka}
       ELK_HOST: ${ELK_HOST:-elasticsearch}
+      PROXY_HOST: ${PROXY_HOST:-proxy}
     volumes:
     - /app/onlyoffice/CommunityServer/data:/app/onlyoffice/data/
 
