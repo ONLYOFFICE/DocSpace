@@ -1720,7 +1720,11 @@ class SectionBodyContent extends React.Component {
                     isEdit || item.id <= 0
                   );
                   const sharedButton =
-                    isRecycleBin || isEdit || item.id <= 0 || sectionWidth < 500
+                    isRecycleBin ||
+                    (isPrivacy && isFolder) ||
+                    isEdit ||
+                    item.id <= 0 ||
+                    sectionWidth < 500
                       ? null
                       : this.getSharedButton();
                   const displayShareButton =
