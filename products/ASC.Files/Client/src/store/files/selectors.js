@@ -1119,3 +1119,7 @@ export const getIconOfDraggedFile = (state) => {
     return;
   });
 };
+
+export const getSharePanelVisible = (state) => {
+  return state.files.sharingPanelVisible;
+};
