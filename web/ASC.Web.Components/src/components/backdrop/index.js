@@ -24,13 +24,8 @@ class Backdrop extends React.Component {
     this.state = {
       backdropExist: false,
     };
-  }
 
-  componentDidMount() {
-    if (this.props.visible) {
-      const isExist = document.querySelectorAll(".backdrop-active").length > 1;
-      this.setState({ backdropExist: isExist });
-    }
+    this.backdropRef = React.createRef();
   }
 
   componentDidUpdate(prevProps) {
@@ -39,6 +34,36 @@ class Backdrop extends React.Component {
       this.setState({ backdropExist: isExist });
     }
   }
+
+  onClickHandler = (e) => {
+    if (!e) return;
+    const { target, clientX, clientY } = e;
+    const nearOpenDropdown = target.closest("[open]");
+    const nearAside = target.closest(".aside-container");
+
+    if ((nearOpenDropdown || nearAside) && (clientX !== 0 || clientY !== 0)) {
+      let rects;
+      if (nearOpenDropdown) {
+        rects = nearOpenDropdown.getBoundingClientRect();
+      }
+      if (nearAside) {
+        rects = nearAside.getBoundingClientRect();
+      }
+      const { x, y, width, height } = rects;
+
+      if (
+        clientX < x ||
+        clientX > x + width ||
+        clientY < y ||
+        clientY > y + height
+      ) {
+        const backdrops = document.querySelectorAll(".backdrop-active");
+        backdrops.forEach((item) => item.click());
+      }
+    }
+
+    this.props.onClick && this.props.onClick(e);
+  };
 
   render() {
     const { backdropExist } = this.state;
@@ -49,14 +74,16 @@ class Backdrop extends React.Component {
         ? `backdrop-active ${className}`
         : "backdrop-active"
       : this.props.className
-      ? `backdrop-active ${className}`
+      ? `backdrop-inactive ${className}`
       : "backdrop-inactive";
 
     return (
       <StyledBackdrop
+        ref={this.backdropRef}
         className={classNameStr}
         {...this.props}
         backdropExist={backdropExist}
+        onClick={this.onClickHandler}
       />
     );
   }
