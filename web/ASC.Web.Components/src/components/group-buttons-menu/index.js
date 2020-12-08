@@ -205,14 +205,11 @@ class GroupButtonsMenu extends React.Component {
     } = this.props;
     const { priorityItems, moreItems, visible } = this.state;
 
-    const enabledMoreItems = moreItems.filter((item) => !item.disabled);
-    const enabledPriorityItems = priorityItems.filter((item) => !item.disabled);
-
     return (
       <StyledGroupButtonsMenu id="groupMenuOuter" visible={visible}>
         <GroupMenuWrapper id="groupMenu">
-          {enabledPriorityItems.length &&
-            enabledPriorityItems.map((item, i) => {
+          {priorityItems.length &&
+            priorityItems.map((item, i) => {
               //if (item.disabled) return;
               return (
                 <GroupButton
@@ -240,9 +237,9 @@ class GroupButtonsMenu extends React.Component {
               );
             })}
         </GroupMenuWrapper>
-        {enabledMoreItems.length > 0 && (
+        {moreItems.length > 0 && (
           <GroupButton id="moreMenu" isDropdown={true} label={moreLabel}>
-            {enabledMoreItems.map((item, i) => (
+            {moreItems.map((item, i) => (
               <DropDownItem
                 key={`moreNavItem-${i}`}
                 label={item.label}
