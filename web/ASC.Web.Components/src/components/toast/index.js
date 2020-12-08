@@ -1,5 +1,6 @@
 import React from "react";
 import { ToastContainer, cssTransition } from "react-toastify";
+import { isMobile } from "react-device-detect";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import { tablet } from "../../utils/device";
@@ -157,22 +158,23 @@ const StyledToastContainer = styled(ToastContainer)`
     right: 0;
     transition: 0.3s;
 
-    /*  @media ${tablet} {  // TODO: Discuss the behavior of notifications on mobile devices
+    @media ${tablet} {
+      // TODO: Discuss the behavior of notifications on mobile devices
       position: absolute;
 
-      &:nth-child(1){
+      &:nth-child(1) {
         z-index: 3;
-        top:0px;
+        top: 0px;
       }
-      &:nth-child(2){
+      &:nth-child(2) {
         z-index: 2;
-        top:8px;
+        top: 8px;
       }
-      &:nth-child(3){
+      &:nth-child(3) {
         z-index: 1;
         top: 16px;
       }
-    }*/
+    }
   }
 
   .Toastify__toast-body {
@@ -185,11 +187,11 @@ const StyledToastContainer = styled(ToastContainer)`
   }
 
   @media only screen and (max-width: 480px) {
-    padding: 0 16px;
     left: 0;
     margin: auto;
     right: 0;
     width: 100%;
+    max-width: calc(100% - 32px);
 
     @keyframes SlideIn {
       from {
@@ -204,6 +206,15 @@ const StyledToastContainer = styled(ToastContainer)`
 `;
 
 const Toast = (props) => {
+  const toastsIntoColumnOnCLick = () => {
+    let documentElement = document.getElementsByClassName("Toastify__toast");
+    if (documentElement.length > 1)
+      for (var i = 0; i < documentElement.length; i++) {
+        documentElement &&
+          documentElement[i].style.setProperty("position", "static");
+      }
+  };
+
   return (
     <StyledToastContainer
       className={props.className}
@@ -215,6 +226,7 @@ const Toast = (props) => {
       pauseOnFocusLoss={false}
       style={props.style}
       transition={Slide}
+      onClick={isMobile ? toastsIntoColumnOnCLick : null}
     />
   );
 };
