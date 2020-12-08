@@ -30,6 +30,10 @@ export const getReviewedFormats = (state) => {
   return state.files.docservice.reviewedDocs;
 };
 
+export const getWebFilterFormats = (state) => {
+  return state.files.docservice.customfilterDocs;
+};
+
 export const getFormFillingFormats = (state) => {
   return state.files.docservice.formfillingDocs;
 };
@@ -92,6 +96,11 @@ export const canWebReview = (extension) => {
   });
 };
 
+export const canWebFilterEditing = (extension) => {
+  return createSelector(getWebFilterFormats, (formats) => {
+    return presentInArray(formats, extension);
+  });
+};
 export const canFormFillingDocs = (extension) => {
   return createSelector(getFormFillingFormats, (formats) => {
     return presentInArray(formats, extension);
@@ -418,6 +427,9 @@ const getOptions = (state, selection, externalAccess = false) => {
   const formFillingDocs = selection.find((x) =>
     canFormFillingDocs(x.fileExst)(state)
   );
+  const webFilter = selection.find((x) =>
+    canWebFilterEditing(x.fileExst)(state)
+  );
 
   let AccessOptions = [];
 
@@ -428,7 +440,7 @@ const getOptions = (state, selection, externalAccess = false) => {
   if (webComment) AccessOptions.push("Comment");
   if (webReview) AccessOptions.push("Review");
   if (formFillingDocs) AccessOptions.push("FormFilling");
-
+  if (webFilter) AccessOptions.push("FilterEditing");
   return AccessOptions;
 };
 
