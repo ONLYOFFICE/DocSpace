@@ -10,13 +10,14 @@
     "products/ASC.Files/Client"
   ],
   "scripts": {
-    "wipe": "rm -fr node_modules yarn.lock web/**/node_modules products/**/node_modules",
+    "wipe": "rimraf node_modules yarn.lock web/**/node_modules products/**/node_modules",
     "build": "yarn workspaces run build",
     "start": "concurrently \"wsrun --parallel start\""
   },
   "devDependencies": {
     "lerna": "^3.22.1",
     "concurrently": "^5.3.0",
-    "wsrun": "^5.2.4"
+    "wsrun": "^5.2.4",
+    "rimraf": "^3.0.2"
   }
 }
