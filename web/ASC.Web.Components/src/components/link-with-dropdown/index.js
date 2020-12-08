@@ -155,7 +155,11 @@ class LinkWithDropdown extends React.Component {
   };
 
   onClose = (e) => {
-    if (this.ref.current.contains(e.target)) return;
+    if (
+      this.ref.current.contains(e.target) &&
+      !e.target.closest(".backdrop-active")
+    )
+      return;
 
     this.setIsOpen(!this.state.isOpen);
   };

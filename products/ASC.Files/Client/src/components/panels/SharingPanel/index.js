@@ -75,7 +75,11 @@ class SharingPanelComponent extends React.Component {
     this.setState({ showActionPanel: !this.state.showActionPanel });
 
   onCloseActionPanel = (e) => {
-    if (this.ref.current.contains(e.target)) return;
+    if (
+      this.ref.current.contains(e.target) &&
+      !e.target.closest(".backdrop-active")
+    )
+      return;
     this.setState({ showActionPanel: !this.state.showActionPanel });
   };
 

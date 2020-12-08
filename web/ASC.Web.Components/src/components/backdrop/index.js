@@ -4,7 +4,7 @@ import styled from "styled-components";
 
 const StyledBackdrop = styled.div`
   background-color: ${(props) =>
-    props.withBackdrop && !props.backdropExist
+    props.withBackdrop && props.needBackground
       ? "rgba(6, 22, 38, 0.1)"
       : "unset"};
   display: ${(props) => (props.visible ? "block" : "none")};
@@ -22,21 +22,19 @@ class Backdrop extends React.Component {
     super(props);
 
     this.state = {
-      backdropExist: false,
+      needBackground: true,
     };
-
-    this.backdropRef = React.createRef();
   }
 
   componentDidUpdate(prevProps) {
     if (prevProps.visible !== this.props.visible) {
-      const isExist = document.querySelectorAll(".backdrop-active").length > 1;
-      this.setState({ backdropExist: isExist });
+      const needBackground =
+        document.querySelectorAll(".backdrop-active").length <= 1;
+      this.setState({ needBackground: needBackground });
     }
   }
 
   onClickHandler = (e) => {
-    if (!e) return;
     const { target, clientX, clientY } = e;
     const nearOpenDropdown = target.closest("[open]");
     const nearAside = target.closest(".aside-container");
@@ -66,7 +64,7 @@ class Backdrop extends React.Component {
   };
 
   render() {
-    const { backdropExist } = this.state;
+    const { needBackground } = this.state;
     const { className } = this.props;
 
     const classNameStr = this.props.visible
@@ -79,10 +77,9 @@ class Backdrop extends React.Component {
 
     return (
       <StyledBackdrop
-        ref={this.backdropRef}
         className={classNameStr}
         {...this.props}
-        backdropExist={backdropExist}
+        needBackground={needBackground}
         onClick={this.onClickHandler}
       />
     );
