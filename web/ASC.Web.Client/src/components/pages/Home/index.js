@@ -78,7 +78,7 @@ Tiles.propTypes = {
   isPrimary: PropTypes.bool.isRequired,
 };
 
-const Body = ({ modules, match, isLoaded, organizationName }) => {
+const Body = ({ modules, match, isLoaded }) => {
   const { t } = useTranslation("translation", { i18n });
   const { error } = match.params;
 
@@ -106,13 +106,18 @@ const Body = ({ modules, match, isLoaded, organizationName }) => {
   );
 };
 
-const Home = (props) => (
-  <PageLayout>
-    <PageLayout.SectionBody>
-      <Body {...props} />
-    </PageLayout.SectionBody>
-  </PageLayout>
-);
+const Home = (props) => {
+  const { defaultPage } = props;
+  return utils.tryRedirectTo(defaultPage) ? (
+    <></>
+  ) : (
+    <PageLayout>
+      <PageLayout.SectionBody>
+        <Body {...props} />
+      </PageLayout.SectionBody>
+    </PageLayout>
+  );
+};
 
 Home.propTypes = {
   modules: PropTypes.array.isRequired,
@@ -121,11 +126,11 @@ Home.propTypes = {
 
 function mapStateToProps(state) {
   const { modules, isLoaded, settings } = state.auth;
-  const { organizationName } = settings;
+  const { defaultPage } = settings;
   return {
     modules,
     isLoaded,
-    organizationName,
+    defaultPage,
   };
 }
 

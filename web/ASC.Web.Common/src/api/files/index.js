@@ -4,10 +4,12 @@ import FilesFilter from "./filter";
 import { FolderType } from "../../constants";
 import find from "lodash/find";
 
-export function openEdit(fileId) {
+export function openEdit(fileId, version, doc) {
+  const params = doc ? `?doc=${doc}` : "";
+
   const options = {
     method: "get",
-    url: `/files/file/${fileId}/openedit`,
+    url: `/files/file/${fileId}/openedit${params}`,
   };
 
   return request(options);
@@ -391,6 +393,15 @@ export function getShareFiles(fileId) {
   return request({
     method: "get",
     url: `/files/file/${fileId}/share`,
+  });
+}
+
+export function setExternalAccess(fileId, accessType) {
+  const data = { share: accessType };
+  return request({
+    method: "put",
+    url: `/files/${fileId}/setacelink`,
+    data,
   });
 }
 

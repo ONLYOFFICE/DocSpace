@@ -5,7 +5,7 @@ import { Icons } from "../icons";
 import DropDown from "../drop-down";
 import DropDownItem from "../drop-down-item";
 import Text from "../text";
-import isEqual from "lodash/isEqual";
+import equal from "fast-deep-equal/react";
 
 // eslint-disable-next-line no-unused-vars
 const SimpleLinkWithDropdown = ({
@@ -19,6 +19,7 @@ const SimpleLinkWithDropdown = ({
   title,
   dropdownType,
   data,
+  isDisabled,
   ...props
 }) => <a {...props}></a>;
 
@@ -75,7 +76,7 @@ const Caret = styled(ExpanderDownIcon)`
 `;
 
 const StyledLinkWithDropdown = styled(SimpleLinkWithDropdown)`
-  cursor: pointer;
+  ${(props) => !props.isDisabled && "cursor: pointer;"}
   text-decoration: none;
   user-select: none;
   padding-right: 20px;
@@ -151,6 +152,7 @@ class LinkWithDropdown extends React.Component {
   setIsOpen = (isOpen) => this.setState({ isOpen: isOpen });
 
   onOpen = () => {
+    if (this.props.isDisabled) return;
     this.setIsOpen(!this.state.isOpen);
   };
 
@@ -180,7 +182,7 @@ class LinkWithDropdown extends React.Component {
   };
 
   shouldComponentUpdate(nextProps, nextState) {
-    return !isEqual(this.props, nextProps) || !isEqual(this.state, nextState);
+    return !equal(this.props, nextProps) || !equal(this.state, nextState);
   }
 
   render() {
@@ -198,8 +200,11 @@ class LinkWithDropdown extends React.Component {
       data,
       id,
       style,
+      isDisabled,
       ...rest
     } = this.props;
+
+    const disableColor = "#A3A9AE";
 
     return (
       <StyledSpan className={className} id={id} style={style} ref={this.ref}>
@@ -207,14 +212,15 @@ class LinkWithDropdown extends React.Component {
           <StyledLinkWithDropdown
             isSemitransparent={isSemitransparent}
             dropdownType={dropdownType}
-            color={color}
+            color={isDisabled ? disableColor : color}
+            isDisabled={isDisabled}
           >
             <StyledText
               isTextOverflow={isTextOverflow}
               truncate={isTextOverflow}
               fontSize={fontSize}
               fontWeight={fontWeight}
-              color={color}
+              color={isDisabled ? disableColor : color}
               isBold={isBold}
               title={title}
               dropdownType={dropdownType}
@@ -222,7 +228,7 @@ class LinkWithDropdown extends React.Component {
               {this.props.children}
             </StyledText>
             <Caret
-              color={color}
+              color={isDisabled ? disableColor : color}
               dropdownType={dropdownType}
               isOpen={this.state.isOpen}
             />
@@ -264,6 +270,7 @@ LinkWithDropdown.propTypes = {
   className: PropTypes.string,
   id: PropTypes.string,
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  isDisabled: PropTypes.bool,
 };
 
 LinkWithDropdown.defaultProps = {
@@ -276,6 +283,7 @@ LinkWithDropdown.defaultProps = {
   isTextOverflow: true,
   isOpen: false,
   className: "",
+  isDisabled: false,
 };
 
 export default LinkWithDropdown;
