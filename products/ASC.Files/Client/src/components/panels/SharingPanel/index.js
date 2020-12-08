@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import {
   Backdrop,
   Heading,
@@ -17,8 +16,16 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import { utils as commonUtils, constants, toastr, store } from "asc-web-common";
-import { getShareUsers, setShareFiles } from "../../../store/files/actions";
-import { getAccessOption, getSelection } from "../../../store/files/selectors";
+import {
+  getShareUsers,
+  setShareFiles,
+  setSharingPanelVisible,
+} from "../../../store/files/actions";
+import {
+  getAccessOption,
+  getSelection,
+  getSharePanelVisible,
+} from "../../../store/files/selectors";
 import {
   StyledAsidePanel,
   StyledContent,
@@ -102,7 +109,7 @@ class SharingPanelComponent extends React.Component {
       message,
       shareDataItems,
     } = this.state;
-    const { selectedItems, onClose } = this.props;
+    const { selectedItems } = this.props;
 
     const folderIds = [];
     const fileIds = [];
@@ -153,7 +160,7 @@ class SharingPanelComponent extends React.Component {
       externalAccess
     )
       .catch((err) => toastr.error(err))
-      .finally(() => onClose());
+      .finally(() => this.onClose());
   };
 
   onFullAccessClick = () => {
@@ -494,7 +501,8 @@ class SharingPanelComponent extends React.Component {
 
   setShareDataItems = (shareDataItems) => this.setState({ shareDataItems });
 
-  onClose = () => this.setState({ showPanel: false });
+  onClose = () =>
+    this.props.setSharingPanelVisible(!this.props.sharingPanelVisible);
 
   componentDidMount() {
     this.getShareData();
@@ -514,7 +522,7 @@ class SharingPanelComponent extends React.Component {
     } = this.state;
     if (showAddUsersPanel || showEmbeddingPanel || showAddGroupsPanel) return;
     if (event.key === "Esc" || event.key === "Escape") {
-      this.props.onClose();
+      this.onClose();
     }
   };
 
@@ -523,7 +531,7 @@ class SharingPanelComponent extends React.Component {
       this.state.showPanel !== prevState.showPanel &&
       this.state.showPanel === false
     ) {
-      this.props.onClose();
+      this.onClose();
     }
 
     if (this.state.message === prevState.message) {
@@ -758,11 +766,6 @@ class SharingPanelComponent extends React.Component {
   }
 }
 
-SharingPanelComponent.propTypes = {
-  onClose: PropTypes.func,
-  visible: PropTypes.bool,
-};
-
 const SharingPanelContainerTranslated = withTranslation()(
   SharingPanelComponent
 );
@@ -777,7 +780,10 @@ const mapStateToProps = (state) => {
     isMyId: getCurrentUserId(state),
     selectedItems: getSelection(state),
     groupsCaption: getSettingsCustomNamesGroupsCaption(state),
+    sharingPanelVisible: getSharePanelVisible(state),
   };
 };
 
-export default connect(mapStateToProps)(withRouter(SharingPanel));
+export default connect(mapStateToProps, { setSharingPanelVisible })(
+  withRouter(SharingPanel)
+);
