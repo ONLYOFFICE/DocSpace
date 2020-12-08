@@ -230,6 +230,17 @@ class SharingPanelComponent extends React.Component {
     });
   };
 
+  onFilterEditingClick = () => {
+    this.setState({
+      accessRight: {
+        icon: "CustomFilterIcon",
+        rights: "CustomFilter",
+        accessNumber: ShareAccessRights.CustomFilter,
+        isOwner: false,
+      },
+    });
+  };
+
   onNotifyUsersChange = () =>
     this.setState({ isNotifyUsers: !this.state.isNotifyUsers });
 
@@ -295,6 +306,18 @@ class SharingPanelComponent extends React.Component {
         icon: "AccessFormIcon",
         rights: "FormFilling",
         accessNumber: ShareAccessRights.FormFilling,
+      };
+      this.setState({ shareDataItems: newUsers });
+    }
+  };
+  onFilterEditingItemClick = (item) => {
+    const newUsers = this.state.shareDataItems;
+    const elementIndex = newUsers.findIndex((x) => x.id === item.id);
+    if (newUsers[elementIndex].rights.rights !== "CustomFilter") {
+      newUsers[elementIndex].rights = {
+        icon: "CustomFilterIcon",
+        rights: "CustomFilter",
+        accessNumber: ShareAccessRights.CustomFilter,
       };
       this.setState({ shareDataItems: newUsers });
     }
@@ -365,6 +388,13 @@ class SharingPanelComponent extends React.Component {
           icon: "AccessFormIcon",
           rights: "FormFilling",
           accessNumber: ShareAccessRights.FormFilling,
+          isOwner: false,
+        };
+      case 8:
+        return {
+          icon: "CustomFilterIcon",
+          rights: "CustomFilter",
+          accessNumber: ShareAccessRights.CustomFilter,
           isOwner: false,
         };
       default:
@@ -619,6 +649,13 @@ class SharingPanelComponent extends React.Component {
             onClick={this.onDenyAccessClick}
           />
         )}
+        {accessOptions.includes("FilterEditing") && (
+          <DropDownItem
+            label="Custom filter"
+            icon="CustomFilterIcon"
+            onClick={this.onFilterEditingClick}
+          />
+        )}
       </>
     );
 
@@ -707,6 +744,7 @@ class SharingPanelComponent extends React.Component {
                   onReviewClick={this.onReviewItemClick}
                   onCommentClick={this.onCommentItemClick}
                   onFormFillingClick={this.onFormFillingItemClick}
+                  onFilterEditingClick={this.onFilterEditingItemClick}
                   onDenyAccessClick={this.onDenyAccessItemClick}
                   onRemoveUserClick={this.onRemoveUserItemClick}
                   onShowEmbeddingPanel={this.onShowEmbeddingPanel}

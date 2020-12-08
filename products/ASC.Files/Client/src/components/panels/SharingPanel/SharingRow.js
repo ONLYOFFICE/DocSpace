@@ -25,6 +25,7 @@ const SharingRow = (props) => {
     onCommentClick,
     onFormFillingClick,
     onDenyAccessClick,
+    onFilterEditingClick,
     onRemoveUserClick,
     onShowEmbeddingPanel,
     onToggleLink,
@@ -86,6 +87,13 @@ const SharingRow = (props) => {
           label="Deny access"
           icon="AccessNoneIcon"
           onClick={() => onDenyAccessClick(item)}
+        />
+      )}
+      {accessOptions.includes("FilterEditing") && (
+        <DropDownItem
+          label="Custom filter"
+          icon="CustomFilterIcon"
+          onClick={() => onFilterEditingClick(item)}
         />
       )}
     </>
