@@ -22,12 +22,13 @@ import {
 import {
   fetchFiles,
   setAction,
-  setProgressBarData,
-  clearProgressData,
+  setSecondaryProgressBarData,
+  clearSecondaryProgressData,
   setIsLoading,
   setSelected,
   setSharingPanelVisible,
 } from "../../../../../store/files/actions";
+import { TIMEOUT } from "../../../../../helpers/constants";
 import {
   EmptyTrashDialog,
   DeleteDialog,
@@ -230,25 +231,36 @@ class SectionHeaderContent extends React.Component {
       .getProgress()
       .then((res) => {
         if (!url) {
-          this.props.setProgressBarData({
+          this.props.setSecondaryProgressBarData({
+            icon: "file",
             visible: true,
             percent: res[0].progress,
             label: this.props.t("ArchivingData"),
+            alert: false,
           });
           setTimeout(() => this.loop(res[0].url), 1000);
         } else {
-          setTimeout(() => this.props.clearProgressData(), 5000);
+          setTimeout(() => this.props.clearSecondaryProgressData(), TIMEOUT);
           return window.open(url, "_blank");
         }
       })
       .catch((err) => {
-        toastr.error(err);
-        this.props.clearProgressData();
+        setSecondaryProgressBarData({
+          visible: true,
+          alert: true,
+        });
+        //toastr.error(err);
+        setTimeout(() => this.props.clearSecondaryProgressData(), TIMEOUT);
       });
   };
 
   downloadAction = () => {
-    const { t, selection, setProgressBarData, clearProgressData } = this.props;
+    const {
+      t,
+      selection,
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
+    } = this.props;
     const fileIds = [];
     const folderIds = [];
     const items = [];
@@ -263,10 +275,12 @@ class SectionHeaderContent extends React.Component {
       }
     }
 
-    setProgressBarData({
+    setSecondaryProgressBarData({
+      icon: "file",
       visible: true,
       percent: 0,
       label: t("ArchivingData"),
+      alert: false,
     });
 
     api.files
@@ -275,8 +289,12 @@ class SectionHeaderContent extends React.Component {
         this.loop(res[0].url);
       })
       .catch((err) => {
-        toastr.error(err);
-        clearProgressData();
+        setSecondaryProgressBarData({
+          visible: true,
+          alert: true,
+        });
+        //toastr.error(err);
+        setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
       });
   };
 
@@ -658,9 +676,9 @@ const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps, {
   setAction,
-  setProgressBarData,
+  setSecondaryProgressBarData,
   setIsLoading,
-  clearProgressData,
+  clearSecondaryProgressData,
   fetchFiles,
   setSelected,
   setSharingPanelVisible,

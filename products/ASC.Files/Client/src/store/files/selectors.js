@@ -965,8 +965,12 @@ export const getConvertDialogVisible = (state) => {
   return state.files.convertDialogVisible;
 };
 
-export const getProgressData = (state) => {
-  return state.files.progressData;
+export const getPrimaryProgressData = (state) => {
+  return state.files.primaryProgressData;
+};
+
+export const getSecondaryProgressData = (state) => {
+  return state.files.secondaryProgressData;
 };
 
 export const getUpdateTree = (state) => {
