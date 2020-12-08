@@ -19,6 +19,7 @@ import {
   SET_PRIMARY_PROGRESS_BAR_DATA,
   SET_SECONDARY_PROGRESS_BAR_DATA,
   SET_CONVERT_DIALOG_VISIBLE,
+  SET_SHARING_PANEL_VISIBLE,
   SET_UPDATE_TREE,
   SET_NEW_ROW_ITEMS,
   SET_SELECTED_NODE,
@@ -65,6 +66,7 @@ const initialState = {
     alert: false,
   },
   convertDialogVisible: false,
+  sharingPanelVisible: false,
   updateTree: false,
   newRowItems: [],
   selectedTreeNode: [],
@@ -484,6 +486,10 @@ const filesReducer = (state = initialState, action) => {
     case SET_CONVERT_DIALOG_VISIBLE:
       return Object.assign({}, state, {
         convertDialogVisible: action.convertDialogVisible,
+      });
+    case SET_SHARING_PANEL_VISIBLE:
+      return Object.assign({}, state, {
+        sharingPanelVisible: action.sharingPanelVisible,
       });
     case SET_UPDATE_TREE:
       return Object.assign({}, state, {

@@ -57,6 +57,7 @@ export const SET_SECONDARY_PROGRESS_BAR_DATA =
   "SET_SECONDARY_PROGRESS_BAR_DATA";
 export const SET_VIEW_AS = "SET_VIEW_AS";
 export const SET_CONVERT_DIALOG_VISIBLE = "SET_CONVERT_DIALOG_VISIBLE";
+export const SET_SHARING_PANEL_VISIBLE = "SET_SHARING_PANEL_VISIBLE";
 export const SET_UPDATE_TREE = "SET_UPDATE_TREE";
 export const SET_NEW_ROW_ITEMS = "SET_NEW_ROW_ITEMS";
 export const SET_SELECTED_NODE = "SET_SELECTED_NODE";
@@ -209,6 +210,13 @@ export function setConvertDialogVisible(convertDialogVisible) {
   };
 }
 
+export function setSharingPanelVisible(sharingPanelVisible) {
+  return {
+    type: SET_SHARING_PANEL_VISIBLE,
+    sharingPanelVisible,
+  };
+}
+
 export function setUpdateTree(updateTree) {
   return {
     type: SET_UPDATE_TREE,
@@ -337,17 +345,17 @@ export function fetchFiles(folderId, filter, clearFilter = true) {
         filterData.total = 0;
         dispatch(setFilesFilter(filterData));
         if (clearFilter) {
-          dispatch(setFolders([]));
-          dispatch(setFiles([]));
-          dispatch(setSelected("close"));
-          dispatch(
-            setSelectedFolder({
-              folders: [],
-              ...privacyFolder,
-              pathParts: privacyFolder.pathParts,
-              ...{ new: 0 },
-            })
-          );
+        dispatch(setFolders([]));
+        dispatch(setFiles([]));
+        dispatch(setSelected("close"));
+        dispatch(
+          setSelectedFolder({
+            folders: [],
+            ...privacyFolder,
+            pathParts: privacyFolder.pathParts,
+            ...{ new: 0 },
+          })
+        );
         }
         return Promise.resolve();
       }
@@ -366,7 +374,7 @@ export function fetchFiles(folderId, filter, clearFilter = true) {
         setFiles(isPrivacyFolder && !isEncryptionSupport ? [] : data.files)
       );
       if (clearFilter) {
-        dispatch(setSelected("close"));
+      dispatch(setSelected("close"));
       }
       return dispatch(
         setSelectedFolder({
@@ -542,7 +550,8 @@ export function setShareFiles(
   fileIds,
   share,
   notify,
-  sharingMessage
+  sharingMessage,
+  externalAccess
 ) {
   const foldersRequests = folderIds.map((id) =>
     files.setShareFolder(id, share, notify, sharingMessage)
@@ -552,7 +561,19 @@ export function setShareFiles(
     files.setShareFiles(id, share, notify, sharingMessage)
   );
 
-  const requests = [...foldersRequests, ...filesRequests];
+  let externalAccessRequest = [];
+
+  if (fileIds.length === 1 && externalAccess !== null) {
+    externalAccessRequest = fileIds.map((id) =>
+      files.setExternalAccess(id, externalAccess)
+    );
+  }
+
+  const requests = [
+    ...foldersRequests,
+    ...filesRequests,
+    ...externalAccessRequest,
+  ];
   return axios.all(requests);
 }
 
@@ -729,13 +750,13 @@ export const startUpload = (uploadFiles, folderId, t) => {
       dispatch(setConvertDialogVisible(showConvertDialog));
     }
     if (state.files.uploadData.uploaded)
-      startUploadFiles(
-        t,
-        newFiles.length,
-        convertFiles.length,
-        dispatch,
-        getState
-      );
+    startUploadFiles(
+      t,
+      newFiles.length,
+      convertFiles.length,
+      dispatch,
+      getState
+    );
   };
 };
 
@@ -1043,16 +1064,16 @@ const refreshFiles = (folderId, dispatch, getState) => {
         dispatch(setTreeFolders(newTreeFolders));
         dispatch(setUpdateTree(true));
       }
-    );
+      );
   } else {
     return api.files.getFolder(folderId, filter.clone()).then((data) => {
-      const path = data.pathParts;
-      const newTreeFolders = treeFolders;
-      const folders = data.folders;
-      const foldersCount = data.count;
-      loopTreeFolders(path, newTreeFolders, folders, foldersCount);
-      dispatch(setTreeFolders(newTreeFolders));
-      dispatch(setUpdateTree(true));
+        const path = data.pathParts;
+        const newTreeFolders = treeFolders;
+        const folders = data.folders;
+        const foldersCount = data.count;
+        loopTreeFolders(path, newTreeFolders, folders, foldersCount);
+        dispatch(setTreeFolders(newTreeFolders));
+        dispatch(setUpdateTree(true));
     });
   }
 };
@@ -1336,7 +1357,7 @@ export const loopFilesOperations = (id, destFolderId, isCopy) => {
                         setPrimaryProgressBarData({
                           visible: true,
                           alert: true,
-                        })
+                    })
                       );
                       //toastr.error(err);
                       setTimeout(

@@ -1,8 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
-import isEqual from "lodash/isEqual";
 import TextInput from "../text-input";
 import { EmailSettings, parseAddress } from "../../utils/email/";
+import equal from "fast-deep-equal/react";
 
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
@@ -32,7 +32,7 @@ class EmailInput extends React.Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    return !isEqual(this.props, nextProps) || !isEqual(this.state, nextState);
+    return !equal(this.props, nextProps) || !equal(this.state, nextState);
   }
 
   componentDidUpdate(prevProps) {

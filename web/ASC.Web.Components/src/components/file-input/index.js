@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import isEqual from "lodash/isEqual";
+import equal from "fast-deep-equal/react";
 
 import IconButton from "../icon-button";
 import TextInput from "../text-input";
@@ -119,7 +119,7 @@ class FileInput extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    return !isEqual(this.props, nextProps) || !isEqual(this.state, nextState);
+    return !equal(this.props, nextProps) || !equal(this.state, nextState);
   }
 
   onIconFileClick = (e) => {
