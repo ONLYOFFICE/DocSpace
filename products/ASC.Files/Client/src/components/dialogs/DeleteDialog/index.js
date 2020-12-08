@@ -26,6 +26,7 @@ import {
   getIsLoading,
   getIsRecycleBinFolder,
   getSelection,
+  getIsPrivacyFolder,
 } from "../../../store/files/selectors";
 import { createI18N } from "../../../helpers/i18n";
 const i18n = createI18N({
@@ -66,6 +67,7 @@ class DeleteDialogComponent extends React.Component {
       treeFolders,
       setTreeFolders,
       isRecycleBinFolder,
+      isPrivacy,
       setProgressBarData,
       clearProgressData,
       t,
@@ -114,6 +116,7 @@ class DeleteDialogComponent extends React.Component {
   onDelete = () => {
     const {
       isRecycleBinFolder,
+      isPrivacy,
       onClose,
       t,
       setProgressBarData,
@@ -122,7 +125,7 @@ class DeleteDialogComponent extends React.Component {
     const { selection } = this.state;
 
     const deleteAfter = true; //Delete after finished
-    const immediately = isRecycleBinFolder ? true : false; //Don't move to the Recycle Bin
+    const immediately = isRecycleBinFolder || isPrivacy ? true : false; //Don't move to the Recycle Bin
 
     const folderIds = [];
     const fileIds = [];
@@ -283,6 +286,7 @@ const mapStateToProps = (state) => {
     treeFolders: getTreeFolders(state),
     isLoading: getIsLoading(state),
     isRecycleBinFolder: getIsRecycleBinFolder(state),
+    isPrivacy: getIsPrivacyFolder(state),
     selection: getSelection(state),
   };
 };
