@@ -151,7 +151,7 @@ class DropDown extends React.PureComponent {
       children,
       withBackdrop,
       open,
-      isTablet,
+
       style,
     } = this.props;
     const { directionX, directionY, width } = this.state;
@@ -166,6 +166,7 @@ class DropDown extends React.PureComponent {
       ? { height: calculatedHeight + "px" }
       : {};
     //console.log("DropDown render", this.props);
+    const isTablet = window.innerWidth < 1024;
 
     const needBackdrop = withBackdrop || isTablet ? true : false;
 
@@ -234,7 +235,7 @@ DropDown.defaultProps = {
   withBackdrop: false,
 };
 
-class DropDownContainer extends React.Component {
+/*class DropDownContainer extends React.Component {
   render() {
     const isTablet = window.innerWidth < 1024; //TODO: Make some better
 
@@ -245,6 +246,6 @@ class DropDownContainer extends React.Component {
 DropDownContainer.propTypes = {
   open: PropTypes.bool,
   withBackdrop: PropTypes.bool,
-};
+};*/
 
-export default DropDownContainer;
+export default DropDown;
