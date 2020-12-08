@@ -425,7 +425,7 @@ class SectionHeaderContent extends React.Component {
       },
       {
         label: t("Share"),
-        disabled: !isAccessedSelected,
+        disabled: !isAccessedSelected || (isPrivacy && isOnlyFoldersSelected),
         onClick: this.onOpenSharingPanel,
       },
       {
