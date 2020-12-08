@@ -128,15 +128,16 @@ class SharingPanelComponent extends React.Component {
     setShareFiles(folderIds, fileIds, share, isNotifyUsers, message)
       .then(() => {
         if (isPrivacy) {
-          debugger;
-          return setEncryptionAccess(selectedItems).then((encryptedFile) => {
-            if (!encryptedFile) return Promise.resolve();
-            return replaceFileStream(
-              selectedItems[0].id,
-              encryptedFile,
-              true,
-              true
-            ).then(() => toastr.info(`File ${selectedItems[0].title} created`));
+          selectedItems.forEach((item) => {
+            return setEncryptionAccess(item).then((encryptedFile) => {
+              if (!encryptedFile) return Promise.resolve();
+              return replaceFileStream(
+                item.id,
+                encryptedFile,
+                true,
+                true
+              ).then(() => toastr.info(`File ${item.title} created`));
+            });
           });
         }
         return Promise.resolve();
