@@ -622,10 +622,12 @@ const getFilesContextOptions = (
     options.push("separator2");
     options.push("delete");
   } else if (isPrivacy) {
-    options.push("sharing-settings");
-    options.push("separator0");
-    options.push("show-version-history");
-    options.push("separator1");
+    if (isFile) {
+      options.push("sharing-settings");
+      options.push("separator0");
+      options.push("show-version-history");
+      options.push("separator1");
+    }
     options.push("download");
     options.push("move");
     options.push("rename");
