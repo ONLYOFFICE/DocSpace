@@ -199,6 +199,7 @@ import OrigCatalogPrivateRoomIcon from "./catalog.private.react.svg";
 import OrigMoveToIcon from "./move.react.svg";
 
 import OrigIntegrationIcon from "./integration.react.svg";
+import OrigCustomFilterIcon from "./custom.filter.react.svg";
 
 export const AZSortingIcon = createStyledIcon(
   OrigAZSortingIcon,
@@ -409,6 +410,10 @@ export const CrossIcon = createStyledIcon(OrigCrossIcon, "CrossIcon");
 export const CrossSidebarIcon = createStyledIcon(
   OrigCrossSidebarIcon,
   "CrossSidebarIcon"
+);
+export const CustomFilterIcon = createStyledIcon(
+  OrigCustomFilterIcon,
+  "CustomFilterIcon"
 );
 export const DangerIcon = createStyledIcon(OrigDangerIcon, "DangerIcon");
 export const DangerToastIcon = createStyledIcon(
