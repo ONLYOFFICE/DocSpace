@@ -16,8 +16,10 @@ import {
   SET_DRAGGING,
   SET_DRAG_ITEM,
   SET_MEDIA_VIEWER_VISIBLE,
-  SET_PROGRESS_BAR_DATA,
+  SET_PRIMARY_PROGRESS_BAR_DATA,
+  SET_SECONDARY_PROGRESS_BAR_DATA,
   SET_CONVERT_DIALOG_VISIBLE,
+  SET_SHARING_PANEL_VISIBLE,
   SET_UPDATE_TREE,
   SET_NEW_ROW_ITEMS,
   SET_SELECTED_NODE,
@@ -49,8 +51,22 @@ const initialState = {
   dragging: false,
   dragItem: null,
   mediaViewerData: { visible: false, id: null },
-  progressData: { percent: 0, label: "", visible: false },
+  primaryProgressData: {
+    percent: 0,
+    label: "",
+    visible: false,
+    icon: "upload",
+    alert: false,
+  },
+  secondaryProgressData: {
+    percent: 0,
+    label: "",
+    visible: false,
+    icon: "trash",
+    alert: false,
+  },
   convertDialogVisible: false,
+  sharingPanelVisible: false,
   updateTree: false,
   newRowItems: [],
   selectedTreeNode: [],
@@ -459,13 +475,21 @@ const filesReducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         mediaViewerData: action.mediaViewerData,
       });
-    case SET_PROGRESS_BAR_DATA:
+    case SET_PRIMARY_PROGRESS_BAR_DATA:
       return Object.assign({}, state, {
-        progressData: action.progressData,
+        primaryProgressData: action.primaryProgressData,
+      });
+    case SET_SECONDARY_PROGRESS_BAR_DATA:
+      return Object.assign({}, state, {
+        secondaryProgressData: action.secondaryProgressData,
       });
     case SET_CONVERT_DIALOG_VISIBLE:
       return Object.assign({}, state, {
         convertDialogVisible: action.convertDialogVisible,
+      });
+    case SET_SHARING_PANEL_VISIBLE:
+      return Object.assign({}, state, {
+        sharingPanelVisible: action.sharingPanelVisible,
       });
     case SET_UPDATE_TREE:
       return Object.assign({}, state, {

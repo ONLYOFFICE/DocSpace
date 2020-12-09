@@ -140,6 +140,7 @@ class EmbeddingPanelComponent extends React.Component {
                 size="16"
                 iconName="ArrowPathIcon"
                 onClick={this.onArrowClick}
+                color="#A3A9AE"
               />
               <Heading
                 className="header_aside-panel-header"
@@ -150,61 +151,65 @@ class EmbeddingPanelComponent extends React.Component {
               </Heading>
             </StyledHeaderContent>
             <StyledBody size={size}>
-              <Text className="embedding-panel_text">{t("Size")}:</Text>
-              <div className="embedding-panel_links-container">
-                <Link
-                  isHovered
-                  type="action"
-                  className="embedding-panel_link"
-                  onClick={this.onSelectSizeMiddle}
-                >
-                  600 x 800 px
-                </Link>
-                <Link
-                  isHovered
-                  type="action"
-                  className="embedding-panel_link"
-                  onClick={this.onSelectSizeSmall}
-                >
-                  400 x 600 px
-                </Link>
-                <Link
-                  isHovered
-                  type="action"
-                  className="embedding-panel_link"
-                  onClick={this.onSelectSizeAuto}
-                >
-                  {t("Auto")}
-                </Link>
-              </div>
-              <div className="embedding-panel_inputs-container">
-                <div>
-                  <Text className="embedding-panel_text">{t("Width")}:</Text>
-                  <TextInput
-                    className="embedding-panel_input"
-                    value={widthValue}
-                    onChange={this.onChangeWidth}
-                  />
+              <div className="embedding-panel_body">
+                <Text className="embedding-panel_text">{t("Size")}:</Text>
+                <div className="embedding-panel_links-container">
+                  <Link
+                    isHovered
+                    type="action"
+                    className="embedding-panel_link"
+                    onClick={this.onSelectSizeMiddle}
+                  >
+                    600 x 800 px
+                  </Link>
+                  <Link
+                    isHovered
+                    type="action"
+                    className="embedding-panel_link"
+                    onClick={this.onSelectSizeSmall}
+                  >
+                    400 x 600 px
+                  </Link>
+                  <Link
+                    isHovered
+                    type="action"
+                    className="embedding-panel_link"
+                    onClick={this.onSelectSizeAuto}
+                  >
+                    {t("Auto")}
+                  </Link>
                 </div>
-                <div>
-                  <Text className="embedding-panel_text">{t("Height")}:</Text>
-                  <TextInput
-                    className="embedding-panel_input"
-                    value={heightValue}
-                    onChange={this.onChangeHeight}
-                  />
+                <div className="embedding-panel_inputs-container">
+                  <div>
+                    <Text className="embedding-panel_text">{t("Width")}:</Text>
+                    <TextInput
+                      className="embedding-panel_input"
+                      value={widthValue}
+                      onChange={this.onChangeWidth}
+                    />
+                  </div>
+                  <div>
+                    <Text className="embedding-panel_text">{t("Height")}:</Text>
+                    <TextInput
+                      className="embedding-panel_input"
+                      value={heightValue}
+                      onChange={this.onChangeHeight}
+                    />
+                  </div>
                 </div>
-              </div>
-              <div>
-                <Text className="embedding-panel_text">{t("EmbedCode")}:</Text>
-                <IconButton
-                  className="embedding-panel_copy-icon"
-                  size="16"
-                  iconName="CopyIcon"
-                  color="#333"
-                  onClick={this.onCopyLink}
-                />
-                <Textarea isReadOnly value={link} />
+                <div className="embedding-panel_code-container">
+                  <Text className="embedding-panel_text">
+                    {t("EmbedCode")}:
+                  </Text>
+                  <IconButton
+                    className="embedding-panel_copy-icon"
+                    size="16"
+                    iconName="CopyIcon"
+                    color="#333"
+                    onClick={this.onCopyLink}
+                  />
+                  <Textarea color="#AEAEAE" isReadOnly value={link} />
+                </div>
               </div>
             </StyledBody>
           </StyledContent>

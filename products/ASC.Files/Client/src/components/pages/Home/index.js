@@ -30,15 +30,18 @@ import {
   getSelectedFolderId,
   getFileActionId,
   getFilter,
-  getProgressData,
+  getPrimaryProgressData,
+  getSecondaryProgressData,
   getTreeFolders,
   getViewAs,
   getIsLoading,
   getIsRecycleBinFolder,
   getDragging,
+  getSharePanelVisible,
 } from "../../../store/files/selectors";
 
 import { ConvertDialog } from "../../dialogs";
+import { SharingPanel } from "../../panels";
 import { createI18N } from "../../../helpers/i18n";
 import { getFilterByLocation } from "../../../helpers/converters";
 const i18n = createI18N({
@@ -167,9 +170,11 @@ class PureHome extends React.Component {
   render() {
     //console.log("Home render");
     const {
-      progressData,
+      primaryProgressData,
+      secondaryProgressData,
       viewAs,
       convertDialogVisible,
+      sharingPanelVisible,
       fileActionId,
       isRecycleBin,
       isLoaded,
@@ -180,6 +185,8 @@ class PureHome extends React.Component {
         {convertDialogVisible && (
           <ConvertDialog visible={convertDialogVisible} />
         )}
+
+        {sharingPanelVisible && <SharingPanel />}
         <PageLayout
           withBodyScroll
           withBodyAutoFocus={!isMobile}
@@ -187,12 +194,20 @@ class PureHome extends React.Component {
           onDrop={this.onDrop}
           setSelections={this.props.setSelections}
           onMouseMove={this.onMouseMove}
-          showProgressBar={progressData.visible}
-          progressBarValue={progressData.percent}
-          //progressBarDropDownContent={progressBarContent}
-          progressBarLabel={progressData.label}
+          showPrimaryProgressBar={primaryProgressData.visible}
+          primaryProgressBarValue={primaryProgressData.percent}
+          primaryProgressBarIcon={primaryProgressData.icon}
+          showPrimaryButtonAlert={primaryProgressData.alert}
+          showSecondaryProgressBar={secondaryProgressData.visible}
+          secondaryProgressBarValue={secondaryProgressData.percent}
+          secondaryProgressBarIcon={secondaryProgressData.icon}
+          showSecondaryButtonAlert={secondaryProgressData.alert}
           viewAs={viewAs}
-          hideAside={!!fileActionId || progressData.visible}
+          hideAside={
+            !!fileActionId ||
+            primaryProgressData.visible ||
+            secondaryProgressData.visible
+          }
           isLoaded={isLoaded}
         >
           <PageLayout.ArticleHeader>
@@ -255,13 +270,15 @@ function mapStateToProps(state) {
     fileActionId: getFileActionId(state),
     filter: getFilter(state),
     isRecycleBin: getIsRecycleBinFolder(state),
-    progressData: getProgressData(state),
+    primaryProgressData: getPrimaryProgressData(state),
+    secondaryProgressData: getSecondaryProgressData(state),
     treeFolders: getTreeFolders(state),
     viewAs: getViewAs(state),
     isLoading: getIsLoading(state),
     homepage: getSettingsHomepage(state),
     dragging: getDragging(state),
     isLoaded: getIsLoaded(state),
+    sharingPanelVisible: getSharePanelVisible(state),
   };
 }
 

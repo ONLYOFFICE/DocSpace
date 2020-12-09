@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { Backdrop, ProgressBar, utils } from "asc-web-components";
+import { Backdrop, utils } from "asc-web-components";
 import store from "../../store";
 import { withTranslation } from "react-i18next";
 import i18n from "./i18n";
@@ -20,6 +20,7 @@ import SubSectionPaging from "./sub-components/section-paging";
 import SectionToggler from "./sub-components/section-toggler";
 import { changeLanguage } from "../../utils";
 import ReactResizeDetector from "react-resize-detector";
+import FloatingButton from "../FloatingButton";
 
 const { getLanguage } = store.auth.selectors;
 const { size } = utils.device;
@@ -203,11 +204,15 @@ class PageLayoutComponent extends React.Component {
   render() {
     const {
       onDrop,
-      progressBarDropDownContent,
-      progressBarLabel,
-      progressBarValue,
+      showPrimaryProgressBar,
+      primaryProgressBarIcon,
+      primaryProgressBarValue,
+      showPrimaryButtonAlert,
+      showSecondaryProgressBar,
+      secondaryProgressBarValue,
+      secondaryProgressBarIcon,
+      showSecondaryButtonAlert,
       setSelections,
-      showProgressBar,
       uploadFiles,
       viewAs,
       withBodyAutoFocus,
@@ -382,15 +387,40 @@ class PageLayoutComponent extends React.Component {
                           </SubSectionPaging>
                         )}
                       </SubSectionBody>
-                      {showProgressBar && (
-                        <ProgressBar
-                          className="layout-progress-bar"
-                          label={progressBarLabel}
-                          percent={progressBarValue}
-                          dropDownContent={progressBarDropDownContent}
-                        />
-                      )}
                     </>
+                  )}
+
+                  {showPrimaryProgressBar && showSecondaryProgressBar ? (
+                    <>
+                      <FloatingButton
+                        className="layout-progress-bar"
+                        icon={primaryProgressBarIcon}
+                        percent={primaryProgressBarValue}
+                        alert={showPrimaryButtonAlert}
+                      />
+                      <FloatingButton
+                        className="layout-progress-second-bar"
+                        icon={secondaryProgressBarIcon}
+                        percent={secondaryProgressBarValue}
+                        alert={showSecondaryButtonAlert}
+                      />
+                    </>
+                  ) : showPrimaryProgressBar && !showSecondaryProgressBar ? (
+                    <FloatingButton
+                      className="layout-progress-bar"
+                      icon={primaryProgressBarIcon}
+                      percent={primaryProgressBarValue}
+                      alert={showPrimaryButtonAlert}
+                    />
+                  ) : !showPrimaryProgressBar && showSecondaryProgressBar ? (
+                    <FloatingButton
+                      className="layout-progress-bar"
+                      icon={secondaryProgressBarIcon}
+                      percent={secondaryProgressBarValue}
+                      alert={showSecondaryButtonAlert}
+                    />
+                  ) : (
+                    <></>
                   )}
 
                   {isArticleAvailable && (
@@ -414,10 +444,15 @@ PageLayoutComponent.propTypes = {
   withBodyScroll: PropTypes.bool,
   withBodyAutoFocus: PropTypes.bool,
   t: PropTypes.func,
-  showProgressBar: PropTypes.bool,
-  progressBarValue: PropTypes.number,
+  showPrimaryProgressBar: PropTypes.bool,
+  primaryProgressBarValue: PropTypes.number,
+  showPrimaryButtonAlert: PropTypes.bool,
   progressBarDropDownContent: PropTypes.any,
-  progressBarLabel: PropTypes.string,
+  primaryProgressBarIcon: PropTypes.string,
+  showSecondaryProgressBar: PropTypes.bool,
+  secondaryProgressBarValue: PropTypes.number,
+  secondaryProgressBarIcon: PropTypes.string,
+  showSecondaryButtonAlert: PropTypes.bool,
   onDrop: PropTypes.func,
   setSelections: PropTypes.func,
   uploadFiles: PropTypes.bool,
