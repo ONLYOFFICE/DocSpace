@@ -76,9 +76,9 @@ class SectionBody extends React.Component {
     this.scrollRef = React.createRef();
   }
 
-  shouldComponentUpdate(nextProps) {
-    return !isEqual(this.props, nextProps);
-  }
+  // shouldComponentUpdate(nextProps) {
+  //   return !isEqual(this.props, nextProps);
+  // }
 
   componentDidMount() {
     if (!this.props.autoFocus) return;
