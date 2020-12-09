@@ -1,6 +1,5 @@
 import React from "react";
 import { ToastContainer, cssTransition } from "react-toastify";
-import { isMobile } from "react-device-detect";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import { tablet } from "../../utils/device";
@@ -206,7 +205,7 @@ const StyledToastContainer = styled(ToastContainer)`
 `;
 
 const Toast = (props) => {
-  const toastsIntoColumnOnCLick = () => {
+  const onToastClick = () => {
     let documentElement = document.getElementsByClassName("Toastify__toast");
     if (documentElement.length > 1)
       for (var i = 0; i < documentElement.length; i++) {
@@ -226,7 +225,7 @@ const Toast = (props) => {
       pauseOnFocusLoss={false}
       style={props.style}
       transition={Slide}
-      onClick={isMobile ? toastsIntoColumnOnCLick : null}
+      onClick={onToastClick}
     />
   );
 };
