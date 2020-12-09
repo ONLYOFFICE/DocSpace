@@ -751,15 +751,16 @@ export const startUpload = (uploadFiles, folderId, t) => {
     //   dispatch(setConvertDialogVisible(showConvertDialog));
     // }
     if (state.files.uploadData.uploaded)
-      startUploadFiles(t, newFiles.length, dispatch, getState);
+      startUploadFiles(t, dispatch, getState);
   };
 };
 
-const startUploadFiles = async (t, filesLength, dispatch, getState) => {
-  if (filesLength === 0) return;
-
+const startUploadFiles = async (t, dispatch, getState) => {
   let state = getState();
   const percent = state.files.uploadData.percent;
+  const filesLength = state.files.uploadData.files.length;
+
+  if (filesLength === 0) return;
 
   const progressData = {
     visible: true,
@@ -775,9 +776,7 @@ const startUploadFiles = async (t, filesLength, dispatch, getState) => {
 
   dispatch(setPrimaryProgressBarData(progressData));
 
-  for (let index = 0; index < filesLength; index++) {
-    await startSessionFunc(index, t, dispatch, getState);
-  }
+  await startSessionFunc(0, t, dispatch, getState);
 
   //TODO: startConvertFunc
 
@@ -789,20 +788,6 @@ const startUploadFiles = async (t, filesLength, dispatch, getState) => {
   const totalErrorsCount = sumBy(files, (f) => (f.error ? 1 : 0));
 
   if (totalErrorsCount > 0) return;
-
-  const uploadData = {
-    files: [],
-    filesSize: 0,
-    uploadStatus: null,
-    uploadedFiles: 0,
-    percent: 0,
-    uploaded: true,
-  };
-
-  setTimeout(() => {
-    dispatch(clearPrimaryProgressData());
-    dispatch(setUploadData(uploadData));
-  }, TIMEOUT);
 };
 
 const chunkSize = 1024 * 1023; //~0.999mb
@@ -831,7 +816,6 @@ const startSessionFunc = (indexOfFile, t, dispatch, getState) => {
 
   if (!item) {
     console.error("Empty files");
-    debugger;
     return Promise.resolve();
   }
 
@@ -873,7 +857,25 @@ const startSessionFunc = (indexOfFile, t, dispatch, getState) => {
         dispatch,
         t,
         getState
-      )
+      ).then(() => {
+        if (indexOfFile + 1 !== files.length) {
+          startSessionFunc(indexOfFile + 1, t, dispatch, getState);
+        } else {
+          const uploadData = {
+            files: [],
+            filesSize: 0,
+            uploadStatus: null,
+            uploadedFiles: 0,
+            percent: 0,
+            uploaded: true,
+          };
+
+          setTimeout(() => {
+            dispatch(clearPrimaryProgressData());
+            dispatch(setUploadData(uploadData));
+          }, TIMEOUT);
+        }
+      })
     )
     .catch((err) => {
       console.error(err);
@@ -936,10 +938,7 @@ const uploadFileChunks = async (
   const length = requestsDataArray.length;
   for (let index = 0; index < length; index++) {
     const res = await api.files.uploadFile(location, requestsDataArray[index]);
-
-    console.log(`Uploaded chunk ${index}/${length}`, res);
-
-    //let isLatestFile = indexOfFile === newFilesLength - 1;
+    //console.log(`Uploaded chunk ${index}/${length}`, res);
 
     const uploadedSize =
       res && res.data && res.data.data && res.data.data.uploaded
@@ -987,9 +986,9 @@ const getNewPercent = (uploadedSize, indexOfFile, getState) => {
   const totalUploadedSize = sumBy(totalUploadedFiles, (f) => f.file.size);
   const newPercent = ((uploadedSize + totalUploadedSize) / newTotalSize) * 100;
 
-  console.log(
-    `newPercent=${newPercent} (newTotalSize=${newTotalSize} totalUploadedSize=${totalUploadedSize} indexOfFile=${indexOfFile})`
-  );
+  // console.log(
+  //   `newPercent=${newPercent} (newTotalSize=${newTotalSize} totalUploadedSize=${totalUploadedSize} indexOfFile=${indexOfFile})`
+  // );
 
   return newPercent;
 };
