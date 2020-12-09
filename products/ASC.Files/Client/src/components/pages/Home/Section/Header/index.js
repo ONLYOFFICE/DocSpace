@@ -134,7 +134,7 @@ const StyledContainer = styled.div`
           `}
         position: absolute;
         top: 56px;
-        z-index: 139;
+        z-index: 180;
       }
     }
 

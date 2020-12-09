@@ -24,7 +24,7 @@ const StyledNav = styled.nav`
   position: absolute;
   right: 0;
   height: 56px;
-  z-index: 140;
+  z-index: 190;
 
   .profile-menu {
     right: 12px;

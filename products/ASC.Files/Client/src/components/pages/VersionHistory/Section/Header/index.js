@@ -40,7 +40,7 @@ const StyledContainer = styled.div`
       & > div:first-child {
         position: absolute;
         top: 56px;
-        z-index: 139;
+        z-index: 180;
       }
     }
 

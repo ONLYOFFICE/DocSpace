@@ -41,7 +41,7 @@ const StyledDropdown = styled.div`
     css`
       left: ${(props) => (props.manualX ? props.manualX : "0px")};
     `}
-    z-index: 150;
+    z-index: 200;
   display: ${(props) => (props.open ? "block" : "none")};
   background: #ffffff;
   border-radius: 6px;
@@ -179,7 +179,7 @@ class DropDown extends React.PureComponent {
         <Backdrop
           visible={open}
           withBackdrop={needBackdrop}
-          zIndex={149}
+          zIndex={199}
           onClick={this.toggleDropDown}
         />
 

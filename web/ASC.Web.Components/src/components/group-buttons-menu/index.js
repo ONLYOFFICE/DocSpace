@@ -20,7 +20,7 @@ const StyledGroupButtonsMenu = styled.div`
   white-space: nowrap;
 
   display: ${(props) => (props.visible ? "block" : "none")};
-  z-index: 139;
+  z-index: 189;
 
   @media ${desktop} {
     margin-top: 1px;
