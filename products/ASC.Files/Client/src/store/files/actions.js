@@ -57,6 +57,7 @@ export const SET_SECONDARY_PROGRESS_BAR_DATA =
   "SET_SECONDARY_PROGRESS_BAR_DATA";
 export const SET_VIEW_AS = "SET_VIEW_AS";
 export const SET_CONVERT_DIALOG_VISIBLE = "SET_CONVERT_DIALOG_VISIBLE";
+export const SET_SHARING_PANEL_VISIBLE = "SET_SHARING_PANEL_VISIBLE";
 export const SET_UPDATE_TREE = "SET_UPDATE_TREE";
 export const SET_NEW_ROW_ITEMS = "SET_NEW_ROW_ITEMS";
 export const SET_SELECTED_NODE = "SET_SELECTED_NODE";
@@ -206,6 +207,13 @@ export function setConvertDialogVisible(convertDialogVisible) {
   return {
     type: SET_CONVERT_DIALOG_VISIBLE,
     convertDialogVisible,
+  };
+}
+
+export function setSharingPanelVisible(sharingPanelVisible) {
+  return {
+    type: SET_SHARING_PANEL_VISIBLE,
+    sharingPanelVisible,
   };
 }
 
@@ -542,7 +550,8 @@ export function setShareFiles(
   fileIds,
   share,
   notify,
-  sharingMessage
+  sharingMessage,
+  externalAccess
 ) {
   const foldersRequests = folderIds.map((id) =>
     files.setShareFolder(id, share, notify, sharingMessage)
@@ -552,7 +561,19 @@ export function setShareFiles(
     files.setShareFiles(id, share, notify, sharingMessage)
   );
 
-  const requests = [...foldersRequests, ...filesRequests];
+  let externalAccessRequest = [];
+
+  if (fileIds.length === 1 && externalAccess !== null) {
+    externalAccessRequest = fileIds.map((id) =>
+      files.setExternalAccess(id, externalAccess)
+    );
+  }
+
+  const requests = [
+    ...foldersRequests,
+    ...filesRequests,
+    ...externalAccessRequest,
+  ];
   return axios.all(requests);
 }
 
@@ -864,12 +885,14 @@ const sendChunk = (
     uploaded,
     percent,
     uploadedFiles,
-    filesSize,
-    convertFilesSize,
+    //filesSize,
+    //convertFilesSize,
   } = uploadData;
   //const totalSize = convertFilesSize + filesSize;
   let newPercent = percent;
-  const toFolderId = uploadData.files[indexOfFile].toFolderId;
+  const file =
+    uploadData.files[indexOfFile] || uploadData.convertFiles[indexOfFile];
+  const toFolderId = file.toFolderId;
   const sendRequestFunc = (index) => {
     api.files
       .uploadFile(location, requestsDataArray[index])
