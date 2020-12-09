@@ -24,11 +24,7 @@ class LinkRow extends React.Component {
       options,
       index,
       t,
-      embeddedComponentRender,
-      externalAccessOptions,
-      //embeddedComponentRender,
       advancedOptions,
-      //accessOptions,
       item,
       withToggle,
     } = this.props;

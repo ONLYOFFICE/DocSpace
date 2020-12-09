@@ -21,5 +21,6 @@
   "Review": "Review",
   "Comment": "Comment",
   "FormFilling": "Form filling",
-  "DenyAccess": "Deny access"
+  "DenyAccess": "Deny access",
+  "CustomFilter": "Custom filter"
 }

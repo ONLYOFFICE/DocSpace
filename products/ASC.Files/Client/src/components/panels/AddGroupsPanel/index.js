@@ -68,9 +68,7 @@ class AddGroupsPanelComponent extends React.Component {
     onClose();
   };
 
-  onPLusClick = () => {
-    console.log("onPlusClick");
-  };
+  //onPLusClick = () => console.log("onPlusClick");
 
   componentDidMount() {
     const scroll = this.scrollRef.current.getElementsByClassName("scroll-body");

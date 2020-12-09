@@ -92,7 +92,6 @@ class SharingPanelComponent extends React.Component {
         ? ShareAccessRights.DenyAccess
         : ShareAccessRights.ReadOnly;
     const newDataItems = JSON.parse(JSON.stringify(shareDataItems));
-    console.log("newDataItems", newDataItems);
 
     newDataItems[0].access = rights;
     this.setState({
@@ -526,13 +525,12 @@ class SharingPanelComponent extends React.Component {
               stype="mediumBlack"
               style={SharingBodyStyle}
             >
-              {shareDataItems.map((item, index) => (
+              {shareDataItems.map((item) => (
                 <SharingRow
-                  key={index}
+                  key={item.sharedTo.id}
                   t={t}
                   selection={selection}
                   item={item}
-                  index={index}
                   isMyId={isMyId}
                   accessOptions={accessOptions}
                   externalAccessOptions={externalAccessOptions}

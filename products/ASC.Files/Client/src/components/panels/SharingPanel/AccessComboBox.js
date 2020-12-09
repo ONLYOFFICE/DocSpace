@@ -2,21 +2,7 @@ import React from "react";
 import { ComboBox, Icons } from "asc-web-components";
 
 const AccessComboBox = (props) => {
-  const {
-    //t,
-    //itemId,
-    //itemAccess,
-    //accessOptions,
-    //onFullAccessClick,
-    //onReadOnlyClick,
-    //onReviewClick,
-    //onCommentClick,
-    //onFormFillingClick,
-    //onDenyAccessClick,
-    access,
-    advancedOptions,
-    directionX,
-  } = props;
+  const { access, advancedOptions, directionX } = props;
 
   const getAccessIcon = () => {
     switch (access) {

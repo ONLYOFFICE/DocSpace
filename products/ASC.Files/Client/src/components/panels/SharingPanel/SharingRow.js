@@ -6,11 +6,11 @@ import LinkRow from "./linkRow";
 import AccessComboBox from "./AccessComboBox";
 
 const SharingRow = (props) => {
+  console.log("SharingRow render");
   const {
     t,
     selection,
     item,
-    index,
     isMyId,
     accessOptions,
     onFullAccessClick,
@@ -26,26 +26,16 @@ const SharingRow = (props) => {
     externalLinkData,
   } = props;
 
-  console.log("SharingRow render item", item);
-  console.log("SharingRow render accessOptions", accessOptions);
-
   const { isOwner, access } = item;
   const { label, name, displayName, shareLink, id } = item.sharedTo;
 
   const linkVisible = selection && selection.length === 1 && shareLink;
-  const onCopyInternalLink = () => {
-    const internalLink = selection.webUrl
-      ? selection.webUrl
-      : selection[0].webUrl;
-    copy(internalLink);
-    toastr.success(t("LinkCopySuccess"));
-  };
 
   const advancedOptions = (
     <>
       {accessOptions.includes("FullAccess") && (
         <DropDownItem
-          label="Full access"
+          label={t("FullAccess")}
           icon="AccessEditIcon"
           data-id={id}
           onClick={onFullAccessClick}
@@ -54,7 +44,7 @@ const SharingRow = (props) => {
 
       {accessOptions.includes("FilterEditing") && (
         <DropDownItem
-          label="Custom filter"
+          label={t("CustomFilter")}
           icon="CustomFilterIcon"
           data-id={id}
           onClick={onFilterEditingClick}
@@ -63,7 +53,7 @@ const SharingRow = (props) => {
 
       {accessOptions.includes("Review") && (
         <DropDownItem
-          label="Review"
+          label={t("Review")}
           icon="AccessReviewIcon"
           data-id={id}
           onClick={onReviewClick}
@@ -72,7 +62,7 @@ const SharingRow = (props) => {
 
       {accessOptions.includes("FormFilling") && (
         <DropDownItem
-          label="Form filling"
+          label={t("FormFilling")}
           icon="AccessFormIcon"
           data-id={id}
           onClick={onFormFillingClick}
@@ -81,7 +71,7 @@ const SharingRow = (props) => {
 
       {accessOptions.includes("Comment") && (
         <DropDownItem
-          label="Comment"
+          label={t("Comment")}
           icon="AccessCommentIcon"
           data-id={id}
           onClick={onCommentClick}
@@ -90,7 +80,7 @@ const SharingRow = (props) => {
 
       {accessOptions.includes("ReadOnly") && (
         <DropDownItem
-          label="Read only"
+          label={t("ReadOnly")}
           icon="EyeIcon"
           data-id={id}
           onClick={onReadOnlyClick}
@@ -99,7 +89,7 @@ const SharingRow = (props) => {
 
       {accessOptions.includes("DenyAccess") && (
         <DropDownItem
-          label="Deny access"
+          label={t("DenyAccess")}
           icon="AccessNoneIcon"
           data-id={id}
           onClick={onDenyAccessClick}
@@ -107,6 +97,14 @@ const SharingRow = (props) => {
       )}
     </>
   );
+
+  const onCopyInternalLink = () => {
+    const internalLink = selection.webUrl
+      ? selection.webUrl
+      : selection[0].webUrl;
+    copy(internalLink);
+    toastr.success(t("LinkCopySuccess"));
+  };
 
   const onCopyClick = () => {
     toastr.success(t("LinkCopySuccess"));
@@ -201,7 +199,7 @@ const SharingRow = (props) => {
       {!shareLink && (
         <Row
           className="sharing-row"
-          key={`internal-link-key_${index}`}
+          key={`internal-link-key_${id}`}
           element={
             isOwner || id === isMyId ? (
               <Icons.AccessEditIcon
