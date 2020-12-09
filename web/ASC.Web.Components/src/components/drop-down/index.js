@@ -157,7 +157,7 @@ class DropDown extends React.PureComponent {
       enabledChildren,
       (child, index) => {
         if (!child.props.isSeparator) return child;
-        if (index !== sizeEnabledChildren - 1) return child;
+        if (index !== 0 && index !== sizeEnabledChildren - 1) return child;
       }
     );
 

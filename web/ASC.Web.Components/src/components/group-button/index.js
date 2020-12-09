@@ -223,6 +223,7 @@ class GroupButton extends React.Component {
               manualY="72px"
               open={this.state.isOpen}
               clickOutsideAction={this.clickOutsideAction}
+              showDisabledItems={true}
             >
               {React.Children.map(children, (child) => (
                 <DropDownItem
