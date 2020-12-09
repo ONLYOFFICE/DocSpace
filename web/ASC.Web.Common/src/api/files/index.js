@@ -506,7 +506,7 @@ export function convertFile(fileId) {
   });
 }
 
-export function getConvertFile(fileId) {
+export function getFileConversationProgress(fileId) {
   return request({
     method: "get",
     url: `/files/file/${fileId}/checkconversion`,

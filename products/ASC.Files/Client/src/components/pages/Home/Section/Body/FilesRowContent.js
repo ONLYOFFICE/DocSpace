@@ -363,7 +363,7 @@ class FilesRowContent extends React.PureComponent {
       clearSecondaryProgressData,
       fetchFiles,
     } = this.props;
-    api.files.getConvertFile(fileId).then((res) => {
+    api.files.getFileConversationProgress(fileId).then((res) => {
       if (res && res[0] && res[0].progress !== 100) {
         setSecondaryProgressBarData({
           icon: "file",
