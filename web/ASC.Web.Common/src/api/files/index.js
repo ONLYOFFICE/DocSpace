@@ -382,17 +382,12 @@ export function removeFiles(folderIds, fileIds, deleteAfter, immediately) {
   return request({ method: "put", url: "/files/fileops/delete", data });
 }
 
-export function getShareFolders(folderId) {
+export function getShareFiles(fileIds, folderIds) {
+  const data = { fileIds, folderIds };
   return request({
-    method: "get",
-    url: `/files/folder/${folderId}/share`,
-  });
-}
-
-export function getShareFiles(fileId) {
-  return request({
-    method: "get",
-    url: `/files/file/${fileId}/share`,
+    method: "post",
+    url: "/files/share",
+    data,
   });
 }
 
@@ -405,18 +400,20 @@ export function setExternalAccess(fileId, accessType) {
   });
 }
 
-export function setShareFolder(folderId, share, notify, sharingMessage) {
-  const data = { share, notify, sharingMessage };
+export function setShareFiles(
+  fileIds,
+  folderIds,
+  share,
+  notify,
+  sharingMessage
+) {
+  const data = { fileIds, folderIds, share, notify, sharingMessage };
+
   return request({
     method: "put",
-    url: `/files/folder/${folderId}/share`,
+    url: `/files/share`,
     data,
   });
-}
-
-export function setShareFiles(fileId, share, notify, sharingMessage) {
-  const data = { share, notify, sharingMessage };
-  return request({ method: "put", url: `/files/file/${fileId}/share`, data });
 }
 
 export function startUploadSession(folderId, fileName, fileSize, relativePath) {

@@ -550,41 +550,13 @@ export function setShareFiles(
   fileIds,
   share,
   notify,
-  sharingMessage,
-  externalAccess
+  sharingMessage
 ) {
-  const foldersRequests = folderIds.map((id) =>
-    files.setShareFolder(id, share, notify, sharingMessage)
-  );
-
-  const filesRequests = fileIds.map((id) =>
-    files.setShareFiles(id, share, notify, sharingMessage)
-  );
-
-  let externalAccessRequest = [];
-
-  if (fileIds.length === 1 && externalAccess !== null) {
-    externalAccessRequest = fileIds.map((id) =>
-      files.setExternalAccess(id, externalAccess)
-    );
-  }
-
-  const requests = [
-    ...foldersRequests,
-    ...filesRequests,
-    ...externalAccessRequest,
-  ];
-  return axios.all(requests);
+  return files.setShareFiles(fileIds, folderIds, share, notify, sharingMessage);
 }
 
 export function getShareUsers(folderIds, fileIds) {
-  const foldersRequests = folderIds.map((folderId) =>
-    files.getShareFolders(folderId)
-  );
-  const filesRequests = fileIds.map((fileId) => files.getShareFiles(fileId));
-  const requests = [...foldersRequests, ...filesRequests];
-
-  return axios.all(requests).then((res) => res);
+  return files.getShareFiles(fileIds, folderIds);
 }
 
 export function clearPrimaryProgressData() {
