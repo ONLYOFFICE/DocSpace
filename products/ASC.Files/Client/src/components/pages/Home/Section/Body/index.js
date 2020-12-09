@@ -185,7 +185,7 @@ const EncryptedFile = styled.div`
   position: absolute;
   width: 16px;
   margin-top: 14px;
-  margin-left: 12px;
+  margin-left: ${(props) => (props.isEdit ? "40px" : "12px")};
 `;
 
 class SectionBodyContent extends React.Component {
@@ -799,7 +799,9 @@ class SectionBodyContent extends React.Component {
           src={item.icon}
           loading={this.svgLoader}
         />
-        {this.props.isPrivacy && item.fileExst && <EncryptedFile />}
+        {this.props.isPrivacy && item.fileExst && (
+          <EncryptedFile isEdit={isEdit} />
+        )}
       </>
     );
   };
