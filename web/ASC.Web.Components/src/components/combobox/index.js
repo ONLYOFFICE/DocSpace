@@ -109,6 +109,7 @@ class ComboBox extends React.Component {
       displayType,
       toggleAction,
       textOverflow,
+      showDisabledItems,
     } = this.props;
     const { isOpen, selectedOption } = this.state;
 
@@ -163,6 +164,7 @@ class ComboBox extends React.Component {
             clickOutsideAction={this.handleClickOutside}
             {...dropDownMaxHeightProp}
             {...dropDownManualWidthProp}
+            showDisabledItems={showDisabledItems}
           >
             {advancedOptions
               ? advancedOptions
@@ -216,6 +218,7 @@ ComboBox.defaultProps = {
   scaledOptions: false,
   size: "base",
   disableIconClick: true,
+  showDisabledItems: false,
 };
 
 export default ComboBox;
