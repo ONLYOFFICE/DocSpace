@@ -39,9 +39,8 @@ const StyledPage = styled.div`
   margin-right: 8px;
 
   .manualWidth {
-    > div:last-of-type {
-        width: 120%;
-      }
+    .dropdown-container {
+      width: 120%;
     }
   }
 `;
