@@ -9,7 +9,8 @@ const commonInputStyle = css`
     (props.size === "huge" && "500px") ||
     (props.size === "large" && "550px")};
   background-color: ${(props) => (props.isDisabled ? "#F8F9F9" : "#fff")};
-  color: ${(props) => (props.isDisabled ? "#A3A9AE" : "#333333")};
+  color: ${(props) =>
+    props.isDisabled ? "#A3A9AE" : props.color ? props.color : "#333333"};
 
   border-radius: 3px;
   box-shadow: none;

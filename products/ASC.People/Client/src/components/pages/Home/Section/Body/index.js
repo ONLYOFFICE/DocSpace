@@ -25,7 +25,7 @@ import {
 } from "../../../../../store/people/actions";
 import { getPeopleList } from "../../../../../store/people/selectors";
 
-import isEqual from "lodash/isEqual";
+import equal from "fast-deep-equal/react";
 import { store, api, constants, toastr, Loaders } from "asc-web-common";
 import {
   ChangeEmailDialog,
@@ -359,7 +359,7 @@ class SectionBodyContent extends React.PureComponent {
     if (currentProps.sectionWidth !== nextProps.sectionWidth) {
       return true;
     }
-    if (!isEqual(currentProps.data, nextProps.data)) {
+    if (!equal(currentProps.data, nextProps.data)) {
       return true;
     }
     if (!isArrayEqual(currentProps.contextOptions, nextProps.contextOptions)) {

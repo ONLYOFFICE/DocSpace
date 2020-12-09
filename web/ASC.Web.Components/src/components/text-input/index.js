@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import commonInputStyle from "../text-input/common-input-styles";
 import MaskedInput from "react-text-mask";
-import isEqual from "lodash/isEqual";
+import equal from "fast-deep-equal/react";
 
 /* eslint-disable no-unused-vars, react/prop-types */
 const Input = ({
@@ -109,7 +109,7 @@ const StyledInput = styled(Input).attrs((props) => ({
 
 class TextInput extends React.Component {
   shouldComponentUpdate(nextProps) {
-    return !isEqual(this.props, nextProps);
+    return !equal(this.props, nextProps);
   }
 
   render() {
