@@ -145,16 +145,37 @@ class DropDown extends React.PureComponent {
     return isTablet ? 36 : 32;
   };
 
+  hideDisabledItems = () => {
+    const { children } = this.props;
+    const enabledChildren = React.Children.map(children, (child) => {
+      if (child && !child.props.disabled) return child;
+    });
+
+    const sizeEnabledChildren = enabledChildren.length;
+
+    const cleanChildren = React.Children.map(
+      enabledChildren,
+      (child, index) => {
+        if (!child.props.isSeparator) return child;
+        if (index !== sizeEnabledChildren - 1) return child;
+      }
+    );
+
+    return cleanChildren;
+  };
+
   render() {
     const {
       maxHeight,
       children,
       withBackdrop,
       open,
-
+      showDisabledItems,
       style,
     } = this.props;
     const { directionX, directionY, width } = this.state;
+    let cleanChildren;
+
     const rowHeights = React.Children.map(children, (child) =>
       this.getItemHeight(child)
     );
@@ -170,9 +191,7 @@ class DropDown extends React.PureComponent {
 
     const needBackdrop = withBackdrop || isTablet ? true : false;
 
-    const enabledChildren = React.Children.map(children, (child) => {
-      if (child && !child.props.disabled) return child;
-    });
+    if (!showDisabledItems) cleanChildren = this.hideDisabledItems();
 
     return (
       <Box style={style}>
@@ -201,8 +220,10 @@ class DropDown extends React.PureComponent {
             >
               {Row}
             </VariableSizeList>
+          ) : cleanChildren ? (
+            cleanChildren
           ) : (
-            enabledChildren
+            children
           )}
         </StyledDropdown>
       </Box>
@@ -227,25 +248,14 @@ DropDown.propTypes = {
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   withBackdrop: PropTypes.bool,
   columnCount: PropTypes.number,
+  showDisabledItems: PropTypes.bool,
 };
 
 DropDown.defaultProps = {
   directionX: "left",
   directionY: "bottom",
   withBackdrop: false,
+  showDisabledItems: false,
 };
-
-/*class DropDownContainer extends React.Component {
-  render() {
-    const isTablet = window.innerWidth < 1024; //TODO: Make some better
-
-    return <DropDown {...this.props} isTablet={isTablet} />;
-  }
-}
-
-DropDownContainer.propTypes = {
-  open: PropTypes.bool,
-  withBackdrop: PropTypes.bool,
-};*/
 
 export default DropDown;
