@@ -108,7 +108,7 @@ services:
   onlyoffice-people.server:
     <<: *x-service-base
     image: "${REPO:-onlyoffice}/${STATUS:-}appserver-people.server:${TAG_SRV:-latest}"
-    container_name: ${PEOPLE_SERVER:-people.server}
+    container_name: ${PEOPLE_SERVER_HOST:-people.server}
     
   onlyoffice-files:
     <<: *x-service-base

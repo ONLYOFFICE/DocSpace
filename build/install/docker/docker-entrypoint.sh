@@ -33,6 +33,7 @@ DOCUMENT_SERVER_URL_CONVERTER=${DOCUMENT_SERVER_URL_CONVERTER:-"/ds-vpath/Conver
 VIEWED_MEDIA=${VIEWED_MEDIA:-'".aac",".flac",".m4a",".mp3",".oga",".ogg",".wav",".f4v",".m4v",".mov",".mp4",".ogv",".webm",".avi"'}
 FFMPEG_EXTS=${FFMPEG_EXTS:-'"avi", "mpeg", "mpg", "wmv"'}
 
+ELK_SHEME=${ELK_SHEME:-"http"}
 ELK_HOST=${ELK_HOST:-${CONTAINER_PRIFIX}-"elasticsearch"}
 ELK_PORT=${ELK_PORT:-"9200"}
 ELK_VALUE='"elastic": { "Scheme": "'${ELK_SHEME}'", "Host": "'${ELK_HOST}'", "Port": "'${ELK_PORT}'" },'
