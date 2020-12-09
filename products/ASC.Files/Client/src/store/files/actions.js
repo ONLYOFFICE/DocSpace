@@ -751,39 +751,50 @@ export const startUpload = (uploadFiles, folderId, t) => {
     //   dispatch(setConvertDialogVisible(showConvertDialog));
     // }
     if (state.files.uploadData.uploaded)
-      startUploadFiles(t, newFiles.length, dispatch, getState);
+      startUploadFiles(t, dispatch, getState);
   };
 };
 
-const startUploadFiles = async (t, filesLength, dispatch, getState) => {
-  if (filesLength === 0) return;
-
+const startUploadFiles = async (t, dispatch, getState) => {
   let state = getState();
-  const percent = state.files.uploadData.percent;
+
+  const { files, percent } = state.files.uploadData;
+
+  if (files.length === 0) return;
 
   const progressData = {
     visible: true,
     percent,
-    label: "",
+    label: t("UploadingLabel", {
+      file: 0,
+      totalFiles: files.length,
+    }),
     icon: "upload",
     alert: false,
   };
-  progressData.label = t("UploadingLabel", {
-    file: 0,
-    totalFiles: filesLength,
-  });
 
   dispatch(setPrimaryProgressBarData(progressData));
 
-  for (let index = 0; index < filesLength; index++) {
+  let index = 0;
+  let len = files.length;
+
+  while (index < len) {
     await startSessionFunc(index, t, dispatch, getState);
+    index++;
+
+    state = getState();
+    len = state.files.uploadData.files.length;
   }
 
   //TODO: startConvertFunc
 
-  //TODO: All files has been uploaded
+  // All files has been uploaded and converted
 
-  state = getState();
+  finishUploadFiles(getState, dispatch);
+};
+
+const finishUploadFiles = (getState, dispatch) => {
+  const state = getState();
   const { files } = state.files.uploadData;
 
   const totalErrorsCount = sumBy(files, (f) => (f.error ? 1 : 0));
@@ -812,7 +823,7 @@ const throttleRefreshFiles = throttle((toFolderId, dispatch, getState) => {
     console.log("RefreshFiles failed", err);
     return Promise.resolve();
   });
-}, 10000);
+}, 1000);
 
 const startSessionFunc = (indexOfFile, t, dispatch, getState) => {
   const state = getState();
