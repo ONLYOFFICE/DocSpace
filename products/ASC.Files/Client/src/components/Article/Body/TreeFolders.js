@@ -22,9 +22,10 @@ import {
   getShareFolderId,
   getRootFolderId,
   getDraggableItems,
+  getIsPrivacyFolder,
 } from "../../../store/files/selectors";
 import { onConvertFiles } from "../../../helpers/files-converter";
-const { isAdmin } = initStore.auth.selectors;
+const { isAdmin, isDesktopClient } = initStore.auth.selectors;
 
 const { files } = api;
 const { FolderType, ShareAccessRights } = constants;
@@ -189,7 +190,9 @@ class TreeFolders extends React.Component {
             onBadgeClick={this.onBadgeClick}
             showBadge={showBadge}
           >
-            {this.getItems(item.folders)}
+            {item.rootFolderType === 13 && !this.props.isDesktop
+              ? null
+              : this.getItems(item.folders)}
           </TreeNode>
         );
       }
@@ -214,7 +217,9 @@ class TreeFolders extends React.Component {
     if (obj.isLeaf) {
       return null;
     }
-
+    if (obj.pos === "0-4" && !this.props.isDesktop) {
+      return null;
+    }
     if (obj.expanded) {
       return <Icons.ExpanderDownIcon size="scale" isfill color="dimgray" />;
     } else {
@@ -442,6 +447,8 @@ function mapStateToProps(state) {
     updateTree: getUpdateTree(state),
     rootFolderId: getRootFolderId(state),
     draggableItems: getDraggableItems(state),
+    isDesktop: isDesktopClient(state),
+    isPrivacy: getIsPrivacyFolder(state),
   };
 }
 
