@@ -14,5 +14,12 @@
   "ShareVia": "Share via",
   "Embedding": "Embedding",
   "ExternalLink": "External link",
-  "InternalLink": "Internal link"
+  "InternalLink": "Internal link",
+
+  "FullAccess": "Full access",
+  "ReadOnly": "Read only",
+  "Review": "Review",
+  "Comment": "Comment",
+  "FormFilling": "Form filling",
+  "DenyAccess": "Deny access"
 }
