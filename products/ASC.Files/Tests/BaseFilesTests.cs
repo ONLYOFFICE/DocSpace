@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+using System.Threading;
 
 using ASC.Common.Security.Authentication;
 using ASC.Core;
@@ -55,6 +56,30 @@ namespace ASC.Files.Tests
             SecurityContext.AuthenticateMe(CurrentTenant.OwnerId);
         }
 
+        public void DeleteFolder(int folder, bool deleteAfter, bool DeleteEmmediatly)
+        {
+            FilesControllerHelper.DeleteFolder(folder, deleteAfter, DeleteEmmediatly);
+            while (true)
+            {
+                var statuses = FileStorageService.GetTasksStatuses();
+
+                if (statuses.TrueForAll(r => r.Finished))
+                    break;
+                Thread.Sleep(100);
+            }
+        }
+        public void DeleteFile(int file, bool deleteAfter, bool DeleteEmmediatly)
+        {
+            FilesControllerHelper.DeleteFile(file, deleteAfter, DeleteEmmediatly);
+            while (true)
+            {
+                var statuses = FileStorageService.GetTasksStatuses();
+
+                if (statuses.TrueForAll(r => r.Finished))
+                    break;
+                Thread.Sleep(100);
+            }
+        }
         private void Configure(WebHostBuilderContext hostingContext, IConfigurationBuilder config)
         {
             var path = "..\\..\\..\\..\\..\\..\\config";

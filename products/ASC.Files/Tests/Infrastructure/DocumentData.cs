@@ -65,15 +65,35 @@ namespace ASC.Files.Tests
 
         public static IEnumerable<TestCaseData> ShareParamToFolder()
         {
-            yield return new TestCaseData("FoldShareTest", false, "folder_test");
+            yield return new TestCaseData( false, "folder_test");
         }
         public static IEnumerable<TestCaseData> ShareParamToFile()
         {
-            yield return new TestCaseData("FileShareTest", false, "folder_test");
+            yield return new TestCaseData(false, "folder_test");
+        }
+        public static IEnumerable<TestCaseData> ShareParamToRecentFile()
+        {
+            yield return new TestCaseData("TestFile", false, "folder_test");
+        }
+        public static IEnumerable<TestCaseData> ShareParamToFileRead()
+        {
+            yield return new TestCaseData( false, "folder_test");
         }
         public static IEnumerable<TestCaseData> GetSharedInfo()
         {
-            yield return new TestCaseData("test");
+            yield return new TestCaseData("TestFileRead");
+        }
+        public static IEnumerable<TestCaseData> GetSharedInfoReadAndWrite()
+        {
+            yield return new TestCaseData("TestFileReadAndWrite");
+        }
+        public static IEnumerable<TestCaseData> GetSharedFolderInfoRead()
+        {
+            yield return new TestCaseData("TestFolderRead");
+        }
+        public static IEnumerable<TestCaseData> GetSharedFolderInfoReadAndWrite()
+        {
+            yield return new TestCaseData("TestFolderReadAndWrite");
         }
     }
 }

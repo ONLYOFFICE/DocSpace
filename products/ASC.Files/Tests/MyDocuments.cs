@@ -15,6 +15,7 @@ namespace ASC.Files.Tests
     public class MyDocuments : BaseFilesTests
     {
         private FolderWrapper<int> TestFolder { get; set; }
+        private FolderWrapper<int> TestFolderNotEmpty { get; set; }
         private FileWrapper<int> TestFile { get; set; }
 
         [OneTimeSetUp]
@@ -23,11 +24,13 @@ namespace ASC.Files.Tests
             base.SetUp();
 
             TestFolder = FilesControllerHelper.CreateFolder(GlobalFolderHelper.FolderMy, "TestFolder");
-
+            TestFolderNotEmpty = FilesControllerHelper.CreateFolder(GlobalFolderHelper.FolderMy, "TestFolderNotEmpty");
+            FilesControllerHelper.CreateFile(TestFolderNotEmpty.Id, "TestFileToContentInTestFolder", default);
+            FilesControllerHelper.CreateFolder(TestFolderNotEmpty.Id, "TestFolderToContentInTestFolder");
             TestFile = FilesControllerHelper.CreateFile(GlobalFolderHelper.FolderMy, "TestFile", default);
 
         }
-        [TearDown]
+        [OneTimeTearDown]
         public override void TearDown()
         {
             base.TearDown();
@@ -35,17 +38,18 @@ namespace ASC.Files.Tests
 
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetCreateFolderItems))]
         [Category("Folder")]
-        [Order(1)]
+        [Order(5)]
         public void CreateFolderReturnsFolderWrapper(string folderTitle)
         {
             var folderWrapper = FilesControllerHelper.CreateFolder(GlobalFolderHelper.FolderMy, folderTitle);
             Assert.IsNotNull(folderWrapper);
             Assert.AreEqual(folderTitle, folderWrapper.Title);
+            DeleteFolder(folderWrapper.Id, false, true);
         }
 
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetFolderItemsEmpty))]
         [Category("Folder")]
-        [Order(2)]
+        [Order(6)]
         [Description("Empty Content")]
         public void GetFolderEmptyReturnsFolderContentWrapper(bool withSubFolders,int filesCountExpected,int foldersCountExpected)
         {
@@ -64,14 +68,12 @@ namespace ASC.Files.Tests
 
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetFolderItemsNotEmpty))]
         [Category("Folder")]
-        [Order(3)]
+        [Order(7)]
         [Description("Not Empty Content")]
         public void GetFolderNotEmptyReturnsFolderContentWrapper(bool withSubFolders, int filesCountExpected, int foldersCountExpected)
         {
-            FilesControllerHelper.CreateFile(TestFolder.Id, "TestFileToContentInTestFolder", default);
-            FilesControllerHelper.CreateFolder(TestFolder.Id, "TestFolderToContentInTestFolder");
             var folderContentWrapper = FilesControllerHelper.GetFolder(
-                 TestFolder.Id,
+                 TestFolderNotEmpty.Id,
                  UserOptions.Id,
                  FilterType.None,
                  withSubFolders);
@@ -81,10 +83,11 @@ namespace ASC.Files.Tests
             Assert.IsNotNull(folderContentWrapper);
             Assert.AreEqual(filesCountExpected, filesCount);
             Assert.AreEqual(foldersCountExpected, foldersCount);
+            DeleteFolder(TestFolderNotEmpty.Id, false, true);
         }
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetFolderInfoItems))]
         [Category("Folder")]
-        [Order(4)]
+        [Order(8)]
         public void GetFolderInfoReturnsFolderWrapper(string folderTitleExpected)
         {
             var folderWrapper = FilesControllerHelper.GetFolderInfo(TestFolder.Id);
@@ -97,7 +100,7 @@ namespace ASC.Files.Tests
 
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetRenameFolderItems))]
         [Category("Folder")]
-        [Order(5)]
+        [Order(9)]
         public void RenameFolderReturnsFolderWrapper(string folderTitle)
         {
             var folderWrapper = FilesControllerHelper.RenameFolder(TestFolder.Id, folderTitle);
@@ -108,11 +111,10 @@ namespace ASC.Files.Tests
 
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetDeleteFolderItems))]
         [Category("Folder")]
-        [Order(6)]
+        [Order(10)]
         public void DeleteFolderReturnsFolderWrapper(bool deleteAfter, bool immediately)
         {
             FilesControllerHelper.DeleteFolder(TestFolder.Id, deleteAfter, immediately);
-
             while (true)
             {
                 var statuses = FileStorageService.GetTasksStatuses();
@@ -130,12 +132,13 @@ namespace ASC.Files.Tests
         public void CreateFileReturnsFileWrapper(string fileTitle)
         {
             var fileWrapper = FilesControllerHelper.CreateFile(GlobalFolderHelper.FolderMy, fileTitle, default);
-            
+
             Assert.IsNotNull(fileWrapper);
             Assert.AreEqual(fileTitle + ".docx", fileWrapper.Title);
+            DeleteFile(fileWrapper.Id, false, true);
+
         }
         
-
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetFileInfoItems))]
         [Category("File")]
         [Order(2)]
