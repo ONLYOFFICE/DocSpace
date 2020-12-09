@@ -1,12 +1,17 @@
 import React from "react";
-import { Row, LinkWithDropdown, ToggleButton, Icons } from "asc-web-components";
+import {
+  Row,
+  LinkWithDropdown,
+  ToggleButton,
+  Icons,
+  ComboBox,
+} from "asc-web-components";
 import { StyledLinkRow } from "../StyledPanels";
 import { constants } from "asc-web-common";
 
 const { ShareAccessRights } = constants;
 
 class LinkRow extends React.Component {
-
   onToggleButtonChange = () => {
     const { onToggleLink, item } = this.props;
 
@@ -21,11 +26,16 @@ class LinkRow extends React.Component {
       t,
       embeddedComponentRender,
       externalAccessOptions,
+      //embeddedComponentRender,
+      advancedOptions,
+      //accessOptions,
       item,
       withToggle,
     } = this.props;
 
-    const isChecked = item.rights.accessNumber !== ShareAccessRights.DenyAccess;
+    //console.log("LinkRow item", item);
+
+    const isChecked = item.access !== ShareAccessRights.DenyAccess;
     const isDisabled = withToggle ? !isChecked : false;
 
     return (
@@ -35,7 +45,24 @@ class LinkRow extends React.Component {
           key={`${linkText}-key_${index}`}
           element={
             withToggle ? (
-              embeddedComponentRender(externalAccessOptions, item, isDisabled)
+              //              embeddedComponentRender(externalAccessOptions, item, isDisabled)
+              <ComboBox
+                advancedOptions={advancedOptions}
+                options={[]}
+                selectedOption={{ key: 0 }}
+                size="content"
+                className="panel_combo-box"
+                scaled={false}
+                directionX="left"
+                disableIconClick={false}
+                isDisabled={isDisabled}
+              >
+                {React.createElement(Icons["EyeIcon"], {
+                  //{React.createElement(Icons[item.rights.icon], {
+                  size: "medium",
+                  className: "sharing-access-combo-box-icon",
+                })}
+              </ComboBox>
             ) : (
               <Icons.AccessEditIcon
                 size="medium"
@@ -48,7 +75,7 @@ class LinkRow extends React.Component {
           <>
             <LinkWithDropdown
               className="sharing_panel-link"
-              color="#333333"
+              color="#333"
               dropdownType="alwaysDashed"
               data={options}
               fontSize="14px"

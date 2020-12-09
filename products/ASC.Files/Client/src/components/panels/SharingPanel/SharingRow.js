@@ -1,15 +1,9 @@
 import React from "react";
-import {
-  IconButton,
-  ComboBox,
-  Row,
-  Text,
-  Icons,
-  DropDownItem,
-} from "asc-web-components";
+import { IconButton, Row, Text, Icons, DropDownItem } from "asc-web-components";
 import { toastr } from "asc-web-common";
 import copy from "copy-to-clipboard";
 import LinkRow from "./linkRow";
+import AccessComboBox from "./AccessComboBox";
 
 const SharingRow = (props) => {
   const {
@@ -32,7 +26,13 @@ const SharingRow = (props) => {
     externalLinkData,
   } = props;
 
-  const linkVisible = selection && selection.length === 1 && item.shareLink;
+  console.log("SharingRow render item", item);
+  console.log("SharingRow render accessOptions", accessOptions);
+
+  const { isOwner, access } = item;
+  const { label, name, displayName, shareLink, id } = item.sharedTo;
+
+  const linkVisible = selection && selection.length === 1 && shareLink;
   const onCopyInternalLink = () => {
     const internalLink = selection.webUrl
       ? selection.webUrl
@@ -41,21 +41,23 @@ const SharingRow = (props) => {
     toastr.success(t("LinkCopySuccess"));
   };
 
-  const advancedOptionsRender = (accessOptions) => (
+  const advancedOptions = (
     <>
       {accessOptions.includes("FullAccess") && (
         <DropDownItem
           label="Full access"
           icon="AccessEditIcon"
-          onClick={() => onFullAccessClick(item)}
+          data-id={id}
+          onClick={onFullAccessClick}
         />
       )}
 
-      {accessOptions.includes("ReadOnly") && (
+      {accessOptions.includes("FilterEditing") && (
         <DropDownItem
-          label="Read only"
-          icon="EyeIcon"
-          onClick={() => onReadOnlyClick(item)}
+          label="Custom filter"
+          icon="CustomFilterIcon"
+          data-id={id}
+          onClick={onFilterEditingClick}
         />
       )}
 
@@ -63,15 +65,8 @@ const SharingRow = (props) => {
         <DropDownItem
           label="Review"
           icon="AccessReviewIcon"
-          onClick={() => onReviewClick(item)}
-        />
-      )}
-
-      {accessOptions.includes("Comment") && (
-        <DropDownItem
-          label="Comment"
-          icon="AccessCommentIcon"
-          onClick={() => onCommentClick(item)}
+          data-id={id}
+          onClick={onReviewClick}
         />
       )}
 
@@ -79,67 +74,58 @@ const SharingRow = (props) => {
         <DropDownItem
           label="Form filling"
           icon="AccessFormIcon"
-          onClick={() => onFormFillingClick(item)}
+          data-id={id}
+          onClick={onFormFillingClick}
         />
       )}
+
+      {accessOptions.includes("Comment") && (
+        <DropDownItem
+          label="Comment"
+          icon="AccessCommentIcon"
+          data-id={id}
+          onClick={onCommentClick}
+        />
+      )}
+
+      {accessOptions.includes("ReadOnly") && (
+        <DropDownItem
+          label="Read only"
+          icon="EyeIcon"
+          data-id={id}
+          onClick={onReadOnlyClick}
+        />
+      )}
+
       {accessOptions.includes("DenyAccess") && (
         <DropDownItem
           label="Deny access"
           icon="AccessNoneIcon"
-          onClick={() => onDenyAccessClick(item)}
-        />
-      )}
-      {accessOptions.includes("FilterEditing") && (
-        <DropDownItem
-          label="Custom filter"
-          icon="CustomFilterIcon"
-          onClick={() => onFilterEditingClick(item)}
+          data-id={id}
+          onClick={onDenyAccessClick}
         />
       )}
     </>
   );
 
-  const embeddedComponentRender = (
-    accessOptions = this.props.accessOptions,
-    item,
-    isDisabled
-  ) => (
-    <ComboBox
-      advancedOptions={advancedOptionsRender(accessOptions)}
-      options={[]}
-      selectedOption={{ key: 0 }}
-      size="content"
-      className="panel_combo-box"
-      scaled={false}
-      directionX="left"
-      disableIconClick={false}
-      isDisabled={isDisabled}
-    >
-      {React.createElement(Icons[item.rights.icon], {
-        size: "medium",
-        className: "sharing-access-combo-box-icon",
-      })}
-    </ComboBox>
-  );
-
   const onCopyClick = () => {
     toastr.success(t("LinkCopySuccess"));
-    copy(item.shareLink);
+    copy(shareLink);
   };
 
   const onShareEmail = () => {
     const itemName = selection.title ? selection.title : selection[0].title;
     const subject = `You have been granted access to the ${itemName} document`;
-    const body = `You have been granted access to the ${itemName} document. Click the link below to open the document right now: 111${item.shareLink}111`;
+    const body = `You have been granted access to the ${itemName} document. Click the link below to open the document right now: 111${shareLink}111`;
 
     window.open(`mailto:?subject=${subject}&body=${body}`);
   };
 
   const onShareTwitter = () =>
-    window.open(`https://twitter.com/intent/tweet?text=${item.shareLink}`);
+    window.open(`https://twitter.com/intent/tweet?text=${shareLink}`);
 
   const onShareFacebook = () => window.open(`https://www.facebook.com`);
-  /*window.open(`https://www.facebook.com/dialog/feed?app_id=645528132139019&display=popup&link=${item.shareLink}`);*/
+  /*window.open(`https://www.facebook.com/dialog/feed?app_id=645528132139019&display=popup&link=${shareLink}`);*/
 
   const internalLinkData = [
     {
@@ -186,11 +172,10 @@ const SharingRow = (props) => {
     {
       key: "linkItem_7",
       label: t("Embedding"),
-      onClick: () => onShowEmbeddingPanel(item.shareLink),
+      onClick: () => onShowEmbeddingPanel(shareLink),
     },
   ];
 
-  //console.log("SharingRow render");
   return (
     <>
       {linkVisible && (
@@ -199,51 +184,51 @@ const SharingRow = (props) => {
             linkText="ExternalLink"
             options={externalLinkOptions}
             externalLinkData={externalLinkData}
-            embeddedComponentRender={embeddedComponentRender}
             onToggleLink={onToggleLink}
             withToggle={true}
             {...props}
+            advancedOptions={advancedOptions}
           />
           <LinkRow
             linkText="InternalLink"
             options={internalLinkData}
-            embeddedComponentRender={embeddedComponentRender}
             {...props}
+            advancedOptions={advancedOptions}
           />
         </>
       )}
 
-      {!item.shareLink && (
+      {!shareLink && (
         <Row
           className="sharing-row"
           key={`internal-link-key_${index}`}
           element={
-            item.rights.isOwner || item.id === isMyId ? (
+            isOwner || id === isMyId ? (
               <Icons.AccessEditIcon
                 size="medium"
                 className="sharing_panel-owner-icon"
               />
             ) : (
-              embeddedComponentRender(accessOptions, item)
+              <AccessComboBox
+                access={access}
+                advancedOptions={advancedOptions}
+                directionX="left"
+              />
             )
           }
           contextButtonSpacerWidth="0px"
         >
           <>
-            {!item.shareLink && (
+            {!shareLink && (
               <Text truncate className="sharing_panel-text">
-                {item.label
-                  ? item.label
-                  : item.name
-                  ? item.name
-                  : item.displayName}
+                {label ? label : name ? name : displayName}
               </Text>
             )}
-            {item.rights.isOwner ? (
+            {isOwner ? (
               <Text className="sharing_panel-remove-icon" color="#A3A9AE">
                 {t("Owner")}
               </Text>
-            ) : item.id === isMyId ? (
+            ) : id === isMyId ? (
               <Text
                 className="sharing_panel-remove-icon"
                 //color="#A3A9AE"
@@ -251,10 +236,11 @@ const SharingRow = (props) => {
                 {t("AccessRightsFullAccess")}
               </Text>
             ) : (
-              !item.shareLink && (
+              !shareLink && (
                 <IconButton
                   iconName="RemoveIcon"
-                  onClick={() => onRemoveUserClick(item)}
+                  id={id}
+                  onClick={onRemoveUserClick}
                   className="sharing_panel-remove-icon"
                   color="#A3A9AE"
                 />

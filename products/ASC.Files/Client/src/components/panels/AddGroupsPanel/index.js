@@ -9,6 +9,7 @@ import {
   StyledHeaderContent,
   StyledBody,
 } from "../StyledPanels";
+import AccessComboBox from "../SharingPanel/AccessComboBox";
 import { createI18N } from "../../../helpers/i18n";
 const i18n = createI18N({
   page: "AddGroupsPanel",
@@ -53,8 +54,13 @@ class AddGroupsPanelComponent extends React.Component {
       }
       const currentItem = shareDataItems.find((x) => x.id === item.id);
       if (!currentItem) {
-        item.rights = accessRight;
-        items.push(item);
+        const newItem = {
+          access: accessRight,
+          isLocked: false,
+          isOwner: false,
+          sharedTo: item,
+        };
+        items.push(newItem);
       }
     }
 
@@ -86,7 +92,7 @@ class AddGroupsPanelComponent extends React.Component {
     const { showActionPanel } = this.state;
     const { visible, accessRight } = this.props;
 
-    if (accessRight && accessRight.rights !== nextProps.accessRight.rights) {
+    if (accessRight !== nextProps.accessRight) {
       return true;
     }
 
@@ -102,7 +108,7 @@ class AddGroupsPanelComponent extends React.Component {
   }
 
   render() {
-    const { visible, embeddedComponent, t } = this.props;
+    const { visible, t } = this.props;
 
     const zIndex = 310;
 
@@ -145,8 +151,14 @@ class AddGroupsPanelComponent extends React.Component {
                 displayType="aside"
                 withoutAside
                 onSelect={this.onSelectGroups}
-                embeddedComponent={embeddedComponent}
-                showCounter={true}
+                embeddedComponent={
+                  <AccessComboBox
+                    access={this.props.accessRight}
+                    advancedOptions={this.props.advancedOptions}
+                    directionX="right"
+                  />
+                }
+                showCounter
               />
             </StyledBody>
           </StyledContent>
