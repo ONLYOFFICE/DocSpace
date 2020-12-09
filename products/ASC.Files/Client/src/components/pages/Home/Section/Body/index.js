@@ -3,7 +3,7 @@ import { withRouter } from "react-router";
 import { connect } from "react-redux";
 import { ReactSVG } from "react-svg";
 import { withTranslation, Trans } from "react-i18next";
-import isEqual from "lodash/isEqual";
+import equal from "fast-deep-equal/react";
 import copy from "copy-to-clipboard";
 import styled from "styled-components";
 import queryString from "query-string";
@@ -52,6 +52,7 @@ import {
   setTreeFolders,
   getFileInfo,
   addFileToRecentlyViewed,
+  setSharingPanelVisible,
 } from "../../../../../store/files/actions";
 import { TIMEOUT } from "../../../../../helpers/constants";
 import {
@@ -91,8 +92,9 @@ import {
   getIsPrivacyFolder,
   getPrivacyInstructionsLink,
   getIconOfDraggedFile,
+  getSharePanelVisible,
 } from "../../../../../store/files/selectors";
-import { SharingPanel, OperationsPanel } from "../../../../panels";
+import { OperationsPanel } from "../../../../panels";
 const {
   isAdmin,
   getSettings,
@@ -185,7 +187,6 @@ class SectionBodyContent extends React.Component {
 
     this.state = {
       editingId: null,
-      showSharingPanel: false,
       showMoveToPanel: false,
       showCopyPanel: false,
       isDrag: false,
@@ -235,7 +236,7 @@ class SectionBodyContent extends React.Component {
     if (this.props && this.props.firstLoad) return true;
 
     const { showMoveToPanel, showCopyPanel, isDrag } = this.state;
-    if (this.state.showSharingPanel !== nextState.showSharingPanel) {
+    if (this.props.sharingPanelVisible !== nextProps.sharingPanelVisible) {
       return true;
     }
 
@@ -243,7 +244,7 @@ class SectionBodyContent extends React.Component {
       return false;
     }
 
-    if (!isEqual(this.props, nextProps)) {
+    if (!equal(this.props, nextProps)) {
       return true;
     }
 
@@ -483,7 +484,7 @@ class SectionBodyContent extends React.Component {
   };
 
   onClickShare = () =>
-    this.setState({ showSharingPanel: !this.state.showSharingPanel });
+    this.props.setSharingPanelVisible(!this.props.sharingPanelVisible);
 
   onClickLinkForPortal = () => {
     const { settings, selection } = this.props;
@@ -795,7 +796,7 @@ class SectionBodyContent extends React.Component {
     if (currentProps.sectionWidth !== nextProps.sectionWidth) {
       return true;
     }
-    if (!isEqual(currentProps.data, nextProps.data)) {
+    if (!equal(currentProps.data, nextProps.data)) {
       return true;
     }
     if (currentProps.viewAs !== nextProps.viewAs) {
@@ -1574,12 +1575,7 @@ class SectionBodyContent extends React.Component {
       tooltipValue,
     } = this.props;
 
-    const {
-      editingId,
-      showSharingPanel,
-      showMoveToPanel,
-      showCopyPanel,
-    } = this.state;
+    const { editingId, showMoveToPanel, showCopyPanel } = this.state;
 
     const operationsPanelProps = {
       setIsLoading,
@@ -1843,12 +1839,6 @@ class SectionBodyContent extends React.Component {
             extsImagePreviewed={mediaViewerImageFormats} //TODO
           />
         )}
-        {showSharingPanel && (
-          <SharingPanel
-            onClose={this.onClickShare}
-            visible={showSharingPanel}
-          />
-        )}
       </>
     );
   }
@@ -1898,6 +1888,7 @@ const mapStateToProps = (state) => {
     viewer: getCurrentUser(state),
     tooltipValue: getTooltipLabel(state),
     iconOfDraggedFile: getIconOfDraggedFile(state)(state),
+    sharingPanelVisible: getSharePanelVisible(state),
   };
 };
 
@@ -1923,4 +1914,5 @@ export default connect(mapStateToProps, {
   getFileInfo,
   addFileToRecentlyViewed,
   loopFilesOperations,
+  setSharingPanelVisible,
 })(withRouter(withTranslation()(SectionBodyContent)));

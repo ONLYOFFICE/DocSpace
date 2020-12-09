@@ -26,6 +26,7 @@ import {
   clearSecondaryProgressData,
   setIsLoading,
   setSelected,
+  setSharingPanelVisible,
 } from "../../../../../store/files/actions";
 import { TIMEOUT } from "../../../../../helpers/constants";
 import {
@@ -33,7 +34,7 @@ import {
   DeleteDialog,
   DownloadDialog,
 } from "../../../../dialogs";
-import { SharingPanel, OperationsPanel } from "../../../../panels";
+import { OperationsPanel } from "../../../../panels";
 import {
   isCanBeDeleted,
   getIsRecycleBinFolder,
@@ -49,6 +50,8 @@ import {
   getHeaderChecked,
   getOnlyFoldersSelected,
   getAccessedSelected,
+  getSelectionLength,
+  getSharePanelVisible,
 } from "../../../../../store/files/selectors";
 
 const { isAdmin } = store.auth.selectors;
@@ -146,7 +149,6 @@ class SectionHeaderContent extends React.Component {
     super(props);
 
     this.state = {
-      showSharingPanel: false,
       showDeleteDialog: false,
       showDownloadDialog: false,
       showEmptyTrashDialog: false,
@@ -302,7 +304,7 @@ class SectionHeaderContent extends React.Component {
   renameAction = () => toastr.info("renameAction click");
 
   onOpenSharingPanel = () =>
-    this.setState({ showSharingPanel: !this.state.showSharingPanel });
+    this.props.setSharingPanelVisible(!this.props.sharingPanelVisible);
 
   onDeleteAction = () =>
     this.setState({ showDeleteDialog: !this.state.showDeleteDialog });
@@ -505,7 +507,6 @@ class SectionHeaderContent extends React.Component {
 
     const {
       showDeleteDialog,
-      showSharingPanel,
       showEmptyTrashDialog,
       showDownloadDialog,
       showMoveToPanel,
@@ -621,13 +622,6 @@ class SectionHeaderContent extends React.Component {
               />
             )}
 
-            {showSharingPanel && (
-              <SharingPanel
-                onClose={this.onOpenSharingPanel}
-                visible={showSharingPanel}
-              />
-            )}
-
             {showMoveToPanel && (
               <OperationsPanel
                 isCopy={false}
@@ -659,14 +653,12 @@ class SectionHeaderContent extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-  const selection = getSelection(state);
-
   return {
     isRootFolder: getIsRootFolder(state),
     isAdmin: isAdmin(state),
     isRecycleBin: getIsRecycleBinFolder(state),
     parentId: getSelectedFolderParentId(state),
-    selection,
+    selection: getSelection(state),
     title: getSelectedFolderTitle(state),
     filter: getFilter(state),
     deleteDialogVisible: isCanBeDeleted(state),
@@ -677,7 +669,8 @@ const mapStateToProps = (state) => {
     isHeaderChecked: getHeaderChecked(state),
     isAccessedSelected: getAccessedSelected(state),
     isOnlyFoldersSelected: getOnlyFoldersSelected(state),
-    isItemsSelected: selection.length,
+    isItemsSelected: getSelectionLength(state),
+    sharingPanelVisible: getSharePanelVisible(state),
   };
 };
 
@@ -688,4 +681,5 @@ export default connect(mapStateToProps, {
   clearSecondaryProgressData,
   fetchFiles,
   setSelected,
+  setSharingPanelVisible,
 })(withTranslation()(withRouter(SectionHeaderContent)));
