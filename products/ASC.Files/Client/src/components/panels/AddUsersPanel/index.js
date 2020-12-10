@@ -55,7 +55,6 @@ class AddUsersPanelComponent extends React.Component {
     for (let item of users) {
       if (item.key) {
         item.id = item.key;
-        delete item.key;
       }
       const currentItem = shareDataItems.find((x) => x.sharedTo.id === item.id);
       if (!currentItem) {

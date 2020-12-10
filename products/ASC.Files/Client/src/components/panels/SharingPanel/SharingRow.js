@@ -87,11 +87,6 @@ class SharingRow extends React.Component {
     const { isOwner } = item;
     const { label, name, displayName, shareLink, id } = item.sharedTo;
 
-    //console.log("access", access);
-    //console.log("onChangeItemAccess", onChangeItemAccess);
-    //console.log("itemId", id);
-    //console.log("accessOptions", accessOptions);
-
     const linkVisible = selection && selection.length === 1 && shareLink;
 
     const internalLinkData = [

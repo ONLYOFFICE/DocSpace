@@ -25,8 +25,6 @@ class LinkRow extends React.Component {
       onChangeItemAccess,
     } = this.props;
 
-    //console.log("LinkRow item", item);
-
     const isChecked = item.access !== ShareAccessRights.DenyAccess;
     const isDisabled = withToggle ? !isChecked : false;
 
