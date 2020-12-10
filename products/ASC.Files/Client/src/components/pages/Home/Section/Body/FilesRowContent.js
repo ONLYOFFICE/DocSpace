@@ -531,7 +531,7 @@ class FilesRowContent extends React.PureComponent {
                 >
                   {fileExst}
                 </Text>
-                {canConvert && !isTrashFolder && (
+                {/* TODO: Uncomment after fix conversation {canConvert && !isTrashFolder && (
                   <IconButton
                     onClick={this.setConvertDialogVisible}
                     iconName="FileActionsConvertIcon"
@@ -541,7 +541,7 @@ class FilesRowContent extends React.PureComponent {
                     color="#A3A9AE"
                     hoverColor="#3B72A7"
                   />
-                )}
+                )} */}
                 {canWebEdit && !isTrashFolder && (
                   <IconButton
                     onClick={this.onFilesClick}

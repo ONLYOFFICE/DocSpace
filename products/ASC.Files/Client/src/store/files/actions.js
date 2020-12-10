@@ -779,15 +779,16 @@ const startUploadFiles = async (t, dispatch, getState) => {
     len = files.length;
   }
 
-  const filesToConvert = getFilesToConvert(files);
+  //TODO: Uncomment after fix conversation
+  /*const filesToConvert = getFilesToConvert(files);
 
   if (filesToConvert.length > 0) {
     // Ask to convert options
-    dispatch(setConvertDialogVisible(true));
-  } else {
-    // All files has been uploaded and nothing to convert
-    finishUploadFiles(getState, dispatch);
-  }
+    return dispatch(setConvertDialogVisible(true));
+  }*/
+
+  // All files has been uploaded and nothing to convert
+  finishUploadFiles(getState, dispatch);
 };
 
 const getFilesToConvert = (files) => {
