@@ -32,7 +32,9 @@ describe("<Backdrop />", () => {
   });
 
   it("accepts style", () => {
-    const wrapper = mount(<Backdrop {...baseProps} style={{ color: "red" }} />);
+    const wrapper = mount(
+      <Backdrop {...baseProps} style={{ color: "red" }} visible={true} />
+    );
 
     expect(wrapper.getDOMNode().style).toHaveProperty("color", "red");
   });

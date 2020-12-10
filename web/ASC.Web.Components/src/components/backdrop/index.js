@@ -4,9 +4,7 @@ import styled from "styled-components";
 
 const StyledBackdrop = styled.div`
   background-color: ${(props) =>
-    props.withBackdrop && props.needBackground
-      ? "rgba(6, 22, 38, 0.1)"
-      : "unset"};
+    props.needBackground ? "rgba(6, 22, 38, 0.1)" : "unset"};
   display: ${(props) => (props.visible ? "block" : "none")};
   height: 100vh;
   position: fixed;
@@ -14,7 +12,7 @@ const StyledBackdrop = styled.div`
   z-index: ${(props) => props.zIndex};
   left: 0;
   top: 0;
-  cursor: ${(props) => (props.withBackdrop ? "pointer" : "default")}; ;
+  cursor: ${(props) => (props.needBackground ? "pointer" : "default")}; ;
 `;
 
 class Backdrop extends React.Component {
@@ -22,67 +20,88 @@ class Backdrop extends React.Component {
     super(props);
 
     this.state = {
-      needBackground: true,
+      needBackdrop: false,
+      needBackground: false,
     };
+
+    this.backdropRef = React.createRef();
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.visible !== this.props.visible) {
-      const needBackground =
-        document.querySelectorAll(".backdrop-active").length <= 1;
-      this.setState({ needBackground: needBackground });
+    if (
+      prevProps.visible !== this.props.visible ||
+      prevProps.isAside !== this.props.isAside ||
+      prevProps.withBackground !== this.props.withBackground
+    ) {
+      this.checkingExistBackdrop();
     }
   }
 
+  componentDidMount() {
+    this.checkingExistBackdrop();
+  }
+
+  checkingExistBackdrop = () => {
+    const { visible, isAside, withBackground } = this.props;
+    if (visible) {
+      const isTablet = window.innerWidth < 1024;
+      const backdrops = document.querySelectorAll(".backdrop-active");
+      const backdropsAside = document.querySelectorAll(
+        ".backdrop-active-aside"
+      );
+
+      const needBackdrop = backdrops.length < 1 || isAside;
+
+      let needBackground =
+        needBackdrop && (isTablet || isAside || withBackground);
+
+      if (!isAside && backdropsAside.length > 0) needBackground = false;
+      if (isAside && backdropsAside.length > 1) needBackground = false;
+
+      this.setState({
+        needBackdrop: needBackdrop,
+        needBackground: needBackground,
+      });
+    } else {
+      this.setState({
+        needBackground: false,
+        needBackdrop: false,
+      });
+    }
+  };
+
   onClickHandler = (e) => {
-    const { target, clientX, clientY } = e;
-    const nearOpenDropdown = target.closest("[open]");
-    const nearAside = target.closest(".aside-container");
-
-    if ((nearOpenDropdown || nearAside) && (clientX !== 0 || clientY !== 0)) {
-      let rects;
-      if (nearOpenDropdown) {
-        rects = nearOpenDropdown.getBoundingClientRect();
-      }
-      if (nearAside) {
-        rects = nearAside.getBoundingClientRect();
-      }
-      const { x, y, width, height } = rects;
-
-      if (
-        clientX < x ||
-        clientX > x + width ||
-        clientY < y ||
-        clientY > y + height
-      ) {
-        const backdrops = document.querySelectorAll(".backdrop-active");
+    if (this.backdropRef.current.classList.contains("backdrop-active-aside")) {
+      const backdrops = document.querySelectorAll(".backdrop-active");
+      if (backdrops.length > 0) {
         backdrops.forEach((item) => item.click());
       }
     }
-
     this.props.onClick && this.props.onClick(e);
   };
 
   render() {
-    const { needBackground } = this.state;
-    const { className } = this.props;
+    const { needBackdrop, needBackground } = this.state;
+    const { className, isAside, visible } = this.props;
 
-    const classNameStr = this.props.visible
-      ? this.props.className
-        ? `backdrop-active ${className}`
-        : "backdrop-active"
-      : this.props.className
-      ? `backdrop-inactive ${className}`
-      : "backdrop-inactive";
+    const classNameStr = isAside
+      ? className
+        ? `backdrop-active-aside ${className}`
+        : "backdrop-active-aside"
+      : className
+      ? `backdrop-active ${className}`
+      : "backdrop-active";
 
-    return (
+    return visible && (needBackdrop || isAside) ? (
       <StyledBackdrop
-        className={classNameStr}
         {...this.props}
+        ref={this.backdropRef}
+        className={classNameStr}
         needBackground={needBackground}
+        visible={visible}
         onClick={this.onClickHandler}
       />
-    );
+    ) : null;
   }
 }
 
@@ -92,13 +111,15 @@ Backdrop.propTypes = {
   className: PropTypes.string,
   id: PropTypes.string,
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
-  withBackdrop: PropTypes.bool,
+  withBackground: PropTypes.bool,
+  isAside: PropTypes.bool,
 };
 
 Backdrop.defaultProps = {
   visible: false,
   zIndex: 200,
-  withBackdrop: true,
+  withBackground: false,
+  isAside: false,
 };
 
 export default Backdrop;
