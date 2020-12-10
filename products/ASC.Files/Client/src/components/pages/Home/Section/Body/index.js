@@ -1735,7 +1735,7 @@ class SectionBodyContent extends React.Component {
                   );
                   const sharedButton =
                     isRecycleBin ||
-                    (isPrivacy && isFolder) ||
+                    (isPrivacy && !item.fileExst) ||
                     isEdit ||
                     item.id <= 0 ||
                     sectionWidth < 500
