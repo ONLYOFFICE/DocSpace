@@ -12,7 +12,8 @@ import {
 } from "../../../../../store/people/actions";
 import { resetProfile } from "../../../../../store/profile/actions";
 const Wrapper = styled.div`
-  display: flex;
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
   align-items: center;
 
   .arrow-button {

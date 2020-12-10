@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
 import { utils, Scrollbar, DragAndDrop } from "asc-web-components";
 import SelectedFrame from "./SelectedFrame";
-import isEqual from "lodash/isEqual";
+import equal from "fast-deep-equal/react";
 
 const { tablet } = utils.device;
 
@@ -25,6 +25,11 @@ const commonStyles = css`
       display: flex;
       flex-direction: column;
       min-height: 100%;
+    }
+
+    .people-row-container,
+    .files-row-container {
+      margin-top: -22px;
     }
   }
 `;
@@ -72,13 +77,18 @@ class SectionBody extends React.Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    return !isEqual(this.props, nextProps);
+    return !equal(this.props, nextProps);
   }
 
   componentDidMount() {
     if (!this.props.autoFocus) return;
 
     this.focusRef.current.focus();
+  }
+
+  componentWillUnmount() {
+    this.focusRef = null;
+    this.scrollRef = null;
   }
 
   render() {

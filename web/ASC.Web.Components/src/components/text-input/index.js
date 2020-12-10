@@ -3,10 +3,9 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import commonInputStyle from "../text-input/common-input-styles";
 import MaskedInput from "react-text-mask";
-import isEqual from "lodash/isEqual";
+import equal from "fast-deep-equal/react";
 
-/* eslint-disable no-unused-vars */
-/* eslint-disable react/prop-types */
+/* eslint-disable no-unused-vars, react/prop-types */
 const Input = ({
   isAutoFocussed,
   isDisabled,
@@ -25,8 +24,7 @@ const Input = ({
   ) : (
     <input {...props} />
   );
-/* eslint-enable react/prop-types */
-/* eslint-enable no-unused-vars */
+/* eslint-enable react/prop-types, no-unused-vars */
 
 const StyledInput = styled(Input).attrs((props) => ({
   id: props.id,
@@ -77,25 +75,31 @@ const StyledInput = styled(Input).attrs((props) => ({
   transition: all 0.2s ease 0s;
 
   ::-webkit-input-placeholder {
-    color: ${(props) => (props.isDisabled ? "#A3A9AE" : "#D0D5DA")};
+    color: "#A3A9AE";
     font-family: "Open Sans", sans-serif;
     user-select: none;
   }
 
   :-moz-placeholder {
-    color: ${(props) => (props.isDisabled ? "#A3A9AE" : "#D0D5DA")};
+    color: "#A3A9AE";
     font-family: "Open Sans", sans-serif;
     user-select: none;
   }
 
   ::-moz-placeholder {
-    color: ${(props) => (props.isDisabled ? "#A3A9AE" : "#D0D5DA")};
+    color: "#A3A9AE";
     font-family: "Open Sans", sans-serif;
     user-select: none;
   }
 
   :-ms-input-placeholder {
-    color: ${(props) => (props.isDisabled ? "#A3A9AE" : "#D0D5DA")};
+    color: "#A3A9AE";
+    font-family: "Open Sans", sans-serif;
+    user-select: none;
+  }
+
+  ::placeholder {
+    color: "#A3A9AE";
     font-family: "Open Sans", sans-serif;
     user-select: none;
   }
@@ -105,7 +109,7 @@ const StyledInput = styled(Input).attrs((props) => ({
 
 class TextInput extends React.Component {
   shouldComponentUpdate(nextProps) {
-    return !isEqual(this.props, nextProps);
+    return !equal(this.props, nextProps);
   }
 
   render() {

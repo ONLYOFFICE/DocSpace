@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import isEqual from "lodash/isEqual";
+import equal from "fast-deep-equal/react";
 
 import { tablet, mobile } from "../../utils/device";
 import InputBlock from "../input-block";
@@ -331,7 +331,7 @@ class PasswordInput extends React.Component {
   };
 
   shouldComponentUpdate(nextProps, nextState) {
-    return !isEqual(this.props, nextProps) || !isEqual(this.state, nextState);
+    return !equal(this.props, nextProps) || !equal(this.state, nextState);
   }
 
   renderTextTooltip = (settings, length, digits, capital, special) => {
@@ -411,45 +411,46 @@ class PasswordInput extends React.Component {
         )
       : null;
 
-    const tooltipContent = !isDisableTooltip ? (
-      <StyledTooltipContainer forwardedAs="div" title={tooltipPasswordTitle}>
-        {tooltipPasswordTitle}
-        <StyledTooltipItem
-          forwardedAs="div"
-          title={tooltipPasswordLength}
-          valid={validLength}
-        >
-          {tooltipPasswordLength}
-        </StyledTooltipItem>
-        {passwordSettings.digits && (
+    const tooltipContent =
+      !isDisableTooltip && !isDisabled ? (
+        <StyledTooltipContainer forwardedAs="div" title={tooltipPasswordTitle}>
+          {tooltipPasswordTitle}
           <StyledTooltipItem
             forwardedAs="div"
-            title={tooltipPasswordDigits}
-            valid={validDigits}
+            title={tooltipPasswordLength}
+            valid={validLength}
           >
-            {tooltipPasswordDigits}
+            {tooltipPasswordLength}
           </StyledTooltipItem>
-        )}
-        {passwordSettings.upperCase && (
-          <StyledTooltipItem
-            forwardedAs="div"
-            title={tooltipPasswordCapital}
-            valid={validCapital}
-          >
-            {tooltipPasswordCapital}
-          </StyledTooltipItem>
-        )}
-        {passwordSettings.specSymbols && (
-          <StyledTooltipItem
-            forwardedAs="div"
-            title={tooltipPasswordSpecial}
-            valid={validSpecial}
-          >
-            {tooltipPasswordSpecial}
-          </StyledTooltipItem>
-        )}
-      </StyledTooltipContainer>
-    ) : null;
+          {passwordSettings.digits && (
+            <StyledTooltipItem
+              forwardedAs="div"
+              title={tooltipPasswordDigits}
+              valid={validDigits}
+            >
+              {tooltipPasswordDigits}
+            </StyledTooltipItem>
+          )}
+          {passwordSettings.upperCase && (
+            <StyledTooltipItem
+              forwardedAs="div"
+              title={tooltipPasswordCapital}
+              valid={validCapital}
+            >
+              {tooltipPasswordCapital}
+            </StyledTooltipItem>
+          )}
+          {passwordSettings.specSymbols && (
+            <StyledTooltipItem
+              forwardedAs="div"
+              title={tooltipPasswordSpecial}
+              valid={validSpecial}
+            >
+              {tooltipPasswordSpecial}
+            </StyledTooltipItem>
+          )}
+        </StyledTooltipContainer>
+      ) : null;
 
     const inputGroup = (
       <>

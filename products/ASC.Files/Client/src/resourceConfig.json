@@ -143,8 +143,6 @@
       "PeopleResource": [
         "LblSendEmail",
         "LblSendMessage",
-        "NotFoundDescription",
-        "NotFoundTitle",
         "ClearButton",
         "LblActive",
         "LblTerminated",

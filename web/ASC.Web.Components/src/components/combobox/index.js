@@ -3,7 +3,7 @@ import DropDown from "../drop-down";
 import DropDownItem from "../drop-down-item";
 import PropTypes from "prop-types";
 import React from "react";
-import isEqual from "lodash/isEqual";
+import equal from "fast-deep-equal/react";
 import styled from "styled-components";
 
 const StyledComboBox = styled.div`
@@ -38,7 +38,7 @@ class ComboBox extends React.Component {
 
   shouldComponentUpdate(nextProps, nextState) {
     const needUpdate =
-      !isEqual(this.props, nextProps) || !isEqual(this.state, nextState);
+      !equal(this.props, nextProps) || !equal(this.state, nextState);
 
     return needUpdate;
   }
@@ -56,11 +56,16 @@ class ComboBox extends React.Component {
   };
 
   comboBoxClick = (e) => {
-    if (this.props.isDisabled || (e && e.target.closest(".optionalBlock")))
+    const { disableIconClick, isDisabled, toggleAction } = this.props;
+
+    if (
+      isDisabled ||
+      (disableIconClick && e && e.target.closest(".optionalBlock"))
+    )
       return;
 
     this.setState({ isOpen: !this.state.isOpen }, () => {
-      this.props.toggleAction && this.props.toggleAction(e, this.state.isOpen);
+      toggleAction && toggleAction(e, this.state.isOpen);
     });
   };
 
@@ -196,6 +201,7 @@ ComboBox.propTypes = {
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   toggleAction: PropTypes.func,
   textOverflow: PropTypes.bool,
+  disableIconClick: PropTypes.bool,
 };
 
 ComboBox.defaultProps = {
@@ -205,6 +211,7 @@ ComboBox.defaultProps = {
   scaled: true,
   scaledOptions: false,
   size: "base",
+  disableIconClick: true,
 };
 
 export default ComboBox;

@@ -13,18 +13,19 @@ import {
 } from "asc-web-components";
 import { constants, api, toastr, store as initStore } from "asc-web-common";
 import {
-  clearProgressData,
+  clearSecondaryProgressData,
   createFile,
   createFolder,
   fetchFiles,
   renameFolder,
   setIsLoading,
   setNewRowItems,
-  setProgressBarData,
+  setSecondaryProgressBarData,
   setTreeFolders,
   setUpdateTree,
   updateFile,
 } from "../../../../../store/files/actions";
+import { TIMEOUT } from "../../../../../helpers/constants";
 import {
   canConvert,
   canWebEdit,
@@ -357,33 +358,48 @@ class FilesRowContent extends React.PureComponent {
       selectedFolder,
       filter,
       setIsLoading,
-      setProgressBarData,
+      setSecondaryProgressBarData,
       t,
-      clearProgressData,
+      clearSecondaryProgressData,
       fetchFiles,
     } = this.props;
     api.files.getConvertFile(fileId).then((res) => {
       if (res && res[0] && res[0].progress !== 100) {
-        setProgressBarData({
+        setSecondaryProgressBarData({
+          icon: "file",
           visible: true,
           percent: res[0].progress,
           label: t("Convert"),
+          alert: false,
         });
         setTimeout(() => this.getConvertProgress(fileId), 1000);
       } else {
         if (res[0].error) {
+          setSecondaryProgressBarData({
+            visible: true,
+            alert: true,
+          });
           toastr.error(res[0].error);
-          clearProgressData();
+          setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
         } else {
-          setProgressBarData({
+          setSecondaryProgressBarData({
+            icon: "file",
             visible: true,
             percent: 100,
             label: t("Convert"),
+            alert: false,
           });
-          setTimeout(() => clearProgressData(), 5000);
+          setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
           const newFilter = filter.clone();
           fetchFiles(selectedFolder.id, newFilter)
-            .catch((err) => toastr.error(err))
+            .catch((err) => {
+              setSecondaryProgressBarData({
+                visible: true,
+                alert: true,
+              });
+              //toastr.error(err);
+              setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+            })
             .finally(() => setIsLoading(false));
         }
       }
@@ -391,8 +407,14 @@ class FilesRowContent extends React.PureComponent {
   };
 
   onConvert = () => {
-    const { item, t, setProgressBarData } = this.props;
-    setProgressBarData({ visible: true, percent: 0, label: t("Convert") });
+    const { item, t, setSecondaryProgressBarData } = this.props;
+    setSecondaryProgressBarData({
+      icon: "file",
+      visible: true,
+      percent: 0,
+      label: t("Convert"),
+      alert: false,
+    });
     this.setState({ showConvertDialog: false }, () =>
       api.files.convertFile(item.id).then((convertRes) => {
         if (convertRes && convertRes[0] && convertRes[0].progress !== 100) {
@@ -686,10 +708,10 @@ export default connect(mapStateToProps, {
   updateFile,
   renameFolder,
   setTreeFolders,
-  setProgressBarData,
+  setSecondaryProgressBarData,
   setUpdateTree,
   setNewRowItems,
   setIsLoading,
-  clearProgressData,
+  clearSecondaryProgressData,
   fetchFiles,
 })(withRouter(withTranslation()(FilesRowContent)));

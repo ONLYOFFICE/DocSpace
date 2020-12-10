@@ -3,7 +3,7 @@ import { withRouter } from "react-router";
 import { connect } from "react-redux";
 import { ReactSVG } from "react-svg";
 import { withTranslation, Trans } from "react-i18next";
-import isEqual from "lodash/isEqual";
+import equal from "fast-deep-equal/react";
 import copy from "copy-to-clipboard";
 import styled from "styled-components";
 import queryString from "query-string";
@@ -31,7 +31,7 @@ import {
   store,
 } from "asc-web-common";
 import {
-  clearProgressData,
+  clearSecondaryProgressData,
   loopFilesOperations,
   markItemAsFavorite,
   removeItemFromFavorite,
@@ -46,13 +46,15 @@ import {
   setIsLoading,
   setMediaViewerData,
   setUpdateTree,
-  setProgressBarData,
+  setSecondaryProgressBarData,
   setSelected,
   setSelection,
   setTreeFolders,
   getFileInfo,
   addFileToRecentlyViewed,
+  setSharingPanelVisible,
 } from "../../../../../store/files/actions";
+import { TIMEOUT } from "../../../../../helpers/constants";
 import {
   getCurrentFilesCount,
   getDragging,
@@ -88,11 +90,12 @@ import {
   getIsPrivacyFolder,
   getPrivacyInstructionsLink,
   getIconOfDraggedFile,
+  getSharePanelVisible,
   isRootFolder,
   getThirdPartyProviders,
   getThirdPartyCapabilities,
 } from "../../../../../store/files/selectors";
-import { SharingPanel, OperationsPanel } from "../../../../panels";
+import { OperationsPanel } from "../../../../panels";
 import {
   DeleteThirdPartyDialog,
   ConnectDialog,
@@ -192,7 +195,6 @@ class SectionBodyContent extends React.Component {
 
     this.state = {
       editingId: null,
-      showSharingPanel: false,
       showMoveToPanel: false,
       showCopyPanel: false,
       showDeleteThirdPartyDialog: false,
@@ -254,7 +256,7 @@ class SectionBodyContent extends React.Component {
       connectDialogVisible,
       showThirdPartyMoveDialog,
     } = this.state;
-    if (this.state.showSharingPanel !== nextState.showSharingPanel) {
+    if (this.props.sharingPanelVisible !== nextProps.sharingPanelVisible) {
       return true;
     }
 
@@ -262,7 +264,7 @@ class SectionBodyContent extends React.Component {
       return false;
     }
 
-    if (!isEqual(this.props, nextProps)) {
+    if (!equal(this.props, nextProps)) {
       return true;
     }
 
@@ -424,11 +426,17 @@ class SectionBodyContent extends React.Component {
   };
 
   onDeleteFile = (fileId, currentFolderId) => {
-    const { t, setProgressBarData, clearProgressData } = this.props;
-    setProgressBarData({
+    const {
+      t,
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
+    } = this.props;
+    setSecondaryProgressBarData({
+      icon: "trash",
       visible: true,
       percent: 0,
       label: t("DeleteOperation"),
+      alert: false,
     });
     api.files
       .deleteFile(fileId)
@@ -437,8 +445,12 @@ class SectionBodyContent extends React.Component {
         this.loopDeleteProgress(id, currentFolderId, false);
       })
       .catch((err) => {
-        toastr.error(err);
-        clearProgressData();
+        setSecondaryProgressBarData({
+          visible: true,
+          alert: true,
+        });
+        //toastr.error(err);
+        setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
       });
   };
 
@@ -449,24 +461,28 @@ class SectionBodyContent extends React.Component {
       setTreeFolders,
       isRecycleBin,
       t,
-      setProgressBarData,
+      setSecondaryProgressBarData,
       fetchFiles,
       setUpdateTree,
     } = this.props;
     api.files.getProgress().then((res) => {
       const deleteProgress = res.find((x) => x.id === id);
       if (deleteProgress && deleteProgress.progress !== 100) {
-        setProgressBarData({
+        setSecondaryProgressBarData({
+          icon: "trash",
           visible: true,
           percent: deleteProgress.progress,
           label: t("DeleteOperation"),
+          alert: false,
         });
         setTimeout(() => this.loopDeleteProgress(id, folderId, isFolder), 1000);
       } else {
-        setProgressBarData({
+        setSecondaryProgressBarData({
+          icon: "trash",
           visible: true,
           percent: 100,
           label: t("DeleteOperation"),
+          alert: false,
         });
         fetchFiles(folderId, filter)
           .then((data) => {
@@ -484,20 +500,34 @@ class SectionBodyContent extends React.Component {
               : toastr.success(`File moved to recycle bin`);
           })
           .catch((err) => {
-            toastr.error(err);
-            this.props.clearProgressData();
+            setSecondaryProgressBarData({
+              visible: true,
+              alert: true,
+            });
+            //toastr.error(err);
+            setTimeout(() => this.props.clearSecondaryProgressData(), TIMEOUT);
           })
           .finally(() =>
-            setTimeout(() => this.props.clearProgressData(), 5000)
+            setTimeout(() => this.props.clearSecondaryProgressData(), TIMEOUT)
           );
       }
     });
   };
 
   onDeleteFolder = (folderId, currentFolderId) => {
-    const { t, setProgressBarData, clearProgressData } = this.props;
+    const {
+      t,
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
+    } = this.props;
     const progressLabel = t("DeleteOperation");
-    setProgressBarData({ visible: true, percent: 0, label: progressLabel });
+    setSecondaryProgressBarData({
+      icon: "trash",
+      visible: true,
+      percent: 0,
+      label: progressLabel,
+      alert: false,
+    });
     api.files
       .deleteFolder(folderId, currentFolderId)
       .then((res) => {
@@ -505,13 +535,17 @@ class SectionBodyContent extends React.Component {
         this.loopDeleteProgress(id, currentFolderId, true);
       })
       .catch((err) => {
-        toastr.error(err);
-        clearProgressData();
+        setSecondaryProgressBarData({
+          visible: true,
+          alert: true,
+        });
+        //toastr.error(err);
+        setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
       });
   };
 
   onClickShare = () =>
-    this.setState({ showSharingPanel: !this.state.showSharingPanel });
+    this.props.setSharingPanelVisible(!this.props.sharingPanelVisible);
 
   onClickLinkForPortal = () => {
     const { settings, selection } = this.props;
@@ -613,15 +647,35 @@ class SectionBodyContent extends React.Component {
   onCopyAction = () =>
     this.setState({ showCopyPanel: !this.state.showCopyPanel });
   onDuplicate = () => {
-    const { selectedFolderId } = this.props;
-    this.copyTo(selectedFolderId);
-  };
+    const {
+      selection,
+      selectedFolderId,
+      setSecondaryProgressBarData,
+      t,
+    } = this.props;
+    const folderIds = [];
+    const fileIds = [];
+    selection[0].fileExst
+      ? fileIds.push(selection[0].id)
+      : folderIds.push(selection[0].id);
+    const conflictResolveType = 0; //Skip = 0, Overwrite = 1, Duplicate = 2
+    const deleteAfter = false;
 
-  onShowDeleteThirdParty = () =>
-    this.setState({
-      showDeleteThirdPartyDialog: !this.state.showDeleteThirdPartyDialog,
-      removeItem: null,
+    setSecondaryProgressBarData({
+      icon: "duplicate",
+      visible: true,
+      percent: 0,
+      label: t("CopyOperation"),
+      alert: false,
     });
+    this.copyTo(
+      selectedFolderId,
+      folderIds,
+      fileIds,
+      conflictResolveType,
+      deleteAfter
+    );
+  };
 
   onCloseConnectDialog = () => {
     this.setState({
@@ -840,7 +894,7 @@ class SectionBodyContent extends React.Component {
     if (currentProps.sectionWidth !== nextProps.sectionWidth) {
       return true;
     }
-    if (!isEqual(currentProps.data, nextProps.data)) {
+    if (!equal(currentProps.data, nextProps.data)) {
       return true;
     }
     if (currentProps.viewAs !== nextProps.viewAs) {
@@ -1388,56 +1442,28 @@ class SectionBodyContent extends React.Component {
     }
   };
 
-  onMoveTo = (folderId) => {
-    const { isShare, isCommon, isAdmin, selection, isRootFolder } = this.props;
-
-    const destFolderId = !isNaN(+folderId) ? +folderId : folderId;
-    const isProvider =
-      selection[0].providerKey && !isRootFolder && !isNaN(+folderId);
-
-    if (isAdmin) {
-      if (isShare) {
-        this.copyTo(destFolderId);
-      } else {
-        if (isProvider) {
-          this.onCloseThirdPartyMoveDialog();
-        } else {
-          this.moveTo(destFolderId);
-        }
-      }
-    } else {
-      if (isShare || isCommon) {
-        this.copyTo(destFolderId);
-      } else {
-        if (isProvider) {
-          this.onCloseThirdPartyMoveDialog();
-        } else {
-          this.moveTo(destFolderId);
-        }
-      }
-    }
-  };
-
-  copyTo = (destFolderId) => {
+  onMoveTo = (destFolderId) => {
     const {
       selection,
       t,
-      setProgressBarData,
-      loopFilesOperations,
-      clearProgressData,
-      setDragItem,
+      isShare,
+      isCommon,
+      isAdmin,
+      setSecondaryProgressBarData,
     } = this.props;
-
-    setProgressBarData({
-      visible: true,
-      percent: 0,
-      label: t("CopyOperation"),
-    });
 
     const folderIds = [];
     const fileIds = [];
     const conflictResolveType = 0; //Skip = 0, Overwrite = 1, Duplicate = 2
     const deleteAfter = true;
+
+    setSecondaryProgressBarData({
+      icon: "move",
+      visible: true,
+      percent: 0,
+      label: t("MoveToOperation"),
+      alert: false,
+    });
 
     for (let item of selection) {
       if (item.fileExst) {
@@ -1446,6 +1472,54 @@ class SectionBodyContent extends React.Component {
         folderIds.push(item.id);
       }
     }
+
+    if (isAdmin) {
+      if (isShare) {
+        this.copyTo(
+          destFolderId,
+          folderIds,
+          fileIds,
+          conflictResolveType,
+          deleteAfter
+        );
+      } else {
+        this.moveTo(
+          destFolderId,
+          folderIds,
+          fileIds,
+          conflictResolveType,
+          deleteAfter
+        );
+      }
+    } else {
+      if (isShare || isCommon) {
+        this.copyTo(
+          destFolderId,
+          folderIds,
+          fileIds,
+          conflictResolveType,
+          deleteAfter
+        );
+      } else {
+        this.moveTo(
+          destFolderId,
+          folderIds,
+          fileIds,
+          conflictResolveType,
+          deleteAfter
+        );
+      }
+    }
+  };
+
+  copyTo = (
+    destFolderId,
+    folderIds,
+    fileIds,
+    conflictResolveType,
+    deleteAfter
+  ) => {
+    const { loopFilesOperations, clearSecondaryProgressData } = this.props;
 
     api.files
       .copyToFolder(
@@ -1458,47 +1532,25 @@ class SectionBodyContent extends React.Component {
       .then((res) => {
         const id = res[0] && res[0].id ? res[0].id : null;
         loopFilesOperations(id, destFolderId, true);
-        setDragItem(null);
       })
       .catch((err) => {
-        toastr.error(err);
-        clearProgressData();
+        setSecondaryProgressBarData({
+          visible: true,
+          alert: true,
+        });
+        //toastr.error(err);
+        setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
       });
   };
 
-  moveTo = (destFolderId) => {
-    const {
-      selection,
-      t,
-      setProgressBarData,
-      loopFilesOperations,
-      clearProgressData,
-      setDragItem,
-      isRootFolder,
-    } = this.props;
-
-    const folderIds = [];
-    const fileIds = [];
-    const conflictResolveType = 0; //Skip = 0, Overwrite = 1, Duplicate = 2
-    const deleteAfter = true;
-
-    for (let item of selection) {
-      if (item.fileExst) {
-        fileIds.push(item.id);
-      } else {
-        !(item.providerKey && isRootFolder) && folderIds.push(item.id);
-      }
-    }
-
-    if (!folderIds.length && !fileIds.length) {
-      return;
-    }
-
-    setProgressBarData({
-      visible: true,
-      percent: 0,
-      label: t("MoveToOperation"),
-    });
+  moveTo = (
+    destFolderId,
+    folderIds,
+    fileIds,
+    conflictResolveType,
+    deleteAfter
+  ) => {
+    const { loopFilesOperations, clearSecondaryProgressData } = this.props;
 
     api.files
       .moveToFolder(
@@ -1511,11 +1563,14 @@ class SectionBodyContent extends React.Component {
       .then((res) => {
         const id = res[0] && res[0].id ? res[0].id : null;
         loopFilesOperations(id, destFolderId, false);
-        setDragItem(null);
       })
       .catch((err) => {
-        toastr.error(err);
-        clearProgressData();
+        setSecondaryProgressBarData({
+          visible: true,
+          alert: true,
+        });
+        //toastr.error(err);
+        setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
       });
   };
 
@@ -1636,14 +1691,13 @@ class SectionBodyContent extends React.Component {
 
     const {
       editingId,
-      showSharingPanel,
       showMoveToPanel,
       showCopyPanel,
       showDeleteThirdPartyDialog,
-      connectDialogVisible,
-      showThirdPartyMoveDialog,
       removeItem,
+      connectDialogVisible,
       connectItem,
+      showThirdPartyMoveDialog,
     } = this.state;
 
     let fileMoveTooltip;
@@ -1811,7 +1865,11 @@ class SectionBodyContent extends React.Component {
         ) : (
           <Consumer>
             {(context) => (
-              <RowContainer draggable useReactWindow={false}>
+              <RowContainer
+                className="files-row-container"
+                draggable
+                useReactWindow={false}
+              >
                 {items.map((item) => {
                   const { checked, isFolder, value, contextOptions } = item;
                   const sectionWidth = context.sectionWidth;
@@ -1914,12 +1972,6 @@ class SectionBodyContent extends React.Component {
             extsImagePreviewed={mediaViewerImageFormats} //TODO
           />
         )}
-        {showSharingPanel && (
-          <SharingPanel
-            onClose={this.onClickShare}
-            visible={showSharingPanel}
-          />
-        )}
       </>
     );
   }
@@ -1968,6 +2020,7 @@ const mapStateToProps = (state) => {
     viewer: getCurrentUser(state),
     tooltipValue: getTooltipLabel(state),
     iconOfDraggedFile: getIconOfDraggedFile(state)(state),
+    sharingPanelVisible: getSharePanelVisible(state),
     isRootFolder: isRootFolder(state),
     providers: getThirdPartyProviders(state),
     capabilities: getThirdPartyCapabilities(state),
@@ -1984,16 +2037,17 @@ export default connect(mapStateToProps, {
   setDragging,
   setDragItem,
   setMediaViewerData,
-  setProgressBarData,
+  setSecondaryProgressBarData,
   setSelection,
   setSelected,
   setUpdateTree,
   setIsLoading,
-  clearProgressData,
+  clearSecondaryProgressData,
   markItemAsFavorite,
   removeItemFromFavorite,
   fetchFavoritesFolder,
   getFileInfo,
   addFileToRecentlyViewed,
   loopFilesOperations,
+  setSharingPanelVisible,
 })(withRouter(withTranslation()(SectionBodyContent)));

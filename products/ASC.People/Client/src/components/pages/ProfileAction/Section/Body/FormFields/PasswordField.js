@@ -1,5 +1,5 @@
 import React from "react";
-import isEqual from "lodash/isEqual";
+import equal from "fast-deep-equal/react";
 import {
   FieldContainer,
   RadioButtonGroup,
@@ -8,7 +8,7 @@ import {
 
 class PasswordField extends React.Component {
   shouldComponentUpdate(nextProps) {
-    return !isEqual(this.props, nextProps);
+    return !equal(this.props, nextProps);
   }
 
   render() {

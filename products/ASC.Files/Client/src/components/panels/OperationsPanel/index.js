@@ -8,7 +8,7 @@ import { utils as commonUtils, toastr } from "asc-web-common";
 import { StyledAsidePanel } from "../StyledPanels";
 import TreeFolders from "../../Article/Body/TreeFolders";
 import {
-  setProgressBarData,
+  setSecondaryProgressBarData,
   itemOperationToFolder,
 } from "../../../store/files/actions";
 import {
@@ -82,6 +82,8 @@ class OperationsPanelComponent extends React.Component {
       itemOperationToFolder,
       t,
       selection,
+      setSecondaryProgressBarData,
+      currentFolderId,
       onClose,
     } = this.props;
 
@@ -91,14 +93,34 @@ class OperationsPanelComponent extends React.Component {
     const folderIds = [];
     const fileIds = [];
 
-    for (let item of selection) {
-      if (item.fileExst) {
-        fileIds.push(item.id);
-      } else if (item.id === destFolderId) {
-        toastr.error(t("MoveToFolderMessage"));
-      } else {
-        folderIds.push(item.id);
+    if (currentFolderId === destFolderId) {
+      return onClose();
+    } else {
+      for (let item of selection) {
+        if (item.fileExst) {
+          fileIds.push(item.id);
+        } else if (item.id === destFolderId) {
+          toastr.error(t("MoveToFolderMessage"));
+        } else {
+          folderIds.push(item.id);
+        }
       }
+      onClose();
+      setSecondaryProgressBarData({
+        icon: isCopy ? "duplicate" : "move",
+        visible: true,
+        percent: 0,
+        label: isCopy ? t("CopyOperation") : t("MoveToOperation"),
+        alert: false,
+      });
+      itemOperationToFolder(
+        destFolderId,
+        folderIds,
+        fileIds,
+        conflictResolveType,
+        deleteAfter,
+        isCopy
+      );
     }
 
     setProgressBarData({
@@ -197,6 +219,6 @@ const mapStateToProps = (state) => {
 };
 
 export default connect(mapStateToProps, {
-  setProgressBarData,
+  setSecondaryProgressBarData,
   itemOperationToFolder,
 })(withRouter(OperationsPanel));
