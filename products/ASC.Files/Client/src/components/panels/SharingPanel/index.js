@@ -9,8 +9,6 @@ import {
   DropDown,
   DropDownItem,
   Textarea,
-  ComboBox,
-  Icons,
 } from "asc-web-components";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
@@ -115,28 +113,30 @@ class SharingPanelComponent extends React.Component {
     let externalAccess = null;
 
     for (let item of shareDataItems) {
-      const baseItem = baseShareData.find((x) => x.id === item.id);
-      if (
-        (baseItem &&
-          baseItem.rights.rights !== item.rights.rights &&
-          !item.shareLink) ||
-        !baseItem
-      ) {
-        share.push({ shareTo: item.id, access: item.rights.accessNumber });
-      }
+      const baseItem = baseShareData.find(
+        (x) => x.sharedTo.id === item.sharedTo.id
+      );
 
       if (
-        item.shareLink &&
-        item.rights.accessNumber !== baseItem.rights.accessNumber
+        (baseItem &&
+          baseItem.access !== item.access &&
+          !item.sharedTo.shareLink) ||
+        !baseItem
       ) {
-        externalAccess = item.rights.accessNumber;
+        share.push({ shareTo: item.sharedTo.id, access: item.access });
+      }
+
+      if (item.sharedTo.shareLink && item.access !== baseItem.access) {
+        externalAccess = item.access;
       }
     }
 
     for (let item of baseShareData) {
-      const baseItem = shareDataItems.find((x) => x.id === item.id);
+      const baseItem = shareDataItems.find(
+        (x) => x.sharedTo.id === item.sharedTo.id
+      );
       if (!baseItem) {
-        share.push({ shareTo: item.id, access: 0 });
+        share.push({ shareTo: item.sharedTo.id, access: 0 });
       }
     }
 
@@ -160,46 +160,9 @@ class SharingPanelComponent extends React.Component {
       .finally(() => this.onClose());
   };
 
-  onFullAccessClick = () => {
-    this.setState({
-      accessRight: ShareAccessRights.FullAccess,
-    });
-  };
-
-  onReadOnlyClick = () => {
-    this.setState({
-      accessRight: ShareAccessRights.ReadOnly,
-    });
-  };
-
-  onReviewClick = () => {
-    this.setState({
-      accessRight: ShareAccessRights.Review,
-    });
-  };
-
-  onCommentClick = () => {
-    this.setState({
-      accessRight: ShareAccessRights.Comment,
-    });
-  };
-
-  onFormFillingClick = () => {
-    this.setState({
-      accessRight: ShareAccessRights.FormFilling,
-    });
-  };
-
-  onDenyAccessClick = () => {
-    this.setState({
-      accessRight: ShareAccessRights.DenyAccess,
-    });
-  };
-
-  onFilterEditingClick = () => {
-    this.setState({
-      accessRight: ShareAccessRights.CustomFilter,
-    });
+  onChangeAccess = (e) => {
+    const accessRight = +e.currentTarget.dataset.access;
+    this.setState({ accessRight });
   };
 
   onNotifyUsersChange = () =>
@@ -211,69 +174,14 @@ class SharingPanelComponent extends React.Component {
       showActionPanel: false,
     });
 
-  onFullAccessItemClick = (e) => {
+  onChangeItemAccess = (e) => {
     const id = e.currentTarget.dataset.id;
-    const shareDataItems = this.state.shareDataItems;
-    const elem = shareDataItems.find((x) => x.sharedTo.id === id);
-    if (elem.access !== ShareAccessRights.FullAccess) {
-      elem.access = ShareAccessRights.FullAccess;
-      this.setState({ shareDataItems });
-    }
-  };
-  onReadOnlyItemClick = (e) => {
-    const id = e.currentTarget.dataset.id;
-    const shareDataItems = this.state.shareDataItems;
-    const elem = shareDataItems.find((x) => x.sharedTo.id === id);
-    if (elem.access !== ShareAccessRights.ReadOnly) {
-      elem.access = ShareAccessRights.ReadOnly;
-      this.setState({ shareDataItems });
-    }
-  };
-  onReviewItemClick = (e) => {
-    const id = e.currentTarget.dataset.id;
-    const shareDataItems = this.state.shareDataItems;
-    const elem = shareDataItems.find((x) => x.sharedTo.id === id);
-    if (elem.access !== ShareAccessRights.Review) {
-      elem.access = ShareAccessRights.Review;
-      this.setState({ shareDataItems });
-    }
-  };
-  onCommentItemClick = (e) => {
-    const id = e.currentTarget.dataset.id;
-    const shareDataItems = this.state.shareDataItems;
-    const elem = shareDataItems.find((x) => x.sharedTo.id === id);
-    if (elem.access !== ShareAccessRights.Comment) {
-      elem.access = ShareAccessRights.Comment;
-      this.setState({ shareDataItems });
-    }
-  };
-  onFormFillingItemClick = (e) => {
-    const id = e.currentTarget.dataset.id;
-    const shareDataItems = this.state.shareDataItems;
-    const elem = shareDataItems.find((x) => x.sharedTo.id === id);
-    if (elem.access !== ShareAccessRights.FormFilling) {
-      elem.access = ShareAccessRights.FormFilling;
-      this.setState({ shareDataItems });
-    }
-  };
-
-  onFilterEditingItemClick = (e) => {
-    const id = e.currentTarget.dataset.id;
+    const access = e.currentTarget.dataset.access;
     const shareDataItems = this.state.shareDataItems;
     const elem = shareDataItems.find((x) => x.sharedTo.id === id);
 
-    if (elem.access !== ShareAccessRights.CustomFilter) {
-      elem.access = ShareAccessRights.CustomFilter;
-      this.setState({ shareDataItems });
-    }
-  };
-  onDenyAccessItemClick = (e) => {
-    const id = e.currentTarget.dataset.id;
-    const shareDataItems = this.state.shareDataItems;
-    const elem = shareDataItems.find((x) => x.sharedTo.id === id);
-
-    if (elem.access !== ShareAccessRights.DenyAccess) {
-      elem.access = ShareAccessRights.DenyAccess;
+    if (elem.access !== +access) {
+      elem.access = +access;
       this.setState({ shareDataItems });
     }
   };
@@ -287,15 +195,6 @@ class SharingPanelComponent extends React.Component {
       shareDataItems.splice(index, 1);
       this.setState({ shareDataItems });
     }
-  };
-
-  removeDuplicateShareData = (shareDataItems) => {
-    let obj = {};
-    return shareDataItems.filter((x) => {
-      if (obj[x.id]) return false;
-      obj[x.id] = true;
-      return true;
-    });
   };
 
   getData = () => {
@@ -416,13 +315,24 @@ class SharingPanelComponent extends React.Component {
     const visible = showPanel;
     const zIndex = 310;
 
+    const {
+      FullAccess,
+      CustomFilter,
+      Review,
+      FormFilling,
+      Comment,
+      ReadOnly,
+      DenyAccess,
+    } = ShareAccessRights;
+
     const advancedOptions = (
       <>
         {accessOptions.includes("FullAccess") && (
           <DropDownItem
             label="Full access"
             icon="AccessEditIcon"
-            onClick={this.onFullAccessClick}
+            data-access={FullAccess}
+            onClick={this.onChangeAccess}
           />
         )}
 
@@ -430,7 +340,8 @@ class SharingPanelComponent extends React.Component {
           <DropDownItem
             label="Custom filter"
             icon="CustomFilterIcon"
-            onClick={this.onFilterEditingClick}
+            data-access={CustomFilter}
+            onClick={this.onChangeAccess}
           />
         )}
 
@@ -438,7 +349,8 @@ class SharingPanelComponent extends React.Component {
           <DropDownItem
             label="Review"
             icon="AccessReviewIcon"
-            onClick={this.onReviewClick}
+            data-access={Review}
+            onClick={this.onChangeAccess}
           />
         )}
 
@@ -446,7 +358,8 @@ class SharingPanelComponent extends React.Component {
           <DropDownItem
             label="Form filling"
             icon="AccessFormIcon"
-            onClick={this.onFormFillingClick}
+            data-access={FormFilling}
+            onClick={this.onChangeAccess}
           />
         )}
 
@@ -454,7 +367,8 @@ class SharingPanelComponent extends React.Component {
           <DropDownItem
             label="Comment"
             icon="AccessCommentIcon"
-            onClick={this.onCommentClick}
+            data-access={Comment}
+            onClick={this.onChangeAccess}
           />
         )}
 
@@ -462,7 +376,8 @@ class SharingPanelComponent extends React.Component {
           <DropDownItem
             label="Read only"
             icon="EyeIcon"
-            onClick={this.onReadOnlyClick}
+            data-access={ReadOnly}
+            onClick={this.onChangeAccess}
           />
         )}
 
@@ -470,7 +385,8 @@ class SharingPanelComponent extends React.Component {
           <DropDownItem
             label="Deny access"
             icon="AccessNoneIcon"
-            onClick={this.onDenyAccessClick}
+            data-access={DenyAccess}
+            onClick={this.onChangeAccess}
           />
         )}
       </>
@@ -527,20 +443,14 @@ class SharingPanelComponent extends React.Component {
             >
               {shareDataItems.map((item) => (
                 <SharingRow
-                  key={item.sharedTo.id}
                   t={t}
+                  key={item.sharedTo.id}
                   selection={selection}
                   item={item}
                   isMyId={isMyId}
                   accessOptions={accessOptions}
                   externalAccessOptions={externalAccessOptions}
-                  onFullAccessClick={this.onFullAccessItemClick}
-                  onReadOnlyClick={this.onReadOnlyItemClick}
-                  onReviewClick={this.onReviewItemClick}
-                  onCommentClick={this.onCommentItemClick}
-                  onFormFillingClick={this.onFormFillingItemClick}
-                  onFilterEditingClick={this.onFilterEditingItemClick}
-                  onDenyAccessClick={this.onDenyAccessItemClick}
+                  onChangeItemAccess={this.onChangeItemAccess}
                   onRemoveUserClick={this.onRemoveUserItemClick}
                   onShowEmbeddingPanel={this.onShowEmbeddingPanel}
                   onToggleLink={this.onToggleLink}

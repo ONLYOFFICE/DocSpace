@@ -54,7 +54,7 @@ class AddUsersPanelComponent extends React.Component {
         item.id = item.key;
         delete item.key;
       }
-      const currentItem = shareDataItems.find((x) => x.id === item.id);
+      const currentItem = shareDataItems.find((x) => x.sharedTo.id === item.id);
       if (!currentItem) {
         const newItem = {
           access: accessRight,
@@ -106,7 +106,13 @@ class AddUsersPanelComponent extends React.Component {
   }
 
   render() {
-    const { visible, t, groupsCaption } = this.props;
+    const {
+      t,
+      visible,
+      groupsCaption,
+      accessRight,
+      advancedOptions,
+    } = this.props;
 
     const zIndex = 310;
 
@@ -151,8 +157,8 @@ class AddUsersPanelComponent extends React.Component {
                 onSelect={this.onPeopleSelect}
                 embeddedComponent={
                   <AccessComboBox
-                    access={this.props.accessRight}
-                    advancedOptions={this.props.advancedOptions}
+                    access={accessRight}
+                    advancedOptions={advancedOptions}
                     directionX="right"
                   />
                 }

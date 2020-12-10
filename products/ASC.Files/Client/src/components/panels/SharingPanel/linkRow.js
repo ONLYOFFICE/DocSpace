@@ -1,12 +1,7 @@
 import React from "react";
-import {
-  Row,
-  LinkWithDropdown,
-  ToggleButton,
-  Icons,
-  ComboBox,
-} from "asc-web-components";
+import { Row, LinkWithDropdown, ToggleButton, Icons } from "asc-web-components";
 import { StyledLinkRow } from "../StyledPanels";
+import AccessComboBox from "./AccessComboBox";
 import { constants } from "asc-web-common";
 
 const { ShareAccessRights } = constants;
@@ -41,24 +36,12 @@ class LinkRow extends React.Component {
           key={`${linkText}-key_${index}`}
           element={
             withToggle ? (
-              //              embeddedComponentRender(externalAccessOptions, item, isDisabled)
-              <ComboBox
+              <AccessComboBox
+                access={item.access}
                 advancedOptions={advancedOptions}
-                options={[]}
-                selectedOption={{ key: 0 }}
-                size="content"
-                className="panel_combo-box"
-                scaled={false}
                 directionX="left"
-                disableIconClick={false}
                 isDisabled={isDisabled}
-              >
-                {React.createElement(Icons["EyeIcon"], {
-                  //{React.createElement(Icons[item.rights.icon], {
-                  size: "medium",
-                  className: "sharing-access-combo-box-icon",
-                })}
-              </ComboBox>
+              />
             ) : (
               <Icons.AccessEditIcon
                 size="medium"

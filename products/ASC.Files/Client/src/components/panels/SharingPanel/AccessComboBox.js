@@ -2,7 +2,7 @@ import React from "react";
 import { ComboBox, Icons } from "asc-web-components";
 
 const AccessComboBox = (props) => {
-  const { access, advancedOptions, directionX } = props;
+  const { access, advancedOptions, directionX, isDisabled } = props;
 
   const getAccessIcon = () => {
     switch (access) {
@@ -37,6 +37,7 @@ const AccessComboBox = (props) => {
       scaled={false}
       directionX={directionX}
       disableIconClick={false}
+      isDisabled={isDisabled}
     >
       {React.createElement(Icons[accessIcon], {
         size: "medium",
