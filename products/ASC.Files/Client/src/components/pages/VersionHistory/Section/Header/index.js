@@ -10,7 +10,8 @@ const { tablet, desktop } = utils.device;
 const { getSettings } = store.auth.selectors;
 
 const StyledContainer = styled.div`
-  display: flex;
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
   align-items: center;
 
   .arrow-button {
@@ -22,14 +23,6 @@ const StyledContainer = styled.div`
       padding: 8px 0 8px 8px;
       margin-left: -8px;
     }
-  }
-
-  @media ${desktop} {
-    ${(props) =>
-      props.isHeaderVisible &&
-      css`
-        width: calc(100% + 76px);
-      `}
   }
 
   .group-button-menu-container {
@@ -85,7 +78,7 @@ const SectionHeaderContent = (props) => {
   };
 
   return (
-    <StyledContainer isHeaderVisible={true}>
+    <StyledContainer>
       <IconButton
         iconName="ArrowPathIcon"
         size="17"
