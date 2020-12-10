@@ -125,7 +125,6 @@ class SelectedFrame extends React.Component {
       for (let childItem in this.container.childNodes) {
         if (this.container.childNodes[childItem].nodeType === 1) {
           const item = this.container.childNodes[childItem];
-          console.log(item.childNodes);
           const currentItem = item.childNodes[0];
           if (currentItem) {
             const itemHeight = currentItem.offsetHeight;
