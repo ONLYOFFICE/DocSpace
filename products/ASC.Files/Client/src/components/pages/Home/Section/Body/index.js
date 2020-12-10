@@ -489,7 +489,7 @@ class SectionBodyContent extends React.Component {
 
   openDocEditor = (id, tab = null, url = null) => {
     return this.props
-      .addFileToRecentlyViewed(id)
+      .addFileToRecentlyViewed(id, this.props.isPrivacy)
       .then(() => console.log("Pushed to recently viewed"))
       .catch((e) => console.error(e))
       .finally(

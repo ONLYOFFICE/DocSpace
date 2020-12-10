@@ -31,6 +31,7 @@ import {
   getFolders,
   getTreeFolders,
   getSelectedFolder,
+  getIsPrivacyFolder,
 } from "../../../store/files/selectors";
 import {
   fetchFiles,
@@ -141,6 +142,7 @@ class NewFilesPanelComponent extends React.Component {
       setMediaViewerData,
       fetchFiles,
       addFileToRecentlyViewed,
+      isPrivacy,
     } = this.props;
 
     if (!fileExst) {
@@ -150,7 +152,7 @@ class NewFilesPanelComponent extends React.Component {
       const isMedia = [2, 3, 4].includes(fileType);
 
       if (canEdit) {
-        return addFileToRecentlyViewed(id)
+        return addFileToRecentlyViewed(id, isPrivacy)
           .then(() => console.log("Pushed to recently viewed"))
           .catch((e) => console.error(e))
           .finally(window.open(`./doceditor?fileId=${id}`, "_blank"));
@@ -317,6 +319,7 @@ const mapStateToProps = (state) => {
     folders: getFolders(state),
     treeFolders: getTreeFolders(state),
     selectedFolder: getSelectedFolder(state),
+    isPrivacy: getIsPrivacyFolder(state),
   };
 };
 
