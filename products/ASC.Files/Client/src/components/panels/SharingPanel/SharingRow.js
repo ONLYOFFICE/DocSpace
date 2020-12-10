@@ -1,12 +1,10 @@
 import React from "react";
-import { IconButton, Row, Text, Icons, DropDownItem } from "asc-web-components";
-import { toastr, constants } from "asc-web-common";
+import { IconButton, Row, Text, Icons } from "asc-web-components";
+import { toastr } from "asc-web-common";
 import copy from "copy-to-clipboard";
 import LinkRow from "./linkRow";
 import AccessComboBox from "./AccessComboBox";
 import equal from "fast-deep-equal/react";
-
-const { ShareAccessRights } = constants;
 
 class SharingRow extends React.Component {
   constructor(props) {
@@ -84,96 +82,17 @@ class SharingRow extends React.Component {
       onToggleLink,
       externalLinkData,
     } = this.props;
+    const { access } = this.state;
 
     const { isOwner } = item;
     const { label, name, displayName, shareLink, id } = item.sharedTo;
 
-    const { access } = this.state;
+    //console.log("access", access);
+    //console.log("onChangeItemAccess", onChangeItemAccess);
+    //console.log("itemId", id);
+    //console.log("accessOptions", accessOptions);
 
     const linkVisible = selection && selection.length === 1 && shareLink;
-    const {
-      FullAccess,
-      CustomFilter,
-      Review,
-      FormFilling,
-      Comment,
-      ReadOnly,
-      DenyAccess,
-    } = ShareAccessRights;
-
-    const advancedOptions = (
-      <>
-        {accessOptions.includes("FullAccess") && (
-          <DropDownItem
-            label={t("FullAccess")}
-            icon="AccessEditIcon"
-            data-id={id}
-            data-access={FullAccess}
-            onClick={onChangeItemAccess}
-          />
-        )}
-
-        {accessOptions.includes("FilterEditing") && (
-          <DropDownItem
-            label={t("CustomFilter")}
-            icon="CustomFilterIcon"
-            data-id={id}
-            data-access={CustomFilter}
-            onClick={onChangeItemAccess}
-          />
-        )}
-
-        {accessOptions.includes("Review") && (
-          <DropDownItem
-            label={t("Review")}
-            icon="AccessReviewIcon"
-            data-id={id}
-            data-access={Review}
-            onClick={onChangeItemAccess}
-          />
-        )}
-
-        {accessOptions.includes("FormFilling") && (
-          <DropDownItem
-            label={t("FormFilling")}
-            icon="AccessFormIcon"
-            data-id={id}
-            data-access={FormFilling}
-            onClick={onChangeItemAccess}
-          />
-        )}
-
-        {accessOptions.includes("Comment") && (
-          <DropDownItem
-            label={t("Comment")}
-            icon="AccessCommentIcon"
-            data-id={id}
-            data-access={Comment}
-            onClick={onChangeItemAccess}
-          />
-        )}
-
-        {accessOptions.includes("ReadOnly") && (
-          <DropDownItem
-            label={t("ReadOnly")}
-            icon="EyeIcon"
-            data-id={id}
-            data-access={ReadOnly}
-            onClick={onChangeItemAccess}
-          />
-        )}
-
-        {accessOptions.includes("DenyAccess") && (
-          <DropDownItem
-            label={t("DenyAccess")}
-            icon="AccessNoneIcon"
-            data-id={id}
-            data-access={DenyAccess}
-            onClick={onChangeItemAccess}
-          />
-        )}
-      </>
-    );
 
     const internalLinkData = [
       {
@@ -233,15 +152,13 @@ class SharingRow extends React.Component {
               options={externalLinkOptions}
               externalLinkData={externalLinkData}
               onToggleLink={onToggleLink}
-              withToggle={true}
+              withToggle
               {...this.props}
-              advancedOptions={advancedOptions}
             />
             <LinkRow
               linkText="InternalLink"
               options={internalLinkData}
               {...this.props}
-              advancedOptions={advancedOptions}
             />
           </>
         )}
@@ -259,8 +176,10 @@ class SharingRow extends React.Component {
               ) : (
                 <AccessComboBox
                   access={access}
-                  advancedOptions={advancedOptions}
                   directionX="left"
+                  onAccessChange={onChangeItemAccess}
+                  itemId={id}
+                  accessOptions={accessOptions}
                 />
               )
             }

@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Backdrop, Heading, Aside, IconButton } from "asc-web-components";
-import { GroupSelector, utils } from "asc-web-common";
+import { GroupSelector, utils, constants } from "asc-web-common";
 import { withTranslation } from "react-i18next";
 import {
   StyledAddGroupsPanel,
@@ -17,6 +17,7 @@ const i18n = createI18N({
 });
 
 const { changeLanguage } = utils;
+const { ShareAccessRights } = constants;
 
 class AddGroupsPanelComponent extends React.Component {
   constructor(props) {
@@ -24,7 +25,10 @@ class AddGroupsPanelComponent extends React.Component {
 
     changeLanguage(i18n);
 
-    this.state = { showActionPanel: false };
+    this.state = {
+      showActionPanel: false,
+      accessRight: ShareAccessRights.ReadOnly,
+    };
     this.scrollRef = React.createRef();
   }
 
@@ -39,12 +43,7 @@ class AddGroupsPanelComponent extends React.Component {
   };
 
   onSelectGroups = (groups) => {
-    const {
-      accessRight,
-      shareDataItems,
-      setShareDataItems,
-      onClose,
-    } = this.props;
+    const { shareDataItems, setShareDataItems, onClose } = this.props;
     const items = shareDataItems;
 
     for (let item of groups) {
@@ -55,7 +54,7 @@ class AddGroupsPanelComponent extends React.Component {
       const currentItem = shareDataItems.find((x) => x.sharedTo.id === item.id);
       if (!currentItem) {
         const newItem = {
-          access: accessRight,
+          access: this.state.accessRight,
           isLocked: false,
           isOwner: false,
           sharedTo: item,
@@ -66,6 +65,17 @@ class AddGroupsPanelComponent extends React.Component {
 
     setShareDataItems(items);
     onClose();
+  };
+
+  onKeyPress = (event) => {
+    if (event.key === "Esc" || event.key === "Escape") {
+      this.props.onClose();
+    }
+  };
+
+  onAccessChange = (e) => {
+    const accessRight = +e.currentTarget.dataset.access;
+    this.setState({ accessRight });
   };
 
   //onPLusClick = () => console.log("onPlusClick");
@@ -79,18 +89,11 @@ class AddGroupsPanelComponent extends React.Component {
   componentWillUnmount() {
     window.removeEventListener("keyup", this.onKeyPress);
   }
-
-  onKeyPress = (event) => {
-    if (event.key === "Esc" || event.key === "Escape") {
-      this.props.onClose();
-    }
-  };
-
   shouldComponentUpdate(nextProps, nextState) {
-    const { showActionPanel } = this.state;
-    const { visible, accessRight } = this.props;
+    const { showActionPanel, accessRight } = this.state;
+    const { visible } = this.props;
 
-    if (accessRight !== nextProps.accessRight) {
+    if (accessRight !== nextState.accessRight) {
       return true;
     }
 
@@ -106,7 +109,8 @@ class AddGroupsPanelComponent extends React.Component {
   }
 
   render() {
-    const { t, visible, accessRight, advancedOptions } = this.props;
+    const { t, visible, accessOptions } = this.props;
+    const { accessRight } = this.state;
 
     const zIndex = 310;
 
@@ -152,8 +156,9 @@ class AddGroupsPanelComponent extends React.Component {
                 embeddedComponent={
                   <AccessComboBox
                     access={accessRight}
-                    advancedOptions={advancedOptions}
                     directionX="right"
+                    onAccessChange={this.onAccessChange}
+                    accessOptions={accessOptions}
                   />
                 }
                 showCounter

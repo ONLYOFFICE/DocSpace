@@ -19,9 +19,10 @@ class LinkRow extends React.Component {
       options,
       index,
       t,
-      advancedOptions,
       item,
       withToggle,
+      accessOptions,
+      onChangeItemAccess,
     } = this.props;
 
     //console.log("LinkRow item", item);
@@ -38,8 +39,10 @@ class LinkRow extends React.Component {
             withToggle ? (
               <AccessComboBox
                 access={item.access}
-                advancedOptions={advancedOptions}
                 directionX="left"
+                accessOptions={accessOptions}
+                onAccessChange={onChangeItemAccess}
+                itemId={item.sharedTo.id}
                 isDisabled={isDisabled}
               />
             ) : (

@@ -63,7 +63,6 @@ class SharingPanelComponent extends React.Component {
       showAddUsersPanel: false,
       showEmbeddingPanel: false,
       showAddGroupsPanel: false,
-      accessRight: ShareAccessRights.ReadOnly,
       shareLink: "",
       isLoadedShareData: false,
       showPanel: false,
@@ -84,11 +83,9 @@ class SharingPanelComponent extends React.Component {
 
   onToggleLink = (item) => {
     const { shareDataItems } = this.state;
+    const { DenyAccess, ReadOnly } = ShareAccessRights;
 
-    const rights =
-      item.access !== ShareAccessRights.DenyAccess
-        ? ShareAccessRights.DenyAccess
-        : ShareAccessRights.ReadOnly;
+    const rights = item.access !== DenyAccess ? DenyAccess : ReadOnly;
     const newDataItems = JSON.parse(JSON.stringify(shareDataItems));
 
     newDataItems[0].access = rights;
@@ -158,11 +155,6 @@ class SharingPanelComponent extends React.Component {
     )
       .catch((err) => toastr.error(err))
       .finally(() => this.onClose());
-  };
-
-  onChangeAccess = (e) => {
-    const accessRight = +e.currentTarget.dataset.access;
-    this.setState({ accessRight });
   };
 
   onNotifyUsersChange = () =>
@@ -305,7 +297,6 @@ class SharingPanelComponent extends React.Component {
       showAddUsersPanel,
       showAddGroupsPanel,
       showEmbeddingPanel,
-      accessRight,
       shareLink,
       showPanel,
       accessOptions,
@@ -314,83 +305,6 @@ class SharingPanelComponent extends React.Component {
 
     const visible = showPanel;
     const zIndex = 310;
-
-    const {
-      FullAccess,
-      CustomFilter,
-      Review,
-      FormFilling,
-      Comment,
-      ReadOnly,
-      DenyAccess,
-    } = ShareAccessRights;
-
-    const advancedOptions = (
-      <>
-        {accessOptions.includes("FullAccess") && (
-          <DropDownItem
-            label="Full access"
-            icon="AccessEditIcon"
-            data-access={FullAccess}
-            onClick={this.onChangeAccess}
-          />
-        )}
-
-        {accessOptions.includes("FilterEditing") && (
-          <DropDownItem
-            label="Custom filter"
-            icon="CustomFilterIcon"
-            data-access={CustomFilter}
-            onClick={this.onChangeAccess}
-          />
-        )}
-
-        {accessOptions.includes("Review") && (
-          <DropDownItem
-            label="Review"
-            icon="AccessReviewIcon"
-            data-access={Review}
-            onClick={this.onChangeAccess}
-          />
-        )}
-
-        {accessOptions.includes("FormFilling") && (
-          <DropDownItem
-            label="Form filling"
-            icon="AccessFormIcon"
-            data-access={FormFilling}
-            onClick={this.onChangeAccess}
-          />
-        )}
-
-        {accessOptions.includes("Comment") && (
-          <DropDownItem
-            label="Comment"
-            icon="AccessCommentIcon"
-            data-access={Comment}
-            onClick={this.onChangeAccess}
-          />
-        )}
-
-        {accessOptions.includes("ReadOnly") && (
-          <DropDownItem
-            label="Read only"
-            icon="EyeIcon"
-            data-access={ReadOnly}
-            onClick={this.onChangeAccess}
-          />
-        )}
-
-        {accessOptions.includes("DenyAccess") && (
-          <DropDownItem
-            label="Deny access"
-            icon="AccessNoneIcon"
-            data-access={DenyAccess}
-            onClick={this.onChangeAccess}
-          />
-        )}
-      </>
-    );
 
     return (
       <StyledAsidePanel visible={visible}>
@@ -491,9 +405,8 @@ class SharingPanelComponent extends React.Component {
             visible={showAddUsersPanel}
             shareDataItems={shareDataItems}
             setShareDataItems={this.setShareDataItems}
-            accessRight={accessRight}
             groupsCaption={groupsCaption}
-            advancedOptions={advancedOptions}
+            accessOptions={accessOptions}
           />
         )}
 
@@ -504,8 +417,7 @@ class SharingPanelComponent extends React.Component {
             visible={showAddGroupsPanel}
             shareDataItems={shareDataItems}
             setShareDataItems={this.setShareDataItems}
-            accessRight={accessRight}
-            advancedOptions={advancedOptions}
+            accessOptions={accessOptions}
           />
         )}
 

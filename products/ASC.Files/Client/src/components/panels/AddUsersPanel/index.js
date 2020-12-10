@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Backdrop, Heading, Aside, IconButton } from "asc-web-components";
-import { PeopleSelector, utils } from "asc-web-common";
+import { PeopleSelector, utils, constants } from "asc-web-common";
 import { withTranslation } from "react-i18next";
 import {
   StyledAddUsersPanelPanel,
@@ -17,6 +17,7 @@ const i18n = createI18N({
 });
 
 const { changeLanguage } = utils;
+const { ShareAccessRights } = constants;
 
 class AddUsersPanelComponent extends React.Component {
   constructor(props) {
@@ -26,6 +27,7 @@ class AddUsersPanelComponent extends React.Component {
 
     this.state = {
       showActionPanel: false,
+      accessRight: ShareAccessRights.ReadOnly,
     };
 
     this.scrollRef = React.createRef();
@@ -36,18 +38,19 @@ class AddUsersPanelComponent extends React.Component {
 
   onArrowClick = () => this.props.onClose();
 
+  onKeyPress = (event) => {
+    if (event.key === "Esc" || event.key === "Escape") {
+      this.props.onClose();
+    }
+  };
+
   onClosePanels = () => {
     this.props.onClose();
     this.props.onSharingPanelClose();
   };
 
   onPeopleSelect = (users) => {
-    const {
-      accessRight,
-      shareDataItems,
-      setShareDataItems,
-      onClose,
-    } = this.props;
+    const { shareDataItems, setShareDataItems, onClose } = this.props;
     const items = shareDataItems;
     for (let item of users) {
       if (item.key) {
@@ -57,7 +60,7 @@ class AddUsersPanelComponent extends React.Component {
       const currentItem = shareDataItems.find((x) => x.sharedTo.id === item.id);
       if (!currentItem) {
         const newItem = {
-          access: accessRight,
+          access: this.state.accessRight,
           isLocked: false,
           isOwner: false,
           sharedTo: item,
@@ -80,17 +83,11 @@ class AddUsersPanelComponent extends React.Component {
     window.removeEventListener("keyup", this.onKeyPress);
   }
 
-  onKeyPress = (event) => {
-    if (event.key === "Esc" || event.key === "Escape") {
-      this.props.onClose();
-    }
-  };
-
   shouldComponentUpdate(nextProps, nextState) {
-    const { showActionPanel } = this.state;
-    const { visible, accessRight } = this.props;
+    const { showActionPanel, accessRight } = this.state;
+    const { visible } = this.props;
 
-    if (accessRight !== nextProps.accessRight) {
+    if (accessRight !== nextState.accessRight) {
       return true;
     }
 
@@ -105,14 +102,14 @@ class AddUsersPanelComponent extends React.Component {
     return false;
   }
 
+  onAccessChange = (e) => {
+    const accessRight = +e.currentTarget.dataset.access;
+    this.setState({ accessRight });
+  };
+
   render() {
-    const {
-      t,
-      visible,
-      groupsCaption,
-      accessRight,
-      advancedOptions,
-    } = this.props;
+    const { t, visible, groupsCaption, accessOptions } = this.props;
+    const { accessRight } = this.state;
 
     const zIndex = 310;
 
@@ -158,8 +155,9 @@ class AddUsersPanelComponent extends React.Component {
                 embeddedComponent={
                   <AccessComboBox
                     access={accessRight}
-                    advancedOptions={advancedOptions}
                     directionX="right"
+                    onAccessChange={this.onAccessChange}
+                    accessOptions={accessOptions}
                   />
                 }
                 groupsCaption={groupsCaption}
