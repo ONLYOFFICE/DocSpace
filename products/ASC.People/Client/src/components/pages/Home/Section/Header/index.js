@@ -75,10 +75,14 @@ const StyledContainer = styled.div`
 
   .header-container {
     position: relative;
-
-    display: flex;
+    display: grid;
+    grid-template-columns: auto auto 1fr;
     align-items: center;
     max-width: calc(100vw - 32px);
+
+    @media ${tablet} {
+      grid-template-columns: 1fr auto;
+    }
 
     .action-button {
       margin-left: 16px;
