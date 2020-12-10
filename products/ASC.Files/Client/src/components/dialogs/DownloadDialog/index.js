@@ -22,9 +22,10 @@ import {
   getSelection,
 } from "../../../store/files/selectors";
 import {
-  setProgressBarData,
-  clearProgressData,
+  setSecondaryProgressBarData,
+  clearSecondaryProgressData,
 } from "../../../store/files/actions";
+import { TIMEOUT } from "../../../helpers/constants";
 import DownloadContent from "./DownloadContent";
 import { createI18N } from "../../../helpers/i18n";
 const i18n = createI18N({
@@ -178,8 +179,8 @@ class DownloadDialogComponent extends React.Component {
       onDownloadProgress,
       onClose,
       t,
-      setProgressBarData,
-      clearProgressData,
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
     } = this.props;
 
     const downloadItems = this.getDownloadItems();
@@ -187,10 +188,12 @@ class DownloadDialogComponent extends React.Component {
     const folderIds = downloadItems[1];
 
     if (fileConvertIds.length || folderIds.length) {
-      setProgressBarData({
+      setSecondaryProgressBarData({
+        icon: "file",
         visible: true,
         percent: 0,
         label: t("ArchivingData"),
+        alert: false,
       });
       api.files
         .downloadFormatFiles(fileConvertIds, folderIds)
@@ -199,8 +202,12 @@ class DownloadDialogComponent extends React.Component {
           onDownloadProgress(false);
         })
         .catch((err) => {
-          toastr.error(err);
-          clearProgressData();
+          setSecondaryProgressBarData({
+            visible: true,
+            alert: true,
+          });
+          //toastr.error(err);
+          setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
         });
     }
   };
@@ -629,6 +636,6 @@ const mapStateToProps = (state) => {
 };
 
 export default connect(mapStateToProps, {
-  setProgressBarData,
-  clearProgressData,
+  setSecondaryProgressBarData,
+  clearSecondaryProgressData,
 })(withRouter(DownloadDialog));
