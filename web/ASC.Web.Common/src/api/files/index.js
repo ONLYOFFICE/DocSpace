@@ -4,7 +4,7 @@ import FilesFilter from "./filter";
 import { FolderType } from "../../constants";
 import find from "lodash/find";
 
-export function openEdit(fileId, version, doc) {
+export function openEdit(fileId, doc) {
   const params = doc ? `?doc=${doc}` : "";
 
   const options = {
@@ -506,7 +506,7 @@ export function convertFile(fileId) {
   });
 }
 
-export function getConvertFile(fileId) {
+export function getFileConversationProgress(fileId) {
   return request({
     method: "get",
     url: `/files/file/${fileId}/checkconversion`,
