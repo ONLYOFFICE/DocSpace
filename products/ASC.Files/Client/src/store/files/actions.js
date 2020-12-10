@@ -845,7 +845,6 @@ const startSessionFunc = (indexOfFile, t, dispatch, getState) => {
 
   if (!item) {
     console.error("Empty files");
-    debugger;
     return Promise.resolve();
   }
 
@@ -1250,7 +1249,6 @@ const startConvertFiles = async (files, t, dispatch, getState) => {
               alert: true,
             })
           );
-          //debugger;
           return;
         }
         if (progress === 100) {
