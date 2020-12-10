@@ -81,7 +81,7 @@ class ContextMenu extends React.PureComponent {
   render() {
     //console.log('ContextMenu render', this.props);
     const { visible } = this.state;
-    const { options, id, className, style } = this.props;
+    const { options, id, className, style, withBackdrop } = this.props;
 
     return (
       ((visible && options) || null) && (
@@ -91,6 +91,7 @@ class ContextMenu extends React.PureComponent {
           style={style}
           open={visible}
           clickOutsideAction={this.handleClick}
+          withBackdrop={withBackdrop}
         >
           {options.map((item) => {
             if (item && item.key !== undefined) {
@@ -115,11 +116,13 @@ ContextMenu.propTypes = {
   className: PropTypes.string,
   id: PropTypes.string,
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  withBackdrop: PropTypes.bool,
 };
 
 ContextMenu.defaultProps = {
   options: [],
   id: "contextMenu",
+  withBackdrop: true,
 };
 
 export default ContextMenu;

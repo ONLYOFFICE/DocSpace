@@ -72,7 +72,11 @@ describe("<ContextMenu />", () => {
 
   it("accepts style", () => {
     const wrapper = mount(
-      <ContextMenu {...baseProps} style={{ color: "red" }} />
+      <ContextMenu
+        {...baseProps}
+        style={{ color: "red" }}
+        withBackdrop={false}
+      />
     );
 
     wrapper.setState({ visible: true });

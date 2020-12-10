@@ -27,3 +27,4 @@ In particular case, state is created containing options for particular Row eleme
 | `options`      |    `array`     |    -     |   -    |     `[ ]`     | DropDownItems collection |
 | `style`        | `obj`, `array` |    -     |   -    |       -       | Accepts css style        |
 | `targetAreaId` |    `string`    |    -     |   -    |       -       | Id of container apply to |
+| `withBackdrop` |     `bool`     |    -     |   -    |    `true`     | Used to display backdrop |
