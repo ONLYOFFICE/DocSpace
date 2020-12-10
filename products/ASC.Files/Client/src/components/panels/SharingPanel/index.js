@@ -84,11 +84,7 @@ class SharingPanelComponent extends React.Component {
     this.setState({ showActionPanel: !this.state.showActionPanel });
 
   onCloseActionPanel = (e) => {
-    if (
-      this.ref.current.contains(e.target) &&
-      !e.target.closest(".backdrop-active")
-    )
-      return;
+    if (this.ref.current.contains(e.target)) return;
     this.setState({ showActionPanel: !this.state.showActionPanel });
   };
 
@@ -685,7 +681,12 @@ class SharingPanelComponent extends React.Component {
 
     return (
       <StyledAsidePanel visible={visible}>
-        <Backdrop onClick={this.onClose} visible={visible} zIndex={zIndex} />
+        <Backdrop
+          onClick={this.onClose}
+          visible={visible}
+          zIndex={zIndex}
+          isAside={true}
+        />
         <Aside className="header_aside-panel" visible={visible}>
           <StyledContent>
             <StyledHeaderContent>

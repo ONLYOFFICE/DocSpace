@@ -388,6 +388,7 @@ class DatePicker extends Component {
                 onClick={this.onClose}
                 visible={isOpen}
                 zIndex={zIndex}
+                isAside={true}
               />
               <Aside visible={isOpen} scale={false} zIndex={zIndex}>
                 <Content>

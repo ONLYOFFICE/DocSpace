@@ -233,7 +233,12 @@ class NewFilesPanelComponent extends React.Component {
 
     return (
       <StyledAsidePanel visible={visible}>
-        <Backdrop onClick={onClose} visible={visible} zIndex={zIndex} />
+        <Backdrop
+          onClick={onClose}
+          visible={visible}
+          zIndex={zIndex}
+          isAside={true}
+        />
         <Aside className="header_aside-panel" visible={visible}>
           <StyledContent>
             <StyledHeaderContent>

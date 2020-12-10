@@ -108,10 +108,8 @@ class PageLayoutComponent extends React.Component {
       this.orientationChangeHandler
     );
 
-    if(this.intervalHandler)
-        clearInterval(this.intervalHandler);
-      if(this.timeoutHandler)
-        clearTimeout(this.timeoutHandler);
+    if (this.intervalHandler) clearInterval(this.intervalHandler);
+    if (this.timeoutHandler) clearTimeout(this.timeoutHandler);
   }
 
   orientationChangeHandler = () => {
@@ -135,13 +133,11 @@ class PageLayoutComponent extends React.Component {
     let lastInnerHeight, noChangeCount;
 
     const updateHeight = () => {
-      if(this.intervalHandler)
-        clearInterval(this.intervalHandler);
-      if(this.timeoutHandler)
-        clearTimeout(this.timeoutHandler);
+      if (this.intervalHandler) clearInterval(this.intervalHandler);
+      if (this.timeoutHandler) clearTimeout(this.timeoutHandler);
 
-        this.intervalHandler = null;
-        this.timeoutHandler = null;
+      this.intervalHandler = null;
+      this.timeoutHandler = null;
 
       const vh = (window.innerHeight - 57) * 0.01;
       document.documentElement.style.setProperty("--vh", `${vh}px`);
