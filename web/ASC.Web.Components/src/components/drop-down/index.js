@@ -257,7 +257,7 @@ const EnhancedComponent = onClickOutside(DropDown);
 
 class DropDownContainer extends React.Component {
   toggleDropDown = (e) => {
-    this.props.clickOutsideAction(e, !this.props.open);
+    this.props.clickOutsideAction({}, !this.props.open);
   };
   render() {
     const { withBackdrop = true, open } = this.props;

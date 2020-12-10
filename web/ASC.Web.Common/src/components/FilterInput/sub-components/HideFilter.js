@@ -26,11 +26,7 @@ class HideFilter extends React.Component {
   };
 
   handleClickOutside = (e) => {
-    if (
-      this.ref.current.contains(e.target) &&
-      !e.target.closest(".backdrop-active")
-    )
-      return;
+    if (this.ref.current.contains(e.target)) return;
     this.setState({ popoverOpen: !this.state.popoverOpen });
   };
 

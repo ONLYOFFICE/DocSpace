@@ -39,11 +39,7 @@ class ProfileActions extends React.PureComponent {
   };
 
   onClose = (e) => {
-    if (
-      this.ref.current.contains(e.target) &&
-      !e.target.closest(".backdrop-active")
-    )
-      return;
+    if (this.ref.current.contains(e.target)) return;
 
     this.setOpened(!this.state.opened);
   };

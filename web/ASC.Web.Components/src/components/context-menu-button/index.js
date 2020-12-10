@@ -140,11 +140,7 @@ class ContextMenuButton extends React.Component {
   };
 
   clickOutsideAction = (e) => {
-    if (
-      this.ref.current.contains(e.target) &&
-      !e.target.closest(".backdrop-active")
-    )
-      return;
+    if (this.ref.current.contains(e.target)) return;
 
     this.onIconButtonClick();
   };
@@ -234,7 +230,12 @@ class ContextMenuButton extends React.Component {
           </DropDown>
         ) : (
           <>
-            <Backdrop onClick={this.onClose} visible={isOpen} zIndex={310} />
+            <Backdrop
+              onClick={this.onClose}
+              visible={isOpen}
+              zIndex={310}
+              isAside={true}
+            />
             <Aside visible={isOpen} scale={false} zIndex={310}>
               <Content>
                 <Header>
