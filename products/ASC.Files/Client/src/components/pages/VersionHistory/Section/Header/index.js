@@ -10,7 +10,8 @@ const { tablet, desktop } = utils.device;
 const { getSettings } = store.auth.selectors;
 
 const StyledContainer = styled.div`
-  display: flex;
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
   align-items: center;
 
   .arrow-button {

@@ -46,7 +46,8 @@ const { EmployeeStatus } = constants;
 const StyledContainer = styled.div`
   position: relative;
 
-  display: flex;
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
   align-items: center;
 
   .action-button {

@@ -24,7 +24,7 @@ const StyledSectionHeader = styled.div`
   }
 
   .section-header {
-    width: calc(100% - 76px);
+    //width: calc(100% - 76px);
 
     @media ${tablet} {
       width: 100%;
@@ -37,12 +37,12 @@ const StyledSectionHeader = styled.div`
     h4,
     h5,
     h6 {
-      max-width: calc(100vw - 435px);
+      //max-width: calc(100vw - 435px);
 
-      @media ${tablet} {
+      /* @media ${tablet} {
         max-width: ${(props) =>
-          props.isArticlePinned ? `calc(100vw - 320px)` : `calc(100vw - 96px)`};
-      }
+        props.isArticlePinned ? `calc(100vw - 320px)` : `calc(100vw - 96px)`};
+      }*/
     }
   }
 `;

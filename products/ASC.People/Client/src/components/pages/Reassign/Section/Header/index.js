@@ -7,7 +7,8 @@ import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 
 const Wrapper = styled.div`
-  display: flex;
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
   align-items: center;
 
   .arrow-button {
