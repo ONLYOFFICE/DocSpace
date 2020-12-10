@@ -7,7 +7,8 @@ import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 
 const Wrapper = styled.div`
-  display: flex;
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
   align-items: center;
 
   .arrow-button {
@@ -20,7 +21,6 @@ const Wrapper = styled.div`
 
 const textStyle = {
   marginLeft: "16px",
-  marginRight: "16px",
 };
 
 const SectionHeaderContent = (props) => {
