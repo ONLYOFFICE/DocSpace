@@ -211,18 +211,20 @@ class SharingPanelComponent extends React.Component {
     const returnValue = this.getData();
     const folderId = returnValue[0];
     const fileId = returnValue[1];
-    const { getAccessOption, selection } = this.props;
+    const { getAccessOption, getExternalAccessOption, selection } = this.props;
 
     if (folderId.length !== 0 || fileId.length !== 0) {
       getShareUsers(folderId, fileId)
         .then((shareDataItems) => {
           const baseShareData = JSON.parse(JSON.stringify(shareDataItems));
           const accessOptions = getAccessOption(selection);
+          const externalAccessOptions = getExternalAccessOption(selection);
 
           this.setState({
             baseShareData,
             shareDataItems,
             accessOptions,
+            externalAccessOptions,
             showPanel: true,
           });
         })

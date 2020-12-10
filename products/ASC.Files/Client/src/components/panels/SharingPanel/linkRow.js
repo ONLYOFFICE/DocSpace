@@ -21,7 +21,7 @@ class LinkRow extends React.Component {
       t,
       item,
       withToggle,
-      accessOptions,
+      externalAccessOptions,
       onChangeItemAccess,
     } = this.props;
 
@@ -38,7 +38,7 @@ class LinkRow extends React.Component {
               <AccessComboBox
                 access={item.access}
                 directionX="left"
-                accessOptions={accessOptions}
+                accessOptions={externalAccessOptions}
                 onAccessChange={onChangeItemAccess}
                 itemId={item.sharedTo.id}
                 isDisabled={isDisabled}
