@@ -21,7 +21,6 @@ const Wrapper = styled.div`
 
 const textStyle = {
   marginLeft: "16px",
-  marginRight: "16px",
 };
 
 const SectionHeaderContent = (props) => {

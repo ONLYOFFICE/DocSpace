@@ -25,14 +25,6 @@ const StyledContainer = styled.div`
     }
   }
 
-  @media ${desktop} {
-    ${(props) =>
-      props.isHeaderVisible &&
-      css`
-        width: calc(100% + 76px);
-      `}
-  }
-
   .group-button-menu-container {
     margin: 0 -16px;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
@@ -86,7 +78,7 @@ const SectionHeaderContent = (props) => {
   };
 
   return (
-    <StyledContainer isHeaderVisible={true}>
+    <StyledContainer>
       <IconButton
         iconName="ArrowPathIcon"
         size="17"

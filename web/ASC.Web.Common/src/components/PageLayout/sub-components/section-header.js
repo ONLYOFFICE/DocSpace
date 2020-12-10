@@ -24,25 +24,9 @@ const StyledSectionHeader = styled.div`
   }
 
   .section-header {
-    //width: calc(100% - 76px);
-
     @media ${tablet} {
       width: 100%;
       padding-top: 4px;
-    }
-
-    h1,
-    h2,
-    h3,
-    h4,
-    h5,
-    h6 {
-      //max-width: calc(100vw - 435px);
-
-      /* @media ${tablet} {
-        max-width: ${(props) =>
-        props.isArticlePinned ? `calc(100vw - 320px)` : `calc(100vw - 96px)`};
-      }*/
     }
   }
 `;
@@ -55,11 +39,10 @@ class SectionHeader extends React.Component {
   render() {
     //console.log("PageLayout SectionHeader render");
     // eslint-disable-next-line react/prop-types
-    const { isArticlePinned, borderBottom, ...rest } = this.props;
+    const { borderBottom, ...rest } = this.props;
 
     return (
       <StyledSectionHeader
-        isArticlePinned={isArticlePinned}
         borderBottom={borderBottom}
       >
         <div className="section-header" {...rest} />
