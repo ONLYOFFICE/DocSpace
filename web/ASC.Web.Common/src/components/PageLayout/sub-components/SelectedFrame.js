@@ -125,25 +125,33 @@ class SelectedFrame extends React.Component {
       for (let childItem in this.container.childNodes) {
         if (this.container.childNodes[childItem].nodeType === 1) {
           const item = this.container.childNodes[childItem];
+          console.log(item.childNodes);
           const currentItem = item.childNodes[0];
-          const itemHeight = currentItem.offsetHeight;
-          const itemOffsetTop = item.offsetTop;
+          if (currentItem) {
+            const itemHeight = currentItem.offsetHeight;
+            const itemOffsetTop = item.offsetTop;
 
-          //const topStart = top - itemHeight - this.props.scrollRef.current.view.offsetParent.offsetTop - offset - 16;
-          //const topEnd = mouseYX[0] - itemHeight;
-          offsetScroll = this.props.scrollRef.current.viewScrollTop || 0;
-          const topStart =
-            top - itemHeight - offsetTop - offset - smallPadding - offsetScroll;
-          const topEnd = mouseYX[0] - offsetTop - offset - smallPadding;
+            //const topStart = top - itemHeight - this.props.scrollRef.current.view.offsetParent.offsetTop - offset - 16;
+            //const topEnd = mouseYX[0] - itemHeight;
+            offsetScroll = this.props.scrollRef.current.viewScrollTop || 0;
+            const topStart =
+              top -
+              itemHeight -
+              offsetTop -
+              offset -
+              smallPadding -
+              offsetScroll;
+            const topEnd = mouseYX[0] - offsetTop - offset - smallPadding;
 
-          if (
-            itemOffsetTop - offsetScroll >= topStart &&
-            itemOffsetTop - offsetScroll <= topEnd
-          ) {
-            const value = currentItem.getAttribute("value");
-            if (value && value.split("_")[2]) {
-              needUpdate = false;
-              break;
+            if (
+              itemOffsetTop - offsetScroll >= topStart &&
+              itemOffsetTop - offsetScroll <= topEnd
+            ) {
+              const value = currentItem.getAttribute("value");
+              if (value && value.split("_")[2]) {
+                needUpdate = false;
+                break;
+              }
             }
           }
         }
