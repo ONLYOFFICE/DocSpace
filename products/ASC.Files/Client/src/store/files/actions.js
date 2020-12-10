@@ -1176,7 +1176,6 @@ export const setDialogVisible = (t) => {
     }
   };
 };
-
 export const convertUploadedFiles = (t) => {
   return (dispatch, getState) => {
     const state = getState();
@@ -1236,11 +1235,23 @@ const startConvertFiles = async (files, t, dispatch, getState) => {
 
     if (data && data[0] && data[0].progress !== 100) {
       let progress = data[0].progress;
+      let error = null;
       while (progress < 100) {
         const res = await getConversationProgress(fileId);
 
         progress = res && res[0] && res[0].progress;
-
+        error = res && res[0] && res[0].error;
+        if (error.length) {
+          dispatch(
+            setPrimaryProgressBarData({
+              icon: "file",
+              visible: true,
+              alert: true,
+            })
+          );
+          //debugger;
+          return;
+        }
         if (progress === 100) {
           break;
         } else {
