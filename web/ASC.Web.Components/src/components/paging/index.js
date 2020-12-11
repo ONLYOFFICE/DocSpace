@@ -40,7 +40,7 @@ const StyledPage = styled.div`
 
   .manualWidth {
     .dropdown-container {
-      width: 120%;
+      width: 110%;
     }
   }
 `;
