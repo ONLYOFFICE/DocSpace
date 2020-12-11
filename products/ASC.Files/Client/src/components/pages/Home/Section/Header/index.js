@@ -62,25 +62,30 @@ const { Consumer } = utils.context;
 const StyledContainer = styled.div`
   .header-container {
     position: relative;
-    display: grid;
-    grid-template-columns: ${(props) =>
-      props.isRootFolder
-        ? "auto auto 1fr"
-        : props.canCreate
-        ? "auto auto auto auto 1fr"
-        : "auto auto auto 1fr"};
+    ${(props) =>
+      props.title &&
+      css`
+        display: grid;
+        grid-template-columns: ${(props) =>
+          props.isRootFolder
+            ? "auto auto 1fr"
+            : props.canCreate
+            ? "auto auto auto auto 1fr"
+            : "auto auto auto 1fr"};
 
+        @media ${tablet} {
+          grid-template-columns: ${(props) =>
+            props.isRootFolder
+              ? "1fr auto"
+              : props.canCreate
+              ? "auto 1fr auto auto"
+              : "auto 1fr auto"};
+        }
+      `}
     align-items: center;
     max-width: calc(100vw - 32px);
 
     @media ${tablet} {
-      grid-template-columns: ${(props) =>
-        props.isRootFolder
-          ? "1fr auto"
-          : props.canCreate
-          ? "auto 1fr auto auto"
-          : "auto 1fr auto"};
-
       .headline-header {
         margin-left: -1px;
       }
@@ -530,6 +535,7 @@ class SectionHeaderContent extends React.Component {
             width={context.sectionWidth}
             isRootFolder={isRootFolder}
             canCreate={canCreate}
+            title={title}
           >
             {isHeaderVisible ? (
               <div className="group-button-menu-container">
