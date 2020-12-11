@@ -465,9 +465,10 @@ class FilesRowContent extends React.PureComponent {
     const updatedDate = updated && this.getStatusByDate();
 
     const isEdit = id === editingId && fileExst === fileAction.extension;
-    const linkStyles = isTrashFolder
-      ? { noHover: true }
-      : { onClick: this.onFilesClick };
+    const linkStyles =
+      isTrashFolder || window.innerWidth <= 1024
+        ? { noHover: true }
+        : { onClick: this.onFilesClick };
     const showNew = !!newItems;
 
     return isEdit ? (
