@@ -98,25 +98,22 @@ namespace ASC.Common.Threading
 
         public T GetProperty<T>(string name)
         {
-            var val = DistributedTaskCache.Props.FirstOrDefault(r => r.Key == name);
+            var prop = DistributedTaskCache.Props.FirstOrDefault(r => r.Key == name);
 
-            if (val == null) return default;
+            if (prop == null) return default;
 
             var resType = typeof(T);
-            object result = val.Value;
+            var val = prop.Value.Trim('"');
+            object result = val;
 
             if(resType == typeof(Guid))
             {
-                result = Guid.Parse(val.Value.Trim('"'));
+                result = Guid.Parse(val);
             }
             else if(resType.IsEnum)
             {
-                Enum.TryParse(resType, val.Value, out var e);
+                Enum.TryParse(resType, val, out var e);
                 result = e;
-            }
-            else if (resType == typeof(bool))
-            {
-                result = bool.Parse(val.Value);
             }
 
             return (T)Convert.ChangeType(result, resType);
