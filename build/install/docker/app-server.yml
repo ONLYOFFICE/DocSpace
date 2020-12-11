@@ -164,7 +164,7 @@ services:
       - DOCUMENT_SERVER=${DOCUMENT_SERVER_HOST}
       - SERVICE_PORT=${SERVICE_PORT}
     volumes:
-      - nginx_log:/var/log/nginx
+      - proxy_log:/var/log/nginx
 
 networks:
   default:
@@ -175,6 +175,6 @@ volumes:
   kafka_data:
   zoo_data:
   zoo_log:
-  nginx_log:
+  proxy_log:
   app_data:
   es_data:
