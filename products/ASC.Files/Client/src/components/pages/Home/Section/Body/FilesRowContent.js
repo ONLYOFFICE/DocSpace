@@ -363,7 +363,7 @@ class FilesRowContent extends React.PureComponent {
       clearSecondaryProgressData,
       fetchFiles,
     } = this.props;
-    api.files.getConvertFile(fileId).then((res) => {
+    api.files.getFileConversationProgress(fileId).then((res) => {
       if (res && res[0] && res[0].progress !== 100) {
         setSecondaryProgressBarData({
           icon: "file",
@@ -532,7 +532,7 @@ class FilesRowContent extends React.PureComponent {
                 >
                   {fileExst}
                 </Text>
-                {canConvert && !isTrashFolder && (
+                {/* TODO: Uncomment after fix conversation {canConvert && !isTrashFolder && (
                   <IconButton
                     onClick={this.setConvertDialogVisible}
                     iconName="FileActionsConvertIcon"
@@ -542,7 +542,7 @@ class FilesRowContent extends React.PureComponent {
                     color="#A3A9AE"
                     hoverColor="#3B72A7"
                   />
-                )}
+                )} */}
                 {canWebEdit && !isTrashFolder && (
                   <IconButton
                     onClick={this.onFilesClick}

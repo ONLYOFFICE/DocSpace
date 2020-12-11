@@ -37,6 +37,7 @@ import {
   getIsLoading,
   getDragging,
   getSharePanelVisible,
+  getFirstLoad,
 } from "../../../store/files/selectors";
 
 import { ConvertDialog } from "../../dialogs";
@@ -49,7 +50,7 @@ const i18n = createI18N({
 });
 const { changeLanguage } = utils;
 const { FilesFilter } = api;
-const { getSettingsHomepage, getIsLoaded } = store.auth.selectors;
+const { getSettingsHomepage } = store.auth.selectors;
 
 class PureHome extends React.Component {
   componentDidMount() {
@@ -175,7 +176,7 @@ class PureHome extends React.Component {
       convertDialogVisible,
       sharingPanelVisible,
       fileActionId,
-      isLoaded,
+      firstLoad,
     } = this.props;
 
     return (
@@ -206,7 +207,7 @@ class PureHome extends React.Component {
             primaryProgressData.visible ||
             secondaryProgressData.visible
           }
-          isLoaded={isLoaded}
+          isLoaded={!firstLoad}
         >
           <PageLayout.ArticleHeader>
             <ArticleHeaderContent />
@@ -274,7 +275,7 @@ function mapStateToProps(state) {
     isLoading: getIsLoading(state),
     homepage: getSettingsHomepage(state),
     dragging: getDragging(state),
-    isLoaded: getIsLoaded(state),
+    firstLoad: getFirstLoad(state),
     sharingPanelVisible: getSharePanelVisible(state),
   };
 }
