@@ -66,19 +66,36 @@ class Backdrop extends React.Component {
     }
   };
 
+  modifyClassName = () => {
+    const { className } = this.props;
+    let modifiedClass = "backdrop-active";
+
+    if (className) {
+      if (typeof className !== "string") {
+        if (!className.includes(modifiedClass)) {
+          modifiedClass = className.push(modifiedClass);
+        } else {
+          modifiedClass = className;
+        }
+      } else {
+        modifiedClass += ` ${className}`;
+      }
+    }
+
+    return modifiedClass;
+  };
+
   render() {
     const { needBackdrop, needBackground } = this.state;
-    const { className, isAside, visible } = this.props;
+    const { isAside, visible } = this.props;
 
-    const classNameStr = className
-      ? `backdrop-active ${className}`
-      : "backdrop-active";
+    const modifiedClassName = this.modifyClassName();
 
     return visible && (needBackdrop || isAside) ? (
       <StyledBackdrop
         {...this.props}
         ref={this.backdropRef}
-        className={classNameStr}
+        className={modifiedClassName}
         needBackground={needBackground}
         visible={visible}
       />
@@ -89,7 +106,7 @@ class Backdrop extends React.Component {
 Backdrop.propTypes = {
   visible: PropTypes.bool,
   zIndex: PropTypes.number,
-  className: PropTypes.string,
+  className: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
   id: PropTypes.string,
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   withBackground: PropTypes.bool,
