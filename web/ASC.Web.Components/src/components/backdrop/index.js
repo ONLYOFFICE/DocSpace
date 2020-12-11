@@ -46,15 +46,13 @@ class Backdrop extends React.Component {
     if (visible) {
       const isTablet = window.innerWidth < 1024;
       const backdrops = document.querySelectorAll(".backdrop-active");
-      const backdropsAside = document.querySelectorAll(".backdrop-aside");
 
-      const needBackdrop = backdrops.length < 1 || isAside;
+      const needBackdrop =
+        backdrops.length < 1 || (isAside && backdrops.length <= 1);
 
-      let needBackground =
-        needBackdrop && (isTablet || isAside || withBackground);
+      let needBackground = needBackdrop && (isTablet || withBackground);
 
-      if (!isAside && backdropsAside.length > 0) needBackground = false;
-      if (isAside && backdropsAside.length > 1) needBackground = false;
+      if (isAside && needBackdrop) needBackground = true;
 
       this.setState({
         needBackdrop: needBackdrop,
@@ -68,25 +66,11 @@ class Backdrop extends React.Component {
     }
   };
 
-  onClickHandler = (e) => {
-    if (this.backdropRef.current.classList.contains("backdrop-aside")) {
-      const backdrops = document.querySelectorAll(".backdrop-active");
-      if (backdrops.length > 0) {
-        backdrops.forEach((item) => item.click());
-      }
-    }
-    this.props.onClick && this.props.onClick(e);
-  };
-
   render() {
     const { needBackdrop, needBackground } = this.state;
     const { className, isAside, visible } = this.props;
 
-    const classNameStr = isAside
-      ? className
-        ? `backdrop-active backdrop-aside ${className}`
-        : "backdrop-active backdrop-aside"
-      : className
+    const classNameStr = className
       ? `backdrop-active ${className}`
       : "backdrop-active";
 
@@ -97,7 +81,6 @@ class Backdrop extends React.Component {
         className={classNameStr}
         needBackground={needBackground}
         visible={visible}
-        onClick={this.onClickHandler}
       />
     ) : null;
   }
