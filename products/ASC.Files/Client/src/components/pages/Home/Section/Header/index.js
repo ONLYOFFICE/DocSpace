@@ -232,19 +232,21 @@ class SectionHeaderContent extends React.Component {
   onCopyAction = () =>
     this.setState({ showCopyPanel: !this.state.showCopyPanel });
 
-  loop = (url) => {
+  loop = (data) => {
+    const url = data.url;
     api.files
       .getProgress()
       .then((res) => {
+        const currentItem = res.find((x) => x.id === data.id);
         if (!url) {
           this.props.setSecondaryProgressBarData({
             icon: "file",
             visible: true,
-            percent: res[0].progress,
+            percent: currentItem.progress,
             label: this.props.t("ArchivingData"),
             alert: false,
           });
-          setTimeout(() => this.loop(res[0].url), 1000);
+          setTimeout(() => this.loop(currentItem), 1000);
         } else {
           setTimeout(() => this.props.clearSecondaryProgressData(), TIMEOUT);
           return window.open(url, "_blank");
@@ -292,7 +294,7 @@ class SectionHeaderContent extends React.Component {
     api.files
       .downloadFiles(fileIds, folderIds)
       .then((res) => {
-        this.loop(res[0].url);
+        this.loop(res[0]);
       })
       .catch((err) => {
         setSecondaryProgressBarData({
