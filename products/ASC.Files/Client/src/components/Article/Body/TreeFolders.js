@@ -190,7 +190,7 @@ class TreeFolders extends React.Component {
             onBadgeClick={this.onBadgeClick}
             showBadge={showBadge}
           >
-            {item.rootFolderType === 13 && !this.props.isDesktop
+            {item.rootFolderType === FolderType.Privacy && !this.props.isDesktop
               ? null
               : this.getItems(item.folders)}
           </TreeNode>
@@ -206,7 +206,7 @@ class TreeFolders extends React.Component {
           isLeaf={item.foldersCount ? false : true}
           icon={this.getFolderIcon(item)}
           newItems={
-            !this.props.isDesktop && item.rootFolderType === 13
+            !this.props.isDesktop && item.rootFolderType === FolderType.Privacy
               ? null
               : item.newItems
           }
