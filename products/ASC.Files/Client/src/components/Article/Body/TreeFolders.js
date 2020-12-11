@@ -205,7 +205,11 @@ class TreeFolders extends React.Component {
           dragging={dragging}
           isLeaf={item.foldersCount ? false : true}
           icon={this.getFolderIcon(item)}
-          newItems={item.newItems}
+          newItems={
+            !this.props.isDesktop && item.rootFolderType === 13
+              ? null
+              : item.newItems
+          }
           onBadgeClick={this.onBadgeClick}
           showBadge={showBadge}
         />
