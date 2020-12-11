@@ -46,9 +46,7 @@ class Backdrop extends React.Component {
     if (visible) {
       const isTablet = window.innerWidth < 1024;
       const backdrops = document.querySelectorAll(".backdrop-active");
-      const backdropsAside = document.querySelectorAll(
-        ".backdrop-active-aside"
-      );
+      const backdropsAside = document.querySelectorAll(".backdrop-aside");
 
       const needBackdrop = backdrops.length < 1 || isAside;
 
@@ -71,7 +69,7 @@ class Backdrop extends React.Component {
   };
 
   onClickHandler = (e) => {
-    if (this.backdropRef.current.classList.contains("backdrop-active-aside")) {
+    if (this.backdropRef.current.classList.contains("backdrop-aside")) {
       const backdrops = document.querySelectorAll(".backdrop-active");
       if (backdrops.length > 0) {
         backdrops.forEach((item) => item.click());
@@ -86,8 +84,8 @@ class Backdrop extends React.Component {
 
     const classNameStr = isAside
       ? className
-        ? `backdrop-active-aside ${className}`
-        : "backdrop-active-aside"
+        ? `backdrop-active backdrop-aside ${className}`
+        : "backdrop-active backdrop-aside"
       : className
       ? `backdrop-active ${className}`
       : "backdrop-active";
