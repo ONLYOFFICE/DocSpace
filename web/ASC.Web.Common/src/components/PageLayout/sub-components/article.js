@@ -38,6 +38,7 @@ const StyledArticle = styled.article`
           ? props.pinned
             ? `
             min-width: 240px;
+            max-width: ${props.isLoaded ? "calc(100vw - 368px)" : "240px"};
           `
             : `
             position: fixed !important;
