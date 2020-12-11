@@ -71,7 +71,7 @@ services:
       target: backup
     image: "${REPO:-onlyoffice}/${STATUS:-}appserver-backup:${TAG_SRV:-latest}"
     
-  onlyoffice-nginx:
+  onlyoffice-proxy:
     build:
       context:  ./
       dockerfile: Dockerfile-app

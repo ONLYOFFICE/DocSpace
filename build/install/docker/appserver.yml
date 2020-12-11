@@ -6,29 +6,30 @@ x-service:
     expose:
     - ${SERVICE_PORT:-5050}
     environment:
-      MYSQL_HOST: ${MYSQL_HOST:-mysql}
+      MYSQL_HOST: ${MYSQL_HOST}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       APP_DOTNET_ENV: ${APP_DOTNET_ENV:-products}
       APP_CORE_BASE_DOMAIN: ${APP_CORE_BASE_DOMAIN:-localhost}
-      APP_CORE_MACHINEKEY: ${APP_CORE_MACHINEKEY:-""}
-      DOCUMENT_SERVER_JWT_SECRET: ${DOCUMENT_SERVER_JWT_SECRET:-""}
-      DOCUMENT_SERVER_JWT_HEADER: ${DOCUMENT_SERVER_JWT_HEADER:-""}
+      APP_CORE_MACHINEKEY: ${APP_CORE_MACHINEKEY}
+      DOCUMENT_SERVER_JWT_SECRET: ${DOCUMENT_SERVER_JWT_SECRET}
+      DOCUMENT_SERVER_JWT_HEADER: ${DOCUMENT_SERVER_JWT_HEADER}
       DOCUMENT_SERVER_URL_PUBLIC: ${DOCUMENT_SERVER_URL_PUBLIC:-/ds-vpath/}
       DOCUMENT_SERVER_URL_INTERNAL: ${DOCUMENT_SERVER_URL_INTERNAL:-http://onlyoffice-document-server/}
       DOCUMENT_SERVER_URL_CONVERTER: ${DOCUMENT_SERVER_URL_CONVERTER:-/ds-vpath/ConvertService.ashx}
-      KAFKA_HOST: ${KAFKA_HOST:-kafka}
-      ELK_HOST: ${ELK_HOST:-elasticsearch}
-      PROXY_HOST: ${PROXY_HOST:-proxy}
+      KAFKA_HOST: ${KAFKA_HOST}
+      ELK_HOST: ${ELK_HOST}
+      PROXY_HOST: ${PROXY_HOST}
     volumes:
-    - /app/onlyoffice/CommunityServer/data:/app/onlyoffice/data/
+    #- /app/onlyoffice/CommunityServer/data:/app/onlyoffice/data
+    - app_data:/app/onlyoffice/data
 
 services: 
   onlyoffice-elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:${ELK_VERSION}
-    container_name: ${ELK_HOST:-elasticsearch}
+    container_name: ${ELK_HOST}
     restart: always
     environment:
       - discovery.type=single-node
@@ -49,7 +50,7 @@ services:
 
   onlyoffice-zookeeper:
     image: zookeeper:latest
-    container_name: ${ZOO_HOST:-zookeeper}
+    container_name: ${ZOO_HOST}
     restart: always
     expose:
       - "2181"
@@ -63,7 +64,7 @@ services:
 
   onlyoffice-kafka:
     image: confluentinc/cp-kafka:latest
-    container_name: ${KAFKA_HOST:-kafka}
+    container_name: ${KAFKA_HOST}
     restart: always
     expose:
       - "9092"
@@ -83,56 +84,56 @@ services:
   onlyoffice-api:
     <<: *x-service-base
     image: "${REPO:-onlyoffice}/${STATUS:-}appserver-api:${TAG_SRV:-latest}"
-    container_name: ${API_HOST:-api}
+    container_name: ${API_HOST}
 
   onlyoffice-api_system:
     <<: *x-service-base
     image: "${REPO:-onlyoffice}/${STATUS:-}appserver-api_system:${TAG_SRV:-latest}"
-    container_name: ${API_SYSTEM_HOST:-api_system}
+    container_name: ${API_SYSTEM_HOST}
      
   onlyoffice-urlshortener:
     <<: *x-service-base
     image: "${REPO:-onlyoffice}/${STATUS:-}appserver-urlshortener:${TAG_SRV:-latest}"
-    container_name: ${URLSHORTENER_HOST:-urlshortener}
+    container_name: ${URLSHORTENER_HOST}
    
   onlyoffice-studio.notify:
     <<: *x-service-base
     image: "${REPO:-onlyoffice}/${STATUS:-}appserver-studio.notify:${TAG_SRV:-latest}"
-    container_name: ${STUDIO_NOYIFY_HOST:-studio.notify}
+    container_name: ${STUDIO_NOYIFY_HOST}
     
   onlyoffice-notify:
     <<: *x-service-base
     image: "${REPO:-onlyoffice}/${STATUS:-}appserver-notify:${TAG_SRV:-latest}"
-    container_name: ${NOTIFY_HOST:-notify}
+    container_name: ${NOTIFY_HOST}
 
   onlyoffice-people.server:
     <<: *x-service-base
     image: "${REPO:-onlyoffice}/${STATUS:-}appserver-people.server:${TAG_SRV:-latest}"
-    container_name: ${PEOPLE_SERVER_HOST:-people.server}
+    container_name: ${PEOPLE_SERVER_HOST}
     
   onlyoffice-files:
     <<: *x-service-base
     image: "${REPO:-onlyoffice}/${STATUS:-}appserver-files:${TAG_SRV:-latest}"
-    container_name: ${FILES_HOST:-files}
+    container_name: ${FILES_HOST}
     
   onlyoffice-files_services:
     <<: *x-service-base
     image: "${REPO:-onlyoffice}/${STATUS:-}appserver-files_services:${TAG_SRV:-latest}"
-    container_name: ${FILES_SERVICES_HOST:-files_services}
+    container_name: ${FILES_SERVICES_HOST}
     
   onlyoffice-studio:
     <<: *x-service-base
     image: "${REPO:-onlyoffice}/${STATUS:-}appserver-studio:${TAG_SRV:-latest}"
-    container_name: ${STUDIO_HOST:-studio}
+    container_name: ${STUDIO_HOST}
    
   onlyoffice-backup:
     <<: *x-service-base
     image: "${REPO:-onlyoffice}/${STATUS:-}appserver-backup:${TAG_SRV:-latest}"
-    container_name: ${BACKUP_HOST:-backup}
+    container_name: ${BACKUP_HOST}
     
-  onlyoffice-nginx:
+  onlyoffice-proxy:
     image: "${REPO:-onlyoffice}/${STATUS:-}appserver-proxy:${TAG_SRV:-latest}"
-    container_name: ${PROXY_HOST:-proxy}
+    container_name: ${PROXY_HOST}
     restart: always
     expose:
       - "8081"
@@ -151,17 +152,17 @@ services:
       - onlyoffice-studio
       - onlyoffice-backup
     environment:
-      - SERVICE_API="${SERVICE_API:-api:5050}"
-      - SERVICE_API_SYSTEM="${SERVICE_API_SYSTEM:-api_system:5050}"
-      - SERVICE_URLSHORYENER="${SERVICE_URLSHORYENER:-urlshortener:5050}"
-      - SERVICE_STUDIO_NOTIFY="${SERVICE_STUDIO_NOTIFY:-studio.notify:-5050}"
-      - SERVICE_PEOPLE_SERVER="${SERVICE_PEOPLE_SERVER:-people.server:-5050}"
-      - SERVICE_FILES="${SERVICE_FILES:-files:-5050}"
-      - SERVICE_FILES_SERVICES="${SERVICE_FILES_SERVICES:-files_services:-5050}"
-      - SERVICE_STUDIO="${SERVICE_STUDIO:-studio:-5050}"
-      - SERVICE_BACKUP="${SERVICE_BACKUP:-backup:-5050}"
-      - DOCUMENT_SERVER="${DOCUMENT_SERVER_HOST:-document-server}"
-      - SERVICE_PORT=${SERVICE_PORT:-5050}
+      - SERVICE_API=${SERVICE_API}
+      - SERVICE_API_SYSTEM=${SERVICE_API_SYSTEM}
+      - SERVICE_URLSHORYENER=${SERVICE_URLSHORYENER}
+      - SERVICE_STUDIO_NOTIFY=${SERVICE_STUDIO_NOTIFY}
+      - SERVICE_PEOPLE_SERVER=${SERVICE_PEOPLE_SERVER}
+      - SERVICE_FILES=${SERVICE_FILES}
+      - SERVICE_FILES_SERVICES=${SERVICE_FILES_SERVICES}
+      - SERVICE_STUDIO=${SERVICE_STUDIO}
+      - SERVICE_BACKUP=${SERVICE_BACKUP}
+      - DOCUMENT_SERVER=${DOCUMENT_SERVER}
+      - SERVICE_PORT=${SERVICE_PORT}
     volumes:
       - nginx_log:/var/log/nginx
 
