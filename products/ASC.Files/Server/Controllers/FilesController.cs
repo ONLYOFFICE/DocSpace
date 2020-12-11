@@ -2219,6 +2219,7 @@ namespace ASC.Api.Documents
         }
 
         /// <visible>false</visible>
+        [AllowAnonymous]
         [Read("docservice")]
         public object GetDocServiceUrl(bool version)
         {

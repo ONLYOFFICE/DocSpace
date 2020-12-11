@@ -143,9 +143,9 @@ class FilterInput extends React.Component {
     }
 
     if (
-      (!equal(selectedFilterData.filterValues, filterValues) ||
-        inputValue !== searchText) &&
-      sectionWidth !== prevProps.sectionWidth
+      !equal(selectedFilterData.filterValues, filterValues) ||
+      inputValue !== searchText // &&
+      //sectionWidth !== prevProps.sectionWidth
     ) {
       const sortData = getSortData();
       const filterValues = this.getDefaultFilterData();
