@@ -62,25 +62,30 @@ const { Consumer } = utils.context;
 const StyledContainer = styled.div`
   .header-container {
     position: relative;
-    display: grid;
-    grid-template-columns: ${(props) =>
-      props.isRootFolder
-        ? "auto auto 1fr"
-        : props.canCreate
-        ? "auto auto auto auto 1fr"
-        : "auto auto auto 1fr"};
+    ${(props) =>
+      props.title &&
+      css`
+        display: grid;
+        grid-template-columns: ${(props) =>
+          props.isRootFolder
+            ? "auto auto 1fr"
+            : props.canCreate
+            ? "auto auto auto auto 1fr"
+            : "auto auto auto 1fr"};
 
+        @media ${tablet} {
+          grid-template-columns: ${(props) =>
+            props.isRootFolder
+              ? "1fr auto"
+              : props.canCreate
+              ? "auto 1fr auto auto"
+              : "auto 1fr auto"};
+        }
+      `}
     align-items: center;
     max-width: calc(100vw - 32px);
 
     @media ${tablet} {
-      grid-template-columns: ${(props) =>
-        props.isRootFolder
-          ? "1fr auto"
-          : props.canCreate
-          ? "auto 1fr auto auto"
-          : "auto 1fr auto"};
-
       .headline-header {
         margin-left: -1px;
       }
@@ -232,19 +237,21 @@ class SectionHeaderContent extends React.Component {
   onCopyAction = () =>
     this.setState({ showCopyPanel: !this.state.showCopyPanel });
 
-  loop = (url) => {
+  loop = (data) => {
+    const url = data.url;
     api.files
       .getProgress()
       .then((res) => {
+        const currentItem = res.find((x) => x.id === data.id);
         if (!url) {
           this.props.setSecondaryProgressBarData({
             icon: "file",
             visible: true,
-            percent: res[0].progress,
+            percent: currentItem.progress,
             label: this.props.t("ArchivingData"),
             alert: false,
           });
-          setTimeout(() => this.loop(res[0].url), 1000);
+          setTimeout(() => this.loop(currentItem), 1000);
         } else {
           setTimeout(() => this.props.clearSecondaryProgressData(), TIMEOUT);
           return window.open(url, "_blank");
@@ -292,7 +299,7 @@ class SectionHeaderContent extends React.Component {
     api.files
       .downloadFiles(fileIds, folderIds)
       .then((res) => {
-        this.loop(res[0].url);
+        this.loop(res[0]);
       })
       .catch((err) => {
         setSecondaryProgressBarData({
@@ -528,6 +535,7 @@ class SectionHeaderContent extends React.Component {
             width={context.sectionWidth}
             isRootFolder={isRootFolder}
             canCreate={canCreate}
+            title={title}
           >
             {isHeaderVisible ? (
               <div className="group-button-menu-container">

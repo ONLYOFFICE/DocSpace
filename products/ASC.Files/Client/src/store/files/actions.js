@@ -1432,16 +1432,16 @@ export const loopFilesOperations = (id, destFolderId, isCopy) => {
                       );
                       //toastr.error(err);
                       setTimeout(
-                        () => dispatch(clearPrimaryProgressData()),
+                        () => dispatch(clearSecondaryProgressData()),
                         TIMEOUT
                       );
                     })
-                    .finally(() =>
+                    .finally(() => {
                       setTimeout(
-                        () => dispatch(clearPrimaryProgressData()),
+                        () => dispatch(clearSecondaryProgressData()),
                         TIMEOUT
-                      )
-                    );
+                      );
+                    });
                 } else {
                   dispatch(
                     setSecondaryProgressBarData({

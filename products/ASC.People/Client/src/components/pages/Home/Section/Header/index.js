@@ -75,14 +75,19 @@ const StyledContainer = styled.div`
 
   .header-container {
     position: relative;
-    display: grid;
-    grid-template-columns: auto auto 1fr;
+    ${(props) =>
+      props.isLoaded &&
+      css`
+        display: grid;
+        grid-template-columns: auto auto 1fr;
+
+        @media ${tablet} {
+          grid-template-columns: 1fr auto;
+        }
+      `}
+
     align-items: center;
     max-width: calc(100vw - 32px);
-
-    @media ${tablet} {
-      grid-template-columns: 1fr auto;
-    }
 
     .action-button {
       margin-left: 16px;
@@ -356,6 +361,7 @@ const SectionHeaderContent = (props) => {
       {(context) => (
         <StyledContainer
           isHeaderVisible={isHeaderVisible}
+          isLoaded={isLoaded}
           width={context.sectionWidth}
         >
           {employeeDialogVisible && (
