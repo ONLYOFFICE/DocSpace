@@ -20,6 +20,8 @@ client.interceptors.response.use(
     return response;
   },
   (error) => {
+    if (!error.response) return Promise.reject(error);
+
     switch (true) {
       case error.response.status === 401:
         setWithCredentialsStatus(false);
