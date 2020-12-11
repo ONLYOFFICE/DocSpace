@@ -103,11 +103,11 @@ namespace ASC.Common.Threading
             if (val == null) return default;
 
             var resType = typeof(T);
-            object result = val.Value;
+            object result = val.Value.Trim('"');
 
             if(resType == typeof(Guid))
             {
-                result = Guid.Parse(val.Value.Trim('"'));
+                result = Guid.Parse(val.Value);
             }
             else if(resType.IsEnum)
             {
