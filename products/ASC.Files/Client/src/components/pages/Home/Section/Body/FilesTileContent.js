@@ -152,7 +152,7 @@ class FilesTileContent extends React.PureComponent {
   };
 
   createItem = (e) => {
-    const { createFile, createFolder, item, setIsLoading } = this.props;
+    const { createFile, item, setIsLoading } = this.props;
     const { itemTitle } = this.state;
 
     setIsLoading(true);
@@ -446,7 +446,6 @@ function mapStateToProps(state, props) {
 
 export default connect(mapStateToProps, {
   createFile,
-  createFolder,
   updateFile,
   renameFolder,
   setTreeFolders,
