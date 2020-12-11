@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import isEqual from "lodash/isEqual";
-
+import equal from "fast-deep-equal/react";
 import { utils } from "asc-web-components";
 
 const { tablet } = utils.device;
@@ -22,7 +21,7 @@ const StyledArticleMainButton = styled.div`
 
 class ArticleMainButton extends React.Component {
   shouldComponentUpdate(nextProps) {
-    return !isEqual(this.props, nextProps);
+    return !equal(this.props, nextProps);
   }
 
   render() {

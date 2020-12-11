@@ -1,7 +1,7 @@
 import React from "react";
 import styled, { css } from "styled-components";
 import { utils } from "asc-web-components";
-import isEqual from "lodash/isEqual";
+import equal from "fast-deep-equal/react";
 import classnames from "classnames";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
@@ -39,8 +39,6 @@ const StyledSectionHeader = styled.div`
   }
 
   .section-header {
-    width: calc(100% - 76px);
-
     @media ${tablet} {
       max-width: calc(100vw - 32px);
       width: 100%;
@@ -56,20 +54,6 @@ const StyledSectionHeader = styled.div`
           z-index: 155;
           padding-right: 16px;
         `}
-    }
-
-    h1,
-    h2,
-    h3,
-    h4,
-    h5,
-    h6 {
-      max-width: calc(100vw - 435px);
-
-      @media ${tablet} {
-        max-width: ${(props) =>
-          props.isArticlePinned ? `calc(100vw - 320px)` : `calc(100vw - 96px)`};
-      }
     }
   }
 
@@ -99,7 +83,7 @@ class SectionHeader extends React.Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    return !isEqual(this.props, nextProps);
+    return !equal(this.props, nextProps);
   }
 
   render() {

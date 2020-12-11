@@ -1,12 +1,14 @@
 import { request } from "../client";
 import * as fakeGroup from "./fake";
 
-export function getGroupList(fake = false) {
+export function getGroupList(fake = false, searchValue) {
+  const params = searchValue ? `?filtervalue=${searchValue}` : "";
+
   return fake
     ? fakeGroup.getGroupList()
     : request({
         method: "get",
-        url: "/group",
+        url: `/group${params}`,
       });
 }
 

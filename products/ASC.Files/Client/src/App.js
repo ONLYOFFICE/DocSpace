@@ -1,6 +1,6 @@
 import React, { Suspense } from "react";
 import { connect } from "react-redux";
-import { Router, Switch, Redirect } from "react-router-dom";
+import { Router, Switch, Redirect, Route } from "react-router-dom";
 import Home from "./components/pages/Home";
 import DocEditor from "./components/pages/DocEditor";
 import Settings from "./components/pages/Settings";
@@ -10,7 +10,6 @@ import config from "../package.json";
 
 import {
   store as commonStore,
-  constants,
   history,
   PrivateRoute,
   PublicRoute,
@@ -32,8 +31,8 @@ const {
   setCurrentProductId,
   setCurrentProductHomePage,
   getPortalCultures,
+  getIsAuthenticated,
 } = commonStore.auth.actions;
-const { AUTH_KEY } = constants;
 
 class App extends React.Component {
   constructor(props) {
@@ -43,8 +42,6 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    utils.removeTempContent();
-
     const {
       setModuleInfo,
       getUser,
@@ -53,80 +50,83 @@ class App extends React.Component {
       getPortalCultures,
       fetchTreeFolders,
       setIsLoaded,
+      getIsAuthenticated,
     } = this.props;
 
     setModuleInfo();
+    getIsAuthenticated().then((isAuthenticated) => {
+      if (!isAuthenticated) {
+        utils.updateTempContent();
+        return setIsLoaded();
+      } else {
+        utils.updateTempContent(isAuthenticated);
+      }
 
-    const token = localStorage.getItem(AUTH_KEY);
+      const requests = this.isEditor
+        ? [getUser()]
+        : [
+            getUser(),
+            getPortalSettings(),
+            getModules(),
+            getPortalCultures(),
+            fetchTreeFolders(),
+          ];
 
-    if (!token) {
-      return setIsLoaded();
-    }
-
-    const requests = this.isEditor
-      ? [getUser()]
-      : [
-        getUser(),
-        getPortalSettings(),
-        getModules(),
-        getPortalCultures(),
-        fetchTreeFolders(),
-      ];
-
-    Promise.all(requests)
-      .catch((e) => {
-        toastr.error(e);
-      })
-      .finally(() => {
-        setIsLoaded();
-      });
+      Promise.all(requests)
+        .catch((e) => {
+          toastr.error(e);
+        })
+        .finally(() => {
+          utils.updateTempContent();
+          setIsLoaded();
+        });
+    });
   }
 
   render() {
     const { homepage } = this.props;
     
     return navigator.onLine ? (
-      <Layout>
-          <Router history={history}>
-            {!this.isEditor && <NavMenu />}
-            <Main >
-              <Suspense fallback={null}>
-                <Switch>
-                  <Redirect exact from="/" to={`${homepage}`} />
-                  <PrivateRoute
-                    exact
-                    path={`${homepage}/settings/:setting`}
-                    component={Settings}
-                  />
-                  <PrivateRoute
-                    exact
-                    path={`${homepage}/doceditor`}
-                    component={DocEditor}
-                  />
-                  <PrivateRoute
-                    exact
-                    path={`${homepage}/:fileId/history`}
-                    component={VersionHistory}
-                  />
-                  <PrivateRoute exact path={homepage} component={Home} />
-                  <PrivateRoute path={`${homepage}/filter`} component={Home} />
-  
-                  <PublicRoute
-                    exact
-                    path={[
-                      "/login",
-                      "/login/error=:error",
-                      "/login/confirmed-email=:confirmedEmail",
-                    ]}
-                    component={Login}
-                  />
-                  <PrivateRoute exact path={`/error=:error`} component={Error520} />
-                  <PrivateRoute component={Error404} />
-                </Switch>
-              </Suspense>
-            </Main>
-          </Router>
-      </Layout>
+	<Layout>
+      <Router history={history}>
+        {!this.isEditor && <NavMenu />}
+        <Main>
+          <Suspense fallback={null}>
+            <Switch>
+              <Redirect exact from="/" to={`${homepage}`} />
+              <PrivateRoute
+                exact
+                path={`${homepage}/settings/:setting`}
+                component={Settings}
+              />
+              <Route
+                exact
+                path={`${homepage}/doceditor`}
+                component={DocEditor}
+              />
+              <PrivateRoute
+                exact
+                path={`${homepage}/:fileId/history`}
+                component={VersionHistory}
+              />
+              <PrivateRoute exact path={homepage} component={Home} />
+              <PrivateRoute path={`${homepage}/filter`} component={Home} />
+              <PublicRoute
+                exact
+                path={[
+                  "/login",
+                  "/login/error=:error",
+                  "/login/confirmed-email=:confirmedEmail",
+                ]}
+                component={Login}
+              />
+              <PrivateRoute exact path={`/error=:error`} component={Error520} />
+              <PrivateRoute component={Error404} />
+            </Switch>
+          </Suspense>
+        </Main>
+      </Router>
+ 	</Layout>
     ) : (
         <Offline />
       );
@@ -143,6 +143,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    getIsAuthenticated: () => getIsAuthenticated(dispatch),
     setModuleInfo: () => {
       dispatch(setCurrentProductHomePage(config.homepage));
       dispatch(setCurrentProductId("e67be73d-f9ae-4ce1-8fec-1880cb518cb4"));

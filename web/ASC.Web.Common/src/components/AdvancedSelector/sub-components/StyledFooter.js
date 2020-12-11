@@ -10,7 +10,6 @@ const StyledFooter = styled.div`
     props.withEmbeddedComponent &&
     css`
       display: flex;
-      padding: 16px 0;
     `}
 
   ${(props) =>

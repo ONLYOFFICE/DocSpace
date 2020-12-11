@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { SearchInput } from "asc-web-components";
-import isEqual from "lodash/isEqual";
+import equal from "fast-deep-equal/react";
 import FilterBlock from "./sub-components/FilterBlock";
 import SortComboBox from "./sub-components/SortComboBox";
 import ViewSelector from "./sub-components/ViewSelector";
@@ -143,9 +143,9 @@ class FilterInput extends React.Component {
     }
 
     if (
-      (!isEqual(selectedFilterData.filterValues, filterValues) ||
-        inputValue !== searchText) &&
-      sectionWidth !== prevProps.sectionWidth
+      !equal(selectedFilterData.filterValues, filterValues) ||
+      inputValue !== searchText // &&
+      //sectionWidth !== prevProps.sectionWidth
     ) {
       const sortData = getSortData();
       const filterValues = this.getDefaultFilterData();
@@ -164,7 +164,7 @@ class FilterInput extends React.Component {
     }
 
     if (
-      !isEqual(
+      !equal(
         prevProps.selectedFilterData.filterValues,
         selectedFilterData.filterValues
       ) &&
@@ -189,7 +189,7 @@ class FilterInput extends React.Component {
     } = this.props;
 
     if (
-      !isEqual(selectedFilterData, nextProps.selectedFilterData) ||
+      !equal(selectedFilterData, nextProps.selectedFilterData) ||
       this.props.viewAs !== nextProps.viewAs ||
       this.props.widthProp !== nextProps.widthProp ||
       sectionWidth !== nextProps.sectionWidth
@@ -206,7 +206,7 @@ class FilterInput extends React.Component {
     )
       return true;
 
-    return !isEqual(this.state, nextState);
+    return !equal(this.state, nextState);
   }
 
   onChangeSortDirection = (key) => {

@@ -1,4 +1,4 @@
-import { AUTH_KEY, LANGUAGE } from "../constants";
+import { LANGUAGE } from "../constants";
 import sjcl from "sjcl";
 import { isMobile } from "react-device-detect";
 
@@ -44,20 +44,6 @@ export function changeLanguage(
     : i18n.changeLanguage("en");
 }
 
-export function redirectToDefaultPage() {
-  if (
-    (window.location.pathname === "/" ||
-      window.location.pathname === "" ||
-      window.location.pathname === "/login") &&
-    localStorage.getItem(AUTH_KEY) !== null
-  ) {
-    setTimeout(() => window.location.replace("/products/files"), 0);
-    return true;
-  }
-
-  return false;
-}
-
 export function createPasswordHash(password, hashSettings) {
   if (
     !password ||
@@ -82,10 +68,20 @@ export function createPasswordHash(password, hashSettings) {
   return hash;
 }
 
-export function removeTempContent() {
-  const tempElm = document.getElementById("temp-content");
-  if (tempElm) {
-    tempElm.outerHTML = "";
+export function updateTempContent(isAuth = false) {
+  if (isAuth) {
+    let el = document.getElementById("burger-loader-svg");
+    let el1 = document.getElementById("logo-loader-svg");
+    let el2 = document.getElementById("avatar-loader-svg");
+
+    el.style.display = "block";
+    el1.style.display = "block";
+    el2.style.display = "block";
+  } else {
+    const tempElm = document.getElementById("temp-content");
+    if (tempElm) {
+      tempElm.outerHTML = "";
+    }
   }
 }
 
@@ -109,3 +105,21 @@ export function showLoader() {
 }
 
 export { withLayoutSize } from "./withLayoutSize";
+
+export function tryRedirectTo(page) {
+  if (
+    page &&
+    page !== "" &&
+    page !== "/" &&
+    window.location &&
+    window.location.pathname &&
+    window.location.pathname === page &&
+    window.location.pathname.indexOf(page) !== -1
+  ) {
+    return false;
+  }
+  //TODO: check if we already on default page
+  window.location.replace(page);
+
+  return true;
+}

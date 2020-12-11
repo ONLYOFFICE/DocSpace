@@ -31,17 +31,20 @@ import {
   getSelectedFolderId,
   getFileActionId,
   getFilter,
-  getProgressData,
+  getPrimaryProgressData,
+  getSecondaryProgressData,
   getTreeFolders,
   getViewAs,
   getIsLoading,
   getIsRecycleBinFolder,
   getDragging,
   getHeaderVisible,
+  getSharePanelVisible,
   getFirstLoad,
 } from "../../../store/files/selectors";
 
 import { ConvertDialog } from "../../dialogs";
+import { SharingPanel } from "../../panels";
 import { createI18N } from "../../../helpers/i18n";
 import { getFilterByLocation } from "../../../helpers/converters";
 const i18n = createI18N({
@@ -50,7 +53,7 @@ const i18n = createI18N({
 });
 const { changeLanguage } = utils;
 const { FilesFilter } = api;
-const { getSettingsHomepage, getIsLoaded } = store.auth.selectors;
+const { getSettingsHomepage } = store.auth.selectors;
 const { setHeaderVisible } = store.auth.actions;
 class PureHome extends React.Component {
   componentDidMount() {
@@ -140,7 +143,7 @@ class PureHome extends React.Component {
 
         if (filter) {
           const folderId = filter.folder;
-          console.log("filter", filter);
+          //console.log("filter", filter);
           return fetchFiles(folderId, filter);
         }
 
@@ -181,14 +184,16 @@ class PureHome extends React.Component {
   }
 
   render() {
-    console.log("Home render");
+    //console.log("Home render");
     const {
-      progressData,
+      primaryProgressData,
+      secondaryProgressData,
       viewAs,
       convertDialogVisible,
+      sharingPanelVisible,
       fileActionId,
       isRecycleBin,
-      isLoaded,
+      firstLoad,
       isHeaderVisible,
     } = this.props;
 
@@ -197,6 +202,8 @@ class PureHome extends React.Component {
         {convertDialogVisible && (
           <ConvertDialog visible={convertDialogVisible} />
         )}
+
+        {sharingPanelVisible && <SharingPanel />}
         <PageLayout
           withBodyScroll
           withBodyAutoFocus={!isMobile}
@@ -204,13 +211,21 @@ class PureHome extends React.Component {
           onDrop={this.onDrop}
           setSelections={this.props.setSelections}
           onMouseMove={this.onMouseMove}
-          showProgressBar={progressData.visible}
-          progressBarValue={progressData.percent}
-          //progressBarDropDownContent={progressBarContent}
-          progressBarLabel={progressData.label}
+          showPrimaryProgressBar={primaryProgressData.visible}
+          primaryProgressBarValue={primaryProgressData.percent}
+          primaryProgressBarIcon={primaryProgressData.icon}
+          showPrimaryButtonAlert={primaryProgressData.alert}
+          showSecondaryProgressBar={secondaryProgressData.visible}
+          secondaryProgressBarValue={secondaryProgressData.percent}
+          secondaryProgressBarIcon={secondaryProgressData.icon}
+          showSecondaryButtonAlert={secondaryProgressData.alert}
           viewAs={viewAs}
-          hideAside={!!fileActionId || progressData.visible}
-          isLoaded={isLoaded}
+          hideAside={
+            !!fileActionId ||
+            primaryProgressData.visible ||
+            secondaryProgressData.visible
+          }
+          isLoaded={!firstLoad}
           isHeaderVisible={isHeaderVisible}
         >
           <PageLayout.ArticleHeader>
@@ -273,13 +288,15 @@ function mapStateToProps(state) {
     fileActionId: getFileActionId(state),
     filter: getFilter(state),
     isRecycleBin: getIsRecycleBinFolder(state),
-    progressData: getProgressData(state),
+    primaryProgressData: getPrimaryProgressData(state),
+    secondaryProgressData: getSecondaryProgressData(state),
     treeFolders: getTreeFolders(state),
     viewAs: getViewAs(state),
     isLoading: getIsLoading(state),
     homepage: getSettingsHomepage(state),
     dragging: getDragging(state),
-    isLoaded: getIsLoaded(state),
+    firstLoad: getFirstLoad(state),
+    sharingPanelVisible: getSharePanelVisible(state),
     firstLoad: getFirstLoad(state),
     isHeaderVisible: getHeaderVisible(state),
   };
