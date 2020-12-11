@@ -9,6 +9,7 @@
 * In file .env (for checking values run: docker exec -it onlyoffice-community-server env)
   - write value DOCUMENT_SERVER_JWT_SECRET
   - write value APP_CORE_MACHINEKEY
-* For running Appserver with Community Server run: docker-compose -f appserver.yml up -d
-* For running standlone Appserver run: docker-compose -f db.yml -f appserver.yml up -d
-  
+* For running Appserver with Community Server run: docker-compose -f app-server.yml up -d
+* For running standlone Appserver run: 
+  - docker-compose -f db.yml up -d
+  - docker-compose -f document-server.yml -f app-server.yml up -d
