@@ -369,6 +369,7 @@ class SectionHeaderContent extends React.Component {
       deleteDialogVisible,
       isRecycleBin,
       isPrivacy,
+      selection,
     } = this.props;
 
     let menu = [
@@ -425,7 +426,9 @@ class SectionHeaderContent extends React.Component {
       },
       {
         label: t("Share"),
-        disabled: !isAccessedSelected || (isPrivacy && isOnlyFoldersSelected),
+        disabled:
+          !isAccessedSelected ||
+          (isPrivacy && (isOnlyFoldersSelected || selection.length > 1)),
         onClick: this.onOpenSharingPanel,
       },
       {
