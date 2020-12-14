@@ -1,4 +1,4 @@
-version: "3.5"
+version: "3.6"
 
 services: 
   
@@ -11,6 +11,7 @@ services:
     container_name: ${MYSQL_HOST:-mysql}
     restart: always
     tty: true
+    user: mysql
     expose:
       - "3306"
     environment:
@@ -20,7 +21,6 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     volumes:
       - mysql_data:/var/lib/mysql
-      - ./config/mysql/log/error.log:/var/log/mysql/error.log
       - ./config/mysql/conf.d/:/etc/mysql/conf.d
       - ./config/createdb.sql:/docker-entrypoint-initdb.d/01_createdb.sql
       - ./config/onlyoffice.sql:/docker-entrypoint-initdb.d/02_onlyoffice.sql
@@ -28,6 +28,7 @@ services:
       - ./config/onlyoffice.resources.sql:/docker-entrypoint-initdb.d/04_onlyoffice.resources.sql
     networks:
       - ${NETWORK_NAME:-onlyoffice} 
+    tmpfs: /var/log/mysql/
 
 networks:
   onlyoffice:
