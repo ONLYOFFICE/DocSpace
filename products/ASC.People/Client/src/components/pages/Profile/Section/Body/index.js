@@ -5,6 +5,7 @@ import {
   Text,
   ToggleContent,
   Link,
+  utils,
 } from "asc-web-components";
 import {
   getUserContacts,
@@ -21,7 +22,7 @@ import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 
 const { isAdmin, isMe } = store.auth.selectors;
-
+const { size } = utils.device;
 const ProfileWrapper = styled.div`
   display: flex;
   align-items: flex-start;
@@ -92,12 +93,24 @@ const stringFormat = (string, data) =>
 
 class SectionBodyContent extends React.PureComponent {
   onEditSubscriptionsClick = () => console.log("Edit subscriptions onClick()");
-
+  constructor(props) {
+    super(props);
+    this.isTablet = window.innerWidth <= size.tablet;
+  }
   onEditProfileClick = () =>
     this.props.history.push(
       `${this.props.settings.homepage}/edit/${this.props.profile.userName}`
     );
+  componentDidMount() {
+    this.documentElement = document.getElementById("customScrollBar");
 
+    if (
+      this.isTablet &&
+      this.documentElement &&
+      this.documentElement.scrollTop !== 0
+    )
+      this.documentElement.scrollTo(0, 0);
+  }
   render() {
     const { profile, settings, isAdmin, viewer, t } = this.props;
 
