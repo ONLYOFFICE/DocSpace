@@ -18,12 +18,15 @@ import {
   getShareUsers,
   setShareFiles,
   setSharingPanelVisible,
+  setIsLoading,
 } from "../../../store/files/actions";
 import {
   getAccessOption,
   getExternalAccessOption,
   getSelection,
   getSharePanelVisible,
+  getCanShareOwnerChange,
+  getIsLoading,
 } from "../../../store/files/selectors";
 import {
   StyledAsidePanel,
@@ -63,10 +66,12 @@ class SharingPanelComponent extends React.Component {
       showAddUsersPanel: false,
       showEmbeddingPanel: false,
       showAddGroupsPanel: false,
+      showChangeOwnerPanel: false,
       shareLink: "",
       isLoadedShareData: false,
       showPanel: false,
       accessOptions: [],
+      filesOwnerId: null,
     };
 
     this.ref = React.createRef();
@@ -100,8 +105,9 @@ class SharingPanelComponent extends React.Component {
       isNotifyUsers,
       message,
       shareDataItems,
+      filesOwnerId,
     } = this.state;
-    const { selection } = this.props;
+    const { selection, setIsLoading } = this.props;
 
     const folderIds = [];
     const fileIds = [];
@@ -133,7 +139,10 @@ class SharingPanelComponent extends React.Component {
         (x) => x.sharedTo.id === item.sharedTo.id
       );
       if (!baseItem) {
-        share.push({ shareTo: item.sharedTo.id, access: 0 });
+        share.push({
+          shareTo: item.sharedTo.id,
+          access: ShareAccessRights.None,
+        });
       }
     }
 
@@ -145,16 +154,25 @@ class SharingPanelComponent extends React.Component {
       }
     }
 
+    const owner = shareDataItems.find((x) => x.isOwner);
+    const ownerId =
+      filesOwnerId !== owner.sharedTo.id ? owner.sharedTo.id : null;
+
+    setIsLoading(true);
     setShareFiles(
       folderIds,
       fileIds,
       share,
       isNotifyUsers,
       message,
-      externalAccess
+      externalAccess,
+      ownerId
     )
       .catch((err) => toastr.error(err))
-      .finally(() => this.onClose());
+      .finally(() => {
+        this.onClose();
+        setIsLoading(false);
+      });
   };
 
   onNotifyUsersChange = () =>
@@ -170,7 +188,7 @@ class SharingPanelComponent extends React.Component {
     const id = e.currentTarget.dataset.id;
     const access = e.currentTarget.dataset.access;
     const shareDataItems = this.state.shareDataItems;
-    const elem = shareDataItems.find((x) => x.sharedTo.id === id);
+    const elem = shareDataItems.find((x) => x.sharedTo.id === id && !x.isOwner);
 
     if (elem.access !== +access) {
       elem.access = +access;
@@ -211,14 +229,22 @@ class SharingPanelComponent extends React.Component {
     const returnValue = this.getData();
     const folderId = returnValue[0];
     const fileId = returnValue[1];
-    const { getAccessOption, getExternalAccessOption, selection } = this.props;
+    const {
+      getAccessOption,
+      getExternalAccessOption,
+      selection,
+      setIsLoading,
+    } = this.props;
 
     if (folderId.length !== 0 || fileId.length !== 0) {
+      setIsLoading(true);
       getShareUsers(folderId, fileId)
         .then((shareDataItems) => {
           const baseShareData = JSON.parse(JSON.stringify(shareDataItems));
           const accessOptions = getAccessOption(selection);
           const externalAccessOptions = getExternalAccessOption(selection);
+          const filesOwner = shareDataItems.find((x) => x.isOwner);
+          const filesOwnerId = filesOwner ? filesOwner.id : null;
 
           this.setState({
             baseShareData,
@@ -226,11 +252,14 @@ class SharingPanelComponent extends React.Component {
             accessOptions,
             externalAccessOptions,
             showPanel: true,
+            filesOwnerId,
           });
         })
         .catch((err) => {
           toastr.error(err);
-        });
+          this.onClose();
+        })
+        .finally(() => setIsLoading(false));
     }
   };
 
@@ -243,6 +272,12 @@ class SharingPanelComponent extends React.Component {
   onShowGroupsPanel = () =>
     this.setState({
       showAddGroupsPanel: !this.state.showAddGroupsPanel,
+      showActionPanel: false,
+    });
+
+  onShowChangeOwnerPanel = () =>
+    this.setState({
+      showChangeOwnerPanel: !this.state.showChangeOwnerPanel,
       showActionPanel: false,
     });
 
@@ -268,8 +303,15 @@ class SharingPanelComponent extends React.Component {
       showAddUsersPanel,
       showEmbeddingPanel,
       showAddGroupsPanel,
+      showChangeOwnerPanel,
     } = this.state;
-    if (showAddUsersPanel || showEmbeddingPanel || showAddGroupsPanel) return;
+    if (
+      showAddUsersPanel ||
+      showEmbeddingPanel ||
+      showAddGroupsPanel ||
+      showChangeOwnerPanel
+    )
+      return;
     if (event.key === "Esc" || event.key === "Escape") {
       this.onClose();
     }
@@ -290,7 +332,14 @@ class SharingPanelComponent extends React.Component {
 
   render() {
     //console.log("Sharing panel render");
-    const { t, isMyId, selection, groupsCaption } = this.props;
+    const {
+      t,
+      isMyId,
+      selection,
+      groupsCaption,
+      canShareOwnerChange,
+      isLoading,
+    } = this.props;
     const {
       showActionPanel,
       isNotifyUsers,
@@ -299,6 +348,7 @@ class SharingPanelComponent extends React.Component {
       showAddUsersPanel,
       showAddGroupsPanel,
       showEmbeddingPanel,
+      showChangeOwnerPanel,
       shareLink,
       showPanel,
       accessOptions,
@@ -307,12 +357,13 @@ class SharingPanelComponent extends React.Component {
 
     const visible = showPanel;
     const zIndex = 310;
+    const onPlusClickProp = !isLoading ? { onClick: this.onPlusClick } : {};
 
     return (
       <StyledAsidePanel visible={visible}>
         <Backdrop onClick={this.onClose} visible={visible} zIndex={zIndex} />
         <Aside className="header_aside-panel" visible={visible}>
-          <StyledContent>
+          <StyledContent isDisabled={isLoading}>
             <StyledHeaderContent>
               <Heading className="sharing_panel-header" size="medium" truncate>
                 {t("SharingSettingsTitle")}
@@ -323,8 +374,9 @@ class SharingPanelComponent extends React.Component {
                     size="17"
                     iconName="PlusIcon"
                     className="sharing_panel-plus-icon"
-                    onClick={this.onPlusClick}
+                    {...onPlusClickProp}
                     color="A3A9AE"
+                    isDisabled={isLoading}
                   />
 
                   <DropDown
@@ -357,19 +409,22 @@ class SharingPanelComponent extends React.Component {
               stype="mediumBlack"
               style={SharingBodyStyle}
             >
-              {shareDataItems.map((item) => (
+              {shareDataItems.map((item, index) => (
                 <SharingRow
                   t={t}
-                  key={item.sharedTo.id}
+                  key={`${item.sharedTo.id}_${index}`}
                   selection={selection}
                   item={item}
                   isMyId={isMyId}
                   accessOptions={accessOptions}
                   externalAccessOptions={externalAccessOptions}
+                  canShareOwnerChange={canShareOwnerChange}
                   onChangeItemAccess={this.onChangeItemAccess}
                   onRemoveUserClick={this.onRemoveUserItemClick}
                   onShowEmbeddingPanel={this.onShowEmbeddingPanel}
                   onToggleLink={this.onToggleLink}
+                  onShowChangeOwnerPanel={this.onShowChangeOwnerPanel}
+                  isLoading={isLoading}
                 />
               ))}
               {isNotifyUsers && (
@@ -378,6 +433,7 @@ class SharingPanelComponent extends React.Component {
                     placeholder={t("AddShareMessage")}
                     onChange={this.onChangeMessage}
                     value={message}
+                    isDisabled={isLoading}
                   />
                 </div>
               )}
@@ -388,6 +444,7 @@ class SharingPanelComponent extends React.Component {
                 label={t("Notify users")}
                 onChange={this.onNotifyUsersChange}
                 className="sharing_panel-checkbox"
+                isDisabled={isLoading}
               />
               <Button
                 className="sharing_panel-button"
@@ -395,6 +452,7 @@ class SharingPanelComponent extends React.Component {
                 size="big"
                 primary
                 onClick={this.onSaveClick}
+                isDisabled={isLoading}
               />
             </StyledFooter>
           </StyledContent>
@@ -409,6 +467,7 @@ class SharingPanelComponent extends React.Component {
             setShareDataItems={this.setShareDataItems}
             groupsCaption={groupsCaption}
             accessOptions={accessOptions}
+            isMultiSelect
           />
         )}
 
@@ -420,6 +479,17 @@ class SharingPanelComponent extends React.Component {
             shareDataItems={shareDataItems}
             setShareDataItems={this.setShareDataItems}
             accessOptions={accessOptions}
+            isMultiSelect
+          />
+        )}
+
+        {showChangeOwnerPanel && (
+          <AddUsersPanel
+            onSharingPanelClose={this.onClose}
+            onClose={this.onShowChangeOwnerPanel}
+            visible={showChangeOwnerPanel}
+            shareDataItems={shareDataItems}
+            setShareDataItems={this.setShareDataItems}
           />
         )}
 
@@ -453,9 +523,12 @@ const mapStateToProps = (state) => {
     selection: getSelection(state),
     groupsCaption: getSettingsCustomNamesGroupsCaption(state),
     sharingPanelVisible: getSharePanelVisible(state),
+    canShareOwnerChange: getCanShareOwnerChange(state),
+    isLoading: getIsLoading(state),
   };
 };
 
-export default connect(mapStateToProps, { setSharingPanelVisible })(
-  withRouter(SharingPanel)
-);
+export default connect(mapStateToProps, {
+  setSharingPanelVisible,
+  setIsLoading,
+})(withRouter(SharingPanel));

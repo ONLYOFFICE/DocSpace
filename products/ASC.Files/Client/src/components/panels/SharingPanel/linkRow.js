@@ -23,10 +23,12 @@ class LinkRow extends React.Component {
       withToggle,
       externalAccessOptions,
       onChangeItemAccess,
+      isLoading,
     } = this.props;
 
     const isChecked = item.access !== ShareAccessRights.DenyAccess;
-    const isDisabled = withToggle ? !isChecked : false;
+    const disableLink = withToggle ? !isChecked : false;
+    const isDisabled = isLoading || disableLink;
 
     return (
       <StyledLinkRow withToggle={withToggle} isDisabled={isDisabled}>
@@ -69,6 +71,7 @@ class LinkRow extends React.Component {
                 <ToggleButton
                   isChecked={isChecked}
                   onChange={this.onToggleButtonChange}
+                  isDisabled={isLoading}
                 />
               </div>
             )}

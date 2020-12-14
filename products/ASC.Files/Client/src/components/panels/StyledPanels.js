@@ -128,6 +128,12 @@ const StyledContent = styled.div`
   .header_aside-panel-plus-icon {
     margin-left: auto;
   }
+
+  .sharing-access-combo-box-icon {
+    path {
+      fill: ${(props) => (props.isDisabled ? "#D0D5DA" : "#A3A9AE")};
+    }
+  }
 `;
 
 const StyledHeaderContent = styled.div`
@@ -242,6 +248,12 @@ const StyledBody = styled.div`
     margin: 8px;
     right: 16px;
   }
+
+  .sharing-access-combo-box-icon {
+    path {
+      fill: #333;
+    }
+  }
 `;
 
 const StyledSharingBody = styled(Scrollbar)`
@@ -296,12 +308,6 @@ const StyledSharingBody = styled(Scrollbar)`
         height: 8px;
         width: 8px;
       }
-    }
-  }
-
-  .sharing-access-combo-box-icon {
-    path {
-      fill: #a3a9ae;
     }
   }
 

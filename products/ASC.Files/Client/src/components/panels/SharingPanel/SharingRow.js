@@ -1,5 +1,5 @@
 import React from "react";
-import { IconButton, Row, Text, Icons } from "asc-web-components";
+import { IconButton, Row, Text, Icons, Link } from "asc-web-components";
 import { toastr } from "asc-web-common";
 import copy from "copy-to-clipboard";
 import LinkRow from "./linkRow";
@@ -81,12 +81,14 @@ class SharingRow extends React.Component {
       onShowEmbeddingPanel,
       onToggleLink,
       externalLinkData,
+      canShareOwnerChange,
+      onShowChangeOwnerPanel,
+      isLoading,
     } = this.props;
     const { access } = this.state;
 
-    const { isOwner } = item;
+    const { isOwner, isLocked } = item;
     const { label, name, displayName, shareLink, id } = item.sharedTo;
-
     const linkVisible = selection && selection.length === 1 && shareLink;
 
     const internalLinkData = [
@@ -138,6 +140,11 @@ class SharingRow extends React.Component {
       },
     ];
 
+    const onRemoveUserProp = !isLoading ? { onClick: onRemoveUserClick } : {};
+    const onShowChangeOwnerPanelProp = !isLoading
+      ? { onClick: onShowChangeOwnerPanel }
+      : {};
+
     return (
       <>
         {linkVisible && (
@@ -163,7 +170,7 @@ class SharingRow extends React.Component {
             className="sharing-row"
             key={`internal-link-key_${id}`}
             element={
-              isOwner || id === isMyId ? (
+              isOwner || id === isMyId || isLocked ? (
                 <Icons.AccessEditIcon
                   size="medium"
                   className="sharing_panel-owner-icon"
@@ -175,17 +182,23 @@ class SharingRow extends React.Component {
                   onAccessChange={onChangeItemAccess}
                   itemId={id}
                   accessOptions={accessOptions}
+                  isDisabled={isLoading}
                 />
               )
             }
             contextButtonSpacerWidth="0px"
           >
             <>
-              {!shareLink && (
-                <Text truncate className="sharing_panel-text">
-                  {label ? label : name ? name : displayName}
-                </Text>
-              )}
+              {!shareLink &&
+                (isOwner && canShareOwnerChange ? (
+                  <Link isHovered type="action" {...onShowChangeOwnerPanelProp}>
+                    {label ? label : name ? name : displayName}
+                  </Link>
+                ) : (
+                  <Text truncate className="sharing_panel-text">
+                    {label ? label : name ? name : displayName}
+                  </Text>
+                ))}
               {isOwner ? (
                 <Text className="sharing_panel-remove-icon" color="#A3A9AE">
                   {t("Owner")}
@@ -198,13 +211,15 @@ class SharingRow extends React.Component {
                   {t("AccessRightsFullAccess")}
                 </Text>
               ) : (
-                !shareLink && (
+                !shareLink &&
+                !isLocked && (
                   <IconButton
                     iconName="RemoveIcon"
                     id={id}
-                    onClick={onRemoveUserClick}
+                    {...onRemoveUserProp}
                     className="sharing_panel-remove-icon"
                     color="#A3A9AE"
+                    isDisabled={isLoading}
                   />
                 )
               )}

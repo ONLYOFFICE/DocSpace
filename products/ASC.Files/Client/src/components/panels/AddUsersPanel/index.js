@@ -72,6 +72,19 @@ class AddUsersPanelComponent extends React.Component {
     onClose();
   };
 
+  onOwnerSelect = (owner) => {
+    const { setShareDataItems, shareDataItems, onClose } = this.props;
+    const ownerItem = shareDataItems.find((x) => x.isOwner);
+    ownerItem.sharedTo = owner[0];
+
+    if (owner[0].key) {
+      owner[0].id = owner[0].key;
+    }
+
+    setShareDataItems(shareDataItems);
+    onClose();
+  };
+
   componentDidMount() {
     const scroll = this.scrollRef.current.getElementsByClassName("scroll-body");
     setTimeout(() => scroll[1] && scroll[1].focus(), 2000);
@@ -107,10 +120,29 @@ class AddUsersPanelComponent extends React.Component {
   };
 
   render() {
-    const { t, visible, groupsCaption, accessOptions } = this.props;
+    const {
+      t,
+      visible,
+      groupsCaption,
+      accessOptions,
+      isMultiSelect,
+    } = this.props;
     const { accessRight } = this.state;
 
     const zIndex = 310;
+
+    const embeddedComponent = isMultiSelect
+      ? {
+          embeddedComponent: (
+            <AccessComboBox
+              access={accessRight}
+              directionX="right"
+              onAccessChange={this.onAccessChange}
+              accessOptions={accessOptions}
+            />
+          ),
+        }
+      : null;
 
     //console.log("AddUsersPanel render");
     return (
@@ -134,7 +166,7 @@ class AddUsersPanelComponent extends React.Component {
                 size="medium"
                 truncate
               >
-                {t("LinkText")}
+                {isMultiSelect ? t("LinkText") : t("OwnerChange")}
               </Heading>
               {/*<IconButton
                 size="16"
@@ -149,16 +181,11 @@ class AddUsersPanelComponent extends React.Component {
                 displayType="aside"
                 withoutAside
                 isOpen={visible}
-                isMultiSelect
-                onSelect={this.onPeopleSelect}
-                embeddedComponent={
-                  <AccessComboBox
-                    access={accessRight}
-                    directionX="right"
-                    onAccessChange={this.onAccessChange}
-                    accessOptions={accessOptions}
-                  />
+                isMultiSelect={isMultiSelect}
+                onSelect={
+                  isMultiSelect ? this.onPeopleSelect : this.onOwnerSelect
                 }
+                {...embeddedComponent}
                 groupsCaption={groupsCaption}
                 showCounter
                 //onCancel={onClose}
