@@ -2,6 +2,7 @@ import React from "react";
 import { withRouter } from "react-router";
 import { /*RequestLoader,*/ Box } from "asc-web-components";
 import { utils, api, toastr } from "asc-web-common";
+import { isIOS, deviceType } from "react-device-detect";
 
 const { getObjectByLocation, showLoader } = utils;
 
@@ -13,8 +14,10 @@ class PureEditor extends React.Component {
 
     console.log("PureEditor componentDidMount", fileId, doc);
 
-    const vh = window.innerHeight * 0.01;
-    document.documentElement.style.setProperty("--vh", `${vh}px`);
+    if (this.isIPad()) {
+      const vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty("--vh", `${vh}px`);
+    }
 
     showLoader();
 
@@ -51,9 +54,16 @@ class PureEditor extends React.Component {
     document.body.appendChild(script);
   }
 
+  isIPad = () => {
+    return isIOS && deviceType === "tablet";
+  };
+
   render() {
     return (
-      <Box widthProp="100vw" heightProp="calc(var(--vh, 1vh) * 100)">
+      <Box
+        widthProp="100vw"
+        heightProp={this.isIPad() ? "calc(var(--vh, 1vh) * 100)" : "100vh"}
+      >
         <div id="editor"></div>
       </Box>
     );
