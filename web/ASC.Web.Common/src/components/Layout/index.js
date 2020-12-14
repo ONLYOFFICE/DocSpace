@@ -15,10 +15,10 @@ const StyledContainer = styled.div`
 
 const Layout = (props) => {
   const { children } = props;
-  const isTablet = window.innerWidth <= size.tablet;
+  const deviceWidth = window.innerWidth <= size.tablet;
 
-  const [windowWidth, setWindowWidth] = useState({
-    matches: isTablet,
+  const [isTabletWidth, setWindowWidth] = useState({
+    matches: deviceWidth,
   });
 
   useEffect(() => {
@@ -86,7 +86,7 @@ const Layout = (props) => {
 
   return (
     <StyledContainer className="Layout">
-      {windowWidth && windowWidth.matches ? (
+      {isTabletWidth && isTabletWidth.matches ? (
         <MobileLayout {...props} />
       ) : (
         children
