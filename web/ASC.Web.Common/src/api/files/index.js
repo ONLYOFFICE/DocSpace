@@ -411,7 +411,16 @@ export function setShareFiles(
 
   return request({
     method: "put",
-    url: `/files/share`,
+    url: "/files/share",
+    data,
+  });
+}
+
+export function setFileOwner(folderIds, fileIds, userId) {
+  const data = { folderIds, fileIds, userId };
+    return request({
+    method: "post",
+    url: "/files/owner",
     data,
   });
 }
