@@ -83,56 +83,56 @@ services:
 
   onlyoffice-api:
     <<: *x-service-base
-    image: "${REPO:-onlyoffice}/${STATUS:-}appserver-api:${TAG_SRV:-latest}"
+    image: "${REPO}/${STATUS}appserver-api:${SRV_VERSION}"
     container_name: ${API_HOST}
 
   onlyoffice-api_system:
     <<: *x-service-base
-    image: "${REPO:-onlyoffice}/${STATUS:-}appserver-api_system:${TAG_SRV:-latest}"
+    image: "${REPO}/${STATUS}appserver-api_system:${SRV_VERSION}"
     container_name: ${API_SYSTEM_HOST}
      
   onlyoffice-urlshortener:
     <<: *x-service-base
-    image: "${REPO:-onlyoffice}/${STATUS:-}appserver-urlshortener:${TAG_SRV:-latest}"
+    image: "${REPO}/${STATUS}appserver-urlshortener:${SRV_VERSION}"
     container_name: ${URLSHORTENER_HOST}
    
   onlyoffice-studio.notify:
     <<: *x-service-base
-    image: "${REPO:-onlyoffice}/${STATUS:-}appserver-studio.notify:${TAG_SRV:-latest}"
+    image: "${REPO}/${STATUS}appserver-studio.notify:${SRV_VERSION}"
     container_name: ${STUDIO_NOYIFY_HOST}
     
   onlyoffice-notify:
     <<: *x-service-base
-    image: "${REPO:-onlyoffice}/${STATUS:-}appserver-notify:${TAG_SRV:-latest}"
+    image: "${REPO}/${STATUS}appserver-notify:${SRV_VERSION}"
     container_name: ${NOTIFY_HOST}
 
   onlyoffice-people.server:
     <<: *x-service-base
-    image: "${REPO:-onlyoffice}/${STATUS:-}appserver-people.server:${TAG_SRV:-latest}"
+    image: "${REPO}/${STATUS}appserver-people.server:${SRV_VERSION}"
     container_name: ${PEOPLE_SERVER_HOST}
     
   onlyoffice-files:
     <<: *x-service-base
-    image: "${REPO:-onlyoffice}/${STATUS:-}appserver-files:${TAG_SRV:-latest}"
+    image: "${REPO}/${STATUS}appserver-files:${SRV_VERSION}"
     container_name: ${FILES_HOST}
     
   onlyoffice-files_services:
     <<: *x-service-base
-    image: "${REPO:-onlyoffice}/${STATUS:-}appserver-files_services:${TAG_SRV:-latest}"
+    image: "${REPO}/${STATUS}appserver-files_services:${SRV_VERSION}"
     container_name: ${FILES_SERVICES_HOST}
     
   onlyoffice-studio:
     <<: *x-service-base
-    image: "${REPO:-onlyoffice}/${STATUS:-}appserver-studio:${TAG_SRV:-latest}"
+    image: "${REPO}/${STATUS}appserver-studio:${SRV_VERSION}"
     container_name: ${STUDIO_HOST}
    
   onlyoffice-backup:
     <<: *x-service-base
-    image: "${REPO:-onlyoffice}/${STATUS:-}appserver-backup:${TAG_SRV:-latest}"
+    image: "${REPO}/${STATUS}appserver-backup:${SRV_VERSION}"
     container_name: ${BACKUP_HOST}
     
   onlyoffice-proxy:
-    image: "${REPO:-onlyoffice}/${STATUS:-}appserver-proxy:${TAG_SRV:-latest}"
+    image: "${REPO}/${STATUS}appserver-proxy:${SRV_VERSION}"
     container_name: ${PROXY_HOST}
     restart: always
     expose:
@@ -169,7 +169,7 @@ services:
 networks:
   default:
     external:
-      name: ${NETWORK_NAME:-onlyoffice}
+      name: ${NETWORK_NAME}
 
 volumes:
   kafka_data:

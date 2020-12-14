@@ -13,14 +13,14 @@
     - write value APP_CORE_MACHINEKEY
 
 * Run Appserver with Community Server:  
-  - check file app-server.yml before running: 
+  - check file appserver.yml before running: 
     - app_data:/app/onlyoffice/data should be commented,
     - /app/onlyoffice CommunityServer/data:/app/onlyoffice/data should be uncommented
-  - docker-compose -f app-server.yml up -d
+  - docker-compose -f appserver.yml up -d
 
 * Run standlone Appserver: 
-  - check file app-server.yml before running: 
+  - check file appserver.yml before running: 
     - app_data:/app/onlyoffice/data should be uncommented,
     - /app/onlyoffice CommunityServer/data:/app/onlyoffice/data should be commented
   - docker-compose -f db.yml up -d
-  - docker-compose -f document-server.yml -f app-server.yml up -d
+  - docker-compose -f ds.yml -f appserver.yml up -d
