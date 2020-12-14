@@ -78,7 +78,7 @@ class PureEditor extends React.Component {
 
   render() {
     return (
-      <Box widthProp="100vw" heightProp="calc(var(--vh, 1vh) * 100)">
+      <Box widthProp="100vw" heightProp="100vh">
         <Toast />
 
         {!this.state.isLoading ? (
