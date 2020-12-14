@@ -70,9 +70,9 @@ class PureEditor extends React.Component {
       hideLoader();
 
       window.DocsAPI.DocEditor("editor", config);
-    } catch (e) {
-      console.log(e);
-      toastr.error(e);
+    } catch (error) {
+      console.log(error);
+      toastr.error(error.message, null, 0, true);
     }
   };
 
