@@ -65,6 +65,8 @@ export const getIsLoaded = (state) => state.auth.isLoaded;
 
 export const getIsLoadedSection = (state) => state.auth.isLoadedSection;
 
+export const getIsTabletView = (state) => state.auth.settings.isTabletView;
+
 export const getDefaultPage = createSelector(
   [getSettings],
   (settings) => (settings && settings.defaultPage) || ""

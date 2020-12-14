@@ -1,8 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import MobileLayout from "./MobileLayout";
 import { utils } from "asc-web-components";
 import { isIOS, isFirefox, isChrome, isSafari } from "react-device-detect";
+
+import { connect } from "react-redux";
+import store from "../../store";
+
+const { setIsTabletView } = store.auth.actions;
+const { getIsTabletView } = store.auth.selectors;
 
 const { size } = utils.device;
 
@@ -14,37 +20,38 @@ const StyledContainer = styled.div`
 `;
 
 const Layout = (props) => {
-  const { children } = props;
-  const isTablet = window.innerWidth <= size.tablet;
-
-  const [windowWidth, setWindowWidth] = useState({
-    matches: isTablet,
-  });
-
-  console.log(size.tablet);
+  const { children, isTabletView, setIsTabletView } = props;
 
   useEffect(() => {
-    let mediaQuery = window.matchMedia("(max-width: 1024px)");
-    mediaQuery.addListener(setWindowWidth);
+    const isTablet = window.innerWidth <= size.tablet;
+    setIsTabletView(isTablet);
 
-    return () => mediaQuery.removeListener(setWindowWidth);
+    let mediaQuery = window.matchMedia("(max-width: 1024px)");
+    mediaQuery.addEventListener("change", isViewChangeHandler);
+
+    return () => mediaQuery.removeEventListener("change", isViewChangeHandler);
   }, []);
 
   useEffect(() => {
-    if (isTablet) {
+    if (isTabletView) {
       if (isIOS && isSafari) window.addEventListener("resize", resizeHandler);
       else window.addEventListener("orientationchange", resizeHandler);
       resizeHandler();
     }
 
     return () => {
-      if (isTablet) {
+      if (isTabletView) {
         if (isIOS && isSafari)
           window.removeEventListener("resize", resizeHandler);
         else window.removeEventListener("orientationchange", resizeHandler);
       }
     };
   }, []);
+
+  const isViewChangeHandler = (e) => {
+    const { matches } = e;
+    setIsTabletView(matches);
+  };
 
   const resizeHandler = () => {
     const intervalTime = 100;
@@ -86,14 +93,24 @@ const Layout = (props) => {
     }, endTimeout);
   };
 
+  console.log(isTabletView, "isTabletView");
+
   return (
     <StyledContainer className="Layout">
-      {windowWidth && windowWidth.matches ? (
-        <MobileLayout {...props} windowWidth={windowWidth} />
-      ) : (
-        children
-      )}
+      {isTabletView ? <MobileLayout {...props} /> : children}
     </StyledContainer>
   );
 };
-export default Layout;
+
+const mapStateToProps = (state) => {
+  return {
+    isTabletView: getIsTabletView(state),
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setIsTabletView: (isTabletView) => dispatch(setIsTabletView(isTabletView)),
+  };
+};
+export default connect(mapStateToProps, mapDispatchToProps)(Layout);

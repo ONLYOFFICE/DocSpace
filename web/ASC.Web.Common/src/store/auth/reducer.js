@@ -17,8 +17,9 @@ import {
   SET_WIZARD_COMPLETED,
   SET_HEADER_VISIBLE,
   SET_IS_AUTHENTICATED,
+  SET_IS_TABLET_VIEW,
 } from "./actions";
-import { LANGUAGE, AUTH_KEY,  HEADER_VISIBLE_KEY } from "../../constants";
+import { LANGUAGE, AUTH_KEY, HEADER_VISIBLE_KEY } from "../../constants";
 
 const initialState = {
   isAuthenticated: false,
@@ -65,6 +66,7 @@ const initialState = {
     },
     isEncryptionSupport: false, // TODO: should switch to "true", when desktop editors client uses
     isHeaderVisible: false,
+    isTabletView: false,
   },
 };
 
@@ -167,6 +169,13 @@ const authReducer = (state = initialState, action) => {
         settings: {
           ...state.settings,
           isHeaderVisible: action.isHeaderVisible,
+        },
+      });
+    case SET_IS_TABLET_VIEW:
+      return Object.assign({}, state, {
+        settings: {
+          ...state.settings,
+          isTabletView: action.isTabletView,
         },
       });
     default:
