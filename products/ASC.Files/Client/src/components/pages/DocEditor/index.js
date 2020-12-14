@@ -1,16 +1,30 @@
 import React from "react";
 import { withRouter } from "react-router";
 import { Toast, Box } from "asc-web-components";
-import { utils, api, toastr } from "asc-web-common";
+import { utils, api, toastr, Loaders } from "asc-web-common";
 
 const { getObjectByLocation, showLoader, hideLoader } = utils;
 
 class PureEditor extends React.Component {
+  constructor(props) {
+    super(props);
+
+    const urlParams = getObjectByLocation(window.location);
+    const fileId = urlParams ? urlParams.fileId || null : null;
+    const doc = urlParams ? urlParams.doc || null : null;
+
+    this.state = {
+      fileId,
+      doc,
+      isLoading: true,
+    };
+  }
+
   async componentDidMount() {
     try {
-      const urlParams = getObjectByLocation(window.location);
-      const fileId = urlParams.fileId || null;
-      const doc = urlParams.doc || null;
+      const { fileId, doc } = this.state;
+
+      if (!fileId) return;
 
       console.log("PureEditor componentDidMount", fileId, doc);
 
@@ -23,10 +37,12 @@ class PureEditor extends React.Component {
 
       const config = await api.files.openEdit(fileId, doc);
 
-      this.loadDocApi(docApiUrl, () => this.onLoad(config));
+      this.setState({ isLoading: false }, () =>
+        this.loadDocApi(docApiUrl, () => this.onLoad(config))
+      );
     } catch (error) {
       console.log(error);
-      toastr.error(error);
+      toastr.error(error.message, null, 0, true);
     }
   }
 
@@ -64,7 +80,14 @@ class PureEditor extends React.Component {
     return (
       <Box widthProp="100vw" heightProp="calc(var(--vh, 1vh) * 100)">
         <Toast />
-        <div id="editor"></div>
+
+        {!this.state.isLoading ? (
+          <div id="editor"></div>
+        ) : (
+          <Box paddingProp="16px">
+            <Loaders.Rectangle height="96vh" />
+          </Box>
+        )}
       </Box>
     );
   }

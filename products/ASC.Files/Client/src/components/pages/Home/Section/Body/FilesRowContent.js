@@ -165,7 +165,9 @@ class FilesRowContent extends React.PureComponent {
 
     if (itemTitle.trim() === "") return this.completeAction(itemId);
 
-    let tab = item.fileExst ? window.open("about:blank", "_blank") : null;
+    let tab = item.fileExst
+      ? window.open("/products/files/doceditor", "_blank")
+      : null;
 
     !item.fileExst
       ? createFolder(item.parentId, itemTitle)
