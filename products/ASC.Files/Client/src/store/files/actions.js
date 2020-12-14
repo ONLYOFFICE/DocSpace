@@ -550,9 +550,28 @@ export function setShareFiles(
   fileIds,
   share,
   notify,
-  sharingMessage
+  sharingMessage,
+  externalAccess,
+  ownerId
 ) {
-  return files.setShareFiles(fileIds, folderIds, share, notify, sharingMessage);
+  let externalAccessRequest = [];
+  if (fileIds.length === 1 && externalAccess !== null) {
+    externalAccessRequest = fileIds.map((id) =>
+      files.setExternalAccess(id, externalAccess)
+    );
+  }
+
+  const ownerChangeRequest = ownerId
+    ? [files.setFileOwner(folderIds, fileIds, ownerId)]
+    : [];
+
+  const requests = [
+    files.setShareFiles(fileIds, folderIds, share, notify, sharingMessage),
+    ...externalAccessRequest,
+    ...ownerChangeRequest,
+  ];
+
+  return axios.all(requests);
 }
 
 export function getShareUsers(folderIds, fileIds) {

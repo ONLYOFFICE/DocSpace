@@ -1182,3 +1182,12 @@ export const getIconOfDraggedFile = (state) => {
 export const getSharePanelVisible = (state) => {
   return state.files.sharingPanelVisible;
 };
+
+export const getCanShareOwnerChange = createSelector(
+  isAdmin,
+  getPathParts,
+  getCommonFolderId,
+  (isAdmin, pathParts, commonId) => {
+    return isAdmin && commonId === pathParts[0];
+  }
+);
