@@ -254,7 +254,7 @@ class SectionHeaderContent extends React.Component {
           setTimeout(() => this.loop(currentItem), 1000);
         } else {
           setTimeout(() => this.props.clearSecondaryProgressData(), TIMEOUT);
-          return window.open(url, "_blank");
+          return (window.location.href = url);
         }
       })
       .catch((err) => {
