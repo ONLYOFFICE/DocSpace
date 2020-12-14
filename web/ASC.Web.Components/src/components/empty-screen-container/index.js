@@ -16,9 +16,9 @@ const EmptyContentBody = styled.div`
     "img button";
 
   grid-column-gap: 16px;
-  grid-row-gap: 12px;
+  grid-row-gap: 10px;
   max-width: 800px;
-
+  grid-template-rows: max-content;
   .ec-image {
     grid-area: img;
     margin: 0 0 0 auto;
@@ -26,28 +26,32 @@ const EmptyContentBody = styled.div`
 
   .ec-header {
     grid-area: headerText;
+    padding-top: 16px;
+    @media (max-width: 375px) {
+      margin-top: 5px;
+    }
   }
 
   .ec-subheading {
     grid-area: subheadingText;
+    margin-top: -1px;
   }
 
   .ec-desc {
     grid-area: descriptionText;
+    line-height: 18px;
+    margin-top: 2px;
   }
 
   .ec-buttons {
     grid-area: button;
+    margin-top: -1px;
   }
 
   @media (orientation: portrait) {
-    @media (max-width: 738px) {
+    @media (max-width: 768px) {
       padding-top: 0px;
-      max-width: 496px;
-
-      .ec-header {
-        padding-top: 16px;
-      }
+      max-width: 700px;
 
       .ec-image {
         max-height: 100px;
@@ -133,7 +137,7 @@ EmptyScreenContainer.propTypes = {
   imageAlt: PropTypes.string,
   headerText: PropTypes.string,
   subheadingText: PropTypes.string,
-  descriptionText: PropTypes.string,
+  descriptionText: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
   buttons: PropTypes.any,
   className: PropTypes.string,
   id: PropTypes.string,

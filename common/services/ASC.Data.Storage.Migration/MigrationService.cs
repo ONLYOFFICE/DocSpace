@@ -38,6 +38,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Storage.Migration
 {
+    [Singletone]
     public class MigrationServiceListener
     {
         public IServiceProvider ServiceProvider { get; }
@@ -79,6 +80,7 @@ namespace ASC.Data.Storage.Migration
         }
     }
 
+    [Scope]
     public class MigrationService : IService
     {
         public StorageUploader StorageUploader { get; }
@@ -124,24 +126,6 @@ namespace ASC.Data.Storage.Migration
         public void StopMigrate()
         {
             StorageUploader.Stop();
-        }
-    }
-
-    public static class MigrationServiceExtension
-    {
-        public static DIHelper AddMigrationService(this DIHelper services)
-        {
-            if (services.TryAddScoped<MigrationService>())
-            {
-                services.TryAddSingleton<MigrationServiceListener>();
-                services.TryAddSingleton<StorageUploader>();
-
-                return services
-                    .AddStaticUploaderService()
-                    .AddStorageFactoryConfigService();
-            }
-
-            return services;
         }
     }
 }

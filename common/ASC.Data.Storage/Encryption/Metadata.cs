@@ -30,10 +30,13 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 
+using ASC.Common;
+
 using Microsoft.Extensions.Configuration;
 
 namespace ASC.Data.Storage.Encryption
 {
+    [Transient]
     public class Metadata : IMetadata
     {
         private const string prefixString = "AscEncrypted";

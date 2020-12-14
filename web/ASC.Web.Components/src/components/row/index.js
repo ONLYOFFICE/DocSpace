@@ -2,14 +2,14 @@ import Checkbox from "../checkbox";
 import ContextMenuButton from "../context-menu-button";
 import PropTypes from "prop-types";
 import React from "react";
-import isEqual from "lodash/isEqual";
 import styled from "styled-components";
 import { tablet } from "../../utils/device";
+import equal from "fast-deep-equal/react";
 
 const StyledRow = styled.div`
   cursor: default;
 
-  min-height: 50px;
+  min-height: 47px;
   width: 100%;
   border-bottom: 1px solid #eceef1;
 
@@ -48,8 +48,6 @@ const StyledElement = styled.div`
 `;
 
 const StyledContentElement = styled.div`
-  margin-right: 8px;
-  margin-left: 8px;
   margin-top: 6px;
   user-select: none;
 `;
@@ -57,9 +55,24 @@ const StyledContentElement = styled.div`
 const StyledOptionButton = styled.div`
   display: flex;
   width: ${(props) => props.spacerWidth && props.spacerWidth};
+  justify-content: flex-end;
 
   .expandButton > div:first-child {
-    padding: 8px 8px 8px 8px;
+    padding: 8px 0px 9px 7px;
+
+    margin-right: 0px;
+
+    @media (min-width: 1024px) {
+      margin-right: -1px;
+    }
+    @media (max-width: 516px) {
+      padding-left: 10px;
+    }
+  }
+
+  //margin-top: -1px;
+  @media ${tablet} {
+    margin-top: unset;
   }
 `;
 
@@ -74,7 +87,7 @@ class Row extends React.Component {
     if (this.props.needForUpdate) {
       return this.props.needForUpdate(this.props, nextProps);
     }
-    return !isEqual(this.props, nextProps);
+    return !equal(this.props, nextProps);
   }
 
   componentDidMount() {
@@ -104,7 +117,7 @@ class Row extends React.Component {
       indeterminate,
       onSelect,
       selectItem,
-      widthProp,
+      sectionWidth,
     } = this.props;
 
     const renderCheckbox = Object.prototype.hasOwnProperty.call(
@@ -119,7 +132,7 @@ class Row extends React.Component {
 
     const renderContentElement =
       Object.prototype.hasOwnProperty.call(this.props, "contentElement") &&
-      widthProp > 500;
+      sectionWidth > 500;
 
     const renderContext =
       Object.prototype.hasOwnProperty.call(this.props, "contextOptions") &&
@@ -142,7 +155,9 @@ class Row extends React.Component {
             />
           </StyledCheckbox>
         )}
-        {renderElement && <StyledElement>{element}</StyledElement>}
+        {renderElement && (
+          <StyledElement className="styled-element">{element}</StyledElement>
+        )}
         <StyledContent className="row_content">{children}</StyledContent>
         <StyledOptionButton
           className="row_context-menu-wrapper"
@@ -176,7 +191,7 @@ Row.propTypes = {
   checked: PropTypes.bool,
   children: PropTypes.element,
   className: PropTypes.string,
-  contentElement: PropTypes.element,
+  contentElement: PropTypes.any,
   contextButtonSpacerWidth: PropTypes.string,
   contextOptions: PropTypes.array,
   data: PropTypes.object,
@@ -187,7 +202,7 @@ Row.propTypes = {
   onSelect: PropTypes.func,
   selectItem: PropTypes.func,
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
-  widthProp: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  sectionWidth: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 };
 
 Row.defaultProps = {

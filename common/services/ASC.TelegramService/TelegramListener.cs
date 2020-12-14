@@ -30,6 +30,7 @@ using ASC.Notify.Messages;
 
 namespace ASC.TelegramService
 {
+    [Singletone]
     public class TelegramListener
     {
         private ICacheNotify<NotifyMessage> CacheMessage { get; }
@@ -88,15 +89,6 @@ namespace ASC.TelegramService
         private void CreateOrUpdateClient(CreateClientProto createClientProto)
         {
             TelegramService.CreateOrUpdateClient(createClientProto.TenantId, createClientProto.Token, createClientProto.TokenLifespan, createClientProto.Proxy);
-        }
-    }
-
-    public static class TelegramListenerExtension
-    {
-        public static DIHelper AddTelegramListenerService(this DIHelper services)
-        {
-            services.TryAddSingleton<TelegramListener>();
-            return services.AddTelegramService();
         }
     }
 }

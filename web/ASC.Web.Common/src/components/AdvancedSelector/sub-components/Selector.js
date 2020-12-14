@@ -69,6 +69,7 @@ const Selector = (props) => {
     size,
     allowGroupSelection,
     embeddedComponent,
+    showCounter,
   } = props;
 
   //console.log("options", options);
@@ -706,10 +707,12 @@ const Selector = (props) => {
       <Footer
         className="footer"
         selectButtonLabel={selectButtonLabel}
+        showCounter={showCounter}
         isDisabled={isDisabled}
         isVisible={isMultiSelect && hasSelected()}
         onClick={onAddClick}
         embeddedComponent={embeddedComponent}
+        selectedLength={selectedOptionList.length}
       />
     </StyledSelector>
   );

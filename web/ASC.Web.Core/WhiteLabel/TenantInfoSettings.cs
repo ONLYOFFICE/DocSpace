@@ -66,6 +66,7 @@ namespace ASC.Web.Core.WhiteLabel
         }
     }
 
+    [Scope]
     public class TenantInfoSettingsHelper
     {
         private WebImageSupplier WebImageSupplier { get; }
@@ -166,24 +167,6 @@ namespace ASC.Web.Core.WhiteLabel
             var fileName = tenantInfoSettings.CompanyLogoFileName ?? "";
 
             return storage.IsFile(fileName) ? storage.GetReadStream(fileName) : null;
-        }
-    }
-
-    public static class TenantInfoSettingsExtension
-    {
-        public static DIHelper AddTenantInfoSettingsService(this DIHelper services)
-        {
-            if (services.TryAddScoped<TenantInfoSettingsHelper>())
-            {
-
-                return services
-                    .AddWebImageSupplierService()
-                    .AddStorageFactoryService()
-                    .AddTenantManagerService()
-                    .AddSettingsManagerService();
-            }
-
-            return services;
         }
     }
 }

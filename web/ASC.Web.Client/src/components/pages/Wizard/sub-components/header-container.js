@@ -19,7 +19,7 @@ const StyledHeaderContainer = styled(Box)`
 
   .wizard-desc {
     text-align: center;
-    margin-top: 8px;
+    margin-top: 9px;
   }
 
   @media ${tablet} {

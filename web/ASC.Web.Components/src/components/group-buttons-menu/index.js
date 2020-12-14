@@ -5,7 +5,7 @@ import GroupButton from "../group-button";
 import DropDownItem from "../drop-down-item";
 import throttle from "lodash/throttle";
 import { isArrayEqual } from "../../utils/array";
-import { tablet } from "../../utils/device";
+import { tablet, desktop } from "../../utils/device";
 
 const StyledGroupButtonsMenu = styled.div`
   box-sizing: border-box;
@@ -13,26 +13,30 @@ const StyledGroupButtonsMenu = styled.div`
   top: 0;
   background: #ffffff;
   box-shadow: 0px 10px 18px -8px rgba(0, 0, 0, 0.100306);
-  height: 57px;
+  height: 56px;
   list-style: none;
   padding: 0 18px 19px 0;
-  width: ${(props) =>
-    props.containerWidth ? props.containerWidth + "px" : "100%"};
+  width: 100%;
   white-space: nowrap;
+
   display: ${(props) => (props.visible ? "block" : "none")};
   z-index: 189;
+
+  @media ${desktop} {
+    margin-top: 1px;
+  }
 `;
 
 const CloseButton = styled.div`
   position: absolute;
-  right: 12px;
+  right: 11px;
   top: 10px;
   width: 20px;
   height: 20px;
   padding: 8px;
 
   @media ${tablet} {
-    right: 4px;
+    right: 3px;
   }
 
   &:hover {
@@ -77,7 +81,7 @@ class GroupButtonsMenu extends React.Component {
       visible: props.visible,
     };
 
-    this.throttledResize = throttle(this.updateMenu, 300);
+    this.throttledResize = throttle(this.updateMenu, 200);
   }
 
   closeMenu = (e) => {
@@ -129,6 +133,7 @@ class GroupButtonsMenu extends React.Component {
     }
 
     if (
+      this.props.sectionWidth !== prevProps.sectionWidth ||
       this.state.priorityItems.length !== prevState.priorityItems.length ||
       this.state.moreItems.length !== prevState.moreItems.length
     ) {
@@ -138,7 +143,7 @@ class GroupButtonsMenu extends React.Component {
 
   countMenuItems = (array, outerWidth, moreWidth) => {
     const itemsArray = array || [];
-    let total = (moreWidth || 0) + 80;
+    let total = (moreWidth || 0) + 10;
 
     for (let i = 0, len = itemsArray.length; i < len; i++) {
       if (total + itemsArray[i] > outerWidth) {
@@ -150,17 +155,20 @@ class GroupButtonsMenu extends React.Component {
   };
 
   updateMenu = () => {
-    const moreMenuElement = document.getElementById("moreMenu");
-    const groupMenuOuterElement = document.getElementById("groupMenuOuter");
+    const { sectionWidth } = this.props;
+    let groupMenuOuterWidth = sectionWidth;
 
-    const screenWidth = window.innerWidth;
-    const groupMenuOuterValues =
-      groupMenuOuterElement && groupMenuOuterElement.getBoundingClientRect();
+    if (!sectionWidth) {
+      const groupMenuOuterElement = document.getElementById("groupMenuOuter");
+      const groupMenuOuterValues =
+        groupMenuOuterElement && groupMenuOuterElement.getBoundingClientRect();
+      const screenWidth = window.innerWidth;
+      const xWidth = groupMenuOuterValues && groupMenuOuterValues.x;
+      groupMenuOuterWidth = screenWidth - xWidth;
+    }
+    const moreMenuElement = document.getElementById("moreMenu");
     const moreMenuWidth =
       moreMenuElement && moreMenuElement.getBoundingClientRect().width;
-    const xWidth = groupMenuOuterValues && groupMenuOuterValues.x;
-    const groupMenuOuterWidth = screenWidth - xWidth;
-
     const visibleItemsCount = this.countMenuItems(
       this.widthsArray,
       groupMenuOuterWidth,
@@ -177,7 +185,6 @@ class GroupButtonsMenu extends React.Component {
     this.setState({
       priorityItems: priorityItems,
       moreItems: moreItems,
-      width: groupMenuOuterWidth,
     });
   };
 
@@ -196,14 +203,10 @@ class GroupButtonsMenu extends React.Component {
       isIndeterminate,
       onChange,
     } = this.props;
-    const { priorityItems, moreItems, visible, width } = this.state;
+    const { priorityItems, moreItems, visible } = this.state;
 
     return (
-      <StyledGroupButtonsMenu
-        id="groupMenuOuter"
-        visible={visible}
-        containerWidth={width}
-      >
+      <StyledGroupButtonsMenu id="groupMenuOuter" visible={visible}>
         <GroupMenuWrapper id="groupMenu">
           {priorityItems.map((item, i) => (
             <GroupButton
@@ -261,6 +264,7 @@ GroupButtonsMenu.propTypes = {
   visible: PropTypes.bool,
   moreLabel: PropTypes.string,
   closeTitle: PropTypes.string,
+  sectionWidth: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
 };
 
 GroupButtonsMenu.defaultProps = {

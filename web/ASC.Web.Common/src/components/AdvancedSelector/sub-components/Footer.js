@@ -11,6 +11,8 @@ const Footer = (props) => {
     isVisible,
     className,
     embeddedComponent,
+    selectedLength,
+    showCounter,
   } = props;
 
   return (
@@ -23,7 +25,7 @@ const Footer = (props) => {
         className="add_members_btn"
         primary={true}
         size="big"
-        label={selectButtonLabel}
+        label={`${selectButtonLabel} ${(selectedLength && showCounter) ? `(${selectedLength})` : ""}`}
         scale={true}
         isDisabled={isDisabled}
         onClick={onClick}

@@ -54,7 +54,7 @@ const StyledDropdown = styled.div`
     !props.maxHeight &&
     props.children &&
     props.children.length > 1 &&
-    `6px 0px`};
+    `4px 0px`};
   ${(props) =>
     props.columnCount &&
     `

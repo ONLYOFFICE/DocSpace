@@ -30,6 +30,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Context;
@@ -48,7 +49,8 @@ using IsolationLevel = System.Data.IsolationLevel;
 
 namespace ASC.MessagingSystem.DbSender
 {
-    public class MessagesRepository
+    [Singletone(Additional = typeof(MessagesRepositoryExtension))]
+    public class MessagesRepository: IDisposable
     {
         private static DateTime lastSave = DateTime.UtcNow;
         private readonly TimeSpan CacheTime;
@@ -312,6 +314,27 @@ namespace ASC.MessagingSystem.DbSender
                 ef.SaveChanges();
 
             } while (ids.Any());
+        }
+
+        public void Dispose()
+        {
+            if (Timer != null)
+            {
+                Timer.Dispose();
+            }
+
+            if (ClearTimer != null)
+            {
+                ClearTimer.Dispose();
+            }
+        }
+    }
+
+    public class MessagesRepositoryExtension
+    {
+        public static void Register(DIHelper services)
+        {
+            services.TryAdd<DbContextManager<MessagesContext>>();
         }
     }
 }

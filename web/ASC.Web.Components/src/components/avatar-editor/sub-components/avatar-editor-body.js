@@ -339,8 +339,13 @@ class AvatarEditorBody extends React.Component {
     fr.onload = function () {
       var img = new Image();
       img.onload = function () {
-        var canvas = resizeImage.resize2Canvas(img, 1024, 1024);
-        var data = resizeImage.resize(canvas, 1024, 1024, resizeImage.JPEG);
+        var canvas = resizeImage.resize2Canvas(img, img.width, img.height);
+        var data = resizeImage.resize(
+          canvas,
+          img.width,
+          img.height,
+          resizeImage.JPEG
+        );
         _this.setState({
           image: data,
           rotate: 0,
@@ -516,8 +521,8 @@ class AvatarEditorBody extends React.Component {
     if (!this.state.image) _this.props.onLoadFile(null);
     img.onload = () => {
       var canvas = document.createElement("canvas");
-      canvas.setAttribute("width", img.height);
-      canvas.setAttribute("height", img.width);
+      canvas.setAttribute("width", img.width);
+      canvas.setAttribute("height", img.height);
       var context = canvas.getContext("2d");
 
       context.translate(canvas.width / 2, canvas.height / 2);
@@ -634,26 +639,8 @@ class AvatarEditorBody extends React.Component {
                         onImageReady={this.onImageReady}
                       />
                       <Box className="editor-buttons">
-                        <IconButton
-                          size="16"
-                          isDisabled={false}
-                          onClick={this.onRotateLeftClick}
-                          iconName={"RotateLeftIcon"}
-                          isFill={true}
-                          isClickable={false}
-                          color="#FFFFFF"
-                          className="editor-button"
-                        />
-                        <IconButton
-                          size="16"
-                          isDisabled={false}
-                          onClick={this.onRotateRightClick}
-                          iconName={"RotateRightIcon"}
-                          isFill={true}
-                          isClickable={false}
-                          color="#FFFFFF"
-                          className="editor-button"
-                        />
+                        <Box></Box>
+                        <Box></Box>
                         <Box></Box>
                         <Box></Box>
                         <Box></Box>
@@ -707,7 +694,7 @@ class AvatarEditorBody extends React.Component {
                         />
                         <Box className="avatar-mini-preview">
                           <Avatar
-                            size="small"
+                            size="min"
                             role={role}
                             source={this.state.croppedImage}
                             editing={false}

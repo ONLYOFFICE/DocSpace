@@ -29,8 +29,12 @@ using System.IO;
 using System.Threading.Tasks;
 
 using ASC.Common;
+using ASC.Common.Caching;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
+
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -44,6 +48,7 @@ namespace ASC.Thumbnails.Svc
         public static async Task Main(string[] args)
         {
             var host = Host.CreateDefaultBuilder(args)
+                .UseServiceProviderFactory(new AutofacServiceProviderFactory())
                 .ConfigureAppConfiguration((hostContext, config) =>
                 {
                     var buided = config.Build();
@@ -73,11 +78,15 @@ namespace ASC.Thumbnails.Svc
                 .ConfigureServices((hostContext, services) =>
                 {
                     var diHelper = new DIHelper(services);
-                    diHelper.AddNLogManager("ASC.Thumbnails.Svc");
-                    services.AddHostedService<ThumbnailsServiceLauncher>();
-                    diHelper.AddThumbnailsServiceLauncher();
 
-                    services.AddAutofac(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath, false, false);
+                    diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+                    LogNLogExtension.ConfigureLog(diHelper, "ASC.Thumbnails.Svc");
+                    services.AddHostedService<ThumbnailsServiceLauncher>();
+                    diHelper.TryAdd<ThumbnailsServiceLauncher>();
+                })
+                .ConfigureContainer<ContainerBuilder>((context, builder) =>
+                {
+                    builder.Register(context.Configuration, context.HostingEnvironment.ContentRootPath, false, false);
                 })
                 .UseConsoleLifetime()
                 .Build();

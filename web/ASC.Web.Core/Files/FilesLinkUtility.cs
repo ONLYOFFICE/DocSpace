@@ -39,6 +39,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace ASC.Web.Core.Files
 {
+    [Scope]
     public class FilesLinkUtility
     {
         public const string FilesBaseVirtualPath = "~/products/files/";
@@ -429,23 +430,6 @@ namespace ASC.Web.Core.Files
         private string GetSettingsKey(string key)
         {
             return "DocKey_" + key;
-        }
-    }
-    public static class FilesLinkUtilityExtention
-    {
-        public static DIHelper AddFilesLinkUtilityService(this DIHelper services)
-        {
-            if (services.TryAddScoped<FilesLinkUtility>())
-            {
-                return services
-                    .AddCommonLinkUtilityService()
-                    .AddBaseCommonLinkUtilityService()
-                    .AddCoreBaseSettingsService()
-                    .AddCoreSettingsService()
-                    .AddInstanceCryptoService();
-            }
-
-            return services;
         }
     }
 }

@@ -32,6 +32,7 @@ using ASC.Common.Caching;
 
 namespace ASC.IPSecurity
 {
+    [Singletone]
     public class IPRestrictionsServiceCache
     {
         private const string cacheKey = "iprestrictions";
@@ -51,6 +52,8 @@ namespace ASC.IPSecurity
             return cacheKey + tenant;
         }
     }
+
+    [Scope]
     public class IPRestrictionsService
     {
         private readonly ICache cache;
@@ -84,21 +87,6 @@ namespace ASC.IPSecurity
             var restrictions = IPRestrictionsRepository.Save(ips, tenant);
             notify.Publish(new IPRestrictionItem { TenantId = tenant }, CacheNotifyAction.InsertOrUpdate);
             return restrictions;
-        }
-    }
-
-    public static class IPRestrictionsServiceExtension
-    {
-        public static DIHelper AddIPRestrictionsService(this DIHelper services)
-        {
-            if (services.TryAddScoped<IPRestrictionsService>())
-            {
-                services.TryAddSingleton<IPRestrictionsServiceCache>();
-
-                return services.AddIPRestrictionsRepositoryService();
-            }
-
-            return services;
         }
     }
 }

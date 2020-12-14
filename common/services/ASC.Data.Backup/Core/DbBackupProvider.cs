@@ -37,6 +37,7 @@ using ASC.Common;
 
 namespace ASC.Data.Backup
 {
+    [Scope]
     public class DbBackupProvider : IBackupProvider
     {
         private readonly List<string> processedTables = new List<string>();
@@ -223,16 +224,6 @@ namespace ASC.Data.Backup
                     processedTables.Add(table);
                 }
             }
-        }
-
-
-    }
-    public static class DbBackupProviderExtension
-    {
-        public static DIHelper AddDbBackupProvider(this DIHelper services)
-        {
-            services.TryAddScoped<DbBackupProvider>();
-            return services;
         }
     }
 }

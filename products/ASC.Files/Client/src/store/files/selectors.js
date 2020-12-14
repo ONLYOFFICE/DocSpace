@@ -22,6 +22,22 @@ export const getEditedFormats = (state) => {
   return state.files.docservice.editedDocs;
 };
 
+export const getCommentedFormats = (state) => {
+  return state.files.docservice.commentedDocs;
+};
+
+export const getReviewedFormats = (state) => {
+  return state.files.docservice.reviewedDocs;
+};
+
+export const getWebFilterFormats = (state) => {
+  return state.files.docservice.customfilterDocs;
+};
+
+export const getFormFillingFormats = (state) => {
+  return state.files.docservice.formfillingDocs;
+};
+
 export const getConvertedFormats = (state) => {
   return state.files.docservice.convertDocs;
 };
@@ -64,6 +80,29 @@ export const getSpreadsheetFormats = (state) => {
 
 export const canWebEdit = (extension) => {
   return createSelector(getEditedFormats, (formats) => {
+    return presentInArray(formats, extension);
+  });
+};
+
+export const canWebComment = (extension) => {
+  return createSelector(getCommentedFormats, (formats) => {
+    return presentInArray(formats, extension);
+  });
+};
+
+export const canWebReview = (extension) => {
+  return createSelector(getReviewedFormats, (formats) => {
+    return presentInArray(formats, extension);
+  });
+};
+
+export const canWebFilterEditing = (extension) => {
+  return createSelector(getWebFilterFormats, (formats) => {
+    return presentInArray(formats, extension);
+  });
+};
+export const canFormFillingDocs = (extension) => {
+  return createSelector(getFormFillingFormats, (formats) => {
     return presentInArray(formats, extension);
   });
 };
@@ -327,8 +366,8 @@ export const getIsRootFolder = (state) => {
 };
 
 export const getRootFolderId = (state) => {
-  if (state.files.selectedFolder.pathParts)
-    return state.files.selectedFolder.pathParts[0];
+  if (state.files.selectedFolder.rootFolderType)
+    return state.files.selectedFolder.rootFolderType;
 };
 
 export const canCreate = createSelector(
@@ -373,29 +412,36 @@ export const isCanBeDeleted = createSelector(
 );
 
 //TODO: Get the whole list of extensions
-export const getAccessOption = (selection) => {
-  const isFolder = selection.find((x) => x.fileExst === undefined);
-  const isMedia = selection.find(
-    (x) => isSound(x.fileExst) || isVideo(x.fileExst)
+export const getAccessOption = (state, selection) => {
+  return getOptions(state, selection);
+};
+
+export const getExternalAccessOption = (state, selection) => {
+  return getOptions(state, selection, true);
+};
+
+const getOptions = (state, selection, externalAccess = false) => {
+  const webEdit = selection.find((x) => canWebEdit(x.fileExst)(state));
+  const webComment = selection.find((x) => canWebComment(x.fileExst)(state));
+  const webReview = selection.find((x) => canWebReview(x.fileExst)(state));
+  const formFillingDocs = selection.find((x) =>
+    canFormFillingDocs(x.fileExst)(state)
   );
-  const isPresentationOrTable = selection.find(
-    (x) => isSpreadsheet(x.fileExst) || isPresentation(x.fileExst)
+  const webFilter = selection.find((x) =>
+    canWebFilterEditing(x.fileExst)(state)
   );
 
-  if (isFolder || isMedia) {
-    return ["FullAccess", "ReadOnly", "DenyAccess"];
-  } else if (isPresentationOrTable) {
-    return ["FullAccess", "ReadOnly", "DenyAccess", "Comment"];
-  } else {
-    return [
-      "FullAccess",
-      "ReadOnly",
-      "DenyAccess",
-      "Comment",
-      "Review",
-      "FormFilling",
-    ];
-  }
+  let AccessOptions = [];
+
+  if (webEdit || !externalAccess) AccessOptions.push("FullAccess");
+
+  AccessOptions.push("ReadOnly", "DenyAccess");
+
+  if (webComment) AccessOptions.push("Comment");
+  if (webReview) AccessOptions.push("Review");
+  if (formFillingDocs) AccessOptions.push("FormFilling");
+  if (webFilter) AccessOptions.push("FilterEditing");
+  return AccessOptions;
 };
 
 export const getFolderIcon = (providerKey, size = 32) => {
@@ -591,10 +637,16 @@ export const isMediaOrImage = (fileExst) => {
   );
 };
 
-const getFilesContextOptions = (item, isRecycleBin, canOpenPlayer) => {
+const getFilesContextOptions = (
+  item,
+  isRecycleBin,
+  isRecent,
+  canOpenPlayer
+) => {
   const options = [];
 
   const isFile = !!item.fileExst;
+  const isFavorite = item.fileStatus === 32;
 
   if (item.id <= 0) return [];
 
@@ -619,6 +671,12 @@ const getFilesContextOptions = (item, isRecycleBin, canOpenPlayer) => {
       options.push("finalize-version");
       options.push("block-unblock-version");
       options.push("separator1");
+      if (isRecent) {
+        options.push("open-location");
+      }
+      if (!isFavorite) {
+        options.push("mark-as-favorite");
+      }
 
       if (canOpenPlayer) {
         options.push("view");
@@ -640,6 +698,10 @@ const getFilesContextOptions = (item, isRecycleBin, canOpenPlayer) => {
     options.push("rename");
     options.push("delete");
   }
+  if (isFavorite && !isRecycleBin) {
+    options.push("remove-from-favorites");
+  }
+
   return options;
 };
 
@@ -674,6 +736,14 @@ const getRecycleBinFolder = createSelector(getTreeFolders, (treeFolders) => {
   return treeFolders.find((x) => x.rootFolderName === "@trash");
 });
 
+const getFavoritesFolder = createSelector(getTreeFolders, (treeFolders) => {
+  return treeFolders.find((x) => x.rootFolderName === "@favorites");
+});
+
+const getRecentFolder = createSelector(getTreeFolders, (treeFolders) => {
+  return treeFolders.find((x) => x.rootFolderName === "@recent");
+});
+
 export const getMyFolderId = createSelector(getMyFolder, (myFolder) => {
   if (myFolder) return myFolder.id;
 });
@@ -696,6 +766,20 @@ export const getRecycleBinFolderId = createSelector(
   getRecycleBinFolder,
   (recycleBinFolder) => {
     if (recycleBinFolder) return recycleBinFolder.id;
+  }
+);
+
+export const getFavoritesFolderId = createSelector(
+  getFavoritesFolder,
+  (favoritesFolder) => {
+    if (favoritesFolder) return favoritesFolder.id;
+  }
+);
+
+export const getRecentFolderId = createSelector(
+  getRecentFolder,
+  (recentFolder) => {
+    if (recentFolder) return recentFolder.id;
   }
 );
 
@@ -731,14 +815,51 @@ export const getIsRecycleBinFolder = createSelector(
   }
 );
 
+export const getIsFavoritesFolder = createSelector(
+  getFavoritesFolder,
+  getSelectedFolderId,
+  (favoritesFolder, id) => {
+    return favoritesFolder && favoritesFolder.id === id;
+  }
+);
+
+export const getIsRecentFolder = createSelector(
+  getRecentFolder,
+  getSelectedFolderId,
+  (recentFolder, id) => {
+    return recentFolder && recentFolder.id === id;
+  }
+);
+
+export const getPrivacyFolder = createSelector(
+  getTreeFolders,
+  (treeFolders) => {
+    return treeFolders.find((x) => x.rootFolderType === FolderType.Privacy);
+  }
+);
+
+export const getIsPrivacyFolder = createSelector(
+  getPrivacyFolder,
+  getSelectedFolderRootFolderType,
+  (privacyFolder, id) => {
+    return privacyFolder && privacyFolder.rootFolderType === id;
+  }
+);
+
 export const getFileActionId = (state) => {
   return state.files.fileAction.id;
 };
 
 export const getFilesList = (state) => {
   return createSelector(
-    [getItemsList, getSelection, getIsRecycleBinFolder, getFileActionId],
-    (items, selection, isRecycleBin, actionId) => {
+    [
+      getItemsList,
+      getSelection,
+      getIsRecycleBinFolder,
+      getIsRecentFolder,
+      getFileActionId,
+    ],
+    (items, selection, isRecycleBin, isRecent, actionId) => {
       return items.map((item) => {
         const {
           access,
@@ -767,10 +888,12 @@ export const getFilesList = (state) => {
           webUrl,
           providerKey,
         } = item;
+
         const canOpenPlayer = isMediaOrImage(item.fileExst)(state);
         const contextOptions = getFilesContextOptions(
           item,
           isRecycleBin,
+          isRecent,
           canOpenPlayer
         );
         const checked = isFileSelected(selection, id, parentId);
@@ -786,24 +909,9 @@ export const getFilesList = (state) => {
 
         let value = fileExst ? `file_${id}` : `folder_${id}`;
 
-        const isArchiveItem = isArchive(item.fileExst)(state);
-        const isImageItem = isImage(item.fileExst)(state);
-        const isSoundItem = isSound(item.fileExst)(state);
-        const isEbookItem = isEbook(item.fileExst)(state);
-        const isHtmlItem = isHtml(item.fileExst)(state);
         const isCanWebEdit = canWebEdit(item.fileExst)(state);
 
-        const icon = fileExst
-          ? getFileIcon(
-              fileExst,
-              24,
-              isArchiveItem,
-              isImageItem,
-              isSoundItem,
-              isEbookItem,
-              isHtmlItem
-            )
-          : getFolderIcon(providerKey, 24);
+        const icon = getIcon(state, 24, fileExst, providerKey);
 
         value += draggable ? "_draggable" : "";
 
@@ -857,8 +965,12 @@ export const getConvertDialogVisible = (state) => {
   return state.files.convertDialogVisible;
 };
 
-export const getProgressData = (state) => {
-  return state.files.progressData;
+export const getPrimaryProgressData = (state) => {
+  return state.files.primaryProgressData;
+};
+
+export const getSecondaryProgressData = (state) => {
+  return state.files.secondaryProgressData;
 };
 
 export const getUpdateTree = (state) => {
@@ -905,6 +1017,10 @@ export const getFilterSelectedItem = (state) => {
   return state.files.filter.selectedItem;
 };
 
+export const getPrivacyInstructionsLink = (state) => {
+  return state.files.privacyInstructions;
+};
+
 export const getHeaderVisible = createSelector(
   getSelectionLength,
   getSelected,
@@ -918,7 +1034,9 @@ export const getHeaderIndeterminate = createSelector(
   getSelectionLength,
   getItemsList,
   (headerVisible, selectionLength, items) => {
-    return headerVisible && selectionLength < items.length;
+    return headerVisible && selectionLength
+      ? selectionLength < items.length
+      : false;
   }
 );
 
@@ -998,6 +1116,69 @@ export const getOnlyFoldersSelected = createSelector(
   }
 );
 
-export const getAccessedSelected = createSelector(getSelection, (selection) => {
-  return selection.every((x) => x.access === 1 || x.access === 0);
-});
+export const getAccessedSelected = createSelector(
+  getSelection,
+  getSelectionLength,
+  (selection, selectionLength) => {
+    return (
+      selectionLength &&
+      selection.every((x) => x.access === 1 || x.access === 0)
+    );
+  }
+);
+
+export const getOperationsFolders = createSelector(
+  getTreeFolders,
+  (treeFolders) => {
+    return treeFolders.filter(
+      (folder) =>
+        (folder.rootFolderType === FolderType.USER ||
+          folder.rootFolderType === FolderType.COMMON ||
+          folder.rootFolderType === FolderType.Projects) &&
+        folder
+    );
+  }
+);
+const getIcon = (state, size = 24, fileExst = null, providerKey = null) => {
+  if (fileExst) {
+    const isArchiveItem = isArchive(fileExst)(state);
+    const isImageItem = isImage(fileExst)(state);
+    const isSoundItem = isSound(fileExst)(state);
+    const isEbookItem = isEbook(fileExst)(state);
+    const isHtmlItem = isHtml(fileExst)(state);
+
+    const icon = getFileIcon(
+      fileExst,
+      size,
+      isArchiveItem,
+      isImageItem,
+      isSoundItem,
+      isEbookItem,
+      isHtmlItem
+    );
+
+    return icon;
+  } else {
+    return getFolderIcon(providerKey, size);
+  }
+};
+
+export const getIconOfDraggedFile = (state) => {
+  return createSelector(getSelection, (selection) => {
+    if (selection.length === 1) {
+      const icon = getIcon(
+        state,
+        24,
+        selection[0].fileExst,
+        selection[0].providerKey
+      );
+
+      return icon;
+    }
+    return;
+  });
+};
+
+export const getSharePanelVisible = (state) => {
+  return state.files.sharingPanelVisible;
+};

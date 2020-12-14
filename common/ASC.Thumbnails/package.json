@@ -16,7 +16,7 @@
     "nconf": "^0.10.0",
     "node-cache": "^5.1.0",
     "request": "^2.88.2",
-    "winston": "^3.2.1",
+    "winston": "^3.3.3",
     "winston-daily-rotate-file": "^4.4.2",
     "graceful-fs": "~4.2.4",
     "cross-spawn": "^7.0.3",

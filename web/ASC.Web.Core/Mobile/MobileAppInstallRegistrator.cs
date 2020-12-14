@@ -27,6 +27,7 @@
 using System;
 using System.Linq;
 
+using ASC.Common;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Context;
 using ASC.Core.Common.EF.Model;
@@ -34,6 +35,7 @@ using ASC.Core.Common.Notify.Push;
 
 namespace ASC.Web.Core.Mobile
 {
+    [Scope]
     public class MobileAppInstallRegistrator : IMobileAppInstallRegistrator
     {
         private DbContext DbContext { get; }

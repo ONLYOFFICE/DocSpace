@@ -28,7 +28,6 @@ using System;
 
 using ASC.Common;
 using ASC.Core;
-using ASC.Core.Notify;
 using ASC.Notify.Model;
 using ASC.Notify.Patterns;
 using ASC.Notify.Recipients;
@@ -37,6 +36,7 @@ using NotifySourceBase = ASC.Core.Notify.NotifySource;
 
 namespace ASC.Files.Core.Services.NotifyService
 {
+    [Scope]
     public class NotifySource : NotifySourceBase
     {
         public NotifySource(UserManager userManager, IRecipientProvider recipientsProvider, SubscriptionManager subscriptionManager)
@@ -54,22 +54,6 @@ namespace ASC.Files.Core.Services.NotifyService
         protected override IPatternProvider CreatePatternsProvider()
         {
             return new XmlPatternProvider2(FilesPatternResource.patterns);
-        }
-    }
-
-    public static class FilesNotifySourceExtension
-    {
-        public static DIHelper AddFilesNotifySourceService(this DIHelper services)
-        {
-            if (services.TryAddScoped<NotifySource>())
-            {
-                return services
-                    .AddUserManagerService()
-                    .AddRecipientProviderImplService()
-                    .AddSubscriptionManagerService();
-            }
-
-            return services;
         }
     }
 }

@@ -42,6 +42,7 @@ using Microsoft.OneDrive.Sdk;
 
 namespace ASC.Files.Thirdparty.OneDrive
 {
+    [Scope]
     [DebuggerDisplay("{CustomerTitle}")]
     internal class OneDriveProviderInfo : IProviderInfo
     {
@@ -114,7 +115,6 @@ namespace ASC.Files.Thirdparty.OneDrive
             if (Wrapper != null)
             {
                 Wrapper.Dispose();
-                Wrapper = null;
             }
 
             CacheReset();
@@ -141,6 +141,7 @@ namespace ASC.Files.Thirdparty.OneDrive
         }
     }
 
+    [Scope(Additional = typeof(OneDriveProviderInfoExtention))]
     internal class OneDriveStorageDisposableWrapper : IDisposable
     {
         internal OneDriveStorage Storage { get; private set; }
@@ -155,7 +156,7 @@ namespace ASC.Files.Thirdparty.OneDrive
 
         public OneDriveStorage CreateStorage(OAuth20Token token, int id)
         {
-            if (Storage != null) return Storage;
+            if (Storage != null && Storage.IsOpened) return Storage;
 
             var onedriveStorage = ServiceProvider.GetService<OneDriveStorage>();
 
@@ -172,7 +173,7 @@ namespace ASC.Files.Thirdparty.OneDrive
             {
                 token = OAuth20TokenHelper.RefreshToken<OneDriveLoginProvider>(ConsumerFactory, token);
 
-                var dbDao = ServiceProvider.GetService<CachedProviderAccountDao>();
+                var dbDao = ServiceProvider.GetService<ProviderAccountDao>();
                 var authData = new AuthData(token: token.ToJson());
                 dbDao.UpdateProviderInfo(id, authData);
             }
@@ -188,6 +189,7 @@ namespace ASC.Files.Thirdparty.OneDrive
         }
     }
 
+    [Singletone]
     public class OneDriveProviderInfoHelper
     {
         private readonly TimeSpan CacheExpiration;
@@ -256,19 +258,12 @@ namespace ASC.Files.Thirdparty.OneDrive
             }
         }
     }
-
-    public static class OneDriveProviderInfoExtension
+    public class OneDriveProviderInfoExtention
     {
-        public static DIHelper AddOneDriveProviderInfoService(this DIHelper services)
+        public static void Register(DIHelper dIHelper)
         {
-            if (services.TryAddScoped<OneDriveProviderInfo>())
-            {
-                services.TryAddScoped<OneDriveStorageDisposableWrapper>();
-                services.TryAddScoped<OneDriveStorage>();
-                services.TryAddSingleton<OneDriveProviderInfoHelper>();
-            }
-
-            return services;
+            dIHelper.TryAdd<OneDriveStorage>();
         }
     }
+
 }

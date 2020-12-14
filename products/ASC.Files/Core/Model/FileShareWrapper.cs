@@ -91,6 +91,8 @@ namespace ASC.Api.Documents
         /// </summary>
         public string ShareLink { get; set; }
     }
+
+    [Scope]
     public class FileShareWrapperHelper
     {
         private UserManager UserManager { get; }
@@ -135,19 +137,6 @@ namespace ASC.Api.Documents
             result.Access = aceWrapper.Share;
 
             return result;
-        }
-    }
-    public static class FileShareWrapperExtention
-    {
-        public static DIHelper AddFileShareWrapperService(this DIHelper services)
-        {
-            if (services.TryAddScoped<FileShareWrapperHelper>())
-            {
-                return services
-                    .AddUserManagerService()
-                    .AddEmployeeWraperFull();
-            }
-            return services;
         }
     }
 }

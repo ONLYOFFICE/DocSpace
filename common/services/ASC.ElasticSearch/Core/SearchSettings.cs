@@ -80,6 +80,7 @@ namespace ASC.ElasticSearch.Core
         }
     }
 
+    [Scope]
     public class SearchSettingsHelper
     {
         private TenantManager TenantManager { get; }
@@ -183,22 +184,5 @@ namespace ASC.ElasticSearch.Core
         public bool Enabled { get; set; }
 
         public string Title { get; set; }
-    }
-
-    public static class SearchSettingsHelperExtention
-    {
-        public static DIHelper AddSearchSettingsHelperService(this DIHelper services)
-        {
-            if (services.TryAddScoped<SearchSettingsHelper>())
-            {
-                return services
-                    .AddSettingsManagerService()
-                    .AddCoreBaseSettingsService()
-                    .AddFactoryIndexerService()
-                    .AddTenantManagerService();
-            }
-
-            return services;
-        }
     }
 }

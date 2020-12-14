@@ -19,7 +19,7 @@ import {
   createConfirmUser,
 } from "../../../../store/confirm/actions";
 const { logout, login } = store.auth.actions;
-const { createPasswordHash } = commonUtils;
+const { createPasswordHash, tryRedirectTo } = commonUtils;
 const inputWidth = "400px";
 
 const ConfirmContainer = styled.div`
@@ -89,7 +89,7 @@ class Confirm extends React.PureComponent {
 
   onSubmit = () => {
     this.setState({ isLoading: true }, () => {
-      const { history, createConfirmUser, linkData, hashSettings } = this.props;
+      const { defaultPage, createConfirmUser, linkData, hashSettings } = this.props;
       const isVisitor = parseInt(linkData.emplType) === 2;
 
       this.setState({ errorText: "" });
@@ -142,7 +142,7 @@ class Confirm extends React.PureComponent {
       createConfirmUser(registerData, loginData, this.state.key)
         .then(() => {
           toastr.success("User has been created successfully");
-          return history.push("/");
+          tryRedirectTo(defaultPage);
         })
         .catch((error) => {
           console.error("confirm error", error);
@@ -368,6 +368,7 @@ function mapStateToProps(state) {
     settings: state.auth.settings.passwordSettings,
     greetingTitle: state.auth.settings.greetingSettings,
     hashSettings: state.auth.settings.hashSettings,
+    defaultPage: state.auth.settings.defaultPage
   };
 }
 
@@ -375,5 +376,5 @@ export default connect(mapStateToProps, {
   getConfirmationInfo,
   createConfirmUser,
   login,
-  logout,
+  logout
 })(withRouter(withTranslation()(CreateUserForm)));

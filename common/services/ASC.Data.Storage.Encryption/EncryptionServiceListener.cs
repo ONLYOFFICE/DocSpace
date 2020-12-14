@@ -22,11 +22,12 @@
  * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
  *
 */
-using ASC.Common.Caching;
 using ASC.Common;
+using ASC.Common.Caching;
 
 namespace ASC.Data.Storage.Encryption
 {
+    [Singletone]
     public class EncryptionServiceListener
     {
         private ICacheNotify<EncryptionSettingsProto> NotifySettings { get; }
@@ -60,15 +61,6 @@ namespace ASC.Data.Storage.Encryption
         public void StopEncryption()
         {
             EncryptionWorker.Stop();
-        }
-    }
-
-    public static class EncryptionServiceListenerExtension
-    {
-        public static DIHelper AddEncryptionServiceListener(this DIHelper services)
-        {
-            services.TryAddSingleton<EncryptionServiceListener>();
-            return services.AddEncryptionWorkerService();
         }
     }
 }

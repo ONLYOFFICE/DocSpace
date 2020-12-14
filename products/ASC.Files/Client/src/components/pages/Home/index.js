@@ -30,14 +30,19 @@ import {
   getSelectedFolderId,
   getFileActionId,
   getFilter,
-  getProgressData,
+  getPrimaryProgressData,
+  getSecondaryProgressData,
   getTreeFolders,
   getViewAs,
   getIsLoading,
   getIsRecycleBinFolder,
+  getDragging,
+  getSharePanelVisible,
+  getFirstLoad,
 } from "../../../store/files/selectors";
 
 import { ConvertDialog } from "../../dialogs";
+import { SharingPanel } from "../../panels";
 import { createI18N } from "../../../helpers/i18n";
 import { getFilterByLocation } from "../../../helpers/converters";
 const i18n = createI18N({
@@ -49,16 +54,6 @@ const { FilesFilter } = api;
 const { getSettingsHomepage } = store.auth.selectors;
 
 class PureHome extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      overwriteSetting: false,
-      uploadOriginalFormatSetting: false,
-      hideWindowSetting: false,
-    };
-  }
-
   componentDidMount() {
     const { fetchFiles, homepage, setIsLoading, setFirstLoad } = this.props;
 
@@ -137,7 +132,7 @@ class PureHome extends React.Component {
 
         if (filter) {
           const folderId = filter.folder;
-          console.log("filter", filter);
+          //console.log("filter", filter);
           return fetchFiles(folderId, filter);
         }
 
@@ -150,23 +145,18 @@ class PureHome extends React.Component {
   }
 
   onDrop = (files, uploadToFolder) => {
-    const { t, currentFolderId, startUpload, setDragging } = this.props;
+    const {
+      t,
+      currentFolderId,
+      startUpload,
+      setDragging,
+      dragging,
+    } = this.props;
     const folderId = uploadToFolder ? uploadToFolder : currentFolderId;
 
-    setDragging(false);
+    dragging && setDragging(false);
     startUpload(files, folderId, t);
   };
-
-  onChangeOverwrite = () =>
-    this.setState({ overwriteSetting: !this.state.overwriteSetting });
-
-  onChangeOriginalFormat = () =>
-    this.setState({
-      uploadOriginalFormatSetting: !this.state.uploadOriginalFormatSetting,
-    });
-
-  onChangeWindowVisible = () =>
-    this.setState({ hideWindowSetting: !this.state.hideWindowSetting });
 
   componentDidUpdate(prevProps) {
     if (this.props.isLoading !== prevProps.isLoading) {
@@ -179,54 +169,25 @@ class PureHome extends React.Component {
   }
 
   render() {
-    console.log("Home render");
+    //console.log("Home render");
     const {
-      // overwriteSetting,
-      // uploadOriginalFormatSetting,
-      // hideWindowSetting
-    } = this.state;
-    const {
-      progressData,
+      primaryProgressData,
+      secondaryProgressData,
       viewAs,
       convertDialogVisible,
+      sharingPanelVisible,
       fileActionId,
       isRecycleBin,
+      firstLoad,
     } = this.props;
-
-    // const progressBarContent = (
-    //   <div>
-    //     <Checkbox
-    //       onChange={this.onChangeOverwrite}
-    //       isChecked={overwriteSetting}
-    //       label={t("OverwriteSetting")}
-    //     />
-    //     <Checkbox
-    //       onChange={this.onChangeOriginalFormat}
-    //       isChecked={uploadOriginalFormatSetting}
-    //       label={t("UploadOriginalFormatSetting")}
-    //     />
-    //     <Checkbox
-    //       onChange={this.onChangeWindowVisible}
-    //       isChecked={hideWindowSetting}
-    //       label={t("HideWindowSetting")}
-    //     />
-    //   </div>
-    // );
 
     return (
       <>
         {convertDialogVisible && (
           <ConvertDialog visible={convertDialogVisible} />
         )}
-        {/* <RequestLoader
-          visible={isLoading}
-          zIndex={256}
-          loaderSize="16px"
-          loaderColor={"#999"}
-          label={`${t("LoadingProcessing")} ${t("LoadingDescription")}`}
-          fontSize="12px"
-          fontColor={"#999"}
-        /> */}
+
+        {sharingPanelVisible && <SharingPanel />}
         <PageLayout
           withBodyScroll
           withBodyAutoFocus={!isMobile}
@@ -234,12 +195,21 @@ class PureHome extends React.Component {
           onDrop={this.onDrop}
           setSelections={this.props.setSelections}
           onMouseMove={this.onMouseMove}
-          showProgressBar={progressData.visible}
-          progressBarValue={progressData.percent}
-          //progressBarDropDownContent={progressBarContent}
-          progressBarLabel={progressData.label}
+          showPrimaryProgressBar={primaryProgressData.visible}
+          primaryProgressBarValue={primaryProgressData.percent}
+          primaryProgressBarIcon={primaryProgressData.icon}
+          showPrimaryButtonAlert={primaryProgressData.alert}
+          showSecondaryProgressBar={secondaryProgressData.visible}
+          secondaryProgressBarValue={secondaryProgressData.percent}
+          secondaryProgressBarIcon={secondaryProgressData.icon}
+          showSecondaryButtonAlert={secondaryProgressData.alert}
           viewAs={viewAs}
-          hideAside={!!fileActionId || progressData.visible}
+          hideAside={
+            !!fileActionId ||
+            primaryProgressData.visible ||
+            secondaryProgressData.visible
+          }
+          isLoaded={!firstLoad}
         >
           <PageLayout.ArticleHeader>
             <ArticleHeaderContent />
@@ -301,11 +271,15 @@ function mapStateToProps(state) {
     fileActionId: getFileActionId(state),
     filter: getFilter(state),
     isRecycleBin: getIsRecycleBinFolder(state),
-    progressData: getProgressData(state),
+    primaryProgressData: getPrimaryProgressData(state),
+    secondaryProgressData: getSecondaryProgressData(state),
     treeFolders: getTreeFolders(state),
     viewAs: getViewAs(state),
     isLoading: getIsLoading(state),
     homepage: getSettingsHomepage(state),
+    dragging: getDragging(state),
+    firstLoad: getFirstLoad(state),
+    sharingPanelVisible: getSharePanelVisible(state),
   };
 }
 

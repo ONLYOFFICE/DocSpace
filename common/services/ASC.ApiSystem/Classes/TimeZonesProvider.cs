@@ -35,6 +35,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.ApiSystem.Classes
 {
+    [Singletone]
     public class TimeZonesProvider
     {
         public ILog Log { get; }
@@ -140,15 +141,5 @@ namespace ASC.ApiSystem.Classes
         }
 
         #endregion
-    }
-
-    public static class TimeZonesProviderExtention
-    {
-        public static DIHelper AddTimeZonesProvider(this DIHelper services)
-        {
-            services.TryAddSingleton<TimeZonesProvider>();
-
-            return services;
-        }
     }
 }

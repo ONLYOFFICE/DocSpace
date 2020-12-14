@@ -6,10 +6,12 @@ import {
   Row,
   Avatar,
   EmptyScreenContainer,
-  Icons,
+  IconButton,
   Link,
   RowContainer,
   utils,
+  Box,
+  Grid,
 } from "asc-web-components";
 import UserContent from "./userContent";
 import {
@@ -23,7 +25,7 @@ import {
 } from "../../../../../store/people/actions";
 import { getPeopleList } from "../../../../../store/people/selectors";
 
-import isEqual from "lodash/isEqual";
+import equal from "fast-deep-equal/react";
 import { store, api, constants, toastr, Loaders } from "asc-web-common";
 import {
   ChangeEmailDialog,
@@ -32,18 +34,21 @@ import {
   DeleteProfileEverDialog,
 } from "../../../../dialogs";
 import { createI18N } from "../../../../../helpers/i18n";
+import { isMobile } from "react-device-detect";
 
 const i18n = createI18N({
   page: "Home",
   localesPath: "pages/Home",
 });
+const { Consumer } = utils.context;
 const { isArrayEqual } = utils.array;
-const { getSettings } = store.auth.selectors;
-const { setIsLoaded } = store.auth.actions;
+const { getSettings, getIsLoadedSection } = store.auth.selectors;
+const { setIsLoadedSection } = store.auth.actions;
 const { resendUserInvites } = api.people;
 const { EmployeeStatus } = constants;
 
 const isRefetchPeople = true;
+
 class SectionBodyContent extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -64,21 +69,20 @@ class SectionBodyContent extends React.PureComponent {
       isLoaded,
       fetchPeople,
       filter,
-      setIsLoaded,
+      setIsLoadedSection,
       peopleList,
     } = this.props;
     if (!isLoaded) return;
-
-    if (peopleList.length <= 0) setIsLoaded();
-
-    setIsLoaded(false);
-
-    fetchPeople(filter)
-      .then(() => isLoaded && setIsLoaded(true))
-      .catch((error) => {
-        isLoaded && setIsLoaded(true);
-        toastr.error(error);
-      });
+    if (peopleList.length <= 0) {
+      fetchPeople(filter)
+        .then(() =>
+          isLoaded ? setIsLoadedSection(true) : setIsLoadedSection()
+        )
+        .catch((error) => {
+          isLoaded ? setIsLoadedSection(true) : setIsLoadedSection();
+          toastr.error(error);
+        });
+    }
   }
 
   findUserById = (id) => this.props.peopleList.find((man) => man.id === id);
@@ -353,7 +357,10 @@ class SectionBodyContent extends React.PureComponent {
     if (currentProps.status !== nextProps.status) {
       return true;
     }
-    if (!isEqual(currentProps.data, nextProps.data)) {
+    if (currentProps.sectionWidth !== nextProps.sectionWidth) {
+      return true;
+    }
+    if (!equal(currentProps.data, nextProps.data)) {
       return true;
     }
     if (!isArrayEqual(currentProps.contextOptions, nextProps.contextOptions)) {
@@ -366,6 +373,7 @@ class SectionBodyContent extends React.PureComponent {
     //console.log("Home SectionBodyContent render()");
     const {
       isLoaded,
+      isLoadedSection,
       peopleList,
       history,
       settings,
@@ -374,66 +382,77 @@ class SectionBodyContent extends React.PureComponent {
       widthProp,
       isMobile,
       selectGroup,
+      isLoading,
     } = this.props;
 
     const { dialogsVisible, user } = this.state;
 
-    return !isLoaded ? (
-      <Loaders.Rows />
+    return !isLoaded || (isMobile && isLoading) || !isLoadedSection ? (
+      <Loaders.Rows isRectangle={false} />
     ) : peopleList.length > 0 ? (
       <>
-        <RowContainer useReactWindow={false}>
-          {peopleList.map((man) => {
-            const {
-              checked,
-              role,
-              displayName,
-              avatar,
-              id,
-              status,
-              options,
-            } = man;
+        <Consumer>
+          {(context) => (
+            <RowContainer
+              className="people-row-container"
+              useReactWindow={false}
+            >
+              {peopleList.map((man) => {
+                const {
+                  checked,
+                  role,
+                  displayName,
+                  avatar,
+                  id,
+                  status,
+                  options,
+                } = man;
+                const sectionWidth = context.sectionWidth;
+                const contextOptionsProps =
+                  options && options.length > 0
+                    ? {
+                        contextOptions: this.getUserContextOptions(options, id),
+                      }
+                    : {};
 
-            const contextOptionsProps =
-              options && options.length > 0
-                ? { contextOptions: this.getUserContextOptions(options, id) }
-                : {};
+                const checkedProps = checked !== null ? { checked } : {};
 
-            const checkedProps = checked !== null ? { checked } : {};
+                const element = (
+                  <Avatar
+                    size="min"
+                    role={role}
+                    userName={displayName}
+                    source={avatar}
+                  />
+                );
 
-            const element = (
-              <Avatar
-                size="small"
-                role={role}
-                userName={displayName}
-                source={avatar}
-              />
-            );
-
-            return (
-              <Row
-                key={id}
-                status={status}
-                data={man}
-                element={element}
-                onSelect={this.onContentRowSelect}
-                {...checkedProps}
-                {...contextOptionsProps}
-                needForUpdate={this.needForUpdate}
-                widthProp={widthProp}
-              >
-                <UserContent
-                  isMobile={isMobile}
-                  widthProp={widthProp}
-                  user={man}
-                  history={history}
-                  settings={settings}
-                  selectGroup={selectGroup}
-                />
-              </Row>
-            );
-          })}
-        </RowContainer>
+                return (
+                  <Row
+                    key={id}
+                    status={status}
+                    data={man}
+                    element={element}
+                    onSelect={this.onContentRowSelect}
+                    {...checkedProps}
+                    {...contextOptionsProps}
+                    needForUpdate={this.needForUpdate}
+                    sectionWidth={sectionWidth}
+                  >
+                    <UserContent
+                      isMobile={isMobile}
+                      widthProp={widthProp}
+                      user={man}
+                      history={history}
+                      settings={settings}
+                      selectGroup={selectGroup}
+                      sectionWidth={sectionWidth}
+                    />
+                  </Row>
+                );
+              })}
+            </RowContainer>
+          )}
+        </Consumer>
 
         {dialogsVisible.changeEmail && (
           <ChangeEmailDialog
@@ -475,14 +494,34 @@ class SectionBodyContent extends React.PureComponent {
         imageAlt="Empty Screen Filter image"
         headerText={t("NotFoundTitle")}
         descriptionText={t("NotFoundDescription")}
-        widthProp={widthProp}
         buttons={
-          <>
-            <Icons.CrossIcon size="small" style={{ marginRight: "4px" }} />
-            <Link type="action" isHovered={true} onClick={this.onResetFilter}>
-              {t("ClearButton")}
-            </Link>
-          </>
+          <Grid
+            marginProp="13px 0"
+            gridColumnGap="8px"
+            columnsProp={["12px 1fr"]}
+          >
+            <Box>
+              <IconButton
+                className="empty-folder_container-icon"
+                size="12"
+                onClick={this.onResetFilter}
+                iconName="CrossIcon"
+                isFill
+                color="#657077"
+              />
+            </Box>
+            <Box marginProp="-4px 0 0 0">
+              <Link
+                type="action"
+                isHovered={true}
+                fontWeight="600"
+                color="#555f65"
+                onClick={this.onResetFilter}
+              >
+                {t("ClearButton")}
+              </Link>
+            </Box>
+          </Grid>
         }
       />
     );
@@ -491,10 +530,12 @@ class SectionBodyContent extends React.PureComponent {
 
 const mapStateToProps = (state) => {
   const { isLoaded } = state.auth;
-  const { filter } = state.people;
+  const { filter, isLoading } = state.people;
   return {
     isLoaded,
+    isLoadedSection: getIsLoadedSection(state),
     filter,
+    isLoading,
     peopleList: getPeopleList(state),
     settings: getSettings(state),
   };
@@ -508,5 +549,5 @@ export default connect(mapStateToProps, {
   resetFilter,
   fetchPeople,
   selectGroup,
-  setIsLoaded,
+  setIsLoadedSection,
 })(withRouter(withTranslation()(SectionBodyContent)));

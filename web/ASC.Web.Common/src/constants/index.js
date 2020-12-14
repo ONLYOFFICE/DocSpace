@@ -1,4 +1,3 @@
-export const AUTH_KEY = "asc_auth_key";
 export const LANGUAGE = "language";
 export const ARTICLE_PINNED_KEY = "asc_article_pinned_key";
 
@@ -86,6 +85,10 @@ export const FolderType = Object.freeze({
   USER: 5,
   SHARE: 6,
   Projects: 8,
+  Favorites: 10,
+  Recent: 11,
+  Templates: 12,
+  Privacy: 13,
 });
 
 export const ShareAccessRights = Object.freeze({
@@ -95,6 +98,7 @@ export const ShareAccessRights = Object.freeze({
   Review: 5,
   Comment: 6,
   FormFilling: 7,
+  CustomFilter: 8,
 });
 
 export const i18nBaseSettings = {
@@ -114,4 +118,18 @@ export const i18nBaseSettings = {
   react: {
     useSuspense: true,
   },
+};
+
+export const LoaderStyle = {
+  title: "",
+  width: "100%",
+  height: "32",
+  backgroundColor: "#000000",
+  foregroundColor: "#000000",
+  backgroundOpacity: 0.1,
+  foregroundOpacity: 0.15,
+  borderRadius: "3",
+  radius: "3",
+  speed: 2,
+  animate: true,
 };

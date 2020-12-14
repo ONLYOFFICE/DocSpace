@@ -19,6 +19,7 @@ namespace ASC.Web.Core.Utility
         string GetShortenLink(string shareLink);
     }
 
+    [Scope]
     public class UrlShortener
     {
         public bool Enabled { get { return !(Instance is NullShortener); } }
@@ -128,21 +129,6 @@ namespace ASC.Web.Core.Utility
         public string GetShortenLink(string shareLink)
         {
             return null;
-        }
-    }
-
-    public static class UrlShortenerExtension
-    {
-        public static DIHelper AddUrlShortener(this DIHelper services)
-        {
-            if (services.TryAddScoped<UrlShortener>())
-            {
-                return services
-                    .AddConsumerFactoryService()
-                    .AddCommonLinkUtilityService();
-            }
-
-            return services;
         }
     }
 }

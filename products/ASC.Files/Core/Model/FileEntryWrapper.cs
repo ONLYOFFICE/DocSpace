@@ -147,6 +147,7 @@ namespace ASC.Api.Documents
         }
     }
 
+    [Scope]
     public class FileEntryWrapperHelper
     {
         private ApiDateTimeHelper ApiDateTimeHelper { get; }
@@ -178,21 +179,6 @@ namespace ASC.Api.Documents
                 ProviderKey = entry.ProviderKey,
                 ProviderId = entry.ProviderId.NullIfDefault()
             };
-        }
-    }
-
-    public static class FileEntryWrapperHelperExtention
-    {
-        public static DIHelper AddFileEntryWrapperHelperService(this DIHelper services)
-        {
-            if (services.TryAddScoped<FileEntryWrapperHelper>())
-            {
-                return services
-                    .AddApiDateTimeHelper()
-                    .AddEmployeeWraper();
-            }
-
-            return services;
         }
     }
 }

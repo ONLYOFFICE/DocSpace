@@ -51,6 +51,7 @@ using Nest;
 
 namespace ASC.ElasticSearch
 {
+    [Singletone]
     public class BaseIndexerHelper
     {
         public ConcurrentDictionary<string, bool> IsExist { get; set; }
@@ -72,6 +73,7 @@ namespace ASC.ElasticSearch
         }
     }
 
+    [Scope]
     public class BaseIndexer<T> where T : class, ISearchItem
     {
         private static readonly object Locker = new object();
@@ -289,7 +291,7 @@ namespace ASC.ElasticSearch
         internal IReadOnlyCollection<T> Select(Expression<Func<Selector<T>, Selector<T>>> expression, bool onlyId = false)
         {
             var func = expression.Compile();
-            var selector = ServiceProvider.GetService<Selector<T>>();
+            var selector = new Selector<T>(ServiceProvider);
             var descriptor = func(selector).Where(r => r.TenantId, TenantManager.GetCurrentTenant().TenantId);
             return Client.Instance.Search(descriptor.GetDescriptor(this, onlyId)).Documents;
         }
@@ -297,7 +299,7 @@ namespace ASC.ElasticSearch
         internal IReadOnlyCollection<T> Select(Expression<Func<Selector<T>, Selector<T>>> expression, bool onlyId, out long total)
         {
             var func = expression.Compile();
-            var selector = ServiceProvider.GetService<Selector<T>>();
+            var selector = new Selector<T>(ServiceProvider);
             var descriptor = func(selector).Where(r => r.TenantId, TenantManager.GetCurrentTenant().TenantId);
             var result = Client.Instance.Search(descriptor.GetDescriptor(this, onlyId));
             total = result.Total;
@@ -542,7 +544,7 @@ namespace ASC.ElasticSearch
         private Func<DeleteByQueryDescriptor<T>, IDeleteByQueryRequest> GetDescriptorForDelete(Expression<Func<Selector<T>, Selector<T>>> expression, int tenantId, bool immediately = true)
         {
             var func = expression.Compile();
-            var selector = ServiceProvider.GetService<Selector<T>>();
+            var selector = new Selector<T>(ServiceProvider);
             var descriptor = func(selector).Where(r => r.TenantId, tenantId);
             return descriptor.GetDescriptorForDelete(this, immediately);
         }
@@ -550,7 +552,7 @@ namespace ASC.ElasticSearch
         private Func<UpdateByQueryDescriptor<T>, IUpdateByQueryRequest> GetDescriptorForUpdate(T data, Expression<Func<Selector<T>, Selector<T>>> expression, int tenantId, bool immediately = true, params Expression<Func<T, object>>[] fields)
         {
             var func = expression.Compile();
-            var selector = ServiceProvider.GetService<Selector<T>>();
+            var selector = new Selector<T>(ServiceProvider);
             var descriptor = func(selector).Where(r => r.TenantId, tenantId);
             return descriptor.GetDescriptorForUpdate(this, GetScriptUpdateByQuery(data, fields), immediately);
         }
@@ -558,7 +560,7 @@ namespace ASC.ElasticSearch
         private Func<UpdateByQueryDescriptor<T>, IUpdateByQueryRequest> GetDescriptorForUpdate(T data, Expression<Func<Selector<T>, Selector<T>>> expression, int tenantId, UpdateAction action, Expression<Func<T, IList>> fields, bool immediately = true)
         {
             var func = expression.Compile();
-            var selector = ServiceProvider.GetService<Selector<T>>();
+            var selector = new Selector<T>(ServiceProvider);
             var descriptor = func(selector).Where(r => r.TenantId, tenantId);
             return descriptor.GetDescriptorForUpdate(this, GetScriptForUpdate(data, action, fields), immediately);
         }
@@ -621,30 +623,5 @@ namespace ASC.ElasticSearch
         Add,
         Replace,
         Remove
-    }
-
-    public static class BaseIndexerExtention
-    {
-        public static DIHelper AddBaseIndexerHelperService(this DIHelper services)
-        {
-            services.TryAddSingleton<BaseIndexerHelper>();
-            return services.AddKafkaService();
-        }
-
-        public static DIHelper AddBaseIndexerService<T>(this DIHelper services) where T : class, ISearchItem
-        {
-            if (services.TryAddScoped<BaseIndexer<T>>())
-            {
-                return services
-                    .AddFactoryIndexerService()
-                    .AddClientService()
-                    .AddWebstudioDbContextService()
-                    .AddTenantManagerService()
-                    .AddBaseIndexerHelperService()
-                    ;
-            }
-
-            return services;
-        }
     }
 }

@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import NavItem from "./nav-item";
 import ProfileActions from "./profile-actions";
+
 import { useTranslation } from "react-i18next";
 import { utils } from "asc-web-components";
 const { tablet } = utils.device;
@@ -13,6 +14,7 @@ import {
   getCurrentUser,
   getLanguage,
   getIsolateModules,
+  getIsLoaded,
 } from "../../../store/auth/selectors";
 
 const StyledNav = styled.nav`
@@ -46,7 +48,6 @@ const StyledNav = styled.nav`
 const HeaderNav = React.memo(
   ({ history, homepage, modules, user, logout, isAuthenticated }) => {
     const { t } = useTranslation();
-
     const onProfileClick = useCallback(() => {
       if (homepage == "/products/people") {
         history.push("/products/people/view/@self");
@@ -97,8 +98,11 @@ const HeaderNav = React.memo(
             noHover={true}
           />
         ))}
-        {isAuthenticated && user && (
+
+        {isAuthenticated && user ? (
           <ProfileActions userActions={getCurrentUserActions()} user={user} />
+        ) : (
+          <></>
         )}
       </StyledNav>
     );
@@ -114,6 +118,7 @@ HeaderNav.propTypes = {
   user: PropTypes.object,
   logout: PropTypes.func,
   isAuthenticated: PropTypes.bool,
+  isLoaded: PropTypes.bool,
 };
 
 function mapStateToProps(state) {
@@ -125,7 +130,7 @@ function mapStateToProps(state) {
     defaultPage: defaultPage || "/",
     user: getCurrentUser(state),
     isAuthenticated,
-
+    isLoaded: getIsLoaded(state),
     modules: getIsolateModules(state),
     language: getLanguage(state),
   };

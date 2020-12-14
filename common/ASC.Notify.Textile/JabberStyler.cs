@@ -30,14 +30,12 @@ using System.Web;
 
 using ASC.Common;
 using ASC.Common.Notify.Patterns;
-using ASC.Core;
 using ASC.Notify.Messages;
 using ASC.Notify.Patterns;
-using ASC.Security.Cryptography;
-using ASC.Web.Core.WhiteLabel;
 
 namespace ASC.Notify.Textile
 {
+    [Scope]
     public class JabberStyler : IPatternStyler
     {
         static readonly Regex VelocityArguments = new Regex(NVelocityPatternFormatter.NoStylePreffix + "(?<arg>.*?)" + NVelocityPatternFormatter.NoStyleSuffix, RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled);
@@ -93,27 +91,6 @@ namespace ASC.Notify.Textile
         private static string ArgMatchReplace(Match match)
         {
             return match.Result("${arg}");
-        }
-    }
-
-    public static class StylerExtension
-    {
-        public static DIHelper AddStylerService(this DIHelper services)
-        {
-            return services
-                .AddCoreBaseSettingsService()
-                .AddInstanceCryptoService()
-                .AddMailWhiteLabelSettingsService()
-                ;
-        }
-        public static DIHelper AddJabberStylerService(this DIHelper services)
-        {
-            if (services.TryAddScoped<JabberStyler>())
-            {
-                return services.AddStylerService();
-            }
-
-            return services;
         }
     }
 }

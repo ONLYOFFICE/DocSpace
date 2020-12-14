@@ -41,6 +41,7 @@ using Newtonsoft.Json.Linq;
 
 namespace ASC.Web.Files.Helpers
 {
+    [Scope]
     public class EasyBibHelper : Consumer
     {
         public ILog Log { get; set; }
@@ -155,24 +156,6 @@ namespace ASC.Web.Files.Helpers
                 throw;
             }
 
-        }
-    }
-
-    public static class EasyBibHelperExtension
-    {
-        public static DIHelper AddEasyBibHelperService(this DIHelper services)
-        {
-            if (services.TryAddScoped<EasyBibHelper>())
-            {
-                return services
-                    .AddConsumerFactoryService()
-                    .AddKafkaService()
-                    .AddTenantManagerService()
-                    .AddCoreBaseSettingsService()
-                    .AddCoreSettingsService();
-            }
-
-            return services;
         }
     }
 }

@@ -10,25 +10,19 @@ const { tablet, desktop } = utils.device;
 const { getSettings } = store.auth.selectors;
 
 const StyledContainer = styled.div`
-  display: flex;
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
   align-items: center;
 
   .arrow-button {
-    margin-right: 16px;
+    margin-left: -8px;
+    margin-right: 24px;
     min-width: 17px;
 
     @media (max-width: 1024px) {
       padding: 8px 0 8px 8px;
       margin-left: -8px;
     }
-  }
-
-  @media ${desktop} {
-    ${(props) =>
-      props.isHeaderVisible &&
-      css`
-        width: calc(100% + 76px);
-      `}
   }
 
   .group-button-menu-container {
@@ -68,6 +62,11 @@ const StyledContainer = styled.div`
       }
     }
   }
+  .headline-header {
+    @media ${desktop} {
+      margin-left: -9px;
+    }
+  }
 `;
 
 const SectionHeaderContent = (props) => {
@@ -79,7 +78,7 @@ const SectionHeaderContent = (props) => {
   };
 
   return (
-    <StyledContainer isHeaderVisible={true}>
+    <StyledContainer>
       <IconButton
         iconName="ArrowPathIcon"
         size="17"
@@ -89,6 +88,7 @@ const SectionHeaderContent = (props) => {
         onClick={onClickBack}
         className="arrow-button"
       />
+
       <Headline className="headline-header" type="content" truncate={true}>
         {title}
       </Headline>

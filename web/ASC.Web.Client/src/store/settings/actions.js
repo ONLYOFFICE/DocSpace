@@ -15,6 +15,8 @@ export const SET_FILTER = "SET_FILTER";
 export const SET_LOGO_TEXT = "SET_LOGO_TEXT";
 export const SET_LOGO_SIZES = "SET_LOGO_SIZES";
 export const SET_LOGO_URLS = "SET_LOGO_URLS";
+export const SET_CONSUMERS = "SET_CONSUMERS";
+export const SET_SELECTED_CONSUMER = "SET_SELECTED_CONSUMER";
 
 export function setOptions(options) {
   return {
@@ -69,6 +71,20 @@ export function setLogoUrls(urls) {
   return {
     type: SET_LOGO_URLS,
     urls,
+  };
+}
+
+export function setConsumers(consumers) {
+  return {
+    type: SET_CONSUMERS,
+    consumers,
+  };
+}
+
+export function setSelectedConsumer(selectedConsumer) {
+  return {
+    type: SET_SELECTED_CONSUMER,
+    selectedConsumer,
   };
 }
 
@@ -184,5 +200,21 @@ export function restoreGreetingTitle() {
     return api.settings.restoreGreetingSettings().then((res) => {
       if (res) dispatch(setGreetingSettings(res.Content));
     });
+  };
+}
+
+export function getConsumers() {
+  return (dispatch) => {
+    return api.settings
+      .getConsumersList()
+      .then((res) => dispatch(setConsumers(res)));
+  };
+}
+
+export function updateConsumerProps(newProps) {
+  return (dispatch) => {
+    return api.settings
+      .updateConsumerProps(newProps)
+      .then(() => dispatch(getConsumers()));
   };
 }

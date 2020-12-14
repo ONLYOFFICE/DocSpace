@@ -51,6 +51,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Studio.Core.Notify
 {
+    [Singletone(Additional = typeof(StudioWhatsNewNotifyExtension))]
     public class StudioWhatsNewNotify
     {
         private IServiceProvider ServiceProvider { get; }
@@ -293,6 +294,7 @@ namespace ASC.Web.Studio.Core.Notify
         }
     }
 
+    [Scope]
     public class StudioWhatsNewNotifyScope
     {
         private TenantManager TenantManager { get; }
@@ -365,26 +367,11 @@ namespace ASC.Web.Studio.Core.Notify
 
     public static class StudioWhatsNewNotifyExtension
     {
-        public static DIHelper AddStudioWhatsNewNotify(this DIHelper services)
+        public static void Register(DIHelper services)
         {
-            services.TryAddSingleton<StudioWhatsNewNotify>();
-            services.TryAddScoped<StudioWhatsNewNotifyScope>();
-            return services
-                .AddWebItemManager()
-                .AddFeedAggregateDataProvider()
-
-                .AddTenantManagerService()
-                .AddPaymentManagerService()
-                .AddStudioNotifyHelperService()
-                .AddUserManagerService()
-                .AddSecurityContextService()
-                .AddAuthContextService()
-                .AddAuthManager()
-                .AddTenantUtilService()
-                .AddCommonLinkUtilityService()
-                .AddDisplayUserSettingsService()
-                .AddCoreSettingsService()
-                ;
+            services.TryAdd<WebItemManager>();
+            services.TryAdd<FeedAggregateDataProvider>();
+            services.TryAdd<StudioWhatsNewNotifyScope>();
         }
     }
 }

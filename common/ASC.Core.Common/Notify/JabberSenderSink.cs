@@ -89,6 +89,7 @@ namespace ASC.Core.Notify
         }
     }
 
+    [Scope]
     public class JabberSenderSinkScope
     {
         private UserManager UserManager { get; }
@@ -103,15 +104,6 @@ namespace ASC.Core.Notify
         public void Deconstruct(out UserManager userManager, out TenantManager tenantManager)
         {
             (userManager, tenantManager) = (UserManager, TenantManager);
-        }
-    }
-
-    public static class JabberSenderSinkExtension
-    {
-        public static DIHelper AddJabberSenderSinkService(this DIHelper services)
-        {
-            services.TryAddScoped<JabberSenderSinkScope>();
-            return services;
         }
     }
 }

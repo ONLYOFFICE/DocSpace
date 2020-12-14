@@ -49,10 +49,10 @@ emailSettings.allowDomainPunycode = true;
 const WizardContainer = styled.div`
   width: 960px;
   margin: 0 auto;
-  margin-top: 60px;
+  margin-top: 63px;
 
   .wizard-form {
-    margin-top: 32px;
+    margin-top: 33px;
     display: grid;
     grid-template-columns: 1fr;
     grid-row-gap: 32px;

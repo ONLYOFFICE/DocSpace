@@ -5,7 +5,7 @@ import { Icons } from "../icons";
 import Link from "../link";
 
 const whiteColor = "#FFFFFF";
-const avatarBackground = "#ECEEF1";
+const avatarBackground = "#D0D5DA";
 const namedAvatarBackground = "#2DA7DB";
 
 const noneUserSelect = css`
@@ -22,12 +22,14 @@ const StyledAvatar = styled.div`
     (props.size === "max" && "160px") ||
     (props.size === "big" && "82px") ||
     (props.size === "medium" && "48px") ||
-    (props.size === "small" && "32px")};
+    (props.size === "small" && "36px") ||
+    (props.size === "min" && "32px")};
   height: ${(props) =>
     (props.size === "max" && "160px") ||
     (props.size === "big" && "82px") ||
     (props.size === "medium" && "48px") ||
-    (props.size === "small" && "32px")};
+    (props.size === "small" && "36px") ||
+    (props.size === "min" && "32px")};
 
   font-family: "Open Sans", sans-serif, Arial;
   font-style: normal;
@@ -38,15 +40,23 @@ const RoleWrapper = styled.div`
   left: ${(props) =>
     (props.size === "max" && "0px") ||
     (props.size === "big" && "0px") ||
-    (props.size === "medium" && "-2px") ||
-    (props.size === "small" && "-2px")};
+    (props.size === "medium" && "-4px") ||
+    (props.size === "small" && "-2px") ||
+    (props.size === "min" && "-2px")};
   bottom: ${(props) =>
     (props.size === "max" && "0px") ||
     (props.size === "big" && "5px") ||
-    (props.size === "medium" && "3px") ||
-    (props.size === "small" && "3px")};
-  width: ${(props) => (props.size === "max" && "24px") || "12px"};
-  height: ${(props) => (props.size === "max" && "24px") || "12px"};
+    (props.size === "medium" && "6px") ||
+    (props.size === "small" && "3px") ||
+    (props.size === "min" && "3px")};
+  width: ${(props) =>
+    (props.size === "max" && "24px") ||
+    (props.size === "medium" && "14px") ||
+    "12px"};
+  height: ${(props) =>
+    (props.size === "max" && "24px") ||
+    (props.size === "medium" && "14px") ||
+    "12px"};
 `;
 
 const ImageStyled = styled.img`
@@ -82,7 +92,8 @@ const NamedAvatar = styled.div`
     (props.size === "max" && "72px") ||
     (props.size === "big" && "34px") ||
     (props.size === "medium" && "20px") ||
-    (props.size === "small" && "12px")};
+    (props.size === "small" && "12px") ||
+    (props.size === "min" && "12px")};
   color: ${whiteColor};
 
   ${noneUserSelect}
@@ -204,7 +215,7 @@ const Avatar = memo((props) => {
 });
 
 Avatar.propTypes = {
-  size: PropTypes.oneOf(["max", "big", "medium", "small"]),
+  size: PropTypes.oneOf(["max", "big", "medium", "small", "min"]),
   role: PropTypes.oneOf(["owner", "admin", "guest", "user"]),
   source: PropTypes.string,
   editLabel: PropTypes.string,

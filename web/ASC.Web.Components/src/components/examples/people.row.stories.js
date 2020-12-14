@@ -221,7 +221,7 @@ storiesOf("EXAMPLES|Row", module).add("people", () => {
       {fakeUsers.map((user) => {
         const element = (
           <Avatar
-            size="small"
+            size="min"
             role={user.role}
             userName={user.userName}
             source={user.avatar}

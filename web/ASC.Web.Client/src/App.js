@@ -3,7 +3,6 @@ import { Router, Route, Switch } from "react-router-dom";
 import { connect } from "react-redux";
 import {
   store as CommonStore,
-  constants,
   history,
   PrivateRoute,
   PublicRoute,
@@ -28,35 +27,43 @@ const {
   getUser,
   getPortalSettings,
   getModules,
+  getIsAuthenticated,
 } = CommonStore.auth.actions;
 
 class App extends React.Component {
   componentDidMount() {
-    utils.removeTempContent();
+    const {
+      getPortalSettings,
+      getUser,
+      getModules,
+      setIsLoaded,
+      getIsAuthenticated,
+    } = this.props;
 
-    const { getPortalSettings, getUser, getModules, setIsLoaded } = this.props;
+    getIsAuthenticated()
+      .then((isAuthenticated) => {
+        if (isAuthenticated) utils.updateTempContent(isAuthenticated);
+        const requests = [];
+        if (!isAuthenticated) {
+          requests.push(getPortalSettings());
+        } else if (
+          !window.location.pathname.includes("confirm/EmailActivation")
+        ) {
+          requests.push(getUser());
+          requests.push(getPortalSettings());
+          requests.push(getModules());
+        }
 
-    const { AUTH_KEY } = constants;
-
-    const token = localStorage.getItem(AUTH_KEY);
-
-    const requests = [];
-
-    if (!token) {
-      requests.push(getPortalSettings());
-    } else if (!window.location.pathname.includes("confirm/EmailActivation")) {
-      requests.push(getUser());
-      requests.push(getPortalSettings());
-      requests.push(getModules());
-    }
-
-    Promise.all(requests)
-      .catch((e) => {
-        toastr.error(e);
+        Promise.all(requests)
+          .catch((e) => {
+            toastr.error(e);
+          })
+          .finally(() => {
+            utils.updateTempContent();
+            setIsLoaded();
+          });
       })
-      .finally(() => {
-        setIsLoaded();
-      });
+      .catch((err) => toastr.error(err));
   }
 
   render() {
@@ -113,6 +120,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    getIsAuthenticated: () => getIsAuthenticated(dispatch),
     getPortalSettings: () => getPortalSettings(dispatch),
     getUser: () => getUser(dispatch),
     getModules: () => getModules(dispatch),

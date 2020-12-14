@@ -64,6 +64,7 @@ namespace ASC.Web.Files.Utils
         }
     }
 
+    [Scope]
     public class MailMergeTaskRunner
     {
         private SetupInfo SetupInfo { get; }
@@ -203,22 +204,6 @@ namespace ASC.Web.Files.Utils
                 throw new Exception("Create draft failed: " + responseSend["error"]["message"].Value<string>());
             }
             return responseSend["response"].Value<string>();
-        }
-    }
-
-    public static class MailMergeTaskRunnerExtension
-    {
-        public static DIHelper AddMailMergeTaskRunnerService(this DIHelper services)
-        {
-            if (services.TryAddScoped<MailMergeTaskRunner>())
-            {
-                return services
-                    .AddSetupInfo()
-                    .AddSecurityContextService()
-                    .AddBaseCommonLinkUtilityService();
-            }
-
-            return services;
         }
     }
 }

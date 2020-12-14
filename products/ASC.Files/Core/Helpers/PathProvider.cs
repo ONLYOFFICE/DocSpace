@@ -34,7 +34,6 @@ using ASC.Common;
 using ASC.Common.Web;
 using ASC.Core.Common;
 using ASC.Files.Core;
-using ASC.Files.Core.Data;
 using ASC.Files.Core.Resources;
 using ASC.Security.Cryptography;
 using ASC.Web.Core.Files;
@@ -43,6 +42,7 @@ using ASC.Web.Studio.Utility;
 
 namespace ASC.Web.Files.Classes
 {
+    [Scope]
     public class PathProvider
     {
         public static readonly string ProjectVirtualPath = "~/Products/Projects/TMDocs.aspx";
@@ -210,26 +210,6 @@ namespace ASC.Web.Files.Classes
             query += $"{FilesLinkUtility.FileTitle}={HttpUtility.UrlEncode(extension)}";
 
             return $"{uriBuilder.Uri}?{query}";
-        }
-    }
-
-    public static class PathProviderExtention
-    {
-        public static DIHelper AddPathProviderService(this DIHelper services)
-        {
-            if (services.TryAddScoped<PathProvider>())
-            {
-                return services
-                    .AddWebImageSupplierService()
-                    .AddCommonLinkUtilityService()
-                    .AddEmailValidationKeyProviderService()
-                    .AddGlobalStoreService()
-                    .AddBaseCommonLinkUtilityService()
-                    .AddFilesLinkUtilityService()
-                    .AddDaoFactoryService();
-            }
-
-            return services;
         }
     }
 }

@@ -27,8 +27,11 @@
 using ASC.ApiSystem.Classes;
 using ASC.ApiSystem.Controllers;
 using ASC.Common;
+using ASC.Common.Caching;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
+
+using Autofac;
 
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
@@ -68,21 +71,20 @@ namespace ASC.ApiSystem
 
             services.AddMemoryCache();
 
+            diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+            diHelper.TryAdd<AuthHandler>();
+            diHelper.TryAdd<CalDavController>();
+            diHelper.TryAdd<CoreSettingsController>();
+            diHelper.TryAdd<PortalController>();
+            diHelper.TryAdd<RegistrationController>();
+            diHelper.TryAdd<SettingsController>();
+            diHelper.TryAdd<TariffController>();
+
             services.AddAuthentication()
                 .AddScheme<AuthenticationSchemeOptions, AuthHandler>("auth.allowskip", _ => { })
                 .AddScheme<AuthenticationSchemeOptions, AuthHandler>("auth.allowskip.registerportal", _ => { });
 
-            diHelper.AddNLogManager("ASC.Apisystem");
-
-            diHelper
-                .AddPortalController()
-                .AddCoreSettingsController()
-                .AddCalDavController()
-                .AddRegistrationController()
-                .AddSettingsController()
-                .AddTariffController();
-
-            services.AddAutofac(Configuration, HostEnvironment.ContentRootPath, false);
+            LogNLogExtension.ConfigureLog(diHelper, "ASC.Apisystem");
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -114,6 +116,11 @@ namespace ASC.ApiSystem
             {
                 endpoints.MapControllers();
             });
+        }
+
+        public void ConfigureContainer(ContainerBuilder builder)
+        {
+            builder.Register(Configuration, HostEnvironment.ContentRootPath, false);
         }
     }
 }

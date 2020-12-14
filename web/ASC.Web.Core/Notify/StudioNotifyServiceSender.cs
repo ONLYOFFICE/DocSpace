@@ -32,11 +32,11 @@ using System.Threading;
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Core;
+using ASC.Core.Common;
 using ASC.Core.Configuration;
 using ASC.Notify.Model;
 using ASC.Notify.Patterns;
 using ASC.Notify.Recipients;
-using ASC.Web.Core.Users;
 using ASC.Web.Studio.Utility;
 
 using Microsoft.Extensions.Configuration;
@@ -44,6 +44,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Web.Studio.Core.Notify
 {
+    [Singletone(Additional = typeof(ServiceLauncherExtension))]
     public class StudioNotifyServiceSender
     {
         private static string EMailSenderName { get { return Constants.NotifyEMailSenderSysName; } }
@@ -61,6 +62,8 @@ namespace ASC.Web.Studio.Core.Notify
         public void OnMessage(NotifyItem item)
         {
             using var scope = ServiceProvider.CreateScope();
+            var commonLinkUtilitySettings = scope.ServiceProvider.GetService<CommonLinkUtilitySettings>();
+            commonLinkUtilitySettings.ServerUri = item.BaseUrl;
             var scopeClass = scope.ServiceProvider.GetService<StudioNotifyServiceSenderScope>();
             var (tenantManager, userManager, securityContext, studioNotifyHelper, _, _) = scopeClass;
             tenantManager.SetCurrentTenant(item.TenantId);
@@ -171,6 +174,7 @@ namespace ASC.Web.Studio.Core.Notify
         }
     }
 
+    [Scope]
     public class StudioNotifyServiceSenderScope
     {
         private TenantManager TenantManager { get; }
@@ -213,22 +217,11 @@ namespace ASC.Web.Studio.Core.Notify
 
     public static class ServiceLauncherExtension
     {
-        public static DIHelper AddStudioNotifyServiceSender(this DIHelper services)
+        public static void Register(DIHelper services)
         {
-            services.TryAddSingleton<StudioNotifyServiceSender>();
-            services.TryAddScoped<StudioNotifyServiceSenderScope>();
-
-            return services
-                .AddStudioPeriodicNotify()
-                .AddStudioWhatsNewNotify()
-                .AddTenantManagerService()
-                .AddUserManagerService()
-                .AddSecurityContextService()
-                .AddAuthContextService()
-                .AddStudioNotifyHelperService()
-                .AddDisplayUserSettingsService()
-                .AddTenantExtraService()
-                .AddCoreBaseSettingsService();
+            services.TryAdd<StudioNotifyServiceSenderScope>();
+            services.TryAdd<StudioPeriodicNotify>();
+            services.TryAdd<StudioWhatsNewNotify>();
         }
     }
 }

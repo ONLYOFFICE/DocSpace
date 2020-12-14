@@ -13,18 +13,19 @@ import {
 } from "asc-web-components";
 import { constants, api, toastr, store as initStore } from "asc-web-common";
 import {
-  clearProgressData,
+  clearSecondaryProgressData,
   createFile,
   createFolder,
   fetchFiles,
   renameFolder,
   setIsLoading,
   setNewRowItems,
-  setProgressBarData,
+  setSecondaryProgressBarData,
   setTreeFolders,
   setUpdateTree,
   updateFile,
 } from "../../../../../store/files/actions";
+import { TIMEOUT } from "../../../../../helpers/constants";
 import {
   canConvert,
   canWebEdit,
@@ -48,6 +49,7 @@ import {
 import { NewFilesPanel } from "../../../../panels";
 import { ConvertDialog } from "../../../../dialogs";
 import EditingWrapperComponent from "./EditingWrapperComponent";
+import { isMobile } from "react-device-detect";
 
 const { FileAction } = constants;
 const sideColor = "#A3A9AE";
@@ -62,12 +64,16 @@ const SimpleFilesRowContent = styled(RowContent)`
   .badge {
     height: 14px;
     width: 14px;
-    margin-right: 8px;
+    margin-right: 6px;
   }
 
   .badges {
     display: flex;
     align-items: center;
+  }
+
+  .favorite {
+    cursor: pointer;
   }
 
   .share-icon {
@@ -87,6 +93,7 @@ const okIcon = (
     size="scale"
     isfill={true}
     color="#A3A9AE"
+    hoveredcolor="#657077"
   />
 );
 
@@ -96,6 +103,7 @@ const cancelIcon = (
     size="scale"
     isfill={true}
     color="#A3A9AE"
+    hoveredcolor="#657077"
   />
 );
 
@@ -148,7 +156,7 @@ class FilesRowContent extends React.PureComponent {
   };
 
   createItem = (e) => {
-    const { createFile, createFolder, item, setIsLoading } = this.props;
+    const { createFile, item, setIsLoading, openDocEditor } = this.props;
     const { itemTitle } = this.state;
 
     setIsLoading(true);
@@ -157,7 +165,9 @@ class FilesRowContent extends React.PureComponent {
 
     if (itemTitle.trim() === "") return this.completeAction(itemId);
 
-    let newTab = item.fileExst ? window.open("about:blank", "_blank") : null;
+    let tab = item.fileExst
+      ? window.open("/products/files/doceditor", "_blank")
+      : null;
 
     !item.fileExst
       ? createFolder(item.parentId, itemTitle)
@@ -165,7 +175,7 @@ class FilesRowContent extends React.PureComponent {
           .finally(() => setIsLoading(false))
       : createFile(item.parentId, `${itemTitle}.${item.fileExst}`)
           .then((file) => {
-            newTab.location = file.webUrl;
+            openDocEditor(file.id, tab, file.webUrl);
             this.completeAction(itemId);
           })
           .finally(() => setIsLoading(false));
@@ -216,6 +226,7 @@ class FilesRowContent extends React.PureComponent {
       canWebEdit,
       item,
       isTrashFolder,
+      openDocEditor,
     } = this.props;
     const { id, fileExst, viewUrl } = item;
 
@@ -237,7 +248,7 @@ class FilesRowContent extends React.PureComponent {
         .finally(() => setIsLoading(false));
     } else {
       if (canWebEdit) {
-        return window.open(`./doceditor?fileId=${id}`, "_blank");
+        return openDocEditor(id);
       }
 
       if (isImage || isSound || isVideo) {
@@ -258,7 +269,7 @@ class FilesRowContent extends React.PureComponent {
   };
 
   getStatusByDate = () => {
-    const { culture, t, item } = this.props;
+    const { culture, t, item, sectionWidth } = this.props;
     const { created, updated, version, fileExst } = item;
 
     const title =
@@ -270,8 +281,9 @@ class FilesRowContent extends React.PureComponent {
 
     const date = fileExst ? updated : created;
     const dateLabel = new Date(date).toLocaleString(culture);
+    const mobile = (sectionWidth && sectionWidth <= 375) || isMobile;
 
-    return `${title}: ${dateLabel}`;
+    return mobile ? dateLabel : `${title}: ${dateLabel}`;
   };
 
   getDefaultName = (format) => {
@@ -342,33 +354,48 @@ class FilesRowContent extends React.PureComponent {
       selectedFolder,
       filter,
       setIsLoading,
-      setProgressBarData,
+      setSecondaryProgressBarData,
       t,
-      clearProgressData,
+      clearSecondaryProgressData,
       fetchFiles,
     } = this.props;
-    api.files.getConvertFile(fileId).then((res) => {
+    api.files.getFileConversationProgress(fileId).then((res) => {
       if (res && res[0] && res[0].progress !== 100) {
-        setProgressBarData({
+        setSecondaryProgressBarData({
+          icon: "file",
           visible: true,
           percent: res[0].progress,
           label: t("Convert"),
+          alert: false,
         });
         setTimeout(() => this.getConvertProgress(fileId), 1000);
       } else {
         if (res[0].error) {
+          setSecondaryProgressBarData({
+            visible: true,
+            alert: true,
+          });
           toastr.error(res[0].error);
-          clearProgressData();
+          setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
         } else {
-          setProgressBarData({
+          setSecondaryProgressBarData({
+            icon: "file",
             visible: true,
             percent: 100,
             label: t("Convert"),
+            alert: false,
           });
-          setTimeout(() => clearProgressData(), 5000);
+          setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
           const newFilter = filter.clone();
           fetchFiles(selectedFolder.id, newFilter)
-            .catch((err) => toastr.error(err))
+            .catch((err) => {
+              setSecondaryProgressBarData({
+                visible: true,
+                alert: true,
+              });
+              //toastr.error(err);
+              setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+            })
             .finally(() => setIsLoading(false));
         }
       }
@@ -376,8 +403,14 @@ class FilesRowContent extends React.PureComponent {
   };
 
   onConvert = () => {
-    const { item, t, setProgressBarData } = this.props;
-    setProgressBarData({ visible: true, percent: 0, label: t("Convert") });
+    const { item, t, setSecondaryProgressBarData } = this.props;
+    setSecondaryProgressBarData({
+      icon: "file",
+      visible: true,
+      percent: 0,
+      label: t("Convert"),
+      alert: false,
+    });
     this.setState({ showConvertDialog: false }, () =>
       api.files.convertFile(item.id).then((convertRes) => {
         if (convertRes && convertRes[0] && convertRes[0].progress !== 100) {
@@ -394,11 +427,11 @@ class FilesRowContent extends React.PureComponent {
       fileAction,
       isTrashFolder,
       folders,
-      widthProp,
       isLoading,
       isMobile,
       canWebEdit,
       canConvert,
+      sectionWidth,
     } = this.props;
     const {
       itemTitle,
@@ -428,9 +461,10 @@ class FilesRowContent extends React.PureComponent {
     const updatedDate = updated && this.getStatusByDate();
 
     const isEdit = id === editingId && fileExst === fileAction.extension;
-    const linkStyles = isTrashFolder
-      ? { noHover: true }
-      : { onClick: this.onFilesClick };
+    const linkStyles =
+      isTrashFolder || window.innerWidth <= 1024
+        ? { noHover: true }
+        : { onClick: this.onFilesClick };
     const showNew = !!newItems;
 
     return isEdit ? (
@@ -462,7 +496,7 @@ class FilesRowContent extends React.PureComponent {
           />
         )}
         <SimpleFilesRowContent
-          widthProp={widthProp}
+          sectionWidth={sectionWidth}
           isMobile={isMobile}
           sideColor={sideColor}
           isFile={fileExst}
@@ -494,7 +528,7 @@ class FilesRowContent extends React.PureComponent {
                 >
                   {fileExst}
                 </Text>
-                {canConvert && (
+                {/* TODO: Uncomment after fix conversation {canConvert && !isTrashFolder && (
                   <IconButton
                     onClick={this.setConvertDialogVisible}
                     iconName="FileActionsConvertIcon"
@@ -502,14 +536,28 @@ class FilesRowContent extends React.PureComponent {
                     size="small"
                     isfill={true}
                     color="#A3A9AE"
+                    hoverColor="#3B72A7"
                   />
-                )}
-                {canWebEdit && (
-                  <Icons.AccessEditIcon
+                )} */}
+                {canWebEdit && !isTrashFolder && (
+                  <IconButton
+                    onClick={this.onFilesClick}
+                    iconName="AccessEditIcon"
                     className="badge"
                     size="small"
                     isfill={true}
                     color="#A3A9AE"
+                    hoverColor="#3B72A7"
+                  />
+                )}
+                {fileStatus === 32 && !isTrashFolder && (
+                  <Icons.FavoriteIcon
+                    className="favorite"
+                    size="small"
+                    data-action="remove"
+                    data-id={item.id}
+                    data-title={item.title}
+                    onClick={this.props.onClickFavorite}
                   />
                 )}
                 {fileStatus === 1 && (
@@ -650,14 +698,13 @@ function mapStateToProps(state, props) {
 
 export default connect(mapStateToProps, {
   createFile,
-  createFolder,
   updateFile,
   renameFolder,
   setTreeFolders,
-  setProgressBarData,
+  setSecondaryProgressBarData,
   setUpdateTree,
   setNewRowItems,
   setIsLoading,
-  clearProgressData,
+  clearSecondaryProgressData,
   fetchFiles,
 })(withRouter(withTranslation()(FilesRowContent)));

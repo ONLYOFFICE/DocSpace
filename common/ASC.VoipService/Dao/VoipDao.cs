@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common;
 using ASC.Core.Common.Configuration;
@@ -39,6 +40,7 @@ using ASC.VoipService.Twilio;
 
 namespace ASC.VoipService.Dao
 {
+    [Scope(typeof(CachedVoipDao))]
     public class VoipDao : AbstractDao
     {
         public VoipDao(

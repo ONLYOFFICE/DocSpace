@@ -18,6 +18,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Backup
 {
+    [Scope]
     public class DbHelper : IDisposable
     {
         private readonly DbProviderFactory factory;
@@ -267,14 +268,6 @@ namespace ASC.Data.Backup
             return tenantColumn != null ?
                 " where " + Quote(tenantColumn) + " = " + tenant :
                 " where 1 = 0";
-        }
-    }
-    public static class DbHelperExtension
-    {
-        public static DIHelper AddDbHelper(this DIHelper services)
-        {
-            services.TryAddScoped<DbHelper>();
-            return services;
         }
     }
 }

@@ -11,6 +11,7 @@ class FilterButton extends React.PureComponent {
       iconSize,
       columnCount,
       asideHeader,
+      asideView,
     } = this.props;
     //console.log('render FilterButton)
     return (
@@ -26,7 +27,7 @@ class FilterButton extends React.PureComponent {
         size={iconSize}
         title="Actions"
         columnCount={columnCount}
-        displayType="auto"
+        displayType={asideView ? "aside" : "auto"}
         asideHeader={asideHeader}
       ></ContextMenuButton>
     );
@@ -39,5 +40,6 @@ FilterButton.propTypes = {
   isDisabled: PropTypes.bool,
   columnCount: PropTypes.number,
   asideHeader: PropTypes.string,
+  asideView: PropTypes.bool,
 };
 export default FilterButton;

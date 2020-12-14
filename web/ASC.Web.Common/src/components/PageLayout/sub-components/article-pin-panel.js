@@ -6,8 +6,8 @@ const { tablet, smallTablet } = utils.device;
 
 const StyledArticlePinPanel = styled.div`
   border-top: 1px solid #eceef1;
-  height: 56px;
-  min-height: 56px;
+  height: 47px;
+  min-height: 47px;
   display: none;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
@@ -31,8 +31,17 @@ const StyledArticlePinPanel = styled.div`
     user-select: none;
     height: 100%;
 
+    .icon-wrapper {
+      width: 19px;
+      height: 16px;
+    }
+    svg {
+      margin-top: -1px;
+    }
+
     span {
-      margin-left: 8px;
+      margin-left: 6px;
+      margin-top: -2px !important;
     }
   }
 `;
@@ -51,12 +60,16 @@ const ArticlePinPanel = React.memo((props) => {
     <StyledArticlePinPanel>
       {pinned ? (
         <div onClick={onUnpin}>
-          <Icons.CatalogUnpinIcon size="medium" />
+          <div className="icon-wrapper">
+            <Icons.CatalogUnpinIcon size="scale" />
+          </div>
           <Text {...textStyles}>{unpinText}</Text>
         </div>
       ) : (
         <div onClick={onPin}>
-          <Icons.CatalogPinIcon size="medium" />
+          <div className="icon-wrapper">
+            <Icons.CatalogPinIcon size="scale" />
+          </div>
           <Text {...textStyles}>{pinText}</Text>
         </div>
       )}

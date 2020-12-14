@@ -41,6 +41,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.UrlShortener.Svc
 {
+    [Singletone]
     public class UrlShortenerService : IServiceController
     {
         private readonly ILog log;
@@ -48,18 +49,23 @@ namespace ASC.UrlShortener.Svc
         private readonly IConfiguration configuration;
 
         private readonly IHostEnvironment hostEnvironment;
-
+        private readonly ConfigurationExtension configurationExtension;
         private ProcessStartInfo processStartInfo;
 
         private Process process;
 
-        public UrlShortenerService(IOptionsMonitor<ILog> options, IConfiguration config, IHostEnvironment host)
+        public UrlShortenerService(
+            IOptionsMonitor<ILog> options,
+            IConfiguration config,
+            IHostEnvironment host,
+            ConfigurationExtension configurationExtension)
         {
             log = options.Get("ASC.UrlShortener.Svc");
 
             configuration = config;
 
             hostEnvironment = host;
+            this.configurationExtension = configurationExtension;
         }
 
         public void Start()
@@ -118,7 +124,7 @@ namespace ASC.UrlShortener.Svc
 
             startInfo.EnvironmentVariables.Add("port", port);
 
-            var conString = ConfigurationExtension.GetConnectionStrings(configuration)["default"].ConnectionString;
+            var conString = configurationExtension.GetConnectionStrings()["default"].ConnectionString;
 
             var dict = new Dictionary<string, string>
                 {
@@ -143,16 +149,6 @@ namespace ASC.UrlShortener.Svc
             startInfo.EnvironmentVariables.Add("logPath", Path.GetFullPath(Path.Combine(hostEnvironment.ContentRootPath, log.LogDirectory, "web.urlshortener.log")));
 
             return startInfo;
-        }
-    }
-
-    public static class UrlShortenerServiceExtension
-    {
-        public static DIHelper AddUrlShortenerService(this DIHelper services)
-        {
-            services.TryAddSingleton<UrlShortenerService>();
-
-            return services;
         }
     }
 }

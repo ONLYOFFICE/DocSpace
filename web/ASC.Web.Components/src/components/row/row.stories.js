@@ -19,7 +19,7 @@ storiesOf("Components|Row", module)
     const element = select("element", ["", "Avatar", "Icon", "ComboBox"], "");
 
     const elementAvatar = (
-      <Avatar size="small" role="user" userName="Demo Avatar" />
+      <Avatar size="min" role="user" userName="Demo Avatar" />
     );
     const elementIcon = <Icons.CatalogFolderIcon size="big" />;
     const elementComboBox = (

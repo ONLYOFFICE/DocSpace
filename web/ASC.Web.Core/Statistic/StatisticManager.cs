@@ -38,6 +38,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Web.Studio.Core.Statistic
 {
+    [Scope]
     public class StatisticManager
     {
         private static DateTime lastSave = DateTime.UtcNow;
@@ -160,19 +161,6 @@ namespace ASC.Web.Studio.Core.Statistic
                 WebstudioDbContext.SaveChanges();
             }
             tx.Commit();
-        }
-    }
-
-    public static class StatisticManagerExtension
-    {
-        public static DIHelper AddStatisticManagerService(this DIHelper services)
-        {
-            if (services.TryAddScoped<StatisticManager>())
-            {
-                return services.AddWebstudioDbContextService();
-            }
-
-            return services;
         }
     }
 }

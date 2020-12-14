@@ -3,10 +3,9 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import commonInputStyle from "../text-input/common-input-styles";
 import MaskedInput from "react-text-mask";
-import isEqual from "lodash/isEqual";
+import equal from "fast-deep-equal/react";
 
-/* eslint-disable no-unused-vars */
-/* eslint-disable react/prop-types */
+/* eslint-disable no-unused-vars, react/prop-types */
 const Input = ({
   isAutoFocussed,
   isDisabled,
@@ -25,8 +24,7 @@ const Input = ({
   ) : (
     <input {...props} />
   );
-/* eslint-enable react/prop-types */
-/* eslint-enable no-unused-vars */
+/* eslint-enable react/prop-types, no-unused-vars */
 
 const StyledInput = styled(Input).attrs((props) => ({
   id: props.id,
@@ -53,9 +51,9 @@ const StyledInput = styled(Input).attrs((props) => ({
     (props.size === "middle" && "20px") ||
     (props.size === "big" && "20px") ||
     (props.size === "huge" && "21px") ||
-    (props.size === "large" && "21px")};
+    (props.size === "large" && "20px")};
   font-size: ${(props) =>
-    (props.size === "base" && "13px") ||
+    (props.size === "base" && "14px") ||
     (props.size === "middle" && "14px") ||
     (props.size === "big" && "16px") ||
     (props.size === "huge" && "18px") ||
@@ -69,33 +67,39 @@ const StyledInput = styled(Input).attrs((props) => ({
   overflow: hidden;
   opacity: 1;
   padding: ${(props) =>
-    (props.size === "base" && "5px 7px") ||
+    (props.size === "base" && "5px 6px") ||
     (props.size === "middle" && "8px 12px") ||
     (props.size === "big" && "8px 16px") ||
     (props.size === "huge" && "8px 20px") ||
-    (props.size === "large" && "11px 16px")};
+    (props.size === "large" && "11px 15px")};
   transition: all 0.2s ease 0s;
 
   ::-webkit-input-placeholder {
-    color: ${(props) => (props.isDisabled ? "#A3A9AE" : "#D0D5DA")};
+    color: "#A3A9AE";
     font-family: "Open Sans", sans-serif;
     user-select: none;
   }
 
   :-moz-placeholder {
-    color: ${(props) => (props.isDisabled ? "#A3A9AE" : "#D0D5DA")};
+    color: "#A3A9AE";
     font-family: "Open Sans", sans-serif;
     user-select: none;
   }
 
   ::-moz-placeholder {
-    color: ${(props) => (props.isDisabled ? "#A3A9AE" : "#D0D5DA")};
+    color: "#A3A9AE";
     font-family: "Open Sans", sans-serif;
     user-select: none;
   }
 
   :-ms-input-placeholder {
-    color: ${(props) => (props.isDisabled ? "#A3A9AE" : "#D0D5DA")};
+    color: "#A3A9AE";
+    font-family: "Open Sans", sans-serif;
+    user-select: none;
+  }
+
+  ::placeholder {
+    color: "#A3A9AE";
     font-family: "Open Sans", sans-serif;
     user-select: none;
   }
@@ -105,7 +109,7 @@ const StyledInput = styled(Input).attrs((props) => ({
 
 class TextInput extends React.Component {
   shouldComponentUpdate(nextProps) {
-    return !isEqual(this.props, nextProps);
+    return !equal(this.props, nextProps);
   }
 
   render() {

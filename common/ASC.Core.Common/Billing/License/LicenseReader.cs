@@ -38,6 +38,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Billing
 {
+    [Scope]
     public class LicenseReader
     {
         private readonly ILog Log;
@@ -339,22 +340,5 @@ namespace ASC.Core.Billing
         private PaymentManager PaymentManager { get; }
         private CoreSettings CoreSettings { get; }
         private IConfiguration Configuration { get; }
-    }
-
-    public static class LicenseReaderExtension
-    {
-        public static DIHelper AddLicenseReaderService(this DIHelper services)
-        {
-            if (services.TryAddScoped<LicenseReader>())
-            {
-                return services
-                    .AddUserManagerService()
-                    .AddPaymentManagerService()
-                    .AddTenantManagerService()
-                    .AddCoreSettingsService();
-            }
-
-            return services;
-        }
     }
 }

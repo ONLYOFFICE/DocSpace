@@ -51,6 +51,7 @@ using Twilio.Types;
 
 namespace ASC.Web.Core.Sms
 {
+    [Scope(Additional = typeof(TwilioProviderExtention))]
     public class SmsProviderManager
     {
         public SmscProvider SmscProvider { get => ConsumerFactory.Get<SmscProvider>(); }
@@ -112,18 +113,6 @@ namespace ASC.Web.Core.Sms
             }
 
             return provider.SendMessage(number, message);
-        }
-    }
-    public static class SmsProviderManagerExtension
-    {
-        public static DIHelper AddSmsProviderManagerService(this DIHelper services)
-        {
-            if (services.TryAddScoped<SmsProviderManager>())
-            {
-                return services.AddConsumerFactoryService();
-            }
-
-            return services;
         }
     }
 
@@ -375,6 +364,7 @@ namespace ASC.Web.Core.Sms
         }
     }
 
+    [Scope]
     public class TwilioProvider : SmsProvider, IValidateKeysProvider
     {
         protected override string Key
@@ -479,6 +469,7 @@ namespace ASC.Web.Core.Sms
         }
     }
 
+    [Scope]
     public class TwilioSaaSProvider : TwilioProvider
     {
         public TwilioSaaSProvider()
@@ -504,6 +495,7 @@ namespace ASC.Web.Core.Sms
         }
     }
 
+    [Scope]
     public class TwilioProviderCleaner
     {
         private VoipDao VoipDao { get; }
@@ -538,20 +530,9 @@ namespace ASC.Web.Core.Sms
 
     public static class TwilioProviderExtention
     {
-        public static DIHelper AddTwilioProviderService(this DIHelper services)
+        public static void Register(DIHelper services)
         {
-            if (services.TryAddScoped<TwilioProvider>())
-            {
-                services.TryAddScoped<TwilioProviderCleaner>();
-                services.TryAddScoped<TwilioSaaSProvider>();
-                return services
-                    .AddVoipDaoService()
-                    .AddTenantManagerService()
-                    .AddCoreBaseSettingsService()
-                    .AddCoreSettingsService();
-            }
-
-            return services;
+            services.TryAdd<TwilioSaaSProvider>();
         }
     }
 }

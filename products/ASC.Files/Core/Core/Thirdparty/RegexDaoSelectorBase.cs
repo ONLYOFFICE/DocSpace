@@ -149,7 +149,7 @@ namespace ASC.Files.Thirdparty
 
         public void RenameProvider(T provider, string newTitle)
         {
-            var dbDao = ServiceProvider.GetService<CachedProviderAccountDao>();
+            var dbDao = ServiceProvider.GetService<ProviderAccountDao>();
             dbDao.UpdateProviderInfo(provider.ID, newTitle, null, provider.RootFolderType);
             provider.UpdateTitle(newTitle); //This will update cached version too
         }

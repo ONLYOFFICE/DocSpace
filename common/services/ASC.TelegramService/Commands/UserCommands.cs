@@ -35,6 +35,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.TelegramService.Commands
 {
+    [Scope]
     public class UserCommands : CommandContext
     {
         private CachedTelegramDao CachedTelegramDao { get; }
@@ -68,15 +69,6 @@ namespace ASC.TelegramService.Commands
             }
 
             await ReplyAsync("Error");
-        }
-    }
-
-    public static class UserCommandsExtension
-    {
-        public static DIHelper AddUserCommandsService(this DIHelper services)
-        {
-            services.TryAddScoped<UserCommands>();
-            return services.AddCachedTelegramDaoService();
         }
     }
 }

@@ -1,7 +1,7 @@
 import React from "react";
-import { TreeMenu, TreeNode, Icons, Badge } from "asc-web-components";
+import { TreeMenu, TreeNode, Icons } from "asc-web-components";
 import styled from "styled-components";
-import isEqual from "lodash/isEqual";
+import equal from "fast-deep-equal/react";
 import { api, constants, toastr, store as initStore } from "asc-web-common";
 import { connect } from "react-redux";
 import {
@@ -70,7 +70,7 @@ class TreeFolders extends React.Component {
       this.setState({ expandedKeys });
     }
 
-    if (!isEqual(prevProps.data, data)) {
+    if (!equal(prevProps.data, data)) {
       //!utils.array.isArrayEqual(prevProps.data, data)) {
       this.setState({ treeData: data });
     }
@@ -87,17 +87,32 @@ class TreeFolders extends React.Component {
   };
 
   getFolderIcon = (item) => {
-    switch (item.key) {
-      case "0-0":
+    if (item.parentId !== 0)
+      return <Icons.CatalogFolderIcon size="scale" isfill color="#657077" />;
+
+    switch (item.rootFolderType) {
+      case FolderType.USER:
         return <Icons.CatalogUserIcon size="scale" isfill color="#657077" />;
-      case "0-1":
+      case FolderType.SHARE:
         return <Icons.CatalogSharedIcon size="scale" isfill color="#657077" />;
-      case "0-2":
+      case FolderType.COMMON:
         return (
           <Icons.CatalogPortfolioIcon size="scale" isfill color="#657077" />
         );
-      case "0-3":
+      case FolderType.Favorites:
+        return (
+          <Icons.CatalogFavoritesIcon size="scale" isfill color="#657077" />
+        );
+      case FolderType.Recent:
+        return <Icons.CatalogRecentIcon size="scale" isfill color="#657077" />;
+      case FolderType.Privacy:
+        return (
+          <Icons.CatalogPrivateRoomIcon size="scale" isfill color="#657077" />
+        );
+
+      case FolderType.TRASH:
         return <Icons.CatalogTrashIcon size="scale" isfill color="#657077" />;
+
       default:
         return <Icons.CatalogFolderIcon size="scale" isfill color="#657077" />;
     }
@@ -183,6 +198,7 @@ class TreeFolders extends React.Component {
           id={item.id}
           key={item.id}
           title={item.title}
+          needTopMargin={item.key === "0-5" ? true : false}
           dragging={dragging}
           isLeaf={item.foldersCount ? false : true}
           icon={this.getFolderIcon(item)}

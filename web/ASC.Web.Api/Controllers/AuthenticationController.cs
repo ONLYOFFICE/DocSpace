@@ -16,6 +16,7 @@ using static ASC.Security.Cryptography.EmailValidationKeyProvider;
 
 namespace ASC.Web.Api.Controllers
 {
+    [Scope]
     [DefaultRoute]
     [ApiController]
     [AllowAnonymous]
@@ -47,8 +48,47 @@ namespace ASC.Web.Api.Controllers
             EmailValidationKeyModelHelper = emailValidationKeyModelHelper;
         }
 
+
+        [Read]
+        public bool GetIsAuthentificated()
+        {
+            return SecurityContext.IsAuthenticated;
+        }
+
         [Create(false)]
-        public AuthenticationTokenData AuthenticateMe([FromBody] AuthModel auth)
+        public AuthenticationTokenData AuthenticateMeFromBody([FromBody] AuthModel auth)
+        {
+            return AuthenticateMe(auth);
+        }
+
+        [Create(false)]
+        [Consumes("application/x-www-form-urlencoded")]
+        public AuthenticationTokenData AuthenticateMeFromForm([FromForm] AuthModel auth)
+        {
+            return AuthenticateMe(auth);
+        }
+
+        [Create("logout")]
+        public void Logout()
+        {
+            CookiesManager.ClearCookies(CookiesType.AuthKey);
+            CookiesManager.ClearCookies(CookiesType.SocketIO);
+        }
+
+        [Create("confirm", false)]
+        public ValidationResult CheckConfirmFromBody([FromBody] EmailValidationKeyModel model)
+        {
+            return EmailValidationKeyModelHelper.Validate(model);
+        }
+
+        [Create("confirm", false)]
+        [Consumes("application/x-www-form-urlencoded")]
+        public ValidationResult CheckConfirmFromForm([FromForm] EmailValidationKeyModel model)
+        {
+            return EmailValidationKeyModelHelper.Validate(model);
+        }
+
+        private AuthenticationTokenData AuthenticateMe(AuthModel auth)
         {
             var tenant = TenantManager.GetCurrentTenant();
             var user = GetUser(tenant.TenantId, auth);
@@ -69,20 +109,6 @@ namespace ASC.Web.Api.Controllers
             {
                 throw new Exception("User authentication failed");
             }
-        }
-
-        [Create("logout")]
-        public void Logout()
-        {
-            CookiesManager.ClearCookies(CookiesType.AuthKey);
-            CookiesManager.ClearCookies(CookiesType.SocketIO);
-        }
-
-        [AllowAnonymous]
-        [Create("confirm", false)]
-        public ValidationResult CheckConfirm([FromBody] EmailValidationKeyModel model)
-        {
-            return EmailValidationKeyModelHelper.Validate(model);
         }
 
         private UserInfo GetUser(int tenantId, AuthModel memberModel)
@@ -138,19 +164,6 @@ namespace ASC.Web.Api.Controllers
                 Tfa = false,
                 TfaKey = null
             };
-        }
-    }
-
-    public static class AuthenticationControllerExtension
-    {
-        public static DIHelper AddAuthenticationController(this DIHelper services)
-        {
-            return services
-                .AddUserManagerService()
-                .AddTenantManagerService()
-                .AddSecurityContextService()
-                .AddTenantCookieSettingsService()
-                .AddPasswordHasherService();
         }
     }
 }

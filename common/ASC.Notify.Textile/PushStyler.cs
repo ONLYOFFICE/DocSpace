@@ -34,6 +34,7 @@ using ASC.Notify.Patterns;
 
 namespace ASC.Notify.Textile
 {
+    [Scope]
     public class PushStyler : IPatternStyler
     {
         private static readonly Regex VelocityArgumentsRegex = new Regex(NVelocityPatternFormatter.NoStylePreffix + "(?'arg'.*?)" + NVelocityPatternFormatter.NoStyleSuffix, RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled);
@@ -50,18 +51,6 @@ namespace ASC.Notify.Textile
                 message.Body = VelocityArgumentsRegex.Replace(message.Body, m => m.Groups["arg"].Value);
                 message.Body = message.Body.Replace(Environment.NewLine, " ").Trim();
             }
-        }
-    }
-    public static class PushStylerExtension
-    {
-        public static DIHelper AddPushStylerService(this DIHelper services)
-        {
-            if (services.TryAddScoped<PushStyler>())
-            {
-                return services.AddStylerService();
-            }
-
-            return services;
         }
     }
 }

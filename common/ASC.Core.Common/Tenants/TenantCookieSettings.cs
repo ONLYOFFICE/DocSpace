@@ -65,6 +65,7 @@ namespace ASC.Core.Tenants
         }
     }
 
+    [Scope]
     public class TenantCookieSettingsHelper
     {
         public bool IsVisibleSettings { get; internal set; }
@@ -118,19 +119,6 @@ namespace ASC.Core.Tenants
             var settingsTenant = GetForTenant(tenantId);
             var expires = settingsTenant.IsDefault() ? DateTime.UtcNow.AddYears(1) : DateTime.UtcNow.AddMinutes(settingsTenant.LifeTime);
             return expires;
-        }
-    }
-
-    public static class TenantCookieSettingsExtention
-    {
-        public static DIHelper AddTenantCookieSettingsService(this DIHelper services)
-        {
-            if (services.TryAddScoped<TenantCookieSettingsHelper>())
-            {
-                return services.AddSettingsManagerService();
-            }
-
-            return services;
         }
     }
 }

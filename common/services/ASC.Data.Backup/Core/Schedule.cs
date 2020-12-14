@@ -12,6 +12,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Backup
 {
+    [Scope]
     public class Schedule
     {
         private TenantManager TenantManager { get; }
@@ -55,23 +56,6 @@ namespace ASC.Data.Backup
                 log.Error("Schedule " + backupSchedule.TenantId, e);
                 return false;
             }
-        }
-    }
-
-    public static class ScheduleExtension
-    {
-        public static DIHelper AddScheduleService(this DIHelper services)
-        {
-            if (services.TryAddScoped<Schedule>())
-            {
-
-                return services
-                    .AddTenantManagerService()
-                    .AddTenantUtilService()
-                    .AddBackupHelperService();
-            }
-
-            return services;
         }
     }
 }

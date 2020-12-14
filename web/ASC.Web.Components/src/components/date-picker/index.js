@@ -14,8 +14,7 @@ import Heading from "../heading";
 import throttle from "lodash/throttle";
 
 const DateInputStyle = styled.div`
-  max-width: 110px;
-  width: 110px;
+  width: 115px;
 `;
 
 const DropDownStyle = styled.div`
@@ -127,14 +126,18 @@ class DatePicker extends Component {
   };
 
   onChange = (value) => {
-    this.onClick(!this.state.isOpen);
     const formatValue = moment(value).format("L");
     this.props.onChange && this.props.onChange(value);
-    this.setState({ selectedDate: value, value: formatValue, hasError: false });
+    this.setState({
+      selectedDate: value,
+      value: formatValue,
+      hasError: false,
+      isOpen: !this.state.isOpen,
+    });
   };
 
-  onClick = (isOpen) => {
-    this.setState({ isOpen });
+  onClick = () => {
+    this.setState({ isOpen: !this.state.isOpen });
   };
 
   onClose = () => {
@@ -359,9 +362,8 @@ class DatePicker extends Component {
           isDisabled={isDisabled}
           isReadOnly={isReadOnly}
           hasError={hasError}
-          //onFocus={this.onClick.bind(this, true)}
-          iconName={"CalendarIcon"}
-          onIconClick={this.onClick.bind(this, !isOpen)}
+          iconName="CalendarIcon"
+          onIconClick={this.onClick}
           value={value}
           onChange={this.handleChange}
           mask={mask}

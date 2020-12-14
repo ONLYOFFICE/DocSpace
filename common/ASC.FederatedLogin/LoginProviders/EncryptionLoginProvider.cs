@@ -29,7 +29,6 @@ using System.Linq;
 
 using ASC.Common;
 using ASC.Common.Utils;
-using ASC.Core;
 using ASC.FederatedLogin;
 using ASC.FederatedLogin.Profile;
 using ASC.Security.Cryptography;
@@ -40,6 +39,7 @@ using SecurityContext = ASC.Core.SecurityContext;
 
 namespace ASC.Web.Studio.Core
 {
+    [Scope]
     public class EncryptionLoginProvider
     {
         private SecurityContext SecurityContext { get; }
@@ -88,22 +88,6 @@ namespace ASC.Web.Studio.Core
 
             var keys = InstanceCrypto.Decrypt(profile.Name);
             return keys;
-        }
-    }
-    public static class EncryptionLoginProviderExtension
-    {
-        public static DIHelper AddEncryptionLoginProviderService(this DIHelper services)
-        {
-            if (services.TryAddScoped<EncryptionLoginProvider>())
-            {
-                return services
-                    .AddSecurityContextService()
-                    .AddSignatureService()
-                    .AddInstanceCryptoService()
-                    .AddAccountLinker();
-            }
-
-            return services;
         }
     }
 }

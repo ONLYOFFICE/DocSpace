@@ -24,7 +24,6 @@
 */
 
 
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -36,22 +35,26 @@ using Microsoft.Extensions.Hosting;
 
 namespace ASC.Notify
 {
+    [Singletone]
     public class ServiceLauncher : IHostedService
     {
         private WebItemManager WebItemManager { get; }
         private StudioNotifyServiceSender StudioNotifyServiceSender { get; }
-        private IServiceProvider ServiceProvider { get; }
+        private NotifyConfiguration NotifyConfiguration { get; }
 
-        public ServiceLauncher(WebItemManager webItemManager, StudioNotifyServiceSender studioNotifyServiceSender, IServiceProvider serviceProvider)
+        public ServiceLauncher(
+            WebItemManager webItemManager,
+            StudioNotifyServiceSender studioNotifyServiceSender,
+            NotifyConfiguration notifyConfiguration)
         {
             WebItemManager = webItemManager;
             StudioNotifyServiceSender = studioNotifyServiceSender;
-            ServiceProvider = serviceProvider;
+            NotifyConfiguration = notifyConfiguration;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            NotifyConfiguration.Configure(ServiceProvider);
+            NotifyConfiguration.Configure();
             WebItemManager.LoadItems();
 
             StudioNotifyServiceSender.RegisterSendMethod();
@@ -62,20 +65,6 @@ namespace ASC.Notify
         public Task StopAsync(CancellationToken cancellationToken)
         {
             return Task.CompletedTask;
-        }
-    }
-
-    public static class ServiceLauncherExtension
-    {
-        public static DIHelper AddServiceLauncher(this DIHelper services)
-        {
-            services.TryAddSingleton<StudioNotifyServiceSender>();
-
-            return services
-                .AddWebItemManager()
-                .AddStudioNotifyServiceSender()
-                .AddNotifyConfiguration()
-                ;
         }
     }
 }

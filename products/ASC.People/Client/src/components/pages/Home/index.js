@@ -25,7 +25,7 @@ const i18n = createI18N({
   localesPath: "pages/Home",
 });
 const { changeLanguage } = utils;
-const { isAdmin } = store.auth.selectors;
+const { isAdmin, getIsLoaded, getOrganizationName } = store.auth.selectors;
 
 class PureHome extends React.Component {
   constructor(props) {
@@ -101,10 +101,14 @@ class PureHome extends React.Component {
       selected,
     } = this.state;
 
-    const { isAdmin } = this.props;
+    const { isAdmin, isLoaded } = this.props;
 
     return (
-      <PageLayout withBodyScroll={true} withBodyAutoFocus={!isMobile}>
+      <PageLayout
+        withBodyScroll={true}
+        withBodyAutoFocus={!isMobile}
+        isLoaded={isLoaded}
+      >
         <PageLayout.ArticleHeader>
           <ArticleHeaderContent />
         </PageLayout.ArticleHeader>
@@ -174,7 +178,6 @@ Home.propTypes = {
 };
 
 function mapStateToProps(state) {
-  const { isLoaded, settings } = state.auth;
   const { users, selection, selected, selectedGroup, groups } = state.people;
   return {
     users,
@@ -182,10 +185,10 @@ function mapStateToProps(state) {
     selected,
     selectedGroup,
     groups,
-    isLoaded,
-    organizationName: settings.organizationName,
+    organizationName: getOrganizationName(state),
     isAdmin: isAdmin(state),
     isLoading: getIsLoading(state),
+    isLoaded: getIsLoaded(state),
   };
 }
 

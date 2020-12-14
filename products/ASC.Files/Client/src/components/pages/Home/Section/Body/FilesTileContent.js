@@ -36,6 +36,7 @@ import {
 import { NewFilesPanel } from "../../../../panels";
 import EditingWrapperComponent from "./EditingWrapperComponent";
 import TileContent from "./TileContent";
+import { isMobile } from "react-device-detect";
 
 const { FileAction } = constants;
 const { getSettings } = initStore.auth.selectors;
@@ -151,7 +152,7 @@ class FilesTileContent extends React.PureComponent {
   };
 
   createItem = (e) => {
-    const { createFile, createFolder, item, setIsLoading } = this.props;
+    const { createFile, item, setIsLoading } = this.props;
     const { itemTitle } = this.state;
 
     setIsLoading(true);
@@ -210,6 +211,7 @@ class FilesTileContent extends React.PureComponent {
       onMediaFileClick,
       fetchFiles,
       canWebEdit,
+      openDocEditor,
     } = this.props;
     if (!fileExst) {
       setIsLoading(true);
@@ -220,13 +222,13 @@ class FilesTileContent extends React.PureComponent {
 
       fetchFiles(id, newFilter)
         .catch((err) => {
-          toastr.error("Something went wrong", err);
+          toastr.error(err);
           setIsLoading(false);
         })
         .finally(() => setIsLoading(false));
     } else {
       if (canWebEdit) {
-        return window.open(`./doceditor?fileId=${id}`, "_blank");
+        return openDocEditor(id);
       }
 
       const isOpenMedia =
@@ -248,7 +250,7 @@ class FilesTileContent extends React.PureComponent {
   };
 
   getStatusByDate = () => {
-    const { culture, t, item } = this.props;
+    const { culture, t, item, sectionWidth } = this.props;
     const { created, updated, version, fileExst } = item;
 
     const title =
@@ -260,8 +262,9 @@ class FilesTileContent extends React.PureComponent {
 
     const date = fileExst ? updated : created;
     const dateLabel = new Date(date).toLocaleString(culture);
+    const mobile = (sectionWidth && sectionWidth <= 375) || isMobile;
 
-    return `${title}: ${dateLabel}`;
+    return mobile ? dateLabel : `${title}: ${dateLabel}`;
   };
 
   getDefaultName = (format) => {
@@ -443,7 +446,6 @@ function mapStateToProps(state, props) {
 
 export default connect(mapStateToProps, {
   createFile,
-  createFolder,
   updateFile,
   renameFolder,
   setTreeFolders,

@@ -33,6 +33,7 @@ using System.Security.Principal;
 using System.Threading;
 using System.Threading.Tasks;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Security.Authentication;
 using ASC.Common.Security.Authorizing;
@@ -269,6 +270,9 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             CurrentTenant = fileOperationData.Tenant;
 
             using var scope = ServiceProvider.CreateScope();
+            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+            tenantManager.SetCurrentTenant(CurrentTenant);
+
             var daoFactory = scope.ServiceProvider.GetService<IDaoFactory>();
             FolderDao = daoFactory.GetFolderDao<TId>();
 
@@ -392,6 +396,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         }
     }
 
+    [Scope]
     public class FileOperationScope
     {
         private TenantManager TenantManager { get; }

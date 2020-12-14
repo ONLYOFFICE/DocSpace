@@ -378,6 +378,7 @@ namespace ASC.Core.Common.Configuration
         }
     }
 
+    [Scope]
     public class ConsumerFactory : IDisposable
     {
         public ILifetimeScope Builder { get; set; }
@@ -430,15 +431,6 @@ namespace ASC.Core.Common.Configuration
         public void Dispose()
         {
             Builder.Dispose();
-        }
-    }
-
-    public static class ConsumerFactoryExtension
-    {
-        public static DIHelper AddConsumerFactoryService(this DIHelper services)
-        {
-            services.TryAddScoped<ConsumerFactory>();
-            return services;
         }
     }
 }

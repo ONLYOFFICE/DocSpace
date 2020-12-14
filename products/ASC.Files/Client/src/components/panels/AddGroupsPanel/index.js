@@ -121,6 +121,7 @@ class AddGroupsPanelComponent extends React.Component {
                 size="16"
                 iconName="ArrowPathIcon"
                 onClick={this.onArrowClick}
+                color="A3A9AE"
               />
               <Heading
                 className="header_aside-panel-header"
@@ -129,12 +130,12 @@ class AddGroupsPanelComponent extends React.Component {
               >
                 {t("AddGroupsForSharingButton")}
               </Heading>
-              <IconButton
+              {/*<IconButton
                 size="16"
                 iconName="PlusIcon"
                 className="header_aside-panel-plus-icon"
                 onClick={this.onPLusClick}
-              />
+              />*/}
             </StyledHeaderContent>
 
             <StyledBody ref={this.scrollRef}>
@@ -145,6 +146,7 @@ class AddGroupsPanelComponent extends React.Component {
                 withoutAside
                 onSelect={this.onSelectGroups}
                 embeddedComponent={embeddedComponent}
+                showCounter={true}
               />
             </StyledBody>
           </StyledContent>

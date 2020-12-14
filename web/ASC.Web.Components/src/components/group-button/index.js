@@ -39,7 +39,7 @@ const StyledDropdownToggle = styled.div`
 
   float: left;
   height: 19px;
-  margin: 18px 12px 19px ${(props) => (props.isSelect ? "0px" : "12px")};
+  margin: 18px 12px 19px ${(props) => (props.isSelect ? "0px" : "13px")};
   overflow: hidden;
   padding: 0px;
 
@@ -91,7 +91,7 @@ const Separator = styled.div`
   border: 1px solid #eceef1;
   width: 0px;
   height: 24px;
-  margin: 16px 11px 0 11px;
+  margin: 16px 12px 0 12px;
 `;
 
 const StyledCheckbox = styled.div`

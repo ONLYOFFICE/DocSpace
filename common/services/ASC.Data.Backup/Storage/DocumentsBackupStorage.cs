@@ -31,13 +31,13 @@ using ASC.Common;
 using ASC.Core;
 using ASC.Data.Storage;
 using ASC.Files.Core;
-using ASC.Files.Core.Data;
 //using File = ASC.Files.Core.File;
 
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Data.Backup.Storage
 {
+    [Scope]
     public class DocumentsBackupStorage : IBackupStorage
     {
         private int TenantId { get; set; }
@@ -198,21 +198,6 @@ namespace ASC.Data.Backup.Storage
             // FileDao will use this storage and will not try to create the new one from service config
             StorageFactory.GetStorage(WebConfigPath, TenantId.ToString(), "files");
             return DaoFactory.GetFileDao<T>();
-        }
-    }
-    public static class DocumentsBackupStorageExtension
-    {
-        public static DIHelper AddDocumentsBackupStorage(this DIHelper services)
-        {
-            if (services.TryAddScoped<DocumentsBackupStorage>())
-            {
-                return services
-                    .AddTenantManagerService()
-                    .AddSecurityContextService()
-                    .AddStorageFactoryService()
-                    .AddDaoFactoryService();
-            }
-            return services;
         }
     }
 }

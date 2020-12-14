@@ -15,6 +15,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Files.Services.FFmpegService
 {
+    [Singletone]
     public class FFmpegService
     {
         public List<string> MustConvertable
@@ -155,14 +156,6 @@ namespace ASC.Web.Files.Services.FFmpegService
             {
                 logger.Info(line);
             }
-        }
-    }
-    public static class FFmpegServiceExtensions
-    {
-        public static DIHelper AddFFmpegServiceService(this DIHelper services)
-        {
-            services.TryAddSingleton<FFmpegService>();
-            return services;
         }
     }
 }

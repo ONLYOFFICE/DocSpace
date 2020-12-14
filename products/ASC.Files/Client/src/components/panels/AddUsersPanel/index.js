@@ -119,6 +119,7 @@ class AddUsersPanelComponent extends React.Component {
                 size="16"
                 iconName="ArrowPathIcon"
                 onClick={this.onArrowClick}
+                color="#A3A9AE"
               />
               <Heading
                 className="header_aside-panel-header"
@@ -144,6 +145,7 @@ class AddUsersPanelComponent extends React.Component {
                 onSelect={this.onPeopleSelect}
                 embeddedComponent={embeddedComponent}
                 groupsCaption={groupsCaption}
+                showCounter={true}
                 //onCancel={onClose}
               />
             </StyledBody>

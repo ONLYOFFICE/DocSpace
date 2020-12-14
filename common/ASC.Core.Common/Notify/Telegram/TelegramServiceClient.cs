@@ -32,6 +32,7 @@ using ASC.Notify.Messages;
 
 namespace ASC.Core.Common.Notify
 {
+    [Singletone]
     public class TelegramServiceClient : ITelegramService
     {
         private ICacheNotify<NotifyMessage> CacheMessage { get; }
@@ -93,15 +94,6 @@ namespace ASC.Core.Common.Notify
         private string GetCacheTokenKey(int tenantId, string userId)
         {
             return "Token" + userId + tenantId;
-        }
-    }
-
-    public static class TelegramServiceClientExtension
-    {
-        public static DIHelper AddTelegramServiceClient(this DIHelper services)
-        {
-            services.TryAddSingleton<TelegramServiceClient>();
-            return services;
         }
     }
 }

@@ -45,6 +45,8 @@ const getCustomModules = (isAdmin) => {
 
 export const getCurrentUser = (state) => state.auth.user;
 
+export const isAuthenticated = (state) => state.auth.isAuthenticated;
+
 export const getCurrentUserId = (state) => state.auth.user;
 
 export const getModules = (state) => state.auth.modules;
@@ -60,6 +62,8 @@ export const getSettingsCustomNamesGroupsCaption = (state) =>
   state.auth.settings.customNames.groupsCaption;
 
 export const getIsLoaded = (state) => state.auth.isLoaded;
+
+export const getIsLoadedSection = (state) => state.auth.isLoadedSection;
 
 export const getDefaultPage = createSelector(
   [getSettings],
@@ -180,3 +184,17 @@ export const getTotalNotificationsCount = createSelector(
     return totalNotifications;
   }
 );
+
+export const isEncryptionSupport = createSelector([getSettings], (settings) => {
+  const { isEncryptionSupport } = settings;
+  return isEncryptionSupport || false;
+});
+
+export const getOrganizationName = createSelector([getSettings], (settings) => {
+  const { organizationName } = settings;
+  return organizationName;
+});
+
+export const getUrlSupport = (state) => state.auth.settings.urlSupport;
+
+export const getUrlAuthKeys = (state) => state.auth.settings.urlAuthKeys;

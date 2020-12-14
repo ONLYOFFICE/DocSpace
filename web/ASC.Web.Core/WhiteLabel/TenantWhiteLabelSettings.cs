@@ -196,6 +196,7 @@ namespace ASC.Web.Core.WhiteLabel
         #endregion
     }
 
+    [Scope]
     public class TenantWhiteLabelSettingsHelper
     {
         private const string moduleName = "whitelabel";
@@ -594,23 +595,5 @@ namespace ASC.Web.Core.WhiteLabel
         }
 
         #endregion
-    }
-
-    public static class TenantWhiteLabelSettingsExtension
-    {
-        public static DIHelper AddTenantWhiteLabelSettingsService(this DIHelper services)
-        {
-            if (services.TryAddScoped<TenantWhiteLabelSettingsHelper>())
-            {
-                return services
-                    .AddUserPhotoManagerService()
-                    .AddWebImageSupplierService()
-                    .AddStorageFactoryService()
-                    .AddWhiteLabelHelperService()
-                    .AddSettingsManagerService();
-            }
-
-            return services;
-        }
     }
 }

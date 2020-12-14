@@ -102,7 +102,7 @@ class InputBlock extends React.Component {
     } else {
       switch (size) {
         case "base":
-          iconButtonSize = 15;
+          iconButtonSize = 16;
           break;
         case "middle":
           iconButtonSize = 18;
@@ -127,7 +127,9 @@ class InputBlock extends React.Component {
         style={style}
       >
         <div className="prepend">
-          <StyledChildrenBlock>{children}</StyledChildrenBlock>
+          <StyledChildrenBlock className="prepend-children">
+            {children}
+          </StyledChildrenBlock>
         </div>
         <TextInput
           id={id}

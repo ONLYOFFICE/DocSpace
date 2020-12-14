@@ -40,6 +40,7 @@ using ASC.Core.Tenants;
 
 namespace ASC.VoipService.Dao
 {
+    [Singletone]
     public class VoipDaoCache
     {
         public ICache Cache { get; }
@@ -58,6 +59,7 @@ namespace ASC.VoipService.Dao
         }
     }
 
+    [Scope]
     public class CachedVoipDao : VoipDao
     {
         private readonly ICache cache;
@@ -108,27 +110,6 @@ namespace ASC.VoipService.Dao
         public static string GetCacheKey(int tenant)
         {
             return "voip" + tenant.ToString(CultureInfo.InvariantCulture);
-        }
-    }
-
-    public static class VoipDaoExtention
-    {
-        public static DIHelper AddVoipDaoService(this DIHelper services)
-        {
-            if (services.TryAddScoped<VoipDao, CachedVoipDao>())
-            {
-                services.TryAddSingleton<VoipDaoCache>();
-
-                return services
-                    .AddDbContextManagerService<VoipDbContext>()
-                    .AddAuthContextService()
-                    .AddTenantUtilService()
-                    .AddSecurityContextService()
-                    .AddBaseCommonLinkUtilityService()
-                    .AddConsumerFactoryService();
-            }
-
-            return services;
         }
     }
 }

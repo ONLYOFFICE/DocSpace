@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Text.Json;
 
 using ASC.Api.Documents;
 
 namespace ASC.Files.Model
 {
-    public class SecurityInfoModel
+    public class SecurityInfoModel : BaseBatchModel<JsonElement>
     {
         public IEnumerable<FileShareParams> Share { get; set; }
         public bool Notify { get; set; }

@@ -45,6 +45,7 @@ using Telegram.Bot.Args;
 
 namespace ASC.TelegramService
 {
+    [Singletone(Additional = typeof(TelegramHandlerExtension))]
     public class TelegramHandler
     {
         private Dictionary<int, TenantTgClient> Clients { get; set; }
@@ -175,14 +176,11 @@ namespace ASC.TelegramService
         }
     }
 
-    public static class TelegramHandlerExtension
+    public class TelegramHandlerExtension
     {
-        public static DIHelper AddTelegramHandlerService(this DIHelper services)
+        public static void Register(DIHelper services)
         {
-            services.TryAddSingleton<TelegramHandler>();
-            return services.AddCachedTelegramDaoService()
-                .AddCommandModuleService()
-                .AddTelegramHelperSerivce();
+            services.TryAdd<TelegramHelper>();
         }
     }
 }

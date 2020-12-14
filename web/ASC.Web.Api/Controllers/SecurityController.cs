@@ -20,6 +20,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ASC.Web.Api.Controllers
 {
+    [Scope]
     [DefaultRoute]
     [ApiController]
     public class SecurityController : ControllerBase
@@ -134,37 +135,32 @@ namespace ASC.Web.Api.Controllers
         }
 
         [Create("audit/settings/lifetime")]
-        public TenantAuditSettings SetAuditSettings(TenantAuditSettings settings)
+        public TenantAuditSettings SetAuditSettingsFromBody([FromBody] TenantAuditSettingsWrapper wrapper)
+        {
+            return SetAuditSettings(wrapper);
+        }
+
+        [Create("audit/settings/lifetime")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public TenantAuditSettings SetAuditSettingsFromForm([FromForm] TenantAuditSettingsWrapper wrapper)
+        {
+            return SetAuditSettings(wrapper);
+        }
+
+        private TenantAuditSettings SetAuditSettings(TenantAuditSettingsWrapper wrapper)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-            if (settings.LoginHistoryLifeTime <= 0 || settings.LoginHistoryLifeTime > TenantAuditSettings.MaxLifeTime)
+            if (wrapper.settings.LoginHistoryLifeTime <= 0 || wrapper.settings.LoginHistoryLifeTime > TenantAuditSettings.MaxLifeTime)
                 throw new ArgumentException("LoginHistoryLifeTime");
 
-            if (settings.AuditTrailLifeTime <= 0 || settings.AuditTrailLifeTime > TenantAuditSettings.MaxLifeTime)
+            if (wrapper.settings.AuditTrailLifeTime <= 0 || wrapper.settings.AuditTrailLifeTime > TenantAuditSettings.MaxLifeTime)
                 throw new ArgumentException("AuditTrailLifeTime");
 
-            SettingsManager.SaveForTenant(settings, TenantManager.GetCurrentTenant().TenantId);
+            SettingsManager.SaveForTenant(wrapper.settings, TenantManager.GetCurrentTenant().TenantId);
             MessageService.Send(MessageAction.AuditSettingsUpdated);
 
-            return settings;
-        }
-    }
-
-    public static class SecurityControllerExtension
-    {
-        public static DIHelper AddSecurityController(this DIHelper services)
-        {
-            return services
-                .AddPermissionContextService()
-                .AddCoreBaseSettingsService()
-                .AddTenantExtraService()
-                .AddTenantManagerService()
-                .AddMessageServiceService()
-                .AddLoginEventsRepositoryService()
-                .AddAuditEventsRepositoryService()
-                .AddAuditReportCreatorService()
-                .AddSettingsManagerService();
+            return wrapper.settings;
         }
     }
 }

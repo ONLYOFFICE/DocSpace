@@ -106,9 +106,9 @@ const StyledOptionalItem = styled.div`
 `;
 
 const StyledIcon = styled.div`
+  margin: -6px 8px 0px 0px;
   width: 16px;
-  margin-right: 8px;
-  margin-top: -2px;
+  height: 16px;
 `;
 
 const StyledArrowIcon = styled.div`
@@ -194,11 +194,15 @@ class ComboButton extends React.Component {
           needDisplay={withOptions || withAdvancedOptions}
           noBorder={noBorder}
           isOpen={isOpen}
+          className="combo-buttons_arrow-icon"
         >
           {(withOptions || withAdvancedOptions) &&
             React.createElement(Icons["ExpanderDownIcon"], {
               size: "scale",
-              color: arrowIconColor,
+              color:
+                selectedOption.arrowIconColor && !isDisabled
+                  ? selectedOption.arrowIconColor
+                  : arrowIconColor,
               isfill: true,
             })}
         </StyledArrowIcon>

@@ -38,6 +38,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Backup
 {
+    [Scope]
     public class FileBackupProvider : IBackupProvider
     {
         private readonly IEnumerable<string> allowedModules;
@@ -250,20 +251,6 @@ namespace ASC.Data.Backup
             {
                 return HashCode.Combine(Module, Domain, Path);
             }
-        }
-    }
-    public static class FileBackupProviderExtension
-    {
-        public static DIHelper AddFileBackupProviderService(this DIHelper services)
-        {
-            if (services.TryAddScoped<FileBackupProvider>())
-            {
-                return services
-                    .AddStorageFactoryService()
-                    .AddStorageFactoryConfigService();
-            }
-
-            return services;
         }
     }
 }

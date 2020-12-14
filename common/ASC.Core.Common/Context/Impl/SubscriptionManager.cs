@@ -28,10 +28,10 @@ using System;
 using System.Linq;
 
 using ASC.Common;
-using ASC.Core.Caching;
 
 namespace ASC.Core
 {
+    [Scope]
     public class SubscriptionManager
     {
         private readonly ISubscriptionService service;
@@ -146,21 +146,6 @@ namespace ASC.Core
         private int GetTenant()
         {
             return TenantManager.GetCurrentTenant().TenantId;
-        }
-    }
-
-    public static class SubscriptionConfigExtension
-    {
-        public static DIHelper AddSubscriptionManagerService(this DIHelper services)
-        {
-            if (services.TryAddScoped<SubscriptionManager>())
-            {
-                return services
-                        .AddSubscriptionService()
-                        .AddTenantManagerService();
-            }
-
-            return services;
         }
     }
 }

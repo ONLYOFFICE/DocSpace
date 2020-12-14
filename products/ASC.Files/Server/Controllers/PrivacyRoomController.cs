@@ -32,6 +32,7 @@ using ASC.Core;
 using ASC.Core.Billing;
 using ASC.Core.Common.Settings;
 using ASC.Core.Users;
+using ASC.Files.Core.Model;
 using ASC.MessagingSystem;
 using ASC.Web.Api.Routing;
 using ASC.Web.Core.PublicResources;
@@ -44,9 +45,10 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Api.Documents
 {
+    [Scope]
     [DefaultRoute]
     [ApiController]
-    public class PrivacyRoomApi : ControllerBase
+    public class PrivacyRoomController : ControllerBase
     {
         private AuthContext AuthContext { get; }
         private PermissionContext PermissionContext { get; }
@@ -58,7 +60,7 @@ namespace ASC.Api.Documents
         private MessageService MessageService { get; }
         private ILog Log { get; }
 
-        public PrivacyRoomApi(
+        public PrivacyRoomController(
             AuthContext authContext,
             PermissionContext permissionContext,
             SettingsManager settingsManager,
@@ -85,7 +87,19 @@ namespace ASC.Api.Documents
         /// </summary>
         /// <visible>false</visible>
         [Update("keys")]
-        public object SetKeys(string publicKey, string privateKeyEnc)
+        public object SetKeysFromBody([FromBody]PrivacyRoomModel model)
+        {
+            return SetKeys(model);
+        }
+
+        [Update("keys")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public object SetKeysFromForm([FromForm]PrivacyRoomModel model)
+        {
+            return SetKeys(model);
+        }
+
+        private object SetKeys(PrivacyRoomModel model)
         {
             PermissionContext.DemandPermissions(new UserSecurityProvider(AuthContext.CurrentAccount.ID), Constants.Action_EditUser);
 
@@ -102,7 +116,7 @@ namespace ASC.Api.Documents
                 Log.InfoFormat("User {0} updates address", AuthContext.CurrentAccount.ID);
             }
 
-            EncryptionKeyPairHelper.SetKeyPair(publicKey, privateKeyEnc);
+            EncryptionKeyPairHelper.SetKeyPair(model.PublicKey, model.PrivateKeyEnc);
 
             return new
             {
@@ -151,11 +165,23 @@ namespace ASC.Api.Documents
         /// <returns></returns>
         /// <visible>false</visible>
         [Update("")]
-        public bool SetPrivacyRoom(bool enable)
+        public bool SetPrivacyRoomFromBody([FromBody]PrivacyRoomModel model)
+        {
+            return SetPrivacyRoom(model);
+        }
+
+        [Update("")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public bool SetPrivacyRoomFromForm([FromForm]PrivacyRoomModel model)
+        {
+            return SetPrivacyRoom(model);
+        }
+
+        private bool SetPrivacyRoom(PrivacyRoomModel model)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-            if (enable)
+            if (model.Enable)
             {
                 if (!PrivacyRoomSettings.IsAvailable(TenantManager))
                 {
@@ -163,30 +189,11 @@ namespace ASC.Api.Documents
                 }
             }
 
-            PrivacyRoomSettings.SetEnabled(TenantManager, SettingsManager, enable);
+            PrivacyRoomSettings.SetEnabled(TenantManager, SettingsManager, model.Enable);
 
-            MessageService.Send(enable ? MessageAction.PrivacyRoomEnable : MessageAction.PrivacyRoomDisable);
+            MessageService.Send(model.Enable ? MessageAction.PrivacyRoomEnable : MessageAction.PrivacyRoomDisable);
 
-            return enable;
-        }
-    }
-
-    public static class PrivacyRoomApiExtention
-    {
-        public static DIHelper AddPrivacyRoomApiService(this DIHelper services)
-        {
-            if (services.TryAddScoped<PrivacyRoomApi>())
-            {
-                services
-                    .AddAuthContextService()
-                    .AddPermissionContextService()
-                    .AddSettingsManagerService()
-                    .AddTenantManagerService()
-                    .AddMessageServiceService()
-                    .AddEncryptionKeyPairHelperService();
-            }
-
-            return services;
+            return model.Enable;
         }
     }
 }

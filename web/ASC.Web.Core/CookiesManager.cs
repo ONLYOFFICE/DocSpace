@@ -47,6 +47,7 @@ namespace ASC.Web.Core
         SocketIO
     }
 
+    [Scope]
     public class CookiesManager
     {
         private const string AuthCookiesName = "asc_auth_key";
@@ -233,23 +234,6 @@ namespace ASC.Web.Core
 
             var cookie = SecurityContext.AuthenticateMe(SecurityContext.CurrentAccount.ID);
             SetCookies(CookiesType.AuthKey, cookie);
-        }
-    }
-
-    public static class CookiesManagerExtension
-    {
-        public static DIHelper AddCookiesManagerService(this DIHelper services)
-        {
-            if (services.TryAddScoped<CookiesManager>())
-            {
-                return services
-                    .AddUserManagerService()
-                    .AddSecurityContextService()
-                    .AddTenantCookieSettingsService()
-                    .AddTenantManagerService();
-            }
-
-            return services;
         }
     }
 }

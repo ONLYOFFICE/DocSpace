@@ -39,7 +39,8 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Notify
 {
-    public class NotifySender
+    [Singletone]
+    public class NotifySender : IDisposable
     {
         private readonly ILog log;
 
@@ -146,16 +147,13 @@ namespace ASC.Notify
                 log.Error(e);
             }
         }
-    }
 
-    public static class NotifySenderExtension
-    {
-        public static DIHelper AddNotifySender(this DIHelper services)
+        public void Dispose()
         {
-            services.TryAddSingleton<NotifySender>();
-
-            return services
-                .AddDbWorker();
+            if (cancellationToken != null)
+            {
+                cancellationToken.Dispose();
+            }
         }
     }
 }

@@ -56,7 +56,7 @@ class PureArticleMainButtonContent extends React.Component {
     const { userCaption, guestCaption, groupCaption } = settings.customNames;
     const { dialogVisible } = this.state;
     return !isLoaded ? (
-      <Loaders.Filter />
+      <Loaders.Rectangle />
     ) : (
       <>
         <MainButton isDisabled={false} isDropdown={true} text={t("Actions")}>

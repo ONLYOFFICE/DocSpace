@@ -40,6 +40,7 @@ using Newtonsoft.Json;
 
 namespace ASC.AuditTrail.Data
 {
+    [Scope]
     public class LoginEventsRepository
     {
         private UserFormatter UserFormatter { get; }
@@ -134,22 +135,6 @@ namespace ASC.AuditTrail.Data
 
             evt.ActionText = AuditActionMapper.GetActionText(evt);
             return evt;
-        }
-    }
-
-    public static class LoginEventsRepositoryExtension
-    {
-        public static DIHelper AddLoginEventsRepositoryService(this DIHelper services)
-        {
-            if (services.TryAddScoped<LoginEventsRepository>())
-            {
-                return services
-                    .AddUserFormatter()
-                    .AddAuditTrailContextService()
-                    .AddAuditActionMapperService();
-            }
-
-            return services;
         }
     }
 }

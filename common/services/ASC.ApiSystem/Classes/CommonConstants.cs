@@ -35,6 +35,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace ASC.ApiSystem.Classes
 {
+    [Singletone]
     public class CommonConstants
     {
         public CommonConstants(IConfiguration configuration)
@@ -83,15 +84,5 @@ namespace ASC.ApiSystem.Classes
         public TimeSpan MaxAttemptsTimeInterval { get; }
 
         public string WebApiBaseUrl { get; }
-    }
-
-    public static class CommonControllerExtention
-    {
-        public static DIHelper AddCommonConstants(this DIHelper services)
-        {
-            services.TryAddSingleton<CommonConstants>();
-
-            return services;
-        }
     }
 }

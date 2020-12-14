@@ -54,4 +54,9 @@ namespace ASC.Core.Tenants
             };
         }
     }
+
+    public class TenantAuditSettingsWrapper
+    {
+        public TenantAuditSettings settings{ get; set; }
+    }
 }

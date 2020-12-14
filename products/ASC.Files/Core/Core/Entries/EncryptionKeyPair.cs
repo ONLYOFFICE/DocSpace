@@ -33,7 +33,6 @@ using ASC.Common;
 using ASC.Core;
 using ASC.Core.Users;
 using ASC.Files.Core;
-using ASC.Files.Core.Data;
 using ASC.Files.Core.Resources;
 using ASC.Files.Core.Security;
 using ASC.Web.Files.Services.WCFService;
@@ -48,6 +47,7 @@ namespace ASC.Web.Files.Core.Entries
         public Guid UserId { get; set; }
     }
 
+    [Scope]
     public class EncryptionKeyPairHelper
     {
         private UserManager UserManager { get; }
@@ -110,7 +110,7 @@ namespace ASC.Web.Files.Core.Entries
             if (!FileSecurity.CanEdit(file)) throw new System.Security.SecurityException(FilesCommonResource.ErrorMassage_SecurityException_EditFile);
             if (file.RootFolderType != FolderType.Privacy) throw new NotSupportedException();
 
-            var fileShares = FileStorageService.GetSharedInfo(new ItemList<string> { string.Format("file_{0}", fileId) }).ToList();
+            var fileShares = FileStorageService.GetSharedInfo(new List<T> { fileId }, new List<T> { }).ToList();
             fileShares = fileShares.Where(share => !share.SubjectGroup
                                             && !share.SubjectId.Equals(FileConstant.ShareLinkId)
                                             && share.Share == FileShare.ReadWrite).ToList();
@@ -130,24 +130,6 @@ namespace ASC.Web.Files.Core.Entries
                 .Where(keyPair => keyPair != null);
 
             return fileKeysPair;
-        }
-    }
-
-    public static class EncryptionKeyPairHelperExtention
-    {
-        public static DIHelper AddEncryptionKeyPairHelperService(this DIHelper services)
-        {
-            if (services.TryAddScoped<EncryptionKeyPairHelper>())
-            {
-                services
-                    .AddAuthContextService()
-                    .AddUserManagerService()
-                    .AddEncryptionLoginProviderService()
-                    .AddFileSecurityService()
-                    .AddDaoFactoryService();
-            }
-
-            return services;
         }
     }
 }

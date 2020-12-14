@@ -1,11 +1,15 @@
 import { request } from "../client";
 import axios from "axios";
 import FilesFilter from "./filter";
+import { FolderType } from "../../constants";
+import find from "lodash/find";
 
-export function openEdit(fileId) {
+export function openEdit(fileId, doc) {
+  const params = doc ? `?doc=${doc}` : "";
+
   const options = {
     method: "get",
-    url: `/files/file/${fileId}/openedit`,
+    url: `/files/file/${fileId}/openedit${params}`,
   };
 
   return request(options);
@@ -43,27 +47,96 @@ export function getFolder(folderId, filter) {
   return request(options);
 }
 
-export function getFoldersTree() {
-  const rootFoldersPaths = [
-    "@my",
-    "@share",
-    "@common",
-    /*'@projects',*/ "@trash",
-  ]; //TODO: need get from settings
-  const requestsArray = rootFoldersPaths.map((path) =>
-    request({ method: "get", url: `/files/${path}?filterType=2` })
-  );
+const getFolderNameByType = (folderType) => {
+  switch (folderType) {
+    case FolderType.USER:
+      return "@my";
+    case FolderType.SHARE:
+      return "@share";
+    case FolderType.COMMON:
+      return "@common";
+    case FolderType.Projects:
+      return "@projects";
+    case FolderType.Favorites:
+      return "@favorites";
+    case FolderType.Recent:
+      return "@recent";
+    case FolderType.TRASH:
+      return "@trash";
+    default:
+      return "";
+  }
+}; //TODO: need get from settings
 
-  return axios.all(requestsArray).then(
-    axios.spread((...responses) =>
-      responses.map((data, index) => {
-        const isRecycleBinFolder = rootFoldersPaths[index] === "@trash";
+const sortInDisplayOrder = (folders) => {
+  const sorted = [];
+
+  const myFolder = find(
+    folders,
+    (folder) => folder.current.rootFolderType == FolderType.USER
+  );
+  myFolder && sorted.push(myFolder);
+
+  const shareFolder = find(
+    folders,
+    (folder) => folder.current.rootFolderType == FolderType.SHARE
+  );
+  shareFolder && sorted.push(shareFolder);
+
+  const favoritesFolder = find(
+    folders,
+    (folder) => folder.current.rootFolderType == FolderType.Favorites
+  );
+  favoritesFolder && sorted.push(favoritesFolder);
+
+  const recentFolder = find(
+    folders,
+    (folder) => folder.current.rootFolderType == FolderType.Recent
+  );
+  recentFolder && sorted.push(recentFolder);
+
+  const privateFolder = find(
+    folders,
+    (folder) => folder.current.rootFolderType == FolderType.Privacy
+  );
+  privateFolder && sorted.push(privateFolder);
+
+  const commonFolder = find(
+    folders,
+    (folder) => folder.current.rootFolderType == FolderType.COMMON
+  );
+  commonFolder && sorted.push(commonFolder);
+
+  const projectsFolder = find(
+    folders,
+    (folder) => folder.current.rootFolderType == FolderType.Projects
+  );
+  projectsFolder && sorted.push(projectsFolder);
+
+  const trashFolder = find(
+    folders,
+    (folder) => folder.current.rootFolderType == FolderType.TRASH
+  );
+  trashFolder && sorted.push(trashFolder);
+
+  return sorted;
+};
+
+export function getFoldersTree() {
+  return request({ method: "get", url: "/files/@root?filterType=2" }).then(
+    (response) => {
+      const folders = sortInDisplayOrder(response);
+      return folders.map((data, index) => {
+        const type = +data.current.rootFolderType;
+        const name = getFolderNameByType(type);
+        const isRecycleBinFolder = type === FolderType.TRASH;
         return {
           id: data.current.id,
           key: `0-${index}`,
+          parentId: data.current.parentId,
           title: data.current.title,
-          rootFolderType: data.current.rootFolderType,
-          rootFolderName: rootFoldersPaths[index],
+          rootFolderType: type,
+          rootFolderName: name,
           folders: !isRecycleBinFolder
             ? data.folders.map((folder) => {
                 return {
@@ -80,8 +153,8 @@ export function getFoldersTree() {
           foldersCount: !isRecycleBinFolder ? data.current.foldersCount : null,
           newItems: data.new,
         };
-      })
-    )
+      });
+    }
   );
 }
 
@@ -98,6 +171,15 @@ export function getCommonFolderList(filter = FilesFilter.getDefault()) {
   const options = {
     method: "get",
     url: `/files/@common`,
+  };
+
+  return request(options);
+}
+
+export function getFavoritesFolderList(filter = FilesFilter.getDefault()) {
+  const options = {
+    method: "get",
+    url: `/files/@favorites`,
   };
 
   return request(options);
@@ -125,6 +207,15 @@ export function getSharedFolderList(filter = FilesFilter.getDefault()) {
   const options = {
     method: "get",
     url: `/files/@share`,
+  };
+
+  return request(options);
+}
+
+export function getRecentFolderList(filter = FilesFilter.getDefault()) {
+  const options = {
+    method: "get",
+    url: `/files/@recent`,
   };
 
   return request(options);
@@ -260,6 +351,17 @@ export function updateFile(fileId, title, lastVersion) {
   return request(options);
 }
 
+export function addFileToRecentlyViewed(fileId) {
+  const data = { fileId };
+  const options = {
+    method: "post",
+    url: `/files/file/${fileId}/recent`,
+    data,
+  };
+
+  return request(options);
+}
+
 export function deleteFile(fileId, deleteAfter, immediately) {
   const data = { deleteAfter, immediately };
   const options = {
@@ -291,6 +393,15 @@ export function getShareFiles(fileId) {
   return request({
     method: "get",
     url: `/files/file/${fileId}/share`,
+  });
+}
+
+export function setExternalAccess(fileId, accessType) {
+  const data = { share: accessType };
+  return request({
+    method: "put",
+    url: `/files/${fileId}/setacelink`,
+    data,
   });
 }
 
@@ -395,7 +506,7 @@ export function convertFile(fileId) {
   });
 }
 
-export function getConvertFile(fileId) {
+export function getFileConversationProgress(fileId) {
   return request({
     method: "get",
     url: `/files/file/${fileId}/checkconversion`,
@@ -463,6 +574,30 @@ export function thirdParty(val) {
 
 export function getSettingsFiles() {
   return request({ method: "get", url: `/files/settings` });
+}
+
+export function markAsFavorite(ids) {
+  let items = ids.map((id) => +id);
+  const data = { fileIds: items };
+  const options = {
+    method: "post",
+    url: "/files/favorites",
+    data,
+  };
+
+  return request(options);
+}
+
+export function removeFromFavorite(ids) {
+  let items = ids.map((id) => +id);
+  const data = { fileIds: items };
+  const options = {
+    method: "delete",
+    url: "/files/favorites",
+    data,
+  };
+
+  return request(options);
 }
 
 export function getDocServiceUrl() {

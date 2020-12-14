@@ -66,13 +66,13 @@ class SelectedFrame extends React.Component {
     const offsetLeft = view.offsetParent.offsetLeft;
 
     const filterContainer = this.wrapper.childNodes[0].childNodes[0];
-    const filterContainerHeight = 48;
+    const filterContainerHeight = 47;
     const offset =
       window.getComputedStyle(filterContainer).display === "none"
         ? 0
         : filterContainerHeight;
 
-    const smallPadding = 16;
+    const smallPadding = -4;
     const bigPadding = 24;
 
     if (this.props.viewAs === "tile") {
@@ -173,7 +173,7 @@ class SelectedFrame extends React.Component {
       const offsetLeft = view.offsetParent.offsetLeft;
 
       const filterContainer = this.wrapper.childNodes[0].childNodes[0];
-      const filterContainerHeight = 48;
+      const filterContainerHeight = 47;
       const offset =
         window.getComputedStyle(filterContainer).display === "none"
           ? 0
@@ -224,7 +224,7 @@ class SelectedFrame extends React.Component {
       frame.style.visibility = "visible";
       frame.style.display = "block";
 
-      const smallPadding = 16;
+      const smallPadding = -4;
       const bigPadding = 24;
 
       const selectedItems = [];

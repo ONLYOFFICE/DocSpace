@@ -36,6 +36,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace ASC.Api.Core
 {
+    [Scope]
     public class ApiContext : ICloneable
     {
         public IHttpContextAccessor HttpContextAccessor { get; set; }
@@ -266,21 +267,6 @@ namespace ASC.Api.Core
         public static bool Check(this ApiContext context, string field)
         {
             return context?.Fields == null || (context.Fields != null && context.Fields.Contains(field, StringComparer.InvariantCultureIgnoreCase));
-        }
-    }
-
-    public static class ApiContextConfigExtension
-    {
-        public static DIHelper AddApiContextService(this DIHelper services)
-        {
-            if (services.TryAddScoped<ApiContext>())
-            {
-                services
-                    .AddTenantManagerService()
-                    .AddSecurityContextService();
-            }
-
-            return services;
         }
     }
 }

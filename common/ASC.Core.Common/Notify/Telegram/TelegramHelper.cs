@@ -41,6 +41,7 @@ using Telegram.Bot;
 
 namespace ASC.Core.Common.Notify
 {
+    [Scope]
     public class TelegramHelper
     {
         public enum RegStatus
@@ -168,19 +169,6 @@ namespace ASC.Core.Common.Notify
         public TelegramBotClient InitClient(string token, string proxy)
         {
             return string.IsNullOrEmpty(proxy) ? new TelegramBotClient(token) : new TelegramBotClient(token, new WebProxy(proxy));
-        }
-    }
-
-    public static class TelegramHelperExtension
-    {
-        public static DIHelper AddTelegramHelperSerivce(this DIHelper services)
-        {
-            if (services.TryAddScoped<TelegramHelper>())
-            {
-                return services.AddTelegramServiceClient()
-                    .AddCachedTelegramDaoService();
-            }
-            return services;
         }
     }
 }

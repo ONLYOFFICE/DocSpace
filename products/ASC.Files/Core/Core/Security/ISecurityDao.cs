@@ -27,8 +27,11 @@
 using System;
 using System.Collections.Generic;
 
+using ASC.Common;
+
 namespace ASC.Files.Core.Security
 {
+    [Scope]
     public interface ISecurityDao<T>
     {
         void SetShare(FileShareRecord r);

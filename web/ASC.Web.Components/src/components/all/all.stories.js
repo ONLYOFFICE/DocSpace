@@ -98,9 +98,7 @@ const arrayUsers = [
 
 const element = "Icon";
 
-const elementAvatar = (
-  <Avatar size="small" role="user" userName="Demo Avatar" />
-);
+const elementAvatar = <Avatar size="min" role="user" userName="Demo Avatar" />;
 const elementIcon = <Icons.CatalogFolderIcon size="big" />;
 const elementComboBox = (
   <ComboBox

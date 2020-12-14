@@ -28,7 +28,9 @@ using System;
 
 using ASC.Common;
 using ASC.Common.Logging;
+using ASC.Core.Common.Configuration;
 using ASC.FederatedLogin;
+using ASC.FederatedLogin.Helpers;
 using ASC.FederatedLogin.LoginProviders;
 using ASC.Web.Files.ThirdPartyApp;
 
@@ -36,17 +38,20 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Files.Helpers
 {
+    [Scope]
     public class WordpressToken
     {
         public ILog Log { get; set; }
         private TokenHelper TokenHelper { get; }
+        public ConsumerFactory ConsumerFactory { get; }
 
         public const string AppAttr = "wordpress";
 
-        public WordpressToken(IOptionsMonitor<ILog> optionsMonitor, TokenHelper tokenHelper)
+        public WordpressToken(IOptionsMonitor<ILog> optionsMonitor, TokenHelper tokenHelper, ConsumerFactory consumerFactory)
         {
             Log = optionsMonitor.CurrentValue;
             TokenHelper = tokenHelper;
+            ConsumerFactory = consumerFactory;
         }
 
         public OAuth20Token GetToken()
@@ -60,6 +65,14 @@ namespace ASC.Web.Files.Helpers
             TokenHelper.SaveToken(new Token(token, AppAttr));
         }
 
+        public OAuth20Token SaveTokenFromCode(string code)
+        {
+            var token = OAuth20TokenHelper.GetAccessToken<WordpressLoginProvider>(ConsumerFactory, code);
+            if (token == null) throw new ArgumentNullException("token");
+            TokenHelper.SaveToken(new Token(token, AppAttr));
+            return token;
+        }
+
         public void DeleteToken(OAuth20Token token)
         {
             if (token == null) throw new ArgumentNullException("token");
@@ -67,6 +80,8 @@ namespace ASC.Web.Files.Helpers
 
         }
     }
+
+    [Singletone]
     public class WordpressHelper
     {
         public ILog Log { get; set; }
@@ -108,26 +123,6 @@ namespace ASC.Web.Files.Helpers
                 Log.Error("Create Wordpress post ", ex);
                 return false;
             }
-        }
-    }
-
-    public static class WordpressHelperExtention
-    {
-        public static DIHelper AddWordpressHelperService(this DIHelper services)
-        {
-            services.TryAddSingleton<WordpressHelper>();
-            return services;
-        }
-
-        public static DIHelper AddWordpressTokenService(this DIHelper services)
-        {
-            if (services.TryAddScoped<WordpressToken>())
-            {
-                return services
-                    .AddTokenHelperService();
-            }
-
-            return services;
         }
     }
 }

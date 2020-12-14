@@ -101,6 +101,7 @@ namespace ASC.Web.Core.WhiteLabel
         }
     }
 
+    [Singletone]
     public class MailWhiteLabelSettingsHelper
     {
         public MailWhiteLabelSettingsHelper(IConfiguration configuration)
@@ -154,14 +155,5 @@ namespace ASC.Web.Core.WhiteLabel
         }
 
         private IConfiguration Configuration { get; }
-    }
-
-    public static class MailWhiteLabelSettingsExtention
-    {
-        public static DIHelper AddMailWhiteLabelSettingsService(this DIHelper services)
-        {
-            services.TryAddSingleton<MailWhiteLabelSettingsHelper>();
-            return services.AddSettingsManagerService();
-        }
     }
 }

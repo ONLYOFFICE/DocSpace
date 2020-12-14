@@ -41,6 +41,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.IPSecurity
 {
+    [Scope]
     public class IPSecurity
     {
         private readonly ILog Log;
@@ -137,23 +138,6 @@ namespace ASC.IPSecurity
         {
             var portIdx = ip.IndexOf(':');
             return portIdx > 0 ? ip.Substring(0, portIdx) : ip;
-        }
-    }
-
-    public static class IPSecurityExtension
-    {
-        public static DIHelper AddIPSecurityService(this DIHelper services)
-        {
-            if (services.TryAddScoped<IPSecurity>())
-            {
-                return services
-                    .AddIPRestrictionsService()
-                    .AddSettingsManagerService()
-                    .AddAuthContextService()
-                    .AddTenantManagerService();
-            }
-
-            return services;
         }
     }
 }

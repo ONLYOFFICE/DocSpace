@@ -43,6 +43,7 @@ using ASC.Web.Studio.UserControls.Statistics;
 
 namespace ASC.Web.Studio.Utility
 {
+    [Scope]
     public class TenantExtra
     {
         private UserManager UserManager { get; }
@@ -252,29 +253,6 @@ namespace ASC.Web.Studio.Utility
                 }
                 return SetupInfo.ChunkUploadSize;
             }
-        }
-    }
-
-    public static class TenantExtraExtension
-    {
-        public static DIHelper AddTenantExtraService(this DIHelper services)
-        {
-            if (services.TryAddScoped<TenantExtra>())
-            {
-
-                return services
-                    .AddUserManagerService()
-                    .AddAuthContextService()
-                    .AddTenantManagerService()
-                    .AddCoreBaseSettingsService()
-                    .AddSetupInfo()
-                    .AddPaymentManagerService()
-                    .AddLicenseReaderService()
-                    .AddTenantStatisticsProviderService()
-                    .AddSettingsManagerService();
-            }
-
-            return services;
         }
     }
 }

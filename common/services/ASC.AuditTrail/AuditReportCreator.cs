@@ -44,6 +44,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.AuditTrail
 {
+    [Scope]
     public class AuditReportCreator
     {
         private ILog Log { get; }
@@ -90,19 +91,6 @@ namespace ASC.AuditTrail
                 Log.Error("Error while generating login report: " + ex);
                 throw;
             }
-        }
-    }
-
-    public static class AuditReportCreatorExtension
-    {
-        public static DIHelper AddAuditReportCreatorService(this DIHelper services)
-        {
-            _ = services.TryAddScoped<AuditReportCreator>();
-            return services
-                .AddGlobalFolderHelperService()
-                .AddFileUploaderService()
-                .AddFilesLinkUtilityService()
-                .AddCommonLinkUtilityService();
         }
     }
 }

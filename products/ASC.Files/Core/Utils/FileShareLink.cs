@@ -38,6 +38,7 @@ using FileShare = ASC.Files.Core.Security.FileShare;
 
 namespace ASC.Web.Files.Utils
 {
+    [Scope]
     public class FileShareLink
     {
         private FileUtility FileUtility { get; }
@@ -118,23 +119,6 @@ namespace ASC.Web.Files.Utils
             if (filesSecurity.CanComment(file, FileConstant.ShareLinkId)) return FileShare.Comment;
             if (filesSecurity.CanRead(file, FileConstant.ShareLinkId)) return FileShare.Read;
             return FileShare.Restrict;
-        }
-    }
-    public static class FileShareLinkExtension
-    {
-        public static DIHelper AddFileShareLinkService(this DIHelper services)
-        {
-            if (services.TryAddScoped<FileShareLink>())
-            {
-                return services
-                    .AddFilesLinkUtilityService()
-                    .AddFileUtilityService()
-                    .AddBaseCommonLinkUtilityService()
-                    .AddGlobalService()
-                    .AddFileSecurityService();
-            }
-
-            return services;
         }
     }
 }

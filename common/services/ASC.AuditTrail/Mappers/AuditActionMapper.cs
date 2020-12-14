@@ -26,14 +26,17 @@
 
 using System;
 using System.Collections.Generic;
-using ASC.MessagingSystem;
 using System.Linq;
-using Microsoft.Extensions.Options;
-using ASC.Common.Logging;
+
 using ASC.Common;
+using ASC.Common.Logging;
+using ASC.MessagingSystem;
+
+using Microsoft.Extensions.Options;
 
 namespace ASC.AuditTrail.Mappers
 {
+    [Singletone]
     public class AuditActionMapper
     {
         private Dictionary<MessageAction, MessageMaps> Actions { get; }
@@ -71,7 +74,7 @@ namespace ASC.AuditTrail.Mappers
                 if (evt.Description == null || !evt.Description.Any()) return actionText;
 
                 var description = evt.Description
-                                     .Select(t => t.Split(new[] {','}, StringSplitOptions.RemoveEmptyEntries))
+                                     .Select(t => t.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
                                      .Select(split => string.Join(", ", split.Select(ToLimitedText))).ToArray();
 
 
@@ -140,15 +143,6 @@ namespace ASC.AuditTrail.Mappers
         {
             if (text == null) return null;
             return text.Length < 50 ? text : string.Format("{0}...", text.Substring(0, 47));
-        }
-    }
-
-    public static class AuditActionMapperExtension
-    {
-        public static DIHelper AddAuditActionMapperService(this DIHelper services)
-        {
-            _ = services.TryAddSingleton<AuditActionMapper>();
-            return services;
         }
     }
 }

@@ -38,6 +38,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Core.Security.Authorizing
 {
+    [Scope]
     class RoleProvider : IRoleProvider
     {
         //circ dep
@@ -83,15 +84,6 @@ namespace ASC.Core.Security.Authorizing
                 }
             }
             return roles;
-        }
-    }
-
-    public static class RoleProviderConfigExtention
-    {
-        public static DIHelper AddRoleProviderService(this DIHelper services)
-        {
-            services.TryAddScoped(typeof(IRoleProvider), typeof(RoleProvider));
-            return services;
         }
     }
 }

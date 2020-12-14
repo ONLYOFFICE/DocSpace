@@ -4,6 +4,7 @@ import { utils, TreeMenu, TreeNode, Icons, Link } from "asc-web-components";
 import {
   selectGroup,
   setIsVisibleDataLossDialog,
+  setIsLoading,
 } from "../../../store/people/actions";
 import { getSelectedGroup } from "../../../store/people/selectors";
 import { withTranslation, I18nextProvider } from "react-i18next";
@@ -113,13 +114,14 @@ class ArticleBodyContent extends React.Component {
     }
   };
   onSelect = (data) => {
+    const { setIsLoading } = this.props
     return () => {
       const { selectGroup } = this.props;
-
+      setIsLoading(true);
       this.changeTitleDocument(data);
       selectGroup(
         data && data.length === 1 && data[0] !== "root" ? data[0] : null
-      );
+      ).finally(() => setIsLoading(false))
     };
   };
   switcherIcon = (obj) => {
@@ -249,4 +251,5 @@ function mapStateToProps(state) {
 export default connect(mapStateToProps, {
   selectGroup,
   setIsVisibleDataLossDialog,
+  setIsLoading,
 })(BodyContent);

@@ -1,10 +1,13 @@
 import { default as api } from "../../api";
+import { setWithCredentialsStatus } from "../../api/client";
+import history from "../../history";
 
 export const LOGIN_POST = "LOGIN_POST";
 export const SET_CURRENT_USER = "SET_CURRENT_USER";
 export const SET_MODULES = "SET_MODULES";
 export const SET_SETTINGS = "SET_SETTINGS";
 export const SET_IS_LOADED = "SET_IS_LOADED";
+export const SET_IS_LOADED_SECTION = "SET_IS_LOADED_SECTION";
 export const LOGOUT = "LOGOUT";
 export const SET_PASSWORD_SETTINGS = "SET_PASSWORD_SETTINGS";
 export const SET_NEW_EMAIL = "SET_NEW_EMAIL";
@@ -16,6 +19,7 @@ export const SET_CURRENT_PRODUCT_HOME_PAGE = "SET_CURRENT_PRODUCT_HOME_PAGE";
 export const SET_GREETING_SETTINGS = "SET_GREETING_SETTINGS";
 export const SET_CUSTOM_NAMES = "SET_CUSTOM_NAMES";
 export const SET_WIZARD_COMPLETED = "SET_WIZARD_COMPLETED";
+export const SET_IS_AUTHENTICATED = "SET_IS_AUTHENTICATED";
 
 export function setCurrentUser(user) {
   return {
@@ -42,6 +46,13 @@ export function setIsLoaded(isLoaded) {
   return {
     type: SET_IS_LOADED,
     isLoaded,
+  };
+}
+
+export function setIsLoadedSection(isLoadedSection) {
+  return {
+    type: SET_IS_LOADED_SECTION,
+    isLoadedSection,
   };
 }
 
@@ -120,20 +131,39 @@ export function setWizardComplete() {
   };
 }
 
+export function setIsAuthenticated(isAuthenticated) {
+  return {
+    type: SET_IS_AUTHENTICATED,
+    isAuthenticated,
+  };
+}
+
 export function getUser(dispatch) {
   return api.people
     .getUser()
     .then((user) => dispatch(setCurrentUser(user)))
+    .then(() => dispatch(setIsAuthenticated(true)))
     .catch((err) => dispatch(setCurrentUser({})));
+}
+
+export function getIsAuthenticated(dispatch) {
+  return api.user
+    .checkIsAuthenticated()
+    .then((success) => { 
+      dispatch(setIsAuthenticated(success));
+      return success;
+    });
 }
 
 export function getPortalSettings(dispatch) {
   return api.settings.getSettings().then((settings) => {
     const { passwordHash: hashSettings, ...otherSettings } = settings;
-
+    const logoSettings = { logoUrl: "images/nav.logo.opened.react.svg" };
     dispatch(
       setSettings(
-        hashSettings ? { ...otherSettings, hashSettings } : otherSettings
+        hashSettings
+          ? { ...logoSettings, ...otherSettings, hashSettings }
+          : { ...logoSettings, ...otherSettings }
       )
     );
 
@@ -166,16 +196,22 @@ export function login(user, hash) {
     return api.user
       .login(user, hash)
       .then(() => dispatch(setIsLoaded(false)))
+      .then(() => {
+        setWithCredentialsStatus(true);
+        return dispatch(setIsAuthenticated(true));
+      })
       .then(() => getUserInfo(dispatch));
   };
 }
 
 export function logout() {
   return (dispatch) => {
-    return api.user
-      .logout()
-      .then(() => dispatch(setLogout()))
-      .then(() => dispatch(setIsLoaded(true)));
+    return api.user.logout().then(() => {
+      setWithCredentialsStatus(false);
+      dispatch(setLogout());
+
+      history.push("/login");
+    });
   };
 }
 

@@ -174,3 +174,19 @@ export function acceptLicense() {
     url: `/settings/license/accept.json`,
   });
 }
+export function getConsumersList() {
+  return request({
+    method: "get",
+    url: `/settings/authservice`,
+  });
+}
+
+export function updateConsumerProps(newProps) {
+  const options = {
+    method: "post",
+    url: `/settings/authservice`,
+    data: newProps,
+  };
+
+  return request(options);
+}
