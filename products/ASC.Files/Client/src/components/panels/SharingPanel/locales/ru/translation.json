@@ -14,5 +14,7 @@
   "ShareVia": "Отправить по",
   "Embedding": "Встраивание",
   "ExternalLink": "Внешняя ссылка",
-  "InternalLink": "Внутренняя ссылка"
+  "InternalLink": "Внутренняя ссылка",
+  "EncryptedFileSaving": "Сохранение зашифрованного файла",
+  "EncryptedFileSharing": "К файлу <strong>{{title}}</strong> успешно предоставлен доступ"
 }

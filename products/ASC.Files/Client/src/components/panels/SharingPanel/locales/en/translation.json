@@ -14,5 +14,7 @@
   "ShareVia": "Share via",
   "Embedding": "Embedding",
   "ExternalLink": "External link",
-  "InternalLink": "Internal link"
+  "InternalLink": "Internal link",
+  "EncryptedFileSaving": "Saving encrypted file",
+  "EncryptedFileSharing": "File <strong>{{title}}</strong> successfully shared"
 }

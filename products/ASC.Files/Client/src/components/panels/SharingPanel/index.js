@@ -15,7 +15,7 @@ import {
 } from "asc-web-components";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
-import { withTranslation } from "react-i18next";
+import { withTranslation, Trans } from "react-i18next";
 import { utils as commonUtils, constants, toastr, store } from "asc-web-common";
 import { getShareUsers, setShareFiles } from "../../../store/files/actions";
 import {
@@ -94,7 +94,14 @@ class SharingPanelComponent extends React.Component {
       message,
       shareDataItems,
     } = this.state;
-    const { selectedItems, onClose, isPrivacy, replaceFileStream } = this.props;
+    const {
+      selectedItems,
+      onClose,
+      isPrivacy,
+      replaceFileStream,
+      i18n,
+      t,
+    } = this.props;
 
     const folderIds = [];
     const fileIds = [];
@@ -124,21 +131,24 @@ class SharingPanelComponent extends React.Component {
         folderIds.push(item.id);
       }
     }
-    //debugger;
     setShareFiles(folderIds, fileIds, share, isNotifyUsers, message)
       .then(() => {
         if (isPrivacy) {
           selectedItems.forEach((item) => {
             return setEncryptionAccess(item).then((encryptedFile) => {
               if (!encryptedFile) return Promise.resolve();
-              toastr.success("Saving encrypted file");
-              return replaceFileStream(
-                item.id,
-                encryptedFile,
-                true,
-                true
-              ).then(() =>
-                toastr.info(`File ${item.title} succesfully shared`)
+
+              toastr.info(t("EncryptedFileSaving"));
+
+              const title = item.title;
+
+              return replaceFileStream(item.id, encryptedFile, true, true).then(
+                () =>
+                  toastr.success(
+                    <Trans i18nKey="EncryptedFileSharing" i18n={i18n}>
+                      File {{ title }} successfully shared
+                    </Trans>
+                  )
               );
             });
           });
