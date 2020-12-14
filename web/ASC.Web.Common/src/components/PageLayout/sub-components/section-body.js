@@ -5,10 +5,10 @@ import { utils, Scrollbar, DragAndDrop } from "asc-web-components";
 import SelectedFrame from "./SelectedFrame";
 import equal from "fast-deep-equal/react";
 import { LayoutContextConsumer } from "../../Layout/context";
-import { getIsLoaded } from "../../../store/auth/selectors";
+import { getIsLoaded, getIsTabletView } from "../../../store/auth/selectors";
 import { connect } from "react-redux";
 import { isSafari } from "react-device-detect";
-const { tablet, size } = utils.device;
+const { tablet } = utils.device;
 
 const commonStyles = css`
   flex-grow: 1;
@@ -79,7 +79,6 @@ class SectionBody extends React.Component {
     this.focusRef = React.createRef();
     this.scrollRef = React.createRef();
     this.isPageAutoScrolled = false;
-    this.isTablet = window.innerWidth <= size.tablet;
   }
 
   shouldComponentUpdate(nextProps) {
@@ -87,12 +86,13 @@ class SectionBody extends React.Component {
   }
 
   componentDidMount() {
+    const { isTabletView } = this.props;
     if (!this.props.autoFocus) return;
 
     this.focusRef.current.focus();
     this.documentElement = document.getElementById("customScrollBar");
     if (
-      this.isTablet &&
+      isTabletView &&
       isSafari &&
       this.documentElement &&
       this.documentElement.scrollTop !== 0
@@ -100,7 +100,8 @@ class SectionBody extends React.Component {
       this.isPageAutoScrolled = true;
   }
   componentDidUpdate() {
-    if (this.isTablet && isSafari && this.isPageAutoScrolled)
+    const { isTabletView } = this.props;
+    if (isTabletView && isSafari && this.isPageAutoScrolled)
       this.documentElement.scrollTo(0, 0);
   }
 
@@ -121,6 +122,7 @@ class SectionBody extends React.Component {
       viewAs,
       withScroll,
       isLoaded,
+      isTabletView,
     } = this.props;
 
     const focusProps = autoFocus
@@ -142,7 +144,7 @@ class SectionBody extends React.Component {
         isLoaded={isLoaded}
       >
         {withScroll ? (
-          !this.isTablet ? (
+          !isTabletView ? (
             <Scrollbar {...scrollProp} stype="mediumBlack">
               <SelectedFrame
                 viewAs={viewAs}
@@ -196,7 +198,7 @@ class SectionBody extends React.Component {
         isLoaded={isLoaded}
       >
         {withScroll ? (
-          !this.isTablet ? (
+          !isTabletView ? (
             <Scrollbar {...scrollProp} stype="mediumBlack">
               <div className="section-wrapper">
                 <div className="section-wrapper-content" {...focusProps}>
@@ -252,6 +254,7 @@ SectionBody.defaultProps = {
 const mapStateToProps = (state) => {
   return {
     isLoaded: getIsLoaded(state),
+    isTabletView: getIsTabletView(state),
   };
 };
 export default connect(mapStateToProps)(SectionBody);

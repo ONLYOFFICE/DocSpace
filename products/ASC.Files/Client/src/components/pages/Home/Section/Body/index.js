@@ -101,6 +101,7 @@ const {
   getCurrentUser,
   isEncryptionSupport,
   getOrganizationName,
+  getIsTabletView,
 } = store.auth.selectors;
 //import { getFilterByLocation } from "../../../../../helpers/converters";
 //import config from "../../../../../../package.json";
@@ -108,8 +109,6 @@ const {
 const { FilesFilter } = api;
 const { FileAction } = constants;
 const { Consumer } = utils.context;
-const { size } = utils.device;
-
 const linkStyles = {
   isHovered: true,
   type: "action",
@@ -197,7 +196,6 @@ class SectionBodyContent extends React.Component {
     this.tooltipRef = React.createRef();
     this.currentDroppable = null;
     this.isCancelScrollUp = false;
-    this.isTablet = window.innerWidth <= size.tablet;
   }
 
   componentDidMount() {
@@ -238,7 +236,7 @@ class SectionBodyContent extends React.Component {
   // }
 
   componentDidUpdate(prevProps) {
-    if (this.isTablet) {
+    if (this.props.isTabletView) {
       if (
         prevProps.selected !== "none" &&
         this.props.isLoading !== prevProps.isLoading
@@ -1910,6 +1908,7 @@ const mapStateToProps = (state) => {
     tooltipValue: getTooltipLabel(state),
     iconOfDraggedFile: getIconOfDraggedFile(state)(state),
     sharingPanelVisible: getSharePanelVisible(state),
+    isTabletView: getIsTabletView(state),
   };
 };
 

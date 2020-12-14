@@ -5,26 +5,27 @@ import i18n from "./i18n";
 import AdvancedSelector from "../AdvancedSelector";
 import { getGroupList } from "../../api/groups";
 import { changeLanguage } from "../../utils";
-import { utils } from "asc-web-components";
+import { connect } from "react-redux";
 
-const { size } = utils.device;
+import { getIsTabletView } from "../../store/auth/selectors";
+
 class GroupSelector extends React.Component {
   constructor(props) {
     super(props);
 
     const { isOpen } = props;
     this.state = this.getDefaultState(isOpen, []);
-    this.isTablet = window.innerWidth <= size.tablet;
   }
 
   componentDidMount() {
+    const { isTabletView } = this.props;
     changeLanguage(i18n);
 
     getGroupList(this.props.useFake)
       .then((groups) => this.setState({ options: this.convertGroups(groups) }))
       .catch((error) => console.log(error));
     const documentElement = document.getElementById("customScrollBar");
-    this.isTablet && documentElement && documentElement.scrollTo(0, 0);
+    isTabletView && documentElement && documentElement.scrollTo(0, 0);
   }
 
   componentDidUpdate(prevProps) {
@@ -172,4 +173,9 @@ const GroupSelectorWithI18n = (props) => {
   return <ExtendedGroupSelector i18n={i18n} {...props} />;
 };
 
-export default GroupSelectorWithI18n;
+const mapStateToProps = (state) => {
+  return {
+    isTabletView: getIsTabletView(state),
+  };
+};
+export default connect(mapStateToProps)(GroupSelectorWithI18n);

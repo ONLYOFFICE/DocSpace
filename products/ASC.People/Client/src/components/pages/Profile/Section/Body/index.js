@@ -21,7 +21,7 @@ import styled from "styled-components";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 
-const { isAdmin, isMe } = store.auth.selectors;
+const { isAdmin, isMe, getIsTabletView } = store.auth.selectors;
 const { size } = utils.device;
 const ProfileWrapper = styled.div`
   display: flex;
@@ -93,19 +93,16 @@ const stringFormat = (string, data) =>
 
 class SectionBodyContent extends React.PureComponent {
   onEditSubscriptionsClick = () => console.log("Edit subscriptions onClick()");
-  constructor(props) {
-    super(props);
-    this.isTablet = window.innerWidth <= size.tablet;
-  }
+
   onEditProfileClick = () =>
     this.props.history.push(
       `${this.props.settings.homepage}/edit/${this.props.profile.userName}`
     );
   componentDidMount() {
     this.documentElement = document.getElementById("customScrollBar");
-
+    const { isTabletView } = this.props;
     if (
-      this.isTablet &&
+      isTabletView &&
       this.documentElement &&
       this.documentElement.scrollTop !== 0
     )
@@ -200,6 +197,7 @@ const mapStateToProps = (state) => {
     profile: state.profile.targetUser,
     isAdmin: isAdmin(state),
     viewer: state.auth.user,
+    isTabletView: getIsTabletView(state),
   };
 };
 
