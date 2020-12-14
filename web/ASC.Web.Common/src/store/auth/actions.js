@@ -1,11 +1,6 @@
 import { default as api } from "../../api";
 import { isDesktopClient } from "./selectors";
-import {
-  // checkPwd,
-  // regDesktop,
-  logout as logoutDesktop,
-  //setEncryptionAccess,
-} from "../../desktop/";
+import { logout as logoutDesktop } from "../../desktop/";
 import { setWithCredentialsStatus } from "../../api/client";
 import history from "../../history";
 
@@ -170,12 +165,10 @@ export function getUser(dispatch) {
 }
 
 export function getIsAuthenticated(dispatch) {
-  return api.user
-    .checkIsAuthenticated()
-    .then((success) => { 
-      dispatch(setIsAuthenticated(success));
-      return success;
-    });
+  return api.user.checkIsAuthenticated().then((success) => {
+    dispatch(setIsAuthenticated(success));
+    return success;
+  });
 }
 
 export function getPortalSettings(dispatch) {
@@ -224,9 +217,9 @@ export function login(user, hash) {
         return dispatch(setIsAuthenticated(true));
       })
       .then(() => {
-         getUserInfo(dispatch);
-         getEncryptionKeys(dispatch);
-       });
+        getUserInfo(dispatch);
+        getEncryptionKeys(dispatch);
+      });
   };
 }
 
