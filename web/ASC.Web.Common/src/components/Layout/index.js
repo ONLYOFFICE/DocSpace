@@ -21,6 +21,8 @@ const Layout = (props) => {
     matches: isTablet,
   });
 
+  console.log(size.tablet);
+
   useEffect(() => {
     let mediaQuery = window.matchMedia("(max-width: 1024px)");
     mediaQuery.addListener(setWindowWidth);
@@ -29,17 +31,17 @@ const Layout = (props) => {
   }, []);
 
   useEffect(() => {
-    if (isIOS && !isFirefox) {
-      if (isSafari) window.addEventListener("resize", resizeHandler);
-      if (isChrome) window.addEventListener("orientationchange", resizeHandler);
+    if (isTablet) {
+      if (isIOS && isSafari) window.addEventListener("resize", resizeHandler);
+      else window.addEventListener("orientationchange", resizeHandler);
       resizeHandler();
     }
 
     return () => {
-      if (isIOS && !isFirefox) {
-        if (isSafari) window.removeEventListener("resize", resizeHandler);
-        if (isChrome)
-          window.removeEventListener("orientationchange", resizeHandler);
+      if (isTablet) {
+        if (isIOS && isSafari)
+          window.removeEventListener("resize", resizeHandler);
+        else window.removeEventListener("orientationchange", resizeHandler);
       }
     };
   }, []);
@@ -87,7 +89,7 @@ const Layout = (props) => {
   return (
     <StyledContainer className="Layout">
       {windowWidth && windowWidth.matches ? (
-        <MobileLayout {...props} />
+        <MobileLayout {...props} windowWidth={windowWidth} />
       ) : (
         children
       )}
