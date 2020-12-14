@@ -197,9 +197,9 @@ class DownloadDialogComponent extends React.Component {
       });
       api.files
         .downloadFormatFiles(fileConvertIds, folderIds)
-        .then(() => {
+        .then((res) => {
           onClose();
-          onDownloadProgress(false);
+          onDownloadProgress(res[0]);
         })
         .catch((err) => {
           setSecondaryProgressBarData({
