@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
-import { withTranslation } from "react-i18next";
+import { withTranslation, Trans } from "react-i18next";
 import styled from "styled-components";
 import {
   RowContent,
@@ -166,6 +166,8 @@ class FilesRowContent extends React.PureComponent {
       openDocEditor,
       isPrivacy,
       replaceFileStream,
+      i18n,
+      t,
     } = this.props;
     const { itemTitle } = this.state;
 
@@ -186,13 +188,19 @@ class FilesRowContent extends React.PureComponent {
             if (isPrivacy) {
               return setEncryptionAccess(file).then((encryptedFile) => {
                 if (!encryptedFile) return Promise.resolve();
-                toastr.success("Saving encrypted file");
+                toastr.info(t("EncryptedFileSaving"));
                 return replaceFileStream(
                   file.id,
                   encryptedFile,
                   true,
                   false
-                ).then(() => toastr.info(`File ${itemTitle} created`));
+                ).then(() =>
+                  toastr.success(
+                    <Trans i18nKey="EncryptedFileCreating" i18n={i18n}>
+                      File <strong>{{ itemTitle }}</strong> successfully created
+                    </Trans>
+                  )
+                );
               });
             }
             return openDocEditor(file.id, tab, file.webUrl);

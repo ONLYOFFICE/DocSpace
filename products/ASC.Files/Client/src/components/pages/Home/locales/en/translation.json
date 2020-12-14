@@ -108,5 +108,7 @@
   "Duplicate": "Create a copy",
   "CopyOperation": "Copying",
   "UnblockVersion": "Unblock/Check-in",
-  "AddFilter": "Add filter"
+  "AddFilter": "Add filter",
+  "EncryptedFileSaving": "Saving encrypted file",
+  "EncryptedFileCreating": "File <strong>{{itemTitle}}</strong> successfully created"
 }

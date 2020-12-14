@@ -108,5 +108,7 @@
   "Duplicate": "Создать копию",
   "CopyOperation": "Копирование",
   "UnblockVersion": "Заблокировать/Разблокировать",
-  "AddFilter": "Добавить фильтр"
+  "AddFilter": "Добавить фильтр",
+  "EncryptedFileSaving": "Сохранение зашифрованного файла",
+  "EncryptedFileCreating": "Создан новый файл <strong>{{itemTitle}}</strong>"
 }
