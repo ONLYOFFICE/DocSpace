@@ -31,6 +31,8 @@ const AccessComboBox = (props) => {
         return "EyeIcon";
       case 3:
         return "AccessNoneIcon";
+      case 4:
+        return "CatalogQuestionIcon";
       case 5:
         return "AccessReviewIcon";
       case 6:
