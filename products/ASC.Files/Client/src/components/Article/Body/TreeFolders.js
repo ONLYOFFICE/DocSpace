@@ -186,7 +186,12 @@ class TreeFolders extends React.Component {
             title={item.title}
             icon={this.getFolderIcon(item)}
             dragging={dragging}
-            newItems={item.newItems}
+            newItems={
+              !this.props.isDesktop &&
+              item.rootFolderType === FolderType.Privacy
+                ? null
+                : item.newItems
+            }
             onBadgeClick={this.onBadgeClick}
             showBadge={showBadge}
           >
