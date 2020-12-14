@@ -345,6 +345,7 @@ class SectionBodyContent extends React.Component {
       setIsLoading,
       fetchFiles,
       setUpdateTree,
+      setAction,
     } = this.props;
     const items = [...folders, ...files];
     const item = items.find((o) => o.id === id && !o.fileExst); //TODO maybe need files find and folders find, not at one function?
@@ -365,14 +366,17 @@ class SectionBodyContent extends React.Component {
             setTreeFolders(newTreeFolders);
           }
         })
-        .finally(() => setIsLoading(false));
+        .finally(() => {
+          this.setState({ editingId: null }, () => {
+            setAction({ type: null });
+            setIsLoading(false);
+          });
+        });
     }
 
-    this.setState({ editingId: null }, () => {
-      this.props.setAction({
-        type: null,
-      });
-    });
+    //this.setState({ editingId: null }, () => {
+    //  setAction({type: null});
+    //});
   };
 
   onClickDelete = () => {

@@ -156,13 +156,7 @@ class FilesRowContent extends React.PureComponent {
   };
 
   createItem = (e) => {
-    const {
-      createFile,
-      createFolder,
-      item,
-      setIsLoading,
-      openDocEditor,
-    } = this.props;
+    const { createFile, item, setIsLoading, openDocEditor } = this.props;
     const { itemTitle } = this.state;
 
     setIsLoading(true);
@@ -171,7 +165,9 @@ class FilesRowContent extends React.PureComponent {
 
     if (itemTitle.trim() === "") return this.completeAction(itemId);
 
-    let tab = item.fileExst ? window.open("about:blank", "_blank") : null;
+    let tab = item.fileExst
+      ? window.open("/products/files/doceditor", "_blank")
+      : null;
 
     !item.fileExst
       ? createFolder(item.parentId, itemTitle)
@@ -465,9 +461,10 @@ class FilesRowContent extends React.PureComponent {
     const updatedDate = updated && this.getStatusByDate();
 
     const isEdit = id === editingId && fileExst === fileAction.extension;
-    const linkStyles = isTrashFolder
-      ? { noHover: true }
-      : { onClick: this.onFilesClick };
+    const linkStyles =
+      isTrashFolder || window.innerWidth <= 1024
+        ? { noHover: true }
+        : { onClick: this.onFilesClick };
     const showNew = !!newItems;
 
     return isEdit ? (
@@ -701,7 +698,6 @@ function mapStateToProps(state, props) {
 
 export default connect(mapStateToProps, {
   createFile,
-  createFolder,
   updateFile,
   renameFolder,
   setTreeFolders,
