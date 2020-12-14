@@ -21,7 +21,6 @@ const StyledContainer = styled.div`
 
 const Layout = (props) => {
   const { children, isTabletView, setIsTabletView } = props;
-
   useEffect(() => {
     const isTablet = window.innerWidth <= size.tablet;
     setIsTabletView(isTablet);
