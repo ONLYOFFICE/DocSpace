@@ -3,8 +3,6 @@ import { store as commonStore } from "asc-web-common";
 import { getEncryptedFormats } from "../store/files/selectors";
 import { desktopConstants } from "asc-web-common";
 
-const domain = window.location.origin;
-const guid = "{FFF0E1EB-13DB-4678-B67D-FF0A41DBBCEF}";
 const { getEncryptionAccess } = commonStore.auth.actions;
 
 export function encryptionUploadDialog(callback) {
