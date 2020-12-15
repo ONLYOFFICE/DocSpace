@@ -1,13 +1,8 @@
 import React from "react";
 import { /*RequestLoader,*/ Box } from "asc-web-components";
 import { utils, api, toastr } from "asc-web-common";
-import { isIOS, deviceType } from "react-device-detect";
 import { setDocumentTitle } from "../../../helpers/utils";
-import { changeTitleAsync, setFavicon } from "./utils";
-
-import textIcon from "./icons/text.ico";
-import presentationIcon from "./icons/presentation.ico";
-import spreadsheetIcon from "./icons/spreadsheet.ico";
+import { changeTitleAsync, setFavicon, isIPad } from "./utils";
 
 const { getObjectByLocation, showLoader } = utils;
 
@@ -46,7 +41,7 @@ class PureEditor extends React.Component {
 
     console.log("PureEditor componentDidMount", fileId, doc);
 
-    if (this.isIPad()) {
+    if (isIPad()) {
       const vh = window.innerHeight * 0.01;
       document.documentElement.style.setProperty("--vh", `${vh}px`);
     }
@@ -68,21 +63,7 @@ class PureEditor extends React.Component {
           docTitle = config.document.title;
           fileType = config.document.fileType;
 
-          switch (fileType) {
-            case "docx":
-              setFavicon(textIcon);
-              break;
-            case "pptx":
-              setFavicon(presentationIcon);
-              break;
-            case "xlsx":
-              setFavicon(spreadsheetIcon);
-              break;
-
-            default:
-              break;
-          }
-
+          setFavicon(fileType);
           setDocumentTitle(docTitle);
 
           if (window.innerWidth < 720) {
@@ -117,15 +98,11 @@ class PureEditor extends React.Component {
     document.body.appendChild(script);
   }
 
-  isIPad = () => {
-    return isIOS && deviceType === "tablet";
-  };
-
   render() {
     return (
       <Box
         widthProp="100vw"
-        heightProp={this.isIPad() ? "calc(var(--vh, 1vh) * 100)" : "100vh"}
+        heightProp={isIPad() ? "calc(var(--vh, 1vh) * 100)" : "100vh"}
       >
         <div id="editor"></div>
       </Box>
