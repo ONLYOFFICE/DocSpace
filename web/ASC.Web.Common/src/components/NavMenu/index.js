@@ -124,7 +124,11 @@ class NavMenu extends React.Component {
       <StyledContainer isLoaded={isLoaded}>
         <Toast />
 
-        <Backdrop visible={isBackdropVisible} onClick={this.backdropClick} />
+        <Backdrop
+          visible={isBackdropVisible}
+          onClick={this.backdropClick}
+          withBackground={true}
+        />
 
         {isLoaded && isAuthenticated ? (
           <>

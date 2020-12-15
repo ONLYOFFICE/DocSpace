@@ -27,9 +27,11 @@ const Layout = (props) => {
     setIsTabletView(isTablet);
 
     let mediaQuery = window.matchMedia("(max-width: 1024px)");
-    mediaQuery.addEventListener("change", isViewChangeHandler);
+    //mediaQuery.addEventListener("change", isViewChangeHandler);
+    mediaQuery.addListener(isViewChangeHandler);
+    //mediaQuery.removeEventListener("change", isViewChangeHandler);
 
-    return () => mediaQuery.removeEventListener("change", isViewChangeHandler);
+    return () => mediaQuery.removeListener(isViewChangeHandler);
   }, []);
 
   useEffect(() => {
