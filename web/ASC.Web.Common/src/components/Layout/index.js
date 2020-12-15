@@ -14,9 +14,10 @@ const { size } = utils.device;
 
 const StyledContainer = styled.div`
   width: 100%;
-  height: ${isIOS && !isFirefox
-    ? "calc(var(--vh, 1vh) * 100 + 57px)"
-    : "100vh"};
+  height: ${(props) =>
+    props.isTabletView && !isFirefox
+      ? "calc(var(--vh, 1vh) * 100 + 57px)"
+      : "100vh"};
 `;
 
 const Layout = (props) => {
@@ -33,26 +34,32 @@ const Layout = (props) => {
 
   useEffect(() => {
     if (isTabletView) {
-      if (isIOS && isSafari) window.addEventListener("resize", resizeHandler);
-      else window.addEventListener("orientationchange", resizeHandler);
+      if (isIOS && isSafari)
+        window.addEventListener("resize", orientationChangeHandler);
+      else
+        window.addEventListener("orientationchange", orientationChangeHandler);
       resizeHandler();
     }
 
     return () => {
       if (isTabletView) {
         if (isIOS && isSafari)
-          window.removeEventListener("resize", resizeHandler);
-        else window.removeEventListener("orientationchange", resizeHandler);
+          window.removeEventListener("resize", orientationChangeHandler);
+        else
+          window.removeEventListener(
+            "orientationchange",
+            orientationChangeHandler
+          );
       }
     };
-  }, []);
+  }, [isTabletView]);
 
   const isViewChangeHandler = (e) => {
     const { matches } = e;
     setIsTabletView(matches);
   };
 
-  const resizeHandler = () => {
+  const orientationChangeHandler = () => {
     const intervalTime = 100;
     const endTimeout = 300;
 
@@ -92,10 +99,8 @@ const Layout = (props) => {
     }, endTimeout);
   };
 
-  console.log(isTabletView, "isTabletView");
-
   return (
-    <StyledContainer className="Layout">
+    <StyledContainer className="Layout" isTabletView={isTabletView}>
       {isTabletView ? <MobileLayout {...props} /> : children}
     </StyledContainer>
   );
