@@ -12,13 +12,21 @@ class PureEditor extends React.Component {
     const fileId = urlParams.fileId || null;
     const doc = urlParams.doc || null;
 
+    let documentIsReady = false;
+
     let docTitle = null;
     let fileType = null;
 
     let docSaved = null;
     let timeout = false;
 
+    const onDocumentReady = () => {
+      documentIsReady = true;
+    };
+
     const onDocumentStateChange = (event) => {
+      if (!documentIsReady) return;
+
       docSaved = !event.data;
       if (!timeout) changeTitle();
     };
@@ -74,6 +82,7 @@ class PureEditor extends React.Component {
             events: {
               onDocumentStateChange: onDocumentStateChange,
               onMetaChange: onMetaChange,
+              onDocumentReady: onDocumentReady,
             },
           };
 
