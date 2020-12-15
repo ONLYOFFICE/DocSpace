@@ -304,6 +304,7 @@ class ProfileInfo extends React.PureComponent {
                     scaledOptions={false}
                     size="content"
                     className="language-combo"
+                    showDisabledItems={true}
                   />
                   <HelpButton
                     place="bottom"
