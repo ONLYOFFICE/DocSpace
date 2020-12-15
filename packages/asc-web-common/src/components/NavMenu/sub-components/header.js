@@ -102,7 +102,6 @@ const HeaderComponent = ({
     <>
       <Header module={currentProductName}>
         <NavItem
-          iconName="MenuIcon"
           badgeNumber={totalNotifications}
           onClick={onClick}
           noHover={true}

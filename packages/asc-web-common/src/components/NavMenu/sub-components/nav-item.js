@@ -8,6 +8,8 @@ import Badge from "@appserver/components/src/components/badge";
 import Link from "@appserver/components/src/components/link";
 import Text from "@appserver/components/src/components/text";
 
+import { MenuIcon } from "@appserver/components/src/components/icons/svg";
+
 const baseColor = "#7A95B0",
   activeColor = "#FFFFFF",
   separatorColor = "#3E668D";
@@ -94,12 +96,7 @@ const NavItem = React.memo((props) => {
           }}
         />
       ) : (
-        // React.createElement(Icons[iconName], {
-        //   size: "big",
-        //   isfill: true,
-        //   color: color,
-        // })
-        <></>
+        <MenuIcon color={color} size="big" isfill={true} />
       )}
       {children && (
         <NavItemLabel
