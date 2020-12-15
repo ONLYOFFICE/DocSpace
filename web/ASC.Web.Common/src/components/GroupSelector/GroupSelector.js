@@ -18,14 +18,11 @@ class GroupSelector extends React.Component {
   }
 
   componentDidMount() {
-    const { isTabletView } = this.props;
     changeLanguage(i18n);
 
     getGroupList(this.props.useFake)
       .then((groups) => this.setState({ options: this.convertGroups(groups) }))
       .catch((error) => console.log(error));
-    const documentElement = document.getElementById("customScrollBar");
-    isTabletView && documentElement && documentElement.scrollTo(0, 0);
   }
 
   componentDidUpdate(prevProps) {

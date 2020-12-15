@@ -105,9 +105,8 @@ class SectionBodyContent extends React.PureComponent {
 
   onDisableClick = (e) => {
     const user = this.findUserById(e.currentTarget.dataset.id);
-    const { updateUserStatus, onLoading, t, onCancelScrollUp } = this.props;
+    const { updateUserStatus, onLoading, t } = this.props;
 
-    onCancelScrollUp(true);
     onLoading(true);
     updateUserStatus(EmployeeStatus.Disabled, [user.id], isRefetchPeople)
       .then(() => toastr.success(t("SuccessChangeUserStatus")))
@@ -117,9 +116,8 @@ class SectionBodyContent extends React.PureComponent {
 
   onEnableClick = (e) => {
     const user = this.findUserById(e.currentTarget.dataset.id);
-    const { updateUserStatus, onLoading, t, onCancelScrollUp } = this.props;
+    const { updateUserStatus, onLoading, t } = this.props;
 
-    onCancelScrollUp(true);
     onLoading(true);
     updateUserStatus(EmployeeStatus.Active, [user.id], isRefetchPeople)
       .then(() => toastr.success(t("SuccessChangeUserStatus")))
@@ -221,8 +219,8 @@ class SectionBodyContent extends React.PureComponent {
 
   onInviteAgainClick = (e) => {
     const user = this.findUserById(e.currentTarget.dataset.id);
-    const { onLoading, onCancelScrollUp } = this.props;
-    onCancelScrollUp(true);
+    const { onLoading } = this.props;
+
     onLoading(true);
     resendUserInvites([user.id])
       .then(() =>

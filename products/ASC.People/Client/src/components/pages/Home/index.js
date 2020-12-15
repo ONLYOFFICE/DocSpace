@@ -19,7 +19,7 @@ import {
 import { setSelected, setIsLoading } from "../../../store/people/actions";
 import { createI18N } from "../../../helpers/i18n";
 import { isMobile } from "react-device-detect";
-import { getIsLoading } from "../../../store/people/selectors";
+import { getFilter, getIsLoading } from "../../../store/people/selectors";
 const i18n = createI18N({
   page: "Home",
   localesPath: "pages/Home",
@@ -32,6 +32,7 @@ const {
   getHeaderVisible,
 } = store.auth.selectors;
 const { setHeaderVisible } = store.auth.actions;
+const { getIsTabletView } = store.auth.selectors;
 class PureHome extends React.Component {
   constructor(props) {
     super(props);
@@ -41,7 +42,8 @@ class PureHome extends React.Component {
       isHeaderChecked: false,
     };
     this.isCancelScrollUp = false;
-    this.isCloseContextMenu = false;
+
+    this.isScrollUpOnTheNextPage = false;
   }
 
   renderGroupButtonMenu = () => {
@@ -63,8 +65,6 @@ class PureHome extends React.Component {
     if (headerVisible || selected === "close") {
       setHeaderVisible(headerVisible);
       if (selected === "close") {
-        this.isCancelScrollUp = true;
-        this.isCloseContextMenu = true;
         setSelected("none");
       }
     }
@@ -88,22 +88,15 @@ class PureHome extends React.Component {
       } else {
         utils.hideLoader();
       }
+    }
 
-      if (this.isCancelScrollUp && !this.props.isLoading)
-        this.isCancelScrollUp = false;
-
-      if (this.isCancelScrollUp && this.isDeleteProfile)
-        this.isCancelScrollUp = false;
-
-      if (this.isCancelScrollUp && this.isCloseContextMenu) {
-        this.isCancelScrollUp = false;
-        this.isCloseContextMenu = false;
+    if (this.props.isTabletView) {
+      if (this.props.filter.page !== prevProps.filter.page)
+        this.isScrollUpOnTheNextPage = true;
+      if (this.isScrollUpOnTheNextPage) {
+        this.documentElement && this.documentElement.scrollTo(0, 0);
+        this.isScrollUpOnTheNextPage = false;
       }
-    } else {
-      !this.props.selection.length > 0 &&
-        !this.isCancelScrollUp &&
-        this.documentElement &&
-        this.documentElement.scrollTo(0, 0);
     }
   }
 
@@ -117,21 +110,14 @@ class PureHome extends React.Component {
 
   onClose = () => {
     const { setSelected, setHeaderVisible } = this.props;
-    this.isCancelScrollUp = true;
-    this.isCloseContextMenu = true;
     setSelected("none");
     setHeaderVisible(false);
   };
 
   onLoading = (status) => {
-    console.log("Set is loading", status);
     this.props.setIsLoading(status);
   };
 
-  onCancelScrollUp = (value, isDeleteProfile) => {
-    this.isCancelScrollUp = value;
-    this.isDeleteProfile = isDeleteProfile;
-  };
   render() {
     const { isHeaderIndeterminate, isHeaderChecked, selected } = this.state;
 
@@ -179,7 +165,6 @@ class PureHome extends React.Component {
             isMobile={isMobile}
             selected={selected}
             onLoading={this.onLoading}
-            onCancelScrollUp={this.onCancelScrollUp}
             onChange={this.onRowChange}
           />
         </PageLayout.SectionBody>
@@ -226,6 +211,8 @@ function mapStateToProps(state) {
     isLoading: getIsLoading(state),
     isLoaded: getIsLoaded(state),
     isHeaderVisible: getHeaderVisible(state),
+    filter: getFilter(state),
+    isTabletView: getIsTabletView(state),
   };
 }
 

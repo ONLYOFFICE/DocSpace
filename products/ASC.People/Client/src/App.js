@@ -20,7 +20,8 @@ import {
   NavMenu,
   Main,
   toastr,
-  Layout
+  Layout,
+  ScrollToTop,
 } from "asc-web-common";
 import { getFilterByLocation } from "./helpers/converters";
 import { fetchGroups, fetchPeople } from "./store/people/actions";
@@ -41,8 +42,6 @@ const {
 /*const Profile = lazy(() => import("./components/pages/Profile"));
 const ProfileAction = lazy(() => import("./components/pages/ProfileAction"));
 const GroupAction = lazy(() => import("./components/pages/GroupAction"));*/
-
-
 
 class App extends React.Component {
   componentDidMount() {
@@ -94,10 +93,10 @@ class App extends React.Component {
 
     console.log("People App render", this.props);
     return navigator.onLine ? (
-      
       <Layout>
         <Router history={history}>
-        <NavMenu />
+          <ScrollToTop />
+          <NavMenu />
           <Main>
             <Suspense fallback={null}>
               <Switch>
@@ -142,7 +141,11 @@ class App extends React.Component {
                   ]}
                   component={Login}
                 />
-                <PrivateRoute exact path={`/error=:error`} component={Error520} />
+                <PrivateRoute
+                  exact
+                  path={`/error=:error`}
+                  component={Error520}
+                />
                 <PrivateRoute component={Error404} />
               </Switch>
             </Suspense>
