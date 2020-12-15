@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import isEqual from "lodash/isEqual";
+import equal from "fast-deep-equal/react";
 import { tablet } from "@appserver/components/src/utils/device";
 
 const StyledSectionHeader = styled.div`
@@ -22,42 +22,25 @@ const StyledSectionHeader = styled.div`
   }
 
   .section-header {
-    width: calc(100% - 76px);
-
     @media ${tablet} {
       width: 100%;
       padding-top: 4px;
     }
-
-    h1,
-    h2,
-    h3,
-    h4,
-    h5,
-    h6 {
-      max-width: calc(100vw - 435px);
-
-      @media ${tablet} {
-        max-width: ${(props) =>
-          props.isArticlePinned ? `calc(100vw - 320px)` : `calc(100vw - 96px)`};
       }
-    }
-  }
 `;
 
 class SectionHeader extends React.Component {
   shouldComponentUpdate(nextProps) {
-    return !isEqual(this.props, nextProps);
+    return !equal(this.props, nextProps);
   }
 
   render() {
     //console.log("PageLayout SectionHeader render");
     // eslint-disable-next-line react/prop-types
-    const { isArticlePinned, borderBottom, ...rest } = this.props;
+    const { borderBottom, ...rest } = this.props;
 
     return (
       <StyledSectionHeader
-        isArticlePinned={isArticlePinned}
         borderBottom={borderBottom}
       >
         <div className="section-header" {...rest} />

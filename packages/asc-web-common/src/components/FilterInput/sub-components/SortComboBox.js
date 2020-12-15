@@ -1,6 +1,6 @@
 import React from "react";
+import equal from "fast-deep-equal/react";
 import PropTypes from "prop-types";
-import isEqual from "lodash/isEqual";
 
 import ComboBox from "@appserver/components/src/components/combobox";
 import IconButton from "@appserver/components/src/components/icon-button";
@@ -65,7 +65,7 @@ class SortComboBox extends React.Component {
       });
       return true;
     }
-    return !isEqual(this.props, nextProps) || !isEqual(this.state, nextState);
+    return !equal(this.props, nextProps) || !equal(this.state, nextState);
   }
 
   onToggleAction = () => {

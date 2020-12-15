@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import Box from "@appserver/components/src/components/box";
 import Text from "@appserver/components/src/components/text";
@@ -8,9 +8,15 @@ import RegisterModalDialog from "./register-modal-dialog";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import { sendRegisterRequest } from "@appserver/common/src/api/settings";
+import { I18nextProvider, withTranslation } from "react-i18next";
+import { getLanguage } from "@appserver/common/src/store/auth/selectors";
+import { connect } from "react-redux";
+import i18n from "../i18n";
 
 const StyledRegister = styled(Box)`
-  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   z-index: 184;
   width: 100%;
   height: 66px;
@@ -61,9 +67,7 @@ const Register = ({ t }) => {
   return (
     <>
       <StyledRegister onClick={onRegisterClick}>
-        <Text color="#316DAA" textAlign="center">
-          {t("Register")}
-        </Text>
+        <Text color="#316DAA">{t("Register")}</Text>
       </StyledRegister>
 
       {visible && (
@@ -86,4 +90,38 @@ Register.propTypes = {
   t: PropTypes.func.isRequired,
 };
 
-export default Register;
+const RegisterTranslationWrapper = withTranslation()(Register);
+
+const RegisterWrapper = (props) => {
+  const { language, isAuthenticated, enabledJoin } = props;
+
+  useEffect(() => {
+    i18n.changeLanguage(language);
+  }, [language]);
+
+  return (
+    <I18nextProvider i18n={i18n}>
+      {enabledJoin && !isAuthenticated && (
+        <RegisterTranslationWrapper {...props} />
+      )}
+    </I18nextProvider>
+  );
+};
+
+RegisterWrapper.propTypes = {
+  language: PropTypes.string,
+  isAuthenticated: PropTypes.bool,
+  enabledJoin: PropTypes.bool,
+};
+
+function mapStateToProps(state) {
+  const { isAuthenticated, settings } = state.auth;
+  const { enabledJoin } = settings;
+  return {
+    language: getLanguage(state),
+    isAuthenticated,
+    enabledJoin,
+  };
+}
+
+export default connect(mapStateToProps, null)(RegisterWrapper);

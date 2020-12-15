@@ -281,7 +281,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
             var folder = GetFolder();
 
             folder.ID = MakeId(fsEntry);
-            folder.ParentFolderID = isRoot ? null : MakeId(fsEntry.Parent);
+            folder.FolderID = isRoot ? null : MakeId(fsEntry.Parent);
             folder.CreateOn = isRoot ? ProviderInfo.CreateOn : fsEntry.Modified;
             folder.ModifiedOn = isRoot ? ProviderInfo.CreateOn : fsEntry.Modified;
             folder.RootFolderId = MakeId(RootFolder());

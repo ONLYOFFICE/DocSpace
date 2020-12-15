@@ -124,7 +124,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
             return fileDao.GetFileHistory(selector.ConvertId(fileId));
         }
 
-        public List<File<string>> GetFiles(string[] fileIds)
+        public List<File<string>> GetFiles(IEnumerable<string> fileIds)
         {
             var result = Enumerable.Empty<File<string>>();
 
@@ -139,7 +139,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
                                                 .SelectMany(matchedId =>
                                                 {
                                                     var fileDao = selectorLocal.GetFileDao(matchedId.FirstOrDefault());
-                                                    return fileDao.GetFiles(matchedId.Select(selectorLocal.ConvertId).ToArray());
+                                                    return fileDao.GetFiles(matchedId.Select(selectorLocal.ConvertId).ToList());
                                                 }
                     )
                     .Where(r => r != null));
@@ -148,7 +148,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
             return result.ToList();
         }
 
-        public List<File<string>> GetFilesFiltered(string[] fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
+        public List<File<string>> GetFilesFiltered(IEnumerable<string> fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
         {
             var result = Enumerable.Empty<File<string>>();
 

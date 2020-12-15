@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import {
   Backdrop,
   Heading,
@@ -22,13 +21,22 @@ import {
   toastr,
   store,
 } from "@appserver/common";
-import { getShareUsers, setShareFiles } from "../../../store/files/actions";
-import { getAccessOption, getSelection } from "../../../store/files/selectors";
+import {
+  getShareUsers,
+  setShareFiles,
+  setSharingPanelVisible,
+} from "../../../store/files/actions";
+import {
+  getAccessOption,
+  getExternalAccessOption,
+  getSelection,
+  getSharePanelVisible,
+} from "../../../store/files/selectors";
 import {
   StyledAsidePanel,
   StyledContent,
   StyledFooter,
-  StyledSharingHeaderContent,
+  StyledHeaderContent,
   StyledSharingBody,
 } from "../StyledPanels";
 import { AddUsersPanel, AddGroupsPanel, EmbeddingPanel } from "../index";
@@ -38,13 +46,14 @@ const i18n = createI18N({
   page: "SharingPanel",
   localesPath: "panels/SharingPanel",
 });
-
 const { changeLanguage } = commonUtils;
 const { ShareAccessRights } = constants;
 const {
   getCurrentUserId,
   getSettingsCustomNamesGroupsCaption,
 } = store.auth.selectors;
+
+const SharingBodyStyle = { height: `calc(100vh - 156px)` };
 
 class SharingPanelComponent extends React.Component {
   constructor(props) {
@@ -84,7 +93,20 @@ class SharingPanelComponent extends React.Component {
     this.setState({ showActionPanel: !this.state.showActionPanel });
   };
 
-  //onKeyClick = () => console.log("onKeyClick");
+  onToggleLink = (item) => {
+    const { shareDataItems } = this.state;
+
+    const rights =
+      item.rights.accessNumber !== ShareAccessRights.DenyAccess
+        ? this.getItemAccess(ShareAccessRights.DenyAccess)
+        : this.getItemAccess(ShareAccessRights.ReadOnly);
+    const newDataItems = JSON.parse(JSON.stringify(shareDataItems));
+
+    newDataItems[0].rights = { ...rights };
+    this.setState({
+      shareDataItems: newDataItems,
+    });
+  };
 
   onSaveClick = () => {
     const {
@@ -93,20 +115,31 @@ class SharingPanelComponent extends React.Component {
       message,
       shareDataItems,
     } = this.state;
-    const { selectedItems, onClose } = this.props;
+    const { selectedItems } = this.props;
 
     const folderIds = [];
     const fileIds = [];
-
     const share = [];
+
+    let externalAccess = null;
+
     for (let item of shareDataItems) {
       const baseItem = baseShareData.find((x) => x.id === item.id);
       if (
-        (baseItem && baseItem.rights.rights !== item.rights.rights) ||
+        (baseItem &&
+          baseItem.rights.rights !== item.rights.rights &&
+          !item.shareLink) ||
         !baseItem
       ) {
         share.push({ shareTo: item.id, access: item.rights.accessNumber });
       }
+
+      if (
+        item.shareLink &&
+        item.rights.accessNumber !== baseItem.rights.accessNumber
+      ) {
+        externalAccess = item.rights.accessNumber;
+    }
     }
 
     for (let item of baseShareData) {
@@ -124,9 +157,16 @@ class SharingPanelComponent extends React.Component {
       }
     }
 
-    setShareFiles(folderIds, fileIds, share, isNotifyUsers, message)
+    setShareFiles(
+      folderIds,
+      fileIds,
+      share,
+      isNotifyUsers,
+      message,
+      externalAccess
+    )
       .catch((err) => toastr.error(err))
-      .finally(() => onClose());
+      .finally(() => this.onClose());
   };
 
   onFullAccessClick = () => {
@@ -190,6 +230,17 @@ class SharingPanelComponent extends React.Component {
         icon: "AccessNoneIcon",
         rights: "DenyAccess",
         accessNumber: ShareAccessRights.DenyAccess,
+        isOwner: false,
+      },
+    });
+  };
+
+  onFilterEditingClick = () => {
+    this.setState({
+      accessRight: {
+        icon: "CustomFilterIcon",
+        rights: "CustomFilter",
+        accessNumber: ShareAccessRights.CustomFilter,
         isOwner: false,
       },
     });
@@ -264,6 +315,18 @@ class SharingPanelComponent extends React.Component {
       this.setState({ shareDataItems: newUsers });
     }
   };
+  onFilterEditingItemClick = (item) => {
+    const newUsers = this.state.shareDataItems;
+    const elementIndex = newUsers.findIndex((x) => x.id === item.id);
+    if (newUsers[elementIndex].rights.rights !== "CustomFilter") {
+      newUsers[elementIndex].rights = {
+        icon: "CustomFilterIcon",
+        rights: "CustomFilter",
+        accessNumber: ShareAccessRights.CustomFilter,
+      };
+      this.setState({ shareDataItems: newUsers });
+    }
+  };
   onDenyAccessItemClick = (item) => {
     const newUsers = this.state.shareDataItems;
     const elementIndex = newUsers.findIndex((x) => x.id === item.id);
@@ -287,17 +350,14 @@ class SharingPanelComponent extends React.Component {
     }
   };
 
-  getItemAccess = (item) => {
+  getItemAccess = (accessType, isOwner = false) => {
     const fullAccessRights = {
       icon: "AccessEditIcon",
       rights: "FullAccess",
       accessNumber: ShareAccessRights.FullAccess,
-      isOwner: item.isOwner,
+      isOwner: isOwner,
     };
-    if (item.sharedTo.shareLink) {
-      return fullAccessRights;
-    }
-    switch (item.access) {
+    switch (accessType) {
       case 1:
         return fullAccessRights;
       case 2:
@@ -335,19 +395,31 @@ class SharingPanelComponent extends React.Component {
           accessNumber: ShareAccessRights.FormFilling,
           isOwner: false,
         };
+      case 8:
+        return {
+          icon: "CustomFilterIcon",
+          rights: "CustomFilter",
+          accessNumber: ShareAccessRights.CustomFilter,
+          isOwner: false,
+        };
       default:
         return;
     }
   };
 
   getShareDataItems = (items) => {
+    const {
+      getAccessOption,
+      getExternalAccessOption,
+      selectedItems,
+    } = this.props;
     let arrayItems = [];
     const newItems = [];
     let stash = [];
 
     for (let array of items) {
       for (let item of array) {
-        const rights = this.getItemAccess(item);
+        const rights = this.getItemAccess(item.access, item.isOwner);
 
         if (rights) {
           item.sharedTo = { ...item.sharedTo, ...{ rights } };
@@ -358,7 +430,6 @@ class SharingPanelComponent extends React.Component {
       newItems.push(stash);
       stash = [];
     }
-
     stash = null;
     for (let item of arrayItems) {
       let length = newItems.length;
@@ -389,15 +460,25 @@ class SharingPanelComponent extends React.Component {
           }
           length--;
         }
+      } else {
+        const externalLinkAccess = items[0][0].access;
+        item.access = externalLinkAccess;
+        item.rights = this.getItemAccess(externalLinkAccess);
       }
     }
 
     arrayItems = this.removeDuplicateShareData(arrayItems);
     const baseShareData = JSON.parse(JSON.stringify(arrayItems));
 
-    const accessOptions = getAccessOption(this.props.selectedItems);
+    const accessOptions = getAccessOption(selectedItems);
+    const externalAccessOptions = getExternalAccessOption(selectedItems);
 
-    return { baseShareData, shareDataItems: arrayItems, accessOptions };
+    return {
+      baseShareData,
+      shareDataItems: arrayItems,
+      accessOptions,
+      externalAccessOptions,
+  };
   };
 
   removeDuplicateShareData = (shareDataItems) => {
@@ -466,7 +547,8 @@ class SharingPanelComponent extends React.Component {
 
   setShareDataItems = (shareDataItems) => this.setState({ shareDataItems });
 
-  onClose = () => this.setState({ showPanel: false });
+  onClose = () =>
+    this.props.setSharingPanelVisible(!this.props.sharingPanelVisible);
 
   componentDidMount() {
     this.getShareData();
@@ -486,7 +568,7 @@ class SharingPanelComponent extends React.Component {
     } = this.state;
     if (showAddUsersPanel || showEmbeddingPanel || showAddGroupsPanel) return;
     if (event.key === "Esc" || event.key === "Escape") {
-      this.props.onClose();
+      this.onClose();
     }
   };
 
@@ -495,7 +577,7 @@ class SharingPanelComponent extends React.Component {
       this.state.showPanel !== prevState.showPanel &&
       this.state.showPanel === false
     ) {
-      this.props.onClose();
+      this.onClose();
     }
 
     if (this.state.message === prevState.message) {
@@ -518,6 +600,7 @@ class SharingPanelComponent extends React.Component {
       shareLink,
       showPanel,
       accessOptions,
+      externalAccessOptions,
     } = this.state;
 
     const visible = showPanel;
@@ -571,6 +654,13 @@ class SharingPanelComponent extends React.Component {
             onClick={this.onDenyAccessClick}
           />
         )}
+        {accessOptions.includes("FilterEditing") && (
+          <DropDownItem
+            label="Custom filter"
+            icon="CustomFilterIcon"
+            onClick={this.onFilterEditingClick}
+          />
+        )}
       </>
     );
 
@@ -583,6 +673,7 @@ class SharingPanelComponent extends React.Component {
         className="panel_combo-box add-groups"
         scaled={false}
         directionX="right"
+        disableIconClick={false}
         //isDisabled={isDisabled}
       >
         {React.createElement(Icons[accessRight.icon], {
@@ -598,7 +689,7 @@ class SharingPanelComponent extends React.Component {
         <Backdrop onClick={this.onClose} visible={visible} zIndex={zIndex} />
         <Aside className="header_aside-panel" visible={visible}>
           <StyledContent>
-            <StyledSharingHeaderContent>
+            <StyledHeaderContent>
               <Heading className="sharing_panel-header" size="medium" truncate>
                 {t("SharingSettingsTitle")}
               </Heading>
@@ -636,12 +727,13 @@ class SharingPanelComponent extends React.Component {
                   onClick={this.onKeyClick}
                 />*/}
               </div>
-            </StyledSharingHeaderContent>
+            </StyledHeaderContent>
             <StyledSharingBody
               ref={this.scrollRef}
               stype="mediumBlack"
-              style={{ height: `calc(100vh - 157px)` }}
+              style={SharingBodyStyle}
             >
+              {" "}
               {shareDataItems.map((item, index) => (
                 <SharingRow
                   key={index}
@@ -651,14 +743,17 @@ class SharingPanelComponent extends React.Component {
                   index={index}
                   isMyId={isMyId}
                   accessOptions={accessOptions}
+                  externalAccessOptions={externalAccessOptions}
                   onFullAccessClick={this.onFullAccessItemClick}
                   onReadOnlyClick={this.onReadOnlyItemClick}
                   onReviewClick={this.onReviewItemClick}
                   onCommentClick={this.onCommentItemClick}
                   onFormFillingClick={this.onFormFillingItemClick}
+                  onFilterEditingClick={this.onFilterEditingItemClick}
                   onDenyAccessClick={this.onDenyAccessItemClick}
                   onRemoveUserClick={this.onRemoveUserItemClick}
                   onShowEmbeddingPanel={this.onShowEmbeddingPanel}
+                  onToggleLink={this.onToggleLink}
                 />
               ))}
               {isNotifyUsers && (
@@ -727,11 +822,6 @@ class SharingPanelComponent extends React.Component {
   }
 }
 
-SharingPanelComponent.propTypes = {
-  onClose: PropTypes.func,
-  visible: PropTypes.bool,
-};
-
 const SharingPanelContainerTranslated = withTranslation()(
   SharingPanelComponent
 );
@@ -742,10 +832,16 @@ const SharingPanel = (props) => (
 
 const mapStateToProps = (state) => {
   return {
+    getAccessOption: (selectedItems) => getAccessOption(state, selectedItems),
+    getExternalAccessOption: (selectedItems) =>
+      getExternalAccessOption(state, selectedItems),
     isMyId: getCurrentUserId(state),
     selectedItems: getSelection(state),
     groupsCaption: getSettingsCustomNamesGroupsCaption(state),
+    sharingPanelVisible: getSharePanelVisible(state),
   };
 };
 
-export default connect(mapStateToProps)(withRouter(SharingPanel));
+export default connect(mapStateToProps, { setSharingPanelVisible })(
+  withRouter(SharingPanel)
+);

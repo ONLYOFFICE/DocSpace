@@ -2,7 +2,7 @@ import React from "react";
 import styled, { css } from "styled-components";
 import PropTypes from "prop-types";
 import Text from "../text";
-import isEqual from "lodash/isEqual";
+import equal from "fast-deep-equal/react";
 import { Icons } from "../icons";
 
 // eslint-disable-next-line no-unused-vars
@@ -105,7 +105,7 @@ const StyledSocialButton = styled(ButtonWrapper).attrs((props) => ({
 
 class SocialButton extends React.Component {
   shouldComponentUpdate(nextProps) {
-    return !isEqual(this.props, nextProps);
+    return !equal(this.props, nextProps);
   }
 
   render() {

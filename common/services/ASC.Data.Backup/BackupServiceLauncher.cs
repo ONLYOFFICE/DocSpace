@@ -32,7 +32,6 @@ using ASC.Common.Utils;
 using ASC.Data.Backup.Listerners;
 using ASC.Web.Studio.Core.Notify;
 
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 
 namespace ASC.Data.Backup.Service
@@ -43,7 +42,7 @@ namespace ASC.Data.Backup.Service
         private BackupCleanerService CleanerService { get; set; }
         private BackupSchedulerService SchedulerService { get; set; }
         private BackupWorker BackupWorker { get; set; }
-        private IConfiguration Configuration { get; set; }
+        private ConfigurationExtension Configuration { get; set; }
         private BackupListener BackupListener { get; set; }
         public NotifyConfiguration NotifyConfiguration { get; }
 
@@ -51,7 +50,7 @@ namespace ASC.Data.Backup.Service
             BackupCleanerService cleanerService,
             BackupSchedulerService schedulerService,
             BackupWorker backupWorker,
-            IConfiguration configuration,
+            ConfigurationExtension configuration,
             BackupListener backupListener,
             NotifyConfiguration notifyConfiguration)
         {

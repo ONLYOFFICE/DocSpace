@@ -102,7 +102,7 @@ class InputBlock extends React.Component {
     } else {
       switch (size) {
         case "base":
-          iconButtonSize = 15;
+          iconButtonSize = 16;
           break;
         case "middle":
           iconButtonSize = 18;

@@ -24,6 +24,7 @@ import SubSectionPaging from "./sub-components/section-paging";
 import SectionToggler from "./sub-components/section-toggler";
 import { changeLanguage } from "../../utils";
 import ReactResizeDetector from "react-resize-detector";
+import FloatingButton from "../FloatingButton";
 
 const { getLanguage } = store.auth.selectors;
 
@@ -83,6 +84,9 @@ class PageLayoutComponent extends React.Component {
       isArticleVisible: isArticleVisibleAndPinned,
       isArticlePinned: isArticleVisibleAndPinned,
     };
+
+    this.timeoutHandler = null;
+    this.intervalHandler = null;
   }
 
   componentDidUpdate(prevProps) {
@@ -105,6 +109,9 @@ class PageLayoutComponent extends React.Component {
       "orientationchange",
       this.orientationChangeHandler
     );
+
+    if (this.intervalHandler) clearInterval(this.intervalHandler);
+    if (this.timeoutHandler) clearTimeout(this.timeoutHandler);
   }
 
   orientationChangeHandler = () => {
@@ -125,20 +132,20 @@ class PageLayoutComponent extends React.Component {
     const intervalTime = 100;
     const endTimeoutTime = 1000;
 
-    let interval, timeout, lastInnerHeight, noChangeCount;
+    let lastInnerHeight, noChangeCount;
 
     const updateHeight = () => {
-      clearInterval(interval);
-      clearTimeout(timeout);
+      if (this.intervalHandler) clearInterval(this.intervalHandler);
+      if (this.timeoutHandler) clearTimeout(this.timeoutHandler);
 
-      interval = null;
-      timeout = null;
+      this.intervalHandler = null;
+      this.timeoutHandler = null;
 
       const vh = (window.innerHeight - 57) * 0.01;
       document.documentElement.style.setProperty("--vh", `${vh}px`);
     };
 
-    interval = setInterval(() => {
+    this.intervalHandler = setInterval(() => {
       if (window.innerHeight === lastInnerHeight) {
         noChangeCount++;
 
@@ -151,7 +158,7 @@ class PageLayoutComponent extends React.Component {
       }
     });
 
-    timeout = setTimeout(() => {
+    this.timeoutHandler = setTimeout(() => {
       updateHeight();
     }, endTimeoutTime);
   };
@@ -195,11 +202,15 @@ class PageLayoutComponent extends React.Component {
   render() {
     const {
       onDrop,
-      progressBarDropDownContent,
-      progressBarLabel,
-      progressBarValue,
+      showPrimaryProgressBar,
+      primaryProgressBarIcon,
+      primaryProgressBarValue,
+      showPrimaryButtonAlert,
+      showSecondaryProgressBar,
+      secondaryProgressBarValue,
+      secondaryProgressBarIcon,
+      showSecondaryButtonAlert,
       setSelections,
-      showProgressBar,
       uploadFiles,
       viewAs,
       withBodyAutoFocus,
@@ -328,9 +339,7 @@ class PageLayoutComponent extends React.Component {
               >
                 <Section widthProp={width}>
                   {isSectionHeaderAvailable && (
-                    <SubSectionHeader
-                      isArticlePinned={this.state.isArticlePinned}
-                    >
+                    <SubSectionHeader>
                       {sectionHeaderContent
                         ? sectionHeaderContent.props.children
                         : null}
@@ -374,15 +383,40 @@ class PageLayoutComponent extends React.Component {
                           </SubSectionPaging>
                         )}
                       </SubSectionBody>
-                      {showProgressBar && (
-                        <ProgressBar
-                          className="layout-progress-bar"
-                          label={progressBarLabel}
-                          percent={progressBarValue}
-                          dropDownContent={progressBarDropDownContent}
-                        />
-                      )}
                     </>
+                  )}
+
+                  {showPrimaryProgressBar && showSecondaryProgressBar ? (
+                    <>
+                      <FloatingButton
+                          className="layout-progress-bar"
+                        icon={primaryProgressBarIcon}
+                        percent={primaryProgressBarValue}
+                        alert={showPrimaryButtonAlert}
+                        />
+                      <FloatingButton
+                        className="layout-progress-second-bar"
+                        icon={secondaryProgressBarIcon}
+                        percent={secondaryProgressBarValue}
+                        alert={showSecondaryButtonAlert}
+                      />
+                    </>
+                  ) : showPrimaryProgressBar && !showSecondaryProgressBar ? (
+                    <FloatingButton
+                      className="layout-progress-bar"
+                      icon={primaryProgressBarIcon}
+                      percent={primaryProgressBarValue}
+                      alert={showPrimaryButtonAlert}
+                    />
+                  ) : !showPrimaryProgressBar && showSecondaryProgressBar ? (
+                    <FloatingButton
+                      className="layout-progress-bar"
+                      icon={secondaryProgressBarIcon}
+                      percent={secondaryProgressBarValue}
+                      alert={showSecondaryButtonAlert}
+                    />
+                  ) : (
+                    <></>
                   )}
 
                   {isArticleAvailable && (
@@ -406,10 +440,15 @@ PageLayoutComponent.propTypes = {
   withBodyScroll: PropTypes.bool,
   withBodyAutoFocus: PropTypes.bool,
   t: PropTypes.func,
-  showProgressBar: PropTypes.bool,
-  progressBarValue: PropTypes.number,
+  showPrimaryProgressBar: PropTypes.bool,
+  primaryProgressBarValue: PropTypes.number,
+  showPrimaryButtonAlert: PropTypes.bool,
   progressBarDropDownContent: PropTypes.any,
-  progressBarLabel: PropTypes.string,
+  primaryProgressBarIcon: PropTypes.string,
+  showSecondaryProgressBar: PropTypes.bool,
+  secondaryProgressBarValue: PropTypes.number,
+  secondaryProgressBarIcon: PropTypes.string,
+  showSecondaryButtonAlert: PropTypes.bool,
   onDrop: PropTypes.func,
   setSelections: PropTypes.func,
   uploadFiles: PropTypes.bool,

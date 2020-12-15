@@ -569,7 +569,7 @@ namespace ASC.Web.Files.Utils
                 var parentId =
                     entry.FileEntryType == FileEntryType.File
                         ? ((File<T>)entry).FolderID
-                        : ((Folder<T>)entry).ParentFolderID;
+                        : ((Folder<T>)entry).FolderID;
 
                 var parentEntry = entryTags.Keys.FirstOrDefault(entryCountTag => Equals(entryCountTag.ID, parentId));
                 if (parentEntry != null)

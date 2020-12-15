@@ -46,7 +46,6 @@ using ASC.Security.Cryptography;
 using ASC.Web.Core;
 using ASC.Web.Core.Files;
 using ASC.Web.Files.Classes;
-using ASC.Web.Files.Core;
 using ASC.Web.Files.Helpers;
 using ASC.Web.Files.Services.DocumentService;
 using ASC.Web.Files.Services.FFmpegService;
@@ -1079,7 +1078,7 @@ namespace ASC.Web.Files
             file.FolderID = folder.ID;
             file.Comment = FilesCommonResource.CommentCreate;
 
-            var req = (HttpWebRequest)WebRequest.Create(fileUri);
+            var req = WebRequest.Create(fileUri);
 
             // hack. http://ubuntuforums.org/showthread.php?t=1841740
             if (WorkContext.IsMono)
@@ -1088,7 +1087,7 @@ namespace ASC.Web.Files
             }
 
             var fileDao = DaoFactory.GetFileDao<T>();
-            var fileStream = new ResponseStream(req.GetResponse());
+            using var fileStream = req.GetResponse().GetResponseStream();
             file.ContentLength = fileStream.Length;
 
             return fileDao.SaveFile(file, fileStream);

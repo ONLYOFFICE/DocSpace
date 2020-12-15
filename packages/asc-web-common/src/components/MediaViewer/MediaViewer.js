@@ -13,7 +13,7 @@ import VideoViewer from "./sub-components/video-viewer";
 import MediaScrollButton from "./sub-components/scroll-button";
 import ControlBtn from "./sub-components/control-btn";
 import StyledMediaViewer from "./StyledMediaViewer";
-import isEqual from "lodash/isEqual";
+import equal from "fast-deep-equal/react";
 import Hammer from "hammerjs";
 
 const StyledVideoViewer = styled(VideoViewer)`
@@ -121,7 +121,7 @@ class MediaViewer extends React.Component {
     if (
       this.props.visible &&
       this.props.visible === prevProps.visible &&
-      !isEqual(this.props.playlist, prevProps.playlist)
+      !equal(this.props.playlist, prevProps.playlist)
     ) {
       let playlistPos = 0;
       if (this.props.playlist.length > 0) {
@@ -138,7 +138,7 @@ class MediaViewer extends React.Component {
           visible: false,
         });
       }
-    } else if (!isEqual(this.props.playlist, prevProps.playlist)) {
+    } else if (!equal(this.props.playlist, prevProps.playlist)) {
       this.setState({
         playlist: this.props.playlist,
       });

@@ -77,8 +77,6 @@ namespace ASC.Files.Core
             FileConverter = fileConverter;
         }
 
-        public T FolderID { get; set; }
-
         public int Version { get; set; }
 
         [JsonPropertyName("version_group")]
@@ -242,19 +240,5 @@ namespace ASC.Files.Core
 
         [NonSerialized]
         private readonly FileConverter FileConverter;
-
-        private T _folderIdDisplay;
-
-        [JsonPropertyName("folder_id")]
-        public override T FolderIdDisplay
-        {
-            get
-            {
-                if (_folderIdDisplay != null) return _folderIdDisplay;
-
-                return FolderID;
-            }
-            set { _folderIdDisplay = value; }
-        }
     }
 }

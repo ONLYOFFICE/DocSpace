@@ -329,40 +329,40 @@ namespace ASC.ElasticSearch
             }
         }
 
-        public Task<bool> IndexAsync(T data, bool immediately = true)
+        public async Task<bool> IndexAsync(T data, bool immediately = true)
         {
             var t = ServiceProvider.GetService<T>();
-            if (!Support(t)) return Task.FromResult(false);
-            return Queue(() => Indexer.Index(data, immediately));
+            if (!await SupportAsync(t)) return false;
+            return await Queue(() => Indexer.Index(data, immediately));
         }
 
-        public Task<bool> IndexAsync(List<T> data, bool immediately = true)
+        public async Task<bool> IndexAsync(List<T> data, bool immediately = true)
         {
             var t = ServiceProvider.GetService<T>();
-            if (!Support(t)) return Task.FromResult(false);
-            return Queue(() => Indexer.Index(data, immediately));
+            if (!await SupportAsync(t)) return false;
+            return await Queue(() => Indexer.Index(data, immediately));
         }
 
-        public Task<bool> UpdateAsync(T data, bool immediately = true, params Expression<Func<T, object>>[] fields)
+        public async Task<bool> UpdateAsync(T data, bool immediately = true, params Expression<Func<T, object>>[] fields)
         {
             var t = ServiceProvider.GetService<T>();
-            if (!Support(t)) return Task.FromResult(false);
-            return Queue(() => Indexer.Update(data, immediately, fields));
+            if (!await SupportAsync(t)) return false;
+            return await Queue(() => Indexer.Update(data, immediately, fields));
         }
 
-        public Task<bool> DeleteAsync(T data, bool immediately = true)
+        public async Task<bool> DeleteAsync(T data, bool immediately = true)
         {
             var t = ServiceProvider.GetService<T>();
-            if (!Support(t)) return Task.FromResult(false);
-            return Queue(() => Indexer.Delete(data, immediately));
+            if (!await SupportAsync(t)) return false;
+            return await Queue(() => Indexer.Delete(data, immediately));
         }
 
-        public Task<bool> DeleteAsync(Expression<Func<Selector<T>, Selector<T>>> expression, bool immediately = true)
+        public async Task<bool> DeleteAsync(Expression<Func<Selector<T>, Selector<T>>> expression, bool immediately = true)
         {
             var t = ServiceProvider.GetService<T>();
-            if (!Support(t)) return Task.FromResult(false);
+            if (!await SupportAsync(t)) return false;
             var tenant = TenantManager.GetCurrentTenant().TenantId;
-            return Queue(() => Indexer.Delete(expression, tenant, immediately));
+            return await Queue(() => Indexer.Delete(expression, tenant, immediately));
         }
 
 
@@ -445,6 +445,11 @@ namespace ASC.ElasticSearch
                 return false;
             }
         }
+
+        public async Task<bool> SupportAsync(T t)
+        {
+            return await FactoryIndexerCommon.CheckStateAsync();
+        }
     }
 
     [Scope]
@@ -507,6 +512,50 @@ namespace ASC.ElasticSearch
             try
             {
                 var result = Client.Instance.Ping(new PingRequest());
+
+                var isValid = result.IsValid;
+
+                Log.DebugFormat("CheckState ping {0}", result.DebugInformation);
+
+                if (cacheState)
+                {
+                    cache.Insert(key, isValid.ToString(CultureInfo.InvariantCulture).ToLower(), cacheTime);
+                }
+
+                return isValid;
+            }
+            catch (Exception e)
+            {
+                if (cacheState)
+                {
+                    cache.Insert(key, "false", cacheTime);
+                }
+
+                Log.Error("Ping false", e);
+                return false;
+            }
+        }
+
+        public async Task<bool> CheckStateAsync(bool cacheState = true)
+        {
+            if (!Init) return false;
+
+            const string key = "elasticsearch";
+
+            if (cacheState)
+            {
+                var cacheValue = cache.Get<string>(key);
+                if (!string.IsNullOrEmpty(cacheValue))
+                {
+                    return Convert.ToBoolean(cacheValue);
+                }
+            }
+
+            var cacheTime = DateTime.UtcNow.AddMinutes(15);
+
+            try
+            {
+                var result = await Client.Instance.PingAsync(new PingRequest());
 
                 var isValid = result.IsValid;
 

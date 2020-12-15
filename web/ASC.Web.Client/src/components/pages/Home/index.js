@@ -8,7 +8,7 @@ import Text from "@appserver/components/src/components/text";
 import toastr from "@appserver/common/src/components/Toast/toastr";
 import PageLayout from "@appserver/common/src/components/PageLayout";
 import ModuleTile from "./ModuleTile";
-import { changeLanguage } from "@appserver/common/src/utils";
+import { changeLanguage, tryRedirectTo } from "@appserver/common/src/utils";
 import { createI18N } from "../../../helpers/i18n";
 import { setDocumentTitle } from "../../../helpers/utils";
 
@@ -78,7 +78,7 @@ Tiles.propTypes = {
   isPrimary: PropTypes.bool.isRequired,
 };
 
-const Body = ({ modules, match, isLoaded, organizationName }) => {
+const Body = ({ modules, match, isLoaded }) => {
   const { t } = useTranslation("translation", { i18n });
   const { error } = match.params;
 
@@ -106,13 +106,18 @@ const Body = ({ modules, match, isLoaded, organizationName }) => {
   );
 };
 
-const Home = (props) => (
-  <PageLayout>
-    <PageLayout.SectionBody>
-      <Body {...props} />
-    </PageLayout.SectionBody>
-  </PageLayout>
-);
+const Home = (props) => {
+  const { defaultPage } = props;
+  return tryRedirectTo(defaultPage) ? (
+    <></>
+  ) : (
+    <PageLayout>
+      <PageLayout.SectionBody>
+        <Body {...props} />
+      </PageLayout.SectionBody>
+    </PageLayout>
+  );
+};
 
 Home.propTypes = {
   modules: PropTypes.array.isRequired,
@@ -121,11 +126,11 @@ Home.propTypes = {
 
 function mapStateToProps(state) {
   const { modules, isLoaded, settings } = state.auth;
-  const { organizationName } = settings;
+  const { defaultPage } = settings;
   return {
     modules,
     isLoaded,
-    organizationName,
+    defaultPage,
   };
 }
 

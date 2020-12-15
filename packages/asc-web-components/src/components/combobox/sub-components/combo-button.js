@@ -106,9 +106,9 @@ const StyledOptionalItem = styled.div`
 `;
 
 const StyledIcon = styled.div`
+  margin: -6px 8px 0px 0px;
   width: 16px;
-  margin-right: 8px;
-  margin-top: -2px;
+  height: 16px;
 `;
 
 const StyledArrowIcon = styled.div`

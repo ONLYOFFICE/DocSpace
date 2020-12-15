@@ -32,6 +32,7 @@ const ClearTextareaAutosize = ({
   isDisabled,
   heightScale,
   hasError,
+  color,
   ...props
 }) => <TextareaAutosize {...props} />;
 const StyledTextarea = styled(ClearTextareaAutosize)`
@@ -56,25 +57,31 @@ const StyledTextarea = styled(ClearTextareaAutosize)`
   }
 
   ::-webkit-input-placeholder {
-    color: ${(props) => (props.isDisabled ? "#D0D5DA" : "#D0D5DA")};
+    color: "#A3A9AE";
     font-family: "Open Sans", sans-serif;
     user-select: none;
   }
 
   :-moz-placeholder {
-    color: ${(props) => (props.isDisabled ? "#D0D5DA" : "#D0D5DA")};
+    color: "#A3A9AE";
     font-family: "Open Sans", sans-serif;
     user-select: none;
   }
 
   ::-moz-placeholder {
-    color: ${(props) => (props.isDisabled ? "#D0D5DA" : "#D0D5DA")};
+    color: "#A3A9AE";
     font-family: "Open Sans", sans-serif;
     user-select: none;
   }
 
   :-ms-input-placeholder {
-    color: ${(props) => (props.isDisabled ? "#D0D5DA" : "#D0D5DA")};
+    color: "#A3A9AE";
+    font-family: "Open Sans", sans-serif;
+    user-select: none;
+  }
+
+  ::placeholder {
+    color: "#A3A9AE";
     font-family: "Open Sans", sans-serif;
     user-select: none;
   }
@@ -99,6 +106,7 @@ class Textarea extends React.PureComponent {
       value,
       fontSize,
       heightTextArea,
+      color,
     } = this.props;
     return (
       <StyledScrollbar
@@ -122,6 +130,7 @@ class Textarea extends React.PureComponent {
           readOnly={isReadOnly}
           value={value}
           fontSize={fontSize}
+          color={color}
         />
       </StyledScrollbar>
     );
@@ -144,6 +153,7 @@ Textarea.propTypes = {
   value: PropTypes.string,
   fontSize: PropTypes.number,
   heightTextArea: PropTypes.number,
+  color: PropTypes.string,
 };
 
 Textarea.defaultProps = {
@@ -156,6 +166,7 @@ Textarea.defaultProps = {
   tabIndex: -1,
   value: "",
   fontSize: 13,
+  color: "#333333",
 };
 
 export default Textarea;

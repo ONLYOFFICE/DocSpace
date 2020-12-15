@@ -128,7 +128,7 @@ namespace ASC.Files.Thirdparty.Box
             var folder = GetFolder();
 
             folder.ID = MakeId(boxFolder.Id);
-            folder.ParentFolderID = isRoot ? null : MakeId(GetParentFolderId(boxFolder));
+            folder.FolderID = isRoot ? null : MakeId(GetParentFolderId(boxFolder));
             folder.CreateOn = isRoot ? ProviderInfo.CreateOn : (boxFolder.CreatedAt ?? default);
             folder.ModifiedOn = isRoot ? ProviderInfo.CreateOn : (boxFolder.ModifiedAt ?? default);
 

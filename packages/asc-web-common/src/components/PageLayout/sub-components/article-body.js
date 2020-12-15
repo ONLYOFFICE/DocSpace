@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import isEqual from "lodash/isEqual";
+import equal from "fast-deep-equal/react";
 import Scrollbar from "@appserver/components/src/components/scrollbar";
 import { tablet, smallTablet } from "@appserver/components/src/utils/device";
 
@@ -51,7 +51,7 @@ const StyledArticleWrapper = styled.div`
 
 class ArticleBody extends React.Component {
   shouldComponentUpdate(nextProps) {
-    return !isEqual(this.props, nextProps);
+    return !equal(this.props, nextProps);
   }
 
   render() {

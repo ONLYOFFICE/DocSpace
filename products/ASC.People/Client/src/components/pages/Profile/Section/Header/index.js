@@ -46,8 +46,15 @@ const { EmployeeStatus } = constants;
 const StyledContainer = styled.div`
   position: relative;
 
-  display: flex;
+  display: grid;
+  grid-template-columns: ${(props) =>
+    props.showContextButton ? "auto auto auto 1fr" : "auto 1fr"};
   align-items: center;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: ${(props) =>
+      props.showContextButton ? "auto 1fr auto" : "auto 1fr"};
+  }
 
   .action-button {
     margin-left: 16px;
@@ -410,9 +417,12 @@ class SectionHeaderContent extends React.PureComponent {
     } = this.props;
     const { avatar, visibleAvatarEditor, dialogsVisible } = this.state;
     const contextOptions = () => this.getUserContextOptions(profile, viewer);
+    const IsMe = isMe(viewer, profile.userName);
 
     return (
-      <StyledContainer>
+      <StyledContainer
+        showContextButton={(isAdmin && !profile.isOwner) || IsMe}
+      >
         <IconButton
           iconName="ArrowPathIcon"
           color="#A3A9AE"
@@ -426,7 +436,7 @@ class SectionHeaderContent extends React.PureComponent {
           {profile.displayName}
           {profile.isLDAP && ` (${t("LDAPLbl")})`}
         </Headline>
-        {((isAdmin && !profile.isOwner) || isMe(viewer, profile.userName)) && (
+        {((isAdmin && !profile.isOwner) || IsMe) && (
           <ContextMenuButton
             className="action-button"
             directionX="right"

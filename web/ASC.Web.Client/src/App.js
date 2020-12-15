@@ -8,12 +8,12 @@ import { connect } from "react-redux";
 //   ComingSoon
 // } from "@appserver/common";
 import CommonStore from "@appserver/common/src/store";
-import constants from "@appserver/common/src/constants";
 import history from "@appserver/common/src/history";
 import PrivateRoute from "@appserver/common/src/components/PrivateRoute";
 import PublicRoute from "@appserver/common/src/components/PublicRoute";
 import NavMenu from "@appserver/common/src/components/NavMenu";
 import Main from "@appserver/common/src/components/Main";
+import utils from "@appserver/common/src/utils";
 import toastr from "@appserver/common/src/components/Toast/toastr";
 
 import Home from "./components/pages/Home";
@@ -28,23 +28,28 @@ const {
   getUser,
   getPortalSettings,
   getModules,
+  getIsAuthenticated,
 } = CommonStore.auth.actions;
 
 class App extends React.Component {
   componentDidMount() {
-    utils.removeTempContent();
+    const {
+      getPortalSettings,
+      getUser,
+      getModules,
+      setIsLoaded,
+      getIsAuthenticated,
+    } = this.props;
 
-    const { getPortalSettings, getUser, getModules, setIsLoaded } = this.props;
-
-    const { AUTH_KEY } = constants;
-
-    const token = localStorage.getItem(AUTH_KEY);
-
+    getIsAuthenticated()
+      .then((isAuthenticated) => {
+        if (isAuthenticated) utils.updateTempContent(isAuthenticated);
     const requests = [];
-
-    if (!token) {
+        if (!isAuthenticated) {
       requests.push(getPortalSettings());
-    } else if (!window.location.pathname.includes("confirm/EmailActivation")) {
+        } else if (
+          !window.location.pathname.includes("confirm/EmailActivation")
+        ) {
       requests.push(getUser());
       requests.push(getPortalSettings());
       requests.push(getModules());
@@ -55,8 +60,11 @@ class App extends React.Component {
         toastr.error(e);
       })
       .finally(() => {
+            utils.updateTempContent();
         setIsLoaded();
       });
+      })
+      .catch((err) => toastr.error(err));
   }
 
   render() {
@@ -113,6 +121,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    getIsAuthenticated: () => getIsAuthenticated(dispatch),
     getPortalSettings: () => getPortalSettings(dispatch),
     getUser: () => getUser(dispatch),
     getModules: () => getModules(dispatch),

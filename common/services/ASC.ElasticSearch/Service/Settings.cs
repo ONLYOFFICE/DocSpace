@@ -27,8 +27,6 @@
 using ASC.Common;
 using ASC.Common.Utils;
 
-using Microsoft.Extensions.Configuration;
-
 namespace ASC.ElasticSearch.Service
 {
     [Singletone]
@@ -39,7 +37,7 @@ namespace ASC.ElasticSearch.Service
 
         }
 
-        public Settings(IConfiguration configuration)
+        public Settings(ConfigurationExtension configuration)
         {
             var cfg = configuration.GetSetting<Settings>("elastic");
             Scheme = cfg.Scheme ?? "http";

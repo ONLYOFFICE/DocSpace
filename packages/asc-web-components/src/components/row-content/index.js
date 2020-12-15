@@ -102,6 +102,7 @@ const MainContainer = styled.div`
 `;
 
 const MainIcons = styled.div`
+  height: 19px;
   align-self: center;
   white-space: nowrap;
 `;

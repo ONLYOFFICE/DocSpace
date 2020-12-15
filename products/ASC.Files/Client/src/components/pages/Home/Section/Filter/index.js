@@ -23,7 +23,7 @@ import {
   Loaders,
   utils,
 } from "@appserver/common";
-import isEqual from "lodash/isEqual";
+import equal from "fast-deep-equal/react";
 import { isMobileOnly } from "react-device-detect";
 
 const { withLayoutSize } = utils;
@@ -291,7 +291,7 @@ class SectionFilterContent extends React.Component {
 
   shouldComponentUpdate(nextProps, nextState) {
     return (
-      !isEqual(this.props.filter, nextProps.filter) ||
+      !equal(this.props.filter, nextProps.filter) ||
       this.props.selectedFolderId !== nextProps.selectedFolderId ||
       this.state.isReady !== nextState.isReady ||
       this.props.viewAs !== nextProps.viewAs ||
@@ -301,7 +301,7 @@ class SectionFilterContent extends React.Component {
   }
 
   render() {
-    console.log("Filter render");
+    //console.log("Filter render");
     const selectedFilterData = this.getSelectedFilterData();
     const { t, language, firstLoad, sectionWidth } = this.props;
     const filterColumnCount =

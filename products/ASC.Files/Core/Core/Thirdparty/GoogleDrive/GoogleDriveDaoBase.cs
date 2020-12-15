@@ -137,7 +137,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             var folder = GetFolder();
 
             folder.ID = MakeId(driveEntry);
-            folder.ParentFolderID = isRoot ? null : MakeId(GetParentDriveId(driveEntry));
+            folder.FolderID = isRoot ? null : MakeId(GetParentDriveId(driveEntry));
             folder.CreateOn = isRoot ? ProviderInfo.CreateOn : (driveEntry.CreatedTime ?? default);
             folder.ModifiedOn = isRoot ? ProviderInfo.CreateOn : (driveEntry.ModifiedTime ?? default);
 

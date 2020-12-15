@@ -293,16 +293,7 @@ namespace ASC.Files.Helpers
 
         public IEnumerable<FileEntryWrapper> GetFolderPath(T folderId)
         {
-            return EntryManager.GetBreadCrumbs(folderId).Select(r =>
-            {
-                if (r is Folder<string> f1)
-                    return FolderWrapperHelper.Get(f1);
-
-                if (r is Folder<int> f2)
-                    return FolderWrapperHelper.Get(f2);
-
-                return default(FileEntryWrapper);
-            });
+            return EntryManager.GetBreadCrumbs(folderId).Select(GetFileEntryWrapper);
         }
 
         public FileWrapper<T> GetFileInfo(T fileId, int version = -1)
@@ -321,28 +312,7 @@ namespace ASC.Files.Helpers
         public List<FileEntryWrapper> GetNewItems(T folderId)
         {
             return FileStorageService.GetNewItems(folderId)
-                .Select(r =>
-                 {
-                     FileEntryWrapper wrapper = null;
-                     if (r is Folder<int> fol1)
-                     {
-                         wrapper = FolderWrapperHelper.Get(fol1);
-                     }
-                     else if (r is Folder<string> fol2)
-                     {
-                         wrapper = FolderWrapperHelper.Get(fol2);
-                     }
-                     else if (r is File<int> file1)
-                     {
-                         wrapper = FileWrapperHelper.Get(file1);
-                     }
-                     else if (r is File<string> file2)
-                     {
-                         wrapper = FileWrapperHelper.Get(file2);
-                     }
-
-                     return wrapper;
-                 })
+                .Select(GetFileEntryWrapper)
                 .ToList();
         }
 
@@ -415,20 +385,7 @@ namespace ASC.Files.Helpers
 
             entries.AddRange(FileStorageService.GetItems(checkedFiles.OfType<string>(), checkedFiles.OfType<string>(), FilterType.FilesOnly, false, "", ""));
 
-            return entries.Select(r =>
-            {
-                FileEntryWrapper wrapper = null;
-                if (r is Folder<int> fol1)
-                {
-                    wrapper = FolderWrapperHelper.Get(fol1);
-                }
-                if (r is Folder<string> fol2)
-                {
-                    wrapper = FolderWrapperHelper.Get(fol2);
-                }
-
-                return wrapper;
-            });
+            return entries.Select(GetFileEntryWrapper);
         }
 
         public IEnumerable<FileOperationWraper> MoveBatchItems(BatchModel batchModel)
@@ -489,13 +446,13 @@ namespace ASC.Files.Helpers
         public IEnumerable<FileWrapper<T>> GetFileVersionInfo(T fileId)
         {
             var files = FileStorageService.GetFileHistory(fileId);
-            return files.Select(FileWrapperHelper.Get);
+            return files.Select(r=> FileWrapperHelper.Get(r));
         }
 
         public IEnumerable<FileWrapper<T>> ChangeHistory(T fileId, int version, bool continueVersion)
         {
             var history = FileStorageService.CompleteVersion(fileId, version, continueVersion).Value;
-            return history.Select(FileWrapperHelper.Get);
+            return history.Select(r=> FileWrapperHelper.Get(r));
         }
 
         public FileWrapper<T> LockFile(T fileId, bool lockFile)
@@ -511,47 +468,46 @@ namespace ASC.Files.Helpers
 
         public IEnumerable<FileShareWrapper> GetFileSecurityInfo(T fileId)
         {
-            var fileShares = FileStorageService.GetSharedInfo(new ItemList<string> { string.Format("file_{0}", fileId) });
-            return fileShares.Select(FileShareWrapperHelper.Get);
+            return GetSecurityInfo(new List<T> { fileId }, new List<T> { });
         }
 
         public IEnumerable<FileShareWrapper> GetFolderSecurityInfo(T folderId)
         {
-            var fileShares = FileStorageService.GetSharedInfo(new ItemList<string> { string.Format("folder_{0}", folderId) });
+            return GetSecurityInfo(new List<T> { }, new List<T> { folderId });
+        }
+
+        public IEnumerable<FileShareWrapper> GetSecurityInfo(IEnumerable<T> fileIds, IEnumerable<T> folderIds)
+        {
+            var fileShares = FileStorageService.GetSharedInfo(fileIds, folderIds);
             return fileShares.Select(FileShareWrapperHelper.Get);
         }
 
         public IEnumerable<FileShareWrapper> SetFileSecurityInfo(T fileId, IEnumerable<FileShareParams> share, bool notify, string sharingMessage)
         {
-            if (share != null && share.Any())
-            {
-                var list = new ItemList<AceWrapper>(share.Select(FileShareParamsHelper.ToAceObject));
-                var aceCollection = new AceCollection
-                {
-                    Entries = new ItemList<string> { "file_" + fileId },
-                    Aces = list,
-                    Message = sharingMessage
-                };
-                FileStorageService.SetAceObject(aceCollection, notify);
-            }
-            return GetFileSecurityInfo(fileId);
+            return SetSecurityInfo(new List<T> { fileId }, new List<T>(), share, notify, sharingMessage);
         }
 
         public IEnumerable<FileShareWrapper> SetFolderSecurityInfo(T folderId, IEnumerable<FileShareParams> share, bool notify, string sharingMessage)
         {
+            return SetSecurityInfo(new List<T>(), new List<T> { folderId}, share, notify, sharingMessage);
+        }
+
+        public IEnumerable<FileShareWrapper> SetSecurityInfo(IEnumerable<T> fileIds, IEnumerable<T> folderIds, IEnumerable<FileShareParams> share, bool notify, string sharingMessage)
+        {
             if (share != null && share.Any())
             {
                 var list = new ItemList<AceWrapper>(share.Select(FileShareParamsHelper.ToAceObject));
-                var aceCollection = new AceCollection
+                var aceCollection = new AceCollection<T>
                 {
-                    Entries = new ItemList<string> { "folder_" + folderId },
+                    Files = fileIds,
+                    Folders = folderIds,
                     Aces = list,
                     Message = sharingMessage
                 };
                 FileStorageService.SetAceObject(aceCollection, notify);
             }
 
-            return GetFolderSecurityInfo(folderId);
+            return GetSecurityInfo(fileIds, folderIds);
         }
 
         public bool RemoveSecurityInfo(List<T> fileIds, List<T> folderIds)
@@ -565,8 +521,7 @@ namespace ASC.Files.Helpers
         {
             var file = GetFileInfo(fileId);
 
-            var objectId = "file_" + file.Id;
-            var sharedInfo = FileStorageService.GetSharedInfo(new ItemList<string> { objectId }).Find(r => r.SubjectId == FileConstant.ShareLinkId);
+            var sharedInfo = FileStorageService.GetSharedInfo(new List<T> { fileId }, new List<T> { }).Find(r => r.SubjectId == FileConstant.ShareLinkId);
             if (sharedInfo == null || sharedInfo.Share != share)
             {
                 var list = new ItemList<AceWrapper>
@@ -578,16 +533,21 @@ namespace ASC.Files.Helpers
                                 Share = share
                             }
                     };
-                var aceCollection = new AceCollection
+                var aceCollection = new AceCollection<T>
                 {
-                    Entries = new ItemList<string> { objectId },
+                    Files = new List<T> { fileId },
                     Aces = list
                 };
                 FileStorageService.SetAceObject(aceCollection, false);
-                sharedInfo = FileStorageService.GetSharedInfo(new ItemList<string> { objectId }).Find(r => r.SubjectId == FileConstant.ShareLinkId);
+                sharedInfo = FileStorageService.GetSharedInfo(new List<T> { fileId }, new List<T> { }).Find(r => r.SubjectId == FileConstant.ShareLinkId);
             }
 
             return sharedInfo.Link;
+        }
+
+        public bool SetAceLink(T fileId, FileShare share)
+        {
+            return FileStorageService.SetAceLink(fileId, share);
         }
 
         ///// <summary>
@@ -625,6 +585,29 @@ namespace ASC.Files.Helpers
                                                                                withSubFolders,
                                                                                new OrderBy(sortBy, !ApiContext.SortDescending)),
                                             startIndex);
+        }
+
+        internal FileEntryWrapper GetFileEntryWrapper(FileEntry r)
+        {
+            FileEntryWrapper wrapper = null;
+            if (r is Folder<int> fol1)
+            {
+                wrapper = FolderWrapperHelper.Get(fol1);
+            }
+            else if (r is Folder<string> fol2)
+            {
+                wrapper = FolderWrapperHelper.Get(fol2);
+            }
+            else if (r is File<int> file1)
+            {
+                wrapper = FileWrapperHelper.Get(file1);
+            }
+            else if (r is File<string> file2)
+            {
+                wrapper = FileWrapperHelper.Get(file2);
+            }
+
+            return wrapper;
         }
     }
 }

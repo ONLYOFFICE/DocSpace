@@ -108,15 +108,15 @@ namespace ASC.Files.Thirdparty.Box
             return new List<File<string>> { GetFile(fileId) };
         }
 
-        public List<File<string>> GetFiles(string[] fileIds)
+        public List<File<string>> GetFiles(IEnumerable<string> fileIds)
         {
-            if (fileIds == null || fileIds.Length == 0) return new List<File<string>>();
+            if (fileIds == null || !fileIds.Any()) return new List<File<string>>();
             return fileIds.Select(GetBoxFile).Select(ToFile).ToList();
         }
 
-        public List<File<string>> GetFilesFiltered(string[] fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
+        public List<File<string>> GetFilesFiltered(IEnumerable<string> fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
         {
-            if (fileIds == null || fileIds.Length == 0 || filterType == FilterType.FoldersOnly) return new List<File<string>>();
+            if (fileIds == null || !fileIds.Any() || filterType == FilterType.FoldersOnly) return new List<File<string>>();
 
             var files = GetFiles(fileIds).AsEnumerable();
 

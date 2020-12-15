@@ -6,12 +6,14 @@ import PropTypes from "prop-types";
 import Loader from "@appserver/components/src/components/loader";
 import PageLayout from "@appserver/common/src/components/PageLayout";
 import store from "@appserver/common/src/store";
+import commonUtils from "@appserver/common/src/utils";
 import { changeEmail } from "../../../../store/confirm/actions";
 const { logout } = store.auth.actions;
+const { tryRedirectTo } = commonUtils;
 
 class ActivateEmail extends React.PureComponent {
   componentDidMount() {
-    const { history, logout, changeEmail, linkData } = this.props;
+    const { logout, changeEmail, linkData } = this.props;
     const [email, uid, key] = [
       linkData.email,
       linkData.uid,
@@ -20,11 +22,11 @@ class ActivateEmail extends React.PureComponent {
     logout();
     changeEmail(uid, email, key)
       .then((res) => {
-        history.push(`/login/confirmed-email=${email}`);
+        tryRedirectTo(`/login/confirmed-email=${email}`);
       })
       .catch((e) => {
         // console.log('activate email error', e);
-        history.push(`/login/error=${e}`);
+        tryRedirectTo(`/login/error=${e}`);
       });
   }
 

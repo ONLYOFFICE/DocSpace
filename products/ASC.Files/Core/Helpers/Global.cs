@@ -566,7 +566,7 @@ namespace ASC.Web.Files.Classes
             {
                 var folder = ServiceProvider.GetService<Folder<T>>();
                 folder.Title = folderName;
-                folder.ParentFolderID = folderId;
+                folder.FolderID = folderId;
 
                 var subFolderId = folderDao.SaveFolder(folder);
 

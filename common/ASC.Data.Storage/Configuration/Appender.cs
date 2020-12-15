@@ -5,7 +5,6 @@ using System.Linq;
 using ASC.Common;
 using ASC.Common.Utils;
 
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Data.Storage.Configuration
@@ -14,7 +13,7 @@ namespace ASC.Data.Storage.Configuration
     {
         public static void Register(DIHelper services)
         {
-            services.TryAddSingleton(r => r.GetService<IConfiguration>().GetSetting<Storage>("Storage"));
+            services.TryAddSingleton(r => r.GetService<ConfigurationExtension>().GetSetting<Storage>("Storage"));
         }
     }
 

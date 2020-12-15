@@ -92,11 +92,11 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             var entries = new List<FileEntry<T>>();
             if (Folders.Any())
             {
-                entries.AddRange(FolderDao.GetFolders(Folders.ToArray()));
+                entries.AddRange(FolderDao.GetFolders(Folders));
             }
             if (Files.Any())
             {
-                entries.AddRange(FileDao.GetFiles(Files.ToArray()));
+                entries.AddRange(FileDao.GetFiles(Files));
             }
             entries.ForEach(x =>
             {

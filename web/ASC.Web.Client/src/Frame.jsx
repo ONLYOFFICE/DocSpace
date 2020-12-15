@@ -9,13 +9,13 @@ import PublicRoute from "@appserver/common/src/components/PublicRoute";
 import ErrorBoundary from "@appserver/common/src/components/ErrorBoundary";
 import history from "@appserver/common/src/history";
 import toastr from "@appserver/common/src/components/Toast/toastr";
-import { AUTH_KEY } from "@appserver/common/src/constants";
 import CommonStore from "@appserver/common/src/store";
 const {
   setIsLoaded,
   getUser,
   getPortalSettings,
   getModules,
+  getIsAuthenticated,
 } = CommonStore.auth.actions;
 
 const Home = React.lazy(() => import("studio/home"));
@@ -59,27 +59,36 @@ const Frame = ({ items = [], page = "home", ...rest }) => {
   useEffect(() => {
     //utils.removeTempContent();
 
-    const { getPortalSettings, getUser, getModules, setIsLoaded } = rest;
+    const {
+      getPortalSettings,
+      getUser,
+      getModules,
+      setIsLoaded,
+      getIsAuthenticated,
+    } = rest;
 
-    const token = localStorage.getItem(AUTH_KEY);
+    getIsAuthenticated()
+      .then((isAuthenticated) => {
+        // if (isAuthenticated)
+        // utils.updateTempContent(isAuthenticated);
 
-    const requests = [];
+        const requests = [];
+        if (!isAuthenticated) {
+          requests.push(getPortalSettings());
+        } else if (
+          !window.location.pathname.includes("confirm/EmailActivation")
+        ) {
+          requests.push(getUser());
+          requests.push(getPortalSettings());
+          requests.push(getModules());
+        }
 
-    if (!token) {
-      requests.push(getPortalSettings());
-    } else if (!window.location.pathname.includes("confirm/EmailActivation")) {
-      requests.push(getUser());
-      requests.push(getPortalSettings());
-      requests.push(getModules());
-    }
-
-    Promise.all(requests)
-      .catch((e) => {
-        toastr.error(e);
+        return Promise.all(requests).finally(() => {
+          // utils.updateTempContent();
+          setIsLoaded();
+        });
       })
-      .finally(() => {
-        setIsLoaded();
-      });
+      .catch((err) => toastr.error(err.message));
   }, []);
 
   return (
@@ -129,6 +138,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    getIsAuthenticated: () => getIsAuthenticated(dispatch),
     getPortalSettings: () => getPortalSettings(dispatch),
     getUser: () => getUser(dispatch),
     getModules: () => getModules(dispatch),

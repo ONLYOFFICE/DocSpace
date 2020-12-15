@@ -213,7 +213,7 @@ namespace ASC.Web.Files.Utils
                     {
                         var newFolder = ServiceProvider.GetService<Folder<T>>();
                         newFolder.Title = subFolderTitle;
-                        newFolder.ParentFolderID = folderId;
+                        newFolder.FolderID = folderId;
 
                         folderId = folderDao.SaveFolder(newFolder);
 

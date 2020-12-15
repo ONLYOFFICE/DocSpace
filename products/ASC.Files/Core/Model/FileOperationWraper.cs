@@ -198,16 +198,16 @@ namespace ASC.Api.Documents
             IEnumerable<FileEntryWrapper> GetFolders<T>(IEnumerable<T> folders)
             {
                 var folderDao = DaoFactory.GetFolderDao<T>();
-                return folderDao.GetFolders(folders.ToArray())
-                    .Select(FolderWrapperHelper.Get)
+                return folderDao.GetFolders(folders)
+                    .Select(r => FolderWrapperHelper.Get(r))
                     .Cast<FileEntryWrapper>();
             }
 
             IEnumerable<FileEntryWrapper> GetFiles<T>(IEnumerable<T> files)
             {
                 var fileDao = DaoFactory.GetFileDao<T>();
-                return fileDao.GetFiles(files.ToArray())
-                    .Select(FilesWrapperHelper.Get)
+                return fileDao.GetFiles(files)
+                    .Select(r => FilesWrapperHelper.Get(r))
                     .Cast<FileEntryWrapper>();
             }
         }

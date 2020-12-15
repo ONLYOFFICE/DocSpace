@@ -1,9 +1,9 @@
 import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import isEqual from "lodash/isEqual";
+import equal from "fast-deep-equal/react";
 
-import { tablet } from "../../utils/device";
+import { tablet, mobile } from "../../utils/device";
 import InputBlock from "../input-block";
 import { Icons } from "../icons";
 import Link from "../link";
@@ -46,6 +46,15 @@ const StyledInput = styled(SimpleInput)`
   .text-tooltip {
     line-height: 14px;
     margin-top: -2px;
+  }
+
+  .password-field-wrapper {
+    display: flex;
+    width: auto;
+
+    @media ${mobile} {
+      width: 100%;
+    }
   }
 `;
 
@@ -322,7 +331,7 @@ class PasswordInput extends React.Component {
   };
 
   shouldComponentUpdate(nextProps, nextState) {
-    return !isEqual(this.props, nextProps) || !isEqual(this.state, nextState);
+    return !equal(this.props, nextProps) || !equal(this.state, nextState);
   }
 
   renderTextTooltip = (settings, length, digits, capital, special) => {
@@ -402,45 +411,46 @@ class PasswordInput extends React.Component {
         )
       : null;
 
-    const tooltipContent = !isDisableTooltip ? (
-      <StyledTooltipContainer forwardedAs="div" title={tooltipPasswordTitle}>
-        {tooltipPasswordTitle}
-        <StyledTooltipItem
-          forwardedAs="div"
-          title={tooltipPasswordLength}
-          valid={validLength}
-        >
-          {tooltipPasswordLength}
-        </StyledTooltipItem>
-        {passwordSettings.digits && (
+    const tooltipContent =
+      !isDisableTooltip && !isDisabled ? (
+        <StyledTooltipContainer forwardedAs="div" title={tooltipPasswordTitle}>
+          {tooltipPasswordTitle}
           <StyledTooltipItem
             forwardedAs="div"
-            title={tooltipPasswordDigits}
-            valid={validDigits}
+            title={tooltipPasswordLength}
+            valid={validLength}
           >
-            {tooltipPasswordDigits}
+            {tooltipPasswordLength}
           </StyledTooltipItem>
-        )}
-        {passwordSettings.upperCase && (
-          <StyledTooltipItem
-            forwardedAs="div"
-            title={tooltipPasswordCapital}
-            valid={validCapital}
-          >
-            {tooltipPasswordCapital}
-          </StyledTooltipItem>
-        )}
-        {passwordSettings.specSymbols && (
-          <StyledTooltipItem
-            forwardedAs="div"
-            title={tooltipPasswordSpecial}
-            valid={validSpecial}
-          >
-            {tooltipPasswordSpecial}
-          </StyledTooltipItem>
-        )}
-      </StyledTooltipContainer>
-    ) : null;
+          {passwordSettings.digits && (
+            <StyledTooltipItem
+              forwardedAs="div"
+              title={tooltipPasswordDigits}
+              valid={validDigits}
+            >
+              {tooltipPasswordDigits}
+            </StyledTooltipItem>
+          )}
+          {passwordSettings.upperCase && (
+            <StyledTooltipItem
+              forwardedAs="div"
+              title={tooltipPasswordCapital}
+              valid={validCapital}
+            >
+              {tooltipPasswordCapital}
+            </StyledTooltipItem>
+          )}
+          {passwordSettings.specSymbols && (
+            <StyledTooltipItem
+              forwardedAs="div"
+              title={tooltipPasswordSpecial}
+              valid={validSpecial}
+            >
+              {tooltipPasswordSpecial}
+            </StyledTooltipItem>
+          )}
+        </StyledTooltipContainer>
+      ) : null;
 
     const inputGroup = (
       <>
@@ -468,7 +478,7 @@ class PasswordInput extends React.Component {
           maxLength={maxLength}
           autoComplete={autoComplete}
         ></InputBlock>
-        <TooltipStyle>
+        {/* <TooltipStyle>
           <Tooltip
             id="tooltipContent"
             effect="solid"
@@ -478,7 +488,7 @@ class PasswordInput extends React.Component {
           >
             {tooltipContent}
           </Tooltip>
-        </TooltipStyle>
+        </TooltipStyle> */}
         <Progress
           progressColor={progressColor}
           progressWidth={progressWidth}
@@ -500,25 +510,27 @@ class PasswordInput extends React.Component {
           </>
         ) : (
           <>
-            <PasswordProgress
-              inputWidth={inputWidth}
-              data-for="tooltipContent"
-              data-tip=""
-              data-event="click"
-              ref={this.ref}
-            >
-              {inputGroup}
-            </PasswordProgress>
-            {!hideNewPasswordButton ? (
-              <NewPasswordButton>
-                <Icons.RefreshIcon
-                  size="medium"
-                  color={iconsColor}
-                  isfill={true}
-                  onClick={this.onGeneratePassword}
-                />
-              </NewPasswordButton>
-            ) : null}
+            <div className="password-field-wrapper">
+              <PasswordProgress
+                inputWidth={inputWidth}
+                data-for="tooltipContent"
+                data-tip=""
+                data-event="click"
+                ref={this.ref}
+              >
+                {inputGroup}
+              </PasswordProgress>
+              {!hideNewPasswordButton ? (
+                <NewPasswordButton>
+                  <Icons.RefreshIcon
+                    size="medium"
+                    color={iconsColor}
+                    isfill={true}
+                    onClick={this.onGeneratePassword}
+                  />
+                </NewPasswordButton>
+              ) : null}
+            </div>
             {textTooltip}
             <CopyLink>
               <Link
@@ -609,6 +621,12 @@ PasswordInput.defaultProps = {
   tooltipOffsetLeft: 110,
 
   simpleView: false,
+  passwordSettings: {
+    minLength: 8,
+    upperCase: false,
+    digits: false,
+    specSymbols: false,
+  },
 };
 
 export default PasswordInput;

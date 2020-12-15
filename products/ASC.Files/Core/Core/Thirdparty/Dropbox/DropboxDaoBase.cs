@@ -123,7 +123,7 @@ namespace ASC.Files.Thirdparty.Dropbox
             var folder = GetFolder();
 
             folder.ID = MakeId(dropboxFolder);
-            folder.ParentFolderID = isRoot ? null : MakeId(GetParentFolderPath(dropboxFolder));
+            folder.FolderID = isRoot ? null : MakeId(GetParentFolderPath(dropboxFolder));
             folder.CreateOn = isRoot ? ProviderInfo.CreateOn : default;
             folder.ModifiedOn = isRoot ? ProviderInfo.CreateOn : default;
             folder.Title = MakeFolderTitle(dropboxFolder);

@@ -270,6 +270,9 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             CurrentTenant = fileOperationData.Tenant;
 
             using var scope = ServiceProvider.CreateScope();
+            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+            tenantManager.SetCurrentTenant(CurrentTenant);
+
             var daoFactory = scope.ServiceProvider.GetService<IDaoFactory>();
             FolderDao = daoFactory.GetFolderDao<TId>();
 

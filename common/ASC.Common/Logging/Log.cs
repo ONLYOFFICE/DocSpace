@@ -376,19 +376,18 @@ namespace ASC.Common.Logging
     [Singletone]
     public class ConfigureLogNLog : IConfigureNamedOptions<LogNLog>
     {
-        public ConfigureLogNLog(IConfiguration configuration)
+        private IConfiguration Configuration { get; }
+        private ConfigurationExtension ConfigurationExtension { get; }
+
+        public ConfigureLogNLog(IConfiguration configuration, ConfigurationExtension configurationExtension)
         {
             Configuration = configuration;
-        }
+            ConfigurationExtension = configurationExtension;
 
-        private IConfiguration Configuration { get; }
-
-        public void Configure(LogNLog options)
-        {
             LogManager.Configuration = new NLog.Config.XmlLoggingConfiguration(Path.Combine(Configuration["pathToConf"], "nlog.config"));
             LogManager.ThrowConfigExceptions = false;
 
-            var settings = Configuration.GetSetting<NLogSettings>("log");
+            var settings = ConfigurationExtension.GetSetting<NLogSettings>("log");
             if (!string.IsNullOrEmpty(settings.Name))
             {
                 LogManager.Configuration.Variables["name"] = settings.Name;
@@ -400,6 +399,11 @@ namespace ASC.Common.Logging
             }
 
             NLog.Targets.Target.Register<SelfCleaningTarget>("SelfCleaning");
+        }
+
+        public void Configure(LogNLog options)
+        {
+
         }
 
         public void Configure(string name, LogNLog options)

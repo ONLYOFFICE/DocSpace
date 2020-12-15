@@ -130,7 +130,7 @@ const TreeNodeMenu = styled(TreeNode)`
       }
     `}
   .draggable {
-    color: #333;
+    color: #555F65;
     /* Required to make elements draggable in old WebKit */
     -khtml-user-drag: none;
     -webkit-user-drag: none;
@@ -291,7 +291,7 @@ const TreeNodeMenu = styled(TreeNode)`
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    color: #333;
+    color: #555F65;
     padding-left: ${(props) =>
       props.icon || props.disableSwitch ? "0" : "20px"};
   }

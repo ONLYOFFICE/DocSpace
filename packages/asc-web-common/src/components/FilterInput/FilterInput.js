@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import SearchInput from "@appserver/components/src/components/search-input";
-import isEqual from "lodash/isEqual";
+import equal from "fast-deep-equal/react";
 import FilterBlock from "./sub-components/FilterBlock";
 import SortComboBox from "./sub-components/SortComboBox";
 import ViewSelector from "./sub-components/ViewSelector";
@@ -127,6 +127,10 @@ class FilterInput extends React.Component {
     const { filterValues, searchText } = this.state;
     const { sortDirection, sortId, inputValue } = selectedFilterData;
 
+    const isGroupChanged = this.groupChanged(
+      prevProps.selectedFilterData.filterValues
+    );
+
     if (
       this.props.needForUpdate &&
       this.props.needForUpdate(prevProps, this.props)
@@ -142,10 +146,17 @@ class FilterInput extends React.Component {
       this.updateFilter();
     }
 
+    if (isGroupChanged) {
+      this.setState({
+        needUpdateFilter: true,
+      });
+    }
+
     if (
-      (!isEqual(selectedFilterData.filterValues, filterValues) ||
+      ((!equal(selectedFilterData.filterValues, filterValues) ||
         inputValue !== searchText) &&
-      sectionWidth !== prevProps.sectionWidth
+        sectionWidth !== prevProps.sectionWidth) ||
+      isGroupChanged
     ) {
       const sortData = getSortData();
       const filterValues = this.getDefaultFilterData();
@@ -164,7 +175,7 @@ class FilterInput extends React.Component {
     }
 
     if (
-      !isEqual(
+      !equal(
         prevProps.selectedFilterData.filterValues,
         selectedFilterData.filterValues
       ) &&
@@ -189,7 +200,7 @@ class FilterInput extends React.Component {
     } = this.props;
 
     if (
-      !isEqual(selectedFilterData, nextProps.selectedFilterData) ||
+      !equal(selectedFilterData, nextProps.selectedFilterData) ||
       this.props.viewAs !== nextProps.viewAs ||
       this.props.widthProp !== nextProps.widthProp ||
       sectionWidth !== nextProps.sectionWidth
@@ -206,7 +217,7 @@ class FilterInput extends React.Component {
     )
       return true;
 
-    return !isEqual(this.state, nextState);
+    return !equal(this.state, nextState);
   }
 
   onChangeSortDirection = (key) => {
@@ -255,6 +266,27 @@ class FilterInput extends React.Component {
       this.state.sortDirection ? "desc" : "asc"
     );
   };
+
+  groupChanged = (prevFilterValues) => {
+    const { selectedFilterData } = this.props;
+
+    let groupItem = selectedFilterData.filterValues.find(
+      (item) => item.group === "filter-group"
+    );
+    let prevGroupItem = prevFilterValues.find(
+      (item) => item.group === "filter-group"
+    );
+
+    if (groupItem === prevGroupItem) return false;
+    if (!groupItem || !prevGroupItem) return true;
+
+    if (groupItem.key.indexOf(prevGroupItem.key) !== -1) {
+      return false;
+    } else {
+      return true;
+    }
+  };
+
   getDefaultFilterData = () => {
     const { getFilterData, selectedFilterData } = this.props;
     const filterData = getFilterData();
@@ -754,6 +786,10 @@ class FilterInput extends React.Component {
     } = this.state;
 
     const smallSectionWidth = sectionWidth ? sectionWidth <= 500 : false;
+    const isAllItemsHide =
+      openFilterItems.length === 0 && hiddenFilterItems.length > 0
+        ? true
+        : false;
 
     let iconSize = 30;
     switch (size) {
@@ -776,6 +812,7 @@ class FilterInput extends React.Component {
         className={className}
         id={id}
         style={style}
+        isAllItemsHide={isAllItemsHide}
       >
         <div className="styled-search-input test" ref={this.searchWrapper}>
           <SearchInput

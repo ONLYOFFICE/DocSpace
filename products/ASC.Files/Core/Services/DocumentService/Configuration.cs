@@ -266,7 +266,7 @@ namespace ASC.Web.Files.Services.DocumentService
 
                 try
                 {
-                    return FileSharing.GetSharedInfoShort<string>(File.UniqID);
+                    return FileSharing.GetSharedInfoShortFile(File.ID);
                 }
                 catch
                 {

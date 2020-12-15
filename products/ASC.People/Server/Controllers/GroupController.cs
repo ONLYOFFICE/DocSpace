@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using ASC.Api.Core;
 using ASC.Api.Utils;
 using ASC.Common;
 using ASC.Common.Web;
@@ -21,6 +22,7 @@ namespace ASC.Employee.Core.Controllers
     [ApiController]
     public class GroupController : ControllerBase
     {
+        public ApiContext ApiContext { get; }
         private MessageService MessageService { get; }
 
         private UserManager UserManager { get; }
@@ -29,12 +31,14 @@ namespace ASC.Employee.Core.Controllers
         private GroupWraperFullHelper GroupWraperFullHelper { get; }
 
         public GroupController(
+            ApiContext apiContext,
             MessageService messageService,
             UserManager userManager,
             PermissionContext permissionContext,
             MessageTarget messageTarget,
             GroupWraperFullHelper groupWraperFullHelper)
         {
+            ApiContext = apiContext;
             MessageService = messageService;
             UserManager = userManager;
             PermissionContext = permissionContext;
@@ -45,7 +49,12 @@ namespace ASC.Employee.Core.Controllers
         [Read]
         public IEnumerable<GroupWrapperSummary> GetAll()
         {
-            return UserManager.GetDepartments().Select(x => new GroupWrapperSummary(x, UserManager));
+            var result = UserManager.GetDepartments().Select(r => r);
+            if (!string.IsNullOrEmpty(ApiContext.FilterValue))
+            {
+                result = result.Where(r => r.Name.Contains(ApiContext.FilterValue, StringComparison.InvariantCultureIgnoreCase));
+            }
+            return result.Select(x => new GroupWrapperSummary(x, UserManager));
         }
 
         [Read("{groupid}")]

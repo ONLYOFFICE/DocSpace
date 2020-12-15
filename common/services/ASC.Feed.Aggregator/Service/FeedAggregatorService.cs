@@ -33,6 +33,7 @@ using System.Threading.Tasks;
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
+using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Common;
 using ASC.Core.Notify.Signalr;
@@ -42,7 +43,6 @@ using ASC.Feed.Data;
 
 using Autofac;
 
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
@@ -62,12 +62,12 @@ namespace ASC.Feed.Aggregator
         private readonly object aggregateLock = new object();
         private readonly object removeLock = new object();
 
-        private IConfiguration Configuration { get; }
+        private ConfigurationExtension Configuration { get; }
         private IServiceProvider ServiceProvider { get; }
         public ILifetimeScope Container { get; }
 
         public FeedAggregatorService(
-            IConfiguration configuration,
+            ConfigurationExtension configuration,
             IServiceProvider serviceProvider,
             ILifetimeScope container,
             IOptionsMonitor<ILog> optionsMonitor,

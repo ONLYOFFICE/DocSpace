@@ -135,7 +135,7 @@ namespace ASC.Files.Thirdparty.SharePoint
             return folders.ToList();
         }
 
-        public List<Folder<string>> GetFolders(string[] folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true)
+        public List<Folder<string>> GetFolders(IEnumerable<string> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true)
         {
             if (filterType == FilterType.FilesOnly || filterType == FilterType.ByExtension
                 || filterType == FilterType.DocumentsOnly || filterType == FilterType.ImagesOnly
@@ -183,9 +183,9 @@ namespace ASC.Files.Thirdparty.SharePoint
                 return ProviderInfo.ToFolder(savedfolder).ID;
             }
 
-            if (folder.ParentFolderID != null)
+            if (folder.FolderID != null)
             {
-                var parentFolder = ProviderInfo.GetFolderById(folder.ParentFolderID);
+                var parentFolder = ProviderInfo.GetFolderById(folder.FolderID);
 
                 folder.Title = GetAvailableTitle(folder.Title, parentFolder, IsExist);
 

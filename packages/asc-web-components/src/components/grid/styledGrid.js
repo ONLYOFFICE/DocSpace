@@ -85,7 +85,7 @@ const StyledGrid = styled.div`
   ${(props) => props.columnsProp && columnsStyle(props)}
   display: grid;
   ${(props) => props.gridArea && gridAreaStyle(props.gridArea)}
-  ${(props) => props.gridColumnGap && gridColumnGapStyle(props)}
+  ${(props) => props.gridColumnGap && gridColumnGapStyle(props.gridColumnGap)}
   ${(props) => props.gridGap && gridGapStyle(props.gridGap)}
   ${(props) => props.gridRowGap && gridRowGapStyle(props)}
   ${(props) => props.heightProp && heightStyle(props.heightProp)}

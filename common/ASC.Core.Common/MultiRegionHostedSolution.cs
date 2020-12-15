@@ -51,6 +51,7 @@ namespace ASC.Core
         private readonly string dbid;
 
         private IConfiguration Configuraion { get; }
+        public ConfigurationExtension ConfigurationExtension { get; }
         private CookieStorage CookieStorage { get; }
         private EFLoggerFactory LoggerFactory { get; }
         private PasswordHasher PasswordHasher { get; }
@@ -58,6 +59,7 @@ namespace ASC.Core
 
         public MultiRegionHostedSolution(string dbid,
             IConfiguration configuraion,
+            ConfigurationExtension configurationExtension,
             CookieStorage cookieStorage,
             EFLoggerFactory loggerFactory,
             PasswordHasher passwordHasher,
@@ -65,6 +67,7 @@ namespace ASC.Core
         {
             this.dbid = dbid;
             Configuraion = configuraion;
+            ConfigurationExtension = configurationExtension;
             CookieStorage = cookieStorage;
             LoggerFactory = loggerFactory;
             PasswordHasher = passwordHasher;
@@ -200,12 +203,12 @@ namespace ASC.Core
 
         private void Initialize()
         {
-            var connectionStrings = Configuraion.GetConnectionStrings();
-            var dbConnectionStrings = Configuraion.GetConnectionStrings(dbid);
+            var connectionStrings = ConfigurationExtension.GetConnectionStrings();
+            var dbConnectionStrings = ConfigurationExtension.GetConnectionStrings(dbid);
 
             if (Convert.ToBoolean(Configuraion["core.multi-hosted.config-only"] ?? "false"))
             {
-                foreach (var cs in Configuraion.GetConnectionStrings())
+                foreach (var cs in ConfigurationExtension.GetConnectionStrings())
                 {
                     if (cs.Name.StartsWith(dbid + "."))
                     {

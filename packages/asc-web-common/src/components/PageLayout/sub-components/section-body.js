@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
-import isEqual from "lodash/isEqual";
+import equal from "fast-deep-equal/react";
 
 import Scrollbar from "@appserver/components/src/components/scrollbar";
 import DragAndDrop from "@appserver/components/src/components/drag-and-drop";
@@ -27,6 +27,11 @@ const commonStyles = css`
       flex-direction: column;
       min-height: 100%;
     }
+
+    .people-row-container,
+    .files-row-container {
+      margin-top: -22px;
+  }
   }
 `;
 
@@ -73,13 +78,18 @@ class SectionBody extends React.Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    return !isEqual(this.props, nextProps);
+    return !equal(this.props, nextProps);
   }
 
   componentDidMount() {
     if (!this.props.autoFocus) return;
 
     this.focusRef.current.focus();
+  }
+
+  componentWillUnmount() {
+    this.focusRef = null;
+    this.scrollRef = null;
   }
 
   render() {
