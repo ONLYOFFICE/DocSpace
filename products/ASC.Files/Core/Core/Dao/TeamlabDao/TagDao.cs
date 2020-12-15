@@ -77,8 +77,21 @@ namespace ASC.Files.Core.Data
 
         public IEnumerable<Tag> GetTags(Guid subject, TagType tagType, IEnumerable<FileEntry<T>> fileEntries)
         {
-            var filesId = fileEntries.Where(e => e.FileEntryType == FileEntryType.File).Select(e => MappingID(e.ID).ToString()).ToList();
-            var foldersId = fileEntries.Where(e => e.FileEntryType == FileEntryType.Folder).Select(e => MappingID(e.ID).ToString()).ToList();
+            var filesId = new HashSet<string>();
+            var foldersId = new HashSet<string>();
+
+            foreach(var f in fileEntries)
+            {
+                var id = MappingID(f.ID).ToString();
+                if (f.FileEntryType == FileEntryType.File)
+                {
+                    filesId.Add(id);
+                }
+                else if (f.FileEntryType == FileEntryType.Folder)
+                {
+                    foldersId.Add(id);
+                }
+            }
 
             var q = Query(FilesDbContext.Tag)
                 .Join(FilesDbContext.TagLink, r => r.Id, l => l.TagId, (tag, link) => new TagLinkData { Tag = tag, Link = link })
@@ -406,7 +419,7 @@ namespace ASC.Files.Core.Data
             .ToList();
 
             var entryIds = tags.Select(r => r.EntryId).ToList();
-            var entryTypes = tags.Select(r => (int)r.EntryType).ToList();
+            var entryTypes = tags.Select(r => (int)r.EntryType).Distinct().ToList();
 
             var sqlQuery = Query(FilesDbContext.Tag)
                 .Join(FilesDbContext.TagLink, r => r.Id, l => l.TagId, (tag, link) => new TagLinkData { Tag = tag, Link = link })

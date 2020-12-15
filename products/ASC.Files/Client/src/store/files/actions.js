@@ -551,11 +551,7 @@ export function createFile(folderId, title) {
 }
 
 export function createFolder(parentFolderId, title) {
-  return (dispatch) => {
-    return files.createFolder(parentFolderId, title).then((folder) => {
-      fetchFolder(parentFolderId, dispatch);
-    });
-  };
+  return files.createFolder(parentFolderId, title);
 }
 
 export function updateFile(fileId, title) {
@@ -1535,16 +1531,16 @@ export const loopFilesOperations = (id, destFolderId, isCopy) => {
                       );
                       //toastr.error(err);
                       setTimeout(
-                        () => dispatch(clearPrimaryProgressData()),
+                        () => dispatch(clearSecondaryProgressData()),
                         TIMEOUT
                       );
                     })
-                    .finally(() =>
+                    .finally(() => {
                       setTimeout(
-                        () => dispatch(clearPrimaryProgressData()),
+                        () => dispatch(clearSecondaryProgressData()),
                         TIMEOUT
-                      )
-                    );
+                      );
+                    });
                 } else {
                   dispatch(
                     setSecondaryProgressBarData({

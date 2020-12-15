@@ -127,6 +127,10 @@ class FilterInput extends React.Component {
     const { filterValues, searchText } = this.state;
     const { sortDirection, sortId, inputValue } = selectedFilterData;
 
+    const isGroupChanged = this.groupChanged(
+      prevProps.selectedFilterData.filterValues
+    );
+
     if (
       this.props.needForUpdate &&
       this.props.needForUpdate(prevProps, this.props)
@@ -142,10 +146,17 @@ class FilterInput extends React.Component {
       this.updateFilter();
     }
 
+    if (isGroupChanged) {
+      this.setState({
+        needUpdateFilter: true,
+      });
+    }
+
     if (
-      !equal(selectedFilterData.filterValues, filterValues) ||
-      inputValue !== searchText // &&
-      //sectionWidth !== prevProps.sectionWidth
+      ((!equal(selectedFilterData.filterValues, filterValues) ||
+        inputValue !== searchText) &&
+        sectionWidth !== prevProps.sectionWidth) ||
+      isGroupChanged
     ) {
       const sortData = getSortData();
       const filterValues = this.getDefaultFilterData();
@@ -255,6 +266,27 @@ class FilterInput extends React.Component {
       this.state.sortDirection ? "desc" : "asc"
     );
   };
+
+  groupChanged = (prevFilterValues) => {
+    const { selectedFilterData } = this.props;
+
+    let groupItem = selectedFilterData.filterValues.find(
+      (item) => item.group === "filter-group"
+    );
+    let prevGroupItem = prevFilterValues.find(
+      (item) => item.group === "filter-group"
+    );
+
+    if (groupItem === prevGroupItem) return false;
+    if (!groupItem || !prevGroupItem) return true;
+
+    if (groupItem.key.indexOf(prevGroupItem.key) !== -1) {
+      return false;
+    } else {
+      return true;
+    }
+  };
+
   getDefaultFilterData = () => {
     const { getFilterData, selectedFilterData } = this.props;
     const filterData = getFilterData();

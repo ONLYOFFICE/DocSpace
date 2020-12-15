@@ -60,6 +60,12 @@ class App extends React.Component {
     } = this.props;
 
     setModuleInfo();
+
+    if (this.isEditor) {
+      setIsLoaded();
+      return;
+    }
+
     getIsAuthenticated().then((isAuthenticated) => {
       if (!isAuthenticated) {
         utils.updateTempContent();
@@ -68,15 +74,13 @@ class App extends React.Component {
         utils.updateTempContent(isAuthenticated);
       }
 
-      const requests = this.isEditor
-        ? [getUser()]
-        : [
-            getUser(),
-            getPortalSettings(),
-            getModules(),
-            getPortalCultures(),
-            fetchTreeFolders(),
-          ];
+      const requests = [
+        getUser(),
+        getPortalSettings(),
+        getModules(),
+        getPortalCultures(),
+        fetchTreeFolders(),
+      ];
 
       Promise.all(requests)
         .catch((e) => {
