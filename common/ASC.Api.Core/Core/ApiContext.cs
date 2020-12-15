@@ -39,6 +39,7 @@ namespace ASC.Api.Core
     [Scope]
     public class ApiContext : ICloneable
     {
+        private static int MaxCount = 1000;
         public IHttpContextAccessor HttpContextAccessor { get; set; }
         public Tenant tenant;
         public Tenant Tenant { get { return tenant ??= TenantManager.GetCurrentTenant(HttpContextAccessor.HttpContext); } }
@@ -48,14 +49,14 @@ namespace ASC.Api.Core
             if (httpContextAccessor == null || httpContextAccessor.HttpContext == null) return;
             HttpContextAccessor = httpContextAccessor;
 
-            Count = 0;
+            Count = MaxCount;
             var query = HttpContextAccessor.HttpContext.Request.Query;
             //Try parse values
             var count = query.GetRequestValue("count");
             if (!string.IsNullOrEmpty(count) && ulong.TryParse(count, out var countParsed))
             {
                 //Count specified and valid
-                Count = (long)countParsed;
+                Count = Math.Min((long)countParsed, MaxCount);
             }
 
             var startIndex = query.GetRequestValue("startIndex");

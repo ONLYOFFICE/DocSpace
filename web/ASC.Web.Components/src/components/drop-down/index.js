@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import CustomScrollbarsVirtualList from "../scrollbar/custom-scrollbars-virtual-list";
 import DropDownItem from "../drop-down-item";
 import Backdrop from "../backdrop";
+import Box from "../box";
 import { VariableSizeList } from "react-window";
 import onClickOutside from "react-onclickoutside";
 
@@ -41,7 +42,7 @@ const StyledDropdown = styled.div`
     css`
       left: ${(props) => (props.manualX ? props.manualX : "0px")};
     `}
-    z-index: 150;
+    z-index: 200;
   display: ${(props) => (props.open ? "block" : "none")};
   background: #ffffff;
   border-radius: 6px;
@@ -156,10 +157,32 @@ class DropDown extends React.PureComponent {
 
     return isTablet ? 36 : 32;
   };
+  hideDisabledItems = () => {
+    if (React.Children.count(this.props.children) > 0) {
+      const { children } = this.props;
+      const enabledChildren = React.Children.map(children, (child) => {
+        if (child && !child.props.disabled) return child;
+      });
+
+      const sizeEnabledChildren = enabledChildren.length;
+
+      const cleanChildren = React.Children.map(
+        enabledChildren,
+        (child, index) => {
+          if (!child.props.isSeparator) return child;
+          if (index !== 0 && index !== sizeEnabledChildren - 1) return child;
+        }
+      );
+
+      return cleanChildren;
+    }
+  };
 
   render() {
-    const { maxHeight, children } = this.props;
+    const { maxHeight, children, showDisabledItems } = this.props;
     const { directionX, directionY, width } = this.state;
+    let cleanChildren;
+
     const rowHeights = React.Children.map(children, (child) =>
       this.getItemHeight(child)
     );
@@ -171,6 +194,9 @@ class DropDown extends React.PureComponent {
       ? { height: calculatedHeight + "px" }
       : {};
     //console.log("DropDown render", this.props);
+
+    if (!showDisabledItems) cleanChildren = this.hideDisabledItems();
+
     return (
       <StyledDropdown
         ref={this.dropDownRef}
@@ -190,6 +216,8 @@ class DropDown extends React.PureComponent {
           >
             {Row}
           </VariableSizeList>
+        ) : cleanChildren ? (
+          cleanChildren
         ) : (
           children
         )}
@@ -215,26 +243,31 @@ DropDown.propTypes = {
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   withBackdrop: PropTypes.bool,
   columnCount: PropTypes.number,
+  showDisabledItems: PropTypes.bool,
 };
 
 DropDown.defaultProps = {
   directionX: "left",
   directionY: "bottom",
   withBackdrop: false,
+  showDisabledItems: false,
 };
 
 const EnhancedComponent = onClickOutside(DropDown);
 
 class DropDownContainer extends React.Component {
+  toggleDropDown = (e) => {
+    this.props.clickOutsideAction({}, !this.props.open);
+  };
   render() {
-    const { withBackdrop = false, open } = this.props;
-    const isTablet = window.innerWidth < 1024; //TODO: Make some better
+    const { withBackdrop = true, open } = this.props;
+
     return (
       <>
+        {withBackdrop ? (
+          <Backdrop visible={open} zIndex={199} onClick={this.toggleDropDown} />
+        ) : null}
         <EnhancedComponent disableOnClickOutside={true} {...this.props} />
-        {withBackdrop && open && isTablet && (
-          <Backdrop visible zIndex={149} onClick={this.toggleDropDown} />
-        )}
       </>
     );
   }

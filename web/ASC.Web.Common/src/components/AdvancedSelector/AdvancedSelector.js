@@ -101,7 +101,12 @@ class AdvancedSelector extends React.Component {
           <Selector {...this.props} displayType={displayType} />
         ) : (
           <>
-            <Backdrop onClick={this.onClose} visible={isOpen} zIndex={310} />
+            <Backdrop
+              onClick={this.onClose}
+              visible={isOpen}
+              zIndex={310}
+              isAside={true}
+            />
             <Aside visible={isOpen} scale={false} className="aside-container">
               <Selector {...this.props} displayType={displayType} />
             </Aside>
