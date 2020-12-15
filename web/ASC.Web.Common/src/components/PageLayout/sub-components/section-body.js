@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
 import { utils, Scrollbar, DragAndDrop } from "asc-web-components";
 import SelectedFrame from "./SelectedFrame";
-import isEqual from "lodash/isEqual";
+import equal from "fast-deep-equal/react";
 
 const { tablet } = utils.device;
 
@@ -76,9 +76,9 @@ class SectionBody extends React.Component {
     this.scrollRef = React.createRef();
   }
 
-  // shouldComponentUpdate(nextProps) {
-  //   return !isEqual(this.props, nextProps);
-  // }
+  shouldComponentUpdate(nextProps) {
+    return !equal(this.props, nextProps);
+  }
 
   componentDidMount() {
     if (!this.props.autoFocus) return;

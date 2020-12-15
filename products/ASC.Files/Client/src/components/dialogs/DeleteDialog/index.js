@@ -14,10 +14,11 @@ import { api, utils, toastr } from "asc-web-common";
 import {
   fetchFiles,
   setTreeFolders,
-  setProgressBarData,
-  clearProgressData,
+  setSecondaryProgressBarData,
+  clearSecondaryProgressData,
   setUpdateTree,
 } from "../../../store/files/actions";
+import { TIMEOUT } from "../../../helpers/constants";
 import {
   loopTreeFolders,
   getSelectedFolderId,
@@ -67,10 +68,9 @@ class DeleteDialogComponent extends React.Component {
       treeFolders,
       setTreeFolders,
       isRecycleBinFolder,
-      isPrivacy,
-      setProgressBarData,
-      clearProgressData,
-      t,
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
+      isPrivacy,      t,
       fetchFiles,
       setUpdateTree,
     } = this.props;
@@ -80,19 +80,23 @@ class DeleteDialogComponent extends React.Component {
       .then((res) => {
         const currentProcess = res.find((x) => x.id === id);
         if (currentProcess && currentProcess.progress !== 100) {
-          setProgressBarData({
+          setSecondaryProgressBarData({
+            icon: "trash",
             percent: currentProcess.progress,
             label: t("DeleteOperation"),
             visible: true,
+            alert: false,
           });
           setTimeout(() => this.loopDeleteOperation(id), 1000);
         } else {
-          setProgressBarData({
+          setSecondaryProgressBarData({
+            icon: "trash",
             percent: 100,
             label: t("DeleteOperation"),
             visible: true,
+            alert: false,
           });
-          setTimeout(() => clearProgressData(), 5000);
+          setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
           fetchFiles(currentFolderId, filter).then((data) => {
             if (!isRecycleBinFolder && !!this.state.foldersList.length) {
               const path = data.selectedFolder.pathParts.slice(0);
@@ -108,8 +112,12 @@ class DeleteDialogComponent extends React.Component {
         }
       })
       .catch((err) => {
-        toastr.error(err);
-        clearProgressData();
+        setSecondaryProgressBarData({
+          visible: true,
+          alert: true,
+        });
+        //toastr.error(err);
+        setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
       });
   };
 
@@ -119,8 +127,8 @@ class DeleteDialogComponent extends React.Component {
       isPrivacy,
       onClose,
       t,
-      setProgressBarData,
-      clearProgressData,
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
     } = this.props;
     const { selection } = this.state;
 
@@ -142,10 +150,12 @@ class DeleteDialogComponent extends React.Component {
 
     onClose();
     if (folderIds.length || fileIds.length) {
-      setProgressBarData({
+      setSecondaryProgressBarData({
+        icon: "trash",
         visible: true,
         label: t("DeleteOperation"),
         percent: 0,
+        alert: false,
       });
 
       files
@@ -155,8 +165,12 @@ class DeleteDialogComponent extends React.Component {
           this.loopDeleteOperation(id);
         })
         .catch((err) => {
-          toastr.error(err);
-          clearProgressData();
+          setSecondaryProgressBarData({
+            visible: true,
+            alert: true,
+          });
+          //toastr.error(err);
+          setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
         });
     }
   };
@@ -293,8 +307,8 @@ const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps, {
   setTreeFolders,
-  setProgressBarData,
-  clearProgressData,
+  setSecondaryProgressBarData,
+  clearSecondaryProgressData,
   setUpdateTree,
   fetchFiles,
 })(withRouter(DeleteDialog));

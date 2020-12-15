@@ -4,10 +4,12 @@ import FilesFilter from "./filter";
 import { FolderType } from "../../constants";
 import find from "lodash/find";
 
-export function openEdit(fileId) {
+export function openEdit(fileId, doc) {
+  const params = doc ? `?doc=${doc}` : "";
+
   const options = {
     method: "get",
-    url: `/files/file/${fileId}/openedit`,
+    url: `/files/file/${fileId}/openedit${params}`,
   };
 
   return request(options);
@@ -394,6 +396,15 @@ export function getShareFiles(fileId) {
   });
 }
 
+export function setExternalAccess(fileId, accessType) {
+  const data = { share: accessType };
+  return request({
+    method: "put",
+    url: `/files/${fileId}/setacelink`,
+    data,
+  });
+}
+
 export function setShareFolder(folderId, share, notify, sharingMessage) {
   const data = { share, notify, sharingMessage };
   return request({
@@ -495,7 +506,7 @@ export function convertFile(fileId) {
   });
 }
 
-export function getConvertFile(fileId) {
+export function getFileConversationProgress(fileId) {
   return request({
     method: "get",
     url: `/files/file/${fileId}/checkconversion`,

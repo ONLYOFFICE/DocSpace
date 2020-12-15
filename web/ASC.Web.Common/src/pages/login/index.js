@@ -1,7 +1,7 @@
 import React, { Component, useEffect } from "react";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
-import { store } from "asc-web-common";
+import { getLanguage } from "../../store/auth/selectors";
 import {
   Box,
   Button,
@@ -11,7 +11,7 @@ import {
   toastr,
   Checkbox,
   PasswordInput,
-  FieldContainer
+  FieldContainer,
 } from "asc-web-components";
 import PageLayout from "../../components/PageLayout";
 import { connect } from "react-redux";
@@ -22,14 +22,14 @@ import ForgotPasswordModalDialog from "./sub-components/forgot-password-modal-di
 import {
   login,
   setIsLoaded,
-  reloadPortalSettings
+  reloadPortalSettings,
 } from "../../store/auth/actions";
 import { sendInstructionsToChangePassword } from "../../api/people";
 import Register from "./sub-components/register-container";
 import { createPasswordHash, tryRedirectTo } from "../../utils";
 import { isDesktopClient } from "../../store/auth/selectors";
 import { checkPwd } from "../../desktop";
-const { getLanguage } = store.auth.selectors;
+
 const LoginContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -488,7 +488,7 @@ function mapStateToProps(state) {
     organizationName,
     hashSettings,
     enabledJoin,
-    defaultPage
+    defaultPage,
   } = settings;
 
   return {
@@ -500,12 +500,12 @@ function mapStateToProps(state) {
     greetingTitle: greetingSettings,
     hashSettings,
     enabledJoin,
-    defaultPage
+    defaultPage,
   };
 }
 
 export default connect(mapStateToProps, {
   login,
   setIsLoaded,
-  reloadPortalSettings
+  reloadPortalSettings,
 })(withRouter(LoginForm));
