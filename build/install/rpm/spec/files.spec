@@ -15,7 +15,6 @@
 /etc/systemd/system/appserver-backup.service
 
 %files common
-%defattr(-, onlyoffice, onlyoffice, -)
 /app/onlyoffice/*
 /var/log/onlyoffice/
 
@@ -43,7 +42,6 @@
 /etc/systemd/system/appserver-api_system.service
 
 %files proxy
-%defattr(-, onlyoffice, onlyoffice, -)
 /etc/nginx/includes/*
 /var/www/story/*
 /var/www/products/ASC.People/client/*
@@ -51,8 +49,8 @@
 /var/www/public/*
 /var/www/studio/client/*
 /etc/nginx/conf.d/*
-/var/www/services/urlshortener/client/*
-/var/www/services/thumb/client/*
+/services/urlshortener/client/*
+/services/thumb/client/*
 /etc/nginx/templates/upstream.conf.template
 
 %files studio.notify

@@ -1,5 +1,6 @@
 %define _unpackaged_files_terminate_build 0
 %undefine _missing_build_ids_terminate_build
+%define  debug_package %{nil}
 %global GIT_BRANCH develop
 Name:           onlyoffice-appserver
 Summary:        AppServer
@@ -29,6 +30,7 @@ Requires:       onlyoffice-appserver-urlshortener
 Requires:       onlyoffice-appserver-thumbnails
 Requires:       onlyoffice-appserver-studio
 Requires:       onlyoffice-appserver-api
+AutoReqProv:    no
 %description
 
 %include package.spec
@@ -49,28 +51,10 @@ Requires:       onlyoffice-appserver-api
 
 %pre common
 
-addgroup --system --gid 107 onlyoffice && \
-adduser -uid 104 --quiet --home /var/www/onlyoffice --system --gid 107 onlyoffice
+getent group onlyoffice >/dev/null || groupadd -r onlyoffice
+getent passwd onlyoffice >/dev/null || useradd -r -g onlyoffice -d /var/www/onlyoffice/ -s /sbin/nologin onlyoffice
 
 %post
-
-%post proxy
-
-chown nginx:nginx /etc/nginx/* -R
-sudo sed -e 's/#//' -i /etc/nginx/conf.d/onlyoffice.conf
-
-mkdir -p /var/mysqld/ && \
-chown -R mysql:mysql /var/lib/mysql /var/run/mysqld /var/mysqld/ && \
-sudo -u mysql bash -c "/usr/bin/pidproxy /var/mysqld/mysqld.pid /usr/bin/mysqld_safe --pid-file=/var/mysqld/mysqld.pid &" && \
-sleep 5s && \
-mysql -e "CREATE DATABASE IF NOT EXISTS onlyoffice CHARACTER SET utf8 COLLATE 'utf8_general_ci'" && \
-mysql -D "onlyoffice" < /app/onlyoffice/createdb.sql && \
-mysql -D "onlyoffice" < /app/onlyoffice/onlyoffice.sql && \
-mysql -D "onlyoffice" < /app/onlyoffice/onlyoffice.data.sql && \
-mysql -D "onlyoffice" < /app/onlyoffice/onlyoffice.resources.sql && \
-mysql -D "onlyoffice" -e 'CREATE USER IF NOT EXISTS "onlyoffice_user"@"localhost" IDENTIFIED WITH mysql_native_password BY "onlyoffice_pass";' && \
-mysql -D "onlyoffice" -e 'GRANT ALL PRIVILEGES ON *.* TO 'onlyoffice_user'@'localhost';' && \
-killall -u mysql -n mysql
 
 %preun
 
