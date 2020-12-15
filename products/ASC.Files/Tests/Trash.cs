@@ -44,8 +44,8 @@ namespace ASC.Files.Tests
         [Order(2)]
         public void CreateFileReturnsFolderWrapper(string fileTitle)
         {
-            var fileWrapper = Assert.Throws<InvalidOperationException>(() => FilesControllerHelper.CreateFile((int)GlobalFolderHelper.FolderTrash, fileTitle, default));
-            Assert.That(fileWrapper.Message == "You don't have enough permission to create");
+            var fileWrapper = FilesControllerHelper.CreateFile((int)GlobalFolderHelper.FolderTrash, fileTitle, default);
+            Assert.AreEqual(fileWrapper.FolderId, GlobalFolderHelper.FolderMy);
         }
 
         [Test]

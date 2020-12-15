@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 using ASC.Api.Documents;
 
@@ -42,10 +40,10 @@ namespace ASC.Files.Tests
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetCreateFileItems))]
         [Category("File")]
         [Order(1)]
-        public void CreateFileReturnsFolderWrapper(string folderTitle)
+        public void CreateFileReturnsFolderWrapper(string fileTitle)
         {
-            var folderWrapper = Assert.Throws<InvalidOperationException>(() => FilesControllerHelper.CreateFile(GlobalFolderHelper.FolderFavorites, folderTitle, default));
-            Assert.That(folderWrapper.Message == "You don't have enough permission to create");
+            var fileWrapper = FilesControllerHelper.CreateFile(GlobalFolderHelper.FolderShare, fileTitle, default);
+            Assert.AreEqual(fileWrapper.FolderId, GlobalFolderHelper.FolderMy);
         }
 
         [Test]
