@@ -25,6 +25,14 @@ class PureEditor extends React.Component {
       changeTitle(event, docTitle);
     };
 
+    const onMetaChange = (event) => {
+      const newTitle = event.data.title;
+      if (newTitle && newTitle !== docTitle) {
+        setDocumentTitle(newTitle);
+        docTitle = newTitle;
+      }
+    };
+
     console.log("PureEditor componentDidMount", fileId, doc);
 
     if (this.isIPad()) {
@@ -73,6 +81,7 @@ class PureEditor extends React.Component {
           const events = {
             events: {
               onDocumentStateChange: onDocumentStateChange,
+              onMetaChange: onMetaChange,
             },
           };
 
