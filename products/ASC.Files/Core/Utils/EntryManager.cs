@@ -741,35 +741,42 @@ namespace ASC.Web.Files.Utils
         {
             var tagDao = DaoFactory.GetTagDao<T>();
 
-            var tagsFavorite = tagDao.GetTags(AuthContext.CurrentAccount.ID, TagType.Favorite, files);
-            var tagsTemplate = tagDao.GetTags(AuthContext.CurrentAccount.ID, TagType.Template, files);
+            var tags = tagDao.GetTags(AuthContext.CurrentAccount.ID, new[] { TagType.Favorite, TagType.Template, TagType.Locked }, files);
             var tagsNew = tagDao.GetNewTags(AuthContext.CurrentAccount.ID, files);
-            var tagsLocked = tagDao.GetTags(TagType.Locked, files.ToArray());
 
             foreach (var file in files)
             {
-                if (tagsFavorite.Any(r => r.EntryId.Equals(file.ID)))
+                foreach(var t in tags)
                 {
-                    file.IsFavorite = true;
-                }
+                    if (!t.Key.Equals(file.ID)) continue;
 
-                if (tagsTemplate.Any(r => r.EntryId.Equals(file.ID)))
-                {
-                    file.IsTemplate = true;
+                    if (t.Value.TagType == TagType.Favorite)
+                    {
+                        file.IsFavorite = true;
+                        continue;
+                    }
+
+                    if (t.Value.TagType == TagType.Template)
+                    {
+                        file.IsTemplate = true;
+                        continue;
+                    }
+
+                    if (t.Value.TagType == TagType.Locked)
+                    {
+                        var lockedBy = t.Value.Owner;
+                        file.Locked = lockedBy != Guid.Empty;
+                        file.LockedBy = lockedBy != Guid.Empty && lockedBy != AuthContext.CurrentAccount.ID
+                            ? Global.GetUserName(lockedBy)
+                            : null;
+                        continue;
+                    }
                 }
 
                 if (tagsNew.Any(r => r.EntryId.Equals(file.ID)))
                 {
                     file.IsNew = true;
                 }
-
-                var tagLocked = tagsLocked.FirstOrDefault(t => t.EntryId.Equals(file.ID));
-
-                var lockedBy = tagLocked != null ? tagLocked.Owner : Guid.Empty;
-                file.Locked = lockedBy != Guid.Empty;
-                file.LockedBy = lockedBy != Guid.Empty && lockedBy != AuthContext.CurrentAccount.ID
-                    ? Global.GetUserName(lockedBy)
-                    : null;
             }
         }
 
