@@ -3,6 +3,8 @@ import { withRouter } from "react-router";
 import { /*RequestLoader,*/ Box } from "asc-web-components";
 import { utils, api, toastr } from "asc-web-common";
 import { isIOS, deviceType } from "react-device-detect";
+import { setDocumentTitle } from "../../../helpers/utils";
+import { changeTitle } from "./utils";
 
 const { getObjectByLocation, showLoader } = utils;
 
@@ -11,6 +13,13 @@ class PureEditor extends React.Component {
     const urlParams = getObjectByLocation(window.location);
     const fileId = urlParams.fileId || null;
     const doc = urlParams.doc || null;
+
+    let docTitle = null;
+    let fileType = null;
+
+    const onDocumentStateChange = (event) => {
+      changeTitle(event, docTitle);
+    };
 
     console.log("PureEditor componentDidMount", fileId, doc);
 
@@ -33,13 +42,28 @@ class PureEditor extends React.Component {
       api.files
         .openEdit(fileId, doc)
         .then((config) => {
+          docTitle = config.document.title;
+          fileType = config.document.fileType;
+
+          setDocumentTitle(docTitle);
+
           if (window.innerWidth < 720) {
             config.type = "mobile";
           }
+
+          const events = {
+            events: {
+              onDocumentStateChange: onDocumentStateChange,
+            },
+          };
+
+          const newConfig = Object.assign(config, events);
+
           if (!window.DocsAPI) throw new Error("DocsAPI is not defined");
 
           console.log("Trying to open file with DocsAPI", fileId);
-          window.DocsAPI.DocEditor("editor", config);
+
+          window.DocsAPI.DocEditor("editor", newConfig);
         })
         .catch((e) => {
           console.log(e);
