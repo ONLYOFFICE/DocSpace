@@ -4,7 +4,11 @@ import { /*RequestLoader,*/ Box } from "asc-web-components";
 import { utils, api, toastr } from "asc-web-common";
 import { isIOS, deviceType } from "react-device-detect";
 import { setDocumentTitle } from "../../../helpers/utils";
-import { changeTitle } from "./utils";
+import { changeTitle, setFavicon } from "./utils";
+
+import textIcon from "./icons/text.ico";
+import presentationIcon from "./icons/presentation.ico";
+import spreadsheetIcon from "./icons/spreadsheet.ico";
 
 const { getObjectByLocation, showLoader } = utils;
 
@@ -44,6 +48,21 @@ class PureEditor extends React.Component {
         .then((config) => {
           docTitle = config.document.title;
           fileType = config.document.fileType;
+
+          switch (fileType) {
+            case "docx":
+              setFavicon(textIcon);
+              break;
+            case "pptx":
+              setFavicon(presentationIcon);
+              break;
+            case "xlsx":
+              setFavicon(spreadsheetIcon);
+              break;
+
+            default:
+              break;
+          }
 
           setDocumentTitle(docTitle);
 

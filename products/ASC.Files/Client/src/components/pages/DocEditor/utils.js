@@ -7,3 +7,8 @@ export const changeTitle = (event, docTitle) => {
     setDocumentTitle(docTitle);
   }
 };
+
+export const setFavicon = (pathToIcon) => {
+  const favicon = document.getElementById("favicon");
+  favicon.href = pathToIcon;
+};
