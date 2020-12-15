@@ -4,43 +4,43 @@ echo "##########################################################"
 echo "##############    Run App Service     ####################"
 echo "##########################################################"
     
-PRODUCT="onlyoffice"
+PRODUCT=${PRODUCT:-"onlyoffice"}
 BASE_DIR="/app/${PRODUCT}"
 PARAMETERS=""
-CONTAINER_PRIFIX=${CONTAINER_PRIFIX:-"onlyoffice"}
-PROXY_HOST=${PROXY_HOST:-${CONTAINER_PRIFIX}-"proxy"}
+PROXY_HOST=${PROXY_HOST:-"proxy"}
 SHEME=${SHEME:-"http"}
+SERVICE_PORT=${SERVICE_PORT:-"5050"}
 
-URLS=${URLS:-"${SHEME}://0.0.0.0:${SERVICE_PORT:-5050}"}
-PATH_TO_CONF="${BASE_DIR}/config"
-LOG_DIR="/var/log/onlyoffice"
+URLS=${URLS:-"${SHEME}://0.0.0.0:${SERVICE_PORT}"}
+PATH_TO_CONF=${PATH_TO_CONF:-"${BASE_DIR}/config"}
+LOG_DIR=${LOG_DIR:-"/var/log/${PRODUCT}"}
 
-MYSQL_HOST=${MYSQL_HOST:-${CONTAINER_PRIFIX}-"mysql-server"}
+MYSQL_HOST=${MYSQL_HOST:-"mysql-server"}
 MYSQL_DATABASE=${MYSQL_DATABASE:-${PRODUCT}}
 MYSQL_USER=${MYSQL_USER:-"${PRODUCT}_user"}
 MYSQL_PASSWORD=${MYSQL_PASSWORD:-"${PRODUCT}_pass"}
 
 APP_DOTNET_ENV=${APP_DOTNET_ENV:-"test"}
 APP_CORE_BASE_DOMAIN=${APP_CORE_BASE_DOMAIN:-"localhost"}
-APP_URL_PORTAL="${SHEME}://${PROXY_HOST}:8092"
+APP_URL_PORTAL=${APP_URL_PORTAL:-"${SHEME}://${PROXY_HOST}:8092"}
 
 APP_CORE_MACHINEKEY=${APP_CORE_MACHINEKEY:-"your_core_machinekey"}
-DOCUMENT_SERVER_JWT_SECRET=${DOCUMENT_SERVER_JWT_SECRET:-"your_jwd_secret_value"}
+DOCUMENT_SERVER_JWT_SECRET=${DOCUMENT_SERVER_JWT_SECRET:-"your_jwt_secret"}
 DOCUMENT_SERVER_JWT_HEADER=${DOCUMENT_SERVER_JWT_HEADER:-"AuthorizationJwt"}
 DOCUMENT_SERVER_URL_PUBLIC=${DOCUMENT_SERVER_URL_PUBLIC:-"/ds-vpath/"}
-DOCUMENT_SERVER_URL_INTERNAL=${DOCUMENT_SERVER_URL_INTERNAL:-"${SHEME}://onlyoffice-document-server/"}
+DOCUMENT_SERVER_URL_INTERNAL=${DOCUMENT_SERVER_URL_INTERNAL:-"${SHEME}://${PRODUCT}-document-server/"}
 DOCUMENT_SERVER_URL_CONVERTER=${DOCUMENT_SERVER_URL_CONVERTER:-"/ds-vpath/ConvertService.ashx"}
 VIEWED_MEDIA=${VIEWED_MEDIA:-'".aac",".flac",".m4a",".mp3",".oga",".ogg",".wav",".f4v",".m4v",".mov",".mp4",".ogv",".webm",".avi"'}
 FFMPEG_EXTS=${FFMPEG_EXTS:-'"avi", "mpeg", "mpg", "wmv"'}
 
 ELK_SHEME=${ELK_SHEME:-"http"}
-ELK_HOST=${ELK_HOST:-${CONTAINER_PRIFIX}-"elasticsearch"}
+ELK_HOST=${ELK_HOST:-"elasticsearch"}
 ELK_PORT=${ELK_PORT:-"9200"}
 ELK_VALUE='"elastic": { "Scheme": "'${ELK_SHEME}'", "Host": "'${ELK_HOST}'", "Port": "'${ELK_PORT}'" },'
 
-KAFKA_HOST=${KAFKA_HOST:-"kafka"}
+KAFKA_HOST=${KAFKA_HOST:-"kafka"}":9092"
 
-APP_STORAGE_ROOT=${APP_STORAGE_ROOT:-"/app/onlyoffice/data/"}
+APP_STORAGE_ROOT=${APP_STORAGE_ROOT:-"${BASE_DIR}/data/"}
 
 if [ -n "$1" ]; then
 	DOTNET_RUN="${1}";
