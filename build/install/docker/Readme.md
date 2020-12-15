@@ -7,10 +7,11 @@
 
 * Build Appserver docker microservices run: docker-compose -f build.yml build
 
-* Check JSON Web Token validation
-  - In file .env:
-    - write value DOCUMENT_SERVER_JWT_SECRET
-    - write value APP_CORE_MACHINEKEY
+*  In file .env check values and if it needs modify for JSON Web Token validation:
+  - list of values:
+    - DOCUMENT_SERVER_JWT_SECRET
+    - APP_CORE_MACHINEKEY
+    - DOCUMENT_SERVER_JWT_HEADER
 
 * Run Appserver with Community Server:  
   - check file appserver.yml before running: 
