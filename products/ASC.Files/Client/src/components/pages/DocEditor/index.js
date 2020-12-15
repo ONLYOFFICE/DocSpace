@@ -1,4 +1,5 @@
 import React from "react";
+import { withRouter } from "react-router";
 import { /*RequestLoader,*/ Box } from "asc-web-components";
 import { utils, api, toastr } from "asc-web-common";
 import { setDocumentTitle } from "../../../helpers/utils";
@@ -119,4 +120,4 @@ class PureEditor extends React.Component {
   }
 }
 
-export default PureEditor;
+export default withRouter(PureEditor);
