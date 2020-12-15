@@ -1,5 +1,4 @@
 import React from "react";
-import { withRouter } from "react-router";
 import { /*RequestLoader,*/ Box } from "asc-web-components";
 import { utils, api, toastr } from "asc-web-common";
 import { isIOS, deviceType } from "react-device-detect";
@@ -122,4 +121,4 @@ class PureEditor extends React.Component {
   }
 }
 
-export default withRouter(PureEditor);
+export default PureEditor;
