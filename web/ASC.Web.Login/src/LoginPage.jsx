@@ -4,7 +4,6 @@ import { Provider } from "react-redux";
 import store from "studio/store";
 import Frame from "studio/frame";
 
-
 const LoginPage = () => {
   return (
     <Provider store={store}>
@@ -13,4 +12,4 @@ const LoginPage = () => {
   );
 };
 
-ReactDOM.render(<LoginPage />, document.getElementById("app"));
+ReactDOM.render(<LoginPage />, document.getElementById("root"));

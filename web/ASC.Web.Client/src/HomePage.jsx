@@ -12,4 +12,4 @@ const HomePage = () => (
   </Provider>
 );
 
-ReactDOM.render(<HomePage />, document.getElementById("app"));
+ReactDOM.render(<HomePage />, document.getElementById("root"));

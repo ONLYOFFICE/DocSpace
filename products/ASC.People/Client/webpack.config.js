@@ -5,7 +5,7 @@ const path = require("path");
 const deps = require("./package.json").dependencies;
 module.exports = {
   output: {
-    publicPath: "http://localhost:5002/",
+    publicPath: "http://localhost:5002",
     filename: "bundle.js",
     path: path.resolve(__dirname, "dist"),
   },
@@ -20,6 +20,7 @@ module.exports = {
   devServer: {
     port: 5002,
     contentBase: path.join(__dirname, "public"),
+    contentBasePublicPath: "/products/people/",
   },
 
   module: {
@@ -96,7 +97,7 @@ module.exports = {
       },
     }),
     new HtmlWebPackPlugin({
-      template: "./src/index.html",
+      template: "./public/index.html",
     }),
   ],
 };

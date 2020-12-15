@@ -10,4 +10,4 @@ const FilesPage = () => (
   </Provider>
 );
 
-ReactDOM.render(<FilesPage />, document.getElementById("app"));
+ReactDOM.render(<FilesPage />, document.getElementById("root"));

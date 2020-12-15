@@ -9,14 +9,14 @@ import PublicRoute from "@appserver/common/src/components/PublicRoute";
 import ErrorBoundary from "@appserver/common/src/components/ErrorBoundary";
 import history from "@appserver/common/src/history";
 import toastr from "@appserver/common/src/components/Toast/toastr";
-import CommonStore from "@appserver/common/src/store";
-const {
+import {
   setIsLoaded,
   getUser,
   getPortalSettings,
   getModules,
   getIsAuthenticated,
-} = CommonStore.auth.actions;
+} from "@appserver/common/src/store/auth/actions";
+import { updateTempContent } from "@appserver/common/src/utils";
 
 const Home = React.lazy(() => import("studio/home"));
 const Login = React.lazy(() => import("login/page"));
@@ -69,8 +69,7 @@ const Frame = ({ items = [], page = "home", ...rest }) => {
 
     getIsAuthenticated()
       .then((isAuthenticated) => {
-        // if (isAuthenticated)
-        // utils.updateTempContent(isAuthenticated);
+        if (isAuthenticated) updateTempContent(isAuthenticated);
 
         const requests = [];
         if (!isAuthenticated) {
@@ -84,7 +83,7 @@ const Frame = ({ items = [], page = "home", ...rest }) => {
         }
 
         return Promise.all(requests).finally(() => {
-          // utils.updateTempContent();
+          updateTempContent();
           setIsLoaded();
         });
       })

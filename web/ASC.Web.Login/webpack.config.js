@@ -19,6 +19,8 @@ module.exports = {
 
   devServer: {
     port: 5020,
+    contentBase: path.join(__dirname, "public"),
+    contentBasePublicPath: "/login",
   },
 
   module: {
@@ -84,7 +86,7 @@ module.exports = {
       },
     }),
     new HtmlWebPackPlugin({
-      template: "./src/index.html",
+      template: "./public/index.html",
     }),
   ],
 };

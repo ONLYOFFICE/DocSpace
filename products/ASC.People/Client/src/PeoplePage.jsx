@@ -10,4 +10,4 @@ const PeoplePage = () => (
   </Provider>
 );
 
-ReactDOM.render(<PeoplePage />, document.getElementById("app"));
+ReactDOM.render(<PeoplePage />, document.getElementById("root"));
