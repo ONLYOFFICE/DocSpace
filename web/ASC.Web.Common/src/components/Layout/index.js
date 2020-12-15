@@ -38,7 +38,6 @@ const Layout = (props) => {
         window.addEventListener("resize", orientationChangeHandler);
       else
         window.addEventListener("orientationchange", orientationChangeHandler);
-      resizeHandler();
     }
 
     return () => {
