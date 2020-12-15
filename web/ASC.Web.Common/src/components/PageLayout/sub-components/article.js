@@ -41,7 +41,7 @@ const StyledArticle = styled.article`
           ? props.pinned
             ? `
             min-width: 240px;
-            margin-top: ${props.isLoaded ? "56px" : "0"};
+            margin-top: ${props.isLoaded ? "0" : "56px"};
             max-width: ${props.isLoaded ? "calc(100vw - 368px)" : "240px"};
             height: calc(100% - 56px)!important;
 			
@@ -103,11 +103,6 @@ class Article extends React.Component {
 
 Article.propTypes = {
   children: PropTypes.any,
-  isLoaded: PropTypes.bool,
 };
-const mapStateToProps = (state) => {
-  return {
-    isLoaded: getIsLoaded(state),
-  };
-};
-export default connect(mapStateToProps)(Article);
+
+export default Article;
