@@ -3,7 +3,7 @@ import { /*RequestLoader,*/ Box } from "asc-web-components";
 import { utils, api, toastr } from "asc-web-common";
 import { isIOS, deviceType } from "react-device-detect";
 import { setDocumentTitle } from "../../../helpers/utils";
-import { changeTitle, setFavicon } from "./utils";
+import { changeTitleAsync, setFavicon } from "./utils";
 
 import textIcon from "./icons/text.ico";
 import presentationIcon from "./icons/presentation.ico";
@@ -20,8 +20,20 @@ class PureEditor extends React.Component {
     let docTitle = null;
     let fileType = null;
 
+    let docSaved = null;
+    let timeout = false;
+
     const onDocumentStateChange = (event) => {
-      changeTitle(event, docTitle);
+      docSaved = !event.data;
+      if (!timeout) changeTitle();
+    };
+
+    const changeTitle = () => {
+      timeout = true;
+      changeTitleAsync(docSaved, docTitle).then((res) => {
+        timeout = false;
+        if (res !== docSaved) changeTitle();
+      });
     };
 
     const onMetaChange = (event) => {
