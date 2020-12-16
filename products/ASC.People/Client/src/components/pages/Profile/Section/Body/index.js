@@ -5,7 +5,6 @@ import {
   Text,
   ToggleContent,
   Link,
-  utils,
 } from "asc-web-components";
 import {
   getUserContacts,
@@ -20,9 +19,9 @@ import styled from "styled-components";
 
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
-
+import { isIOS } from "react-device-detect";
 const { isAdmin, isMe, getIsTabletView } = store.auth.selectors;
-const { size } = utils.device;
+
 const ProfileWrapper = styled.div`
   display: flex;
   align-items: flex-start;
@@ -102,6 +101,7 @@ class SectionBodyContent extends React.PureComponent {
     this.documentElement = document.getElementById("customScrollBar");
     const { isTabletView } = this.props;
     if (
+      isIOS &&
       isTabletView &&
       this.documentElement &&
       this.documentElement.scrollTop !== 0
