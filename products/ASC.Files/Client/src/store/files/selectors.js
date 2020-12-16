@@ -853,13 +853,22 @@ export const getFileActionId = (state) => {
 export const getFilesList = (state) => {
   return createSelector(
     [
-      getItemsList,
+      getFolders,
+      getFiles,
       getSelection,
       getIsRecycleBinFolder,
       getIsRecentFolder,
       getFileActionId,
     ],
-    (items, selection, isRecycleBin, isRecent, actionId) => {
+    (folders, files, selection, isRecycleBin, isRecent, actionId) => {
+      const items =
+        folders && files
+          ? [...folders, ...files]
+          : folders
+          ? folders
+          : files
+          ? files
+          : [];
       return items.map((item) => {
         const {
           access,
