@@ -1,3 +1,2 @@
 #!/bin/bash
-sleep 30
 docker-compose -f build.yml build
