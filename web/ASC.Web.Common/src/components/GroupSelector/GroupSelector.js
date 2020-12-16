@@ -5,9 +5,6 @@ import i18n from "./i18n";
 import AdvancedSelector from "../AdvancedSelector";
 import { getGroupList } from "../../api/groups";
 import { changeLanguage } from "../../utils";
-import { connect } from "react-redux";
-
-import { getIsTabletView } from "../../store/auth/selectors";
 
 class GroupSelector extends React.Component {
   constructor(props) {
@@ -170,9 +167,4 @@ const GroupSelectorWithI18n = (props) => {
   return <ExtendedGroupSelector i18n={i18n} {...props} />;
 };
 
-const mapStateToProps = (state) => {
-  return {
-    isTabletView: getIsTabletView(state),
-  };
-};
-export default connect(mapStateToProps)(GroupSelectorWithI18n);
+export default GroupSelectorWithI18n;
