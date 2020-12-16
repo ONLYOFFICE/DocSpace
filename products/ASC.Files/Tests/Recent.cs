@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 
 using ASC.Api.Documents;
 using ASC.Core.Users;
@@ -30,7 +31,6 @@ namespace ASC.Files.Tests
         {
             base.TearDown();
             DeleteFolder(TestFolder.Id, false, true);
-            DeleteFile(TestFile.Id, false, true);
         }
 
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetCreateFolderItems))]
@@ -57,6 +57,28 @@ namespace ASC.Files.Tests
         public void RecentFileReturnsFolderWrapper(string fileTitleExpected)
         {
             var RecentFolder = FilesControllerHelper.AddToRecent(TestFile.Id);
+            Assert.IsNotNull(RecentFolder);
+            Assert.AreEqual(fileTitleExpected + ".docx", RecentFolder.Title);
+        }
+        [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetFileInfoItems))]
+        [Category("File")]
+        [Order(4)]
+        public void DeleteRecentFileReturnsFolderWrapper(string fileTitleExpected)
+        {
+            var RecentFolder = FilesControllerHelper.AddToRecent(TestFile.Id);
+            FilesControllerHelper.DeleteFile(
+                TestFile.Id,
+                false,
+                true);
+
+            while (true)
+            {
+                var statuses = FileStorageService.GetTasksStatuses();
+
+                if (statuses.TrueForAll(r => r.Finished))
+                    break;
+                Thread.Sleep(100);
+            }
             Assert.IsNotNull(RecentFolder);
             Assert.AreEqual(fileTitleExpected + ".docx", RecentFolder.Title);
         }
