@@ -25,14 +25,23 @@ describe("<Backdrop />", () => {
     expect(wrapper.prop("id")).toEqual("testId");
   });
 
-  it("accepts className", () => {
+  it("accepts className string", () => {
     const wrapper = mount(<Backdrop {...baseProps} className="test" />);
 
     expect(wrapper.prop("className")).toEqual("test");
   });
 
+  it("accepts className array", () => {
+    const testArr = ["test", "backdrop-active"];
+    const wrapper = mount(<Backdrop {...baseProps} className={["test"]} />);
+
+    expect(wrapper.prop("className")).toEqual(expect.arrayContaining(testArr));
+  });
+
   it("accepts style", () => {
-    const wrapper = mount(<Backdrop {...baseProps} style={{ color: "red" }} />);
+    const wrapper = mount(
+      <Backdrop {...baseProps} style={{ color: "red" }} visible={true} />
+    );
 
     expect(wrapper.getDOMNode().style).toHaveProperty("color", "red");
   });

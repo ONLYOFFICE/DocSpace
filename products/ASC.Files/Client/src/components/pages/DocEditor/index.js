@@ -1,112 +1,138 @@
 import React from "react";
 import { withRouter } from "react-router";
-import { /*RequestLoader,*/ Box } from "asc-web-components";
-import { utils, api, toastr } from "asc-web-common";
+import { Toast, Box } from "asc-web-components";
+import { utils, api, toastr, Loaders } from "asc-web-common";
 import { setDocumentTitle } from "../../../helpers/utils";
 import { changeTitleAsync, setFavicon, isIPad } from "./utils";
 
-const { getObjectByLocation, showLoader } = utils;
+const { getObjectByLocation, showLoader, hideLoader } = utils;
+
+let documentIsReady = false;
+
+let docTitle = null;
+let fileType = null;
+
+let docSaved = null;
+let timeout = false;
 
 class PureEditor extends React.Component {
-  async componentDidMount() {
+  constructor(props) {
+    super(props);
+
     const urlParams = getObjectByLocation(window.location);
-    const fileId = urlParams.fileId || null;
-    const doc = urlParams.doc || null;
+    const fileId = urlParams ? urlParams.fileId || null : null;
+    const doc = urlParams ? urlParams.doc || null : null;
 
-    let documentIsReady = false;
-
-    let docTitle = null;
-    let fileType = null;
-
-    let docSaved = null;
-    let timeout = false;
-
-    const onDocumentReady = () => {
-      documentIsReady = true;
+    this.state = {
+      fileId,
+      doc,
+      isLoading: true,
     };
+  }
+  async componentDidMount() {
+    try {
+      const { fileId, doc } = this.state;
 
-    const onDocumentStateChange = (event) => {
-      if (!documentIsReady) return;
+      if (!fileId) return;
 
-      docSaved = !event.data;
-      if (!timeout) changeTitle();
-    };
+      console.log("PureEditor componentDidMount", fileId, doc);
 
-    const changeTitle = () => {
-      timeout = true;
-      changeTitleAsync(docSaved, docTitle).then((res) => {
-        timeout = false;
-        if (res !== docSaved) changeTitle();
-      });
-    };
-
-    const onMetaChange = (event) => {
-      const newTitle = event.data.title;
-      if (newTitle && newTitle !== docTitle) {
-        setDocumentTitle(newTitle);
-        docTitle = newTitle;
-      }
-    };
-
-    console.log("PureEditor componentDidMount", fileId, doc);
-
-    if (isIPad()) {
       const vh = window.innerHeight * 0.01;
       document.documentElement.style.setProperty("--vh", `${vh}px`);
+
+      showLoader();
+
+      const docApiUrl = await api.files.getDocServiceUrl();
+
+      const config = await api.files.openEdit(fileId, doc);
+
+      if (isIPad()) {
+        const vh = window.innerHeight * 0.01;
+        document.documentElement.style.setProperty("--vh", `${vh}px`);
+      }
+
+      this.setState({ isLoading: false }, () =>
+        this.loadDocApi(docApiUrl, () => this.onLoad(config))
+      );
+    } catch (error) {
+      console.log(error);
+      toastr.error(error.message, null, 0, true);
     }
+  }
 
-    showLoader();
-
-    let docApiUrl = await api.files.getDocServiceUrl();
-
+  loadDocApi = (docApiUrl, onLoadCallback) => {
     const script = document.createElement("script");
     script.setAttribute("type", "text/javascript");
     script.setAttribute("id", "scripDocServiceAddress");
 
-    script.onload = function () {
-      console.log("PureEditor script.onload", fileId, window.DocsAPI);
-
-      api.files
-        .openEdit(fileId, doc)
-        .then((config) => {
-          docTitle = config.document.title;
-          fileType = config.document.fileType;
-
-          setFavicon(fileType);
-          setDocumentTitle(docTitle);
-
-          if (window.innerWidth < 720) {
-            config.type = "mobile";
-          }
-
-          const events = {
-            events: {
-              onDocumentStateChange: onDocumentStateChange,
-              onMetaChange: onMetaChange,
-              onDocumentReady: onDocumentReady,
-            },
-          };
-
-          const newConfig = Object.assign(config, events);
-
-          if (!window.DocsAPI) throw new Error("DocsAPI is not defined");
-
-          console.log("Trying to open file with DocsAPI", fileId);
-
-          window.DocsAPI.DocEditor("editor", newConfig);
-        })
-        .catch((e) => {
-          console.log(e);
-          toastr.error(e);
-        });
-    };
+    script.onload = onLoadCallback;
 
     script.src = docApiUrl;
     script.async = true;
 
     console.log("PureEditor componentDidMount: added script");
     document.body.appendChild(script);
-  }
+  };
+
+  onLoad = (config) => {
+    try {
+      docTitle = config.document.title;
+      fileType = config.document.fileType;
+
+      setFavicon(fileType);
+      setDocumentTitle(docTitle);
+
+      if (window.innerWidth < 720) {
+        config.type = "mobile";
+      }
+
+      const events = {
+        events: {
+          onDocumentStateChange: this.onDocumentStateChange,
+          onMetaChange: this.onMetaChange,
+          onDocumentReady: this.onDocumentReady,
+        },
+      };
+
+      const newConfig = Object.assign(config, events);
+
+      if (!window.DocsAPI) throw new Error("DocsAPI is not defined");
+
+      hideLoader();
+
+      window.DocsAPI.DocEditor("editor", newConfig);
+    } catch (error) {
+      console.log(error);
+      toastr.error(error.message, null, 0, true);
+    }
+  };
+
+  onDocumentStateChange = (event) => {
+    if (!documentIsReady) return;
+
+    docSaved = !event.data;
+    if (!timeout) this.changeTitle();
+  };
+
+  onDocumentReady = () => {
+    documentIsReady = true;
+  };
+
+  onMetaChange = (event) => {
+    const newTitle = event.data.title;
+    if (newTitle && newTitle !== docTitle) {
+      setDocumentTitle(newTitle);
+      docTitle = newTitle;
+    }
+  };
+
+  changeTitle = () => {
+    timeout = true;
+    changeTitleAsync(docSaved, docTitle).then((res) => {
+      timeout = false;
+      if (res !== docSaved) this.changeTitle();
+    });
+  };
 
   render() {
     return (
@@ -114,7 +140,14 @@ class PureEditor extends React.Component {
         widthProp="100vw"
         heightProp={isIPad() ? "calc(var(--vh, 1vh) * 100)" : "100vh"}
       >
-        <div id="editor"></div>
+        <Toast />
+        {!this.state.isLoading ? (
+          <div id="editor"></div>
+        ) : (
+          <Box paddingProp="16px">
+            <Loaders.Rectangle height="96vh" />
+          </Box>
+        )}{" "}
       </Box>
     );
   }
