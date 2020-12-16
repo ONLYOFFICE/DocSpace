@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import MobileLayout from "./MobileLayout";
 import { utils } from "asc-web-components";
-import { isIOS, isFirefox, isChrome, isSafari } from "react-device-detect";
+import { isIOS, isFirefox, isSafari } from "react-device-detect";
 
 import { connect } from "react-redux";
 import store from "../../store";
@@ -22,9 +22,7 @@ const StyledContainer = styled.div`
 
 const Layout = (props) => {
   const { children, isTabletView, setIsTabletView } = props;
-  const [isInitPortrait, setInitOrientation] = useState(
-    window.innerHeight > window.innerWidth
-  );
+
   useEffect(() => {
     const isTablet = window.innerWidth <= size.tablet;
     setIsTabletView(isTablet);
@@ -75,15 +73,8 @@ const Layout = (props) => {
       interval = null;
       timeout = null;
 
-      let vh = (window.innerHeight - 57) * 0.01;
+      const vh = (window.innerHeight - 57) * 0.01;
 
-      if (
-        isChrome &&
-        isInitPortrait &&
-        window.innerHeight < window.innerWidth
-      ) {
-        vh = window.innerHeight * 0.01;
-      }
       document.documentElement.style.setProperty("--vh", `${vh}px`);
     };
     interval = setInterval(() => {
