@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import MobileLayout from "./MobileLayout";
 import { utils } from "asc-web-components";
@@ -22,16 +22,17 @@ const StyledContainer = styled.div`
 
 const Layout = (props) => {
   const { children, isTabletView, setIsTabletView } = props;
+  const [isInitPortrait, setInitOrientation] = useState(
+    window.innerHeight > window.innerWidth
+  );
   useEffect(() => {
     const isTablet = window.innerWidth <= size.tablet;
     setIsTabletView(isTablet);
 
     let mediaQuery = window.matchMedia("(max-width: 1024px)");
-    //mediaQuery.addEventListener("change", isViewChangeHandler);
-    mediaQuery.addListener(isViewChangeHandler);
-    //mediaQuery.removeEventListener("change", isViewChangeHandler);
+    mediaQuery.addEventListener("change", isViewChangeHandler);
 
-    return () => mediaQuery.removeListener(isViewChangeHandler);
+    return () => mediaQuery.removeEventListener("change", isViewChangeHandler);
   }, []);
 
   useEffect(() => {
@@ -40,6 +41,7 @@ const Layout = (props) => {
         window.addEventListener("resize", orientationChangeHandler);
       else
         window.addEventListener("orientationchange", orientationChangeHandler);
+      orientationChangeHandler();
     }
 
     return () => {
@@ -75,10 +77,12 @@ const Layout = (props) => {
 
       let vh = (window.innerHeight - 57) * 0.01;
 
-      if (isChrome) {
-        if (window.innerHeight < window.innerWidth) {
-          vh = (window.innerHeight + 57) * 0.01;
-        }
+      if (
+        isChrome &&
+        isInitPortrait &&
+        window.innerHeight < window.innerWidth
+      ) {
+        vh = window.innerHeight * 0.01;
       }
       document.documentElement.style.setProperty("--vh", `${vh}px`);
     };
