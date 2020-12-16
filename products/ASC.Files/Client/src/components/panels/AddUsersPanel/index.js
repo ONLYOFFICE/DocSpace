@@ -179,6 +179,8 @@ class AddUsersPanelComponent extends React.Component {
 
             <StyledBody ref={this.scrollRef}>
               <PeopleSelector
+                role={isMultiSelect ? null : "user"}
+                employeeStatus={1}
                 displayType="aside"
                 withoutAside
                 isOpen={visible}

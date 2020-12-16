@@ -82,7 +82,7 @@ class PeopleSelector extends React.Component {
     const pageCount = 100;
 
     this.setState({ isNextPageLoading: true }, () => {
-      const { role, useFake } = this.props;
+      const { role, useFake, employeeStatus } = this.props;
 
       const filter = Filter.getDefault();
       filter.page = startIndex / pageCount;
@@ -94,6 +94,9 @@ class PeopleSelector extends React.Component {
 
       if (role) {
         filter.role = role;
+      }
+      if (employeeStatus) {
+        filter.employeeStatus = employeeStatus;
       }
 
       if (currentGroup && currentGroup !== "all") filter.group = currentGroup;
@@ -277,6 +280,7 @@ PeopleSelector.propTypes = {
   groupsCaption: PropTypes.string,
   searchPlaceHolderLabel: PropTypes.string,
   role: PropTypes.oneOf(["admin", "user", "guest"]),
+  employeeStatus: PropTypes.oneOf([1, 2]),
   displayType: PropTypes.oneOf(["auto", "aside", "dropdown"]),
   withoutAside: PropTypes.bool,
   embeddedComponent: PropTypes.any,
@@ -287,6 +291,7 @@ PeopleSelector.defaultProps = {
   size: "full",
   language: "en",
   role: null,
+  employeeStatus: null,
   defaultOption: null,
   defaultOptionLabel: "Me",
   groupsCaption: "Groups",
