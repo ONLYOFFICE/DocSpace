@@ -5,15 +5,8 @@ import textIcon from "./icons/text.ico";
 import presentationIcon from "./icons/presentation.ico";
 import spreadsheetIcon from "./icons/spreadsheet.ico";
 
-export const changeTitleAsync = (docSaved, docTitle) => {
+export const changeTitle = (docSaved, docTitle) => {
   docSaved ? setDocumentTitle(docTitle) : setDocumentTitle(`*${docTitle}`);
-
-  const resp = docSaved;
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(resp);
-    }, 500);
-  });
 };
 
 export const setFavicon = (fileType) => {

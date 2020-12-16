@@ -3,7 +3,8 @@ import { withRouter } from "react-router";
 import { Toast, Box } from "asc-web-components";
 import { utils, api, toastr, Loaders } from "asc-web-common";
 import { setDocumentTitle } from "../../../helpers/utils";
-import { changeTitleAsync, setFavicon, isIPad } from "./utils";
+import { changeTitle, setFavicon, isIPad } from "./utils";
+import throttle from "lodash/throttle";
 
 const { getObjectByLocation, showLoader, hideLoader } = utils;
 
@@ -13,7 +14,11 @@ let docTitle = null;
 let fileType = null;
 
 let docSaved = null;
-let timeout = false;
+
+const throttledChangeTitle = throttle(
+  () => changeTitle(docSaved, docTitle),
+  500
+);
 
 class PureEditor extends React.Component {
   constructor(props) {
@@ -35,15 +40,9 @@ class PureEditor extends React.Component {
 
       if (!fileId) return;
 
-      console.log("PureEditor componentDidMount", fileId, doc);
-
-      const vh = window.innerHeight * 0.01;
-      document.documentElement.style.setProperty("--vh", `${vh}px`);
-
       showLoader();
 
       const docApiUrl = await api.files.getDocServiceUrl();
-
       const config = await api.files.openEdit(fileId, doc);
 
       if (isIPad()) {
@@ -111,7 +110,7 @@ class PureEditor extends React.Component {
     if (!documentIsReady) return;
 
     docSaved = !event.data;
-    if (!timeout) this.changeTitle();
+    throttledChangeTitle();
   };
 
   onDocumentReady = () => {
@@ -124,14 +123,6 @@ class PureEditor extends React.Component {
       setDocumentTitle(newTitle);
       docTitle = newTitle;
     }
-  };
-
-  changeTitle = () => {
-    timeout = true;
-    changeTitleAsync(docSaved, docTitle).then((res) => {
-      timeout = false;
-      if (res !== docSaved) this.changeTitle();
-    });
   };
 
   render() {
