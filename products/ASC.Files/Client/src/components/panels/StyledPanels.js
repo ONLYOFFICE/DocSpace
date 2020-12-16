@@ -169,6 +169,10 @@ const StyledBody = styled.div`
     box-sizing: border-box;
     width: 100%;
     height: calc(100vh - 125px);
+
+    .styled-element {
+      margin-left: -2px;
+    }
   }
 
   .embedding-panel_body {
