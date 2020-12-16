@@ -561,10 +561,14 @@ export function setShareFiles(
     ? [files.setFileOwner(folderIds, fileIds, ownerId)]
     : [];
 
+  const shareRequest = !!share.length
+    ? [files.setShareFiles(fileIds, folderIds, share, notify, sharingMessage)]
+    : [];
+
   const requests = [
-    files.setShareFiles(fileIds, folderIds, share, notify, sharingMessage),
-    ...externalAccessRequest,
     ...ownerChangeRequest,
+    ...shareRequest,
+    ...externalAccessRequest,
   ];
 
   return axios.all(requests);

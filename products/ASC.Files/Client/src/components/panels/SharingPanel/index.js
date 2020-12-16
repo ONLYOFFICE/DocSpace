@@ -19,6 +19,8 @@ import {
   setShareFiles,
   setSharingPanelVisible,
   setIsLoading,
+  setFiles,
+  setFolders,
 } from "../../../store/files/actions";
 import {
   getAccessOption,
@@ -27,6 +29,8 @@ import {
   getSharePanelVisible,
   getCanShareOwnerChange,
   getIsLoading,
+  getFiles,
+  getFolders,
 } from "../../../store/files/selectors";
 import {
   StyledAsidePanel,
@@ -99,6 +103,27 @@ class SharingPanelComponent extends React.Component {
     });
   };
 
+  updateRowData = (newRowData) => {
+    const { files, folders, setFiles, setFolders } = this.props;
+
+    for (let item of newRowData) {
+      if (!item.fileExst && item.foldersCount) {
+        let folderIndex = folders.findIndex((x) => x.id === item.id);
+        if (folderIndex !== -1) {
+          folders[folderIndex] = item;
+        }
+      } else {
+        let fileIndex = files.findIndex((x) => x.id === item.id);
+        if (fileIndex !== -1) {
+          files[fileIndex] = item;
+        }
+      }
+    }
+
+    setFiles(files);
+    setFolders(folders);
+  };
+
   onSaveClick = () => {
     const {
       baseShareData,
@@ -124,7 +149,7 @@ class SharingPanelComponent extends React.Component {
         (baseItem &&
           baseItem.access !== item.access &&
           !item.sharedTo.shareLink) ||
-        !baseItem
+        (!item.isOwner && !baseItem)
       ) {
         share.push({ shareTo: item.sharedTo.id, access: item.access });
       }
@@ -168,10 +193,15 @@ class SharingPanelComponent extends React.Component {
       externalAccess,
       ownerId
     )
+      .then((res) => {
+        if (ownerId) {
+          this.updateRowData(res[0]);
+        }
+      })
       .catch((err) => toastr.error(err))
       .finally(() => {
-        this.onClose();
         setIsLoading(false);
+        this.onClose();
       });
   };
 
@@ -244,7 +274,7 @@ class SharingPanelComponent extends React.Component {
           const accessOptions = getAccessOption(selection);
           const externalAccessOptions = getExternalAccessOption(selection);
           const filesOwner = shareDataItems.find((x) => x.isOwner);
-          const filesOwnerId = filesOwner ? filesOwner.id : null;
+          const filesOwnerId = filesOwner ? filesOwner.sharedTo.id : null;
 
           this.setState({
             baseShareData,
@@ -530,10 +560,14 @@ const mapStateToProps = (state) => {
     sharingPanelVisible: getSharePanelVisible(state),
     canShareOwnerChange: getCanShareOwnerChange(state),
     isLoading: getIsLoading(state),
+    files: getFiles(state),
+    folders: getFolders(state),
   };
 };
 
 export default connect(mapStateToProps, {
   setSharingPanelVisible,
   setIsLoading,
+  setFiles,
+  setFolders,
 })(withRouter(SharingPanel));
