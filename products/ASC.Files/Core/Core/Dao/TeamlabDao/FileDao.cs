@@ -174,7 +174,7 @@ namespace ASC.Files.Core.Data
         {
             if (fileIds == null || !fileIds.Any()) return new List<File<int>>();
 
-            var query = GetFileQuery(r => fileIds.Any(a => a == r.Id) && r.CurrentVersion)
+            var query = GetFileQuery(r => fileIds.Contains(r.Id) && r.CurrentVersion)
                 .AsNoTracking();
 
             return FromQueryWithShared(query).Select(ToFile).ToList();
@@ -184,7 +184,7 @@ namespace ASC.Files.Core.Data
         {
             if (fileIds == null || !fileIds.Any() || filterType == FilterType.FoldersOnly) return new List<File<int>>();
 
-            var query = GetFileQuery(r => fileIds.Any(a => a == r.Id) && r.CurrentVersion).AsNoTracking();
+            var query = GetFileQuery(r => fileIds.Contains(r.Id) && r.CurrentVersion).AsNoTracking();
 
             if (!string.IsNullOrEmpty(searchText))
             {
@@ -192,7 +192,7 @@ namespace ASC.Files.Core.Data
 
                 if (FactoryIndexer.TrySelectIds(s => func(s).In(r => r.Id, fileIds.ToArray()), out var searchIds))
                 {
-                    query = query.Where(r => searchIds.Any(b => b == r.Id));
+                    query = query.Where(r => searchIds.Contains(r.Id));
                 }
                 else
                 {
@@ -205,7 +205,7 @@ namespace ASC.Files.Core.Data
                 if (subjectGroup)
                 {
                     var users = UserManager.GetUsersByGroup(subjectID).Select(u => u.ID).ToArray();
-                    query = query.Where(r => users.Any(b => b == r.CreateBy));
+                    query = query.Where(r => users.Contains(r.CreateBy));
                 }
                 else
                 {
@@ -274,7 +274,7 @@ namespace ASC.Files.Core.Data
 
                 if (FactoryIndexer.TrySelectIds(expression, out var searchIds))
                 {
-                    q = q.Where(r => searchIds.Any(a => a == r.Id));
+                    q = q.Where(r => searchIds.Contains(r.Id));
                 }
                 else
                 {
@@ -296,7 +296,7 @@ namespace ASC.Files.Core.Data
                 if (subjectGroup)
                 {
                     var users = UserManager.GetUsersByGroup(subjectID).Select(u => u.ID).ToArray();
-                    q = q.Where(r => users.Any(a => a == r.CreateBy));
+                    q = q.Where(r => users.Contains(r.CreateBy));
                 }
                 else
                 {
@@ -445,7 +445,7 @@ namespace ASC.Files.Core.Data
                 if (parentFoldersIds.Any())
                 {
                     var folderToUpdate = FilesDbContext.Folders
-                        .Where(r => parentFoldersIds.Any(a => a == r.Id));
+                        .Where(r => parentFoldersIds.Contains(r.Id));
 
                     foreach (var f in folderToUpdate)
                     {
@@ -569,7 +569,7 @@ namespace ASC.Files.Core.Data
                 if (parentFoldersIds.Any())
                 {
                     var folderToUpdate = FilesDbContext.Folders
-                        .Where(r => parentFoldersIds.Any(a => a == r.Id));
+                        .Where(r => parentFoldersIds.Contains(r.Id));
 
                     foreach (var f in folderToUpdate)
                     {
@@ -669,7 +669,7 @@ namespace ASC.Files.Core.Data
             FilesDbContext.RemoveRange(toDeleteFiles);
 
             var tagsToRemove = Query(FilesDbContext.Tag)
-                .Where(r => !Query(FilesDbContext.TagLink).Where(a => a.TagId == r.Id).Any());
+                .Where(r => !Query(FilesDbContext.TagLink).Any(a => a.TagId == r.Id));
 
             FilesDbContext.Tag.RemoveRange(tagsToRemove);
 
@@ -1027,7 +1027,7 @@ namespace ASC.Files.Core.Data
         {
             var toUpdate = Query(FilesDbContext.Files)
                 .Where(r => r.CurrentVersion)
-                .Where(r => fileIds.Any(a => a == r.Id));
+                .Where(r => fileIds.Contains(r.Id));
 
             foreach (var f in toUpdate)
             {
@@ -1044,7 +1044,7 @@ namespace ASC.Files.Core.Data
             var q = GetFileQuery(r => r.CurrentVersion)
                 .AsNoTracking()
                 .Join(FilesDbContext.Tree, a => a.FolderId, t => t.FolderId, (file, tree) => new { file, tree })
-                .Where(r => parentIds.Any(a => a == r.tree.ParentId))
+                .Where(r => parentIds.Contains(r.tree.ParentId))
                 .Select(r => r.file);
 
             if (!string.IsNullOrEmpty(searchText))
@@ -1053,7 +1053,7 @@ namespace ASC.Files.Core.Data
 
                 if (FactoryIndexer.TrySelectIds(s => func(s), out var searchIds))
                 {
-                    q = q.Where(r => searchIds.Any(b => b == r.Id));
+                    q = q.Where(r => searchIds.Contains(r.Id));
                 }
                 else
                 {
@@ -1066,7 +1066,7 @@ namespace ASC.Files.Core.Data
                 if (subjectGroup)
                 {
                     var users = UserManager.GetUsersByGroup(subjectID).Select(u => u.ID).ToArray();
-                    q = q.Where(r => users.Any(u => u == r.CreateBy));
+                    q = q.Where(r => users.Contains(r.CreateBy));
                 }
                 else
                 {
@@ -1099,7 +1099,7 @@ namespace ASC.Files.Core.Data
         {
             if (FactoryIndexer.TrySelectIds(s => s.MatchAll(searchText), out var ids))
             {
-                var query = GetFileQuery(r => r.CurrentVersion && ids.Any(i => i == r.Id)).AsNoTracking();
+                var query = GetFileQuery(r => r.CurrentVersion && ids.Contains(r.Id)).AsNoTracking();
                 return FromQueryWithShared(query).Select(ToFile)
                     .Where(
                         f =>
