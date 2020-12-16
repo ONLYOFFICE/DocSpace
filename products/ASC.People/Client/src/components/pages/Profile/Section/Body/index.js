@@ -5,6 +5,7 @@ import {
   Text,
   ToggleContent,
   Link,
+  utils,
 } from "asc-web-components";
 import {
   getUserContacts,
@@ -20,8 +21,8 @@ import styled from "styled-components";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 
-const { isAdmin, isMe } = store.auth.selectors;
-
+const { isAdmin, isMe, getIsTabletView } = store.auth.selectors;
+const { size } = utils.device;
 const ProfileWrapper = styled.div`
   display: flex;
   align-items: flex-start;
@@ -97,7 +98,16 @@ class SectionBodyContent extends React.PureComponent {
     this.props.history.push(
       `${this.props.settings.homepage}/edit/${this.props.profile.userName}`
     );
-
+  componentDidMount() {
+    this.documentElement = document.getElementById("customScrollBar");
+    const { isTabletView } = this.props;
+    if (
+      isTabletView &&
+      this.documentElement &&
+      this.documentElement.scrollTop !== 0
+    )
+      this.documentElement.scrollTo(0, 0);
+  }
   render() {
     const { profile, settings, isAdmin, viewer, t } = this.props;
 
@@ -187,6 +197,7 @@ const mapStateToProps = (state) => {
     profile: state.profile.targetUser,
     isAdmin: isAdmin(state),
     viewer: state.auth.user,
+    isTabletView: getIsTabletView(state),
   };
 };
 
