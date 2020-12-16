@@ -5,7 +5,6 @@ import {
   Text,
   ToggleContent,
   Link,
-  utils,
 } from "asc-web-components";
 import {
   getUserContacts,
@@ -22,7 +21,7 @@ import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 
 const { isAdmin, isMe } = store.auth.selectors;
-const { size } = utils.device;
+
 const ProfileWrapper = styled.div`
   display: flex;
   align-items: flex-start;
