@@ -13,7 +13,7 @@ import {
   Heading,
 } from "asc-web-components";
 import { PageLayout } from "asc-web-common";
-import { store, utils as commonUtils } from "asc-web-common";
+import { store, utils as commonUtils, api } from "asc-web-common";
 import {
   getConfirmationInfo,
   changePassword,
@@ -118,6 +118,9 @@ class Form extends React.PureComponent {
 
     window.addEventListener("keydown", this.onKeyPress);
     window.addEventListener("keyup", this.onKeyPress);
+    if (isAuthenticated) {
+      api.user.logout;
+    }
   }
 
   componentWillUnmount() {
