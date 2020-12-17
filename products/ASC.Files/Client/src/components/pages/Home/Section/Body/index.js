@@ -555,7 +555,7 @@ class SectionBodyContent extends React.Component {
 
     let fileId, isLockedFile;
     const file = selection[0];
-    debugger;
+
     if (file) {
       fileId = file.id;
       isLockedFile = !file.locked;
