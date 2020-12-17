@@ -24,7 +24,6 @@ class ConfirmRoute extends React.Component {
 
     if (forUnauthorized && isAuthenticated) {
       this.props.logout(false);
-      return;
     }
 
     const { location } = this.props;
