@@ -38,6 +38,7 @@ class DateField extends React.Component {
           tabIndex={inputTabIndex}
           displayType="auto"
           calendarHeaderContent={calendarHeaderContent}
+          minDate={new Date()}
         />
       </FieldContainer>
     );
