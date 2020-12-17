@@ -203,6 +203,8 @@ COPY --from=develop /var/www/products/ASC.Files/client /var/www/products/ASC.Fil
 COPY --from=develop /var/www/products/ASC.People/client /var/www/products/ASC.People/client
 COPY --from=develop /var/www/public /var/www/public
 COPY --from=develop /var/www/studio/client /var/www/studio/client
+COPY --from=develop /var/www/services/urlshortener/client /var/www/services/urlshortener/client
+COPY --from=develop /var/www/services/thumb/client /var/www/services/thumb/client
 COPY /config/nginx/templates/upstream.conf.template /etc/nginx/templates/upstream.conf.template
 
 # add defualt user and group for no-root run
@@ -335,3 +337,13 @@ COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.Files/se
 COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.People/server/ASC.People.dll /var/www/products/ASC.People/server/
 
 CMD ["ASC.Web.Studio.dll", "studio"]
+
+## thumbnails ##
+FROM builder AS thumbnails
+
+WORKDIR /services/thumbnails/service
+
+COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
+COPY --from=develop --chown=onlyoffice:onlyoffice /services/thumb/service/ .
+
+CMD ["ASC.Thumbnails.Svc.dll", "thumbnails"]

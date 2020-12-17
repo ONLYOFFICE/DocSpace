@@ -18,6 +18,12 @@ upstream  service_urlshortener {
 }
 
 
+upstream  service_thumbnails {
+  server $SERVICE_URLSHORYENER;
+
+  server localhost:5016 backup;
+}
+
 upstream  service_studio.notify {
   server $SERVICE_STUDIO_NOTIFY;
 

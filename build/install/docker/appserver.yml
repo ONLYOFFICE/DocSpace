@@ -131,6 +131,11 @@ services:
     image: "${REPO}/${STATUS}appserver-backup:${SRV_VERSION}"
     container_name: ${BACKUP_HOST}
     
+  onlyoffice-thumbnails:
+    <<: *x-service-base
+    image: "${REPO}/${STATUS}appserver-thumbnails:${SRV_VERSION}"
+    container_name: ${THUMVNAILS_HOST}
+
   onlyoffice-proxy:
     image: "${REPO}/${STATUS}appserver-proxy:${SRV_VERSION}"
     container_name: ${PROXY_HOST}
@@ -151,6 +156,7 @@ services:
       - onlyoffice-files_services
       - onlyoffice-studio
       - onlyoffice-backup
+      - onlyoffice-thumbnails
     environment:
       - SERVICE_API=${SERVICE_API}
       - SERVICE_API_SYSTEM=${SERVICE_API_SYSTEM}
@@ -161,6 +167,7 @@ services:
       - SERVICE_FILES_SERVICES=${SERVICE_FILES_SERVICES}
       - SERVICE_STUDIO=${SERVICE_STUDIO}
       - SERVICE_BACKUP=${SERVICE_BACKUP}
+      - SERVICE_THUMVNAILS=${SERVICE_THUMVNAILS}
       - DOCUMENT_SERVER=${DOCUMENT_SERVER_HOST}
       - SERVICE_PORT=${SERVICE_PORT}
     volumes:

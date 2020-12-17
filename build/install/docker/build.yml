@@ -70,6 +70,13 @@ services:
       dockerfile: Dockerfile-app
       target: backup
     image: "${REPO}/${STATUS}appserver-backup:${SRV_VERSION}"
+
+  onlyoffice-thumbnails:
+    build:
+      context: ./
+      dockerfile: Dockerfile-app
+      target: thumbnails
+    image: "${REPO}/${STATUS}appserver-thumbnails:${SRV_VERSION}"
     
   onlyoffice-proxy:
     build:

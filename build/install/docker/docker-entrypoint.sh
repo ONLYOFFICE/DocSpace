@@ -62,8 +62,7 @@ sed -i "s!\"base-domain\".*,!\"base-domain\": \"${APP_CORE_BASE_DOMAIN}\",!g" ${
 sed -i "s!\"machinekey\".*,!\"machinekey\": \"${APP_CORE_MACHINEKEY}\",!g" ${PATH_TO_CONF}/appsettings.${APP_DOTNET_ENV}.json
 sed -i "s!\"public\".*,!\"public\": \"${DOCUMENT_SERVER_URL_PUBLIC}\",!g" ${PATH_TO_CONF}/appsettings.${APP_DOTNET_ENV}.json
 sed -i "s!\"internal\".*,!\"internal\": \"${DOCUMENT_SERVER_URL_INTERNAL}\",!g" ${PATH_TO_CONF}/appsettings.${APP_DOTNET_ENV}.json
-sed -i "s!\"portal\".*,!\"portal\": \"${APP_URL_PORTAL}\",!g" ${PATH_TO_CONF}/appsettings.${APP_DOTNET_ENV}.json
-sed -i "s!\"converter\".*!\"converter\": \"${DOCUMENT_SERVER_URL_CONVERTER}\"!g" ${PATH_TO_CONF}/appsettings.${APP_DOTNET_ENV}.json
+sed -i "s!\"portal\".*!\"portal\": \"${APP_URL_PORTAL}\",!g" ${PATH_TO_CONF}/appsettings.${APP_DOTNET_ENV}.json
 sed -i "s!\"viewed-media\".*!\"viewed-media\": \[${VIEWED_MEDIA}\]!g" ${PATH_TO_CONF}/appsettings.${APP_DOTNET_ENV}.json
 sed -i "s!\"exts\".*!\"exts\": \[ ${FFMPEG_EXTS} \]!g" ${PATH_TO_CONF}/appsettings.${APP_DOTNET_ENV}.json
 sed -i "0,/\"value\"/s!\"value\".*,!\"value\": \"${DOCUMENT_SERVER_JWT_SECRET}\",!" ${PATH_TO_CONF}/appsettings.${APP_DOTNET_ENV}.json
