@@ -35,16 +35,14 @@ RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \
     apt-get -y update && \
     cd ~ && \
     echo "#!/bin/sh\nexit 0" > /usr/sbin/policy-rc.d && \
-    apt-get install -yq libgdiplus \
-                        git \ 
+    apt-get install -yq git \
                         yarn \
                         dotnet-sdk-3.1 
 
 RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \
     git clone https://github.com/ONLYOFFICE/AppServer.git /app/onlyoffice/src/ && \
     cd /app/onlyoffice/src/ && \
-    git checkout ${GIT_BRANCH} && \
-    git pull
+    git checkout ${GIT_BRANCH}
 
 RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \ 
     cd /app/onlyoffice/src/ && \
@@ -181,7 +179,8 @@ RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \
     apt-get -y update && \
     apt-get -y upgrade && \
     apt-get install -yq nano &&\
-    apt-get install -yq jq
+    apt-get install -yq jq &&\
+    apt-get install -yq libgdiplus
     
 USER onlyoffice    
 EXPOSE 5050
