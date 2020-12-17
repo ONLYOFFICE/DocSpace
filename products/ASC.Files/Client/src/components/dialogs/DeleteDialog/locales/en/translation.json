@@ -10,5 +10,6 @@
   "DeleteDialogNote": "Note: This action can not be undone.",
   "QuestionDeleteFolder": "Are you sure you want to delete this folder?",
   "QuestionDeleteElements": "Are you sure you want to delete these elements?",
-  "DeleteOperation": "Deleting"
+  "DeleteOperation": "Deleting",
+  "DeleteSelectedElem": "Selected elements were successfully deleted"
 }
