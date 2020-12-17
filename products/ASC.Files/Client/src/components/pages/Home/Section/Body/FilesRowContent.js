@@ -36,7 +36,7 @@ import {
   getIsLoading,
   getIsRecycleBinFolder,
   getNewRowItems,
-  getRootFolderId,
+  getSelectedFolderId,
   getSelectedFolder,
   getSelectedFolderNew,
   getSelectedFolderParentId,
@@ -316,7 +316,7 @@ class FilesRowContent extends React.PureComponent {
       item,
       treeFolders,
       setTreeFolders,
-      rootFolderId,
+      selectedFolderId,
       newItems,
       setNewRowItems,
       setUpdateTree,
@@ -326,7 +326,7 @@ class FilesRowContent extends React.PureComponent {
         .markAsRead([], [item.id])
         .then(() => {
           const data = treeFolders;
-          const dataItem = data.find((x) => x.id === rootFolderId);
+          const dataItem = data.find((x) => x.id === selectedFolderId);
           dataItem.newItems = newItems ? dataItem.newItems - 1 : 0;
           setUpdateTree(true);
           setTreeFolders(data);
@@ -685,7 +685,7 @@ function mapStateToProps(state, props) {
     isTrashFolder: getIsRecycleBinFolder(state),
     settings: getSettings(state),
     treeFolders: getTreeFolders(state),
-    rootFolderId: getRootFolderId(state),
+    selectedFolderId: getSelectedFolderId(state),
     newItems: getSelectedFolderNew(state),
     selectedFolder: getSelectedFolder(state),
     folders: getFolders(state),
