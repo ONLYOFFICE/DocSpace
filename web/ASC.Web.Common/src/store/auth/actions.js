@@ -147,12 +147,10 @@ export function getUser(dispatch) {
 }
 
 export function getIsAuthenticated(dispatch) {
-  return api.user
-    .checkIsAuthenticated()
-    .then((success) => { 
-      dispatch(setIsAuthenticated(success));
-      return success;
-    });
+  return api.user.checkIsAuthenticated().then((success) => {
+    dispatch(setIsAuthenticated(success));
+    return success;
+  });
 }
 
 export function getPortalSettings(dispatch) {
@@ -204,13 +202,14 @@ export function login(user, hash) {
   };
 }
 
-export function logout() {
+export function logout(needRedirect = true) {
   return (dispatch) => {
     return api.user.logout().then(() => {
       setWithCredentialsStatus(false);
-      dispatch(setLogout());
-
-      history.push("/login");
+      if (needRedirect) {
+        dispatch(setLogout());
+        history.push("/login");
+      }
     });
   };
 }

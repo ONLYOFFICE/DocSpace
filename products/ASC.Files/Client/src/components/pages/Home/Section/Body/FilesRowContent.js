@@ -36,7 +36,7 @@ import {
   getIsLoading,
   getIsRecycleBinFolder,
   getNewRowItems,
-  getRootFolderId,
+  getSelectedFolderId,
   getSelectedFolder,
   getSelectedFolderNew,
   getSelectedFolderParentId,
@@ -66,7 +66,9 @@ const SimpleFilesRowContent = styled(RowContent)`
     width: 14px;
     margin-right: 6px;
   }
-
+  .lock-file {
+    cursor: pointer;
+  }
   .badges {
     display: flex;
     align-items: center;
@@ -329,7 +331,7 @@ class FilesRowContent extends React.PureComponent {
       item,
       treeFolders,
       setTreeFolders,
-      rootFolderId,
+      selectedFolderId,
       newItems,
       setNewRowItems,
       setUpdateTree,
@@ -339,7 +341,7 @@ class FilesRowContent extends React.PureComponent {
         .markAsRead([], [item.id])
         .then(() => {
           const data = treeFolders;
-          const dataItem = data.find((x) => x.id === rootFolderId);
+          const dataItem = data.find((x) => x.id === selectedFolderId);
           dataItem.newItems = newItems ? dataItem.newItems - 1 : 0;
           setUpdateTree(true);
           setTreeFolders(data);
@@ -585,10 +587,13 @@ class FilesRowContent extends React.PureComponent {
                 )}
                 {locked && (
                   <Icons.FileActionsLockedIcon
-                    className="badge"
+                    className="badge lock-file"
                     size="small"
                     isfill={true}
                     color="#3B72A7"
+                    data-id={item.id}
+                    data-locked={true}
+                    onClick={this.props.onClickLock}
                   />
                 )}
                 {versionGroup > 1 && (
@@ -695,7 +700,7 @@ function mapStateToProps(state, props) {
     isTrashFolder: getIsRecycleBinFolder(state),
     settings: getSettings(state),
     treeFolders: getTreeFolders(state),
-    rootFolderId: getRootFolderId(state),
+    selectedFolderId: getSelectedFolderId(state),
     newItems: getSelectedFolderNew(state),
     selectedFolder: getSelectedFolder(state),
     folders: getFolders(state),

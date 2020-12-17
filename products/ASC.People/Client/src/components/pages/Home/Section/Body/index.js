@@ -424,7 +424,8 @@ class SectionBodyContent extends React.PureComponent {
                       }
                     : {};
 
-                const checkedProps = checked !== null ? { checked } : {};
+                const checkedProps =
+                  checked !== null && isAdmin ? { checked } : {};
 
                 const element = (
                   <Avatar

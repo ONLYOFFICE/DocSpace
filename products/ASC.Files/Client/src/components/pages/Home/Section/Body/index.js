@@ -156,16 +156,18 @@ const SimpleFilesRow = styled(Row)`
         width: 0px;
       }
   `}
+
   .share-button-icon {
     margin-right: 7px;
     margin-top: -1px;
   }
 
-  .share-button,
+  .share-button:hover,
   .share-button-icon:hover {
     cursor: pointer;
-    div {
-      color: "#657077";
+    color: #657077;
+    path {
+      fill: #657077;
     }
   }
 
@@ -542,7 +544,7 @@ class SectionBodyContent extends React.Component {
     history.push(`${settings.homepage}/${fileId}/history`);
   };
 
-  lockFile = () => {
+  lockFile = (e) => {
     const {
       selection,
       /*files,*/ selectedFolderId,
@@ -550,9 +552,20 @@ class SectionBodyContent extends React.Component {
       setIsLoading,
       fetchFiles,
     } = this.props;
+
+    let fileId, isLockedFile;
     const file = selection[0];
 
-    api.files.lockFile(file.id, !file.locked).then((res) => {
+    if (file) {
+      fileId = file.id;
+      isLockedFile = !file.locked;
+    } else {
+      const { id, locked } = e.currentTarget.dataset;
+      fileId = Number(id);
+      isLockedFile = !Boolean(locked);
+    }
+
+    api.files.lockFile(fileId, isLockedFile).then((res) => {
       /*const newFiles = files;
         const indexOfFile = newFiles.findIndex(x => x.id === res.id);
         newFiles[indexOfFile] = res;*/
@@ -1497,7 +1510,8 @@ class SectionBodyContent extends React.Component {
     });
   };
 
-  getSharedButton = () => {
+  getSharedButton = (shared) => {
+    const color = shared ? "#657077" : "#a3a9ae";
     return (
       <Text
         className="share-button"
@@ -1505,13 +1519,13 @@ class SectionBodyContent extends React.Component {
         title={this.props.t("Share")}
         fontSize="12px"
         fontWeight={600}
-        color="#A3A9AE"
+        color={color}
         display="inline-flex"
         onClick={this.onClickShare}
       >
         <IconButton
           className="share-button-icon"
-          color="#a3a9ae"
+          color={color}
           hoverColor="#657077"
           size={18}
           iconName="CatalogSharedIcon"
@@ -1745,7 +1759,13 @@ class SectionBodyContent extends React.Component {
                 useReactWindow={false}
               >
                 {items.map((item) => {
-                  const { checked, isFolder, value, contextOptions } = item;
+                  const {
+                    checked,
+                    isFolder,
+                    value,
+                    contextOptions,
+                    canShare,
+                  } = item;
                   const sectionWidth = context.sectionWidth;
                   const isEdit =
                     !!fileAction.type &&
@@ -1767,15 +1787,11 @@ class SectionBodyContent extends React.Component {
                     isEdit || item.id <= 0
                   );
                   const sharedButton =
-                    isRecycleBin || isEdit || item.id <= 0 || sectionWidth < 500
+                    !canShare || isEdit || item.id <= 0 || sectionWidth < 500
                       ? null
-                      : this.getSharedButton();
+                      : this.getSharedButton(item.shared);
                   const displayShareButton =
-                    sectionWidth < 500
-                      ? "26px"
-                      : isRecycleBin
-                      ? "38px"
-                      : "96px";
+                    sectionWidth < 500 ? "26px" : !canShare ? "38px" : "96px";
                   let classNameProp =
                     isFolder && item.access < 2 && !isRecycleBin
                       ? { className: " dropable" }
@@ -1816,6 +1832,7 @@ class SectionBodyContent extends React.Component {
                           onEditComplete={this.onEditComplete}
                           onMediaFileClick={this.onMediaFileClick}
                           onClickFavorite={this.onClickFavorite}
+                          onClickLock={this.lockFile}
                           openDocEditor={this.openDocEditor}
                         />
                       </SimpleFilesRow>

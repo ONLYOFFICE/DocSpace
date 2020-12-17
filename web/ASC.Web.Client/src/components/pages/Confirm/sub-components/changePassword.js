@@ -20,29 +20,24 @@ import {
 } from "../../../../store/confirm/actions";
 
 const { createPasswordHash, tryRedirectTo } = commonUtils;
-const { logout } = store.auth.actions;
+const { logout, getPortalSettings } = store.auth.actions;
 
 const BodyStyle = styled.form`
   margin: 70px auto 0 auto;
   max-width: 500px;
-
   .password-header {
     margin-bottom: 24px;
-
     .password-logo {
       max-width: 216px;
       max-height: 35px;
     }
-
     .password-title {
       margin: 8px 0;
     }
   }
-
   .password-text {
     margin-bottom: 5px;
   }
-
   .password-button {
     margin-top: 20px;
   }
@@ -110,7 +105,8 @@ class Form extends React.PureComponent {
   };
 
   componentDidMount() {
-    const { getConfirmationInfo, defaultPage } = this.props;
+    const { getConfirmationInfo, defaultPage, logout } = this.props;
+    logout(false);
     getConfirmationInfo(this.state.key).catch((error) => {
       toastr.error(this.props.t(`${error}`));
       tryRedirectTo(defaultPage);

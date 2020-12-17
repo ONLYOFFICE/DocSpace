@@ -164,8 +164,15 @@ const StyledHeaderContent = styled.div`
 `;
 
 const StyledBody = styled.div`
-  .files-operations-body {
+  &.files-operations-body {
     padding: 0 16px;
+    box-sizing: border-box;
+    width: 100%;
+    height: calc(100vh - 125px);
+
+    .styled-element {
+      margin-left: -2px;
+    }
   }
 
   .embedding-panel_body {
