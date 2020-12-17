@@ -442,8 +442,8 @@ class SectionBodyContent extends React.Component {
               setTreeFolders(newTreeFolders);
             }
             isFolder
-              ? toastr.success(`Folder moved to recycle bin`)
-              : toastr.success(`File moved to recycle bin`);
+              ? toastr.success(t("FolderRemoved"))
+              : toastr.success(t("FileRemoved"));
           })
           .catch((err) => {
             setSecondaryProgressBarData({

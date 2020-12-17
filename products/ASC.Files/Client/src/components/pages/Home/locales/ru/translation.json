@@ -110,5 +110,7 @@
   "UnblockVersion": "Заблокировать/Разблокировать",
   "AddFilter": "Добавить фильтр",
   "FolderCreated": "Создана новая папка <strong>{{itemTitle}}</strong>",
-  "FileCreated": "Создан новый файл <strong>{{itemTitle}}.{{exst}}</strong>"
+  "FileCreated": "Создан новый файл <strong>{{itemTitle}}.{{exst}}</strong>",
+  "FolderRemoved": "Папка перемещена в корзину",
+  "FileRemoved": "Файл перемещен в корзину"
 }

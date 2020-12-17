@@ -110,5 +110,7 @@
   "UnblockVersion": "Unblock/Check-in",
   "AddFilter": "Add filter",
   "FolderCreated": "New folder <strong>{{itemTitle}}</strong> is created",
-  "FileCreated": "New file <strong>{{itemTitle}}.{{exst}}</strong> is created"
+  "FileCreated": "New file <strong>{{itemTitle}}.{{exst}}</strong> is created",
+  "FolderRemoved": "Folder moved to recycle bin",
+  "FileRemoved": "File moved to recycle bin"
 }
