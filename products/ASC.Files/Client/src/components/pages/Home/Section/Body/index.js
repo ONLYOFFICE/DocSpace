@@ -542,7 +542,7 @@ class SectionBodyContent extends React.Component {
     history.push(`${settings.homepage}/${fileId}/history`);
   };
 
-  lockFile = () => {
+  lockFile = (e) => {
     const {
       selection,
       /*files,*/ selectedFolderId,
@@ -550,9 +550,20 @@ class SectionBodyContent extends React.Component {
       setIsLoading,
       fetchFiles,
     } = this.props;
-    const file = selection[0];
 
-    api.files.lockFile(file.id, !file.locked).then((res) => {
+    let fileId, isLockedFile;
+    const file = selection[0];
+    debugger;
+    if (file) {
+      fileId = file.id;
+      isLockedFile = !file.locked;
+    } else {
+      const { id, locked } = e.currentTarget.dataset;
+      fileId = Number(id);
+      isLockedFile = !Boolean(locked);
+    }
+
+    api.files.lockFile(fileId, isLockedFile).then((res) => {
       /*const newFiles = files;
         const indexOfFile = newFiles.findIndex(x => x.id === res.id);
         newFiles[indexOfFile] = res;*/
@@ -1816,6 +1827,7 @@ class SectionBodyContent extends React.Component {
                           onEditComplete={this.onEditComplete}
                           onMediaFileClick={this.onMediaFileClick}
                           onClickFavorite={this.onClickFavorite}
+                          onClickLock={this.lockFile}
                           openDocEditor={this.openDocEditor}
                         />
                       </SimpleFilesRow>
