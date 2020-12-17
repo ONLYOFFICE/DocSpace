@@ -784,6 +784,9 @@ class UpdateUserForm extends React.Component {
               inputIsDisabled={isLoading}
               inputOnChange={this.onWorkFromDateChange}
               inputTabIndex={7}
+              calendarMinDate={
+                profile.birthday ? new Date(profile.birthday) : new Date()
+              }
             />
             <TextField
               labelText={`${t("Location")}:`}
