@@ -118,8 +118,8 @@ class Form extends React.PureComponent {
 
     window.addEventListener("keydown", this.onKeyPress);
     window.addEventListener("keyup", this.onKeyPress);
-    if (isAuthenticated) {
-      api.user.logout;
+    if (this.props.isAuthenticated) {
+      api.user.logout();
     }
   }
 
