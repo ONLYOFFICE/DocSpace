@@ -206,11 +206,8 @@ export function logout(needRedirect = true) {
   return (dispatch) => {
     return api.user.logout().then(() => {
       setWithCredentialsStatus(false);
-      if (!needRedirect) {
-        getPortalSettings(dispatch);
-      } else {
+      if (needRedirect) {
         dispatch(setLogout());
-
         history.push("/login");
       }
     });
