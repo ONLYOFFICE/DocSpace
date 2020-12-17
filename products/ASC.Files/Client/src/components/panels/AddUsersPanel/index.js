@@ -111,6 +111,7 @@ class AddUsersPanelComponent extends React.Component {
           onClick={this.onClosePanels}
           visible={visible}
           zIndex={zIndex}
+          isAside={true}
         />
         <Aside className="header_aside-panel">
           <StyledContent>
