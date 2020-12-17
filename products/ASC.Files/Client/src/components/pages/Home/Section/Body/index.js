@@ -328,7 +328,9 @@ class SectionBodyContent extends React.Component {
       fetchFiles,
       setUpdateTree,
       setAction,
+      selection,
     } = this.props;
+    const selectedItem = selection[0] ?? {};
     const items = [...folders, ...files];
     const item = items.find((o) => o.id === id && !o.fileExst); //TODO maybe need files find and folders find, not at one function?
     if (
@@ -353,6 +355,7 @@ class SectionBodyContent extends React.Component {
             setAction({ type: null });
             setIsLoading(false);
           });
+          this.onSelectItem(selectedItem);
         });
     }
 
