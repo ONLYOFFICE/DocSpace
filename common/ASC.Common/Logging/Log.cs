@@ -383,10 +383,7 @@ namespace ASC.Common.Logging
         {
             Configuration = configuration;
             ConfigurationExtension = configurationExtension;
-        }
 
-        public void Configure(LogNLog options)
-        {
             LogManager.Configuration = new NLog.Config.XmlLoggingConfiguration(Path.Combine(Configuration["pathToConf"], "nlog.config"));
             LogManager.ThrowConfigExceptions = false;
 
@@ -402,6 +399,11 @@ namespace ASC.Common.Logging
             }
 
             NLog.Targets.Target.Register<SelfCleaningTarget>("SelfCleaning");
+        }
+
+        public void Configure(LogNLog options)
+        {
+
         }
 
         public void Configure(string name, LogNLog options)

@@ -164,6 +164,7 @@ namespace ASC.Core.Data
             var counter = CoreDbContext.QuotaRows
                 .Where(r => r.Path == row.Path && r.Tenant == row.Tenant)
                 .Select(r => r.Counter)
+                .Take(1)
                 .FirstOrDefault();
 
             var dbQuotaRow = new DbQuotaRow

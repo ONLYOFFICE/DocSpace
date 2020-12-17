@@ -98,13 +98,25 @@ namespace ASC.Common.Threading
 
         public T GetProperty<T>(string name)
         {
-            if (!DistributedTaskCache.Props.Any(r => r.Key == name)) return default;
+            var prop = DistributedTaskCache.Props.FirstOrDefault(r => r.Key == name);
 
-            var val = DistributedTaskCache.Props.SingleOrDefault(r => r.Key == name);
+            if (prop == null) return default;
 
-            if (val == null) return default;
+            var resType = typeof(T);
+            var val = prop.Value.Trim('"');
+            object result = val;
 
-            return JsonSerializer.Deserialize<T>(val.Value);
+            if(resType == typeof(Guid))
+            {
+                result = Guid.Parse(val);
+            }
+            else if(resType.IsEnum)
+            {
+                Enum.TryParse(resType, val, out var e);
+                result = e;
+            }
+
+            return (T)Convert.ChangeType(result, resType);
         }
 
         public void SetProperty(string name, object value)

@@ -52,7 +52,7 @@ namespace ASC.Employee.Core.Controllers
             var result = UserManager.GetDepartments().Select(r => r);
             if (!string.IsNullOrEmpty(ApiContext.FilterValue))
             {
-                result = result.Where(r => r.Name.Contains(ApiContext.FilterValue));
+                result = result.Where(r => r.Name.Contains(ApiContext.FilterValue, StringComparison.InvariantCultureIgnoreCase));
             }
             return result.Select(x => new GroupWrapperSummary(x, UserManager));
         }

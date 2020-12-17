@@ -1,7 +1,7 @@
 import React from "react";
 import { TreeMenu, TreeNode, Icons } from "asc-web-components";
 import styled from "styled-components";
-import isEqual from "lodash/isEqual";
+import equal from "fast-deep-equal/react";
 import { api, constants, toastr, store as initStore } from "asc-web-common";
 import { connect } from "react-redux";
 import {
@@ -70,7 +70,7 @@ class TreeFolders extends React.Component {
       this.setState({ expandedKeys });
     }
 
-    if (!isEqual(prevProps.data, data)) {
+    if (!equal(prevProps.data, data)) {
       //!utils.array.isArrayEqual(prevProps.data, data)) {
       this.setState({ treeData: data });
     }

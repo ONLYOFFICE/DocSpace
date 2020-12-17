@@ -57,6 +57,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             var operations = tasks.GetTasks();
             var processlist = Process.GetProcesses();
 
+            //TODO: replace with distributed cache
             foreach (var o in operations.Where(o => processlist.All(p => p.Id != o.InstanceId)))
             {
                 o.SetProperty(FileOperation.PROGRESS, 100);

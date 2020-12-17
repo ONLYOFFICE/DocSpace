@@ -25,7 +25,7 @@ import {
 } from "../../../../../store/people/actions";
 import { getPeopleList } from "../../../../../store/people/selectors";
 
-import isEqual from "lodash/isEqual";
+import equal from "fast-deep-equal/react";
 import { store, api, constants, toastr, Loaders } from "asc-web-common";
 import {
   ChangeEmailDialog,
@@ -73,15 +73,16 @@ class SectionBodyContent extends React.PureComponent {
       peopleList,
     } = this.props;
     if (!isLoaded) return;
-
-    if (peopleList.length <= 0) setIsLoadedSection();
-
-    fetchPeople(filter)
-      .then(() => isLoaded && setIsLoadedSection(true))
-      .catch((error) => {
-        isLoaded && setIsLoadedSection(true);
-        toastr.error(error);
-      });
+    if (peopleList.length <= 0) {
+      fetchPeople(filter)
+        .then(() =>
+          isLoaded ? setIsLoadedSection(true) : setIsLoadedSection()
+        )
+        .catch((error) => {
+          isLoaded ? setIsLoadedSection(true) : setIsLoadedSection();
+          toastr.error(error);
+        });
+    }
   }
 
   findUserById = (id) => this.props.peopleList.find((man) => man.id === id);
@@ -359,7 +360,7 @@ class SectionBodyContent extends React.PureComponent {
     if (currentProps.sectionWidth !== nextProps.sectionWidth) {
       return true;
     }
-    if (!isEqual(currentProps.data, nextProps.data)) {
+    if (!equal(currentProps.data, nextProps.data)) {
       return true;
     }
     if (!isArrayEqual(currentProps.contextOptions, nextProps.contextOptions)) {
@@ -392,7 +393,10 @@ class SectionBodyContent extends React.PureComponent {
       <>
         <Consumer>
           {(context) => (
-            <RowContainer className="people-row" useReactWindow={false}>
+            <RowContainer
+              className="people-row-container"
+              useReactWindow={false}
+            >
               {peopleList.map((man) => {
                 const {
                   checked,

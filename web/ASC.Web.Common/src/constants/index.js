@@ -1,4 +1,3 @@
-export const AUTH_KEY = "asc_auth_key";
 export const LANGUAGE = "language";
 export const ARTICLE_PINNED_KEY = "asc_article_pinned_key";
 
@@ -99,6 +98,7 @@ export const ShareAccessRights = Object.freeze({
   Review: 5,
   Comment: 6,
   FormFilling: 7,
+  CustomFilter: 8,
 });
 
 export const i18nBaseSettings = {

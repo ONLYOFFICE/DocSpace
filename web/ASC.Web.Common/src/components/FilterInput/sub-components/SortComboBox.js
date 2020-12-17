@@ -1,5 +1,5 @@
 import React from "react";
-import isEqual from "lodash/isEqual";
+import equal from "fast-deep-equal/react";
 import {
   ComboBox,
   IconButton,
@@ -65,7 +65,7 @@ class SortComboBox extends React.Component {
       });
       return true;
     }
-    return !isEqual(this.props, nextProps) || !isEqual(this.state, nextState);
+    return !equal(this.props, nextProps) || !equal(this.state, nextState);
   }
 
   onToggleAction = () => {

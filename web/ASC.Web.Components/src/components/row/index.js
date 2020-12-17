@@ -2,9 +2,9 @@ import Checkbox from "../checkbox";
 import ContextMenuButton from "../context-menu-button";
 import PropTypes from "prop-types";
 import React from "react";
-import isEqual from "lodash/isEqual";
 import styled from "styled-components";
 import { tablet } from "../../utils/device";
+import equal from "fast-deep-equal/react";
 
 const StyledRow = styled.div`
   cursor: default;
@@ -87,7 +87,7 @@ class Row extends React.Component {
     if (this.props.needForUpdate) {
       return this.props.needForUpdate(this.props, nextProps);
     }
-    return !isEqual(this.props, nextProps);
+    return !equal(this.props, nextProps);
   }
 
   componentDidMount() {
