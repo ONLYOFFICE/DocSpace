@@ -721,6 +721,22 @@ namespace ASC.Files.Core.Data
         protected List<Tag> FromQuery(IQueryable<TagLinkData> dbFilesTags)
         {
             return dbFilesTags
+                .Select(r=> new TagLinkData()
+                {
+                    Tag = new DbFilesTag
+                    {
+                        Name = r.Tag.Name,
+                        Flag = r.Tag.Flag,
+                        Owner = r.Tag.Owner,
+                        Id = r.Tag.Id
+                    },
+                    Link = new DbFilesTagLink
+                    {
+                         TagCount = r.Link.TagCount,
+                         EntryId = r.Link.EntryId,
+                         EntryType = r.Link.EntryType
+                    }
+                })
                 .ToList()
                 .Select(ToTag)
                 .ToList();
