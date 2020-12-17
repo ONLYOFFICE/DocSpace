@@ -112,7 +112,6 @@ class ProfileInfo extends React.PureComponent {
     newFilter.group = group;
 
     setIsLoading(true);
-    console.log("SectionFilterContent etchPeople");
     fetchPeople(newFilter).finally(() => setIsLoading(false));
   };
 
