@@ -495,7 +495,8 @@ namespace ASC.Files.Core.Data
                             .FirstOrDefault()
                     })
                     .Where(r => r.root.FolderType == FolderType.USER)
-                    .Select(r => r.tagLink);
+                    .Select(r => r.tagLink)
+                    .Distinct();
 
                 tempTags = tempTags.Concat(FromQuery(tmpShareFileTags));
 

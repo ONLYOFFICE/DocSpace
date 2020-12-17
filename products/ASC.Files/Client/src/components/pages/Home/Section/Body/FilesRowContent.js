@@ -66,7 +66,9 @@ const SimpleFilesRowContent = styled(RowContent)`
     width: 14px;
     margin-right: 6px;
   }
-
+  .lock-file {
+    cursor: pointer;
+  }
   .badges {
     display: flex;
     align-items: center;
@@ -570,10 +572,13 @@ class FilesRowContent extends React.PureComponent {
                 )}
                 {locked && (
                   <Icons.FileActionsLockedIcon
-                    className="badge"
+                    className="badge lock-file"
                     size="small"
                     isfill={true}
                     color="#3B72A7"
+                    data-id={item.id}
+                    data-locked={true}
+                    onClick={this.props.onClickLock}
                   />
                 )}
                 {versionGroup > 1 && (
