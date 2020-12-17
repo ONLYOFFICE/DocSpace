@@ -520,7 +520,8 @@ namespace ASC.Files.Core.Data
                             .FirstOrDefault()
                     })
                     .Where(r => r.root.FolderType == FolderType.USER)
-                    .Select(r => r.tagLink);
+                    .Select(r => r.tagLink)
+                    .Distinct();
 
                 tempTags = tempTags.Concat(FromQuery(tmpShareFolderTags));
 
@@ -539,7 +540,8 @@ namespace ASC.Files.Core.Data
                     r.mapping.Id.StartsWith("drive-" + r.account.Id) ||
                     r.mapping.Id.StartsWith("onedrive-" + r.account.Id)
                     )
-                    .Select(r => r.tagLink);
+                    .Select(r => r.tagLink)
+                    .Distinct();
 
                 tempTags = tempTags.Concat(FromQuery(tmpShareSboxTags));
             }
@@ -572,7 +574,8 @@ namespace ASC.Files.Core.Data
                             .FirstOrDefault()
                     })
                     .Where(r => r.root.FolderType == FolderType.Privacy)
-                    .Select(r => r.tagLink);
+                    .Select(r => r.tagLink)
+                    .Distinct();
 
                 tempTags = tempTags.Concat(FromQuery(tmpShareFileTags));
 
@@ -596,7 +599,8 @@ namespace ASC.Files.Core.Data
                                             .FirstOrDefault()
                                     })
                                     .Where(r => r.root.FolderType == FolderType.Privacy)
-                                    .Select(r => r.tagLink);
+                                    .Select(r => r.tagLink)
+                                    .Distinct();
 
                 tempTags = tempTags.Concat(FromQuery(tmpShareFolderTags));
             }
@@ -607,7 +611,8 @@ namespace ASC.Files.Core.Data
                     .Where(r => r.bunch.LeftNode == r.tagLink.Link.EntryId)
                     .Where(r => r.tagLink.Link.EntryType == FileEntryType.Folder)
                     .Where(r => r.bunch.RightNode.StartsWith("projects/project/"))
-                    .Select(r => r.tagLink);
+                    .Select(r => r.tagLink)
+                    .Distinct();
                 tempTags = tempTags.Concat(FromQuery(q));
             }
 
@@ -649,7 +654,8 @@ namespace ASC.Files.Core.Data
                 .Where(r => r.file.TenantId == r.tagLink.Link.TenantId)
                 .Where(r => where.Any(a => r.file.FolderId.ToString() == a))
                 .Where(r => r.tagLink.Link.EntryType == FileEntryType.File)
-                .Select(r => r.tagLink);
+                .Select(r => r.tagLink)
+                .Distinct();
 
             result.AddRange(FromQuery(newTagsForFiles));
 
@@ -680,7 +686,8 @@ namespace ASC.Files.Core.Data
                     .Where(r => thirdpartyFolderIds.Any(a => r.mapping.Id == a))
                     .Where(r => r.tagLink.Tag.Owner == subject)
                     .Where(r => r.tagLink.Link.EntryType == FileEntryType.Folder)
-                    .Select(r => r.tagLink);
+                    .Select(r => r.tagLink)
+                    .Distinct();
 
                 result.AddRange(FromQuery(newTagsForSBox));
             }
