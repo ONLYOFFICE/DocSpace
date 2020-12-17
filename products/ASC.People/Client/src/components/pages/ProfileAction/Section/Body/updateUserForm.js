@@ -699,7 +699,7 @@ class UpdateUserForm extends React.Component {
             <TextChangeField
               labelText={`${t("Password")}:`}
               inputName="password"
-              inputValue={profile.password}
+              inputValue={"********"}
               buttonText={t("ChangeButton")}
               buttonIsDisabled={isLoading}
               buttonOnClick={this.toggleDialogsVisible}
@@ -709,7 +709,7 @@ class UpdateUserForm extends React.Component {
             <TextChangeField
               labelText={`${t("Phone")}:`}
               inputName="phone"
-              inputValue={profile.phone}
+              inputValue={profile.mobilePhone}
               buttonText={t("ChangeButton")}
               buttonIsDisabled={isLoading}
               buttonOnClick={this.toggleDialogsVisible}
