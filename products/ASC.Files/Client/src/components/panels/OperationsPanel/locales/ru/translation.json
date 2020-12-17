@@ -4,5 +4,9 @@
   "CopyOperation": "Копирование",
   "MoveToOperation": "Перемещение",
   "Restore": "Восстановить",
-  "MoveToFolderMessage": "Нельзя перенести папку в свою дочернюю папку"
+  "MoveToFolderMessage": "Нельзя перенести папку в свою дочернюю папку",
+  "MoveItem": "<strong>{{title}}</strong> перемещен",
+  "MoveItems": "Перемещено элементов: <strong>{{qty}}</strong>",
+  "CopyItem": "<strong>{{title}}</strong> скопирован",
+  "CopyItems": "Скопировано элементов: <strong>{{qty}}</strong>"
 }

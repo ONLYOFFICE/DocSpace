@@ -3,7 +3,7 @@ import { constants, store } from "asc-web-common";
 import { createSelector } from "reselect";
 
 const { FileType, FilterType, FolderType } = constants;
-const { isAdmin } = store.auth.selectors;
+const { isAdmin, isVisitor } = store.auth.selectors;
 
 const presentInArray = (array, search) => {
   const result = array.findIndex((item) => item === search);
@@ -641,6 +641,8 @@ const getFilesContextOptions = (
   item,
   isRecycleBin,
   isRecent,
+  isFavorites,
+  isVisitor,
   canOpenPlayer
 ) => {
   const options = [];
@@ -657,25 +659,33 @@ const getFilesContextOptions = (
     options.push("separator2");
     options.push("delete");
   } else {
-    options.push("sharing-settings");
+    if (!(isRecent || isFavorites || isVisitor)) {
+      options.push("sharing-settings");
+    }
 
     if (isFile) {
       options.push("send-by-email");
     }
 
     options.push("link-for-portal-users");
-    options.push("separator0");
+
+    if (!isVisitor) {
+      options.push("separator0");
+    }
 
     if (isFile) {
-      options.push("show-version-history");
-      options.push("finalize-version");
-      options.push("block-unblock-version");
-      options.push("separator1");
-      if (isRecent) {
-        options.push("open-location");
-      }
-      if (!isFavorite) {
-        options.push("mark-as-favorite");
+      if (!isVisitor) {
+        options.push("show-version-history");
+        options.push("finalize-version");
+        options.push("block-unblock-version");
+        options.push("separator1");
+
+        if (isRecent) {
+          options.push("open-location");
+        }
+        if (!isFavorite) {
+          options.push("mark-as-favorite");
+        }
       }
 
       if (canOpenPlayer) {
@@ -688,15 +698,17 @@ const getFilesContextOptions = (
       options.push("download");
     }
 
-    options.push("move");
-    options.push("copy");
+    if (!isVisitor) {
+      options.push("move");
+      options.push("copy");
 
-    if (isFile) {
-      options.push("duplicate");
+      if (isFile) {
+        options.push("duplicate");
+      }
+
+      options.push("rename");
+      options.push("delete");
     }
-
-    options.push("rename");
-    options.push("delete");
   }
   if (isFavorite && !isRecycleBin) {
     options.push("remove-from-favorites");
@@ -857,9 +869,19 @@ export const getFilesList = (state) => {
       getSelection,
       getIsRecycleBinFolder,
       getIsRecentFolder,
+      getIsFavoritesFolder,
       getFileActionId,
+      isVisitor,
     ],
-    (items, selection, isRecycleBin, isRecent, actionId) => {
+    (
+      items,
+      selection,
+      isRecycleBin,
+      isRecent,
+      isFavorites,
+      actionId,
+      isVisitor
+    ) => {
       return items.map((item) => {
         const {
           access,
@@ -894,6 +916,8 @@ export const getFilesList = (state) => {
           item,
           isRecycleBin,
           isRecent,
+          isFavorites,
+          isVisitor,
           canOpenPlayer
         );
         const checked = isFileSelected(selection, id, parentId);
@@ -912,6 +936,13 @@ export const getFilesList = (state) => {
         const isCanWebEdit = canWebEdit(item.fileExst)(state);
 
         const icon = getIcon(state, 24, fileExst, providerKey);
+
+        const canShare = !(
+          isRecycleBin ||
+          isFavorites ||
+          isRecent ||
+          isVisitor
+        );
 
         value += draggable ? "_draggable" : "";
 
@@ -951,6 +982,7 @@ export const getFilesList = (state) => {
           draggable,
           canOpenPlayer,
           canWebEdit: isCanWebEdit,
+          canShare,
         };
       });
     }
