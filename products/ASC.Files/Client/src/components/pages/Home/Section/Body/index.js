@@ -1759,7 +1759,13 @@ class SectionBodyContent extends React.Component {
                 useReactWindow={false}
               >
                 {items.map((item) => {
-                  const { checked, isFolder, value, contextOptions } = item;
+                  const {
+                    checked,
+                    isFolder,
+                    value,
+                    contextOptions,
+                    canShare,
+                  } = item;
                   const sectionWidth = context.sectionWidth;
                   const isEdit =
                     !!fileAction.type &&
@@ -1781,15 +1787,11 @@ class SectionBodyContent extends React.Component {
                     isEdit || item.id <= 0
                   );
                   const sharedButton =
-                    isRecycleBin || isEdit || item.id <= 0 || sectionWidth < 500
+                    !canShare || isEdit || item.id <= 0 || sectionWidth < 500
                       ? null
                       : this.getSharedButton(item.shared);
                   const displayShareButton =
-                    sectionWidth < 500
-                      ? "26px"
-                      : isRecycleBin
-                      ? "38px"
-                      : "96px";
+                    sectionWidth < 500 ? "26px" : !canShare ? "38px" : "96px";
                   let classNameProp =
                     isFolder && item.access < 2 && !isRecycleBin
                       ? { className: " dropable" }
