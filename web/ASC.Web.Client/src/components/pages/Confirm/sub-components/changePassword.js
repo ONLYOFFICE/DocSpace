@@ -105,8 +105,7 @@ class Form extends React.PureComponent {
   };
 
   componentDidMount() {
-    const { getConfirmationInfo, defaultPage, logout } = this.props;
-    logout(false);
+    const { getConfirmationInfo, defaultPage } = this.props;
     getConfirmationInfo(this.state.key).catch((error) => {
       toastr.error(this.props.t(`${error}`));
       tryRedirectTo(defaultPage);
