@@ -108,5 +108,7 @@
   "Duplicate": "Create a copy",
   "CopyOperation": "Copying",
   "UnblockVersion": "Unblock/Check-in",
-  "AddFilter": "Add filter"
+  "AddFilter": "Add filter",
+  "FolderCreated": "New folder <strong>{{itemTitle}}</strong> is created",
+  "FileCreated": "New file <strong>{{itemTitle}}.{{exst}}</strong> is created"
 }

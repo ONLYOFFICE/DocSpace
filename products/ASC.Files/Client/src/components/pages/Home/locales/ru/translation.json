@@ -108,5 +108,7 @@
   "Duplicate": "Создать копию",
   "CopyOperation": "Копирование",
   "UnblockVersion": "Заблокировать/Разблокировать",
-  "AddFilter": "Добавить фильтр"
+  "AddFilter": "Добавить фильтр",
+  "FolderCreated": "Создана новая папка <strong>{{itemTitle}}</strong>",
+  "FileCreated": "Создан новый файл <strong>{{itemTitle}}.{{exst}}</strong>"
 }
