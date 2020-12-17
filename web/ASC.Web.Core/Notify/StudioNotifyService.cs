@@ -53,6 +53,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Studio.Core.Notify
 {
+    [Scope(Additional = typeof(StudioNotifyServiceExtension))]
     public class StudioNotifyService
     {
         private readonly StudioNotifyServiceHelper client;
@@ -73,7 +74,6 @@ namespace ASC.Web.Studio.Core.Notify
         private DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
         private SettingsManager SettingsManager { get; }
         private WebItemSecurity WebItemSecurity { get; }
-        private WebItemManager WebItemManager { get; }
         private ILog Log { get; }
 
         public StudioNotifyService(
@@ -92,7 +92,6 @@ namespace ASC.Web.Studio.Core.Notify
             DisplayUserSettingsHelper displayUserSettingsHelper,
             SettingsManager settingsManager,
             WebItemSecurity webItemSecurity,
-            WebItemManager webItemManager,
             IOptionsMonitor<ILog> option)
         {
             Log = option.Get("ASC.Notify");
@@ -109,7 +108,6 @@ namespace ASC.Web.Studio.Core.Notify
             DisplayUserSettingsHelper = displayUserSettingsHelper;
             SettingsManager = settingsManager;
             WebItemSecurity = webItemSecurity;
-            WebItemManager = webItemManager;
             UserManager = userManager;
             StudioNotifyHelper = studioNotifyHelper;
         }
@@ -181,7 +179,7 @@ namespace ASC.Web.Studio.Core.Notify
         public void UserPasswordChange(UserInfo userInfo)
         {
             var hash = Authentication.GetUserPasswordStamp(userInfo.ID).ToString("s");
-            var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(userInfo.Email, ConfirmType.PasswordChange, hash + userInfo.ID, userInfo.ID);
+            var confirmationUrl = CommonLinkUtility.GetConfirmationUrl(userInfo.Email, ConfirmType.PasswordChange, hash, userInfo.ID);
 
             static string greenButtonText() => WebstudioNotifyPatternResource.ButtonChangePassword;
 
@@ -1014,6 +1012,7 @@ namespace ASC.Web.Studio.Core.Notify
         #endregion
     }
 
+    [Scope]
     public class StudioNotifyServiceScope
     {
         private TenantManager TenantManager { get; }
@@ -1034,30 +1033,9 @@ namespace ASC.Web.Studio.Core.Notify
 
     public static class StudioNotifyServiceExtension
     {
-        public static DIHelper AddStudioNotifyServiceService(this DIHelper services)
+        public static void Register(DIHelper services)
         {
-            if (services.TryAddScoped<StudioNotifyService>())
-            {
-                services.TryAddScoped<StudioNotifyServiceScope>();
-                return services
-                    .AddDisplayUserSettingsService()
-                    .AddMailWhiteLabelSettingsService()
-                    .AddAdditionalWhiteLabelSettingsService()
-                    .AddStudioNotifyServiceHelper()
-                    .AddUserManagerService()
-                    .AddStudioNotifyHelperService()
-                    .AddTenantExtraService()
-                    .AddAuthManager()
-                    .AddAuthContextService()
-                    .AddTenantManagerService()
-                    .AddCoreBaseSettingsService()
-                    .AddCommonLinkUtilityService()
-                    .AddSetupInfo()
-                    .AddWebItemSecurity()
-                    .AddWebItemManager();
-            }
-
-            return services;
+            services.TryAdd<StudioNotifyServiceScope>();
         }
     }
 }

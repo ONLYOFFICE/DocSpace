@@ -28,7 +28,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using ASC.Common;
 using ASC.Core.Users;
 using ASC.Notify.Recipients;
 
@@ -156,17 +155,6 @@ namespace ASC.Core.Notify
                 catch (OverflowException) { }
             }
             return false;
-        }
-    }
-
-    public static class RecipientProviderImplExtension
-    {
-        public static DIHelper AddRecipientProviderImplService(this DIHelper services)
-        {
-            services.TryAddScoped(typeof(IRecipientProvider), typeof(RecipientProviderImpl));
-
-            return services
-                .AddUserManagerService();
         }
     }
 }

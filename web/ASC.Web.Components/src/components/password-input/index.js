@@ -1,9 +1,9 @@
 import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import isEqual from "lodash/isEqual";
+import equal from "fast-deep-equal/react";
 
-import { tablet } from "../../utils/device";
+import { tablet, mobile } from "../../utils/device";
 import InputBlock from "../input-block";
 import { Icons } from "../icons";
 import Link from "../link";
@@ -17,7 +17,7 @@ const SimpleInput = ({ onValidateInput, onCopyToClipboard, ...props }) => (
 
 SimpleInput.propTypes = {
   onValidateInput: PropTypes.func,
-  onCopyToClipboard: PropTypes.func
+  onCopyToClipboard: PropTypes.func,
 };
 
 const StyledInput = styled(SimpleInput)`
@@ -34,6 +34,10 @@ const StyledInput = styled(SimpleInput)`
     padding-right: 8px;
   }
 
+  .prepend-children {
+    padding: 0;
+  }
+
   .break {
     flex-basis: 100%;
     height: 0;
@@ -43,10 +47,20 @@ const StyledInput = styled(SimpleInput)`
     line-height: 14px;
     margin-top: -2px;
   }
+
+  .password-field-wrapper {
+    display: flex;
+    width: auto;
+
+    @media ${mobile} {
+      width: 100%;
+    }
+  }
 `;
 
 const PasswordProgress = styled.div`
-  ${props => (props.inputWidth ? `width: ${props.inputWidth};` : `flex: auto;`)}
+  ${(props) =>
+    props.inputWidth ? `width: ${props.inputWidth};` : `flex: auto;`}
   .input-relative {
     position: relative;
     svg {
@@ -89,13 +103,13 @@ const TooltipStyle = styled.div`
 `;
 const Progress = styled.div`
   border: 1.5px solid
-    ${props =>
+    ${(props) =>
       !props.isDisabled && props.progressColor
         ? props.progressColor
         : "transparent"};
   border-radius: 2px;
   margin-top: -1px;
-  width: ${props => (props.progressWidth ? props.progressWidth + "%" : "0%")};
+  width: ${(props) => (props.progressWidth ? props.progressWidth + "%" : "0%")};
 `;
 
 const StyledTooltipContainer = styled(Text)`
@@ -105,7 +119,7 @@ const StyledTooltipContainer = styled(Text)`
 const StyledTooltipItem = styled(Text)`
   margin-left: 8px;
   height: 24px;
-  color: ${props => (props.valid ? "#44bb00" : "#B40404")};
+  color: ${(props) => (props.valid ? "#44bb00" : "#B40404")};
 `;
 
 class PasswordInput extends React.Component {
@@ -128,7 +142,7 @@ class PasswordInput extends React.Component {
       validLength: false,
       validDigits: false,
       validCapital: false,
-      validSpecial: false
+      validSpecial: false,
     };
   }
 
@@ -141,11 +155,11 @@ class PasswordInput extends React.Component {
     const newType = this.state.type === "text" ? "password" : "text";
 
     this.setState({
-      type: newType
+      type: newType,
     });
   };
 
-  testStrength = value => {
+  testStrength = (value) => {
     const { generatorSpecial, passwordSettings } = this.props;
     const specSymbols = new RegExp("[" + generatorSpecial + "]");
 
@@ -167,11 +181,11 @@ class PasswordInput extends React.Component {
       digits: digits,
       capital: capital,
       special: special,
-      length: value.trim().length >= passwordSettings.minLength
+      length: value.trim().length >= passwordSettings.minLength,
     };
   };
 
-  checkPassword = value => {
+  checkPassword = (value) => {
     const greenColor = "#44bb00";
     const redColor = "#B40404";
     const passwordValidation = this.testStrength(value);
@@ -197,16 +211,16 @@ class PasswordInput extends React.Component {
       validLength: passwordValidation.length,
       validDigits: passwordValidation.digits,
       validCapital: passwordValidation.capital,
-      validSpecial: passwordValidation.special
+      validSpecial: passwordValidation.special,
     });
   };
 
-  onChangeAction = e => {
+  onChangeAction = (e) => {
     this.props.onChange && this.props.onChange(e);
 
     if (this.props.simpleView) {
       this.setState({
-        inputValue: e.target.value
+        inputValue: e.target.value,
       });
       return;
     }
@@ -214,14 +228,14 @@ class PasswordInput extends React.Component {
     this.checkPassword(e.target.value);
   };
 
-  onGeneratePassword = e => {
+  onGeneratePassword = (e) => {
     if (this.props.isDisabled) return e.preventDefault();
 
     const newPassword = this.getNewPassword();
 
     if (this.state.type !== "text") {
       this.setState({
-        type: "text"
+        type: "text",
       });
     }
 
@@ -273,14 +287,14 @@ class PasswordInput extends React.Component {
     return password.substr(0, length);
   };
 
-  copyToClipboard = emailInputName => {
+  copyToClipboard = (emailInputName) => {
     const {
       clipEmailResource,
       clipPasswordResource,
       clipActionResource,
       clipCopiedResource,
       isDisabled,
-      onCopyToClipboard
+      onCopyToClipboard,
     } = this.props;
     const { disableCopyAction, inputValue } = this.state;
 
@@ -288,7 +302,7 @@ class PasswordInput extends React.Component {
 
     this.setState({
       disableCopyAction: true,
-      copyLabel: clipCopiedResource
+      copyLabel: clipCopiedResource,
     });
 
     const textField = document.createElement("textarea");
@@ -311,32 +325,34 @@ class PasswordInput extends React.Component {
     setTimeout(() => {
       this.setState({
         disableCopyAction: false,
-        copyLabel: clipActionResource
+        copyLabel: clipActionResource,
       });
     }, 2000);
   };
 
   shouldComponentUpdate(nextProps, nextState) {
-    return !isEqual(this.props, nextProps) || !isEqual(this.state, nextState);
+    return !equal(this.props, nextProps) || !equal(this.state, nextState);
   }
 
-  renderTextTooltip = (
-    settings,
-    length,
-    digits,
-    capital,
-    special
-  ) => {
+  renderTextTooltip = (settings, length, digits, capital, special) => {
     return (
       <>
-      <div className="break"></div>
-      <Text className="text-tooltip" fontSize="10px" color="#A3A9AE" as="span">
-        {settings.minLength ? length : null} {settings.digits ? `, ${digits}` : null } {settings.upperCase ? `, ${capital}` : null} {settings.specSymbols ? `, ${special}` : null}
-      </Text>
-      <div className="break"></div>
+        <div className="break"></div>
+        <Text
+          className="text-tooltip"
+          fontSize="10px"
+          color="#A3A9AE"
+          as="span"
+        >
+          {settings.minLength ? length : null}{" "}
+          {settings.digits ? `, ${digits}` : null}{" "}
+          {settings.upperCase ? `, ${capital}` : null}{" "}
+          {settings.specSymbols ? `, ${special}` : null}
+        </Text>
+        <div className="break"></div>
       </>
     );
-  }
+  };
 
   render() {
     //console.log('PasswordInput render()');
@@ -367,7 +383,7 @@ class PasswordInput extends React.Component {
       simpleView,
       hideNewPasswordButton,
       isDisableTooltip,
-      isTextTooltipVisible
+      isTextTooltipVisible,
     } = this.props;
     const {
       type,
@@ -379,63 +395,62 @@ class PasswordInput extends React.Component {
       validDigits,
       validCapital,
       validSpecial,
-      disableCopyAction
+      disableCopyAction,
     } = this.state;
 
     const iconsColor = isDisabled ? "#D0D5DA" : "#A3A9AE";
     const iconName = type === "password" ? "EyeOffIcon" : "EyeIcon";
 
-    const textTooltip = isTextTooltipVisible 
+    const textTooltip = isTextTooltipVisible
       ? this.renderTextTooltip(
-        passwordSettings,
-        tooltipPasswordLength,
-        tooltipPasswordDigits,
-        tooltipPasswordCapital,
-        tooltipPasswordSpecial
-      ) 
+          passwordSettings,
+          tooltipPasswordLength,
+          tooltipPasswordDigits,
+          tooltipPasswordCapital,
+          tooltipPasswordSpecial
+        )
       : null;
 
-    const tooltipContent = !isDisableTooltip 
-      ? (
-      <StyledTooltipContainer forwardedAs="div" title={tooltipPasswordTitle}>
-        {tooltipPasswordTitle}
-        <StyledTooltipItem
-          forwardedAs="div"
-          title={tooltipPasswordLength}
-          valid={validLength}
-        >
-          {tooltipPasswordLength}
-        </StyledTooltipItem>
-        {passwordSettings.digits && (
+    const tooltipContent =
+      !isDisableTooltip && !isDisabled ? (
+        <StyledTooltipContainer forwardedAs="div" title={tooltipPasswordTitle}>
+          {tooltipPasswordTitle}
           <StyledTooltipItem
             forwardedAs="div"
-            title={tooltipPasswordDigits}
-            valid={validDigits}
+            title={tooltipPasswordLength}
+            valid={validLength}
           >
-            {tooltipPasswordDigits}
+            {tooltipPasswordLength}
           </StyledTooltipItem>
-        )}
-        {passwordSettings.upperCase && (
-          <StyledTooltipItem
-            forwardedAs="div"
-            title={tooltipPasswordCapital}
-            valid={validCapital}
-          >
-            {tooltipPasswordCapital}
-          </StyledTooltipItem>
-        )}
-        {passwordSettings.specSymbols && (
-          <StyledTooltipItem
-            forwardedAs="div"
-            title={tooltipPasswordSpecial}
-            valid={validSpecial}
-          >
-            {tooltipPasswordSpecial}
-          </StyledTooltipItem>
-        )}
-      </StyledTooltipContainer>
-    )
-    : null;
+          {passwordSettings.digits && (
+            <StyledTooltipItem
+              forwardedAs="div"
+              title={tooltipPasswordDigits}
+              valid={validDigits}
+            >
+              {tooltipPasswordDigits}
+            </StyledTooltipItem>
+          )}
+          {passwordSettings.upperCase && (
+            <StyledTooltipItem
+              forwardedAs="div"
+              title={tooltipPasswordCapital}
+              valid={validCapital}
+            >
+              {tooltipPasswordCapital}
+            </StyledTooltipItem>
+          )}
+          {passwordSettings.specSymbols && (
+            <StyledTooltipItem
+              forwardedAs="div"
+              title={tooltipPasswordSpecial}
+              valid={validSpecial}
+            >
+              {tooltipPasswordSpecial}
+            </StyledTooltipItem>
+          )}
+        </StyledTooltipContainer>
+      ) : null;
 
     const inputGroup = (
       <>
@@ -495,17 +510,18 @@ class PasswordInput extends React.Component {
           </>
         ) : (
           <>
-            <PasswordProgress
-              inputWidth={inputWidth}
-              data-for="tooltipContent"
-              data-tip=""
-              data-event="click"
-              ref={this.ref}
-            >
-              {inputGroup}
-            </PasswordProgress>
-            {!hideNewPasswordButton 
-              ? <NewPasswordButton>
+            <div className="password-field-wrapper">
+              <PasswordProgress
+                inputWidth={inputWidth}
+                data-for="tooltipContent"
+                data-tip=""
+                data-event="click"
+                ref={this.ref}
+              >
+                {inputGroup}
+              </PasswordProgress>
+              {!hideNewPasswordButton ? (
+                <NewPasswordButton>
                   <Icons.RefreshIcon
                     size="medium"
                     color={iconsColor}
@@ -513,8 +529,8 @@ class PasswordInput extends React.Component {
                     onClick={this.onGeneratePassword}
                   />
                 </NewPasswordButton>
-              : null
-            }
+              ) : null}
+            </div>
             {textTooltip}
             <CopyLink>
               <Link
@@ -580,7 +596,7 @@ PasswordInput.propTypes = {
 
   tooltipOffsetLeft: PropTypes.number,
 
-  simpleView: PropTypes.bool
+  simpleView: PropTypes.bool,
 };
 
 PasswordInput.defaultProps = {
@@ -604,7 +620,13 @@ PasswordInput.defaultProps = {
   className: "",
   tooltipOffsetLeft: 110,
 
-  simpleView: false
+  simpleView: false,
+  passwordSettings: {
+    minLength: 8,
+    upperCase: false,
+    digits: false,
+    specSymbols: false,
+  },
 };
 
 export default PasswordInput;

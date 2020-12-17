@@ -5,22 +5,28 @@ import {
   setViewAs,
   setIsLoading,
 } from "../../../../../store/files/actions";
+import {
+  getFilter,
+  getSelectedFolderId,
+  getViewAs,
+  getFilterSelectedItem,
+  getFirstLoad,
+} from "../../../../../store/files/selectors";
 import find from "lodash/find";
 import result from "lodash/result";
 import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
-import { constants, FilterInput, store, Loaders } from "asc-web-common";
-import isEqual from "lodash/isEqual";
+import { constants, FilterInput, store, Loaders, utils } from "asc-web-common";
+import equal from "fast-deep-equal/react";
 import { isMobileOnly } from "react-device-detect";
-import {
-  getFilter,
-  getFirstLoad,
-  getSelectedFolderId,
-  getViewAs,
-} from "../../../../../store/files/selectors";
 
-const { getCurrentUser, getCustomNames, getLanguage } = store.auth.selectors;
+const { withLayoutSize } = utils;
 
+const {
+  getCurrentUser,
+  getSettingsCustomNames,
+  getLanguage,
+} = store.auth.selectors;
 const { FilterType } = constants;
 
 const getFilterType = (filterValues) => {
@@ -279,24 +285,26 @@ class SectionFilterContent extends React.Component {
 
   shouldComponentUpdate(nextProps, nextState) {
     return (
-      !isEqual(this.props.filter, nextProps.filter) ||
+      !equal(this.props.filter, nextProps.filter) ||
       this.props.selectedFolderId !== nextProps.selectedFolderId ||
       this.state.isReady !== nextState.isReady ||
       this.props.viewAs !== nextProps.viewAs ||
-      this.props.firstLoad !== nextProps.firstLoad
+      this.props.firstLoad !== nextProps.firstLoad ||
+      this.props.sectionWidth !== nextProps.sectionWidth
     );
   }
 
   render() {
-    console.log("Filter render");
+    //console.log("Filter render");
     const selectedFilterData = this.getSelectedFilterData();
-    const { t, language, firstLoad } = this.props;
+    const { t, language, firstLoad, sectionWidth } = this.props;
     const filterColumnCount =
       window.innerWidth < 500 ? {} : { filterColumnCount: 3 };
     return firstLoad ? (
       <Loaders.Filter />
     ) : (
       <FilterInput
+        sectionWidth={sectionWidth}
         getFilterData={this.getData}
         getSortData={this.getSortData}
         selectedFilterData={selectedFilterData}
@@ -320,11 +328,12 @@ class SectionFilterContent extends React.Component {
 function mapStateToProps(state) {
   return {
     user: getCurrentUser(state),
-    customNames: getCustomNames(state),
+    customNames: getSettingsCustomNames(state),
     language: getLanguage(state),
     firstLoad: getFirstLoad(state),
     filter: getFilter(state),
     selectedFolderId: getSelectedFolderId(state),
+    selectedItem: getFilterSelectedItem(state),
     viewAs: getViewAs(state),
   };
 }
@@ -333,4 +342,4 @@ export default connect(mapStateToProps, {
   fetchFiles,
   setViewAs,
   setIsLoading,
-})(withRouter(withTranslation()(SectionFilterContent)));
+})(withRouter(withLayoutSize(withTranslation()(SectionFilterContent))));

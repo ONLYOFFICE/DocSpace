@@ -5,6 +5,7 @@ using ASC.Common.Caching;
 
 namespace ASC.Data.Storage.Encryption
 {
+    [Singletone]
     public class EncryptionServiceNotifier
     {
         private ICacheNotify<ProgressEncryption> СacheBackupProgress { get; }
@@ -27,15 +28,9 @@ namespace ASC.Data.Storage.Encryption
             return Cache.Get<ProgressEncryption>(GetCacheKey(tenantId));
         }
 
-        private string GetCacheKey(int tenantId) => $"encryption{tenantId}";
-    }
-
-    public static class EncryptionServiceNotifierExtension
-    {
-        public static DIHelper AddEncryptionServiceNotifierService(this DIHelper services)
+        private string GetCacheKey(int tenantId)
         {
-            services.TryAddSingleton<EncryptionServiceNotifier>();
-            return services;
+            return $"encryption{tenantId}";
         }
     }
 }

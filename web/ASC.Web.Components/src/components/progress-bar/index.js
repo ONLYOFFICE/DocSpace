@@ -18,14 +18,14 @@ const StyledProgressBar = styled.div`
   }
 
   .progress-bar_percent {
-    width: ${props => props.uploadedPercent}%;
+    width: ${(props) => props.uploadedPercent}%;
     float: left;
     overflow: hidden;
     max-height: 22px;
     min-height: 22px;
   }
   .progress-bar_field {
-    width: ${props => props.remainPercent}%;
+    width: ${(props) => props.remainPercent}%;
     float: left;
     overflow: hidden;
     max-height: 22px;
@@ -33,7 +33,7 @@ const StyledProgressBar = styled.div`
   }
 
   .progress-bar_percent {
-    transition: width .6s ease;
+    transition: width 0.6s ease;
     background: linear-gradient(90deg, #20d21f 75%, #b9d21f 100%);
   }
 
@@ -57,7 +57,7 @@ const StyledProgressBar = styled.div`
   }
 `;
 
-const ProgressBar = props => {
+const ProgressBar = (props) => {
   const { percent, label, dropDownContent, ...rest } = props;
   const progressPercent = percent > 100 ? 100 : percent;
   const remainPercent = 100 - progressPercent;
@@ -67,14 +67,19 @@ const ProgressBar = props => {
 
   const onLinkClick = () => setIsOpen(!isOpen);
 
-  const onClose = e => {
+  const onClose = (e) => {
     if (ref.current.contains(e.target)) return;
     setIsOpen(!isOpen);
   };
 
   //console.log("ProgressBar render");
   return (
-    <StyledProgressBar ref={ref} {...rest} uploadedPercent={progressPercent} remainPercent={remainPercent} >
+    <StyledProgressBar
+      ref={ref}
+      {...rest}
+      uploadedPercent={progressPercent}
+      remainPercent={remainPercent}
+    >
       <Link
         className="progress-bar_full-text"
         color="#333"

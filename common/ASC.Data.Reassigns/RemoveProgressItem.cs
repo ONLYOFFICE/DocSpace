@@ -246,6 +246,7 @@ namespace ASC.Data.Reassigns
         }
     }
 
+    [Scope]
     public class RemoveProgressItemScope
     {
         private TenantManager TenantManager { get; }
@@ -313,13 +314,10 @@ namespace ASC.Data.Reassigns
 
     public static class RemoveProgressItemExtension
     {
-        public static DIHelper AddRemoveProgressItemService(this DIHelper services)
+        public static void Register(DIHelper services)
         {
-            services.TryAddSingleton<ProgressQueueOptionsManager<RemoveProgressItem>>();
-            services.TryAddSingleton<ProgressQueue<RemoveProgressItem>>();
-            services.TryAddScoped<RemoveProgressItemScope>();
-            services.AddSingleton<IPostConfigureOptions<ProgressQueue<RemoveProgressItem>>, ConfigureProgressQueue<RemoveProgressItem>>();
-            return services;
+            services.TryAdd<RemoveProgressItemScope>();
+            services.AddProgressQueue<RemoveProgressItem>(1, (int)TimeSpan.FromMinutes(5).TotalMilliseconds, true, false, 0);
         }
     }
 }

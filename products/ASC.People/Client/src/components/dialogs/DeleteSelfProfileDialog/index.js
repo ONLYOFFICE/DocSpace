@@ -7,7 +7,7 @@ import { api, utils, toastr } from "asc-web-common";
 import { createI18N } from "../../../helpers/i18n";
 const i18n = createI18N({
   page: "DeleteSelfProfileDialog",
-  localesPath: "dialogs/DeleteSelfProfileDialog"
+  localesPath: "dialogs/DeleteSelfProfileDialog",
 });
 const { sendInstructionsToDelete } = api.people;
 const { changeLanguage } = utils;
@@ -17,7 +17,7 @@ class DeleteSelfProfileDialogComponent extends React.Component {
     super(props);
 
     this.state = {
-      isRequestRunning: false
+      isRequestRunning: false,
     };
 
     changeLanguage(i18n);
@@ -26,10 +26,10 @@ class DeleteSelfProfileDialogComponent extends React.Component {
     const { onClose } = this.props;
     this.setState({ isRequestRunning: true }, () => {
       sendInstructionsToDelete()
-        .then(res => {
+        .then((res) => {
           toastr.success(res);
         })
-        .catch(error => toastr.error(error))
+        .catch((error) => toastr.error(error))
         .finally(() => {
           this.setState({ isRequestRunning: false }, () => onClose());
         });
@@ -87,14 +87,14 @@ const DeleteSelfProfileDialogTranslated = withTranslation()(
   DeleteSelfProfileDialogComponent
 );
 
-const DeleteSelfProfileDialog = props => (
+const DeleteSelfProfileDialog = (props) => (
   <DeleteSelfProfileDialogTranslated i18n={i18n} {...props} />
 );
 
 DeleteSelfProfileDialog.propTypes = {
   visible: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-  email: PropTypes.string.isRequired
+  email: PropTypes.string.isRequired,
 };
 
 export default DeleteSelfProfileDialog;

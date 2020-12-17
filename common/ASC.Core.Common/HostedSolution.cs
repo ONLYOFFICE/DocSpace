@@ -104,6 +104,7 @@ namespace ASC.Core
         }
     }
 
+    [Scope(typeof(ConfigureHostedSolution))]
     public class HostedSolution
     {
         internal ITenantService TenantService { get; set; }
@@ -282,28 +283,6 @@ namespace ASC.Core
                 tenant.HostedRegion = Region;
             }
             return tenant;
-        }
-    }
-
-    public static class HostedSolutionExtension
-    {
-        public static DIHelper AddHostedSolutionService(this DIHelper services)
-        {
-            if (services.TryAddScoped<IConfigureOptions<HostedSolution>, ConfigureHostedSolution>())
-            {
-                return services
-                    .AddUserFormatter()
-                    .AddTenantService()
-                    .AddUserService()
-                    .AddQuotaService()
-                    .AddTariffService()
-                    .AddTenantManagerService()
-                    .AddTenantUtilService()
-                    .AddDbSettingsManagerService()
-                    .AddCoreSettingsService();
-            }
-
-            return services;
         }
     }
 }

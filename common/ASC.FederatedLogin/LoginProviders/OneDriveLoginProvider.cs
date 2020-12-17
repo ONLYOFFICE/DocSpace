@@ -35,12 +35,14 @@ using Microsoft.Extensions.Configuration;
 
 namespace ASC.FederatedLogin.LoginProviders
 {
+    [Scope]
     public class OneDriveLoginProvider : Consumer, IOAuthProvider
     {
         private const string OneDriveOauthUrl = "https://login.live.com/";
         public const string OneDriveApiUrl = "https://api.onedrive.com";
 
-        public string Scopes { get { return "wl.signin wl.skydrive_update wl.offline_access"; } }
+        public static string OneDriveLoginProviderScopes { get { return "wl.signin wl.skydrive_update wl.offline_access"; } }
+        public string Scopes { get { return OneDriveLoginProviderScopes; } }
         public string CodeUrl { get { return OneDriveOauthUrl + "oauth20_authorize.srf"; } }
         public string AccessTokenUrl { get { return OneDriveOauthUrl + "oauth20_token.srf"; } }
         public string RedirectUri { get { return this["skydriveRedirectUrl"]; } }
@@ -69,20 +71,6 @@ namespace ASC.FederatedLogin.LoginProviders
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
             : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, name, order, props, additional)
         {
-        }
-    }
-
-    public static class OneDriveLoginProviderExtension
-    {
-        public static DIHelper AddOneDriveLoginProviderService(this DIHelper services)
-        {
-            //services.TryAddScoped<OneDriveLoginProvider>();
-            return services
-                .AddConsumerFactoryService()
-                .AddKafkaService()
-                .AddTenantManagerService()
-                .AddCoreBaseSettingsService()
-                .AddCoreSettingsService();
         }
     }
 }

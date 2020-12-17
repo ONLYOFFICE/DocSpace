@@ -5,7 +5,7 @@ import {
   Button,
   Text,
   EmailInput,
-  FieldContainer
+  FieldContainer,
 } from "asc-web-components";
 import { withTranslation } from "react-i18next";
 import ModalDialogContainer from "../ModalDialogContainer";
@@ -14,7 +14,7 @@ import { api, utils, toastr } from "asc-web-common";
 import { createI18N } from "../../../helpers/i18n";
 const i18n = createI18N({
   page: "ChangeEmailDialog",
-  localesPath: "dialogs/ChangeEmailDialog"
+  localesPath: "dialogs/ChangeEmailDialog",
 });
 
 const { sendInstructionsToChangeEmail } = api.people;
@@ -33,7 +33,7 @@ class ChangeEmailDialogComponent extends React.Component {
       email,
       hasError: false,
       errorMessage: "",
-      emailErrors: []
+      emailErrors: [],
     };
 
     changeLanguage(i18n);
@@ -55,10 +55,10 @@ class ChangeEmailDialogComponent extends React.Component {
     window.removeEventListener("keyup", this.onKeyPress);
   }
 
-  onValidateEmailInput = result =>
+  onValidateEmailInput = (result) =>
     this.setState({ isEmailValid: result.isValid, emailErrors: result.errors });
 
-  onChangeEmailInput = e => {
+  onChangeEmailInput = (e) => {
     const { hasError } = this.state;
     const email = e.target.value;
     hasError && this.setState({ hasError: false });
@@ -71,10 +71,10 @@ class ChangeEmailDialogComponent extends React.Component {
     const { id } = user;
     this.setState({ isRequestRunning: true }, () => {
       sendInstructionsToChangeEmail(id, email)
-        .then(res => {
+        .then((res) => {
           toastr.success(res);
         })
-        .catch(error => toastr.error(error))
+        .catch((error) => toastr.error(error))
         .finally(() => {
           this.setState({ isRequestRunning: false }, () =>
             this.props.onClose()
@@ -95,13 +95,13 @@ class ChangeEmailDialogComponent extends React.Component {
         this.onSendEmailChangeInstructions();
       }
     } else {
-      const translatedErrors = emailErrors.map(errorKey => t(errorKey));
+      const translatedErrors = emailErrors.map((errorKey) => t(errorKey));
       const errorMessage = translatedErrors[0];
       this.setState({ errorMessage, hasError: true });
     }
   };
 
-  onKeyPress = event => {
+  onKeyPress = (event) => {
     const { isRequestRunning } = this.state;
     if (event.key === "Enter" && !isRequestRunning) {
       this.onValidateEmail();
@@ -159,14 +159,14 @@ const ChangeEmailDialogTranslated = withTranslation()(
   ChangeEmailDialogComponent
 );
 
-const ChangeEmailDialog = props => (
+const ChangeEmailDialog = (props) => (
   <ChangeEmailDialogTranslated i18n={i18n} {...props} />
 );
 
 ChangeEmailDialog.propTypes = {
   visible: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-  user: PropTypes.object.isRequired
+  user: PropTypes.object.isRequired,
 };
 
 export default ChangeEmailDialog;

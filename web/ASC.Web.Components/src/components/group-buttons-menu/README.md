@@ -19,20 +19,20 @@ const menuItems = [
     children: [
       <DropDownItem key="aaa" label="aaa" />,
       <DropDownItem key="bbb" label="bbb" />,
-      <DropDownItem key="ccc" label="ccc" />
+      <DropDownItem key="ccc" label="ccc" />,
     ],
-    onSelect: a => console.log(a)
+    onSelect: (a) => console.log(a),
   },
   {
     label: "Menu item 1",
     disabled: false,
-    onClick: () => console.log("Menu item 1 action")
+    onClick: () => console.log("Menu item 1 action"),
   },
   {
     label: "Menu item 2",
     disabled: true,
-    onClick: () => console.log("Menu item 2 action")
-  }
+    onClick: () => console.log("Menu item 2 action"),
+  },
 ];
 ```
 

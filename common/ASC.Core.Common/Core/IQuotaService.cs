@@ -26,10 +26,14 @@
 
 using System.Collections.Generic;
 
+using ASC.Common;
+using ASC.Core.Caching;
+using ASC.Core.Data;
 using ASC.Core.Tenants;
 
 namespace ASC.Core
 {
+    [Scope(typeof(ConfigureDbQuotaService), typeof(ConfigureCachedQuotaService))]
     public interface IQuotaService
     {
         IEnumerable<TenantQuota> GetTenantQuotas();

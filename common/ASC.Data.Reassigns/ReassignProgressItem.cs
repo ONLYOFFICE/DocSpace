@@ -50,7 +50,6 @@ namespace ASC.Data.Reassigns
 {
     public class ReassignProgressItem : IProgressItem
     {
-        private readonly HttpContext _context;
         private readonly IDictionary<string, StringValues> _httpHeaders;
 
         private readonly int _tenantId;
@@ -78,7 +77,6 @@ namespace ASC.Data.Reassigns
             int tenantId, Guid fromUserId, Guid toUserId, Guid currentUserId, bool deleteProfile)
         {
             ServiceProvider = serviceProvider;
-            _context = context;
             QueueWorkerRemove = queueWorkerRemove;
             _httpHeaders = QueueWorker.GetHttpHeaders(context.Request);
 
@@ -209,6 +207,7 @@ namespace ASC.Data.Reassigns
         }
     }
 
+    [Scope]
     public class ReassignProgressItemScope
     {
         private TenantManager TenantManager { get; }
@@ -269,18 +268,12 @@ namespace ASC.Data.Reassigns
         }
     }
 
-    public static class ReassignProgressItemExtension
+    public class ReassignProgressItemExtension
     {
-        public static DIHelper AddReassignProgressItemService(this DIHelper services)
+        public static void Register(DIHelper services)
         {
-            if (services.TryAddScoped<ReassignProgressItemScope>())
-            {
-                services.TryAddSingleton<ProgressQueueOptionsManager<ReassignProgressItem>>();
-                services.TryAddSingleton<ProgressQueue<ReassignProgressItem>>();
-                services.AddSingleton<IPostConfigureOptions<ProgressQueue<ReassignProgressItem>>, ConfigureProgressQueue<ReassignProgressItem>>();
-            }
-
-            return services;
+            services.TryAdd<ReassignProgressItemScope>();
+            services.AddProgressQueue<ReassignProgressItem>(1, (int)TimeSpan.FromMinutes(5).TotalMilliseconds, true, false, 0);
         }
     }
 }

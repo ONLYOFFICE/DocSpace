@@ -27,8 +27,11 @@
 using System;
 using System.Collections.Generic;
 
+using ASC.Common;
+
 namespace ASC.Files.Core
 {
+    [Scope]
     public interface ITagDao<T>
     {
         IEnumerable<Tag> GetTags(Guid subject, TagType tagType, IEnumerable<FileEntry<T>> fileEntries);
@@ -38,6 +41,8 @@ namespace ASC.Files.Core
         IEnumerable<Tag> GetTags(T entryID, FileEntryType entryType, TagType tagType);
 
         IEnumerable<Tag> GetTags(TagType tagType, IEnumerable<FileEntry<T>> fileEntries);
+
+        IDictionary<object, Tag> GetTags(Guid subject, IEnumerable<TagType> tagType, IEnumerable<FileEntry<T>> fileEntries);
 
         IEnumerable<Tag> GetNewTags(Guid subject, IEnumerable<FileEntry<T>> fileEntries);
 

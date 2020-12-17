@@ -1,14 +1,19 @@
 /* eslint-disable react/display-name */
-import React, { memo } from 'react';
-import styled from 'styled-components';
-import PropTypes from 'prop-types';
-import CustomScrollbarsVirtualList from '../scrollbar/custom-scrollbars-virtual-list';
-import { FixedSizeList as List, areEqual } from 'react-window';
-import AutoSizer from 'react-virtualized-auto-sizer';
-import ContextMenu from '../context-menu';
+import React, { memo } from "react";
+import styled from "styled-components";
+import PropTypes from "prop-types";
+import CustomScrollbarsVirtualList from "../scrollbar/custom-scrollbars-virtual-list";
+import { FixedSizeList as List, areEqual } from "react-window";
+import AutoSizer from "react-virtualized-auto-sizer";
+import ContextMenu from "../context-menu";
 
 const StyledRowContainer = styled.div`
-  height: ${props => props.useReactWindow ? props.manualHeight ? props.manualHeight : '100%' : 'auto'};
+  height: ${(props) =>
+    props.useReactWindow
+      ? props.manualHeight
+        ? props.manualHeight
+        : "100%"
+      : "auto"};
   position: relative;
 `;
 
@@ -17,40 +22,51 @@ class RowContainer extends React.PureComponent {
     super(props);
 
     this.state = {
-      contextOptions: []
+      contextOptions: [],
     };
   }
 
   onRowContextClick = (options) => {
     if (Array.isArray(options)) {
       this.setState({
-        contextOptions: options
+        contextOptions: options,
       });
     }
   };
 
   componentDidMount() {
-    window.addEventListener('contextmenu', this.onRowContextClick);
+    window.addEventListener("contextmenu", this.onRowContextClick);
   }
 
   componentWillUnmount() {
-    window.removeEventListener('contextmenu', this.onRowContextClick);
+    window.removeEventListener("contextmenu", this.onRowContextClick);
   }
 
   // eslint-disable-next-line react/prop-types
   renderRow = memo(({ data, index, style }) => {
     // eslint-disable-next-line react/prop-types
     const options = data[index].props.contextOptions;
-    
+
     return (
-      <div onContextMenu={this.onRowContextClick.bind(this, options)} style={style}>
+      <div
+        onContextMenu={this.onRowContextClick.bind(this, options)}
+        style={style}
+      >
         {data[index]}
       </div>
-    )
+    );
   }, areEqual);
 
   render() {
-    const { manualHeight, itemHeight, children, useReactWindow, id, className, style } = this.props;
+    const {
+      manualHeight,
+      itemHeight,
+      children,
+      useReactWindow,
+      id,
+      className,
+      style,
+    } = this.props;
 
     const renderList = ({ height, width }) => (
       <List
@@ -67,12 +83,24 @@ class RowContainer extends React.PureComponent {
     );
 
     return (
-      <StyledRowContainer id={id} className={className} style={style} manualHeight={manualHeight} useReactWindow={useReactWindow}>
-        { useReactWindow ? (
+      <StyledRowContainer
+        id={id}
+        className={className}
+        style={style}
+        manualHeight={manualHeight}
+        useReactWindow={useReactWindow}
+      >
+        {useReactWindow ? (
           <AutoSizer>{renderList}</AutoSizer>
         ) : (
           children.map((item, index) => (
-            <div key={index} onContextMenu={this.onRowContextClick.bind(this, item.props.contextOptions)}>
+            <div
+              key={index}
+              onContextMenu={this.onRowContextClick.bind(
+                this,
+                item.props.contextOptions
+              )}
+            >
               {item}
             </div>
           ))
@@ -90,13 +118,13 @@ RowContainer.propTypes = {
   useReactWindow: PropTypes.bool,
   className: PropTypes.string,
   id: PropTypes.string,
-  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 };
 
 RowContainer.defaultProps = {
   itemHeight: 50,
   useReactWindow: true,
-  id: "rowContainer"
+  id: "rowContainer",
 };
 
 export default RowContainer;

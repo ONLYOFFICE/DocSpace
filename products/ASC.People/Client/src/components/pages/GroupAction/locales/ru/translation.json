@@ -8,7 +8,7 @@
   "AddButton": "Добавить",
 
   "SuccessSaveGroup": "Успешное сохранение: {{groupCaption, lowercase}} '{{ groupName }}'",
-  
+
   "CustomNewDepartment": "{{groupCaption}} (создание)",
   "SearchAddedMembers": "Поиск добавленных участников",
   "MeLabel": "Я",

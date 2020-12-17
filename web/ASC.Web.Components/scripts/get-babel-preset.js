@@ -27,16 +27,16 @@ module.exports = function getBabelPreset() {
         {
           targets: {
             browsers: ["last 1 versions"],
-            node: "8"
-          }
-        }
+            node: "8",
+          },
+        },
       ],
       (isEnvProduction || isEnvDevelopment) && [
         // Latest stable ECMAScript features
         require("@babel/preset-env").default,
         {
           targets: {
-            browsers: ["last 1 versions"]
+            browsers: ["last 1 versions"],
           },
           corejs: 2,
           // `entry` transforms `@babel/polyfill` into individual requires for
@@ -47,8 +47,8 @@ module.exports = function getBabelPreset() {
           useBuiltIns: "entry",
           // Do not transform modules to CJS
           modules: false,
-          include: ["transform-classes"]
-        }
+          include: ["transform-classes"],
+        },
       ],
       [
         require("@babel/preset-react").default,
@@ -58,16 +58,16 @@ module.exports = function getBabelPreset() {
           development: isEnvDevelopment || isEnvTest,
           // Will use the native built-in instead of trying to polyfill
           // behavior for any plugins that require one.
-          useBuiltIns: true
-        }
+          useBuiltIns: true,
+        },
       ],
       [
         "@emotion/babel-preset-css-prop",
         {
           sourceMap: isEnvDevelopment,
-          autoLabel: !isEnvProduction
-        }
-      ]
+          autoLabel: !isEnvProduction,
+        },
+      ],
     ].filter(Boolean),
     plugins: [
       require("babel-plugin-styled-components").default,
@@ -89,8 +89,8 @@ module.exports = function getBabelPreset() {
       [
         require("@babel/plugin-proposal-class-properties").default,
         {
-          loose: true
-        }
+          loose: true,
+        },
       ],
       // The following two plugins use Object.assign directly, instead of Babel's
       // extends helper. Note that this assumes `Object.assign` is available.
@@ -98,37 +98,37 @@ module.exports = function getBabelPreset() {
       [
         require("@babel/plugin-proposal-object-rest-spread").default,
         {
-          useBuiltIns: true
-        }
+          useBuiltIns: true,
+        },
       ],
       // Polyfills the runtime needed for async/await and generators
       [
         require("@babel/plugin-transform-runtime").default,
         {
           helpers: false,
-          regenerator: true
-        }
+          regenerator: true,
+        },
       ],
       isEnvProduction && [
         // Remove PropTypes from production build
         require("babel-plugin-transform-react-remove-prop-types").default,
         {
-          mode: "wrap"
-        }
+          mode: "wrap",
+        },
       ],
       // function* () { yield 42; yield 43; }
       !isEnvTest && [
         require("@babel/plugin-transform-regenerator").default,
         {
           // Async functions are converted to generators by @babel/preset-env
-          async: false
-        }
+          async: false,
+        },
       ],
       // Adds syntax support for import()
       require("@babel/plugin-syntax-dynamic-import").default,
       isEnvTest &&
         // Transform dynamic import to require
-        require("babel-plugin-transform-dynamic-import").default
-    ].filter(Boolean)
+        require("babel-plugin-transform-dynamic-import").default,
+    ].filter(Boolean),
   };
 };

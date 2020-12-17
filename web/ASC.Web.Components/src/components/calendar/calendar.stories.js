@@ -1,12 +1,7 @@
 import React from "react";
 import { storiesOf } from "@storybook/react";
 import { action } from "@storybook/addon-actions";
-import {
-  withKnobs,
-  color,
-  select,
-  date
-} from "@storybook/addon-knobs/react";
+import { withKnobs, color, select, date } from "@storybook/addon-knobs/react";
 import withReadme from "storybook-readme/with-readme";
 import Readme from "./README.md";
 import Calendar from ".";
@@ -42,7 +37,7 @@ const locales = [
   "es",
   "tr",
   "uk",
-  "vi"
+  "vi",
 ];
 
 const arraySize = ["base", "big"];
@@ -53,7 +48,7 @@ storiesOf("Components|Calendar", module)
   .add("base", () => (
     <Section>
       <Calendar
-        onChange={date => {
+        onChange={(date) => {
           action("Selected date")(date);
         }}
         themeColor={color("themeColor", "#ED7309")}

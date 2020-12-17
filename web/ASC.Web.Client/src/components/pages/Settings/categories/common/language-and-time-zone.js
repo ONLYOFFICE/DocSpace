@@ -8,40 +8,40 @@ import {
   Loader,
   toastr,
   Link,
-  SaveCancelButtons
+  SaveCancelButtons,
 } from "asc-web-components";
 import styled from "styled-components";
 import { Trans } from "react-i18next";
 import { store, utils } from "asc-web-common";
 import {
   setLanguageAndTime,
-  getPortalTimezones
+  getPortalTimezones,
 } from "../../../../../store/settings/actions";
 import { saveToSessionStorage, getFromSessionStorage } from "../../utils";
 import { default as clientStore } from "../../../../../store/store";
 import { setDocumentTitle } from "../../../../../helpers/utils";
-
+const { getLanguage } = store.auth.selectors;
 const { changeLanguage } = utils;
 const {
   getPortalCultures,
   getModules,
-  getCurrentCustomSchema
+  getCurrentCustomSchema,
 } = store.auth.actions;
 
 const mapCulturesToArray = (cultures, t) => {
-  return cultures.map(culture => {
+  return cultures.map((culture) => {
     return { key: culture, label: t(`Culture_${culture}`) };
   });
 };
 
-const mapTimezonesToArray = timezones => {
-  return timezones.map(timezone => {
+const mapTimezonesToArray = (timezones) => {
+  return timezones.map((timezone) => {
     return { key: timezone.id, label: timezone.displayName };
   });
 };
 
 const findSelectedItemByKey = (items, selectedItemKey) => {
-  return items.find(item => item.key === selectedItemKey);
+  return items.find((item) => item.key === selectedItemKey);
 };
 
 const StyledComponent = styled.div`
@@ -81,7 +81,7 @@ class LanguageAndTimeZone extends React.Component {
       rawCultures,
       rawTimezones,
       organizationName,
-      t
+      t,
     } = props;
     const languages = mapCulturesToArray(rawCultures, t);
     const timezones = mapTimezonesToArray(rawTimezones);
@@ -111,7 +111,7 @@ class LanguageAndTimeZone extends React.Component {
       isLoadingGreetingSave: false,
       isLoadingGreetingRestore: false,
       hasChanged: false,
-      showReminder: false
+      showReminder: false,
     };
   }
 
@@ -121,7 +121,7 @@ class LanguageAndTimeZone extends React.Component {
       portalLanguage,
       portalTimeZoneId,
       t,
-      getPortalTimezones
+      getPortalTimezones,
     } = this.props;
     const { timezones, languages, isLoadedData, showReminder } = this.state;
 
@@ -130,7 +130,7 @@ class LanguageAndTimeZone extends React.Component {
       !showReminder
     ) {
       this.setState({
-        showReminder: true
+        showReminder: true,
       });
     }
 
@@ -164,17 +164,17 @@ class LanguageAndTimeZone extends React.Component {
             timezones,
             timezone,
             languageDefault,
-            timezoneDefault
+            timezoneDefault,
           });
 
           if (!timezoneDefault) {
             this.setState({
-              timezoneDefault: timezone
+              timezoneDefault: timezone,
             });
           }
           if (!languageDefault) {
             this.setState({
-              languageDefault: language
+              languageDefault: language,
             });
           }
         });
@@ -189,7 +189,7 @@ class LanguageAndTimeZone extends React.Component {
       timezones,
       languages,
       timezoneDefault,
-      languageDefault
+      languageDefault,
     } = this.state;
     const { i18n, language, nameSchemaId } = this.props;
     if (timezones.length && languages.length && !prevState.isLoadedData) {
@@ -197,7 +197,7 @@ class LanguageAndTimeZone extends React.Component {
     }
     if (language !== prevProps.language) {
       changeLanguage(i18n)
-        .then(t => {
+        .then((t) => {
           const newLocaleLanguages = mapCulturesToArray(
             this.props.rawCultures,
             t
@@ -209,7 +209,7 @@ class LanguageAndTimeZone extends React.Component {
             ) || newLocaleLanguages[0];
           this.setState({
             languages: newLocaleLanguages,
-            language: languageFromSessionStorage || newLocaleSelectedLanguage
+            language: languageFromSessionStorage || newLocaleSelectedLanguage,
           });
         })
         .then(() => getModules(clientStore.dispatch))
@@ -220,7 +220,7 @@ class LanguageAndTimeZone extends React.Component {
     }
   }
 
-  onLanguageSelect = language => {
+  onLanguageSelect = (language) => {
     this.setState({ language });
     if (this.settingIsEqualInitialValue("language", language)) {
       saveToSessionStorage("language", "");
@@ -230,7 +230,7 @@ class LanguageAndTimeZone extends React.Component {
     this.checkChanges();
   };
 
-  onTimezoneSelect = timezone => {
+  onTimezoneSelect = (timezone) => {
     this.setState({ timezone });
     if (this.settingIsEqualInitialValue("timezone", timezone)) {
       saveToSessionStorage("timezone", "");
@@ -243,23 +243,23 @@ class LanguageAndTimeZone extends React.Component {
 
   onSaveLngTZSettings = () => {
     const { setLanguageAndTime, i18n } = this.props;
-    this.setState({ isLoading: true }, function() {
+    this.setState({ isLoading: true }, function () {
       setLanguageAndTime(this.state.language.key, this.state.timezone.key)
         .then(() => changeLanguage(i18n))
-        .then(t => toastr.success(t("SuccessfullySaveSettingsMessage")))
-        .catch(error => toastr.error(error))
+        .then((t) => toastr.success(t("SuccessfullySaveSettingsMessage")))
+        .catch((error) => toastr.error(error))
         .finally(() => this.setState({ isLoading: false }));
     });
 
     this.setState({
       showReminder: false,
       timezoneDefault: this.state.timezone,
-      languageDefault: this.state.language
+      languageDefault: this.state.language,
     });
   };
 
   onCancelClick = () => {
-    settingNames.forEach(settingName => {
+    settingNames.forEach((settingName) => {
       const valueFromSessionStorage = getFromSessionStorage(settingName);
 
       if (
@@ -274,7 +274,7 @@ class LanguageAndTimeZone extends React.Component {
     });
 
     this.setState({
-      showReminder: false
+      showReminder: false,
     });
 
     this.checkChanges();
@@ -289,7 +289,7 @@ class LanguageAndTimeZone extends React.Component {
   checkChanges = () => {
     let hasChanged = false;
 
-    settingNames.forEach(settingName => {
+    settingNames.forEach((settingName) => {
       const valueFromSessionStorage = getFromSessionStorage(settingName);
       if (
         valueFromSessionStorage &&
@@ -300,7 +300,7 @@ class LanguageAndTimeZone extends React.Component {
 
     if (hasChanged !== this.state.hasChanged) {
       this.setState({
-        hasChanged: hasChanged
+        hasChanged: hasChanged,
       });
     }
   };
@@ -315,7 +315,7 @@ class LanguageAndTimeZone extends React.Component {
       timezones,
       timezone,
       hasChanged,
-      showReminder
+      showReminder,
     } = this.state;
     const supportEmail = "documentation@onlyoffice.com";
     const tooltipLanguage = (
@@ -409,21 +409,22 @@ function mapStateToProps(state) {
     cultures,
     greetingSettings,
     nameSchemaId,
-    organizationName
+    organizationName,
   } = state.auth.settings;
   return {
     portalLanguage: culture,
     portalTimeZoneId: timezone,
-    language: state.auth.user.cultureName || culture,
+    language: getLanguage(state),
     rawTimezones: timezones,
     rawCultures: cultures,
     greetingSettings,
     nameSchemaId,
-    organizationName
+    organizationName,
   };
 }
 
-export default connect(
-  mapStateToProps,
-  { getPortalCultures, setLanguageAndTime, getPortalTimezones }
-)(withTranslation()(LanguageAndTimeZone));
+export default connect(mapStateToProps, {
+  getPortalCultures,
+  setLanguageAndTime,
+  getPortalTimezones,
+})(withTranslation()(LanguageAndTimeZone));

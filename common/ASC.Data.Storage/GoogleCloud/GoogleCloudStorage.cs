@@ -37,6 +37,7 @@ using System.Text;
 using System.Threading;
 using System.Web;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Data.Storage.Configuration;
@@ -55,6 +56,7 @@ using MimeMapping = ASC.Common.Web.MimeMapping;
 
 namespace ASC.Data.Storage.GoogleCloud
 {
+    [Scope]
     public class GoogleCloudStorage : BaseStorage
     {
         private string _subDir = string.Empty;
@@ -241,7 +243,7 @@ namespace ASC.Data.Storage.GoogleCloud
         {
             var contentDisposition = string.Format("attachment; filename={0};",
                                                  HttpUtility.UrlPathEncode(attachmentFileName));
-            if (attachmentFileName.Any(c => (int)c >= 0 && (int)c <= 127))
+            if (attachmentFileName.Any(c => c >= 0 && c <= 127))
             {
                 contentDisposition = string.Format("attachment; filename*=utf-8''{0};",
                                                    HttpUtility.UrlPathEncode(attachmentFileName));
@@ -318,11 +320,12 @@ namespace ASC.Data.Storage.GoogleCloud
 
         private PredefinedObjectAcl GetGoogleCloudAcl(ACL acl)
         {
-            return acl switch
-            {
-                ACL.Read => PredefinedObjectAcl.PublicRead,
-                _ => PredefinedObjectAcl.PublicRead,
-            };
+            return PredefinedObjectAcl.PublicRead;
+            //return acl switch
+            //{
+            //    ACL.Read => PredefinedObjectAcl.PublicRead,
+            //    _ => PredefinedObjectAcl.PublicRead,
+            //};
         }
 
         private PredefinedObjectAcl GetDomainACL(string domain)
@@ -785,7 +788,7 @@ namespace ASC.Data.Storage.GoogleCloud
                         continue;
                     }
 
-                    if ((int)status != 308)
+                    if (status != 308)
                         throw (ex);
 
                     break;

@@ -7,7 +7,7 @@ import { api, utils, toastr } from "asc-web-common";
 import { createI18N } from "../../../helpers/i18n";
 const i18n = createI18N({
   page: "ChangePasswordDialog",
-  localesPath: "dialogs/ChangePasswordDialog"
+  localesPath: "dialogs/ChangePasswordDialog",
 });
 
 const { sendInstructionsToChangePassword } = api.people;
@@ -18,7 +18,7 @@ class ChangePasswordDialogComponent extends React.Component {
     super();
 
     this.state = {
-      isRequestRunning: false
+      isRequestRunning: false,
     };
 
     changeLanguage(i18n);
@@ -27,10 +27,10 @@ class ChangePasswordDialogComponent extends React.Component {
     const { email, onClose } = this.props;
     this.setState({ isRequestRunning: true }, () => {
       sendInstructionsToChangePassword(email)
-        .then(res => {
+        .then((res) => {
           toastr.success(res);
         })
-        .catch(error => toastr.error(error))
+        .catch((error) => toastr.error(error))
         .finally(() => {
           this.setState({ isRequestRunning: false }, () => onClose());
         });
@@ -84,14 +84,14 @@ const ChangePasswordDialogTranslated = withTranslation()(
   ChangePasswordDialogComponent
 );
 
-const ChangePasswordDialog = props => (
+const ChangePasswordDialog = (props) => (
   <ChangePasswordDialogTranslated i18n={i18n} {...props} />
 );
 
 ChangePasswordDialog.propTypes = {
   visible: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-  email: PropTypes.string.isRequired
+  email: PropTypes.string.isRequired,
 };
 
 export default ChangePasswordDialog;

@@ -29,16 +29,16 @@ settings.allowDomainPunycode = true;
 
 You can apply all properties of the `TextInput` component to the component
 
-| Props                |                 Type                  | Required |             Values              |     Default     | Description                                                                                                                                                                          |
-| -------------------- | :-----------------------------------: | :------: | :-----------------------------: | :-------------: | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `className`          |               `string`                |    -     |                -                |        -        | Accepts class                                                                                                                                                                        |
-| `customValidate` |                `func`                 |    -     |                -                |        -        | Function for your custom validation input value. Function must return object with following parameters: `value`: string value of input, `isValid`: boolean result of validating, `errors`(optional): array of errors |
-| `emailSettings`      | `Object`, `EmailSettings` |    -     |                -                | { allowDomainPunycode: false, allowLocalPartPunycode: false, allowDomainIp: false, allowStrictLocalPart: true, allowSpaces: false, allowName: false, allowLocalDomainName: false } | Settings for validating email                                                                                                                                                        |
-| `hasError`           |                `bool`                 |    -     |                -                |        -        | Used in your custom validation                                                                                                                                                       |
-| `id`                 |               `string`                |    -     |                -                |        -        | Accepts id                                                                                                                                                                           |
-| `onChange`           |                `func`                 |    -     |                -                |        -        | Function for your custom handling changes in input                                                                                                                                   |
-| `onValidateInput`    |                `func`                 |    -     | { isValid: bool, errors: array} |        -        | Will be validate our value, return object with following parameters: `isValid`: boolean result of validating, `errors`: array of errors                                              |
-| `style`              |            `obj`, `array`             |    -     |                -                |        -        | Accepts css style                                                                                                                                                                    |
+| Props             |           Type            | Required |             Values              |                                                                                      Default                                                                                       | Description                                                                                                                                                                                                          |
+| ----------------- | :-----------------------: | :------: | :-----------------------------: | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `className`       |         `string`          |    -     |                -                |                                                                                         -                                                                                          | Accepts class                                                                                                                                                                                                        |
+| `customValidate`  |          `func`           |    -     |                -                |                                                                                         -                                                                                          | Function for your custom validation input value. Function must return object with following parameters: `value`: string value of input, `isValid`: boolean result of validating, `errors`(optional): array of errors |
+| `emailSettings`   | `Object`, `EmailSettings` |    -     |                -                | { allowDomainPunycode: false, allowLocalPartPunycode: false, allowDomainIp: false, allowStrictLocalPart: true, allowSpaces: false, allowName: false, allowLocalDomainName: false } | Settings for validating email                                                                                                                                                                                        |
+| `hasError`        |          `bool`           |    -     |                -                |                                                                                         -                                                                                          | Used in your custom validation                                                                                                                                                                                       |
+| `id`              |         `string`          |    -     |                -                |                                                                                         -                                                                                          | Accepts id                                                                                                                                                                                                           |
+| `onChange`        |          `func`           |    -     |                -                |                                                                                         -                                                                                          | Function for your custom handling changes in input                                                                                                                                                                   |
+| `onValidateInput` |          `func`           |    -     | { isValid: bool, errors: array} |                                                                                         -                                                                                          | Will be validate our value, return object with following parameters: `isValid`: boolean result of validating, `errors`: array of errors                                                                              |
+| `style`           |      `obj`, `array`       |    -     |                -                |                                                                                         -                                                                                          | Accepts css style                                                                                                                                                                                                    |
 
 ### Validate email
 
@@ -68,7 +68,7 @@ const emailSettings = {
   allowStrictLocalPart: true,
   allowSpaces: false,
   allowName: false,
-  allowLocalDomainName: false
+  allowLocalDomainName: false,
 };
 ```
 
@@ -114,14 +114,14 @@ You should use custom validation with the `customValidate` prop. This prop conta
 
 Base colors:
 
-| Сomponent actions | isValid | border-color |
-| ----------------- | :-----: | :----------: |
-| `:focus`          | `false` |  ![#c30](https://placehold.it/15/c30/000000?text=+)   #c30     |
-| `:focus`          | `true`  |  ![#2DA7DB](https://placehold.it/15/2DA7DB/000000?text=+) #2DA7DB    |
-| `:hover`          | `false` |  ![#c30](https://placehold.it/15/c30/000000?text=+)   #c30     |
-| `:hover`          | `true`  |  ![#D0D5DA](https://placehold.it/15/D0D5DA/000000?text=+) #D0D5DA    |
-| `default`         | `false` |  ![#c30](https://placehold.it/15/c30/000000?text=+)   #c30     |
-| `default`         | `true`  |  ![#D0D5DA](https://placehold.it/15/D0D5DA/000000?text=+) #D0D5DA    |
+| Сomponent actions | isValid |                           border-color                           |
+| ----------------- | :-----: | :--------------------------------------------------------------: |
+| `:focus`          | `false` |     ![#c30](https://placehold.it/15/c30/000000?text=+) #c30      |
+| `:focus`          | `true`  | ![#2DA7DB](https://placehold.it/15/2DA7DB/000000?text=+) #2DA7DB |
+| `:hover`          | `false` |     ![#c30](https://placehold.it/15/c30/000000?text=+) #c30      |
+| `:hover`          | `true`  | ![#D0D5DA](https://placehold.it/15/D0D5DA/000000?text=+) #D0D5DA |
+| `default`         | `false` |     ![#c30](https://placehold.it/15/c30/000000?text=+) #c30      |
+| `default`         | `true`  | ![#D0D5DA](https://placehold.it/15/D0D5DA/000000?text=+) #D0D5DA |
 
 ```js
 import React from "react";
@@ -130,21 +130,20 @@ import { EmailInput } from "asc-web-components";
 const onChange = (e) => {
   // your event handling
   customValidate(e.target.value);
-}
+};
 
 const customValidate = (value) => {
   const isValid = !!(value && value.length > 0);
-  return { 
+  return {
     value,
     isValid: isValid,
-    errors: isValid ? [] : ["incorrect email"]
-  }
-}
+    errors: isValid ? [] : ["incorrect email"],
+  };
+};
 
 const onValidateInput = (result) => {
-    console.log("onValidateInput", result);
-}
-
+  console.log("onValidateInput", result);
+};
 ```
 
 ```jsx
@@ -152,6 +151,5 @@ const onValidateInput = (result) => {
   customValidate={customValidate}
   onChange={onChange}
   onValidateInput={onValidateInput}
-/>;
-
+/>
 ```

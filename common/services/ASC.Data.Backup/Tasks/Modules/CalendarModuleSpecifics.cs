@@ -33,7 +33,6 @@ namespace ASC.Data.Backup.Tasks.Modules
 {
     public class CalendarModuleSpecifics : ModuleSpecificsBase
     {
-        private Helpers helpers;
 
         private readonly TableInfo[] _tables = new[]
             {
@@ -60,7 +59,6 @@ namespace ASC.Data.Backup.Tasks.Modules
         public CalendarModuleSpecifics(Helpers helpers)
     : base(helpers)
         {
-            this.helpers = helpers;
             _tableRelations = new[]
             {
                 new RelationInfo("calendar_calendars", "id", "calendar_calendar_item", "calendar_id"),

@@ -61,7 +61,7 @@ class Filter {
       activationStatus,
       role,
       search,
-      group
+      group,
     } = this;
 
     let dtoFilter = {
@@ -74,7 +74,7 @@ class Filter {
       filtervalue: (search ?? "").trim(),
       groupId: group,
       fields:
-        "id,status,isAdmin,isOwner,isVisitor,activationStatus,userName,email,mobilePhone,displayName,avatar,listAdminModules,birthday,title,location,isLDAP,isSSO,groups"
+        "id,status,isAdmin,isOwner,isVisitor,activationStatus,userName,email,mobilePhone,displayName,avatar,listAdminModules,birthday,title,location,isLDAP,isSSO,groups",
     };
 
     switch (role) {

@@ -61,7 +61,7 @@ const toastr = {
   error: error,
   info: info,
   success: success,
-  warning: warning
+  warning: warning,
 };
 
 const CloseButton = ({ closeToast }) => (
@@ -99,7 +99,7 @@ const notify = (
       closeOnClick: !withCross,
       closeButton: withCross && <CloseButton />,
       autoClose: timeout === 0 ? false : timeout < 750 ? 5000 : timeout || 5000,
-      position: centerPosition && toast.POSITION.TOP_CENTER
+      position: centerPosition && toast.POSITION.TOP_CENTER,
     }
   );
 };

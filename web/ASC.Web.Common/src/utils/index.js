@@ -1,5 +1,6 @@
-import { AUTH_KEY, LANGUAGE } from "../constants";
+import { LANGUAGE } from "../constants";
 import sjcl from "sjcl";
+import { isMobile } from "react-device-detect";
 
 export const toUrlParams = (obj, skipNull) => {
   let str = "";
@@ -32,26 +33,15 @@ export function getObjectByLocation(location) {
   return object;
 }
 
-export function changeLanguage(i18n, currentLng = localStorage.getItem(LANGUAGE)) {
+export function changeLanguage(
+  i18n,
+  currentLng = localStorage.getItem(LANGUAGE)
+) {
   return currentLng
     ? i18n.language !== currentLng
       ? i18n.changeLanguage(currentLng)
       : Promise.resolve((...args) => i18n.t(...args))
     : i18n.changeLanguage("en");
-}
-
-export function redirectToDefaultPage() {
-  if (
-    (window.location.pathname === "/" ||
-      window.location.pathname === "" ||
-      window.location.pathname === "/login") &&
-    localStorage.getItem(AUTH_KEY) !== null
-  ) {
-    setTimeout(() => window.location.replace("/products/files"), 0);
-    return true;
-  }
-
-  return false;
 }
 
 export function createPasswordHash(password, hashSettings) {
@@ -78,30 +68,58 @@ export function createPasswordHash(password, hashSettings) {
   return hash;
 }
 
-export function removeTempContent() {
-  const tempElm = document.getElementById("temp-content");
-  if (tempElm) {
-    tempElm.outerHTML = "";
+export function updateTempContent(isAuth = false) {
+  if (isAuth) {
+    let el = document.getElementById("burger-loader-svg");
+    let el1 = document.getElementById("logo-loader-svg");
+    let el2 = document.getElementById("avatar-loader-svg");
+
+    el.style.display = "block";
+    el1.style.display = "block";
+    el2.style.display = "block";
+  } else {
+    const tempElm = document.getElementById("temp-content");
+    if (tempElm) {
+      tempElm.outerHTML = "";
+    }
   }
 }
 
 export function hideLoader() {
-  const ele = document.getElementById("ipl-progress-indicator");
-  if (ele) {
-    // fade out
-    ele.classList.add("available");
-    ele.style.display = "";
-    // setTimeout(() => {
-    //   // remove from DOM
-    //   ele.outerHTML = "";
-    // }, 2000);
+  if (isMobile) return;
+
+  if (window.loadingTimeout) {
+    clearTimeout(window.loadingTimeout);
+    window.loadingTimeout = null;
   }
+
+  document.body.classList.remove("loading");
 }
 
 export function showLoader() {
-  const ele = document.getElementById("ipl-progress-indicator");
-  if (ele) {
-    ele.classList.remove("available");
-    ele.style.display = "block";
+  if (isMobile) return;
+
+  window.loadingTimeout = setTimeout(() => {
+    document.body.classList.add("loading");
+  }, 1000);
+}
+
+export { withLayoutSize } from "./withLayoutSize";
+
+export function tryRedirectTo(page) {
+  if (
+    page &&
+    page !== "" &&
+    page !== "/" &&
+    window.location &&
+    window.location.pathname &&
+    window.location.pathname === page &&
+    window.location.pathname.indexOf(page) !== -1
+  ) {
+    return false;
   }
+  //TODO: check if we already on default page
+  window.location.replace(page);
+
+  return true;
 }

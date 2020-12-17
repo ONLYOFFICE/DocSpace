@@ -1,13 +1,10 @@
 import React from "react";
-import isEqual from "lodash/isEqual";
-import {
-  FieldContainer,
-  EmailInput
-} from "asc-web-components";
+import equal from "fast-deep-equal/react";
+import { FieldContainer, EmailInput } from "asc-web-components";
 
 class EmailField extends React.Component {
   shouldComponentUpdate(nextProps) {
-    return !isEqual(this.props, nextProps);
+    return !equal(this.props, nextProps);
   }
 
   render() {
@@ -29,8 +26,6 @@ class EmailField extends React.Component {
       onValidateInput,
     } = this.props;
 
-
-
     return (
       <FieldContainer
         isRequired={isRequired}
@@ -46,7 +41,7 @@ class EmailField extends React.Component {
           tabIndex={inputTabIndex}
           placeholder={placeholder}
           scale={scale}
-          autoComplete='email'
+          autoComplete="email"
           isDisabled={inputIsDisabled}
           onValidateInput={onValidateInput}
           hasError={hasError}

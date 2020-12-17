@@ -65,6 +65,7 @@ namespace ASC.Web.Files.HttpHandlers
         }
     }
 
+    [Scope]
     public class ThirdPartyAppHandlerService
     {
         private AuthContext AuthContext { get; }
@@ -132,19 +133,6 @@ namespace ASC.Web.Files.HttpHandlers
 
     public static class ThirdPartyAppHandlerExtention
     {
-        public static DIHelper AddThirdPartyAppHandlerService(this DIHelper services)
-        {
-            if (services.TryAddScoped<ThirdPartyAppHandlerService>())
-            {
-                return services
-                    .AddCommonLinkUtilityService()
-                    .AddBaseCommonLinkUtilityService()
-                    .AddAuthContextService();
-            }
-
-            return services;
-        }
-
         public static IApplicationBuilder UseThirdPartyAppHandler(this IApplicationBuilder builder)
         {
             return builder.UseMiddleware<ThirdPartyAppHandler>();

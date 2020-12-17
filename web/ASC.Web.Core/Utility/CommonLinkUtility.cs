@@ -72,6 +72,7 @@ namespace ASC.Web.Studio.Utility
         PrivacyRoom = 22
     }
 
+    [Scope]
     public class CommonLinkUtility : BaseCommonLinkUtility
     {
         private static readonly Regex RegFilePathTrim = new Regex("/[^/]*\\.aspx", RegexOptions.IgnoreCase | RegexOptions.Compiled);
@@ -88,7 +89,7 @@ namespace ASC.Web.Studio.Utility
             WebItemManager webItemManager,
             EmailValidationKeyProvider emailValidationKeyProvider,
             IOptionsMonitor<ILog> options,
-            IOptions<CommonLinkUtilitySettings> settings) :
+            CommonLinkUtilitySettings settings) :
             this(null, coreBaseSettings, coreSettings, tenantManager, userManager, webItemManagerSecurity, webItemManager, emailValidationKeyProvider, options, settings)
         {
         }
@@ -103,7 +104,7 @@ namespace ASC.Web.Studio.Utility
             WebItemManager webItemManager,
             EmailValidationKeyProvider emailValidationKeyProvider,
             IOptionsMonitor<ILog> options,
-            IOptions<CommonLinkUtilitySettings> settings) :
+            CommonLinkUtilitySettings settings) :
             base(httpContextAccessor, coreBaseSettings, coreSettings, tenantManager, options, settings) =>
             (UserManager, WebItemManagerSecurity, WebItemManager, EmailValidationKeyProvider) = (userManager, webItemManagerSecurity, webItemManager, emailValidationKeyProvider);
 
@@ -547,23 +548,5 @@ namespace ASC.Web.Studio.Utility
 
         #endregion
 
-    }
-
-    public static class CommonLinkUtilityExtension
-    {
-        public static DIHelper AddCommonLinkUtilityService(this DIHelper services)
-        {
-            if (services.TryAddScoped<CommonLinkUtility>())
-            {
-                return services
-                    .AddUserManagerService()
-                    .AddBaseCommonLinkUtilityService()
-                    .AddWebItemManagerSecurity()
-                    .AddWebItemManager()
-                    .AddEmailValidationKeyProviderService();
-            }
-
-            return services;
-        }
     }
 }

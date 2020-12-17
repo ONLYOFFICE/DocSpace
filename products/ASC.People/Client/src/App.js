@@ -1,7 +1,6 @@
 import React, { Suspense } from "react";
 import { connect } from "react-redux";
 import { Router, Switch, Redirect } from "react-router-dom";
-import { Loader } from "asc-web-components";
 import Home from "./components/pages/Home";
 import Profile from "./components/pages/Profile";
 import ProfileAction from "./components/pages/ProfileAction";
@@ -17,9 +16,9 @@ import {
   Offline,
   utils,
   store as commonStore,
-  constants,
   NavMenu,
   Main,
+  toastr,
 } from "asc-web-common";
 import { getFilterByLocation } from "./helpers/converters";
 import { fetchGroups, fetchPeople } from "./store/people/actions";
@@ -34,8 +33,8 @@ const {
   setCurrentProductHomePage,
   getPortalPasswordSettings,
   getPortalCultures,
+  getIsAuthenticated,
 } = commonStore.auth.actions;
-const { AUTH_KEY } = constants;
 
 /*const Profile = lazy(() => import("./components/pages/Profile"));
 const ProfileAction = lazy(() => import("./components/pages/ProfileAction"));
@@ -43,8 +42,6 @@ const GroupAction = lazy(() => import("./components/pages/GroupAction"));*/
 
 class App extends React.Component {
   componentDidMount() {
-    utils.removeTempContent();
-
     const {
       setModuleInfo,
       getUser,
@@ -55,30 +52,36 @@ class App extends React.Component {
       fetchGroups,
       fetchPeople,
       setIsLoaded,
+      getIsAuthenticated,
     } = this.props;
 
     setModuleInfo();
+    getIsAuthenticated().then((isAuthenticated) => {
+      if (!isAuthenticated) {
+        utils.updateTempContent();
+        return setIsLoaded();
+      } else {
+        utils.updateTempContent(isAuthenticated);
+      }
 
-    const token = localStorage.getItem(AUTH_KEY);
+      const requests = [
+        getUser(),
+        getPortalSettings(),
+        getModules(),
+        getPortalPasswordSettings(),
+        getPortalCultures(),
+        fetchGroups(),
+        fetchPeople(),
+      ];
 
-    if (!token) {
-      utils.hideLoader();
-      return setIsLoaded();
-    }
-
-    const requests = [
-      getUser(),
-      getPortalSettings(),
-      getModules(),
-      getPortalPasswordSettings(),
-      getPortalCultures(),
-      fetchGroups(),
-      fetchPeople(),
-    ];
-
-    Promise.all(requests).finally(() => {
-      utils.hideLoader();
-      setIsLoaded();
+      Promise.all(requests)
+        .catch((e) => {
+          toastr.error(e);
+        })
+        .finally(() => {
+          utils.updateTempContent();
+          setIsLoaded();
+        });
     });
   }
 
@@ -89,11 +92,7 @@ class App extends React.Component {
       <Router history={history}>
         <NavMenu />
         <Main>
-          <Suspense
-            fallback={
-              <Loader className="pageLoader" type="rombs" size="40px" />
-            }
-          >
+          <Suspense fallback={null}>
             <Switch>
               <Redirect exact from="/" to={`${homepage}`} />
               <PrivateRoute
@@ -158,6 +157,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    getIsAuthenticated: () => getIsAuthenticated(dispatch),
     setModuleInfo: () => {
       dispatch(setCurrentProductHomePage(config.homepage));
       dispatch(setCurrentProductId("f4d98afd-d336-4332-8778-3c6945c81ea0"));

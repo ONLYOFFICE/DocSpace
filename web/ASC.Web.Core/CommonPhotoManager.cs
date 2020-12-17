@@ -126,10 +126,10 @@ namespace ASC.Web.Core
             var mimeType = string.Format("image/{0}", formatName);
             if (mimeType == "image/jpg") mimeType = "image/jpeg";
             var encoders = ImageCodecInfo.GetImageEncoders();
-            foreach (var e in
-                encoders.Where(e => e.MimeType.Equals(mimeType, StringComparison.InvariantCultureIgnoreCase)))
+            var encoder = encoders.FirstOrDefault(e => e.MimeType.Equals(mimeType, StringComparison.InvariantCultureIgnoreCase));
+            if (encoder != null)
             {
-                return e;
+                return encoder;
             }
             return 0 < encoders.Length ? encoders[0] : null;
         }

@@ -31,7 +31,6 @@ using System.Globalization;
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common;
-using ASC.Files.Core.Data;
 using ASC.Files.Core.Resources;
 using ASC.Files.Core.Security;
 using ASC.Notify.Patterns;
@@ -42,6 +41,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Files.Core.Services.NotifyService
 {
+    [Scope(Additional = typeof(NotifyClientExtension))]
     public class NotifyClient
     {
         private IServiceProvider ServiceProvider { get; }
@@ -179,26 +179,20 @@ namespace ASC.Files.Core.Services.NotifyService
 
         private static string GetAccessString(FileShare fileShare, CultureInfo cultureInfo)
         {
-            switch (fileShare)
+            return fileShare switch
             {
-                case FileShare.Read:
-                    return FilesCommonResource.ResourceManager.GetString("AceStatusEnum_Read", cultureInfo);
-                case FileShare.ReadWrite:
-                    return FilesCommonResource.ResourceManager.GetString("AceStatusEnum_ReadWrite", cultureInfo);
-                case FileShare.CustomFilter:
-                    return FilesCommonResource.ResourceManager.GetString("AceStatusEnum_CustomFilter", cultureInfo);
-                case FileShare.Review:
-                    return FilesCommonResource.ResourceManager.GetString("AceStatusEnum_Review", cultureInfo);
-                case FileShare.FillForms:
-                    return FilesCommonResource.ResourceManager.GetString("AceStatusEnum_FillForms", cultureInfo);
-                case FileShare.Comment:
-                    return FilesCommonResource.ResourceManager.GetString("AceStatusEnum_Comment", cultureInfo);
-                default:
-                    return string.Empty;
-            }
+                FileShare.Read => FilesCommonResource.ResourceManager.GetString("AceStatusEnum_Read", cultureInfo),
+                FileShare.ReadWrite => FilesCommonResource.ResourceManager.GetString("AceStatusEnum_ReadWrite", cultureInfo),
+                FileShare.CustomFilter => FilesCommonResource.ResourceManager.GetString("AceStatusEnum_CustomFilter", cultureInfo),
+                FileShare.Review => FilesCommonResource.ResourceManager.GetString("AceStatusEnum_Review", cultureInfo),
+                FileShare.FillForms => FilesCommonResource.ResourceManager.GetString("AceStatusEnum_FillForms", cultureInfo),
+                FileShare.Comment => FilesCommonResource.ResourceManager.GetString("AceStatusEnum_Comment", cultureInfo),
+                _ => string.Empty,
+            };
         }
     }
 
+    [Scope]
     public class NotifyClientScope
     {
         private NotifySource NotifySource { get; }
@@ -254,27 +248,11 @@ namespace ASC.Files.Core.Services.NotifyService
         }
     }
 
-    public static class NotifyClientExtension
+    public class NotifyClientExtension
     {
-        public static DIHelper AddNotifyClientService(this DIHelper services)
+        public static void Register(DIHelper services)
         {
-            if (services.TryAddScoped<NotifyClient>())
-            {
-                services.TryAddScoped<NotifyClientScope>();
-                return services
-                    .AddFilesNotifySourceService()
-                    .AddBaseCommonLinkUtilityService()
-                    .AddUserManagerService()
-                    .AddSecurityContextService()
-                    .AddFilesLinkUtilityService()
-                    .AddFileUtilityService()
-                    .AddPathProviderService()
-                    .AddTenantManagerService()
-                    .AddDaoFactoryService()
-                    ;
-            }
-
-            return services;
+            services.TryAdd<NotifyClientScope>();
         }
     }
 }

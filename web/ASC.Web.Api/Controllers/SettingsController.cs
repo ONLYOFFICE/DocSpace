@@ -51,6 +51,7 @@ using ASC.Core.Common.Notify;
 using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
+using ASC.Data.Backup;
 using ASC.Data.Backup.Contracts;
 using ASC.Data.Backup.Service;
 using ASC.Data.Storage;
@@ -96,6 +97,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Api.Settings
 {
+    [Scope]
     [DefaultRoute]
     [ApiController]
     public partial class SettingsController : ControllerBase
@@ -166,6 +168,7 @@ namespace ASC.Api.Settings
         private PasswordHasher PasswordHasher { get; }
         private ILog Log { get; set; }
         private TelegramHelper TelegramHelper { get; }
+        private BackupAjaxHandler BackupAjaxHandler { get; }
 
         public SettingsController(
             IOptionsMonitor<ILog> option,
@@ -227,7 +230,8 @@ namespace ASC.Api.Settings
             BackupServiceNotifier backupServiceNotifier,
             ICacheNotify<DeleteSchedule> cacheDeleteSchedule,
             EncryptionServiceNotifier encryptionServiceNotifier,
-            PasswordHasher passwordHasher)
+            PasswordHasher passwordHasher,
+            BackupAjaxHandler backupAjaxHandler)
         {
             Log = option.Get("ASC.Api");
             WebHostEnvironment = webHostEnvironment;
@@ -289,6 +293,7 @@ namespace ASC.Api.Settings
             StorageFactory = storageFactory;
             UrlShortener = urlShortener;
             TelegramHelper = telegramHelper;
+            BackupAjaxHandler = backupAjaxHandler;
         }
 
         [Read("", Check = false)]
@@ -337,7 +342,19 @@ namespace ASC.Api.Settings
         }
 
         [Create("messagesettings")]
-        public ContentResult EnableAdminMessageSettings(AdminMessageSettingsModel model)
+        public object EnableAdminMessageSettingsFromBody([FromBody]AdminMessageSettingsModel model)
+        {
+            return EnableAdminMessageSettings(model);
+        }
+
+        [Create("messagesettings")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public object EnableAdminMessageSettingsFromForm([FromForm] AdminMessageSettingsModel model)
+        {
+            return EnableAdminMessageSettings(model);
+        }
+
+        private object EnableAdminMessageSettings(AdminMessageSettingsModel model)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -345,12 +362,25 @@ namespace ASC.Api.Settings
 
             MessageService.Send(MessageAction.AdministratorMessageSettingsUpdated);
 
-            return new ContentResult() { Content = Resource.SuccessfullySaveSettingsMessage };
+            return Resource.SuccessfullySaveSettingsMessage;
         }
 
         [AllowAnonymous]
         [Create("sendadmmail")]
-        public ContentResult SendAdmMail(AdminMessageSettingsModel model)
+        public object SendAdmMailFromBody([FromBody]AdminMessageSettingsModel model)
+        {
+            return SendAdmMail(model);
+        }
+
+        [AllowAnonymous]
+        [Create("sendadmmail")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public object SendAdmMailFromForm([FromForm] AdminMessageSettingsModel model)
+        {
+            return SendAdmMail(model);
+        }
+
+        private object SendAdmMail(AdminMessageSettingsModel model)
         {
             var studioAdminMessageSettings = SettingsManager.Load<StudioAdminMessageSettings>();
             var enableAdmMess = studioAdminMessageSettings.Enable || TenantExtra.IsNotPaid();
@@ -369,11 +399,23 @@ namespace ASC.Api.Settings
             StudioNotifyService.SendMsgToAdminFromNotAuthUser(model.Email, model.Message);
             MessageService.Send(MessageAction.ContactAdminMailSent);
 
-            return new ContentResult() { Content = Resource.AdminMessageSent };
+            return Resource.AdminMessageSent;
         }
 
         [Create("maildomainsettings")]
-        public ContentResult SaveMailDomainSettings(MailDomainSettingsModel model)
+        public object SaveMailDomainSettingsFromBody([FromBody] MailDomainSettingsModel model)
+        {
+            return SaveMailDomainSettings(model);
+        }
+
+        [Create("maildomainsettings")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public object SaveMailDomainSettingsFromForm([FromForm] MailDomainSettingsModel model)
+        {
+            return SaveMailDomainSettings(model);
+        }
+
+        private object SaveMailDomainSettings(MailDomainSettingsModel model)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -383,7 +425,7 @@ namespace ASC.Api.Settings
                 foreach (var d in model.Domains.Select(domain => (domain ?? "").Trim().ToLower()))
                 {
                     if (!(!string.IsNullOrEmpty(d) && new Regex("^[a-z0-9]([a-z0-9-.]){1,98}[a-z0-9]$").IsMatch(d)))
-                        return new ContentResult() { Content = Resource.ErrorNotCorrectTrustedDomain };
+                        return Resource.ErrorNotCorrectTrustedDomain;
 
                     Tenant.TrustedDomains.Add(d);
                 }
@@ -400,12 +442,25 @@ namespace ASC.Api.Settings
 
             MessageService.Send(MessageAction.TrustedMailDomainSettingsUpdated);
 
-            return new ContentResult { Content = Resource.SuccessfullySaveSettingsMessage };
+            return Resource.SuccessfullySaveSettingsMessage;
         }
 
         [AllowAnonymous]
         [Create("sendjoininvite")]
-        public ContentResult SendJoinInviteMail(AdminMessageSettingsModel model)
+        public object SendJoinInviteMailFromBody([FromBody]AdminMessageSettingsModel model)
+        {
+            return SendJoinInviteMail(model);
+        }
+
+        [AllowAnonymous]
+        [Create("sendjoininvite")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public object SendJoinInviteMailFromForm([FromForm] AdminMessageSettingsModel model)
+        {
+            return SendJoinInviteMail(model);
+        }
+
+        private object SendJoinInviteMail(AdminMessageSettingsModel model)
         {
             try
             {
@@ -440,34 +495,34 @@ namespace ASC.Api.Settings
                 switch (Tenant.TrustedDomainsType)
                 {
                     case TenantTrustedDomainsType.Custom:
-                        {
-                            var address = new MailAddress(email);
-                            if (Tenant.TrustedDomains.Any(d => address.Address.EndsWith("@" + d, StringComparison.InvariantCultureIgnoreCase)))
-                            {
-                                StudioNotifyService.SendJoinMsg(email, emplType);
-                                MessageService.Send(MessageInitiator.System, MessageAction.SentInviteInstructions, email);
-                                return new ContentResult() { Content = Resource.FinishInviteJoinEmailMessage };
-                            }
-
-                            throw new Exception(Resource.ErrorEmailDomainNotAllowed);
-                        }
-                    case TenantTrustedDomainsType.All:
+                    {
+                        var address = new MailAddress(email);
+                        if (Tenant.TrustedDomains.Any(d => address.Address.EndsWith("@" + d, StringComparison.InvariantCultureIgnoreCase)))
                         {
                             StudioNotifyService.SendJoinMsg(email, emplType);
                             MessageService.Send(MessageInitiator.System, MessageAction.SentInviteInstructions, email);
-                            return new ContentResult() { Content = Resource.FinishInviteJoinEmailMessage };
+                            return Resource.FinishInviteJoinEmailMessage;
                         }
+
+                        throw new Exception(Resource.ErrorEmailDomainNotAllowed);
+                    }
+                    case TenantTrustedDomainsType.All:
+                    {
+                        StudioNotifyService.SendJoinMsg(email, emplType);
+                        MessageService.Send(MessageInitiator.System, MessageAction.SentInviteInstructions, email);
+                        return Resource.FinishInviteJoinEmailMessage;
+                    }
                     default:
                         throw new Exception(Resource.ErrorNotCorrectEmail);
                 }
             }
             catch (FormatException)
             {
-                return new ContentResult() { Content = Resource.ErrorNotCorrectEmail };
+                return Resource.ErrorNotCorrectEmail;
             }
             catch (Exception e)
             {
-                return new ContentResult() { Content = e.Message.HtmlEncode() };
+                return e.Message.HtmlEncode();
             }
         }
 
@@ -609,7 +664,7 @@ namespace ASC.Api.Settings
 
         [Authorize(AuthenticationSchemes = "confirm", Roles = "Wizard")]
         [Read("machine", Check = false)]
-        public string GetMachineName()
+        public object GetMachineName()
         {
             return Dns.GetHostName().ToLowerInvariant();
         }
@@ -621,7 +676,19 @@ namespace ASC.Api.Settings
         }
 
         [Create("greetingsettings")]
-        public ContentResult SaveGreetingSettings(GreetingSettingsModel model)
+        public ContentResult SaveGreetingSettingsFromBody([FromBody]GreetingSettingsModel model)
+        {
+            return SaveGreetingSettings(model);
+        }
+
+        [Create("greetingsettings")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public ContentResult SaveGreetingSettingsFromForm([FromForm]GreetingSettingsModel model)
+        {
+            return SaveGreetingSettings(model);
+        }
+
+        private ContentResult SaveGreetingSettings(GreetingSettingsModel model)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -694,7 +761,19 @@ namespace ASC.Api.Settings
         }
 
         [Update("version")]
-        public TenantVersionWrapper SetVersion(SettingsModel model)
+        public TenantVersionWrapper SetVersionFromBody([FromBody]SettingsModel model)
+        {
+            return SetVersion(model);
+        }
+
+        [Update("version")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public TenantVersionWrapper SetVersionFromForm([FromForm] SettingsModel model)
+        {
+            return SetVersion(model);
+        }
+
+        private TenantVersionWrapper SetVersion(SettingsModel model)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -758,7 +837,19 @@ namespace ASC.Api.Settings
         }
 
         [Update("security")]
-        public IEnumerable<SecurityWrapper> SetWebItemSecurity(WebItemSecurityModel model)
+        public IEnumerable<SecurityWrapper> SetWebItemSecurityFromBody([FromBody]WebItemSecurityModel model)
+        {
+            return SetWebItemSecurity(model);
+        }
+
+        [Update("security")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public IEnumerable<SecurityWrapper> SetWebItemSecurityFromForm([FromForm] WebItemSecurityModel model)
+        {
+            return SetWebItemSecurity(model);
+        }
+
+        private IEnumerable<SecurityWrapper> SetWebItemSecurity(WebItemSecurityModel model)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -792,7 +883,19 @@ namespace ASC.Api.Settings
         }
 
         [Update("security/access")]
-        public IEnumerable<SecurityWrapper> SetAccessToWebItems(WebItemSecurityModel model)
+        public IEnumerable<SecurityWrapper> SetAccessToWebItemsFromBody([FromBody]WebItemSecurityModel model)
+        {
+            return SetAccessToWebItems(model);
+        }
+
+        [Update("security/access")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public IEnumerable<SecurityWrapper> SetAccessToWebItemsFromForm([FromForm] WebItemSecurityModel model)
+        {
+            return SetAccessToWebItems(model);
+        }
+
+        private IEnumerable<SecurityWrapper> SetAccessToWebItems(WebItemSecurityModel model)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -850,11 +953,23 @@ namespace ASC.Api.Settings
         public object IsProductAdministrator(Guid productid, Guid userid)
         {
             var result = WebItemSecurity.IsProductAdministrator(productid, userid);
-            return new { ProductId = productid, UserId = userid, Administrator = result, };
+            return new { ProductId = productid, UserId = userid, Administrator = result };
         }
 
         [Update("security/administrator")]
-        public object SetProductAdministrator(SecurityModel model)
+        public object SetProductAdministratorFromBody([FromBody]SecurityModel model)
+        {
+            return SetProductAdministrator(model);
+        }
+
+        [Update("security/administrator")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public object SetProductAdministratorFromForm([FromForm] SecurityModel model)
+        {
+            return SetProductAdministrator(model);
+        }
+
+        private object SetProductAdministrator(SecurityModel model)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -877,15 +992,26 @@ namespace ASC.Api.Settings
         }
 
         [Read("logo")]
-        public string GetLogo()
+        public object GetLogo()
         {
             return TenantInfoSettingsHelper.GetAbsoluteCompanyLogoPath(SettingsManager.Load<TenantInfoSettings>());
         }
 
-
         ///<visible>false</visible>
         [Create("whitelabel/save")]
-        public void SaveWhiteLabelSettings(WhiteLabelModel model)
+        public bool SaveWhiteLabelSettingsFromBody([FromBody] WhiteLabelModel model, [FromQuery] WhiteLabelQuery query)
+        {
+            return SaveWhiteLabelSettings(model, query);
+        }
+
+        [Create("whitelabel/save")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public bool SaveWhiteLabelSettingsFromForm([FromForm] WhiteLabelModel model, [FromQuery] WhiteLabelQuery query)
+        {
+            return SaveWhiteLabelSettings(model, query);
+        }
+
+        private bool SaveWhiteLabelSettings(WhiteLabelModel model, WhiteLabelQuery query)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -894,7 +1020,7 @@ namespace ASC.Api.Settings
                 throw new BillingException(Resource.ErrorNotAllowedOption, "WhiteLabel");
             }
 
-            if (model.IsDefault)
+            if (query.IsDefault)
             {
                 DemandRebrandingPermission();
                 SaveWhiteLabelSettingsForDefaultTenant(model);
@@ -903,6 +1029,7 @@ namespace ASC.Api.Settings
             {
                 SaveWhiteLabelSettingsForCurrentTenant(model);
             }
+            return true;
         }
 
         private void SaveWhiteLabelSettingsForCurrentTenant(WhiteLabelModel model)
@@ -925,7 +1052,7 @@ namespace ASC.Api.Settings
             if (model.Logo != null)
             {
                 var logoDict = new Dictionary<int, string>();
-                model.Logo.ToList().ForEach(n => logoDict.Add(n.Key, n.Value));
+                model.Logo.ToList().ForEach(n => logoDict.Add(Int32.Parse(n.Key), n.Value));
 
                 TenantWhiteLabelSettingsHelper.SetLogo(settings, logoDict, storage);
             }
@@ -935,10 +1062,9 @@ namespace ASC.Api.Settings
 
         }
 
-
         ///<visible>false</visible>
         [Create("whitelabel/savefromfiles")]
-        public void SaveWhiteLabelSettingsFromFiles(WhiteLabelModel model)
+        public bool SaveWhiteLabelSettingsFromFiles([FromQuery] WhiteLabelQuery query)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -947,40 +1073,41 @@ namespace ASC.Api.Settings
                 throw new BillingException(Resource.ErrorNotAllowedOption, "WhiteLabel");
             }
 
-            if (model.Attachments == null || !model.Attachments.Any())
+            if (HttpContext.Request.Form?.Files == null || !HttpContext.Request.Form.Files.Any())
             {
                 throw new InvalidOperationException("No input files");
             }
 
-            if (model.IsDefault)
+            if (query.IsDefault)
             {
                 DemandRebrandingPermission();
-                SaveWhiteLabelSettingsFromFilesForDefaultTenant(model);
+                SaveWhiteLabelSettingsFromFilesForDefaultTenant();
             }
             else
             {
-                SaveWhiteLabelSettingsFromFilesForCurrentTenant(model);
+                SaveWhiteLabelSettingsFromFilesForCurrentTenant();
             }
+            return true;
         }
 
-        private void SaveWhiteLabelSettingsFromFilesForCurrentTenant(WhiteLabelModel model)
+        private void SaveWhiteLabelSettingsFromFilesForCurrentTenant()
         {
             var settings = SettingsManager.Load<TenantWhiteLabelSettings>();
 
-            SaveWhiteLabelSettingsFromFilesForTenant(settings, null, Tenant.TenantId, model);
+            SaveWhiteLabelSettingsFromFilesForTenant(settings, null, Tenant.TenantId);
         }
 
-        private void SaveWhiteLabelSettingsFromFilesForDefaultTenant(WhiteLabelModel model)
+        private void SaveWhiteLabelSettingsFromFilesForDefaultTenant()
         {
             var settings = SettingsManager.LoadForDefaultTenant<TenantWhiteLabelSettings>();
             var storage = StorageFactory.GetStorage(string.Empty, "static_partnerdata");
 
-            SaveWhiteLabelSettingsFromFilesForTenant(settings, storage, Tenant.DEFAULT_TENANT, model);
+            SaveWhiteLabelSettingsFromFilesForTenant(settings, storage, Tenant.DEFAULT_TENANT);
         }
 
-        private void SaveWhiteLabelSettingsFromFilesForTenant(TenantWhiteLabelSettings settings, IDataStore storage, int tenantId, WhiteLabelModel model)
+        private void SaveWhiteLabelSettingsFromFilesForTenant(TenantWhiteLabelSettings settings, IDataStore storage, int tenantId)
         {
-            foreach (var f in model.Attachments)
+            foreach (var f in HttpContext.Request.Form.Files)
             {
                 var parts = f.FileName.Split('.');
                 var logoType = (WhiteLabelLogoTypeEnum)(Convert.ToInt32(parts[0]));
@@ -1017,7 +1144,7 @@ namespace ASC.Api.Settings
 
         ///<visible>false</visible>
         [Read("whitelabel/logos")]
-        public Dictionary<int, string> GetWhiteLabelLogos(WhiteLabelModel model)
+        public Dictionary<string, string> GetWhiteLabelLogos([FromQuery] WhiteLabelQuery query)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -1026,30 +1153,30 @@ namespace ASC.Api.Settings
                 throw new BillingException(Resource.ErrorNotAllowedOption, "WhiteLabel");
             }
 
-            var result = new Dictionary<int, string>();
+            Dictionary<string, string> result;
 
-            if (model.IsDefault)
+            if (query.IsDefault)
             {
                 DemandRebrandingPermission();
 
-                result = new Dictionary<int, string>
+                result = new Dictionary<string, string>
                 {
-                    { (int)WhiteLabelLogoTypeEnum.LightSmall, CommonLinkUtility.GetFullAbsolutePath(TenantWhiteLabelSettingsHelper.GetAbsoluteDefaultLogoPath(WhiteLabelLogoTypeEnum.LightSmall, !model.IsRetina)) },
-                    { (int)WhiteLabelLogoTypeEnum.Dark, CommonLinkUtility.GetFullAbsolutePath(TenantWhiteLabelSettingsHelper.GetAbsoluteDefaultLogoPath(WhiteLabelLogoTypeEnum.Dark, !model.IsRetina)) },
-                    { (int)WhiteLabelLogoTypeEnum.Favicon, CommonLinkUtility.GetFullAbsolutePath(TenantWhiteLabelSettingsHelper.GetAbsoluteDefaultLogoPath(WhiteLabelLogoTypeEnum.Favicon, !model.IsRetina)) },
-                    { (int)WhiteLabelLogoTypeEnum.DocsEditor, CommonLinkUtility.GetFullAbsolutePath(TenantWhiteLabelSettingsHelper.GetAbsoluteDefaultLogoPath(WhiteLabelLogoTypeEnum.DocsEditor, !model.IsRetina)) }
+                    { ((int)WhiteLabelLogoTypeEnum.LightSmall).ToString(), CommonLinkUtility.GetFullAbsolutePath(TenantWhiteLabelSettingsHelper.GetAbsoluteDefaultLogoPath(WhiteLabelLogoTypeEnum.LightSmall, !query.IsRetina)) },
+                    { ((int)WhiteLabelLogoTypeEnum.Dark).ToString(), CommonLinkUtility.GetFullAbsolutePath(TenantWhiteLabelSettingsHelper.GetAbsoluteDefaultLogoPath(WhiteLabelLogoTypeEnum.Dark, !query.IsRetina)) },
+                    { ((int)WhiteLabelLogoTypeEnum.Favicon).ToString(), CommonLinkUtility.GetFullAbsolutePath(TenantWhiteLabelSettingsHelper.GetAbsoluteDefaultLogoPath(WhiteLabelLogoTypeEnum.Favicon, !query.IsRetina)) },
+                    { ((int)WhiteLabelLogoTypeEnum.DocsEditor).ToString(), CommonLinkUtility.GetFullAbsolutePath(TenantWhiteLabelSettingsHelper.GetAbsoluteDefaultLogoPath(WhiteLabelLogoTypeEnum.DocsEditor, !query.IsRetina)) }
                 };
             }
             else
             {
                 var _tenantWhiteLabelSettings = SettingsManager.Load<TenantWhiteLabelSettings>();
 
-                result = new Dictionary<int, string>
+                result = new Dictionary<string, string>
                     {
-                        { (int)WhiteLabelLogoTypeEnum.LightSmall, CommonLinkUtility.GetFullAbsolutePath(TenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.LightSmall, !model.IsRetina)) },
-                        { (int)WhiteLabelLogoTypeEnum.Dark, CommonLinkUtility.GetFullAbsolutePath(TenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.Dark, !model.IsRetina)) },
-                        { (int)WhiteLabelLogoTypeEnum.Favicon, CommonLinkUtility.GetFullAbsolutePath(TenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.Favicon, !model.IsRetina)) },
-                        { (int)WhiteLabelLogoTypeEnum.DocsEditor, CommonLinkUtility.GetFullAbsolutePath(TenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.DocsEditor, !model.IsRetina)) }
+                        { ((int)WhiteLabelLogoTypeEnum.LightSmall).ToString(), CommonLinkUtility.GetFullAbsolutePath(TenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.LightSmall, !query.IsRetina)) },
+                        { ((int)WhiteLabelLogoTypeEnum.Dark).ToString(), CommonLinkUtility.GetFullAbsolutePath(TenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.Dark, !query.IsRetina)) },
+                        { ((int)WhiteLabelLogoTypeEnum.Favicon).ToString(), CommonLinkUtility.GetFullAbsolutePath(TenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.Favicon, !query.IsRetina)) },
+                        { ((int)WhiteLabelLogoTypeEnum.DocsEditor).ToString(), CommonLinkUtility.GetFullAbsolutePath(TenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.DocsEditor, !query.IsRetina)) }
                     };
             }
 
@@ -1058,7 +1185,7 @@ namespace ASC.Api.Settings
 
         ///<visible>false</visible>
         [Read("whitelabel/logotext")]
-        public string GetWhiteLabelLogoText(WhiteLabelModel model)
+        public object GetWhiteLabelLogoText([FromQuery] WhiteLabelQuery query)
         {
             if (!TenantLogoManager.WhiteLabelEnabled)
             {
@@ -1066,12 +1193,12 @@ namespace ASC.Api.Settings
             }
 
 
-            if (model.IsDefault)
+            if (query.IsDefault)
             {
                 DemandRebrandingPermission();
             }
 
-            var settings = model.IsDefault ? SettingsManager.LoadForDefaultTenant<TenantWhiteLabelSettings>() : SettingsManager.Load<TenantWhiteLabelSettings>();
+            var settings = query.IsDefault ? SettingsManager.LoadForDefaultTenant<TenantWhiteLabelSettings>() : SettingsManager.Load<TenantWhiteLabelSettings>();
 
             return settings.LogoText ?? TenantWhiteLabelSettings.DefaultLogoText;
         }
@@ -1079,7 +1206,7 @@ namespace ASC.Api.Settings
 
         ///<visible>false</visible>
         [Update("whitelabel/restore")]
-        public void RestoreWhiteLabelOptions(WhiteLabelModel model)
+        public bool RestoreWhiteLabelOptions(WhiteLabelQuery query)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -1087,7 +1214,7 @@ namespace ASC.Api.Settings
             {
                 throw new BillingException(Resource.ErrorNotAllowedOption, "WhiteLabel");
             }
-            if (model.IsDefault)
+            if (query.IsDefault)
             {
                 DemandRebrandingPermission();
                 RestoreWhiteLabelOptionsForDefaultTenant();
@@ -1096,6 +1223,7 @@ namespace ASC.Api.Settings
             {
                 RestoreWhiteLabelOptionsForCurrentTenant();
             }
+            return true;
         }
 
         private void RestoreWhiteLabelOptionsForCurrentTenant()
@@ -1131,14 +1259,38 @@ namespace ASC.Api.Settings
         }
 
         [Update("iprestrictions")]
-        public IEnumerable<string> SaveIpRestrictions(IpRestrictionsModel model)
+        public IEnumerable<string> SaveIpRestrictionsFromBody([FromBody]IpRestrictionsModel model)
+        {
+            return SaveIpRestrictions(model);
+        }
+
+        [Update("iprestrictions")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public IEnumerable<string> SaveIpRestrictionsFromForm([FromForm] IpRestrictionsModel model)
+        {
+            return SaveIpRestrictions(model);
+        }
+
+        private IEnumerable<string> SaveIpRestrictions(IpRestrictionsModel model)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
             return IPRestrictionsService.Save(model.Ips, Tenant.TenantId);
         }
 
         [Update("iprestrictions/settings")]
-        public IPRestrictionsSettings UpdateIpRestrictionsSettings(IpRestrictionsModel model)
+        public IPRestrictionsSettings UpdateIpRestrictionsSettingsFromBody([FromBody]IpRestrictionsModel model)
+        {
+            return UpdateIpRestrictionsSettings(model);
+        }
+
+        [Update("iprestrictions/settings")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public IPRestrictionsSettings UpdateIpRestrictionsSettingsFromForm([FromForm] IpRestrictionsModel model)
+        {
+            return UpdateIpRestrictionsSettings(model);
+        }
+
+        private IPRestrictionsSettings UpdateIpRestrictionsSettings(IpRestrictionsModel model)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -1149,7 +1301,19 @@ namespace ASC.Api.Settings
         }
 
         [Update("tips")]
-        public TipsSettings UpdateTipsSettings(SettingsModel model)
+        public TipsSettings UpdateTipsSettingsFromBody([FromBody]SettingsModel model)
+        {
+            return UpdateTipsSettings(model);
+        }
+
+        [Update("tips")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public TipsSettings UpdateTipsSettingsFromForm([FromForm] SettingsModel model)
+        {
+            return UpdateTipsSettings(model);
+        }
+        
+        private TipsSettings UpdateTipsSettings(SettingsModel model)
         {
             var settings = new TipsSettings { Show = model.Show };
             SettingsManager.SaveForCurrentUser(settings);
@@ -1184,7 +1348,20 @@ namespace ASC.Api.Settings
 
         [Update("wizard/complete", Check = false)]
         [Authorize(AuthenticationSchemes = "confirm", Roles = "Wizard")]
-        public WizardSettings CompleteWizard(WizardModel wizardModel)
+        public WizardSettings CompleteWizardFromBody([FromBody]WizardModel wizardModel)
+        {
+            return CompleteWizard(wizardModel);
+        }
+
+        [Update("wizard/complete", Check = false)]
+        [Authorize(AuthenticationSchemes = "confirm", Roles = "Wizard")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public WizardSettings CompleteWizardFromForm([FromForm] WizardModel wizardModel)
+        {
+            return CompleteWizard(wizardModel);
+        }
+
+        private WizardSettings CompleteWizard(WizardModel wizardModel)
         {
             ApiContext.AuthByClaim();
 
@@ -1195,7 +1372,19 @@ namespace ASC.Api.Settings
 
 
         [Update("tfaapp")]
-        public bool TfaSettings(TfaModel model)
+        public bool TfaSettingsFromBody([FromBody]TfaModel model)
+        {
+            return TfaSettings(model);
+        }
+
+        [Update("tfaapp")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public bool TfaSettingsFromForm([FromForm] TfaModel model)
+        {
+            return TfaSettings(model);
+        }
+        
+        private bool TfaSettings(TfaModel model)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -1298,13 +1487,25 @@ namespace ASC.Api.Settings
             if (currentUser.IsVisitor(UserManager) || currentUser.IsOutsider(UserManager))
                 throw new NotSupportedException("Not available.");
 
-            var codes = TfaManager.GenerateBackupCodes(currentUser).Select(r => new { r.IsUsed, r.Code }).ToList();
+            var codes = TfaManager.GenerateBackupCodes().Select(r => new { r.IsUsed, r.Code }).ToList();
             MessageService.Send(MessageAction.UserConnectedTfaApp, MessageTarget.Create(currentUser.ID), currentUser.DisplayUserName(false, DisplayUserSettingsHelper));
             return codes;
         }
 
         [Update("tfaappnewapp")]
-        public string TfaAppNewApp(TfaModel model)
+        public object TfaAppNewAppFromBody([FromBody]TfaModel model)
+        {
+            return TfaAppNewApp(model);
+        }
+
+        [Update("tfaappnewapp")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public object TfaAppNewAppFromForm([FromForm] TfaModel model)
+        {
+            return TfaAppNewApp(model);
+        }
+
+        private object TfaAppNewApp(TfaModel model)
         {
             var isMe = model.Id.Equals(Guid.Empty);
             var user = UserManager.GetUsers(isMe ? AuthContext.CurrentAccount.ID : model.Id);
@@ -1348,7 +1549,19 @@ namespace ASC.Api.Settings
 
         ///<visible>false</visible>
         [Update("colortheme")]
-        public void SaveColorTheme(SettingsModel model)
+        public void SaveColorThemeFromBody([FromBody]SettingsModel model)
+        {
+            SaveColorTheme(model);
+        }
+
+        [Update("colortheme")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public void SaveColorThemeFromForm([FromForm] SettingsModel model)
+        {
+            SaveColorTheme(model);
+        }
+
+        private void SaveColorTheme(SettingsModel model)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
             ColorThemesSettingsHelper.SaveColorTheme(model.Theme);
@@ -1357,7 +1570,19 @@ namespace ASC.Api.Settings
 
         ///<visible>false</visible>
         [Update("timeandlanguage")]
-        public string TimaAndLanguage(SettingsModel model)
+        public object TimaAndLanguageFromBody([FromBody]SettingsModel model)
+        {
+            return TimaAndLanguage(model);
+        }
+
+        [Update("timeandlanguage")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public object TimaAndLanguageFromForm([FromForm] SettingsModel model)
+        {
+            return TimaAndLanguage(model);
+        }
+
+        private object TimaAndLanguage(SettingsModel model)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -1399,7 +1624,19 @@ namespace ASC.Api.Settings
         }
 
         [Create("owner")]
-        public object SendOwnerChangeInstructions(SettingsModel model)
+        public object SendOwnerChangeInstructionsFromBody([FromBody]SettingsModel model)
+        {
+            return SendOwnerChangeInstructions(model);
+        }
+
+        [Create("owner")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public object SendOwnerChangeInstructionsFromForm([FromForm] SettingsModel model)
+        {
+            return SendOwnerChangeInstructions(model);
+        }
+
+        private object SendOwnerChangeInstructions(SettingsModel model)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -1425,7 +1662,20 @@ namespace ASC.Api.Settings
 
         [Update("owner")]
         [Authorize(AuthenticationSchemes = "confirm", Roles = "PortalOwnerChange")]
-        public void Owner(SettingsModel model)
+        public void OwnerFromBody([FromBody]SettingsModel model)
+        {
+            Owner(model);
+        }
+
+        [Update("owner")]
+        [Authorize(AuthenticationSchemes = "confirm", Roles = "PortalOwnerChange")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public void OwnerFromForm([FromForm] SettingsModel model)
+        {
+            Owner(model);
+        }
+
+        private void Owner(SettingsModel model)
         {
             var newOwner = Constants.LostUser;
             try
@@ -1454,7 +1704,19 @@ namespace ASC.Api.Settings
 
         ///<visible>false</visible>
         [Update("defaultpage")]
-        public string SaveDefaultPageSettings(SettingsModel model)
+        public object SaveDefaultPageSettingsFromBody([FromBody]SettingsModel model)
+        {
+            return SaveDefaultPageSettings(model);
+        }
+
+        [Update("defaultpage")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public object SaveDefaultPageSettingsFromForm([FromForm] SettingsModel model)
+        {
+            return SaveDefaultPageSettings(model);
+        }
+
+        private object SaveDefaultPageSettings(SettingsModel model)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -1584,7 +1846,19 @@ namespace ASC.Api.Settings
         }
 
         [Create("customnavigation/create")]
-        public CustomNavigationItem CreateCustomNavigationItem(CustomNavigationItem item)
+        public CustomNavigationItem CreateCustomNavigationItemFromBody([FromBody]CustomNavigationItem item)
+        {
+            return CreateCustomNavigationItem(item);
+        }
+
+        [Create("customnavigation/create")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public CustomNavigationItem CreateCustomNavigationItemFromForm([FromForm] CustomNavigationItem item)
+        {
+            return CreateCustomNavigationItem(item);
+        }
+
+        private CustomNavigationItem CreateCustomNavigationItem(CustomNavigationItem item)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -1654,12 +1928,17 @@ namespace ASC.Api.Settings
         }
 
         [Update("emailactivation")]
-        public EmailActivationSettings UpdateEmailActivationSettings(bool show)
+        public EmailActivationSettings UpdateEmailActivationSettingsFromBody([FromBody]EmailActivationSettings settings)
         {
-            var settings = new EmailActivationSettings { Show = show };
-
             SettingsManager.SaveForCurrentUser(settings);
+            return settings;
+        }
 
+        [Update("emailactivation")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public EmailActivationSettings UpdateEmailActivationSettingsFromForm([FromForm]EmailActivationSettings settings)
+        {
+            SettingsManager.SaveForCurrentUser(settings);
             return settings;
         }
 
@@ -1776,23 +2055,22 @@ namespace ASC.Api.Settings
             return ServiceClient.GetProgress(Tenant.TenantId);
         }
 
-        [Read("encryption")]
-        public void StartEncryption(EncryptionSettingsModel settings)
-        {
-            EncryptionSettingsProto encryptionSettingsProto = new EncryptionSettingsProto
-            {
-                NotifyUsers = settings.NotifyUsers,
-                Password = settings.Password,
-                Status = settings.Status,
-                ServerRootPath = settings.ServerRootPath
-            };
-            EncryptionServiceClient.Start(encryptionSettingsProto);
-        }
-
         public readonly object Locker = new object();
 
         [Create("encryption/start")]
-        public void StartStorageEncryption(StorageEncryptionModel storageEncryption)
+        public bool StartStorageEncryptionFromBody([FromBody]StorageEncryptionModel storageEncryption)
+        {
+            return StartStorageEncryption(storageEncryption);
+        }
+
+        [Create("encryption/start")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public bool StartStorageEncryptionFromForm([FromForm] StorageEncryptionModel storageEncryption)
+        {
+            return StartStorageEncryption(storageEncryption);
+        }
+
+        private bool StartStorageEncryption(StorageEncryptionModel storageEncryption)
         {
             lock (Locker)
             {
@@ -1803,6 +2081,7 @@ namespace ASC.Api.Settings
                     StartEncryption(storageEncryption.NotifyUsers);
                 }
             }
+            return true;
         }
 
         private void StartEncryption(bool notifyUsers)
@@ -1970,7 +2249,19 @@ namespace ASC.Api.Settings
         }
 
         [Update("storage")]
-        public StorageSettings UpdateStorage(StorageModel model)
+        public StorageSettings UpdateStorageFromBody([FromBody]StorageModel model)
+        {
+            return UpdateStorage(model);
+        }
+
+        [Update("storage")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public StorageSettings UpdateStorageFromForm([FromForm] StorageModel model)
+        {
+            return UpdateStorage(model);
+        }
+
+        private StorageSettings UpdateStorage(StorageModel model)
         {
             try
             {
@@ -2038,7 +2329,19 @@ namespace ASC.Api.Settings
         }
 
         [Update("storage/cdn")]
-        public CdnStorageSettings UpdateCdn(StorageModel model)
+        public CdnStorageSettings UpdateCdnFromBody([FromBody]StorageModel model)
+        {
+            return UpdateCdn(model);
+        }
+
+        [Update("storage/cdn")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public CdnStorageSettings UpdateCdnFromForm([FromForm] StorageModel model)
+        {
+            return UpdateCdn(model);
+        }
+
+        private CdnStorageSettings UpdateCdn(StorageModel model)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
             if (!CoreBaseSettings.Standalone) return null;
@@ -2079,29 +2382,29 @@ namespace ASC.Api.Settings
             StorageSettingsHelper.Clear(SettingsManager.Load<CdnStorageSettings>());
         }
 
-        //[Read("storage/backup")]
-        //public List<StorageWrapper> GetAllBackupStorages()
-        //{
-        //    PermissionContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
-        //if (CoreContext.Configuration.Standalone)
-        //{
-        //    TenantExtra.DemandControlPanelPermission();
-        //}
-        //    var schedule = new BackupAjaxHandler().GetSchedule();
-        //    var current = new StorageSettings();
+        [Read("storage/backup")]
+        public List<StorageWrapper> GetAllBackupStorages()
+        {
+            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+            if (CoreBaseSettings.Standalone)
+            {
+                TenantExtra.DemandControlPanelPermission();
+            }
+            var schedule = BackupAjaxHandler.GetSchedule();
+            var current = new StorageSettings();
 
-        //    if (schedule != null && schedule.StorageType == Contracts.BackupStorageType.ThirdPartyConsumer)
-        //    {
-        //        current = new StorageSettings
-        //        {
-        //            Module = schedule.StorageParams["module"],
-        //            Props = schedule.StorageParams.Where(r => r.Key != "module").ToDictionary(r => r.Key, r => r.Value)
-        //        };
-        //    }
+            if (schedule != null && schedule.StorageType == BackupStorageType.ThirdPartyConsumer)
+            {
+                current = new StorageSettings
+                {
+                    Module = schedule.StorageParams["module"],
+                    Props = schedule.StorageParams.Where(r => r.Key != "module").ToDictionary(r => r.Key, r => r.Value)
+                };
+            }
 
-        //    var consumers = ConsumerFactory.GetAll<DataStoreConsumer>().ToList();
-        //    return consumers.Select(consumer => new StorageWrapper(consumer, current)).ToList();
-        //}
+            var consumers = ConsumerFactory.GetAll<DataStoreConsumer>().ToList();
+            return consumers.Select(consumer => new StorageWrapper(consumer, current)).ToList();
+        }
 
         private void StartMigrate(StorageSettings settings)
         {
@@ -2135,15 +2438,28 @@ namespace ASC.Api.Settings
 
         ///<visible>false</visible>
         [Create("rebranding/company")]
-        public void SaveCompanyWhiteLabelSettings(CompanyWhiteLabelSettings settings)
+        public bool SaveCompanyWhiteLabelSettingsFromBody([FromBody] CompanyWhiteLabelSettingsWrapper companyWhiteLabelSettingsWrapper)
         {
-            if (settings == null) throw new ArgumentNullException("settings");
+            return SaveCompanyWhiteLabelSettings(companyWhiteLabelSettingsWrapper);
+        }
+
+        [Create("rebranding/company")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public bool SaveCompanyWhiteLabelSettingsFromForm([FromForm] CompanyWhiteLabelSettingsWrapper companyWhiteLabelSettingsWrapper)
+        {
+           return SaveCompanyWhiteLabelSettings(companyWhiteLabelSettingsWrapper);
+        }
+
+        private bool SaveCompanyWhiteLabelSettings(CompanyWhiteLabelSettingsWrapper companyWhiteLabelSettingsWrapper)
+        {
+            if (companyWhiteLabelSettingsWrapper.Settings == null) throw new ArgumentNullException("settings");
 
             DemandRebrandingPermission();
 
-            settings.IsLicensorSetting = false; //TODO: CoreContext.TenantManager.GetTenantQuota(TenantProvider.CurrentTenantID).Branding && settings.IsLicensor
+            companyWhiteLabelSettingsWrapper.Settings.IsLicensorSetting = false; //TODO: CoreContext.TenantManager.GetTenantQuota(TenantProvider.CurrentTenantID).Branding && settings.IsLicensor
 
-            SettingsManager.SaveForDefaultTenant(settings);
+            SettingsManager.SaveForDefaultTenant(companyWhiteLabelSettingsWrapper.Settings);
+            return true;
         }
 
         ///<visible>false</visible>
@@ -2168,13 +2484,26 @@ namespace ASC.Api.Settings
 
         ///<visible>false</visible>
         [Create("rebranding/additional")]
-        public void SaveAdditionalWhiteLabelSettings(AdditionalWhiteLabelSettings settings)
+        public bool SaveAdditionalWhiteLabelSettingsFromBody([FromBody]AdditionalWhiteLabelSettingsWrapper wrapper)
         {
-            if (settings == null) throw new ArgumentNullException("settings");
+            return SaveAdditionalWhiteLabelSettings(wrapper);
+        }
+
+        [Create("rebranding/additional")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public bool SaveAdditionalWhiteLabelSettingsFromForm([FromForm] AdditionalWhiteLabelSettingsWrapper wrapper)
+        {
+           return SaveAdditionalWhiteLabelSettings(wrapper);
+        }
+
+        private bool SaveAdditionalWhiteLabelSettings(AdditionalWhiteLabelSettingsWrapper wrapper)
+        {
+            if (wrapper.Settings == null) throw new ArgumentNullException("settings");
 
             DemandRebrandingPermission();
 
-            SettingsManager.SaveForDefaultTenant(settings);
+            SettingsManager.SaveForDefaultTenant(wrapper.Settings);
+            return true;
         }
 
         ///<visible>false</visible>
@@ -2199,26 +2528,53 @@ namespace ASC.Api.Settings
 
         ///<visible>false</visible>
         [Create("rebranding/mail")]
-        public void SaveMailWhiteLabelSettings(MailWhiteLabelSettings settings)
+        public bool SaveMailWhiteLabelSettingsFromBody([FromBody] MailWhiteLabelSettings settings)
+        {
+            return SaveMailWhiteLabelSettings(settings);
+        }
+
+        ///<visible>false</visible>
+        [Create("rebranding/mail")]
+        public bool SaveMailWhiteLabelSettingsFromForm([FromForm] MailWhiteLabelSettings settings)
+        {
+            return SaveMailWhiteLabelSettings(settings);
+        }
+
+        private bool SaveMailWhiteLabelSettings(MailWhiteLabelSettings settings)
         {
             if (settings == null) throw new ArgumentNullException("settings");
 
             DemandRebrandingPermission();
 
             SettingsManager.SaveForDefaultTenant(settings);
+            return true;
         }
 
         ///<visible>false</visible>
         [Update("rebranding/mail")]
-        public void UpdateMailWhiteLabelSettings(bool footerEnabled)
+        public bool UpdateMailWhiteLabelSettingsFromBody([FromBody]MailWhiteLabelSettingsModel model)
+        {
+            return UpdateMailWhiteLabelSettings(model);
+        }
+
+        [Update("rebranding/mail")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public bool UpdateMailWhiteLabelSettingsFromForm([FromForm]MailWhiteLabelSettingsModel model)
+        {
+            return UpdateMailWhiteLabelSettings(model);
+        }
+
+        private bool UpdateMailWhiteLabelSettings(MailWhiteLabelSettingsModel model)
         {
             DemandRebrandingPermission();
 
             var settings = SettingsManager.LoadForDefaultTenant<MailWhiteLabelSettings>();
 
-            settings.FooterEnabled = footerEnabled;
+            settings.FooterEnabled = model.FooterEnabled;
 
             SettingsManager.SaveForDefaultTenant(settings);
+
+            return true;
         }
 
         ///<visible>false</visible>
@@ -2267,7 +2623,19 @@ namespace ASC.Api.Settings
         }
 
         [Create("authservice")]
-        public bool SaveAuthKeys(AuthServiceModel model)
+        public bool SaveAuthKeysFromBody([FromBody]AuthServiceModel model)
+        {
+            return SaveAuthKeys(model);
+        }
+
+        [Create("authservice")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public bool SaveAuthKeysFromForm([FromForm] AuthServiceModel model)
+        {
+            return SaveAuthKeys(model);
+        }
+
+        private bool SaveAuthKeys(AuthServiceModel model)
         {
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
             if (!SetupInfo.IsVisibleSettings(ManagementType.ThirdPartyAuthorization.ToString()))
@@ -2353,11 +2721,11 @@ namespace ASC.Api.Settings
         [Read("telegramlink")]
         public object TelegramLink()
         {
-            var currentLink = TelegramHelper.CurrentRegistrationLink(AuthContext.CurrentAccount.ID, TenantManager.CurrentTenant.TenantId);
+            var currentLink = TelegramHelper.CurrentRegistrationLink(AuthContext.CurrentAccount.ID, Tenant.TenantId);
 
             if (string.IsNullOrEmpty(currentLink))
             {
-                var url = TelegramHelper.RegisterUser(AuthContext.CurrentAccount.ID, TenantManager.CurrentTenant.TenantId);
+                var url = TelegramHelper.RegisterUser(AuthContext.CurrentAccount.ID, Tenant.TenantId);
                 return url;
             }
             else
@@ -2373,7 +2741,7 @@ namespace ASC.Api.Settings
         [Read("telegramisconnected")]
         public object TelegramIsConnected()
         {
-            return (int)TelegramHelper.UserIsConnected(AuthContext.CurrentAccount.ID, TenantManager.CurrentTenant.TenantId);
+            return (int)TelegramHelper.UserIsConnected(AuthContext.CurrentAccount.ID, Tenant.TenantId);
         }
 
         /// <summary>
@@ -2382,7 +2750,7 @@ namespace ASC.Api.Settings
         [Delete("telegramdisconnect")]
         public void TelegramDisconnect()
         {
-            TelegramHelper.Disconnect(AuthContext.CurrentAccount.ID, TenantManager.CurrentTenant.TenantId);
+            TelegramHelper.Disconnect(AuthContext.CurrentAccount.ID, Tenant.TenantId);
         }
 
         private readonly int maxCount = 10;
@@ -2397,71 +2765,6 @@ namespace ASC.Api.Settings
             }
 
             MemoryCache.Set(key, ++count, TimeSpan.FromMinutes(expirationMinutes));
-        }
-    }
-
-    public static class SettingsControllerExtension
-    {
-        public static DIHelper AddSettingsController(this DIHelper services)
-        {
-            return services
-                .AddMessageTargetService()
-                .AddCoreConfigurationService()
-                .AddIPRestrictionsService()
-                .AddDisplayUserSettingsService()
-                .AddSetupInfo()
-                .AddCommonLinkUtilityService()
-                .AddCoreBaseSettingsService()
-                .AddTenantUtilService()
-                .AddEmailValidationKeyProviderService()
-                .AddMessageServiceService()
-                .AddStudioNotifyServiceService()
-                .AddApiContextService()
-                .AddUserManagerService()
-                .AddTenantManagerService()
-                .AddTenantExtraService()
-                .AddTenantStatisticsProviderService()
-                .AddUserPhotoManagerService()
-                .AddAuthContextService()
-                .AddCookiesManagerService()
-                .AddWebItemSecurity()
-                .AddStudioNotifyHelperService()
-                .AddLicenseReaderService()
-                .AddPermissionContextService()
-                .AddWebItemManager()
-                .AddWebItemManagerSecurity()
-                .AddCdnStorageSettingsService()
-                .AddStorageSettingsService()
-                .AddStorageFactoryService()
-                .AddStorageFactoryConfigService()
-                .AddSettingsManagerService()
-                .AddTenantInfoSettingsService()
-                .AddColorThemesSettingsHelperService()
-                .AddTenantWhiteLabelSettingsService()
-                .AddStudioSmsNotificationSettingsService()
-                .AddTfaManagerService()
-                .AddStorageHelperService()
-                .AddTenantLogoManagerService()
-                .AddBuildVersionService()
-                .AddStatisticManagerService()
-                .AddEmployeeWraper()
-                .AddConsumerFactoryService()
-                .AddSmsProviderManagerService()
-                .AddCustomNamingPeopleService()
-                .AddProviderManagerService()
-                .AddAccountLinker()
-                .AddMobileDetectorService()
-                .AddFirstTimeTenantSettings()
-                .AddServiceClient()
-                .AddTwilioProviderService()
-                .AddEncryptionServiceClient()
-                .AddEncryptionSettingsHelperService()
-                .AddStorageFactoryService()
-                .AddBackupService()
-                .AddEncryptionServiceNotifierService()
-                .AddTelegramLoginProviderService()
-                .AddTelegramHelperSerivce()
-                .AddPasswordHasherService();
         }
     }
 }

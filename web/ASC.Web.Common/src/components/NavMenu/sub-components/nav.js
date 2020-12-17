@@ -14,16 +14,16 @@ const StyledNav = styled.nav`
   position: fixed;
   top: 0;
   transition: width 0.3s ease-in-out;
-  width: ${props => (props.opened ? "240px" : "0")};
+  width: ${(props) => (props.opened ? "240px" : "0")};
   z-index: 200;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 `;
 
 const StyledScrollbar = styled(Scrollbar)`
-  width: ${props => (props.opened ? 240 : 56)};
+  width: ${(props) => (props.opened ? 240 : 56)};
 `;
 
-const Nav = React.memo(props => {
+const Nav = React.memo((props) => {
   //console.log("Nav render");
   const { opened, onMouseEnter, onMouseLeave, children } = props;
 
@@ -46,8 +46,8 @@ Nav.propTypes = {
   onMouseLeave: PropTypes.func,
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
-    PropTypes.node
-  ])
+    PropTypes.node,
+  ]),
 };
 
 export default Nav;

@@ -10,7 +10,7 @@ import { Calendar } from "asc-web-components";
 
 ```jsx
 <Calendar
-  onChange={date => {
+  onChange={(date) => {
     console.log("Selected date:", date);
   }}
   disabled={false}

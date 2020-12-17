@@ -40,7 +40,6 @@ using ASC.Core;
 using ASC.Core.Common.Settings;
 using ASC.Core.Users;
 using ASC.Files.Core;
-using ASC.Files.Core.Data;
 using ASC.Files.Core.Resources;
 using ASC.Files.Core.Security;
 using ASC.Web.Core.Files;
@@ -61,6 +60,7 @@ using FileShare = ASC.Files.Core.Security.FileShare;
 
 namespace ASC.Web.Files.Utils
 {
+    [Scope]
     public class LockerManager
     {
         private AuthContext AuthContext { get; }
@@ -93,6 +93,7 @@ namespace ASC.Web.Files.Utils
         }
     }
 
+    [Scope]
     public class BreadCrumbsManager
     {
         private IDaoFactory DaoFactory { get; }
@@ -112,18 +113,18 @@ namespace ASC.Web.Files.Utils
             AuthContext = authContext;
         }
 
-        public List<Folder<T>> GetBreadCrumbs<T>(T folderId)
+        public List<FileEntry> GetBreadCrumbs<T>(T folderId)
         {
             var folderDao = DaoFactory.GetFolderDao<T>();
             return GetBreadCrumbs(folderId, folderDao);
         }
 
-        public List<Folder<T>> GetBreadCrumbs<T>(T folderId, IFolderDao<T> folderDao)
+        public List<FileEntry> GetBreadCrumbs<T>(T folderId, IFolderDao<T> folderDao)
         {
-            if (folderId == null) return new List<Folder<T>>();
-            var breadCrumbs = FileSecurity.FilterRead(folderDao.GetParentFolders(folderId)).ToList();
+            if (folderId == null) return new List<FileEntry>();
+            var breadCrumbs = FileSecurity.FilterRead(folderDao.GetParentFolders(folderId)).Cast<FileEntry>().ToList();
 
-            var firstVisible = breadCrumbs.ElementAtOrDefault(0);
+            var firstVisible = breadCrumbs.ElementAtOrDefault(0) as Folder<T>;
 
             var rootId = 0;
             if (firstVisible == null)
@@ -161,15 +162,18 @@ namespace ASC.Web.Files.Utils
                 }
             }
 
+            var folderDaoInt = DaoFactory.GetFolderDao<int>();
+
             if (rootId != 0)
             {
-                breadCrumbs.Insert(0, folderDao.GetFolder((T)Convert.ChangeType(rootId, typeof(T))));
+                breadCrumbs.Insert(0, folderDaoInt.GetFolder(rootId));
             }
 
             return breadCrumbs;
         }
     }
 
+    [Scope]
     public class EntryManager
     {
         private const string UPDATE_LIST = "filesUpdateList";
@@ -336,7 +340,7 @@ namespace ASC.Web.Files.Utils
 
                             folders.RemoveAll(folder => rootKeys.Contains(folder.ID));
 
-                            var projectFolders = DaoFactory.GetFolderDao<int>().GetFolders(projectFolderIds.ToArray(), filter, subjectGroup, subjectId, null, false, false);
+                            var projectFolders = DaoFactory.GetFolderDao<int>().GetFolders(projectFolderIds.ToList(), filter, subjectGroup, subjectId, null, false, false);
                             folders.AddRange(projectFolders);
                         }
 
@@ -362,18 +366,18 @@ namespace ASC.Web.Files.Utils
                     }
                 }
 
-                parent.TotalFiles = entries.Aggregate(0, (a, f) => a + (f.FileEntryType == FileEntryType.Folder ? ((Folder<T>)f).TotalFiles : 1));
-                parent.TotalSubFolders = entries.Aggregate(0, (a, f) => a + (f.FileEntryType == FileEntryType.Folder ? ((Folder<T>)f).TotalSubFolders + 1 : 0));
+                parent.TotalFiles = entries.Aggregate(0, (a, f) => a + (f.FileEntryType == FileEntryType.Folder ? ((IFolder)f).TotalFiles : 1));
+                parent.TotalSubFolders = entries.Aggregate(0, (a, f) => a + (f.FileEntryType == FileEntryType.Folder ? ((IFolder)f).TotalSubFolders + 1 : 0));
             }
             else if (parent.FolderType == FolderType.SHARE)
             {
                 //share
-                var shared = (IEnumerable<FileEntry<T>>)fileSecurity.GetSharesForMe<T>(filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders);
+                var shared = fileSecurity.GetSharesForMe(filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders);
 
                 entries = entries.Concat(shared);
 
-                parent.TotalFiles = entries.Aggregate(0, (a, f) => a + (f.FileEntryType == FileEntryType.Folder ? ((Folder<T>)f).TotalFiles : 1));
-                parent.TotalSubFolders = entries.Aggregate(0, (a, f) => a + (f.FileEntryType == FileEntryType.Folder ? ((Folder<T>)f).TotalSubFolders + 1 : 0));
+                parent.TotalFiles = entries.Aggregate(0, (a, f) => a + (f.FileEntryType == FileEntryType.Folder ? ((IFolder)f).TotalFiles : 1));
+                parent.TotalSubFolders = entries.Aggregate(0, (a, f) => a + (f.FileEntryType == FileEntryType.Folder ? ((IFolder)f).TotalSubFolders + 1 : 0));
             }
             else if (parent.FolderType == FolderType.Recent)
             {
@@ -381,7 +385,7 @@ namespace ASC.Web.Files.Utils
                 var files = GetRecent(fileDao, filter, subjectGroup, subjectId, searchText, searchInContent);
                 entries = entries.Concat(files);
 
-                parent.TotalFiles = entries.Aggregate(0, (a, f) => a + (f.FileEntryType == FileEntryType.Folder ? ((Folder<T>)f).TotalFiles : 1));
+                parent.TotalFiles = entries.Aggregate(0, (a, f) => a + (f.FileEntryType == FileEntryType.Folder ? ((IFolder)f).TotalFiles : 1));
             }
             else if (parent.FolderType == FolderType.Favorites)
             {
@@ -393,8 +397,8 @@ namespace ASC.Web.Files.Utils
                 entries = entries.Concat(folders);
                 entries = entries.Concat(files);
 
-                parent.TotalFiles = entries.Aggregate(0, (a, f) => a + (f.FileEntryType == FileEntryType.Folder ? ((Folder<T>)f).TotalFiles : 1));
-                parent.TotalSubFolders = entries.Aggregate(0, (a, f) => a + (f.FileEntryType == FileEntryType.Folder ? ((Folder<T>)f).TotalSubFolders + 1 : 0));
+                parent.TotalFiles = entries.Aggregate(0, (a, f) => a + (f.FileEntryType == FileEntryType.Folder ? ((IFolder)f).TotalFiles : 1));
+                parent.TotalSubFolders = entries.Aggregate(0, (a, f) => a + (f.FileEntryType == FileEntryType.Folder ? ((IFolder)f).TotalSubFolders + 1 : 0));
             }
             else if (parent.FolderType == FolderType.Templates)
             {
@@ -402,7 +406,7 @@ namespace ASC.Web.Files.Utils
                 var files = GetTemplates(fileDao, filter, subjectGroup, subjectId, searchText, searchInContent);
                 entries = entries.Concat(files);
 
-                parent.TotalFiles = entries.Aggregate(0, (a, f) => a + (f.FileEntryType == FileEntryType.Folder ? ((Folder<T>)f).TotalFiles : 1));
+                parent.TotalFiles = entries.Aggregate(0, (a, f) => a + (f.FileEntryType == FileEntryType.Folder ? ((IFolder)f).TotalFiles : 1));
                 parent.TotalSubFolders = 0;
             }
             else if (parent.FolderType == FolderType.Privacy)
@@ -418,12 +422,12 @@ namespace ASC.Web.Files.Utils
                 entries = entries.Concat(files);
 
                 //share
-                var shared = (IEnumerable<FileEntry<T>>)fileSecurity.GetPrivacyForMe<T>(filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders);
+                var shared = fileSecurity.GetPrivacyForMe(filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders);
 
                 entries = entries.Concat(shared);
 
-                parent.TotalFiles = entries.Aggregate(0, (a, f) => a + (f.FileEntryType == FileEntryType.Folder ? ((Folder<T>)f).TotalFiles : 1));
-                parent.TotalSubFolders = entries.Aggregate(0, (a, f) => a + (f.FileEntryType == FileEntryType.Folder ? ((Folder<T>)f).TotalSubFolders + 1 : 0));
+                parent.TotalFiles = entries.Aggregate(0, (a, f) => a + (f.FileEntryType == FileEntryType.Folder ? ((IFolder)f).TotalFiles : 1));
+                parent.TotalSubFolders = entries.Aggregate(0, (a, f) => a + (f.FileEntryType == FileEntryType.Folder ? ((IFolder)f).TotalSubFolders + 1 : 0));
             }
             else
             {
@@ -493,7 +497,7 @@ namespace ASC.Web.Files.Utils
             var folderList = new List<Folder<string>>();
 
             if ((parent.ID.Equals(GlobalFolderHelper.FolderMy) || parent.ID.Equals(GlobalFolderHelper.FolderCommon))
-                && ThirdpartyConfiguration.SupportInclusion
+                && ThirdpartyConfiguration.SupportInclusion(DaoFactory)
                 && (FilesSettingsHelper.EnableThirdParty
                     || CoreBaseSettings.Personal))
             {
@@ -550,7 +554,7 @@ namespace ASC.Web.Files.Utils
 
             if (filter == FilterType.None || filter == FilterType.FoldersOnly)
             {
-                var folderIds = tags.Where(tag => tag.EntryType == FileEntryType.Folder).Select(tag => (T)Convert.ChangeType(tag.EntryId, typeof(T))).ToArray();
+                var folderIds = tags.Where(tag => tag.EntryType == FileEntryType.Folder).Select(tag => (T)Convert.ChangeType(tag.EntryId, typeof(T))).ToList();
                 folders = folderDao.GetFolders(folderIds, filter, subjectGroup, subjectId, searchText, false, false);
                 folders = folders.Where(folder => folder.RootFolderType != FolderType.TRASH).ToList();
 
@@ -619,70 +623,57 @@ namespace ASC.Web.Files.Utils
         {
             if (entries == null || !entries.Any()) return entries;
 
-            Comparison<FileEntry> sorter;
-
             if (orderBy == null)
             {
                 orderBy = FilesSettingsHelper.DefaultOrder;
             }
 
             var c = orderBy.IsAsc ? 1 : -1;
-            switch (orderBy.SortedBy)
+            Comparison<FileEntry> sorter = orderBy.SortedBy switch
             {
-                case SortedByType.Type:
-                    sorter = (x, y) =>
-                             {
-                                 var cmp = 0;
-                                 if (x.FileEntryType == FileEntryType.File && y.FileEntryType == FileEntryType.File)
-                                     cmp = c * (FileUtility.GetFileExtension((x.Title)).CompareTo(FileUtility.GetFileExtension(y.Title)));
-                                 return cmp == 0 ? x.Title.EnumerableComparer(y.Title) : cmp;
-                             };
-                    break;
-                case SortedByType.Author:
-                    sorter = (x, y) =>
-                             {
-                                 var cmp = c * string.Compare(x.ModifiedByString, y.ModifiedByString);
-                                 return cmp == 0 ? x.Title.EnumerableComparer(y.Title) : cmp;
-                             };
-                    break;
-                case SortedByType.Size:
-                    sorter = (x, y) =>
-                             {
-                                 var cmp = 0;
-                                 if (x.FileEntryType == FileEntryType.File && y.FileEntryType == FileEntryType.File)
-                                     cmp = c * ((File<T>)x).ContentLength.CompareTo(((File<T>)y).ContentLength);
-                                 return cmp == 0 ? x.Title.EnumerableComparer(y.Title) : cmp;
-                             };
-                    break;
-                case SortedByType.AZ:
-                    sorter = (x, y) => c * x.Title.EnumerableComparer(y.Title);
-                    break;
-                case SortedByType.DateAndTime:
-                    sorter = (x, y) =>
-                             {
-                                 var cmp = c * DateTime.Compare(x.ModifiedOn, y.ModifiedOn);
-                                 return cmp == 0 ? x.Title.EnumerableComparer(y.Title) : cmp;
-                             };
-                    break;
-                case SortedByType.DateAndTimeCreation:
-                    sorter = (x, y) =>
-                    {
-                        var cmp = c * DateTime.Compare(x.CreateOn, y.CreateOn);
-                        return cmp == 0 ? x.Title.EnumerableComparer(y.Title) : cmp;
-                    };
-                    break;
-                case SortedByType.New:
-                    sorter = (x, y) =>
-                        {
-                            var isNewSortResult = x.IsNew.CompareTo(y.IsNew);
-                            return c * (isNewSortResult == 0 ? DateTime.Compare(x.ModifiedOn, y.ModifiedOn) : isNewSortResult);
-                        };
-                    break;
-                default:
-                    sorter = (x, y) => c * x.Title.EnumerableComparer(y.Title);
-                    break;
-            }
-
+                SortedByType.Type => (x, y) =>
+                {
+                    var cmp = 0;
+                    if (x.FileEntryType == FileEntryType.File && y.FileEntryType == FileEntryType.File)
+                        cmp = c * (FileUtility.GetFileExtension((x.Title)).CompareTo(FileUtility.GetFileExtension(y.Title)));
+                    return cmp == 0 ? x.Title.EnumerableComparer(y.Title) : cmp;
+                }
+                ,
+                SortedByType.Author => (x, y) =>
+                {
+                    var cmp = c * string.Compare(x.ModifiedByString, y.ModifiedByString);
+                    return cmp == 0 ? x.Title.EnumerableComparer(y.Title) : cmp;
+                }
+                ,
+                SortedByType.Size => (x, y) =>
+                {
+                    var cmp = 0;
+                    if (x.FileEntryType == FileEntryType.File && y.FileEntryType == FileEntryType.File)
+                        cmp = c * ((File<T>)x).ContentLength.CompareTo(((File<T>)y).ContentLength);
+                    return cmp == 0 ? x.Title.EnumerableComparer(y.Title) : cmp;
+                }
+                ,
+                SortedByType.AZ => (x, y) => c * x.Title.EnumerableComparer(y.Title),
+                SortedByType.DateAndTime => (x, y) =>
+                {
+                    var cmp = c * DateTime.Compare(x.ModifiedOn, y.ModifiedOn);
+                    return cmp == 0 ? x.Title.EnumerableComparer(y.Title) : cmp;
+                }
+                ,
+                SortedByType.DateAndTimeCreation => (x, y) =>
+                {
+                    var cmp = c * DateTime.Compare(x.CreateOn, y.CreateOn);
+                    return cmp == 0 ? x.Title.EnumerableComparer(y.Title) : cmp;
+                }
+                ,
+                SortedByType.New => (x, y) =>
+                {
+                    var isNewSortResult = x.IsNew.CompareTo(y.IsNew);
+                    return c * (isNewSortResult == 0 ? DateTime.Compare(x.ModifiedOn, y.ModifiedOn) : isNewSortResult);
+                }
+                ,
+                _ => (x, y) => c * x.Title.EnumerableComparer(y.Title),
+            };
             if (orderBy.SortedBy != SortedByType.New)
             {
                 // folders on top
@@ -706,7 +697,7 @@ namespace ASC.Web.Files.Utils
             //Fake folder. Don't send request to third party
             var folder = ServiceProvider.GetService<Folder<string>>();
 
-            folder.ParentFolderID = parentFolderId;
+            folder.FolderID = parentFolderId;
 
             folder.ID = providerInfo.RootFolderId;
             folder.CreateBy = providerInfo.Owner;
@@ -728,12 +719,12 @@ namespace ASC.Web.Files.Utils
         }
 
 
-        public List<Folder<T>> GetBreadCrumbs<T>(T folderId)
+        public List<FileEntry> GetBreadCrumbs<T>(T folderId)
         {
             return BreadCrumbsManager.GetBreadCrumbs(folderId);
         }
 
-        public List<Folder<T>> GetBreadCrumbs<T>(T folderId, IFolderDao<T> folderDao)
+        public List<FileEntry> GetBreadCrumbs<T>(T folderId, IFolderDao<T> folderDao)
         {
             return BreadCrumbsManager.GetBreadCrumbs(folderId, folderDao);
         }
@@ -750,35 +741,42 @@ namespace ASC.Web.Files.Utils
         {
             var tagDao = DaoFactory.GetTagDao<T>();
 
-            var tagsFavorite = tagDao.GetTags(AuthContext.CurrentAccount.ID, TagType.Favorite, files);
-            var tagsTemplate = tagDao.GetTags(AuthContext.CurrentAccount.ID, TagType.Template, files);
+            var tags = tagDao.GetTags(AuthContext.CurrentAccount.ID, new[] { TagType.Favorite, TagType.Template, TagType.Locked }, files);
             var tagsNew = tagDao.GetNewTags(AuthContext.CurrentAccount.ID, files);
-            var tagsLocked = tagDao.GetTags(TagType.Locked, files.ToArray());
 
             foreach (var file in files)
             {
-                if (tagsFavorite.Any(r => r.EntryId.Equals(file.ID)))
+                foreach(var t in tags)
                 {
-                    file.IsFavorite = true;
-                }
+                    if (!t.Key.Equals(file.ID)) continue;
 
-                if (tagsTemplate.Any(r => r.EntryId.Equals(file.ID)))
-                {
-                    file.IsTemplate = true;
+                    if (t.Value.TagType == TagType.Favorite)
+                    {
+                        file.IsFavorite = true;
+                        continue;
+                    }
+
+                    if (t.Value.TagType == TagType.Template)
+                    {
+                        file.IsTemplate = true;
+                        continue;
+                    }
+
+                    if (t.Value.TagType == TagType.Locked)
+                    {
+                        var lockedBy = t.Value.Owner;
+                        file.Locked = lockedBy != Guid.Empty;
+                        file.LockedBy = lockedBy != Guid.Empty && lockedBy != AuthContext.CurrentAccount.ID
+                            ? Global.GetUserName(lockedBy)
+                            : null;
+                        continue;
+                    }
                 }
 
                 if (tagsNew.Any(r => r.EntryId.Equals(file.ID)))
                 {
                     file.IsNew = true;
                 }
-
-                var tagLocked = tagsLocked.FirstOrDefault(t => t.EntryId.Equals(file.ID));
-
-                var lockedBy = tagLocked != null ? tagLocked.Owner : Guid.Empty;
-                file.Locked = lockedBy != Guid.Empty;
-                file.LockedBy = lockedBy != Guid.Empty && lockedBy != AuthContext.CurrentAccount.ID
-                    ? Global.GetUserName(lockedBy)
-                    : null;
             }
         }
 
@@ -909,10 +907,8 @@ namespace ASC.Web.Files.Utils
                     }
 
                     var req = (HttpWebRequest)WebRequest.Create(downloadUri);
-                    using (var editedFileStream = new ResponseStream(req.GetResponse()))
-                    {
-                        editedFileStream.CopyTo(tmpStream);
-                    }
+                    using var editedFileStream = new ResponseStream(req.GetResponse());
+                    editedFileStream.CopyTo(tmpStream);
                 }
                 tmpStream.Position = 0;
 
@@ -1211,71 +1207,6 @@ namespace ASC.Web.Files.Utils
                                      .Where(folder => folder.CreateBy == fromUserId).Select(folder => folder.ID);
 
             folderDao.ReassignFolders(folderIds.ToArray(), toUserId);
-        }
-    }
-
-    public static class EntryManagerExtension
-    {
-        public static DIHelper AddEntryManagerService(this DIHelper services)
-        {
-            if (services.TryAddScoped<EntryManager>())
-            {
-                return services
-                    .AddDaoFactoryService()
-                    .AddFileSecurityService()
-                    .AddGlobalFolderHelperService()
-                    .AddPathProviderService()
-                    .AddAuthContextService()
-                    .AddFileMarkerService()
-                    .AddFileUtilityService()
-                    .AddGlobalService()
-                    .AddGlobalStoreService()
-                    .AddCoreBaseSettingsService()
-                    .AddFilesSettingsHelperService()
-                    .AddUserManagerService()
-                    .AddFileShareLinkService()
-                    .AddDocumentServiceConnectorService()
-                    .AddDocumentServiceHelperService()
-                    .AddFilesIntegrationService()
-                    .AddThirdpartyConfigurationService()
-                    .AddLockerManagerService()
-                    .AddBreadCrumbsManagerService()
-                    ;
-            }
-
-            return services;
-        }
-    }
-
-    public static class LockerManagerExtension
-    {
-        public static DIHelper AddLockerManagerService(this DIHelper services)
-        {
-            if (services.TryAddScoped<LockerManager>())
-            {
-                return services
-                    .AddAuthContextService()
-                    .AddDaoFactoryService();
-            }
-
-            return services;
-        }
-    }
-
-    public static class BreadCrumbsManagerExtension
-    {
-        public static DIHelper AddBreadCrumbsManagerService(this DIHelper services)
-        {
-            if (services.TryAddScoped<BreadCrumbsManager>())
-            {
-                return services
-                    .AddDaoFactoryService()
-                    .AddFileSecurityService()
-                    .AddGlobalFolderHelperService()
-                    .AddAuthContextService();
-            }
-
-            return services;
         }
     }
 }

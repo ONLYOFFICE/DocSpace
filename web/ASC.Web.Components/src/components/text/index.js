@@ -1,19 +1,36 @@
 import React from "react";
-import PropTypes from 'prop-types';
-import styled, { css } from 'styled-components';
-import commonTextStyles from './common-text-styles';
+import PropTypes from "prop-types";
+import styled, { css } from "styled-components";
+import commonTextStyles from "./common-text-styles";
 
 const styleCss = css`
-  font-size: ${props => props.fontSizeProp};  
+  font-size: ${(props) => props.fontSizeProp};
   outline: 0 !important;
-  font-weight: ${props => props.fontWeightProp
-    ? props.fontWeightProp
-    : props.isBold == true ? 700 : 'normal'};
-  ${props => props.isItalic == true && css`font-style: italic;`}
-  ${props => props.backgroundColor && css`background-color: ${props => props.backgroundColor};`}
-  ${props => props.isInline
-    ? css`display: inline-block;`
-    : props.display && css`display: ${props => props.display};`}
+  font-weight: ${(props) =>
+    props.fontWeightProp
+      ? props.fontWeightProp
+      : props.isBold == true
+      ? 700
+      : "normal"};
+  ${(props) =>
+    props.isItalic == true &&
+    css`
+      font-style: italic;
+    `}
+  ${(props) =>
+    props.backgroundColor &&
+    css`
+      background-color: ${(props) => props.backgroundColor};
+    `}
+  ${(props) =>
+    props.isInline
+      ? css`
+          display: inline-block;
+        `
+      : props.display &&
+        css`
+          display: ${(props) => props.display};
+        `}
   margin: 0;
 `;
 
@@ -22,7 +39,16 @@ const StyledText = styled.p`
   ${commonTextStyles};
 `;
 
-const Text = ({ title, tag, as, fontSize, fontWeight, color, textAlign, ...rest }) => {
+const Text = ({
+  title,
+  tag,
+  as,
+  fontSize,
+  fontWeight,
+  color,
+  textAlign,
+  ...rest
+}) => {
   //console.log("Text render", rest)
   return (
     <StyledText
@@ -50,14 +76,14 @@ Text.propTypes = {
   isBold: PropTypes.bool,
   isInline: PropTypes.bool,
   isItalic: PropTypes.bool,
-  display: PropTypes.string
+  display: PropTypes.string,
 };
 
 Text.defaultProps = {
   title: null,
-  color: '#333333',
-  textAlign: 'left',
-  fontSize: '13px',
+  color: "#333333",
+  textAlign: "left",
+  fontSize: "13px",
   truncate: false,
   isBold: false,
   isInline: false,

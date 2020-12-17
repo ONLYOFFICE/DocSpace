@@ -1,18 +1,18 @@
 import { SET_INVITE_LINKS } from "./actions";
 
 const initialState = {
-  inviteLinks: {}
+  inviteLinks: {},
 };
 
 const profileReducer = (state = initialState, action) => {
   switch (action.type) {
     case SET_INVITE_LINKS:
       return Object.assign({}, state, {
-        inviteLinks: action.payload
+        inviteLinks: action.payload,
       });
     default:
       return state;
-  };
-}
+  }
+};
 
 export default profileReducer;

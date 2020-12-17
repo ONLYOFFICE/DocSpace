@@ -25,7 +25,7 @@ const i18n = createI18N({
   localesPath: "pages/Home",
 });
 const { changeLanguage } = utils;
-const { isAdmin } = store.auth.selectors;
+const { isAdmin, getIsLoaded, getOrganizationName } = store.auth.selectors;
 
 class PureHome extends React.Component {
   constructor(props) {
@@ -101,55 +101,57 @@ class PureHome extends React.Component {
       selected,
     } = this.state;
 
-    const { isAdmin } = this.props;
+    const { isAdmin, isLoaded } = this.props;
 
     return (
+      <PageLayout
+        withBodyScroll={true}
+        withBodyAutoFocus={!isMobile}
+        isLoaded={isLoaded}
+      >
+        <PageLayout.ArticleHeader>
+          <ArticleHeaderContent />
+        </PageLayout.ArticleHeader>
 
-        <PageLayout withBodyScroll={true} withBodyAutoFocus={!isMobile}>
-          <PageLayout.ArticleHeader>
-            <ArticleHeaderContent />
-          </PageLayout.ArticleHeader>
+        {isAdmin && (
+          <PageLayout.ArticleMainButton>
+            <ArticleMainButtonContent />
+          </PageLayout.ArticleMainButton>
+        )}
 
-          {isAdmin && (
-            <PageLayout.ArticleMainButton>
-              <ArticleMainButtonContent />
-            </PageLayout.ArticleMainButton>
-          )}
+        <PageLayout.ArticleBody>
+          <ArticleBodyContent />
+        </PageLayout.ArticleBody>
 
-          <PageLayout.ArticleBody>
-            <ArticleBodyContent />
-          </PageLayout.ArticleBody>
+        <PageLayout.SectionHeader>
+          <SectionHeaderContent
+            isHeaderVisible={isHeaderVisible}
+            isHeaderIndeterminate={isHeaderIndeterminate}
+            isHeaderChecked={isHeaderChecked}
+            onCheck={this.onSectionHeaderContentCheck}
+            onSelect={this.onSectionHeaderContentSelect}
+            onClose={this.onClose}
+            onLoading={this.onLoading}
+          />
+        </PageLayout.SectionHeader>
 
-          <PageLayout.SectionHeader>
-            <SectionHeaderContent
-              isHeaderVisible={isHeaderVisible}
-              isHeaderIndeterminate={isHeaderIndeterminate}
-              isHeaderChecked={isHeaderChecked}
-              onCheck={this.onSectionHeaderContentCheck}
-              onSelect={this.onSectionHeaderContentSelect}
-              onClose={this.onClose}
-              onLoading={this.onLoading}
-            />
-          </PageLayout.SectionHeader>
+        <PageLayout.SectionFilter>
+          <SectionFilterContent onLoading={this.onLoading} />
+        </PageLayout.SectionFilter>
 
-          <PageLayout.SectionFilter>
-            <SectionFilterContent onLoading={this.onLoading} />
-          </PageLayout.SectionFilter>
+        <PageLayout.SectionBody>
+          <SectionBodyContent
+            isMobile={isMobile}
+            selected={selected}
+            onLoading={this.onLoading}
+            onChange={this.onRowChange}
+          />
+        </PageLayout.SectionBody>
 
-          <PageLayout.SectionBody>
-            <SectionBodyContent
-              isMobile={isMobile}
-              selected={selected}
-              onLoading={this.onLoading}
-              onChange={this.onRowChange}
-            />
-          </PageLayout.SectionBody>
-
-          <PageLayout.SectionPaging>
-            <SectionPagingContent onLoading={this.onLoading} />
-          </PageLayout.SectionPaging>
-        </PageLayout>
-
+        <PageLayout.SectionPaging>
+          <SectionPagingContent onLoading={this.onLoading} />
+        </PageLayout.SectionPaging>
+      </PageLayout>
     );
   }
 }
@@ -176,7 +178,6 @@ Home.propTypes = {
 };
 
 function mapStateToProps(state) {
-  const { isLoaded, settings } = state.auth;
   const { users, selection, selected, selectedGroup, groups } = state.people;
   return {
     users,
@@ -184,10 +185,10 @@ function mapStateToProps(state) {
     selected,
     selectedGroup,
     groups,
-    isLoaded,
-    organizationName: settings.organizationName,
+    organizationName: getOrganizationName(state),
     isAdmin: isAdmin(state),
     isLoading: getIsLoading(state),
+    isLoaded: getIsLoaded(state),
   };
 }
 

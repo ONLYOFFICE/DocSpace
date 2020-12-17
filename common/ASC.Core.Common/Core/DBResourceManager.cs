@@ -162,9 +162,6 @@ namespace TMResourceData
             private readonly string culture;
             private readonly string filename;
             private readonly ILog log;
-
-            private IConfiguration Configuration { get; }
-            private IOptionsMonitor<ILog> Option { get; }
             private DbContextManager<ResourceDbContext> DbContext { get; }
 
             public DBResourceSet(
@@ -184,8 +181,6 @@ namespace TMResourceData
                     throw new ArgumentNullException("filename");
                 }
 
-                Configuration = configuration;
-                Option = option;
                 DbContext = dbContext;
                 log = option.CurrentValue;
 
@@ -283,6 +278,7 @@ namespace TMResourceData
         }
     }
 
+    [Singletone]
     public class WhiteLabelHelper
     {
         private readonly ILog log;
@@ -369,15 +365,6 @@ namespace TMResourceData
             }
 
             return resourceValue;
-        }
-    }
-
-    public static class WhiteLabelHelperExtension
-    {
-        public static DIHelper AddWhiteLabelHelperService(this DIHelper services)
-        {
-            services.TryAddSingleton<WhiteLabelHelper>();
-            return services;
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+
 using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ASC.Core.Common.Migrations.Npgsql.UserDbContextNpgsql
@@ -62,7 +63,7 @@ namespace ASC.Core.Common.Migrations.Npgsql.UserDbContextNpgsql
                     table.PrimaryKey("core_subscriptionmethod_pkey", x => new { x.tenant, x.source, x.action, x.recipient });
                 });
 
-            
+
 
             migrationBuilder.CreateTable(
                 name: "core_userphoto",
@@ -78,8 +79,8 @@ namespace ASC.Core.Common.Migrations.Npgsql.UserDbContextNpgsql
                     table.PrimaryKey("core_userphoto_pkey", x => x.userid);
                 });
 
-            
-            
+
+
 
             migrationBuilder.InsertData(
                 schema: "onlyoffice",

@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Model;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Files.Core.EF
@@ -23,7 +24,10 @@ namespace ASC.Files.Core.EF
         [Column("modified_on")]
         public DateTime ModifiedOn { get; set; }
 
-        public override object[] GetKeys() => new object[] { UserId, App };
+        public override object[] GetKeys()
+        {
+            return new object[] { UserId, App };
+        }
     }
 
     public static class DbFilesThirdpartyAppExtension

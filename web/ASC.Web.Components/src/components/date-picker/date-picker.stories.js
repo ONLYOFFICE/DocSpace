@@ -8,7 +8,7 @@ import {
   select,
   date,
   number,
-  text
+  text,
 } from "@storybook/addon-knobs/react";
 import withReadme from "storybook-readme/with-readme";
 import Readme from "./README.md";
@@ -45,7 +45,7 @@ const locales = [
   "es",
   "tr",
   "uk",
-  "vi"
+  "vi",
 ];
 
 const displayType = ["dropdown", "aside", "auto"];
@@ -56,7 +56,7 @@ storiesOf("Components|DatePicker", module)
   .add("base", () => (
     <Section>
       <DatePicker
-        onChange={date => {
+        onChange={(date) => {
           action("Selected date")(date);
         }}
         selectedDate={myDateKnob("selectedDate", new Date())}

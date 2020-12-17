@@ -1,4 +1,5 @@
 ﻿using System;
+
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
@@ -245,7 +246,7 @@ namespace ASC.Files.Core.Migrations.MySql.FilesDbContextMySql
                     table.PrimaryKey("PRIMARY", x => x.hash_id);
                 });
 
-           
+
             migrationBuilder.CreateIndex(
                 name: "left_node",
                 table: "files_bunch_objects",

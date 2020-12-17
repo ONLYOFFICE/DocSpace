@@ -5,5 +5,5 @@
   "EmptySearchUsersResult": "There are no users with such name",
   "EmptyUsers": "There are no users",
   "LoadingLabel": "Loading... Please wait...",
-  "CustomAllGroups":"All {{ groupsCaption, lowercase }}"
+  "CustomAllGroups": "All {{ groupsCaption, lowercase }}"
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+
 using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ASC.Core.Common.Migrations.MySql.UserDbContextMySql
@@ -7,7 +8,7 @@ namespace ASC.Core.Common.Migrations.MySql.UserDbContextMySql
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-           
+
             migrationBuilder.CreateTable(
                 name: "core_group",
                 columns: table => new
@@ -83,7 +84,7 @@ namespace ASC.Core.Common.Migrations.MySql.UserDbContextMySql
                     table.PrimaryKey("PRIMARY", x => new { x.tenant, x.source, x.action, x.recipient });
                 });
 
-            
+
 
             migrationBuilder.CreateTable(
                 name: "core_userphoto",
@@ -100,7 +101,7 @@ namespace ASC.Core.Common.Migrations.MySql.UserDbContextMySql
                     table.PrimaryKey("PRIMARY", x => x.userid);
                 });
 
-           
+
             migrationBuilder.InsertData(
                 table: "core_subscription",
                 columns: new[] { "tenant", "source", "action", "recipient", "object", "unsubscribed" },
@@ -177,7 +178,7 @@ namespace ASC.Core.Common.Migrations.MySql.UserDbContextMySql
                 table: "core_group",
                 columns: new[] { "tenant", "parentid" });
 
-          
+
             migrationBuilder.CreateIndex(
                 name: "tenant",
                 table: "core_userphoto",

@@ -30,6 +30,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 
+using ASC.Common;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Context;
 using ASC.Core.Common.EF.Model;
@@ -42,6 +43,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Data
 {
+    [Scope]
     public class ConfigureDbTenantService : IConfigureNamedOptions<DbTenantService>
     {
         private TenantDomainValidator TenantDomainValidator { get; }
@@ -58,28 +60,30 @@ namespace ASC.Core.Data
         public void Configure(string name, DbTenantService options)
         {
             Configure(options);
-            options.TenantDbContext = DbContextManager.Get(name);
+            options.LazyTenantDbContext = new Lazy<TenantDbContext>(() => DbContextManager.Get(name));
         }
 
         public void Configure(DbTenantService options)
         {
             options.TenantDomainValidator = TenantDomainValidator;
-            options.TenantDbContext = DbContextManager.Value;
+            options.LazyTenantDbContext = new Lazy<TenantDbContext>(() => DbContextManager.Value);
         }
     }
 
+    [Scope]
     public class DbTenantService : ITenantService
     {
         private List<string> forbiddenDomains;
 
         internal TenantDomainValidator TenantDomainValidator { get; set; }
-        public MachinePseudoKeys MachinePseudoKeys { get; }
-        internal TenantDbContext TenantDbContext { get; set; }
+        private MachinePseudoKeys MachinePseudoKeys { get; }
+        internal TenantDbContext TenantDbContext { get => LazyTenantDbContext.Value; }
+        internal Lazy<TenantDbContext> LazyTenantDbContext { get; set; }
 
-        public Expression<Func<DbTenant, Tenant>> FromDbTenantToTenant { get; set; }
-        public Expression<Func<TenantUserSecurity, Tenant>> FromTenantUserToTenant { get; set; }
+        private static Expression<Func<DbTenant, Tenant>> FromDbTenantToTenant { get; set; }
+        private static Expression<Func<TenantUserSecurity, Tenant>> FromTenantUserToTenant { get; set; }
 
-        public DbTenantService()
+        static DbTenantService()
         {
             FromDbTenantToTenant = r => new Tenant
             {
@@ -93,7 +97,7 @@ namespace ASC.Core.Data
                 PaymentId = r.PaymentId,
                 Spam = r.Spam,
                 Status = r.Status,
-                StatusChangeDate = r.StatusChangedHack ?? DateTime.MinValue,
+                StatusChangeDate = r.StatusChangedHack,
                 TenantAlias = r.Alias,
                 TenantId = r.Id,
                 MappedDomain = r.MappedDomain,
@@ -101,23 +105,27 @@ namespace ASC.Core.Data
                 VersionChanged = r.VersionChanged,
                 TrustedDomainsRaw = r.TrustedDomains,
                 TrustedDomainsType = r.TrustedDomainsEnabled,
-                AffiliateId = r.Partner != null ? r.Partner.AffiliateId : null,
-                PartnerId = r.Partner != null ? r.Partner.PartnerId : null,
+                //AffiliateId = r.Partner != null ? r.Partner.AffiliateId : null,
+                //PartnerId = r.Partner != null ? r.Partner.PartnerId : null,
                 TimeZone = r.TimeZone,
-                Campaign = r.Partner != null ? r.Partner.Campaign : null
+                //Campaign = r.Partner != null ? r.Partner.Campaign : null
             };
 
             var fromDbTenantToTenant = FromDbTenantToTenant.Compile();
             FromTenantUserToTenant = r => fromDbTenantToTenant(r.DbTenant);
         }
 
+        public DbTenantService()
+        {
+
+        }
+
         public DbTenantService(
             DbContextManager<TenantDbContext> dbContextManager,
             TenantDomainValidator tenantDomainValidator,
             MachinePseudoKeys machinePseudoKeys)
-            : this()
         {
-            TenantDbContext = dbContextManager.Value;
+            LazyTenantDbContext = new Lazy<TenantDbContext>(() => dbContextManager.Value);
             TenantDomainValidator = tenantDomainValidator;
             MachinePseudoKeys = machinePseudoKeys;
         }
@@ -149,7 +157,7 @@ namespace ASC.Core.Data
         {
             if (string.IsNullOrEmpty(login)) throw new ArgumentNullException("login");
 
-            Func<IQueryable<TenantUserSecurity>> query = () => TenantsQuery()
+            IQueryable<TenantUserSecurity> query() => TenantsQuery()
                     .Where(r => r.Status == TenantStatus.Active)
                     .Join(TenantDbContext.Users, r => r.Id, r => r.Tenant, (tenant, user) => new
                     {
@@ -237,12 +245,15 @@ namespace ASC.Core.Data
         public Tenant GetTenant(string domain)
         {
             if (string.IsNullOrEmpty(domain)) throw new ArgumentNullException("domain");
+            
+            domain = domain.ToLowerInvariant();
 
             return TenantsQuery()
-                .Where(r => r.Alias == domain.ToLowerInvariant() || r.MappedDomain == domain.ToLowerInvariant())
+                .Where(r => r.Alias == domain || r.MappedDomain == domain)
                 .OrderBy(a => a.Status == TenantStatus.Restoring ? TenantStatus.Active : a.Status)
                 .ThenByDescending(a => a.Status == TenantStatus.Restoring ? 0 : a.Id)
                 .Select(FromDbTenantToTenant)
+                .Take(1)
                 .FirstOrDefault();
         }
 
@@ -450,8 +461,7 @@ namespace ASC.Core.Data
 
         private IQueryable<DbTenant> TenantsQuery()
         {
-            return TenantDbContext.Tenants
-                .Include(r => r.Partner);
+            return TenantDbContext.Tenants;
         }
 
         private void ValidateDomain(string domain, int tenantId, bool validateCharacters)

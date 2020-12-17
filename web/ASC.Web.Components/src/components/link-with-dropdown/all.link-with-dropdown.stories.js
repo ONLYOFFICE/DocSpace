@@ -4,32 +4,32 @@ import LinkWithDropdown from ".";
 
 const headerStyle = {
   paddingLeft: 20,
-  fontSize: 16
+  fontSize: 16,
 };
 
 const rowStyle = {
   marginTop: 8,
   paddingLeft: 28,
-  fontSize: 12
+  fontSize: 12,
 };
 
 const data = [
   {
     key: "key1",
     label: "Base button1",
-    onClick: () => console.log("Base button1 clicked")
+    onClick: () => console.log("Base button1 clicked"),
   },
   {
     key: "key2",
     label: "Base button2",
-    onClick: () => console.log("Base button2 clicked")
+    onClick: () => console.log("Base button2 clicked"),
   },
   { key: "key3", isSeparator: true },
   {
     key: "key4",
     label: "Base button3",
-    onClick: () => console.log("Base button3 clicked")
-  }
+    onClick: () => console.log("Base button3 clicked"),
+  },
 ];
 
 storiesOf("Components|LinkWithDropdown", module)
@@ -40,7 +40,7 @@ storiesOf("Components|LinkWithDropdown", module)
         style={{
           padding: "8px 0 0 20px",
           display: "grid",
-          gridTemplateColumns: "1fr 1fr"
+          gridTemplateColumns: "1fr 1fr",
         }}
       >
         <div>

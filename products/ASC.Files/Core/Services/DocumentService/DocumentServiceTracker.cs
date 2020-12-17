@@ -42,7 +42,6 @@ using ASC.Core;
 using ASC.Core.Common;
 using ASC.Core.Users;
 using ASC.Files.Core;
-using ASC.Files.Core.Data;
 using ASC.Files.Core.Resources;
 using ASC.Files.Core.Services.NotifyService;
 using ASC.MessagingSystem;
@@ -158,6 +157,7 @@ namespace ASC.Web.Files.Services.DocumentService
         #endregion
     }
 
+    [Scope]
     public class DocumentServiceTrackerHelper
     {
         private SecurityContext SecurityContext { get; }
@@ -635,35 +635,6 @@ namespace ASC.Web.Files.Services.DocumentService
             {
                 Logger.Error("DocService save history error", ex);
             }
-        }
-    }
-    public static class DocumentServiceTrackerHelperExtension
-    {
-        public static DIHelper AddDocumentServiceTrackerHelperService(this DIHelper services)
-        {
-            if (services.TryAddScoped<DocumentServiceTrackerHelper>())
-            {
-                return services
-                    .AddSecurityContextService()
-                    .AddUserManagerService()
-                    .AddTenantManagerService()
-                    .AddFilesLinkUtilityService()
-                    .AddEmailValidationKeyProviderService()
-                    .AddBaseCommonLinkUtilityService()
-                    .AddGlobalStoreService()
-                    .AddDisplayUserSettingsService()
-                    .AddDaoFactoryService()
-                    .AddDocumentServiceHelperService()
-                    .AddEntryManagerService()
-                    .AddFileShareLinkService()
-                    .AddFilesMessageService()
-                    .AddDocumentServiceConnectorService()
-                    .AddNotifyClientService()
-                    .AddSocketManagerService()
-                    .AddMailMergeTaskRunnerService();
-            }
-
-            return services;
         }
     }
 }

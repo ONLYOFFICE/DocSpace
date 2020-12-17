@@ -48,7 +48,7 @@ namespace ASC.Files.Thirdparty.Dropbox
 {
     internal abstract class DropboxDaoBase : ThirdPartyProviderDao<DropboxProviderInfo>
     {
-        public override string Id { get => "dropbox"; }
+        protected override string Id { get => "dropbox"; }
 
         public DropboxDaoBase(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor, FileUtility fileUtility) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility)
         {
@@ -123,7 +123,7 @@ namespace ASC.Files.Thirdparty.Dropbox
             var folder = GetFolder();
 
             folder.ID = MakeId(dropboxFolder);
-            folder.ParentFolderID = isRoot ? null : MakeId(GetParentFolderPath(dropboxFolder));
+            folder.FolderID = isRoot ? null : MakeId(GetParentFolderPath(dropboxFolder));
             folder.CreateOn = isRoot ? ProviderInfo.CreateOn : default;
             folder.ModifiedOn = isRoot ? ProviderInfo.CreateOn : default;
             folder.Title = MakeFolderTitle(dropboxFolder);
@@ -220,7 +220,7 @@ namespace ASC.Files.Thirdparty.Dropbox
             }
         }
 
-        protected IEnumerable<string> GetChildren(object folderId)
+        protected override IEnumerable<string> GetChildren(string folderId)
         {
             return GetDropboxItems(folderId).Select(MakeId);
         }

@@ -34,7 +34,7 @@ namespace ASC.Files.Core.EF
 
     public static class DbFilesSecurityExtension
     {
-       public static ModelBuilderWrapper AddDbFilesSecurity(this ModelBuilderWrapper modelBuilder)
+        public static ModelBuilderWrapper AddDbFilesSecurity(this ModelBuilderWrapper modelBuilder)
         {
             modelBuilder
                 .Add(MySqlAddDbFilesSecurity, Provider.MySql)

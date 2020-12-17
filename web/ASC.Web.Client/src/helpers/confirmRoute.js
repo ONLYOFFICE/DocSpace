@@ -4,9 +4,9 @@ import { ValidationResult } from "./../helpers/constants";
 import { Loader } from "asc-web-components";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
-import { api, constants, utils, PageLayout } from "asc-web-common";
+import { api, utils, PageLayout, store } from "asc-web-common";
+const { isAuthenticated } = store.auth.selectors;
 const { checkConfirmLink } = api.user;
-const { AUTH_KEY } = constants;
 const { getObjectByLocation } = utils;
 
 class ConfirmRoute extends React.Component {
@@ -14,17 +14,19 @@ class ConfirmRoute extends React.Component {
     super(props);
     this.state = {
       linkData: {},
-      isLoaded: false
+      isLoaded: false,
     };
   }
 
   componentDidMount() {
-    const { forUnauthorized, history } = this.props;
+    const { forUnauthorized, history, isAuthenticated } = this.props;
 
-    if (forUnauthorized && localStorage.getItem(AUTH_KEY))
-      return history.push(`/error=Access error. You should be unauthorized for performing this action`);
+    if (forUnauthorized && isAuthenticated)
+      return history.push(
+        `/error=Access error. You should be unauthorized for performing this action`
+      );
 
-    const { location, isAuthenticated } = this.props;
+    const { location } = this.props;
     const { search } = location;
 
     const queryParams = getObjectByLocation(location);
@@ -39,17 +41,19 @@ class ConfirmRoute extends React.Component {
     }
 
     checkConfirmLink(confirmLinkData)
-      .then(validationResult => {
+      .then((validationResult) => {
         switch (validationResult) {
           case ValidationResult.Ok:
-            const confirmHeader = `type=${confirmLinkData.type}&${search.slice(1)}`;
+            const confirmHeader = `type=${confirmLinkData.type}&${search.slice(
+              1
+            )}`;
             const linkData = {
               ...confirmLinkData,
-              confirmHeader
+              confirmHeader,
             };
             this.setState({
               isLoaded: true,
-              linkData
+              linkData,
             });
             break;
           case ValidationResult.Invalid:
@@ -63,7 +67,7 @@ class ConfirmRoute extends React.Component {
             break;
         }
       })
-      .catch(error => {
+      .catch((error) => {
         history.push(`${path}/error=${error}`);
       });
   }
@@ -76,7 +80,7 @@ class ConfirmRoute extends React.Component {
     return (
       <Route
         {...rest}
-        render={props =>
+        render={(props) =>
           !this.state.isLoaded ? (
             <PageLayout>
               <PageLayout.SectionBody>
@@ -84,10 +88,10 @@ class ConfirmRoute extends React.Component {
               </PageLayout.SectionBody>
             </PageLayout>
           ) : (
-              <Component
-                {...(props = { ...props, linkData: this.state.linkData })}
-              />
-            )
+            <Component
+              {...(props = { ...props, linkData: this.state.linkData })}
+            />
+          )
         }
       />
     );
@@ -96,11 +100,10 @@ class ConfirmRoute extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    isAuthenticated: state.auth.isAuthenticated
+    isAuthenticated: isAuthenticated(state)
   };
 }
 
-export default connect(
-  mapStateToProps,
-  { checkConfirmLink }
-)(withRouter(ConfirmRoute));
+export default connect(mapStateToProps, { checkConfirmLink })(
+  withRouter(ConfirmRoute)
+);

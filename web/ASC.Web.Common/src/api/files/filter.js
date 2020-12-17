@@ -4,7 +4,7 @@ const DEFAULT_PAGE = 0;
 const DEFAULT_PAGE_COUNT = 25;
 const DEFAULT_TOTAL = 0;
 const DEFAULT_SORT_BY = "DateAndTime";
-const DEFAULT_SORT_ORDER = "ascending";
+const DEFAULT_SORT_ORDER = "descending";
 const DEFAULT_VIEW = "row";
 const DEFAULT_FILTER_TYPE = null;
 const DEFAULT_SEARCH_TYPE = true; //withSubfolders
@@ -76,7 +76,7 @@ class FilesFilter {
       search,
       sortBy,
       sortOrder,
-      withSubfolders
+      withSubfolders,
     } = this;
 
     const isFilterSet =
@@ -89,7 +89,6 @@ class FilesFilter {
         : null;
 
     const dtoFilter = {
-      folder: folder,
       count: pageCount,
       startIndex: this.getStartIndex(),
       page: page,
@@ -98,7 +97,7 @@ class FilesFilter {
       filterType: filterType,
       filterValue: (search ?? "").trim(),
       withSubfolders: isFilterSet,
-      userIdOrGroupId
+      userIdOrGroupId,
     };
 
     return dtoFilter;

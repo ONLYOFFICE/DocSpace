@@ -35,6 +35,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
+using ASC.Common;
 using ASC.Common.Logging;
 
 using Microsoft.Extensions.Options;
@@ -43,6 +44,7 @@ using Newtonsoft.Json;
 
 namespace ASC.Core.Common.Billing
 {
+    [Singletone]
     public class CouponManager
     {
         private IEnumerable<AvangateProduct> Products { get; set; }

@@ -29,11 +29,11 @@ using System.Collections.Generic;
 
 using ASC.Common;
 using ASC.Common.Caching;
-using ASC.Core.Common.EF;
 using ASC.Core.Data;
 
 namespace ASC.Core.Caching
 {
+    [Singletone]
     class AzServiceCache
     {
         internal ICache Cache { get; }
@@ -73,6 +73,7 @@ namespace ASC.Core.Caching
         }
     }
 
+    [Scope]
     class CachedAzService : IAzService
     {
         private readonly IAzService service;
@@ -116,22 +117,6 @@ namespace ASC.Core.Caching
         {
             service.RemoveAce(tenant, r);
             cacheNotify.Publish(r, CacheNotifyAction.Remove);
-        }
-    }
-
-    public static class AzConfigExtension
-    {
-        public static DIHelper AddAzService(this DIHelper services)
-        {
-            if (services.TryAddScoped<DbAzService>())
-            {
-                services.TryAddScoped<IAzService, CachedAzService>();
-                services.TryAddSingleton<AzServiceCache>();
-                services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
-                services.AddCoreDbContextService();
-            }
-
-            return services;
         }
     }
 }

@@ -42,6 +42,7 @@ using static ASC.Security.Cryptography.EmailValidationKeyProvider;
 
 namespace ASC.Security.Cryptography
 {
+    [Scope]
     public class EmailValidationKeyProvider
     {
         public enum ValidationResult
@@ -158,10 +159,13 @@ namespace ASC.Security.Cryptography
         public ConfirmType? Type { get; set; }
         public int? P { get; set; }
 
-        public void Deconstruct(out string key, out EmployeeType? emplType, out string email, out Guid? uiD, out ConfirmType? type, out int? p) =>
-        (key, emplType, email, uiD, type, p) = (Key, EmplType, Email, UiD, Type, P);
+        public void Deconstruct(out string key, out EmployeeType? emplType, out string email, out Guid? uiD, out ConfirmType? type, out int? p)
+        {
+            (key, emplType, email, uiD, type, p) = (Key, EmplType, Email, UiD, Type, P);
+        }
     }
 
+    [Transient]
     public class EmailValidationKeyModelHelper
     {
         private IHttpContextAccessor HttpContextAccessor { get; }
@@ -188,7 +192,7 @@ namespace ASC.Security.Cryptography
         {
             var request = QueryHelpers.ParseQuery(HttpContextAccessor.HttpContext.Request.Headers["confirm"]);
 
-            _ = request.TryGetValue("type", out var type);
+            request.TryGetValue("type", out var type);
 
             ConfirmType? cType = null;
             if (Enum.TryParse<ConfirmType>(type, out var confirmType))
@@ -196,17 +200,17 @@ namespace ASC.Security.Cryptography
                 cType = confirmType;
             }
 
-            _ = request.TryGetValue("key", out var key);
+            request.TryGetValue("key", out var key);
 
-            _ = request.TryGetValue("p", out var pkey);
-            _ = int.TryParse(pkey, out var p);
+            request.TryGetValue("p", out var pkey);
+            int.TryParse(pkey, out var p);
 
-            _ = request.TryGetValue("emplType", out var emplType);
-            _ = Enum.TryParse<EmployeeType>(emplType, out var employeeType);
+            request.TryGetValue("emplType", out var emplType);
+            Enum.TryParse<EmployeeType>(emplType, out var employeeType);
 
-            _ = request.TryGetValue("email", out var _email);
-            _ = request.TryGetValue("uid", out var userIdKey);
-            _ = Guid.TryParse(userIdKey, out var userId);
+            request.TryGetValue("email", out var _email);
+            request.TryGetValue("uid", out var userIdKey);
+            Guid.TryParse(userIdKey, out var userId);
 
             return new EmailValidationKeyModel
             {
@@ -268,23 +272,6 @@ namespace ASC.Security.Cryptography
             }
 
             return checkKeyResult;
-        }
-    }
-
-    public static class EmailValidationKeyProviderExtension
-    {
-        public static DIHelper AddEmailValidationKeyProviderService(this DIHelper services)
-        {
-            if (services.TryAddScoped<EmailValidationKeyProvider>())
-            {
-                services.TryAddTransient<EmailValidationKeyModelHelper>();
-
-                return services
-                    .AddTenantManagerService()
-                    .AddMachinePseudoKeysService();
-            }
-
-            return services;
         }
     }
 }

@@ -10,7 +10,7 @@ storiesOf("Components|ProgressBar", module)
   .addDecorator(withReadme(Readme))
   .add("base", () => (
     <ProgressBar
-      style={{marginTop: 16}}
+      style={{ marginTop: 16 }}
       label={text("label", "Uploading files: 20 of 100")}
       percent={number("value", 20)}
       dropDownContent={text("dropDownContent", "You content here")}

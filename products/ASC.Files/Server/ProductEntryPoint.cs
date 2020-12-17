@@ -29,24 +29,12 @@ using ASC.Web.Files.Configuration;
 
 namespace ASC.Files
 {
+    [Scope]
     public class ApiProductEntryPoint : ProductEntryPoint
     {
         public override string ApiURL
         {
             get => "api/2.0/files/info.json";
-        }
-    }
-
-    public static class ApiProductEntryPointExtention
-    {
-        public static DIHelper AddApiProductEntryPointService(this DIHelper services)
-        {
-            if (services.TryAddScoped<ApiProductEntryPoint>())
-            {
-                return services.AddProductEntryPointService();
-            }
-
-            return services;
         }
     }
 }

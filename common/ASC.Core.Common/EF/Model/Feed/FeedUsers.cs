@@ -14,7 +14,10 @@ namespace ASC.Core.Common.EF.Model
         [Column("user_id")]
         public Guid UserId { get; set; }
 
-        public override object[] GetKeys() => new object[] { FeedId, UserId };
+        public override object[] GetKeys()
+        {
+            return new object[] { FeedId, UserId };
+        }
     }
 
     public static class FeedUsersExtension

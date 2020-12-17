@@ -25,7 +25,7 @@ const array_items = [
           <button>BUTTON</button>
         </div>
       </div>
-    )
+    ),
   },
   {
     key: "1",
@@ -42,7 +42,7 @@ const array_items = [
           <label>LABEL</label>
         </div>
       </div>
-    )
+    ),
   },
   {
     key: "2",
@@ -59,8 +59,8 @@ const array_items = [
           <input></input>
         </div>
       </div>
-    )
-  }
+    ),
+  },
 ];
 ```
 

@@ -1,16 +1,21 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq.Expressions;
+
+using ASC.Common;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Model;
 using ASC.ElasticSearch;
+
 using Microsoft.EntityFrameworkCore;
+
 using Nest;
 
 using ColumnAttribute = System.ComponentModel.DataAnnotations.Schema.ColumnAttribute;
 
 namespace ASC.Files.Core.EF
 {
+    [Transient]
     [ElasticsearchType(RelationName = Tables.Folder)]
     [Table("files_folder")]
     public class DbFolder : IDbFile, IDbSearch, ISearchItem
@@ -59,15 +64,15 @@ namespace ASC.Files.Core.EF
             }
         }
     }
-        public static class DbFolderExtension
+    public static class DbFolderExtension
+    {
+        public static ModelBuilderWrapper AddDbFolder(this ModelBuilderWrapper modelBuilder)
         {
-            public static ModelBuilderWrapper AddDbFolder(this ModelBuilderWrapper modelBuilder)
-            {
-                modelBuilder
-                    .Add(MySqlAddDbFolder, Provider.MySql)
+            modelBuilder
+                .Add(MySqlAddDbFolder, Provider.MySql)
                     .Add(PgSqlAddDbFolder, Provider.Postgre);
-                return modelBuilder;
-            }
+            return modelBuilder;
+        }
         public static void MySqlAddDbFolder(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<DbFolder>(entity =>
@@ -168,6 +173,6 @@ namespace ASC.Files.Core.EF
                     .HasMaxLength(400);
             });
         }
-        }
-    
+    }
+
 }

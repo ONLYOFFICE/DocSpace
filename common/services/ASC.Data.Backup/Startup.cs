@@ -2,8 +2,12 @@
 
 using ASC.Api.Core;
 using ASC.Common;
+using ASC.Common.DependencyInjection;
 using ASC.Data.Backup.Controllers;
 using ASC.Data.Backup.Service;
+using ASC.Web.Studio.Core.Notify;
+
+using Autofac;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,15 +26,20 @@ namespace ASC.Data.Backup
 
         public override void ConfigureServices(IServiceCollection services)
         {
-            var diHelper = new DIHelper(services);
+            base.ConfigureServices(services);
 
-            diHelper
-                .AddBackupServiceLauncher()
-                .AddBackupController()
-                .AddProgressQueue<BaseBackupProgressItem>(1, (int)TimeSpan.FromMinutes(5).TotalMilliseconds, true, false, 0);
+            DIHelper.AddProgressQueue<BaseBackupProgressItem>(1, (int)TimeSpan.FromMinutes(5).TotalMilliseconds, true, false, 0);
+
+            DIHelper.TryAdd<BackupServiceLauncher>();
+            DIHelper.TryAdd<BackupController>();
+            NotifyConfigurationExtension.Register(DIHelper);
 
             services.AddHostedService<BackupServiceLauncher>();
-            base.ConfigureServices(services);
+        }
+
+        public void ConfigureContainer(ContainerBuilder builder)
+        {
+            builder.Register(Configuration, HostEnvironment.ContentRootPath);
         }
     }
 }

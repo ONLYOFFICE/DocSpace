@@ -214,10 +214,10 @@ namespace ASC.Web.Core.Helpers
         /// <returns></returns>
         public override object ConvertFrom(System.ComponentModel.ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value)
         {
-            if (value is string)
+            if (value is string @string)
             {
                 var result = (_isFlagEnum) ?
-                    GetFlagValue(culture, (string)value) : GetValue(culture, (string)value);
+                    GetFlagValue(culture, @string) : GetValue(culture, @string);
                 if (result == null)
                 {
                     result = base.ConvertFrom(context, culture, value);

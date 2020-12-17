@@ -128,7 +128,7 @@ namespace ASC.Web.Core.Mail
 
         public bool IsMailServerAvailable()
         {
-            return _GetMailServerInfo() != null;
+            return InnerGetMailServerInfo() != null;
         }
 
 
@@ -136,10 +136,10 @@ namespace ASC.Web.Core.Mail
         {
             DemandPermission();
 
-            return _GetMailServerInfo();
+            return InnerGetMailServerInfo();
         }
 
-        private MailServerInfo _GetMailServerInfo()
+        private MailServerInfo InnerGetMailServerInfo()
         {
             var cachedData = Cache.Get<Tuple<MailServerInfo>>(CacheKey);
 

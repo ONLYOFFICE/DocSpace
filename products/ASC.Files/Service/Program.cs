@@ -9,7 +9,9 @@ using ASC.Common.Logging;
 using ASC.ElasticSearch;
 using ASC.Feed.Aggregator;
 using ASC.Web.Files.Core.Search;
-using ASC.Web.Files.Utils;
+
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,6 +24,7 @@ namespace ASC.Files.Service
         public static async Task Main(string[] args)
         {
             var host = Host.CreateDefaultBuilder(args)
+                .UseServiceProviderFactory(new AutofacServiceProviderFactory())
                 .ConfigureAppConfiguration((hostContext, config) =>
                 {
                     var buided = config.Build();
@@ -51,21 +54,22 @@ namespace ASC.Files.Service
                 .ConfigureServices((hostContext, services) =>
                 {
                     var diHelper = new DIHelper(services);
-                    diHelper.AddNLogManager("ASC.Files");
+
+                    diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
                     services.AddHostedService<ServiceLauncher>();
-                    diHelper
-                        .AddServiceLauncher()
-                        .AddFileConverterService()
-                        .AddKafkaService()
-                        .AddFactoryIndexerFileService()
-                        .AddFactoryIndexerFolderService();
+                    diHelper.TryAdd<ServiceLauncher>();
 
-                    diHelper.AddNLogManager("ASC.Feed.Agregator");
                     services.AddHostedService<FeedAggregatorService>();
-                    diHelper
-                        .AddFeedAggregatorService();
+                    diHelper.TryAdd<FeedAggregatorService>();
 
-                    services.AddAutofac(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath, true, false, "search.json", "feed.json");
+                    LogNLogExtension.ConfigureLog(diHelper, "ASC.Files", "ASC.Feed.Agregator");
+                    //diHelper.TryAdd<FileConverter>();
+                    diHelper.TryAdd<FactoryIndexerFile>();
+                    diHelper.TryAdd<FactoryIndexerFolder>();
+                })
+                .ConfigureContainer<ContainerBuilder>((context, builder) =>
+                {
+                    builder.Register(context.Configuration, context.HostingEnvironment.ContentRootPath, true, false, "search.json", "feed.json");
                 })
                 .UseConsoleLifetime()
                 .Build();

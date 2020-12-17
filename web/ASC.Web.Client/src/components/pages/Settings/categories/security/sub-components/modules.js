@@ -11,7 +11,7 @@ import { createI18N } from "../../../../../../helpers/i18n";
 
 const i18n = createI18N({
   page: "Settings",
-  localesPath: "pages/Settings"
+  localesPath: "pages/Settings",
 });
 
 //const { changeLanguage } = utils;
@@ -85,7 +85,7 @@ class PureModulesSettings extends Component {
             <RadioButtonContainer>
               <Text>
                 {t("AccessRightsAccessToProduct", {
-                  product: t("People")
+                  product: t("People"),
                 })}
                 :
               </Text>
@@ -96,15 +96,15 @@ class PureModulesSettings extends Component {
                   {
                     value: "allUsers",
                     label: t("AccessRightsAllUsers", {
-                      users: t("Employees")
-                    })
+                      users: t("Employees"),
+                    }),
                   },
                   {
                     value: "usersFromTheList",
                     label: t("AccessRightsUsersFromList", {
-                      users: t("Employees")
-                    })
-                  }
+                      users: t("Employees"),
+                    }),
+                  },
                 ]}
                 orientation="vertical"
                 spacing="10px"
@@ -113,7 +113,7 @@ class PureModulesSettings extends Component {
             <ProjectsBody>
               <Text className="projects_margin" fontSize="12px">
                 {t("AccessRightsProductUsersCan", {
-                  category: t("People")
+                  category: t("People"),
                 })}
               </Text>
               <Text fontSize="12px">
@@ -129,13 +129,10 @@ class PureModulesSettings extends Component {
 
 const AccessRightsContainer = withTranslation()(PureModulesSettings);
 
-const ModulesSettings = props => (
+const ModulesSettings = (props) => (
   <I18nextProvider i18n={i18n}>
     <AccessRightsContainer {...props} />
   </I18nextProvider>
 );
 
-export default connect(
-  null,
-  {}
-)(withRouter(ModulesSettings));
+export default connect(null, {})(withRouter(ModulesSettings));

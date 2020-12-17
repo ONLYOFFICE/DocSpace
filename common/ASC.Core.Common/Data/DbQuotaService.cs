@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 
+using ASC.Common;
 using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
 
@@ -36,6 +37,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Data
 {
+    [Scope]
     class ConfigureDbQuotaService : IConfigureNamedOptions<DbQuotaService>
     {
         private DbContextManager<CoreDbContext> DbContextManager { get; }
@@ -48,20 +50,22 @@ namespace ASC.Core.Data
 
         public void Configure(string name, DbQuotaService options)
         {
-            options.CoreDbContext = DbContextManager.Get(name);
+            options.LazyCoreDbContext = new Lazy<CoreDbContext>(() => DbContextManager.Get(name));
         }
 
         public void Configure(DbQuotaService options)
         {
-            options.CoreDbContext = DbContextManager.Value;
+            options.LazyCoreDbContext = new Lazy<CoreDbContext>(() => DbContextManager.Value);
         }
     }
 
+    [Scope]
     class DbQuotaService : IQuotaService
     {
         private Expression<Func<DbQuota, TenantQuota>> FromDbQuotaToTenantQuota { get; set; }
         private Expression<Func<DbQuotaRow, TenantQuotaRow>> FromDbQuotaRowToTenantQuotaRow { get; set; }
-        internal CoreDbContext CoreDbContext { get; set; }
+        internal CoreDbContext CoreDbContext { get => LazyCoreDbContext.Value; }
+        internal Lazy<CoreDbContext> LazyCoreDbContext { get; set; }
 
         public DbQuotaService()
         {
@@ -90,7 +94,7 @@ namespace ASC.Core.Data
 
         public DbQuotaService(DbContextManager<CoreDbContext> dbContextManager) : this()
         {
-            CoreDbContext = dbContextManager.Value;
+            LazyCoreDbContext = new Lazy<CoreDbContext>(() => dbContextManager.Value);
         }
 
         public IEnumerable<TenantQuota> GetTenantQuotas()
@@ -160,6 +164,7 @@ namespace ASC.Core.Data
             var counter = CoreDbContext.QuotaRows
                 .Where(r => r.Path == row.Path && r.Tenant == row.Tenant)
                 .Select(r => r.Counter)
+                .Take(1)
                 .FirstOrDefault();
 
             var dbQuotaRow = new DbQuotaRow

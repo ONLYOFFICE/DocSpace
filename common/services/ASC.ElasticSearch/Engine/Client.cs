@@ -41,6 +41,7 @@ using Nest;
 
 namespace ASC.ElasticSearch
 {
+    [Scope]
     public class Client
     {
         private static volatile ElasticClient client;
@@ -125,21 +126,6 @@ namespace ASC.ElasticSearch
                     return client;
                 }
             }
-        }
-    }
-
-    public static class ClientExtention
-    {
-        public static DIHelper AddClientService(this DIHelper services)
-        {
-            if (services.TryAddScoped<Client>())
-            {
-                return services
-                    .AddSettingsService()
-                    .AddCoreConfigurationService();
-            }
-
-            return services;
         }
     }
 }

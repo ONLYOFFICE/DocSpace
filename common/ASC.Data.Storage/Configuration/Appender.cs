@@ -5,19 +5,18 @@ using System.Linq;
 using ASC.Common;
 using ASC.Common.Utils;
 
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Data.Storage.Configuration
 {
     public static class StorageConfigExtension
     {
-        public static DIHelper AddStorage(this DIHelper services)
+        public static void Register(DIHelper services)
         {
-            services.TryAddSingleton(r => r.GetService<IConfiguration>().GetSetting<Storage>("Storage"));
-            return services;
+            services.TryAddSingleton(r => r.GetService<ConfigurationExtension>().GetSetting<Storage>("Storage"));
         }
     }
+
 
     public class Storage
     {

@@ -14,8 +14,8 @@ import { ProgressBar } from "asc-web-components";
 
 ### Properties
 
-|       Props       |   Type   | Required | Values | Default | Description            |
-| :---------------: | :------: | :------: | :----: | :-----: | ---------------------- |
-|     `percent`     | `number` |    ✅    |   -    |    -    | Progress value.        |
-|      `label`      | `string` |    -     |   -    |    -    | Text in progress-bar.  |
-| `dropDownContent` |  `any`   |    -     |   -    |    -    | Drop-down content.     |
+|       Props       |   Type   | Required | Values | Default | Description           |
+| :---------------: | :------: | :------: | :----: | :-----: | --------------------- |
+|     `percent`     | `number` |    ✅    |   -    |    -    | Progress value.       |
+|      `label`      | `string` |    -     |   -    |    -    | Text in progress-bar. |
+| `dropDownContent` |  `any`   |    -     |   -    |    -    | Drop-down content.    |

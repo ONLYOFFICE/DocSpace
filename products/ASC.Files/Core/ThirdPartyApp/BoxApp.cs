@@ -327,10 +327,8 @@ namespace ASC.Web.Files.ThirdPartyApp
                 else
                 {
                     var downloadRequest = (HttpWebRequest)WebRequest.Create(downloadUrl);
-                    using (var downloadStream = new ResponseStream(downloadRequest.GetResponse()))
-                    {
-                        downloadStream.CopyTo(tmpStream);
-                    }
+                    using var downloadStream = new ResponseStream(downloadRequest.GetResponse());
+                    downloadStream.CopyTo(tmpStream);
                 }
 
                 var mediaPartEnd = string.Format("\r\n--{0}--\r\n", boundary);
@@ -475,10 +473,8 @@ namespace ASC.Web.Files.ThirdPartyApp
                 request.Method = "GET";
                 request.Headers.Add("Authorization", "Bearer " + token);
 
-                using (var stream = new ResponseStream(request.GetResponse()))
-                {
-                    stream.CopyTo(context.Response.Body);
-                }
+                using var stream = new ResponseStream(request.GetResponse());
+                stream.CopyTo(context.Response.Body);
             }
             catch (Exception ex)
             {

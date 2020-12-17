@@ -27,7 +27,6 @@ const ModalDialogContainer = styled.div`
   }
 
   .button-dialog-accept {
-
     @media ${tablet} {
       width: 100%;
     }
@@ -59,7 +58,6 @@ const ModalDialogContainer = styled.div`
       font-size: 16px;
     }
   }
-
 
   .delete_dialog-header-text {
     padding-bottom: 8px;

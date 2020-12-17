@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Model;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Files.Core.EF
@@ -23,10 +24,10 @@ namespace ASC.Files.Core.EF
         public string EntryId { get; set; }
 
         [Column("create_by")]
-        public Guid CreateBy { get; set; }
+        public Guid? CreateBy { get; set; }
 
         [Column("create_on")]
-        public DateTime CreateOn { get; set; }
+        public DateTime? CreateOn { get; set; }
 
         [Column("tag_count")]
         public int TagCount { get; set; }

@@ -72,15 +72,12 @@ namespace ASC.Web.Files.ThirdPartyApp
 
         public static IThirdPartyApp GetApp(string app)
         {
-            switch (app)
+            return app switch
             {
-                case GoogleDriveApp.AppAttr:
-                    return new GoogleDriveApp();
-                case BoxApp.AppAttr:
-                    return new BoxApp();
-            }
-
-            return new GoogleDriveApp();
+                GoogleDriveApp.AppAttr => new GoogleDriveApp(),
+                BoxApp.AppAttr => new BoxApp(),
+                _ => new GoogleDriveApp(),
+            };
         }
     }
 }

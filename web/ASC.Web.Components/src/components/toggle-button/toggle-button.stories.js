@@ -22,7 +22,7 @@ storiesOf("Components|Buttons", module)
               isChecked={value}
               isDisabled={boolean("isDisabled", false)}
               label={text("label", "label text")}
-              onChange={e => {
+              onChange={(e) => {
                 toggle(e.target.checked);
                 action("onChange")(e);
               }}

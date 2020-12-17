@@ -33,6 +33,7 @@ using ASC.Core.Common.Notify.Jabber;
 
 namespace ASC.Core.Notify.Jabber
 {
+    [Scope]
     public class JabberServiceClient
     {
         private static readonly TimeSpan Timeout = TimeSpan.FromMinutes(2);
@@ -237,22 +238,6 @@ namespace ASC.Core.Notify.Jabber
         private JabberServiceClientWcf GetService()
         {
             return new JabberServiceClientWcf();
-        }
-    }
-
-    public static class JabberServiceClientExtension
-    {
-        public static DIHelper AddJabberServiceClient(this DIHelper services)
-        {
-            if (services.TryAddScoped<JabberServiceClient>())
-            {
-                return services
-                    .AddUserManagerService()
-                    .AddAuthContextService()
-                    .AddTenantManagerService();
-            }
-
-            return services;
         }
     }
 }

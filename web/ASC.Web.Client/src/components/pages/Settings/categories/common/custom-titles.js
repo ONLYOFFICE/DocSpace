@@ -7,12 +7,12 @@ import {
   toastr,
   TextInput,
   Link,
-  SaveCancelButtons
+  SaveCancelButtons,
 } from "asc-web-components";
 import styled from "styled-components";
 import {
   setGreetingTitle,
-  restoreGreetingTitle
+  restoreGreetingTitle,
 } from "../../../../../store/settings/actions";
 import { saveToSessionStorage, getFromSessionStorage } from "../../utils";
 import { setDocumentTitle } from "../../../../../helpers/utils";
@@ -64,7 +64,7 @@ class CustomTitles extends React.Component {
       isLoadingGreetingSave: false,
       isLoadingGreetingRestore: false,
       hasChanged: false,
-      showReminder: false
+      showReminder: false,
     };
   }
 
@@ -73,18 +73,18 @@ class CustomTitles extends React.Component {
 
     if (greetingTitleFromSessionStorage && !showReminder) {
       this.setState({
-        showReminder: true
+        showReminder: true,
       });
     }
     this.setState({
-      isLoadedData: true
+      isLoadedData: true,
     });
   }
 
   componentDidUpdate(prevProps, prevState) {
     if (prevState.isLoadedData !== true) {
       this.setState({
-        isLoadedData: true
+        isLoadedData: true,
       });
     }
 
@@ -93,7 +93,7 @@ class CustomTitles extends React.Component {
     }
   }
 
-  onChangeGreetingTitle = e => {
+  onChangeGreetingTitle = (e) => {
     this.setState({ greetingTitle: e.target.value });
 
     if (this.settingIsEqualInitialValue("greetingTitle", e.target.value)) {
@@ -108,42 +108,42 @@ class CustomTitles extends React.Component {
   onSaveGreetingSettings = () => {
     const { setGreetingTitle, t } = this.props;
     const { greetingTitle } = this.state;
-    this.setState({ isLoadingGreetingSave: true }, function() {
+    this.setState({ isLoadingGreetingSave: true }, function () {
       setGreetingTitle(greetingTitle)
         .then(() =>
           toastr.success(t("SuccessfullySaveGreetingSettingsMessage"))
         )
-        .catch(error => toastr.error(error))
+        .catch((error) => toastr.error(error))
         .finally(() => this.setState({ isLoadingGreetingSave: false }));
     });
 
     this.setState({
       showReminder: false,
       greetingTitle: greetingTitle,
-      greetingTitleDefault: greetingTitle
+      greetingTitleDefault: greetingTitle,
     });
   };
 
   onRestoreGreetingSettings = () => {
     const { restoreGreetingTitle, t } = this.props;
-    this.setState({ isLoadingGreetingRestore: true }, function() {
+    this.setState({ isLoadingGreetingRestore: true }, function () {
       restoreGreetingTitle()
         .then(() => {
           this.setState({
             greetingTitle: this.props.greetingSettings,
             greetingTitleDefault: this.props.greetingSettings,
-            showReminder: false
+            showReminder: false,
           });
           saveToSessionStorage("greetingTitle", "");
           toastr.success(t("SuccessfullySaveGreetingSettingsMessage"));
         })
-        .catch(error => toastr.error(error))
+        .catch((error) => toastr.error(error))
         .finally(() => this.setState({ isLoadingGreetingRestore: false }));
     });
   };
 
   onCancelClick = () => {
-    settingNames.forEach(currentSetting => {
+    settingNames.forEach((currentSetting) => {
       const valueFromSessionStorage = getFromSessionStorage(currentSetting);
 
       if (
@@ -161,7 +161,7 @@ class CustomTitles extends React.Component {
     });
 
     this.setState({
-      showReminder: false
+      showReminder: false,
     });
 
     this.checkChanges();
@@ -176,7 +176,7 @@ class CustomTitles extends React.Component {
   checkChanges = () => {
     let hasChanged = false;
 
-    settingNames.forEach(settingName => {
+    settingNames.forEach((settingName) => {
       const valueFromSessionStorage = getFromSessionStorage(settingName);
       if (
         valueFromSessionStorage &&
@@ -187,7 +187,7 @@ class CustomTitles extends React.Component {
 
     if (hasChanged !== this.state.hasChanged) {
       this.setState({
-        hasChanged: hasChanged
+        hasChanged: hasChanged,
       });
     }
   };
@@ -200,7 +200,7 @@ class CustomTitles extends React.Component {
       isLoadingGreetingSave,
       isLoadingGreetingRestore,
       hasChanged,
-      showReminder
+      showReminder,
     } = this.state;
 
     return !isLoadedData ? (
@@ -252,11 +252,11 @@ function mapStateToProps(state) {
   const { greetingSettings, organizationName } = state.auth.settings;
   return {
     greetingSettings,
-    organizationName
+    organizationName,
   };
 }
 
-export default connect(
-  mapStateToProps,
-  { setGreetingTitle, restoreGreetingTitle }
-)(withTranslation()(CustomTitles));
+export default connect(mapStateToProps, {
+  setGreetingTitle,
+  restoreGreetingTitle,
+})(withTranslation()(CustomTitles));

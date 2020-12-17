@@ -35,6 +35,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace ASC.Web.Core.Mobile
 {
+    [Scope]
     public class MobileDetector
     {
         private readonly Regex uaMobileRegex;
@@ -80,15 +81,6 @@ namespace ASC.Web.Core.Mobile
                 }
             }
             return result.GetValueOrDefault();
-        }
-    }
-
-    public static class MobileDetectorExtension
-    {
-        public static DIHelper AddMobileDetectorService(this DIHelper services)
-        {
-            services.TryAddScoped<MobileDetector>();
-            return services;
         }
     }
 }

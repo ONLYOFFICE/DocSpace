@@ -1,7 +1,7 @@
 import React from "react";
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import Loader from '../loader';
+import PropTypes from "prop-types";
+import styled from "styled-components";
+import Loader from "../loader";
 import Text from "../text";
 
 const StyledOuter = styled.div`
@@ -9,8 +9,8 @@ const StyledOuter = styled.div`
   text-align: center;
   top: 10px;
   width: 100%;
-  z-index: ${props => props.zIndex};
-  display: ${props => props.visible ? 'block' : 'none'};
+  z-index: ${(props) => props.zIndex};
+  display: ${(props) => (props.visible ? "block" : "none")};
 `;
 
 const StyledInner = styled.div`
@@ -21,17 +21,17 @@ const StyledInner = styled.div`
   overflow: hidden;
   padding: 5px 10px;
   line-height: 16px;
-  z-index: ${props => props.zIndex};
+  z-index: ${(props) => props.zIndex};
   border-radius: 5px;
   -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
-  box-shadow: 0 2px 8px rgba(0,0,0,.3);
-  -moz-box-shadow: 0 2px 8px rgba(0,0,0,.3);
-  -webkit-box-shadow: 0 2px 8px rgba(0,0,0,.3);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  -moz-box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  -webkit-box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 
   .text-style {
     display: contents;
-  }  
+  }
 `;
 
 const OvalLoader = styled(Loader)`
@@ -42,13 +42,18 @@ const OvalLoader = styled(Loader)`
   }
 `;
 
-const RequestLoader = props => {
+const RequestLoader = (props) => {
   //console.log("RequestLoader render");
   const { loaderColor, loaderSize, label, fontColor, fontSize } = props;
   return (
     <StyledOuter {...props}>
       <StyledInner {...props}>
-        <OvalLoader type="oval" color={loaderColor} size={loaderSize} label={label} />
+        <OvalLoader
+          type="oval"
+          color={loaderColor}
+          size={loaderSize}
+          label={label}
+        />
         <Text className="text-style" color={fontColor} fontSize={fontSize}>
           {label}
         </Text>
@@ -59,7 +64,7 @@ const RequestLoader = props => {
 
 RequestLoader.propTypes = {
   visible: PropTypes.bool,
-  zIndex: PropTypes.number,  
+  zIndex: PropTypes.number,
   loaderSize: PropTypes.string,
   loaderColor: PropTypes.string,
   label: PropTypes.string,
@@ -67,17 +72,17 @@ RequestLoader.propTypes = {
   fontColor: PropTypes.string,
   className: PropTypes.string,
   id: PropTypes.string,
-  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 };
 
 RequestLoader.defaultProps = {
   visible: false,
   zIndex: 256,
-  loaderSize: '16px',
-  loaderColor: '#999',
-  label: 'Loading... Please wait...',
-  fontSize: '12px',
-  fontColor: '#999'
+  loaderSize: "16px",
+  loaderColor: "#999",
+  label: "Loading... Please wait...",
+  fontSize: "12px",
+  fontColor: "#999",
 };
 
 export default RequestLoader;

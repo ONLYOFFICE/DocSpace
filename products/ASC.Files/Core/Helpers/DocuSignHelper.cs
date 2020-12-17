@@ -41,7 +41,6 @@ using ASC.FederatedLogin;
 using ASC.FederatedLogin.Helpers;
 using ASC.FederatedLogin.LoginProviders;
 using ASC.Files.Core;
-using ASC.Files.Core.Data;
 using ASC.Files.Core.Resources;
 using ASC.Files.Core.Security;
 using ASC.MessagingSystem;
@@ -66,6 +65,7 @@ using Newtonsoft.Json;
 
 namespace ASC.Web.Files.Helpers
 {
+    [Scope]
     public class DocuSignToken
     {
         public ILog Log { get; set; }
@@ -134,6 +134,7 @@ namespace ASC.Web.Files.Helpers
         }
     }
 
+    [Scope]
     public class DocuSignHelper
     {
         public ILog Log { get; set; }
@@ -464,41 +465,5 @@ namespace ASC.Web.Files.Helpers
         Completed,
         Declined,
         Voided,
-    }
-
-    public static class DocuSignHelperExtension
-    {
-        public static DIHelper AddDocuSignTokenService(this DIHelper services)
-        {
-            if (services.TryAddScoped<DocuSignToken>())
-            {
-                return services
-                    .AddAuthContextService()
-                    .AddDocuSignLoginProviderService()
-                    .AddTokenHelperService();
-            }
-
-            return services;
-        }
-
-        public static DIHelper AddDocuSignHelperService(this DIHelper services)
-        {
-            services.TryAddScoped<DocuSignHelper>();
-
-            return services
-                .AddDocuSignLoginProviderService()
-                .AddFileSecurityService()
-                .AddDaoFactoryService()
-                .AddBaseCommonLinkUtilityService()
-                .AddUserManagerService()
-                .AddAuthContextService()
-                .AddDisplayUserSettingsService()
-                .AddFileMarkerService()
-                .AddGlobalFolderHelperService()
-                .AddFilesMessageService()
-                .AddDocuSignTokenService()
-                .AddFilesLinkUtilityService()
-                ;
-        }
     }
 }

@@ -57,7 +57,7 @@ function getVerticalCss() {
     .icon-button {
       position: relative;
       margin: 0;
-      padding: 1px 8px;
+      padding: 0px 8px;
       width: 13px;
       height: 13px;
     }
@@ -66,12 +66,10 @@ function getVerticalCss() {
 
 const Container = styled.div`
   .error-label {
-    max-width: ${props => (props.maxwidth ? props.maxwidth : "293px")}
+    max-width: ${(props) => (props.maxwidth ? props.maxwidth : "293px")};
   }
-  ${props =>
-    props.vertical
-      ? getVerticalCss()
-      : getHorizontalCss(props.maxLabelWidth)}
+  ${(props) =>
+    props.vertical ? getVerticalCss() : getHorizontalCss(props.maxLabelWidth)}
 
   @media ${tablet} {
     ${getVerticalCss()}
@@ -100,7 +98,7 @@ class FieldContainer extends React.Component {
       maxLabelWidth,
       errorMessage,
       errorColor,
-      errorMessageWidth
+      errorMessageWidth,
     } = this.props;
 
     return (
@@ -112,7 +110,7 @@ class FieldContainer extends React.Component {
         style={style}
         maxwidth={errorMessageWidth}
       >
-        {labelVisible &&
+        {labelVisible && (
           <div className="field-label-icon">
             <Label
               isRequired={isRequired}
@@ -129,11 +127,11 @@ class FieldContainer extends React.Component {
               />
             )}
           </div>
-        }
+        )}
         <div className="field-body">
           {children}
           {hasError ? (
-            <Text className="error-label" fontSize='10px' color={errorColor}>
+            <Text className="error-label" fontSize="10px" color={errorColor}>
               {errorMessage}
             </Text>
           ) : null}
@@ -155,7 +153,7 @@ FieldContainer.propTypes = {
   icon: PropTypes.string,
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
-    PropTypes.node
+    PropTypes.node,
   ]),
   tooltipContent: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   place: PropTypes.string,
@@ -165,7 +163,7 @@ FieldContainer.propTypes = {
   errorColor: PropTypes.string,
   errorMessageWidth: PropTypes.string,
   id: PropTypes.string,
-  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 };
 
 FieldContainer.defaultProps = {
@@ -173,7 +171,7 @@ FieldContainer.defaultProps = {
   labelVisible: true,
   maxLabelWidth: "110px",
   errorColor: "#C96C27",
-  errorMessageWidth: "293px"
+  errorMessageWidth: "293px",
 };
 
 export default FieldContainer;

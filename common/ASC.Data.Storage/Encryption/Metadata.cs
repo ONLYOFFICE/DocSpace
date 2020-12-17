@@ -30,10 +30,13 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 
+using ASC.Common;
+
 using Microsoft.Extensions.Configuration;
 
 namespace ASC.Data.Storage.Encryption
 {
+    [Transient]
     public class Metadata : IMetadata
     {
         private const string prefixString = "AscEncrypted";
@@ -73,9 +76,7 @@ namespace ASC.Data.Storage.Encryption
                     return iterations.Value;
                 }
 
-                int iterationsCount;
-
-                if (!int.TryParse(Configuration["storage:encryption:iterations"], out iterationsCount))
+                if (!int.TryParse(Configuration["storage:encryption:iterations"], out var iterationsCount))
                 {
                     iterationsCount = 4096;
                 }
@@ -315,5 +316,5 @@ namespace ASC.Data.Storage.Encryption
             }
         }
     }
-    
+
 }

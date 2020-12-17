@@ -7,12 +7,12 @@ import {
   StyledAddGroupsPanel,
   StyledContent,
   StyledHeaderContent,
-  StyledBody
+  StyledBody,
 } from "../StyledPanels";
 import { createI18N } from "../../../helpers/i18n";
 const i18n = createI18N({
   page: "AddGroupsPanel",
-  localesPath: "panels/AddGroupsPanel"
+  localesPath: "panels/AddGroupsPanel",
 });
 
 const { changeLanguage } = utils;
@@ -37,12 +37,12 @@ class AddGroupsPanelComponent extends React.Component {
     this.props.onSharingPanelClose();
   };
 
-  onSelectGroups = groups => {
+  onSelectGroups = (groups) => {
     const {
       accessRight,
       shareDataItems,
       setShareDataItems,
-      onClose
+      onClose,
     } = this.props;
     const items = shareDataItems;
 
@@ -51,7 +51,7 @@ class AddGroupsPanelComponent extends React.Component {
         item.id = item.key;
         delete item.key;
       }
-      const currentItem = shareDataItems.find(x => x.id === item.id);
+      const currentItem = shareDataItems.find((x) => x.id === item.id);
       if (!currentItem) {
         item.rights = accessRight;
         items.push(item);
@@ -76,7 +76,7 @@ class AddGroupsPanelComponent extends React.Component {
     window.removeEventListener("keyup", this.onKeyPress);
   }
 
-  onKeyPress = event => {
+  onKeyPress = (event) => {
     if (event.key === "Esc" || event.key === "Escape") {
       this.props.onClose();
     }
@@ -113,6 +113,7 @@ class AddGroupsPanelComponent extends React.Component {
           onClick={this.onClosePanels}
           visible={visible}
           zIndex={zIndex}
+          isAside={true}
         />
         <Aside className="header_aside-panel">
           <StyledContent>
@@ -121,6 +122,7 @@ class AddGroupsPanelComponent extends React.Component {
                 size="16"
                 iconName="ArrowPathIcon"
                 onClick={this.onArrowClick}
+                color="A3A9AE"
               />
               <Heading
                 className="header_aside-panel-header"
@@ -129,12 +131,12 @@ class AddGroupsPanelComponent extends React.Component {
               >
                 {t("AddGroupsForSharingButton")}
               </Heading>
-              <IconButton
+              {/*<IconButton
                 size="16"
                 iconName="PlusIcon"
                 className="header_aside-panel-plus-icon"
                 onClick={this.onPLusClick}
-              />
+              />*/}
             </StyledHeaderContent>
 
             <StyledBody ref={this.scrollRef}>
@@ -145,6 +147,7 @@ class AddGroupsPanelComponent extends React.Component {
                 withoutAside
                 onSelect={this.onSelectGroups}
                 embeddedComponent={embeddedComponent}
+                showCounter={true}
               />
             </StyledBody>
           </StyledContent>
@@ -157,14 +160,14 @@ class AddGroupsPanelComponent extends React.Component {
 AddGroupsPanelComponent.propTypes = {
   visible: PropTypes.bool,
   onSharingPanelClose: PropTypes.func,
-  onClose: PropTypes.func
+  onClose: PropTypes.func,
 };
 
 const AddGroupsPanelContainerTranslated = withTranslation()(
   AddGroupsPanelComponent
 );
 
-const AddGroupsPanel = props => (
+const AddGroupsPanel = (props) => (
   <AddGroupsPanelContainerTranslated i18n={i18n} {...props} />
 );
 

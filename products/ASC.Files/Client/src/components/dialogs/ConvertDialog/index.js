@@ -5,11 +5,15 @@ import ModalDialogContainer from "../ModalDialogContainer";
 import { ModalDialog, Button, Text, Checkbox } from "asc-web-components";
 import { withTranslation } from "react-i18next";
 import { utils } from "asc-web-common";
-import { setTreeFolders, setDialogVisible, onConvert } from "../../../store/files/actions";
+import {
+  setTreeFolders,
+  setDialogVisible,
+  convertUploadedFiles,
+} from "../../../store/files/actions";
 import { createI18N } from "../../../helpers/i18n";
 const i18n = createI18N({
   page: "ConvertDialog",
-  localesPath: "dialogs/ConvertDialog"
+  localesPath: "dialogs/ConvertDialog",
 });
 
 const { changeLanguage } = utils;
@@ -21,7 +25,7 @@ class ConvertDialogComponent extends React.Component {
 
     this.state = {
       saveOriginalFormat: true,
-      hideMessage: false
+      hideMessage: false,
     };
   }
 
@@ -46,8 +50,8 @@ class ConvertDialogComponent extends React.Component {
     return false;
   }
 
-  onConvert = () => this.props.onConvert(this.props.t);  
-  onClose = () =>  this.props.setDialogVisible(this.props.t);
+  onConvert = () => this.props.convertUploadedFiles(this.props.t);
+  onClose = () => this.props.setDialogVisible(this.props.t);
 
   render() {
     const { t, visible } = this.props;
@@ -62,7 +66,7 @@ class ConvertDialogComponent extends React.Component {
               <img
                 className="convert_dialog_image"
                 src="images/convert_alert.png"
-                alt="convert alert image"
+                alt="convert alert"
               />
               <div className="convert_dialog-content">
                 <Text>{t("ConversionMessage")}</Text>
@@ -110,12 +114,12 @@ const ModalDialogContainerTranslated = withTranslation()(
   ConvertDialogComponent
 );
 
-const ConvertDialog = props => (
+const ConvertDialog = (props) => (
   <ModalDialogContainerTranslated i18n={i18n} {...props} />
 );
 
-const mapStateToProps = state => {
-  return {};
-};
-
-export default connect(mapStateToProps, { setTreeFolders, setDialogVisible, onConvert })(withRouter(ConvertDialog));
+export default connect(null, {
+  setTreeFolders,
+  setDialogVisible,
+  convertUploadedFiles,
+})(withRouter(ConvertDialog));

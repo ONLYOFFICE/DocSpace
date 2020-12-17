@@ -8,7 +8,7 @@ using ASC.Web.Studio.UserControls.Statistics;
 
 namespace ASC.Data.Backup
 {
-
+    [Scope]
     public class BackupHelper
     {
         public const long AvailableZipSize = 10 * 1024 * 1024 * 1024L;
@@ -58,21 +58,5 @@ namespace ASC.Data.Backup
         Available,
         WithoutMail,
         NotAvailable,
-    }
-
-    public static class BackupHelperExtension
-    {
-        public static DIHelper AddBackupHelperService(this DIHelper services)
-        {
-            if (services.TryAddScoped<BackupHelper>())
-            {
-                return services
-                    .AddTenantManagerService()
-                    .AddCoreBaseSettingsService()
-                    .AddTenantStatisticsProviderService();
-            }
-
-            return services;
-        }
     }
 }

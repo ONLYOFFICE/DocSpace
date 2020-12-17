@@ -37,7 +37,7 @@ namespace ASC.Web.Files.Services.WCFService
         public int Total { get; set; }
 
         [JsonPropertyName("path_parts")]
-        public ItemList<T> FolderPathParts { get; set; }
+        public ItemList<object> FolderPathParts { get; set; }
 
         [JsonPropertyName("folder_info")]
         public Folder<T> FolderInfo { get; set; }

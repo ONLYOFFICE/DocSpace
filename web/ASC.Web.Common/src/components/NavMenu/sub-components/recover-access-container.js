@@ -40,11 +40,11 @@ const RecoverAccess = ({ t }) => {
     setDescription("");
     setDescErr(false);
   };
-  const onChangeEmail = e => {
+  const onChangeEmail = (e) => {
     setEmail(e.currentTarget.value);
     setEmailErr(false);
   };
-  const onChangeDescription = e => {
+  const onChangeDescription = (e) => {
     setDescription(e.currentTarget.value);
     setDescErr(false);
   };
@@ -61,7 +61,7 @@ const RecoverAccess = ({ t }) => {
           setLoading(false);
           toastr.success("Successfully sent");
         })
-        .catch(error => {
+        .catch((error) => {
           setLoading(false);
           toastr.error(error);
         })
@@ -118,7 +118,7 @@ const RecoverAccess = ({ t }) => {
 };
 
 RecoverAccess.propTypes = {
-  t: PropTypes.func.isRequired
+  t: PropTypes.func.isRequired,
 };
 
 export default RecoverAccess;

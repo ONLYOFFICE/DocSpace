@@ -1,9 +1,10 @@
 ﻿
-using ASC.Common;
-using ASC.Core.Common.EF.Model;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+
+using ASC.Core.Common.EF.Model;
+
+using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF
 {
@@ -31,20 +32,11 @@ namespace ASC.Core.Common.EF
         {
             ModelBuilderWrapper
                   .From(modelBuilder, Provider)
-                  .AddAcl()
-                  .AddDbButton()
+                .AddAcl()
+                .AddDbButton()
                   .AddDbQuotaRow()
                   .AddDbQuota()
                   .AddDbTariff();
-        }
-    }
-
-
-    public static class CoreDbExtension
-    {
-        public static DIHelper AddCoreDbContextService(this DIHelper services)
-        {
-            return services.AddDbContextManagerService<CoreDbContext>();
         }
     }
 }

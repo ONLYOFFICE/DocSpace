@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Model;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Files.Core.EF
@@ -38,7 +39,10 @@ namespace ASC.Files.Core.EF
         [Column("tenant_id")]
         public int TenantId { get; set; }
 
-        public override object[] GetKeys() => new object[] { Id };
+        public override object[] GetKeys()
+        {
+            return new object[] { Id };
+        }
     };
 
     public static class DbFilesThirdpartyAccountExtension

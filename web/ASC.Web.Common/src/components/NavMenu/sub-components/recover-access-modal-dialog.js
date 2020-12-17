@@ -6,7 +6,7 @@ import {
   Text,
   ModalDialog,
   Textarea,
-  FieldContainer
+  FieldContainer,
 } from "asc-web-components";
 import styled from "styled-components";
 
@@ -39,7 +39,7 @@ const RecoverAccessModalDialog = ({
   onChangeEmail,
   onChangeDescription,
   onRecoverModalClose,
-  onSendRecoverRequest
+  onSendRecoverRequest,
 }) => {
   const [width, setWidth] = useState(window.innerWidth);
 
@@ -139,7 +139,7 @@ RecoverAccessModalDialog.propTypes = {
   onChangeEmail: PropTypes.func.isRequired,
   onChangeDescription: PropTypes.func.isRequired,
   onRecoverModalClose: PropTypes.func.isRequired,
-  onSendRecoverRequest: PropTypes.func.isRequired
+  onSendRecoverRequest: PropTypes.func.isRequired,
 };
 
 export default RecoverAccessModalDialog;

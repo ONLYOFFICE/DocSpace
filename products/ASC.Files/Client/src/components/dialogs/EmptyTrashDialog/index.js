@@ -5,28 +5,38 @@ import ModalDialogContainer from "../ModalDialogContainer";
 import { ModalDialog, Button, Text } from "asc-web-components";
 import { withTranslation } from "react-i18next";
 import { api, utils, toastr } from "asc-web-common";
-import { fetchFiles, setProgressBarData, clearProgressData } from "../../../store/files/actions";
+import {
+  fetchFiles,
+  setSecondaryProgressBarData,
+  clearSecondaryProgressData,
+} from "../../../store/files/actions";
+import { TIMEOUT } from "../../../helpers/constants";
+import {
+  getSelectedFolderId,
+  getFilter,
+  getIsLoading,
+} from "../../../store/files/selectors";
 import { createI18N } from "../../../helpers/i18n";
 
 const i18n = createI18N({
   page: "EmptyTrashDialog",
-  localesPath: "dialogs/EmptyTrashDialog"
+  localesPath: "dialogs/EmptyTrashDialog",
 });
 
 const { files } = api;
 const { changeLanguage } = utils;
 
-const EmptyTrashDialogComponent = props => {
+const EmptyTrashDialogComponent = (props) => {
   const {
     onClose,
     visible,
     t,
     filter,
     currentFolderId,
-    setProgressBarData,
+    setSecondaryProgressBarData,
     isLoading,
-    clearProgressData,
-    fetchFiles
+    clearSecondaryProgressData,
+    fetchFiles,
   } = props;
 
   useEffect(() => {
@@ -34,63 +44,95 @@ const EmptyTrashDialogComponent = props => {
   }, []);
 
   const loopEmptyTrash = useCallback(
-    id => {
+    (id) => {
       const successMessage = "Success empty recycle bin";
-      api.files.getProgress()
-        .then(res => {
-          const currentProcess = res.find(x => x.id === id);
+      api.files
+        .getProgress()
+        .then((res) => {
+          const currentProcess = res.find((x) => x.id === id);
           if (currentProcess && currentProcess.progress !== 100) {
             const newProgressData = {
+              icon: "trash",
               visible: true,
               percent: currentProcess.progress,
-              label: t("DeleteOperation")
+              label: t("DeleteOperation"),
+              alert: false,
             };
-            setProgressBarData(newProgressData);
+            setSecondaryProgressBarData(newProgressData);
             setTimeout(() => loopEmptyTrash(id), 1000);
           } else {
             fetchFiles(currentFolderId, filter)
               .then(() => {
-                setProgressBarData({
+                setSecondaryProgressBarData({
+                  icon: "trash",
                   visible: true,
                   percent: 100,
-                  label: t("DeleteOperation")
+                  label: t("DeleteOperation"),
+                  alert: false,
                 });
-                setTimeout(() => clearProgressData(), 5000);
+                setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
                 toastr.success(successMessage);
               })
-              .catch(err => {
-                toastr.error(err);
-                clearProgressData();
+              .catch((err) => {
+                setSecondaryProgressBarData({
+                  visible: true,
+                  alert: true,
+                });
+                //toastr.error(err);
+                setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
               });
           }
         })
-        .catch(err => {
-          toastr.error(err);
-          clearProgressData();
+        .catch((err) => {
+          setSecondaryProgressBarData({
+            visible: true,
+            alert: true,
+          });
+          //toastr.error(err);
+          setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
         });
     },
-    [t, currentFolderId, filter, setProgressBarData, clearProgressData, fetchFiles]
+    [
+      t,
+      currentFolderId,
+      filter,
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
+      fetchFiles,
+    ]
   );
 
   const onEmptyTrash = useCallback(() => {
     const newProgressData = {
+      icon: "trash",
       visible: true,
       percent: 0,
-      label: t("DeleteOperation")
+      label: t("DeleteOperation"),
+      alert: false,
     };
-    setProgressBarData(newProgressData);
+    setSecondaryProgressBarData(newProgressData);
     onClose();
     files
       .emptyTrash()
-      .then(res => {
+      .then((res) => {
         const id = res[0] && res[0].id ? res[0].id : null;
         loopEmptyTrash(id);
       })
-      .catch(err => {
-        toastr.error(err);
-        clearProgressData();
+      .catch((err) => {
+        setSecondaryProgressBarData({
+          visible: true,
+          alert: true,
+        });
+        //toastr.error(err);
+        setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
       });
-  }, [onClose, loopEmptyTrash, setProgressBarData, t, clearProgressData]);
+  }, [
+    onClose,
+    loopEmptyTrash,
+    setSecondaryProgressBarData,
+    t,
+    clearSecondaryProgressData,
+  ]);
 
   return (
     <ModalDialogContainer>
@@ -127,19 +169,20 @@ const ModalDialogContainerTranslated = withTranslation()(
   EmptyTrashDialogComponent
 );
 
-const EmptyTrashDialog = props => (
+const EmptyTrashDialog = (props) => (
   <ModalDialogContainerTranslated i18n={i18n} {...props} />
 );
 
-const mapStateToProps = state => {
-  const { selectedFolder, filter, isLoading } = state.files;
+const mapStateToProps = (state) => {
   return {
-    currentFolderId: selectedFolder.id,
-    filter,
-    isLoading
+    currentFolderId: getSelectedFolderId(state),
+    filter: getFilter(state),
+    isLoading: getIsLoading(state),
   };
 };
 
-export default connect(mapStateToProps,
-  { setProgressBarData, clearProgressData, fetchFiles }
-)(withRouter(EmptyTrashDialog));
+export default connect(mapStateToProps, {
+  setSecondaryProgressBarData,
+  clearSecondaryProgressData,
+  fetchFiles,
+})(withRouter(EmptyTrashDialog));

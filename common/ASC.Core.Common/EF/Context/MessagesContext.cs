@@ -1,8 +1,10 @@
-﻿using ASC.Common;
-using ASC.Core.Common.EF.Model;
-using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Collections.Generic;
+
+using ASC.Common;
+using ASC.Core.Common.EF.Model;
+
+using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF.Context
 {
@@ -29,14 +31,13 @@ namespace ASC.Core.Common.EF.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.AddDbFunction();
-
             ModelBuilderWrapper
                 .From(modelBuilder, Provider)
                 .AddDbTenant()
                 .AddWebstudioSettings()
                 .AddAuditEvent()
-                .AddLoginEvents();
+                .AddLoginEvents()
+                .AddDbFunction();
         }
     }
 

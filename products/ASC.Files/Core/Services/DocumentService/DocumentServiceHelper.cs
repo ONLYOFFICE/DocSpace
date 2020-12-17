@@ -34,7 +34,6 @@ using ASC.Common;
 using ASC.Core;
 using ASC.Core.Users;
 using ASC.Files.Core;
-using ASC.Files.Core.Data;
 using ASC.Files.Core.Resources;
 using ASC.Files.Core.Security;
 using ASC.Security.Cryptography;
@@ -47,6 +46,7 @@ using FileShare = ASC.Files.Core.Security.FileShare;
 
 namespace ASC.Web.Files.Services.DocumentService
 {
+    [Scope(Additional = typeof(ConfigurationExtention))]
     public class DocumentServiceHelper
     {
         private IDaoFactory DaoFactory { get; }
@@ -393,30 +393,6 @@ namespace ASC.Web.Files.Services.DocumentService
 
             var meta = new Web.Core.Files.DocumentService.MetaData { Title = file.Title };
             return DocumentServiceConnector.Command(Web.Core.Files.DocumentService.CommandMethod.Meta, docKeyForTrack, file.ID, meta: meta);
-        }
-    }
-    public static class DocumentServiceHelperExtention
-    {
-        public static DIHelper AddDocumentServiceHelperService(this DIHelper services)
-        {
-            if (services.TryAddScoped<DocumentServiceHelper>())
-            {
-                return services
-                    .AddDaoFactoryService()
-                    .AddFileShareLinkService()
-                    .AddUserManagerService()
-                    .AddAuthContextService()
-                    .AddFileSecurityService()
-                    .AddSetupInfo()
-                    .AddLockerManagerService()
-                    .AddFileUtilityService()
-                    .AddMachinePseudoKeysService()
-                    .AddGlobalService()
-                    .AddDocumentServiceConnectorService()
-                    .AddConfigurationService();
-            }
-
-            return services;
         }
     }
 }

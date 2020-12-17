@@ -18,6 +18,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Backup
 {
+    [Scope]
     public class DbHelper : IDisposable
     {
         private readonly DbProviderFactory factory;
@@ -143,73 +144,71 @@ namespace ASC.Data.Backup
 
         public void SetTable(DataTable table)
         {
-            using (var tx = connect.BeginTransaction())
+            using var tx = connect.BeginTransaction();
+            try
             {
-                try
+                if ("tenants_tenants".Equals(table.TableName, StringComparison.InvariantCultureIgnoreCase))
                 {
-                    if ("tenants_tenants".Equals(table.TableName, StringComparison.InvariantCultureIgnoreCase))
+                    // remove last tenant
+                    var tenant = backupsContext.Tenants.LastOrDefault();
+                    if (tenant != null)
                     {
-                        // remove last tenant
-                        var tenant = backupsContext.Tenants.LastOrDefault();
-                        if (tenant != null)
+                        backupsContext.Tenants.Remove(tenant);
+                        backupsContext.SaveChanges();
+                    }
+                    /*  var tenantid = CreateCommand("select id from tenants_tenants order by id desc limit 1").ExecuteScalar();
+                         CreateCommand("delete from tenants_tenants where id = " + tenantid).ExecuteNonQuery();*/
+                    if (table.Columns.Contains("mappeddomain"))
+                    {
+                        foreach (var r in table.Rows.Cast<DataRow>())
                         {
-                            backupsContext.Tenants.Remove(tenant);
-                            backupsContext.SaveChanges();
-                        }
-                        /*  var tenantid = CreateCommand("select id from tenants_tenants order by id desc limit 1").ExecuteScalar();
-                             CreateCommand("delete from tenants_tenants where id = " + tenantid).ExecuteNonQuery();*/
-                        if (table.Columns.Contains("mappeddomain"))
-                        {
-                            foreach (var r in table.Rows.Cast<DataRow>())
+                            r[table.Columns["mappeddomain"]] = null;
+                            if (table.Columns.Contains("id"))
                             {
-                                r[table.Columns["mappeddomain"]] = null;
-                                if (table.Columns.Contains("id"))
-                                {
-                                    var tariff = backupsContext.Tariffs.FirstOrDefault(t => t.Tenant == tenant.Id);
-                                    tariff.Tenant = (int)r[table.Columns["id"]];
-                                    //  CreateCommand("update tenants_tariff set tenant = " + r[table.Columns["id"]] + " where tenant = " + tenantid).ExecuteNonQuery();
-                                    backupsContext.Entry(tariff).State = EntityState.Modified;
-                                    backupsContext.SaveChanges();
-                                }
+                                var tariff = backupsContext.Tariffs.FirstOrDefault(t => t.Tenant == tenant.Id);
+                                tariff.Tenant = (int)r[table.Columns["id"]];
+                                //  CreateCommand("update tenants_tariff set tenant = " + r[table.Columns["id"]] + " where tenant = " + tenantid).ExecuteNonQuery();
+                                backupsContext.Entry(tariff).State = EntityState.Modified;
+                                backupsContext.SaveChanges();
                             }
                         }
                     }
-
-                    var sql = new StringBuilder("replace into " + Quote(table.TableName) + "(");
-
-                    var tableColumns = GetColumnsFrom(table.TableName)
-                        .Intersect(table.Columns.Cast<DataColumn>().Select(c => c.ColumnName), StringComparer.InvariantCultureIgnoreCase)
-                        .ToList();
-
-                    tableColumns.ForEach(column => sql.AppendFormat("{0}, ", Quote(column)));
-                    sql.Replace(", ", ") values (", sql.Length - 2, 2);
-
-                    var insert = connect.CreateCommand();
-                    tableColumns.ForEach(column =>
-                    {
-                        sql.AppendFormat("@{0}, ", column);
-                        var p = insert.CreateParameter();
-                        p.ParameterName = "@" + column;
-                        insert.Parameters.Add(p);
-                    });
-                    sql.Replace(", ", ")", sql.Length - 2, 2);
-                    insert.CommandText = sql.ToString();
-
-                    foreach (var r in table.Rows.Cast<DataRow>())
-                    {
-                        foreach (var c in tableColumns)
-                        {
-                            ((IDbDataParameter)insert.Parameters["@" + c]).Value = r[c];
-                        }
-                        insert.ExecuteNonQuery();
-                    }
-
-                    tx.Commit();
                 }
-                catch (Exception e)
+
+                var sql = new StringBuilder("replace into " + Quote(table.TableName) + "(");
+
+                var tableColumns = GetColumnsFrom(table.TableName)
+                    .Intersect(table.Columns.Cast<DataColumn>().Select(c => c.ColumnName), StringComparer.InvariantCultureIgnoreCase)
+                    .ToList();
+
+                tableColumns.ForEach(column => sql.AppendFormat("{0}, ", Quote(column)));
+                sql.Replace(", ", ") values (", sql.Length - 2, 2);
+
+                var insert = connect.CreateCommand();
+                tableColumns.ForEach(column =>
                 {
-                    log.ErrorFormat("Table {0}: {1}", table, e);
+                    sql.AppendFormat("@{0}, ", column);
+                    var p = insert.CreateParameter();
+                    p.ParameterName = "@" + column;
+                    insert.Parameters.Add(p);
+                });
+                sql.Replace(", ", ")", sql.Length - 2, 2);
+                insert.CommandText = sql.ToString();
+
+                foreach (var r in table.Rows.Cast<DataRow>())
+                {
+                    foreach (var c in tableColumns)
+                    {
+                        ((IDbDataParameter)insert.Parameters["@" + c]).Value = r[c];
+                    }
+                    insert.ExecuteNonQuery();
                 }
+
+                tx.Commit();
+            }
+            catch (Exception e)
+            {
+                log.ErrorFormat("Table {0}: {1}", table, e);
             }
         }
 
@@ -269,14 +268,6 @@ namespace ASC.Data.Backup
             return tenantColumn != null ?
                 " where " + Quote(tenantColumn) + " = " + tenant :
                 " where 1 = 0";
-        }
-    }
-    public static class DbHelperExtension
-    {
-        public static DIHelper AddDbHelper(this DIHelper services)
-        {
-            services.TryAddScoped<DbHelper>();
-            return services;
         }
     }
 }

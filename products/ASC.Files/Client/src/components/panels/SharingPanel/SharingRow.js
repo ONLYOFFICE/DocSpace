@@ -6,10 +6,10 @@ import {
   Text,
   Icons,
   DropDownItem,
-  LinkWithDropdown
 } from "asc-web-components";
 import { toastr } from "asc-web-common";
 import copy from "copy-to-clipboard";
+import LinkRow from "./linkRow";
 
 const SharingRow = (props) => {
   const {
@@ -25,19 +25,23 @@ const SharingRow = (props) => {
     onCommentClick,
     onFormFillingClick,
     onDenyAccessClick,
+    onFilterEditingClick,
     onRemoveUserClick,
     onShowEmbeddingPanel,
+    onToggleLink,
+    externalLinkData,
   } = props;
 
   const linkVisible = selection && selection.length === 1 && item.shareLink;
-
   const onCopyInternalLink = () => {
-    const internalLink = selection.webUrl ? selection.webUrl : selection[0].webUrl;
+    const internalLink = selection.webUrl
+      ? selection.webUrl
+      : selection[0].webUrl;
     copy(internalLink);
     toastr.success(t("LinkCopySuccess"));
   };
 
-  const advancedOptionsRender = () => (
+  const advancedOptionsRender = (accessOptions) => (
     <>
       {accessOptions.includes("FullAccess") && (
         <DropDownItem
@@ -85,19 +89,31 @@ const SharingRow = (props) => {
           onClick={() => onDenyAccessClick(item)}
         />
       )}
+      {accessOptions.includes("FilterEditing") && (
+        <DropDownItem
+          label="Custom filter"
+          icon="CustomFilterIcon"
+          onClick={() => onFilterEditingClick(item)}
+        />
+      )}
     </>
   );
 
-  const embeddedComponentRender = () => (
+  const embeddedComponentRender = (
+    accessOptions = this.props.accessOptions,
+    item,
+    isDisabled
+  ) => (
     <ComboBox
-      advancedOptions={advancedOptionsRender()}
+      advancedOptions={advancedOptionsRender(accessOptions)}
       options={[]}
       selectedOption={{ key: 0 }}
       size="content"
       className="panel_combo-box"
       scaled={false}
       directionX="left"
-      //isDisabled={isDisabled}
+      disableIconClick={false}
+      isDisabled={isDisabled}
     >
       {React.createElement(Icons[item.rights.icon], {
         size: "medium",
@@ -109,7 +125,7 @@ const SharingRow = (props) => {
   const onCopyClick = () => {
     toastr.success(t("LinkCopySuccess"));
     copy(item.shareLink);
-  }
+  };
 
   const onShareEmail = () => {
     const itemName = selection.title ? selection.title : selection[0].title;
@@ -117,59 +133,13 @@ const SharingRow = (props) => {
     const body = `You have been granted access to the ${itemName} document. Click the link below to open the document right now: 111${item.shareLink}111`;
 
     window.open(`mailto:?subject=${subject}&body=${body}`);
-  }
+  };
 
   const onShareTwitter = () =>
     window.open(`https://twitter.com/intent/tweet?text=${item.shareLink}`);
 
-  const onShareFacebook = () =>
-    window.open(`https://www.facebook.com`);
-    /*window.open(`https://www.facebook.com/dialog/feed?app_id=645528132139019&display=popup&link=${item.shareLink}`);*/
-
-  const options = [
-    {
-      key: 1,
-      label: "Disabled",
-      disabled: false,
-      onClick: () => console.log("Disabled"),
-    },
-    {
-      key: 2,
-      label: "1 hour",
-      disabled: false,
-      onClick: () => console.log("1 hour"),
-    },
-    {
-      key: 3,
-      label: "1 day",
-      disabled: false,
-      onClick: () => console.log("1 day"),
-    },
-    {
-      key: 4,
-      label: "1 week",
-      disabled: false,
-      onClick: () => console.log("1 week"),
-    },
-    {
-      key: 5,
-      label: "1 month",
-      disabled: false,
-      onClick: () => console.log("1 month"),
-    },
-    {
-      key: 6,
-      label: "1 year",
-      disabled: false,
-      onClick: () => console.log("1 year"),
-    },
-    {
-      key: 7,
-      label: "Timeless",
-      disabled: false,
-      onClick: () => console.log("Timeless"),
-    },
-  ];
+  const onShareFacebook = () => window.open(`https://www.facebook.com`);
+  /*window.open(`https://www.facebook.com/dialog/feed?app_id=645528132139019&display=popup&link=${item.shareLink}`);*/
 
   const internalLinkData = [
     {
@@ -179,11 +149,11 @@ const SharingRow = (props) => {
     },
   ];
 
-  const externalLinkData = [
+  const externalLinkOptions = [
     {
       key: "linkItem_0",
       label: t("CopyExternalLink"),
-      onClick: onCopyClick
+      onClick: onCopyClick,
     },
     {
       key: "linkItem_1",
@@ -192,7 +162,7 @@ const SharingRow = (props) => {
     {
       key: "linkItem_2",
       label: `${t("ShareVia")} e-mail`,
-      onClick: onShareEmail
+      onClick: onShareEmail,
     },
     {
       key: "linkItem_3",
@@ -202,12 +172,12 @@ const SharingRow = (props) => {
     {
       key: "linkItem_4",
       label: `${t("ShareVia")} Facebook`,
-      onClick: onShareFacebook
+      onClick: onShareFacebook,
     },
     {
       key: "linkItem_5",
       label: `${t("ShareVia")} Twitter`,
-      onClick: onShareTwitter
+      onClick: onShareTwitter,
     },
     {
       key: "linkItem_6",
@@ -220,53 +190,32 @@ const SharingRow = (props) => {
     },
   ];
 
-  const linksFunction = (linkText, data) => (
-    <Row
-      key={`${linkText}-key_${index}`}
-      //element={embeddedComponentRender(accessOptions, item)}
-      element={
-        <Icons.AccessEditIcon
-          size="medium"
-          className="sharing_panel-owner-icon"
-        />
-      }
-      contextButtonSpacerWidth="0px"
-    >
-      <>
-        <LinkWithDropdown
-          className="sharing_panel-link"
-          color="black"
-          dropdownType="alwaysDashed"
-          data={data}
-        >
-          {t(linkText)}
-        </LinkWithDropdown>
-        {/*
-          <ComboBox
-            className="sharing_panel-link-combo-box"
-            options={options}
-            isDisabled={false}
-            selectedOption={options[0]}
-            dropDownMaxHeight={200}
-            noBorder={false}
-            scaled={false}
-            scaledOptions
-            size="content"
-            onSelect={(option) => console.log("selected", option)}
-          />
-          */
-        }
-      </>
-    </Row>
-  );
-
   //console.log("SharingRow render");
   return (
     <>
-      {linkVisible && linksFunction("ExternalLink", externalLinkData)}
-      {linkVisible && linksFunction("InternalLink", internalLinkData)}
+      {linkVisible && (
+        <>
+          <LinkRow
+            linkText="ExternalLink"
+            options={externalLinkOptions}
+            externalLinkData={externalLinkData}
+            embeddedComponentRender={embeddedComponentRender}
+            onToggleLink={onToggleLink}
+            withToggle={true}
+            {...props}
+          />
+          <LinkRow
+            linkText="InternalLink"
+            options={internalLinkData}
+            embeddedComponentRender={embeddedComponentRender}
+            {...props}
+          />
+        </>
+      )}
+
       {!item.shareLink && (
         <Row
+          className="sharing-row"
           key={`internal-link-key_${index}`}
           element={
             item.rights.isOwner || item.id === isMyId ? (
@@ -291,10 +240,7 @@ const SharingRow = (props) => {
               </Text>
             )}
             {item.rights.isOwner ? (
-              <Text
-                className="sharing_panel-remove-icon"
-                //color="#A3A9AE"
-              >
+              <Text className="sharing_panel-remove-icon" color="#A3A9AE">
                 {t("Owner")}
               </Text>
             ) : item.id === isMyId ? (
@@ -310,6 +256,7 @@ const SharingRow = (props) => {
                   iconName="RemoveIcon"
                   onClick={() => onRemoveUserClick(item)}
                   className="sharing_panel-remove-icon"
+                  color="#A3A9AE"
                 />
               )
             )}

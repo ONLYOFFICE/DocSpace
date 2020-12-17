@@ -37,6 +37,7 @@ using ASC.Common;
 
 namespace ASC.Data.Backup
 {
+    [Scope]
     public class DbBackupProvider : IBackupProvider
     {
         private readonly List<string> processedTables = new List<string>();
@@ -92,7 +93,7 @@ namespace ASC.Data.Backup
 
         private void OnProgressChanged(string status, int progress)
         {
-            if (ProgressChanged != null) ProgressChanged(this, new ProgressChangedEventArgs(status, progress));
+            ProgressChanged?.Invoke(this, new ProgressChangedEventArgs(status, progress));
         }
 
 
@@ -100,10 +101,10 @@ namespace ASC.Data.Backup
         {
             if (config.Contains(Path.DirectorySeparatorChar) && !Uri.IsWellFormedUriString(config, UriKind.Relative))
             {
-                var map = new ExeConfigurationFileMap();
-                map.ExeConfigFilename = string.Compare(Path.GetExtension(config), ".config", true) == 0 ?
-                    config :
-                    Path.Combine(config, "Web.config");
+                var map = new ExeConfigurationFileMap
+                {
+                    ExeConfigFilename = string.Compare(Path.GetExtension(config), ".config", true) == 0 ? config : Path.Combine(config, "Web.config")
+                };
                 return ConfigurationManager.OpenMappedExeConfiguration(map, ConfigurationUserLevel.None);
             }
             return ConfigurationManager.OpenExeConfiguration(config);
@@ -223,16 +224,6 @@ namespace ASC.Data.Backup
                     processedTables.Add(table);
                 }
             }
-        }
-
-
-    }
-    public static class DbBackupProviderExtension
-    {
-        public static DIHelper AddDbBackupProvider(this DIHelper services)
-        {
-            services.TryAddScoped<DbBackupProvider>();
-            return services;
         }
     }
 }

@@ -33,6 +33,7 @@ using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 
+using ASC.Common;
 using ASC.Core.Common.Configuration;
 using ASC.FederatedLogin;
 using ASC.FederatedLogin.Helpers;
@@ -45,6 +46,7 @@ using Newtonsoft.Json.Linq;
 
 namespace ASC.Files.Thirdparty.OneDrive
 {
+    [Scope]
     internal class OneDriveStorage
     {
         public OneDriveStorage(ConsumerFactory consumerFactory)
@@ -72,7 +74,7 @@ namespace ASC.Files.Thirdparty.OneDrive
 
         private OneDriveClient OnedriveClient
         {
-            get { return _onedriveClientCache ?? (_onedriveClientCache = new OneDriveClient(new OneDriveAuthProvider(AccessToken))); }
+            get { return _onedriveClientCache ??= new OneDriveClient(new OneDriveAuthProvider(AccessToken)); }
         }
 
         public bool IsOpened { get; private set; }
@@ -269,12 +271,10 @@ namespace ASC.Files.Thirdparty.OneDrive
             {
                 if (responseStream != null)
                 {
-                    using (var readStream = new StreamReader(responseStream))
-                    {
-                        var responseString = readStream.ReadToEnd();
-                        var responseJson = JObject.Parse(responseString);
-                        uploadSession.Location = responseJson.Value<string>("uploadUrl");
-                    }
+                    using var readStream = new StreamReader(responseStream);
+                    var responseString = readStream.ReadToEnd();
+                    var responseJson = JObject.Parse(responseString);
+                    uploadSession.Location = responseJson.Value<string>("uploadUrl");
                 }
             }
 
@@ -305,28 +305,22 @@ namespace ASC.Files.Thirdparty.OneDrive
                 stream.CopyTo(requestStream);
             }
 
-            using (var response = (HttpWebResponse)request.GetResponse())
+            using var response = (HttpWebResponse)request.GetResponse();
+            if (response.StatusCode != HttpStatusCode.Created && response.StatusCode != HttpStatusCode.OK)
             {
-                if (response.StatusCode != HttpStatusCode.Created && response.StatusCode != HttpStatusCode.OK)
-                {
-                    oneDriveSession.BytesTransfered += chunkLength;
-                }
-                else
-                {
-                    oneDriveSession.Status = ResumableUploadSessionStatus.Completed;
+                oneDriveSession.BytesTransfered += chunkLength;
+            }
+            else
+            {
+                oneDriveSession.Status = ResumableUploadSessionStatus.Completed;
 
-                    using (var responseStream = response.GetResponseStream())
-                    {
-                        if (responseStream == null) return;
-                        using (var readStream = new StreamReader(responseStream))
-                        {
-                            var responseString = readStream.ReadToEnd();
-                            var responseJson = JObject.Parse(responseString);
+                using var responseStream = response.GetResponseStream();
+                if (responseStream == null) return;
+                using var readStream = new StreamReader(responseStream);
+                var responseString = readStream.ReadToEnd();
+                var responseJson = JObject.Parse(responseString);
 
-                            oneDriveSession.FileId = responseJson.Value<string>("id");
-                        }
-                    }
-                }
+                oneDriveSession.FileId = responseJson.Value<string>("id");
             }
         }
 

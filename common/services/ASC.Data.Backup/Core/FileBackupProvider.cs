@@ -38,10 +38,11 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Backup
 {
+    [Scope]
     public class FileBackupProvider : IBackupProvider
     {
-        private IEnumerable<string> allowedModules;
-        private ILog log;
+        private readonly IEnumerable<string> allowedModules;
+        private readonly ILog log;
         private StorageFactory StorageFactory { get; set; }
         private StorageFactoryConfig StorageFactoryConfig { get; set; }
 
@@ -88,17 +89,15 @@ namespace ASC.Data.Backup
                     {
                         try
                         {
-                            using (var stream = storage.GetReadStream(file.Domain, file.Path))
+                            using var stream = storage.GetReadStream(file.Domain, file.Path);
+                            var tmpPath = Path.GetTempFileName();
+                            using (var tmpFile = File.OpenWrite(tmpPath))
                             {
-                                var tmpPath = Path.GetTempFileName();
-                                using (var tmpFile = File.OpenWrite(tmpPath))
-                                {
-                                    stream.CopyTo(tmpFile);
-                                }
-
-                                writer.WriteEntry(backupPath, tmpPath);
-                                File.Delete(tmpPath);
+                                stream.CopyTo(tmpFile);
                             }
+
+                            writer.WriteEntry(backupPath, tmpPath);
+                            File.Delete(tmpPath);
 
                             break;
                         }
@@ -250,28 +249,8 @@ namespace ASC.Data.Backup
 
             public override int GetHashCode()
             {
-                unchecked
-                {
-                    var result = (Module != null ? Module.GetHashCode() : 0);
-                    result = (result * 397) ^ (Domain != null ? Domain.GetHashCode() : 0);
-                    result = (result * 397) ^ (Path != null ? Path.GetHashCode() : 0);
-                    return result;
-                }
+                return HashCode.Combine(Module, Domain, Path);
             }
-        }
-    }
-    public static class FileBackupProviderExtension
-    {
-        public static DIHelper AddFileBackupProviderService(this DIHelper services)
-        {
-            if (services.TryAddScoped<FileBackupProvider>())
-            {
-                return services
-                    .AddStorageFactoryService()
-                    .AddStorageFactoryConfigService();
-            }
-
-            return services;
         }
     }
 }

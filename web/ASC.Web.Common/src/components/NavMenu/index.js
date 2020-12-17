@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import PropTypes from "prop-types";
+import styled from "styled-components";
 import { Backdrop, Toast, Aside } from "asc-web-components";
 import Header from "./sub-components/header";
 import HeaderNav from "./sub-components/header-nav";
@@ -12,6 +13,14 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router";
 
 import { getLanguage } from "../../store/auth/selectors";
+import Loaders from "../Loaders";
+
+const backgroundColor = "#0F4071";
+
+const StyledContainer = styled.header`
+  align-items: center;
+  background-color: ${backgroundColor};
+`;
 
 class NavMenu extends React.Component {
   constructor(props) {
@@ -22,14 +31,14 @@ class NavMenu extends React.Component {
       isBackdropVisible,
       isNavHoverEnabled,
       isNavOpened,
-      isAsideVisible
+      isAsideVisible,
     } = props;
 
     this.state = {
       isBackdropVisible,
       isNavOpened,
       isAsideVisible,
-      isNavHoverEnabled
+      isNavHoverEnabled,
     };
   }
 
@@ -38,7 +47,7 @@ class NavMenu extends React.Component {
       isBackdropVisible: false,
       isNavOpened: false,
       isAsideVisible: false,
-      isNavHoverEnabled: !this.state.isNavHoverEnabled
+      isNavHoverEnabled: !this.state.isNavHoverEnabled,
     });
   };
 
@@ -47,7 +56,7 @@ class NavMenu extends React.Component {
       isBackdropVisible: true,
       isNavOpened: true,
       isAsideVisible: false,
-      isNavHoverEnabled: false
+      isNavHoverEnabled: false,
     });
   };
 
@@ -63,7 +72,7 @@ class NavMenu extends React.Component {
       this.setState({
         isBackdropVisible: false,
         isNavOpened: true,
-        isAsideVisible: false
+        isAsideVisible: false,
       });
     }, 1000);
   };
@@ -74,7 +83,7 @@ class NavMenu extends React.Component {
     this.setState({
       isBackdropVisible: false,
       isNavOpened: false,
-      isAsideVisible: false
+      isAsideVisible: false,
     });
   };
 
@@ -84,37 +93,44 @@ class NavMenu extends React.Component {
       isBackdropVisible: true,
       isNavOpened: false,
       isAsideVisible: true,
-      isNavHoverEnabled: false
+      isNavHoverEnabled: false,
     });
   };
 
   render() {
     const { isBackdropVisible, isNavOpened, isAsideVisible } = this.state;
 
-    const { isAuthenticated, isLoaded, asideContent } = this.props;
+    const { isAuthenticated, isLoaded, asideContent, history } = this.props;
 
     const isAsideAvailable = !!asideContent;
 
-    console.log("NavMenu render", this.state, this.props);
+    //console.log("NavMenu render", this.state, this.props);
 
     return (
-      <>
+      <StyledContainer>
         <Toast />
 
-        <Backdrop visible={isBackdropVisible} onClick={this.backdropClick} />
+        <Backdrop
+          visible={isBackdropVisible}
+          onClick={this.backdropClick}
+          withBackground={true}
+        />
 
-        <HeaderNav />
-
-        {!isAuthenticated && isLoaded ? (
-          <HeaderUnAuth />
+        {isLoaded && isAuthenticated ? (
+          <>
+            <HeaderNav history={history} />
+            <Header
+              isNavOpened={isNavOpened}
+              onClick={this.showNav}
+              onNavMouseEnter={this.handleNavMouseEnter}
+              onNavMouseLeave={this.handleNavMouseLeave}
+              toggleAside={this.toggleAside}
+            />
+          </>
+        ) : !isLoaded && isAuthenticated ? (
+          <Loaders.Header />
         ) : (
-          <Header
-            isNavOpened={isNavOpened}
-            onClick={this.showNav}
-            onNavMouseEnter={this.handleNavMouseEnter}
-            onNavMouseLeave={this.handleNavMouseLeave}
-            toggleAside={this.toggleAside}
-          />
+          <HeaderUnAuth />
         )}
 
         {isAsideAvailable && (
@@ -122,7 +138,7 @@ class NavMenu extends React.Component {
             {asideContent}
           </Aside>
         )}
-      </>
+      </StyledContainer>
     );
   }
 }
@@ -135,25 +151,25 @@ NavMenu.propTypes = {
 
   asideContent: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
-    PropTypes.node
+    PropTypes.node,
   ]),
 
   isAuthenticated: PropTypes.bool,
   isLoaded: PropTypes.bool,
 
-  history: PropTypes.object
+  history: PropTypes.object,
 };
 
 NavMenu.defaultProps = {
   isBackdropVisible: false,
   isNavHoverEnabled: true,
   isNavOpened: false,
-  isAsideVisible: false
+  isAsideVisible: false,
 };
 
 const NavMenuTranslationWrapper = withTranslation()(NavMenu);
 
-const NavMenuWrapper = props => {
+const NavMenuWrapper = (props) => {
   const { language } = props;
 
   useEffect(() => {
@@ -168,7 +184,7 @@ const NavMenuWrapper = props => {
 };
 
 NavMenuWrapper.propTypes = {
-  language: PropTypes.string.isRequired
+  language: PropTypes.string.isRequired,
 };
 
 function mapStateToProps(state) {
@@ -178,7 +194,7 @@ function mapStateToProps(state) {
     isAuthenticated,
     isLoaded,
 
-    language: getLanguage(state)
+    language: getLanguage(state),
   };
 }
 

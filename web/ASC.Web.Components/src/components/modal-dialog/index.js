@@ -21,8 +21,8 @@ const Dialog = styled.div`
 
 const Content = styled.div`
   position: relative;
-  height: ${props => props.contentHeight};
-  width: ${props => props.contentWidth};
+  height: ${(props) => props.contentHeight};
+  width: ${(props) => props.contentWidth};
   background-color: #fff;
   padding: 0 16px 16px;
   box-sizing: border-box;
@@ -132,7 +132,7 @@ class ModalDialog extends React.Component {
     window.removeEventListener("keyup", this.onKeyPress);
   }
 
-  onKeyPress = event => {
+  onKeyPress = (event) => {
     if (event.key === "Esc" || event.key === "Escape") {
       this.props.onClose();
     }
@@ -150,14 +150,14 @@ class ModalDialog extends React.Component {
       className,
       id,
       style,
-      children
+      children,
     } = this.props;
 
     let header = null;
     let body = null;
     let footer = null;
 
-    React.Children.forEach(children, child => {
+    React.Children.forEach(children, (child) => {
       const childType =
         child && child.type && (child.type.displayName || child.type.name);
 
@@ -177,7 +177,7 @@ class ModalDialog extends React.Component {
     });
 
     return this.state.displayType === "modal" ? (
-      <Backdrop visible={visible} zIndex={zIndex}>
+      <Backdrop visible={visible} zIndex={zIndex} withBackground={true}>
         <Dialog className={className} id={id} style={style}>
           <Content contentHeight={contentHeight} contentWidth={contentWidth}>
             <StyledHeader>
@@ -195,7 +195,12 @@ class ModalDialog extends React.Component {
       </Backdrop>
     ) : (
       <Box className={className} id={id} style={style}>
-        <Backdrop visible={visible} onClick={onClose} zIndex={zIndex} />
+        <Backdrop
+          visible={visible}
+          onClick={onClose}
+          zIndex={zIndex}
+          isAside={true}
+        />
         <Aside
           visible={visible}
           scale={scale}
@@ -203,13 +208,16 @@ class ModalDialog extends React.Component {
           className="modal-dialog-aside"
         >
           <Content contentHeight={contentHeight} contentWidth={contentWidth}>
-            <StyledHeader>
+            <StyledHeader className="modal-dialog-aside-header">
               <Heading className="heading" size="medium" truncate={true}>
                 {header ? header.props.children : null}
               </Heading>
               {scale ? <CloseButton onClick={onClose}></CloseButton> : ""}
             </StyledHeader>
-            <BodyBox paddingProp={bodyPadding}>
+            <BodyBox
+              className="modal-dialog-aside-body"
+              paddingProp={bodyPadding}
+            >
               {body ? body.props.children : null}
             </BodyBox>
             <Box className="modal-dialog-aside-footer">
@@ -234,14 +242,14 @@ ModalDialog.propTypes = {
   contentWidth: PropTypes.string,
   className: PropTypes.string,
   id: PropTypes.string,
-  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 };
 
 ModalDialog.defaultProps = {
   displayType: "auto",
   zIndex: 310,
   bodyPadding: "16px 0",
-  contentWidth: "100%"
+  contentWidth: "100%",
 };
 
 ModalDialog.Header = Header;

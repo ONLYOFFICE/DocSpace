@@ -35,7 +35,6 @@ using ASC.Core;
 using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
-using ASC.IPSecurity;
 using ASC.MessagingSystem;
 using ASC.Web.Core.PublicResources;
 using ASC.Web.Core.Utility;
@@ -46,13 +45,13 @@ namespace ASC.Web.Core.Users
     /// <summary>
     /// Web studio user manager helper
     /// </summary>
+    /// 
+    [Scope]
     public sealed class UserManagerWrapper
     {
         private StudioNotifyService StudioNotifyService { get; }
         private UserManager UserManager { get; }
         private SecurityContext SecurityContext { get; }
-        private AuthContext AuthContext { get; }
-        private TenantManager TenantManager { get; }
         private MessageService MessageService { get; }
         private CustomNamingPeople CustomNamingPeople { get; }
         private TenantUtil TenantUtil { get; }
@@ -66,7 +65,6 @@ namespace ASC.Web.Core.Users
             StudioNotifyService studioNotifyService,
             UserManager userManager,
             SecurityContext securityContext,
-            AuthContext authContext,
             MessageService messageService,
             CustomNamingPeople customNamingPeople,
             TenantUtil tenantUtil,
@@ -74,13 +72,11 @@ namespace ASC.Web.Core.Users
             IPSecurity.IPSecurity iPSecurity,
             DisplayUserSettingsHelper displayUserSettingsHelper,
             SettingsManager settingsManager,
-            UserFormatter userFormatter
-            )
+            UserFormatter userFormatter)
         {
             StudioNotifyService = studioNotifyService;
             UserManager = userManager;
             SecurityContext = securityContext;
-            AuthContext = authContext;
             MessageService = messageService;
             CustomNamingPeople = customNamingPeople;
             TenantUtil = tenantUtil;
@@ -142,7 +138,7 @@ namespace ASC.Web.Core.Users
                 userInfo.ActivationStatus = !afterInvite ? EmployeeActivationStatus.Pending : EmployeeActivationStatus.Activated;
             }
 
-            var newUserInfo = UserManager.SaveUserInfo(userInfo, isVisitor);
+            var newUserInfo = UserManager.SaveUserInfo(userInfo);
             SecurityContext.SetUserPasswordHash(newUserInfo.ID, passwordHash);
 
             if (CoreBaseSettings.Personal)
@@ -353,31 +349,6 @@ namespace ASC.Web.Core.Users
                                    + @"\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$";
             const RegexOptions options = RegexOptions.IgnoreCase | RegexOptions.Compiled;
             return new Regex(pattern, options).IsMatch(email);
-        }
-    }
-    public static class UserManagerWrapperExtension
-    {
-        public static DIHelper AddUserManagerWrapperService(this DIHelper services)
-        {
-            if (services.TryAddScoped<UserManagerWrapper>())
-            {
-
-                return services
-                    .AddIPSecurityService()
-                    .AddTenantUtilService()
-                    .AddCustomNamingPeopleService()
-                    .AddSettingsManagerService()
-                    .AddStudioNotifyServiceService()
-                    .AddUserManagerService()
-                    .AddSecurityContextService()
-                    .AddAuthContextService()
-                    .AddMessageServiceService()
-                    .AddDisplayUserSettingsService()
-                    .AddCoreBaseSettingsService()
-                    .AddUserFormatter();
-            }
-
-            return services;
         }
     }
 }

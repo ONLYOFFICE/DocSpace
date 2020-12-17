@@ -16,14 +16,14 @@ import { SearchInput } from "asc-web-components";
       key: "filter-example",
       group: "filter-example",
       label: "example group",
-      isHeader: true
+      isHeader: true,
     },
-    { key: "filter-example-test", group: "filter-example", label: "Test" }
+    { key: "filter-example-test", group: "filter-example", label: "Test" },
   ]}
-  onSearchClick={result => {
+  onSearchClick={(result) => {
     console.log(result);
   }}
-  onChangeFilter={result => {
+  onChangeFilter={(result) => {
     console.log(result);
   }}
 />

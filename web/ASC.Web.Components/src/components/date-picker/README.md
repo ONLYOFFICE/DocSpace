@@ -10,7 +10,7 @@ import { DatePicker } from "asc-web-components";
 
 ```jsx
 <DatePicker
-  onChange={date => {
+  onChange={(date) => {
     console.log("Selected date", date);
   }}
   selectedDate={new Date()}

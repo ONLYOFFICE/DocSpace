@@ -38,62 +38,59 @@ namespace ASC.Data.Storage
             var offsetInput = 0;
             var isAsterix = false;
 
-            while (true)
+            int i;
+            for (i = 0; i < pattern.Length;)
             {
-                int i;
-                for (i = 0; i < pattern.Length;)
+                switch (pattern[i])
                 {
-                    switch (pattern[i])
-                    {
-                        case '?':
-                            isAsterix = false;
-                            offsetInput++;
-                            break;
-                        case '*':
-                            isAsterix = true;
-                            while (i < pattern.Length && pattern[i] == '*')
-                            {
-                                i++;
-                            }
-                            if (i >= pattern.Length)
-                            {
-                                return true;
-                            }
-                            continue;
-                        default:
-                            if (offsetInput >= input.Length)
+                    case '?':
+                        isAsterix = false;
+                        offsetInput++;
+                        break;
+                    case '*':
+                        isAsterix = true;
+                        while (i < pattern.Length && pattern[i] == '*')
+                        {
+                            i++;
+                        }
+                        if (i >= pattern.Length)
+                        {
+                            return true;
+                        }
+                        continue;
+                    default:
+                        if (offsetInput >= input.Length)
+                        {
+                            return false;
+                        }
+                        if ((caseInsensitive ? char.ToLower(input[offsetInput]) : input[offsetInput]) != (caseInsensitive ? char.ToLower(pattern[i]) : pattern[i]))
+                        {
+                            if (!isAsterix)
                             {
                                 return false;
                             }
-                            if ((caseInsensitive ? char.ToLower(input[offsetInput]) : input[offsetInput]) != (caseInsensitive ? char.ToLower(pattern[i]) : pattern[i]))
-                            {
-                                if (!isAsterix)
-                                {
-                                    return false;
-                                }
-                                offsetInput++;
-                                continue;
-                            }
                             offsetInput++;
-                            break;
-                    } // end switch
-                    i++;
-                } // end for
+                            continue;
+                        }
+                        offsetInput++;
+                        break;
+                } // end switch
+                i++;
+            } // end for
 
-                // have we finished parsing our input?
-                if (i > input.Length)
-                {
-                    return false;
-                }
-                // do we have any lingering asterixes we need to skip?
-                while (i < pattern.Length && pattern[i] == '*')
-                {
-                    ++i;
-                }
-                // final evaluation. The index should be pointing at the
-                // end of the string.
-                return (offsetInput == input.Length);
+            // have we finished parsing our input?
+            if (i > input.Length)
+            {
+                return false;
             }
+            // do we have any lingering asterixes we need to skip?
+            while (i < pattern.Length && pattern[i] == '*')
+            {
+                ++i;
+            }
+            // final evaluation. The index should be pointing at the
+            // end of the string.
+            return (offsetInput == input.Length);
         }
     }
 }

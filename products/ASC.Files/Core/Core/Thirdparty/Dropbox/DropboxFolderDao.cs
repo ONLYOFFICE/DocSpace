@@ -36,7 +36,6 @@ using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
 using ASC.Files.Core;
 using ASC.Files.Core.EF;
-using ASC.Files.Core.Security;
 using ASC.Files.Core.Thirdparty;
 using ASC.Web.Core.Files;
 using ASC.Web.Studio.Core;
@@ -45,6 +44,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Files.Thirdparty.Dropbox
 {
+    [Scope]
     internal class DropboxFolderDao : DropboxDaoBase, IFolderDao<string>
     {
         private CrossDao CrossDao { get; }
@@ -120,29 +120,18 @@ namespace ASC.Files.Thirdparty.Dropbox
 
             if (orderBy == null) orderBy = new OrderBy(SortedByType.DateAndTime, false);
 
-            switch (orderBy.SortedBy)
+            folders = orderBy.SortedBy switch
             {
-                case SortedByType.Author:
-                    folders = orderBy.IsAsc ? folders.OrderBy(x => x.CreateBy) : folders.OrderByDescending(x => x.CreateBy);
-                    break;
-                case SortedByType.AZ:
-                    folders = orderBy.IsAsc ? folders.OrderBy(x => x.Title) : folders.OrderByDescending(x => x.Title);
-                    break;
-                case SortedByType.DateAndTime:
-                    folders = orderBy.IsAsc ? folders.OrderBy(x => x.ModifiedOn) : folders.OrderByDescending(x => x.ModifiedOn);
-                    break;
-                case SortedByType.DateAndTimeCreation:
-                    folders = orderBy.IsAsc ? folders.OrderBy(x => x.CreateOn) : folders.OrderByDescending(x => x.CreateOn);
-                    break;
-                default:
-                    folders = orderBy.IsAsc ? folders.OrderBy(x => x.Title) : folders.OrderByDescending(x => x.Title);
-                    break;
-            }
-
+                SortedByType.Author => orderBy.IsAsc ? folders.OrderBy(x => x.CreateBy) : folders.OrderByDescending(x => x.CreateBy),
+                SortedByType.AZ => orderBy.IsAsc ? folders.OrderBy(x => x.Title) : folders.OrderByDescending(x => x.Title),
+                SortedByType.DateAndTime => orderBy.IsAsc ? folders.OrderBy(x => x.ModifiedOn) : folders.OrderByDescending(x => x.ModifiedOn),
+                SortedByType.DateAndTimeCreation => orderBy.IsAsc ? folders.OrderBy(x => x.CreateOn) : folders.OrderByDescending(x => x.CreateOn),
+                _ => orderBy.IsAsc ? folders.OrderBy(x => x.Title) : folders.OrderByDescending(x => x.Title),
+            };
             return folders.ToList();
         }
 
-        public List<Folder<string>> GetFolders(string[] folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true)
+        public List<Folder<string>> GetFolders(IEnumerable<string> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true)
         {
             if (filterType == FilterType.FilesOnly || filterType == FilterType.ByExtension
                 || filterType == FilterType.DocumentsOnly || filterType == FilterType.ImagesOnly
@@ -196,9 +185,9 @@ namespace ASC.Files.Thirdparty.Dropbox
                 return RenameFolder(folder, folder.Title);
             }
 
-            if (folder.ParentFolderID != null)
+            if (folder.FolderID != null)
             {
-                var dropboxFolderPath = MakeDropboxPath(folder.ParentFolderID);
+                var dropboxFolderPath = MakeDropboxPath(folder.FolderID);
 
                 folder.Title = GetAvailableTitle(folder.Title, dropboxFolderPath, IsExist);
 
@@ -294,10 +283,10 @@ namespace ASC.Files.Thirdparty.Dropbox
         public string MoveFolder(string folderId, string toFolderId, CancellationToken? cancellationToken)
         {
             var dropboxFolder = GetDropboxFolder(folderId);
-            if (dropboxFolder is ErrorFolder) throw new Exception(((ErrorFolder)dropboxFolder).Error);
+            if (dropboxFolder is ErrorFolder errorFolder) throw new Exception(errorFolder.Error);
 
             var toDropboxFolder = GetDropboxFolder(toFolderId);
-            if (toDropboxFolder is ErrorFolder) throw new Exception(((ErrorFolder)toDropboxFolder).Error);
+            if (toDropboxFolder is ErrorFolder errorFolder1) throw new Exception(errorFolder1.Error);
 
             var fromFolderPath = GetParentFolderPath(dropboxFolder);
 
@@ -338,10 +327,10 @@ namespace ASC.Files.Thirdparty.Dropbox
         public Folder<string> CopyFolder(string folderId, string toFolderId, CancellationToken? cancellationToken)
         {
             var dropboxFolder = GetDropboxFolder(folderId);
-            if (dropboxFolder is ErrorFolder) throw new Exception(((ErrorFolder)dropboxFolder).Error);
+            if (dropboxFolder is ErrorFolder folder) throw new Exception(folder.Error);
 
             var toDropboxFolder = GetDropboxFolder(toFolderId);
-            if (toDropboxFolder is ErrorFolder) throw new Exception(((ErrorFolder)toDropboxFolder).Error);
+            if (toDropboxFolder is ErrorFolder errorFolder) throw new Exception(errorFolder.Error);
 
             var newDropboxFolder = ProviderInfo.Storage.CopyFolder(MakeDropboxPath(dropboxFolder), MakeDropboxPath(toDropboxFolder), dropboxFolder.Name);
 
@@ -444,110 +433,6 @@ namespace ASC.Files.Thirdparty.Dropbox
             var storageMaxUploadSize = ProviderInfo.Storage.MaxChunkedUploadFileSize;
 
             return chunkedUpload ? storageMaxUploadSize : Math.Min(storageMaxUploadSize, SetupInfo.AvailableFileSize);
-        }
-
-        #region Only for TMFolderDao
-
-        public void ReassignFolders(string[] folderIds, Guid newOwnerId)
-        {
-        }
-
-        public IEnumerable<Folder<string>> Search(string text, bool bunch)
-        {
-            return null;
-        }
-
-        public string GetFolderID(string module, string bunch, string data, bool createIfNotExists)
-        {
-            return null;
-        }
-
-        public IEnumerable<string> GetFolderIDs(string module, string bunch, IEnumerable<string> data, bool createIfNotExists)
-        {
-            return new List<string>();
-        }
-
-        public string GetFolderIDCommon(bool createIfNotExists)
-        {
-            return null;
-        }
-
-        public string GetFolderIDUser(bool createIfNotExists, Guid? userId)
-        {
-            return null;
-        }
-
-        public string GetFolderIDShare(bool createIfNotExists)
-        {
-            return null;
-        }
-
-        public string GetFolderIDRecent(bool createIfNotExists)
-        {
-            return null;
-        }
-
-        public string GetFolderIDFavorites(bool createIfNotExists)
-        {
-            return null;
-        }
-
-        public string GetFolderIDTemplates(bool createIfNotExists)
-        {
-            return null;
-        }
-
-        public string GetFolderIDPrivacy(bool createIfNotExists, Guid? userId)
-        {
-            return null;
-        }
-
-        public string GetFolderIDTrash(bool createIfNotExists, Guid? userId)
-        {
-            return null;
-        }
-
-
-        public string GetFolderIDPhotos(bool createIfNotExists)
-        {
-            return null;
-        }
-
-        public string GetFolderIDProjects(bool createIfNotExists)
-        {
-            return null;
-        }
-
-        public string GetBunchObjectID(string folderID)
-        {
-            return null;
-        }
-
-        public Dictionary<string, string> GetBunchObjectIDs(List<string> folderIDs)
-        {
-            return null;
-        }
-
-        public IEnumerable<(Folder<string>, SmallShareRecord)> GetFeeds(int tenant, DateTime from, DateTime to)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<string> GetTenantsWithFeeds(DateTime fromTime)
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
-    }
-
-    public static class DropboxFolderDaoExtention
-    {
-        public static DIHelper AddDropboxFolderDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<DropboxFolderDao>();
-
-            return services;
         }
     }
 }

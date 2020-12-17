@@ -36,25 +36,27 @@ using Microsoft.AspNetCore.Http;
 
 namespace ASC.Api.Core
 {
+    [Scope]
     public class ApiContext : ICloneable
     {
+        private static int MaxCount = 1000;
         public IHttpContextAccessor HttpContextAccessor { get; set; }
         public Tenant tenant;
-        public Tenant Tenant { get { return tenant ?? (tenant = TenantManager.GetCurrentTenant(HttpContextAccessor.HttpContext)); } }
+        public Tenant Tenant { get { return tenant ??= TenantManager.GetCurrentTenant(HttpContextAccessor.HttpContext); } }
 
         public ApiContext(IHttpContextAccessor httpContextAccessor, SecurityContext securityContext, TenantManager tenantManager)
         {
             if (httpContextAccessor == null || httpContextAccessor.HttpContext == null) return;
             HttpContextAccessor = httpContextAccessor;
 
-            Count = 0;
+            Count = MaxCount;
             var query = HttpContextAccessor.HttpContext.Request.Query;
             //Try parse values
             var count = query.GetRequestValue("count");
             if (!string.IsNullOrEmpty(count) && ulong.TryParse(count, out var countParsed))
             {
                 //Count specified and valid
-                Count = (long)countParsed;
+                Count = Math.Min((long)countParsed, MaxCount);
             }
 
             var startIndex = query.GetRequestValue("startIndex");
@@ -224,7 +226,7 @@ namespace ASC.Api.Core
             var id = HttpContextAccessor.HttpContext.User.Claims.FirstOrDefault(r => r.Type == ClaimTypes.Sid);
             if (Guid.TryParse(id?.Value, out var userId))
             {
-                _ = SecurityContext.AuthenticateMe(userId);
+                SecurityContext.AuthenticateMe(userId);
             }
         }
     }
@@ -266,21 +268,6 @@ namespace ASC.Api.Core
         public static bool Check(this ApiContext context, string field)
         {
             return context?.Fields == null || (context.Fields != null && context.Fields.Contains(field, StringComparer.InvariantCultureIgnoreCase));
-        }
-    }
-
-    public static class ApiContextConfigExtension
-    {
-        public static DIHelper AddApiContextService(this DIHelper services)
-        {
-            if (services.TryAddScoped<ApiContext>())
-            {
-                services
-                    .AddTenantManagerService()
-                    .AddSecurityContextService();
-            }
-
-            return services;
         }
     }
 }

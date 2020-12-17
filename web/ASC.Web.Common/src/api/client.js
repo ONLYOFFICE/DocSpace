@@ -1,5 +1,4 @@
 import axios from "axios";
-import { AUTH_KEY } from "../constants";
 //import history from "../history";
 
 const PREFIX = "api";
@@ -13,25 +12,25 @@ const baseURL = `${window.location.origin}/${PREFIX}/${VERSION}`;
 const client = axios.create({
   baseURL: baseURL,
   responseType: "json",
-  timeout: 30000 // default is `0` (no timeout)
+  timeout: 30000, // default is `0` (no timeout)
 });
 
-setAuthorizationToken(localStorage.getItem(AUTH_KEY));
-
 client.interceptors.response.use(
-  response => {
+  (response) => {
     return response;
   },
-  error => {
+  (error) => {
+    if (!error.response) return Promise.reject(error);
+
     switch (true) {
       case error.response.status === 401:
-      setAuthorizationToken();
+        setWithCredentialsStatus(false);
         window.location.href = "/login";
         break;
       case error.response.status === 402:
         if (!window.location.pathname.includes("payments")) {
           window.location.href = "/payments";
-    }
+        }
         break;
       default:
         break;
@@ -41,13 +40,8 @@ client.interceptors.response.use(
   }
 );
 
-export function setAuthorizationToken(token) {
-  client.defaults.withCredentials = true;
-  if (token) {
-    localStorage.setItem(AUTH_KEY, true);
-  } else {
-    localStorage.clear();
-  }
+export function setWithCredentialsStatus(state) {
+  client.defaults.withCredentials = state;
 }
 
 export function setClientBasePath(path) {
@@ -56,17 +50,16 @@ export function setClientBasePath(path) {
   client.defaults.baseURL = path;
 }
 
-const checkResponseError = res => {
+const getResponseError = (res) => {
   if (!res) return;
 
   if (res.data && res.data.error) {
-    console.error(res.data.error);
-    throw new Error(res.data.error.message);
+    return res.data.error.message;
   }
 
   if (res.isAxiosError && res.message) {
     console.error(res.message);
-    throw new Error(res.message);
+    return res.message;
   }
 };
 
@@ -74,9 +67,10 @@ const checkResponseError = res => {
  * @description wrapper for making ajax requests
  * @param {object} object with method,url,data etc.
  */
-export const request = function(options) {
-  const onSuccess = function(response) {
-    checkResponseError(response);
+export const request = function (options) {
+  const onSuccess = function (response) {
+    const error = getResponseError(response);
+    if (error) throw new Error(error);
 
     if (!response || !response.data || response.isAxiosError) return null;
 
@@ -86,19 +80,15 @@ export const request = function(options) {
     return response.data.response;
   };
 
-  const onError = function(error) {
-    console.error("Request Failed:", error.config);
-    if (error.response) {
-      console.error("Status:", error.response.status);
-      console.error("Data:", error.response.data);
-      console.error("Headers:", error.response.headers);
-    } else {
-      console.error("Error Message:", error.message);
-    }
-    return Promise.reject(error.response || error.message);
+  const onError = function (errorResponse) {
+    console.error("Request Failed:", errorResponse);
+
+    const errorText = errorResponse.response
+      ? getResponseError(errorResponse.response)
+      : errorResponse.message;
+
+    return Promise.reject(errorText || errorResponse);
   };
 
-  return client(options)
-    .then(onSuccess)
-    .catch(onError);
+  return client(options).then(onSuccess).catch(onError);
 };

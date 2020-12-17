@@ -8,7 +8,7 @@ import {
   Text,
   Link,
   TextInput,
-  Textarea
+  Textarea,
 } from "asc-web-components";
 import { utils, toastr } from "asc-web-common";
 import { withTranslation } from "react-i18next";
@@ -16,13 +16,13 @@ import {
   StyledEmbeddingPanel,
   StyledContent,
   StyledHeaderContent,
-  StyledBody
+  StyledBody,
 } from "../StyledPanels";
 import copy from "copy-to-clipboard";
 import { createI18N } from "../../../helpers/i18n";
 const i18n = createI18N({
   page: "EmbeddingPanel",
-  localesPath: "panels/EmbeddingPanel"
+  localesPath: "panels/EmbeddingPanel",
 });
 
 const { changeLanguage } = utils;
@@ -35,7 +35,7 @@ class EmbeddingPanelComponent extends React.Component {
       size: "auto",
       widthValue: "100%",
       heightValue: "100%",
-      link: `<iframe src="${props.embeddingLink}" width="100%" height="100%" frameborder="0" scrolling="no" allowtransparency> </iframe>`
+      link: `<iframe src="${props.embeddingLink}" width="100%" height="100%" frameborder="0" scrolling="no" allowtransparency> </iframe>`,
     };
 
     changeLanguage(i18n);
@@ -62,10 +62,10 @@ class EmbeddingPanelComponent extends React.Component {
       this.setState({ size: "auto", widthValue: "100%", heightValue: "100%" });
   };
 
-  onChangeWidth = e => {
+  onChangeWidth = (e) => {
     this.setState({ widthValue: e.target.value });
   };
-  onChangeHeight = e => {
+  onChangeHeight = (e) => {
     this.setState({ heightValue: e.target.value });
   };
 
@@ -132,6 +132,7 @@ class EmbeddingPanelComponent extends React.Component {
           onClick={this.onClosePanels}
           visible={visible}
           zIndex={zIndex}
+          isAside={true}
         />
         <Aside className="header_aside-panel">
           <StyledContent>
@@ -140,6 +141,7 @@ class EmbeddingPanelComponent extends React.Component {
                 size="16"
                 iconName="ArrowPathIcon"
                 onClick={this.onArrowClick}
+                color="#A3A9AE"
               />
               <Heading
                 className="header_aside-panel-header"
@@ -150,61 +152,65 @@ class EmbeddingPanelComponent extends React.Component {
               </Heading>
             </StyledHeaderContent>
             <StyledBody size={size}>
-              <Text className="embedding-panel_text">{t("Size")}:</Text>
-              <div className="embedding-panel_links-container">
-                <Link
-                  isHovered
-                  type="action"
-                  className="embedding-panel_link"
-                  onClick={this.onSelectSizeMiddle}
-                >
-                  600 x 800 px
-                </Link>
-                <Link
-                  isHovered
-                  type="action"
-                  className="embedding-panel_link"
-                  onClick={this.onSelectSizeSmall}
-                >
-                  400 x 600 px
-                </Link>
-                <Link
-                  isHovered
-                  type="action"
-                  className="embedding-panel_link"
-                  onClick={this.onSelectSizeAuto}
-                >
-                  {t("Auto")}
-                </Link>
-              </div>
-              <div className="embedding-panel_inputs-container">
-                <div>
-                  <Text className="embedding-panel_text">{t("Width")}:</Text>
-                  <TextInput
-                    className="embedding-panel_input"
-                    value={widthValue}
-                    onChange={this.onChangeWidth}
-                  />
+              <div className="embedding-panel_body">
+                <Text className="embedding-panel_text">{t("Size")}:</Text>
+                <div className="embedding-panel_links-container">
+                  <Link
+                    isHovered
+                    type="action"
+                    className="embedding-panel_link"
+                    onClick={this.onSelectSizeMiddle}
+                  >
+                    600 x 800 px
+                  </Link>
+                  <Link
+                    isHovered
+                    type="action"
+                    className="embedding-panel_link"
+                    onClick={this.onSelectSizeSmall}
+                  >
+                    400 x 600 px
+                  </Link>
+                  <Link
+                    isHovered
+                    type="action"
+                    className="embedding-panel_link"
+                    onClick={this.onSelectSizeAuto}
+                  >
+                    {t("Auto")}
+                  </Link>
                 </div>
-                <div>
-                  <Text className="embedding-panel_text">{t("Height")}:</Text>
-                  <TextInput
-                    className="embedding-panel_input"
-                    value={heightValue}
-                    onChange={this.onChangeHeight}
-                  />
+                <div className="embedding-panel_inputs-container">
+                  <div>
+                    <Text className="embedding-panel_text">{t("Width")}:</Text>
+                    <TextInput
+                      className="embedding-panel_input"
+                      value={widthValue}
+                      onChange={this.onChangeWidth}
+                    />
+                  </div>
+                  <div>
+                    <Text className="embedding-panel_text">{t("Height")}:</Text>
+                    <TextInput
+                      className="embedding-panel_input"
+                      value={heightValue}
+                      onChange={this.onChangeHeight}
+                    />
+                  </div>
                 </div>
-              </div>
-              <div>
-                <Text className="embedding-panel_text">{t("EmbedCode")}:</Text>
-                <IconButton
-                  className="embedding-panel_copy-icon"
-                  size="16"
-                  iconName="CopyIcon"
-                  color="#333"
-                  onClick={this.onCopyLink}
-                />
-                <Textarea isReadOnly value={link} />
+                <div className="embedding-panel_code-container">
+                  <Text className="embedding-panel_text">
+                    {t("EmbedCode")}:
+                  </Text>
+                  <IconButton
+                    className="embedding-panel_copy-icon"
+                    size="16"
+                    iconName="CopyIcon"
+                    color="#333"
+                    onClick={this.onCopyLink}
+                  />
+                  <Textarea color="#AEAEAE" isReadOnly value={link} />
+                </div>
               </div>
             </StyledBody>
           </StyledContent>
@@ -217,14 +223,14 @@ class EmbeddingPanelComponent extends React.Component {
 EmbeddingPanelComponent.propTypes = {
   visible: PropTypes.bool,
   onSharingPanelClose: PropTypes.func,
-  onClose: PropTypes.func
+  onClose: PropTypes.func,
 };
 
 const EmbeddingPanelContainerTranslated = withTranslation()(
   EmbeddingPanelComponent
 );
 
-const EmbeddingPanel = props => (
+const EmbeddingPanel = (props) => (
   <EmbeddingPanelContainerTranslated i18n={i18n} {...props} />
 );
 

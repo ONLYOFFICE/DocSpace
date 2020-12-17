@@ -12,7 +12,7 @@ const array_items = [
         <button>BUTTON</button>
         <button>BUTTON</button>
       </div>
-    )
+    ),
   },
   {
     key: "tab1",
@@ -23,7 +23,7 @@ const array_items = [
         <label>LABEL</label>
         <label>LABEL</label>
       </div>
-    )
+    ),
   },
   {
     key: "tab2",
@@ -34,7 +34,7 @@ const array_items = [
         <input></input>
         <input></input>
       </div>
-    )
+    ),
   },
   {
     key: "tab3",
@@ -45,7 +45,7 @@ const array_items = [
         <button>BUTTON</button>
         <button>BUTTON</button>
       </div>
-    )
+    ),
   },
   {
     key: "tab4",
@@ -56,8 +56,8 @@ const array_items = [
         <label>LABEL</label>
         <label>LABEL</label>
       </div>
-    )
-  }
+    ),
+  },
 ];
 
 describe("<TabContainer />", () => {
@@ -80,8 +80,8 @@ describe("<TabContainer />", () => {
                   <button>BUTTON</button>
                 </>
               </div>
-            )
-          }
+            ),
+          },
         ]}
       </TabContainer>
     );
@@ -103,7 +103,10 @@ describe("<TabContainer />", () => {
     const wrapper = mount(
       <TabContainer>{array_items}</TabContainer>
     ).instance();
-    const shouldUpdate = wrapper.shouldComponentUpdate(wrapper.props, {...wrapper.state, activeTab: 3});
+    const shouldUpdate = wrapper.shouldComponentUpdate(wrapper.props, {
+      ...wrapper.state,
+      activeTab: 3,
+    });
     expect(shouldUpdate).toBe(true);
   });
 });

@@ -11,14 +11,14 @@ const EmptyContentBody = styled.div`
   display: grid;
   grid-template-areas:
     "img headerText"
-    ${props => props.subheadingText && `"img subheadingText"`}
-    ${props => props.descriptionText && `"img descriptionText"`}
+    ${(props) => props.subheadingText && `"img subheadingText"`}
+    ${(props) => props.descriptionText && `"img descriptionText"`}
     "img button";
 
   grid-column-gap: 16px;
-  grid-row-gap: 12px;
+  grid-row-gap: 10px;
   max-width: 800px;
-
+  grid-template-rows: max-content;
   .ec-image {
     grid-area: img;
     margin: 0 0 0 auto;
@@ -26,28 +26,32 @@ const EmptyContentBody = styled.div`
 
   .ec-header {
     grid-area: headerText;
+    padding-top: 16px;
+    @media (max-width: 375px) {
+      margin-top: 5px;
+    }
   }
 
   .ec-subheading {
     grid-area: subheadingText;
+    margin-top: -1px;
   }
 
   .ec-desc {
     grid-area: descriptionText;
+    line-height: 18px;
+    margin-top: 2px;
   }
 
   .ec-buttons {
     grid-area: button;
+    margin-top: -1px;
   }
 
   @media (orientation: portrait) {
-    @media (max-width: 738px) {
+    @media (max-width: 768px) {
       padding-top: 0px;
-      max-width: 496px;
-
-      .ec-header {
-        padding-top: 16px;
-      }
+      max-width: 700px;
 
       .ec-image {
         max-height: 100px;
@@ -59,8 +63,8 @@ const EmptyContentBody = styled.div`
       grid-template-areas:
         "img"
         "headerText"
-        ${props => props.subheadingText && `"subheadingText"`}
-        ${props => props.descriptionText && `"descriptionText"`}
+        ${(props) => props.subheadingText && `"subheadingText"`}
+        ${(props) => props.descriptionText && `"descriptionText"`}
         "button";
 
       .ec-header {
@@ -81,21 +85,21 @@ const EmptyContentBody = styled.div`
   }
 `;
 
-const EmptyContentImage = styled.img.attrs(props => ({
+const EmptyContentImage = styled.img.attrs((props) => ({
   src: props.imageSrc,
-  alt: props.imageAlt
+  alt: props.imageAlt,
 }))`
   background: no-repeat 0 0 transparent;
 `;
 
-const EmptyScreenContainer = props => {
+const EmptyScreenContainer = (props) => {
   const {
     imageSrc,
     imageAlt,
     headerText,
     subheadingText,
     descriptionText,
-    buttons
+    buttons,
   } = props;
   return (
     <EmptyContentBody {...props}>
@@ -133,11 +137,11 @@ EmptyScreenContainer.propTypes = {
   imageAlt: PropTypes.string,
   headerText: PropTypes.string,
   subheadingText: PropTypes.string,
-  descriptionText: PropTypes.string,
+  descriptionText: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
   buttons: PropTypes.any,
   className: PropTypes.string,
   id: PropTypes.string,
-  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 };
 
 export default EmptyScreenContainer;

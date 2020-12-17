@@ -15,7 +15,7 @@ import { createI18N } from "../../../../../helpers/i18n";
 import { setDocumentTitle } from "../../../../../helpers/utils";
 const i18n = createI18N({
   page: "Settings",
-  localesPath: "pages/Settings"
+  localesPath: "pages/Settings",
 });
 
 const { changeLanguage } = utils;
@@ -51,11 +51,11 @@ class PureAccessRights extends Component {
     // }
 
     this.state = {
-      selectedTab
+      selectedTab,
     };
   }
 
-  onSelectPage = page => {
+  onSelectPage = (page) => {
     const { history } = this.props;
 
     switch (page.key) {
@@ -101,13 +101,13 @@ class PureAccessRights extends Component {
             {
               key: "0",
               title: t("OwnerSettings"),
-              content: <OwnerSettings />
+              content: <OwnerSettings />,
             },
             {
               key: "1",
               title: t("AdminsSettings"),
-              content: <AdminsSettings />
-            }
+              content: <AdminsSettings />,
+            },
             // {
             //   key: "2",
             //   title: "Portals settings",
@@ -123,7 +123,7 @@ class PureAccessRights extends Component {
 function mapStateToProps(state) {
   const { organizationName } = state.auth.settings;
   return {
-    organizationName
+    organizationName,
   };
 }
 
@@ -131,7 +131,7 @@ const AccessRightsContainer = connect(mapStateToProps)(
   withTranslation()(PureAccessRights)
 );
 
-const AccessRights = props => {
+const AccessRights = (props) => {
   useEffect(() => {
     changeLanguage(i18n);
   }, []);

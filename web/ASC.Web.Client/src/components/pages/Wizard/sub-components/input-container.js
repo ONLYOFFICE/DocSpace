@@ -22,7 +22,7 @@ const StyledContainer = styled(Box)`
   grid-row-gap: 16px;
 
   .generate-pass-link {
-    margin-bottom: 16px;
+    margin-bottom: 11px;
   }
 
   .wizard-checkbox {
@@ -34,8 +34,13 @@ const StyledContainer = styled(Box)`
     vertical-align: middle;
   }
 
+  .wizard-checkbox svg {
+    margin-right: 8px;
+  }
+
   .link {
-    vertical-align: middle;
+    vertical-align: -2px;
+    margin-top: 2px;
   }
 
   @media ${tablet} {
@@ -83,7 +88,7 @@ const InputContainer = ({
       tabIndex={1}
       size="large"
       scale={true}
-      placeholder={t("Email")}
+      placeholder={t("PlaceholderEmail")}
       emailSettings={settings}
       hasError={hasErrorEmail}
       onValidateInput={onEmailChangeHandler}
@@ -134,7 +139,7 @@ const InputContainer = ({
         <Link
           className="generate-pass-link"
           type="action"
-          fontWeight="600"
+          fontWeight="400"
           isHovered={true}
           onClick={() => refPassInput.current.onGeneratePassword()}
         >

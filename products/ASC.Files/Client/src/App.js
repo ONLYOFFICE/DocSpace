@@ -1,8 +1,6 @@
 import React, { Suspense } from "react";
 import { connect } from "react-redux";
-import axios from "axios";
-import { Router, Switch, Redirect } from "react-router-dom";
-import { Loader } from "asc-web-components";
+import { Router, Switch, Redirect, Route } from "react-router-dom";
 import Home from "./components/pages/Home";
 import DocEditor from "./components/pages/DocEditor";
 import Settings from "./components/pages/Settings";
@@ -12,7 +10,6 @@ import config from "../package.json";
 
 import {
   store as commonStore,
-  constants,
   history,
   PrivateRoute,
   PublicRoute,
@@ -23,6 +20,7 @@ import {
   NavMenu,
   Main,
   utils,
+  toastr,
 } from "asc-web-common";
 
 const {
@@ -32,47 +30,60 @@ const {
   getModules,
   setCurrentProductId,
   setCurrentProductHomePage,
-  getPortalPasswordSettings,
   getPortalCultures,
+  getIsAuthenticated,
 } = commonStore.auth.actions;
-const { AUTH_KEY } = constants;
 
 class App extends React.Component {
-  componentDidMount() {
-    utils.removeTempContent();
+  constructor(props) {
+    super(props);
 
+    this.isEditor = window.location.pathname.indexOf("doceditor") !== -1;
+  }
+
+  componentDidMount() {
     const {
       setModuleInfo,
       getUser,
       getPortalSettings,
       getModules,
-      getPortalPasswordSettings,
       getPortalCultures,
       fetchTreeFolders,
       setIsLoaded,
+      getIsAuthenticated,
     } = this.props;
 
     setModuleInfo();
 
-    const token = localStorage.getItem(AUTH_KEY);
-
-    if (!token) {
-      utils.hideLoader();
-      return setIsLoaded();
+    if (this.isEditor) {
+      setIsLoaded();
+      return;
     }
 
-    const requests = [
-      getUser(),
-      getPortalSettings(),
-      getModules(),
-      getPortalPasswordSettings(),
-      getPortalCultures(),
-      fetchTreeFolders(),
-    ];
+    getIsAuthenticated().then((isAuthenticated) => {
+      if (!isAuthenticated) {
+        utils.updateTempContent();
+        return setIsLoaded();
+      } else {
+        utils.updateTempContent(isAuthenticated);
+      }
 
-    axios.all(requests).then(() => {
-      utils.hideLoader();
-      setIsLoaded();
+      const requests = [
+        getUser(),
+        getPortalSettings(),
+        getModules(),
+        getPortalCultures(),
+        fetchTreeFolders(),
+      ];
+
+      Promise.all(requests)
+        .catch((e) => {
+          toastr.error(e);
+        })
+        .finally(() => {
+          utils.updateTempContent();
+          setIsLoaded();
+        });
     });
   }
 
@@ -81,15 +92,9 @@ class App extends React.Component {
 
     return navigator.onLine ? (
       <Router history={history}>
-        {!window.location.pathname.startsWith(`${homepage}/doceditor`) && (
-          <NavMenu />
-        )}
+        {!this.isEditor && <NavMenu />}
         <Main>
-          <Suspense
-            fallback={
-              <Loader className="pageLoader" type="rombs" size="40px" />
-            }
-          >
+          <Suspense fallback={null}>
             <Switch>
               <Redirect exact from="/" to={`${homepage}`} />
               <PrivateRoute
@@ -97,7 +102,7 @@ class App extends React.Component {
                 path={`${homepage}/settings/:setting`}
                 component={Settings}
               />
-              <PrivateRoute
+              <Route
                 exact
                 path={`${homepage}/doceditor`}
                 component={DocEditor}
@@ -140,6 +145,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    getIsAuthenticated: () => getIsAuthenticated(dispatch),
     setModuleInfo: () => {
       dispatch(setCurrentProductHomePage(config.homepage));
       dispatch(setCurrentProductId("e67be73d-f9ae-4ce1-8fec-1880cb518cb4"));
@@ -147,7 +153,6 @@ const mapDispatchToProps = (dispatch) => {
     getUser: () => getUser(dispatch),
     getPortalSettings: () => getPortalSettings(dispatch),
     getModules: () => getModules(dispatch),
-    getPortalPasswordSettings: () => getPortalPasswordSettings(dispatch),
     getPortalCultures: () => getPortalCultures(dispatch),
     fetchTreeFolders: () => fetchTreeFolders(dispatch),
     setIsLoaded: () => dispatch(setIsLoaded(true)),

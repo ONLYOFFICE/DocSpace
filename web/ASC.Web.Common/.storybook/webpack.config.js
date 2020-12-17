@@ -1,38 +1,37 @@
-const path = require('path');
+const path = require("path");
 
 const sourceFolders = [
   path.resolve(__dirname),
-  path.resolve(__dirname, '../src'),
+  path.resolve(__dirname, "../src"),
 ];
 
 module.exports = ({ config }) => {
-
-  if (process.env.NODE_ENV === 'production') {
+  if (process.env.NODE_ENV === "production") {
     // remove progress plugin
     // progress plugin outputs a lot of console logs, which makes
     // netlify build realllllllllllllllly slow.
     config.plugins = config.plugins.filter(
-      plugin => plugin.constructor.name !== 'ProgressPlugin'
+      (plugin) => plugin.constructor.name !== "ProgressPlugin"
     );
-    config.devtool = 'none'; // TODO: should we use something differen?
+    config.devtool = "none"; // TODO: should we use something differen?
   } else {
-    config.devtool = 'cheap-module-source-map'; // TODO: should we use something differen?
+    config.devtool = "cheap-module-source-map"; // TODO: should we use something differen?
   }
 
   config.resolve.alias = {
     ...config.resolve.alias,
-    "styled-components": path.resolve('./node_modules/styled-components'),
+    "styled-components": path.resolve("./node_modules/styled-components"),
   };
 
-  config.devtool = 'cheap-module-source-map'; // TODO: should we use something differen?
+  config.devtool = "cheap-module-source-map"; // TODO: should we use something differen?
   config.module.rules = [
     // Disable require.ensure as it's not a standard language feature.
     { parser: { requireEnsure: false } },
     // add story source
     {
       test: /\.stories\.js$/,
-      loaders: [require.resolve('@storybook/source-loader')],
-      enforce: 'pre',
+      loaders: [require.resolve("@storybook/source-loader")],
+      enforce: "pre",
     },
     // Process JS with Babel.
     {
@@ -40,11 +39,11 @@ module.exports = ({ config }) => {
       include: sourceFolders,
       use: [
         {
-          loader: require.resolve('babel-loader'),
+          loader: require.resolve("babel-loader"),
           options: {
             babelrc: false,
             compact: false,
-            presets: [require.resolve('../scripts/get-babel-preset')],
+            presets: [require.resolve("../scripts/get-babel-preset")],
             // This is a feature of `babel-loader` for webpack (not Babel itself).
             // It enables caching results in ./node_modules/.cache/babel-loader/
             // directory for faster rebuilds.
@@ -61,10 +60,10 @@ module.exports = ({ config }) => {
       include: sourceFolders,
       use: [
         {
-          loader: require.resolve('babel-loader'),
+          loader: require.resolve("babel-loader"),
           options: {
             babelrc: false,
-            presets: [require.resolve('../scripts/get-babel-preset')],
+            presets: [require.resolve("../scripts/get-babel-preset")],
             // This is a feature of `babel-loader` for webpack (not Babel itself).
             // It enables caching results in ./node_modules/.cache/babel-loader/
             // directory for faster rebuilds.
@@ -73,7 +72,7 @@ module.exports = ({ config }) => {
           },
         },
         {
-          loader: require.resolve('@svgr/webpack'),
+          loader: require.resolve("@svgr/webpack"),
           options: {
             // NOTE: disable this and manually add `removeViewBox: false` in the SVGO plugins list
             // See related PR: https://github.com/smooth-code/svgr/pull/137
@@ -91,16 +90,16 @@ module.exports = ({ config }) => {
     },
     {
       test: /\.css$/,
-      use: ['style-loader','css-loader']
+      use: ["style-loader", "css-loader"],
     },
     // Storybook uses a plugin to load and render markdown files.
     {
       test: /\.md$/,
       use: [
-        { loader: require.resolve('html-loader') },
-        { loader: require.resolve('markdown-loader') },
+        { loader: require.resolve("html-loader") },
+        { loader: require.resolve("markdown-loader") },
       ],
-    }
+    },
   ];
 
   return config;

@@ -190,6 +190,24 @@ import OrigFlipVertical from "./flip.vertical.react.svg";
 import OrigRotateLeft from "./rotate.left.react.svg";
 import OrigRotateRight from "./rotate.right.react.svg";
 
+import OrigFavorites from "./favorites.react.svg";
+import OrigCatalogFavoritesIcon from "./catalog.favorites.react.svg";
+import OrigFavoriteIcon from "./favorite.react.svg";
+import OrigRecentIcon from "./catalog.recent.react.svg";
+
+import OrigCatalogPrivateRoomIcon from "./catalog.private.react.svg";
+import OrigMoveToIcon from "./move.react.svg";
+
+import OrigIntegrationIcon from "./integration.react.svg";
+import OrigCustomFilterIcon from "./custom.filter.react.svg";
+
+import OrigButtonUploadIcon from "./button.upload.react.svg";
+import OrigButtonFileIcon from "./button.file.react.svg";
+import OrigButtonTrashIcon from "./button.trash.react.svg";
+import OrigButtonMoveIcon from "./button.move.react.svg";
+import OrigButtonDuplicateIcon from "./button.duplicate.react.svg";
+import OrigButtonAlertIcon from "./button.alert.react.svg";
+
 export const AZSortingIcon = createStyledIcon(
   OrigAZSortingIcon,
   "AZSortingIcon"
@@ -255,6 +273,30 @@ export const ArrowContentIcon = createStyledIcon(
   "ArrowContentIcon"
 );
 export const BloggerIcon = createStyledIcon(OrigBloggerIcon, "BloggerIcon");
+export const ButtonUploadIcon = createStyledIcon(
+  OrigButtonUploadIcon,
+  "ButtonUploadIcon"
+);
+export const ButtonFileIcon = createStyledIcon(
+  OrigButtonFileIcon,
+  "ButtonFileIcon"
+);
+export const ButtonTrashIcon = createStyledIcon(
+  OrigButtonTrashIcon,
+  "ButtonTrashIcon"
+);
+export const ButtonMoveIcon = createStyledIcon(
+  OrigButtonMoveIcon,
+  "ButtonMoveIcon"
+);
+export const ButtonDuplicateIcon = createStyledIcon(
+  OrigButtonDuplicateIcon,
+  "ButtonDuplicateIcon"
+);
+export const ButtonAlertIcon = createStyledIcon(
+  OrigButtonAlertIcon,
+  "ButtonAlertIcon"
+);
 export const CalendarCheckedIcon = createStyledIcon(
   OrigCalendarCheckedIcon,
   "CalendarCheckedIcon"
@@ -343,7 +385,10 @@ export const CatalogUserIcon = createStyledIcon(
 );
 export const ChatIcon = createStyledIcon(OrigChatIcon, "ChatIcon");
 export const CheckIcon = createStyledIcon(OrigCheckIcon, "CheckIcon");
-export const CheckToastIcon = createStyledIcon(OrigCheckToastIcon, "CheckToastIcon");
+export const CheckToastIcon = createStyledIcon(
+  OrigCheckToastIcon,
+  "CheckToastIcon"
+);
 export const CheckboxIcon = createStyledIcon(
   OrigCheckboxIcon,
   "CheckboxIcon",
@@ -397,8 +442,15 @@ export const CrossSidebarIcon = createStyledIcon(
   OrigCrossSidebarIcon,
   "CrossSidebarIcon"
 );
+export const CustomFilterIcon = createStyledIcon(
+  OrigCustomFilterIcon,
+  "CustomFilterIcon"
+);
 export const DangerIcon = createStyledIcon(OrigDangerIcon, "DangerIcon");
-export const DangerToastIcon = createStyledIcon(OrigDangerToastIcon, "DangerToastIcon");
+export const DangerToastIcon = createStyledIcon(
+  OrigDangerToastIcon,
+  "DangerToastIcon"
+);
 export const DocumentsIcon = createStyledIcon(
   OrigDocumentsIcon,
   "DocumentsIcon"
@@ -449,7 +501,10 @@ export const HorizontalDotsIcon = createStyledIcon(
 export const IcqIcon = createStyledIcon(OrigIcqIcon, "IcqIcon");
 export const ImportIcon = createStyledIcon(OrigImportIcon, "ImportIcon");
 export const InfoIcon = createStyledIcon(OrigInfoIcon, "InfoIcon");
-export const InfoToastIcon = createStyledIcon(OrigInfoToastIcon, "InfoToastIcon");
+export const InfoToastIcon = createStyledIcon(
+  OrigInfoToastIcon,
+  "InfoToastIcon"
+);
 export const InvitationLinkIcon = createStyledIcon(
   OrigInvitationLinkIcon,
   "InvitationLinkIcon"
@@ -735,4 +790,24 @@ export const RotateLeftIcon = createStyledIcon(
 export const RotateRightIcon = createStyledIcon(
   OrigRotateRight,
   "RotateRightIcon"
+);
+export const FavoritesIcon = createStyledIcon(OrigFavorites, "FavoritesIcon");
+export const CatalogFavoritesIcon = createStyledIcon(
+  OrigCatalogFavoritesIcon,
+  "CatalogFavoritesIcon"
+);
+export const FavoriteIcon = createStyledIcon(OrigFavoriteIcon, "FavoriteIcon");
+export const CatalogRecentIcon = createStyledIcon(
+  OrigRecentIcon,
+  "CatalogRecentIcon"
+);
+export const CatalogPrivateRoomIcon = createStyledIcon(
+  OrigCatalogPrivateRoomIcon,
+  "CatalogPrivateRoomIcon"
+);
+
+export const MoveToIcon = createStyledIcon(OrigMoveToIcon, "MoveToIcon");
+export const IntegrationIcon = createStyledIcon(
+  OrigIntegrationIcon,
+  "IntegrationIcon"
 );

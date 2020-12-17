@@ -36,6 +36,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace ASC.Data.Storage
 {
+    [Singletone]
     public class PathUtils
     {
         private string StorageRoot { get; }
@@ -115,16 +116,6 @@ namespace ASC.Data.Storage
                 physPath = Path.GetFullPath(Path.Combine(HostEnvironment.ContentRootPath, physPath.Trim(Path.DirectorySeparatorChar)));
             }
             return physPath;
-        }
-    }
-
-    public static class PathUtilsExtension
-    {
-        public static DIHelper AddPathUtilsService(this DIHelper services)
-        {
-            services.TryAddSingleton<PathUtils>();
-
-            return services;
         }
     }
 }

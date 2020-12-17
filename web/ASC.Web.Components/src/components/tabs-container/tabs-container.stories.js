@@ -26,7 +26,7 @@ const arrayItems = [
           <button>BUTTON</button>
         </div>
       </div>
-    )
+    ),
   },
   {
     key: "tab1",
@@ -43,7 +43,7 @@ const arrayItems = [
           <label>LABEL</label> <label>LABEL</label> <label>LABEL</label>
         </div>
       </div>
-    )
+    ),
   },
   {
     key: "tab2",
@@ -60,7 +60,7 @@ const arrayItems = [
           <input /> <input /> <input />
         </div>
       </div>
-    )
+    ),
   },
   {
     key: "tab3",
@@ -80,7 +80,7 @@ const arrayItems = [
           <button>BUTTON</button>
         </div>
       </div>
-    )
+    ),
   },
   {
     key: "tab4",
@@ -97,8 +97,8 @@ const arrayItems = [
           <label>LABEL</label> <label>LABEL</label> <label>LABEL</label>
         </div>
       </div>
-    )
-  }
+    ),
+  },
 ];
 
 const scrollArrayItems = [
@@ -113,7 +113,7 @@ const scrollArrayItems = [
         <br />
         <label>Tab_0 Tab_0 Tab_0</label>
       </>
-    )
+    ),
   },
   {
     key: "tab1",
@@ -126,7 +126,7 @@ const scrollArrayItems = [
         <br />
         <label>Tab_1 Tab_1 Tab_1</label>
       </>
-    )
+    ),
   },
   {
     key: "tab2",
@@ -139,7 +139,7 @@ const scrollArrayItems = [
         <br />
         <label>Tab_2 Tab_2 Tab_2</label>
       </>
-    )
+    ),
   },
   {
     key: "tab3",
@@ -152,7 +152,7 @@ const scrollArrayItems = [
         <br />
         <label>Tab_3 Tab_3 Tab_3</label>
       </>
-    )
+    ),
   },
   {
     key: "tab4",
@@ -165,7 +165,7 @@ const scrollArrayItems = [
         <br />
         <label>Tab_4 Tab_4 Tab_4</label>
       </>
-    )
+    ),
   },
   {
     key: "tab5",
@@ -178,7 +178,7 @@ const scrollArrayItems = [
         <br />
         <label>Tab_5 Tab_5 Tab_5</label>
       </>
-    )
+    ),
   },
   {
     key: "tab6",
@@ -191,7 +191,7 @@ const scrollArrayItems = [
         <br />
         <label>Tab_6 Tab_6 Tab_6</label>
       </>
-    )
+    ),
   },
   {
     key: "tab7",
@@ -204,7 +204,7 @@ const scrollArrayItems = [
         <br />
         <label>Tab_7 Tab_7 Tab_7</label>
       </>
-    )
+    ),
   },
   {
     key: "tab8",
@@ -217,7 +217,7 @@ const scrollArrayItems = [
         <br />
         <label>Tab_8 Tab_8 Tab_8</label>
       </>
-    )
+    ),
   },
   {
     key: "tab9",
@@ -230,7 +230,7 @@ const scrollArrayItems = [
         <br />
         <label>Tab_9 Tab_9 Tab_9</label>
       </>
-    )
+    ),
   },
   {
     key: "tab10",
@@ -243,7 +243,7 @@ const scrollArrayItems = [
         <br />
         <label>Tab_10 Tab_10 Tab_10</label>
       </>
-    )
+    ),
   },
   {
     key: "tab11",
@@ -256,8 +256,8 @@ const scrollArrayItems = [
         <br />
         <label>Tab_11 Tab_11 Tab_11</label>
       </>
-    )
-  }
+    ),
+  },
 ];
 
 const tabsItems = [
@@ -272,7 +272,7 @@ const tabsItems = [
         <br />
         <label>Tab_0 Tab_0 Tab_0</label>
       </>
-    )
+    ),
   },
   {
     key: "tab1",
@@ -285,7 +285,7 @@ const tabsItems = [
         <br />
         <label>Tab_1 Tab_1 Tab_1</label>
       </>
-    )
+    ),
   },
   {
     key: "tab2",
@@ -298,7 +298,7 @@ const tabsItems = [
         <br />
         <label>Tab_2 Tab_2 Tab_2</label>
       </>
-    )
+    ),
   },
   {
     key: "tab3",
@@ -311,7 +311,7 @@ const tabsItems = [
         <br />
         <label>Tab_3 Tab_3 Tab_3</label>
       </>
-    )
+    ),
   },
   {
     key: "tab4",
@@ -324,7 +324,7 @@ const tabsItems = [
         <br />
         <label>Tab_4 Tab_4 Tab_4</label>
       </>
-    )
+    ),
   },
   {
     key: "tab5",
@@ -337,7 +337,7 @@ const tabsItems = [
         <br />
         <label>Tab_5 Tab_5 Tab_5</label>
       </>
-    )
+    ),
   },
   {
     key: "tab6",
@@ -350,7 +350,7 @@ const tabsItems = [
         <br />
         <label>Tab_6 Tab_6 Tab_6</label>
       </>
-    )
+    ),
   },
   {
     key: "tab7",
@@ -363,7 +363,7 @@ const tabsItems = [
         <br />
         <label>Tab_7 Tab_7 Tab_7</label>
       </>
-    )
+    ),
   },
   {
     key: "tab8",
@@ -376,7 +376,7 @@ const tabsItems = [
         <br />
         <label>Tab_8 Tab_8 Tab_8</label>
       </>
-    )
+    ),
   },
   {
     key: "tab9",
@@ -389,8 +389,8 @@ const tabsItems = [
         <br />
         <label>Tab_9 Tab_9 Tab_9</label>
       </>
-    )
-  }
+    ),
+  },
 ];
 
 storiesOf("Components|TabContainer", module)
@@ -401,7 +401,7 @@ storiesOf("Components|TabContainer", module)
       <Section>
         <h5 style={{ marginBottom: 20 }}>Base TabsContainer:</h5>
         <TabContainer
-          onSelect={index => action("Selected item")(index)}
+          onSelect={(index) => action("Selected item")(index)}
           isDisabled={boolean("isDisabled", false)}
           selectedItem={arrayItems.indexOf(arrayItems[0])}
         >

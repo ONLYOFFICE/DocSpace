@@ -15,6 +15,7 @@ namespace ASC.Core.Common.EF.Model
         public string Alias { get; set; }
         public string MappedDomain { get; set; }
         public int Version { get; set; }
+
         public DateTime? Version_Changed { get; set; }
 
         [NotMapped]
@@ -30,7 +31,7 @@ namespace ASC.Core.Common.EF.Model
 
         //hack for DateTime?
         [NotMapped]
-        public DateTime? StatusChangedHack { get { return StatusChanged; } set { StatusChanged = value; } }
+        public DateTime StatusChangedHack { get { return StatusChanged ?? DateTime.MinValue; } set { StatusChanged = value; } }
 
         public DateTime CreationDateTime { get; set; }
 
@@ -48,7 +49,7 @@ namespace ASC.Core.Common.EF.Model
         public bool Spam { get; set; }
         public bool Calls { get; set; }
 
-        public DbTenantPartner Partner { get; set; }
+//        public DbTenantPartner Partner { get; set; }
     }
 
     public static class DbTenantExtension
@@ -73,10 +74,10 @@ namespace ASC.Core.Common.EF.Model
 
         public static void MySqlAddDbTenant(this ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<DbTenant>()
-                .HasOne(r => r.Partner)
-                .WithOne(r => r.Tenant)
-                .HasPrincipalKey<DbTenant>(r => new { r.Id });
+            //modelBuilder.Entity<DbTenant>()
+            //    .HasOne(r => r.Partner)
+            //    .WithOne(r => r.Tenant)
+            //    .HasPrincipalKey<DbTenant>(r => new { r.Id });
 
             modelBuilder.Entity<DbTenant>(entity =>
             {
@@ -186,7 +187,7 @@ namespace ASC.Core.Common.EF.Model
                     .HasColumnName("version")
                     .HasDefaultValueSql("'2'");
 
-                entity.Property(e => e.VersionChanged)
+                entity.Property(e => e.Version_Changed)
                     .HasColumnName("version_changed")
                     .HasColumnType("datetime");
             });
@@ -289,7 +290,7 @@ namespace ASC.Core.Common.EF.Model
                     .HasColumnName("version")
                     .HasDefaultValueSql("2");
 
-                entity.Property(e => e.VersionChanged).HasColumnName("version_changed");
+                entity.Property(e => e.Version_Changed).HasColumnName("version_changed");
             });
         }
     }

@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
+using ASC.Common;
 using ASC.Common.Security.Authentication;
 using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
@@ -91,11 +92,11 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             var entries = new List<FileEntry<T>>();
             if (Folders.Any())
             {
-                entries.AddRange(FolderDao.GetFolders(Folders.ToArray()));
+                entries.AddRange(FolderDao.GetFolders(Folders));
             }
             if (Files.Any())
             {
-                entries.AddRange(FileDao.GetFiles(Files.ToArray()));
+                entries.AddRange(FileDao.GetFiles(Files));
             }
             entries.ForEach(x =>
             {
@@ -135,6 +136,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         }
     }
 
+    [Scope]
     public class FileMarkAsReadOperationScope
     {
         private FileMarker FileMarker { get; }

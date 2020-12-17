@@ -19,7 +19,7 @@ import {
   changePassword,
 } from "../../../../store/confirm/actions";
 
-const { createPasswordHash } = commonUtils;
+const { createPasswordHash, tryRedirectTo } = commonUtils;
 const { logout } = store.auth.actions;
 
 const BodyStyle = styled.form`
@@ -80,7 +80,7 @@ class Form extends React.PureComponent {
   onSubmit = (e) => {
     this.setState({ isLoading: true }, function () {
       const { userId, password, key } = this.state;
-      const { history, changePassword, hashSettings } = this.props;
+      const { changePassword, hashSettings, defaultPage } = this.props;
       let hasError = false;
 
       if (!this.state.passwordValid) {
@@ -99,8 +99,8 @@ class Form extends React.PureComponent {
       changePassword(userId, hash, key)
         .then(() => this.props.logout())
         .then(() => {
-          history.push("/");
           toastr.success(this.props.t("ChangePasswordSuccess"));
+          tryRedirectTo(defaultPage);
         })
         .catch((error) => {
           toastr.error(this.props.t(`${error}`));
@@ -110,10 +110,10 @@ class Form extends React.PureComponent {
   };
 
   componentDidMount() {
-    const { getConfirmationInfo, history } = this.props;
+    const { getConfirmationInfo, defaultPage } = this.props;
     getConfirmationInfo(this.state.key).catch((error) => {
       toastr.error(this.props.t(`${error}`));
-      history.push("/");
+      tryRedirectTo(defaultPage);
     });
 
     window.addEventListener("keydown", this.onKeyPress);
@@ -221,6 +221,7 @@ function mapStateToProps(state) {
     isAuthenticated: state.auth.isAuthenticated,
     greetingTitle: state.auth.settings.greetingSettings,
     hashSettings: state.auth.settings.hashSettings,
+    defaultPage: state.auth.settings.defaultPage,
   };
 }
 

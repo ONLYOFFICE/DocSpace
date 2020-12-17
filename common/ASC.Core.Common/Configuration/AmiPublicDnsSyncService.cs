@@ -107,7 +107,9 @@ namespace ASC.Core.Configuration
             CoreBaseSettings = coreBaseSettings;
         }
 
-        public void Deconstruct(out TenantManager tenantManager, out CoreBaseSettings coreBaseSettings) =>
+        public void Deconstruct(out TenantManager tenantManager, out CoreBaseSettings coreBaseSettings)
+        {
             (tenantManager, coreBaseSettings) = (TenantManager, CoreBaseSettings);
+        }
     }
 }

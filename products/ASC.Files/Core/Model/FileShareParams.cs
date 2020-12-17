@@ -51,6 +51,7 @@ namespace ASC.Api.Documents
 
     }
 
+    [Scope]
     public class FileShareParamsHelper
     {
         private UserManager UserManager { get; }
@@ -66,20 +67,6 @@ namespace ASC.Api.Documents
                 SubjectId = fileShareParams.ShareTo,
                 SubjectGroup = !UserManager.UserExists(fileShareParams.ShareTo)
             };
-        }
-    }
-
-    public static class FileShareParamsExtention
-    {
-        public static DIHelper AddFileShareParamsService(this DIHelper services)
-        {
-            if (services.TryAddScoped<FileShareParamsHelper>())
-            {
-                return services
-                    .AddUserManagerService();
-            }
-
-            return services;
         }
     }
 }

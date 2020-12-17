@@ -10,7 +10,7 @@ const tabletProps = css`
 
   .section-body_filter {
     display: block;
-    margin: 0 0 16px;
+    margin: 0 0 25px;
   }
 `;
 
@@ -19,28 +19,34 @@ const StyledSection = styled.section`
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  min-width: 344px;
-
+  /*width: ${(props) => `${props.widthProp}px`};*/
   .layout-progress-bar {
-    bottom: 0;
-    position: sticky;
-    margin-left: -24px;
-    
+    position: fixed;
+    right: 15px;
+    bottom: 21px;
+
     @media ${tablet} {
-      margin-left: -16px;
+      bottom: 83px;
+    }
+  }
+
+  .layout-progress-second-bar {
+    position: fixed;
+    right: 15px;
+    bottom: 83px;
+
+    @media ${tablet} {
+      bottom: 145px;
     }
   }
 
   .section-header_filter {
-      display: block;
-    }
+    display: block;
+  }
 
-    .section-body_filter {
-      display: none;
-    }
-
-  /*${props => props.widthProp < 738 && tabletProps};*/
-
+  .section-body_filter {
+    display: none;
+  }
   @media ${tablet} {
     padding: 0 0 0 16px;
     ${tabletProps};

@@ -19,10 +19,10 @@ const Label = styled.label`
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
   .checkbox {
-    margin-right: 8px;
+    margin-right: 12px;
   }
 
-  ${props =>
+  ${(props) =>
     props.isDisabled
       ? css`
           cursor: not-allowed;
@@ -52,12 +52,12 @@ const CheckboxIcon = ({ isChecked, isDisabled, isIndeterminate }) => {
   const iconName = isIndeterminate
     ? "CheckboxIndeterminateIcon"
     : isChecked
-      ? "CheckboxCheckedIcon"
-      : "CheckboxIcon";
+    ? "CheckboxCheckedIcon"
+    : "CheckboxIcon";
 
   let newProps = {
     size: "medium",
-    className: "checkbox"
+    className: "checkbox",
   };
 
   if (isDisabled) {
@@ -80,7 +80,7 @@ class Checkbox extends React.Component {
     this.ref = React.createRef();
 
     this.state = {
-      checked: props.isChecked
+      checked: props.isChecked,
     };
 
     this.onInputChange = this.onInputChange.bind(this);
@@ -106,11 +106,25 @@ class Checkbox extends React.Component {
 
   render() {
     //console.log("Checkbox render");
-    const { isDisabled, id, className, label, style, value, title, truncate } = this.props;
+    const {
+      isDisabled,
+      id,
+      className,
+      label,
+      style,
+      value,
+      title,
+      truncate,
+    } = this.props;
     const colorProps = isDisabled ? { color: disableColor } : {};
 
     return (
-      <Label id={id} style={style} isDisabled={isDisabled} className={className}>
+      <Label
+        id={id}
+        style={style}
+        isDisabled={isDisabled}
+        className={className}
+      >
         <HiddenInput
           type="checkbox"
           checked={this.state.checked}
@@ -121,12 +135,7 @@ class Checkbox extends React.Component {
         />
         <CheckboxIcon {...this.props} />
         {this.props.label && (
-          <Text
-            as="span"
-            title={title}
-            truncate={truncate}
-            {...colorProps}
-          >
+          <Text as="span" title={title} truncate={truncate} {...colorProps}>
             {label}
           </Text>
         )}
@@ -149,12 +158,12 @@ Checkbox.propTypes = {
   className: PropTypes.string,
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   title: PropTypes.string,
-  truncate: PropTypes.bool
+  truncate: PropTypes.bool,
 };
 
 Checkbox.defaultProps = {
   isChecked: false,
-  truncate: false
+  truncate: false,
 };
 
 export default Checkbox;

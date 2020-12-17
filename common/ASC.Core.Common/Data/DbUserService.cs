@@ -30,6 +30,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 
+using ASC.Common;
 using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
@@ -39,6 +40,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Data
 {
+    [Scope]
     public class ConfigureEFUserService : IConfigureNamedOptions<EFUserService>
     {
         private DbContextManager<UserDbContext> DbContextManager { get; }
@@ -52,34 +54,35 @@ namespace ASC.Core.Data
         public void Configure(string name, EFUserService options)
         {
             DbId = name;
-            options.UserDbContext = DbContextManager.Get(name);
+            options.LazyUserDbContext = new Lazy<UserDbContext>(() => DbContextManager.Get(name));
             options.UserDbContextManager = DbContextManager;
         }
 
         public void Configure(EFUserService options)
         {
-            options.UserDbContext = DbContextManager.Value;
+            options.LazyUserDbContext = new Lazy<UserDbContext>(() => DbContextManager.Value);
             options.UserDbContextManager = DbContextManager;
         }
     }
 
-
+    [Scope]
     public class EFUserService : IUserService
     {
-        public Expression<Func<User, UserInfo>> FromUserToUserInfo { get; set; }
-        public Func<UserInfo, User> FromUserInfoToUser { get; set; }
-        public Expression<Func<DbGroup, Group>> FromDbGroupToGroup { get; set; }
-        public Func<Group, DbGroup> FromGroupToDbGroup { get; set; }
-        public Expression<Func<UserGroup, UserGroupRef>> FromUserGroupToUserGroupRef { get; set; }
-        public Func<UserGroupRef, UserGroup> FromUserGroupRefToUserGroup { get; set; }
+        private static Expression<Func<User, UserInfo>> FromUserToUserInfo { get; set; }
+        private static Func<UserInfo, User> FromUserInfoToUser { get; set; }
+        private static Expression<Func<DbGroup, Group>> FromDbGroupToGroup { get; set; }
+        private static Func<Group, DbGroup> FromGroupToDbGroup { get; set; }
+        private static Expression<Func<UserGroup, UserGroupRef>> FromUserGroupToUserGroupRef { get; set; }
+        private static Func<UserGroupRef, UserGroup> FromUserGroupRefToUserGroup { get; set; }
 
-        internal UserDbContext UserDbContext { get; set; }
+        internal UserDbContext UserDbContext { get => LazyUserDbContext.Value; }
+        internal Lazy<UserDbContext> LazyUserDbContext { get; set; }
         internal DbContextManager<UserDbContext> UserDbContextManager { get; set; }
         private PasswordHasher PasswordHasher { get; }
         public MachinePseudoKeys MachinePseudoKeys { get; }
         internal string DbId { get; set; }
 
-        public EFUserService()
+        static EFUserService()
         {
             FromUserToUserInfo = user => new UserInfo
             {
@@ -184,12 +187,17 @@ namespace ASC.Core.Data
             };
         }
 
-        public EFUserService(DbContextManager<UserDbContext> userDbContextManager, PasswordHasher passwordHasher, MachinePseudoKeys machinePseudoKeys) : this()
+        public EFUserService()
+        {
+
+        }
+
+        public EFUserService(DbContextManager<UserDbContext> userDbContextManager, PasswordHasher passwordHasher, MachinePseudoKeys machinePseudoKeys)
         {
             UserDbContextManager = userDbContextManager;
             PasswordHasher = passwordHasher;
             MachinePseudoKeys = machinePseudoKeys;
-            UserDbContext = UserDbContextManager.Value;
+            LazyUserDbContext = new Lazy<UserDbContext>(() => UserDbContextManager.Value);
         }
 
         public Group GetGroup(int tenant, Guid id)

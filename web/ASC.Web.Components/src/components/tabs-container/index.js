@@ -35,13 +35,13 @@ const Label = styled.div`
     user-select: none;
   }
 
-  ${props =>
+  ${(props) =>
     props.isDisabled &&
     css`
       pointer-events: none;
     `}
 
-  ${props =>
+  ${(props) =>
     props.selected
       ? css`
           cursor: default;
@@ -57,7 +57,7 @@ const Label = styled.div`
           }
         `}
 
-  ${props =>
+  ${(props) =>
     props.isDisabled &&
     props.selected &&
     css`
@@ -83,7 +83,7 @@ class TabContainer extends Component {
 
     this.state = {
       activeTab: this.props.selectedItem,
-      onScrollHide: true
+      onScrollHide: true,
     };
 
     this.scrollRef = React.createRef();
@@ -179,7 +179,7 @@ class TabContainer extends Component {
     }
   };
 
-  setPrimaryTabPosition = index => {
+  setPrimaryTabPosition = (index) => {
     const arrayOfWidths = this.getWidthElements(); //get tabs widths
     const marginRight = 8;
     let rightTabs = this.arrayRefs.length - 1;
@@ -248,11 +248,11 @@ TabContainer.propTypes = {
   children: PropTypes.PropTypes.arrayOf(PropTypes.object.isRequired).isRequired,
   isDisabled: PropTypes.bool,
   onSelect: PropTypes.func,
-  selectedItem: PropTypes.number
+  selectedItem: PropTypes.number,
 };
 
 TabContainer.defaultProps = {
-  selectedItem: 0
+  selectedItem: 0,
 };
 
 export default TabContainer;

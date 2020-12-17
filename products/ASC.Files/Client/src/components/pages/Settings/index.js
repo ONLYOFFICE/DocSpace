@@ -1,8 +1,7 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
-import { PageLayout, utils } from "asc-web-common";
-//import { RequestLoader } from "asc-web-components";
+import { PageLayout, utils, Loaders } from "asc-web-common";
 import {
   ArticleHeaderContent,
   ArticleBodyContent,
@@ -12,10 +11,14 @@ import { SectionHeaderContent, SectionBodyContent } from "./Section";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import { createI18N } from "../../../helpers/i18n";
 import {
-  setIsErrorSettings,
   getFilesSettings,
   setIsLoading,
+  setFirstLoad,
+  setSelectedNode,
 } from "../../../store/files/actions";
+import { getSettingsTree, getIsLoading } from "../../../store/files/selectors";
+
+import { setDocumentTitle } from "../../../helpers/utils";
 
 const i18n = createI18N({
   page: "Settings",
@@ -28,22 +31,48 @@ const PureSettings = ({
   match,
   t,
   isLoading,
-  setIsErrorSettings,
+  settingsTree,
   getFilesSettings,
   setIsLoading,
+  setFirstLoad,
+  setSelectedNode,
 }) => {
-  //console.log("Settings render()");
+  const [title, setTitle] = useState("");
   const { setting } = match.params;
 
   useEffect(() => {
-    setIsLoading(true);
-    getFilesSettings()
-      .then(() => setIsLoading(false))
-      .catch((e) => {
-        setIsErrorSettings(true);
+    switch (setting) {
+      case "common":
+        setTitle("CommonSettings");
+        break;
+      case "admin":
+        setTitle("AdminSettings");
+        break;
+      case "thirdparty":
+        setTitle("ThirdPartySettings");
+        break;
+      default:
+        setTitle("CommonSettings");
+        break;
+    }
+  }, [setting]);
+  useEffect(() => {
+    if (Object.keys(settingsTree).length === 0) {
+      setIsLoading(true);
+      getFilesSettings().then(() => {
         setIsLoading(false);
+        setFirstLoad(false);
+        setSelectedNode([setting]);
       });
-  }, [getFilesSettings, setIsErrorSettings, setIsLoading]);
+    }
+  }, [
+    setting,
+    getFilesSettings,
+    setIsLoading,
+    setFirstLoad,
+    settingsTree,
+    setSelectedNode,
+  ]);
 
   useEffect(() => {
     if (isLoading) {
@@ -53,17 +82,14 @@ const PureSettings = ({
     }
   }, [isLoading]);
 
+  //console.log("render settings");
+
+  useEffect(() => {
+    setDocumentTitle(t(`${title}`));
+  }, [title, t]);
+
   return (
     <>
-      {/* <RequestLoader
-        visible={isLoading}
-        zIndex={256}
-        loaderSize="16px"
-        loaderColor={"#999"}
-        label={`${t("LoadingProcessing")} ${t("LoadingDescription")}`}
-        fontSize="12px"
-        fontColor={"#999"}
-      /> */}
       <PageLayout>
         <PageLayout.ArticleHeader>
           <ArticleHeaderContent />
@@ -78,11 +104,19 @@ const PureSettings = ({
         </PageLayout.ArticleBody>
 
         <PageLayout.SectionHeader>
-          <SectionHeaderContent setting={setting} t={t} />
+          {Object.keys(settingsTree).length === 0 && isLoading ? (
+            <Loaders.SectionHeader />
+          ) : (
+            <SectionHeaderContent title={t(`${title}`)} />
+          )}
         </PageLayout.SectionHeader>
 
         <PageLayout.SectionBody>
-          <SectionBodyContent setting={setting} t={t} />
+          {Object.keys(settingsTree).length === 0 && isLoading ? (
+            <Loaders.SettingsFiles />
+          ) : (
+            <SectionBodyContent setting={setting} t={t} />
+          )}
         </PageLayout.SectionBody>
       </PageLayout>
     </>
@@ -104,12 +138,21 @@ const Settings = (props) => {
 
 function mapStateToProps(state) {
   return {
-    isLoading: state.files.isLoading,
+    isLoading: getIsLoading(state),
+    settingsTree: getSettingsTree(state),
   };
 }
 
-export default connect(mapStateToProps, {
-  setIsErrorSettings,
-  getFilesSettings,
-  setIsLoading,
-})(withRouter(Settings));
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setIsLoading: (isLoading) => dispatch(setIsLoading(isLoading)),
+    getFilesSettings: () => dispatch(getFilesSettings()),
+    setFirstLoad: (firstLoad) => dispatch(setFirstLoad(firstLoad)),
+    setSelectedNode: (node) => dispatch(setSelectedNode(node)),
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withRouter(Settings));

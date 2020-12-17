@@ -14,7 +14,6 @@ import { connect } from "react-redux";
 import { updateProfileCulture } from "../../../../../../store/profile/actions";
 
 const { resendUserInvites } = api.people;
-const { getCurrentCustomSchema, getModules } = store.auth.actions;
 
 const InfoContainer = styled.div`
   margin-bottom: 24px;
@@ -140,25 +139,13 @@ class ProfileInfo extends React.PureComponent {
 
   onLanguageSelect = (language) => {
     console.log("onLanguageSelect", language);
-    const {
-      profile,
-      updateProfileCulture,
-      nameSchemaId,
-      getModules,
-      getCurrentCustomSchema,
-    } = this.props;
+    const { profile, updateProfileCulture } = this.props;
 
     if (profile.cultureName === language.key) return;
 
-    updateProfileCulture(profile.id, language.key)
-      .then(() => {
-        if (!nameSchemaId) return getModules();
-        return (
-          axios.all([getModules(), getCurrentCustomSchema(nameSchemaId)]),
-          console.log("Update getModules", getModules())
-        );
-      })
-      .catch((err) => console.log(err));
+    updateProfileCulture(profile.id, language.key).catch((err) =>
+      console.log(err)
+    );
   };
 
   getLanguages = () => {
@@ -202,7 +189,8 @@ class ProfileInfo extends React.PureComponent {
     const selectedLanguage = languages.find((item) => item.key === language);
     const workFromDate = new Date(workFrom).toLocaleDateString(language);
     const birthDayDate = new Date(birthday).toLocaleDateString(language);
-    const formatedSex = capitalizeFirstLetter(sex);
+    const formatedSex =
+      (sex === "male" && t("MaleSexStatus")) || t("FemaleSexStatus");
     const formatedDepartments = department && getFormattedDepartments(groups);
     const supportEmail = "documentation@onlyoffice.com";
     const tooltipLanguage = (
@@ -223,7 +211,6 @@ class ProfileInfo extends React.PureComponent {
         </Link>
       </Text>
     );
-
     return (
       <InfoContainer>
         <InfoItem>
@@ -317,6 +304,7 @@ class ProfileInfo extends React.PureComponent {
                     scaledOptions={false}
                     size="content"
                     className="language-combo"
+                    showDisabledItems={true}
                   />
                   <HelpButton
                     place="bottom"
@@ -339,7 +327,7 @@ class ProfileInfo extends React.PureComponent {
 }
 
 function mapStateToProps(state) {
-  const { customNames, nameSchemaId } = state.auth.settings;
+  const { customNames } = state.auth.settings;
   const {
     groupCaption,
     regDateCaption,
@@ -354,13 +342,10 @@ function mapStateToProps(state) {
     userPostCaption,
     userCaption,
     guestCaption,
-    nameSchemaId,
   };
 }
 const mapDispatchToProps = (dispatch) => {
   return {
-    getModules: () => getModules(dispatch),
-    getCurrentCustomSchema: (id) => getCurrentCustomSchema(dispatch, id),
     updateProfileCulture: (id, culture) =>
       dispatch(updateProfileCulture(id, culture)),
   };

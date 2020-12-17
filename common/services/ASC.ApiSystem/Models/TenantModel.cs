@@ -26,7 +26,6 @@
 
 using System.ComponentModel.DataAnnotations;
 
-using ASC.ApiSystem.Classes;
 using ASC.ApiSystem.Interfaces;
 using ASC.Core.Tenants;
 
@@ -47,7 +46,7 @@ namespace ASC.ApiSystem.Models
         [StringLength(255)]
         public string FirstName { get; set; }
 
-        [Email]
+        //todo  [Email]
         [StringLength(255)]
         public string Email { get; set; }
 

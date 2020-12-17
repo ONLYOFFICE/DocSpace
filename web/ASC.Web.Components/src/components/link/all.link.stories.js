@@ -6,7 +6,7 @@ const rowStyle = { marginTop: 8, fontSize: 12 };
 
 const headerStyle = {
   padding: "8px 0 0 40px",
-  fontSize: 16
+  fontSize: 16,
 };
 
 storiesOf("Components|Link", module)

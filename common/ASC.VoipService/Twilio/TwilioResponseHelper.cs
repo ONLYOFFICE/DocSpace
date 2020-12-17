@@ -61,7 +61,7 @@ namespace ASC.VoipService.Twilio
         public VoiceResponse Inbound(Tuple<Agent, bool> agentTuple)
         {
             var agent = agentTuple?.Item1;
-            var anyOnline = agentTuple != null ? agentTuple.Item2 : false;
+            var anyOnline = agentTuple != null && agentTuple.Item2;
             var response = new VoiceResponse();
 
             if (settings.WorkingHours != null && settings.WorkingHours.Enabled)
@@ -119,7 +119,7 @@ namespace ASC.VoipService.Twilio
             return AddVoiceMail(new VoiceResponse());
         }
 
-        public VoiceResponse Wait(string queueId, string queueTime, string queueSize)
+        public VoiceResponse Wait(string queueTime, string queueSize)
         {
             var response = new VoiceResponse();
             var queue = settings.Queue;
@@ -140,7 +140,7 @@ namespace ASC.VoipService.Twilio
             return response;
         }
 
-        public VoiceResponse GatherQueue(string digits, string number, List<Agent> availableOperators)
+        public VoiceResponse GatherQueue(string digits, List<Agent> availableOperators)
         {
             var response = new VoiceResponse();
 

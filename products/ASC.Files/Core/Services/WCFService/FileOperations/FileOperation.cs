@@ -33,6 +33,7 @@ using System.Security.Principal;
 using System.Threading;
 using System.Threading.Tasks;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Security.Authentication;
 using ASC.Common.Security.Authorizing;
@@ -269,13 +270,16 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             CurrentTenant = fileOperationData.Tenant;
 
             using var scope = ServiceProvider.CreateScope();
+            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+            tenantManager.SetCurrentTenant(CurrentTenant);
+
             var daoFactory = scope.ServiceProvider.GetService<IDaoFactory>();
             FolderDao = daoFactory.GetFolderDao<TId>();
 
             Total = InitTotalProgressSteps();
             Source = string.Join(SPLIT_CHAR, Folders.Select(f => "folder_" + f).Concat(Files.Select(f => "file_" + f)).ToArray());
         }
-        
+
         public override void RunJob(DistributedTask _, CancellationToken cancellationToken)
         {
             try
@@ -392,6 +396,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         }
     }
 
+    [Scope]
     public class FileOperationScope
     {
         private TenantManager TenantManager { get; }
@@ -407,7 +412,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             Options = options;
         }
 
-        public void Deconstruct(out TenantManager tenantManager, out IDaoFactory daoFactory, out FileSecurity fileSecurity, out IOptionsMonitor<ILog> optionsMonitor )
+        public void Deconstruct(out TenantManager tenantManager, out IDaoFactory daoFactory, out FileSecurity fileSecurity, out IOptionsMonitor<ILog> optionsMonitor)
         {
             tenantManager = TenantManager;
             daoFactory = DaoFactory;

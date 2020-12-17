@@ -1,6 +1,7 @@
 import React, { Component, useEffect } from "react";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
+import { getLanguage } from "../../store/auth/selectors";
 import {
   Box,
   Button,
@@ -9,26 +10,23 @@ import {
   Link,
   toastr,
   Checkbox,
-  HelpButton,
   PasswordInput,
-  FieldContainer
+  FieldContainer,
 } from "asc-web-components";
 import PageLayout from "../../components/PageLayout";
 import { connect } from "react-redux";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { withTranslation } from "react-i18next";
 import i18n from "./i18n";
 import ForgotPasswordModalDialog from "./sub-components/forgot-password-modal-dialog";
 import {
   login,
   setIsLoaded,
-  reloadPortalSettings
+  reloadPortalSettings,
 } from "../../store/auth/actions";
 import { sendInstructionsToChangePassword } from "../../api/people";
 import Register from "./sub-components/register-container";
-import { createPasswordHash } from "../../utils";
-//import history from "../../history";
-import { redirectToDefaultPage } from "../../utils";
+import { createPasswordHash, tryRedirectTo } from "../../utils";
 
 const LoginContainer = styled.div`
   display: flex;
@@ -75,8 +73,7 @@ const LoginContainer = styled.div`
       padding: 14px 0;
 
       .login-checkbox-wrapper {
-        position: absolute;
-        display: inline-flex;
+        display: flex;
 
         .login-checkbox {
           float: left;
@@ -84,23 +81,11 @@ const LoginContainer = styled.div`
             font-size: 12px;
           }
         }
-
-        .login-tooltip {
-          display: inline-flex;
-
-          @media (min-width: 1025px) {
-            margin-left: 8px;
-            margin-top: 4px;
-          }
-          @media (max-width: 1024px) {
-            padding: 4px 8px 8px 8px;
-          }
-        }
       }
 
       .login-link {
-        float: right;
-        line-height: 16px;
+        line-height: 18px;
+        margin-left: auto;
       }
     }
 
@@ -124,6 +109,14 @@ const LoginContainer = styled.div`
   }
 `;
 
+const LoginFormWrapper = styled.div`
+  display: grid;
+  grid-template-rows: ${(props) =>
+    props.enabledJoin ? css`1fr 66px` : css`1fr`};
+  width: 100%;
+  height: calc(100vh-56px);
+`;
+
 class Form extends Component {
   constructor(props) {
     super(props);
@@ -140,23 +133,23 @@ class Form extends Component {
       email: "",
       emailError: false,
       errorText: "",
-      socialButtons: []
+      socialButtons: [],
     };
   }
 
-  onChangeLogin = event => {
+  onChangeLogin = (event) => {
     this.setState({ identifier: event.target.value });
     !this.state.identifierValid && this.setState({ identifierValid: true });
     this.state.errorText && this.setState({ errorText: "" });
   };
 
-  onChangePassword = event => {
+  onChangePassword = (event) => {
     this.setState({ password: event.target.value });
     !this.state.passwordValid && this.setState({ passwordValid: true });
     this.state.errorText && this.setState({ errorText: "" });
   };
 
-  onChangeEmail = event => {
+  onChangeEmail = (event) => {
     this.setState({ email: event.target.value, emailError: false });
   };
 
@@ -166,11 +159,11 @@ class Form extends Component {
     this.setState({
       openDialog: true,
       isDisabled: true,
-      email: this.state.identifier
+      email: this.state.identifier,
     });
   };
 
-  onKeyPress = event => {
+  onKeyPress = (event) => {
     if (event.key === "Enter") {
       !this.state.isDisabled
         ? this.onSubmit()
@@ -185,8 +178,8 @@ class Form extends Component {
       this.setState({ isLoading: true });
       sendInstructionsToChangePassword(this.state.email)
         .then(
-          res => toastr.success(res),
-          message => toastr.error(message)
+          (res) => toastr.success(res),
+          (message) => toastr.error(message)
         )
         .finally(this.onDialogClose());
     }
@@ -198,13 +191,13 @@ class Form extends Component {
       isDisabled: false,
       isLoading: false,
       email: "",
-      emailError: false
+      emailError: false,
     });
   };
 
   onSubmit = () => {
     const { errorText, identifier, password } = this.state;
-    const { login, setIsLoaded, history, hashSettings, homepage } = this.props;
+    const { login, setIsLoaded, hashSettings, defaultPage } = this.props;
 
     errorText && this.setState({ errorText: "" });
     let hasError = false;
@@ -230,18 +223,28 @@ class Form extends Component {
 
     login(userName, hash)
       .then(() => {
-        if (!redirectToDefaultPage()) {
+        if (!tryRedirectTo(defaultPage)) {
           setIsLoaded(true);
         }
       })
-      .catch(error => {
-        let err = error.data.error.message;
-        this.setState({ errorText: err, isLoading: false });
+      .catch((error) => {
+        this.setState({
+          errorText: error,
+          identifierValid: !error,
+          passwordValid: !error,
+          isLoading: false,
+        });
       });
   };
 
   componentDidMount() {
-    const { match, t, hashSettings, reloadPortalSettings, organizationName } = this.props;
+    const {
+      match,
+      t,
+      hashSettings, // eslint-disable-line react/prop-types
+      reloadPortalSettings, // eslint-disable-line react/prop-types
+      organizationName,
+    } = this.props;
     const { error, confirmedEmail } = match.params;
 
     document.title = `${t("Authorization")} – ${organizationName}`; //TODO: implement the setDocumentTitle() utility in ASC.Web.Common
@@ -252,7 +255,7 @@ class Form extends Component {
 
     if (!hashSettings) {
       reloadPortalSettings();
-  }
+    }
   }
 
   componentWillUnmount() {
@@ -263,7 +266,7 @@ class Form extends Component {
     minLength: 6,
     upperCase: false,
     digits: false,
-    specSymbols: false
+    specSymbols: false,
   };
 
   render() {
@@ -280,7 +283,7 @@ class Form extends Component {
       email,
       emailError,
       errorText,
-      socialButtons
+      socialButtons,
     } = this.state;
     const { params } = match;
 
@@ -303,7 +306,7 @@ class Form extends Component {
               isVertical={true}
               labelVisible={false}
               hasError={!identifierValid}
-              errorMessage={t("RequiredFieldMessage")}
+              errorMessage={errorText ? errorText : t("RequiredFieldMessage")} //TODO: Add wrong login server error
             >
               <TextInput
                 id="login"
@@ -325,7 +328,7 @@ class Form extends Component {
               isVertical={true}
               labelVisible={false}
               hasError={!passwordValid}
-              errorMessage={t("RequiredFieldMessage")}
+              errorMessage={errorText ? "" : t("RequiredFieldMessage")} //TODO: Add wrong password server error
             >
               <PasswordInput
                 simpleView={true}
@@ -353,25 +356,24 @@ class Form extends Component {
                   onChange={this.onChangeCheckbox}
                   label={<Text fontSize="13px">{t("Remember")}</Text>}
                 />
-                <HelpButton
+                {/*<HelpButton
                   className="login-tooltip"
                   helpButtonHeaderContent={t("CookieSettingsTitle")}
                   tooltipContent={
                     <Text fontSize="12px">{t("RememberHelper")}</Text>
                   }
-                />
+                />*/}
+                <Link
+                  fontSize="13px"
+                  color="#316DAA"
+                  className="login-link"
+                  type="page"
+                  isHovered={false}
+                  onClick={this.onClick}
+                >
+                  {t("ForgotPassword")}
+                </Link>
               </div>
-
-              <Link
-                fontSize="13px"
-                color="#316DAA"
-                className="login-link"
-                type="page"
-                isHovered={false}
-                onClick={this.onClick}
-              >
-                {t("ForgotPassword")}
-              </Link>
             </div>
 
             {openDialog && (
@@ -405,9 +407,11 @@ class Form extends Component {
                 {t("MessageEmailConfirmed")} {t("MessageAuthorize")}
               </Text>
             )}
+            {/* TODO: old error indication
+            
             <Text fontSize="14px" color="#c30">
               {errorText}
-            </Text>
+            </Text> */}
 
             {socialButtons.length ? (
               <Box displayProp="flex" alignItems="center">
@@ -428,7 +432,8 @@ class Form extends Component {
 Form.propTypes = {
   login: PropTypes.func.isRequired,
   match: PropTypes.object.isRequired,
-  //history: PropTypes.object.isRequired,
+  hashSettings: PropTypes.object,
+  reloadPortalSettings: PropTypes.func,
   setIsLoaded: PropTypes.func.isRequired,
   greetingTitle: PropTypes.string.isRequired,
   t: PropTypes.func.isRequired,
@@ -436,65 +441,67 @@ Form.propTypes = {
   language: PropTypes.string.isRequired,
   socialButtons: PropTypes.array,
   organizationName: PropTypes.string,
-  homepage: PropTypes.string
+  homepage: PropTypes.string,
+  defaultPage: PropTypes.string,
 };
 
 Form.defaultProps = {
   identifier: "",
   password: "",
-  email: ""
+  email: "",
 };
 
 const FormWrapper = withTranslation()(Form);
-const RegisterWrapper = withTranslation()(Register);
 
-const LoginForm = props => {
-  const { language, isLoaded, enabledJoin } = props;
+const LoginForm = (props) => {
+  const { language, enabledJoin } = props;
 
   useEffect(() => {
     i18n.changeLanguage(language);
   }, [language]);
 
   return (
-    <>
-      {isLoaded && (
-        <>
-          <PageLayout>
-            <PageLayout.SectionBody>
-              <>
-                <FormWrapper i18n={i18n} {...props} />
-                {enabledJoin && <RegisterWrapper i18n={i18n} {...props} />}
-              </>
-            </PageLayout.SectionBody>
-          </PageLayout>
-        </>
-      )}
-    </>
+    <LoginFormWrapper enabledJoin={enabledJoin}>
+      <PageLayout>
+        <PageLayout.SectionBody>
+          <FormWrapper i18n={i18n} {...props} />
+        </PageLayout.SectionBody>
+      </PageLayout>
+      <Register />
+    </LoginFormWrapper>
   );
 };
 
 LoginForm.propTypes = {
   language: PropTypes.string.isRequired,
   isLoaded: PropTypes.bool,
-  enabledJoin: PropTypes.bool
+  enabledJoin: PropTypes.bool,
 };
 
 function mapStateToProps(state) {
-  const { isLoaded, user, settings } = state.auth;
-  const { greetingSettings, enabledJoin, organizationName, culture, hashSettings } = settings;
+  const { isLoaded, settings, isAuthenticated } = state.auth;
+  const {
+    greetingSettings,
+    organizationName,
+    hashSettings,
+    enabledJoin,
+    defaultPage,
+  } = settings;
 
   return {
+    isAuthenticated,
     isLoaded,
-    enabledJoin,
     organizationName,
-    language: user.cultureName || culture,
+    language: getLanguage(state),
     greetingTitle: greetingSettings,
-    hashSettings  
+    hashSettings,
+    enabledJoin,
+    defaultPage,
   };
 }
 
 export default connect(mapStateToProps, {
   login,
   setIsLoaded,
-  reloadPortalSettings
+  reloadPortalSettings,
 })(withRouter(LoginForm));

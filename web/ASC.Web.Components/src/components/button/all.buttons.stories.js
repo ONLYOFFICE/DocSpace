@@ -1,7 +1,7 @@
-import React from 'react';
-import { storiesOf } from '@storybook/react';
-import Button from '.';
-import Section from '../../../.storybook/decorators/section';
+import React from "react";
+import { storiesOf } from "@storybook/react";
+import Button from ".";
+import Section from "../../../.storybook/decorators/section";
 
 function onClick(e) {
   e = e || window.event;
@@ -11,12 +11,11 @@ function onClick(e) {
 }
 
 const getButtons = (primary) => {
-
-  const sizes = ['large', 'big', 'medium', 'base'];
-  const states = ['isActivated', 'isHovered', 'isClicked', 'isDisabled'];
+  const sizes = ["large", "big", "medium", "base"];
+  const states = ["isActivated", "isHovered", "isClicked", "isDisabled"];
 
   const baseButton = {
-    size: 'base',
+    size: "base",
     primary: true,
     isActivated: false,
     isHovered: false,
@@ -24,22 +23,26 @@ const getButtons = (primary) => {
     isDisabled: false,
     isLoading: false,
     onClick: onClick,
-    label: "base button"
+    label: "base button",
   };
 
   let buttons = [];
   baseButton.primary = primary;
 
-  sizes.forEach(size => {
+  sizes.forEach((size) => {
     let sizeButtons = [];
-    states.forEach(state => {
-      let btn = { ...baseButton, size: size, label: primary ? (size === "base" ? "Save" : "Publish") : "Cancel" }
+    states.forEach((state) => {
+      let btn = {
+        ...baseButton,
+        size: size,
+        label: primary ? (size === "base" ? "Save" : "Publish") : "Cancel",
+      };
       btn[state] = true;
       sizeButtons.push(btn);
-    })
+    });
     buttons.push({
       size: size,
-      buttons: sizeButtons
+      buttons: sizeButtons,
     });
   });
 
@@ -48,10 +51,9 @@ const getButtons = (primary) => {
   return buttons;
 };
 
-storiesOf('Components|Buttons', module)
-
+storiesOf("Components|Buttons", module)
   .addParameters({ options: { showAddonPanel: false } })
-  .add('all', () => (
+  .add("all", () => (
     <Section>
       <div>
         <h1>Main buttons (primary action)</h1>
@@ -72,9 +74,10 @@ storiesOf('Components|Buttons', module)
                   {Object.values(btnSize.buttons).map((btn, j) => (
                     <td key={`col${i}${j}`} style={{ paddingBottom: 20 }}>
                       <Button key={`btn${i}${j}`} {...btn} />
-                    </td>))}
+                    </td>
+                  ))}
                 </tr>
-              )
+              );
             })}
           </tbody>
         </table>
@@ -98,9 +101,10 @@ storiesOf('Components|Buttons', module)
                   {Object.values(btnSize.buttons).map((btn, j) => (
                     <td key={`col${i}${j}`} style={{ paddingBottom: 20 }}>
                       <Button key={`btn${i}${j}`} {...btn} />
-                    </td>))}
+                    </td>
+                  ))}
                 </tr>
-              )
+              );
             })}
           </tbody>
         </table>

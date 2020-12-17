@@ -85,6 +85,7 @@ namespace ASC.Web.Files.ThirdPartyApp
         }
     }
 
+    [Scope]
     public class TokenHelper
     {
         public ILog Logger { get; }
@@ -160,23 +161,6 @@ namespace ASC.Web.Files.ThirdPartyApp
         private OAuth20Token DecryptToken(string token)
         {
             return string.IsNullOrEmpty(token) ? null : OAuth20Token.FromJson(InstanceCrypto.Decrypt(token));
-        }
-    }
-
-    public static class TokenHelperExtension
-    {
-        public static DIHelper AddTokenHelperService(this DIHelper services)
-        {
-            if (services.TryAddScoped<TokenHelper>())
-            {
-                return services
-                    .AddFilesDbContextService()
-                    .AddInstanceCryptoService()
-                    .AddAuthContextService()
-                    .AddTenantManagerService();
-            }
-
-            return services;
         }
     }
 }
