@@ -41,7 +41,7 @@ export function createConfirmUser(registerData, loginData, key) {
         const promise = new Promise((resolve, reject) => {
           setTimeout(() => {
             login(
-              loginData.userName,
+              loginData.email,
               loginData.passwordHash
             )(dispatch)
               .then(() => {
