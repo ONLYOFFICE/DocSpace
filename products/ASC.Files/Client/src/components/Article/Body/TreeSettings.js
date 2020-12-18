@@ -12,6 +12,8 @@ import {
   setExpandSettingsTree,
   getFilesSettings,
   setSelectedFolder,
+  setIsLoading,
+  setFirstLoad,
 } from "../../../store/files/actions";
 import {
   getIsLoading,
@@ -77,16 +79,24 @@ const PureTreeSettings = ({
   getFilesSettings,
   setSelectedFolder,
   selectedFolder,
+  setIsLoading,
+  setFirstLoad,
   t,
 }) => {
   useEffect(() => {
     const { setting } = match.params;
-    if (setting && !expandedSetting) setExpandSettingsTree(["settings"]);
-  }, [match, expandedSetting, setExpandSettingsTree]);
+    setIsLoading(true);
+    getFilesSettings().then(() => {
+      setIsLoading(false);
+      setFirstLoad(false);
+      setSelectedNode([setting]);
+    });
+  }, []);
 
   useEffect(() => {
-    getFilesSettings();
-  }, [getFilesSettings]);
+    const { setting } = match.params;
+    if (setting && !expandedSetting) setExpandSettingsTree(["settings"]);
+  }, [match, expandedSetting, setExpandSettingsTree]);
 
   const switcherIcon = (obj) => {
     if (obj.isLeaf) {
@@ -146,7 +156,7 @@ const PureTreeSettings = ({
             title={t("TreeSettingsAdminSettings")}
           />
         ) : null}
-        {enableThirdParty ? (
+        {/*enableThirdParty ? (
           <TreeNode
             selectable={true}
             className="settings-node"
@@ -155,7 +165,7 @@ const PureTreeSettings = ({
             isLeaf={true}
             title={t("TreeSettingsConnectedCloud")}
           />
-        ) : null}
+        ) : null*/}
       </TreeNode>
     );
   };
@@ -211,4 +221,6 @@ export default connect(mapStateToProps, {
   setExpandSettingsTree,
   getFilesSettings,
   setSelectedFolder,
+  setIsLoading,
+  setFirstLoad,
 })(withRouter(TreeSettings));
