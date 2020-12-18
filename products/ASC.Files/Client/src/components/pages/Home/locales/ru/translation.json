@@ -112,5 +112,9 @@
   "FolderCreated": "Создана новая папка <strong>{{itemTitle}}</strong>",
   "FileCreated": "Создан новый файл <strong>{{itemTitle}}.{{exst}}</strong>",
   "FolderRemoved": "Папка перемещена в корзину",
-  "FileRemoved": "Файл перемещен в корзину"
+  "FileRemoved": "Файл перемещен в корзину",
+  "MoveItem": "<strong>{{title}}</strong> перемещен",
+  "MoveItems": "Перемещено элементов: <strong>{{qty}}</strong>",
+  "CopyItem": "<strong>{{title}}</strong> скопирован",
+  "CopyItems": "Скопировано элементов: <strong>{{qty}}</strong>"
 }
