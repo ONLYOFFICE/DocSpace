@@ -588,6 +588,11 @@ export const getSelectionLength = (state) => {
   return state.files.selection.length;
 };
 
+export const getSelectionTitle = createSelector(getSelection, (selection) => {
+  if (selection.length === 0) return null;
+  return selection.find((el) => el.title).title;
+});
+
 export const getViewAs = (state) => {
   return state.files.viewAs;
 };
@@ -1214,3 +1219,10 @@ export const getIconOfDraggedFile = (state) => {
 export const getSharePanelVisible = (state) => {
   return state.files.sharingPanelVisible;
 };
+
+export const isSecondaryProgressFinished = createSelector(
+  getSecondaryProgressData,
+  (data) => {
+    return data && data.percent === 100;
+  }
+);

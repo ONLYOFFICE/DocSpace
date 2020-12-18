@@ -4,9 +4,5 @@
   "CopyOperation": "Copying",
   "MoveToOperation": "Moving",
   "Restore": "Restore",
-  "MoveToFolderMessage": "You cannot move the folder to its subfolder",
-  "MoveItem": "<strong>{{title}}</strong> moved",
-  "MoveItems": "<strong>{{qty}}</strong> elements has been moved",
-  "CopyItem": "<strong>{{title}}</strong> copied",
-  "CopyItems": "<strong>{{qty}}</strong> elements copied"
+  "MoveToFolderMessage": "You cannot move the folder to its subfolder"
 }

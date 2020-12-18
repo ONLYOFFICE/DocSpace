@@ -182,7 +182,7 @@ const Body = () => {
           <Text className="text_style" fontSize="12px">
             {t("SourceCode")}:{" "}
             <Link
-              href="https://github.com/ONLYOFFICE/CommunityServer"
+              href="https://github.com/ONLYOFFICE/AppServer"
               isHovered={true}
               fontSize="12px"
             >
