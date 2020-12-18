@@ -48,6 +48,8 @@ const BodyStyle = styled.div`
   }
 
   .copyright-line {
+    display: grid;
+    grid-template-columns: 10fr 180px 10fr;
     padding-bottom: 15px;
     text-align: center;
 
@@ -56,7 +58,6 @@ const BodyStyle = styled.div`
       content: "";
       height: 2px;
       margin-top: 9px;
-      width: 26%;
       float: right;
     }
 
@@ -65,7 +66,6 @@ const BodyStyle = styled.div`
       content: "";
       height: 2px;
       margin-top: 9px;
-      width: 26%;
       float: left;
     }
   }
