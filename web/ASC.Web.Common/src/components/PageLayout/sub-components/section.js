@@ -62,7 +62,7 @@ class Section extends React.Component {
     const { pinned } = this.props;
 
     if (isIOS && isSafari && window.innerWidth <= size.smallTablet && pinned) {
-      this.props.onUnpin();
+      this.props.unpinArticle();
     }
   }
   render() {
