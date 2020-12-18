@@ -49,7 +49,8 @@ const BodyStyle = styled.div`
 
   .copyright-line {
     display: grid;
-    grid-template-columns: 10fr 180px 10fr;
+    grid-template-columns: 1fr max-content 1fr;
+    grid-column-gap: 24px;
     padding-bottom: 15px;
     text-align: center;
 
