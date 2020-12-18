@@ -13,7 +13,6 @@ import {
   getFilesSettings,
   setSelectedFolder,
   setIsLoading,
-  setFirstLoad,
 } from "../../../store/files/actions";
 import {
   getIsLoading,
@@ -80,7 +79,6 @@ const PureTreeSettings = ({
   setSelectedFolder,
   selectedFolder,
   setIsLoading,
-  setFirstLoad,
   t,
 }) => {
   useEffect(() => {
@@ -88,7 +86,6 @@ const PureTreeSettings = ({
     setIsLoading(true);
     getFilesSettings().then(() => {
       setIsLoading(false);
-      setFirstLoad(false);
       setSelectedNode([setting]);
     });
   }, []);
@@ -222,5 +219,4 @@ export default connect(mapStateToProps, {
   getFilesSettings,
   setSelectedFolder,
   setIsLoading,
-  setFirstLoad,
 })(withRouter(TreeSettings));

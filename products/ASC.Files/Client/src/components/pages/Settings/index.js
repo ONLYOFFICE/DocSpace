@@ -33,13 +33,14 @@ const PureSettings = ({
   t,
   isLoading,
   settingsTree,
-  getFilesSettings,
-  setIsLoading,
   setFirstLoad,
-  setSelectedNode,
 }) => {
   const [title, setTitle] = useState("");
   const { setting } = match.params;
+
+  useEffect(() => {
+    setFirstLoad(false);
+  }, []);
 
   useEffect(() => {
     switch (setting) {
