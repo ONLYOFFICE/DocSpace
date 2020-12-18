@@ -89,7 +89,12 @@ class Confirm extends React.PureComponent {
 
   onSubmit = () => {
     this.setState({ isLoading: true }, () => {
-      const { defaultPage, createConfirmUser, linkData, hashSettings } = this.props;
+      const {
+        defaultPage,
+        createConfirmUser,
+        linkData,
+        hashSettings,
+      } = this.props;
       const isVisitor = parseInt(linkData.emplType) === 2;
 
       this.setState({ errorText: "" });
@@ -368,7 +373,7 @@ function mapStateToProps(state) {
     settings: state.auth.settings.passwordSettings,
     greetingTitle: state.auth.settings.greetingSettings,
     hashSettings: state.auth.settings.hashSettings,
-    defaultPage: state.auth.settings.defaultPage
+    defaultPage: state.auth.settings.defaultPage,
   };
 }
 
@@ -376,5 +381,5 @@ export default connect(mapStateToProps, {
   getConfirmationInfo,
   createConfirmUser,
   login,
-  logout
+  logout,
 })(withRouter(withTranslation()(CreateUserForm)));
