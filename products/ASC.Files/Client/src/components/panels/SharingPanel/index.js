@@ -536,9 +536,7 @@ class SharingPanelComponent extends React.Component {
 
     return isFile
       ? item.canOpenPlayer
-        ? `${window.location.origin + settings.homepage}/filter?folder=${
-            item.folderId
-          }&preview=${item.id}`
+        ? `${window.location.href}&preview=${item.id}`
         : item.webUrl
       : `${window.location.origin + settings.homepage}/filter?folder=${
           item.id

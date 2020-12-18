@@ -21,7 +21,7 @@ import SectionToggler from "./sub-components/section-toggler";
 import { changeLanguage } from "../../utils";
 import ReactResizeDetector from "react-resize-detector";
 import FloatingButton from "../FloatingButton";
-
+import { isIOS, isSafari } from "react-device-detect";
 const { getLanguage } = store.auth.selectors;
 const { size } = utils.device;
 const { Provider } = utils.context;
@@ -99,6 +99,7 @@ class PageLayoutComponent extends React.Component {
 
   componentDidMount() {
     window.addEventListener("orientationchange", this.orientationChangeHandler);
+
     this.orientationChangeHandler();
   }
 
@@ -116,7 +117,10 @@ class PageLayoutComponent extends React.Component {
     this.updateMainHeight();
 
     const isValueExist = !!localStorage.getItem(ARTICLE_PINNED_KEY);
-    const isEnoughWidth = screen.availWidth > size.smallTablet;
+    const isEnoughWidth =
+      isIOS && isSafari
+        ? this.windowWidth > size.smallTablet
+        : screen.availWidth > size.smallTablet;
 
     if (!isEnoughWidth && isValueExist) {
       this.backdropClick();
@@ -124,6 +128,7 @@ class PageLayoutComponent extends React.Component {
     if (isEnoughWidth && isValueExist) {
       this.pinArticle();
     }
+    if (isIOS && isSafari) this.windowWidth = window.innerWidth;
   };
 
   updateMainHeight = () => {
