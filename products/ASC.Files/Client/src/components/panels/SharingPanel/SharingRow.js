@@ -29,14 +29,13 @@ const SharingRow = (props) => {
     onRemoveUserClick,
     onShowEmbeddingPanel,
     onToggleLink,
-    externalLinkData,
+    internalLink,
   } = props;
+  const externalLinkVisible =
+    selection && selection.length === 1 && item.shareLink;
+  const internalLinkVisible = index === 0 && internalLink;
 
-  const linkVisible = selection && selection.length === 1 && item.shareLink;
   const onCopyInternalLink = () => {
-    const internalLink = selection.webUrl
-      ? selection.webUrl
-      : selection[0].webUrl;
     copy(internalLink);
     toastr.success(t("LinkCopySuccess"));
   };
@@ -193,24 +192,23 @@ const SharingRow = (props) => {
   //console.log("SharingRow render");
   return (
     <>
-      {linkVisible && (
-        <>
-          <LinkRow
-            linkText="ExternalLink"
-            options={externalLinkOptions}
-            externalLinkData={externalLinkData}
-            embeddedComponentRender={embeddedComponentRender}
-            onToggleLink={onToggleLink}
-            withToggle={true}
-            {...props}
-          />
-          <LinkRow
-            linkText="InternalLink"
-            options={internalLinkData}
-            embeddedComponentRender={embeddedComponentRender}
-            {...props}
-          />
-        </>
+      {externalLinkVisible && (
+        <LinkRow
+          linkText="ExternalLink"
+          options={externalLinkOptions}
+          embeddedComponentRender={embeddedComponentRender}
+          onToggleLink={onToggleLink}
+          withToggle={true}
+          {...props}
+        />
+      )}
+      {internalLinkVisible && (
+        <LinkRow
+          linkText="InternalLink"
+          options={internalLinkData}
+          embeddedComponentRender={embeddedComponentRender}
+          {...props}
+        />
       )}
 
       {!item.shareLink && (
