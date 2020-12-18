@@ -235,7 +235,7 @@ class SectionBodyContent extends React.Component {
   // }
 
   shouldComponentUpdate(nextProps, nextState) {
-    if (this.props && this.props.firstLoad) return true;
+    //if (this.props && this.props.firstLoad) return true;
 
     const { showMoveToPanel, showCopyPanel, isDrag } = this.state;
     if (this.props.sharingPanelVisible !== nextProps.sharingPanelVisible) {
