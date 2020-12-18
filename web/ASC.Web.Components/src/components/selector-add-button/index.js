@@ -26,7 +26,11 @@ const StyledButton = styled.div`
 `;
 
 const SelectorAddButton = (props) => {
-  const { isDisabled, title, onClick, className, id, style } = props;
+  const { isDisabled, title, className, id, style } = props;
+
+  const onClick = (e) => {
+    !isDisabled && props.onClick && props.onClick(e);
+  };
 
   return (
     <StyledButton
