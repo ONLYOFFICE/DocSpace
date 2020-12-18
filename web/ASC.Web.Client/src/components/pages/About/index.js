@@ -86,7 +86,7 @@ const Body = () => {
   useEffect(() => {
     changeLanguage(i18n);
     setDocumentTitle(t("AboutTitle")); //TODO: implement the ability to read the current module in redux to implement the template `${t("AboutTitle")} – ${t("People")}`
-  }, [t, setDocumentTitle]);
+  }, [t]);
 
   const gitHub = "GitHub";
   const license = "AGPL-3.0";
@@ -103,6 +103,7 @@ const Body = () => {
           href="https://www.gnu.org/licenses/gpl-3.0.html"
           isHovered={true}
           fontSize="12px"
+          target="_blank"
         >
           {{ license }}
         </Link>
@@ -172,7 +173,7 @@ const Body = () => {
             {phone}
           </Text>
         </div>
-        <Link href="http://www.onlyoffice.com" fontSize="12px">
+        <Link href="http://www.onlyoffice.com" fontSize="12px" target="_blank">
           {link}
         </Link>
 
@@ -185,6 +186,7 @@ const Body = () => {
               href="https://github.com/ONLYOFFICE/AppServer"
               isHovered={true}
               fontSize="12px"
+              target="_blank"
             >
               {gitHub}
             </Link>
