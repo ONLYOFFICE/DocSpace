@@ -280,6 +280,7 @@ class SectionBodyContent extends React.Component {
       fetchFavoritesFolder,
       isFavorites,
       selectedFolderId,
+      setSelected,
       //selection,
       t,
     } = this.props;
@@ -299,6 +300,7 @@ class SectionBodyContent extends React.Component {
               : getFileInfo(id);
           })
           .then(() => toastr.success(t("RemovedFromFavorites")))
+          .then(() => setSelected("close"))
           .catch((e) => toastr.error(e));
       default:
         return;
