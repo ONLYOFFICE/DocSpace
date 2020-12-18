@@ -203,6 +203,7 @@ class SectionBodyContent extends React.Component {
     let previewId = queryString.parse(this.props.location.search).preview;
 
     if (previewId) {
+      this.removeQuery("preview");
       this.onMediaFileClick(+previewId);
     }
 
@@ -502,13 +503,10 @@ class SectionBodyContent extends React.Component {
     const item = selection[0];
     const isFile = !!item.fileExst;
     const { t } = this.props;
-
     copy(
       isFile
         ? item.canOpenPlayer
-          ? `${window.location.origin + settings.homepage}/filter?folder=${
-              item.folderId
-            }&preview=${item.id}`
+          ? `${window.location.href}&preview=${item.id}`
           : item.webUrl
         : `${window.location.origin + settings.homepage}/filter?folder=${
             item.id
@@ -1489,6 +1487,18 @@ class SectionBodyContent extends React.Component {
         //toastr.error(err);
         setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
       });
+  };
+
+  removeQuery = (queryName) => {
+    const { location, history } = this.props;
+    const queryParams = new URLSearchParams(location.search);
+
+    if (queryParams.has(queryName)) {
+      queryParams.delete(queryName);
+      history.replace({
+        search: queryParams.toString(),
+      });
+    }
   };
 
   onSelectItem = (item) => {
