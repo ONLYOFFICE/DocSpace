@@ -114,7 +114,7 @@ namespace ASC.Files.Core.Data
         public Folder<int> GetFolder(int folderId)
         {
             var query = GetFolderQuery(r => r.Id == folderId).AsNoTracking();
-            return ToFolder(FromQueryWithShared(query).SingleOrDefault());
+            return ToFolder(FromQueryWithShared(query).Take(1).SingleOrDefault());
         }
 
         public Folder<int> GetFolder(string title, int parentId)
@@ -124,7 +124,7 @@ namespace ASC.Files.Core.Data
             var query = GetFolderQuery(r => r.Title == title && r.ParentId == parentId).AsNoTracking()
                 .OrderBy(r => r.CreateOn);
 
-            return ToFolder(FromQueryWithShared(query).FirstOrDefault());
+            return ToFolder(FromQueryWithShared(query).Take(1).FirstOrDefault());
         }
 
         public Folder<int> GetRootFolder(int folderId)
@@ -1041,7 +1041,12 @@ namespace ASC.Files.Core.Data
                             .Join(FilesDbContext.Tree, a => a.Id, b => b.ParentId, (folder, tree) => new { folder, tree })
                             .Where(x => x.folder.TenantId == r.TenantId && x.tree.FolderId == r.ParentId)
                             .OrderByDescending(r => r.tree.Level)
-                            .Select(r => r.folder)
+                            .Select(r => new DbFolder
+                            {
+                                FolderType = r.folder.FolderType,
+                                CreateBy = r.folder.CreateBy,
+                                Id = r.folder.Id
+                            })
                             .Take(1)
                             .FirstOrDefault(),
                     Shared = FilesDbContext.Security
@@ -1060,7 +1065,12 @@ namespace ASC.Files.Core.Data
                             .Where(x => x.folder.TenantId == r.TenantId)
                             .Where(x => x.tree.FolderId == r.ParentId)
                             .OrderByDescending(x => x.tree.Level)
-                            .Select(x => x.folder)
+                            .Select(r => new DbFolder
+                            {
+                                FolderType = r.folder.FolderType,
+                                CreateBy = r.folder.CreateBy,
+                                Id = r.folder.Id
+                            })
                             .Take(1)
                             .FirstOrDefault(),
                     Shared = true

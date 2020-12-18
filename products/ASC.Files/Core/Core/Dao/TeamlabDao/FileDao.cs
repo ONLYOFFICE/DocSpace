@@ -237,10 +237,6 @@ namespace ASC.Files.Core.Data
 
         public List<int> GetFiles(int parentId)
         {
-            var query = GetFileQuery(r => r.FolderId == parentId && r.CurrentVersion)
-                .AsNoTracking()
-                .Select(r => r.Id);
-
             return Query(FilesDbContext.Files)
                 .AsNoTracking()
                 .Where(r => r.FolderId == parentId && r.CurrentVersion)
@@ -397,8 +393,8 @@ namespace ASC.Files.Core.Data
                 if (file.CreateOn == default) file.CreateOn = TenantUtil.DateTimeNow();
 
                 var toUpdate = FilesDbContext.Files
-                    .Where(r => r.Id == file.ID && r.CurrentVersion && r.TenantId == TenantID)
-                    .FirstOrDefault();
+                    .Take(1)
+                    .FirstOrDefault(r => r.Id == file.ID && r.CurrentVersion && r.TenantId == TenantID);
 
                 if (toUpdate != null)
                 {
@@ -535,8 +531,8 @@ namespace ASC.Files.Core.Data
                 if (file.CreateOn == default) file.CreateOn = TenantUtil.DateTimeNow();
 
                 toUpdate = FilesDbContext.Files
-                    .Where(r => r.Id == file.ID && r.Version == file.Version && r.TenantId == TenantID)
-                    .FirstOrDefault();
+                    .Take(1)
+                    .FirstOrDefault(r => r.Id == file.ID && r.Version == file.Version && r.TenantId == TenantID);
 
                 toUpdate.Version = file.Version;
                 toUpdate.VersionGroup = file.VersionGroup;
@@ -612,9 +608,8 @@ namespace ASC.Files.Core.Data
                 || file.Version <= 1) return;
 
             var toDelete = Query(FilesDbContext.Files)
-                .Where(r => r.Id == file.ID)
-                .Where(r => r.Version == file.Version)
-                .FirstOrDefault();
+                .Take(1)
+                .FirstOrDefault(r => r.Id == file.ID && r.Version == file.Version);
 
             if (toDelete != null)
             {
@@ -623,9 +618,8 @@ namespace ASC.Files.Core.Data
             FilesDbContext.SaveChanges();
 
             var toUpdate = Query(FilesDbContext.Files)
-                .Where(r => r.Id == file.ID)
-                .Where(r => r.Version == file.Version - 1)
-                .FirstOrDefault();
+                .Take(1)
+                .FirstOrDefault(r => r.Id == file.ID && r.Version == file.Version - 1);
 
             toUpdate.CurrentVersion = true;
             FilesDbContext.SaveChanges();
@@ -665,7 +659,7 @@ namespace ASC.Files.Core.Data
                 FactoryIndexer.DeleteAsync(d);
             }
 
-            var toDeleteLinks = Query(FilesDbContext.TagLink).Where(r => r.EntryId == fileId.ToString()).Where(r => r.EntryType == FileEntryType.File);
+            var toDeleteLinks = Query(FilesDbContext.TagLink).Where(r => r.EntryId == fileId.ToString() && r.EntryType == FileEntryType.File);
             FilesDbContext.RemoveRange(toDeleteFiles);
 
             var tagsToRemove = Query(FilesDbContext.Tag)
@@ -703,10 +697,9 @@ namespace ASC.Files.Core.Data
         {
             return Query(FilesDbContext.Files)
                 .AsNoTracking()
-                .Where(r => r.Title == title)
-                .Where(r => r.FolderId == folderId)
-                .Where(r => r.CurrentVersion)
-                .Any();
+                .Any(r => r.Title == title && 
+                          r.FolderId == folderId && 
+                          r.CurrentVersion);
         }
 
         public TTo MoveFile<TTo>(int fileId, TTo toFolderId)
@@ -846,6 +839,7 @@ namespace ASC.Files.Core.Data
             var toUpdate = Query(FilesDbContext.Files)
                 .Where(r => r.Id == file.ID)
                 .Where(r => r.CurrentVersion)
+                .Take(1)
                 .FirstOrDefault();
 
             toUpdate.Title = newTitle;
@@ -867,6 +861,7 @@ namespace ASC.Files.Core.Data
             var toUpdate = Query(FilesDbContext.Files)
                 .Where(r => r.Id == fileId)
                 .Where(r => r.Version == fileVersion)
+                .Take(1)
                 .FirstOrDefault();
 
             toUpdate.Comment = comment;
@@ -899,6 +894,7 @@ namespace ASC.Files.Core.Data
                 .Where(r => r.Id == fileId)
                 .Where(r => r.Version == fileVersion)
                 .Select(r => r.VersionGroup)
+                .Take(1)
                 .FirstOrDefault();
 
             var toUpdate = Query(FilesDbContext.Files)
@@ -1196,10 +1192,9 @@ namespace ASC.Files.Core.Data
         public bool ContainChanges(int fileId, int fileVersion)
         {
             return Query(FilesDbContext.Files)
-                .Where(r => r.Id == fileId)
-                .Where(r => r.Version == fileVersion)
-                .Where(r => r.Changes != null)
-                .Any();
+                .Any(r => r.Id == fileId && 
+                          r.Version == fileVersion && 
+                          r.Changes != null);
         }
 
         public IEnumerable<(File<int>, SmallShareRecord)> GetFeeds(int tenant, DateTime from, DateTime to)
@@ -1232,7 +1227,7 @@ namespace ASC.Files.Core.Data
                 .Where(r => r.ModifiedOn > fromTime)
                 .Select(r => r.TenantId)
                 .GroupBy(r => r)
-                .Where(r => r.Count() > 0)
+                .Where(r => r.Any())
                 .Select(r => r.Key)
                 .ToList();
 
@@ -1240,7 +1235,7 @@ namespace ASC.Files.Core.Data
                 .Where(r => r.TimeStamp > fromTime)
                 .Select(r => r.TenantId)
                 .GroupBy(r => r)
-                .Where(r => r.Count() > 0)
+                .Where(r => r.Any())
                 .Select(r => r.Key)
                 .ToList();
 
@@ -1332,15 +1327,19 @@ namespace ASC.Files.Core.Data
                         .Where(x => x.folder.TenantId == r.TenantId)
                         .Where(x => x.tree.FolderId == r.FolderId)
                         .OrderByDescending(r => r.tree.Level)
-                        .Select(r => r.folder)
+                        .Select(r => new DbFolder
+                        {
+                            FolderType = r.folder.FolderType,
+                            CreateBy = r.folder.CreateBy,
+                            Id = r.folder.Id
+                        })
                         .Take(1)
                         .FirstOrDefault(),
                     Shared =
                      FilesDbContext.Security
-                        .Where(x=> x.TenantId == TenantID)
-                        .Where(x => x.EntryType == FileEntryType.File)
-                        .Where(x => x.EntryId == r.Id.ToString())
-                        .Any()
+                        .Any(x=> x.TenantId == TenantID && 
+                                   x.EntryType == FileEntryType.File && 
+                                   x.EntryId == r.Id.ToString())
                 });
         }
 
@@ -1355,7 +1354,12 @@ namespace ASC.Files.Core.Data
                             .Where(x => x.folder.TenantId == r.TenantId)
                             .Where(x => x.tree.FolderId == r.FolderId)
                             .OrderByDescending(r => r.tree.Level)
-                            .Select(r => r.folder)
+                            .Select(r => new DbFolder
+                            {
+                                FolderType = r.folder.FolderType,
+                                CreateBy = r.folder.CreateBy,
+                                Id = r.folder.Id
+                            })
                             .Take(1)
                             .FirstOrDefault(),
                     Shared = true

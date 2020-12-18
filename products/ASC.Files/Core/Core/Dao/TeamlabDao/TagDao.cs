@@ -532,7 +532,8 @@ namespace ASC.Files.Core.Data
                             .FirstOrDefault()
                     })
                     .Where(r => r.root.FolderType == FolderType.USER)
-                    .Select(r => r.tagLink);
+                    .Select(r => r.tagLink)
+                    .Distinct();
 
                 tempTags = tempTags.Concat(FromQuery(tmpShareFileTags));
 
@@ -554,7 +555,8 @@ namespace ASC.Files.Core.Data
                             .FirstOrDefault()
                     })
                     .Where(r => r.root.FolderType == FolderType.USER)
-                    .Select(r => r.tagLink);
+                    .Select(r => r.tagLink)
+                    .Distinct();
 
                 tempTags = tempTags.Concat(FromQuery(tmpShareFolderTags));
 
@@ -572,7 +574,8 @@ namespace ASC.Files.Core.Data
                                 r.mapping.Id.StartsWith("drive-" + r.account.Id) ||
                                 r.mapping.Id.StartsWith("onedrive-" + r.account.Id))
                     )
-                    .Select(r => r.tagLink);
+                    .Select(r => r.tagLink)
+                    .Distinct();
 
                 tempTags = tempTags.Concat(FromQuery(tmpShareSboxTags));
             }
@@ -603,7 +606,8 @@ namespace ASC.Files.Core.Data
                             .FirstOrDefault()
                     })
                     .Where(r => r.root.FolderType == FolderType.Privacy)
-                    .Select(r => r.tagLink);
+                    .Select(r => r.tagLink)
+                    .Distinct();
 
                 tempTags = tempTags.Concat(FromQuery(tmpShareFileTags));
 
@@ -626,7 +630,8 @@ namespace ASC.Files.Core.Data
                                             .FirstOrDefault()
                                     })
                                     .Where(r => r.root.FolderType == FolderType.Privacy)
-                                    .Select(r => r.tagLink);
+                                    .Select(r => r.tagLink)
+                                    .Distinct();
 
                 tempTags = tempTags.Concat(FromQuery(tmpShareFolderTags));
             }
@@ -637,7 +642,8 @@ namespace ASC.Files.Core.Data
                     .Where(r => r.bunch.LeftNode == r.tagLink.Link.EntryId && 
                                 r.tagLink.Link.EntryType == FileEntryType.Folder && 
                                 r.bunch.RightNode.StartsWith("projects/project/"))
-                    .Select(r => r.tagLink);
+                    .Select(r => r.tagLink)
+                    .Distinct();
                 tempTags = tempTags.Concat(FromQuery(q));
             }
 
@@ -679,7 +685,8 @@ namespace ASC.Files.Core.Data
                 .Where(r => r.file.TenantId == r.tagLink.Link.TenantId)
                 .Where(r => where.Contains(r.file.FolderId.ToString()))
                 .Where(r => r.tagLink.Link.EntryType == FileEntryType.File)
-                .Select(r => r.tagLink);
+                .Select(r => r.tagLink)
+                .Distinct();
 
             result.AddRange(FromQuery(newTagsForFiles));
 
@@ -710,7 +717,8 @@ namespace ASC.Files.Core.Data
                                 thirdpartyFolderIds.Contains(r.mapping.Id) &&
                                 r.tagLink.Tag.Owner == subject &&
                                 r.tagLink.Link.EntryType == FileEntryType.Folder)
-                    .Select(r => r.tagLink);
+                    .Select(r => r.tagLink)
+                    .Distinct();
 
                 result.AddRange(FromQuery(newTagsForSBox));
             }
@@ -721,6 +729,22 @@ namespace ASC.Files.Core.Data
         protected List<Tag> FromQuery(IQueryable<TagLinkData> dbFilesTags)
         {
             return dbFilesTags
+                .Select(r=> new TagLinkData()
+                {
+                    Tag = new DbFilesTag
+                    {
+                        Name = r.Tag.Name,
+                        Flag = r.Tag.Flag,
+                        Owner = r.Tag.Owner,
+                        Id = r.Tag.Id
+                    },
+                    Link = new DbFilesTagLink
+                    {
+                         TagCount = r.Link.TagCount,
+                         EntryId = r.Link.EntryId,
+                         EntryType = r.Link.EntryType
+                    }
+                })
                 .ToList()
                 .Select(ToTag)
                 .ToList();

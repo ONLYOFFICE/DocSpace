@@ -6,6 +6,7 @@ const {
   getPortalPasswordSettings,
   setNewEmail,
   logout,
+  getPortalSettings,
 } = store.auth.actions;
 
 export const SET_IS_CONFIRM_LOADED = "SET_IS_CONFIRM_LOADED";
@@ -19,9 +20,12 @@ export function setIsConfirmLoaded(isConfirmLoaded) {
 
 export function getConfirmationInfo(token) {
   return (dispatch) => {
-    return getPortalPasswordSettings(dispatch, token).then(() =>
-      dispatch(setIsConfirmLoaded(true))
-    );
+    const requests = [
+      getPortalSettings(dispatch),
+      getPortalPasswordSettings(dispatch, token),
+    ];
+
+    return Promise.all(requests).then(() => dispatch(setIsConfirmLoaded(true)));
   };
 }
 
