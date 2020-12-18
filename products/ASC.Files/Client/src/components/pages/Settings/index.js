@@ -29,6 +29,7 @@ const { changeLanguage } = utils;
 
 const PureSettings = ({
   match,
+  history,
   t,
   isLoading,
   settingsTree,
@@ -49,30 +50,14 @@ const PureSettings = ({
         setTitle("AdminSettings");
         break;
       case "thirdparty":
-        setTitle("ThirdPartySettings");
+        //setTitle("ThirdPartySettings");
+        history.push("/products/files/settings/common");
         break;
       default:
         setTitle("CommonSettings");
         break;
     }
   }, [setting]);
-  useEffect(() => {
-    if (Object.keys(settingsTree).length === 0) {
-      setIsLoading(true);
-      getFilesSettings().then(() => {
-        setIsLoading(false);
-        setFirstLoad(false);
-        setSelectedNode([setting]);
-      });
-    }
-  }, [
-    setting,
-    getFilesSettings,
-    setIsLoading,
-    setFirstLoad,
-    settingsTree,
-    setSelectedNode,
-  ]);
 
   useEffect(() => {
     if (isLoading) {
