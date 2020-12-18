@@ -117,10 +117,7 @@ class PageLayoutComponent extends React.Component {
     this.updateMainHeight();
 
     const isValueExist = !!localStorage.getItem(ARTICLE_PINNED_KEY);
-    const isEnoughWidth =
-      isIOS && isSafari
-        ? this.windowWidth > size.smallTablet
-        : screen.availWidth > size.smallTablet;
+    const isEnoughWidth = screen.availWidth > size.smallTablet;
 
     if (!isEnoughWidth && isValueExist) {
       this.backdropClick();
@@ -128,7 +125,6 @@ class PageLayoutComponent extends React.Component {
     if (isEnoughWidth && isValueExist) {
       this.pinArticle();
     }
-    if (isIOS && isSafari) this.windowWidth = window.innerWidth;
   };
 
   updateMainHeight = () => {
@@ -340,7 +336,11 @@ class PageLayoutComponent extends React.Component {
                   sectionWidth: width,
                 }}
               >
-                <Section widthProp={width}>
+                <Section
+                  widthProp={width}
+                  onUnpin={this.unpinArticle}
+                  pinned={this.state.isArticlePinned}
+                >
                   {isSectionHeaderAvailable && (
                     <SubSectionHeader>
                       {sectionHeaderContent
