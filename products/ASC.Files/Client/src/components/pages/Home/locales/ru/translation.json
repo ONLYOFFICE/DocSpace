@@ -116,5 +116,7 @@
   "MoveItem": "<strong>{{title}}</strong> перемещен",
   "MoveItems": "Перемещено элементов: <strong>{{qty}}</strong>",
   "CopyItem": "<strong>{{title}}</strong> скопирован",
-  "CopyItems": "Скопировано элементов: <strong>{{qty}}</strong>"
+  "CopyItems": "Скопировано элементов: <strong>{{qty}}</strong>",
+  "ContainsSpecCharacter": "Название не должно содержать следующих символов: *+:\"<>?|/",
+  "CreateWithEmptyTitle": "Нельзя создать папку или файл с пустым названием"
 }
