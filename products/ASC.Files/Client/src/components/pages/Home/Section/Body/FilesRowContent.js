@@ -222,7 +222,14 @@ class FilesRowContent extends React.PureComponent {
   }
 
   renameTitle = (e) => {
-    this.setState({ itemTitle: e.target.value });
+    let title = e.target.value;
+    //const chars = '*+:"<>?|/'; TODO: think how to solve problem with interpolation escape values in i18n translate
+    const regexp = new RegExp('[*+:"<>?|\\\\/]', "gim");
+    if (title.match(regexp)) {
+      toastr.warning(this.props.t("ContainsSpecCharacter"));
+    }
+    title = title.replace(regexp, "_");
+    return this.setState({ itemTitle: title });
   };
 
   cancelUpdateItem = (e) => {
