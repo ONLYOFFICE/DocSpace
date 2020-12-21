@@ -42,14 +42,6 @@ const { isAdmin } = store.auth.selectors;
 const { EmployeeType, EmployeeStatus } = constants;
 
 const StyledContainer = styled.div`
-  @media ${desktop} {
-    ${(props) =>
-      props.isHeaderVisible &&
-      css`
-        width: calc(100% + 76px);
-      `}
-  }
-
   .group-button-menu-container {
     margin: 0 -16px;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
@@ -75,8 +67,17 @@ const StyledContainer = styled.div`
 
   .header-container {
     position: relative;
+    ${(props) =>
+      props.isLoaded &&
+      css`
+        display: grid;
+        grid-template-columns: auto auto 1fr;
 
-    display: flex;
+        @media ${tablet} {
+          grid-template-columns: 1fr auto;
+        }
+      `}
+
     align-items: center;
     max-width: calc(100vw - 32px);
 
@@ -352,6 +353,7 @@ const SectionHeaderContent = (props) => {
       {(context) => (
         <StyledContainer
           isHeaderVisible={isHeaderVisible}
+          isLoaded={isLoaded}
           width={context.sectionWidth}
         >
           {employeeDialogVisible && (

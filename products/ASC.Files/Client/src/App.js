@@ -1,6 +1,6 @@
 import React, { Suspense } from "react";
 import { connect } from "react-redux";
-import { Router, Switch, Redirect } from "react-router-dom";
+import { Router, Switch, Redirect, Route } from "react-router-dom";
 import Home from "./components/pages/Home";
 import DocEditor from "./components/pages/DocEditor";
 import Settings from "./components/pages/Settings";
@@ -54,6 +54,12 @@ class App extends React.Component {
     } = this.props;
 
     setModuleInfo();
+
+    if (this.isEditor) {
+      setIsLoaded();
+      return;
+    }
+
     getIsAuthenticated().then((isAuthenticated) => {
       if (!isAuthenticated) {
         utils.updateTempContent();
@@ -62,15 +68,13 @@ class App extends React.Component {
         utils.updateTempContent(isAuthenticated);
       }
 
-      const requests = this.isEditor
-        ? [getUser()]
-        : [
-            getUser(),
-            getPortalSettings(),
-            getModules(),
-            getPortalCultures(),
-            fetchTreeFolders(),
-          ];
+      const requests = [
+        getUser(),
+        getPortalSettings(),
+        getModules(),
+        getPortalCultures(),
+        fetchTreeFolders(),
+      ];
 
       Promise.all(requests)
         .catch((e) => {
@@ -98,7 +102,7 @@ class App extends React.Component {
                 path={`${homepage}/settings/:setting`}
                 component={Settings}
               />
-              <PrivateRoute
+              <Route
                 exact
                 path={`${homepage}/doceditor`}
                 component={DocEditor}

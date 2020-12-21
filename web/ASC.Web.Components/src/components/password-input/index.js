@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import isEqual from "lodash/isEqual";
+import equal from "fast-deep-equal/react";
 
 import { tablet, mobile } from "../../utils/device";
 import InputBlock from "../input-block";
@@ -331,7 +331,7 @@ class PasswordInput extends React.Component {
   };
 
   shouldComponentUpdate(nextProps, nextState) {
-    return !isEqual(this.props, nextProps) || !isEqual(this.state, nextState);
+    return !equal(this.props, nextProps) || !equal(this.state, nextState);
   }
 
   renderTextTooltip = (settings, length, digits, capital, special) => {

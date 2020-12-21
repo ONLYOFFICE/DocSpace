@@ -1,6 +1,6 @@
 {
-  "name": "ASC.Files",
-  "version": "0.1.0",
+  "name": "asc-files-client",
+  "version": "0.0.3",
   "private": true,
   "homepage": "/products/files",
   "dependencies": {
@@ -9,6 +9,7 @@
     "asc-web-components": "file:../../../packages/asc-web-components",
     "connected-react-router": "6.6.1",
     "copy-to-clipboard": "^3.2.0",
+    "fast-deep-equal": "^3.1.3",
     "history": "4.10.1",
     "i18next": "19.0.3",
     "i18next-browser-languagedetector": "4.0.1",

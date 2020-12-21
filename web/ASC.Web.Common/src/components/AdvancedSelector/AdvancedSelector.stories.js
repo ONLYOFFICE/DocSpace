@@ -13,8 +13,8 @@ import withReadme from "storybook-readme/with-readme";
 import Readme from "./README.md";
 import AdvancedSelector2 from ".";
 import Section from "../../../.storybook/decorators/section";
-import { Button, Avatar, Text } from "asc-web-components";
-import isEqual from "lodash/isEqual";
+import { Button } from "asc-web-components";
+import equal from "fast-deep-equal/react";
 import UserTooltip from "../PeopleSelector/sub-components/UserTooltip";
 
 function getRandomInt(min, max) {
@@ -137,7 +137,7 @@ class ADSelectorExample extends React.Component {
 
   componentDidUpdate(prevProps) {
     const { total, options, isOpen } = this.props;
-    if (!isEqual(prevProps.options, options)) {
+    if (!equal(prevProps.options, options)) {
       this.setState({
         options: options,
       });

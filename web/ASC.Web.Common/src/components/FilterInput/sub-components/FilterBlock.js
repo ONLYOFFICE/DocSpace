@@ -3,7 +3,7 @@ import FilterButton from "./FilterButton";
 import HideFilter from "./HideFilter";
 import { ComboBox } from "asc-web-components";
 import CloseButton from "./CloseButton";
-import isEqual from "lodash/isEqual";
+import equal from "fast-deep-equal/react";
 import PropTypes from "prop-types";
 import {
   StyledFilterItem,
@@ -291,8 +291,8 @@ class FilterBlock extends React.Component {
     const { needUpdateFilter } = this.props;
     if (
       (needUpdate || needUpdateFilter) &&
-      (!isEqual(prevState.openFilterItems, this.state.openFilterItems) ||
-        !isEqual(prevState.hiddenFilterItems, this.state.hiddenFilterItems))
+      (!equal(prevState.openFilterItems, this.state.openFilterItems) ||
+        !equal(prevState.hiddenFilterItems, this.state.hiddenFilterItems))
     ) {
       this.props.onFilterRender();
       this.setNeedUpdate(false);
@@ -302,10 +302,10 @@ class FilterBlock extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
     const { hiddenFilterItems, openFilterItems } = nextProps;
 
-    if (!isEqual(this.props, nextProps)) {
+    if (!equal(this.props, nextProps)) {
       if (
-        !isEqual(this.props.hiddenFilterItems, hiddenFilterItems) ||
-        !isEqual(this.props.openFilterItems, openFilterItems)
+        !equal(this.props.hiddenFilterItems, hiddenFilterItems) ||
+        !equal(this.props.openFilterItems, openFilterItems)
       ) {
         this.setState({
           hiddenFilterItems,
@@ -316,7 +316,7 @@ class FilterBlock extends React.Component {
       return true;
     }
 
-    return !isEqual(this.state, nextState);
+    return !equal(this.state, nextState);
   }
 
   onDeleteFilterItem = (key) => {
