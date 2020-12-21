@@ -3,7 +3,7 @@ import { withRouter } from "react-router";
 import { Toast, Box } from "asc-web-components";
 import { utils, api, toastr, Loaders } from "asc-web-common";
 
-const { getObjectByLocation, showLoader, hideLoader } = utils;
+const { getObjectByLocation, showLoader, hideLoader, tryRedirectTo } = utils;
 
 class PureEditor extends React.Component {
   constructor(props) {
@@ -35,6 +35,12 @@ class PureEditor extends React.Component {
 
       const docApiUrl = await api.files.getDocServiceUrl();
 
+      if (!doc) {
+        const isAuthenticated = await api.user.checkIsAuthenticated();
+
+        if (!isAuthenticated) return tryRedirectTo("/login");
+      }
+
       const config = await api.files.openEdit(fileId, doc);
 
       this.setState({ isLoading: false }, () =>
@@ -42,7 +48,12 @@ class PureEditor extends React.Component {
       );
     } catch (error) {
       console.log(error);
-      toastr.error(error.message, null, 0, true);
+      toastr.error(
+        typeof error === "string" ? error : error.message,
+        null,
+        0,
+        true
+      );
     }
   }
 
