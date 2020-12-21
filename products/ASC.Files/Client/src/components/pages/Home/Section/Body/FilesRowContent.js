@@ -146,7 +146,12 @@ class FilesRowContent extends React.PureComponent {
     const originalTitle = getTitleWithoutExst(item);
 
     setIsLoading(true);
-    if (originalTitle === itemTitle) return this.completeAction(fileAction.id);
+    if (originalTitle === itemTitle || itemTitle.trim() === "") {
+      this.setState({
+        itemTitle: originalTitle,
+      });
+      return this.completeAction(fileAction.id);
+    }
 
     item.fileExst
       ? updateFile(fileAction.id, itemTitle)
