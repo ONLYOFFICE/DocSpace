@@ -97,16 +97,14 @@ import {
   getSharePanelVisible,
   getVisibilityVersionHistoryPanel,
 } from "../../../../../store/files/selectors";
-import {
-  OperationsPanel,
-  VersionHistoryPanel,
-} from "../../../../panels";
+import { OperationsPanel, VersionHistoryPanel } from "../../../../panels";
 const {
   isAdmin,
   getSettings,
   getCurrentUser,
   isEncryptionSupport,
   getOrganizationName,
+  getIsTabletView,
 } = store.auth.selectors;
 //import { getFilterByLocation } from "../../../../../helpers/converters";
 //import config from "../../../../../../package.json";
@@ -246,7 +244,8 @@ class SectionBodyContent extends React.Component {
     const { showMoveToPanel, showCopyPanel, isDrag } = this.state;
     const { isVisibleVersionHistoryPanel } = this.props;
 
-    if (this.props.sharingPanelVisible !== nextProps.sharingPanelVisible) {      return true;
+    if (this.props.sharingPanelVisible !== nextProps.sharingPanelVisible) {
+      return true;
     }
 
     if (this.state.showSharingPanel !== nextState.showSharingPanel) {
@@ -558,15 +557,15 @@ class SectionBodyContent extends React.Component {
     const {
       settings,
       history,
-      isMobile,
       setIsLoading,
       setVisibilityVersionHistoryPanel,
       setVersionHistoryFileId,
+      isTabletView,
     } = this.props;
 
     const fileId = e.currentTarget.dataset.id;
 
-    if (!isMobile && window.innerWidth > 1024) {
+    if (!isTabletView) {
       setIsLoading(true);
       setVersionHistoryFileId(fileId);
       setVisibilityVersionHistoryPanel(true);
@@ -1635,6 +1634,7 @@ class SectionBodyContent extends React.Component {
       mediaViewerMediaFormats,
       tooltipValue,
       isVisibleVersionHistoryPanel,
+      history,
     } = this.props;
 
     const { editingId, showMoveToPanel, showCopyPanel } = this.state;
@@ -1714,6 +1714,7 @@ class SectionBodyContent extends React.Component {
           <VersionHistoryPanel
             visible={isVisibleVersionHistoryPanel}
             onClose={this.onHistoryAction}
+            history={history}
           />
         )}
         <CustomTooltip ref={this.tooltipRef}>{fileMoveTooltip}</CustomTooltip>
@@ -1961,6 +1962,7 @@ const mapStateToProps = (state) => {
     iconOfDraggedFile: getIconOfDraggedFile(state)(state),
     sharingPanelVisible: getSharePanelVisible(state),
     isVisibleVersionHistoryPanel: getVisibilityVersionHistoryPanel(state),
+    isTabletView: getIsTabletView(state),
   };
 };
 

@@ -3,12 +3,15 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
 import { Backdrop, Heading, Aside } from "asc-web-components";
-import { api, utils, Loaders } from "asc-web-common";
+import { api, utils, Loaders, store } from "asc-web-common";
 
 import { withTranslation, I18nextProvider } from "react-i18next";
 import { createI18N } from "../../../helpers/i18n";
 
-import { setIsLoading } from "../../../store/files/actions";
+import {
+  setIsLoading,
+  setVisibilityVersionHistoryPanel,
+} from "../../../store/files/actions";
 import { getVersionHistoryFileId } from "../../../store/files/selectors";
 
 import {
@@ -27,6 +30,8 @@ const i18n = createI18N({
 
 const { changeLanguage } = utils;
 
+const { getIsTabletView, getSettingsHomepage } = store.auth.selectors;
+
 class PureVersionHistoryPanel extends React.Component {
   constructor(props) {
     super(props);
@@ -39,6 +44,20 @@ class PureVersionHistoryPanel extends React.Component {
       this.getFileVersions(fileId);
     }
   }
+
+  componentDidUpdate(preProps) {
+    const { isTabletView, fileId } = this.props;
+    if (isTabletView !== preProps.isTabletView && isTabletView) {
+      this.redirectToPage(fileId);
+    }
+  }
+
+  redirectToPage = (fileId) => {
+    const { history, homepage, setVisibilityVersionHistoryPanel } = this.props;
+    setVisibilityVersionHistoryPanel(false);
+
+    history.replace(`${homepage}/${fileId}/history`);
+  };
 
   getFileVersions = (fileId) => {
     const { setIsLoading } = this.props;
@@ -133,12 +152,16 @@ VersionHistoryPanelContainer.propTypes = {
 function mapStateToProps(state) {
   return {
     fileId: getVersionHistoryFileId(state),
+    isTabletView: getIsTabletView(state),
+    homepage: getSettingsHomepage(state),
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
     setIsLoading: (isLoading) => dispatch(setIsLoading(isLoading)),
+    setVisibilityVersionHistoryPanel: (isVisible) =>
+      dispatch(setVisibilityVersionHistoryPanel(isVisible)),
   };
 }
 
