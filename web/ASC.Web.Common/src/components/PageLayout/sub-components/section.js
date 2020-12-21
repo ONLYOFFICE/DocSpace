@@ -1,7 +1,7 @@
 import React from "react";
 import styled, { css } from "styled-components";
 import { utils } from "asc-web-components";
-import { isIOS, isSafari } from "react-device-detect";
+import { isIOS, isSafari, isChrome } from "react-device-detect";
 const { tablet, size } = utils.device;
 
 const tabletProps = css`
@@ -61,7 +61,12 @@ class Section extends React.Component {
   componentDidUpdate() {
     const { pinned } = this.props;
 
-    if (isIOS && isSafari && window.innerWidth <= size.smallTablet && pinned) {
+    if (
+      isIOS &&
+      (isSafari || isChrome) &&
+      window.innerWidth <= size.smallTablet &&
+      pinned
+    ) {
       this.props.unpinArticle();
     }
   }
