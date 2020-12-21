@@ -11,5 +11,6 @@
   "DeleteDialogNote": "Замечание: Это действие не может быть отменено.",
   "QuestionDeleteFolder": "Вы собираетесь удалить эту папку?",
   "QuestionDeleteElements": "Вы собираетесь удалить эти элементы?",
-  "DeleteOperation": "Удаление"
+  "DeleteOperation": "Удаление",
+  "DeleteSelectedElem": "Выбранные элементы успешно удалены"
 }

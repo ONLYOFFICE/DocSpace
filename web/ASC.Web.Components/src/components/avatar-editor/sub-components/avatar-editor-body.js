@@ -714,6 +714,7 @@ class AvatarEditorBody extends React.Component {
                             hoverColor="#657077"
                             directionX="right"
                             getData={() => []}
+                            isDisabled={true}
                           />
                         </Box>
                       </Box>

@@ -56,6 +56,9 @@ const StyledMediaViewer = styled.div`
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      width: calc(100% - 50px);
+      padding-left: 16px;
+      box-sizing: border-box;
     }
   }
 

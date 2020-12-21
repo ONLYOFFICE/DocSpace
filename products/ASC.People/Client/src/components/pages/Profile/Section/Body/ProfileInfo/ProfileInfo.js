@@ -1,6 +1,5 @@
 import React from "react";
 import { Trans } from "react-i18next";
-import axios from "axios";
 import {
   Text,
   IconButton,
@@ -9,9 +8,14 @@ import {
   HelpButton,
 } from "asc-web-components";
 import styled from "styled-components";
-import { history, api, store, toastr, Loaders } from "asc-web-common";
+import { api, toastr, Loaders } from "asc-web-common";
 import { connect } from "react-redux";
 import { updateProfileCulture } from "../../../../../../store/profile/actions";
+import { getFilter } from "../../../../../../store/people/selectors";
+import {
+  fetchPeople,
+  setIsLoading,
+} from "../../../../../../store/people/actions";
 
 const { resendUserInvites } = api.people;
 
@@ -82,32 +86,6 @@ const IconButtonWrapper = styled.div`
   }
 `;
 
-const onGroupClick = (e) => {
-  const id = e.currentTarget.dataset.id;
-  history.push(`/products/people/filter?group=${id}`);
-};
-
-const getFormattedDepartments = (departments) => {
-  const formattedDepartments = departments.map((department, index) => {
-    return (
-      <span key={index}>
-        <Link
-          type="page"
-          fontSize="13px"
-          isHovered={true}
-          data-id={department.id}
-          onClick={onGroupClick}
-        >
-          {department.name}
-        </Link>
-        {departments.length - 1 !== index ? ", " : ""}
-      </span>
-    );
-  });
-
-  return formattedDepartments;
-};
-
 const capitalizeFirstLetter = (string) => {
   return string && string.charAt(0).toUpperCase() + string.slice(1);
 };
@@ -124,6 +102,38 @@ class ProfileInfo extends React.PureComponent {
     };
 
     return newState;
+  };
+
+  onGroupClick = (e) => {
+    const group = e.currentTarget.dataset.id;
+    const { filter, setIsLoading, fetchPeople } = this.props;
+
+    const newFilter = filter.clone();
+    newFilter.group = group;
+
+    setIsLoading(true);
+    fetchPeople(newFilter).finally(() => setIsLoading(false));
+  };
+
+  getFormattedDepartments = (departments) => {
+    const formattedDepartments = departments.map((department, index) => {
+      return (
+        <span key={index}>
+          <Link
+            type="page"
+            fontSize="13px"
+            isHovered={true}
+            data-id={department.id}
+            onClick={this.onGroupClick}
+          >
+            {department.name}
+          </Link>
+          {departments.length - 1 !== index ? ", " : ""}
+        </span>
+      );
+    });
+
+    return formattedDepartments;
   };
 
   onSentInviteAgain = (id) => {
@@ -191,7 +201,8 @@ class ProfileInfo extends React.PureComponent {
     const birthDayDate = new Date(birthday).toLocaleDateString(language);
     const formatedSex =
       (sex === "male" && t("MaleSexStatus")) || t("FemaleSexStatus");
-    const formatedDepartments = department && getFormattedDepartments(groups);
+    const formatedDepartments =
+      department && this.getFormattedDepartments(groups);
     const supportEmail = "documentation@onlyoffice.com";
     const tooltipLanguage = (
       <Text fontSize="13px">
@@ -342,12 +353,15 @@ function mapStateToProps(state) {
     userPostCaption,
     userCaption,
     guestCaption,
+    filter: getFilter(state),
   };
 }
 const mapDispatchToProps = (dispatch) => {
   return {
     updateProfileCulture: (id, culture) =>
       dispatch(updateProfileCulture(id, culture)),
+    fetchPeople: (filter) => dispatch(fetchPeople(filter)),
+    setIsLoading: (isLoading) => dispatch(setIsLoading(isLoading)),
   };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(ProfileInfo);
