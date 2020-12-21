@@ -69,8 +69,7 @@ export const SET_FILES_SETTING = "SET_FILES_SETTING";
 export const SET_IS_ERROR_SETTINGS = "SET_IS_ERROR_SETTINGS";
 export const SET_FIRST_LOAD = "SET_FIRST_LOAD";
 export const SET_UPLOAD_DATA = "SET_UPLOAD_DATA";
-export const SET_VISIBILITY_VERSION_HISTORY_PANEL =
-  "SET_VISIBILITY_VERSION_HISTORY_PANEL";
+export const SET_IS_VERSION_HISTORY_PANEL = "SET_IS_VERSION_HISTORY_PANEL";
 export const SET_VERSION_HISTORY_FILE_ID = "SET_VERSION_HISTORY_FILE_ID";
 
 export function setFile(file) {
@@ -291,9 +290,9 @@ export function setUploadData(uploadData) {
   };
 }
 
-export function setVisibilityVersionHistoryPanel(isVisible) {
+export function setIsVersionHistoryPanel(isVisible) {
   return {
-    type: SET_VISIBILITY_VERSION_HISTORY_PANEL,
+    type: SET_IS_VERSION_HISTORY_PANEL,
     isVisible,
   };
 }

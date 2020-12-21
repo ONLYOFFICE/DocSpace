@@ -1053,7 +1053,7 @@ export const getPrivacyInstructionsLink = (state) => {
   return state.files.privacyInstructions;
 };
 
-export const getVisibilityVersionHistoryPanel = (state) => {
+export const getIsVersionHistoryPanel = (state) => {
   return state.files.versionHistory.isVisible;
 };
 

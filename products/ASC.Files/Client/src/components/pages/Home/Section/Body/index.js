@@ -52,7 +52,7 @@ import {
   setTreeFolders,
   getFileInfo,
   addFileToRecentlyViewed,
-  setVisibilityVersionHistoryPanel,
+  setIsVersionHistoryPanel,
   setVersionHistoryFileId,
   setSharingPanelVisible,
 } from "../../../../../store/files/actions";
@@ -95,7 +95,7 @@ import {
   getPrivacyInstructionsLink,
   getIconOfDraggedFile,
   getSharePanelVisible,
-  getVisibilityVersionHistoryPanel,
+  getIsVersionHistoryPanel,
 } from "../../../../../store/files/selectors";
 import { OperationsPanel, VersionHistoryPanel } from "../../../../panels";
 const {
@@ -242,7 +242,7 @@ class SectionBodyContent extends React.Component {
     if (this.props && this.props.firstLoad) return true;
 
     const { showMoveToPanel, showCopyPanel, isDrag } = this.state;
-    const { isVisibleVersionHistoryPanel } = this.props;
+    const { isVersionHistoryPanel } = this.props;
 
     if (this.props.sharingPanelVisible !== nextProps.sharingPanelVisible) {
       return true;
@@ -271,9 +271,7 @@ class SectionBodyContent extends React.Component {
       return true;
     }
 
-    if (
-      isVisibleVersionHistoryPanel !== nextProps.isVisibleVersionHistoryPanel
-    ) {
+    if (isVersionHistoryPanel !== nextProps.isVersionHistoryPanel) {
       return true;
     }
 
@@ -558,7 +556,7 @@ class SectionBodyContent extends React.Component {
       settings,
       history,
       setIsLoading,
-      setVisibilityVersionHistoryPanel,
+      setIsVersionHistoryPanel,
       setVersionHistoryFileId,
       isTabletView,
     } = this.props;
@@ -568,19 +566,16 @@ class SectionBodyContent extends React.Component {
     if (!isTabletView) {
       setIsLoading(true);
       setVersionHistoryFileId(fileId);
-      setVisibilityVersionHistoryPanel(true);
+      setIsVersionHistoryPanel(true);
     } else {
       history.push(`${settings.homepage}/${fileId}/history`);
     }
   };
 
   onHistoryAction = () => {
-    const {
-      isVisibleVersionHistoryPanel,
-      setVisibilityVersionHistoryPanel,
-    } = this.props;
+    const { isVersionHistoryPanel, setIsVersionHistoryPanel } = this.props;
 
-    setVisibilityVersionHistoryPanel(!isVisibleVersionHistoryPanel);
+    setIsVersionHistoryPanel(!isVersionHistoryPanel);
   };
 
   lockFile = (e) => {
@@ -1633,7 +1628,7 @@ class SectionBodyContent extends React.Component {
       mediaViewerImageFormats,
       mediaViewerMediaFormats,
       tooltipValue,
-      isVisibleVersionHistoryPanel,
+      isVersionHistoryPanel,
       history,
     } = this.props;
 
@@ -1710,9 +1705,9 @@ class SectionBodyContent extends React.Component {
             onClose={this.onCopyAction}
           />
         )}
-        {isVisibleVersionHistoryPanel && (
+        {isVersionHistoryPanel && (
           <VersionHistoryPanel
-            visible={isVisibleVersionHistoryPanel}
+            visible={isVersionHistoryPanel}
             onClose={this.onHistoryAction}
             history={history}
           />
@@ -1961,7 +1956,7 @@ const mapStateToProps = (state) => {
     tooltipValue: getTooltipLabel(state),
     iconOfDraggedFile: getIconOfDraggedFile(state)(state),
     sharingPanelVisible: getSharePanelVisible(state),
-    isVisibleVersionHistoryPanel: getVisibilityVersionHistoryPanel(state),
+    isVersionHistoryPanel: getIsVersionHistoryPanel(state),
     isTabletView: getIsTabletView(state),
   };
 };
@@ -1989,6 +1984,6 @@ export default connect(mapStateToProps, {
   addFileToRecentlyViewed,
   loopFilesOperations,
   setSharingPanelVisible,
-  setVisibilityVersionHistoryPanel,
+  setIsVersionHistoryPanel,
   setVersionHistoryFileId,
 })(withRouter(withTranslation()(SectionBodyContent)));

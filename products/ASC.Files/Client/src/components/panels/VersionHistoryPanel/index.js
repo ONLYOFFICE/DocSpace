@@ -10,7 +10,7 @@ import { createI18N } from "../../../helpers/i18n";
 
 import {
   setIsLoading,
-  setVisibilityVersionHistoryPanel,
+  setIsVersionHistoryPanel,
 } from "../../../store/files/actions";
 import { getVersionHistoryFileId } from "../../../store/files/selectors";
 
@@ -53,8 +53,8 @@ class PureVersionHistoryPanel extends React.Component {
   }
 
   redirectToPage = (fileId) => {
-    const { history, homepage, setVisibilityVersionHistoryPanel } = this.props;
-    setVisibilityVersionHistoryPanel(false);
+    const { history, homepage, setIsVersionHistoryPanel } = this.props;
+    setIsVersionHistoryPanel(false);
 
     history.replace(`${homepage}/${fileId}/history`);
   };
@@ -160,8 +160,8 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     setIsLoading: (isLoading) => dispatch(setIsLoading(isLoading)),
-    setVisibilityVersionHistoryPanel: (isVisible) =>
-      dispatch(setVisibilityVersionHistoryPanel(isVisible)),
+    setIsVersionHistoryPanel: (isVisible) =>
+      dispatch(setIsVersionHistoryPanel(isVisible)),
   };
 }
 

@@ -15,7 +15,7 @@ import { createI18N } from "../../../helpers/i18n";
 //import { setDocumentTitle } from "../../../helpers/utils";
 import {
   setFirstLoad,
-  setVisibilityVersionHistoryPanel,
+  setIsVersionHistoryPanel,
   setVersionHistoryFileId,
   setFilesFilter,
 } from "../../../store/files/actions";
@@ -43,14 +43,7 @@ class PureVersionHistory extends React.Component {
   }
 
   componentDidMount() {
-    const {
-      match,
-      history,
-      homepage,
-      setVisibilityVersionHistoryPanel,
-      setVersionHistoryFileId,
-      isTabletView,
-    } = this.props;
+    const { match, isTabletView } = this.props;
     const { fileId } = match.params;
 
     //setDocumentTitle(t("GroupAction"));
@@ -72,14 +65,14 @@ class PureVersionHistory extends React.Component {
 
   redirectToPanelView = () => {
     const {
-      setVisibilityVersionHistoryPanel,
+      setIsVersionHistoryPanel,
       setVersionHistoryFileId,
       match,
     } = this.props;
 
     const { fileId } = match.params;
 
-    setVisibilityVersionHistoryPanel(true);
+    setIsVersionHistoryPanel(true);
     setVersionHistoryFileId(fileId);
     this.redirectToHomepage();
   };
@@ -184,8 +177,8 @@ function mapStateToProps(state) {
 const mapDispatchToProps = (dispatch) => {
   return {
     setFirstLoad: (firstLoad) => dispatch(setFirstLoad(firstLoad)),
-    setVisibilityVersionHistoryPanel: (isVisible) =>
-      dispatch(setVisibilityVersionHistoryPanel(isVisible)),
+    setIsVersionHistoryPanel: (isVisible) =>
+      dispatch(setIsVersionHistoryPanel(isVisible)),
     setVersionHistoryFileId: (fileId) =>
       dispatch(setVersionHistoryFileId(fileId)),
     setFilesFilter: (filter) => dispatch(setFilesFilter(filter)),

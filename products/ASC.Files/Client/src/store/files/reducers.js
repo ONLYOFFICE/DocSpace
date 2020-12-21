@@ -31,7 +31,7 @@ import {
   SET_IS_ERROR_SETTINGS,
   SET_FIRST_LOAD,
   SET_UPLOAD_DATA,
-  SET_VISIBILITY_VERSION_HISTORY_PANEL,
+  SET_IS_VERSION_HISTORY_PANEL,
   SET_VERSION_HISTORY_FILE_ID,
 } from "./actions";
 import { api } from "asc-web-common";
@@ -569,7 +569,7 @@ const filesReducer = (state = initialState, action) => {
         uploadData: action.uploadData,
       });
 
-    case SET_VISIBILITY_VERSION_HISTORY_PANEL:
+    case SET_IS_VERSION_HISTORY_PANEL:
       return Object.assign({}, state, {
         versionHistory: {
           ...state.versionHistory,
