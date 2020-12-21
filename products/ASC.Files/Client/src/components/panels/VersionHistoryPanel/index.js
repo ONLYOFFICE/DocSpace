@@ -12,7 +12,10 @@ import {
   setIsLoading,
   setIsVersionHistoryPanel,
 } from "../../../store/files/actions";
-import { getVersionHistoryFileId } from "../../../store/files/selectors";
+import {
+  getVersionHistoryFileId,
+  getIsLoading,
+} from "../../../store/files/selectors";
 
 import {
   StyledVersionHistoryPanel,
@@ -75,13 +78,14 @@ class PureVersionHistoryPanel extends React.Component {
     //console.log("render versionHistoryPanel");
 
     const { versions } = this.state;
-    const { visible } = this.props;
+    const { visible, isLoading } = this.props;
     const zIndex = 310;
 
     return (
       <StyledVersionHistoryPanel
         className="version-history-modal-dialog"
         visible={visible}
+        isLoading={isLoading}
       >
         <Backdrop
           onClick={this.onClosePanelHandler}
@@ -90,7 +94,7 @@ class PureVersionHistoryPanel extends React.Component {
           isAside={true}
         />
         <Aside className="version-history-aside-panel">
-          {Object.keys(versions).length > 0 ? (
+          {Object.keys(versions).length > 0 && !isLoading ? (
             <StyledContent>
               <StyledHeaderContent className="version-history-panel-header">
                 <Heading
@@ -113,6 +117,7 @@ class PureVersionHistoryPanel extends React.Component {
             <StyledContent>
               <StyledHeaderContent className="version-history-panel-header">
                 <Loaders.ArticleHeader
+                  className="loader-version-history"
                   height="28"
                   width="688"
                   title="version-history-header-loader"
@@ -154,6 +159,7 @@ function mapStateToProps(state) {
     fileId: getVersionHistoryFileId(state),
     isTabletView: getIsTabletView(state),
     homepage: getSettingsHomepage(state),
+    isLoading: getIsLoading(state),
   };
 }
 
