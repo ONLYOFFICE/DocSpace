@@ -17,15 +17,18 @@ import {
   setFirstLoad,
   setVisibilityVersionHistoryPanel,
   setVersionHistoryFileId,
+  setFilesFilter,
 } from "../../../store/files/actions";
-import { getIsLoading } from "../../../store/files/selectors";
+import { getFilter, getIsLoading } from "../../../store/files/selectors";
+
 const i18n = createI18N({
   page: "VersionHistory",
   localesPath: "pages/VersionHistory",
 });
 
 const { changeLanguage } = utils;
-const { getSettingsHomepage } = store.auth.selectors;
+const { getSettingsHomepage, getIsTabletView } = store.auth.selectors;
+
 class PureVersionHistory extends React.Component {
   constructor(props) {
     super(props);
@@ -46,20 +49,45 @@ class PureVersionHistory extends React.Component {
       homepage,
       setVisibilityVersionHistoryPanel,
       setVersionHistoryFileId,
+      isTabletView,
     } = this.props;
     const { fileId } = match.params;
 
     //setDocumentTitle(t("GroupAction"));
     if (fileId) {
-      if (!isMobile && window.innerWidth > 1024) {
-        setVisibilityVersionHistoryPanel(true);
-        setVersionHistoryFileId(fileId);
-        history.push(`${homepage}`);
+      if (!isTabletView) {
+        this.redirectToPanelView();
       } else {
         this.getFileVersions(fileId);
       }
     }
   }
+
+  componentDidUpdate(prevProps) {
+    const { isTabletView } = this.props;
+    if (isTabletView !== prevProps.isTabletView && !isTabletView) {
+      this.redirectToPanelView();
+    }
+  }
+
+  redirectToPanelView = () => {
+    const {
+      setVisibilityVersionHistoryPanel,
+      setVersionHistoryFileId,
+      match,
+    } = this.props;
+
+    const { fileId } = match.params;
+
+    setVisibilityVersionHistoryPanel(true);
+    setVersionHistoryFileId(fileId);
+    this.redirectToHomepage();
+  };
+
+  redirectToHomepage = () => {
+    const { setFilesFilter, filter } = this.props;
+    setFilesFilter(filter);
+  };
 
   getFileVersions = (fileId) => {
     const { setFirstLoad } = this.props;
@@ -148,6 +176,8 @@ function mapStateToProps(state) {
   return {
     isLoading: getIsLoading(state),
     homepage: getSettingsHomepage(state),
+    isTabletView: getIsTabletView(state),
+    filter: getFilter(state),
   };
 }
 
@@ -158,6 +188,7 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(setVisibilityVersionHistoryPanel(isVisible)),
     setVersionHistoryFileId: (fileId) =>
       dispatch(setVersionHistoryFileId(fileId)),
+    setFilesFilter: (filter) => dispatch(setFilesFilter(filter)),
   };
 };
 
