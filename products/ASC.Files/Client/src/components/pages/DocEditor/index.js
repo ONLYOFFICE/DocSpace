@@ -2,8 +2,24 @@ import React from "react";
 import { withRouter } from "react-router";
 import { Toast, Box } from "asc-web-components";
 import { utils, api, toastr, Loaders } from "asc-web-common";
+import { isIOS, deviceType } from "react-device-detect";
+import { setDocumentTitle } from "../../../helpers/utils";
+import { changeTitle, setFavicon, isIPad } from "./utils";
+import throttle from "lodash/throttle";
 
 const { getObjectByLocation, showLoader, hideLoader, tryRedirectTo } = utils;
+
+let documentIsReady = false;
+
+let docTitle = null;
+let fileType = null;
+
+let docSaved = null;
+
+const throttledChangeTitle = throttle(
+  () => changeTitle(docSaved, docTitle),
+  500
+);
 
 class PureEditor extends React.Component {
   constructor(props) {
@@ -28,8 +44,10 @@ class PureEditor extends React.Component {
 
       console.log("PureEditor componentDidMount", fileId, doc);
 
-      const vh = window.innerHeight * 0.01;
-      document.documentElement.style.setProperty("--vh", `${vh}px`);
+      if (isIPad()) {
+        const vh = window.innerHeight * 0.01;
+        document.documentElement.style.setProperty("--vh", `${vh}px`);
+      }
 
       showLoader();
 
@@ -73,23 +91,62 @@ class PureEditor extends React.Component {
 
   onLoad = (config) => {
     try {
+      docTitle = config.document.title;
+      fileType = config.document.fileType;
+
+      setFavicon(fileType);
+      setDocumentTitle(docTitle);
+
       if (window.innerWidth < 720) {
         config.type = "mobile";
       }
+
+      const events = {
+        events: {
+          onDocumentStateChange: this.onDocumentStateChange,
+          onMetaChange: this.onMetaChange,
+          onDocumentReady: this.onDocumentReady,
+        },
+      };
+
+      const newConfig = Object.assign(config, events);
+
       if (!window.DocsAPI) throw new Error("DocsAPI is not defined");
 
       hideLoader();
 
-      window.DocsAPI.DocEditor("editor", config);
+      window.DocsAPI.DocEditor("editor", newConfig);
     } catch (error) {
       console.log(error);
       toastr.error(error.message, null, 0, true);
     }
   };
 
+  onDocumentStateChange = (event) => {
+    if (!documentIsReady) return;
+
+    docSaved = !event.data;
+    throttledChangeTitle();
+  };
+
+  onDocumentReady = () => {
+    documentIsReady = true;
+  };
+
+  onMetaChange = (event) => {
+    const newTitle = event.data.title;
+    if (newTitle && newTitle !== docTitle) {
+      setDocumentTitle(newTitle);
+      docTitle = newTitle;
+    }
+  };
+
   render() {
     return (
-      <Box widthProp="100vw" heightProp="100vh">
+      <Box
+        widthProp="100vw"
+        heightProp={isIPad() ? "calc(var(--vh, 1vh) * 100)" : "100vh"}
+      >
         <Toast />
 
         {!this.state.isLoading ? (
