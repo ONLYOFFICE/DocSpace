@@ -68,7 +68,7 @@ sed -i "s!\"exts\".*!\"exts\": \[ ${FFMPEG_EXTS} \]!g" ${PATH_TO_CONF}/appsettin
 sed -i "0,/\"value\"/s!\"value\".*,!\"value\": \"${DOCUMENT_SERVER_JWT_SECRET}\",!" ${PATH_TO_CONF}/appsettings.${APP_DOTNET_ENV}.json
 sed -i "s!\"header\".*!\"header\": \"${DOCUMENT_SERVER_JWT_HEADER}\"!" ${PATH_TO_CONF}/appsettings.${APP_DOTNET_ENV}.json
 
-sed -i "s!\"files\".*!${ELK_VALUE}\n\"files\": {!" ${PATH_TO_CONF}/appsettings.${APP_DOTNET_ENV}.json
+grep -q "${ELK_VALUE}" ${PATH_TO_CONF}/appsettings.${APP_DOTNET_ENV}.json || sed -i "s!\"files\".*!${ELK_VALUE}\n\"files\": {!" ${PATH_TO_CONF}/appsettings.${APP_DOTNET_ENV}.json
 
 sed -i "s!\"BootstrapServers\".*!\"BootstrapServers\": \"${KAFKA_HOST}\"!g" ${PATH_TO_CONF}/kafka.${APP_DOTNET_ENV}.json
 
