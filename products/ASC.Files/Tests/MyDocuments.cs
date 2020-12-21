@@ -1,6 +1,4 @@
-﻿
-using System.Threading;
-
+﻿using System.Threading;
 using ASC.Api.Documents;
 using ASC.Files.Core;
 using ASC.Files.Tests.Infrastructure;

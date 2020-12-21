@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Threading;
-
 using ASC.Common.Security.Authentication;
 using ASC.Core;
+using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.Files.Helpers;
@@ -14,12 +15,13 @@ using ASC.Files.Tests.Infrastructure;
 using ASC.Web.Files.Classes;
 using ASC.Web.Files.Services.WCFService;
 using ASC.Web.Files.Services.WCFService.FileOperations;
-
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+
+
 
 namespace ASC.Files.Tests
 {
@@ -27,6 +29,10 @@ namespace ASC.Files.Tests
     {
         protected FilesControllerHelper<int> FilesControllerHelper { get; set; }
         protected TestServer TestServer { get; set; }
+
+        public BaseDbContext baseDbContext;
+
+
         protected GlobalFolderHelper GlobalFolderHelper { get; set; }
         protected FileStorageService<int> FileStorageService { get; set; }
         protected UserManager UserManager { get; set; }
@@ -36,11 +42,12 @@ namespace ASC.Files.Tests
         protected UserOptions UserOptions { get; set; }
         protected IAccount Account { get; set; }
         protected IConfiguration Configuration { get; set; }
-
+       
         public virtual void SetUp()
         {
-            var scope = Program.CreateHostBuilder(new string[] { "--pathToConf" ,"..\\..\\..\\..\\..\\..\\config" }).Build().Services.CreateScope();
-
+            var scope1 = Program.CreateHostBuilder(new string[] { "--pathToConf" ,"..\\..\\..\\..\\..\\..\\config", "--ConnectionStrings:default:connectionString", "Server=localhost;Database=onlyoffice_test;User ID=root;Password=root;Pooling=true;Character Set=utf8;AutoEnlist=false;SSL Mode=none;AllowPublicKeyRetrieval=True", "--migration:enabled", "true" }).Build();
+           
+            var scope = scope1.Services.CreateScope();
             var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
             var tenant = tenantManager.GetTenant(1);
             tenantManager.SetCurrentTenant(tenant);
@@ -55,6 +62,7 @@ namespace ASC.Files.Tests
 
             SecurityContext.AuthenticateMe(CurrentTenant.OwnerId);
         }
+        
 
         public void DeleteFolder(int folder, bool deleteAfter, bool DeleteEmmediatly)
         {
@@ -127,10 +135,10 @@ namespace ASC.Files.Tests
 
             return batchModel;
         }
-
+        
         public virtual void TearDown()
         {
-            //TestServer.Dispose();
+            Database.Delete("Server=localhost;Database=onlyoffice_test;User ID=root;Password=root;Pooling=true;");
         }
     }
 }

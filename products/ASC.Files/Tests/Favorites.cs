@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-
 using ASC.Api.Documents;
-using ASC.Web.Files.Services.WCFService;
-
 using NUnit.Framework;
 
 namespace ASC.Files.Tests
@@ -14,8 +10,8 @@ namespace ASC.Files.Tests
     {
         private FolderWrapper<int> TestFolder { get; set; }
         public FileWrapper<int> TestFile { get; private set; }
-       
-        public IEnumerable <int > folderIds;
+
+        public IEnumerable<int> folderIds;
         public IEnumerable<int> fileIds;
 
         [OneTimeSetUp]
@@ -24,15 +20,15 @@ namespace ASC.Files.Tests
             base.SetUp();
             TestFolder = FilesControllerHelper.CreateFolder(GlobalFolderHelper.FolderMy, "TestFolder");
             TestFile = FilesControllerHelper.CreateFile(GlobalFolderHelper.FolderMy, "TestFile", default);
-            folderIds = new List<int> { TestFolder.Id  };
+            folderIds = new List<int> { TestFolder.Id };
             fileIds = new List<int> { TestFile.Id };
         }
         [OneTimeTearDown]
         public override void TearDown()
         {
-            base.TearDown();
             DeleteFolder(TestFolder.Id, false, true);
             DeleteFile(TestFile.Id, false, true);
+            base.TearDown();
         }
 
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetCreateFolderItems))]
@@ -72,5 +68,7 @@ namespace ASC.Files.Tests
             Assert.IsNotNull(favorite);
 
         }
-    }
+        
+
+}
 }

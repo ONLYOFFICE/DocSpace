@@ -505,6 +505,22 @@ namespace ASC.Core.Common.Migrations.MySql.TenantDbContextMySql
                             Tenant = 1,
                             UserName = "administrator",
                             WorkFromDate = new DateTime(2020, 10, 6, 10, 14, 35, 587, DateTimeKind.Utc).AddTicks(6725)
+                        },
+                        new
+                        {
+                            Id = "005bb3ff-7de3-47d2-9b3d-61b9ec8a76a5",
+                            ActivationStatus = 0,
+                            CreateOn = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "test@gmail.com",
+                            FirstName = "Test",
+                            LastModified = new DateTime(2020, 10, 6, 10, 14, 35, 587, DateTimeKind.Utc).AddTicks(7841),
+                            LastName = "User",
+                            PhoneActivation = 0,
+                            Removed = false,
+                            Status = 1,
+                            Tenant = 1,
+                            UserName = "TestUser",
+                            WorkFromDate = new DateTime(2020, 10, 6, 10, 14, 35, 587, DateTimeKind.Utc).AddTicks(6725)
                         });
                 });
 

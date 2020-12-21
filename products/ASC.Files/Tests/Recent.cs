@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
-
 using ASC.Api.Documents;
 using ASC.Core.Users;
-
 using NUnit.Framework;
 
 namespace ASC.Files.Tests
@@ -29,8 +27,8 @@ namespace ASC.Files.Tests
         [OneTimeTearDown]
         public override void TearDown()
         {
-            base.TearDown();
             DeleteFolder(TestFolder.Id, false, true);
+            base.TearDown();
         }
 
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetCreateFolderItems))]

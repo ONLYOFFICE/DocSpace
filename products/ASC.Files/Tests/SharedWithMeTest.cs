@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
-
 using ASC.Api.Documents;
 using ASC.Core;
 using ASC.Core.Users;
@@ -41,11 +40,11 @@ namespace ASC.Files.Tests
         [OneTimeTearDown]
         public override void TearDown()
         {
-            base.TearDown();
             DeleteFolder(TestFolderRead.Id, false, true);
             DeleteFolder(TestFolderReadAndWrite.Id, false, true);
             DeleteFile(TestFileRead.Id, false, true);
             DeleteFile(TestFileReadAndWrite.Id, false, true);
+            base.TearDown();
         }
 
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetCreateFolderItems))]
