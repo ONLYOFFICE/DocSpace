@@ -68,6 +68,7 @@ class PureVersionHistoryPanel extends React.Component {
           onClick={this.onClosePanelHandler}
           visible={visible}
           zIndex={zIndex}
+          isAside={true}
         />
         <Aside className="version-history-aside-panel">
           {Object.keys(versions).length > 0 ? (

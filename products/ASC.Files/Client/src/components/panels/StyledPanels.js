@@ -87,8 +87,11 @@ const StyledVersionHistoryPanel = styled.div`
       margin-top: 12px;
     }
   }
+
   .version-history-panel-body {
-    margin-top: 18px;
+    .row_content {
+      margin: 0 16px !important;
+    }
   }
   .version-comment-wrapper {
     margin-left: 79px;
