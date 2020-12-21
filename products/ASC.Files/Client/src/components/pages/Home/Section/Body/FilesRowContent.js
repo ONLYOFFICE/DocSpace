@@ -170,7 +170,10 @@ class FilesRowContent extends React.PureComponent {
 
     const itemId = e.currentTarget.dataset.itemid;
 
-    if (itemTitle.trim() === "") return this.completeAction(itemId);
+    if (itemTitle.trim() === "") {
+      toastr.warning(this.props.t("CreateWithEmptyTitle"));
+      return this.completeAction(itemId);
+    }
 
     let tab = item.fileExst
       ? window.open("/products/files/doceditor", "_blank")
