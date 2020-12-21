@@ -226,7 +226,12 @@ class FilesRowContent extends React.PureComponent {
   };
 
   cancelUpdateItem = (e) => {
-    this.completeAction(e);
+    const originalTitle = getTitleWithoutExst(this.props.item);
+    this.setState({
+      itemTitle: originalTitle,
+    });
+
+    return this.completeAction(e);
   };
 
   onClickUpdateItem = (e) => {
