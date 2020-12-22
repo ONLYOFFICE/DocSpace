@@ -182,12 +182,15 @@ class FilesRowContent extends React.PureComponent {
     !item.fileExst
       ? createFolder(item.parentId, itemTitle)
           .then(() => this.completeAction(itemId))
-          .finally(() => {
+          .then(() =>
             toastr.success(
               <Trans i18nKey="FolderCreated" i18n={i18n}>
                 New folder {{ itemTitle }} is created
               </Trans>
-            );
+            )
+          )
+          .catch((e) => toastr.error(e))
+          .finally(() => {
             return setIsLoading(false);
           })
       : createFile(item.parentId, `${itemTitle}.${item.fileExst}`)
@@ -195,13 +198,16 @@ class FilesRowContent extends React.PureComponent {
             openDocEditor(file.id, tab, file.webUrl);
             this.completeAction(itemId);
           })
-          .finally(() => {
+          .then(() => {
             const exst = item.fileExst;
-            toastr.success(
+            return toastr.success(
               <Trans i18nKey="FileCreated" i18n={i18n}>
                 New file {{ itemTitle }}.{{ exst }} is created
               </Trans>
             );
+          })
+          .catch((e) => toastr.error(e))
+          .finally(() => {
             return setIsLoading(false);
           });
   };
