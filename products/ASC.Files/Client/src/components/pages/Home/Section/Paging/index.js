@@ -133,7 +133,7 @@ const SectionPagingContent = ({
 
   //console.log("SectionPagingContent render", filter);
 
-  return filter.total < filter.pageCount ? (
+  return filter.total < filter.pageCount && filter.total < 26 ? (
     <></>
   ) : (
     <Paging
