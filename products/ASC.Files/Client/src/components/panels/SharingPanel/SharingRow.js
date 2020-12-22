@@ -134,8 +134,10 @@ const SharingRow = (props) => {
     window.open(`mailto:?subject=${subject}&body=${body}`);
   };
 
-  const onShareTwitter = () =>
-    window.open(`https://twitter.com/intent/tweet?text=${item.shareLink}`);
+  const onShareTwitter = () => {
+    const encodedLink = encodeURIComponent(item.shareLink);
+    window.open(`https://twitter.com/intent/tweet?text=${encodedLink}`);
+  };
 
   const onShareFacebook = () => {
     window.open(
