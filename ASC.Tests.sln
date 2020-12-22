@@ -35,8 +35,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.IPSecurity", "common\AS
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Notify.Textile", "common\ASC.Notify.Textile\ASC.Notify.Textile.csproj", "{5FE0EDA2-1FD7-4D43-885E-DBDD858DCC86}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Resource.Manager", "common\ASC.Resource.Manager\ASC.Resource.Manager.csproj", "{4D9FF164-3E24-416C-91CA-365281BE0A45}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Textile", "common\ASC.Textile\ASC.Textile.csproj", "{1A82BE07-0836-4620-A95D-C6D1E9327589}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.VoipService", "common\ASC.VoipService\ASC.VoipService.csproj", "{664031A4-1652-4B68-8168-FD18998700EE}"
@@ -133,10 +131,6 @@ Global
 		{5FE0EDA2-1FD7-4D43-885E-DBDD858DCC86}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5FE0EDA2-1FD7-4D43-885E-DBDD858DCC86}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5FE0EDA2-1FD7-4D43-885E-DBDD858DCC86}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4D9FF164-3E24-416C-91CA-365281BE0A45}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4D9FF164-3E24-416C-91CA-365281BE0A45}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4D9FF164-3E24-416C-91CA-365281BE0A45}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4D9FF164-3E24-416C-91CA-365281BE0A45}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1A82BE07-0836-4620-A95D-C6D1E9327589}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1A82BE07-0836-4620-A95D-C6D1E9327589}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1A82BE07-0836-4620-A95D-C6D1E9327589}.Release|Any CPU.ActiveCfg = Release|Any CPU
