@@ -586,7 +586,7 @@ class CreateUserForm extends React.Component {
               inputOnChange={this.onWorkFromDateChange}
               inputTabIndex={6}
               calendarMinDate={
-                profile.birthday ? new Date(profile.birthday) : new Date()
+                profile.birthday ? new Date(profile.birthday) : undefined
               }
             />
             <TextField
