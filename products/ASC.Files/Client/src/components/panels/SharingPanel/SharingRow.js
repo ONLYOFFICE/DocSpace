@@ -137,8 +137,11 @@ const SharingRow = (props) => {
   const onShareTwitter = () =>
     window.open(`https://twitter.com/intent/tweet?text=${item.shareLink}`);
 
-  const onShareFacebook = () => window.open(`https://www.facebook.com`);
-  /*window.open(`https://www.facebook.com/dialog/feed?app_id=645528132139019&display=popup&link=${item.shareLink}`);*/
+  const onShareFacebook = () => {
+    window.open(
+      `https://www.facebook.com/sharer/sharer.php?u=${item.shareLink}`
+    );
+  };
 
   const internalLinkData = [
     {
