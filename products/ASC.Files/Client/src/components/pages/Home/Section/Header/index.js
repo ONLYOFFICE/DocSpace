@@ -37,6 +37,7 @@ import {
 import { OperationsPanel } from "../../../../panels";
 import {
   isCanBeDeleted,
+  getWebEditSelected,
   getIsRecycleBinFolder,
   canCreate,
   getSelectedFolderTitle,
@@ -48,7 +49,6 @@ import {
   getHeaderVisible,
   getHeaderIndeterminate,
   getHeaderChecked,
-  getOnlyFoldersSelected,
   getAccessedSelected,
   getSelectionLength,
   getSharePanelVisible,
@@ -401,7 +401,7 @@ class SectionHeaderContent extends React.Component {
       t,
       isItemsSelected,
       isAccessedSelected,
-      isOnlyFoldersSelected,
+      isWebEditSelected,
       deleteDialogVisible,
       isRecycleBin,
     } = this.props;
@@ -470,7 +470,7 @@ class SectionHeaderContent extends React.Component {
       },
       {
         label: t("DownloadAs"),
-        disabled: !isItemsSelected || isOnlyFoldersSelected,
+        disabled: !isItemsSelected || !isWebEditSelected,
         onClick: this.downloadAsAction,
       },
       {
@@ -683,11 +683,11 @@ const mapStateToProps = (state) => {
     deleteDialogVisible: isCanBeDeleted(state),
     currentFolderId: getSelectedFolderId(state),
     canCreate: canCreate(state),
+    isWebEditSelected: getWebEditSelected(state),
     isHeaderVisible: getHeaderVisible(state),
     isHeaderIndeterminate: getHeaderIndeterminate(state),
     isHeaderChecked: getHeaderChecked(state),
     isAccessedSelected: getAccessedSelected(state),
-    isOnlyFoldersSelected: getOnlyFoldersSelected(state),
     isItemsSelected: getSelectionLength(state),
     sharingPanelVisible: getSharePanelVisible(state),
   };

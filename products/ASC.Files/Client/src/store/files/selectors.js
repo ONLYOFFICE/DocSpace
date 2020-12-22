@@ -1155,6 +1155,17 @@ export const getOnlyFoldersSelected = createSelector(
   }
 );
 
+export const getWebEditSelected = createSelector(
+  getSelection,
+  getEditedFormats,
+  (selection, editedFormats) => {
+    return selection.some((selected) => {
+      if (selected.isFolder === true || !selected.fileExst) return false;
+      return editedFormats.find((format) => selected.fileExst === format);
+    });
+  }
+);
+
 export const getAccessedSelected = createSelector(
   getSelection,
   getSelectionLength,
