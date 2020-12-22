@@ -17,21 +17,3 @@ const resources = {
 newInstance.init({ ...i18nBaseSettings, resources });
 
 export default newInstance;
-
-// newInstance.init({
-//   resources: resources,
-//   lng: localStorage.getItem(LANGUAGE) || 'en',
-//   fallbackLng: "en",
-
-//   interpolation: {
-//     escapeValue: false, // not needed for react as it escapes by default
-//     format: function (value, format) {
-//       if (format === 'lowercase') return value.toLowerCase();
-//       return value;
-//     }
-//   },
-
-//   react: {
-//     useSuspense: false
-//   }
-// });
