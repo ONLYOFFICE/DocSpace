@@ -80,25 +80,22 @@ const StyledVersionHistoryPanel = styled.div`
   .version-history-panel-header {
     height: 53px;
     margin-left: 0px;
-    border-bottom: 1px solid #eceef1;
     .version-history-panel-heading {
       font-weight: 700;
       margin-bottom: 13px;
       margin-top: 12px;
     }
   }
-
   .version-history-panel-body {
-    padding: ${(props) => (props.isLoading ? "16px 16px !important" : null)};
-    .row_content {
-      margin: 0 16px !important;
+    margin: ${(props) => (props.isLoading ? "16px 16px" : "0 16px")};
+    border-top: 1px solid #eceef1;
+
+    .version-comment-wrapper {
+      margin-left: 79px;
     }
-  }
-  .version-comment-wrapper {
-    margin-left: 79px;
-  }
-  .version_edit-comment {
-    margin-left: 72px;
+    .version_edit-comment {
+      padding-left: 2px;
+    }
   }
 `;
 
