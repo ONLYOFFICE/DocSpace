@@ -65,6 +65,7 @@ namespace ASC.Core.Common.EF
                     optionsBuilder.UseNpgsql(ConnectionStringSettings.ConnectionString);
                     break;
             }
+           
         }
 
         public Provider GetProviderByConnectionString()

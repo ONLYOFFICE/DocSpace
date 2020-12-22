@@ -42,8 +42,15 @@ namespace ASC.Core.Common.EF
                     PwdHash = "vLFfghR5tNV3K9DKhmwArV+SbjWAcgZZzIDTnJ0JgCo=",
                     PwdHashSha512 = "USubvPlB+ogq0Q1trcSupg==",
                     LastModified = DateTime.UtcNow
-                }
-                );
+                },
+                new UserSecurity
+                {
+                    Tenant = 1,
+                    UserId = Guid.Parse("005bb3ff-7de3-47d2-9b3d-61b9ec8a76a5"),
+                    PwdHash = "vLFfghR5tNV3K9DKhmwArV+SbjWAcgZZzIDTnJ0JgCo=",
+                    PwdHashSha512 = "USubvPlB+ogq0Q1trcSupg==",
+                    LastModified = DateTime.UtcNow
+                });
 
             return modelBuilder;
         }
