@@ -30,7 +30,7 @@ export function getConfirmationInfo(token) {
 }
 
 export function createConfirmUser(registerData, loginData, key) {
-  const data = Object.assign({}, registerData, loginData);
+  const data = Object.assign({ fromInviteLink: true }, registerData, loginData);
   return (dispatch) => {
     return api.people
       .createUser(data, key)
