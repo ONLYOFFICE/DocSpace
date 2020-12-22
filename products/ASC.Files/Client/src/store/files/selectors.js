@@ -538,6 +538,8 @@ export const getFileIcon = (
       return `${folderPath}/svg.svg`;
     case ".txt":
       return `${folderPath}/txt.svg`;
+    case ".webm":
+      return `${folderPath}/webm.svg`;
     case ".xls":
       return `${folderPath}/xls.svg`;
     case ".xlsx":
