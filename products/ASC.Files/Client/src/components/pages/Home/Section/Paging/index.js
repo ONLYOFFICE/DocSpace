@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo } from "react";
 import { connect } from "react-redux";
+import { isMobile } from "react-device-detect";
 import { fetchFiles, setIsLoading } from "../../../../../store/files/actions";
 import {
   getFilter,
@@ -132,7 +133,7 @@ const SectionPagingContent = ({
 
   //console.log("SectionPagingContent render", filter);
 
-  return filter.total < filter.pageCount ? (
+  return filter.total < filter.pageCount && filter.total < 26 ? (
     <></>
   ) : (
     <Paging
@@ -145,6 +146,7 @@ const SectionPagingContent = ({
       displayItems={false}
       disablePrevious={!filter.hasPrev()}
       disableNext={!filter.hasNext()}
+      disableHover={isMobile}
       previousAction={onPrevClick}
       nextAction={onNextClick}
       openDirection="top"

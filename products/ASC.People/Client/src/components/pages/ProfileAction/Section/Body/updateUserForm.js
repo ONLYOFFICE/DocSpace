@@ -790,7 +790,7 @@ class UpdateUserForm extends React.Component {
               inputValue={
                 profile.workFrom ? new Date(profile.workFrom) : undefined
               }
-              inputIsDisabled={isLoading}
+              inputIsDisabled={isLoading || !isAdmin}
               inputOnChange={this.onWorkFromDateChange}
               inputTabIndex={7}
               calendarMinDate={
@@ -809,7 +809,7 @@ class UpdateUserForm extends React.Component {
               labelText={`${userPostCaption}:`}
               inputName="title"
               inputValue={profile.title}
-              inputIsDisabled={isLoading}
+              inputIsDisabled={isLoading || !isAdmin}
               inputOnChange={this.onInputChange}
               inputTabIndex={9}
             />

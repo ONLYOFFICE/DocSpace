@@ -278,6 +278,10 @@ class SectionHeaderContent extends React.Component {
     const folderIds = [];
     const items = [];
 
+    if (selection.length === 1) {
+      return window.open(selection[0].viewUrl, "_blank");
+    }
+
     for (let item of selection) {
       if (item.fileExst) {
         fileIds.push(item.id);

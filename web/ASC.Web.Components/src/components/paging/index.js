@@ -58,6 +58,7 @@ const Paging = (props) => {
     openDirection,
     disablePrevious,
     disableNext,
+    disableHover,
     selectedPageItem,
     selectedCountItem,
     id,
@@ -85,6 +86,7 @@ const Paging = (props) => {
         label={previousLabel}
         onClick={previousAction}
         isDisabled={disablePrevious}
+        disableHover={disableHover}
       />
       {pageItems && (
         <StyledPage>
@@ -106,6 +108,7 @@ const Paging = (props) => {
         label={nextLabel}
         onClick={nextAction}
         isDisabled={disableNext}
+        disableHover={disableHover}
       />
       {countItems && (
         <StyledOnPage>
@@ -132,6 +135,7 @@ Paging.propTypes = {
 
   disablePrevious: PropTypes.bool,
   disableNext: PropTypes.bool,
+  disableHover: PropTypes.bool,
 
   selectedPageItem: PropTypes.object,
   selectedCountItem: PropTypes.object,
@@ -152,6 +156,7 @@ Paging.propTypes = {
 Paging.defaultProps = {
   disablePrevious: false,
   disableNext: false,
+  disableHover: false,
 };
 
 export default Paging;

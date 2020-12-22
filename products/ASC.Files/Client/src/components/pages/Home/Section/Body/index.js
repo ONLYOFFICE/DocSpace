@@ -612,7 +612,7 @@ class SectionBodyContent extends React.Component {
     selection[0].fileExst
       ? fileIds.push(selection[0].id)
       : folderIds.push(selection[0].id);
-    const conflictResolveType = 0; //Skip = 0, Overwrite = 1, Duplicate = 2
+    const conflictResolveType = 2; //Skip = 0, Overwrite = 1, Duplicate = 2
     const deleteAfter = false;
 
     setSecondaryProgressBarData({
@@ -1611,11 +1611,6 @@ class SectionBodyContent extends React.Component {
 
     const { editingId, showMoveToPanel, showCopyPanel } = this.state;
 
-    const operationsPanelProps = {
-      setIsLoading,
-      isLoading,
-    };
-
     let fileMoveTooltip;
     if (dragging) {
       fileMoveTooltip = tooltipValue
@@ -1667,8 +1662,6 @@ class SectionBodyContent extends React.Component {
       <>
         {showMoveToPanel && (
           <OperationsPanel
-            {...operationsPanelProps}
-            isCopy={false}
             visible={showMoveToPanel}
             onClose={this.onMoveAction}
           />
@@ -1676,8 +1669,7 @@ class SectionBodyContent extends React.Component {
 
         {showCopyPanel && (
           <OperationsPanel
-            {...operationsPanelProps}
-            isCopy={true}
+            isCopy
             visible={showCopyPanel}
             onClose={this.onCopyAction}
           />
