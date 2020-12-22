@@ -132,7 +132,7 @@ export const isSound = (extension) => {
 };
 
 export const isVideo = (extension) => {
-  return createSelector(getVideoFormats, (formats) => {
+  return createSelector(getMediaViewerMediaFormats, (formats) => {
     return presentInArray(formats, extension);
   });
 };
