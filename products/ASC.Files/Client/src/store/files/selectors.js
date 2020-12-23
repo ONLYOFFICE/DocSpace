@@ -874,7 +874,16 @@ export const getFilesList = (state) => {
       getFileActionId,
       isVisitor,
     ],
-    (folders, files, selection, isRecycleBin, isRecent, actionId) => {
+    (
+      folders,
+      files,
+      selection,
+      isRecycleBin,
+      isRecent,
+      isFavorites,
+      actionId,
+      isVisitor
+    ) => {
       const items =
         folders && files
           ? [...folders, ...files]
