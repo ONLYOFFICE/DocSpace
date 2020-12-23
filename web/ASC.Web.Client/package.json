@@ -1,6 +1,6 @@
 {
   "name": "asc-web-client",
-  "version": "0.1.0",
+  "version": "0.0.3",
   "private": true,
   "dependencies": {
     "asc-web-common": "file:../../packages/asc-web-common",
