@@ -1614,3 +1614,21 @@ export function restoreVersion(id, version) {
     });
   };
 }
+
+export function updateCommentVersion(id, comment, version) {
+  return (dispatch, getState) => {
+    return api.files
+      .versionEditComment(id, comment, version)
+      .then((updatedComment) => {
+        const state = getState();
+        const versions = getFileVersions(state);
+        const updatedVersions = versions.map((item) => {
+          if (item.version === version) {
+            item.comment = updatedComment;
+          }
+          return item;
+        });
+        dispatch(setFileVersions(updatedVersions));
+      });
+  };
+}
