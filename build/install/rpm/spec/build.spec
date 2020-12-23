@@ -90,24 +90,28 @@ cd ../../../
 cd common/services/ASC.Thumbnails.Svc
 dotnet -d publish --no-build --self-contained -r linux-x64 -o %{_builddir}/services/thumb/service
 cd ../../../
+
 yarn install --cwd common/ASC.Thumbnails --frozen-lockfile
 mkdir -p %{_builddir}/services/thumb/client
 cp -Rf common/ASC.Thumbnails/* %{_builddir}/services/thumb/client
+
 cd common/services/ASC.UrlShortener.Svc
 dotnet -d publish --no-build --self-contained -r linux-x64 -o %{_builddir}/services/urlshortener/service
 cd ../../../
 yarn install --cwd common/ASC.UrlShortener --frozen-lockfile
 mkdir -p %{_builddir}/services/urlshortener/client
 cp -Rf common/ASC.UrlShortener/* %{_builddir}/services/urlshortener/client
+
 cd common/services/ASC.Studio.Notify
+dotnet add ASC.Studio.Notify.csproj reference ../../../products/ASC.People/Server/ASC.People.csproj  ../../../products/ASC.Files/Server/ASC.Files.csproj
 dotnet -d publish --no-build --self-contained -r linux-x64 -o %{_builddir}/var/www/services/studio.notify
 
 cd %{_builddir}/AppServer-%GIT_BRANCH/
 mkdir -p %{_builddir}/var/www/public/
 cp -f public/* %{_builddir}/var/www/public/ 
-mkdir -p %{_builddir}/app/onlyoffice/config/
-cp -rf config/* %{_builddir}/app/onlyoffice/config/
-cp -f build/install/config/*.sql %{_builddir}/app/onlyoffice/
+mkdir -p %{_builddir}/etc/onlyoffice/appserver/config/
+cp -rf config/* %{_builddir}/etc/onlyoffice/appserver/config/
+cp -f build/install/config/*.sql %{_builddir}/etc/onlyoffice/appserver/
 mkdir -p %{_builddir}/etc/nginx/conf.d/
 cp -f config/nginx/onlyoffice*.conf %{_builddir}/etc/nginx/conf.d/
 mkdir -p %{_builddir}/etc/nginx/includes/
@@ -116,4 +120,5 @@ mkdir -p %{_builddir}/etc/mysql/conf.d/
 cp -f build/install/config/mysql/conf.d/mysql.cnf %{_builddir}/etc/mysql/conf.d/mysql.cnf
 mkdir -p %{_builddir}/etc/nginx/templates/
 cp -f build/install/config/nginx/templates/upstream.conf.template %{_builddir}/etc/nginx/templates/
-cp -f build/install/rpm/appserver-configuracion.sh %{_builddir}/app/onlyoffice/config/
+mkdir -p %{_builddir}/usr/bin/
+cp -f build/install/rpm/*.sh %{_builddir}/usr/bin/

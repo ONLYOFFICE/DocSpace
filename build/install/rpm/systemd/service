@@ -1,14 +1,18 @@
 [Unit]
 Description=AppServer-${SERVICE_NAME}
+After=network.target syslog.target
 
 [Service]
 PIDFile=/run/appserver/appserver-${SERVICE_NAME}.pid
-Type=simple
+Type=forking
 User=onlyoffice
+Group=onlyoffice
 WorkingDirectory=${WORK_DIR}
 ExecStart=${EXEC_START}
-TimeoutSec=300
-Restart=always
+TimeoutSec=600
+
+Restart=no
+PrivateTmp=false
 
 [Install]
 WantedBy=multi-user.target

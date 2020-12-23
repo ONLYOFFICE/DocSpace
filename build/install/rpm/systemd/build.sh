@@ -1,8 +1,9 @@
 #!/bin/bash
 
-PRODUCT="onlyoffice"
-BASE_DIR="/app/${PRODUCT}"
+PRODUCT="onlyoffice/appserver"
+BASE_DIR="/etc/${PRODUCT}"
 PATH_TO_CONF="${BASE_DIR}/config"
+STORAGE_ROOT="${BASE_DIR}/data"
 LOG_DIR="/var/log/${PRODUCT}"
 DOTNET_RUN="/usr/bin/dotnet"
 APP_URLS="http://0.0.0.0"
@@ -101,7 +102,7 @@ reassign_values (){
 	;;
   esac
   
-  EXEC_START="${DOTNET_RUN} ${WORK_DIR}${EXEC_FILE} --urls=${APP_URLS}:${SERVICE_PORT} --pathToConf=${PATH_TO_CONF} --'\$STORAGE_ROOT'=/app/onlyoffice/data/ --log:dir=${LOG_DIR} --log:name=${SERVICE_NAME}${CORE}${ENVIRONMENT}"
+  EXEC_START="${DOTNET_RUN} ${WORK_DIR}${EXEC_FILE} --urls=${APP_URLS}:${SERVICE_PORT} --pathToConf=${PATH_TO_CONF} --'\$STORAGE_ROOT'=${STORAGE_ROOT} --log:dir=${LOG_DIR} --log:name=${SERVICE_NAME}${CORE}${ENVIRONMENT}"
 }
 
 write_to_file () {
