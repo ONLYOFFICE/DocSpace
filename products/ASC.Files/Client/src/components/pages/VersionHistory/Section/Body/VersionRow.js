@@ -30,7 +30,7 @@ const StyledRow = styled(Row)`
     min-height: 69px;
   }
   .version_badge {
-    cursor: pointer;
+    cursor: ${(props) => (props.canEdit ? "pointer" : "default")};
 
     .version_badge-text {
       position: absolute;
@@ -100,8 +100,8 @@ const StyledRow = styled(Row)`
   }
 
   .version_link {
-    display: ${(props) => (props.showEditPanel ? "none" : "block")};
-    text-decoration: underline dashed;
+    display: ${(props) =>
+      props.showEditPanel ? "none" : props.canEdit ? "block" : "none"};
     white-space: break-spaces;
     margin-left: -7px;
     margin-top: 4px;
@@ -113,7 +113,9 @@ const StyledRow = styled(Row)`
   }
 
   .version_text {
-    display: none;
+    display: ${(props) => (props.canEdit ? "none" : "block")};
+    margin-left: -7px;
+    margin-top: 5px;
 
     @media ${tablet} {
       display: block;
@@ -122,18 +124,22 @@ const StyledRow = styled(Row)`
     }
   }
 
-  .version_link-action {
-    display: block;
+  .version_links-container {
+    display: flex;
     margin-left: auto;
-    margin-top: 5px;
 
-    :last-child {
-      margin-left: 8px;
-      margin-right: -7px;
-    }
+    .version_link-action {
+      display: block;
+      margin-top: 5px;
 
-    @media ${tablet} {
-      display: none;
+      :last-child {
+        margin-right: -7px;
+        margin-left: 8px;
+      }
+
+      @media ${tablet} {
+        display: none;
+      }
     }
   }
 
@@ -192,6 +198,8 @@ const VersionRow = (props) => {
   const [showEditPanel, setShowEditPanel] = useState(false);
   const [commentValue, setCommentValue] = useState(info.comment);
   const [displayComment, setDisplayComment] = useState(info.comment);
+
+  const canEdit = info.access === 1 || info.access === 0;
 
   const VersionBadge = (props) => (
     <Box {...props} marginProp="0 8px" displayProp="flex">
@@ -262,8 +270,8 @@ const VersionRow = (props) => {
   };
 
   const contextOptions = [
-    { key: "edit", label: t("EditComment"), onClick: onEditComment },
-    { key: "restore", label: t("Restore"), onClick: onRestoreClick },
+    canEdit && { key: "edit", label: t("EditComment"), onClick: onEditComment },
+    canEdit && { key: "restore", label: t("Restore"), onClick: onRestoreClick },
     {
       key: "download",
       label: `${t("Download")} (${info.contentLength})`,
@@ -271,11 +279,17 @@ const VersionRow = (props) => {
     },
   ];
 
+  const onClickProp = canEdit ? { onClick: onVersionClick } : {};
+
   return (
-    <StyledRow showEditPanel={showEditPanel} contextOptions={contextOptions}>
+    <StyledRow
+      showEditPanel={showEditPanel}
+      contextOptions={contextOptions}
+      canEdit={canEdit}
+    >
       <>
         <Box displayProp="flex">
-          <VersionBadge className="version_badge" onClick={onVersionClick} />
+          <VersionBadge className="version_badge" {...onClickProp} />
           <Link
             onClick={onOpenFile}
             fontWeight={600}
@@ -340,26 +354,36 @@ const VersionRow = (props) => {
                 </Box>
               </>
             )}
-            <Link onClick={onEditComment} className="version_link">
+
+            <Link
+              type="action"
+              isHovered
+              onClick={onEditComment}
+              className="version_link"
+            >
               {displayComment}
             </Link>
             <Text className="version_text">{displayComment}</Text>
           </>
 
-          <Link
-            onClick={onRestoreClick}
-            {...linkStyles}
-            className="version_link-action"
-          >
-            {t("Restore")}
-          </Link>
-          <Link
-            onClick={onDownloadAction}
-            {...linkStyles}
-            className="version_link-action"
-          >
-            {t("Download")}
-          </Link>
+          <div className="version_links-container">
+            {canEdit && (
+              <Link
+                onClick={onRestoreClick}
+                {...linkStyles}
+                className="version_link-action"
+              >
+                {t("Restore")}
+              </Link>
+            )}
+            <Link
+              onClick={onDownloadAction}
+              {...linkStyles}
+              className="version_link-action"
+            >
+              {t("Download")}
+            </Link>
+          </div>
         </Box>
         {showEditPanel && (
           <Box className="version_edit-comment" marginProp="8px 0 16px 70px">

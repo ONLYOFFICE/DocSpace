@@ -86,23 +86,13 @@ const IconButtonWrapper = styled.div`
   }
 `;
 
-const capitalizeFirstLetter = (string) => {
-  return string && string.charAt(0).toUpperCase() + string.slice(1);
-};
-
 class ProfileInfo extends React.PureComponent {
   constructor(props) {
     super(props);
-    this.state = this.mapPropsToState(props);
-  }
-
-  mapPropsToState = (props) => {
-    const newState = {
+    this.state = {
       profile: props.profile,
     };
-
-    return newState;
-  };
+  }
 
   onGroupClick = (e) => {
     const group = e.currentTarget.dataset.id;
@@ -137,9 +127,12 @@ class ProfileInfo extends React.PureComponent {
   };
 
   onSentInviteAgain = (id) => {
+    const { t } = this.props;
     resendUserInvites(new Array(id))
-      .then(() => toastr.success("The invitation was successfully sent"))
-      .catch((error) => toastr.error(error));
+      .then(() => toastr.success(t("SuccessSentInvitation")))
+      .catch((error) =>
+        toastr.error(error && error.message ? error.message : error)
+      );
   };
 
   onEmailClick = (e) => {
@@ -153,8 +146,8 @@ class ProfileInfo extends React.PureComponent {
 
     if (profile.cultureName === language.key) return;
 
-    updateProfileCulture(profile.id, language.key).catch((err) =>
-      console.log(err)
+    updateProfileCulture(profile.id, language.key).catch((error) =>
+      toastr.error(error && error.message ? error.message : error)
     );
   };
 
@@ -196,7 +189,9 @@ class ProfileInfo extends React.PureComponent {
     const type = isVisitor ? guestCaption : userCaption;
     const language = cultureName || currentCulture || this.props.culture;
     const languages = this.getLanguages();
-    const selectedLanguage = languages.find((item) => item.key === language);
+    const selectedLanguage =
+      languages.find((item) => item.key === language) ||
+      languages.find((item) => item.key === this.props.culture);
     const workFromDate = new Date(workFrom).toLocaleDateString(language);
     const birthDayDate = new Date(birthday).toLocaleDateString(language);
     const formatedSex =
@@ -217,6 +212,7 @@ class ProfileInfo extends React.PureComponent {
         <Link
           isHovered={true}
           href="https://helpcenter.onlyoffice.com/ru/guides/become-translator.aspx"
+          target="_blank"
         >
           {t("LearnMore")}
         </Link>

@@ -203,6 +203,7 @@ class SectionBodyContent extends React.Component {
     let previewId = queryString.parse(this.props.location.search).preview;
 
     if (previewId) {
+      this.removeQuery("preview");
       this.onMediaFileClick(+previewId);
     }
 
@@ -235,7 +236,7 @@ class SectionBodyContent extends React.Component {
   // }
 
   shouldComponentUpdate(nextProps, nextState) {
-    if (this.props && this.props.firstLoad) return true;
+    //if (this.props && this.props.firstLoad) return true;
 
     const { showMoveToPanel, showCopyPanel, isDrag } = this.state;
     if (this.props.sharingPanelVisible !== nextProps.sharingPanelVisible) {
@@ -265,11 +266,15 @@ class SectionBodyContent extends React.Component {
   }
 
   onOpenLocation = () => {
-    const item = this.props.selection[0];
-    const { folderId, checked } = this.props.selection[0];
+    const { filter, selection } = this.props;
+    const { folderId, checked, id, isFolder } = selection[0];
+    const item = selection[0];
+    const locationId = isFolder ? id : folderId;
+    const locationFilter = isFolder ? filter : null;
+
     return this.props
-      .fetchFiles(folderId)
-      .then(() => this.onContentRowSelect(!checked, item));
+      .fetchFiles(locationId, locationFilter)
+      .then(() => (isFolder ? null : this.onContentRowSelect(!checked, item)));
   };
 
   onClickFavorite = (e) => {
@@ -280,6 +285,7 @@ class SectionBodyContent extends React.Component {
       fetchFavoritesFolder,
       isFavorites,
       selectedFolderId,
+      setSelected,
       //selection,
       t,
     } = this.props;
@@ -299,6 +305,7 @@ class SectionBodyContent extends React.Component {
               : getFileInfo(id);
           })
           .then(() => toastr.success(t("RemovedFromFavorites")))
+          .then(() => setSelected("close"))
           .catch((e) => toastr.error(e));
       default:
         return;
@@ -332,7 +339,7 @@ class SectionBodyContent extends React.Component {
       setAction,
       selection,
     } = this.props;
-    const selectedItem = selection[0] ?? {};
+    const selectedItem = selection[0];
     const items = [...folders, ...files];
     const item = items.find((o) => o.id === id && !o.fileExst); //TODO maybe need files find and folders find, not at one function?
     if (
@@ -357,7 +364,8 @@ class SectionBodyContent extends React.Component {
             setAction({ type: null });
             setIsLoading(false);
           });
-          this.onSelectItem(selectedItem);
+          fileAction.type === FileAction.Rename &&
+            this.onSelectItem(selectedItem);
         });
     }
 
@@ -500,13 +508,10 @@ class SectionBodyContent extends React.Component {
     const item = selection[0];
     const isFile = !!item.fileExst;
     const { t } = this.props;
-
     copy(
       isFile
         ? item.canOpenPlayer
-          ? `${window.location.origin + settings.homepage}/filter?folder=${
-              item.folderId
-            }&preview=${item.id}`
+          ? `${window.location.href}&preview=${item.id}`
           : item.webUrl
         : `${window.location.origin + settings.homepage}/filter?folder=${
             item.id
@@ -611,7 +616,7 @@ class SectionBodyContent extends React.Component {
     selection[0].fileExst
       ? fileIds.push(selection[0].id)
       : folderIds.push(selection[0].id);
-    const conflictResolveType = 0; //Skip = 0, Overwrite = 1, Duplicate = 2
+    const conflictResolveType = 2; //Skip = 0, Overwrite = 1, Duplicate = 2
     const deleteAfter = false;
 
     setSecondaryProgressBarData({
@@ -637,6 +642,14 @@ class SectionBodyContent extends React.Component {
 
     return options.map((option) => {
       switch (option) {
+        case "open":
+          return {
+            key: option,
+            label: t("Open"),
+            icon: "CatalogFolderIcon",
+            onClick: this.onOpenLocation,
+            disabled: false,
+          };
         case "show-version-history":
           return {
             key: option,
@@ -659,6 +672,7 @@ class SectionBodyContent extends React.Component {
         case "separator0":
         case "separator1":
         case "separator2":
+        case "separator3":
           return { key: option, isSeparator: true };
         case "open-location":
           return {
@@ -1489,6 +1503,18 @@ class SectionBodyContent extends React.Component {
       });
   };
 
+  removeQuery = (queryName) => {
+    const { location, history } = this.props;
+    const queryParams = new URLSearchParams(location.search);
+
+    if (queryParams.has(queryName)) {
+      queryParams.delete(queryName);
+      history.replace({
+        search: queryParams.toString(),
+      });
+    }
+  };
+
   onSelectItem = (item) => {
     const { selected, setSelected, setSelection } = this.props;
     selected === "close" && setSelected("none");
@@ -1598,11 +1624,6 @@ class SectionBodyContent extends React.Component {
 
     const { editingId, showMoveToPanel, showCopyPanel } = this.state;
 
-    const operationsPanelProps = {
-      setIsLoading,
-      isLoading,
-    };
-
     let fileMoveTooltip;
     if (dragging) {
       fileMoveTooltip = tooltipValue
@@ -1654,8 +1675,6 @@ class SectionBodyContent extends React.Component {
       <>
         {showMoveToPanel && (
           <OperationsPanel
-            {...operationsPanelProps}
-            isCopy={false}
             visible={showMoveToPanel}
             onClose={this.onMoveAction}
           />
@@ -1663,8 +1682,7 @@ class SectionBodyContent extends React.Component {
 
         {showCopyPanel && (
           <OperationsPanel
-            {...operationsPanelProps}
-            isCopy={true}
+            isCopy
             visible={showCopyPanel}
             onClose={this.onCopyAction}
           />

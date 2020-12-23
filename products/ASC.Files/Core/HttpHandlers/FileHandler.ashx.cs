@@ -83,8 +83,7 @@ namespace ASC.Web.Files
         {
             using var scope = ServiceProvider.CreateScope();
             var fileHandlerService = scope.ServiceProvider.GetService<FileHandlerService>();
-            await fileHandlerService.Invoke(context);
-            await Next.Invoke(context);
+            await fileHandlerService.Invoke(context).ConfigureAwait(false);
         }
     }
 
@@ -187,31 +186,31 @@ namespace ASC.Web.Files
                 {
                     case "view":
                     case "download":
-                        await DownloadFile(context);
+                        await DownloadFile(context).ConfigureAwait(false);
                         break;
                     case "bulk":
-                        await BulkDownloadFile(context);
+                        await BulkDownloadFile(context).ConfigureAwait(false);
                         break;
                     case "stream":
-                        await StreamFile(context);
+                        await StreamFile(context).ConfigureAwait(false);
                         break;
                     case "empty":
-                        await EmptyFile(context);
+                        await EmptyFile(context).ConfigureAwait(false);
                         break;
                     case "tmp":
-                        await TempFile(context);
+                        await TempFile(context).ConfigureAwait(false);
                         break;
                     case "create":
-                        await CreateFile(context);
+                        await CreateFile(context).ConfigureAwait(false);
                         break;
                     case "redirect":
                         Redirect(context);
                         break;
                     case "diff":
-                        await DifferenceFile(context);
+                        await DifferenceFile(context).ConfigureAwait(false);
                         break;
                     case "track":
-                        await TrackFile(context);
+                        await TrackFile(context).ConfigureAwait(false);
                         break;
                     default:
                         throw new HttpException((int)HttpStatusCode.BadRequest, FilesCommonResource.ErrorMassage_BadRequest);
@@ -697,6 +696,7 @@ namespace ASC.Web.Files
             try
             {
                 await context.Response.Body.FlushAsync();
+                await context.Response.CompleteAsync();
                 //context.Response.SuppressContent = true;
                 //context.ApplicationInstance.CompleteRequest();
             }

@@ -24,12 +24,12 @@ const StyledDropdown = styled.div`
   ${(props) =>
     props.directionY === "top" &&
     css`
-      bottom: ${(props) => (props.manualY ? props.manualY : "auto")};
+      bottom: ${(props) => (props.manualY ? props.manualY : "100%")};
     `}
     ${(props) =>
     props.directionY === "bottom" &&
     css`
-      top: ${(props) => (props.manualY ? props.manualY : "auto")};
+      top: ${(props) => (props.manualY ? props.manualY : "100%")};
     `}
     ${(props) =>
     props.directionX === "right" &&
@@ -42,7 +42,8 @@ const StyledDropdown = styled.div`
       left: ${(props) => (props.manualX ? props.manualX : "0px")};
     `}
     z-index: 150;
-  display: ${(props) => (props.open ? "block" : "none")};
+  display: ${(props) =>
+    props.open ? (props.columnCount ? "block" : "table") : "none"};
   background: #ffffff;
   border-radius: 6px;
   -moz-border-radius: 6px;
