@@ -143,8 +143,8 @@ class ProfileInfo extends React.PureComponent {
 
     if (profile.cultureName === language.key) return;
 
-    updateProfileCulture(profile.id, language.key).catch((err) =>
-      console.log(err)
+    updateProfileCulture(profile.id, language.key).catch((error) =>
+      toastr.error(error && error.message ? error.message : error)
     );
   };
 
