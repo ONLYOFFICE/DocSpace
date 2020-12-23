@@ -87,7 +87,8 @@ const StyledVersionHistoryPanel = styled.div`
     }
   }
   .version-history-panel-body {
-    margin: ${(props) => (props.isLoading ? "16px 16px" : "0 16px")};
+    padding: ${(props) => (props.isLoading ? "16px 0" : null)};
+    margin: 0 16px;
     border-top: 1px solid #eceef1;
 
     .version-comment-wrapper {

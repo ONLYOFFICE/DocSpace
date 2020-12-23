@@ -11,8 +11,12 @@ import {
 import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
 import { connect } from "react-redux";
-import { api, toastr, store } from "asc-web-common";
-import { setIsLoading } from "../../../../../store/files/actions";
+import { toastr, store } from "asc-web-common";
+import {
+  markAsVersion,
+  restoreVersion,
+  updateCommentVersion,
+} from "../../../../../store/files/actions";
 import VersionBadge from "./VersionBadge";
 import StyledVersionRow from "./StyledVersionRow";
 
@@ -23,14 +27,14 @@ const VersionRow = (props) => {
     info,
     index,
     culture,
-    setIsLoading,
     isVersion,
     t,
-    getFileVersions,
+    markAsVersion,
+    restoreVersion,
+    updateCommentVersion,
   } = props;
   const [showEditPanel, setShowEditPanel] = useState(false);
   const [commentValue, setCommentValue] = useState(info.comment);
-  const [displayComment, setDisplayComment] = useState(info.comment);
 
   const title = `${new Date(info.created).toLocaleString(culture)} ${
     info.createdBy.displayName
@@ -44,12 +48,13 @@ const VersionRow = (props) => {
 
   const onChange = (e) => setCommentValue(e.target.value);
 
-  const onSaveClick = () =>
-    api.files
-      .versionEditComment(info.id, commentValue, info.version)
-      .then(() => setDisplayComment(commentValue))
+  const onSaveClick = () => {
+    updateCommentVersion(info.id, commentValue, info.version)
       .catch((err) => toastr.error(err))
-      .finally(() => onEditComment());
+      .finally(() => {
+        onEditComment();
+      });
+  };
 
   const onCancelClick = () => {
     setCommentValue(info.comment);
@@ -58,21 +63,13 @@ const VersionRow = (props) => {
   const onOpenFile = () => window.open(info.webUrl);
 
   const onRestoreClick = () => {
-    setIsLoading(true);
-    api.files
-      .versionRestore(info.id, info.version)
-      .then(() => getFileVersions(info.id))
-      .catch((err) => toastr.error(err))
-      .finally(() => setIsLoading(false));
+    restoreVersion(info.id, info.version).catch((err) => toastr.error(err));
   };
 
   const onVersionClick = () => {
-    setIsLoading(true);
-    api.files
-      .markAsVersion(info.id, isVersion, info.version)
-      .then(() => getFileVersions(info.id))
-      .catch((err) => toastr.error(err))
-      .finally(() => setIsLoading(false));
+    markAsVersion(info.id, isVersion, info.version).catch((err) =>
+      toastr.error(err)
+    );
   };
 
   const contextOptions = [
@@ -168,9 +165,9 @@ const VersionRow = (props) => {
               </>
             )}
             <Link onClick={onEditComment} className="version_link">
-              {displayComment}
+              {info.comment}
             </Link>
-            <Text className="version_text">{displayComment}</Text>
+            <Text className="version_text">{info.comment}</Text>
           </>
 
           <Link
@@ -226,6 +223,17 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, {
-  setIsLoading,
-})(withRouter(withTranslation()(VersionRow)));
+const mapDispatchToProps = (dispatch) => {
+  return {
+    markAsVersion: (id, isVersion, version) =>
+      dispatch(markAsVersion(id, isVersion, version)),
+    restoreVersion: (id, version) => dispatch(restoreVersion(id, version)),
+    updateCommentVersion: (id, comment, version) =>
+      dispatch(updateCommentVersion(id, comment, version)),
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withRouter(withTranslation()(VersionRow)));

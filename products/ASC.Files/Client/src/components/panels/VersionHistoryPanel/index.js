@@ -3,18 +3,16 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
 import { Backdrop, Heading, Aside } from "asc-web-components";
-import { api, utils, Loaders, store } from "asc-web-common";
+import { utils, Loaders, store } from "asc-web-common";
 
 import { withTranslation, I18nextProvider } from "react-i18next";
 import { createI18N } from "../../../helpers/i18n";
 
+import { setIsVerHistoryPanel } from "../../../store/files/actions";
 import {
-  setIsLoading,
-  setIsVersionHistoryPanel,
-} from "../../../store/files/actions";
-import {
-  getVersionHistoryFileId,
+  getVerHistoryFileId,
   getIsLoading,
+  getFileVersions,
 } from "../../../store/files/selectors";
 
 import {
@@ -36,18 +34,6 @@ const { changeLanguage } = utils;
 const { getIsTabletView, getSettingsHomepage } = store.auth.selectors;
 
 class PureVersionHistoryPanel extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { versions: {} };
-  }
-
-  componentDidMount() {
-    const { fileId } = this.props;
-    if (fileId) {
-      this.getFileVersions(fileId);
-    }
-  }
-
   componentDidUpdate(preProps) {
     const { isTabletView, fileId } = this.props;
     if (isTabletView !== preProps.isTabletView && isTabletView) {
@@ -56,18 +42,10 @@ class PureVersionHistoryPanel extends React.Component {
   }
 
   redirectToPage = (fileId) => {
-    const { history, homepage, setIsVersionHistoryPanel } = this.props;
-    setIsVersionHistoryPanel(false);
+    const { history, homepage, setIsVerHistoryPanel } = this.props;
+    setIsVerHistoryPanel(false);
 
     history.replace(`${homepage}/${fileId}/history`);
-  };
-
-  getFileVersions = (fileId) => {
-    const { setIsLoading } = this.props;
-
-    api.files.getFileVersionInfo(fileId).then((versions) => {
-      this.setState({ versions: versions }, () => setIsLoading(false));
-    });
   };
 
   onClosePanelHandler = () => {
@@ -77,15 +55,14 @@ class PureVersionHistoryPanel extends React.Component {
   render() {
     //console.log("render versionHistoryPanel");
 
-    const { versions } = this.state;
-    const { visible, isLoading } = this.props;
+    const { visible, isLoading, versions } = this.props;
     const zIndex = 310;
-
+    console.log(isLoading);
     return (
       <StyledVersionHistoryPanel
         className="version-history-modal-dialog"
         visible={visible}
-        isLoading={isLoading}
+        isLoading={true}
       >
         <Backdrop
           onClick={this.onClosePanelHandler}
@@ -94,9 +71,9 @@ class PureVersionHistoryPanel extends React.Component {
           isAside={true}
         />
         <Aside className="version-history-aside-panel">
-          {Object.keys(versions).length > 0 && !isLoading ? (
-            <StyledContent>
-              <StyledHeaderContent className="version-history-panel-header">
+          <StyledContent>
+            <StyledHeaderContent className="version-history-panel-header">
+              {versions && !isLoading ? (
                 <Heading
                   className="version-history-panel-heading"
                   size="medium"
@@ -104,30 +81,20 @@ class PureVersionHistoryPanel extends React.Component {
                 >
                   {versions[0].title}
                 </Heading>
-              </StyledHeaderContent>
-
-              <StyledBody className="version-history-panel-body">
-                <SectionBodyContent
-                  getFileVersions={this.getFileVersions}
-                  versions={versions}
-                />
-              </StyledBody>
-            </StyledContent>
-          ) : (
-            <StyledContent>
-              <StyledHeaderContent className="version-history-panel-header">
+              ) : (
                 <Loaders.ArticleHeader
                   className="loader-version-history"
                   height="28"
                   width="688"
                   title="version-history-header-loader"
                 />
-              </StyledHeaderContent>
-              <StyledBody className="version-history-panel-body">
-                <Loaders.HistoryRows title="version-history-body-loader" />
-              </StyledBody>
-            </StyledContent>
-          )}
+              )}
+            </StyledHeaderContent>
+
+            <StyledBody className="version-history-panel-body">
+              <SectionBodyContent />
+            </StyledBody>
+          </StyledContent>
         </Aside>
       </StyledVersionHistoryPanel>
     );
@@ -156,18 +123,18 @@ VersionHistoryPanelContainer.propTypes = {
 
 function mapStateToProps(state) {
   return {
-    fileId: getVersionHistoryFileId(state),
+    fileId: getVerHistoryFileId(state),
     isTabletView: getIsTabletView(state),
     homepage: getSettingsHomepage(state),
     isLoading: getIsLoading(state),
+    versions: getFileVersions(state),
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    setIsLoading: (isLoading) => dispatch(setIsLoading(isLoading)),
-    setIsVersionHistoryPanel: (isVisible) =>
-      dispatch(setIsVersionHistoryPanel(isVisible)),
+    setIsVerHistoryPanel: (isVisible) =>
+      dispatch(setIsVerHistoryPanel(isVisible)),
   };
 }
 

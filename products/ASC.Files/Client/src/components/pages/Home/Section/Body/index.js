@@ -52,8 +52,8 @@ import {
   setTreeFolders,
   getFileInfo,
   addFileToRecentlyViewed,
-  setIsVersionHistoryPanel,
-  setVersionHistoryFileId,
+  setIsVerHistoryPanel,
+  setVerHistoryFileId,
   setSharingPanelVisible,
 } from "../../../../../store/files/actions";
 import { TIMEOUT } from "../../../../../helpers/constants";
@@ -95,7 +95,7 @@ import {
   getPrivacyInstructionsLink,
   getIconOfDraggedFile,
   getSharePanelVisible,
-  getIsVersionHistoryPanel,
+  getIsVerHistoryPanel,
 } from "../../../../../store/files/selectors";
 import { OperationsPanel, VersionHistoryPanel } from "../../../../panels";
 const {
@@ -556,8 +556,8 @@ class SectionBodyContent extends React.Component {
       settings,
       history,
       setIsLoading,
-      setIsVersionHistoryPanel,
-      setVersionHistoryFileId,
+      setIsVerHistoryPanel,
+      setVerHistoryFileId,
       isTabletView,
     } = this.props;
 
@@ -565,17 +565,17 @@ class SectionBodyContent extends React.Component {
 
     if (!isTabletView) {
       setIsLoading(true);
-      setVersionHistoryFileId(fileId);
-      setIsVersionHistoryPanel(true);
+      setVerHistoryFileId(fileId);
+      setIsVerHistoryPanel(true);
     } else {
       history.push(`${settings.homepage}/${fileId}/history`);
     }
   };
 
   onHistoryAction = () => {
-    const { isVersionHistoryPanel, setIsVersionHistoryPanel } = this.props;
+    const { isVersionHistoryPanel, setIsVerHistoryPanel } = this.props;
 
-    setIsVersionHistoryPanel(!isVersionHistoryPanel);
+    setIsVerHistoryPanel(!isVersionHistoryPanel);
   };
 
   lockFile = (e) => {
@@ -1956,7 +1956,7 @@ const mapStateToProps = (state) => {
     tooltipValue: getTooltipLabel(state),
     iconOfDraggedFile: getIconOfDraggedFile(state)(state),
     sharingPanelVisible: getSharePanelVisible(state),
-    isVersionHistoryPanel: getIsVersionHistoryPanel(state),
+    isVersionHistoryPanel: getIsVerHistoryPanel(state),
     isTabletView: getIsTabletView(state),
   };
 };
@@ -1984,6 +1984,6 @@ export default connect(mapStateToProps, {
   addFileToRecentlyViewed,
   loopFilesOperations,
   setSharingPanelVisible,
-  setIsVersionHistoryPanel,
-  setVersionHistoryFileId,
+  setIsVerHistoryPanel,
+  setVerHistoryFileId,
 })(withRouter(withTranslation()(SectionBodyContent)));
