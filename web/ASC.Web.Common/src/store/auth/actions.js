@@ -223,16 +223,17 @@ export function login(user, hash) {
   };
 }
 
-export function logout() {
+export function logout(needRedirect = true) {
   return (dispatch, getState) => {
     const state = getState();
     const isDesktop = isDesktopClient(state);
     return api.user.logout().then(() => {
       setWithCredentialsStatus(false);
       isDesktop && logoutDesktop();
-      dispatch(setLogout());
-
-      history.push("/login");
+      if (needRedirect) {
+        dispatch(setLogout());
+        history.push("/login");
+      }
     });
   };
 }

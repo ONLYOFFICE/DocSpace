@@ -13,7 +13,7 @@
     "express": "^4.17.1",
     "filenamify-url": "^2.1.1",
     "moment": "^2.26.0",
-    "nconf": "^0.10.0",
+    "nconf": "^0.11.0",
     "node-cache": "^5.1.0",
     "request": "^2.88.2",
     "winston": "^3.3.3",

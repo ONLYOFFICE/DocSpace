@@ -235,7 +235,12 @@ class NewFilesPanelComponent extends React.Component {
 
     return (
       <StyledAsidePanel visible={visible}>
-        <Backdrop onClick={onClose} visible={visible} zIndex={zIndex} />
+        <Backdrop
+          onClick={onClose}
+          visible={visible}
+          zIndex={zIndex}
+          isAside={true}
+        />
         <Aside className="header_aside-panel" visible={visible}>
           <StyledContent>
             <StyledHeaderContent>
@@ -248,7 +253,7 @@ class NewFilesPanelComponent extends React.Component {
               </Heading>
             </StyledHeaderContent>
             <StyledBody className="files-operations-body">
-              <RowContainer useReactWindow manualHeight="87vh">
+              <RowContainer useReactWindow>
                 {files.map((file) => {
                   const element = this.getItemIcon(file);
                   return (

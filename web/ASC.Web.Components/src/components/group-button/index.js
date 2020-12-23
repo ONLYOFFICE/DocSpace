@@ -138,9 +138,8 @@ class GroupButton extends React.Component {
   }
 
   clickOutsideAction = (e) => {
-    this.state.isOpen &&
-      !this.ref.current.contains(e.target) &&
-      this.setIsOpen(false);
+    this.state.isOpen && !this.ref.current.contains(e.target);
+    this.setIsOpen(false);
   };
 
   checkboxChange = (e) => {
@@ -223,6 +222,7 @@ class GroupButton extends React.Component {
               manualY="72px"
               open={this.state.isOpen}
               clickOutsideAction={this.clickOutsideAction}
+              showDisabledItems={true}
             >
               {React.Children.map(children, (child) => (
                 <DropDownItem

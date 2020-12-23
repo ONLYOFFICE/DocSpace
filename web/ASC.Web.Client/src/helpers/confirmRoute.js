@@ -6,6 +6,7 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { api, utils, PageLayout, store } from "asc-web-common";
 const { isAuthenticated } = store.auth.selectors;
+const { logout } = store.auth.actions;
 const { checkConfirmLink } = api.user;
 const { getObjectByLocation } = utils;
 
@@ -21,10 +22,9 @@ class ConfirmRoute extends React.Component {
   componentDidMount() {
     const { forUnauthorized, history, isAuthenticated } = this.props;
 
-    if (forUnauthorized && isAuthenticated)
-      return history.push(
-        `/error=Access error. You should be unauthorized for performing this action`
-      );
+    if (forUnauthorized && isAuthenticated) {
+      this.props.logout(false);
+    }
 
     const { location } = this.props;
     const { search } = location;
@@ -100,10 +100,10 @@ class ConfirmRoute extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    isAuthenticated: isAuthenticated(state)
+    isAuthenticated: isAuthenticated(state),
   };
 }
 
-export default connect(mapStateToProps, { checkConfirmLink })(
+export default connect(mapStateToProps, { checkConfirmLink, logout })(
   withRouter(ConfirmRoute)
 );

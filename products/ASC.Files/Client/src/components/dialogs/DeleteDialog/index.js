@@ -74,7 +74,7 @@ class DeleteDialogComponent extends React.Component {
       fetchFiles,
       setUpdateTree,
     } = this.props;
-    const successMessage = "Files and folders was deleted";
+    const successMessage = t("DeleteSelectedElem");
     api.files
       .getProgress()
       .then((res) => {

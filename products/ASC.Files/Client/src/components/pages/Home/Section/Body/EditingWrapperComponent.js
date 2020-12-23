@@ -76,6 +76,8 @@ const EditingWrapperComponent = (props) => {
     setIsHoveredCancel(!CancelIconIsHovered);
   };
 
+  const onFocus = (e) => e.target.select();
+
   return (
     <EditingWrapper>
       <TextInput
@@ -87,6 +89,7 @@ const EditingWrapperComponent = (props) => {
         isAutoFocussed={true}
         onChange={renameTitle}
         onKeyPress={onKeyUpUpdateItem}
+        onFocus={onFocus}
         isDisabled={isLoading}
         data-itemid={itemId}
       />

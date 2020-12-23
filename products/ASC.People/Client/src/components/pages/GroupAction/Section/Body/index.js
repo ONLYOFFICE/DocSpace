@@ -490,7 +490,11 @@ const convertGroups = (groups) => {
 function mapStateToProps(state) {
   const currentModuleName = getCurrentProductName(state);
   const settings = getSettings(state);
-  const { groupHeadCaption, groupsCaption, groupCaption } = settings;
+  const {
+    groupHeadCaption,
+    groupsCaption,
+    groupCaption,
+  } = settings.customNames;
   const { isLoaded } = state.auth;
 
   return {
