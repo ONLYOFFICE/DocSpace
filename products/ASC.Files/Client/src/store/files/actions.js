@@ -1603,3 +1603,14 @@ export function markAsVersion(id, isVersion, version) {
       .then((versions) => dispatch(setFileVersions(versions)));
   };
 }
+
+export function restoreVersion(id, version) {
+  return (dispatch, getState) => {
+    return api.files.versionRestore(id, version).then((newVersion) => {
+      const state = getState();
+      const versions = getFileVersions(state);
+      versions.unshift(newVersion);
+      dispatch(setFileVersions(versions));
+    });
+  };
+}

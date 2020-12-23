@@ -585,7 +585,6 @@ const filesReducer = (state = initialState, action) => {
         },
       });
     }
-
     case SET_FILE_VERSIONS: {
       return Object.assign({}, state, {
         versionHistory: {
