@@ -21,6 +21,7 @@ import SectionToggler from "./sub-components/section-toggler";
 import { changeLanguage } from "../../utils";
 import ReactResizeDetector from "react-resize-detector";
 import FloatingButton from "../FloatingButton";
+import { isMobile, isMacOs } from "react-device-detect";
 
 const { getLanguage } = store.auth.selectors;
 const { size } = utils.device;
@@ -358,7 +359,9 @@ class PageLayoutComponent extends React.Component {
                         uploadFiles={uploadFiles}
                         setSelections={setSelections}
                         withScroll={withBodyScroll}
-                        autoFocus={withBodyAutoFocus}
+                        autoFocus={
+                          isMobile || isMacOs ? false : withBodyAutoFocus
+                        }
                         pinned={this.state.isArticlePinned}
                         viewAs={viewAs}
                       >

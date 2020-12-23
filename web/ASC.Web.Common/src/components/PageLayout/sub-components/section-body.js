@@ -7,7 +7,7 @@ import equal from "fast-deep-equal/react";
 import { LayoutContextConsumer } from "../../Layout/context";
 import { getIsLoaded, getIsTabletView } from "../../../store/auth/selectors";
 import { connect } from "react-redux";
-import { isSafari } from "react-device-detect";
+
 const { tablet } = utils.device;
 
 const commonStyles = css`
@@ -78,7 +78,6 @@ class SectionBody extends React.Component {
 
     this.focusRef = React.createRef();
     this.scrollRef = React.createRef();
-    this.isPageAutoScrolled = false;
   }
 
   shouldComponentUpdate(nextProps) {
@@ -86,23 +85,8 @@ class SectionBody extends React.Component {
   }
 
   componentDidMount() {
-    const { isTabletView } = this.props;
     if (!this.props.autoFocus) return;
-
     this.focusRef.current.focus();
-    this.documentElement = document.getElementById("customScrollBar");
-    if (
-      isTabletView &&
-      isSafari &&
-      this.documentElement &&
-      this.documentElement.scrollTop !== 0
-    )
-      this.isPageAutoScrolled = true;
-  }
-  componentDidUpdate() {
-    const { isTabletView } = this.props;
-    if (isTabletView && isSafari && this.isPageAutoScrolled)
-      this.documentElement.scrollTo(0, 0);
   }
 
   componentWillUnmount() {
@@ -242,6 +226,7 @@ SectionBody.propTypes = {
   ]),
   viewAs: PropTypes.string,
   isLoaded: PropTypes.bool,
+  isTabletView: PropTypes.bool,
 };
 
 SectionBody.defaultProps = {

@@ -97,17 +97,7 @@ class SectionBodyContent extends React.PureComponent {
     this.props.history.push(
       `${this.props.settings.homepage}/edit/${this.props.profile.userName}`
     );
-  componentDidMount() {
-    this.documentElement = document.getElementById("customScrollBar");
-    const { isTabletView } = this.props;
-    if (
-      isIOS &&
-      isTabletView &&
-      this.documentElement &&
-      this.documentElement.scrollTop !== 0
-    )
-      this.documentElement.scrollTo(0, 0);
-  }
+
   render() {
     const { profile, settings, isAdmin, viewer, t } = this.props;
 
