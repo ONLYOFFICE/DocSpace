@@ -70,3 +70,9 @@ upstream  document_server {
 
   server localhost backup;
 }
+
+upstream  service_sh {
+  server $SERVICE_SH;
+
+  server localhost backup;
+}

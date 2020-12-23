@@ -84,3 +84,10 @@ services:
       dockerfile: Dockerfile-app
       target: web
     image: "${REPO}/${STATUS}appserver-proxy:${SRV_VERSION}"
+
+  onlyoffice-socket:
+    build:
+      context:  ./
+      dockerfile: Dockerfile-app
+      target: socket
+    image: "${REPO}/${STATUS}appserver-socket:${SRV_VERSION}"

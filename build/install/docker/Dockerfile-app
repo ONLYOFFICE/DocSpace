@@ -144,11 +144,19 @@ RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \
     cd ../../../ && \
     yarn install --cwd common/ASC.Thumbnails --frozen-lockfile && \
     mkdir -p /var/www/services/thumb/client && cp -Rf common/ASC.Thumbnails/* /var/www/services/thumb/client && \
+    
     cd common/services/ASC.UrlShortener.Svc && \
     dotnet -d publish --no-build --self-contained -r linux-x64 -o /services/urlshortener/service && \
     cd ../../../ && \
     yarn install --cwd common/ASC.UrlShortener --frozen-lockfile && \
     mkdir -p /var/www/services/urlshortener/client && cp -Rf common/ASC.UrlShortener/* /var/www/services/urlshortener/client && \
+    
+    cd common/services/ASC.Socket.IO.Svc && \
+    dotnet -d publish --no-build --self-contained -r linux-x64 -o /services/socket/service && \
+    cd ../../../ && \
+    yarn install --cwd common/ASC.Socket.IO --frozen-lockfile && \
+    mkdir -p /var/www/services/socket/client && cp -Rf common/ASC.Socket.IO/* /var/www/services/socket/client && \
+
     cd common/services/ASC.Studio.Notify && \
     dotnet add ASC.Studio.Notify.csproj reference ../../../products/ASC.People/Server/ASC.People.csproj  ../../../products/ASC.Files/Server/ASC.Files.csproj  && \
     dotnet -d publish --no-build --self-contained -r linux-x64 -o /var/www/services/studio.notify
@@ -180,9 +188,10 @@ RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \
     apt-get -y upgrade && \
     apt-get install -yq nano &&\
     apt-get install -yq jq &&\
+    apt-get install -yq nodejs &&\
     apt-get install -yq libgdiplus
     
-USER onlyoffice    
+#USER onlyoffice    
 EXPOSE 5050
 
 ENTRYPOINT ["./docker-entrypoint.sh"]
@@ -203,8 +212,6 @@ COPY --from=develop /var/www/products/ASC.Files/client /var/www/products/ASC.Fil
 COPY --from=develop /var/www/products/ASC.People/client /var/www/products/ASC.People/client
 COPY --from=develop /var/www/public /var/www/public
 COPY --from=develop /var/www/studio/client /var/www/studio/client
-COPY --from=develop /var/www/services/urlshortener/client /var/www/services/urlshortener/client
-COPY --from=develop /var/www/services/thumb/client /var/www/services/thumb/client
 COPY /config/nginx/templates/upstream.conf.template /etc/nginx/templates/upstream.conf.template
 
 # add defualt user and group for no-root run
@@ -217,6 +224,7 @@ RUN chown nginx:nginx /etc/nginx/* -R &&\
     sed -i 's/localhost:5007/service_files/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/localhost:5003/service_studio/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/localhost:5012/service_backup/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/localhost:9999/service_sh/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/172.*/document_server;/' /etc/nginx/conf.d/onlyoffice.conf && \
     # configute the image nginx whith less privileged https://hub.docker.com/_/nginx
     sed -i 's/pid.*nginx.pid;/pid \/tmp\/nginx.pid;/' /etc/nginx/nginx.conf && \
@@ -264,6 +272,7 @@ WORKDIR /services/urlshortener/service/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
 COPY --from=develop --chown=onlyoffice:onlyoffice /services/urlshortener/service/ .
+COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/services/urlshortener/client /services/urlshortener/client
 CMD ["ASC.UrlShortener.Svc.dll", "urlshortener"]
 
 
@@ -345,5 +354,17 @@ WORKDIR /services/thumbnails/service
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
 COPY --from=develop --chown=onlyoffice:onlyoffice /services/thumb/service/ .
+COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/services/thumb/client /services/thumbnails/client
 
 CMD ["ASC.Thumbnails.Svc.dll", "thumbnails"]
+
+## socket ##
+FROM builder AS socket
+
+WORKDIR /services/socket/service
+
+COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
+COPY --from=develop --chown=onlyoffice:onlyoffice /services/socket/service/ .
+COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/services/socket/client /services/ASC.Socket.IO
+
+CMD ["ASC.Socket.IO.Svc.dll", "socket"]
