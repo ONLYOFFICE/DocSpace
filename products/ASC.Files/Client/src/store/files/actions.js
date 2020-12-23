@@ -27,6 +27,8 @@ import {
   getTreeFolders,
   getSettingsTree,
   getPrivacyFolder,
+  getVerHistoryFileId,
+  getFileVersions,
 } from "./selectors";
 
 import sumBy from "lodash/sumBy";
@@ -69,8 +71,9 @@ export const SET_FILES_SETTING = "SET_FILES_SETTING";
 export const SET_IS_ERROR_SETTINGS = "SET_IS_ERROR_SETTINGS";
 export const SET_FIRST_LOAD = "SET_FIRST_LOAD";
 export const SET_UPLOAD_DATA = "SET_UPLOAD_DATA";
-export const SET_IS_VERSION_HISTORY_PANEL = "SET_IS_VERSION_HISTORY_PANEL";
-export const SET_VERSION_HISTORY_FILE_ID = "SET_VERSION_HISTORY_FILE_ID";
+export const SET_IS_VER_HISTORY_PANEL = "SET_IS_VER_HISTORY_PANEL";
+export const SET_VER_HISTORY_FILE_ID = "SET_VER_HISTORY_FILE_ID";
+export const SET_FILE_VERSIONS = "SET_FILE_VERSIONS";
 
 export function setFile(file) {
   return {
@@ -290,17 +293,24 @@ export function setUploadData(uploadData) {
   };
 }
 
-export function setIsVersionHistoryPanel(isVisible) {
+export function setIsVerHistoryPanel(isVisible) {
   return {
-    type: SET_IS_VERSION_HISTORY_PANEL,
+    type: SET_IS_VER_HISTORY_PANEL,
     isVisible,
   };
 }
 
-export function setVersionHistoryFileId(fileId) {
+export function setVerHistoryFileId(fileId) {
   return {
-    type: SET_VERSION_HISTORY_FILE_ID,
+    type: SET_VER_HISTORY_FILE_ID,
     fileId,
+  };
+}
+
+export function setFileVersions(versions) {
+  return {
+    type: SET_FILE_VERSIONS,
+    versions,
   };
 }
 
@@ -1567,5 +1577,20 @@ export function itemOperationToFolder(
         setTimeout(() => dispatch(clearPrimaryProgressData()), TIMEOUT);
         setTimeout(() => dispatch(clearSecondaryProgressData()), TIMEOUT);
       });
+  };
+}
+
+export function fetchFileVersions(fileId) {
+  return (dispatch, getState) => {
+    const state = getState();
+    const currentId = getVerHistoryFileId(state);
+    if (currentId !== fileId) {
+      return api.files
+        .getFileVersionInfo(fileId)
+        .then((versions) => dispatch(setFileVersions(versions)));
+    } else {
+      const currentVersions = getFileVersions(state);
+      return Promise.resolve(currentVersions);
+    }
   };
 }
