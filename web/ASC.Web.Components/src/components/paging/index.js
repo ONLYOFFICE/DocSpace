@@ -64,6 +64,7 @@ const Paging = (props) => {
     id,
     className,
     style,
+    showCountItem,
   } = props;
 
   const onSelectPageAction = (option) => {
@@ -110,18 +111,20 @@ const Paging = (props) => {
         isDisabled={disableNext}
         disableHover={disableHover}
       />
-      {countItems && (
-        <StyledOnPage>
-          <ComboBox
-            className="hideDisabled"
-            directionY={openDirection}
-            directionX="right"
-            options={countItems}
-            onSelect={onSelectCountAction}
-            selectedOption={selectedCountItem}
-          />
-        </StyledOnPage>
-      )}
+      {showCountItem
+        ? countItems && (
+            <StyledOnPage>
+              <ComboBox
+                className="hideDisabled"
+                directionY={openDirection}
+                directionX="right"
+                options={countItems}
+                onSelect={onSelectCountAction}
+                selectedOption={selectedCountItem}
+              />
+            </StyledOnPage>
+          )
+        : null}
     </StyledPaging>
   );
 };
@@ -151,12 +154,15 @@ Paging.propTypes = {
   className: PropTypes.string,
   id: PropTypes.string,
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+
+  showCountItem: PropTypes.bool.isRequired,
 };
 
 Paging.defaultProps = {
   disablePrevious: false,
   disableNext: false,
   disableHover: false,
+  showCountItem: true,
 };
 
 export default Paging;
