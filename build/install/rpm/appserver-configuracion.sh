@@ -203,6 +203,8 @@ execute_mysql_sqript(){
 }
 
 setup_nginx(){
+	rm -rf /etc/nginx/conf.d/default.conf
+
     sed -i "s/listen.*;/listen $AS_PORT;/" /etc/nginx/conf.d/onlyoffice.conf
 
     shopt -s nocasematch

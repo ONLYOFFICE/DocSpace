@@ -102,6 +102,12 @@ yarn install --cwd common/ASC.UrlShortener --frozen-lockfile
 mkdir -p %{_builddir}/services/urlshortener/client
 cp -Rf common/ASC.UrlShortener/* %{_builddir}/services/urlshortener/client
 
+cd common/services/ASC.Socket.IO.Svc
+dotnet -d publish --no-build --self-contained -r linux-x64 -o %{_builddir}/services/socket/service
+cd ../../../
+yarn install --cwd common/ASC.Socket.IO --frozen-lockfile
+mkdir -p %{_builddir}/services/ASC.Socket.IO && cp -Rf common/ASC.Socket.IO/* %{_builddir}/services/ASC.Socket.IO
+
 cd common/services/ASC.Studio.Notify
 dotnet add ASC.Studio.Notify.csproj reference ../../../products/ASC.People/Server/ASC.People.csproj  ../../../products/ASC.Files/Server/ASC.Files.csproj
 dotnet -d publish --no-build --self-contained -r linux-x64 -o %{_builddir}/var/www/services/studio.notify

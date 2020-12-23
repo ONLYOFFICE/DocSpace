@@ -14,6 +14,7 @@ service_name=(
 	api_system
 	urlshortener
 	thumbnails
+	socket
 	studio_notify
 	notify 
 	people
@@ -53,6 +54,12 @@ reassign_values (){
 		SERVICE_PORT="5016"
 		WORK_DIR="/services/thumb/service/"
 		EXEC_FILE="ASC.Thumbnails.Svc.dll"
+	;;
+	socket )	
+		SERVICE_NAME="$1"
+		SERVICE_PORT="9999"
+		WORK_DIR="/services/socket/service/"
+		EXEC_FILE="ASC.Socket.IO.Svc.dll"
 	;;
 	studio_notify )
 		SERVICE_NAME="$1"

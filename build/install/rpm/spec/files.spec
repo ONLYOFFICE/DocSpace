@@ -18,7 +18,7 @@
 %defattr(-, onlyoffice, onlyoffice, -)
 /etc/onlyoffice/appserver/*
 /var/log/onlyoffice/appserver/
-/usr/bin/
+/usr/bin/*
 
 %files files_services
 %defattr(-, onlyoffice, onlyoffice, -)
@@ -53,9 +53,6 @@
 /var/www/products/ASC.Files/client/*
 /var/www/public/*
 /var/www/studio/client/*
-/services/urlshortener/client/*
-/services/thumb/client/*
-
 
 %files studio.notify
 %defattr(-, onlyoffice, onlyoffice, -)
@@ -73,12 +70,20 @@
 %files urlshortener
 %defattr(-, onlyoffice, onlyoffice, -)
 /services/urlshortener/service/*
+/services/urlshortener/client/*
 /etc/systemd/system/appserver-urlshortener.service
 
 %files thumbnails
 %defattr(-, onlyoffice, onlyoffice, -)
 /services/thumb/service/*
+/services/thumb/client/*
 /etc/systemd/system/appserver-thumbnails.service
+
+%files socket
+%defattr(-, onlyoffice, onlyoffice, -)
+/services/socket/service/*
+/services/ASC.Socket.IO/*
+/etc/systemd/system/appserver-socket.service
 
 %files studio
 %defattr(-, onlyoffice, onlyoffice, -)
