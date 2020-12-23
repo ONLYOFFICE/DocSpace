@@ -1239,3 +1239,39 @@ export const isSecondaryProgressFinished = createSelector(
     return data && data.percent === 100;
   }
 );
+
+export const getSortedFiles = (state) => {
+  const formatKeys = Object.freeze({
+    OriginalFormat: 0,
+  });
+
+  const items = getSelection(state);
+
+  let sortedFiles = {
+    documents: [],
+    spreadsheets: [],
+    presentations: [],
+    other: [],
+  };
+
+  for (let item of items) {
+    item.checked = true;
+    item.format = formatKeys.OriginalFormat;
+
+    if (item.fileExst) {
+      if (isSpreadsheet(item.fileExst)(state)) {
+        sortedFiles.spreadsheets.push(item);
+      } else if (isPresentation(item.fileExst)(state)) {
+        sortedFiles.presentations.push(item);
+      } else if (item.fileExst !== ".pdf" && canWebEdit(item.fileExst)(state)) {
+        sortedFiles.documents.push(item);
+      } else {
+        sortedFiles.other.push(item);
+      }
+    } else {
+      sortedFiles.other.push(item);
+    }
+  }
+
+  return sortedFiles;
+};
