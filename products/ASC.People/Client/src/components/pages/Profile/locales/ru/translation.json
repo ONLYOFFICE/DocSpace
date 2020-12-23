@@ -32,6 +32,7 @@
   "SaveButton": "Сохранить",
   "ChangesApplied": "Изменения успешно применены",
   "SuccessChangeUserStatus": "Статус пользователя успешно изменен",
+  "SuccessSentInvitation": "Приглашение было успешно отправлено",
   "MessageEmailActivationInstuctionsSentOnEmail": "Инструкция по активации почты пользователя была отправлена по адресу <strong>{{ email }}</strong>",
   "People": "Люди",
   "Profile": "Профиль",

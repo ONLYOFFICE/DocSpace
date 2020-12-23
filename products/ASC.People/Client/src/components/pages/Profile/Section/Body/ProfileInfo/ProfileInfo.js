@@ -127,9 +127,12 @@ class ProfileInfo extends React.PureComponent {
   };
 
   onSentInviteAgain = (id) => {
+    const { t } = this.props;
     resendUserInvites(new Array(id))
-      .then(() => toastr.success("The invitation was successfully sent"))
-      .catch((error) => toastr.error(error));
+      .then(() => toastr.success(t("SuccessSentInvitation")))
+      .catch((error) =>
+        toastr.error(error && error.message ? error.message : error)
+      );
   };
 
   onEmailClick = (e) => {
@@ -143,8 +146,8 @@ class ProfileInfo extends React.PureComponent {
 
     if (profile.cultureName === language.key) return;
 
-    updateProfileCulture(profile.id, language.key).catch((err) =>
-      console.log(err)
+    updateProfileCulture(profile.id, language.key).catch((error) =>
+      toastr.error(error && error.message ? error.message : error)
     );
   };
 
@@ -209,6 +212,7 @@ class ProfileInfo extends React.PureComponent {
         <Link
           isHovered={true}
           href="https://helpcenter.onlyoffice.com/ru/guides/become-translator.aspx"
+          target="_blank"
         >
           {t("LearnMore")}
         </Link>
