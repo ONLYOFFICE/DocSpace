@@ -1585,6 +1585,7 @@ export function fetchFileVersions(fileId) {
     const state = getState();
     const currentId = getVerHistoryFileId(state);
     if (currentId !== fileId) {
+      dispatch(setVerHistoryFileId(fileId));
       return api.files
         .getFileVersionInfo(fileId)
         .then((versions) => dispatch(setFileVersions(versions)));
@@ -1592,5 +1593,13 @@ export function fetchFileVersions(fileId) {
       const currentVersions = getFileVersions(state);
       return Promise.resolve(currentVersions);
     }
+  };
+}
+
+export function markAsVersion(id, isVersion, version) {
+  return (dispatch) => {
+    return api.files
+      .markAsVersion(id, isVersion, version)
+      .then((versions) => dispatch(setFileVersions(versions)));
   };
 }
