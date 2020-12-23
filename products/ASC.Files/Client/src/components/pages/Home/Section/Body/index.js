@@ -266,11 +266,15 @@ class SectionBodyContent extends React.Component {
   }
 
   onOpenLocation = () => {
-    const item = this.props.selection[0];
-    const { folderId, checked } = this.props.selection[0];
+    const { filter, selection } = this.props;
+    const { folderId, checked, id, isFolder } = selection[0];
+    const item = selection[0];
+    const locationId = isFolder ? id : folderId;
+    const locationFilter = isFolder ? filter : null;
+
     return this.props
-      .fetchFiles(folderId)
-      .then(() => this.onContentRowSelect(!checked, item));
+      .fetchFiles(locationId, locationFilter)
+      .then(() => (isFolder ? null : this.onContentRowSelect(!checked, item)));
   };
 
   onClickFavorite = (e) => {
@@ -638,6 +642,14 @@ class SectionBodyContent extends React.Component {
 
     return options.map((option) => {
       switch (option) {
+        case "open":
+          return {
+            key: option,
+            label: t("Open"),
+            icon: "CatalogFolderIcon",
+            onClick: this.onOpenLocation,
+            disabled: false,
+          };
         case "show-version-history":
           return {
             key: option,
@@ -660,6 +672,7 @@ class SectionBodyContent extends React.Component {
         case "separator0":
         case "separator1":
         case "separator2":
+        case "separator3":
           return { key: option, isSeparator: true };
         case "open-location":
           return {
