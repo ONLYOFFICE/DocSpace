@@ -1166,8 +1166,10 @@ namespace ASC.Files.Core.Data
 
         public Dictionary<string, string> GetBunchObjectIDs(List<int> folderIDs)
         {
+            var folderSIds = folderIDs.Select(r => r.ToString()).ToList();
+
             return Query(FilesDbContext.BunchObjects)
-                .Where(r => folderIDs.Any(a => a.ToString() == r.LeftNode))
+                .Where(r => folderSIds.Any(a => a == r.LeftNode))
                 .ToDictionary(r => r.LeftNode, r => r.RightNode);
         }
 
