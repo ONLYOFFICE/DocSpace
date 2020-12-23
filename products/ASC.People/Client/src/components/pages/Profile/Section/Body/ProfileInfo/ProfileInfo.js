@@ -212,6 +212,7 @@ class ProfileInfo extends React.PureComponent {
         <Link
           isHovered={true}
           href="https://helpcenter.onlyoffice.com/ru/guides/become-translator.aspx"
+          target="_blank"
         >
           {t("LearnMore")}
         </Link>
