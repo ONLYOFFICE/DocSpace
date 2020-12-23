@@ -656,6 +656,7 @@ const getFilesContextOptions = (
 
   const isFile = !!item.fileExst;
   const isFavorite = item.fileStatus === 32;
+  const isFullAccess = item.access < 2;
 
   if (item.id <= 0) return [];
 
@@ -688,8 +689,10 @@ const getFilesContextOptions = (
     if (isFile) {
       options.push("show-version-history");
       if (!isVisitor) {
-        options.push("finalize-version");
-        options.push("block-unblock-version");
+        if (isFullAccess) {
+          options.push("finalize-version");
+          options.push("block-unblock-version");
+        }
         options.push("separator2");
 
         if (isRecent) {
