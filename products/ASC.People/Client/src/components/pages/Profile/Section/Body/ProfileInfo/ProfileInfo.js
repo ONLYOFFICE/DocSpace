@@ -127,9 +127,12 @@ class ProfileInfo extends React.PureComponent {
   };
 
   onSentInviteAgain = (id) => {
+    const { t } = this.props;
     resendUserInvites(new Array(id))
-      .then(() => toastr.success("The invitation was successfully sent"))
-      .catch((error) => toastr.error(error));
+      .then(() => toastr.success(t("SuccessSentInvitation")))
+      .catch((error) =>
+        toastr.error(error && error.message ? error.message : error)
+      );
   };
 
   onEmailClick = (e) => {
