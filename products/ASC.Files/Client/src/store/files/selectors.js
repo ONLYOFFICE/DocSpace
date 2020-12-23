@@ -663,29 +663,34 @@ const getFilesContextOptions = (
     options.push("download");
     options.push("download-as");
     options.push("restore");
-    options.push("separator2");
+    options.push("separator0");
     options.push("delete");
   } else {
+    if (!isFile) {
+      options.push("open");
+      options.push("separator0");
+    }
+
     if (!(isRecent || isFavorites || isVisitor)) {
       options.push("sharing-settings");
     }
 
-    if (isFile) {
+    if (isFile && !isVisitor) {
       options.push("send-by-email");
     }
 
     options.push("link-for-portal-users");
 
     if (!isVisitor) {
-      options.push("separator0");
+      options.push("separator1");
     }
 
     if (isFile) {
+      options.push("show-version-history");
       if (!isVisitor) {
-        options.push("show-version-history");
         options.push("finalize-version");
         options.push("block-unblock-version");
-        options.push("separator1");
+        options.push("separator2");
 
         if (isRecent) {
           options.push("open-location");
@@ -693,6 +698,8 @@ const getFilesContextOptions = (
         if (!isFavorite) {
           options.push("mark-as-favorite");
         }
+      } else {
+        options.push("separator3");
       }
 
       if (canOpenPlayer) {
@@ -715,6 +722,8 @@ const getFilesContextOptions = (
 
       options.push("rename");
       options.push("delete");
+    } else {
+      options.push("copy");
     }
   }
   if (isFavorite && !isRecycleBin) {
