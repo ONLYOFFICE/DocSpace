@@ -1609,8 +1609,9 @@ export function restoreVersion(id, version) {
     return api.files.versionRestore(id, version).then((newVersion) => {
       const state = getState();
       const versions = getFileVersions(state);
-      versions.unshift(newVersion);
-      dispatch(setFileVersions(versions));
+      const updatedVersions = versions.slice();
+      updatedVersions.splice(1, 0, newVersion);
+      dispatch(setFileVersions(updatedVersions));
     });
   };
 }
@@ -1622,7 +1623,8 @@ export function updateCommentVersion(id, comment, version) {
       .then((updatedComment) => {
         const state = getState();
         const versions = getFileVersions(state);
-        const updatedVersions = versions.map((item) => {
+        const copyVersions = versions.slice();
+        const updatedVersions = copyVersions.map((item) => {
           if (item.version === version) {
             item.comment = updatedComment;
           }

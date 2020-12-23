@@ -390,7 +390,11 @@ const initialState = {
     ],
   },
   privacyInstructions: "https://www.onlyoffice.com/private-rooms.aspx",
-  versionHistory: { isVisible: false, fileId: null, versions: null },
+  versionHistory: {
+    isVisible: false,
+    fileId: null,
+    versions: null,
+  },
 };
 
 const filesReducer = (state = initialState, action) => {
@@ -593,6 +597,7 @@ const filesReducer = (state = initialState, action) => {
         },
       });
     }
+
     default:
       return state;
   }
