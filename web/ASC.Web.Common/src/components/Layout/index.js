@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import styled from "styled-components";
 import MobileLayout from "./MobileLayout";
 import { utils } from "asc-web-components";
-import { isIOS, isFirefox, isSafari } from "react-device-detect";
+import { isIOS, isFirefox, isSafari, isMobile } from "react-device-detect";
 
 import { connect } from "react-redux";
 import store from "../../store";
@@ -16,7 +16,9 @@ const StyledContainer = styled.div`
   width: 100%;
   height: ${(props) =>
     props.isTabletView && !isFirefox
-      ? "calc(var(--vh, 1vh) * 100 + 57px)"
+      ? isMobile
+        ? "calc(var(--vh, 1vh) * 100 + 57px)"
+        : "100vh"
       : "100vh"};
 `;
 
