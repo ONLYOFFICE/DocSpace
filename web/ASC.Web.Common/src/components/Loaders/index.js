@@ -11,6 +11,7 @@ import Filter from "./FilterLoader/index";
 import ProfileView from "./ProfileViewLoader/index";
 import SettingsFiles from "./SettingsFilesLoader";
 import Group from "./GroupLoader/index";
+import HistoryRows from "./HistoryRowsLoader";
 
 export default {
   Rectangle,
@@ -26,4 +27,5 @@ export default {
   ProfileView,
   SettingsFiles,
   Group,
+  HistoryRows,
 };

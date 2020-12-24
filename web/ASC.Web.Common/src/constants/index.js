@@ -104,7 +104,7 @@ export const ShareAccessRights = Object.freeze({
 export const i18nBaseSettings = {
   lng: localStorage.getItem(LANGUAGE) || "en",
   supportedLngs: ["en", "ru"],
-  fallbackLng: false, //fallbackLng: "en",
+  fallbackLng: "en",
   load: "languageOnly",
 
   interpolation: {

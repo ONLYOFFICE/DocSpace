@@ -41,7 +41,7 @@ const StyledMediaViewer = styled.div`
     line-height: 19px;
   }
   .details {
-    z-index: 4001;
+    z-index: 4002;
     padding-top: 14px;
     padding-bottom: 14px;
     height: 20px;

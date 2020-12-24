@@ -357,6 +357,7 @@ class SectionBodyContent extends React.Component {
                 groupsCaption={groupsCaption}
                 defaultOption={me}
                 defaultOptionLabel={t("MeLabel")}
+                employeeStatus={1}
               />
             </FieldContainer>
             <FieldContainer
@@ -394,6 +395,7 @@ class SectionBodyContent extends React.Component {
                 defaultOption={me}
                 defaultOptionLabel={t("MeLabel")}
                 selectedOptions={groupMembers}
+                employeeStatus={1}
               />
             </FieldContainer>
             {groupMembers && groupMembers.length > 0 && (
