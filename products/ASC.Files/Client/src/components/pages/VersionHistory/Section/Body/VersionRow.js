@@ -100,6 +100,7 @@ const VersionRow = (props) => {
             index={index}
             versionGroup={info.versionGroup}
             {...onClickProp}
+            t={t}
           />
           <Link
             onClick={onOpenFile}

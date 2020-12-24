@@ -6,6 +6,7 @@ const VersionBadge = ({
   isVersion,
   versionGroup,
   index,
+  t,
   ...rest
 }) => (
   <Box className={className} marginProp="0 8px" displayProp="flex" {...rest}>
@@ -27,7 +28,7 @@ const VersionBadge = ({
       />
     </svg>
     <Text className="version_badge-text" color="#FFF" isBold fontSize="12px">
-      {isVersion && `Ver.${versionGroup}`}
+      {isVersion && t("Version", { versionGroup: versionGroup })}
     </Text>
   </Box>
 );
