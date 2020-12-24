@@ -5,8 +5,8 @@ export default function ScrollToTop() {
   const { pathname } = useLocation();
 
   useEffect(() => {
-    document.getElementById("customScrollBar") &&
-      document.getElementById("customScrollBar").scrollTo(0, 0);
+    const documentScrollElement = document.getElementById("customScrollBar");
+    documentScrollElement && documentScrollElement.scrollTo(0, 0);
   }, [pathname]);
 
   return null;
