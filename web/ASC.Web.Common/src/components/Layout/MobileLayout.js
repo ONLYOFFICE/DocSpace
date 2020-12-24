@@ -47,10 +47,6 @@ class MobileLayout extends Component {
     if (visibleContent && isMobile && !isTouchDevice) {
       return;
     }
-    if (!isIOS && window.pageYOffset !== 0) {
-      window.scroll(0, 0);
-      return;
-    }
 
     if (Math.abs(currentScrollPosition - prevScrollPosition) <= 54) {
       return;

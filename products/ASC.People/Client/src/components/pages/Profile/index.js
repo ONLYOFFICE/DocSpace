@@ -26,7 +26,7 @@ class PureProfile extends React.Component {
   componentDidMount() {
     const { match, fetchProfile, profile, location, t } = this.props;
     const { userId } = match.params;
-    isChrome && isAndroid && window && window.scroll(0, 0);
+
     setDocumentTitle(t("Profile"));
     this.documentElement = document.getElementsByClassName(
       "needToCancelAnimationWithTransition"
