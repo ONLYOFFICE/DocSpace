@@ -124,6 +124,7 @@ const HeaderComponent = ({
             valueTop={value.isVisible}
             isLoaded={isLoaded}
             isAuthenticated={isAuthenticated}
+            className="needToCancelAnimationWithTransition"
           >
             <NavItem
               iconName="MenuIcon"

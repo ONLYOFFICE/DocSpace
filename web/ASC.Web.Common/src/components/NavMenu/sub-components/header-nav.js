@@ -98,7 +98,10 @@ const HeaderNav = React.memo(
     return (
       <LayoutContextConsumer>
         {(value) => (
-          <StyledNav valueTop={value.isVisible}>
+          <StyledNav
+            valueTop={value.isVisible}
+            className="needToCancelAnimationWithTransition"
+          >
             {modules.map((module) => (
               <NavItem
                 key={module.id}

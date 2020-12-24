@@ -28,7 +28,9 @@ class PureProfile extends React.Component {
     const { userId } = match.params;
     isChrome && isAndroid && window && window.scroll(0, 0);
     setDocumentTitle(t("Profile"));
-
+    this.documentElement = document.getElementsByClassName(
+      "needToCancelAnimationWithTransition"
+    );
     const queryString = ((location && location.search) || "").slice(1);
     const queryParams = queryString.split("&");
     const arrayOfQueryParams = queryParams.map((queryParam) =>
@@ -42,15 +44,27 @@ class PureProfile extends React.Component {
     if (!profile) {
       fetchProfile(userId);
     }
+
+    if (!profile && this.documentElement) {
+      for (var i = 0; i < this.documentElement.length; i++) {
+        this.documentElement[i].style.transition = "none";
+      }
+    }
   }
 
   componentDidUpdate(prevProps) {
-    const { match, fetchProfile } = this.props;
+    const { match, fetchProfile, profile } = this.props;
     const { userId } = match.params;
     const prevUserId = prevProps.match.params.userId;
 
     if (userId !== undefined && userId !== prevUserId) {
       fetchProfile(userId);
+    }
+
+    if (profile && this.documentElement) {
+      for (var i = 0; i < this.documentElement.length; i++) {
+        this.documentElement[i].style.transition = "";
+      }
     }
   }
 

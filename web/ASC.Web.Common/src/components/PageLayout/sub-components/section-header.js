@@ -109,9 +109,12 @@ class SectionHeader extends React.Component {
         <LayoutContextConsumer>
           {(value) => (
             <div
-              className={classnames("section-header", {
-                "section-header--hidden": !value.isVisible,
-              })}
+              className={classnames(
+                "section-header needToCancelAnimationWithTransition",
+                {
+                  "section-header--hidden": !value.isVisible,
+                }
+              )}
               {...rest}
             />
           )}
