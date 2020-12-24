@@ -32,6 +32,7 @@
   "SaveButton": "Save",
   "ChangesApplied": "Changes are applied",
   "SuccessChangeUserStatus": "The user status was successfully changed",
+  "SuccessSentInvitation": "The invitation was successfully sent",
   "MessageEmailActivationInstuctionsSentOnEmail": "The email activation instructions have been sent to the <strong>{{ email }}</strong> email address",
   "People": "People",
   "Profile": "Profile",

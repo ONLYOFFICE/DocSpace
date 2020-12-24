@@ -100,6 +100,7 @@ class PageLayoutComponent extends React.Component {
 
   componentDidMount() {
     window.addEventListener("orientationchange", this.orientationChangeHandler);
+
     this.orientationChangeHandler();
   }
 
@@ -334,7 +335,11 @@ class PageLayoutComponent extends React.Component {
                   sectionWidth: width,
                 }}
               >
-                <Section widthProp={width}>
+                <Section
+                  widthProp={width}
+                  unpinArticle={this.unpinArticle}
+                  pinned={this.state.isArticlePinned}
+                >
                   {isSectionHeaderAvailable && (
                     <SubSectionHeader
                       isHeaderVisible={isHeaderVisible}

@@ -75,6 +75,14 @@ namespace ASC.Data.Storage.GoogleCloud
             TenantManager tenantManager,
             PathUtils pathUtils,
             EmailValidationKeyProvider emailValidationKeyProvider,
+            IOptionsMonitor<ILog> options) : base(tenantManager, pathUtils, emailValidationKeyProvider, options)
+        {
+        }
+
+        public GoogleCloudStorage(
+            TenantManager tenantManager,
+            PathUtils pathUtils,
+            EmailValidationKeyProvider emailValidationKeyProvider,
             IHttpContextAccessor httpContextAccessor,
             IOptionsMonitor<ILog> options) : base(tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, options)
         {

@@ -121,7 +121,7 @@ class SectionBodyContent extends React.PureComponent {
             source={profile.avatarMax}
             userName={profile.displayName}
           />
-          {(isAdmin || isSelf) && (
+          {profile.status !== 2 && (isAdmin || isSelf) && (
             <EditButtonWrapper>
               <Button
                 size="big"

@@ -211,12 +211,12 @@ export function login(user, hash) {
   };
 }
 
-export function logout(needRedirect = true) {
+export function logout(withoutRedirect) {
   return (dispatch) => {
     return api.user.logout().then(() => {
       setWithCredentialsStatus(false);
-      if (needRedirect) {
-        dispatch(setLogout());
+      dispatch(setLogout());
+      if (!withoutRedirect) {
         history.push("/login");
       }
     });
