@@ -51,4 +51,8 @@
     <ProjectReference Include="..\Core\ASC.Files.Core.csproj" />
     <ProjectReference Include="..\Server\ASC.Files.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="TestMigrations\" />
+  </ItemGroup>
 </Project>

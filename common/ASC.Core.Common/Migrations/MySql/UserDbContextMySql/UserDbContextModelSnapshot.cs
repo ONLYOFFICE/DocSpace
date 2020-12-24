@@ -725,14 +725,6 @@ namespace ASC.Core.Common.Migrations.MySql.UserDbContextMySql
                             PwdHash = "vLFfghR5tNV3K9DKhmwArV+SbjWAcgZZzIDTnJ0JgCo=",
                             PwdHashSha512 = "USubvPlB+ogq0Q1trcSupg==",
                             Tenant = 1
-                        },
-                        new
-                        {
-                            UserId = "005bb3ff-7de3-47d2-9b3d-61b9ec8a76a5",
-                            LastModified = new DateTime(2020, 10, 6, 10, 14, 35, 616, DateTimeKind.Utc).AddTicks(3267),
-                            PwdHash = "vLFfghR5tNV3K9DKhmwArV+SbjWAcgZZzIDTnJ0JgCo=",
-                            PwdHashSha512 = "USubvPlB+ogq0Q1trcSupg==",
-                            Tenant = 1
                         });
                 });
 

@@ -4,9 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Threading;
+
 using ASC.Common.Security.Authentication;
 using ASC.Core;
 using ASC.Core.Common.EF;
+using ASC.Core.Common.EF.Context;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.Files.Helpers;
@@ -17,11 +19,11 @@ using ASC.Web.Files.Services.WCFService;
 using ASC.Web.Files.Services.WCFService.FileOperations;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-
-
 
 namespace ASC.Files.Tests
 {
@@ -42,12 +44,20 @@ namespace ASC.Files.Tests
         protected UserOptions UserOptions { get; set; }
         protected IAccount Account { get; set; }
         protected IConfiguration Configuration { get; set; }
-       
+        protected IServiceScope scope { get; set; }
+
+        const string con = "Server=localhost;Database=onlyoffice_test;User ID = root; Password=root;Pooling=true;";
         public virtual void SetUp()
         {
-            var scope1 = Program.CreateHostBuilder(new string[] { "--pathToConf" ,"..\\..\\..\\..\\..\\..\\config", "--ConnectionStrings:default:connectionString", "Server=localhost;Database=onlyoffice_test;User ID=root;Password=root;Pooling=true;Character Set=utf8;AutoEnlist=false;SSL Mode=none;AllowPublicKeyRetrieval=True", "--migration:enabled", "true" }).Build();
-           
-            var scope = scope1.Services.CreateScope();
+            var scope1 = Program.CreateHostBuilder(new string[] { "--pathToConf" ,"..\\..\\..\\..\\..\\..\\config", "--ConnectionStrings:default:connectionString", con, "--migration:enabled", "true" }).Build();
+            
+             scope = scope1.Services.CreateScope();
+            var TenantDbContext = scope.ServiceProvider.GetService<DbContextManager<TenantDbContext>>();
+            using (var db = TenantDbContext)
+            {
+                var migrator = db.Value.GetInfrastructure().GetRequiredService<IMigrator>();
+                migrator.Migrate("20201222152946_TestUser");
+            }
             var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
             var tenant = tenantManager.GetTenant(1);
             tenantManager.SetCurrentTenant(tenant);
@@ -59,8 +69,10 @@ namespace ASC.Files.Tests
             SecurityContext = scope.ServiceProvider.GetService<SecurityContext>();
             UserOptions = scope.ServiceProvider.GetService<IOptions<UserOptions>>().Value;
             FileStorageService = scope.ServiceProvider.GetService<FileStorageService<int>>();
-
+           
+            
             SecurityContext.AuthenticateMe(CurrentTenant.OwnerId);
+           
         }
         
 
@@ -138,7 +150,7 @@ namespace ASC.Files.Tests
         
         public virtual void TearDown()
         {
-            Database.Delete("Server=localhost;Database=onlyoffice_test;User ID=root;Password=root;Pooling=true;");
+            Database.Delete(con);
         }
     }
 }

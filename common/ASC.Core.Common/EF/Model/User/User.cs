@@ -99,21 +99,7 @@ namespace ASC.Core.Common.EF
                     ActivationStatus = 0,
                     WorkFromDate = DateTime.UtcNow,
                     LastModified = DateTime.UtcNow
-                },
-                new User
-                {
-                    Id = Guid.Parse("005bb3ff-7de3-47d2-9b3d-61b9ec8a76a5"),
-                    FirstName = "Test",
-                    LastName = "User",
-                    UserName = "TestUser",
-                    Tenant = 1,
-                    Email = "test@gmail.com",
-                    Status = (EmployeeStatus)1,
-                    ActivationStatus = 0,
-                    WorkFromDate = DateTime.UtcNow,
-                    LastModified = DateTime.UtcNow
-                }
-                );
+                });
 
             return modelBuilder;
         }
