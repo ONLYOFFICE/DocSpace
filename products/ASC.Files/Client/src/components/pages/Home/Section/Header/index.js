@@ -37,6 +37,7 @@ import {
 import { OperationsPanel } from "../../../../panels";
 import {
   isCanBeDeleted,
+  getWebEditSelected,
   getIsRecycleBinFolder,
   canCreate,
   getSelectedFolderTitle,
@@ -48,11 +49,11 @@ import {
   getHeaderVisible,
   getHeaderIndeterminate,
   getHeaderChecked,
-  getOnlyFoldersSelected,
   getAccessedSelected,
   getSelectionLength,
   getSharePanelVisible,
-  getIsPrivacyFolder
+  getIsPrivacyFolder,
+  getOnlyFoldersSelected,
 } from "../../../../../store/files/selectors";
 
 const { isAdmin } = store.auth.selectors;
@@ -279,6 +280,10 @@ class SectionHeaderContent extends React.Component {
     const folderIds = [];
     const items = [];
 
+    if (selection.length === 1) {
+      return window.open(selection[0].viewUrl, "_blank");
+    }
+
     for (let item of selection) {
       if (item.fileExst) {
         fileIds.push(item.id);
@@ -398,11 +403,12 @@ class SectionHeaderContent extends React.Component {
       t,
       isItemsSelected,
       isAccessedSelected,
-      isOnlyFoldersSelected,
+      isWebEditSelected,
       deleteDialogVisible,
       isRecycleBin,
       isPrivacy,
       selection,
+      isOnlyFoldersSelected,
     } = this.props;
 
     let menu = [
@@ -471,7 +477,7 @@ class SectionHeaderContent extends React.Component {
       },
       {
         label: t("DownloadAs"),
-        disabled: !isItemsSelected || isOnlyFoldersSelected,
+        disabled: !isItemsSelected || !isWebEditSelected,
         onClick: this.downloadAsAction,
       },
       {
@@ -690,13 +696,14 @@ const mapStateToProps = (state) => {
     deleteDialogVisible: isCanBeDeleted(state),
     currentFolderId: getSelectedFolderId(state),
     canCreate: canCreate(state),
+    isWebEditSelected: getWebEditSelected(state),
     isHeaderVisible: getHeaderVisible(state),
     isHeaderIndeterminate: getHeaderIndeterminate(state),
     isHeaderChecked: getHeaderChecked(state),
     isAccessedSelected: getAccessedSelected(state),
-    isOnlyFoldersSelected: getOnlyFoldersSelected(state),
     isItemsSelected: getSelectionLength(state),
     sharingPanelVisible: getSharePanelVisible(state),
+    isOnlyFoldersSelected: getOnlyFoldersSelected(state),
   };
 };
 

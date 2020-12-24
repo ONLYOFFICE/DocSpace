@@ -6,6 +6,14 @@ import {
   Text,
   LinkWithDropdown,
 } from "asc-web-components";
+import styled from "styled-components";
+
+const StyledDownloadContent = styled.div`
+  .row_content,
+  .row-content_tablet-side-info {
+    overflow: unset;
+  }
+`;
 
 const DownloadContent = (props) => {
   const {
@@ -236,7 +244,7 @@ const DownloadContent = (props) => {
   const documentsTitle = getTitleLabel(titleFormat);
 
   return (
-    <>
+    <StyledDownloadContent>
       {showTitle && (
         <Row
           key={"title"}
@@ -244,7 +252,7 @@ const DownloadContent = (props) => {
           checked={checkedTitle}
           indeterminate={indeterminateTitle}
         >
-          <RowContent>
+          <RowContent convertSideInfo={false}>
             <Text truncate type="page" title={title} fontSize="14px">
               {title}
             </Text>
@@ -286,7 +294,7 @@ const DownloadContent = (props) => {
               checked={file.checked}
               element={element}
             >
-              <RowContent>
+              <RowContent convertSideInfo={false}>
                 <Text truncate type="page" title={file.title} fontSize="14px">
                   {file.title}
                 </Text>
@@ -309,7 +317,7 @@ const DownloadContent = (props) => {
           );
         })}
       </RowContainer>
-    </>
+    </StyledDownloadContent>
   );
 };
 

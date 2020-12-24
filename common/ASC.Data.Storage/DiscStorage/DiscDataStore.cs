@@ -75,6 +75,19 @@ namespace ASC.Data.Storage.DiscStorage
         }
 
         public DiscDataStore(
+    TenantManager tenantManager,
+    PathUtils pathUtils,
+    EmailValidationKeyProvider emailValidationKeyProvider,
+    IOptionsMonitor<ILog> options,
+    EncryptionSettingsHelper encryptionSettingsHelper,
+    EncryptionFactory encryptionFactory)
+    : base(tenantManager, pathUtils, emailValidationKeyProvider, options)
+        {
+            EncryptionSettingsHelper = encryptionSettingsHelper;
+            EncryptionFactory = encryptionFactory;
+        }
+
+        public DiscDataStore(
             TenantManager tenantManager,
             PathUtils pathUtils,
             EmailValidationKeyProvider emailValidationKeyProvider,

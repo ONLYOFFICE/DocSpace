@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import { MainButton, DropDownItem } from "asc-web-components";
 import { withTranslation, I18nextProvider } from "react-i18next";
+import { isMobile } from "react-device-detect";
 import { setAction, startUpload } from "../../../store/files/actions";
 import {
   canCreate,
@@ -124,13 +125,15 @@ class PureArticleMainButtonContent extends React.Component {
           label={t("UploadFiles")}
           onClick={this.onUploadFileClick}
         />
-        <DropDownItem
-          className="main-button_drop-down"
-          icon="ActionsUploadIcon"
-          label={t("UploadFolder")}
-          disabled={isPrivacy}
-          onClick={this.onUploadFolderClick}
-        />
+        {!isMobile && (
+          <DropDownItem
+            className="main-button_drop-down"
+            icon="ActionsUploadIcon"
+            label={t("UploadFolder")}
+            disabled={isPrivacy}
+            onClick={this.onUploadFolderClick}
+          />
+        )}
         <input
           id="customFileInput"
           className="custom-file-input"

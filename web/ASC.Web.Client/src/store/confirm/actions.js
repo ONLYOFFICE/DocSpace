@@ -30,7 +30,7 @@ export function getConfirmationInfo(token) {
 }
 
 export function createConfirmUser(registerData, loginData, key) {
-  const data = Object.assign({}, registerData, loginData);
+  const data = Object.assign({ fromInviteLink: true }, registerData, loginData);
   return (dispatch) => {
     return api.people
       .createUser(data, key)
@@ -81,8 +81,8 @@ export function activateConfirmUser(
         const promise = new Promise((resolve, reject) => {
           setTimeout(() => {
             login(
-              data.userName,
-              data.passwordHash
+              loginData.userName,
+              loginData.passwordHash
             )(dispatch)
               .then(() => {
                 resolve(loadInitInfo(dispatch));
