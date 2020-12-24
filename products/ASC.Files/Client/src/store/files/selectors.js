@@ -1072,6 +1072,18 @@ export const getPrivacyInstructionsLink = (state) => {
   return state.files.privacyInstructions;
 };
 
+export const getIsVerHistoryPanel = (state) => {
+  return state.files.versionHistory.isVisible;
+};
+
+export const getVerHistoryFileId = (state) => {
+  return state.files.versionHistory.fileId;
+};
+
+export const getFileVersions = (state) => {
+  return state.files.versionHistory.versions;
+};
+
 export const getHeaderVisible = createSelector(
   getSelectionLength,
   getSelected,

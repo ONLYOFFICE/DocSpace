@@ -1,230 +1,42 @@
 import React, { useState } from "react";
-import styled from "styled-components";
 import {
-  Row,
   Link,
   Text,
   Box,
   Textarea,
   Button,
   ModalDialog,
-  utils,
   Icons,
 } from "asc-web-components";
 import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
 import { connect } from "react-redux";
-import { api, toastr } from "asc-web-common";
-import { setIsLoading } from "../../../../../store/files/actions";
+import { toastr, store } from "asc-web-common";
 import {
-  getFilter,
-  getSelectedFolderId,
-} from "../../../../../store/files/selectors";
+  markAsVersion,
+  restoreVersion,
+  updateCommentVersion,
+} from "../../../../../store/files/actions";
+import VersionBadge from "./VersionBadge";
+import StyledVersionRow from "./StyledVersionRow";
 
-const { tablet } = utils.device;
-
-const StyledRow = styled(Row)`
-  min-height: 70px;
-
-  @media ${tablet} {
-    min-height: 69px;
-  }
-  .version_badge {
-    cursor: ${(props) => (props.canEdit ? "pointer" : "default")};
-
-    .version_badge-text {
-      position: absolute;
-      left: -2px;
-    }
-
-    margin-left: -8px;
-    margin-right: 16px;
-    margin-top: ${(props) => (props.showEditPanel ? "13px" : "-2px")};
-
-    @media ${tablet} {
-      margin-left: 0px;
-      margin-top: 0px;
-      .version_badge-text {
-        left: 6px;
-      }
-    }
-  }
-
-  .version-link-file {
-    margin-top: ${(props) => (props.showEditPanel ? "12px" : "-3px")};
-    @media ${tablet} {
-      margin-top: -1px;
-    }
-  }
-
-  .icon-link {
-    width: 10px;
-    height: 10px;
-    margin-left: 9px;
-    margin-top: ${(props) => (props.showEditPanel ? "11px" : "-3px")};
-    @media ${tablet} {
-      margin-top: -1px;
-    }
-  }
-
-  .version_modal-dialog {
-    display: none;
-
-    @media ${tablet} {
-      display: block;
-    }
-  }
-
-  .version_edit-comment {
-    display: block;
-    margin-left: 63px;
-
-    @media ${tablet} {
-      display: none;
-    }
-  }
-
-  .textarea-desktop {
-    margin: 9px 23px 1px -7px;
-  }
-
-  .version_content-length {
-    display: block;
-    margin-left: auto;
-    margin-top: ${(props) => (props.showEditPanel ? "12px" : "-3px")};
-    margin-right: -7px;
-
-    @media ${tablet} {
-      display: none;
-    }
-  }
-
-  .version_link {
-    display: ${(props) =>
-      props.showEditPanel ? "none" : props.canEdit ? "block" : "none"};
-    white-space: break-spaces;
-    margin-left: -7px;
-    margin-top: 4px;
-
-    @media ${tablet} {
-      display: none;
-      text-decoration: none;
-    }
-  }
-
-  .version_text {
-    display: ${(props) => (props.canEdit ? "none" : "block")};
-    margin-left: -7px;
-    margin-top: 5px;
-
-    @media ${tablet} {
-      display: block;
-      margin-left: 1px;
-      margin-top: 5px;
-    }
-  }
-
-  .version_links-container {
-    display: flex;
-    margin-left: auto;
-
-    .version_link-action {
-      display: block;
-      margin-top: 5px;
-
-      :last-child {
-        margin-right: -7px;
-        margin-left: 8px;
-      }
-
-      @media ${tablet} {
-        display: none;
-      }
-    }
-  }
-
-  .row_context-menu-wrapper {
-    display: none;
-
-    @media ${tablet} {
-      display: block;
-    }
-  }
-
-  .row_content {
-    display: block;
-  }
-
-  .modal-dialog-aside-footer {
-    width: 90%;
-
-    .version_save-button {
-      width: 100%;
-    }
-  }
-
-  .row_context-menu-wrapper {
-    margin-right: -3px;
-    margin-top: -25px;
-  }
-
-  .version_edit-comment-button-primary {
-    margin-right: 8px;
-    width: 87px;
-  }
-  .version_edit-comment-button-second {
-    width: 87px;
-  }
-  .version_modal-dialog .modal-dialog-aside-header {
-    border-bottom: unset;
-  }
-  .version_modal-dialog .modal-dialog-aside-body {
-    margin-top: -24px;
-  }
-`;
+const { getLanguage } = store.auth.selectors;
 
 const VersionRow = (props) => {
   const {
     info,
     index,
     culture,
-    selectedFolderId,
-    filter,
-    setIsLoading,
     isVersion,
     t,
-    getFileVersions,
+    markAsVersion,
+    restoreVersion,
+    updateCommentVersion,
   } = props;
   const [showEditPanel, setShowEditPanel] = useState(false);
   const [commentValue, setCommentValue] = useState(info.comment);
-  const [displayComment, setDisplayComment] = useState(info.comment);
 
   const canEdit = info.access === 1 || info.access === 0;
-
-  const VersionBadge = (props) => (
-    <Box {...props} marginProp="0 8px" displayProp="flex">
-      <svg
-        width="55"
-        height="18"
-        viewBox="0 0 55 18"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        stroke={isVersion ? "none" : "#A3A9AE"}
-        strokeDasharray={isVersion ? "none" : "2px"}
-        strokeWidth={isVersion ? "none" : "2px"}
-      >
-        <path
-          fillRule="evenodd"
-          clipRule="evenodd"
-          d="M0 1C0 0.447716 0.447715 0 1 0L53.9994 0C54.6787 0 55.1603 0.662806 54.9505 1.3089L52.5529 8.6911C52.4877 8.89187 52.4877 9.10813 52.5529 9.3089L54.9505 16.6911C55.1603 17.3372 54.6787 18 53.9994 18H0.999999C0.447714 18 0 17.5523 0 17V1Z"
-          fill={!isVersion ? "#FFF" : index === 0 ? "#A3A9AE" : "#ED7309"}
-        />
-      </svg>
-      <Text className="version_badge-text" color="#FFF" isBold fontSize="12px">
-        {isVersion && `Ver.${info.versionGroup}`}
-      </Text>
-    </Box>
-  );
 
   const title = `${new Date(info.created).toLocaleString(culture)} ${
     info.createdBy.displayName
@@ -238,12 +50,13 @@ const VersionRow = (props) => {
 
   const onChange = (e) => setCommentValue(e.target.value);
 
-  const onSaveClick = () =>
-    api.files
-      .versionEditComment(info.id, commentValue, info.version)
-      .then(() => setDisplayComment(commentValue))
+  const onSaveClick = () => {
+    updateCommentVersion(info.id, commentValue, info.version)
       .catch((err) => toastr.error(err))
-      .finally(() => onEditComment());
+      .finally(() => {
+        onEditComment();
+      });
+  };
 
   const onCancelClick = () => {
     setCommentValue(info.comment);
@@ -252,21 +65,13 @@ const VersionRow = (props) => {
   const onOpenFile = () => window.open(info.webUrl);
 
   const onRestoreClick = () => {
-    setIsLoading(true);
-    api.files
-      .versionRestore(info.id, info.version)
-      .then(() => getFileVersions(info.id))
-      .catch((err) => toastr.error(err))
-      .finally(() => setIsLoading(false));
+    restoreVersion(info.id, info.version).catch((err) => toastr.error(err));
   };
 
   const onVersionClick = () => {
-    setIsLoading(true);
-    api.files
-      .markAsVersion(info.id, isVersion, info.version)
-      .then(() => getFileVersions(info.id))
-      .catch((err) => toastr.error(err))
-      .finally(() => setIsLoading(false));
+    markAsVersion(info.id, isVersion, info.version).catch((err) =>
+      toastr.error(err)
+    );
   };
 
   const contextOptions = [
@@ -282,14 +87,21 @@ const VersionRow = (props) => {
   const onClickProp = canEdit ? { onClick: onVersionClick } : {};
 
   return (
-    <StyledRow
+    <StyledVersionRow
       showEditPanel={showEditPanel}
       contextOptions={contextOptions}
       canEdit={canEdit}
     >
       <>
         <Box displayProp="flex">
-          <VersionBadge className="version_badge" {...onClickProp} />
+          <VersionBadge
+            className="version_badge"
+            isVersion={isVersion}
+            index={index}
+            versionGroup={info.versionGroup}
+            {...onClickProp}
+            t={t}
+          />
           <Link
             onClick={onOpenFile}
             fontWeight={600}
@@ -311,7 +123,11 @@ const VersionRow = (props) => {
             {info.contentLength}
           </Text>
         </Box>
-        <Box marginProp="0 0 0 70px" displayProp="flex">
+        <Box
+          className="version-comment-wrapper"
+          marginProp="0 0 0 70px"
+          displayProp="flex"
+        >
           <>
             {showEditPanel && (
               <>
@@ -361,9 +177,9 @@ const VersionRow = (props) => {
               onClick={onEditComment}
               className="version_link"
             >
-              {displayComment}
+              {info.comment}
             </Link>
-            <Text className="version_text">{displayComment}</Text>
+            <Text className="version_text">{info.comment}</Text>
           </>
 
           <div className="version_links-container">
@@ -386,7 +202,7 @@ const VersionRow = (props) => {
           </div>
         </Box>
         {showEditPanel && (
-          <Box className="version_edit-comment" marginProp="8px 0 16px 70px">
+          <Box className="version_edit-comment" marginProp="8px 0 2px 70px">
             <Box
               className="version_edit-comment-button-primary"
               displayProp="inline-block"
@@ -413,17 +229,27 @@ const VersionRow = (props) => {
           </Box>
         )}
       </>
-    </StyledRow>
+    </StyledVersionRow>
   );
 };
 
 const mapStateToProps = (state) => {
   return {
-    filter: getFilter(state),
-    selectedFolderId: getSelectedFolderId(state),
+    culture: getLanguage(state),
   };
 };
 
-export default connect(mapStateToProps, {
-  setIsLoading,
-})(withRouter(withTranslation()(VersionRow)));
+const mapDispatchToProps = (dispatch) => {
+  return {
+    markAsVersion: (id, isVersion, version) =>
+      dispatch(markAsVersion(id, isVersion, version)),
+    restoreVersion: (id, version) => dispatch(restoreVersion(id, version)),
+    updateCommentVersion: (id, comment, version) =>
+      dispatch(updateCommentVersion(id, comment, version)),
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withRouter(withTranslation()(VersionRow)));

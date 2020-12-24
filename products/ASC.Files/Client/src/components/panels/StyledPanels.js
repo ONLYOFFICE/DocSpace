@@ -67,6 +67,39 @@ const StyledAsidePanel = styled.div`
   ${PanelStyles}
 `;
 
+const StyledVersionHistoryPanel = styled.div`
+  ${PanelStyles}
+  .version-history-modal-dialog {
+    transform: translateX(${(props) => (props.visible ? "0" : "720px")});
+    width: 720px;
+  }
+  .version-history-aside-panel {
+    transform: translateX(${(props) => (props.visible ? "0" : "720px")});
+    width: 720px;
+  }
+  .version-history-panel-header {
+    height: 53px;
+    margin-left: 0px;
+    .version-history-panel-heading {
+      font-weight: 700;
+      margin-bottom: 13px;
+      margin-top: 12px;
+    }
+  }
+  .version-history-panel-body {
+    padding: ${(props) => (props.isLoading ? "16px 0" : null)};
+    margin: 0 16px;
+    border-top: 1px solid #eceef1;
+
+    .version-comment-wrapper {
+      margin-left: 79px;
+    }
+    .version_edit-comment {
+      padding-left: 2px;
+    }
+  }
+`;
+
 const StyledAddUsersPanelPanel = styled.div`
   .header_aside-panel {
     transform: translateX(${(props) => (props.visible ? "0" : "500px")});
@@ -413,6 +446,7 @@ export {
   StyledAddGroupsPanel,
   StyledAddUsersPanelPanel,
   StyledEmbeddingPanel,
+  StyledVersionHistoryPanel,
   StyledContent,
   StyledHeaderContent,
   StyledBody,
