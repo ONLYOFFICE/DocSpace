@@ -5,6 +5,7 @@ import copy from "copy-to-clipboard";
 import LinkRow from "./linkRow";
 import AccessComboBox from "./AccessComboBox";
 import equal from "fast-deep-equal/react";
+import { getAccessIcon } from "../../../store/files/selectors";
 
 class SharingRow extends React.Component {
   constructor(props) {
@@ -147,6 +148,8 @@ class SharingRow extends React.Component {
       ? { onClick: onShowChangeOwnerPanel }
       : {};
 
+    const accessIcon = getAccessIcon(access);
+
     return (
       <>
         {externalLinkVisible && (
@@ -172,11 +175,13 @@ class SharingRow extends React.Component {
             className="sharing-row"
             key={`internal-link-key_${id}`}
             element={
-              isOwner || id === isMyId || isLocked ? (
-                <Icons.AccessEditIcon
-                  size="medium"
-                  className="sharing_panel-owner-icon"
-                />
+              isOwner || isLocked ? (
+                React.createElement(Icons[accessIcon], {
+                  size: "medium",
+                  className: "sharing_panel-owner-icon",
+                  isfill: true,
+                  color: isLoading ? "#D0D5DA" : "#a3a9ae",
+                })
               ) : (
                 <AccessComboBox
                   access={access}

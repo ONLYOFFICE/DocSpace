@@ -10,6 +10,29 @@ const presentInArray = (array, search) => {
   return result === -1 ? false : true;
 };
 
+export const getAccessIcon = (access) => {
+  switch (access) {
+    case 1:
+      return "AccessEditIcon";
+    case 2:
+      return "EyeIcon";
+    case 3:
+      return "AccessNoneIcon";
+    case 4:
+      return "CatalogQuestionIcon";
+    case 5:
+      return "AccessReviewIcon";
+    case 6:
+      return "AccessCommentIcon";
+    case 7:
+      return "AccessFormIcon";
+    case 8:
+      return "CustomFilterIcon";
+    default:
+      return;
+  }
+};
+
 export const getMediaViewerImageFormats = (state) => {
   return state.files.mediaViewerFormats.images;
 };

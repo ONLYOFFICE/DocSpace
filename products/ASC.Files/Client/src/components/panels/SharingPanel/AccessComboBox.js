@@ -1,6 +1,7 @@
 import React from "react";
 import { ComboBox, Icons, DropDownItem } from "asc-web-components";
 import { constants } from "asc-web-common";
+import { getAccessIcon } from "../../../store/files/selectors";
 
 const { ShareAccessRights } = constants;
 
@@ -22,29 +23,6 @@ const AccessComboBox = (props) => {
     ReadOnly,
     DenyAccess,
   } = ShareAccessRights;
-
-  const getAccessIcon = () => {
-    switch (access) {
-      case 1:
-        return "AccessEditIcon";
-      case 2:
-        return "EyeIcon";
-      case 3:
-        return "AccessNoneIcon";
-      case 4:
-        return "CatalogQuestionIcon";
-      case 5:
-        return "AccessReviewIcon";
-      case 6:
-        return "AccessCommentIcon";
-      case 7:
-        return "AccessFormIcon";
-      case 8:
-        return "CustomFilterIcon";
-      default:
-        return;
-    }
-  };
 
   const advancedOptions = (
     <>
@@ -120,7 +98,7 @@ const AccessComboBox = (props) => {
     </>
   );
 
-  const accessIcon = getAccessIcon();
+  const accessIcon = getAccessIcon(access);
 
   return (
     <ComboBox
