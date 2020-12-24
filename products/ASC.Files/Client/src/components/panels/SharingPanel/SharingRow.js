@@ -58,13 +58,16 @@ class SharingRow extends React.Component {
     window.open(`mailto:?subject=${subject}&body=${body}`);
   };
 
-  onShareTwitter = () =>
-    window.open(
-      `https://twitter.com/intent/tweet?text=${this.props.item.sharedTo.shareLink}`
-    );
+  onShareTwitter = () => {
+    const encodedLink = encodeURIComponent(this.props.item.sharedTo.shareLink);
+    window.open(`https://twitter.com/intent/tweet?text=${encodedLink}`);
+  };
 
-  onShareFacebook = () => window.open(`https://www.facebook.com`);
-  //window.open(`https://www.facebook.com/dialog/feed?app_id=645528132139019&display=popup&link=${shareLink}`);
+  onShareFacebook = () => {
+    window.open(
+      `https://www.facebook.com/sharer/sharer.php?u=${this.props.item.sharedTo.shareLink}`
+    );
+  };
 
   render() {
     //console.log("SharingRow render");
