@@ -34,11 +34,8 @@ class SharingRow extends React.Component {
   }
 
   onCopyInternalLink = () => {
-    const { selection, t } = this.props;
+    const { internalLink, t } = this.props;
 
-    const internalLink = selection.webUrl
-      ? selection.webUrl
-      : selection[0].webUrl;
     copy(internalLink);
     toastr.success(t("LinkCopySuccess"));
   };
@@ -74,6 +71,7 @@ class SharingRow extends React.Component {
       t,
       selection,
       item,
+      index,
       isMyId,
       accessOptions,
       onChangeItemAccess,
@@ -84,12 +82,16 @@ class SharingRow extends React.Component {
       canShareOwnerChange,
       onShowChangeOwnerPanel,
       isLoading,
+      internalLink,
     } = this.props;
     const { access } = this.state;
 
     const { isOwner, isLocked } = item;
     const { label, name, displayName, shareLink, id } = item.sharedTo;
-    const linkVisible = selection && selection.length === 1 && shareLink;
+
+    const externalLinkVisible =
+      selection && selection.length === 1 && shareLink;
+    const internalLinkVisible = index === 0 && internalLink;
 
     const internalLinkData = [
       {
@@ -147,22 +149,22 @@ class SharingRow extends React.Component {
 
     return (
       <>
-        {linkVisible && (
-          <>
-            <LinkRow
-              linkText="ExternalLink"
-              options={externalLinkOptions}
-              externalLinkData={externalLinkData}
-              onToggleLink={onToggleLink}
-              withToggle
-              {...this.props}
-            />
-            <LinkRow
-              linkText="InternalLink"
-              options={internalLinkData}
-              {...this.props}
-            />
-          </>
+        {externalLinkVisible && (
+          <LinkRow
+            linkText="ExternalLink"
+            options={externalLinkOptions}
+            externalLinkData={externalLinkData}
+            onToggleLink={onToggleLink}
+            withToggle
+            {...this.props}
+          />
+        )}
+        {internalLinkVisible && (
+          <LinkRow
+            linkText="InternalLink"
+            options={internalLinkData}
+            {...this.props}
+          />
         )}
 
         {!shareLink && (

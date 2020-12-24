@@ -51,6 +51,7 @@ const { ShareAccessRights } = constants;
 const {
   getCurrentUserId,
   getSettingsCustomNamesGroupsCaption,
+  getSettings,
 } = store.auth.selectors;
 
 const SharingBodyStyle = { height: `calc(100vh - 156px)` };
@@ -184,6 +185,7 @@ class SharingPanelComponent extends React.Component {
       filesOwnerId !== owner.sharedTo.id ? owner.sharedTo.id : null;
 
     setIsLoading(true);
+    this.onClose();
     setShareFiles(
       folderIds,
       fileIds,
@@ -199,10 +201,7 @@ class SharingPanelComponent extends React.Component {
         }
       })
       .catch((err) => toastr.error(err))
-      .finally(() => {
-        setIsLoading(false);
-        this.onClose();
-      });
+      .finally(() => setIsLoading(false));
   };
 
   onNotifyUsersChange = () =>
@@ -291,6 +290,22 @@ class SharingPanelComponent extends React.Component {
         })
         .finally(() => setIsLoading(false));
     }
+  };
+
+  getInternalLink = () => {
+    const { settings, selection } = this.props;
+    const item = selection[0];
+    const isFile = !!item.fileExst;
+
+    if (selection.length !== 1) return null;
+
+    return isFile
+      ? item.canOpenPlayer
+        ? `${window.location.href}&preview=${item.id}`
+        : item.webUrl
+      : `${window.location.origin + settings.homepage}/filter?folder=${
+          item.id
+        }`;
   };
 
   onShowEmbeddingPanel = (link) =>
@@ -388,6 +403,7 @@ class SharingPanelComponent extends React.Component {
     const visible = showPanel;
     const zIndex = 310;
     const onPlusClickProp = !isLoading ? { onClick: this.onPlusClick } : {};
+    const internalLink = selection.length === 1 && this.getInternalLink();
 
     return (
       <StyledAsidePanel visible={visible}>
@@ -447,6 +463,7 @@ class SharingPanelComponent extends React.Component {
               {shareDataItems.map((item, index) => (
                 <SharingRow
                   t={t}
+                  index={index}
                   key={`${item.sharedTo.id}_${index}`}
                   selection={selection}
                   item={item}
@@ -455,6 +472,7 @@ class SharingPanelComponent extends React.Component {
                   externalAccessOptions={externalAccessOptions}
                   canShareOwnerChange={canShareOwnerChange}
                   onChangeItemAccess={this.onChangeItemAccess}
+                  internalLink={internalLink}
                   onRemoveUserClick={this.onRemoveUserItemClick}
                   onShowEmbeddingPanel={this.onShowEmbeddingPanel}
                   onToggleLink={this.onToggleLink}
@@ -552,8 +570,8 @@ const SharingPanel = (props) => (
 const mapStateToProps = (state) => {
   return {
     getAccessOption: (selection) => getAccessOption(state, selection),
-    getExternalAccessOption: (selectedItems) =>
-      getExternalAccessOption(state, selectedItems),
+    getExternalAccessOption: (selection) =>
+      getExternalAccessOption(state, selection),
     isMyId: getCurrentUserId(state),
     selection: getSelection(state),
     groupsCaption: getSettingsCustomNamesGroupsCaption(state),
@@ -562,6 +580,7 @@ const mapStateToProps = (state) => {
     isLoading: getIsLoading(state),
     files: getFiles(state),
     folders: getFolders(state),
+    settings: getSettings(state),
   };
 };
 

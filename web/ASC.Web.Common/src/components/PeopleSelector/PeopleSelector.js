@@ -82,7 +82,7 @@ class PeopleSelector extends React.Component {
     const pageCount = 100;
 
     this.setState({ isNextPageLoading: true }, () => {
-      const { role, useFake, employeeStatus } = this.props;
+      const { role, employeeStatus, useFake } = this.props;
 
       const filter = Filter.getDefault();
       filter.page = startIndex / pageCount;
@@ -90,6 +90,10 @@ class PeopleSelector extends React.Component {
 
       if (searchValue) {
         filter.search = searchValue;
+      }
+
+      if (employeeStatus) {
+        filter.employeeStatus = employeeStatus;
       }
 
       if (role) {

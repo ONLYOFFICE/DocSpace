@@ -132,7 +132,7 @@ export const isSound = (extension) => {
 };
 
 export const isVideo = (extension) => {
-  return createSelector(getVideoFormats, (formats) => {
+  return createSelector(getMediaViewerMediaFormats, (formats) => {
     return presentInArray(formats, extension);
   });
 };
@@ -538,6 +538,8 @@ export const getFileIcon = (
       return `${folderPath}/svg.svg`;
     case ".txt":
       return `${folderPath}/txt.svg`;
+    case ".webm":
+      return `${folderPath}/webm.svg`;
     case ".xls":
       return `${folderPath}/xls.svg`;
     case ".xlsx":
@@ -587,6 +589,11 @@ export const getSelection = createSelector(
 export const getSelectionLength = (state) => {
   return state.files.selection.length;
 };
+
+export const getSelectionTitle = createSelector(getSelection, (selection) => {
+  if (selection.length === 0) return null;
+  return selection.find((el) => el.title).title;
+});
 
 export const getViewAs = (state) => {
   return state.files.viewAs;
@@ -649,6 +656,7 @@ const getFilesContextOptions = (
 
   const isFile = !!item.fileExst;
   const isFavorite = item.fileStatus === 32;
+  const isFullAccess = item.access < 2;
 
   if (item.id <= 0) return [];
 
@@ -656,29 +664,36 @@ const getFilesContextOptions = (
     options.push("download");
     options.push("download-as");
     options.push("restore");
-    options.push("separator2");
+    options.push("separator0");
     options.push("delete");
   } else {
+    if (!isFile) {
+      options.push("open");
+      options.push("separator0");
+    }
+
     if (!(isRecent || isFavorites || isVisitor)) {
       options.push("sharing-settings");
     }
 
-    if (isFile) {
+    if (isFile && !isVisitor) {
       options.push("send-by-email");
     }
 
     options.push("link-for-portal-users");
 
     if (!isVisitor) {
-      options.push("separator0");
+      options.push("separator1");
     }
 
     if (isFile) {
+      options.push("show-version-history");
       if (!isVisitor) {
-        options.push("show-version-history");
-        options.push("finalize-version");
-        options.push("block-unblock-version");
-        options.push("separator1");
+        if (isFullAccess) {
+          options.push("finalize-version");
+          options.push("block-unblock-version");
+        }
+        options.push("separator2");
 
         if (isRecent) {
           options.push("open-location");
@@ -686,6 +701,8 @@ const getFilesContextOptions = (
         if (!isFavorite) {
           options.push("mark-as-favorite");
         }
+      } else {
+        options.push("separator3");
       }
 
       if (canOpenPlayer) {
@@ -708,6 +725,8 @@ const getFilesContextOptions = (
 
       options.push("rename");
       options.push("delete");
+    } else {
+      options.push("copy");
     }
   }
   if (isFavorite && !isRecycleBin) {
@@ -1158,6 +1177,17 @@ export const getOnlyFoldersSelected = createSelector(
   }
 );
 
+export const getWebEditSelected = createSelector(
+  getSelection,
+  getEditedFormats,
+  (selection, editedFormats) => {
+    return selection.some((selected) => {
+      if (selected.isFolder === true || !selected.fileExst) return false;
+      return editedFormats.find((format) => selected.fileExst === format);
+    });
+  }
+);
+
 export const getAccessedSelected = createSelector(
   getSelection,
   getSelectionLength,
@@ -1233,3 +1263,46 @@ export const getCanShareOwnerChange = createSelector(
     return isAdmin && commonId === pathParts[0];
   }
 );
+
+export const isSecondaryProgressFinished = createSelector(
+  getSecondaryProgressData,
+  (data) => {
+    return data && data.percent === 100;
+  }
+);
+
+export const getSortedFiles = (state) => {
+  const formatKeys = Object.freeze({
+    OriginalFormat: 0,
+  });
+
+  const items = getSelection(state);
+
+  let sortedFiles = {
+    documents: [],
+    spreadsheets: [],
+    presentations: [],
+    other: [],
+  };
+
+  for (let item of items) {
+    item.checked = true;
+    item.format = formatKeys.OriginalFormat;
+
+    if (item.fileExst) {
+      if (isSpreadsheet(item.fileExst)(state)) {
+        sortedFiles.spreadsheets.push(item);
+      } else if (isPresentation(item.fileExst)(state)) {
+        sortedFiles.presentations.push(item);
+      } else if (item.fileExst !== ".pdf" && canWebEdit(item.fileExst)(state)) {
+        sortedFiles.documents.push(item);
+      } else {
+        sortedFiles.other.push(item);
+      }
+    } else {
+      sortedFiles.other.push(item);
+    }
+  }
+
+  return sortedFiles;
+};
