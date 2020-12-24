@@ -18,7 +18,7 @@ const StyledVersionRow = styled(Row)`
   }
 
   .version_badge {
-    cursor: pointer;
+    cursor: ${(props) => (props.canEdit ? "pointer" : "default")};
     margin-right: 16px;
     margin-left: 0px;
 
@@ -79,7 +79,8 @@ const StyledVersionRow = styled(Row)`
   }
 
   .version_link {
-    display: ${(props) => (props.showEditPanel ? "none" : "block")};
+    display: ${(props) =>
+      props.showEditPanel ? "none" : props.canEdit ? "block" : "none"};
     text-decoration: underline dashed;
     white-space: break-spaces;
     margin-left: -7px;
@@ -92,7 +93,9 @@ const StyledVersionRow = styled(Row)`
   }
 
   .version_text {
-    display: none;
+    display: ${(props) => (props.canEdit ? "none" : "block")};
+    margin-left: -7px;
+    margin-top: 5px;
 
     @media ${tablet} {
       display: inline-block;
@@ -101,17 +104,22 @@ const StyledVersionRow = styled(Row)`
     }
   }
 
-  .version_link-action {
-    display: block;
+  .version_links-container {
+    display: flex;
     margin-left: auto;
-    margin-top: 5px;
 
-    :last-child {
-      margin-left: 8px;
-    }
+    .version_link-action {
+      display: block;
+      margin-left: auto;
+      margin-top: 5px;
 
-    @media ${tablet} {
-      display: none;
+      :last-child {
+        margin-left: 8px;
+      }
+
+      @media ${tablet} {
+        display: none;
+      }
     }
   }
 
