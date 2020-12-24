@@ -157,24 +157,33 @@ const TabletSideInfo = styled.div`
     `}
 `;
 
-const getSideInfo = (content) => {
+const getSideInfo = (content, convert) => {
   let info = "";
+  let child = null;
   const lastIndex = content.length - 1;
 
   content.map((element, index) => {
     const delimiter = index === lastIndex ? "" : " | ";
     if (index > 1) {
-      info +=
-        element.props && element.props.children
-          ? element.props.children + delimiter
-          : "";
+      if (!convert && index === lastIndex) {
+        child = element;
+      } else {
+        info +=
+          element.props && element.props.children
+            ? element.props.children + delimiter
+            : "";
+      }
     }
   });
-  return info;
+  return (
+    <>
+      {info}
+      {child}
+    </>
+  );
 };
 
 const RowContent = (props) => {
-  //console.log("RowContent render");
   const {
     children,
     disableSideInfo,
@@ -185,9 +194,10 @@ const RowContent = (props) => {
     onClick,
     sectionWidth,
     isMobile,
+    convertSideInfo,
   } = props;
 
-  const sideInfo = getSideInfo(children);
+  const sideInfo = getSideInfo(children, convertSideInfo);
   const mainContainerWidth =
     children[0].props && children[0].props.containerWidth;
 
@@ -236,9 +246,11 @@ const RowContent = (props) => {
       })}
       {!disableSideInfo && (
         <TabletSideInfo
+          className="row-content_tablet-side-info"
           color={sideColor}
           widthProp={sectionWidth}
           isMobile={isMobile}
+          convertSideInfo={convertSideInfo}
         >
           {sideInfo}
         </TabletSideInfo>
@@ -257,10 +269,12 @@ RowContent.propTypes = {
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   sectionWidth: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   isMobile: PropTypes.bool,
+  convertSideInfo: PropTypes.bool,
 };
 
 RowContent.defaultProps = {
   disableSideInfo: false,
+  convertSideInfo: true,
 };
 
 export default RowContent;

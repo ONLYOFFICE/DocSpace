@@ -24,6 +24,7 @@ namespace ASC.People.Models
         public string Files { get; set; }
         public string Password { get; set; }
         public string PasswordHash { get; set; }
+        public bool FromInviteLink { get; set; }
     }
 
     public class UpdateMemberModel : MemberModel

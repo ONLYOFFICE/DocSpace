@@ -1,13 +1,15 @@
 import React from "react";
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 import { withRouter } from "react-router";
-import { Headline, store } from "asc-web-common";
+import { Headline } from "asc-web-common";
 import { IconButton, utils } from "asc-web-components";
 import { connect } from "react-redux";
 import { withTranslation } from "react-i18next";
 
+import { setFilesFilter } from "../../../../../store/files/actions";
+import { getFilter } from "../../../../../store/files/selectors";
+
 const { tablet, desktop } = utils.device;
-const { getSettings } = store.auth.selectors;
 
 const StyledContainer = styled.div`
   display: grid;
@@ -73,8 +75,8 @@ const SectionHeaderContent = (props) => {
   const { title } = props;
 
   const onClickBack = () => {
-    const { history, settings } = props;
-    history.push(settings.homepage);
+    const { filter, setFilesFilter } = props;
+    setFilesFilter(filter);
   };
 
   return (
@@ -98,10 +100,10 @@ const SectionHeaderContent = (props) => {
 
 const mapStateToProps = (state) => {
   return {
-    settings: getSettings(state),
+    filter: getFilter(state),
   };
 };
 
-export default connect(mapStateToProps)(
+export default connect(mapStateToProps, { setFilesFilter })(
   withTranslation()(withRouter(SectionHeaderContent))
 );

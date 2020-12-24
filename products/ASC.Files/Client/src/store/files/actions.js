@@ -1373,7 +1373,7 @@ export const loopFilesOperations = (id, destFolderId, isCopy) => {
           if (currentItem && currentItem.progress !== 100) {
             dispatch(
               setSecondaryProgressBarData({
-                icon: "move",
+                icon: isCopy ? "duplicate" : "move",
                 label: progressData.label,
                 percent: currentItem.progress,
                 visible: true,
@@ -1384,7 +1384,7 @@ export const loopFilesOperations = (id, destFolderId, isCopy) => {
           } else {
             dispatch(
               setSecondaryProgressBarData({
-                icon: "move",
+                icon: isCopy ? "duplicate" : "move",
                 label: progressData.label,
                 percent: 100,
                 visible: true,
