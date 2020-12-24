@@ -3,6 +3,9 @@ import styled from "styled-components";
 import { Headline } from "asc-web-common";
 import { IconButton, utils } from "asc-web-components";
 
+import { setFilesFilter } from "../../../../../store/files/actions";
+import { getFilter } from "../../../../../store/files/selectors";
+
 const { tablet, desktop } = utils.device;
 
 const StyledContainer = styled.div`

@@ -29,14 +29,13 @@ const SharingRow = (props) => {
     onRemoveUserClick,
     onShowEmbeddingPanel,
     onToggleLink,
-    externalLinkData,
+    internalLink,
   } = props;
+  const externalLinkVisible =
+    selection && selection.length === 1 && item.shareLink;
+  const internalLinkVisible = index === 0 && internalLink;
 
-  const linkVisible = selection && selection.length === 1 && item.shareLink;
   const onCopyInternalLink = () => {
-    const internalLink = selection.webUrl
-      ? selection.webUrl
-      : selection[0].webUrl;
     copy(internalLink);
     toastr.success(t("LinkCopySuccess"));
   };
@@ -135,11 +134,16 @@ const SharingRow = (props) => {
     window.open(`mailto:?subject=${subject}&body=${body}`);
   };
 
-  const onShareTwitter = () =>
-    window.open(`https://twitter.com/intent/tweet?text=${item.shareLink}`);
+  const onShareTwitter = () => {
+    const encodedLink = encodeURIComponent(item.shareLink);
+    window.open(`https://twitter.com/intent/tweet?text=${encodedLink}`);
+  };
 
-  const onShareFacebook = () => window.open(`https://www.facebook.com`);
-  /*window.open(`https://www.facebook.com/dialog/feed?app_id=645528132139019&display=popup&link=${item.shareLink}`);*/
+  const onShareFacebook = () => {
+    window.open(
+      `https://www.facebook.com/sharer/sharer.php?u=${item.shareLink}`
+    );
+  };
 
   const internalLinkData = [
     {
@@ -193,24 +197,23 @@ const SharingRow = (props) => {
   //console.log("SharingRow render");
   return (
     <>
-      {linkVisible && (
-        <>
-          <LinkRow
-            linkText="ExternalLink"
-            options={externalLinkOptions}
-            externalLinkData={externalLinkData}
-            embeddedComponentRender={embeddedComponentRender}
-            onToggleLink={onToggleLink}
-            withToggle={true}
-            {...props}
-          />
-          <LinkRow
-            linkText="InternalLink"
-            options={internalLinkData}
-            embeddedComponentRender={embeddedComponentRender}
-            {...props}
-          />
-        </>
+      {externalLinkVisible && (
+        <LinkRow
+          linkText="ExternalLink"
+          options={externalLinkOptions}
+          embeddedComponentRender={embeddedComponentRender}
+          onToggleLink={onToggleLink}
+          withToggle={true}
+          {...props}
+        />
+      )}
+      {internalLinkVisible && (
+        <LinkRow
+          linkText="InternalLink"
+          options={internalLinkData}
+          embeddedComponentRender={embeddedComponentRender}
+          {...props}
+        />
       )}
 
       {!item.shareLink && (

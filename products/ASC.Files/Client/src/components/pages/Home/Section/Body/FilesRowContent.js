@@ -146,7 +146,12 @@ class FilesRowContent extends React.PureComponent {
     const originalTitle = getTitleWithoutExst(item);
 
     setIsLoading(true);
-    if (originalTitle === itemTitle) return this.completeAction(fileAction.id);
+    if (originalTitle === itemTitle || itemTitle.trim() === "") {
+      this.setState({
+        itemTitle: originalTitle,
+      });
+      return this.completeAction(fileAction.id);
+    }
 
     item.fileExst
       ? updateFile(fileAction.id, itemTitle)
@@ -165,7 +170,10 @@ class FilesRowContent extends React.PureComponent {
 
     const itemId = e.currentTarget.dataset.itemid;
 
-    if (itemTitle.trim() === "") return this.completeAction(itemId);
+    if (itemTitle.trim() === "") {
+      toastr.warning(this.props.t("CreateWithEmptyTitle"));
+      return this.completeAction(itemId);
+    }
 
     let tab = item.fileExst
       ? window.open("/products/files/doceditor", "_blank")
@@ -174,12 +182,15 @@ class FilesRowContent extends React.PureComponent {
     !item.fileExst
       ? createFolder(item.parentId, itemTitle)
           .then(() => this.completeAction(itemId))
-          .finally(() => {
+          .then(() =>
             toastr.success(
               <Trans i18nKey="FolderCreated" i18n={i18n}>
                 New folder {{ itemTitle }} is created
               </Trans>
-            );
+            )
+          )
+          .catch((e) => toastr.error(e))
+          .finally(() => {
             return setIsLoading(false);
           })
       : createFile(item.parentId, `${itemTitle}.${item.fileExst}`)
@@ -187,13 +198,16 @@ class FilesRowContent extends React.PureComponent {
             openDocEditor(file.id, tab, file.webUrl);
             this.completeAction(itemId);
           })
-          .finally(() => {
+          .then(() => {
             const exst = item.fileExst;
-            toastr.success(
+            return toastr.success(
               <Trans i18nKey="FileCreated" i18n={i18n}>
                 New file {{ itemTitle }}.{{ exst }} is created
               </Trans>
             );
+          })
+          .catch((e) => toastr.error(e))
+          .finally(() => {
             return setIsLoading(false);
           });
   };
@@ -217,11 +231,23 @@ class FilesRowContent extends React.PureComponent {
   }
 
   renameTitle = (e) => {
-    this.setState({ itemTitle: e.target.value });
+    let title = e.target.value;
+    //const chars = '*+:"<>?|/'; TODO: think how to solve problem with interpolation escape values in i18n translate
+    const regexp = new RegExp('[*+:"<>?|\\\\/]', "gim");
+    if (title.match(regexp)) {
+      toastr.warning(this.props.t("ContainsSpecCharacter"));
+    }
+    title = title.replace(regexp, "_");
+    return this.setState({ itemTitle: title });
   };
 
   cancelUpdateItem = (e) => {
-    this.completeAction(e);
+    const originalTitle = getTitleWithoutExst(this.props.item);
+    this.setState({
+      itemTitle: originalTitle,
+    });
+
+    return this.completeAction(e);
   };
 
   onClickUpdateItem = (e) => {

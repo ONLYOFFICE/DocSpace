@@ -22,6 +22,166 @@ import StyledVersionRow from "./StyledVersionRow";
 
 const { getLanguage } = store.auth.selectors;
 
+const StyledRow = styled(Row)`
+  min-height: 70px;
+
+  @media ${tablet} {
+    min-height: 69px;
+  }
+  .version_badge {
+    cursor: ${(props) => (props.canEdit ? "pointer" : "default")};
+
+    .version_badge-text {
+      position: absolute;
+      left: -2px;
+    }
+
+    margin-left: -8px;
+    margin-right: 16px;
+    margin-top: ${(props) => (props.showEditPanel ? "13px" : "-2px")};
+
+    @media ${tablet} {
+      margin-left: 0px;
+      margin-top: 0px;
+      .version_badge-text {
+        left: 6px;
+      }
+    }
+  }
+
+  .version-link-file {
+    margin-top: ${(props) => (props.showEditPanel ? "12px" : "-3px")};
+    @media ${tablet} {
+      margin-top: -1px;
+    }
+  }
+
+  .icon-link {
+    width: 10px;
+    height: 10px;
+    margin-left: 9px;
+    margin-top: ${(props) => (props.showEditPanel ? "11px" : "-3px")};
+    @media ${tablet} {
+      margin-top: -1px;
+    }
+  }
+
+  .version_modal-dialog {
+    display: none;
+
+    @media ${tablet} {
+      display: block;
+    }
+  }
+
+  .version_edit-comment {
+    display: block;
+    margin-left: 63px;
+
+    @media ${tablet} {
+      display: none;
+    }
+  }
+
+  .textarea-desktop {
+    margin: 9px 23px 1px -7px;
+  }
+
+  .version_content-length {
+    display: block;
+    margin-left: auto;
+    margin-top: ${(props) => (props.showEditPanel ? "12px" : "-3px")};
+    margin-right: -7px;
+
+    @media ${tablet} {
+      display: none;
+    }
+  }
+
+  .version_link {
+    display: ${(props) =>
+      props.showEditPanel ? "none" : props.canEdit ? "block" : "none"};
+    white-space: break-spaces;
+    margin-left: -7px;
+    margin-top: 4px;
+
+    @media ${tablet} {
+      display: none;
+      text-decoration: none;
+    }
+  }
+
+  .version_text {
+    display: ${(props) => (props.canEdit ? "none" : "block")};
+    margin-left: -7px;
+    margin-top: 5px;
+
+    @media ${tablet} {
+      display: block;
+      margin-left: 1px;
+      margin-top: 5px;
+    }
+  }
+
+  .version_links-container {
+    display: flex;
+    margin-left: auto;
+
+    .version_link-action {
+      display: block;
+      margin-top: 5px;
+
+      :last-child {
+        margin-right: -7px;
+        margin-left: 8px;
+      }
+
+      @media ${tablet} {
+        display: none;
+      }
+    }
+  }
+
+  .row_context-menu-wrapper {
+    display: none;
+
+    @media ${tablet} {
+      display: block;
+    }
+  }
+
+  .row_content {
+    display: block;
+  }
+
+  .modal-dialog-aside-footer {
+    width: 90%;
+
+    .version_save-button {
+      width: 100%;
+    }
+  }
+
+  .row_context-menu-wrapper {
+    margin-right: -3px;
+    margin-top: -25px;
+  }
+
+  .version_edit-comment-button-primary {
+    margin-right: 8px;
+    width: 87px;
+  }
+  .version_edit-comment-button-second {
+    width: 87px;
+  }
+  .version_modal-dialog .modal-dialog-aside-header {
+    border-bottom: unset;
+  }
+  .version_modal-dialog .modal-dialog-aside-body {
+    margin-top: -24px;
+  }
+`;
+
 const VersionRow = (props) => {
   const {
     info,
@@ -35,6 +195,8 @@ const VersionRow = (props) => {
   } = props;
   const [showEditPanel, setShowEditPanel] = useState(false);
   const [commentValue, setCommentValue] = useState(info.comment);
+
+  const canEdit = info.access === 1 || info.access === 0;
 
   const title = `${new Date(info.created).toLocaleString(culture)} ${
     info.createdBy.displayName
@@ -73,8 +235,8 @@ const VersionRow = (props) => {
   };
 
   const contextOptions = [
-    { key: "edit", label: t("EditComment"), onClick: onEditComment },
-    { key: "restore", label: t("Restore"), onClick: onRestoreClick },
+    canEdit && { key: "edit", label: t("EditComment"), onClick: onEditComment },
+    canEdit && { key: "restore", label: t("Restore"), onClick: onRestoreClick },
     {
       key: "download",
       label: `${t("Download")} (${info.contentLength})`,
@@ -82,10 +244,13 @@ const VersionRow = (props) => {
     },
   ];
 
+  const onClickProp = canEdit ? { onClick: onVersionClick } : {};
+
   return (
-    <StyledVersionRow
+    <StyledRow
       showEditPanel={showEditPanel}
       contextOptions={contextOptions}
+      canEdit={canEdit}
     >
       <>
         <Box displayProp="flex">
@@ -94,7 +259,7 @@ const VersionRow = (props) => {
             isVersion={isVersion}
             index={index}
             versionGroup={info.versionGroup}
-            onClick={onVersionClick}
+            {...onClickProp}
           />
           <Link
             onClick={onOpenFile}
@@ -164,26 +329,36 @@ const VersionRow = (props) => {
                 </Box>
               </>
             )}
-            <Link onClick={onEditComment} className="version_link">
+
+            <Link
+              type="action"
+              isHovered
+              onClick={onEditComment}
+              className="version_link"
+            >
               {info.comment}
             </Link>
             <Text className="version_text">{info.comment}</Text>
           </>
 
-          <Link
-            onClick={onRestoreClick}
-            {...linkStyles}
-            className="version_link-action"
-          >
-            {t("Restore")}
-          </Link>
-          <Link
-            onClick={onDownloadAction}
-            {...linkStyles}
-            className="version_link-action"
-          >
-            {t("Download")}
-          </Link>
+          <div className="version_links-container">
+            {canEdit && (
+              <Link
+                onClick={onRestoreClick}
+                {...linkStyles}
+                className="version_link-action"
+              >
+                {t("Restore")}
+              </Link>
+            )}
+            <Link
+              onClick={onDownloadAction}
+              {...linkStyles}
+              className="version_link-action"
+            >
+              {t("Download")}
+            </Link>
+          </div>
         </Box>
         {showEditPanel && (
           <Box className="version_edit-comment" marginProp="8px 0 2px 70px">

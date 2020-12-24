@@ -13,6 +13,7 @@
   "MarkedAsFavorite": "Добавлено в избранное",
   "RemoveFromFavorites": "Удалить из избранного",
   "RemovedFromFavorites": "Удалено из избранного",
+  "Open": "Открыть",
   "Edit": "Редактировать",
   "Preview": "Просмотр",
   "View": "Просмотр",
@@ -112,5 +113,11 @@
   "FolderCreated": "Создана новая папка <strong>{{itemTitle}}</strong>",
   "FileCreated": "Создан новый файл <strong>{{itemTitle}}.{{exst}}</strong>",
   "FolderRemoved": "Папка перемещена в корзину",
-  "FileRemoved": "Файл перемещен в корзину"
+  "FileRemoved": "Файл перемещен в корзину",
+  "MoveItem": "<strong>{{title}}</strong> перемещен",
+  "MoveItems": "Перемещено элементов: <strong>{{qty}}</strong>",
+  "CopyItem": "<strong>{{title}}</strong> скопирован",
+  "CopyItems": "Скопировано элементов: <strong>{{qty}}</strong>",
+  "ContainsSpecCharacter": "Название не должно содержать следующих символов: *+:\"<>?|/",
+  "CreateWithEmptyTitle": "Нельзя создать папку или файл с пустым названием"
 }
