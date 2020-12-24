@@ -6,5 +6,5 @@
   "AddButton": "Save",
   "CancelButton": "Cancel",
   "EditComment": "Edit comment",
-  "Version": "Ver.{{versionGroup}}"
+  "Version": "Ver.{{version}}"
 }

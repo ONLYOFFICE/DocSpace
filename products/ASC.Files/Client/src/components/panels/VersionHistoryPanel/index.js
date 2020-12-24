@@ -54,10 +54,9 @@ class PureVersionHistoryPanel extends React.Component {
 
   render() {
     //console.log("render versionHistoryPanel");
-
     const { visible, isLoading, versions } = this.props;
     const zIndex = 310;
-    console.log(isLoading);
+
     return (
       <StyledVersionHistoryPanel
         className="version-history-modal-dialog"

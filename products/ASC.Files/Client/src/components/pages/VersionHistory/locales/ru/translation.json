@@ -6,5 +6,5 @@
   "AddButton": "Сохранить",
   "CancelButton": "Отмена",
   "EditComment": "Редактировать комментарий",
-  "Version": "Ver.{{versionGroup}}"
+  "Version": "Ver.{{version}}"
 }

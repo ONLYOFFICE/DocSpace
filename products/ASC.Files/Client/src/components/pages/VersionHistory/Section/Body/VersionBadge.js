@@ -28,7 +28,7 @@ const VersionBadge = ({
       />
     </svg>
     <Text className="version_badge-text" color="#FFF" isBold fontSize="12px">
-      {isVersion && t("Version", { versionGroup: versionGroup })}
+      {isVersion && t("Version", { version: versionGroup })}
     </Text>
   </Box>
 );
