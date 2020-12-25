@@ -24,6 +24,7 @@ export const SET_WIZARD_COMPLETED = "SET_WIZARD_COMPLETED";
 export const FETCH_ENCRYPTION_KEYS = "FETCH_ENCRYPTION_KEYS";
 export const SET_IS_ENCRYPTION_SUPPORT = "SET_IS_ENCRYPTION_SUPPORT";
 export const SET_IS_AUTHENTICATED = "SET_IS_AUTHENTICATED";
+export const SET_IS_TABLET_VIEW = "SET_IS_TABLET_VIEW";
 
 export function setCurrentUser(user) {
   return {
@@ -153,6 +154,13 @@ export function setIsAuthenticated(isAuthenticated) {
   return {
     type: SET_IS_AUTHENTICATED,
     isAuthenticated,
+  };
+}
+
+export function setIsTabletView(isTabletView) {
+  return {
+    type: SET_IS_TABLET_VIEW,
+    isTabletView,
   };
 }
 

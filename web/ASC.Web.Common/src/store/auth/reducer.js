@@ -17,7 +17,8 @@ import {
   SET_WIZARD_COMPLETED,
   FETCH_ENCRYPTION_KEYS,
   SET_IS_ENCRYPTION_SUPPORT,
-  SET_IS_AUTHENTICATED
+  SET_IS_AUTHENTICATED,
+  SET_IS_TABLET_VIEW,
 } from "./actions";
 import { LANGUAGE } from "../../constants";
 
@@ -29,6 +30,7 @@ const initialState = {
   isAuthenticated: false,
   isLoaded: false,
   isLoadedSection: true,
+
   user: {},
   modules: [],
   settings: {
@@ -72,6 +74,7 @@ const initialState = {
     //isDesktopEncryption: desktopEncryption,
     isEncryptionSupport: false,
     encryptionKeys: null,
+    isTabletView: false,
   },
 };
 
@@ -185,6 +188,13 @@ const authReducer = (state = initialState, action) => {
           //isEncryptionSupport: state.isDesktopEncryption && action.isSupport,
         },
       };
+    case SET_IS_TABLET_VIEW:
+      return Object.assign({}, state, {
+        settings: {
+          ...state.settings,
+          isTabletView: action.isTabletView,
+        },
+      });
     default:
       return state;
   }

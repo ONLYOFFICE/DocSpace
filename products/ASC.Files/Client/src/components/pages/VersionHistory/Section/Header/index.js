@@ -1,10 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import { withRouter } from "react-router";
 import { Headline } from "asc-web-common";
 import { IconButton, utils } from "asc-web-components";
-import { connect } from "react-redux";
-import { withTranslation } from "react-i18next";
 
 import { setFilesFilter } from "../../../../../store/files/actions";
 import { getFilter } from "../../../../../store/files/selectors";
@@ -18,7 +15,7 @@ const StyledContainer = styled.div`
 
   .arrow-button {
     margin-left: -8px;
-    margin-right: 24px;
+    margin-right: 15px;
     min-width: 17px;
 
     @media (max-width: 1024px) {
@@ -72,12 +69,7 @@ const StyledContainer = styled.div`
 `;
 
 const SectionHeaderContent = (props) => {
-  const { title } = props;
-
-  const onClickBack = () => {
-    const { filter, setFilesFilter } = props;
-    setFilesFilter(filter);
-  };
+  const { title, onClickBack } = props;
 
   return (
     <StyledContainer>
@@ -98,12 +90,4 @@ const SectionHeaderContent = (props) => {
   );
 };
 
-const mapStateToProps = (state) => {
-  return {
-    filter: getFilter(state),
-  };
-};
-
-export default connect(mapStateToProps, { setFilesFilter })(
-  withTranslation()(withRouter(SectionHeaderContent))
-);
+export default SectionHeaderContent;
