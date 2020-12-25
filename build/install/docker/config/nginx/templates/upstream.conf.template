@@ -1,78 +1,49 @@
-upstream  service_api {
-  server $SERVICE_API;
+resolver 127.0.0.11 valid=30s;
 
-  server localhost:5000 backup;
+map $DOCUMENT_SERVER $document_server {
+    $DOCUMENT_SERVER $DOCUMENT_SERVER;
 }
 
-upstream  service_api_system {
-  server $SERVICE_API_SYSTEM;
-
-  server localhost:5010 backup;
+map $SERVICE_API $service_api {
+    $SERVICE_API $SERVICE_API;
 }
 
-
-upstream  service_urlshortener {
-  server $SERVICE_URLSHORYENER;
-
-  server localhost:5015 backup;
+map $SERVICE_API_SYSTEM $service_api_system {
+    $SERVICE_API_SYSTEM $SERVICE_API_SYSTEM;
 }
 
-
-upstream  service_thumbnails {
-  server $SERVICE_URLSHORYENER;
-
-  server localhost:5016 backup;
+map $SERVICE_URLSHORYENER $service_urlshortener {
+    $SERVICE_URLSHORYENER $SERVICE_URLSHORYENER;
 }
 
-upstream  service_studio.notify {
-  server $SERVICE_STUDIO_NOTIFY;
-
-  server localhost:5006 backup;
+map $SERVICE_THUMVNAILS $service_thumbnails {
+    $SERVICE_THUMVNAILS $SERVICE_THUMVNAILS;
 }
 
-
-upstream  service_people.server {
-  server $SERVICE_PEOPLE_SERVER;
-
-  server localhost:5004 backup;
+map $SERVICE_STUDIO_NOTIFY $service_studio_notify {
+    $SERVICE_STUDIO_NOTIFY $SERVICE_STUDIO_NOTIFY;
 }
 
-
-upstream  service_files {
-  server $SERVICE_FILES;
-
-  server localhost:5007 backup;
+map $SERVICE_PEOPLE_SERVER $service_people_server {
+    $SERVICE_PEOPLE_SERVER $SERVICE_PEOPLE_SERVER;
 }
 
-
-upstream  service_files_services {
-  server $SERVICE_FILES_SERVICES;
-
-  server localhost:5009 backup;
+map $SERVICE_FILES $service_files {
+    $SERVICE_FILES $SERVICE_FILES;
 }
 
-
-upstream  service_studio {
-  server $SERVICE_STUDIO;
-
-  server localhost:5003 backup;
+map $SERVICE_FILES_SERVICES $service_files_services {
+    $SERVICE_FILES_SERVICES $SERVICE_FILES_SERVICES;
 }
 
-
-upstream  service_backup {
-  server $SERVICE_BACKUP;
-
-  server localhost:5012 backup;
+map $SERVICE_STUDIO $service_studio {
+    $SERVICE_STUDIO $SERVICE_STUDIO;
 }
 
-upstream  document_server {
-  server $DOCUMENT_SERVER;
-
-  server localhost backup;
+map $SERVICE_BACKUP $service_backup {
+    $SERVICE_BACKUP $SERVICE_BACKUP;
 }
 
-upstream  service_sh {
-  server $SERVICE_SH;
-
-  server localhost backup;
+map $SERVICE_SH $service_sh {
+    $SERVICE_SH $SERVICE_SH;
 }
