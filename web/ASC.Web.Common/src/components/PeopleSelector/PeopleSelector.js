@@ -284,7 +284,7 @@ PeopleSelector.propTypes = {
   groupsCaption: PropTypes.string,
   searchPlaceHolderLabel: PropTypes.string,
   role: PropTypes.oneOf(["admin", "user", "guest"]),
-  employeeStatus: PropTypes.oneOf([1, 2]),
+  employeeStatus: PropTypes.any,
   displayType: PropTypes.oneOf(["auto", "aside", "dropdown"]),
   withoutAside: PropTypes.bool,
   embeddedComponent: PropTypes.any,
