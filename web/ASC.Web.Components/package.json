@@ -120,8 +120,5 @@
     "react-window": "^1.8.6",
     "react-window-infinite-loader": "^1.0.5",
     "resize-image": "^0.1.0"
-  },
-  "resolutions": {
-    "js-yaml": "3.13.1"
   }
 }

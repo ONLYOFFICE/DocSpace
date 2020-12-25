@@ -129,9 +129,6 @@
     "react-values": "^0.3.3",
     "styled-components": "^5.2.1"
   },
-  "resolutions": {
-    "js-yaml": "3.13.1"
-  },
   "engines": {
     "node": ">=8",
     "npm": ">=5"
