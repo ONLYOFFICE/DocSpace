@@ -27,6 +27,8 @@ import {
   getTreeFolders,
   getSettingsTree,
   getPrivacyFolder,
+  getVerHistoryFileId,
+  getFileVersions,
 } from "./selectors";
 
 import sumBy from "lodash/sumBy";
@@ -73,6 +75,9 @@ export const SET_THIRDPARTY_CAPABILITIES = "SET_THIRDPARTY_CAPABILITIES";
 export const SET_THIRDPARTY_PROVIDERS = "SET_THIRDPARTY_PROVIDERS";
 export const SET_CONNECT_ITEM = "SET_CONNECT_ITEM";
 export const SET_SHOW_THIRDPARTY_PANEL = "SET_SHOW_THIRDPARTY_PANEL";
+export const SET_IS_VER_HISTORY_PANEL = "SET_IS_VER_HISTORY_PANEL";
+export const SET_VER_HISTORY_FILE_ID = "SET_VER_HISTORY_FILE_ID";
+export const SET_FILE_VERSIONS = "SET_FILE_VERSIONS";
 
 export function setFile(file) {
   return {
@@ -317,6 +322,28 @@ export function setShowThirdPartyPanel(showThirdPartyPanel) {
   return {
     type: SET_SHOW_THIRDPARTY_PANEL,
     showThirdPartyPanel,
+  };
+}
+
+
+export function setIsVerHistoryPanel(isVisible) {
+  return {
+    type: SET_IS_VER_HISTORY_PANEL,
+    isVisible,
+  };
+}
+
+export function setVerHistoryFileId(fileId) {
+  return {
+    type: SET_VER_HISTORY_FILE_ID,
+    fileId,
+  };
+}
+
+export function setFileVersions(versions) {
+  return {
+    type: SET_FILE_VERSIONS,
+    versions,
   };
 }
 
@@ -1477,7 +1504,7 @@ export const loopFilesOperations = (id, destFolderId, isCopy) => {
           if (currentItem && currentItem.progress !== 100) {
             dispatch(
               setSecondaryProgressBarData({
-                icon: "move",
+                icon: isCopy ? "duplicate" : "move",
                 label: progressData.label,
                 percent: currentItem.progress,
                 visible: true,
@@ -1488,7 +1515,7 @@ export const loopFilesOperations = (id, destFolderId, isCopy) => {
           } else {
             dispatch(
               setSecondaryProgressBarData({
-                icon: "move",
+                icon: isCopy ? "duplicate" : "move",
                 label: progressData.label,
                 percent: 100,
                 visible: true,
@@ -1722,4 +1749,59 @@ export function oAuthPopup(url) {
   }
 
   return newWindow;
+}
+
+export function fetchFileVersions(fileId) {
+  return (dispatch, getState) => {
+    const state = getState();
+    const currentId = getVerHistoryFileId(state);
+    if (currentId !== fileId) {
+      dispatch(setVerHistoryFileId(fileId));
+      return api.files
+        .getFileVersionInfo(fileId)
+        .then((versions) => dispatch(setFileVersions(versions)));
+    } else {
+      const currentVersions = getFileVersions(state);
+      return Promise.resolve(currentVersions);
+    }
+  };
+}
+
+export function markAsVersion(id, isVersion, version) {
+  return (dispatch) => {
+    return api.files
+      .markAsVersion(id, isVersion, version)
+      .then((versions) => dispatch(setFileVersions(versions)));
+  };
+}
+
+export function restoreVersion(id, version) {
+  return (dispatch, getState) => {
+    return api.files.versionRestore(id, version).then((newVersion) => {
+      const state = getState();
+      const versions = getFileVersions(state);
+      const updatedVersions = versions.slice();
+      updatedVersions.splice(1, 0, newVersion);
+      dispatch(setFileVersions(updatedVersions));
+    });
+  };
+}
+
+export function updateCommentVersion(id, comment, version) {
+  return (dispatch, getState) => {
+    return api.files
+      .versionEditComment(id, comment, version)
+      .then((updatedComment) => {
+        const state = getState();
+        const versions = getFileVersions(state);
+        const copyVersions = versions.slice();
+        const updatedVersions = copyVersions.map((item) => {
+          if (item.version === version) {
+            item.comment = updatedComment;
+          }
+          return item;
+        });
+        dispatch(setFileVersions(updatedVersions));
+      });
+  };
 }

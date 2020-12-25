@@ -46,6 +46,7 @@ const { ShareAccessRights } = constants;
 const {
   getCurrentUserId,
   getSettingsCustomNamesGroupsCaption,
+  getSettings,
 } = store.auth.selectors;
 
 const SharingBodyStyle = { height: `calc(100vh - 156px)` };
@@ -526,6 +527,22 @@ class SharingPanelComponent extends React.Component {
     }
   };
 
+  getInternalLink = () => {
+    const { settings, selectedItems } = this.props;
+    const item = selectedItems[0];
+    const isFile = !!item.fileExst;
+
+    if (selectedItems.length !== 1) return null;
+
+    return isFile
+      ? item.canOpenPlayer
+        ? `${window.location.href}&preview=${item.id}`
+        : item.webUrl
+      : `${window.location.origin + settings.homepage}/filter?folder=${
+          item.id
+        }`;
+  };
+
   onShowEmbeddingPanel = (link) =>
     this.setState({
       showEmbeddingPanel: !this.state.showEmbeddingPanel,
@@ -600,6 +617,7 @@ class SharingPanelComponent extends React.Component {
 
     const visible = showPanel;
     const zIndex = 310;
+    const internalLink = selectedItems && this.getInternalLink();
 
     const advancedOptions = (
       <>
@@ -681,7 +699,12 @@ class SharingPanelComponent extends React.Component {
 
     return (
       <StyledAsidePanel visible={visible}>
-        <Backdrop onClick={this.onClose} visible={visible} zIndex={zIndex} />
+        <Backdrop
+          onClick={this.onClose}
+          visible={visible}
+          zIndex={zIndex}
+          isAside={true}
+        />
         <Aside className="header_aside-panel" visible={visible}>
           <StyledContent>
             <StyledHeaderContent>
@@ -739,6 +762,7 @@ class SharingPanelComponent extends React.Component {
                   isMyId={isMyId}
                   accessOptions={accessOptions}
                   externalAccessOptions={externalAccessOptions}
+                  internalLink={internalLink}
                   onFullAccessClick={this.onFullAccessItemClick}
                   onReadOnlyClick={this.onReadOnlyItemClick}
                   onReviewClick={this.onReviewItemClick}
@@ -834,6 +858,7 @@ const mapStateToProps = (state) => {
     selectedItems: getSelection(state),
     groupsCaption: getSettingsCustomNamesGroupsCaption(state),
     sharingPanelVisible: getSharePanelVisible(state),
+    settings: getSettings(state),
   };
 };
 

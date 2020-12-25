@@ -41,7 +41,7 @@ const StyledMediaViewer = styled.div`
     line-height: 19px;
   }
   .details {
-    z-index: 4001;
+    z-index: 4002;
     padding-top: 14px;
     padding-bottom: 14px;
     height: 20px;
@@ -56,6 +56,9 @@ const StyledMediaViewer = styled.div`
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      width: calc(100% - 50px);
+      padding-left: 16px;
+      box-sizing: border-box;
     }
   }
 

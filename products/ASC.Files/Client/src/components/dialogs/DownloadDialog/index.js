@@ -16,10 +16,7 @@ import { utils, api, toastr } from "asc-web-common";
 import {
   getFileIcon,
   getFolderIcon,
-  isSpreadsheet,
-  isPresentation,
-  isDocument,
-  getSelection,
+  getSortedFiles,
 } from "../../../store/files/selectors";
 import {
   setSecondaryProgressBarData,
@@ -52,38 +49,15 @@ const formatKeys = Object.freeze({
 class DownloadDialogComponent extends React.Component {
   constructor(props) {
     super(props);
+    const { sortedFiles } = this.props;
 
     changeLanguage(i18n);
 
-    const documents = [];
-    const spreadsheets = [];
-    const presentations = [];
-    const other = [];
-
-    for (let item of props.items) {
-      item.checked = true;
-      item.format = formatKeys.OriginalFormat;
-
-      if (item.fileExst) {
-        if (isSpreadsheet(item.fileExst)) {
-          spreadsheets.push(item);
-        } else if (isPresentation(item.fileExst)) {
-          presentations.push(item);
-        } else if (item.fileExst !== ".pdf" && isDocument(item.fileExst)) {
-          documents.push(item);
-        } else {
-          other.push(item);
-        }
-      } else {
-        other.push(item);
-      }
-    }
-
     this.state = {
-      documents,
-      spreadsheets,
-      presentations,
-      other,
+      documents: sortedFiles.documents,
+      spreadsheets: sortedFiles.spreadsheets,
+      presentations: sortedFiles.presentations,
+      other: sortedFiles.other,
 
       documentsTitleFormat: formatKeys.OriginalFormat,
       spreadsheetsTitleFormat: formatKeys.OriginalFormat,
@@ -631,7 +605,7 @@ const DownloadDialog = (props) => (
 
 const mapStateToProps = (state) => {
   return {
-    items: getSelection(state),
+    sortedFiles: getSortedFiles(state),
   };
 };
 

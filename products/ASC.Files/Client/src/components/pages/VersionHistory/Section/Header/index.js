@@ -1,13 +1,12 @@
 import React from "react";
-import styled, { css } from "styled-components";
-import { withRouter } from "react-router";
-import { Headline, store } from "asc-web-common";
+import styled from "styled-components";
+import { Headline } from "asc-web-common";
 import { IconButton, utils } from "asc-web-components";
-import { connect } from "react-redux";
-import { withTranslation } from "react-i18next";
+
+import { setFilesFilter } from "../../../../../store/files/actions";
+import { getFilter } from "../../../../../store/files/selectors";
 
 const { tablet, desktop } = utils.device;
-const { getSettings } = store.auth.selectors;
 
 const StyledContainer = styled.div`
   display: grid;
@@ -16,7 +15,7 @@ const StyledContainer = styled.div`
 
   .arrow-button {
     margin-left: -8px;
-    margin-right: 24px;
+    margin-right: 15px;
     min-width: 17px;
 
     @media (max-width: 1024px) {
@@ -70,12 +69,7 @@ const StyledContainer = styled.div`
 `;
 
 const SectionHeaderContent = (props) => {
-  const { title } = props;
-
-  const onClickBack = () => {
-    const { history, settings } = props;
-    history.push(settings.homepage);
-  };
+  const { title, onClickBack } = props;
 
   return (
     <StyledContainer>
@@ -96,12 +90,4 @@ const SectionHeaderContent = (props) => {
   );
 };
 
-const mapStateToProps = (state) => {
-  return {
-    settings: getSettings(state),
-  };
-};
-
-export default connect(mapStateToProps)(
-  withTranslation()(withRouter(SectionHeaderContent))
-);
+export default SectionHeaderContent;

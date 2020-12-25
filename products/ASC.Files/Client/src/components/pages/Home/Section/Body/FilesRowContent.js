@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
-import { withTranslation } from "react-i18next";
+import { Trans, withTranslation } from "react-i18next";
 import styled from "styled-components";
 import {
   RowContent,
@@ -36,7 +36,7 @@ import {
   getIsLoading,
   getIsRecycleBinFolder,
   getNewRowItems,
-  getRootFolderId,
+  getSelectedFolderId,
   getSelectedFolder,
   getSelectedFolderNew,
   getSelectedFolderParentId,
@@ -66,7 +66,9 @@ const SimpleFilesRowContent = styled(RowContent)`
     width: 14px;
     margin-right: 6px;
   }
-
+  .lock-file {
+    cursor: pointer;
+  }
   .badges {
     display: flex;
     align-items: center;
@@ -144,7 +146,12 @@ class FilesRowContent extends React.PureComponent {
     const originalTitle = getTitleWithoutExst(item);
 
     setIsLoading(true);
-    if (originalTitle === itemTitle) return this.completeAction(fileAction.id);
+    if (originalTitle === itemTitle || itemTitle.trim() === "") {
+      this.setState({
+        itemTitle: originalTitle,
+      });
+      return this.completeAction(fileAction.id);
+    }
 
     item.fileExst
       ? updateFile(fileAction.id, itemTitle)
@@ -156,14 +163,17 @@ class FilesRowContent extends React.PureComponent {
   };
 
   createItem = (e) => {
-    const { createFile, item, setIsLoading, openDocEditor } = this.props;
+    const { createFile, item, setIsLoading, openDocEditor, i18n } = this.props;
     const { itemTitle } = this.state;
 
     setIsLoading(true);
 
     const itemId = e.currentTarget.dataset.itemid;
 
-    if (itemTitle.trim() === "") return this.completeAction(itemId);
+    if (itemTitle.trim() === "") {
+      toastr.warning(this.props.t("CreateWithEmptyTitle"));
+      return this.completeAction(itemId);
+    }
 
     let tab = item.fileExst
       ? window.open("/products/files/doceditor", "_blank")
@@ -172,13 +182,34 @@ class FilesRowContent extends React.PureComponent {
     !item.fileExst
       ? createFolder(item.parentId, itemTitle)
           .then(() => this.completeAction(itemId))
-          .finally(() => setIsLoading(false))
+          .then(() =>
+            toastr.success(
+              <Trans i18nKey="FolderCreated" i18n={i18n}>
+                New folder {{ itemTitle }} is created
+              </Trans>
+            )
+          )
+          .catch((e) => toastr.error(e))
+          .finally(() => {
+            return setIsLoading(false);
+          })
       : createFile(item.parentId, `${itemTitle}.${item.fileExst}`)
           .then((file) => {
             openDocEditor(file.id, file.providerKey, tab, file.webUrl);
             this.completeAction(itemId);
           })
-          .finally(() => setIsLoading(false));
+          .then(() => {
+            const exst = item.fileExst;
+            return toastr.success(
+              <Trans i18nKey="FileCreated" i18n={i18n}>
+                New file {{ itemTitle }}.{{ exst }} is created
+              </Trans>
+            );
+          })
+          .catch((e) => toastr.error(e))
+          .finally(() => {
+            return setIsLoading(false);
+          });
   };
 
   componentDidUpdate(prevProps) {
@@ -200,11 +231,23 @@ class FilesRowContent extends React.PureComponent {
   }
 
   renameTitle = (e) => {
-    this.setState({ itemTitle: e.target.value });
+    let title = e.target.value;
+    //const chars = '*+:"<>?|/'; TODO: think how to solve problem with interpolation escape values in i18n translate
+    const regexp = new RegExp('[*+:"<>?|\\\\/]', "gim");
+    if (title.match(regexp)) {
+      toastr.warning(this.props.t("ContainsSpecCharacter"));
+    }
+    title = title.replace(regexp, "_");
+    return this.setState({ itemTitle: title });
   };
 
   cancelUpdateItem = (e) => {
-    this.completeAction(e);
+    const originalTitle = getTitleWithoutExst(this.props.item);
+    this.setState({
+      itemTitle: originalTitle,
+    });
+
+    return this.completeAction(e);
   };
 
   onClickUpdateItem = (e) => {
@@ -314,7 +357,7 @@ class FilesRowContent extends React.PureComponent {
       item,
       treeFolders,
       setTreeFolders,
-      rootFolderId,
+      selectedFolderId,
       newItems,
       setNewRowItems,
       setUpdateTree,
@@ -324,7 +367,7 @@ class FilesRowContent extends React.PureComponent {
         .markAsRead([], [item.id])
         .then(() => {
           const data = treeFolders;
-          const dataItem = data.find((x) => x.id === rootFolderId);
+          const dataItem = data.find((x) => x.id === selectedFolderId);
           dataItem.newItems = newItems ? dataItem.newItems - 1 : 0;
           setUpdateTree(true);
           setTreeFolders(data);
@@ -571,10 +614,13 @@ class FilesRowContent extends React.PureComponent {
                 )}
                 {locked && (
                   <Icons.FileActionsLockedIcon
-                    className="badge"
+                    className="badge lock-file"
                     size="small"
                     isfill={true}
                     color="#3B72A7"
+                    data-id={item.id}
+                    data-locked={true}
+                    onClick={this.props.onClickLock}
                   />
                 )}
                 {versionGroup > 1 && (
@@ -683,7 +729,7 @@ function mapStateToProps(state, props) {
     isTrashFolder: getIsRecycleBinFolder(state),
     settings: getSettings(state),
     treeFolders: getTreeFolders(state),
-    rootFolderId: getRootFolderId(state),
+    selectedFolderId: getSelectedFolderId(state),
     newItems: getSelectedFolderNew(state),
     selectedFolder: getSelectedFolder(state),
     folders: getFolders(state),

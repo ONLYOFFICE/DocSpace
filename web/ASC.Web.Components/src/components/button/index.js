@@ -35,6 +35,7 @@ const ButtonWrapper = ({
   isHovered,
   isClicked,
   isDisabled,
+  disableHover,
   isLoading,
   label,
   innerRef,
@@ -54,6 +55,7 @@ ButtonWrapper.propTypes = {
   isHovered: PropTypes.bool,
   isClicked: PropTypes.bool,
   isDisabled: PropTypes.bool,
+  disableHover: PropTypes.bool,
   isLoading: PropTypes.bool,
 
   onClick: PropTypes.func,
@@ -206,7 +208,8 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
     !props.isLoading &&
     (props.isHovered
       ? hoverCss
-      : css`
+      : !props.disableHover &&
+        css`
           &:hover {
             ${hoverCss}
           }
@@ -316,6 +319,7 @@ Button.propTypes = {
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 
   isHovered: PropTypes.bool,
+  disableHover: PropTypes.bool,
   isClicked: PropTypes.bool,
   isDisabled: PropTypes.bool,
   isLoading: PropTypes.bool,
@@ -337,6 +341,7 @@ Button.defaultProps = {
   minwidth: null,
 
   isHovered: false,
+  disableHover: false,
   isClicked: false,
   isDisabled: false,
   isLoading: false,

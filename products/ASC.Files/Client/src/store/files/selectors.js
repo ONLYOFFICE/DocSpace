@@ -3,7 +3,7 @@ import { constants, store } from "asc-web-common";
 import { createSelector } from "reselect";
 
 const { FileType, FilterType, FolderType } = constants;
-const { isAdmin } = store.auth.selectors;
+const { isAdmin, isVisitor } = store.auth.selectors;
 
 const presentInArray = (array, search) => {
   const result = array.findIndex((item) => item === search);
@@ -132,7 +132,7 @@ export const isSound = (extension) => {
 };
 
 export const isVideo = (extension) => {
-  return createSelector(getVideoFormats, (formats) => {
+  return createSelector(getMediaViewerMediaFormats, (formats) => {
     return presentInArray(formats, extension);
   });
 };
@@ -552,6 +552,8 @@ export const getFileIcon = (
       return `${folderPath}/svg.svg`;
     case ".txt":
       return `${folderPath}/txt.svg`;
+    case ".webm":
+      return `${folderPath}/webm.svg`;
     case ".xls":
       return `${folderPath}/xls.svg`;
     case ".xlsx":
@@ -603,6 +605,11 @@ export const getSelection = createSelector(
 export const getSelectionLength = (state) => {
   return state.files.selection.length;
 };
+
+export const getSelectionTitle = createSelector(getSelection, (selection) => {
+  if (selection.length === 0) return null;
+  return selection.find((el) => el.title).title;
+});
 
 export const getViewAs = (state) => {
   return state.files.viewAs;
@@ -673,6 +680,8 @@ const getFilesContextOptions = (
   item,
   isRecycleBin,
   isRecent,
+  isFavorites,
+  isVisitor,
   canOpenPlayer,
   isRootFolder
 ) => {
@@ -680,6 +689,7 @@ const getFilesContextOptions = (
 
   const isFile = !!item.fileExst;
   const isFavorite = item.fileStatus === 32;
+  const isFullAccess = item.access < 2;
   const isThirdPartyFolder = item.providerKey && isRootFolder;
 
   if (item.id <= 0) return [];
@@ -688,32 +698,45 @@ const getFilesContextOptions = (
     options.push("download");
     options.push("download-as");
     options.push("restore");
-    options.push("separator2");
+    options.push("separator0");
     options.push("delete");
   } else {
-    options.push("sharing-settings");
+    if (!isFile) {
+      options.push("open");
+      options.push("separator0");
+    }
 
-    if (isFile) {
+    if (!(isRecent || isFavorites || isVisitor)) {
+      options.push("sharing-settings");
+    }
+
+    if (isFile && !isVisitor) {
       options.push("send-by-email");
     }
 
     options.push("link-for-portal-users");
-    options.push("separator0");
+
+    if (!isVisitor) {
+      options.push("separator1");
+    }
 
     if (isFile) {
-      if (!item.providerKey && !canOpenPlayer) {
-        options.push("show-version-history");
-        options.push("finalize-version");
-        options.push("block-unblock-version");
-        options.push("separator1");
-      }
+      options.push("show-version-history");
+      if (!isVisitor) {
+        if (isFullAccess && !item.providerKey && !canOpenPlayer) {
+          options.push("finalize-version");
+          options.push("block-unblock-version");
+        }
+        options.push("separator2");
 
-      if (isRecent) {
-        options.push("open-location");
-      }
-
-      if (!isFavorite) {
-        options.push("mark-as-favorite");
+        if (isRecent) {
+          options.push("open-location");
+        }
+        if (!isFavorite) {
+          options.push("mark-as-favorite");
+        }
+      } else {
+        options.push("separator3");
       }
 
       if (canOpenPlayer) {
@@ -725,19 +748,22 @@ const getFilesContextOptions = (
 
       options.push("download");
     }
-    !isThirdPartyFolder && options.push("move");
-    options.push("copy");
 
-    if (isFile) {
-      options.push("duplicate");
+    if (!isVisitor) {
+      !isThirdPartyFolder && options.push("move");
+      options.push("copy");
+
+      if (isFile) {
+        options.push("duplicate");
+      }
+
+      options.push("rename");
+      isThirdPartyFolder && options.push("change-thirdparty-info");
+      options.push("separator3");
+      options.push("delete");
+    } else {
+      options.push("copy");
     }
-
-    options.push("rename");
-
-    isThirdPartyFolder && options.push("change-thirdparty-info");
-
-    options.push("separator3");
-    options.push("delete");
   }
 
   if (isFavorite && !isRecycleBin) {
@@ -899,10 +925,21 @@ export const getFilesList = (state) => {
       getSelection,
       getIsRecycleBinFolder,
       getIsRecentFolder,
+      getIsFavoritesFolder,
       getFileActionId,
+      isVisitor,
       isRootFolder,
     ],
-    (items, selection, isRecycleBin, isRecent, actionId, isRootFolder) => {
+    (
+      items,
+      selection,
+      isRecycleBin,
+      isRecent,
+      isFavorites,
+      actionId,
+      isVisitor,
+      isRootFolder
+    ) => {
       return items.map((item) => {
         const {
           access,
@@ -937,6 +974,8 @@ export const getFilesList = (state) => {
           item,
           isRecycleBin,
           isRecent,
+          isFavorites,
+          isVisitor,
           canOpenPlayer,
           isRootFolder
         );
@@ -956,6 +995,13 @@ export const getFilesList = (state) => {
         const isCanWebEdit = canWebEdit(item.fileExst)(state);
 
         const icon = getIcon(state, 24, fileExst, providerKey);
+
+        const canShare = !(
+          isRecycleBin ||
+          isFavorites ||
+          isRecent ||
+          isVisitor
+        );
 
         value += draggable ? "_draggable" : "";
 
@@ -995,6 +1041,7 @@ export const getFilesList = (state) => {
           draggable,
           canOpenPlayer,
           canWebEdit: isCanWebEdit,
+          canShare,
         };
       });
     }
@@ -1063,6 +1110,18 @@ export const getFilterSelectedItem = (state) => {
 
 export const getPrivacyInstructionsLink = (state) => {
   return state.files.privacyInstructions;
+};
+
+export const getIsVerHistoryPanel = (state) => {
+  return state.files.versionHistory.isVisible;
+};
+
+export const getVerHistoryFileId = (state) => {
+  return state.files.versionHistory.fileId;
+};
+
+export const getFileVersions = (state) => {
+  return state.files.versionHistory.versions;
 };
 
 export const getHeaderVisible = createSelector(
@@ -1157,6 +1216,17 @@ export const getOnlyFoldersSelected = createSelector(
   getSelection,
   (selection) => {
     return selection.every((selected) => selected.isFolder === true);
+  }
+);
+
+export const getWebEditSelected = createSelector(
+  getSelection,
+  getEditedFormats,
+  (selection, editedFormats) => {
+    return selection.some((selected) => {
+      if (selected.isFolder === true || !selected.fileExst) return false;
+      return editedFormats.find((format) => selected.fileExst === format);
+    });
   }
 );
 
@@ -1322,3 +1392,46 @@ export const getIsThirdPartySelection = createSelector(
     isRootItem &&
     !!selection[0].providerKey
 );
+
+export const isSecondaryProgressFinished = createSelector(
+  getSecondaryProgressData,
+  (data) => {
+    return data && data.percent === 100;
+  }
+);
+
+export const getSortedFiles = (state) => {
+  const formatKeys = Object.freeze({
+    OriginalFormat: 0,
+  });
+
+  const items = getSelection(state);
+
+  let sortedFiles = {
+    documents: [],
+    spreadsheets: [],
+    presentations: [],
+    other: [],
+  };
+
+  for (let item of items) {
+    item.checked = true;
+    item.format = formatKeys.OriginalFormat;
+
+    if (item.fileExst) {
+      if (isSpreadsheet(item.fileExst)(state)) {
+        sortedFiles.spreadsheets.push(item);
+      } else if (isPresentation(item.fileExst)(state)) {
+        sortedFiles.presentations.push(item);
+      } else if (item.fileExst !== ".pdf" && canWebEdit(item.fileExst)(state)) {
+        sortedFiles.documents.push(item);
+      } else {
+        sortedFiles.other.push(item);
+      }
+    } else {
+      sortedFiles.other.push(item);
+    }
+  }
+
+  return sortedFiles;
+};

@@ -1,6 +1,6 @@
 {
   "name": "asc-people-client",
-  "version": "0.1.0",
+  "version": "0.0.5",
   "private": true,
   "homepage": "/products/people",
   "dependencies": {

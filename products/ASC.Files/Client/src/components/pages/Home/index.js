@@ -4,8 +4,8 @@ import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import { isMobile } from "react-device-detect";
 //import { RequestLoader } from "asc-web-components";
-import { PageLayout, utils, api, store } from "asc-web-common";
-import { withTranslation, I18nextProvider } from "react-i18next";
+import { PageLayout, utils, api, store, toastr } from "asc-web-common";
+import { withTranslation, I18nextProvider, Trans } from "react-i18next";
 import {
   ArticleBodyContent,
   ArticleHeaderContent,
@@ -38,6 +38,9 @@ import {
   getDragging,
   getSharePanelVisible,
   getFirstLoad,
+  isSecondaryProgressFinished,
+  getSelectionLength,
+  getSelectionTitle,
 } from "../../../store/files/selectors";
 
 import { ConvertDialog } from "../../dialogs";
@@ -157,13 +160,66 @@ class PureHome extends React.Component {
     startUpload(files, folderId, t);
   };
 
+  showOperationToast = (type, qty, title) => {
+    const { i18n } = this.props;
+
+    switch (type) {
+      case "move":
+        if (qty > 1) {
+          return toastr.success(
+            <Trans i18nKey="MoveItems" i18n={i18n}>
+              {{ qty }} elements has been moved
+            </Trans>
+          );
+        }
+        return toastr.success(
+          <Trans i18nKey="MoveItem" i18n={i18n}>
+            {{ title }} moved
+          </Trans>
+        );
+      case "duplicate":
+        if (qty > 1) {
+          return toastr.success(
+            <Trans i18nKey="CopyItems" i18n={i18n}>
+              {{ qty }} elements copied
+            </Trans>
+          );
+        }
+        return toastr.success(
+          <Trans i18nKey="CopyItem" i18n={i18n}>
+            {{ title }} copied
+          </Trans>
+        );
+      default:
+        break;
+    }
+  };
+
   componentDidUpdate(prevProps) {
-    if (this.props.isLoading !== prevProps.isLoading) {
-      if (this.props.isLoading) {
+    const {
+      isLoading,
+      isProgressFinished,
+      secondaryProgressData,
+      selectionLength,
+      selectionTitle,
+    } = this.props;
+    if (isLoading !== prevProps.isLoading) {
+      if (isLoading) {
         utils.showLoader();
       } else {
         utils.hideLoader();
       }
+    }
+
+    if (
+      isProgressFinished &&
+      isProgressFinished !== prevProps.isProgressFinished
+    ) {
+      this.showOperationToast(
+        secondaryProgressData.icon,
+        selectionLength,
+        selectionTitle
+      );
     }
   }
 
@@ -277,6 +333,9 @@ function mapStateToProps(state) {
     dragging: getDragging(state),
     firstLoad: getFirstLoad(state),
     sharingPanelVisible: getSharePanelVisible(state),
+    isProgressFinished: isSecondaryProgressFinished(state),
+    selectionLength: getSelectionLength(state),
+    selectionTitle: getSelectionTitle(state),
   };
 }
 

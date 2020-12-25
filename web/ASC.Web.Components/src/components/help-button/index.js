@@ -193,7 +193,12 @@ class HelpButton extends React.Component {
         )}
         {displayType === "aside" && (
           <>
-            <Backdrop onClick={this.onClose} visible={isOpen} zIndex={zIndex} />
+            <Backdrop
+              onClick={this.onClose}
+              visible={isOpen}
+              zIndex={zIndex}
+              isAside={true}
+            />
             <Aside visible={isOpen} scale={false} zIndex={zIndex}>
               <Content>
                 {helpButtonHeaderContent && (

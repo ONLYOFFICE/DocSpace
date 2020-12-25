@@ -47,7 +47,7 @@ export const getCurrentUser = (state) => state.auth.user;
 
 export const isAuthenticated = (state) => state.auth.isAuthenticated;
 
-export const getCurrentUserId = (state) => state.auth.user;
+export const getCurrentUserId = (state) => state.auth.user.id;
 
 export const getModules = (state) => state.auth.modules;
 
@@ -64,6 +64,8 @@ export const getSettingsCustomNamesGroupsCaption = (state) =>
 export const getIsLoaded = (state) => state.auth.isLoaded;
 
 export const getIsLoadedSection = (state) => state.auth.isLoadedSection;
+
+export const getIsTabletView = (state) => state.auth.settings.isTabletView;
 
 export const getDefaultPage = createSelector(
   [getSettings],

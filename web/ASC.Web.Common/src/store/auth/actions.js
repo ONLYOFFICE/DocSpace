@@ -20,6 +20,7 @@ export const SET_GREETING_SETTINGS = "SET_GREETING_SETTINGS";
 export const SET_CUSTOM_NAMES = "SET_CUSTOM_NAMES";
 export const SET_WIZARD_COMPLETED = "SET_WIZARD_COMPLETED";
 export const SET_IS_AUTHENTICATED = "SET_IS_AUTHENTICATED";
+export const SET_IS_TABLET_VIEW = "SET_IS_TABLET_VIEW";
 
 export function setCurrentUser(user) {
   return {
@@ -138,6 +139,13 @@ export function setIsAuthenticated(isAuthenticated) {
   };
 }
 
+export function setIsTabletView(isTabletView) {
+  return {
+    type: SET_IS_TABLET_VIEW,
+    isTabletView,
+  };
+}
+
 export function getUser(dispatch) {
   return api.people
     .getUser()
@@ -147,12 +155,10 @@ export function getUser(dispatch) {
 }
 
 export function getIsAuthenticated(dispatch) {
-  return api.user
-    .checkIsAuthenticated()
-    .then((success) => { 
-      dispatch(setIsAuthenticated(success));
-      return success;
-    });
+  return api.user.checkIsAuthenticated().then((success) => {
+    dispatch(setIsAuthenticated(success));
+    return success;
+  });
 }
 
 export function getPortalSettings(dispatch) {
@@ -204,13 +210,14 @@ export function login(user, hash) {
   };
 }
 
-export function logout() {
+export function logout(withoutRedirect) {
   return (dispatch) => {
     return api.user.logout().then(() => {
       setWithCredentialsStatus(false);
       dispatch(setLogout());
-
-      history.push("/login");
+      if (!withoutRedirect) {
+        history.push("/login");
+      }
     });
   };
 }

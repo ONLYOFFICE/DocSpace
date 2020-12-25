@@ -585,6 +585,9 @@ class CreateUserForm extends React.Component {
               inputIsDisabled={isLoading}
               inputOnChange={this.onWorkFromDateChange}
               inputTabIndex={6}
+              calendarMinDate={
+                profile.birthday ? new Date(profile.birthday) : undefined
+              }
             />
             <TextField
               labelText={`${t("Location")}:`}

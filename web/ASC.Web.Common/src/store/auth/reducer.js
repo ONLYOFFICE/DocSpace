@@ -16,6 +16,7 @@ import {
   SET_CUSTOM_NAMES,
   SET_WIZARD_COMPLETED,
   SET_IS_AUTHENTICATED,
+  SET_IS_TABLET_VIEW,
 } from "./actions";
 import { LANGUAGE } from "../../constants";
 
@@ -23,6 +24,7 @@ const initialState = {
   isAuthenticated: false,
   isLoaded: false,
   isLoadedSection: true,
+
   user: {},
   modules: [],
   settings: {
@@ -63,6 +65,7 @@ const initialState = {
       guestsCaption: "Guests",
     },
     isEncryptionSupport: false, // TODO: should switch to "true", when desktop editors client uses
+    isTabletView: false,
   },
 };
 
@@ -158,6 +161,13 @@ const authReducer = (state = initialState, action) => {
     case SET_WIZARD_COMPLETED:
       return Object.assign({}, state, {
         settings: { ...state.settings, wizardCompleted: true },
+      });
+    case SET_IS_TABLET_VIEW:
+      return Object.assign({}, state, {
+        settings: {
+          ...state.settings,
+          isTabletView: action.isTabletView,
+        },
       });
 
     default:

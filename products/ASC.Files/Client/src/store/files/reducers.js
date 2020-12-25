@@ -35,6 +35,9 @@ import {
   SET_THIRDPARTY_PROVIDERS,
   SET_CONNECT_ITEM,
   SET_SHOW_THIRDPARTY_PANEL,
+  SET_IS_VER_HISTORY_PANEL,
+  SET_VER_HISTORY_FILE_ID,
+  SET_FILE_VERSIONS,
 } from "./actions";
 import { api } from "asc-web-common";
 import { isFileSelected, skipFile, getFilesBySelected } from "./selectors";
@@ -395,6 +398,11 @@ const initialState = {
   providers: [],
   connectItem: null,
   showThirdPartyPanel: false,
+  versionHistory: {
+    isVisible: false,
+    fileId: null,
+    versions: null,
+  },
 };
 
 const filesReducer = (state = initialState, action) => {
@@ -589,6 +597,31 @@ const filesReducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         showThirdPartyPanel: action.showThirdPartyPanel,
       });
+
+    case SET_IS_VER_HISTORY_PANEL:
+      return Object.assign({}, state, {
+        versionHistory: {
+          ...state.versionHistory,
+          isVisible: action.isVisible,
+        },
+      });
+    case SET_VER_HISTORY_FILE_ID: {
+      return Object.assign({}, state, {
+        versionHistory: {
+          ...state.versionHistory,
+          fileId: action.fileId,
+        },
+      });
+    }
+    case SET_FILE_VERSIONS: {
+      return Object.assign({}, state, {
+        versionHistory: {
+          ...state.versionHistory,
+          versions: action.versions,
+        },
+      });
+    }
+
     default:
       return state;
   }

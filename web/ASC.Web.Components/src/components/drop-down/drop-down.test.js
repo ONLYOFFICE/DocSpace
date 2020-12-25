@@ -8,6 +8,8 @@ const baseProps = {
   directionX: "left",
   directionY: "bottom",
   manualWidth: "100%",
+  showDisabledItems: true,
+  withBackdrop: false,
 };
 
 const baseChildren = <div label="1"></div>;
@@ -23,6 +25,20 @@ describe("<DropDown />", () => {
     const wrapper = mount(<DropDown {...baseProps} open />);
 
     expect(wrapper.prop("open")).toEqual(true);
+  });
+
+  it("showDisabledItems", () => {
+    const wrapper = mount(
+      <DropDown {...baseProps} open showDisabledItems={false} />
+    );
+
+    expect(wrapper.prop("showDisabledItems")).toEqual(false);
+  });
+
+  it("render with backdrop", () => {
+    const wrapper = mount(<DropDown {...baseProps} open withBackdrop={true} />);
+
+    expect(wrapper.prop("withBackdrop")).toEqual(true);
   });
 
   it("directionX right", () => {

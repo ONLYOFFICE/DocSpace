@@ -1,6 +1,6 @@
 {
-  "name": "ASC.Files",
-  "version": "0.1.0",
+  "name": "asc-files-client",
+  "version": "0.0.5",
   "private": true,
   "homepage": "/products/files",
   "dependencies": {
