@@ -1,7 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Data.Entity;
-using System.IO;
+﻿using System;
 using System.Linq;
+using System.Reflection;
 using System.Text.Json;
 using System.Threading;
 
@@ -17,10 +16,9 @@ using ASC.Files.Tests.Infrastructure;
 using ASC.Web.Files.Classes;
 using ASC.Web.Files.Services.WCFService;
 using ASC.Web.Files.Services.WCFService.FileOperations;
-using Microsoft.AspNetCore.Hosting;
+
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -49,15 +47,15 @@ namespace ASC.Files.Tests
         const string con = "Server=localhost;Database=onlyoffice_test;User ID = root; Password=root;Pooling=true;";
         public virtual void SetUp()
         {
-            var scope1 = Program.CreateHostBuilder(new string[] { "--pathToConf" ,"..\\..\\..\\..\\..\\..\\config", "--ConnectionStrings:default:connectionString", con, "--migration:enabled", "true" }).Build();
-            
-             scope = scope1.Services.CreateScope();
-            var TenantDbContext = scope.ServiceProvider.GetService<DbContextManager<TenantDbContext>>();
-            using (var db = TenantDbContext)
-            {
-                var migrator = db.Value.GetInfrastructure().GetRequiredService<IMigrator>();
-                migrator.Migrate("20201222152946_TestUser");
-            }
+            var host = Program.CreateHostBuilder(new string[] {
+                "--pathToConf" ,"..\\..\\..\\..\\..\\..\\config",
+                "--ConnectionStrings:default:connectionString", con,
+                "--migration:enabled", "true" }).Build();
+
+            Migrate(host.Services);
+
+            scope = host.Services.CreateScope();
+
             var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
             var tenant = tenantManager.GetTenant(1);
             tenantManager.SetCurrentTenant(tenant);
@@ -72,10 +70,8 @@ namespace ASC.Files.Tests
            
             
             SecurityContext.AuthenticateMe(CurrentTenant.OwnerId);
-           
         }
         
-
         public void DeleteFolder(int folder, bool deleteAfter, bool DeleteEmmediatly)
         {
             FilesControllerHelper.DeleteFolder(folder, deleteAfter, DeleteEmmediatly);
@@ -99,31 +95,6 @@ namespace ASC.Files.Tests
                     break;
                 Thread.Sleep(100);
             }
-        }
-        private void Configure(WebHostBuilderContext hostingContext, IConfigurationBuilder config)
-        {
-            var path = "..\\..\\..\\..\\..\\..\\config";
-
-
-            if (!Path.IsPathRooted(path))
-            {
-                path = Path.GetFullPath(Path.Combine(hostingContext.HostingEnvironment.ContentRootPath, path));
-            }
-
-            config.SetBasePath(path);
-            config
-                .AddInMemoryCollection(new Dictionary<string, string>
-                {
-                        {"pathToConf", path}
-                })
-                .AddJsonFile("appsettings.json")
-                .AddJsonFile($"appsettings.{hostingContext.HostingEnvironment.EnvironmentName}.json", true)
-                .AddJsonFile("storage.json")
-                .AddJsonFile("kafka.json")
-                .AddJsonFile($"kafka.{hostingContext.HostingEnvironment.EnvironmentName}.json", true)
-                .AddEnvironmentVariables();
-
-            Configuration = config.Build();
         }
 
         public BatchModel GetBatchModel(string text)
@@ -150,7 +121,29 @@ namespace ASC.Files.Tests
         
         public virtual void TearDown()
         {
-            Database.Delete(con);
+            var context = scope.ServiceProvider.GetService<DbContextManager<TenantDbContext>>();
+            context.Value.Database.EnsureDeleted();
+        }
+
+        private void Migrate(IServiceProvider serviceProvider)
+        {
+            using var scope = serviceProvider.CreateScope();
+
+            var configuration = scope.ServiceProvider.GetService<IConfiguration>();
+
+            TenantMigrate();
+
+            configuration["testAssembly"] = Assembly.GetExecutingAssembly().GetName().Name;
+            TenantMigrate();
+            configuration["testAssembly"] = "";
+
+            void TenantMigrate()
+            {
+                using (var db = scope.ServiceProvider.GetService<DbContextManager<TenantDbContext>>())
+                {
+                    db.Value.Migrate();
+                }
+            }
         }
     }
 }
