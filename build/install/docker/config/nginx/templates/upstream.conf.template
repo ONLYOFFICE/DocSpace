@@ -15,14 +15,14 @@ map $SERVICE_API_SYSTEM $service_api_system {
     $SERVICE_API_SYSTEM $SERVICE_API_SYSTEM;
 }
 
-map $SERVICE_URLSHORYENER $service_urlshortener {
+map $SERVICE_URLSHORTENER $service_urlshortener {
     volatile;
-    $SERVICE_URLSHORYENER $SERVICE_URLSHORYENER;
+    $SERVICE_URLSHORTENER $SERVICE_URLSHORTENER;
 }
 
-map $SERVICE_THUMVNAILS $service_thumbnails {
+map $SERVICE_THUMBNAILS $service_thumbnails {
     volatile;
-    $SERVICE_THUMVNAILS $SERVICE_THUMVNAILS;
+    $SERVICE_THUMBNAILS $SERVICE_THUMBNAILS;
 }
 
 map $SERVICE_STUDIO_NOTIFY $service_studio_notify {
