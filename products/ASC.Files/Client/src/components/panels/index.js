@@ -4,6 +4,7 @@ import AddGroupsPanel from "./AddGroupsPanel";
 import EmbeddingPanel from "./EmbeddingPanel";
 import OperationsPanel from "./OperationsPanel";
 import NewFilesPanel from "./NewFilesPanel";
+import VersionHistoryPanel from "./VersionHistoryPanel";
 
 export {
   SharingPanel,
@@ -12,4 +13,5 @@ export {
   EmbeddingPanel,
   OperationsPanel,
   NewFilesPanel,
+  VersionHistoryPanel,
 };

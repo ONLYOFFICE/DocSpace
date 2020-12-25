@@ -216,6 +216,7 @@ class PageLayoutComponent extends React.Component {
       withBodyScroll,
       children,
       isLoaded,
+      headerBorderBottom,
     } = this.props;
 
     let articleHeaderContent = null;
@@ -458,6 +459,7 @@ PageLayoutComponent.propTypes = {
   hideAside: PropTypes.bool,
   isLoaded: PropTypes.bool,
   viewAs: PropTypes.string,
+  headerBorderBottom: PropTypes.bool,
 };
 
 PageLayoutComponent.defaultProps = {

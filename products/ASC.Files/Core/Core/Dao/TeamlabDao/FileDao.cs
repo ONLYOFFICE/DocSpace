@@ -393,7 +393,6 @@ namespace ASC.Files.Core.Data
                 if (file.CreateOn == default) file.CreateOn = TenantUtil.DateTimeNow();
 
                 var toUpdate = FilesDbContext.Files
-                    .Take(1)
                     .FirstOrDefault(r => r.Id == file.ID && r.CurrentVersion && r.TenantId == TenantID);
 
                 if (toUpdate != null)
