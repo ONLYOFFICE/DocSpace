@@ -155,6 +155,7 @@ class AddGroupsPanelComponent extends React.Component {
                 onSelect={this.onSelectGroups}
                 embeddedComponent={
                   <AccessComboBox
+                    t={t}
                     access={accessRight}
                     directionX="right"
                     onAccessChange={this.onAccessChange}

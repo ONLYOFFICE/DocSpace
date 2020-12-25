@@ -135,6 +135,7 @@ class AddUsersPanelComponent extends React.Component {
       ? {
           embeddedComponent: (
             <AccessComboBox
+              t={t}
               access={accessRight}
               directionX="right"
               onAccessChange={this.onAccessChange}

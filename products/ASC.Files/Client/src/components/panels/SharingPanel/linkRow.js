@@ -38,6 +38,7 @@ class LinkRow extends React.Component {
           element={
             withToggle ? (
               <AccessComboBox
+                t={t}
                 access={item.access}
                 directionX="left"
                 accessOptions={externalAccessOptions}

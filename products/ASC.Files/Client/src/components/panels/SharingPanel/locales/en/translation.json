@@ -22,5 +22,9 @@
   "Comment": "Comment",
   "FormFilling": "Form filling",
   "DenyAccess": "Deny access",
-  "CustomFilter": "Custom filter"
+  "CustomFilter": "Custom filter",
+
+  "ShareEveryone": "Everyone",
+  "ShareEmailSubject": "You have been granted access to the {{itemName}} document",
+  "ShareEmailBody": "You have been granted access to the {{itemName}} document. Click the link below to open the document right now: {{shareLink}}"
 }

@@ -49,11 +49,11 @@ class SharingRow extends React.Component {
   };
 
   onShareEmail = () => {
-    const { selection, item } = this.props;
+    const { selection, item, t } = this.props;
     const { shareLink } = item.sharedTo;
     const itemName = selection.title ? selection.title : selection[0].title;
-    const subject = `You have been granted access to the ${itemName} document`;
-    const body = `You have been granted access to the ${itemName} document. Click the link below to open the document right now: ${shareLink}`;
+    const subject = t("ShareEmailSubject", { itemName });
+    const body = t("ShareEmailBody", { itemName, shareLink });
 
     window.open(`mailto:?subject=${subject}&body=${body}`);
   };
@@ -91,7 +91,12 @@ class SharingRow extends React.Component {
     const { access } = this.state;
 
     const { isOwner, isLocked } = item;
-    const { label, name, displayName, shareLink, id } = item.sharedTo;
+    const { label, displayName, name, shareLink, id } = item.sharedTo;
+    const userName = name
+      ? name === "Everyone"
+        ? t("ShareEveryone")
+        : name
+      : "";
 
     const externalLinkVisible =
       selection && selection.length === 1 && shareLink;
@@ -187,6 +192,7 @@ class SharingRow extends React.Component {
                 })
               ) : (
                 <AccessComboBox
+                  t={t}
                   access={access}
                   directionX="left"
                   onAccessChange={onChangeItemAccess}
@@ -202,11 +208,11 @@ class SharingRow extends React.Component {
               {!shareLink &&
                 (isOwner && canShareOwnerChange ? (
                   <Link isHovered type="action" {...onShowChangeOwnerPanelProp}>
-                    {label ? label : name ? name : displayName}
+                    {label ? label : userName ? userName : displayName}
                   </Link>
                 ) : (
                   <Text truncate className="sharing_panel-text">
-                    {label ? label : name ? name : displayName}
+                    {label ? label : userName ? userName : displayName}
                   </Text>
                 ))}
               {isOwner ? (

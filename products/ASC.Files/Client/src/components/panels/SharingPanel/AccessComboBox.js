@@ -13,6 +13,7 @@ const AccessComboBox = (props) => {
     isDisabled,
     itemId,
     onAccessChange,
+    t,
   } = props;
   const {
     FullAccess,
@@ -28,7 +29,7 @@ const AccessComboBox = (props) => {
     <>
       {accessOptions.includes("FullAccess") && (
         <DropDownItem
-          label="Full access"
+          label={t("FullAccess")}
           icon="AccessEditIcon"
           data-id={itemId}
           data-access={FullAccess}
@@ -38,7 +39,7 @@ const AccessComboBox = (props) => {
 
       {accessOptions.includes("FilterEditing") && (
         <DropDownItem
-          label="Custom filter"
+          label={t("CustomFilter")}
           icon="CustomFilterIcon"
           data-id={itemId}
           data-access={CustomFilter}
@@ -48,7 +49,7 @@ const AccessComboBox = (props) => {
 
       {accessOptions.includes("Review") && (
         <DropDownItem
-          label="Review"
+          label={t("Review")}
           icon="AccessReviewIcon"
           data-id={itemId}
           data-access={Review}
@@ -58,7 +59,7 @@ const AccessComboBox = (props) => {
 
       {accessOptions.includes("FormFilling") && (
         <DropDownItem
-          label="Form filling"
+          label={t("FormFilling")}
           icon="AccessFormIcon"
           data-id={itemId}
           data-access={FormFilling}
@@ -68,7 +69,7 @@ const AccessComboBox = (props) => {
 
       {accessOptions.includes("Comment") && (
         <DropDownItem
-          label="Comment"
+          label={t("Comment")}
           icon="AccessCommentIcon"
           data-id={itemId}
           data-access={Comment}
@@ -78,7 +79,7 @@ const AccessComboBox = (props) => {
 
       {accessOptions.includes("ReadOnly") && (
         <DropDownItem
-          label="Read only"
+          label={t("ReadOnly")}
           icon="EyeIcon"
           data-id={itemId}
           data-access={ReadOnly}
@@ -88,7 +89,7 @@ const AccessComboBox = (props) => {
 
       {accessOptions.includes("DenyAccess") && (
         <DropDownItem
-          label="Deny access"
+          label={t("DenyAccess")}
           icon="AccessNoneIcon"
           data-id={itemId}
           data-access={DenyAccess}
