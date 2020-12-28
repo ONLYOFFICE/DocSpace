@@ -99,6 +99,9 @@ class PeopleSelector extends React.Component {
       if (role) {
         filter.role = role;
       }
+      if (employeeStatus) {
+        filter.employeeStatus = employeeStatus;
+      }
 
       if (currentGroup && currentGroup !== "all") filter.group = currentGroup;
 
@@ -281,6 +284,7 @@ PeopleSelector.propTypes = {
   groupsCaption: PropTypes.string,
   searchPlaceHolderLabel: PropTypes.string,
   role: PropTypes.oneOf(["admin", "user", "guest"]),
+  employeeStatus: PropTypes.any,
   displayType: PropTypes.oneOf(["auto", "aside", "dropdown"]),
   withoutAside: PropTypes.bool,
   embeddedComponent: PropTypes.any,

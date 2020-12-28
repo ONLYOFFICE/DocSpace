@@ -5,7 +5,7 @@ ARG RELEASE_DATE_SIGN=""
 ARG VERSION="8.9.0.190"
 ARG SOURCE_REPO_URL="deb http://static.teamlab.com.s3.amazonaws.com/repo/debian squeeze main"
 ARG DEBIAN_FRONTEND=noninteractive
-ARG GIT_BRANCH="master"
+ARG GIT_BRANCH="develop"
 
 LABEL onlyoffice.community.release-date="${RELEASE_DATE}" \
       onlyoffice.community.version="${VERSION}" \
@@ -182,7 +182,11 @@ RUN cd /app/onlyoffice/src/ && \
 
 COPY config/mysql/conf.d/mysql.cnf /etc/mysql/conf.d/mysql.cnf
 COPY config/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-COPY config/mysql/dotnet_dump.sql /app/onlyoffice/dotnet_dump.sql
+
+COPY config/createdb.sql /app/onlyoffice/createdb.sql
+COPY config/onlyoffice.sql /app/onlyoffice/onlyoffice.sql
+COPY config/onlyoffice.data.sql /app/onlyoffice/onlyoffice.data.sql
+COPY config/onlyoffice.resources.sql /app/onlyoffice/onlyoffice.resources.sql
 
 RUN sed -i 's/Server=.*;Port=/Server=127.0.0.1;Port=/' /app/onlyoffice/config/appsettings.test.json
 
@@ -191,7 +195,10 @@ RUN mkdir -p /var/mysqld/ && \
     sudo -u mysql bash -c "/usr/bin/pidproxy /var/mysqld/mysqld.pid /usr/bin/mysqld_safe --pid-file=/var/mysqld/mysqld.pid &" && \
     sleep 5s && \
     mysql -e "CREATE DATABASE IF NOT EXISTS onlyoffice CHARACTER SET utf8 COLLATE 'utf8_general_ci'" && \
-    mysql -D "onlyoffice" < /app/onlyoffice/dotnet_dump.sql && \
+    mysql -D "onlyoffice" < /app/onlyoffice/createdb.sql && \
+    mysql -D "onlyoffice" < /app/onlyoffice/onlyoffice.sql && \
+    mysql -D "onlyoffice" < /app/onlyoffice/onlyoffice.data.sql && \
+    mysql -D "onlyoffice" < /app/onlyoffice/onlyoffice.resources.sql && \
     mysql -D "onlyoffice" -e 'CREATE USER IF NOT EXISTS "onlyoffice_user"@"localhost" IDENTIFIED WITH mysql_native_password BY "onlyoffice_pass";' && \
     mysql -D "onlyoffice" -e 'GRANT ALL PRIVILEGES ON *.* TO 'onlyoffice_user'@'localhost';' && \
     killall -u mysql -n mysql
