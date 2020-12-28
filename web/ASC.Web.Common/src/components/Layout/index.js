@@ -25,6 +25,8 @@ const StyledContainer = styled.div`
     > .scroll-body {
       position: ${(props) =>
         props.isTabletView ? "static" : "absolute"} !important;
+      padding-right: ${(props) =>
+        props.isTabletView ? "0px" : "16px"} !important;
     }
   }
 `;
