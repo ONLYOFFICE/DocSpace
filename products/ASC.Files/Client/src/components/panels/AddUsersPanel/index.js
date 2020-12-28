@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Backdrop, Heading, Aside, IconButton } from "asc-web-components";
-import { PeopleSelector, utils } from "asc-web-common";
+import { PeopleSelector, utils, constants } from "asc-web-common";
 import { withTranslation } from "react-i18next";
 import {
   StyledAddUsersPanelPanel,
@@ -9,6 +9,7 @@ import {
   StyledHeaderContent,
   StyledBody,
 } from "../StyledPanels";
+import AccessComboBox from "../SharingPanel/AccessComboBox";
 import { createI18N } from "../../../helpers/i18n";
 const i18n = createI18N({
   page: "AddUsersPanel",
@@ -16,6 +17,7 @@ const i18n = createI18N({
 });
 
 const { changeLanguage } = utils;
+const { ShareAccessRights } = constants;
 
 class AddUsersPanelComponent extends React.Component {
   constructor(props) {
@@ -25,6 +27,7 @@ class AddUsersPanelComponent extends React.Component {
 
     this.state = {
       showActionPanel: false,
+      accessRight: ShareAccessRights.ReadOnly,
     };
 
     this.scrollRef = React.createRef();
@@ -35,32 +38,50 @@ class AddUsersPanelComponent extends React.Component {
 
   onArrowClick = () => this.props.onClose();
 
+  onKeyPress = (event) => {
+    if (event.key === "Esc" || event.key === "Escape") {
+      this.props.onClose();
+    }
+  };
+
   onClosePanels = () => {
     this.props.onClose();
     this.props.onSharingPanelClose();
   };
 
   onPeopleSelect = (users) => {
-    const {
-      accessRight,
-      shareDataItems,
-      setShareDataItems,
-      onClose,
-    } = this.props;
+    const { shareDataItems, setShareDataItems, onClose } = this.props;
     const items = shareDataItems;
     for (let item of users) {
       if (item.key) {
         item.id = item.key;
-        delete item.key;
       }
-      const currentItem = shareDataItems.find((x) => x.id === item.id);
+      const currentItem = shareDataItems.find((x) => x.sharedTo.id === item.id);
       if (!currentItem) {
-        item.rights = accessRight;
-        items.push(item);
+        const newItem = {
+          access: this.state.accessRight,
+          isLocked: false,
+          isOwner: false,
+          sharedTo: item,
+        };
+        items.push(newItem);
       }
     }
 
     setShareDataItems(items);
+    onClose();
+  };
+
+  onOwnerSelect = (owner) => {
+    const { setShareDataItems, shareDataItems, onClose } = this.props;
+    const ownerItem = shareDataItems.find((x) => x.isOwner);
+    ownerItem.sharedTo = owner[0];
+
+    if (owner[0].key) {
+      owner[0].id = owner[0].key;
+    }
+
+    setShareDataItems(shareDataItems);
     onClose();
   };
 
@@ -74,17 +95,11 @@ class AddUsersPanelComponent extends React.Component {
     window.removeEventListener("keyup", this.onKeyPress);
   }
 
-  onKeyPress = (event) => {
-    if (event.key === "Esc" || event.key === "Escape") {
-      this.props.onClose();
-    }
-  };
-
   shouldComponentUpdate(nextProps, nextState) {
-    const { showActionPanel } = this.state;
-    const { visible, accessRight } = this.props;
+    const { showActionPanel, accessRight } = this.state;
+    const { visible } = this.props;
 
-    if (accessRight && accessRight.rights !== nextProps.accessRight.rights) {
+    if (accessRight !== nextState.accessRight) {
       return true;
     }
 
@@ -99,10 +114,36 @@ class AddUsersPanelComponent extends React.Component {
     return false;
   }
 
+  onAccessChange = (e) => {
+    const accessRight = +e.currentTarget.dataset.access;
+    this.setState({ accessRight });
+  };
+
   render() {
-    const { visible, embeddedComponent, t, groupsCaption } = this.props;
+    const {
+      t,
+      visible,
+      groupsCaption,
+      accessOptions,
+      isMultiSelect,
+    } = this.props;
+    const { accessRight } = this.state;
 
     const zIndex = 310;
+
+    const embeddedComponent = isMultiSelect
+      ? {
+          embeddedComponent: (
+            <AccessComboBox
+              t={t}
+              access={accessRight}
+              directionX="right"
+              onAccessChange={this.onAccessChange}
+              accessOptions={accessOptions}
+            />
+          ),
+        }
+      : null;
 
     //console.log("AddUsersPanel render");
     return (
@@ -127,7 +168,7 @@ class AddUsersPanelComponent extends React.Component {
                 size="medium"
                 truncate
               >
-                {t("LinkText")}
+                {isMultiSelect ? t("LinkText") : t("OwnerChange")}
               </Heading>
               {/*<IconButton
                 size="16"
@@ -139,14 +180,18 @@ class AddUsersPanelComponent extends React.Component {
 
             <StyledBody ref={this.scrollRef}>
               <PeopleSelector
+                role={isMultiSelect ? null : "user"}
+                employeeStatus={1}
                 displayType="aside"
                 withoutAside
                 isOpen={visible}
-                isMultiSelect
-                onSelect={this.onPeopleSelect}
-                embeddedComponent={embeddedComponent}
+                isMultiSelect={isMultiSelect}
+                onSelect={
+                  isMultiSelect ? this.onPeopleSelect : this.onOwnerSelect
+                }
+                {...embeddedComponent}
                 groupsCaption={groupsCaption}
-                showCounter={true}
+                showCounter
                 //onCancel={onClose}
               />
             </StyledBody>

@@ -81,18 +81,18 @@ namespace ASC.Web.Files.Services.DocumentService
         [DebuggerDisplay("{Status} - {Key}")]
         public class TrackerData
         {
-            public List<Action> Actions;
-            public string ChangesUrl;
-            public ForceSaveInitiator ForceSaveType;
-            public object History;
-            public string Key;
-            public MailMergeData MailMerge;
-            public TrackerStatus Status;
-            public string Token;
-            public string Url;
-            public List<string> Users;
-            public string UserData;
-            public bool Encrypted;
+            public List<Action> Actions { get; set; }
+            public string ChangesUrl { get; set; }
+            public ForceSaveInitiator ForceSaveType { get; set; }
+            public object History { get; set; }
+            public string Key { get; set; }
+            public MailMergeData MailMerge { get; set; }
+            public TrackerStatus Status { get; set; }
+            public string Token { get; set; }
+            public string Url { get; set; }
+            public List<string> Users { get; set; }
+            public string UserData { get; set; }
+            public bool Encrypted { get; set; }
 
             [DebuggerDisplay("{Type} - {UserId}")]
             public class Action
@@ -119,17 +119,17 @@ namespace ASC.Web.Files.Services.DocumentService
         [DebuggerDisplay("{From}")]
         public class MailMergeData
         {
-            public int RecordCount;
-            public int RecordErrorCount;
-            public int RecordIndex;
+            public int RecordCount { get; set; }
+            public int RecordErrorCount { get; set; }
+            public int RecordIndex { get; set; }
 
-            public string From;
-            public string Subject;
-            public string To;
-            public MailMergeType Type;
+            public string From { get; set; }
+            public string Subject { get; set; }
+            public string To { get; set; }
+            public MailMergeType Type { get; set; }
 
-            public string Title; //attach
-            public string Message; //attach
+            public string Title { get; set; } //attach
+            public string Message { get; set; } //attach
         }
 
         [Serializable]
@@ -150,7 +150,12 @@ namespace ASC.Web.Files.Services.DocumentService
 
             public static string Serialize(TrackResponse response)
             {
-                return JsonSerializer.Serialize(response);
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                };
+
+                return JsonSerializer.Serialize(response, options);
             }
         }
 
@@ -219,23 +224,23 @@ namespace ASC.Web.Files.Services.DocumentService
             Logger = options.CurrentValue;
         }
 
-        public string GetCallbackUrl(string fileId)
+        public string GetCallbackUrl<T>(T fileId)
         {
             var callbackUrl = BaseCommonLinkUtility.GetFullAbsolutePath(FilesLinkUtility.FileHandlerPath
                                                                     + "?" + FilesLinkUtility.Action + "=track"
-                                                                    + "&" + FilesLinkUtility.FileId + "=" + HttpUtility.UrlEncode(fileId)
-                                                                    + "&" + FilesLinkUtility.AuthKey + "=" + EmailValidationKeyProvider.GetEmailKey(fileId));
+                                                                    + "&" + FilesLinkUtility.FileId + "=" + HttpUtility.UrlEncode(fileId.ToString())
+                                                                    + "&" + FilesLinkUtility.AuthKey + "=" + EmailValidationKeyProvider.GetEmailKey(fileId.ToString()));
             callbackUrl = DocumentServiceConnector.ReplaceCommunityAdress(callbackUrl);
             return callbackUrl;
         }
 
-        public bool StartTrack(string fileId, string docKeyForTrack)
+        public bool StartTrack<T>(T fileId, string docKeyForTrack)
         {
             var callbackUrl = GetCallbackUrl(fileId);
             return DocumentServiceConnector.Command(CommandMethod.Info, docKeyForTrack, fileId, callbackUrl);
         }
 
-        public TrackResponse ProcessData(string fileId, TrackerData fileData)
+        public TrackResponse ProcessData<T>(T fileId, TrackerData fileData)
         {
             switch (fileData.Status)
             {
@@ -458,7 +463,7 @@ namespace ASC.Web.Files.Services.DocumentService
             return result;
         }
 
-        private TrackResponse ProcessMailMerge(string fileId, TrackerData fileData)
+        private TrackResponse ProcessMailMerge<T>(T fileId, TrackerData fileData)
         {
             if (fileData.Users == null || fileData.Users.Count == 0 || !Guid.TryParse(fileData.Users[0], out var userId))
             {

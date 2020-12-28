@@ -15,6 +15,29 @@ const presentInArray = (array, search) => {
   return result === -1 ? false : true;
 };
 
+export const getAccessIcon = (access) => {
+  switch (access) {
+    case 1:
+      return "AccessEditIcon";
+    case 2:
+      return "EyeIcon";
+    case 3:
+      return "AccessNoneIcon";
+    case 4:
+      return "CatalogQuestionIcon";
+    case 5:
+      return "AccessReviewIcon";
+    case 6:
+      return "AccessCommentIcon";
+    case 7:
+      return "AccessFormIcon";
+    case 8:
+      return "CustomFilterIcon";
+    default:
+      return;
+  }
+};
+
 export const getMediaViewerImageFormats = (state) => {
   return state.files.mediaViewerFormats.images;
 };
@@ -912,7 +935,8 @@ export const getFileActionId = (state) => {
 export const getFilesList = (state) => {
   return createSelector(
     [
-      getItemsList,
+      getFolders,
+      getFiles,
       getSelection,
       getIsRecycleBinFolder,
       getIsRecentFolder,
@@ -922,7 +946,8 @@ export const getFilesList = (state) => {
       isVisitor,
     ],
     (
-      items,
+      folders,
+      files,
       selection,
       isRecycleBin,
       isRecent,
@@ -931,6 +956,14 @@ export const getFilesList = (state) => {
       isPrivacy,
       isVisitor
     ) => {
+      const items =
+        folders && files
+          ? [...folders, ...files]
+          : folders
+          ? folders
+          : files
+          ? files
+          : [];
       return items.map((item) => {
         const {
           access,
@@ -1294,6 +1327,15 @@ export const getIconOfDraggedFile = (state) => {
 export const getSharePanelVisible = (state) => {
   return state.files.sharingPanelVisible;
 };
+
+export const getCanShareOwnerChange = createSelector(
+  isAdmin,
+  getPathParts,
+  getCommonFolderId,
+  (isAdmin, pathParts, commonId) => {
+    return isAdmin && commonId === pathParts[0];
+  }
+);
 
 export const isSecondaryProgressFinished = createSelector(
   getSecondaryProgressData,

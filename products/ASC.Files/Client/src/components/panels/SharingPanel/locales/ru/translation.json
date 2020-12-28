@@ -15,6 +15,19 @@
   "Embedding": "Встраивание",
   "ExternalLink": "Внешняя ссылка",
   "InternalLink": "Внутренняя ссылка",
+
   "EncryptedFileSaving": "Сохранение зашифрованного файла",
-  "EncryptedFileSharing": "К файлу <strong>{{title}}</strong> успешно предоставлен доступ"
+  "EncryptedFileSharing": "К файлу <strong>{{title}}</strong> успешно предоставлен доступ",
+
+  "FullAccess": "Полный доступ",
+  "ReadOnly": "Только чтение",
+  "Review": "Рецензирование",
+  "Comment": "Комментирование",
+  "FormFilling": "Заполнение форм",
+  "DenyAccess": "Доступ запрещён",
+  "CustomFilter": "Пользовательский фильтр",
+
+  "ShareEveryone": "Все",
+  "ShareEmailSubject": "Вам предоставлен доступ к документу {{itemName}}",
+  "ShareEmailBody": "Вам предоставлен доступ к документу {{itemName}}. Нажмите на ссылку ниже, чтобы открыть документ прямо сейчас: {{shareLink}}"
 }
