@@ -73,14 +73,25 @@ Summary:        urlshortener
 Group:          Applications/Internet
 Requires:       onlyoffice-appserver-common
 Requires:       dotnet-sdk-3.1
+Requires:       nodejs >= 10.0
 AutoReqProv:    no
 %description    urlshortener
+
+%package        socket
+Summary:        socket
+Group:          Applications/Internet
+Requires:       onlyoffice-appserver-common
+Requires:       dotnet-sdk-3.1
+Requires:       nodejs >= 10.0
+AutoReqProv:    no
+%description    socket
 
 %package        thumbnails
 Summary:        thumbnails
 Group:          Applications/Internet
 Requires:       onlyoffice-appserver-common
 Requires:       dotnet-sdk-3.1
+Requires:       nodejs >= 10.0
 AutoReqProv:    no
 %description    thumbnails
 

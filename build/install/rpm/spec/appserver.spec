@@ -52,7 +52,7 @@ AutoReqProv:    no
 %pre common
 
 getent group onlyoffice >/dev/null || groupadd -r onlyoffice
-getent passwd onlyoffice >/dev/null || useradd -r -g onlyoffice -d /var/www/onlyoffice/ -s /sbin/nologin onlyoffice
+getent passwd onlyoffice >/dev/null || useradd -r -g onlyoffice -s /sbin/nologin onlyoffice
 
 %post
 

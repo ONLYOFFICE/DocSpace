@@ -1,7 +1,8 @@
 MYSQL=""
 
 DB_PORT="3306"  
-AS_PORT="80"
+APP_HOST="localhost"
+APP_PORT="80"
 
 APP_CONF="/etc/onlyoffice/appserver/config/appsettings.test.json"
 DS_CONF="/etc/onlyoffice/documentserver/local.json"
@@ -14,18 +15,24 @@ DB_PWD=""
 DOCUMENT_SERVER_HOST="localhost";
 DOCUMENT_SERVER_PORT="8083";
 
+KAFKA_HOST="localhost"
+KAFKA_PORT="9092"
+
+ELK_SHEME="http"
+ELK_HOST="localhost"
+ELK_PORT="9200"
+ELK_VALUE='"elastic": { "Scheme": "'${ELK_SHEME}'", "Host": "'${ELK_HOST}'", "Port": "'${ELK_PORT}'" },'
+
 [ -e $APP_CONF ] || { echo "Configuration file not found at path $APP_CONF"; exit 1; }
 [ $(id -u) -ne 0 ] && { echo "Root privileges required"; exit 1; }
 
 restart_services() {
-	echo "Restarting services... "
+	echo -n "Restarting services... "
 
-	for SVC in nginx mysqld appserver-api.service appserver-api_system.service appserver-backup.service appserver-files.service appserver-files_service.service appserver-notify.service appserver-people.service appserver-studio.service appserver-studio_notify.service appserver-thumbnails.service appserver-urlshortener.service
+	for SVC in nginx mysqld appserver-api appserver-api_system appserver-backup appserver-files appserver-files_service appserver-notify appserver-people appserver-studio appserver-studio_notify appserver-thumbnails appserver-urlshortener
 	do
-		systemctl stop $SVC.service
-		systemctl start $SVC.service
-
-		echo "$SVC.service "
+		systemctl stop $SVC.service  >/dev/null 2>&1
+		systemctl start $SVC.service  >/dev/null 2>&1
 	done
 	echo "OK"
 }
@@ -36,15 +43,15 @@ input_db_params(){
     local def_DB_USER="root"
     local def_DB_PWD="root"
     if read -i "default" 2>/dev/null <<< "test"; then 
-		read -e -p "Host: " -i "$DB_HOST" DB_HOST
+		read -e -p "Database host: " -i "$DB_HOST" DB_HOST
 		read -e -p "Database name: " -i "$DB_NAME" DB_NAME
-		read -e -p "User: " -i "$DB_USER" DB_USER
-		read -e -p "Password: " -s DB_PWD
+		read -e -p "Database user: " -i "$DB_USER" DB_USER
+		read -e -p "Database password: " -s DB_PWD
 	else
-		read -e -p "Host (default $DB_HOST): " DB_HOST
-		read -e -p "Database name (default $DB_NAME): " DB_NAME
-		read -e -p "User (default $DB_USER): " DB_USER
-		read -e -p "Password: " -s DB_PWD
+		read -e -p "Database host (default $def_DB_HOST): " DB_HOST
+		read -e -p "Database name (default $def_DB_NAME): " DB_NAME
+		read -e -p "Database user (default $def_DB_USER): " DB_USER
+		read -e -p "Database password: " -s DB_PWD
     fi
     
     if [ -z $DB_HOST ]; then
@@ -52,7 +59,7 @@ input_db_params(){
 	fi
 
 	if [ -z $DB_NAME ]; then
-		DB_NAME="${def_DB_NAME }";
+		DB_NAME="${def_DB_NAME}";
 	fi
 
 	if [ -z $DB_USER ]; then
@@ -174,38 +181,40 @@ execute_mysql_sqript(){
 		sed "s/LimitMEMLOCK.*/LimitMEMLOCK = infinity/" -i ${CNF_SERVICE_PATH} || true # ignore errors
 	fi
 
-    systemctl daemon-reload
-	systemctl stop mysqld
-	systemctl start mysqld
+    systemctl daemon-reload >/dev/null 2>&1
+	systemctl stop mysqld >/dev/null 2>&1
+	systemctl start mysqld >/dev/null 2>&1
 
     mysql_check_connection
     
     if [ "$DB_USER" = "root" ] && [ ! "$(mysql -V | grep ' 5.5.')" ]; then
 	   # allow connect via mysql_native_password with root and empty password
-	   $MYSQL -D "mysql" -e "update user set plugin='mysql_native_password' where user='root';ALTER USER '${DB_USER}'@'localhost' IDENTIFIED WITH mysql_native_password BY '${DB_PWD}';"
+	   $MYSQL -D "mysql" -e "update user set plugin='mysql_native_password' where user='root';ALTER USER '${DB_USER}'@'localhost' IDENTIFIED WITH mysql_native_password BY '${DB_PWD}';" >/dev/null 2>&1
 	fi
 
-    DB_TABLES_COUNT=$($MYSQL --silent --skip-column-names -e "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='${DB_NAME}'");
+    DB_TABLES_COUNT=$($MYSQL --silent --skip-column-names -e "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='${DB_NAME}'"); 
     
     if [ "${DB_TABLES_COUNT}" -eq "0" ]; then
 	echo -n "Installing MYSQL database... "
 
     sed -i -e '1 s/^/SET SQL_MODE='ALLOW_INVALID_DATES';\n/;' /etc/onlyoffice/appserver/onlyoffice.sql
-	$MYSQL -e "CREATE DATABASE IF NOT EXISTS $DB_NAME CHARACTER SET utf8 COLLATE 'utf8_general_ci';"
-    $MYSQL "$DB_NAME" < "/etc/onlyoffice/appserver/createdb.sql"
-    $MYSQL "$DB_NAME" < "/etc/onlyoffice/appserver/onlyoffice.sql"
-    $MYSQL "$DB_NAME" < "/etc/onlyoffice/appserver/onlyoffice.data.sql"
-    $MYSQL "$DB_NAME" < "/etc/onlyoffice/appserver/onlyoffice.resources.sql"
+	$MYSQL -e "CREATE DATABASE IF NOT EXISTS $DB_NAME CHARACTER SET utf8 COLLATE 'utf8_general_ci';" >/dev/null 2>&1
+    $MYSQL "$DB_NAME" < "/etc/onlyoffice/appserver/createdb.sql" >/dev/null 2>&1
+    $MYSQL "$DB_NAME" < "/etc/onlyoffice/appserver/onlyoffice.sql" >/dev/null 2>&1
+    $MYSQL "$DB_NAME" < "/etc/onlyoffice/appserver/onlyoffice.data.sql" >/dev/null 2>&1
+    $MYSQL "$DB_NAME" < "/etc/onlyoffice/appserver/onlyoffice.resources.sql" >/dev/null 2>&1
 	else
-		echo "Upgrading MySQL database... "
+		echo -n "Upgrading MySQL database... "
     fi
     echo "OK"
 }
 
 setup_nginx(){
+	echo -n "Configuring nginx..."
+
 	rm -rf /etc/nginx/conf.d/default.conf
 
-    sed -i "s/listen.*;/listen $AS_PORT;/" /etc/nginx/conf.d/onlyoffice.conf
+    sed -i "s/listen.*;/listen $APP_PORT;/" /etc/nginx/conf.d/onlyoffice.conf
 
     shopt -s nocasematch
     PORTS=()
@@ -228,11 +237,13 @@ setup_nginx(){
         true
     done
     chown nginx:nginx /etc/nginx/* -R
-    sudo sed -e 's/#//' -i /etc/nginx/conf.d/onlyoffice.conf
+    #sudo sed -e 's/#//' -i /etc/nginx/conf.d/onlyoffice.conf
     systemctl reload nginx
+	echo "OK"
 }
 
 setup_docs() {
+	echo -n "Configuring Docs..."
 	DOCUMENT_SERVER_JWT_SECRET=$(cat ${DS_CONF} | jq -r '.services.CoAuthoring.secret.inbox.string')
 	DOCUMENT_SERVER_JWT_HEADER=$(cat ${DS_CONF} | jq -r '.services.CoAuthoring.token.inbox.header')
 
@@ -241,6 +252,8 @@ setup_docs() {
 	sed "s!\"internal\": .*,!\"internal\": "${DOCUMENT_SERVER_HOST}:${DOCUMENT_SERVER_PORT}",!" -i ${APP_CONF}
 	sed "s!\"header\": \".*\"!\"header\": \"${DOCUMENT_SERVER_JWT_HEADER_FROM_DS}\"!" -i ${APP_CONF}
 	sed "0,/\"value\": \".*\",/{s/\"value\": \".*\",/\"value\": \"$DOCUMENT_SERVER_JWT_SECRET\",/}" -i ${APP_CONF}
+	sed "s!\"portal\": \".*\"!\"portal\": \"$APP_HOST:$APP_PORT\"!" -i ${APP_CONF}
+	echo "OK"
 }
 
 if rpm -q mysql-community-client >/dev/null; then
@@ -253,8 +266,14 @@ if rpm -q nginx >/dev/null; then
     setup_nginx
 fi
 
-if rpm -q onlyoffice-documentserver || rpm -q onlyoffice-documentserver-de || rpm -q onlyoffice-documentserver-ee >/dev/null; then
+if rpm -q onlyoffice-documentserver >/dev/null || rpm -q onlyoffice-documentserver-de >/dev/null || rpm -q onlyoffice-documentserver-ee >/dev/null; then
     setup_docs
 fi
+
+#kafka
+sed -i "s!\"BootstrapServers\".*!\"BootstrapServers\": \"${KAFKA_HOST}:${KAFKA_PORT}\"!g" ${APP_CONF}/kafka.test.json
+
+#elastic
+grep -q "${ELK_VALUE}" ${APP_CONF}/appsettings.test.json || sed -i "s!\"files\".*!${ELK_VALUE}\n\"files\": {!" ${APP_CONF}/appsettings.test.json
 
 restart_services

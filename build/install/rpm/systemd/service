@@ -4,7 +4,7 @@ After=network.target syslog.target
 
 [Service]
 PIDFile=/run/appserver/appserver-${SERVICE_NAME}.pid
-Type=forking
+Type=simple
 User=onlyoffice
 Group=onlyoffice
 WorkingDirectory=${WORK_DIR}
