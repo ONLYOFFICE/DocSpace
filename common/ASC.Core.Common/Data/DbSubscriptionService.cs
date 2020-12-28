@@ -65,6 +65,19 @@ namespace ASC.Core.Data
             };
         }
 
+        public string[] GetRecipients(int tenant, string sourceId, string actionId, string objectId)
+        {
+            if (sourceId == null) throw new ArgumentNullException("sourceId");
+            if (actionId == null) throw new ArgumentNullException("actionId");
+
+            var q = GetQuery(tenant, sourceId, actionId)
+                .Where(r => r.Object == (objectId ?? string.Empty))
+                .Where(r => !r.Unsubscribed)
+                .Select(r => r.Recipient)
+                .Distinct();
+
+            return q.ToArray();
+        }
 
         public IEnumerable<SubscriptionRecord> GetSubscriptions(int tenant, string sourceId, string actionId)
         {
@@ -99,8 +112,52 @@ namespace ASC.Core.Data
                 .Where(r => r.Recipient == recipientId)
                 .Where(r => r.Object == (objectId ?? string.Empty));
 
-            return GetSubscriptions(q, tenant).FirstOrDefault();
+            return GetSubscriptions(q, tenant).Take(1).FirstOrDefault();
         }
+
+        public bool IsUnsubscribe(int tenant, string sourceId, string actionId, string recipientId, string objectId)
+        {
+            if (recipientId == null) throw new ArgumentNullException("recipientId");
+            if (sourceId == null) throw new ArgumentNullException("sourceId");
+            if (actionId == null) throw new ArgumentNullException("actionId");
+
+            var q = UserDbContext.Subscriptions
+                .Where(r => r.Source == sourceId && 
+                            r.Action == actionId && 
+                            r.Tenant == tenant &&
+                            r.Recipient == recipientId &&
+                            r.Unsubscribed);
+
+            if (!string.IsNullOrEmpty(objectId))
+            {
+                q = q.Where(r=> r.Object == objectId || r.Object == string.Empty);
+            }
+            else
+            {
+                q = q = q.Where(r => r.Object == string.Empty);;
+            }
+
+            return q.Any();
+        }
+
+        public string[] GetSubscriptions(int tenant, string sourceId, string actionId, string recipientId, bool checkSubscribe)
+        {
+            if (recipientId == null) throw new ArgumentNullException("recipientId");
+            if (sourceId == null) throw new ArgumentNullException("sourceId");
+            if (actionId == null) throw new ArgumentNullException("actionId");
+
+            var q = GetQuery(tenant, sourceId, actionId)
+                .Where(r=> r.Recipient == recipientId)
+                .Distinct();
+
+            if (checkSubscribe)
+            {
+                q = q.Where(r=> !r.Unsubscribed);
+            }
+
+            return q.Select(r=> r.Object).ToArray();
+        }
+
 
         public void SaveSubscription(SubscriptionRecord s)
         {
@@ -171,24 +228,26 @@ namespace ASC.Core.Data
                 .Distinct();
 
 
-            var methods = a.Select(FromDbSubscriptionMethodToSubscriptionMethod).ToList();
-
-            var result = methods.ToList();
-
+            var methods = a.ToList();
+            var result = new List<SubscriptionMethod>();
             var common = new Dictionary<string, SubscriptionMethod>();
-            foreach (var m in methods)
+            var conv = FromDbSubscriptionMethodToSubscriptionMethod.Compile();
+
+            foreach (var r in methods)
             {
+                var m = conv(r);
                 var key = m.SourceId + m.ActionId + m.RecipientId;
                 if (m.Tenant == Tenant.DEFAULT_TENANT)
                 {
                     m.Tenant = tenant;
                     common.Add(key, m);
+                    result.Add(m);
                 }
                 else
                 {
-                    if (common.TryGetValue(key, out var r))
+                    if (!common.TryGetValue(key, out var rec))
                     {
-                        result.Remove(r);
+                        result.Add(rec);
                     }
                 }
             }
@@ -250,23 +309,26 @@ namespace ASC.Core.Data
 
         private IEnumerable<SubscriptionRecord> GetSubscriptions(IQueryable<Subscription> q, int tenant)
         {
-            var subs = q.Select(FromSubscriptionToSubscriptionRecord).ToList();
-
-            var result = subs.ToList();
+            var subs = q.ToList();
+            var result = new List<SubscriptionRecord>();
             var common = new Dictionary<string, SubscriptionRecord>();
-            foreach (var s in subs)
+            var conv = FromSubscriptionToSubscriptionRecord.Compile();
+
+            foreach (var r in subs)
             {
+                var s = conv(r);
                 var key = s.SourceId + s.ActionId + s.RecipientId + s.ObjectId;
                 if (s.Tenant == Tenant.DEFAULT_TENANT)
                 {
                     s.Tenant = tenant;
                     common.Add(key, s);
+                    result.Add(s);
                 }
                 else
                 {
-                    if (common.TryGetValue(key, out var r))
+                    if (common.TryGetValue(key, out var rec))
                     {
-                        result.Remove(r);
+                        result.Remove(rec);
                     }
                 }
             }

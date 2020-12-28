@@ -89,8 +89,6 @@ namespace ASC.ApiSystem.Models
 
         public bool Calls { get; set; }
 
-        public bool Analytics { get; set; }
-
         public string AppKey { get; set; }
 
         public bool LimitedControlPanel { get; set; }

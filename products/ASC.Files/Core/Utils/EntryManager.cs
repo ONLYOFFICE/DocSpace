@@ -380,8 +380,9 @@ namespace ASC.Web.Files.Utils
             }
             else if (parent.FolderType == FolderType.Recent)
             {
+                var folderDao = DaoFactory.GetFolderDao<T>();
                 var fileDao = DaoFactory.GetFileDao<T>();
-                var files = GetRecent(fileDao, filter, subjectGroup, subjectId, searchText, searchInContent);
+                var files = GetRecent(folderDao, fileDao, filter, subjectGroup, subjectId, searchText, searchInContent);
                 entries = entries.Concat(files);
 
                 CalculateTotal();
@@ -400,8 +401,9 @@ namespace ASC.Web.Files.Utils
             }
             else if (parent.FolderType == FolderType.Templates)
             {
+                var folderDao = DaoFactory.GetFolderDao<T>();
                 var fileDao = DaoFactory.GetFileDao<T>();
-                var files = GetTemplates(fileDao, filter, subjectGroup, subjectId, searchText, searchInContent);
+                var files = GetTemplates(folderDao, fileDao, filter, subjectGroup, subjectId, searchText, searchInContent);
                 entries = entries.Concat(files);
 
                 CalculateTotal();
@@ -443,9 +445,12 @@ namespace ASC.Web.Files.Utils
                 }
             }
 
-            if (orderBy.SortedBy != SortedByType.New && parent.FolderType != FolderType.Recent)
+            if (orderBy.SortedBy != SortedByType.New)
             {
-                entries = SortEntries<T>(entries, orderBy);
+                if (parent.FolderType != FolderType.Recent)
+                {
+                    entries = SortEntries<T>(entries, orderBy);
+                }
 
                 total = entries.Count();
                 if (0 < from) entries = entries.Skip(from);
@@ -484,7 +489,7 @@ namespace ASC.Web.Files.Utils
             }
         }
 
-        public IEnumerable<File<T>> GetTemplates<T>(IFileDao<T> fileDao, FilterType filter, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent)
+        public IEnumerable<File<T>> GetTemplates<T>(IFolderDao<T> folderDao, IFileDao<T> fileDao, FilterType filter, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent)
         {
             var tagDao = DaoFactory.GetTagDao<T>();
             var tags = tagDao.GetTags(AuthContext.CurrentAccount.ID, TagType.Template);
@@ -495,6 +500,8 @@ namespace ASC.Web.Files.Utils
             files = files.Where(file => file.RootFolderType != FolderType.TRASH).ToList();
 
             files = FileSecurity.FilterRead(files).ToList();
+
+            CheckFolderId(folderDao, files);
 
             return files;
         }
@@ -534,7 +541,7 @@ namespace ASC.Web.Files.Utils
             return folderList;
         }
 
-        public IEnumerable<File<T>> GetRecent<T>(IFileDao<T> fileDao, FilterType filter, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent)
+        public IEnumerable<File<T>> GetRecent<T>(IFolderDao<T> folderDao, IFileDao<T> fileDao, FilterType filter, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent)
         {
             var tagDao = DaoFactory.GetTagDao<T>();
             var tags = tagDao.GetTags(AuthContext.CurrentAccount.ID, TagType.Recent).ToList();
@@ -544,6 +551,8 @@ namespace ASC.Web.Files.Utils
             files = files.Where(file => file.RootFolderType != FolderType.TRASH).ToList();
 
             files = FileSecurity.FilterRead(files).ToList();
+
+            CheckFolderId(folderDao, files);
 
             var listFileIds = fileIds.ToList();
             files = files.OrderBy(file => listFileIds.IndexOf(file.ID)).ToList();
@@ -566,6 +575,8 @@ namespace ASC.Web.Files.Utils
                 folders = folders.Where(folder => folder.RootFolderType != FolderType.TRASH).ToList();
 
                 folders = fileSecurity.FilterRead(folders).ToList();
+
+                CheckFolderId(folderDao, folders);
             }
 
             if (filter != FilterType.FoldersOnly)
@@ -575,6 +586,8 @@ namespace ASC.Web.Files.Utils
                 files = files.Where(file => file.RootFolderType != FolderType.TRASH).ToList();
 
                 files = fileSecurity.FilterRead(files).ToList();
+
+                CheckFolderId(folderDao, folders);
             }
         }
 
@@ -734,6 +747,23 @@ namespace ASC.Web.Files.Utils
         public List<FileEntry> GetBreadCrumbs<T>(T folderId, IFolderDao<T> folderDao)
         {
             return BreadCrumbsManager.GetBreadCrumbs(folderId, folderDao);
+        }
+
+        public void CheckFolderId<T>(IFolderDao<T> folderDao, IEnumerable<FileEntry<T>> entries)
+        {
+            foreach (var entry in entries)
+            {
+                if (entry.RootFolderType == FolderType.USER
+                    && entry.RootFolderCreator != AuthContext.CurrentAccount.ID)
+                {
+                    var folderId = entry.FolderID;
+                    var folder = folderDao.GetFolder(folderId);
+                    if (!FileSecurity.CanRead(folder))
+                    {
+                        entry.FolderIdDisplay = GlobalFolderHelper.GetFolderShare<T>();
+                    }
+                }
+            }
         }
 
 

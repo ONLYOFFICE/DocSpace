@@ -76,6 +76,22 @@ namespace ASC.Core.Notify.Jabber
             return false;
         }
 
+        public string GetVersion()
+        {
+            using (var service = GetService())
+            {
+                try
+                {
+                    return service.GetVersion();
+                }
+                catch (Exception error)
+                {
+                    ProcessError(error);
+                }
+            }
+            return null;
+        }
+
         public int GetNewMessagesCount()
         {
             var result = 0;

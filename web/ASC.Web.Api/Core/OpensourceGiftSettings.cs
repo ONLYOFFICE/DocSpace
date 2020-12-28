@@ -1,6 +1,6 @@
-ï»¿/*
+/*
  *
- * (c) Copyright Ascensio System Limited 2010-2020
+ * (c) Copyright Ascensio System Limited 2010-2018
  *
  * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
  * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
@@ -15,45 +15,37 @@
  * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display 
  * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
  *
- * Pursuant to Section 7 Â§ 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
+ * Pursuant to Section 7 § 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
  * relevant author attributions when distributing the software. If the display of the logo in its graphic 
  * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE" 
  * in every copy of the program you distribute. 
- * Pursuant to Section 7 Â§ 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
+ * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
  *
 */
 
 
-using System.IO;
-using System.Security.Cryptography;
+using System;
 
-namespace ASC.Data.Storage.Encryption
+using ASC.Core.Common.Settings;
+
+namespace ASC.Web.Studio.Core
 {
-    //https://stackoverflow.com/a/22072068
-
-    internal sealed class CryptoStreamWrapper : CryptoStream
+    public class OpensourceGiftSettings : ISettings
     {
-        private readonly Stream underlyingStream;
+        public bool Readed { get; set; }
 
-        public CryptoStreamWrapper(Stream stream, ICryptoTransform transform, CryptoStreamMode mode)
-            : base(stream, transform, mode)
+        #region ISettings Members
+
+        public Guid ID
         {
-            underlyingStream = stream;
+            get { return new Guid("{1F4FEA2C-2D9F-47A6-ADEF-CEC4D1E1E243}"); }
         }
 
-        protected override void Dispose(bool disposing)
+        public ISettings GetDefault(IServiceProvider serviceProvider)
         {
-            try
-            {
-                base.Dispose(disposing);
-            }
-            catch (CryptographicException)
-            {
-                if (disposing)
-                {
-                    underlyingStream.Dispose();
-                }
-            }
+            return new OpensourceGiftSettings { Readed = false };
         }
+
+        #endregion
     }
 }

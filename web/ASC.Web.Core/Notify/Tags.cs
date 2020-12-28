@@ -128,8 +128,6 @@ namespace ASC.Web.Studio.Core.Notify
 
         public const string EmbeddedAttachments = "EmbeddedAttachments";
 
-        public const string Analytics = "Analytics";
-
         public const string ImagePath = "ImagePath";
     }
 }

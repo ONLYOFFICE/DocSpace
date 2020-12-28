@@ -317,7 +317,10 @@ namespace ASC.Files.Core.Data
 
                 FilesDbContext.SaveChanges();
 
-                FactoryIndexer.IndexAsync(toUpdate);
+                if (folder.FolderType == FolderType.DEFAULT || folder.FolderType == FolderType.BUNCH)
+                {
+                    FactoryIndexer.IndexAsync(toUpdate);
+                }
             }
             else
             {
@@ -337,7 +340,10 @@ namespace ASC.Files.Core.Data
 
                 newFolder = FilesDbContext.Folders.Add(newFolder).Entity;
                 FilesDbContext.SaveChanges();
-                FactoryIndexer.IndexAsync(newFolder);
+                if (folder.FolderType == FolderType.DEFAULT || folder.FolderType == FolderType.BUNCH)
+                {
+                    FactoryIndexer.IndexAsync(newFolder);
+                }
                 folder.ID = newFolder.Id;
 
                 //itself link
@@ -755,7 +761,9 @@ namespace ASC.Files.Core.Data
         private void RecalculateFoldersCount(int id)
         {
             var toUpdate = Query(FilesDbContext.Folders)
-                .Where(r => FilesDbContext.Tree.Where(a => a.FolderId == id).Select(a => a.ParentId).Contains(r.Id))
+                .Join(FilesDbContext.Tree, r=> r.Id, r=> r.ParentId,(file, tree) => new { file, tree })
+                .Where(r => r.tree.FolderId == id)
+                .Select(r=> r.file)
                 .ToList();
 
             foreach (var f in toUpdate)
@@ -1247,7 +1255,7 @@ namespace ASC.Files.Core.Data
 
             //var projectID = Convert.ToInt32(bunchObjectIDParts[bunchObjectIDParts.Length - 1]);
 
-            //if (HttpContext.Current == null)
+            //if (HttpContext.Current == null || !SecurityContext.IsAuthenticated)
             //    return string.Empty;
 
             //var apiServer = new ApiServer();
