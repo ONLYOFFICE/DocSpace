@@ -139,14 +139,14 @@ class App extends React.Component {
   }
 
   render() {
-    const { homepage } = this.props;
+    const { homepage, isDesktop } = this.props;
     console.log(Layout);
 
     return navigator.onLine ? (
       <Layout>
         <Router history={history}>
           {!this.isEditor && <NavMenu />}
-          <Main>
+          <Main isDesktop={isDesktop}>
             <Suspense fallback={null}>
               <Switch>
                 <Redirect exact from="/" to={`${homepage}`} />
