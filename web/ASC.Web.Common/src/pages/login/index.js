@@ -114,7 +114,11 @@ const LoginContainer = styled.div`
 const LoginFormWrapper = styled.div`
   display: grid;
   grid-template-rows: ${(props) =>
-    props.enabledJoin ? css`1fr 66px` : css`1fr`};
+    props.enabledJoin
+      ? props.isDesktop
+        ? css`1fr 10px`
+        : css`1fr 66px`
+      : css`1fr`};
   width: 100%;
   height: calc(100vh-56px);
 `;
@@ -199,7 +203,13 @@ class Form extends Component {
 
   onSubmit = () => {
     const { errorText, identifier, password } = this.state;
-    const { login, setIsLoaded, hashSettings, isDesktop, defaultPage } = this.props;
+    const {
+      login,
+      setIsLoaded,
+      hashSettings,
+      isDesktop,
+      defaultPage,
+    } = this.props;
 
     errorText && this.setState({ errorText: "" });
     let hasError = false;
@@ -458,14 +468,14 @@ Form.defaultProps = {
 const FormWrapper = withTranslation()(Form);
 
 const LoginForm = (props) => {
-  const { language, enabledJoin } = props;
+  const { language, enabledJoin, isDesktop } = props;
 
   useEffect(() => {
     i18n.changeLanguage(language);
   }, [language]);
 
   return (
-    <LoginFormWrapper enabledJoin={enabledJoin}>
+    <LoginFormWrapper enabledJoin={enabledJoin} isDesktop={isDesktop}>
       <PageLayout>
         <PageLayout.SectionBody>
           <FormWrapper i18n={i18n} {...props} />
