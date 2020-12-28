@@ -128,39 +128,27 @@ class SectionBody extends React.Component {
         isLoaded={isLoaded}
       >
         {withScroll ? (
-          !isTabletView ? (
-            <Scrollbar {...scrollProp} stype="mediumBlack">
-              <SelectedFrame
-                viewAs={viewAs}
-                scrollRef={this.scrollRef}
-                setSelections={setSelections}
-              >
-                <div className="section-wrapper">
-                  <div className="section-wrapper-content" {...focusProps}>
-                    {children}
-                    <StyledSpacer pinned={pinned} />
-                  </div>
-                </div>
-              </SelectedFrame>
-            </Scrollbar>
-          ) : (
-            <LayoutContextConsumer>
-              {(ref) => (
+          <LayoutContextConsumer>
+            {(ref) => (
+              <Scrollbar id="desktopScroll" {...scrollProp} stype="mediumBlack">
                 <SelectedFrame
                   viewAs={viewAs}
-                  scrollRef={ref.scrollRefLayout}
+                  scrollRef={
+                    isTabletView ? ref.scrollRefLayout : this.scrollRef
+                  }
                   setSelections={setSelections}
                 >
                   <div className="section-wrapper">
                     <div className="section-wrapper-content" {...focusProps}>
                       {children}
+
                       <StyledSpacer pinned={pinned} />
                     </div>
                   </div>
                 </SelectedFrame>
-              )}
-            </LayoutContextConsumer>
-          )
+              </Scrollbar>
+            )}
+          </LayoutContextConsumer>
         ) : (
           <SelectedFrame
             viewAs={viewAs}
@@ -182,23 +170,14 @@ class SectionBody extends React.Component {
         isLoaded={isLoaded}
       >
         {withScroll ? (
-          !isTabletView ? (
-            <Scrollbar {...scrollProp} stype="mediumBlack">
-              <div className="section-wrapper">
-                <div className="section-wrapper-content" {...focusProps}>
-                  {children}
-                  <StyledSpacer pinned={pinned} />
-                </div>
-              </div>
-            </Scrollbar>
-          ) : (
+          <Scrollbar id="desktopScroll" {...scrollProp} stype="mediumBlack">
             <div className="section-wrapper">
               <div className="section-wrapper-content" {...focusProps}>
                 {children}
                 <StyledSpacer pinned={pinned} />
               </div>
             </div>
-          )
+          </Scrollbar>
         ) : (
           <div className="section-wrapper">
             {children}

@@ -20,66 +20,82 @@ const StyledContainer = styled.div`
         ? "calc(var(--vh, 1vh) * 100 + 57px)"
         : "100vh"
       : "100vh"};
+
+  #desktopScroll {
+    > .scroll-body {
+      position: ${(props) =>
+        props.isTabletView ? "static" : "absolute"} !important;
+    }
+  }
 `;
 
 const Layout = (props) => {
   const { children, isTabletView, setIsTabletView } = props;
+
+  const intervalTime = 100;
+  const endTimeout = 300;
+  let intervalHandler;
+  let timeoutHandler;
 
   useEffect(() => {
     const isTablet = window.innerWidth <= size.tablet;
     setIsTabletView(isTablet);
 
     let mediaQuery = window.matchMedia("(max-width: 1024px)");
-    mediaQuery.addEventListener("change", isViewChangeHandler);
+    mediaQuery.addEventListener("change", onWidthChange);
 
-    return () => mediaQuery.removeEventListener("change", isViewChangeHandler);
+    return () => {
+      mediaQuery.removeEventListener("change", onWidthChange);
+      if (intervalHandler) clearInterval(intervalHandler);
+      if (timeoutHandler) clearTimeout(timeoutHandler);
+    };
   }, []);
 
   useEffect(() => {
     if (isTabletView) {
-      if (isIOS && isSafari)
-        window.addEventListener("resize", orientationChangeHandler);
-      else
-        window.addEventListener("orientationchange", orientationChangeHandler);
-      orientationChangeHandler();
+      if (isIOS && isSafari) window.addEventListener("resize", onResize);
+      else window.addEventListener("orientationchange", onOrientationChange);
+      changeRootHeight();
     }
 
     return () => {
       if (isTabletView) {
-        if (isIOS && isSafari)
-          window.removeEventListener("resize", orientationChangeHandler);
+        if (isIOS && isSafari) window.removeEventListener("resize", onResize);
         else
-          window.removeEventListener(
-            "orientationchange",
-            orientationChangeHandler
-          );
+          window.removeEventListener("orientationchange", onOrientationChange);
       }
     };
   }, [isTabletView]);
 
-  const isViewChangeHandler = (e) => {
+  const onWidthChange = (e) => {
     const { matches } = e;
     setIsTabletView(matches);
   };
+  const onResize = () => {
+    changeRootHeight();
+  };
+  const onOrientationChange = () => {
+    changeRootHeight();
+  };
+  const changeRootHeight = () => {
+    intervalHandler && clearInterval(intervalHandler);
+    timeoutHandler && clearTimeout(timeoutHandler);
 
-  const orientationChangeHandler = () => {
-    const intervalTime = 100;
-    const endTimeout = 300;
-
-    let interval, timeout, lastInnerHeight, noChangeCount;
+    let lastInnerHeight, noChangeCount;
 
     const updateHeight = () => {
-      clearInterval(interval);
-      clearTimeout(timeout);
+      clearInterval(intervalHandler);
+      clearTimeout(timeoutHandler);
 
-      interval = null;
-      timeout = null;
+      intervalHandler = null;
+      timeoutHandler = null;
 
       const vh = (window.innerHeight - 57) * 0.01;
 
       document.documentElement.style.setProperty("--vh", `${vh}px`);
     };
-    interval = setInterval(() => {
+    intervalHandler = setInterval(() => {
+      //console.log("changeRootHeight setInterval"); TODO: need to refactoring
       if (window.innerHeight === lastInnerHeight) {
         noChangeCount++;
 
@@ -92,14 +108,14 @@ const Layout = (props) => {
       }
     });
 
-    timeout = setTimeout(() => {
+    timeoutHandler = setTimeout(() => {
       updateHeight();
     }, endTimeout);
   };
 
   return (
     <StyledContainer className="Layout" isTabletView={isTabletView}>
-      {isTabletView ? <MobileLayout {...props} /> : children}
+      <MobileLayout {...props} />
     </StyledContainer>
   );
 };

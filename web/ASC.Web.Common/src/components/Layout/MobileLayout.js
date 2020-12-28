@@ -17,11 +17,13 @@ class MobileLayout extends Component {
   }
 
   componentDidMount() {
-    this.documentElement = document.getElementById("customScrollBar");
+    this.customScrollElm = document.querySelector(
+      "#customScrollBar > .scroll-body"
+    );
 
-    if (!isChrome) this.documentElement.scrollTo(0, 0);
+    if (!isChrome) this.customScrollElm.scrollTo(0, 0);
 
-    this.documentElement.addEventListener(
+    this.customScrollElm.addEventListener(
       "scroll",
       this.scrolledTheVerticalAxis
     );
@@ -30,7 +32,7 @@ class MobileLayout extends Component {
   }
 
   componentWillUnmount() {
-    this.documentElement.removeEventListener(
+    this.customScrollElm.removeEventListener(
       "scroll",
       this.scrolledTheVerticalAxis
     );
@@ -40,8 +42,8 @@ class MobileLayout extends Component {
     const { prevScrollPosition, visibleContent } = this.state;
 
     const currentScrollPosition =
-      this.documentElement.scrollTop > 0
-        ? this.documentElement.scrollTop
+      this.customScrollElm.scrollTop > 0
+        ? this.customScrollElm.scrollTop
         : window.pageYOffset;
 
     if (visibleContent && isMobile && !isTouchDevice) {
@@ -53,7 +55,7 @@ class MobileLayout extends Component {
     }
 
     if (prevScrollPosition === 0 && currentScrollPosition > 100) {
-      this.documentElement.scrollTo(0, 0);
+      this.customScrollElm.scrollTo(0, 0);
       if (Math.abs(currentScrollPosition - prevScrollPosition) <= 104) {
         return;
       }
@@ -64,15 +66,15 @@ class MobileLayout extends Component {
     if (
       (isSafari || isIOS) &&
       currentScrollPosition >=
-        this.documentElement.scrollHeight - this.documentElement.clientHeight &&
-      this.documentElement.scrollHeight !== this.documentElement.clientHeight
+        this.customScrollElm.scrollHeight - this.customScrollElm.clientHeight &&
+      this.customScrollElm.scrollHeight !== this.customScrollElm.clientHeight
     ) {
       isVisible = false;
     }
 
     if (
       !visibleContent &&
-      this.documentElement.scrollHeight - this.documentElement.clientHeight < 57
+      this.customScrollElm.scrollHeight - this.customScrollElm.clientHeight < 57
     ) {
       isVisible = true;
     }
@@ -88,7 +90,7 @@ class MobileLayout extends Component {
     const { children } = this.props;
 
     return (
-      <Scrollbar {...scrollProp} stype="mediumBlack">
+      <Scrollbar id="customScrollBar" {...scrollProp} stype="mediumBlack">
         <LayoutContextProvider
           value={{
             scrollRefLayout: this.scrollRefPage,

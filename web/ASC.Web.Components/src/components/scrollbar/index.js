@@ -96,7 +96,6 @@ const Scrollbar = React.forwardRef((props, ref) => {
       style={{ ...style, ...view }}
       tabIndex={-1}
       className={"scroll-body"}
-      id="customScrollBar"
     />
   );
 

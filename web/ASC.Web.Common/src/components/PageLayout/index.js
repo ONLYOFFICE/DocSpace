@@ -126,41 +126,6 @@ class PageLayoutComponent extends React.Component {
     }
   };
 
-  updateMainHeight = () => {
-    const intervalTime = 100;
-    const endTimeoutTime = 1000;
-
-    let lastInnerHeight, noChangeCount;
-
-    const updateHeight = () => {
-      if (this.intervalHandler) clearInterval(this.intervalHandler);
-      if (this.timeoutHandler) clearTimeout(this.timeoutHandler);
-
-      this.intervalHandler = null;
-      this.timeoutHandler = null;
-
-      const vh = (window.innerHeight - 57) * 0.01;
-      document.documentElement.style.setProperty("--vh", `${vh}px`);
-    };
-
-    this.intervalHandler = setInterval(() => {
-      if (window.innerHeight === lastInnerHeight) {
-        noChangeCount++;
-
-        if (noChangeCount === intervalTime) {
-          updateHeight();
-        }
-      } else {
-        lastInnerHeight = window.innerHeight;
-        noChangeCount = 0;
-      }
-    });
-
-    this.timeoutHandler = setTimeout(() => {
-      updateHeight();
-    }, endTimeoutTime);
-  };
-
   backdropClick = () => {
     this.setState({
       isBackdropVisible: false,
