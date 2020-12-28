@@ -489,6 +489,8 @@ const LoginForm = (props) => {
 LoginForm.propTypes = {
   language: PropTypes.string.isRequired,
   isLoaded: PropTypes.bool,
+  enabledJoin: PropTypes.bool,
+  isDesktop: PropTypes.bool.isRequired,
 };
 
 function mapStateToProps(state) {
