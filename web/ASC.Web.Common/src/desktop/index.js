@@ -1,6 +1,9 @@
 import toastr from "../components/Toast/toastr";
+//import store from "../store/index";
 import isEmpty from "lodash/isEmpty";
 import omit from "lodash/omit";
+
+//const { getEncryptionAccess } = store.auth.actions;
 
 export const desktopConstants = Object.freeze({
   domain: window.location.origin,
@@ -8,7 +11,13 @@ export const desktopConstants = Object.freeze({
   guid: "{FFF0E1EB-13DB-4678-B67D-FF0A41DBBCEF}",
 });
 
-export function regDesktop(user, isEncryption, keys, setEncryptionKeys) {
+export function regDesktop(
+  user,
+  isEncryption,
+  keys,
+  setEncryptionKeys,
+  isEditor
+) {
   const data = {
     displayName: user.displayName,
     email: user.email,
@@ -56,12 +65,7 @@ export function regDesktop(user, isEncryption, keys, setEncryptionKeys) {
           break;
         }
         case "getsharingkeys":
-          console.log(
-            "%c%s",
-            "color: green; font: 1.1em/1 bold;",
-            "Get sharing keys"
-          );
-          toastr.info("get sharing keys");
+          if (!isEditor) return;
           break;
         default:
           break;

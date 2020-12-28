@@ -22,7 +22,7 @@ import {
   utils,
   toastr,
   Layout,
-  regDesktop
+  regDesktop,
 } from "asc-web-common";
 
 const {
@@ -122,7 +122,13 @@ class App extends React.Component {
     console.log("componentDidUpdate: ", this.props);
     if (isAuthenticated && !this.isDesktopInit && isEncryption && isLoaded) {
       this.isDesktopInit = true;
-      regDesktop(user, isEncryption, encryptionKeys, setEncryptionKeys);
+      regDesktop(
+        user,
+        isEncryption,
+        encryptionKeys,
+        setEncryptionKeys,
+        this.isEditor
+      );
       console.log(
         "%c%s",
         "color: green; font: 1.2em bold;",
