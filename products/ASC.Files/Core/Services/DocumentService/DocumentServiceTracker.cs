@@ -587,6 +587,8 @@ namespace ASC.Web.Files.Services.DocumentService
 
         private void StoringFileAfterError<T>(T fileId, string userId, string downloadUri)
         {
+            if (string.IsNullOrEmpty(downloadUri)) return;
+
             try
             {
                 var fileName = Global.ReplaceInvalidCharsAndTruncate(fileId + FileUtility.GetFileExtension(downloadUri));

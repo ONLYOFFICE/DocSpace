@@ -1,6 +1,6 @@
 ﻿syntax = "proto3";
 
-package ASC.Data.Storage.Encryption;
+package ASC.Core.Encryption;
 
 message EncryptionSettingsProto {
     string password = 1;

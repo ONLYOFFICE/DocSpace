@@ -32,6 +32,7 @@ using System.Linq;
 using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
+using ASC.Core.Encryption;
 using ASC.Data.Storage.Configuration;
 using ASC.Data.Storage.Encryption;
 using ASC.Security.Cryptography;

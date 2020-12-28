@@ -43,4 +43,11 @@ namespace ASC.Files.Core
         void InvalidateStorage();
         void UpdateTitle(string newtitle);
     }
+
+    public class ProviderInfoArgumentException : ArgumentException
+    {
+        public ProviderInfoArgumentException(string message) : base(message)
+        {
+        }
+    }
 }

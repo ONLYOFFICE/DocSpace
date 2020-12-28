@@ -24,18 +24,36 @@
 */
 
 
-using System;
+using System.IO;
+using System.Security.Cryptography;
 
-namespace ASC.Data.Storage.Encryption
+namespace ASC.Data.Encryption
 {
-    public class IntegrityProtectionException : Exception
+    //https://stackoverflow.com/a/22072068
+
+    internal sealed class CryptoStreamWrapper : CryptoStream
     {
-        public IntegrityProtectionException()
+        private readonly Stream underlyingStream;
+
+        public CryptoStreamWrapper(Stream stream, ICryptoTransform transform, CryptoStreamMode mode)
+            : base(stream, transform, mode)
         {
+            underlyingStream = stream;
         }
 
-        public IntegrityProtectionException(string message) : base(message)
+        protected override void Dispose(bool disposing)
         {
+            try
+            {
+                base.Dispose(disposing);
+            }
+            catch (CryptographicException)
+            {
+                if (disposing)
+                {
+                    underlyingStream.Dispose();
+                }
+            }
         }
     }
 }
