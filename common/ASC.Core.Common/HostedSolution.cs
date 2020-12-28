@@ -206,7 +206,6 @@ namespace ASC.Core
             tenant.OwnerId = user.ID;
             tenant = TenantService.SaveTenant(CoreSettings, tenant);
 
-            SettingsManager.SaveSettings(new TenantAnalyticsSettings() { Analytics = ri.Analytics }, tenant.TenantId);
             SettingsManager.SaveSettings(new TenantControlPanelSettings { LimitedAccess = ri.LimitedControlPanel }, tenant.TenantId);
         }
 

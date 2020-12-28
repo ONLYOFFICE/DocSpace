@@ -31,7 +31,6 @@ using System.IO;
 using System.Net;
 using System.Text;
 using System.Threading;
-using System.Web;
 
 using ASC.Common;
 using ASC.Common.Logging;
@@ -113,7 +112,7 @@ namespace ASC.Web.Studio.UserControls.FirstTime
         {
             try
             {
-                var (email, passwordHash, lng, timeZone, promocode, amiid, analytics, subscribeFromSite) = wizardModel;
+                var (email, passwordHash, lng, timeZone, promocode, amiid, subscribeFromSite) = wizardModel;
 
                 var tenant = TenantManager.GetCurrentTenant();
                 var settings = SettingsManager.Load<WizardSettings>();
@@ -178,10 +177,6 @@ namespace ASC.Web.Studio.UserControls.FirstTime
                     LicenseReader.RefreshLicense();
                 }
 
-                if (TenantExtra.Opensource)
-                {
-                    settings.Analytics = analytics;
-                }
                 settings.Completed = true;
                 SettingsManager.Save(settings);
 
@@ -193,8 +188,6 @@ namespace ASC.Web.Studio.UserControls.FirstTime
 
                 StudioNotifyService.SendCongratulations(currentUser);
                 StudioNotifyService.SendRegData(currentUser);
-
-                SendInstallInfo(currentUser);
 
                 if (subscribeFromSite && TenantExtra.Opensource && !CoreBaseSettings.CustomMode)
                 {
@@ -226,7 +219,7 @@ namespace ASC.Web.Studio.UserControls.FirstTime
         {
             get
             {
-                return TenantExtra.EnableTarrifSettings && TenantExtra.Enterprise && !TenantExtra.EnterprisePaid;
+                return TenantExtra.EnableTarrifSettings && TenantExtra.Enterprise;
             }
         }
 
@@ -276,86 +269,35 @@ namespace ASC.Web.Studio.UserControls.FirstTime
             return string.IsNullOrEmpty(_amiId) || _amiId != customAmiId;
         }
 
-        public void SendInstallInfo(UserInfo user)
-        {
-            try
-            {
-                StudioNotifyService.SendRegData(user);
-
-                var url = Configuration["web:install-url"];
-                if (string.IsNullOrEmpty(url)) return;
-
-                var tenant = TenantManager.GetCurrentTenant();
-                var q = new MailQuery
-                {
-                    Email = user.Email,
-                    Id = CoreSettings.GetKey(tenant.TenantId),
-                    Alias = tenant.GetTenantDomain(CoreSettings),
-                };
-
-                var index = url.IndexOf("?v=", StringComparison.InvariantCultureIgnoreCase);
-                if (0 < index)
-                {
-                    q.Version = url.Substring(index + 3) + Environment.OSVersion;
-                    url = url.Substring(0, index);
-                }
-
-                using var webClient = new WebClient();
-                var values = new NameValueCollection
-                        {
-                            {"query", Signature.Create(q, "4be71393-0c90-41bf-b641-a8d9523fba5c")}
-                        };
-                webClient.UploadValues(url, values);
-            }
-            catch (Exception error)
-            {
-                Log.Error(error);
-            }
-        }
-
         private void SubscribeFromSite(UserInfo user)
         {
             try
             {
                 var url = (SetupInfo.TeamlabSiteRedirect ?? "").Trim().TrimEnd('/');
+
                 if (string.IsNullOrEmpty(url)) return;
 
                 url += "/post.ashx";
 
-                var request = (HttpWebRequest)WebRequest.Create(url);
-                request.Method = "POST";
-                request.ContentType = "application/x-www-form-urlencoded";
-                request.Timeout = 10000;
-
-                var bodyString = string.Format("type=sendsubscription&email={0}", HttpUtility.UrlEncode(user.Email));
-                var bytes = Encoding.UTF8.GetBytes(bodyString);
-                request.ContentLength = bytes.Length;
-                using (var stream = request.GetRequestStream())
+                using (var webClient = new WebClient())
                 {
-                    stream.Write(bytes, 0, bytes.Length);
-                }
+                    var values = new NameValueCollection
+                        {
+                            { "type", "sendsubscription" },
+                            { "subscr_type", "Opensource" },
+                            { "email", user.Email }
+                        };
 
-                using (var response = request.GetResponse())
-                using (var stream = response.GetResponseStream())
-                {
-                    if (stream == null) throw new Exception("Response is null");
+                    var responseBody = webClient.UploadValues(url, values);
+                    var responseBodyStr = Encoding.UTF8.GetString(responseBody);
 
-                    using var reader = new StreamReader(stream);
-                    Log.Debug("Subscribe response: " + reader.ReadToEnd());
+                    Log.Debug("Subscribe response: " + responseBodyStr);
                 }
             }
             catch (Exception e)
             {
                 Log.Error("Subscribe request", e);
             }
-        }
-
-        private class MailQuery
-        {
-            public string Email { get; set; }
-            public string Version { get; set; }
-            public string Id { get; set; }
-            public string Alias { get; set; }
         }
     }
 }

@@ -227,8 +227,8 @@ namespace ASC.Core.Billing
                 Support = true,
                 Trial = license.Trial,
                 CountPortals = license.PortalCount,
-                DiscEncryption = license.DiscEncryption ?? !license.Trial,
-                PrivacyRoom = !license.Trial,
+                DiscEncryption = true,
+                PrivacyRoom = true,
             };
 
             if (defaultQuota.Name != "overdue" && !defaultQuota.Trial)
@@ -236,7 +236,6 @@ namespace ASC.Core.Billing
                 quota.WhiteLabel |= defaultQuota.WhiteLabel;
                 quota.Branding |= defaultQuota.Branding;
                 quota.SSBranding |= defaultQuota.SSBranding;
-                quota.DiscEncryption |= defaultQuota.DiscEncryption;
 
                 quota.CountPortals = Math.Max(defaultQuota.CountPortals, quota.CountPortals);
             }

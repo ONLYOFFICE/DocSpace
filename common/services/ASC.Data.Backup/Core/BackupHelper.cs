@@ -3,7 +3,6 @@ using System.Linq;
 
 using ASC.Common;
 using ASC.Core;
-using ASC.Core.Tenants;
 using ASC.Web.Studio.UserControls.Statistics;
 
 namespace ASC.Data.Backup
@@ -30,7 +29,7 @@ namespace ASC.Data.Backup
             if (CoreBaseSettings.Standalone)
                 return BackupAvailableSize.Available;
 
-            var size = TenantManager.FindTenantQuotaRows(new TenantQuotaRowQuery(tenantId))
+            var size = TenantManager.FindTenantQuotaRows(tenantId)
                         .Where(r => !string.IsNullOrEmpty(r.Tag) && new Guid(r.Tag) != Guid.Empty && !new Guid(r.Tag).Equals(mailStorageTag))
                         .Sum(r => r.Counter);
             if (size > AvailableZipSize)

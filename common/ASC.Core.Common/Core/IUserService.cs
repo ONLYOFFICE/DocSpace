@@ -57,6 +57,8 @@ namespace ASC.Core
 
         UserInfo GetUser(int tenant, Guid id);
 
+        UserInfo GetUser(int tenant, string email);
+
         UserInfo GetUser(int tenant, Guid id, Expression<Func<User, UserInfo>> exp);
 
         UserInfo GetUserByPasswordHash(int tenant, string login, string passwordHash);

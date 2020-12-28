@@ -30,6 +30,7 @@ using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Caching;
+using ASC.Core.Encryption;
 
 using Microsoft.Extensions.DependencyInjection;
 
