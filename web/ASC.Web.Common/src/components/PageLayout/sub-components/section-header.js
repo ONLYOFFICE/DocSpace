@@ -42,18 +42,46 @@ const StyledSectionHeader = styled.div`
     @media ${tablet} {
       max-width: calc(100vw - 32px);
       width: 100%;
-      padding-top: 4px;
+      //padding-top: 4px;
       ${(props) =>
         props.isLoaded &&
         css`
           position: fixed;
           top: ${(props) => (!props.isHeaderVisible ? "56px" : "0")};
+          opacity: 1;
           width: ${(props) =>
             props.isArticlePinned ? `calc(100% - 272px)` : "100%"};
           background-color: #fff;
-          z-index: 149;
+          z-index: ${(props) => (!props.isHeaderVisible ? "149" : "160")};
           padding-right: 16px;
         `}
+
+      .group-button-menu-container {
+        & > div:first-child {
+          animation-name: slideDown;
+          animation-duration: 0.4s;
+          animation-timing-function: ease;
+          visibility: visible !important;
+
+          @keyframes slideDown {
+            0% {
+              transform: translate(0, -120%);
+              opacity: 0;
+            }
+            90% {
+              opacity: 0.5;
+            }
+
+            97% {
+              opacity: 0.6;
+            }
+            100% {
+              transform: translate(0, 8%);
+              opacity: 1;
+            }
+          }
+        }
+      }
     }
   }
 

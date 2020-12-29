@@ -137,6 +137,7 @@ const StyledContainer = styled.div`
     padding-bottom: 56px;
 
     @media ${tablet} {
+      padding-bottom: 0;
       & > div:first-child {
         ${(props) =>
           props.width &&
@@ -146,20 +147,6 @@ const StyledContainer = styled.div`
         position: absolute;
         top: 56px;
         z-index: 180;
-
-        animation-name: slideDown;
-        animation-duration: 0.4s;
-        animation-timing-function: ease;
-        visibility: visible !important;
-
-        @keyframes slideDown {
-          from {
-            transform: translate(0, -200%);
-          }
-          to {
-            transform: translate(0, 8%);
-          }
-        }
       }
     }
 
