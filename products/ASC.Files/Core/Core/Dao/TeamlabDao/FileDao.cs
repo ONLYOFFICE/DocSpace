@@ -160,7 +160,7 @@ namespace ASC.Files.Core.Data
 
             query = query.OrderByDescending(r => r.Version);
 
-            return ToFile(FromQueryWithShared(query).SingleOrDefault());
+            return ToFile(FromQueryWithShared(query).Take(1).SingleOrDefault());
         }
 
         public List<File<int>> GetFileHistory(int fileId)
@@ -393,7 +393,6 @@ namespace ASC.Files.Core.Data
                 if (file.CreateOn == default) file.CreateOn = TenantUtil.DateTimeNow();
 
                 var toUpdate = FilesDbContext.Files
-                    .Take(1)
                     .FirstOrDefault(r => r.Id == file.ID && r.CurrentVersion && r.TenantId == TenantID);
 
                 if (toUpdate != null)

@@ -110,6 +110,7 @@ namespace ASC.ElasticSearch
 
             }, CancellationTokenSource.Token, TaskCreationOptions.LongRunning);
 
+            task.ConfigureAwait(false);
             task.Start();
 
             return Task.CompletedTask;
@@ -131,20 +132,28 @@ namespace ASC.ElasticSearch
 
         private void IndexAll(bool reindex = false)
         {
-            Timer.Change(-1, -1);
-            IsStarted = true;
-
-            using var scope = Container.BeginLifetimeScope();
-            var wrappers = scope.Resolve<IEnumerable<IFactoryIndexer>>();
-
-            foreach (var w in wrappers)
+            try
             {
-                IndexProduct(w, reindex);
-            }
+                Timer.Change(Timeout.Infinite, Timeout.Infinite);
+                IsStarted = true;
 
-            Timer.Change(Period, Period);
-            IndexNotify.Publish(new IndexAction() { Indexing = "", LastIndexed = DateTime.Now.Ticks }, CacheNotifyAction.Any);
-            IsStarted = false;
+                using var scope = Container.BeginLifetimeScope();
+                var wrappers = scope.Resolve<IEnumerable<IFactoryIndexer>>();
+
+                foreach (var w in wrappers)
+                {
+                    IndexProduct(w, reindex);
+                }
+
+                Timer.Change(Period, Period);
+                IndexNotify.Publish(new IndexAction() { Indexing = "", LastIndexed = DateTime.Now.Ticks }, CacheNotifyAction.Any);
+                IsStarted = false;
+            }
+            catch (Exception e)
+            {
+                Log.Fatal("IndexAll", e);
+                throw;
+            }
         }
 
         public void IndexProduct(IFactoryIndexer product, bool reindex)

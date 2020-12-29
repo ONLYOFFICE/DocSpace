@@ -66,6 +66,7 @@ namespace ASC.Core
         private TenantManager TenantManager { get; }
         private PermissionContext PermissionContext { get; }
         private UserManagerConstants UserManagerConstants { get; }
+        public CoreBaseSettings CoreBaseSettings { get; }
         private Constants Constants { get; }
 
         private Tenant tenant;
@@ -80,12 +81,14 @@ namespace ASC.Core
             IUserService service,
             TenantManager tenantManager,
             PermissionContext permissionContext,
-            UserManagerConstants userManagerConstants)
+            UserManagerConstants userManagerConstants,
+            CoreBaseSettings coreBaseSettings)
         {
             UserService = service;
             TenantManager = tenantManager;
             PermissionContext = permissionContext;
             UserManagerConstants = userManagerConstants;
+            CoreBaseSettings = coreBaseSettings;
             Constants = UserManagerConstants.Constants;
         }
 
@@ -94,8 +97,9 @@ namespace ASC.Core
             TenantManager tenantManager,
             PermissionContext permissionContext,
             UserManagerConstants userManagerConstants,
+            CoreBaseSettings coreBaseSettings,
             IHttpContextAccessor httpContextAccessor)
-            : this(service, tenantManager, permissionContext, userManagerConstants)
+            : this(service, tenantManager, permissionContext, userManagerConstants, coreBaseSettings)
         {
             Accessor = httpContextAccessor;
         }
@@ -231,6 +235,13 @@ namespace ASC.Core
         public UserInfo GetUserByEmail(string email)
         {
             if (string.IsNullOrEmpty(email)) return Constants.LostUser;
+
+            if (CoreBaseSettings.Personal)
+            {
+                var u = UserService.GetUser(Tenant.TenantId, email);
+                return u != null && !u.Removed ? u : Constants.LostUser;
+            }
+
 
             return GetUsersInternal()
                 .FirstOrDefault(u => string.Compare(u.Email, email, StringComparison.CurrentCultureIgnoreCase) == 0) ?? Constants.LostUser;

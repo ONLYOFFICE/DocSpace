@@ -223,7 +223,7 @@ namespace ASC.ElasticSearch
                 {
                     Logger.Error("inner", inner.Response.OriginalException);
 
-                    if (inner.Response.HttpStatusCode == 413)
+                    if (inner.Response.HttpStatusCode == 413 || inner.Response.HttpStatusCode == 403)
                     {
                         data.ForEach(r => Index(r, immediately));
                     }

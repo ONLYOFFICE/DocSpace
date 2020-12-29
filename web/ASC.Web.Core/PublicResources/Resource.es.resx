@@ -625,6 +625,9 @@
   <data name="LicenseUploadedOverdue" xml:space="preserve">
     <value>Se ha subido correctamente. {0}Soporte y atualizaciones no están disponibles para esta licencia desde {2}.{1}</value>
   </data>
+  <data name="LicenseUploadedOverdueSupport" xml:space="preserve">
+    <value>Cargado correctamente. {0}El soporte no está disponible para esta licencia desde {2}.{1}</value>
+  </data>
   <data name="MessageEmailChangeInstuctionsSentOnEmail" xml:space="preserve">
     <value>Las instrucciones para cambiar el correo electrónico se han enviado con éxito</value>
   </data>
