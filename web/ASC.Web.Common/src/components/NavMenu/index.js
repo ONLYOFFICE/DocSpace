@@ -123,26 +123,23 @@ class NavMenu extends React.Component {
           withBackground={true}
         />
 
-        {isLoaded && isAuthenticated ? (
-          <>
-            {!isDesktop && (
-              <>
-                <HeaderNav history={history} />
-                <Header
-                  isNavOpened={isNavOpened}
-                  onClick={this.showNav}
-                  onNavMouseEnter={this.handleNavMouseEnter}
-                  onNavMouseLeave={this.handleNavMouseLeave}
-                  toggleAside={this.toggleAside}
-                />
-              </>
-            )}
-          </>
-        ) : !isLoaded && isAuthenticated ? (
-          <Loaders.Header />
-        ) : (
-          !isDesktop && <HeaderUnAuth />
-        )}
+        {!isDesktop &&
+          (isLoaded && isAuthenticated ? (
+            <>
+              <HeaderNav history={history} />
+              <Header
+                isNavOpened={isNavOpened}
+                onClick={this.showNav}
+                onNavMouseEnter={this.handleNavMouseEnter}
+                onNavMouseLeave={this.handleNavMouseLeave}
+                toggleAside={this.toggleAside}
+              />
+            </>
+          ) : !isLoaded && isAuthenticated ? (
+            <Loaders.Header />
+          ) : (
+            <HeaderUnAuth />
+          ))}
 
         {isAsideAvailable && (
           <Aside visible={isAsideVisible} onClick={this.backdropClick}>

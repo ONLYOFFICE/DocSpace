@@ -255,7 +255,10 @@
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
     <script>
-      if (window.location.pathname.indexOf("doceditor") === -1) {
+      if (
+        window.location.pathname.indexOf("doceditor") === -1 &&
+        window["AscDesktopEditor"] === undefined
+      ) {
         let el = document.getElementById("temp-content");
         el.style.display = "block";
       }
