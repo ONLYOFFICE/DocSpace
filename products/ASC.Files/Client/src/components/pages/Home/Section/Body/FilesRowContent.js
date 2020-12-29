@@ -211,18 +211,7 @@ class FilesRowContent extends React.PureComponent {
               return setEncryptionAccess(file).then((encryptedFile) => {
                 if (!encryptedFile) return Promise.resolve();
                 toastr.info(t("EncryptedFileSaving"));
-                return replaceFileStream(
-                  file.id,
-                  encryptedFile,
-                  true,
-                  false
-                ).then(() =>
-                  toastr.success(
-                    <Trans i18nKey="EncryptedFileCreating" i18n={i18n}>
-                      File <strong>{{ itemTitle }}</strong> successfully created
-                    </Trans>
-                  )
-                );
+                return replaceFileStream(file.id, encryptedFile, true, false);
               });
             }
             return openDocEditor(file.id, tab, file.webUrl);
