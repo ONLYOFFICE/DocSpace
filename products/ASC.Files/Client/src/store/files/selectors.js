@@ -673,7 +673,8 @@ const getFilesContextOptions = (
   isRecent,
   isFavorites,
   isVisitor,
-  canOpenPlayer
+  canOpenPlayer,
+  canChangeOwner
 ) => {
   const options = [];
 
@@ -703,6 +704,7 @@ const getFilesContextOptions = (
       options.push("send-by-email");
     }
 
+    canChangeOwner && options.push("owner-change");
     options.push("link-for-portal-users");
 
     if (!isVisitor) {
@@ -915,6 +917,7 @@ export const getFilesList = (state) => {
       getIsFavoritesFolder,
       getFileActionId,
       isVisitor,
+      getCanShareOwnerChange,
     ],
     (
       folders,
@@ -924,7 +927,8 @@ export const getFilesList = (state) => {
       isRecent,
       isFavorites,
       actionId,
-      isVisitor
+      isVisitor,
+      canChangeOwner
     ) => {
       const items =
         folders && files
@@ -970,7 +974,8 @@ export const getFilesList = (state) => {
           isRecent,
           isFavorites,
           isVisitor,
-          canOpenPlayer
+          canOpenPlayer,
+          canChangeOwner
         );
         const checked = isFileSelected(selection, id, parentId);
 
@@ -1295,7 +1300,7 @@ export const getCanShareOwnerChange = createSelector(
   getPathParts,
   getCommonFolderId,
   (isAdmin, pathParts, commonId) => {
-    return isAdmin && commonId === pathParts[0];
+    return isAdmin && pathParts && commonId === pathParts[0];
   }
 );
 
@@ -1340,4 +1345,8 @@ export const getSortedFiles = (state) => {
   }
 
   return sortedFiles;
+};
+
+export const getShowOwnerChangePanel = (state) => {
+  return state.files.ownerPanelVisible;
 };
