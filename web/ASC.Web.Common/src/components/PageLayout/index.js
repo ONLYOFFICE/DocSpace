@@ -257,6 +257,7 @@ class PageLayoutComponent extends React.Component {
           <Article
             visible={this.state.isArticleVisible}
             pinned={this.state.isArticlePinned}
+            isLoaded={isLoaded}
           >
             {isArticleHeaderAvailable && (
               <SubArticleHeader>
