@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+
 using ASC.Api.Documents;
+
 using NUnit.Framework;
 
 namespace ASC.Files.Tests
@@ -24,11 +26,10 @@ namespace ASC.Files.Tests
             fileIds = new List<int> { TestFile.Id };
         }
         [OneTimeTearDown]
-        public override void TearDown()
+        public void TearDown()
         {
-            DeleteFolder(TestFolder.Id, false, true);
-            DeleteFile(TestFile.Id, false, true);
-            base.TearDown();
+            DeleteFolder(TestFolder.Id);
+            DeleteFile(TestFile.Id);
         }
 
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetCreateFolderItems))]

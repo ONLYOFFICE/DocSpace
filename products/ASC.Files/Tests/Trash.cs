@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Threading;
+
 using ASC.Api.Documents;
 using ASC.Web.Files.Services.WCFService;
 using ASC.Web.Files.Services.WCFService.FileOperations;
+
 using NUnit.Framework;
 
 namespace ASC.Files.Tests
@@ -22,11 +24,10 @@ namespace ASC.Files.Tests
 
         }
         [OneTimeTearDown]
-        public override void TearDown()
+        public void TearDown()
         {
-            DeleteFile(TestFile.Id, false, true);
-            DeleteFolder(TestFolder.Id, false, true);
-            base.TearDown();
+            DeleteFile(TestFile.Id);
+            DeleteFolder(TestFolder.Id);
         }
 
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetCreateFolderItems))]

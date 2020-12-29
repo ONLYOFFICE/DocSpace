@@ -1,4 +1,5 @@
 ﻿using System.Threading;
+
 using ASC.Api.Documents;
 using ASC.Files.Core;
 using ASC.Files.Tests.Infrastructure;
@@ -29,9 +30,10 @@ namespace ASC.Files.Tests
 
         }
         [OneTimeTearDown]
-        public override void TearDown()
+        public void TearDown()
         {
-            base.TearDown();
+            DeleteFolder(TestFolder.Id);
+            DeleteFile(TestFile.Id);
         }
 
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetCreateFolderItems))]
@@ -42,7 +44,7 @@ namespace ASC.Files.Tests
             var folderWrapper = FilesControllerHelper.CreateFolder(GlobalFolderHelper.FolderMy, folderTitle);
             Assert.IsNotNull(folderWrapper);
             Assert.AreEqual(folderTitle, folderWrapper.Title);
-            DeleteFolder(folderWrapper.Id, false, true);
+            DeleteFolder(folderWrapper.Id);
         }
 
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetFolderItemsEmpty))]
@@ -81,7 +83,7 @@ namespace ASC.Files.Tests
             Assert.IsNotNull(folderContentWrapper);
             Assert.AreEqual(filesCountExpected, filesCount);
             Assert.AreEqual(foldersCountExpected, foldersCount);
-            DeleteFolder(TestFolderNotEmpty.Id, false, true);
+            DeleteFolder(TestFolderNotEmpty.Id);
         }
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetFolderInfoItems))]
         [Category("Folder")]
@@ -133,7 +135,7 @@ namespace ASC.Files.Tests
 
             Assert.IsNotNull(fileWrapper);
             Assert.AreEqual(fileTitle + ".docx", fileWrapper.Title);
-            DeleteFile(fileWrapper.Id, false, true);
+            DeleteFile(fileWrapper.Id);
 
         }
         

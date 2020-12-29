@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+
 using ASC.Api.Documents;
 using ASC.Core;
 using ASC.Core.Users;
@@ -37,14 +38,14 @@ namespace ASC.Files.Tests
             TestFolderParamRead = new List<FileShareParams> { new FileShareParams { Access = Core.Security.FileShare.Read, ShareTo = NewUser.ID } };
             TestFolderParamReadAndWrite = new List<FileShareParams> { new FileShareParams { Access = Core.Security.FileShare.ReadWrite, ShareTo = NewUser.ID } };
         }
+
         [OneTimeTearDown]
-        public override void TearDown()
+        public void TearDown()
         {
-            DeleteFolder(TestFolderRead.Id, false, true);
-            DeleteFolder(TestFolderReadAndWrite.Id, false, true);
-            DeleteFile(TestFileRead.Id, false, true);
-            DeleteFile(TestFileReadAndWrite.Id, false, true);
-            base.TearDown();
+            DeleteFolder(TestFolderRead.Id);
+            DeleteFolder(TestFolderReadAndWrite.Id);
+            DeleteFile(TestFileRead.Id);
+            DeleteFile(TestFileReadAndWrite.Id);
         }
 
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetCreateFolderItems))]
@@ -122,7 +123,7 @@ namespace ASC.Files.Tests
         {
             var fileWrapper = FilesControllerHelper.CreateFile(GlobalFolderHelper.FolderShare, fileTitle, default);
             Assert.AreEqual(fileWrapper.FolderId, GlobalFolderHelper.FolderMy);
-            DeleteFile(fileWrapper.Id, false, true);
+            DeleteFile(fileWrapper.Id);
         }
 
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.ShareParamToFileRead))]

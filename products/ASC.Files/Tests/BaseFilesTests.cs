@@ -4,12 +4,10 @@ using System.Reflection;
 using System.Text.Json;
 using System.Threading;
 
-using ASC.Common.Security.Authentication;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Context;
 using ASC.Core.Tenants;
-using ASC.Core.Users;
 using ASC.Files.Helpers;
 using ASC.Files.Model;
 using ASC.Files.Tests.Infrastructure;
@@ -17,42 +15,74 @@ using ASC.Web.Files.Classes;
 using ASC.Web.Files.Services.WCFService;
 using ASC.Web.Files.Services.WCFService.FileOperations;
 
-using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
+using NUnit.Framework;
+
 namespace ASC.Files.Tests
 {
+    [SetUpFixture]
+    public class MySetUpClass
+    {
+        protected IServiceScope Scope { get; set; }
+
+        [OneTimeSetUp]
+        public void CreateDb()
+        {
+            var host = Program.CreateHostBuilder(new string[] {
+                "--pathToConf" ,"..\\..\\..\\..\\..\\..\\config",
+                "--ConnectionStrings:default:connectionString", BaseFilesTests.TestConnection,
+                "--migration:enabled", "true" }).Build();
+            
+            Migrate(host.Services);
+            Migrate(host.Services, Assembly.GetExecutingAssembly().GetName().Name);
+
+            Scope = host.Services.CreateScope();
+        }
+
+        [OneTimeTearDown]
+        public void DropDb()
+        {
+            var context = Scope.ServiceProvider.GetService<DbContextManager<TenantDbContext>>();
+            context.Value.Database.EnsureDeleted();
+        }
+
+        private void Migrate(IServiceProvider serviceProvider, string testAssembly = null)
+        {
+            using var scope = serviceProvider.CreateScope();
+
+            if (!string.IsNullOrEmpty(testAssembly))
+            {
+                var configuration = scope.ServiceProvider.GetService<IConfiguration>();
+                configuration["testAssembly"] = testAssembly;
+            }
+
+            using var db = scope.ServiceProvider.GetService<DbContextManager<TenantDbContext>>();
+            db.Value.Migrate();
+        }
+    }
+
     public class BaseFilesTests
     {
         protected FilesControllerHelper<int> FilesControllerHelper { get; set; }
-        protected TestServer TestServer { get; set; }
-
-        public BaseDbContext baseDbContext;
-
-
         protected GlobalFolderHelper GlobalFolderHelper { get; set; }
         protected FileStorageService<int> FileStorageService { get; set; }
         protected UserManager UserManager { get; set; }
         protected Tenant CurrentTenant { get; set; }
-        protected UserInfo User { get; set; }
         protected SecurityContext SecurityContext { get; set; }
         protected UserOptions UserOptions { get; set; }
-        protected IAccount Account { get; set; }
-        protected IConfiguration Configuration { get; set; }
         protected IServiceScope scope { get; set; }
 
-        const string con = "Server=localhost;Database=onlyoffice_test;User ID = root; Password=root;Pooling=true;";
+        public const string TestConnection = "Server=localhost;Database=onlyoffice_test;User ID = root; Password=root;Pooling=true;";
         public virtual void SetUp()
         {
             var host = Program.CreateHostBuilder(new string[] {
                 "--pathToConf" ,"..\\..\\..\\..\\..\\..\\config",
-                "--ConnectionStrings:default:connectionString", con,
-                "--migration:enabled", "true" }).Build();
-
-            Migrate(host.Services);
+                "--ConnectionStrings:default:connectionString", TestConnection,
+                 "--migration:enabled", "true" }).Build();
 
             scope = host.Services.CreateScope();
 
@@ -72,9 +102,9 @@ namespace ASC.Files.Tests
             SecurityContext.AuthenticateMe(CurrentTenant.OwnerId);
         }
         
-        public void DeleteFolder(int folder, bool deleteAfter, bool DeleteEmmediatly)
+        public void DeleteFolder(int folder)
         {
-            FilesControllerHelper.DeleteFolder(folder, deleteAfter, DeleteEmmediatly);
+            FilesControllerHelper.DeleteFolder(folder, false, true);
             while (true)
             {
                 var statuses = FileStorageService.GetTasksStatuses();
@@ -84,9 +114,9 @@ namespace ASC.Files.Tests
                 Thread.Sleep(100);
             }
         }
-        public void DeleteFile(int file, bool deleteAfter, bool DeleteEmmediatly)
+        public void DeleteFile(int file)
         {
-            FilesControllerHelper.DeleteFile(file, deleteAfter, DeleteEmmediatly);
+            FilesControllerHelper.DeleteFile(file, false, true);
             while (true)
             {
                 var statuses = FileStorageService.GetTasksStatuses();
@@ -117,33 +147,6 @@ namespace ASC.Files.Tests
             };
 
             return batchModel;
-        }
-        
-        public virtual void TearDown()
-        {
-            var context = scope.ServiceProvider.GetService<DbContextManager<TenantDbContext>>();
-            context.Value.Database.EnsureDeleted();
-        }
-
-        private void Migrate(IServiceProvider serviceProvider)
-        {
-            using var scope = serviceProvider.CreateScope();
-
-            var configuration = scope.ServiceProvider.GetService<IConfiguration>();
-
-            TenantMigrate();
-
-            configuration["testAssembly"] = Assembly.GetExecutingAssembly().GetName().Name;
-            TenantMigrate();
-            configuration["testAssembly"] = "";
-
-            void TenantMigrate()
-            {
-                using (var db = scope.ServiceProvider.GetService<DbContextManager<TenantDbContext>>())
-                {
-                    db.Value.Migrate();
-                }
-            }
         }
     }
 }

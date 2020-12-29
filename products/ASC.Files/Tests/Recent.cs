@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+
 using ASC.Api.Documents;
 using ASC.Core.Users;
+
 using NUnit.Framework;
 
 namespace ASC.Files.Tests
@@ -24,11 +26,12 @@ namespace ASC.Files.Tests
             NewUser = UserManager.GetUsers(Guid.Parse("005bb3ff-7de3-47d2-9b3d-61b9ec8a76a5"));
             TestFileShare = new List<FileShareParams> { new FileShareParams { Access = Core.Security.FileShare.Read, ShareTo = NewUser.ID } };
         }
+
         [OneTimeTearDown]
-        public override void TearDown()
+        public void TearDown()
         {
-            DeleteFolder(TestFolder.Id, false, true);
-            base.TearDown();
+            DeleteFolder(TestFolder.Id);
+            DeleteFile(TestFile.Id);
         }
 
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetCreateFolderItems))]
