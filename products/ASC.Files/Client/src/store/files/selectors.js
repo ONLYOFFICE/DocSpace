@@ -1376,12 +1376,9 @@ export const isCanBeDeleted = createSelector(
 export const isCanShare = createSelector(
   getSelectedFolderRootFolderType,
   isAdmin,
-  getSelectionSelector,
-  getIsRecycleBinFolder,
-  getIsRecentFolder,
-  getIsFavoritesFolder,
-  (folderType, isAdmin, selection, isRecycleBin, isFavorites, isRecent) => {
-    if (isRecycleBin || isFavorites || isRecent || isVisitor) {
+  isVisitor,
+  (folderType, isAdmin, isVisitor) => {
+    if (isVisitor) {
       return false;
     }
 
@@ -1391,10 +1388,12 @@ export const isCanShare = createSelector(
       case FolderType.SHARE:
         return false;
       case FolderType.COMMON:
-        return (
-          isAdmin || selection.some((x) => x.access === 0 || x.access === 1)
-        );
+        return isAdmin;
       case FolderType.TRASH:
+        return false;
+      case FolderType.Favorites:
+        return false;
+      case FolderType.Recent:
         return false;
       default:
         return false;
