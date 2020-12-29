@@ -15,14 +15,17 @@ using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Web;
 using ASC.Core;
+using ASC.Core.Common.Settings;
 using ASC.FederatedLogin.Helpers;
 using ASC.Files.Core;
 using ASC.Files.Model;
 using ASC.Web.Core.Files;
 using ASC.Web.Files.Classes;
+using ASC.Web.Files.Core.Entries;
 using ASC.Web.Files.Services.DocumentService;
 using ASC.Web.Files.Services.WCFService;
 using ASC.Web.Files.Utils;
+using ASC.Web.Studio.Core;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
@@ -58,6 +61,8 @@ namespace ASC.Files.Helpers
         private FolderContentWrapperHelper FolderContentWrapperHelper { get; }
         private ChunkedUploadSessionHelper ChunkedUploadSessionHelper { get; }
         private DocumentServiceTrackerHelper DocumentServiceTracker { get; }
+        private SettingsManager SettingsManager { get; }
+        private EncryptionKeyPairHelper EncryptionKeyPairHelper { get; }
         private ILog Logger { get; set; }
 
         /// <summary>
@@ -82,7 +87,9 @@ namespace ASC.Files.Helpers
             FolderContentWrapperHelper folderContentWrapperHelper,
             ChunkedUploadSessionHelper chunkedUploadSessionHelper,
             DocumentServiceTrackerHelper documentServiceTracker,
-            IOptionsMonitor<ILog> optionMonitor)
+            IOptionsMonitor<ILog> optionMonitor,
+            SettingsManager settingsManager,
+            EncryptionKeyPairHelper encryptionKeyPairHelper)
         {
             ApiContext = context;
             FileStorageService = fileStorageService;
@@ -101,6 +108,8 @@ namespace ASC.Files.Helpers
             FolderContentWrapperHelper = folderContentWrapperHelper;
             ChunkedUploadSessionHelper = chunkedUploadSessionHelper;
             DocumentServiceTracker = documentServiceTracker;
+            SettingsManager = settingsManager;
+            EncryptionKeyPairHelper = encryptionKeyPairHelper;
             Logger = optionMonitor.Get("ASC.Files");
         }
 
@@ -196,6 +205,21 @@ namespace ASC.Files.Helpers
             DocumentServiceHelper.GetParams(fileId, version, doc, true, true, true, out var configuration);
             configuration.EditorType = EditorType.External;
             configuration.EditorConfig.CallbackUrl = DocumentServiceTracker.GetCallbackUrl(configuration.Document.Info.File.ID.ToString());
+
+            if (configuration.Document.Info.File.RootFolderType == FolderType.Privacy && PrivacyRoomSettings.GetEnabled(SettingsManager))
+            {
+                var keyPair = EncryptionKeyPairHelper.GetKeyPair();
+                if (keyPair != null)
+                {
+                    configuration.EditorConfig.EncryptionKeys = new EncryptionKeysConfig
+                    {
+                        PrivateKeyEnc = keyPair.PrivateKeyEnc,
+                        PublicKey = keyPair.PublicKey,
+                    };
+                }
+            }
+
+
             configuration.Token = DocumentServiceHelper.GetSignature(configuration);
             return configuration;
         }
