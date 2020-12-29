@@ -3,7 +3,7 @@ import { constants, store } from "asc-web-common";
 import { createSelector } from "reselect";
 
 const { FileType, FilterType, FolderType } = constants;
-const { isAdmin, isVisitor } = store.auth.selectors;
+const { isAdmin, isVisitor, getCurrentUserId } = store.auth.selectors;
 
 const presentInArray = (array, search) => {
   const result = array.findIndex((item) => item === search);
@@ -415,25 +415,6 @@ export const canCreate = createSelector(
   }
 );
 
-export const isCanBeDeleted = createSelector(
-  getSelectedFolderRootFolderType,
-  isAdmin,
-  (folderType, isAdmin) => {
-    switch (folderType) {
-      case FolderType.USER:
-        return true;
-      case FolderType.SHARE:
-        return false;
-      case FolderType.COMMON:
-        return isAdmin;
-      case FolderType.TRASH:
-        return true;
-      default:
-        return false;
-    }
-  }
-);
-
 //TODO: Get the whole list of extensions
 export const getAccessOption = (state, selection) => {
   return getOptions(state, selection);
@@ -674,7 +655,9 @@ const getFilesContextOptions = (
   isFavorites,
   isVisitor,
   canOpenPlayer,
-  canChangeOwner
+  canChangeOwner,
+  canBeDeleted,
+  canShare
 ) => {
   const options = [];
 
@@ -696,7 +679,8 @@ const getFilesContextOptions = (
       options.push("separator0");
     }
 
-    if (!(isRecent || isFavorites || isVisitor)) {
+    //TODO: use canShare selector
+    if (/*!(isRecent || isFavorites || isVisitor) && */ canShare) {
       options.push("sharing-settings");
     }
 
@@ -749,7 +733,7 @@ const getFilesContextOptions = (
       }
 
       options.push("rename");
-      options.push("delete");
+      canBeDeleted && options.push("delete");
     } else {
       options.push("copy");
     }
@@ -918,6 +902,8 @@ export const getFilesList = (state) => {
       getFileActionId,
       isVisitor,
       getCanShareOwnerChange,
+      isCanBeDeleted,
+      isCanShare,
     ],
     (
       folders,
@@ -928,7 +914,9 @@ export const getFilesList = (state) => {
       isFavorites,
       actionId,
       isVisitor,
-      canChangeOwner
+      canChangeOwner,
+      canBeDeleted,
+      canShare
     ) => {
       const items =
         folders && files
@@ -975,7 +963,9 @@ export const getFilesList = (state) => {
           isFavorites,
           isVisitor,
           canOpenPlayer,
-          canChangeOwner
+          canChangeOwner,
+          canBeDeleted,
+          canShare
         );
         const checked = isFileSelected(selection, id, parentId);
 
@@ -994,12 +984,13 @@ export const getFilesList = (state) => {
 
         const icon = getIcon(state, 24, fileExst, providerKey);
 
-        const canShare = !(
+        //TODO: use canShare selector
+        /*const canShare = !(
           isRecycleBin ||
           isFavorites ||
           isRecent ||
           isVisitor
-        );
+        );*/
 
         value += draggable ? "_draggable" : "";
 
@@ -1231,9 +1222,11 @@ export const getWebEditSelected = createSelector(
 export const getAccessedSelected = createSelector(
   getSelection,
   getSelectionLength,
-  (selection, selectionLength) => {
+  isAdmin,
+  (selection, selectionLength, isAdmin) => {
     return (
       selectionLength &&
+      isAdmin &&
       selection.every((x) => x.access === 1 || x.access === 0)
     );
   }
@@ -1299,8 +1292,15 @@ export const getCanShareOwnerChange = createSelector(
   isAdmin,
   getPathParts,
   getCommonFolderId,
-  (isAdmin, pathParts, commonId) => {
-    return isAdmin && pathParts && commonId === pathParts[0];
+  getCurrentUserId,
+  getSelectionSelector,
+
+  (isAdmin, pathParts, commonId, userId, selection) => {
+    return (
+      (isAdmin || (selection.length && selection[0].createdBy.id === userId)) &&
+      pathParts &&
+      commonId === pathParts[0]
+    );
   }
 );
 
@@ -1350,3 +1350,54 @@ export const getSortedFiles = (state) => {
 export const getShowOwnerChangePanel = (state) => {
   return state.files.ownerPanelVisible;
 };
+
+export const isCanBeDeleted = createSelector(
+  getSelectedFolderRootFolderType,
+  isAdmin,
+  getSelectionSelector,
+  (folderType, isAdmin, selection) => {
+    switch (folderType) {
+      case FolderType.USER:
+        return true;
+      case FolderType.SHARE:
+        return false;
+      case FolderType.COMMON:
+        return (
+          isAdmin || selection.some((x) => x.access === 0 || x.access === 1)
+        );
+      case FolderType.TRASH:
+        return true;
+      default:
+        return false;
+    }
+  }
+);
+
+export const isCanShare = createSelector(
+  getSelectedFolderRootFolderType,
+  isAdmin,
+  getSelectionSelector,
+  getIsRecycleBinFolder,
+  getIsRecentFolder,
+  getIsFavoritesFolder,
+  (folderType, isAdmin, selection, isRecycleBin, isFavorites, isRecent) => {
+    if (isRecycleBin || isFavorites || isRecent || isVisitor) {
+      return false;
+    }
+
+    switch (folderType) {
+      case FolderType.USER:
+        return true;
+      case FolderType.SHARE:
+        return false;
+      case FolderType.COMMON:
+        return (
+          isAdmin || selection.some((x) => x.access === 0 || x.access === 1)
+        );
+      case FolderType.TRASH:
+        return false;
+      default:
+        return false;
+    }
+  }
+);
