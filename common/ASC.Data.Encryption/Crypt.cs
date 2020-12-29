@@ -29,10 +29,12 @@ using System.IO;
 using System.Security.Cryptography;
 
 using ASC.Common;
+using ASC.Core.Encryption;
+using ASC.Data.Storage.Encryption;
 
 using Microsoft.Extensions.Configuration;
 
-namespace ASC.Data.Storage.Encryption
+namespace ASC.Data.Encryption
 {
     [Transient]
     public class Crypt : ICrypt
@@ -42,7 +44,6 @@ namespace ASC.Data.Storage.Encryption
         private string TempDir { get; set; }
 
         private IConfiguration Configuration { get; set; }
-        private EncryptionFactory EncryptionFactory { get; set; }
 
         public void Init(string storageName, EncryptionSettings encryptionSettings)
         {
@@ -51,10 +52,9 @@ namespace ASC.Data.Storage.Encryption
             TempDir = Configuration["storage:encryption:tempdir"] ?? Path.GetTempPath();
         }
 
-        public Crypt(IConfiguration configuration, EncryptionFactory encryptionFactory)
+        public Crypt(IConfiguration configuration)
         {
             Configuration = configuration;
-            EncryptionFactory = encryptionFactory;
         }
 
         public byte Version { get { return 1; } }
@@ -63,7 +63,7 @@ namespace ASC.Data.Storage.Encryption
         {
             if (string.IsNullOrEmpty(Settings.Password)) return;
 
-            var metadata = EncryptionFactory.GetMetadata();
+            var metadata = new Metadata(Configuration);
 
             metadata.Initialize(Settings.Password);
 
@@ -122,7 +122,7 @@ namespace ASC.Data.Storage.Encryption
 
             try
             {
-                var metadata = EncryptionFactory.GetMetadata();
+                var metadata = new Metadata(Configuration);
 
                 metadata.Initialize(Version, password, fileInfo.Length);
 
@@ -176,7 +176,7 @@ namespace ASC.Data.Storage.Encryption
 
             try
             {
-                var metadata = EncryptionFactory.GetMetadata();
+                var metadata = new Metadata(Configuration);
 
                 metadata.Initialize(password);
 
@@ -221,7 +221,7 @@ namespace ASC.Data.Storage.Encryption
         {
             var decryptedMemoryStream = new MemoryStream(); //TODO: MemoryStream or temporary decrypted file on disk?
 
-            var metadata = EncryptionFactory.GetMetadata();
+            var metadata = new Metadata(Configuration);
 
             metadata.Initialize(password);
 
@@ -253,7 +253,7 @@ namespace ASC.Data.Storage.Encryption
 
         private Stream GetReadStream(string filePath, string password)
         {
-            var metadata = EncryptionFactory.GetMetadata();
+            var metadata = new Metadata(Configuration);
 
             metadata.Initialize(password);
 
@@ -274,7 +274,7 @@ namespace ASC.Data.Storage.Encryption
 
         private long GetFileSize(string filePath, string password)
         {
-            var metadata = EncryptionFactory.GetMetadata();
+            var metadata = new Metadata(Configuration);
 
             metadata.Initialize(password);
 

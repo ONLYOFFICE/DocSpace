@@ -395,8 +395,9 @@ namespace ASC.Web.Files.Services.DocumentService
                     break;
             }
 
+            var folderDao = DaoFactory.GetFolderDao<int>();
             var fileDao = DaoFactory.GetFileDao<int>();
-            var files = entryManager.GetTemplates(fileDao, filter, false, Guid.Empty, string.Empty, false);
+            var files = entryManager.GetTemplates(folderDao, fileDao, filter, false, Guid.Empty, string.Empty, false);
             var listTemplates = from file in files
                                 select
                                     new TemplatesConfig
@@ -480,7 +481,7 @@ namespace ASC.Web.Files.Services.DocumentService
 
             var folderDao = DaoFactory.GetFolderDao<int>();
             var fileDao = DaoFactory.GetFileDao<int>();
-            var files = entryManager.GetRecent(fileDao, filter, false, Guid.Empty, string.Empty, false);
+            var files = entryManager.GetRecent(folderDao, fileDao, filter, false, Guid.Empty, string.Empty, false);
 
             var listRecent = from file in files
                              where !Equals(_configuration.Document.Info.File.ID, file.ID)

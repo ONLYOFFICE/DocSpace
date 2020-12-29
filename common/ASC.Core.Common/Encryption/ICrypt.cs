@@ -25,30 +25,21 @@
 
 
 using System.IO;
-using System.Security.Cryptography;
 
-namespace ASC.Data.Storage.Encryption
+namespace ASC.Core.Encryption
 {
-    public interface IMetadata
+    public interface ICrypt
     {
-        void Initialize(string password);
+        byte Version { get; }
 
-        void Initialize(byte version, string password, long fileSize);
+        void EncryptFile(string filePath);
 
-        bool TryReadFromStream(Stream stream, byte cryptVersion);
+        void DecryptFile(string filePath);
 
-        void WriteToStream(Stream stream);
+        Stream GetReadStream(string filePath);
 
-        SymmetricAlgorithm GetCryptographyAlgorithm();
+        long GetFileSize(string filePath);
 
-        void ComputeAndWriteHmacHash(Stream stream);
-
-        void ComputeAndValidateHmacHash(Stream stream);
-
-        byte GetCryptoVersion();
-
-        long GetFileSize();
-
-        int GetMetadataLength();
+        void Init(string storageName, EncryptionSettings encryptionSettings);
     }
 }

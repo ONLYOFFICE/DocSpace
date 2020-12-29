@@ -34,6 +34,7 @@ using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Common.Threading.Progress;
 using ASC.Core;
+using ASC.Core.Encryption;
 using ASC.Core.Tenants;
 using ASC.Data.Storage.DiscStorage;
 

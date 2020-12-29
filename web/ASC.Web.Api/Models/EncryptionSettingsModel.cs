@@ -1,4 +1,4 @@
-﻿using ASC.Data.Storage.Encryption;
+﻿using ASC.Core.Encryption;
 
 namespace ASC.Web.Api.Models
 {

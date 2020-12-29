@@ -28,7 +28,7 @@ using System;
 using System.IO;
 using System.Security.Cryptography;
 
-namespace ASC.Data.Storage.Encryption
+namespace ASC.Data.Encryption
 {
     internal sealed class StreamWrapper : Stream
     {
@@ -39,7 +39,7 @@ namespace ASC.Data.Storage.Encryption
         private readonly long fileSize;
         private readonly long metadataLength;
 
-        public StreamWrapper(Stream fileStream, IMetadata metadata)
+        public StreamWrapper(Stream fileStream, Metadata metadata)
         {
             stream = fileStream;
             symmetricAlgorithm = metadata.GetCryptographyAlgorithm();
