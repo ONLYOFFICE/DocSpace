@@ -218,6 +218,16 @@ const StyledBody = styled.div`
     padding: 0 16px;
   }
 
+  .change-owner_body {
+    padding: 0 16px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .change-owner_owner-label {
+    margin: 16px 0;
+  }
+
   .selector-wrapper {
     position: fixed;
     height: calc(100% - 57px);
