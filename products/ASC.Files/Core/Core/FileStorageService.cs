@@ -1727,8 +1727,9 @@ namespace ASC.Web.Files.Services.WCFService
                 IEnumerable<File<T>> result;
 
                 var subjectId = string.IsNullOrEmpty(subjectID) ? Guid.Empty : new Guid(subjectID);
+                var folderDao = GetFolderDao();
                 var fileDao = GetFileDao();
-                result = EntryManager.GetTemplates(fileDao, filter, subjectGroup, subjectId, search, searchInContent);
+                result = EntryManager.GetTemplates(folderDao, fileDao, filter, subjectGroup, subjectId, search, searchInContent);
 
                 if (result.Count() <= from)
                     return null;
