@@ -6,6 +6,7 @@ APP_PORT="80"
 
 APP_CONF="/etc/onlyoffice/appserver/config/appsettings.test.json"
 DS_CONF="/etc/onlyoffice/documentserver/local.json"
+KAFKA_CONF="/etc/onlyoffice/appserver/config/kafka.test.json"
 
 DB_HOST=""
 DB_NAME=""
@@ -210,7 +211,7 @@ execute_mysql_sqript(){
 }
 
 setup_nginx(){
-	echo -n "Configuring nginx..."
+	echo -n "Configuring nginx... "
 
 	rm -rf /etc/nginx/conf.d/default.conf
 
@@ -237,13 +238,13 @@ setup_nginx(){
         true
     done
     chown nginx:nginx /etc/nginx/* -R
-    #sudo sed -e 's/#//' -i /etc/nginx/conf.d/onlyoffice.conf
+    sudo sed -e 's/#//' -i /etc/nginx/conf.d/onlyoffice.conf
     systemctl reload nginx
 	echo "OK"
 }
 
 setup_docs() {
-	echo -n "Configuring Docs..."
+	echo -n "Configuring Docs... "
 	DOCUMENT_SERVER_JWT_SECRET=$(cat ${DS_CONF} | jq -r '.services.CoAuthoring.secret.inbox.string')
 	DOCUMENT_SERVER_JWT_HEADER=$(cat ${DS_CONF} | jq -r '.services.CoAuthoring.token.inbox.header')
 
@@ -271,9 +272,9 @@ if rpm -q onlyoffice-documentserver >/dev/null || rpm -q onlyoffice-documentserv
 fi
 
 #kafka
-sed -i "s!\"BootstrapServers\".*!\"BootstrapServers\": \"${KAFKA_HOST}:${KAFKA_PORT}\"!g" ${APP_CONF}/kafka.test.json
+sed -i "s!\"BootstrapServers\".*!\"BootstrapServers\": \"${KAFKA_HOST}:${KAFKA_PORT}\"!g" ${KAFKA_CONF}
 
 #elastic
-grep -q "${ELK_VALUE}" ${APP_CONF}/appsettings.test.json || sed -i "s!\"files\".*!${ELK_VALUE}\n\"files\": {!" ${APP_CONF}/appsettings.test.json
+grep -q "${ELK_VALUE}" ${APP_CONF} || sed -i "s!\"files\".*!${ELK_VALUE}\n\"files\": {!" ${APP_CONF}
 
 restart_services
