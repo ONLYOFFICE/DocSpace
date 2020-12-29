@@ -36,6 +36,7 @@ using ASC.Files.Core.Security;
 using ASC.Notify.Patterns;
 using ASC.Web.Core.Files;
 using ASC.Web.Files.Classes;
+using ASC.Web.Studio.Core.Notify;
 
 using Microsoft.Extensions.DependencyInjection;
 
@@ -115,6 +116,7 @@ namespace ASC.Files.Core.Services.NotifyService
             var scopeClass = scope.ServiceProvider.GetService<NotifyClientScope>();
             var (notifySource, _, filesLinkUtility, fileUtility, baseCommonLinkUtility, daoFactory, pathProvider, userManager, tenantManager) = scopeClass;
             var client = WorkContext.NotifyContext.NotifyService.RegisterClient(notifySource, scope);
+            var studioNotifyHelper = scope.ServiceProvider.GetService<StudioNotifyHelper>();
 
             var folderDao = daoFactory.GetFolderDao<T>();
             if (fileEntry.FileEntryType == FileEntryType.File && folderDao.GetFolder(((File<T>)fileEntry).FolderID) == null) return;
@@ -124,6 +126,13 @@ namespace ASC.Files.Core.Services.NotifyService
                           : pathProvider.GetFolderUrl((Folder<T>)fileEntry);
 
             var recipientsProvider = notifySource.GetRecipientsProvider();
+
+            var action = fileEntry.FileEntryType == FileEntryType.File
+            ? ((File<T>)fileEntry).Encrypted
+                ? NotifyConstants.Event_ShareEncryptedDocument
+                : NotifyConstants.Event_ShareDocument
+            : NotifyConstants.Event_ShareFolder;
+
 
             foreach (var recipientPair in recipients)
             {
@@ -136,14 +145,15 @@ namespace ASC.Files.Core.Services.NotifyService
                 var recipient = recipientsProvider.GetRecipient(u.ID.ToString());
 
                 client.SendNoticeAsync(
-                    fileEntry.FileEntryType == FileEntryType.File ? NotifyConstants.Event_ShareDocument : NotifyConstants.Event_ShareFolder,
+                    action,
                     fileEntry.UniqID,
                     recipient,
                     true,
                     new TagValue(NotifyConstants.Tag_DocumentTitle, fileEntry.Title),
                     new TagValue(NotifyConstants.Tag_DocumentUrl, baseCommonLinkUtility.GetFullAbsolutePath(url)),
                     new TagValue(NotifyConstants.Tag_AccessRights, aceString),
-                    new TagValue(NotifyConstants.Tag_Message, message.HtmlEncode())
+                    new TagValue(NotifyConstants.Tag_Message, message.HtmlEncode()),
+                    TagValues.Image(studioNotifyHelper,0, "privacy.png")
                     );
             }
         }

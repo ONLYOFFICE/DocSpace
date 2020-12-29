@@ -108,7 +108,7 @@ namespace ASC.Api.Settings
             //    if (ConfigurationManagerExtension.AppSettings["web.talk"] != "true")
             //        return null;
 
-            //    return GetCommunityVersion();
+            //    return new JabberServiceClient().GetVersion();
             //}
             //catch (Exception e)
             //{

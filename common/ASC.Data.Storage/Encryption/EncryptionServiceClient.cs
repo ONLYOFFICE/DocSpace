@@ -26,6 +26,7 @@
 
 using ASC.Common;
 using ASC.Common.Caching;
+using ASC.Core.Encryption;
 
 namespace ASC.Data.Storage.Encryption
 {

@@ -182,27 +182,14 @@ namespace ASC.Core.Data
             tx.Commit();
         }
 
-        public IEnumerable<TenantQuotaRow> FindTenantQuotaRows(TenantQuotaRowQuery query)
+        public IEnumerable<TenantQuotaRow> FindTenantQuotaRows(int tenantId)
         {
-            if (query == null) throw new ArgumentNullException("query");
-
             IQueryable<DbQuotaRow> q = CoreDbContext.QuotaRows;
 
-
-            if (query.Tenant != Tenant.DEFAULT_TENANT)
+            if (tenantId != Tenant.DEFAULT_TENANT)
             {
-                q = q.Where(r => r.Tenant == query.Tenant);
+                q = q.Where(r => r.Tenant == tenantId);
             }
-            if (!string.IsNullOrEmpty(query.Path))
-            {
-                q = q.Where(r => r.Path == query.Path);
-            }
-
-            if (query.LastModified != default)
-            {
-                q = q.Where(r => r.LastModified >= query.LastModified);
-            }
-
 
             return q.Select(FromDbQuotaRowToTenantQuotaRow).ToList();
         }
