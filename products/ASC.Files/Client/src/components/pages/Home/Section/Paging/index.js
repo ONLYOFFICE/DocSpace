@@ -137,10 +137,13 @@ const SectionPagingContent = ({
 
   //console.log("SectionPagingContent render", filter);
 
-  const currItemsLength = useMemo(() => {
+  const showCountItem = useMemo(() => {
     if (files && folders)
-      return files.length + folders.length === filter.pageCount;
-  }, [files, folders, filter]);
+      return (
+        files.length + folders.length === filter.pageCount ||
+        (pageItems.length < 1 && filter.total > 25)
+      );
+  }, [files, folders, filter, pageItems]);
 
   return filter.total < filter.pageCount && filter.total < 26 ? (
     <></>
@@ -161,7 +164,7 @@ const SectionPagingContent = ({
       openDirection="top"
       selectedPageItem={selectedPageItem} //FILTER CURRENT PAGE
       selectedCountItem={selectedCountItem} //FILTER PAGE COUNT
-      showCountItem={currItemsLength}
+      showCountItem={showCountItem}
     />
   );
 };
