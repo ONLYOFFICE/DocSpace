@@ -7,9 +7,8 @@ import {
   Heading,
   Aside,
   Row,
-  RowContent,
+  Box,
   RowContainer,
-  Text,
   Link,
   Button,
 } from "asc-web-components";
@@ -258,9 +257,7 @@ class NewFilesPanelComponent extends React.Component {
                   const element = this.getItemIcon(file);
                   return (
                     <Row key={file.id} element={element}>
-                      <RowContent
-                        onClick={this.onNewFilesClick.bind(this, file)}
-                      >
+                      <Box onClick={this.onNewFilesClick.bind(this, file)}>
                         <Link
                           containerWidth="100%"
                           type="page"
@@ -270,14 +267,11 @@ class NewFilesPanelComponent extends React.Component {
                           truncate
                           title={file.title}
                           fontSize="14px"
+                          className="files-new-link"
                         >
                           {file.title}
                         </Link>
-                        <></>
-                        <Text fontSize="12px" containerWidth="auto">
-                          {file.checked && t("ConvertInto")}
-                        </Text>
-                      </RowContent>
+                      </Box>
                     </Row>
                   );
                 })}
