@@ -48,11 +48,13 @@ class DeleteDialogComponent extends React.Component {
 
     let i = 0;
     while (props.selection.length !== i) {
-      selection.push({ ...props.selection[i], checked: true });
-      if (selection[i].fileExst) {
-        filesList.push(selection[i]);
-      } else {
-        foldersList.push(selection[i]);
+      if (props.selection[i].access === 0 || props.selection[i].access === 1) {
+        selection.push({ ...props.selection[i], checked: true });
+        if (selection[i].fileExst) {
+          filesList.push(selection[i]);
+        } else {
+          foldersList.push(selection[i]);
+        }
       }
       i++;
     }

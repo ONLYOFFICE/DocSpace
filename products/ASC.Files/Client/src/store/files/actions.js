@@ -74,6 +74,7 @@ export const SET_UPLOAD_DATA = "SET_UPLOAD_DATA";
 export const SET_IS_VER_HISTORY_PANEL = "SET_IS_VER_HISTORY_PANEL";
 export const SET_VER_HISTORY_FILE_ID = "SET_VER_HISTORY_FILE_ID";
 export const SET_FILE_VERSIONS = "SET_FILE_VERSIONS";
+export const SET_CHANGE_OWNER_VISIBLE = "SET_CHANGE_OWNER_VISIBLE";
 
 export function setFile(file) {
   return {
@@ -311,6 +312,13 @@ export function setFileVersions(versions) {
   return {
     type: SET_FILE_VERSIONS,
     versions,
+  };
+}
+
+export function setChangeOwnerPanelVisible(ownerPanelVisible) {
+  return {
+    type: SET_CHANGE_OWNER_VISIBLE,
+    ownerPanelVisible,
   };
 }
 
@@ -569,6 +577,10 @@ export function renameFolder(folderId, title) {
   };
 }
 
+export function setFilesOwner(folderIds, fileIds, ownerId) {
+  return files.setFileOwner(folderIds, fileIds, ownerId);
+}
+
 export function setShareFiles(
   folderIds,
   fileIds,
@@ -586,7 +598,7 @@ export function setShareFiles(
   }
 
   const ownerChangeRequest = ownerId
-    ? [files.setFileOwner(folderIds, fileIds, ownerId)]
+    ? [setFilesOwner(folderIds, fileIds, ownerId)]
     : [];
 
   const shareRequest = !!share.length

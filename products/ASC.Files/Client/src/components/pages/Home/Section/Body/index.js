@@ -55,6 +55,7 @@ import {
   setIsVerHistoryPanel,
   setVerHistoryFileId,
   setSharingPanelVisible,
+  setChangeOwnerPanelVisible
 } from "../../../../../store/files/actions";
 import { TIMEOUT } from "../../../../../helpers/constants";
 import {
@@ -527,6 +528,10 @@ class SectionBodyContent extends React.Component {
   onClickShare = () =>
     this.props.setSharingPanelVisible(!this.props.sharingPanelVisible);
 
+  onOwnerChange = () => {
+    this.props.setChangeOwnerPanelVisible(true);
+  };
+
   onClickLinkForPortal = () => {
     const { settings, selection } = this.props;
     const item = selection[0];
@@ -759,6 +764,14 @@ class SectionBodyContent extends React.Component {
             label: t("SendByEmail"),
             icon: "MailIcon",
             disabled: true,
+          };
+        case "owner-change":
+          return {
+            key: option,
+            label: t("ChangeOwner"),
+            icon: "CatalogUserIcon",
+            onClick: this.onOwnerChange,
+            disabled: false,
           };
         case "link-for-portal-users":
           return {
@@ -1657,8 +1670,6 @@ class SectionBodyContent extends React.Component {
       settings,
       selection,
       fileAction,
-      setIsLoading,
-      isLoading,
       currentFolderCount,
       isRecycleBin,
       isPrivacy,
@@ -1971,7 +1982,6 @@ const mapStateToProps = (state) => {
     isDesktop: isDesktopClient(state),
     isEncryptionSupport: isEncryptionSupport(state),
     isFavorites: getIsFavoritesFolder(state),
-    isLoading: getIsLoading(state),
     isMy: getIsMyFolder(state),
     isRecycleBin: getIsRecycleBinFolder(state),
     isRecent: getIsRecentFolder(state),
@@ -2025,4 +2035,5 @@ export default connect(mapStateToProps, {
   setSharingPanelVisible,
   setIsVerHistoryPanel,
   setVerHistoryFileId,
+  setChangeOwnerPanelVisible,
 })(withRouter(withTranslation()(SectionBodyContent)));

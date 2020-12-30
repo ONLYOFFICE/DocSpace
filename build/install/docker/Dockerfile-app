@@ -2,14 +2,12 @@
 FROM ubuntu:18.04 AS develop
 
 ARG RELEASE_DATE="2016-06-21"
-ARG RELEASE_DATE_SIGN=""
 ARG VERSION="8.9.0.190"
-ARG SOURCE_REPO_URL="deb http://static.teamlab.com.s3.amazonaws.com/repo/debian squeeze main"
 ARG DEBIAN_FRONTEND=noninteractive
 ARG GIT_BRANCH="master"
 
-LABEL onlyoffice.community.release-date="${RELEASE_DATE}" \
-      onlyoffice.community.version="${VERSION}" \
+LABEL onlyoffice.appserver.release-date="${RELEASE_DATE}" \
+      onlyoffice.appserver.version="${VERSION}" \
       maintainer="Ascensio System SIA <support@onlyoffice.com>"
 
 ENV LANG=en_US.UTF-8 \

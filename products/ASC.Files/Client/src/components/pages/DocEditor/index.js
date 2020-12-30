@@ -65,7 +65,6 @@ class PureEditor extends React.Component {
       const config = await api.files.openEdit(fileId, doc);
 
       if (isDesktop) {
-
         const isEncryption =
           config.editorConfig["encryptionKeys"] !== undefined;
         const user = await api.people.getUser();
@@ -108,8 +107,8 @@ class PureEditor extends React.Component {
   };
 
   onLoad = (config) => {
+    console.log("Editor config: ", config);
     try {
-
       console.log(config);
 
       docTitle = config.document.title;
@@ -134,10 +133,10 @@ class PureEditor extends React.Component {
 
       const { isDesktop } = this.state;
 
-      if (isDesktop && newConfig.editorConfig["encryptionKeys"] !== undefined) {
-        newConfig.editorConfig.encryptionKeys.cryptoEngineId =
-          "{FFF0E1EB-13DB-4678-B67D-FF0A41DBBCEF}";
-      }
+      // if (isDesktop && newConfig.editorConfig["encryptionKeys"] !== undefined) {
+      //   newConfig.editorConfig.encryptionKeys.cryptoEngineId =
+      //     "{FFF0E1EB-13DB-4678-B67D-FF0A41DBBCEF}";
+      // }
 
       if (!window.DocsAPI) throw new Error("DocsAPI is not defined");
 
