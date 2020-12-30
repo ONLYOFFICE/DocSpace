@@ -26,6 +26,7 @@ namespace ASC.Core.Common.EF
         {
             context.LoggerFactory = LoggerFactory;
             context.ConnectionStringSettings = Configuration.GetConnectionStrings(name) ?? Configuration.GetConnectionStrings(baseName);
+            context.MigrateAssembly = Configuration["testAssembly"];
         }
 
         public void Configure(T context)

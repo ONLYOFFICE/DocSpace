@@ -61,17 +61,18 @@ namespace ASC.ApiSystem
 
                     config.SetBasePath(path);
                     config
-                    .AddInMemoryCollection(new Dictionary<string, string>
-                    {
-                                        {"pathToConf", path}
-                    })
                     .AddJsonFile("appsettings.json")
                     .AddJsonFile($"appsettings.{hostingContext.HostingEnvironment.EnvironmentName}.json", true)
                     .AddJsonFile("storage.json")
                     .AddJsonFile("kafka.json")
                     .AddJsonFile($"kafka.{hostingContext.HostingEnvironment.EnvironmentName}.json", true)
                     .AddEnvironmentVariables()
-                    .AddCommandLine(args);
+                    .AddCommandLine(args)
+                    .AddInMemoryCollection(new Dictionary<string, string>
+                    {
+                                        {"pathToConf", path}
+                    });
+
                 });
         }
     }
