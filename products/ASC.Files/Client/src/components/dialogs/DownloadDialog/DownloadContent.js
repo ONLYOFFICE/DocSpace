@@ -263,7 +263,7 @@ const DownloadContent = (props) => {
             <LinkWithDropdown
               containerWidth="auto"
               data={formats}
-              directionX="right"
+              directionX="left"
               directionY="bottom"
               dropdownType="appearDashedAfterHover"
               fontSize="12px"
@@ -306,7 +306,7 @@ const DownloadContent = (props) => {
                   dropdownType="appearDashedAfterHover"
                   containerWidth="auto"
                   data={dropdownItems}
-                  directionX="right"
+                  directionX="left"
                   directionY="bottom"
                   fontSize="12px"
                 >
