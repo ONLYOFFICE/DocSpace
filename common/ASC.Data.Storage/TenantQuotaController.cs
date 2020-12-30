@@ -60,7 +60,7 @@ namespace ASC.Data.Storage
         {
             this.tenant = tenant;
             TenantManager = tenantManager;
-            lazyCurrentSize = new Lazy<long>(() => TenantManager.FindTenantQuotaRows(new TenantQuotaRowQuery(tenant))
+            lazyCurrentSize = new Lazy<long>(() => TenantManager.FindTenantQuotaRows(tenant)
                 .Where(r => UsedInQuota(r.Tag))
                 .Sum(r => r.Counter));
         }
@@ -96,14 +96,6 @@ namespace ASC.Data.Storage
                 CurrentSize += size;
             }
             SetTenantQuotaRow(module, domain, size, dataTag, false);
-        }
-
-        public long QuotaUsedGet(string module, string domain)
-        {
-            var path = string.IsNullOrEmpty(module) ? null : string.Format("/{0}/{1}", module, domain);
-            return TenantManager.FindTenantQuotaRows(new TenantQuotaRowQuery(tenant).WithPath(path))
-                .Where(r => UsedInQuota(r.Tag))
-                .Sum(r => r.Counter);
         }
 
         public void QuotaUsedCheck(long size)

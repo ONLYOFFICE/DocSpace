@@ -49,6 +49,7 @@ using ASC.Core.Billing;
 using ASC.Core.Common.Configuration;
 using ASC.Core.Common.Notify;
 using ASC.Core.Common.Settings;
+using ASC.Core.Encryption;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.Data.Backup;
@@ -169,6 +170,7 @@ namespace ASC.Api.Settings
         private ILog Log { get; set; }
         private TelegramHelper TelegramHelper { get; }
         private BackupAjaxHandler BackupAjaxHandler { get; }
+        private PaymentManager PaymentManager { get; }
 
         public SettingsController(
             IOptionsMonitor<ILog> option,
@@ -231,7 +233,8 @@ namespace ASC.Api.Settings
             ICacheNotify<DeleteSchedule> cacheDeleteSchedule,
             EncryptionServiceNotifier encryptionServiceNotifier,
             PasswordHasher passwordHasher,
-            BackupAjaxHandler backupAjaxHandler)
+            BackupAjaxHandler backupAjaxHandler,
+            PaymentManager paymentManager)
         {
             Log = option.Get("ASC.Api");
             WebHostEnvironment = webHostEnvironment;
@@ -294,6 +297,7 @@ namespace ASC.Api.Settings
             UrlShortener = urlShortener;
             TelegramHelper = telegramHelper;
             BackupAjaxHandler = backupAjaxHandler;
+            PaymentManager = paymentManager;
         }
 
         [Read("", Check = false)]
@@ -1157,8 +1161,6 @@ namespace ASC.Api.Settings
 
             if (query.IsDefault)
             {
-                DemandRebrandingPermission();
-
                 result = new Dictionary<string, string>
                 {
                     { ((int)WhiteLabelLogoTypeEnum.LightSmall).ToString(), CommonLinkUtility.GetFullAbsolutePath(TenantWhiteLabelSettingsHelper.GetAbsoluteDefaultLogoPath(WhiteLabelLogoTypeEnum.LightSmall, !query.IsRetina)) },
@@ -1190,12 +1192,6 @@ namespace ASC.Api.Settings
             if (!TenantLogoManager.WhiteLabelEnabled)
             {
                 throw new BillingException(Resource.ErrorNotAllowedOption, "WhiteLabel");
-            }
-
-
-            if (query.IsDefault)
-            {
-                DemandRebrandingPermission();
             }
 
             var settings = query.IsDefault ? SettingsManager.LoadForDefaultTenant<TenantWhiteLabelSettings>() : SettingsManager.Load<TenantWhiteLabelSettings>();
@@ -1774,6 +1770,47 @@ namespace ASC.Api.Settings
             return "";
         }
 
+        ///<visible>false</visible>
+        [Create("license/trial")]
+        public bool ActivateTrial()
+        {
+            if (!CoreBaseSettings.Standalone) throw new NotSupportedException();
+            if (!UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsAdmin(UserManager)) throw new SecurityException();
+
+            var curQuota = TenantExtra.GetTenantQuota();
+            if (curQuota.Id != Tenant.DEFAULT_TENANT) return false;
+            if (curQuota.Trial) return false;
+
+            var curTariff = TenantExtra.GetCurrentTariff();
+            if (curTariff.DueDate.Date != DateTime.MaxValue.Date) return false;
+
+            var quota = new TenantQuota(-1000)
+            {
+                Name = "apirequest",
+                ActiveUsers = curQuota.ActiveUsers,
+                MaxFileSize = curQuota.MaxFileSize,
+                MaxTotalSize = curQuota.MaxTotalSize,
+                Features = curQuota.Features
+            };
+            quota.Trial = true;
+
+            TenantManager.SaveTenantQuota(quota);
+
+            var DEFAULT_TRIAL_PERIOD = 30;
+
+            var tariff = new Tariff
+            {
+                QuotaId = quota.Id,
+                DueDate = DateTime.Today.AddDays(DEFAULT_TRIAL_PERIOD)
+            };
+
+            PaymentManager.SetTariff(-1, tariff);
+
+            MessageService.Send(MessageAction.LicenseKeyUploaded);
+
+            return true;
+        }
+
         [AllowAnonymous]
         [Read("license/required", Check = false)]
         public bool RequestLicense()
@@ -1799,7 +1836,10 @@ namespace ASC.Api.Settings
 
                 return dueDate >= DateTime.UtcNow.Date
                                      ? Resource.LicenseUploaded
-                                     : string.Format(Resource.LicenseUploadedOverdue,
+                                     : string.Format(
+                                         (TenantExtra.GetTenantQuota().Update
+                                              ? Resource.LicenseUploadedOverdueSupport
+                                              : Resource.LicenseUploadedOverdue),
                                                      "",
                                                      "",
                                                      dueDate.Date.ToLongDateString());
@@ -2072,6 +2112,11 @@ namespace ASC.Api.Settings
 
         private bool StartStorageEncryption(StorageEncryptionModel storageEncryption)
         {
+            if (CoreBaseSettings.CustomMode)
+            {
+                return false;
+            }
+
             lock (Locker)
             {
                 var activeTenants = TenantManager.GetTenants();
@@ -2195,6 +2240,11 @@ namespace ASC.Api.Settings
         {
             try
             {
+                if (CoreBaseSettings.CustomMode)
+                {
+                    return null;
+                }
+
                 if (!SetupInfo.IsVisibleSettings<EncryptionSettings>())
                 {
                     throw new NotSupportedException();
@@ -2230,6 +2280,11 @@ namespace ASC.Api.Settings
         [Read("encryption/progress")]
         public double? GetStorageEncryptionProgress()
         {
+            if (CoreBaseSettings.CustomMode)
+            {
+                return -1;
+            }
+
             if (!SetupInfo.IsVisibleSettings<EncryptionSettings>())
             {
                 throw new NotSupportedException();

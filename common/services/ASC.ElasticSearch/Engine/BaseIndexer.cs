@@ -171,7 +171,7 @@ namespace ASC.ElasticSearch
 
                     if (runBulk)
                     {
-                        var portion1 = portion;
+                        var portion1 = portion.ToList();
                         Client.Instance.Bulk(r => r.IndexMany(portion1, GetMeta));
                         for (var j = portionStart; j < i; j++)
                         {
@@ -567,6 +567,7 @@ namespace ASC.ElasticSearch
 
         public IEnumerable<List<T>> IndexAll(Func<DateTime, (int, int, int)> getCount, Func<long, long, DateTime, List<T>> getData)
         {
+            var now = DateTime.UtcNow;
             var lastIndexed = WebstudioDbContext.WebstudioIndex
                 .Where(r => r.IndexName == Wrapper.IndexName)
                 .Select(r => r.LastModified)
@@ -600,7 +601,7 @@ namespace ASC.ElasticSearch
             WebstudioDbContext.AddOrUpdate(r => r.WebstudioIndex, new DbWebstudioIndex()
             {
                 IndexName = Wrapper.IndexName,
-                LastModified = DateTime.UtcNow
+                LastModified = now
             });
 
             WebstudioDbContext.SaveChanges();

@@ -12,7 +12,6 @@ using ASC.Common.Utils;
 
 using CommandLine;
 
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Resource.Manager
@@ -29,6 +28,7 @@ namespace ASC.Resource.Manager
             var services = new ServiceCollection();
             var startup = new Startup();
             startup.ConfigureServices(services);
+
             var serviceProvider = services.BuildServiceProvider();
             using var scope = serviceProvider.CreateScope();
             var scopeClass = scope.ServiceProvider.GetService<ProgramScope>();
@@ -42,11 +42,11 @@ namespace ASC.Resource.Manager
             {
                 var (project, module, filePath, exportPath, culture, format, key) = options;
 
-                project = "Files";
-                module = "Common";
-                filePath = "FilesCommonResource.resx";
-                exportPath = @"C:\Git\portals_core\products\ASC.Files\Core\Resources";
-                key = "AceStatusEnum_CustomFilter";
+                project = "WebStudio";
+                module = "WebStudio";
+                filePath = "Resource.resx";
+                exportPath = @"C:\Git\portals_core\web\ASC.Web.Core\PublicResources";
+                key = "LicenseUploadedOverdueSupport";
 
                 if (format == "json")
                 {
@@ -192,24 +192,16 @@ namespace ASC.Resource.Manager
         }
     }
 
+    [Scope]
     public class ProgramScope
     {
         internal ResourceData ResourceData { get; }
-        internal IConfiguration Configuration { get; }
+        internal ConfigurationExtension Configuration { get; }
 
-        public ProgramScope(ResourceData resourceData, IConfiguration configuration)
+        public ProgramScope(ResourceData resourceData, ConfigurationExtension configuration)
         {
             ResourceData = resourceData;
             Configuration = configuration;
-        }
-    }
-
-    public static class ProgramExtension
-    {
-        public static DIHelper AddProgramService(this DIHelper services)
-        {
-            services.TryAddScoped<ProgramScope>();
-            return services;
         }
     }
 }

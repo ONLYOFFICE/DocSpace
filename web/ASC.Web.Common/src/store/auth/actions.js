@@ -20,6 +20,7 @@ export const SET_GREETING_SETTINGS = "SET_GREETING_SETTINGS";
 export const SET_CUSTOM_NAMES = "SET_CUSTOM_NAMES";
 export const SET_WIZARD_COMPLETED = "SET_WIZARD_COMPLETED";
 export const SET_IS_AUTHENTICATED = "SET_IS_AUTHENTICATED";
+export const SET_IS_TABLET_VIEW = "SET_IS_TABLET_VIEW";
 
 export function setCurrentUser(user) {
   return {
@@ -135,6 +136,13 @@ export function setIsAuthenticated(isAuthenticated) {
   return {
     type: SET_IS_AUTHENTICATED,
     isAuthenticated,
+  };
+}
+
+export function setIsTabletView(isTabletView) {
+  return {
+    type: SET_IS_TABLET_VIEW,
+    isTabletView,
   };
 }
 

@@ -245,12 +245,15 @@ namespace ASC.Core.Data
         public Tenant GetTenant(string domain)
         {
             if (string.IsNullOrEmpty(domain)) throw new ArgumentNullException("domain");
+            
+            domain = domain.ToLowerInvariant();
 
             return TenantsQuery()
-                .Where(r => r.Alias == domain.ToLowerInvariant() || r.MappedDomain == domain.ToLowerInvariant())
+                .Where(r => r.Alias == domain || r.MappedDomain == domain)
                 .OrderBy(a => a.Status == TenantStatus.Restoring ? TenantStatus.Active : a.Status)
                 .ThenByDescending(a => a.Status == TenantStatus.Restoring ? 0 : a.Id)
                 .Select(FromDbTenantToTenant)
+                .Take(1)
                 .FirstOrDefault();
         }
 

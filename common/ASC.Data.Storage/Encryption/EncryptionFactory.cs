@@ -24,43 +24,36 @@
 */
 
 
-using System;
-
 using ASC.Common;
+using ASC.Core.Encryption;
 
-using Microsoft.Extensions.DependencyInjection;
+using Autofac;
 
 namespace ASC.Data.Storage.Encryption
 {
-    [Singletone(Additional = typeof(EncryptionFactoryExtension))]
+    [Singletone]
     public class EncryptionFactory
     {
-        private IServiceProvider ServiceProvider { get; }
+        private ILifetimeScope Container { get; }
 
-        public EncryptionFactory(IServiceProvider serviceProvider)
+        public EncryptionFactory(ILifetimeScope container)
         {
-            ServiceProvider = serviceProvider;
+            Container = container;
         }
 
         public ICrypt GetCrypt(string storageName, EncryptionSettings encryptionSettings)
         {
-            var crypt = ServiceProvider.GetService<Crypt>();
-            crypt.Init(storageName, encryptionSettings);
-            return crypt;
-        }
+            ICrypt result = null;
 
-        public IMetadata GetMetadata()
-        {
-            return ServiceProvider.GetService<Metadata>();
-        }
-    }
+            using var scope = Container.BeginLifetimeScope();
+            if (scope != null)
+            {
+                result = scope.Resolve<ICrypt>();
+            }
 
-    public class EncryptionFactoryExtension
-    {
-        public static void Register(DIHelper services)
-        {
-            services.TryAdd<Crypt>();
-            services.TryAdd<Metadata>();
+            result ??= new FakeCrypt();
+            result.Init(storageName, encryptionSettings);
+            return result;
         }
     }
 }
