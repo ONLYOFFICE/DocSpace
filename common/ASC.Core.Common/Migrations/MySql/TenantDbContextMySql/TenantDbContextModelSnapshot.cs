@@ -270,13 +270,8 @@ namespace ASC.Core.Common.Migrations.MySql.TenantDbContextMySql
                         .HasAnnotation("MySql:CharSet", "utf8")
                         .HasAnnotation("MySql:Collation", "utf8_general_ci");
 
-                    b.Property<int?>("TenantId1")
-                        .HasColumnType("int");
-
                     b.HasKey("TenantId")
                         .HasName("PRIMARY");
-
-                    b.HasIndex("TenantId1");
 
                     b.ToTable("tenants_partners");
                 });
@@ -603,13 +598,6 @@ namespace ASC.Core.Common.Migrations.MySql.TenantDbContextMySql
                             PwdHashSha512 = "USubvPlB+ogq0Q1trcSupg==",
                             Tenant = 1
                         });
-                });
-
-            modelBuilder.Entity("ASC.Core.Common.EF.Model.DbTenantPartner", b =>
-                {
-                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
-                        .WithMany()
-                        .HasForeignKey("TenantId1");
                 });
 
             modelBuilder.Entity("ASC.Core.Common.EF.UserGroup", b =>
