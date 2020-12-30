@@ -209,6 +209,10 @@ const StyledBody = styled.div`
     width: 100%;
     height: calc(100vh - 125px);
 
+    .files-new-link {
+      padding-left: 8px;
+    }
+
     .styled-element {
       margin-left: -2px;
     }
