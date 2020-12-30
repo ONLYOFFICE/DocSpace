@@ -45,7 +45,6 @@ class MobileLayout extends Component {
       this.customScrollElm.scrollTop > 0
         ? this.customScrollElm.scrollTop
         : window.pageYOffset;
-
     if (visibleContent && isMobile && !isTouchDevice) {
       return;
     }
@@ -70,13 +69,6 @@ class MobileLayout extends Component {
       this.customScrollElm.scrollHeight !== this.customScrollElm.clientHeight
     ) {
       isVisible = false;
-    }
-
-    if (
-      !visibleContent &&
-      this.customScrollElm.scrollHeight - this.customScrollElm.clientHeight < 57
-    ) {
-      isVisible = true;
     }
 
     this.setState({
