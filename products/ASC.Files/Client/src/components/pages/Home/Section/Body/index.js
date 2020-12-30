@@ -55,7 +55,7 @@ import {
   setIsVerHistoryPanel,
   setVerHistoryFileId,
   setSharingPanelVisible,
-  setChangeOwnerPanelVisible
+  setChangeOwnerPanelVisible,
 } from "../../../../../store/files/actions";
 import { TIMEOUT } from "../../../../../helpers/constants";
 import {
@@ -189,7 +189,7 @@ const SimpleFilesRow = styled(Row)`
   }
 `;
 
-const EncryptedFile = styled.div`
+const EncryptedFileIcon = styled.div`
   background: url("images/security.svg") no-repeat 0 0 / 16px 16px transparent;
   height: 16px;
   position: absolute;
@@ -893,6 +893,10 @@ class SectionBodyContent extends React.Component {
     if (currentProps.viewAs !== nextProps.viewAs) {
       return true;
     }
+    if (currentProps.isPrivacy !== nextProps.isPrivacy) {
+      return true;
+    }
+
     return false;
   };
 
@@ -922,7 +926,7 @@ class SectionBodyContent extends React.Component {
           loading={this.svgLoader}
         />
         {this.props.isPrivacy && item.fileExst && (
-          <EncryptedFile isEdit={isEdit} />
+          <EncryptedFileIcon isEdit={isEdit} />
         )}
       </>
     );
@@ -1879,7 +1883,11 @@ class SectionBodyContent extends React.Component {
                     isEdit || item.id <= 0
                   );
                   const sharedButton =
-                    !canShare || (isPrivacy && !item.fileExst) || isEdit || item.id <= 0 || sectionWidth < 500
+                    !canShare ||
+                    (isPrivacy && !item.fileExst) ||
+                    isEdit ||
+                    item.id <= 0 ||
+                    sectionWidth < 500
                       ? null
                       : this.getSharedButton(item.shared);
                   const displayShareButton =
@@ -1909,6 +1917,7 @@ class SectionBodyContent extends React.Component {
                         contentElement={sharedButton}
                         onSelect={this.onContentRowSelect}
                         editing={editingId}
+                        isPrivacy={isPrivacy}
                         {...checkedProps}
                         {...contextOptionsProps}
                         needForUpdate={this.needForUpdate}
