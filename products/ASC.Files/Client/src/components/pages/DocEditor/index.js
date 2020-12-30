@@ -131,13 +131,6 @@ class PureEditor extends React.Component {
 
       const newConfig = Object.assign(config, events);
 
-      const { isDesktop } = this.state;
-
-      // if (isDesktop && newConfig.editorConfig["encryptionKeys"] !== undefined) {
-      //   newConfig.editorConfig.encryptionKeys.cryptoEngineId =
-      //     "{FFF0E1EB-13DB-4678-B67D-FF0A41DBBCEF}";
-      // }
-
       if (!window.DocsAPI) throw new Error("DocsAPI is not defined");
 
       hideLoader();
