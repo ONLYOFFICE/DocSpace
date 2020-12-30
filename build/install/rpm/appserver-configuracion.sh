@@ -7,6 +7,7 @@ APP_PORT="80"
 APP_CONF="/etc/onlyoffice/appserver/config/appsettings.test.json"
 DS_CONF="/etc/onlyoffice/documentserver/local.json"
 KAFKA_CONF="/etc/onlyoffice/appserver/config/kafka.test.json"
+NGINX_CONF="/etc/nginx/conf.d/onlyoffice.conf"
 
 DB_HOST=""
 DB_NAME=""
@@ -30,7 +31,7 @@ ELK_VALUE='"elastic": { "Scheme": "'${ELK_SHEME}'", "Host": "'${ELK_HOST}'", "Po
 restart_services() {
 	echo -n "Restarting services... "
 
-	for SVC in nginx mysqld appserver-api appserver-api_system appserver-backup appserver-files appserver-files_service appserver-notify appserver-people appserver-studio appserver-studio_notify appserver-thumbnails appserver-urlshortener
+	for SVC in nginx mysqld appserver-api appserver-socket appserver-api_system appserver-backup appserver-files appserver-files_service appserver-notify appserver-people appserver-studio appserver-studio_notify appserver-thumbnails appserver-urlshortener
 	do
 		systemctl stop $SVC.service  >/dev/null 2>&1
 		systemctl start $SVC.service  >/dev/null 2>&1
@@ -215,7 +216,7 @@ setup_nginx(){
 
 	rm -rf /etc/nginx/conf.d/default.conf
 
-    sed -i "s/listen.*;/listen $APP_PORT;/" /etc/nginx/conf.d/onlyoffice.conf
+    sed -i "s/listen.*;/listen $APP_PORT;/" $NGINX_CONF
 
     shopt -s nocasematch
     PORTS=()
@@ -238,7 +239,7 @@ setup_nginx(){
         true
     done
     chown nginx:nginx /etc/nginx/* -R
-    sudo sed -e 's/#//' -i /etc/nginx/conf.d/onlyoffice.conf
+    sudo sed -e 's/#//' -i $NGINX_CONF
     systemctl reload nginx
 	echo "OK"
 }
@@ -249,11 +250,12 @@ setup_docs() {
 	DOCUMENT_SERVER_JWT_HEADER=$(cat ${DS_CONF} | jq -r '.services.CoAuthoring.token.inbox.header')
 
 	sed "s!\"browser\": .*!\"browser\": false!" -i ${DS_CONF}
-
-	sed "s!\"internal\": .*,!\"internal\": "${DOCUMENT_SERVER_HOST}:${DOCUMENT_SERVER_PORT}",!" -i ${APP_CONF}
-	sed "s!\"header\": \".*\"!\"header\": \"${DOCUMENT_SERVER_JWT_HEADER_FROM_DS}\"!" -i ${APP_CONF}
+	sed "s!\"internal\": .*,!\"internal\": \"${DOCUMENT_SERVER_HOST}:${DOCUMENT_SERVER_PORT}\",!" -i ${APP_CONF}
+	sed "s!\"header\": \".*\"!\"header\": \"${DOCUMENT_SERVER_JWT_HEADER}\"!" -i ${APP_CONF}
 	sed "0,/\"value\": \".*\",/{s/\"value\": \".*\",/\"value\": \"$DOCUMENT_SERVER_JWT_SECRET\",/}" -i ${APP_CONF}
-	sed "s!\"portal\": \".*\"!\"portal\": \"$APP_HOST:$APP_PORT\"!" -i ${APP_CONF}
+	sed "s!\"portal\": \".*\"!\"portal\": \"\"!" -i ${APP_CONF}
+	sed "0,/proxy_pass .*;/{s/proxy_pass .*;/proxy_pass http:\/\/${DOCUMENT_SERVER_HOST}:${DOCUMENT_SERVER_PORT};/}" -i $NGINX_CONF
+
 	echo "OK"
 }
 
