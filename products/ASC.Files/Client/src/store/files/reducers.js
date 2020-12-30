@@ -34,6 +34,7 @@ import {
   SET_IS_VER_HISTORY_PANEL,
   SET_VER_HISTORY_FILE_ID,
   SET_FILE_VERSIONS,
+  SET_CHANGE_OWNER_VISIBLE,
 } from "./actions";
 import { api } from "asc-web-common";
 import { isFileSelected, skipFile, getFilesBySelected } from "./selectors";
@@ -395,6 +396,7 @@ const initialState = {
     fileId: null,
     versions: null,
   },
+  ownerPanelVisible: false,
 };
 
 const filesReducer = (state = initialState, action) => {
@@ -595,6 +597,11 @@ const filesReducer = (state = initialState, action) => {
           ...state.versionHistory,
           versions: action.versions,
         },
+      });
+    }
+    case SET_CHANGE_OWNER_VISIBLE: {
+      return Object.assign({}, state, {
+        ownerPanelVisible: action.ownerPanelVisible,
       });
     }
 
