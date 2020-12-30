@@ -55,7 +55,7 @@ import { setEncryptionAccess } from "../../../../../helpers/desktop";
 
 const { FileAction } = constants;
 const sideColor = "#A3A9AE";
-const { getSettings } = initStore.auth.selectors;
+const { getSettings, isDesktopClient } = initStore.auth.selectors;
 const { getEncryptionAccess, replaceFileStream } = initStore.auth.actions;
 
 const SimpleFilesRowContent = styled(RowContent)`
@@ -172,6 +172,7 @@ class FilesRowContent extends React.PureComponent {
       setIsLoading,
       openDocEditor,
       isPrivacy,
+      isDesktop,
       replaceFileStream,
       i18n,
       t,
@@ -187,9 +188,10 @@ class FilesRowContent extends React.PureComponent {
       return this.completeAction(itemId);
     }
 
-    let tab = item.fileExst
-      ? window.open("/products/files/doceditor", "_blank")
-      : null;
+    let tab =
+      !isDesktop && item.fileExst
+        ? window.open("/products/files/doceditor", "_blank")
+        : null;
 
     !item.fileExst
       ? createFolder(item.parentId, itemTitle)
@@ -211,7 +213,12 @@ class FilesRowContent extends React.PureComponent {
               return setEncryptionAccess(file).then((encryptedFile) => {
                 if (!encryptedFile) return Promise.resolve();
                 toastr.info(t("EncryptedFileSaving"));
-                return replaceFileStream(file.id, encryptedFile, true, false);
+                return replaceFileStream(
+                  file.id,
+                  encryptedFile,
+                  true,
+                  false
+                ).then(() => openDocEditor(file.id, tab, file.webUrl));
               });
             }
             return openDocEditor(file.id, tab, file.webUrl);
@@ -753,6 +760,7 @@ function mapStateToProps(state, props) {
     dragging: getDragging(state),
     isLoading: getIsLoading(state),
     isPrivacy: getIsPrivacyFolder(state),
+    isDesktop: isDesktopClient(state),
 
     canWebEdit: canWebEdit(props.item.fileExst)(state),
     canConvert: canConvert(props.item.fileExst)(state),
