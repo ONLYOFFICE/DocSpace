@@ -80,5 +80,11 @@ namespace ASC.Common.Utils
         {
             return GetConnectionStrings()[key];
         }
+
+        public string this[string key]
+        {
+            get => Configuration[key];
+            set => Configuration[key] = value;
+        }
     }
 }
