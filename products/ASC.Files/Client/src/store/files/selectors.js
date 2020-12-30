@@ -3,7 +3,13 @@ import { constants, store } from "asc-web-common";
 import { createSelector } from "reselect";
 
 const { FileType, FilterType, FolderType } = constants;
-const { isAdmin, isVisitor, getCurrentUserId } = store.auth.selectors;
+const {
+  isAdmin,
+  isVisitor,
+  getCurrentUserId,
+  isEncryptionSupport,
+  isDesktopClient,
+} = store.auth.selectors;
 
 const presentInArray = (array, search) => {
   const result = array.findIndex((item) => item === search);
@@ -63,6 +69,10 @@ export const getFormFillingFormats = (state) => {
 
 export const getConvertedFormats = (state) => {
   return state.files.docservice.convertDocs;
+};
+
+export const getEncryptedFormats = (state) => {
+  return state.files.docservice.encryptedDocs;
 };
 
 export const getArchiveFormats = (state) => {
@@ -398,7 +408,9 @@ export const canCreate = createSelector(
   isAdmin,
   getPathParts,
   getSelectedFolderAccess,
-  (folderType, isAdmin, pathParts, access) => {
+  isEncryptionSupport,
+  isDesktopClient,
+  (folderType, isAdmin, pathParts, access, isSupport, isDesktop) => {
     switch (folderType) {
       case FolderType.USER:
         return true;
@@ -406,6 +418,8 @@ export const canCreate = createSelector(
         const isNotRootFolder = pathParts.length > 1;
         const canCreateInSharedFolder = access === 1;
         return isNotRootFolder && canCreateInSharedFolder;
+      case FolderType.Privacy:
+        return isDesktop && isSupport;
       case FolderType.COMMON:
         return isAdmin;
       case FolderType.TRASH:
@@ -657,7 +671,8 @@ const getFilesContextOptions = (
   canOpenPlayer,
   canChangeOwner,
   canBeDeleted,
-  canShare
+  canShare,
+  isPrivacy
 ) => {
   const options = [];
 
@@ -672,6 +687,18 @@ const getFilesContextOptions = (
     options.push("download-as");
     options.push("restore");
     options.push("separator0");
+    options.push("delete");
+  } else if (isPrivacy) {
+    if (isFile) {
+      options.push("sharing-settings");
+      options.push("separator0");
+      options.push("show-version-history");
+      options.push("separator1");
+    }
+    options.push("download");
+    options.push("move");
+    options.push("rename");
+    options.push("separator2");
     options.push("delete");
   } else {
     if (!isFile) {
@@ -900,6 +927,7 @@ export const getFilesList = (state) => {
       getIsRecentFolder,
       getIsFavoritesFolder,
       getFileActionId,
+      getIsPrivacyFolder,
       isVisitor,
       getCanShareOwnerChange,
       isCanBeDeleted,
@@ -916,7 +944,8 @@ export const getFilesList = (state) => {
       isVisitor,
       canChangeOwner,
       canBeDeleted,
-      canShare
+      canShare,
+      isPrivacy
     ) => {
       const items =
         folders && files
@@ -965,7 +994,8 @@ export const getFilesList = (state) => {
           canOpenPlayer,
           canChangeOwner,
           canBeDeleted,
-          canShare
+          canShare,
+          isPrivacy
         );
         const checked = isFileSelected(selection, id, parentId);
 
@@ -1234,14 +1264,21 @@ export const getAccessedSelected = createSelector(
 
 export const getOperationsFolders = createSelector(
   getTreeFolders,
-  (treeFolders) => {
-    return treeFolders.filter(
-      (folder) =>
-        (folder.rootFolderType === FolderType.USER ||
-          folder.rootFolderType === FolderType.COMMON ||
-          folder.rootFolderType === FolderType.Projects) &&
-        folder
-    );
+  getIsPrivacyFolder,
+  (treeFolders, isPrivacy) => {
+    if (isPrivacy) {
+      return treeFolders.filter(
+        (folder) => folder.rootFolderType === FolderType.Privacy && folder
+      );
+    } else {
+      return treeFolders.filter(
+        (folder) =>
+          (folder.rootFolderType === FolderType.USER ||
+            folder.rootFolderType === FolderType.COMMON ||
+            folder.rootFolderType === FolderType.Projects) &&
+          folder
+      );
+    }
   }
 );
 const getIcon = (state, size = 24, fileExst = null, providerKey = null) => {
@@ -1365,6 +1402,8 @@ export const isCanBeDeleted = createSelector(
         return (
           isAdmin || selection.some((x) => x.access === 0 || x.access === 1)
         );
+      case FolderType.Privacy:
+        return true;
       case FolderType.TRASH:
         return true;
       default:
@@ -1395,6 +1434,8 @@ export const isCanShare = createSelector(
         return false;
       case FolderType.Recent:
         return false;
+      case FolderType.Privacy:
+        return true;
       default:
         return false;
     }

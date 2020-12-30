@@ -562,8 +562,9 @@ export function updateFile(fileId, title) {
   };
 }
 
-export function addFileToRecentlyViewed(fileId) {
+export function addFileToRecentlyViewed(fileId, isPrivacy) {
   return (dispatch) => {
+    if (isPrivacy) return Promise.resolve();
     return files.addFileToRecentlyViewed(fileId);
   };
 }

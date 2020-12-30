@@ -120,5 +120,6 @@
   "CopyItems": "<strong>{{qty}}</strong> elements copied",
   "ContainsSpecCharacter": "The title cannot contain any of the following characters: *+:\"<>?|/",
   "CreateWithEmptyTitle": "Can't create folder or file with empty title",
-  "ChangeOwner": "Change owner"
-}
+  "ChangeOwner": "Change owner",
+  "EncryptedFileSaving": "Saving encrypted file",
+  "EncryptedFileCreating": "File <strong>{{itemTitle}}</strong> successfully created"}

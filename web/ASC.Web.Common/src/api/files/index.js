@@ -609,3 +609,50 @@ export function removeFromFavorite(ids) {
 export function getDocServiceUrl() {
   return request({ method: "get", url: `/files/docservice` });
 }
+
+export function getIsEncryptionSupport() {
+  return request({
+    method: "get",
+    url: "/files/@privacy/available",
+  });
+}
+
+export function setEncryptionKeys(keys) {
+  const data = {
+    publicKey: keys.publicKey,
+    privateKeyEnc: keys.privateKeyEnc,
+  };
+  return request({
+    method: "put",
+    url: "privacyroom/keys",
+    data,
+  });
+}
+
+export function getEncryptionKeys() {
+  return request({
+    method: "get",
+    url: "privacyroom/keys",
+  });
+}
+
+export function getEncryptionAccess(fileId) {
+  return request({
+    method: "get",
+    url: `privacyroom/access/${fileId}`,
+    data: fileId,
+  });
+}
+
+export function updateFileStream(file, fileId, encrypted, forcesave) {
+  let fd = new FormData();
+  fd.append("file", file);
+  fd.append("encrypted", encrypted);
+  fd.append("forcesave", forcesave);
+
+  return request({
+    method: "put",
+    url: `/files/${fileId}/update`,
+    data: fd,
+  });
+}

@@ -27,6 +27,8 @@ import {
 import { sendInstructionsToChangePassword } from "../../api/people";
 import Register from "./sub-components/register-container";
 import { createPasswordHash, tryRedirectTo } from "../../utils";
+import { isDesktopClient } from "../../store/auth/selectors";
+import { checkPwd } from "../../desktop";
 
 const LoginContainer = styled.div`
   display: flex;
@@ -112,7 +114,11 @@ const LoginContainer = styled.div`
 const LoginFormWrapper = styled.div`
   display: grid;
   grid-template-rows: ${(props) =>
-    props.enabledJoin ? css`1fr 66px` : css`1fr`};
+    props.enabledJoin
+      ? props.isDesktop
+        ? css`1fr 10px`
+        : css`1fr 66px`
+      : css`1fr`};
   width: 100%;
   height: calc(100vh-56px);
 `;
@@ -197,7 +203,13 @@ class Form extends Component {
 
   onSubmit = () => {
     const { errorText, identifier, password } = this.state;
-    const { login, setIsLoaded, hashSettings, defaultPage } = this.props;
+    const {
+      login,
+      setIsLoaded,
+      hashSettings,
+      isDesktop,
+      defaultPage,
+    } = this.props;
 
     errorText && this.setState({ errorText: "" });
     let hasError = false;
@@ -220,6 +232,8 @@ class Form extends Component {
 
     this.setState({ isLoading: true });
     const hash = createPasswordHash(pass, hashSettings);
+
+    isDesktop && checkPwd();
 
     login(userName, hash)
       .then(() => {
@@ -454,14 +468,14 @@ Form.defaultProps = {
 const FormWrapper = withTranslation()(Form);
 
 const LoginForm = (props) => {
-  const { language, enabledJoin } = props;
+  const { language, enabledJoin, isDesktop } = props;
 
   useEffect(() => {
     i18n.changeLanguage(language);
   }, [language]);
 
   return (
-    <LoginFormWrapper enabledJoin={enabledJoin}>
+    <LoginFormWrapper enabledJoin={enabledJoin} isDesktop={isDesktop}>
       <PageLayout>
         <PageLayout.SectionBody>
           <FormWrapper i18n={i18n} {...props} />
@@ -476,6 +490,7 @@ LoginForm.propTypes = {
   language: PropTypes.string.isRequired,
   isLoaded: PropTypes.bool,
   enabledJoin: PropTypes.bool,
+  isDesktop: PropTypes.bool.isRequired,
 };
 
 function mapStateToProps(state) {
@@ -491,6 +506,7 @@ function mapStateToProps(state) {
   return {
     isAuthenticated,
     isLoaded,
+    isDesktop: isDesktopClient(state),
     organizationName,
     language: getLanguage(state),
     greetingTitle: greetingSettings,

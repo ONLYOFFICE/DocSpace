@@ -34,6 +34,7 @@ import {
   getFilter,
   getFolders,
   getIsLoading,
+  getIsPrivacyFolder,
   getIsRecycleBinFolder,
   getNewRowItems,
   getSelectedFolderId,
@@ -50,10 +51,12 @@ import { NewFilesPanel } from "../../../../panels";
 import { ConvertDialog } from "../../../../dialogs";
 import EditingWrapperComponent from "./EditingWrapperComponent";
 import { isMobile } from "react-device-detect";
+import { setEncryptionAccess } from "../../../../../helpers/desktop";
 
 const { FileAction } = constants;
 const sideColor = "#A3A9AE";
-const { getSettings } = initStore.auth.selectors;
+const { getSettings, isDesktopClient } = initStore.auth.selectors;
+const { getEncryptionAccess, replaceFileStream } = initStore.auth.actions;
 
 const SimpleFilesRowContent = styled(RowContent)`
   .badge-ext {
@@ -163,7 +166,17 @@ class FilesRowContent extends React.PureComponent {
   };
 
   createItem = (e) => {
-    const { createFile, item, setIsLoading, openDocEditor, i18n } = this.props;
+    const {
+      createFile,
+      item,
+      setIsLoading,
+      openDocEditor,
+      isPrivacy,
+      isDesktop,
+      replaceFileStream,
+      i18n,
+      t,
+    } = this.props;
     const { itemTitle } = this.state;
 
     setIsLoading(true);
@@ -175,9 +188,10 @@ class FilesRowContent extends React.PureComponent {
       return this.completeAction(itemId);
     }
 
-    let tab = item.fileExst
-      ? window.open("/products/files/doceditor", "_blank")
-      : null;
+    let tab =
+      !isDesktop && item.fileExst
+        ? window.open("/products/files/doceditor", "_blank")
+        : null;
 
     !item.fileExst
       ? createFolder(item.parentId, itemTitle)
@@ -195,9 +209,21 @@ class FilesRowContent extends React.PureComponent {
           })
       : createFile(item.parentId, `${itemTitle}.${item.fileExst}`)
           .then((file) => {
-            openDocEditor(file.id, tab, file.webUrl);
-            this.completeAction(itemId);
+            if (isPrivacy) {
+              return setEncryptionAccess(file).then((encryptedFile) => {
+                if (!encryptedFile) return Promise.resolve();
+                toastr.info(t("EncryptedFileSaving"));
+                return replaceFileStream(
+                  file.id,
+                  encryptedFile,
+                  true,
+                  false
+                ).then(() => openDocEditor(file.id, tab, file.webUrl));
+              });
+            }
+            return openDocEditor(file.id, tab, file.webUrl);
           })
+          .then(() => this.completeAction(itemId))
           .then(() => {
             const exst = item.fileExst;
             return toastr.success(
@@ -733,6 +759,8 @@ function mapStateToProps(state, props) {
     newRowItems: getNewRowItems(state),
     dragging: getDragging(state),
     isLoading: getIsLoading(state),
+    isPrivacy: getIsPrivacyFolder(state),
+    isDesktop: isDesktopClient(state),
 
     canWebEdit: canWebEdit(props.item.fileExst)(state),
     canConvert: canConvert(props.item.fileExst)(state),
@@ -753,4 +781,6 @@ export default connect(mapStateToProps, {
   setIsLoading,
   clearSecondaryProgressData,
   fetchFiles,
+  getEncryptionAccess,
+  replaceFileStream,
 })(withRouter(withTranslation()(FilesRowContent)));
