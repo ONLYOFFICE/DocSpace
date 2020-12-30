@@ -1434,6 +1434,8 @@ export const isCanShare = createSelector(
         return false;
       case FolderType.Recent:
         return false;
+      case FolderType.Privacy:
+        return true;
       default:
         return false;
     }
