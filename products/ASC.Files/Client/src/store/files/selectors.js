@@ -3,7 +3,13 @@ import { constants, store } from "asc-web-common";
 import { createSelector } from "reselect";
 
 const { FileType, FilterType, FolderType } = constants;
-const { isAdmin, isVisitor, getCurrentUserId, isEncryptionSupport, isDesktopClient } = store.auth.selectors;
+const {
+  isAdmin,
+  isVisitor,
+  getCurrentUserId,
+  isEncryptionSupport,
+  isDesktopClient,
+} = store.auth.selectors;
 
 const presentInArray = (array, search) => {
   const result = array.findIndex((item) => item === search);
@@ -1396,6 +1402,8 @@ export const isCanBeDeleted = createSelector(
         return (
           isAdmin || selection.some((x) => x.access === 0 || x.access === 1)
         );
+      case FolderType.Privacy:
+        return true;
       case FolderType.TRASH:
         return true;
       default:
