@@ -28,9 +28,9 @@
 
 %files common
 %defattr(-, onlyoffice, onlyoffice, -)
-/etc/onlyoffice/appserver/
+%config /etc/onlyoffice/appserver/
 /var/log/onlyoffice/appserver/
-/usr/bin/*
+%config %attr(644, root, root) /usr/bin/*
 %dir /etc/onlyoffice/
 %dir /var/log/onlyoffice/
 

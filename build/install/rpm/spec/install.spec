@@ -1,3 +1,4 @@
+%install
 mkdir -p "%{buildroot}/etc/nginx/conf.d/"
 mkdir -p "%{buildroot}/etc/nginx/includes"
 mkdir -p "%{buildroot}/etc/onlyoffice/appserver/config/"
