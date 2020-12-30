@@ -39,7 +39,7 @@ const StyledArticle = styled.article`
           ? props.pinned
             ? `
             min-width: 240px;
-            margin-top: ${!props.isLoaded ? "56px" : "0"};
+            margin-top: 56px;
             max-width: ${props.isLoaded ? "calc(100vw - 368px)" : "240px"};
             height: calc(100% - 56px)!important;
 
