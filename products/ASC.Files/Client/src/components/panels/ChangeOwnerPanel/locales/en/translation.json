@@ -1,0 +1,6 @@
+{
+    "ChangeOwner": "Change owner ({{fileName}})",
+    "AddButton": "Save",
+    "CancelButton": "Cancel",
+    "ChangeOwnerDescription": "Once the changes are applied, the current folder owner gets access rights to the access settings of the group he/she belongs to or according to the default folder permissions."
+}
