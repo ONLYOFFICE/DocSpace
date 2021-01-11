@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.Json;
@@ -80,7 +81,7 @@ namespace ASC.Files.Tests
         public virtual void SetUp()
         {
             var host = Program.CreateHostBuilder(new string[] {
-                "--pathToConf" ,"..\\..\\..\\..\\..\\..\\config",
+                "--pathToConf" , Path.Combine("..", "..", "..", "..","..", "..", "config"),
                 "--ConnectionStrings:default:connectionString", TestConnection,
                  "--migration:enabled", "true" }).Build();
 
