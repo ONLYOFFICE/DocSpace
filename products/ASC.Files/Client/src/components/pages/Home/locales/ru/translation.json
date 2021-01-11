@@ -120,5 +120,6 @@
   "CopyItems": "Скопировано элементов: <strong>{{qty}}</strong>",
   "ContainsSpecCharacter": "Название не должно содержать следующих символов: *+:\"<>?|/",
   "CreateWithEmptyTitle": "Нельзя создать папку или файл с пустым названием",
-  "ChangeOwner": "Сменить владельца"
-}
+  "ChangeOwner": "Сменить владельца",
+  "EncryptedFileSaving": "Сохранение зашифрованного файла",
+  "EncryptedFileCreating": "Создан новый файл <strong>{{itemTitle}}</strong>"}

@@ -24,6 +24,7 @@ namespace ASC.Core.Common.EF
 
         }
 
+        internal string MigrateAssembly { get; set; }
         internal ILoggerFactory LoggerFactory { get; set; }
         internal ConnectionStringSettings ConnectionStringSettings { get; set; }
         protected internal Provider Provider { get; set; }
@@ -33,7 +34,7 @@ namespace ASC.Core.Common.EF
             get { return null; }
         }
 
-        internal void Migrate()
+        public void Migrate()
         {
             if (ProviderContext != null)
             {
@@ -42,6 +43,7 @@ namespace ASC.Core.Common.EF
                 using var sqlProvider = ProviderContext[provider]();
                 sqlProvider.ConnectionStringSettings = ConnectionStringSettings;
                 sqlProvider.LoggerFactory = LoggerFactory;
+                sqlProvider.MigrateAssembly = MigrateAssembly;
 
                 sqlProvider.Database.Migrate();
             }
@@ -59,12 +61,19 @@ namespace ASC.Core.Common.EF
             switch (Provider)
             {
                 case Provider.MySql:
-                    optionsBuilder.UseMySql(ConnectionStringSettings.ConnectionString);
+                    optionsBuilder.UseMySql(ConnectionStringSettings.ConnectionString, r=>
+                    {
+                        if (!string.IsNullOrEmpty(MigrateAssembly))
+                        {
+                            r = r.MigrationsAssembly(MigrateAssembly);
+                        }
+                    });
                     break;
                 case Provider.Postgre:
                     optionsBuilder.UseNpgsql(ConnectionStringSettings.ConnectionString);
                     break;
             }
+           
         }
 
         public Provider GetProviderByConnectionString()
