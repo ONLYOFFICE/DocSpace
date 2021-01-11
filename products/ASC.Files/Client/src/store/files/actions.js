@@ -78,6 +78,7 @@ export const SET_SHOW_THIRDPARTY_PANEL = "SET_SHOW_THIRDPARTY_PANEL";
 export const SET_IS_VER_HISTORY_PANEL = "SET_IS_VER_HISTORY_PANEL";
 export const SET_VER_HISTORY_FILE_ID = "SET_VER_HISTORY_FILE_ID";
 export const SET_FILE_VERSIONS = "SET_FILE_VERSIONS";
+export const SET_CHANGE_OWNER_VISIBLE = "SET_CHANGE_OWNER_VISIBLE";
 
 export function setFile(file) {
   return {
@@ -347,6 +348,13 @@ export function setFileVersions(versions) {
   };
 }
 
+export function setChangeOwnerPanelVisible(ownerPanelVisible) {
+  return {
+    type: SET_CHANGE_OWNER_VISIBLE,
+    ownerPanelVisible,
+  };
+}
+
 export function setFilterUrl(filter) {
   const defaultFilter = FilesFilter.getDefault();
   const params = [];
@@ -589,8 +597,9 @@ export function updateFile(fileId, title) {
   };
 }
 
-export function addFileToRecentlyViewed(fileId) {
+export function addFileToRecentlyViewed(fileId, isPrivacy) {
   return (dispatch) => {
+    if (isPrivacy) return Promise.resolve();
     return files.addFileToRecentlyViewed(fileId);
   };
 }
@@ -603,46 +612,45 @@ export function renameFolder(folderId, title) {
   };
 }
 
+export function setFilesOwner(folderIds, fileIds, ownerId) {
+  return files.setFileOwner(folderIds, fileIds, ownerId);
+}
+
 export function setShareFiles(
   folderIds,
   fileIds,
   share,
   notify,
   sharingMessage,
-  externalAccess
+  externalAccess,
+  ownerId
 ) {
-  const foldersRequests = folderIds.map((id) =>
-    files.setShareFolder(id, share, notify, sharingMessage)
-  );
-
-  const filesRequests = fileIds.map((id) =>
-    files.setShareFiles(id, share, notify, sharingMessage)
-  );
-
   let externalAccessRequest = [];
-
   if (fileIds.length === 1 && externalAccess !== null) {
     externalAccessRequest = fileIds.map((id) =>
       files.setExternalAccess(id, externalAccess)
     );
   }
 
+  const ownerChangeRequest = ownerId
+    ? [setFilesOwner(folderIds, fileIds, ownerId)]
+    : [];
+
+  const shareRequest = !!share.length
+    ? [files.setShareFiles(fileIds, folderIds, share, notify, sharingMessage)]
+    : [];
+
   const requests = [
-    ...foldersRequests,
-    ...filesRequests,
+    ...ownerChangeRequest,
+    ...shareRequest,
     ...externalAccessRequest,
   ];
+
   return axios.all(requests);
 }
 
 export function getShareUsers(folderIds, fileIds) {
-  const foldersRequests = folderIds.map((folderId) =>
-    files.getShareFolders(folderId)
-  );
-  const filesRequests = fileIds.map((fileId) => files.getShareFiles(fileId));
-  const requests = [...foldersRequests, ...filesRequests];
-
-  return axios.all(requests).then((res) => res);
+  return files.getShareFiles(fileIds, folderIds);
 }
 
 export function clearPrimaryProgressData() {

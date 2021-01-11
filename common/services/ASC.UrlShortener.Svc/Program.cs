@@ -59,11 +59,6 @@ namespace ASC.UrlShortener.Svc
                     config.SetBasePath(path);
                     var env = hostContext.Configuration.GetValue("ENVIRONMENT", "Production");
                     config
-                        .AddInMemoryCollection(new Dictionary<string, string>
-                            {
-                                {"pathToConf", path }
-                            }
-                        )
                         .AddJsonFile("appsettings.json")
                         .AddJsonFile($"appsettings.{env}.json", true)
                         .AddJsonFile($"urlshortener.{env}.json", true)
@@ -71,7 +66,12 @@ namespace ASC.UrlShortener.Svc
                         .AddJsonFile("kafka.json")
                         .AddJsonFile($"kafka.{env}.json", true)
                         .AddEnvironmentVariables()
-                        .AddCommandLine(args);
+                        .AddCommandLine(args)
+                        .AddInMemoryCollection(new Dictionary<string, string>
+                            {
+                                {"pathToConf", path }
+                            }
+                        );
                 })
                 .ConfigureServices((hostContext, services) =>
                 {

@@ -55,6 +55,7 @@ import {
   setIsVerHistoryPanel,
   setVerHistoryFileId,
   setSharingPanelVisible,
+  setChangeOwnerPanelVisible,
 } from "../../../../../store/files/actions";
 import { TIMEOUT } from "../../../../../helpers/constants";
 import {
@@ -108,6 +109,7 @@ const {
   isAdmin,
   getSettings,
   getCurrentUser,
+  isDesktopClient,
   isEncryptionSupport,
   getOrganizationName,
   getIsTabletView,
@@ -192,6 +194,15 @@ const SimpleFilesRow = styled(Row)`
     margin-right: 1px;
     margin-bottom: 2px;
   }
+`;
+
+const EncryptedFileIcon = styled.div`
+  background: url("images/security.svg") no-repeat 0 0 / 16px 16px transparent;
+  height: 16px;
+  position: absolute;
+  width: 16px;
+  margin-top: 14px;
+  margin-left: ${(props) => (props.isEdit ? "40px" : "12px")};
 `;
 
 class SectionBodyContent extends React.Component {
@@ -577,6 +588,10 @@ class SectionBodyContent extends React.Component {
   onClickShare = () =>
     this.props.setSharingPanelVisible(!this.props.sharingPanelVisible);
 
+  onOwnerChange = () => {
+    this.props.setChangeOwnerPanelVisible(true);
+  };
+
   onClickLinkForPortal = () => {
     const { settings, selection } = this.props;
     const item = selection[0];
@@ -606,7 +621,7 @@ class SectionBodyContent extends React.Component {
         : window.open(`./doceditor?fileId=${id}`, "_blank");
     } else {
       return this.props
-        .addFileToRecentlyViewed(id)
+        .addFileToRecentlyViewed(id, this.props.isPrivacy)
         .then(() => console.log("Pushed to recently viewed"))
         .catch((e) => console.error(e))
         .finally(
@@ -830,6 +845,14 @@ class SectionBodyContent extends React.Component {
             icon: "MailIcon",
             disabled: true,
           };
+        case "owner-change":
+          return {
+            key: option,
+            label: t("ChangeOwner"),
+            icon: "CatalogUserIcon",
+            onClick: this.onOwnerChange,
+            disabled: false,
+          };
         case "link-for-portal-users":
           return {
             key: option,
@@ -966,6 +989,10 @@ class SectionBodyContent extends React.Component {
     if (currentProps.viewAs !== nextProps.viewAs) {
       return true;
     }
+    if (currentProps.isPrivacy !== nextProps.isPrivacy) {
+      return true;
+    }
+
     return false;
   };
 
@@ -985,14 +1012,19 @@ class SectionBodyContent extends React.Component {
 
   getItemIcon = (item, isEdit) => {
     return (
-      <ReactSVG
-        beforeInjection={(svg) => {
-          svg.setAttribute("style", "margin-top: 4px");
-          isEdit && svg.setAttribute("style", "margin: 4px 0 0 28px");
-        }}
-        src={item.icon}
-        loading={this.svgLoader}
-      />
+      <>
+        <ReactSVG
+          beforeInjection={(svg) => {
+            svg.setAttribute("style", "margin-top: 4px");
+            isEdit && svg.setAttribute("style", "margin: 4px 0 0 28px");
+          }}
+          src={item.icon}
+          loading={this.svgLoader}
+        />
+        {this.props.isPrivacy && item.fileExst && (
+          <EncryptedFileIcon isEdit={isEdit} />
+        )}
+      </>
     );
   };
 
@@ -1037,6 +1069,8 @@ class SectionBodyContent extends React.Component {
       isFavorites,
       isRecent,
       isPrivacy,
+      isDesktop,
+      isEncryptionSupport,
       organizationName,
       privacyInstructions,
       title,
@@ -1074,15 +1108,17 @@ class SectionBodyContent extends React.Component {
             </Box>
           ))}
         </Text>
-        <Text fontSize="12px">
-          <Trans i18nKey="PrivateRoomSupport" i18n={i18n}>
-            Work in Private Room is available via {{ organizationName }} desktop
-            app.
-            <Link isBold isHovered color="#116d9d" href={privacyInstructions}>
-              Instructions
-            </Link>
-          </Trans>
-        </Text>
+        {!isDesktop && (
+          <Text fontSize="12px">
+            <Trans i18nKey="PrivateRoomSupport" i18n={i18n}>
+              Work in Private Room is available via {{ organizationName }}
+              desktop app.
+              <Link isBold isHovered color="#116d9d" href={privacyInstructions}>
+                Instructions
+              </Link>
+            </Trans>
+          </Text>
+        )}
       </>
     );
 
@@ -1201,6 +1237,7 @@ class SectionBodyContent extends React.Component {
           headerText={privateRoomHeader}
           descriptionText={privateRoomDescription}
           imageSrc="images/empty_screen_privacy.png"
+          buttons={isDesktop && isEncryptionSupport && commonButtons}
         />
       );
     } else {
@@ -1985,7 +2022,11 @@ class SectionBodyContent extends React.Component {
                     isEdit || item.id <= 0
                   );
                   const sharedButton =
-                    !canShare || isEdit || item.id <= 0 || sectionWidth < 500
+                    !canShare ||
+                    (isPrivacy && !item.fileExst) ||
+                    isEdit ||
+                    item.id <= 0 ||
+                    sectionWidth < 500
                       ? null
                       : this.getSharedButton(item.shared);
                   const displayShareButton =
@@ -2015,6 +2056,7 @@ class SectionBodyContent extends React.Component {
                         contentElement={sharedButton}
                         onSelect={this.onContentRowSelect}
                         editing={editingId}
+                        isPrivacy={isPrivacy}
                         {...checkedProps}
                         {...contextOptionsProps}
                         needForUpdate={this.needForUpdate}
@@ -2085,6 +2127,7 @@ const mapStateToProps = (state) => {
     folders: getFolders(state),
     isAdmin: isAdmin(state),
     isCommon: getIsCommonFolder(state),
+    isDesktop: isDesktopClient(state),
     isEncryptionSupport: isEncryptionSupport(state),
     isFavorites: getIsFavoritesFolder(state),
     isMy: getIsMyFolder(state),
@@ -2143,4 +2186,5 @@ export default connect(mapStateToProps, {
   setSharingPanelVisible,
   setIsVerHistoryPanel,
   setVerHistoryFileId,
+  setChangeOwnerPanelVisible,
 })(withRouter(withTranslation()(SectionBodyContent)));

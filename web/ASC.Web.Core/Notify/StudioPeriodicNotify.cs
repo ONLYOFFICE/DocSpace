@@ -481,9 +481,6 @@ namespace ASC.Web.Studio.Core.Notify
                                     ? new List<UserInfo> { userManager.GetUsers(tenant.OwnerId) }
                                     : studioNotifyHelper.GetRecipients(toadmins, tousers, false);
 
-
-                    var analytics = studioNotifyHelper.GetNotifyAnalytics(action, toowner, toadmins, tousers, false);
-
                     foreach (var u in users.Where(u => paymentMessage || studioNotifyHelper.IsSubscribedToNotify(u, Actions.PeriodicNotify)))
                     {
                         var culture = string.IsNullOrEmpty(u.CultureName) ? tenant.GetCulture() : u.GetCulture();
@@ -514,7 +511,6 @@ namespace ASC.Web.Studio.Core.Notify
                             TagValues.TableItem(7, tableItemText7, tableItemUrl7, tableItemImg7, tableItemComment7, tableItemLearnMoreText7, tableItemLearnMoreUrl7),
                             TagValues.TableBottom(),
                             new TagValue(CommonTags.Footer, u.IsAdmin(userManager) ? "common" : "social"),
-                            new TagValue(CommonTags.Analytics, analytics),
                             new TagValue(Tags.Coupon, coupon));
                     }
                 }
@@ -564,8 +560,9 @@ namespace ASC.Web.Studio.Core.Notify
                     var quota = tenantManager.GetTenantQuota(tenant.TenantId);
                     var createdDate = tenant.CreatedDateTime.Date;
 
-                    var dueDateIsNotMax = tariff.DueDate != DateTime.MaxValue;
-                    var dueDate = tariff.DueDate.Date;
+                    var actualEndDate = (tariff.DueDate != DateTime.MaxValue ? tariff.DueDate : tariff.LicenseDate);
+                    var dueDateIsNotMax = actualEndDate != DateTime.MaxValue;
+                    var dueDate = actualEndDate.Date;
 
                     var delayDueDateIsNotMax = tariff.DelayDueDate != DateTime.MaxValue;
                     var delayDueDate = tariff.DelayDueDate.Date;
@@ -1083,7 +1080,7 @@ namespace ASC.Web.Studio.Core.Notify
                                 case 28:
                                     action = Actions.PersonalAfterRegistration28;
                                     greenButtonText = () => WebstudioNotifyPatternResource.ButtonStartFreeTrial;
-                                    greenButtonUrl = "https://www.onlyoffice.com/enterprise-edition-free.aspx";
+                                    greenButtonUrl = "https://www.onlyoffice.com/download-commercial.aspx";
                                     break;
                                 default:
                                     continue;

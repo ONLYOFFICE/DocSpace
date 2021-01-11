@@ -41,10 +41,11 @@ import {
   isSecondaryProgressFinished,
   getSelectionLength,
   getSelectionTitle,
+  getShowOwnerChangePanel,
 } from "../../../store/files/selectors";
 
 import { ConvertDialog } from "../../dialogs";
-import { SharingPanel } from "../../panels";
+import { SharingPanel, ChangeOwnerPanel } from "../../panels";
 import { createI18N } from "../../../helpers/i18n";
 import { getFilterByLocation } from "../../../helpers/converters";
 const i18n = createI18N({
@@ -233,6 +234,7 @@ class PureHome extends React.Component {
       sharingPanelVisible,
       fileActionId,
       firstLoad,
+      showOwnerChangePanel,
     } = this.props;
 
     return (
@@ -240,6 +242,8 @@ class PureHome extends React.Component {
         {convertDialogVisible && (
           <ConvertDialog visible={convertDialogVisible} />
         )}
+
+        {showOwnerChangePanel && <ChangeOwnerPanel />}
 
         {sharingPanelVisible && <SharingPanel />}
         <PageLayout
@@ -336,6 +340,7 @@ function mapStateToProps(state) {
     isProgressFinished: isSecondaryProgressFinished(state),
     selectionLength: getSelectionLength(state),
     selectionTitle: getSelectionTitle(state),
+    showOwnerChangePanel: getShowOwnerChangePanel(state),
   };
 }
 

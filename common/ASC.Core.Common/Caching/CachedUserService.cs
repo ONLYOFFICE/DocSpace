@@ -259,6 +259,12 @@ namespace ASC.Core.Caching
             }
         }
 
+        public UserInfo GetUser(int tenant, string email)
+        {
+            return Service.GetUser(tenant, email);
+        }
+
+
         /// <summary>
         /// For Personal only
         /// </summary>

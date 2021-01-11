@@ -53,9 +53,11 @@ import {
   getSelectionLength,
   getSharePanelVisible,
   getIsThirdPartySelection,
+  getIsPrivacyFolder,
+  getOnlyFoldersSelected,
 } from "../../../../../store/files/selectors";
 
-const { isAdmin } = store.auth.selectors;
+const { isAdmin, isDesktopClient } = store.auth.selectors;
 const { FilterType, FileAction } = constants;
 const { tablet, desktop } = utils.device;
 const { Consumer } = utils.context;
@@ -145,7 +147,11 @@ const StyledContainer = styled.div`
             width: ${props.width + 16 + "px"};
           `}
         position: absolute;
-        top: 56px;
+        ${(props) =>
+          !props.isDesktop &&
+          css`
+            top: 56px;
+          `}
         z-index: 180;
       }
     }
@@ -406,6 +412,9 @@ class SectionHeaderContent extends React.Component {
       deleteDialogVisible,
       isRecycleBin,
       isThirdPartySelection,
+      isPrivacy,
+      selection,
+      isOnlyFoldersSelected,
     } = this.props;
 
     let menu = [
@@ -462,7 +471,9 @@ class SectionHeaderContent extends React.Component {
       },
       {
         label: t("Share"),
-        disabled: !isAccessedSelected,
+        disabled:
+          !isAccessedSelected ||
+          (isPrivacy && (isOnlyFoldersSelected || selection.length > 1)),
         onClick: this.onOpenSharingPanel,
       },
       {
@@ -507,6 +518,11 @@ class SectionHeaderContent extends React.Component {
       menu.splice(1, 1);
     }
 
+    if (isPrivacy) {
+      menu.splice(3, 1);
+      menu.splice(4, 1);
+    }
+
     return menu;
   };
 
@@ -523,6 +539,7 @@ class SectionHeaderContent extends React.Component {
       isRootFolder,
       title,
       canCreate,
+      isDesktop,
     } = this.props;
 
     const {
@@ -543,6 +560,7 @@ class SectionHeaderContent extends React.Component {
             isRootFolder={isRootFolder}
             canCreate={canCreate}
             title={title}
+            isDesktop={isDesktop}
           >
             {isHeaderVisible ? (
               <div className="group-button-menu-container">
@@ -679,6 +697,8 @@ const mapStateToProps = (state) => {
     isRootFolder: getIsRootFolder(state),
     isAdmin: isAdmin(state),
     isRecycleBin: getIsRecycleBinFolder(state),
+    isPrivacy: getIsPrivacyFolder(state),
+    isDesktop: isDesktopClient(state),
     parentId: getSelectedFolderParentId(state),
     selection: getSelection(state),
     title: getSelectedFolderTitle(state),
@@ -694,6 +714,7 @@ const mapStateToProps = (state) => {
     isItemsSelected: getSelectionLength(state),
     sharingPanelVisible: getSharePanelVisible(state),
     isThirdPartySelection: getIsThirdPartySelection(state),
+    isOnlyFoldersSelected: getOnlyFoldersSelected(state),
   };
 };
 

@@ -161,6 +161,12 @@ const StyledContent = styled.div`
   .header_aside-panel-plus-icon {
     margin-left: auto;
   }
+
+  .sharing-access-combo-box-icon {
+    path {
+      fill: ${(props) => (props.isDisabled ? "#D0D5DA" : "#A3A9AE")};
+    }
+  }
 `;
 
 const StyledHeaderContent = styled.div`
@@ -203,6 +209,10 @@ const StyledBody = styled.div`
     width: 100%;
     height: calc(100vh - 125px);
 
+    .files-new-link {
+      padding-left: 8px;
+    }
+
     .styled-element {
       margin-left: -2px;
     }
@@ -210,6 +220,16 @@ const StyledBody = styled.div`
 
   .embedding-panel_body {
     padding: 0 16px;
+  }
+
+  .change-owner_body {
+    padding: 0 16px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .change-owner_owner-label {
+    margin: 16px 0;
   }
 
   .selector-wrapper {
@@ -282,6 +302,12 @@ const StyledBody = styled.div`
     margin: 8px;
     right: 16px;
   }
+
+  .sharing-access-combo-box-icon {
+    path {
+      fill: #333;
+    }
+  }
 `;
 
 const StyledSharingBody = styled(Scrollbar)`
@@ -336,12 +362,6 @@ const StyledSharingBody = styled(Scrollbar)`
         height: 8px;
         width: 8px;
       }
-    }
-  }
-
-  .sharing-access-combo-box-icon {
-    path {
-      fill: #a3a9ae;
     }
   }
 

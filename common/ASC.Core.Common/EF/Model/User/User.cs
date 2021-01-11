@@ -99,8 +99,7 @@ namespace ASC.Core.Common.EF
                     ActivationStatus = 0,
                     WorkFromDate = DateTime.UtcNow,
                     LastModified = DateTime.UtcNow
-                }
-                );
+                });
 
             return modelBuilder;
         }

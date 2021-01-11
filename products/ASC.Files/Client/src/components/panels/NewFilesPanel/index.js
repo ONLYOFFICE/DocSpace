@@ -7,9 +7,8 @@ import {
   Heading,
   Aside,
   Row,
-  RowContent,
+  Box,
   RowContainer,
-  Text,
   Link,
   Button,
 } from "asc-web-components";
@@ -31,6 +30,7 @@ import {
   getFolders,
   getTreeFolders,
   getSelectedFolder,
+  getIsPrivacyFolder,
 } from "../../../store/files/selectors";
 import {
   fetchFiles,
@@ -141,6 +141,7 @@ class NewFilesPanelComponent extends React.Component {
       setMediaViewerData,
       fetchFiles,
       addFileToRecentlyViewed,
+      isPrivacy,
     } = this.props;
 
     if (!fileExst) {
@@ -150,7 +151,7 @@ class NewFilesPanelComponent extends React.Component {
       const isMedia = [2, 3, 4].includes(fileType);
 
       if (canEdit && providerKey) {
-        return addFileToRecentlyViewed(id)
+        return addFileToRecentlyViewed(id, isPrivacy)
           .then(() => console.log("Pushed to recently viewed"))
           .catch((e) => console.error(e))
           .finally(window.open(`./doceditor?fileId=${id}`, "_blank"));
@@ -256,9 +257,7 @@ class NewFilesPanelComponent extends React.Component {
                   const element = this.getItemIcon(file);
                   return (
                     <Row key={file.id} element={element}>
-                      <RowContent
-                        onClick={this.onNewFilesClick.bind(this, file)}
-                      >
+                      <Box onClick={this.onNewFilesClick.bind(this, file)}>
                         <Link
                           containerWidth="100%"
                           type="page"
@@ -268,14 +267,11 @@ class NewFilesPanelComponent extends React.Component {
                           truncate
                           title={file.title}
                           fontSize="14px"
+                          className="files-new-link"
                         >
                           {file.title}
                         </Link>
-                        <></>
-                        <Text fontSize="12px" containerWidth="auto">
-                          {file.checked && t("ConvertInto")}
-                        </Text>
-                      </RowContent>
+                      </Box>
                     </Row>
                   );
                 })}
@@ -322,6 +318,7 @@ const mapStateToProps = (state) => {
     folders: getFolders(state),
     treeFolders: getTreeFolders(state),
     selectedFolder: getSelectedFolder(state),
+    isPrivacy: getIsPrivacyFolder(state),
   };
 };
 

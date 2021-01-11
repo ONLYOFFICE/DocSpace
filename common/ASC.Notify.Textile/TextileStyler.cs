@@ -93,7 +93,6 @@ namespace ASC.Notify.Textile
             formatter.Format(message.Body);
 
             var template = GetTemplate(message);
-            var analytics = GetAnalytics(message);
             var imagePath = GetImagePath(message);
             var logoImg = GetLogoImg(message, imagePath);
             var logoText = GetLogoText(message);
@@ -103,7 +102,7 @@ namespace ASC.Notify.Textile
 
             InitFooter(message, mailSettings, out var footerContent, out var footerSocialContent);
 
-            message.Body = template.Replace("%ANALYTICS%", analytics)
+            message.Body = template
                                    .Replace("%CONTENT%", output.GetFormattedText())
                                    .Replace("%LOGO%", logoImg)
                                    .Replace("%LOGOTEXT%", logoText)
@@ -131,12 +130,6 @@ namespace ASC.Notify.Textile
             }
 
             return template;
-        }
-
-        private static string GetAnalytics(NoticeMessage message)
-        {
-            var analyticsTag = message.GetArgument("Analytics");
-            return analyticsTag == null ? string.Empty : (string)analyticsTag.Value;
         }
 
         private static string GetImagePath(NoticeMessage message)
