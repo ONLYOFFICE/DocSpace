@@ -168,8 +168,6 @@ const SectionBodyContent = ({
   if (setting === "admin" && isAdmin) content = renderAdminSettings();
   if (setting === "common") content = renderCommonSettings();
   if (setting === "thirdParty" && enableThirdParty) content = <ConnectClouds />;
-  //if (setting === "thirdparty" && enableThirdParty)
-  //  content = renderCommonSettings(); //renderClouds();
 
   return isLoading ? null : (!enableThirdParty && setting === "thirdParty") ||
     (!isAdmin && setting === "admin") ? (

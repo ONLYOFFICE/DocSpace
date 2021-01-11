@@ -153,7 +153,7 @@ const PureTreeSettings = ({
             title={t("TreeSettingsAdminSettings")}
           />
         ) : null}
-        {/*enableThirdParty ? (
+        {enableThirdParty ? (
           <TreeNode
             selectable={true}
             className="settings-node"
@@ -162,7 +162,7 @@ const PureTreeSettings = ({
             isLeaf={true}
             title={t("TreeSettingsConnectedCloud")}
           />
-        ) : null*/}
+        ) : null}
       </TreeNode>
     );
   };

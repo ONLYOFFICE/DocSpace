@@ -51,8 +51,7 @@ const PureSettings = ({
         setTitle("AdminSettings");
         break;
       case "thirdParty":
-        //setTitle("ThirdPartySettings");
-        history.push("/products/files/settings/common");
+        setTitle("ThirdPartySettings");
         break;
       default:
         setTitle("CommonSettings");
