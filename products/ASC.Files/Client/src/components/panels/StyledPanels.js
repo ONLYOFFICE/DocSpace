@@ -67,6 +67,39 @@ const StyledAsidePanel = styled.div`
   ${PanelStyles}
 `;
 
+const StyledVersionHistoryPanel = styled.div`
+  ${PanelStyles}
+  .version-history-modal-dialog {
+    transform: translateX(${(props) => (props.visible ? "0" : "720px")});
+    width: 720px;
+  }
+  .version-history-aside-panel {
+    transform: translateX(${(props) => (props.visible ? "0" : "720px")});
+    width: 720px;
+  }
+  .version-history-panel-header {
+    height: 53px;
+    margin-left: 0px;
+    .version-history-panel-heading {
+      font-weight: 700;
+      margin-bottom: 13px;
+      margin-top: 12px;
+    }
+  }
+  .version-history-panel-body {
+    padding: ${(props) => (props.isLoading ? "16px 0" : null)};
+    margin: 0 16px;
+    border-top: 1px solid #eceef1;
+
+    .version-comment-wrapper {
+      margin-left: 79px;
+    }
+    .version_edit-comment {
+      padding-left: 2px;
+    }
+  }
+`;
+
 const StyledAddUsersPanelPanel = styled.div`
   .header_aside-panel {
     transform: translateX(${(props) => (props.visible ? "0" : "500px")});
@@ -128,6 +161,12 @@ const StyledContent = styled.div`
   .header_aside-panel-plus-icon {
     margin-left: auto;
   }
+
+  .sharing-access-combo-box-icon {
+    path {
+      fill: ${(props) => (props.isDisabled ? "#D0D5DA" : "#A3A9AE")};
+    }
+  }
 `;
 
 const StyledHeaderContent = styled.div`
@@ -164,12 +203,33 @@ const StyledHeaderContent = styled.div`
 `;
 
 const StyledBody = styled.div`
-  .files-operations-body {
+  &.files-operations-body {
     padding: 0 16px;
+    box-sizing: border-box;
+    width: 100%;
+    height: calc(100vh - 125px);
+
+    .files-new-link {
+      padding-left: 8px;
+    }
+
+    .styled-element {
+      margin-left: -2px;
+    }
   }
 
   .embedding-panel_body {
     padding: 0 16px;
+  }
+
+  .change-owner_body {
+    padding: 0 16px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .change-owner_owner-label {
+    margin: 16px 0;
   }
 
   .selector-wrapper {
@@ -242,6 +302,12 @@ const StyledBody = styled.div`
     margin: 8px;
     right: 16px;
   }
+
+  .sharing-access-combo-box-icon {
+    path {
+      fill: #333;
+    }
+  }
 `;
 
 const StyledSharingBody = styled(Scrollbar)`
@@ -296,12 +362,6 @@ const StyledSharingBody = styled(Scrollbar)`
         height: 8px;
         width: 8px;
       }
-    }
-  }
-
-  .sharing-access-combo-box-icon {
-    path {
-      fill: #a3a9ae;
     }
   }
 
@@ -406,6 +466,7 @@ export {
   StyledAddGroupsPanel,
   StyledAddUsersPanelPanel,
   StyledEmbeddingPanel,
+  StyledVersionHistoryPanel,
   StyledContent,
   StyledHeaderContent,
   StyledBody,

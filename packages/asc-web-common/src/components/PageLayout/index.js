@@ -101,6 +101,7 @@ class PageLayoutComponent extends React.Component {
 
   componentDidMount() {
     window.addEventListener("orientationchange", this.orientationChangeHandler);
+
     this.orientationChangeHandler();
   }
 
@@ -217,6 +218,7 @@ class PageLayoutComponent extends React.Component {
       withBodyScroll,
       children,
       isLoaded,
+      headerBorderBottom,
     } = this.props;
 
     let articleHeaderContent = null;
@@ -337,7 +339,11 @@ class PageLayoutComponent extends React.Component {
                   sectionWidth: width,
                 }}
               >
-                <Section widthProp={width}>
+                <Section
+                  widthProp={width}
+                  unpinArticle={this.unpinArticle}
+                  pinned={this.state.isArticlePinned}
+                >
                   {isSectionHeaderAvailable && (
                     <SubSectionHeader>
                       {sectionHeaderContent
@@ -455,6 +461,7 @@ PageLayoutComponent.propTypes = {
   hideAside: PropTypes.bool,
   isLoaded: PropTypes.bool,
   viewAs: PropTypes.string,
+  headerBorderBottom: PropTypes.bool,
 };
 
 PageLayoutComponent.defaultProps = {

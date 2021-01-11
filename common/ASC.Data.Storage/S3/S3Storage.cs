@@ -81,6 +81,15 @@ namespace ASC.Data.Storage.S3
             TenantManager tenantManager,
             PathUtils pathUtils,
             EmailValidationKeyProvider emailValidationKeyProvider,
+            IOptionsMonitor<ILog> options)
+            : base(tenantManager, pathUtils, emailValidationKeyProvider, options)
+        {
+        }
+
+        public S3Storage(
+            TenantManager tenantManager,
+            PathUtils pathUtils,
+            EmailValidationKeyProvider emailValidationKeyProvider,
             IHttpContextAccessor httpContextAccessor,
             IOptionsMonitor<ILog> options)
             : base(tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, options)
@@ -607,6 +616,7 @@ namespace ASC.Data.Storage.S3
         public override string SavePrivate(string domain, string path, Stream stream, DateTime expires)
         {
             using var client = GetClient();
+            using var uploader = new TransferUtility(client);
             var objectKey = MakePath(domain, path);
             var buffered = stream.GetBuffered();
             var request = new TransferUtilityUploadRequest
@@ -627,7 +637,7 @@ namespace ASC.Data.Storage.S3
 
             request.Metadata.Add("private-expire", expires.ToFileTimeUtc().ToString(CultureInfo.InvariantCulture));
 
-            new TransferUtility(client).Upload(request);
+            uploader.Upload(request);
 
             //Get presigned url                
             var pUrlRequest = new GetPreSignedUrlRequest

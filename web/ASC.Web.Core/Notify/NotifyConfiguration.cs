@@ -138,60 +138,64 @@ namespace ASC.Web.Studio.Core.Notify
                  (r, p, scope) =>
                  {
                      var scopeClass = scope.ServiceProvider.GetService<NotifyConfigurationScope>();
+                     var coreBaseSettings = scope.ServiceProvider.GetService<CoreBaseSettings>();
                      var (tenantManager, webItemSecurity, userManager, options, _, _, _, _, _, _, _, _, _, _, _) = scopeClass;
                      try
                      {
                          // culture
                          var u = Constants.LostUser;
-                         var tenant = tenantManager.GetCurrentTenant();
-
-                         if (32 <= r.Recipient.ID.Length)
+                         if (!(coreBaseSettings.Personal && r.NotifyAction.ID == Actions.PersonalConfirmation.ID))
                          {
-                             var guid = default(Guid);
-                             try
+                             var tenant = tenantManager.GetCurrentTenant();
+
+                             if (32 <= r.Recipient.ID.Length)
                              {
-                                 guid = new Guid(r.Recipient.ID);
+                                 var guid = default(Guid);
+                                 try
+                                 {
+                                     guid = new Guid(r.Recipient.ID);
+                                 }
+                                 catch (FormatException) { }
+                                 catch (OverflowException) { }
+
+                                 if (guid != default)
+                                 {
+                                     u = userManager.GetUsers(guid);
+                                 }
                              }
-                             catch (FormatException) { }
-                             catch (OverflowException) { }
 
-                             if (guid != default)
+                             if (Constants.LostUser.Equals(u))
                              {
-                                 u = userManager.GetUsers(guid);
+                                 u = userManager.GetUserByEmail(r.Recipient.ID);
                              }
-                         }
 
-                         if (Constants.LostUser.Equals(u))
-                         {
-                             u = userManager.GetUserByEmail(r.Recipient.ID);
-                         }
-
-                         if (Constants.LostUser.Equals(u))
-                         {
-                             u = userManager.GetUserByUserName(r.Recipient.ID);
-                         }
-
-                         if (!Constants.LostUser.Equals(u))
-                         {
-                             var culture = !string.IsNullOrEmpty(u.CultureName) ? u.GetCulture() : tenant.GetCulture();
-                             Thread.CurrentThread.CurrentCulture = culture;
-                             Thread.CurrentThread.CurrentUICulture = culture;
-
-                             // security
-                             var tag = r.Arguments.Find(a => a.Tag == CommonTags.ModuleID);
-                             var productId = tag != null ? (Guid)tag.Value : Guid.Empty;
-                             if (productId == Guid.Empty)
+                             if (Constants.LostUser.Equals(u))
                              {
-                                 tag = r.Arguments.Find(a => a.Tag == CommonTags.ProductID);
-                                 productId = tag != null ? (Guid)tag.Value : Guid.Empty;
+                                 u = userManager.GetUserByUserName(r.Recipient.ID);
                              }
-                             if (productId == Guid.Empty)
+
+                             if (!Constants.LostUser.Equals(u))
                              {
-                                 productId = (Guid)(CallContext.GetData("asc.web.product_id") ?? Guid.Empty);
-                             }
-                             if (productId != Guid.Empty && productId != new Guid("f4d98afdd336433287783c6945c81ea0") /* ignore people product */)
-                             {
-                                 return !webItemSecurity.IsAvailableForUser(productId, u.ID);
+                                 var culture = !string.IsNullOrEmpty(u.CultureName) ? u.GetCulture() : tenant.GetCulture();
+                                 Thread.CurrentThread.CurrentCulture = culture;
+                                 Thread.CurrentThread.CurrentUICulture = culture;
+
+                                 // security
+                                 var tag = r.Arguments.Find(a => a.Tag == CommonTags.ModuleID);
+                                 var productId = tag != null ? (Guid)tag.Value : Guid.Empty;
+                                 if (productId == Guid.Empty)
+                                 {
+                                     tag = r.Arguments.Find(a => a.Tag == CommonTags.ProductID);
+                                     productId = tag != null ? (Guid)tag.Value : Guid.Empty;
+                                 }
+                                 if (productId == Guid.Empty)
+                                 {
+                                     productId = (Guid)(CallContext.GetData("asc.web.product_id") ?? Guid.Empty);
+                                 }
+                                 if (productId != Guid.Empty && productId != new Guid("f4d98afdd336433287783c6945c81ea0") /* ignore people product */)
+                                 {
+                                     return !webItemSecurity.IsAvailableForUser(productId, u.ID);
+                                 }
                              }
                          }
 

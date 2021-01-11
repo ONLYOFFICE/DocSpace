@@ -176,7 +176,7 @@ namespace ASC.Core.Common.Configuration
         {
             if (!CanSet)
             {
-                throw new NotSupportedException("Key for read only.");
+                throw new NotSupportedException("Key for read only. Consumer " + Name);
             }
 
             foreach (var providerProp in Props)
@@ -258,7 +258,7 @@ namespace ASC.Core.Common.Configuration
         {
             if (!CanSet)
             {
-                throw new NotSupportedException("Key for read only.");
+                throw new NotSupportedException("Key for read only. Key " + name);
             }
 
             if (!ManagedKeys.Contains(name))

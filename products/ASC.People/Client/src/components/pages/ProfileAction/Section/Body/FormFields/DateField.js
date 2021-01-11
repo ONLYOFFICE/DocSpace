@@ -15,12 +15,12 @@ class DateField extends React.Component {
       hasError,
       labelText,
       calendarHeaderContent,
-
       inputName,
       inputValue,
       inputIsDisabled,
       inputOnChange,
       inputTabIndex,
+      calendarMinDate,
     } = this.props;
 
     return (
@@ -38,6 +38,8 @@ class DateField extends React.Component {
           tabIndex={inputTabIndex}
           displayType="auto"
           calendarHeaderContent={calendarHeaderContent}
+          minDate={calendarMinDate ? calendarMinDate : new Date("1900/01/01")}
+          maxDate={new Date()}
         />
       </FieldContainer>
     );

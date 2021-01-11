@@ -21,6 +21,8 @@ import {
   Main,
   utils,
   toastr,
+  Layout,
+  regDesktop,
 } from "@appserver/common";
 
 const {
@@ -31,14 +33,24 @@ const {
   setCurrentProductId,
   setCurrentProductHomePage,
   getPortalCultures,
+  setEncryptionKeys,
+  getIsEncryptionSupport,
+  getEncryptionKeys,
   getIsAuthenticated,
 } = commonStore.auth.actions;
+const {
+  getCurrentUser,
+  isEncryptionSupport,
+  isDesktopClient,
+  getIsLoaded,
+} = commonStore.auth.selectors;
 
 class App extends React.Component {
   constructor(props) {
     super(props);
 
     this.isEditor = window.location.pathname.indexOf("doceditor") !== -1;
+    this.isDesktopInit = false;
   }
 
   componentDidMount() {
@@ -50,6 +62,9 @@ class App extends React.Component {
       getPortalCultures,
       fetchTreeFolders,
       setIsLoaded,
+      getIsEncryptionSupport,
+      getEncryptionKeys,
+      isDesktop,
       getIsAuthenticated,
     } = this.props;
 
@@ -68,15 +83,23 @@ class App extends React.Component {
         utils.updateTempContent(isAuthenticated);
       }
 
-      const requests = [
-        getUser(),
+      const requests = [getUser()];
+      if (!this.isEditor) {
+        requests.push(
         getPortalSettings(),
         getModules(),
         getPortalCultures(),
-        fetchTreeFolders(),
-      ];
+          fetchTreeFolders()
+        );
+        if (isDesktop) {
+          requests.push(getIsEncryptionSupport(), getEncryptionKeys());
+        }
+      }
 
       Promise.all(requests)
+        .then(() => {
+          if (this.isEditor) return Promise.resolve();
+        })
         .catch((e) => {
           toastr.error(e);
         })
@@ -87,13 +110,43 @@ class App extends React.Component {
     });
   }
 
+  componentDidUpdate(prevProps) {
+    const {
+      isAuthenticated,
+      user,
+      isEncryption,
+      encryptionKeys,
+      setEncryptionKeys,
+      isLoaded,
+    } = this.props;
+    console.log("componentDidUpdate: ", this.props);
+    if (isAuthenticated && !this.isDesktopInit && isEncryption && isLoaded) {
+      this.isDesktopInit = true;
+      regDesktop(
+        user,
+        isEncryption,
+        encryptionKeys,
+        setEncryptionKeys,
+        this.isEditor
+      );
+      console.log(
+        "%c%s",
+        "color: green; font: 1.2em bold;",
+        "Current keys is: ",
+        encryptionKeys
+      );
+    }
+  }
+
   render() {
-    const { homepage } = this.props;
+    const { homepage, isDesktop } = this.props;
+    console.log(Layout);
 
     return navigator.onLine ? (
+      <Layout>
       <Router history={history}>
         {!this.isEditor && <NavMenu />}
-        <Main>
+          <Main isDesktop={isDesktop}>
           <Suspense fallback={null}>
             <Switch>
               <Redirect exact from="/" to={`${homepage}`} />
@@ -123,12 +176,17 @@ class App extends React.Component {
                 ]}
                 component={Login}
               />
-              <PrivateRoute exact path={`/error=:error`} component={Error520} />
+                <PrivateRoute
+                  exact
+                  path={`/error=:error`}
+                  component={Error520}
+                />
               <PrivateRoute component={Error404} />
             </Switch>
           </Suspense>
         </Main>
       </Router>
+      </Layout>
     ) : (
       <Offline />
     );
@@ -140,6 +198,12 @@ const mapStateToProps = (state) => {
   const { homepage } = settings;
   return {
     homepage: homepage || config.homepage,
+    user: getCurrentUser(state),
+    isAuthenticated: state.auth.isAuthenticated,
+    isLoaded: getIsLoaded(state),
+    isEncryption: isEncryptionSupport(state),
+    isDesktop: isDesktopClient(state),
+    encryptionKeys: settings.encryptionKeys,
   };
 };
 
@@ -156,6 +220,9 @@ const mapDispatchToProps = (dispatch) => {
     getPortalCultures: () => getPortalCultures(dispatch),
     fetchTreeFolders: () => fetchTreeFolders(dispatch),
     setIsLoaded: () => dispatch(setIsLoaded(true)),
+    getIsEncryptionSupport: () => getIsEncryptionSupport(dispatch),
+    getEncryptionKeys: () => getEncryptionKeys(dispatch),
+    setEncryptionKeys: (keys) => dispatch(setEncryptionKeys(keys)),
   };
 };
 

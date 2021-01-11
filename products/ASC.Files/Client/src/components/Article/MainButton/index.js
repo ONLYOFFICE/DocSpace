@@ -4,12 +4,14 @@ import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import { MainButton, DropDownItem } from "@appserver/components";
 import { withTranslation, I18nextProvider } from "react-i18next";
+import { isMobile } from "react-device-detect";
 import { setAction, startUpload } from "../../../store/files/actions";
 import {
   canCreate,
   getFilter,
   getSelectedFolder,
   getFirstLoad,
+  getIsPrivacyFolder,
 } from "../../../store/files/selectors";
 import {
   utils as commonUtils,
@@ -18,6 +20,7 @@ import {
   Loaders,
 } from "@appserver/common";
 import { createI18N } from "../../../helpers/i18n";
+import { encryptionUploadDialog } from "../../../helpers/desktop";
 
 const { getSettings } = initStore.auth.selectors;
 const i18n = createI18N({
@@ -39,7 +42,19 @@ class PureArticleMainButtonContent extends React.Component {
     });
   };
 
-  onUploadFileClick = () => this.inputFilesElement.click();
+  onUploadFileClick = () => {
+    if (this.props.isPrivacy) {
+      encryptionUploadDialog((encryptedFile, encrypted) => {
+        const { selectedFolder, startUpload, t } = this.props;
+        encryptedFile.encrypted = encrypted;
+        this.goToHomePage();
+        startUpload([encryptedFile], selectedFolder.id, t);
+      });
+    } else {
+      this.inputFilesElement.click();
+    }
+  };
+
   onUploadFolderClick = () => this.inputFolderElement.click();
 
   goToHomePage = () => {
@@ -50,22 +65,23 @@ class PureArticleMainButtonContent extends React.Component {
 
   onFileChange = (e) => {
     const { selectedFolder, startUpload, t } = this.props;
-
     this.goToHomePage();
     startUpload(e.target.files, selectedFolder.id, t);
   };
+
   onInputClick = (e) => (e.target.value = null);
 
   shouldComponentUpdate(nextProps, nextState) {
     return (
       nextProps.canCreate !== this.props.canCreate ||
-      nextProps.firstLoad !== this.props.firstLoad
+      nextProps.firstLoad !== this.props.firstLoad ||
+      nextProps.isPrivacy !== this.props.isPrivacy
     );
   }
 
   render() {
     //console.log("Files ArticleMainButtonContent render");
-    const { t, canCreate, isDisabled, firstLoad } = this.props;
+    const { t, canCreate, isDisabled, firstLoad, isPrivacy } = this.props;
 
     return firstLoad ? (
       <Loaders.Rectangle />
@@ -109,12 +125,15 @@ class PureArticleMainButtonContent extends React.Component {
           label={t("UploadFiles")}
           onClick={this.onUploadFileClick}
         />
-        <DropDownItem
-          className="main-button_drop-down"
-          icon="ActionsUploadIcon"
-          label={t("UploadFolder")}
-          onClick={this.onUploadFolderClick}
-        />
+        {!isMobile && (
+          <DropDownItem
+            className="main-button_drop-down"
+            icon="ActionsUploadIcon"
+            label={t("UploadFolder")}
+            disabled={isPrivacy}
+            onClick={this.onUploadFolderClick}
+          />
+        )}
         <input
           id="customFileInput"
           className="custom-file-input"
@@ -167,6 +186,7 @@ const mapStateToProps = (state) => {
     settings: getSettings(state),
     filter: getFilter(state),
     selectedFolder: getSelectedFolder(state),
+    isPrivacy: getIsPrivacyFolder(state),
   };
 };
 

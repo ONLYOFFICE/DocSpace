@@ -32,6 +32,7 @@
     <None Remove="protos\ConsumerCacheItem.proto" />
     <None Remove="protos\CreateClientProto.proto" />
     <None Remove="protos\DisableClientProto.proto" />
+    <None Remove="protos\EncryptionSettingsProto.proto" />
     <None Remove="protos\GroupCacheItem.proto" />
     <None Remove="protos\NotifyInvoke.proto" />
     <None Remove="protos\NotifyMessage.proto" />
@@ -59,12 +60,13 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.9" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.1.9" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="3.1.4" />
-    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="3.2.3" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="3.2.4" />
     <PackageReference Include="System.Text.Json" Version="4.7.2" />
     <PackageReference Include="Telegram.Bot" Version="15.7.1" />
   </ItemGroup>
   <ItemGroup>
     <Protobuf Include="protos\CreateClientProto.proto" />
+    <Protobuf Include="protos\EncryptionSettingsProto.proto" />
     <Protobuf Include="protos\NotifyInvoke.proto" />
     <Protobuf Include="protos\NotifyMessage.proto" />
     <Protobuf Include="protos\DisableClientProto.proto" />

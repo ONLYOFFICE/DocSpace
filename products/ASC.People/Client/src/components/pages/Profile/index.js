@@ -14,7 +14,7 @@ import { I18nextProvider, withTranslation } from "react-i18next";
 import { createI18N } from "../../../helpers/i18n";
 import { setDocumentTitle } from "../../../helpers/utils";
 import { withRouter } from "react-router";
-
+import { isChrome, isAndroid } from "react-device-detect";
 const i18n = createI18N({
   page: "Profile",
   localesPath: "pages/Profile",
@@ -26,7 +26,7 @@ class PureProfile extends React.Component {
   componentDidMount() {
     const { match, fetchProfile, profile, location, t } = this.props;
     const { userId } = match.params;
-
+    isChrome && isAndroid && window && window.scroll(0, 0);
     setDocumentTitle(t("Profile"));
 
     const queryString = ((location && location.search) || "").slice(1);

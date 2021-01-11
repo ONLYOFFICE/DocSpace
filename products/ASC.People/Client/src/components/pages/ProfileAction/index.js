@@ -91,11 +91,9 @@ class ProfileAction extends React.Component {
             </PageLayout.ArticleBody>
           )}
 
-          {loaded && (
-            <PageLayout.SectionHeader>
-              <SectionHeaderContent />
-            </PageLayout.SectionHeader>
-          )}
+          <PageLayout.SectionHeader>
+            {loaded ? <SectionHeaderContent /> : <Loaders.SectionHeader />}
+          </PageLayout.SectionHeader>
 
           <PageLayout.SectionBody>
             {loaded ? (

@@ -14,5 +14,20 @@
   "ShareVia": "Share via",
   "Embedding": "Embedding",
   "ExternalLink": "External link",
-  "InternalLink": "Internal link"
+  "InternalLink": "Internal link",
+
+  "EncryptedFileSaving": "Saving encrypted file",
+  "EncryptedFileSharing": "File <strong>{{title}}</strong> successfully shared",
+
+  "FullAccess": "Full access",
+  "ReadOnly": "Read only",
+  "Review": "Review",
+  "Comment": "Comment",
+  "FormFilling": "Form filling",
+  "DenyAccess": "Deny access",
+  "CustomFilter": "Custom filter",
+
+  "ShareEveryone": "Everyone",
+  "ShareEmailSubject": "You have been granted access to the {{itemName}} document",
+  "ShareEmailBody": "You have been granted access to the {{itemName}} document. Click the link below to open the document right now: {{shareLink}}"
 }

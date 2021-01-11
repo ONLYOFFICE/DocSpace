@@ -92,9 +92,11 @@ export const FolderType = Object.freeze({
 });
 
 export const ShareAccessRights = Object.freeze({
+  None: 0,
   FullAccess: 1,
   ReadOnly: 2,
   DenyAccess: 3,
+  Varies: 4,
   Review: 5,
   Comment: 6,
   FormFilling: 7,
@@ -104,7 +106,7 @@ export const ShareAccessRights = Object.freeze({
 export const i18nBaseSettings = {
   lng: localStorage.getItem(LANGUAGE) || "en",
   supportedLngs: ["en", "ru"],
-  fallbackLng: false, //fallbackLng: "en",
+  fallbackLng: "en",
   load: "languageOnly",
 
   interpolation: {

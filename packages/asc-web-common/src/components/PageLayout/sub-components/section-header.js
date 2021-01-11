@@ -40,9 +40,7 @@ class SectionHeader extends React.Component {
     const { borderBottom, ...rest } = this.props;
 
     return (
-      <StyledSectionHeader
-        borderBottom={borderBottom}
-      >
+      <StyledSectionHeader borderBottom={borderBottom}>
         <div className="section-header" {...rest} />
       </StyledSectionHeader>
     );

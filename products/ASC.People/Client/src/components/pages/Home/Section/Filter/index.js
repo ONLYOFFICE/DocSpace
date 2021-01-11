@@ -64,17 +64,6 @@ const getGroup = (filterValues) => {
 };
 
 class SectionFilterContent extends React.Component {
-  componentDidMount() {
-    const { location, filter, onLoading, fetchPeople } = this.props;
-
-    const newFilter = getFilterByLocation(location);
-
-    if (!newFilter || newFilter.equals(filter)) return;
-
-    onLoading(true);
-    fetchPeople(newFilter).finally(() => onLoading(false));
-  }
-
   onFilter = (data) => {
     const { onLoading, fetchPeople, filter } = this.props;
 

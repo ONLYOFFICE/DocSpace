@@ -30,13 +30,13 @@ const Confirm = ({ match, isLoaded }) => {
   }, []);
 
   //console.log("Confirm render");
-  return (
-    !isLoaded ? <PageLayout>
-    <PageLayout.SectionBody>
-      <Loaders.Rectangle height="90vh"/>
-    </PageLayout.SectionBody>
-  </PageLayout> :
-
+  return !isLoaded ? (
+    <PageLayout>
+      <PageLayout.SectionBody>
+        <Loaders.Rectangle height="90vh" />
+      </PageLayout.SectionBody>
+    </PageLayout>
+  ) : (
     <I18nextProvider i18n={i18n}>
       <Suspense fallback={null}>
         <Switch>
@@ -61,7 +61,7 @@ const Confirm = ({ match, isLoaded }) => {
             component={ChangeEmailForm}
           />
           <ConfirmRoute
-            exact
+            forUnauthorized
             path={`${match.path}/PasswordChange`}
             component={ChangePasswordForm}
           />
@@ -89,7 +89,7 @@ const Confirm = ({ match, isLoaded }) => {
 
 function mapStateToProps(state) {
   return {
-    isLoaded: getIsLoaded(state)
+    isLoaded: getIsLoaded(state),
   };
 }
 

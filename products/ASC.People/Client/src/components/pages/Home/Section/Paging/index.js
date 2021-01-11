@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo } from "react";
 import { connect } from "react-redux";
+import { isMobile } from "react-device-detect";
 import { fetchPeople } from "../../../../../store/people/actions";
 import { Paging } from "@appserver/components";
 import { useTranslation } from "react-i18next";
@@ -137,6 +138,7 @@ const SectionPagingContent = ({
         displayItems={false}
         disablePrevious={!filter.hasPrev()}
         disableNext={!filter.hasNext()}
+        disableHover={isMobile}
         previousAction={onPrevClick}
         nextAction={onNextClick}
         openDirection="top"

@@ -230,7 +230,12 @@ class ContextMenuButton extends React.Component {
           </DropDown>
         ) : (
           <>
-            <Backdrop onClick={this.onClose} visible={isOpen} zIndex={310} />
+            <Backdrop
+              onClick={this.onClose}
+              visible={isOpen}
+              zIndex={310}
+              isAside={true}
+            />
             <Aside visible={isOpen} scale={false} zIndex={310}>
               <Content>
                 <Header>

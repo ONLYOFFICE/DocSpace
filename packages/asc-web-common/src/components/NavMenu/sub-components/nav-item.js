@@ -61,6 +61,19 @@ const NavItemBadge = styled(Badge)`
   ${(props) => (props.opened ? "" : badgeCss)}
 `;
 
+const VersionBadge = styled.div`
+  background-color: #3cb55b;
+  border-radius: 5px;
+  color: #ffffff;
+  display: inline-block;
+  font-size: 10px;
+  line-height: 8px;
+  padding: 3px 6px;
+  position: absolute;
+  top: -5px;
+  left: 10px;
+`;
+
 const NavItem = React.memo((props) => {
   //console.log("NavItem render");
   const {
@@ -96,7 +109,10 @@ const NavItem = React.memo((props) => {
           }}
         />
       ) : (
+        <>
+          <VersionBadge>BETA</VersionBadge>
         <MenuIcon color={color} size="big" isfill={true} />
+        </>
       )}
       {children && (
         <NavItemLabel

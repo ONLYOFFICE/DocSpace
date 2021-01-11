@@ -357,6 +357,7 @@ class SectionBodyContent extends React.Component {
                 groupsCaption={groupsCaption}
                 defaultOption={me}
                 defaultOptionLabel={t("MeLabel")}
+                employeeStatus={1}
               />
             </FieldContainer>
             <FieldContainer
@@ -394,6 +395,7 @@ class SectionBodyContent extends React.Component {
                 defaultOption={me}
                 defaultOptionLabel={t("MeLabel")}
                 selectedOptions={groupMembers}
+                employeeStatus={1}
               />
             </FieldContainer>
             {groupMembers && groupMembers.length > 0 && (
@@ -490,7 +492,11 @@ const convertGroups = (groups) => {
 function mapStateToProps(state) {
   const currentModuleName = getCurrentProductName(state);
   const settings = getSettings(state);
-  const { groupHeadCaption, groupsCaption, groupCaption } = settings;
+  const {
+    groupHeadCaption,
+    groupsCaption,
+    groupCaption,
+  } = settings.customNames;
   const { isLoaded } = state.auth;
 
   return {

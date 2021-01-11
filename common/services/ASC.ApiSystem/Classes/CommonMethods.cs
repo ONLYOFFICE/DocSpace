@@ -304,7 +304,7 @@ namespace ASC.ApiSystem.Controllers
             try
             {
                 var data = string.Format("secret={0}&remoteip={1}&response={2}", Configuration["recaptcha:private-key"], ip, response);
-                var url = Configuration["recaptcha:verify-url"] ?? "https://www.google.com/recaptcha/api/siteverify";
+                var url = Configuration["recaptcha:verify-url"] ?? "https://www.recaptcha.net/recaptcha/api/siteverify";
 
                 var webRequest = (HttpWebRequest)WebRequest.Create(url);
                 webRequest.Method = WebRequestMethods.Http.Post;

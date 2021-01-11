@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta
       name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no, viewport-fit=cover"
     />
     <meta name="theme-color" content="#000000" />
     <!--
@@ -96,7 +96,7 @@
   <body>
     <noscript> You need to enable JavaScript to run this app. </noscript>
 
-    <div id="temp-content">
+    <div id="temp-content" style="display: none">
       <header class="temp-header-container">
         <div id="burger-loader-svg" class="burger-loader-svg">
           <svg
@@ -223,5 +223,12 @@
       To begin the development, run `npm start` or `yarn start`.
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
+    <script>
+      console.log("AscDesktopEditor", window["AscDesktopEditor"]);
+      if (window["AscDesktopEditor"] === undefined) {
+        let el = document.getElementById("temp-content");
+        el.style.display = "block";
+      }
+    </script>
   </body>
 </html>

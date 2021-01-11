@@ -50,6 +50,9 @@ const BodyStyle = styled.div`
   }
 
   .copyright-line {
+    display: grid;
+    grid-template-columns: 1fr max-content 1fr;
+    grid-column-gap: 24px;
     padding-bottom: 15px;
     text-align: center;
 
@@ -58,7 +61,6 @@ const BodyStyle = styled.div`
       content: "";
       height: 2px;
       margin-top: 9px;
-      width: 26%;
       float: right;
     }
 
@@ -67,7 +69,6 @@ const BodyStyle = styled.div`
       content: "";
       height: 2px;
       margin-top: 9px;
-      width: 26%;
       float: left;
     }
   }
@@ -88,7 +89,7 @@ const Body = () => {
   useEffect(() => {
     changeLanguage(i18n);
     setDocumentTitle(t("AboutTitle")); //TODO: implement the ability to read the current module in redux to implement the template `${t("AboutTitle")} – ${t("People")}`
-  }, [t, setDocumentTitle]);
+  }, [t]);
 
   const gitHub = "GitHub";
   const license = "AGPL-3.0";
@@ -105,6 +106,7 @@ const Body = () => {
           href="https://www.gnu.org/licenses/gpl-3.0.html"
           isHovered={true}
           fontSize="12px"
+          target="_blank"
         >
           {{ license }}
         </Link>
@@ -174,7 +176,7 @@ const Body = () => {
             {phone}
           </Text>
         </div>
-        <Link href="http://www.onlyoffice.com" fontSize="12px">
+        <Link href="http://www.onlyoffice.com" fontSize="12px" target="_blank">
           {link}
         </Link>
 
@@ -184,9 +186,10 @@ const Body = () => {
           <Text className="text_style" fontSize="12px">
             {t("SourceCode")}:{" "}
             <Link
-              href="https://github.com/ONLYOFFICE/CommunityServer"
+              href="https://github.com/ONLYOFFICE/AppServer"
               isHovered={true}
               fontSize="12px"
+              target="_blank"
             >
               {gitHub}
             </Link>

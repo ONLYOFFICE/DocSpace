@@ -34,3 +34,4 @@ When using component, it should be noted that parent must have CSS property _pos
 | `open`               |     `bool`     |    -     |        -        | `false`  | Tells when the dropdown should be opened                                           |
 | `style`              | `obj`, `array` |    -     |        -        |    -     | Accepts css style                                                                  |
 | `withBackdrop`       |     `bool`     |    -     |        -        |  `true`  | Used to display backdrop                                                           |
+| `showDisabledItems`  |     `bool`     |    -     |        -        | `false`  | Display disabled items or not                                                      |

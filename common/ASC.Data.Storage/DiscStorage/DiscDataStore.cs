@@ -32,6 +32,7 @@ using System.Linq;
 using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
+using ASC.Core.Encryption;
 using ASC.Data.Storage.Configuration;
 using ASC.Data.Storage.Encryption;
 using ASC.Security.Cryptography;
@@ -72,6 +73,19 @@ namespace ASC.Data.Storage.DiscStorage
             Crypt = EncryptionFactory.GetCrypt(moduleConfig.Name, settings);
 
             return this;
+        }
+
+        public DiscDataStore(
+    TenantManager tenantManager,
+    PathUtils pathUtils,
+    EmailValidationKeyProvider emailValidationKeyProvider,
+    IOptionsMonitor<ILog> options,
+    EncryptionSettingsHelper encryptionSettingsHelper,
+    EncryptionFactory encryptionFactory)
+    : base(tenantManager, pathUtils, emailValidationKeyProvider, options)
+        {
+            EncryptionSettingsHelper = encryptionSettingsHelper;
+            EncryptionFactory = encryptionFactory;
         }
 
         public DiscDataStore(

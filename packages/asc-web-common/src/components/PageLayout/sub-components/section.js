@@ -1,6 +1,7 @@
 import React from "react";
 import styled, { css } from "styled-components";
-import { tablet } from "@appserver/components/src/utils/device";
+import { tablet, size } from "@appserver/components/src/utils/device";
+import { isIOS, isTablet, isSafari, isChrome } from "react-device-detect";
 
 const tabletProps = css`
   .section-header_filter {
@@ -56,8 +57,22 @@ class Section extends React.Component {
   /*shouldComponentUpdate() {
     return false;
   }*/
+  componentDidUpdate() {
+    const { pinned } = this.props;
+
+    if (
+      isIOS &&
+      isTablet &&
+      (isSafari || isChrome) &&
+      window.innerWidth <= size.smallTablet &&
+      pinned
+    ) {
+      this.props.unpinArticle();
+    }
+  }
   render() {
     //console.log("PageLayout Section render");
+
     return <StyledSection {...this.props} />;
   }
 }

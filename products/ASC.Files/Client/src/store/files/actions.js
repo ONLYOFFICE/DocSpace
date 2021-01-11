@@ -27,6 +27,8 @@ import {
   getTreeFolders,
   getSettingsTree,
   getPrivacyFolder,
+  getVerHistoryFileId,
+  getFileVersions,
 } from "./selectors";
 
 import sumBy from "lodash/sumBy";
@@ -69,6 +71,10 @@ export const SET_FILES_SETTING = "SET_FILES_SETTING";
 export const SET_IS_ERROR_SETTINGS = "SET_IS_ERROR_SETTINGS";
 export const SET_FIRST_LOAD = "SET_FIRST_LOAD";
 export const SET_UPLOAD_DATA = "SET_UPLOAD_DATA";
+export const SET_IS_VER_HISTORY_PANEL = "SET_IS_VER_HISTORY_PANEL";
+export const SET_VER_HISTORY_FILE_ID = "SET_VER_HISTORY_FILE_ID";
+export const SET_FILE_VERSIONS = "SET_FILE_VERSIONS";
+export const SET_CHANGE_OWNER_VISIBLE = "SET_CHANGE_OWNER_VISIBLE";
 
 export function setFile(file) {
   return {
@@ -287,6 +293,35 @@ export function setUploadData(uploadData) {
     uploadData,
   };
 }
+
+export function setIsVerHistoryPanel(isVisible) {
+  return {
+    type: SET_IS_VER_HISTORY_PANEL,
+    isVisible,
+  };
+}
+
+export function setVerHistoryFileId(fileId) {
+  return {
+    type: SET_VER_HISTORY_FILE_ID,
+    fileId,
+  };
+}
+
+export function setFileVersions(versions) {
+  return {
+    type: SET_FILE_VERSIONS,
+    versions,
+  };
+}
+
+export function setChangeOwnerPanelVisible(ownerPanelVisible) {
+  return {
+    type: SET_CHANGE_OWNER_VISIBLE,
+    ownerPanelVisible,
+  };
+}
+
 export function setFilterUrl(filter) {
   const defaultFilter = FilesFilter.getDefault();
   const params = [];
@@ -527,8 +562,9 @@ export function updateFile(fileId, title) {
   };
 }
 
-export function addFileToRecentlyViewed(fileId) {
+export function addFileToRecentlyViewed(fileId, isPrivacy) {
   return (dispatch) => {
+    if (isPrivacy) return Promise.resolve();
     return files.addFileToRecentlyViewed(fileId);
   };
 }
@@ -541,46 +577,45 @@ export function renameFolder(folderId, title) {
   };
 }
 
+export function setFilesOwner(folderIds, fileIds, ownerId) {
+  return files.setFileOwner(folderIds, fileIds, ownerId);
+}
+
 export function setShareFiles(
   folderIds,
   fileIds,
   share,
   notify,
   sharingMessage,
-  externalAccess
+  externalAccess,
+  ownerId
 ) {
-  const foldersRequests = folderIds.map((id) =>
-    files.setShareFolder(id, share, notify, sharingMessage)
-  );
-
-  const filesRequests = fileIds.map((id) =>
-    files.setShareFiles(id, share, notify, sharingMessage)
-  );
-
   let externalAccessRequest = [];
-
   if (fileIds.length === 1 && externalAccess !== null) {
     externalAccessRequest = fileIds.map((id) =>
       files.setExternalAccess(id, externalAccess)
     );
   }
 
+  const ownerChangeRequest = ownerId
+    ? [setFilesOwner(folderIds, fileIds, ownerId)]
+    : [];
+
+  const shareRequest = !!share.length
+    ? [files.setShareFiles(fileIds, folderIds, share, notify, sharingMessage)]
+    : [];
+
   const requests = [
-    ...foldersRequests,
-    ...filesRequests,
+    ...ownerChangeRequest,
+    ...shareRequest,
     ...externalAccessRequest,
   ];
+
   return axios.all(requests);
 }
 
 export function getShareUsers(folderIds, fileIds) {
-  const foldersRequests = folderIds.map((folderId) =>
-    files.getShareFolders(folderId)
-  );
-  const filesRequests = fileIds.map((fileId) => files.getShareFiles(fileId));
-  const requests = [...foldersRequests, ...filesRequests];
-
-  return axios.all(requests).then((res) => res);
+  return files.getShareFiles(fileIds, folderIds);
 }
 
 export function clearPrimaryProgressData() {
@@ -1373,7 +1408,7 @@ export const loopFilesOperations = (id, destFolderId, isCopy) => {
           if (currentItem && currentItem.progress !== 100) {
             dispatch(
               setSecondaryProgressBarData({
-                icon: "move",
+                icon: isCopy ? "duplicate" : "move",
                 label: progressData.label,
                 percent: currentItem.progress,
                 visible: true,
@@ -1384,7 +1419,7 @@ export const loopFilesOperations = (id, destFolderId, isCopy) => {
           } else {
             dispatch(
               setSecondaryProgressBarData({
-                icon: "move",
+                icon: isCopy ? "duplicate" : "move",
                 label: progressData.label,
                 percent: 100,
                 visible: true,
@@ -1549,6 +1584,61 @@ export function itemOperationToFolder(
         //toastr.error(err);
         setTimeout(() => dispatch(clearPrimaryProgressData()), TIMEOUT);
         setTimeout(() => dispatch(clearSecondaryProgressData()), TIMEOUT);
+      });
+  };
+}
+
+export function fetchFileVersions(fileId) {
+  return (dispatch, getState) => {
+    const state = getState();
+    const currentId = getVerHistoryFileId(state);
+    if (currentId !== fileId) {
+      dispatch(setVerHistoryFileId(fileId));
+      return api.files
+        .getFileVersionInfo(fileId)
+        .then((versions) => dispatch(setFileVersions(versions)));
+    } else {
+      const currentVersions = getFileVersions(state);
+      return Promise.resolve(currentVersions);
+    }
+  };
+}
+
+export function markAsVersion(id, isVersion, version) {
+  return (dispatch) => {
+    return api.files
+      .markAsVersion(id, isVersion, version)
+      .then((versions) => dispatch(setFileVersions(versions)));
+  };
+}
+
+export function restoreVersion(id, version) {
+  return (dispatch, getState) => {
+    return api.files.versionRestore(id, version).then((newVersion) => {
+      const state = getState();
+      const versions = getFileVersions(state);
+      const updatedVersions = versions.slice();
+      updatedVersions.splice(1, 0, newVersion);
+      dispatch(setFileVersions(updatedVersions));
+    });
+  };
+}
+
+export function updateCommentVersion(id, comment, version) {
+  return (dispatch, getState) => {
+    return api.files
+      .versionEditComment(id, comment, version)
+      .then((updatedComment) => {
+        const state = getState();
+        const versions = getFileVersions(state);
+        const copyVersions = versions.slice();
+        const updatedVersions = copyVersions.map((item) => {
+          if (item.version === version) {
+            item.comment = updatedComment;
+          }
+          return item;
+        });
+        dispatch(setFileVersions(updatedVersions));
       });
   };
 }

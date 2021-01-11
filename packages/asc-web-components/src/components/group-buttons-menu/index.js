@@ -208,30 +208,34 @@ class GroupButtonsMenu extends React.Component {
     return (
       <StyledGroupButtonsMenu id="groupMenuOuter" visible={visible}>
         <GroupMenuWrapper id="groupMenu">
-          {priorityItems.map((item, i) => (
-            <GroupButton
-              key={`navItem-${i}`}
-              label={item.label}
-              isDropdown={item.isDropdown}
-              isSeparator={item.isSeparator}
-              isSelect={item.isSelect}
-              onSelect={item.onSelect}
-              selected={selected}
-              fontWeight={item.fontWeight}
-              disabled={item.disabled}
-              onClick={this.groupButtonClick}
-              data-index={i}
-              activated={item.activated}
-              checked={checked}
-              dropDownMaxHeight={item.dropDownMaxHeight}
-              hovered={item.hovered}
-              isIndeterminate={isIndeterminate}
-              onChange={onChange}
-              opened={item.opened}
-            >
-              {item.children}
-            </GroupButton>
-          ))}
+          {priorityItems.length &&
+            priorityItems.map((item, i) => {
+              //if (item.disabled) return;
+              return (
+                <GroupButton
+                  key={`navItem-${i}`}
+                  label={item.label}
+                  isDropdown={item.isDropdown}
+                  isSeparator={item.isSeparator}
+                  isSelect={item.isSelect}
+                  onSelect={item.onSelect}
+                  selected={selected}
+                  fontWeight={item.fontWeight}
+                  disabled={item.disabled}
+                  onClick={this.groupButtonClick}
+                  data-index={i}
+                  activated={item.activated}
+                  checked={checked}
+                  dropDownMaxHeight={item.dropDownMaxHeight}
+                  hovered={item.hovered}
+                  isIndeterminate={isIndeterminate}
+                  onChange={onChange}
+                  opened={item.opened}
+                >
+                  {item.children}
+                </GroupButton>
+              );
+            })}
         </GroupMenuWrapper>
         {moreItems.length > 0 && (
           <GroupButton id="moreMenu" isDropdown={true} label={moreLabel}>

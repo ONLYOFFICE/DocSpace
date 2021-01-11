@@ -98,7 +98,10 @@ const StyledFilterInput = styled.div`
 
   .dropdown-style {
     position: relative;
-    z-index: 190;
+
+    .backdrop-active {
+      z-index: 190;
+    }
 
     .drop-down {
       padding: 16px;

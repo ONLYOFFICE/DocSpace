@@ -25,8 +25,11 @@ import {
   setIsLoaded,
   reloadPortalSettings,
 } from "@appserver/common/src/store/auth/actions";
-
-import { getLanguage } from "@appserver/common/src/store/auth/selectors";
+import { checkPwd } from "@appserver/common/src/desktop";
+import {
+  getLanguage,
+  isDesktopClient,
+} from "@appserver/common/src/store/auth/selectors";
 import { sendInstructionsToChangePassword } from "@appserver/common/src/api/people";
 import { createPasswordHash, tryRedirectTo } from "@appserver/common/src/utils";
 
@@ -114,7 +117,11 @@ const LoginContainer = styled.div`
 const LoginFormWrapper = styled.div`
   display: grid;
   grid-template-rows: ${(props) =>
-    props.enabledJoin ? css`1fr 66px` : css`1fr`};
+    props.enabledJoin
+      ? props.isDesktop
+        ? css`1fr 10px`
+        : css`1fr 66px`
+      : css`1fr`};
   width: 100%;
   height: calc(100vh-56px);
 `;
@@ -199,7 +206,13 @@ class Form extends Component {
 
   onSubmit = () => {
     const { errorText, identifier, password } = this.state;
-    const { login, setIsLoaded, hashSettings, defaultPage } = this.props;
+    const {
+      login,
+      setIsLoaded,
+      hashSettings,
+      isDesktop,
+      defaultPage,
+    } = this.props;
 
     errorText && this.setState({ errorText: "" });
     let hasError = false;
@@ -222,6 +235,8 @@ class Form extends Component {
 
     this.setState({ isLoading: true });
     const hash = createPasswordHash(pass, hashSettings);
+
+    isDesktop && checkPwd();
 
     login(userName, hash)
       .then(() => {
@@ -462,14 +477,14 @@ const FormWrapper = withTranslation()(Form);
 const RegisterWrapper = withTranslation()(Register);
 
 const LoginForm = (props) => {
-  const { language, enabledJoin } = props;
+  const { language, enabledJoin, isDesktop } = props;
 
   useEffect(() => {
     i18n.changeLanguage(language);
   }, [language]);
 
   return (
-    <LoginFormWrapper enabledJoin={enabledJoin}>
+    <LoginFormWrapper enabledJoin={enabledJoin} isDesktop={isDesktop}>
       <PageLayout>
         <PageLayout.SectionBody>
           <FormWrapper i18n={i18n} {...props} />
@@ -484,6 +499,7 @@ LoginForm.propTypes = {
   language: PropTypes.string.isRequired,
   isLoaded: PropTypes.bool,
   enabledJoin: PropTypes.bool,
+  isDesktop: PropTypes.bool.isRequired,
 };
 
 function mapStateToProps(state) {
@@ -499,6 +515,7 @@ function mapStateToProps(state) {
   return {
     isAuthenticated,
     isLoaded,
+    isDesktop: isDesktopClient(state),
     organizationName,
     language: getLanguage(state),
     greetingTitle: greetingSettings,

@@ -3,11 +3,40 @@ import { constants, store } from "@appserver/common";
 import { createSelector } from "reselect";
 
 const { FileType, FilterType, FolderType } = constants;
-const { isAdmin } = store.auth.selectors;
+const {
+  isAdmin,
+  isVisitor,
+  getCurrentUserId,
+  isEncryptionSupport,
+  isDesktopClient,
+} = store.auth.selectors;
 
 const presentInArray = (array, search) => {
   const result = array.findIndex((item) => item === search);
   return result === -1 ? false : true;
+};
+
+export const getAccessIcon = (access) => {
+  switch (access) {
+    case 1:
+      return "AccessEditIcon";
+    case 2:
+      return "EyeIcon";
+    case 3:
+      return "AccessNoneIcon";
+    case 4:
+      return "CatalogQuestionIcon";
+    case 5:
+      return "AccessReviewIcon";
+    case 6:
+      return "AccessCommentIcon";
+    case 7:
+      return "AccessFormIcon";
+    case 8:
+      return "CustomFilterIcon";
+    default:
+      return;
+  }
 };
 
 export const getMediaViewerImageFormats = (state) => {
@@ -40,6 +69,10 @@ export const getFormFillingFormats = (state) => {
 
 export const getConvertedFormats = (state) => {
   return state.files.docservice.convertDocs;
+};
+
+export const getEncryptedFormats = (state) => {
+  return state.files.docservice.encryptedDocs;
 };
 
 export const getArchiveFormats = (state) => {
@@ -132,7 +165,7 @@ export const isSound = (extension) => {
 };
 
 export const isVideo = (extension) => {
-  return createSelector(getVideoFormats, (formats) => {
+  return createSelector(getMediaViewerMediaFormats, (formats) => {
     return presentInArray(formats, extension);
   });
 };
@@ -375,7 +408,9 @@ export const canCreate = createSelector(
   isAdmin,
   getPathParts,
   getSelectedFolderAccess,
-  (folderType, isAdmin, pathParts, access) => {
+  isEncryptionSupport,
+  isDesktopClient,
+  (folderType, isAdmin, pathParts, access, isSupport, isDesktop) => {
     switch (folderType) {
       case FolderType.USER:
         return true;
@@ -383,28 +418,11 @@ export const canCreate = createSelector(
         const isNotRootFolder = pathParts.length > 1;
         const canCreateInSharedFolder = access === 1;
         return isNotRootFolder && canCreateInSharedFolder;
+      case FolderType.Privacy:
+        return isDesktop && isSupport;
       case FolderType.COMMON:
         return isAdmin;
       case FolderType.TRASH:
-      default:
-        return false;
-    }
-  }
-);
-
-export const isCanBeDeleted = createSelector(
-  getSelectedFolderRootFolderType,
-  isAdmin,
-  (folderType, isAdmin) => {
-    switch (folderType) {
-      case FolderType.USER:
-        return true;
-      case FolderType.SHARE:
-        return false;
-      case FolderType.COMMON:
-        return isAdmin;
-      case FolderType.TRASH:
-        return true;
       default:
         return false;
     }
@@ -538,6 +556,8 @@ export const getFileIcon = (
       return `${folderPath}/svg.svg`;
     case ".txt":
       return `${folderPath}/txt.svg`;
+    case ".webm":
+      return `${folderPath}/webm.svg`;
     case ".xls":
       return `${folderPath}/xls.svg`;
     case ".xlsx":
@@ -587,6 +607,11 @@ export const getSelection = createSelector(
 export const getSelectionLength = (state) => {
   return state.files.selection.length;
 };
+
+export const getSelectionTitle = createSelector(getSelection, (selection) => {
+  if (selection.length === 0) return null;
+  return selection.find((el) => el.title).title;
+});
 
 export const getViewAs = (state) => {
   return state.files.viewAs;
@@ -641,12 +666,19 @@ const getFilesContextOptions = (
   item,
   isRecycleBin,
   isRecent,
-  canOpenPlayer
+  isFavorites,
+  isVisitor,
+  canOpenPlayer,
+  canChangeOwner,
+  canBeDeleted,
+  canShare,
+  isPrivacy
 ) => {
   const options = [];
 
   const isFile = !!item.fileExst;
   const isFavorite = item.fileStatus === 32;
+  const isFullAccess = item.access < 2;
 
   if (item.id <= 0) return [];
 
@@ -654,28 +686,59 @@ const getFilesContextOptions = (
     options.push("download");
     options.push("download-as");
     options.push("restore");
+    options.push("separator0");
+    options.push("delete");
+  } else if (isPrivacy) {
+    if (isFile) {
+      options.push("sharing-settings");
+      options.push("separator0");
+      options.push("show-version-history");
+      options.push("separator1");
+    }
+    options.push("download");
+    options.push("move");
+    options.push("rename");
     options.push("separator2");
     options.push("delete");
   } else {
-    options.push("sharing-settings");
+    if (!isFile) {
+      options.push("open");
+      options.push("separator0");
+    }
 
-    if (isFile) {
+    //TODO: use canShare selector
+    if (/*!(isRecent || isFavorites || isVisitor) && */ canShare) {
+      options.push("sharing-settings");
+    }
+
+    if (isFile && !isVisitor) {
       options.push("send-by-email");
     }
 
+    canChangeOwner && options.push("owner-change");
     options.push("link-for-portal-users");
-    options.push("separator0");
+
+    if (!isVisitor) {
+      options.push("separator1");
+    }
 
     if (isFile) {
       options.push("show-version-history");
-      options.push("finalize-version");
-      options.push("block-unblock-version");
-      options.push("separator1");
-      if (isRecent) {
-        options.push("open-location");
-      }
-      if (!isFavorite) {
-        options.push("mark-as-favorite");
+      if (!isVisitor) {
+        if (isFullAccess) {
+          options.push("finalize-version");
+          options.push("block-unblock-version");
+        }
+        options.push("separator2");
+
+        if (isRecent) {
+          options.push("open-location");
+        }
+        if (!isFavorite) {
+          options.push("mark-as-favorite");
+        }
+      } else {
+        options.push("separator3");
       }
 
       if (canOpenPlayer) {
@@ -688,15 +751,19 @@ const getFilesContextOptions = (
       options.push("download");
     }
 
-    options.push("move");
-    options.push("copy");
+    if (!isVisitor) {
+      options.push("move");
+      options.push("copy");
 
-    if (isFile) {
-      options.push("duplicate");
+      if (isFile) {
+        options.push("duplicate");
+      }
+
+      options.push("rename");
+      canBeDeleted && options.push("delete");
+    } else {
+      options.push("copy");
     }
-
-    options.push("rename");
-    options.push("delete");
   }
   if (isFavorite && !isRecycleBin) {
     options.push("remove-from-favorites");
@@ -853,13 +920,41 @@ export const getFileActionId = (state) => {
 export const getFilesList = (state) => {
   return createSelector(
     [
-      getItemsList,
+      getFolders,
+      getFiles,
       getSelection,
       getIsRecycleBinFolder,
       getIsRecentFolder,
+      getIsFavoritesFolder,
       getFileActionId,
+      getIsPrivacyFolder,
+      isVisitor,
+      getCanShareOwnerChange,
+      isCanBeDeleted,
+      isCanShare,
     ],
-    (items, selection, isRecycleBin, isRecent, actionId) => {
+    (
+      folders,
+      files,
+      selection,
+      isRecycleBin,
+      isRecent,
+      isFavorites,
+      actionId,
+      isVisitor,
+      canChangeOwner,
+      canBeDeleted,
+      canShare,
+      isPrivacy
+    ) => {
+      const items =
+        folders && files
+          ? [...folders, ...files]
+          : folders
+          ? folders
+          : files
+          ? files
+          : [];
       return items.map((item) => {
         const {
           access,
@@ -894,7 +989,13 @@ export const getFilesList = (state) => {
           item,
           isRecycleBin,
           isRecent,
-          canOpenPlayer
+          isFavorites,
+          isVisitor,
+          canOpenPlayer,
+          canChangeOwner,
+          canBeDeleted,
+          canShare,
+          isPrivacy
         );
         const checked = isFileSelected(selection, id, parentId);
 
@@ -912,6 +1013,14 @@ export const getFilesList = (state) => {
         const isCanWebEdit = canWebEdit(item.fileExst)(state);
 
         const icon = getIcon(state, 24, fileExst, providerKey);
+
+        //TODO: use canShare selector
+        /*const canShare = !(
+          isRecycleBin ||
+          isFavorites ||
+          isRecent ||
+          isVisitor
+        );*/
 
         value += draggable ? "_draggable" : "";
 
@@ -951,6 +1060,7 @@ export const getFilesList = (state) => {
           draggable,
           canOpenPlayer,
           canWebEdit: isCanWebEdit,
+          canShare,
         };
       });
     }
@@ -1019,6 +1129,18 @@ export const getFilterSelectedItem = (state) => {
 
 export const getPrivacyInstructionsLink = (state) => {
   return state.files.privacyInstructions;
+};
+
+export const getIsVerHistoryPanel = (state) => {
+  return state.files.versionHistory.isVisible;
+};
+
+export const getVerHistoryFileId = (state) => {
+  return state.files.versionHistory.fileId;
+};
+
+export const getFileVersions = (state) => {
+  return state.files.versionHistory.versions;
 };
 
 export const getHeaderVisible = createSelector(
@@ -1116,12 +1238,25 @@ export const getOnlyFoldersSelected = createSelector(
   }
 );
 
+export const getWebEditSelected = createSelector(
+  getSelection,
+  getEditedFormats,
+  (selection, editedFormats) => {
+    return selection.some((selected) => {
+      if (selected.isFolder === true || !selected.fileExst) return false;
+      return editedFormats.find((format) => selected.fileExst === format);
+    });
+  }
+);
+
 export const getAccessedSelected = createSelector(
   getSelection,
   getSelectionLength,
-  (selection, selectionLength) => {
+  isAdmin,
+  (selection, selectionLength, isAdmin) => {
     return (
       selectionLength &&
+      isAdmin &&
       selection.every((x) => x.access === 1 || x.access === 0)
     );
   }
@@ -1129,14 +1264,21 @@ export const getAccessedSelected = createSelector(
 
 export const getOperationsFolders = createSelector(
   getTreeFolders,
-  (treeFolders) => {
-    return treeFolders.filter(
-      (folder) =>
-        (folder.rootFolderType === FolderType.USER ||
-          folder.rootFolderType === FolderType.COMMON ||
-          folder.rootFolderType === FolderType.Projects) &&
-        folder
-    );
+  getIsPrivacyFolder,
+  (treeFolders, isPrivacy) => {
+    if (isPrivacy) {
+      return treeFolders.filter(
+        (folder) => folder.rootFolderType === FolderType.Privacy && folder
+      );
+    } else {
+      return treeFolders.filter(
+        (folder) =>
+          (folder.rootFolderType === FolderType.USER ||
+            folder.rootFolderType === FolderType.COMMON ||
+            folder.rootFolderType === FolderType.Projects) &&
+          folder
+      );
+    }
   }
 );
 const getIcon = (state, size = 24, fileExst = null, providerKey = null) => {
@@ -1182,3 +1324,120 @@ export const getIconOfDraggedFile = (state) => {
 export const getSharePanelVisible = (state) => {
   return state.files.sharingPanelVisible;
 };
+
+export const getCanShareOwnerChange = createSelector(
+  isAdmin,
+  getPathParts,
+  getCommonFolderId,
+  getCurrentUserId,
+  getSelectionSelector,
+
+  (isAdmin, pathParts, commonId, userId, selection) => {
+    return (
+      (isAdmin || (selection.length && selection[0].createdBy.id === userId)) &&
+      pathParts &&
+      commonId === pathParts[0]
+    );
+  }
+);
+
+export const isSecondaryProgressFinished = createSelector(
+  getSecondaryProgressData,
+  (data) => {
+    return data && data.percent === 100;
+  }
+);
+
+export const getSortedFiles = (state) => {
+  const formatKeys = Object.freeze({
+    OriginalFormat: 0,
+  });
+
+  const items = getSelection(state);
+
+  let sortedFiles = {
+    documents: [],
+    spreadsheets: [],
+    presentations: [],
+    other: [],
+  };
+
+  for (let item of items) {
+    item.checked = true;
+    item.format = formatKeys.OriginalFormat;
+
+    if (item.fileExst) {
+      if (isSpreadsheet(item.fileExst)(state)) {
+        sortedFiles.spreadsheets.push(item);
+      } else if (isPresentation(item.fileExst)(state)) {
+        sortedFiles.presentations.push(item);
+      } else if (item.fileExst !== ".pdf" && canWebEdit(item.fileExst)(state)) {
+        sortedFiles.documents.push(item);
+      } else {
+        sortedFiles.other.push(item);
+      }
+    } else {
+      sortedFiles.other.push(item);
+    }
+  }
+
+  return sortedFiles;
+};
+
+export const getShowOwnerChangePanel = (state) => {
+  return state.files.ownerPanelVisible;
+};
+
+export const isCanBeDeleted = createSelector(
+  getSelectedFolderRootFolderType,
+  isAdmin,
+  getSelectionSelector,
+  (folderType, isAdmin, selection) => {
+    switch (folderType) {
+      case FolderType.USER:
+        return true;
+      case FolderType.SHARE:
+        return false;
+      case FolderType.COMMON:
+        return (
+          isAdmin || selection.some((x) => x.access === 0 || x.access === 1)
+        );
+      case FolderType.Privacy:
+        return true;
+      case FolderType.TRASH:
+        return true;
+      default:
+        return false;
+    }
+  }
+);
+
+export const isCanShare = createSelector(
+  getSelectedFolderRootFolderType,
+  isAdmin,
+  isVisitor,
+  (folderType, isAdmin, isVisitor) => {
+    if (isVisitor) {
+      return false;
+    }
+
+    switch (folderType) {
+      case FolderType.USER:
+        return true;
+      case FolderType.SHARE:
+        return false;
+      case FolderType.COMMON:
+        return isAdmin;
+      case FolderType.TRASH:
+        return false;
+      case FolderType.Favorites:
+        return false;
+      case FolderType.Recent:
+        return false;
+      case FolderType.Privacy:
+        return true;
+      default:
+        return false;
+    }
+  }
+);

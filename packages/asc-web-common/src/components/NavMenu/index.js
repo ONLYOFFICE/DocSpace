@@ -15,7 +15,7 @@ import { connect } from "react-redux";
 
 import { withRouter } from "react-router";
 
-import { getLanguage } from "../../store/auth/selectors";
+import { getLanguage, isDesktopClient } from "../../store/auth/selectors";
 import Loaders from "../Loaders";
 
 const backgroundColor = "#0F4071";
@@ -35,6 +35,7 @@ class NavMenu extends React.Component {
       isNavHoverEnabled,
       isNavOpened,
       isAsideVisible,
+      isDesktop,
     } = props;
 
     this.state = {
@@ -42,6 +43,7 @@ class NavMenu extends React.Component {
       isNavOpened,
       isAsideVisible,
       isNavHoverEnabled,
+      isDesktop,
     };
   }
 
@@ -101,7 +103,12 @@ class NavMenu extends React.Component {
   };
 
   render() {
-    const { isBackdropVisible, isNavOpened, isAsideVisible } = this.state;
+    const {
+      isBackdropVisible,
+      isNavOpened,
+      isAsideVisible,
+      isDesktop,
+    } = this.state;
 
     const { isAuthenticated, isLoaded, asideContent, history } = this.props;
 
@@ -113,24 +120,29 @@ class NavMenu extends React.Component {
       <StyledContainer>
         <Toast />
 
-        <Backdrop visible={isBackdropVisible} onClick={this.backdropClick} />
+        <Backdrop
+          visible={isBackdropVisible}
+          onClick={this.backdropClick}
+          withBackground={true}
+        />
 
-        {isLoaded && isAuthenticated ? (
-          <>
-            <HeaderNav history={history} />
-            <Header
-              isNavOpened={isNavOpened}
-              onClick={this.showNav}
-              onNavMouseEnter={this.handleNavMouseEnter}
-              onNavMouseLeave={this.handleNavMouseLeave}
-              toggleAside={this.toggleAside}
-            />
-          </>
-        ) : !isLoaded && isAuthenticated ? (
-          <Loaders.Header />
-        ) : (
-          <HeaderUnAuth />
-        )}
+        {!isDesktop &&
+          (isLoaded && isAuthenticated ? (
+            <>
+              <HeaderNav history={history} />
+              <Header
+                isNavOpened={isNavOpened}
+                onClick={this.showNav}
+                onNavMouseEnter={this.handleNavMouseEnter}
+                onNavMouseLeave={this.handleNavMouseLeave}
+                toggleAside={this.toggleAside}
+              />
+            </>
+          ) : !isLoaded && isAuthenticated ? (
+            <Loaders.Header />
+          ) : (
+            <HeaderUnAuth />
+          ))}
 
         {isAsideAvailable && (
           <Aside visible={isAsideVisible} onClick={this.backdropClick}>
@@ -147,6 +159,7 @@ NavMenu.propTypes = {
   isNavHoverEnabled: PropTypes.bool,
   isNavOpened: PropTypes.bool,
   isAsideVisible: PropTypes.bool,
+  isDesktop: PropTypes.bool,
 
   asideContent: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
@@ -164,6 +177,7 @@ NavMenu.defaultProps = {
   isNavHoverEnabled: true,
   isNavOpened: false,
   isAsideVisible: false,
+  isDesktop: false,
 };
 
 const NavMenuTranslationWrapper = withTranslation()(NavMenu);
@@ -192,7 +206,7 @@ function mapStateToProps(state) {
   return {
     isAuthenticated,
     isLoaded,
-
+    isDesktop: isDesktopClient(state),
     language: getLanguage(state),
   };
 }

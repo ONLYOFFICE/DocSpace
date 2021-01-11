@@ -658,6 +658,9 @@
   <data name="LicenseUploadedOverdue" xml:space="preserve">
     <value>Успешно загружено. {0}Поддержка и обновления недоступны для этой лицензии с {2}.{1}</value>
   </data>
+  <data name="LicenseUploadedOverdueSupport" xml:space="preserve">
+    <value>Успешно загружено. {0}Техподдержка недоступна для этой лицензии с {2}.{1}</value>
+  </data>
   <data name="MessageEmailChangeInstuctionsSentOnEmail" xml:space="preserve">
     <value>Инструкции по изменению электронной почты были успешно отправлены</value>
   </data>

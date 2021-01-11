@@ -16,3 +16,4 @@ export { default as toastr } from "./Toast";
 export { default as NavMenu } from "./NavMenu";
 export { default as Main } from "./Main";
 export { default as Loaders } from "./Loaders";
+export { default as Layout } from "./Layout";

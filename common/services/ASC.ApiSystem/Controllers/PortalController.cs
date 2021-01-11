@@ -249,7 +249,6 @@ namespace ASC.ApiSystem.Controllers
                 Industry = (TenantIndustry)model.Industry,
                 Spam = model.Spam,
                 Calls = model.Calls,
-                Analytics = model.Analytics,
                 LimitedControlPanel = model.LimitedControlPanel
             };
 

@@ -30,6 +30,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
@@ -83,8 +84,7 @@ namespace ASC.Web.Files
         {
             using var scope = ServiceProvider.CreateScope();
             var fileHandlerService = scope.ServiceProvider.GetService<FileHandlerService>();
-            await fileHandlerService.Invoke(context);
-            await Next.Invoke(context);
+            await fileHandlerService.Invoke(context).ConfigureAwait(false);
         }
     }
 
@@ -187,31 +187,31 @@ namespace ASC.Web.Files
                 {
                     case "view":
                     case "download":
-                        await DownloadFile(context);
+                        await DownloadFile(context).ConfigureAwait(false);
                         break;
                     case "bulk":
-                        await BulkDownloadFile(context);
+                        await BulkDownloadFile(context).ConfigureAwait(false);
                         break;
                     case "stream":
-                        await StreamFile(context);
+                        await StreamFile(context).ConfigureAwait(false);
                         break;
                     case "empty":
-                        await EmptyFile(context);
+                        await EmptyFile(context).ConfigureAwait(false);
                         break;
                     case "tmp":
-                        await TempFile(context);
+                        await TempFile(context).ConfigureAwait(false);
                         break;
                     case "create":
-                        await CreateFile(context);
+                        await CreateFile(context).ConfigureAwait(false);
                         break;
                     case "redirect":
                         Redirect(context);
                         break;
                     case "diff":
-                        await DifferenceFile(context);
+                        await DifferenceFile(context).ConfigureAwait(false);
                         break;
                     case "track":
-                        await TrackFile(context);
+                        await TrackFile(context).ConfigureAwait(false);
                         break;
                     default:
                         throw new HttpException((int)HttpStatusCode.BadRequest, FilesCommonResource.ErrorMassage_BadRequest);
@@ -697,6 +697,7 @@ namespace ASC.Web.Files
             try
             {
                 await context.Response.Body.FlushAsync();
+                await context.Response.CompleteAsync();
                 //context.Response.SuppressContent = true;
                 //context.ApplicationInstance.CompleteRequest();
             }
@@ -1148,12 +1149,25 @@ namespace ASC.Web.Files
 
         private async Task TrackFile(HttpContext context)
         {
+            var q = context.Request.Query[FilesLinkUtility.FileId];
+            
+            if (int.TryParse(q, out var id))
+            {
+                await TrackFile(context, id);
+            }
+            else
+            {
+                await TrackFile(context, q.FirstOrDefault() ?? "");
+            }
+        }
+
+        private async Task TrackFile<T>(HttpContext context, T fileId)
+        {
             var auth = context.Request.Query[FilesLinkUtility.AuthKey].FirstOrDefault();
-            var fileId = context.Request.Query[FilesLinkUtility.FileId].FirstOrDefault();
             Logger.Debug("DocService track fileid: " + fileId);
 
             var callbackSpan = TimeSpan.FromDays(128);
-            var validateResult = EmailValidationKeyProvider.ValidateEmailKey(fileId, auth ?? "", callbackSpan);
+            var validateResult = EmailValidationKeyProvider.ValidateEmailKey(fileId.ToString(), auth ?? "", callbackSpan);
             if (validateResult != EmailValidationKeyProvider.ValidationResult.Ok)
             {
                 Logger.ErrorFormat("DocService track auth error: {0}, {1}: {2}", validateResult.ToString(), FilesLinkUtility.AuthKey, auth);
@@ -1165,8 +1179,8 @@ namespace ASC.Web.Files
             {
                 string body;
                 var receiveStream = context.Request.Body;
-                var readStream = new StreamReader(receiveStream);
-                body = readStream.ReadToEnd();
+                using var readStream = new StreamReader(receiveStream);
+                body = await readStream.ReadToEndAsync();
 
                 Logger.Debug("DocService track body: " + body);
                 if (string.IsNullOrEmpty(body))
@@ -1174,12 +1188,17 @@ namespace ASC.Web.Files
                     throw new ArgumentException("DocService request body is incorrect");
                 }
 
-                var data = JToken.Parse(body);
-                if (data == null)
+                var options = new JsonSerializerOptions
                 {
-                    throw new ArgumentException("DocService request is incorrect");
-                }
-                fileData = data.ToObject<DocumentServiceTracker.TrackerData>();
+                    AllowTrailingCommas = true,
+                    PropertyNameCaseInsensitive = true
+                };
+                fileData = JsonSerializer.Deserialize<DocumentServiceTracker.TrackerData>(body, options);
+            }
+            catch(JsonException e)
+            {
+                Logger.Error("DocService track error read body", e);
+                throw new HttpException((int)HttpStatusCode.BadRequest, "DocService request is incorrect");
             }
             catch (Exception e)
             {

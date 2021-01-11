@@ -7,6 +7,7 @@ const {
   getPortalPasswordSettings,
   setNewEmail,
   logout,
+  getPortalSettings,
 } = store.auth.actions;
 
 export const SET_IS_CONFIRM_LOADED = "SET_IS_CONFIRM_LOADED";
@@ -20,14 +21,17 @@ export function setIsConfirmLoaded(isConfirmLoaded) {
 
 export function getConfirmationInfo(token) {
   return (dispatch) => {
-    return getPortalPasswordSettings(dispatch, token).then(() =>
-      dispatch(setIsConfirmLoaded(true))
-    );
+    const requests = [
+      getPortalSettings(dispatch),
+      getPortalPasswordSettings(dispatch, token),
+    ];
+
+    return Promise.all(requests).then(() => dispatch(setIsConfirmLoaded(true)));
   };
 }
 
 export function createConfirmUser(registerData, loginData, key) {
-  const data = Object.assign({}, registerData, loginData);
+  const data = Object.assign({ fromInviteLink: true }, registerData, loginData);
   return (dispatch) => {
     return api.people
       .createUser(data, key)
@@ -78,8 +82,8 @@ export function activateConfirmUser(
         const promise = new Promise((resolve, reject) => {
           setTimeout(() => {
             login(
-              data.userName,
-              data.passwordHash
+              loginData.userName,
+              loginData.passwordHash
             )(dispatch)
               .then(() => {
                 resolve(loadInitInfo(dispatch));

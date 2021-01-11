@@ -64,8 +64,11 @@ const EditingWrapperComponent = (props) => {
     if (code === 13) {
       return onClickUpdateItem(e);
     }
-
-    if (code === 27) return cancelUpdateItem(e);
+    //if (code === 27) return cancelUpdateItem(e);
+  };
+  const onEscapeKeyPress = (e) => {
+    if (e.keyCode === 27) return cancelUpdateItem(e);
+    return;
   };
 
   const setIsHoveredOkHandler = () => {
@@ -75,6 +78,8 @@ const EditingWrapperComponent = (props) => {
   const setIsHoveredCancelHandler = () => {
     setIsHoveredCancel(!CancelIconIsHovered);
   };
+
+  const onFocus = (e) => e.target.select();
 
   return (
     <EditingWrapper>
@@ -87,6 +92,8 @@ const EditingWrapperComponent = (props) => {
         isAutoFocussed={true}
         onChange={renameTitle}
         onKeyPress={onKeyUpUpdateItem}
+        onKeyDown={onEscapeKeyPress}
+        onFocus={onFocus}
         isDisabled={isLoading}
         data-itemid={itemId}
       />
