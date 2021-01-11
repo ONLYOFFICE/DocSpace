@@ -2,6 +2,7 @@ pipeline {
 	agent none
 	stages {
 		stage('Build') {
+			when { expression { return false; } }
 			parallel {
 				stage('Unix') {
 					agent { label 'net-core' }
@@ -82,7 +83,7 @@ pipeline {
 						}
 						stage('Files') {
 							steps {
-								sh "cd ${env.WORKSPACE}/products/ASC.Files/Tests/ && dotnet test ASC.Files.Tests.csproj"
+								sh "dotnet restore ASC.Web.sln --configfile .nuget/NuGet.Config && cd ${env.WORKSPACE}/products/ASC.Files/Tests/ && dotnet test ASC.Files.Tests.csproj"
 							}
 						}
 					}
@@ -110,7 +111,7 @@ pipeline {
 						}
 						stage('Files') {
 							steps {
-								bat "cd ${env.WORKSPACE}\\products\\ASC.Files\\Tests\\ && dotnet test ASC.Files.Tests.csproj"
+								bat "dotnet restore ASC.Web.sln --configfile .nuget\\NuGet.Config && cd ${env.WORKSPACE}\\products\\ASC.Files\\Tests\\ && dotnet test ASC.Files.Tests.csproj"
 							}
 						}
 					}
