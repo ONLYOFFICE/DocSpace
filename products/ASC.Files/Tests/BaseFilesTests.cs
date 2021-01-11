@@ -77,7 +77,7 @@ namespace ASC.Files.Tests
         protected UserOptions UserOptions { get; set; }
         protected IServiceScope scope { get; set; }
 
-        public const string TestConnection = "Server=localhost;Database=onlyoffice_test;User ID = root; Password=root;Pooling=true;";
+        public const string TestConnection = "Server=localhost;Database=onlyoffice_test;User ID =root;Password=root;Pooling=true;Character Set=utf8;AutoEnlist=false;SSL Mode=none";
         public virtual void SetUp()
         {
             var host = Program.CreateHostBuilder(new string[] {
