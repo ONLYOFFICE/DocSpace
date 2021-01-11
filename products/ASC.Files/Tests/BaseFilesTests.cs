@@ -34,7 +34,7 @@ namespace ASC.Files.Tests
         public void CreateDb()
         {
             var host = Program.CreateHostBuilder(new string[] {
-                "--pathToConf" ,"..\\..\\..\\..\\..\\..\\config",
+                "--pathToConf", Path.Combine("..", "..", "..", "..","..", "..", "config"),,
                 "--ConnectionStrings:default:connectionString", BaseFilesTests.TestConnection,
                 "--migration:enabled", "true" }).Build();
             
