@@ -95,7 +95,9 @@ class App extends React.Component {
           getPortalSettings(),
           getModules(),
           getPortalCultures(),
-          fetchTreeFolders()
+          fetchTreeFolders(),
+          fetchThirdPartyCapabilities(),
+          fetchThirdPartyProviders()
         );
         if (isDesktop) {
           requests.push(getIsEncryptionSupport(), getEncryptionKeys());
