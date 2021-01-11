@@ -964,11 +964,11 @@ export const getFilesList = (state) => {
       getIsRecentFolder,
       getIsFavoritesFolder,
       getFileActionId,
-      getIsPrivacyFolder,
       isVisitor,
       getCanShareOwnerChange,
       isCanBeDeleted,
       isCanShare,
+      getIsPrivacyFolder,
       isRootFolder,
     ],
     (
