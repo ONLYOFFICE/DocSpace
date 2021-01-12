@@ -129,7 +129,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
             return TagDao.GetTags(entryID, entryType, tagType);
         }
 
-        public IDictionary<object, Tag> GetTags(Guid subject, IEnumerable<TagType> tagType, IEnumerable<FileEntry<string>> fileEntries)
+        public IDictionary<object, IEnumerable<Tag>> GetTags(Guid subject, IEnumerable<TagType> tagType, IEnumerable<FileEntry<string>> fileEntries)
         {
             return TagDao.GetTags(subject, tagType, fileEntries);
         }

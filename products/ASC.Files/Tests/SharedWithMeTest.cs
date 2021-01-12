@@ -237,6 +237,7 @@ namespace ASC.Files.Tests
             Assert.IsNotNull(fileWrapper);
             Assert.AreEqual(fileTitleExpected + ".docx", fileWrapper.Title);
         }
+
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetUpdateFileItems))]
         [Category("File Read and Write")]
         [Order(17)]

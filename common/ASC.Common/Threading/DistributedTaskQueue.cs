@@ -44,11 +44,14 @@ namespace ASC.Common.Threading
         private readonly ICacheNotify<DistributedTaskCancelation> notify;
         private readonly ICacheNotify<DistributedTaskCache> notifyCache;
 
-        public DistributedTaskCacheNotify(ICacheNotify<DistributedTaskCancelation> notify, ICacheNotify<DistributedTaskCache> notifyCache)
+        public DistributedTaskCacheNotify(
+            ICacheNotify<DistributedTaskCancelation> notify, 
+            ICacheNotify<DistributedTaskCache> notifyCache,
+            ICache cache)
         {
             Cancelations = new ConcurrentDictionary<string, CancellationTokenSource>();
 
-            Cache = AscCache.Memory;
+            Cache = cache;
 
             this.notify = notify;
 

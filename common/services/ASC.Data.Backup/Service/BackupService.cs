@@ -51,9 +51,9 @@ namespace ASC.Data.Backup.Service
         private ICacheNotify<BackupProgress> СacheBackupProgress { get; }
         public ICache Cache { get; }
 
-        public BackupServiceNotifier(ICacheNotify<BackupProgress> сacheBackupProgress)
+        public BackupServiceNotifier(ICacheNotify<BackupProgress> сacheBackupProgress, ICache cache)
         {
-            Cache = AscCache.Memory;
+            Cache = cache;
             СacheBackupProgress = сacheBackupProgress;
 
             СacheBackupProgress.Subscribe((a) =>

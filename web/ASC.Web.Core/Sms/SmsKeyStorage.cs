@@ -42,10 +42,10 @@ namespace ASC.Web.Core.Sms
         public ICache KeyCache { get; }
         public ICache CheckCache { get; }
 
-        public SmsKeyStorageCache(ICacheNotify<SmsKeyCacheKey> keyCacheNotify)
+        public SmsKeyStorageCache(ICacheNotify<SmsKeyCacheKey> keyCacheNotify, ICache cache)
         {
-            CheckCache = AscCache.Memory;
-            KeyCache = AscCache.Memory;
+            CheckCache = cache;
+            KeyCache = cache;
             KeyCacheNotify = keyCacheNotify;
             KeyCacheNotify.Subscribe(r => KeyCache.Remove(r.Key), CacheNotifyAction.Remove);
         }

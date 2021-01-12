@@ -45,11 +45,15 @@ namespace ASC.Core.Caching
         internal ICacheNotify<TenantCacheItem> CacheNotifyItem { get; }
         internal ICacheNotify<TenantSetting> CacheNotifySettings { get; }
 
-        public TenantServiceCache(CoreBaseSettings coreBaseSettings, ICacheNotify<TenantCacheItem> cacheNotifyItem, ICacheNotify<TenantSetting> cacheNotifySettings)
+        public TenantServiceCache(
+            CoreBaseSettings coreBaseSettings,
+            ICacheNotify<TenantCacheItem> cacheNotifyItem,
+            ICacheNotify<TenantSetting> cacheNotifySettings,
+            ICache cache)
         {
             CacheNotifyItem = cacheNotifyItem;
             CacheNotifySettings = cacheNotifySettings;
-            Cache = AscCache.Memory;
+            Cache = cache;
             CacheExpiration = TimeSpan.FromMinutes(2);
 
             cacheNotifyItem.Subscribe((t) =>
@@ -194,12 +198,12 @@ namespace ASC.Core.Caching
 
         public CachedTenantService()
         {
-            cache = AscCache.Memory;
             SettingsExpiration = TimeSpan.FromMinutes(2);
         }
 
-        public CachedTenantService(DbTenantService service, TenantServiceCache tenantServiceCache) : this()
+        public CachedTenantService(DbTenantService service, TenantServiceCache tenantServiceCache, ICache cache) : this()
         {
+            this.cache = cache;
             Service = service ?? throw new ArgumentNullException("service");
             TenantServiceCache = tenantServiceCache;
             CacheNotifyItem = tenantServiceCache.CacheNotifyItem;

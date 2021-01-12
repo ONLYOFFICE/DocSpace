@@ -46,9 +46,9 @@ namespace ASC.Web.Core.Mail
     {
         private ICacheNotify<MailServiceHelperCache> CacheNotify { get; }
         public ICache Cache { get; }
-        public MailServiceHelperStorage(ICacheNotify<MailServiceHelperCache> cacheNotify)
+        public MailServiceHelperStorage(ICacheNotify<MailServiceHelperCache> cacheNotify, ICache cache)
         {
-            Cache = AscCache.Memory;
+            Cache = cache;
             CacheNotify = cacheNotify;
             CacheNotify.Subscribe(r => Cache.Remove(r.Key), CacheNotifyAction.Remove);
         }

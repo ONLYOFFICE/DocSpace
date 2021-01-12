@@ -61,10 +61,11 @@ namespace ASC.Core.Caching
             ICacheNotify<UserInfoCacheItem> cacheUserInfoItem,
             ICacheNotify<UserPhotoCacheItem> cacheUserPhotoItem,
             ICacheNotify<GroupCacheItem> cacheGroupCacheItem,
-            ICacheNotify<UserGroupRefCacheItem> cacheUserGroupRefItem)
+            ICacheNotify<UserGroupRefCacheItem> cacheUserGroupRefItem, 
+            ICache cache)
         {
             TrustInterval = new TrustInterval();
-            Cache = AscCache.Memory;
+            Cache = cache;
             CoreBaseSettings = coreBaseSettings;
             CacheUserInfoItem = cacheUserInfoItem;
             CacheUserPhotoItem = cacheUserPhotoItem;

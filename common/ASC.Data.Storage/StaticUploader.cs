@@ -51,7 +51,7 @@ namespace ASC.Data.Storage
         private static readonly TaskScheduler Scheduler;
         private static readonly CancellationTokenSource TokenSource;
 
-        private static readonly ICache Cache;
+        private ICache Cache { get; set; }
         private static readonly object Locker;
 
         private IServiceProvider ServiceProvider { get; }
@@ -62,7 +62,6 @@ namespace ASC.Data.Storage
         static StaticUploader()
         {
             Scheduler = new ConcurrentExclusiveSchedulerPair(TaskScheduler.Default, 4).ConcurrentScheduler;
-            Cache = AscCache.Memory;
             Locker = new object();
             TokenSource = new CancellationTokenSource();
         }
@@ -71,8 +70,10 @@ namespace ASC.Data.Storage
             IServiceProvider serviceProvider,
             TenantManager tenantManager,
             SettingsManager settingsManager,
-            StorageSettingsHelper storageSettingsHelper)
+            StorageSettingsHelper storageSettingsHelper, 
+            ICache cache)
         {
+            Cache = cache;
             ServiceProvider = serviceProvider;
             TenantManager = tenantManager;
             SettingsManager = settingsManager;
@@ -170,7 +171,7 @@ namespace ASC.Data.Storage
             TokenSource.Cancel();
         }
 
-        public static UploadOperationProgress GetProgress(int tenantId)
+        public UploadOperationProgress GetProgress(int tenantId)
         {
             lock (Locker)
             {

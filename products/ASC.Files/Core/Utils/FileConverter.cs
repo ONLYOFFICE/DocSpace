@@ -72,13 +72,13 @@ namespace ASC.Web.Files.Utils
 
         private IServiceProvider ServiceProvider { get; }
 
-        public FileConverterQueue(IServiceProvider ServiceProvider)
+        public FileConverterQueue(IServiceProvider ServiceProvider, ICache cache)
         {
             conversionQueue = new Dictionary<File<T>, ConvertFileOperationResult>(new FileComparer<T>());
             timer = new Timer(CheckConvertFilesStatus, null, 0, Timeout.Infinite);
             locker = new object();
             this.ServiceProvider = ServiceProvider;
-            cache = AscCache.Memory;
+            this.cache = cache;
         }
 
         public void Add(File<T> file, string password, int tenantId, IAccount account, bool deleteAfter, string url)
@@ -516,6 +516,7 @@ namespace ASC.Web.Files.Utils
         private FileShareLink FileShareLink { get; }
         private DocumentServiceHelper DocumentServiceHelper { get; }
         private DocumentServiceConnector DocumentServiceConnector { get; }
+        public FileTrackerHelper FileTracker { get; }
         private IServiceProvider ServiceProvider { get; }
         private IHttpContextAccessor HttpContextAccesor { get; }
 
@@ -536,6 +537,7 @@ namespace ASC.Web.Files.Utils
             FileShareLink fileShareLink,
             DocumentServiceHelper documentServiceHelper,
             DocumentServiceConnector documentServiceConnector,
+            FileTrackerHelper fileTracker,
             IServiceProvider serviceProvider)
         {
             FileUtility = fileUtility;
@@ -554,6 +556,7 @@ namespace ASC.Web.Files.Utils
             FileShareLink = fileShareLink;
             DocumentServiceHelper = documentServiceHelper;
             DocumentServiceConnector = documentServiceConnector;
+            FileTracker = fileTracker;
             ServiceProvider = serviceProvider;
         }
         public FileConverter(
@@ -573,11 +576,12 @@ namespace ASC.Web.Files.Utils
             FileShareLink fileShareLink,
             DocumentServiceHelper documentServiceHelper,
             DocumentServiceConnector documentServiceConnector,
+            FileTrackerHelper fileTracker,
             IServiceProvider serviceProvider,
             IHttpContextAccessor httpContextAccesor)
             : this(fileUtility, filesLinkUtility, daoFactory, setupInfo, pathProvider, fileSecurity,
                   fileMarker, tenantManager, authContext, entryManager, filesSettingsHelper,
-                  globalFolderHelper, filesMessageService, fileShareLink, documentServiceHelper, documentServiceConnector,
+                  globalFolderHelper, filesMessageService, fileShareLink, documentServiceHelper, documentServiceConnector, fileTracker,
                   serviceProvider)
         {
             HttpContextAccesor = httpContextAccesor;

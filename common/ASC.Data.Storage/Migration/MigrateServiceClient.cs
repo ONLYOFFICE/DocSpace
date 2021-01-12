@@ -42,11 +42,12 @@ namespace ASC.Data.Storage.Migration
 
         public ServiceClientListener(
             ICacheNotify<MigrationProgress> progressMigrationNotify,
-            IServiceProvider serviceProvider)
+            IServiceProvider serviceProvider, 
+            ICache cache)
         {
             ProgressMigrationNotify = progressMigrationNotify;
             ServiceProvider = serviceProvider;
-            Cache = AscCache.Memory;
+            Cache = cache;
 
             ProgressListening();
         }

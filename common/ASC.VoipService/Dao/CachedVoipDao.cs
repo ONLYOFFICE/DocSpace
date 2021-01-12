@@ -46,9 +46,9 @@ namespace ASC.VoipService.Dao
         public ICache Cache { get; }
         private ICacheNotify<CachedVoipItem> Notify { get; }
 
-        public VoipDaoCache(ICacheNotify<CachedVoipItem> notify)
+        public VoipDaoCache(ICacheNotify<CachedVoipItem> notify, ICache cache)
         {
-            Cache = AscCache.Memory;
+            Cache = cache;
             Notify = notify;
             Notify.Subscribe((c) => Cache.Remove(CachedVoipDao.GetCacheKey(c.Tenant)), CacheNotifyAction.Any);
         }

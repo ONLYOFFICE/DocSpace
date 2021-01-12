@@ -32,6 +32,8 @@ using System.Text.RegularExpressions;
 
 using Google.Protobuf;
 
+using Microsoft.Extensions.Caching.Memory;
+
 namespace ASC.Common.Caching
 {
     [Singletone]
@@ -62,17 +64,14 @@ namespace ASC.Common.Caching
         }
     }
 
+    [Singletone]
     public class AscCache : ICache
     {
-        public static readonly ICache Memory;
+        public IMemoryCache MemoryCache { get; }
 
-        static AscCache()
+        public AscCache(IMemoryCache memoryCache)
         {
-            Memory = new AscCache();
-        }
-
-        private AscCache()
-        {
+            MemoryCache = memoryCache;
         }
 
         public T Get<T>(string key) where T : class
@@ -84,7 +83,7 @@ namespace ASC.Common.Caching
         public void Insert(string key, object value, TimeSpan sligingExpiration)
         {
             var cache = GetCache();
-            cache.Set(key, value, new CacheItemPolicy { SlidingExpiration = sligingExpiration });
+            cache.Set(key, value, new MemoryCacheEntryOptions(){ SlidingExpiration = sligingExpiration });
         }
 
         public void Insert(string key, object value, DateTime absolutExpiration)
@@ -102,15 +101,15 @@ namespace ASC.Common.Caching
 
         public void Remove(Regex pattern)
         {
-            var cache = GetCache();
+            //var cache = GetCache();
 
-            var copy = cache.ToDictionary(p => p.Key, p => p.Value);
+            //var copy = cache.ToDictionary(p => p.Key, p => p.Value);
 
-            var keys = copy.Select(p => p.Key).Where(k => pattern.IsMatch(k)).ToArray();
-            foreach (var key in keys)
-            {
-                cache.Remove(key);
-            }
+            //var keys = copy.Select(p => p.Key).Where(k => pattern.IsMatch(k)).ToArray();
+            //foreach (var key in keys)
+            //{
+            //    cache.Remove(key);
+            //}
         }
 
 
@@ -155,9 +154,9 @@ namespace ASC.Common.Caching
             }
         }
 
-        private MemoryCache GetCache()
+        private IMemoryCache GetCache()
         {
-            return MemoryCache.Default;
+            return MemoryCache;
         }
     }
 }

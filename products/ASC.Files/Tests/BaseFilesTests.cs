@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Text.Json;
 using System.Threading;
 
+using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Context;
@@ -68,6 +69,7 @@ namespace ASC.Files.Tests
 
     public class BaseFilesTests
     {
+        protected ILog Log { get; set; }
         protected FilesControllerHelper<int> FilesControllerHelper { get; set; }
         protected GlobalFolderHelper GlobalFolderHelper { get; set; }
         protected FileStorageService<int> FileStorageService { get; set; }
@@ -98,8 +100,9 @@ namespace ASC.Files.Tests
             SecurityContext = scope.ServiceProvider.GetService<SecurityContext>();
             UserOptions = scope.ServiceProvider.GetService<IOptions<UserOptions>>().Value;
             FileStorageService = scope.ServiceProvider.GetService<FileStorageService<int>>();
-           
-            
+            Log = scope.ServiceProvider.GetService<IOptionsMonitor<ILog>>().CurrentValue;
+
+
             SecurityContext.AuthenticateMe(CurrentTenant.OwnerId);
         }
         
