@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 
 using ASC.Api.Documents;
@@ -113,7 +114,7 @@ namespace ASC.Files.Tests
                     break;
                 Thread.Sleep(100);
             }
-            Assert.IsFalse(statuses.TrueForAll(r => string.IsNullOrEmpty(r.Error)));
+            Assert.IsFalse(statuses.TrueForAll(r => string.IsNullOrEmpty(r.Error)), string.Join(",", statuses.Select(r => r.Error)));
         }
 
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetCreateFileItems))]
@@ -179,7 +180,7 @@ namespace ASC.Files.Tests
                     break;
                 Thread.Sleep(100);
             }
-            Assert.IsFalse(statuses.TrueForAll(r => string.IsNullOrEmpty(r.Error)));
+            Assert.IsFalse(statuses.TrueForAll(r => string.IsNullOrEmpty(r.Error)), string.Join(",", statuses.Select(r => r.Error)));
         }
         #endregion
 
@@ -243,7 +244,8 @@ namespace ASC.Files.Tests
                     break;
                 Thread.Sleep(100);
             }
-            Assert.IsFalse(statuses.TrueForAll(r => string.IsNullOrEmpty(r.Error)));
+
+            Assert.IsTrue(statuses.TrueForAll(r => string.IsNullOrEmpty(r.Error)), string.Join(",", statuses.Select(r=> r.Error)));
         }
 
         
@@ -301,7 +303,7 @@ namespace ASC.Files.Tests
                     break;
                 Thread.Sleep(100);
             }
-            Assert.IsFalse(statuses.TrueForAll(r => string.IsNullOrEmpty(r.Error)));
+            Assert.IsFalse(statuses.TrueForAll(r => string.IsNullOrEmpty(r.Error)), string.Join(",", statuses.Select(r => r.Error)));
         }
         #endregion
     }
