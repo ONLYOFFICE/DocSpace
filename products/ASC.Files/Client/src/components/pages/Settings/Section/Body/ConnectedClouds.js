@@ -360,9 +360,8 @@ class ConnectClouds extends React.Component {
                     <Link
                       type="page"
                       title={item.customer_title}
-                      as="div"
                       color="#333"
-                      fontSize="12px"
+                      fontSize="13px"
                       fontWeight={400}
                       truncate={true}
                       data-provider-key={item.provider_key}
