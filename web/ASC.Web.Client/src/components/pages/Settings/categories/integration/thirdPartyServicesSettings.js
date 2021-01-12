@@ -21,6 +21,12 @@ const { getUrlAuthKeys } = commonStore.auth.selectors;
 const tablet = utils.device.tablet;
 const mobile = utils.device.mobile;
 
+const StyledThirdPartyServices = styled(Box)`
+  .consumer-modal-dialog {
+    cursor: default;
+  }
+`;
+
 const RootContainer = styled(Box)`
   @media ${tablet} {
     margin: 0;
@@ -133,11 +139,12 @@ class ThirdPartyServices extends React.Component {
     const { onModalClose, onModalOpen, setConsumer, onChangeLoading } = this;
 
     return (
-      <>
+      <StyledThirdPartyServices>
         <RootContainer
           displayProp="flex"
           flexDirection="column"
           marginProp="0 88px 0 0"
+          className="aaaaaa"
         >
           <Box className="title-description-container">
             <Text>{t("ThirdPartyTitleDescription")}</Text>
@@ -194,7 +201,7 @@ class ThirdPartyServices extends React.Component {
             updateConsumerProps={updateConsumerProps}
           />
         )}
-      </>
+      </StyledThirdPartyServices>
     );
   }
 }
