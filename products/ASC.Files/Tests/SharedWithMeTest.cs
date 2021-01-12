@@ -118,7 +118,7 @@ namespace ASC.Files.Tests
 
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetCreateFileItems))]
         [Category("File Read")]
-        [Order(1)]
+        [Order(6)]
         public void CreateSharedFileReturnsFolderWrapperRead(string fileTitle)
         {
             var fileWrapper = FilesControllerHelper.CreateFile(GlobalFolderHelper.FolderShare, fileTitle, default);
@@ -128,7 +128,7 @@ namespace ASC.Files.Tests
 
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.ShareParamToFileRead))]
         [Category("File Read")]
-        [Order(2)]
+        [Order(7)]
         public void ShareFileToAnotherUserRead( bool notify, string message)
         {
             var shareFolder = FilesControllerHelper.SetFileSecurityInfo(TestFileRead.Id, TestFolderParamRead, notify, message);
@@ -137,7 +137,7 @@ namespace ASC.Files.Tests
 
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetSharedInfo))]
         [Category("File Read")]
-        [Order(3)]
+        [Order(8)]
         public void GetSharedFileInfoReturnsFolderWrapperRead(string fileTitleExpected)
         {
             SecurityContext.AuthenticateMe(NewUser.ID);
@@ -147,9 +147,10 @@ namespace ASC.Files.Tests
             Assert.AreEqual(fileTitleExpected + ".docx", fileWrapper.Title);
 
         }
+
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetUpdateFileItems))]
         [Category("File Read")]
-        [Order(4)]
+        [Order(9)]
         public void UpdateSharedFileReturnsFolderWrapperRead(string fileTitle, int lastVersion)
         {
             SecurityContext.AuthenticateMe(NewUser.ID);
@@ -159,7 +160,7 @@ namespace ASC.Files.Tests
 
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetDeleteFileItems))]
         [Category("File Read")]
-        [Order(5)]
+        [Order(10)]
         public void DeleteSharedFileReturnsFolderWrapperRead(bool deleteAfter, bool immediately)
         {
             SecurityContext.AuthenticateMe(NewUser.ID);
@@ -186,7 +187,7 @@ namespace ASC.Files.Tests
 
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.ShareParamToFolder))]
         [Category("Folder Read and Write")]
-        [Order(2)]
+        [Order(11)]
         public void ShareFolderToAnotherUserReadAndWrite(bool notify, string message)
         {
             var shareFolder = FilesControllerHelper.SetFolderSecurityInfo(TestFolderReadAndWrite.Id, TestFolderParamReadAndWrite, notify, message);
@@ -195,7 +196,7 @@ namespace ASC.Files.Tests
 
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetSharedFolderInfoReadAndWrite))]
         [Category("Folder Read and Write")]
-        [Order(3)]
+        [Order(12)]
         public void GetSharedFolderInfoReturnsFolderWrapperReadAndWrite(string folderTitleExpected)
         {
             SecurityContext.AuthenticateMe(NewUser.ID);
@@ -210,7 +211,7 @@ namespace ASC.Files.Tests
 
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetRenameFolderItems))]
         [Category("Folder Read and Write")]
-        [Order(4)]
+        [Order(13)]
         public void RenameSharedFolderReturnsFolderWrapperReadAndWrite(string folderTitle)
         {
             SecurityContext.AuthenticateMe(NewUser.ID);
@@ -222,7 +223,7 @@ namespace ASC.Files.Tests
 
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetDeleteFolderItems))]
         [Category("Folder Read and Write")]
-        [Order(5)]
+        [Order(14)]
         public void DeleteSharedFolderReturnsFolderWrapperReadAndWrite(bool deleteAfter, bool immediately)
         {
             SecurityContext.AuthenticateMe(NewUser.ID);
@@ -249,7 +250,7 @@ namespace ASC.Files.Tests
 
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.ShareParamToFile))]
         [Category("File Read and Write")]
-        [Order(2)]
+        [Order(15)]
         public void ShareFileToAnotherUserReadAndWrite( bool notify, string message)
         {
             var shareFolder = FilesControllerHelper.SetFileSecurityInfo(TestFileReadAndWrite.Id, TestFolderParamReadAndWrite, notify, message);
@@ -258,7 +259,7 @@ namespace ASC.Files.Tests
 
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetSharedInfoReadAndWrite))]
         [Category("File Read and Write")]
-        [Order(3)]
+        [Order(16)]
         public void GetSharedFileInfoReturnsFolderWrapperReadAndWrite(string fileTitleExpected)
         {
             SecurityContext.AuthenticateMe(NewUser.ID);
@@ -269,7 +270,7 @@ namespace ASC.Files.Tests
         }
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetUpdateFileItems))]
         [Category("File Read and Write")]
-        [Order(4)]
+        [Order(17)]
         public void UpdateSharedFileReturnsFolderWrapperReadAndWrite(string fileTitle, int lastVersion)
         {
             SecurityContext.AuthenticateMe(NewUser.ID);
@@ -281,7 +282,7 @@ namespace ASC.Files.Tests
 
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetDeleteFileItems))]
         [Category("File Read and Write")]
-        [Order(5)]
+        [Order(18)]
         public void DeleteSharedFileReturnsFolderWrapperReadAndWrite(bool deleteAfter, bool immediately)
         {
             SecurityContext.AuthenticateMe(NewUser.ID);
