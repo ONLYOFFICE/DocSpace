@@ -6,6 +6,7 @@ using System.Threading;
 using ASC.Api.Documents;
 using ASC.Core;
 using ASC.Core.Users;
+using ASC.Files.Core.Resources;
 using ASC.Web.Api.Models;
 using ASC.Web.Files.Services.WCFService;
 using ASC.Web.Files.Services.WCFService.FileOperations;
@@ -114,7 +115,8 @@ namespace ASC.Files.Tests
                     break;
                 Thread.Sleep(100);
             }
-            Assert.IsFalse(statuses.TrueForAll(r => string.IsNullOrEmpty(r.Error)), string.Join(",", statuses.Select(r => r.Error)));
+
+            Assert.That(string.Join(",", statuses.Select(r => r.Error)) == FilesCommonResource.ErrorMassage_SecurityException_DeleteFolder);
         }
 
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetCreateFileItems))]
@@ -245,10 +247,8 @@ namespace ASC.Files.Tests
                 Thread.Sleep(100);
             }
 
-            Assert.IsTrue(statuses.TrueForAll(r => string.IsNullOrEmpty(r.Error)), string.Join(",", statuses.Select(r=> r.Error)));
+            Assert.That(string.Join(",", statuses.Select(r => r.Error)) == FilesCommonResource.ErrorMassage_SecurityException_DeleteFolder);
         }
-
-        
 
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.ShareParamToFile))]
         [Category("File Read and Write")]
