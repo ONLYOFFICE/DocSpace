@@ -110,7 +110,7 @@ namespace ASC.Common.Caching
 
         public ConcurrentDictionary<string, T> HashGetAll<T>(string key)
         {
-            return MemoryCache.GetOrCreate<ConcurrentDictionary<string, T>>(key, r=> new ConcurrentDictionary<string, T>());
+            return MemoryCache.GetOrCreate(key, r=> new ConcurrentDictionary<string, T>());
         }
 
         public T HashGet<T>(string key, string field)
