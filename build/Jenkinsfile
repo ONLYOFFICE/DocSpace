@@ -84,7 +84,7 @@ pipeline {
 						}
 						stage('Files') {
 							steps {
-								sh "dotnet restore ASC.Web.sln --configfile .nuget/NuGet.Config && cd ${env.WORKSPACE}/products/ASC.Files/Tests/ && dotnet test ASC.Files.Tests.csproj -r linux-x64"
+								sh "dotnet restore ASC.Web.sln --configfile .nuget/NuGet.Config && cd ${env.WORKSPACE}/products/ASC.Files/Tests/ && dotnet test ASC.Files.Tests.csproj -r linux-x64 -l \"console;verbosity=detailed\""
 							}
 						}
 					}
