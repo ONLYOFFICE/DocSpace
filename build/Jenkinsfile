@@ -2,7 +2,6 @@ pipeline {
 	agent none
 	stages {
 		stage('Build') {
-			when { expression { return false; } }
 			parallel {
 				stage('Unix') {
 					agent { label 'net-core' }
