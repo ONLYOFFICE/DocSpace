@@ -719,6 +719,11 @@ class SectionBodyContent extends React.Component {
     this.setState({ showMoveToPanel: !this.state.showMoveToPanel });
   onCopyAction = () =>
     this.setState({ showCopyPanel: !this.state.showCopyPanel });
+  onShowDeleteThirdParty = () => {
+    this.setState({
+      showDeleteThirdPartyDialog: !this.state.showDeleteThirdPartyDialog,
+    });
+  };
   onDuplicate = () => {
     const {
       selection,

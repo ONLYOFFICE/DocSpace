@@ -37,7 +37,7 @@ class OperationsPanelComponent extends React.Component {
     this.state = {
       showProviderDialog: false,
       operationPanelVisible: props.visible,
-      provider: "",
+      providerKey: "",
       destFolderId: null,
     };
   }
@@ -47,13 +47,17 @@ class OperationsPanelComponent extends React.Component {
     const destFolderId = isNaN(+folder[0]) ? folder[0] : +folder[0];
 
     const provider = selection.find((x) => x.providerKey);
+    const isProviderFolder = selection.find((x) => !x.providerKey);
 
     if (currentFolderId === destFolderId) {
       return onClose();
     } else {
-      provider && !isCopy && !treeNode.node.props.providerKey
+      provider &&
+      !isProviderFolder &&
+      !isCopy &&
+      treeNode.node.props.providerKey !== provider.providerKey
         ? this.setState({
-            provider: provider.providerKey,
+            providerKey: provider.providerKey,
             operationPanelVisible: false,
             showProviderDialog: true,
             destFolderId,
@@ -95,7 +99,12 @@ class OperationsPanelComponent extends React.Component {
     if (currentFolderId === destFolderId) {
       return onClose();
     } else {
-      for (let item of selection) {
+      const isProviderFolder = selection.find((x) => !x.providerKey);
+      const items = isProviderFolder
+        ? selection.filter((x) => !x.providerKey)
+        : selection;
+
+      for (let item of items) {
         if (item.fileExst) {
           fileIds.push(item.id);
         } else if (item.id === destFolderId) {
@@ -135,7 +144,11 @@ class OperationsPanelComponent extends React.Component {
       operationsFolders,
       onClose,
     } = this.props;
-    const { showProviderDialog, operationPanelVisible, provider } = this.state;
+    const {
+      showProviderDialog,
+      operationPanelVisible,
+      providerKey,
+    } = this.state;
 
     const zIndex = 310;
     const expandedKeys = this.props.expandedKeys.map((item) => item.toString());
@@ -148,7 +161,7 @@ class OperationsPanelComponent extends React.Component {
             onClose={onClose}
             startMoveOperation={this.startMoveOperation}
             startCopyOperation={this.startCopyOperation}
-            provider={provider}
+            provider={providerKey}
           />
         )}
 
