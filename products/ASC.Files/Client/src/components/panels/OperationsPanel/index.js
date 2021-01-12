@@ -42,7 +42,7 @@ class OperationsPanelComponent extends React.Component {
     };
   }
 
-  onSelect = (folder) => {
+  onSelect = (folder, treeNode) => {
     const { currentFolderId, onClose, selection, isCopy } = this.props;
     const destFolderId = isNaN(+folder[0]) ? folder[0] : +folder[0];
 
@@ -51,7 +51,7 @@ class OperationsPanelComponent extends React.Component {
     if (currentFolderId === destFolderId) {
       return onClose();
     } else {
-      provider && !isCopy
+      provider && !isCopy && !treeNode.node.props.providerKey
         ? this.setState({
             provider: provider.providerKey,
             operationPanelVisible: false,
@@ -78,7 +78,6 @@ class OperationsPanelComponent extends React.Component {
 
   startOperation = (isCopy, folderId) => {
     const {
-      setProgressBarData,
       itemOperationToFolder,
       t,
       selection,
@@ -122,21 +121,6 @@ class OperationsPanelComponent extends React.Component {
         isCopy
       );
     }
-
-    setProgressBarData({
-      visible: true,
-      percent: 0,
-      label: isCopy ? t("CopyOperation") : t("MoveToOperation"),
-    });
-
-    itemOperationToFolder(
-      destFolderId,
-      folderIds,
-      fileIds,
-      conflictResolveType,
-      deleteAfter,
-      isCopy
-    );
 
     onClose();
   };

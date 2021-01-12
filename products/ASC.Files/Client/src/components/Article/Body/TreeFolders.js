@@ -271,9 +271,6 @@ class TreeFolders extends React.Component {
     if (obj.isLeaf) {
       return null;
     }
-    if (obj.pos === "0-4" && !this.props.isDesktop) {
-      return null;
-    }
     if (obj.expanded) {
       return <Icons.ExpanderDownIcon size="scale" isfill color="dimgray" />;
     } else {
