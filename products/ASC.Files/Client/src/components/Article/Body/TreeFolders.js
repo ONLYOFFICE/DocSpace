@@ -219,7 +219,6 @@ class TreeFolders extends React.Component {
         ? item.newItems > 0 && this.props.needUpdate
         : false;
 
-      //TODO: fix service folders
       const serviceFolder = !!item.providerKey;
       if ((item.folders && item.folders.length > 0) || serviceFolder) {
         return (
@@ -449,15 +448,9 @@ class TreeFolders extends React.Component {
   };
 
   render() {
-    const {
-      selectedKeys,
-      isLoading,
-      onSelect,
-      needUpdate,
-      dragging,
-    } = this.props;
+    const { selectedKeys, isLoading, onSelect, dragging } = this.props;
     const { treeData, expandedKeys } = this.state;
-    const loadProp = needUpdate ? { loadData: this.onLoadData } : {};
+    //const loadProp = needUpdate ? { loadData: this.onLoadData } : {};
 
     return (
       <StyledTreeMenu
@@ -470,7 +463,8 @@ class TreeFolders extends React.Component {
         switcherIcon={this.switcherIcon}
         onSelect={onSelect}
         selectedKeys={selectedKeys}
-        {...loadProp}
+        //{...loadProp}
+        loadData={this.onLoadData}
         expandedKeys={expandedKeys}
         onExpand={this.onExpand}
         onMouseEnter={this.onMouseEnter}
