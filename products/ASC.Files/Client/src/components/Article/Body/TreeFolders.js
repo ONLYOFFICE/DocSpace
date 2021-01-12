@@ -186,6 +186,12 @@ class TreeFolders extends React.Component {
             title={item.title}
             icon={this.getFolderIcon(item)}
             dragging={dragging}
+            isLeaf={
+              item.rootFolderType === FolderType.Privacy &&
+              !this.props.isDesktop
+                ? true
+                : null
+            }
             newItems={
               !this.props.isDesktop &&
               item.rootFolderType === FolderType.Privacy
@@ -224,9 +230,6 @@ class TreeFolders extends React.Component {
 
   switcherIcon = (obj) => {
     if (obj.isLeaf) {
-      return null;
-    }
-    if (obj.pos === "0-4" && !this.props.isDesktop) {
       return null;
     }
     if (obj.expanded) {
