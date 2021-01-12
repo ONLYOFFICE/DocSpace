@@ -69,13 +69,13 @@ namespace ASC.Common.Threading
 
             notifyCache.Subscribe((c) =>
             {
-                TestContext.WriteLine($"HashSet remove key: {c.Key}, id:{c.Id}");
+                TestContext.WriteLine($"HashSet remove key: {c}");
                 Cache.HashSet(c.Key, c.Id, (DistributedTaskCache)null);
             }, CacheNotifyAction.Remove);
 
             notifyCache.Subscribe((c) =>
             {
-                TestContext.WriteLine($"HashSet key: {c.Key}, id:{c.Id}");
+                TestContext.WriteLine($"HashSet key: {c}");
                 Cache.HashSet(c.Key, c.Id, c);
             }, CacheNotifyAction.InsertOrUpdate);
         }
