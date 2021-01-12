@@ -57,6 +57,9 @@ const initialState = {
     greetingSettings: "Web Office Applications",
     enableAdmMess: false,
     urlLicense: "https://gnu.org/licenses/gpl-3.0.html",
+    urlSupport: "https://helpdesk.onlyoffice.com/",
+    urlAuthKeys:
+      "https://helpcenter.onlyoffice.com/ru/installation/groups-authorization-keys.aspx",
     logoUrl: "",
     customNames: {
       id: "Common",
