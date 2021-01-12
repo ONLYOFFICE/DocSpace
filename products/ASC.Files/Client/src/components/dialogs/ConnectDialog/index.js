@@ -187,7 +187,7 @@ const PureConnectDialogContainer = (props) => {
             <Text className="dialog-form-text">{t("ConnectFolderTitle")}</Text>
             <TextInput
               scale
-              value={`${customerTitle} ${t("Directory")}`}
+              value={`${customerTitle}`}
               onChange={onChangeFolderName}
             />
           </div>
