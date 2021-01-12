@@ -116,7 +116,8 @@ namespace ASC.Files.Tests
                 Thread.Sleep(100);
             }
 
-            Assert.That(string.Join(",", statuses.Select(r => r.Error)) == FilesCommonResource.ErrorMassage_SecurityException_DeleteFolder);
+            var error = string.Join(",", statuses.Select(r => r.Error));
+            Assert.That(error == FilesCommonResource.ErrorMassage_SecurityException_DeleteFolder, error);
         }
 
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetCreateFileItems))]
@@ -182,7 +183,9 @@ namespace ASC.Files.Tests
                     break;
                 Thread.Sleep(100);
             }
-            Assert.IsFalse(statuses.TrueForAll(r => string.IsNullOrEmpty(r.Error)), string.Join(",", statuses.Select(r => r.Error)));
+
+            var error = string.Join(",", statuses.Select(r => r.Error));
+            Assert.That(error == FilesCommonResource.ErrorMassage_SecurityException_DeleteFile, error);
         }
         #endregion
 
@@ -247,7 +250,8 @@ namespace ASC.Files.Tests
                 Thread.Sleep(100);
             }
 
-            Assert.That(string.Join(",", statuses.Select(r => r.Error)) == FilesCommonResource.ErrorMassage_SecurityException_DeleteFolder);
+            var error = string.Join(",", statuses.Select(r => r.Error));
+            Assert.That(error == FilesCommonResource.ErrorMassage_SecurityException_DeleteFolder, error);
         }
 
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.ShareParamToFile))]
@@ -303,7 +307,9 @@ namespace ASC.Files.Tests
                     break;
                 Thread.Sleep(100);
             }
-            Assert.IsFalse(statuses.TrueForAll(r => string.IsNullOrEmpty(r.Error)), string.Join(",", statuses.Select(r => r.Error)));
+
+            var error = string.Join(",", statuses.Select(r => r.Error));
+            Assert.That(error == FilesCommonResource.ErrorMassage_SecurityException_DeleteFile, error);
         }
         #endregion
     }
