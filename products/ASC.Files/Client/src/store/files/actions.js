@@ -326,7 +326,6 @@ export function setShowThirdPartyPanel(showThirdPartyPanel) {
   };
 }
 
-
 export function setIsVerHistoryPanel(isVisible) {
   return {
     type: SET_IS_VER_HISTORY_PANEL,
@@ -1738,22 +1737,26 @@ export function getOAuthToken(modal) {
   });
 }
 
-export function openConnectWindow(serviceName) {
+export function openConnectWindow(serviceName, modal) {
   const service = convertServiceName(serviceName);
   return api.files.openConnectWindow(service).then((link) => {
-    return oAuthPopup(link);
+    return oAuthPopup(link, modal);
   });
 }
 
-export function oAuthPopup(url) {
-  let newWindow;
+export function oAuthPopup(url, modal) {
+  let newWindow = modal;
+
+  if (modal) {
+    newWindow.location = url;
+  }
 
   try {
     let params =
       "height=600,width=1020,resizable=0,status=0,toolbar=0,menubar=0,location=1";
-    newWindow = window.open(url, "Authorization", params);
+    newWindow = modal ? newWindow : window.open(url, "Authorization", params);
   } catch (err) {
-    newWindow = window.open(url, "Authorization");
+    newWindow = modal ? newWindow : window.open(url, "Authorization");
   }
 
   return newWindow;

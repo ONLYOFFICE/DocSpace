@@ -152,12 +152,18 @@ class ConnectClouds extends React.Component {
   onShowService = (e) => {
     const selectedServiceData = e.currentTarget.dataset;
     const showAccountSettingDialog = !e.currentTarget.dataset.link;
-    !showAccountSettingDialog &&
-      openConnectWindow(selectedServiceData.title).then((modal) =>
+    if (!showAccountSettingDialog) {
+      let authModal = window.open(
+        "",
+        "Authorization",
+        "height=600, width=1020"
+      );
+      openConnectWindow(selectedServiceData.title, authModal).then((modal) =>
         getOAuthToken(modal).then((token) =>
           this.showOAuthModal(token, selectedServiceData)
         )
       );
+    }
 
     this.setState({
       showThirdPartyDialog: !this.state.showThirdPartyDialog,
