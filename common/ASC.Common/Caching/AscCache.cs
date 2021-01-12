@@ -139,7 +139,7 @@ namespace ASC.Common.Caching
             if (value != null)
             {
                 dic.AddOrUpdate(field, value, (k, v) => value);
-                cache.Set(key, dic, null);
+                cache.Set(key, dic, DateTime.MaxValue);
             }
             else if (dic != null)
             {
@@ -150,7 +150,7 @@ namespace ASC.Common.Caching
                 }
                 else
                 {
-                    cache.Set(key, dic, null);
+                    cache.Set(key, dic, DateTime.MaxValue);
                 }
             }
         }

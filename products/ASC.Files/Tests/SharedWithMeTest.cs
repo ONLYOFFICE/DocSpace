@@ -272,7 +272,7 @@ namespace ASC.Files.Tests
             {
                 statuses = FileStorageService.GetTasksStatuses();
 
-                if (statuses.Any() && statuses.TrueForAll(r => r.Finished))
+                if (statuses.TrueForAll(r => r.Finished))
                     break;
                 await Task.Delay(100);
             }
