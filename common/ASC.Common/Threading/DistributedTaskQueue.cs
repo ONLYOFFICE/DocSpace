@@ -34,6 +34,8 @@ using System.Threading.Tasks;
 
 using ASC.Common.Caching;
 
+using NUnit.Framework;
+
 namespace ASC.Common.Threading
 {
     [Singletone]
@@ -67,11 +69,13 @@ namespace ASC.Common.Threading
 
             notifyCache.Subscribe((c) =>
             {
+                TestContext.WriteLine($"HashSet remove key: {c.Key}, id:{c.Id}");
                 Cache.HashSet(c.Key, c.Id, (DistributedTaskCache)null);
             }, CacheNotifyAction.Remove);
 
             notifyCache.Subscribe((c) =>
             {
+                TestContext.WriteLine($"HashSet key: {c.Key}, id:{c.Id}");
                 Cache.HashSet(c.Key, c.Id, c);
             }, CacheNotifyAction.InsertOrUpdate);
         }
@@ -163,7 +167,8 @@ namespace ASC.Common.Threading
 
         public IEnumerable<DistributedTask> GetTasks()
         {
-            var tasks = cache.HashGetAll<DistributedTaskCache>(key).Values.Select(r => new DistributedTask(r)).ToList();
+            TestContext.WriteLine($"key: {key}");
+            var tasks = cache.HashGetAll<DistributedTaskCache>(key).Select(r => new DistributedTask(r.Value)).ToList();
             tasks.ForEach(t =>
             {
                 if (t.Publication == null)
