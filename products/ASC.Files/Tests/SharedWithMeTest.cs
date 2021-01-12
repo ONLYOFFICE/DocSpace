@@ -115,7 +115,6 @@ namespace ASC.Files.Tests
         {
             var fileWrapper = FilesControllerHelper.CreateFile(GlobalFolderHelper.FolderShare, fileTitle, default);
             Assert.AreEqual(fileWrapper.FolderId, GlobalFolderHelper.FolderMy);
-            DeleteFile(fileWrapper.Id);
         }
 
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.ShareParamToFileRead))]

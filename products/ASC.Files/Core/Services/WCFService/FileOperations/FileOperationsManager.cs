@@ -63,7 +63,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 foreach (var o in operations.Where(o => processlist.All(p => p.Id != o.InstanceId)))
                 {
                     o.SetProperty(FileOperation.PROGRESS, 100);
-                    tasks.RemoveTask(o.Id);
+                    //tasks.RemoveTask(o.Id);
                 }
             }
 
@@ -71,7 +71,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             foreach (var o in operations.Where(o => o.Status > DistributedTaskStatus.Running))
             {
                 o.SetProperty(FileOperation.PROGRESS, 100);
-                //tasks.RemoveTask(o.Id);
+                tasks.RemoveTask(o.Id);
             }
 
             var results = operations
