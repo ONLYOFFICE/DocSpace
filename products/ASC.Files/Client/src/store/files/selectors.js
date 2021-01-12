@@ -852,6 +852,10 @@ export const getMyFolderId = createSelector(getMyFolder, (myFolder) => {
   if (myFolder) return myFolder.id;
 });
 
+export const getMyDirectoryFolders = createSelector(getMyFolder, (myFolder) => {
+  if (myFolder) return myFolder.folders || null;
+});
+
 export const getShareFolderId = createSelector(
   getShareFolder,
   (shareFolder) => {

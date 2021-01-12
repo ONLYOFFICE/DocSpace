@@ -20,6 +20,7 @@ import {
   openConnectWindow,
   setConnectItem,
   setShowThirdPartyPanel,
+  fetchFiles,
 } from "../../../../../store/files/actions";
 import {
   getThirdPartyCapabilities,
@@ -36,6 +37,8 @@ import {
   getConnectItem,
   getShowThirdPartyPanel,
   getThirdPartyProviders,
+  getMyDirectoryFolders,
+  getFilter,
 } from "../../../../../store/files/selectors";
 import { DeleteThirdPartyDialog, ConnectDialog } from "../../../../dialogs";
 
@@ -245,6 +248,16 @@ class ConnectClouds extends React.Component {
     }
   };
 
+  openLocation = (e) => {
+    const { myDirectoryFolders, filter, fetchFiles } = this.props;
+    const provider = e.currentTarget.dataset.providerKey;
+    const id = myDirectoryFolders
+      .filter((f) => f.providerKey === provider)
+      .map((f) => f.id)
+      .join();
+    return fetchFiles(id, filter);
+  };
+
   render() {
     const {
       showThirdPartyDialog,
@@ -319,7 +332,7 @@ class ConnectClouds extends React.Component {
                     {
                       "data-id": item.provider_id,
                       "data-title": item.customer_title,
-                      //"data-provider-key": item.provider_key
+                      //"data-provider-key": item.provider_key,
                       label: t("DeleteThirdParty"),
                       onClick: this.onDeleteThirdParty,
                     },
@@ -352,6 +365,8 @@ class ConnectClouds extends React.Component {
                       fontSize="12px"
                       fontWeight={400}
                       truncate={true}
+                      data-provider-key={item.provider_key}
+                      onClick={this.openLocation}
                     >
                       {item.customer_title}
                     </Link>
@@ -522,10 +537,13 @@ function mapStateToProps(state) {
     connectItem: getConnectItem(state),
     showThirdPartyPanel: getShowThirdPartyPanel(state),
     providers: getThirdPartyProviders(state),
+    myDirectoryFolders: getMyDirectoryFolders(state),
+    filter: getFilter(state),
   };
 }
 
 export default connect(mapStateToProps, {
   setConnectItem,
   setShowThirdPartyPanel,
+  fetchFiles,
 })(withTranslation()(ConnectClouds));
