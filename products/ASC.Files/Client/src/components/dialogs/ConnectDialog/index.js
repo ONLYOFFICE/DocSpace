@@ -126,9 +126,15 @@ const PureConnectDialogContainer = (props) => {
           const { pathParts, folders, foldersCount } = treeFolder;
 
           const newTreeFolders = treeFolders;
-          loopTreeFolders(pathParts, newTreeFolders, folders, foldersCount);
-          setUpdateTree(true);
+          loopTreeFolders(
+            pathParts,
+            newTreeFolders,
+            folders,
+            foldersCount,
+            folderData
+          );
           setTreeFolders(newTreeFolders);
+          setUpdateTree(true);
           fetchThirdPartyProviders();
           setSelectedNode([`${folderData.id}`]);
           fetchFiles(folderData.id);
