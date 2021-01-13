@@ -88,10 +88,15 @@ const PureConnectDialogContainer = (props) => {
   } = props;
   const { corporate, title, link, token, provider_id, provider_key } = item;
 
+  const provider = providers.find(
+    (el) => el.provider_key === item.provider_key
+  );
+  const folderTitle = provider ? provider.customer_title : title;
+
   const [urlValue, setUrlValue] = useState("");
   const [loginValue, setLoginValue] = useState("");
   const [passwordValue, setPasswordValue] = useState("");
-  const [customerTitle, setCustomerTitleValue] = useState(title);
+  const [customerTitle, setCustomerTitleValue] = useState(folderTitle);
   const [isCorporate, setMakeShared] = useState(!!corporate);
   const [oAuthToken, setToken] = useState(token);
 
@@ -100,10 +105,6 @@ const PureConnectDialogContainer = (props) => {
   const onChangePassword = (e) => setPasswordValue(e.target.value);
   const onChangeFolderName = (e) => setCustomerTitleValue(e.target.value);
   const onChangeMakeShared = (e) => setMakeShared(!isCorporate);
-
-  const folderTitle = providers.find(
-    (el) => el.provider_key === item.provider_key
-  ).customer_title;
 
   const onSave = () => {
     onClose();
@@ -193,7 +194,7 @@ const PureConnectDialogContainer = (props) => {
             <Text className="dialog-form-text">{t("ConnectFolderTitle")}</Text>
             <TextInput
               scale
-              value={`${folderTitle}`}
+              value={`${customerTitle}`}
               onChange={onChangeFolderName}
             />
           </div>
