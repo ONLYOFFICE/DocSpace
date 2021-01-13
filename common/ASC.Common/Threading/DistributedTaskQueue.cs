@@ -148,7 +148,12 @@ namespace ASC.Common.Threading
             var token = cancelation.Token;
             cancelations[distributedTask.Id] = cancelation;
 
-            var task = new Task(() => action(distributedTask, token), token, TaskCreationOptions.LongRunning);
+            TestContext.WriteLine($"ThreadId QueueTask: {Thread.CurrentThread.ManagedThreadId}");
+
+            var task = new Task(() => {
+                TestContext.WriteLine($"ThreadId QueueTask task: {Thread.CurrentThread.ManagedThreadId}");
+                action(distributedTask, token);
+            }, token, TaskCreationOptions.LongRunning);
             task
                 .ConfigureAwait(false)
                 .GetAwaiter()

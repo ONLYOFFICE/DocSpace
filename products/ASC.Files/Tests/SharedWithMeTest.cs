@@ -100,12 +100,13 @@ namespace ASC.Files.Tests
         {
             SecurityContext.AuthenticateMe(NewUser.ID);
 
-            FilesControllerHelper.DeleteFolder(
+            var result = FilesControllerHelper.DeleteFolder(
                 TestFolderRead.Id,
                 deleteAfter,
-                immediately);
+                immediately)
+                .FirstOrDefault();
 
-            await WaitLongOperation(FilesCommonResource.ErrorMassage_SecurityException_DeleteFolder);
+            await WaitLongOperation(result, FilesCommonResource.ErrorMassage_SecurityException_DeleteFolder);
         }
 
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.GetCreateFileItems))]
@@ -155,12 +156,13 @@ namespace ASC.Files.Tests
         public async Task DeleteSharedFileReturnsFolderWrapperRead(bool deleteAfter, bool immediately)
         {
             SecurityContext.AuthenticateMe(NewUser.ID);
-            FilesControllerHelper.DeleteFile(
+            var result = FilesControllerHelper.DeleteFile(
                 TestFileRead.Id,
                 deleteAfter,
-                immediately);
+                immediately)
+                .FirstOrDefault();
 
-            await WaitLongOperation(FilesCommonResource.ErrorMassage_SecurityException_DeleteFile);
+            await WaitLongOperation(result, FilesCommonResource.ErrorMassage_SecurityException_DeleteFile);
         }
         #endregion
 
@@ -209,12 +211,13 @@ namespace ASC.Files.Tests
         {
             SecurityContext.AuthenticateMe(NewUser.ID);
 
-            FilesControllerHelper.DeleteFolder(
+            var result = FilesControllerHelper.DeleteFolder(
                 TestFolderReadAndWrite.Id,
                 deleteAfter,
-                immediately);
+                immediately)
+                .FirstOrDefault();
 
-            await WaitLongOperation(FilesCommonResource.ErrorMassage_SecurityException_DeleteFolder);
+            await WaitLongOperation(result, FilesCommonResource.ErrorMassage_SecurityException_DeleteFolder);
         }
 
         [TestCaseSource(typeof(DocumentData), nameof(DocumentData.ShareParamToFile))]
@@ -256,17 +259,24 @@ namespace ASC.Files.Tests
         public async Task DeleteSharedFileReturnsFolderWrapperReadAndWrite(bool deleteAfter, bool immediately)
         {
             SecurityContext.AuthenticateMe(NewUser.ID);
-            FilesControllerHelper.DeleteFile(
+            var result = FilesControllerHelper.DeleteFile(
                 TestFileReadAndWrite.Id,
                 deleteAfter,
-                immediately);
+                immediately)
+                .FirstOrDefault();
 
-            await WaitLongOperation(FilesCommonResource.ErrorMassage_SecurityException_DeleteFile);
+            await WaitLongOperation(result, FilesCommonResource.ErrorMassage_SecurityException_DeleteFile);
         }
         #endregion
 
-        private async Task WaitLongOperation(string assertError)
+        private async Task WaitLongOperation(FileOperationWraper result, string assertError)
         {
+            if(result != null && result.Finished)
+            {
+                Assert.That(result.Error == assertError, result.Error);
+                return;
+            }
+
             ItemList<FileOperationResult> statuses;
             while (true)
             {
