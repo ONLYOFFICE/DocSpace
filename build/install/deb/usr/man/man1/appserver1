@@ -1,0 +1,13 @@
+.TH appserver 1 "20 Des 2020" "1-0-0" "appserver man page"
+.SH NAME 
+appserver \- "Modify doc document"
+.SH SYNOPSIS
+$ appserver, the text will display ...
+.SH DESCREPTION
+$ appserver is the simple program ...
+.SH OPTIONS
+$ appserver has some options ...
+.SH SEE ALSO
+puts(3) printf(3)
+.SH AUTHORS
+Author1, author2, ...

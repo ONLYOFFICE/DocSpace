@@ -1,0 +1,11 @@
+Source: appserver
+Section: web
+Priority: optional
+Maintainer: onlyoffice
+Build-Depends: debhelper (>= 8.0.0)
+
+Package: appserver
+Version: 1.0-0
+Architecture: all
+Depends: ${shlibs:Depends}, ${misc:Depends}, {{package_header_tag_requires}}
+Description: {{package_section_description}}
