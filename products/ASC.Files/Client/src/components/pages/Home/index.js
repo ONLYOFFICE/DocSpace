@@ -58,18 +58,10 @@ const i18n = createI18N({
 const { changeLanguage } = utils;
 const { FilesFilter } = api;
 const { getSettingsHomepage } = store.auth.selectors;
-const { setHeaderVisible } = store.auth.actions;
+
 class PureHome extends React.Component {
   componentDidMount() {
-    const {
-      fetchFiles,
-      homepage,
-      setIsLoading,
-      setFirstLoad,
-      firstLoad,
-    } = this.props;
-
-    if (!firstLoad) return;
+    const { fetchFiles, homepage, setIsLoading, setFirstLoad } = this.props;
 
     const reg = new RegExp(`${homepage}((/?)$|/filter)`, "gm"); //TODO: Always find?
     const match = window.location.pathname.match(reg);
@@ -224,10 +216,6 @@ class PureHome extends React.Component {
       }
     }
 
-    if (this.props.isHeaderVisible !== prevProps.isHeaderVisible) {
-      this.props.setHeaderVisible(this.props.isHeaderVisible);
-    }
-
     if (
       isProgressFinished &&
       isProgressFinished !== prevProps.isProgressFinished
@@ -357,7 +345,6 @@ function mapStateToProps(state) {
     dragging: getDragging(state),
     firstLoad: getFirstLoad(state),
     sharingPanelVisible: getSharePanelVisible(state),
-    firstLoad: getFirstLoad(state),
     isHeaderVisible: getHeaderVisible(state),
     isProgressFinished: isSecondaryProgressFinished(state),
     selectionLength: getSelectionLength(state),
@@ -375,8 +362,6 @@ const mapDispatchToProps = (dispatch) => {
     setFirstLoad: (firstLoad) => dispatch(setFirstLoad(firstLoad)),
     fetchFiles: (folderId, filter) => dispatch(fetchFiles(folderId, filter)),
     setSelections: (items) => dispatch(setSelections(items)),
-    setHeaderVisible: (isHeaderVisible) =>
-      dispatch(setHeaderVisible(isHeaderVisible)),
   };
 };
 
