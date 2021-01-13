@@ -100,9 +100,10 @@ class OperationsPanelComponent extends React.Component {
       return onClose();
     } else {
       const isProviderFolder = selection.find((x) => !x.providerKey);
-      const items = isProviderFolder
-        ? selection.filter((x) => !x.providerKey)
-        : selection;
+      const items =
+        isProviderFolder && !isCopy
+          ? selection.filter((x) => !x.providerKey)
+          : selection;
 
       for (let item of items) {
         if (item.fileExst) {
