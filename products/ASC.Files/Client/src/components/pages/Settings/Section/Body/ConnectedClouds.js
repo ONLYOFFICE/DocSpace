@@ -21,6 +21,7 @@ import {
   setConnectItem,
   setShowThirdPartyPanel,
   fetchFiles,
+  setSelectedNode,
 } from "../../../../../store/files/actions";
 import {
   getThirdPartyCapabilities,
@@ -255,13 +256,18 @@ class ConnectClouds extends React.Component {
   };
 
   openLocation = (e) => {
-    const { myDirectoryFolders, filter, fetchFiles } = this.props;
+    const {
+      myDirectoryFolders,
+      filter,
+      fetchFiles,
+      setSelectedNode,
+    } = this.props;
     const provider = e.currentTarget.dataset.providerKey;
     const id = myDirectoryFolders
       .filter((f) => f.providerKey === provider)
       .map((f) => f.id)
       .join();
-    return fetchFiles(id, filter);
+    return fetchFiles(id, filter).then(() => setSelectedNode([id]));
   };
 
   render() {
@@ -551,4 +557,5 @@ export default connect(mapStateToProps, {
   setConnectItem,
   setShowThirdPartyPanel,
   fetchFiles,
+  setSelectedNode,
 })(withTranslation()(ConnectClouds));
