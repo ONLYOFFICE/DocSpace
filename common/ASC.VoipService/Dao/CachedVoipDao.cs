@@ -43,7 +43,7 @@ namespace ASC.VoipService.Dao
     [Singletone]
     public class VoipDaoCache
     {
-        public ICache Cache { get; }
+        internal ICache Cache { get; }
         private ICacheNotify<CachedVoipItem> Notify { get; }
 
         public VoipDaoCache(ICacheNotify<CachedVoipItem> notify, ICache cache)

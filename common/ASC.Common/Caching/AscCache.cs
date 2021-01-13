@@ -67,7 +67,7 @@ namespace ASC.Common.Caching
     [Singletone]
     public class AscCache : ICache
     {
-        public IMemoryCache MemoryCache { get; }
+        private IMemoryCache MemoryCache { get; }
 
         public AscCache(IMemoryCache memoryCache)
         {

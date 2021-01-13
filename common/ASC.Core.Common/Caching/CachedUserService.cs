@@ -49,7 +49,7 @@ namespace ASC.Core.Caching
         public const string REFS = "refs";
 
         public TrustInterval TrustInterval { get; set; }
-        public ICache Cache { get; }
+        internal ICache Cache { get; }
         internal CoreBaseSettings CoreBaseSettings { get; }
         internal ICacheNotify<UserInfoCacheItem> CacheUserInfoItem { get; }
         internal ICacheNotify<UserPhotoCacheItem> CacheUserPhotoItem { get; }

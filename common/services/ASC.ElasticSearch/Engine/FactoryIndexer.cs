@@ -91,7 +91,7 @@ namespace ASC.ElasticSearch
         private IServiceProvider ServiceProvider { get; }
         public string IndexName { get => Indexer.IndexName; }
 
-        public ICache Cache { get; }
+        private ICache Cache { get; }
         public virtual string SettingsTitle { get => ""; }
 
         public FactoryIndexer(

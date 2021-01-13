@@ -45,7 +45,7 @@ namespace ASC.Web.Core
     [Singletone]
     public class WebItemSecurityCache
     {
-        public ICache Cache { get; }
+        private ICache Cache { get; }
         private ICacheNotify<WebItemSecurityNotifier> CacheNotify { get; }
 
         public WebItemSecurityCache(ICacheNotify<WebItemSecurityNotifier> cacheNotify, ICache cache)

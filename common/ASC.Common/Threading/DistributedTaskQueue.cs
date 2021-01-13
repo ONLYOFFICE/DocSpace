@@ -34,8 +34,6 @@ using System.Threading.Tasks;
 
 using ASC.Common.Caching;
 
-using NUnit.Framework;
-
 namespace ASC.Common.Threading
 {
     [Singletone]
@@ -69,13 +67,11 @@ namespace ASC.Common.Threading
 
             notifyCache.Subscribe((c) =>
             {
-                TestContext.WriteLine($"HashSet remove key: {c}");
                 Cache.HashSet(c.Key, c.Id, (DistributedTaskCache)null);
             }, CacheNotifyAction.Remove);
 
             notifyCache.Subscribe((c) =>
             {
-                TestContext.WriteLine($"HashSet key: {c}");
                 Cache.HashSet(c.Key, c.Id, c);
             }, CacheNotifyAction.InsertOrUpdate);
         }
@@ -148,12 +144,7 @@ namespace ASC.Common.Threading
             var token = cancelation.Token;
             cancelations[distributedTask.Id] = cancelation;
 
-            TestContext.WriteLine($"ThreadId QueueTask: {Thread.CurrentThread.ManagedThreadId}");
-
-            var task = new Task(() => {
-                TestContext.WriteLine($"ThreadId QueueTask task: {Thread.CurrentThread.ManagedThreadId}");
-                action(distributedTask, token);
-            }, token, TaskCreationOptions.LongRunning);
+            var task = new Task(() => { action(distributedTask, token); }, token, TaskCreationOptions.LongRunning);
             task
                 .ConfigureAwait(false)
                 .GetAwaiter()
@@ -172,7 +163,6 @@ namespace ASC.Common.Threading
 
         public IEnumerable<DistributedTask> GetTasks()
         {
-            TestContext.WriteLine($"key: {key}");
             var tasks = cache.HashGetAll<DistributedTaskCache>(key).Select(r => new DistributedTask(r.Value)).ToList();
             tasks.ForEach(t =>
             {

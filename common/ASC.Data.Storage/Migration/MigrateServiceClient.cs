@@ -36,9 +36,9 @@ namespace ASC.Data.Storage.Migration
     [Singletone]
     public class ServiceClientListener
     {
-        public ICacheNotify<MigrationProgress> ProgressMigrationNotify { get; }
-        public IServiceProvider ServiceProvider { get; }
-        public ICache Cache { get; }
+        private ICacheNotify<MigrationProgress> ProgressMigrationNotify { get; }
+        private IServiceProvider ServiceProvider { get; }
+        private ICache Cache { get; }
 
         public ServiceClientListener(
             ICacheNotify<MigrationProgress> progressMigrationNotify,

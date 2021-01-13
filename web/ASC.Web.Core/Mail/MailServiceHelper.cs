@@ -79,7 +79,7 @@ namespace ASC.Web.Core.Mail
         public MailServiceHelperStorage MailServiceHelperStorage { get; }
         private EFLoggerFactory LoggerFactory { get; }
         private MailDbContext MailDbContext { get; }
-        public ICache Cache { get; }
+        private ICache Cache { get; }
 
         public MailServiceHelper(
             UserManager userManager,

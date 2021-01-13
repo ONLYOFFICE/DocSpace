@@ -2,7 +2,6 @@ pipeline {
 	agent none
 	stages {
 		stage('Build') {
-			when { expression { return false; } }
 			parallel {
 				stage('Unix') {
 					agent { label 'net-core' }
@@ -63,7 +62,6 @@ pipeline {
 					agent { label 'net-core' }
 					stages {
 						stage('Components') {
-							when { expression { return false; } }
 							steps {
 								sh "sh ./build/scripts/components.sh && cd ${env.WORKSPACE}/web/ASC.Web.Components && yarn test:coverage --ci --reporters=default --reporters=jest-junit || true"
 							}
@@ -93,7 +91,6 @@ pipeline {
 					agent { label 'win-core' }
 					stages {
 						stage('Components') {
-							when { expression { return false; } }
 							steps {
 								bat "sh build\\scripts\\components.sh && cd ${env.WORKSPACE}\\web\\ASC.Web.Components && yarn test:coverage --ci --reporters=default --reporters=jest-junit || true"
 							}

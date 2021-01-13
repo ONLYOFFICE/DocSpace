@@ -281,10 +281,12 @@ namespace ASC.Files.Tests
             while (true)
             {
                 statuses = FileStorageService.GetTasksStatuses();
-                TestContext.WriteLine($"statuses.Any: {statuses.Any()}");
 
                 if (statuses.TrueForAll(r => r.Finished))
-                    break;
+                { 
+                    break; 
+                }
+
                 await Task.Delay(100);
             }
 

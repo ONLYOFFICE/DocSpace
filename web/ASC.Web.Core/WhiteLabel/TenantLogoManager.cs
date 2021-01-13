@@ -52,7 +52,7 @@ namespace ASC.Web.Core.WhiteLabel
             private set;
         }
 
-        public ICache Cache { get; }
+        private ICache Cache { get; }
         private ICacheNotify<TenantLogoCacheItem> CacheNotify { get; }
 
         public TenantLogoManager(

@@ -49,7 +49,7 @@ namespace ASC.Data.Backup.Service
     public class BackupServiceNotifier
     {
         private ICacheNotify<BackupProgress> СacheBackupProgress { get; }
-        public ICache Cache { get; }
+        private ICache Cache { get; }
 
         public BackupServiceNotifier(ICacheNotify<BackupProgress> сacheBackupProgress, ICache cache)
         {

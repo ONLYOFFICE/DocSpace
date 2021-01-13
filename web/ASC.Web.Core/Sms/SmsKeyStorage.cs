@@ -62,8 +62,8 @@ namespace ASC.Web.Core.Sms
         public readonly TimeSpan StoreInterval;
         public readonly int AttemptCount;
         private static readonly object KeyLocker = new object();
-        public ICache KeyCache { get; }
-        public ICache CheckCache { get; }
+        private ICache KeyCache { get; }
+        private ICache CheckCache { get; }
 
         private TenantManager TenantManager { get; }
         public SmsKeyStorageCache SmsKeyStorageCache { get; }

@@ -37,8 +37,6 @@ using ASC.Files.Core.Resources;
 
 using Microsoft.Extensions.Primitives;
 
-using NUnit.Framework;
-
 namespace ASC.Web.Files.Services.WCFService.FileOperations
 {
     [Singletone(Additional = typeof(FileOperationsManagerHelperExtention))]
@@ -58,7 +56,6 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         {
             var operations = tasks.GetTasks();
             var processlist = Process.GetProcesses();
-            TestContext.WriteLine($"operations.Any: {operations.Any()}");
 
             //TODO: replace with distributed cache
             if (processlist.Any())
@@ -77,7 +74,6 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 tasks.RemoveTask(o.Id);
             }
 
-            TestContext.WriteLine($"operations1.Any: {operations.Any()}");
             var results = operations
                 .Where(o => o.GetProperty<bool>(FileOperation.HOLD) || o.GetProperty<int>(FileOperation.PROGRESS) != 100)
                 .Select(o => new FileOperationResult
@@ -164,7 +160,6 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         private ItemList<FileOperationResult> QueueTask(Guid userId, FileOperation op)
         {
             tasks.QueueTask(op.RunJob, op.GetDistributedTask());
-            TestContext.WriteLine($"tasks.Any: {tasks.GetTasks().Any()}");
             return GetOperationResults(userId);
         }
 
