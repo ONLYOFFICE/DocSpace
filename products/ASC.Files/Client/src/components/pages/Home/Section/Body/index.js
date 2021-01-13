@@ -256,6 +256,10 @@ class SectionBodyContent extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (this.props.isTabletView) {
+      if (this.props.folderId !== prevProps.folderId) {
+        this.customScrollElm && this.customScrollElm.scrollTo(0, 0);
+      }
+
       if (this.props.filter.page !== prevProps.filter.page)
         this.isScrollUpOnTheNextPage = true;
       if (this.isScrollUpOnTheNextPage) {
