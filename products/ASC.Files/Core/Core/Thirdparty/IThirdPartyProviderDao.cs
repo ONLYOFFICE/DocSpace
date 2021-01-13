@@ -402,9 +402,9 @@ namespace ASC.Files.Thirdparty
             return new List<Tag>();
         }
 
-        public IDictionary<object, Tag> GetTags(Guid subject, IEnumerable<TagType> tagType, IEnumerable<FileEntry<string>> fileEntries)
+        public IDictionary<object, IEnumerable<Tag>> GetTags(Guid subject, IEnumerable<TagType> tagType, IEnumerable<FileEntry<string>> fileEntries)
         {
-            return new Dictionary<object, Tag>();
+            return new Dictionary<object, IEnumerable<Tag>>();
         }
 
 

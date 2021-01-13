@@ -75,6 +75,7 @@ namespace ASC.UrlShortener.Svc
                 })
                 .ConfigureServices((hostContext, services) =>
                 {
+                    services.AddMemoryCache();
                     var diHelper = new DIHelper(services);
                     LogNLogExtension.ConfigureLog(diHelper, "ASC.UrlShortener.Svc");
                     services.AddHostedService<UrlShortenerServiceLauncher>();

@@ -45,13 +45,14 @@ namespace ASC.Core.Common.Notify
         public TelegramServiceClient(ICacheNotify<NotifyMessage> cacheMessage,
             ICacheNotify<RegisterUserProto> cacheRegisterUser,
             ICacheNotify<CreateClientProto> cacheCreateClient,
-            ICacheNotify<DisableClientProto> cacheDisableClient)
+            ICacheNotify<DisableClientProto> cacheDisableClient, 
+            ICache cache)
         {
             CacheMessage = cacheMessage;
             CacheRegisterUser = cacheRegisterUser;
             CacheCreateClient = cacheCreateClient;
             CacheDisableClient = cacheDisableClient;
-            Cache = AscCache.Memory;
+            Cache = cache;
         }
 
         public void SendMessage(NotifyMessage m)

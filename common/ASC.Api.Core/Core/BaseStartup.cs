@@ -41,6 +41,7 @@ namespace ASC.Api.Core
         public virtual void ConfigureServices(IServiceCollection services)
         {
             services.AddHttpContextAccessor();
+            services.AddMemoryCache();
 
             DIHelper.Configure(services);
 
