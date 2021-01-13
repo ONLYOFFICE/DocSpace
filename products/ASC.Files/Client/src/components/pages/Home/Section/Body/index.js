@@ -215,7 +215,9 @@ class SectionBodyContent extends React.Component {
   }
 
   componentDidMount() {
-    this.documentElement = document.getElementById("customScrollBar");
+    this.customScrollElm = document.querySelector(
+      "#customScrollBar > .scroll-body"
+    );
 
     let previewId = queryString.parse(this.props.location.search).preview;
 
@@ -257,7 +259,7 @@ class SectionBodyContent extends React.Component {
       if (this.props.filter.page !== prevProps.filter.page)
         this.isScrollUpOnTheNextPage = true;
       if (this.isScrollUpOnTheNextPage) {
-        this.documentElement && this.documentElement.scrollTo(0, 0);
+        this.customScrollElm && this.customScrollElm.scrollTo(0, 0);
         this.isScrollUpOnTheNextPage = false;
       }
     }

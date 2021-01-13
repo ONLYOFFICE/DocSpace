@@ -75,7 +75,9 @@ class PureHome extends React.Component {
   };
 
   componentDidMount() {
-    this.documentElement = document.getElementById("customScrollBar");
+    this.customScrollElm = document.querySelector(
+      "#customScrollBar > .scroll-body"
+    );
   }
   componentDidUpdate(prevProps) {
     if (this.props.selection !== prevProps.selection) {
@@ -94,7 +96,7 @@ class PureHome extends React.Component {
       if (this.props.filter.page !== prevProps.filter.page)
         this.isScrollUpOnTheNextPage = true;
       if (this.isScrollUpOnTheNextPage) {
-        this.documentElement && this.documentElement.scrollTo(0, 0);
+        this.customScrollElm && this.customScrollElm.scrollTo(0, 0);
         this.isScrollUpOnTheNextPage = false;
       }
     }
