@@ -86,7 +86,7 @@ const PureConnectDialogContainer = (props) => {
     setSelectedNode,
     providers,
   } = props;
-  const { corporate, title, link, token, provider_id, provider_key } = item;
+  const { corporate, title, link, provider_id, provider_key } = item;
 
   const provider = providers.find(
     (el) => el.provider_key === item.provider_key
@@ -98,7 +98,6 @@ const PureConnectDialogContainer = (props) => {
   const [passwordValue, setPasswordValue] = useState("");
   const [customerTitle, setCustomerTitleValue] = useState(folderTitle);
   const [isCorporate, setMakeShared] = useState(!!corporate);
-  const [oAuthToken, setToken] = useState(token);
 
   const onChangeUrl = (e) => setUrlValue(e.target.value);
   const onChangeLogin = (e) => setLoginValue(e.target.value);
@@ -110,10 +109,10 @@ const PureConnectDialogContainer = (props) => {
     onClose();
     setIsLoading(true);
     saveThirdParty(
-      urlValue,
-      loginValue,
-      passwordValue,
-      oAuthToken,
+      null,
+      null,
+      null,
+      null,
       isCorporate,
       customerTitle,
       provider_key,
@@ -141,8 +140,8 @@ const PureConnectDialogContainer = (props) => {
 
   const onReconnect = () => {
     let authModal = window.open("", "Authorization", "height=600, width=1020");
-    openConnectWindow(title, authModal).then((modal) =>
-      getOAuthToken(modal).then((token) => setToken(token))
+    openConnectWindow(title, authModal).then(
+      (modal) => getOAuthToken(modal) //.then((token) => setToken(token))
     );
   };
 
