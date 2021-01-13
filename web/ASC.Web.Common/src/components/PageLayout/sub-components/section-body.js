@@ -7,7 +7,7 @@ import equal from "fast-deep-equal/react";
 import { LayoutContextConsumer } from "../../Layout/context";
 import { getIsLoaded, getIsTabletView } from "../../../store/auth/selectors";
 import { connect } from "react-redux";
-
+import { isMobile } from "react-device-detect";
 const { tablet } = utils.device;
 
 const commonStyles = css`
@@ -23,6 +23,7 @@ const commonStyles = css`
     @media ${tablet} {
       padding: 16px 0 16px 24px;
       margin-top: ${(props) => props.isLoaded && "104px"};
+      margin-bottom: ${!isMobile && "16px"};
     }
 
     .section-wrapper {
@@ -44,6 +45,7 @@ const StyledSectionBody = styled.div`
   ${(props) =>
     props.withScroll &&
     `
+
     margin-left: -24px;
   `}
 `;

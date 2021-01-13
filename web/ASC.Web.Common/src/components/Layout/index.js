@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import MobileLayout from "./MobileLayout";
 import { utils } from "asc-web-components";
 import { isIOS, isFirefox, isSafari, isMobile } from "react-device-detect";
@@ -25,8 +25,24 @@ const StyledContainer = styled.div`
     > .scroll-body {
       position: ${(props) =>
         props.isTabletView ? "static" : "absolute"} !important;
+
       padding-right: ${(props) =>
-        props.isTabletView ? "0px" : "16px"} !important;
+        props.isTabletView ? "1px" : "16px"} !important;
+
+      ${(props) =>
+        !isMobile &&
+        props.isTabletView &&
+        css`
+          overflow-x: hidden !important;
+        `}
+    }
+    .nav-thumb-horizontal {
+      ${(props) =>
+        props.isTabletView &&
+        css`
+          position: fixed !important;
+          bottom: 4px;
+        `}
     }
   }
 `;

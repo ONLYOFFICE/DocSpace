@@ -23,7 +23,7 @@ const StyledMain = styled.main`
   }
 
   @media ${smallTablet} {
-    min-height: auto;
+    min-height: 100%;
   }
 `;
 
