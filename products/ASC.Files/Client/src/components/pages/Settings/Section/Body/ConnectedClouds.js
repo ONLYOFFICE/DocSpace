@@ -7,6 +7,7 @@ import {
   Link,
   ModalDialog,
   Button,
+  RowContainer,
   Row,
   Icons,
 } from "asc-web-components";
@@ -329,62 +330,66 @@ class ConnectClouds extends React.Component {
               label={t("ConnectedCloud")}
               primary
             />
-            {providers.map((item, index) => {
-              const element = this.getThirdPartyIcon(item.provider_key);
-              return (
-                <Row
-                  key={index}
-                  element={element}
-                  contextOptions={[
-                    {
-                      "data-key": item.provider_key,
-                      label: t("ThirdPartyInfo"),
-                      onClick: this.onChangeThirdPartyInfo,
-                    },
-                    {
-                      "data-id": item.provider_id,
-                      "data-title": item.customer_title,
-                      //"data-provider-key": item.provider_key,
-                      label: t("DeleteThirdParty"),
-                      onClick: this.onDeleteThirdParty,
-                    },
-                  ]}
-                >
-                  <Box
-                    containerMinWidth="200px"
-                    containerWidth="100%"
-                    displayProp="flex"
-                    flexDirection="row"
-                    alignItems="baseline"
-                    alignSelf="baseline"
+            <RowContainer useReactWindow={false}>
+              {providers.map((item, index) => {
+                const element = this.getThirdPartyIcon(item.provider_key);
+                return (
+                  <Row
+                    key={index}
+                    element={element}
+                    contextOptions={[
+                      {
+                        key: index,
+                        "data-key": item.provider_key,
+                        label: t("ThirdPartyInfo"),
+                        onClick: this.onChangeThirdPartyInfo,
+                      },
+                      {
+                        key: index,
+                        "data-id": item.provider_id,
+                        "data-title": item.customer_title,
+                        //"data-provider-key": item.provider_key,
+                        label: t("DeleteThirdParty"),
+                        onClick: this.onDeleteThirdParty,
+                      },
+                    ]}
                   >
-                    <Text
-                      style={{ width: 100 }}
-                      as="div"
-                      type="page"
-                      title={item.provider_key}
-                      fontWeight="600"
-                      fontSize="15px"
-                      color="#333"
+                    <Box
+                      containerMinWidth="200px"
+                      containerWidth="100%"
+                      displayProp="flex"
+                      flexDirection="row"
+                      alignItems="baseline"
+                      alignSelf="baseline"
                     >
-                      {item.provider_key}
-                    </Text>
-                    <Link
-                      type="page"
-                      title={item.customer_title}
-                      color="#333"
-                      fontSize="13px"
-                      fontWeight={400}
-                      truncate={true}
-                      data-provider-key={item.provider_key}
-                      onClick={this.openLocation}
-                    >
-                      {item.customer_title}
-                    </Link>
-                  </Box>
-                </Row>
-              );
-            })}
+                      <Text
+                        style={{ width: 100 }}
+                        as="div"
+                        type="page"
+                        title={item.provider_key}
+                        fontWeight="600"
+                        fontSize="15px"
+                        color="#333"
+                      >
+                        {item.provider_key}
+                      </Text>
+                      <Link
+                        type="page"
+                        title={item.customer_title}
+                        color="#333"
+                        fontSize="13px"
+                        fontWeight={400}
+                        truncate={true}
+                        data-provider-key={item.provider_key}
+                        onClick={this.openLocation}
+                      >
+                        {item.customer_title}
+                      </Link>
+                    </Box>
+                  </Row>
+                );
+              })}
+            </RowContainer>
           </>
         ) : (
           <EmptyFolderContainer
