@@ -1458,11 +1458,10 @@ export const getShowThirdPartyPanel = (state) => {
 export const getIsThirdPartySelection = createSelector(
   getSelectionSelector,
   isRootFolder,
-  (selection, isRootItem) =>
-    selection &&
-    selection.length === 1 &&
-    isRootItem &&
-    !!selection[0].providerKey
+  (selection, isRootItem) => {
+    const withProvider = selection && selection.find((x) => !x.providerKey);
+    return !withProvider && isRootItem;
+  }
 );
 
 export const getCanShareOwnerChange = createSelector(
