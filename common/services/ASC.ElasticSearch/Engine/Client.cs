@@ -77,25 +77,24 @@ namespace ASC.ElasticSearch
                         .RequestTimeout(TimeSpan.FromMinutes(5))
                         .MaximumRetries(10)
                         .ThrowExceptions();
-#if DEBUG
+
                     if (Log.IsTraceEnabled)
                     {
                         settings.DisableDirectStreaming().PrettyJson().EnableDebugMode(r =>
                         {
-                            Log.Trace(r.DebugInformation);
+                            //Log.Trace(r.DebugInformation);
 
-                            if (r.RequestBodyInBytes != null)
-                            {
-                                Log.TraceFormat("Request: {0}", Encoding.UTF8.GetString(r.RequestBodyInBytes));
-                            }
+                            //if (r.RequestBodyInBytes != null)
+                            //{
+                            //    Log.TraceFormat("Request: {0}", Encoding.UTF8.GetString(r.RequestBodyInBytes));
+                            //}
 
-                            if (r.ResponseBodyInBytes != null)
+                            if (r.HttpStatusCode != null && (r.HttpStatusCode == 403 || r.HttpStatusCode == 500) && r.ResponseBodyInBytes != null)
                             {
                                 Log.TraceFormat("Response: {0}", Encoding.UTF8.GetString(r.ResponseBodyInBytes));
                             }
                         });
                     }
-#endif
 
                     client = new ElasticClient(settings);
 

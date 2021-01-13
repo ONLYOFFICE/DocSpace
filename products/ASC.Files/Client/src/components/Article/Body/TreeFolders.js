@@ -22,9 +22,10 @@ import {
   getShareFolderId,
   getRootFolderId,
   getDraggableItems,
+  getIsPrivacyFolder,
 } from "../../../store/files/selectors";
 import { onConvertFiles } from "../../../helpers/files-converter";
-const { isAdmin } = initStore.auth.selectors;
+const { isAdmin, isDesktopClient } = initStore.auth.selectors;
 
 const { files } = api;
 const { FolderType, ShareAccessRights } = constants;
@@ -185,11 +186,24 @@ class TreeFolders extends React.Component {
             title={item.title}
             icon={this.getFolderIcon(item)}
             dragging={dragging}
-            newItems={item.newItems}
+            isLeaf={
+              item.rootFolderType === FolderType.Privacy &&
+              !this.props.isDesktop
+                ? true
+                : null
+            }
+            newItems={
+              !this.props.isDesktop &&
+              item.rootFolderType === FolderType.Privacy
+                ? null
+                : item.newItems
+            }
             onBadgeClick={this.onBadgeClick}
             showBadge={showBadge}
           >
-            {this.getItems(item.folders)}
+            {item.rootFolderType === FolderType.Privacy && !this.props.isDesktop
+              ? null
+              : this.getItems(item.folders)}
           </TreeNode>
         );
       }
@@ -198,11 +212,15 @@ class TreeFolders extends React.Component {
           id={item.id}
           key={item.id}
           title={item.title}
-          needTopMargin={item.key === "0-5" ? true : false}
+          needTopMargin={item.rootFolderType === FolderType.TRASH}
           dragging={dragging}
           isLeaf={item.foldersCount ? false : true}
           icon={this.getFolderIcon(item)}
-          newItems={item.newItems}
+          newItems={
+            !this.props.isDesktop && item.rootFolderType === FolderType.Privacy
+              ? null
+              : item.newItems
+          }
           onBadgeClick={this.onBadgeClick}
           showBadge={showBadge}
         />
@@ -214,7 +232,6 @@ class TreeFolders extends React.Component {
     if (obj.isLeaf) {
       return null;
     }
-
     if (obj.expanded) {
       return <Icons.ExpanderDownIcon size="scale" isfill color="dimgray" />;
     } else {
@@ -442,6 +459,8 @@ function mapStateToProps(state) {
     updateTree: getUpdateTree(state),
     rootFolderId: getRootFolderId(state),
     draggableItems: getDraggableItems(state),
+    isDesktop: isDesktopClient(state),
+    isPrivacy: getIsPrivacyFolder(state),
   };
 }
 

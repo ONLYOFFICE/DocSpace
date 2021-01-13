@@ -16,15 +16,22 @@ import {
   SET_CUSTOM_NAMES,
   SET_WIZARD_COMPLETED,
   SET_HEADER_VISIBLE,
+  FETCH_ENCRYPTION_KEYS,
+  SET_IS_ENCRYPTION_SUPPORT,
   SET_IS_AUTHENTICATED,
   SET_IS_TABLET_VIEW,
 } from "./actions";
 import { LANGUAGE, AUTH_KEY, HEADER_VISIBLE_KEY } from "../../constants";
 
+const desktop = window["AscDesktopEditor"] !== undefined;
+const desktopEncryption =
+  desktop && typeof window.AscDesktopEditor.cloudCryptoCommand === "function";
+
 const initialState = {
   isAuthenticated: false,
   isLoaded: false,
   isLoadedSection: true,
+
   user: {},
   modules: [],
   settings: {
@@ -64,7 +71,11 @@ const initialState = {
       guestCaption: "Guest",
       guestsCaption: "Guests",
     },
-    isEncryptionSupport: false, // TODO: should switch to "true", when desktop editors client uses
+    isDesktopClient: desktop,
+    //isDesktopEncryption: desktopEncryption,
+    isEncryptionSupport: false,
+    encryptionKeys: null,
+
     isHeaderVisible: false,
     isTabletView: false,
   },
@@ -163,6 +174,23 @@ const authReducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         settings: { ...state.settings, wizardCompleted: true },
       });
+    case FETCH_ENCRYPTION_KEYS:
+      return {
+        ...state,
+        settings: {
+          ...state.settings,
+          encryptionKeys: action.keys,
+        },
+      };
+    case SET_IS_ENCRYPTION_SUPPORT:
+      return {
+        ...state,
+        settings: {
+          ...state.settings,
+          isEncryptionSupport: action.isSupport,
+          //isEncryptionSupport: state.isDesktopEncryption && action.isSupport,
+        },
+      };
 
     case SET_HEADER_VISIBLE:
       return Object.assign({}, state, {

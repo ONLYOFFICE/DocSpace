@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta
       name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no, viewport-fit=cover"
     />
     <meta name="theme-color" content="#000000" />
     <base href="%PUBLIC_URL%/" />
@@ -255,7 +255,10 @@
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
     <script>
-      if (window.location.pathname.indexOf("doceditor") === -1) {
+      if (
+        window.location.pathname.indexOf("doceditor") === -1 &&
+        window["AscDesktopEditor"] === undefined
+      ) {
         let el = document.getElementById("temp-content");
         el.style.display = "block";
       }

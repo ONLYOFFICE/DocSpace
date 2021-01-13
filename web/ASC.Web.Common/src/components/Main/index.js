@@ -4,9 +4,12 @@ import { isIOS, isFirefox } from "react-device-detect";
 import { utils } from "asc-web-components";
 const { tablet, smallTablet } = utils.device;
 const StyledMain = styled.main`
-  height: ${isIOS && !isFirefox
-    ? "calc(var(--vh, 1vh) * 100)"
-    : "calc(100vh - 56px)"};
+  height: ${(props) =>
+    isIOS && !isFirefox
+      ? "calc(var(--vh, 1vh) * 100)"
+      : props.isDesktop
+      ? "100vh"
+      : "calc(100vh - 56px)"};
   width: 100vw;
   z-index: 0;
   display: flex;

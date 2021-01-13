@@ -27,6 +27,7 @@ import {
   getIsLoading,
   getIsRecycleBinFolder,
   getSelection,
+  getIsPrivacyFolder,
 } from "../../../store/files/selectors";
 import { createI18N } from "../../../helpers/i18n";
 const i18n = createI18N({
@@ -47,11 +48,13 @@ class DeleteDialogComponent extends React.Component {
 
     let i = 0;
     while (props.selection.length !== i) {
-      selection.push({ ...props.selection[i], checked: true });
-      if (selection[i].fileExst) {
-        filesList.push(selection[i]);
-      } else {
-        foldersList.push(selection[i]);
+      if (props.selection[i].access === 0 || props.selection[i].access === 1) {
+        selection.push({ ...props.selection[i], checked: true });
+        if (selection[i].fileExst) {
+          filesList.push(selection[i]);
+        } else {
+          foldersList.push(selection[i]);
+        }
       }
       i++;
     }
@@ -69,7 +72,7 @@ class DeleteDialogComponent extends React.Component {
       isRecycleBinFolder,
       setSecondaryProgressBarData,
       clearSecondaryProgressData,
-      t,
+      isPrivacy,      t,
       fetchFiles,
       setUpdateTree,
     } = this.props;
@@ -123,6 +126,7 @@ class DeleteDialogComponent extends React.Component {
   onDelete = () => {
     const {
       isRecycleBinFolder,
+      isPrivacy,
       onClose,
       t,
       setSecondaryProgressBarData,
@@ -131,7 +135,7 @@ class DeleteDialogComponent extends React.Component {
     const { selection } = this.state;
 
     const deleteAfter = true; //Delete after finished
-    const immediately = isRecycleBinFolder ? true : false; //Don't move to the Recycle Bin
+    const immediately = isRecycleBinFolder || isPrivacy ? true : false; //Don't move to the Recycle Bin
 
     const folderIds = [];
     const fileIds = [];
@@ -298,6 +302,7 @@ const mapStateToProps = (state) => {
     treeFolders: getTreeFolders(state),
     isLoading: getIsLoading(state),
     isRecycleBinFolder: getIsRecycleBinFolder(state),
+    isPrivacy: getIsPrivacyFolder(state),
     selection: getSelection(state),
   };
 };

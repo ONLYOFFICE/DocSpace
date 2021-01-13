@@ -223,6 +223,13 @@ namespace ASC.Core.Data
                 .FirstOrDefault();
         }
 
+        public UserInfo GetUser(int tenant, string email)
+        {
+            return GetUserQuery(tenant, default(DateTime))
+                .Select(FromUserToUserInfo)
+                .FirstOrDefault(r=> r.Email ==  email && !r.Removed);
+        }
+
         public UserInfo GetUserByPasswordHash(int tenant, string login, string passwordHash)
         {
             if (string.IsNullOrEmpty(login)) throw new ArgumentNullException("login");
@@ -259,8 +266,9 @@ namespace ASC.Core.Data
                     .Where(r => r.Email == login)
                     ;
 
-                var user = q.Select(FromUserToUserInfo).Take(1).FirstOrDefault();
-                if (user != null)
+                var users = q.Select(FromUserToUserInfo).ToList();
+                UserInfo result = null;
+                foreach (var user in users)
                 {
                     RegeneratePassword(tenant, user.ID);
 
@@ -270,27 +278,40 @@ namespace ASC.Core.Data
                     var any = UserDbContext.UserSecurity
                         .Any(r => r.UserId == user.ID && (r.PwdHash == pwdHash || r.PwdHash == oldHash));//todo: remove old scheme
 
-                    if (any) return user;
+                    if (any)
+                    {
+                        if (tenant != Tenant.DEFAULT_TENANT) return user;
+
+                        //need for regenerate all passwords only
+                        //todo: remove with old scheme
+                        result = user;
+                    }
                 }
 
-                return null;
+                return result;
             }
         }
 
         //todo: remove
         private void RegeneratePassword(int tenant, Guid userId)
         {
-            var h2 = UserDbContext.UserSecurity
-                .Where(r => r.Tenant == tenant)
-                .Where(r => r.UserId == userId)
-                .Select(r => r.PwdHashSha512)
+            var q = UserDbContext.UserSecurity
+                .Where(r => r.UserId == userId);
+
+            if (tenant != Tenant.DEFAULT_TENANT)
+            {
+                q = q.Where(r => r.Tenant == tenant);
+            }
+
+            var h2 = q.Select(r => new { r.Tenant, r.PwdHashSha512 })
                 .Take(1)
                 .FirstOrDefault();
-            if (string.IsNullOrEmpty(h2)) return;
 
-            var password = Crypto.GetV(h2, 1, false);
+            if (h2 == null || string.IsNullOrEmpty(h2.PwdHashSha512)) return;
+
+            var password = Crypto.GetV(h2.PwdHashSha512, 1, false);
             var passwordHash = PasswordHasher.GetClientPassword(password);
-            SetUserPasswordHash(tenant, userId, passwordHash);
+            SetUserPasswordHash(h2.Tenant, userId, passwordHash);
         }
 
         public IDictionary<string, UserGroupRef> GetUserGroupRefs(int tenant, DateTime from)

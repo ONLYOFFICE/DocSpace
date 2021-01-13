@@ -163,7 +163,7 @@ namespace ASC.Files.Thirdparty
             }
             catch (InvalidOperationException)
             {
-                throw new ArgumentException("Provider id not found or you have no access");
+                throw new ProviderInfoArgumentException("Provider id not found or you have no access");
             }
         }
 

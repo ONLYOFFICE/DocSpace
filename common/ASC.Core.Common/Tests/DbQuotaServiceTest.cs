@@ -47,7 +47,7 @@ namespace ASC.Core.Common.Tests
         public void ClearData()
         {
             Service.RemoveTenantQuota(Tenant);
-            foreach (var row in Service.FindTenantQuotaRows(new TenantQuotaRowQuery(Tenant) { Path = "path" }))
+            foreach (var row in Service.FindTenantQuotaRows(Tenant))
             {
                 //DeleteQuotaRow(row);
             }
@@ -71,12 +71,12 @@ namespace ASC.Core.Common.Tests
             var row = new TenantQuotaRow { Tenant = this.Tenant, Path = "path", Counter = 1000, Tag = "tag" };
             Service.SetTenantQuotaRow(row, false);
 
-            var rows = Service.FindTenantQuotaRows(new TenantQuotaRowQuery(Tenant).WithPath("path")).ToList();
+            var rows = Service.FindTenantQuotaRows(Tenant).ToList();
             CompareQuotaRows(row, rows.Find(r => r.Tenant == row.Tenant && r.Tag == row.Tag));
 
             Service.SetTenantQuotaRow(row, true);
             row.Counter += 1000;
-            rows = Service.FindTenantQuotaRows(new TenantQuotaRowQuery(Tenant).WithPath("path")).ToList();
+            rows = Service.FindTenantQuotaRows(Tenant).ToList();
             CompareQuotaRows(row, rows.Find(r => r.Tenant == row.Tenant && r.Tag == row.Tag));
 
             //DeleteQuotaRow(row);

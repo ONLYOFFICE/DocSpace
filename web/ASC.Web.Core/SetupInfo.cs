@@ -76,7 +76,6 @@ namespace ASC.Web.Studio.Core
         public bool ThirdPartyAuthEnabled { get; private set; }
         public bool ThirdPartyBannerEnabled { get; private set; }
         public string NoTenantRedirectURL { get; private set; }
-        public string[] CustomScripts { get; private set; }
         public string NotifyAddress { get; private set; }
         public string TipsAddress { get; private set; }
         public string UserForum { get; private set; }
@@ -117,7 +116,6 @@ namespace ASC.Web.Studio.Core
         public int TfaAppBackupCodeLength { get; private set; }
         public int TfaAppBackupCodeCount { get; private set; }
         public string TfaAppSender { get; private set; }
-        public string NotifyAnalyticsUrl { get; private set; }
         public string RecaptchaPublicKey { get; private set; }
         public string RecaptchaPrivateKey { get; private set; }
         public string RecaptchaVerifyUrl { get; private set; }
@@ -159,7 +157,6 @@ namespace ASC.Web.Studio.Core
             ThirdPartyAuthEnabled = string.Equals(GetAppSettings("web.thirdparty-auth", "true"), "true");
             ThirdPartyBannerEnabled = string.Equals(GetAppSettings("web.thirdparty-banner", "false"), "true");
             NoTenantRedirectURL = GetAppSettings("web.notenant-url", "");
-            CustomScripts = GetAppSettings("web.custom-scripts", string.Empty).Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 
             NotifyAddress = GetAppSettings("web.promo-url", string.Empty);
             TipsAddress = GetAppSettings("web.promo-tips-url", string.Empty);
@@ -174,7 +171,7 @@ namespace ASC.Web.Studio.Core
 
             RecaptchaPublicKey = GetAppSettings("web.recaptcha.public-key", "");
             RecaptchaPrivateKey = GetAppSettings("web.recaptcha.private-key", "");
-            RecaptchaVerifyUrl = GetAppSettings("web.recaptcha.verify-url", "https://www.google.com/recaptcha/api/siteverify");
+            RecaptchaVerifyUrl = GetAppSettings("web.recaptcha.verify-url", "https://www.recaptcha.net/recaptcha/api/siteverify");
             LoginThreshold = Convert.ToInt32(GetAppSettings("web.login.threshold", "0"));
             if (LoginThreshold < 1) LoginThreshold = 5;
 
@@ -198,7 +195,6 @@ namespace ASC.Web.Studio.Core
             TfaAppBackupCodeCount = GetAppSettings("web.tfaapp.backup.count", 5);
             TfaAppSender = GetAppSettings("web.tfaapp.backup.title", "ONLYOFFICE");
 
-            NotifyAnalyticsUrl = GetAppSettings("core.notify.analytics.url", "");
             AmiMetaUrl = GetAppSettings("web:ami:meta", "");
         }
 

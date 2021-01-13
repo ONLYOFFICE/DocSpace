@@ -660,6 +660,9 @@
   <data name="LicenseUploadedOverdue" xml:space="preserve">
     <value>Téléchargé avec succès. {0}Support et mises à jour ne sont plus disponibles pour cette licence depuis {2}.{1}</value>
   </data>
+  <data name="LicenseUploadedOverdueSupport" xml:space="preserve">
+    <value>Chargement réussi. {0}Le support n'est plus disponible pour cette licence à partir de {2}.{1} </value>
+  </data>
   <data name="MessageEmailChangeInstuctionsSentOnEmail" xml:space="preserve">
     <value>Les instructions de changement d'émail ont été envoyées avec succès</value>
   </data>

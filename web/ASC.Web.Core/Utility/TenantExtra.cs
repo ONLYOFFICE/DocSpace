@@ -85,7 +85,8 @@ namespace ASC.Web.Studio.Utility
                 return
                     SetupInfo.IsVisibleSettings<TariffSettings>()
                     && !SettingsManager.Load<TenantAccessSettings>().Anyone
-                    && (!CoreBaseSettings.Standalone || !string.IsNullOrEmpty(LicenseReader.LicensePath));
+                    && (!CoreBaseSettings.Standalone || !string.IsNullOrEmpty(LicenseReader.LicensePath))
+                    && string.IsNullOrEmpty(SetupInfo.AmiMetaUrl);
             }
         }
 

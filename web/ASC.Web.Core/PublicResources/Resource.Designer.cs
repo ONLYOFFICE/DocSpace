@@ -1861,6 +1861,15 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Uploaded successfully. {0}Support are not available for this license since {2}.{1}.
+        /// </summary>
+        public static string LicenseUploadedOverdueSupport {
+            get {
+                return ResourceManager.GetString("LicenseUploadedOverdueSupport", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The email change instructions have been successfuly sent.
         /// </summary>
         public static string MessageEmailChangeInstuctionsSentOnEmail {

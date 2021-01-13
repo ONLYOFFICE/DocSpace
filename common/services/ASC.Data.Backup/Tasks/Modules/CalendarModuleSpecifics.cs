@@ -105,7 +105,7 @@ namespace ASC.Data.Backup.Tasks.Modules
 
             if (table.Name == "calendar_event_history")
                 return string.Format(
-                    "inner join calendar_calendars as t1 on t1.id = t.calendar_id inner join calendar_events as t2 on t2.id = t.event_id where t1.tenant = {0} and t2.tenant = {0}",
+                    "inner join calendar_calendars as t1 on t1.id = t.calendar_id  and t1.tenant = t.tenant  inner join calendar_events as t2 on t2.id = t.event_id where t1.tenant = {0} and t2.tenant = {0}",
                     tenantId);
 
             return base.GetSelectCommandConditionText(tenantId, table);
