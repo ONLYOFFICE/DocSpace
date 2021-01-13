@@ -27,6 +27,7 @@ import {
   loopTreeFolders,
   getMyFolderId,
   getCommonFolderId,
+  getThirdPartyProviders,
 } from "../../../store/files/selectors";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import { connect } from "react-redux";
@@ -83,6 +84,7 @@ const PureConnectDialogContainer = (props) => {
     commonFolderId,
     setIsLoading,
     setSelectedNode,
+    providers,
   } = props;
   const { corporate, title, link, token, provider_id, provider_key } = item;
 
@@ -98,6 +100,10 @@ const PureConnectDialogContainer = (props) => {
   const onChangePassword = (e) => setPasswordValue(e.target.value);
   const onChangeFolderName = (e) => setCustomerTitleValue(e.target.value);
   const onChangeMakeShared = (e) => setMakeShared(!isCorporate);
+
+  const folderTitle = providers.find(
+    (el) => el.provider_key === item.provider_key
+  ).customer_title;
 
   const onSave = () => {
     onClose();
@@ -187,7 +193,7 @@ const PureConnectDialogContainer = (props) => {
             <Text className="dialog-form-text">{t("ConnectFolderTitle")}</Text>
             <TextInput
               scale
-              value={`${customerTitle}`}
+              value={`${folderTitle}`}
               onChange={onChangeFolderName}
             />
           </div>
@@ -226,6 +232,7 @@ const mapStateToProps = (state) => {
     treeFolders: getTreeFolders(state),
     myFolderId: getMyFolderId(state),
     commonFolderId: getCommonFolderId(state),
+    providers: getThirdPartyProviders(state),
   };
 };
 

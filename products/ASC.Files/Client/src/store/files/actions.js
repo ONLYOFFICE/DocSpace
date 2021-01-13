@@ -1722,9 +1722,12 @@ export function getOAuthToken(modal) {
   return new Promise((resolve) => {
     const interval = setInterval(() => {
       try {
-        if (modal.json) {
+        if (modal.document.documentElement.innerText) {
+          const converted = JSON.parse(
+            modal.document.documentElement.innerText
+          );
           clearInterval(interval);
-          const token = modal.json.response;
+          const token = converted.response;
           if (token) {
             modal.close();
             return resolve(token);
