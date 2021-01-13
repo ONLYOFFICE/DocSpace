@@ -147,11 +147,7 @@ class ConsumerModalDialog extends React.Component {
 
     return (
       <ModalDialogContainer>
-        <ModalDialog
-          visible={dialogVisible}
-          onClose={onModalClose}
-          className="consumer-modal-dialog"
-        >
+        <ModalDialog visible={dialogVisible} onClose={onModalClose}>
           <ModalDialog.Header>{selectedConsumer.title}</ModalDialog.Header>
           <ModalDialog.Body>
             <Text as="div">{consumerInstruction}</Text>
