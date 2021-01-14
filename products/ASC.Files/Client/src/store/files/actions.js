@@ -1689,9 +1689,13 @@ export function itemOperationToFolder(
 }
 
 export function fetchThirdPartyCapabilities(dispatch) {
-  return files
-    .getThirdPartyCapabilities()
-    .then((data) => dispatch(setThirdPartyCapabilities(data)));
+  return files.getThirdPartyCapabilities().then((data) => {
+    for (let item of data) {
+      item.splice(1, 1);
+    }
+
+    dispatch(setThirdPartyCapabilities(data));
+  });
 }
 
 export function fetchThirdPartyProviders() {

@@ -275,7 +275,7 @@ export const createTreeFolders = (pathParts, filterData) => {
 };
 
 const renameTreeFolder = (folders, newItems, currentFolder) => {
-  const newItem = folders.find((x) => x.id === currentFolder.id);
+  const newItem = folders.find((x) => x.id + "" === currentFolder.id);
   const oldItemIndex = newItems.folders.findIndex(
     (x) => x.id === currentFolder.id
   );

@@ -91,12 +91,10 @@ const ServiceItem = (props) => {
   const { capability, t, ...rest } = props;
 
   const capabilityName = capability[0];
-  const capabilityAuthKey = capability[1];
-  const capabilityLink = capability[2] ? capability[2] : "";
+  const capabilityLink = capability[1] ? capability[1] : "";
 
   const dataProps = {
     "data-link": capabilityLink,
-    "data-token": capabilityAuthKey,
     "data-title": capabilityName,
   };
 
@@ -152,6 +150,7 @@ class ConnectClouds extends React.Component {
   };
 
   onShowService = (e) => {
+    console.log("onShowService", e.currentTarget.dataset);
     const selectedServiceData = e.currentTarget.dataset;
     const showAccountSettingDialog = !e.currentTarget.dataset.link;
     if (!showAccountSettingDialog) {
@@ -216,8 +215,7 @@ class ConnectClouds extends React.Component {
 
     const selectedServiceData = {
       title: capabilitiesItem[0],
-      token: capabilitiesItem[1],
-      link: capabilitiesItem[2],
+      link: capabilitiesItem[1],
       corporate: providerItem.corporate,
       provider_id: providerItem.provider_id,
       provider_key: key,
@@ -339,16 +337,15 @@ class ConnectClouds extends React.Component {
                     element={element}
                     contextOptions={[
                       {
-                        key: index,
+                        key: `${index}_change`,
                         "data-key": item.provider_key,
                         label: t("ThirdPartyInfo"),
                         onClick: this.onChangeThirdPartyInfo,
                       },
                       {
-                        key: index,
+                        key: `${index}_delete`,
                         "data-id": item.provider_id,
                         "data-title": item.customer_title,
-                        //"data-provider-key": item.provider_key,
                         label: t("DeleteThirdParty"),
                         onClick: this.onDeleteThirdParty,
                       },

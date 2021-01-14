@@ -91,12 +91,10 @@ const ServiceItem = (props) => {
   const { capability, src, ...rest } = props;
 
   const capabilityName = capability[0];
-  //const capabilityAuthKey = capability[1];
-  const capabilityLink = capability[2] ? capability[2] : "";
+  const capabilityLink = capability[1] ? capability[1] : "";
 
   const dataProps = {
     "data-link": capabilityLink,
-    //"data-token": capabilityAuthKey,
     "data-title": capabilityName,
   };
 
