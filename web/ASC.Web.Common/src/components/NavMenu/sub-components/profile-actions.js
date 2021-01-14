@@ -32,7 +32,6 @@ class ProfileActions extends React.PureComponent {
       this.setOpened(this.props.opened);
     }
     if (this.state.opened !== prevState.opened) {
-      console.log("isHeaderVisible", isHeaderVisible);
       isTabletView &&
         isHeaderVisible &&
         this.props.isOpenProfileMenu(this.state.opened);
