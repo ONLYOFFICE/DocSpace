@@ -25,10 +25,12 @@ import { LANGUAGE } from "../../constants";
 const desktop = window["AscDesktopEditor"] !== undefined;
 const desktopEncryption =
   desktop && typeof window.AscDesktopEditor.cloudCryptoCommand === "function";
-const lang = localStorage
-  .getItem("language")
-  .split("-")
-  .find((el) => el[0]);
+const lang = localStorage["language"]
+  ? localStorage
+      .getItem("language")
+      .split("-")
+      .find((el) => el[0])
+  : "en";
 
 const initialState = {
   isAuthenticated: false,
