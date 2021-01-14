@@ -119,7 +119,7 @@ namespace ASC.Web.Core.Sms
     public abstract class SmsProvider : Consumer
     {
         protected readonly ILog Log;
-        protected static readonly ICache MemoryCache = AscCache.Memory;
+        protected ICache MemoryCache { get; set; }
 
         protected virtual string SendMessageUrlFormat { get; set; }
         protected virtual string GetBalanceUrlFormat { get; set; }
@@ -139,9 +139,11 @@ namespace ASC.Web.Core.Sms
             ICacheNotify<ConsumerCacheItem> cache,
             ConsumerFactory consumerFactory,
             IOptionsMonitor<ILog> options,
+            ICache memCache,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
             : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, name, order, props, additional)
         {
+            MemoryCache = memCache;
             Log = options.CurrentValue;
         }
 
@@ -201,8 +203,9 @@ namespace ASC.Web.Core.Sms
             ICacheNotify<ConsumerCacheItem> cache,
             ConsumerFactory consumerFactory,
             IOptionsMonitor<ILog> options,
+            ICache memCache,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, options, name, order, props, additional)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, options, memCache, name, order, props, additional)
         {
         }
 
@@ -338,8 +341,9 @@ namespace ASC.Web.Core.Sms
             ICacheNotify<ConsumerCacheItem> cache,
             ConsumerFactory consumerFactory,
             IOptionsMonitor<ILog> options,
+            ICache memCache,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, options, name, order, props, additional)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, options, memCache, name, order, props, additional)
         {
         }
     }
@@ -358,8 +362,9 @@ namespace ASC.Web.Core.Sms
             ICacheNotify<ConsumerCacheItem> cache,
             ConsumerFactory consumerFactory,
             IOptionsMonitor<ILog> options,
+            ICache memCache,
             string name, int order, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, options, name, order, null, additional)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, options, memCache, name, order, null, additional)
         {
         }
     }
@@ -439,8 +444,9 @@ namespace ASC.Web.Core.Sms
             ICacheNotify<ConsumerCacheItem> cache,
             ConsumerFactory consumerFactory,
             IOptionsMonitor<ILog> options,
+            ICache memCache,
             string name, int order, Dictionary<string, string> props)
-            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, options, name, order, props)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, options, memCache ,name, order, props)
         {
             AuthContext = authContext;
             TenantUtil = tenantUtil;
@@ -489,8 +495,9 @@ namespace ASC.Web.Core.Sms
             ICacheNotify<ConsumerCacheItem> cache,
             ConsumerFactory consumerFactory,
             IOptionsMonitor<ILog> options,
+            ICache memCache,
             string name, int order)
-            : base(authContext, tenantUtil, securityContext, baseCommonLinkUtility, twilioProviderCleaner, tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, options, name, order, null)
+            : base(authContext, tenantUtil, securityContext, baseCommonLinkUtility, twilioProviderCleaner, tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, options, memCache, name, order, null)
         {
         }
     }

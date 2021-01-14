@@ -365,6 +365,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             var scopeClass = scope.ServiceProvider.GetService<FileMoveCopyOperationScope>();
             var (filesMessageService, fileMarker, fileUtility, global, entryManager) = scopeClass;
             var fileDao = scope.ServiceProvider.GetService<IFileDao<TTo>>();
+            var fileTracker = scope.ServiceProvider.GetService<FileTrackerHelper>();
 
             var toFolderId = toFolder.ID;
             foreach (var fileId in fileIds)
@@ -474,7 +475,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                 {
                                     Error = FilesCommonResource.ErrorMassage_LockedFile;
                                 }
-                                else if (FileTracker.IsEditing(conflict.ID))
+                                else if (fileTracker.IsEditing(conflict.ID))
                                 {
                                     Error = FilesCommonResource.ErrorMassage_SecurityException_UpdateEditingFile;
                                 }
@@ -563,6 +564,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         private bool WithError(IServiceScope scope, IEnumerable<File<T>> files, out string error)
         {
             var entryManager = scope.ServiceProvider.GetService<EntryManager>();
+            var fileTracker = scope.ServiceProvider.GetService<FileTrackerHelper>();
             error = null;
             foreach (var file in files)
             {
@@ -576,7 +578,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                     error = FilesCommonResource.ErrorMassage_LockedFile;
                     return true;
                 }
-                if (FileTracker.IsEditing(file.ID))
+                if (fileTracker.IsEditing(file.ID))
                 {
                     error = FilesCommonResource.ErrorMassage_SecurityException_UpdateEditingFile;
                     return true;

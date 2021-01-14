@@ -115,6 +115,7 @@ namespace ASC.Web.Files.Services.WCFService
         private SettingsManager SettingsManager { get; }
         private FileOperationsManager FileOperationsManager { get; }
         private TenantManager TenantManager { get; }
+        public FileTrackerHelper FileTracker { get; }
         private ILog Logger { get; set; }
 
         public FileStorageService(
@@ -156,7 +157,8 @@ namespace ASC.Web.Files.Services.WCFService
             EncryptionKeyPairHelper encryptionKeyPairHelper,
             SettingsManager settingsManager,
             FileOperationsManager fileOperationsManager,
-            TenantManager tenantManager)
+            TenantManager tenantManager,
+            FileTrackerHelper fileTracker)
         {
             Global = global;
             GlobalStore = globalStore;
@@ -197,6 +199,7 @@ namespace ASC.Web.Files.Services.WCFService
             Logger = optionMonitor.Get("ASC.Files");
             FileOperationsManager = fileOperationsManager;
             TenantManager = tenantManager;
+            FileTracker = fileTracker;
         }
 
         public Folder<T> GetFolder(T folderId)

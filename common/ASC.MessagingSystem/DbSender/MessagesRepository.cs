@@ -70,13 +70,14 @@ namespace ASC.MessagingSystem.DbSender
             CacheTime = TimeSpan.FromMinutes(1);
             Cache = new Dictionary<string, EventMessage>();
             Parser = Parser.GetDefault();
-            Timer = new Timer(FlushCache);
             timerStarted = false;
 
-            ClearTimer = new Timer(DeleteOldEvents);
-            ClearTimer.Change(new TimeSpan(0), TimeSpan.FromDays(1));
             Log = options.CurrentValue;
             ServiceProvider = serviceProvider;
+
+            Timer = new Timer(FlushCache);
+            ClearTimer = new Timer(DeleteOldEvents);
+            ClearTimer.Change(new TimeSpan(0), TimeSpan.FromDays(1));
         }
 
         public void Add(EventMessage message)

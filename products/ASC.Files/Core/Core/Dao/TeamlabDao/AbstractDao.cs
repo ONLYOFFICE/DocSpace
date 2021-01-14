@@ -79,9 +79,10 @@ namespace ASC.Files.Core.Data
             CoreConfiguration coreConfiguration,
             SettingsManager settingsManager,
             AuthContext authContext,
-            IServiceProvider serviceProvider)
+            IServiceProvider serviceProvider, 
+            ICache cache)
         {
-            cache = AscCache.Memory;
+            this.cache = cache;
             FilesDbContext = dbContextManager.Get(FileConstant.DatabaseId);
             UserManager = userManager;
             TenantManager = tenantManager;
