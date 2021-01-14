@@ -47,41 +47,13 @@ const StyledSectionHeader = styled.div`
         props.isLoaded &&
         css`
           position: fixed;
-          top: ${(props) => (!props.isHeaderVisible ? "56px" : "0")};
-          opacity: 1;
+          top: 56px;
           width: ${(props) =>
             props.isArticlePinned ? `calc(100% - 272px)` : "100%"};
           background-color: #fff;
           z-index: ${(props) => (!props.isHeaderVisible ? "149" : "160")};
           padding-right: 16px;
         `}
-
-      .group-button-menu-container {
-        & > div:first-child {
-          animation-name: slideDown;
-          animation-duration: 0.4s;
-          animation-timing-function: ease;
-          visibility: visible !important;
-
-          @keyframes slideDown {
-            0% {
-              transform: translate(0, -120%);
-              opacity: 0;
-            }
-            90% {
-              opacity: 0.5;
-            }
-
-            97% {
-              opacity: 0.6;
-            }
-            100% {
-              transform: translate(0, 8%);
-              opacity: 1;
-            }
-          }
-        }
-      }
     }
   }
 
@@ -93,6 +65,19 @@ const StyledSectionHeader = styled.div`
       -ms-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
       -webkit-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
       -o-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
+    }
+
+    .group-button-menu-container {
+      & > div:first-child {
+        top: ${(props) =>
+          !props.isSectionHeaderVisible ? "56px" : "0px"} !important;
+
+        transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
+        -moz-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
+        -ms-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
+        -webkit-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
+        -o-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
+      }
     }
   }
 
@@ -128,14 +113,15 @@ class SectionHeader extends React.Component {
     } = this.props;
 
     return (
-      <StyledSectionHeader
-        isHeaderVisible={isHeaderVisible}
-        isArticlePinned={isArticlePinned}
-        borderBottom={borderBottom}
-        isLoaded={isLoaded}
-      >
-        <LayoutContextConsumer>
-          {(value) => (
+      <LayoutContextConsumer>
+        {(value) => (
+          <StyledSectionHeader
+            isHeaderVisible={isHeaderVisible}
+            isArticlePinned={isArticlePinned}
+            borderBottom={borderBottom}
+            isLoaded={isLoaded}
+            isSectionHeaderVisible={value.isVisible}
+          >
             <div
               className={classnames(
                 "section-header needToCancelAnimationWithTransition",
@@ -145,9 +131,9 @@ class SectionHeader extends React.Component {
               )}
               {...rest}
             />
-          )}
-        </LayoutContextConsumer>
-      </StyledSectionHeader>
+          </StyledSectionHeader>
+        )}
+      </LayoutContextConsumer>
     );
   }
 }
