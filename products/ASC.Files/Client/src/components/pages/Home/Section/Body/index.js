@@ -383,7 +383,7 @@ class SectionBodyContent extends React.Component {
   onChangeThirdPartyInfo = (e) => {
     const providerKey = e.currentTarget.dataset.providerKey;
     const provider = this.props.providers.find(
-      (x) => x.providerKey === providerKey
+      (x) => x.provider_key === providerKey
     );
     const capabilityItem = this.props.capabilities.find(
       (x) => x[0] === providerKey
