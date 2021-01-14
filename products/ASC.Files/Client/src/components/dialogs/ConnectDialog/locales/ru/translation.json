@@ -4,5 +4,6 @@
   "Reconnect": "Подключить повторно",
   "SaveButton": "Сохранить",
   "ConnectMakeShared": "Сделать доступным и поместить в папку 'Общие'",
-  "ConnectFolderTitle": "Название папки"
+  "ConnectFolderTitle": "Название папки",
+  "EmptyField": "Все поля обязательны для заполнения"
 }

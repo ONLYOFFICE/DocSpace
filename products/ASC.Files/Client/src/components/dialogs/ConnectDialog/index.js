@@ -105,7 +105,16 @@ const PureConnectDialogContainer = (props) => {
   const onChangeFolderName = (e) => setCustomerTitleValue(e.target.value);
   const onChangeMakeShared = (e) => setMakeShared(!isCorporate);
 
+  const isEmptyField = [
+    urlValue,
+    loginValue,
+    passwordValue,
+    customerTitle,
+  ].some((el) => el.trim().length === 0);
+
   const onSave = () => {
+    if (isEmptyField) return toastr.error(t("EmptyField"));
+
     onClose();
     setIsLoading(true);
     saveThirdParty(

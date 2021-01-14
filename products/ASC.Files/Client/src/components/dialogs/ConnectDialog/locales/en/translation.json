@@ -4,5 +4,6 @@
   "Reconnect": "Reconnect",
   "SaveButton": "Save",
   "ConnectMakeShared": "Make shared and put into the 'Common' folder",
-  "ConnectFolderTitle": "Folder title"
+  "ConnectFolderTitle": "Folder title",
+  "EmptyField": "All fields are required to be filled in"
 }
