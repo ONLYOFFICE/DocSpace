@@ -58,7 +58,7 @@ const i18n = createI18N({
 const { changeLanguage } = utils;
 const { FilesFilter } = api;
 const { getSettingsHomepage } = store.auth.selectors;
-
+const { setHeaderVisible } = store.auth.actions;
 class PureHome extends React.Component {
   componentDidMount() {
     const { fetchFiles, homepage, setIsLoading, setFirstLoad } = this.props;
@@ -215,7 +215,9 @@ class PureHome extends React.Component {
         utils.hideLoader();
       }
     }
-
+    if (this.props.isHeaderVisible !== prevProps.isHeaderVisible) {
+      this.props.setHeaderVisible(this.props.isHeaderVisible);
+    }
     if (
       isProgressFinished &&
       isProgressFinished !== prevProps.isProgressFinished
@@ -362,6 +364,8 @@ const mapDispatchToProps = (dispatch) => {
     setFirstLoad: (firstLoad) => dispatch(setFirstLoad(firstLoad)),
     fetchFiles: (folderId, filter) => dispatch(fetchFiles(folderId, filter)),
     setSelections: (items) => dispatch(setSelections(items)),
+    setHeaderVisible: (isHeaderVisible) =>
+      dispatch(setHeaderVisible(isHeaderVisible)),
   };
 };
 
