@@ -226,6 +226,7 @@ class TreeFolders extends React.Component {
             id={item.id}
             key={item.id}
             title={item.title}
+            needTopMargin={item.rootFolderType === FolderType.Privacy}
             icon={this.getFolderIcon(item)}
             dragging={dragging}
             isLeaf={
