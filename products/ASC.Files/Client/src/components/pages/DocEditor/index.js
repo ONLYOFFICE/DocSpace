@@ -1,7 +1,8 @@
 import React from "react";
 import { withRouter } from "react-router";
 import { Toast, Box } from "asc-web-components";
-import { utils, api, toastr, Loaders } from "asc-web-common";
+import { utils, api, toastr, Loaders, regDesktop } from "asc-web-common";
+
 import { isIOS, deviceType } from "react-device-detect";
 import { setDocumentTitle } from "../../../helpers/utils";
 import { changeTitle, setFavicon, isIPad } from "./utils";
@@ -26,19 +27,23 @@ class PureEditor extends React.Component {
     super(props);
 
     const urlParams = getObjectByLocation(window.location);
-    const fileId = urlParams ? urlParams.fileId || null : null;
+    const fileId = urlParams
+      ? urlParams.fileId || urlParams.fileid || null
+      : null;
     const doc = urlParams ? urlParams.doc || null : null;
+    const desktop = window["AscDesktopEditor"] !== undefined;
 
     this.state = {
       fileId,
       doc,
       isLoading: true,
+      isDesktop: desktop,
     };
   }
 
   async componentDidMount() {
     try {
-      const { fileId, doc } = this.state;
+      const { fileId, doc, isDesktop } = this.state;
 
       if (!fileId) return;
 
@@ -60,6 +65,20 @@ class PureEditor extends React.Component {
       }
 
       const config = await api.files.openEdit(fileId, doc);
+
+      if (isDesktop) {
+        const isEncryption =
+          config.editorConfig["encryptionKeys"] !== undefined;
+        const user = await api.people.getUser();
+
+        regDesktop(
+          user,
+          isEncryption,
+          config.editorConfig.encryptionKeys,
+          (keys) => api.files.setEncryptionKeys(keys),
+          true
+        );
+      }
 
       this.setState({ isLoading: false }, () =>
         this.loadDocApi(docApiUrl, () => this.onLoad(config))
@@ -90,7 +109,10 @@ class PureEditor extends React.Component {
   };
 
   onLoad = (config) => {
+    console.log("Editor config: ", config);
     try {
+      console.log(config);
+
       docTitle = config.document.title;
       fileType = config.document.fileType;
 

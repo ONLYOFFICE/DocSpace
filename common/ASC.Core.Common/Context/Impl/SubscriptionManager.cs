@@ -56,11 +56,11 @@ namespace ASC.Core
             };
         }
 
-        public SubscriptionManager(ISubscriptionService service, TenantManager tenantManager)
+        public SubscriptionManager(ISubscriptionService service, TenantManager tenantManager, ICache cache)
         {
             this.service = service ?? throw new ArgumentNullException("subscriptionManager");
             TenantManager = tenantManager;
-            Cache = AscCache.Memory;
+            Cache = cache;
         }
 
 

@@ -16,6 +16,9 @@
   "ExternalLink": "External link",
   "InternalLink": "Internal link",
 
+  "EncryptedFileSaving": "Saving encrypted file",
+  "EncryptedFileSharing": "File <strong>{{title}}</strong> successfully shared",
+
   "FullAccess": "Full access",
   "ReadOnly": "Read only",
   "Review": "Review",

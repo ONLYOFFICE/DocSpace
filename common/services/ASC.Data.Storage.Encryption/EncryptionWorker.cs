@@ -44,9 +44,9 @@ namespace ASC.Data.Storage.Encryption
         private object Locker { get; }
         private FactoryOperation FactoryOperation { get; }
 
-        public EncryptionWorker(FactoryOperation factoryOperation)
+        public EncryptionWorker(FactoryOperation factoryOperation, ICache cache)
         {
-            Cache = AscCache.Memory;
+            Cache = cache;
             Locker = new object();
             FactoryOperation = factoryOperation;
         }

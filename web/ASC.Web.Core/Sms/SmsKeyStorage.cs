@@ -42,10 +42,10 @@ namespace ASC.Web.Core.Sms
         public ICache KeyCache { get; }
         public ICache CheckCache { get; }
 
-        public SmsKeyStorageCache(ICacheNotify<SmsKeyCacheKey> keyCacheNotify)
+        public SmsKeyStorageCache(ICacheNotify<SmsKeyCacheKey> keyCacheNotify, ICache cache)
         {
-            CheckCache = AscCache.Memory;
-            KeyCache = AscCache.Memory;
+            CheckCache = cache;
+            KeyCache = cache;
             KeyCacheNotify = keyCacheNotify;
             KeyCacheNotify.Subscribe(r => KeyCache.Remove(r.Key), CacheNotifyAction.Remove);
         }
@@ -62,8 +62,8 @@ namespace ASC.Web.Core.Sms
         public readonly TimeSpan StoreInterval;
         public readonly int AttemptCount;
         private static readonly object KeyLocker = new object();
-        public ICache KeyCache { get; }
-        public ICache CheckCache { get; }
+        private ICache KeyCache { get; }
+        private ICache CheckCache { get; }
 
         private TenantManager TenantManager { get; }
         public SmsKeyStorageCache SmsKeyStorageCache { get; }

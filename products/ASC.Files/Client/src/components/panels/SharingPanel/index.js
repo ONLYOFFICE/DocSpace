@@ -12,7 +12,7 @@ import {
 } from "asc-web-components";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
-import { withTranslation } from "react-i18next";
+import { withTranslation, Trans } from "react-i18next";
 import { utils as commonUtils, constants, toastr, store } from "asc-web-common";
 import {
   getShareUsers,
@@ -31,6 +31,7 @@ import {
   getIsLoading,
   getFiles,
   getFolders,
+  getIsPrivacyFolder,
 } from "../../../store/files/selectors";
 import {
   StyledAsidePanel,
@@ -42,12 +43,14 @@ import {
 import { AddUsersPanel, AddGroupsPanel, EmbeddingPanel } from "../index";
 import SharingRow from "./SharingRow";
 import { createI18N } from "../../../helpers/i18n";
+import { setEncryptionAccess } from "../../../helpers/desktop";
 const i18n = createI18N({
   page: "SharingPanel",
   localesPath: "panels/SharingPanel",
 });
 const { changeLanguage } = commonUtils;
 const { ShareAccessRights } = constants;
+const { replaceFileStream } = store.auth.actions;
 const {
   getCurrentUserId,
   getSettingsCustomNamesGroupsCaption,
@@ -133,7 +136,14 @@ class SharingPanelComponent extends React.Component {
       shareDataItems,
       filesOwnerId,
     } = this.state;
-    const { selection, setIsLoading } = this.props;
+    const {
+      selection,
+      setIsLoading,
+      isPrivacy,
+      replaceFileStream,
+      i18n,
+      t,
+    } = this.props;
 
     const folderIds = [];
     const fileIds = [];
@@ -179,7 +189,6 @@ class SharingPanelComponent extends React.Component {
         folderIds.push(item.id);
       }
     }
-
     const owner = shareDataItems.find((x) => x.isOwner);
     const ownerId =
       filesOwnerId !== owner.sharedTo.id ? owner.sharedTo.id : null;
@@ -199,6 +208,28 @@ class SharingPanelComponent extends React.Component {
         if (ownerId) {
           this.updateRowData(res[0]);
         }
+        if (isPrivacy) {
+          if (share.length === 0) return Promise.resolve();
+          selection.forEach((item) => {
+            return setEncryptionAccess(item).then((encryptedFile) => {
+              if (!encryptedFile) return Promise.resolve();
+
+              toastr.info(t("EncryptedFileSaving"));
+
+              const title = item.title;
+
+              return replaceFileStream(item.id, encryptedFile, true, true).then(
+                () =>
+                  toastr.success(
+                    <Trans i18nKey="EncryptedFileSharing" i18n={i18n}>
+                      File {{ title }} successfully shared
+                    </Trans>
+                  )
+              );
+            });
+          });
+        }
+        return Promise.resolve();
       })
       .catch((err) => toastr.error(err))
       .finally(() => setIsLoading(false));
@@ -574,6 +605,7 @@ const mapStateToProps = (state) => {
       getExternalAccessOption(state, selection),
     isMyId: getCurrentUserId(state),
     selection: getSelection(state),
+    isPrivacy: getIsPrivacyFolder(state),
     groupsCaption: getSettingsCustomNamesGroupsCaption(state),
     sharingPanelVisible: getSharePanelVisible(state),
     canShareOwnerChange: getCanShareOwnerChange(state),
@@ -585,6 +617,7 @@ const mapStateToProps = (state) => {
 };
 
 export default connect(mapStateToProps, {
+  replaceFileStream,
   setSharingPanelVisible,
   setIsLoading,
   setFiles,

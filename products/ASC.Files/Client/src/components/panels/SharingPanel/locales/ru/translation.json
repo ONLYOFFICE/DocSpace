@@ -16,6 +16,9 @@
   "ExternalLink": "Внешняя ссылка",
   "InternalLink": "Внутренняя ссылка",
 
+  "EncryptedFileSaving": "Сохранение зашифрованного файла",
+  "EncryptedFileSharing": "К файлу <strong>{{title}}</strong> успешно предоставлен доступ",
+
   "FullAccess": "Полный доступ",
   "ReadOnly": "Только чтение",
   "Review": "Рецензирование",

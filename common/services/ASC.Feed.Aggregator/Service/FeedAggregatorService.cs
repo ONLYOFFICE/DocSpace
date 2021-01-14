@@ -121,6 +121,7 @@ namespace ASC.Feed.Aggregator
                 var cfg = FeedSettings.GetInstance(Configuration);
                 using var scope = ServiceProvider.CreateScope();
                 var scopeClass = scope.ServiceProvider.GetService<FeedAggregatorServiceScope>();
+                var cache = scope.ServiceProvider.GetService<ICache>();
                 var (baseCommonLinkUtility, tenantManager, feedAggregateDataProvider, userManager, securityContext, authManager) = scopeClass;
                 baseCommonLinkUtility.Initialize(cfg.ServerRoot);
 
@@ -145,7 +146,6 @@ namespace ASC.Feed.Aggregator
                     {
                         // Warning! There is hack here!
                         // clearing the cache to get the correct acl
-                        var cache = AscCache.Memory;
                         cache.Remove("acl" + tenant);
                         cache.Remove("/webitemsecurity/" + tenant);
                         //cache.Remove(string.Format("sub/{0}/{1}/{2}", tenant, "6045b68c-2c2e-42db-9e53-c272e814c4ad", NotifyConstants.Event_NewCommentForMessage.ID));

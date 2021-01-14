@@ -52,7 +52,7 @@ namespace ASC.Web.Core.WhiteLabel
             private set;
         }
 
-        public ICache Cache { get; }
+        private ICache Cache { get; }
         private ICacheNotify<TenantLogoCacheItem> CacheNotify { get; }
 
         public TenantLogoManager(
@@ -62,7 +62,8 @@ namespace ASC.Web.Core.WhiteLabel
             TenantManager tenantManager,
             AuthContext authContext,
             IConfiguration configuration,
-            ICacheNotify<TenantLogoCacheItem> cacheNotify)
+            ICacheNotify<TenantLogoCacheItem> cacheNotify, 
+            ICache cache)
         {
             TenantWhiteLabelSettingsHelper = tenantWhiteLabelSettingsHelper;
             SettingsManager = settingsManager;
@@ -72,7 +73,7 @@ namespace ASC.Web.Core.WhiteLabel
             Configuration = configuration;
             var hideSettings = (Configuration["web:hide-settings"] ?? "").Split(new[] { ',', ';', ' ' });
             WhiteLabelEnabled = !hideSettings.Contains("WhiteLabel", StringComparer.CurrentCultureIgnoreCase);
-            Cache = AscCache.Memory;
+            Cache = cache;
             CacheNotify = cacheNotify;
         }
 
