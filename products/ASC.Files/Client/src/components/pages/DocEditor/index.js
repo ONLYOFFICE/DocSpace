@@ -27,7 +27,9 @@ class PureEditor extends React.Component {
     super(props);
 
     const urlParams = getObjectByLocation(window.location);
-    const fileId = urlParams ? urlParams.fileId || null : null;
+    const fileId = urlParams
+      ? urlParams.fileId || urlParams.fileid || null
+      : null;
     const doc = urlParams ? urlParams.doc || null : null;
     const desktop = window["AscDesktopEditor"] !== undefined;
 
