@@ -119,19 +119,30 @@ const PureConnectDialogContainer = (props) => {
       provider_id
     )
       .then((folderData) => {
-        const folderId = isCorporate ? commonFolderId : myFolderId;
+        //const folderId = isCorporate ? commonFolderId : myFolderId;
 
         fetchTreeFolders().then((data) => {
-          const treeFolder = data.treeFolders.find((x) => x.id === folderId);
-          const { pathParts, folders, foldersCount } = treeFolder;
+          const commonFolder = data.treeFolders.find(
+            (x) => x.id === commonFolderId
+          );
+          const myFolder = data.treeFolders.find((x) => x.id === myFolderId);
 
           const newTreeFolders = treeFolders;
+
           loopTreeFolders(
-            pathParts,
+            myFolder.pathParts,
             newTreeFolders,
-            folders,
-            foldersCount,
-            folderData
+            myFolder.folders,
+            myFolder.foldersCount,
+            !isCorporate ? folderData : null
+          );
+
+          loopTreeFolders(
+            commonFolder.pathParts,
+            newTreeFolders,
+            commonFolder.folders,
+            commonFolder.foldersCount,
+            isCorporate ? folderData : null
           );
           setTreeFolders(newTreeFolders);
           setUpdateTree(true);
