@@ -51,7 +51,7 @@ const StyledSectionHeader = styled.div`
           width: ${(props) =>
             props.isArticlePinned ? `calc(100% - 272px)` : "100%"};
           background-color: #fff;
-          z-index: ${(props) => (!props.isHeaderVisible ? "149" : "160")};
+          z-index: ${(props) => (!props.isHeaderVisible ? "149" : "190")};
           padding-right: 16px;
         `}
     }

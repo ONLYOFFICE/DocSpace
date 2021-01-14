@@ -1,11 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 import NavItem from "./nav-item";
 import Headline from "../../Headline";
 import Nav from "./nav";
 import NavLogoItem from "./nav-logo-item";
-import { LayoutContextConsumer } from "../../Layout/context";
+
 import Loaders from "../../Loaders/index";
 import { ReactSVG } from "react-svg";
 
@@ -20,7 +20,7 @@ import {
   getIsLoaded,
 } from "../../../store/auth/selectors";
 
-const { desktop, tablet } = utils.device;
+const { desktop } = utils.device;
 
 const backgroundColor = "#0F4071";
 
@@ -30,18 +30,6 @@ const Header = styled.header`
   display: flex;
   width: 100vw;
   height: 56px;
-
-  @media ${tablet} {
-    position: inherit;
-
-    transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
-    -moz-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
-    -ms-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
-    -webkit-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
-    -o-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
-
-    top: ${(props) => (props.valueTop ? "0" : "-56px")};
-  }
 
   .header-logo-wrapper {
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
@@ -117,48 +105,40 @@ const HeaderComponent = ({
 
   return (
     <>
-      <LayoutContextConsumer>
-        {(value) => (
-          <Header
-            module={currentProductName}
-            valueTop={value.isVisible}
-            isLoaded={isLoaded}
-            isAuthenticated={isAuthenticated}
-            className="needToCancelAnimationWithTransition"
-          >
-            <NavItem
-              iconName="MenuIcon"
-              badgeNumber={totalNotifications}
-              onClick={onClick}
-              noHover={true}
-            />
+      <Header
+        module={currentProductName}
+        isLoaded={isLoaded}
+        isAuthenticated={isAuthenticated}
+        className="navMenuHeader needToCancelAnimationWithTransition"
+      >
+        <NavItem
+          iconName="MenuIcon"
+          badgeNumber={totalNotifications}
+          onClick={onClick}
+          noHover={true}
+        />
 
-            <a className="header-logo-wrapper" href={defaultPage}>
-              <ReactSVG
-                className="header-logo-icon"
-                loading={() => (
-                  <Loaders.Rectangle
-                    width="168"
-                    height="24"
-                    backgroundColor="#fff"
-                    foregroundColor="#fff"
-                    backgroundOpacity={0.25}
-                    foregroundOpacity={0.2}
-                  />
-                )}
-                src={props.logoUrl}
+        <a className="header-logo-wrapper" href={defaultPage}>
+          <ReactSVG
+            className="header-logo-icon"
+            loading={() => (
+              <Loaders.Rectangle
+                width="168"
+                height="24"
+                backgroundColor="#fff"
+                foregroundColor="#fff"
+                backgroundOpacity={0.25}
+                foregroundOpacity={0.2}
               />
-            </a>
-            <Headline
-              className="header-module-title"
-              type="header"
-              color="#FFF"
-            >
-              {currentProductName}
-            </Headline>
-          </Header>
-        )}
-      </LayoutContextConsumer>
+            )}
+            src={props.logoUrl}
+          />
+        </a>
+        <Headline className="header-module-title" type="header" color="#FFF">
+          {currentProductName}
+        </Headline>
+      </Header>
+
       {isNavAvailable && (
         <Nav
           opened={isNavOpened}

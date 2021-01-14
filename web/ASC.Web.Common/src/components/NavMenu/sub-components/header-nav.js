@@ -1,22 +1,21 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import NavItem from "./nav-item";
 import ProfileActions from "./profile-actions";
-
 import { useTranslation } from "react-i18next";
 import { utils } from "asc-web-components";
-import { LayoutContextConsumer } from "../../Layout/context";
-const { tablet } = utils.device;
-import { logout } from "../../../store/auth/actions";
 
+import { logout } from "../../../store/auth/actions";
 import {
   getCurrentUser,
   getLanguage,
   getIsolateModules,
   getIsLoaded,
 } from "../../../store/auth/selectors";
+
+const { tablet } = utils.device;
 
 const StyledNav = styled.nav`
   display: flex;
@@ -25,7 +24,7 @@ const StyledNav = styled.nav`
   position: absolute;
   right: 0;
   height: 56px;
-  z-index: 190;
+  z-index: ${(props) => (props.isOpen ? "191" : "190")} !important;
 
   .profile-menu {
     right: 12px;
@@ -44,15 +43,6 @@ const StyledNav = styled.nav`
 
   @media ${tablet} {
     padding: 0 16px;
-    position: fixed;
-
-    transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
-    -moz-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
-    -ms-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
-    -webkit-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
-    -o-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
-
-    top: ${(props) => (props.valueTop ? "0" : "-56px")};
   }
 `;
 const HeaderNav = React.memo(
@@ -94,37 +84,38 @@ const HeaderNav = React.memo(
       return currentUserActions;
     }, [onProfileClick, onAboutClick, onLogoutClick]);
 
+    const [isOpen, setIsOpen] = useState(false); //TODO: Need to refactoring
+    const isOpenProfileMenu = (value) => {
+      setIsOpen(value);
+    };
     //console.log("HeaderNav render");
     return (
-      <LayoutContextConsumer>
-        {(value) => (
-          <StyledNav
-            valueTop={value.isVisible}
-            className="needToCancelAnimationWithTransition"
-          >
-            {modules.map((module) => (
-              <NavItem
-                key={module.id}
-                iconName={module.iconName}
-                iconUrl={module.iconUrl}
-                badgeNumber={module.notifications}
-                onClick={module.onClick}
-                onBadgeClick={module.onBadgeClick}
-                noHover={true}
-              />
-            ))}
+      <StyledNav
+        isOpen={isOpen}
+        className="profileMenuIcon needToCancelAnimationWithTransition"
+      >
+        {modules.map((module) => (
+          <NavItem
+            key={module.id}
+            iconName={module.iconName}
+            iconUrl={module.iconUrl}
+            badgeNumber={module.notifications}
+            onClick={module.onClick}
+            onBadgeClick={module.onBadgeClick}
+            noHover={true}
+          />
+        ))}
 
-            {isAuthenticated && user ? (
-              <ProfileActions
-                userActions={getCurrentUserActions()}
-                user={user}
-              />
-            ) : (
-              <></>
-            )}
-          </StyledNav>
+        {isAuthenticated && user ? (
+          <ProfileActions
+            userActions={getCurrentUserActions()}
+            user={user}
+            isOpenProfileMenu={isOpenProfileMenu}
+          />
+        ) : (
+          <></>
         )}
-      </LayoutContextConsumer>
+      </StyledNav>
     );
   }
 );

@@ -1,8 +1,11 @@
 import React from "react";
+import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { Avatar, DropDownItem, Link } from "asc-web-components";
 import ProfileMenu from "../../ProfileMenu";
+import store from "../../../store";
 
+const { getHeaderVisible, getIsTabletView } = store.auth.selectors;
 class ProfileActions extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -19,13 +22,20 @@ class ProfileActions extends React.PureComponent {
     this.setState({ opened: opened });
   };
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
+    const { isHeaderVisible, isTabletView } = this.props;
     if (this.props.user !== prevProps.user) {
       this.setState({ user: this.props.user });
     }
 
     if (this.props.opened !== prevProps.opened) {
       this.setOpened(this.props.opened);
+    }
+    if (this.state.opened !== prevState.opened) {
+      console.log("isHeaderVisible", isHeaderVisible);
+      isTabletView &&
+        isHeaderVisible &&
+        this.props.isOpenProfileMenu(this.state.opened);
     }
   }
 
@@ -108,5 +118,10 @@ ProfileActions.defaultProps = {
   user: {},
   userActions: [],
 };
-
-export default ProfileActions;
+function mapStateToProps(state) {
+  return {
+    isHeaderVisible: getHeaderVisible(state),
+    isTabletView: getIsTabletView(state),
+  };
+}
+export default connect(mapStateToProps)(ProfileActions);
