@@ -158,7 +158,10 @@ class App extends React.Component {
                 />
                 <Route
                   exact
-                  path={[`${homepage}/doceditor`, `${homepage}/DocEditor.aspx`]}
+                  path={[
+                    `${homepage}/doceditor`,
+                    `/Products/Files/DocEditor.aspx`,
+                  ]}
                   component={DocEditor}
                 />
                 <PrivateRoute
