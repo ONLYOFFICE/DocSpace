@@ -5,5 +5,8 @@
   "SaveButton": "Save",
   "ConnectMakeShared": "Make shared and put into the 'Common' folder",
   "ConnectFolderTitle": "Folder title",
+  "ConnectionUrl": "Connection url",
+  "Login": "Login",
+  "Password": "Password",
   "EmptyField": "All fields are required to be filled in"
 }

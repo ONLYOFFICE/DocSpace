@@ -5,5 +5,8 @@
   "SaveButton": "Сохранить",
   "ConnectMakeShared": "Сделать доступным и поместить в папку 'Общие'",
   "ConnectFolderTitle": "Название папки",
+  "ConnectionUrl": "URL-адрес подключения",
+  "Login": "Логин",
+  "Password": "Пароль",
   "EmptyField": "Все поля обязательны для заполнения"
 }
