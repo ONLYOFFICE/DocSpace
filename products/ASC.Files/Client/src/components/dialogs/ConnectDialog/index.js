@@ -180,10 +180,15 @@ const PureConnectDialogContainer = (props) => {
           setUpdateTree(true);
           fetchThirdPartyProviders();
           onClose();
+          setIsLoading(false);
         });
       })
-      .catch((err) => typeof(err) === "string" ? setErrorText(err) : setErrorText("Something went wrong"))
-      .finally(() => setIsLoading(false));
+      .catch((err) =>
+        typeof err === "string"
+          ? setErrorText(err)
+          : setErrorText("Something went wrong")
+      );
+    //.finally(() => setIsLoading(false));
   };
 
   const onReconnect = () => {
