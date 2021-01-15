@@ -9,6 +9,7 @@ import {
   Text,
   FieldContainer,
   utils,
+  toastr,
 } from "asc-web-components";
 import { utils as commonUtils } from "asc-web-common";
 import {
@@ -40,10 +41,6 @@ const { changeLanguage } = commonUtils;
 const { tablet } = utils.device;
 
 const StyledConnectedDialog = styled.div`
-  .field-label {
-    color: #333;
-  }
-
   .dialog-form-text {
     line-height: 32px;
     min-width: 160px;
@@ -85,7 +82,6 @@ const PureConnectDialogContainer = (props) => {
   const [customerTitle, setCustomerTitleValue] = useState(folderTitle);
   const [isCorporate, setMakeShared] = useState(!!corporate);
   const [oAuthToken, setToken] = useState(token);
-  const [errorText, setErrorText] = useState("");
 
   const [isTitleValid, setIsTitleValid] = useState(true);
   const [isUrlValid, setIsUrlValid] = useState(true);
@@ -183,12 +179,10 @@ const PureConnectDialogContainer = (props) => {
           setIsLoading(false);
         });
       })
-      .catch((err) =>
-        typeof err === "string"
-          ? setErrorText(err)
-          : setErrorText("Something went wrong")
-      );
-    //.finally(() => setIsLoading(false));
+      .catch((err) => {
+        toastr.error(err);
+        setIsLoading(false);
+      });
   };
 
   const onReconnect = () => {
@@ -215,7 +209,6 @@ const PureConnectDialogContainer = (props) => {
                 onClick={onReconnect}
                 scale
                 isDisabled={isLoading}
-                isLoading={isLoading}
               />
             </FieldContainer>
           ) : (
@@ -227,7 +220,7 @@ const PureConnectDialogContainer = (props) => {
                   labelText={t("ConnectionUrl")}
                   isVertical
                   hasError={!isUrlValid}
-                  errorMessage={errorText ? "" : t("RequiredFieldMessage")}
+                  errorMessage={t("RequiredFieldMessage")}
                 >
                   <TextInput
                     isDisabled={isLoading}
@@ -244,7 +237,7 @@ const PureConnectDialogContainer = (props) => {
                 isRequired
                 isVertical
                 hasError={!isLoginValid}
-                errorMessage={errorText ? "" : t("RequiredFieldMessage")}
+                errorMessage={t("RequiredFieldMessage")}
               >
                 <TextInput
                   isDisabled={isLoading}
@@ -259,7 +252,7 @@ const PureConnectDialogContainer = (props) => {
                 isRequired
                 isVertical
                 hasError={!isPasswordValid}
-                errorMessage={errorText ? "" : t("RequiredFieldMessage")}
+                errorMessage={t("RequiredFieldMessage")}
               >
                 <PasswordInput
                   isDisabled={isLoading}
@@ -278,8 +271,8 @@ const PureConnectDialogContainer = (props) => {
             labelText={t("ConnectFolderTitle")}
             isRequired
             isVertical
-            hasError={!isTitleValid || !!errorText}
-            errorMessage={errorText ? errorText : t("RequiredFieldMessage")}
+            hasError={!isTitleValid}
+            errorMessage={t("RequiredFieldMessage")}
           >
             <TextInput
               tabIndex={4}
