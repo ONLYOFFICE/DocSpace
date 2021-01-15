@@ -213,11 +213,13 @@ class ConnectClouds extends React.Component {
       (x) => x.provider_key === key
     );
 
+    const { corporate, provider_id, customer_title } = providerItem;
+
     const selectedServiceData = {
-      title: capabilitiesItem[0],
-      link: capabilitiesItem[1],
-      corporate: providerItem.corporate,
-      provider_id: providerItem.provider_id,
+      title: capabilitiesItem ? capabilitiesItem[0] : customer_title,
+      link: capabilitiesItem ? capabilitiesItem[1] : " ",
+      corporate: corporate,
+      provider_id: provider_id,
       provider_key: key,
     };
     this.setState({ selectedServiceData, showAccountSettingDialog: true });

@@ -113,7 +113,7 @@ const PureConnectDialogContainer = (props) => {
   ].some((el) => el.trim().length === 0);
 
   const onSave = () => {
-    if (isEmptyField) return toastr.error(t("EmptyField"));
+    //if (isEmptyField) return toastr.error(t("EmptyField"));
 
     onClose();
     setIsLoading(true);
