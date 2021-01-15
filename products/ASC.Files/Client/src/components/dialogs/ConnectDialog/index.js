@@ -212,6 +212,7 @@ const PureConnectDialogContainer = (props) => {
                 onClick={onReconnect}
                 scale
                 isDisabled={isLoading}
+                isLoading={isLoading}
               />
             </FieldContainer>
           ) : (
@@ -301,6 +302,7 @@ const PureConnectDialogContainer = (props) => {
             primary
             onClick={onSave}
             isDisabled={isLoading}
+            isLoading={isLoading}
           />
         </ModalDialog.Footer>
       </ModalDialog>
