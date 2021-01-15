@@ -223,6 +223,7 @@ const PureConnectDialogContainer = (props) => {
                   errorMessage={t("RequiredFieldMessage")}
                 >
                   <TextInput
+                    hasError={!isUrlValid}
                     isDisabled={isLoading}
                     tabIndex={1}
                     scale
@@ -240,6 +241,7 @@ const PureConnectDialogContainer = (props) => {
                 errorMessage={t("RequiredFieldMessage")}
               >
                 <TextInput
+                  hasError={!isLoginValid}
                   isDisabled={isLoading}
                   tabIndex={2}
                   scale
@@ -255,6 +257,7 @@ const PureConnectDialogContainer = (props) => {
                 errorMessage={t("RequiredFieldMessage")}
               >
                 <PasswordInput
+                  hasError={!isPasswordValid}
                   isDisabled={isLoading}
                   className="dialog-form-input"
                   tabIndex={3}
@@ -275,11 +278,12 @@ const PureConnectDialogContainer = (props) => {
             errorMessage={t("RequiredFieldMessage")}
           >
             <TextInput
+              hasError={!isTitleValid}
+              isDisabled={isLoading}
               tabIndex={4}
               scale
               value={`${customerTitle}`}
               onChange={onChangeFolderName}
-              isDisabled={isLoading}
             />
           </FieldContainer>
           <Text className="dialog-form-text" />
