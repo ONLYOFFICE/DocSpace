@@ -22,6 +22,7 @@ import { changeLanguage } from "../../utils";
 import ReactResizeDetector from "react-resize-detector";
 import FloatingButton from "../FloatingButton";
 import { isMobile, isMacOs } from "react-device-detect";
+import { getIsTabletView } from "../../store/auth/selectors";
 
 const { getLanguage } = store.auth.selectors;
 const { size } = utils.device;
@@ -182,6 +183,7 @@ class PageLayoutComponent extends React.Component {
       isLoaded,
       isHeaderVisible,
       headerBorderBottom,
+      isTabletView,
     } = this.props;
 
     let articleHeaderContent = null;
@@ -331,9 +333,7 @@ class PageLayoutComponent extends React.Component {
                         uploadFiles={uploadFiles}
                         setSelections={setSelections}
                         withScroll={withBodyScroll}
-                        autoFocus={
-                          isMobile || isMacOs ? false : withBodyAutoFocus
-                        }
+                        autoFocus={!isTabletView}
                         pinned={this.state.isArticlePinned}
                         viewAs={viewAs}
                       >
@@ -463,6 +463,7 @@ PageLayout.propTypes = {
 function mapStateToProps(state) {
   return {
     language: getLanguage(state),
+    isTabletView: getIsTabletView(state),
   };
 }
 
