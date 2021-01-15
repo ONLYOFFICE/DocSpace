@@ -858,6 +858,13 @@ export const getMyDirectoryFolders = createSelector(getMyFolder, (myFolder) => {
   if (myFolder) return myFolder.folders || null;
 });
 
+export const getCommonDirectoryFolders = createSelector(
+  getCommonFolder,
+  (commonFolder) => {
+    if (commonFolder) return commonFolder.folders;
+  }
+);
+
 export const getShareFolderId = createSelector(
   getShareFolder,
   (shareFolder) => {

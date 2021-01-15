@@ -40,6 +40,7 @@ import {
   getShowThirdPartyPanel,
   getThirdPartyProviders,
   getMyDirectoryFolders,
+  getCommonDirectoryFolders,
   getFilter,
 } from "../../../../../store/files/selectors";
 import { DeleteThirdPartyDialog, ConnectDialog } from "../../../../dialogs";
@@ -259,12 +260,18 @@ class ConnectClouds extends React.Component {
   openLocation = (e) => {
     const {
       myDirectoryFolders,
+      commonDirectoryFolders,
       filter,
       fetchFiles,
       setSelectedNode,
+      providers,
     } = this.props;
     const provider = e.currentTarget.dataset.providerKey;
-    const id = myDirectoryFolders
+    const isCorporate =
+      !!providers.length &&
+      providers.find((p) => p.provider_key === provider).corporate;
+    const dir = isCorporate ? commonDirectoryFolders : myDirectoryFolders;
+    const id = dir
       .filter((f) => f.providerKey === provider)
       .map((f) => f.id)
       .join();
@@ -553,6 +560,7 @@ function mapStateToProps(state) {
     showThirdPartyPanel: getShowThirdPartyPanel(state),
     providers: getThirdPartyProviders(state),
     myDirectoryFolders: getMyDirectoryFolders(state),
+    commonDirectoryFolders: getCommonDirectoryFolders(state),
     filter: getFilter(state),
   };
 }
