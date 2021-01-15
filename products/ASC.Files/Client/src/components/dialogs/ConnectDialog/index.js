@@ -219,6 +219,7 @@ const PureConnectDialogContainer = (props) => {
               {showUrlField && (
                 <FieldContainer
                   labelVisible
+                  isRequired
                   labelText={t("ConnectionUrl")}
                   isVertical
                   hasError={!isUrlValid}
@@ -236,6 +237,7 @@ const PureConnectDialogContainer = (props) => {
 
               <FieldContainer
                 labelText={t("Login")}
+                isRequired
                 isVertical
                 hasError={!isLoginValid}
                 errorMessage={errorText ? "" : t("RequiredFieldMessage")}
@@ -250,6 +252,7 @@ const PureConnectDialogContainer = (props) => {
               </FieldContainer>
               <FieldContainer
                 labelText={t("Password")}
+                isRequired
                 isVertical
                 hasError={!isPasswordValid}
                 errorMessage={errorText ? "" : t("RequiredFieldMessage")}
@@ -269,6 +272,7 @@ const PureConnectDialogContainer = (props) => {
 
           <FieldContainer
             labelText={t("ConnectFolderTitle")}
+            isRequired
             isVertical
             hasError={!isTitleValid || !!errorText}
             errorMessage={errorText ? errorText : t("RequiredFieldMessage")}
