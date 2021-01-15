@@ -389,8 +389,8 @@ class SectionBodyContent extends React.Component {
       (x) => x[0] === providerKey
     );
     const capability = {
-      title: capabilityItem[0],
-      link: capabilityItem[1],
+      title: capabilityItem ? capabilityItem[0] : provider.customer_title,
+      link: capabilityItem ? capabilityItem[1] : " ",
     };
 
     const connectItem = { ...provider, ...capability };
