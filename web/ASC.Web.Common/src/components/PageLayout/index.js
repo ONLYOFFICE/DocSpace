@@ -21,7 +21,6 @@ import SectionToggler from "./sub-components/section-toggler";
 import { changeLanguage } from "../../utils";
 import ReactResizeDetector from "react-resize-detector";
 import FloatingButton from "../FloatingButton";
-import { isMobile, isMacOs } from "react-device-detect";
 import { getIsTabletView } from "../../store/auth/selectors";
 
 const { getLanguage } = store.auth.selectors;
