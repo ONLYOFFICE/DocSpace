@@ -56,7 +56,6 @@ const StyledConnectedDialog = styled.div`
 
 const PureConnectDialogContainer = (props) => {
   const {
-    onClose,
     visible,
     t,
     item,
@@ -110,6 +109,7 @@ const PureConnectDialogContainer = (props) => {
     setCustomerTitleValue(e.target.value);
   };
   const onChangeMakeShared = () => setMakeShared(!isCorporate);
+  const onClose = () => !isLoading && props.onClose();
 
   const onSave = () => {
     const isTitleValid = !!customerTitle.trim();
