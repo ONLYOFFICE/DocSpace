@@ -32,6 +32,12 @@ const {
 } = CommonStore.auth.actions;
 
 class App extends React.Component {
+  constructor(props) {
+    super(props);
+
+    const pathname = window.location.pathname.toLowerCase();
+    this.isThirdPartyResponse = pathname.indexOf("thirdparty") !== -1;
+  }
   componentDidMount() {
     const {
       getPortalSettings,
@@ -40,6 +46,11 @@ class App extends React.Component {
       setIsLoaded,
       getIsAuthenticated,
     } = this.props;
+
+    if (this.isThirdPartyResponse) {
+      setIsLoaded();
+      return;
+    }
 
     getIsAuthenticated()
       .then((isAuthenticated) => {
@@ -70,7 +81,7 @@ class App extends React.Component {
   render() {
     return navigator.onLine ? (
       <Router history={history}>
-        <NavMenu />
+        {!this.isThirdPartyResponse && <NavMenu />}
         <Main>
           <Suspense fallback={null}>
             <Switch>
@@ -85,6 +96,10 @@ class App extends React.Component {
                 component={Login}
               />
               <Route path="/confirm" component={Confirm} />
+              <Route
+                path={`/thirdparty/:provider`}
+                component={ThirdPartyResponse}
+              />
               <PrivateRoute
                 exact
                 path={["/", "/error=:error"]}
@@ -98,10 +113,6 @@ class App extends React.Component {
                 component={ComingSoon}
               />
               <PrivateRoute path="/payments" component={Payments} />
-              <PrivateRoute
-                path={`/thirdparty/:provider`}
-                component={ThirdPartyResponse}
-              />
               <PrivateRoute component={Error404} />
             </Switch>
           </Suspense>

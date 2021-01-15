@@ -1,9 +1,9 @@
 import React from "react";
 import { withRouter } from "react-router";
 import { Box } from "asc-web-components";
-import { utils } from "asc-web-common";
+import { utils, Loaders, ErrorContainer } from "asc-web-common";
 
-const { getObjectByLocation } = utils;
+const { getObjectByLocation, showLoader, hideLoader } = utils;
 
 class ThirdPartyResponse extends React.Component {
   constructor(props) {
@@ -12,18 +12,32 @@ class ThirdPartyResponse extends React.Component {
     const urlParams = getObjectByLocation(window.location);
 
     this.code = urlParams ? urlParams.code || null : null;
+    this.error = urlParams ? urlParams.error || null : null;
     this.provider = provider;
   }
 
-  async componentDidMount() {
-    localStorage.setItem("provider", this.provider);
-    localStorage.setItem("code", this.code);
+  componentDidMount() {
+    showLoader();
 
-    setTimeout(window.close(), 1000);
+    if (this.code) {
+      localStorage.setItem("code", this.code);
+      hideLoader();
+      window.close();
+    } else {
+      hideLoader();
+    }
   }
 
   render() {
-    return <Box>OK</Box>;
+    return (
+      <Box>
+        {!this.error ? (
+          <Loaders.Rectangle height="100vh" width="100vw" />
+        ) : (
+          <ErrorContainer bodyText={this.error} />
+        )}
+      </Box>
+    );
   }
 }
 
