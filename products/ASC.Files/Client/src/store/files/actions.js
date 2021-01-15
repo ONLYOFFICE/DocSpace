@@ -1724,18 +1724,15 @@ const convertServiceName = (serviceName) => {
 
 export function getOAuthToken(modal) {
   return new Promise((resolve) => {
+    localStorage.removeItem("code");
     const interval = setInterval(() => {
       try {
-        if (modal.document.documentElement.innerText) {
-          const converted = JSON.parse(
-            modal.document.documentElement.innerText
-          );
+        const code = localStorage.getItem("code");
+
+        if (code) {
+          localStorage.removeItem("code");
           clearInterval(interval);
-          const token = converted.response;
-          if (token) {
-            modal.close();
-            return resolve(token);
-          }
+          resolve(code);
         }
       } catch {
         return;

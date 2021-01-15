@@ -22,6 +22,7 @@ const Confirm = lazy(() => import("./components/pages/Confirm"));
 const Settings = lazy(() => import("./components/pages/Settings"));
 const Wizard = lazy(() => import("./components/pages/Wizard"));
 const Payments = lazy(() => import("./components/pages/Payments"));
+const ThirdPartyResponse = lazy(() => import("./components/pages/ThirdParty"));
 const {
   setIsLoaded,
   getUser,
@@ -97,6 +98,10 @@ class App extends React.Component {
                 component={ComingSoon}
               />
               <PrivateRoute path="/payments" component={Payments} />
+              <PrivateRoute
+                path={`/thirdparty/:provider`}
+                component={ThirdPartyResponse}
+              />
               <PrivateRoute component={Error404} />
             </Switch>
           </Suspense>
