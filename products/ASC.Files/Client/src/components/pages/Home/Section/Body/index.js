@@ -255,12 +255,14 @@ class SectionBodyContent extends React.Component {
   // }
 
   componentDidUpdate(prevProps) {
-    if (this.props.isTabletView) {
-      if (this.props.folderId !== prevProps.folderId) {
+    const { isTabletView, folderId, filter } = this.props;
+
+    if (isTabletView) {
+      if (folderId !== prevProps.folderId) {
         this.customScrollElm && this.customScrollElm.scrollTo(0, 0);
       }
 
-      if (this.props.filter.page !== prevProps.filter.page)
+      if (filter.page !== prevProps.filter.page)
         this.isScrollUpOnTheNextPage = true;
       if (this.isScrollUpOnTheNextPage) {
         this.customScrollElm && this.customScrollElm.scrollTo(0, 0);
@@ -1711,7 +1713,6 @@ class SectionBodyContent extends React.Component {
       isVersionHistoryPanel,
       history,
     } = this.props;
-    console.log("Files Home SectionBodyContent render", this.props);
 
     const { editingId, showMoveToPanel, showCopyPanel } = this.state;
 
