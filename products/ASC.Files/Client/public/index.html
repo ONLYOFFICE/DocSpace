@@ -257,7 +257,7 @@
     <script>
       var pathname = window.location.pathname.toLowerCase();
       if (
-        pathname.indexOf("doceditor") !== -1 &&
+        pathname.indexOf("doceditor") === -1 &&
         window["AscDesktopEditor"] === undefined
       ) {
         let el = document.getElementById("temp-content");
