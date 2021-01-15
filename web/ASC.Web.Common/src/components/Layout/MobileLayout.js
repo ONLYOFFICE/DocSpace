@@ -42,26 +42,35 @@ class MobileLayout extends Component {
     const { prevScrollPosition, visibleContent } = this.state;
 
     const currentScrollPosition =
-      this.customScrollElm.scrollTop > 0
-        ? this.customScrollElm.scrollTop
-        : window.pageYOffset;
+      this.customScrollElm.scrollTop > 0 ? this.customScrollElm.scrollTop : 0;
     if (visibleContent && isMobile && !isTouchDevice) {
       return;
     }
 
-    if (Math.abs(currentScrollPosition - prevScrollPosition) <= 54) {
+    if (
+      (isSafari || isIOS) &&
+      Math.abs(currentScrollPosition - prevScrollPosition) <= 112 &&
+      currentScrollPosition === 0
+    ) {
+      if (!this.state.visibleContent)
+        this.setState({
+          visibleContent: true,
+        });
+      return;
+    }
+
+    if (Math.abs(currentScrollPosition - prevScrollPosition) <= 112) {
       return;
     }
 
     if (prevScrollPosition === 0 && currentScrollPosition > 100) {
-      this.customScrollElm.scrollTo(0, 0);
+      //this.customScrollElm.scrollTo(0, 0);
       if (Math.abs(currentScrollPosition - prevScrollPosition) <= 104) {
         return;
       }
     }
 
     let isVisible = prevScrollPosition >= currentScrollPosition;
-
     if (
       (isSafari || isIOS) &&
       currentScrollPosition >=
