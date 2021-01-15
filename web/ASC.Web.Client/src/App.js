@@ -47,14 +47,15 @@ class App extends React.Component {
       getIsAuthenticated,
     } = this.props;
 
-    if (this.isThirdPartyResponse) {
-      setIsLoaded();
-      return;
-    }
-
     getIsAuthenticated()
       .then((isAuthenticated) => {
         if (isAuthenticated) utils.updateTempContent(isAuthenticated);
+
+        if (this.isThirdPartyResponse) {
+          setIsLoaded();
+          return;
+        }
+
         const requests = [];
         if (!isAuthenticated) {
           requests.push(getPortalSettings());
@@ -96,7 +97,7 @@ class App extends React.Component {
                 component={Login}
               />
               <Route path="/confirm" component={Confirm} />
-              <Route
+              <PrivateRoute
                 path={`/thirdparty/:provider`}
                 component={ThirdPartyResponse}
               />
