@@ -60,23 +60,17 @@ const StyledSectionHeader = styled.div`
   .section-header,
   .section-header--hidden {
     @media ${tablet} {
-      transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
-      -moz-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
-      -ms-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
-      -webkit-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
-      -o-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
-    }
-
-    .group-button-menu-container {
-      & > div:first-child {
-        top: ${(props) =>
-          !props.isSectionHeaderVisible ? "56px" : "0px"} !important;
-
+      &,
+      .group-button-menu-container > div:first-child {
         transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
         -moz-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
         -ms-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
         -webkit-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
         -o-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
+      }
+      .group-button-menu-container > div:first-child {
+        top: ${(props) =>
+          !props.isSectionHeaderVisible ? "56px" : "0px"} !important;
       }
     }
   }
