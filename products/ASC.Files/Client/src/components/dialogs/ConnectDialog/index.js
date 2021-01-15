@@ -182,7 +182,7 @@ const PureConnectDialogContainer = (props) => {
           onClose();
         });
       })
-      .catch((err) => setErrorText(err))
+      .catch((err) => typeof(err) === "string" ? setErrorText(err) : setErrorText("Something went wrong"))
       .finally(() => setIsLoading(false));
   };
 
@@ -196,8 +196,6 @@ const PureConnectDialogContainer = (props) => {
   const onKeyUpHandler = (e) => {
     if (e.keyCode === 13) onSave();
   };
-
-  console.log("errorText", errorText);
 
   return (
     <StyledConnectedDialog onKeyUp={onKeyUpHandler} autoFocus>
