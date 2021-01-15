@@ -171,11 +171,15 @@ const PureConnectDialogContainer = (props) => {
     );
   };
 
+  const onKeyUpHandler = (e) => {
+    if (e.keyCode === 13) onSave();
+  };
+
   const isAccount = !!link;
   const showUrlField = title === "WebDav" || title === "SharePoint";
 
   return (
-    <StyledConnectedDialog>
+    <StyledConnectedDialog onKeyUp={onKeyUpHandler} autoFocus>
       <ModalDialog visible={visible} zIndex={310} onClose={onClose}>
         <ModalDialog.Header>{t("ConnectingAccount")}</ModalDialog.Header>
         <ModalDialog.Body>
@@ -194,18 +198,29 @@ const PureConnectDialogContainer = (props) => {
               {showUrlField && (
                 <div className="dialog-form-container">
                   <Text className="dialog-form-text">{t("ConnectionUrl")}</Text>
-                  <TextInput scale value={urlValue} onChange={onChangeUrl} />
+                  <TextInput
+                    tabIndex={1}
+                    scale
+                    value={urlValue}
+                    onChange={onChangeUrl}
+                  />
                 </div>
               )}
 
               <div className="dialog-form-container">
                 <Text className="dialog-form-text">{t("Login")}</Text>
-                <TextInput scale value={loginValue} onChange={onChangeLogin} />
+                <TextInput
+                  tabIndex={2}
+                  scale
+                  value={loginValue}
+                  onChange={onChangeLogin}
+                />
               </div>
               <div className="dialog-form-container">
                 <Text className="dialog-form-text">{t("Password")}</Text>
                 <PasswordInput
                   className="dialog-form-input"
+                  tabIndex={3}
                   simpleView
                   passwordSettings={{ minLength: 0 }}
                   value={passwordValue}
@@ -218,6 +233,7 @@ const PureConnectDialogContainer = (props) => {
           <div className="dialog-form-container">
             <Text className="dialog-form-text">{t("ConnectFolderTitle")}</Text>
             <TextInput
+              tabIndex={4}
               scale
               value={`${customerTitle}`}
               onChange={onChangeFolderName}
@@ -233,7 +249,13 @@ const PureConnectDialogContainer = (props) => {
           </div>
         </ModalDialog.Body>
         <ModalDialog.Footer>
-          <Button label={t("SaveButton")} size="big" primary onClick={onSave} />
+          <Button
+            tabIndex={5}
+            label={t("SaveButton")}
+            size="big"
+            primary
+            onClick={onSave}
+          />
         </ModalDialog.Footer>
       </ModalDialog>
     </StyledConnectedDialog>
