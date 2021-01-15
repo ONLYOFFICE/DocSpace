@@ -36,7 +36,7 @@ import {
 } from "../../../../dialogs";
 import { OperationsPanel } from "../../../../panels";
 import {
-  isCanBeDeleted,
+  getUserAccess,
   getWebEditSelected,
   getIsRecycleBinFolder,
   canCreate,
@@ -703,7 +703,7 @@ const mapStateToProps = (state) => {
     selection: getSelection(state),
     title: getSelectedFolderTitle(state),
     filter: getFilter(state),
-    deleteDialogVisible: isCanBeDeleted(state),
+    deleteDialogVisible: getUserAccess(state),
     currentFolderId: getSelectedFolderId(state),
     canCreate: canCreate(state),
     isWebEditSelected: getWebEditSelected(state),

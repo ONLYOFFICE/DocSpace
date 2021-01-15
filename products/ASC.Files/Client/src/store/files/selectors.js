@@ -702,7 +702,7 @@ const getFilesContextOptions = (
   isVisitor,
   canOpenPlayer,
   canChangeOwner,
-  canBeDeleted,
+  haveAccess,
   canShare,
   isPrivacy,
   isRootFolder
@@ -786,17 +786,19 @@ const getFilesContextOptions = (
     }
 
     if (!isVisitor) {
-      !isThirdPartyFolder && options.push("move");
+      !isThirdPartyFolder && haveAccess && options.push("move");
       options.push("copy");
 
       if (isFile) {
         options.push("duplicate");
       }
 
-      options.push("rename");
-      isThirdPartyFolder && options.push("change-thirdparty-info");
+      haveAccess && options.push("rename");
+      isThirdPartyFolder &&
+        haveAccess &&
+        options.push("change-thirdparty-info");
       options.push("separator3");
-      canBeDeleted && options.push("delete");
+      haveAccess && options.push("delete");
     } else {
       options.push("copy");
     }
@@ -970,7 +972,7 @@ export const getFilesList = (state) => {
       getFileActionId,
       isVisitor,
       getCanShareOwnerChange,
-      isCanBeDeleted,
+      getUserAccess,
       isCanShare,
       getIsPrivacyFolder,
       isRootFolder,
@@ -985,7 +987,7 @@ export const getFilesList = (state) => {
       actionId,
       isVisitor,
       canChangeOwner,
-      canBeDeleted,
+      haveAccess,
       canShare,
       isPrivacy,
       isRootFolder
@@ -1036,7 +1038,7 @@ export const getFilesList = (state) => {
           isVisitor,
           canOpenPlayer,
           canChangeOwner,
-          canBeDeleted,
+          haveAccess,
           canShare,
           isPrivacy,
           isRootFolder
@@ -1527,7 +1529,7 @@ export const getShowOwnerChangePanel = (state) => {
   return state.files.ownerPanelVisible;
 };
 
-export const isCanBeDeleted = createSelector(
+export const getUserAccess = createSelector(
   getSelectedFolderRootFolderType,
   isAdmin,
   getSelectionSelector,
