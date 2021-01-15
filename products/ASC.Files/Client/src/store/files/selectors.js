@@ -855,7 +855,7 @@ export const getMyFolderId = createSelector(getMyFolder, (myFolder) => {
 });
 
 export const getMyDirectoryFolders = createSelector(getMyFolder, (myFolder) => {
-  if (myFolder) return myFolder.folders || null;
+  if (myFolder) return myFolder.folders;
 });
 
 export const getCommonDirectoryFolders = createSelector(
