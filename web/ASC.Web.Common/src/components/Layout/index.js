@@ -29,12 +29,7 @@ const StyledContainer = styled.div`
       padding-right: ${(props) =>
         props.isTabletView ? "1px" : "16px"} !important;
 
-      ${(props) =>
-        !isMobile &&
-        props.isTabletView &&
-        css`
-          overflow-x: hidden !important;
-        `}
+      height: calc(100% + 20px);
     }
     .nav-thumb-horizontal {
       ${(props) =>

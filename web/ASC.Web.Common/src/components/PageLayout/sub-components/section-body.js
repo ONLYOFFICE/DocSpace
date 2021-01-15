@@ -23,7 +23,6 @@ const commonStyles = css`
     @media ${tablet} {
       padding: 16px 0 16px 24px;
       margin-top: ${(props) => props.isLoaded && "104px"};
-      margin-bottom: ${!isMobile && "16px"};
     }
 
     .section-wrapper {
