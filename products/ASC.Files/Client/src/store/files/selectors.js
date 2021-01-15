@@ -1484,7 +1484,9 @@ export const getCanShareOwnerChange = createSelector(
     return (
       (isAdmin || (selection.length && selection[0].createdBy.id === userId)) &&
       pathParts &&
-      commonId === pathParts[0]
+      commonId === pathParts[0] &&
+      selection.length &&
+      !selection[0].providerKey
     );
   }
 );

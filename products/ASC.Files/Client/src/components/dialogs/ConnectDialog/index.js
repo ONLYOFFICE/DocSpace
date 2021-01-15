@@ -7,18 +7,16 @@ import {
   Button,
   Checkbox,
   Text,
+  FieldContainer,
   utils,
 } from "asc-web-components";
-import { utils as commonUtils, toastr } from "asc-web-common";
+import { utils as commonUtils } from "asc-web-common";
 import {
-  fetchFiles,
   fetchThirdPartyProviders,
   fetchTreeFolders,
   getOAuthToken,
   openConnectWindow,
   saveThirdParty,
-  setIsLoading,
-  setSelectedNode,
   setTreeFolders,
   setUpdateTree,
 } from "../../../store/files/actions";
@@ -42,19 +40,10 @@ const { changeLanguage } = commonUtils;
 const { tablet } = utils.device;
 
 const StyledConnectedDialog = styled.div`
-  .dialog-form-container {
-    display: flex;
-    flex-direction: row;
-    margin-bottom: 16px;
-
-    @media ${tablet} {
-      flex-direction: column;
-      margin-bottom: 8px;
-    }
-    .dialog-form-input {
-      width: 100%;
-    }
+  .field-label {
+    color: #333;
   }
+
   .dialog-form-text {
     line-height: 32px;
     min-width: 160px;
@@ -74,7 +63,6 @@ const PureConnectDialogContainer = (props) => {
     visible,
     t,
     item,
-    fetchFiles,
     treeFolders,
     setUpdateTree,
     setTreeFolders,
@@ -82,8 +70,6 @@ const PureConnectDialogContainer = (props) => {
     fetchTreeFolders,
     myFolderId,
     commonFolderId,
-    setIsLoading,
-    setSelectedNode,
     providers,
   } = props;
   const { corporate, title, link, token, provider_id, provider_key } = item;
@@ -99,21 +85,62 @@ const PureConnectDialogContainer = (props) => {
   const [customerTitle, setCustomerTitleValue] = useState(folderTitle);
   const [isCorporate, setMakeShared] = useState(!!corporate);
   const [oAuthToken, setToken] = useState(token);
+  const [errorText, setErrorText] = useState("");
 
-  const onChangeUrl = (e) => setUrlValue(e.target.value);
-  const onChangeLogin = (e) => setLoginValue(e.target.value);
-  const onChangePassword = (e) => setPasswordValue(e.target.value);
-  const onChangeFolderName = (e) => setCustomerTitleValue(e.target.value);
-  const onChangeMakeShared = (e) => setMakeShared(!isCorporate);
+  const [isTitleValid, setIsTitleValid] = useState(true);
+  const [isUrlValid, setIsUrlValid] = useState(true);
+  const [isLoginValid, setIsLoginValid] = useState(true);
+  const [isPasswordValid, setIsPasswordValid] = useState(true);
 
-  const providerData = [customerTitle];
-  if (!item.link) providerData.push(urlValue, loginValue, passwordValue);
-  const isEmptyField = providerData.some((el) => el.trim().length === 0);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const isAccount = !!link;
+  const showUrlField = title === "WebDav" || title === "SharePoint";
+
+  const onChangeUrl = (e) => {
+    setIsUrlValid(true);
+    setUrlValue(e.target.value);
+  };
+  const onChangeLogin = (e) => {
+    setIsLoginValid(true);
+    setLoginValue(e.target.value);
+  };
+  const onChangePassword = (e) => {
+    setIsPasswordValid(true);
+    setPasswordValue(e.target.value);
+  };
+  const onChangeFolderName = (e) => {
+    setIsTitleValid(true);
+    setCustomerTitleValue(e.target.value);
+  };
+  const onChangeMakeShared = () => setMakeShared(!isCorporate);
 
   const onSave = () => {
-    if (isEmptyField) return toastr.error(t("EmptyField"));
+    const isTitleValid = !!customerTitle.trim();
+    const isUrlValid = !!urlValue.trim();
+    const isLoginValid = !!loginValue.trim();
+    const isPasswordValid = !!passwordValue.trim();
 
-    onClose();
+    if (link) {
+      if (!isTitleValid) {
+        setIsTitleValid(!!customerTitle.trim());
+        return;
+      }
+    } else {
+      if (
+        !isTitleValid ||
+        !isLoginValid ||
+        !isPasswordValid ||
+        (showUrlField && !isUrlValid)
+      ) {
+        setIsTitleValid(isTitleValid);
+        showUrlField && setIsUrlValid(isUrlValid);
+        setIsLoginValid(isLoginValid);
+        setIsPasswordValid(isPasswordValid);
+        return;
+      }
+    }
+
     setIsLoading(true);
     saveThirdParty(
       null,
@@ -126,8 +153,6 @@ const PureConnectDialogContainer = (props) => {
       provider_id
     )
       .then((folderData) => {
-        //const folderId = isCorporate ? commonFolderId : myFolderId;
-
         fetchTreeFolders().then((data) => {
           const commonFolder = data.treeFolders.find(
             (x) => x.id === commonFolderId
@@ -154,11 +179,10 @@ const PureConnectDialogContainer = (props) => {
           setTreeFolders(newTreeFolders);
           setUpdateTree(true);
           fetchThirdPartyProviders();
-          setSelectedNode([`${folderData.id}`]);
-          fetchFiles(folderData.id);
+          onClose();
         });
       })
-      .catch((err) => toastr.error(err))
+      .catch((err) => setErrorText(err))
       .finally(() => setIsLoading(false));
   };
 
@@ -173,8 +197,7 @@ const PureConnectDialogContainer = (props) => {
     if (e.keyCode === 13) onSave();
   };
 
-  const isAccount = !!link;
-  const showUrlField = title === "WebDav" || title === "SharePoint";
+  console.log("errorText", errorText);
 
   return (
     <StyledConnectedDialog onKeyUp={onKeyUpHandler} autoFocus>
@@ -182,41 +205,57 @@ const PureConnectDialogContainer = (props) => {
         <ModalDialog.Header>{t("ConnectingAccount")}</ModalDialog.Header>
         <ModalDialog.Body>
           {isAccount ? (
-            <div className="dialog-form-container">
-              <Text className="dialog-form-text">{t("Account")}</Text>
+            <FieldContainer labelVisible labelText={t("Account")} isVertical>
               <Button
                 label={t("Reconnect")}
                 size="medium"
                 onClick={onReconnect}
                 scale
+                isDisabled={isLoading}
               />
-            </div>
+            </FieldContainer>
           ) : (
             <>
               {showUrlField && (
-                <div className="dialog-form-container">
-                  <Text className="dialog-form-text">{t("ConnectionUrl")}</Text>
+                <FieldContainer
+                  labelVisible
+                  labelText={t("ConnectionUrl")}
+                  isVertical
+                  hasError={!isUrlValid}
+                  errorMessage={errorText ? "" : t("RequiredFieldMessage")}
+                >
                   <TextInput
+                    isDisabled={isLoading}
                     tabIndex={1}
                     scale
                     value={urlValue}
                     onChange={onChangeUrl}
                   />
-                </div>
+                </FieldContainer>
               )}
 
-              <div className="dialog-form-container">
-                <Text className="dialog-form-text">{t("Login")}</Text>
+              <FieldContainer
+                labelText={t("Login")}
+                isVertical
+                hasError={!isLoginValid}
+                errorMessage={errorText ? "" : t("RequiredFieldMessage")}
+              >
                 <TextInput
+                  isDisabled={isLoading}
                   tabIndex={2}
                   scale
                   value={loginValue}
                   onChange={onChangeLogin}
                 />
-              </div>
-              <div className="dialog-form-container">
-                <Text className="dialog-form-text">{t("Password")}</Text>
+              </FieldContainer>
+              <FieldContainer
+                labelText={t("Password")}
+                isVertical
+                hasError={!isPasswordValid}
+                errorMessage={errorText ? "" : t("RequiredFieldMessage")}
+              >
                 <PasswordInput
+                  isDisabled={isLoading}
                   className="dialog-form-input"
                   tabIndex={3}
                   simpleView
@@ -224,27 +263,31 @@ const PureConnectDialogContainer = (props) => {
                   value={passwordValue}
                   onChange={onChangePassword}
                 />
-              </div>
+              </FieldContainer>
             </>
           )}
 
-          <div className="dialog-form-container">
-            <Text className="dialog-form-text">{t("ConnectFolderTitle")}</Text>
+          <FieldContainer
+            labelText={t("ConnectFolderTitle")}
+            isVertical
+            hasError={!isTitleValid || !!errorText}
+            errorMessage={errorText ? errorText : t("RequiredFieldMessage")}
+          >
             <TextInput
               tabIndex={4}
               scale
               value={`${customerTitle}`}
               onChange={onChangeFolderName}
+              isDisabled={isLoading}
             />
-          </div>
-          <div className="dialog-form-container">
-            <Text className="dialog-form-text" />
-            <Checkbox
-              label={t("ConnectMakeShared")}
-              isChecked={isCorporate}
-              onChange={onChangeMakeShared}
-            />
-          </div>
+          </FieldContainer>
+          <Text className="dialog-form-text" />
+          <Checkbox
+            label={t("ConnectMakeShared")}
+            isChecked={isCorporate}
+            onChange={onChangeMakeShared}
+            isDisabled={isLoading}
+          />
         </ModalDialog.Body>
         <ModalDialog.Footer>
           <Button
@@ -253,6 +296,7 @@ const PureConnectDialogContainer = (props) => {
             size="big"
             primary
             onClick={onSave}
+            isDisabled={isLoading}
           />
         </ModalDialog.Footer>
       </ModalDialog>
@@ -283,11 +327,8 @@ const mapStateToProps = (state) => {
 };
 
 export default connect(mapStateToProps, {
-  fetchFiles,
   setUpdateTree,
   setTreeFolders,
   fetchThirdPartyProviders,
   fetchTreeFolders,
-  setIsLoading,
-  setSelectedNode,
 })(ConnectDialog);
