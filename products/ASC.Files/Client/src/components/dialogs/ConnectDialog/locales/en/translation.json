@@ -8,5 +8,6 @@
   "ConnectionUrl": "Connection url",
   "Login": "Login",
   "Password": "Password",
-  "EmptyField": "All fields are required to be filled in"
+  "EmptyField": "All fields are required to be filled in",
+  "RequiredFieldMessage": "Required field"
 }

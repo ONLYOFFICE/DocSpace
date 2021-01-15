@@ -8,5 +8,6 @@
   "ConnectionUrl": "URL-адрес подключения",
   "Login": "Логин",
   "Password": "Пароль",
-  "EmptyField": "Все поля обязательны для заполнения"
+  "EmptyField": "Все поля обязательны для заполнения",
+  "RequiredFieldMessage": "Обязательное поле"
 }

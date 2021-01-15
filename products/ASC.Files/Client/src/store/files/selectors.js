@@ -645,8 +645,9 @@ export const getServiceFilesCount = (state) => {
 };
 
 export const getFilesCount = (state) => {
-  const { filesCount, foldersCount } = state.files.selectedFolder;
-  return filesCount + foldersCount;
+  const { selectedFolder, folders } = state.files;
+  const { filesCount, foldersCount } = selectedFolder
+  return filesCount + folders ? folders.length : foldersCount;
 };
 
 export const getCurrentFilesCount = createSelector(
@@ -1484,7 +1485,9 @@ export const getCanShareOwnerChange = createSelector(
     return (
       (isAdmin || (selection.length && selection[0].createdBy.id === userId)) &&
       pathParts &&
-      commonId === pathParts[0]
+      commonId === pathParts[0] &&
+      selection.length &&
+      !selection[0].providerKey
     );
   }
 );
