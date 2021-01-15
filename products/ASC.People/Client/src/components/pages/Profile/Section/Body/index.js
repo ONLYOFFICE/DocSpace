@@ -19,7 +19,7 @@ import styled from "styled-components";
 
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
-import { isIOS } from "react-device-detect";
+
 const { isAdmin, isMe, getIsTabletView } = store.auth.selectors;
 
 const ProfileWrapper = styled.div`

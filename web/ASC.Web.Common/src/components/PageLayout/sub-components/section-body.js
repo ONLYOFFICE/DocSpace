@@ -7,7 +7,7 @@ import equal from "fast-deep-equal/react";
 import { LayoutContextConsumer } from "../../Layout/context";
 import { getIsLoaded, getIsTabletView } from "../../../store/auth/selectors";
 import { connect } from "react-redux";
-import { isMobile } from "react-device-detect";
+
 const { tablet } = utils.device;
 
 const commonStyles = css`
