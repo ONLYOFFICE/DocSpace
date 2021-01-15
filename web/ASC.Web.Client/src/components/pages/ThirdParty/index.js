@@ -1,44 +1,50 @@
-import React from "react";
-import { withRouter } from "react-router";
+import React, { useState, useEffect } from "react";
 import { Box } from "asc-web-components";
-import { utils, Loaders, ErrorContainer } from "asc-web-common";
+import { useTranslation } from "react-i18next";
+import { utils, Loaders, ErrorContainer, PageLayout } from "asc-web-common";
+import { createI18N } from "../../../helpers/i18n";
+import { setDocumentTitle } from "../../../helpers/utils";
 
-const { getObjectByLocation, showLoader, hideLoader } = utils;
+const i18n = createI18N({
+  page: "ThirdParty",
+  localesPath: "pages/ThirdParty",
+});
 
-class ThirdPartyResponse extends React.Component {
-  constructor(props) {
-    super(props);
-    const { provider } = props.match.params;
+const { getObjectByLocation, changeLanguage } = utils;
+
+const ThirdPartyResponsePage = ({ match }) => {
+  const { params } = match;
+  const { provider } = params;
+  const { t } = useTranslation("translation", { i18n });
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    changeLanguage(i18n);
     const urlParams = getObjectByLocation(window.location);
-
-    this.code = urlParams ? urlParams.code || null : null;
-    this.error = urlParams ? urlParams.error || null : null;
-    this.provider = provider;
-  }
-
-  componentDidMount() {
-    showLoader();
-
-    if (this.code) {
-      localStorage.setItem("code", this.code);
-      hideLoader();
+    const code = urlParams ? urlParams.code || null : null;
+    const error = urlParams ? urlParams.error || null : null;
+    setDocumentTitle(provider);
+    if (error) {
+      setError(error);
+    } else if (code) {
+      localStorage.setItem("code", code);
       window.close();
     } else {
-      hideLoader();
+      setError(t("ErrorEmptyResponse"));
     }
-  }
+  }, [t, provider]);
 
-  render() {
-    return (
-      <Box>
-        {!this.error ? (
-          <Loaders.Rectangle height="100vh" width="100vw" />
+  return (
+    <PageLayout>
+      <PageLayout.SectionBody>
+        {error ? (
+          <ErrorContainer bodyText={error} />
         ) : (
-          <ErrorContainer bodyText={this.error} />
+          <Loaders.Rectangle height="96vh" />
         )}
-      </Box>
-    );
-  }
-}
+      </PageLayout.SectionBody>
+    </PageLayout>
+  );
+};
 
-export default withRouter(ThirdPartyResponse);
+export default ThirdPartyResponsePage;
