@@ -779,7 +779,24 @@ export function getFilesSettings() {
     if (Object.keys(settingsTree).length === 0) {
       return api.files
         .getSettingsFiles()
-        .then((settings) => dispatch(setFilesSettings(settings)))
+        .then((settings) => {
+          dispatch(setFilesSettings(settings));
+          if (settings.enableThirdParty) {
+            return axios
+              .all([
+                api.files.getThirdPartyCapabilities(),
+                api.files.getThirdPartyList(),
+              ])
+              .then(([capabilities, providers]) => {
+                for (let item of capabilities) {
+                  item.splice(1, 1);
+                }
+
+                dispatch(setThirdPartyCapabilities(capabilities));
+                dispatch(setThirdPartyProviders(providers));
+              });
+          }
+        })
         .catch(() => setIsErrorSettings(true));
     } else {
       return Promise.resolve(settingsTree);
@@ -1686,16 +1703,6 @@ export function itemOperationToFolder(
         setTimeout(() => dispatch(clearSecondaryProgressData()), TIMEOUT);
       });
   };
-}
-
-export function fetchThirdPartyCapabilities(dispatch) {
-  return files.getThirdPartyCapabilities().then((data) => {
-    for (let item of data) {
-      item.splice(1, 1);
-    }
-
-    dispatch(setThirdPartyCapabilities(data));
-  });
 }
 
 export function fetchThirdPartyProviders() {

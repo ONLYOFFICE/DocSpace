@@ -5,11 +5,7 @@ import Home from "./components/pages/Home";
 import DocEditor from "./components/pages/DocEditor";
 import Settings from "./components/pages/Settings";
 import VersionHistory from "./components/pages/VersionHistory";
-import {
-  fetchTreeFolders,
-  fetchThirdPartyCapabilities,
-  fetchThirdPartyProviders,
-} from "./store/files/actions";
+import { fetchTreeFolders } from "./store/files/actions";
 import config from "../package.json";
 
 import {
@@ -66,8 +62,6 @@ class App extends React.Component {
       getModules,
       getPortalCultures,
       fetchTreeFolders,
-      fetchThirdPartyCapabilities,
-      fetchThirdPartyProviders,
       setIsLoaded,
       getIsEncryptionSupport,
       getEncryptionKeys,
@@ -96,9 +90,7 @@ class App extends React.Component {
           getPortalSettings(),
           getModules(),
           getPortalCultures(),
-          fetchTreeFolders(),
-          fetchThirdPartyCapabilities(),
-          fetchThirdPartyProviders()
+          fetchTreeFolders()
         );
         if (isDesktop) {
           requests.push(getIsEncryptionSupport(), getEncryptionKeys());
@@ -231,8 +223,6 @@ const mapDispatchToProps = (dispatch) => {
     getModules: () => getModules(dispatch),
     getPortalCultures: () => getPortalCultures(dispatch),
     fetchTreeFolders: () => dispatch(fetchTreeFolders()),
-    fetchThirdPartyCapabilities: () => fetchThirdPartyCapabilities(dispatch),
-    fetchThirdPartyProviders: () => dispatch(fetchThirdPartyProviders()),
     setIsLoaded: () => dispatch(setIsLoaded(true)),
     getIsEncryptionSupport: () => getIsEncryptionSupport(dispatch),
     getEncryptionKeys: () => getEncryptionKeys(dispatch),
