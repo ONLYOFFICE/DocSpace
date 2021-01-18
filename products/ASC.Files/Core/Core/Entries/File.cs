@@ -233,7 +233,9 @@ namespace ASC.Files.Core
         }
 
         public object NativeAccessor { get; set; }
-        public FileTrackerHelper FileTracker { get; }
+
+        [NonSerialized]
+        private FileTrackerHelper FileTracker;
 
         [NonSerialized]
         private readonly FilesLinkUtility FilesLinkUtility;

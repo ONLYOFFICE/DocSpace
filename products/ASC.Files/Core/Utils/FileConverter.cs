@@ -516,7 +516,7 @@ namespace ASC.Web.Files.Utils
         private FileShareLink FileShareLink { get; }
         private DocumentServiceHelper DocumentServiceHelper { get; }
         private DocumentServiceConnector DocumentServiceConnector { get; }
-        public FileTrackerHelper FileTracker { get; }
+        private FileTrackerHelper FileTracker { get; }
         private IServiceProvider ServiceProvider { get; }
         private IHttpContextAccessor HttpContextAccesor { get; }
 

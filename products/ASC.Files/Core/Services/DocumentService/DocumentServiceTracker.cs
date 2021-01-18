@@ -182,7 +182,7 @@ namespace ASC.Web.Files.Services.DocumentService
         private DocumentServiceConnector DocumentServiceConnector { get; }
         private NotifyClient NotifyClient { get; }
         private MailMergeTaskRunner MailMergeTaskRunner { get; }
-        public FileTrackerHelper FileTracker { get; }
+        private FileTrackerHelper FileTracker { get; }
         public ILog Logger { get; }
 
         public DocumentServiceTrackerHelper(
