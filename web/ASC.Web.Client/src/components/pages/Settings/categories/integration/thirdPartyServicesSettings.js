@@ -138,7 +138,6 @@ class ThirdPartyServices extends React.Component {
           displayProp="flex"
           flexDirection="column"
           marginProp="0 88px 0 0"
-          className="aaaaaa"
         >
           <Box className="title-description-container">
             <Text>{t("ThirdPartyTitleDescription")}</Text>
