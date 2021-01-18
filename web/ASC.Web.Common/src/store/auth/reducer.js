@@ -25,6 +25,12 @@ import { LANGUAGE } from "../../constants";
 const desktop = window["AscDesktopEditor"] !== undefined;
 const desktopEncryption =
   desktop && typeof window.AscDesktopEditor.cloudCryptoCommand === "function";
+const lang = localStorage["language"]
+  ? localStorage
+      .getItem("language")
+      .split("-")
+      .find((el) => el[0])
+  : "en";
 
 const initialState = {
   isAuthenticated: false,
@@ -57,6 +63,8 @@ const initialState = {
     greetingSettings: "Web Office Applications",
     enableAdmMess: false,
     urlLicense: "https://gnu.org/licenses/gpl-3.0.html",
+    urlSupport: "https://helpdesk.onlyoffice.com/",
+    urlAuthKeys: `https://helpcenter.onlyoffice.com/${lang}/installation/groups-authorization-keys.aspx`,
     logoUrl: "",
     customNames: {
       id: "Common",

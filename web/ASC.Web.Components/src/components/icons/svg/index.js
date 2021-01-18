@@ -208,6 +208,17 @@ import OrigButtonMoveIcon from "./button.move.react.svg";
 import OrigButtonDuplicateIcon from "./button.duplicate.react.svg";
 import OrigButtonAlertIcon from "./button.alert.react.svg";
 
+import OrigBoxIcon from "./icon_box.react.svg";
+import OrigDropBoxIcon from "./icon_dropbox.react.svg";
+import OrigGoogleDriveIcon from "./icon_google_drive.react.svg";
+import OrigOneDriveIcon from "./icon_onedrive.react.svg";
+import OrigSharePointIcon from "./icon_sharepoint.react.svg";
+import OrigKDriveIcon from "./icon_kdrive.react.svg";
+import OrigYandexDiskIcon from "./icon_yandex_disk.react.svg";
+import OrigOwnCloudIcon from "./icon_owncloud.react.svg";
+import OrigNextCloudIcon from "./icon_nextcloud.react.svg";
+import OrigWebDavIcon from "./icon_webdav.react.svg";
+
 export const AZSortingIcon = createStyledIcon(
   OrigAZSortingIcon,
   "AZSortingIcon"
@@ -811,3 +822,26 @@ export const IntegrationIcon = createStyledIcon(
   OrigIntegrationIcon,
   "IntegrationIcon"
 );
+
+export const BoxIcon = createStyledIcon(OrigBoxIcon, "BoxIcon");
+export const DropBoxIcon = createStyledIcon(OrigDropBoxIcon, "DropBoxIcon");
+export const GoogleDriveIcon = createStyledIcon(
+  OrigGoogleDriveIcon,
+  "GoogleDriveIcon"
+);
+export const OneDriveIcon = createStyledIcon(OrigOneDriveIcon, "OneDriveIcon");
+export const SharePointIcon = createStyledIcon(
+  OrigSharePointIcon,
+  "SharePointIcon"
+);
+export const KDriveIcon = createStyledIcon(OrigKDriveIcon, "KDriveIcon");
+export const YandexDiskIcon = createStyledIcon(
+  OrigYandexDiskIcon,
+  "YandexDiskIcon"
+);
+export const OwnCloudIcon = createStyledIcon(OrigOwnCloudIcon, "OwnCloudIcon");
+export const NextCloudIcon = createStyledIcon(
+  OrigNextCloudIcon,
+  "NextCloudIcon"
+);
+export const WebDavIcon = createStyledIcon(OrigWebDavIcon, "WebDavIcon");

@@ -222,7 +222,7 @@ const mapDispatchToProps = (dispatch) => {
     getPortalSettings: () => getPortalSettings(dispatch),
     getModules: () => getModules(dispatch),
     getPortalCultures: () => getPortalCultures(dispatch),
-    fetchTreeFolders: () => fetchTreeFolders(dispatch),
+    fetchTreeFolders: () => dispatch(fetchTreeFolders()),
     setIsLoaded: () => dispatch(setIsLoaded(true)),
     getIsEncryptionSupport: () => getIsEncryptionSupport(dispatch),
     getEncryptionKeys: () => getEncryptionKeys(dispatch),

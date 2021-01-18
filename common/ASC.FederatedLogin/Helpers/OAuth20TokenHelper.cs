@@ -50,7 +50,7 @@ namespace ASC.FederatedLogin.Helpers
             ConsumerFactory = consumerFactory;
         }
 
-        public RedirectResult RequestCode<T>(string scope = null, Dictionary<string, string> additionalArgs = null) where T : Consumer, IOAuthProvider, new()
+        public string RequestCode<T>(string scope = null, Dictionary<string, string> additionalArgs = null) where T : Consumer, IOAuthProvider, new()
         {
             var loginProvider = ConsumerFactory.Get<T>();
             var requestUrl = loginProvider.CodeUrl;
@@ -80,7 +80,7 @@ namespace ASC.FederatedLogin.Helpers
                                                                                    + "=" + HttpUtility.UrlEncode((additionalArgs[additionalArg] ?? "").Trim())) : null);
             }
 
-            return new RedirectResult(uriBuilder.Uri + "?" + query);
+            return uriBuilder.Uri + "?" + query;
         }
 
         public static OAuth20Token GetAccessToken<T>(ConsumerFactory consumerFactory, string authCode) where T : Consumer, IOAuthProvider, new()
