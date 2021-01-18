@@ -80,20 +80,22 @@ class PureHome extends React.Component {
     );
   }
   componentDidUpdate(prevProps) {
-    if (this.props.selection !== prevProps.selection) {
+    const { selection, isLoading, isTabletView, filter } = this.props;
+
+    if (selection !== prevProps.selection) {
       this.renderGroupButtonMenu();
     }
 
-    if (this.props.isLoading !== prevProps.isLoading) {
-      if (this.props.isLoading) {
+    if (isLoading !== prevProps.isLoading) {
+      if (isLoading) {
         utils.showLoader();
       } else {
         utils.hideLoader();
       }
     }
 
-    if (this.props.isTabletView) {
-      if (this.props.filter.page !== prevProps.filter.page)
+    if (isTabletView) {
+      if (filter.page !== prevProps.filter.page)
         this.isScrollUpOnTheNextPage = true;
       if (this.isScrollUpOnTheNextPage) {
         this.customScrollElm && this.customScrollElm.scrollTo(0, 0);

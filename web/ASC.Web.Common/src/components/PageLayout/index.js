@@ -332,7 +332,7 @@ class PageLayoutComponent extends React.Component {
                         uploadFiles={uploadFiles}
                         setSelections={setSelections}
                         withScroll={withBodyScroll}
-                        autoFocus={isTabletView}
+                        autoFocus={!isTabletView}
                         pinned={this.state.isArticlePinned}
                         viewAs={viewAs}
                       >
