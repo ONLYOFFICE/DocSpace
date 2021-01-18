@@ -58,7 +58,7 @@ class TreeFolders extends React.Component {
     super(props);
 
     const { data, expandedKeys } = props;
-    this.state = { treeData: data, expandedKeys };
+    this.state = { treeData: data, expandedKeys, isExpand: false };
   }
 
   componentDidUpdate(prevProps) {
@@ -88,35 +88,76 @@ class TreeFolders extends React.Component {
   };
 
   getFolderIcon = (item) => {
-    if (item.parentId !== 0)
-      return <Icons.CatalogFolderIcon size="scale" isfill color="#657077" />;
+    let iconName = "CatalogFolderIcon";
 
     switch (item.rootFolderType) {
       case FolderType.USER:
-        return <Icons.CatalogUserIcon size="scale" isfill color="#657077" />;
+        iconName = "CatalogUserIcon";
+        break;
       case FolderType.SHARE:
-        return <Icons.CatalogSharedIcon size="scale" isfill color="#657077" />;
+        iconName = "CatalogSharedIcon";
+        break;
       case FolderType.COMMON:
-        return (
-          <Icons.CatalogPortfolioIcon size="scale" isfill color="#657077" />
-        );
+        iconName = "CatalogPortfolioIcon";
+        break;
       case FolderType.Favorites:
-        return (
-          <Icons.CatalogFavoritesIcon size="scale" isfill color="#657077" />
-        );
+        iconName = "CatalogFavoritesIcon";
+        break;
       case FolderType.Recent:
-        return <Icons.CatalogRecentIcon size="scale" isfill color="#657077" />;
+        iconName = "CatalogRecentIcon";
+        break;
       case FolderType.Privacy:
-        return (
-          <Icons.CatalogPrivateRoomIcon size="scale" isfill color="#657077" />
-        );
-
+        iconName = "CatalogPrivateRoomIcon";
+        break;
       case FolderType.TRASH:
-        return <Icons.CatalogTrashIcon size="scale" isfill color="#657077" />;
-
+        iconName = "CatalogTrashIcon";
+        break;
       default:
-        return <Icons.CatalogFolderIcon size="scale" isfill color="#657077" />;
+        break;
     }
+
+    if (item.parentId !== 0) iconName = "CatalogFolderIcon";
+
+    switch (item.providerKey) {
+      case "GoogleDrive":
+        iconName = "CloudServicesGoogleDriveIcon";
+        break;
+      case "Box":
+        iconName = "CloudServicesBoxIcon";
+        break;
+      case "DropboxV2":
+        iconName = "CloudServicesDropboxIcon";
+        break;
+      case "OneDrive":
+        iconName = "CloudServicesOneDriveIcon";
+        break;
+      case "SharePoint":
+        iconName = "CloudServicesOneDriveIcon";
+        break;
+      case "kDrive":
+        iconName = "CatalogFolderIcon";
+        break;
+      case "Yandex":
+        iconName = "CatalogFolderIcon";
+        break;
+      case "NextCloud":
+        iconName = "CloudServicesNextcloudIcon";
+        break;
+      case "OwnCloud":
+        iconName = "CatalogFolderIcon";
+        break;
+      case "WebDav":
+        iconName = "CatalogFolderIcon";
+        break;
+      default:
+        break;
+    }
+
+    return React.createElement(Icons[iconName], {
+      size: "scale",
+      isfill: true,
+      color: "#657077",
+    });
   };
 
   showDragItems = (item) => {
@@ -178,12 +219,14 @@ class TreeFolders extends React.Component {
         ? item.newItems > 0 && this.props.needUpdate
         : false;
 
-      if (item.folders && item.folders.length > 0) {
+      const serviceFolder = !!item.providerKey;
+      if ((item.folders && item.folders.length > 0) || serviceFolder) {
         return (
           <TreeNode
             id={item.id}
             key={item.id}
             title={item.title}
+            needTopMargin={item.rootFolderType === FolderType.Privacy}
             icon={this.getFolderIcon(item)}
             dragging={dragging}
             isLeaf={
@@ -198,12 +241,13 @@ class TreeFolders extends React.Component {
                 ? null
                 : item.newItems
             }
+            providerKey={item.providerKey}
             onBadgeClick={this.onBadgeClick}
             showBadge={showBadge}
           >
             {item.rootFolderType === FolderType.Privacy && !this.props.isDesktop
               ? null
-              : this.getItems(item.folders)}
+              : this.getItems(item.folders ? item.folders : [])}
           </TreeNode>
         );
       }
@@ -221,6 +265,7 @@ class TreeFolders extends React.Component {
               ? null
               : item.newItems
           }
+          providerKey={item.providerKey}
           onBadgeClick={this.onBadgeClick}
           showBadge={showBadge}
         />
@@ -315,9 +360,14 @@ class TreeFolders extends React.Component {
       .catch((err) => toastr.error("Something went wrong", err));
   };
 
-  onLoadData = (treeNode) => {
+  onLoadData = (treeNode, isExpand) => {
+    isExpand && this.setState({ isExpand: true });
     this.props.setIsLoading && this.props.setIsLoading(true);
     //console.log("load data...", treeNode);
+
+    if (this.state.isExpand && !isExpand) {
+      return Promise.resolve();
+    }
 
     return this.generateTreeNodes(treeNode)
       .then((data) => {
@@ -331,13 +381,16 @@ class TreeFolders extends React.Component {
         this.setState({ treeData });
       })
       .catch((err) => toastr.error(err))
-      .finally(() => this.props.setIsLoading && this.props.setIsLoading(false));
+      .finally(() => {
+        this.setState({ isExpand: false });
+        this.props.setIsLoading && this.props.setIsLoading(false);
+      });
   };
 
   onExpand = (data, treeNode) => {
     if (treeNode.node && !treeNode.node.props.children) {
       if (treeNode.expanded) {
-        this.onLoadData(treeNode.node);
+        this.onLoadData(treeNode.node, true);
       }
     }
     if (this.props.needUpdate) {
@@ -402,15 +455,9 @@ class TreeFolders extends React.Component {
   };
 
   render() {
-    const {
-      selectedKeys,
-      isLoading,
-      onSelect,
-      needUpdate,
-      dragging,
-    } = this.props;
+    const { selectedKeys, isLoading, onSelect, dragging } = this.props;
     const { treeData, expandedKeys } = this.state;
-    const loadProp = needUpdate ? { loadData: this.onLoadData } : {};
+    //const loadProp = needUpdate ? { loadData: this.onLoadData } : {};
 
     return (
       <StyledTreeMenu
@@ -423,7 +470,8 @@ class TreeFolders extends React.Component {
         switcherIcon={this.switcherIcon}
         onSelect={onSelect}
         selectedKeys={selectedKeys}
-        {...loadProp}
+        //{...loadProp}
+        loadData={this.onLoadData}
         expandedKeys={expandedKeys}
         onExpand={this.onExpand}
         onMouseEnter={this.onMouseEnter}

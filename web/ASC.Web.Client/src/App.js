@@ -22,6 +22,7 @@ const Confirm = lazy(() => import("./components/pages/Confirm"));
 const Settings = lazy(() => import("./components/pages/Settings"));
 const Wizard = lazy(() => import("./components/pages/Wizard"));
 const Payments = lazy(() => import("./components/pages/Payments"));
+const ThirdPartyResponse = lazy(() => import("./components/pages/ThirdParty"));
 const {
   setIsLoaded,
   getUser,
@@ -31,6 +32,12 @@ const {
 } = CommonStore.auth.actions;
 
 class App extends React.Component {
+  constructor(props) {
+    super(props);
+
+    const pathname = window.location.pathname.toLowerCase();
+    this.isThirdPartyResponse = pathname.indexOf("thirdparty") !== -1;
+  }
   componentDidMount() {
     const {
       getPortalSettings,
@@ -43,6 +50,12 @@ class App extends React.Component {
     getIsAuthenticated()
       .then((isAuthenticated) => {
         if (isAuthenticated) utils.updateTempContent(isAuthenticated);
+
+        if (this.isThirdPartyResponse) {
+          setIsLoaded();
+          return;
+        }
+
         const requests = [];
         if (!isAuthenticated) {
           requests.push(getPortalSettings());
@@ -69,7 +82,7 @@ class App extends React.Component {
   render() {
     return navigator.onLine ? (
       <Router history={history}>
-        <NavMenu />
+        {!this.isThirdPartyResponse && <NavMenu />}
         <Main>
           <Suspense fallback={null}>
             <Switch>
@@ -84,6 +97,10 @@ class App extends React.Component {
                 component={Login}
               />
               <Route path="/confirm" component={Confirm} />
+              <PrivateRoute
+                path={`/thirdparty/:provider`}
+                component={ThirdPartyResponse}
+              />
               <PrivateRoute
                 exact
                 path={["/", "/error=:error"]}

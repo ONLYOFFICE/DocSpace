@@ -122,4 +122,7 @@
   "CreateWithEmptyTitle": "Can't create folder or file with empty title",
   "ChangeOwner": "Change owner",
   "EncryptedFileSaving": "Saving encrypted file",
-  "EncryptedFileCreating": "File <strong>{{itemTitle}}</strong> successfully created"}
+  "EncryptedFileCreating": "File <strong>{{itemTitle}}</strong> successfully created",
+  "DeleteThirdParty": "Delete third party",
+  "ThirdPartyInfo": "Change the third party info"
+}

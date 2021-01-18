@@ -27,6 +27,7 @@ import {
   getIsLoading,
   getIsRecycleBinFolder,
   getSelection,
+  isRootFolder,
   getIsPrivacyFolder,
 } from "../../../store/files/selectors";
 import { createI18N } from "../../../helpers/i18n";
@@ -48,12 +49,18 @@ class DeleteDialogComponent extends React.Component {
 
     let i = 0;
     while (props.selection.length !== i) {
-      if (props.selection[i].access === 0 || props.selection[i].access === 1) {
-        selection.push({ ...props.selection[i], checked: true });
-        if (selection[i].fileExst) {
-          filesList.push(selection[i]);
-        } else {
-          foldersList.push(selection[i]);
+      if (!(props.isRootFolder && props.selection[i].providerKey)) {
+        if (
+          props.selection[i].access === 0 ||
+          props.selection[i].access === 1
+        ) {
+          const item = { ...props.selection[i], checked: true };
+          selection.push(item);
+          if (props.selection[i].fileExst) {
+            filesList.push(item);
+          } else {
+            foldersList.push(item);
+          }
         }
       }
       i++;
@@ -72,7 +79,7 @@ class DeleteDialogComponent extends React.Component {
       isRecycleBinFolder,
       setSecondaryProgressBarData,
       clearSecondaryProgressData,
-      isPrivacy,      t,
+      t,
       fetchFiles,
       setUpdateTree,
     } = this.props;
@@ -185,12 +192,12 @@ class DeleteDialogComponent extends React.Component {
     const newSelection = this.state.selection;
 
     if (fileType !== "undefined") {
-      const a = newSelection.find((x) => x.id === id && x.fileExst);
-      a.checked = !a.checked;
+      const selection = newSelection.find((x) => x.id === id && x.fileExst);
+      selection.checked = !selection.checked;
       this.setState({ selection: newSelection });
     } else {
-      const a = newSelection.find((x) => x.id === id && !x.fileExst);
-      a.checked = !a.checked;
+      const selection = newSelection.find((x) => x.id === id && !x.fileExst);
+      selection.checked = !selection.checked;
       this.setState({ selection: newSelection });
     }
   };
@@ -304,6 +311,7 @@ const mapStateToProps = (state) => {
     isRecycleBinFolder: getIsRecycleBinFolder(state),
     isPrivacy: getIsPrivacyFolder(state),
     selection: getSelection(state),
+    isRootFolder: isRootFolder(state),
   };
 };
 

@@ -179,7 +179,7 @@ namespace ASC.Web.Files.Utils
         private const string UPDATE_LIST = "filesUpdateList";
         
         private ICache Cache { get; set; }
-        public FileTrackerHelper FileTracker { get; }
+        private FileTrackerHelper FileTracker { get; }
         private IDaoFactory DaoFactory { get; }
         private FileSecurity FileSecurity { get; }
         private GlobalFolderHelper GlobalFolderHelper { get; }

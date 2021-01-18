@@ -3,7 +3,6 @@ import { withRouter } from "react-router";
 import { Toast, Box } from "asc-web-components";
 import { utils, api, toastr, Loaders, regDesktop } from "asc-web-common";
 
-import { isIOS, deviceType } from "react-device-detect";
 import { setDocumentTitle } from "../../../helpers/utils";
 import { changeTitle, setFavicon, isIPad } from "./utils";
 import throttle from "lodash/throttle";
@@ -125,9 +124,13 @@ class PureEditor extends React.Component {
 
       const events = {
         events: {
+          onAppReady: this.onSDKAppReady,
           onDocumentStateChange: this.onDocumentStateChange,
           onMetaChange: this.onMetaChange,
           onDocumentReady: this.onDocumentReady,
+          onInfo: this.onSDKInfo,
+          onWarning: this.onSDKWarning,
+          onError: this.onSDKError,
         },
       };
 
@@ -142,6 +145,34 @@ class PureEditor extends React.Component {
       console.log(error);
       toastr.error(error.message, null, 0, true);
     }
+  };
+
+  onSDKAppReady = () => {
+    console.log("ONLYOFFICE Document Editor is ready");
+  };
+
+  onSDKInfo = (event) => {
+    console.log(
+      "ONLYOFFICE Document Editor is opened in mode " + event.data.mode
+    );
+  };
+
+  onSDKWarning = (event) => {
+    console.log(
+      "ONLYOFFICE Document Editor reports a warning: code " +
+        event.data.warningCode +
+        ", description " +
+        event.data.warningDescription
+    );
+  };
+
+  onSDKError = (event) => {
+    console.log(
+      "ONLYOFFICE Document Editor reports an error: code " +
+        event.data.errorCode +
+        ", description " +
+        event.data.errorDescription
+    );
   };
 
   onDocumentStateChange = (event) => {

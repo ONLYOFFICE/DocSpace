@@ -122,4 +122,7 @@
   "CreateWithEmptyTitle": "Нельзя создать папку или файл с пустым названием",
   "ChangeOwner": "Сменить владельца",
   "EncryptedFileSaving": "Сохранение зашифрованного файла",
-  "EncryptedFileCreating": "Создан новый файл <strong>{{itemTitle}}</strong>"}
+  "EncryptedFileCreating": "Создан новый файл <strong>{{itemTitle}}</strong>",
+  "DeleteThirdParty": "Отключить сторонний ресурс",
+  "ThirdPartyInfo": "Изменить настройки подключения"
+}

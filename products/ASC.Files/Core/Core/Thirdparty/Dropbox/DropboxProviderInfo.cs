@@ -38,7 +38,7 @@ using Dropbox.Api.Files;
 
 namespace ASC.Files.Thirdparty.Dropbox
 {
-    [Scope]
+    [Transient]
     [DebuggerDisplay("{CustomerTitle}")]
     internal class DropboxProviderInfo : IProviderInfo
     {
