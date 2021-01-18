@@ -1791,7 +1791,6 @@ class SectionBodyContent extends React.Component {
       settings,
       selection,
       fileAction,
-      currentFolderCount,
       isRecycleBin,
       isPrivacy,
       isEncryptionSupport,

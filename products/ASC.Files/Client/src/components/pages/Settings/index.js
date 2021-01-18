@@ -40,7 +40,7 @@ const PureSettings = ({
 
   useEffect(() => {
     setFirstLoad(false);
-  }, []);
+  }, [setFirstLoad]);
 
   useEffect(() => {
     switch (setting) {

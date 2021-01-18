@@ -79,7 +79,6 @@ class DeleteDialogComponent extends React.Component {
       isRecycleBinFolder,
       setSecondaryProgressBarData,
       clearSecondaryProgressData,
-      isPrivacy,
       t,
       fetchFiles,
       setUpdateTree,

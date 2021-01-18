@@ -1,4 +1,4 @@
-import { api, history, constants, toastr, store } from "asc-web-common";
+import { api, history, constants, store } from "asc-web-common";
 import axios from "axios";
 import queryString from "query-string";
 import {
@@ -22,7 +22,7 @@ import {
   getSelectedFolderId,
   getFilter,
   getIsRecycleBinFolder,
-  getPrimaryProgressData,
+  /*getPrimaryProgressData,*/
   getSecondaryProgressData,
   getTreeFolders,
   getSettingsTree,
@@ -1081,35 +1081,35 @@ const getNewPercent = (uploadedSize, indexOfFile, getState) => {
   return newPercent;
 };
 
-const updateFiles = (folderId, dispatch, getState) => {
-  //console.log("folderId ", folderId);
-  const uploadData = {
-    files: [],
-    filesSize: 0,
-    convertFiles: [],
-    convertFilesSize: 0,
-    uploadedFiles: 0,
-    percent: 0,
-    uploaded: true,
-  };
-  return refreshFiles(folderId, dispatch, getState)
-    .catch((err) => {
-      dispatch(
-        setPrimaryProgressBarData({
-          alert: true,
-          visible: true,
-        })
-      );
-      setTimeout(() => dispatch(clearPrimaryProgressData()), TIMEOUT);
-      //toastr.error(err);
-    })
-    .finally(() =>
-      setTimeout(() => {
-        dispatch(clearPrimaryProgressData());
-        dispatch(setUploadData(uploadData));
-      }, TIMEOUT)
-    );
-};
+// const updateFiles = (folderId, dispatch, getState) => {
+//   //console.log("folderId ", folderId);
+//   const uploadData = {
+//     files: [],
+//     filesSize: 0,
+//     convertFiles: [],
+//     convertFilesSize: 0,
+//     uploadedFiles: 0,
+//     percent: 0,
+//     uploaded: true,
+//   };
+//   return refreshFiles(folderId, dispatch, getState)
+//     .catch((err) => {
+//       dispatch(
+//         setPrimaryProgressBarData({
+//           alert: true,
+//           visible: true,
+//         })
+//       );
+//       setTimeout(() => dispatch(clearPrimaryProgressData()), TIMEOUT);
+//       //toastr.error(err);
+//     })
+//     .finally(() =>
+//       setTimeout(() => {
+//         dispatch(clearPrimaryProgressData());
+//         dispatch(setUploadData(uploadData));
+//       }, TIMEOUT)
+//     );
+// };
 
 const refreshFiles = (folderId, dispatch, getState) => {
   const { files } = getState();
@@ -1142,7 +1142,7 @@ const refreshFiles = (folderId, dispatch, getState) => {
   }
 };
 
-const getConvertProgress = (
+/*const getConvertProgress = (
   fileId,
   t,
   uploadData,
@@ -1224,7 +1224,7 @@ const updateConvertProgress = (uploadData, t, dispatch) => {
   if (!progressVisible) {
     setTimeout(() => dispatch(clearPrimaryProgressData()), TIMEOUT);
   }
-};
+};*/
 
 export const setDialogVisible = (t) => {
   return (dispatch, getState) => {

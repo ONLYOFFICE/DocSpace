@@ -186,6 +186,7 @@ const PureConnectDialogContainer = (props) => {
   }, [
     commonFolderId,
     customerTitle,
+    fetchFiles,
     fetchThirdPartyProviders,
     fetchTreeFolders,
     isCorporate,
@@ -197,6 +198,8 @@ const PureConnectDialogContainer = (props) => {
     passwordValue,
     provider_id,
     provider_key,
+    selectedFolder.folders,
+    selectedFolder.id,
     setTreeFolders,
     setUpdateTree,
     showUrlField,
