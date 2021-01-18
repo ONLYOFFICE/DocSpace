@@ -43,7 +43,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Files.Thirdparty.Box
 {
-    [Scope]
+    [Transient]
     [DebuggerDisplay("{CustomerTitle}")]
     internal class BoxProviderInfo : IProviderInfo
     {

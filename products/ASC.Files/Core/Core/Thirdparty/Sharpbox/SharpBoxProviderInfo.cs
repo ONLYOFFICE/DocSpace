@@ -38,7 +38,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Files.Thirdparty.Sharpbox
 {
-    [Scope]
+    [Transient]
     internal class SharpBoxProviderInfo : IProviderInfo
     {
         public int ID { get; set; }
