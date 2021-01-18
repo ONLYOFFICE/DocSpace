@@ -1,14 +1,11 @@
 import React, { useState, useEffect } from "react";
-import styled from "styled-components";
 import {
   ModalDialog,
   TextInput,
   PasswordInput,
   Button,
   Checkbox,
-  Text,
   FieldContainer,
-  utils,
   toastr,
 } from "asc-web-components";
 import { utils as commonUtils } from "asc-web-common";
@@ -31,6 +28,7 @@ import {
 import { withTranslation, I18nextProvider } from "react-i18next";
 import { connect } from "react-redux";
 import { createI18N } from "../../../helpers/i18n";
+import ModalDialogContainer from "../ModalDialogContainer";
 
 const i18n = createI18N({
   page: "ConnectDialog",
@@ -38,21 +36,6 @@ const i18n = createI18N({
 });
 
 const { changeLanguage } = commonUtils;
-const { tablet } = utils.device;
-
-const StyledConnectedDialog = styled.div`
-  .dialog-form-text {
-    line-height: 32px;
-    min-width: 160px;
-    text-align: right;
-    padding-right: 8px;
-
-    @media ${tablet} {
-      text-align: left;
-      width: 100%;
-    }
-  }
-`;
 
 const PureConnectDialogContainer = (props) => {
   const {
@@ -197,7 +180,7 @@ const PureConnectDialogContainer = (props) => {
   };
 
   return (
-    <StyledConnectedDialog onKeyUp={onKeyUpHandler} autoFocus>
+    <ModalDialogContainer onKeyUp={onKeyUpHandler} autoFocus>
       <ModalDialog visible={visible} zIndex={310} onClose={onClose}>
         <ModalDialog.Header>{t("ConnectingAccount")}</ModalDialog.Header>
         <ModalDialog.Body>
@@ -286,7 +269,6 @@ const PureConnectDialogContainer = (props) => {
               onChange={onChangeFolderName}
             />
           </FieldContainer>
-          <Text className="dialog-form-text" />
           <Checkbox
             label={t("ConnectMakeShared")}
             isChecked={isCorporate}
@@ -306,7 +288,7 @@ const PureConnectDialogContainer = (props) => {
           />
         </ModalDialog.Footer>
       </ModalDialog>
-    </StyledConnectedDialog>
+    </ModalDialogContainer>
   );
 };
 
