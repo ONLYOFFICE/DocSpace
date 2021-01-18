@@ -503,7 +503,7 @@ class FilesRowContent extends React.PureComponent {
       isLoading,
       isMobile,
       canWebEdit,
-      canConvert,
+      /* canConvert,*/
       sectionWidth,
     } = this.props;
     const {

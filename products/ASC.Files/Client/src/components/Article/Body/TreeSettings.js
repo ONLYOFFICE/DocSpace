@@ -81,14 +81,15 @@ const PureTreeSettings = ({
   setIsLoading,
   t,
 }) => {
+  const { setting } = match.params;
+
   useEffect(() => {
-    const { setting } = match.params;
     setIsLoading(true);
     getFilesSettings().then(() => {
       setIsLoading(false);
       setSelectedNode([setting]);
     });
-  }, []);
+  }, [getFilesSettings, setting, setIsLoading, setSelectedNode]);
 
   useEffect(() => {
     const { setting } = match.params;

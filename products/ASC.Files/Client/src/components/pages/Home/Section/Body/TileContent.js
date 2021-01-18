@@ -102,7 +102,7 @@ const getSideInfo = (content) => {
   let info = "";
   const lastIndex = content.length - 1;
 
-  content.map((element, index) => {
+  content.forEach((element, index) => {
     const delimiter = index === lastIndex ? "" : " | ";
     if (index > 1) {
       info +=
@@ -163,6 +163,7 @@ const TileContent = (props) => {
             </SideContainerWrapper>
           );
         }
+        return null;
       })}
       {!disableSideInfo && (
         <TabletSideInfo color={sideColor}>{sideInfo}</TabletSideInfo>

@@ -3,7 +3,6 @@ import { withRouter } from "react-router";
 import { Toast, Box } from "asc-web-components";
 import { utils, api, toastr, Loaders, regDesktop } from "asc-web-common";
 
-import { isIOS, deviceType } from "react-device-detect";
 import { setDocumentTitle } from "../../../helpers/utils";
 import { changeTitle, setFavicon, isIPad } from "./utils";
 import throttle from "lodash/throttle";
