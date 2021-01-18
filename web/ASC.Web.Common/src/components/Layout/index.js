@@ -1,8 +1,15 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styled, { css } from "styled-components";
 import MobileLayout from "./MobileLayout";
 import { utils } from "asc-web-components";
-import { isIOS, isFirefox, isSafari, isMobile } from "react-device-detect";
+import {
+  isIOS,
+  isFirefox,
+  isSafari,
+  isMobile,
+  isMobileOnly,
+  isChrome,
+} from "react-device-detect";
 
 import { connect } from "react-redux";
 import store from "../../store";
@@ -17,7 +24,7 @@ const StyledContainer = styled.div`
   height: ${(props) =>
     props.isTabletView && !isFirefox
       ? isMobile
-        ? "calc(var(--vh, 1vh) * 100 + 57px)"
+        ? `${props.contentHeight}px`
         : "100vh"
       : "100vh"};
 
@@ -45,11 +52,17 @@ const StyledContainer = styled.div`
 const Layout = (props) => {
   const { children, isTabletView, setIsTabletView } = props;
 
+  const [contentHeight, setContentHeight] = useState();
+  const [isPortrait, setIsPortrait] = useState();
+
   const intervalTime = 100;
   const endTimeout = 300;
   let intervalHandler;
   let timeoutHandler;
 
+  useEffect(() => {
+    setIsPortrait(window.innerHeight > window.innerWidth);
+  });
   useEffect(() => {
     const isTablet = window.innerWidth <= size.tablet;
     setIsTabletView(isTablet);
@@ -103,9 +116,14 @@ const Layout = (props) => {
       intervalHandler = null;
       timeoutHandler = null;
 
-      const vh = (window.innerHeight - 57) * 0.01;
+      let height = window.innerHeight;
 
-      document.documentElement.style.setProperty("--vh", `${vh}px`);
+      if (isMobileOnly && isIOS && isChrome) {
+        if (window.innerHeight < window.innerWidth && isPortrait) {
+          height = window.screen.availWidth - 57;
+        }
+      }
+      setContentHeight(height);
     };
     intervalHandler = setInterval(() => {
       //console.log("changeRootHeight setInterval"); TODO: need to refactoring
@@ -127,7 +145,11 @@ const Layout = (props) => {
   };
 
   return (
-    <StyledContainer className="Layout" isTabletView={isTabletView}>
+    <StyledContainer
+      className="Layout"
+      isTabletView={isTabletView}
+      contentHeight={contentHeight}
+    >
       <MobileLayout {...props} />
     </StyledContainer>
   );
