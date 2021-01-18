@@ -22,6 +22,7 @@ import { changeLanguage } from "../../utils";
 import ReactResizeDetector from "react-resize-detector";
 import FloatingButton from "../FloatingButton";
 import { getIsTabletView } from "../../store/auth/selectors";
+import { isMobile } from "react-device-detect";
 
 const { getLanguage } = store.auth.selectors;
 const { size } = utils.device;
@@ -333,7 +334,7 @@ class PageLayoutComponent extends React.Component {
                         uploadFiles={uploadFiles}
                         setSelections={setSelections}
                         withScroll={withBodyScroll}
-                        autoFocus={!isTabletView}
+                        autoFocus={isMobile || isTabletView ? false : true}
                         pinned={this.state.isArticlePinned}
                         viewAs={viewAs}
                       >
