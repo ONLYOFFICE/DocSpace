@@ -60,7 +60,7 @@ namespace ASC.Web.Files.Services.DocumentService
         private Global Global { get; }
         private DocumentServiceConnector DocumentServiceConnector { get; }
         private LockerManager LockerManager { get; }
-        public FileTrackerHelper FileTracker { get; }
+        private FileTrackerHelper FileTracker { get; }
         private IServiceProvider ServiceProvider { get; }
 
         public DocumentServiceHelper(

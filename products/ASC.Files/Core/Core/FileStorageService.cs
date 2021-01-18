@@ -115,7 +115,7 @@ namespace ASC.Web.Files.Services.WCFService
         private SettingsManager SettingsManager { get; }
         private FileOperationsManager FileOperationsManager { get; }
         private TenantManager TenantManager { get; }
-        public FileTrackerHelper FileTracker { get; }
+        private FileTrackerHelper FileTracker { get; }
         private ILog Logger { get; set; }
 
         public FileStorageService(
