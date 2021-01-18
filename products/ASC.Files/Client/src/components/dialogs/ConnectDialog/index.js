@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   ModalDialog,
   TextInput,
@@ -28,7 +28,6 @@ import {
 import { withTranslation, I18nextProvider } from "react-i18next";
 import { connect } from "react-redux";
 import { createI18N } from "../../../helpers/i18n";
-import ModalDialogContainer from "../ModalDialogContainer";
 
 const i18n = createI18N({
   page: "ConnectDialog",
@@ -92,9 +91,12 @@ const PureConnectDialogContainer = (props) => {
     setCustomerTitleValue(e.target.value);
   };
   const onChangeMakeShared = () => setMakeShared(!isCorporate);
-  const onClose = () => !isLoading && props.onClose();
+  const onClose = useCallback(() => !isLoading && props.onClose(), [
+    isLoading,
+    props,
+  ]);
 
-  const onSave = () => {
+  const onSave = useCallback(() => {
     const isTitleValid = !!customerTitle.trim();
     const isUrlValid = !!urlValue.trim();
     const isLoginValid = !!loginValue.trim();
@@ -166,7 +168,26 @@ const PureConnectDialogContainer = (props) => {
         toastr.error(err);
         setIsLoading(false);
       });
-  };
+  }, [
+    commonFolderId,
+    customerTitle,
+    fetchThirdPartyProviders,
+    fetchTreeFolders,
+    isCorporate,
+    link,
+    loginValue,
+    myFolderId,
+    oAuthToken,
+    onClose,
+    passwordValue,
+    provider_id,
+    provider_key,
+    setTreeFolders,
+    setUpdateTree,
+    showUrlField,
+    treeFolders,
+    urlValue,
+  ]);
 
   const onReconnect = () => {
     let authModal = window.open("", "Authorization", "height=600, width=1020");
@@ -175,120 +196,125 @@ const PureConnectDialogContainer = (props) => {
     );
   };
 
-  const onKeyUpHandler = (e) => {
-    if (e.keyCode === 13) onSave();
-  };
+  const onKeyUpHandler = useCallback(
+    (e) => {
+      if (e.keyCode === 13) onSave();
+    },
+    [onSave]
+  );
+
+  useEffect(() => {
+    window.addEventListener("keyup", onKeyUpHandler);
+    return () => window.removeEventListener("keyup", onKeyUpHandler);
+  }, [onKeyUpHandler]);
 
   return (
-    <ModalDialogContainer onKeyUp={onKeyUpHandler} autoFocus>
-      <ModalDialog visible={visible} zIndex={310} onClose={onClose}>
-        <ModalDialog.Header>{t("ConnectingAccount")}</ModalDialog.Header>
-        <ModalDialog.Body>
-          {isAccount ? (
-            <FieldContainer labelVisible labelText={t("Account")} isVertical>
-              <Button
-                label={t("Reconnect")}
-                size="medium"
-                onClick={onReconnect}
-                scale
-                isDisabled={isLoading}
-              />
-            </FieldContainer>
-          ) : (
-            <>
-              {showUrlField && (
-                <FieldContainer
-                  labelVisible
-                  isRequired
-                  labelText={t("ConnectionUrl")}
-                  isVertical
-                  hasError={!isUrlValid}
-                  errorMessage={t("RequiredFieldMessage")}
-                >
-                  <TextInput
-                    hasError={!isUrlValid}
-                    isDisabled={isLoading}
-                    tabIndex={1}
-                    scale
-                    value={urlValue}
-                    onChange={onChangeUrl}
-                  />
-                </FieldContainer>
-              )}
-
+    <ModalDialog visible={visible} zIndex={310} onClose={onClose}>
+      <ModalDialog.Header>{t("ConnectingAccount")}</ModalDialog.Header>
+      <ModalDialog.Body>
+        {isAccount ? (
+          <FieldContainer labelVisible labelText={t("Account")} isVertical>
+            <Button
+              label={t("Reconnect")}
+              size="medium"
+              onClick={onReconnect}
+              scale
+              isDisabled={isLoading}
+            />
+          </FieldContainer>
+        ) : (
+          <>
+            {showUrlField && (
               <FieldContainer
-                labelText={t("Login")}
+                labelVisible
                 isRequired
+                labelText={t("ConnectionUrl")}
                 isVertical
-                hasError={!isLoginValid}
+                hasError={!isUrlValid}
                 errorMessage={t("RequiredFieldMessage")}
               >
                 <TextInput
-                  hasError={!isLoginValid}
+                  hasError={!isUrlValid}
                   isDisabled={isLoading}
-                  tabIndex={2}
+                  tabIndex={1}
                   scale
-                  value={loginValue}
-                  onChange={onChangeLogin}
+                  value={urlValue}
+                  onChange={onChangeUrl}
                 />
               </FieldContainer>
-              <FieldContainer
-                labelText={t("Password")}
-                isRequired
-                isVertical
-                hasError={!isPasswordValid}
-                errorMessage={t("RequiredFieldMessage")}
-              >
-                <PasswordInput
-                  hasError={!isPasswordValid}
-                  isDisabled={isLoading}
-                  className="dialog-form-input"
-                  tabIndex={3}
-                  simpleView
-                  passwordSettings={{ minLength: 0 }}
-                  value={passwordValue}
-                  onChange={onChangePassword}
-                />
-              </FieldContainer>
-            </>
-          )}
+            )}
 
-          <FieldContainer
-            labelText={t("ConnectFolderTitle")}
-            isRequired
-            isVertical
+            <FieldContainer
+              labelText={t("Login")}
+              isRequired
+              isVertical
+              hasError={!isLoginValid}
+              errorMessage={t("RequiredFieldMessage")}
+            >
+              <TextInput
+                hasError={!isLoginValid}
+                isDisabled={isLoading}
+                tabIndex={2}
+                scale
+                value={loginValue}
+                onChange={onChangeLogin}
+              />
+            </FieldContainer>
+            <FieldContainer
+              labelText={t("Password")}
+              isRequired
+              isVertical
+              hasError={!isPasswordValid}
+              errorMessage={t("RequiredFieldMessage")}
+            >
+              <PasswordInput
+                hasError={!isPasswordValid}
+                isDisabled={isLoading}
+                tabIndex={3}
+                simpleView
+                passwordSettings={{ minLength: 0 }}
+                value={passwordValue}
+                onChange={onChangePassword}
+              />
+            </FieldContainer>
+          </>
+        )}
+
+        <FieldContainer
+          labelText={t("ConnectFolderTitle")}
+          isRequired
+          isVertical
+          hasError={!isTitleValid}
+          errorMessage={t("RequiredFieldMessage")}
+        >
+          <TextInput
             hasError={!isTitleValid}
-            errorMessage={t("RequiredFieldMessage")}
-          >
-            <TextInput
-              hasError={!isTitleValid}
-              isDisabled={isLoading}
-              tabIndex={4}
-              scale
-              value={`${customerTitle}`}
-              onChange={onChangeFolderName}
-            />
-          </FieldContainer>
-          <Checkbox
-            label={t("ConnectMakeShared")}
-            isChecked={isCorporate}
-            onChange={onChangeMakeShared}
             isDisabled={isLoading}
+            tabIndex={4}
+            scale
+            value={`${customerTitle}`}
+            onChange={onChangeFolderName}
           />
-        </ModalDialog.Body>
-        <ModalDialog.Footer>
-          <Button
-            tabIndex={5}
-            label={t("SaveButton")}
-            size="big"
-            primary
-            onClick={onSave}
-            isDisabled={isLoading}
-            isLoading={isLoading}
-          />
-        </ModalDialog.Footer>
-      </ModalDialog>
-    </ModalDialogContainer>
+        </FieldContainer>
+        <Checkbox
+          label={t("ConnectMakeShared")}
+          isChecked={isCorporate}
+          onChange={onChangeMakeShared}
+          isDisabled={isLoading}
+        />
+      </ModalDialog.Body>
+      <ModalDialog.Footer>
+        <Button
+          tabIndex={5}
+          label={t("SaveButton")}
+          size="big"
+          primary
+          onClick={onSave}
+          isDisabled={isLoading}
+          isLoading={isLoading}
+        />
+      </ModalDialog.Footer>
+    </ModalDialog>
   );
 };
 
