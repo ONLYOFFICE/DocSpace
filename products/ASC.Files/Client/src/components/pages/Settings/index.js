@@ -100,7 +100,11 @@ const PureSettings = ({
         <PageLayout.SectionBody>
           {(Object.keys(settingsTree).length === 0 && isLoading) ||
           isLoading ? (
-            <Loaders.SettingsFiles />
+            setting === "thirdParty" ? (
+              <Loaders.Rows />
+            ) : (
+              <Loaders.SettingsFiles />
+            )
           ) : (
             <SectionBodyContent setting={setting} t={t} />
           )}
