@@ -102,21 +102,7 @@ namespace ASC.Common.Threading
 
             if (prop == null) return default;
 
-            var resType = typeof(T);
-            var val = prop.Value.Trim('"');
-            object result = val;
-
-            if(resType == typeof(Guid))
-            {
-                result = Guid.Parse(val);
-            }
-            else if(resType.IsEnum)
-            {
-                Enum.TryParse(resType, val, out var e);
-                result = e;
-            }
-
-            return (T)Convert.ChangeType(result, resType);
+            return JsonSerializer.Deserialize<T>(prop.Value);
         }
 
         public void SetProperty(string name, object value)

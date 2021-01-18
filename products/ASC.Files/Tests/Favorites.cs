@@ -25,6 +25,7 @@ namespace ASC.Files.Tests
             folderIds = new List<int> { TestFolder.Id };
             fileIds = new List<int> { TestFile.Id };
         }
+
         [OneTimeTearDown]
         public void TearDown()
         {

@@ -94,7 +94,12 @@ namespace ASC.Web.Files.Core.Entries
             var currentAddressString = EncryptionLoginProvider.GetKeys();
             if (string.IsNullOrEmpty(currentAddressString)) return null;
 
-            var keyPair = JsonSerializer.Deserialize<EncryptionKeyPair>(currentAddressString);
+            var options = new JsonSerializerOptions
+            {
+                AllowTrailingCommas = true,
+                PropertyNameCaseInsensitive = true
+            };
+            var keyPair = JsonSerializer.Deserialize<EncryptionKeyPair>(currentAddressString, options);
             if (keyPair.UserId != AuthContext.CurrentAccount.ID) return null;
             return keyPair;
         }
@@ -120,7 +125,13 @@ namespace ASC.Web.Files.Core.Entries
                 var fileKeyPairString = EncryptionLoginProvider.GetKeys(share.SubjectId);
                 if (string.IsNullOrEmpty(fileKeyPairString)) return null;
 
-                var fileKeyPair = JsonSerializer.Deserialize<EncryptionKeyPair>(fileKeyPairString);
+
+                var options = new JsonSerializerOptions
+                {
+                    AllowTrailingCommas = true,
+                    PropertyNameCaseInsensitive = true
+                };
+                var fileKeyPair = JsonSerializer.Deserialize<EncryptionKeyPair>(fileKeyPairString, options);
                 if (fileKeyPair.UserId != share.SubjectId) return null;
 
                 fileKeyPair.PrivateKeyEnc = null;
