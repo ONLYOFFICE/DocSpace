@@ -50,7 +50,7 @@ namespace ASC.Core.Caching
 
         internal bool QuotaCacheEnabled { get; }
 
-        public QuotaServiceCache(IConfiguration Configuration, ICacheNotify<QuotaCacheItem> cacheNotify)
+        public QuotaServiceCache(IConfiguration Configuration, ICacheNotify<QuotaCacheItem> cacheNotify, ICache cache)
         {
             if (Configuration["core:enable-quota-cache"] == null)
             {
@@ -62,7 +62,7 @@ namespace ASC.Core.Caching
             }
 
             CacheNotify = cacheNotify;
-            Cache = AscCache.Memory;
+            Cache = cache;
             Interval = new TrustInterval();
 
             cacheNotify.Subscribe((i) =>

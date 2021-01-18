@@ -46,9 +46,9 @@ namespace ASC.Web.Core.Mail
     {
         private ICacheNotify<MailServiceHelperCache> CacheNotify { get; }
         public ICache Cache { get; }
-        public MailServiceHelperStorage(ICacheNotify<MailServiceHelperCache> cacheNotify)
+        public MailServiceHelperStorage(ICacheNotify<MailServiceHelperCache> cacheNotify, ICache cache)
         {
-            Cache = AscCache.Memory;
+            Cache = cache;
             CacheNotify = cacheNotify;
             CacheNotify.Subscribe(r => Cache.Remove(r.Key), CacheNotifyAction.Remove);
         }
@@ -79,7 +79,7 @@ namespace ASC.Web.Core.Mail
         public MailServiceHelperStorage MailServiceHelperStorage { get; }
         private EFLoggerFactory LoggerFactory { get; }
         private MailDbContext MailDbContext { get; }
-        public ICache Cache { get; }
+        private ICache Cache { get; }
 
         public MailServiceHelper(
             UserManager userManager,

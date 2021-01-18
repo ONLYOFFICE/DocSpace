@@ -41,9 +41,9 @@ namespace ASC.Core.Caching
         internal ICacheNotify<SubscriptionRecord> NotifyRecord { get; }
         internal ICacheNotify<SubscriptionMethodCache> NotifyMethod { get; }
 
-        public SubscriptionServiceCache(ICacheNotify<SubscriptionRecord> notifyRecord, ICacheNotify<SubscriptionMethodCache> notifyMethod)
+        public SubscriptionServiceCache(ICacheNotify<SubscriptionRecord> notifyRecord, ICacheNotify<SubscriptionMethodCache> notifyMethod, ICache cache)
         {
-            Cache = AscCache.Memory;
+            Cache = cache;
             NotifyRecord = notifyRecord;
             NotifyMethod = notifyMethod;
 

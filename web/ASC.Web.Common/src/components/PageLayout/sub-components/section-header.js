@@ -50,6 +50,13 @@ const StyledSectionHeader = styled.div`
           top: 56px;
           width: ${(props) =>
             props.isArticlePinned ? `calc(100% - 272px)` : "100%"};
+          ${(props) =>
+            props.sectionWidth &&
+            props.isArticlePinned &&
+            css`
+              max-width: ${props.sectionWidth + "px"};
+            `}
+
           background-color: #fff;
           z-index: ${(props) => (!props.isHeaderVisible ? "149" : "190")};
           padding-right: 16px;
@@ -103,6 +110,7 @@ class SectionHeader extends React.Component {
       isHeaderVisible,
       dispatch,
       isLoaded,
+      sectionWidth,
       ...rest
     } = this.props;
 
@@ -115,6 +123,7 @@ class SectionHeader extends React.Component {
             borderBottom={borderBottom}
             isLoaded={isLoaded}
             isSectionHeaderVisible={value.isVisible}
+            sectionWidth={sectionWidth}
           >
             <div
               className={classnames(
