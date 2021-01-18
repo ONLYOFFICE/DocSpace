@@ -40,9 +40,9 @@ namespace ASC.IPSecurity
 
         internal ICacheNotify<IPRestrictionItem> Notify { get; }
 
-        public IPRestrictionsServiceCache(ICacheNotify<IPRestrictionItem> notify)
+        public IPRestrictionsServiceCache(ICacheNotify<IPRestrictionItem> notify, ICache cache)
         {
-            Cache = AscCache.Memory;
+            Cache = cache;
             notify.Subscribe((r) => Cache.Remove(GetCacheKey(r.TenantId)), CacheNotifyAction.Any);
             Notify = notify;
         }

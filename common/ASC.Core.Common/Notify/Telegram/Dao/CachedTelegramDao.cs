@@ -39,10 +39,12 @@ namespace ASC.Core.Common.Notify.Telegram
     class ConfigureCachedTelegramDao : IConfigureNamedOptions<CachedTelegramDao>
     {
         private IOptionsSnapshot<TelegramDao> Service { get; }
+        private ICache Cache { get; }
 
-        public ConfigureCachedTelegramDao(IOptionsSnapshot<TelegramDao> service)
+        public ConfigureCachedTelegramDao(IOptionsSnapshot<TelegramDao> service, ICache cache)
         {
             Service = service;
+            Cache = cache;
         }
 
         public void Configure(string name, CachedTelegramDao options)
@@ -54,7 +56,7 @@ namespace ASC.Core.Common.Notify.Telegram
         public void Configure(CachedTelegramDao options)
         {
             options.TgDao = Service.Value;
-            options.Cache = AscCache.Memory;
+            options.Cache = Cache;
             options.Expiration = TimeSpan.FromMinutes(20);
 
             options.PairKeyFormat = "tgUser:{0}:{1}";

@@ -121,7 +121,8 @@ namespace ASC.Web.Files.Utils
             CoreBaseSettings coreBaseSettings,
             AuthContext authContext,
             IServiceProvider serviceProvider,
-            FilesSettingsHelper filesSettingsHelper)
+            FilesSettingsHelper filesSettingsHelper, 
+            ICache cache)
         {
             TenantManager = tenantManager;
             UserManager = userManager;
@@ -132,7 +133,7 @@ namespace ASC.Web.Files.Utils
             AuthContext = authContext;
             ServiceProvider = serviceProvider;
             FilesSettingsHelper = filesSettingsHelper;
-            cache = AscCache.Memory;
+            this.cache = cache;
         }
 
         internal void ExecMarkFileAsNew<T>(AsyncTaskData<T> obj)

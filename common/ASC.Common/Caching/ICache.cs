@@ -30,6 +30,7 @@ using System.Text.RegularExpressions;
 
 namespace ASC.Common.Caching
 {
+    [Singletone(typeof(AscCache))]
     public interface ICache
     {
         T Get<T>(string key) where T : class;

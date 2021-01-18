@@ -387,7 +387,12 @@ namespace ASC.Files.Helpers
                 {
                     try
                     {
-                        var jResult = JsonSerializer.Deserialize<FileJsonSerializerData<T>>(r.Result);
+                        var options = new JsonSerializerOptions
+                        {
+                            AllowTrailingCommas = true,
+                            PropertyNameCaseInsensitive = true
+                        };
+                        var jResult = JsonSerializer.Deserialize<FileJsonSerializerData<T>>(r.Result, options);
                         o.File = GetFileInfo(jResult.Id, jResult.Version);
                     }
                     catch (Exception e)

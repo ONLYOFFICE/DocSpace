@@ -61,6 +61,7 @@ namespace ASC.ApiSystem
             var diHelper = new DIHelper(services);
 
             services.AddHttpContextAccessor();
+            services.AddMemoryCache();
 
             services.AddControllers()
                 .AddJsonOptions(options =>
