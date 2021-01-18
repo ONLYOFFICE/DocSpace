@@ -17,6 +17,7 @@ import {
   saveThirdParty,
   setTreeFolders,
   setUpdateTree,
+  fetchFiles,
 } from "../../../store/files/actions";
 import {
   getTreeFolders,
@@ -24,6 +25,7 @@ import {
   getMyFolderId,
   getCommonFolderId,
   getThirdPartyProviders,
+  getSelectedFolder,
 } from "../../../store/files/selectors";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import { connect } from "react-redux";
@@ -49,6 +51,8 @@ const PureConnectDialogContainer = (props) => {
     myFolderId,
     commonFolderId,
     providers,
+    selectedFolder,
+    fetchFiles,
   } = props;
   const { corporate, title, link, token, provider_id, provider_key } = item;
 
@@ -160,8 +164,19 @@ const PureConnectDialogContainer = (props) => {
           setTreeFolders(newTreeFolders);
           setUpdateTree(true);
           fetchThirdPartyProviders();
-          onClose();
-          setIsLoading(false);
+
+          const newFolder =
+            selectedFolder.folders &&
+            selectedFolder.folders.find((x) => x.id === folderData.id);
+          if (newFolder)
+            fetchFiles(selectedFolder.id).then(() => {
+              onClose();
+              setIsLoading(false);
+            });
+          else {
+            onClose();
+            setIsLoading(false);
+          }
         });
       })
       .catch((err) => {
@@ -337,6 +352,7 @@ const mapStateToProps = (state) => {
     myFolderId: getMyFolderId(state),
     commonFolderId: getCommonFolderId(state),
     providers: getThirdPartyProviders(state),
+    selectedFolder: getSelectedFolder(state),
   };
 };
 
@@ -345,4 +361,5 @@ export default connect(mapStateToProps, {
   setTreeFolders,
   fetchThirdPartyProviders,
   fetchTreeFolders,
+  fetchFiles,
 })(ConnectDialog);

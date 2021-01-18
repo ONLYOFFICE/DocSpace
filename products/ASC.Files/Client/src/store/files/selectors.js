@@ -646,7 +646,7 @@ export const getServiceFilesCount = (state) => {
 
 export const getFilesCount = (state) => {
   const { selectedFolder, folders } = state.files;
-  const { filesCount, foldersCount } = selectedFolder
+  const { filesCount, foldersCount } = selectedFolder;
   return filesCount + folders ? folders.length : foldersCount;
 };
 
