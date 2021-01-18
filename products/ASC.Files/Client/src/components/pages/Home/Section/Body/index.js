@@ -1808,6 +1808,7 @@ class SectionBodyContent extends React.Component {
       tooltipValue,
       isVersionHistoryPanel,
       history,
+      filter,
     } = this.props;
 
     const {
@@ -1854,19 +1855,18 @@ class SectionBodyContent extends React.Component {
       });
     }
 
-    return (!fileAction.id && currentFolderCount === 0) || null ? (
-      parentId === 0 ? (
+    const { authorType, search, withSubfolders, filterType } = filter;
+    const isFiltered = authorType || search || !withSubfolders || filterType;
+
+    return (!fileAction.id && items.length === 0) || null ? (
+      firstLoad ? (
+        <Loaders.Rows />
+      ) : isFiltered ? (
+        this.renderEmptyFilterContainer()
+      ) : parentId === 0 || (isPrivacy && !isEncryptionSupport) ? (
         this.renderEmptyRootFolderContainer()
       ) : (
         this.renderEmptyFolderContainer()
-      )
-    ) : !fileAction.id && items.length === 0 ? (
-      firstLoad ? (
-        <Loaders.Rows />
-      ) : isPrivacy && !isEncryptionSupport ? (
-        this.renderEmptyRootFolderContainer()
-      ) : (
-        this.renderEmptyFilterContainer()
       )
     ) : (
       <>
