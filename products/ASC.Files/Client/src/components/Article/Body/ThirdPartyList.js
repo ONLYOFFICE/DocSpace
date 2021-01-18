@@ -155,7 +155,7 @@ const PureThirdPartyListContainer = ({
   };
 
   const onShowConnectPanel = () => {
-    setShowThirdPartyPanel(true);
+    setShowThirdPartyPanel((prev) => !prev);
     redirectAction();
   };
 
