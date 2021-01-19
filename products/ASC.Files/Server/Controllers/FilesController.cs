@@ -1767,6 +1767,12 @@ namespace ASC.Api.Documents
             return FilesControllerHelperInt.SetAceLink(fileId, model.Share);
         }
 
+        [Update("{fileId}/setacelink")]
+        public bool SetAceLink(string fileId, [FromBody] GenerateSharedLinkModel model)
+        {
+            return FilesControllerHelperString.SetAceLink(fileId, model.Share);
+        }
+
         /// <summary>
         ///   Get a list of available providers
         /// </summary>

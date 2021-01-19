@@ -37,7 +37,7 @@ import {
   getIsPrivacyFolder,
   getIsRecycleBinFolder,
   getNewRowItems,
-  getSelectedFolderId,
+  getPathParts,
   getSelectedFolder,
   getSelectedFolderNew,
   getSelectedFolderParentId,
@@ -218,10 +218,12 @@ class FilesRowContent extends React.PureComponent {
                   encryptedFile,
                   true,
                   false
-                ).then(() => openDocEditor(file.id, tab, file.webUrl));
+                ).then(() =>
+                  openDocEditor(file.id, file.providerKey, tab, file.webUrl)
+                );
               });
             }
-            return openDocEditor(file.id, tab, file.webUrl);
+            return openDocEditor(file.id, file.providerKey, tab, file.webUrl);
           })
           .then(() => this.completeAction(itemId))
           .then(() => {
@@ -297,7 +299,7 @@ class FilesRowContent extends React.PureComponent {
       isTrashFolder,
       openDocEditor,
     } = this.props;
-    const { id, fileExst, viewUrl } = item;
+    const { id, fileExst, viewUrl, providerKey } = item;
 
     if (isTrashFolder) return;
 
@@ -317,7 +319,7 @@ class FilesRowContent extends React.PureComponent {
         .finally(() => setIsLoading(false));
     } else {
       if (canWebEdit) {
-        return openDocEditor(id);
+        return openDocEditor(id, providerKey);
       }
 
       if (isImage || isSound || isVideo) {
@@ -383,7 +385,7 @@ class FilesRowContent extends React.PureComponent {
       item,
       treeFolders,
       setTreeFolders,
-      selectedFolderId,
+      selectedFolderPathParts,
       newItems,
       setNewRowItems,
       setUpdateTree,
@@ -393,7 +395,9 @@ class FilesRowContent extends React.PureComponent {
         .markAsRead([], [item.id])
         .then(() => {
           const data = treeFolders;
-          const dataItem = data.find((x) => x.id === selectedFolderId);
+          const dataItem = data.find(
+            (x) => x.id === selectedFolderPathParts[0]
+          );
           dataItem.newItems = newItems ? dataItem.newItems - 1 : 0;
           setUpdateTree(true);
           setTreeFolders(data);
@@ -499,7 +503,7 @@ class FilesRowContent extends React.PureComponent {
       isLoading,
       isMobile,
       canWebEdit,
-      canConvert,
+      /* canConvert,*/
       sectionWidth,
     } = this.props;
     const {
@@ -521,6 +525,7 @@ class FilesRowContent extends React.PureComponent {
       id,
       versionGroup,
       locked,
+      providerKey,
     } = item;
     const titleWithoutExt = getTitleWithoutExst(item);
     const fileOwner =
@@ -720,7 +725,7 @@ class FilesRowContent extends React.PureComponent {
             color={sideColor}
             className="row_update-text"
           >
-            {updatedDate && updatedDate}
+            {(fileExst || !providerKey) && updatedDate && updatedDate}
           </Text>
           <Text
             containerMinWidth="90px"
@@ -734,9 +739,11 @@ class FilesRowContent extends React.PureComponent {
           >
             {fileExst
               ? contentLength
-              : `${t("TitleDocuments")}: ${filesCount} | ${t(
+              : !providerKey
+              ? `${t("TitleDocuments")}: ${filesCount} | ${t(
                   "TitleSubfolders"
-                )}: ${foldersCount}`}
+                )}: ${foldersCount}`
+              : ""}
           </Text>
         </SimpleFilesRowContent>
       </>
@@ -752,7 +759,7 @@ function mapStateToProps(state, props) {
     isTrashFolder: getIsRecycleBinFolder(state),
     settings: getSettings(state),
     treeFolders: getTreeFolders(state),
-    selectedFolderId: getSelectedFolderId(state),
+    selectedFolderPathParts: getPathParts(state),
     newItems: getSelectedFolderNew(state),
     selectedFolder: getSelectedFolder(state),
     folders: getFolders(state),

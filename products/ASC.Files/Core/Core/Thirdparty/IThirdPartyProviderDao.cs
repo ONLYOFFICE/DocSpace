@@ -402,9 +402,9 @@ namespace ASC.Files.Thirdparty
             return new List<Tag>();
         }
 
-        public IDictionary<object, Tag> GetTags(Guid subject, IEnumerable<TagType> tagType, IEnumerable<FileEntry<string>> fileEntries)
+        public IDictionary<object, IEnumerable<Tag>> GetTags(Guid subject, IEnumerable<TagType> tagType, IEnumerable<FileEntry<string>> fileEntries)
         {
-            return new Dictionary<object, Tag>();
+            return new Dictionary<object, IEnumerable<Tag>>();
         }
 
 
@@ -464,16 +464,10 @@ namespace ASC.Files.Thirdparty
 
             if (!entryIDs.Any()) return new List<Tag>();
 
-            var q = FilesDbContext.Tag
-                .Join(FilesDbContext.TagLink.DefaultIfEmpty(),
-                r => new TagLink { TenantId = r.TenantId, Id = r.Id },
-                r => new TagLink { TenantId = r.TenantId, Id = r.TagId },
-                (tag, tagLink) => new { tag, tagLink },
-                new TagLinkComparer())
-                .Where(r => r.tag.TenantId == TenantID)
-                .Where(r => r.tag.Flag == TagType.New)
-                .Where(r => r.tagLink.TenantId == TenantID)
-                .Where(r => entryIDs.Any(a => a == r.tagLink.EntryId));
+            var q = from r in FilesDbContext.Tag
+                    from l in FilesDbContext.TagLink.Where(a => a.TenantId == r.TenantId && a.TagId == r.Id).DefaultIfEmpty()
+                    where r.TenantId == TenantID && l.TenantId == TenantID && r.Flag == TagType.New && entryIDs.Contains(l.EntryId)
+                    select new { tag = r, tagLink = l };
 
             if (subject != Guid.Empty)
             {
@@ -481,6 +475,7 @@ namespace ASC.Files.Thirdparty
             }
 
             var tags = q
+                .Distinct()
                 .ToList()
                 .Select(r => new Tag
                 {

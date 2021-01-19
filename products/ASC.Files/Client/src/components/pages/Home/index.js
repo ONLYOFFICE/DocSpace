@@ -35,7 +35,6 @@ import {
   getTreeFolders,
   getViewAs,
   getIsLoading,
-  getIsRecycleBinFolder,
   getDragging,
   getSharePanelVisible,
   getFirstLoad,
@@ -234,7 +233,6 @@ class PureHome extends React.Component {
       convertDialogVisible,
       sharingPanelVisible,
       fileActionId,
-      isRecycleBin,
       firstLoad,
       showOwnerChangePanel,
     } = this.props;
@@ -251,7 +249,7 @@ class PureHome extends React.Component {
         <PageLayout
           withBodyScroll
           withBodyAutoFocus={!isMobile}
-          uploadFiles={!isRecycleBin}
+          uploadFiles
           onDrop={this.onDrop}
           setSelections={this.props.setSelections}
           onMouseMove={this.onMouseMove}
@@ -330,7 +328,6 @@ function mapStateToProps(state) {
     currentFolderId: getSelectedFolderId(state),
     fileActionId: getFileActionId(state),
     filter: getFilter(state),
-    isRecycleBin: getIsRecycleBinFolder(state),
     primaryProgressData: getPrimaryProgressData(state),
     secondaryProgressData: getSecondaryProgressData(state),
     treeFolders: getTreeFolders(state),

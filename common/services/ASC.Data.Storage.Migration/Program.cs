@@ -50,8 +50,8 @@ namespace ASC.Data.Storage.Migration
                 })
                 .ConfigureServices((hostContext, services) =>
                 {
+                    services.AddMemoryCache();
                     var diHelper = new DIHelper(services);
-
                     LogNLogExtension.ConfigureLog(diHelper, "ASC.Data.Storage.Migration", "ASC.Migration");
                     diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));
 

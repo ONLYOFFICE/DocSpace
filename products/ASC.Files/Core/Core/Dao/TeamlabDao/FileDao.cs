@@ -32,6 +32,7 @@ using System.Linq.Expressions;
 using System.Text;
 
 using ASC.Common;
+using ASC.Common.Caching;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.Settings;
@@ -85,6 +86,7 @@ namespace ASC.Files.Core.Data
             SettingsManager settingsManager,
             AuthContext authContext,
             IServiceProvider serviceProvider,
+            ICache cache,
             GlobalStore globalStore,
             GlobalSpace globalSpace,
             GlobalFolder globalFolder,
@@ -104,7 +106,8 @@ namespace ASC.Files.Core.Data
                   coreConfiguration,
                   settingsManager,
                   authContext,
-                  serviceProvider)
+                  serviceProvider,
+                  cache)
         {
             FactoryIndexer = factoryIndexer;
             GlobalStore = globalStore;

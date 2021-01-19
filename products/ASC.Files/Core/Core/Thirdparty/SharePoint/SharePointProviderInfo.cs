@@ -48,7 +48,7 @@ using Folder = Microsoft.SharePoint.Client.Folder;
 
 namespace ASC.Files.Thirdparty.SharePoint
 {
-    [Scope]
+    [Transient]
     public class SharePointProviderInfo : IProviderInfo
     {
         private ClientContext clientContext;
@@ -592,11 +592,11 @@ namespace ASC.Files.Thirdparty.SharePoint
         private readonly ICache FolderCache;
         private readonly ICacheNotify<SharePointProviderCacheItem> Notify;
 
-        public SharePointProviderInfoHelper(ICacheNotify<SharePointProviderCacheItem> notify)
+        public SharePointProviderInfoHelper(ICacheNotify<SharePointProviderCacheItem> notify, ICache cache)
         {
             CacheExpiration = TimeSpan.FromMinutes(1);
-            FileCache = AscCache.Memory;
-            FolderCache = AscCache.Memory;
+            FileCache = cache;
+            FolderCache = cache;
             Notify = notify;
 
             Notify.Subscribe((i) =>

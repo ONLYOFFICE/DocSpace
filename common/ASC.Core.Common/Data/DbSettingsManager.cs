@@ -48,9 +48,9 @@ namespace ASC.Core.Data
         public ICache Cache { get; }
         private ICacheNotify<SettingsCacheItem> Notify { get; }
 
-        public DbSettingsManagerCache(ICacheNotify<SettingsCacheItem> notify)
+        public DbSettingsManagerCache(ICacheNotify<SettingsCacheItem> notify, ICache cache)
         {
-            Cache = AscCache.Memory;
+            Cache = cache;
             Notify = notify;
             Notify.Subscribe((i) => Cache.Remove(i.Key), CacheNotifyAction.Remove);
         }

@@ -49,9 +49,9 @@ namespace ASC.Core.Billing
         public ICache Cache { get; }
         internal ICacheNotify<TariffCacheItem> Notify { get; }
 
-        public TariffServiceStorage(ICacheNotify<TariffCacheItem> notify)
+        public TariffServiceStorage(ICacheNotify<TariffCacheItem> notify, ICache cache)
         {
-            Cache = AscCache.Memory;
+            Cache = cache;
             Notify = notify;
             Notify.Subscribe((i) =>
             {
