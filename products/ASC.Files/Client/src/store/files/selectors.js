@@ -1597,6 +1597,10 @@ export const getUploadPanelVisible = (state) => {
   return state.files.uploadPanelVisible;
 };
 
+export const getUploadData = (state) => {
+  return state.files.uploadData;
+};
+
 export const getUploadDataFiles = (state) => {
   return state.files.uploadData.files;
 };

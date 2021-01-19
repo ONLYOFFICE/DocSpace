@@ -968,7 +968,7 @@ const finishUploadFiles = (getState, dispatch) => {
 
   const totalErrorsCount = sumBy(files, (f) => (f.error ? 1 : 0));
 
-  if (totalErrorsCount > 0) return;
+  //if (totalErrorsCount > 0) return;
 
   const uploadData = {
     files: [],
@@ -1079,7 +1079,7 @@ const startSessionFunc = (indexOfFile, t, dispatch, getState) => {
             icon: "upload",
             percent: 100,
             visible: true,
-            alert: false,
+            alert: true,
           })
         );
         return Promise.resolve();
@@ -1187,9 +1187,9 @@ const getNewPercent = (uploadedSize, indexOfFile, getState) => {
   const totalUploadedSize = sumBy(totalUploadedFiles, (f) => f.file.size);
   const newPercent = ((uploadedSize + totalUploadedSize) / newTotalSize) * 100;
 
-  console.log(
+  /*console.log(
     `newPercent=${newPercent} (newTotalSize=${newTotalSize} totalUploadedSize=${totalUploadedSize} indexOfFile=${indexOfFile})`
-  );
+  );*/
 
   return newPercent;
 };

@@ -29,6 +29,7 @@ import {
   getMediaViewerImageFormats,
   getMediaViewerMediaFormats,
   getSelected,
+  getUploadData,
 } from "../../../store/files/selectors";
 import SharingPanel from "../SharingPanel";
 import {
@@ -134,10 +135,11 @@ class UploadPanelComponent extends React.Component {
       soundFormats,
       mediaViewerImageFormats,
       mediaViewerMediaFormats,
+      getUploadData,
     } = this.props;
 
     const { uploadData } = this.state;
-    const uploaded = uploadDataFiles.length === 0;
+    const uploaded = getUploadData.percent === 100;
 
     const visible = uploadPanelVisible;
     const zIndex = 310;
@@ -229,6 +231,7 @@ const mapStateToProps = (state) => {
     mediaViewerImageFormats: getMediaViewerImageFormats(state),
     mediaViewerMediaFormats: getMediaViewerMediaFormats(state),
     selected: getSelected(state),
+    getUploadData: getUploadData(state),
   };
 };
 
