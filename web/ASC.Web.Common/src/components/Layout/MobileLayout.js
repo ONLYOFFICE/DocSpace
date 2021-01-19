@@ -43,7 +43,19 @@ class MobileLayout extends Component {
 
     const currentScrollPosition =
       this.customScrollElm.scrollTop > 0 ? this.customScrollElm.scrollTop : 0;
+
     if (visibleContent && isMobile && !isTouchDevice) {
+      return;
+    }
+    if (
+      (isSafari || isIOS) &&
+      this.customScrollElm.scrollHeight - this.customScrollElm.clientHeight <
+        112
+    ) {
+      if (!this.state.visibleContent)
+        this.setState({
+          visibleContent: true,
+        });
       return;
     }
 
@@ -71,6 +83,7 @@ class MobileLayout extends Component {
     }
 
     let isVisible = prevScrollPosition >= currentScrollPosition;
+
     if (
       (isSafari || isIOS) &&
       currentScrollPosition >=
