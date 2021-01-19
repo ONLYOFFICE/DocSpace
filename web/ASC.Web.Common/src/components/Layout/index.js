@@ -28,6 +28,10 @@ const StyledContainer = styled.div`
         : "100vh"
       : "100vh"};
 
+  .scroll-body {
+    z-index: 1;
+  }
+
   #desktopScroll {
     > .scroll-body {
       position: ${(props) =>
