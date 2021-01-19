@@ -6,6 +6,7 @@ import OperationsPanel from "./OperationsPanel";
 import NewFilesPanel from "./NewFilesPanel";
 import VersionHistoryPanel from "./VersionHistoryPanel";
 import ChangeOwnerPanel from "./ChangeOwnerPanel";
+import DownloadPanel from "./DownloadPanel";
 
 export {
   SharingPanel,
@@ -16,4 +17,5 @@ export {
   NewFilesPanel,
   VersionHistoryPanel,
   ChangeOwnerPanel,
+  DownloadPanel,
 };
