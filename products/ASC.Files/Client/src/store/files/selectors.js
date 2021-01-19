@@ -1593,8 +1593,8 @@ export const isCanShare = createSelector(
   }
 );
 
-export const getDownloadPanelVisible = (state) => {
-  return state.files.downloadPanelVisible;
+export const getUploadPanelVisible = (state) => {
+  return state.files.uploadPanelVisible;
 };
 
 export const getUploadDataFiles = (state) => {

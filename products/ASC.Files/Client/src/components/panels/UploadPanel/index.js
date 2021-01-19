@@ -11,7 +11,7 @@ import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import { utils as commonUtils, store } from "asc-web-common";
 import {
-  setDownloadPanelVisible,
+  setUploadPanelVisible,
   setSharingPanelVisible,
   cancelUpload,
   cancelCurrentUpload,
@@ -20,7 +20,7 @@ import {
   setSelected,
 } from "../../../store/files/actions";
 import {
-  getDownloadPanelVisible,
+  getUploadPanelVisible,
   getUploadDataFiles,
   getArchiveFormats,
   getImageFormats,
@@ -40,8 +40,8 @@ import {
 import FileRow from "./FileRow";
 import { createI18N } from "../../../helpers/i18n";
 const i18n = createI18N({
-  page: "DownloadPanel",
-  localesPath: "panels/DownloadPanel",
+  page: "UploadPanel",
+  localesPath: "panels/UploadPanel",
 });
 const { changeLanguage } = commonUtils;
 
@@ -49,7 +49,7 @@ const { getCurrentUserId } = store.auth.selectors;
 
 const DownloadBodyStyle = { height: `calc(100vh - 156px)` };
 
-class DownloadPanelComponent extends React.Component {
+class UploadPanelComponent extends React.Component {
   constructor(props) {
     super(props);
 
@@ -63,7 +63,7 @@ class DownloadPanelComponent extends React.Component {
   }
 
   onClose = () => {
-    this.props.setDownloadPanelVisible(!this.props.downloadPanelVisible);
+    this.props.setUploadPanelVisible(!this.props.uploadPanelVisible);
   };
   componentDidMount() {
     document.addEventListener("keyup", this.onKeyPress);
@@ -90,7 +90,7 @@ class DownloadPanelComponent extends React.Component {
     }
   };
 
-  clearDownloadPanel = () => {
+  clearUploadPanel = () => {
     this.setState({
       uploadData: [],
       uploaded: false,
@@ -126,7 +126,7 @@ class DownloadPanelComponent extends React.Component {
   render() {
     const {
       t,
-      downloadPanelVisible,
+      uploadPanelVisible,
       sharingPanelVisible,
       uploadDataFiles,
       archiveFormats,
@@ -139,7 +139,7 @@ class DownloadPanelComponent extends React.Component {
     const { uploadData } = this.state;
     const uploaded = uploadDataFiles.length === 0;
 
-    const visible = downloadPanelVisible;
+    const visible = uploadPanelVisible;
     const zIndex = 310;
     return (
       <StyledAsidePanel visible={visible}>
@@ -152,18 +152,18 @@ class DownloadPanelComponent extends React.Component {
         <Aside className="header_aside-panel" visible={visible}>
           <StyledContent>
             <StyledHeaderContent>
-              <Heading className="download_panel-header" size="medium" truncate>
+              <Heading className="upload_panel-header" size="medium" truncate>
                 {t("Uploads")}
               </Heading>
-              <div className="download_panel-icons-container">
-                <div className="download_panel-remove-icon">
+              <div className="upload_panel-icons-container">
+                <div className="upload_panel-remove-icon">
                   {uploaded ? (
                     <IconButton
                       size="20"
                       iconName="ClearActiveIcon"
                       color="#A3A9AE"
                       isClickable={true}
-                      onClick={this.clearDownloadPanel}
+                      onClick={this.clearUploadPanel}
                     />
                   ) : (
                     <IconButton
@@ -175,7 +175,7 @@ class DownloadPanelComponent extends React.Component {
                     />
                   )}
                 </div>
-                {/*<div className="download_panel-vertical-dots-icon">
+                {/*<div className="upload_panel-vertical-dots-icon">
                   <IconButton
                     size="20"
                     iconName="VerticalDotsIcon"
@@ -211,18 +211,16 @@ class DownloadPanelComponent extends React.Component {
   }
 }
 
-const DownloadPanelContainerTranslated = withTranslation()(
-  DownloadPanelComponent
-);
+const UploadPanelContainerTranslated = withTranslation()(UploadPanelComponent);
 
-const DownloadPanel = (props) => (
-  <DownloadPanelContainerTranslated i18n={i18n} {...props} />
+const UploadPanel = (props) => (
+  <UploadPanelContainerTranslated i18n={i18n} {...props} />
 );
 
 const mapStateToProps = (state) => {
   return {
     isMyId: getCurrentUserId(state),
-    downloadPanelVisible: getDownloadPanelVisible(state),
+    uploadPanelVisible: getUploadPanelVisible(state),
     uploadDataFiles: getUploadDataFiles(state),
     archiveFormats: getArchiveFormats(state),
     imageFormats: getImageFormats(state),
@@ -235,11 +233,11 @@ const mapStateToProps = (state) => {
 };
 
 export default connect(mapStateToProps, {
-  setDownloadPanelVisible,
+  setUploadPanelVisible,
   setSharingPanelVisible,
   cancelUpload,
   cancelCurrentUpload,
   setMediaViewerData,
   setSelection,
   setSelected,
-})(withRouter(DownloadPanel));
+})(withRouter(UploadPanel));

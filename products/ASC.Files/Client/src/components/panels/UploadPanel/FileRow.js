@@ -22,7 +22,7 @@ const StyledFileRow = styled(Row)`
   box-sizing: border-box;
   font-weight: 600;
 
-  .download_panel-icon {
+  .upload_panel-icon {
     margin-left: auto;
     line-height: 24px;
     display: flex;
@@ -185,7 +185,7 @@ const FileRow = (props) => {
             {item.fileId ? (
               <IconButton
                 iconName="CatalogSharedIcon"
-                className="download_panel-icon"
+                className="upload_panel-icon"
                 color={color}
                 isClickable={true}
                 onClick={() =>
@@ -193,7 +193,7 @@ const FileRow = (props) => {
                 }
               />
             ) : item.error || (!item.fileId && uploaded) ? (
-              <div className="download_panel-icon">
+              <div className="upload_panel-icon">
                 {" "}
                 <Icons.LoadErrorIcon
                   size="medium"
@@ -213,7 +213,7 @@ const FileRow = (props) => {
                 />
               </div>
             ) : (
-              <div className="download_panel-icon">
+              <div className="upload_panel-icon">
                 <LoadingButton
                   percent={currentFileUploadProgress}
                   onClick={() => cancelCurrentUpload(index)}

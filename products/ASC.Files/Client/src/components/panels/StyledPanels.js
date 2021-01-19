@@ -42,7 +42,7 @@ const StyledAsidePanel = styled.div`
     margin: 14px 0;
     padding-right: 10px;
   }
-  .download_panel-header {
+  .upload_panel-header {
     font-weight: 700;
     padding: 19px auto 19px 17px;
   }
@@ -199,12 +199,12 @@ const StyledHeaderContent = styled.div`
     }
   }
 
-  .download_panel-icons-container {
+  .upload_panel-icons-container {
     display: flex;
     margin-left: auto;
-    .download_panel-vertical-dots-icon {
+    .upload_panel-vertical-dots-icon {
     }
-    .download_panel-remove-icon {
+    .upload_panel-remove-icon {
       padding-right: 8px;
     }
   }

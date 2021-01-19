@@ -24,7 +24,7 @@ import {
   setFirstLoad,
   startUpload,
   setSelections,
-  setDownloadPanelVisible,
+  setUploadPanelVisible,
 } from "../../../store/files/actions";
 import {
   getConvertDialogVisible,
@@ -38,7 +38,7 @@ import {
   getIsLoading,
   getDragging,
   getSharePanelVisible,
-  getDownloadPanelVisible,
+  getUploadPanelVisible,
   getFirstLoad,
   isSecondaryProgressFinished,
   getSelectionLength,
@@ -47,7 +47,7 @@ import {
 } from "../../../store/files/selectors";
 
 import { ConvertDialog } from "../../dialogs";
-import { SharingPanel, DownloadPanel, ChangeOwnerPanel } from "../../panels";
+import { SharingPanel, UploadPanel, ChangeOwnerPanel } from "../../panels";
 import { createI18N } from "../../../helpers/i18n";
 import { getFilterByLocation } from "../../../helpers/converters";
 const i18n = createI18N({
@@ -198,8 +198,8 @@ class PureHome extends React.Component {
     }
   };
 
-  showDownloadPanel = () => {
-    this.props.setDownloadPanelVisible(!this.props.downloadPanelVisible);
+  showUploadPanel = () => {
+    this.props.setUploadPanelVisible(!this.props.uploadPanelVisible);
   };
   componentDidUpdate(prevProps) {
     const {
@@ -240,7 +240,7 @@ class PureHome extends React.Component {
       fileActionId,
       firstLoad,
       showOwnerChangePanel,
-      downloadPanelVisible,
+      uploadPanelVisible,
     } = this.props;
 
     return (
@@ -252,7 +252,7 @@ class PureHome extends React.Component {
         {showOwnerChangePanel && <ChangeOwnerPanel />}
 
         {sharingPanelVisible && <SharingPanel />}
-        {downloadPanelVisible && <DownloadPanel />}
+        {uploadPanelVisible && <UploadPanel />}
         <PageLayout
           withBodyScroll
           withBodyAutoFocus={!isMobile}
@@ -275,8 +275,8 @@ class PureHome extends React.Component {
             secondaryProgressData.visible
           }
           isLoaded={!firstLoad}
-          downloadPanelVisible={downloadPanelVisible}
-          onOpenDownloadPanel={this.showDownloadPanel}
+          uploadPanelVisible={uploadPanelVisible}
+          onOpenUploadPanel={this.showUploadPanel}
         >
           <PageLayout.ArticleHeader>
             <ArticleHeaderContent />
@@ -350,7 +350,7 @@ function mapStateToProps(state) {
     selectionLength: getSelectionLength(state),
     selectionTitle: getSelectionTitle(state),
     showOwnerChangePanel: getShowOwnerChangePanel(state),
-    downloadPanelVisible: getDownloadPanelVisible(state),
+    uploadPanelVisible: getUploadPanelVisible(state),
   };
 }
 
@@ -363,8 +363,8 @@ const mapDispatchToProps = (dispatch) => {
     setFirstLoad: (firstLoad) => dispatch(setFirstLoad(firstLoad)),
     fetchFiles: (folderId, filter) => dispatch(fetchFiles(folderId, filter)),
     setSelections: (items) => dispatch(setSelections(items)),
-    setDownloadPanelVisible: (downloadPanelVisible) =>
-      dispatch(setDownloadPanelVisible(downloadPanelVisible)),
+    setUploadPanelVisible: (uploadPanelVisible) =>
+      dispatch(setUploadPanelVisible(uploadPanelVisible)),
   };
 };
 
