@@ -158,6 +158,7 @@ const FileRow = (props) => {
               mediaViewerMediaFormats.includes(`.${originalExt}`) ? (
                 <Text
                   fontWeight="600"
+                  color={item.error && "#A3A9AE"}
                   // MediaViewer doesn't work
                   /*onClick={() => onMediaClick(item.fileId)}*/
                 >
@@ -166,6 +167,7 @@ const FileRow = (props) => {
               ) : (
                 <Link
                   fontWeight="600"
+                  color={item.error && "#A3A9AE"}
                   href={item.fileInfo ? item.fileInfo.webUrl : ""}
                   target="_blank"
                 >
@@ -173,7 +175,9 @@ const FileRow = (props) => {
                 </Link>
               )
             ) : (
-              <Text fontWeight="600">{name}</Text>
+              <Text fontWeight="600" color={item.error && "#A3A9AE"}>
+                {name}
+              </Text>
             )}
             {originalExt || ext ? (
               <Text fontWeight="600" color="#A3A9AE">
