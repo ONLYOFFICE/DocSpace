@@ -32,6 +32,7 @@ import {
   getFiles,
   getFolders,
   getIsPrivacyFolder,
+  getDownloadPanelVisible,
 } from "../../../store/files/selectors";
 import {
   StyledAsidePanel,
@@ -415,6 +416,7 @@ class SharingPanelComponent extends React.Component {
       groupsCaption,
       canShareOwnerChange,
       isLoading,
+      downloadPanelVisible,
     } = this.props;
     const {
       showActionPanel,
@@ -447,6 +449,14 @@ class SharingPanelComponent extends React.Component {
         <Aside className="header_aside-panel" visible={visible}>
           <StyledContent isDisabled={isLoading}>
             <StyledHeaderContent>
+              {downloadPanelVisible && (
+                <IconButton
+                  size="16"
+                  iconName="ArrowPathIcon"
+                  onClick={this.onClose}
+                  color="A3A9AE"
+                />
+              )}
               <Heading className="sharing_panel-header" size="medium" truncate>
                 {t("SharingSettingsTitle")}
               </Heading>
@@ -613,6 +623,7 @@ const mapStateToProps = (state) => {
     files: getFiles(state),
     folders: getFolders(state),
     settings: getSettings(state),
+    downloadPanelVisible: getDownloadPanelVisible(state),
   };
 };
 

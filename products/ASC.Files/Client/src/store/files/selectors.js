@@ -1592,3 +1592,24 @@ export const isCanShare = createSelector(
     }
   }
 );
+
+export const getDownloadPanelVisible = (state) => {
+  return state.files.downloadPanelVisible;
+};
+
+export const getUploadDataFiles = (state) => {
+  return state.files.uploadData.files;
+};
+
+export const getLoadingFile = createSelector(
+  getPrimaryProgressData,
+  (primaryProgressData) => {
+    const { loadingFile } = primaryProgressData;
+    if (!loadingFile || !loadingFile.uniqueId) return null;
+    return loadingFile;
+  }
+);
+
+export const getFileByFileId = (state, fileId) => {
+  return state.files.files.find((file) => file.id === fileId);
+};

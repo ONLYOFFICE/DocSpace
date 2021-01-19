@@ -33,6 +33,7 @@ import {
 
 import sumBy from "lodash/sumBy";
 import throttle from "lodash/throttle";
+import uniqueid from "lodash/uniqueId";
 
 const { files, FilesFilter } = api;
 const { FolderType } = constants;
@@ -60,6 +61,7 @@ export const SET_SECONDARY_PROGRESS_BAR_DATA =
 export const SET_VIEW_AS = "SET_VIEW_AS";
 export const SET_CONVERT_DIALOG_VISIBLE = "SET_CONVERT_DIALOG_VISIBLE";
 export const SET_SHARING_PANEL_VISIBLE = "SET_SHARING_PANEL_VISIBLE";
+export const SET_DOWNLOAD_PANEL_VISIBLE = "SET_DOWNLOAD_PANEL_VISIBLE";
 export const SET_UPDATE_TREE = "SET_UPDATE_TREE";
 export const SET_NEW_ROW_ITEMS = "SET_NEW_ROW_ITEMS";
 export const SET_SELECTED_NODE = "SET_SELECTED_NODE";
@@ -224,6 +226,13 @@ export function setSharingPanelVisible(sharingPanelVisible) {
   return {
     type: SET_SHARING_PANEL_VISIBLE,
     sharingPanelVisible,
+  };
+}
+
+export function setDownloadPanelVisible(downloadPanelVisible) {
+  return {
+    type: SET_DOWNLOAD_PANEL_VISIBLE,
+    downloadPanelVisible,
   };
 }
 
@@ -824,10 +833,13 @@ export const startUpload = (uploadFiles, folderId, t) => {
 
       newFiles.push({
         file: file,
+        uniqueId: uniqueid("download_row-key_"),
         fileId: null,
         toFolderId: folderId,
         action: needConvert ? "convert" : "upload",
-        error: null,
+        error: file.size ? null : t("EmptyFile"),
+        fileInfo: null,
+        cancel: false,
       });
 
       filesSize += file.size;
@@ -855,6 +867,57 @@ export const startUpload = (uploadFiles, folderId, t) => {
   };
 };
 
+export const cancelUpload = () => {
+  return (dispatch, getState) => {
+    const state = getState();
+
+    const { uploadData } = state.files;
+    const files = uploadData.files;
+    let newFiles = [];
+
+    for (let i = 0; i < files.length; i++) {
+      if (files[i].fileId) {
+        newFiles.push(files[i]);
+      }
+    }
+    const { filesSize, uploadedFiles } = uploadData;
+
+    const newUploadData = {
+      files: newFiles,
+      filesSize,
+      uploadedFiles,
+      percent: 100,
+      uploaded: true,
+    };
+
+    dispatch(setUploadData(newUploadData));
+  };
+};
+
+export const cancelCurrentUpload = (index) => {
+  return (dispatch, getState) => {
+    const state = getState();
+
+    const { uploadData } = state.files;
+    let files = uploadData.files;
+    files[index].cancel = true;
+
+    console.log("newFiles", files);
+
+    const { filesSize, percent, uploadedFiles } = uploadData;
+
+    const newUploadData = {
+      files: files,
+      filesSize,
+      uploadedFiles,
+      percent: percent,
+      uploaded: false,
+    };
+
+    dispatch(setUploadData(newUploadData));
+  };
+};
+
 const startUploadFiles = async (t, dispatch, getState) => {
   let state = getState();
 
@@ -865,10 +928,6 @@ const startUploadFiles = async (t, dispatch, getState) => {
   const progressData = {
     visible: true,
     percent,
-    label: t("UploadingLabel", {
-      file: 0,
-      totalFiles: files.length,
-    }),
     icon: "upload",
     alert: false,
   };
@@ -889,7 +948,6 @@ const startUploadFiles = async (t, dispatch, getState) => {
 
   //TODO: Uncomment after fix conversation
   /*const filesToConvert = getFilesToConvert(files);
-
   if (filesToConvert.length > 0) {
     // Ask to convert options
     return dispatch(setConvertDialogVisible(true));
@@ -985,22 +1043,47 @@ const startSessionFunc = (indexOfFile, t, dispatch, getState) => {
 
       return { location, requestsDataArray, fileSize };
     })
-    .then(({ location, requestsDataArray, fileSize }) =>
-      uploadFileChunks(
+    .then(({ location, requestsDataArray, fileSize }) => {
+      const state = getState();
+      const { percent } = state.files.uploadData;
+      dispatch(
+        setPrimaryProgressBarData({
+          icon: "upload",
+          visible: true,
+          percent: percent,
+          loadingFile: {
+            uniqueId: files[indexOfFile].uniqueId,
+            percent: 0,
+          },
+        })
+      );
+
+      return uploadFileChunks(
         location,
         requestsDataArray,
         fileSize,
         indexOfFile,
+        file,
         dispatch,
         t,
         getState
-      )
-    )
+      );
+    })
     .catch((err) => {
-      console.error(err);
-
       const state = getState();
       const { uploadData } = state.files;
+
+      if (uploadData.files[indexOfFile] === undefined) {
+        dispatch(
+          setPrimaryProgressBarData({
+            icon: "upload",
+            percent: 100,
+            visible: true,
+            alert: false,
+          })
+        );
+        return Promise.resolve();
+      }
 
       uploadData.files[indexOfFile].error = err;
 
@@ -1011,7 +1094,6 @@ const startSessionFunc = (indexOfFile, t, dispatch, getState) => {
       dispatch(
         setPrimaryProgressBarData({
           icon: "upload",
-          label: "Error", //TODO: Add translation
           percent: newPercent,
           visible: true,
           alert: true,
@@ -1027,15 +1109,25 @@ const uploadFileChunks = async (
   requestsDataArray,
   fileSize,
   indexOfFile,
+  file,
   dispatch,
   t,
   getState
 ) => {
   const length = requestsDataArray.length;
   for (let index = 0; index < length; index++) {
+    const state = getState();
+    if (
+      state.files.uploadData.uploaded ||
+      !state.files.uploadData.files.some((f) => f.file === file) ||
+      state.files.uploadData.files[indexOfFile].cancel
+    ) {
+      return Promise.resolve();
+    }
+
     const res = await api.files.uploadFile(location, requestsDataArray[index]);
 
-    console.log(`Uploaded chunk ${index}/${length}`, res);
+    //console.log(`Uploaded chunk ${index}/${length}`, res);
 
     //let isLatestFile = indexOfFile === newFilesLength - 1;
     const fileId = res.data.data.id;
@@ -1050,20 +1142,25 @@ const uploadFileChunks = async (
     const { uploadData } = newState.files;
     const { uploadedFiles, files } = uploadData;
 
+    const percentCurrentFile = (index / length) * 100;
     dispatch(
       setPrimaryProgressBarData({
         icon: "upload",
-        label: t("UploadingLabel", {
-          file: uploadedFiles,
-          totalFiles: files.length,
-        }),
         percent: newPercent,
         visible: true,
+        loadingFile: {
+          uniqueId: files[indexOfFile].uniqueId,
+          percent: percentCurrentFile,
+        },
       })
     );
 
     if (uploaded) {
       uploadData.files[indexOfFile].fileId = fileId;
+      uploadData.files[indexOfFile].fileInfo = await api.files.getFileInfo(
+        fileId
+      );
+      uploadData.percent = newPercent;
       dispatch(setUploadData(uploadData));
     }
   }
@@ -1081,7 +1178,6 @@ const uploadFileChunks = async (
 
   return throttleRefreshFiles(toFolderId, dispatch, getState);
 };
-
 const getNewPercent = (uploadedSize, indexOfFile, getState) => {
   const newState = getState();
   const { files } = newState.files.uploadData;
