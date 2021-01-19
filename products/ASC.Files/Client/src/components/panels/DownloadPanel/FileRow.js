@@ -63,7 +63,7 @@ const checkExt = (ext) => {
     "docx",
     "dvd",
     "ebook",
-    "file_archive",
+    "file_arcive",
     "flv",
     "html",
     "iaf",
@@ -115,7 +115,7 @@ const FileRow = (props) => {
 
   if (archiveFormats.includes(`.${ext}`)) {
     originalExt = ext;
-    ext = "file_archive";
+    ext = "file_arcive";
   }
 
   if (imageFormats.includes(`.${ext}`)) {
