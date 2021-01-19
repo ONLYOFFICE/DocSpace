@@ -42,6 +42,11 @@ const StyledAsidePanel = styled.div`
     margin: 14px 0;
     padding-right: 10px;
   }
+  .download_panel-header {
+    font-weight: 700;
+    padding: 19px auto 19px 17px;
+  }
+
   .modal-dialog-aside {
     padding: 0;
     transform: translateX(${(props) => (props.visible ? "0" : "500px")});
@@ -182,7 +187,6 @@ const StyledHeaderContent = styled.div`
   .sharing_panel-icons-container {
     display: flex;
     margin-left: auto;
-
     .sharing_panel-drop-down-wrapper {
       position: relative;
 
@@ -195,10 +199,21 @@ const StyledHeaderContent = styled.div`
     }
   }
 
+  .download_panel-icons-container {
+    display: flex;
+    margin-left: auto;
+    .download_panel-vertical-dots-icon {
+    }
+    .download_panel-remove-icon {
+      padding-right: 8px;
+    }
+  }
+
   .files-operations-header,
   .sharing_panel-header {
     font-weight: 700;
     margin: 14px 0;
+    margin-left: 16px;
   }
 `;
 
@@ -208,10 +223,6 @@ const StyledBody = styled.div`
     box-sizing: border-box;
     width: 100%;
     height: calc(100vh - 125px);
-
-    .files-new-link {
-      padding-left: 8px;
-    }
 
     .styled-element {
       margin-left: -2px;
