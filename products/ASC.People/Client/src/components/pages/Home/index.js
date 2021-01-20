@@ -80,7 +80,7 @@ class PureHome extends React.Component {
     );
   }
   componentDidUpdate(prevProps) {
-    const { selection, isLoading, isTabletView, filter } = this.props;
+    const { selection, isLoading, filter } = this.props;
 
     if (selection !== prevProps.selection) {
       this.renderGroupButtonMenu();
@@ -94,7 +94,7 @@ class PureHome extends React.Component {
       }
     }
 
-    if (isTabletView) {
+    if (isMobile) {
       if (filter.page !== prevProps.filter.page)
         this.isScrollUpOnTheNextPage = true;
       if (this.isScrollUpOnTheNextPage) {

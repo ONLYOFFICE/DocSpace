@@ -99,6 +99,7 @@ import {
   getIsVerHistoryPanel,
 } from "../../../../../store/files/selectors";
 import { OperationsPanel, VersionHistoryPanel } from "../../../../panels";
+import { isMobile } from "react-device-detect";
 const {
   isAdmin,
   getSettings,
@@ -255,9 +256,9 @@ class SectionBodyContent extends React.Component {
   // }
 
   componentDidUpdate(prevProps) {
-    const { isTabletView, folderId, filter } = this.props;
+    const { folderId, filter } = this.props;
 
-    if (isTabletView) {
+    if (isMobile) {
       if (folderId !== prevProps.folderId) {
         this.customScrollElm && this.customScrollElm.scrollTo(0, 0);
       }
