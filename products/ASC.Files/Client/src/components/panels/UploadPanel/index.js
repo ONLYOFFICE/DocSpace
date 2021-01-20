@@ -139,7 +139,7 @@ class UploadPanelComponent extends React.Component {
     } = this.props;
 
     const { uploadData } = this.state;
-    const uploaded = getUploadData.percent === 100;
+    const uploaded = getUploadData.uploaded;
 
     const visible = uploadPanelVisible;
     const zIndex = 310;
