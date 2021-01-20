@@ -921,9 +921,10 @@ export const cancelCurrentUpload = (index) => {
 const startUploadFiles = async (t, dispatch, getState) => {
   let state = getState();
 
-  let { files, percent } = state.files.uploadData;
+  let { files, percent, filesSize } = state.files.uploadData;
 
-  if (files.length === 0) return finishUploadFiles(getState, dispatch);
+  if (files.length === 0 || filesSize === 0)
+    return finishUploadFiles(getState, dispatch);
 
   const progressData = {
     visible: true,
