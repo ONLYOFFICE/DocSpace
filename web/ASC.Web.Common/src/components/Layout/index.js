@@ -15,7 +15,7 @@ import { connect } from "react-redux";
 import store from "../../store";
 
 const { setIsTabletView } = store.auth.actions;
-const { getIsTabletView } = store.auth.selectors;
+const { getIsTabletView, isArticlePinned } = store.auth.selectors;
 
 const { size } = utils.device;
 
@@ -24,11 +24,11 @@ const StyledContainer = styled.div`
   height: ${(props) =>
     isMobile && !isFirefox ? `${props.contentHeight}px` : "100vh"};
 
-  .scroll-body {
+  /* .scroll-body {
     z-index: 1;
-  }
+  } */
 
-  #desktopScroll {
+  /*#desktopScroll {
     > .scroll-body {
       position: ${(props) =>
     props.isTabletView ? "static" : "absolute"} !important;
@@ -48,39 +48,35 @@ const StyledContainer = styled.div`
     }
   } */
 
-  /* #articleScrollBar {
+  #articleScrollBar {
     > .scroll-body {
-      position: ${(props) =>
-    props.isTabletView ? "static" : "absolute"} !important;
+      position: ${isMobile ? "static" : "absolute"} !important;
       ${(props) =>
-    props.isTabletView &&
-    css`
-      overflow-y: hidden !important;
-      overflow-x: hidden !important;
-      max-width: calc(100vw - 576px);
-      min-width: 208px;
-    `}
-
-  
-    
-      > div:first-child {
+        isMobile &&
+        props.isArticlePinned &&
+        css`
+          overflow-y: hidden !important;
+          overflow-x: hidden !important;
+          /* max-width: calc(100vw - 576px);
+          min-width: 208px; */
+        `}/* > div:first-child {
         ${(props) =>
-    props.isTabletView &&
-    css`
-      max-width: calc(100vw - 488px);
-      min-width: 208px !important;
-    `} 
-      }
+        props.isTabletView &&
+        css`
+          max-width: calc(100vw - 488px);
+          min-width: 208px !important;
+        `}
+      } */
 
-      .nav-thumb-vertical {
+      /* .nav-thumb-vertical {
         ${(props) =>
-    props.isTabletView &&
-    css`
-      width: 0 !important;
-    `}
-      }
+        props.isTabletView &&
+        css`
+          width: 0 !important;
+        `}
+      } */
     }
-  } */
+  }
 `;
 
 const Layout = (props) => {
@@ -183,6 +179,7 @@ const Layout = (props) => {
       className="Layout"
       isTabletView={isTabletView}
       contentHeight={contentHeight}
+      isArticlePinned={isArticlePinned}
     >
       {isMobile ? <MobileLayout {...props} /> : children}
     </StyledContainer>
@@ -192,6 +189,7 @@ const Layout = (props) => {
 const mapStateToProps = (state) => {
   return {
     isTabletView: getIsTabletView(state),
+    isArticlePinned: isArticlePinned(state),
   };
 };
 

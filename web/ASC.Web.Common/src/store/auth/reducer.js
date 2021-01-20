@@ -20,8 +20,14 @@ import {
   SET_IS_ENCRYPTION_SUPPORT,
   SET_IS_AUTHENTICATED,
   SET_IS_TABLET_VIEW,
+  SET_ARTICLE_PINNED,
 } from "./actions";
-import { LANGUAGE, AUTH_KEY, HEADER_VISIBLE_KEY } from "../../constants";
+import {
+  LANGUAGE,
+  ARTICLE_PINNED_KEY,
+  AUTH_KEY,
+  HEADER_VISIBLE_KEY,
+} from "../../constants";
 
 const desktop = window["AscDesktopEditor"] !== undefined;
 const desktopEncryption =
@@ -78,6 +84,7 @@ const initialState = {
 
     isHeaderVisible: false,
     isTabletView: false,
+    isArticlePinned: localStorage.getItem(ARTICLE_PINNED_KEY) || false,
   },
 };
 
@@ -205,6 +212,11 @@ const authReducer = (state = initialState, action) => {
           ...state.settings,
           isTabletView: action.isTabletView,
         },
+      });
+
+    case SET_ARTICLE_PINNED:
+      return Object.assign({}, state, {
+        settings: { ...state.settings, isArticlePinned: action.isPinned },
       });
     default:
       return state;

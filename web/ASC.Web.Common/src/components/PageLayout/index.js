@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { Backdrop, utils } from "asc-web-components";
 import store from "../../store";
 import { withTranslation } from "react-i18next";
+import { isMobile } from "react-device-detect";
 import i18n from "./i18n";
 import { ARTICLE_PINNED_KEY } from "../../constants";
 import Article from "./sub-components/article";
@@ -22,7 +23,8 @@ import { changeLanguage } from "../../utils";
 import ReactResizeDetector from "react-resize-detector";
 import FloatingButton from "../FloatingButton";
 import { getIsTabletView } from "../../store/auth/selectors";
-import { isMobile } from "react-device-detect";
+import { isArticlePinned } from "../../store/auth/selectors";
+import { setArticlePinned } from "../../store/auth/actions";
 
 const { getLanguage } = store.auth.selectors;
 const { size } = utils.device;
@@ -75,9 +77,7 @@ class PageLayoutComponent extends React.Component {
   constructor(props) {
     super(props);
 
-    const isArticleVisibleAndPinned = !!localStorage.getItem(
-      ARTICLE_PINNED_KEY
-    );
+    const isArticleVisibleAndPinned = !!this.props.isArticlePinned;
 
     this.state = {
       isBackdropVisible: false,
@@ -116,7 +116,7 @@ class PageLayoutComponent extends React.Component {
   }
 
   orientationChangeHandler = () => {
-    const isValueExist = !!localStorage.getItem(ARTICLE_PINNED_KEY);
+    const isValueExist = !!this.props.isArticlePinned;
     const isEnoughWidth = screen.availWidth > size.smallTablet;
 
     if (!isEnoughWidth && isValueExist) {
@@ -142,7 +142,7 @@ class PageLayoutComponent extends React.Component {
       isArticleVisible: true,
     });
 
-    localStorage.setItem(ARTICLE_PINNED_KEY, true);
+    this.props.setArticlePinned(true);
   };
 
   unpinArticle = () => {
@@ -152,7 +152,7 @@ class PageLayoutComponent extends React.Component {
       isArticleVisible: true,
     });
 
-    localStorage.removeItem(ARTICLE_PINNED_KEY);
+    this.props.setArticlePinned(false);
   };
 
   showArticle = () => {
@@ -468,7 +468,12 @@ function mapStateToProps(state) {
   return {
     language: getLanguage(state),
     isTabletView: getIsTabletView(state),
+    isArticlePinned: isArticlePinned(state),
   };
 }
-
-export default connect(mapStateToProps)(PageLayout);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setArticlePinned: (isPinned) => dispatch(setArticlePinned(isPinned)),
+  };
+};
+export default connect(mapStateToProps, mapDispatchToProps)(PageLayout);

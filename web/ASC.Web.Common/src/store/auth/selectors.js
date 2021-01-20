@@ -210,3 +210,8 @@ export const isDesktopClient = createSelector([getSettings], (settings) => {
   const { isDesktopClient } = settings;
   return isDesktopClient || false;
 });
+
+export const isArticlePinned = createSelector([getSettings], (settings) => {
+  const { isArticlePinned } = settings;
+  return isArticlePinned || false;
+});

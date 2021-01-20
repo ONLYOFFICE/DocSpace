@@ -39,14 +39,17 @@ const StyledArticle = styled.article`
           ? props.pinned
             ? `
             min-width: 240px;
+            max-width: ${props.isLoaded ? "calc(100vw - 368px)" : "240px"};
+            
             ${
               isMobile &&
               css`
                 margin-top: 56px;
                 height: calc(100% - 56px) !important;
+                width: 240px !important;
               `
             }
-            max-width: ${props.isLoaded ? "calc(100vw - 368px)" : "240px"};
+         
          
 
 			      .increaseHeight {
