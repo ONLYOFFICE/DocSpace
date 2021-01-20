@@ -63,7 +63,10 @@ export function regDesktop(
           break;
         }
         case "getsharingkeys":
-          if (!isEditor && typeof getEncryptionAccess === "function") return;
+          if (!isEditor || typeof getEncryptionAccess !== "function") {
+            callback({});
+            return;
+          }
           getEncryptionAccess(callback);
           break;
         default:
