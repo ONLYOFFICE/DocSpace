@@ -39,9 +39,15 @@ const StyledArticle = styled.article`
           ? props.pinned
             ? `
             min-width: 240px;
-            margin-top: 56px;
+            ${
+              isMobile &&
+              css`
+                margin-top: 56px;
+                height: calc(100% - 56px) !important;
+              `
+            }
             max-width: ${props.isLoaded ? "calc(100vw - 368px)" : "240px"};
-            height: calc(100% - 56px)!important;
+         
 
 			      .increaseHeight {
               position: fixed;
@@ -84,6 +90,7 @@ class Article extends React.Component {
       bottom: false,
       left: false,
     };
+
     return (
       <StyledArticle {...rest}>
         <Resizable

@@ -184,6 +184,7 @@ class PageLayoutComponent extends React.Component {
       isHeaderVisible,
       headerBorderBottom,
       isTabletView,
+      firstLoad,
     } = this.props;
 
     let articleHeaderContent = null;
@@ -261,6 +262,7 @@ class PageLayoutComponent extends React.Component {
             visible={this.state.isArticleVisible}
             pinned={this.state.isArticlePinned}
             isLoaded={isLoaded}
+            firstLoad={firstLoad}
           >
             {isArticleHeaderAvailable && (
               <SubArticleHeader>
@@ -298,10 +300,11 @@ class PageLayoutComponent extends React.Component {
             refreshMode="debounce"
             refreshOptions={{ trailing: true }}
           >
-            {({ width }) => (
+            {({ width, height }) => (
               <Provider
                 value={{
                   sectionWidth: width,
+                  sectionHeight: height,
                 }}
               >
                 <Section

@@ -8,6 +8,7 @@ import PropTypes from "prop-types";
 import { LayoutContextConsumer } from "../../Layout/context";
 
 import { getIsLoaded } from "../../../store/auth/selectors";
+import { isMobile } from "react-device-detect";
 
 const { tablet } = utils.device;
 
@@ -16,17 +17,19 @@ const StyledSectionHeader = styled.div`
   height: 55px;
   margin-right: 24px;
   margin-top: -1px;
+  ${(props) =>
+    props.isLoaded &&
+    isMobile &&
+    css`
+      position: absolute;
+      top: 56px;
+      height: 49px;
+      width: ${(props) => !props.isLoaded && "100%"};
+    `}
 
   @media ${tablet} {
     margin-right: 16px;
     border-bottom: none;
-
-    ${(props) =>
-      props.isLoaded &&
-      css`
-        position: absolute;
-        top: 56px;
-      `}
 
     ${(props) =>
       props.borderBottom &&
@@ -34,39 +37,41 @@ const StyledSectionHeader = styled.div`
       border-bottom: 1px solid #eceef1;
       padding-bottom: 16px
     `};
-    height: 49px;
-    width: ${(props) => !props.isLoaded && "100%"};
   }
 
   .section-header {
-    @media ${tablet} {
+    ${isMobile &&
+    css`
       max-width: calc(100vw - 32px);
       width: 100%;
-      //padding-top: 4px;
-      ${(props) =>
-        props.isLoaded &&
-        css`
-          position: fixed;
-          top: 56px;
-          width: ${(props) =>
-            props.isArticlePinned ? `calc(100% - 272px)` : "100%"};
-          ${(props) =>
-            props.sectionWidth &&
-            props.isArticlePinned &&
-            css`
-              max-width: ${props.sectionWidth + "px"};
-            `}
+    `}
 
-          background-color: #fff;
-          z-index: ${(props) => (!props.isHeaderVisible ? "149" : "190")};
-          padding-right: 16px;
-        `}
-    }
+    //padding-top: 4px;
+      ${(props) =>
+      props.isLoaded &&
+      isMobile &&
+      css`
+        position: fixed;
+        top: 56px;
+        width: ${(props) =>
+          props.isArticlePinned ? `calc(100% - 272px)` : "100%"};
+        /* ${(props) =>
+          props.sectionWidth &&
+          props.isArticlePinned &&
+          css`
+            max-width: ${props.sectionWidth + "px"};
+          `} */
+
+        background-color: #fff;
+        z-index: ${(props) => (!props.isHeaderVisible ? "149" : "190")};
+        padding-right: 16px;
+      `}
   }
 
   .section-header,
   .section-header--hidden {
-    @media ${tablet} {
+    ${isMobile &&
+    css`
       &,
       .group-button-menu-container > div:first-child {
         transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
@@ -79,13 +84,14 @@ const StyledSectionHeader = styled.div`
         top: ${(props) =>
           !props.isSectionHeaderVisible ? "56px" : "0px"} !important;
       }
-    }
+    `}
   }
 
   .section-header--hidden {
-    @media ${tablet} {
+    ${isMobile &&
+    css`
       top: -61px;
-    }
+    `}
   }
 `;
 

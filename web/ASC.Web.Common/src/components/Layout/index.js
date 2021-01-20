@@ -22,11 +22,7 @@ const { size } = utils.device;
 const StyledContainer = styled.div`
   width: 100%;
   height: ${(props) =>
-    props.isTabletView && !isFirefox
-      ? isMobile
-        ? `${props.contentHeight}px`
-        : "100vh"
-      : "100vh"};
+    isMobile && !isFirefox ? `${props.contentHeight}px` : "100vh"};
 
   .scroll-body {
     z-index: 1;
@@ -35,22 +31,56 @@ const StyledContainer = styled.div`
   #desktopScroll {
     > .scroll-body {
       position: ${(props) =>
-        props.isTabletView ? "static" : "absolute"} !important;
+    props.isTabletView ? "static" : "absolute"} !important;
 
       padding-right: ${(props) =>
-        props.isTabletView ? "1px" : "16px"} !important;
+    props.isTabletView ? "1px" : "16px"} !important;
 
       height: ${isMobile ? "100%" : "calc(100% + 20px)"};
     }
     .nav-thumb-horizontal {
       ${(props) =>
-        props.isTabletView &&
-        css`
-          position: fixed !important;
-          bottom: 4px;
-        `}
+    props.isTabletView &&
+    css`
+      position: fixed !important;
+      bottom: 4px;
+    `}
     }
-  }
+  } */
+
+  /* #articleScrollBar {
+    > .scroll-body {
+      position: ${(props) =>
+    props.isTabletView ? "static" : "absolute"} !important;
+      ${(props) =>
+    props.isTabletView &&
+    css`
+      overflow-y: hidden !important;
+      overflow-x: hidden !important;
+      max-width: calc(100vw - 576px);
+      min-width: 208px;
+    `}
+
+  
+    
+      > div:first-child {
+        ${(props) =>
+    props.isTabletView &&
+    css`
+      max-width: calc(100vw - 488px);
+      min-width: 208px !important;
+    `} 
+      }
+
+      .nav-thumb-vertical {
+        ${(props) =>
+    props.isTabletView &&
+    css`
+      width: 0 !important;
+    `}
+      }
+    }
+  } */
 `;
 
 const Layout = (props) => {
@@ -154,7 +184,7 @@ const Layout = (props) => {
       isTabletView={isTabletView}
       contentHeight={contentHeight}
     >
-      <MobileLayout {...props} />
+      {isMobile ? <MobileLayout {...props} /> : children}
     </StyledContainer>
   );
 };

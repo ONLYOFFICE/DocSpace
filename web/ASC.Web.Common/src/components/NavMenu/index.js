@@ -12,6 +12,7 @@ import { withRouter } from "react-router";
 import { getLanguage, isDesktopClient } from "../../store/auth/selectors";
 import Loaders from "../Loaders";
 import { LayoutContextConsumer } from "../Layout/context";
+import { isMobile } from "react-device-detect";
 
 const backgroundColor = "#0F4071";
 const { tablet } = utils.device;
@@ -23,13 +24,15 @@ const StyledContainer = styled.header`
   @media ${tablet} {
     ${(props) =>
       !props.isLoaded
-        ? css`
+        ? isMobile &&
+          css`
             position: static;
 
             margin-right: -16px; /* It is a opposite value of padding-right of custom scroll bar,
        so that there is no white bar in the header on loading. (padding-right: 16px)*/
           `
-        : css`
+        : isMobile &&
+          css`
             .navMenuHeader,
             .profileMenuIcon,
             .navMenuHeaderUnAuth {

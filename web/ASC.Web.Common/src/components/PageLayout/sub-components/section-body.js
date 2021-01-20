@@ -7,6 +7,7 @@ import equal from "fast-deep-equal/react";
 import { LayoutContextConsumer } from "../../Layout/context";
 import { getIsLoaded, getIsTabletView } from "../../../store/auth/selectors";
 import { connect } from "react-redux";
+import { isMobile } from "react-device-detect";
 
 const { tablet } = utils.device;
 
@@ -22,8 +23,13 @@ const commonStyles = css`
 
     @media ${tablet} {
       padding: 16px 0 16px 24px;
-      margin-top: ${(props) => props.isLoaded && "104px"};
     }
+    ${(props) =>
+      props.isLoaded &&
+      isMobile &&
+      css`
+        margin-top: 104px;
+      `}
 
     .section-wrapper {
       display: flex;
@@ -86,6 +92,9 @@ class SectionBody extends React.Component {
   }
 
   componentDidMount() {
+    this.customScrollElm = document.querySelector(
+      "#desktopScroll > .scroll-body"
+    );
     if (!this.props.autoFocus) return;
     this.focusRef.current.focus();
   }
@@ -129,27 +138,39 @@ class SectionBody extends React.Component {
         isLoaded={isLoaded}
       >
         {withScroll ? (
-          <LayoutContextConsumer>
-            {(ref) => (
-              <Scrollbar id="desktopScroll" {...scrollProp} stype="mediumBlack">
+          !isMobile ? (
+            <Scrollbar {...scrollProp} stype="mediumBlack">
+              <SelectedFrame
+                viewAs={viewAs}
+                scrollRef={this.scrollRef}
+                setSelections={setSelections}
+              >
+                <div className="section-wrapper">
+                  <div className="section-wrapper-content" {...focusProps}>
+                    {children}
+                    <StyledSpacer pinned={pinned} />
+                  </div>
+                </div>
+              </SelectedFrame>
+            </Scrollbar>
+          ) : (
+            <LayoutContextConsumer>
+              {(ref) => (
                 <SelectedFrame
                   viewAs={viewAs}
-                  scrollRef={
-                    isTabletView ? ref.scrollRefLayout : this.scrollRef
-                  }
+                  scrollRef={ref.scrollRefLayout}
                   setSelections={setSelections}
                 >
                   <div className="section-wrapper">
                     <div className="section-wrapper-content" {...focusProps}>
                       {children}
-
                       <StyledSpacer pinned={pinned} />
                     </div>
                   </div>
                 </SelectedFrame>
-              </Scrollbar>
-            )}
-          </LayoutContextConsumer>
+              )}
+            </LayoutContextConsumer>
+          )
         ) : (
           <SelectedFrame
             viewAs={viewAs}
@@ -171,14 +192,23 @@ class SectionBody extends React.Component {
         isLoaded={isLoaded}
       >
         {withScroll ? (
-          <Scrollbar id="desktopScroll" {...scrollProp} stype="mediumBlack">
+          !isMobile ? (
+            <Scrollbar {...scrollProp} stype="mediumBlack">
+              <div className="section-wrapper">
+                <div className="section-wrapper-content" {...focusProps}>
+                  {children}
+                  <StyledSpacer pinned={pinned} />
+                </div>
+              </div>
+            </Scrollbar>
+          ) : (
             <div className="section-wrapper">
               <div className="section-wrapper-content" {...focusProps}>
                 {children}
                 <StyledSpacer pinned={pinned} />
               </div>
             </div>
-          </Scrollbar>
+          )
         ) : (
           <div className="section-wrapper">
             {children}

@@ -35,6 +35,7 @@ import {
   ChangeUserStatusDialog,
   ChangeUserTypeDialog,
 } from "../../../../dialogs";
+import { isMobile } from "react-device-detect";
 const { tablet, desktop } = utils.device;
 const { Consumer } = utils.context;
 
@@ -51,10 +52,16 @@ const StyledContainer = styled.div`
       padding-bottom: 0;
       & > div:first-child {
         ${(props) =>
-          props.width &&
-          css`
-            width: ${props.width + 32 + "px"};
-          `}
+          isMobile
+            ? props.width &&
+              css`
+                width: ${props.width + 32 + "px"};
+              `
+            : props.width &&
+              css`
+                width: ${props.width + 16 + "px"};
+              `}
+
         position: absolute;
         top: 56px;
         z-index: 180;

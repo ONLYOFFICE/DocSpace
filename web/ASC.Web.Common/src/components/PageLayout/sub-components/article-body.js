@@ -60,7 +60,11 @@ class ArticleBody extends React.Component {
 
     return (
       <StyledArticleBody>
-        <Scrollbar className="custom-scrollbar" stype="mediumBlack">
+        <Scrollbar
+          id="articleScrollBar"
+          className="custom-scrollbar"
+          stype="mediumBlack"
+        >
           <StyledArticleWrapper>{children}</StyledArticleWrapper>
         </Scrollbar>
       </StyledArticleBody>

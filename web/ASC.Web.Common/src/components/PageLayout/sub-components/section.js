@@ -1,7 +1,13 @@
 import React from "react";
 import styled, { css } from "styled-components";
 import { utils } from "asc-web-components";
-import { isIOS, isTablet, isSafari, isChrome } from "react-device-detect";
+import {
+  isIOS,
+  isTablet,
+  isSafari,
+  isChrome,
+  isMobile,
+} from "react-device-detect";
 const { tablet, size } = utils.device;
 
 const tabletProps = css`
@@ -51,8 +57,11 @@ const StyledSection = styled.section`
   @media ${tablet} {
     padding: 0 0 0 16px;
     ${tabletProps};
-    min-width: 100px;
   }
+  ${isMobile &&
+  css`
+    min-width: 100px;
+  `}
 `;
 
 class Section extends React.Component {

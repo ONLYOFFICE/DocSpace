@@ -12,6 +12,7 @@ import {
 } from "asc-web-common";
 import { connect } from "react-redux";
 import { withTranslation } from "react-i18next";
+import { isMobile } from "react-device-detect";
 import {
   ContextMenuButton,
   DropDownItem,
@@ -142,10 +143,15 @@ const StyledContainer = styled.div`
       padding-bottom: 0;
       & > div:first-child {
         ${(props) =>
-          props.width &&
-          css`
-            width: ${props.width + 32 + "px"};
-          `}
+          isMobile
+            ? props.width &&
+              css`
+                width: ${props.width + 32 + "px"};
+              `
+            : props.width &&
+              css`
+                width: ${props.width + 16 + "px"};
+              `}
         position: absolute;
         ${(props) =>
           !props.isDesktop &&
