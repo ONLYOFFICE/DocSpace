@@ -72,4 +72,29 @@ grep -q "${ELK_VALUE}" ${PATH_TO_CONF}/appsettings.${APP_DOTNET_ENV}.json || sed
 
 sed -i "s!\"BootstrapServers\".*!\"BootstrapServers\": \"${KAFKA_HOST}\"!g" ${PATH_TO_CONF}/kafka.${APP_DOTNET_ENV}.json
 
+S3_STORAGE=${S3_STORAGE:-"false"}
+
+if [ "${S3_STORAGE}" == "true" ]; then
+	
+	S3_PATH_TO_CONF=${PATH_TO_CONF}/autofac.consumers.json
+
+	S3_ACCESSKEY=${S3_ACCESSKEY:-""}
+	S3_SECRETACCESSKEY=${S3_SECRETACCESSKEY:-""}
+	S3_BUCKET=${S3_BUCKET:-""}
+	S3_REGION=${S3_REGION:-""}
+	S3_SERVICEURL=${S3_SERVICEURL:-""}
+	S3_FORCEPATHSTYLE=${S3_FORCEPATHSTYLE:-""}
+	S3_USEHTTP=${S3_USEHTTP:-""}
+	S3_SEE=${S3_SEE:-""}
+    
+	jq '.components[18].parameters.props.acesskey="'${S3_ACCESSKEY}'"' ${S3_PATH_TO_CONF} > ${S3_PATH_TO_CONF}.tmp && mv ${S3_PATH_TO_CONF}.tmp ${S3_PATH_TO_CONF}
+	jq '.components[18].parameters.props.secretaccesskey="'${S3_SECRETACCESSKEY}'"' ${S3_PATH_TO_CONF} > ${S3_PATH_TO_CONF}.tmp && mv ${S3_PATH_TO_CONF}.tmp ${S3_PATH_TO_CONF}
+	jq '.components[18].parameters.additional.bucket="'${S3_BUCKET}'"' ${S3_PATH_TO_CONF} > ${S3_PATH_TO_CONF}.tmp && mv ${S3_PATH_TO_CONF}.tmp ${S3_PATH_TO_CONF}
+	jq '.components[18].parameters.additional.region="'${S3_REGION}'"' ${S3_PATH_TO_CONF} > ${S3_PATH_TO_CONF}.tmp && mv ${S3_PATH_TO_CONF}.tmp ${S3_PATH_TO_CONF}
+	jq '.components[18].parameters.additional.serviceurl="'${S3_SERVICEURL}'"' ${S3_PATH_TO_CONF} > ${S3_PATH_TO_CONF}.tmp && mv ${S3_PATH_TO_CONF}.tmp ${S3_PATH_TO_CONF}
+	jq '.components[18].parameters.additional.forcepathstyle="'${S3_FORCEPATHSTYLE}'"' ${S3_PATH_TO_CONF} > ${S3_PATH_TO_CONF}.tmp && mv ${S3_PATH_TO_CONF}.tmp ${S3_PATH_TO_CONF}
+	jq '.components[18].parameters.additional.usehttp="'${S3_USEHTTP}'"' ${S3_PATH_TO_CONF} > ${S3_PATH_TO_CONF}.tmp && mv ${S3_PATH_TO_CONF}.tmp ${S3_PATH_TO_CONF}
+	jq '.components[18].parameters.additional.sse="'${S3_SEE}'"' ${S3_PATH_TO_CONF} > ${S3_PATH_TO_CONF}.tmp && mv ${S3_PATH_TO_CONF}.tmp ${S3_PATH_TO_CONF}
+fi
+
 dotnet ${DOTNET_RUN} --urls=${URLS} --ENVIRONMENT=${APP_DOTNET_ENV} --'$STORAGE_ROOT'=${APP_STORAGE_ROOT} --pathToConf=${PATH_TO_CONF} --log:dir=${LOG_DIR} --log:name=${DOTNET_LOG_NAME} ${PARAMETERS}
