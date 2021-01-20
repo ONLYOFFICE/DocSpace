@@ -36,6 +36,9 @@ const StyledFileRow = styled(Row)`
   }
   .__react_component_tooltip.type-light {
     background-color: #f8f7bf !important;
+    box-shadow: none;
+    -moz-box-shadow: none;
+    -webkit-box-shadow: none;
   }
   .__react_component_tooltip.place-left::after {
     border-left: 6px solid #f8f7bf !important;
