@@ -153,7 +153,7 @@ class UploadPanelComponent extends React.Component {
         />
         <Aside className="header_aside-panel" visible={visible}>
           <StyledContent>
-            <StyledHeaderContent>
+            <StyledHeaderContent className="upload-panel_header-content">
               <Heading className="upload_panel-header" size="medium" truncate>
                 {t("Uploads")}
               </Heading>
@@ -186,7 +186,11 @@ class UploadPanelComponent extends React.Component {
                   </div>*/}
               </div>
             </StyledHeaderContent>
-            <StyledBody stype="mediumBlack" style={DownloadBodyStyle}>
+            <StyledBody
+              stype="mediumBlack"
+              className="upload-panel_body"
+              style={DownloadBodyStyle}
+            >
               {uploadData.map((item, index) => (
                 <FileRow
                   t={t}
