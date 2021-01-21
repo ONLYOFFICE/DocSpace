@@ -21,8 +21,9 @@ const StyledSectionHeader = styled.div`
     props.isLoaded &&
     isMobile &&
     css`
-      position: absolute;
-      top: 56px;
+      //position: absolute;
+      //top: 56px;
+      margin-top: 71px;
       height: 49px;
       width: ${(props) => !props.isLoaded && "100%"};
     `}

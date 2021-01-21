@@ -32,6 +32,12 @@ const StyledArticle = styled.article`
         cursor: ew-resize !important;
       }
     }
+    ${isMobile &&
+    css`
+      margin-top: 56px;
+      height: calc(100% - 56px) !important;
+      width: 240px !important;
+    `}
     @media ${tablet} {
       padding: 0 16px;
       ${(props) =>
@@ -41,17 +47,7 @@ const StyledArticle = styled.article`
             min-width: 240px;
             max-width: ${props.isLoaded ? "calc(100vw - 368px)" : "240px"};
             
-            ${
-              isMobile &&
-              css`
-                margin-top: 56px;
-                height: calc(100% - 56px) !important;
-                width: 240px !important;
-              `
-            }
-         
-         
-
+    
 			      .increaseHeight {
               position: fixed;
               height: 100%;

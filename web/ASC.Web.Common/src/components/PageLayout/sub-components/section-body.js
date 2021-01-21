@@ -23,13 +23,13 @@ const commonStyles = css`
 
     @media ${tablet} {
       padding: 16px 0 16px 24px;
+      ${(props) =>
+        props.isLoaded &&
+        isMobile &&
+        css`
+          margin-top: -7px;
+        `}
     }
-    ${(props) =>
-      props.isLoaded &&
-      isMobile &&
-      css`
-        margin-top: 104px;
-      `}
 
     .section-wrapper {
       display: flex;

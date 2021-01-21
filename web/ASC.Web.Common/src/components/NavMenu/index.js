@@ -21,35 +21,33 @@ const StyledContainer = styled.header`
   align-items: center;
   background-color: ${backgroundColor};
 
-  @media ${tablet} {
-    ${(props) =>
-      !props.isLoaded
-        ? isMobile &&
-          css`
-            position: static;
+  ${(props) =>
+    !props.isLoaded
+      ? isMobile &&
+        css`
+          position: static;
 
-            margin-right: -16px; /* It is a opposite value of padding-right of custom scroll bar,
+          margin-right: -16px; /* It is a opposite value of padding-right of custom scroll bar,
        so that there is no white bar in the header on loading. (padding-right: 16px)*/
-          `
-        : isMobile &&
-          css`
-            .navMenuHeader,
-            .profileMenuIcon,
-            .navMenuHeaderUnAuth {
-              position: fixed;
-              z-index: 160;
-              top: ${(props) => (props.isVisible ? "0" : "-56px")};
+        `
+      : isMobile &&
+        css`
+          .navMenuHeader,
+          .profileMenuIcon,
+          .navMenuHeaderUnAuth {
+            position: fixed;
+            z-index: 160;
+            top: ${(props) => (props.isVisible ? "0" : "-56px")};
 
-              transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
-              -moz-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
-              -ms-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
-              -webkit-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
-              -o-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
-            }
+            transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
+            -moz-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
+            -ms-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
+            -webkit-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
+            -o-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
+          }
 
-            width: 100%;
-          `}
-  }
+          width: 100%;
+        `}
 `;
 
 class NavMenu extends React.Component {
