@@ -9,6 +9,7 @@ import {
   isMobile,
   isMobileOnly,
   isChrome,
+  isTablet,
 } from "react-device-detect";
 
 import { connect } from "react-redux";
@@ -22,11 +23,9 @@ const { size } = utils.device;
 const StyledContainer = styled.div`
   width: 100%;
   height: ${(props) =>
-    props.isTabletView && !isFirefox ? `${props.contentHeight}px` : "100vh"};
-
-  /* .scroll-body {
-    z-index: 1;
-  } */
+    (props.isTabletView || isMobile) && !isFirefox
+      ? `${props.contentHeight}px`
+      : "100vh"};
 
   /*#desktopScroll {
     > .scroll-body {
@@ -109,14 +108,14 @@ const Layout = (props) => {
   }, []);
 
   useEffect(() => {
-    if (isTabletView) {
+    if (isTabletView || isMobile) {
       if (isIOS && isSafari) window.addEventListener("resize", onResize);
       else window.addEventListener("orientationchange", onOrientationChange);
       changeRootHeight();
     }
 
     return () => {
-      if (isTabletView) {
+      if (isTabletView || isMobile) {
         if (isIOS && isSafari) window.removeEventListener("resize", onResize);
         else
           window.removeEventListener("orientationchange", onOrientationChange);
@@ -151,6 +150,14 @@ const Layout = (props) => {
 
       if (isMobileOnly && isIOS && isChrome) {
         if (window.innerHeight < window.innerWidth && isPortrait) {
+          height = window.screen.availWidth - 57;
+        }
+      }
+      if (isTablet && isIOS && isSafari) {
+        if (
+          window.innerHeight < window.innerWidth &&
+          window.innerWidth > 1024
+        ) {
           height = window.screen.availWidth - 57;
         }
       }
