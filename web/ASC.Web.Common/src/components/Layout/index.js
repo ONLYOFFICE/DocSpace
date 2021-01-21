@@ -22,7 +22,7 @@ const { size } = utils.device;
 const StyledContainer = styled.div`
   width: 100%;
   height: ${(props) =>
-    isMobile && !isFirefox ? `${props.contentHeight}px` : "100vh"};
+    props.isTabletView && !isFirefox ? `${props.contentHeight}px` : "100vh"};
 
   /* .scroll-body {
     z-index: 1;
