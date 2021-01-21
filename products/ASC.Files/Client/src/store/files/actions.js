@@ -819,7 +819,7 @@ export const startUpload = (uploadFiles, folderId, t) => {
 
     const { uploadData } = state.files;
 
-    console.log("start upload", uploadData);
+    //console.log("start upload", uploadData);
 
     let newFiles = state.files.uploadData.files;
     let filesSize = 0;
@@ -849,7 +849,7 @@ export const startUpload = (uploadFiles, folderId, t) => {
 
     const { percent, uploadedFiles, uploaded } = uploadData;
 
-    console.log("newFiles: ", newFiles);
+    //console.log("newFiles: ", newFiles);
 
     const newUploadData = {
       files: newFiles,
@@ -894,20 +894,20 @@ export const cancelUpload = () => {
   };
 };
 
-export const cancelCurrentUpload = (index) => {
+export const cancelCurrentUpload = (id) => {
   return (dispatch, getState) => {
     const state = getState();
 
     const { uploadData } = state.files;
-    let files = uploadData.files;
-    files[index].cancel = true;
+    const files = uploadData.files;
+    const newFiles = files.filter((el) => el.uniqueId !== id);
 
     console.log("newFiles", files);
 
     const { filesSize, percent, uploadedFiles } = uploadData;
 
     const newUploadData = {
-      files: files,
+      files: newFiles,
       filesSize,
       uploadedFiles,
       percent: percent,
@@ -969,7 +969,7 @@ const finishUploadFiles = (getState, dispatch) => {
 
   const totalErrorsCount = sumBy(files, (f) => (f.error ? 1 : 0));
 
-  //if (totalErrorsCount > 0) return;
+  if (totalErrorsCount > 0) return;
 
   const uploadData = {
     files: [],
@@ -1000,7 +1000,7 @@ const startSessionFunc = (indexOfFile, t, dispatch, getState) => {
   const { uploadData } = state.files;
   const { uploaded, files } = uploadData;
 
-  console.log("START UPLOAD SESSION FUNC", uploadData);
+  //console.log("START UPLOAD SESSION FUNC", uploadData);
 
   if (!uploaded && files.length === 0) {
     uploadData.uploaded = true;

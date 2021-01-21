@@ -12,8 +12,24 @@ import {
 import LoadingButton from "./LoadingButton";
 import { connect } from "react-redux";
 import {
+  cancelCurrentUpload,
+  setSelection,
+  setSelected,
+  setSharingPanelVisible,
+} from "../../../store/files/actions";
+import {
   getLoadingFile,
   getFileByFileId,
+  getArchiveFormats,
+  getImageFormats,
+  getSoundFormats,
+  getSharePanelVisible,
+  getMediaViewerImageFormats,
+  getMediaViewerMediaFormats,
+  isUploaded,
+  getSelected,
+  isMediaOrImage,
+  getIconSrc,
 } from "../../../store/files/selectors";
 
 const StyledFileRow = styled(Row)`
@@ -34,6 +50,7 @@ const StyledFileRow = styled(Row)`
       height: 16px;
     }
   }
+
   .__react_component_tooltip.type-light {
     background-color: #f8f7bf !important;
     box-shadow: none;
@@ -57,179 +74,127 @@ const StyledFileRow = styled(Row)`
   }
 `;
 
-const checkExt = (ext) => {
-  const extArray = [
-    "avi",
-    "csv",
-    "djvu",
-    "doc",
-    "docx",
-    "dvd",
-    "ebook",
-    "file_arcive",
-    "flv",
-    "html",
-    "iaf",
-    "image",
-    "m2ts",
-    "mkv",
-    "mov",
-    "mp4",
-    "mpg",
-    "odp",
-    "ods",
-    "odt",
-    "pdf",
-    "pps",
-    "ppsx",
-    "ppt",
-    "pptx",
-    "rtf",
-    "sound",
-    "svg",
-    "txt",
-    "xls",
-    "xlsx",
-    "xps",
-  ];
-  return extArray.includes(ext);
-};
-
 const FileRow = (props) => {
   const {
     t,
     item,
-    index,
-    archiveFormats,
-    imageFormats,
-    soundFormats,
     uploaded,
-    onOpenSharingPanel,
     cancelCurrentUpload,
-    mediaViewerImageFormats,
-    mediaViewerMediaFormats,
-    onMediaClick,
+    //onMediaClick,
     currentFileUploadProgress,
-    currentFile,
+    fileIcon,
+    isMedia,
+    ext,
+    name,
+    color,
   } = props;
-  const name = item.file.name.split(".");
-  let ext = name.length > 1 ? name.pop() : "";
-  let originalExt = null;
 
-  if (archiveFormats.includes(`.${ext}`)) {
-    originalExt = ext;
-    ext = "file_arcive";
-  }
+  const onCancelCurrentUpload = (e) => {
+    console.log("cancel upload ", e);
+    const id = e.currentTarget.dataset.id;
+    return cancelCurrentUpload(id);
+  };
 
-  if (imageFormats.includes(`.${ext}`)) {
-    originalExt = ext;
-    ext = "image";
-  }
+  const onOpenSharingPanel = (item) => {
+    //console.log(item);
+    const {
+      selected,
+      setSelected,
+      setSelection,
+      setSharingPanelVisible,
+      sharingPanelVisible,
+    } = props;
+    selected === "close" && setSelected("none");
+    setSelection([item]);
+    setSharingPanelVisible(!sharingPanelVisible);
+  };
 
-  if (soundFormats.includes(`.${ext}`)) {
-    originalExt = ext;
-    ext = "sound";
-  }
-
-  const fileIcon = checkExt(ext) ? (
-    <img src={`images/icons/24/${ext}.svg`} alt={`${ext}`} />
-  ) : (
-    <img src="images/icons/24/file.svg" alt="file" />
-  );
-
-  const color =
-    item.fileId && currentFile(item.fileId) && currentFile(item.fileId).shared
-      ? "#657077"
-      : "#A3A9AE";
+  // const onMediaClick = (id) => {
+  //   console.log("id", id);
+  //   const item = { visible: true, id: id };
+  //   this.props.setMediaViewerData(item);
+  // };
 
   return (
     <>
-      {item.cancel ? (
-        <></>
-      ) : (
-        <StyledFileRow
-          className="download-row"
-          key={item.uniqueId}
-          checkbox={false}
-          element={fileIcon}
-        >
-          <>
-            {item.fileId ? (
-              mediaViewerImageFormats.includes(`.${ext}`) ||
-              mediaViewerMediaFormats.includes(`.${ext}`) ||
-              mediaViewerImageFormats.includes(`.${originalExt}`) ||
-              mediaViewerMediaFormats.includes(`.${originalExt}`) ? (
-                <Text
-                  fontWeight="600"
-                  color={item.error && "#A3A9AE"}
-                  // MediaViewer doesn't work
-                  /*onClick={() => onMediaClick(item.fileId)}*/
-                >
-                  {name}
-                </Text>
-              ) : (
-                <Link
-                  fontWeight="600"
-                  color={item.error && "#A3A9AE"}
-                  href={item.fileInfo ? item.fileInfo.webUrl : ""}
-                  target="_blank"
-                >
-                  {name}
-                </Link>
-              )
-            ) : (
-              <Text fontWeight="600" color={item.error && "#A3A9AE"}>
+      <StyledFileRow
+        className="download-row"
+        key={item.uniqueId}
+        checkbox={false}
+        element={<img src={fileIcon} alt="" />}
+      >
+        <>
+          {item.fileId ? (
+            isMedia ? (
+              <Text
+                fontWeight="600"
+                color={item.error && "#A3A9AE"}
+                // MediaViewer doesn't work
+                /*onClick={() => onMediaClick(item.fileId)}*/
+              >
                 {name}
               </Text>
-            )}
-            {originalExt || ext ? (
-              <Text fontWeight="600" color="#A3A9AE">
-                .{originalExt ? originalExt : ext}
-              </Text>
             ) : (
-              <></>
-            )}
-            {item.fileId ? (
-              <IconButton
-                iconName="CatalogSharedIcon"
-                className="upload_panel-icon"
-                color={color}
-                isClickable={true}
-                onClick={() =>
-                  onOpenSharingPanel(item.fileInfo ? item.fileInfo : "")
-                }
+              <Link
+                fontWeight="600"
+                color={item.error && "#A3A9AE"}
+                href={item.fileInfo ? item.fileInfo.webUrl : ""}
+                target="_blank"
+              >
+                {name}
+              </Link>
+            )
+          ) : (
+            <Text fontWeight="600" color={item.error && "#A3A9AE"}>
+              {name}
+            </Text>
+          )}
+          {ext ? (
+            <Text fontWeight="600" color="#A3A9AE">
+              {ext}
+            </Text>
+          ) : (
+            <></>
+          )}
+          {item.fileId ? (
+            <IconButton
+              iconName="CatalogSharedIcon"
+              className="upload_panel-icon"
+              color={color}
+              isClickable={true}
+              onClick={() =>
+                onOpenSharingPanel(item.fileInfo ? item.fileInfo : "")
+              }
+            />
+          ) : item.error || (!item.fileId && uploaded) ? (
+            <div className="upload_panel-icon">
+              {" "}
+              <Icons.LoadErrorIcon
+                size="medium"
+                data-for="errorTooltip"
+                data-tip={item.error || t("UnknownError")}
               />
-            ) : item.error || (!item.fileId && uploaded) ? (
-              <div className="upload_panel-icon">
-                {" "}
-                <Icons.LoadErrorIcon
-                  size="medium"
-                  data-for="errorTooltip"
-                  data-tip={item.error || t("UnknownError")}
-                />
-                <Tooltip
-                  id="errorTooltip"
-                  className="tooltip-custom"
-                  getContent={(dataTip) => (
-                    <Text fontSize="13px">{dataTip}</Text>
-                  )}
-                  effect="float"
-                  place="left"
-                  maxWidth={320}
-                  color="#f8f7bf"
-                />
-              </div>
-            ) : (
-              <div className="upload_panel-icon">
-                <LoadingButton
-                  percent={currentFileUploadProgress}
-                  onClick={() => cancelCurrentUpload(index)}
-                />
-              </div>
-            )}
-          </>
-        </StyledFileRow>
-      )}
+              <Tooltip
+                id="errorTooltip"
+                className="tooltip-custom"
+                getContent={(dataTip) => <Text fontSize="13px">{dataTip}</Text>}
+                effect="float"
+                place="left"
+                maxWidth={320}
+                color="#f8f7bf"
+              />
+            </div>
+          ) : (
+            <div
+              className="upload_panel-icon"
+              data-id={item.uniqueId}
+              onClick={onCancelCurrentUpload}
+            >
+              <LoadingButton percent={currentFileUploadProgress} />
+            </div>
+          )}
+        </>
+      </StyledFileRow>
     </>
   );
 };
@@ -237,14 +202,49 @@ const mapStateToProps = (state, ownProps) => {
   const loadingFile = getLoadingFile(state);
 
   const { item } = ownProps;
+
+  let ext;
+  let name;
+  let splitted;
+  if (item.file) {
+    splitted = item.file.name.split(".");
+    ext = splitted.length > 1 ? "." + splitted.pop() : "";
+    name = splitted[0];
+  } else {
+    ext = item.fileInfo.fileExst;
+    splitted = item.fileInfo.title.split(".");
+    name = splitted[0];
+  }
+  const currentFile = item.fileId ? getFileByFileId(state, item.fileId) : null; // TODO: Change file search in upload collection instead of directory files list
+  let color = "#A3A9AE";
+  if (currentFile && currentFile.shared) color = "#657077";
+
   const { uniqueId } = item;
   return {
-    currentFile: (fileId) => getFileByFileId(state, fileId),
     currentFileUploadProgress:
       loadingFile && loadingFile.uniqueId === uniqueId
         ? loadingFile.percent
         : null,
+    archiveFormats: getArchiveFormats(state),
+    imageFormats: getImageFormats(state),
+    soundFormats: getSoundFormats(state),
+    sharingPanelVisible: getSharePanelVisible(state),
+    mediaViewerImageFormats: getMediaViewerImageFormats(state),
+    mediaViewerMediaFormats: getMediaViewerMediaFormats(state),
+    uploaded: isUploaded(state),
+    selected: getSelected(state),
+    isMedia: isMediaOrImage(ext)(state),
+    fileIcon: getIconSrc(ext, 24)(state),
+    ext,
+    name,
+    color,
   };
 };
 
-export default connect(mapStateToProps)(FileRow);
+export default connect(mapStateToProps, {
+  setSharingPanelVisible,
+  cancelCurrentUpload,
+  // setMediaViewerData,
+  setSelection,
+  setSelected,
+})(FileRow);

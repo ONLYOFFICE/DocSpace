@@ -1,35 +1,16 @@
 import React from "react";
-import {
-  Backdrop,
-  Heading,
-  Aside,
-  IconButton,
-  Icons,
-} from "asc-web-components";
+import { Backdrop, Heading, Aside, IconButton } from "asc-web-components";
 import { connect } from "react-redux";
-import { withRouter } from "react-router";
-import { withTranslation } from "react-i18next";
-import { utils as commonUtils, store } from "asc-web-common";
+// import { withTranslation } from "react-i18next";
+// import { utils as commonUtils } from "asc-web-common";
 import {
   setUploadPanelVisible,
-  setSharingPanelVisible,
   cancelUpload,
-  cancelCurrentUpload,
-  setMediaViewerData,
-  setSelection,
-  setSelected,
 } from "../../../store/files/actions";
 import {
   getUploadPanelVisible,
-  getUploadDataFiles,
-  getArchiveFormats,
-  getImageFormats,
-  getSoundFormats,
   getSharePanelVisible,
-  getMediaViewerImageFormats,
-  getMediaViewerMediaFormats,
-  getSelected,
-  getUploadData,
+  isUploaded,
 } from "../../../store/files/selectors";
 import SharingPanel from "../SharingPanel";
 import {
@@ -38,27 +19,24 @@ import {
   StyledHeaderContent,
   StyledBody,
 } from "../StyledPanels";
-import FileRow from "./FileRow";
-import { createI18N } from "../../../helpers/i18n";
-const i18n = createI18N({
-  page: "UploadPanel",
-  localesPath: "panels/UploadPanel",
-});
-const { changeLanguage } = commonUtils;
+import FileList from "./FileList";
 
-const { getCurrentUserId } = store.auth.selectors;
+// import { createI18N } from "../../../helpers/i18n";
 
-const DownloadBodyStyle = { height: `calc(100vh - 156px)` };
+// const i18n = createI18N({
+//   page: "UploadPanel",
+//   localesPath: "panels/UploadPanel",
+// });
+//const { changeLanguage } = commonUtils;
+
+const DownloadBodyStyle = { height: `calc(100vh - 62px)` };
 
 class UploadPanelComponent extends React.Component {
   constructor(props) {
     super(props);
 
-    changeLanguage(i18n);
+    //changeLanguage(i18n);
 
-    this.state = {
-      uploadData: [],
-    };
     this.ref = React.createRef();
     this.scrollRef = React.createRef();
   }
@@ -73,18 +51,6 @@ class UploadPanelComponent extends React.Component {
     document.removeEventListener("keyup", this.onKeyPress);
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    const { uploadDataFiles } = this.props;
-    if (
-      prevState.uploadData !== uploadDataFiles &&
-      uploadDataFiles.length > 0
-    ) {
-      this.setState({
-        uploadData: prevProps.uploadDataFiles,
-      });
-    }
-  }
-
   onKeyPress = (event) => {
     if (event.key === "Esc" || event.key === "Escape") {
       this.onClose();
@@ -92,57 +58,21 @@ class UploadPanelComponent extends React.Component {
   };
 
   clearUploadPanel = () => {
-    this.setState({
-      uploadData: [],
-      uploaded: false,
-    });
     this.onClose();
   };
 
-  cancelCurrentUpload = (index) => {
-    this.props.cancelCurrentUpload(index);
-    console.log("cancel upload ", index);
-  };
-
-  onOpenSharingPanel = (item) => {
-    console.log(item);
-    const {
-      selected,
-      setSelected,
-      setSelection,
-      setSharingPanelVisible,
-      sharingPanelVisible,
-    } = this.props;
-    selected === "close" && setSelected("none");
-    setSelection([item]);
-    setSharingPanelVisible(!sharingPanelVisible);
-  };
-
-  onMediaClick = (id) => {
-    console.log("id", id);
-    const item = { visible: true, id: id };
-    this.props.setMediaViewerData(item);
-  };
-
   render() {
+    //console.log("UploadPanel render");
     const {
-      t,
+      // t,
       uploadPanelVisible,
       sharingPanelVisible,
-      uploadDataFiles,
-      archiveFormats,
-      imageFormats,
-      soundFormats,
-      mediaViewerImageFormats,
-      mediaViewerMediaFormats,
-      getUploadData,
+      uploaded,
     } = this.props;
-
-    const { uploadData } = this.state;
-    const uploaded = getUploadData.percent === 100;
 
     const visible = uploadPanelVisible;
     const zIndex = 310;
+
     return (
       <StyledAsidePanel visible={visible}>
         <Backdrop
@@ -155,7 +85,8 @@ class UploadPanelComponent extends React.Component {
           <StyledContent>
             <StyledHeaderContent>
               <Heading className="upload_panel-header" size="medium" truncate>
-                {t("Uploads")}
+                {/* {t("Uploads")}  TODO: fix translations render */}
+                Uploads
               </Heading>
               <div className="upload_panel-icons-container">
                 <div className="upload_panel-remove-icon">
@@ -187,23 +118,7 @@ class UploadPanelComponent extends React.Component {
               </div>
             </StyledHeaderContent>
             <StyledBody stype="mediumBlack" style={DownloadBodyStyle}>
-              {uploadData.map((item, index) => (
-                <FileRow
-                  t={t}
-                  item={item}
-                  key={index}
-                  index={index}
-                  archiveFormats={archiveFormats}
-                  imageFormats={imageFormats}
-                  soundFormats={soundFormats}
-                  uploaded={uploaded}
-                  cancelCurrentUpload={this.cancelCurrentUpload}
-                  onOpenSharingPanel={this.onOpenSharingPanel}
-                  mediaViewerImageFormats={mediaViewerImageFormats}
-                  mediaViewerMediaFormats={mediaViewerMediaFormats}
-                  onMediaClick={this.onMediaClick}
-                />
-              ))}
+              <FileList />
             </StyledBody>
           </StyledContent>
         </Aside>
@@ -213,34 +128,22 @@ class UploadPanelComponent extends React.Component {
   }
 }
 
-const UploadPanelContainerTranslated = withTranslation()(UploadPanelComponent);
+// const UploadPanelContainerTranslated = withTranslation()(UploadPanelComponent);
 
-const UploadPanel = (props) => (
-  <UploadPanelContainerTranslated i18n={i18n} {...props} />
-);
+// const UploadPanel = (props) => (
+//   <UploadPanelContainerTranslated i18n={i18n} {...props} />
+// );
 
 const mapStateToProps = (state) => {
+  //console.log("mapStateToProps");
   return {
-    isMyId: getCurrentUserId(state),
     uploadPanelVisible: getUploadPanelVisible(state),
-    uploadDataFiles: getUploadDataFiles(state),
-    archiveFormats: getArchiveFormats(state),
-    imageFormats: getImageFormats(state),
-    soundFormats: getSoundFormats(state),
     sharingPanelVisible: getSharePanelVisible(state),
-    mediaViewerImageFormats: getMediaViewerImageFormats(state),
-    mediaViewerMediaFormats: getMediaViewerMediaFormats(state),
-    selected: getSelected(state),
-    getUploadData: getUploadData(state),
+    uploaded: isUploaded(state),
   };
 };
 
 export default connect(mapStateToProps, {
   setUploadPanelVisible,
-  setSharingPanelVisible,
   cancelUpload,
-  cancelCurrentUpload,
-  setMediaViewerData,
-  setSelection,
-  setSelected,
-})(withRouter(UploadPanel));
+})(UploadPanelComponent);
