@@ -51,6 +51,7 @@ const StyledContainer = styled.div`
   #articleScrollBar {
     > .scroll-body {
       position: ${isMobile ? "static" : "absolute"} !important;
+
       ${(props) =>
         isMobile &&
         props.isArticlePinned &&
@@ -67,14 +68,14 @@ const StyledContainer = styled.div`
           min-width: 208px !important;
         `}
       } */
+    }
 
-      /* .nav-thumb-vertical {
-        ${(props) =>
+    .nav-thumb-horizontal {
+      ${(props) =>
         props.isTabletView &&
         css`
-          width: 0 !important;
+          height: 0 !important;
         `}
-      } */
     }
   }
 `;
