@@ -39,7 +39,7 @@ import { isMobile } from "react-device-detect";
 const { tablet, desktop } = utils.device;
 const { Consumer } = utils.context;
 
-const { isAdmin } = store.auth.selectors;
+const { isAdmin, getIsTabletView } = store.auth.selectors;
 const { EmployeeType, EmployeeStatus } = constants;
 
 const StyledContainer = styled.div`
@@ -47,21 +47,23 @@ const StyledContainer = styled.div`
     margin: 0 -16px;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     padding-bottom: 56px;
+    position: sticky;
+    ${(props) =>
+      !props.isTabletView
+        ? props.width &&
+          isMobile &&
+          css`
+            width: ${props.width + 40 + "px"};
+          `
+        : props.width &&
+          isMobile &&
+          css`
+            width: ${props.width + 24 + "px"};
+          `}
 
     @media ${tablet} {
       padding-bottom: 0;
       & > div:first-child {
-        ${(props) =>
-          isMobile
-            ? props.width &&
-              css`
-                width: ${props.width + 32 + "px"};
-              `
-            : props.width &&
-              css`
-                width: ${props.width + 16 + "px"};
-              `}
-
         position: absolute;
         top: 56px;
         z-index: 180;
@@ -136,6 +138,7 @@ const SectionHeaderContent = (props) => {
     hasUsersToInvite,
     hasUsersToRemove,
     isLoaded,
+    isTabletView,
   } = props;
 
   const {
@@ -145,7 +148,7 @@ const SectionHeaderContent = (props) => {
     groupsCaption,
   } = customNames;
 
-  //console.log("SectionHeaderContent render");
+  //console.log("SectionHeaderContent render", props.isTabletView);
 
   const toggleEmployeeDialog = useCallback(
     () => setEmployeeDialogVisible(!employeeDialogVisible),
@@ -363,6 +366,7 @@ const SectionHeaderContent = (props) => {
           isHeaderVisible={isHeaderVisible}
           isLoaded={isLoaded}
           width={context.sectionWidth}
+          isTabletView={isTabletView}
         >
           {employeeDialogVisible && (
             <ChangeUserTypeDialog
@@ -508,6 +512,7 @@ const mapStateToProps = (state) => {
     hasUsersToDisable: hasUsersToDisable(state),
     hasUsersToInvite: hasUsersToInvite(state),
     hasUsersToRemove: hasUsersToRemove(state),
+    isTabletView: getIsTabletView(state),
   };
 };
 

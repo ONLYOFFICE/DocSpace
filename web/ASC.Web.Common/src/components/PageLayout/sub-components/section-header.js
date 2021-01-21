@@ -89,7 +89,7 @@ const StyledSectionHeader = styled.div`
           @media ${desktop} {
             ${isMobile &&
             css`
-              position: absolute !important;
+              position: absolute;
             `}
           }
         }

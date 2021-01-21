@@ -58,7 +58,7 @@ import {
   getOnlyFoldersSelected,
 } from "../../../../../store/files/selectors";
 
-const { isAdmin, isDesktopClient } = store.auth.selectors;
+const { isAdmin, isDesktopClient, getIsTabletView } = store.auth.selectors;
 const { FilterType, FileAction } = constants;
 const { tablet, desktop } = utils.device;
 const { Consumer } = utils.context;
@@ -139,20 +139,24 @@ const StyledContainer = styled.div`
     margin: 0 -16px;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     padding-bottom: 56px;
+    position: sticky;
+
+    ${(props) =>
+      !props.isTabletView
+        ? props.width &&
+          isMobile &&
+          css`
+            width: ${props.width + 40 + "px"};
+          `
+        : props.width &&
+          isMobile &&
+          css`
+            width: ${props.width + 32 + "px"};
+          `}
 
     @media ${tablet} {
       padding-bottom: 0;
       & > div:first-child {
-        ${(props) =>
-          isMobile
-            ? props.width &&
-              css`
-                width: ${props.width + 32 + "px"};
-              `
-            : props.width &&
-              css`
-                width: ${props.width + 16 + "px"};
-              `}
         position: absolute;
         ${(props) =>
           !props.isDesktop &&
@@ -547,6 +551,7 @@ class SectionHeaderContent extends React.Component {
       title,
       canCreate,
       isDesktop,
+      isTabletView,
     } = this.props;
 
     const {
@@ -568,6 +573,7 @@ class SectionHeaderContent extends React.Component {
             canCreate={canCreate}
             title={title}
             isDesktop={isDesktop}
+            isTabletView={isTabletView}
           >
             {isHeaderVisible ? (
               <div className="group-button-menu-container">
@@ -722,6 +728,7 @@ const mapStateToProps = (state) => {
     sharingPanelVisible: getSharePanelVisible(state),
     isThirdPartySelection: getIsThirdPartySelection(state),
     isOnlyFoldersSelected: getOnlyFoldersSelected(state),
+    isTabletView: getIsTabletView(state),
   };
 };
 
