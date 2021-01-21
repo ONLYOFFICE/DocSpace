@@ -51,6 +51,10 @@ const StyledFileRow = styled(Row)`
     }
   }
 
+  .img_error {
+    filter: grayscale(1);
+  }
+
   .__react_component_tooltip.type-light {
     background-color: #f8f7bf !important;
     box-shadow: none;
@@ -121,7 +125,7 @@ const FileRow = (props) => {
         className="download-row"
         key={item.uniqueId}
         checkbox={false}
-        element={<img src={fileIcon} alt="" />}
+        element={<img className={item.error && "img_error"} src={fileIcon} alt="" />}
       >
         <>
           {item.fileId ? (

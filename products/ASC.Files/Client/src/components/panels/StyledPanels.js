@@ -46,7 +46,16 @@ const StyledAsidePanel = styled.div`
     font-weight: 700;
     padding: 19px auto 19px 17px;
   }
-
+  .upload-panel_header-content {
+    z-index: 320;
+    position: fixed;
+    left: 0;
+    right: 0;
+    background-color: #fff;
+  }
+  .upload-panel_body {
+    padding: 64px 0;
+  }
   .modal-dialog-aside {
     padding: 0;
     transform: translateX(${(props) => (props.visible ? "0" : "500px")});
@@ -177,11 +186,6 @@ const StyledContent = styled.div`
 const StyledHeaderContent = styled.div`
   display: flex;
   align-items: center;
-  padding: 0 16px;
-
-  display: flex;
-  align-items: center;
-
   padding: 0 16px;
 
   .sharing_panel-icons-container {
