@@ -34,6 +34,11 @@ const StyledFileRow = styled(Row)`
       height: 16px;
     }
   }
+
+  .img_error {
+    filter: grayscale(1);
+  }
+
   .__react_component_tooltip.type-light {
     background-color: #f8f7bf !important;
     box-shadow: none;
@@ -132,9 +137,17 @@ const FileRow = (props) => {
   }
 
   const fileIcon = checkExt(ext) ? (
-    <img src={`images/icons/24/${ext}.svg`} alt={`${ext}`} />
+    <img
+      src={`images/icons/24/${ext}.svg`}
+      alt={`${ext}`}
+      className={item.error && "img_error"}
+    />
   ) : (
-    <img src="images/icons/24/file.svg" alt="file" />
+    <img
+      src="images/icons/24/file.svg"
+      alt="file"
+      className={item.error && "img_error"}
+    />
   );
 
   const color =
