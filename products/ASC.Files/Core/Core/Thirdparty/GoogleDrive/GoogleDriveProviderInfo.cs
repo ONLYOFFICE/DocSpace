@@ -46,7 +46,7 @@ using DriveFile = Google.Apis.Drive.v3.Data.File;
 
 namespace ASC.Files.Thirdparty.GoogleDrive
 {
-    [Scope]
+    [Transient]
     [DebuggerDisplay("{CustomerTitle}")]
     internal class GoogleDriveProviderInfo : IProviderInfo
     {

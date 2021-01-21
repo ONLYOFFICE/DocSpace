@@ -135,7 +135,7 @@ class NewFilesPanelComponent extends React.Component {
   };
 
   onFilesClick = (item) => {
-    const { id, fileExst, viewUrl, fileType } = item;
+    const { id, fileExst, viewUrl, fileType, providerKey } = item;
     const {
       filter,
       setMediaViewerData,
@@ -150,7 +150,7 @@ class NewFilesPanelComponent extends React.Component {
       const canEdit = [5, 6, 7].includes(fileType); //TODO: maybe dirty
       const isMedia = [2, 3, 4].includes(fileType);
 
-      if (canEdit) {
+      if (canEdit && providerKey) {
         return addFileToRecentlyViewed(id, isPrivacy)
           .then(() => console.log("Pushed to recently viewed"))
           .catch((e) => console.error(e))

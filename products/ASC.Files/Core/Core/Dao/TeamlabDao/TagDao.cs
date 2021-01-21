@@ -659,7 +659,7 @@ namespace ASC.Files.Core.Data
                 result.AddRange(tempTags);
             }
 
-            var monitorFolderIdsInt = monitorFolderIds.Select(r => Convert.ToInt32(r)).ToList();
+            var monitorFolderIdsInt = monitorFolderIds.OfType<int>().ToList();
             var subFoldersSqlQuery =
                 FilesDbContext.Tree
                 .Where(r => monitorFolderIdsInt.Contains(r.ParentId));

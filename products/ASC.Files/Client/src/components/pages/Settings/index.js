@@ -40,7 +40,7 @@ const PureSettings = ({
 
   useEffect(() => {
     setFirstLoad(false);
-  }, []);
+  }, [setFirstLoad]);
 
   useEffect(() => {
     switch (setting) {
@@ -50,9 +50,8 @@ const PureSettings = ({
       case "admin":
         setTitle("AdminSettings");
         break;
-      case "thirdparty":
-        //setTitle("ThirdPartySettings");
-        history.push("/products/files/settings/common");
+      case "thirdParty":
+        setTitle("ThirdPartySettings");
         break;
       default:
         setTitle("CommonSettings");
@@ -90,7 +89,8 @@ const PureSettings = ({
         </PageLayout.ArticleBody>
 
         <PageLayout.SectionHeader>
-          {Object.keys(settingsTree).length === 0 && isLoading ? (
+          {(Object.keys(settingsTree).length === 0 && isLoading) ||
+          isLoading ? (
             <Loaders.SectionHeader />
           ) : (
             <SectionHeaderContent title={t(`${title}`)} />
@@ -98,8 +98,13 @@ const PureSettings = ({
         </PageLayout.SectionHeader>
 
         <PageLayout.SectionBody>
-          {Object.keys(settingsTree).length === 0 && isLoading ? (
-            <Loaders.SettingsFiles />
+          {(Object.keys(settingsTree).length === 0 && isLoading) ||
+          isLoading ? (
+            setting === "thirdParty" ? (
+              <Loaders.Rows />
+            ) : (
+              <Loaders.SettingsFiles />
+            )
           ) : (
             <SectionBodyContent setting={setting} t={t} />
           )}

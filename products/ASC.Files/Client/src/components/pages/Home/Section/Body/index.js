@@ -59,7 +59,7 @@ import {
 } from "../../../../../store/files/actions";
 import { TIMEOUT } from "../../../../../helpers/constants";
 import {
-  getCurrentFolderCount,
+  getCurrentFilesCount,
   getDragging,
   getDragItem,
   getFileAction,
@@ -70,7 +70,6 @@ import {
   getFolderIcon,
   getSelectedFolderId,
   getFolders,
-  getIsLoading,
   getMediaViewerId,
   getMediaViewerVisibility,
   getSelectedFolderParentId,
@@ -79,7 +78,6 @@ import {
   getSelection,
   getTreeFolders,
   getViewAs,
-  isFileSelected,
   loopTreeFolders,
   getFilesList,
   getMediaViewerImageFormats,
@@ -96,10 +94,18 @@ import {
   getPrivacyInstructionsLink,
   getIconOfDraggedFile,
   getSharePanelVisible,
+  isRootFolder,
+  getThirdPartyProviders,
+  getThirdPartyCapabilities,
   getIsVerHistoryPanel,
 } from "../../../../../store/files/selectors";
 import { OperationsPanel, VersionHistoryPanel } from "../../../../panels";
 import { isMobile } from "react-device-detect";
+import {
+  DeleteThirdPartyDialog,
+  ConnectDialog,
+  ThirdPartyMoveDialog,
+} from "../../../../dialogs";
 const {
   isAdmin,
   getSettings,
@@ -176,6 +182,7 @@ const SimpleFilesRow = styled(Row)`
       fill: #657077;
     }
   }
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
   @media (max-width: 1312px) {
     .share-button {
@@ -206,8 +213,13 @@ class SectionBodyContent extends React.Component {
       editingId: null,
       showMoveToPanel: false,
       showCopyPanel: false,
+      showDeleteThirdPartyDialog: false,
+      connectDialogVisible: false,
+      showThirdPartyMoveDialog: false,
       isDrag: false,
       canDrag: true,
+      removeItem: null,
+      connectItem: null,
     };
 
     this.tooltipRef = React.createRef();
@@ -275,7 +287,14 @@ class SectionBodyContent extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
     //if (this.props && this.props.firstLoad) return true;
 
-    const { showMoveToPanel, showCopyPanel, isDrag } = this.state;
+    const {
+      showMoveToPanel,
+      showCopyPanel,
+      isDrag,
+      showDeleteThirdPartyDialog,
+      connectDialogVisible,
+      showThirdPartyMoveDialog,
+    } = this.state;
     const { isVersionHistoryPanel } = this.props;
 
     if (this.props.sharingPanelVisible !== nextProps.sharingPanelVisible) {
@@ -302,6 +321,18 @@ class SectionBodyContent extends React.Component {
     }
 
     if (isDrag !== nextState.isDrag) {
+      return true;
+    }
+
+    if (showDeleteThirdPartyDialog !== nextState.showDeleteThirdPartyDialog) {
+      return true;
+    }
+
+    if (connectDialogVisible !== nextState.connectDialogVisible) {
+      return true;
+    }
+
+    if (showThirdPartyMoveDialog !== nextState.showThirdPartyMoveDialog) {
       return true;
     }
 
@@ -371,6 +402,23 @@ class SectionBodyContent extends React.Component {
     });
   };
 
+  onChangeThirdPartyInfo = (e) => {
+    const providerKey = e.currentTarget.dataset.providerKey;
+    const provider = this.props.providers.find(
+      (x) => x.provider_key === providerKey
+    );
+    const capabilityItem = this.props.capabilities.find(
+      (x) => x[0] === providerKey
+    );
+    const capability = {
+      title: capabilityItem ? capabilityItem[0] : provider.customer_title,
+      link: capabilityItem ? capabilityItem[1] : " ",
+    };
+
+    const connectItem = { ...provider, ...capability };
+    this.setState({ connectItem, connectDialogVisible: true });
+  };
+
   onEditComplete = (id, isFolder) => {
     const {
       folderId,
@@ -421,7 +469,18 @@ class SectionBodyContent extends React.Component {
     //});
   };
 
-  onClickDelete = () => {
+  onClickDelete = (e) => {
+    const { isThirdParty, id, title } = e.currentTarget.dataset;
+    const splitItem = id.split("-");
+
+    if (isThirdParty === "true") {
+      this.setState({
+        showDeleteThirdPartyDialog: true,
+        removeItem: { id: splitItem[splitItem.length - 1], title },
+      });
+      return;
+    }
+
     const item = this.props.selection[0];
     item.fileExst
       ? this.onDeleteFile(item.id, item.folderId)
@@ -576,21 +635,27 @@ class SectionBodyContent extends React.Component {
     return window.open(this.props.selection[0].viewUrl, "_blank");
   };
 
-  openDocEditor = (id, tab = null, url = null) => {
-    return this.props
-      .addFileToRecentlyViewed(id, this.props.isPrivacy)
-      .then(() => console.log("Pushed to recently viewed"))
-      .catch((e) => console.error(e))
-      .finally(
-        tab
-          ? (tab.location = url)
-          : window.open(`./doceditor?fileId=${id}`, "_blank")
-      );
+  openDocEditor = (id, providerKey = null, tab = null, url = null) => {
+    if (providerKey) {
+      tab
+        ? (tab.location = url)
+        : window.open(`./doceditor?fileId=${id}`, "_blank");
+    } else {
+      return this.props
+        .addFileToRecentlyViewed(id, this.props.isPrivacy)
+        .then(() => console.log("Pushed to recently viewed"))
+        .catch((e) => console.error(e))
+        .finally(
+          tab
+            ? (tab.location = url)
+            : window.open(`./doceditor?fileId=${id}`, "_blank")
+        );
+    }
   };
 
   onClickLinkEdit = (e) => {
-    const id = e.currentTarget.dataset.id;
-    return this.openDocEditor(id);
+    const { id, providerKey } = e.currentTarget.dataset;
+    return this.openDocEditor(id, providerKey);
   };
 
   showVersionHistory = (e) => {
@@ -675,6 +740,11 @@ class SectionBodyContent extends React.Component {
     this.setState({ showMoveToPanel: !this.state.showMoveToPanel });
   onCopyAction = () =>
     this.setState({ showCopyPanel: !this.state.showCopyPanel });
+  onShowDeleteThirdParty = () => {
+    this.setState({
+      showDeleteThirdPartyDialog: !this.state.showDeleteThirdPartyDialog,
+    });
+  };
   onDuplicate = () => {
     const {
       selection,
@@ -706,10 +776,24 @@ class SectionBodyContent extends React.Component {
     );
   };
 
+  onCloseConnectDialog = () => {
+    this.setState({
+      connectItem: null,
+      connectDialogVisible: !this.state.connectDialogVisible,
+    });
+  };
+
+  onCloseThirdPartyMoveDialog = () => {
+    this.setState({
+      showThirdPartyMoveDialog: !this.state.showThirdPartyMoveDialog,
+    });
+  };
+
   getFilesContextOptions = (options, item) => {
-    const { t } = this.props;
+    const { t, isRootFolder } = this.props;
 
     const isSharable = item.access !== 1 && item.access !== 0;
+    const isThirdPartyFolder = item.providerKey && isRootFolder;
 
     return options.map((option) => {
       switch (option) {
@@ -811,6 +895,7 @@ class SectionBodyContent extends React.Component {
             onClick: this.onClickLinkEdit,
             disabled: false,
             "data-id": item.id,
+            "data-provider-key": item.providerKey,
           };
         case "preview":
           return {
@@ -820,6 +905,7 @@ class SectionBodyContent extends React.Component {
             onClick: this.onClickLinkEdit,
             disabled: true,
             "data-id": item.id,
+            "data-provider-key": item.providerKey,
           };
         case "view":
           return {
@@ -869,13 +955,27 @@ class SectionBodyContent extends React.Component {
             onClick: this.onClickRename,
             disabled: false,
           };
+
+        case "change-thirdparty-info":
+          return {
+            key: option,
+            label: t("ThirdPartyInfo"),
+            icon: "AccessEditIcon",
+            onClick: this.onChangeThirdPartyInfo,
+            disabled: false,
+            "data-provider-key": item.providerKey,
+          };
+
         case "delete":
           return {
             key: option,
-            label: t("Delete"),
+            label: isThirdPartyFolder ? t("DeleteThirdParty") : t("Delete"),
             icon: "CatalogTrashIcon",
             onClick: this.onClickDelete,
             disabled: false,
+            "data-is-third-party": isThirdPartyFolder ? true : false,
+            "data-id": item.id,
+            "data-title": item.title,
           };
         case "remove-from-favorites":
           return {
@@ -1353,16 +1453,24 @@ class SectionBodyContent extends React.Component {
     if (!value) {
       return;
     }
-    const splitValue = value.split("_");
+    let splitValue = value.split("_");
     let item = null;
     if (splitValue[0] === "folder") {
-      item = selection.find(
-        (x) => x.id === Number(splitValue[1]) && !x.fileExst
-      );
+      splitValue.splice(0, 1);
+      if (splitValue[splitValue.length - 1] === "draggable") {
+        splitValue.splice(-1, 1);
+      }
+      splitValue = splitValue.join("_");
+
+      item = selection.find((x) => x.id + "" === splitValue && !x.fileExst);
     } else {
-      item = selection.find(
-        (x) => x.id === Number(splitValue[1]) && x.fileExst
-      );
+      splitValue.splice(0, 1);
+      if (splitValue[splitValue.length - 1] === "draggable") {
+        splitValue.splice(-1, 1);
+      }
+      splitValue = splitValue.join("_");
+
+      item = selection.find((x) => x.id + "" === splitValue && x.fileExst);
     }
     if (item) {
       this.setState({ isDrag: true });
@@ -1370,13 +1478,7 @@ class SectionBodyContent extends React.Component {
   };
 
   onMouseUp = (e) => {
-    const {
-      selection,
-      dragging,
-      setDragging,
-      dragItem,
-      setDragItem,
-    } = this.props;
+    const { selection, dragging, setDragging, dragItem } = this.props;
 
     document.body.classList.remove("drag-cursor");
 
@@ -1401,12 +1503,16 @@ class SectionBodyContent extends React.Component {
         setDragging(false);
         return;
       }
-      const splitValue = value.split("_");
+      let splitValue = value.split("_");
       let item = null;
       if (splitValue[0] === "folder") {
-        item = selection.find(
-          (x) => x.id === Number(splitValue[1]) && !x.fileExst
-        );
+        splitValue.splice(0, 1);
+        if (splitValue[splitValue.length - 1] === "draggable") {
+          splitValue.splice(-1, 1);
+        }
+        splitValue = splitValue.join("_");
+
+        item = selection.find((x) => x.id + "" === splitValue && !x.fileExst);
       } else {
         return;
       }
@@ -1415,14 +1521,13 @@ class SectionBodyContent extends React.Component {
         return;
       } else {
         setDragging(false);
-        this.onMoveTo(Number(splitValue[1]));
+        this.onMoveTo(splitValue);
         return;
       }
     } else {
       setDragging(false);
       if (dragItem) {
         this.onMoveTo(dragItem);
-        setDragItem(null);
         return;
       }
       return;
@@ -1475,6 +1580,7 @@ class SectionBodyContent extends React.Component {
       isAdmin,
       setSecondaryProgressBarData,
     } = this.props;
+
     const folderIds = [];
     const fileIds = [];
     const conflictResolveType = 0; //Skip = 0, Overwrite = 1, Duplicate = 2
@@ -1487,6 +1593,7 @@ class SectionBodyContent extends React.Component {
       label: t("MoveToOperation"),
       alert: false,
     });
+
     for (let item of selection) {
       if (item.fileExst) {
         fileIds.push(item.id);
@@ -1686,6 +1793,16 @@ class SectionBodyContent extends React.Component {
     );
   };
 
+  startMoveOperation = () => {
+    this.moveTo(this.props.dragItem);
+    this.onCloseThirdPartyMoveDialog();
+  };
+
+  startCopyOperation = () => {
+    this.copyTo(this.props.dragItem);
+    this.onCloseThirdPartyMoveDialog();
+  };
+
   render() {
     //console.log("Files Home SectionBodyContent render", this.props);
 
@@ -1696,7 +1813,6 @@ class SectionBodyContent extends React.Component {
       settings,
       selection,
       fileAction,
-      currentFolderCount,
       isRecycleBin,
       isPrivacy,
       isEncryptionSupport,
@@ -1713,9 +1829,19 @@ class SectionBodyContent extends React.Component {
       tooltipValue,
       isVersionHistoryPanel,
       history,
+      filter,
     } = this.props;
 
-    const { editingId, showMoveToPanel, showCopyPanel } = this.state;
+    const {
+      editingId,
+      showMoveToPanel,
+      showCopyPanel,
+      showDeleteThirdPartyDialog,
+      removeItem,
+      connectDialogVisible,
+      connectItem,
+      showThirdPartyMoveDialog,
+    } = this.state;
 
     let fileMoveTooltip;
     if (dragging) {
@@ -1750,19 +1876,18 @@ class SectionBodyContent extends React.Component {
       });
     }
 
-    return (!fileAction.id && currentFolderCount === 0) || null ? (
-      parentId === 0 ? (
+    const { authorType, search, withSubfolders, filterType } = filter;
+    const isFiltered = authorType || search || !withSubfolders || filterType;
+
+    return (!fileAction.id && items.length === 0) || null ? (
+      firstLoad ? (
+        <Loaders.Rows />
+      ) : isFiltered ? (
+        this.renderEmptyFilterContainer()
+      ) : parentId === 0 || (isPrivacy && !isEncryptionSupport) ? (
         this.renderEmptyRootFolderContainer()
       ) : (
         this.renderEmptyFolderContainer()
-      )
-    ) : !fileAction.id && items.length === 0 ? (
-      firstLoad ? (
-        <Loaders.Rows />
-      ) : isPrivacy && !isEncryptionSupport ? (
-        this.renderEmptyRootFolderContainer()
-      ) : (
-        this.renderEmptyFilterContainer()
       )
     ) : (
       <>
@@ -1780,6 +1905,33 @@ class SectionBodyContent extends React.Component {
             onClose={this.onCopyAction}
           />
         )}
+
+        {showDeleteThirdPartyDialog && (
+          <DeleteThirdPartyDialog
+            onClose={this.onShowDeleteThirdParty}
+            visible={showDeleteThirdPartyDialog}
+            removeItem={removeItem}
+          />
+        )}
+
+        {connectDialogVisible && (
+          <ConnectDialog
+            visible={connectDialogVisible}
+            item={connectItem}
+            onClose={this.onCloseConnectDialog}
+          />
+        )}
+
+        {showThirdPartyMoveDialog && (
+          <ThirdPartyMoveDialog
+            visible={showThirdPartyMoveDialog}
+            onClose={this.onCloseThirdPartyMoveDialog}
+            startMoveOperation={this.startMoveOperation}
+            startCopyOperation={this.startCopyOperation}
+            provider={selection[0].providerKey}
+          />
+        )}
+
         {isVersionHistoryPanel && (
           <VersionHistoryPanel
             visible={isVersionHistoryPanel}
@@ -1798,33 +1950,23 @@ class SectionBodyContent extends React.Component {
             headingFiles={t("Files")}
           >
             {items.map((item) => {
+              const { checked, isFolder, value, contextOptions } = item;
               const isEdit =
                 !!fileAction.type &&
                 editingId === item.id &&
                 item.fileExst === fileAction.extension;
-              const contextOptions = this.getFilesContextOptions(
-                item,
-                viewer
-              ).filter((o) => o);
               const contextOptionsProps =
-                !contextOptions.length || isEdit ? {} : { contextOptions };
-              const checked = isFileSelected(selection, item.id, item.parentId);
+                !isEdit && contextOptions && contextOptions.length > 0
+                  ? {
+                      contextOptions: this.getFilesContextOptions(
+                        contextOptions,
+                        item
+                      ),
+                    }
+                  : {};
               const checkedProps = isEdit || item.id <= 0 ? {} : { checked };
               const element = this.getItemIcon(item, isEdit || item.id <= 0);
 
-              const selectedItem = selection.find(
-                (x) => x.id === item.id && x.fileExst === item.fileExst
-              );
-              const isFolder = selectedItem
-                ? false
-                : item.fileExst
-                ? false
-                : true;
-              const draggable = selectedItem && !isRecycleBin;
-              let value = item.fileExst
-                ? `file_${item.id}`
-                : `folder_${item.id}`;
-              value += draggable ? "_draggable" : "";
               let classNameProp =
                 isFolder && item.access < 2 && !isRecycleBin
                   ? { className: " dropable" }
@@ -1841,7 +1983,7 @@ class SectionBodyContent extends React.Component {
                   key={`dnd-key_${item.id}`}
                   {...contextOptionsProps}
                   value={value}
-                  isFolder={!item.fileExst}
+                  isFolder={isFolder}
                 >
                   <Tile
                     key={item.id}
@@ -1997,7 +2139,7 @@ SectionBodyContent.defaultProps = {
 
 const mapStateToProps = (state) => {
   return {
-    currentFolderCount: getCurrentFolderCount(state),
+    currentFolderCount: getCurrentFilesCount(state),
     currentMediaFileId: getMediaViewerId(state),
     dragging: getDragging(state),
     dragItem: getDragItem(state),
@@ -2036,6 +2178,9 @@ const mapStateToProps = (state) => {
     tooltipValue: getTooltipLabel(state),
     iconOfDraggedFile: getIconOfDraggedFile(state)(state),
     sharingPanelVisible: getSharePanelVisible(state),
+    isRootFolder: isRootFolder(state),
+    providers: getThirdPartyProviders(state),
+    capabilities: getThirdPartyCapabilities(state),
     isTabletView: getIsTabletView(state),
     isVersionHistoryPanel: getIsVerHistoryPanel(state),
   };

@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
-import { PageLayout, Loaders, utils, api, store } from "asc-web-common";
+import { PageLayout, Loaders, utils, store } from "asc-web-common";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import {
   ArticleHeaderContent,
@@ -31,10 +31,6 @@ const { changeLanguage } = utils;
 const { getIsTabletView } = store.auth.selectors;
 
 class PureVersionHistory extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   componentDidMount() {
     const { isTabletView } = this.props;
 

@@ -42,7 +42,7 @@ using Microsoft.OneDrive.Sdk;
 
 namespace ASC.Files.Thirdparty.OneDrive
 {
-    [Scope]
+    [Transient]
     [DebuggerDisplay("{CustomerTitle}")]
     internal class OneDriveProviderInfo : IProviderInfo
     {
