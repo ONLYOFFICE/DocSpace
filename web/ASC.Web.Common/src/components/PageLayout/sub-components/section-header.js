@@ -10,7 +10,7 @@ import { LayoutContextConsumer } from "../../Layout/context";
 import { getIsLoaded } from "../../../store/auth/selectors";
 import { isMobile } from "react-device-detect";
 
-const { tablet } = utils.device;
+const { tablet, desktop } = utils.device;
 
 const StyledSectionHeader = styled.div`
   border-bottom: 1px solid #eceef1;
@@ -68,11 +68,10 @@ const StyledSectionHeader = styled.div`
         padding-right: 16px;
       `}
   }
-
-  .section-header,
-  .section-header--hidden {
-    ${isMobile &&
-    css`
+  ${isMobile &&
+  css`
+    .section-header,
+    .section-header--hidden {
       &,
       .group-button-menu-container > div:first-child {
         transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
@@ -81,13 +80,22 @@ const StyledSectionHeader = styled.div`
         -webkit-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
         -o-transition: top 0.3s cubic-bezier(0, 0, 0.8, 1);
       }
-      .group-button-menu-container > div:first-child {
-        top: ${(props) =>
-          !props.isSectionHeaderVisible ? "56px" : "0px"} !important;
-      }
-    `}
-  }
+      .group-button-menu-container {
+        padding-bottom: 0 !important;
+        > div:first-child {
+          top: ${(props) =>
+            !props.isSectionHeaderVisible ? "56px" : "0px"} !important;
 
+          @media ${desktop} {
+            ${isMobile &&
+            css`
+              position: absolute !important;
+            `}
+          }
+        }
+      }
+    }
+  `}
   .section-header--hidden {
     ${isMobile &&
     css`
