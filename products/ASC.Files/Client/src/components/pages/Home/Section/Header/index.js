@@ -139,7 +139,10 @@ const StyledContainer = styled.div`
     margin: 0 -16px;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     padding-bottom: 56px;
-    position: sticky;
+    ${isMobile &&
+    css`
+      position: sticky;
+    `}
 
     ${(props) =>
       !props.isTabletView
