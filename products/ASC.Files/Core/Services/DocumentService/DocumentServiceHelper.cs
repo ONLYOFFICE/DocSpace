@@ -60,6 +60,7 @@ namespace ASC.Web.Files.Services.DocumentService
         private Global Global { get; }
         private DocumentServiceConnector DocumentServiceConnector { get; }
         private LockerManager LockerManager { get; }
+        private FileTrackerHelper FileTracker { get; }
         private IServiceProvider ServiceProvider { get; }
 
         public DocumentServiceHelper(
@@ -74,6 +75,7 @@ namespace ASC.Web.Files.Services.DocumentService
             Global global,
             DocumentServiceConnector documentServiceConnector,
             LockerManager lockerManager,
+            FileTrackerHelper fileTracker, 
             IServiceProvider serviceProvider)
         {
             DaoFactory = daoFactory;
@@ -87,6 +89,7 @@ namespace ASC.Web.Files.Services.DocumentService
             Global = global;
             DocumentServiceConnector = documentServiceConnector;
             LockerManager = lockerManager;
+            FileTracker = fileTracker;
             ServiceProvider = serviceProvider;
         }
 

@@ -19,7 +19,7 @@ import {
   activateConfirmUser,
 } from "../../../../store/confirm/actions";
 const { EmployeeActivationStatus } = constants;
-const { createPasswordHash } = commonUtils;
+const { createPasswordHash, tryRedirectTo } = commonUtils;
 const inputWidth = "400px";
 
 const ConfirmContainer = styled.div`
@@ -82,7 +82,7 @@ class Confirm extends React.PureComponent {
 
   onSubmit = (e) => {
     this.setState({ isLoading: true }, function () {
-      const { activateConfirmUser, history, hashSettings } = this.props;
+      const { activateConfirmUser, hashSettings, defaultPage } = this.props;
 
       this.setState({ errorText: "" });
 
@@ -131,7 +131,7 @@ class Confirm extends React.PureComponent {
         this.state.userId,
         EmployeeActivationStatus.Activated
       )
-        .then(() => history.push("/"))
+        .then(() => tryRedirectTo(defaultPage))
         .catch((error) => {
           console.error("activate error", error);
           this.setState({
@@ -344,6 +344,7 @@ function mapStateToProps(state) {
     settings: state.auth.settings.passwordSettings,
     greetingTitle: state.auth.settings.greetingSettings,
     hashSettings: state.auth.settings.hashSettings,
+    defaultPage: state.auth.settings.defaultPage,
   };
 }
 

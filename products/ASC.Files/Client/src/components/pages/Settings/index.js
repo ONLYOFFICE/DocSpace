@@ -29,16 +29,18 @@ const { changeLanguage } = utils;
 
 const PureSettings = ({
   match,
+  history,
   t,
   isLoading,
   settingsTree,
-  getFilesSettings,
-  setIsLoading,
   setFirstLoad,
-  setSelectedNode,
 }) => {
   const [title, setTitle] = useState("");
   const { setting } = match.params;
+
+  useEffect(() => {
+    setFirstLoad(false);
+  }, [setFirstLoad]);
 
   useEffect(() => {
     switch (setting) {
@@ -48,7 +50,7 @@ const PureSettings = ({
       case "admin":
         setTitle("AdminSettings");
         break;
-      case "thirdparty":
+      case "thirdParty":
         setTitle("ThirdPartySettings");
         break;
       default:
@@ -56,23 +58,6 @@ const PureSettings = ({
         break;
     }
   }, [setting]);
-  useEffect(() => {
-    if (Object.keys(settingsTree).length === 0) {
-      setIsLoading(true);
-      getFilesSettings().then(() => {
-        setIsLoading(false);
-        setFirstLoad(false);
-        setSelectedNode([setting]);
-      });
-    }
-  }, [
-    setting,
-    getFilesSettings,
-    setIsLoading,
-    setFirstLoad,
-    settingsTree,
-    setSelectedNode,
-  ]);
 
   useEffect(() => {
     if (isLoading) {
@@ -104,7 +89,8 @@ const PureSettings = ({
         </PageLayout.ArticleBody>
 
         <PageLayout.SectionHeader>
-          {Object.keys(settingsTree).length === 0 && isLoading ? (
+          {(Object.keys(settingsTree).length === 0 && isLoading) ||
+          isLoading ? (
             <Loaders.SectionHeader />
           ) : (
             <SectionHeaderContent title={t(`${title}`)} />
@@ -112,8 +98,13 @@ const PureSettings = ({
         </PageLayout.SectionHeader>
 
         <PageLayout.SectionBody>
-          {Object.keys(settingsTree).length === 0 && isLoading ? (
-            <Loaders.SettingsFiles />
+          {(Object.keys(settingsTree).length === 0 && isLoading) ||
+          isLoading ? (
+            setting === "thirdParty" ? (
+              <Loaders.Rows />
+            ) : (
+              <Loaders.SettingsFiles />
+            )
           ) : (
             <SectionBodyContent setting={setting} t={t} />
           )}

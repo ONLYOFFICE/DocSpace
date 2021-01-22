@@ -29,8 +29,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
+using ASC.Core.Encryption;
 using ASC.Data.Storage.Configuration;
 using ASC.Data.Storage.Encryption;
 using ASC.Security.Cryptography;
@@ -40,6 +42,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Storage.DiscStorage
 {
+    [Scope]
     public class DiscDataStore : BaseStorage
     {
         private readonly Dictionary<string, MappedPath> _mappedPaths = new Dictionary<string, MappedPath>();
@@ -70,6 +73,19 @@ namespace ASC.Data.Storage.DiscStorage
             Crypt = EncryptionFactory.GetCrypt(moduleConfig.Name, settings);
 
             return this;
+        }
+
+        public DiscDataStore(
+    TenantManager tenantManager,
+    PathUtils pathUtils,
+    EmailValidationKeyProvider emailValidationKeyProvider,
+    IOptionsMonitor<ILog> options,
+    EncryptionSettingsHelper encryptionSettingsHelper,
+    EncryptionFactory encryptionFactory)
+    : base(tenantManager, pathUtils, emailValidationKeyProvider, options)
+        {
+            EncryptionSettingsHelper = encryptionSettingsHelper;
+            EncryptionFactory = encryptionFactory;
         }
 
         public DiscDataStore(

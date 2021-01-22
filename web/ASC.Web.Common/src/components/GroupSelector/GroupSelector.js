@@ -18,7 +18,7 @@ class GroupSelector extends React.Component {
     changeLanguage(i18n);
 
     getGroupList(this.props.useFake)
-      .then((groups) => this.setState({ groups: this.convertGroups(groups) }))
+      .then((groups) => this.setState({ options: this.convertGroups(groups) }))
       .catch((error) => console.log(error));
   }
 
@@ -45,7 +45,7 @@ class GroupSelector extends React.Component {
     );
 
     this.setState({ isNextPageLoading: true }, () => {
-      getGroupList(this.props.useFake)
+      getGroupList(this.props.useFake, searchValue)
         .then((groups) => {
           const newOptions = this.convertGroups(groups);
 
@@ -59,10 +59,10 @@ class GroupSelector extends React.Component {
     });
   };
 
-  getDefaultState = (isOpen, groups) => {
+  getDefaultState = (isOpen, options) => {
     return {
       isOpen: isOpen,
-      groups,
+      options,
       hasNextPage: true,
       isNextPageLoading: false,
     };
@@ -77,7 +77,7 @@ class GroupSelector extends React.Component {
   render() {
     const {
       isOpen,
-      groups,
+      options,
       selectedOptions,
       hasNextPage,
       isNextPageLoading,
@@ -104,7 +104,7 @@ class GroupSelector extends React.Component {
         id={id}
         className={className}
         style={style}
-        options={groups}
+        options={options}
         hasNextPage={hasNextPage}
         isNextPageLoading={isNextPageLoading}
         loadNextPage={this.loadNextPage}

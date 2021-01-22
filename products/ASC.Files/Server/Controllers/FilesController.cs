@@ -553,13 +553,13 @@ namespace ASC.Api.Documents
         /// <param name="keepConvertStatus" visible="false">Keep status conversation after finishing</param>
         /// <category>Uploads</category>
         /// <returns></returns>
-        [Create("{folderId}/insert", DisableFormat = true)]
+        [Create("{folderId}/insert", order: int.MaxValue, DisableFormat = true)]
         public FileWrapper<string> InsertFileFromBody(string folderId, [FromBody]InsertFileModel model)
         {
             return InsertFile(folderId, model);
         }
 
-        [Create("{folderId}/insert", DisableFormat = true)]
+        [Create("{folderId}/insert", order: int.MaxValue, DisableFormat = true)]
         [Consumes("application/x-www-form-urlencoded")]
         public FileWrapper<string> InsertFileFromForm(string folderId, [FromForm]InsertFileModel model)
         {
@@ -571,13 +571,14 @@ namespace ASC.Api.Documents
             return FilesControllerHelperString.InsertFile(folderId, model.File, model.Title, model.CreateNewIfExist, model.KeepConvertStatus);
         }
 
-        [Create("{folderId:int}/insert")]
+        [Create("{folderId:int}/insert", order: int.MaxValue - 1)]
         public FileWrapper<int> InsertFileFromBody(int folderId, [FromBody]InsertFileModel model)
         {
             return InsertFile(folderId, model);
         }
 
-        [Create("{folderId:int}/insert")]
+        [Create("{folderId:int}/insert", order: int.MaxValue - 1)]
+        [Consumes("application/x-www-form-urlencoded")]
         public FileWrapper<int> InsertFileFromForm(int folderId, [FromForm]InsertFileModel model)
         {
             return InsertFile(folderId, model);
@@ -1761,6 +1762,18 @@ namespace ASC.Api.Documents
             return FilesControllerHelperInt.GenerateSharedLink(fileId, model.Share);
         }
 
+        [Update("{fileId:int}/setacelink")]
+        public bool SetAceLink(int fileId, [FromBody] GenerateSharedLinkModel model)
+        {
+            return FilesControllerHelperInt.SetAceLink(fileId, model.Share);
+        }
+
+        [Update("{fileId}/setacelink")]
+        public bool SetAceLink(string fileId, [FromBody] GenerateSharedLinkModel model)
+        {
+            return FilesControllerHelperString.SetAceLink(fileId, model.Share);
+        }
+
         /// <summary>
         ///   Get a list of available providers
         /// </summary>
@@ -2213,6 +2226,7 @@ namespace ASC.Api.Documents
         }
 
         /// <visible>false</visible>
+        [AllowAnonymous]
         [Read("docservice")]
         public object GetDocServiceUrl(bool version)
         {

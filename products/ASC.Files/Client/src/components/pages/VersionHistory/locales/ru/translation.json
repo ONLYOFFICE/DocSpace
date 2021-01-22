@@ -5,5 +5,6 @@
   "Restore": "Восстановить",
   "AddButton": "Сохранить",
   "CancelButton": "Отмена",
-  "EditComment": "Редактировать комментарий"
+  "EditComment": "Редактировать комментарий",
+  "Version": "Ver.{{version}}"
 }

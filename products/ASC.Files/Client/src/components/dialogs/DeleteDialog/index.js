@@ -14,10 +14,11 @@ import { api, utils, toastr } from "asc-web-common";
 import {
   fetchFiles,
   setTreeFolders,
-  setProgressBarData,
-  clearProgressData,
+  setSecondaryProgressBarData,
+  clearSecondaryProgressData,
   setUpdateTree,
 } from "../../../store/files/actions";
+import { TIMEOUT } from "../../../helpers/constants";
 import {
   loopTreeFolders,
   getSelectedFolderId,
@@ -26,6 +27,8 @@ import {
   getIsLoading,
   getIsRecycleBinFolder,
   getSelection,
+  isRootFolder,
+  getIsPrivacyFolder,
 } from "../../../store/files/selectors";
 import { createI18N } from "../../../helpers/i18n";
 const i18n = createI18N({
@@ -46,11 +49,19 @@ class DeleteDialogComponent extends React.Component {
 
     let i = 0;
     while (props.selection.length !== i) {
-      selection.push({ ...props.selection[i], checked: true });
-      if (selection[i].fileExst) {
-        filesList.push(selection[i]);
-      } else {
-        foldersList.push(selection[i]);
+      if (!(props.isRootFolder && props.selection[i].providerKey)) {
+        if (
+          props.selection[i].access === 0 ||
+          props.selection[i].access === 1
+        ) {
+          const item = { ...props.selection[i], checked: true };
+          selection.push(item);
+          if (props.selection[i].fileExst) {
+            filesList.push(item);
+          } else {
+            foldersList.push(item);
+          }
+        }
       }
       i++;
     }
@@ -66,31 +77,35 @@ class DeleteDialogComponent extends React.Component {
       treeFolders,
       setTreeFolders,
       isRecycleBinFolder,
-      setProgressBarData,
-      clearProgressData,
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
       t,
       fetchFiles,
       setUpdateTree,
     } = this.props;
-    const successMessage = "Files and folders was deleted";
+    const successMessage = t("DeleteSelectedElem");
     api.files
       .getProgress()
       .then((res) => {
         const currentProcess = res.find((x) => x.id === id);
         if (currentProcess && currentProcess.progress !== 100) {
-          setProgressBarData({
+          setSecondaryProgressBarData({
+            icon: "trash",
             percent: currentProcess.progress,
             label: t("DeleteOperation"),
             visible: true,
+            alert: false,
           });
           setTimeout(() => this.loopDeleteOperation(id), 1000);
         } else {
-          setProgressBarData({
+          setSecondaryProgressBarData({
+            icon: "trash",
             percent: 100,
             label: t("DeleteOperation"),
             visible: true,
+            alert: false,
           });
-          setTimeout(() => clearProgressData(), 5000);
+          setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
           fetchFiles(currentFolderId, filter).then((data) => {
             if (!isRecycleBinFolder && !!this.state.foldersList.length) {
               const path = data.selectedFolder.pathParts.slice(0);
@@ -106,23 +121,28 @@ class DeleteDialogComponent extends React.Component {
         }
       })
       .catch((err) => {
-        toastr.error(err);
-        clearProgressData();
+        setSecondaryProgressBarData({
+          visible: true,
+          alert: true,
+        });
+        //toastr.error(err);
+        setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
       });
   };
 
   onDelete = () => {
     const {
       isRecycleBinFolder,
+      isPrivacy,
       onClose,
       t,
-      setProgressBarData,
-      clearProgressData,
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
     } = this.props;
     const { selection } = this.state;
 
     const deleteAfter = true; //Delete after finished
-    const immediately = isRecycleBinFolder ? true : false; //Don't move to the Recycle Bin
+    const immediately = isRecycleBinFolder || isPrivacy ? true : false; //Don't move to the Recycle Bin
 
     const folderIds = [];
     const fileIds = [];
@@ -139,10 +159,12 @@ class DeleteDialogComponent extends React.Component {
 
     onClose();
     if (folderIds.length || fileIds.length) {
-      setProgressBarData({
+      setSecondaryProgressBarData({
+        icon: "trash",
         visible: true,
         label: t("DeleteOperation"),
         percent: 0,
+        alert: false,
       });
 
       files
@@ -152,8 +174,12 @@ class DeleteDialogComponent extends React.Component {
           this.loopDeleteOperation(id);
         })
         .catch((err) => {
-          toastr.error(err);
-          clearProgressData();
+          setSecondaryProgressBarData({
+            visible: true,
+            alert: true,
+          });
+          //toastr.error(err);
+          setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
         });
     }
   };
@@ -166,12 +192,12 @@ class DeleteDialogComponent extends React.Component {
     const newSelection = this.state.selection;
 
     if (fileType !== "undefined") {
-      const a = newSelection.find((x) => x.id === id && x.fileExst);
-      a.checked = !a.checked;
+      const selection = newSelection.find((x) => x.id === id && x.fileExst);
+      selection.checked = !selection.checked;
       this.setState({ selection: newSelection });
     } else {
-      const a = newSelection.find((x) => x.id === id && !x.fileExst);
-      a.checked = !a.checked;
+      const selection = newSelection.find((x) => x.id === id && !x.fileExst);
+      selection.checked = !selection.checked;
       this.setState({ selection: newSelection });
     }
   };
@@ -283,14 +309,16 @@ const mapStateToProps = (state) => {
     treeFolders: getTreeFolders(state),
     isLoading: getIsLoading(state),
     isRecycleBinFolder: getIsRecycleBinFolder(state),
+    isPrivacy: getIsPrivacyFolder(state),
     selection: getSelection(state),
+    isRootFolder: isRootFolder(state),
   };
 };
 
 export default connect(mapStateToProps, {
   setTreeFolders,
-  setProgressBarData,
-  clearProgressData,
+  setSecondaryProgressBarData,
+  clearSecondaryProgressData,
   setUpdateTree,
   fetchFiles,
 })(withRouter(DeleteDialog));

@@ -49,7 +49,7 @@ namespace ASC.Core.Caching
         public const string REFS = "refs";
 
         public TrustInterval TrustInterval { get; set; }
-        public ICache Cache { get; }
+        internal ICache Cache { get; }
         internal CoreBaseSettings CoreBaseSettings { get; }
         internal ICacheNotify<UserInfoCacheItem> CacheUserInfoItem { get; }
         internal ICacheNotify<UserPhotoCacheItem> CacheUserPhotoItem { get; }
@@ -61,10 +61,11 @@ namespace ASC.Core.Caching
             ICacheNotify<UserInfoCacheItem> cacheUserInfoItem,
             ICacheNotify<UserPhotoCacheItem> cacheUserPhotoItem,
             ICacheNotify<GroupCacheItem> cacheGroupCacheItem,
-            ICacheNotify<UserGroupRefCacheItem> cacheUserGroupRefItem)
+            ICacheNotify<UserGroupRefCacheItem> cacheUserGroupRefItem, 
+            ICache cache)
         {
             TrustInterval = new TrustInterval();
-            Cache = AscCache.Memory;
+            Cache = cache;
             CoreBaseSettings = coreBaseSettings;
             CacheUserInfoItem = cacheUserInfoItem;
             CacheUserPhotoItem = cacheUserPhotoItem;
@@ -258,6 +259,12 @@ namespace ASC.Core.Caching
                 return u;
             }
         }
+
+        public UserInfo GetUser(int tenant, string email)
+        {
+            return Service.GetUser(tenant, email);
+        }
+
 
         /// <summary>
         /// For Personal only

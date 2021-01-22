@@ -12,19 +12,17 @@ import {
 } from "asc-web-components";
 import { ReactSVG } from "react-svg";
 import { withTranslation } from "react-i18next";
-import { utils, api, toastr } from "asc-web-common";
+import { utils, api } from "asc-web-common";
 import {
   getFileIcon,
   getFolderIcon,
-  isSpreadsheet,
-  isPresentation,
-  isDocument,
-  getSelection,
+  getSortedFiles,
 } from "../../../store/files/selectors";
 import {
-  setProgressBarData,
-  clearProgressData,
+  setSecondaryProgressBarData,
+  clearSecondaryProgressData,
 } from "../../../store/files/actions";
+import { TIMEOUT } from "../../../helpers/constants";
 import DownloadContent from "./DownloadContent";
 import { createI18N } from "../../../helpers/i18n";
 const i18n = createI18N({
@@ -51,38 +49,15 @@ const formatKeys = Object.freeze({
 class DownloadDialogComponent extends React.Component {
   constructor(props) {
     super(props);
+    const { sortedFiles } = this.props;
 
     changeLanguage(i18n);
 
-    const documents = [];
-    const spreadsheets = [];
-    const presentations = [];
-    const other = [];
-
-    for (let item of props.items) {
-      item.checked = true;
-      item.format = formatKeys.OriginalFormat;
-
-      if (item.fileExst) {
-        if (isSpreadsheet(item.fileExst)) {
-          spreadsheets.push(item);
-        } else if (isPresentation(item.fileExst)) {
-          presentations.push(item);
-        } else if (item.fileExst !== ".pdf" && isDocument(item.fileExst)) {
-          documents.push(item);
-        } else {
-          other.push(item);
-        }
-      } else {
-        other.push(item);
-      }
-    }
-
     this.state = {
-      documents,
-      spreadsheets,
-      presentations,
-      other,
+      documents: sortedFiles.documents,
+      spreadsheets: sortedFiles.spreadsheets,
+      presentations: sortedFiles.presentations,
+      other: sortedFiles.other,
 
       documentsTitleFormat: formatKeys.OriginalFormat,
       spreadsheetsTitleFormat: formatKeys.OriginalFormat,
@@ -178,8 +153,8 @@ class DownloadDialogComponent extends React.Component {
       onDownloadProgress,
       onClose,
       t,
-      setProgressBarData,
-      clearProgressData,
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
     } = this.props;
 
     const downloadItems = this.getDownloadItems();
@@ -187,20 +162,26 @@ class DownloadDialogComponent extends React.Component {
     const folderIds = downloadItems[1];
 
     if (fileConvertIds.length || folderIds.length) {
-      setProgressBarData({
+      setSecondaryProgressBarData({
+        icon: "file",
         visible: true,
         percent: 0,
         label: t("ArchivingData"),
+        alert: false,
       });
       api.files
         .downloadFormatFiles(fileConvertIds, folderIds)
-        .then(() => {
+        .then((res) => {
           onClose();
-          onDownloadProgress(false);
+          onDownloadProgress(res[0]);
         })
         .catch((err) => {
-          toastr.error(err);
-          clearProgressData();
+          setSecondaryProgressBarData({
+            visible: true,
+            alert: true,
+          });
+          //toastr.error(err);
+          setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
         });
     }
   };
@@ -624,11 +605,11 @@ const DownloadDialog = (props) => (
 
 const mapStateToProps = (state) => {
   return {
-    items: getSelection(state),
+    sortedFiles: getSortedFiles(state),
   };
 };
 
 export default connect(mapStateToProps, {
-  setProgressBarData,
-  clearProgressData,
+  setSecondaryProgressBarData,
+  clearSecondaryProgressData,
 })(withRouter(DownloadDialog));

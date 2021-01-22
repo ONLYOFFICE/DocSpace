@@ -1,7 +1,8 @@
 import React from "react";
 import styled, { css } from "styled-components";
 import { utils } from "asc-web-components";
-const { tablet } = utils.device;
+import { isIOS, isTablet, isSafari, isChrome } from "react-device-detect";
+const { tablet, size } = utils.device;
 
 const tabletProps = css`
   .section-header_filter {
@@ -21,12 +22,22 @@ const StyledSection = styled.section`
   flex-direction: column;
   /*width: ${(props) => `${props.widthProp}px`};*/
   .layout-progress-bar {
-    bottom: 0;
-    position: sticky;
-    margin-left: -24px;
+    position: fixed;
+    right: 15px;
+    bottom: 21px;
 
     @media ${tablet} {
-      margin-left: -16px;
+      bottom: 83px;
+    }
+  }
+
+  .layout-progress-second-bar {
+    position: fixed;
+    right: 15px;
+    bottom: 83px;
+
+    @media ${tablet} {
+      bottom: 145px;
     }
   }
 
@@ -47,8 +58,22 @@ class Section extends React.Component {
   /*shouldComponentUpdate() {
     return false;
   }*/
+  componentDidUpdate() {
+    const { pinned } = this.props;
+
+    if (
+      isIOS &&
+      isTablet &&
+      (isSafari || isChrome) &&
+      window.innerWidth <= size.smallTablet &&
+      pinned
+    ) {
+      this.props.unpinArticle();
+    }
+  }
   render() {
     //console.log("PageLayout Section render");
+
     return <StyledSection {...this.props} />;
   }
 }

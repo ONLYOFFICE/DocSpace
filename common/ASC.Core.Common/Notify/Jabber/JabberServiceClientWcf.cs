@@ -38,6 +38,11 @@ namespace ASC.Core.Notify.Jabber
         {
         }
 
+        public string GetVersion()
+        {
+            return Channel.GetVersion();
+        }
+
         public byte AddXmppConnection(string connectionId, string userName, byte state, int tenantId)
         {
             return Channel.AddXmppConnection(connectionId, userName, state, tenantId);

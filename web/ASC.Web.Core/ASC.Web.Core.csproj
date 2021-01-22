@@ -31,6 +31,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\common\ASC.Common\ASC.Common.csproj" />
     <ProjectReference Include="..\..\common\ASC.Core.Common\ASC.Core.Common.csproj" />
+    <ProjectReference Include="..\..\common\ASC.Data.Encryption\ASC.Data.Encryption.csproj" />
     <ProjectReference Include="..\..\common\ASC.Data.Storage\ASC.Data.Storage.csproj" />
     <ProjectReference Include="..\..\common\ASC.FederatedLogin\ASC.FederatedLogin.csproj" />
     <ProjectReference Include="..\..\common\ASC.Feed\ASC.Feed.csproj" />

@@ -1,0 +1,3 @@
+#!/bin/bash
+export SRV_VERSION=$DOCKER_TAG
+docker-compose -f build.yml push

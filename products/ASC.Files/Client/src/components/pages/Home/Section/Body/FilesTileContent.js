@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
-import { withTranslation } from "react-i18next";
+import { Trans, withTranslation } from "react-i18next";
 import styled from "styled-components";
 import { Link, Text, Icons, Badge } from "asc-web-components";
 import { constants, api, toastr, store as initStore } from "asc-web-common";
@@ -152,7 +152,7 @@ class FilesTileContent extends React.PureComponent {
   };
 
   createItem = (e) => {
-    const { createFile, createFolder, item, setIsLoading } = this.props;
+    const { createFile, item, setIsLoading, i18n } = this.props;
     const { itemTitle } = this.state;
 
     setIsLoading(true);
@@ -162,10 +162,25 @@ class FilesTileContent extends React.PureComponent {
     !item.fileExst
       ? createFolder(item.parentId, itemTitle)
           .then(() => this.completeAction(e))
-          .finally(() => setIsLoading(false))
+          .finally(() => {
+            toastr.success(
+              <Trans i18nKey="FolderCreated" i18n={i18n}>
+                New folder {{ itemTitle }} is created
+              </Trans>
+            );
+            return setIsLoading(false);
+          })
       : createFile(item.parentId, `${itemTitle}.${item.fileExst}`)
           .then(() => this.completeAction(e))
-          .finally(() => setIsLoading(false));
+          .finally(() => {
+            const exst = item.fileExst;
+            toastr.success(
+              <Trans i18nKey="FileCreated" i18n={i18n}>
+                New file {{ itemTitle }}.{{ exst }} is created
+              </Trans>
+            );
+            return setIsLoading(false);
+          });
   };
 
   componentDidUpdate(prevProps) {
@@ -203,7 +218,7 @@ class FilesTileContent extends React.PureComponent {
   };
 
   onFilesClick = () => {
-    const { id, fileExst, viewUrl } = this.props.item;
+    const { id, fileExst, viewUrl, providerKey } = this.props.item;
     const {
       filter,
       parentFolder,
@@ -228,7 +243,7 @@ class FilesTileContent extends React.PureComponent {
         .finally(() => setIsLoading(false));
     } else {
       if (canWebEdit) {
-        return openDocEditor(id);
+        return openDocEditor(id, providerKey);
       }
 
       const isOpenMedia =
@@ -446,7 +461,6 @@ function mapStateToProps(state, props) {
 
 export default connect(mapStateToProps, {
   createFile,
-  createFolder,
   updateFile,
   renameFolder,
   setTreeFolders,

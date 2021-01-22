@@ -32,6 +32,7 @@
     <None Remove="protos\ConsumerCacheItem.proto" />
     <None Remove="protos\CreateClientProto.proto" />
     <None Remove="protos\DisableClientProto.proto" />
+    <None Remove="protos\EncryptionSettingsProto.proto" />
     <None Remove="protos\GroupCacheItem.proto" />
     <None Remove="protos\NotifyInvoke.proto" />
     <None Remove="protos\NotifyMessage.proto" />
@@ -65,6 +66,7 @@
   </ItemGroup>
   <ItemGroup>
     <Protobuf Include="protos\CreateClientProto.proto" />
+    <Protobuf Include="protos\EncryptionSettingsProto.proto" />
     <Protobuf Include="protos\NotifyInvoke.proto" />
     <Protobuf Include="protos\NotifyMessage.proto" />
     <Protobuf Include="protos\DisableClientProto.proto" />

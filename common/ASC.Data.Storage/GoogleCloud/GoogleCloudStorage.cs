@@ -37,6 +37,7 @@ using System.Text;
 using System.Threading;
 using System.Web;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Data.Storage.Configuration;
@@ -55,6 +56,7 @@ using MimeMapping = ASC.Common.Web.MimeMapping;
 
 namespace ASC.Data.Storage.GoogleCloud
 {
+    [Scope]
     public class GoogleCloudStorage : BaseStorage
     {
         private string _subDir = string.Empty;
@@ -68,6 +70,14 @@ namespace ASC.Data.Storage.GoogleCloud
         private Uri _bucketSSlRoot;
 
         private bool _lowerCasing = true;
+
+        public GoogleCloudStorage(
+            TenantManager tenantManager,
+            PathUtils pathUtils,
+            EmailValidationKeyProvider emailValidationKeyProvider,
+            IOptionsMonitor<ILog> options) : base(tenantManager, pathUtils, emailValidationKeyProvider, options)
+        {
+        }
 
         public GoogleCloudStorage(
             TenantManager tenantManager,
@@ -787,7 +797,7 @@ namespace ASC.Data.Storage.GoogleCloud
                     }
 
                     if (status != 308)
-                        throw;
+                        throw (ex);
 
                     break;
                 }

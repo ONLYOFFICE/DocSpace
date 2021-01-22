@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta
       name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no, viewport-fit=cover"
     />
     <meta name="theme-color" content="#000000" />
     <base href="%PUBLIC_URL%/" />
@@ -72,13 +72,13 @@
           display: none;
         }
       }
-      .burger-loader-svg{
+      .burger-loader-svg {
         display: none;
         width: 24px;
         height: 24px;
         padding-left: 16px;
       }
-      .logo-loader-svg{
+      .logo-loader-svg {
         display: none;
         width: 168px;
         height: 24px;
@@ -86,7 +86,7 @@
         cursor: pointer;
         padding-left: 16px;
       }
-      .avatar-loader-svg{
+      .avatar-loader-svg {
         display: none;
         width: 36px;
         height: 36px;
@@ -97,7 +97,7 @@
   <body>
     <noscript> You need to enable JavaScript to run this app. </noscript>
 
-    <div id="temp-content">
+    <div id="temp-content" style="display: none">
       <header class="temp-header-container">
         <div id="burger-loader-svg" class="burger-loader-svg">
           <svg
@@ -116,8 +116,11 @@
             ></rect>
             <defs>
               <linearGradient id="fill0">
-                <stop offset="0.599964" stop-color="#fff" stop-opacity="0.25">
-                </stop>
+                <stop
+                  offset="0.599964"
+                  stop-color="#fff"
+                  stop-opacity="0.25"
+                ></stop>
               </linearGradient>
             </defs>
           </svg>
@@ -139,8 +142,11 @@
             ></rect>
             <defs>
               <linearGradient id="fill01">
-                <stop offset="0.599964" stop-color="#fff" stop-opacity="0.25">
-                </stop>
+                <stop
+                  offset="0.599964"
+                  stop-color="#fff"
+                  stop-opacity="0.25"
+                ></stop>
               </linearGradient>
             </defs>
           </svg>
@@ -164,8 +170,11 @@
             ></circle>
             <defs>
               <linearGradient id="fill02">
-                <stop offset="0.599964" stop-color="#fff" stop-opacity="0.25">
-                </stop>
+                <stop
+                  offset="0.599964"
+                  stop-color="#fff"
+                  stop-opacity="0.25"
+                ></stop>
               </linearGradient>
             </defs>
           </svg>
@@ -193,8 +202,11 @@
               <rect x="3" y="3" rx="5" ry="5" width="100%" />
             </clipPath>
             <linearGradient id="fill1">
-              <stop offset="0.599964" stop-color="#000000" stop-opacity="0.1">
-              </stop>
+              <stop
+                offset="0.599964"
+                stop-color="#000000"
+                stop-opacity="0.1"
+              ></stop>
             </linearGradient>
           </defs>
         </svg>
@@ -213,14 +225,15 @@
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
     <script>
-      if (localStorage.getItem("asc_auth_key")){
-        let el = document.getElementById("burger-loader-svg");
-        let el1 = document.getElementById("logo-loader-svg");
-        let el2 = document.getElementById("avatar-loader-svg");
+      console.log("AscDesktopEditor", window["AscDesktopEditor"]);
 
+      var pathname = window.location.pathname.toLowerCase();
+      if (
+        pathname.indexOf("thirdparty") === -1 &&
+        window["AscDesktopEditor"] === undefined
+      ) {
+        let el = document.getElementById("temp-content");
         el.style.display = "block";
-        el1.style.display = "block";
-        el2.style.display = "block";
       }
     </script>
   </body>

@@ -146,7 +146,7 @@
 		  "props": {
 			"docuSignClientId": "",
 			"docuSignClientSecret": "",
-			"docuSignHost": "",
+			"docuSignHost": ""
 		  },
 		  "additional": {
 			"docuSignRedirectUrl" : ""
@@ -186,33 +186,6 @@
 		  }
 	  }
     },
-/*	{
-      "type": "ASC.Web.Files.Helpers.EasyBibHelper, ASC.Web.Files",
-      "services": [
-        {
-          "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
-        }, 
-		{
-		  "type": "ASC.Web.Files.Helpers.EasyBibHelper, ASC.Web.Files"
-		}, 
-		{
-		  "key": "EasyBib",
-		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
-		}, 
-		{
-		  "key": "EasyBib",
-		  "type": "ASC.Web.Files.Helpers.EasyBibHelper, ASC.Web.Files"
-		}
-      ],
-	  "instanceScope": "perlifetimescope",
-	  "parameters": {
-		  "name": "EasyBib",
-		  "order": "15",
-		  "props": {
-			"easyBibappkey": ""
-		  }
-	  }
-    },*/
 	{
       "type": "ASC.FederatedLogin.LoginProviders.FacebookLoginProvider, ASC.FederatedLogin",
       "services": [
@@ -270,7 +243,7 @@
 			"firebase_apiKey": "",
 			"firebase_projectId": "",
 			"firebase_messagingSenderId": "",
-			"firebase_authorization": "",
+			"firebase_authorization": ""
 		  }
 	  }
     },
@@ -459,39 +432,6 @@
 		  }
 	  }
     },
-/*	{
-      "type": "ASC.FederatedLogin.LoginProviders.TwitterLoginProvider, ASC.FederatedLogin",
-      "services": [
-        {
-          "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
-        }, 
-		{
-		  "type": "ASC.FederatedLogin.LoginProviders.TwitterLoginProvider, ASC.FederatedLogin"
-		}, 
-		{
-		  "key": "Twitter",
-		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
-		}, 
-		{
-		  "key": "Twitter",
-		  "type": "ASC.FederatedLogin.LoginProviders.TwitterLoginProvider, ASC.FederatedLogin"
-		}
-      ],
-	  "instanceScope": "perlifetimescope",
-	  "parameters": {
-		  "name": "Twitter",
-		  "order": "7",
-		  "props": {
-			"twitterKey": "",
-			"twitterSecret": "",
-			"twitterAccessToken_Default": "",
-			"twitterAccessTokenSecret_Default": ""
-		  },
-		  "additional": {
-			"twitterRedirectUrl" : ""
-		  }
-	  }
-    }, */
 	{
       "type": "ASC.FederatedLogin.LoginProviders.YahooLoginProvider, ASC.FederatedLogin",
       "services": [

@@ -20,7 +20,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="protos\EncryptionSettingsProto.proto" />
     <None Remove="protos\EncryptionStop.proto" />
     <None Remove="protos\MigrationCache.proto" />
     <None Remove="protos\MigrationProgress.proto" />
@@ -51,7 +50,6 @@
 
   <ItemGroup>
     <Protobuf Include="protos\DataStoreCacheItem.proto" />
-    <Protobuf Include="protos\EncryptionSettingsProto.proto" />
     <Protobuf Include="protos\EncryptionStop.proto" />
     <Protobuf Include="protos\MigrationCache.proto" />
     <Protobuf Include="protos\MigrationProgress.proto" />

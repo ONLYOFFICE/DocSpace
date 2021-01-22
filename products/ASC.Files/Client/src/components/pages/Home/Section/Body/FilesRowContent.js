@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
-import { withTranslation } from "react-i18next";
+import { Trans, withTranslation } from "react-i18next";
 import styled from "styled-components";
 import {
   RowContent,
@@ -13,18 +13,19 @@ import {
 } from "asc-web-components";
 import { constants, api, toastr, store as initStore } from "asc-web-common";
 import {
-  clearProgressData,
+  clearSecondaryProgressData,
   createFile,
   createFolder,
   fetchFiles,
   renameFolder,
   setIsLoading,
   setNewRowItems,
-  setProgressBarData,
+  setSecondaryProgressBarData,
   setTreeFolders,
   setUpdateTree,
   updateFile,
 } from "../../../../../store/files/actions";
+import { TIMEOUT } from "../../../../../helpers/constants";
 import {
   canConvert,
   canWebEdit,
@@ -33,9 +34,10 @@ import {
   getFilter,
   getFolders,
   getIsLoading,
+  getIsPrivacyFolder,
   getIsRecycleBinFolder,
   getNewRowItems,
-  getRootFolderId,
+  getPathParts,
   getSelectedFolder,
   getSelectedFolderNew,
   getSelectedFolderParentId,
@@ -49,10 +51,12 @@ import { NewFilesPanel } from "../../../../panels";
 import { ConvertDialog } from "../../../../dialogs";
 import EditingWrapperComponent from "./EditingWrapperComponent";
 import { isMobile } from "react-device-detect";
+import { setEncryptionAccess } from "../../../../../helpers/desktop";
 
 const { FileAction } = constants;
 const sideColor = "#A3A9AE";
-const { getSettings } = initStore.auth.selectors;
+const { getSettings, isDesktopClient } = initStore.auth.selectors;
+const { getEncryptionAccess, replaceFileStream } = initStore.auth.actions;
 
 const SimpleFilesRowContent = styled(RowContent)`
   .badge-ext {
@@ -65,7 +69,9 @@ const SimpleFilesRowContent = styled(RowContent)`
     width: 14px;
     margin-right: 6px;
   }
-
+  .lock-file {
+    cursor: pointer;
+  }
   .badges {
     display: flex;
     align-items: center;
@@ -143,7 +149,12 @@ class FilesRowContent extends React.PureComponent {
     const originalTitle = getTitleWithoutExst(item);
 
     setIsLoading(true);
-    if (originalTitle === itemTitle) return this.completeAction(fileAction.id);
+    if (originalTitle === itemTitle || itemTitle.trim() === "") {
+      this.setState({
+        itemTitle: originalTitle,
+      });
+      return this.completeAction(fileAction.id);
+    }
 
     item.fileExst
       ? updateFile(fileAction.id, itemTitle)
@@ -157,10 +168,14 @@ class FilesRowContent extends React.PureComponent {
   createItem = (e) => {
     const {
       createFile,
-      createFolder,
       item,
       setIsLoading,
       openDocEditor,
+      isPrivacy,
+      isDesktop,
+      replaceFileStream,
+      i18n,
+      t,
     } = this.props;
     const { itemTitle } = this.state;
 
@@ -168,20 +183,61 @@ class FilesRowContent extends React.PureComponent {
 
     const itemId = e.currentTarget.dataset.itemid;
 
-    if (itemTitle.trim() === "") return this.completeAction(itemId);
+    if (itemTitle.trim() === "") {
+      toastr.warning(this.props.t("CreateWithEmptyTitle"));
+      return this.completeAction(itemId);
+    }
 
-    let tab = item.fileExst ? window.open("about:blank", "_blank") : null;
+    let tab =
+      !isDesktop && item.fileExst
+        ? window.open("/products/files/doceditor", "_blank")
+        : null;
 
     !item.fileExst
       ? createFolder(item.parentId, itemTitle)
           .then(() => this.completeAction(itemId))
-          .finally(() => setIsLoading(false))
+          .then(() =>
+            toastr.success(
+              <Trans i18nKey="FolderCreated" i18n={i18n}>
+                New folder {{ itemTitle }} is created
+              </Trans>
+            )
+          )
+          .catch((e) => toastr.error(e))
+          .finally(() => {
+            return setIsLoading(false);
+          })
       : createFile(item.parentId, `${itemTitle}.${item.fileExst}`)
           .then((file) => {
-            openDocEditor(file.id, tab, file.webUrl);
-            this.completeAction(itemId);
+            if (isPrivacy) {
+              return setEncryptionAccess(file).then((encryptedFile) => {
+                if (!encryptedFile) return Promise.resolve();
+                toastr.info(t("EncryptedFileSaving"));
+                return replaceFileStream(
+                  file.id,
+                  encryptedFile,
+                  true,
+                  false
+                ).then(() =>
+                  openDocEditor(file.id, file.providerKey, tab, file.webUrl)
+                );
+              });
+            }
+            return openDocEditor(file.id, file.providerKey, tab, file.webUrl);
           })
-          .finally(() => setIsLoading(false));
+          .then(() => this.completeAction(itemId))
+          .then(() => {
+            const exst = item.fileExst;
+            return toastr.success(
+              <Trans i18nKey="FileCreated" i18n={i18n}>
+                New file {{ itemTitle }}.{{ exst }} is created
+              </Trans>
+            );
+          })
+          .catch((e) => toastr.error(e))
+          .finally(() => {
+            return setIsLoading(false);
+          });
   };
 
   componentDidUpdate(prevProps) {
@@ -203,11 +259,23 @@ class FilesRowContent extends React.PureComponent {
   }
 
   renameTitle = (e) => {
-    this.setState({ itemTitle: e.target.value });
+    let title = e.target.value;
+    //const chars = '*+:"<>?|/'; TODO: think how to solve problem with interpolation escape values in i18n translate
+    const regexp = new RegExp('[*+:"<>?|\\\\/]', "gim");
+    if (title.match(regexp)) {
+      toastr.warning(this.props.t("ContainsSpecCharacter"));
+    }
+    title = title.replace(regexp, "_");
+    return this.setState({ itemTitle: title });
   };
 
   cancelUpdateItem = (e) => {
-    this.completeAction(e);
+    const originalTitle = getTitleWithoutExst(this.props.item);
+    this.setState({
+      itemTitle: originalTitle,
+    });
+
+    return this.completeAction(e);
   };
 
   onClickUpdateItem = (e) => {
@@ -231,7 +299,7 @@ class FilesRowContent extends React.PureComponent {
       isTrashFolder,
       openDocEditor,
     } = this.props;
-    const { id, fileExst, viewUrl } = item;
+    const { id, fileExst, viewUrl, providerKey } = item;
 
     if (isTrashFolder) return;
 
@@ -251,7 +319,7 @@ class FilesRowContent extends React.PureComponent {
         .finally(() => setIsLoading(false));
     } else {
       if (canWebEdit) {
-        return openDocEditor(id);
+        return openDocEditor(id, providerKey);
       }
 
       if (isImage || isSound || isVideo) {
@@ -317,7 +385,7 @@ class FilesRowContent extends React.PureComponent {
       item,
       treeFolders,
       setTreeFolders,
-      rootFolderId,
+      selectedFolderPathParts,
       newItems,
       setNewRowItems,
       setUpdateTree,
@@ -327,7 +395,9 @@ class FilesRowContent extends React.PureComponent {
         .markAsRead([], [item.id])
         .then(() => {
           const data = treeFolders;
-          const dataItem = data.find((x) => x.id === rootFolderId);
+          const dataItem = data.find(
+            (x) => x.id === selectedFolderPathParts[0]
+          );
           dataItem.newItems = newItems ? dataItem.newItems - 1 : 0;
           setUpdateTree(true);
           setTreeFolders(data);
@@ -357,33 +427,48 @@ class FilesRowContent extends React.PureComponent {
       selectedFolder,
       filter,
       setIsLoading,
-      setProgressBarData,
+      setSecondaryProgressBarData,
       t,
-      clearProgressData,
+      clearSecondaryProgressData,
       fetchFiles,
     } = this.props;
-    api.files.getConvertFile(fileId).then((res) => {
+    api.files.getFileConversationProgress(fileId).then((res) => {
       if (res && res[0] && res[0].progress !== 100) {
-        setProgressBarData({
+        setSecondaryProgressBarData({
+          icon: "file",
           visible: true,
           percent: res[0].progress,
           label: t("Convert"),
+          alert: false,
         });
         setTimeout(() => this.getConvertProgress(fileId), 1000);
       } else {
         if (res[0].error) {
+          setSecondaryProgressBarData({
+            visible: true,
+            alert: true,
+          });
           toastr.error(res[0].error);
-          clearProgressData();
+          setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
         } else {
-          setProgressBarData({
+          setSecondaryProgressBarData({
+            icon: "file",
             visible: true,
             percent: 100,
             label: t("Convert"),
+            alert: false,
           });
-          setTimeout(() => clearProgressData(), 5000);
+          setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
           const newFilter = filter.clone();
           fetchFiles(selectedFolder.id, newFilter)
-            .catch((err) => toastr.error(err))
+            .catch((err) => {
+              setSecondaryProgressBarData({
+                visible: true,
+                alert: true,
+              });
+              //toastr.error(err);
+              setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+            })
             .finally(() => setIsLoading(false));
         }
       }
@@ -391,8 +476,14 @@ class FilesRowContent extends React.PureComponent {
   };
 
   onConvert = () => {
-    const { item, t, setProgressBarData } = this.props;
-    setProgressBarData({ visible: true, percent: 0, label: t("Convert") });
+    const { item, t, setSecondaryProgressBarData } = this.props;
+    setSecondaryProgressBarData({
+      icon: "file",
+      visible: true,
+      percent: 0,
+      label: t("Convert"),
+      alert: false,
+    });
     this.setState({ showConvertDialog: false }, () =>
       api.files.convertFile(item.id).then((convertRes) => {
         if (convertRes && convertRes[0] && convertRes[0].progress !== 100) {
@@ -412,7 +503,7 @@ class FilesRowContent extends React.PureComponent {
       isLoading,
       isMobile,
       canWebEdit,
-      canConvert,
+      /* canConvert,*/
       sectionWidth,
     } = this.props;
     const {
@@ -434,6 +525,7 @@ class FilesRowContent extends React.PureComponent {
       id,
       versionGroup,
       locked,
+      providerKey,
     } = item;
     const titleWithoutExt = getTitleWithoutExst(item);
     const fileOwner =
@@ -443,9 +535,10 @@ class FilesRowContent extends React.PureComponent {
     const updatedDate = updated && this.getStatusByDate();
 
     const isEdit = id === editingId && fileExst === fileAction.extension;
-    const linkStyles = isTrashFolder
-      ? { noHover: true }
-      : { onClick: this.onFilesClick };
+    const linkStyles =
+      isTrashFolder || window.innerWidth <= 1024
+        ? { noHover: true }
+        : { onClick: this.onFilesClick };
     const showNew = !!newItems;
 
     return isEdit ? (
@@ -509,7 +602,7 @@ class FilesRowContent extends React.PureComponent {
                 >
                   {fileExst}
                 </Text>
-                {canConvert && !isTrashFolder && (
+                {/* TODO: Uncomment after fix conversation {canConvert && !isTrashFolder && (
                   <IconButton
                     onClick={this.setConvertDialogVisible}
                     iconName="FileActionsConvertIcon"
@@ -519,7 +612,7 @@ class FilesRowContent extends React.PureComponent {
                     color="#A3A9AE"
                     hoverColor="#3B72A7"
                   />
-                )}
+                )} */}
                 {canWebEdit && !isTrashFolder && (
                   <IconButton
                     onClick={this.onFilesClick}
@@ -551,10 +644,13 @@ class FilesRowContent extends React.PureComponent {
                 )}
                 {locked && (
                   <Icons.FileActionsLockedIcon
-                    className="badge"
+                    className="badge lock-file"
                     size="small"
                     isfill={true}
                     color="#3B72A7"
+                    data-id={item.id}
+                    data-locked={true}
+                    onClick={this.props.onClickLock}
                   />
                 )}
                 {versionGroup > 1 && (
@@ -629,7 +725,7 @@ class FilesRowContent extends React.PureComponent {
             color={sideColor}
             className="row_update-text"
           >
-            {updatedDate && updatedDate}
+            {(fileExst || !providerKey) && updatedDate && updatedDate}
           </Text>
           <Text
             containerMinWidth="90px"
@@ -643,9 +739,11 @@ class FilesRowContent extends React.PureComponent {
           >
             {fileExst
               ? contentLength
-              : `${t("TitleDocuments")}: ${filesCount} | ${t(
+              : !providerKey
+              ? `${t("TitleDocuments")}: ${filesCount} | ${t(
                   "TitleSubfolders"
-                )}: ${foldersCount}`}
+                )}: ${foldersCount}`
+              : ""}
           </Text>
         </SimpleFilesRowContent>
       </>
@@ -661,13 +759,15 @@ function mapStateToProps(state, props) {
     isTrashFolder: getIsRecycleBinFolder(state),
     settings: getSettings(state),
     treeFolders: getTreeFolders(state),
-    rootFolderId: getRootFolderId(state),
+    selectedFolderPathParts: getPathParts(state),
     newItems: getSelectedFolderNew(state),
     selectedFolder: getSelectedFolder(state),
     folders: getFolders(state),
     newRowItems: getNewRowItems(state),
     dragging: getDragging(state),
     isLoading: getIsLoading(state),
+    isPrivacy: getIsPrivacyFolder(state),
+    isDesktop: isDesktopClient(state),
 
     canWebEdit: canWebEdit(props.item.fileExst)(state),
     canConvert: canConvert(props.item.fileExst)(state),
@@ -679,14 +779,15 @@ function mapStateToProps(state, props) {
 
 export default connect(mapStateToProps, {
   createFile,
-  createFolder,
   updateFile,
   renameFolder,
   setTreeFolders,
-  setProgressBarData,
+  setSecondaryProgressBarData,
   setUpdateTree,
   setNewRowItems,
   setIsLoading,
-  clearProgressData,
+  clearSecondaryProgressData,
   fetchFiles,
+  getEncryptionAccess,
+  replaceFileStream,
 })(withRouter(withTranslation()(FilesRowContent)));

@@ -91,7 +91,7 @@ namespace ASC.ElasticSearch
         private IServiceProvider ServiceProvider { get; }
         public string IndexName { get => Indexer.IndexName; }
 
-        public ICache Cache { get; }
+        private ICache Cache { get; }
         public virtual string SettingsTitle { get => ""; }
 
         public FactoryIndexer(
@@ -100,9 +100,10 @@ namespace ASC.ElasticSearch
             SearchSettingsHelper searchSettingsHelper,
             FactoryIndexer factoryIndexer,
             BaseIndexer<T> baseIndexer,
-            IServiceProvider serviceProvider)
+            IServiceProvider serviceProvider, 
+            ICache cache)
         {
-            Cache = AscCache.Memory;
+            Cache = cache;
             Logger = options.Get("ASC.Indexer");
             TenantManager = tenantManager;
             SearchSettingsHelper = searchSettingsHelper;
@@ -223,7 +224,7 @@ namespace ASC.ElasticSearch
                 {
                     Logger.Error("inner", inner.Response.OriginalException);
 
-                    if (inner.Response.HttpStatusCode == 413)
+                    if (inner.Response.HttpStatusCode == 413 || inner.Response.HttpStatusCode == 403)
                     {
                         data.ForEach(r => Index(r, immediately));
                     }
@@ -455,7 +456,7 @@ namespace ASC.ElasticSearch
     [Scope]
     public class FactoryIndexer
     {
-        private static readonly ICache cache = AscCache.Memory;
+        private readonly ICache cache;
 
         private FactoryIndexerHelper FactoryIndexerHelper { get; }
         internal ILifetimeScope Builder { get; set; }
@@ -469,8 +470,10 @@ namespace ASC.ElasticSearch
             FactoryIndexerHelper factoryIndexerHelper,
             Client client,
             IOptionsMonitor<ILog> options,
-            CoreBaseSettings coreBaseSettings)
+            CoreBaseSettings coreBaseSettings, 
+            ICache cache)
         {
+            this.cache = cache;
             Builder = container;
             FactoryIndexerHelper = factoryIndexerHelper;
             Client = client;

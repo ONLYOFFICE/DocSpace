@@ -1,14 +1,14 @@
 import React from "react";
-import isEqual from "lodash/isEqual";
+import equal from "fast-deep-equal/react";
 import { FieldContainer, RadioButtonGroup } from "asc-web-components";
 
 class RadioField extends React.Component {
   shouldComponentUpdate(nextProps) {
-    return !isEqual(this.props, nextProps);
+    return !equal(this.props, nextProps);
   }
 
   render() {
-    console.log("RadioField render");
+    //console.log("RadioField render");
 
     const {
       isRequired,

@@ -15,14 +15,17 @@ using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Web;
 using ASC.Core;
+using ASC.Core.Common.Settings;
 using ASC.FederatedLogin.Helpers;
 using ASC.Files.Core;
 using ASC.Files.Model;
 using ASC.Web.Core.Files;
 using ASC.Web.Files.Classes;
+using ASC.Web.Files.Core.Entries;
 using ASC.Web.Files.Services.DocumentService;
 using ASC.Web.Files.Services.WCFService;
 using ASC.Web.Files.Utils;
+using ASC.Web.Studio.Core;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
@@ -57,7 +60,10 @@ namespace ASC.Files.Helpers
         private EntryManager EntryManager { get; }
         private FolderContentWrapperHelper FolderContentWrapperHelper { get; }
         private ChunkedUploadSessionHelper ChunkedUploadSessionHelper { get; }
-        public ILog Logger { get; set; }
+        private DocumentServiceTrackerHelper DocumentServiceTracker { get; }
+        private SettingsManager SettingsManager { get; }
+        private EncryptionKeyPairHelper EncryptionKeyPairHelper { get; }
+        private ILog Logger { get; set; }
 
         /// <summary>
         /// </summary>
@@ -80,7 +86,10 @@ namespace ASC.Files.Helpers
             EntryManager entryManager,
             FolderContentWrapperHelper folderContentWrapperHelper,
             ChunkedUploadSessionHelper chunkedUploadSessionHelper,
-            IOptionsMonitor<ILog> optionMonitor)
+            DocumentServiceTrackerHelper documentServiceTracker,
+            IOptionsMonitor<ILog> optionMonitor,
+            SettingsManager settingsManager,
+            EncryptionKeyPairHelper encryptionKeyPairHelper)
         {
             ApiContext = context;
             FileStorageService = fileStorageService;
@@ -98,6 +107,9 @@ namespace ASC.Files.Helpers
             EntryManager = entryManager;
             FolderContentWrapperHelper = folderContentWrapperHelper;
             ChunkedUploadSessionHelper = chunkedUploadSessionHelper;
+            DocumentServiceTracker = documentServiceTracker;
+            SettingsManager = settingsManager;
+            EncryptionKeyPairHelper = encryptionKeyPairHelper;
             Logger = optionMonitor.Get("ASC.Files");
         }
 
@@ -192,6 +204,22 @@ namespace ASC.Files.Helpers
         {
             DocumentServiceHelper.GetParams(fileId, version, doc, true, true, true, out var configuration);
             configuration.EditorType = EditorType.External;
+            configuration.EditorConfig.CallbackUrl = DocumentServiceTracker.GetCallbackUrl(configuration.Document.Info.File.ID.ToString());
+
+            if (configuration.Document.Info.File.RootFolderType == FolderType.Privacy && PrivacyRoomSettings.GetEnabled(SettingsManager))
+            {
+                var keyPair = EncryptionKeyPairHelper.GetKeyPair();
+                if (keyPair != null)
+                {
+                    configuration.EditorConfig.EncryptionKeys = new EncryptionKeysConfig
+                    {
+                        PrivateKeyEnc = keyPair.PrivateKeyEnc,
+                        PublicKey = keyPair.PublicKey,
+                    };
+                }
+            }
+
+
             configuration.Token = DocumentServiceHelper.GetSignature(configuration);
             return configuration;
         }
@@ -359,7 +387,12 @@ namespace ASC.Files.Helpers
                 {
                     try
                     {
-                        var jResult = JsonSerializer.Deserialize<FileJsonSerializerData<T>>(r.Result);
+                        var options = new JsonSerializerOptions
+                        {
+                            AllowTrailingCommas = true,
+                            PropertyNameCaseInsensitive = true
+                        };
+                        var jResult = JsonSerializer.Deserialize<FileJsonSerializerData<T>>(r.Result, options);
                         o.File = GetFileInfo(jResult.Id, jResult.Version);
                     }
                     catch (Exception e)
@@ -543,6 +576,11 @@ namespace ASC.Files.Helpers
             }
 
             return sharedInfo.Link;
+        }
+
+        public bool SetAceLink(T fileId, FileShare share)
+        {
+            return FileStorageService.SetAceLink(fileId, share);
         }
 
         ///// <summary>

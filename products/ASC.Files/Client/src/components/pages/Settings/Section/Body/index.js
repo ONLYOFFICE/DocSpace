@@ -22,6 +22,7 @@ import {
   getSettingsTreeEnableThirdParty,
   getSettingsTree,
 } from "../../../../../store/files/selectors";
+import ConnectClouds from "./ConnectedClouds";
 
 const { isAdmin } = store.auth.selectors;
 
@@ -162,17 +163,13 @@ const SectionBodyContent = ({
     );
   };
 
-  const renderClouds = () => {
-    return <></>;
-  };
-
   let content;
 
   if (setting === "admin" && isAdmin) content = renderAdminSettings();
   if (setting === "common") content = renderCommonSettings();
-  if (setting === "thirdparty" && enableThirdParty) content = renderClouds();
+  if (setting === "thirdParty" && enableThirdParty) content = <ConnectClouds />;
 
-  return isLoading ? null : (!enableThirdParty && setting === "thirdparty") ||
+  return isLoading ? null : (!enableThirdParty && setting === "thirdParty") ||
     (!isAdmin && setting === "admin") ? (
     <Error403 />
   ) : isErrorSettings ? (

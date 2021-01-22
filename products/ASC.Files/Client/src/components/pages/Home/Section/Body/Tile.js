@@ -1,7 +1,7 @@
 import { Checkbox, ContextMenuButton } from "asc-web-components";
 import PropTypes from "prop-types";
 import React from "react";
-import isEqual from "lodash/isEqual";
+import equal from "fast-deep-equal/react";
 import styled, { css } from "styled-components";
 import BadgesFileTile from "./BadgesFileTile";
 
@@ -111,7 +111,7 @@ class Tile extends React.Component {
     if (this.props.needForUpdate) {
       return this.props.needForUpdate(this.props, nextProps);
     }
-    return !isEqual(this.props, nextProps);
+    return !equal(this.props, nextProps);
   }
 
   render() {

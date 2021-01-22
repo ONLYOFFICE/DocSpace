@@ -98,13 +98,11 @@ namespace ASC.Common.Threading
 
         public T GetProperty<T>(string name)
         {
-            if (!DistributedTaskCache.Props.Any(r => r.Key == name)) return default;
+            var prop = DistributedTaskCache.Props.FirstOrDefault(r => r.Key == name);
 
-            var val = DistributedTaskCache.Props.SingleOrDefault(r => r.Key == name);
+            if (prop == null) return default;
 
-            if (val == null) return default;
-
-            return JsonSerializer.Deserialize<T>(val.Value);
+            return JsonSerializer.Deserialize<T>(prop.Value);
         }
 
         public void SetProperty(string name, object value)

@@ -19,30 +19,25 @@ import {
   changePassword,
 } from "../../../../store/confirm/actions";
 
-const { createPasswordHash } = commonUtils;
-const { logout } = store.auth.actions;
+const { createPasswordHash, tryRedirectTo } = commonUtils;
+const { logout, getPortalSettings } = store.auth.actions;
 
 const BodyStyle = styled.form`
   margin: 70px auto 0 auto;
   max-width: 500px;
-
   .password-header {
     margin-bottom: 24px;
-
     .password-logo {
       max-width: 216px;
       max-height: 35px;
     }
-
     .password-title {
       margin: 8px 0;
     }
   }
-
   .password-text {
     margin-bottom: 5px;
   }
-
   .password-button {
     margin-top: 20px;
   }
@@ -80,7 +75,7 @@ class Form extends React.PureComponent {
   onSubmit = (e) => {
     this.setState({ isLoading: true }, function () {
       const { userId, password, key } = this.state;
-      const { history, changePassword, hashSettings } = this.props;
+      const { changePassword, hashSettings, defaultPage } = this.props;
       let hasError = false;
 
       if (!this.state.passwordValid) {
@@ -99,8 +94,8 @@ class Form extends React.PureComponent {
       changePassword(userId, hash, key)
         .then(() => this.props.logout())
         .then(() => {
-          history.push("/");
           toastr.success(this.props.t("ChangePasswordSuccess"));
+          tryRedirectTo(defaultPage);
         })
         .catch((error) => {
           toastr.error(this.props.t(`${error}`));
@@ -110,10 +105,10 @@ class Form extends React.PureComponent {
   };
 
   componentDidMount() {
-    const { getConfirmationInfo, history } = this.props;
+    const { getConfirmationInfo, defaultPage } = this.props;
     getConfirmationInfo(this.state.key).catch((error) => {
       toastr.error(this.props.t(`${error}`));
-      history.push("/");
+      tryRedirectTo(defaultPage);
     });
 
     window.addEventListener("keydown", this.onKeyPress);
@@ -221,6 +216,7 @@ function mapStateToProps(state) {
     isAuthenticated: state.auth.isAuthenticated,
     greetingTitle: state.auth.settings.greetingSettings,
     hashSettings: state.auth.settings.hashSettings,
+    defaultPage: state.auth.settings.defaultPage,
   };
 }
 

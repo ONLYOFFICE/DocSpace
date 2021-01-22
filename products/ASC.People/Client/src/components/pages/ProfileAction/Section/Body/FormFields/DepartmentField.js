@@ -1,5 +1,5 @@
 import React from "react";
-import isEqual from "lodash/isEqual";
+import equal from "fast-deep-equal/react";
 import {
   FieldContainer,
   SelectorAddButton,
@@ -9,8 +9,13 @@ import { GroupSelector } from "asc-web-common";
 
 class DepartmentField extends React.Component {
   shouldComponentUpdate(nextProps) {
-    return !isEqual(this.props, nextProps);
+    return !equal(this.props, nextProps);
   }
+
+  onRemoveGroup = (e) => {
+    const groupId = e.currentTarget.parentElement.dataset.id;
+    this.props.onRemoveGroup(groupId);
+  };
 
   render() {
     console.log("DepartmentField render");
@@ -25,7 +30,6 @@ class DepartmentField extends React.Component {
 
       onShowGroupSelector,
       onCloseGroupSelector,
-      onRemoveGroup,
 
       selectorIsVisible,
       selectorSelectedOptions,
@@ -55,11 +59,11 @@ class DepartmentField extends React.Component {
           <SelectedItem
             key={`department_${option.key}`}
             text={option.label}
-            onClose={() => {
-              onRemoveGroup(option.key);
-            }}
+            data-id={option.key}
+            onClose={this.onRemoveGroup}
             isInline={true}
             className="department-item"
+            isDisabled={isDisabled}
           />
         ))}
       </FieldContainer>

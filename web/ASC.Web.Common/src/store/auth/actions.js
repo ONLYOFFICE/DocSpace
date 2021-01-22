@@ -1,4 +1,8 @@
 import { default as api } from "../../api";
+import { isDesktopClient } from "./selectors";
+import { logout as logoutDesktop } from "../../desktop/";
+import { setWithCredentialsStatus } from "../../api/client";
+import history from "../../history";
 
 export const LOGIN_POST = "LOGIN_POST";
 export const SET_CURRENT_USER = "SET_CURRENT_USER";
@@ -17,6 +21,10 @@ export const SET_CURRENT_PRODUCT_HOME_PAGE = "SET_CURRENT_PRODUCT_HOME_PAGE";
 export const SET_GREETING_SETTINGS = "SET_GREETING_SETTINGS";
 export const SET_CUSTOM_NAMES = "SET_CUSTOM_NAMES";
 export const SET_WIZARD_COMPLETED = "SET_WIZARD_COMPLETED";
+export const FETCH_ENCRYPTION_KEYS = "FETCH_ENCRYPTION_KEYS";
+export const SET_IS_ENCRYPTION_SUPPORT = "SET_IS_ENCRYPTION_SUPPORT";
+export const SET_IS_AUTHENTICATED = "SET_IS_AUTHENTICATED";
+export const SET_IS_TABLET_VIEW = "SET_IS_TABLET_VIEW";
 
 export function setCurrentUser(user) {
   return {
@@ -128,11 +136,47 @@ export function setWizardComplete() {
   };
 }
 
+export function fetchEncryptionKeys(keys) {
+  return {
+    type: FETCH_ENCRYPTION_KEYS,
+    keys,
+  };
+}
+
+export function setIsEncryptionSupport(isSupport) {
+  return {
+    type: SET_IS_ENCRYPTION_SUPPORT,
+    isSupport,
+  };
+}
+
+export function setIsAuthenticated(isAuthenticated) {
+  return {
+    type: SET_IS_AUTHENTICATED,
+    isAuthenticated,
+  };
+}
+
+export function setIsTabletView(isTabletView) {
+  return {
+    type: SET_IS_TABLET_VIEW,
+    isTabletView,
+  };
+}
+
 export function getUser(dispatch) {
   return api.people
     .getUser()
     .then((user) => dispatch(setCurrentUser(user)))
+    .then(() => dispatch(setIsAuthenticated(true)))
     .catch((err) => dispatch(setCurrentUser({})));
+}
+
+export function getIsAuthenticated(dispatch) {
+  return api.user.checkIsAuthenticated().then((success) => {
+    dispatch(setIsAuthenticated(success));
+    return success;
+  });
 }
 
 export function getPortalSettings(dispatch) {
@@ -176,16 +220,29 @@ export function login(user, hash) {
     return api.user
       .login(user, hash)
       .then(() => dispatch(setIsLoaded(false)))
-      .then(() => getUserInfo(dispatch));
+      .then(() => {
+        setWithCredentialsStatus(true);
+        return dispatch(setIsAuthenticated(true));
+      })
+      .then(() => {
+        getUserInfo(dispatch);
+        getEncryptionKeys(dispatch);
+      });
   };
 }
 
-export function logout() {
-  return (dispatch) => {
-    return api.user
-      .logout()
-      .then(() => dispatch(setLogout()))
-      .then(() => dispatch(setIsLoaded(true)));
+export function logout(withoutRedirect) {
+  return (dispatch, getState) => {
+    const state = getState();
+    const isDesktop = isDesktopClient(state);
+    return api.user.logout().then(() => {
+      setWithCredentialsStatus(false);
+      isDesktop && logoutDesktop();
+      dispatch(setLogout());
+      if (!withoutRedirect) {
+        history.push("/login");
+      }
+    });
   };
 }
 
@@ -210,3 +267,48 @@ export function getPortalPasswordSettings(dispatch, confirmKey = null) {
 export const reloadPortalSettings = () => {
   return (dispatch) => getPortalSettings(dispatch);
 };
+
+export function setEncryptionKeys(keys) {
+  return (dispatch) => {
+    return api.files
+      .setEncryptionKeys(keys)
+      .then(() => {
+        console.log(
+          "%c%s",
+          "color: green; font: 1.1em/1 bold;",
+          "Encryption keys successfully set"
+        );
+        dispatch(fetchEncryptionKeys(keys ?? {}));
+      })
+      .catch((err) => console.error(err));
+  };
+}
+
+export function getEncryptionKeys(dispatch) {
+  return api.files
+    .getEncryptionKeys()
+    .then((res) => dispatch(fetchEncryptionKeys(res ?? {})))
+    .catch((err) => console.error(err));
+}
+
+export function getEncryptionAccess(fileId) {
+  return api.files
+    .getEncryptionAccess(fileId)
+    .then((keys) => {
+      return Promise.resolve(keys);
+    })
+    .catch((err) => console.error(err));
+}
+
+export function getIsEncryptionSupport(dispatch) {
+  return api.files
+    .getIsEncryptionSupport()
+    .then((res) => dispatch(setIsEncryptionSupport(res)))
+    .catch((err) => console.error(err));
+}
+
+export function replaceFileStream(fileId, file, encrypted, forcesave) {
+  return (dispatch) => {
+    return api.files.updateFileStream(file, fileId, encrypted, forcesave);
+  };
+}

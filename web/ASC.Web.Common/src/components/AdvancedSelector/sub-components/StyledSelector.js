@@ -125,6 +125,7 @@ const StyledSelector = styled(Container)`
     /* background-color: red; */
     padding: 16px 16px 0 16px;
     grid-row-gap: 2px;
+    overflow: hidden;
 
     grid-template-columns: 1fr;
     grid-template-rows: ${(props) =>
@@ -137,7 +138,7 @@ const StyledSelector = styled(Container)`
               ? "100px"
               : "30px"
             : props.groups && props.groups.length > 0
-            ? "70px"
+            ? "75px"
             : "30px"
           : "30px"} 1fr;
     grid-template-areas: "header-options" "body-options";
@@ -207,7 +208,7 @@ const StyledSelector = styled(Container)`
     .body-options {
       grid-area: body-options;
       margin-left: -8px;
-      margin-top: 5px;
+      margin-top: 2px;
 
       @media ${tablet} {
         width: 290px;

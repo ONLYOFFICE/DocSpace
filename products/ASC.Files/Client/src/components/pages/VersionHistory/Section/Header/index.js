@@ -1,21 +1,18 @@
 import React from "react";
-import styled, { css } from "styled-components";
-import { withRouter } from "react-router";
-import { Headline, store } from "asc-web-common";
+import styled from "styled-components";
+import { Headline } from "asc-web-common";
 import { IconButton, utils } from "asc-web-components";
-import { connect } from "react-redux";
-import { withTranslation } from "react-i18next";
 
-const { tablet, desktop } = utils.device;
-const { getSettings } = store.auth.selectors;
+const { desktop } = utils.device;
 
 const StyledContainer = styled.div`
-  display: flex;
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
   align-items: center;
 
   .arrow-button {
     margin-left: -8px;
-    margin-right: 24px;
+    margin-right: 15px;
     min-width: 17px;
 
     @media (max-width: 1024px) {
@@ -24,51 +21,6 @@ const StyledContainer = styled.div`
     }
   }
 
-  @media ${desktop} {
-    ${(props) =>
-      props.isHeaderVisible &&
-      css`
-        width: calc(100% + 76px);
-      `}
-  }
-
-  .group-button-menu-container {
-    margin: 0 -16px;
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-
-    @media ${tablet} {
-      & > div:first-child {
-        position: absolute;
-        top: 56px;
-        z-index: 180;
-      }
-    }
-
-    @media ${desktop} {
-      margin: 0 -24px;
-    }
-  }
-
-  .header-container {
-    position: relative;
-
-    display: flex;
-    align-items: center;
-    max-width: calc(100vw - 32px);
-
-    .action-button {
-      margin-left: 16px;
-
-      @media ${tablet} {
-        margin-left: auto;
-
-        & > div:first-child {
-          padding: 8px 16px 8px 16px;
-          margin-right: -16px;
-        }
-      }
-    }
-  }
   .headline-header {
     @media ${desktop} {
       margin-left: -9px;
@@ -77,15 +29,10 @@ const StyledContainer = styled.div`
 `;
 
 const SectionHeaderContent = (props) => {
-  const { title } = props;
-
-  const onClickBack = () => {
-    const { history, settings } = props;
-    history.push(settings.homepage);
-  };
+  const { title, onClickBack } = props;
 
   return (
-    <StyledContainer isHeaderVisible={true}>
+    <StyledContainer>
       <IconButton
         iconName="ArrowPathIcon"
         size="17"
@@ -103,12 +50,4 @@ const SectionHeaderContent = (props) => {
   );
 };
 
-const mapStateToProps = (state) => {
-  return {
-    settings: getSettings(state),
-  };
-};
-
-export default connect(mapStateToProps)(
-  withTranslation()(withRouter(SectionHeaderContent))
-);
+export default SectionHeaderContent;

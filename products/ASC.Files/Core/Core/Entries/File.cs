@@ -66,7 +66,8 @@ namespace ASC.Files.Core
         public File(Global global,
             FilesLinkUtility filesLinkUtility,
             FileUtility fileUtility,
-            FileConverter fileConverter)
+            FileConverter fileConverter,
+            FileTrackerHelper fileTracker)
             : base(global)
         {
             Version = 1;
@@ -75,6 +76,7 @@ namespace ASC.Files.Core
             FilesLinkUtility = filesLinkUtility;
             FileUtility = fileUtility;
             FileConverter = fileConverter;
+            FileTracker = fileTracker;
         }
 
         public int Version { get; set; }
@@ -231,6 +233,9 @@ namespace ASC.Files.Core
         }
 
         public object NativeAccessor { get; set; }
+
+        [NonSerialized]
+        private FileTrackerHelper FileTracker;
 
         [NonSerialized]
         private readonly FilesLinkUtility FilesLinkUtility;

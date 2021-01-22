@@ -199,6 +199,25 @@ import OrigCatalogPrivateRoomIcon from "./catalog.private.react.svg";
 import OrigMoveToIcon from "./move.react.svg";
 
 import OrigIntegrationIcon from "./integration.react.svg";
+import OrigCustomFilterIcon from "./custom.filter.react.svg";
+
+import OrigButtonUploadIcon from "./button.upload.react.svg";
+import OrigButtonFileIcon from "./button.file.react.svg";
+import OrigButtonTrashIcon from "./button.trash.react.svg";
+import OrigButtonMoveIcon from "./button.move.react.svg";
+import OrigButtonDuplicateIcon from "./button.duplicate.react.svg";
+import OrigButtonAlertIcon from "./button.alert.react.svg";
+
+import OrigBoxIcon from "./icon_box.react.svg";
+import OrigDropBoxIcon from "./icon_dropbox.react.svg";
+import OrigGoogleDriveIcon from "./icon_google_drive.react.svg";
+import OrigOneDriveIcon from "./icon_onedrive.react.svg";
+import OrigSharePointIcon from "./icon_sharepoint.react.svg";
+import OrigKDriveIcon from "./icon_kdrive.react.svg";
+import OrigYandexDiskIcon from "./icon_yandex_disk.react.svg";
+import OrigOwnCloudIcon from "./icon_owncloud.react.svg";
+import OrigNextCloudIcon from "./icon_nextcloud.react.svg";
+import OrigWebDavIcon from "./icon_webdav.react.svg";
 
 export const AZSortingIcon = createStyledIcon(
   OrigAZSortingIcon,
@@ -265,6 +284,30 @@ export const ArrowContentIcon = createStyledIcon(
   "ArrowContentIcon"
 );
 export const BloggerIcon = createStyledIcon(OrigBloggerIcon, "BloggerIcon");
+export const ButtonUploadIcon = createStyledIcon(
+  OrigButtonUploadIcon,
+  "ButtonUploadIcon"
+);
+export const ButtonFileIcon = createStyledIcon(
+  OrigButtonFileIcon,
+  "ButtonFileIcon"
+);
+export const ButtonTrashIcon = createStyledIcon(
+  OrigButtonTrashIcon,
+  "ButtonTrashIcon"
+);
+export const ButtonMoveIcon = createStyledIcon(
+  OrigButtonMoveIcon,
+  "ButtonMoveIcon"
+);
+export const ButtonDuplicateIcon = createStyledIcon(
+  OrigButtonDuplicateIcon,
+  "ButtonDuplicateIcon"
+);
+export const ButtonAlertIcon = createStyledIcon(
+  OrigButtonAlertIcon,
+  "ButtonAlertIcon"
+);
 export const CalendarCheckedIcon = createStyledIcon(
   OrigCalendarCheckedIcon,
   "CalendarCheckedIcon"
@@ -409,6 +452,10 @@ export const CrossIcon = createStyledIcon(OrigCrossIcon, "CrossIcon");
 export const CrossSidebarIcon = createStyledIcon(
   OrigCrossSidebarIcon,
   "CrossSidebarIcon"
+);
+export const CustomFilterIcon = createStyledIcon(
+  OrigCustomFilterIcon,
+  "CustomFilterIcon"
 );
 export const DangerIcon = createStyledIcon(OrigDangerIcon, "DangerIcon");
 export const DangerToastIcon = createStyledIcon(
@@ -775,3 +822,26 @@ export const IntegrationIcon = createStyledIcon(
   OrigIntegrationIcon,
   "IntegrationIcon"
 );
+
+export const BoxIcon = createStyledIcon(OrigBoxIcon, "BoxIcon");
+export const DropBoxIcon = createStyledIcon(OrigDropBoxIcon, "DropBoxIcon");
+export const GoogleDriveIcon = createStyledIcon(
+  OrigGoogleDriveIcon,
+  "GoogleDriveIcon"
+);
+export const OneDriveIcon = createStyledIcon(OrigOneDriveIcon, "OneDriveIcon");
+export const SharePointIcon = createStyledIcon(
+  OrigSharePointIcon,
+  "SharePointIcon"
+);
+export const KDriveIcon = createStyledIcon(OrigKDriveIcon, "KDriveIcon");
+export const YandexDiskIcon = createStyledIcon(
+  OrigYandexDiskIcon,
+  "YandexDiskIcon"
+);
+export const OwnCloudIcon = createStyledIcon(OrigOwnCloudIcon, "OwnCloudIcon");
+export const NextCloudIcon = createStyledIcon(
+  OrigNextCloudIcon,
+  "NextCloudIcon"
+);
+export const WebDavIcon = createStyledIcon(OrigWebDavIcon, "WebDavIcon");

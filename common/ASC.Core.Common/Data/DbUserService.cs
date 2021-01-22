@@ -202,7 +202,7 @@ namespace ASC.Core.Data
 
         public Group GetGroup(int tenant, Guid id)
         {
-            return GetGroupQuery(UserDbContext, tenant, default)
+            return GetGroupQuery(tenant)
                 .Where(r => r.Id == id)
                 .Select(FromDbGroupToGroup)
                 .FirstOrDefault();
@@ -210,17 +210,24 @@ namespace ASC.Core.Data
 
         public IDictionary<Guid, Group> GetGroups(int tenant, DateTime from)
         {
-            return GetGroupQuery(UserDbContext, tenant, from)
+            return GetGroupQuery(tenant, from)
                 .Select(FromDbGroupToGroup)
                 .ToDictionary(r => r.Id, r => r);
         }
 
         public UserInfo GetUser(int tenant, Guid id)
         {
-            return GetUserQuery(UserDbContext, tenant, default)
+            return GetUserQuery(tenant)
                 .Where(r => r.Id == id)
                 .Select(FromUserToUserInfo)
                 .FirstOrDefault();
+        }
+
+        public UserInfo GetUser(int tenant, string email)
+        {
+            return GetUserQuery(tenant, default(DateTime))
+                .Select(FromUserToUserInfo)
+                .FirstOrDefault(r=> r.Email ==  email && !r.Removed);
         }
 
         public UserInfo GetUserByPasswordHash(int tenant, string login, string passwordHash)
@@ -234,7 +241,7 @@ namespace ASC.Core.Data
                 var pwdHash = GetPasswordHash(userId, passwordHash);
                 var oldHash = Hasher.Base64Hash(passwordHash, HashAlg.SHA256);
 
-                var q = UserDbContext.Users
+                var q = GetUserQuery(tenant)
                     .Where(r => !r.Removed)
                     .Where(r => r.Id == userId)
                     .Join(UserDbContext.UserSecurity, r => r.Id, r => r.UserId, (user, security) => new DbUserSecurity
@@ -247,54 +254,64 @@ namespace ASC.Core.Data
 
                 if (tenant != Tenant.DEFAULT_TENANT)
                 {
-                    q = q.Where(r => r.User.Tenant == tenant);
+                    q = q.Where(r => r.UserSecurity.Tenant == tenant);
                 }
 
                 return q.Select(r => r.User).Select(FromUserToUserInfo).FirstOrDefault();
             }
             else
             {
-                var q = UserDbContext.Users
+                var q = GetUserQuery(tenant)
                     .Where(r => !r.Removed)
                     .Where(r => r.Email == login)
                     ;
-                if (tenant != Tenant.DEFAULT_TENANT)
-                {
-                    q = q.Where(r => r.Tenant == tenant);
-                }
-                var user = q.Select(FromUserToUserInfo).FirstOrDefault();
-                if (user != null)
+
+                var users = q.Select(FromUserToUserInfo).ToList();
+                UserInfo result = null;
+                foreach (var user in users)
                 {
                     RegeneratePassword(tenant, user.ID);
 
                     var pwdHash = GetPasswordHash(user.ID, passwordHash);
                     var oldHash = Hasher.Base64Hash(passwordHash, HashAlg.SHA256);
 
-                    var count = UserDbContext.UserSecurity
-                        .Where(r => r.UserId == user.ID)
-                        .Where(r => r.PwdHash == pwdHash || r.PwdHash == oldHash)
-                        .Count();//todo: remove old scheme
+                    var any = UserDbContext.UserSecurity
+                        .Any(r => r.UserId == user.ID && (r.PwdHash == pwdHash || r.PwdHash == oldHash));//todo: remove old scheme
 
-                    if (count > 0) return user;
+                    if (any)
+                    {
+                        if (tenant != Tenant.DEFAULT_TENANT) return user;
+
+                        //need for regenerate all passwords only
+                        //todo: remove with old scheme
+                        result = user;
+                    }
                 }
 
-                return null;
+                return result;
             }
         }
 
         //todo: remove
         private void RegeneratePassword(int tenant, Guid userId)
         {
-            var h2 = UserDbContext.UserSecurity
-                .Where(r => r.Tenant == tenant)
-                .Where(r => r.UserId == userId)
-                .Select(r => r.PwdHashSha512)
-                .FirstOrDefault();
-            if (string.IsNullOrEmpty(h2)) return;
+            var q = UserDbContext.UserSecurity
+                .Where(r => r.UserId == userId);
 
-            var password = Crypto.GetV(h2, 1, false);
+            if (tenant != Tenant.DEFAULT_TENANT)
+            {
+                q = q.Where(r => r.Tenant == tenant);
+            }
+
+            var h2 = q.Select(r => new { r.Tenant, r.PwdHashSha512 })
+                .Take(1)
+                .FirstOrDefault();
+
+            if (h2 == null || string.IsNullOrEmpty(h2.PwdHashSha512)) return;
+
+            var password = Crypto.GetV(h2.PwdHashSha512, 1, false);
             var passwordHash = PasswordHasher.GetClientPassword(password);
-            SetUserPasswordHash(tenant, userId, passwordHash);
+            SetUserPasswordHash(h2.Tenant, userId, passwordHash);
         }
 
         public IDictionary<string, UserGroupRef> GetUserGroupRefs(int tenant, DateTime from)
@@ -338,7 +355,7 @@ namespace ASC.Core.Data
 
         public IDictionary<Guid, UserInfo> GetUsers(int tenant, DateTime from)
         {
-            return GetUserQuery(UserDbContext, tenant, from)
+            return GetUserQuery(tenant, from)
                 .Select(FromUserToUserInfo)
                 .ToDictionary(r => r.ID, r => r);
         }
@@ -346,11 +363,11 @@ namespace ASC.Core.Data
         public IQueryable<UserInfo> GetUsers(int tenant, bool isAdmin, EmployeeStatus? employeeStatus, List<List<Guid>> includeGroups, List<Guid> excludeGroups, EmployeeActivationStatus? activationStatus, string text, string sortBy, bool sortOrderAsc, long limit, long offset, out int total, out int count)
         {
             var userDbContext = UserDbContextManager.GetNew(DbId);
-            var totalQuery = userDbContext.Users.Where(r => r.Tenant == tenant);
+            var totalQuery = GetUserQuery(userDbContext, tenant);
             totalQuery = GetUserQueryForFilter(totalQuery, isAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, text);
             total = totalQuery.Count();
 
-            var q = GetUserQuery(userDbContext, tenant, default);
+            var q = GetUserQuery(userDbContext, tenant);
 
             q = GetUserQueryForFilter(q, isAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, text);
 
@@ -377,8 +394,8 @@ namespace ASC.Core.Data
         public IQueryable<UserInfo> GetUsers(int tenant, out int total)
         {
             var userDbContext = UserDbContextManager.GetNew(DbId);
-            total = userDbContext.Users.Where(r => r.Tenant == tenant).Count();
-            return userDbContext.Users.Where(r => r.Tenant == tenant).Select(FromUserToUserInfo);
+            total = userDbContext.Users.Count(r => r.Tenant == tenant);
+            return GetUserQuery(userDbContext, tenant).Select(FromUserToUserInfo);
         }
 
 
@@ -527,16 +544,18 @@ namespace ASC.Core.Data
             user.Email = user.Email.Trim();
 
             using var tx = UserDbContext.Database.BeginTransaction();
-            var count = UserDbContext.Users.Where(r => r.UserName == user.UserName && r.Id != user.ID && !r.Removed).Count();
+            var any = GetUserQuery(tenant)
+                .Any(r => r.UserName == user.UserName && r.Id != user.ID && !r.Removed);
 
-            if (count != 0)
+            if (any)
             {
                 throw new ArgumentOutOfRangeException("Duplicate username.");
             }
 
-            count = UserDbContext.Users.Where(r => r.Email == user.Email && r.Id != user.ID && !r.Removed).Count();
+            any = GetUserQuery(tenant)
+                .Any(r => r.Email == user.Email && r.Id != user.ID && !r.Removed);
 
-            if (count != 0)
+            if (any)
             {
                 throw new ArgumentOutOfRangeException("Duplicate email.");
             }
@@ -559,7 +578,7 @@ namespace ASC.Core.Data
 
             UserDbContext.AddOrUpdate(r => r.UserGroups, FromUserGroupRefToUserGroup(r));
 
-            var user = UserDbContext.Users.FirstOrDefault(a => a.Tenant == tenant && a.Id == r.UserId);
+            var user = GetUserQuery(tenant).FirstOrDefault(a => a.Tenant == tenant && a.Id == r.UserId);
             if (user != null)
             {
                 user.LastModified = r.LastModified;
@@ -620,9 +639,14 @@ namespace ASC.Core.Data
             tr.Commit();
         }
 
-        private IQueryable<User> GetUserQuery(UserDbContext UserDbContext, int tenant, DateTime from)
+        private IQueryable<User> GetUserQuery(int tenant, DateTime from = default)
         {
-            var q = UserDbContext.Users.Where(r => true);
+            return GetUserQuery(UserDbContext, tenant, from);
+        }
+
+        private IQueryable<User> GetUserQuery(UserDbContext userDbContext, int tenant, DateTime from = default)
+        {
+            var q = userDbContext.Users.AsQueryable();
 
             if (tenant != Tenant.DEFAULT_TENANT)
             {
@@ -637,7 +661,7 @@ namespace ASC.Core.Data
             return q;
         }
 
-        private IQueryable<DbGroup> GetGroupQuery(UserDbContext UserDbContext, int tenant, DateTime from)
+        private IQueryable<DbGroup> GetGroupQuery(int tenant, DateTime from = default)
         {
             var q = UserDbContext.Groups.Where(r => true);
 
@@ -752,7 +776,7 @@ namespace ASC.Core.Data
 
         public UserInfo GetUser(int tenant, Guid id, Expression<Func<User, UserInfo>> exp)
         {
-            return GetUserQuery(UserDbContext, tenant, default)
+            return GetUserQuery(tenant)
                     .Where(r => r.Id == id)
                     .Select(exp ?? FromUserToUserInfo)
                     .FirstOrDefault();

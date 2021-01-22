@@ -261,7 +261,7 @@ namespace ASC.Core.Common.Migrations.MySql.TenantDbContextMySql
             migrationBuilder.InsertData(
                 table: "core_user",
                 columns: new[] { "id", "activation_status", "bithdate", "contacts", "culture", "email", "firstname", "last_modified", "lastname", "location", "notes", "phone", "phone_activation", "removed", "sex", "sid", "sso_name_id", "sso_session_id", "status", "tenant", "terminateddate", "title", "username", "workfromdate" },
-                values: new object[] { "66faa6e4-f133-11ea-b126-00ffeec8b4ef", 0, null, null, null, "", "Administrator", new DateTime(2020, 10, 6, 10, 14, 35, 587, DateTimeKind.Utc).AddTicks(7841), "", null, null, null, 0, false, null, null, null, null, 1, 1, null, null, "administrator", new DateTime(2020, 10, 6, 10, 14, 35, 587, DateTimeKind.Utc).AddTicks(6725) });
+                values: new object[] {"66faa6e4-f133-11ea-b126-00ffeec8b4ef", 0, null, null, null, "", "Administrator", new DateTime(2020, 10, 6, 10, 14, 35, 587, DateTimeKind.Utc).AddTicks(7841), "", null, null, null, 0, false, null, null, null, null, 1, 1, null, null, "administrator", new DateTime(2020, 10, 6, 10, 14, 35, 587, DateTimeKind.Utc).AddTicks(6725) });
 
             migrationBuilder.InsertData(
                 table: "tenants_forbiden",

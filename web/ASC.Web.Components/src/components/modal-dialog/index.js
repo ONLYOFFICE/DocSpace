@@ -17,6 +17,7 @@ const Dialog = styled.div`
   display: flex;
   align-items: center;
   min-height: 100%;
+  cursor: default;
 `;
 
 const Content = styled.div`
@@ -177,7 +178,7 @@ class ModalDialog extends React.Component {
     });
 
     return this.state.displayType === "modal" ? (
-      <Backdrop visible={visible} zIndex={zIndex}>
+      <Backdrop visible={visible} zIndex={zIndex} withBackground={true}>
         <Dialog className={className} id={id} style={style}>
           <Content contentHeight={contentHeight} contentWidth={contentWidth}>
             <StyledHeader>
@@ -195,7 +196,12 @@ class ModalDialog extends React.Component {
       </Backdrop>
     ) : (
       <Box className={className} id={id} style={style}>
-        <Backdrop visible={visible} onClick={onClose} zIndex={zIndex} />
+        <Backdrop
+          visible={visible}
+          onClick={onClose}
+          zIndex={zIndex}
+          isAside={true}
+        />
         <Aside
           visible={visible}
           scale={scale}

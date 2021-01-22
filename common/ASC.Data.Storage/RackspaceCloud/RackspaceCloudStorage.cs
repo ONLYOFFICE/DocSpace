@@ -30,6 +30,7 @@ using System.IO;
 using System.Linq;
 using System.Web;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Data.Storage.Configuration;
@@ -45,6 +46,7 @@ using MimeMapping = ASC.Common.Web.MimeMapping;
 
 namespace ASC.Data.Storage.RackspaceCloud
 {
+    [Scope]
     public class RackspaceCloudStorage : BaseStorage
     {
         private string _region;
@@ -61,6 +63,16 @@ namespace ASC.Data.Storage.RackspaceCloud
         private Uri _cnameSSL;
 
         private readonly ILog _logger;
+
+        public RackspaceCloudStorage(
+            TenantManager tenantManager,
+            PathUtils pathUtils,
+            EmailValidationKeyProvider emailValidationKeyProvider,
+            IOptionsMonitor<ILog> options)
+            : base(tenantManager, pathUtils, emailValidationKeyProvider, options)
+        {
+            _logger = options.Get("ASC.Data.Storage.Rackspace.RackspaceCloudStorage");
+        }
 
         public RackspaceCloudStorage(
             TenantManager tenantManager,

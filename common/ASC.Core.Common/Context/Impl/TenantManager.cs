@@ -349,9 +349,9 @@ namespace ASC.Core
             QuotaService.SetTenantQuotaRow(row, exchange);
         }
 
-        public List<TenantQuotaRow> FindTenantQuotaRows(TenantQuotaRowQuery query)
+        public List<TenantQuotaRow> FindTenantQuotaRows(int tenantId)
         {
-            return QuotaService.FindTenantQuotaRows(query).ToList();
+            return QuotaService.FindTenantQuotaRows(tenantId).ToList();
         }
     }
 }

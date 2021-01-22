@@ -16,8 +16,10 @@ import {
   SET_DRAGGING,
   SET_DRAG_ITEM,
   SET_MEDIA_VIEWER_VISIBLE,
-  SET_PROGRESS_BAR_DATA,
+  SET_PRIMARY_PROGRESS_BAR_DATA,
+  SET_SECONDARY_PROGRESS_BAR_DATA,
   SET_CONVERT_DIALOG_VISIBLE,
+  SET_SHARING_PANEL_VISIBLE,
   SET_UPDATE_TREE,
   SET_NEW_ROW_ITEMS,
   SET_SELECTED_NODE,
@@ -29,6 +31,14 @@ import {
   SET_IS_ERROR_SETTINGS,
   SET_FIRST_LOAD,
   SET_UPLOAD_DATA,
+  SET_THIRDPARTY_CAPABILITIES,
+  SET_THIRDPARTY_PROVIDERS,
+  SET_CONNECT_ITEM,
+  SET_SHOW_THIRDPARTY_PANEL,
+  SET_IS_VER_HISTORY_PANEL,
+  SET_VER_HISTORY_FILE_ID,
+  SET_FILE_VERSIONS,
+  SET_CHANGE_OWNER_VISIBLE,
 } from "./actions";
 import { api } from "asc-web-common";
 import { isFileSelected, skipFile, getFilesBySelected } from "./selectors";
@@ -49,8 +59,22 @@ const initialState = {
   dragging: false,
   dragItem: null,
   mediaViewerData: { visible: false, id: null },
-  progressData: { percent: 0, label: "", visible: false },
+  primaryProgressData: {
+    percent: 0,
+    label: "",
+    visible: false,
+    icon: "upload",
+    alert: false,
+  },
+  secondaryProgressData: {
+    percent: 0,
+    label: "",
+    visible: false,
+    icon: "trash",
+    alert: false,
+  },
   convertDialogVisible: false,
+  sharingPanelVisible: false,
   updateTree: false,
   newRowItems: [],
   selectedTreeNode: [],
@@ -371,6 +395,16 @@ const initialState = {
     ],
   },
   privacyInstructions: "https://www.onlyoffice.com/private-rooms.aspx",
+  capabilities: [],
+  providers: [],
+  connectItem: null,
+  showThirdPartyPanel: false,
+  versionHistory: {
+    isVisible: false,
+    fileId: null,
+    versions: null,
+  },
+  ownerPanelVisible: false,
 };
 
 const filesReducer = (state = initialState, action) => {
@@ -459,13 +493,21 @@ const filesReducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         mediaViewerData: action.mediaViewerData,
       });
-    case SET_PROGRESS_BAR_DATA:
+    case SET_PRIMARY_PROGRESS_BAR_DATA:
       return Object.assign({}, state, {
-        progressData: action.progressData,
+        primaryProgressData: action.primaryProgressData,
+      });
+    case SET_SECONDARY_PROGRESS_BAR_DATA:
+      return Object.assign({}, state, {
+        secondaryProgressData: action.secondaryProgressData,
       });
     case SET_CONVERT_DIALOG_VISIBLE:
       return Object.assign({}, state, {
         convertDialogVisible: action.convertDialogVisible,
+      });
+    case SET_SHARING_PANEL_VISIBLE:
+      return Object.assign({}, state, {
+        sharingPanelVisible: action.sharingPanelVisible,
       });
     case SET_UPDATE_TREE:
       return Object.assign({}, state, {
@@ -541,6 +583,52 @@ const filesReducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         uploadData: action.uploadData,
       });
+    case SET_THIRDPARTY_CAPABILITIES:
+      return Object.assign({}, state, {
+        capabilities: action.capabilities,
+      });
+    case SET_THIRDPARTY_PROVIDERS:
+      return Object.assign({}, state, {
+        providers: action.providers,
+      });
+    case SET_CONNECT_ITEM:
+      return Object.assign({}, state, {
+        connectItem: action.connectItem,
+      });
+    case SET_SHOW_THIRDPARTY_PANEL:
+      return Object.assign({}, state, {
+        showThirdPartyPanel: action.showThirdPartyPanel,
+      });
+
+    case SET_IS_VER_HISTORY_PANEL:
+      return Object.assign({}, state, {
+        versionHistory: {
+          ...state.versionHistory,
+          isVisible: action.isVisible,
+        },
+      });
+    case SET_VER_HISTORY_FILE_ID: {
+      return Object.assign({}, state, {
+        versionHistory: {
+          ...state.versionHistory,
+          fileId: action.fileId,
+        },
+      });
+    }
+    case SET_FILE_VERSIONS: {
+      return Object.assign({}, state, {
+        versionHistory: {
+          ...state.versionHistory,
+          versions: action.versions,
+        },
+      });
+    }
+    case SET_CHANGE_OWNER_VISIBLE: {
+      return Object.assign({}, state, {
+        ownerPanelVisible: action.ownerPanelVisible,
+      });
+    }
+
     default:
       return state;
   }

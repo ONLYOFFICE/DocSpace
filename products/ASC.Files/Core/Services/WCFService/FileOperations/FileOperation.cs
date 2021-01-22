@@ -178,10 +178,10 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 Status = status2;
             }
 
-            var finished1 = thirdpartyTask.GetProperty<string>(FINISHED);
-            var finished2 = daoTask.GetProperty<string>(FINISHED);
+            var finished1 = thirdpartyTask.GetProperty<bool?>(FINISHED);
+            var finished2 = daoTask.GetProperty<bool?>(FINISHED);
 
-            if (!string.IsNullOrEmpty(finished1) && !string.IsNullOrEmpty(finished2))
+            if (finished1 != null && finished2 != null)
             {
                 TaskInfo.SetProperty(FINISHED, finished1);
             }
