@@ -983,7 +983,7 @@ const finishUploadFiles = (getState, dispatch) => {
   const { uploadPanelVisible } = state.files;
   const totalErrorsCount = sumBy(files, (f) => (f.error ? 1 : 0));
 
-  if (totalErrorsCount > 0) return;
+  if (totalErrorsCount > 0) console.log("Errors: ", totalErrorsCount);
 
   const uploadData = {
     files: uploadPanelVisible ? files : [],
