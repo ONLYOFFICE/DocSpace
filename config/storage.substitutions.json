@@ -1,0 +1,91 @@
+{
+    "storage": {
+      "appender": [
+        {
+          "name": "generic",
+          "append": "~/"
+        }
+      ],
+      "handler": [
+        {
+          "name": "s3",
+          "type": "ASC.Data.Storage.S3.S3Storage, ASC.Data.Storage",
+          "property": [
+            {
+                "acesskey": "${S3_ACCESSKEY}",
+                "secretaccesskey": "${S3_SECRETACCESSKEY}",
+                "bucket": "${S3_BUCKET}",
+                "cname": "${S3_CNAME}",
+                "region": "${S3_REGION}",
+                "recycleDir": "${S3_RECYCLEDIR}"
+            }
+          ]
+        }
+      ],
+      "module": [
+        {
+          "name": "forum",
+          "type": "s3"
+        },
+        {
+          "name": "bookmarking",
+          "type": "s3"
+        },
+        {
+          "name": "wiki",
+          "type": "s3"
+        },
+        {
+          "name": "files",
+          "type": "s3",
+          "domain": [
+            {
+              "name": "files_temp"
+            }
+          ]
+        },
+        {
+          "name": "crm",
+          "type": "s3"
+        },
+        {
+          "name": "fckuploaders",
+          "type": "s3"
+        },
+        {
+          "name": "talk",
+          "type": "s3"
+        },
+        {
+          "name": "mailaggregator",
+          "type": "s3"
+        },
+        {
+          "name": "logo",
+          "type": "s3"
+        },
+        {
+          "name": "whitelabel",
+          "type": "s3"
+        },
+        {
+          "name": "backup",
+          "type": "s3"
+        },
+        {
+          "name": "customnavigation",
+          "type": "s3"
+        },
+        {
+          "name": "userPhotos",
+          "type": "s3"
+        },
+        {
+          "name": "static_partnerdata",
+          "type": "s3",
+          "acl": "Read"
+        }
+      ]
+    }
+  }
+  

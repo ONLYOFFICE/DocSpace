@@ -27,6 +27,8 @@ x-service:
       S3_SECRETACCESSKEY: ${S3_SECRETACCESSKEY}
       S3_BUCKET: ${S3_BUCKET}
       S3_REGION: ${S3_REGION}
+      S3_CNAME: ${S3_CNAME}
+      S3_RECYCLEDIR: ${S3_RECYCLEDIR}
     volumes:
     #- /app/onlyoffice/CommunityServer/data:/app/onlyoffice/data
     - app_data:/app/onlyoffice/data
