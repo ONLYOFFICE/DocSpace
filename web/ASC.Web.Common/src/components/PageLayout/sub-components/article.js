@@ -34,7 +34,7 @@ const StyledArticle = styled.article`
     }
     ${isMobile &&
     css`
-      margin-top: 56px;
+      margin-top: ${(props) => (props.pinned ? "56px;" : "0;")}
       height: calc(100% - 56px) !important;
       width: 240px !important;
     `}

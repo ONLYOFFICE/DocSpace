@@ -18,7 +18,7 @@ import store from "../../store";
 const { setIsTabletView } = store.auth.actions;
 const { getIsTabletView, isArticlePinned } = store.auth.selectors;
 
-const { size } = utils.device;
+const { size, isSmallTablet } = utils.device;
 
 const StyledContainer = styled.div`
   width: 100%;
@@ -49,14 +49,21 @@ const StyledContainer = styled.div`
 
   #articleScrollBar {
     > .scroll-body {
-      position: ${isMobile ? "static" : "absolute"} !important;
+      position: ${(props) =>
+        isMobile && !isSmallTablet()
+          ? props.isArticlePinned
+            ? "static"
+            : "absolute"
+          : "absolute"} !important;
 
       ${(props) =>
         isMobile &&
         props.isArticlePinned &&
+        !isSmallTablet() &&
         css`
           overflow-y: hidden !important;
           overflow-x: hidden !important;
+          width: 208px;
           /* max-width: calc(100vw - 576px);
           min-width: 208px; */
         `}/* > div:first-child {
@@ -80,7 +87,7 @@ const StyledContainer = styled.div`
 `;
 
 const Layout = (props) => {
-  const { children, isTabletView, setIsTabletView } = props;
+  const { children, isTabletView, setIsTabletView, isArticlePinned } = props;
 
   const [contentHeight, setContentHeight] = useState();
   const [isPortrait, setIsPortrait] = useState();
