@@ -43,7 +43,16 @@ class UploadPanelComponent extends React.Component {
   }
 
   onClose = () => {
-    this.props.setUploadPanelVisible(!this.props.uploadPanelVisible);
+    const {
+      setUploadPanelVisible,
+      uploadPanelVisible,
+      uploaded,
+      clearUploadData,
+    } = this.props;
+    setUploadPanelVisible(!uploadPanelVisible);
+    if (uploaded) {
+      clearUploadData();
+    }
   };
   componentDidMount() {
     document.addEventListener("keyup", this.onKeyPress);
