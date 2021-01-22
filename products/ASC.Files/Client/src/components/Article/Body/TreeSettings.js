@@ -34,7 +34,6 @@ const StyledTreeMenu = styled(TreeMenu)`
   margin-top: 18px !important;
   @media (max-width: 1024px) {
     margin-top: 14px !important;
-    margin-bottom: 64px !important;
   }
 
   .rc-tree-node-selected {
