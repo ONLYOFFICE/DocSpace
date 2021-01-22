@@ -1602,12 +1602,8 @@ export const getUploadData = (state) => {
   return state.files.uploadData;
 };
 
-export const getUploadDataPercent = createSelector(getUploadData, (data) => {
-  return data.percent;
-});
-
-export const isUploaded = createSelector(getUploadDataPercent, (percent) => {
-  return percent === 100;
+export const isUploaded = createSelector(getUploadData, (data) => {
+  return data.uploaded;
 });
 
 export const getUploadDataFiles = (state) => {

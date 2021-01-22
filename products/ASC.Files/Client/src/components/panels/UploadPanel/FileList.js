@@ -7,7 +7,7 @@ import { getUploadDataFiles } from "../../../store/files/selectors";
 import RowWrapper from "./RowWrapper";
 
 const FileList = ({ uploadDataFiles }) => {
-  console.log("FileList render");
+  //console.log("FileList render");
 
   return (
     <AutoSizer>

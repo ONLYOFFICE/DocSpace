@@ -125,7 +125,9 @@ const FileRow = (props) => {
         className="download-row"
         key={item.uniqueId}
         checkbox={false}
-        element={<img className={item.error && "img_error"} src={fileIcon} alt="" />}
+        element={
+          <img className={item.error && "img_error"} src={fileIcon} alt="" />
+        }
       >
         <>
           {item.fileId ? (
@@ -176,7 +178,7 @@ const FileRow = (props) => {
               <Icons.LoadErrorIcon
                 size="medium"
                 data-for="errorTooltip"
-                data-tip={item.error || t("UnknownError")}
+                data-tip={item.error || /*t("UnknownError")*/ "Unknown Error"}
               />
               <Tooltip
                 id="errorTooltip"

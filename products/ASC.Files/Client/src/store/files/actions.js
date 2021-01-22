@@ -963,16 +963,30 @@ const getFilesToConvert = (files) => {
   return filesToConvert;
 };
 
+export const clearUploadData = () => {
+  return (dispatch) => {
+    const uploadData = {
+      files: [],
+      filesSize: 0,
+      uploadStatus: null,
+      uploadedFiles: 0,
+      percent: 0,
+      uploaded: true,
+    };
+    dispatch(setUploadData(uploadData));
+  };
+};
+
 const finishUploadFiles = (getState, dispatch) => {
   const state = getState();
   const { files } = state.files.uploadData;
-
+  const { uploadPanelVisible } = state.files;
   const totalErrorsCount = sumBy(files, (f) => (f.error ? 1 : 0));
 
   if (totalErrorsCount > 0) return;
 
   const uploadData = {
-    files: [],
+    files: uploadPanelVisible ? files : [],
     filesSize: 0,
     uploadStatus: null,
     uploadedFiles: 0,

@@ -6,6 +6,7 @@ import { connect } from "react-redux";
 import {
   setUploadPanelVisible,
   cancelUpload,
+  clearUploadData,
 } from "../../../store/files/actions";
 import {
   getUploadPanelVisible,
@@ -58,11 +59,12 @@ class UploadPanelComponent extends React.Component {
   };
 
   clearUploadPanel = () => {
+    this.props.clearUploadData();
     this.onClose();
   };
 
   render() {
-    //console.log("UploadPanel render");
+    console.log("UploadPanel render");
     const {
       // t,
       uploadPanelVisible,
@@ -73,6 +75,7 @@ class UploadPanelComponent extends React.Component {
     const visible = uploadPanelVisible;
     const zIndex = 310;
 
+    console.log(uploaded);
     return (
       <StyledAsidePanel visible={visible}>
         <Backdrop
@@ -150,4 +153,5 @@ const mapStateToProps = (state) => {
 export default connect(mapStateToProps, {
   setUploadPanelVisible,
   cancelUpload,
+  clearUploadData,
 })(UploadPanelComponent);

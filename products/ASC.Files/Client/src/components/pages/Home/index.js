@@ -242,7 +242,7 @@ class PureHome extends React.Component {
       showOwnerChangePanel,
       uploadPanelVisible,
     } = this.props;
-    console.log("Files Home render");
+    //console.log("Files Home render");
     return (
       <>
         {convertDialogVisible && (
