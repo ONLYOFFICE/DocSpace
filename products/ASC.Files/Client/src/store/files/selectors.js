@@ -508,7 +508,7 @@ export const getFileIcon = (
 ) => {
   const folderPath = `images/icons/${size}`;
 
-  if (archive) return `${folderPath}/file_arcive.svg`;
+  if (archive) return `${folderPath}/file_archive.svg`;
 
   if (image) return `${folderPath}/image.svg`;
 
@@ -1645,7 +1645,7 @@ export const getIconSrc = (ext, size = 24) => {
       const folderPath = `images/icons/${size}`;
 
       if (presentInArray(archiveFormats, ext, true))
-        return `${folderPath}/file_arcive.svg`;
+        return `${folderPath}/file_archive.svg`;
 
       if (presentInArray(imageFormats, ext, true))
         return `${folderPath}/image.svg`;
