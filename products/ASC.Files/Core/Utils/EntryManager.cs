@@ -177,8 +177,9 @@ namespace ASC.Web.Files.Utils
     public class EntryManager
     {
         private const string UPDATE_LIST = "filesUpdateList";
-        private readonly ICache cache;
-
+        
+        private ICache Cache { get; set; }
+        private FileTrackerHelper FileTracker { get; }
         private IDaoFactory DaoFactory { get; }
         private FileSecurity FileSecurity { get; }
         private GlobalFolderHelper GlobalFolderHelper { get; }
@@ -226,7 +227,9 @@ namespace ASC.Web.Files.Utils
             BreadCrumbsManager breadCrumbsManager,
             TenantManager tenantManager,
             SettingsManager settingsManager,
-            IServiceProvider serviceProvider)
+            IServiceProvider serviceProvider, 
+            ICache cache,
+            FileTrackerHelper fileTracker)
         {
             DaoFactory = daoFactory;
             FileSecurity = fileSecurity;
@@ -251,7 +254,8 @@ namespace ASC.Web.Files.Utils
             SettingsManager = settingsManager;
             ServiceProvider = serviceProvider;
             Logger = optionsMonitor.CurrentValue;
-            cache = AscCache.Memory;
+            Cache = cache;
+            FileTracker = fileTracker;
         }
 
         public IEnumerable<FileEntry> GetEntries<T>(Folder<T> parent, int from, int count, FilterType filter, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent, bool withSubfolders, OrderBy orderBy, out int total)
@@ -319,8 +323,8 @@ namespace ASC.Web.Files.Utils
                             if (!folderIDProjectTitle.ContainsKey(projectFolderID))
                                 folderIDProjectTitle.Add(projectFolderID, new KeyValuePair<int, string>(projectID, projectTitle));
 
-                            AscCache.Memory.Remove("documents/folders/" + projectFolderID);
-                            AscCache.Memory.Insert("documents/folders/" + projectFolderID, projectTitle, TimeSpan.FromMinutes(30));
+                            Cache.Remove("documents/folders/" + projectFolderID);
+                            Cache.Insert("documents/folders/" + projectFolderID, projectTitle, TimeSpan.FromMinutes(30));
                         }
                     }
 
@@ -787,21 +791,13 @@ namespace ASC.Web.Files.Utils
                 {
                     if (!t.Key.Equals(file.ID)) continue;
 
-                    if (t.Value.TagType == TagType.Favorite)
-                    {
-                        file.IsFavorite = true;
-                        continue;
-                    }
+                    file.IsFavorite = t.Value.Any(r=> r.TagType == TagType.Favorite);
+                    file.IsTemplate = t.Value.Any(r => r.TagType == TagType.Template);
 
-                    if (t.Value.TagType == TagType.Template)
+                    var lockedTag = t.Value.FirstOrDefault(r => r.TagType == TagType.Locked);
+                    if (lockedTag != null)
                     {
-                        file.IsTemplate = true;
-                        continue;
-                    }
-
-                    if (t.Value.TagType == TagType.Locked)
-                    {
-                        var lockedBy = t.Value.Owner;
+                        var lockedBy = lockedTag.Owner;
                         file.Locked = lockedBy != Guid.Empty;
                         file.LockedBy = lockedBy != Guid.Empty && lockedBy != AuthContext.CurrentAccount.ID
                             ? Global.GetUserName(lockedBy)
@@ -1026,14 +1022,14 @@ namespace ASC.Web.Files.Utils
             if (fromFile.ProviderEntry) throw new Exception(FilesCommonResource.ErrorMassage_BadRequest);
             if (fromFile.Encrypted) throw new Exception(FilesCommonResource.ErrorMassage_NotSupportedFormat);
 
-            var exists = cache.Get<string>(UPDATE_LIST + fileId.ToString()) != null;
+            var exists = Cache.Get<string>(UPDATE_LIST + fileId.ToString()) != null;
             if (exists)
             {
                 throw new Exception(FilesCommonResource.ErrorMassage_UpdateEditingFile);
             }
             else
             {
-                cache.Insert(UPDATE_LIST + fileId.ToString(), fileId.ToString(), TimeSpan.FromMinutes(2));
+                Cache.Insert(UPDATE_LIST + fileId.ToString(), fileId.ToString(), TimeSpan.FromMinutes(2));
             }
 
             try
@@ -1086,7 +1082,7 @@ namespace ASC.Web.Files.Utils
             }
             finally
             {
-                cache.Remove(UPDATE_LIST + fromFile.ID);
+                Cache.Remove(UPDATE_LIST + fromFile.ID);
             }
         }
 

@@ -1,9 +1,6 @@
 import toastr from "../components/Toast/toastr";
-//import store from "../store/index";
 import isEmpty from "lodash/isEmpty";
 import omit from "lodash/omit";
-
-//const { getEncryptionAccess } = store.auth.actions;
 
 export const desktopConstants = Object.freeze({
   domain: window.location.origin,
@@ -16,7 +13,8 @@ export function regDesktop(
   isEncryption,
   keys,
   setEncryptionKeys,
-  isEditor
+  isEditor,
+  getEncryptionAccess
 ) {
   const data = {
     displayName: user.displayName,
@@ -65,7 +63,11 @@ export function regDesktop(
           break;
         }
         case "getsharingkeys":
-          if (!isEditor) return;
+          if (!isEditor || typeof getEncryptionAccess !== "function") {
+            callback({});
+            return;
+          }
+          getEncryptionAccess(callback);
           break;
         default:
           break;

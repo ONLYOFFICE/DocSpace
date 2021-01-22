@@ -81,14 +81,15 @@ const PureTreeSettings = ({
   setIsLoading,
   t,
 }) => {
+  const { setting } = match.params;
+
   useEffect(() => {
-    const { setting } = match.params;
     setIsLoading(true);
     getFilesSettings().then(() => {
       setIsLoading(false);
       setSelectedNode([setting]);
     });
-  }, []);
+  }, [getFilesSettings, setting, setIsLoading, setSelectedNode]);
 
   useEffect(() => {
     const { setting } = match.params;
@@ -153,16 +154,16 @@ const PureTreeSettings = ({
             title={t("TreeSettingsAdminSettings")}
           />
         ) : null}
-        {/*enableThirdParty ? (
+        {enableThirdParty ? (
           <TreeNode
             selectable={true}
             className="settings-node"
             id="connected-clouds"
-            key="thirdparty"
+            key="thirdParty"
             isLeaf={true}
             title={t("TreeSettingsConnectedCloud")}
           />
-        ) : null*/}
+        ) : null}
       </TreeNode>
     );
   };

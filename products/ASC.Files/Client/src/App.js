@@ -49,7 +49,8 @@ class App extends React.Component {
   constructor(props) {
     super(props);
 
-    this.isEditor = window.location.pathname.indexOf("doceditor") !== -1;
+    const pathname = window.location.pathname.toLowerCase();
+    this.isEditor = pathname.indexOf("doceditor") !== -1;
     this.isDesktopInit = false;
   }
 
@@ -157,7 +158,10 @@ class App extends React.Component {
               />
               <Route
                 exact
-                path={`${homepage}/doceditor`}
+                  path={[
+                    `${homepage}/doceditor`,
+                    `/Products/Files/DocEditor.aspx`,
+                  ]}
                 component={DocEditor}
               />
               <PrivateRoute
@@ -218,7 +222,7 @@ const mapDispatchToProps = (dispatch) => {
     getPortalSettings: () => getPortalSettings(dispatch),
     getModules: () => getModules(dispatch),
     getPortalCultures: () => getPortalCultures(dispatch),
-    fetchTreeFolders: () => fetchTreeFolders(dispatch),
+    fetchTreeFolders: () => dispatch(fetchTreeFolders()),
     setIsLoaded: () => dispatch(setIsLoaded(true)),
     getIsEncryptionSupport: () => getIsEncryptionSupport(dispatch),
     getEncryptionKeys: () => getEncryptionKeys(dispatch),

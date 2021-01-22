@@ -36,7 +36,7 @@ import {
 } from "../../../../dialogs";
 import { OperationsPanel } from "../../../../panels";
 import {
-  isCanBeDeleted,
+  getUserAccess,
   getWebEditSelected,
   getIsRecycleBinFolder,
   canCreate,
@@ -52,6 +52,7 @@ import {
   getAccessedSelected,
   getSelectionLength,
   getSharePanelVisible,
+  getIsThirdPartySelection,
   getIsPrivacyFolder,
   getOnlyFoldersSelected,
 } from "../../../../../store/files/selectors";
@@ -410,6 +411,7 @@ class SectionHeaderContent extends React.Component {
       isWebEditSelected,
       deleteDialogVisible,
       isRecycleBin,
+      isThirdPartySelection,
       isPrivacy,
       selection,
       isOnlyFoldersSelected,
@@ -486,7 +488,7 @@ class SectionHeaderContent extends React.Component {
       },
       {
         label: t("MoveTo"),
-        disabled: !isItemsSelected,
+        disabled: !isItemsSelected || isThirdPartySelection,
         onClick: this.onMoveAction,
       },
       {
@@ -496,7 +498,8 @@ class SectionHeaderContent extends React.Component {
       },
       {
         label: t("Delete"),
-        disabled: !isItemsSelected || !deleteDialogVisible,
+        disabled:
+          !isItemsSelected || !deleteDialogVisible || isThirdPartySelection,
         onClick: this.onDeleteAction,
       },
     ];
@@ -700,7 +703,7 @@ const mapStateToProps = (state) => {
     selection: getSelection(state),
     title: getSelectedFolderTitle(state),
     filter: getFilter(state),
-    deleteDialogVisible: isCanBeDeleted(state),
+    deleteDialogVisible: getUserAccess(state),
     currentFolderId: getSelectedFolderId(state),
     canCreate: canCreate(state),
     isWebEditSelected: getWebEditSelected(state),
@@ -710,6 +713,7 @@ const mapStateToProps = (state) => {
     isAccessedSelected: getAccessedSelected(state),
     isItemsSelected: getSelectionLength(state),
     sharingPanelVisible: getSharePanelVisible(state),
+    isThirdPartySelection: getIsThirdPartySelection(state),
     isOnlyFoldersSelected: getOnlyFoldersSelected(state),
   };
 };

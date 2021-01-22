@@ -38,7 +38,7 @@ using Dropbox.Api.Files;
 
 namespace ASC.Files.Thirdparty.Dropbox
 {
-    [Scope]
+    [Transient]
     [DebuggerDisplay("{CustomerTitle}")]
     internal class DropboxProviderInfo : IProviderInfo
     {
@@ -185,12 +185,12 @@ namespace ASC.Files.Thirdparty.Dropbox
         private readonly ICache CacheChildItems;
         private readonly ICacheNotify<DropboxCacheItem> CacheNotify;
 
-        public DropboxProviderInfoHelper(ICacheNotify<DropboxCacheItem> cacheNotify)
+        public DropboxProviderInfoHelper(ICacheNotify<DropboxCacheItem> cacheNotify, ICache cache)
         {
             CacheExpiration = TimeSpan.FromMinutes(1);
-            CacheFile = AscCache.Memory;
-            CacheFolder = AscCache.Memory;
-            CacheChildItems = AscCache.Memory;
+            CacheFile = cache;
+            CacheFolder = cache;
+            CacheChildItems = cache;
             CacheNotify = cacheNotify;
 
             CacheNotify.Subscribe((i) =>

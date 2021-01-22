@@ -49,9 +49,9 @@ namespace ASC.FederatedLogin
         private readonly ICache cache;
         private readonly ICacheNotify<LinkerCacheItem> notify;
 
-        public AccountLinkerStorage(ICacheNotify<LinkerCacheItem> notify)
+        public AccountLinkerStorage(ICacheNotify<LinkerCacheItem> notify, ICache cache)
         {
-            cache = AscCache.Memory;
+            this.cache = cache;
             this.notify = notify;
             notify.Subscribe((c) => cache.Remove(c.Obj), CacheNotifyAction.Remove);
         }

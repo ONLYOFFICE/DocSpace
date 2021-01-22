@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using ASC.Common;
+using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.ElasticSearch;
@@ -53,8 +54,9 @@ namespace ASC.Web.Files.Core.Search
             FactoryIndexer factoryIndexer,
             BaseIndexer<DbFile> baseIndexer,
             IServiceProvider serviceProvider,
-            IDaoFactory daoFactory)
-            : base(options, tenantManager, searchSettingsHelper, factoryIndexer, baseIndexer, serviceProvider)
+            IDaoFactory daoFactory,
+            ICache cache)
+            : base(options, tenantManager, searchSettingsHelper, factoryIndexer, baseIndexer, serviceProvider, cache)
         {
             DaoFactory = daoFactory;
         }

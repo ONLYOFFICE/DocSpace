@@ -37,6 +37,11 @@ const EmptyFolderWrapper = styled.div`
       margin-right: 4px;
       cursor: pointer;
     }
+
+    .empty-connect_container-links {
+      position: relative;
+      bottom: 16px;
+    }
   }
 `;
 

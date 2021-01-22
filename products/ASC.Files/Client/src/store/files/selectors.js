@@ -374,6 +374,10 @@ export const getSelectedFolderParentId = (state) => {
   return state.files.selectedFolder.parentId;
 };
 
+export const getSelectedFolderProviderItem = (state) => {
+  return state.files.selectedFolder.providerItem;
+};
+
 export const getSelectedFolderNew = (state) => {
   return state.files.selectedFolder.new;
 };
@@ -403,21 +407,24 @@ export const getRootFolderId = (state) => {
     return state.files.selectedFolder.rootFolderType;
 };
 
+export const isRootFolder = createSelector(getPathParts, (pathParts) => {
+  return pathParts && pathParts.length <= 1;
+});
+
 export const canCreate = createSelector(
   getSelectedFolderRootFolderType,
   isAdmin,
-  getPathParts,
+  isRootFolder,
   getSelectedFolderAccess,
   isEncryptionSupport,
   isDesktopClient,
-  (folderType, isAdmin, pathParts, access, isSupport, isDesktop) => {
+  (folderType, isAdmin, isRootFolder, access, isSupport, isDesktop) => {
     switch (folderType) {
       case FolderType.USER:
         return true;
       case FolderType.SHARE:
-        const isNotRootFolder = pathParts.length > 1;
         const canCreateInSharedFolder = access === 1;
-        return isNotRootFolder && canCreateInSharedFolder;
+        return !isRootFolder && canCreateInSharedFolder;
       case FolderType.Privacy:
         return isDesktop && isSupport;
       case FolderType.COMMON:
@@ -480,7 +487,11 @@ export const getFolderIcon = (providerKey, size = 32) => {
     case "SharePoint":
       return `${folderPath}/folder/sharepoint.svg`;
     case "Yandex":
-      return `${folderPath}/Folder/yandex.svg`;
+      return `${folderPath}/folder/yandex.svg`;
+    case "kDrive":
+      return `${folderPath}/folder/kdrive.svg`;
+    case "WebDav":
+      return `${folderPath}/folder/webdav.svg`;
     default:
       return `${folderPath}/folder.svg`;
   }
@@ -492,18 +503,15 @@ export const getFileIcon = (
   archive = false,
   image = false,
   sound = false,
-  ebook = false,
   html = false
 ) => {
   const folderPath = `images/icons/${size}`;
 
-  if (archive) return `${folderPath}/file_archive.svg`;
+  if (archive) return `${folderPath}/file_arcive.svg`;
 
   if (image) return `${folderPath}/image.svg`;
 
   if (sound) return `${folderPath}/sound.svg`;
-
-  if (ebook) return `${folderPath}/ebook.svg`;
 
   if (html) return `${folderPath}/html.svg`;
 
@@ -520,12 +528,18 @@ export const getFileIcon = (
       return `${folderPath}/docx.svg`;
     case ".dvd":
       return `${folderPath}/dvd.svg`;
+    case ".epub":
+      return `${folderPath}/epub.svg`;
+    case ".pb2":
+      return `${folderPath}/fb2.svg`;
     case ".flv":
       return `${folderPath}/flv.svg`;
     case ".iaf":
       return `${folderPath}/iaf.svg`;
     case ".m2ts":
       return `${folderPath}/m2ts.svg`;
+    case ".mht":
+      return `${folderPath}/mht.svg`;
     case ".mkv":
       return `${folderPath}/mkv.svg`;
     case ".mov":
@@ -564,6 +578,8 @@ export const getFileIcon = (
       return `${folderPath}/xlsx.svg`;
     case ".xps":
       return `${folderPath}/xps.svg`;
+    case ".xml":
+      return `${folderPath}/xml.svg`;
     default:
       return `${folderPath}/file.svg`;
   }
@@ -621,10 +637,27 @@ export const getTreeFolders = (state) => {
   return state.files.treeFolders;
 };
 
-export const getCurrentFolderCount = (state) => {
-  const { filesCount, foldersCount } = state.files.selectedFolder;
-  return filesCount + foldersCount;
+export const getServiceFilesCount = (state) => {
+  const { files, folders } = state.files;
+  const filesLength = files ? files.length : 0;
+  const foldersLength = folders ? folders.length : 0;
+  return filesLength + foldersLength;
 };
+
+export const getFilesCount = (state) => {
+  const { selectedFolder, folders } = state.files;
+  const { filesCount, foldersCount } = selectedFolder;
+  return filesCount + folders ? folders.length : foldersCount;
+};
+
+export const getCurrentFilesCount = createSelector(
+  getSelectedFolderProviderItem,
+  getFilesCount,
+  getServiceFilesCount,
+  (providerItem, filesCount, serviceFilesCount) => {
+    return providerItem ? serviceFilesCount : filesCount;
+  }
+);
 
 export const getDragItem = (state) => {
   return state.files.dragItem;
@@ -670,15 +703,17 @@ const getFilesContextOptions = (
   isVisitor,
   canOpenPlayer,
   canChangeOwner,
-  canBeDeleted,
+  haveAccess,
   canShare,
-  isPrivacy
+  isPrivacy,
+  isRootFolder
 ) => {
   const options = [];
 
   const isFile = !!item.fileExst;
   const isFavorite = item.fileStatus === 32;
   const isFullAccess = item.access < 2;
+  const isThirdPartyFolder = item.providerKey && isRootFolder;
 
   if (item.id <= 0) return [];
 
@@ -725,7 +760,7 @@ const getFilesContextOptions = (
     if (isFile) {
       options.push("show-version-history");
       if (!isVisitor) {
-        if (isFullAccess) {
+        if (isFullAccess && !item.providerKey && !canOpenPlayer) {
           options.push("finalize-version");
           options.push("block-unblock-version");
         }
@@ -752,19 +787,24 @@ const getFilesContextOptions = (
     }
 
     if (!isVisitor) {
-      options.push("move");
+      !isThirdPartyFolder && haveAccess && options.push("move");
       options.push("copy");
 
       if (isFile) {
         options.push("duplicate");
       }
 
-      options.push("rename");
-      canBeDeleted && options.push("delete");
+      haveAccess && options.push("rename");
+      isThirdPartyFolder &&
+        haveAccess &&
+        options.push("change-thirdparty-info");
+      options.push("separator3");
+      haveAccess && options.push("delete");
     } else {
       options.push("copy");
     }
   }
+
   if (isFavorite && !isRecycleBin) {
     options.push("remove-from-favorites");
   }
@@ -814,6 +854,17 @@ const getRecentFolder = createSelector(getTreeFolders, (treeFolders) => {
 export const getMyFolderId = createSelector(getMyFolder, (myFolder) => {
   if (myFolder) return myFolder.id;
 });
+
+export const getMyDirectoryFolders = createSelector(getMyFolder, (myFolder) => {
+  if (myFolder) return myFolder.folders;
+});
+
+export const getCommonDirectoryFolders = createSelector(
+  getCommonFolder,
+  (commonFolder) => {
+    if (commonFolder) return commonFolder.folders;
+  }
+);
 
 export const getShareFolderId = createSelector(
   getShareFolder,
@@ -927,11 +978,12 @@ export const getFilesList = (state) => {
       getIsRecentFolder,
       getIsFavoritesFolder,
       getFileActionId,
-      getIsPrivacyFolder,
       isVisitor,
       getCanShareOwnerChange,
-      isCanBeDeleted,
+      getUserAccess,
       isCanShare,
+      getIsPrivacyFolder,
+      isRootFolder,
     ],
     (
       folders,
@@ -943,9 +995,10 @@ export const getFilesList = (state) => {
       actionId,
       isVisitor,
       canChangeOwner,
-      canBeDeleted,
+      haveAccess,
       canShare,
-      isPrivacy
+      isPrivacy,
+      isRootFolder
     ) => {
       const items =
         folders && files
@@ -976,7 +1029,7 @@ export const getFilesList = (state) => {
           shared,
           title,
           updated,
-          updatedBu,
+          updatedBy,
           version,
           versionGroup,
           viewUrl,
@@ -993,9 +1046,10 @@ export const getFilesList = (state) => {
           isVisitor,
           canOpenPlayer,
           canChangeOwner,
-          canBeDeleted,
+          haveAccess,
           canShare,
-          isPrivacy
+          isPrivacy,
+          isRootFolder
         );
         const checked = isFileSelected(selection, id, parentId);
 
@@ -1050,7 +1104,7 @@ export const getFilesList = (state) => {
           shared,
           title,
           updated,
-          updatedBu,
+          updatedBy,
           value,
           version,
           versionGroup,
@@ -1286,7 +1340,6 @@ const getIcon = (state, size = 24, fileExst = null, providerKey = null) => {
     const isArchiveItem = isArchive(fileExst)(state);
     const isImageItem = isImage(fileExst)(state);
     const isSoundItem = isSound(fileExst)(state);
-    const isEbookItem = isEbook(fileExst)(state);
     const isHtmlItem = isHtml(fileExst)(state);
 
     const icon = getFileIcon(
@@ -1295,7 +1348,6 @@ const getIcon = (state, size = 24, fileExst = null, providerKey = null) => {
       isArchiveItem,
       isImageItem,
       isSoundItem,
-      isEbookItem,
       isHtmlItem
     );
 
@@ -1325,6 +1377,103 @@ export const getSharePanelVisible = (state) => {
   return state.files.sharingPanelVisible;
 };
 
+export const getThirdPartyCapabilities = (state) => {
+  return state.files.capabilities;
+};
+
+export const getThirdPartyProviders = (state) => {
+  return state.files.providers;
+};
+
+export const getGoogleConnect = createSelector(
+  getThirdPartyCapabilities,
+  (capabilities) => {
+    return capabilities.find((x) => x[0] === "GoogleDrive");
+  }
+);
+
+export const getBoxConnect = createSelector(
+  getThirdPartyCapabilities,
+  (capabilities) => {
+    return capabilities.find((x) => x[0] === "Box");
+  }
+);
+
+export const getDropboxConnect = createSelector(
+  getThirdPartyCapabilities,
+  (capabilities) => {
+    return capabilities.find((x) => x[0] === "DropboxV2");
+  }
+);
+export const getOneDriveConnect = createSelector(
+  getThirdPartyCapabilities,
+  (capabilities) => {
+    return capabilities.find((x) => x[0] === "OneDrive");
+  }
+);
+
+export const getSharePointConnect = createSelector(
+  getThirdPartyCapabilities,
+  (capabilities) => {
+    return capabilities.find((x) => x[0] === "SharePoint");
+  }
+);
+
+export const getkDriveConnect = createSelector(
+  getThirdPartyCapabilities,
+  (capabilities) => {
+    return capabilities.find((x) => x[0] === "kDrive");
+  }
+);
+
+export const getYandexConnect = createSelector(
+  getThirdPartyCapabilities,
+  (capabilities) => {
+    return capabilities.find((x) => x[0] === "Yandex");
+  }
+);
+
+export const getWebDavConnect = createSelector(
+  getThirdPartyCapabilities,
+  (capabilities) => {
+    return capabilities.find((x) => x[0] === "WebDav");
+  }
+);
+
+// TODO: remove WebDav get NextCloud
+export const getNextCloudConnect = createSelector(
+  getThirdPartyCapabilities,
+  (capabilities) => {
+    return capabilities.find((x) => x[0] === "WebDav");
+    //return capabilities.find((x) => x[0] === "NextCloud");
+  }
+);
+// TODO:remove WebDav get OwnCloud
+export const getOwnCloudConnect = createSelector(
+  getThirdPartyCapabilities,
+  (capabilities) => {
+    return capabilities.find((x) => x[0] === "WebDav");
+    //return capabilities.find((x) => x[0] === "OwnCloud");
+  }
+);
+
+export const getConnectItem = (state) => {
+  return state.files.connectItem;
+};
+
+export const getShowThirdPartyPanel = (state) => {
+  return state.files.showThirdPartyPanel;
+};
+
+export const getIsThirdPartySelection = createSelector(
+  getSelectionSelector,
+  isRootFolder,
+  (selection, isRootItem) => {
+    const withProvider = selection && selection.find((x) => !x.providerKey);
+    return !withProvider && isRootItem;
+  }
+);
+
 export const getCanShareOwnerChange = createSelector(
   isAdmin,
   getPathParts,
@@ -1336,7 +1485,9 @@ export const getCanShareOwnerChange = createSelector(
     return (
       (isAdmin || (selection.length && selection[0].createdBy.id === userId)) &&
       pathParts &&
-      commonId === pathParts[0]
+      commonId === pathParts[0] &&
+      selection.length &&
+      !selection[0].providerKey
     );
   }
 );
@@ -1388,7 +1539,7 @@ export const getShowOwnerChangePanel = (state) => {
   return state.files.ownerPanelVisible;
 };
 
-export const isCanBeDeleted = createSelector(
+export const getUserAccess = createSelector(
   getSelectedFolderRootFolderType,
   isAdmin,
   getSelectionSelector,

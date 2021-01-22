@@ -218,7 +218,7 @@ class FilesTileContent extends React.PureComponent {
   };
 
   onFilesClick = () => {
-    const { id, fileExst, viewUrl } = this.props.item;
+    const { id, fileExst, viewUrl, providerKey } = this.props.item;
     const {
       filter,
       parentFolder,
@@ -243,7 +243,7 @@ class FilesTileContent extends React.PureComponent {
         .finally(() => setIsLoading(false));
     } else {
       if (canWebEdit) {
-        return openDocEditor(id);
+        return openDocEditor(id, providerKey);
       }
 
       const isOpenMedia =

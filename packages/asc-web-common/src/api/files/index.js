@@ -145,6 +145,7 @@ export function getFoldersTree() {
                   access: folder.access,
                   foldersCount: folder.foldersCount,
                   rootFolderType: folder.rootFolderType,
+                  providerKey: folder.providerKey,
                   newItems: folder.new,
                 };
               })
@@ -576,6 +577,45 @@ export function forceSave(val) {
 export function thirdParty(val) {
   const data = { set: val };
   return request({ method: "put", url: "files/thirdparty", data });
+}
+
+export function getThirdPartyList() {
+  return request({ method: "get", url: "files/thirdparty" });
+}
+
+export function saveThirdParty(
+  url,
+  login,
+  password,
+  token,
+  isCorporate,
+  customerTitle,
+  providerKey,
+  providerId
+) {
+  const data = {
+    url,
+    login,
+    password,
+    token,
+    isCorporate,
+    customerTitle,
+    providerKey,
+    providerId,
+  };
+  return request({ method: "post", url: "files/thirdparty", data });
+}
+
+export function deleteThirdParty(providerId) {
+  return request({ method: "delete", url: `files/thirdparty/${providerId}` });
+}
+
+export function getThirdPartyCapabilities() {
+  return request({ method: "get", url: "files/thirdparty/capabilities" });
+}
+
+export function openConnectWindow(service) {
+  return request({ method: "get", url: `thirdparty/${service}` });
 }
 
 export function getSettingsFiles() {

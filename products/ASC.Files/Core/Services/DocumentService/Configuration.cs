@@ -365,7 +365,12 @@ namespace ASC.Web.Files.Services.DocumentService
             {
                 try
                 {
-                    JsonSerializer.Deserialize<ActionLinkConfig>(value);
+                    var options = new JsonSerializerOptions
+                    {
+                        AllowTrailingCommas = true,
+                        PropertyNameCaseInsensitive = true
+                    };
+                    JsonSerializer.Deserialize<ActionLinkConfig>(value, options);
                 }
                 catch (Exception)
                 {

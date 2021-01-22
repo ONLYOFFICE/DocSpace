@@ -87,7 +87,7 @@ namespace ASC.Web.Studio.Core.TFA
     public class TfaManager
     {
         private static readonly TwoFactorAuthenticator Tfa = new TwoFactorAuthenticator();
-        private static readonly ICache Cache = AscCache.Memory;
+        private ICache Cache { get; set; }
 
         private SettingsManager SettingsManager { get; }
         private SecurityContext SecurityContext { get; }
@@ -104,8 +104,10 @@ namespace ASC.Web.Studio.Core.TFA
             SetupInfo setupInfo,
             Signature signature,
             InstanceCrypto instanceCrypto,
-            MachinePseudoKeys machinePseudoKeys)
+            MachinePseudoKeys machinePseudoKeys,
+            ICache cache)
         {
+            Cache = cache;
             SettingsManager = settingsManager;
             SecurityContext = securityContext;
             CookiesManager = cookiesManager;

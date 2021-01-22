@@ -43,7 +43,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Files.Thirdparty.Box
 {
-    [Scope]
+    [Transient]
     [DebuggerDisplay("{CustomerTitle}")]
     internal class BoxProviderInfo : IProviderInfo
     {
@@ -217,13 +217,16 @@ namespace ASC.Files.Thirdparty.Box
     public class BoxProviderInfoHelper
     {
         private readonly TimeSpan CacheExpiration = TimeSpan.FromMinutes(1);
-        private readonly ICache CacheFile = AscCache.Memory;
-        private readonly ICache CacheFolder = AscCache.Memory;
-        private readonly ICache CacheChildItems = AscCache.Memory;
+        private readonly ICache CacheFile;
+        private readonly ICache CacheFolder;
+        private readonly ICache CacheChildItems;
         private readonly ICacheNotify<BoxCacheItem> CacheNotify;
 
-        public BoxProviderInfoHelper(ICacheNotify<BoxCacheItem> cacheNotify)
+        public BoxProviderInfoHelper(ICacheNotify<BoxCacheItem> cacheNotify, ICache cache)
         {
+            CacheFile = cache;
+            CacheFolder = cache;
+            CacheChildItems = cache;
             CacheNotify = cacheNotify;
             CacheNotify.Subscribe((i) =>
             {

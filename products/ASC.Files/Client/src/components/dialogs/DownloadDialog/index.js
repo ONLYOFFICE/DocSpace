@@ -12,7 +12,7 @@ import {
 } from "@appserver/components";
 import { ReactSVG } from "react-svg";
 import { withTranslation } from "react-i18next";
-import { utils, api, toastr } from "@appserver/common";
+import { utils, api } from "@appserver/common";
 import {
   getFileIcon,
   getFolderIcon,

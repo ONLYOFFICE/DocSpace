@@ -31,6 +31,10 @@ import {
   SET_IS_ERROR_SETTINGS,
   SET_FIRST_LOAD,
   SET_UPLOAD_DATA,
+  SET_THIRDPARTY_CAPABILITIES,
+  SET_THIRDPARTY_PROVIDERS,
+  SET_CONNECT_ITEM,
+  SET_SHOW_THIRDPARTY_PANEL,
   SET_IS_VER_HISTORY_PANEL,
   SET_VER_HISTORY_FILE_ID,
   SET_FILE_VERSIONS,
@@ -391,6 +395,10 @@ const initialState = {
     ],
   },
   privacyInstructions: "https://www.onlyoffice.com/private-rooms.aspx",
+  capabilities: [],
+  providers: [],
+  connectItem: null,
+  showThirdPartyPanel: false,
   versionHistory: {
     isVisible: false,
     fileId: null,
@@ -574,6 +582,22 @@ const filesReducer = (state = initialState, action) => {
     case SET_UPLOAD_DATA:
       return Object.assign({}, state, {
         uploadData: action.uploadData,
+      });
+    case SET_THIRDPARTY_CAPABILITIES:
+      return Object.assign({}, state, {
+        capabilities: action.capabilities,
+      });
+    case SET_THIRDPARTY_PROVIDERS:
+      return Object.assign({}, state, {
+        providers: action.providers,
+      });
+    case SET_CONNECT_ITEM:
+      return Object.assign({}, state, {
+        connectItem: action.connectItem,
+      });
+    case SET_SHOW_THIRDPARTY_PANEL:
+      return Object.assign({}, state, {
+        showThirdPartyPanel: action.showThirdPartyPanel,
       });
 
     case SET_IS_VER_HISTORY_PANEL:

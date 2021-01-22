@@ -60,40 +60,58 @@ pipeline {
 			parallel {
 				stage('Unix') {
 					agent { label 'net-core' }
-					steps {
-						sh "sh ./build/scripts/components.sh && cd ${env.WORKSPACE}/web/ASC.Web.Components && yarn test:coverage --ci --reporters=default --reporters=jest-junit || true"
-					}
-					post {
-						success {
-							junit 'web/ASC.Web.Components/junit.xml'
-							publishHTML target: [
-								allowMissing         : false,
-								alwaysLinkToLastBuild: false,
-								keepAll             : true,
-								reportDir            : 'web/ASC.Web.Components/coverage/lcov-report',
-								reportFiles          : 'index.html',
-								reportName           : 'Unix Test Report'
-							]
-							publishCoverage adapters: [coberturaAdapter('web/ASC.Web.Components/coverage/cobertura-coverage.xml')]
+					stages {
+						stage('Components') {
+							steps {
+								sh "sh ./build/scripts/components.sh && cd ${env.WORKSPACE}/web/ASC.Web.Components && yarn test:coverage --ci --reporters=default --reporters=jest-junit || true"
+							}
+							post {
+								success {
+									junit 'web/ASC.Web.Components/junit.xml'
+									publishHTML target: [
+										allowMissing         : false,
+										alwaysLinkToLastBuild: false,
+										keepAll             : true,
+										reportDir            : 'web/ASC.Web.Components/coverage/lcov-report',
+										reportFiles          : 'index.html',
+										reportName           : 'Unix Test Report'
+									]
+									publishCoverage adapters: [coberturaAdapter('web/ASC.Web.Components/coverage/cobertura-coverage.xml')]
+								}
+							}
+						}
+						stage('Files') {
+							steps {
+								sh "dotnet restore ASC.Web.sln --configfile .nuget/NuGet.Config && cd ${env.WORKSPACE}/products/ASC.Files/Tests/ && dotnet test ASC.Files.Tests.csproj -r linux-x64 -l \"console;verbosity=detailed\""
+							}
 						}
 					}
 				}
 				stage('Windows') {
 					agent { label 'win-core' }
-					steps {
-						bat "sh build\\scripts\\components.sh && cd ${env.WORKSPACE}\\web\\ASC.Web.Components && yarn test:coverage --ci --reporters=default --reporters=jest-junit || true"
-					}
-					post {
-						success {
-							junit 'web\\ASC.Web.Components\\junit.xml'
-							publishHTML target: [
-								allowMissing         : false,
-								alwaysLinkToLastBuild: false,
-								keepAll             : true,
-								reportDir            : 'web\\ASC.Web.Components\\coverage\\lcov-report',
-								reportFiles          : 'index.html',
-								reportName           : 'Windows Test Report'
-							]
+					stages {
+						stage('Components') {
+							steps {
+								bat "sh build\\scripts\\components.sh && cd ${env.WORKSPACE}\\web\\ASC.Web.Components && yarn test:coverage --ci --reporters=default --reporters=jest-junit || true"
+							}
+							post {
+								success {
+									junit 'web\\ASC.Web.Components\\junit.xml'
+									publishHTML target: [
+										allowMissing         : false,
+										alwaysLinkToLastBuild: false,
+										keepAll             : true,
+										reportDir            : 'web\\ASC.Web.Components\\coverage\\lcov-report',
+										reportFiles          : 'index.html',
+										reportName           : 'Windows Test Report'
+									]
+								}
+							}
+						}
+						stage('Files') {
+							steps {
+								bat "dotnet restore ASC.Web.sln --configfile .nuget\\NuGet.Config && cd ${env.WORKSPACE}\\products\\ASC.Files\\Tests\\ && dotnet test ASC.Files.Tests.csproj"
+							}
 						}
 					}
 				}

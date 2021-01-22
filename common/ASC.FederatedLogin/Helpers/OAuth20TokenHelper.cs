@@ -50,7 +50,7 @@ namespace ASC.FederatedLogin.Helpers
             ConsumerFactory = consumerFactory;
         }
 
-        public RedirectResult RequestCode<T>(string scope = null, Dictionary<string, string> additionalArgs = null) where T : Consumer, IOAuthProvider, new()
+        public string RequestCode<T>(string scope = null, Dictionary<string, string> additionalArgs = null) where T : Consumer, IOAuthProvider, new()
         {
             var loginProvider = ConsumerFactory.Get<T>();
             var requestUrl = loginProvider.CodeUrl;
@@ -63,11 +63,13 @@ namespace ASC.FederatedLogin.Helpers
             if (!string.IsNullOrEmpty(query)) query += "&";
             query += "response_type=code";
 
-            if (!string.IsNullOrEmpty(clientID)) query += "&client_id=" + HttpUtility.UrlEncode(clientID);
-            if (!string.IsNullOrEmpty(redirectUri)) query += "&redirect_uri=" + HttpUtility.UrlEncode(redirectUri);
-            if (!string.IsNullOrEmpty(scope)) query += "&scope=" + HttpUtility.UrlEncode(scope);
+            if (!string.IsNullOrEmpty(clientID)) query += $"&client_id={HttpUtility.UrlEncode(clientID)}";
+            if (!string.IsNullOrEmpty(redirectUri)) query += $"&redirect_uri={HttpUtility.UrlEncode(redirectUri)}";
+            if (!string.IsNullOrEmpty(scope)) query += $"&scope={HttpUtility.UrlEncode(scope)}";
 
-            query += "&state=" + HttpUtility.UrlEncode(HttpContextAccessor.HttpContext.Request.GetUrlRewriter().AbsoluteUri.TrimEnd('/')) + "/code";
+            var u = HttpContextAccessor.HttpContext.Request.GetUrlRewriter();
+            var state = HttpUtility.UrlEncode(new UriBuilder(u.Scheme, u.Host, u.Port, $"thirdparty/{loginProvider.Name.ToLower()}/code").Uri.AbsoluteUri);
+            query += $"&state={state}";
 
             if (additionalArgs != null)
             {
@@ -78,7 +80,7 @@ namespace ASC.FederatedLogin.Helpers
                                                                                    + "=" + HttpUtility.UrlEncode((additionalArgs[additionalArg] ?? "").Trim())) : null);
             }
 
-            return new RedirectResult(uriBuilder.Uri + "?" + query);
+            return uriBuilder.Uri + "?" + query;
         }
 
         public static OAuth20Token GetAccessToken<T>(ConsumerFactory consumerFactory, string authCode) where T : Consumer, IOAuthProvider, new()

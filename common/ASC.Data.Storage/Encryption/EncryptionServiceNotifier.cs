@@ -11,9 +11,9 @@ namespace ASC.Data.Storage.Encryption
         private ICacheNotify<ProgressEncryption> СacheBackupProgress { get; }
         private ICache Cache { get; }
 
-        public EncryptionServiceNotifier(ICacheNotify<ProgressEncryption> сacheBackupProgress)
+        public EncryptionServiceNotifier(ICacheNotify<ProgressEncryption> сacheBackupProgress, ICache cache)
         {
-            Cache = AscCache.Memory;
+            Cache = cache;
             СacheBackupProgress = сacheBackupProgress;
 
             СacheBackupProgress.Subscribe((a) =>

@@ -225,7 +225,12 @@
     -->
     <script>
       console.log("AscDesktopEditor", window["AscDesktopEditor"]);
-      if (window["AscDesktopEditor"] === undefined) {
+
+      var pathname = window.location.pathname.toLowerCase();
+      if (
+        pathname.indexOf("thirdparty") === -1 &&
+        window["AscDesktopEditor"] === undefined
+      ) {
         let el = document.getElementById("temp-content");
         el.style.display = "block";
       }

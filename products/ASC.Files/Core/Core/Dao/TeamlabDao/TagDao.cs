@@ -31,6 +31,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 
 using ASC.Common;
+using ASC.Common.Caching;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.Settings;
@@ -59,7 +60,8 @@ namespace ASC.Files.Core.Data
             CoreConfiguration coreConfiguration,
             SettingsManager settingsManager,
             AuthContext authContext,
-            IServiceProvider serviceProvider)
+            IServiceProvider serviceProvider,
+            ICache cache)
             : base(dbContextManager,
                   userManager,
                   tenantManager,
@@ -71,7 +73,8 @@ namespace ASC.Files.Core.Data
                   coreConfiguration,
                   settingsManager,
                   authContext,
-                  serviceProvider)
+                  serviceProvider,
+                  cache)
         {
         }
 
@@ -108,7 +111,7 @@ namespace ASC.Files.Core.Data
             return FromQuery(q);
         }
 
-        public IDictionary<object, Tag> GetTags(Guid subject, IEnumerable<TagType> tagType, IEnumerable<FileEntry<T>> fileEntries)
+        public IDictionary<object, IEnumerable<Tag>> GetTags(Guid subject, IEnumerable<TagType> tagType, IEnumerable<FileEntry<T>> fileEntries)
         {
             var filesId = new HashSet<string>();
             var foldersId = new HashSet<string>();
@@ -139,7 +142,8 @@ namespace ASC.Files.Core.Data
             }
 
             return FromQuery(q)
-                .ToDictionary(r=> r.EntryId);
+                .GroupBy(r=> r.EntryId)
+                .ToDictionary(r=> r.Key, r=> r.AsEnumerable());
         }
 
         public IEnumerable<Tag> GetTags(TagType tagType, IEnumerable<FileEntry<T>> fileEntries)
@@ -655,7 +659,7 @@ namespace ASC.Files.Core.Data
                 result.AddRange(tempTags);
             }
 
-            var monitorFolderIdsInt = monitorFolderIds.Select(r => Convert.ToInt32(r)).ToList();
+            var monitorFolderIdsInt = monitorFolderIds.OfType<int>().ToList();
             var subFoldersSqlQuery =
                 FilesDbContext.Tree
                 .Where(r => monitorFolderIdsInt.Contains(r.ParentId));

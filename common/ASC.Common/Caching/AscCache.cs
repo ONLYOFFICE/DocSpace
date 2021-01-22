@@ -32,6 +32,8 @@ using System.Text.RegularExpressions;
 
 using Google.Protobuf;
 
+using Microsoft.Extensions.Caching.Memory;
+
 namespace ASC.Common.Caching
 {
     [Singletone]
@@ -62,70 +64,58 @@ namespace ASC.Common.Caching
         }
     }
 
+    [Singletone]
     public class AscCache : ICache
     {
-        public static readonly ICache Memory;
+        private IMemoryCache MemoryCache { get; }
 
-        static AscCache()
+        public AscCache(IMemoryCache memoryCache)
         {
-            Memory = new AscCache();
-        }
-
-        private AscCache()
-        {
+            MemoryCache = memoryCache;
         }
 
         public T Get<T>(string key) where T : class
         {
-            var cache = GetCache();
-            return cache.Get(key) as T;
+            return MemoryCache.Get<T>(key);
         }
 
         public void Insert(string key, object value, TimeSpan sligingExpiration)
         {
-            var cache = GetCache();
-            cache.Set(key, value, new CacheItemPolicy { SlidingExpiration = sligingExpiration });
+            MemoryCache.Set(key, value, new MemoryCacheEntryOptions(){ SlidingExpiration = sligingExpiration });
         }
 
         public void Insert(string key, object value, DateTime absolutExpiration)
         {
-            var cache = GetCache();
-            cache.Set(key, value,
-                absolutExpiration == DateTime.MaxValue ? DateTimeOffset.MaxValue : new DateTimeOffset(absolutExpiration));
+            MemoryCache.Set(key, value, absolutExpiration == DateTime.MaxValue ? DateTimeOffset.MaxValue : new DateTimeOffset(absolutExpiration));
         }
 
         public void Remove(string key)
         {
-            var cache = GetCache();
-            cache.Remove(key);
+            MemoryCache.Remove(key);
         }
 
         public void Remove(Regex pattern)
         {
-            var cache = GetCache();
+            //var cache = GetCache();
 
-            var copy = cache.ToDictionary(p => p.Key, p => p.Value);
+            //var copy = cache.ToDictionary(p => p.Key, p => p.Value);
 
-            var keys = copy.Select(p => p.Key).Where(k => pattern.IsMatch(k)).ToArray();
-            foreach (var key in keys)
-            {
-                cache.Remove(key);
-            }
+            //var keys = copy.Select(p => p.Key).Where(k => pattern.IsMatch(k)).ToArray();
+            //foreach (var key in keys)
+            //{
+            //    cache.Remove(key);
+            //}
         }
 
 
         public ConcurrentDictionary<string, T> HashGetAll<T>(string key)
         {
-            var cache = GetCache();
-            var dic = (ConcurrentDictionary<string, T>)cache.Get(key);
-            return dic != null ? dic : new ConcurrentDictionary<string, T>();
+            return MemoryCache.GetOrCreate(key, r=> new ConcurrentDictionary<string, T>());
         }
 
         public T HashGet<T>(string key, string field)
         {
-            var cache = GetCache();
-            var dic = (ConcurrentDictionary<string, T>)cache.Get(key);
-            if (dic != null && dic.TryGetValue(field, out var value))
+            if (MemoryCache.TryGetValue<ConcurrentDictionary<string, T>>(key, out var dic) && dic.TryGetValue(field, out var value))
             {
                 return value;
             }
@@ -134,30 +124,24 @@ namespace ASC.Common.Caching
 
         public void HashSet<T>(string key, string field, T value)
         {
-            var cache = GetCache();
             var dic = HashGetAll<T>(key);
             if (value != null)
             {
                 dic.AddOrUpdate(field, value, (k, v) => value);
-                cache.Set(key, dic, null);
+                MemoryCache.Set(key, dic, DateTime.MaxValue);
             }
             else if (dic != null)
             {
                 dic.TryRemove(field, out _);
                 if (dic.Count == 0)
                 {
-                    cache.Remove(key);
+                    MemoryCache.Remove(key);
                 }
                 else
                 {
-                    cache.Set(key, dic, null);
+                    MemoryCache.Set(key, dic, DateTime.MaxValue);
                 }
             }
-        }
-
-        private MemoryCache GetCache()
-        {
-            return MemoryCache.Default;
         }
     }
 }

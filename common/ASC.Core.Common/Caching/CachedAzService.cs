@@ -39,10 +39,10 @@ namespace ASC.Core.Caching
         internal ICache Cache { get; }
         internal ICacheNotify<AzRecordCache> CacheNotify { get; }
 
-        public AzServiceCache(ICacheNotify<AzRecordCache> cacheNotify)
+        public AzServiceCache(ICacheNotify<AzRecordCache> cacheNotify, ICache cache)
         {
             CacheNotify = cacheNotify;
-            Cache = AscCache.Memory;
+            Cache = cache;
 
             cacheNotify.Subscribe((r) => UpdateCache(r, true), CacheNotifyAction.Remove);
             cacheNotify.Subscribe((r) => UpdateCache(r, false), CacheNotifyAction.InsertOrUpdate);

@@ -1,9 +1,11 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.Json;
 using System.Threading;
 
+using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Context;
@@ -33,7 +35,7 @@ namespace ASC.Files.Tests
         public void CreateDb()
         {
             var host = Program.CreateHostBuilder(new string[] {
-                "--pathToConf" ,"..\\..\\..\\..\\..\\..\\config",
+                "--pathToConf", Path.Combine("..", "..", "..", "..","..", "..", "config"),
                 "--ConnectionStrings:default:connectionString", BaseFilesTests.TestConnection,
                 "--migration:enabled", "true" }).Build();
             
@@ -67,6 +69,7 @@ namespace ASC.Files.Tests
 
     public class BaseFilesTests
     {
+        protected ILog Log { get; set; }
         protected FilesControllerHelper<int> FilesControllerHelper { get; set; }
         protected GlobalFolderHelper GlobalFolderHelper { get; set; }
         protected FileStorageService<int> FileStorageService { get; set; }
@@ -76,11 +79,11 @@ namespace ASC.Files.Tests
         protected UserOptions UserOptions { get; set; }
         protected IServiceScope scope { get; set; }
 
-        public const string TestConnection = "Server=localhost;Database=onlyoffice_test;User ID = root; Password=root;Pooling=true;";
+        public const string TestConnection = "Server=localhost;Database=onlyoffice_test;User ID =root;Password=root;Pooling=true;Character Set=utf8;AutoEnlist=false;SSL Mode=none";
         public virtual void SetUp()
         {
             var host = Program.CreateHostBuilder(new string[] {
-                "--pathToConf" ,"..\\..\\..\\..\\..\\..\\config",
+                "--pathToConf" , Path.Combine("..", "..", "..", "..","..", "..", "config"),
                 "--ConnectionStrings:default:connectionString", TestConnection,
                  "--migration:enabled", "true" }).Build();
 
@@ -97,8 +100,9 @@ namespace ASC.Files.Tests
             SecurityContext = scope.ServiceProvider.GetService<SecurityContext>();
             UserOptions = scope.ServiceProvider.GetService<IOptions<UserOptions>>().Value;
             FileStorageService = scope.ServiceProvider.GetService<FileStorageService<int>>();
-           
-            
+            Log = scope.ServiceProvider.GetService<IOptionsMonitor<ILog>>().CurrentValue;
+
+
             SecurityContext.AuthenticateMe(CurrentTenant.OwnerId);
         }
         

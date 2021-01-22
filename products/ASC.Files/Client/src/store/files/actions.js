@@ -1,4 +1,4 @@
-import { api, history, constants, toastr, store } from "@appserver/common";
+import { api, history, constants, store } from "@appserver/common";
 import axios from "axios";
 import queryString from "query-string";
 import {
@@ -22,7 +22,7 @@ import {
   getSelectedFolderId,
   getFilter,
   getIsRecycleBinFolder,
-  getPrimaryProgressData,
+  /*getPrimaryProgressData,*/
   getSecondaryProgressData,
   getTreeFolders,
   getSettingsTree,
@@ -71,6 +71,10 @@ export const SET_FILES_SETTING = "SET_FILES_SETTING";
 export const SET_IS_ERROR_SETTINGS = "SET_IS_ERROR_SETTINGS";
 export const SET_FIRST_LOAD = "SET_FIRST_LOAD";
 export const SET_UPLOAD_DATA = "SET_UPLOAD_DATA";
+export const SET_THIRDPARTY_CAPABILITIES = "SET_THIRDPARTY_CAPABILITIES";
+export const SET_THIRDPARTY_PROVIDERS = "SET_THIRDPARTY_PROVIDERS";
+export const SET_CONNECT_ITEM = "SET_CONNECT_ITEM";
+export const SET_SHOW_THIRDPARTY_PANEL = "SET_SHOW_THIRDPARTY_PANEL";
 export const SET_IS_VER_HISTORY_PANEL = "SET_IS_VER_HISTORY_PANEL";
 export const SET_VER_HISTORY_FILE_ID = "SET_VER_HISTORY_FILE_ID";
 export const SET_FILE_VERSIONS = "SET_FILE_VERSIONS";
@@ -294,6 +298,34 @@ export function setUploadData(uploadData) {
   };
 }
 
+export function setThirdPartyCapabilities(capabilities) {
+  return {
+    type: SET_THIRDPARTY_CAPABILITIES,
+    capabilities,
+  };
+}
+
+export function setThirdPartyProviders(providers) {
+  return {
+    type: SET_THIRDPARTY_PROVIDERS,
+    providers,
+  };
+}
+
+export function setConnectItem(connectItem) {
+  return {
+    type: SET_CONNECT_ITEM,
+    connectItem,
+  };
+}
+
+export function setShowThirdPartyPanel(showThirdPartyPanel) {
+  return {
+    type: SET_SHOW_THIRDPARTY_PANEL,
+    showThirdPartyPanel,
+  };
+}
+
 export function setIsVerHistoryPanel(isVisible) {
   return {
     type: SET_IS_VER_HISTORY_PANEL,
@@ -382,6 +414,7 @@ export function fetchFiles(folderId, filter, clearFilter = true) {
         if (clearFilter) {
         dispatch(setFolders([]));
         dispatch(setFiles([]));
+          dispatch(setAction({ type: null }));
         dispatch(setSelected("close"));
         dispatch(
           setSelectedFolder({
@@ -520,8 +553,9 @@ export function fetchSharedFolder(dispatch) {
   });
 }
 
-export function fetchTreeFolders(dispatch) {
-  return files.getFoldersTree().then((data) => dispatch(setTreeFolders(data)));
+export function fetchTreeFolders() {
+  return (dispatch) =>
+    files.getFoldersTree().then((data) => dispatch(setTreeFolders(data)));
 }
 
 /*export function testUpdateMyFolder(folders) {
@@ -703,6 +737,32 @@ export function setEnableThirdParty(data, setting) {
   };
 }
 
+export function deleteThirdParty(id) {
+  return files.deleteThirdParty(id);
+}
+
+export function saveThirdParty(
+  url,
+  login,
+  password,
+  token,
+  isCorporate,
+  customerTitle,
+  providerKey,
+  providerId
+) {
+  return files.saveThirdParty(
+    url,
+    login,
+    password,
+    token,
+    isCorporate,
+    customerTitle,
+    providerKey,
+    providerId
+  );
+}
+
 export function setForceSave(data, setting) {
   return (dispatch) => {
     return files
@@ -719,7 +779,24 @@ export function getFilesSettings() {
     if (Object.keys(settingsTree).length === 0) {
       return api.files
         .getSettingsFiles()
-        .then((settings) => dispatch(setFilesSettings(settings)))
+        .then((settings) => {
+          dispatch(setFilesSettings(settings));
+          if (settings.enableThirdParty) {
+            return axios
+              .all([
+                api.files.getThirdPartyCapabilities(),
+                api.files.getThirdPartyList(),
+              ])
+              .then(([capabilities, providers]) => {
+                for (let item of capabilities) {
+                  item.splice(1, 1);
+                }
+
+                dispatch(setThirdPartyCapabilities(capabilities));
+                dispatch(setThirdPartyProviders(providers));
+              });
+          }
+        })
         .catch(() => setIsErrorSettings(true));
     } else {
       return Promise.resolve(settingsTree);
@@ -1021,35 +1098,35 @@ const getNewPercent = (uploadedSize, indexOfFile, getState) => {
   return newPercent;
 };
 
-const updateFiles = (folderId, dispatch, getState) => {
-  //console.log("folderId ", folderId);
-  const uploadData = {
-    files: [],
-    filesSize: 0,
-    convertFiles: [],
-    convertFilesSize: 0,
-    uploadedFiles: 0,
-    percent: 0,
-    uploaded: true,
-  };
-  return refreshFiles(folderId, dispatch, getState)
-    .catch((err) => {
-      dispatch(
-        setPrimaryProgressBarData({
-          alert: true,
-          visible: true,
-        })
-      );
-      setTimeout(() => dispatch(clearPrimaryProgressData()), TIMEOUT);
-      //toastr.error(err);
-    })
-    .finally(() =>
-      setTimeout(() => {
-        dispatch(clearPrimaryProgressData());
-        dispatch(setUploadData(uploadData));
-      }, TIMEOUT)
-    );
-};
+// const updateFiles = (folderId, dispatch, getState) => {
+//   //console.log("folderId ", folderId);
+//   const uploadData = {
+//     files: [],
+//     filesSize: 0,
+//     convertFiles: [],
+//     convertFilesSize: 0,
+//     uploadedFiles: 0,
+//     percent: 0,
+//     uploaded: true,
+//   };
+//   return refreshFiles(folderId, dispatch, getState)
+//     .catch((err) => {
+//       dispatch(
+//         setPrimaryProgressBarData({
+//           alert: true,
+//           visible: true,
+//         })
+//       );
+//       setTimeout(() => dispatch(clearPrimaryProgressData()), TIMEOUT);
+//       //toastr.error(err);
+//     })
+//     .finally(() =>
+//       setTimeout(() => {
+//         dispatch(clearPrimaryProgressData());
+//         dispatch(setUploadData(uploadData));
+//       }, TIMEOUT)
+//     );
+// };
 
 const refreshFiles = (folderId, dispatch, getState) => {
   const { files } = getState();
@@ -1082,7 +1159,7 @@ const refreshFiles = (folderId, dispatch, getState) => {
   }
 };
 
-const getConvertProgress = (
+/*const getConvertProgress = (
   fileId,
   t,
   uploadData,
@@ -1164,7 +1241,7 @@ const updateConvertProgress = (uploadData, t, dispatch) => {
   if (!progressVisible) {
     setTimeout(() => dispatch(clearPrimaryProgressData()), TIMEOUT);
   }
-};
+};*/
 
 export const setDialogVisible = (t) => {
   return (dispatch, getState) => {
@@ -1320,6 +1397,17 @@ const startConvertFiles = async (files, t, dispatch, getState) => {
   }
   };
 
+const convertSplitItem = (item) => {
+  let splitItem = item.split("_");
+  const fileExst = splitItem[0];
+  splitItem.splice(0, 1);
+  if (splitItem[splitItem.length - 1] === "draggable") {
+    splitItem.splice(-1, 1);
+  }
+  splitItem = splitItem.join("_");
+  return [fileExst, splitItem];
+};
+
 export const setSelections = (items) => {
   return (dispatch, getState) => {
     const {
@@ -1337,15 +1425,11 @@ export const setSelections = (items) => {
       for (let item of items) {
         if (!item) break; // temporary fall protection selection tile
 
-        item = item.split("_");
+        item = convertSplitItem(item);
         if (item[0] === "folder") {
-          newFile = selection.find(
-            (x) => x.id === Number(item[1]) && !x.fileExst
-          );
+          newFile = selection.find((x) => x.id + "" === item[1] && !x.fileExst);
         } else if (item[0] === "file") {
-          newFile = selection.find(
-            (x) => x.id === Number(item[1]) && x.fileExst
-          );
+          newFile = selection.find((x) => x.id + "" === item[1] && x.fileExst);
         }
         if (newFile) {
           newSelection.push(newFile);
@@ -1366,13 +1450,11 @@ export const setSelections = (items) => {
         if (!item) break; // temporary fall protection selection tile
 
         let newFile = null;
-        item = item.split("_");
+        item = convertSplitItem(item);
         if (item[0] === "folder") {
-          newFile = folders.find(
-            (x) => x.id === Number(item[1]) && !x.fileExst
-          );
+          newFile = folders.find((x) => x.id + "" === item[1] && !x.fileExst);
         } else if (item[0] === "file") {
-          newFile = files.find((x) => x.id === Number(item[1]) && x.fileExst);
+          newFile = files.find((x) => x.id + "" === item[1] && x.fileExst);
         }
         if (newFile && fileActionId !== newFile.id) {
           const existItem = selection.find(
@@ -1384,6 +1466,44 @@ export const setSelections = (items) => {
           }
         }
       }
+    } else if (selection.length === items.length && items.length === 1) {
+      const item = convertSplitItem(items[0]);
+
+      if (item[1] !== selection[0].id) {
+        let addFile = null;
+        let delFile = null;
+        const newSelection = [];
+        if (item[0] === "folder") {
+          delFile = selection.find((x) => x.id + "" === item[1] && !x.fileExst);
+          addFile = folders.find((x) => x.id + "" === item[1] && !x.fileExst);
+        } else if (item[0] === "file") {
+          delFile = selection.find((x) => x.id + "" === item[1] && x.fileExst);
+          addFile = files.find((x) => x.id + "" === item[1] && x.fileExst);
+        }
+
+        const existItem = selection.find(
+          (x) => x.id === addFile.id && x.fileExst === addFile.fileExst
+        );
+        if (!existItem) {
+          dispatch(selectFile(addFile));
+          selected !== "none" && dispatch(setSelected("none"));
+        }
+
+        if (delFile) {
+          newSelection.push(delFile);
+        }
+
+        for (let item of selection) {
+          const element = newSelection.find(
+            (x) => x.id === item.id && x.fileExst === item.fileExst
+          );
+          if (!element) {
+            dispatch(deselectFile(item));
+          }
+        }
+    } else {
+      return;
+    }
     } else {
       return;
     }
@@ -1454,7 +1574,6 @@ export const loopFilesOperations = (id, destFolderId, isCopy) => {
                       }
                     })
                     .catch((err) => {
-                      console.log("ERROR_1", err);
                       dispatch(
                         setPrimaryProgressBarData({
                           visible: true,
@@ -1492,7 +1611,6 @@ export const loopFilesOperations = (id, destFolderId, isCopy) => {
                 }
               })
               .catch((err) => {
-                console.log("ERROR_2", err);
                 dispatch(
                   setSecondaryProgressBarData({
                     visible: true,
@@ -1508,7 +1626,6 @@ export const loopFilesOperations = (id, destFolderId, isCopy) => {
           }
         })
         .catch((err) => {
-          console.log("ERROR_3", err);
           dispatch(
             setSecondaryProgressBarData({
               visible: true,
@@ -1586,6 +1703,74 @@ export function itemOperationToFolder(
         setTimeout(() => dispatch(clearSecondaryProgressData()), TIMEOUT);
       });
   };
+}
+
+export function fetchThirdPartyProviders() {
+  return (dispatch) => {
+    files.getThirdPartyList().then((data) => {
+      dispatch(setThirdPartyProviders(data));
+    });
+  };
+}
+
+const convertServiceName = (serviceName) => {
+  //Docusign, OneDrive, Wordpress
+  switch (serviceName) {
+    case "GoogleDrive":
+      return "google";
+    case "Box":
+      return "box";
+    case "DropboxV2":
+      return "dropbox";
+    case "OneDrive":
+      return "onedrive";
+    default:
+      return "";
+  }
+};
+
+export function getOAuthToken(modal) {
+  return new Promise((resolve) => {
+    localStorage.removeItem("code");
+    const interval = setInterval(() => {
+      try {
+        const code = localStorage.getItem("code");
+
+        if (code) {
+          localStorage.removeItem("code");
+          clearInterval(interval);
+          resolve(code);
+        }
+      } catch {
+        return;
+      }
+    }, 500);
+  });
+}
+
+export function openConnectWindow(serviceName, modal) {
+  const service = convertServiceName(serviceName);
+  return api.files.openConnectWindow(service).then((link) => {
+    return oAuthPopup(link, modal);
+  });
+}
+
+export function oAuthPopup(url, modal) {
+  let newWindow = modal;
+
+  if (modal) {
+    newWindow.location = url;
+  }
+
+  try {
+    let params =
+      "height=600,width=1020,resizable=0,status=0,toolbar=0,menubar=0,location=1";
+    newWindow = modal ? newWindow : window.open(url, "Authorization", params);
+  } catch (err) {
+    newWindow = modal ? newWindow : window.open(url, "Authorization");
+  }
+
+  return newWindow;
 }
 
 export function fetchFileVersions(fileId) {
