@@ -49,7 +49,60 @@ export const isAuthenticated = (state) => state.auth.isAuthenticated;
 
 export const getCurrentUserId = (state) => state.auth.user.id;
 
-export const getModules = (state) => state.auth.modules;
+export const getModules = (state) => {
+  const modules = state.auth.modules;
+
+  const extendedModules = [
+    ...modules,
+    {
+      id: "1e044602-43b5-4d79-82f3-fd6208a11960",
+      title: "Projects",
+      iconName: "ProjectsIcon",
+      iconUrl: "",
+      link: "/products/projects/",
+      imageUrl: "/products/files/images/files.svg",
+      isPrimary: false,
+    },
+    {
+      id: "6743007C-6F95-4d20-8C88-A8601CE5E76D",
+      title: "CRM",
+      iconName: "CrmIcon",
+      iconUrl: "",
+      link: "/products/crm/",
+      imageUrl: "/products/files/images/files.svg",
+      isPrimary: false,
+    },
+    {
+      id: "EA942538-E68E-4907-9394-035336EE0BA8",
+      title: "Community",
+      iconName: "CommunityIcon",
+      iconUrl: "",
+      link: "/products/community/",
+      imageUrl: "/products/files/images/files.svg",
+      isPrimary: false,
+    },
+    {
+      id: "2A923037-8B2D-487b-9A22-5AC0918ACF3F",
+      title: "Mail",
+      iconName: "MailIcon",
+      iconUrl: "",
+      link: "/products/mail/",
+      imageUrl: "/products/files/images/files.svg",
+      isPrimary: false,
+    },
+    {
+      id: "32D24CB5-7ECE-4606-9C94-19216BA42086",
+      title: "Calendar",
+      iconName: "CalendarCheckedIcon",
+      iconUrl: "",
+      link: "/products/calendar/",
+      imageUrl: "/products/files/images/files.svg",
+      isPrimary: false,
+    },
+  ];
+
+  return extendedModules;
+};
 
 export const getSettings = (state) => state.auth.settings;
 
@@ -124,41 +177,9 @@ export const getAvailableModules = createSelector(
       return [];
     }
 
-    const extendedModules = [
-      ...modules,
-      {
-        id: "1e044602-43b5-4d79-82f3-fd6208a11960",
-        title: "Projects",
-        iconName: "ProjectsIcon",
-        iconUrl: "",
-        link: "/products/projects/",
-      },
-      {
-        id: "6743007C-6F95-4d20-8C88-A8601CE5E76D",
-        title: "CRM",
-        iconName: "CrmIcon",
-        iconUrl: "",
-        link: "/products/crm/",
-      },
-      {
-        id: "2A923037-8B2D-487b-9A22-5AC0918ACF3F",
-        title: "Mail",
-        iconName: "MailIcon",
-        iconUrl: "",
-        link: "/products/mail/",
-      },
-      {
-        id: "32D24CB5-7ECE-4606-9C94-19216BA42086",
-        title: "Calendar",
-        iconName: "CalendarIcon",
-        iconUrl: "",
-        link: "/products/calendar/",
-      },
-    ];
-
     const isUserAdmin = user.isAdmin;
     const customModules = getCustomModules(isUserAdmin);
-    const products = extendedModules.map((m) => toModuleWrapper(m));
+    const products = modules.map((m) => toModuleWrapper(m));
 
     return [
       {
