@@ -116,6 +116,7 @@ class App extends React.Component {
                   "/products/projects",
                   "/products/crm",
                   "/products/calendar",
+                  "/products/community/",
                 ]}
                 component={ComingSoon}
               />
