@@ -2,8 +2,6 @@
 
 cd %{_builddir}/AppServer-%GIT_BRANCH/build/install/rpm/systemd/
 bash build.sh
-mkdir -p %{_builddir}/etc/systemd/system
-cp -r modules/* %{_builddir}/etc/systemd/system
 
 cd %{_builddir}/AppServer-%GIT_BRANCH/
 yarn install --cwd web/ASC.Web.Components --frozen-lockfile > build/ASC.Web.Components.log
@@ -18,8 +16,6 @@ yarn pack --cwd web/ASC.Web.Common
 
 cd %{_builddir}/AppServer-%GIT_BRANCH/
 npm run-script build:storybook --prefix web/ASC.Web.Components
-mkdir -p %{_builddir}/var/www/story/
-cp -Rf web/ASC.Web.Components/storybook-static/* %{_builddir}/var/www/story/
 
 cd %{_builddir}/AppServer-%GIT_BRANCH/
 component=$(ls web/ASC.Web.Components/asc-web-components-v1.*.tgz)
@@ -30,8 +26,6 @@ yarn add ../../$common --cwd web/ASC.Web.Client --cache-folder ../../yarn
 yarn install --cwd web/ASC.Web.Client --frozen-lockfile || (cd web/ASC.Web.Client \
 npm i && cd ../../)
 npm run-script build --prefix web/ASC.Web.Client
-mkdir -p %{_builddir}/var/www/studio/client
-cp -rf web/ASC.Web.Client/build/* %{_builddir}/var/www/studio/client
 
 cd %{_builddir}/AppServer-%GIT_BRANCH/
 component=$(ls  web/ASC.Web.Components/asc-web-components-v1.*.tgz)
@@ -42,9 +36,6 @@ yarn add ../../../$common --cwd products/ASC.Files/Client --cache-folder ../../.
 yarn install --cwd products/ASC.Files/Client --frozen-lockfile || (cd products/ASC.Files/Client \
 npm i && cd ../../../)
 npm run-script build --prefix products/ASC.Files/Client
-mkdir -p %{_builddir}/var/www/products/ASC.Files/client
-cp -Rf products/ASC.Files/Client/build/* %{_builddir}/var/www/products/ASC.Files/client
-mkdir -p %{_builddir}/var/www/products/ASC.Files/client/products/files
 
 cd %{_builddir}/AppServer-%GIT_BRANCH/
 component=$(ls  web/ASC.Web.Components/asc-web-components-v1.*.tgz)
@@ -55,76 +46,51 @@ yarn add ../../../$common --cwd products/ASC.People/Client --cache-folder ../../
 yarn install --cwd products/ASC.People/Client --frozen-lockfile || (cd products/ASC.People/Client \
 npm i && cd ../../../)
 npm run-script build --prefix products/ASC.People/Client
-mkdir -p %{_builddir}/var/www/products/ASC.People/client
-cp -Rf products/ASC.People/Client/build/* %{_builddir}/var/www/products/ASC.People/client
-mkdir -p %{_builddir}/var/www/products/ASC.People/client/products/people
 
 cd %{_builddir}/AppServer-%GIT_BRANCH/
 dotnet restore ASC.Web.sln --configfile .nuget/NuGet.Config
 dotnet build -r linux-x64 ASC.Web.sln
 cd products/ASC.People/Server
-dotnet -d publish --no-build --self-contained -r linux-x64 -o %{_builddir}/var/www/products/ASC.People/server
+dotnet -d publish --no-build --self-contained -r linux-x64 -o %{_builddir}%{_var}/www/products/ASC.People/server
 cd ../../../
 cd products/ASC.Files/Server
-dotnet -d publish --no-build --self-contained -r linux-x64 -o %{_builddir}/var/www/products/ASC.Files/server
-cp -avrf DocStore %{_builddir}/var/www/products/ASC.Files/server/
+dotnet -d publish --no-build --self-contained -r linux-x64 -o %{_builddir}%{_var}/www/products/ASC.Files/server
+cp -avrf DocStore %{_builddir}%{_var}/www/products/ASC.Files/server/
 cd ../../../
 cd products/ASC.Files/Service
-dotnet -d publish --no-build --self-contained -r linux-x64 -o %{_builddir}/var/www/products/ASC.Files/service
+dotnet -d publish --no-build --self-contained -r linux-x64 -o %{_builddir}%{_var}/www/products/ASC.Files/service
 cd ../../../
 cd web/ASC.Web.Api
-dotnet -d publish --no-build --self-contained -r linux-x64 -o %{_builddir}/var/www/studio/api
+dotnet -d publish --no-build --self-contained -r linux-x64 -o %{_builddir}%{_var}/www/studio/api
 cd ../../
 cd web/ASC.Web.Studio
-dotnet -d publish --no-build --self-contained -r linux-x64 -o %{_builddir}/var/www/studio/server
+dotnet -d publish --no-build --self-contained -r linux-x64 -o %{_builddir}%{_var}/www/studio/server
 cd ../../
 cd common/services/ASC.Data.Backup
-dotnet -d publish --no-build --self-contained -r linux-x64 -o %{_builddir}/var/www/services/backup
+dotnet -d publish --no-build --self-contained -r linux-x64 -o %{_builddir}%{_var}/www/services/backup
 cd ../../../
 cd common/services/ASC.Notify
-dotnet -d publish --no-build --self-contained -r linux-x64 -o %{_builddir}/var/www/services/notify
+dotnet -d publish --no-build --self-contained -r linux-x64 -o %{_builddir}%{_var}/www/services/notify
 cd ../../../
 cd common/services/ASC.ApiSystem
-dotnet -d publish --no-build --self-contained -r linux-x64 -o %{_builddir}/var/www/services/apisystem
+dotnet -d publish --no-build --self-contained -r linux-x64 -o %{_builddir}%{_var}/www/services/apisystem
 cd ../../../
 cd common/services/ASC.Thumbnails.Svc
 dotnet -d publish --no-build --self-contained -r linux-x64 -o %{_builddir}/services/thumb/service
 cd ../../../
 
 yarn install --cwd common/ASC.Thumbnails --frozen-lockfile
-mkdir -p %{_builddir}/services/thumb/client
-cp -Rf common/ASC.Thumbnails/* %{_builddir}/services/thumb/client
 
 cd common/services/ASC.UrlShortener.Svc
 dotnet -d publish --no-build --self-contained -r linux-x64 -o %{_builddir}/services/urlshortener/service
 cd ../../../
 yarn install --cwd common/ASC.UrlShortener --frozen-lockfile
-mkdir -p %{_builddir}/services/urlshortener/client
-cp -Rf common/ASC.UrlShortener/* %{_builddir}/services/urlshortener/client
 
 cd common/services/ASC.Socket.IO.Svc
 dotnet -d publish --no-build --self-contained -r linux-x64 -o %{_builddir}/services/socket/service
 cd ../../../
 yarn install --cwd common/ASC.Socket.IO --frozen-lockfile
-mkdir -p %{_builddir}/services/ASC.Socket.IO && cp -Rf common/ASC.Socket.IO/* %{_builddir}/services/ASC.Socket.IO
 
 cd common/services/ASC.Studio.Notify
 dotnet add ASC.Studio.Notify.csproj reference ../../../products/ASC.People/Server/ASC.People.csproj  ../../../products/ASC.Files/Server/ASC.Files.csproj
-dotnet -d publish --no-build --self-contained -r linux-x64 -o %{_builddir}/var/www/services/studio.notify
-
-cd %{_builddir}/AppServer-%GIT_BRANCH/
-mkdir -p %{_builddir}/var/www/public/
-cp -f public/* %{_builddir}/var/www/public/ 
-mkdir -p %{_builddir}/etc/onlyoffice/appserver/config/
-cp -rf config/* %{_builddir}/etc/onlyoffice/appserver/config/
-cp -f build/install/config/*.sql %{_builddir}/etc/onlyoffice/appserver/
-mkdir -p %{_builddir}/etc/nginx/conf.d/
-cp -f config/nginx/onlyoffice*.conf %{_builddir}/etc/nginx/conf.d/
-mkdir -p %{_builddir}/etc/nginx/includes/
-cp -f config/nginx/includes/onlyoffice*.conf %{_builddir}/etc/nginx/includes/ 
-mkdir -p %{_builddir}/etc/mysql/conf.d/
-cp -f build/install/config/mysql/conf.d/mysql.cnf %{_builddir}/etc/mysql/conf.d/mysql.cnf
-mkdir -p %{_builddir}/etc/nginx/templates/
-cp -f build/install/config/nginx/templates/upstream.conf.template %{_builddir}/etc/nginx/templates/
-mkdir -p %{_builddir}/usr/bin/
-cp -f build/install/rpm/*.sh %{_builddir}/usr/bin/
+dotnet -d publish --no-build --self-contained -r linux-x64 -o %{_builddir}%{_var}/www/services/studio.notify

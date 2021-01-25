@@ -1,7 +1,7 @@
 %package        backup
 Summary:        backup
 Group:          Applications/Internet
-Requires:       onlyoffice-appserver-common
+Requires:       %name-common
 Requires:       dotnet-sdk-3.1
 AutoReqProv:    no
 %description    backup
@@ -14,7 +14,7 @@ Group:          Applications/Internet
 %package        files_services
 Summary:        files_services
 Group:          Applications/Internet
-Requires:       onlyoffice-appserver-common
+Requires:       %name-common
 Requires:       dotnet-sdk-3.1
 AutoReqProv:    no
 %description    files_services
@@ -22,7 +22,7 @@ AutoReqProv:    no
 %package        notify
 Summary:        notify
 Group:          Applications/Internet
-Requires:       onlyoffice-appserver-common
+Requires:       %name-common
 Requires:       dotnet-sdk-3.1
 AutoReqProv:    no
 %description    notify
@@ -30,7 +30,7 @@ AutoReqProv:    no
 %package        files
 Summary:        files
 Group:          Applications/Internet
-Requires:       onlyoffice-appserver-common
+Requires:       %name-common
 Requires:       dotnet-sdk-3.1
 AutoReqProv:    no
 %description    files
@@ -38,7 +38,7 @@ AutoReqProv:    no
 %package        api_system
 Summary:        api_system
 Group:          Applications/Internet
-Requires:       onlyoffice-appserver-common
+Requires:       %name-common
 Requires:       dotnet-sdk-3.1
 AutoReqProv:    no
 %description    api_system
@@ -46,7 +46,7 @@ AutoReqProv:    no
 %package        proxy
 Summary:        proxy
 Group:          Applications/Internet
-Requires:       onlyoffice-appserver-common
+Requires:       %name-common
 Requires:       nginx
 Requires:       mysql-community-client
 AutoReqProv:    no
@@ -55,7 +55,7 @@ AutoReqProv:    no
 %package        studio.notify
 Summary:        studio.notify
 Group:          Applications/Internet
-Requires:       onlyoffice-appserver-common
+Requires:       %name-common
 Requires:       dotnet-sdk-3.1
 AutoReqProv:    no
 %description    studio.notify
@@ -63,7 +63,7 @@ AutoReqProv:    no
 %package        people.server
 Summary:        people.server
 Group:          Applications/Internet
-Requires:       onlyoffice-appserver-common
+Requires:       %name-common
 Requires:       dotnet-sdk-3.1
 AutoReqProv:    no
 %description    people.server
@@ -71,7 +71,7 @@ AutoReqProv:    no
 %package        urlshortener
 Summary:        urlshortener
 Group:          Applications/Internet
-Requires:       onlyoffice-appserver-common
+Requires:       %name-common
 Requires:       dotnet-sdk-3.1
 Requires:       nodejs >= 10.0
 AutoReqProv:    no
@@ -80,7 +80,7 @@ AutoReqProv:    no
 %package        socket
 Summary:        socket
 Group:          Applications/Internet
-Requires:       onlyoffice-appserver-common
+Requires:       %name-common
 Requires:       dotnet-sdk-3.1
 Requires:       nodejs >= 10.0
 AutoReqProv:    no
@@ -89,7 +89,7 @@ AutoReqProv:    no
 %package        thumbnails
 Summary:        thumbnails
 Group:          Applications/Internet
-Requires:       onlyoffice-appserver-common
+Requires:       %name-common
 Requires:       dotnet-sdk-3.1
 Requires:       nodejs >= 10.0
 AutoReqProv:    no
@@ -98,7 +98,7 @@ AutoReqProv:    no
 %package        studio
 Summary:        studio
 Group:          Applications/Internet
-Requires:       onlyoffice-appserver-common
+Requires:       %name-common
 Requires:       dotnet-sdk-3.1
 AutoReqProv:    no
 %description    studio
@@ -106,7 +106,7 @@ AutoReqProv:    no
 %package        api
 Summary:        api
 Group:          Applications/Internet
-Requires:       onlyoffice-appserver-common
+Requires:       %name-common
 Requires:       dotnet-sdk-3.1
 AutoReqProv:    no
 %description    api

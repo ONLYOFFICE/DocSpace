@@ -19,17 +19,17 @@ BuildRequires:  nodejs >= 10.0
 BuildRequires:  yarn
 BuildRequires:  libgdiplus
 BuildRequires:  dotnet-sdk-3.1
-Requires:       onlyoffice-appserver-backup
-Requires:       onlyoffice-appserver-files_services
-Requires:       onlyoffice-appserver-notify
-Requires:       onlyoffice-appserver-files
-Requires:       onlyoffice-appserver-api_system
-Requires:       onlyoffice-appserver-proxy
-Requires:       onlyoffice-appserver-people.server
-Requires:       onlyoffice-appserver-urlshortener
-Requires:       onlyoffice-appserver-thumbnails
-Requires:       onlyoffice-appserver-studio
-Requires:       onlyoffice-appserver-api
+Requires:       %name-backup
+Requires:       %name-files_services
+Requires:       %name-notify
+Requires:       %name-files
+Requires:       %name-api_system
+Requires:       %name-proxy
+Requires:       %name-people.server
+Requires:       %name-urlshortener
+Requires:       %name-thumbnails
+Requires:       %name-studio
+Requires:       %name-api
 AutoReqProv:    no
 %description
 
@@ -58,7 +58,7 @@ getent passwd onlyoffice >/dev/null || useradd -r -g onlyoffice -s /sbin/nologin
 
 %post common
 
-chmod +x /usr/bin/appserver-configuracion.sh
+chmod +x %{_bindir}/appserver-configuracion.sh
 
 %preun
 
