@@ -3,12 +3,14 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import { Text } from "asc-web-components";
-import { toastr, ModuleTile, PageLayout, utils } from "asc-web-common";
+import { toastr, ModuleTile, PageLayout, utils, store } from "asc-web-common";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 
 import { createI18N } from "../../../helpers/i18n";
 import { setDocumentTitle } from "../../../helpers/utils";
+
+const { getModules, getIsLoaded } = store.auth.selectors;
 
 const i18n = createI18N({
   page: "Home",
@@ -122,10 +124,9 @@ Home.propTypes = {
 };
 
 function mapStateToProps(state) {
-  const { modules, isLoaded } = state.auth;
   return {
-    modules,
-    isLoaded,
+    modules: getModules(state),
+    isLoaded: getIsLoaded(state),
   };
 }
 
