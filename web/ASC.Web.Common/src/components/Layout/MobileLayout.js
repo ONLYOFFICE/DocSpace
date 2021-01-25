@@ -44,6 +44,12 @@ class MobileLayout extends Component {
     const currentScrollPosition =
       this.customScrollElm.scrollTop > 0 ? this.customScrollElm.scrollTop : 0;
 
+    if (document.getElementsByClassName("backdrop-active").length > 0) {
+      const elements = document.getElementsByClassName("backdrop-active");
+      elements[0].click();
+      return;
+    }
+
     if (visibleContent && isMobile && !isTouchDevice) {
       return;
     }
