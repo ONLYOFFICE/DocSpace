@@ -110,7 +110,13 @@ class App extends React.Component {
               <PrivateRoute restricted path="/settings" component={Settings} />
               <PrivateRoute
                 exact
-                path={["/coming-soon"]}
+                path={[
+                  "/coming-soon",
+                  "/products/mail",
+                  "/products/projects",
+                  "/products/crm",
+                  "/products/calendar",
+                ]}
                 component={ComingSoon}
               />
               <PrivateRoute path="/payments" component={Payments} />
