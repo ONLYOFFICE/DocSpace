@@ -18,10 +18,11 @@ import {
 } from "@appserver/common/src/store/auth/actions";
 import { updateTempContent } from "@appserver/common/src/utils";
 
-const Home = React.lazy(() => import("studio/home"));
+const Home = React.lazy(() => import("./components/pages/Home"));
 const Login = React.lazy(() => import("login/page"));
 const People = React.lazy(() => import("people/page"));
 const Files = React.lazy(() => import("files/page"));
+const About = React.lazy(() => import("./components/pages/About"));
 
 const HomeRoute = () => (
   <React.Suspense fallback={null}>
@@ -55,7 +56,14 @@ const FilesRoute = () => (
   </React.Suspense>
 );
 
-const Frame = ({ items = [], page = "home", ...rest }) => {
+const AboutRoute = () => (
+  <React.Suspense fallback={null}>
+    <ErrorBoundary>
+      <About />
+    </ErrorBoundary>
+  </React.Suspense>
+);
+const Shell = ({ items = [], page = "home", ...rest }) => {
   useEffect(() => {
     //utils.removeTempContent();
 
@@ -109,6 +117,7 @@ const Frame = ({ items = [], page = "home", ...rest }) => {
               path={["/products/files", "/products/files/filter"]}
               component={FilesRoute}
             />
+            <PrivateRoute path={["/about"]} component={AboutRoute} />
             <PublicRoute
               exact
               path={[
@@ -145,4 +154,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Frame);
+export default connect(mapStateToProps, mapDispatchToProps)(Shell);

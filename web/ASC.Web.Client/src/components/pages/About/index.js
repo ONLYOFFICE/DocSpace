@@ -2,7 +2,7 @@
 import Text from "@appserver/components/src/components/text";
 import Link from "@appserver/components/src/components/link";
 import PageLayout from "@appserver/common/src/components/PageLayout";
-import utils from "@appserver/common/src/utils";
+import { changeLanguage } from "@appserver/common/src/utils";
 import { useTranslation } from "react-i18next";
 import version from "../../../../package.json";
 import styled from "styled-components";
@@ -14,8 +14,6 @@ const i18n = createI18N({
   page: "About",
   localesPath: "pages/About",
 });
-
-const { changeLanguage } = utils;
 
 const BodyStyle = styled.div`
   margin-top: 24px;

@@ -1,13 +1,24 @@
-const HtmlWebPackPlugin = require("html-webpack-plugin");
-const ModuleFederationPlugin = require("webpack/lib/container/ModuleFederationPlugin");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const ModuleFederationPlugin = require("webpack").container
+  .ModuleFederationPlugin;
 const path = require("path");
-
 const deps = require("./package.json").dependencies;
+
 module.exports = {
+  entry: "./src/index",
+  mode: "development",
+  devServer: {
+    contentBase: [path.join(__dirname, "public"), path.join(__dirname, "dist")],
+    contentBasePublicPath: "/products/people/",
+    port: 5002,
+    historyApiFallback: true,
+    hot: false,
+    hotOnly: false,
+  },
+
   output: {
-    publicPath: "http://localhost:5002",
-    filename: "bundle.js",
-    path: path.resolve(__dirname, "dist"),
+    publicPath: "auto",
+    chunkFilename: "[id].[contenthash].js",
   },
 
   resolve: {
@@ -16,13 +27,6 @@ module.exports = {
       crypto: false,
     },
   },
-
-  devServer: {
-    port: 5002,
-    contentBase: path.join(__dirname, "public"),
-    contentBasePublicPath: "/products/people/",
-  },
-
   module: {
     rules: [
       {
@@ -79,10 +83,9 @@ module.exports = {
       filename: "remoteEntry.js",
       remotes: {
         studio: "studio@http://localhost:5001/remoteEntry.js",
-        people: "people@http://localhost:5002/remoteEntry.js",
       },
       exposes: {
-        "./page": "./src/PeopleContent.jsx",
+        "./page": "./src/People.jsx",
       },
       shared: {
         ...deps,
@@ -96,7 +99,7 @@ module.exports = {
         },
       },
     }),
-    new HtmlWebPackPlugin({
+    new HtmlWebpackPlugin({
       template: "./public/index.html",
     }),
   ],

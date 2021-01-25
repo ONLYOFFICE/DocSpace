@@ -1,10 +1,11 @@
 import { createStore, applyMiddleware } from "redux";
 import thunk from "redux-thunk";
 import { composeWithDevTools } from "redux-devtools-extension/logOnlyInProduction";
-import dynostore, {
-  combineReducers,
-  dynamicReducers,
-} from "@redux-dynostore/core";
+import { combineReducers } from "redux";
+// import dynostore, {
+//   combineReducers,
+//   dynamicReducers,
+// } from "@redux-dynostore/core";
 //import { createReducerManager } from "./reducerManager";
 
 import authReducer from "@appserver/common/src/store/auth/reducer";
@@ -32,7 +33,7 @@ const rootReducer = combineReducers({
 const store = createStore(
   //reducerManager.reduce,
   rootReducer,
-  composeWithDevTools(applyMiddleware(thunk), dynostore(dynamicReducers()))
+  composeWithDevTools(applyMiddleware(thunk))
 );
 
 // Optional: Put the reducer manager on the store so it is easily accessible

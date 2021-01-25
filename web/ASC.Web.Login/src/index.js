@@ -1,1 +1,1 @@
-import("./LoginPage.jsx");
+import("./bootstrap");

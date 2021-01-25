@@ -1,4 +1,4 @@
-import("./FilesPage");
+import("./bootstrap");
 
 //import "./wdyr";
 

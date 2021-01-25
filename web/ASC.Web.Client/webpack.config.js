@@ -1,15 +1,26 @@
-const HtmlWebPackPlugin = require("html-webpack-plugin");
-const ModuleFederationPlugin = require("webpack/lib/container/ModuleFederationPlugin");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const ModuleFederationPlugin = require("webpack").container
+  .ModuleFederationPlugin;
 const path = require("path");
-
 const deps = require("./package.json").dependencies;
-module.exports = {
-  output: {
-    publicPath: "http://localhost:5001/",
-    filename: "bundle.js",
-    path: path.resolve(__dirname, "dist"),
-  },
 
+module.exports = {
+  entry: "./src/index",
+  mode: "development",
+  devServer: {
+    contentBase: [path.join(__dirname, "public"), path.join(__dirname, "dist")],
+    port: 5001,
+    historyApiFallback: true,
+    hot: false,
+    hotOnly: false,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH, OPTIONS",
+      "Access-Control-Allow-Headers":
+        "X-Requested-With, content-type, Authorization",
+    },
+    openPage: "http://localhost:8092",
+  },
   resolve: {
     extensions: [".jsx", ".js", ".json"],
     fallback: {
@@ -17,10 +28,9 @@ module.exports = {
     },
   },
 
-  devServer: {
-    port: 5001,
-    openPage: "http://localhost:8092",
-    contentBase: path.join(__dirname, "public"),
+  output: {
+    publicPath: "auto",
+    chunkFilename: "[id].[contenthash].js",
   },
 
   module: {
@@ -84,8 +94,7 @@ module.exports = {
         login: "login@http://localhost:5020/remoteEntry.js",
       },
       exposes: {
-        "./home": "./src/components/pages/Home",
-        "./frame": "./src/Frame",
+        "./shell": "./src/Shell",
         "./store": "./src/store/store",
       },
       shared: {
@@ -100,7 +109,7 @@ module.exports = {
         },
       },
     }),
-    new HtmlWebPackPlugin({
+    new HtmlWebpackPlugin({
       template: "./public/index.html",
     }),
   ],
