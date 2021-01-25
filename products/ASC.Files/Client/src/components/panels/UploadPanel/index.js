@@ -84,7 +84,6 @@ class UploadPanelComponent extends React.Component {
     const visible = uploadPanelVisible;
     const zIndex = 310;
 
-    console.log(uploaded);
     return (
       <StyledAsidePanel visible={visible}>
         <Backdrop
