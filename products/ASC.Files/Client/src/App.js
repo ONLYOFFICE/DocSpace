@@ -149,7 +149,7 @@ class App extends React.Component {
         <Router history={history}>
           <ScrollToTop />
           {!this.isEditor && <NavMenu />}
-          <Main>
+          <Main isDesktop={isDesktop}>
             <Suspense fallback={null}>
               <Switch>
                 <Redirect exact from="/" to={`${homepage}`} />
@@ -170,7 +170,7 @@ class App extends React.Component {
                   exact
                   path={`${homepage}/:fileId/history`}
                   component={VersionHistory}
-				/>
+                />
                 <PrivateRoute exact path={homepage} component={Home} />
                 <PrivateRoute path={`${homepage}/filter`} component={Home} />
                 <PublicRoute
