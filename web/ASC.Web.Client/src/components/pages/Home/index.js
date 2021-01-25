@@ -57,7 +57,9 @@ const HomeContainer = styled.div`
 const Tiles = ({ modules, isPrimary }) => {
   let index = 0;
 
-  const mapped = modules.filter((m) => m.isPrimary === isPrimary);
+  const mapped = modules.filter(
+    (m) => m.isPrimary === isPrimary && m.isolateMode !== true
+  );
 
   return mapped.length > 0 ? (
     <div className="home-modules">
