@@ -40,6 +40,7 @@ import {
   SET_VER_HISTORY_FILE_ID,
   SET_FILE_VERSIONS,
   SET_CHANGE_OWNER_VISIBLE,
+  SELECT_UPLOADED_FILE,
 } from "./actions";
 import { api } from "asc-web-common";
 import { isFileSelected, skipFile, getFilesBySelected } from "./selectors";
@@ -94,6 +95,7 @@ const initialState = {
     percent: 0,
     uploaded: true,
   },
+  selectedUploadFile: [],
   docservice: {
     coauthorDocs: [".pptx", ".ppsx", ".xlsx", ".csv", ".docx", ".txt"],
     commentedDocs: [".docx", ".xlsx", ".pptx"],
@@ -633,6 +635,12 @@ const filesReducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         ownerPanelVisible: action.ownerPanelVisible,
       });
+    }
+    case SELECT_UPLOADED_FILE: {
+      return {
+        ...state,
+        selectedUploadFile: action.file,
+      };
     }
 
     default:

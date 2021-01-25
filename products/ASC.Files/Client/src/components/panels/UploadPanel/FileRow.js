@@ -13,9 +13,8 @@ import LoadingButton from "./LoadingButton";
 import { connect } from "react-redux";
 import {
   cancelCurrentUpload,
-  setSelection,
-  setSelected,
   setSharingPanelVisible,
+  selectUploadedFile,
 } from "../../../store/files/actions";
 import {
   getLoadingFile,
@@ -27,9 +26,9 @@ import {
   getMediaViewerImageFormats,
   getMediaViewerMediaFormats,
   isUploaded,
-  getSelected,
   isMediaOrImage,
   getIconSrc,
+  getUploadedFile,
 } from "../../../store/files/selectors";
 
 const StyledFileRow = styled(Row)`
@@ -80,7 +79,7 @@ const StyledFileRow = styled(Row)`
 
 const FileRow = (props) => {
   const {
-    t,
+    // t,
     item,
     uploaded,
     cancelCurrentUpload,
@@ -99,17 +98,16 @@ const FileRow = (props) => {
     return cancelCurrentUpload(id);
   };
 
-  const onOpenSharingPanel = (item) => {
-    //console.log(item);
+  const onOpenSharingPanel = () => {
     const {
-      selected,
-      setSelected,
-      setSelection,
       setSharingPanelVisible,
       sharingPanelVisible,
+      selectUploadedFile,
+      uploadedFile,
     } = props;
-    selected === "close" && setSelected("none");
-    setSelection([item]);
+
+    const file = uploadedFile[0].fileInfo;
+    selectUploadedFile([file]);
     setSharingPanelVisible(!sharingPanelVisible);
   };
 
@@ -167,10 +165,8 @@ const FileRow = (props) => {
               iconName="CatalogSharedIcon"
               className="upload_panel-icon"
               color={color}
-              isClickable={true}
-              onClick={() =>
-                onOpenSharingPanel(item.fileInfo ? item.fileInfo : "")
-              }
+              isClickable
+              onClick={onOpenSharingPanel}
             />
           ) : item.error || (!item.fileId && uploaded) ? (
             <div className="upload_panel-icon">
@@ -226,6 +222,7 @@ const mapStateToProps = (state, ownProps) => {
   if (currentFile && currentFile.shared) color = "#657077";
 
   const { uniqueId } = item;
+
   return {
     currentFileUploadProgress:
       loadingFile && loadingFile.uniqueId === uniqueId
@@ -238,12 +235,12 @@ const mapStateToProps = (state, ownProps) => {
     mediaViewerImageFormats: getMediaViewerImageFormats(state),
     mediaViewerMediaFormats: getMediaViewerMediaFormats(state),
     uploaded: isUploaded(state),
-    selected: getSelected(state),
     isMedia: isMediaOrImage(ext)(state),
     fileIcon: getIconSrc(ext, 24)(state),
     ext,
     name,
     color,
+    uploadedFile: getUploadedFile(uniqueId)(state),
   };
 };
 
@@ -251,6 +248,5 @@ export default connect(mapStateToProps, {
   setSharingPanelVisible,
   cancelCurrentUpload,
   // setMediaViewerData,
-  setSelection,
-  setSelected,
+  selectUploadedFile,
 })(FileRow);

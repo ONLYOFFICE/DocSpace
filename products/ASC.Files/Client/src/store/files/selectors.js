@@ -1729,3 +1729,13 @@ export const getIconSrc = (ext, size = 24) => {
     }
   );
 };
+
+export const getUploadedFile = (id) => {
+  return createSelector(getUploadDataFiles, (files) => {
+    return files.filter((f) => f.uniqueId === id);
+  });
+};
+
+export const getUploadSelection = (state) => {
+  return state.files.selectedUploadFile;
+};

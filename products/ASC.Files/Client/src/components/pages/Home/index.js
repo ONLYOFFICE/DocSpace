@@ -37,8 +37,6 @@ import {
   getViewAs,
   getIsLoading,
   getDragging,
-  getSharePanelVisible,
-  getUploadPanelVisible,
   getFirstLoad,
   isSecondaryProgressFinished,
   getSelectionLength,
@@ -47,9 +45,10 @@ import {
 } from "../../../store/files/selectors";
 
 import { ConvertDialog } from "../../dialogs";
-import { SharingPanel, UploadPanel, ChangeOwnerPanel } from "../../panels";
+import { ChangeOwnerPanel } from "../../panels";
 import { createI18N } from "../../../helpers/i18n";
 import { getFilterByLocation } from "../../../helpers/converters";
+import Panels from "./Panels";
 const i18n = createI18N({
   page: "Home",
   localesPath: "pages/Home",
@@ -236,13 +235,11 @@ class PureHome extends React.Component {
       secondaryProgressData,
       viewAs,
       convertDialogVisible,
-      sharingPanelVisible,
       fileActionId,
       firstLoad,
       showOwnerChangePanel,
-      uploadPanelVisible,
     } = this.props;
-    //console.log("Files Home render");
+
     return (
       <>
         {convertDialogVisible && (
@@ -251,12 +248,10 @@ class PureHome extends React.Component {
 
         {showOwnerChangePanel && <ChangeOwnerPanel />}
 
-        {sharingPanelVisible && <SharingPanel />}
-        {uploadPanelVisible && <UploadPanel />}
+        <Panels />
         <PageLayout
           withBodyScroll
           withBodyAutoFocus={!isMobile}
-          uploadFiles
           onDrop={this.onDrop}
           setSelections={this.props.setSelections}
           onMouseMove={this.onMouseMove}
@@ -275,7 +270,6 @@ class PureHome extends React.Component {
             secondaryProgressData.visible
           }
           isLoaded={!firstLoad}
-          uploadPanelVisible={uploadPanelVisible}
           onOpenUploadPanel={this.showUploadPanel}
         >
           <PageLayout.ArticleHeader>
@@ -345,12 +339,10 @@ function mapStateToProps(state) {
     homepage: getSettingsHomepage(state),
     dragging: getDragging(state),
     firstLoad: getFirstLoad(state),
-    sharingPanelVisible: getSharePanelVisible(state),
     isProgressFinished: isSecondaryProgressFinished(state),
     selectionLength: getSelectionLength(state),
     selectionTitle: getSelectionTitle(state),
     showOwnerChangePanel: getShowOwnerChangePanel(state),
-    uploadPanelVisible: getUploadPanelVisible(state),
   };
 }
 

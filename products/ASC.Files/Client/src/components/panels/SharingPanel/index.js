@@ -21,6 +21,7 @@ import {
   setIsLoading,
   setFiles,
   setFolders,
+  selectUploadedFile,
 } from "../../../store/files/actions";
 import {
   getAccessOption,
@@ -33,6 +34,7 @@ import {
   getFolders,
   getIsPrivacyFolder,
   getUploadPanelVisible,
+  getUploadSelection,
 } from "../../../store/files/selectors";
 import {
   StyledAsidePanel,
@@ -362,8 +364,10 @@ class SharingPanelComponent extends React.Component {
 
   setShareDataItems = (shareDataItems) => this.setState({ shareDataItems });
 
-  onClose = () =>
+  onClose = () => {
     this.props.setSharingPanelVisible(!this.props.sharingPanelVisible);
+    this.props.selectUploadedFile([]);
+  };
 
   componentDidMount() {
     this.getShareData();
@@ -432,6 +436,7 @@ class SharingPanelComponent extends React.Component {
       accessOptions,
       externalAccessOptions,
     } = this.state;
+    console.log("Sharing Panel render");
 
     const visible = showPanel;
     const zIndex = 310;
@@ -608,13 +613,19 @@ const SharingPanel = (props) => (
   <SharingPanelContainerTranslated i18n={i18n} {...props} />
 );
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, ownProps) => {
+  const selection = getSelection(state);
+  const uploadSelection = getUploadSelection(state);
+  const selectedFile = ownProps.uploadPanelVisible
+    ? uploadSelection
+    : selection; // TODO: take out this implementation from this component
+
   return {
     getAccessOption: (selection) => getAccessOption(state, selection),
     getExternalAccessOption: (selection) =>
       getExternalAccessOption(state, selection),
     isMyId: getCurrentUserId(state),
-    selection: getSelection(state),
+    selection: selectedFile,
     isPrivacy: getIsPrivacyFolder(state),
     groupsCaption: getSettingsCustomNamesGroupsCaption(state),
     sharingPanelVisible: getSharePanelVisible(state),
@@ -623,7 +634,6 @@ const mapStateToProps = (state) => {
     files: getFiles(state),
     folders: getFolders(state),
     settings: getSettings(state),
-    uploadPanelVisible: getUploadPanelVisible(state),
   };
 };
 
@@ -633,4 +643,5 @@ export default connect(mapStateToProps, {
   setIsLoading,
   setFiles,
   setFolders,
+  selectUploadedFile,
 })(withRouter(SharingPanel));

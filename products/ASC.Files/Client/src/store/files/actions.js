@@ -81,6 +81,7 @@ export const SET_IS_VER_HISTORY_PANEL = "SET_IS_VER_HISTORY_PANEL";
 export const SET_VER_HISTORY_FILE_ID = "SET_VER_HISTORY_FILE_ID";
 export const SET_FILE_VERSIONS = "SET_FILE_VERSIONS";
 export const SET_CHANGE_OWNER_VISIBLE = "SET_CHANGE_OWNER_VISIBLE";
+export const SELECT_UPLOADED_FILE = "SELECT_UPLOADED_FILE";
 
 export function setFile(file) {
   return {
@@ -360,6 +361,13 @@ export function setChangeOwnerPanelVisible(ownerPanelVisible) {
   return {
     type: SET_CHANGE_OWNER_VISIBLE,
     ownerPanelVisible,
+  };
+}
+
+export function selectUploadedFile(file) {
+  return {
+    type: SELECT_UPLOADED_FILE,
+    file,
   };
 }
 
