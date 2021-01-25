@@ -15,6 +15,7 @@ const toModuleWrapper = (item, iconName) => {
     iconUrl: item.iconUrl,
     notifications: 0,
     url: item.link,
+    isolateMode: item.isolateMode,
     onClick: (e) => {
       if (e) {
         window.open(item.link, "_self");
@@ -60,7 +61,7 @@ export const getModules = (state) => {
       iconName: "ProjectsIcon",
       iconUrl: "",
       link: "/products/projects/",
-      imageUrl: "/products/files/images/files.svg",
+      imageUrl: "/images/projects.svg",
       isPrimary: false,
     },
     {
@@ -69,16 +70,7 @@ export const getModules = (state) => {
       iconName: "CrmIcon",
       iconUrl: "",
       link: "/products/crm/",
-      imageUrl: "/products/files/images/files.svg",
-      isPrimary: false,
-    },
-    {
-      id: "EA942538-E68E-4907-9394-035336EE0BA8",
-      title: "Community",
-      iconName: "CommunityIcon",
-      iconUrl: "",
-      link: "/products/community/",
-      imageUrl: "/products/files/images/files.svg",
+      imageUrl: "/images/crm.svg",
       isPrimary: false,
     },
     {
@@ -87,7 +79,7 @@ export const getModules = (state) => {
       iconName: "MailIcon",
       iconUrl: "",
       link: "/products/mail/",
-      imageUrl: "/products/files/images/files.svg",
+      imageUrl: "/images/mail.svg",
       isPrimary: false,
     },
     {
@@ -96,8 +88,18 @@ export const getModules = (state) => {
       iconName: "CalendarCheckedIcon",
       iconUrl: "",
       link: "/products/calendar/",
-      imageUrl: "/products/files/images/files.svg",
+      imageUrl: "/images/calendar.svg",
       isPrimary: false,
+    },
+    {
+      id: "BF88953E-3C43-4850-A3FB-B1E43AD53A3E",
+      title: "Talk",
+      iconName: "ChatIcon",
+      iconUrl: "",
+      link: "/products/talk/",
+      imageUrl: "/images/talk.svg",
+      isPrimary: false,
+      isolateMode: true,
     },
   ];
 
