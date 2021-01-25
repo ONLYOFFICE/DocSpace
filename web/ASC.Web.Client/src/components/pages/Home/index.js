@@ -107,10 +107,7 @@ const Body = ({ modules, match, isLoaded }) => {
 };
 
 const Home = (props) => {
-  const { defaultPage } = props;
-  return utils.tryRedirectTo(defaultPage) ? (
-    <></>
-  ) : (
+  return (
     <PageLayout>
       <PageLayout.SectionBody>
         <Body {...props} />
@@ -125,12 +122,10 @@ Home.propTypes = {
 };
 
 function mapStateToProps(state) {
-  const { modules, isLoaded, settings } = state.auth;
-  const { defaultPage } = settings;
+  const { modules, isLoaded } = state.auth;
   return {
     modules,
     isLoaded,
-    defaultPage,
   };
 }
 
