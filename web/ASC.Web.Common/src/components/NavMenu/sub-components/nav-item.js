@@ -104,7 +104,7 @@ const NavItem = React.memo((props) => {
         />
       ) : (
         <>
-          <VersionBadge>BETA</VersionBadge>
+          {iconName === "MenuIcon" && <VersionBadge>BETA</VersionBadge>}
           {React.createElement(Icons[iconName], {
             size: "big",
             isfill: true,
