@@ -124,9 +124,41 @@ export const getAvailableModules = createSelector(
       return [];
     }
 
+    const extendedModules = [
+      ...modules,
+      {
+        id: "1e044602-43b5-4d79-82f3-fd6208a11960",
+        title: "Projects",
+        iconName: "ProjectsIcon",
+        iconUrl: "",
+        link: "/products/projects/",
+      },
+      {
+        id: "6743007C-6F95-4d20-8C88-A8601CE5E76D",
+        title: "CRM",
+        iconName: "CrmIcon",
+        iconUrl: "",
+        link: "/products/crm/",
+      },
+      {
+        id: "2A923037-8B2D-487b-9A22-5AC0918ACF3F",
+        title: "Mail",
+        iconName: "MailIcon",
+        iconUrl: "",
+        link: "/products/mail/",
+      },
+      {
+        id: "32D24CB5-7ECE-4606-9C94-19216BA42086",
+        title: "Calendar",
+        iconName: "CalendarIcon",
+        iconUrl: "",
+        link: "/products/calendar/",
+      },
+    ];
+
     const isUserAdmin = user.isAdmin;
     const customModules = getCustomModules(isUserAdmin);
-    const products = modules.map((m) => toModuleWrapper(m));
+    const products = extendedModules.map((m) => toModuleWrapper(m));
 
     return [
       {
