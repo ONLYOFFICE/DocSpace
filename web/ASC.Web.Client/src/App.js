@@ -83,7 +83,7 @@ class App extends React.Component {
 
   render() {
     return navigator.onLine ? (
-      <Lauout>
+      <Layout>
         <Router history={history}>
           {!this.isThirdPartyResponse && <NavMenu />}
           <Main>
@@ -110,7 +110,11 @@ class App extends React.Component {
                   component={Home}
                 />
                 <PrivateRoute exact path="/about" component={About} />
-                <PrivateRoute restricted path="/settings" component={Settings} />
+                <PrivateRoute
+                  restricted
+                  path="/settings"
+                  component={Settings}
+                />
                 <PrivateRoute
                   exact
                   path={["/coming-soon"]}
