@@ -158,7 +158,7 @@ namespace ASC.Api.Documents
         public Module GetModule()
         {
             ProductEntryPoint.Init();
-            return new Module(ProductEntryPoint, true);
+            return new Module(ProductEntryPoint);
         }
 
         [Read("@root")]

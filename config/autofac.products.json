@@ -7,7 +7,7 @@
           "type": "ASC.Web.Core.IWebItem, ASC.Web.Core"
         }
       ],
-	  "instanceScope": "singleinstance"
+	  "instanceScope": "InstancePerLifetimeScope"
     },
     {
       "type": "ASC.Files.ApiProductEntryPoint, ASC.Files",
@@ -16,7 +16,7 @@
           "type": "ASC.Web.Core.IWebItem, ASC.Web.Core"
         }
       ],
-	  "instanceScope": "singleinstance"
+	  "instanceScope": "InstancePerLifetimeScope"
     }
   ]
 }
