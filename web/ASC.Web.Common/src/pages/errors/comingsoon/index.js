@@ -11,9 +11,20 @@ const ComingSoonContainer = () => {
     changeLanguage(i18n);
   }, []);
 
+  const urlParams = window.location.pathname.split("/").filter((o) => o);
+  const isProduct = urlParams[0] === "products";
+  const headerText = isProduct
+    ? urlParams[1][0].toUpperCase() +
+      urlParams[1].substring(1) +
+      ` : ` +
+      t("ComingSoonHeader")
+    : t("ComingSoonHeader");
+
+  console.log(urlParams);
+
   return (
     <ErrorContainer
-      headerText={t("ComingSoonHeader")}
+      headerText={headerText}
       bodyText={t("ComingSoonText")}
       buttonText={t("ComingSoonButtonText")}
       buttonUrl="https://www.onlyoffice.com/blog"
