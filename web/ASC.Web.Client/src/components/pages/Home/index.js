@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
@@ -7,6 +7,7 @@ import styled from "styled-components";
 import Text from "@appserver/components/src/components/text";
 import toastr from "@appserver/common/src/components/Toast/toastr";
 import PageLayout from "@appserver/common/src/components/PageLayout";
+import history from "@appserver/common/src/history";
 import ModuleTile from "./ModuleTile";
 import { changeLanguage, tryRedirectTo } from "@appserver/common/src/utils";
 import { createI18N } from "../../../helpers/i18n";
@@ -54,17 +55,13 @@ const HomeContainer = styled.div`
 
 const Tiles = ({ modules, isPrimary }) => {
   let index = 0;
-
   const mapped = modules.filter((m) => m.isPrimary === isPrimary);
 
   return mapped.length > 0 ? (
     <div className="home-modules">
       {mapped.map((module) => (
         <div className="home-module" key={++index}>
-          <ModuleTile
-            {...module}
-            onClick={() => window.open(module.link, "_self")}
-          />
+          <ModuleTile {...module} onClick={() => history.push(module.link)} />
         </div>
       ))}
     </div>

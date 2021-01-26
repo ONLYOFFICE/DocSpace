@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import PropTypes from "prop-types";
 import Text from "@appserver/components/src/components/text";
 import StyledModuleTile from "./StyledModuleTile";
@@ -7,7 +7,14 @@ const ModuleTile = (props) => {
   // console.log("ModuleTile render", props);
   const { title, imageUrl, link, description, isPrimary, onClick } = props;
 
-  const handleClick = (e, link) => onClick && onClick(e, link);
+  const handleClick = useCallback(
+    (e) => {
+      if (typeof onClick !== "function") return;
+
+      onClick(e, link);
+    },
+    [link, onClick]
+  );
 
   return (
     <StyledModuleTile>
@@ -17,12 +24,12 @@ const ModuleTile = (props) => {
             <img
               className="title-image selectable"
               src={imageUrl}
-              onClick={handleClick.bind(link)}
+              onClick={handleClick}
             />
           </div>
 
           <div className="title-text-wrapper">
-            <div onClick={handleClick.bind(link)} className="title-text">
+            <div onClick={handleClick} className="title-text">
               <Text fontSize="36px" className="title-text-header selectable">
                 {title}
               </Text>
@@ -38,7 +45,7 @@ const ModuleTile = (props) => {
             <img
               className="sub-title-image"
               src={imageUrl}
-              onClick={handleClick.bind(link)}
+              onClick={handleClick}
             />
           </div>
           <div>
@@ -46,7 +53,7 @@ const ModuleTile = (props) => {
               <Text
                 fontSize="18px"
                 className="sub-title-text"
-                onClick={handleClick.bind(link)}
+                onClick={handleClick}
               >
                 {title}
               </Text>
