@@ -85,6 +85,7 @@ class App extends React.Component {
     return navigator.onLine ? (
       <Layout>
         <Router history={history}>
+          <ScrollToTop />
           {!this.isThirdPartyResponse && <NavMenu />}
           <Main>
             <Suspense fallback={null}>
