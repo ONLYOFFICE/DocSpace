@@ -147,6 +147,9 @@ const Layout = (props) => {
     let lastInnerHeight, noChangeCount;
 
     const updateHeight = () => {
+      const correctorMobileChrome = 57; // ios
+      const correctorTabletSafari = 71; // ios
+
       clearInterval(intervalHandler);
       clearTimeout(timeoutHandler);
 
@@ -157,7 +160,7 @@ const Layout = (props) => {
 
       if (isMobileOnly && isIOS && isChrome) {
         if (window.innerHeight < window.innerWidth && isPortrait) {
-          height = window.screen.availWidth - 57;
+          height = window.screen.availWidth - correctorMobileChrome;
         }
       }
       if (isTablet && isIOS && isSafari) {
@@ -165,7 +168,7 @@ const Layout = (props) => {
           window.innerHeight < window.innerWidth &&
           window.innerWidth > 1024
         ) {
-          height = window.screen.availWidth - 57;
+          height = window.screen.availWidth - correctorTabletSafari;
         }
       }
       setContentHeight(height);
