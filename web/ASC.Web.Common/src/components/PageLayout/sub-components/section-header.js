@@ -25,10 +25,10 @@ const StyledSectionHeader = styled.div`
       //top: 56px;
 
       height: 49px;
-      /* min-height: 48px;
-      max-height: 49px; */
+      min-height: 48px;
+      max-height: 49px;
       width: ${(props) => !props.isLoaded && "100%"};
-      margin-top: 63px;
+      margin-top: 64px;
       @media ${tablet} {
         margin-top: 55px;
       }
