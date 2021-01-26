@@ -5,7 +5,6 @@ APP_HOST="localhost"
 APP_PORT="80"
 
 APP_CONF="/etc/onlyoffice/appserver/config/appsettings.test.json"
-DS_CONF="/etc/onlyoffice/documentserver/local.json"
 KAFKA_CONF="/etc/onlyoffice/appserver/config/kafka.test.json"
 NGINX_CONF="/etc/nginx/conf.d/onlyoffice.conf"
 
@@ -31,10 +30,14 @@ ELK_VALUE='"elastic": { "Scheme": "'${ELK_SHEME}'", "Host": "'${ELK_HOST}'", "Po
 restart_services() {
 	echo -n "Restarting services... "
 
-	for SVC in nginx mysqld appserver-api appserver-socket appserver-api_system appserver-backup appserver-files appserver-files_service appserver-notify appserver-people appserver-studio appserver-studio_notify appserver-thumbnails appserver-urlshortener
+	for SVC in nginx mysqld elasticsearch appserver-api appserver-socket appserver-api_system appserver-backup appserver-files appserver-files_service appserver-notify appserver-people appserver-studio appserver-studio_notify appserver-thumbnails appserver-urlshortener
 	do
-		systemctl stop $SVC.service  >/dev/null 2>&1
-		systemctl start $SVC.service  >/dev/null 2>&1
+		if systemctl is-active $SVC | grep -q "active"; then
+			systemctl restart $SVC.service >/dev/null 2>&1
+		else
+			systemctl enable $SVC.service  >/dev/null 2>&1
+			systemctl start $SVC.service  >/dev/null 2>&1
+		fi
 	done
 	echo "OK"
 }
@@ -246,6 +249,8 @@ setup_nginx(){
 
 setup_docs() {
 	echo -n "Configuring Docs... "
+	DS_CONF="/etc/onlyoffice/documentserver/local.json"
+	
 	DOCUMENT_SERVER_JWT_SECRET=$(cat ${DS_CONF} | jq -r '.services.CoAuthoring.secret.inbox.string')
 	DOCUMENT_SERVER_JWT_HEADER=$(cat ${DS_CONF} | jq -r '.services.CoAuthoring.token.inbox.header')
 
@@ -256,6 +261,67 @@ setup_docs() {
 	sed "s!\"portal\": \".*\"!\"portal\": \"\"!" -i ${APP_CONF}
 	sed "0,/proxy_pass .*;/{s/proxy_pass .*;/proxy_pass http:\/\/${DOCUMENT_SERVER_HOST}:${DOCUMENT_SERVER_PORT};/}" -i $NGINX_CONF
 
+	echo "OK"
+}
+
+setup_elasticsearch() {
+	echo -n "Configuring elasticsearch... "
+
+	grep -q "${ELK_VALUE}" ${APP_CONF} || sed -i "s!\"files\".*!${ELK_VALUE}\n\"files\": {!" ${APP_CONF}
+	ELASTIC_SEARCH_VERSION=$(rpm -qi elasticsearch | grep Version | tail -n1 | awk -F': ' '/Version/ {print $2}');
+	ELASTIC_SEARCH_CONF_PATH="/etc/elasticsearch/elasticsearch.yml"
+	ELASTIC_SEARCH_JAVA_CONF_PATH="/etc/elasticsearch/jvm.options";
+
+	if /usr/share/elasticsearch/bin/elasticsearch-plugin list | grep -q "ingest-attachment"; then
+		/usr/share/elasticsearch/bin/elasticsearch-plugin remove -s ingest-attachment
+	fi
+		/usr/share/elasticsearch/bin/elasticsearch-plugin install -s -b ingest-attachment	
+
+	if [ -f ${ELASTIC_SEARCH_CONF_PATH}.rpmnew ]; then
+	cp -rf ${ELASTIC_SEARCH_CONF_PATH}.rpmnew ${ELASTIC_SEARCH_CONF_PATH};   
+	fi
+
+	if [ -f ${ELASTIC_SEARCH_JAVA_CONF_PATH}.rpmnew ]; then
+	cp -rf ${ELASTIC_SEARCH_JAVA_CONF_PATH}.rpmnew ${ELASTIC_SEARCH_JAVA_CONF_PATH};   
+	fi
+
+	if ! grep -q "indices.fielddata.cache.size" ${ELASTIC_SEARCH_CONF_PATH}; then
+		echo "indices.fielddata.cache.size: 30%" >> ${ELASTIC_SEARCH_CONF_PATH}
+	else
+		sed -i "s/indices.fielddata.cache.size.*/indices.fielddata.cache.size: 30%/" ${ELASTIC_SEARCH_CONF_PATH} 
+	fi
+
+	if ! grep -q "indices.memory.index_buffer_size" ${ELASTIC_SEARCH_CONF_PATH}; then
+		echo "indices.memory.index_buffer_size: 30%" >> ${ELASTIC_SEARCH_CONF_PATH}
+	else
+		sed -i "s/indices.memory.index_buffer_size.*/indices.memory.index_buffer_size: 30%/" ${ELASTIC_SEARCH_CONF_PATH} 
+	fi
+
+	if grep -q "HeapDumpOnOutOfMemoryError" ${ELASTIC_SEARCH_JAVA_CONF_PATH}; then
+		sed "/-XX:+HeapDumpOnOutOfMemoryError/d" -i ${ELASTIC_SEARCH_JAVA_CONF_PATH}
+	fi
+
+	TOTAL_MEMORY=$(free -m | grep -oP '\d+' | head -n 1);
+	MEMORY_REQUIREMENTS=12228; #RAM ~4*3Gb
+
+	if [ ${TOTAL_MEMORY} -gt ${MEMORY_REQUIREMENTS} ]; then
+		if ! grep -q "[-]Xms1g" ${ELASTIC_SEARCH_JAVA_CONF_PATH}; then
+			echo "-Xms4g" >> ${ELASTIC_SEARCH_JAVA_CONF_PATH}
+		else
+			sed -i "s/-Xms1g/-Xms4g/" ${ELASTIC_SEARCH_JAVA_CONF_PATH} 
+		fi
+
+		if ! grep -q "[-]Xmx1g" ${ELASTIC_SEARCH_JAVA_CONF_PATH}; then
+			echo "-Xmx4g" >> ${ELASTIC_SEARCH_JAVA_CONF_PATH}
+		else
+			sed -i "s/-Xmx1g/-Xmx4g/" ${ELASTIC_SEARCH_JAVA_CONF_PATH} 
+		fi
+	fi
+
+	if [ -d /etc/elasticsearch/ ]; then 
+		chmod g+ws /etc/elasticsearch/
+	fi
+	
 	echo "OK"
 }
 
@@ -273,10 +339,11 @@ if rpm -q onlyoffice-documentserver >/dev/null || rpm -q onlyoffice-documentserv
     setup_docs
 fi
 
+if rpm -q elasticsearch >/dev/null; then
+    setup_elasticsearch
+fi
+
 #kafka
 sed -i "s!\"BootstrapServers\".*!\"BootstrapServers\": \"${KAFKA_HOST}:${KAFKA_PORT}\"!g" ${KAFKA_CONF}
-
-#elastic
-grep -q "${ELK_VALUE}" ${APP_CONF} || sed -i "s!\"files\".*!${ELK_VALUE}\n\"files\": {!" ${APP_CONF}
 
 restart_services
