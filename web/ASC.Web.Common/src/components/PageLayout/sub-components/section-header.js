@@ -3,11 +3,8 @@ import styled, { css } from "styled-components";
 import { utils } from "asc-web-components";
 import equal from "fast-deep-equal/react";
 import classnames from "classnames";
-import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { LayoutContextConsumer } from "../../Layout/context";
-
-import { getIsLoaded } from "../../../store/auth/selectors";
 import { isMobile } from "react-device-detect";
 
 const { tablet, desktop } = utils.device;
@@ -17,22 +14,20 @@ const StyledSectionHeader = styled.div`
   height: 55px;
   margin-right: 24px;
   margin-top: -1px;
-  ${(props) =>
-    props.isLoaded &&
-    isMobile &&
-    css`
-      //position: absolute;
-      //top: 56px;
+  ${isMobile &&
+  css`
+    //position: absolute;
+    //top: 56px;
 
-      height: 49px;
-      min-height: 48px;
-      max-height: 49px;
-      width: ${(props) => !props.isLoaded && "100%"};
-      margin-top: 64px;
-      @media ${tablet} {
-        margin-top: 55px;
-      }
-    `}
+    height: 49px;
+    min-height: 48px;
+    max-height: 49px;
+    width: ${(props) => !props.isLoaded && "100%"};
+    margin-top: 64px;
+    @media ${tablet} {
+      margin-top: 55px;
+    }
+  `}
 
   @media ${tablet} {
     margin-right: 16px;
@@ -54,26 +49,24 @@ const StyledSectionHeader = styled.div`
     `}
 
     //padding-top: 4px;
-      ${(props) =>
-      props.isLoaded &&
-      isMobile &&
-      css`
-        position: fixed;
-        top: 56px;
-        height: 50px;
-        width: ${(props) =>
-          props.isArticlePinned ? `calc(100% - 272px)` : "100%"};
-        /* ${(props) =>
-          props.sectionWidth &&
-          props.isArticlePinned &&
-          css`
-            max-width: ${props.sectionWidth + "px"};
-          `} */
+      ${isMobile &&
+    css`
+      position: fixed;
+      top: 56px;
 
-        background-color: #fff;
-        z-index: ${(props) => (!props.isHeaderVisible ? "149" : "190")};
-        padding-right: 16px;
-      `}
+      width: ${(props) =>
+        props.isArticlePinned ? `calc(100% - 272px)` : "100%"};
+      /* ${(props) =>
+        props.sectionWidth &&
+        props.isArticlePinned &&
+        css`
+          max-width: ${props.sectionWidth + "px"};
+        `} */
+
+      background-color: #fff;
+      z-index: ${(props) => (!props.isHeaderVisible ? "149" : "190")};
+      padding-right: 16px;
+    `}
   }
   ${isMobile &&
   css`
@@ -130,9 +123,6 @@ class SectionHeader extends React.Component {
       isArticlePinned,
       borderBottom,
       isHeaderVisible,
-      dispatch,
-      isLoaded,
-      sectionWidth,
       ...rest
     } = this.props;
 
@@ -143,9 +133,7 @@ class SectionHeader extends React.Component {
             isHeaderVisible={isHeaderVisible}
             isArticlePinned={isArticlePinned}
             borderBottom={borderBottom}
-            isLoaded={isLoaded}
             isSectionHeaderVisible={value.isVisible}
-            sectionWidth={sectionWidth}
           >
             <div
               className={classnames(
@@ -164,13 +152,5 @@ class SectionHeader extends React.Component {
 }
 
 SectionHeader.displayName = "SectionHeader";
-SectionHeader.propTypes = {
-  isLoaded: PropTypes.bool,
-};
 
-const mapStateToProps = (state) => {
-  return {
-    isLoaded: getIsLoaded(state),
-  };
-};
-export default connect(mapStateToProps)(SectionHeader);
+export default SectionHeader;
