@@ -13,7 +13,7 @@ namespace ASC.Projects
 {
     public class Startup : BaseStartup
     {
-        public override string[] LogParams { get => new string[] { "ASC.Files" }; }
+        public override string[] LogParams { get => new string[] { "ASC.Projects" }; }
 
         public Startup(IConfiguration configuration, IHostEnvironment hostEnvironment)
             : base(configuration, hostEnvironment)
@@ -24,8 +24,6 @@ namespace ASC.Projects
         public override void ConfigureServices(IServiceCollection services)
         {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-
-            services.AddMemoryCache();
 
             base.ConfigureServices(services);
         }
