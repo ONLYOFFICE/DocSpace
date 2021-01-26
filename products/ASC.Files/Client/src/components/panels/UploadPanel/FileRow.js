@@ -30,6 +30,7 @@ import {
   getIconSrc,
   getUploadedFile,
 } from "../../../store/files/selectors";
+import ShareButton from "./ShareButton";
 
 const StyledFileRow = styled(Row)`
   margin: 0 16px;
@@ -90,6 +91,7 @@ const FileRow = (props) => {
     ext,
     name,
     color,
+    uploadedFile,
   } = props;
 
   const onCancelCurrentUpload = (e) => {
@@ -161,13 +163,7 @@ const FileRow = (props) => {
             <></>
           )}
           {item.fileId ? (
-            <IconButton
-              iconName="CatalogSharedIcon"
-              className="upload_panel-icon"
-              color={color}
-              isClickable
-              onClick={onOpenSharingPanel}
-            />
+            <ShareButton uploadedFile={uploadedFile} />
           ) : item.error || (!item.fileId && uploaded) ? (
             <div className="upload_panel-icon">
               {" "}
@@ -217,9 +213,6 @@ const mapStateToProps = (state, ownProps) => {
     splitted = item.fileInfo.title.split(".");
     name = splitted[0];
   }
-  const currentFile = item.fileId ? getFileByFileId(state, item.fileId) : null; // TODO: Change file search in upload collection instead of directory files list
-  let color = "#A3A9AE";
-  if (currentFile && currentFile.shared) color = "#657077";
 
   const { uniqueId } = item;
 
@@ -239,7 +232,6 @@ const mapStateToProps = (state, ownProps) => {
     fileIcon: getIconSrc(ext, 24)(state),
     ext,
     name,
-    color,
     uploadedFile: getUploadedFile(uniqueId)(state),
   };
 };

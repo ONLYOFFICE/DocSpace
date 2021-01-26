@@ -41,6 +41,7 @@ import {
   SET_FILE_VERSIONS,
   SET_CHANGE_OWNER_VISIBLE,
   SELECT_UPLOADED_FILE,
+  UPDATE_UPLOADED_FILE,
 } from "./actions";
 import { api } from "asc-web-common";
 import { isFileSelected, skipFile, getFilesBySelected } from "./selectors";
@@ -640,6 +641,19 @@ const filesReducer = (state = initialState, action) => {
       return {
         ...state,
         selectedUploadFile: action.file,
+      };
+    }
+    case UPDATE_UPLOADED_FILE: {
+      return {
+        ...state,
+        uploadData: {
+          ...state.uploadData,
+          files: state.uploadData.files.map((file) =>
+            file.fileId === action.id
+              ? { ...file, fileInfo: action.info }
+              : file
+          ),
+        },
       };
     }
 

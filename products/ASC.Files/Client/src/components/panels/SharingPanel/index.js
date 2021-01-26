@@ -22,6 +22,7 @@ import {
   setFiles,
   setFolders,
   selectUploadedFile,
+  updateUploadedItem,
 } from "../../../store/files/actions";
 import {
   getAccessOption,
@@ -146,6 +147,9 @@ class SharingPanelComponent extends React.Component {
       replaceFileStream,
       i18n,
       t,
+      uploadPanelVisible,
+      updateUploadedItem,
+      uploadSelection,
     } = this.props;
 
     const folderIds = [];
@@ -231,6 +235,10 @@ class SharingPanelComponent extends React.Component {
               );
             });
           });
+        }
+
+        if (uploadPanelVisible && uploadSelection) {
+          return updateUploadedItem(selection[0].id);
         }
         return Promise.resolve();
       })
@@ -436,7 +444,6 @@ class SharingPanelComponent extends React.Component {
       accessOptions,
       externalAccessOptions,
     } = this.state;
-    console.log("Sharing Panel render");
 
     const visible = showPanel;
     const zIndex = 310;
@@ -634,6 +641,7 @@ const mapStateToProps = (state, ownProps) => {
     files: getFiles(state),
     folders: getFolders(state),
     settings: getSettings(state),
+    uploadSelection,
   };
 };
 
@@ -644,4 +652,5 @@ export default connect(mapStateToProps, {
   setFiles,
   setFolders,
   selectUploadedFile,
+  updateUploadedItem,
 })(withRouter(SharingPanel));
