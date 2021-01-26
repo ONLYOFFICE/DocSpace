@@ -5,7 +5,7 @@ import { utils } from "asc-web-components";
 import { Resizable } from "re-resizable";
 import { isMobile } from "react-device-detect";
 
-const { tablet } = utils.device;
+const { tablet, isDesktop } = utils.device;
 
 const StyledArticle = styled.article`
   @media ${tablet} {
@@ -34,7 +34,7 @@ const StyledArticle = styled.article`
     }
     ${isMobile &&
     css`
-      margin-top: ${(props) => (props.pinned ? "56px;" : "0;")}
+      margin-top: ${(props) => (props.pinned || isDesktop() ? "56px;" : "0;")}
       height: calc(100% - 56px) !important;
       width: 240px !important;
     `}
