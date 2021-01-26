@@ -98,6 +98,7 @@ import {
   getThirdPartyProviders,
   getThirdPartyCapabilities,
   getIsVerHistoryPanel,
+  getIsLoading,
 } from "../../../../../store/files/selectors";
 import { OperationsPanel, VersionHistoryPanel } from "../../../../panels";
 import { isMobile } from "react-device-detect";
@@ -268,19 +269,20 @@ class SectionBodyContent extends React.Component {
   // }
 
   componentDidUpdate(prevProps) {
-    const { folderId, filter } = this.props;
+    const { folderId } = this.props;
 
     if (isMobile) {
       if (folderId !== prevProps.folderId) {
         this.customScrollElm && this.customScrollElm.scrollTo(0, 0);
       }
 
-      if (filter.page !== prevProps.filter.page)
-        this.isScrollUpOnTheNextPage = true;
-      if (this.isScrollUpOnTheNextPage) {
-        this.customScrollElm && this.customScrollElm.scrollTo(0, 0);
-        this.isScrollUpOnTheNextPage = false;
-      }
+      // if (filter.page !== prevProps.filter.page)
+      //   this.isScrollUpOnTheNextPage = true;
+      // if (this.isScrollUpOnTheNextPage) {
+      //   this.customScrollElm && this.customScrollElm.scrollTo(0, 0);
+      //   this.isScrollUpOnTheNextPage = false;
+      //   //setIsLoading(false);
+      // }
     }
   }
 
@@ -295,7 +297,7 @@ class SectionBodyContent extends React.Component {
       connectDialogVisible,
       showThirdPartyMoveDialog,
     } = this.state;
-    const { isVersionHistoryPanel } = this.props;
+    const { isVersionHistoryPanel, isLoading } = this.props;
 
     if (this.props.sharingPanelVisible !== nextProps.sharingPanelVisible) {
       return true;
@@ -340,6 +342,9 @@ class SectionBodyContent extends React.Component {
       return true;
     }
 
+    if (isLoading !== nextProps.isLoading) {
+      return true;
+    }
     return false;
   }
 
@@ -1830,6 +1835,7 @@ class SectionBodyContent extends React.Component {
       isVersionHistoryPanel,
       history,
       filter,
+      isLoading,
     } = this.props;
 
     const {
@@ -1878,7 +1884,7 @@ class SectionBodyContent extends React.Component {
 
     const { authorType, search, withSubfolders, filterType } = filter;
     const isFiltered = authorType || search || !withSubfolders || filterType;
-
+    console.log();
     return (!fileAction.id && items.length === 0) || null ? (
       firstLoad ? (
         <Loaders.Rows />
@@ -1889,6 +1895,8 @@ class SectionBodyContent extends React.Component {
       ) : (
         this.renderEmptyFolderContainer()
       )
+    ) : isMobile && isLoading ? (
+      <Loaders.Rows />
     ) : (
       <>
         {showMoveToPanel && (
@@ -2183,6 +2191,7 @@ const mapStateToProps = (state) => {
     capabilities: getThirdPartyCapabilities(state),
     isTabletView: getIsTabletView(state),
     isVersionHistoryPanel: getIsVerHistoryPanel(state),
+    isLoading: getIsLoading(state),
   };
 };
 

@@ -23,12 +23,12 @@ const commonStyles = css`
 
     @media ${tablet} {
       padding: 16px 0 16px 24px;
-      ${(props) =>
+      /* ${(props) =>
         props.isLoaded &&
         isMobile &&
         css`
           margin-top: -7px;
-        `}
+        `} */
     }
 
     .section-wrapper {
@@ -127,7 +127,7 @@ class SectionBody extends React.Component {
       : {};
 
     const scrollProp = uploadFiles ? { ref: this.scrollRef } : {};
-
+    console.log("SectionBody", this.props);
     return uploadFiles ? (
       <StyledDropZoneBody
         isDropZone

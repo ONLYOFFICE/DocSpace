@@ -94,14 +94,14 @@ class PureHome extends React.Component {
       }
     }
 
-    if (isMobile) {
-      if (filter.page !== prevProps.filter.page)
-        this.isScrollUpOnTheNextPage = true;
-      if (this.isScrollUpOnTheNextPage) {
-        this.customScrollElm && this.customScrollElm.scrollTo(0, 0);
-        this.isScrollUpOnTheNextPage = false;
-      }
-    }
+    // if (isMobile) {
+    //   if (filter.page !== prevProps.filter.page)
+    //     this.isScrollUpOnTheNextPage = true;
+    //   if (this.isScrollUpOnTheNextPage) {
+    //     this.customScrollElm && this.customScrollElm.scrollTo(0, 0);
+    //     this.isScrollUpOnTheNextPage = false;
+    //   }
+    // }
   }
 
   onSectionHeaderContentCheck = (checked) => {

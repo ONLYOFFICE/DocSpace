@@ -23,9 +23,15 @@ const StyledSectionHeader = styled.div`
     css`
       //position: absolute;
       //top: 56px;
-      margin-top: 71px;
+
       height: 49px;
+      /* min-height: 48px;
+      max-height: 49px; */
       width: ${(props) => !props.isLoaded && "100%"};
+      margin-top: 63px;
+      @media ${tablet} {
+        margin-top: 55px;
+      }
     `}
 
   @media ${tablet} {
@@ -54,6 +60,7 @@ const StyledSectionHeader = styled.div`
       css`
         position: fixed;
         top: 56px;
+        height: 50px;
         width: ${(props) =>
           props.isArticlePinned ? `calc(100% - 272px)` : "100%"};
         /* ${(props) =>

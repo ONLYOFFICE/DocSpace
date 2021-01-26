@@ -34,7 +34,6 @@ import {
   DeleteProfileEverDialog,
 } from "../../../../dialogs";
 import { createI18N } from "../../../../../helpers/i18n";
-import { isMobile } from "react-device-detect";
 
 const i18n = createI18N({
   page: "Home",
