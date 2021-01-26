@@ -1,6 +1,6 @@
 import api from "@appserver/common/src/api";
 import history from "@appserver/common/src/history";
-import constants from "@appserver/common/src/constants";
+import { EmployeeStatus } from "@appserver/common/src/constants";
 import config from "../../../package.json";
 import {
   EMPLOYEE_STATUS,
@@ -13,9 +13,7 @@ import {
   PAGE,
   PAGE_COUNT,
 } from "../../helpers/constants";
-import { getUserByUserName } from "../people/selectors";
-
-const { EmployeeStatus } = constants;
+import { getUserByUserName } from "./selectors";
 const { Filter } = api;
 
 export const SET_GROUPS = "SET_GROUPS";

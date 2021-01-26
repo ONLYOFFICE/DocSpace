@@ -2,10 +2,6 @@ import { createStore, applyMiddleware } from "redux";
 import thunk from "redux-thunk";
 import { composeWithDevTools } from "redux-devtools-extension/logOnlyInProduction";
 import { combineReducers } from "redux";
-// import dynostore, {
-//   combineReducers,
-//   dynamicReducers,
-// } from "@redux-dynostore/core";
 //import { createReducerManager } from "./reducerManager";
 
 import authReducer from "@appserver/common/src/store/auth/reducer";
@@ -14,29 +10,45 @@ import confirmReducer from "./confirm/reducer";
 import wizardReducer from "./wizard/reducer";
 import paymentsReducer from "./payments/reducer";
 
-const rootReducer = combineReducers({
+const staticReducers = {
   auth: authReducer,
   settings: settingsReducer,
   confirm: confirmReducer,
   wizard: wizardReducer,
   payments: paymentsReducer,
-});
+};
 
-/* eslint-disable no-underscore-dangle */
-// const composeEnhancers = composeWithDevTools({
-//   // options like actionSanitizer, stateSanitizer
-// });
+function createReducer(asyncReducers) {
+  return combineReducers({
+    ...staticReducers,
+    ...asyncReducers,
+  });
+}
 
-//const reducerManager = createReducerManager(staticReducers);
+/**
+ * Cf. redux docs:
+ * https://redux.js.org/recipes/code-splitting/#defining-an-injectreducer-function
+ */
+const configureStore = (initialState) => {
+  const store = createStore(createReducer(), initialState);
 
-// Create a store with the root reducer function being the one exposed by the manager.
-const store = createStore(
-  //reducerManager.reduce,
-  rootReducer,
-  composeWithDevTools(applyMiddleware(thunk))
-);
+  store.asyncReducers = {};
 
-// Optional: Put the reducer manager on the store so it is easily accessible
-//store.reducerManager = reducerManager;
+  store.attachReducer = (key, asyncReducer) => {
+    store.asyncReducers[key] = asyncReducer;
+    store.replaceReducer(createReducer(store.asyncReducers));
+  };
+
+  store.detachReducer = (key) => {
+    if (key in store.asyncReducers) {
+      delete store.asyncReducers[key];
+      store.replaceReducer(createReducer(store.asyncReducers));
+    }
+  };
+
+  return store;
+};
+
+const store = configureStore(composeWithDevTools(applyMiddleware(thunk)));
 
 export default store;
