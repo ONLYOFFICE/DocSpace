@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
+using ASC.Common.DependencyInjection;
 using ASC.Common.Threading.Progress;
 using ASC.Common.Threading.Workers;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
@@ -140,6 +142,16 @@ namespace ASC.Common
         public void Configure(IServiceCollection serviceCollection)
         {
             ServiceCollection = serviceCollection;
+        }
+
+        public void RegisterProducts(IConfiguration configuration, string path)
+        {
+            var types = AutofacExtension.FindAndLoad(configuration, path);
+
+            foreach (var t in types)
+            {
+                TryAdd(Type.GetType(t));
+            }
         }
 
         public bool TryAdd<TService>() where TService : class
