@@ -15,7 +15,6 @@ import { LayoutContextConsumer } from "../Layout/context";
 import { isMobile } from "react-device-detect";
 
 const backgroundColor = "#0F4071";
-const { tablet } = utils.device;
 
 const StyledContainer = styled.header`
   align-items: center;

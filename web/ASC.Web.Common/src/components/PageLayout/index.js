@@ -6,7 +6,6 @@ import store from "../../store";
 import { withTranslation } from "react-i18next";
 import { isMobile } from "react-device-detect";
 import i18n from "./i18n";
-import { ARTICLE_PINNED_KEY } from "../../constants";
 import Article from "./sub-components/article";
 import SubArticleHeader from "./sub-components/article-header";
 import SubArticleMainButton from "./sub-components/article-main-button";
@@ -433,6 +432,9 @@ PageLayoutComponent.propTypes = {
   isLoaded: PropTypes.bool,
   viewAs: PropTypes.string,
   headerBorderBottom: PropTypes.bool,
+  isTabletView: PropTypes.bool,
+  isHeaderVisible: PropTypes.bool,
+  firstLoad: PropTypes.bool,
 };
 
 PageLayoutComponent.defaultProps = {

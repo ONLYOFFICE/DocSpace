@@ -11,7 +11,7 @@ import {
   isChrome,
   isTablet,
 } from "react-device-detect";
-
+import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import store from "../../store";
 
@@ -204,6 +204,11 @@ const Layout = (props) => {
   );
 };
 
+Layout.propTypes = {
+  children: PropTypes.any,
+  isTabletView: PropTypes.bool,
+  setIsTabletView: PropTypes.func,
+};
 const mapStateToProps = (state) => {
   return {
     isTabletView: getIsTabletView(state),

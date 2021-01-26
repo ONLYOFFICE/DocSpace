@@ -225,7 +225,6 @@ class SectionBodyContent extends React.Component {
 
     this.tooltipRef = React.createRef();
     this.currentDroppable = null;
-    this.isScrollUpOnTheNextPage = false;
   }
 
   componentDidMount() {
@@ -275,14 +274,6 @@ class SectionBodyContent extends React.Component {
       if (folderId !== prevProps.folderId) {
         this.customScrollElm && this.customScrollElm.scrollTo(0, 0);
       }
-
-      // if (filter.page !== prevProps.filter.page)
-      //   this.isScrollUpOnTheNextPage = true;
-      // if (this.isScrollUpOnTheNextPage) {
-      //   this.customScrollElm && this.customScrollElm.scrollTo(0, 0);
-      //   this.isScrollUpOnTheNextPage = false;
-      //   //setIsLoading(false);
-      // }
     }
   }
 

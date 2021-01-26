@@ -87,8 +87,6 @@ const HeaderComponent = ({
   isAuthenticated,
   ...props
 }) => {
-  console.log("Header render", isLoaded);
-
   const isNavAvailable = mainModules.length > 0;
   const onLogoClick = () => {
     window.open(defaultPage, "_self");
@@ -109,7 +107,7 @@ const HeaderComponent = ({
         module={currentProductName}
         isLoaded={isLoaded}
         isAuthenticated={isAuthenticated}
-        className="navMenuHeader needToCancelAnimationWithTransition"
+        className="navMenuHeader hidingHeader"
       >
         <NavItem
           iconName="MenuIcon"

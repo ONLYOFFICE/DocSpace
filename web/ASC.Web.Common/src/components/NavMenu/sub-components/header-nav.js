@@ -90,10 +90,7 @@ const HeaderNav = React.memo(
     };
     //console.log("HeaderNav render");
     return (
-      <StyledNav
-        isOpen={isOpen}
-        className="profileMenuIcon needToCancelAnimationWithTransition"
-      >
+      <StyledNav isOpen={isOpen} className="profileMenuIcon hidingHeader">
         {modules.map((module) => (
           <NavItem
             key={module.id}

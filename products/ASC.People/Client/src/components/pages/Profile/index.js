@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { Loader } from "asc-web-components";
 import { PageLayout, utils, store, toastr, Loaders } from "asc-web-common";
 import {
   ArticleHeaderContent,
@@ -28,9 +27,7 @@ class PureProfile extends React.Component {
     const { userId } = match.params;
 
     setDocumentTitle(t("Profile"));
-    this.documentElement = document.getElementsByClassName(
-      "needToCancelAnimationWithTransition"
-    );
+    this.documentElement = document.getElementsByClassName("hidingHeader");
     const queryString = ((location && location.search) || "").slice(1);
     const queryParams = queryString.split("&");
     const arrayOfQueryParams = queryParams.map((queryParam) =>

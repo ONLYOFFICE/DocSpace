@@ -5,7 +5,7 @@ import { utils, Scrollbar, DragAndDrop } from "asc-web-components";
 import SelectedFrame from "./SelectedFrame";
 import equal from "fast-deep-equal/react";
 import { LayoutContextConsumer } from "../../Layout/context";
-import { getIsLoaded, getIsTabletView } from "../../../store/auth/selectors";
+import { getIsLoaded } from "../../../store/auth/selectors";
 import { connect } from "react-redux";
 import { isMobile } from "react-device-detect";
 
@@ -23,12 +23,6 @@ const commonStyles = css`
 
     @media ${tablet} {
       padding: 16px 0 16px 24px;
-      /* ${(props) =>
-        props.isLoaded &&
-        isMobile &&
-        css`
-          margin-top: -7px;
-        `} */
     }
 
     .section-wrapper {
@@ -92,9 +86,6 @@ class SectionBody extends React.Component {
   }
 
   componentDidMount() {
-    this.customScrollElm = document.querySelector(
-      "#desktopScroll > .scroll-body"
-    );
     if (!this.props.autoFocus) return;
     this.focusRef.current.focus();
   }
@@ -116,7 +107,6 @@ class SectionBody extends React.Component {
       viewAs,
       withScroll,
       isLoaded,
-      isTabletView,
     } = this.props;
 
     const focusProps = autoFocus
@@ -127,7 +117,7 @@ class SectionBody extends React.Component {
       : {};
 
     const scrollProp = uploadFiles ? { ref: this.scrollRef } : {};
-    console.log("SectionBody", this.props);
+
     return uploadFiles ? (
       <StyledDropZoneBody
         isDropZone
@@ -236,7 +226,6 @@ SectionBody.propTypes = {
   ]),
   viewAs: PropTypes.string,
   isLoaded: PropTypes.bool,
-  isTabletView: PropTypes.bool,
 };
 
 SectionBody.defaultProps = {
@@ -249,7 +238,6 @@ SectionBody.defaultProps = {
 const mapStateToProps = (state) => {
   return {
     isLoaded: getIsLoaded(state),
-    isTabletView: getIsTabletView(state),
   };
 };
 export default connect(mapStateToProps)(SectionBody);

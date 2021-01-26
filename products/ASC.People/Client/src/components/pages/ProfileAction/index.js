@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { Loader } from "asc-web-components";
 import { PageLayout, utils, store, Loaders } from "asc-web-common";
 import {
   ArticleHeaderContent,
@@ -32,9 +31,7 @@ class ProfileAction extends React.Component {
   componentDidMount() {
     const { match, fetchProfile, isEdit, setIsEditingForm, t } = this.props;
     const { userId } = match.params;
-    this.documentElement = document.getElementsByClassName(
-      "needToCancelAnimationWithTransition"
-    );
+    this.documentElement = document.getElementsByClassName("hidingHeader");
     setDocumentTitle(t("ProfileAction"));
     changeLanguage(i18n);
     if (isEdit) {

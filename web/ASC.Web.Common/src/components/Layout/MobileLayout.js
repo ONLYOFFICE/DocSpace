@@ -1,6 +1,7 @@
 import React, { Component, createRef } from "react";
 import { Scrollbar, utils } from "asc-web-components";
 import { LayoutContextProvider } from "./context";
+import PropTypes from "prop-types";
 import { isMobile, isSafari, isIOS, isChrome } from "react-device-detect";
 
 const { isTouchDevice } = utils.device;
@@ -82,7 +83,6 @@ class MobileLayout extends Component {
     }
 
     if (prevScrollPosition === 0 && currentScrollPosition > 100) {
-      //this.customScrollElm.scrollTo(0, 0);
       if (Math.abs(currentScrollPosition - prevScrollPosition) <= 104) {
         return;
       }
@@ -123,5 +123,9 @@ class MobileLayout extends Component {
     );
   }
 }
+
+MobileLayout.propTypes = {
+  children: PropTypes.any,
+};
 
 export default MobileLayout;

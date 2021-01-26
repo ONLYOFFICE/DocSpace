@@ -16,9 +16,6 @@ const StyledSectionHeader = styled.div`
   margin-top: -1px;
   ${isMobile &&
   css`
-    //position: absolute;
-    //top: 56px;
-
     height: 49px;
     min-height: 48px;
     max-height: 49px;
@@ -56,12 +53,6 @@ const StyledSectionHeader = styled.div`
 
       width: ${(props) =>
         props.isArticlePinned ? `calc(100% - 272px)` : "100%"};
-      /* ${(props) =>
-        props.sectionWidth &&
-        props.isArticlePinned &&
-        css`
-          max-width: ${props.sectionWidth + "px"};
-        `} */
 
       background-color: #fff;
       z-index: ${(props) => (!props.isHeaderVisible ? "149" : "190")};
@@ -136,12 +127,9 @@ class SectionHeader extends React.Component {
             isSectionHeaderVisible={value.isVisible}
           >
             <div
-              className={classnames(
-                "section-header needToCancelAnimationWithTransition",
-                {
-                  "section-header--hidden": !value.isVisible,
-                }
-              )}
+              className={classnames("section-header hidingHeader", {
+                "section-header--hidden": !value.isVisible,
+              })}
               {...rest}
             />
           </StyledSectionHeader>
@@ -153,4 +141,8 @@ class SectionHeader extends React.Component {
 
 SectionHeader.displayName = "SectionHeader";
 
+SectionHeader.propTypes = {
+  isArticlePinned: PropTypes.bool,
+  isHeaderVisible: PropTypes.bool,
+};
 export default SectionHeader;

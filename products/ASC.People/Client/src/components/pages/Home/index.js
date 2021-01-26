@@ -41,9 +41,6 @@ class PureHome extends React.Component {
       isHeaderIndeterminate: false,
       isHeaderChecked: false,
     };
-    this.isCancelScrollUp = false;
-
-    this.isScrollUpOnTheNextPage = false;
   }
 
   renderGroupButtonMenu = () => {
@@ -74,13 +71,8 @@ class PureHome extends React.Component {
     this.setState(newState);
   };
 
-  componentDidMount() {
-    this.customScrollElm = document.querySelector(
-      "#customScrollBar > .scroll-body"
-    );
-  }
   componentDidUpdate(prevProps) {
-    const { selection, isLoading, filter } = this.props;
+    const { selection, isLoading } = this.props;
 
     if (selection !== prevProps.selection) {
       this.renderGroupButtonMenu();
@@ -93,15 +85,6 @@ class PureHome extends React.Component {
         utils.hideLoader();
       }
     }
-
-    // if (isMobile) {
-    //   if (filter.page !== prevProps.filter.page)
-    //     this.isScrollUpOnTheNextPage = true;
-    //   if (this.isScrollUpOnTheNextPage) {
-    //     this.customScrollElm && this.customScrollElm.scrollTo(0, 0);
-    //     this.isScrollUpOnTheNextPage = false;
-    //   }
-    // }
   }
 
   onSectionHeaderContentCheck = (checked) => {
@@ -126,7 +109,7 @@ class PureHome extends React.Component {
     const { isHeaderIndeterminate, isHeaderChecked, selected } = this.state;
 
     const { isAdmin, isLoaded, isHeaderVisible } = this.props;
-    console.log("Render Home at people", this.props);
+    //console.log("Render Home at people", this.props);
     return (
       <PageLayout
         withBodyScroll={true}
