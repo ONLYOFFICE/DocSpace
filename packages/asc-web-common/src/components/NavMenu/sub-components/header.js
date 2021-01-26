@@ -1,11 +1,13 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 import NavItem from "./nav-item";
 import Headline from "../../Headline";
 import Nav from "./nav";
 import NavLogoItem from "./nav-logo-item";
 import Loaders from "../../Loaders/index";
+import history from "../../../history";
 import { ReactSVG } from "react-svg";
 
 import { desktop } from "@appserver/components/src/utils/device";
@@ -86,7 +88,7 @@ const HeaderComponent = ({
 
   const isNavAvailable = mainModules.length > 0;
   const onLogoClick = () => {
-    window.open(defaultPage, "_self");
+    history.push(defaultPage);
   };
 
   const onBadgeClick = (e) => {
@@ -107,7 +109,7 @@ const HeaderComponent = ({
           noHover={true}
         />
 
-        <a className="header-logo-wrapper" href={defaultPage}>
+        <Link className="header-logo-wrapper" to={defaultPage}>
           <ReactSVG
             className="header-logo-icon"
             loading={() => (
@@ -122,7 +124,7 @@ const HeaderComponent = ({
             )}
             src={props.logoUrl}
           />
-        </a>
+        </Link>
         <Headline className="header-module-title" type="header" color="#FFF">
           {currentProductName}
         </Headline>

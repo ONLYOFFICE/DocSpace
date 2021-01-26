@@ -1,5 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
+import { Link } from 'react-router-dom';
 import PropTypes from "prop-types";
 import styled from "styled-components";
 
@@ -24,9 +25,9 @@ const NavLogoItem = React.memo((props) => {
   //console.log("NavLogoItem render");
   return (
     <LogoItem opened={props.opened}>
-      <a className="nav-logo-wrapper" href="/">
+      <Link className="nav-logo-wrapper" to="/">
         <img className="nav-logo-icon" src={props.logoUrl} />
-      </a>
+      </Link>
     </LogoItem>
   );
 });
