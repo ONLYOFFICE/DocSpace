@@ -168,7 +168,7 @@ const Layout = (props) => {
           window.innerHeight < window.innerWidth &&
           window.innerWidth > 1024
         ) {
-          height = window.screen.availWidth - correctorTabletSafari;
+          height = window.screen.availHeight - correctorTabletSafari;
         }
       }
       setContentHeight(height);
