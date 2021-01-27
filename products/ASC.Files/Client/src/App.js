@@ -120,7 +120,7 @@ class App extends React.Component {
       setEncryptionKeys,
       isLoaded,
     } = this.props;
-    console.log("componentDidUpdate: ", this.props);
+    //console.log("componentDidUpdate: ", this.props);
     if (isAuthenticated && !this.isDesktopInit && isEncryption && isLoaded) {
       this.isDesktopInit = true;
       regDesktop(
@@ -141,7 +141,7 @@ class App extends React.Component {
 
   render() {
     const { homepage, isDesktop } = this.props;
-    console.log(Layout);
+    //console.log(Layout);
 
     return navigator.onLine ? (
       <Layout>

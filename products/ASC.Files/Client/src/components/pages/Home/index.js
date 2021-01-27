@@ -24,6 +24,7 @@ import {
   setFirstLoad,
   startUpload,
   setSelections,
+  setUploadPanelVisible,
 } from "../../../store/files/actions";
 import {
   getConvertDialogVisible,
@@ -36,7 +37,6 @@ import {
   getViewAs,
   getIsLoading,
   getDragging,
-  getSharePanelVisible,
   getFirstLoad,
   isSecondaryProgressFinished,
   getSelectionLength,
@@ -45,9 +45,10 @@ import {
 } from "../../../store/files/selectors";
 
 import { ConvertDialog } from "../../dialogs";
-import { SharingPanel, ChangeOwnerPanel } from "../../panels";
+import { ChangeOwnerPanel } from "../../panels";
 import { createI18N } from "../../../helpers/i18n";
 import { getFilterByLocation } from "../../../helpers/converters";
+import Panels from "./Panels";
 const i18n = createI18N({
   page: "Home",
   localesPath: "pages/Home",
@@ -196,6 +197,9 @@ class PureHome extends React.Component {
     }
   };
 
+  showUploadPanel = () => {
+    this.props.setUploadPanelVisible(!this.props.uploadPanelVisible);
+  };
   componentDidUpdate(prevProps) {
     const {
       isLoading,
@@ -231,7 +235,6 @@ class PureHome extends React.Component {
       secondaryProgressData,
       viewAs,
       convertDialogVisible,
-      sharingPanelVisible,
       fileActionId,
       firstLoad,
       showOwnerChangePanel,
@@ -245,7 +248,7 @@ class PureHome extends React.Component {
 
         {showOwnerChangePanel && <ChangeOwnerPanel />}
 
-        {sharingPanelVisible && <SharingPanel />}
+        <Panels />
         <PageLayout
           withBodyScroll
           withBodyAutoFocus={!isMobile}
@@ -268,6 +271,7 @@ class PureHome extends React.Component {
             secondaryProgressData.visible
           }
           isLoaded={!firstLoad}
+          onOpenUploadPanel={this.showUploadPanel}
         >
           <PageLayout.ArticleHeader>
             <ArticleHeaderContent />
@@ -336,7 +340,6 @@ function mapStateToProps(state) {
     homepage: getSettingsHomepage(state),
     dragging: getDragging(state),
     firstLoad: getFirstLoad(state),
-    sharingPanelVisible: getSharePanelVisible(state),
     isProgressFinished: isSecondaryProgressFinished(state),
     selectionLength: getSelectionLength(state),
     selectionTitle: getSelectionTitle(state),
@@ -353,6 +356,8 @@ const mapDispatchToProps = (dispatch) => {
     setFirstLoad: (firstLoad) => dispatch(setFirstLoad(firstLoad)),
     fetchFiles: (folderId, filter) => dispatch(fetchFiles(folderId, filter)),
     setSelections: (items) => dispatch(setSelections(items)),
+    setUploadPanelVisible: (uploadPanelVisible) =>
+      dispatch(setUploadPanelVisible(uploadPanelVisible)),
   };
 };
 

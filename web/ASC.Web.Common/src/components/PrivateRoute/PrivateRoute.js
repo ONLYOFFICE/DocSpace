@@ -4,7 +4,13 @@ import { Redirect, Route } from "react-router-dom";
 import { connect } from "react-redux";
 //import { Loader } from "asc-web-components";
 import PageLayout from "../PageLayout";
-import { getCurrentUser, getIsLoaded, isAdmin, isAuthenticated, isMe } from "../../store/auth/selectors.js";
+import {
+  getCurrentUser,
+  getIsLoaded,
+  isAdmin,
+  isAuthenticated,
+  isMe,
+} from "../../store/auth/selectors.js";
 import { Error401, Error404 } from "../../pages/errors";
 import RectangleLoader from "../Loaders/RectangleLoader/RectangleLoader";
 //import isEmpty from "lodash/isEmpty";
@@ -34,14 +40,14 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
       );
     }
 
-    if(!isLoaded) {
+    if (!isLoaded) {
       return (
-            <PageLayout>
-              <PageLayout.SectionBody>
-                <RectangleLoader  height="90vh"/>
-              </PageLayout.SectionBody>
-            </PageLayout>
-          );
+        <PageLayout>
+          <PageLayout.SectionBody>
+            <RectangleLoader height="90vh" />
+          </PageLayout.SectionBody>
+        </PageLayout>
+      );
     }
 
     // const userLoaded = !isEmpty(user);
@@ -65,11 +71,11 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
       isAdmin ||
       (allowForMe && userId && isMe(user, userId))
     ) {
-      console.log(
-        "PrivateRoute render Component",
-        rest,
-        Component.name || Component.displayName
-      );
+      // console.log(
+      //   "PrivateRoute render Component",
+      //   rest,
+      //   Component.name || Component.displayName
+      // );
       return <Component {...props} />;
     }
 
@@ -91,7 +97,7 @@ function mapStateToProps(state) {
     isAdmin: isAdmin(state),
     user: getCurrentUser(state),
     isAuthenticated: isAuthenticated(state),
-    isLoaded: getIsLoaded(state)
+    isLoaded: getIsLoaded(state),
   };
 }
 

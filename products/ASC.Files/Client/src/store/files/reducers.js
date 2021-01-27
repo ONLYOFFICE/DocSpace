@@ -20,6 +20,7 @@ import {
   SET_SECONDARY_PROGRESS_BAR_DATA,
   SET_CONVERT_DIALOG_VISIBLE,
   SET_SHARING_PANEL_VISIBLE,
+  SET_UPLOAD_PANEL_VISIBLE,
   SET_UPDATE_TREE,
   SET_NEW_ROW_ITEMS,
   SET_SELECTED_NODE,
@@ -39,6 +40,8 @@ import {
   SET_VER_HISTORY_FILE_ID,
   SET_FILE_VERSIONS,
   SET_CHANGE_OWNER_VISIBLE,
+  SELECT_UPLOADED_FILE,
+  UPDATE_UPLOADED_FILE,
 } from "./actions";
 import { api } from "asc-web-common";
 import { isFileSelected, skipFile, getFilesBySelected } from "./selectors";
@@ -75,6 +78,7 @@ const initialState = {
   },
   convertDialogVisible: false,
   sharingPanelVisible: false,
+  uploadPanelVisible: false,
   updateTree: false,
   newRowItems: [],
   selectedTreeNode: [],
@@ -92,6 +96,7 @@ const initialState = {
     percent: 0,
     uploaded: true,
   },
+  selectedUploadFile: [],
   docservice: {
     coauthorDocs: [".pptx", ".ppsx", ".xlsx", ".csv", ".docx", ".txt"],
     commentedDocs: [".docx", ".xlsx", ".pptx"],
@@ -509,6 +514,10 @@ const filesReducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         sharingPanelVisible: action.sharingPanelVisible,
       });
+    case SET_UPLOAD_PANEL_VISIBLE:
+      return Object.assign({}, state, {
+        uploadPanelVisible: action.uploadPanelVisible,
+      });
     case SET_UPDATE_TREE:
       return Object.assign({}, state, {
         updateTree: action.updateTree,
@@ -627,6 +636,25 @@ const filesReducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         ownerPanelVisible: action.ownerPanelVisible,
       });
+    }
+    case SELECT_UPLOADED_FILE: {
+      return {
+        ...state,
+        selectedUploadFile: action.file,
+      };
+    }
+    case UPDATE_UPLOADED_FILE: {
+      return {
+        ...state,
+        uploadData: {
+          ...state.uploadData,
+          files: state.uploadData.files.map((file) =>
+            file.fileId === action.id
+              ? { ...file, fileInfo: action.info }
+              : file
+          ),
+        },
+      };
     }
 
     default:
