@@ -1,9 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { ModalDialog, Button, Link, Text } from "@appserver/components";
+import { ModalDialog, Button, Link, Text } from "@appserver/components/src";
 import { withTranslation } from "react-i18next";
 import ModalDialogContainer from "../ModalDialogContainer";
-import { api, utils, toastr } from "@appserver/common";
+import { api, utils, toastr } from "@appserver/common/src";
 import { createI18N } from "../../../helpers/i18n";
 const i18n = createI18N({
   page: "DeleteSelfProfileDialog",

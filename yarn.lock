@@ -3027,7 +3027,7 @@ class-utils@^0.3.5:
     isobject "^3.0.0"
     static-extend "^0.1.1"
 
-classnames@2.x, classnames@^2.2.1, classnames@^2.2.6:
+classnames@2.x, classnames@^2.2.1, classnames@^2.2.5, classnames@^2.2.6:
   version "2.2.6"
   resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.2.6.tgz#43935bffdd291f326dad0a205309b38d00f650ce"
   integrity sha512-JR/iSQOSt+LQIWwrwEzJ9uk0xfN3mTVYMwt1Ir5mUcSN6pU+V4zQFFaJsclJbPuAUQH+yfWef6tm7l1quW3C8Q==
@@ -3674,7 +3674,7 @@ deep-extend@^0.6.0:
   resolved "https://registry.yarnpkg.com/deep-extend/-/deep-extend-0.6.0.tgz#c4fa7c95404a17a9c3e8ca7e1537312b736330ac"
   integrity sha512-LOHxIOaPYdHlJRtCQfDIVZtfw/ufM8+rVj649RIHzcm/vGwQRXFt6OPqIFWsm2XEMrNIEtWR64sY1LEKD2vAOA==
 
-deepmerge@^4.2.2:
+deepmerge@^4.0.0, deepmerge@^4.2.2:
   version "4.2.2"
   resolved "https://registry.yarnpkg.com/deepmerge/-/deepmerge-4.2.2.tgz#44d2ea3679b8f4d4ffba33f03d865fc1e7bf4955"
   integrity sha512-FJ3UgI4gIl+PHZm53knsuSFpE+nESMr7M4v9QcgB7S63Kj/6WqMiFQJpBBYz1Pt+66bZpP3Q7Lye0Oo9MPKEdg==
@@ -4769,6 +4769,11 @@ graceful-fs@^4.1.11, graceful-fs@^4.1.15, graceful-fs@^4.1.2, graceful-fs@^4.1.6
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.2.4.tgz#2256bde14d3632958c465ebc96dc467ca07a29fb"
   integrity sha512-WjKPNJF79dtJAVniUlGGWHYGz2jWxT6VhN/4m1NdkbZ2nOsEF+cI1Edgql5zCRhs/VsQYRvrXctxktVXZUkixw==
 
+hammerjs@^2.0.8:
+  version "2.0.8"
+  resolved "https://registry.yarnpkg.com/hammerjs/-/hammerjs-2.0.8.tgz#04ef77862cff2bb79d30f7692095930222bf60f1"
+  integrity sha1-BO93hiz/K7edMPdpIJWTAiK/YPE=
+
 handle-thing@^2.0.0:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/handle-thing/-/handle-thing-2.0.1.tgz#857f79ce359580c340d43081cc648970d0bb234e"
@@ -5793,6 +5798,11 @@ load-json-file@^5.3.0:
     pify "^4.0.1"
     strip-bom "^3.0.0"
     type-fest "^0.3.0"
+
+load-script@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/load-script/-/load-script-1.0.0.tgz#0491939e0bee5643ee494a7e3da3d2bac70c6ca4"
+  integrity sha1-BJGTngvuVkPuSUp+PaPSuscMbKQ=
 
 loader-runner@^4.2.0:
   version "4.2.0"
@@ -7496,6 +7506,13 @@ react-dropzone@^11.2.4:
     file-selector "^0.2.2"
     prop-types "^15.7.2"
 
+react-hammerjs@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/react-hammerjs/-/react-hammerjs-1.0.1.tgz#bc1ed9e9ef7da057163fb169ce12917b6d6ca7d8"
+  integrity sha1-vB7Z6e99oFcWP7FpzhKRe21sp9g=
+  dependencies:
+    hammerjs "^2.0.8"
+
 react-i18next@^11.7.3:
   version "11.8.5"
   resolved "https://registry.yarnpkg.com/react-i18next/-/react-i18next-11.8.5.tgz#a093335822e36252cda6efc0f55facef6253643f"
@@ -7513,6 +7530,15 @@ react-onclickoutside@^6.9.0:
   version "6.9.1"
   resolved "https://registry.yarnpkg.com/react-onclickoutside/-/react-onclickoutside-6.9.1.tgz#44f94aba8e82721f2550fbd187c7d2d4669eab14"
   integrity sha512-fkeEZOym0eyf8pemEUFRI6rttdREwfYtNWpN9msWsYtwz0G+w1KeKODc466lKJtfMHn3u8gVmBnGPf2fQ9LxoQ==
+
+react-player@^1.15.3:
+  version "1.15.3"
+  resolved "https://registry.yarnpkg.com/react-player/-/react-player-1.15.3.tgz#d00cf145f9c86184cb0a071a1fbf8ecb7b68987f"
+  integrity sha512-8fc0R1AipFIy7l4lKgnIg+gMU2IY32ZMxxBlINjXAq/YnN3HUP3hOaE+aQ0lQv+a1/MMZgbekWD86ZGDO7kB8g==
+  dependencies:
+    deepmerge "^4.0.0"
+    load-script "^1.0.0"
+    prop-types "^15.7.2"
 
 react-redux@^7.2.2:
   version "7.2.2"
@@ -7611,6 +7637,13 @@ react-transition-group@^4.4.1:
     dom-helpers "^5.0.1"
     loose-envify "^1.4.0"
     prop-types "^15.6.2"
+
+react-viewer@^3.2.2:
+  version "3.2.2"
+  resolved "https://registry.yarnpkg.com/react-viewer/-/react-viewer-3.2.2.tgz#38626a7fa862ec84dfa373c2ef5843f4100c465b"
+  integrity sha512-DHOq1x6cXsAViY43204ILRzLVR5ovP1MgzsC+LzZCWlInRuHjzAgpQZ8GzWm1CkiNYuHGwCxH36X0JUHl2xDSg==
+  dependencies:
+    classnames "^2.2.5"
 
 react-virtualized-auto-sizer@^1.0.2:
   version "1.0.4"
@@ -8186,6 +8219,11 @@ schema-utils@^3.0.0:
     "@types/json-schema" "^7.0.6"
     ajv "^6.12.5"
     ajv-keywords "^3.5.2"
+
+screenfull@^5.1.0:
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/screenfull/-/screenfull-5.1.0.tgz#85c13c70f4ead4c1b8a935c70010dfdcd2c0e5c8"
+  integrity sha512-dYaNuOdzr+kc6J6CFcBrzkLCfyGcMg+gWkJ8us93IQ7y1cevhQAugFsaCdMHb6lw8KV3xPzSxzH7zM1dQap9mA==
 
 select-hose@^2.0.0:
   version "2.0.0"

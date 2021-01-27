@@ -6,8 +6,8 @@ import {
   DropDownItem,
   ContextMenuButton,
   utils,
-} from "@appserver/components";
-import { Headline, toastr, Loaders } from "@appserver/common";
+} from "@appserver/components/src";
+import { Headline, toastr, Loaders } from "@appserver/common/src";
 import { connect } from "react-redux";
 import {
   getSelectedGroup,
@@ -27,7 +27,7 @@ import {
   setSelected,
 } from "../../../../../store/people/actions";
 import { deleteGroup } from "../../../../../store/group/actions";
-import { store, constants } from "@appserver/common";
+import { store, constants } from "@appserver/common/src";
 import {
   InviteDialog,
   DeleteUsersDialog,

@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
-import { utils, TreeMenu, TreeNode, Icons, Link } from "@appserver/components";
+import { utils, TreeMenu, TreeNode, Link } from "@appserver/components/src";
 import {
   selectGroup,
   setIsVisibleDataLossDialog,
@@ -13,7 +13,15 @@ import {
   utils as commonUtils,
   store as initStore,
   Loaders,
-} from "@appserver/common";
+} from "@appserver/common/src";
+
+import {
+  DepartmentsGroupIcon,
+  CatalogFolderIcon,
+  ExpanderDownIcon,
+  ExpanderRightIcon,
+} from "@appserver/components/src/components/icons/svg";
+
 import { createI18N } from "../../../helpers/i18n";
 import styled, { css } from "styled-components";
 import { setDocumentTitle } from "../../../helpers/utils";
@@ -44,7 +52,7 @@ const getItems = (data) => {
           key={item.key}
           icon={
             item.root ? (
-              <Icons.DepartmentsGroupIcon
+              <DepartmentsGroupIcon
                 size="scale"
                 isfill={true}
                 color="#657077"
@@ -63,9 +71,7 @@ const getItems = (data) => {
         className="inner-folder"
         key={item.key}
         title={item.title}
-        icon={
-          <Icons.CatalogFolderIcon size="scale" isfill={true} color="#657077" />
-        }
+        icon={<CatalogFolderIcon size="scale" isfill={true} color="#657077" />}
       />
     );
   });
@@ -129,13 +135,9 @@ class ArticleBodyContent extends React.Component {
       return null;
     }
     if (obj.expanded) {
-      return (
-        <Icons.ExpanderDownIcon size="scale" isfill={true} color="dimgray" />
-      );
+      return <ExpanderDownIcon size="scale" isfill={true} color="dimgray" />;
     } else {
-      return (
-        <Icons.ExpanderRightIcon size="scale" isfill={true} color="dimgray" />
-      );
+      return <ExpanderRightIcon size="scale" isfill={true} color="dimgray" />;
     }
   };
 

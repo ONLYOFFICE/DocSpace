@@ -2,11 +2,11 @@ import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
-import { store } from "@appserver/common";
-import { MainButton, DropDownItem } from "@appserver/components";
+import { store } from "@appserver/common/src";
+import { MainButton, DropDownItem } from "@appserver/components/src";
 import { InviteDialog } from "./../../dialogs";
 import { withTranslation, I18nextProvider } from "react-i18next";
-import { utils, toastr, Loaders } from "@appserver/common";
+import { utils, toastr, Loaders } from "@appserver/common/src";
 import { createI18N } from "../../../helpers/i18n";
 const { getLanguage, getSettings } = store.auth.selectors;
 const i18n = createI18N({

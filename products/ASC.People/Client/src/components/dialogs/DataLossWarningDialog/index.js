@@ -1,9 +1,9 @@
 import React from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { ModalDialog, Button, Text } from "@appserver/components";
+import { ModalDialog, Button, Text } from "@appserver/components/src";
 import { withTranslation } from "react-i18next";
-import { utils } from "@appserver/common";
+import { utils } from "@appserver/common/src";
 import ModalDialogContainer from "../ModalDialogContainer";
 import { createI18N } from "../../../helpers/i18n";
 import {

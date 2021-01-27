@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import styled from "styled-components";
-import { utils } from "asc-web-components";
+import { utils } from "@appserver/components/src";
 import { connect } from "react-redux";
 import store from "../../store";
 

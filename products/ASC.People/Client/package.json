@@ -2,6 +2,7 @@
   "name": "@appserver/people",
   "version": "0.1.0",
   "private": "true",
+  "homepage": "/products/people",
   "scripts": {
     "start": "webpack-cli serve",
     "build": "webpack --mode production",
@@ -48,7 +49,9 @@
     "react-device-detect": "^1.14.0",
     "react-dom": "^16.14.0",
     "react-dropzone": "^11.2.4",
+    "react-hammerjs": "^1.0.1",
     "react-onclickoutside": "^6.9.0",
+    "react-player": "^1.15.3",
     "react-redux": "^7.2.2",
     "react-resize-detector": "^5.2.0",
     "react-router": "^5.2.0",
@@ -58,6 +61,7 @@
     "react-text-mask": "^5.4.3",
     "react-toastify": "^6.1.0",
     "react-tooltip": "^4.2.11",
+    "react-viewer": "^3.2.2",
     "react-virtualized-auto-sizer": "^1.0.2",
     "react-window": "^1.8.6",
     "react-window-infinite-loader": "^1.0.5",
@@ -69,6 +73,7 @@
     "sass": "^1.29.0",
     "sass-loader": "^10.1.0",
     "sjcl": "^1.0.8",
+    "screenfull": "^5.1.0",
     "styled-components": "^5.2.1"
   }
 }

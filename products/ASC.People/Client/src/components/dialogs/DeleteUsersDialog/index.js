@@ -9,11 +9,11 @@ import {
   ToggleContent,
   Checkbox,
   CustomScrollbarsVirtualList,
-} from "@appserver/components";
+} from "@appserver/components/src";
 import { FixedSizeList as List, areEqual } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { withTranslation } from "react-i18next";
-import { api, utils, toastr } from "@appserver/common";
+import { api, utils, toastr } from "@appserver/common/src";
 import { removeUser, setSelected } from "../../../store/people/actions";
 import ModalDialogContainer from "../ModalDialogContainer";
 import { createI18N } from "../../../helpers/i18n";

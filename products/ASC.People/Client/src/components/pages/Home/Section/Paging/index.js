@@ -2,10 +2,10 @@ import React, { useCallback, useMemo } from "react";
 import { connect } from "react-redux";
 import { isMobile } from "react-device-detect";
 import { fetchPeople } from "../../../../../store/people/actions";
-import { Paging } from "@appserver/components";
+import { Paging } from "@appserver/components/src";
 import { useTranslation } from "react-i18next";
 import { getFilter } from "../../../../../store/people/selectors";
-import { store, Loaders } from "@appserver/common";
+import { store, Loaders } from "@appserver/common/src";
 const { getIsLoaded } = store.auth.selectors;
 
 const SectionPagingContent = ({

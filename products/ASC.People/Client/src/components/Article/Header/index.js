@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { store, Headline, Loaders } from "@appserver/common";
+import { store, Headline, Loaders } from "@appserver/common/src";
 
 const { getCurrentProductName } = store.auth.selectors;
 

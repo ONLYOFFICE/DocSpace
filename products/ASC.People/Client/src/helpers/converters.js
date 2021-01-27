@@ -9,7 +9,7 @@ import {
   PAGE,
   PAGE_COUNT,
 } from "./constants";
-import { api, utils } from "@appserver/common";
+import { api, utils } from "@appserver/common/src";
 const { Filter } = api;
 const { getObjectByLocation } = utils;
 

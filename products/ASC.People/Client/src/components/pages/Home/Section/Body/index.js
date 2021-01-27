@@ -12,7 +12,7 @@ import {
   utils,
   Box,
   Grid,
-} from "@appserver/components";
+} from "@appserver/components/src";
 import UserContent from "./userContent";
 import {
   selectUser,
@@ -26,7 +26,7 @@ import {
 import { getPeopleList } from "../../../../../store/people/selectors";
 
 import equal from "fast-deep-equal/react";
-import { store, api, constants, toastr, Loaders } from "@appserver/common";
+import { store, api, constants, toastr, Loaders } from "@appserver/common/src";
 import {
   ChangeEmailDialog,
   ChangePasswordDialog,
@@ -79,15 +79,15 @@ class SectionBodyContent extends React.PureComponent {
     } = this.props;
     if (!isLoaded) return;
     if (peopleList.length <= 0) {
-    fetchPeople(filter)
+      fetchPeople(filter)
         .then(() =>
           isLoaded ? setIsLoadedSection(true) : setIsLoadedSection()
         )
-      .catch((error) => {
+        .catch((error) => {
           isLoaded ? setIsLoadedSection(true) : setIsLoadedSection();
-        toastr.error(error);
-      });
-  }
+          toastr.error(error);
+        });
+    }
   }
 
   findUserById = (id) => this.props.peopleList.find((man) => man.id === id);

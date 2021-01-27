@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 //import { RequestLoader } from "@appserver/components";
-import { PageLayout, utils, store } from "@appserver/common";
+import { PageLayout, utils, store } from "@appserver/common/src";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import {
   ArticleHeaderContent,
@@ -178,6 +178,12 @@ Home.propTypes = {
 };
 
 function mapStateToProps(state) {
+  if (!state || !state.people) {
+    return {
+      isLoading: true,
+    };
+  }
+
   const { users, selection, selected, selectedGroup, groups } = state.people;
   return {
     users,
