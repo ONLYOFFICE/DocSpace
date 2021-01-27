@@ -509,14 +509,7 @@ namespace ASC.Api.Documents
         /// <category>Uploads</category>
         /// <returns></returns>
         [Create("@my/insert")]
-        public FileWrapper<int> InsertFileToMyFromBody([FromBody]InsertFileModel model)
-        {
-            return InsertFile(GlobalFolderHelper.FolderMy, model);
-        }
-
-        [Create("@my/insert")]
-        [Consumes("application/x-www-form-urlencoded")]
-        public FileWrapper<int> InsertFileToMyFromForm([FromForm]InsertFileModel model)
+        public FileWrapper<int> InsertFileToMyFromBody([FromForm] InsertFileModel model)
         {
             return InsertFile(GlobalFolderHelper.FolderMy, model);
         }
@@ -531,14 +524,7 @@ namespace ASC.Api.Documents
         /// <category>Uploads</category>
         /// <returns></returns>
         [Create("@common/insert")]
-        public FileWrapper<int> InsertFileToCommonFromBody([FromBody]InsertFileModel model)
-        {
-            return InsertFile(GlobalFolderHelper.FolderCommon, model);
-        }
-
-        [Create("@common/insert")]
-        [Consumes("application/x-www-form-urlencoded")]
-        public FileWrapper<int> InsertFileToCommonFromForm([FromForm]InsertFileModel model)
+        public FileWrapper<int> InsertFileToCommonFromBody([FromForm] InsertFileModel model)
         {
             return InsertFile(GlobalFolderHelper.FolderCommon, model);
         }
@@ -553,31 +539,13 @@ namespace ASC.Api.Documents
         /// <param name="keepConvertStatus" visible="false">Keep status conversation after finishing</param>
         /// <category>Uploads</category>
         /// <returns></returns>
-        [Create("{folderId}/insert", DisableFormat = true)]
-        public FileWrapper<string> InsertFileFromBody(string folderId, [FromBody]InsertFileModel model)
+        [Create("{folderId}/insert", order: int.MaxValue, DisableFormat = true)]
+        public FileWrapper<string> InsertFile(string folderId, [FromForm] InsertFileModel model)
         {
-            return InsertFile(folderId, model);
+            return FilesControllerHelperString.InsertFile(folderId, model.File.OpenReadStream(), model.Title, model.CreateNewIfExist, model.KeepConvertStatus);
         }
 
-        [Create("{folderId}/insert", DisableFormat = true)]
-        [Consumes("application/x-www-form-urlencoded")]
-        public FileWrapper<string> InsertFileFromForm(string folderId, [FromForm]InsertFileModel model)
-        {
-            return InsertFile(folderId, model);
-        }
-
-        private FileWrapper<string> InsertFile(string folderId, InsertFileModel model)
-        {
-            return FilesControllerHelperString.InsertFile(folderId, model.File, model.Title, model.CreateNewIfExist, model.KeepConvertStatus);
-        }
-
-        [Create("{folderId:int}/insert")]
-        public FileWrapper<int> InsertFileFromBody(int folderId, [FromBody]InsertFileModel model)
-        {
-            return InsertFile(folderId, model);
-        }
-
-        [Create("{folderId:int}/insert")]
+        [Create("{folderId:int}/insert", order: int.MaxValue - 1)]
         public FileWrapper<int> InsertFileFromForm(int folderId, [FromForm]InsertFileModel model)
         {
             return InsertFile(folderId, model);
@@ -585,7 +553,7 @@ namespace ASC.Api.Documents
 
         private FileWrapper<int> InsertFile(int folderId, InsertFileModel model)
         {
-            return FilesControllerHelperInt.InsertFile(folderId, model.File, model.Title, model.CreateNewIfExist, model.KeepConvertStatus);
+            return FilesControllerHelperInt.InsertFile(folderId, model.File.OpenReadStream(), model.Title, model.CreateNewIfExist, model.KeepConvertStatus);
         }
 
         /// <summary>

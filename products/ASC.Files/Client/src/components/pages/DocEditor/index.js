@@ -74,8 +74,30 @@ class PureEditor extends React.Component {
           user,
           isEncryption,
           config.editorConfig.encryptionKeys,
-          (keys) => api.files.setEncryptionKeys(keys),
-          true
+          (keys) => {
+            api.files.setEncryptionKeys(keys);
+          },
+          true,
+          (callback) => {
+            api.files
+              .getEncryptionAccess(fileId)
+              .then((keys) => {
+                var data = {
+                  keys,
+                };
+
+                callback(data);
+              })
+              .catch((error) => {
+                console.log(error);
+                toastr.error(
+                  typeof error === "string" ? error : error.message,
+                  null,
+                  0,
+                  true
+                );
+              });
+          }
         );
       }
 

@@ -102,7 +102,7 @@ services:
   onlyoffice-studio.notify:
     <<: *x-service-base
     image: "${REPO}/${STATUS}appserver-studio.notify:${SRV_VERSION}"
-    container_name: ${STUDIO_NOYIFY_HOST}
+    container_name: ${STUDIO_NOTIFY_HOST}
     
   onlyoffice-notify:
     <<: *x-service-base
