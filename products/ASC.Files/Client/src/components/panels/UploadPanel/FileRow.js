@@ -6,7 +6,6 @@ import LoadingButton from "./LoadingButton";
 import { connect } from "react-redux";
 import {
   cancelCurrentUpload,
-  setSharingPanelVisible,
   selectUploadedFile,
 } from "../../../store/files/actions";
 import {
@@ -205,7 +204,6 @@ const mapStateToProps = (state, ownProps) => {
 };
 
 export default connect(mapStateToProps, {
-  setSharingPanelVisible,
   cancelCurrentUpload,
   // setMediaViewerData,
   selectUploadedFile,
