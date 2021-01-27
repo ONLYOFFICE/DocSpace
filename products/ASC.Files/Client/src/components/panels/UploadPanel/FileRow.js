@@ -6,7 +6,6 @@ import LoadingButton from "./LoadingButton";
 import { connect } from "react-redux";
 import {
   cancelCurrentUpload,
-  selectUploadedFile,
 } from "../../../store/files/actions";
 import {
   getLoadingFile,
@@ -206,5 +205,4 @@ const mapStateToProps = (state, ownProps) => {
 export default connect(mapStateToProps, {
   cancelCurrentUpload,
   // setMediaViewerData,
-  selectUploadedFile,
 })(FileRow);
