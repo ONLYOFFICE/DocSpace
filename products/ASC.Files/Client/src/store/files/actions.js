@@ -906,6 +906,9 @@ export const cancelUpload = () => {
       uploaded: true,
     };
 
+    if (newUploadData.files.length === 0)
+      dispatch(setUploadPanelVisible(false));
+
     dispatch(setUploadData(newUploadData));
   };
 };
