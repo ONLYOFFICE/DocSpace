@@ -7,41 +7,89 @@ export function isMe(user, userName) {
   );
 }
 
-const toModuleWrapper = (item, iconName) => {
+const toModuleWrapper = (item, noAction = true, iconName = null) => {
+  switch (item.id) {
+    case "6743007c-6f95-4d20-8c88-a8601ce5e76d":
+      item.iconName = "CrmIcon";
+      item.iconUrl = "";
+      item.imageUrl = "/images/crm.svg";
+      break;
+    case "1e044602-43b5-4d79-82f3-fd6208a11960":
+      item.iconName = "ProjectsIcon";
+      item.iconUrl = "";
+      item.imageUrl = "/images/projects.svg";
+      break;
+    case "2A923037-8B2D-487b-9A22-5AC0918ACF3F":
+      item.iconName = "MailIcon";
+      item.iconUrl = "";
+      item.imageUrl = "/images/mail.svg";
+      break;
+    case "32D24CB5-7ECE-4606-9C94-19216BA42086":
+      item.iconName = "CalendarCheckedIcon";
+      item.iconUrl = "";
+      item.imageUrl = "/images/calendar.svg";
+      break;
+    case "BF88953E-3C43-4850-A3FB-B1E43AD53A3E":
+      item.iconName = "ChatIcon";
+      item.iconUrl = "";
+      item.imageUrl = "/images/talk.svg";
+      item.isolateMode = true;
+      break;
+    default:
+      break;
+  }
+
+  const actions = noAction
+    ? null
+    : {
+        onClick: (e) => {
+          if (e) {
+            window.open(item.link, "_self");
+            e.preventDefault();
+          }
+        },
+        onBadgeClick: (e) => console.log(iconName + " Badge Clicked", e),
+      };
+
+  const description = noAction ? { description: item.description } : null;
+
   return {
     id: item.id,
     title: item.title,
+    link: item.link,
     iconName: item.iconName || iconName || "PeopleIcon", //TODO: Change to URL
     iconUrl: item.iconUrl,
+    imageUrl: item.imageUrl,
     notifications: 0,
     url: item.link,
     isolateMode: item.isolateMode,
-    onClick: (e) => {
-      if (e) {
-        window.open(item.link, "_self");
-        e.preventDefault();
-      }
-    },
-    onBadgeClick: (e) => console.log(iconName + " Badge Clicked", e),
+    isPrimary: item.isPrimary,
+    ...description,
+    ...actions,
   };
 };
 
 const getCustomModules = (isAdmin) => {
   if (!isAdmin) {
     return [];
-  } // Temporarily hiding the settings module
+  }
+  const settingsModuleWrapper = toModuleWrapper(
+    {
+      id: "settings",
+      title: "Settings",
+      link: "/settings",
+    },
+    false,
+    "SettingsIcon"
+  );
 
-  /*  const separator = getSeparator("nav-modules-separator");
-      const settingsModuleWrapper = toModuleWrapper(
-        {
-          id: "settings",
-          title: i18n.t('Settings'),
-          link: "/settings"
-        },
-        "SettingsIcon"
-      );
-    
-      return [separator, settingsModuleWrapper];*/ return [];
+  return [
+    {
+      separator: true,
+      id: "nav-products-separator-custom",
+    },
+    settingsModuleWrapper,
+  ];
 };
 
 export const getCurrentUser = (state) => state.auth.user;
@@ -56,52 +104,24 @@ export const getModules = (state) => {
   const extendedModules = [
     ...modules,
     {
-      id: "1e044602-43b5-4d79-82f3-fd6208a11960",
-      title: "Projects",
-      iconName: "ProjectsIcon",
-      iconUrl: "",
-      link: "/products/projects/",
-      imageUrl: "/images/projects.svg",
-      isPrimary: false,
-    },
-    {
-      id: "6743007C-6F95-4d20-8C88-A8601CE5E76D",
-      title: "CRM",
-      iconName: "CrmIcon",
-      iconUrl: "",
-      link: "/products/crm/",
-      imageUrl: "/images/crm.svg",
-      isPrimary: false,
-    },
-    {
       id: "2A923037-8B2D-487b-9A22-5AC0918ACF3F",
       title: "Mail",
-      iconName: "MailIcon",
-      iconUrl: "",
       link: "/products/mail/",
-      imageUrl: "/images/mail.svg",
       isPrimary: false,
     },
     {
       id: "32D24CB5-7ECE-4606-9C94-19216BA42086",
       title: "Calendar",
-      iconName: "CalendarCheckedIcon",
-      iconUrl: "",
       link: "/products/calendar/",
-      imageUrl: "/images/calendar.svg",
       isPrimary: false,
     },
     {
       id: "BF88953E-3C43-4850-A3FB-B1E43AD53A3E",
       title: "Talk",
-      iconName: "ChatIcon",
-      iconUrl: "",
       link: "/products/talk/",
-      imageUrl: "/images/talk.svg",
       isPrimary: false,
-      isolateMode: true,
     },
-  ];
+  ].map((m) => toModuleWrapper(m));
 
   return extendedModules;
 };
@@ -181,7 +201,7 @@ export const getAvailableModules = createSelector(
 
     const isUserAdmin = user.isAdmin;
     const customModules = getCustomModules(isUserAdmin);
-    const products = modules.map((m) => toModuleWrapper(m));
+    const products = modules.map((m) => toModuleWrapper(m, false));
 
     return [
       {
