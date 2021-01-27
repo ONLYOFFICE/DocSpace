@@ -828,6 +828,7 @@ namespace ASC.Api.Documents
         }
 
         [Create("{folderId:int}/text")]
+        [Consumes("application/x-www-form-urlencoded")]
         public FileWrapper<int> CreateTextFileFromForm(int folderId, [FromForm]CreateTextOrHtmlFileModel model)
         {
             return CreateTextFile(folderId, model);
