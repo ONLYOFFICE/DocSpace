@@ -124,5 +124,6 @@
   "EncryptedFileSaving": "Сохранение зашифрованного файла",
   "EncryptedFileCreating": "Создан новый файл <strong>{{itemTitle}}</strong>",
   "DeleteThirdParty": "Отключить сторонний ресурс",
-  "ThirdPartyInfo": "Изменить настройки подключения"
+  "ThirdPartyInfo": "Изменить настройки подключения",
+  "EmptyFile": "Пустой файл"
 }

@@ -182,6 +182,7 @@ class PageLayoutComponent extends React.Component {
       isLoaded,
       isHeaderVisible,
       headerBorderBottom,
+      onOpenUploadPanel,
       isTabletView,
       firstLoad,
     } = this.props;
@@ -369,6 +370,7 @@ class PageLayoutComponent extends React.Component {
                         icon={primaryProgressBarIcon}
                         percent={primaryProgressBarValue}
                         alert={showPrimaryButtonAlert}
+                        onClick={onOpenUploadPanel}
                       />
                       <FloatingButton
                         className="layout-progress-second-bar"
@@ -383,6 +385,7 @@ class PageLayoutComponent extends React.Component {
                       icon={primaryProgressBarIcon}
                       percent={primaryProgressBarValue}
                       alert={showPrimaryButtonAlert}
+                      onClick={onOpenUploadPanel}
                     />
                   ) : !showPrimaryProgressBar && showSecondaryProgressBar ? (
                     <FloatingButton
@@ -431,7 +434,8 @@ PageLayoutComponent.propTypes = {
   hideAside: PropTypes.bool,
   isLoaded: PropTypes.bool,
   viewAs: PropTypes.string,
-  headerBorderBottom: PropTypes.bool,
+  uploadPanelVisible: PropTypes.bool,
+  onOpenUploadPanel: PropTypes.func,
   isTabletView: PropTypes.bool,
   isHeaderVisible: PropTypes.bool,
   firstLoad: PropTypes.bool,
