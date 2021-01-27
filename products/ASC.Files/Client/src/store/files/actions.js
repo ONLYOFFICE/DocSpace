@@ -1046,7 +1046,7 @@ const startSessionFunc = (indexOfFile, t, dispatch, getState) => {
   }
 
   const { file, toFolderId /*, action*/ } = item;
-
+  const chunks = Math.ceil(file.size / chunkSize, chunkSize);
   const fileName = file.name;
   const fileSize = file.size;
   const relativePath = file.path
@@ -1061,7 +1061,7 @@ const startSessionFunc = (indexOfFile, t, dispatch, getState) => {
       const location = res.data.location;
 
       const requestsDataArray = [];
-      const chunks = Math.ceil(file.size / chunkSize, chunkSize);
+
       let chunk = 0;
 
       while (chunk < chunks) {
@@ -1084,7 +1084,7 @@ const startSessionFunc = (indexOfFile, t, dispatch, getState) => {
           percent: percent,
           loadingFile: {
             uniqueId: files[indexOfFile].uniqueId,
-            percent: 0,
+            percent: chunks < 2 ? 50 : 0,
           },
         })
       );
