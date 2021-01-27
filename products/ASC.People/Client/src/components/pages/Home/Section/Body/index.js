@@ -13,7 +13,10 @@ import {
   fetchPeople,
   selectGroup,
 } from "../../../../../store/people/actions";
-import { getPeopleList } from "../../../../../store/people/selectors";
+import {
+  getPeopleList,
+  getIsEmptyGroup,
+} from "../../../../../store/people/selectors";
 
 import equal from "fast-deep-equal/react";
 import { store, api, constants, toastr, Loaders } from "asc-web-common";
@@ -380,6 +383,7 @@ class SectionBodyContent extends React.PureComponent {
       isLoading,
       isAdmin,
       currentUserId,
+      isEmptyGroup,
     } = this.props;
 
     const { dialogsVisible, user } = this.state;
@@ -492,7 +496,7 @@ class SectionBodyContent extends React.PureComponent {
       <EmptyScreen
         t={t}
         onResetFilter={this.onResetFilter}
-        groupId={filter.group}
+        isEmptyGroup={isEmptyGroup}
       />
     );
   }
@@ -510,6 +514,7 @@ const mapStateToProps = (state) => {
     settings: getSettings(state),
     isAdmin: isAdmin(state),
     currentUserId: getCurrentUserId(state),
+    isEmptyGroup: getIsEmptyGroup(state),
   };
 };
 
