@@ -1053,10 +1053,7 @@ export const getFilesList = (state) => {
         );
         const checked = isFileSelected(selection, id, parentId);
 
-        const selectedItem = selection.find(
-          (x) => x.id === id && x.fileExst === fileExst
-        );
-
+        const selectedItem = selection.find((x) => x.id === id && x.fileExst);
         const isFolder = selectedItem ? false : fileExst ? false : true;
 
         const draggable =
