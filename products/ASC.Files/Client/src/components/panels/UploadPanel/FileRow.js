@@ -1,13 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import {
-  IconButton,
-  Row,
-  Text,
-  Icons,
-  Tooltip,
-  Link,
-} from "asc-web-components";
+import { Row, Text, Icons, Tooltip, Link } from "asc-web-components";
 
 import LoadingButton from "./LoadingButton";
 import { connect } from "react-redux";
@@ -18,13 +11,6 @@ import {
 } from "../../../store/files/actions";
 import {
   getLoadingFile,
-  getFileByFileId,
-  getArchiveFormats,
-  getImageFormats,
-  getSoundFormats,
-  getSharePanelVisible,
-  getMediaViewerImageFormats,
-  getMediaViewerMediaFormats,
   isUploaded,
   isMediaOrImage,
   getIconSrc,
@@ -91,7 +77,6 @@ const FileRow = (props) => {
     isMedia,
     ext,
     name,
-    color,
     uploadedFile,
   } = props;
 
@@ -99,19 +84,6 @@ const FileRow = (props) => {
     console.log("cancel upload ", e);
     const id = e.currentTarget.dataset.id;
     return cancelCurrentUpload(id);
-  };
-
-  const onOpenSharingPanel = () => {
-    const {
-      setSharingPanelVisible,
-      sharingPanelVisible,
-      selectUploadedFile,
-      uploadedFile,
-    } = props;
-
-    const file = uploadedFile[0].fileInfo;
-    selectUploadedFile([file]);
-    setSharingPanelVisible(!sharingPanelVisible);
   };
 
   // const onMediaClick = (id) => {
@@ -224,12 +196,6 @@ const mapStateToProps = (state, ownProps) => {
       loadingFile && loadingFile.uniqueId === uniqueId
         ? loadingFile.percent
         : null,
-    archiveFormats: getArchiveFormats(state),
-    imageFormats: getImageFormats(state),
-    soundFormats: getSoundFormats(state),
-    sharingPanelVisible: getSharePanelVisible(state),
-    mediaViewerImageFormats: getMediaViewerImageFormats(state),
-    mediaViewerMediaFormats: getMediaViewerMediaFormats(state),
     uploaded: isUploaded(state),
     isMedia: isMediaOrImage(ext)(state),
     fileIcon: getIconSrc(ext, 24)(state),
