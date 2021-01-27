@@ -24,42 +24,42 @@ const People = React.lazy(() => import("people/page"));
 const Files = React.lazy(() => import("files/page"));
 const About = React.lazy(() => import("./components/pages/About"));
 
-const HomeRoute = () => (
+const HomeRoute = (props) => (
   <React.Suspense fallback={null}>
     <ErrorBoundary>
-      <Home />
+      <Home {...props} />
     </ErrorBoundary>
   </React.Suspense>
 );
 
-const LoginRoute = () => (
+const LoginRoute = (props) => (
   <React.Suspense fallback={null}>
     <ErrorBoundary>
-      <Login />
+      <Login {...props} />
     </ErrorBoundary>
   </React.Suspense>
 );
 
-const PeopleRoute = () => (
+const PeopleRoute = (props) => (
   <React.Suspense fallback={null}>
     <ErrorBoundary>
-      <People />
+      <People {...props} />
     </ErrorBoundary>
   </React.Suspense>
 );
 
-const FilesRoute = () => (
+const FilesRoute = (props) => (
   <React.Suspense fallback={null}>
     <ErrorBoundary>
-      <Files />
+      <Files {...props} />
     </ErrorBoundary>
   </React.Suspense>
 );
 
-const AboutRoute = () => (
+const AboutRoute = (props) => (
   <React.Suspense fallback={null}>
     <ErrorBoundary>
-      <About />
+      <About {...props} />
     </ErrorBoundary>
   </React.Suspense>
 );
