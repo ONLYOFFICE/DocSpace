@@ -40,6 +40,7 @@ const StyledFileRow = styled(Row)`
 
   .upload_panel-icon {
     margin-left: auto;
+    padding-left: 16px;
     line-height: 24px;
     display: flex;
     align-items: center;
@@ -135,6 +136,7 @@ const FileRow = (props) => {
               <Text
                 fontWeight="600"
                 color={item.error && "#A3A9AE"}
+                truncate
                 // MediaViewer doesn't work
                 /*onClick={() => onMediaClick(item.fileId)}*/
               >
@@ -144,6 +146,7 @@ const FileRow = (props) => {
               <Link
                 fontWeight="600"
                 color={item.error && "#A3A9AE"}
+                truncate
                 href={item.fileInfo ? item.fileInfo.webUrl : ""}
                 target="_blank"
               >
@@ -151,7 +154,7 @@ const FileRow = (props) => {
               </Link>
             )
           ) : (
-            <Text fontWeight="600" color={item.error && "#A3A9AE"}>
+            <Text fontWeight="600" color={item.error && "#A3A9AE"} truncate>
               {name}
             </Text>
           )}
