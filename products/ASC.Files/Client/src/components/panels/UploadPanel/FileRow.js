@@ -14,7 +14,6 @@ import {
   isUploaded,
   isMediaOrImage,
   getIconSrc,
-  getUploadedFile,
 } from "../../../store/files/selectors";
 import ShareButton from "./ShareButton";
 
@@ -77,11 +76,11 @@ const FileRow = (props) => {
     isMedia,
     ext,
     name,
-    uploadedFile,
+    uniqueId,
   } = props;
 
   const onCancelCurrentUpload = (e) => {
-    console.log("cancel upload ", e);
+    //console.log("cancel upload ", e);
     const id = e.currentTarget.dataset.id;
     return cancelCurrentUpload(id);
   };
@@ -138,7 +137,7 @@ const FileRow = (props) => {
             <></>
           )}
           {item.fileId ? (
-            <ShareButton uploadedFile={uploadedFile} />
+            <ShareButton uniqueId={uniqueId} />
           ) : item.error || (!item.fileId && uploaded) ? (
             <div className="upload_panel-icon">
               {" "}
@@ -201,7 +200,7 @@ const mapStateToProps = (state, ownProps) => {
     fileIcon: getIconSrc(ext, 24)(state),
     ext,
     name,
-    uploadedFile: getUploadedFile(uniqueId)(state),
+    uniqueId,
   };
 };
 

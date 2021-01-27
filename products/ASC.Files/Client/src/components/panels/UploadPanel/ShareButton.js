@@ -5,10 +5,20 @@ import {
   setSharingPanelVisible,
   selectUploadedFile,
 } from "../../../store/files/actions";
-import { getSharePanelVisible } from "../../../store/files/selectors";
+import {
+  getSharePanelVisible,
+  getUploadedFile,
+} from "../../../store/files/selectors";
 
 const ShareButton = (props) => {
   //console.log("Share button render");
+  const { uploadedFile } = props;
+  const isShared = uploadedFile[0].fileInfo
+    ? uploadedFile[0].fileInfo.shared
+    : false;
+  let color = "#A3A9AE";
+  if (isShared) color = "#657077";
+
   const onOpenSharingPanel = () => {
     const {
       setSharingPanelVisible,
@@ -26,7 +36,7 @@ const ShareButton = (props) => {
     <IconButton
       iconName="CatalogSharedIcon"
       className="upload_panel-icon"
-      color={props.color}
+      color={color}
       isClickable
       onClick={onOpenSharingPanel}
     />
@@ -34,14 +44,11 @@ const ShareButton = (props) => {
 };
 
 const mapStateToProps = (state, ownProps) => {
-  const isShared = ownProps.uploadedFile[0].fileInfo
-    ? ownProps.uploadedFile[0].fileInfo.shared
-    : false;
-  let color = "#A3A9AE";
-  if (isShared) color = "#657077";
+  const uniqueId = ownProps.uniqueId;
+
   return {
     sharingPanelVisible: getSharePanelVisible(state),
-    color,
+    uploadedFile: getUploadedFile(uniqueId)(state),
   };
 };
 
