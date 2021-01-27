@@ -177,7 +177,7 @@ const FileRow = (props) => {
               />
               <Tooltip
                 id="errorTooltip"
-                className="tooltip-custom"
+                offsetTop={64}
                 getContent={(dataTip) => <Text fontSize="13px">{dataTip}</Text>}
                 effect="float"
                 place="left"
