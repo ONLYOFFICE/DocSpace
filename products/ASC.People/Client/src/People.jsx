@@ -5,6 +5,7 @@ import profileReducer from "./store/profile/reducers";
 import groupReducer from "./store/group/reducers";
 import portalReducer from "./store/portal/reducers";
 import Routes from "./Routes";
+import { Box, Text } from "@appserver/components/src";
 
 const PeopleContent = (props) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -25,7 +26,20 @@ const PeopleContent = (props) => {
     };
   }, []);
 
-  return isLoading ? <div>LOADING STORE</div> : <Routes />;
+  return (
+    <Box
+      displayProp="flex"
+      flexDirection="column"
+      alignItems="center"
+      widthProp="100%"
+    >
+      <Box displayProp="flex" alignItems="center" heightProp="100%">
+        <Text fontSize="24px" color="green">
+          PEOPLE PAGE
+        </Text>
+      </Box>
+    </Box>
+  ); //isLoading ? <div>LOADING STORE</div> : <Routes />;
 };
 
 export default PeopleContent;

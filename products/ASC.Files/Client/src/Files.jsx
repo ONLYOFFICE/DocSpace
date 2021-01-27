@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { Box, Text } from "@appserver/components/src";
 // import { useStore } from "react-redux";
 // import dynamic from "@redux-dynostore/react-redux";
 // import { attachReducer } from "@redux-dynostore/core";
@@ -14,7 +15,20 @@ const FilesContent = (props) => {
   //   return store.reducerManager.remove("portal");
   // }, []);
 
-  return <div>FILES PAGE</div>;
+  return (
+    <Box
+      displayProp="flex"
+      flexDirection="column"
+      alignItems="center"
+      widthProp="100%"
+    >
+      <Box displayProp="flex" alignItems="center" heightProp="100%">
+        <Text fontSize="24px" color="blue">
+          FILES PAGE
+        </Text>
+      </Box>
+    </Box>
+  );
 };
 
 export default FilesContent;
