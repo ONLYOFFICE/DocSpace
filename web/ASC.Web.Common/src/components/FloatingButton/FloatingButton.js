@@ -9,10 +9,16 @@ import {
 import { Icons } from "asc-web-components";
 
 const FloatingButton = ({ id, className, style, ...rest }) => {
-  const { icon, alert, percent } = rest;
+  const { icon, alert, percent, onClick } = rest;
 
   return (
-    <StyledCircleWrap id={id} className={className} style={style} icon={icon}>
+    <StyledCircleWrap
+      id={id}
+      className={className}
+      style={style}
+      icon={icon}
+      onClick={onClick}
+    >
       <StyledCircle percent={percent}>
         <div className="circle__mask circle__full">
           <div className="circle__fill"></div>
@@ -50,6 +56,7 @@ FloatingButton.propTypes = {
   icon: PropTypes.oneOf(["upload", "file", "trash", "move", "duplicate"]),
   alert: PropTypes.bool,
   percent: PropTypes.number,
+  onClick: PropTypes.func,
 };
 
 FloatingButton.defaultProps = {

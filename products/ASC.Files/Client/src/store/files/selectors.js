@@ -11,8 +11,9 @@ const {
   isDesktopClient,
 } = store.auth.selectors;
 
-const presentInArray = (array, search) => {
-  const result = array.findIndex((item) => item === search);
+const presentInArray = (array, search, caseInsensitive = false) => {
+  let pattern = caseInsensitive ? search.toLowerCase() : search;
+  const result = array.findIndex((item) => item === pattern);
   return result === -1 ? false : true;
 };
 
@@ -507,7 +508,7 @@ export const getFileIcon = (
 ) => {
   const folderPath = `images/icons/${size}`;
 
-  if (archive) return `${folderPath}/file_arcive.svg`;
+  if (archive) return `${folderPath}/file_archive.svg`;
 
   if (image) return `${folderPath}/image.svg`;
 
@@ -1589,3 +1590,149 @@ export const isCanShare = createSelector(
     }
   }
 );
+
+export const getUploadPanelVisible = (state) => {
+  return state.files.uploadPanelVisible;
+};
+
+export const getUploadData = (state) => {
+  return state.files.uploadData;
+};
+
+export const isUploaded = createSelector(getUploadData, (data) => {
+  return data.uploaded;
+});
+
+export const getUploadDataFiles = (state) => {
+  return state.files.uploadData.files;
+};
+
+export const getLoadingFile = createSelector(
+  getPrimaryProgressData,
+  (primaryProgressData) => {
+    const { loadingFile } = primaryProgressData;
+    if (!loadingFile || !loadingFile.uniqueId) return null;
+    return loadingFile;
+  }
+);
+
+export const getFileByFileId = (state, fileId) => {
+  return state.files.files.find((file) => file.id === fileId);
+};
+
+// export const getUploadItem = (fileExst) => {
+//   return createSelector(
+//     [getMediaViewerImageFormats, getMediaViewerMediaFormats],
+//     (media, images) => {
+//       if (media.includes(fileExst) || images.includes(fileExst)) {
+//         return true;
+//       }
+//       return false;
+//     }
+//   );
+// };
+
+export const getIconSrc = (ext, size = 24) => {
+  return createSelector(
+    getArchiveFormats,
+    getImageFormats,
+    getSoundFormats,
+    getHtmlFormats,
+    (archiveFormats, imageFormats, soundFormats, htmlFormats) => {
+      const folderPath = `images/icons/${size}`;
+
+      if (presentInArray(archiveFormats, ext, true))
+        return `${folderPath}/file_archive.svg`;
+
+      if (presentInArray(imageFormats, ext, true))
+        return `${folderPath}/image.svg`;
+
+      if (presentInArray(soundFormats, ext, true))
+        return `${folderPath}/sound.svg`;
+
+      if (presentInArray(htmlFormats, ext, true))
+        return `${folderPath}/html.svg`;
+
+      const extension = ext.toLowerCase();
+
+      switch (extension) {
+        case ".avi":
+          return `${folderPath}/avi.svg`;
+        case ".csv":
+          return `${folderPath}/csv.svg`;
+        case ".djvu":
+          return `${folderPath}/djvu.svg`;
+        case ".doc":
+          return `${folderPath}/doc.svg`;
+        case ".docx":
+          return `${folderPath}/docx.svg`;
+        case ".dvd":
+          return `${folderPath}/dvd.svg`;
+        case ".epub":
+          return `${folderPath}/epub.svg`;
+        case ".pb2":
+          return `${folderPath}/fb2.svg`;
+        case ".flv":
+          return `${folderPath}/flv.svg`;
+        case ".iaf":
+          return `${folderPath}/iaf.svg`;
+        case ".m2ts":
+          return `${folderPath}/m2ts.svg`;
+        case ".mht":
+          return `${folderPath}/mht.svg`;
+        case ".mkv":
+          return `${folderPath}/mkv.svg`;
+        case ".mov":
+          return `${folderPath}/mov.svg`;
+        case ".mp4":
+          return `${folderPath}/mp4.svg`;
+        case ".mpg":
+          return `${folderPath}/mpg.svg`;
+        case ".odp":
+          return `${folderPath}/odp.svg`;
+        case ".ods":
+          return `${folderPath}/ods.svg`;
+        case ".odt":
+          return `${folderPath}/odt.svg`;
+        case ".pdf":
+          return `${folderPath}/pdf.svg`;
+        case ".pps":
+          return `${folderPath}/pps.svg`;
+        case ".ppsx":
+          return `${folderPath}/ppsx.svg`;
+        case ".ppt":
+          return `${folderPath}/ppt.svg`;
+        case ".pptx":
+          return `${folderPath}/pptx.svg`;
+        case ".rtf":
+          return `${folderPath}/rtf.svg`;
+        case ".svg":
+          return `${folderPath}/svg.svg`;
+        case ".txt":
+          return `${folderPath}/txt.svg`;
+        case ".webm":
+          return `${folderPath}/webm.svg`;
+        case ".xls":
+          return `${folderPath}/xls.svg`;
+        case ".xlsx":
+          return `${folderPath}/xlsx.svg`;
+        case ".xps":
+          return `${folderPath}/xps.svg`;
+        case ".xml":
+          return `${folderPath}/xml.svg`;
+        default:
+          return `${folderPath}/file.svg`;
+      }
+    }
+  );
+};
+
+export const getUploadedFile = (id) => {
+  return createSelector(getUploadDataFiles, (files) => {
+    return files.filter((f) => f.uniqueId === id);
+  });
+};
+
+export const getUploadSelection = (state) => {
+  return state.files.selectedUploadFile;
+};
