@@ -2,17 +2,7 @@ import React from "react";
 import { withRouter } from "react-router";
 import { connect } from "react-redux";
 import { withTranslation, Trans } from "react-i18next";
-import {
-  Row,
-  Avatar,
-  EmptyScreenContainer,
-  IconButton,
-  Link,
-  RowContainer,
-  utils,
-  Box,
-  Grid,
-} from "asc-web-components";
+import { Row, Avatar, RowContainer, utils } from "asc-web-components";
 import UserContent from "./userContent";
 import {
   selectUser,
@@ -34,7 +24,7 @@ import {
   DeleteProfileEverDialog,
 } from "../../../../dialogs";
 import { createI18N } from "../../../../../helpers/i18n";
-import { isMobile } from "react-device-detect";
+import EmptyScreen from "./sub-components/EmptyScreen";
 
 const i18n = createI18N({
   page: "Home",
@@ -499,40 +489,10 @@ class SectionBodyContent extends React.PureComponent {
         )}
       </>
     ) : (
-      <EmptyScreenContainer
-        imageSrc="images/empty_screen_filter.png"
-        imageAlt="Empty Screen Filter image"
-        headerText={t("NotFoundTitle")}
-        descriptionText={t("NotFoundDescription")}
-        buttons={
-          <Grid
-            marginProp="13px 0"
-            gridColumnGap="8px"
-            columnsProp={["12px 1fr"]}
-          >
-            <Box>
-              <IconButton
-                className="empty-folder_container-icon"
-                size="12"
-                onClick={this.onResetFilter}
-                iconName="CrossIcon"
-                isFill
-                color="#657077"
-              />
-            </Box>
-            <Box marginProp="-4px 0 0 0">
-              <Link
-                type="action"
-                isHovered={true}
-                fontWeight="600"
-                color="#555f65"
-                onClick={this.onResetFilter}
-              >
-                {t("ClearButton")}
-              </Link>
-            </Box>
-          </Grid>
-        }
+      <EmptyScreen
+        t={t}
+        onResetFilter={this.onResetFilter}
+        groupId={filter.group}
       />
     );
   }
