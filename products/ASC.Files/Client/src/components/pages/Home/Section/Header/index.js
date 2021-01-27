@@ -160,6 +160,13 @@ const StyledContainer = styled.div`
     @media ${tablet} {
       padding-bottom: 0;
       & > div:first-child {
+        ${(props) =>
+          !isMobile &&
+          props.width &&
+          css`
+            width: ${props.width + 16 + "px"};
+          `}
+
         position: absolute;
         ${(props) =>
           !props.isDesktop &&
