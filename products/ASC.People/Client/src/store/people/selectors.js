@@ -438,3 +438,11 @@ export const hasUsersToRemove = createSelector([getUsersToRemove], hasAny);
 export const getFilter = (state) => state.people.filter;
 
 export const getGroups = (state) => state.people.groups;
+
+export const getIsEmptyGroup = createSelector(
+  [getPeopleList, getFilter],
+  (usersList, filter) => {
+    if (usersList.length === 0 && filter.group && !filter.search) return true;
+    return false;
+  }
+);
