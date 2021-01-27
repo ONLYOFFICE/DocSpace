@@ -59,6 +59,7 @@ const {
   getCurrentUserId,
   getSettingsCustomNamesGroupsCaption,
   getSettings,
+  isDesktopClient,
 } = store.auth.selectors;
 
 const SharingBodyStyle = { height: `calc(100vh - 156px)` };
@@ -150,6 +151,7 @@ class SharingPanelComponent extends React.Component {
       uploadPanelVisible,
       updateUploadedItem,
       uploadSelection,
+      isDesktop,
     } = this.props;
 
     const folderIds = [];
@@ -215,7 +217,7 @@ class SharingPanelComponent extends React.Component {
         if (ownerId) {
           this.updateRowData(res[0]);
         }
-        if (isPrivacy) {
+        if (isPrivacy && isDesktop) {
           if (share.length === 0) return Promise.resolve();
           selection.forEach((item) => {
             return setEncryptionAccess(item).then((encryptedFile) => {
@@ -634,6 +636,7 @@ const mapStateToProps = (state, ownProps) => {
     isMyId: getCurrentUserId(state),
     selection: selectedFile,
     isPrivacy: getIsPrivacyFolder(state),
+    isDesktop: isDesktopClient(state),
     groupsCaption: getSettingsCustomNamesGroupsCaption(state),
     sharingPanelVisible: getSharePanelVisible(state),
     canShareOwnerChange: getCanShareOwnerChange(state),
