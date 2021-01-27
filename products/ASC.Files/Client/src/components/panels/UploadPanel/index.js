@@ -1,8 +1,8 @@
 import React from "react";
 import { Backdrop, Heading, Aside, IconButton } from "asc-web-components";
 import { connect } from "react-redux";
-// import { withTranslation } from "react-i18next";
-// import { utils as commonUtils } from "asc-web-common";
+import { withTranslation } from "react-i18next";
+import { utils as commonUtils } from "asc-web-common";
 import {
   setUploadPanelVisible,
   cancelUpload,
@@ -22,13 +22,13 @@ import {
 } from "../StyledPanels";
 import FileList from "./FileList";
 
-// import { createI18N } from "../../../helpers/i18n";
+import { createI18N } from "../../../helpers/i18n";
 
-// const i18n = createI18N({
-//   page: "UploadPanel",
-//   localesPath: "panels/UploadPanel",
-// });
-//const { changeLanguage } = commonUtils;
+const i18n = createI18N({
+  page: "UploadPanel",
+  localesPath: "panels/UploadPanel",
+});
+const { changeLanguage } = commonUtils;
 
 const DownloadBodyStyle = { height: `calc(100vh - 62px)` };
 
@@ -36,7 +36,7 @@ class UploadPanelComponent extends React.Component {
   constructor(props) {
     super(props);
 
-    //changeLanguage(i18n);
+    changeLanguage(i18n);
 
     this.ref = React.createRef();
     this.scrollRef = React.createRef();
@@ -73,13 +73,8 @@ class UploadPanelComponent extends React.Component {
   };
 
   render() {
-    console.log("UploadPanel render");
-    const {
-      // t,
-      uploadPanelVisible,
-      sharingPanelVisible,
-      uploaded,
-    } = this.props;
+    //console.log("UploadPanel render");
+    const { t, uploadPanelVisible, sharingPanelVisible, uploaded } = this.props;
 
     const visible = uploadPanelVisible;
     const zIndex = 310;
@@ -96,8 +91,7 @@ class UploadPanelComponent extends React.Component {
           <StyledContent>
             <StyledHeaderContent className="upload-panel_header-content">
               <Heading className="upload_panel-header" size="medium" truncate>
-                {/* {t("Uploads")}  TODO: fix translations render */}
-                Uploads
+                {t("Uploads")}
               </Heading>
               <div className="upload_panel-icons-container">
                 <div className="upload_panel-remove-icon">
@@ -143,11 +137,11 @@ class UploadPanelComponent extends React.Component {
   }
 }
 
-// const UploadPanelContainerTranslated = withTranslation()(UploadPanelComponent);
+const UploadPanelContainerTranslated = withTranslation()(UploadPanelComponent);
 
-// const UploadPanel = (props) => (
-//   <UploadPanelContainerTranslated i18n={i18n} {...props} />
-// );
+const UploadPanel = (props) => (
+  <UploadPanelContainerTranslated i18n={i18n} {...props} />
+);
 
 const mapStateToProps = (state) => {
   //console.log("mapStateToProps");
@@ -162,4 +156,4 @@ export default connect(mapStateToProps, {
   setUploadPanelVisible,
   cancelUpload,
   clearUploadData,
-})(UploadPanelComponent);
+})(UploadPanel);

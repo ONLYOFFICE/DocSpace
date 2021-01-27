@@ -252,6 +252,7 @@ class PureHome extends React.Component {
         <PageLayout
           withBodyScroll
           withBodyAutoFocus={!isMobile}
+          uploadFiles
           onDrop={this.onDrop}
           setSelections={this.props.setSelections}
           onMouseMove={this.onMouseMove}
