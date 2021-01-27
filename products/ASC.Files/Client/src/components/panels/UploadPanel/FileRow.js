@@ -80,7 +80,7 @@ const StyledFileRow = styled(Row)`
 
 const FileRow = (props) => {
   const {
-    // t,
+    t,
     item,
     uploaded,
     cancelCurrentUpload,
@@ -170,7 +170,7 @@ const FileRow = (props) => {
               <Icons.LoadErrorIcon
                 size="medium"
                 data-for="errorTooltip"
-                data-tip={item.error || /*t("UnknownError")*/ "Unknown Error"}
+                data-tip={item.error || t("UnknownError")}
               />
               <Tooltip
                 id="errorTooltip"
