@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { utils, Icons, Text, Box } from "asc-web-components";
+import { utils, Icons, Text } from "asc-web-components";
 const { tablet, smallTablet } = utils.device;
 
 const StyledArticlePinPanel = styled.div`
@@ -59,14 +59,12 @@ const ArticlePinPanel = React.memo((props) => {
   return (
     <StyledArticlePinPanel>
       {pinned ? (
-    
         <div onClick={onUnpin}>
           <div className="icon-wrapper">
             <Icons.CatalogUnpinIcon size="scale" />
           </div>
           <Text {...textStyles}>{unpinText}</Text>
         </div>
-
       ) : (
         <div onClick={onPin}>
           <div className="icon-wrapper">
