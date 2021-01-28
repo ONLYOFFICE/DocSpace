@@ -187,7 +187,7 @@ RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \
     apt-get install -yq nodejs &&\
     apt-get install -yq libgdiplus
     
-#USER onlyoffice    
+USER onlyoffice    
 EXPOSE 5050
 
 ENTRYPOINT ["./docker-entrypoint.sh"]
