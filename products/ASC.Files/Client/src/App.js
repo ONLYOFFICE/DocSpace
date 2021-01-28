@@ -22,6 +22,7 @@ import {
   utils,
   toastr,
   Layout,
+  ScrollToTop,
   regDesktop,
 } from "asc-web-common";
 
@@ -146,6 +147,7 @@ class App extends React.Component {
     return navigator.onLine ? (
       <Layout>
         <Router history={history}>
+          <ScrollToTop />
           {!this.isEditor && <NavMenu />}
           <Main isDesktop={isDesktop}>
             <Suspense fallback={null}>

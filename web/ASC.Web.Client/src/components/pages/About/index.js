@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import version from "../../../../package.json";
 import styled from "styled-components";
 import { Trans } from "react-i18next";
+import { isMobile } from "react-device-detect";
 import { createI18N } from "../../../helpers/i18n";
 import { setDocumentTitle } from "../../../helpers/utils";
 
@@ -16,7 +17,7 @@ const i18n = createI18N({
 const { changeLanguage } = utils;
 
 const BodyStyle = styled.div`
-  margin-top: 24px;
+  margin-top: ${isMobile ? "80px" : "24px"};
 
   .avatar {
     text-align: center;

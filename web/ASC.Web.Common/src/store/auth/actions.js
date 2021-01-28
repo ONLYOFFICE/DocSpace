@@ -3,6 +3,7 @@ import { isDesktopClient } from "./selectors";
 import { logout as logoutDesktop } from "../../desktop/";
 import { setWithCredentialsStatus } from "../../api/client";
 import history from "../../history";
+import { ARTICLE_PINNED_KEY } from "../../constants";
 
 export const LOGIN_POST = "LOGIN_POST";
 export const SET_CURRENT_USER = "SET_CURRENT_USER";
@@ -21,10 +22,12 @@ export const SET_CURRENT_PRODUCT_HOME_PAGE = "SET_CURRENT_PRODUCT_HOME_PAGE";
 export const SET_GREETING_SETTINGS = "SET_GREETING_SETTINGS";
 export const SET_CUSTOM_NAMES = "SET_CUSTOM_NAMES";
 export const SET_WIZARD_COMPLETED = "SET_WIZARD_COMPLETED";
+export const SET_HEADER_VISIBLE = "SET_HEADER_VISIBLE";
 export const FETCH_ENCRYPTION_KEYS = "FETCH_ENCRYPTION_KEYS";
 export const SET_IS_ENCRYPTION_SUPPORT = "SET_IS_ENCRYPTION_SUPPORT";
 export const SET_IS_AUTHENTICATED = "SET_IS_AUTHENTICATED";
 export const SET_IS_TABLET_VIEW = "SET_IS_TABLET_VIEW";
+export const SET_ARTICLE_PINNED = "SET_ARTICLE_PINNED";
 
 export function setCurrentUser(user) {
   return {
@@ -267,6 +270,12 @@ export function getPortalPasswordSettings(dispatch, confirmKey = null) {
 export const reloadPortalSettings = () => {
   return (dispatch) => getPortalSettings(dispatch);
 };
+export function setHeaderVisible(isHeaderVisible) {
+  return {
+    type: SET_HEADER_VISIBLE,
+    isHeaderVisible,
+  };
+}
 
 export function setEncryptionKeys(keys) {
   return (dispatch) => {
@@ -310,5 +319,15 @@ export function getIsEncryptionSupport(dispatch) {
 export function replaceFileStream(fileId, file, encrypted, forcesave) {
   return (dispatch) => {
     return api.files.updateFileStream(file, fileId, encrypted, forcesave);
+  };
+}
+
+export function setArticlePinned(isPinned) {
+  isPinned
+    ? localStorage.setItem(ARTICLE_PINNED_KEY, isPinned)
+    : localStorage.removeItem(ARTICLE_PINNED_KEY);
+  return {
+    type: SET_ARTICLE_PINNED,
+    isPinned,
   };
 }
