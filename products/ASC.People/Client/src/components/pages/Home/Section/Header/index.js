@@ -66,6 +66,10 @@ const StyledContainer = styled.div`
 
     @media ${tablet} {
       padding-bottom: 0;
+      ${!isMobile &&
+      css`
+        height: 56px;
+      `}
       & > div:first-child {
         ${(props) =>
           !isMobile &&

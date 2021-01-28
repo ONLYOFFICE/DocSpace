@@ -139,6 +139,7 @@ const StyledContainer = styled.div`
     margin: 0 -16px;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     padding-bottom: 56px;
+
     ${isMobile &&
     css`
       position: sticky;
@@ -159,6 +160,10 @@ const StyledContainer = styled.div`
 
     @media ${tablet} {
       padding-bottom: 0;
+      ${!isMobile &&
+      css`
+        height: 56px;
+      `}
       & > div:first-child {
         ${(props) =>
           !isMobile &&
