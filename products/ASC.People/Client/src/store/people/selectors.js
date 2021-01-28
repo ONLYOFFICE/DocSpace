@@ -442,7 +442,10 @@ export const getGroups = (state) => state.people.groups;
 export const getIsEmptyGroup = createSelector(
   [getPeopleList, getFilter],
   (usersList, filter) => {
-    if (usersList.length === 0 && filter.group && !filter.search) return true;
+    const { group, search, role, activationStatus, employeeStatus } = filter;
+    const filterIsClear =
+      !search && !role && !activationStatus && !employeeStatus;
+    if (usersList.length === 0 && filterIsClear && group) return true;
     return false;
   }
 );
