@@ -7,9 +7,10 @@ import { withTranslation } from "react-i18next";
 import { api, utils, toastr } from "asc-web-common";
 import {
   fetchFiles,
-  setProgressBarData,
-  clearProgressData,
+  setSecondaryProgressBarData,
+  clearSecondaryProgressData,
 } from "../../../store/files/actions";
+import { TIMEOUT } from "../../../helpers/constants";
 import {
   getSelectedFolderId,
   getFilter,
@@ -32,9 +33,9 @@ const EmptyTrashDialogComponent = (props) => {
     t,
     filter,
     currentFolderId,
-    setProgressBarData,
+    setSecondaryProgressBarData,
     isLoading,
-    clearProgressData,
+    clearSecondaryProgressData,
     fetchFiles,
   } = props;
 
@@ -51,51 +52,65 @@ const EmptyTrashDialogComponent = (props) => {
           const currentProcess = res.find((x) => x.id === id);
           if (currentProcess && currentProcess.progress !== 100) {
             const newProgressData = {
+              icon: "trash",
               visible: true,
               percent: currentProcess.progress,
               label: t("DeleteOperation"),
+              alert: false,
             };
-            setProgressBarData(newProgressData);
+            setSecondaryProgressBarData(newProgressData);
             setTimeout(() => loopEmptyTrash(id), 1000);
           } else {
             fetchFiles(currentFolderId, filter)
               .then(() => {
-                setProgressBarData({
+                setSecondaryProgressBarData({
+                  icon: "trash",
                   visible: true,
                   percent: 100,
                   label: t("DeleteOperation"),
+                  alert: false,
                 });
-                setTimeout(() => clearProgressData(), 5000);
+                setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
                 toastr.success(successMessage);
               })
               .catch((err) => {
-                toastr.error(err);
-                clearProgressData();
+                setSecondaryProgressBarData({
+                  visible: true,
+                  alert: true,
+                });
+                //toastr.error(err);
+                setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
               });
           }
         })
         .catch((err) => {
-          toastr.error(err);
-          clearProgressData();
+          setSecondaryProgressBarData({
+            visible: true,
+            alert: true,
+          });
+          //toastr.error(err);
+          setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
         });
     },
     [
       t,
       currentFolderId,
       filter,
-      setProgressBarData,
-      clearProgressData,
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
       fetchFiles,
     ]
   );
 
   const onEmptyTrash = useCallback(() => {
     const newProgressData = {
+      icon: "trash",
       visible: true,
       percent: 0,
       label: t("DeleteOperation"),
+      alert: false,
     };
-    setProgressBarData(newProgressData);
+    setSecondaryProgressBarData(newProgressData);
     onClose();
     files
       .emptyTrash()
@@ -104,10 +119,20 @@ const EmptyTrashDialogComponent = (props) => {
         loopEmptyTrash(id);
       })
       .catch((err) => {
-        toastr.error(err);
-        clearProgressData();
+        setSecondaryProgressBarData({
+          visible: true,
+          alert: true,
+        });
+        //toastr.error(err);
+        setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
       });
-  }, [onClose, loopEmptyTrash, setProgressBarData, t, clearProgressData]);
+  }, [
+    onClose,
+    loopEmptyTrash,
+    setSecondaryProgressBarData,
+    t,
+    clearSecondaryProgressData,
+  ]);
 
   return (
     <ModalDialogContainer>
@@ -157,7 +182,7 @@ const mapStateToProps = (state) => {
 };
 
 export default connect(mapStateToProps, {
-  setProgressBarData,
-  clearProgressData,
+  setSecondaryProgressBarData,
+  clearSecondaryProgressData,
   fetchFiles,
 })(withRouter(EmptyTrashDialog));

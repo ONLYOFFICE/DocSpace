@@ -49,6 +49,9 @@ namespace ASC.Web.Api.Controllers
         private SettingsManager SettingsManager { get; }
         private IMobileAppInstallRegistrator MobileAppInstallRegistrator { get; }
         private IConfiguration Configuration { get; set; }
+        public CoreBaseSettings CoreBaseSettings { get; }
+        public LicenseReader LicenseReader { get; }
+        public SetupInfo SetupInfo { get; }
         private TenantExtra TenantExtra { get; set; }
         public ILog Log { get; }
 
@@ -67,7 +70,10 @@ namespace ASC.Web.Api.Controllers
             SettingsManager settingsManager,
             IMobileAppInstallRegistrator mobileAppInstallRegistrator,
             TenantExtra tenantExtra,
-            IConfiguration configuration
+            IConfiguration configuration,
+            CoreBaseSettings coreBaseSettings,
+            LicenseReader licenseReader,
+            SetupInfo setupInfo
             )
         {
             Log = options.CurrentValue;
@@ -83,6 +89,9 @@ namespace ASC.Web.Api.Controllers
             SettingsManager = settingsManager;
             MobileAppInstallRegistrator = mobileAppInstallRegistrator;
             Configuration = configuration;
+            CoreBaseSettings = coreBaseSettings;
+            LicenseReader = licenseReader;
+            SetupInfo = setupInfo;
             TenantExtra = tenantExtra;
         }
 
@@ -129,12 +138,17 @@ namespace ASC.Web.Api.Controllers
         {
             return new
             {
+                customMode = CoreBaseSettings.CustomMode,
                 opensource = TenantExtra.Opensource,
                 enterprise = TenantExtra.Enterprise,
                 tariff = TenantExtra.GetCurrentTariff(),
                 quota = TenantExtra.GetTenantQuota(),
                 notPaid = TenantExtra.IsNotPaid(),
-                licenseAccept = SettingsManager.LoadForCurrentUser<TariffSettings>().LicenseAcceptSetting
+                licenseAccept = SettingsManager.LoadForCurrentUser<TariffSettings>().LicenseAcceptSetting,
+                enableTariffPage = //TenantExtra.EnableTarrifSettings - think about hide-settings for opensource
+                    (!CoreBaseSettings.Standalone || !string.IsNullOrEmpty(LicenseReader.LicensePath))
+                    && string.IsNullOrEmpty(SetupInfo.AmiMetaUrl)
+                    && !CoreBaseSettings.CustomMode
             };
         }
 
@@ -143,7 +157,7 @@ namespace ASC.Web.Api.Controllers
         public double GetUsedSpace()
         {
             return Math.Round(
-                TenantManager.FindTenantQuotaRows(new TenantQuotaRowQuery(Tenant.TenantId))
+                TenantManager.FindTenantQuotaRows(Tenant.TenantId)
                            .Where(q => !string.IsNullOrEmpty(q.Tag) && new Guid(q.Tag) != Guid.Empty)
                            .Sum(q => q.Counter) / 1024f / 1024f / 1024f, 2);
         }
@@ -209,7 +223,7 @@ namespace ASC.Web.Api.Controllers
         {
             try
             {
-                var settings = SettingsManager.LoadForCurrentUser<OpensourcePresentSettings>();
+                var settings = SettingsManager.LoadForCurrentUser<OpensourceGiftSettings>();
                 settings.Readed = true;
                 SettingsManager.SaveForCurrentUser(settings);
             }

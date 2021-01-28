@@ -15,14 +15,35 @@ import {
   SET_GREETING_SETTINGS,
   SET_CUSTOM_NAMES,
   SET_WIZARD_COMPLETED,
+  SET_HEADER_VISIBLE,
+  FETCH_ENCRYPTION_KEYS,
+  SET_IS_ENCRYPTION_SUPPORT,
+  SET_IS_AUTHENTICATED,
+  SET_IS_TABLET_VIEW,
+  SET_ARTICLE_PINNED,
 } from "./actions";
-import isEmpty from "lodash/isEmpty";
-import { LANGUAGE, AUTH_KEY } from "../../constants";
+import {
+  LANGUAGE,
+  ARTICLE_PINNED_KEY,
+  AUTH_KEY,
+  HEADER_VISIBLE_KEY,
+} from "../../constants";
+
+const desktop = window["AscDesktopEditor"] !== undefined;
+const desktopEncryption =
+  desktop && typeof window.AscDesktopEditor.cloudCryptoCommand === "function";
+const lang = localStorage["language"]
+  ? localStorage
+      .getItem("language")
+      .split("-")
+      .find((el) => el[0])
+  : "en";
 
 const initialState = {
   isAuthenticated: false,
   isLoaded: false,
   isLoadedSection: true,
+
   user: {},
   modules: [],
   settings: {
@@ -49,6 +70,8 @@ const initialState = {
     greetingSettings: "Web Office Applications",
     enableAdmMess: false,
     urlLicense: "https://gnu.org/licenses/gpl-3.0.html",
+    urlSupport: "https://helpdesk.onlyoffice.com/",
+    urlAuthKeys: `https://helpcenter.onlyoffice.com/${lang}/installation/groups-authorization-keys.aspx`,
     logoUrl: "",
     customNames: {
       id: "Common",
@@ -62,7 +85,14 @@ const initialState = {
       guestCaption: "Guest",
       guestsCaption: "Guests",
     },
-    isEncryptionSupport: false, // TODO: should switch to "true", when desktop editors client uses
+    isDesktopClient: desktop,
+    //isDesktopEncryption: desktopEncryption,
+    isEncryptionSupport: false,
+    encryptionKeys: null,
+
+    isHeaderVisible: false,
+    isTabletView: false,
+    isArticlePinned: localStorage.getItem(ARTICLE_PINNED_KEY) || false,
   },
 };
 
@@ -73,9 +103,11 @@ const authReducer = (state = initialState, action) => {
         localStorage.getItem(LANGUAGE) !== action.user.cultureName &&
         localStorage.setItem(LANGUAGE, action.user.cultureName);
       return Object.assign({}, state, {
-        isAuthenticated:
-          !isEmpty(action.user) || localStorage.getItem(AUTH_KEY),
         user: action.user,
+      });
+    case SET_IS_AUTHENTICATED:
+      return Object.assign({}, state, {
+        isAuthenticated: action.isAuthenticated,
       });
     case SET_MODULES:
       return Object.assign({}, state, {
@@ -150,13 +182,50 @@ const authReducer = (state = initialState, action) => {
       });
     case LOGOUT:
       return Object.assign({}, initialState, {
+        isLoaded: true,
         settings: state.settings,
       });
     case SET_WIZARD_COMPLETED:
       return Object.assign({}, state, {
         settings: { ...state.settings, wizardCompleted: true },
       });
+    case FETCH_ENCRYPTION_KEYS:
+      return {
+        ...state,
+        settings: {
+          ...state.settings,
+          encryptionKeys: action.keys,
+        },
+      };
+    case SET_IS_ENCRYPTION_SUPPORT:
+      return {
+        ...state,
+        settings: {
+          ...state.settings,
+          isEncryptionSupport: action.isSupport,
+          //isEncryptionSupport: state.isDesktopEncryption && action.isSupport,
+        },
+      };
 
+    case SET_HEADER_VISIBLE:
+      return Object.assign({}, state, {
+        settings: {
+          ...state.settings,
+          isHeaderVisible: action.isHeaderVisible,
+        },
+      });
+    case SET_IS_TABLET_VIEW:
+      return Object.assign({}, state, {
+        settings: {
+          ...state.settings,
+          isTabletView: action.isTabletView,
+        },
+      });
+
+    case SET_ARTICLE_PINNED:
+      return Object.assign({}, state, {
+        settings: { ...state.settings, isArticlePinned: action.isPinned },
+      });
     default:
       return state;
   }

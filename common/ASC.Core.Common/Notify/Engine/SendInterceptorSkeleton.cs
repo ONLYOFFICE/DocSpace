@@ -44,8 +44,8 @@ namespace ASC.Notify.Engine
 
         public SendInterceptorSkeleton(string name, InterceptorPlace preventPlace, InterceptorLifetime lifetime, Func<NotifyRequest, InterceptorPlace, IServiceScope, bool> sendInterceptor)
         {
-            if (string.IsNullOrEmpty("name")) throw new ArgumentNullException("name");
-            if (string.IsNullOrEmpty("sendInterceptor")) throw new ArgumentNullException("sendInterceptor");
+            if (string.IsNullOrEmpty(name)) throw new ArgumentException("Empty name.", "name");
+            if (sendInterceptor == null) throw new ArgumentNullException("sendInterceptor");
 
             method = sendInterceptor;
             Name = name;

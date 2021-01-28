@@ -28,12 +28,15 @@ using System;
 using System.Collections.Generic;
 
 using ASC.Common;
+using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Data.Backup.Contracts;
 using ASC.Data.Backup.EF.Model;
 using ASC.Data.Backup.Service;
 using ASC.Data.Backup.Utils;
+
+using Microsoft.Extensions.Options;
 
 using Newtonsoft.Json;
 
@@ -45,6 +48,7 @@ namespace ASC.Data.Backup.Storage
         private ConfigurationExtension Configuration { get; }
         private DocumentsBackupStorage DocumentsBackupStorage { get; }
         private DataStoreBackupStorage DataStoreBackupStorage { get; }
+        private ILog Log { get; }
         private LocalBackupStorage LocalBackupStorage { get; }
         private ConsumerBackupStorage ConsumerBackupStorage { get; }
         private TenantManager TenantManager { get; }
@@ -55,11 +59,13 @@ namespace ASC.Data.Backup.Storage
             ConfigurationExtension configuration,
             DocumentsBackupStorage documentsBackupStorage,
             TenantManager tenantManager,
-            DataStoreBackupStorage dataStoreBackupStorage)
+            DataStoreBackupStorage dataStoreBackupStorage,
+            IOptionsMonitor<ILog> options)
         {
             Configuration = configuration;
             DocumentsBackupStorage = documentsBackupStorage;
             DataStoreBackupStorage = dataStoreBackupStorage;
+            Log = options.CurrentValue;
             LocalBackupStorage = localBackupStorage;
             ConsumerBackupStorage = consumerBackupStorage;
             TenantManager = tenantManager;
@@ -67,7 +73,15 @@ namespace ASC.Data.Backup.Storage
 
         public IBackupStorage GetBackupStorage(BackupRecord record)
         {
-            return GetBackupStorage(record.StorageType, record.TenantId, JsonConvert.DeserializeObject<Dictionary<string, string>>(record.StorageParams));
+            try
+            {
+                return GetBackupStorage(record.StorageType, record.TenantId, JsonConvert.DeserializeObject<Dictionary<string, string>>(record.StorageParams));
+            }
+            catch (Exception error)
+            {
+                Log.Error("can't get backup storage for record " + record.Id, error);
+                return null;
+            }
         }
 
         public IBackupStorage GetBackupStorage(BackupStorageType type, int tenantId, Dictionary<string, string> storageParams)

@@ -1,4 +1,4 @@
-import { api, history, constants, toastr, store } from "asc-web-common";
+import { api, history, constants, store } from "asc-web-common";
 import axios from "axios";
 import queryString from "query-string";
 import {
@@ -12,6 +12,7 @@ import {
   SORT_ORDER,
   FOLDER,
   PREVIEW,
+  TIMEOUT,
 } from "../../helpers/constants";
 import config from "../../../package.json";
 import {
@@ -21,11 +22,18 @@ import {
   getSelectedFolderId,
   getFilter,
   getIsRecycleBinFolder,
-  getProgressData,
+  /*getPrimaryProgressData,*/
+  getSecondaryProgressData,
   getTreeFolders,
   getSettingsTree,
   getPrivacyFolder,
+  getVerHistoryFileId,
+  getFileVersions,
 } from "./selectors";
+
+import sumBy from "lodash/sumBy";
+import throttle from "lodash/throttle";
+import uniqueid from "lodash/uniqueId";
 
 const { files, FilesFilter } = api;
 const { FolderType } = constants;
@@ -47,9 +55,13 @@ export const SET_ACTION = "SET_ACTION";
 export const SET_DRAGGING = "SET_DRAGGING";
 export const SET_DRAG_ITEM = "SET_DRAG_ITEM";
 export const SET_MEDIA_VIEWER_VISIBLE = "SET_MEDIA_VIEWER_VISIBLE";
-export const SET_PROGRESS_BAR_DATA = "SET_PROGRESS_BAR_DATA";
+export const SET_PRIMARY_PROGRESS_BAR_DATA = "SET_PRIMARY_PROGRESS_BAR_DATA";
+export const SET_SECONDARY_PROGRESS_BAR_DATA =
+  "SET_SECONDARY_PROGRESS_BAR_DATA";
 export const SET_VIEW_AS = "SET_VIEW_AS";
 export const SET_CONVERT_DIALOG_VISIBLE = "SET_CONVERT_DIALOG_VISIBLE";
+export const SET_SHARING_PANEL_VISIBLE = "SET_SHARING_PANEL_VISIBLE";
+export const SET_UPLOAD_PANEL_VISIBLE = "SET_UPLOAD_PANEL_VISIBLE";
 export const SET_UPDATE_TREE = "SET_UPDATE_TREE";
 export const SET_NEW_ROW_ITEMS = "SET_NEW_ROW_ITEMS";
 export const SET_SELECTED_NODE = "SET_SELECTED_NODE";
@@ -61,6 +73,16 @@ export const SET_FILES_SETTING = "SET_FILES_SETTING";
 export const SET_IS_ERROR_SETTINGS = "SET_IS_ERROR_SETTINGS";
 export const SET_FIRST_LOAD = "SET_FIRST_LOAD";
 export const SET_UPLOAD_DATA = "SET_UPLOAD_DATA";
+export const SET_THIRDPARTY_CAPABILITIES = "SET_THIRDPARTY_CAPABILITIES";
+export const SET_THIRDPARTY_PROVIDERS = "SET_THIRDPARTY_PROVIDERS";
+export const SET_CONNECT_ITEM = "SET_CONNECT_ITEM";
+export const SET_SHOW_THIRDPARTY_PANEL = "SET_SHOW_THIRDPARTY_PANEL";
+export const SET_IS_VER_HISTORY_PANEL = "SET_IS_VER_HISTORY_PANEL";
+export const SET_VER_HISTORY_FILE_ID = "SET_VER_HISTORY_FILE_ID";
+export const SET_FILE_VERSIONS = "SET_FILE_VERSIONS";
+export const SET_CHANGE_OWNER_VISIBLE = "SET_CHANGE_OWNER_VISIBLE";
+export const SELECT_UPLOADED_FILE = "SELECT_UPLOADED_FILE";
+export const UPDATE_UPLOADED_FILE = "UPDATE_UPLOADED_FILE";
 
 export function setFile(file) {
   return {
@@ -181,10 +203,17 @@ export function setMediaViewerData(mediaViewerData) {
   };
 }
 
-export function setProgressBarData(progressData) {
+export function setPrimaryProgressBarData(primaryProgressData) {
   return {
-    type: SET_PROGRESS_BAR_DATA,
-    progressData,
+    type: SET_PRIMARY_PROGRESS_BAR_DATA,
+    primaryProgressData,
+  };
+}
+
+export function setSecondaryProgressBarData(secondaryProgressData) {
+  return {
+    type: SET_SECONDARY_PROGRESS_BAR_DATA,
+    secondaryProgressData,
   };
 }
 
@@ -192,6 +221,20 @@ export function setConvertDialogVisible(convertDialogVisible) {
   return {
     type: SET_CONVERT_DIALOG_VISIBLE,
     convertDialogVisible,
+  };
+}
+
+export function setSharingPanelVisible(sharingPanelVisible) {
+  return {
+    type: SET_SHARING_PANEL_VISIBLE,
+    sharingPanelVisible,
+  };
+}
+
+export function setUploadPanelVisible(uploadPanelVisible) {
+  return {
+    type: SET_UPLOAD_PANEL_VISIBLE,
+    uploadPanelVisible,
   };
 }
 
@@ -265,6 +308,77 @@ export function setUploadData(uploadData) {
     uploadData,
   };
 }
+
+export function setThirdPartyCapabilities(capabilities) {
+  return {
+    type: SET_THIRDPARTY_CAPABILITIES,
+    capabilities,
+  };
+}
+
+export function setThirdPartyProviders(providers) {
+  return {
+    type: SET_THIRDPARTY_PROVIDERS,
+    providers,
+  };
+}
+
+export function setConnectItem(connectItem) {
+  return {
+    type: SET_CONNECT_ITEM,
+    connectItem,
+  };
+}
+
+export function setShowThirdPartyPanel(showThirdPartyPanel) {
+  return {
+    type: SET_SHOW_THIRDPARTY_PANEL,
+    showThirdPartyPanel,
+  };
+}
+
+export function setIsVerHistoryPanel(isVisible) {
+  return {
+    type: SET_IS_VER_HISTORY_PANEL,
+    isVisible,
+  };
+}
+
+export function setVerHistoryFileId(fileId) {
+  return {
+    type: SET_VER_HISTORY_FILE_ID,
+    fileId,
+  };
+}
+
+export function setFileVersions(versions) {
+  return {
+    type: SET_FILE_VERSIONS,
+    versions,
+  };
+}
+
+export function setChangeOwnerPanelVisible(ownerPanelVisible) {
+  return {
+    type: SET_CHANGE_OWNER_VISIBLE,
+    ownerPanelVisible,
+  };
+}
+
+export function selectUploadedFile(file) {
+  return {
+    type: SELECT_UPLOADED_FILE,
+    file,
+  };
+}
+export function updateUploadedFile(id, info) {
+  return {
+    type: UPDATE_UPLOADED_FILE,
+    id,
+    info,
+  };
+}
+
 export function setFilterUrl(filter) {
   const defaultFilter = FilesFilter.getDefault();
   const params = [];
@@ -304,7 +418,7 @@ export function setFilterUrl(filter) {
 }
 
 // TODO: similar to fetchFolder, remove one
-export function fetchFiles(folderId, filter) {
+export function fetchFiles(folderId, filter, clearFilter = true) {
   return (dispatch, getState) => {
     const filterData = filter ? filter.clone() : FilesFilter.getDefault();
     filterData.folder = folderId;
@@ -322,18 +436,20 @@ export function fetchFiles(folderId, filter) {
         );
         filterData.total = 0;
         dispatch(setFilesFilter(filterData));
-
-        dispatch(setFolders([]));
-        dispatch(setFiles([]));
-        dispatch(setSelected("close"));
-        dispatch(
-          setSelectedFolder({
-            folders: [],
-            ...privacyFolder,
-            pathParts: privacyFolder.pathParts,
-            ...{ new: 0 },
-          })
-        );
+        if (clearFilter) {
+          dispatch(setFolders([]));
+          dispatch(setFiles([]));
+          dispatch(setAction({ type: null }));
+          dispatch(setSelected("close"));
+          dispatch(
+            setSelectedFolder({
+              folders: [],
+              ...privacyFolder,
+              pathParts: privacyFolder.pathParts,
+              ...{ new: 0 },
+            })
+          );
+        }
         return Promise.resolve();
       }
     }
@@ -350,7 +466,9 @@ export function fetchFiles(folderId, filter) {
       dispatch(
         setFiles(isPrivacyFolder && !isEncryptionSupport ? [] : data.files)
       );
-      dispatch(setSelected("close"));
+      if (clearFilter) {
+        dispatch(setSelected("close"));
+      }
       return dispatch(
         setSelectedFolder({
           folders: data.folders,
@@ -460,8 +578,9 @@ export function fetchSharedFolder(dispatch) {
   });
 }
 
-export function fetchTreeFolders(dispatch) {
-  return files.getFoldersTree().then((data) => dispatch(setTreeFolders(data)));
+export function fetchTreeFolders() {
+  return (dispatch) =>
+    files.getFoldersTree().then((data) => dispatch(setTreeFolders(data)));
 }
 
 /*export function testUpdateMyFolder(folders) {
@@ -491,11 +610,7 @@ export function createFile(folderId, title) {
 }
 
 export function createFolder(parentFolderId, title) {
-  return (dispatch) => {
-    return files.createFolder(parentFolderId, title).then((folder) => {
-      fetchFolder(parentFolderId, dispatch);
-    });
-  };
+  return files.createFolder(parentFolderId, title);
 }
 
 export function updateFile(fileId, title) {
@@ -506,8 +621,9 @@ export function updateFile(fileId, title) {
   };
 }
 
-export function addFileToRecentlyViewed(fileId) {
+export function addFileToRecentlyViewed(fileId, isPrivacy) {
   return (dispatch) => {
+    if (isPrivacy) return Promise.resolve();
     return files.addFileToRecentlyViewed(fileId);
   };
 }
@@ -520,38 +636,72 @@ export function renameFolder(folderId, title) {
   };
 }
 
+export function setFilesOwner(folderIds, fileIds, ownerId) {
+  return files.setFileOwner(folderIds, fileIds, ownerId);
+}
+
 export function setShareFiles(
   folderIds,
   fileIds,
   share,
   notify,
-  sharingMessage
+  sharingMessage,
+  externalAccess,
+  ownerId
 ) {
-  const foldersRequests = folderIds.map((id) =>
-    files.setShareFolder(id, share, notify, sharingMessage)
-  );
+  let externalAccessRequest = [];
+  if (fileIds.length === 1 && externalAccess !== null) {
+    externalAccessRequest = fileIds.map((id) =>
+      files.setExternalAccess(id, externalAccess)
+    );
+  }
 
-  const filesRequests = fileIds.map((id) =>
-    files.setShareFiles(id, share, notify, sharingMessage)
-  );
+  const ownerChangeRequest = ownerId
+    ? [setFilesOwner(folderIds, fileIds, ownerId)]
+    : [];
 
-  const requests = [...foldersRequests, ...filesRequests];
+  const shareRequest = !!share.length
+    ? [files.setShareFiles(fileIds, folderIds, share, notify, sharingMessage)]
+    : [];
+
+  const requests = [
+    ...ownerChangeRequest,
+    ...shareRequest,
+    ...externalAccessRequest,
+  ];
+
   return axios.all(requests);
 }
 
 export function getShareUsers(folderIds, fileIds) {
-  const foldersRequests = folderIds.map((folderId) =>
-    files.getShareFolders(folderId)
-  );
-  const filesRequests = fileIds.map((fileId) => files.getShareFiles(fileId));
-  const requests = [...foldersRequests, ...filesRequests];
-
-  return axios.all(requests).then((res) => res);
+  return files.getShareFiles(fileIds, folderIds);
 }
 
-export function clearProgressData() {
+export function clearPrimaryProgressData() {
   return (dispatch) => {
-    dispatch(setProgressBarData({ visible: false, percent: 0, label: "" }));
+    dispatch(
+      setPrimaryProgressBarData({
+        visible: false,
+        percent: 0,
+        label: "",
+        icon: "",
+        alert: false,
+      })
+    );
+  };
+}
+
+export function clearSecondaryProgressData() {
+  return (dispatch) => {
+    dispatch(
+      setSecondaryProgressBarData({
+        visible: false,
+        percent: 0,
+        label: "",
+        icon: "",
+        alert: false,
+      })
+    );
   };
 }
 
@@ -612,6 +762,32 @@ export function setEnableThirdParty(data, setting) {
   };
 }
 
+export function deleteThirdParty(id) {
+  return files.deleteThirdParty(id);
+}
+
+export function saveThirdParty(
+  url,
+  login,
+  password,
+  token,
+  isCorporate,
+  customerTitle,
+  providerKey,
+  providerId
+) {
+  return files.saveThirdParty(
+    url,
+    login,
+    password,
+    token,
+    isCorporate,
+    customerTitle,
+    providerKey,
+    providerId
+  );
+}
+
 export function setForceSave(data, setting) {
   return (dispatch) => {
     return files
@@ -628,7 +804,24 @@ export function getFilesSettings() {
     if (Object.keys(settingsTree).length === 0) {
       return api.files
         .getSettingsFiles()
-        .then((settings) => dispatch(setFilesSettings(settings)))
+        .then((settings) => {
+          dispatch(setFilesSettings(settings));
+          if (settings.enableThirdParty) {
+            return axios
+              .all([
+                api.files.getThirdPartyCapabilities(),
+                api.files.getThirdPartyList(),
+              ])
+              .then(([capabilities, providers]) => {
+                for (let item of capabilities) {
+                  item.splice(1, 1);
+                }
+
+                dispatch(setThirdPartyCapabilities(capabilities));
+                dispatch(setThirdPartyProviders(providers));
+              });
+          }
+        })
         .catch(() => setIsErrorSettings(true));
     } else {
       return Promise.resolve(settingsTree);
@@ -639,83 +832,208 @@ export function getFilesSettings() {
 export const startUpload = (uploadFiles, folderId, t) => {
   return (dispatch, getState) => {
     const state = getState();
-    const newFiles = [];
+
+    const { uploadData } = state.files;
+
+    //console.log("start upload", uploadData);
+
+    let newFiles = state.files.uploadData.files;
     let filesSize = 0;
-    const convertFiles = [];
-    let convertFilesSize = 0;
 
     for (let index of Object.keys(uploadFiles)) {
-      const item = uploadFiles[index];
-      if (item.size !== 0) {
-        const parts = item.name.split(".");
-        const ext = parts.length > 1 ? "." + parts.pop() : "";
-        if (canConvert(ext)(state)) {
-          convertFiles.push(item);
-          convertFilesSize += item.size;
-        } else {
-          newFiles.push(item);
-          filesSize += item.size;
-        }
-      } else {
-        toastr.error(t("ErrorUploadMessage"));
-      }
+      const file = uploadFiles[index];
+
+      const parts = file.name.split(".");
+      const ext = parts.length > 1 ? "." + parts.pop() : "";
+      const needConvert = canConvert(ext)(state);
+
+      newFiles.push({
+        file: file,
+        uniqueId: uniqueid("download_row-key_"),
+        fileId: null,
+        toFolderId: folderId,
+        action: needConvert ? "convert" : "upload",
+        error: file.size ? null : t("EmptyFile"),
+        fileInfo: null,
+        cancel: false,
+      });
+
+      filesSize += file.size;
     }
 
-    const uploadStatus = convertFiles.length ? "pending" : null;
-    const uploadToFolder = folderId;
-    const showConvertDialog = !!convertFiles.length;
+    //const showConvertDialog = uploadStatus === "pending";
+
+    const { percent, uploadedFiles, uploaded } = uploadData;
+
+    //console.log("newFiles: ", newFiles);
 
     const newUploadData = {
       files: newFiles,
       filesSize,
-      convertFiles,
-      convertFilesSize,
-      uploadStatus,
-      uploadToFolder,
-      uploadedFiles: 0,
-      percent: 0,
+      uploadedFiles,
+      percent,
       uploaded: false,
     };
+
     dispatch(setUploadData(newUploadData));
 
-    if (showConvertDialog) {
-      dispatch(setConvertDialogVisible(showConvertDialog));
+    if (uploaded) {
+      startUploadFiles(t, dispatch, getState);
     }
-
-    startUploadFiles(
-      t,
-      newFiles.length,
-      convertFiles.length,
-      dispatch,
-      getState
-    );
   };
 };
 
-const startUploadFiles = (
-  t,
-  filesLength,
-  convertFilesLength,
-  dispatch,
-  getState
-) => {
-  if (filesLength > 0 || convertFilesLength > 0) {
-    const progressData = { visible: true, percent: 0, label: "" };
-    progressData.label = t("UploadingLabel", {
-      file: 0,
-      totalFiles: filesLength + convertFilesLength,
-    });
-    dispatch(setProgressBarData(progressData));
-    startSessionFunc(0, t, dispatch, getState);
-  }
+export const cancelUpload = () => {
+  return (dispatch, getState) => {
+    const state = getState();
+
+    const { uploadData } = state.files;
+    const files = uploadData.files;
+    let newFiles = [];
+
+    for (let i = 0; i < files.length; i++) {
+      if (files[i].fileId) {
+        newFiles.push(files[i]);
+      }
+    }
+    const { filesSize, uploadedFiles } = uploadData;
+
+    const newUploadData = {
+      files: newFiles,
+      filesSize,
+      uploadedFiles,
+      percent: 100,
+      uploaded: true,
+    };
+
+    if (newUploadData.files.length === 0)
+      dispatch(setUploadPanelVisible(false));
+
+    dispatch(setUploadData(newUploadData));
+  };
 };
+
+export const cancelCurrentUpload = (id) => {
+  return (dispatch, getState) => {
+    const state = getState();
+
+    const { uploadData } = state.files;
+    const files = uploadData.files;
+    const newFiles = files.filter((el) => el.uniqueId !== id);
+
+    console.log("newFiles", files);
+
+    const { filesSize, percent, uploadedFiles } = uploadData;
+
+    const newUploadData = {
+      files: newFiles,
+      filesSize,
+      uploadedFiles,
+      percent: percent,
+      uploaded: false,
+    };
+
+    dispatch(setUploadData(newUploadData));
+  };
+};
+
+const startUploadFiles = async (t, dispatch, getState) => {
+  let state = getState();
+
+  let { files, percent, filesSize } = state.files.uploadData;
+
+  if (files.length === 0 || filesSize === 0)
+    return finishUploadFiles(getState, dispatch);
+
+  const progressData = {
+    visible: true,
+    percent,
+    icon: "upload",
+    alert: false,
+  };
+
+  dispatch(setPrimaryProgressBarData(progressData));
+
+  let index = 0;
+  let len = files.length;
+
+  while (index < len) {
+    await startSessionFunc(index, t, dispatch, getState);
+    index++;
+
+    state = getState();
+    files = state.files.uploadData.files;
+    len = files.length;
+  }
+
+  //TODO: Uncomment after fix conversation
+  /*const filesToConvert = getFilesToConvert(files);
+  if (filesToConvert.length > 0) {
+    // Ask to convert options
+    return dispatch(setConvertDialogVisible(true));
+  }*/
+
+  // All files has been uploaded and nothing to convert
+  finishUploadFiles(getState, dispatch);
+};
+
+const getFilesToConvert = (files) => {
+  const filesToConvert = files.filter((f) => f.action === "convert");
+  return filesToConvert;
+};
+
+export const clearUploadData = () => {
+  return (dispatch) => {
+    const uploadData = {
+      files: [],
+      filesSize: 0,
+      uploadStatus: null,
+      uploadedFiles: 0,
+      percent: 0,
+      uploaded: true,
+    };
+    dispatch(setUploadData(uploadData));
+  };
+};
+
+const finishUploadFiles = (getState, dispatch) => {
+  const state = getState();
+  const { files } = state.files.uploadData;
+  const { uploadPanelVisible } = state.files;
+  const totalErrorsCount = sumBy(files, (f) => (f.error ? 1 : 0));
+
+  if (totalErrorsCount > 0) console.log("Errors: ", totalErrorsCount);
+
+  const uploadData = {
+    files: uploadPanelVisible ? files : [],
+    filesSize: 0,
+    uploadStatus: null,
+    uploadedFiles: 0,
+    percent: 0,
+    uploaded: true,
+  };
+
+  setTimeout(() => {
+    dispatch(clearPrimaryProgressData());
+    dispatch(setUploadData(uploadData));
+  }, TIMEOUT);
+};
+
+const chunkSize = 1024 * 1023; //~0.999mb
+
+const throttleRefreshFiles = throttle((toFolderId, dispatch, getState) => {
+  return refreshFiles(toFolderId, dispatch, getState).catch((err) => {
+    console.log("RefreshFiles failed", err);
+    return Promise.resolve();
+  });
+}, 1000);
 
 const startSessionFunc = (indexOfFile, t, dispatch, getState) => {
   const state = getState();
   const { uploadData } = state.files;
-  const { uploaded, uploadToFolder, files, convertFiles } = uploadData;
+  const { uploaded, files } = uploadData;
 
-  const currentFiles = uploaded ? convertFiles : files;
+  //console.log("START UPLOAD SESSION FUNC", uploadData);
 
   if (!uploaded && files.length === 0) {
     uploadData.uploaded = true;
@@ -723,37 +1041,32 @@ const startSessionFunc = (indexOfFile, t, dispatch, getState) => {
     return;
   }
 
-  let file = files[indexOfFile];
-  let isLatestFile = indexOfFile === files.length - 1;
+  const item = files[indexOfFile];
 
-  if (uploaded) {
-    if (convertFiles.length) {
-      file = convertFiles[indexOfFile];
-      isLatestFile = indexOfFile === convertFiles.length - 1;
-    } else {
-      //Test return empty convert files
-      return;
-    }
+  if (!item) {
+    console.error("Empty files");
+    return Promise.resolve();
   }
 
+  const { file, toFolderId /*, action*/ } = item;
+  const chunks = Math.ceil(file.size / chunkSize, chunkSize);
   const fileName = file.name;
   const fileSize = file.size;
   const relativePath = file.path
     ? file.path.slice(1, -file.name.length)
     : file.webkitRelativePath
-      ? file.webkitRelativePath.slice(0, -file.name.length)
-      : "";
+    ? file.webkitRelativePath.slice(0, -file.name.length)
+    : "";
 
-  let location;
-  const requestsDataArray = [];
-  const chunkSize = 1024 * 1023; //~0.999mb
-  const chunks = Math.ceil(file.size / chunkSize, chunkSize);
-  let chunk = 0;
-
-  api.files
-    .startUploadSession(uploadToFolder, fileName, fileSize, relativePath)
+  return api.files
+    .startUploadSession(toFolderId, fileName, fileSize, relativePath)
     .then((res) => {
-      location = res.data.location;
+      const location = res.data.location;
+
+      const requestsDataArray = [];
+
+      let chunk = 0;
+
       while (chunk < chunks) {
         const offset = chunk * chunkSize;
         const formData = new FormData();
@@ -761,157 +1074,199 @@ const startSessionFunc = (indexOfFile, t, dispatch, getState) => {
         requestsDataArray.push(formData);
         chunk++;
       }
+
+      return { location, requestsDataArray, fileSize };
     })
-    .then(() =>
-      sendChunk(
-        currentFiles,
+    .then(({ location, requestsDataArray, fileSize }) => {
+      const state = getState();
+      const { percent } = state.files.uploadData;
+      dispatch(
+        setPrimaryProgressBarData({
+          icon: "upload",
+          visible: true,
+          percent: percent,
+          loadingFile: {
+            uniqueId: files[indexOfFile].uniqueId,
+            percent: chunks < 2 ? 50 : 0,
+          },
+        })
+      );
+
+      return uploadFileChunks(
         location,
         requestsDataArray,
-        isLatestFile,
+        fileSize,
         indexOfFile,
-        t,
+        file,
         dispatch,
+        t,
         getState
-      )
-    )
+      );
+    })
     .catch((err) => {
-      toastr.error(err);
-      dispatch(clearProgressData());
+      const state = getState();
+      const { uploadData } = state.files;
+
+      if (uploadData.files[indexOfFile] === undefined) {
+        dispatch(
+          setPrimaryProgressBarData({
+            icon: "upload",
+            percent: 100,
+            visible: true,
+            alert: true,
+          })
+        );
+        return Promise.resolve();
+      }
+
+      uploadData.files[indexOfFile].error = err;
+
+      dispatch(setUploadData(uploadData));
+
+      const newPercent = getNewPercent(fileSize, indexOfFile, getState);
+
+      dispatch(
+        setPrimaryProgressBarData({
+          icon: "upload",
+          percent: newPercent,
+          visible: true,
+          alert: true,
+        })
+      );
+
+      return Promise.resolve();
     });
 };
 
-const sendChunk = (
-  files,
+const uploadFileChunks = async (
   location,
   requestsDataArray,
-  isLatestFile,
+  fileSize,
   indexOfFile,
-  t,
+  file,
   dispatch,
+  t,
   getState
 ) => {
-  const state = getState();
-  const { uploadData } = state.files;
-  const {
-    uploaded,
-    percent,
-    uploadedFiles,
-    uploadToFolder,
-    filesSize,
-    convertFilesSize,
-  } = uploadData;
-  const totalSize = convertFilesSize + filesSize;
+  const length = requestsDataArray.length;
+  for (let index = 0; index < length; index++) {
+    const state = getState();
+    if (
+      state.files.uploadData.uploaded ||
+      !state.files.uploadData.files.some((f) => f.file === file) ||
+      state.files.uploadData.files[indexOfFile].cancel
+    ) {
+      return Promise.resolve();
+    }
 
-  const sendRequestFunc = (index) => {
-    api.files
-      .uploadFile(location, requestsDataArray[index])
-      .then((res) => {
-        //percent problem? use getState()
-        const currentFile = files[indexOfFile];
-        const fileId = res.data.data.id;
-        const newPercent = percent + (currentFile.size / totalSize) * 100;
+    const res = await api.files.uploadFile(location, requestsDataArray[index]);
 
-        if (res.data.data && res.data.data.uploaded) {
-          //newState = { percent: newPercent };
-        }
+    //console.log(`Uploaded chunk ${index}/${length}`, res);
 
-        if (index + 1 !== requestsDataArray.length) {
-          dispatch(
-            setProgressBarData({
-              label: t("UploadingLabel", {
-                file: uploadedFiles,
-                totalFiles: files.length,
-              }),
-              newPercent,
-              visible: true,
-            })
-          );
-          sendRequestFunc(index + 1);
-        } else if (uploaded) {
-          api.files.convertFile(fileId).then((convertRes) => {
-            if (convertRes && convertRes[0] && convertRes[0].progress !== 100) {
-              uploadData.percent = newPercent;
-              getConvertProgress(
-                fileId,
-                t,
-                uploadData,
-                isLatestFile,
-                indexOfFile,
-                dispatch,
-                getState
-              );
-            }
-          });
-        } else if (isLatestFile) {
-          if (uploaded) {
-            updateFiles(uploadToFolder, dispatch, getState);
-          } else {
-            const uploadStatus = getState().files.uploadData.uploadStatus;
-            if (uploadStatus === "convert") {
-              const newUploadData = {
-                ...getState().files.uploadData,
-                ...{
-                  uploadedFiles: uploadedFiles + 1,
-                  percent: newPercent,
-                  uploaded: true,
-                },
-              };
-              updateConvertProgress(newUploadData, t, dispatch);
-              startSessionFunc(0, t, dispatch, getState);
-            } else if (uploadStatus === "pending") {
-              const stateUploadData = getState().files.uploadData;
-              const newUploadData = {
-                ...stateUploadData,
-                ...{
-                  uploadStatus: null,
-                  uploadedFiles: uploadedFiles + 1,
-                  percent: newPercent,
-                  uploaded: true,
-                },
-              };
-              updateConvertProgress(newUploadData, t, dispatch);
-            } else {
-              const newUploadData = {
-                ...getState().files.uploadData,
-                ...{ uploadedFiles: uploadedFiles + 1, percent: newPercent },
-              };
-              updateConvertProgress(newUploadData, t, dispatch);
-              updateFiles(uploadToFolder, dispatch, getState);
-            }
-          }
-        } else {
-          const newUploadData = {
-            ...getState().files.uploadData,
-            ...{ uploadedFiles: uploadedFiles + 1, percent: newPercent },
-          };
-          updateConvertProgress(newUploadData, t, dispatch);
-          startSessionFunc(indexOfFile + 1, t, dispatch, getState);
-        }
+    //let isLatestFile = indexOfFile === newFilesLength - 1;
+    const fileId = res.data.data.id;
+
+    const { uploaded } = res.data.data;
+
+    const uploadedSize = uploaded ? fileSize : index * chunkSize;
+
+    const newPercent = getNewPercent(uploadedSize, indexOfFile, getState);
+
+    const newState = getState();
+    const { uploadData } = newState.files;
+    const { uploadedFiles, files } = uploadData;
+
+    const percentCurrentFile = (index / length) * 100;
+    dispatch(
+      setPrimaryProgressBarData({
+        icon: "upload",
+        percent: newPercent,
+        visible: true,
+        loadingFile: {
+          uniqueId: files[indexOfFile].uniqueId,
+          percent: percentCurrentFile,
+        },
       })
-      .catch((err) => toastr.error(err));
-  };
+    );
 
-  sendRequestFunc(0);
+    if (uploaded) {
+      uploadData.files[indexOfFile].fileId = fileId;
+      uploadData.files[indexOfFile].fileInfo = await api.files.getFileInfo(
+        fileId
+      );
+      uploadData.percent = newPercent;
+      dispatch(setUploadData(uploadData));
+    }
+  }
+
+  // All chuncks are uploaded
+
+  const newState = getState();
+
+  const { files } = newState.files.uploadData;
+  const currentFile = files[indexOfFile];
+
+  if (!currentFile) return Promise.resolve();
+
+  const { toFolderId } = currentFile;
+
+  return throttleRefreshFiles(toFolderId, dispatch, getState);
+};
+const getNewPercent = (uploadedSize, indexOfFile, getState) => {
+  const newState = getState();
+  const { files } = newState.files.uploadData;
+
+  const newTotalSize = sumBy(files, (f) => f.file.size);
+  const totalUploadedFiles = files.filter((_, i) => i < indexOfFile);
+  const totalUploadedSize = sumBy(totalUploadedFiles, (f) => f.file.size);
+  const newPercent = ((uploadedSize + totalUploadedSize) / newTotalSize) * 100;
+
+  /*console.log(
+    `newPercent=${newPercent} (newTotalSize=${newTotalSize} totalUploadedSize=${totalUploadedSize} indexOfFile=${indexOfFile})`
+  );*/
+
+  return newPercent;
 };
 
-const updateFiles = (folderId, dispatch, getState) => {
+// const updateFiles = (folderId, dispatch, getState) => {
+//   //console.log("folderId ", folderId);
+//   const uploadData = {
+//     files: [],
+//     filesSize: 0,
+//     convertFiles: [],
+//     convertFilesSize: 0,
+//     uploadedFiles: 0,
+//     percent: 0,
+//     uploaded: true,
+//   };
+//   return refreshFiles(folderId, dispatch, getState)
+//     .catch((err) => {
+//       dispatch(
+//         setPrimaryProgressBarData({
+//           alert: true,
+//           visible: true,
+//         })
+//       );
+//       setTimeout(() => dispatch(clearPrimaryProgressData()), TIMEOUT);
+//       //toastr.error(err);
+//     })
+//     .finally(() =>
+//       setTimeout(() => {
+//         dispatch(clearPrimaryProgressData());
+//         dispatch(setUploadData(uploadData));
+//       }, TIMEOUT)
+//     );
+// };
+
+const refreshFiles = (folderId, dispatch, getState) => {
   const { files } = getState();
   const { filter, treeFolders, selectedFolder } = files;
-  const uploadData = {
-    files: [],
-    filesSize: 0,
-    convertFiles: [],
-    convertFilesSize: 0,
-    uploadStatus: null,
-    uploadToFolder: null,
-    uploadedFiles: 0,
-    percent: 0,
-    uploaded: true,
-  };
-
-  if (selectedFolder.id === folderId) {
-    return dispatch(fetchFiles(selectedFolder.id, filter.clone()))
-      .then((data) => {
+  if (
+    selectedFolder.id === folderId &&
+    window.location.pathname.indexOf("/history") === -1
+  ) {
+    return dispatch(fetchFiles(selectedFolder.id, filter.clone(), false)).then(
+      (data) => {
         const path = data.selectedFolder.pathParts;
         const newTreeFolders = treeFolders;
         const folders = data.selectedFolder.folders;
@@ -919,37 +1274,22 @@ const updateFiles = (folderId, dispatch, getState) => {
         loopTreeFolders(path, newTreeFolders, folders, foldersCount);
         dispatch(setTreeFolders(newTreeFolders));
         dispatch(setUpdateTree(true));
-      })
-      .catch((err) => toastr.error(err))
-      .finally(() =>
-        setTimeout(() => {
-          dispatch(clearProgressData());
-          dispatch(setUploadData(uploadData));
-        }, 5000)
-      );
+      }
+    );
   } else {
-    return api.files
-      .getFolder(folderId, filter.clone())
-      .then((data) => {
-        const path = data.pathParts;
-        const newTreeFolders = treeFolders;
-        const folders = data.folders;
-        const foldersCount = data.count;
-        loopTreeFolders(path, newTreeFolders, folders, foldersCount);
-        dispatch(setTreeFolders(newTreeFolders));
-        dispatch(setUpdateTree(true));
-      })
-      .catch((err) => toastr.error(err))
-      .finally(() =>
-        setTimeout(() => {
-          dispatch(clearProgressData());
-          dispatch(setUploadData(uploadData));
-        }, 5000)
-      );
+    return api.files.getFolder(folderId, filter.clone()).then((data) => {
+      const path = data.pathParts;
+      const newTreeFolders = treeFolders;
+      const folders = data.folders;
+      const foldersCount = data.count;
+      loopTreeFolders(path, newTreeFolders, folders, foldersCount);
+      dispatch(setTreeFolders(newTreeFolders));
+      dispatch(setUpdateTree(true));
+    });
   }
 };
 
-const getConvertProgress = (
+/*const getConvertProgress = (
   fileId,
   t,
   uploadData,
@@ -958,8 +1298,8 @@ const getConvertProgress = (
   dispatch,
   getState
 ) => {
-  const { uploadedFiles, uploadToFolder } = uploadData;
-  api.files.getConvertFile(fileId).then((res) => {
+  const { uploadedFiles } = uploadData;
+  api.files.getFileConversationProgress(fileId).then((res) => {
     if (res && res[0] && res[0].progress !== 100) {
       setTimeout(
         () =>
@@ -980,10 +1320,18 @@ const getConvertProgress = (
       !isLatestFile && startSessionFunc(indexOfFile + 1, t, dispatch, getState);
 
       if (res[0].error) {
-        toastr.error(res[0].error);
+        dispatch(
+          setPrimaryProgressBarData({
+            visible: true,
+            alert: true,
+          })
+        );
+        setTimeout(() => dispatch(clearPrimaryProgressData()), TIMEOUT);
+        //toastr.error(res[0].error);
       }
       if (isLatestFile) {
-        updateFiles(uploadToFolder, dispatch, getState);
+        const toFolderId = uploadData.files[indexOfFile].toFolderId;
+        updateFiles(toFolderId, dispatch, getState);
         return;
       }
     }
@@ -1012,27 +1360,23 @@ const updateConvertProgress = (uploadData, t, dispatch) => {
   dispatch(setUploadData(uploadData));
 
   dispatch(
-    setProgressBarData({
+    setPrimaryProgressBarData({
+      icon: "upload",
       label: t("UploadingLabel", { file, totalFiles }),
       percent,
       visible: true,
+      alert: false,
     })
   );
   if (!progressVisible) {
-    setTimeout(() => dispatch(clearProgressData()), 5000);
+    setTimeout(() => dispatch(clearPrimaryProgressData()), TIMEOUT);
   }
-};
+};*/
 
 export const setDialogVisible = (t) => {
   return (dispatch, getState) => {
     const { uploadData } = getState().files;
-    const {
-      files,
-      uploadStatus,
-      uploadToFolder,
-      uploadedFiles,
-      percent,
-    } = uploadData;
+    const { files, uploadStatus, uploadedFiles, percent } = uploadData;
 
     dispatch(setConvertDialogVisible(false));
     const label = t("UploadingLabel", {
@@ -1041,33 +1385,157 @@ export const setDialogVisible = (t) => {
     });
 
     if (uploadStatus === null) {
-      dispatch(setProgressBarData({ label, percent: 100, visible: true }));
+      dispatch(
+        setPrimaryProgressBarData({
+          icon: "upload",
+          label,
+          percent: 100,
+          visible: true,
+          alert: false,
+        })
+      );
       uploadData.uploadedFiles = 0;
       uploadData.percent = 0;
       dispatch(setUploadData(uploadData));
-      updateFiles(uploadToFolder, dispatch, getState);
     } else if (!files.length) {
-      dispatch(clearProgressData());
+      dispatch(clearPrimaryProgressData());
     } else {
-      dispatch(setProgressBarData({ label, percent, visible: true }));
+      dispatch(
+        setPrimaryProgressBarData({
+          icon: "upload",
+          label,
+          percent,
+          visible: true,
+          alert: false,
+        })
+      );
       uploadData.uploadStatus = "cancel";
       dispatch(setUploadData(uploadData));
     }
   };
 };
-
-export const onConvert = (t) => {
+export const convertUploadedFiles = (t) => {
   return (dispatch, getState) => {
-    const { uploadData } = getState().files;
+    const state = getState();
 
-    if (uploadData.uploaded) {
-      startSessionFunc(0, t, dispatch, getState);
+    const { uploadData } = state.files;
+    const filesToConvert = getFilesToConvert(uploadData.files);
+
+    if (filesToConvert.length > 0) {
+      startConvertFiles(filesToConvert, t, dispatch, getState).then(() =>
+        finishUploadFiles(getState, dispatch)
+      );
+    } else {
+      finishUploadFiles(getState, dispatch);
+    }
+  };
+};
+
+const getConversationProgress = async (fileId) => {
+  const promise = new Promise((resolve, reject) => {
+    setTimeout(() => {
+      try {
+        api.files.getFileConversationProgress(fileId).then((res) => {
+          console.log(res);
+          resolve(res);
+        });
+      } catch (error) {
+        console.error(error);
+        reject(error);
+      }
+    }, 1000);
+  });
+
+  return promise;
+};
+
+const startConvertFiles = async (files, t, dispatch, getState) => {
+  const state = getState();
+  const { uploadData } = state.files;
+
+  const total = files.length;
+  dispatch(setConvertDialogVisible(false));
+  dispatch(
+    setPrimaryProgressBarData({
+      icon: "file",
+      label: t("ConvertingLabel", {
+        file: 0,
+        totalFiles: total,
+      }),
+      percent: 0,
+      visible: true,
+    })
+  );
+  for (let index = 0; index < total; index++) {
+    const fileId = uploadData.files[index].fileId;
+
+    const data = await api.files.convertFile(fileId);
+
+    if (data && data[0] && data[0].progress !== 100) {
+      let progress = data[0].progress;
+      let error = null;
+      while (progress < 100) {
+        const res = await getConversationProgress(fileId);
+
+        progress = res && res[0] && res[0].progress;
+        error = res && res[0] && res[0].error;
+        if (error.length) {
+          dispatch(
+            setPrimaryProgressBarData({
+              icon: "file",
+              visible: true,
+              alert: true,
+            })
+          );
+          return;
+        }
+        if (progress === 100) {
+          break;
+        } else {
+          //TODO: calculate local progress
+          // const percent = (progress) + (index / total) * 100;
+          // dispatch(
+          //   setPrimaryProgressBarData({
+          //     icon: "file",
+          //     label: t("ConvertingLabel", {
+          //       file: index + 1,
+          //       totalFiles: total,
+          //     }),
+          //     percent: newPercent,
+          //     visible: true,
+          //   })
+          // );
+        }
+
+        //setTimeout(() => { console.log("Wait for a second...") }, 1000);
+      }
     }
 
-    uploadData.uploadStatus = "convert";
-    dispatch(setUploadData(uploadData));
-    dispatch(setConvertDialogVisible(false));
-  };
+    const newPercent = (index + 1 / total) * 100;
+
+    dispatch(
+      setPrimaryProgressBarData({
+        icon: "file",
+        label: t("ConvertingLabel", {
+          file: index + 1,
+          totalFiles: total,
+        }),
+        percent: newPercent,
+        visible: true,
+      })
+    );
+  }
+};
+
+const convertSplitItem = (item) => {
+  let splitItem = item.split("_");
+  const fileExst = splitItem[0];
+  splitItem.splice(0, 1);
+  if (splitItem[splitItem.length - 1] === "draggable") {
+    splitItem.splice(-1, 1);
+  }
+  splitItem = splitItem.join("_");
+  return [fileExst, splitItem];
 };
 
 export const setSelections = (items) => {
@@ -1087,15 +1555,11 @@ export const setSelections = (items) => {
       for (let item of items) {
         if (!item) break; // temporary fall protection selection tile
 
-        item = item.split("_");
+        item = convertSplitItem(item);
         if (item[0] === "folder") {
-          newFile = selection.find(
-            (x) => x.id === Number(item[1]) && !x.fileExst
-          );
+          newFile = selection.find((x) => x.id + "" === item[1] && !x.fileExst);
         } else if (item[0] === "file") {
-          newFile = selection.find(
-            (x) => x.id === Number(item[1]) && x.fileExst
-          );
+          newFile = selection.find((x) => x.id + "" === item[1] && x.fileExst);
         }
         if (newFile) {
           newSelection.push(newFile);
@@ -1116,13 +1580,11 @@ export const setSelections = (items) => {
         if (!item) break; // temporary fall protection selection tile
 
         let newFile = null;
-        item = item.split("_");
+        item = convertSplitItem(item);
         if (item[0] === "folder") {
-          newFile = folders.find(
-            (x) => x.id === Number(item[1]) && !x.fileExst
-          );
+          newFile = folders.find((x) => x.id + "" === item[1] && !x.fileExst);
         } else if (item[0] === "file") {
-          newFile = files.find((x) => x.id === Number(item[1]) && x.fileExst);
+          newFile = files.find((x) => x.id + "" === item[1] && x.fileExst);
         }
         if (newFile && fileActionId !== newFile.id) {
           const existItem = selection.find(
@@ -1133,6 +1595,44 @@ export const setSelections = (items) => {
             selected !== "none" && dispatch(setSelected("none"));
           }
         }
+      }
+    } else if (selection.length === items.length && items.length === 1) {
+      const item = convertSplitItem(items[0]);
+
+      if (item[1] !== selection[0].id) {
+        let addFile = null;
+        let delFile = null;
+        const newSelection = [];
+        if (item[0] === "folder") {
+          delFile = selection.find((x) => x.id + "" === item[1] && !x.fileExst);
+          addFile = folders.find((x) => x.id + "" === item[1] && !x.fileExst);
+        } else if (item[0] === "file") {
+          delFile = selection.find((x) => x.id + "" === item[1] && x.fileExst);
+          addFile = files.find((x) => x.id + "" === item[1] && x.fileExst);
+        }
+
+        const existItem = selection.find(
+          (x) => x.id === addFile.id && x.fileExst === addFile.fileExst
+        );
+        if (!existItem) {
+          dispatch(selectFile(addFile));
+          selected !== "none" && dispatch(setSelected("none"));
+        }
+
+        if (delFile) {
+          newSelection.push(delFile);
+        }
+
+        for (let item of selection) {
+          const element = newSelection.find(
+            (x) => x.id === item.id && x.fileExst === item.fileExst
+          );
+          if (!element) {
+            dispatch(deselectFile(item));
+          }
+        }
+      } else {
+        return;
       }
     } else {
       return;
@@ -1147,7 +1647,7 @@ export const loopFilesOperations = (id, destFolderId, isCopy) => {
     const currentFolderId = getSelectedFolderId(state);
     const filter = getFilter(state);
     const isRecycleBin = getIsRecycleBinFolder(state);
-    const progressData = getProgressData(state);
+    const progressData = getSecondaryProgressData(state);
     const treeFolders = getTreeFolders(state);
 
     const loopOperation = () => {
@@ -1157,19 +1657,23 @@ export const loopFilesOperations = (id, destFolderId, isCopy) => {
           const currentItem = res.find((x) => x.id === id);
           if (currentItem && currentItem.progress !== 100) {
             dispatch(
-              setProgressBarData({
+              setSecondaryProgressBarData({
+                icon: isCopy ? "duplicate" : "move",
                 label: progressData.label,
                 percent: currentItem.progress,
                 visible: true,
+                alert: false,
               })
             );
             setTimeout(() => loopOperation(), 1000);
           } else {
             dispatch(
-              setProgressBarData({
+              setSecondaryProgressBarData({
+                icon: isCopy ? "duplicate" : "move",
                 label: progressData.label,
                 percent: 100,
                 visible: true,
+                alert: false,
               })
             );
             api.files
@@ -1200,37 +1704,66 @@ export const loopFilesOperations = (id, destFolderId, isCopy) => {
                       }
                     })
                     .catch((err) => {
-                      console.log("ERROR_1", err);
-                      toastr.error(err);
-                      dispatch(clearProgressData());
+                      dispatch(
+                        setPrimaryProgressBarData({
+                          visible: true,
+                          alert: true,
+                        })
+                      );
+                      //toastr.error(err);
+                      setTimeout(
+                        () => dispatch(clearSecondaryProgressData()),
+                        TIMEOUT
+                      );
                     })
-                    .finally(() =>
-                      setTimeout(() => dispatch(clearProgressData()), 5000)
-                    );
+                    .finally(() => {
+                      setTimeout(
+                        () => dispatch(clearSecondaryProgressData()),
+                        TIMEOUT
+                      );
+                    });
                 } else {
                   dispatch(
-                    setProgressBarData({
+                    setSecondaryProgressBarData({
+                      icon: "duplicate",
                       label: progressData.label,
                       percent: 100,
                       visible: true,
+                      alert: false,
                     })
                   );
-                  setTimeout(() => dispatch(clearProgressData()), 5000);
+                  setTimeout(
+                    () => dispatch(clearSecondaryProgressData()),
+                    TIMEOUT
+                  );
                   dispatch(setUpdateTree(true));
                   dispatch(setTreeFolders(newTreeFolders));
                 }
               })
               .catch((err) => {
-                console.log("ERROR_2", err);
-                toastr.error(err);
-                dispatch(clearProgressData());
+                dispatch(
+                  setSecondaryProgressBarData({
+                    visible: true,
+                    alert: true,
+                  })
+                );
+                //toastr.error(err);
+                setTimeout(
+                  () => dispatch(clearSecondaryProgressData()),
+                  TIMEOUT
+                );
               });
           }
         })
         .catch((err) => {
-          console.log("ERROR_3", err);
-          toastr.error(err);
-          dispatch(clearProgressData());
+          dispatch(
+            setSecondaryProgressBarData({
+              visible: true,
+              alert: true,
+            })
+          );
+          //toastr.error(err);
+          setTimeout(() => dispatch(clearSecondaryProgressData()), TIMEOUT);
         });
     };
 
@@ -1238,25 +1771,197 @@ export const loopFilesOperations = (id, destFolderId, isCopy) => {
   };
 };
 
-export function selectItemOperation(destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter, isCopy) {
+export function selectItemOperation(
+  destFolderId,
+  folderIds,
+  fileIds,
+  conflictResolveType,
+  deleteAfter,
+  isCopy
+) {
   return (dispatch) => {
-    return isCopy ?
-      files.copyToFolder(destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter)
-      :
-      files.moveToFolder(destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter)
-  }
+    return isCopy
+      ? files.copyToFolder(
+          destFolderId,
+          folderIds,
+          fileIds,
+          conflictResolveType,
+          deleteAfter
+        )
+      : files.moveToFolder(
+          destFolderId,
+          folderIds,
+          fileIds,
+          conflictResolveType,
+          deleteAfter
+        );
+  };
 }
 
-export function itemOperationToFolder(destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter, isCopy) {
+export function itemOperationToFolder(
+  destFolderId,
+  folderIds,
+  fileIds,
+  conflictResolveType,
+  deleteAfter,
+  isCopy
+) {
   return (dispatch) => {
-    return dispatch(selectItemOperation(destFolderId, folderIds, fileIds, conflictResolveType, deleteAfter, isCopy))
+    return dispatch(
+      selectItemOperation(
+        destFolderId,
+        folderIds,
+        fileIds,
+        conflictResolveType,
+        deleteAfter,
+        isCopy
+      )
+    )
       .then((res) => {
         const id = res[0] && res[0].id ? res[0].id : null;
-        dispatch(loopFilesOperations(id, destFolderId, isCopy))
+        dispatch(loopFilesOperations(id, destFolderId, isCopy));
       })
       .catch((err) => {
-        toastr.error(err);
-        dispatch(clearProgressData())
-      })
+        dispatch(
+          setPrimaryProgressBarData({
+            visible: true,
+            alert: true,
+          })
+        );
+        //toastr.error(err);
+        setTimeout(() => dispatch(clearPrimaryProgressData()), TIMEOUT);
+        setTimeout(() => dispatch(clearSecondaryProgressData()), TIMEOUT);
+      });
+  };
+}
+
+export function fetchThirdPartyProviders() {
+  return (dispatch) => {
+    files.getThirdPartyList().then((data) => {
+      dispatch(setThirdPartyProviders(data));
+    });
+  };
+}
+
+const convertServiceName = (serviceName) => {
+  //Docusign, OneDrive, Wordpress
+  switch (serviceName) {
+    case "GoogleDrive":
+      return "google";
+    case "Box":
+      return "box";
+    case "DropboxV2":
+      return "dropbox";
+    case "OneDrive":
+      return "onedrive";
+    default:
+      return "";
+  }
+};
+
+export function getOAuthToken(modal) {
+  return new Promise((resolve) => {
+    localStorage.removeItem("code");
+    const interval = setInterval(() => {
+      try {
+        const code = localStorage.getItem("code");
+
+        if (code) {
+          localStorage.removeItem("code");
+          clearInterval(interval);
+          resolve(code);
+        }
+      } catch {
+        return;
+      }
+    }, 500);
+  });
+}
+
+export function openConnectWindow(serviceName, modal) {
+  const service = convertServiceName(serviceName);
+  return api.files.openConnectWindow(service).then((link) => {
+    return oAuthPopup(link, modal);
+  });
+}
+
+export function oAuthPopup(url, modal) {
+  let newWindow = modal;
+
+  if (modal) {
+    newWindow.location = url;
+  }
+
+  try {
+    let params =
+      "height=600,width=1020,resizable=0,status=0,toolbar=0,menubar=0,location=1";
+    newWindow = modal ? newWindow : window.open(url, "Authorization", params);
+  } catch (err) {
+    newWindow = modal ? newWindow : window.open(url, "Authorization");
+  }
+
+  return newWindow;
+}
+
+export function fetchFileVersions(fileId) {
+  return (dispatch, getState) => {
+    const state = getState();
+    const currentId = getVerHistoryFileId(state);
+    if (currentId !== fileId) {
+      dispatch(setVerHistoryFileId(fileId));
+      return api.files
+        .getFileVersionInfo(fileId)
+        .then((versions) => dispatch(setFileVersions(versions)));
+    } else {
+      const currentVersions = getFileVersions(state);
+      return Promise.resolve(currentVersions);
+    }
+  };
+}
+
+export function markAsVersion(id, isVersion, version) {
+  return (dispatch) => {
+    return api.files
+      .markAsVersion(id, isVersion, version)
+      .then((versions) => dispatch(setFileVersions(versions)));
+  };
+}
+
+export function restoreVersion(id, version) {
+  return (dispatch, getState) => {
+    return api.files.versionRestore(id, version).then((newVersion) => {
+      const state = getState();
+      const versions = getFileVersions(state);
+      const updatedVersions = versions.slice();
+      updatedVersions.splice(1, 0, newVersion);
+      dispatch(setFileVersions(updatedVersions));
+    });
+  };
+}
+
+export function updateCommentVersion(id, comment, version) {
+  return (dispatch, getState) => {
+    return api.files
+      .versionEditComment(id, comment, version)
+      .then((updatedComment) => {
+        const state = getState();
+        const versions = getFileVersions(state);
+        const copyVersions = versions.slice();
+        const updatedVersions = copyVersions.map((item) => {
+          if (item.version === version) {
+            item.comment = updatedComment;
+          }
+          return item;
+        });
+        dispatch(setFileVersions(updatedVersions));
+      });
+  };
+}
+
+export function updateUploadedItem(id) {
+  return (dispatch) => {
+    return api.files
+      .getFileInfo(id)
+      .then((data) => dispatch(updateUploadedFile(id, data)));
   };
 }

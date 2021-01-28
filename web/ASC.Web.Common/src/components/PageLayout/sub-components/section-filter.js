@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import isEqual from "lodash/isEqual";
+import equal from "fast-deep-equal/react";
 
 const StyledSectionFilter = styled.div`
   margin: 16px 24px 9px 0;
@@ -8,7 +8,7 @@ const StyledSectionFilter = styled.div`
 
 class SectionFilter extends React.Component {
   shouldComponentUpdate(nextProps) {
-    return !isEqual(this.props, nextProps);
+    return !equal(this.props, nextProps);
   }
 
   render() {

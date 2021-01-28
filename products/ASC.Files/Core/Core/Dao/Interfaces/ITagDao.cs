@@ -42,6 +42,8 @@ namespace ASC.Files.Core
 
         IEnumerable<Tag> GetTags(TagType tagType, IEnumerable<FileEntry<T>> fileEntries);
 
+        IDictionary<object, IEnumerable<Tag>> GetTags(Guid subject, IEnumerable<TagType> tagType, IEnumerable<FileEntry<T>> fileEntries);
+
         IEnumerable<Tag> GetNewTags(Guid subject, IEnumerable<FileEntry<T>> fileEntries);
 
         IEnumerable<Tag> GetNewTags(Guid subject, FileEntry<T> fileEntry);

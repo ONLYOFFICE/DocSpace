@@ -46,7 +46,7 @@ using DriveFile = Google.Apis.Drive.v3.Data.File;
 
 namespace ASC.Files.Thirdparty.GoogleDrive
 {
-    [Scope]
+    [Transient]
     [DebuggerDisplay("{CustomerTitle}")]
     internal class GoogleDriveProviderInfo : IProviderInfo
     {
@@ -233,12 +233,12 @@ namespace ASC.Files.Thirdparty.GoogleDrive
         private readonly ICache CacheChildFolders;
         private readonly ICacheNotify<GoogleDriveCacheItem> CacheNotify;
 
-        public GoogleDriveProviderInfoHelper(ICacheNotify<GoogleDriveCacheItem> cacheNotify)
+        public GoogleDriveProviderInfoHelper(ICacheNotify<GoogleDriveCacheItem> cacheNotify, ICache cache)
         {
             CacheExpiration = TimeSpan.FromMinutes(1);
-            CacheEntry = AscCache.Memory;
-            CacheChildFiles = AscCache.Memory;
-            CacheChildFolders = AscCache.Memory;
+            CacheEntry = cache;
+            CacheChildFiles = cache;
+            CacheChildFolders = cache;
 
             CacheNotify = cacheNotify;
             CacheNotify.Subscribe((i) =>

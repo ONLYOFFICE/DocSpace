@@ -1,16 +1,27 @@
 import React from "react";
-import styled from "styled-components";
-import { isIOS, isFirefox } from "react-device-detect";
+import styled, { css } from "styled-components";
+import { isIOS, isFirefox, isMobile } from "react-device-detect";
+import { utils } from "asc-web-components";
 
 const StyledMain = styled.main`
-  height: ${isIOS && !isFirefox
-    ? "calc(var(--vh, 1vh) * 100)"
-    : "calc(100vh - 56px)"};
+  height: ${(props) =>
+    isIOS && !isFirefox
+      ? "calc(var(--vh, 1vh) * 100)"
+      : props.isDesktop
+      ? "100vh"
+      : "calc(100vh - 56px)"};
   width: 100vw;
   z-index: 0;
   display: flex;
   flex-direction: row;
   box-sizing: border-box;
+
+  ${isMobile &&
+  css`
+    height: auto;
+    min-height: 100%;
+    width: 100%;
+  `}
 `;
 
 const Main = React.memo((props) => {

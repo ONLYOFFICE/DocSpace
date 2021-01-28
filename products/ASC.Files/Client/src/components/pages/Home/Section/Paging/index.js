@@ -1,15 +1,20 @@
 import React, { useCallback, useMemo } from "react";
 import { connect } from "react-redux";
+import { isMobile } from "react-device-detect";
 import { fetchFiles, setIsLoading } from "../../../../../store/files/actions";
 import {
   getFilter,
   getSelectedFolderId,
+  getFiles,
+  getFolders,
 } from "../../../../../store/files/selectors";
 import { Paging } from "asc-web-components";
 import { useTranslation } from "react-i18next";
 
 const SectionPagingContent = ({
   filter,
+  files,
+  folders,
   fetchFiles,
   setIsLoading,
   selectedCount,
@@ -132,7 +137,15 @@ const SectionPagingContent = ({
 
   //console.log("SectionPagingContent render", filter);
 
-  return filter.total < filter.pageCount ? (
+  const showCountItem = useMemo(() => {
+    if (files && folders)
+      return (
+        files.length + folders.length === filter.pageCount ||
+        (pageItems.length < 1 && filter.total > 25)
+      );
+  }, [files, folders, filter, pageItems]);
+
+  return filter.total < filter.pageCount && filter.total < 26 ? (
     <></>
   ) : (
     <Paging
@@ -145,11 +158,13 @@ const SectionPagingContent = ({
       displayItems={false}
       disablePrevious={!filter.hasPrev()}
       disableNext={!filter.hasNext()}
+      disableHover={isMobile}
       previousAction={onPrevClick}
       nextAction={onNextClick}
       openDirection="top"
       selectedPageItem={selectedPageItem} //FILTER CURRENT PAGE
       selectedCountItem={selectedCountItem} //FILTER PAGE COUNT
+      showCountItem={showCountItem}
     />
   );
 };
@@ -158,6 +173,8 @@ function mapStateToProps(state) {
   return {
     filter: getFilter(state),
     selectedFolderId: getSelectedFolderId(state),
+    files: getFiles(state),
+    folders: getFolders(state),
   };
 }
 

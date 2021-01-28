@@ -53,6 +53,8 @@ namespace ASC.Files.Service
                 })
                 .ConfigureServices((hostContext, services) =>
                 {
+                    services.AddMemoryCache();
+
                     var diHelper = new DIHelper(services);
 
                     diHelper.TryAdd(typeof(ICacheNotify<>), typeof(KafkaCache<>));

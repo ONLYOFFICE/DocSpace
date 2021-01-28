@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { utils } from "asc-web-components";
 import { Resizable } from "re-resizable";
 import { isMobile } from "react-device-detect";
+
 const { tablet } = utils.device;
 
 const StyledArticle = styled.article`
@@ -31,6 +32,15 @@ const StyledArticle = styled.article`
         cursor: ew-resize !important;
       }
     }
+    ${isMobile &&
+    css`
+      margin-top: 56px;
+      height: calc(100% - 56px) !important;
+      width: 240px !important;
+      @media ${tablet} {
+        margin-top: ${(props) => (props.pinned ? "56px;" : "0;")};
+      }
+    `}
     @media ${tablet} {
       padding: 0 16px;
       ${(props) =>
@@ -38,6 +48,18 @@ const StyledArticle = styled.article`
           ? props.pinned
             ? `
             min-width: 240px;
+            max-width: ${props.isLoaded ? "calc(100vw - 368px)" : "240px"};
+            
+    
+			      .increaseHeight {
+              position: fixed;
+              height: 100%;
+              top: 0;
+              left: 0;
+              min-width: 240px;
+              background: #f8f9f9;
+              z-index: -1;
+            }
           `
             : `
             position: fixed !important;
@@ -70,6 +92,7 @@ class Article extends React.Component {
       bottom: false,
       left: false,
     };
+
     return (
       <StyledArticle {...rest}>
         <Resizable
@@ -78,6 +101,7 @@ class Article extends React.Component {
           handleWrapperClass="resizable-border"
         >
           {children}
+          <div className="increaseHeight"></div>
         </Resizable>
       </StyledArticle>
     );

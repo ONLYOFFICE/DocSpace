@@ -8,7 +8,7 @@ import { utils } from "asc-web-common";
 import {
   setTreeFolders,
   setDialogVisible,
-  onConvert,
+  convertUploadedFiles,
 } from "../../../store/files/actions";
 import { createI18N } from "../../../helpers/i18n";
 const i18n = createI18N({
@@ -50,7 +50,7 @@ class ConvertDialogComponent extends React.Component {
     return false;
   }
 
-  onConvert = () => this.props.onConvert(this.props.t);
+  onConvert = () => this.props.convertUploadedFiles(this.props.t);
   onClose = () => this.props.setDialogVisible(this.props.t);
 
   render() {
@@ -66,7 +66,7 @@ class ConvertDialogComponent extends React.Component {
               <img
                 className="convert_dialog_image"
                 src="images/convert_alert.png"
-                alt="convert alert image"
+                alt="convert alert"
               />
               <div className="convert_dialog-content">
                 <Text>{t("ConversionMessage")}</Text>
@@ -118,12 +118,8 @@ const ConvertDialog = (props) => (
   <ModalDialogContainerTranslated i18n={i18n} {...props} />
 );
 
-const mapStateToProps = (state) => {
-  return {};
-};
-
-export default connect(mapStateToProps, {
+export default connect(null, {
   setTreeFolders,
   setDialogVisible,
-  onConvert,
+  convertUploadedFiles,
 })(withRouter(ConvertDialog));

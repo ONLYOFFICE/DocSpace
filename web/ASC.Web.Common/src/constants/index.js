@@ -1,4 +1,3 @@
-export const AUTH_KEY = "asc_auth_key";
 export const LANGUAGE = "language";
 export const ARTICLE_PINNED_KEY = "asc_article_pinned_key";
 
@@ -93,18 +92,21 @@ export const FolderType = Object.freeze({
 });
 
 export const ShareAccessRights = Object.freeze({
+  None: 0,
   FullAccess: 1,
   ReadOnly: 2,
   DenyAccess: 3,
+  Varies: 4,
   Review: 5,
   Comment: 6,
   FormFilling: 7,
+  CustomFilter: 8,
 });
 
 export const i18nBaseSettings = {
   lng: localStorage.getItem(LANGUAGE) || "en",
   supportedLngs: ["en", "ru"],
-  fallbackLng: false, //fallbackLng: "en",
+  fallbackLng: "en",
   load: "languageOnly",
 
   interpolation: {

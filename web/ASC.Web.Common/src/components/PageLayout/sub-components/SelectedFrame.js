@@ -126,6 +126,7 @@ class SelectedFrame extends React.Component {
         if (this.container.childNodes[childItem].nodeType === 1) {
           const item = this.container.childNodes[childItem];
           const currentItem = item.childNodes[0];
+          if (!currentItem) return;
           const itemHeight = currentItem.offsetHeight;
           const itemOffsetTop = item.offsetTop;
 
@@ -141,7 +142,8 @@ class SelectedFrame extends React.Component {
             itemOffsetTop - offsetScroll <= topEnd
           ) {
             const value = currentItem.getAttribute("value");
-            if (value && value.split("_")[2]) {
+            const splitValue = value && value.split("_");
+            if (value && splitValue[splitValue.length - 1] === "draggable") {
               needUpdate = false;
               break;
             }

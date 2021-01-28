@@ -33,6 +33,7 @@ import {
   setIsEditingForm,
   toggleAvatarEditor,
 } from "../../../../../store/people/actions";
+import { getDisableProfileType } from "../../../../../store/profile/selectors";
 import {
   MainContainer,
   AvatarContainer,
@@ -47,7 +48,7 @@ import ContactsField from "./FormFields/ContactsField";
 import InfoFieldContainer from "./FormFields/InfoFieldContainer";
 import styled from "styled-components";
 import { DataLossWarningDialog } from "../../../../dialogs";
-import { api, toastr } from "asc-web-common";
+import { api, toastr, store } from "asc-web-common";
 import {
   ChangeEmailDialog,
   ChangePasswordDialog,
@@ -56,6 +57,7 @@ import {
 import { isMobile } from "react-device-detect";
 const { createThumbnailsAvatar, loadAvatar, deleteAvatar } = api.people;
 const { isTablet } = utils.device;
+const { isAdmin } = store.auth.selectors;
 
 const dialogsDataset = {
   changeEmail: "changeEmail",
@@ -543,7 +545,14 @@ class UpdateUserForm extends React.Component {
       dialogsVisible,
       isMobile,
     } = this.state;
-    const { t, i18n, settings, avatarMax } = this.props;
+    const {
+      t,
+      i18n,
+      settings,
+      avatarMax,
+      disableProfileType,
+      isAdmin,
+    } = this.props;
     const {
       guestCaption,
       userCaption,
@@ -699,7 +708,7 @@ class UpdateUserForm extends React.Component {
             <TextChangeField
               labelText={`${t("Password")}:`}
               inputName="password"
-              inputValue={profile.password}
+              inputValue={"********"}
               buttonText={t("ChangeButton")}
               buttonIsDisabled={isLoading}
               buttonOnClick={this.toggleDialogsVisible}
@@ -709,7 +718,7 @@ class UpdateUserForm extends React.Component {
             <TextChangeField
               labelText={`${t("Phone")}:`}
               inputName="phone"
-              inputValue={profile.phone}
+              inputValue={profile.mobilePhone}
               buttonText={t("ChangeButton")}
               buttonIsDisabled={isLoading}
               buttonOnClick={this.toggleDialogsVisible}
@@ -724,7 +733,7 @@ class UpdateUserForm extends React.Component {
               inputValue={profile.firstName}
               inputIsDisabled={isLoading}
               inputOnChange={this.onInputChange}
-              inputAutoFocussed={true}
+              inputAutoFocussed={!isMobile}
               inputTabIndex={4}
               maxLength={50}
             />
@@ -769,7 +778,7 @@ class UpdateUserForm extends React.Component {
                 { value: "true", label: guestCaption },
                 { value: "false", label: userCaption },
               ]}
-              radioIsDisabled={isLoading}
+              radioIsDisabled={isLoading || disableProfileType}
               radioOnChange={this.onUserTypeChange}
               tooltipContent={tooltipTypeContent}
               helpButtonHeaderContent={t("UserType")}
@@ -781,9 +790,12 @@ class UpdateUserForm extends React.Component {
               inputValue={
                 profile.workFrom ? new Date(profile.workFrom) : undefined
               }
-              inputIsDisabled={isLoading}
+              inputIsDisabled={isLoading || !isAdmin}
               inputOnChange={this.onWorkFromDateChange}
               inputTabIndex={7}
+              calendarMinDate={
+                profile.birthday ? new Date(profile.birthday) : new Date()
+              }
             />
             <TextField
               labelText={`${t("Location")}:`}
@@ -797,13 +809,13 @@ class UpdateUserForm extends React.Component {
               labelText={`${userPostCaption}:`}
               inputName="title"
               inputValue={profile.title}
-              inputIsDisabled={isLoading}
+              inputIsDisabled={isLoading || !isAdmin}
               inputOnChange={this.onInputChange}
               inputTabIndex={9}
             />
             <DepartmentField
               labelText={`${groupCaption}:`}
-              isDisabled={isLoading}
+              isDisabled={isLoading || !isAdmin}
               showGroupSelectorButtonTitle={t("AddButton")}
               onShowGroupSelector={this.onShowGroupSelector}
               onCloseGroupSelector={this.onCloseGroupSelector}
@@ -906,6 +918,8 @@ const mapStateToProps = (state) => {
     groups: state.people.groups,
     editingForm: state.people.editingForm,
     filter: state.people.filter,
+    disableProfileType: getDisableProfileType(state),
+    isAdmin: isAdmin(state),
   };
 };
 

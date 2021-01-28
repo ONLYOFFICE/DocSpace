@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { Loader } from "asc-web-components";
 import { PageLayout, utils, store, Loaders } from "asc-web-common";
 import {
   ArticleHeaderContent,
@@ -32,7 +31,7 @@ class ProfileAction extends React.Component {
   componentDidMount() {
     const { match, fetchProfile, isEdit, setIsEditingForm, t } = this.props;
     const { userId } = match.params;
-
+    this.documentElement = document.getElementsByClassName("hidingHeader");
     setDocumentTitle(t("ProfileAction"));
     changeLanguage(i18n);
     if (isEdit) {
@@ -40,6 +39,12 @@ class ProfileAction extends React.Component {
     }
     if (userId) {
       fetchProfile(userId);
+    }
+
+    if (!this.loaded && this.documentElement) {
+      for (var i = 0; i < this.documentElement.length; i++) {
+        this.documentElement[i].style.transition = "none";
+      }
     }
   }
 
@@ -51,12 +56,18 @@ class ProfileAction extends React.Component {
     if (userId !== undefined && userId !== prevUserId) {
       fetchProfile(userId);
     }
+
+    if (this.loaded && this.documentElement) {
+      for (var i = 0; i < this.documentElement.length; i++) {
+        this.documentElement[i].style.transition = "";
+      }
+    }
   }
 
   render() {
     console.log("ProfileAction render");
 
-    let loaded = false;
+    this.loaded = false;
     const {
       profile,
       isVisitor,
@@ -67,9 +78,9 @@ class ProfileAction extends React.Component {
     const { userId, type } = match.params;
 
     if (type) {
-      loaded = true;
+      this.loaded = true;
     } else if (profile) {
-      loaded = profile.userName === userId || profile.id === userId;
+      this.loaded = profile.userName === userId || profile.id === userId;
     }
 
     return (
@@ -91,14 +102,12 @@ class ProfileAction extends React.Component {
             </PageLayout.ArticleBody>
           )}
 
-          {loaded && (
-            <PageLayout.SectionHeader>
-              <SectionHeaderContent />
-            </PageLayout.SectionHeader>
-          )}
+          <PageLayout.SectionHeader>
+            {this.loaded ? <SectionHeaderContent /> : <Loaders.SectionHeader />}
+          </PageLayout.SectionHeader>
 
           <PageLayout.SectionBody>
-            {loaded ? (
+            {this.loaded ? (
               type ? (
                 avatarEditorIsOpen ? (
                   <CreateAvatarEditorPage />

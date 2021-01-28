@@ -2,8 +2,7 @@ import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
-import { /*RequestLoader,*/ Loader } from "asc-web-components";
-import { PageLayout, utils, api, store } from "asc-web-common";
+import { PageLayout, Loaders, utils, store } from "asc-web-common";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import {
   ArticleHeaderContent,
@@ -13,120 +12,87 @@ import {
 import { SectionHeaderContent, SectionBodyContent } from "./Section";
 import { createI18N } from "../../../helpers/i18n";
 //import { setDocumentTitle } from "../../../helpers/utils";
-import { getIsLoading } from "../../../store/files/selectors";
+import {
+  setIsVerHistoryPanel,
+  setFilesFilter,
+} from "../../../store/files/actions";
+import {
+  getFilter,
+  getIsLoading,
+  getFileVersions,
+} from "../../../store/files/selectors";
+
 const i18n = createI18N({
   page: "VersionHistory",
   localesPath: "pages/VersionHistory",
 });
 
 const { changeLanguage } = utils;
-const { getSettings, getIsLoaded } = store.auth.selectors;
+const { getIsTabletView } = store.auth.selectors;
 
 class PureVersionHistory extends React.Component {
-  constructor(props) {
-    super(props);
-
-    const { match } = props;
-    const { fileId } = match.params;
-
-    this.state = {
-      fileId,
-      versions: null,
-    };
-  }
-
   componentDidMount() {
-    const { match } = this.props;
-    const { fileId } = match.params;
+    const { isTabletView } = this.props;
 
-    //setDocumentTitle(t("GroupAction"));
-
-    if (fileId) {
-      this.getFileVersions(fileId);
+    if (!isTabletView) {
+      this.redirectToPanelView();
     }
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.isLoading !== prevProps.isLoading) {
-      if (this.props.isLoading) {
-        utils.showLoader();
-      } else {
-        utils.hideLoader();
-      }
+    const { isTabletView } = this.props;
+    if (isTabletView !== prevProps.isTabletView && !isTabletView) {
+      this.redirectToPanelView();
     }
   }
 
-  getFileVersions = (fileId) => {
-    api.files
-      .getFileVersionInfo(fileId)
-      .then((versions) => this.setState({ versions }));
+  redirectToPanelView = () => {
+    const { setIsVerHistoryPanel } = this.props;
+    setIsVerHistoryPanel(true);
+    this.redirectToHomepage();
+  };
+
+  redirectToHomepage = () => {
+    const { setFilesFilter, filter } = this.props;
+    setFilesFilter(filter);
   };
 
   render() {
-    const { versions } = this.state;
-    const { settings } = this.props;
+    const { isLoading, versions } = this.props;
 
     return (
-      <>
-        {/* <RequestLoader
-          visible={isLoading}
-          zIndex={256}
-          loaderSize="16px"
-          loaderColor={"#999"}
-          label={`${t("LoadingProcessing")} ${t("LoadingDescription")}`}
-          fontSize="12px"
-          fontColor={"#999"}
-        /> */}
-        {versions ? (
-          <PageLayout
-            withBodyScroll={true}
-            withBodyAutoFocus={true}
-            headerBorderBottom={true}
-          >
-            <PageLayout.ArticleHeader>
-              <ArticleHeaderContent />
-            </PageLayout.ArticleHeader>
+      <PageLayout
+        withBodyScroll={true}
+        withBodyAutoFocus={true}
+        headerBorderBottom={true}
+      >
+        <PageLayout.ArticleHeader>
+          <ArticleHeaderContent />
+        </PageLayout.ArticleHeader>
 
-            <PageLayout.ArticleMainButton>
-              <ArticleMainButtonContent />
-            </PageLayout.ArticleMainButton>
+        <PageLayout.ArticleMainButton>
+          <ArticleMainButtonContent />
+        </PageLayout.ArticleMainButton>
 
-            <PageLayout.ArticleBody>
-              <ArticleBodyContent />
-            </PageLayout.ArticleBody>
+        <PageLayout.ArticleBody>
+          <ArticleBodyContent />
+        </PageLayout.ArticleBody>
 
-            <PageLayout.SectionHeader>
-              <SectionHeaderContent title={versions && versions[0].title} />
-            </PageLayout.SectionHeader>
+        <PageLayout.SectionHeader>
+          {versions && !isLoading ? (
+            <SectionHeaderContent
+              title={versions[0].title}
+              onClickBack={this.redirectToHomepage}
+            />
+          ) : (
+            <Loaders.SectionHeader title="version-history-title-loader" />
+          )}
+        </PageLayout.SectionHeader>
 
-            <PageLayout.SectionBody>
-              <SectionBodyContent
-                getFileVersions={this.getFileVersions}
-                versions={versions}
-                culture={settings.culture}
-              />
-            </PageLayout.SectionBody>
-          </PageLayout>
-        ) : (
-          <PageLayout>
-            <PageLayout.ArticleHeader>
-              <ArticleHeaderContent />
-            </PageLayout.ArticleHeader>
-
-            <PageLayout.ArticleMainButton>
-              <ArticleMainButtonContent />
-            </PageLayout.ArticleMainButton>
-
-            <PageLayout.ArticleBody>
-              <ArticleBodyContent />
-            </PageLayout.ArticleBody>
-
-            <PageLayout.SectionBody>
-              <Loader className="pageLoader" type="rombs" size="40px" />
-            </PageLayout.SectionBody>
-          </PageLayout>
-        )}
-      </>
+        <PageLayout.SectionBody>
+          <SectionBodyContent />
+        </PageLayout.SectionBody>
+      </PageLayout>
     );
   }
 }
@@ -146,15 +112,26 @@ const VersionHistory = (props) => {
 
 VersionHistory.propTypes = {
   history: PropTypes.object.isRequired,
-  isLoaded: PropTypes.bool,
 };
 
 function mapStateToProps(state) {
   return {
-    settings: getSettings(state),
-    isLoaded: getIsLoaded(state),
     isLoading: getIsLoading(state),
+    isTabletView: getIsTabletView(state),
+    filter: getFilter(state),
+    versions: getFileVersions(state),
   };
 }
 
-export default connect(mapStateToProps, {})(withRouter(VersionHistory));
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setIsVerHistoryPanel: (isVisible) =>
+      dispatch(setIsVerHistoryPanel(isVisible)),
+    setFilesFilter: (filter) => dispatch(setFilesFilter(filter)),
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withRouter(VersionHistory));

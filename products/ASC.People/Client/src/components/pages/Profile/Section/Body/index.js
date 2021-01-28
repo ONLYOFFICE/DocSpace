@@ -20,7 +20,7 @@ import styled from "styled-components";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 
-const { isAdmin, isMe } = store.auth.selectors;
+const { isAdmin, isMe, getIsTabletView } = store.auth.selectors;
 
 const ProfileWrapper = styled.div`
   display: flex;
@@ -121,7 +121,7 @@ class SectionBodyContent extends React.PureComponent {
             source={profile.avatarMax}
             userName={profile.displayName}
           />
-          {(isAdmin || isSelf) && (
+          {profile.status !== 2 && (isAdmin || isSelf) && (
             <EditButtonWrapper>
               <Button
                 size="big"
@@ -187,6 +187,7 @@ const mapStateToProps = (state) => {
     profile: state.profile.targetUser,
     isAdmin: isAdmin(state),
     viewer: state.auth.user,
+    isTabletView: getIsTabletView(state),
   };
 };
 

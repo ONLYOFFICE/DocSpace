@@ -7,9 +7,8 @@ import {
   Heading,
   Aside,
   Row,
-  RowContent,
+  Box,
   RowContainer,
-  Text,
   Link,
   Button,
 } from "asc-web-components";
@@ -31,6 +30,7 @@ import {
   getFolders,
   getTreeFolders,
   getSelectedFolder,
+  getIsPrivacyFolder,
 } from "../../../store/files/selectors";
 import {
   fetchFiles,
@@ -135,12 +135,13 @@ class NewFilesPanelComponent extends React.Component {
   };
 
   onFilesClick = (item) => {
-    const { id, fileExst, viewUrl, fileType } = item;
+    const { id, fileExst, viewUrl, fileType, providerKey } = item;
     const {
       filter,
       setMediaViewerData,
       fetchFiles,
       addFileToRecentlyViewed,
+      isPrivacy,
     } = this.props;
 
     if (!fileExst) {
@@ -149,8 +150,8 @@ class NewFilesPanelComponent extends React.Component {
       const canEdit = [5, 6, 7].includes(fileType); //TODO: maybe dirty
       const isMedia = [2, 3, 4].includes(fileType);
 
-      if (canEdit) {
-        return addFileToRecentlyViewed(id)
+      if (canEdit && providerKey) {
+        return addFileToRecentlyViewed(id, isPrivacy)
           .then(() => console.log("Pushed to recently viewed"))
           .catch((e) => console.error(e))
           .finally(window.open(`./doceditor?fileId=${id}`, "_blank"));
@@ -233,23 +234,30 @@ class NewFilesPanelComponent extends React.Component {
 
     return (
       <StyledAsidePanel visible={visible}>
-        <Backdrop onClick={onClose} visible={visible} zIndex={zIndex} />
+        <Backdrop
+          onClick={onClose}
+          visible={visible}
+          zIndex={zIndex}
+          isAside={true}
+        />
         <Aside className="header_aside-panel" visible={visible}>
           <StyledContent>
-            <StyledHeaderContent className="files-operations-panel">
-              <Heading size="medium" truncate>
+            <StyledHeaderContent>
+              <Heading
+                className="files-operations-header"
+                size="medium"
+                truncate
+              >
                 {t("NewFiles")}
               </Heading>
             </StyledHeaderContent>
             <StyledBody className="files-operations-body">
-              <RowContainer useReactWindow manualHeight="83vh">
+              <RowContainer useReactWindow>
                 {files.map((file) => {
                   const element = this.getItemIcon(file);
                   return (
                     <Row key={file.id} element={element}>
-                      <RowContent
-                        onClick={this.onNewFilesClick.bind(this, file)}
-                      >
+                      <Box onClick={this.onNewFilesClick.bind(this, file)}>
                         <Link
                           containerWidth="100%"
                           type="page"
@@ -259,14 +267,11 @@ class NewFilesPanelComponent extends React.Component {
                           truncate
                           title={file.title}
                           fontSize="14px"
+                          className="files-new-link"
                         >
                           {file.title}
                         </Link>
-                        <></>
-                        <Text fontSize="12px" containerWidth="auto">
-                          {file.checked && t("ConvertInto")}
-                        </Text>
-                      </RowContent>
+                      </Box>
                     </Row>
                   );
                 })}
@@ -313,6 +318,7 @@ const mapStateToProps = (state) => {
     folders: getFolders(state),
     treeFolders: getTreeFolders(state),
     selectedFolder: getSelectedFolder(state),
+    isPrivacy: getIsPrivacyFolder(state),
   };
 };
 

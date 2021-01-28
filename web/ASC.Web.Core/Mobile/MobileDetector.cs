@@ -40,7 +40,7 @@ namespace ASC.Web.Core.Mobile
     {
         private readonly Regex uaMobileRegex;
 
-        private static readonly ICache cache = AscCache.Memory;
+        private ICache cache { get; set; }
 
         private IHttpContextAccessor HttpContextAccessor { get; }
 
@@ -50,8 +50,9 @@ namespace ASC.Web.Core.Mobile
         }
 
 
-        public MobileDetector(IHttpContextAccessor httpContextAccessor, IConfiguration configuration)
+        public MobileDetector(IHttpContextAccessor httpContextAccessor, IConfiguration configuration, ICache cache)
         {
+            this.cache = cache;
             if (!string.IsNullOrEmpty(configuration["mobile:regex"]))
             {
                 uaMobileRegex = new Regex(configuration["mobile:regex"], RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled);

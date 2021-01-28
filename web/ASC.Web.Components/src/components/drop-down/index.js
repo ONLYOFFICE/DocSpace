@@ -4,8 +4,10 @@ import PropTypes from "prop-types";
 import CustomScrollbarsVirtualList from "../scrollbar/custom-scrollbars-virtual-list";
 import DropDownItem from "../drop-down-item";
 import Backdrop from "../backdrop";
+import Box from "../box";
 import { VariableSizeList } from "react-window";
 import onClickOutside from "react-onclickoutside";
+import { isMobile } from "react-device-detect";
 
 const StyledDropdown = styled.div`
   font-family: "Open Sans", sans-serif, Arial;
@@ -24,12 +26,12 @@ const StyledDropdown = styled.div`
   ${(props) =>
     props.directionY === "top" &&
     css`
-      bottom: ${(props) => (props.manualY ? props.manualY : "auto")};
+      bottom: ${(props) => (props.manualY ? props.manualY : "100%")};
     `}
     ${(props) =>
     props.directionY === "bottom" &&
     css`
-      top: ${(props) => (props.manualY ? props.manualY : "auto")};
+      top: ${(props) => (props.manualY ? props.manualY : "100%")};
     `}
     ${(props) =>
     props.directionX === "right" &&
@@ -41,8 +43,9 @@ const StyledDropdown = styled.div`
     css`
       left: ${(props) => (props.manualX ? props.manualX : "0px")};
     `}
-    z-index: 150;
-  display: ${(props) => (props.open ? "block" : "none")};
+    z-index: 200;
+  display: ${(props) =>
+    props.open ? (props.columnCount ? "block" : "table") : "none"};
   background: #ffffff;
   border-radius: 6px;
   -moz-border-radius: 6px;
@@ -118,6 +121,7 @@ class DropDown extends React.PureComponent {
   }
 
   handleClickOutside = (e) => {
+    e.preventDefault();
     this.toggleDropDown(e);
   };
 
@@ -156,10 +160,32 @@ class DropDown extends React.PureComponent {
 
     return isTablet ? 36 : 32;
   };
+  hideDisabledItems = () => {
+    if (React.Children.count(this.props.children) > 0) {
+      const { children } = this.props;
+      const enabledChildren = React.Children.map(children, (child) => {
+        if (child && !child.props.disabled) return child;
+      });
+
+      const sizeEnabledChildren = enabledChildren.length;
+
+      const cleanChildren = React.Children.map(
+        enabledChildren,
+        (child, index) => {
+          if (!child.props.isSeparator) return child;
+          if (index !== 0 && index !== sizeEnabledChildren - 1) return child;
+        }
+      );
+
+      return cleanChildren;
+    }
+  };
 
   render() {
-    const { maxHeight, children } = this.props;
+    const { maxHeight, children, showDisabledItems } = this.props;
     const { directionX, directionY, width } = this.state;
+    let cleanChildren;
+
     const rowHeights = React.Children.map(children, (child) =>
       this.getItemHeight(child)
     );
@@ -171,6 +197,9 @@ class DropDown extends React.PureComponent {
       ? { height: calculatedHeight + "px" }
       : {};
     //console.log("DropDown render", this.props);
+
+    if (!showDisabledItems) cleanChildren = this.hideDisabledItems();
+
     return (
       <StyledDropdown
         ref={this.dropDownRef}
@@ -190,6 +219,8 @@ class DropDown extends React.PureComponent {
           >
             {Row}
           </VariableSizeList>
+        ) : cleanChildren ? (
+          cleanChildren
         ) : (
           children
         )}
@@ -215,26 +246,38 @@ DropDown.propTypes = {
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   withBackdrop: PropTypes.bool,
   columnCount: PropTypes.number,
+  showDisabledItems: PropTypes.bool,
 };
 
 DropDown.defaultProps = {
   directionX: "left",
   directionY: "bottom",
   withBackdrop: false,
+  showDisabledItems: false,
 };
 
 const EnhancedComponent = onClickOutside(DropDown);
 
 class DropDownContainer extends React.Component {
+  toggleDropDown = (e) => {
+    this.props.clickOutsideAction({}, !this.props.open);
+  };
   render() {
-    const { withBackdrop = false, open } = this.props;
-    const isTablet = window.innerWidth < 1024; //TODO: Make some better
+    const { withBackdrop = true, open } = this.props;
+    const eventTypesProp = isMobile
+      ? { eventTypes: ["click", "touchend"] }
+      : {};
+
     return (
       <>
-        <EnhancedComponent disableOnClickOutside={true} {...this.props} />
-        {withBackdrop && open && isTablet && (
-          <Backdrop visible zIndex={149} onClick={this.toggleDropDown} />
-        )}
+        {withBackdrop ? (
+          <Backdrop visible={open} zIndex={199} onClick={this.toggleDropDown} />
+        ) : null}
+        <EnhancedComponent
+          {...eventTypesProp}
+          disableOnClickOutside={true}
+          {...this.props}
+        />
       </>
     );
   }

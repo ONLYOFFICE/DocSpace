@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Backdrop, Heading, Aside, IconButton } from "asc-web-components";
-import { GroupSelector, utils } from "asc-web-common";
+import { GroupSelector, utils, constants } from "asc-web-common";
 import { withTranslation } from "react-i18next";
 import {
   StyledAddGroupsPanel,
@@ -9,6 +9,7 @@ import {
   StyledHeaderContent,
   StyledBody,
 } from "../StyledPanels";
+import AccessComboBox from "../SharingPanel/AccessComboBox";
 import { createI18N } from "../../../helpers/i18n";
 const i18n = createI18N({
   page: "AddGroupsPanel",
@@ -16,6 +17,7 @@ const i18n = createI18N({
 });
 
 const { changeLanguage } = utils;
+const { ShareAccessRights } = constants;
 
 class AddGroupsPanelComponent extends React.Component {
   constructor(props) {
@@ -23,7 +25,10 @@ class AddGroupsPanelComponent extends React.Component {
 
     changeLanguage(i18n);
 
-    this.state = { showActionPanel: false };
+    this.state = {
+      showActionPanel: false,
+      accessRight: ShareAccessRights.ReadOnly,
+    };
     this.scrollRef = React.createRef();
   }
 
@@ -38,23 +43,22 @@ class AddGroupsPanelComponent extends React.Component {
   };
 
   onSelectGroups = (groups) => {
-    const {
-      accessRight,
-      shareDataItems,
-      setShareDataItems,
-      onClose,
-    } = this.props;
+    const { shareDataItems, setShareDataItems, onClose } = this.props;
     const items = shareDataItems;
 
     for (let item of groups) {
       if (item.key) {
         item.id = item.key;
-        delete item.key;
       }
-      const currentItem = shareDataItems.find((x) => x.id === item.id);
+      const currentItem = shareDataItems.find((x) => x.sharedTo.id === item.id);
       if (!currentItem) {
-        item.rights = accessRight;
-        items.push(item);
+        const newItem = {
+          access: this.state.accessRight,
+          isLocked: false,
+          isOwner: false,
+          sharedTo: item,
+        };
+        items.push(newItem);
       }
     }
 
@@ -62,9 +66,18 @@ class AddGroupsPanelComponent extends React.Component {
     onClose();
   };
 
-  onPLusClick = () => {
-    console.log("onPlusClick");
+  onKeyPress = (event) => {
+    if (event.key === "Esc" || event.key === "Escape") {
+      this.props.onClose();
+    }
   };
+
+  onAccessChange = (e) => {
+    const accessRight = +e.currentTarget.dataset.access;
+    this.setState({ accessRight });
+  };
+
+  //onPLusClick = () => console.log("onPlusClick");
 
   componentDidMount() {
     const scroll = this.scrollRef.current.getElementsByClassName("scroll-body");
@@ -75,18 +88,11 @@ class AddGroupsPanelComponent extends React.Component {
   componentWillUnmount() {
     window.removeEventListener("keyup", this.onKeyPress);
   }
-
-  onKeyPress = (event) => {
-    if (event.key === "Esc" || event.key === "Escape") {
-      this.props.onClose();
-    }
-  };
-
   shouldComponentUpdate(nextProps, nextState) {
-    const { showActionPanel } = this.state;
-    const { visible, accessRight } = this.props;
+    const { showActionPanel, accessRight } = this.state;
+    const { visible } = this.props;
 
-    if (accessRight && accessRight.rights !== nextProps.accessRight.rights) {
+    if (accessRight !== nextState.accessRight) {
       return true;
     }
 
@@ -102,7 +108,8 @@ class AddGroupsPanelComponent extends React.Component {
   }
 
   render() {
-    const { visible, embeddedComponent, t } = this.props;
+    const { t, visible, accessOptions } = this.props;
+    const { accessRight } = this.state;
 
     const zIndex = 310;
 
@@ -113,6 +120,7 @@ class AddGroupsPanelComponent extends React.Component {
           onClick={this.onClosePanels}
           visible={visible}
           zIndex={zIndex}
+          isAside={true}
         />
         <Aside className="header_aside-panel">
           <StyledContent>
@@ -145,8 +153,16 @@ class AddGroupsPanelComponent extends React.Component {
                 displayType="aside"
                 withoutAside
                 onSelect={this.onSelectGroups}
-                embeddedComponent={embeddedComponent}
-                showCounter={true}
+                embeddedComponent={
+                  <AccessComboBox
+                    t={t}
+                    access={accessRight}
+                    directionX="right"
+                    onAccessChange={this.onAccessChange}
+                    accessOptions={accessOptions}
+                  />
+                }
+                showCounter
               />
             </StyledBody>
           </StyledContent>

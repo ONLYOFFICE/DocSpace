@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import isEqual from "lodash/isEqual";
+import equal from "fast-deep-equal/react";
 import ContactField from "./ContactField";
 import { ComboBox } from "asc-web-components";
 
@@ -62,7 +62,7 @@ const renderItems = (
 
 class ContactsField extends React.Component {
   shouldComponentUpdate(nextProps) {
-    return !isEqual(this.props, nextProps);
+    return !equal(this.props, nextProps);
   }
 
   render() {

@@ -49,15 +49,26 @@ namespace ASC.Data.Storage
             TenantManager tenantManager,
             PathUtils pathUtils,
             EmailValidationKeyProvider emailValidationKeyProvider,
-            IHttpContextAccessor httpContextAccessor,
             IOptionsMonitor<ILog> options)
         {
             TenantManager = tenantManager;
             PathUtils = pathUtils;
             EmailValidationKeyProvider = emailValidationKeyProvider;
-            HttpContextAccessor = httpContextAccessor;
             Options = options;
             Log = options.CurrentValue;
+        }
+
+        public BaseStorage(
+            TenantManager tenantManager,
+            PathUtils pathUtils,
+            EmailValidationKeyProvider emailValidationKeyProvider,
+            IHttpContextAccessor httpContextAccessor,
+            IOptionsMonitor<ILog> options) : this(tenantManager,
+            pathUtils,
+            emailValidationKeyProvider,
+            options)
+        {
+            HttpContextAccessor = httpContextAccessor;
         }
 
         #region IDataStore Members

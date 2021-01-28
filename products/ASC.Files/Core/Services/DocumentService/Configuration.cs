@@ -266,7 +266,7 @@ namespace ASC.Web.Files.Services.DocumentService
 
                 try
                 {
-                    return FileSharing.GetSharedInfoShort<string>(File.UniqID);
+                    return FileSharing.GetSharedInfoShortFile(File.ID);
                 }
                 catch
                 {
@@ -365,7 +365,12 @@ namespace ASC.Web.Files.Services.DocumentService
             {
                 try
                 {
-                    JsonSerializer.Deserialize<ActionLinkConfig>(value);
+                    var options = new JsonSerializerOptions
+                    {
+                        AllowTrailingCommas = true,
+                        PropertyNameCaseInsensitive = true
+                    };
+                    JsonSerializer.Deserialize<ActionLinkConfig>(value, options);
                 }
                 catch (Exception)
                 {
@@ -395,8 +400,9 @@ namespace ASC.Web.Files.Services.DocumentService
                     break;
             }
 
+            var folderDao = DaoFactory.GetFolderDao<int>();
             var fileDao = DaoFactory.GetFileDao<int>();
-            var files = entryManager.GetTemplates(fileDao, filter, false, Guid.Empty, string.Empty, false);
+            var files = entryManager.GetTemplates(folderDao, fileDao, filter, false, Guid.Empty, string.Empty, false);
             var listTemplates = from file in files
                                 select
                                     new TemplatesConfig
@@ -480,7 +486,7 @@ namespace ASC.Web.Files.Services.DocumentService
 
             var folderDao = DaoFactory.GetFolderDao<int>();
             var fileDao = DaoFactory.GetFileDao<int>();
-            var files = entryManager.GetRecent(fileDao, filter, false, Guid.Empty, string.Empty, false);
+            var files = entryManager.GetRecent(folderDao, fileDao, filter, false, Guid.Empty, string.Empty, false);
 
             var listRecent = from file in files
                              where !Equals(_configuration.Document.Info.File.ID, file.ID)
@@ -583,7 +589,7 @@ namespace ASC.Web.Files.Services.DocumentService
 
     public class EncryptionKeysConfig
     {
-        public string CryptoEngineId = "{FFF0E1EB-13DB-4678-B67D-FF0A41DBBCEF}";
+        public string CryptoEngineId { get => "{FFF0E1EB-13DB-4678-B67D-FF0A41DBBCEF}"; }
 
         public string PrivateKeyEnc { get; set; }
 

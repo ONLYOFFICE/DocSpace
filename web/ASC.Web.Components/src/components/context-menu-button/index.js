@@ -140,7 +140,9 @@ class ContextMenuButton extends React.Component {
   };
 
   clickOutsideAction = (e) => {
-    if (this.ref.current.contains(e.target)) return;
+    const path = e.path || (e.composedPath && e.composedPath());
+    const dropDownItem = path ? path.find((x) => x === this.ref.current) : null;
+    if (!dropDownItem) return;
 
     this.onIconButtonClick();
   };
@@ -230,7 +232,12 @@ class ContextMenuButton extends React.Component {
           </DropDown>
         ) : (
           <>
-            <Backdrop onClick={this.onClose} visible={isOpen} zIndex={310} />
+            <Backdrop
+              onClick={this.onClose}
+              visible={isOpen}
+              zIndex={310}
+              isAside={true}
+            />
             <Aside visible={isOpen} scale={false} zIndex={310}>
               <Content>
                 <Header>

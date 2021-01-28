@@ -59,20 +59,16 @@ const EditingWrapperComponent = (props) => {
   const [OkIconIsHovered, setIsHoveredOk] = useState(false);
   const [CancelIconIsHovered, setIsHoveredCancel] = useState(false);
 
-  const onUpdate = (e) => {
-    onClickUpdateItem(e);
-  };
-
-  const onCancel = (e) => {
-    cancelUpdateItem(e);
-  };
-
   const onKeyUpUpdateItem = (e) => {
-    if (e.keyCode === 13) {
-      onClickUpdateItem(e);
+    var code = e.keyCode || e.which;
+    if (code === 13) {
+      return onClickUpdateItem(e);
     }
-
+    //if (code === 27) return cancelUpdateItem(e);
+  };
+  const onEscapeKeyPress = (e) => {
     if (e.keyCode === 27) return cancelUpdateItem(e);
+    return;
   };
 
   const setIsHoveredOkHandler = () => {
@@ -82,6 +78,8 @@ const EditingWrapperComponent = (props) => {
   const setIsHoveredCancelHandler = () => {
     setIsHoveredCancel(!CancelIconIsHovered);
   };
+
+  const onFocus = (e) => e.target.select();
 
   return (
     <EditingWrapper>
@@ -93,7 +91,9 @@ const EditingWrapperComponent = (props) => {
         tabIndex={1}
         isAutoFocussed={true}
         onChange={renameTitle}
-        onKeyUp={onKeyUpUpdateItem}
+        onKeyPress={onKeyUpUpdateItem}
+        onKeyDown={onEscapeKeyPress}
+        onFocus={onFocus}
         isDisabled={isLoading}
         data-itemid={itemId}
       />
@@ -101,7 +101,7 @@ const EditingWrapperComponent = (props) => {
         className="edit-button"
         size="medium"
         isDisabled={isLoading}
-        onClick={onUpdate}
+        onClick={onClickUpdateItem}
         icon={okIcon}
         data-itemid={itemId}
         onMouseEnter={setIsHoveredOkHandler}
@@ -112,7 +112,7 @@ const EditingWrapperComponent = (props) => {
         className="edit-button"
         size="medium"
         isDisabled={isLoading}
-        onClick={onCancel}
+        onClick={cancelUpdateItem}
         icon={cancelIcon}
         data-itemid={itemId}
         onMouseEnter={setIsHoveredCancelHandler}

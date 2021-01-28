@@ -57,10 +57,14 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             var operations = tasks.GetTasks();
             var processlist = Process.GetProcesses();
 
-            foreach (var o in operations.Where(o => processlist.All(p => p.Id != o.InstanceId)))
+            //TODO: replace with distributed cache
+            if (processlist.Any())
             {
-                o.SetProperty(FileOperation.PROGRESS, 100);
-                tasks.RemoveTask(o.Id);
+                foreach (var o in operations.Where(o => processlist.All(p => p.Id != o.InstanceId)))
+                {
+                    o.SetProperty(FileOperation.PROGRESS, 100);
+                    tasks.RemoveTask(o.Id);
+                }
             }
 
             operations = operations.Where(t => t.GetProperty<Guid>(FileOperation.OWNER) == userId);

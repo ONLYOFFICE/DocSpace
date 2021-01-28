@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import isEqual from "lodash/isEqual";
+import equal from "fast-deep-equal/react";
 import { Scrollbar, utils } from "asc-web-components";
 const { tablet, smallTablet } = utils.device;
 
@@ -14,7 +14,7 @@ const StyledArticleBody = styled.div`
     height: calc(100% - 104px);
     display: table;
     width: 100%;
-
+    z-index: 5;
     .custom-scrollbar {
       display: table-cell;
     }
@@ -51,7 +51,7 @@ const StyledArticleWrapper = styled.div`
 
 class ArticleBody extends React.Component {
   shouldComponentUpdate(nextProps) {
-    return !isEqual(this.props, nextProps);
+    return !equal(this.props, nextProps);
   }
 
   render() {
@@ -60,7 +60,11 @@ class ArticleBody extends React.Component {
 
     return (
       <StyledArticleBody>
-        <Scrollbar className="custom-scrollbar" stype="mediumBlack">
+        <Scrollbar
+          id="articleScrollBar"
+          className="custom-scrollbar"
+          stype="mediumBlack"
+        >
           <StyledArticleWrapper>{children}</StyledArticleWrapper>
         </Scrollbar>
       </StyledArticleBody>

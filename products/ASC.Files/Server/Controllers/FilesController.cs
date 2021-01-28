@@ -97,8 +97,8 @@ namespace ASC.Api.Documents
         private WordpressHelper WordpressHelper { get; }
         private EasyBibHelper EasyBibHelper { get; }
         private ProductEntryPoint ProductEntryPoint { get; }
-        public TenantManager TenantManager { get; }
-        public FileUtility FileUtility { get; }
+        private TenantManager TenantManager { get; }
+        private FileUtility FileUtility { get; }
 
         /// <summary>
         /// </summary>
@@ -509,14 +509,7 @@ namespace ASC.Api.Documents
         /// <category>Uploads</category>
         /// <returns></returns>
         [Create("@my/insert")]
-        public FileWrapper<int> InsertFileToMyFromBody([FromBody]InsertFileModel model)
-        {
-            return InsertFile(GlobalFolderHelper.FolderMy, model);
-        }
-
-        [Create("@my/insert")]
-        [Consumes("application/x-www-form-urlencoded")]
-        public FileWrapper<int> InsertFileToMyFromForm([FromForm]InsertFileModel model)
+        public FileWrapper<int> InsertFileToMyFromBody([FromForm] InsertFileModel model)
         {
             return InsertFile(GlobalFolderHelper.FolderMy, model);
         }
@@ -531,14 +524,7 @@ namespace ASC.Api.Documents
         /// <category>Uploads</category>
         /// <returns></returns>
         [Create("@common/insert")]
-        public FileWrapper<int> InsertFileToCommonFromBody([FromBody]InsertFileModel model)
-        {
-            return InsertFile(GlobalFolderHelper.FolderCommon, model);
-        }
-
-        [Create("@common/insert")]
-        [Consumes("application/x-www-form-urlencoded")]
-        public FileWrapper<int> InsertFileToCommonFromForm([FromForm]InsertFileModel model)
+        public FileWrapper<int> InsertFileToCommonFromBody([FromForm] InsertFileModel model)
         {
             return InsertFile(GlobalFolderHelper.FolderCommon, model);
         }
@@ -553,31 +539,13 @@ namespace ASC.Api.Documents
         /// <param name="keepConvertStatus" visible="false">Keep status conversation after finishing</param>
         /// <category>Uploads</category>
         /// <returns></returns>
-        [Create("{folderId}/insert", DisableFormat = true)]
-        public FileWrapper<string> InsertFileFromBody(string folderId, [FromBody]InsertFileModel model)
+        [Create("{folderId}/insert", order: int.MaxValue, DisableFormat = true)]
+        public FileWrapper<string> InsertFile(string folderId, [FromForm] InsertFileModel model)
         {
-            return InsertFile(folderId, model);
+            return FilesControllerHelperString.InsertFile(folderId, model.File.OpenReadStream(), model.Title, model.CreateNewIfExist, model.KeepConvertStatus);
         }
 
-        [Create("{folderId}/insert", DisableFormat = true)]
-        [Consumes("application/x-www-form-urlencoded")]
-        public FileWrapper<string> InsertFileFromForm(string folderId, [FromForm]InsertFileModel model)
-        {
-            return InsertFile(folderId, model);
-        }
-
-        private FileWrapper<string> InsertFile(string folderId, InsertFileModel model)
-        {
-            return FilesControllerHelperString.InsertFile(folderId, model.File, model.Title, model.CreateNewIfExist, model.KeepConvertStatus);
-        }
-
-        [Create("{folderId:int}/insert")]
-        public FileWrapper<int> InsertFileFromBody(int folderId, [FromBody]InsertFileModel model)
-        {
-            return InsertFile(folderId, model);
-        }
-
-        [Create("{folderId:int}/insert")]
+        [Create("{folderId:int}/insert", order: int.MaxValue - 1)]
         public FileWrapper<int> InsertFileFromForm(int folderId, [FromForm]InsertFileModel model)
         {
             return InsertFile(folderId, model);
@@ -585,7 +553,7 @@ namespace ASC.Api.Documents
 
         private FileWrapper<int> InsertFile(int folderId, InsertFileModel model)
         {
-            return FilesControllerHelperInt.InsertFile(folderId, model.File, model.Title, model.CreateNewIfExist, model.KeepConvertStatus);
+            return FilesControllerHelperInt.InsertFile(folderId, model.File.OpenReadStream(), model.Title, model.CreateNewIfExist, model.KeepConvertStatus);
         }
 
         /// <summary>
@@ -596,30 +564,17 @@ namespace ASC.Api.Documents
         /// <param name="encrypted"></param>
         /// <returns></returns>
         /// <visible>false</visible>
-        [Update("{fileId}/update", DisableFormat = true)]
-        public FileWrapper<string> UpdateFileStreamFromBody(string fileId, [FromBody]FileStreamModel model)
-        {
-            return FilesControllerHelperString.UpdateFileStream(model.File, fileId, model.Encrypted, model.Forcesave);
-        }
 
         [Update("{fileId}/update", DisableFormat = true)]
-        [Consumes("application/x-www-form-urlencoded")]
         public FileWrapper<string> UpdateFileStreamFromForm(string fileId, [FromForm]FileStreamModel model)
         {
-            return FilesControllerHelperString.UpdateFileStream(model.File, fileId, model.Encrypted, model.Forcesave);
+            return FilesControllerHelperString.UpdateFileStream(model.File.OpenReadStream(), fileId, model.Encrypted, model.Forcesave);
         }
 
         [Update("{fileId:int}/update")]
-        public FileWrapper<int> UpdateFileStreamFromBody(int fileId, [FromBody]FileStreamModel model)
-        {
-            return FilesControllerHelperInt.UpdateFileStream(model.File, fileId, model.Encrypted, model.Forcesave);
-        }
-
-        [Update("{fileId:int}/update")]
-        [Consumes("application/x-www-form-urlencoded")]
         public FileWrapper<int> UpdateFileStreamFromForm(int fileId, [FromForm]FileStreamModel model)
         {
-            return FilesControllerHelperInt.UpdateFileStream(model.File, fileId, model.Encrypted, model.Forcesave);
+            return FilesControllerHelperInt.UpdateFileStream(model.File.OpenReadStream(), fileId, model.Encrypted, model.Forcesave);
         }
 
 
@@ -873,6 +828,7 @@ namespace ASC.Api.Documents
         }
 
         [Create("{folderId:int}/text")]
+        [Consumes("application/x-www-form-urlencoded")]
         public FileWrapper<int> CreateTextFileFromForm(int folderId, [FromForm]CreateTextOrHtmlFileModel model)
         {
             return CreateTextFile(folderId, model);
@@ -1096,6 +1052,27 @@ namespace ASC.Api.Documents
         public FolderWrapper<int> RenameFolderFromForm(int folderId, [FromForm]CreateFolderModel folderModel)
         {
             return FilesControllerHelperInt.RenameFolder(folderId, folderModel.Title);
+        }
+
+        [Create("owner")]
+        public IEnumerable<FileEntryWrapper> ChangeOwnerFromBody([FromBody] ChangeOwnerModel model)
+        {
+            return ChangeOwner(model);
+        }
+
+        [Create("owner")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public IEnumerable<FileEntryWrapper> ChangeOwnerFromForm([FromForm] ChangeOwnerModel model)
+        {
+            return ChangeOwner(model);
+        }
+
+        public IEnumerable<FileEntryWrapper> ChangeOwner(ChangeOwnerModel model)
+        {
+            var result = new List<FileEntry>();
+            result.AddRange(FileStorageServiceInt.ChangeOwner(model.FolderIds.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()).ToList(), model.FileIds.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()).ToList(), model.UserId));
+            result.AddRange(FileStorageService.ChangeOwner(model.FolderIds.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()).ToList(), model.FileIds.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()).ToList(), model.UserId));
+            return result.Select(FilesControllerHelperInt.GetFileEntryWrapper);
         }
 
         /// <summary>
@@ -1583,6 +1560,25 @@ namespace ASC.Api.Documents
             return FilesControllerHelperInt.GetFolderSecurityInfo(folderId);
         }
 
+        [Create("share")]
+        public IEnumerable<FileShareWrapper> GetSecurityInfoFromBody([FromBody] BaseBatchModel<JsonElement> model)
+        {
+            var result = new List<FileShareWrapper>();
+            result.AddRange(FilesControllerHelperInt.GetSecurityInfo(model.FileIds.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()), model.FolderIds.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32())));
+            result.AddRange(FilesControllerHelperString.GetSecurityInfo(model.FileIds.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()), model.FolderIds.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString())));
+            return result;
+        }
+
+        [Create("share")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public IEnumerable<FileShareWrapper> GetSecurityInfoFromForm([FromForm] BaseBatchModel<JsonElement> model)
+        {
+            var result = new List<FileShareWrapper>();
+            result.AddRange(FilesControllerHelperInt.GetSecurityInfo(model.FileIds.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()), model.FolderIds.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32())));
+            result.AddRange(FilesControllerHelperString.GetSecurityInfo(model.FileIds.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()), model.FolderIds.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString())));
+            return result;
+        }
+
         /// <summary>
         /// Sets sharing settings for the file with the ID specified in the request
         /// </summary>
@@ -1620,6 +1616,27 @@ namespace ASC.Api.Documents
         public IEnumerable<FileShareWrapper> SetFileSecurityInfoFromForm(int fileId, [FromForm]SecurityInfoModel model)
         {
             return FilesControllerHelperInt.SetFileSecurityInfo(fileId, model.Share, model.Notify, model.SharingMessage);
+        }
+
+        [Update("share")]
+        public IEnumerable<FileShareWrapper> SetSecurityInfoFromBody([FromBody]SecurityInfoModel model)
+        {
+            return SetSecurityInfo(model);
+        }
+
+        [Update("share")]
+        [Consumes("application/x-www-form-urlencoded")]
+        public IEnumerable<FileShareWrapper> SetSecurityInfoFromForm([FromForm]SecurityInfoModel model)
+        {
+            return SetSecurityInfo(model);
+        }        
+        
+        public IEnumerable<FileShareWrapper> SetSecurityInfo(SecurityInfoModel model)
+        {
+            var result = new List<FileShareWrapper>();
+            result.AddRange(FilesControllerHelperInt.SetSecurityInfo(model.FileIds.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()).ToList(), model.FolderIds.Where(r => r.ValueKind == JsonValueKind.Number).Select(r => r.GetInt32()).ToList(), model.Share, model.Notify, model.SharingMessage));
+            result.AddRange(FilesControllerHelperString.SetSecurityInfo(model.FileIds.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()).ToList(), model.FolderIds.Where(r => r.ValueKind == JsonValueKind.String).Select(r => r.GetString()).ToList(), model.Share, model.Notify, model.SharingMessage));
+            return result;
         }
 
         /// <summary>
@@ -1711,6 +1728,18 @@ namespace ASC.Api.Documents
         public object GenerateSharedLinkFromForm(int fileId, [FromForm] GenerateSharedLinkModel model)
         {
             return FilesControllerHelperInt.GenerateSharedLink(fileId, model.Share);
+        }
+
+        [Update("{fileId:int}/setacelink")]
+        public bool SetAceLink(int fileId, [FromBody] GenerateSharedLinkModel model)
+        {
+            return FilesControllerHelperInt.SetAceLink(fileId, model.Share);
+        }
+
+        [Update("{fileId}/setacelink")]
+        public bool SetAceLink(string fileId, [FromBody] GenerateSharedLinkModel model)
+        {
+            return FilesControllerHelperString.SetAceLink(fileId, model.Share);
         }
 
         /// <summary>
@@ -2165,6 +2194,7 @@ namespace ASC.Api.Documents
         }
 
         /// <visible>false</visible>
+        [AllowAnonymous]
         [Read("docservice")]
         public object GetDocServiceUrl(bool version)
         {

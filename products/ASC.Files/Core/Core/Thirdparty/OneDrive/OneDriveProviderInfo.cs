@@ -42,7 +42,7 @@ using Microsoft.OneDrive.Sdk;
 
 namespace ASC.Files.Thirdparty.OneDrive
 {
-    [Scope]
+    [Transient]
     [DebuggerDisplay("{CustomerTitle}")]
     internal class OneDriveProviderInfo : IProviderInfo
     {
@@ -197,11 +197,11 @@ namespace ASC.Files.Thirdparty.OneDrive
         private readonly ICache CacheChildItems;
         private readonly ICacheNotify<OneDriveCacheItem> CacheNotify;
 
-        public OneDriveProviderInfoHelper(ICacheNotify<OneDriveCacheItem> cacheNotify)
+        public OneDriveProviderInfoHelper(ICacheNotify<OneDriveCacheItem> cacheNotify, ICache cache)
         {
             CacheExpiration = TimeSpan.FromMinutes(1);
-            CacheItem = AscCache.Memory;
-            CacheChildItems = AscCache.Memory;
+            CacheItem = cache;
+            CacheChildItems = cache;
 
             CacheNotify = cacheNotify;
             CacheNotify.Subscribe((i) =>

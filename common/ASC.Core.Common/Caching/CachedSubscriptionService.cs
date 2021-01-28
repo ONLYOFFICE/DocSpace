@@ -41,9 +41,9 @@ namespace ASC.Core.Caching
         internal ICacheNotify<SubscriptionRecord> NotifyRecord { get; }
         internal ICacheNotify<SubscriptionMethodCache> NotifyMethod { get; }
 
-        public SubscriptionServiceCache(ICacheNotify<SubscriptionRecord> notifyRecord, ICacheNotify<SubscriptionMethodCache> notifyMethod)
+        public SubscriptionServiceCache(ICacheNotify<SubscriptionRecord> notifyRecord, ICacheNotify<SubscriptionMethodCache> notifyMethod, ICache cache)
         {
-            Cache = AscCache.Memory;
+            Cache = cache;
             NotifyRecord = notifyRecord;
             NotifyMethod = notifyMethod;
 
@@ -140,6 +140,16 @@ namespace ASC.Core.Caching
             }
         }
 
+        public string[] GetRecipients(int tenant, string sourceID, string actionID, string objectID)
+        {
+            return service.GetRecipients(tenant, sourceID, actionID, objectID);
+        }
+
+        public string[] GetSubscriptions(int tenant, string sourceId, string actionId, string recipientId, bool checkSubscribe)
+        {
+            return service.GetSubscriptions(tenant, sourceId, actionId, recipientId, checkSubscribe);
+        }
+
         public SubscriptionRecord GetSubscription(int tenant, string sourceId, string actionId, string recipientId, string objectId)
         {
             var store = GetSubsciptionsStore(tenant, sourceId, actionId);
@@ -195,7 +205,12 @@ namespace ASC.Core.Caching
             }
             return store;
         }
+        public bool IsUnsubscribe(int tenant, string sourceId, string actionId, string recipientId, string objectId)
+        {
+            return service.IsUnsubscribe(tenant, sourceId, actionId, recipientId, objectId);
+        }
     }
+
     internal class SubsciptionsStore
     {
         private readonly List<SubscriptionRecord> records;

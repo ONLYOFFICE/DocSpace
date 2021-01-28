@@ -25,7 +25,7 @@ import {
 } from "../../../../../store/people/actions";
 import { getPeopleList } from "../../../../../store/people/selectors";
 
-import isEqual from "lodash/isEqual";
+import equal from "fast-deep-equal/react";
 import { store, api, constants, toastr, Loaders } from "asc-web-common";
 import {
   ChangeEmailDialog,
@@ -34,7 +34,6 @@ import {
   DeleteProfileEverDialog,
 } from "../../../../dialogs";
 import { createI18N } from "../../../../../helpers/i18n";
-import { isMobile } from "react-device-detect";
 
 const i18n = createI18N({
   page: "Home",
@@ -42,7 +41,12 @@ const i18n = createI18N({
 });
 const { Consumer } = utils.context;
 const { isArrayEqual } = utils.array;
-const { getSettings, getIsLoadedSection } = store.auth.selectors;
+const {
+  getSettings,
+  getIsLoadedSection,
+  isAdmin,
+  getCurrentUserId,
+} = store.auth.selectors;
 const { setIsLoadedSection } = store.auth.actions;
 const { resendUserInvites } = api.people;
 const { EmployeeStatus } = constants;
@@ -73,15 +77,16 @@ class SectionBodyContent extends React.PureComponent {
       peopleList,
     } = this.props;
     if (!isLoaded) return;
-
-    if (peopleList.length <= 0) setIsLoadedSection();
-
-    fetchPeople(filter)
-      .then(() => isLoaded && setIsLoadedSection(true))
-      .catch((error) => {
-        isLoaded && setIsLoadedSection(true);
-        toastr.error(error);
-      });
+    if (peopleList.length <= 0) {
+      fetchPeople(filter)
+        .then(() =>
+          isLoaded ? setIsLoadedSection(true) : setIsLoadedSection()
+        )
+        .catch((error) => {
+          isLoaded ? setIsLoadedSection(true) : setIsLoadedSection();
+          toastr.error(error);
+        });
+    }
   }
 
   findUserById = (id) => this.props.peopleList.find((man) => man.id === id);
@@ -198,6 +203,7 @@ class SectionBodyContent extends React.PureComponent {
   toggleDeleteProfileEverDialog = (e) => {
     this.onCloseDialog();
 
+    this.props.onCancelScrollUp(true, true);
     const user = this.findUserById(e.currentTarget.dataset.id);
 
     if (!user) return;
@@ -218,6 +224,7 @@ class SectionBodyContent extends React.PureComponent {
   onInviteAgainClick = (e) => {
     const user = this.findUserById(e.currentTarget.dataset.id);
     const { onLoading } = this.props;
+
     onLoading(true);
     resendUserInvites([user.id])
       .then(() =>
@@ -359,7 +366,7 @@ class SectionBodyContent extends React.PureComponent {
     if (currentProps.sectionWidth !== nextProps.sectionWidth) {
       return true;
     }
-    if (!isEqual(currentProps.data, nextProps.data)) {
+    if (!equal(currentProps.data, nextProps.data)) {
       return true;
     }
     if (!isArrayEqual(currentProps.contextOptions, nextProps.contextOptions)) {
@@ -369,7 +376,7 @@ class SectionBodyContent extends React.PureComponent {
   };
 
   render() {
-    //console.log("Home SectionBodyContent render()");
+    // console.log("Home SectionBodyContent render()");
     const {
       isLoaded,
       isLoadedSection,
@@ -382,6 +389,8 @@ class SectionBodyContent extends React.PureComponent {
       isMobile,
       selectGroup,
       isLoading,
+      isAdmin,
+      currentUserId,
     } = this.props;
 
     const { dialogsVisible, user } = this.state;
@@ -392,7 +401,10 @@ class SectionBodyContent extends React.PureComponent {
       <>
         <Consumer>
           {(context) => (
-            <RowContainer className="people-row" useReactWindow={false}>
+            <RowContainer
+              className="people-row-container"
+              useReactWindow={false}
+            >
               {peopleList.map((man) => {
                 const {
                   checked,
@@ -404,14 +416,17 @@ class SectionBodyContent extends React.PureComponent {
                   options,
                 } = man;
                 const sectionWidth = context.sectionWidth;
+                const showContextMenu = options && options.length > 0;
                 const contextOptionsProps =
-                  options && options.length > 0
+                  (isAdmin && showContextMenu) ||
+                  (showContextMenu && id === currentUserId)
                     ? {
                         contextOptions: this.getUserContextOptions(options, id),
                       }
                     : {};
 
-                const checkedProps = checked !== null ? { checked } : {};
+                const checkedProps =
+                  checked !== null && isAdmin ? { checked } : {};
 
                 const element = (
                   <Avatar
@@ -534,6 +549,8 @@ const mapStateToProps = (state) => {
     isLoading,
     peopleList: getPeopleList(state),
     settings: getSettings(state),
+    isAdmin: isAdmin(state),
+    currentUserId: getCurrentUserId(state),
   };
 };
 

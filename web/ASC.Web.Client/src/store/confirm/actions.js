@@ -6,6 +6,7 @@ const {
   getPortalPasswordSettings,
   setNewEmail,
   logout,
+  getPortalSettings,
 } = store.auth.actions;
 
 export const SET_IS_CONFIRM_LOADED = "SET_IS_CONFIRM_LOADED";
@@ -19,20 +20,41 @@ export function setIsConfirmLoaded(isConfirmLoaded) {
 
 export function getConfirmationInfo(token) {
   return (dispatch) => {
-    return getPortalPasswordSettings(dispatch, token).then(() =>
-      dispatch(setIsConfirmLoaded(true))
-    );
+    const requests = [
+      getPortalSettings(dispatch),
+      getPortalPasswordSettings(dispatch, token),
+    ];
+
+    return Promise.all(requests).then(() => dispatch(setIsConfirmLoaded(true)));
   };
 }
 
 export function createConfirmUser(registerData, loginData, key) {
-  const data = Object.assign({}, registerData, loginData);
+  const data = Object.assign({ fromInviteLink: true }, registerData, loginData);
   return (dispatch) => {
     return api.people
       .createUser(data, key)
-      .then((user) => dispatch(setCurrentUser(user)))
-      .then(() => api.user.login(loginData.userName, loginData.passwordHash))
-      .then(() => loadInitInfo(dispatch));
+      .then((user) => {
+        dispatch(setCurrentUser(user));
+      })
+      .then(() => {
+        const promise = new Promise((resolve, reject) => {
+          setTimeout(() => {
+            login(
+              loginData.userName,
+              loginData.passwordHash
+            )(dispatch)
+              .then(() => {
+                resolve(loadInitInfo(dispatch));
+              })
+              .catch((e) => {
+                reject(e);
+              });
+          }, 1000);
+        });
+
+        return promise;
+      });
   };
 }
 
@@ -56,7 +78,22 @@ export function activateConfirmUser(
         return api.people.updateActivationStatus(activationStatus, userId, key);
       })
       .then((data) => {
-        return dispatch(login(loginData.userName, loginData.passwordHash));
+        const promise = new Promise((resolve, reject) => {
+          setTimeout(() => {
+            login(
+              loginData.userName,
+              loginData.passwordHash
+            )(dispatch)
+              .then(() => {
+                resolve(loadInitInfo(dispatch));
+              })
+              .catch((e) => {
+                reject(e);
+              });
+          }, 1000);
+        });
+
+        return promise;
       })
       .then((data) => {
         return api.people.updateUser(changedData);

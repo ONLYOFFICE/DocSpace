@@ -45,7 +45,9 @@ const getCustomModules = (isAdmin) => {
 
 export const getCurrentUser = (state) => state.auth.user;
 
-export const getCurrentUserId = (state) => state.auth.user;
+export const isAuthenticated = (state) => state.auth.isAuthenticated;
+
+export const getCurrentUserId = (state) => state.auth.user.id;
 
 export const getModules = (state) => state.auth.modules;
 
@@ -62,6 +64,8 @@ export const getSettingsCustomNamesGroupsCaption = (state) =>
 export const getIsLoaded = (state) => state.auth.isLoaded;
 
 export const getIsLoadedSection = (state) => state.auth.isLoadedSection;
+
+export const getIsTabletView = (state) => state.auth.settings.isTabletView;
 
 export const getDefaultPage = createSelector(
   [getSettings],
@@ -185,7 +189,7 @@ export const getTotalNotificationsCount = createSelector(
 
 export const isEncryptionSupport = createSelector([getSettings], (settings) => {
   const { isEncryptionSupport } = settings;
-  return isEncryptionSupport || false;
+  return isEncryptionSupport;
 });
 
 export const getOrganizationName = createSelector([getSettings], (settings) => {
@@ -196,3 +200,18 @@ export const getOrganizationName = createSelector([getSettings], (settings) => {
 export const getUrlSupport = (state) => state.auth.settings.urlSupport;
 
 export const getUrlAuthKeys = (state) => state.auth.settings.urlAuthKeys;
+
+export const getHeaderVisible = createSelector([getSettings], (settings) => {
+  const { isHeaderVisible } = settings;
+  return isHeaderVisible;
+});
+
+export const isDesktopClient = createSelector([getSettings], (settings) => {
+  const { isDesktopClient } = settings;
+  return isDesktopClient || false;
+});
+
+export const isArticlePinned = createSelector([getSettings], (settings) => {
+  const { isArticlePinned } = settings;
+  return isArticlePinned || false;
+});

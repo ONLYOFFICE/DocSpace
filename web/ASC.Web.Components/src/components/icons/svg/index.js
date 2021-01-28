@@ -199,6 +199,18 @@ import OrigCatalogPrivateRoomIcon from "./catalog.private.react.svg";
 import OrigMoveToIcon from "./move.react.svg";
 
 import OrigIntegrationIcon from "./integration.react.svg";
+import OrigCustomFilterIcon from "./custom.filter.react.svg";
+
+import OrigButtonUploadIcon from "./button.upload.react.svg";
+import OrigButtonFileIcon from "./button.file.react.svg";
+import OrigButtonTrashIcon from "./button.trash.react.svg";
+import OrigButtonMoveIcon from "./button.move.react.svg";
+import OrigButtonDuplicateIcon from "./button.duplicate.react.svg";
+import OrigButtonAlertIcon from "./button.alert.react.svg";
+
+import OrigButtonCancelIcon from "./button.cancel.react.svg";
+import OrigLoadErrorIcon from "./load.error.react.svg";
+import OrigClearActiveIcon from "./clear.active.react.svg";
 
 export const AZSortingIcon = createStyledIcon(
   OrigAZSortingIcon,
@@ -265,6 +277,30 @@ export const ArrowContentIcon = createStyledIcon(
   "ArrowContentIcon"
 );
 export const BloggerIcon = createStyledIcon(OrigBloggerIcon, "BloggerIcon");
+export const ButtonUploadIcon = createStyledIcon(
+  OrigButtonUploadIcon,
+  "ButtonUploadIcon"
+);
+export const ButtonFileIcon = createStyledIcon(
+  OrigButtonFileIcon,
+  "ButtonFileIcon"
+);
+export const ButtonTrashIcon = createStyledIcon(
+  OrigButtonTrashIcon,
+  "ButtonTrashIcon"
+);
+export const ButtonMoveIcon = createStyledIcon(
+  OrigButtonMoveIcon,
+  "ButtonMoveIcon"
+);
+export const ButtonDuplicateIcon = createStyledIcon(
+  OrigButtonDuplicateIcon,
+  "ButtonDuplicateIcon"
+);
+export const ButtonAlertIcon = createStyledIcon(
+  OrigButtonAlertIcon,
+  "ButtonAlertIcon"
+);
 export const CalendarCheckedIcon = createStyledIcon(
   OrigCalendarCheckedIcon,
   "CalendarCheckedIcon"
@@ -272,6 +308,10 @@ export const CalendarCheckedIcon = createStyledIcon(
 export const CalendarEmptyIcon = createStyledIcon(
   OrigCalendarEmptyIcon,
   "CalendarEmptyIcon"
+);
+export const ButtonCancelIcon = createStyledIcon(
+  OrigButtonCancelIcon,
+  "ButtonCancelIcon"
 );
 export const CalendarIcon = createStyledIcon(OrigCalendarIcon, "CalendarIcon");
 export const CameraIcon = createStyledIcon(OrigCameraIcon, "CameraIcon");
@@ -351,6 +391,10 @@ export const CatalogUserIcon = createStyledIcon(
   OrigCatalogUserIcon,
   "CatalogUserIcon"
 );
+export const ClearActiveIcon = createStyledIcon(
+  OrigClearActiveIcon,
+  "ClearActiveIcon"
+);
 export const ChatIcon = createStyledIcon(OrigChatIcon, "ChatIcon");
 export const CheckIcon = createStyledIcon(OrigCheckIcon, "CheckIcon");
 export const CheckToastIcon = createStyledIcon(
@@ -409,6 +453,10 @@ export const CrossIcon = createStyledIcon(OrigCrossIcon, "CrossIcon");
 export const CrossSidebarIcon = createStyledIcon(
   OrigCrossSidebarIcon,
   "CrossSidebarIcon"
+);
+export const CustomFilterIcon = createStyledIcon(
+  OrigCustomFilterIcon,
+  "CustomFilterIcon"
 );
 export const DangerIcon = createStyledIcon(OrigDangerIcon, "DangerIcon");
 export const DangerToastIcon = createStyledIcon(
@@ -485,6 +533,10 @@ export const JabberIcon = createStyledIcon(OrigJabberIcon, "JabberIcon");
 export const LivejournalIcon = createStyledIcon(
   OrigLivejournalIcon,
   "LivejournalIcon"
+);
+export const LoadErrorIcon = createStyledIcon(
+  OrigLoadErrorIcon,
+  "LoadErrorIcon"
 );
 export const MailIcon = createStyledIcon(OrigMailIcon, "MailIcon");
 export const MainMenuFeedbackIcon = createStyledIcon(

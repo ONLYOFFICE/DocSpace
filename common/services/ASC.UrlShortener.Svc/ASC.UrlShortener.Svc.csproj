@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\ASC.Common\ASC.Common.csproj" />
+    <ProjectReference Include="..\..\ASC.Data.Encryption\ASC.Data.Encryption.csproj" />
   </ItemGroup>
 
   <ItemGroup>

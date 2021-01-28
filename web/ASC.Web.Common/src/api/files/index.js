@@ -4,10 +4,12 @@ import FilesFilter from "./filter";
 import { FolderType } from "../../constants";
 import find from "lodash/find";
 
-export function openEdit(fileId) {
+export function openEdit(fileId, doc) {
+  const params = doc ? `?doc=${doc}` : "";
+
   const options = {
     method: "get",
-    url: `/files/file/${fileId}/openedit`,
+    url: `/files/file/${fileId}/openedit${params}`,
   };
 
   return request(options);
@@ -143,6 +145,7 @@ export function getFoldersTree() {
                   access: folder.access,
                   foldersCount: folder.foldersCount,
                   rootFolderType: folder.rootFolderType,
+                  providerKey: folder.providerKey,
                   newItems: folder.new,
                 };
               })
@@ -380,32 +383,47 @@ export function removeFiles(folderIds, fileIds, deleteAfter, immediately) {
   return request({ method: "put", url: "/files/fileops/delete", data });
 }
 
-export function getShareFolders(folderId) {
+export function getShareFiles(fileIds, folderIds) {
+  const data = { fileIds, folderIds };
   return request({
-    method: "get",
-    url: `/files/folder/${folderId}/share`,
-  });
-}
-
-export function getShareFiles(fileId) {
-  return request({
-    method: "get",
-    url: `/files/file/${fileId}/share`,
-  });
-}
-
-export function setShareFolder(folderId, share, notify, sharingMessage) {
-  const data = { share, notify, sharingMessage };
-  return request({
-    method: "put",
-    url: `/files/folder/${folderId}/share`,
+    method: "post",
+    url: "/files/share",
     data,
   });
 }
 
-export function setShareFiles(fileId, share, notify, sharingMessage) {
-  const data = { share, notify, sharingMessage };
-  return request({ method: "put", url: `/files/file/${fileId}/share`, data });
+export function setExternalAccess(fileId, accessType) {
+  const data = { share: accessType };
+  return request({
+    method: "put",
+    url: `/files/${fileId}/setacelink`,
+    data,
+  });
+}
+
+export function setShareFiles(
+  fileIds,
+  folderIds,
+  share,
+  notify,
+  sharingMessage
+) {
+  const data = { fileIds, folderIds, share, notify, sharingMessage };
+
+  return request({
+    method: "put",
+    url: "/files/share",
+    data,
+  });
+}
+
+export function setFileOwner(folderIds, fileIds, userId) {
+  const data = { folderIds, fileIds, userId };
+    return request({
+    method: "post",
+    url: "/files/owner",
+    data,
+  });
 }
 
 export function startUploadSession(folderId, fileName, fileSize, relativePath) {
@@ -495,7 +513,7 @@ export function convertFile(fileId) {
   });
 }
 
-export function getConvertFile(fileId) {
+export function getFileConversationProgress(fileId) {
   return request({
     method: "get",
     url: `/files/file/${fileId}/checkconversion`,
@@ -561,6 +579,45 @@ export function thirdParty(val) {
   return request({ method: "put", url: "files/thirdparty", data });
 }
 
+export function getThirdPartyList() {
+  return request({ method: "get", url: "files/thirdparty" });
+}
+
+export function saveThirdParty(
+  url,
+  login,
+  password,
+  token,
+  isCorporate,
+  customerTitle,
+  providerKey,
+  providerId
+) {
+  const data = {
+    url,
+    login,
+    password,
+    token,
+    isCorporate,
+    customerTitle,
+    providerKey,
+    providerId,
+  };
+  return request({ method: "post", url: "files/thirdparty", data });
+}
+
+export function deleteThirdParty(providerId) {
+  return request({ method: "delete", url: `files/thirdparty/${providerId}` });
+}
+
+export function getThirdPartyCapabilities() {
+  return request({ method: "get", url: "files/thirdparty/capabilities" });
+}
+
+export function openConnectWindow(service) {
+  return request({ method: "get", url: `thirdparty/${service}` });
+}
+
 export function getSettingsFiles() {
   return request({ method: "get", url: `/files/settings` });
 }
@@ -591,4 +648,51 @@ export function removeFromFavorite(ids) {
 
 export function getDocServiceUrl() {
   return request({ method: "get", url: `/files/docservice` });
+}
+
+export function getIsEncryptionSupport() {
+  return request({
+    method: "get",
+    url: "/files/@privacy/available",
+  });
+}
+
+export function setEncryptionKeys(keys) {
+  const data = {
+    publicKey: keys.publicKey,
+    privateKeyEnc: keys.privateKeyEnc,
+  };
+  return request({
+    method: "put",
+    url: "privacyroom/keys",
+    data,
+  });
+}
+
+export function getEncryptionKeys() {
+  return request({
+    method: "get",
+    url: "privacyroom/keys",
+  });
+}
+
+export function getEncryptionAccess(fileId) {
+  return request({
+    method: "get",
+    url: `privacyroom/access/${fileId}`,
+    data: fileId,
+  });
+}
+
+export function updateFileStream(file, fileId, encrypted, forcesave) {
+  let fd = new FormData();
+  fd.append("file", file);
+  fd.append("encrypted", encrypted);
+  fd.append("forcesave", forcesave);
+
+  return request({
+    method: "put",
+    url: `/files/${fileId}/update`,
+    data: fd,
+  });
 }

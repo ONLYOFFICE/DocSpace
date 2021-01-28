@@ -3,16 +3,23 @@ import React from "react";
 import { Redirect, Route } from "react-router-dom";
 import { connect } from "react-redux";
 //import { Loader } from "asc-web-components";
-//import PageLayout from "../PageLayout";
-import { getCurrentUser, isAdmin, isMe } from "../../store/auth/selectors.js";
-import { AUTH_KEY } from "../../constants";
+import PageLayout from "../PageLayout";
+import {
+  getCurrentUser,
+  getIsLoaded,
+  isAdmin,
+  isAuthenticated,
+  isMe,
+} from "../../store/auth/selectors.js";
 import { Error401, Error404 } from "../../pages/errors";
-import isEmpty from "lodash/isEmpty";
+import RectangleLoader from "../Loaders/RectangleLoader/RectangleLoader";
+//import isEmpty from "lodash/isEmpty";
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
   const {
     isAdmin,
     isAuthenticated,
+    isLoaded,
     restricted,
     allowForMe,
     user,
@@ -21,7 +28,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
   const { userId } = computedMatch.params;
 
   const renderComponent = (props) => {
-    if (!isAuthenticated) {
+    if (isLoaded && !isAuthenticated) {
       console.log("PrivateRoute render Redirect to login", rest);
       return (
         <Redirect
@@ -33,10 +40,20 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
       );
     }
 
-    const userLoaded = !isEmpty(user);
-    if (!userLoaded) {
-      return <Component {...props} />;
+    if (!isLoaded) {
+      return (
+        <PageLayout>
+          <PageLayout.SectionBody>
+            <RectangleLoader height="90vh" />
+          </PageLayout.SectionBody>
+        </PageLayout>
+      );
     }
+
+    // const userLoaded = !isEmpty(user);
+    // if (!userLoaded) {
+    //   return <Component {...props} />;
+    // }
 
     // if (!userLoaded) {
     //   console.log("PrivateRoute render Loader", rest);
@@ -54,11 +71,11 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
       isAdmin ||
       (allowForMe && userId && isMe(user, userId))
     ) {
-      console.log(
-        "PrivateRoute render Component",
-        rest,
-        Component.name || Component.displayName
-      );
+      // console.log(
+      //   "PrivateRoute render Component",
+      //   rest,
+      //   Component.name || Component.displayName
+      // );
       return <Component {...props} />;
     }
 
@@ -76,14 +93,11 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
 };
 
 function mapStateToProps(state) {
-  const { isLoaded, isAuthenticated } = state.auth;
   return {
     isAdmin: isAdmin(state),
     user: getCurrentUser(state),
-    isAuthenticated: !(
-      !localStorage.getItem(AUTH_KEY) ||
-      (isLoaded && !isAuthenticated)
-    ),
+    isAuthenticated: isAuthenticated(state),
+    isLoaded: getIsLoaded(state),
   };
 }
 
