@@ -32,6 +32,7 @@ x-service:
     volumes:
     #- /app/onlyoffice/CommunityServer/data:/app/onlyoffice/data
     - app_data:/app/onlyoffice/data
+    - ./config/storage.substitutions.json:/app/onlyoffice/config/storage.json
 
 services: 
   onlyoffice-elasticsearch:

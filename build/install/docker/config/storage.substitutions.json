@@ -11,13 +11,22 @@
           "name": "s3",
           "type": "ASC.Data.Storage.S3.S3Storage, ASC.Data.Storage",
           "property": [
+
             {
-                "acesskey": "${S3_ACCESSKEY}",
-                "secretaccesskey": "${S3_SECRETACCESSKEY}",
-                "bucket": "${S3_BUCKET}",
-                "cname": "${S3_CNAME}",
-                "region": "${S3_REGION}",
-                "recycleDir": "${S3_RECYCLEDIR}"
+              "name": "acesskey",
+              "value": "AKIA54GFN2U6LKJ2BCEZ"
+            },
+            {
+              "name": "secretaccesskey",
+              "value": "tiGy+ZTMb9zQTCFnr3z26t4XcMonb4J3Xi6WGklq"
+            },
+            {
+              "name": "bucket",
+              "value": "kirichenko-appserver"
+            },
+            {
+              "name": "region",
+              "value": "us-east-1"
             }
           ]
         }
