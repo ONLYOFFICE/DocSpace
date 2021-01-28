@@ -27,26 +27,6 @@ const StyledContainer = styled.div`
       ? `${props.contentHeight}px`
       : "100vh"};
 
-  /*#desktopScroll {
-    > .scroll-body {
-      position: ${(props) =>
-    props.isTabletView ? "static" : "absolute"} !important;
-
-      padding-right: ${(props) =>
-    props.isTabletView ? "1px" : "16px"} !important;
-
-      height: ${isMobile ? "100%" : "calc(100% + 20px)"};
-    }
-    .nav-thumb-horizontal {
-      ${(props) =>
-    props.isTabletView &&
-    css`
-      position: fixed !important;
-      bottom: 4px;
-    `}
-    }
-  } */
-
   #articleScrollBar {
     > .scroll-body {
       position: ${(props) =>
@@ -64,16 +44,7 @@ const StyledContainer = styled.div`
           overflow-y: hidden !important;
           overflow-x: hidden !important;
           width: 208px;
-          /* max-width: calc(100vw - 576px);
-          min-width: 208px; */
-        `}/* > div:first-child {
-        ${(props) =>
-        props.isTabletView &&
-        css`
-          max-width: calc(100vw - 488px);
-          min-width: 208px !important;
         `}
-      } */
     }
 
     .nav-thumb-horizontal {
