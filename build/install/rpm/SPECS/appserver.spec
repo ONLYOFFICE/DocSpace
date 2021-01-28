@@ -1,5 +1,3 @@
-%define _unpackaged_files_terminate_build 0
-%undefine _missing_build_ids_terminate_build
 %define  debug_package %{nil}
 %global GIT_BRANCH develop
 Name:           onlyoffice-appserver

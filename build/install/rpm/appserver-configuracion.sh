@@ -6,7 +6,7 @@ APP_PORT="80"
 
 APP_CONF="/etc/onlyoffice/appserver/config/appsettings.test.json"
 KAFKA_CONF="/etc/onlyoffice/appserver/config/kafka.test.json"
-NGINX_CONF="/etc/nginx/conf.d/onlyoffice.conf"
+NGINX_CONF="/etc/nginx/conf.d"
 
 DB_HOST=""
 DB_NAME=""
@@ -219,13 +219,14 @@ setup_nginx(){
 
 	rm -rf /etc/nginx/conf.d/default.conf
 
-    sed -i "s/listen.*;/listen $APP_PORT;/" $NGINX_CONF
+    sed -i "s/listen.*;/listen $APP_PORT;/" $NGINX_CONF/onlyoffice.conf
 
     shopt -s nocasematch
     PORTS=()
     case $(getenforce) in
         enforcing|permissive)
             PORTS+=('8081')
+            PORTS+=('8083')
             PORTS+=('5001')
             PORTS+=('5002')
             PORTS+=('5008')
@@ -242,7 +243,7 @@ setup_nginx(){
         true
     done
     chown nginx:nginx /etc/nginx/* -R
-    sudo sed -e 's/#//' -i $NGINX_CONF
+    sudo sed -e 's/#//' -i $NGINX_CONF/onlyoffice.conf
     systemctl reload nginx
 	echo "OK"
 }
@@ -250,7 +251,10 @@ setup_nginx(){
 setup_docs() {
 	echo -n "Configuring Docs... "
 	DS_CONF="/etc/onlyoffice/documentserver/local.json"
-	
+
+	sed -i "s/0.0.0.0:.*;/0.0.0.0:$DOCUMENT_SERVER_PORT;/" $NGINX_CONF/ds.conf
+	sed -i "s/]:.*;/]:$DOCUMENT_SERVER_PORT default_server;/g" $NGINX_CONF/ds.conf  	
+
 	DOCUMENT_SERVER_JWT_SECRET=$(cat ${DS_CONF} | jq -r '.services.CoAuthoring.secret.inbox.string')
 	DOCUMENT_SERVER_JWT_HEADER=$(cat ${DS_CONF} | jq -r '.services.CoAuthoring.token.inbox.header')
 
@@ -259,7 +263,7 @@ setup_docs() {
 	sed "s!\"header\": \".*\"!\"header\": \"${DOCUMENT_SERVER_JWT_HEADER}\"!" -i ${APP_CONF}
 	sed "0,/\"value\": \".*\",/{s/\"value\": \".*\",/\"value\": \"$DOCUMENT_SERVER_JWT_SECRET\",/}" -i ${APP_CONF}
 	sed "s!\"portal\": \".*\"!\"portal\": \"\"!" -i ${APP_CONF}
-	sed "0,/proxy_pass .*;/{s/proxy_pass .*;/proxy_pass http:\/\/${DOCUMENT_SERVER_HOST}:${DOCUMENT_SERVER_PORT};/}" -i $NGINX_CONF
+	sed "0,/proxy_pass .*;/{s/proxy_pass .*;/proxy_pass http:\/\/${DOCUMENT_SERVER_HOST}:${DOCUMENT_SERVER_PORT};/}" -i $NGINX_CONF/onlyoffice.conf
 
 	echo "OK"
 }
