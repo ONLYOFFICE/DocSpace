@@ -1875,7 +1875,7 @@ class SectionBodyContent extends React.Component {
 
     const { authorType, search, withSubfolders, filterType } = filter;
     const isFiltered = authorType || search || !withSubfolders || filterType;
-    console.log();
+
     return (!fileAction.id && items.length === 0) || null ? (
       firstLoad ? (
         <Loaders.Rows />
