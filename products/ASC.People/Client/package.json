@@ -17,6 +17,8 @@
     "lodash-es": "4.17.15",
     "merge": "^1.2.1",
     "node-sass": "^4.14.1",
+    "mobx": "^6.1.1",
+    "mobx-react": "^7.1.0",
     "oidc-client": "^1.10.1",
     "prop-types": "^15.7.2",
     "react": "^16.14.0",
