@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { observer } from "mobx-react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import NavItem from "./nav-item";
@@ -14,10 +15,12 @@ import {
   getCurrentProductId,
   getCurrentProductName,
   getDefaultPage,
-  getMainModules,
+  //getMainModules,
   getTotalNotificationsCount,
   getIsLoaded,
 } from "../../../store/auth/selectors";
+import store from "../../../store";
+const { moduleStore } = store;
 
 const { desktop } = utils.device;
 
@@ -189,6 +192,14 @@ HeaderComponent.propTypes = {
   isAuthenticated: PropTypes.bool,
 };
 
+const HeaderComponentWrapper = observer((props) => {
+  useEffect(() => {
+    moduleStore.getModules();
+  }, []);
+
+  return <HeaderComponent mainModules={moduleStore.modules} {...props} />;
+});
+
 const mapStateToProps = (state) => {
   const { logoUrl } = state.auth.settings;
   const { isAuthenticated } = state.auth;
@@ -196,7 +207,7 @@ const mapStateToProps = (state) => {
   return {
     defaultPage: getDefaultPage(state),
     totalNotifications: getTotalNotificationsCount(state),
-    mainModules: getMainModules(state),
+    //mainModules: getMainModules(state),
     currentProductName: getCurrentProductName(state),
     currentProductId: getCurrentProductId(state),
     isLoaded: getIsLoaded(state),
@@ -205,4 +216,4 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps)(HeaderComponent);
+export default connect(mapStateToProps)(HeaderComponentWrapper);

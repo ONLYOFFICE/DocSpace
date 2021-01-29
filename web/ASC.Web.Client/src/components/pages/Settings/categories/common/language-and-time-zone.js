@@ -24,7 +24,7 @@ const { getLanguage } = store.auth.selectors;
 const { changeLanguage } = utils;
 const {
   getPortalCultures,
-  getModules,
+  //getModules,
   getCurrentCustomSchema,
 } = store.auth.actions;
 
@@ -212,7 +212,7 @@ class LanguageAndTimeZone extends React.Component {
             language: languageFromSessionStorage || newLocaleSelectedLanguage,
           });
         })
-        .then(() => getModules(clientStore.dispatch))
+        //.then(() => getModules(clientStore.dispatch))
         .then(() => getCurrentCustomSchema(clientStore.dispatch, nameSchemaId));
     }
     if (timezoneDefault && languageDefault) {

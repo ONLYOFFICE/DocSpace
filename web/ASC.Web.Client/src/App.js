@@ -27,7 +27,7 @@ const {
   setIsLoaded,
   getUser,
   getPortalSettings,
-  getModules,
+  //getModules,
   getIsAuthenticated,
 } = CommonStore.auth.actions;
 
@@ -42,7 +42,7 @@ class App extends React.Component {
     const {
       getPortalSettings,
       getUser,
-      getModules,
+      //getModules,
       setIsLoaded,
       getIsAuthenticated,
     } = this.props;
@@ -64,7 +64,7 @@ class App extends React.Component {
         ) {
           requests.push(getUser());
           requests.push(getPortalSettings());
-          requests.push(getModules());
+          //requests.push(getModules());
         }
 
         Promise.all(requests)
@@ -140,7 +140,7 @@ const mapDispatchToProps = (dispatch) => {
     getIsAuthenticated: () => getIsAuthenticated(dispatch),
     getPortalSettings: () => getPortalSettings(dispatch),
     getUser: () => getUser(dispatch),
-    getModules: () => getModules(dispatch),
+    //getModules: () => getModules(dispatch),
     setIsLoaded: () => dispatch(setIsLoaded(true)),
   };
 };

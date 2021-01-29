@@ -6,7 +6,7 @@ import history from "../../history";
 
 export const LOGIN_POST = "LOGIN_POST";
 export const SET_CURRENT_USER = "SET_CURRENT_USER";
-export const SET_MODULES = "SET_MODULES";
+//export const SET_MODULES = "SET_MODULES";
 export const SET_SETTINGS = "SET_SETTINGS";
 export const SET_IS_LOADED = "SET_IS_LOADED";
 export const SET_IS_LOADED_SECTION = "SET_IS_LOADED_SECTION";
@@ -33,12 +33,12 @@ export function setCurrentUser(user) {
   };
 }
 
-export function setModules(modules) {
-  return {
-    type: SET_MODULES,
-    modules,
-  };
-}
+// export function setModules(modules) {
+//   return {
+//     type: SET_MODULES,
+//     modules,
+//   };
+// }
 
 export function setSettings(settings) {
   return {
@@ -201,14 +201,14 @@ export function getCurrentCustomSchema(dispatch, id) {
     .then((customNames) => dispatch(setCustomNames(customNames)));
 }
 
-export function getModules(dispatch) {
-  return api.modules
-    .getModulesList()
-    .then((modules) => dispatch(setModules(modules)));
-}
+// export function getModules(dispatch) {
+//   return api.modules
+//     .getModulesList()
+//     .then((modules) => dispatch(setModules(modules)));
+// }
 
 export const loadInitInfo = (dispatch) => {
-  return getPortalSettings(dispatch).then(() => getModules(dispatch));
+  return getPortalSettings(dispatch); //.then(() => getModules(dispatch));
 };
 
 export function getUserInfo(dispatch) {

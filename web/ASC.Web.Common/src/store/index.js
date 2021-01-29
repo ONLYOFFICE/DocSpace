@@ -1,3 +1,6 @@
 import { default as auth } from "./auth";
+import ModuleStore from "./ModuleStore";
 
-export default { auth };
+const moduleStore = new ModuleStore();
+
+export default { auth, moduleStore };

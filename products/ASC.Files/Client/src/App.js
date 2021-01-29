@@ -29,7 +29,7 @@ const {
   setIsLoaded,
   getUser,
   getPortalSettings,
-  getModules,
+  //getModules,
   setCurrentProductId,
   setCurrentProductHomePage,
   getPortalCultures,
@@ -59,7 +59,7 @@ class App extends React.Component {
       setModuleInfo,
       getUser,
       getPortalSettings,
-      getModules,
+      //getModules,
       getPortalCultures,
       fetchTreeFolders,
       setIsLoaded,
@@ -88,7 +88,7 @@ class App extends React.Component {
       if (!this.isEditor) {
         requests.push(
           getPortalSettings(),
-          getModules(),
+          //getModules(),
           getPortalCultures(),
           fetchTreeFolders()
         );
@@ -220,7 +220,7 @@ const mapDispatchToProps = (dispatch) => {
     },
     getUser: () => getUser(dispatch),
     getPortalSettings: () => getPortalSettings(dispatch),
-    getModules: () => getModules(dispatch),
+    //getModules: () => getModules(dispatch),
     getPortalCultures: () => getPortalCultures(dispatch),
     fetchTreeFolders: () => dispatch(fetchTreeFolders()),
     setIsLoaded: () => dispatch(setIsLoaded(true)),

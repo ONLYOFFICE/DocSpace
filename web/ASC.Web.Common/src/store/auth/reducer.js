@@ -99,10 +99,10 @@ const authReducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         isAuthenticated: action.isAuthenticated,
       });
-    case SET_MODULES:
-      return Object.assign({}, state, {
-        modules: action.modules,
-      });
+    // case SET_MODULES:
+    //   return Object.assign({}, state, {
+    //     modules: action.modules,
+    //   });
     case SET_SETTINGS:
       if (!localStorage.getItem(LANGUAGE)) {
         localStorage.setItem(LANGUAGE, action.settings.culture);
