@@ -22,6 +22,7 @@ import {
   utils,
   toastr,
   Layout,
+  ScrollToTop,
   regDesktop,
 } from "asc-web-common";
 
@@ -120,7 +121,7 @@ class App extends React.Component {
       setEncryptionKeys,
       isLoaded,
     } = this.props;
-    console.log("componentDidUpdate: ", this.props);
+    //console.log("componentDidUpdate: ", this.props);
     if (isAuthenticated && !this.isDesktopInit && isEncryption && isLoaded) {
       this.isDesktopInit = true;
       regDesktop(
@@ -141,11 +142,12 @@ class App extends React.Component {
 
   render() {
     const { homepage, isDesktop } = this.props;
-    console.log(Layout);
+    //console.log(Layout);
 
     return navigator.onLine ? (
       <Layout>
         <Router history={history}>
+          <ScrollToTop />
           {!this.isEditor && <NavMenu />}
           <Main isDesktop={isDesktop}>
             <Suspense fallback={null}>

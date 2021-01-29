@@ -5,6 +5,7 @@ import NavItem from "./nav-item";
 import Headline from "../../Headline";
 import Nav from "./nav";
 import NavLogoItem from "./nav-logo-item";
+
 import Loaders from "../../Loaders/index";
 import { ReactSVG } from "react-svg";
 
@@ -82,10 +83,10 @@ const HeaderComponent = ({
   isNavOpened,
   currentProductId,
   toggleAside,
+  isLoaded,
+  isAuthenticated,
   ...props
 }) => {
-  //console.log("Header render");
-
   const isNavAvailable = mainModules.length > 0;
   const onLogoClick = () => {
     window.open(defaultPage, "_self");
@@ -102,7 +103,12 @@ const HeaderComponent = ({
 
   return (
     <>
-      <Header module={currentProductName}>
+      <Header
+        module={currentProductName}
+        isLoaded={isLoaded}
+        isAuthenticated={isAuthenticated}
+        className="navMenuHeader hidingHeader"
+      >
         <NavItem
           iconName="MenuIcon"
           badgeNumber={totalNotifications}
@@ -130,6 +136,7 @@ const HeaderComponent = ({
           {currentProductName}
         </Headline>
       </Header>
+
       {isNavAvailable && (
         <Nav
           opened={isNavOpened}

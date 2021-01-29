@@ -10,4 +10,4 @@ export const PAGE = "page";
 export const PAGE_COUNT = "count";
 export const FOLDER = "folder";
 export const PREVIEW = "preview";
-export const TIMEOUT = 5000;
+export const TIMEOUT = 1000;

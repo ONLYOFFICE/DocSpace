@@ -8,6 +8,7 @@ const StyledCircleWrap = styled.div`
   height: 54px;
   background: ${backgroundColor};
   border-radius: 50%;
+  cursor: pointer;
 `;
 
 const StyledCircle = styled.div`

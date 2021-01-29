@@ -12,6 +12,7 @@ import {
 } from "asc-web-common";
 import { connect } from "react-redux";
 import { withTranslation } from "react-i18next";
+import { isMobile } from "react-device-detect";
 import {
   ContextMenuButton,
   DropDownItem,
@@ -57,7 +58,7 @@ import {
   getOnlyFoldersSelected,
 } from "../../../../../store/files/selectors";
 
-const { isAdmin, isDesktopClient } = store.auth.selectors;
+const { isAdmin, isDesktopClient, getIsTabletView } = store.auth.selectors;
 const { FilterType, FileAction } = constants;
 const { tablet, desktop } = utils.device;
 const { Consumer } = utils.context;
@@ -139,13 +140,38 @@ const StyledContainer = styled.div`
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     padding-bottom: 56px;
 
+    ${isMobile &&
+    css`
+      position: sticky;
+    `}
+
+    ${(props) =>
+      !props.isTabletView
+        ? props.width &&
+          isMobile &&
+          css`
+            width: ${props.width + 40 + "px"};
+          `
+        : props.width &&
+          isMobile &&
+          css`
+            width: ${props.width + 32 + "px"};
+          `}
+
     @media ${tablet} {
+      padding-bottom: 0;
+      ${!isMobile &&
+      css`
+        height: 56px;
+      `}
       & > div:first-child {
         ${(props) =>
+          !isMobile &&
           props.width &&
           css`
             width: ${props.width + 16 + "px"};
           `}
+
         position: absolute;
         ${(props) =>
           !props.isDesktop &&
@@ -540,6 +566,7 @@ class SectionHeaderContent extends React.Component {
       title,
       canCreate,
       isDesktop,
+      isTabletView,
     } = this.props;
 
     const {
@@ -561,6 +588,7 @@ class SectionHeaderContent extends React.Component {
             canCreate={canCreate}
             title={title}
             isDesktop={isDesktop}
+            isTabletView={isTabletView}
           >
             {isHeaderVisible ? (
               <div className="group-button-menu-container">
@@ -715,6 +743,7 @@ const mapStateToProps = (state) => {
     sharingPanelVisible: getSharePanelVisible(state),
     isThirdPartySelection: getIsThirdPartySelection(state),
     isOnlyFoldersSelected: getOnlyFoldersSelected(state),
+    isTabletView: getIsTabletView(state),
   };
 };
 
