@@ -7,9 +7,9 @@ import { createI18N } from "../../../../helpers/i18n";
 import Button from "@appserver/components/src/components/button";
 import { tablet } from "@appserver/components/src/utils/device";
 import toastr from "@appserver/components/src/components/toast/toastr";
-import utils from "@appserver/common/src/utils";
+import {changeLanguage }from "@appserver/common/src/utils";
 import { setPaymentsLicense } from "../../../../store/payments/actions";
-const { changeLanguage } = utils;
+
 
 const i18n = createI18N({
   page: "PaymentsEnterprise",

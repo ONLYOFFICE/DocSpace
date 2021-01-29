@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
-import { Router, Switch } from "react-router-dom";
+import { Router, Switch, Link } from "react-router-dom";
 import NavMenu from "@appserver/common/src/components/NavMenu";
 import Main from "@appserver/common/src/components/Main";
 import Box from "@appserver/components/src/components/box";
@@ -20,6 +20,7 @@ import {
 } from "@appserver/common/src/store/auth/actions";
 import { updateTempContent } from "@appserver/common/src/utils";
 
+const Payments = React.lazy(() => import("./components/pages/Payments"));
 const Error404 = React.lazy(() =>
   import("@appserver/common/src/pages/errors/404")
 );
@@ -28,6 +29,14 @@ const Login = React.lazy(() => import("login/page"));
 const People = React.lazy(() => import("people/page"));
 const Files = React.lazy(() => import("files/page"));
 const About = React.lazy(() => import("./components/pages/About"));
+
+const PaymentsRoute = (props) => (
+  <React.Suspense fallback={null}>
+    <ErrorBoundary>
+      <Payments {...props} />
+    </ErrorBoundary>
+  </React.Suspense>
+);
 
 const Error404Route = (props) => (
   <React.Suspense fallback={null}>
@@ -142,6 +151,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
                 ]}
                 component={LoginRoute}
               />
+              <PrivateRoute path="/payments" component={PaymentsRoute} />
               <PrivateRoute component={Error404Route} />
             </Switch>
           </Main>

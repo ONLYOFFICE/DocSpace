@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import { withTranslation } from "react-i18next";
 import PropTypes from "prop-types";
 import PageLayout from "@appserver/common/src/components/PageLayout";
-import utils from "@appserver/common/src/utils";
+import {changeLanguage }from "@appserver/common/src/utils";
 import store from "@appserver/common/src/store";
 import Loader from "@appserver/components/src/components/loader";
 import { tablet, size } from "@appserver/components/src/utils/device";
@@ -21,7 +21,7 @@ const i18n = createI18N({
   localesPath: "pages/PaymentsEnterprise",
 });
 const { setCurrentProductId } = store.auth.actions;
-const { changeLanguage } = utils;
+
 
 const StyledBody = styled.div`
   margin: 0 auto;
