@@ -541,6 +541,7 @@ class FilesRowContent extends React.PureComponent {
         : { onClick: this.onFilesClick };
     const showNew = !!newItems;
 
+    //console.log(fileStatus);
     return isEdit ? (
       <EditingWrapperComponent
         itemTitle={itemTitle}
@@ -624,7 +625,7 @@ class FilesRowContent extends React.PureComponent {
                     hoverColor="#3B72A7"
                   />
                 )}
-                {fileStatus === 32 && !isTrashFolder && (
+                {fileStatus === 96 && !isTrashFolder && (
                   <Icons.FavoriteIcon
                     className="favorite"
                     size="small"

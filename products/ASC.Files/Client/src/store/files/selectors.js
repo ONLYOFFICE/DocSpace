@@ -712,7 +712,7 @@ const getFilesContextOptions = (
   const options = [];
 
   const isFile = !!item.fileExst;
-  const isFavorite = item.fileStatus === 32;
+  const isFavorite = item.fileStatus === 96;
   const isFullAccess = item.access < 2;
   const isThirdPartyFolder = item.providerKey && isRootFolder;
 
