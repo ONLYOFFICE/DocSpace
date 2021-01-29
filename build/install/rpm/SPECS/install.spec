@@ -37,7 +37,7 @@ cp -rf %{_builddir}%{_var}/www/services/notify/* "%{buildroot}%{_var}/www/servic
 cp -rf %{_builddir}%{_var}/www/services/studio.notify/* "%{buildroot}%{_var}/www/services/studio.notify/"
 cp -rf %{_builddir}%{_var}/www/studio/api/* "%{buildroot}%{_var}/www/studio/api"
 cp -rf %{_builddir}%{_var}/www/studio/server/* "%{buildroot}%{_var}/www/studio/server/"
-cp -rf %{_builddir}/AppServer-%GIT_BRANCH/build/install/config/*.sql %{buildroot}%{_sysconfdir}/onlyoffice/appserver/
+cp -rf %{_builddir}/AppServer-%GIT_BRANCH/build/install/docker/config/*.sql %{buildroot}%{_sysconfdir}/onlyoffice/appserver/
 cp -rf %{_builddir}/AppServer-%GIT_BRANCH/build/install/rpm/*.sh %{buildroot}%{_bindir}/
 cp -rf %{_builddir}/AppServer-%GIT_BRANCH/build/install/rpm/systemd/modules/* %{buildroot}%{_sysconfdir}/systemd/system
 cp -rf %{_builddir}/AppServer-%GIT_BRANCH/common/ASC.Socket.IO/* %{buildroot}/services/ASC.Socket.IO
