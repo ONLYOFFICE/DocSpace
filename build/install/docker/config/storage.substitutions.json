@@ -25,8 +25,16 @@
               "value": "kirichenko-appserver"
             },
             {
+              "name": "cname",
+              "value": "http://kirichenko-appserver"
+            },
+            {
               "name": "region",
               "value": "us-east-1"
+            },
+            {
+              "name": "recycleDir",
+              "value": "recycle"
             }
           ]
         }
