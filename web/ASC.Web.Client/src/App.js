@@ -16,21 +16,22 @@ export default App;
 // import React, { Suspense, lazy } from "react";
 // import { Router, Route, Switch } from "react-router-dom";
 // import { connect } from "react-redux";
-// // import {
-// //   Login,
-// //   Error404,
-// //   Offline,
-// //   ComingSoon
-// // } from "@appserver/common";
-// import CommonStore from "@appserver/common/src/store";
-// import history from "@appserver/common/src/history";
-// import PrivateRoute from "@appserver/common/src/components/PrivateRoute";
-// import PublicRoute from "@appserver/common/src/components/PublicRoute";
-// import NavMenu from "@appserver/common/src/components/NavMenu";
-// import Main from "@appserver/common/src/components/Main";
-// import utils from "@appserver/common/src/utils";
-// import toastr from "@appserver/common/src/components/Toast/toastr";
-
+// import {
+//   store as CommonStore,
+//   history,
+//   PrivateRoute,
+//   PublicRoute,
+//   Login,
+//   Error404,
+//   Offline,
+//   ComingSoon,
+//   NavMenu,
+//   Main,
+//   utils,
+//   toastr,
+//   Layout,
+//   ScrollToTop,
+// } from "asc-web-common";
 // import Home from "./components/pages/Home";
 
 // const About = lazy(() => import("./components/pages/About"));
@@ -72,69 +73,76 @@ export default App;
 //           return;
 //         }
 
-//     const requests = [];
+//         const requests = [];
 //         if (!isAuthenticated) {
-//       requests.push(getPortalSettings());
+//           requests.push(getPortalSettings());
 //         } else if (
 //           !window.location.pathname.includes("confirm/EmailActivation")
 //         ) {
-//       requests.push(getUser());
-//       requests.push(getPortalSettings());
-//       requests.push(getModules());
-//     }
+//           requests.push(getUser());
+//           requests.push(getPortalSettings());
+//           requests.push(getModules());
+//         }
 
-//     Promise.all(requests)
-//       .catch((e) => {
-//         toastr.error(e);
-//       })
-//       .finally(() => {
+//         Promise.all(requests)
+//           .catch((e) => {
+//             toastr.error(e);
+//           })
+//           .finally(() => {
 //             utils.updateTempContent();
-//         setIsLoaded();
-//       });
+//             setIsLoaded();
+//           });
 //       })
 //       .catch((err) => toastr.error(err));
 //   }
 
 //   render() {
 //     return navigator.onLine ? (
-//       <Router history={history}>
-//         {!this.isThirdPartyResponse && <NavMenu />}
-//         <Main>
-//           <Suspense fallback={null}>
-//             <Switch>
-//               <Route exact path="/wizard" component={Wizard} />
-//               <PublicRoute
-//                 exact
-//                 path={[
-//                   "/login",
-//                   "/login/error=:error",
-//                   "/login/confirmed-email=:confirmedEmail",
-//                 ]}
-//                 component={Login}
-//               />
-//               <Route path="/confirm" component={Confirm} />
-//               <PrivateRoute
-//                 path={`/thirdparty/:provider`}
-//                 component={ThirdPartyResponse}
-//               />
-//               <PrivateRoute
-//                 exact
-//                 path={["/", "/error=:error"]}
-//                 component={Home}
-//               />
-//               <PrivateRoute exact path="/about" component={About} />
-//               <PrivateRoute restricted path="/settings" component={Settings} />
-//               <PrivateRoute
-//                 exact
-//                 path={["/coming-soon"]}
-//                 component={ComingSoon}
-//               />
-//               <PrivateRoute path="/payments" component={Payments} />
-//               <PrivateRoute component={Error404} />
-//             </Switch>
-//           </Suspense>
-//         </Main>
-//       </Router>
+//       <Layout>
+//         <Router history={history}>
+//           <ScrollToTop />
+//           {!this.isThirdPartyResponse && <NavMenu />}
+//           <Main>
+//             <Suspense fallback={null}>
+//               <Switch>
+//                 <Route exact path="/wizard" component={Wizard} />
+//                 <PublicRoute
+//                   exact
+//                   path={[
+//                     "/login",
+//                     "/login/error=:error",
+//                     "/login/confirmed-email=:confirmedEmail",
+//                   ]}
+//                   component={Login}
+//                 />
+//                 <Route path="/confirm" component={Confirm} />
+//                 <PrivateRoute
+//                   path={`/thirdparty/:provider`}
+//                   component={ThirdPartyResponse}
+//                 />
+//                 <PrivateRoute
+//                   exact
+//                   path={["/", "/error=:error"]}
+//                   component={Home}
+//                 />
+//                 <PrivateRoute exact path="/about" component={About} />
+//                 <PrivateRoute
+//                   restricted
+//                   path="/settings"
+//                   component={Settings}
+//                 />
+//                 <PrivateRoute
+//                   exact
+//                   path={["/coming-soon"]}
+//                   component={ComingSoon}
+//                 />
+//                 <PrivateRoute path="/payments" component={Payments} />
+//                 <PrivateRoute component={Error404} />
+//               </Switch>
+//             </Suspense>
+//           </Main>
+//         </Router>
+//       </Layout>
 //     ) : (
 //       <Offline />
 //     );

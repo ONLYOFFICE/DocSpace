@@ -334,7 +334,7 @@ class FilesRowContent extends React.PureComponent {
   onMobileRowClick = (e) => {
     const { isTrashFolder } = this.props;
 
-    if (isTrashFolder || window.innerWidth > 1024) return;
+    if (isTrashFolder || !isMobile) return;
 
     this.onFilesClick();
   };

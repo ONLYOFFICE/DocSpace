@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { Loader } from "@appserver/components";
 import { PageLayout, utils, store, toastr, Loaders } from "@appserver/common";
 import {
   ArticleHeaderContent,
@@ -14,21 +13,21 @@ import { I18nextProvider, withTranslation } from "react-i18next";
 import { createI18N } from "../../../helpers/i18n";
 import { setDocumentTitle } from "../../../helpers/utils";
 import { withRouter } from "react-router";
-import { isChrome, isAndroid } from "react-device-detect";
+
 const i18n = createI18N({
   page: "Profile",
   localesPath: "pages/Profile",
 });
 const { changeLanguage } = utils;
-const { isAdmin, isVisitor, getLanguage } = store.auth.selectors;
+const { isAdmin, isVisitor, getLanguage, getIsLoaded } = store.auth.selectors;
 
 class PureProfile extends React.Component {
   componentDidMount() {
     const { match, fetchProfile, profile, location, t } = this.props;
     const { userId } = match.params;
-    isChrome && isAndroid && window && window.scroll(0, 0);
-    setDocumentTitle(t("Profile"));
 
+    setDocumentTitle(t("Profile"));
+    this.documentElement = document.getElementsByClassName("hidingHeader");
     const queryString = ((location && location.search) || "").slice(1);
     const queryParams = queryString.split("&");
     const arrayOfQueryParams = queryParams.map((queryParam) =>
@@ -42,15 +41,27 @@ class PureProfile extends React.Component {
     if (!profile) {
       fetchProfile(userId);
     }
+
+    if (!profile && this.documentElement) {
+      for (var i = 0; i < this.documentElement.length; i++) {
+        this.documentElement[i].style.transition = "none";
+  }
+    }
   }
 
   componentDidUpdate(prevProps) {
-    const { match, fetchProfile } = this.props;
+    const { match, fetchProfile, profile } = this.props;
     const { userId } = match.params;
     const prevUserId = prevProps.match.params.userId;
 
     if (userId !== undefined && userId !== prevUserId) {
       fetchProfile(userId);
+    }
+
+    if (profile && this.documentElement) {
+      for (var i = 0; i < this.documentElement.length; i++) {
+        this.documentElement[i].style.transition = "";
+  }
     }
   }
 
@@ -59,11 +70,12 @@ class PureProfile extends React.Component {
   }
 
   render() {
-    //console.log("Profile render")
-    const { profile, isVisitor, isAdmin } = this.props;
+    //console.log("Profile render");
+
+    const { profile, isVisitor, isAdmin, isLoaded } = this.props;
 
     return (
-      <PageLayout withBodyAutoFocus={true}>
+      <PageLayout withBodyAutoFocus={true} isLoaded={isLoaded}>
         {!isVisitor && (
           <PageLayout.ArticleHeader>
             <ArticleHeaderContent />
@@ -117,11 +129,10 @@ Profile.propTypes = {
 };
 
 function mapStateToProps(state) {
-  const { isLoaded } = state.auth;
   const { targetUser } = state.profile;
   return {
     profile: targetUser,
-    isLoaded,
+    isLoaded: getIsLoaded(state),
     isVisitor: isVisitor(state),
     isAdmin: isAdmin(state),
     language: getLanguage(state),

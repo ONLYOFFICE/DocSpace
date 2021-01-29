@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import Box from "@appserver/components/src/components/box";
 import RecoverAccess from "./recover-access-container";
+
 import { connect } from "react-redux";
 import { useTranslation } from "react-i18next";
 
@@ -54,12 +55,10 @@ const HeaderUnAuth = ({
   isAuthenticated,
   isLoaded,
 }) => {
-  //console.log("HeaderUnAuth render");
-
   const { t } = useTranslation();
 
   return (
-    <Header>
+    <Header isLoaded={isLoaded} className="navMenuHeaderUnAuth">
       <Box
         displayProp="flex"
         justifyContent="space-between"

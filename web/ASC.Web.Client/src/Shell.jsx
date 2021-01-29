@@ -7,6 +7,8 @@ import Box from "@appserver/components/src/components/box";
 import PrivateRoute from "@appserver/common/src/components/PrivateRoute";
 import PublicRoute from "@appserver/common/src/components/PublicRoute";
 import ErrorBoundary from "@appserver/common/src/components/ErrorBoundary";
+import Layout from "@appserver/common/src/components/Layout";
+import ScrollToTop from "@appserver/common/src/components/Layout/ScrollToTop";
 import history from "@appserver/common/src/history";
 import toastr from "@appserver/common/src/components/Toast/toastr";
 import {
@@ -110,39 +112,42 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
   }, []);
 
   return (
-    <Router history={history}>
-      <Box>
-        <NavMenu />
-        <Main>
-          <Switch>
-            <PrivateRoute
-              exact
-              path={["/", "/error=:error"]}
-              component={HomeRoute}
-            />
-            <PrivateRoute
-              path={["/products/people", "/products/people/filter"]}
-              component={PeopleRoute}
-            />
-            <PrivateRoute
-              path={["/products/files", "/products/files/filter"]}
-              component={FilesRoute}
-            />
-            <PrivateRoute path={["/about"]} component={AboutRoute} />
-            <PublicRoute
-              exact
-              path={[
-                "/login",
-                "/login/error=:error",
-                "/login/confirmed-email=:confirmedEmail",
-              ]}
-              component={LoginRoute}
-            />
-            <PrivateRoute component={Error404Route} />
-          </Switch>
-        </Main>
-      </Box>
-    </Router>
+    <Layout>
+      <Router history={history}>
+        <Box>
+          <NavMenu />
+          <ScrollToTop />
+          <Main>
+            <Switch>
+              <PrivateRoute
+                exact
+                path={["/", "/error=:error"]}
+                component={HomeRoute}
+              />
+              <PrivateRoute
+                path={["/products/people", "/products/people/filter"]}
+                component={PeopleRoute}
+              />
+              <PrivateRoute
+                path={["/products/files", "/products/files/filter"]}
+                component={FilesRoute}
+              />
+              <PrivateRoute path={["/about"]} component={AboutRoute} />
+              <PublicRoute
+                exact
+                path={[
+                  "/login",
+                  "/login/error=:error",
+                  "/login/confirmed-email=:confirmedEmail",
+                ]}
+                component={LoginRoute}
+              />
+              <PrivateRoute component={Error404Route} />
+            </Switch>
+          </Main>
+        </Box>
+      </Router>
+    </Layout>
   );
 };
 

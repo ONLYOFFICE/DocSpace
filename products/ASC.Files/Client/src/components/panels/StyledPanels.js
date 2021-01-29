@@ -42,6 +42,20 @@ const StyledAsidePanel = styled.div`
     margin: 14px 0;
     padding-right: 10px;
   }
+  .upload_panel-header {
+    font-weight: 700;
+    padding: 19px auto 19px 17px;
+  }
+  .upload-panel_header-content {
+    z-index: 320;
+    position: fixed;
+    left: 0;
+    right: 0;
+    background-color: #fff;
+  }
+  .upload-panel_body {
+    padding: 64px 0;
+  }
   .modal-dialog-aside {
     padding: 0;
     transform: translateX(${(props) => (props.visible ? "0" : "500px")});
@@ -174,15 +188,9 @@ const StyledHeaderContent = styled.div`
   align-items: center;
   padding: 0 16px;
 
-  display: flex;
-  align-items: center;
-
-  padding: 0 16px;
-
   .sharing_panel-icons-container {
     display: flex;
     margin-left: auto;
-
     .sharing_panel-drop-down-wrapper {
       position: relative;
 
@@ -195,10 +203,21 @@ const StyledHeaderContent = styled.div`
     }
   }
 
+  .upload_panel-icons-container {
+    display: flex;
+    margin-left: auto;
+    .upload_panel-vertical-dots-icon {
+    }
+    .upload_panel-remove-icon {
+      padding-right: 8px;
+    }
+  }
+
   .files-operations-header,
   .sharing_panel-header {
     font-weight: 700;
     margin: 14px 0;
+    margin-left: 16px;
   }
 `;
 
@@ -208,10 +227,6 @@ const StyledBody = styled.div`
     box-sizing: border-box;
     width: 100%;
     height: calc(100vh - 125px);
-
-    .files-new-link {
-      padding-left: 8px;
-    }
 
     .styled-element {
       margin-left: -2px;

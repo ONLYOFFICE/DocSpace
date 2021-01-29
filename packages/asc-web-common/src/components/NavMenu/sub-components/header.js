@@ -6,6 +6,7 @@ import NavItem from "./nav-item";
 import Headline from "../../Headline";
 import Nav from "./nav";
 import NavLogoItem from "./nav-logo-item";
+
 import Loaders from "../../Loaders/index";
 import history from "../../../history";
 import { ReactSVG } from "react-svg";
@@ -82,10 +83,10 @@ const HeaderComponent = ({
   isNavOpened,
   currentProductId,
   toggleAside,
+  isLoaded,
+  isAuthenticated,
   ...props
 }) => {
-  //console.log("Header render");
-
   const isNavAvailable = mainModules.length > 0;
   const onLogoClick = () => {
     history.push(defaultPage);
@@ -102,7 +103,12 @@ const HeaderComponent = ({
 
   return (
     <>
-      <Header module={currentProductName}>
+      <Header
+        module={currentProductName}
+        isLoaded={isLoaded}
+        isAuthenticated={isAuthenticated}
+        className="navMenuHeader hidingHeader"
+      >
         <NavItem
           badgeNumber={totalNotifications}
           onClick={onClick}
@@ -129,6 +135,7 @@ const HeaderComponent = ({
           {currentProductName}
         </Headline>
       </Header>
+
       {isNavAvailable && (
         <Nav
           opened={isNavOpened}

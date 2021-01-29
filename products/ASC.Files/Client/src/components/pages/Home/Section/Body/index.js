@@ -98,8 +98,10 @@ import {
   getThirdPartyProviders,
   getThirdPartyCapabilities,
   getIsVerHistoryPanel,
+  getIsLoading,
 } from "../../../../../store/files/selectors";
 import { OperationsPanel, VersionHistoryPanel } from "../../../../panels";
+import { isMobile } from "react-device-detect";
 import {
   DeleteThirdPartyDialog,
   ConnectDialog,
@@ -120,7 +122,6 @@ const {
 const { FilesFilter } = api;
 const { FileAction } = constants;
 const { Consumer } = utils.context;
-
 const linkStyles = {
   isHovered: true,
   type: "action",
@@ -227,6 +228,10 @@ class SectionBodyContent extends React.Component {
   }
 
   componentDidMount() {
+    this.customScrollElm = document.querySelector(
+      "#customScrollBar > .scroll-body"
+    );
+
     let previewId = queryString.parse(this.props.location.search).preview;
 
     if (previewId) {
@@ -262,6 +267,16 @@ class SectionBodyContent extends React.Component {
   //   }
   // }
 
+  componentDidUpdate(prevProps) {
+    const { folderId } = this.props;
+
+    if (isMobile) {
+      if (folderId !== prevProps.folderId) {
+        this.customScrollElm && this.customScrollElm.scrollTo(0, 0);
+      }
+    }
+  }
+
   shouldComponentUpdate(nextProps, nextState) {
     //if (this.props && this.props.firstLoad) return true;
 
@@ -273,7 +288,7 @@ class SectionBodyContent extends React.Component {
       connectDialogVisible,
       showThirdPartyMoveDialog,
     } = this.state;
-    const { isVersionHistoryPanel } = this.props;
+    const { isVersionHistoryPanel, isLoading } = this.props;
 
     if (this.props.sharingPanelVisible !== nextProps.sharingPanelVisible) {
       return true;
@@ -318,6 +333,9 @@ class SectionBodyContent extends React.Component {
       return true;
     }
 
+    if (isLoading !== nextProps.isLoading) {
+      return true;
+    }
     return false;
   }
 
@@ -1808,6 +1826,7 @@ class SectionBodyContent extends React.Component {
       isVersionHistoryPanel,
       history,
       filter,
+      isLoading,
     } = this.props;
 
     const {
@@ -1867,6 +1886,8 @@ class SectionBodyContent extends React.Component {
       ) : (
         this.renderEmptyFolderContainer()
       )
+    ) : isMobile && isLoading ? (
+      <Loaders.Rows />
     ) : (
       <>
         {showMoveToPanel && (
@@ -2159,8 +2180,9 @@ const mapStateToProps = (state) => {
     isRootFolder: isRootFolder(state),
     providers: getThirdPartyProviders(state),
     capabilities: getThirdPartyCapabilities(state),
-    isVersionHistoryPanel: getIsVerHistoryPanel(state),
     isTabletView: getIsTabletView(state),
+    isVersionHistoryPanel: getIsVerHistoryPanel(state),
+    isLoading: getIsLoading(state),
   };
 };
 

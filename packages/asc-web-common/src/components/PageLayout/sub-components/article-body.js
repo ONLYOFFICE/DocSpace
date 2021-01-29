@@ -14,7 +14,7 @@ const StyledArticleBody = styled.div`
     height: calc(100% - 104px);
     display: table;
     width: 100%;
-
+    z-index: 5;
     .custom-scrollbar {
       display: table-cell;
     }
@@ -60,7 +60,11 @@ class ArticleBody extends React.Component {
 
     return (
       <StyledArticleBody>
-        <Scrollbar className="custom-scrollbar" stype="mediumBlack">
+        <Scrollbar
+          id="articleScrollBar"
+          className="custom-scrollbar"
+          stype="mediumBlack"
+        >
           <StyledArticleWrapper>{children}</StyledArticleWrapper>
         </Scrollbar>
       </StyledArticleBody>

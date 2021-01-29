@@ -8,8 +8,8 @@ import { Provider } from "@appserver/components/src/utils/context";
 
 import store from "../../store";
 import { withTranslation } from "react-i18next";
+import { isMobile } from "react-device-detect";
 import i18n from "./i18n";
-import { ARTICLE_PINNED_KEY } from "../../constants";
 import Article from "./sub-components/article";
 import SubArticleHeader from "./sub-components/article-header";
 import SubArticleMainButton from "./sub-components/article-main-button";
@@ -25,6 +25,9 @@ import SectionToggler from "./sub-components/section-toggler";
 import { changeLanguage } from "../../utils";
 import ReactResizeDetector from "react-resize-detector";
 import FloatingButton from "../FloatingButton";
+import { getIsTabletView } from "../../store/auth/selectors";
+import { isArticlePinned } from "../../store/auth/selectors";
+import { setArticlePinned } from "../../store/auth/actions";
 
 const { getLanguage } = store.auth.selectors;
 
@@ -75,9 +78,7 @@ class PageLayoutComponent extends React.Component {
   constructor(props) {
     super(props);
 
-    const isArticleVisibleAndPinned = !!localStorage.getItem(
-      ARTICLE_PINNED_KEY
-    );
+    const isArticleVisibleAndPinned = !!this.props.isArticlePinned;
 
     this.state = {
       isBackdropVisible: false,
@@ -116,9 +117,7 @@ class PageLayoutComponent extends React.Component {
   }
 
   orientationChangeHandler = () => {
-    this.updateMainHeight();
-
-    const isValueExist = !!localStorage.getItem(ARTICLE_PINNED_KEY);
+    const isValueExist = !!this.props.isArticlePinned;
     const isEnoughWidth = screen.availWidth > size.smallTablet;
 
     if (!isEnoughWidth && isValueExist) {
@@ -127,41 +126,6 @@ class PageLayoutComponent extends React.Component {
     if (isEnoughWidth && isValueExist) {
       this.pinArticle();
     }
-  };
-
-  updateMainHeight = () => {
-    const intervalTime = 100;
-    const endTimeoutTime = 1000;
-
-    let lastInnerHeight, noChangeCount;
-
-    const updateHeight = () => {
-      if (this.intervalHandler) clearInterval(this.intervalHandler);
-      if (this.timeoutHandler) clearTimeout(this.timeoutHandler);
-
-      this.intervalHandler = null;
-      this.timeoutHandler = null;
-
-      const vh = (window.innerHeight - 57) * 0.01;
-      document.documentElement.style.setProperty("--vh", `${vh}px`);
-    };
-
-    this.intervalHandler = setInterval(() => {
-      if (window.innerHeight === lastInnerHeight) {
-        noChangeCount++;
-
-        if (noChangeCount === intervalTime) {
-          updateHeight();
-        }
-      } else {
-        lastInnerHeight = window.innerHeight;
-        noChangeCount = 0;
-      }
-    });
-
-    this.timeoutHandler = setTimeout(() => {
-      updateHeight();
-    }, endTimeoutTime);
   };
 
   backdropClick = () => {
@@ -179,7 +143,7 @@ class PageLayoutComponent extends React.Component {
       isArticleVisible: true,
     });
 
-    localStorage.setItem(ARTICLE_PINNED_KEY, true);
+    this.props.setArticlePinned(true);
   };
 
   unpinArticle = () => {
@@ -189,7 +153,7 @@ class PageLayoutComponent extends React.Component {
       isArticleVisible: true,
     });
 
-    localStorage.removeItem(ARTICLE_PINNED_KEY);
+    this.props.setArticlePinned(false);
   };
 
   showArticle = () => {
@@ -218,7 +182,11 @@ class PageLayoutComponent extends React.Component {
       withBodyScroll,
       children,
       isLoaded,
+      isHeaderVisible,
       headerBorderBottom,
+      onOpenUploadPanel,
+      isTabletView,
+      firstLoad,
     } = this.props;
 
     let articleHeaderContent = null;
@@ -296,6 +264,7 @@ class PageLayoutComponent extends React.Component {
             visible={this.state.isArticleVisible}
             pinned={this.state.isArticlePinned}
             isLoaded={isLoaded}
+            firstLoad={firstLoad}
           >
             {isArticleHeaderAvailable && (
               <SubArticleHeader>
@@ -333,10 +302,11 @@ class PageLayoutComponent extends React.Component {
             refreshMode="debounce"
             refreshOptions={{ trailing: true }}
           >
-            {({ width }) => (
+            {({ width, height }) => (
               <Provider
                 value={{
                   sectionWidth: width,
+                  sectionHeight: height,
                 }}
               >
                 <Section
@@ -345,7 +315,10 @@ class PageLayoutComponent extends React.Component {
                   pinned={this.state.isArticlePinned}
                 >
                   {isSectionHeaderAvailable && (
-                    <SubSectionHeader>
+                    <SubSectionHeader
+                      isHeaderVisible={isHeaderVisible}
+                      isArticlePinned={this.state.isArticlePinned}
+                    >
                       {sectionHeaderContent
                         ? sectionHeaderContent.props.children
                         : null}
@@ -365,7 +338,7 @@ class PageLayoutComponent extends React.Component {
                         uploadFiles={uploadFiles}
                         setSelections={setSelections}
                         withScroll={withBodyScroll}
-                        autoFocus={withBodyAutoFocus}
+                        autoFocus={isMobile || isTabletView ? false : true}
                         pinned={this.state.isArticlePinned}
                         viewAs={viewAs}
                       >
@@ -399,6 +372,7 @@ class PageLayoutComponent extends React.Component {
                         icon={primaryProgressBarIcon}
                         percent={primaryProgressBarValue}
                         alert={showPrimaryButtonAlert}
+                        onClick={onOpenUploadPanel}
                         />
                       <FloatingButton
                         className="layout-progress-second-bar"
@@ -413,6 +387,7 @@ class PageLayoutComponent extends React.Component {
                       icon={primaryProgressBarIcon}
                       percent={primaryProgressBarValue}
                       alert={showPrimaryButtonAlert}
+                      onClick={onOpenUploadPanel}
                     />
                   ) : !showPrimaryProgressBar && showSecondaryProgressBar ? (
                     <FloatingButton
@@ -461,7 +436,11 @@ PageLayoutComponent.propTypes = {
   hideAside: PropTypes.bool,
   isLoaded: PropTypes.bool,
   viewAs: PropTypes.string,
-  headerBorderBottom: PropTypes.bool,
+  uploadPanelVisible: PropTypes.bool,
+  onOpenUploadPanel: PropTypes.func,
+  isTabletView: PropTypes.bool,
+  isHeaderVisible: PropTypes.bool,
+  firstLoad: PropTypes.bool,
 };
 
 PageLayoutComponent.defaultProps = {
@@ -495,7 +474,13 @@ PageLayout.propTypes = {
 function mapStateToProps(state) {
   return {
     language: getLanguage(state),
+    isTabletView: getIsTabletView(state),
+    isArticlePinned: isArticlePinned(state),
   };
 }
-
-export default connect(mapStateToProps)(PageLayout);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setArticlePinned: (isPinned) => dispatch(setArticlePinned(isPinned)),
+  };
+};
+export default connect(mapStateToProps, mapDispatchToProps)(PageLayout);

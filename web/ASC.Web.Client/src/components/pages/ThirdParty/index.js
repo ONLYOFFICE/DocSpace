@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Box } from "asc-web-components";
+import { Box } from "@appserver/components/src";
 import { useTranslation } from "react-i18next";
 import { utils, Loaders, ErrorContainer, PageLayout } from "asc-web-common";
 import { createI18N } from "../../../helpers/i18n";

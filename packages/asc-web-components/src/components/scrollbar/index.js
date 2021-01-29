@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import { Scrollbars } from "react-custom-scrollbars";
 
 const Scrollbar = React.forwardRef((props, ref) => {
-  //console.log("Scrollbar render");
   const scrollbarType = {
     smallWhite: {
       thumbV: {

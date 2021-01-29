@@ -36,8 +36,9 @@ export default App;
 //   utils,
 //   toastr,
 //   Layout,
+//   ScrollToTop,
 //   regDesktop,
-// } from "@appserver/common";
+// } from "asc-web-common";
 
 // const {
 //   setIsLoaded,
@@ -101,9 +102,9 @@ export default App;
 //       const requests = [getUser()];
 //       if (!this.isEditor) {
 //         requests.push(
-//         getPortalSettings(),
-//         getModules(),
-//         getPortalCultures(),
+//           getPortalSettings(),
+//           getModules(),
+//           getPortalCultures(),
 //           fetchTreeFolders()
 //         );
 //         if (isDesktop) {
@@ -134,7 +135,7 @@ export default App;
 //       setEncryptionKeys,
 //       isLoaded,
 //     } = this.props;
-//     console.log("componentDidUpdate: ", this.props);
+//     //console.log("componentDidUpdate: ", this.props);
 //     if (isAuthenticated && !this.isDesktopInit && isEncryption && isLoaded) {
 //       this.isDesktopInit = true;
 //       regDesktop(
@@ -155,55 +156,56 @@ export default App;
 
 //   render() {
 //     const { homepage, isDesktop } = this.props;
-//     console.log(Layout);
+//     //console.log(Layout);
 
 //     return navigator.onLine ? (
 //       <Layout>
-//       <Router history={history}>
-//         {!this.isEditor && <NavMenu />}
+//         <Router history={history}>
+//           <ScrollToTop />
+//           {!this.isEditor && <NavMenu />}
 //           <Main isDesktop={isDesktop}>
-//           <Suspense fallback={null}>
-//             <Switch>
-//               <Redirect exact from="/" to={`${homepage}`} />
-//               <PrivateRoute
-//                 exact
-//                 path={`${homepage}/settings/:setting`}
-//                 component={Settings}
-//               />
-//               <Route
-//                 exact
+//             <Suspense fallback={null}>
+//               <Switch>
+//                 <Redirect exact from="/" to={`${homepage}`} />
+//                 <PrivateRoute
+//                   exact
+//                   path={`${homepage}/settings/:setting`}
+//                   component={Settings}
+//                 />
+//                 <Route
+//                   exact
 //                   path={[
 //                     `${homepage}/doceditor`,
 //                     `/Products/Files/DocEditor.aspx`,
 //                   ]}
-//                 component={DocEditor}
-//               />
-//               <PrivateRoute
-//                 exact
-//                 path={`${homepage}/:fileId/history`}
-//                 component={VersionHistory}
-//               />
-//               <PrivateRoute exact path={homepage} component={Home} />
-//               <PrivateRoute path={`${homepage}/filter`} component={Home} />
-//               <PublicRoute
-//                 exact
-//                 path={[
-//                   "/login",
-//                   "/login/error=:error",
-//                   "/login/confirmed-email=:confirmedEmail",
-//                 ]}
-//                 component={Login}
-//               />
+//                   component={DocEditor}
+//                 />
+//                 <PrivateRoute
+//                   exact
+//                   path={`${homepage}/:fileId/history`}
+//                   component={VersionHistory}
+//                 />
+//                 <PrivateRoute exact path={homepage} component={Home} />
+//                 <PrivateRoute path={`${homepage}/filter`} component={Home} />
+//                 <PublicRoute
+//                   exact
+//                   path={[
+//                     "/login",
+//                     "/login/error=:error",
+//                     "/login/confirmed-email=:confirmedEmail",
+//                   ]}
+//                   component={Login}
+//                 />
 //                 <PrivateRoute
 //                   exact
 //                   path={`/error=:error`}
 //                   component={Error520}
 //                 />
-//               <PrivateRoute component={Error404} />
-//             </Switch>
-//           </Suspense>
-//         </Main>
-//       </Router>
+//                 <PrivateRoute component={Error404} />
+//               </Switch>
+//             </Suspense>
+//           </Main>
+//         </Router>
 //       </Layout>
 //     ) : (
 //       <Offline />
