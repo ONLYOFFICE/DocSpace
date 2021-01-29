@@ -153,9 +153,9 @@ class FilterInput extends React.Component {
     }
 
     if (
-      ((!equal(selectedFilterData.filterValues, filterValues) ||
-        inputValue !== searchText) &&
-        sectionWidth !== prevProps.sectionWidth) ||
+      !equal(selectedFilterData.filterValues, filterValues) ||
+      inputValue !== searchText ||
+      sectionWidth !== prevProps.sectionWidth ||
       isGroupChanged
     ) {
       const sortData = getSortData();
@@ -251,7 +251,7 @@ class FilterInput extends React.Component {
     this.setState({ sortDirection: !this.state.sortDirection });
   };
   onSearchChanged = (value) => {
-    this.setState({ searchText: value });
+    //this.setState({ searchText: value });
     this.onFilter(
       this.state.filterValues,
       this.state.sortId,
