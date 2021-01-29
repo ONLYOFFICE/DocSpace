@@ -32,6 +32,12 @@ namespace ASC.Files.Model
         public bool Immediately { get; set; }
     }
 
+    public class DeleteModel
+    {
+        public bool DeleteAfter { get; set; }
+        public bool Immediately { get; set; }
+    }
+
     public class BatchModel : BaseBatchModel<JsonElement>
     {
         public JsonElement DestFolderId { get; set; }
