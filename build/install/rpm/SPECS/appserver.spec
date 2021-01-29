@@ -1,5 +1,4 @@
-%define  debug_package %{nil}
-%global GIT_BRANCH develop
+%define         debug_package %{nil}
 Name:           onlyoffice-appserver
 Summary:        AppServer
 Version:        0.0.0
