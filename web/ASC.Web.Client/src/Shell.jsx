@@ -18,11 +18,22 @@ import {
 } from "@appserver/common/src/store/auth/actions";
 import { updateTempContent } from "@appserver/common/src/utils";
 
+const Error404 = React.lazy(() =>
+  import("@appserver/common/src/pages/errors/404")
+);
 const Home = React.lazy(() => import("./components/pages/Home"));
 const Login = React.lazy(() => import("login/page"));
 const People = React.lazy(() => import("people/page"));
 const Files = React.lazy(() => import("files/page"));
 const About = React.lazy(() => import("./components/pages/About"));
+
+const Error404Route = (props) => (
+  <React.Suspense fallback={null}>
+    <ErrorBoundary>
+      <Error404 {...props} />
+    </ErrorBoundary>
+  </React.Suspense>
+);
 
 const HomeRoute = (props) => (
   <React.Suspense fallback={null}>
@@ -127,6 +138,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
               ]}
               component={LoginRoute}
             />
+            <PrivateRoute component={Error404Route} />
           </Switch>
         </Main>
       </Box>
