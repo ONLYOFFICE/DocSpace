@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
-import { Router, Switch, Link } from "react-router-dom";
+import { Router, Switch } from "react-router-dom";
 import NavMenu from "@appserver/common/src/components/NavMenu";
 import Main from "@appserver/common/src/components/Main";
 import Box from "@appserver/components/src/components/box";
