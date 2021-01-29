@@ -1,9 +1,10 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { Link } from "asc-web-components";
 import { history, utils } from "asc-web-common";
 import { withTranslation, I18nextProvider } from "react-i18next";
+import { isMobile } from "react-device-detect";
 import { createI18N } from "../../../helpers/i18n";
 import {
   getGoogleConnect,
@@ -31,7 +32,10 @@ const i18n = createI18N({
 
 const StyledThirdParty = styled.div`
   margin-top: 42px;
-
+  ${isMobile &&
+  css`
+    margin-bottom: 64px;
+  `}
   .tree-thirdparty-list {
     padding-top: 3px;
     display: flex;

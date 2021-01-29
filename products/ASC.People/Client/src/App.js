@@ -6,6 +6,7 @@ import Profile from "./components/pages/Profile";
 import ProfileAction from "./components/pages/ProfileAction";
 import GroupAction from "./components/pages/GroupAction";
 import Reassign from "./components/pages/Reassign";
+
 import {
   history,
   PrivateRoute,
@@ -19,6 +20,8 @@ import {
   NavMenu,
   Main,
   toastr,
+  Layout,
+  ScrollToTop,
 } from "asc-web-common";
 import { getFilterByLocation } from "./helpers/converters";
 import { fetchGroups, fetchPeople } from "./store/people/actions";
@@ -87,60 +90,68 @@ class App extends React.Component {
 
   render() {
     const { homepage } = this.props;
+
     console.log("People App render", this.props);
     return navigator.onLine ? (
-      <Router history={history}>
-        <NavMenu />
-        <Main>
-          <Suspense fallback={null}>
-            <Switch>
-              <Redirect exact from="/" to={`${homepage}`} />
-              <PrivateRoute
-                exact
-                path={`${homepage}/view/:userId`}
-                component={Profile}
-              />
-              <PrivateRoute
-                path={`${homepage}/edit/:userId`}
-                restricted
-                allowForMe
-                component={ProfileAction}
-              />
-              <PrivateRoute
-                path={`${homepage}/create/:type`}
-                restricted
-                component={ProfileAction}
-              />
-              <PrivateRoute
-                path={[
-                  `${homepage}/group/edit/:groupId`,
-                  `${homepage}/group/create`,
-                ]}
-                restricted
-                component={GroupAction}
-              />
-              <PrivateRoute
-                path={`${homepage}/reassign/:userId`}
-                restricted
-                component={Reassign}
-              />
-              <PrivateRoute exact path={homepage} component={Home} />
-              <PrivateRoute path={`${homepage}/filter`} component={Home} />
-              <PublicRoute
-                exact
-                path={[
-                  "/login",
-                  "/login/error=:error",
-                  "/login/confirmed-email=:confirmedEmail",
-                ]}
-                component={Login}
-              />
-              <PrivateRoute exact path={`/error=:error`} component={Error520} />
-              <PrivateRoute component={Error404} />
-            </Switch>
-          </Suspense>
-        </Main>
-      </Router>
+      <Layout>
+        <Router history={history}>
+          <ScrollToTop />
+          <NavMenu />
+          <Main>
+            <Suspense fallback={null}>
+              <Switch>
+                <Redirect exact from="/" to={`${homepage}`} />
+                <PrivateRoute
+                  exact
+                  path={`${homepage}/view/:userId`}
+                  component={Profile}
+                />
+                <PrivateRoute
+                  path={`${homepage}/edit/:userId`}
+                  restricted
+                  allowForMe
+                  component={ProfileAction}
+                />
+                <PrivateRoute
+                  path={`${homepage}/create/:type`}
+                  restricted
+                  component={ProfileAction}
+                />
+                <PrivateRoute
+                  path={[
+                    `${homepage}/group/edit/:groupId`,
+                    `${homepage}/group/create`,
+                  ]}
+                  restricted
+                  component={GroupAction}
+                />
+                <PrivateRoute
+                  path={`${homepage}/reassign/:userId`}
+                  restricted
+                  component={Reassign}
+                />
+                <PrivateRoute exact path={homepage} component={Home} />
+                <PrivateRoute path={`${homepage}/filter`} component={Home} />
+                <PublicRoute
+                  exact
+                  path={[
+                    "/login",
+                    "/login/error=:error",
+                    "/login/confirmed-email=:confirmedEmail",
+                  ]}
+                  component={Login}
+                />
+                <PrivateRoute
+                  exact
+                  path={`/error=:error`}
+                  component={Error520}
+                />
+                <PrivateRoute component={Error404} />
+              </Switch>
+            </Suspense>
+          </Main>
+        </Router>
+      </Layout>
     ) : (
       <Offline />
     );
