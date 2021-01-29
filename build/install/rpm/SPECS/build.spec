@@ -1,23 +1,23 @@
 %build
 
-cd %{_builddir}/AppServer-%GIT_BRANCH/build/install/rpm/systemd/
+cd %{_builddir}/AppServer-%{GIT_BRANCH//\//-}/build/install/rpm/systemd/
 bash build.sh
 
-cd %{_builddir}/AppServer-%GIT_BRANCH/
+cd %{_builddir}/AppServer-%{GIT_BRANCH//\//-}/
 yarn install --cwd web/ASC.Web.Components --frozen-lockfile > build/ASC.Web.Components.log
 yarn pack --cwd web/ASC.Web.Components
 	
-cd %{_builddir}/AppServer-%GIT_BRANCH/
+cd %{_builddir}/AppServer-%{GIT_BRANCH//\//-}/
 component=$(ls web/ASC.Web.Components/asc-web-components-v1.*.tgz)
 yarn remove asc-web-components --cwd web/ASC.Web.Common --peer
 yarn add file:../../$component --cwd web/ASC.Web.Common --cache-folder ../../yarn --peer
 yarn install --cwd web/ASC.Web.Common --frozen-lockfile > build/ASC.Web.Common.log
 yarn pack --cwd web/ASC.Web.Common
 
-cd %{_builddir}/AppServer-%GIT_BRANCH/
+cd %{_builddir}/AppServer-%{GIT_BRANCH//\//-}/
 npm run-script build:storybook --prefix web/ASC.Web.Components
 
-cd %{_builddir}/AppServer-%GIT_BRANCH/
+cd %{_builddir}/AppServer-%{GIT_BRANCH//\//-}/
 component=$(ls web/ASC.Web.Components/asc-web-components-v1.*.tgz)
 common=$(ls web/ASC.Web.Common/asc-web-common-v1.*.tgz)
 yarn remove asc-web-components asc-web-common --cwd web/ASC.Web.Client
@@ -27,7 +27,7 @@ yarn install --cwd web/ASC.Web.Client --frozen-lockfile || (cd web/ASC.Web.Clien
 npm i && cd ../../)
 npm run-script build --prefix web/ASC.Web.Client
 
-cd %{_builddir}/AppServer-%GIT_BRANCH/
+cd %{_builddir}/AppServer-%{GIT_BRANCH//\//-}/
 component=$(ls  web/ASC.Web.Components/asc-web-components-v1.*.tgz)
 common=$(ls web/ASC.Web.Common/asc-web-common-v1.*.tgz)
 yarn remove asc-web-components asc-web-common --cwd products/ASC.Files/Client
@@ -37,7 +37,7 @@ yarn install --cwd products/ASC.Files/Client --frozen-lockfile || (cd products/A
 npm i && cd ../../../)
 npm run-script build --prefix products/ASC.Files/Client
 
-cd %{_builddir}/AppServer-%GIT_BRANCH/
+cd %{_builddir}/AppServer-%{GIT_BRANCH//\//-}/
 component=$(ls  web/ASC.Web.Components/asc-web-components-v1.*.tgz)
 common=$(ls web/ASC.Web.Common/asc-web-common-v1.*.tgz)
 yarn remove asc-web-components asc-web-common --cwd products/ASC.People/Client
@@ -47,7 +47,7 @@ yarn install --cwd products/ASC.People/Client --frozen-lockfile || (cd products/
 npm i && cd ../../../)
 npm run-script build --prefix products/ASC.People/Client
 
-cd %{_builddir}/AppServer-%GIT_BRANCH/
+cd %{_builddir}/AppServer-%{GIT_BRANCH//\//-}/
 dotnet restore ASC.Web.sln --configfile .nuget/NuGet.Config
 dotnet build -r linux-x64 ASC.Web.sln
 cd products/ASC.People/Server
