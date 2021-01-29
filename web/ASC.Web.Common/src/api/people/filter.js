@@ -124,6 +124,25 @@ class Filter {
         );
   }
 
+  resetWithoutGroup(idGroup) {
+    if (idGroup) {
+      return new Filter(
+        0,
+        this.pageCount,
+        this.total,
+        this.sortBy,
+        this.sortOrder,
+        null,
+        null,
+        null,
+        null,
+        idGroup
+      );
+    } else {
+      this.clone(true);
+    }
+  }
+
   equals(filter) {
     const equals =
       this.employeeStatus === filter.employeeStatus &&

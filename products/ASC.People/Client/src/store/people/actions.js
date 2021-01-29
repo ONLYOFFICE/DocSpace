@@ -265,13 +265,18 @@ export function updateUserType(type, userIds) {
   };
 }
 
-export function resetFilter() {
+export function resetFilter(withoutGroup = false) {
   return (dispatch, getState) => {
     const { people } = getState();
     const { filter } = people;
+    let newFilter;
 
-    const newFilter = filter.clone(true);
-
+    if (withoutGroup) {
+      const { group } = filter;
+      newFilter = filter.resetWithoutGroup(group);
+    } else {
+      newFilter = filter.clone(true);
+    }
     return fetchPeople(newFilter, dispatch);
   };
 }
