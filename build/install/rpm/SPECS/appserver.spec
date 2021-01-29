@@ -12,7 +12,7 @@ ExclusiveArch:  x86_64
 AutoReq:        no
 AutoProv:       no
 License:        GPLv3
-Source0:        https://github.com/ONLYOFFICE/appserver/archive/${GIT_BRANCH##*/}.tar.gz
+Source0:        https://github.com/ONLYOFFICE/appserver/archive/%GIT_BRANCH.tar.gz
 BuildRequires:  nodejs >= 10.0
 BuildRequires:  yarn
 BuildRequires:  libgdiplus
@@ -35,7 +35,7 @@ AutoReqProv:    no
 
 %prep
 
-%setup -n AppServer-${GIT_BRANCH##*/}
+%setup -n AppServer-%GIT_BRANCH
 
 %include build.spec
 
