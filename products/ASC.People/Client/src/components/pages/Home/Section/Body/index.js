@@ -197,6 +197,7 @@ class SectionBodyContent extends React.PureComponent {
   toggleDeleteProfileEverDialog = (e) => {
     this.onCloseDialog();
 
+    this.props.onCancelScrollUp(true, true);
     const user = this.findUserById(e.currentTarget.dataset.id);
 
     if (!user) return;
@@ -217,6 +218,7 @@ class SectionBodyContent extends React.PureComponent {
   onInviteAgainClick = (e) => {
     const user = this.findUserById(e.currentTarget.dataset.id);
     const { onLoading } = this.props;
+
     onLoading(true);
     resendUserInvites([user.id])
       .then(() =>
@@ -368,7 +370,7 @@ class SectionBodyContent extends React.PureComponent {
   };
 
   render() {
-    //console.log("Home SectionBodyContent render()");
+    // console.log("Home SectionBodyContent render()");
     const {
       isLoaded,
       isLoadedSection,

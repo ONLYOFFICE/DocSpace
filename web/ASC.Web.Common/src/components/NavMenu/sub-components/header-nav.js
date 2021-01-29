@@ -1,21 +1,21 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import NavItem from "./nav-item";
 import ProfileActions from "./profile-actions";
-
 import { useTranslation } from "react-i18next";
 import { utils } from "asc-web-components";
-const { tablet } = utils.device;
-import { logout } from "../../../store/auth/actions";
 
+import { logout } from "../../../store/auth/actions";
 import {
   getCurrentUser,
   getLanguage,
   getIsolateModules,
   getIsLoaded,
 } from "../../../store/auth/selectors";
+
+const { tablet } = utils.device;
 
 const StyledNav = styled.nav`
   display: flex;
@@ -24,7 +24,7 @@ const StyledNav = styled.nav`
   position: absolute;
   right: 0;
   height: 56px;
-  z-index: 190;
+  z-index: ${(props) => (props.isOpen ? "191" : "190")} !important;
 
   .profile-menu {
     right: 12px;
@@ -84,9 +84,13 @@ const HeaderNav = React.memo(
       return currentUserActions;
     }, [onProfileClick, onAboutClick, onLogoutClick]);
 
+    const [isOpen, setIsOpen] = useState(false); //TODO: Need to refactoring
+    const isOpenProfileMenu = (value) => {
+      setIsOpen(value);
+    };
     //console.log("HeaderNav render");
     return (
-      <StyledNav>
+      <StyledNav isOpen={isOpen} className="profileMenuIcon hidingHeader">
         {modules.map((module) => (
           <NavItem
             key={module.id}
@@ -100,7 +104,11 @@ const HeaderNav = React.memo(
         ))}
 
         {isAuthenticated && user ? (
-          <ProfileActions userActions={getCurrentUserActions()} user={user} />
+          <ProfileActions
+            userActions={getCurrentUserActions()}
+            user={user}
+            isOpenProfileMenu={isOpenProfileMenu}
+          />
         ) : (
           <></>
         )}
