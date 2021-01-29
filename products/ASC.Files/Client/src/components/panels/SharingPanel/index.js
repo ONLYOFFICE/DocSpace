@@ -21,6 +21,8 @@ import {
   setIsLoading,
   setFiles,
   setFolders,
+  selectUploadedFile,
+  updateUploadedItem,
 } from "../../../store/files/actions";
 import {
   getAccessOption,
@@ -32,6 +34,8 @@ import {
   getFiles,
   getFolders,
   getIsPrivacyFolder,
+  getUploadPanelVisible,
+  getUploadSelection,
 } from "../../../store/files/selectors";
 import {
   StyledAsidePanel,
@@ -55,6 +59,7 @@ const {
   getCurrentUserId,
   getSettingsCustomNamesGroupsCaption,
   getSettings,
+  isDesktopClient,
 } = store.auth.selectors;
 
 const SharingBodyStyle = { height: `calc(100vh - 156px)` };
@@ -143,6 +148,10 @@ class SharingPanelComponent extends React.Component {
       replaceFileStream,
       i18n,
       t,
+      uploadPanelVisible,
+      updateUploadedItem,
+      uploadSelection,
+      isDesktop,
     } = this.props;
 
     const folderIds = [];
@@ -208,7 +217,7 @@ class SharingPanelComponent extends React.Component {
         if (ownerId) {
           this.updateRowData(res[0]);
         }
-        if (isPrivacy) {
+        if (isPrivacy && isDesktop) {
           if (share.length === 0) return Promise.resolve();
           selection.forEach((item) => {
             return setEncryptionAccess(item).then((encryptedFile) => {
@@ -228,6 +237,10 @@ class SharingPanelComponent extends React.Component {
               );
             });
           });
+        }
+
+        if (uploadPanelVisible && uploadSelection) {
+          return updateUploadedItem(selection[0].id);
         }
         return Promise.resolve();
       })
@@ -361,8 +374,10 @@ class SharingPanelComponent extends React.Component {
 
   setShareDataItems = (shareDataItems) => this.setState({ shareDataItems });
 
-  onClose = () =>
+  onClose = () => {
     this.props.setSharingPanelVisible(!this.props.sharingPanelVisible);
+    this.props.selectUploadedFile([]);
+  };
 
   componentDidMount() {
     this.getShareData();
@@ -415,6 +430,7 @@ class SharingPanelComponent extends React.Component {
       groupsCaption,
       canShareOwnerChange,
       isLoading,
+      uploadPanelVisible,
     } = this.props;
     const {
       showActionPanel,
@@ -447,6 +463,14 @@ class SharingPanelComponent extends React.Component {
         <Aside className="header_aside-panel" visible={visible}>
           <StyledContent isDisabled={isLoading}>
             <StyledHeaderContent>
+              {uploadPanelVisible && (
+                <IconButton
+                  size="16"
+                  iconName="ArrowPathIcon"
+                  onClick={this.onClose}
+                  color="A3A9AE"
+                />
+              )}
               <Heading className="sharing_panel-header" size="medium" truncate>
                 {t("SharingSettingsTitle")}
               </Heading>
@@ -598,14 +622,21 @@ const SharingPanel = (props) => (
   <SharingPanelContainerTranslated i18n={i18n} {...props} />
 );
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, ownProps) => {
+  const selection = getSelection(state);
+  const uploadSelection = getUploadSelection(state);
+  const selectedFile = ownProps.uploadPanelVisible
+    ? uploadSelection
+    : selection; // TODO: take out this implementation from this component
+
   return {
     getAccessOption: (selection) => getAccessOption(state, selection),
     getExternalAccessOption: (selection) =>
       getExternalAccessOption(state, selection),
     isMyId: getCurrentUserId(state),
-    selection: getSelection(state),
+    selection: selectedFile,
     isPrivacy: getIsPrivacyFolder(state),
+    isDesktop: isDesktopClient(state),
     groupsCaption: getSettingsCustomNamesGroupsCaption(state),
     sharingPanelVisible: getSharePanelVisible(state),
     canShareOwnerChange: getCanShareOwnerChange(state),
@@ -613,6 +644,7 @@ const mapStateToProps = (state) => {
     files: getFiles(state),
     folders: getFolders(state),
     settings: getSettings(state),
+    uploadSelection,
   };
 };
 
@@ -622,4 +654,6 @@ export default connect(mapStateToProps, {
   setIsLoading,
   setFiles,
   setFolders,
+  selectUploadedFile,
+  updateUploadedItem,
 })(withRouter(SharingPanel));
