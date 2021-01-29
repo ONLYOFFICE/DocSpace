@@ -1,8 +1,8 @@
 %define         debug_package %{nil}
 Name:           onlyoffice-appserver
 Summary:        AppServer
-Version:        0.0.0
-Release:        0
+Version:        %version
+Release:        %release
 Group:          Applications/Internet
 URL:            http://onlyoffice.com
 Vendor:         Ascensio System SIA
