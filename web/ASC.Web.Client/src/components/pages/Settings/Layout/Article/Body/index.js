@@ -4,10 +4,14 @@ import styled from "styled-components";
 import { withTranslation } from "react-i18next";
 import TreeMenu from "@appserver/components/src/components/tree-menu";
 import TreeNode from "@appserver/components/src/components/tree-menu/sub-components/tree-node";
-import Icons from "@appserver/components/src/components/icons";
+import { Icons } from "@appserver/components/src/components/icons";
+import {
+  ExpanderDownIcon,
+  ExpanderRightIcon,
+} from "@appserver/components/src/components/icons/svg";
 import Link from "@appserver/components/src/components/link";
 import Text from "@appserver/components/src/components/text";
-import {isArrayEqual} from "@appserver/components/src/utils/array";
+import { isArrayEqual } from "@appserver/components/src/utils/array";
 
 import {
   getKeyByLink,
@@ -118,9 +122,7 @@ class ArticleBodyContent extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (
-      !isArrayEqual(prevState.selectedKeys, this.state.selectedKeys)
-    ) {
+    if (!isArrayEqual(prevState.selectedKeys, this.state.selectedKeys)) {
       const { selectedKeys } = this.state;
       const { match, history } = this.props;
       const settingsPath = getSelectedLinkByKey(selectedKeys[0], settingsTree);
@@ -144,13 +146,9 @@ class ArticleBodyContent extends React.Component {
       return null;
     }
     if (obj.expanded) {
-      return (
-        <Icons.ExpanderDownIcon size="scale" isfill={true} color="dimgray" />
-      );
+      return <ExpanderDownIcon size="scale" isfill={true} color="dimgray" />;
     } else {
-      return (
-        <Icons.ExpanderRightIcon size="scale" isfill={true} color="dimgray" />
-      );
+      return <ExpanderRightIcon size="scale" isfill={true} color="dimgray" />;
     }
   };
 

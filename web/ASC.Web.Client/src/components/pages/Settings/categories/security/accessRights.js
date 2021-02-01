@@ -6,7 +6,7 @@ import { I18nextProvider, withTranslation } from "react-i18next";
 import styled from "styled-components";
 import TabContainer from "@appserver/components/src/components/tabs-container";
 
-import utils from "@appserver/common/src/utils";
+import { changeLanguage }  from "@appserver/common/src/utils";
 
 import OwnerSettings from "./sub-components/owner";
 import AdminsSettings from "./sub-components/admins";
@@ -19,7 +19,7 @@ const i18n = createI18N({
   localesPath: "pages/Settings",
 });
 
-const { changeLanguage } = utils;
+
 
 const MainContainer = styled.div`
   padding-bottom: 16px;

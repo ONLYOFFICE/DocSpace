@@ -10,7 +10,7 @@ import Loader from "@appserver/components/src/components/loader";
 import toastr from "@appserver/components/src/components/toast/toastr";
 import Link from "@appserver/components/src/components/link";
 import SaveCancelButtons from "@appserver/components/src/components/save-cancel-buttons";
-import utils from "@appserver/common/src/utils";
+import { changeLanguage } from "@appserver/common/src/utils";
 import store from "@appserver/common/src/store";
 import {
   setLanguageAndTime,
@@ -20,7 +20,7 @@ import { saveToSessionStorage, getFromSessionStorage } from "../../utils";
 import { default as clientStore } from "../../../../../store/store";
 import { setDocumentTitle } from "../../../../../helpers/utils";
 const { getLanguage } = store.auth.selectors;
-const { changeLanguage } = utils;
+
 const {
   getPortalCultures,
   getModules,

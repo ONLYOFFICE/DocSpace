@@ -1,6 +1,8 @@
 import React from "react";
-import { Backdrop, Aside, Heading } from "asc-web-components";
-import { PeopleSelector } from "asc-web-common";
+import PeopleSelector from "@appserver/common/src/components/PeopleSelector";
+import Aside from "@appserver/components/src/components/aside";
+import Backdrop from "@appserver/components/src/components/backdrop";
+import Heading from "@appserver/components/src/components/heading";
 import {
   StyledAddUsersPanelPanel,
   StyledContent,

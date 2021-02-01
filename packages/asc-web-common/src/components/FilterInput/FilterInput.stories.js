@@ -6,7 +6,7 @@ import { withKnobs, boolean, text, select } from "@storybook/addon-knobs/react";
 import withReadme from "storybook-readme/with-readme";
 import Readme from "./README.md";
 import FilterInput from ".";
-import { Button } from "asc-web-components";
+import { Button } from "@appserver/components";
 import Section from "../../../.storybook/decorators/section";
 
 const sizeOptions = ["base", "middle", "big", "huge"];

@@ -1,8 +1,9 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import styled, { css } from "styled-components";
-import { Link } from "asc-web-components";
-import { history, utils } from "asc-web-common";
+import Link from "@appserver/components/src/components/link";
+import { history } from "@appserver/common";
+import { changeLanguage } from "@appserver/common/src/utils";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import { isMobile } from "react-device-detect";
 import { createI18N } from "../../../helpers/i18n";

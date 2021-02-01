@@ -7,7 +7,7 @@ import Section from "../../../.storybook/decorators/section";
 import withProvider from "../../../.storybook/decorators/redux";
 import GroupSelector from ".";
 import { BooleanValue } from "react-values";
-import { Button } from "asc-web-components";
+import { Button } from "@appserver/components";
 //import withReadme from "storybook-readme/with-readme";
 //import Readme from "./README.md";
 

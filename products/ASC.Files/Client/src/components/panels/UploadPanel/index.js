@@ -1,8 +1,11 @@
 import React from "react";
-import { Backdrop, Heading, Aside, IconButton } from "asc-web-components";
+import IconButton from "@appserver/components/src/components/icon-button";
+import Backdrop from "@appserver/components/src/components/backdrop";
+import Heading from "@appserver/components/src/components/heading";
+import Aside from "@appserver/components/src/components/aside";
 import { connect } from "react-redux";
 import { withTranslation } from "react-i18next";
-import { utils as commonUtils } from "asc-web-common";
+import { changeLanguage } from "@appserver/common/src/utils";
 import {
   setUploadPanelVisible,
   cancelUpload,
@@ -28,7 +31,6 @@ const i18n = createI18N({
   page: "UploadPanel",
   localesPath: "panels/UploadPanel",
 });
-const { changeLanguage } = commonUtils;
 
 const DownloadBodyStyle = { height: `calc(100vh - 62px)` };
 

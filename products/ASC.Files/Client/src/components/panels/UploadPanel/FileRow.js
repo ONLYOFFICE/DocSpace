@@ -1,7 +1,9 @@
 import React from "react";
 import styled from "styled-components";
-import { Row, Text, Icons, Tooltip, Link } from "asc-web-components";
-
+import {  Icons, Tooltip } from "@appserver/components";
+import Row from "@appserver/components/src/components/row"
+import Text from "@appserver/components/src/components/text";
+import Link from "@appserver/components/src/components/link"
 import LoadingButton from "./LoadingButton";
 import { connect } from "react-redux";
 import {

@@ -1,9 +1,10 @@
 import React from "react";
 import { withRouter } from "react-router";
 import { connect } from "react-redux";
-import { ModalDialog, Button } from "asc-web-components";
+import ModalDialog from "@appserver/components/src/components/modal-dialog";
+import Button from "@appserver/components/src/components/button";
 import { withTranslation } from "react-i18next";
-import { utils, toastr, api } from "asc-web-common";
+import { utils, toastr, api } from "@appserver/common";
 import {
   deleteThirdParty,
   setThirdPartyProviders,

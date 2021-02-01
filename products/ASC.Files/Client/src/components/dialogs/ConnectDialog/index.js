@@ -1,14 +1,12 @@
 import React, { useState, useEffect, useCallback } from "react";
-import {
-  ModalDialog,
-  TextInput,
-  PasswordInput,
-  Button,
-  Checkbox,
-  FieldContainer,
-  toastr,
-} from "asc-web-components";
-import { utils as commonUtils } from "asc-web-common";
+import { toastr } from "@appserver/components";
+import Button from "@appserver/components/src/components/button";
+import ModalDialog from "@appserver/components/src/components/modal-dialog";
+import Checkbox from "@appserver/components/src/components/checkbox";
+import TextInput from "@appserver/components/src/components/text-input";
+import PasswordInput from "@appserver/components/src/components/password-input";
+import FieldContainer from "@appserver/components/src/components/field-container";
+import { changeLanguage } from "@appserver/common/src/utils";
 import {
   fetchThirdPartyProviders,
   fetchTreeFolders,
@@ -35,8 +33,6 @@ const i18n = createI18N({
   page: "ConnectDialog",
   localesPath: "dialogs/ConnectDialog",
 });
-
-const { changeLanguage } = commonUtils;
 
 const PureConnectDialogContainer = (props) => {
   const {

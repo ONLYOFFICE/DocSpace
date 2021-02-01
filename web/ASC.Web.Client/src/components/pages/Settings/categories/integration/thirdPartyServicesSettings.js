@@ -9,7 +9,6 @@ import {
 import { getConsumersList } from "../../../../../store/settings/selectors";
 import { withTranslation } from "react-i18next";
 import styled from "styled-components";
-
 import Box from "@appserver/components/src/components/box";
 import Text from "@appserver/components/src/components/text";
 import Link from "@appserver/components/src/components/link";

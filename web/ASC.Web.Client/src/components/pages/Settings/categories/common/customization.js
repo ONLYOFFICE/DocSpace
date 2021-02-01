@@ -7,7 +7,7 @@ import Loader from "@appserver/components/src/components/loader";
 import toastr from "@appserver/components/src/components/toast/toastr";
 import Link from "@appserver/components/src/components/link";
 import { ArrowRightIcon } from "@appserver/components/src/components/icons/svg";
-import utils from "@appserver/common/src/utils";
+import { changeLanguage } from "@appserver/common/src/utils";
 import store from "@appserver/common/src/store";
 import {
   setLanguageAndTime,
@@ -15,8 +15,8 @@ import {
 } from "../../../../../store/settings/actions";
 import { default as clientStore } from "../../../../../store/store";
 import { setDocumentTitle } from "../../../../../helpers/utils";
+
 const { getLanguage } = store.auth.selectors;
-const { changeLanguage } = utils;
 const {
   getPortalCultures,
   getModules,
@@ -233,11 +233,7 @@ class Customization extends React.Component {
               >
                 {t("StudioTimeLanguageSettings")}
               </Link>
-              <ArrowRightIcon
-                size="small"
-                isfill={true}
-                color="#333333"
-              />
+              <ArrowRightIcon size="small" isfill={true} color="#333333" />
             </div>
             {language && language.label && timezone && timezone.label && (
               <Text className="category-item-subheader" truncate={true}>
@@ -258,11 +254,7 @@ class Customization extends React.Component {
               >
                 {t("CustomTitles")}
               </Link>
-              <ArrowRightIcon
-                size="small"
-                isfill={true}
-                color="#333333"
-              />
+              <ArrowRightIcon size="small" isfill={true} color="#333333" />
             </div>
             <Text className="category-item-description">
               {t("CustomTitlesSettingsDescription")}

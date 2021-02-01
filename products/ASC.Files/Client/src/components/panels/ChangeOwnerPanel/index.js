@@ -1,16 +1,15 @@
 import React from "react";
 import { withRouter } from "react-router";
 import { connect } from "react-redux";
-import {
-  Button,
-  Heading,
-  Link,
-  Text,
-  Backdrop,
-  Aside,
-} from "asc-web-components";
+import Backdrop from "@appserver/components/src/components/backdrop";
+import Heading from "@appserver/components/src/components/heading";
+import Aside from "@appserver/components/src/components/aside";
+import Button from "@appserver/components/src/components/button";
+import Text from "@appserver/components/src/components/text";
+import Link from "@appserver/components/src/components/link";
 import { withTranslation } from "react-i18next";
-import { utils, store, toastr } from "asc-web-common";
+import { store, toastr } from "@appserver/common";
+import { changeLanguage } from "@appserver/common/src/utils";
 import {
   setIsLoading,
   setFilesOwner,
@@ -41,7 +40,7 @@ const i18n = createI18N({
   page: "ChangeOwnerPanel",
   localesPath: "panels/ChangeOwnerPanel",
 });
-const { changeLanguage } = utils;
+
 const { getSettingsCustomNamesGroupsCaption } = store.auth.selectors;
 
 class ChangeOwnerComponent extends React.Component {

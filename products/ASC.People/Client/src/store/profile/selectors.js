@@ -1,5 +1,5 @@
 import { createSelector } from "reselect";
-import { store } from "asc-web-common";
+import { store } from "@appserver/common";
 const { isAdmin, getCurrentUserId } = store.auth.selectors;
 
 const getProfileId = (state) =>

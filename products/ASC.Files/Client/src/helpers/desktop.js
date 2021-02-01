@@ -1,7 +1,7 @@
 import store from "../store/store";
-import { store as commonStore } from "asc-web-common";
+import { store as commonStore } from "@appserver/common";
 import { getEncryptedFormats } from "../store/files/selectors";
-import { desktopConstants } from "asc-web-common";
+import { desktopConstants } from "@appserver/common/src/desktop";
 
 const { getEncryptionAccess } = commonStore.auth.actions;
 

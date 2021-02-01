@@ -1,8 +1,13 @@
 import React from "react";
-import { Row, LinkWithDropdown, ToggleButton, Icons } from "asc-web-components";
+import {
+  Row,
+  LinkWithDropdown,
+  ToggleButton,
+  Icons,
+} from "@appserver/components";
 import { StyledLinkRow } from "../StyledPanels";
 import AccessComboBox from "./AccessComboBox";
-import { constants } from "asc-web-common";
+import constants from "@appserver/common/src/constants";
 
 const { ShareAccessRights } = constants;
 

@@ -13,7 +13,7 @@ import {
   MainButton,
   SearchInput,
   Paging,
-} from "asc-web-components";
+} from "@appserver/components";
 import withReadme from "storybook-readme/with-readme";
 import { boolean, withKnobs } from "@storybook/addon-knobs/react";
 import Readme from "./README.md";

@@ -1,7 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-
 import ModalDialog from "@appserver/components/src/components/modal-dialog";
 import EmailInput from "@appserver/components/src/components/email-input";
 import Button from "@appserver/components/src/components/button";

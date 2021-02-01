@@ -1,17 +1,15 @@
 import React from "react";
 import { connect } from "react-redux";
 import styled from "styled-components";
-import {
-  Box,
-  Text,
-  Link,
-  ModalDialog,
-  Button,
-  RowContainer,
-  Row,
-  Icons,
-} from "asc-web-components";
-import { store } from "asc-web-common";
+import { Icons } from "@appserver/components";
+import ModalDialog from "@appserver/components/src/components/modal-dialog";
+import Button from "@appserver/components/src/components/button";
+import Text from "@appserver/components/src/components/text";
+import Link from "@appserver/components/src/components/link";
+import Box from "@appserver/components/src/components/box";
+import Row from "@appserver/components/src/components/row";
+import RowContainer from "@appserver/components/src/components/row-container";
+import { store } from "@appserver/common";
 import { withTranslation } from "react-i18next";
 import EmptyFolderContainer from "../../../Home/Section/Body/EmptyFolderContainer";
 import { createI18N } from "../../../../../helpers/i18n";

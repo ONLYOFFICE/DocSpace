@@ -1,5 +1,5 @@
 import React from "react";
-import { IconButton } from "asc-web-components";
+import  IconButton  from "@appserver/components/src/components/icon-button";
 import { connect } from "react-redux";
 import {
   setSharingPanelVisible,

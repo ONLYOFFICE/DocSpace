@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router";
 
 import { RowContainer } from "@appserver/components";
-import { Loaders } from "asc-web-common";
+import  Loaders from "@appserver/common/src/components/Loaders";
 import VersionRow from "./VersionRow";
 
 import {

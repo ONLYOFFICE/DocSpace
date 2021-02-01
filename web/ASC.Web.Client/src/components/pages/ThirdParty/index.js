@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Box } from "@appserver/components/src";
 import { useTranslation } from "react-i18next";
-import { utils, Loaders, ErrorContainer, PageLayout } from "asc-web-common";
+import {
+  changeLanguage,
+  getObjectByLocation,
+} from "@appserver/common/src/utils";
+import ErrorContainer from "@appserver/common/src/components/ErrorContainer";
+import PageLayout from "@appserver/common/src/components/PageLayout";
 import { createI18N } from "../../../helpers/i18n";
 import { setDocumentTitle } from "../../../helpers/utils";
 
@@ -9,8 +14,6 @@ const i18n = createI18N({
   page: "ThirdParty",
   localesPath: "pages/ThirdParty",
 });
-
-const { getObjectByLocation, changeLanguage } = utils;
 
 const ThirdPartyResponsePage = ({ match }) => {
   const { params } = match;

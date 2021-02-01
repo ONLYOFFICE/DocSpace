@@ -2,9 +2,10 @@ import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
-import { Backdrop, Heading, Aside } from "asc-web-components";
-import { utils, Loaders, store } from "asc-web-common";
-
+import { Backdrop, Heading, Aside } from "@appserver/components";
+import { store } from "@appserver/common";
+import { changeLanguage } from "@appserver/common/src/utils";
+import Loaders from "@appserver/common/src/components/Loaders";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import { createI18N } from "../../../helpers/i18n";
 
@@ -28,8 +29,6 @@ const i18n = createI18N({
   page: "VersionHistory",
   localesPath: "pages/VersionHistory",
 });
-
-const { changeLanguage } = utils;
 
 const { getIsTabletView, getSettingsHomepage } = store.auth.selectors;
 
