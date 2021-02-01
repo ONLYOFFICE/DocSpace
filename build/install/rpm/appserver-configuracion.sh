@@ -217,7 +217,7 @@ execute_mysql_sqript(){
 setup_nginx(){
 	echo -n "Configuring nginx... "
 
-	rm -rf /etc/nginx/conf.d/default.conf
+	mv /etc/nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf.old
 
     sed -i "s/listen.*;/listen $APP_PORT;/" $NGINX_CONF/onlyoffice.conf
 
@@ -258,13 +258,18 @@ setup_docs() {
 	DOCUMENT_SERVER_JWT_SECRET=$(cat ${DS_CONF} | jq -r '.services.CoAuthoring.secret.inbox.string')
 	DOCUMENT_SERVER_JWT_HEADER=$(cat ${DS_CONF} | jq -r '.services.CoAuthoring.token.inbox.header')
 
-	sed "s!\"browser\": .*!\"browser\": false!" -i ${DS_CONF}
-	sed "s!\"internal\": .*,!\"internal\": \"${DOCUMENT_SERVER_HOST}:${DOCUMENT_SERVER_PORT}\",!" -i ${APP_CONF}
+	sed "s!\"browser\": .*!\"browser\": true!" -i ${DS_CONF}
+	sed "0,/\"inbox\": .*/{s/\"inbox\": .*/\"inbox\": true,/}" -i ${DS_CONF}
+	sed "0,/\"outbox\": .*/{s/\"outbox\": .*/\"outbox\": true/}" -i ${DS_CONF}
+	sed "s!\"internal\": .*,!\"internal\": \"http://${DOCUMENT_SERVER_HOST}:${DOCUMENT_SERVER_PORT}\",!" -i ${APP_CONF}
 	sed "s!\"header\": \".*\"!\"header\": \"${DOCUMENT_SERVER_JWT_HEADER}\"!" -i ${APP_CONF}
 	sed "0,/\"value\": \".*\",/{s/\"value\": \".*\",/\"value\": \"$DOCUMENT_SERVER_JWT_SECRET\",/}" -i ${APP_CONF}
-	sed "s!\"portal\": \".*\"!\"portal\": \"\"!" -i ${APP_CONF}
+	sed "s!\"portal\": \".*\"!\"portal\": \"http://$APP_HOST:$APP_PORT\"!" -i ${APP_CONF}
 	sed "0,/proxy_pass .*;/{s/proxy_pass .*;/proxy_pass http:\/\/${DOCUMENT_SERVER_HOST}:${DOCUMENT_SERVER_PORT};/}" -i $NGINX_CONF/onlyoffice.conf
-
+	
+	sudo supervisorctl start ds:example
+	sudo supervisorctl restart ds:*
+	
 	echo "OK"
 }
 
