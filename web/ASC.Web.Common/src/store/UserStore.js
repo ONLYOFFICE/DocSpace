@@ -1,4 +1,8 @@
-import { makeAutoObservable } from "mobx";
+import {
+  action,
+  /*makeAutoObservable,*/ makeObservable,
+  observable,
+} from "mobx";
 import api from "../api";
 import { LANGUAGE } from "../constants";
 
@@ -7,7 +11,11 @@ class UserStore {
   isAuthenticated = false;
 
   constructor() {
-    makeAutoObservable(this);
+    makeObservable(this, {
+      user: observable,
+      isAuthenticated: observable,
+      setCurrentUser: action.bound,
+    });
   }
 
   async setCurrentUser() {

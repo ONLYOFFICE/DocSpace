@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, useEffect } from "react";
+import React, { Suspense, lazy /*useEffect*/ } from "react";
 import { Router, Route, Switch } from "react-router-dom";
 import { connect } from "react-redux";
 import {
@@ -16,7 +16,7 @@ import {
   toastr,
 } from "asc-web-common";
 import Home from "./components/pages/Home";
-import { observer } from "mobx-react";
+import { inject, observer } from "mobx-react";
 
 const About = lazy(() => import("./components/pages/About"));
 const Confirm = lazy(() => import("./components/pages/Confirm"));
@@ -31,7 +31,7 @@ const {
   //getModules,
   getIsAuthenticated,
 } = CommonStore.auth.actions;
-const { userStore } = CommonStore;
+//const { userStore } = CommonStore;
 
 class App extends React.Component {
   constructor(props) {
@@ -43,7 +43,7 @@ class App extends React.Component {
   componentDidMount() {
     const {
       getPortalSettings,
-      //getUser,
+      getUser,
       //getModules,
       setIsLoaded,
       getIsAuthenticated,
@@ -57,14 +57,13 @@ class App extends React.Component {
           setIsLoaded();
           return;
         }
-
         const requests = [];
         if (!isAuthenticated) {
           requests.push(getPortalSettings());
         } else if (
           !window.location.pathname.includes("confirm/EmailActivation")
         ) {
-          //requests.push(getUser());
+          requests.push(getUser());
           requests.push(getPortalSettings());
           //requests.push(getModules());
         }
@@ -147,12 +146,32 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-const AppWrapper = observer((props) => {
-  useEffect(() => {
-    userStore.setCurrentUser();
-  }, []);
+// const AppWrapper = inject(({ userStore }, { ...props }) => ({
+//   setCurrentUser: userStore.setCurrentUser,
+//   user: userStore.user,
+//   props,
+// }))(
+//   observer(({ props, setCurrentUser, user }) => {
+//     useEffect(() => {
+//       setCurrentUser();
+//     }, [setCurrentUser]);
 
-  return <App user={userStore.user} {...props} />;
-});
+//     return <App {...props} />;
+//   })
+// );
 
-export default connect(mapStateToProps, mapDispatchToProps)(AppWrapper);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(
+  inject(({ userStore }) => ({
+    user: userStore.user,
+    isAuthenticated: userStore.isAuthenticated,
+    getUser: userStore.setCurrentUser,
+  }))(observer(App))
+);
+
+// export default inject(({ userStore }) => ({
+//   user: userStore.user,
+//   getUser: userStore.setCurrentUser,
+// }))(observer(connect(mapStateToProps, mapDispatchToProps)(App)));
