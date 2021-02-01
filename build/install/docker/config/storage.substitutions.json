@@ -14,23 +14,23 @@
 
             {
               "name": "acesskey",
-              "value": "AKIA54GFN2U6CG7BQNPI"
+              "value": ""
             },
             {
               "name": "secretaccesskey",
-              "value": "2mo3bk27FjjAFAgUO0OCn/+NZmqIHQOsZHkpuLBe"
+              "value": ""
             },
             {
               "name": "bucket",
-              "value": "kirichenko-appserver"
+              "value": ""
             },
             {
               "name": "region",
-              "value": "us-east-1"
+              "value": ""
             },
             {
               "name": "cname",
-              "value": "http://kirichenko-appserver"
+              "value": ""
             },
             {
               "name": "recycleDir",
