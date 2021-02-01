@@ -476,7 +476,7 @@ class SectionHeaderContent extends React.Component {
   };
 
   onDeleteAction = () => {
-    console.log(this.props.confirmDelete);
+    //console.log(this.props.confirmDelete);
     if (this.props.confirmDelete) {
       this.setState({ showDeleteDialog: !this.state.showDeleteDialog });
     } else {
