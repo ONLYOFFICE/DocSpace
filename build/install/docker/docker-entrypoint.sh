@@ -72,44 +72,4 @@ grep -q "${ELK_VALUE}" ${PATH_TO_CONF}/appsettings.${APP_DOTNET_ENV}.json || sed
 
 sed -i "s!\"BootstrapServers\".*!\"BootstrapServers\": \"${KAFKA_HOST}\"!g" ${PATH_TO_CONF}/kafka.${APP_DOTNET_ENV}.json
 
-S3_STORAGE=${S3_STORAGE:-"false"}
-
-if [ "${S3_STORAGE}" == "true" ]; then
-
- 	PATH_TO_STORAGE_JSON=${PATH_TO_CONF}/storage.json
-	PATH_TO_STORAGE_SUBSTITUTIONS_JSON=${PATH_TO_CONF}/storage.substitutions.json
-
-	S3_ACCESSKEY=${S3_ACCESSKEY:-""}
- 	S3_SECRETACCESSKEY=${S3_SECRETACCESSKEY:-""}
- 	S3_BUCKET=${S3_BUCKET:-""}
- 	S3_REGION=${S3_REGION:-""}
-	S3_CNAME=${S3_CNAME:-""}
-	S3_RECYCLEDIR=${S3_RECYCLEDIR:-""}
-
-    #jq '.components[18].parameters.props.acesskey="'${S3_ACCESSKEY}'"' ${S3_PATH_TO_CONF} > ${S3_PATH_TO_CONF}.tmp && mv ${S3_PATH_TO_CONF}.tmp ${S3_PATH_TO_CONF}
-	
-	jq '.storage.handler[0].property[0].acesskey="'${S3_ACCESSKEY}'"' ${PATH_TO_STORAGE_SUBSTITUTIONS_JSON} > ${PATH_TO_STORAGE_SUBSTITUTIONS_JSON}.tmp && mv ${PATH_TO_STORAGE_SUBSTITUTIONS_JSON}.tmp ${PATH_TO_STORAGE_SUBSTITUTIONS_JSON}
-	jq '.storage.handler[0].property[0].secretaccesskey="'${S3_SECRETACCESSKEY}'"' ${PATH_TO_STORAGE_SUBSTITUTIONS_JSON} > ${PATH_TO_STORAGE_SUBSTITUTIONS_JSON}.tmp && mv ${PATH_TO_STORAGE_SUBSTITUTIONS_JSON}.tmp ${PATH_TO_STORAGE_SUBSTITUTIONS_JSON}
-	jq '.storage.handler[0].property[0].bucket="'${S3_BUCKET}'"' ${PATH_TO_STORAGE_SUBSTITUTIONS_JSON} > ${PATH_TO_STORAGE_SUBSTITUTIONS_JSON}.tmp && mv ${PATH_TO_STORAGE_SUBSTITUTIONS_JSON}.tmp ${PATH_TO_STORAGE_SUBSTITUTIONS_JSON}
-	jq '.storage.handler[0].property[0].cname="'${S3_CNAME}'"' ${PATH_TO_STORAGE_SUBSTITUTIONS_JSON} > ${PATH_TO_STORAGE_SUBSTITUTIONS_JSON}.tmp && mv ${PATH_TO_STORAGE_SUBSTITUTIONS_JSON}.tmp ${PATH_TO_STORAGE_SUBSTITUTIONS_JSON}
-	jq '.storage.handler[0].property[0].region="'${S3_REGION}'"' ${PATH_TO_STORAGE_SUBSTITUTIONS_JSON} > ${PATH_TO_STORAGE_SUBSTITUTIONS_JSON}.tmp && mv ${PATH_TO_STORAGE_SUBSTITUTIONS_JSON}.tmp ${PATH_TO_STORAGE_SUBSTITUTIONS_JSON}
-	jq '.storage.handler[0].property[0].recycleDir="'${S3_RECYCLEDIR}'"' ${PATH_TO_STORAGE_SUBSTITUTIONS_JSON} > ${PATH_TO_STORAGE_SUBSTITUTIONS_JSON}.tmp && mv ${PATH_TO_STORAGE_SUBSTITUTIONS_JSON}.tmp ${PATH_TO_STORAGE_SUBSTITUTIONS_JSON}
-	
-	mv ${PATH_TO_STORAGE_JSON} ${PATH_TO_STORAGE_JSON}.tmp && ${PATH_TO_STORAGE_SUBSTITUTIONS_JSON} ${PATH_TO_STORAGE_JSON} 
-
-# 	S3_SERVICEURL=${S3_SERVICEURL:-""}
-# 	S3_FORCEPATHSTYLE=${S3_FORCEPATHSTYLE:-""}
-# 	S3_USEHTTP=${S3_USEHTTP:-""}
-# 	S3_SEE=${S3_SEE:-""}
-    
-# 	jq '.components[18].parameters.props.acesskey="'${S3_ACCESSKEY}'"' ${S3_PATH_TO_CONF} > ${S3_PATH_TO_CONF}.tmp && mv ${S3_PATH_TO_CONF}.tmp ${S3_PATH_TO_CONF}
-# 	jq '.components[18].parameters.props.secretaccesskey="'${S3_SECRETACCESSKEY}'"' ${S3_PATH_TO_CONF} > ${S3_PATH_TO_CONF}.tmp && mv ${S3_PATH_TO_CONF}.tmp ${S3_PATH_TO_CONF}
-# 	jq '.components[18].parameters.additional.bucket="'${S3_BUCKET}'"' ${S3_PATH_TO_CONF} > ${S3_PATH_TO_CONF}.tmp && mv ${S3_PATH_TO_CONF}.tmp ${S3_PATH_TO_CONF}
-# 	jq '.components[18].parameters.additional.region="'${S3_REGION}'"' ${S3_PATH_TO_CONF} > ${S3_PATH_TO_CONF}.tmp && mv ${S3_PATH_TO_CONF}.tmp ${S3_PATH_TO_CONF}
-# 	jq '.components[18].parameters.additional.serviceurl="'${S3_SERVICEURL}'"' ${S3_PATH_TO_CONF} > ${S3_PATH_TO_CONF}.tmp && mv ${S3_PATH_TO_CONF}.tmp ${S3_PATH_TO_CONF}
-# 	jq '.components[18].parameters.additional.forcepathstyle="'${S3_FORCEPATHSTYLE}'"' ${S3_PATH_TO_CONF} > ${S3_PATH_TO_CONF}.tmp && mv ${S3_PATH_TO_CONF}.tmp ${S3_PATH_TO_CONF}
-# 	jq '.components[18].parameters.additional.usehttp="'${S3_USEHTTP}'"' ${S3_PATH_TO_CONF} > ${S3_PATH_TO_CONF}.tmp && mv ${S3_PATH_TO_CONF}.tmp ${S3_PATH_TO_CONF}
-# 	jq '.components[18].parameters.additional.sse="'${S3_SEE}'"' ${S3_PATH_TO_CONF} > ${S3_PATH_TO_CONF}.tmp && mv ${S3_PATH_TO_CONF}.tmp ${S3_PATH_TO_CONF}
-fi
-
 dotnet ${DOTNET_RUN} --urls=${URLS} --ENVIRONMENT=${APP_DOTNET_ENV} --'$STORAGE_ROOT'=${APP_STORAGE_ROOT} --pathToConf=${PATH_TO_CONF} --log:dir=${LOG_DIR} --log:name=${DOTNET_LOG_NAME} ${PARAMETERS}
