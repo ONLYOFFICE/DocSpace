@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import React, { Suspense, useEffect } from "react";
 import { connect } from "react-redux";
 import { Router, Switch, Redirect } from "react-router-dom";
 import Home from "./components/pages/Home";
@@ -23,10 +23,11 @@ import {
 import { getFilterByLocation } from "./helpers/converters";
 import { fetchGroups, fetchPeople } from "./store/people/actions";
 import config from "../package.json";
+import { observer } from "mobx-react";
 
 const {
   setIsLoaded,
-  getUser,
+  //getUser,
   getPortalSettings,
   //getModules,
   setCurrentProductId,
@@ -35,6 +36,7 @@ const {
   getPortalCultures,
   getIsAuthenticated,
 } = commonStore.auth.actions;
+const { userStore } = commonStore;
 
 /*const Profile = lazy(() => import("./components/pages/Profile"));
 const ProfileAction = lazy(() => import("./components/pages/ProfileAction"));
@@ -44,7 +46,7 @@ class App extends React.Component {
   componentDidMount() {
     const {
       setModuleInfo,
-      getUser,
+      //getUser,
       getPortalSettings,
       //getModules,
       getPortalPasswordSettings,
@@ -65,7 +67,7 @@ class App extends React.Component {
       }
 
       const requests = [
-        getUser(),
+        //getUser(),
         getPortalSettings(),
         //getModules(),
         getPortalPasswordSettings(),
@@ -162,7 +164,7 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(setCurrentProductHomePage(config.homepage));
       dispatch(setCurrentProductId("f4d98afd-d336-4332-8778-3c6945c81ea0"));
     },
-    getUser: () => getUser(dispatch),
+    //getUser: () => getUser(dispatch),
     getPortalSettings: () => getPortalSettings(dispatch),
     //getModules: () => getModules(dispatch),
     getPortalPasswordSettings: () => getPortalPasswordSettings(dispatch),
@@ -183,4 +185,12 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+const AppWrapper = observer((props) => {
+  useEffect(() => {
+    userStore.setCurrentUser();
+  }, []);
+
+  return <App user={userStore.user} {...props} />;
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(AppWrapper);

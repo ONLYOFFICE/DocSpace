@@ -1,4 +1,4 @@
-import React, { Suspense, lazy } from "react";
+import React, { Suspense, lazy, useEffect } from "react";
 import { Router, Route, Switch } from "react-router-dom";
 import { connect } from "react-redux";
 import {
@@ -16,6 +16,7 @@ import {
   toastr,
 } from "asc-web-common";
 import Home from "./components/pages/Home";
+import { observer } from "mobx-react";
 
 const About = lazy(() => import("./components/pages/About"));
 const Confirm = lazy(() => import("./components/pages/Confirm"));
@@ -25,11 +26,12 @@ const Payments = lazy(() => import("./components/pages/Payments"));
 const ThirdPartyResponse = lazy(() => import("./components/pages/ThirdParty"));
 const {
   setIsLoaded,
-  getUser,
+  //getUser,
   getPortalSettings,
   //getModules,
   getIsAuthenticated,
 } = CommonStore.auth.actions;
+const { userStore } = CommonStore;
 
 class App extends React.Component {
   constructor(props) {
@@ -41,7 +43,7 @@ class App extends React.Component {
   componentDidMount() {
     const {
       getPortalSettings,
-      getUser,
+      //getUser,
       //getModules,
       setIsLoaded,
       getIsAuthenticated,
@@ -62,7 +64,7 @@ class App extends React.Component {
         } else if (
           !window.location.pathname.includes("confirm/EmailActivation")
         ) {
-          requests.push(getUser());
+          //requests.push(getUser());
           requests.push(getPortalSettings());
           //requests.push(getModules());
         }
@@ -139,10 +141,18 @@ const mapDispatchToProps = (dispatch) => {
   return {
     getIsAuthenticated: () => getIsAuthenticated(dispatch),
     getPortalSettings: () => getPortalSettings(dispatch),
-    getUser: () => getUser(dispatch),
+    //getUser: () => getUser(dispatch),
     //getModules: () => getModules(dispatch),
     setIsLoaded: () => dispatch(setIsLoaded(true)),
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+const AppWrapper = observer((props) => {
+  useEffect(() => {
+    userStore.setCurrentUser();
+  }, []);
+
+  return <App user={userStore.user} {...props} />;
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(AppWrapper);

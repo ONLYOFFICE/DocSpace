@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import React, { Suspense, useEffect } from "react";
 import { connect } from "react-redux";
 import { Router, Switch, Redirect, Route } from "react-router-dom";
 import Home from "./components/pages/Home";
@@ -24,10 +24,11 @@ import {
   Layout,
   regDesktop,
 } from "asc-web-common";
+import { observer } from "mobx-react";
 
 const {
   setIsLoaded,
-  getUser,
+  //getUser,
   getPortalSettings,
   //getModules,
   setCurrentProductId,
@@ -39,11 +40,12 @@ const {
   getIsAuthenticated,
 } = commonStore.auth.actions;
 const {
-  getCurrentUser,
+  //getCurrentUser,
   isEncryptionSupport,
   isDesktopClient,
   getIsLoaded,
 } = commonStore.auth.selectors;
+const { userStore } = commonStore;
 
 class App extends React.Component {
   constructor(props) {
@@ -57,7 +59,7 @@ class App extends React.Component {
   componentDidMount() {
     const {
       setModuleInfo,
-      getUser,
+      //getUser,
       getPortalSettings,
       //getModules,
       getPortalCultures,
@@ -84,7 +86,9 @@ class App extends React.Component {
         utils.updateTempContent(isAuthenticated);
       }
 
-      const requests = [getUser()];
+      const requests = [
+        /*getUser()*/
+      ];
       if (!this.isEditor) {
         requests.push(
           getPortalSettings(),
@@ -202,7 +206,7 @@ const mapStateToProps = (state) => {
   const { homepage } = settings;
   return {
     homepage: homepage || config.homepage,
-    user: getCurrentUser(state),
+    //user: getCurrentUser(state),
     isAuthenticated: state.auth.isAuthenticated,
     isLoaded: getIsLoaded(state),
     isEncryption: isEncryptionSupport(state),
@@ -218,7 +222,7 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(setCurrentProductHomePage(config.homepage));
       dispatch(setCurrentProductId("e67be73d-f9ae-4ce1-8fec-1880cb518cb4"));
     },
-    getUser: () => getUser(dispatch),
+    //getUser: () => getUser(dispatch),
     getPortalSettings: () => getPortalSettings(dispatch),
     //getModules: () => getModules(dispatch),
     getPortalCultures: () => getPortalCultures(dispatch),
@@ -230,4 +234,12 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+const AppWrapper = observer((props) => {
+  useEffect(() => {
+    userStore.setCurrentUser();
+  }, []);
+
+  return <App user={userStore.user} {...props} />;
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(AppWrapper);
