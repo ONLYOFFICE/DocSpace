@@ -318,7 +318,7 @@ function mapStateToProps(state) {
   return {
     profile: state.profile.targetUser,
     avatarMax: state.profile.avatarMax,
-    settings: state.auth.settings,
+    //settings: state.auth.settings,
   };
 }
 

@@ -115,7 +115,7 @@ const GroupActionContainer = (props) => {
 
 function mapStateToProps(state) {
   return {
-    settings: state.auth.settings,
+    //settings: state.auth.settings,
     group: state.group.targetGroup,
     isAdmin: isAdmin(state),
   };

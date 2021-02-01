@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { IconButton } from "asc-web-components";
-import { Headline } from "asc-web-common";
+import { Headline, store } from "asc-web-common";
 import { useTranslation } from "react-i18next";
 import {
   setFilter,
@@ -11,6 +11,10 @@ import {
   toggleAvatarEditor,
 } from "../../../../../store/people/actions";
 import { resetProfile } from "../../../../../store/profile/actions";
+import { observer } from "mobx-react";
+
+const { settingsStore } = store;
+
 const Wrapper = styled.div`
   display: grid;
   grid-template-columns: auto 1fr auto auto;
@@ -84,7 +88,7 @@ const SectionHeaderContent = (props) => {
     profile,
     setFilter,
     filter,
-    settings.homepage,
+    //settings.homepage,
     avatarEditorIsOpen,
   ]);
   return (
@@ -108,16 +112,20 @@ const SectionHeaderContent = (props) => {
 function mapStateToProps(state) {
   return {
     profile: state.profile.targetUser,
-    settings: state.auth.settings,
+    //settings: state.auth.settings,
     filter: state.people.filter,
     editingForm: state.people.editingForm,
     avatarEditorIsOpen: state.people.avatarEditorIsOpen,
   };
 }
 
+const SectionHeaderContentWrapper = observer((props) => {
+  return <SectionHeaderContent settings={settingsStore.settings} {...props} />;
+});
+
 export default connect(mapStateToProps, {
   setFilter,
   setIsVisibleDataLossDialog,
   toggleAvatarEditor,
   resetProfile,
-})(withRouter(SectionHeaderContent));
+})(withRouter(SectionHeaderContentWrapper));

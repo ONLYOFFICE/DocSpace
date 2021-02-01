@@ -30,11 +30,14 @@ import {
   DeleteProfileEverDialog,
 } from "../../../../dialogs";
 import { createI18N } from "../../../../../helpers/i18n";
+import { observer } from "mobx-react";
+
 const i18n = createI18N({
   page: "Profile",
   localesPath: "pages/Profile",
 });
 const { isAdmin, isMe } = store.auth.selectors;
+const { settingsStore } = store;
 const {
   resendUserInvites,
   createThumbnailsAvatar,
@@ -505,7 +508,7 @@ class SectionHeaderContent extends React.PureComponent {
 
 const mapStateToProps = (state) => {
   return {
-    settings: state.auth.settings,
+    //settings: state.auth.settings,
     profile: state.profile.targetUser,
     viewer: state.auth.user,
     isAdmin: isAdmin(state),
@@ -513,9 +516,13 @@ const mapStateToProps = (state) => {
   };
 };
 
+const SectionHeaderContentWrapper = observer((props) => {
+  return <SectionHeaderContent settings={settingsStore.settings} {...props} />;
+});
+
 export default connect(mapStateToProps, {
   updateUserStatus,
   fetchProfile,
   updateProfile,
   setFilter,
-})(withRouter(withTranslation()(SectionHeaderContent)));
+})(withRouter(withTranslation()(SectionHeaderContentWrapper)));

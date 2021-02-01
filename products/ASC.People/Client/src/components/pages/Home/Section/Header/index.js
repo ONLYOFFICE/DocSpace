@@ -7,7 +7,7 @@ import {
   ContextMenuButton,
   utils,
 } from "asc-web-components";
-import { Headline, toastr, Loaders } from "asc-web-common";
+import { Headline, toastr, Loaders, store, constants } from "asc-web-common";
 import { connect } from "react-redux";
 import {
   getSelectedGroup,
@@ -27,7 +27,6 @@ import {
   setSelected,
 } from "../../../../../store/people/actions";
 import { deleteGroup } from "../../../../../store/group/actions";
-import { store, constants } from "asc-web-common";
 import {
   InviteDialog,
   DeleteUsersDialog,
@@ -35,10 +34,13 @@ import {
   ChangeUserStatusDialog,
   ChangeUserTypeDialog,
 } from "../../../../dialogs";
+import { observer } from "mobx-react";
+
 const { tablet, desktop } = utils.device;
 const { Consumer } = utils.context;
 
 const { isAdmin } = store.auth.selectors;
+const { settingsStore } = store;
 const { EmployeeType, EmployeeStatus } = constants;
 
 const StyledContainer = styled.div`
@@ -482,15 +484,15 @@ const SectionHeaderContent = (props) => {
 };
 
 const mapStateToProps = (state) => {
-  const { isLoaded, settings } = state.auth;
+  const { isLoaded /* settings */ } = state.auth;
   const { groups, selection, selectedGroup } = state.people;
-  const { homepage, customNames } = settings;
+  //const { homepage, customNames } = settings;
 
   return {
     group: getSelectedGroup(groups, selectedGroup),
     isAdmin: isAdmin(state),
-    homepage,
-    customNames,
+    //homepage,
+    //customNames,
     selection,
     isLoaded,
     hasAnybodySelected: hasAnybodySelected(state),
@@ -503,10 +505,20 @@ const mapStateToProps = (state) => {
   };
 };
 
+const SectionHeaderContentWrapper = observer((props) => {
+  return (
+    <SectionHeaderContent
+      customNames={settingsStore.settings.customNames}
+      homepage={settingsStore.settings.homepage}
+      {...props}
+    />
+  );
+});
+
 export default connect(mapStateToProps, {
   updateUserStatus,
   fetchPeople,
   deleteGroup,
   removeUser,
   setSelected,
-})(withTranslation()(withRouter(SectionHeaderContent)));
+})(withTranslation()(withRouter(SectionHeaderContentWrapper)));

@@ -34,7 +34,8 @@ import {
   DeleteProfileEverDialog,
 } from "../../../../dialogs";
 import { createI18N } from "../../../../../helpers/i18n";
-import { isMobile } from "react-device-detect";
+import { observer } from "mobx-react";
+//import { isMobile } from "react-device-detect";
 
 const i18n = createI18N({
   page: "Home",
@@ -43,7 +44,7 @@ const i18n = createI18N({
 const { Consumer } = utils.context;
 const { isArrayEqual } = utils.array;
 const {
-  getSettings,
+  //getSettings,
   getIsLoadedSection,
   isAdmin,
   getCurrentUserId,
@@ -51,6 +52,7 @@ const {
 const { setIsLoadedSection } = store.auth.actions;
 const { resendUserInvites } = api.people;
 const { EmployeeStatus } = constants;
+const { settingsStore } = store;
 
 const isRefetchPeople = true;
 
@@ -547,11 +549,15 @@ const mapStateToProps = (state) => {
     filter,
     isLoading,
     peopleList: getPeopleList(state),
-    settings: getSettings(state),
+    //settings: getSettings(state),
     isAdmin: isAdmin(state),
     currentUserId: getCurrentUserId(state),
   };
 };
+
+const SectionBodyContentWrapper = observer((props) => {
+  return <SectionBodyContent settings={settingsStore.settings} {...props} />;
+});
 
 export default connect(mapStateToProps, {
   selectUser,
@@ -562,4 +568,4 @@ export default connect(mapStateToProps, {
   fetchPeople,
   selectGroup,
   setIsLoadedSection,
-})(withRouter(withTranslation()(SectionBodyContent)));
+})(withRouter(withTranslation()(SectionBodyContentWrapper)));

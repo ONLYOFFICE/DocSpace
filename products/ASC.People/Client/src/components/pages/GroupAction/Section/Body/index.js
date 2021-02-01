@@ -28,12 +28,15 @@ import { connect } from "react-redux";
 import styled from "styled-components";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
+import { observer } from "mobx-react";
 
 const {
   getCurrentProductName,
-  getSettings,
+  //getSettings,
   getCurrentUser,
 } = initStore.auth.selectors;
+
+const { settingsStore } = initStore;
 
 const MainContainer = styled.div`
   display: flex;
@@ -491,22 +494,22 @@ const convertGroups = (groups) => {
 
 function mapStateToProps(state) {
   const currentModuleName = getCurrentProductName(state);
-  const settings = getSettings(state);
-  const {
-    groupHeadCaption,
-    groupsCaption,
-    groupCaption,
-  } = settings.customNames;
+  //const settings = getSettings(state);
+  // const {
+  //   groupHeadCaption,
+  //   groupsCaption,
+  //   groupCaption,
+  // } = settings.customNames;
   const { isLoaded } = state.auth;
 
   return {
-    settings,
+    //settings,
     group: state.group.targetGroup,
     groups: convertGroups(state.people.groups),
     users: convertUsers(state.people.selector.users), //TODO: replace to api requests with search
-    groupHeadCaption,
-    groupsCaption,
-    groupCaption,
+    // groupHeadCaption,
+    // groupsCaption,
+    // groupCaption,
     me: getCurrentUser(state),
     currentModuleName,
     filter: state.people.filter,
@@ -514,10 +517,28 @@ function mapStateToProps(state) {
   };
 }
 
+const SectionBodyContentWrapper = observer((props) => {
+  const {
+    groupHeadCaption,
+    groupsCaption,
+    groupCaption,
+  } = settingsStore.settings.customNames;
+
+  return (
+    <SectionBodyContent
+      settings={settingsStore.settings}
+      groupHeadCaption={groupHeadCaption}
+      groupsCaption={groupsCaption}
+      groupCaption={groupCaption}
+      {...props}
+    />
+  );
+});
+
 export default connect(mapStateToProps, {
   resetGroup,
   createGroup,
   updateGroup,
   selectGroup,
   setFilter,
-})(withRouter(withTranslation()(SectionBodyContent)));
+})(withRouter(withTranslation()(SectionBodyContentWrapper)));

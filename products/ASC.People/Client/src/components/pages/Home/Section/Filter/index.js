@@ -5,18 +5,21 @@ import find from "lodash/find";
 import result from "lodash/result";
 import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
-import { getFilterByLocation } from "../../../../../helpers/converters";
+//import { getFilterByLocation } from "../../../../../helpers/converters";
 import { store, FilterInput, Loaders, utils } from "asc-web-common";
 import { isMobileOnly } from "react-device-detect";
 import { getFilter, getGroups } from "../../../../../store/people/selectors";
+import { observer } from "mobx-react";
+
 const {
   isAdmin,
   getCurrentUser,
   getLanguage,
-  getSettings,
+  //getSettings,
   getIsLoaded,
 } = store.auth.selectors;
 
+const { settingsStore } = store;
 const { withLayoutSize } = utils;
 
 const getEmployeeStatus = (filterValues) => {
@@ -267,12 +270,16 @@ function mapStateToProps(state) {
     language: getLanguage(state),
     groups: getGroups(state),
     filter: getFilter(state),
-    settings: getSettings(state),
+    //settings: getSettings(state),
     isAdmin: isAdmin(state),
     isLoaded: getIsLoaded(state),
   };
 }
 
+const SectionFilterContentWrapper = observer((props) => {
+  return <SectionFilterContent settings={settingsStore.settings} {...props} />;
+});
+
 export default connect(mapStateToProps, { fetchPeople })(
-  withRouter(withLayoutSize(withTranslation()(SectionFilterContent)))
+  withRouter(withLayoutSize(withTranslation()(SectionFilterContentWrapper)))
 );

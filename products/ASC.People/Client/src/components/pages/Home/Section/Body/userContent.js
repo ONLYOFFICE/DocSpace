@@ -9,6 +9,10 @@ import {
   Box,
 } from "asc-web-components";
 import { connect } from "react-redux";
+import { store } from "asc-web-common";
+import { observer } from "mobx-react";
+
+const { settingsStore } = store;
 
 const getFormattedGroups = (user, selectGroup) => {
   let temp = [];
@@ -166,10 +170,16 @@ const UserContent = ({
   );
 };
 
-function mapStateToProps(state) {
-  return {
-    settings: state.auth.settings,
-  };
-}
+// function mapStateToProps(state) {
+//   return {
+//     settings: state.auth.settings,
+//   };
+// }
 
-export default connect(mapStateToProps)(withRouter(UserContent));
+const UserContentWrapper = observer((props) => {
+  return <UserContent settings={settingsStore.settings} {...props} />;
+});
+
+export default connect(null /* mapStateToProps */)(
+  withRouter(UserContentWrapper)
+);

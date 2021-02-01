@@ -12,15 +12,18 @@ import {
 import { withTranslation } from "react-i18next";
 import ModalDialogContainer from "../ModalDialogContainer";
 import copy from "copy-to-clipboard";
-import { api, utils } from "asc-web-common";
+import { api, utils, store } from "asc-web-common";
 import { createI18N } from "../../../helpers/i18n";
 import { getPortalInviteLinks } from "../../../store/portal/actions";
+import { observer } from "mobx-react";
+
 const i18n = createI18N({
   page: "InviteDialog",
   localesPath: "dialogs/InviteDialog",
 });
 const { getShortenedLink } = api.portal;
 const { changeLanguage } = utils;
+const { settingsStore } = store;
 
 const textAreaName = "link-textarea";
 
@@ -210,10 +213,10 @@ class InviteDialogComponent extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
-    settings: state.auth.settings.hasShortenService,
+    //settings: state.auth.settings.hasShortenService,
     userInvitationLink: state.portal.inviteLinks.userLink,
     guestInvitationLink: state.portal.inviteLinks.guestLink,
-    guestsCaption: state.auth.settings.customNames.guestsCaption,
+    //guestsCaption: state.auth.settings.customNames.guestsCaption,
   };
 };
 
@@ -235,4 +238,17 @@ InviteDialog.propTypes = {
   onCloseButton: PropTypes.func.isRequired,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(InviteDialog);
+const InviteDialogWrapper = observer((props) => {
+  return (
+    <InviteDialog
+      settings={settingsStore.settings.hasShortenService}
+      guestsCaption={settingsStore.settings.customNames.guestsCaption}
+      {...props}
+    />
+  );
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(InviteDialogWrapper);

@@ -19,8 +19,10 @@ import styled from "styled-components";
 
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
+import { observer } from "mobx-react";
 
 const { isAdmin, isMe } = store.auth.selectors;
+const { settingsStore } = store;
 
 const ProfileWrapper = styled.div`
   display: flex;
@@ -183,13 +185,17 @@ class SectionBodyContent extends React.PureComponent {
 
 const mapStateToProps = (state) => {
   return {
-    settings: state.auth.settings,
+    //settings: state.auth.settings,
     profile: state.profile.targetUser,
     isAdmin: isAdmin(state),
     viewer: state.auth.user,
   };
 };
 
+const SectionBodyContentWrapper = observer((props) => {
+  return <SectionBodyContent settings={settingsStore.settings} {...props} />;
+});
+
 export default connect(mapStateToProps)(
-  withRouter(withTranslation()(SectionBodyContent))
+  withRouter(withTranslation()(SectionBodyContentWrapper))
 );

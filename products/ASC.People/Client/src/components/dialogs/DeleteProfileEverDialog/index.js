@@ -4,10 +4,12 @@ import { withRouter } from "react-router";
 import PropTypes from "prop-types";
 import { ModalDialog, Button, Text } from "asc-web-components";
 import { withTranslation, Trans } from "react-i18next";
-import { api, utils, toastr } from "asc-web-common";
+import { api, utils, toastr, store } from "asc-web-common";
 import { fetchPeople } from "../../../store/people/actions";
 import ModalDialogContainer from "../ModalDialogContainer";
 import { createI18N } from "../../../helpers/i18n";
+import { observer } from "mobx-react";
+
 const i18n = createI18N({
   page: "DeleteProfileEverDialog",
   localesPath: "dialogs/DeleteProfileEverDialog",
@@ -16,6 +18,7 @@ const i18n = createI18N({
 const { deleteUser } = api.people;
 const { Filter } = api;
 const { changeLanguage } = utils;
+const { settingsStore } = store;
 
 class DeleteProfileEverDialogComponent extends React.Component {
   constructor(props) {
@@ -111,12 +114,21 @@ DeleteProfileEverDialog.propTypes = {
   history: PropTypes.object.isRequired,
 };
 
-function mapStateToProps(state) {
-  return {
-    userCaption: state.auth.settings.customNames.userCaption,
-  };
-}
+// function mapStateToProps(state) {
+//   return {
+//     userCaption: state.auth.settings.customNames.userCaption,
+//   };
+// }
 
-export default connect(mapStateToProps, { fetchPeople })(
-  withRouter(DeleteProfileEverDialog)
+const DeleteProfileWrapper = observer((props) => {
+  return (
+    <DeleteProfileEverDialog
+      userCaption={settingsStore.settings.customNames.userCaption}
+      {...props}
+    />
+  );
+});
+
+export default connect(null /* mapStateToProps */, { fetchPeople })(
+  withRouter(DeleteProfileWrapper)
 );

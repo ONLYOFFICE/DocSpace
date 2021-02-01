@@ -28,7 +28,7 @@ import { observer } from "mobx-react";
 const {
   setIsLoaded,
   //getUser,
-  getPortalSettings,
+  //getPortalSettings,
   //getModules,
   setCurrentProductId,
   setCurrentProductHomePage,
@@ -36,7 +36,7 @@ const {
   getPortalCultures,
   getIsAuthenticated,
 } = commonStore.auth.actions;
-const { userStore } = commonStore;
+const { userStore, settingsStore } = commonStore;
 
 /*const Profile = lazy(() => import("./components/pages/Profile"));
 const ProfileAction = lazy(() => import("./components/pages/ProfileAction"));
@@ -47,7 +47,7 @@ class App extends React.Component {
     const {
       setModuleInfo,
       //getUser,
-      getPortalSettings,
+      //getPortalSettings,
       //getModules,
       getPortalPasswordSettings,
       getPortalCultures,
@@ -68,7 +68,7 @@ class App extends React.Component {
 
       const requests = [
         //getUser(),
-        getPortalSettings(),
+        //getPortalSettings(),
         //getModules(),
         getPortalPasswordSettings(),
         getPortalCultures(),
@@ -149,13 +149,13 @@ class App extends React.Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  const { settings } = state.auth;
-  const { homepage } = settings;
-  return {
-    homepage: homepage || config.homepage,
-  };
-};
+// const mapStateToProps = (state) => {
+//   const { settings } = state.auth;
+//   const { homepage } = settings;
+//   return {
+//     homepage: homepage || config.homepage,
+//   };
+// };
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -165,7 +165,7 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(setCurrentProductId("f4d98afd-d336-4332-8778-3c6945c81ea0"));
     },
     //getUser: () => getUser(dispatch),
-    getPortalSettings: () => getPortalSettings(dispatch),
+    //getPortalSettings: () => getPortalSettings(dispatch),
     //getModules: () => getModules(dispatch),
     getPortalPasswordSettings: () => getPortalPasswordSettings(dispatch),
     getPortalCultures: () => getPortalCultures(dispatch),
@@ -188,9 +188,14 @@ const mapDispatchToProps = (dispatch) => {
 const AppWrapper = observer((props) => {
   useEffect(() => {
     userStore.setCurrentUser();
+    settingsStore.getPortalSettings();
   }, []);
 
-  return <App user={userStore.user} {...props} />;
+  const homepage = settingsStore.settings.homepage || config.homepage;
+  return <App homepage={homepage} user={userStore.user} {...props} />;
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(AppWrapper);
+export default connect(
+  null /*mapStateToProps*/,
+  mapDispatchToProps
+)(AppWrapper);

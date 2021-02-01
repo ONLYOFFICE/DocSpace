@@ -295,7 +295,7 @@ function mapStateToProps(state) {
     avatarMax: state.profile.avatarMax,
     createdAvatar: state.profile.createdAvatar,
     croppedAvatar: state.profile.croppedAvatar,
-    settings: state.auth.settings,
+    //settings: state.auth.settings,
     editingForm: state.people.editingForm,
   };
 }

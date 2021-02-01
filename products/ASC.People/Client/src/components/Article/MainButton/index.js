@@ -8,13 +8,16 @@ import { InviteDialog } from "./../../dialogs";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import { utils, toastr, Loaders } from "asc-web-common";
 import { createI18N } from "../../../helpers/i18n";
-const { getLanguage, getSettings } = store.auth.selectors;
+import { observer } from "mobx-react";
+
+const { getLanguage /* getSettings */ } = store.auth.selectors;
 const i18n = createI18N({
   page: "Article",
   localesPath: "Article",
 });
 
 const { changeLanguage } = utils;
+const { settingsStore } = store;
 
 class PureArticleMainButtonContent extends React.Component {
   constructor(props) {
@@ -134,9 +137,15 @@ const mapStateToProps = (state) => {
   const { isLoaded } = state.auth;
   return {
     isLoaded,
-    settings: getSettings(state),
+    //settings: getSettings(state),
     language: getLanguage(state),
   };
 };
 
-export default connect(mapStateToProps)(withRouter(ArticleMainButtonContent));
+const MainButtonWrapper = observer((props) => {
+  return (
+    <ArticleMainButtonContent settings={settingsStore.settings} {...props} />
+  );
+});
+
+export default connect(mapStateToProps)(withRouter(MainButtonWrapper));
