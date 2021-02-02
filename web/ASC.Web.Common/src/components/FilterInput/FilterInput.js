@@ -153,7 +153,10 @@ class FilterInput extends React.Component {
     }
 
     if (
-      !equal(selectedFilterData.filterValues, filterValues) ||
+      !equal(
+        selectedFilterData.filterValues,
+        prevProps.selectedFilterData.filterValues
+      ) ||
       inputValue !== searchText ||
       sectionWidth !== prevProps.sectionWidth ||
       isGroupChanged
@@ -170,6 +173,7 @@ class FilterInput extends React.Component {
             : "",
         filterValues: filterValues,
         searchText: selectedFilterData.inputValue || "",
+        needUpdateFilter: false,
       });
       this.updateFilter(filterValues);
     }
