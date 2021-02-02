@@ -24,7 +24,7 @@ import {
   Layout,
   regDesktop,
 } from "asc-web-common";
-import { observer } from "mobx-react";
+import { inject, observer } from "mobx-react";
 
 const {
   setIsLoaded,
@@ -45,7 +45,7 @@ const {
   isDesktopClient,
   getIsLoaded,
 } = commonStore.auth.selectors;
-const { userStore } = commonStore;
+//const { userStore } = commonStore;
 
 class App extends React.Component {
   constructor(props) {
@@ -59,7 +59,7 @@ class App extends React.Component {
   componentDidMount() {
     const {
       setModuleInfo,
-      //getUser,
+      getUser,
       getPortalSettings,
       //getModules,
       getPortalCultures,
@@ -86,9 +86,7 @@ class App extends React.Component {
         utils.updateTempContent(isAuthenticated);
       }
 
-      const requests = [
-        /*getUser()*/
-      ];
+      const requests = [getUser()];
       if (!this.isEditor) {
         requests.push(
           getPortalSettings(),
@@ -234,12 +232,23 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-const AppWrapper = observer((props) => {
-  useEffect(() => {
-    userStore.setCurrentUser();
-  }, []);
+// const AppWrapper = observer((props) => {
+//   useEffect(() => {
+//     userStore.setCurrentUser();
+//   }, []);
 
-  return <App user={userStore.user} {...props} />;
-});
+//   return <App user={userStore.user} {...props} />;
+// });
 
-export default connect(mapStateToProps, mapDispatchToProps)(AppWrapper);
+//export default connect(mapStateToProps, mapDispatchToProps)(AppWrapper);
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(
+  inject(({ userStore }) => ({
+    user: userStore.user,
+    isAuthenticated: userStore.isAuthenticated,
+    getUser: userStore.setCurrentUser,
+  }))(observer(App))
+);

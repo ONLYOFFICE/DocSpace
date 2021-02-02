@@ -23,7 +23,7 @@ import {
 import { getFilterByLocation } from "./helpers/converters";
 import { fetchGroups, fetchPeople } from "./store/people/actions";
 import config from "../package.json";
-import { observer } from "mobx-react";
+import { inject, observer } from "mobx-react";
 
 const {
   setIsLoaded,
@@ -36,7 +36,7 @@ const {
   getPortalCultures,
   getIsAuthenticated,
 } = commonStore.auth.actions;
-const { userStore } = commonStore;
+//const { userStore } = commonStore;
 
 /*const Profile = lazy(() => import("./components/pages/Profile"));
 const ProfileAction = lazy(() => import("./components/pages/ProfileAction"));
@@ -46,7 +46,7 @@ class App extends React.Component {
   componentDidMount() {
     const {
       setModuleInfo,
-      //getUser,
+      getUser,
       getPortalSettings,
       //getModules,
       getPortalPasswordSettings,
@@ -67,7 +67,7 @@ class App extends React.Component {
       }
 
       const requests = [
-        //getUser(),
+        getUser(),
         getPortalSettings(),
         //getModules(),
         getPortalPasswordSettings(),
@@ -185,12 +185,23 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-const AppWrapper = observer((props) => {
-  useEffect(() => {
-    userStore.setCurrentUser();
-  }, []);
+// const AppWrapper = observer((props) => {
+//   useEffect(() => {
+//     userStore.setCurrentUser();
+//   }, []);
 
-  return <App user={userStore.user} {...props} />;
-});
+//   return <App user={userStore.user} {...props} />;
+// });
 
-export default connect(mapStateToProps, mapDispatchToProps)(AppWrapper);
+// export default connect(mapStateToProps, mapDispatchToProps)(AppWrapper);
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(
+  inject(({ userStore }) => ({
+    user: userStore.user,
+    isAuthenticated: userStore.isAuthenticated,
+    getUser: userStore.setCurrentUser,
+  }))(observer(App))
+);

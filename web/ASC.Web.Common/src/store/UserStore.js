@@ -9,11 +9,13 @@ import { LANGUAGE } from "../constants";
 class UserStore {
   user = null;
   isAuthenticated = false;
+  isAdmin = false;
 
   constructor() {
     makeObservable(this, {
       user: observable,
       isAuthenticated: observable,
+      isAdmin: observable,
       setCurrentUser: action.bound,
     });
   }
@@ -24,6 +26,7 @@ class UserStore {
       localStorage.setItem(LANGUAGE, user.cultureName);
     this.user = user;
     this.isAuthenticated = true;
+    this.isAdmin = user.isAdmin;
   }
 }
 

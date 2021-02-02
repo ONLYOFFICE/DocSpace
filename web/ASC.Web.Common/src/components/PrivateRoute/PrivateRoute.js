@@ -13,7 +13,7 @@ import {
 } from "../../store/auth/selectors.js";
 import { Error401, Error404 } from "../../pages/errors";
 import RectangleLoader from "../Loaders/RectangleLoader/RectangleLoader";
-import { observer } from "mobx-react";
+import { inject, observer } from "mobx-react";
 import store from "../../store";
 
 const { userStore } = store;
@@ -29,6 +29,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
     user,
     computedMatch,
   } = rest;
+
   const { userId } = computedMatch.params;
 
   const renderComponent = (props) => {
@@ -98,14 +99,23 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
 
 function mapStateToProps(state) {
   return {
-    isAdmin: isAdmin(state),
+    //isAdmin: isAdmin(state),
     //user: getCurrentUser(state),
-    isAuthenticated: isAuthenticated(state),
+    //isAuthenticated: isAuthenticated(state),
     isLoaded: getIsLoaded(state),
   };
 }
-const PrivateRouteWrapper = observer((props) => {
-  return <PrivateRoute user={userStore.user} {...props} />;
-});
+// const PrivateRouteWrapper = observer((props) => {
+//   return <PrivateRoute user={userStore.user} {...props} />;
+// });
 
-export default connect(mapStateToProps)(PrivateRouteWrapper);
+// export default connect(mapStateToProps)(PrivateRouteWrapper);
+
+export default connect(mapStateToProps)(
+  inject(({ userStore }) => ({
+    user: userStore.user,
+    isAuthenticated: userStore.isAuthenticated,
+    isAdmin: userStore.isAdmin,
+    getUser: userStore.setCurrentUser,
+  }))(observer(PrivateRoute))
+);
