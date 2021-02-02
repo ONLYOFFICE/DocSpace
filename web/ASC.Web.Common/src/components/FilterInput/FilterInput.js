@@ -153,10 +153,12 @@ class FilterInput extends React.Component {
     }
 
     if (
-      !equal(
+      (!equal(
         selectedFilterData.filterValues,
         prevProps.selectedFilterData.filterValues
-      ) ||
+      ) &&
+        selectedFilterData.filterValues.length !==
+          this.state.filterValues.length) ||
       inputValue !== searchText ||
       sectionWidth !== prevProps.sectionWidth ||
       isGroupChanged
@@ -492,7 +494,8 @@ class FilterInput extends React.Component {
       : fullWidth - filterWidth;
 
     if (searchWidth) {
-      const asideView = searchWidth && searchWidth < 350;
+      const asideView =
+        searchWidth && searchWidth < 350 && window.innerWidth < 1025;
 
       this.setState({
         asideView,
