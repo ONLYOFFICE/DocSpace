@@ -29,7 +29,7 @@ import { inject, observer } from "mobx-react";
 const {
   setIsLoaded,
   //getUser,
-  //getPortalSettings,
+  getPortalSettings,
   //getModules,
   setCurrentProductId,
   setCurrentProductHomePage,
@@ -252,6 +252,6 @@ export default connect(
     getUser: userStore.setCurrentUser,
     homepage: settingsStore.settings.homepage || config.homepage,
     encryptionKeys: settingsStore.settings.encryptionKeys,
-    getPortalSettings: settingsStore.getPortalSettings
+    getPortalSettings: settingsStore.getPortalSettings,
   }))(observer(App))
 );
