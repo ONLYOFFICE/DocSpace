@@ -16,18 +16,18 @@ class UserStore {
       user: observable,
       isAuthenticated: observable,
       isAdmin: observable,
-      setCurrentUser: action.bound,
+      getCurrentUser: action,
     });
   }
 
-  async setCurrentUser() {
+  getCurrentUser = async () => {
     const user = await api.people.getUser();
     localStorage.getItem(LANGUAGE) !== user.cultureName &&
       localStorage.setItem(LANGUAGE, user.cultureName);
     this.user = user;
     this.isAuthenticated = true;
     this.isAdmin = user.isAdmin;
-  }
+  };
 }
 
 export default UserStore;

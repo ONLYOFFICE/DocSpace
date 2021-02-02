@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { observer } from "mobx-react";
+import React from "react";
+import { inject } from "mobx-react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import NavItem from "./nav-item";
@@ -19,8 +19,8 @@ import {
   getTotalNotificationsCount,
   getIsLoaded,
 } from "../../../store/auth/selectors";
-import store from "../../../store";
-const { moduleStore, settingsStore } = store;
+//import store from "../../../store";
+//const { moduleStore, settingsStore } = store;
 
 const { desktop } = utils.device;
 
@@ -192,19 +192,24 @@ HeaderComponent.propTypes = {
   isAuthenticated: PropTypes.bool,
 };
 
-const HeaderComponentWrapper = observer((props) => {
-  useEffect(() => {
-    moduleStore.getModules();
-  }, []);
+const HeaderComponentWrapper = inject((stores) => ({
+  logoUrl: stores.settingsStore.settings.logoUrl,
+  mainModules: stores.moduleStore.modules,
+}))(HeaderComponent);
 
-  return (
-    <HeaderComponent
-      logoUrl={settingsStore.settings.logoUrl}
-      mainModules={moduleStore.modules}
-      {...props}
-    />
-  );
-});
+// const HeaderComponentWrapper = observer((props) => {
+//   useEffect(() => {
+//     moduleStore.getModules();
+//   }, []);
+
+//   return (
+//     <HeaderComponent
+//       logoUrl={settingsStore.settings.logoUrl}
+//       mainModules={moduleStore.modules}
+//       {...props}
+//     />
+//   );
+// });
 
 const mapStateToProps = (state) => {
   //const { logoUrl } = state.auth.settings;

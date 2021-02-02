@@ -1,99 +1,133 @@
-import { makeAutoObservable } from "mobx";
+import { action, computed, makeObservable, observable } from "mobx";
 import api from "../api";
 import { LANGUAGE } from "../constants";
 
 const desktop = window["AscDesktopEditor"] !== undefined;
-const desktopEncryption =
-  desktop && typeof window.AscDesktopEditor.cloudCryptoCommand === "function";
-const lang = localStorage["language"]
-  ? localStorage
-      .getItem("language")
-      .split("-")
-      .find((el) => el[0])
-  : "en";
+// const desktopEncryption =
+//   desktop && typeof window.AscDesktopEditor.cloudCryptoCommand === "function";
+// const lang = localStorage[LANGUAGE]
+//   ? localStorage
+//       .getItem(LANGUAGE)
+//       .split("-")
+//       .find((el) => el[0])
+//   : "en";
 
 class SettingsStore {
-  settings = {
-    currentProductId: "",
-    culture: "en-US",
-    cultures: [],
-    trustedDomains: [],
-    trustedDomainsType: 1,
-    timezone: "UTC",
-    timezones: [],
-    utcOffset: "00:00:00",
-    utcHoursOffset: 0,
-    defaultPage: "/products/files",
-    homepage: "", //config.homepage,
-    datePattern: "M/d/yyyy",
-    datePatternJQ: "00/00/0000",
-    dateTimePattern: "dddd, MMMM d, yyyy h:mm:ss tt",
-    datepicker: {
-      datePattern: "mm/dd/yy",
-      dateTimePattern: "DD, mm dd, yy h:mm:ss tt",
-      timePattern: "h:mm tt",
-    },
-    organizationName: "ONLYOFFICE",
-    greetingSettings: "Web Office Applications",
-    enableAdmMess: false,
-    urlLicense: "https://gnu.org/licenses/gpl-3.0.html",
-    urlSupport: "https://helpdesk.onlyoffice.com/",
-    urlAuthKeys: `https://helpcenter.onlyoffice.com/${lang}/installation/groups-authorization-keys.aspx`,
-    logoUrl: "",
-    customNames: {
-      id: "Common",
-      userCaption: "User",
-      usersCaption: "Users",
-      groupCaption: "Group",
-      groupsCaption: "Groups",
-      userPostCaption: "Title",
-      regDateCaption: "Registration Date",
-      groupHeadCaption: "Head",
-      guestCaption: "Guest",
-      guestsCaption: "Guests",
-    },
-    isDesktopClient: desktop,
-    //isDesktopEncryption: desktopEncryption,
-    isEncryptionSupport: false,
-    encryptionKeys: null,
-    isTabletView: false,
+  currentProductId = "";
+  culture = "en-US";
+  cultures = [];
+  trustedDomains = [];
+  trustedDomainsType = 1;
+  timezone = "UTC";
+  timezones = [];
+  utcOffset = "00:00:00";
+  utcHoursOffset = 0;
+  defaultPage = "/products/files";
+  homepage = ""; //config.homepage;
+  datePattern = "M/d/yyyy";
+  datePatternJQ = "00/00/0000";
+  dateTimePattern = "dddd, MMMM d, yyyy h:mm:ss tt";
+  datepicker = {
+    datePattern: "mm/dd/yy",
+    dateTimePattern: "DD: mm dd: yy h:mm:ss tt",
+    timePattern: "h:mm tt",
   };
+  organizationName = "ONLYOFFICE";
+  greetingSettings = "Web Office Applications";
+  enableAdmMess = false;
+  urlLicense = "https://gnu.org/licenses/gpl-3.0.html";
+  urlSupport = "https://helpdesk.onlyoffice.com/";
+  logoUrl = "images/nav.logo.opened.react.svg";
+  customNames = {
+    id: "Common",
+    userCaption: "User",
+    usersCaption: "Users",
+    groupCaption: "Group",
+    groupsCaption: "Groups",
+    userPostCaption: "Title",
+    regDateCaption: "Registration Date",
+    groupHeadCaption: "Head",
+    guestCaption: "Guest",
+    guestsCaption: "Guests",
+  };
+  isDesktopClient = desktop;
+  //isDesktopEncryption: desktopEncryption;
+  isEncryptionSupport = false;
+  encryptionKeys = null;
+  isTabletView = false;
+  hashSettings = null;
 
   constructor() {
-    makeAutoObservable(this);
+    makeObservable(this, {
+      currentProductId: observable,
+      culture: observable,
+      cultures: observable,
+      trustedDomains: observable,
+      trustedDomainsType: observable,
+      timezone: observable,
+      timezones: observable,
+      utcOffset: observable,
+      utcHoursOffset: observable,
+      defaultPage: observable,
+      homepage: observable,
+      datePattern: observable,
+      datePatternJQ: observable,
+      dateTimePattern: observable,
+      datepicker: observable,
+      organizationName: observable,
+      greetingSettings: observable,
+      enableAdmMess: observable,
+      urlLicense: observable,
+      urlSupport: observable,
+      urlAuthKeys: computed,
+      logoUrl: observable,
+      customNames: observable,
+      isDesktopClient: observable,
+      isEncryptionSupport: observable,
+      encryptionKeys: observable,
+      isTabletView: observable,
+      hashSettings: observable,
+      getSettings: action,
+      getCurrentCustomSchema: action,
+      getPortalSettings: action,
+    });
   }
 
-  getSettings() {
-    return api.settings.getSettings();
+  get urlAuthKeys() {
+    const splitted = this.culture.split("-");
+    const lang = splitted.length > 0 ? splitted[0] : "en";
+    return `https://helpcenter.onlyoffice.com/${lang}/installation/groups-authorization-keys.aspx`;
   }
 
-  getCurrentCustomSchema(id) {
-    return api.settings.getCurrentCustomSchema(id);
-  }
+  getSettings = async () => {
+    const newSettings = await api.settings.getSettings();
 
-  async getPortalSettings() {
-    const settingsData = await this.getSettings();
-    let customNames = { ...this.settings.customNames };
-    const { passwordHash: hashSettings, ...otherSettings } = settingsData;
-    const logoSettings = { logoUrl: "images/nav.logo.opened.react.svg" };
+    Object.keys(newSettings).map((key) => {
+      if (this[key]) {
+        this[key] = newSettings[key];
 
-    const settings = hashSettings
-      ? { ...logoSettings, ...otherSettings, hashSettings }
-      : { ...logoSettings, ...otherSettings };
+        if (key === "culture" && !localStorage.getItem(LANGUAGE)) {
+          localStorage.setItem(LANGUAGE, newSettings[key]);
+        }
+      } else if (key === "passwordHash") {
+        this.hashSettings = newSettings[key];
+      }
+    });
 
-    if (!localStorage.getItem(LANGUAGE)) {
-      localStorage.setItem(LANGUAGE, settings.culture);
+    return newSettings;
+  };
+
+  getCurrentCustomSchema = async (id) => {
+    this.customNames = await api.settings.getCurrentCustomSchema(id);
+  };
+
+  getPortalSettings = async () => {
+    const origSettings = await this.getSettings();
+
+    if (origSettings.nameSchemaId) {
+      this.getCurrentCustomSchema(origSettings.nameSchemaId);
     }
-
-    if (otherSettings.nameSchemaId) {
-      customNames = await this.getCurrentCustomSchema(
-        otherSettings.nameSchemaId
-      );
-    }
-
-    settings.customNames = customNames;
-    this.settings = { ...this.settings, ...settings };
-  }
+  };
 }
 
 export default SettingsStore;

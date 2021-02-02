@@ -16,7 +16,7 @@ import {
   toastr,
 } from "asc-web-common";
 import Home from "./components/pages/Home";
-import { inject, observer } from "mobx-react";
+import { inject } from "mobx-react";
 
 const About = lazy(() => import("./components/pages/About"));
 const Confirm = lazy(() => import("./components/pages/Confirm"));
@@ -40,44 +40,53 @@ class App extends React.Component {
     const pathname = window.location.pathname.toLowerCase();
     this.isThirdPartyResponse = pathname.indexOf("thirdparty") !== -1;
   }
-  componentDidMount() {
+  async componentDidMount() {
     const {
-      getPortalSettings,
-      getUser,
+      //getPortalSettings,
+      //getUser,
       //getModules,
-      setIsLoaded,
+      //setIsLoaded,
       getIsAuthenticated,
+      loadBaseInfo,
     } = this.props;
 
-    getIsAuthenticated()
-      .then((isAuthenticated) => {
-        if (isAuthenticated) utils.updateTempContent(isAuthenticated);
+    try {
+      const isAuthenticated = await getIsAuthenticated();
 
-        if (this.isThirdPartyResponse) {
-          setIsLoaded();
-          return;
-        }
-        const requests = [];
-        if (!isAuthenticated) {
-          requests.push(getPortalSettings());
-        } else if (
-          !window.location.pathname.includes("confirm/EmailActivation")
-        ) {
-          requests.push(getUser());
-          requests.push(getPortalSettings());
-          //requests.push(getModules());
-        }
+      if (isAuthenticated) utils.updateTempContent(isAuthenticated);
 
-        Promise.all(requests)
-          .catch((e) => {
-            toastr.error(e);
-          })
-          .finally(() => {
-            utils.updateTempContent();
-            setIsLoaded();
-          });
-      })
-      .catch((err) => toastr.error(err));
+      if (this.isThirdPartyResponse) {
+        setIsLoaded();
+        return;
+      }
+
+      await loadBaseInfo();
+
+      utils.updateTempContent();
+      setIsLoaded();
+
+      // const requests = [];
+      // if (!isAuthenticated) {
+      //   requests.push(getPortalSettings());
+      // } else if (
+      //   !window.location.pathname.includes("confirm/EmailActivation")
+      // ) {
+      //   requests.push(getUser());
+      //   requests.push(getPortalSettings());
+      //   //requests.push(getModules());
+      // }
+
+      // Promise.all(requests)
+      //   .catch((e) => {
+      //     toastr.error(e);
+      //   })
+      //   .finally(() => {
+      //     utils.updateTempContent();
+      //     setIsLoaded();
+      //   });
+    } catch (err) {
+      toastr.error(err);
+    }
   }
 
   render() {
@@ -127,10 +136,10 @@ class App extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-  const { modules, isLoaded /* , settings */ } = state.auth;
+  const { /*modules,*/ isLoaded /* , settings */ } = state.auth;
   //const { organizationName } = settings;
   return {
-    modules,
+    //modules,
     isLoaded,
     //organizationName,
   };
@@ -164,13 +173,17 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(
-  inject(({ userStore, settingsStore }) => ({
-    user: userStore.user,
-    isAuthenticated: userStore.isAuthenticated,
-    getUser: userStore.setCurrentUser,
-    getPortalSettings: settingsStore.getPortalSettings,
-    //organizationName: settingsStore.settings.organizationName
-  }))(observer(App))
+  inject(({ store }) => {
+    return {
+      user: store.userStore.user,
+      isAuthenticated: store.userStore.isAuthenticated,
+      getUser: store.userStore.getCurrentUser,
+      getPortalSettings: store.settingsStore.getPortalSettings,
+      modules: store.moduleStore.modules,
+      loadBaseInfo: store.init,
+      //organizationName: settingsStore.settings.organizationName
+    };
+  })(App)
 );
 
 // export default inject(({ userStore }) => ({

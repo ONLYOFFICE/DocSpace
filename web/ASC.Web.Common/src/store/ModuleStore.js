@@ -9,7 +9,7 @@ class ModuleStore {
     makeAutoObservable(this);
   }
 
-  async getModules() {
+  getModules = async () => {
     this.isLoading = true;
     const list = await api.modules.getModulesList();
 
@@ -32,7 +32,7 @@ class ModuleStore {
     });
 
     this.isLoading = false;
-  }
+  };
 }
 
 export default ModuleStore;
