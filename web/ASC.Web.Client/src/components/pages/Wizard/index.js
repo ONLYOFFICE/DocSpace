@@ -10,7 +10,6 @@ import {
   ErrorContainer,
   history,
   utils as commonUtils,
-  store,
 } from "asc-web-common";
 import { Loader, utils } from "asc-web-components";
 
@@ -34,9 +33,7 @@ import {
 
 import { createI18N } from "../../../helpers/i18n";
 import { setDocumentTitle } from "../../../helpers/utils";
-import { observer } from "mobx-react";
-
-const { settingsStore } = store;
+import { inject } from "mobx-react";
 
 const i18n = createI18N({
   page: "Wizard",
@@ -567,33 +564,6 @@ function mapStateToProps({ wizard, auth }) {
   };
 }
 
-const WizardPageWrapper = observer((props) => {
-  const {
-    culture,
-    wizardToken,
-    passwordSettings,
-    cultures,
-    timezones,
-    timezone,
-    urlLicense,
-    hashSettings,
-  } = settingsStore.settings;
-
-  return (
-    <WizardPage
-      culture={culture}
-      wizardToken={wizardToken}
-      passwordSettings={passwordSettings}
-      cultures={cultures}
-      timezones={timezones}
-      timezone={timezone}
-      urlLicense={urlLicense}
-      hashSettings={hashSettings}
-      {...props}
-    />
-  );
-});
-
 export default connect(mapStateToProps, {
   getPortalPasswordSettings,
   getPortalCultures,
@@ -604,4 +574,27 @@ export default connect(mapStateToProps, {
   setPortalOwner,
   setLicense,
   resetLicenseUploaded,
-})(withRouter(WizardPageWrapper));
+});
+
+inject(({ store }) => {
+  const {
+    culture,
+    wizardToken,
+    passwordSettings,
+    cultures,
+    timezones,
+    timezone,
+    urlLicense,
+    hashSettings,
+  } = store.settingsStore;
+  return {
+    culture,
+    wizardToken,
+    passwordSettings,
+    cultures,
+    timezones,
+    timezone,
+    urlLicense,
+    hashSettings,
+  };
+})(withRouter(WizardPage));

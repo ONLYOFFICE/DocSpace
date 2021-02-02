@@ -15,13 +15,12 @@ import {
   RequestLoader,
   Loader,
 } from "asc-web-components";
-import { PeopleSelector, store } from "asc-web-common";
+import { PeopleSelector } from "asc-web-common";
 import isEmpty from "lodash/isEmpty";
 
 import { createI18N } from "../../../../../../helpers/i18n";
-import { observer } from "mobx-react";
+import { inject } from "mobx-react";
 
-const { settingsStore } = store;
 const i18n = createI18N({
   page: "Settings",
   localesPath: "pages/Settings",
@@ -265,16 +264,11 @@ OwnerSettings.propTypes = {
   owner: PropTypes.object,
 };
 
-const OwnerSettingsWrapper = observer((props) => {
-  return (
-    <OwnerSettings
-      groupsCaption={settingsStore.customNames.groupsCaption}
-      ownerId={settingsStore.ownerId}
-      {...props}
-    />
-  );
-});
-
 export default connect(mapStateToProps, { getPortalOwner })(
-  withRouter(OwnerSettingsWrapper)
+  inject(({ store }) => {
+    return {
+      groupsCaption: store.settingsStore.customNames.groupsCaption,
+      ownerId: store.settingsStore.ownerId,
+    };
+  })(withRouter(OwnerSettings))
 );

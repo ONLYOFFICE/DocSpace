@@ -20,9 +20,8 @@ import {
 import { saveToSessionStorage, getFromSessionStorage } from "../../utils";
 import { default as clientStore } from "../../../../../store/store";
 import { setDocumentTitle } from "../../../../../helpers/utils";
-import { observer } from "mobx-react";
+import { inject } from "mobx-react";
 
-const { settingsStore } = store;
 const { getLanguage } = store.auth.selectors;
 const { changeLanguage } = utils;
 const {
@@ -404,29 +403,35 @@ class LanguageAndTimeZone extends React.Component {
   }
 }
 
-function mapStateToProps(state) {
-  // const {
-  //   culture,
-  //   timezone,
-  //   timezones,
-  //   cultures,
-  //   greetingSettings,
-  //   nameSchemaId,
-  //   organizationName,
-  // } = state.auth.settings;
-  return {
-    //portalLanguage: culture,
-    //portalTimeZoneId: timezone,
-    language: getLanguage(state),
-    // rawTimezones: timezones,
-    // rawCultures: cultures,
-    // greetingSettings,
-    // nameSchemaId,
-    // organizationName,
-  };
-}
+// function mapStateToProps(state) {
+//   const {
+//     culture,
+//     timezone,
+//     timezones,
+//     cultures,
+//     greetingSettings,
+//     nameSchemaId,
+//     organizationName,
+//   } = state.auth.settings;
+//   return {
+//     portalLanguage: culture,
+//     portalTimeZoneId: timezone,
+//     language: getLanguage(state),
+//     rawTimezones: timezones,
+//     rawCultures: cultures,
+//     greetingSettings,
+//     nameSchemaId,
+//     organizationName,
+//   };
+// }
 
-const LanguageAndTimeZoneWrapper = observer((props) => {
+export default connect(null, {
+  getPortalCultures,
+  setLanguageAndTime,
+  getPortalTimezones,
+});
+
+inject(({ store }) => {
   const {
     culture,
     timezone,
@@ -435,24 +440,15 @@ const LanguageAndTimeZoneWrapper = observer((props) => {
     nameSchemaId,
     organizationName,
     greetingSettings,
-  } = settingsStore.settings;
-
-  return (
-    <LanguageAndTimeZone
-      portalLanguage={culture}
-      portalTimeZoneId={timezone}
-      rawTimezones={timezones}
-      rawCultures={cultures}
-      greetingSettings={greetingSettings}
-      nameSchemaId={nameSchemaId}
-      organizationName={organizationName}
-      {...props}
-    />
-  );
-});
-
-export default connect(mapStateToProps, {
-  getPortalCultures,
-  setLanguageAndTime,
-  getPortalTimezones,
-})(withTranslation()(LanguageAndTimeZoneWrapper));
+  } = store.settingsStore;
+  return {
+    portalLanguage: culture,
+    portalTimeZoneId: timezone,
+    language: culture || "en-US",
+    rawTimezones: timezones,
+    rawCultures: cultures,
+    greetingSettings,
+    nameSchemaId,
+    organizationName,
+  };
+})(withTranslation()(LanguageAndTimeZone));

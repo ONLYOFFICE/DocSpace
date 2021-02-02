@@ -18,9 +18,8 @@ import {
   getConfirmationInfo,
   createConfirmUser,
 } from "../../../../store/confirm/actions";
-import { observer } from "mobx-react";
+import { inject } from "mobx-react";
 
-const { settingsStore } = store;
 const { logout, login } = store.auth.actions;
 const { createPasswordHash, tryRedirectTo } = commonUtils;
 const inputWidth = "400px";
@@ -380,27 +379,24 @@ function mapStateToProps(state) {
   };
 }
 
-const CreateUserFormWrapper = observer((props) => {
-  const {
-    greetingSettings,
-    hashSettings,
-    defaultPage,
-  } = settingsStore.settings;
-
-  return (
-    <CreateUserForm
-      settings={settingsStore.settings}
-      greetingTitle={greetingSettings}
-      hashSettings={hashSettings}
-      defaultPage={defaultPage}
-      {...props}
-    />
-  );
-});
-
 export default connect(mapStateToProps, {
   getConfirmationInfo,
   createConfirmUser,
   login,
   logout,
-})(withRouter(withTranslation()(CreateUserFormWrapper)));
+});
+inject(({ store }) => {
+  const {
+    passwordSettings,
+    greetingSettings,
+    hashSettings,
+    defaultPage,
+  } = store.settingsStore.settings;
+
+  return {
+    settings: passwordSettings,
+    greetingTitle: greetingSettings,
+    hashSettings,
+    defaultPage,
+  };
+})(withRouter(withTranslation()(CreateUserForm)));

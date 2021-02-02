@@ -4,10 +4,8 @@ import { connect } from "react-redux";
 import { withTranslation } from "react-i18next";
 import styled from "styled-components";
 import { Button, TextInput, Text } from "asc-web-components";
-import { PageLayout, store } from "asc-web-common";
-import { observer } from "mobx-react";
-
-const { settingsStore } = store;
+import { PageLayout } from "asc-web-common";
+import { inject } from "mobx-react";
 
 const BodyStyle = styled.div`
   margin: 70px auto 0 auto;
@@ -130,15 +128,8 @@ function mapStateToProps(state) {
   };
 }
 
-const ChangePhoneFormWrapper = observer((props) => {
-  return (
-    <ChangePhoneForm
-      greetingTitle={settingsStore.greetingSettings}
-      {...props}
-    />
-  );
-});
-
 export default connect(mapStateToProps)(
-  withRouter(withTranslation()(ChangePhoneFormWrapper))
+  inject(({ store }) => ({
+    greetingTitle: store.settingsStore.greetingSettings,
+  }))(withRouter(withTranslation()(ChangePhoneForm)))
 );
