@@ -4,7 +4,10 @@ import { connect } from "react-redux";
 import { withTranslation } from "react-i18next";
 import styled from "styled-components";
 import { Button, TextInput, Text } from "asc-web-components";
-import { PageLayout } from "asc-web-common";
+import { PageLayout, store } from "asc-web-common";
+import { observer } from "mobx-react";
+
+const { settingsStore } = store;
 
 const BodyStyle = styled.div`
   margin: 70px auto 0 auto;
@@ -123,10 +126,19 @@ function mapStateToProps(state) {
   return {
     isLoaded: state.auth.isLoaded,
     currentPhone: state.auth.user.mobilePhone,
-    greetingTitle: state.auth.settings.greetingSettings,
+    //greetingTitle: state.auth.settings.greetingSettings,
   };
 }
 
+const ChangePhoneFormWrapper = observer((props) => {
+  return (
+    <ChangePhoneForm
+      greetingTitle={settingsStore.settings.greetingSettings}
+      {...props}
+    />
+  );
+});
+
 export default connect(mapStateToProps)(
-  withRouter(withTranslation()(ChangePhoneForm))
+  withRouter(withTranslation()(ChangePhoneFormWrapper))
 );

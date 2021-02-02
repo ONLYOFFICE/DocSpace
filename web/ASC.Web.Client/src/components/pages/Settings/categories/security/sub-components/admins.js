@@ -26,11 +26,14 @@ import {
   EmptyScreenContainer,
   Icons,
 } from "asc-web-components";
-import { FilterInput, PeopleSelector } from "asc-web-common";
+import { FilterInput, PeopleSelector, store } from "asc-web-common";
 import { getUserRole } from "../../../../../../store/settings/selectors";
 import isEmpty from "lodash/isEmpty";
 
 import { createI18N } from "../../../../../../helpers/i18n";
+import { observer } from "mobx-react";
+
+const { settingsStore } = store;
 
 const i18n = createI18N({
   page: "Settings",
@@ -566,7 +569,7 @@ const AdminsSettings = (props) => (
 function mapStateToProps(state) {
   const { admins, owner, filter } = state.settings.security.accessRight;
   const { user: me } = state.auth;
-  const groupsCaption = state.auth.settings.customNames.groupsCaption;
+  //const groupsCaption = state.auth.settings.customNames.groupsCaption;
 
   return {
     admins,
@@ -574,7 +577,7 @@ function mapStateToProps(state) {
     owner,
     filter,
     me,
-    groupsCaption,
+    //groupsCaption,
   };
 }
 
@@ -590,8 +593,17 @@ AdminsSettings.propTypes = {
   owner: PropTypes.object,
 };
 
+const AdminsSettingsWrapper = observer((props) => {
+  return (
+    <AdminsSettings
+      groupsCaption={settingsStore.settings.customNames.groupsCaption}
+      {...props}
+    />
+  );
+});
+
 export default connect(mapStateToProps, {
   changeAdmins,
   fetchPeople,
   getUpdateListAdmin,
-})(withRouter(AdminsSettings));
+})(withRouter(AdminsSettingsWrapper));

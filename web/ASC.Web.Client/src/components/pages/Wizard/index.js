@@ -10,6 +10,7 @@ import {
   ErrorContainer,
   history,
   utils as commonUtils,
+  store,
 } from "asc-web-common";
 import { Loader, utils } from "asc-web-components";
 
@@ -33,6 +34,9 @@ import {
 
 import { createI18N } from "../../../helpers/i18n";
 import { setDocumentTitle } from "../../../helpers/utils";
+import { observer } from "mobx-react";
+
+const { settingsStore } = store;
 
 const i18n = createI18N({
   page: "Wizard",
@@ -535,6 +539,35 @@ function mapStateToProps({ wizard, auth }) {
     licenseUpload,
   } = wizard;
 
+  // const {
+  //   culture,
+  //   wizardToken,
+  //   passwordSettings,
+  //   cultures,
+  //   timezones,
+  //   timezone,
+  //   urlLicense,
+  //   hashSettings,
+  // } = auth.settings;
+
+  return {
+    isLoaded: auth.isLoaded,
+    isWizardLoaded,
+    machineName,
+    //culture,
+    //wizardToken,
+    //passwordSettings,
+    //cultures,
+    //timezones,
+    //timezone,
+    //urlLicense,
+    isLicenseRequired,
+    licenseUpload,
+    //hashSettings,
+  };
+}
+
+const WizardPageWrapper = observer((props) => {
   const {
     culture,
     wizardToken,
@@ -544,24 +577,22 @@ function mapStateToProps({ wizard, auth }) {
     timezone,
     urlLicense,
     hashSettings,
-  } = auth.settings;
+  } = settingsStore.settings;
 
-  return {
-    isLoaded: auth.isLoaded,
-    isWizardLoaded,
-    machineName,
-    culture,
-    wizardToken,
-    passwordSettings,
-    cultures,
-    timezones,
-    timezone,
-    urlLicense,
-    isLicenseRequired,
-    licenseUpload,
-    hashSettings,
-  };
-}
+  return (
+    <WizardPage
+      culture={culture}
+      wizardToken={wizardToken}
+      passwordSettings={passwordSettings}
+      cultures={cultures}
+      timezones={timezones}
+      timezone={timezone}
+      urlLicense={urlLicense}
+      hashSettings={hashSettings}
+      {...props}
+    />
+  );
+});
 
 export default connect(mapStateToProps, {
   getPortalPasswordSettings,
@@ -573,4 +604,4 @@ export default connect(mapStateToProps, {
   setPortalOwner,
   setLicense,
   resetLicenseUploaded,
-})(withRouter(WizardPage));
+})(withRouter(WizardPageWrapper));

@@ -18,6 +18,9 @@ import {
   getConfirmationInfo,
   createConfirmUser,
 } from "../../../../store/confirm/actions";
+import { observer } from "mobx-react";
+
+const { settingsStore } = store;
 const { logout, login } = store.auth.actions;
 const { createPasswordHash, tryRedirectTo } = commonUtils;
 const inputWidth = "400px";
@@ -370,16 +373,34 @@ function mapStateToProps(state) {
   return {
     isConfirmLoaded: state.confirm.isConfirmLoaded,
     isAuthenticated: state.auth.isAuthenticated,
-    settings: state.auth.settings.passwordSettings,
-    greetingTitle: state.auth.settings.greetingSettings,
-    hashSettings: state.auth.settings.hashSettings,
-    defaultPage: state.auth.settings.defaultPage,
+    //settings: state.auth.settings.passwordSettings,
+    //greetingTitle: state.auth.settings.greetingSettings,
+    //hashSettings: state.auth.settings.hashSettings,
+    //defaultPage: state.auth.settings.defaultPage,
   };
 }
+
+const CreateUserFormWrapper = observer((props) => {
+  const {
+    greetingSettings,
+    hashSettings,
+    defaultPage,
+  } = settingsStore.settings;
+
+  return (
+    <CreateUserForm
+      settings={settingsStore.settings}
+      greetingTitle={greetingSettings}
+      hashSettings={hashSettings}
+      defaultPage={defaultPage}
+      {...props}
+    />
+  );
+});
 
 export default connect(mapStateToProps, {
   getConfirmationInfo,
   createConfirmUser,
   login,
   logout,
-})(withRouter(withTranslation()(CreateUserForm)));
+})(withRouter(withTranslation()(CreateUserFormWrapper)));

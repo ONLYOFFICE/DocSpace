@@ -29,6 +29,10 @@ import Register from "./sub-components/register-container";
 import { createPasswordHash, tryRedirectTo } from "../../utils";
 import { isDesktopClient } from "../../store/auth/selectors";
 import { checkPwd } from "../../desktop";
+import store from "../../store";
+import { observer } from "mobx-react";
+
+const { settingsStore } = store;
 
 const LoginContainer = styled.div`
   display: flex;
@@ -494,30 +498,51 @@ LoginForm.propTypes = {
 };
 
 function mapStateToProps(state) {
-  const { isLoaded, settings, isAuthenticated } = state.auth;
+  const { isLoaded, /* settings, */ isAuthenticated } = state.auth;
+  // const {
+  //   greetingSettings,
+  //   organizationName,
+  //   hashSettings,
+  //   enabledJoin,
+  //   defaultPage,
+  // } = settings;
+
+  return {
+    isAuthenticated,
+    isLoaded,
+    isDesktop: isDesktopClient(state),
+    //organizationName,
+    language: getLanguage(state),
+    //greetingTitle: greetingSettings,
+    //hashSettings,
+    //enabledJoin,
+    //defaultPage,
+  };
+}
+
+const LoginWrapper = observer((props) => {
   const {
     greetingSettings,
     organizationName,
     hashSettings,
     enabledJoin,
     defaultPage,
-  } = settings;
+  } = settingsStore.settings;
 
-  return {
-    isAuthenticated,
-    isLoaded,
-    isDesktop: isDesktopClient(state),
-    organizationName,
-    language: getLanguage(state),
-    greetingTitle: greetingSettings,
-    hashSettings,
-    enabledJoin,
-    defaultPage,
-  };
-}
+  return (
+    <LoginForm
+      organizationName={organizationName}
+      greetingTitle={greetingSettings}
+      hashSettings={hashSettings}
+      enabledJoin={enabledJoin}
+      defaultPage={defaultPage}
+      {...props}
+    />
+  );
+});
 
 export default connect(mapStateToProps, {
   login,
   setIsLoaded,
   reloadPortalSettings,
-})(withRouter(LoginForm));
+})(withRouter(LoginWrapper));

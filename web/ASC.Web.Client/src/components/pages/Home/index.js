@@ -3,12 +3,15 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import { Text } from "asc-web-components";
-import { toastr, ModuleTile, PageLayout, utils } from "asc-web-common";
+import { toastr, ModuleTile, PageLayout, utils, store } from "asc-web-common";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 
 import { createI18N } from "../../../helpers/i18n";
 import { setDocumentTitle } from "../../../helpers/utils";
+import { observer } from "mobx-react";
+
+const { settingsStore } = store;
 
 const i18n = createI18N({
   page: "Home",
@@ -125,13 +128,17 @@ Home.propTypes = {
 };
 
 function mapStateToProps(state) {
-  const { modules, isLoaded, settings } = state.auth;
-  const { defaultPage } = settings;
+  const { modules, isLoaded /* , settings */ } = state.auth;
+  //const { defaultPage } = settings;
   return {
     modules,
     isLoaded,
-    defaultPage,
+    //defaultPage,
   };
 }
 
-export default connect(mapStateToProps)(withRouter(Home));
+const HomeWrapper = observer((props) => {
+  return <Home defaultPage={settingsStore.settings.defaultPage} {...props} />;
+});
+
+export default connect(mapStateToProps)(withRouter(HomeWrapper));

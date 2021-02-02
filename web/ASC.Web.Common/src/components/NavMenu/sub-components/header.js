@@ -20,7 +20,7 @@ import {
   getIsLoaded,
 } from "../../../store/auth/selectors";
 import store from "../../../store";
-const { moduleStore } = store;
+const { moduleStore, settingsStore } = store;
 
 const { desktop } = utils.device;
 
@@ -197,11 +197,17 @@ const HeaderComponentWrapper = observer((props) => {
     moduleStore.getModules();
   }, []);
 
-  return <HeaderComponent mainModules={moduleStore.modules} {...props} />;
+  return (
+    <HeaderComponent
+      logoUrl={settingsStore.settings.logoUrl}
+      mainModules={moduleStore.modules}
+      {...props}
+    />
+  );
 });
 
 const mapStateToProps = (state) => {
-  const { logoUrl } = state.auth.settings;
+  //const { logoUrl } = state.auth.settings;
   const { isAuthenticated } = state.auth;
 
   return {
@@ -211,7 +217,7 @@ const mapStateToProps = (state) => {
     currentProductName: getCurrentProductName(state),
     currentProductId: getCurrentProductId(state),
     isLoaded: getIsLoaded(state),
-    logoUrl,
+    //logoUrl,
     isAuthenticated,
   };
 };

@@ -21,8 +21,11 @@ import {
 } from "asc-web-common";
 import { createI18N } from "../../../helpers/i18n";
 import { encryptionUploadDialog } from "../../../helpers/desktop";
+import { observer } from "mobx-react";
 
-const { getSettings } = initStore.auth.selectors;
+const { settingsStore } = initStore;
+
+//const { getSettings } = initStore.auth.selectors;
 const i18n = createI18N({
   page: "Article",
   localesPath: "Article",
@@ -58,9 +61,9 @@ class PureArticleMainButtonContent extends React.Component {
   onUploadFolderClick = () => this.inputFolderElement.click();
 
   goToHomePage = () => {
-    const { settings, history, filter } = this.props;
+    const { homepage, history, filter } = this.props;
     const urlFilter = filter.toUrlParams();
-    history.push(`${settings.homepage}/filter?${urlFilter}`);
+    history.push(`${homepage}/filter?${urlFilter}`);
   };
 
   onFileChange = (e) => {
@@ -183,13 +186,22 @@ const mapStateToProps = (state) => {
   return {
     canCreate: canCreate(state),
     firstLoad: getFirstLoad(state),
-    settings: getSettings(state),
+    //settings: getSettings(state),
     filter: getFilter(state),
     selectedFolder: getSelectedFolder(state),
     isPrivacy: getIsPrivacyFolder(state),
   };
 };
 
+const ArticleMainButtonContentWrapper = observer((props) => {
+  return (
+    <ArticleMainButtonContent
+      homepage={settingsStore.settings.homepage}
+      {...props}
+    />
+  );
+});
+
 export default connect(mapStateToProps, { setAction, startUpload })(
-  withRouter(ArticleMainButtonContent)
+  withRouter(ArticleMainButtonContentWrapper)
 );

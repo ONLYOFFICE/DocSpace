@@ -5,6 +5,10 @@ import styled from "styled-components";
 import RecoverAccess from "./recover-access-container";
 import { connect } from "react-redux";
 import { useTranslation } from "react-i18next";
+import store from "../../../store";
+import { observer } from "mobx-react";
+
+const { settingsStore } = store;
 
 const backgroundColor = "#0F4071";
 
@@ -99,15 +103,25 @@ HeaderUnAuth.propTypes = {
 };
 
 const mapStateToProps = (state) => {
-  const { isAuthenticated, isLoaded, settings } = state.auth;
-  const { enableAdmMess, wizardToken } = settings;
+  const { isAuthenticated, isLoaded /* , settings */ } = state.auth;
+  //const { enableAdmMess, wizardToken } = settings;
 
   return {
-    enableAdmMess,
-    wizardToken,
+    //enableAdmMess,
+    //wizardToken,
     isAuthenticated,
     isLoaded,
   };
 };
 
-export default connect(mapStateToProps)(HeaderUnAuth);
+const HeaderUnAuthWrapper = observer((props) => {
+  return (
+    <HeaderUnAuth
+      enableAdmMess={settingsStore.settings.enableAdmMess}
+      wizardToken={settingsStore.settings.wizardToken || "/"}
+      {...props}
+    />
+  );
+});
+
+export default connect(mapStateToProps)(HeaderUnAuthWrapper);

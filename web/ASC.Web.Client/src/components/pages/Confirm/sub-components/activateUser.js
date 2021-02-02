@@ -9,7 +9,7 @@ import {
   toastr,
   Loader,
 } from "asc-web-components";
-import { PageLayout } from "asc-web-common";
+import { PageLayout, store } from "asc-web-common";
 import styled from "styled-components";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
@@ -18,8 +18,12 @@ import {
   getConfirmationInfo,
   activateConfirmUser,
 } from "../../../../store/confirm/actions";
+import { observer } from "mobx-react";
+
+const { settingsStore } = store;
 const { EmployeeActivationStatus } = constants;
 const { createPasswordHash, tryRedirectTo } = commonUtils;
+
 const inputWidth = "400px";
 
 const ConfirmContainer = styled.div`
@@ -341,14 +345,32 @@ const ActivateUserForm = (props) => (
 function mapStateToProps(state) {
   return {
     isConfirmLoaded: state.confirm.isConfirmLoaded,
-    settings: state.auth.settings.passwordSettings,
-    greetingTitle: state.auth.settings.greetingSettings,
-    hashSettings: state.auth.settings.hashSettings,
-    defaultPage: state.auth.settings.defaultPage,
+    //settings: state.auth.settings.passwordSettings,
+    //greetingTitle: state.auth.settings.greetingSettings,
+    //hashSettings: state.auth.settings.hashSettings,
+    //defaultPage: state.auth.settings.defaultPage,
   };
 }
+
+const ActivateUserFormWrapper = observer((props) => {
+  const {
+    greetingSettings,
+    hashSettings,
+    defaultPage,
+  } = settingsStore.settings;
+
+  return (
+    <ActivateUserForm
+      settings={settingsStore.settings}
+      greetingTitle={greetingSettings}
+      hashSettings={hashSettings}
+      defaultPage={defaultPage}
+      {...props}
+    />
+  );
+});
 
 export default connect(mapStateToProps, {
   getConfirmationInfo,
   activateConfirmUser,
-})(withRouter(withTranslation()(ActivateUserForm)));
+})(withRouter(withTranslation()(ActivateUserFormWrapper)));

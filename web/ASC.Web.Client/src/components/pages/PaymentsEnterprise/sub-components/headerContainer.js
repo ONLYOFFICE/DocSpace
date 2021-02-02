@@ -4,11 +4,14 @@ import styled from "styled-components";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { Text } from "asc-web-components";
-import { utils } from "asc-web-common";
+import { utils, store } from "asc-web-common";
 
 import { useTranslation, Trans } from "react-i18next";
 import { createI18N } from "../../../../helpers/i18n";
 import moment from "moment";
+import { observer } from "mobx-react";
+
+const { settingsStore } = store;
 const { changeLanguage } = utils;
 
 const i18n = createI18N({
@@ -105,13 +108,25 @@ HeaderContainer.propTypes = {
   trialMode: PropTypes.bool,
 };
 function mapStateToProps({ auth, payments }) {
-  const { culture, organizationName } = auth.settings;
+  //const { culture, organizationName } = auth.settings;
   const { expiresDate, trialMode } = payments.currentLicense;
   return {
-    culture,
+    //culture,
     expiresDate,
     trialMode,
-    organizationName,
+    //organizationName,
   };
 }
-export default connect(mapStateToProps)(withRouter(HeaderContainer));
+
+const HeaderContainerWrapper = observer((props) => {
+  const { organizationName, culture } = settingsStore.settings;
+  return (
+    <HeaderContainer
+      organizationName={organizationName}
+      culture={culture}
+      {...props}
+    />
+  );
+});
+
+export default connect(mapStateToProps)(withRouter(HeaderContainerWrapper));

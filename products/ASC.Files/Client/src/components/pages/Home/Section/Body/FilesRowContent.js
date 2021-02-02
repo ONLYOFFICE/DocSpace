@@ -52,11 +52,13 @@ import { ConvertDialog } from "../../../../dialogs";
 import EditingWrapperComponent from "./EditingWrapperComponent";
 import { isMobile } from "react-device-detect";
 import { setEncryptionAccess } from "../../../../../helpers/desktop";
+import { observer } from "mobx-react";
 
 const { FileAction } = constants;
 const sideColor = "#A3A9AE";
-const { getSettings, isDesktopClient } = initStore.auth.selectors;
+const { /* getSettings, */ isDesktopClient } = initStore.auth.selectors;
 const { getEncryptionAccess, replaceFileStream } = initStore.auth.actions;
+const { settingsStore } = initStore;
 
 const SimpleFilesRowContent = styled(RowContent)`
   .badge-ext {
@@ -373,10 +375,10 @@ class FilesRowContent extends React.PureComponent {
   };
 
   onShowVersionHistory = (e) => {
-    const { settings, history } = this.props;
+    const { homepage, history } = this.props;
     const fileId = e.currentTarget.dataset.id;
 
-    history.push(`${settings.homepage}/${fileId}/history`);
+    history.push(`${homepage}/${fileId}/history`);
   };
 
   onBadgeClick = () => {
@@ -757,7 +759,7 @@ function mapStateToProps(state, props) {
     fileAction: getFileAction(state),
     parentFolder: getSelectedFolderParentId(state),
     isTrashFolder: getIsRecycleBinFolder(state),
-    settings: getSettings(state),
+    //settings: getSettings(state),
     treeFolders: getTreeFolders(state),
     selectedFolderPathParts: getPathParts(state),
     newItems: getSelectedFolderNew(state),
@@ -777,6 +779,12 @@ function mapStateToProps(state, props) {
   };
 }
 
+const FilesRowContentWrapper = observer((props) => {
+  return (
+    <FilesRowContent homepage={settingsStore.settings.homepage} {...props} />
+  );
+});
+
 export default connect(mapStateToProps, {
   createFile,
   updateFile,
@@ -790,4 +798,4 @@ export default connect(mapStateToProps, {
   fetchFiles,
   getEncryptionAccess,
   replaceFileStream,
-})(withRouter(withTranslation()(FilesRowContent)));
+})(withRouter(withTranslation()(FilesRowContentWrapper)));

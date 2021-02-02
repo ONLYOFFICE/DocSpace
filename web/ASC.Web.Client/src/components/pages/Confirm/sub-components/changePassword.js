@@ -18,9 +18,12 @@ import {
   getConfirmationInfo,
   changePassword,
 } from "../../../../store/confirm/actions";
+import { observer } from "mobx-react";
+
+const { settingsStore } = store;
 
 const { createPasswordHash, tryRedirectTo } = commonUtils;
-const { logout, getPortalSettings } = store.auth.actions;
+const { logout /* , getPortalSettings */ } = store.auth.actions;
 
 const BodyStyle = styled.form`
   margin: 70px auto 0 auto;
@@ -212,16 +215,34 @@ function mapStateToProps(state) {
   return {
     isValidConfirmLink: state.auth.isValidConfirmLink,
     isConfirmLoaded: state.confirm.isConfirmLoaded,
-    settings: state.auth.settings.passwordSettings,
+    //settings: state.auth.settings.passwordSettings,
     isAuthenticated: state.auth.isAuthenticated,
-    greetingTitle: state.auth.settings.greetingSettings,
-    hashSettings: state.auth.settings.hashSettings,
-    defaultPage: state.auth.settings.defaultPage,
+    //greetingTitle: state.auth.settings.greetingSettings,
+    //hashSettings: state.auth.settings.hashSettings,
+    //defaultPage: state.auth.settings.defaultPage,
   };
 }
+
+const ChangePasswordFormWrapper = observer((props) => {
+  const {
+    greetingSettings,
+    hashSettings,
+    defaultPage,
+  } = settingsStore.settings;
+
+  return (
+    <ChangePasswordForm
+      settings={settingsStore.settings}
+      hashSettings={hashSettings}
+      greetingTitle={greetingSettings}
+      defaultPage={defaultPage}
+      {...props}
+    />
+  );
+});
 
 export default connect(mapStateToProps, {
   changePassword,
   getConfirmationInfo,
   logout,
-})(withRouter(withTranslation()(ChangePasswordForm)));
+})(withRouter(withTranslation()(ChangePasswordFormWrapper)));

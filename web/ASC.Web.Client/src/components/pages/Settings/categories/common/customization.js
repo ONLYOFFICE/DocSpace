@@ -10,6 +10,9 @@ import {
 } from "../../../../../store/settings/actions";
 import { default as clientStore } from "../../../../../store/store";
 import { setDocumentTitle } from "../../../../../helpers/utils";
+import { observer } from "mobx-react";
+
+const { settingsStore } = store;
 const { getLanguage } = store.auth.selectors;
 const { changeLanguage } = utils;
 const {
@@ -270,6 +273,26 @@ class Customization extends React.Component {
 }
 
 function mapStateToProps(state) {
+  // const {
+  //   culture,
+  //   timezone,
+  //   timezones,
+  //   cultures,
+  //   nameSchemaId,
+  //   organizationName,
+  // } = state.auth.settings;
+  return {
+    // portalLanguage: culture,
+    // portalTimeZoneId: timezone,
+    language: getLanguage(state),
+    // rawTimezones: timezones,
+    // rawCultures: cultures,
+    // nameSchemaId: nameSchemaId,
+    // organizationName,
+  };
+}
+
+const CustomizationWrapper = observer((props) => {
   const {
     culture,
     timezone,
@@ -277,20 +300,23 @@ function mapStateToProps(state) {
     cultures,
     nameSchemaId,
     organizationName,
-  } = state.auth.settings;
-  return {
-    portalLanguage: culture,
-    portalTimeZoneId: timezone,
-    language: getLanguage(state),
-    rawTimezones: timezones,
-    rawCultures: cultures,
-    nameSchemaId: nameSchemaId,
-    organizationName,
-  };
-}
+  } = settingsStore.settings;
+
+  return (
+    <Customization
+      portalLanguage={culture}
+      portalTimeZoneId={timezone}
+      rawTimezones={timezones}
+      rawCultures={cultures}
+      nameSchemaId={nameSchemaId}
+      organizationName={organizationName}
+      {...props}
+    />
+  );
+});
 
 export default connect(mapStateToProps, {
   getPortalCultures,
   setLanguageAndTime,
   getPortalTimezones,
-})(withTranslation()(Customization));
+})(withTranslation()(CustomizationWrapper));
