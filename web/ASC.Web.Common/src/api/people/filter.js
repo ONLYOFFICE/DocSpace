@@ -9,7 +9,7 @@ const DEFAULT_SORT_ORDER = "ascending";
 const DEFAULT_EMPLOYEE_STATUS = EmployeeStatus.Active;
 const DEFAULT_ACTIVATION_STATUS = null;
 const DEFAULT_ROLE = null;
-const DEFAULT_SEARCH = null;
+const DEFAULT_SEARCH = "";
 const DEFAULT_GROUP = null;
 
 class Filter {
@@ -135,7 +135,7 @@ class Filter {
         null,
         null,
         null,
-        null,
+        "",
         idGroup
       );
     } else {
