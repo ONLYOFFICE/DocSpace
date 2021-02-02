@@ -4,8 +4,10 @@ import { withTranslation } from "react-i18next";
 import { connect } from "react-redux";
 import styled from "styled-components";
 import { Button, Text, toastr } from "asc-web-components";
-import { PageLayout, utils as commonUtils } from "asc-web-common";
+import { PageLayout, utils as commonUtils, store } from "asc-web-common";
+import { observer } from "mobx-react";
 const { tryRedirectTo } = commonUtils;
+const { settingsStore } = store;
 
 const BodyStyle = styled.div`
   margin-top: 70px;
@@ -118,7 +120,7 @@ Form.propTypes = {};
 
 Form.defaultProps = {};
 
-const ChangePasswordForm = (props) => (
+const ChangeOwnerForm = (props) => (
   <PageLayout>
     <PageLayout.SectionBody>
       <Form {...props} />
@@ -126,14 +128,25 @@ const ChangePasswordForm = (props) => (
   </PageLayout>
 );
 
-function mapStateToProps(state) {
-  return {
-    greetingTitle: state.auth.settings.greetingSettings,
-    defaultPage: state.auth.settings.defaultPage,
-  };
-}
+// function mapStateToProps(state) {
+//   return {
+//     greetingTitle: state.auth.settings.greetingSettings,
+//     defaultPage: state.auth.settings.defaultPage,
+//   };
+// }
+
+const ChangeOwnerFormWrapper = observer((props) => {
+  return (
+    <ChangeOwnerForm
+      greetingTitle={settingsStore.settings.greetingSettings}
+      defaultPage={settingsStore.settings.defaultPage}
+      {...props}
+    />
+  );
+});
 
 export default connect(
-  mapStateToProps,
+  null,
+  //mapStateToProps,
   {}
-)(withRouter(withTranslation()(ChangePasswordForm)));
+)(withRouter(withTranslation()(ChangeOwnerFormWrapper)));

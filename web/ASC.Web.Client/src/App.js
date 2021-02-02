@@ -27,11 +27,11 @@ const ThirdPartyResponse = lazy(() => import("./components/pages/ThirdParty"));
 const {
   setIsLoaded,
   //getUser,
-  getPortalSettings,
+  //getPortalSettings,
   //getModules,
   getIsAuthenticated,
 } = CommonStore.auth.actions;
-//const { userStore } = CommonStore;
+//const { userStore, settingsStore } = CommonStore;
 
 class App extends React.Component {
   constructor(props) {
@@ -127,19 +127,19 @@ class App extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-  const { modules, isLoaded, settings } = state.auth;
-  const { organizationName } = settings;
+  const { modules, isLoaded /* , settings */ } = state.auth;
+  //const { organizationName } = settings;
   return {
     modules,
     isLoaded,
-    organizationName,
+    //organizationName,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
     getIsAuthenticated: () => getIsAuthenticated(dispatch),
-    getPortalSettings: () => getPortalSettings(dispatch),
+    //getPortalSettings: () => getPortalSettings(dispatch),
     //getUser: () => getUser(dispatch),
     //getModules: () => getModules(dispatch),
     setIsLoaded: () => dispatch(setIsLoaded(true)),
@@ -164,10 +164,12 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(
-  inject(({ userStore }) => ({
+  inject(({ userStore, settingsStore }) => ({
     user: userStore.user,
     isAuthenticated: userStore.isAuthenticated,
     getUser: userStore.setCurrentUser,
+    getPortalSettings: settingsStore.getPortalSettings,
+    //organizationName: settingsStore.settings.organizationName
   }))(observer(App))
 );
 

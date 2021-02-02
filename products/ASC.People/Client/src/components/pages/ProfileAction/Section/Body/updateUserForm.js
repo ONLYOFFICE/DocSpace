@@ -55,9 +55,12 @@ import {
   ChangePhoneDialog,
 } from "../../../../dialogs";
 import { isMobile } from "react-device-detect";
+import { observer } from "mobx-react";
+
 const { createThumbnailsAvatar, loadAvatar, deleteAvatar } = api.people;
 const { isTablet } = utils.device;
 const { isAdmin } = store.auth.selectors;
+const { settingsStore } = store;
 
 const dialogsDataset = {
   changeEmail: "changeEmail",
@@ -914,7 +917,7 @@ const mapStateToProps = (state) => {
   return {
     profile: state.profile.targetUser,
     avatarMax: state.profile.avatarMax,
-    settings: state.auth.settings,
+    //settings: state.auth.settings,
     groups: state.people.groups,
     editingForm: state.people.editingForm,
     filter: state.people.filter,
@@ -922,6 +925,10 @@ const mapStateToProps = (state) => {
     isAdmin: isAdmin(state),
   };
 };
+
+const UpdateUserFormWrapper = observer((props) => {
+  return <UpdateUserForm settings={settingsStore.settings} {...props} />;
+});
 
 export default connect(mapStateToProps, {
   updateProfile,
@@ -932,4 +939,4 @@ export default connect(mapStateToProps, {
   setFilter,
   toggleAvatarEditor,
   setAvatarMax,
-})(withRouter(withTranslation()(UpdateUserForm)));
+})(withRouter(withTranslation()(UpdateUserFormWrapper)));

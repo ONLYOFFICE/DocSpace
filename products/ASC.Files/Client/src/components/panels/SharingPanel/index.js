@@ -34,7 +34,7 @@ import {
   getFiles,
   getFolders,
   getIsPrivacyFolder,
-  getUploadPanelVisible,
+  //getUploadPanelVisible,
   getUploadSelection,
 } from "../../../store/files/selectors";
 import {
@@ -48,6 +48,7 @@ import { AddUsersPanel, AddGroupsPanel, EmbeddingPanel } from "../index";
 import SharingRow from "./SharingRow";
 import { createI18N } from "../../../helpers/i18n";
 import { setEncryptionAccess } from "../../../helpers/desktop";
+import { observer } from "mobx-react";
 const i18n = createI18N({
   page: "SharingPanel",
   localesPath: "panels/SharingPanel",
@@ -58,9 +59,10 @@ const { replaceFileStream } = store.auth.actions;
 const {
   getCurrentUserId,
   getSettingsCustomNamesGroupsCaption,
-  getSettings,
+  //getSettings,
   isDesktopClient,
 } = store.auth.selectors;
+const { settingsStore } = store;
 
 const SharingBodyStyle = { height: `calc(100vh - 156px)` };
 
@@ -337,7 +339,7 @@ class SharingPanelComponent extends React.Component {
   };
 
   getInternalLink = () => {
-    const { settings, selection } = this.props;
+    const { homepage, selection } = this.props;
     const item = selection[0];
     const isFile = !!item.fileExst;
 
@@ -347,9 +349,7 @@ class SharingPanelComponent extends React.Component {
       ? item.canOpenPlayer
         ? `${window.location.href}&preview=${item.id}`
         : item.webUrl
-      : `${window.location.origin + settings.homepage}/filter?folder=${
-          item.id
-        }`;
+      : `${window.location.origin + homepage}/filter?folder=${item.id}`;
   };
 
   onShowEmbeddingPanel = (link) =>
@@ -643,10 +643,14 @@ const mapStateToProps = (state, ownProps) => {
     isLoading: getIsLoading(state),
     files: getFiles(state),
     folders: getFolders(state),
-    settings: getSettings(state),
+    //settings: getSettings(state),
     uploadSelection,
   };
 };
+
+const SharingPanelWrapper = observer((props) => {
+  return <SharingPanel homepage={settingsStore.settings.homepage} {...props} />;
+});
 
 export default connect(mapStateToProps, {
   replaceFileStream,
@@ -656,4 +660,4 @@ export default connect(mapStateToProps, {
   setFolders,
   selectUploadedFile,
   updateUploadedItem,
-})(withRouter(SharingPanel));
+})(withRouter(SharingPanelWrapper));

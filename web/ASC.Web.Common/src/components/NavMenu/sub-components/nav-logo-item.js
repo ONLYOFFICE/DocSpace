@@ -2,6 +2,10 @@ import React from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import styled from "styled-components";
+import store from "../../../store";
+import { observer } from "mobx-react";
+
+const { settingsStore } = store;
 
 const LogoItem = styled.div`
   display: flex;
@@ -39,12 +43,16 @@ NavLogoItem.propTypes = {
   logoUrl: PropTypes.string,
 };
 
-const mapStateToProps = (state) => {
-  const { logoUrl } = state.auth.settings;
+// const mapStateToProps = (state) => {
+//   const { logoUrl } = state.auth.settings;
 
-  return {
-    logoUrl,
-  };
-};
+//   return {
+//     logoUrl,
+//   };
+// };
 
-export default connect(mapStateToProps)(NavLogoItem);
+const NavLogoItemWrapper = observer((props) => {
+  return <NavLogoItem logoUrl={settingsStore.settings.logoUrl} {...props} />;
+});
+
+export default connect(null /* mapStateToProps */)(NavLogoItemWrapper);

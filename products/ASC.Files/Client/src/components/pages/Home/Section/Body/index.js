@@ -105,9 +105,10 @@ import {
   ConnectDialog,
   ThirdPartyMoveDialog,
 } from "../../../../dialogs";
+import { observer } from "mobx-react";
 const {
   isAdmin,
-  getSettings,
+  //getSettings,
   getCurrentUser,
   isDesktopClient,
   isEncryptionSupport,
@@ -120,6 +121,7 @@ const {
 const { FilesFilter } = api;
 const { FileAction } = constants;
 const { Consumer } = utils.context;
+const { settingsStore } = store;
 
 const linkStyles = {
   isHovered: true,
@@ -592,7 +594,7 @@ class SectionBodyContent extends React.Component {
   };
 
   onClickLinkForPortal = () => {
-    const { settings, selection } = this.props;
+    const { homepage, selection } = this.props;
     const item = selection[0];
     const isFile = !!item.fileExst;
     const { t } = this.props;
@@ -601,9 +603,7 @@ class SectionBodyContent extends React.Component {
         ? item.canOpenPlayer
           ? `${window.location.href}&preview=${item.id}`
           : item.webUrl
-        : `${window.location.origin + settings.homepage}/filter?folder=${
-            item.id
-          }`
+        : `${window.location.origin + homepage}/filter?folder=${item.id}`
     );
 
     toastr.success(t("LinkCopySuccess"));
@@ -638,7 +638,7 @@ class SectionBodyContent extends React.Component {
 
   showVersionHistory = (e) => {
     const {
-      settings,
+      homepage,
       history,
       setIsLoading,
       setIsVerHistoryPanel,
@@ -653,7 +653,7 @@ class SectionBodyContent extends React.Component {
       setVerHistoryFileId(fileId);
       setIsVerHistoryPanel(true);
     } else {
-      history.push(`${settings.homepage}/${fileId}/history`);
+      history.push(`${homepage}/${fileId}/history`);
     }
   };
 
@@ -1788,7 +1788,7 @@ class SectionBodyContent extends React.Component {
       viewer,
       parentId,
       folderId,
-      settings,
+      culture,
       selection,
       fileAction,
       isRecycleBin,
@@ -1978,7 +1978,7 @@ class SectionBodyContent extends React.Component {
                     <FilesTileContent
                       item={item}
                       viewer={viewer}
-                      culture={settings.culture}
+                      culture={culture}
                       onEditComplete={this.onEditComplete}
                       onMediaFileClick={this.onMediaFileClick}
                       openDocEditor={this.openDocEditor}
@@ -2071,7 +2071,7 @@ class SectionBodyContent extends React.Component {
                           isMobile={isMobile}
                           item={item}
                           viewer={viewer}
-                          culture={settings.culture}
+                          culture={culture}
                           onEditComplete={this.onEditComplete}
                           onMediaFileClick={this.onMediaFileClick}
                           onClickFavorite={this.onClickFavorite}
@@ -2148,7 +2148,7 @@ const mapStateToProps = (state) => {
     selected: getSelected(state),
     selectedFolderId: getSelectedFolderId(state),
     selection: getSelection(state),
-    settings: getSettings(state),
+    //settings: getSettings(state),
     title: getSelectedFolderTitle(state),
     treeFolders: getTreeFolders(state),
     viewAs: getViewAs(state),
@@ -2163,6 +2163,16 @@ const mapStateToProps = (state) => {
     isTabletView: getIsTabletView(state),
   };
 };
+
+const SectionBodyContentWrapper = observer((props) => {
+  return (
+    <SectionBodyContent
+      homepage={settingsStore.settings.homepage}
+      culture={settingsStore.settings.culture}
+      {...props}
+    />
+  );
+});
 
 export default connect(mapStateToProps, {
   deselectFile,
@@ -2190,4 +2200,4 @@ export default connect(mapStateToProps, {
   setIsVerHistoryPanel,
   setVerHistoryFileId,
   setChangeOwnerPanelVisible,
-})(withRouter(withTranslation()(SectionBodyContent)));
+})(withRouter(withTranslation()(SectionBodyContentWrapper)));

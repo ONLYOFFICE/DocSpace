@@ -18,7 +18,7 @@ import {
 } from "../../../store/auth/selectors";
 import { observer } from "mobx-react";
 
-const { userStore } = store;
+const { userStore, settingsStore } = store;
 
 const StyledNav = styled.nav`
   display: flex;
@@ -125,12 +125,12 @@ HeaderNav.propTypes = {
 };
 
 function mapStateToProps(state) {
-  const { settings, isAuthenticated } = state.auth;
-  const { defaultPage, homepage } = settings;
+  const { /* settings, */ isAuthenticated } = state.auth;
+  //const { defaultPage, homepage } = settings;
 
   return {
-    homepage,
-    defaultPage: defaultPage || "/",
+    //homepage,
+    //defaultPage: defaultPage || "/",
     //user: getCurrentUser(state),
     isAuthenticated,
     isLoaded: getIsLoaded(state),
@@ -140,7 +140,14 @@ function mapStateToProps(state) {
 }
 
 const HeaderNavWrapper = observer((props) => {
-  return <HeaderNav user={userStore.user} {...props} />;
+  return (
+    <HeaderNav
+      user={userStore.user}
+      homepage={settingsStore.settings.homepage}
+      defaultPage={settingsStore.settings.defaultPage || "/"}
+      {...props}
+    />
+  );
 });
 
 export default connect(mapStateToProps, { logout })(HeaderNavWrapper);

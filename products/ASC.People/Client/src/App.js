@@ -36,7 +36,7 @@ const {
   getPortalCultures,
   getIsAuthenticated,
 } = commonStore.auth.actions;
-//const { userStore } = commonStore;
+const { userStore, settingsStore } = commonStore;
 
 /*const Profile = lazy(() => import("./components/pages/Profile"));
 const ProfileAction = lazy(() => import("./components/pages/ProfileAction"));
@@ -149,13 +149,13 @@ class App extends React.Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  const { settings } = state.auth;
-  const { homepage } = settings;
-  return {
-    homepage: homepage || config.homepage,
-  };
-};
+// const mapStateToProps = (state) => {
+//   const { settings } = state.auth;
+//   const { homepage } = settings;
+//   return {
+//     homepage: homepage || config.homepage,
+//   };
+// };
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -165,7 +165,7 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(setCurrentProductId("f4d98afd-d336-4332-8778-3c6945c81ea0"));
     },
     //getUser: () => getUser(dispatch),
-    getPortalSettings: () => getPortalSettings(dispatch),
+    //getPortalSettings: () => getPortalSettings(dispatch),
     //getModules: () => getModules(dispatch),
     getPortalPasswordSettings: () => getPortalPasswordSettings(dispatch),
     getPortalCultures: () => getPortalCultures(dispatch),
@@ -199,9 +199,11 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(
-  inject(({ userStore }) => ({
+  inject(({ userStore }, { settingsStore }) => ({
     user: userStore.user,
     isAuthenticated: userStore.isAuthenticated,
     getUser: userStore.setCurrentUser,
+    homepage: settingsStore.settings.homepage || config.homepage,
+    encryptionKeys: settingsStore.settings.encryptionKeys
   }))(observer(App))
 );

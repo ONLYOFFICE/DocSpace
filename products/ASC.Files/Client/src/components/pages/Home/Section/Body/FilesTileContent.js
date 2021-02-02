@@ -37,9 +37,11 @@ import { NewFilesPanel } from "../../../../panels";
 import EditingWrapperComponent from "./EditingWrapperComponent";
 import TileContent from "./TileContent";
 import { isMobile } from "react-device-detect";
+import { observer } from "mobx-react";
 
 const { FileAction } = constants;
-const { getSettings } = initStore.auth.selectors;
+const { settingsStore } = initStore;
+//const { getSettings } = initStore.auth.selectors;
 
 const SimpleFilesTileContent = styled(TileContent)`
   .rowMainContainer {
@@ -298,10 +300,10 @@ class FilesTileContent extends React.PureComponent {
   };
 
   onShowVersionHistory = (e) => {
-    const { settings, history } = this.props;
+    const { homepage, history } = this.props;
     const fileId = e.currentTarget.dataset.id;
 
-    history.push(`${settings.homepage}/${fileId}/history`);
+    history.push(`${homepage}/${fileId}/history`);
   };
 
   onBadgeClick = () => {
@@ -446,7 +448,7 @@ function mapStateToProps(state, props) {
     fileAction: getFileAction(state),
     parentFolder: getSelectedFolderParentId(state),
     isTrashFolder: getIsRecycleBinFolder(state),
-    settings: getSettings(state),
+    //settings: getSettings(state),
     treeFolders: getTreeFolders(state),
     rootFolderId: getRootFolderId(state),
     newItems: getSelectedFolderNew(state),
@@ -459,6 +461,12 @@ function mapStateToProps(state, props) {
   };
 }
 
+const FilesTileContentWrapper = observer((props) => {
+  return (
+    <FilesTileContent homepage={settingsStore.settings.homepage} {...props} />
+  );
+});
+
 export default connect(mapStateToProps, {
   createFile,
   updateFile,
@@ -466,4 +474,4 @@ export default connect(mapStateToProps, {
   setTreeFolders,
   setIsLoading,
   fetchFiles,
-})(withRouter(withTranslation()(FilesTileContent)));
+})(withRouter(withTranslation()(FilesTileContentWrapper)));

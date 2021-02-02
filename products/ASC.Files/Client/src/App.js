@@ -29,7 +29,7 @@ import { inject, observer } from "mobx-react";
 const {
   setIsLoaded,
   //getUser,
-  getPortalSettings,
+  //getPortalSettings,
   //getModules,
   setCurrentProductId,
   setCurrentProductHomePage,
@@ -45,7 +45,7 @@ const {
   isDesktopClient,
   getIsLoaded,
 } = commonStore.auth.selectors;
-//const { userStore } = commonStore;
+const { userStore, settingsStore } = commonStore;
 
 class App extends React.Component {
   constructor(props) {
@@ -200,16 +200,16 @@ class App extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-  const { settings } = state.auth;
-  const { homepage } = settings;
+  //const { settings } = state.auth;
+  //const { homepage } = settings;
   return {
-    homepage: homepage || config.homepage,
+    //homepage: homepage || config.homepage,
     //user: getCurrentUser(state),
     isAuthenticated: state.auth.isAuthenticated,
     isLoaded: getIsLoaded(state),
     isEncryption: isEncryptionSupport(state),
     isDesktop: isDesktopClient(state),
-    encryptionKeys: settings.encryptionKeys,
+    //encryptionKeys: settings.encryptionKeys,
   };
 };
 
@@ -221,7 +221,7 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(setCurrentProductId("e67be73d-f9ae-4ce1-8fec-1880cb518cb4"));
     },
     //getUser: () => getUser(dispatch),
-    getPortalSettings: () => getPortalSettings(dispatch),
+    //getPortalSettings: () => getPortalSettings(dispatch),
     //getModules: () => getModules(dispatch),
     getPortalCultures: () => getPortalCultures(dispatch),
     fetchTreeFolders: () => dispatch(fetchTreeFolders()),
@@ -246,9 +246,12 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(
-  inject(({ userStore }) => ({
+  inject(({ userStore, settingsStore }) => ({
     user: userStore.user,
     isAuthenticated: userStore.isAuthenticated,
     getUser: userStore.setCurrentUser,
+    homepage: settingsStore.settings.homepage || config.homepage,
+    encryptionKeys: settingsStore.settings.encryptionKeys,
+    getPortalSettings: settingsStore.getPortalSettings
   }))(observer(App))
 );

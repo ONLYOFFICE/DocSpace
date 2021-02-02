@@ -15,10 +15,13 @@ import {
   RequestLoader,
   Loader,
 } from "asc-web-components";
-import { PeopleSelector } from "asc-web-common";
+import { PeopleSelector, store } from "asc-web-common";
 import isEmpty from "lodash/isEmpty";
 
 import { createI18N } from "../../../../../../helpers/i18n";
+import { observer } from "mobx-react";
+
+const { settingsStore } = store;
 const i18n = createI18N({
   page: "Settings",
   localesPath: "pages/Settings",
@@ -244,13 +247,13 @@ const OwnerSettings = (props) => (
 function mapStateToProps(state) {
   const { owner } = state.settings.security.accessRight;
   const { user: me } = state.auth;
-  const groupsCaption = state.auth.settings.customNames.groupsCaption;
+  //const groupsCaption = state.auth.settings.customNames.groupsCaption;
 
   return {
-    ownerId: state.auth.settings.ownerId,
+    //ownerId: state.auth.settings.ownerId,
     owner,
     me,
-    groupsCaption,
+    //groupsCaption,
   };
 }
 
@@ -262,6 +265,16 @@ OwnerSettings.propTypes = {
   owner: PropTypes.object,
 };
 
+const OwnerSettingsWrapper = observer((props) => {
+  return (
+    <OwnerSettings
+      groupsCaption={settingsStore.settings.customNames.groupsCaption}
+      ownerId={settingsStore.settings.ownerId}
+      {...props}
+    />
+  );
+});
+
 export default connect(mapStateToProps, { getPortalOwner })(
-  withRouter(OwnerSettings)
+  withRouter(OwnerSettingsWrapper)
 );

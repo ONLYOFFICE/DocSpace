@@ -1,7 +1,7 @@
 import {
   SET_CURRENT_USER,
-  SET_MODULES,
-  SET_SETTINGS,
+  //SET_MODULES,
+  //SET_SETTINGS,
   SET_IS_LOADED,
   SET_IS_LOADED_SECTION,
   LOGOUT,
@@ -13,7 +13,7 @@ import {
   SET_CURRENT_PRODUCT_ID,
   SET_CURRENT_PRODUCT_HOME_PAGE,
   SET_GREETING_SETTINGS,
-  SET_CUSTOM_NAMES,
+  //SET_CUSTOM_NAMES,
   SET_WIZARD_COMPLETED,
   FETCH_ENCRYPTION_KEYS,
   SET_IS_ENCRYPTION_SUPPORT,
@@ -103,16 +103,16 @@ const authReducer = (state = initialState, action) => {
     //   return Object.assign({}, state, {
     //     modules: action.modules,
     //   });
-    case SET_SETTINGS:
-      if (!localStorage.getItem(LANGUAGE)) {
-        localStorage.setItem(LANGUAGE, action.settings.culture);
-      }
-      return Object.assign({}, state, {
-        settings: {
-          ...state.settings,
-          ...action.settings,
-        },
-      });
+    // case SET_SETTINGS:
+    //   if (!localStorage.getItem(LANGUAGE)) {
+    //     localStorage.setItem(LANGUAGE, action.settings.culture);
+    //   }
+    //   return Object.assign({}, state, {
+    //     settings: {
+    //       ...state.settings,
+    //       ...action.settings,
+    //     },
+    //   });
     case SET_PORTAL_CULTURES:
       return Object.assign({}, state, {
         settings: { ...state.settings, cultures: action.cultures },
@@ -166,10 +166,10 @@ const authReducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         settings: { ...state.settings, greetingSettings: action.title },
       });
-    case SET_CUSTOM_NAMES:
-      return Object.assign({}, state, {
-        settings: { ...state.settings, customNames: action.customNames },
-      });
+    // case SET_CUSTOM_NAMES:
+    //   return Object.assign({}, state, {
+    //     settings: { ...state.settings, customNames: action.customNames },
+    //   });
     case LOGOUT:
       return Object.assign({}, initialState, {
         isLoaded: true,

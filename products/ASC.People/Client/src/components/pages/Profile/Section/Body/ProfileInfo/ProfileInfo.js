@@ -8,7 +8,7 @@ import {
   HelpButton,
 } from "asc-web-components";
 import styled from "styled-components";
-import { api, toastr, Loaders } from "asc-web-common";
+import { api, toastr, Loaders, store } from "asc-web-common";
 import { connect } from "react-redux";
 import { updateProfileCulture } from "../../../../../../store/profile/actions";
 import { getFilter } from "../../../../../../store/people/selectors";
@@ -16,8 +16,10 @@ import {
   fetchPeople,
   setIsLoading,
 } from "../../../../../../store/people/actions";
+import { observer } from "mobx-react";
 
 const { resendUserInvites } = api.people;
+const { settingsStore } = store;
 
 const InfoContainer = styled.div`
   margin-bottom: 24px;
@@ -206,9 +208,9 @@ class ProfileInfo extends React.PureComponent {
           ones, feel free to write to us at
           <Link href={`mailto:${supportEmail}`} isHovered={true}>
             {{ supportEmail }}
-          </Link>{" "}
+          </Link>
           to take part in the translation and get up to 1 year free of charge."
-        </Trans>{" "}
+        </Trans>
         <Link
           isHovered={true}
           href="https://helpcenter.onlyoffice.com/ru/guides/become-translator.aspx"
@@ -334,21 +336,21 @@ class ProfileInfo extends React.PureComponent {
 }
 
 function mapStateToProps(state) {
-  const { customNames } = state.auth.settings;
-  const {
-    groupCaption,
-    regDateCaption,
-    userPostCaption,
-    userCaption,
-    guestCaption,
-  } = customNames;
+  //const { customNames } = state.auth.settings;
+  // const {
+  //   groupCaption,
+  //   regDateCaption,
+  //   userPostCaption,
+  //   userCaption,
+  //   guestCaption,
+  // } = customNames;
 
   return {
-    groupCaption,
-    regDateCaption,
-    userPostCaption,
-    userCaption,
-    guestCaption,
+    //groupCaption,
+    //regDateCaption,
+    //userPostCaption,
+    //userCaption,
+    //guestCaption,
     filter: getFilter(state),
   };
 }
@@ -360,4 +362,27 @@ const mapDispatchToProps = (dispatch) => {
     setIsLoading: (isLoading) => dispatch(setIsLoading(isLoading)),
   };
 };
-export default connect(mapStateToProps, mapDispatchToProps)(ProfileInfo);
+
+const ProfileInfoWrapper = observer((props) => {
+  const { customNames } = settingsStore.settings;
+  const {
+    groupCaption,
+    regDateCaption,
+    userPostCaption,
+    userCaption,
+    guestCaption,
+  } = customNames;
+
+  return (
+    <ProfileInfo
+      groupCaption={groupCaption}
+      regDateCaption={regDateCaption}
+      userPostCaption={userPostCaption}
+      userCaption={userCaption}
+      guestCaption={guestCaption}
+      {...props}
+    />
+  );
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ProfileInfoWrapper);

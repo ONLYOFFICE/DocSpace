@@ -8,6 +8,10 @@ import { I18nextProvider, withTranslation } from "react-i18next";
 import { getLanguage } from "../../../store/auth/selectors";
 import { connect } from "react-redux";
 import i18n from "../i18n";
+import store from "../../../store";
+import { observer } from "mobx-react";
+
+const { settingsStore } = store;
 
 const StyledRegister = styled(Box)`
   display: flex;
@@ -111,13 +115,22 @@ RegisterWrapper.propTypes = {
 };
 
 function mapStateToProps(state) {
-  const { isAuthenticated, settings } = state.auth;
-  const { enabledJoin } = settings;
+  const { isAuthenticated /* , settings */ } = state.auth;
+  //const { enabledJoin } = settings;
   return {
     language: getLanguage(state),
     isAuthenticated,
-    enabledJoin,
+    //enabledJoin,
   };
 }
 
-export default connect(mapStateToProps, null)(RegisterWrapper);
+const RegisterComponentWrapper = observer((props) => {
+  return (
+    <RegisterWrapper
+      enabledJoin={settingsStore.settings.enabledJoin}
+      {...props}
+    />
+  );
+});
+
+export default connect(mapStateToProps, null)(RegisterComponentWrapper);

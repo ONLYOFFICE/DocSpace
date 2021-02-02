@@ -3,11 +3,14 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import PropTypes from "prop-types";
 import { IconButton } from "asc-web-components";
-import { Headline } from "asc-web-common";
+import { Headline, store } from "asc-web-common";
 import { withTranslation } from "react-i18next";
 import { resetGroup } from "../../../../../store/group/actions";
 import { setFilter } from "../../../../../store/people/actions";
 import styled from "styled-components";
+import { observer } from "mobx-react";
+
+const { settingsStore } = store;
 
 const Wrapper = styled.div`
   display: grid;
@@ -75,13 +78,22 @@ SectionHeaderContent.defaultProps = {
 
 function mapStateToProps(state) {
   return {
-    settings: state.auth.settings,
+    //settings: state.auth.settings,
     group: state.group.targetGroup,
-    groupCaption: state.auth.settings.customNames.groupCaption,
+    //groupCaption: state.auth.settings.customNames.groupCaption,
     filter: state.people.filter,
   };
 }
 
+const SectionHeaderContentWrapper = observer((props) => {
+  return (
+    <SectionHeaderContent
+      groupCaption={settingsStore.settings.customNames.groupCaption}
+      {...props}
+    />
+  );
+});
+
 export default connect(mapStateToProps, { resetGroup, setFilter })(
-  withTranslation()(withRouter(SectionHeaderContent))
+  withTranslation()(withRouter(SectionHeaderContentWrapper))
 );
