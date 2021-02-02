@@ -11,5 +11,6 @@
   "QuestionDeleteFolder": "Are you sure you want to delete this folder?",
   "QuestionDeleteElements": "Are you sure you want to delete these elements?",
   "DeleteOperation": "Deleting",
-  "DeleteSelectedElem": "Selected elements were successfully deleted"
+  "DeleteSelectedElem": "Selected elements were successfully deleted",
+  "DeleteFromTrash": "Selected elements were successfully deleted from trash"
 }
