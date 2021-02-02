@@ -376,7 +376,9 @@ class SectionHeaderContent extends React.Component {
       fetchFiles,
       setUpdateTree,
     } = this.props;
-    const successMessage = t("DeleteSelectedElem");
+    const successMessage = isRecycleBin
+      ? t("DeleteFromTrash")
+      : t("DeleteSelectedElem");
     api.files
       .getProgress()
       .then((res) => {
