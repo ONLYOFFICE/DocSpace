@@ -273,7 +273,7 @@ export function resetFilter(withoutGroup = false) {
 
     if (withoutGroup) {
       const { group } = filter;
-      newFilter = filter.resetWithoutGroup(group);
+      newFilter = filter.reset(group);
     } else {
       newFilter = filter.clone(true);
     }

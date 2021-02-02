@@ -124,7 +124,7 @@ class Filter {
         );
   }
 
-  resetWithoutGroup(idGroup) {
+  reset(idGroup) {
     if (idGroup) {
       return new Filter(
         0,
