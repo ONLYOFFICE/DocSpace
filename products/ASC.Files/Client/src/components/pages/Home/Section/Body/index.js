@@ -2167,8 +2167,8 @@ const mapStateToProps = (state) => {
 const SectionBodyContentWrapper = observer((props) => {
   return (
     <SectionBodyContent
-      homepage={settingsStore.settings.homepage}
-      culture={settingsStore.settings.culture}
+      homepage={settingsStore.homepage}
+      culture={settingsStore.culture}
       {...props}
     />
   );

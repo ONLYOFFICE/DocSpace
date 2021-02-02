@@ -522,7 +522,7 @@ const SectionBodyContentWrapper = observer((props) => {
     groupHeadCaption,
     groupsCaption,
     groupCaption,
-  } = settingsStore.settings.customNames;
+  } = settingsStore.customNames;
 
   return (
     <SectionBodyContent

@@ -108,12 +108,7 @@ export { withLayoutSize } from "./withLayoutSize";
 
 export function tryRedirectTo(page) {
   if (
-    page &&
-    page !== "" &&
-    page !== "/" &&
-    window.location &&
-    window.location.pathname &&
-    window.location.pathname === page &&
+    window.location.pathname === page ||
     window.location.pathname.indexOf(page) !== -1
   ) {
     return false;

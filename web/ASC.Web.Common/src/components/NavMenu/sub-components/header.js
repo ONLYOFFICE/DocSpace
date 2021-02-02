@@ -192,25 +192,6 @@ HeaderComponent.propTypes = {
   isAuthenticated: PropTypes.bool,
 };
 
-const HeaderComponentWrapper = inject((stores) => ({
-  logoUrl: stores.settingsStore.settings.logoUrl,
-  mainModules: stores.moduleStore.modules,
-}))(HeaderComponent);
-
-// const HeaderComponentWrapper = observer((props) => {
-//   useEffect(() => {
-//     moduleStore.getModules();
-//   }, []);
-
-//   return (
-//     <HeaderComponent
-//       logoUrl={settingsStore.settings.logoUrl}
-//       mainModules={moduleStore.modules}
-//       {...props}
-//     />
-//   );
-// });
-
 const mapStateToProps = (state) => {
   //const { logoUrl } = state.auth.settings;
   const { isAuthenticated } = state.auth;
@@ -227,4 +208,9 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps)(HeaderComponentWrapper);
+export default connect(mapStateToProps)(
+  inject(({ store }) => ({
+    logoUrl: store.settingsStore.logoUrl,
+    mainModules: store.moduleStore.modules,
+  }))(HeaderComponent)
+);

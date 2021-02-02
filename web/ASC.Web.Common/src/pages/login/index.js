@@ -29,10 +29,7 @@ import Register from "./sub-components/register-container";
 import { createPasswordHash, tryRedirectTo } from "../../utils";
 import { isDesktopClient } from "../../store/auth/selectors";
 import { checkPwd } from "../../desktop";
-import store from "../../store";
-import { observer } from "mobx-react";
-
-const { settingsStore } = store;
+import { inject } from "mobx-react";
 
 const LoginContainer = styled.div`
   display: flex;
@@ -241,6 +238,7 @@ class Form extends Component {
 
     login(userName, hash)
       .then(() => {
+        debugger;
         if (!tryRedirectTo(defaultPage)) {
           setIsLoaded(true);
         }
@@ -520,29 +518,27 @@ function mapStateToProps(state) {
   };
 }
 
-const LoginWrapper = observer((props) => {
-  const {
-    greetingSettings,
-    organizationName,
-    hashSettings,
-    enabledJoin,
-    defaultPage,
-  } = settingsStore.settings;
-
-  return (
-    <LoginForm
-      organizationName={organizationName}
-      greetingTitle={greetingSettings}
-      hashSettings={hashSettings}
-      enabledJoin={enabledJoin}
-      defaultPage={defaultPage}
-      {...props}
-    />
-  );
-});
-
 export default connect(mapStateToProps, {
-  login,
+  //login,
   setIsLoaded,
   reloadPortalSettings,
-})(withRouter(LoginWrapper));
+})(
+  inject(({ store }) => {
+    const {
+      greetingSettings,
+      organizationName,
+      hashSettings,
+      enabledJoin,
+      defaultPage,
+    } = store.settingsStore;
+    const { login } = store;
+    return {
+      organizationName,
+      greetingTitle: greetingSettings,
+      hashSettings,
+      enabledJoin,
+      defaultPage,
+      login,
+    };
+  })(withRouter(LoginForm))
+);

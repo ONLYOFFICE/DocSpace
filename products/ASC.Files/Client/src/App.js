@@ -250,8 +250,8 @@ export default connect(
     user: userStore.user,
     isAuthenticated: userStore.isAuthenticated,
     getUser: userStore.setCurrentUser,
-    homepage: settingsStore.settings.homepage || config.homepage,
-    encryptionKeys: settingsStore.settings.encryptionKeys,
+    homepage: settingsStore.homepage || config.homepage,
+    encryptionKeys: settingsStore.encryptionKeys,
     getPortalSettings: settingsStore.getPortalSettings,
   }))(observer(App))
 );

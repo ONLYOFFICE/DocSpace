@@ -5,19 +5,15 @@ import { connect } from "react-redux";
 //import { Loader } from "asc-web-components";
 import PageLayout from "../PageLayout";
 import {
-  getCurrentUser,
+  //getCurrentUser,
   getIsLoaded,
-  isAdmin,
-  isAuthenticated,
+  //isAdmin,
+  //isAuthenticated,
   isMe,
 } from "../../store/auth/selectors.js";
 import { Error401, Error404 } from "../../pages/errors";
 import RectangleLoader from "../Loaders/RectangleLoader/RectangleLoader";
-import { inject, observer } from "mobx-react";
-import store from "../../store";
-
-const { userStore } = store;
-//import isEmpty from "lodash/isEmpty";
+import { inject } from "mobx-react";
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
   const {
@@ -111,11 +107,11 @@ function mapStateToProps(state) {
 
 // export default connect(mapStateToProps)(PrivateRouteWrapper);
 
-export default connect(mapStateToProps)(
-  inject(({ userStore }) => ({
-    user: userStore.user,
-    isAuthenticated: userStore.isAuthenticated,
-    isAdmin: userStore.isAdmin,
-    getUser: userStore.setCurrentUser,
-  }))(observer(PrivateRoute))
-);
+const wrapper = inject(({ store }) => ({
+  user: store.userStore.user,
+  isAuthenticated: store.userStore.isAuthenticated,
+  isAdmin: store.userStore.isAdmin,
+  //getUser: store.userStore.getCurrentUser,
+}))(PrivateRoute);
+
+export default connect(mapStateToProps)(wrapper);

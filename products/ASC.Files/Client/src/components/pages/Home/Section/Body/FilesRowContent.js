@@ -780,9 +780,7 @@ function mapStateToProps(state, props) {
 }
 
 const FilesRowContentWrapper = observer((props) => {
-  return (
-    <FilesRowContent homepage={settingsStore.settings.homepage} {...props} />
-  );
+  return <FilesRowContent homepage={settingsStore.homepage} {...props} />;
 });
 
 export default connect(mapStateToProps, {

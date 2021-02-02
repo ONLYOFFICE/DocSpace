@@ -9,16 +9,14 @@ import { useTranslation } from "react-i18next";
 import { utils } from "asc-web-components";
 const { tablet } = utils.device;
 import { logout } from "../../../store/auth/actions";
-import store from "../../../store/index";
+//import store from "../../../store/index";
 import {
   //getCurrentUser,
   getLanguage,
   getIsolateModules,
   getIsLoaded,
 } from "../../../store/auth/selectors";
-import { observer } from "mobx-react";
-
-const { userStore, settingsStore } = store;
+import { inject } from "mobx-react";
 
 const StyledNav = styled.nav`
   display: flex;
@@ -139,15 +137,10 @@ function mapStateToProps(state) {
   };
 }
 
-const HeaderNavWrapper = observer((props) => {
-  return (
-    <HeaderNav
-      user={userStore.user}
-      homepage={settingsStore.settings.homepage}
-      defaultPage={settingsStore.settings.defaultPage || "/"}
-      {...props}
-    />
-  );
-});
-
-export default connect(mapStateToProps, { logout })(HeaderNavWrapper);
+export default connect(mapStateToProps, { logout })(
+  inject(({ store }) => ({
+    user: store.userStore.user,
+    homepage: store.settingsStore.homepage,
+    defaultPage: store.settingsStore.defaultPage || "/",
+  }))(HeaderNav)
+);

@@ -75,12 +75,7 @@ function mapStateToProps(state) {
 }
 
 const ChangeEmailFormWrapper = observer((props) => {
-  return (
-    <ChangeEmailForm
-      defaultPage={settingsStore.settings.defaultPage}
-      {...props}
-    />
-  );
+  return <ChangeEmailForm defaultPage={settingsStore.defaultPage} {...props} />;
 });
 
 export default connect(mapStateToProps, { changeEmail })(

@@ -133,7 +133,7 @@ const AdvantagesContainer = ({ organizationName }) => {
 const AdvantagesContainerWrapper = observer((props) => {
   return (
     <AdvantagesContainer
-      organizationName={settingsStore.settings.organizationName}
+      organizationName={settingsStore.organizationName}
       {...props}
     />
   );

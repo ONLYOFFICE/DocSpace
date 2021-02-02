@@ -241,8 +241,8 @@ InviteDialog.propTypes = {
 const InviteDialogWrapper = observer((props) => {
   return (
     <InviteDialog
-      settings={settingsStore.settings.hasShortenService}
-      guestsCaption={settingsStore.settings.customNames.guestsCaption}
+      settings={settingsStore.hasShortenService}
+      guestsCaption={settingsStore.customNames.guestsCaption}
       {...props}
     />
   );

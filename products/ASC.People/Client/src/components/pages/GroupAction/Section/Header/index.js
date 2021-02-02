@@ -88,7 +88,7 @@ function mapStateToProps(state) {
 const SectionHeaderContentWrapper = observer((props) => {
   return (
     <SectionHeaderContent
-      groupCaption={settingsStore.settings.customNames.groupCaption}
+      groupCaption={settingsStore.customNames.groupCaption}
       {...props}
     />
   );

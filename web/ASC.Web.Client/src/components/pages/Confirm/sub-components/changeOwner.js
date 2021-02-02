@@ -138,8 +138,8 @@ const ChangeOwnerForm = (props) => (
 const ChangeOwnerFormWrapper = observer((props) => {
   return (
     <ChangeOwnerForm
-      greetingTitle={settingsStore.settings.greetingSettings}
-      defaultPage={settingsStore.settings.defaultPage}
+      greetingTitle={settingsStore.greetingSettings}
+      defaultPage={settingsStore.defaultPage}
       {...props}
     />
   );

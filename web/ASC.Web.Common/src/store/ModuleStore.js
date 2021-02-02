@@ -21,6 +21,9 @@ class ModuleStore {
         iconUrl: item.iconUrl,
         notifications: 0,
         url: item.link,
+        isPrimary: item.isPrimary,
+        description: item.description,
+        imageUrl: item.imageUrl,
         onClick: (e) => {
           if (e) {
             window.open(item.link, "_self");

@@ -133,7 +133,7 @@ class PureAccessRights extends Component {
 const PureAccessRightsWrapper = observer((props) => {
   return (
     <PureAccessRights
-      organizationName={settingsStore.settings.organizationName}
+      organizationName={settingsStore.organizationName}
       {...props}
     />
   );

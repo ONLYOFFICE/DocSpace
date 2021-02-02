@@ -596,7 +596,7 @@ AdminsSettings.propTypes = {
 const AdminsSettingsWrapper = observer((props) => {
   return (
     <AdminsSettings
-      groupsCaption={settingsStore.settings.customNames.groupsCaption}
+      groupsCaption={settingsStore.customNames.groupsCaption}
       {...props}
     />
   );

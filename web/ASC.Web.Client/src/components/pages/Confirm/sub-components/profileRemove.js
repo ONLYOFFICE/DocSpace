@@ -129,7 +129,7 @@ function mapStateToProps(state) {
 const ProfileRemoveFormWrapper = observer((props) => {
   return (
     <ProfileRemoveForm
-      greetingTitle={settingsStore.settings.greetingSettings}
+      greetingTitle={settingsStore.greetingSettings}
       {...props}
     />
   );

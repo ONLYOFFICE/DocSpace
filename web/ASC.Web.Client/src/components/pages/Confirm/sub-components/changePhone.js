@@ -133,7 +133,7 @@ function mapStateToProps(state) {
 const ChangePhoneFormWrapper = observer((props) => {
   return (
     <ChangePhoneForm
-      greetingTitle={settingsStore.settings.greetingSettings}
+      greetingTitle={settingsStore.greetingSettings}
       {...props}
     />
   );

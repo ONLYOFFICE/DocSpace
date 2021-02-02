@@ -195,10 +195,7 @@ const mapStateToProps = (state) => {
 
 const ArticleMainButtonContentWrapper = observer((props) => {
   return (
-    <ArticleMainButtonContent
-      homepage={settingsStore.settings.homepage}
-      {...props}
-    />
+    <ArticleMainButtonContent homepage={settingsStore.homepage} {...props} />
   );
 });
 

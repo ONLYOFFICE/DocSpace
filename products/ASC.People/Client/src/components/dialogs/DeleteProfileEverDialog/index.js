@@ -123,7 +123,7 @@ DeleteProfileEverDialog.propTypes = {
 const DeleteProfileWrapper = observer((props) => {
   return (
     <DeleteProfileEverDialog
-      userCaption={settingsStore.settings.customNames.userCaption}
+      userCaption={settingsStore.customNames.userCaption}
       {...props}
     />
   );

@@ -45,7 +45,7 @@ class App extends React.Component {
       //getPortalSettings,
       //getUser,
       //getModules,
-      //setIsLoaded,
+      setIsLoaded,
       getIsAuthenticated,
       loadBaseInfo,
     } = this.props;

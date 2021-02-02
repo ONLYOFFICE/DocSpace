@@ -508,8 +508,8 @@ const mapStateToProps = (state) => {
 const SectionHeaderContentWrapper = observer((props) => {
   return (
     <SectionHeaderContent
-      customNames={settingsStore.settings.customNames}
-      homepage={settingsStore.settings.homepage}
+      customNames={settingsStore.customNames}
+      homepage={settingsStore.homepage}
       {...props}
     />
   );

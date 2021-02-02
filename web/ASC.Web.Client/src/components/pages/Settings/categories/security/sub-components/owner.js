@@ -268,8 +268,8 @@ OwnerSettings.propTypes = {
 const OwnerSettingsWrapper = observer((props) => {
   return (
     <OwnerSettings
-      groupsCaption={settingsStore.settings.customNames.groupsCaption}
-      ownerId={settingsStore.settings.ownerId}
+      groupsCaption={settingsStore.customNames.groupsCaption}
+      ownerId={settingsStore.ownerId}
       {...props}
     />
   );

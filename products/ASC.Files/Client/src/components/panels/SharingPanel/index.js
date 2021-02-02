@@ -649,7 +649,7 @@ const mapStateToProps = (state, ownProps) => {
 };
 
 const SharingPanelWrapper = observer((props) => {
-  return <SharingPanel homepage={settingsStore.settings.homepage} {...props} />;
+  return <SharingPanel homepage={settingsStore.homepage} {...props} />;
 });
 
 export default connect(mapStateToProps, {

@@ -5,14 +5,10 @@ import { connect } from "react-redux";
 import { getIsLoaded, isAuthenticated } from "../../store/auth/selectors";
 import PageLayout from "../PageLayout";
 import RectangleLoader from "../Loaders/RectangleLoader/RectangleLoader";
-import store from "../../store";
-import { observer } from "mobx-react";
-
-const { settingsStore } = store;
+import { inject } from "mobx-react";
 
 export const PublicRoute = ({ component: Component, ...rest }) => {
   const { wizardToken, wizardCompleted, isAuthenticated, isLoaded } = rest;
-
   const renderComponent = (props) => {
     if (!isLoaded) {
       return (
@@ -63,14 +59,9 @@ function mapStateToProps(state) {
   };
 }
 
-const PublicRouteWrapper = observer((props) => {
-  return (
-    <PublicRoute
-      wizardToken={settingsStore.settings.wizardToken}
-      wizardCompleted={settingsStore.settings.wizardCompleted}
-      {...props}
-    />
-  );
-});
+const wrapper = inject(({ store }) => ({
+  wizardToken: store.settingsStore.wizardToke,
+  wizardCompleted: store.settingsStore.wizardCompleted,
+}))(PublicRoute);
 
-export default connect(mapStateToProps)(PublicRouteWrapper);
+export default connect(mapStateToProps)(wrapper);

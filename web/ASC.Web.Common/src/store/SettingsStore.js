@@ -22,7 +22,7 @@ class SettingsStore {
   timezones = [];
   utcOffset = "00:00:00";
   utcHoursOffset = 0;
-  defaultPage = "/products/files";
+  defaultPage = "/"; //"/products/files";
   homepage = ""; //config.homepage;
   datePattern = "M/d/yyyy";
   datePatternJQ = "00/00/0000";

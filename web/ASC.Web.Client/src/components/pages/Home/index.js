@@ -3,15 +3,14 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import { Text } from "asc-web-components";
-import { toastr, ModuleTile, PageLayout, utils, store } from "asc-web-common";
+import { toastr, ModuleTile, PageLayout, utils } from "asc-web-common";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 
 import { createI18N } from "../../../helpers/i18n";
 import { setDocumentTitle } from "../../../helpers/utils";
-import { observer } from "mobx-react";
-
-const { settingsStore } = store;
+import { inject, observer } from "mobx-react";
+import { observable, observe } from "mobx";
 
 const i18n = createI18N({
   page: "Home",
@@ -84,7 +83,6 @@ Tiles.propTypes = {
 const Body = ({ modules, match, isLoaded }) => {
   const { t } = useTranslation("translation", { i18n });
   const { error } = match.params;
-
   setDocumentTitle();
 
   useEffect(() => error && toastr.error(error), [error]);
@@ -128,17 +126,21 @@ Home.propTypes = {
 };
 
 function mapStateToProps(state) {
-  const { modules, isLoaded /* , settings */ } = state.auth;
+  const { isLoaded /* , settings */ } = state.auth;
   //const { defaultPage } = settings;
   return {
-    modules,
     isLoaded,
     //defaultPage,
   };
 }
 
-const HomeWrapper = observer((props) => {
-  return <Home defaultPage={settingsStore.settings.defaultPage} {...props} />;
-});
-
-export default connect(mapStateToProps)(withRouter(HomeWrapper));
+export default connect(mapStateToProps)(
+  inject(({ store }) => {
+    const { defaultPage } = store.settingsStore;
+    const { modules } = store.moduleStore;
+    return {
+      defaultPage,
+      modules,
+    };
+  })(withRouter(Home))
+);

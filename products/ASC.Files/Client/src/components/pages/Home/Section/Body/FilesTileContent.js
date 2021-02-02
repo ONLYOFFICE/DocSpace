@@ -462,9 +462,7 @@ function mapStateToProps(state, props) {
 }
 
 const FilesTileContentWrapper = observer((props) => {
-  return (
-    <FilesTileContent homepage={settingsStore.settings.homepage} {...props} />
-  );
+  return <FilesTileContent homepage={settingsStore.homepage} {...props} />;
 });
 
 export default connect(mapStateToProps, {
