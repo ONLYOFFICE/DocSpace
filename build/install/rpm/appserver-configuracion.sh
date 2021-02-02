@@ -1,13 +1,11 @@
-MYSQL=""
 
-DB_PORT="3306"  
 APP_HOST="localhost"
 APP_PORT="80"
 
 APP_CONF="/etc/onlyoffice/appserver/config/appsettings.test.json"
-KAFKA_CONF="/etc/onlyoffice/appserver/config/kafka.test.json"
 NGINX_CONF="/etc/nginx/conf.d"
 
+MYSQL=""
 DB_HOST=""
 DB_NAME=""
 DB_USER=""
@@ -18,6 +16,8 @@ DOCUMENT_SERVER_PORT="8083";
 
 KAFKA_HOST="localhost"
 KAFKA_PORT="9092"
+ZOOKEEPER_HOST="localhost"
+ZOOKEEPER_PORT="2181"
 
 ELK_SHEME="http"
 ELK_HOST="localhost"
@@ -30,13 +30,18 @@ ELK_VALUE='"elastic": { "Scheme": "'${ELK_SHEME}'", "Host": "'${ELK_HOST}'", "Po
 restart_services() {
 	echo -n "Restarting services... "
 
-	for SVC in nginx mysqld elasticsearch appserver-api appserver-socket appserver-api_system appserver-backup appserver-files appserver-files_service appserver-notify appserver-people appserver-studio appserver-studio_notify appserver-thumbnails appserver-urlshortener
+	for SVC in nginx mysqld elasticsearch kafka zookeeper appserver-api appserver-socket appserver-api_system appserver-backup \
+	appserver-files appserver-files_service appserver-notify appserver-people appserver-studio appserver-studio_notify \
+	appserver-thumbnails appserver-urlshortener
 	do
 		if systemctl is-active $SVC | grep -q "active"; then
 			systemctl restart $SVC.service >/dev/null 2>&1
 		else
 			systemctl enable $SVC.service  >/dev/null 2>&1
 			systemctl start $SVC.service  >/dev/null 2>&1
+		fi
+		if systemctl is-active $SVC | grep -v "active" >/dev/null; then
+			echo -e "\033[31m $SVC not started \033[0m"
 		fi
 	done
 	echo "OK"
@@ -45,19 +50,13 @@ restart_services() {
 input_db_params(){
     local def_DB_HOST="localhost"
     local def_DB_NAME="onlyoffice"
-    local def_DB_USER="root"
-    local def_DB_PWD="root"
-    if read -i "default" 2>/dev/null <<< "test"; then 
-		read -e -p "Database host: " -i "$DB_HOST" DB_HOST
-		read -e -p "Database name: " -i "$DB_NAME" DB_NAME
-		read -e -p "Database user: " -i "$DB_USER" DB_USER
-		read -e -p "Database password: " -s DB_PWD
-	else
-		read -e -p "Database host (default $def_DB_HOST): " DB_HOST
-		read -e -p "Database name (default $def_DB_NAME): " DB_NAME
-		read -e -p "Database user (default $def_DB_USER): " DB_USER
-		read -e -p "Database password: " -s DB_PWD
-    fi
+    local def_DB_USER="onlyoffice_user"
+    local def_DB_PWD="onlyoffice_pass"
+
+	read -e -p "Database host: " -i "$DB_HOST" DB_HOST
+	read -e -p "Database name: " -i "$DB_NAME" DB_NAME
+	read -e -p "Database user: " -i "$DB_USER" DB_USER
+	read -e -p "Database password: " -s DB_PWD
     
     if [ -z $DB_HOST ]; then
 		DB_HOST="${def_DB_HOST}";
@@ -106,8 +105,8 @@ mysql_check_connection() {
 	done
 }
 
-execute_mysql_sqript(){
-    local CNF_PATH="/etc/my.cnf";
+change_mysql_config(){
+	local CNF_PATH="/etc/my.cnf";
     local CNF_SERVICE_PATH="/usr/lib/systemd/system/mysqld.service";
 
     if ! grep -q "\[mysqld\]" ${CNF_PATH}; then
@@ -187,8 +186,12 @@ execute_mysql_sqript(){
 	fi
 
     systemctl daemon-reload >/dev/null 2>&1
-	systemctl stop mysqld >/dev/null 2>&1
-	systemctl start mysqld >/dev/null 2>&1
+	systemctl restart mysqld >/dev/null 2>&1
+}
+
+execute_mysql_script(){
+
+	change_mysql_config
 
     mysql_check_connection
     
@@ -200,14 +203,14 @@ execute_mysql_sqript(){
     DB_TABLES_COUNT=$($MYSQL --silent --skip-column-names -e "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='${DB_NAME}'"); 
     
     if [ "${DB_TABLES_COUNT}" -eq "0" ]; then
-	echo -n "Installing MYSQL database... "
+		echo -n "Installing MYSQL database... "
 
-    sed -i -e '1 s/^/SET SQL_MODE='ALLOW_INVALID_DATES';\n/;' /etc/onlyoffice/appserver/onlyoffice.sql
-	$MYSQL -e "CREATE DATABASE IF NOT EXISTS $DB_NAME CHARACTER SET utf8 COLLATE 'utf8_general_ci';" >/dev/null 2>&1
-    $MYSQL "$DB_NAME" < "/etc/onlyoffice/appserver/createdb.sql" >/dev/null 2>&1
-    $MYSQL "$DB_NAME" < "/etc/onlyoffice/appserver/onlyoffice.sql" >/dev/null 2>&1
-    $MYSQL "$DB_NAME" < "/etc/onlyoffice/appserver/onlyoffice.data.sql" >/dev/null 2>&1
-    $MYSQL "$DB_NAME" < "/etc/onlyoffice/appserver/onlyoffice.resources.sql" >/dev/null 2>&1
+		sed -i -e '1 s/^/SET SQL_MODE='ALLOW_INVALID_DATES';\n/;' /etc/onlyoffice/appserver/onlyoffice.sql
+		$MYSQL -e "CREATE DATABASE IF NOT EXISTS $DB_NAME CHARACTER SET utf8 COLLATE 'utf8_general_ci';"
+		$MYSQL "$DB_NAME" < "/etc/onlyoffice/appserver/createdb.sql" >/dev/null 2>&1
+		$MYSQL "$DB_NAME" < "/etc/onlyoffice/appserver/onlyoffice.sql" >/dev/null 2>&1
+		$MYSQL "$DB_NAME" < "/etc/onlyoffice/appserver/onlyoffice.data.sql" >/dev/null 2>&1
+		$MYSQL "$DB_NAME" < "/etc/onlyoffice/appserver/onlyoffice.resources.sql" >/dev/null 2>&1
 	else
 		echo -n "Upgrading MySQL database... "
     fi
@@ -217,7 +220,7 @@ execute_mysql_sqript(){
 setup_nginx(){
 	echo -n "Configuring nginx... "
 
-	mv /etc/nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf.old
+	mv -f $NGINX_CONF/default.conf $NGINX_CONF/default.conf.old >/dev/null 2>&1
 
     sed -i "s/listen.*;/listen $APP_PORT;/" $NGINX_CONF/onlyoffice.conf
 
@@ -250,13 +253,13 @@ setup_nginx(){
 
 setup_docs() {
 	echo -n "Configuring Docs... "
-	DS_CONF="/etc/onlyoffice/documentserver/local.json"
+	local DS_CONF="/etc/onlyoffice/documentserver/local.json"
 
 	sed -i "s/0.0.0.0:.*;/0.0.0.0:$DOCUMENT_SERVER_PORT;/" $NGINX_CONF/ds.conf
 	sed -i "s/]:.*;/]:$DOCUMENT_SERVER_PORT default_server;/g" $NGINX_CONF/ds.conf  	
 
-	DOCUMENT_SERVER_JWT_SECRET=$(cat ${DS_CONF} | jq -r '.services.CoAuthoring.secret.inbox.string')
-	DOCUMENT_SERVER_JWT_HEADER=$(cat ${DS_CONF} | jq -r '.services.CoAuthoring.token.inbox.header')
+	local DOCUMENT_SERVER_JWT_SECRET=$(cat ${DS_CONF} | jq -r '.services.CoAuthoring.secret.inbox.string')
+	local DOCUMENT_SERVER_JWT_HEADER=$(cat ${DS_CONF} | jq -r '.services.CoAuthoring.token.inbox.header')
 
 	sed "s!\"browser\": .*!\"browser\": true!" -i ${DS_CONF}
 	sed "0,/\"inbox\": .*/{s/\"inbox\": .*/\"inbox\": true,/}" -i ${DS_CONF}
@@ -267,8 +270,9 @@ setup_docs() {
 	sed "s!\"portal\": \".*\"!\"portal\": \"http://$APP_HOST:$APP_PORT\"!" -i ${APP_CONF}
 	sed "0,/proxy_pass .*;/{s/proxy_pass .*;/proxy_pass http:\/\/${DOCUMENT_SERVER_HOST}:${DOCUMENT_SERVER_PORT};/}" -i $NGINX_CONF/onlyoffice.conf
 	
-	sudo supervisorctl start ds:example
-	sudo supervisorctl restart ds:*
+	sudo sed 's,autostart=false,autostart=true,' -i /etc/supervisord.d/ds-example.ini
+	sudo supervisorctl start ds:example >/dev/null 2>&1
+	sudo supervisorctl restart ds:* >/dev/null 2>&1
 	
 	echo "OK"
 }
@@ -277,9 +281,9 @@ setup_elasticsearch() {
 	echo -n "Configuring elasticsearch... "
 
 	grep -q "${ELK_VALUE}" ${APP_CONF} || sed -i "s!\"files\".*!${ELK_VALUE}\n\"files\": {!" ${APP_CONF}
-	ELASTIC_SEARCH_VERSION=$(rpm -qi elasticsearch | grep Version | tail -n1 | awk -F': ' '/Version/ {print $2}');
-	ELASTIC_SEARCH_CONF_PATH="/etc/elasticsearch/elasticsearch.yml"
-	ELASTIC_SEARCH_JAVA_CONF_PATH="/etc/elasticsearch/jvm.options";
+	local ELASTIC_SEARCH_VERSION=$(rpm -qi elasticsearch | grep Version | tail -n1 | awk -F': ' '/Version/ {print $2}');
+	local ELASTIC_SEARCH_CONF_PATH="/etc/elasticsearch/elasticsearch.yml"
+	local ELASTIC_SEARCH_JAVA_CONF_PATH="/etc/elasticsearch/jvm.options";
 
 	if /usr/share/elasticsearch/bin/elasticsearch-plugin list | grep -q "ingest-attachment"; then
 		/usr/share/elasticsearch/bin/elasticsearch-plugin remove -s ingest-attachment
@@ -310,8 +314,8 @@ setup_elasticsearch() {
 		sed "/-XX:+HeapDumpOnOutOfMemoryError/d" -i ${ELASTIC_SEARCH_JAVA_CONF_PATH}
 	fi
 
-	TOTAL_MEMORY=$(free -m | grep -oP '\d+' | head -n 1);
-	MEMORY_REQUIREMENTS=12228; #RAM ~4*3Gb
+	local TOTAL_MEMORY=$(free -m | grep -oP '\d+' | head -n 1);
+	local MEMORY_REQUIREMENTS=12228; #RAM ~4*3Gb
 
 	if [ ${TOTAL_MEMORY} -gt ${MEMORY_REQUIREMENTS} ]; then
 		if ! grep -q "[-]Xms1g" ${ELASTIC_SEARCH_JAVA_CONF_PATH}; then
@@ -334,10 +338,37 @@ setup_elasticsearch() {
 	echo "OK"
 }
 
+setup_kafka() {
+
+	local KAFKA_SERVICE=$(systemctl --type=service | grep 'kafka' | grep -oE '[^ ]+$' | tail -n1)
+
+	if [ $KAFKA_SERVICE ]; then
+
+		local APP_KAFKA_CONF="/etc/onlyoffice/appserver/config/kafka.test.json"
+
+		echo -n "Configuring kafka... "
+
+		local KAFKA_CONF="$(cat /etc/systemd/system/$KAFKA_SERVICE | grep ExecStop= | cut -c 10- | rev | cut -c 26- | rev)/config"
+
+		sed -i "s/clientPort=.*/clientPort=${ZOOKEEPER_PORT}/g" $KAFKA_CONF/zookeeper.properties
+		sed -i "s/zookeeper.connect=.*/zookeeper.connect=${ZOOKEEPER_HOST}:${ZOOKEEPER_PORT}/g" $KAFKA_CONF/server.properties
+		sed -i "s/bootstrap.servers=.*/bootstrap.servers=${KAFKA_HOST}:${KAFKA_PORT}/g" $KAFKA_CONF/consumer.properties
+		sed -i "s/bootstrap.servers=.*/bootstrap.servers=${KAFKA_HOST}:${KAFKA_PORT}/g" $KAFKA_CONF/connect-standalone.properties
+		sed -i "s/logger.kafka.controller=.*,/logger.kafka.controller=INFO,/g" $KAFKA_CONF/log4j.properties
+		sed -i "s/logger.state.change.logger=.*,/logger.state.change.logger=INFO,/g" $KAFKA_CONF/log4j.properties
+		echo "log4j.logger.kafka.producer.async.DefaultEventHandler=INFO, kafkaAppender" >> $KAFKA_CONF/log4j.properties
+
+		sed -i "s/\"BootstrapServers\".*/\"BootstrapServers\": \"${KAFKA_HOST}:${KAFKA_PORT}\"/g" ${APP_KAFKA_CONF}
+	
+		echo "OK"
+	fi
+
+}
+
 if rpm -q mysql-community-client >/dev/null; then
     input_db_params
     establish_mysql_conn || exit $?
-    execute_mysql_sqript || exit $?
+    execute_mysql_script || exit $?
 fi 
 
 if rpm -q nginx >/dev/null; then
@@ -352,7 +383,6 @@ if rpm -q elasticsearch >/dev/null; then
     setup_elasticsearch
 fi
 
-#kafka
-sed -i "s!\"BootstrapServers\".*!\"BootstrapServers\": \"${KAFKA_HOST}:${KAFKA_PORT}\"!g" ${KAFKA_CONF}
+setup_kafka
 
 restart_services
