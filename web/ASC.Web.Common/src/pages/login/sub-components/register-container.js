@@ -5,10 +5,8 @@ import styled from "styled-components";
 import PropTypes from "prop-types";
 import { sendRegisterRequest } from "../../../api/settings/index";
 import { I18nextProvider, withTranslation } from "react-i18next";
-import { getLanguage } from "../../../store/auth/selectors";
-import { connect } from "react-redux";
 import i18n from "../i18n";
-import { inject } from "mobx-react";
+import { inject, observer } from "mobx-react";
 
 const StyledRegister = styled(Box)`
   display: flex;
@@ -111,24 +109,12 @@ RegisterWrapper.propTypes = {
   enabledJoin: PropTypes.bool,
 };
 
-function mapStateToProps(state) {
-  const { isAuthenticated /* , settings */ } = state.auth;
-  //const { enabledJoin } = settings;
+export default inject(({ store }) => {
+  const { settingsStore, isAuthenticated, language } = store;
+  const { enabledJoin } = settingsStore;
   return {
-    language: getLanguage(state),
+    enabledJoin,
     isAuthenticated,
-    //enabledJoin,
+    language,
   };
-}
-
-export default connect(
-  mapStateToProps,
-  null
-)(
-  inject(({ store }) => {
-    const { enabledJoin } = store.settingsStore;
-    return {
-      enabledJoin,
-    };
-  })(RegisterWrapper)
-);
+})(observer(RegisterWrapper));

@@ -1,22 +1,21 @@
-import {
-  action,
-  /*makeAutoObservable,*/ makeObservable,
-  observable,
-} from "mobx";
+import { action, makeObservable, observable } from "mobx";
 import api from "../api";
 import { LANGUAGE } from "../constants";
 
 class UserStore {
   user = null;
-  isAuthenticated = false;
-  isAdmin = false;
+  isLoading = false;
+  isLoaded = false;
 
   constructor() {
     makeObservable(this, {
       user: observable,
-      isAuthenticated: observable,
-      isAdmin: observable,
+      isLoading: observable,
+      isLoaded: observable,
       getCurrentUser: action,
+      setIsLoading: action,
+      setIsLoaded: action,
+      setUser: action,
     });
   }
 
@@ -24,9 +23,28 @@ class UserStore {
     const user = await api.people.getUser();
     localStorage.getItem(LANGUAGE) !== user.cultureName &&
       localStorage.setItem(LANGUAGE, user.cultureName);
+    this.setUser(user);
+  };
+
+  init = async () => {
+    this.setIsLoading(true);
+
+    await this.getCurrentUser();
+
+    this.setIsLoading(false);
+    this.setIsLoaded(true);
+  };
+
+  setIsLoading = (isLoading) => {
+    this.isLoading = isLoading;
+  };
+
+  setIsLoaded = (isLoaded) => {
+    this.isLoaded = isLoaded;
+  };
+
+  setUser = (user) => {
     this.user = user;
-    this.isAuthenticated = true;
-    this.isAdmin = user.isAdmin;
   };
 }
 

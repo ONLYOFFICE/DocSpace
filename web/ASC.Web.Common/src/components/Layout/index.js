@@ -1,11 +1,8 @@
 import React, { useEffect } from "react";
+import PropTypes from "prop-types";
 import styled from "styled-components";
 import { utils } from "asc-web-components";
-import { connect } from "react-redux";
-import store from "../../store";
-
-const { setIsTabletView } = store.auth.actions;
-const { getIsTabletView } = store.auth.selectors;
+import { inject, observer } from "mobx-react";
 
 const { size } = utils.device;
 const StyledContainer = styled.div``;
@@ -35,15 +32,17 @@ const Layout = (props) => {
   );
 };
 
-const mapStateToProps = (state) => {
-  return {
-    isTabletView: getIsTabletView(state),
-  };
+Layout.propTypes = {
+  isTabletView: PropTypes.bool,
+  children: PropTypes.any,
+  setIsTabletView: PropTypes.func,
 };
 
-const mapDispatchToProps = (dispatch) => {
+export default inject(({ store }) => {
   return {
-    setIsTabletView: (isTabletView) => dispatch(setIsTabletView(isTabletView)),
+    isTabletView: store.settingsStore.isTabletView,
+    setIsTabletView: (isTablet) => {
+      store.settingsStore.isTabletView = isTablet;
+    },
   };
-};
-export default connect(mapStateToProps, mapDispatchToProps)(Layout);
+})(observer(Layout));

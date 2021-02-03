@@ -1,19 +1,18 @@
 /* eslint-disable react/prop-types */
 import React from "react";
 import { Redirect, Route } from "react-router-dom";
-import { connect } from "react-redux";
 //import { Loader } from "asc-web-components";
 import PageLayout from "../PageLayout";
 import {
   //getCurrentUser,
-  getIsLoaded,
+  //getIsLoaded,
   //isAdmin,
   //isAuthenticated,
   isMe,
 } from "../../store/auth/selectors.js";
 import { Error401, Error404 } from "../../pages/errors";
 import RectangleLoader from "../Loaders/RectangleLoader/RectangleLoader";
-import { inject } from "mobx-react";
+import { inject, observer } from "mobx-react";
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
   const {
@@ -93,25 +92,15 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
   return <Route {...rest} render={renderComponent} />;
 };
 
-function mapStateToProps(state) {
+export default inject(({ store }) => {
+  const { userStore, isAuthenticated, isLoaded, isAdmin } = store;
+  const { user } = userStore;
+
   return {
-    //isAdmin: isAdmin(state),
-    //user: getCurrentUser(state),
-    //isAuthenticated: isAuthenticated(state),
-    isLoaded: getIsLoaded(state),
+    user,
+    isAuthenticated,
+    isAdmin,
+    isLoaded,
+    //getUser: store.userStore.getCurrentUser,
   };
-}
-// const PrivateRouteWrapper = observer((props) => {
-//   return <PrivateRoute user={userStore.user} {...props} />;
-// });
-
-// export default connect(mapStateToProps)(PrivateRouteWrapper);
-
-const wrapper = inject(({ store }) => ({
-  user: store.userStore.user,
-  isAuthenticated: store.userStore.isAuthenticated,
-  isAdmin: store.userStore.isAdmin,
-  //getUser: store.userStore.getCurrentUser,
-}))(PrivateRoute);
-
-export default connect(mapStateToProps)(wrapper);
+})(observer(PrivateRoute));

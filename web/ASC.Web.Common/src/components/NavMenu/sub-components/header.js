@@ -1,5 +1,5 @@
 import React from "react";
-import { inject } from "mobx-react";
+import { inject, observer } from "mobx-react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import NavItem from "./nav-item";
@@ -10,15 +10,15 @@ import Loaders from "../../Loaders/index";
 import { ReactSVG } from "react-svg";
 
 import { utils } from "asc-web-components";
-import { connect } from "react-redux";
-import {
-  getCurrentProductId,
-  getCurrentProductName,
-  getDefaultPage,
-  //getMainModules,
-  getTotalNotificationsCount,
-  getIsLoaded,
-} from "../../../store/auth/selectors";
+// import { connect } from "react-redux";
+// import {
+//   getCurrentProductId,
+//   getCurrentProductName,
+//   getDefaultPage,
+//   //getMainModules,
+//   getTotalNotificationsCount,
+//   getIsLoaded,
+// } from "../../../store/auth/selectors";
 //import store from "../../../store";
 //const { moduleStore, settingsStore } = store;
 
@@ -192,25 +192,24 @@ HeaderComponent.propTypes = {
   isAuthenticated: PropTypes.bool,
 };
 
-const mapStateToProps = (state) => {
-  //const { logoUrl } = state.auth.settings;
-  const { isAuthenticated } = state.auth;
-
-  return {
-    defaultPage: getDefaultPage(state),
-    totalNotifications: getTotalNotificationsCount(state),
-    //mainModules: getMainModules(state),
-    currentProductName: getCurrentProductName(state),
-    currentProductId: getCurrentProductId(state),
-    isLoaded: getIsLoaded(state),
-    //logoUrl,
+export default inject(({ store }) => {
+  const {
+    settingsStore,
+    moduleStore,
+    isLoaded,
     isAuthenticated,
+    product,
+  } = store;
+  const { logoUrl, defaultPage, currentProductId } = settingsStore;
+  const { modules: mainModules, totalNotifications } = moduleStore;
+  return {
+    defaultPage,
+    logoUrl,
+    mainModules,
+    totalNotifications,
+    isLoaded,
+    isAuthenticated,
+    currentProductId,
+    currentProductName: (product && product.title) || "",
   };
-};
-
-export default connect(mapStateToProps)(
-  inject(({ store }) => ({
-    logoUrl: store.settingsStore.logoUrl,
-    mainModules: store.moduleStore.modules,
-  }))(HeaderComponent)
-);
+})(observer(HeaderComponent));

@@ -70,13 +70,20 @@ export function createPasswordHash(password, hashSettings) {
 
 export function updateTempContent(isAuth = false) {
   if (isAuth) {
-    let el = document.getElementById("burger-loader-svg");
-    let el1 = document.getElementById("logo-loader-svg");
-    let el2 = document.getElementById("avatar-loader-svg");
+    const el = document.getElementById("burger-loader-svg");
+    if (el) {
+      el.style.display = "block";
+    }
 
-    el.style.display = "block";
-    el1.style.display = "block";
-    el2.style.display = "block";
+    const el1 = document.getElementById("logo-loader-svg");
+    if (el1) {
+      el1.style.display = "block";
+    }
+
+    const el2 = document.getElementById("avatar-loader-svg");
+    if (el2) {
+      el2.style.display = "block";
+    }
   } else {
     const tempElm = document.getElementById("temp-content");
     if (tempElm) {

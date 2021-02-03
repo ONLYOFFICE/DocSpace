@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { Backdrop, utils } from "asc-web-components";
 import store from "../../store";
@@ -21,8 +20,8 @@ import SectionToggler from "./sub-components/section-toggler";
 import { changeLanguage } from "../../utils";
 import ReactResizeDetector from "react-resize-detector";
 import FloatingButton from "../FloatingButton";
+import { inject, observer } from "mobx-react";
 
-const { getLanguage } = store.auth.selectors;
 const { size } = utils.device;
 const { Provider } = utils.context;
 
@@ -493,10 +492,6 @@ PageLayout.propTypes = {
   children: PropTypes.any,
 };
 
-function mapStateToProps(state) {
-  return {
-    language: getLanguage(state),
-  };
-}
-
-export default connect(mapStateToProps)(PageLayout);
+export default inject(({ store }) => ({ language: store.language }))(
+  observer(PageLayout)
+);

@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { inject } from "mobx-react";
+import { inject, observer } from "mobx-react";
 
 const LogoItem = styled.div`
   display: flex;
@@ -20,7 +20,7 @@ const LogoItem = styled.div`
   }
 `;
 
-const NavLogoItem = React.memo((props) => {
+const NavLogoItem = (props) => {
   //console.log("NavLogoItem render");
   return (
     <LogoItem opened={props.opened}>
@@ -29,7 +29,7 @@ const NavLogoItem = React.memo((props) => {
       </a>
     </LogoItem>
   );
-});
+};
 
 NavLogoItem.displayName = "NavLogoItem";
 
@@ -49,4 +49,4 @@ NavLogoItem.propTypes = {
 
 export default inject(({ store }) => ({
   logoUrl: store.settingsStore.logoUrl,
-}))(NavLogoItem);
+}))(observer(NavLogoItem));

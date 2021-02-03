@@ -2,17 +2,10 @@ import { action, computed, makeObservable, observable } from "mobx";
 import api from "../api";
 import { LANGUAGE } from "../constants";
 
-const desktop = window["AscDesktopEditor"] !== undefined;
-// const desktopEncryption =
-//   desktop && typeof window.AscDesktopEditor.cloudCryptoCommand === "function";
-// const lang = localStorage[LANGUAGE]
-//   ? localStorage
-//       .getItem(LANGUAGE)
-//       .split("-")
-//       .find((el) => el[0])
-//   : "en";
-
 class SettingsStore {
+  isLoading = false;
+  isLoaded = false;
+
   currentProductId = "";
   culture = "en-US";
   cultures = [];
@@ -50,12 +43,13 @@ class SettingsStore {
     guestCaption: "Guest",
     guestsCaption: "Guests",
   };
-  isDesktopClient = desktop;
+  isDesktopClient = window["AscDesktopEditor"] !== undefined;
   //isDesktopEncryption: desktopEncryption;
   isEncryptionSupport = false;
   encryptionKeys = null;
   isTabletView = false;
   hashSettings = null;
+  title = "";
 
   constructor() {
     makeObservable(this, {
@@ -90,6 +84,11 @@ class SettingsStore {
       getSettings: action,
       getCurrentCustomSchema: action,
       getPortalSettings: action,
+      init: action,
+      isLoaded: observable,
+      isLoading: observable,
+      setIsLoading: action,
+      setIsLoaded: action,
     });
   }
 
@@ -127,6 +126,23 @@ class SettingsStore {
     if (origSettings.nameSchemaId) {
       this.getCurrentCustomSchema(origSettings.nameSchemaId);
     }
+  };
+
+  init = async () => {
+    this.setIsLoading(true);
+
+    await this.getPortalSettings();
+
+    this.setIsLoading(false);
+    this.setIsLoaded(true);
+  };
+
+  setIsLoading = (isLoading) => {
+    this.isLoading = isLoading;
+  };
+
+  setIsLoaded = (isLoaded) => {
+    this.isLoaded = isLoaded;
   };
 }
 

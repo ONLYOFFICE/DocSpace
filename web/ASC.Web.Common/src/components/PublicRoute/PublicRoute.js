@@ -1,11 +1,9 @@
 /* eslint-disable react/prop-types */
 import React from "react";
 import { Redirect, Route } from "react-router-dom";
-import { connect } from "react-redux";
-import { getIsLoaded, isAuthenticated } from "../../store/auth/selectors";
 import PageLayout from "../PageLayout";
 import RectangleLoader from "../Loaders/RectangleLoader/RectangleLoader";
-import { inject } from "mobx-react";
+import { inject, observer } from "mobx-react";
 
 export const PublicRoute = ({ component: Component, ...rest }) => {
   const { wizardToken, wizardCompleted, isAuthenticated, isLoaded } = rest;
@@ -47,21 +45,14 @@ export const PublicRoute = ({ component: Component, ...rest }) => {
   return <Route {...rest} render={renderComponent} />;
 };
 
-function mapStateToProps(state) {
-  //const { settings } = state.auth;
-  //const {wizardToken, wizardCompleted} = settings;
+export default inject(({ store }) => {
+  const { settingsStore, isAuthenticated, isLoaded } = store;
+  const { wizardToken, wizardCompleted } = settingsStore;
+
   return {
-    isAuthenticated: isAuthenticated(state),
-    isLoaded: getIsLoaded(state),
-
-    //wizardToken,
-    //wizardCompleted,
+    wizardToken,
+    wizardCompleted,
+    isAuthenticated,
+    isLoaded,
   };
-}
-
-const wrapper = inject(({ store }) => ({
-  wizardToken: store.settingsStore.wizardToke,
-  wizardCompleted: store.settingsStore.wizardCompleted,
-}))(PublicRoute);
-
-export default connect(mapStateToProps)(wrapper);
+})(observer(PublicRoute));

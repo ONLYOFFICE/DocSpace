@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import { Text } from "asc-web-components";
@@ -10,7 +9,6 @@ import styled from "styled-components";
 import { createI18N } from "../../../helpers/i18n";
 import { setDocumentTitle } from "../../../helpers/utils";
 import { inject, observer } from "mobx-react";
-import { observable, observe } from "mobx";
 
 const i18n = createI18N({
   page: "Home",
@@ -59,14 +57,13 @@ const Tiles = ({ modules, isPrimary }) => {
 
   const mapped = modules.filter((m) => m.isPrimary === isPrimary);
 
+  console.log("Tiles", mapped, isPrimary);
+
   return mapped.length > 0 ? (
     <div className="home-modules">
-      {mapped.map((module) => (
+      {mapped.map((m) => (
         <div className="home-module" key={++index}>
-          <ModuleTile
-            {...module}
-            onClick={() => window.open(module.link, "_self")}
-          />
+          <ModuleTile {...m} onClick={() => window.open(m.link, "_self")} />
         </div>
       ))}
     </div>
@@ -123,24 +120,16 @@ const Home = (props) => {
 Home.propTypes = {
   modules: PropTypes.array.isRequired,
   isLoaded: PropTypes.bool,
+  defaultPage: PropTypes.string,
 };
 
-function mapStateToProps(state) {
-  const { isLoaded /* , settings */ } = state.auth;
-  //const { defaultPage } = settings;
+export default inject(({ store }) => {
+  const { isLoaded, settingsStore, moduleStore } = store;
+  const { defaultPage } = settingsStore;
+  const { modules } = moduleStore;
   return {
+    defaultPage,
+    modules,
     isLoaded,
-    //defaultPage,
   };
-}
-
-export default connect(mapStateToProps)(
-  inject(({ store }) => {
-    const { defaultPage } = store.settingsStore;
-    const { modules } = store.moduleStore;
-    return {
-      defaultPage,
-      modules,
-    };
-  })(withRouter(Home))
-);
+})(withRouter(observer(Home)));
