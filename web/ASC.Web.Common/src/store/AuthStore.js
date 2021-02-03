@@ -34,8 +34,6 @@ class AuthStore {
 
       console.log("Login response", response);
 
-      debugger;
-
       setWithCredentialsStatus(true);
 
       await this.init();
