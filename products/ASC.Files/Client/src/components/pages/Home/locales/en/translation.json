@@ -125,5 +125,7 @@
   "EncryptedFileCreating": "File <strong>{{itemTitle}}</strong> successfully created",
   "DeleteThirdParty": "Delete third party",
   "ThirdPartyInfo": "Change the third party info",
-  "EmptyFile": "Empty file"
+  "EmptyFile": "Empty file",
+  "DeleteSelectedElem": "Selected elements were successfully deleted",
+  "DeleteFromTrash": "Selected elements were successfully deleted from trash"
 }

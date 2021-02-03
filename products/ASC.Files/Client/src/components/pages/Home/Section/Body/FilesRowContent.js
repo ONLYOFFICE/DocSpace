@@ -53,7 +53,7 @@ import EditingWrapperComponent from "./EditingWrapperComponent";
 import { isMobile } from "react-device-detect";
 import { setEncryptionAccess } from "../../../../../helpers/desktop";
 
-const { FileAction } = constants;
+const { FileAction, ShareAccessRights } = constants;
 const sideColor = "#A3A9AE";
 const { getSettings, isDesktopClient } = initStore.auth.selectors;
 const { getEncryptionAccess, replaceFileStream } = initStore.auth.actions;
@@ -534,6 +534,9 @@ class FilesRowContent extends React.PureComponent {
         createdBy.displayName);
     const updatedDate = updated && this.getStatusByDate();
 
+    const accessToEdit =
+      item.access === ShareAccessRights.FullAccess ||
+      item.access === ShareAccessRights.None; // TODO: fix access type for owner (now - None)
     const isEdit = id === editingId && fileExst === fileAction.extension;
     const linkStyles =
       isTrashFolder || window.innerWidth <= 1024
@@ -614,7 +617,7 @@ class FilesRowContent extends React.PureComponent {
                     hoverColor="#3B72A7"
                   />
                 )} */}
-                {canWebEdit && !isTrashFolder && (
+                {canWebEdit && !isTrashFolder && accessToEdit && (
                   <IconButton
                     onClick={this.onFilesClick}
                     iconName="AccessEditIcon"

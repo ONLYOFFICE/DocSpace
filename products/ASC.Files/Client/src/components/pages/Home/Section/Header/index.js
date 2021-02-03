@@ -28,6 +28,8 @@ import {
   setIsLoading,
   setSelected,
   setSharingPanelVisible,
+  setTreeFolders,
+  setUpdateTree,
 } from "../../../../../store/files/actions";
 import { TIMEOUT } from "../../../../../helpers/constants";
 import {
@@ -56,7 +58,12 @@ import {
   getIsThirdPartySelection,
   getIsPrivacyFolder,
   getOnlyFoldersSelected,
+  getSettingsTreeConfirmDelete,
+  loopTreeFolders,
+  getTreeFolders,
 } from "../../../../../store/files/selectors";
+
+const { files } = api;
 
 const { isAdmin, isDesktopClient, getIsTabletView } = store.auth.selectors;
 const { FilterType, FileAction } = constants;
@@ -356,8 +363,128 @@ class SectionHeaderContent extends React.Component {
   onOpenSharingPanel = () =>
     this.props.setSharingPanelVisible(!this.props.sharingPanelVisible);
 
-  onDeleteAction = () =>
-    this.setState({ showDeleteDialog: !this.state.showDeleteDialog });
+  loopDeleteOperation = (id) => {
+    const {
+      currentFolderId,
+      filter,
+      treeFolders,
+      setTreeFolders,
+      isRecycleBin,
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
+      t,
+      fetchFiles,
+      setUpdateTree,
+    } = this.props;
+    const successMessage = isRecycleBin
+      ? t("DeleteFromTrash")
+      : t("DeleteSelectedElem");
+    api.files
+      .getProgress()
+      .then((res) => {
+        const currentProcess = res.find((x) => x.id === id);
+        if (currentProcess && currentProcess.progress !== 100) {
+          setSecondaryProgressBarData({
+            icon: "trash",
+            percent: currentProcess.progress,
+            label: t("DeleteOperation"),
+            visible: true,
+            alert: false,
+          });
+          setTimeout(() => this.loopDeleteOperation(id), 1000);
+        } else {
+          setSecondaryProgressBarData({
+            icon: "trash",
+            percent: 100,
+            label: t("DeleteOperation"),
+            visible: true,
+            alert: false,
+          });
+          setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+          fetchFiles(currentFolderId, filter).then((data) => {
+            if (!isRecycleBin) {
+              const path = data.selectedFolder.pathParts.slice(0);
+              const newTreeFolders = treeFolders;
+              const folders = data.selectedFolder.folders;
+              const foldersCount = data.selectedFolder.foldersCount;
+              loopTreeFolders(path, newTreeFolders, folders, foldersCount);
+              setUpdateTree(true);
+              setTreeFolders(newTreeFolders);
+            }
+            toastr.success(successMessage);
+          });
+        }
+      })
+      .catch((err) => {
+        setSecondaryProgressBarData({
+          visible: true,
+          alert: true,
+        });
+        //toastr.error(err);
+        setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+      });
+  };
+
+  onDelete = () => {
+    const {
+      isRecycleBin,
+      isPrivacy,
+      t,
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
+      selection,
+    } = this.props;
+
+    const deleteAfter = true; //Delete after finished
+    const immediately = isRecycleBin || isPrivacy ? true : false; //Don't move to the Recycle Bin
+
+    const folderIds = [];
+    const fileIds = [];
+
+    let i = 0;
+    while (selection.length !== i) {
+      if (selection[i].fileExst) {
+        fileIds.push(selection[i].id);
+      } else {
+        folderIds.push(selection[i].id);
+      }
+      i++;
+    }
+
+    if (folderIds.length || fileIds.length) {
+      setSecondaryProgressBarData({
+        icon: "trash",
+        visible: true,
+        label: t("DeleteOperation"),
+        percent: 0,
+        alert: false,
+      });
+
+      files
+        .removeFiles(folderIds, fileIds, deleteAfter, immediately)
+        .then((res) => {
+          const id = res[0] && res[0].id ? res[0].id : null;
+          this.loopDeleteOperation(id);
+        })
+        .catch((err) => {
+          setSecondaryProgressBarData({
+            visible: true,
+            alert: true,
+          });
+          //toastr.error(err);
+          setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+        });
+    }
+  };
+
+  onDeleteAction = () => {
+    //console.log(this.props.confirmDelete);
+    if (this.props.confirmDelete) {
+      this.setState({ showDeleteDialog: !this.state.showDeleteDialog });
+    } else {
+      this.onDelete();
+    }
+  };
 
   onEmptyTrashAction = () =>
     this.setState({ showEmptyTrashDialog: !this.state.showEmptyTrashDialog });
@@ -744,6 +871,8 @@ const mapStateToProps = (state) => {
     isThirdPartySelection: getIsThirdPartySelection(state),
     isOnlyFoldersSelected: getOnlyFoldersSelected(state),
     isTabletView: getIsTabletView(state),
+    confirmDelete: getSettingsTreeConfirmDelete(state),
+    treeFolders: getTreeFolders(state),
   };
 };
 
@@ -755,4 +884,6 @@ export default connect(mapStateToProps, {
   fetchFiles,
   setSelected,
   setSharingPanelVisible,
+  setTreeFolders,
+  setUpdateTree,
 })(withTranslation()(withRouter(SectionHeaderContent)));
