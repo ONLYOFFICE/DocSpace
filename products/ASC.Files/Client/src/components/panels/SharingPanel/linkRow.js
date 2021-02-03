@@ -47,7 +47,7 @@ class LinkRow extends React.Component {
                 isDisabled={isDisabled}
               />
             ) : (
-              <Icons.AccessEditIcon
+              <Icons.InternalLinkIcon
                 size="medium"
                 className="sharing_panel-owner-icon"
               />
