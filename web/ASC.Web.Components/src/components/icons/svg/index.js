@@ -211,6 +211,7 @@ import OrigButtonAlertIcon from "./button.alert.react.svg";
 import OrigButtonCancelIcon from "./button.cancel.react.svg";
 import OrigLoadErrorIcon from "./load.error.react.svg";
 import OrigClearActiveIcon from "./clear.active.react.svg";
+import OrigInternalLinkIcon from "./internal.link.react.svg";
 
 export const AZSortingIcon = createStyledIcon(
   OrigAZSortingIcon,
@@ -826,4 +827,8 @@ export const MoveToIcon = createStyledIcon(OrigMoveToIcon, "MoveToIcon");
 export const IntegrationIcon = createStyledIcon(
   OrigIntegrationIcon,
   "IntegrationIcon"
+);
+export const InternalLinkIcon = createStyledIcon(
+  OrigInternalLinkIcon,
+  "InternalLinkIcon"
 );
