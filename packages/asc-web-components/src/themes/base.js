@@ -299,25 +299,26 @@ const Base = {
     borderColor: blueMain,
   },
 
-  // textArea: {
-  //   width: "100%",
-  //   height: "90%",
-  //   border: "none",
-  //   outline: "none",
-  //   resize: "none",
-  //   overflow: "hidden",
-  //   padding: "5px 8px 2px 8px",
-  //   fontSize: "13px",
-  //   lineHeight: "1.5",
+  textArea: {
+    width: "100%",
+    height: "90%",
+    border: "none",
+    outline: "none",
+    resize: "none",
+    overflow: "hidden",
+    padding: "5px 8px 2px 8px",
+    fontSize: "13px",
+    lineHeight: "1.5",
 
-  //   disabledColor: grayLight,
+    disabledColor: grayLight,
 
-  //   focusBorderColor: blueMain,
-  //   focusOutline: "none",
+    focusBorderColor: blueMain,
+    focusErrorBorderColor: red,
+    focusOutline: "none",
 
-  //   scrollWidth: "100%",
-  //   scrollHeight: "91px",
-  // },
+    scrollWidth: "100%",
+    scrollHeight: "91px",
+  },
 
   link: {
     color: black,
@@ -326,7 +327,7 @@ const Base = {
     textDecoration: "none",
     cursor: "pointer",
     display: "inline-block",
-    
+
     hover: {
       textDecoration: "underline dashed",
       page: { textDecoration: "underline" },
