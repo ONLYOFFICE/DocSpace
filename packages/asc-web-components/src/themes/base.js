@@ -83,7 +83,7 @@ const Base = {
 
     lineHeight: {
       base: "15px",
-      medium:  "18px",
+      medium: "18px",
       big: "20px",
       large: "20px",
     },
@@ -319,18 +319,19 @@ const Base = {
   //   scrollHeight: "91px",
   // },
 
-  // link: {
-  //   color: black,
-  //   lineHeight: "calc(100% + 6px)",
-  //   opacity: "0.5",
-  //   textDecoration: "none",
-  //   cursor: "pointer",
-
-  //   hover: {
-  //     textDecoration: "underline dashed",
-  //     page: { textDecoration: "underline" },
-  //   },
-  // },
+  link: {
+    color: black,
+    lineHeight: "calc(100% + 6px)",
+    opacity: "0.5",
+    textDecoration: "none",
+    cursor: "pointer",
+    display: "inline-block",
+    
+    hover: {
+      textDecoration: "underline dashed",
+      page: { textDecoration: "underline" },
+    },
+  },
 
   // tooltip: {
   //   borderRadius: "6px",
