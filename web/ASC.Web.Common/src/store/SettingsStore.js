@@ -50,6 +50,8 @@ class SettingsStore {
   isTabletView = false;
   hashSettings = null;
   title = "";
+  ownerId = null;
+  nameSchemaId = null;
 
   constructor() {
     makeObservable(this, {
@@ -81,6 +83,8 @@ class SettingsStore {
       encryptionKeys: observable,
       isTabletView: observable,
       hashSettings: observable,
+      ownerId: observable,
+      nameSchemaId: observable,
       getSettings: action,
       getCurrentCustomSchema: action,
       getPortalSettings: action,
