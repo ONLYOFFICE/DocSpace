@@ -102,7 +102,7 @@ class SettingsStore {
     const newSettings = await api.settings.getSettings();
 
     Object.keys(newSettings).map((key) => {
-      if (this[key]) {
+      if (key in this) {
         this[key] = newSettings[key];
 
         if (key === "culture" && !localStorage.getItem(LANGUAGE)) {
