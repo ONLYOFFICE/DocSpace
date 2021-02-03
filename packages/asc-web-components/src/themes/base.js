@@ -54,47 +54,63 @@ const Base = {
   // },
 
   button: {
-    fontWeight: 600,
-    margin: 0,
+    fontWeight: "600",
+    margin: "0",
     display: "inline-block",
     textAlign: "center",
     textDecoration: "none",
-    verticalAlign: "middle",
+
+    topVerticalAlign: "text-top",
+    middleVerticalAlign: "middle",
+    bottomVerticalAlign: "text-bottom",
+
     borderRadius: "3px",
     stroke: "none",
     overflow: "hidden",
     textOverflow: "ellipsis",
     whiteSpace: "nowrap",
     outline: "none",
+    boxSizing: "border-box",
+
+    paddingRight: "4px",
+
     height: {
       base: "24px",
       medium: "32px",
       big: "36px",
+      large: "44px",
     },
+
     lineHeight: {
-      base: "normal",
-      medium: "normal",
-      big: "normal",
+      base: "15px",
+      medium:  "18px",
+      big: "20px",
+      large: "20px",
     },
+
     fontSize: {
       base: "12px",
       medium: "13px",
       big: "14px",
+      large: "16px",
     },
+
     padding: {
       base: "0 14px",
       medium: "0 18px",
       big: "0 20px",
     },
+
     minWidth: {
       base: "65px",
       medium: "80px",
       big: "85px",
     },
+
     color: {
       base: black,
       primary: white,
-      disabled: grayMid,
+      disabled: grayLightMid,
     },
 
     backgroundColor: {
@@ -107,6 +123,7 @@ const Base = {
       primaryActive: blueActive,
       primaryDisabled: blueDisabled,
     },
+
     border: {
       base: `1px solid ${globalColors.grayMid}`,
       baseHover: `1px solid ${globalColors.blueMain}`,
@@ -280,7 +297,7 @@ const Base = {
     margin: "0",
 
     borderColor: blueMain,
-  }
+  },
 
   // textArea: {
   //   width: "100%",

@@ -1769,13 +1769,13 @@
     once "^1.4.0"
 
 "@octokit/request@^5.2.0":
-  version "5.4.13"
-  resolved "https://registry.yarnpkg.com/@octokit/request/-/request-5.4.13.tgz#eec5987b3e96f984fc5f41967e001170c6d23a18"
-  integrity sha512-WcNRH5XPPtg7i1g9Da5U9dvZ6YbTffw9BN2rVezYiE7couoSyaRsw0e+Tl8uk1fArHE7Dn14U7YqUDy59WaqEw==
+  version "5.4.14"
+  resolved "https://registry.yarnpkg.com/@octokit/request/-/request-5.4.14.tgz#ec5f96f78333bb2af390afa5ff66f114b063bc96"
+  integrity sha512-VkmtacOIQp9daSnBmDI92xNIeLuSRDOIuplp/CJomkvzt7M18NXgG044Cx/LFKLgjKt9T2tZR6AtJayba9GTSA==
   dependencies:
     "@octokit/endpoint" "^6.0.1"
     "@octokit/request-error" "^2.0.0"
-    "@octokit/types" "^6.0.3"
+    "@octokit/types" "^6.7.1"
     deprecation "^2.0.0"
     is-plain-object "^5.0.0"
     node-fetch "^2.6.1"
@@ -1811,10 +1811,10 @@
   dependencies:
     "@types/node" ">= 8"
 
-"@octokit/types@^6.0.3":
-  version "6.7.0"
-  resolved "https://registry.yarnpkg.com/@octokit/types/-/types-6.7.0.tgz#a548ed7a5606620a55c4814e11d64e3d19285f47"
-  integrity sha512-QiE7y2Brh0Bv61K//kFGJ6jCZihCf4fGL1FP0Oims5h2SlSYtDiAQMJW15s8udyLfjo/jY05G1YlN8ED/c6RNw==
+"@octokit/types@^6.0.3", "@octokit/types@^6.7.1":
+  version "6.7.1"
+  resolved "https://registry.yarnpkg.com/@octokit/types/-/types-6.7.1.tgz#01fdc5bbc67bf10ab0ca0aa2461d19ff9dd67fb7"
+  integrity sha512-OzRXbizUfixgzTjlSZQj+yuo0J9vAMOLtpsIm3JjQUsI3CcLXZnVaxRIWtYD+iwHznnvG9fJlPHM6SRp77fUcw==
   dependencies:
     "@octokit/openapi-types" "^3.4.1"
     "@types/node" ">= 8"
@@ -2934,9 +2934,9 @@ camelize@^1.0.0:
   integrity sha1-FkpUg+Yw+kMh5a8HAg5TGDGyYJs=
 
 caniuse-lite@^1.0.30001181:
-  version "1.0.30001181"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001181.tgz#4f0e5184e1ea7c3bf2727e735cbe7ca9a451d673"
-  integrity sha512-m5ul/ARCX50JB8BSNM+oiPmQrR5UmngaQ3QThTTp5HcIIQGP/nPBs82BYLE+tigzm3VW+F4BJIhUyaVtEweelQ==
+  version "1.0.30001183"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001183.tgz#7a57ba9d6584119bb5f2bc76d3cc47ba9356b3e2"
+  integrity sha512-7JkwTEE1hlRKETbCFd8HDZeLiQIUcl8rC6JgNjvHCNaxOeNmQ9V4LvQXRUsKIV2CC73qKxljwVhToaA3kLRqTw==
 
 caseless@~0.12.0:
   version "0.12.0"
@@ -3914,9 +3914,9 @@ ee-first@1.1.1:
   integrity sha1-WQxhFWsK4vTwJVcyoViyZrxWsh0=
 
 electron-to-chromium@^1.3.649:
-  version "1.3.649"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.649.tgz#3aa8be052d4d268ede45d8e98d0cd60ffefad607"
-  integrity sha512-ojGDupQ3UMkvPWcTICe4JYe17+o9OLiFMPoduoR72Zp2ILt1mRVeqnxBEd6s/ptekrnsFU+0A4lStfBe/wyG/A==
+  version "1.3.650"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.650.tgz#24e821fff2ed61fd71fee092f2a0631b3c0c22a6"
+  integrity sha512-j6pRuNylFBbroG6NB8Lw/Im9oDY74s2zWHBP5TmdYg73cBuL6cz//SMgolVa0gIJk/DSL+kO7baJ1DSXW1FUZg==
 
 email-addresses@^3.1.0:
   version "3.1.0"
@@ -3983,9 +3983,9 @@ env-paths@^2.2.0:
   integrity sha512-6u0VYSCo/OW6IoD5WCLLy9JUGARbamfSavcNXry/eu8aHVFei6CD3Sw+VGX5alea1i9pgPHW0mbu6Xj0uBh7gA==
 
 envinfo@^7.3.1, envinfo@^7.7.3:
-  version "7.7.3"
-  resolved "https://registry.yarnpkg.com/envinfo/-/envinfo-7.7.3.tgz#4b2d8622e3e7366afb8091b23ed95569ea0208cc"
-  integrity sha512-46+j5QxbPWza0PB1i15nZx0xQ4I/EfQxg9J8Had3b408SV63nEtor2e+oiY63amTo9KTuh2a3XLObNwduxYwwA==
+  version "7.7.4"
+  resolved "https://registry.yarnpkg.com/envinfo/-/envinfo-7.7.4.tgz#c6311cdd38a0e86808c1c9343f667e4267c4a320"
+  integrity sha512-TQXTYFVVwwluWSFis6K2XKxgrD22jEv0FTuLCQI+OjH7rn93+iY0fSSFM5lrSxFY+H1+B0/cvvlamr3UsBivdQ==
 
 err-code@^1.0.0:
   version "1.1.2"
@@ -5076,9 +5076,9 @@ i18next-xhr-backend@^3.2.2:
     "@babel/runtime" "^7.5.5"
 
 i18next@^19.8.4:
-  version "19.8.5"
-  resolved "https://registry.yarnpkg.com/i18next/-/i18next-19.8.5.tgz#8275c98ab98faffa348de2c34c2fd80ffeadb999"
-  integrity sha512-mDuH/mvnNXZmvqxl3akSZuJtbX7ou7M66kzfXQTfRngTZ9cAjktlx4yVzA+gS9VPZp51eZOQAGfEDbFcnyvliw==
+  version "19.8.7"
+  resolved "https://registry.yarnpkg.com/i18next/-/i18next-19.8.7.tgz#ef023e353974d1b1453e8b6331bd9fb7cba427df"
+  integrity sha512-ezo1gb7QO4OQ5gQCdZMUxopwQSoqpRp6whdEjm1grxMSmkGj1NJ+kYS0UQd4NnpPIVqsgqTQ2L2eqSQYQ+U3Fw==
   dependencies:
     "@babel/runtime" "^7.12.0"
 
@@ -5491,10 +5491,11 @@ is-plain-object@^5.0.0:
   integrity sha512-VRSzKkbMm5jMDoKLbltAkFQ5Qr7VDiTFGXxYFXXowVj387GeGNOCsOH6Msy00SGZ3Fp84b1Naa1psqgcCIEP5Q==
 
 is-regex@^1.0.4, is-regex@^1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/is-regex/-/is-regex-1.1.1.tgz#c6f98aacc546f6cec5468a07b7b153ab564a57b9"
-  integrity sha512-1+QkEcxiLlB7VEyFtyBg94e08OAsvq7FUBgApTq/w2ymCLyKJgDPsybBENVtA7XCQEgEXxKPonG+mvYRxh/LIg==
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/is-regex/-/is-regex-1.1.2.tgz#81c8ebde4db142f2cf1c53fc86d6a45788266251"
+  integrity sha512-axvdhb5pdhEVThqJzYXwMlVuZwC+FF2DpcOhTS+y/8jVq4trxyPgfcwIxIKiyeuLlSQYKkmUaPQJ8ZE4yNKXDg==
   dependencies:
+    call-bind "^1.0.2"
     has-symbols "^1.0.1"
 
 is-ssh@^1.3.0:
@@ -8174,9 +8175,9 @@ sass-loader@^10.1.0:
     semver "^7.3.2"
 
 sass@^1.29.0:
-  version "1.32.5"
-  resolved "https://registry.yarnpkg.com/sass/-/sass-1.32.5.tgz#2882d22ad5748c05fa9bff6c3b0ffbc4f4b9e1dc"
-  integrity sha512-kU1yJ5zUAmPxr7f3q0YXTAd1oZjSR1g3tYyv+xu0HZSl5JiNOaE987eiz7wCUvbm4I9fGWGU2TgApTtcP4GMNQ==
+  version "1.32.6"
+  resolved "https://registry.yarnpkg.com/sass/-/sass-1.32.6.tgz#e3646c8325cd97ff75a8a15226007f3ccd221393"
+  integrity sha512-1bcDHDcSqeFtMr0JXI3xc/CXX6c4p0wHHivJdru8W7waM7a1WjKMm4m/Z5sY7CbVw4Whi2Chpcw6DFfSWwGLzQ==
   dependencies:
     chokidar ">=2.0.0 <4.0.0"
 
@@ -8534,9 +8535,9 @@ source-map-support@~0.5.12, source-map-support@~0.5.19:
     source-map "^0.6.0"
 
 source-map-url@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/source-map-url/-/source-map-url-0.4.0.tgz#3e935d7ddd73631b97659956d55128e87b5084a3"
-  integrity sha1-PpNdfd1zYxuXZZlW1VEo6HtQhKM=
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/source-map-url/-/source-map-url-0.4.1.tgz#0af66605a745a5a2f91cf1bbf8a7afbc283dec56"
+  integrity sha512-cPiFOTLUKvJFIg4SKVScy4ilPPW6rFgMgfuZJPNoDuMs3nC1HbMUycBoJw77xFIp6z1UJQJOfx6C9GMH80DiTw==
 
 source-map@^0.5.0, source-map@^0.5.6:
   version "0.5.7"
