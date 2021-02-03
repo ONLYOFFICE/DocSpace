@@ -32,8 +32,8 @@ const {
 const Base = {
   // color: black,
   // backgroundColor: white,
-   fontFamily: "Open Sans, sans-serif, Arial",
-   fontSize: "30px",
+  fontFamily: "Open Sans, sans-serif, Arial",
+  fontSize: "30px",
 
   // text: {
   //   color: black,
@@ -96,8 +96,7 @@ const Base = {
       primary: white,
       disabled: grayMid,
     },
-    baseHover: "red",
-    primaryHover: "green",
+
     backgroundColor: {
       base: white,
       baseHover: white,
@@ -200,7 +199,7 @@ const Base = {
     disableColor: "#A3A9AE",
 
     backgroundColor: white,
-    disableBackgroundColor: "#F8F9F9",
+    disableBackgroundColor: grayLight,
 
     width: {
       base: "173px",
@@ -215,26 +214,27 @@ const Base = {
     boxSizing: "border-box",
     border: "solid 1px",
 
-    borderColor: "#D0D5DA",
-    errorBorderColor: "#c30",
-    warningBorderColor: "#f1ca92",
-    disabledBorderColor: "#ECEEF1",
+    borderColor: grayMid,
+    errorBorderColor: red,
+    warningBorderColor: warningColor,
+    disabledBorderColor: grayLightMid,
 
-    hoverBorderColor: "#A3A9AE",
-    hoverErrorBorderColor: "#c30",
-    hoverWarningBorderColor: "#f1ca92",
-    hoverDisabledBorderColor: "#ECEEF1",
+    hoverBorderColor: gray,
+    hoverErrorBorderColor: red,
+    hoverWarningBorderColor: warningColor,
+    hoverDisabledBorderColor: grayLightMid,
 
-    focusBorderColor: "#2DA7DB",
-    focusErrorBorderColor:  "#c30",
-    focusWarningBorderColor: "#f1ca92",
-    focusDisabledBorderColor: "#ECEEF1",
+    focusBorderColor: blueMain,
+    focusErrorBorderColor: red,
+    focusWarningBorderColor: warningColor,
+    focusDisabledBorderColor: grayLightMid,
   },
 
   textInput: {
     fontWeight: "normal",
-    placeholderColor: "#333333",
-    disablePlaceholderColor: "#A3A9AE",
+    userSelect: "none",
+    placeholderColor: gray,
+    disablePlaceholderColor: grayMid,
 
     transition: "all 0.2s ease 0s",
     appearance: "none",
@@ -242,13 +242,14 @@ const Base = {
     flex: "1 1 0%",
     outline: "none",
     overflow: "hidden",
+    opacity: "1",
 
     lineHeight: {
       base: "20px",
       middle: "20px",
       big: "20px",
       huge: "21px",
-      large:"20px"
+      large: "20px",
     },
 
     fontSize: {
@@ -256,7 +257,7 @@ const Base = {
       middle: "14px",
       big: "16px",
       huge: "18px",
-      large: "16px"
+      large: "16px",
     },
 
     padding: {
@@ -264,7 +265,7 @@ const Base = {
       middle: "8px 12px",
       big: "8px 16px",
       huge: "8px 20px",
-      large: "11px 15px"
+      large: "11px 15px",
     },
   },
 
@@ -452,27 +453,27 @@ const Base = {
   //     fillColor: gray,
   //   },
 
-    // button: {
-    //   height: "18px",
-    //   heightWithBorder: "32px",
-    //   paddingLeft: "8px",
+  // button: {
+  //   height: "18px",
+  //   heightWithBorder: "32px",
+  //   paddingLeft: "8px",
 
-    //   color: black,
-    //   disabledColor: grayMid,
-    //   background: white,
-    //   backgroundWithBorder: "none",
+  //   color: black,
+  //   disabledColor: grayMid,
+  //   background: white,
+  //   backgroundWithBorder: "none",
 
-    //   border: `1px solid ${grayMid}`,
-    //   borderRadius: "3px",
-    //   borderColor: blueMain,
+  //   border: `1px solid ${grayMid}`,
+  //   borderRadius: "3px",
+  //   borderColor: blueMain,
 
-    //   disabledBorderColor: grayLightMid,
-    //   disabledBackground: grayLight,
+  //   disabledBorderColor: grayLightMid,
+  //   disabledBackground: grayLight,
 
-    //   hoverBorderColor: gray,
-    //   hoverBorderColorOpen: blueMain,
-    //   hoverDisabledBorderColor: grayLightMid,
-    // },
+  //   hoverBorderColor: gray,
+  //   hoverBorderColorOpen: blueMain,
+  //   hoverDisabledBorderColor: grayLightMid,
+  // },
 
   //   label: {
   //     marginRightWithBorder: "8px",
