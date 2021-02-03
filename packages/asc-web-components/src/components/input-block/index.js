@@ -5,26 +5,29 @@ import TextInput from "../text-input";
 import { Icons } from "../icons";
 import IconButton from "../icon-button";
 import commonInputStyle from "../text-input/common-input-styles";
+import { Base } from "../../themes";
 
 const iconNames = Object.keys(Icons);
 
 const StyledIconBlock = styled.div`
-  display: flex;
-  align-items: center;
-
+  display: ${(props) => props.theme.inputBlock.display};
+  align-items: ${(props) => props.theme.inputBlock.alignItems};
   cursor: ${(props) =>
     props.isDisabled || !props.isClickable ? "default" : "pointer"};
-  height: 100%;
-  padding-right: 8px;
-  padding-left: 1px;
+
+  height: ${(props) => props.theme.inputBlock.height};
+  padding-right: ${(props) => props.theme.inputBlock.paddingRight};
+  padding-left: ${(props) => props.theme.inputBlock.paddingLeft};
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 `;
+StyledIconBlock.defaultProps = { theme: Base };
 
 const StyledChildrenBlock = styled.div`
-  display: flex;
-  align-items: center;
-  padding: 2px 0px 2px 2px;
+  display: ${(props) => props.theme.inputBlock.display};
+  align-items: ${(props) => props.theme.inputBlock.alignItems};
+  padding: ${(props) => props.theme.inputBlock.padding};
 `;
+StyledChildrenBlock.defaultProps = { theme: Base };
 
 /* eslint-disable react/prop-types, no-unused-vars */
 const CustomInputGroup = ({
@@ -37,21 +40,23 @@ const CustomInputGroup = ({
 }) => <div {...props}></div>;
 /* eslint-enable react/prop-types, no-unused-vars */
 const StyledInputGroup = styled(CustomInputGroup)`
-  display: flex;
+  display: ${(props) => props.theme.inputBlock.display};
 
   .prepend {
-    display: flex;
-    align-items: center;
+    display: ${(props) => props.theme.inputBlock.display};
+    align-items: ${(props) => props.theme.inputBlock.alignItems};
   }
 
   .append {
-    align-items: center;
-    margin: 0;
+    align-items: ${(props) => props.theme.inputBlock.alignItems};
+    margin: ${(props) => props.theme.inputBlock.margin};
   }
+
   ${commonInputStyle} :focus-within {
-    border-color: #2da7db;
+    border-color: ${(props) => props.theme.inputBlock.borderColor};
   }
 `;
+StyledInputGroup.defaultProps = { theme: Base };
 class InputBlock extends React.Component {
   constructor(props) {
     super(props);
@@ -95,6 +100,7 @@ class InputBlock extends React.Component {
       isIconFill,
       onIconClick,
       iconSize,
+      theme,
     } = this.props;
 
     if (typeof iconSize == "number" && iconSize > 0) {
@@ -125,9 +131,10 @@ class InputBlock extends React.Component {
         size={size}
         className={className}
         style={style}
+        theme={theme}
       >
         <div className="prepend">
-          <StyledChildrenBlock className="prepend-children">
+          <StyledChildrenBlock className="prepend-children" theme={theme}>
             {children}
           </StyledChildrenBlock>
         </div>
@@ -169,6 +176,7 @@ class InputBlock extends React.Component {
                 isFill={isIconFill}
                 isDisabled={isDisabled}
                 isClickable={typeof onIconClick === "function"}
+                theme={theme}
               />
             </StyledIconBlock>
           </div>
@@ -222,6 +230,7 @@ InputBlock.defaultProps = {
   type: "text",
   maxLength: 255,
   size: "base",
+  theme: Base,
   scale: false,
   tabIndex: -1,
   hasError: false,

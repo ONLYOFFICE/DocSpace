@@ -269,6 +269,19 @@ const Base = {
     },
   },
 
+  inputBlock: {
+    height: "100%",
+    paddingRight: "8px",
+    paddingLeft: "1px",
+
+    display: "flex",
+    alignItems: "center",
+    padding: "2px 0px 2px 2px",
+    margin: "0",
+
+    borderColor: blueMain,
+  }
+
   // textArea: {
   //   width: "100%",
   //   height: "90%",
