@@ -6,11 +6,8 @@ using System.Runtime.Loader;
 
 using Autofac;
 using Autofac.Configuration;
-using Autofac.Extensions.DependencyInjection;
 
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Common.DependencyInjection
 {
@@ -26,47 +23,68 @@ namespace ASC.Common.DependencyInjection
 
     public static class AutofacExtension
     {
-        public static IContainer AddAutofac(this IServiceCollection services, IConfiguration configuration, string currentDir)
+        public static void Register(this ContainerBuilder builder, IConfiguration configuration, string currentDir, bool loadproducts = true, bool loadconsumers = true, params string[] intern)
         {
             var folder = configuration["core:products:folder"];
             var subfolder = configuration["core:products:subfolder"];
             string productsDir;
 
-            if (currentDir.EndsWith(Path.Combine(Path.GetFileName(folder), Assembly.GetCallingAssembly().GetName().Name, subfolder)))
+            if (!Path.IsPathRooted(folder))
             {
-                productsDir = Path.GetFullPath(Path.Combine("..", ".."));
+                if (currentDir.EndsWith(Path.Combine(Path.GetFileName(folder), Assembly.GetEntryAssembly().GetName().Name, subfolder)))
+                {
+                    productsDir = Path.GetFullPath(Path.Combine("..", ".."));
+                }
+                else
+                {
+                    productsDir = Path.GetFullPath(Path.Combine(currentDir, folder));
+                }
             }
             else
             {
-                productsDir = Path.GetFullPath(Path.Combine(currentDir, folder));
+                productsDir = folder;
             }
 
-            var builder = new ContainerBuilder();
-            var modules = new string[] { "autofac.json", "autofac.products.json", "autofac.consumers.json" };
+            var modules = new List<(bool, string)>
+            {
+                (true, "autofac.json")
+            };
+
+            if (loadproducts)
+            {
+                modules.Add((true, "autofac.products.json"));
+            }
+
+            if (loadconsumers)
+            {
+                modules.Add((true, "autofac.consumers.json"));
+            }
+
+            if (intern != null)
+            {
+                modules.AddRange(intern.Select(r => (false, r)));
+            }
 
             foreach (var p in modules)
             {
-                var config = new ConfigurationBuilder()
-                .SetBasePath(configuration["pathToConf"])
-                .AddJsonFile(p);
+                var config = new ConfigurationBuilder();
+                if (p.Item1)
+                {
+                    config.SetBasePath(configuration["pathToConf"]);
+                }
+                config.AddJsonFile(p.Item2);
 
                 var root = config.Build();
                 var module = new ConfigurationModule(root);
                 builder.RegisterModule(module);
 
-                if (p == "autofac.products.json")
+                if (p.Item2 == "autofac.products.json")
                 {
                     FindAndLoad(root.GetSection("components"));
                 }
             }
 
-            builder.Populate(services);
-
-            var container = builder.Build();
-
-            services.TryAddSingleton(container);
-
-            return container;
+            return;
 
             void FindAndLoad(IConfigurationSection sectionSettings)
             {
@@ -104,13 +122,7 @@ namespace ASC.Common.DependencyInjection
 
                 if (!string.IsNullOrEmpty(path))
                 {
-                    AssemblyLoadContext.Default.Resolving += (c, n) =>
-                    {
-                        var path = GetFullPath(n.Name);
-                        return path != null ?
-                                c.LoadFromAssemblyPath(Path.Combine(Path.GetDirectoryName(path), $"{n.Name}.dll")) :
-                                null;
-                    };
+                    AssemblyLoadContext.Default.Resolving += new Resolver(path).Resolving;
                 }
             }
 
@@ -120,12 +132,31 @@ namespace ASC.Common.DependencyInjection
                 return GetPath(Path.Combine(productPath, "bin"), n, SearchOption.AllDirectories) ?? GetPath(productPath, n, SearchOption.TopDirectoryOnly);
             }
 
-            string GetPath(string dirPath, string dll, SearchOption searchOption)
+            static string GetPath(string dirPath, string dll, SearchOption searchOption)
             {
                 if (!Directory.Exists(dirPath)) return null;
 
                 return Directory.GetFiles(dirPath, $"{dll}.dll", searchOption).FirstOrDefault();
             }
+        }
+    }
+
+    class Resolver
+    {
+        private string ResolvePath { get; set; }
+
+        public Resolver(string assemblyPath)
+        {
+            ResolvePath = assemblyPath;
+        }
+
+        public Assembly Resolving(AssemblyLoadContext context, AssemblyName assemblyName)
+        {
+            var path = Path.Combine(Path.GetDirectoryName(ResolvePath), $"{assemblyName.Name}.dll");
+
+            if (!File.Exists(path)) return null;
+
+            return context.LoadFromAssemblyPath(path);
         }
     }
 }

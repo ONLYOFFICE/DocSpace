@@ -14,7 +14,7 @@ storiesOf("Components|FieldContainer", module)
   .addDecorator(withReadme(Readme))
   .add("base", () => (
     <StringValue
-      onChange={e => {
+      onChange={(e) => {
         action("onChange")(e);
       }}
     >
@@ -25,12 +25,22 @@ storiesOf("Components|FieldContainer", module)
               isVertical={boolean("isVertical", false)}
               isRequired={boolean("isRequired", false)}
               hasError={boolean("hasError", false)}
+              labelVisible={boolean("labelVisible", true)}
               labelText={text("labelText", "Name:")}
               maxLabelWidth={text("maxLabelWidth", "110px")}
-              tooltipContent={text("tooltipContent", "Paste you tooltip content here")}
-              helpButtonHeaderContent={text("helpButtonHeaderContent", "Tooltip header")}
+              tooltipContent={text(
+                "tooltipContent",
+                "Paste you tooltip content here"
+              )}
+              helpButtonHeaderContent={text(
+                "helpButtonHeaderContent",
+                "Tooltip header"
+              )}
               place="top"
-              errorMessage={text("errorMessage", "Error text. Lorem ipsum dolor sit amet, consectetuer adipiscing elit")}
+              errorMessage={text(
+                "errorMessage",
+                "Error text. Lorem ipsum dolor sit amet, consectetuer adipiscing elit"
+              )}
               errorColor={color("errorColor", "#C96C27")}
               errorMessageWidth={text("errorMessageWidth", "293px")}
             >
@@ -38,7 +48,7 @@ storiesOf("Components|FieldContainer", module)
                 value={value}
                 hasError={boolean("hasError", false)}
                 className="field-input"
-                onChange={e => {
+                onChange={(e) => {
                   set(e.target.value);
                 }}
               />

@@ -16,8 +16,8 @@ const mask = [/\d/, /\d/, "/", /\d/, /\d/, "/", /\d/, /\d/, /\d/, /\d/];
 <InputBlock
   mask={mask}
   iconName={"SearchIcon"}
-  onIconClick={event => alert(event.target.value)}
-  onChange={event => alert(event.target.value)}
+  onIconClick={(event) => alert(event.target.value)}
+  onChange={(event) => alert(event.target.value)}
 >
   <Button
     size="base"

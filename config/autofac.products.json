@@ -10,7 +10,7 @@
 	  "instanceScope": "singleinstance"
     },
     {
-      "type": "ASC.Web.Files.Configuration.ProductEntryPoint, ASC.Files",
+      "type": "ASC.Files.ApiProductEntryPoint, ASC.Files",
       "services": [
         {
           "type": "ASC.Web.Core.IWebItem, ASC.Web.Core"

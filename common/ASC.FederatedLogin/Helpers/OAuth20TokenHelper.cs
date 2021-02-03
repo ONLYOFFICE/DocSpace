@@ -29,18 +29,30 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
+using ASC.Common;
 using ASC.Core.Common.Configuration;
 using ASC.FederatedLogin.LoginProviders;
 
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ASC.FederatedLogin.Helpers
 {
-    public static class OAuth20TokenHelper
+    [Scope]
+    public class OAuth20TokenHelper
     {
-        public static void RequestCode<T>(HttpContext context, ConsumerFactory consumerFactory, string scope = null, Dictionary<string, string> additionalArgs = null) where T : Consumer, IOAuthProvider, new()
+        private IHttpContextAccessor HttpContextAccessor { get; }
+        private ConsumerFactory ConsumerFactory { get; }
+
+        public OAuth20TokenHelper(IHttpContextAccessor httpContextAccessor, ConsumerFactory consumerFactory)
         {
-            var loginProvider = consumerFactory.Get<T>();
+            HttpContextAccessor = httpContextAccessor;
+            ConsumerFactory = consumerFactory;
+        }
+
+        public string RequestCode<T>(string scope = null, Dictionary<string, string> additionalArgs = null) where T : Consumer, IOAuthProvider, new()
+        {
+            var loginProvider = ConsumerFactory.Get<T>();
             var requestUrl = loginProvider.CodeUrl;
             var clientID = loginProvider.ClientID;
             var redirectUri = loginProvider.RedirectUri;
@@ -51,11 +63,13 @@ namespace ASC.FederatedLogin.Helpers
             if (!string.IsNullOrEmpty(query)) query += "&";
             query += "response_type=code";
 
-            if (!string.IsNullOrEmpty(clientID)) query += "&client_id=" + HttpUtility.UrlEncode(clientID);
-            if (!string.IsNullOrEmpty(redirectUri)) query += "&redirect_uri=" + HttpUtility.UrlEncode(redirectUri);
-            if (!string.IsNullOrEmpty(scope)) query += "&scope=" + HttpUtility.UrlEncode(scope);
+            if (!string.IsNullOrEmpty(clientID)) query += $"&client_id={HttpUtility.UrlEncode(clientID)}";
+            if (!string.IsNullOrEmpty(redirectUri)) query += $"&redirect_uri={HttpUtility.UrlEncode(redirectUri)}";
+            if (!string.IsNullOrEmpty(scope)) query += $"&scope={HttpUtility.UrlEncode(scope)}";
 
-            query += "&state=" + HttpUtility.UrlEncode(context.Request.GetUrlRewriter().AbsoluteUri);
+            var u = HttpContextAccessor.HttpContext.Request.GetUrlRewriter();
+            var state = HttpUtility.UrlEncode(new UriBuilder(u.Scheme, u.Host, u.Port, $"thirdparty/{loginProvider.Name.ToLower()}/code").Uri.AbsoluteUri);
+            query += $"&state={state}";
 
             if (additionalArgs != null)
             {
@@ -66,7 +80,7 @@ namespace ASC.FederatedLogin.Helpers
                                                                                    + "=" + HttpUtility.UrlEncode((additionalArgs[additionalArg] ?? "").Trim())) : null);
             }
 
-            context.Response.Redirect(uriBuilder.Uri + "?" + query, true);
+            return uriBuilder.Uri + "?" + query;
         }
 
         public static OAuth20Token GetAccessToken<T>(ConsumerFactory consumerFactory, string authCode) where T : Consumer, IOAuthProvider, new()

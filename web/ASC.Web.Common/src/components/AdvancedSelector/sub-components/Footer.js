@@ -3,26 +3,34 @@ import PropTypes from "prop-types";
 import { Button } from "asc-web-components";
 import StyledFooter from "./StyledFooter";
 
-const Footer = props => {
+const Footer = (props) => {
   const {
     selectButtonLabel,
     isDisabled,
     onClick,
     isVisible,
-    className
+    className,
+    embeddedComponent,
+    selectedLength,
+    showCounter,
   } = props;
 
   return (
-    <StyledFooter isVisible={isVisible} className={className}>
+    <StyledFooter
+      withEmbeddedComponent={embeddedComponent}
+      isVisible={isVisible}
+      className={className}
+    >
       <Button
         className="add_members_btn"
         primary={true}
         size="big"
-        label={selectButtonLabel}
+        label={`${selectButtonLabel} ${(selectedLength && showCounter) ? `(${selectedLength})` : ""}`}
         scale={true}
         isDisabled={isDisabled}
         onClick={onClick}
       />
+      {embeddedComponent && embeddedComponent}
     </StyledFooter>
   );
 };
@@ -32,7 +40,9 @@ Footer.propTypes = {
   selectButtonLabel: PropTypes.string,
   isDisabled: PropTypes.bool,
   isVisible: PropTypes.bool,
-  onClick: PropTypes.func
+  onClick: PropTypes.func,
+  comboBoxOptions: PropTypes.any,
+  embeddedComponent: PropTypes.any,
 };
 
 export default Footer;

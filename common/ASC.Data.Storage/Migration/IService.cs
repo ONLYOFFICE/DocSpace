@@ -25,6 +25,7 @@
 
 
 using System.ServiceModel;
+
 using ASC.Data.Storage.Configuration;
 
 namespace ASC.Data.Storage.Migration

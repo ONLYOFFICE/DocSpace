@@ -12,12 +12,14 @@ const StyledHeader = styled(Heading)`
   line-height: unset;
 `;
 
-const InfoFieldContainer = React.memo(props => {
+const InfoFieldContainer = React.memo((props) => {
   const { headerText, children } = props;
 
   return (
     <Container>
-      <StyledHeader level={2} size='small'>{headerText}</StyledHeader>
+      <StyledHeader level={2} size="small">
+        {headerText}
+      </StyledHeader>
       {children}
     </Container>
   );

@@ -1,11 +1,11 @@
 {
   "InviteLinkTitle": "Пригласительная ссылка",
-"HelpAnswerLinkInviteSettings": "Поделитесь ссылкой, чтобы пригласить коллег на портал.",
-"InviteLinkValidInterval": "Эта ссылка действительна только в течение {{ count }} дней.",
-"CopyToClipboard": "Копировать ссылку",
-"CloseButton": "Закрыть",
-"LinkCopySuccess": "Ссылка скопирована в буфер обмена",
-"GetShortenLink": "Получить сокращенную ссылку",
-"InviteUsersAsCollaborators": "Добавить со статусом {{guestsCaption, lowercase}}",
-"LoadingProcessing": "Загрузка..."
+  "HelpAnswerLinkInviteSettings": "Поделитесь ссылкой, чтобы пригласить коллег на портал.",
+  "InviteLinkValidInterval": "Эта ссылка действительна только в течение {{ count }} дней.",
+  "CopyToClipboard": "Копировать ссылку",
+  "CloseButton": "Закрыть",
+  "LinkCopySuccess": "Ссылка скопирована",
+  "GetShortenLink": "Получить сокращенную ссылку",
+  "InviteUsersAsCollaborators": "Добавить со статусом {{guestsCaption, lowercase}}",
+  "LoadingProcessing": "Загрузка..."
 }

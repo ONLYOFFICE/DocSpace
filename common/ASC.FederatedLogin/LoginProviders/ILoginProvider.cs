@@ -25,7 +25,9 @@
 
 
 using System.Collections.Generic;
+
 using ASC.FederatedLogin.Profile;
+
 using Microsoft.AspNetCore.Http;
 
 namespace ASC.FederatedLogin.LoginProviders

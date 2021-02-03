@@ -27,10 +27,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 
 using ASC.Collections;
 using ASC.Common;
 using ASC.Core.Caching;
+using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
 
@@ -38,10 +40,11 @@ using Microsoft.AspNetCore.Http;
 
 namespace ASC.Core
 {
+    [Singletone]
     public class UserManagerConstants
     {
         public IDictionary<Guid, UserInfo> SystemUsers { get; }
-        public Constants Constants { get; }
+        internal Constants Constants { get; }
 
         public UserManagerConstants(Constants constants)
         {
@@ -53,6 +56,7 @@ namespace ASC.Core
         }
     }
 
+    [Scope]
     public class UserManager
     {
         private IDictionary<Guid, UserInfo> SystemUsers { get => UserManagerConstants.SystemUsers; }
@@ -62,10 +66,11 @@ namespace ASC.Core
         private TenantManager TenantManager { get; }
         private PermissionContext PermissionContext { get; }
         private UserManagerConstants UserManagerConstants { get; }
+        public CoreBaseSettings CoreBaseSettings { get; }
         private Constants Constants { get; }
 
         private Tenant tenant;
-        private Tenant Tenant { get { return tenant ?? (tenant = TenantManager.GetCurrentTenant()); } }
+        private Tenant Tenant { get { return tenant ??= TenantManager.GetCurrentTenant(); } }
 
         public UserManager()
         {
@@ -74,25 +79,37 @@ namespace ASC.Core
 
         public UserManager(
             IUserService service,
-            IHttpContextAccessor httpContextAccessor,
             TenantManager tenantManager,
             PermissionContext permissionContext,
-            UserManagerConstants userManagerConstants)
+            UserManagerConstants userManagerConstants,
+            CoreBaseSettings coreBaseSettings)
         {
             UserService = service;
-            Accessor = httpContextAccessor;
             TenantManager = tenantManager;
             PermissionContext = permissionContext;
             UserManagerConstants = userManagerConstants;
+            CoreBaseSettings = coreBaseSettings;
             Constants = UserManagerConstants.Constants;
+        }
+
+        public UserManager(
+            IUserService service,
+            TenantManager tenantManager,
+            PermissionContext permissionContext,
+            UserManagerConstants userManagerConstants,
+            CoreBaseSettings coreBaseSettings,
+            IHttpContextAccessor httpContextAccessor)
+            : this(service, tenantManager, permissionContext, userManagerConstants, coreBaseSettings)
+        {
+            Accessor = httpContextAccessor;
         }
 
 
         public void ClearCache()
         {
-            if (UserService is ICachedService)
+            if (UserService is ICachedService service)
             {
-                ((ICachedService)UserService).InvalidateCache();
+                service.InvalidateCache();
             }
         }
 
@@ -187,10 +204,16 @@ namespace ASC.Core
             var u = UserService.GetUser(Tenant.TenantId, id);
             return u != null && !u.Removed ? u : Constants.LostUser;
         }
-
-        public UserInfo GetUsers(int tenant, string login, string passwordHash)
+        public UserInfo GetUser(Guid id, Expression<Func<User, UserInfo>> exp)
         {
-            var u = UserService.GetUser(tenant, login, passwordHash);
+            if (IsSystemUser(id)) return SystemUsers[id];
+            var u = UserService.GetUser(Tenant.TenantId, id, exp);
+            return u != null && !u.Removed ? u : Constants.LostUser;
+        }
+
+        public UserInfo GetUsersByPasswordHash(int tenant, string login, string passwordHash)
+        {
+            var u = UserService.GetUserByPasswordHash(tenant, login, passwordHash);
             return u != null && !u.Removed ? u : Constants.LostUser;
         }
 
@@ -212,6 +235,13 @@ namespace ASC.Core
         public UserInfo GetUserByEmail(string email)
         {
             if (string.IsNullOrEmpty(email)) return Constants.LostUser;
+
+            if (CoreBaseSettings.Personal)
+            {
+                var u = UserService.GetUser(Tenant.TenantId, email);
+                return u != null && !u.Removed ? u : Constants.LostUser;
+            }
+
 
             return GetUsersInternal()
                 .FirstOrDefault(u => string.Compare(u.Email, email, StringComparison.CurrentCultureIgnoreCase) == 0) ?? Constants.LostUser;
@@ -252,7 +282,7 @@ namespace ASC.Core
             return findUsers.ToArray();
         }
 
-        public UserInfo SaveUserInfo(UserInfo u, bool isVisitor = false)
+        public UserInfo SaveUserInfo(UserInfo u)
         {
             if (IsSystemUser(u.ID)) return SystemUsers[u.ID];
             if (u.ID == Guid.Empty) PermissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
@@ -633,21 +663,6 @@ namespace ASC.Core
                 CategoryId = g.CategoryID,
                 Sid = g.Sid
             };
-        }
-    }
-
-    public static class UserManagerConfigExtension
-    {
-        public static DIHelper AddUserManagerService(this DIHelper services)
-        {
-            services.TryAddSingleton<UserManagerConstants>();
-            services.TryAddScoped<UserManager>();
-
-            return services
-                .AddUserService()
-                .AddTenantManagerService()
-                .AddConstantsService()
-                .AddPermissionContextService();
         }
     }
 }

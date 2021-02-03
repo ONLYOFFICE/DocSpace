@@ -1,7 +1,5 @@
 ﻿using ASC.Common;
 using ASC.Common.Logging;
-using ASC.Core.Common.EF;
-using ASC.Core.Common.EF.Context;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,10 +22,10 @@ namespace ASC.Resource.Manager
         {
             var diHelper = new DIHelper(services);
             services.AddLogging();
-            diHelper.TryAddScoped<ResourceData>();
-            diHelper.AddDbContextManagerService<ResourceDbContext>();
-            diHelper.AddLoggerService();
-            diHelper.TryAddSingleton(Configuration);
+            diHelper.Configure(services);
+            services.AddSingleton(Configuration);
+            diHelper.TryAdd<ProgramScope>();
+            LogNLogExtension.ConfigureLog(diHelper);
         }
     }
 }

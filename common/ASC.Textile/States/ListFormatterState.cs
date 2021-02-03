@@ -72,7 +72,7 @@ namespace Textile.States
             {
                 if (!m_firstItem)
                     Formatter.Output.WriteLine("</li>");
-                Formatter.Output.Write(string.Format("<li {0}>",FormattedStylesAndAlignment("li")));
+                Formatter.Output.Write(string.Format("<li {0}>", FormattedStylesAndAlignment("li")));
                 m_firstItemLine = false;
             }
             else
@@ -135,7 +135,7 @@ namespace Textile.States
 
         protected string FormattedStylesAndAlignment(string element)
         {
-            return Blocks.BlockAttributesParser.ParseBlockAttributes(m_alignInfo + m_attsInfo,element);
+            return Blocks.BlockAttributesParser.ParseBlockAttributes(m_alignInfo + m_attsInfo, element);
         }
     }
 }

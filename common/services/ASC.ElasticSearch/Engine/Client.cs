@@ -41,6 +41,7 @@ using Nest;
 
 namespace ASC.ElasticSearch
 {
+    [Scope]
     public class Client
     {
         private static volatile ElasticClient client;
@@ -49,12 +50,14 @@ namespace ASC.ElasticSearch
 
         public ILog Log { get; }
 
-        public CoreConfiguration CoreConfiguration { get; }
+        private CoreConfiguration CoreConfiguration { get; }
+        private Settings Settings { get; }
 
-        public Client(IOptionsMonitor<ILog> option, CoreConfiguration coreConfiguration)
+        public Client(IOptionsMonitor<ILog> option, CoreConfiguration coreConfiguration, Settings settings)
         {
             Log = option.Get("ASC.Indexer");
             CoreConfiguration = coreConfiguration;
+            Settings = settings;
         }
 
         public ElasticClient Instance
@@ -67,33 +70,31 @@ namespace ASC.ElasticSearch
                 {
                     if (client != null) return client;
 
-                    var launchSettings = CoreConfiguration.GetSection<Settings>(Tenant.DEFAULT_TENANT) ??
-                                         Settings.Default;
+                    var launchSettings = CoreConfiguration.GetSection<Settings>(Tenant.DEFAULT_TENANT) ?? Settings;
 
                     var uri = new Uri(string.Format("{0}://{1}:{2}", launchSettings.Scheme, launchSettings.Host, launchSettings.Port));
                     var settings = new ConnectionSettings(new SingleNodeConnectionPool(uri))
                         .RequestTimeout(TimeSpan.FromMinutes(5))
                         .MaximumRetries(10)
                         .ThrowExceptions();
-#if DEBUG
+
                     if (Log.IsTraceEnabled)
                     {
                         settings.DisableDirectStreaming().PrettyJson().EnableDebugMode(r =>
                         {
-                            Log.Trace(r.DebugInformation);
+                            //Log.Trace(r.DebugInformation);
 
-                            if (r.RequestBodyInBytes != null)
-                            {
-                                Log.TraceFormat("Request: {0}", Encoding.UTF8.GetString(r.RequestBodyInBytes));
-                            }
+                            //if (r.RequestBodyInBytes != null)
+                            //{
+                            //    Log.TraceFormat("Request: {0}", Encoding.UTF8.GetString(r.RequestBodyInBytes));
+                            //}
 
-                            if (r.ResponseBodyInBytes != null)
+                            if (r.HttpStatusCode != null && (r.HttpStatusCode == 403 || r.HttpStatusCode == 500) && r.ResponseBodyInBytes != null)
                             {
                                 Log.TraceFormat("Response: {0}", Encoding.UTF8.GetString(r.ResponseBodyInBytes));
                             }
                         });
                     }
-#endif
 
                     client = new ElasticClient(settings);
 
@@ -107,7 +108,7 @@ namespace ASC.ElasticSearch
 
                             if (result.IsValid)
                             {
-                                client.PutPipeline("attachments", p => p
+                                client.Ingest.PutPipeline("attachments", p => p
                                 .Processors(pp => pp
                                     .Attachment<Attachment>(a => a.Field("document.data").TargetField("document.attachment"))
                                 ));
@@ -124,16 +125,6 @@ namespace ASC.ElasticSearch
                     return client;
                 }
             }
-        }
-    }
-
-    public static class ClientExtention
-    {
-        public static DIHelper AddClientService(this DIHelper services)
-        {
-            services.TryAddScoped<Client>();
-            return services
-                .AddCoreConfigurationService();
         }
     }
 }

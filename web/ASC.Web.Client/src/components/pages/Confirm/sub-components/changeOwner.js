@@ -4,7 +4,8 @@ import { withTranslation } from "react-i18next";
 import { connect } from "react-redux";
 import styled from "styled-components";
 import { Button, Text, toastr } from "asc-web-components";
-import { PageLayout } from "asc-web-common";
+import { PageLayout, utils as commonUtils } from "asc-web-common";
+const { tryRedirectTo } = commonUtils;
 
 const BodyStyle = styled.div`
   margin-top: 70px;
@@ -58,11 +59,11 @@ class Form extends React.PureComponent {
   };
 
   onRedirect = () => {
-    this.props.history.push("/");
+    tryRedirectTo(this.props.defaultPage);
   };
 
   onCancelClick = () => {
-    this.props.history.push("/");
+    tryRedirectTo(this.props.defaultPage);
   };
 
   render() {
@@ -78,7 +79,7 @@ class Form extends React.PureComponent {
               alt="Logo"
             />
             <Text className="owner-title">{greetingTitle}</Text>
-            <Text className="owner-confirm_text" fontSize='18px'>
+            <Text className="owner-confirm_text" fontSize="18px">
               {t("ConfirmOwnerPortalTitle", { newOwner: "NEW OWNER" })}
             </Text>
             {this.state.showButtons ? (
@@ -102,7 +103,7 @@ class Form extends React.PureComponent {
                 />
               </>
             ) : (
-              <Text className="owner-confirm-message" fontSize='12px'>
+              <Text className="owner-confirm-message" fontSize="12px">
                 {t("ConfirmOwnerPortalSuccessMessage")}
               </Text>
             )}
@@ -117,12 +118,19 @@ Form.propTypes = {};
 
 Form.defaultProps = {};
 
-const ChangePasswordForm = props => (
-  <PageLayout sectionBodyContent={<Form {...props} />} />
+const ChangePasswordForm = (props) => (
+  <PageLayout>
+    <PageLayout.SectionBody>
+      <Form {...props} />
+    </PageLayout.SectionBody>
+  </PageLayout>
 );
 
 function mapStateToProps(state) {
-  return { greetingTitle: state.auth.settings.greetingSettings };
+  return {
+    greetingTitle: state.auth.settings.greetingSettings,
+    defaultPage: state.auth.settings.defaultPage,
+  };
 }
 
 export default connect(

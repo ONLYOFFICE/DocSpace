@@ -26,10 +26,13 @@
 
 using System;
 using System.Web;
+
 using ASC.Common.Utils;
 using ASC.Security.Cryptography;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Memory;
+
 using Newtonsoft.Json;
 
 namespace ASC.FederatedLogin.Profile

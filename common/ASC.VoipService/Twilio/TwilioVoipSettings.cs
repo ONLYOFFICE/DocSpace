@@ -27,9 +27,11 @@
 using System;
 using System.Text;
 using System.Web;
+
 using ASC.Core;
 using ASC.Core.Common;
 using ASC.Core.Tenants;
+
 using Uri = System.Uri;
 
 namespace ASC.VoipService.Twilio
@@ -37,18 +39,19 @@ namespace ASC.VoipService.Twilio
     public class TwilioVoipSettings : VoipSettings
     {
         public TwilioVoipSettings(
-            AuthContext authContext, 
-            TenantUtil tenantUtil, 
-            SecurityContext securityContext, 
-            BaseCommonLinkUtility baseCommonLinkUtility) : 
-            base(authContext, tenantUtil, securityContext, baseCommonLinkUtility) { }
-
-        public TwilioVoipSettings(
-            Uri voiceUrl, 
-            AuthContext authContext, 
+            AuthContext authContext,
             TenantUtil tenantUtil,
             SecurityContext securityContext,
-            BaseCommonLinkUtility baseCommonLinkUtility) : 
+            BaseCommonLinkUtility baseCommonLinkUtility) :
+            base(authContext, tenantUtil, securityContext, baseCommonLinkUtility)
+        { }
+
+        public TwilioVoipSettings(
+            Uri voiceUrl,
+            AuthContext authContext,
+            TenantUtil tenantUtil,
+            SecurityContext securityContext,
+            BaseCommonLinkUtility baseCommonLinkUtility) :
             this(authContext, tenantUtil, securityContext, baseCommonLinkUtility)
         {
             if (string.IsNullOrEmpty(voiceUrl.Query)) return;

@@ -13,6 +13,7 @@ import { EmptyScreenContainer } from "asc-web-components";
   imageSrc="empty_screen_filter.png"
   imageAlt="Empty Screen Filter image"
   headerText="No results matching your search could be found"
+  subheading="No files to be displayed in this section"
   descriptionText="No results matching your search could be found"
   buttons={<a href="/">Go to home</a>}
 />
@@ -26,6 +27,7 @@ import { EmptyScreenContainer } from "asc-web-components";
 | `className`       |    `string`    |    -     |   -    |    -    | Accepts class                           |
 | `descriptionText` |    `string`    |    -     |   -    |    -    | Description text                        |
 | `headerText`      |    `string`    |    -     |   -    |    -    | Header text                             |
+| `subheadingText`  |    `string`    |    -     |   -    |    -    | Subheading text                         |
 | `id`              |    `string`    |    -     |   -    |    -    | Accepts id                              |
 | `imageAlt`        |    `string`    |    -     |   -    |    -    | Alternative image text                  |
 | `imageSrc`        |    `string`    |    -     |   -    |    -    | Image url source                        |

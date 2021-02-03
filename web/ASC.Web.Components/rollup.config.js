@@ -4,10 +4,10 @@ import json from "rollup-plugin-json";
 import babel from "rollup-plugin-babel";
 import cleanup from "rollup-plugin-cleanup";
 import replace from "rollup-plugin-replace";
-import postcss from 'rollup-plugin-postcss';
-import copy from 'rollup-plugin-copy';
+import postcss from "rollup-plugin-postcss";
+import copy from "rollup-plugin-copy";
 import svgrPlugin from "@svgr/rollup";
-import generatePackageJson from 'rollup-plugin-generate-package-json'
+import generatePackageJson from "rollup-plugin-generate-package-json";
 import pkg from "./package.json";
 
 const getBabelPreset = require("./scripts/get-babel-preset");
@@ -25,12 +25,12 @@ const configureRollupPlugins = (options = {}) => [
       license: pkg.license,
       main: pkg.main,
       module: pkg.module,
-      peerDependencies: pkg.peerDependencies
+      peerDependencies: pkg.peerDependencies,
     },
-    outputFolder: '../../packages/asc-web-components'
+    outputFolder: "../../packages/asc-web-components",
   }),
   replace({
-    "process.env.NODE_ENV": JSON.stringify("production")
+    "process.env.NODE_ENV": JSON.stringify("production"),
   }),
   // To use the nodejs `resolve` algorithm
   resolve(),
@@ -42,12 +42,12 @@ const configureRollupPlugins = (options = {}) => [
     ...babelOptions,
     plugins: [
       ...babelOptions.plugins,
-      ...(options.babel && options.babel.plugins ? options.babel.plugins : [])
-    ]
+      ...(options.babel && options.babel.plugins ? options.babel.plugins : []),
+    ],
   }),
   // To convert CJS modules to ES6
   commonjs({
-    include: "node_modules/**"
+    include: "node_modules/**",
   }),
   // To convert JSON files to ES6
   json(),
@@ -61,16 +61,16 @@ const configureRollupPlugins = (options = {}) => [
       plugins: [
         { removeViewBox: false },
         // Keeps ID's of svgs so they can be targeted with CSS
-        { cleanupIDs: false }
-      ]
-    }
+        { cleanupIDs: false },
+      ],
+    },
   }),
   postcss({
-    extensions: ['.css'],
+    extensions: [".css"],
   }),
   // To remove comments, trim trailing spaces, compact empty lines,
   // and normalize line endings
-  cleanup()  
+  cleanup(),
 ];
 
 const deps = Object.keys(pkg.dependencies || {});
@@ -86,7 +86,7 @@ const config = [
     output: {
       file: pkg.module,
       format: "esm",
-      sourcemap: true
+      sourcemap: true,
     },
     plugins: configureRollupPlugins({
       babel: {
@@ -94,12 +94,12 @@ const config = [
           [
             "transform-rename-import",
             {
-              replacements: [{ original: "lodash", replacement: "lodash-es" }]
-            }
-          ]
-        ]
-      }
-    })
+              replacements: [{ original: "lodash", replacement: "lodash-es" }],
+            },
+          ],
+        ],
+      },
+    }),
   },
   {
     input: "src/index.js",
@@ -107,18 +107,19 @@ const config = [
     output: {
       file: pkg.main,
       format: "cjs",
-      sourcemap: true
+      sourcemap: true,
     },
     plugins: [
       ...configureRollupPlugins(),
       copy({
-      targets: [
-        { src: 'dist', dest: '../../packages/asc-web-components' },
-        { src: 'README.md', dest: '../../packages/asc-web-components' },
-      ],
-      verbose: true
-    })]
-  }
+        targets: [
+          { src: "dist", dest: "../../packages/asc-web-components" },
+          { src: "README.md", dest: "../../packages/asc-web-components" },
+        ],
+        verbose: true,
+      }),
+    ],
+  },
 ];
 
 export default config;

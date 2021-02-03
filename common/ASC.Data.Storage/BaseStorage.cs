@@ -30,10 +30,12 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Web;
+
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Data.Storage.Configuration;
 using ASC.Security.Cryptography;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 
@@ -47,15 +49,26 @@ namespace ASC.Data.Storage
             TenantManager tenantManager,
             PathUtils pathUtils,
             EmailValidationKeyProvider emailValidationKeyProvider,
-            IHttpContextAccessor httpContextAccessor,
             IOptionsMonitor<ILog> options)
         {
             TenantManager = tenantManager;
             PathUtils = pathUtils;
             EmailValidationKeyProvider = emailValidationKeyProvider;
-            HttpContextAccessor = httpContextAccessor;
             Options = options;
             Log = options.CurrentValue;
+        }
+
+        public BaseStorage(
+            TenantManager tenantManager,
+            PathUtils pathUtils,
+            EmailValidationKeyProvider emailValidationKeyProvider,
+            IHttpContextAccessor httpContextAccessor,
+            IOptionsMonitor<ILog> options) : this(tenantManager,
+            pathUtils,
+            emailValidationKeyProvider,
+            options)
+        {
+            HttpContextAccessor = httpContextAccessor;
         }
 
         #region IDataStore Members
@@ -214,11 +227,11 @@ namespace ASC.Data.Storage
 
         public virtual bool IsSupportChunking { get { return false; } }
 
-        public TenantManager TenantManager { get; }
-        public PathUtils PathUtils { get; }
-        public EmailValidationKeyProvider EmailValidationKeyProvider { get; }
-        public IHttpContextAccessor HttpContextAccessor { get; }
-        public IOptionsMonitor<ILog> Options { get; }
+        protected TenantManager TenantManager { get; }
+        protected PathUtils PathUtils { get; }
+        protected EmailValidationKeyProvider EmailValidationKeyProvider { get; }
+        protected IHttpContextAccessor HttpContextAccessor { get; }
+        protected IOptionsMonitor<ILog> Options { get; }
 
         #endregion
 

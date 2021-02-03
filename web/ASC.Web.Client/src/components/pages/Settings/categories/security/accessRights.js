@@ -1,6 +1,7 @@
-import React, { Component } from "react";
+import React, { Component, useEffect } from "react";
 import { withRouter } from "react-router";
-import i18n from "../../i18n";
+import { connect } from "react-redux";
+//import i18n from "../../i18n";
 import { I18nextProvider, withTranslation } from "react-i18next";
 import styled from "styled-components";
 import { TabContainer } from "asc-web-components";
@@ -9,6 +10,13 @@ import { utils } from "asc-web-common";
 import OwnerSettings from "./sub-components/owner";
 import AdminsSettings from "./sub-components/admins";
 // import ModulesSettings from "./sub-components/modules";
+
+import { createI18N } from "../../../../../helpers/i18n";
+import { setDocumentTitle } from "../../../../../helpers/utils";
+const i18n = createI18N({
+  page: "Settings",
+  localesPath: "pages/Settings",
+});
 
 const { changeLanguage } = utils;
 
@@ -26,9 +34,9 @@ class PureAccessRights extends Component {
   constructor(props) {
     super(props);
 
-    document.title = `${props.t(
-      "ManagementCategorySecurity"
-    )} – ${props.t("OrganizationName")}`;
+    const { t, organizationName } = props;
+
+    setDocumentTitle(t("ManagementCategorySecurity"));
 
     const url = props.history.location.pathname;
     const newUrl = url.split("/");
@@ -43,11 +51,11 @@ class PureAccessRights extends Component {
     // }
 
     this.state = {
-      selectedTab
+      selectedTab,
     };
   }
 
-  onSelectPage = page => {
+  onSelectPage = (page) => {
     const { history } = this.props;
 
     switch (page.key) {
@@ -93,13 +101,13 @@ class PureAccessRights extends Component {
             {
               key: "0",
               title: t("OwnerSettings"),
-              content: <OwnerSettings />
+              content: <OwnerSettings />,
             },
             {
               key: "1",
               title: t("AdminsSettings"),
-              content: <AdminsSettings />
-            }
+              content: <AdminsSettings />,
+            },
             // {
             //   key: "2",
             //   title: "Portals settings",
@@ -112,10 +120,21 @@ class PureAccessRights extends Component {
   }
 }
 
-const AccessRightsContainer = withTranslation()(PureAccessRights);
+function mapStateToProps(state) {
+  const { organizationName } = state.auth.settings;
+  return {
+    organizationName,
+  };
+}
 
-const AccessRights = props => {
-  changeLanguage(i18n);
+const AccessRightsContainer = connect(mapStateToProps)(
+  withTranslation()(PureAccessRights)
+);
+
+const AccessRights = (props) => {
+  useEffect(() => {
+    changeLanguage(i18n);
+  }, []);
 
   return (
     <I18nextProvider i18n={i18n}>

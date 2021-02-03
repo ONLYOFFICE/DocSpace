@@ -26,12 +26,10 @@
 
 using System;
 using System.Collections.Generic;
-using ASC.Core.Security.Authorizing;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Common.Security.Authorizing
 {
+    [Scope]
     public class AzManager
     {
         private readonly IPermissionProvider permissionProvider;
@@ -146,17 +144,5 @@ namespace ASC.Common.Security.Authorizing
         }
 
         #endregion
-    }
-
-    public static class AzManagerConfigExtension
-    {
-        public static DIHelper AddAzManagerService(this DIHelper services)
-        {
-            services.TryAddScoped<AzManager>();
-
-            return services
-                .AddPermissionProviderService()
-                .AddRoleProviderService();
-        }
     }
 }

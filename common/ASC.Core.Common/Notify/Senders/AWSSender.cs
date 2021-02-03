@@ -46,7 +46,8 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Notify.Senders
 {
-    class AWSSender : SmtpSender
+    [Singletone(Additional = typeof(AWSSenderExtension))]
+    public class AWSSender : SmtpSender
     {
         private readonly object locker = new object();
         private AmazonSimpleEmailServiceClient ses;
@@ -71,7 +72,6 @@ namespace ASC.Core.Notify.Senders
             lastRefresh = DateTime.UtcNow - refreshTimeout; //set to refresh on first send
         }
 
-
         public override NoticeSendResult Send(NotifyMessage m)
         {
             NoticeSendResult result;
@@ -81,15 +81,15 @@ namespace ASC.Core.Notify.Senders
                 {
                     Log.DebugFormat("Tenant: {0}, To: {1}", m.Tenant, m.To);
                     using var scope = ServiceProvider.CreateScope();
-                    var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+                    var scopeClass = scope.ServiceProvider.GetService<AWSSenderScope>();
+                    var (tenantManager, configuration) = scopeClass;
                     tenantManager.SetCurrentTenant(m.Tenant);
-                    var configuration = scope.ServiceProvider.GetService<CoreConfiguration>();
 
                     if (!configuration.SmtpSettings.IsDefaultSettings)
                     {
-                        _useCoreSettings = true;
+                        UseCoreSettings = true;
                         result = base.Send(m);
-                        _useCoreSettings = false;
+                        UseCoreSettings = false;
                     }
                     else
                     {
@@ -231,14 +231,29 @@ namespace ASC.Core.Notify.Senders
         }
     }
 
-    public static class AWSSenderExtension
+    [Scope]
+    public class AWSSenderScope
     {
-        public static DIHelper AddAWSSenderService(this DIHelper services)
+        private TenantManager TenantManager { get; }
+        private CoreConfiguration CoreConfiguration { get; }
+
+        public AWSSenderScope(TenantManager tenantManager, CoreConfiguration coreConfiguration)
         {
-            services.TryAddSingleton<AWSSender>();
-            return services
-                .AddTenantManagerService()
-                .AddCoreSettingsService();
+            TenantManager = tenantManager;
+            CoreConfiguration = coreConfiguration;
+        }
+
+        public void Deconstruct(out TenantManager tenantManager, out CoreConfiguration coreConfiguration)
+        {
+            (tenantManager, coreConfiguration) = (TenantManager, CoreConfiguration);
+        }
+    }
+
+    public class AWSSenderExtension
+    {
+        public static void Register(DIHelper services)
+        {
+            services.TryAdd<AWSSenderScope>();
         }
     }
 }

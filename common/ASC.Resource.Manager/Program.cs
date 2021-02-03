@@ -7,11 +7,11 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
+using ASC.Common;
 using ASC.Common.Utils;
 
 using CommandLine;
 
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Resource.Manager
@@ -28,9 +28,10 @@ namespace ASC.Resource.Manager
             var services = new ServiceCollection();
             var startup = new Startup();
             startup.ConfigureServices(services);
+
             var serviceProvider = services.BuildServiceProvider();
             using var scope = serviceProvider.CreateScope();
-            var ResourceData = scope.ServiceProvider.GetService<ResourceData>();
+            var scopeClass = scope.ServiceProvider.GetService<ProgramScope>();
 
             var cultures = new List<string>();
             var projects = new List<ResFile>();
@@ -41,10 +42,11 @@ namespace ASC.Resource.Manager
             {
                 var (project, module, filePath, exportPath, culture, format, key) = options;
 
-                //project = "WebStudio";
-                //module = "Notify";
-                //filePath = "WebstudioNotifyPatternResource.resx";
-                //exportPath = @"C:\Git\portals_core\web\ASC.Web.Core\PublicResources";
+                project = "WebStudio";
+                module = "WebStudio";
+                filePath = "Resource.resx";
+                exportPath = @"C:\Git\portals_core\web\ASC.Web.Core\PublicResources";
+                key = "LicenseUploadedOverdueSupport";
 
                 if (format == "json")
                 {
@@ -71,10 +73,10 @@ namespace ASC.Resource.Manager
                     return;
                 }
 
-                enabledSettings = serviceProvider.GetService<IConfiguration>().GetSetting<EnabledSettings>("enabled");
-                cultures = ResourceData.GetCultures().Where(r => r.Available).Select(r => r.Title).Intersect(enabledSettings.Langs).ToList();
-                projects = ResourceData.GetAllFiles();
-                //key = CheckExist("WebstudioNotifyPatternResource", "ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core");
+                enabledSettings = scopeClass.Configuration.GetSetting<EnabledSettings>("enabled");
+                cultures = scopeClass.ResourceData.GetCultures().Where(r => r.Available).Select(r => r.Title).Intersect(enabledSettings.Langs).ToList();
+                projects = scopeClass.ResourceData.GetAllFiles();
+                //key = CheckExist("FilesJSResource", "ASC.Files.Resources.FilesJSResource,ASC.Files");
 
                 ExportWithProject(project, module, filePath, culture, exportPath, key);
 
@@ -187,6 +189,19 @@ namespace ASC.Resource.Manager
             _ = Parallel.ForEach(xmlFiles, localInit, func(@$"\|(\w*)\|{fullClassName.Replace(".", "\\.")}"), localFinally);
 
             return string.Join(',', bag.ToArray());
+        }
+    }
+
+    [Scope]
+    public class ProgramScope
+    {
+        internal ResourceData ResourceData { get; }
+        internal ConfigurationExtension Configuration { get; }
+
+        public ProgramScope(ResourceData resourceData, ConfigurationExtension configuration)
+        {
+            ResourceData = resourceData;
+            Configuration = configuration;
         }
     }
 }

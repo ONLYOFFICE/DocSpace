@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace AppLimit.CloudComputing.SharpBox.StorageProvider.API
+﻿namespace AppLimit.CloudComputing.SharpBox.StorageProvider.API
 {
     internal class GenericHelper
     {

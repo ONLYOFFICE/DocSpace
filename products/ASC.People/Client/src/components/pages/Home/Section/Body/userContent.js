@@ -1,129 +1,147 @@
 import React, { useCallback } from "react";
 import { withRouter } from "react-router";
-import { RowContent, Link, LinkWithDropdown, Icons, Text } from "asc-web-components";
+import {
+  RowContent,
+  Link,
+  LinkWithDropdown,
+  Icons,
+  Text,
+  Box,
+} from "asc-web-components";
 import { connect } from "react-redux";
-import { getUserStatus } from "../../../../../store/people/selectors";
 
-const getFormatedGroups = (user, status, selectGroup) => {
+const getFormattedGroups = (user, selectGroup) => {
   let temp = [];
   const groups = user.groups;
-  const linkColor = "#333";
+  const linkColor = user.statusType === "pending" ? "#D0D5DA" : "#A3A9AE";
 
-  if (!groups) temp.push({ key: 0, label: '' });
+  if (!groups) temp.push({ key: 0, label: "" });
 
-  groups && groups.map(group =>
-    temp.push(
-      {
+  groups &&
+    groups.map((group) =>
+      temp.push({
         key: group.id,
         label: group.name,
-        onClick: () => selectGroup(group.id)
-      }
-    )
-  );
+        onClick: () => selectGroup(group.id),
+      })
+    );
 
   if (temp.length <= 1) {
     return (
       <Link
         isTextOverflow={true}
-        containerWidth='25%'
-        type='action'
+        containerMinWidth="120px"
+        containerWidth="15%"
+        type="action"
         title={temp[0].label}
-        fontSize='12px'
+        fontSize="12px"
         fontWeight={400}
         color={linkColor}
         onClick={temp[0].onClick}
       >
         {temp[0].label}
-      </Link>);
+      </Link>
+    );
   } else {
     return (
       <LinkWithDropdown
         isTextOverflow={true}
-        containerWidth='25%'
+        containerMinWidth="120px"
+        containerWidth="15%"
         title={temp[0].label}
-        fontSize='12px'
+        fontSize="12px"
         fontWeight={400}
         color={linkColor}
         data={temp}
       >
         {temp[0].label}
-      </LinkWithDropdown>);
+      </LinkWithDropdown>
+    );
   }
 };
 
-const UserContent = ({ user, history, settings, selectGroup }) => {
-  const { userName, displayName, title, mobilePhone, email } = user;
-  const status = getUserStatus(user);
-  const groups = getFormatedGroups(user, status, selectGroup);
+const UserContent = ({
+  user,
+  history,
+  settings,
+  selectGroup,
+  widthProp,
+  isMobile,
+  sectionWidth,
+}) => {
+  const { userName, displayName, title, mobilePhone, email, statusType } = user;
+  const groups = getFormattedGroups(user, selectGroup);
 
   const onUserNameClick = useCallback(
     (e) => {
       e.preventDefault();
-      history.push(`${settings.homepage}/view/${userName}`)
+      history.push(`${settings.homepage}/view/${userName}`);
     },
     [history, settings.homepage, userName]
   );
 
-  const onPhoneClick = useCallback(
-    () => window.open(`sms:${mobilePhone}`),
-    [mobilePhone]
-  );
+  const onPhoneClick = useCallback(() => window.open(`sms:${mobilePhone}`), [
+    mobilePhone,
+  ]);
 
-  const onEmailClick = useCallback(
-    () => window.open(`mailto:${email}`),
-    [email]
-  );
+  const onEmailClick = useCallback(() => window.open(`mailto:${email}`), [
+    email,
+  ]);
 
-  const nameColor = "#333";
-  const sideInfoColor = "#333";
-
-  const headDepartmentStyle = {
-    maxWidth: '1fr'
-  }
+  const nameColor = statusType === "pending" ? "#A3A9AE" : "#333333";
+  const sideInfoColor = statusType === "pending" ? "#D0D5DA" : "#A3A9AE";
 
   return (
     <RowContent
+      widthProp={widthProp}
+      isMobile={isMobile}
       sideColor={sideInfoColor}
+      sectionWidth={sectionWidth}
     >
       <Link
-        containerWidth='28%'
-        type='page'
+        containerWidth="28%"
+        type="page"
         href={`/products/people/view/${userName}`}
         title={displayName}
-        fontWeight="bold"
+        fontWeight={600}
         onClick={onUserNameClick}
-        fontSize='15px'
+        fontSize="15px"
         color={nameColor}
         isTextOverflow={true}
       >
         {displayName}
       </Link>
       <>
-        {status === 'pending' && <Icons.SendClockIcon size='small' isfill={true} color='#3B72A7' />}
-        {status === 'disabled' && <Icons.CatalogSpamIcon size='small' isfill={true} color='#3B72A7' />}
+        {statusType === "pending" && (
+          <Icons.SendClockIcon size="small" isfill={true} color="#3B72A7" />
+        )}
+        {statusType === "disabled" && (
+          <Icons.CatalogSpamIcon size="small" isfill={true} color="#3B72A7" />
+        )}
       </>
-      {title
-        ?
+      {title ? (
         <Text
-          containerWidth='30%'
-          style={headDepartmentStyle}
+          containerMinWidth="120px"
+          containerWidth="20%"
           as="div"
           color={sideInfoColor}
-          fontSize='12px'
+          fontSize="12px"
           fontWeight={600}
           title={title}
           truncate={true}
         >
           {title}
         </Text>
-        : <div containerWidth='30%' style={headDepartmentStyle}></div>
-      }
+      ) : (
+        <Box containerMinWidth="120px" containerWidth="20%"></Box>
+      )}
       {groups}
       <Link
-        containerWidth='5%'
-        type='page'
+        containerMinWidth="60px"
+        containerWidth="15%"
+        type="page"
         title={mobilePhone}
-        fontSize='12px'
+        fontSize="12px"
         fontWeight={400}
         color={sideInfoColor}
         onClick={onPhoneClick}
@@ -132,10 +150,11 @@ const UserContent = ({ user, history, settings, selectGroup }) => {
         {mobilePhone}
       </Link>
       <Link
-        containerWidth='15%'
-        type='page'
+        containerMinWidth="140px"
+        containerWidth="17%"
+        type="page"
         title={email}
-        fontSize='12px'
+        fontSize="12px"
         fontWeight={400}
         color={sideInfoColor}
         onClick={onEmailClick}
@@ -149,7 +168,7 @@ const UserContent = ({ user, history, settings, selectGroup }) => {
 
 function mapStateToProps(state) {
   return {
-    settings: state.auth.settings
+    settings: state.auth.settings,
   };
 }
 

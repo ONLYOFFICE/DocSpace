@@ -1,10 +1,7 @@
 /* eslint-disable react/prop-types */
 import React from "react";
 import { storiesOf } from "@storybook/react";
-import {
-  withKnobs,
-  boolean
-} from "@storybook/addon-knobs/react";
+import { withKnobs, boolean } from "@storybook/addon-knobs/react";
 import Section from "../../../.storybook/decorators/section";
 
 import PeopleSelector from ".";
@@ -21,33 +18,37 @@ class PeopleSelectorExample extends React.Component {
     this.buttonRef = React.createRef();
 
     this.state = {
-      isOpen: false
-    }
+      isOpen: false,
+    };
   }
 
   toggle = () => {
     this.setState({
-      isOpen: !this.state.isOpen
-    })
-  }
+      isOpen: !this.state.isOpen,
+    });
+  };
 
   onCancel = (e) => {
-    if (this.buttonRef.current.contains(e.target)) { 
+    if (this.buttonRef.current.contains(e.target)) {
       console.log("onCancel skipped");
       return;
     }
 
     console.log("onCancel");
     this.toggle();
-  }
+  };
 
   render() {
     return (
       <div style={{ position: "relative" }}>
-        <Button label="Toggle dropdown" onClick={this.toggle} ref={this.buttonRef} />
-        <PeopleSelector 
-          isOpen={this.state.isOpen} 
-          useFake={true} 
+        <Button
+          label="Toggle dropdown"
+          onClick={this.toggle}
+          ref={this.buttonRef}
+        />
+        <PeopleSelector
+          isOpen={this.state.isOpen}
+          useFake={true}
           isMultiSelect={boolean("isMultiSelect", true)}
           onSelect={(data) => {
             console.log("onSelect", data);
@@ -60,11 +61,10 @@ class PeopleSelectorExample extends React.Component {
             displayName: "Boris Johnson",
             avatar: "",
             title: "Prime Minister of the United Kingdom",
-            email: "boris.johnson@example.com"
+            email: "boris.johnson@example.com",
           }}
           defaultOptionLabel={text("defaultOptionLabel", "Me")}
         />
-        
       </div>
     );
   }

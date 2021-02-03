@@ -1,9 +1,10 @@
+/* eslint-disable no-useless-escape, no-control-regex */
 import emailAddresses from "email-addresses";
 import punycode from "punycode";
 import { parseErrorTypes, errorKeys } from "./../constants";
-import { EmailSettings } from './emailSettings';
+import { EmailSettings } from "./emailSettings";
 
-const getParts = string => {
+const getParts = (string) => {
   let mass = [];
   let e = string.replace(/[\s,;]*$/, ",");
   for (let t, i = false, o = 0, a = 0, s = e.length; s > a; a += 1) {
@@ -26,24 +27,21 @@ const getParts = string => {
   return mass;
 };
 
-const str2Obj = str => {
+const str2Obj = (str) => {
   let t = /^"(.*)"\s*<([^>]+)>$/,
     n = /^(.*)<([^>]+)>$/,
     i = str.match(t) || str.match(n);
   return i
     ? {
-      name: i[1]
-        .replace(/\\"/g, '"')
-        .replace(/\\\\/g, "\\")
-        .trim(),
-      email: i[2].trim()
-    }
+        name: i[1].replace(/\\"/g, '"').replace(/\\\\/g, "\\").trim(),
+        email: i[2].trim(),
+      }
     : {
-      email: str
-    };
+        email: str,
+      };
 };
 
-const obj2str = object => {
+const obj2str = (object) => {
   let t = undefined;
   if (object.email) {
     t = object.email;
@@ -58,30 +56,40 @@ const obj2str = object => {
   return t;
 };
 
-const normalizeString = str => {
+const normalizeString = (str) => {
   return obj2str(str2Obj(str));
 };
 
 const checkErrors = (parsedAddress, options) => {
   const errors = [];
 
-  if (!options.allowLocalDomainName &&
-    (parsedAddress.domain.indexOf(".") === -1)) {
+  if (
+    !options.allowLocalDomainName &&
+    parsedAddress.domain.indexOf(".") === -1
+  ) {
     errors.push({
       message: "Local domains are not supported",
       type: parseErrorTypes.IncorrectEmail,
       errorItem: parsedAddress,
-      errorKey: errorKeys.LocalDomain
+      errorKey: errorKeys.LocalDomain,
     });
   }
 
-  if (!(options.allowDomainIp || options.allowDomainPunycode || options.allowLocalDomainName)
-    && !/(^((?!-)[a-zA-Z0-9-]{1,63}\.)+[a-zA-Z]{2,63}\.?$)/.test(parsedAddress.domain)) {
+  if (
+    !(
+      options.allowDomainIp ||
+      options.allowDomainPunycode ||
+      options.allowLocalDomainName
+    ) &&
+    !/(^((?!-)[a-zA-Z0-9-]{1,63}\.)+[a-zA-Z]{2,63}\.?$)/.test(
+      parsedAddress.domain
+    )
+  ) {
     errors.push({
       message: "Incorrect domain",
       type: parseErrorTypes.IncorrectEmail,
       errorItem: parsedAddress,
-      errorKey: errorKeys.IncorrectDomain
+      errorKey: errorKeys.IncorrectDomain,
     });
   }
 
@@ -94,25 +102,32 @@ const checkErrors = (parsedAddress, options) => {
       message: "Domains as ip address are not supported",
       type: parseErrorTypes.IncorrectEmail,
       errorItem: parsedAddress,
-      errorKey: errorKeys.DomainIpAddress
+      errorKey: errorKeys.DomainIpAddress,
     });
   }
 
-  if (!options.allowDomainPunycode && !/^[\x00-\x7F]+$/.test(punycode.toUnicode(parsedAddress.domain))) {
+  if (
+    !options.allowDomainPunycode &&
+    !/^[\x00-\x7F]+$/.test(punycode.toUnicode(parsedAddress.domain))
+  ) {
     errors.push({
       message: "Punycode domains are not supported",
       type: parseErrorTypes.IncorrectEmail,
       errorItem: parsedAddress,
-      errorKey: errorKeys.PunycodeDomain
+      errorKey: errorKeys.PunycodeDomain,
     });
   }
 
-  if (!options.allowLocalPartPunycode && parsedAddress.local.length > 0 && !/^[\x00-\x7F]+$/.test(punycode.toUnicode(parsedAddress.local))) {
+  if (
+    !options.allowLocalPartPunycode &&
+    parsedAddress.local.length > 0 &&
+    !/^[\x00-\x7F]+$/.test(punycode.toUnicode(parsedAddress.local))
+  ) {
     errors.push({
       message: "Punycode local part are not supported",
       type: parseErrorTypes.IncorrectEmail,
       errorItem: parsedAddress,
-      errorKey: errorKeys.PunycodeLocalPart
+      errorKey: errorKeys.PunycodeLocalPart,
     });
   }
 
@@ -125,7 +140,7 @@ const checkErrors = (parsedAddress, options) => {
       message: "Incorrect localpart",
       type: parseErrorTypes.IncorrectEmail,
       errorItem: parsedAddress,
-      errorKey: errorKeys.IncorrectLocalPart
+      errorKey: errorKeys.IncorrectLocalPart,
     });
   }
 
@@ -138,16 +153,17 @@ const checkErrors = (parsedAddress, options) => {
       message: "Incorrect, localpart contains spaces",
       type: parseErrorTypes.IncorrectEmail,
       errorItem: parsedAddress,
-      errorKey: errorKeys.SpacesInLocalPart
+      errorKey: errorKeys.SpacesInLocalPart,
     });
   }
 
   if (parsedAddress.local.length > 64) {
     errors.push({
-      message: "The maximum total length of a user name or other local-part is 64 characters. See RFC2821",
+      message:
+        "The maximum total length of a user name or other local-part is 64 characters. See RFC2821",
       type: parseErrorTypes.IncorrectEmail,
       errorItem: parsedAddress,
-      errorKey: errorKeys.MaxLengthExceeded
+      errorKey: errorKeys.MaxLengthExceeded,
     });
   }
 
@@ -160,7 +176,8 @@ const checkErrors = (parsedAddress, options) => {
  * @return {Array} result with array of Email objects
  */
 export const parseAddresses = (str, options = new EmailSettings()) => {
-  if (!(options instanceof EmailSettings)) throw new TypeError("Invalid options");
+  if (!(options instanceof EmailSettings))
+    throw new TypeError("Invalid options");
 
   const parts = getParts(str);
   const resultEmails = [];
@@ -177,10 +194,10 @@ export const parseAddresses = (str, options = new EmailSettings()) => {
       errors.push({
         message: "Incorrect email",
         type: parseErrorTypes.IncorrectEmail,
-        errorKey: errorKeys.IncorrectEmail
+        errorKey: errorKeys.IncorrectEmail,
       });
     } else {
-      const checkOptionErrors = checkErrors(parsedAddress, options)
+      const checkOptionErrors = checkErrors(parsedAddress, options);
       checkOptionErrors.length && errors.push(...checkOptionErrors);
     }
 
@@ -204,13 +221,21 @@ export const parseAddress = (str, options = new EmailSettings()) => {
 
   if (!parsedEmails.length) {
     return new Email("", str, [
-      { message: "No one email parsed", type: parseErrorTypes.EmptyRecipients, errorKey: errorKeys.EmptyEmail }
+      {
+        message: "No one email parsed",
+        type: parseErrorTypes.EmptyRecipients,
+        errorKey: errorKeys.EmptyEmail,
+      },
     ]);
   }
 
   if (parsedEmails.length > 1) {
     return new Email("", str, [
-      { message: "Too many email parsed", type: parseErrorTypes.IncorrectEmail, errorKey: errorKeys.ManyEmails }
+      {
+        message: "Too many email parsed",
+        type: parseErrorTypes.IncorrectEmail,
+        errorKey: errorKeys.ManyEmails,
+      },
     ]);
   }
 
@@ -224,7 +249,7 @@ export const parseAddress = (str, options = new EmailSettings()) => {
  * @param {String} domain
  * @return {Bool} result
  */
-export const isValidDomainName = domain => {
+export const isValidDomainName = (domain) => {
   let parsed = emailAddresses.parseOneAddress("test@" + domain);
   if (!parsed) return false;
   return parsed && parsed.domain === domain && domain.indexOf(".") !== -1;
@@ -237,10 +262,9 @@ export const isValidDomainName = domain => {
  * @return {Bool} result
  */
 export const isEqualEmail = (email1, email2) => {
-
   const emailSettings = new EmailSettings();
   emailSettings.disableAllSettings();
-  
+
   const parsed1 = parseAddress(email1, emailSettings);
   const parsed2 = parseAddress(email2, emailSettings);
 

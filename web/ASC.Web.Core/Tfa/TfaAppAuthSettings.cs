@@ -25,13 +25,13 @@
 
 
 using System;
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
+
 using ASC.Core.Common.Settings;
 
 namespace ASC.Web.Studio.Core.TFA
 {
     [Serializable]
-    [DataContract]
     public class TfaAppAuthSettings : ISettings
     {
         public Guid ID
@@ -44,7 +44,7 @@ namespace ASC.Web.Studio.Core.TFA
             return new TfaAppAuthSettings { EnableSetting = false, };
         }
 
-        [DataMember(Name = "Enable")]
+        [JsonPropertyName("Enable")]
         public bool EnableSetting { get; set; }
 
 

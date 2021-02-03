@@ -3,7 +3,7 @@
   "CancelButton": "Cancel",
   "SendInviteAgain": "Send invitation once again",
   "SuccessSendInvitation": "The invitation was successfully sent",
-  
+
   "ShowUsersList": "View users list",
   "SendInviteAgainDialog": "The invitation to the portal will be sent once again to the selected users with the 'Pending' status who are not disabled.",
   "SendInviteAgainDialogMessage": "After the users confirm the invitation to the portal their status will change to 'Active'"

@@ -150,9 +150,9 @@ namespace ASC.FederatedLogin.LoginProviders
         public string ClientSecret { get { return ""; } }
         public bool IsEnabled { get { return ConsumerFactory.Get<GoogleLoginProvider>().IsEnabled; } }
 
-        public Signature Signature { get; }
-        public InstanceCrypto InstanceCrypto { get; }
-        public ConsumerFactory ConsumerFactory { get; }
+        private Signature Signature { get; }
+        private InstanceCrypto InstanceCrypto { get; }
+        private ConsumerFactory ConsumerFactory { get; }
 
         internal LoginProfile ProfileFromOpenId(ClaimsResponse spprofile, FetchResponse fetchprofile, string claimedId, string realmUrlString)
         {

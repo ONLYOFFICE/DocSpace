@@ -26,6 +26,7 @@
 
 using System.Collections.Generic;
 using System.ServiceModel;
+
 using ASC.Core.Common.Notify.Jabber;
 
 namespace ASC.Core.Notify.Jabber
@@ -33,6 +34,9 @@ namespace ASC.Core.Notify.Jabber
     [ServiceContract]
     public interface IJabberService
     {
+        [OperationContract] 
+        string GetVersion();
+
         [OperationContract]
         byte AddXmppConnection(string connectionId, string userName, byte state, int tenantId);
 

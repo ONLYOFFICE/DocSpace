@@ -1,74 +1,40 @@
 {
   "Article": {
-    "Resource":[
-      "People",
-      "Actions",
-      "InviteLinkTitle"
-    ],
-    "PeopleResource": [
-      "ImportPeople"
-    ]
+    "Resource": ["People", "Actions", "InviteLinkTitle"],
+    "PeopleResource": ["ImportPeople"]
   },
   "dialogs": {
-    "InviteDialog": {
+    "DeleteDialog": {
+      "Resource": ["OKButton", "CancelButton", "ConfirmationTitle"],
+      "ResourceJS": ["LinkCopySuccess"],
+      "UserControlsCommonResource": ["QuestionDeleteFile"],
+      "FeedResource": ["FilesModule", "FoldersModule"]
+    },
+    "EmptyTrashDialog": {
+      "Resource": ["OKButton", "CancelButton", "ConfirmationTitle"]
+    }
+  },
+  "panels": {
+    "SharingPanel": {
       "Resource": [
-        "HelpAnswerLinkInviteSettings",
-        "CopyToClipboard",
-        "CloseButton",
-        "GetShortenLink",
-        "LoadingProcessing",
-        "InviteUsersAsCollaborators",
-        "InviteLinkTitle"
+        "Owner",
+        "SharingSettingsTitle",
+        "AddGroupsForSharingButton",
+        "AccessRightsFullAccess"
       ],
-    "ResourceJS": [
-      "LinkCopySuccess"
-    ]
+      "UserControlsCommonResource": ["LinkText", "AddShareMessage"],
+      "ResourceJS": ["AddButton"]
+    },
+    "AddUsersPanel": {
+      "UserControlsCommonResource": ["LinkText"]
+    },
+    "AddGroupsPanel": {
+      "Resource": ["AddGroupsForSharingButton"]
+    },
+    "EmbeddingPanel": {
+      "UserControlsCommonResource": ["Size"]
+    }
   },
-  "ChangeEmailDialog":{
-    "Resource": [
-      "EmailChangeTitle",
-      "EnterEmail",
-      "EmailActivationDescription",
-      "SendButton"
-    ]
-  },
-  "DeleteSelfProfileDialog":{
-    "Resource": [
-      "DeleteProfileTitle",
-      "DeleteProfileInfo",
-      "CloseButton",
-      "SendButton"
-    ]
-  },
-  "ChangePhoneDialog":{
-    "Resource": [
-      "SendButton",
-      "MobilePhoneChangeTitle",
-      "MobilePhoneEraseDescription"
-    ]
-  },
-  "DeleteProfileEverDialog":{
-    "Resource": [
-      "Confirmation",
-      "DeleteUserConfirmation",
-      "Warning",
-      "DeleteUserDataConfirmation"      
-    ],
-    "PeopleResource": [
-      "SuccessfullyDeleteUserInfoMessage"
-    ],
-    "UserControlsCommonResource":[
-      "NotBeUndone"
-    ]
-  },
-  "ChangePasswordDialog":{
-    "Resource": [
-      "PasswordChangeTitle",
-      "MessageSendPasswordChangeInstructionsOnEmail",
-      "SendButton"
-    ]
-  }
-},
   "pages": {
     "Profile": {
       "Resource": [
@@ -103,12 +69,8 @@
         "MessageEmailActivationInstuctionsSentOnEmail",
         "Error"
       ],
-      "ResourceJS": [
-        "ChangesApplied"
-      ],
-      "PeopleJSResource": [
-        "SuccessChangeUserStatus"
-      ]
+      "ResourceJS": ["ChangesApplied"],
+      "PeopleJSResource": ["SuccessChangeUserStatus"]
     },
     "ProfileAction": {
       "Resource": [
@@ -151,10 +113,7 @@
         "Message",
         "WriteComment"
       ],
-      "CustomModeResource": [
-        "ReviewingCustomMode"
-        
-      ]
+      "CustomModeResource": ["ReviewingCustomMode"]
     },
     "Home": {
       "Resource": [
@@ -184,8 +143,6 @@
       "PeopleResource": [
         "LblSendEmail",
         "LblSendMessage",
-        "NotFoundDescription",
-        "NotFoundTitle",
         "ClearButton",
         "LblActive",
         "LblTerminated",
@@ -198,40 +155,19 @@
         "SuccessChangeUserType",
         "SuccessSendInvitation"
       ],
-      "UserControlsCommonResource": [
-        "NextPage",
-        "PreviousPage",
-        "LblSelect"
-
-      ]
+      "UserControlsCommonResource": ["NextPage", "PreviousPage", "LblSelect"]
     }
   },
   "Layout": {
-    "Resource": [
-      "Profile",
-      "AboutCompanyTitle",
-      "LogoutButton"
-    ]
+    "Resource": ["Profile", "AboutCompanyTitle", "LogoutButton"]
   },
   "GroupAction": {
-    "Resource": [
-      "SaveButton",
-      "CancelButton",
-      "Name"
-    ],
-    "PeopleResource": [
-      "Members",
-      "AddMembers",
-      "AddButton"
-    ],
-    "UserControlsCommonResource": [
-      "Members",
-      "AddMembers",
-      "LblSelect"
-    ]
+    "Resource": ["SaveButton", "CancelButton", "Name"],
+    "PeopleResource": ["Members", "AddMembers", "AddButton"],
+    "UserControlsCommonResource": ["Members", "AddMembers", "LblSelect"]
   },
-  "Reassign":{
-    "PeopleResource":[
+  "Reassign": {
+    "PeopleResource": [
       "ReassignmentData",
       "ReassignsTransferedListHdr",
       "ReassignsTransferedListItem1",
@@ -243,11 +179,7 @@
       "ReassignButton",
       "ReassignsToUser"
     ],
-    "UserControlsCommonResource":[
-      "NotBeUndone"
-    ],
-    "PeopleJSResource":[
-      "ChooseUser"
-    ]
+    "UserControlsCommonResource": ["NotBeUndone"],
+    "PeopleJSResource": ["ChooseUser"]
   }
 }

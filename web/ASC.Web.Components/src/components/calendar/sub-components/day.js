@@ -10,7 +10,7 @@ const StyledDay = styled.div`
   text-align: center;
   line-height: 33px;
   user-select: none;
-  ${props =>
+  ${(props) =>
     props.size === "base" ? "margin-top: 3px;" : "margin-top: 7.5px;"}
 `;
 
@@ -57,7 +57,7 @@ class Day extends React.Component {
 Day.propTypes = {
   day: PropTypes.object,
   size: PropTypes.string,
-  onDayClick: PropTypes.func
+  onDayClick: PropTypes.func,
 };
 
 export default Day;

@@ -47,16 +47,17 @@ namespace ASC.Web.Core
         SocketIO
     }
 
+    [Scope]
     public class CookiesManager
     {
         private const string AuthCookiesName = "asc_auth_key";
         private const string SocketIOCookiesName = "socketio.sid";
 
-        public IHttpContextAccessor HttpContextAccessor { get; }
-        public UserManager UserManager { get; }
-        public SecurityContext SecurityContext { get; }
-        public TenantCookieSettingsHelper TenantCookieSettingsHelper { get; }
-        public TenantManager TenantManager { get; }
+        private IHttpContextAccessor HttpContextAccessor { get; }
+        private UserManager UserManager { get; }
+        private SecurityContext SecurityContext { get; }
+        private TenantCookieSettingsHelper TenantCookieSettingsHelper { get; }
+        private TenantManager TenantManager { get; }
 
         public CookiesManager(
             IHttpContextAccessor httpContextAccessor,
@@ -233,20 +234,6 @@ namespace ASC.Web.Core
 
             var cookie = SecurityContext.AuthenticateMe(SecurityContext.CurrentAccount.ID);
             SetCookies(CookiesType.AuthKey, cookie);
-        }
-    }
-
-    public static class CookiesManagerExtension
-    {
-        public static DIHelper AddCookiesManagerService(this DIHelper services)
-        {
-            services.TryAddScoped<CookiesManager>();
-
-            return services
-                .AddUserManagerService()
-                .AddSecurityContextService()
-                .AddTenantCookieSettingsService()
-                .AddTenantManagerService();
         }
     }
 }

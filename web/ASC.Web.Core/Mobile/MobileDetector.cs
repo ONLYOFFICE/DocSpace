@@ -26,19 +26,23 @@
 
 using System;
 using System.Text.RegularExpressions;
+
+using ASC.Common;
 using ASC.Common.Caching;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 
 namespace ASC.Web.Core.Mobile
 {
+    [Scope]
     public class MobileDetector
     {
         private readonly Regex uaMobileRegex;
 
-        private static readonly ICache cache = AscCache.Memory;
+        private ICache cache { get; set; }
 
-        public IHttpContextAccessor HttpContextAccessor { get; }
+        private IHttpContextAccessor HttpContextAccessor { get; }
 
         public bool IsMobile()
         {
@@ -46,8 +50,9 @@ namespace ASC.Web.Core.Mobile
         }
 
 
-        public MobileDetector(IHttpContextAccessor httpContextAccessor, IConfiguration configuration)
+        public MobileDetector(IHttpContextAccessor httpContextAccessor, IConfiguration configuration, ICache cache)
         {
+            this.cache = cache;
             if (!string.IsNullOrEmpty(configuration["mobile:regex"]))
             {
                 uaMobileRegex = new Regex(configuration["mobile:regex"], RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled);

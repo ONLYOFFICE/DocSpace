@@ -1,5 +1,4 @@
-﻿using System;
-using AppLimit.CloudComputing.SharpBox.Common.Net.oAuth.Token;
+﻿using AppLimit.CloudComputing.SharpBox.Common.Net.oAuth.Token;
 
 namespace AppLimit.CloudComputing.SharpBox.StorageProvider.GoogleDocs
 {

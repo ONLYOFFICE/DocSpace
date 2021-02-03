@@ -2,21 +2,27 @@ import React, { memo } from "react";
 import { withRouter } from "react-router";
 import PropTypes from "prop-types";
 import {
-  toastr,
   ModalDialog,
   Button,
   Text,
   ToggleContent,
   Checkbox,
-  CustomScrollbarsVirtualList
+  CustomScrollbarsVirtualList,
 } from "asc-web-components";
 import { FixedSizeList as List, areEqual } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { withTranslation } from "react-i18next";
-import i18n from "./i18n";
-import { api, utils } from "asc-web-common";
+import { api, utils, toastr } from "asc-web-common";
 import ModalDialogContainer from "../ModalDialogContainer";
+import { createI18N } from "../../../helpers/i18n";
+import { connect } from "react-redux";
+import { getUsersToInviteIds } from "../../../store/people/selectors";
+import { setSelected } from "../../../store/people/actions";
 
+const i18n = createI18N({
+  page: "SendInviteDialog",
+  localesPath: "dialogs/SendInviteDialog",
+});
 const { resendUserInvites } = api.people;
 const { changeLanguage } = utils;
 
@@ -29,18 +35,18 @@ class SendInviteDialogComponent extends React.Component {
     const { userIds, selectedUsers } = props;
 
     const listUsers = selectedUsers.map((item, index) => {
-      const disabled = userIds.find(x => x === item.id);
+      const disabled = userIds.find((x) => x === item.id);
       return (selectedUsers[index] = {
         ...selectedUsers[index],
         checked: disabled ? true : false,
-        disabled: disabled ? false : true
+        disabled: disabled ? false : true,
       });
     });
 
     this.state = {
       listUsers,
       isRequestRunning: false,
-      userIds
+      userIds,
     };
   }
 
@@ -51,7 +57,7 @@ class SendInviteDialogComponent extends React.Component {
     this.setState({ isRequestRunning: true }, () => {
       resendUserInvites(userIds)
         .then(() => toastr.success(t("SuccessSendInvitation")))
-        .catch(error => toastr.error(error))
+        .catch((error) => toastr.error(error))
         .finally(() => {
           this.setState({ isRequestRunning: false }, () => {
             setSelected("close");
@@ -61,9 +67,9 @@ class SendInviteDialogComponent extends React.Component {
     });
   };
 
-  onChange = e => {
+  onChange = (e) => {
     const userIndex = this.state.listUsers.findIndex(
-      x => x.id === e.target.value
+      (x) => x.id === e.target.value
     );
     const newUsersList = this.state.listUsers;
     newUsersList[userIndex].checked = !newUsersList[userIndex].checked;
@@ -118,44 +124,38 @@ class SendInviteDialogComponent extends React.Component {
     //console.log("SendInviteDialog render");
     return (
       <ModalDialogContainer>
-        <ModalDialog
-          visible={visible}
-          onClose={onClose}
-          headerContent={t("SendInviteAgain")}
-          bodyContent={
-            <>
-              <Text>{t("SendInviteAgainDialog")}</Text>
-              <Text>{t("SendInviteAgainDialogMessage")}</Text>
-              <ToggleContent
-                className="toggle-content-dialog"
-                label={t("ShowUsersList")}
-              >
-                <div style={containerStyles} className="modal-dialog-content">
-                  <AutoSizer>{renderList}</AutoSizer>
-                </div>
-              </ToggleContent>
-            </>
-          }
-          footerContent={
-            <>
-              <Button
-                label={t("OKButton")}
-                size="medium"
-                primary
-                onClick={this.onSendInvite}
-                isLoading={isRequestRunning}
-                isDisabled={!userIds.length}
-              />
-              <Button
-                className="button-dialog"
-                label={t("CancelButton")}
-                size="medium"
-                onClick={onClose}
-                isDisabled={isRequestRunning}
-              />
-            </>
-          }
-        />
+        <ModalDialog visible={visible} onClose={onClose}>
+          <ModalDialog.Header>{t("SendInviteAgain")}</ModalDialog.Header>
+          <ModalDialog.Body>
+            <Text>{t("SendInviteAgainDialog")}</Text>
+            <Text>{t("SendInviteAgainDialogMessage")}</Text>
+            <ToggleContent
+              className="toggle-content-dialog"
+              label={t("ShowUsersList")}
+            >
+              <div style={containerStyles} className="modal-dialog-content">
+                <AutoSizer>{renderList}</AutoSizer>
+              </div>
+            </ToggleContent>
+          </ModalDialog.Body>
+          <ModalDialog.Footer>
+            <Button
+              label={t("OKButton")}
+              size="medium"
+              primary
+              onClick={this.onSendInvite}
+              isLoading={isRequestRunning}
+              isDisabled={!userIds.length}
+            />
+            <Button
+              className="button-dialog"
+              label={t("CancelButton")}
+              size="medium"
+              onClick={onClose}
+              isDisabled={isRequestRunning}
+            />
+          </ModalDialog.Footer>
+        </ModalDialog>
       </ModalDialogContainer>
     );
   }
@@ -163,7 +163,7 @@ class SendInviteDialogComponent extends React.Component {
 
 const SendInviteDialogTranslated = withTranslation()(SendInviteDialogComponent);
 
-const SendInviteDialog = props => (
+const SendInviteDialog = (props) => (
   <SendInviteDialogTranslated i18n={i18n} {...props} />
 );
 
@@ -172,7 +172,19 @@ SendInviteDialog.propTypes = {
   onClose: PropTypes.func.isRequired,
   userIds: PropTypes.arrayOf(PropTypes.string).isRequired,
   selectedUsers: PropTypes.arrayOf(PropTypes.object).isRequired,
-  setSelected: PropTypes.func.isRequired
+  setSelected: PropTypes.func.isRequired,
 };
 
-export default withRouter(SendInviteDialog);
+const mapStateToProps = (state) => {
+  const { selection } = state.people;
+  const usersToInviteIds = getUsersToInviteIds(state);
+
+  return {
+    userIds: usersToInviteIds,
+    selectedUsers: selection,
+  };
+};
+
+export default connect(mapStateToProps, { setSelected })(
+  withRouter(SendInviteDialog)
+);

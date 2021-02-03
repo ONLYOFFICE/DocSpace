@@ -1,0 +1,16 @@
+{
+  "DownloadAs": "Download as",
+  "OriginalFormat": "Original format",
+  "CustomFormat": "Custom format",
+  "ChooseFormatText": "Choose format for each file to be downloaded",
+  "Documents": "Documents",
+  "Spreadsheets": "Spreadsheets",
+  "Presentations": "Presentations",
+  "ConvertInto": "Convert into",
+  "Other": "Other",
+  "ConvertToZip": "Files will be compressed into the .zip file",
+  "ConvertMessage": "If you choose to convert the file to the format different from the original, some data might be lost.",
+  "DownloadButton": "Download",
+  "CancelButton": "Cancel",
+  "ArchivingData": "Archiving data"
+}

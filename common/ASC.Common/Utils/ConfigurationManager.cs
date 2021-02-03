@@ -1,7 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+
 using Microsoft.Extensions.Configuration;
 
 namespace ASC.Common.Utils
@@ -31,13 +33,23 @@ namespace ASC.Common.Utils
         }
     }
 
-    public static class ConfigurationExtension
+    [Singletone]
+    public class ConfigurationExtension
     {
-        public static IEnumerable<T> GetSettings<T>(this IConfiguration configuration, string section) where T : new()
+        private IConfiguration Configuration { get; }
+        private Lazy<ConnectionStringCollection> ConnectionStringSettings { get; }
+
+        public ConfigurationExtension(IConfiguration configuration)
+        {
+            Configuration = configuration;
+            ConnectionStringSettings = new Lazy<ConnectionStringCollection>(new ConnectionStringCollection(GetSettings<ConnectionStringSettings>("ConnectionStrings")));
+        }
+
+        public IEnumerable<T> GetSettings<T>(string section) where T : new()
         {
             var result = new List<T>();
 
-            var sectionSettings = configuration.GetSection(section);
+            var sectionSettings = Configuration.GetSection(section);
 
             foreach (var ch in sectionSettings.GetChildren())
             {
@@ -48,9 +60,10 @@ namespace ASC.Common.Utils
 
             return result;
         }
-        public static T GetSetting<T>(this IConfiguration configuration, string section) where T : new()
+
+        public T GetSetting<T>(string section) where T : new()
         {
-            var sectionSettings = configuration.GetSection(section);
+            var sectionSettings = Configuration.GetSection(section);
 
             var cs = new T();
             sectionSettings.Bind(cs);
@@ -58,13 +71,20 @@ namespace ASC.Common.Utils
             return cs;
         }
 
-        public static ConnectionStringCollection GetConnectionStrings(this IConfiguration configuration)
+        public ConnectionStringCollection GetConnectionStrings()
         {
-            return new ConnectionStringCollection(configuration.GetSettings<ConnectionStringSettings>("ConnectionStrings"));
+            return ConnectionStringSettings.Value;
         }
-        public static ConnectionStringSettings GetConnectionStrings(this IConfiguration configuration, string key)
+
+        public ConnectionStringSettings GetConnectionStrings(string key)
         {
-            return configuration.GetConnectionStrings()[key];
+            return GetConnectionStrings()[key];
+        }
+
+        public string this[string key]
+        {
+            get => Configuration[key];
+            set => Configuration[key] = value;
         }
     }
 }

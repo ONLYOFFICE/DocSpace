@@ -2,8 +2,8 @@
   "CancelButton": "Отмена",
   "DisabledEmployeeTitle": "Заблокирован",
   "SuccessChangeUserStatus": "Статус пользователя успешно изменен",
-  
-  "ShowUsersList": "Показать список пользователей",  
+
+  "ShowUsersList": "Показать список пользователей",
   "ChangeUserStatusDialogHeader": "Изменение статуса пользователя",
   "ChangeUserStatusDialog": "Пользователи со статусом '{{ userStatus }}' будут  {{ status }}.",
   "ChangeUserStatusDialogMessage": "Вы не можете изменить статус владельца портала и свой собственный статус",

@@ -26,43 +26,41 @@
 
 using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
 
 using ASC.Core.Tenants;
+using ASC.Security.Cryptography;
 
 namespace ASC.Api.Settings
 {
-    [DataContract(Name = "settings", Namespace = "")]
     public class SettingsWrapper
     {
-        [DataMember(EmitDefaultValue = false)]
         public string Timezone { get; set; }
 
-        [DataMember(EmitDefaultValue = false)]
         public List<string> TrustedDomains { get; set; }
 
-        [DataMember(EmitDefaultValue = false)]
         public TenantTrustedDomainsType TrustedDomainsType { get; set; }
 
-        [DataMember(EmitDefaultValue = false)]
         public string Culture { get; set; }
 
-        [DataMember(EmitDefaultValue = false)]
         public TimeSpan UtcOffset { get; set; }
 
-
-        [DataMember(EmitDefaultValue = false)]
         public double UtcHoursOffset { get; set; }
 
-
-        [DataMember(EmitDefaultValue = false)]
         public string GreetingSettings { get; set; }
 
-        [DataMember(EmitDefaultValue = false)]
         public Guid OwnerId { get; set; }
 
-        [DataMember(EmitDefaultValue = false)]
         public string NameSchemaId { get; set; }
+
+        public bool? EnabledJoin { get; set; }
+
+        public bool? EnableAdmMess { get; set; }
+
+        public bool? ThirdpartyEnable { get; set; }
+
+        public string WizardToken { get; set; }
+
+        public PasswordHasher PasswordHash { get; set; }
 
         public static SettingsWrapper GetSample()
         {

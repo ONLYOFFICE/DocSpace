@@ -25,7 +25,7 @@
 
 
 using System;
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 using ASC.Common;
 using ASC.Core;
@@ -36,7 +36,6 @@ using ASC.Web.Studio.Utility;
 namespace ASC.Web.Studio.Core.SMS
 {
     [Serializable]
-    [DataContract]
     public class StudioSmsNotificationSettings : ISettings
     {
         public Guid ID
@@ -49,17 +48,18 @@ namespace ASC.Web.Studio.Core.SMS
             return new StudioSmsNotificationSettings { EnableSetting = false, };
         }
 
-        [DataMember(Name = "Enable")]
+        [JsonPropertyName("Enable")]
         public bool EnableSetting { get; set; }
     }
 
+    [Scope]
     public class StudioSmsNotificationSettingsHelper
     {
-        public TenantExtra TenantExtra { get; }
-        public CoreBaseSettings CoreBaseSettings { get; }
-        public SetupInfo SetupInfo { get; }
-        public SettingsManager SettingsManager { get; }
-        public SmsProviderManager SmsProviderManager { get; }
+        private TenantExtra TenantExtra { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
+        private SetupInfo SetupInfo { get; }
+        private SettingsManager SettingsManager { get; }
+        private SmsProviderManager SmsProviderManager { get; }
 
         public StudioSmsNotificationSettingsHelper(
             TenantExtra tenantExtra,
@@ -94,19 +94,6 @@ namespace ASC.Web.Studio.Core.SMS
                 settings.EnableSetting = value;
                 SettingsManager.Save<StudioSmsNotificationSettings>(settings);
             }
-        }
-    }
-
-    public static class StudioSmsNotificationSettingsExtension
-    {
-        public static DIHelper AddStudioSmsNotificationSettingsService(this DIHelper services)
-        {
-            services.TryAddScoped<StudioSmsNotificationSettingsHelper>();
-
-            return services
-                .AddTenantExtraService()
-                .AddCoreBaseSettingsService()
-                .AddSetupInfo();
         }
     }
 }

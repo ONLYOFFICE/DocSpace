@@ -2,10 +2,17 @@
 import { Text, Link } from "asc-web-components";
 import { PageLayout, utils } from "asc-web-common";
 import { useTranslation } from "react-i18next";
-import i18n from "./i18n";
 import version from "../../../../package.json";
 import styled from "styled-components";
 import { Trans } from "react-i18next";
+import { createI18N } from "../../../helpers/i18n";
+import { setDocumentTitle } from "../../../helpers/utils";
+
+const i18n = createI18N({
+  page: "About",
+  localesPath: "pages/About",
+});
+
 const { changeLanguage } = utils;
 
 const BodyStyle = styled.div`
@@ -41,6 +48,9 @@ const BodyStyle = styled.div`
   }
 
   .copyright-line {
+    display: grid;
+    grid-template-columns: 1fr max-content 1fr;
+    grid-column-gap: 24px;
     padding-bottom: 15px;
     text-align: center;
 
@@ -49,7 +59,6 @@ const BodyStyle = styled.div`
       content: "";
       height: 2px;
       margin-top: 9px;
-      width: 26%;
       float: right;
     }
 
@@ -58,7 +67,6 @@ const BodyStyle = styled.div`
       content: "";
       height: 2px;
       margin-top: 9px;
-      width: 26%;
       float: left;
     }
   }
@@ -78,7 +86,7 @@ const Body = () => {
 
   useEffect(() => {
     changeLanguage(i18n);
-    document.title = `${t("AboutTitle")} – ${t("People")}`;
+    setDocumentTitle(t("AboutTitle")); //TODO: implement the ability to read the current module in redux to implement the template `${t("AboutTitle")} – ${t("People")}`
   }, [t]);
 
   const gitHub = "GitHub";
@@ -96,6 +104,7 @@ const Body = () => {
           href="https://www.gnu.org/licenses/gpl-3.0.html"
           isHovered={true}
           fontSize="12px"
+          target="_blank"
         >
           {{ license }}
         </Link>
@@ -165,7 +174,7 @@ const Body = () => {
             {phone}
           </Text>
         </div>
-        <Link href="http://www.onlyoffice.com" fontSize="12px">
+        <Link href="http://www.onlyoffice.com" fontSize="12px" target="_blank">
           {link}
         </Link>
 
@@ -175,9 +184,10 @@ const Body = () => {
           <Text className="text_style" fontSize="12px">
             {t("SourceCode")}:{" "}
             <Link
-              href="https://github.com/ONLYOFFICE/CommunityServer"
+              href="https://github.com/ONLYOFFICE/AppServer"
               isHovered={true}
               fontSize="12px"
+              target="_blank"
             >
               {gitHub}
             </Link>
@@ -189,7 +199,11 @@ const Body = () => {
 };
 
 const About = ({ language }) => (
-  <PageLayout sectionBodyContent={<Body language={language} />} />
+  <PageLayout>
+    <PageLayout.SectionBody>
+      <Body language={language} />
+    </PageLayout.SectionBody>
+  </PageLayout>
 );
 
 export default About;

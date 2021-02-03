@@ -1,5 +1,4 @@
-﻿using System;
-using AppLimit.CloudComputing.SharpBox.StorageProvider.BaseObjects;
+﻿using AppLimit.CloudComputing.SharpBox.StorageProvider.BaseObjects;
 
 namespace AppLimit.CloudComputing.SharpBox.StorageProvider.SkyDrive
 {

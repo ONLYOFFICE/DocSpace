@@ -25,19 +25,14 @@
 
 
 using System;
-using System.Runtime.Serialization;
+
 using ASC.Core.Common.Settings;
 
 namespace ASC.Web.Core.Utility.Settings
 {
     [Serializable]
-    [DataContract]
     public class WizardSettings : ISettings
     {
-        [DataMember(Name = "Analytics")]
-        public bool Analytics { get; set; }
-
-        [DataMember(Name = "Completed")]
         public bool Completed { get; set; }
 
         public Guid ID
@@ -50,7 +45,6 @@ namespace ASC.Web.Core.Utility.Settings
         {
             return new WizardSettings
             {
-                Analytics = false,
                 Completed = true
             };
         }

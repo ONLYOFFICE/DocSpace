@@ -25,14 +25,12 @@
 
 
 using System;
-using ASC.Common.Security.Authentication;
-using ASC.Core;
+
 using ASC.Notify.Patterns;
-using ASC.Web.Core.Users;
 
 namespace ASC.Web.Studio.Core.Notify
 {
-    internal static class TagValues
+    public static class TagValues
     {
         public static ITagValue WithoutUnsubscribe()
         {
@@ -155,6 +153,17 @@ namespace ASC.Web.Studio.Core.Notify
             }
 
             return new TagActionValue("TableItem" + number, action);
+        }
+
+        public static ITagValue Image(StudioNotifyHelper studioNotifyHelper, int id, string imageFileName)
+        {
+            var imgSrc = studioNotifyHelper.GetNotificationImageUrl(imageFileName);
+
+            var imgHtml = string.Format("<img style=\"border: 0; padding: 0; width: auto; height: auto;\" alt=\"\" src=\"{0}\"/>", imgSrc);
+
+            var tagName = "Image" + (id > 0 ? id.ToString() : string.Empty);
+
+            return new TagValue(tagName, imgHtml);
         }
     }
 }

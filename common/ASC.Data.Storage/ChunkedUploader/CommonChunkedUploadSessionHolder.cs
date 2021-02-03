@@ -28,8 +28,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+
 using ASC.Common.Logging;
 using ASC.Data.Storage;
+
 using Microsoft.Extensions.Options;
 
 namespace ASC.Core.ChunkedUploader
@@ -38,7 +40,7 @@ namespace ASC.Core.ChunkedUploader
     {
         public static readonly TimeSpan SlidingExpiration = TimeSpan.FromHours(12);
 
-        public IOptionsMonitor<ILog> Option { get; }
+        private IOptionsMonitor<ILog> Option { get; }
         private IDataStore DataStore { get; set; }
         private string Domain { get; set; }
         private long MaxChunkUploadSize { get; set; }
@@ -158,14 +160,14 @@ namespace ASC.Core.ChunkedUploader
 
                 using (var bufferStream = new FileStream(uploadSession.ChunksBuffer, FileMode.Append))
                 {
-                    stream.StreamCopyTo(bufferStream);
+                    stream.CopyTo(bufferStream);
                 }
 
                 uploadSession.BytesUploaded += chunkLength;
 
                 if (uploadSession.BytesTotal == uploadSession.BytesUploaded)
                 {
-                    return new FileStream(uploadSession.ChunksBuffer, FileMode.Open, FileAccess.Read, FileShare.None,
+                    return new FileStream(uploadSession.ChunksBuffer, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite,
                         4096, FileOptions.DeleteOnClose);
                 }
             }

@@ -33,12 +33,11 @@ using ASC.Common.Security;
 using ASC.Common.Security.Authentication;
 using ASC.Common.Security.Authorizing;
 
-using Microsoft.Extensions.DependencyInjection.Extensions;
-
 using Constants = ASC.Core.Configuration.Constants;
 
 namespace ASC.Core.Security.Authorizing
 {
+    [Scope]
     class PermissionResolver : IPermissionResolver
     {
         private readonly AzManager azManager;
@@ -123,15 +122,6 @@ namespace ASC.Core.Security.Authorizing
                 DenySubject = denySubject;
                 DenyAction = denyAction;
             }
-        }
-    }
-
-    public static class PermissionResolverConfigExtention
-    {
-        public static DIHelper AddPermissionResolverService(this DIHelper services)
-        {
-            services.TryAddScoped(typeof(IPermissionResolver), typeof(PermissionResolver));
-            return services.AddAzManagerService();
         }
     }
 }

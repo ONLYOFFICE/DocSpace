@@ -1,3 +1,4 @@
+import { EmployeeStatus } from "../../constants";
 import { toUrlParams } from "../../utils";
 
 const DEFAULT_PAGE = 0;
@@ -5,7 +6,7 @@ const DEFAULT_PAGE_COUNT = 25;
 const DEFAULT_TOTAL = 0;
 const DEFAULT_SORT_BY = "firstname";
 const DEFAULT_SORT_ORDER = "ascending";
-const DEFAULT_EMPLOYEE_STATUS = null;
+const DEFAULT_EMPLOYEE_STATUS = EmployeeStatus.Active;
 const DEFAULT_ACTIVATION_STATUS = null;
 const DEFAULT_ROLE = null;
 const DEFAULT_SEARCH = null;
@@ -61,7 +62,7 @@ class Filter {
       activationStatus,
       role,
       search,
-      group
+      group,
     } = this;
 
     let dtoFilter = {
@@ -72,9 +73,9 @@ class Filter {
       employeestatus: employeeStatus,
       activationstatus: activationStatus,
       filtervalue: (search ?? "").trim(),
-      groupId: group
-      //fields: "id,status,isAdmin,isOwner,isVisitor,activationStatus,userName,email,displayName,avatarSmall,
-      //listAdminModules,birthday,title,location,isLDAP,isSSO"
+      groupId: group,
+      fields:
+        "id,status,isAdmin,isOwner,isVisitor,activationStatus,userName,email,mobilePhone,displayName,avatar,listAdminModules,birthday,title,location,isLDAP,isSSO,groups",
     };
 
     switch (role) {

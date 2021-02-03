@@ -1,10 +1,10 @@
 import React from "react";
-import isEqual from "lodash/isEqual";
+import equal from "fast-deep-equal/react";
 import { FieldContainer, DatePicker } from "asc-web-components";
 
 class DateField extends React.Component {
   shouldComponentUpdate(nextProps) {
-    return !isEqual(this.props, nextProps);
+    return !equal(this.props, nextProps);
   }
 
   render() {
@@ -15,12 +15,12 @@ class DateField extends React.Component {
       hasError,
       labelText,
       calendarHeaderContent,
-
       inputName,
       inputValue,
       inputIsDisabled,
       inputOnChange,
-      inputTabIndex
+      inputTabIndex,
+      calendarMinDate,
     } = this.props;
 
     return (
@@ -38,6 +38,8 @@ class DateField extends React.Component {
           tabIndex={inputTabIndex}
           displayType="auto"
           calendarHeaderContent={calendarHeaderContent}
+          minDate={calendarMinDate ? calendarMinDate : new Date("1900/01/01")}
+          maxDate={new Date()}
         />
       </FieldContainer>
     );

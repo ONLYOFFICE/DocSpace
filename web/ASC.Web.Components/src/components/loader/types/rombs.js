@@ -1,6 +1,6 @@
 import React from "react";
-import PropTypes from 'prop-types';
-import styled, { keyframes } from 'styled-components';
+import PropTypes from "prop-types";
+import styled, { keyframes } from "styled-components";
 
 export const keyFrameBlue = keyframes`
     0%   { top:120px; background: #de7a59;  }
@@ -37,59 +37,58 @@ export const keyFrameGreen = keyframes`
 `;
 
 const Romb = styled.div`
-    width: ${props => props.size};
-    height: ${props => props.size};
-    -ms-transform: rotate(135deg) skew(20deg, 20deg);
-    -webkit-transform: rotate(135deg) skew(20deg, 20deg);
-    -moz-transform: rotate(135deg) skew(20deg, 20deg);
-    -o-transform: rotate(135deg) skew(20deg, 20deg);
-    background: red;
-    border-radius: 6px;
-    animation: movedown 3s infinite ease;
-    -moz-animation: movedown 3s infinite ease;
-    -webkit-animation: movedown 3s infinite ease;
-    -o-animation: movedown 3s infinite ease;
-    -ms-animation: movedown 3s infinite ease;
-    position: absolute;
+  width: ${(props) => props.size};
+  height: ${(props) => props.size};
+  -ms-transform: rotate(135deg) skew(20deg, 20deg);
+  -webkit-transform: rotate(135deg) skew(20deg, 20deg);
+  -moz-transform: rotate(135deg) skew(20deg, 20deg);
+  -o-transform: rotate(135deg) skew(20deg, 20deg);
+  background: red;
+  border-radius: 6px;
+  animation: movedown 3s infinite ease;
+  -moz-animation: movedown 3s infinite ease;
+  -webkit-animation: movedown 3s infinite ease;
+  -o-animation: movedown 3s infinite ease;
+  -ms-animation: movedown 3s infinite ease;
+  position: absolute;
 
-    background: ${props =>
-        (props.color === 'blue' && '#55bce6') ||
-        (props.color === 'red' && '#de7a59') ||
-        (props.color === 'green' && '#a1cb5c')
-    };
+  background: ${(props) =>
+    (props.color === "blue" && "#55bce6") ||
+    (props.color === "red" && "#de7a59") ||
+    (props.color === "green" && "#a1cb5c")};
 
-    z-index: ${props =>
-        (props.color === 'blue' && '1') ||
-        (props.color === 'red' && '3') ||
-        (props.color === 'green' && '2')
-    };
+  z-index: ${(props) =>
+    (props.color === "blue" && "1") ||
+    (props.color === "red" && "3") ||
+    (props.color === "green" && "2")};
 
-    animation: ${props =>
-        (props.color === 'blue' && keyFrameBlue) ||
-        (props.color === 'red' && keyFrameRed) ||
-        (props.color === 'green' && keyFrameGreen) 
-    } 2s ease-in-out 0s infinite;
+  animation: ${(props) =>
+      (props.color === "blue" && keyFrameBlue) ||
+      (props.color === "red" && keyFrameRed) ||
+      (props.color === "green" && keyFrameGreen)}
+    2s ease-in-out 0s infinite;
 `;
 
-Romb.protoTypes = {
-    width: PropTypes.string.isRequired,
-    height: PropTypes.string.isRequired
+Romb.propTypes = {
+  width: PropTypes.string.isRequired,
+  height: PropTypes.string.isRequired,
 };
 
+// eslint-disable-next-line react/prop-types
 const Rombs = ({ size }) => (
-    <>
-        <Romb color="blue" size={size} />
-        <Romb color="green" size={size} />
-        <Romb color="red" size={size} />
-    </>
+  <>
+    <Romb color="blue" size={size} />
+    <Romb color="green" size={size} />
+    <Romb color="red" size={size} />
+  </>
 );
 
-Rombs.protoTypes = {
-    size: PropTypes.string.isRequired
+Rombs.propTypes = {
+  size: PropTypes.string.isRequired,
 };
 
 Rombs.defaultProps = {
-    size: '40px'
-}
+  size: "40px",
+};
 
 export { Rombs };

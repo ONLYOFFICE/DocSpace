@@ -26,11 +26,15 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+
+using ASC.Common;
 using ASC.Core.Notify.Senders;
+
 using Microsoft.Extensions.Options;
 
 namespace ASC.Notify.Config
 {
+    [Singletone]
     public class ConfigureNotifyServiceCfg : IConfigureOptions<NotifyServiceCfg>
     {
         public ConfigureNotifyServiceCfg(IServiceProvider serviceProvider)
@@ -38,7 +42,7 @@ namespace ASC.Notify.Config
             ServiceProvider = serviceProvider;
         }
 
-        public IServiceProvider ServiceProvider { get; }
+        private IServiceProvider ServiceProvider { get; }
 
         public void Configure(NotifyServiceCfg options)
         {
@@ -46,6 +50,7 @@ namespace ASC.Notify.Config
         }
     }
 
+    [Singletone(typeof(ConfigureNotifyServiceCfg))]
     public class NotifyServiceCfg
     {
         public string ConnectionStringName { get; set; }

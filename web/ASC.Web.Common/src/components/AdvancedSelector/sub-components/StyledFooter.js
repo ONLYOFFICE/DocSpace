@@ -6,7 +6,13 @@ const StyledFooter = styled.div`
   padding: 16px;
   height: 69px;
 
-  ${props =>
+  ${(props) =>
+    props.withEmbeddedComponent &&
+    css`
+      display: flex;
+    `}
+
+  ${(props) =>
     !props.isVisible &&
     css`
       display: none;

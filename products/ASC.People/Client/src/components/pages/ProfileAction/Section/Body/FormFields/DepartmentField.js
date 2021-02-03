@@ -1,16 +1,21 @@
 import React from "react";
-import isEqual from "lodash/isEqual";
+import equal from "fast-deep-equal/react";
 import {
   FieldContainer,
   SelectorAddButton,
-  SelectedItem
+  SelectedItem,
 } from "asc-web-components";
 import { GroupSelector } from "asc-web-common";
 
 class DepartmentField extends React.Component {
   shouldComponentUpdate(nextProps) {
-    return !isEqual(this.props, nextProps);
+    return !equal(this.props, nextProps);
   }
+
+  onRemoveGroup = (e) => {
+    const groupId = e.currentTarget.parentElement.dataset.id;
+    this.props.onRemoveGroup(groupId);
+  };
 
   render() {
     console.log("DepartmentField render");
@@ -25,11 +30,10 @@ class DepartmentField extends React.Component {
 
       onShowGroupSelector,
       onCloseGroupSelector,
-      onRemoveGroup,
 
       selectorIsVisible,
       selectorSelectedOptions,
-      selectorOnSelectGroups
+      selectorOnSelectGroups,
     } = this.props;
 
     return (
@@ -45,23 +49,23 @@ class DepartmentField extends React.Component {
           onClick={onShowGroupSelector}
           className="department-add-btn"
         />
-        <GroupSelector 
+        <GroupSelector
           isOpen={selectorIsVisible}
           isMultiSelect={true}
           onSelect={selectorOnSelectGroups}
           onCancel={onCloseGroupSelector}
         />
-        {selectorSelectedOptions.map(option => (
-            <SelectedItem
-              key={`department_${option.key}`}
-              text={option.label}
-              onClose={() => {
-                onRemoveGroup(option.key);
-              }}
-              isInline={true}
-              className="department-item"
-            />
-          ))}
+        {selectorSelectedOptions.map((option) => (
+          <SelectedItem
+            key={`department_${option.key}`}
+            text={option.label}
+            data-id={option.key}
+            onClose={this.onRemoveGroup}
+            isInline={true}
+            className="department-item"
+            isDisabled={isDisabled}
+          />
+        ))}
       </FieldContainer>
     );
   }

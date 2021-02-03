@@ -1,5 +1,4 @@
-﻿using System;
-using AppLimit.CloudComputing.SharpBox.Common.Net.Json;
+﻿using AppLimit.CloudComputing.SharpBox.Common.Net.Json;
 
 namespace AppLimit.CloudComputing.SharpBox.StorageProvider.DropBox
 {

@@ -35,6 +35,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace ASC.FederatedLogin.LoginProviders
 {
+    [Scope]
     public class DropboxLoginProvider : Consumer, IOAuthProvider
     {
         public string Scopes { get { return ""; } }
@@ -62,22 +63,10 @@ namespace ASC.FederatedLogin.LoginProviders
             CoreSettings coreSettings,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
+            ConsumerFactory consumerFactory,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, name, order, props, additional)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, name, order, props, additional)
         {
-        }
-    }
-    public static class DropboxLoginProviderExtension
-    {
-        public static DIHelper AddDropboxLoginProviderService(this DIHelper services)
-        {
-            //services.TryAddScoped<DropboxLoginProvider>();
-            return services
-                .AddConsumerFactoryService()
-                .AddKafkaService()
-                .AddTenantManagerService()
-                .AddCoreBaseSettingsService()
-                .AddCoreSettingsService();
         }
     }
 }

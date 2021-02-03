@@ -29,6 +29,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+using ASC.Common;
+using ASC.Common.Caching;
 using ASC.Core;
 using ASC.Core.Common.Settings;
 using ASC.ElasticSearch.Core;
@@ -39,25 +41,36 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.ElasticSearch.Service
 {
+    [Singletone(Additional = typeof(ServiceExtension))]
     public class Service
     {
-        public FactoryIndexer FactoryIndexer { get; }
-        public IServiceProvider ServiceProvider { get; }
+        private ILifetimeScope Container { get; }
+        private IServiceProvider ServiceProvider { get; }
+        private ICacheNotify<ReIndexAction> CacheNotify { get; }
 
-        public Service(FactoryIndexer factoryIndexer, IServiceProvider serviceProvider)
+        public Service(ILifetimeScope container, IServiceProvider serviceProvider, ICacheNotify<ReIndexAction> cacheNotify)
         {
-            FactoryIndexer = factoryIndexer;
+            Container = container;
             ServiceProvider = serviceProvider;
+            CacheNotify = cacheNotify;
+        }
+
+        public void Subscribe()
+        {
+            CacheNotify.Subscribe((a) =>
+            {
+                ReIndex(a.Names.ToList(), a.Tenant);
+            }, CacheNotifyAction.Any);
         }
 
         public bool Support(string table)
         {
-            return FactoryIndexer.Builder.Resolve<IEnumerable<Wrapper>>().Any(r => r.IndexName == table);
+            return Container.Resolve<IEnumerable<IFactoryIndexer>>().Any(r => r.IndexName == table);
         }
 
         public void ReIndex(List<string> toReIndex, int tenant)
         {
-            var allItems = FactoryIndexer.Builder.Resolve<IEnumerable<Wrapper>>().ToList();
+            var allItems = Container.Resolve<IEnumerable<IFactoryIndexer>>().ToList();
             var tasks = new List<Task>(toReIndex.Count);
 
             foreach (var item in toReIndex)
@@ -70,18 +83,18 @@ namespace ASC.ElasticSearch.Service
                 tasks.Add(instance.ReIndex());
             }
 
+            if (!tasks.Any()) return;
+
             Task.WhenAll(tasks).ContinueWith(r =>
             {
                 using var scope = ServiceProvider.CreateScope();
 
-                var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+                var scopeClass = scope.ServiceProvider.GetService<ServiceScope>();
+                var (tenantManager, settingsManager) = scopeClass;
                 tenantManager.SetCurrentTenant(tenant);
-
-                var settingsManager = scope.ServiceProvider.GetService<SettingsManager>();
                 settingsManager.ClearCache<SearchSettings>();
             });
         }
-
         //public State GetState()
         //{
         //    return new State
@@ -90,5 +103,32 @@ namespace ASC.ElasticSearch.Service
         //        LastIndexed = Launcher.LastIndexed
         //    };
         //}
+    }
+
+    [Scope]
+    public class ServiceScope
+    {
+        private TenantManager TenantManager { get; }
+        private SettingsManager SettingsManager { get; }
+
+        public ServiceScope(TenantManager tenantManager, SettingsManager settingsManager)
+        {
+            TenantManager = tenantManager;
+            SettingsManager = settingsManager;
+        }
+
+        public void Deconstruct(out TenantManager tenantManager, out SettingsManager settingsManager)
+        {
+            tenantManager = TenantManager;
+            settingsManager = SettingsManager;
+        }
+    }
+
+    internal class ServiceExtension
+    {
+        public static void Register(DIHelper services)
+        {
+            services.TryAdd<ServiceScope>();
+        }
     }
 }

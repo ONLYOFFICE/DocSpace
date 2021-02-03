@@ -1,19 +1,23 @@
 import React from "react";
-import { Trans } from 'react-i18next';
+import { Trans } from "react-i18next";
 import {
   Text,
   IconButton,
   Link,
-  toastr,
   ComboBox,
-  HelpButton
+  HelpButton,
 } from "asc-web-components";
-import styled from 'styled-components';
-import { history, api, store as commonStore } from "asc-web-common";
+import styled from "styled-components";
+import { api, toastr, Loaders } from "asc-web-common";
 import { connect } from "react-redux";
-import store from "../../../../../../store/store";
+import { updateProfileCulture } from "../../../../../../store/profile/actions";
+import { getFilter } from "../../../../../../store/people/selectors";
+import {
+  fetchPeople,
+  setIsLoading,
+} from "../../../../../../store/people/actions";
+
 const { resendUserInvites } = api.people;
-const { getCurrentCustomSchema, getModules } = commonStore.auth.actions;
 
 const InfoContainer = styled.div`
   margin-bottom: 24px;
@@ -59,90 +63,93 @@ const InfoItemValue = styled.div`
   }
   .help-icon {
     display: inline-flex;
-    
-    @media(min-width: 1025px) {
+
+    @media (min-width: 1025px) {
       margin-top: 6px;
     }
-    @media(max-width: 1024px) {
+    @media (max-width: 1024px) {
       padding: 6px 24px 8px 8px;
       margin-left: -8px;
-    }  
+    }
   }
 `;
 
 const IconButtonWrapper = styled.div`
-  ${props => props.isBefore
-    ? `margin-right: 8px;`
-    : `margin-left: 8px;`
-  }
+  ${(props) => (props.isBefore ? `margin-right: 8px;` : `margin-left: 8px;`)}
 
   display: inline-flex;
 
   :hover {
     & > div > svg > path {
-      fill: #3B72A7;
+      fill: #3b72a7;
     }
   }
 `;
 
-const onGroupClick = (department) => {
-  history.push(`/products/people/filter?group=${department.id}`)
-};
-
-const getFormattedDepartments = departments => {
-  const formattedDepartments = departments.map((department, index) => {
-    return (
-      <span key={index}>
-        <Link type="page" fontSize='13px' isHovered={true} onClick={onGroupClick.bind(this, department)}>
-          {department.name}
-        </Link>
-        {departments.length - 1 !== index ? ", " : ""}
-      </span>
-    );
-  });
-
-  return formattedDepartments;
-};
-
-const capitalizeFirstLetter = string => {
-  return string && string.charAt(0).toUpperCase() + string.slice(1);
-};
-
 class ProfileInfo extends React.PureComponent {
   constructor(props) {
     super(props);
-    this.state = this.mapPropsToState(props);
-  }
-
-  mapPropsToState = (props) => {
-    const newState = {
+    this.state = {
       profile: props.profile,
     };
-
-    return newState;
-  };
-
-  onSentInviteAgain = id => {
-    resendUserInvites(new Array(id))
-      .then(() => toastr.success("The invitation was successfully sent"))
-      .catch(error => toastr.error(error));
-  };
-
-  onEmailClick = (e, email) => {
-    if (e.target.title)
-      window.open("mailto:" + email);
   }
+
+  onGroupClick = (e) => {
+    const group = e.currentTarget.dataset.id;
+    const { filter, setIsLoading, fetchPeople } = this.props;
+
+    const newFilter = filter.clone();
+    newFilter.group = group;
+
+    setIsLoading(true);
+    fetchPeople(newFilter).finally(() => setIsLoading(false));
+  };
+
+  getFormattedDepartments = (departments) => {
+    const formattedDepartments = departments.map((department, index) => {
+      return (
+        <span key={index}>
+          <Link
+            type="page"
+            fontSize="13px"
+            isHovered={true}
+            data-id={department.id}
+            onClick={this.onGroupClick}
+          >
+            {department.name}
+          </Link>
+          {departments.length - 1 !== index ? ", " : ""}
+        </span>
+      );
+    });
+
+    return formattedDepartments;
+  };
+
+  onSentInviteAgain = (id) => {
+    const { t } = this.props;
+    resendUserInvites(new Array(id))
+      .then(() => toastr.success(t("SuccessSentInvitation")))
+      .catch((error) =>
+        toastr.error(error && error.message ? error.message : error)
+      );
+  };
+
+  onEmailClick = (e) => {
+    const email = e.currentTarget.dataset.email;
+    if (e.target.title) window.open("mailto:" + email);
+  };
 
   onLanguageSelect = (language) => {
     console.log("onLanguageSelect", language);
-    const { profile, updateProfileCulture, nameSchemaId } = this.props;
+    const { profile, updateProfileCulture } = this.props;
 
     if (profile.cultureName === language.key) return;
 
-    updateProfileCulture(profile.id, language.key)
-      .then(() => getModules(store.dispatch))
-      .then(() => getCurrentCustomSchema(store.dispatch, nameSchemaId));
-  }
+    updateProfileCulture(profile.id, language.key).catch((error) =>
+      toastr.error(error && error.message ? error.message : error)
+    );
+  };
 
   getLanguages = () => {
     const { cultures, t } = this.props;
@@ -150,188 +157,207 @@ class ProfileInfo extends React.PureComponent {
     return cultures.map((culture) => {
       return { key: culture, label: t(`Culture_${culture}`) };
     });
-  }
+  };
 
   render() {
-    const { isVisitor, email, activationStatus, department, groups, title, mobilePhone, sex, workFrom, birthday, location, cultureName, currentCulture } = this.props.profile;
+    const {
+      isVisitor,
+      email,
+      activationStatus,
+      department,
+      groups,
+      title,
+      mobilePhone,
+      sex,
+      workFrom,
+      birthday,
+      location,
+      cultureName,
+      currentCulture,
+    } = this.props.profile;
     const isAdmin = this.props.isAdmin;
     const isSelf = this.props.isSelf;
-    const { t, i18n, userPostCaption, regDateCaption, groupCaption, userCaption, guestCaption } = this.props;
+    const {
+      t,
+      i18n,
+      userPostCaption,
+      regDateCaption,
+      groupCaption,
+      userCaption,
+      guestCaption,
+    } = this.props;
     const type = isVisitor ? guestCaption : userCaption;
     const language = cultureName || currentCulture || this.props.culture;
     const languages = this.getLanguages();
-    const selectedLanguage = languages.find(item => item.key === language);
+    const selectedLanguage =
+      languages.find((item) => item.key === language) ||
+      languages.find((item) => item.key === this.props.culture);
     const workFromDate = new Date(workFrom).toLocaleDateString(language);
     const birthDayDate = new Date(birthday).toLocaleDateString(language);
-    const formatedSex = capitalizeFirstLetter(sex);
-    const formatedDepartments = department && getFormattedDepartments(groups);
+    const formatedSex =
+      (sex === "male" && t("MaleSexStatus")) || t("FemaleSexStatus");
+    const formatedDepartments =
+      department && this.getFormattedDepartments(groups);
     const supportEmail = "documentation@onlyoffice.com";
-    const tooltipLanguage =
-      <Text fontSize='13px'>
+    const tooltipLanguage = (
+      <Text fontSize="13px">
         <Trans i18nKey="NotFoundLanguage" i18n={i18n}>
-          "In case you cannot find your language in the list of the
-          available ones, feel free to write to us at
+          "In case you cannot find your language in the list of the available
+          ones, feel free to write to us at
           <Link href={`mailto:${supportEmail}`} isHovered={true}>
             {{ supportEmail }}
-          </Link> to take part in the translation and get up to 1 year free of
-          charge."
-        </Trans>
-        {" "}
-        <Link isHovered={true} href="https://helpcenter.onlyoffice.com/ru/guides/become-translator.aspx">{t("LearnMore")}</Link>
+          </Link>{" "}
+          to take part in the translation and get up to 1 year free of charge."
+        </Trans>{" "}
+        <Link
+          isHovered={true}
+          href="https://helpcenter.onlyoffice.com/ru/guides/become-translator.aspx"
+          target="_blank"
+        >
+          {t("LearnMore")}
+        </Link>
       </Text>
-
+    );
     return (
       <InfoContainer>
         <InfoItem>
-          <InfoItemLabel>
-            {t('UserType')}:
-          </InfoItemLabel>
-          <InfoItemValue>
-            {type}
-          </InfoItemValue>
+          <InfoItemLabel>{t("UserType")}:</InfoItemLabel>
+          <InfoItemValue>{type}</InfoItemValue>
         </InfoItem>
-        {email &&
+        {email && (
           <InfoItem>
-            <InfoItemLabel>
-              {t('Email')}:
-            </InfoItemLabel>
+            <InfoItemLabel>{t("Email")}:</InfoItemLabel>
             <InfoItemValue>
               <>
-                {activationStatus === 2 && (isAdmin || isSelf) &&
-                  <IconButtonWrapper isBefore={true} title={t('PendingTitle')}>
+                {activationStatus === 2 && (isAdmin || isSelf) && (
+                  <IconButtonWrapper isBefore={true} title={t("PendingTitle")}>
                     <IconButton
-                      color='#C96C27'
+                      color="#C96C27"
                       size={16}
-                      iconName='DangerIcon'
-                      isFill={true} />
+                      iconName="DangerIcon"
+                      isFill={true}
+                    />
                   </IconButtonWrapper>
-                }
+                )}
                 <Link
                   type="page"
-                  fontSize='13px'
+                  fontSize="13px"
                   isHovered={true}
                   title={email}
-                  onClick={this.onEmailClick.bind(email)}
+                  data-email={email}
+                  onClick={this.onEmailClick}
                 >
                   {email}
                 </Link>
               </>
             </InfoItemValue>
           </InfoItem>
-        }
-        {(mobilePhone) &&
+        )}
+        {mobilePhone && (
           <InfoItem>
-            <InfoItemLabel>
-              {t('PhoneLbl')}:
-            </InfoItemLabel>
+            <InfoItemLabel>{t("PhoneLbl")}:</InfoItemLabel>
+            <InfoItemValue>{mobilePhone}</InfoItemValue>
+          </InfoItem>
+        )}
+        {sex && (
+          <InfoItem>
+            <InfoItemLabel>{t("Sex")}:</InfoItemLabel>
+            <InfoItemValue>{formatedSex}</InfoItemValue>
+          </InfoItem>
+        )}
+        {birthday && (
+          <InfoItem>
+            <InfoItemLabel>{t("Birthdate")}:</InfoItemLabel>
+            <InfoItemValue>{birthDayDate}</InfoItemValue>
+          </InfoItem>
+        )}
+        {title && (
+          <InfoItem>
+            <InfoItemLabel>{userPostCaption}:</InfoItemLabel>
+            <InfoItemValue>{title}</InfoItemValue>
+          </InfoItem>
+        )}
+        {department && (
+          <InfoItem>
+            <InfoItemLabel>{groupCaption}:</InfoItemLabel>
+            <InfoItemValue>{formatedDepartments}</InfoItemValue>
+          </InfoItem>
+        )}
+        {location && (
+          <InfoItem>
+            <InfoItemLabel>{t("Location")}:</InfoItemLabel>
+            <InfoItemValue>{location}</InfoItemValue>
+          </InfoItem>
+        )}
+        {workFrom && (
+          <InfoItem>
+            <InfoItemLabel>{regDateCaption}:</InfoItemLabel>
+            <InfoItemValue>{workFromDate}</InfoItemValue>
+          </InfoItem>
+        )}
+        {isSelf && (
+          <InfoItem>
+            <InfoItemLabel>{t("Language")}:</InfoItemLabel>
             <InfoItemValue>
-              {mobilePhone}
+              {languages && selectedLanguage ? (
+                <>
+                  <ComboBox
+                    options={languages}
+                    selectedOption={selectedLanguage}
+                    onSelect={this.onLanguageSelect}
+                    isDisabled={false}
+                    noBorder={true}
+                    scaled={false}
+                    scaledOptions={false}
+                    size="content"
+                    className="language-combo"
+                    showDisabledItems={true}
+                  />
+                  <HelpButton
+                    place="bottom"
+                    offsetLeft={50}
+                    offsetRight={0}
+                    tooltipContent={tooltipLanguage}
+                    helpButtonHeaderContent={t("Language")}
+                    className="help-icon"
+                  />
+                </>
+              ) : (
+                <Loaders.Text />
+              )}
             </InfoItemValue>
           </InfoItem>
-        }
-        {sex &&
-          <InfoItem>
-            <InfoItemLabel>
-              {t('Sex')}:
-            </InfoItemLabel>
-            <InfoItemValue>
-              {formatedSex}
-            </InfoItemValue>
-          </InfoItem>
-        }
-        {birthday &&
-          <InfoItem>
-            <InfoItemLabel>
-              {t('Birthdate')}:
-            </InfoItemLabel>
-            <InfoItemValue>
-              {birthDayDate}
-            </InfoItemValue>
-          </InfoItem>
-        }
-        {title &&
-          <InfoItem>
-            <InfoItemLabel>
-              {userPostCaption}:
-            </InfoItemLabel>
-            <InfoItemValue>
-              {title}
-            </InfoItemValue>
-          </InfoItem>
-        }
-        {department &&
-          <InfoItem>
-            <InfoItemLabel>
-              {groupCaption}:
-            </InfoItemLabel>
-            <InfoItemValue>
-              {formatedDepartments}
-            </InfoItemValue>
-          </InfoItem>
-        }
-        {location &&
-          <InfoItem>
-            <InfoItemLabel>
-              {t('Location')}:
-            </InfoItemLabel>
-            <InfoItemValue>
-              {location}
-            </InfoItemValue>
-          </InfoItem>
-        }
-        {workFrom &&
-          <InfoItem>
-            <InfoItemLabel>
-              {regDateCaption}:
-            </InfoItemLabel>
-            <InfoItemValue>
-              {workFromDate}
-            </InfoItemValue>
-          </InfoItem>
-        }
-        {isSelf &&
-          <InfoItem>
-            <InfoItemLabel>
-              {t('Language')}:
-            </InfoItemLabel>
-            <InfoItemValue>
-              <ComboBox
-                options={languages}
-                selectedOption={selectedLanguage}
-                onSelect={this.onLanguageSelect}
-                isDisabled={false}
-                noBorder={true}
-                scaled={false}
-                scaledOptions={false}
-                size='content'
-                className='language-combo'
-              />
-              <HelpButton
-                place="bottom"
-                offsetLeft={50}
-                offsetRight={0}
-                tooltipContent={tooltipLanguage}
-                helpButtonHeaderContent={t('Language')}
-                className="help-icon"
-              />
-            </InfoItemValue>
-
-          </InfoItem>
-        }
+        )}
       </InfoContainer>
     );
   }
-};
-
-function mapStateToProps(state) {
-  return {
-    groupCaption: state.auth.settings.customNames.groupCaption,
-    regDateCaption: state.auth.settings.customNames.regDateCaption,
-    userPostCaption: state.auth.settings.customNames.userPostCaption,
-    userCaption: state.auth.settings.customNames.userCaption,
-    guestCaption: state.auth.settings.customNames.guestCaption,
-    nameSchemaId: state.auth.settings.nameSchemaId
-  }
 }
 
-export default connect(mapStateToProps)(ProfileInfo);
+function mapStateToProps(state) {
+  const { customNames } = state.auth.settings;
+  const {
+    groupCaption,
+    regDateCaption,
+    userPostCaption,
+    userCaption,
+    guestCaption,
+  } = customNames;
+
+  return {
+    groupCaption,
+    regDateCaption,
+    userPostCaption,
+    userCaption,
+    guestCaption,
+    filter: getFilter(state),
+  };
+}
+const mapDispatchToProps = (dispatch) => {
+  return {
+    updateProfileCulture: (id, culture) =>
+      dispatch(updateProfileCulture(id, culture)),
+    fetchPeople: (filter) => dispatch(fetchPeople(filter)),
+    setIsLoading: (isLoading) => dispatch(setIsLoading(isLoading)),
+  };
+};
+export default connect(mapStateToProps, mapDispatchToProps)(ProfileInfo);

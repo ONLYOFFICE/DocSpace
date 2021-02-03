@@ -11,10 +11,7 @@ import { ContextMenu } from "asc-web-components";
 ```
 
 ```jsx
-<ContextMenu 
-  targetAreaId="rowContainer" 
-  options={[]} 
-/>
+<ContextMenu targetAreaId="rowContainer" options={[]} />
 ```
 
 For use within separate component it is necessary to determine active zone and events for calling and transferring options in menu.
@@ -30,3 +27,4 @@ In particular case, state is created containing options for particular Row eleme
 | `options`      |    `array`     |    -     |   -    |     `[ ]`     | DropDownItems collection |
 | `style`        | `obj`, `array` |    -     |   -    |       -       | Accepts css style        |
 | `targetAreaId` |    `string`    |    -     |   -    |       -       | Id of container apply to |
+| `withBackdrop` |     `bool`     |    -     |   -    |    `true`     | Used to display backdrop |

@@ -27,7 +27,9 @@ const ModalDialogContainer = styled.div`
   }
 
   .link-dialog {
+    transition: opacity 0.2s;
     margin-right: 12px;
+    opacity: ${(props) => (props.ChangeTextAnim ? 0 : 1)};
   }
 
   .error-label {

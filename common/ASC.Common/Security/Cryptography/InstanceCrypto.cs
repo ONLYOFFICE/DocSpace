@@ -33,9 +33,10 @@ using ASC.Common;
 
 namespace ASC.Security.Cryptography
 {
+    [Singletone]
     public class InstanceCrypto
     {
-        public MachinePseudoKeys MachinePseudoKeys { get; }
+        private MachinePseudoKeys MachinePseudoKeys { get; }
 
         public InstanceCrypto(MachinePseudoKeys machinePseudoKeys)
         {
@@ -84,16 +85,6 @@ namespace ASC.Security.Cryptography
         private byte[] EKey()
         {
             return MachinePseudoKeys.GetMachineConstant(32);
-        }
-    }
-    public static class InstanceCryptoExtension
-    {
-        public static DIHelper AddInstanceCryptoService(this DIHelper services)
-        {
-            services.TryAddSingleton<InstanceCrypto>();
-
-            return services
-                .AddMachinePseudoKeysService();
         }
     }
 }

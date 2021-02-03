@@ -15,3 +15,5 @@
 /products/ASC.People/Data/
 Data/
 Logs/
+**/.DS_Store
+.eslintcache

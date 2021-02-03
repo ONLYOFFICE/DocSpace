@@ -1,9 +1,9 @@
 module.exports = {
-  parser: 'babel-eslint',
-  extends: ['eslint:recommended', 'plugin:react/recommended'],
+  parser: "babel-eslint",
+  extends: ["eslint:recommended", "plugin:react/recommended"],
   settings: {
     react: {
-      version: 'detect',
+      version: "detect",
     },
   },
   env: {

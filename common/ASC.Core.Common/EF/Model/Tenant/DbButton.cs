@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
+using ASC.Core.Common.EF.Model;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF
@@ -24,12 +26,57 @@ namespace ASC.Core.Common.EF
 
     public static class DbButtonExtension
     {
-        public static ModelBuilder AddDbButton(this ModelBuilder modelBuilder)
+        public static ModelBuilderWrapper AddDbButton(this ModelBuilderWrapper modelBuilder)
         {
-            modelBuilder.Entity<DbButton>()
-                .HasKey(c => new { c.TariffId, c.PartnerId });
-
+            modelBuilder
+                .Add(MySqlAddDbButton, Provider.MySql)
+                .Add(PgSqlAddDbButton, Provider.Postgre);
             return modelBuilder;
+        }
+        public static void MySqlAddDbButton(this ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<DbButton>(entity =>
+            {
+                entity.HasKey(e => new { e.TariffId, e.PartnerId })
+                    .HasName("PRIMARY");
+
+                entity.ToTable("tenants_buttons");
+
+                entity.Property(e => e.TariffId).HasColumnName("tariff_id");
+
+                entity.Property(e => e.PartnerId)
+                    .HasColumnName("partner_id")
+                    .HasColumnType("varchar(50)")
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+
+                entity.Property(e => e.ButtonUrl)
+                    .IsRequired()
+                    .HasColumnName("button_url")
+                    .HasColumnType("text")
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+            });
+        }
+        public static void PgSqlAddDbButton(this ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<DbButton>(entity =>
+            {
+                entity.HasKey(e => new { e.TariffId, e.PartnerId })
+                    .HasName("tenants_buttons_pkey");
+
+                entity.ToTable("tenants_buttons", "onlyoffice");
+
+                entity.Property(e => e.TariffId).HasColumnName("tariff_id");
+
+                entity.Property(e => e.PartnerId)
+                    .HasColumnName("partner_id")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.ButtonUrl)
+                    .IsRequired()
+                    .HasColumnName("button_url");
+            });
         }
     }
 }

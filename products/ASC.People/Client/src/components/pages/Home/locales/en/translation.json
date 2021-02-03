@@ -11,8 +11,8 @@
   "RemoveData": "Delete personal data",
   "DeleteSelfProfile": "Delete profile",
   "LoadingDescription": "Please wait...",
-  "NotFoundDescription": "No people matching your filter can be displayed in this section. Please select other filter options or clear filter to view all the people in this section.",
-  "NotFoundTitle": "No results matching your search could be found",
+  "NotFoundDescription": "Change filter settings or add people to the section.",
+  "NotFoundTitle": "Nothing found",
   "ClearButton": "Reset filter",
   "UserStatus": "Status",
   "LblActive": "Active",
@@ -45,11 +45,12 @@
   "LblInvited": "Invited",
   "LblSetActive": "Set active",
   "LblSetDisabled": "Set disabled",
-  "DirectionAscLabel":"A-Z",
-  "DirectionDescLabel":"Z-A",
+  "DirectionAscLabel": "A-Z",
+  "DirectionDescLabel": "Z-A",
   "MakeInvitationLink": "Make invitation link",
   "SuccessfullyRemovedUsers": "Users have been removed successfully",
   "SendEmailAction": "Send e-mail action",
   "SuccessfullyRemovedGroup": "Group has been removed successfully",
-  "OrganizationName": "ONLYOFFICE"
+  "AddFilter": "Add filter",
+  "SuccessChangeUserStatus": "The user status was successfully changed"
 }

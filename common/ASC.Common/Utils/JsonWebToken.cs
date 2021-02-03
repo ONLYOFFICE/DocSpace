@@ -49,9 +49,12 @@ namespace ASC.Web.Core.Files
 
         public static string Decode(string token, string key, bool verify = true, bool baseSerializer = false)
         {
-            var (serializer, _, urlEncoder) = GetSettings(baseSerializer);
+            var (serializer, algorithm, urlEncoder) = GetSettings(baseSerializer);
 
-            var decoder = new JwtDecoder(serializer, urlEncoder);
+            var provider = new UtcDateTimeProvider();
+            IJwtValidator validator = new JwtValidator(serializer, provider);
+
+            var decoder = new JwtDecoder(serializer, validator, urlEncoder, algorithm);
 
             return decoder.Decode(token, key, verify);
         }

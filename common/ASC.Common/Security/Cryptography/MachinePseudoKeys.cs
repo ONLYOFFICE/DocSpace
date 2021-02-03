@@ -36,6 +36,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace ASC.Security.Cryptography
 {
+    [Singletone]
     public class MachinePseudoKeys
     {
         private readonly byte[] confkey = null;
@@ -74,15 +75,6 @@ namespace ASC.Security.Cryptography
             var buff = new byte[bytesCount];
             rnd.NextBytes(buff);
             return buff;
-        }
-    }
-    public static class MachinePseudoKeysExtension
-    {
-        public static DIHelper AddMachinePseudoKeysService(this DIHelper services)
-        {
-            services.TryAddSingleton<MachinePseudoKeys>();
-
-            return services;
         }
     }
 }

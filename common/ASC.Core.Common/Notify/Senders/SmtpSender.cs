@@ -46,7 +46,8 @@ using MimeKit;
 
 namespace ASC.Core.Notify.Senders
 {
-    internal class SmtpSender : INotifySender
+    [Singletone(Additional = typeof(SmtpSenderExtension))]
+    public class SmtpSender : INotifySender
     {
         private const string HTML_FORMAT =
             @"<!DOCTYPE html PUBLIC ""-//W3C//DTD HTML 4.01 Transitional//EN"">
@@ -58,14 +59,14 @@ namespace ASC.Core.Notify.Senders
 </html>";
 
         protected ILog Log { get; set; }
-        public IConfiguration Configuration { get; }
-        public IServiceProvider ServiceProvider { get; }
+        protected IConfiguration Configuration { get; }
+        protected IServiceProvider ServiceProvider { get; }
 
-        private string _host;
-        private int _port;
-        private bool _ssl;
-        private ICredentials _credentials;
-        protected bool _useCoreSettings;
+        private string Host { get; set; }
+        private int Port { get; set; }
+        private bool Ssl { get; set; }
+        private ICredentials Credentials { get; set; }
+        protected bool UseCoreSettings { get; set; }
         const int NETWORK_TIMEOUT = 30000;
 
         public SmtpSender(
@@ -81,16 +82,16 @@ namespace ASC.Core.Notify.Senders
         {
             if (properties.ContainsKey("useCoreSettings") && bool.Parse(properties["useCoreSettings"]))
             {
-                _useCoreSettings = true;
+                UseCoreSettings = true;
             }
             else
             {
-                _host = properties["host"];
-                _port = properties.ContainsKey("port") ? int.Parse(properties["port"]) : 25;
-                _ssl = properties.ContainsKey("enableSsl") && bool.Parse(properties["enableSsl"]);
+                Host = properties["host"];
+                Port = properties.ContainsKey("port") ? int.Parse(properties["port"]) : 25;
+                Ssl = properties.ContainsKey("enableSsl") && bool.Parse(properties["enableSsl"]);
                 if (properties.ContainsKey("userName"))
                 {
-                    _credentials = new NetworkCredential(
+                    Credentials = new NetworkCredential(
                          properties["userName"],
                          properties["password"]);
                 }
@@ -101,10 +102,10 @@ namespace ASC.Core.Notify.Senders
         {
             var s = configuration.SmtpSettings;
 
-            _host = s.Host;
-            _port = s.Port;
-            _ssl = s.EnableSSL;
-            _credentials = !string.IsNullOrEmpty(s.CredentialsUserName)
+            Host = s.Host;
+            Port = s.Port;
+            Ssl = s.EnableSSL;
+            Credentials = !string.IsNullOrEmpty(s.CredentialsUserName)
                 ? new NetworkCredential(s.CredentialsUserName, s.CredentialsUserPassword)
                 : null;
         }
@@ -112,9 +113,9 @@ namespace ASC.Core.Notify.Senders
         public virtual NoticeSendResult Send(NotifyMessage m)
         {
             using var scope = ServiceProvider.CreateScope();
-            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+            var scopeClass = scope.ServiceProvider.GetService<SmtpSenderScope>();
+            var (tenantManager, configuration) = scopeClass;
             tenantManager.SetCurrentTenant(m.Tenant);
-            var configuration = scope.ServiceProvider.GetService<CoreConfiguration>();
 
             var smtpClient = GetSmtpClient();
             var result = NoticeSendResult.TryOnceAgain;
@@ -122,19 +123,19 @@ namespace ASC.Core.Notify.Senders
             {
                 try
                 {
-                    if (_useCoreSettings)
+                    if (UseCoreSettings)
                         InitUseCoreSettings(configuration);
 
                     var mail = BuildMailMessage(m);
 
-                    Log.DebugFormat("SmtpSender - host={0}; port={1}; enableSsl={2} enableAuth={3}", _host, _port, _ssl, _credentials != null);
+                    Log.DebugFormat("SmtpSender - host={0}; port={1}; enableSsl={2} enableAuth={3}", Host, Port, Ssl, Credentials != null);
 
-                    smtpClient.Connect(_host, _port,
-                        _ssl ? SecureSocketOptions.Auto : SecureSocketOptions.None);
+                    smtpClient.Connect(Host, Port,
+                        Ssl ? SecureSocketOptions.Auto : SecureSocketOptions.None);
 
-                    if (_credentials != null)
+                    if (Credentials != null)
                     {
-                        smtpClient.Authenticate(_credentials);
+                        smtpClient.Authenticate(Credentials);
                     }
 
                     smtpClient.Send(mail);
@@ -152,7 +153,7 @@ namespace ASC.Core.Notify.Senders
             }
             catch (InvalidOperationException)
             {
-                result = string.IsNullOrEmpty(_host) || _port == 0
+                result = string.IsNullOrEmpty(Host) || Port == 0
                     ? NoticeSendResult.SendingImpossible
                     : NoticeSendResult.TryOnceAgain;
             }
@@ -269,7 +270,7 @@ namespace ASC.Core.Notify.Senders
                 mimeMessage.ReplyTo.Add(MailboxAddress.Parse(ParserOptions.Default, m.ReplyTo));
             }
 
-            mimeMessage.Headers.Add("Auto-Submitted", "auto-generated");
+            mimeMessage.Headers.Add("Auto-Submitted", string.IsNullOrEmpty(m.AutoSubmitted) ? "auto-generated" : m.AutoSubmitted);
 
             return mimeMessage;
         }
@@ -322,14 +323,29 @@ namespace ASC.Core.Notify.Senders
         }
     }
 
-    public static class SmtpSenderExtension
+    [Scope]
+    public class SmtpSenderScope
     {
-        public static DIHelper AddSmtpSenderService(this DIHelper services)
+        private TenantManager TenantManager { get; }
+        private CoreConfiguration CoreConfiguration { get; }
+
+        public SmtpSenderScope(TenantManager tenantManager, CoreConfiguration coreConfiguration)
         {
-            services.TryAddSingleton<SmtpSender>();
-            return services
-                .AddTenantManagerService()
-                .AddCoreSettingsService();
+            TenantManager = tenantManager;
+            CoreConfiguration = coreConfiguration;
+        }
+
+        public void Deconstruct(out TenantManager tenantManager, out CoreConfiguration coreConfiguration)
+        {
+            (tenantManager, coreConfiguration) = (TenantManager, CoreConfiguration);
+        }
+    }
+
+    public class SmtpSenderExtension
+    {
+        public static void Register(DIHelper services)
+        {
+            services.TryAdd<SmtpSenderScope>();
         }
     }
 }

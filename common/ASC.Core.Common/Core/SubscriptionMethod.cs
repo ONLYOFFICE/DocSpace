@@ -41,6 +41,8 @@ namespace ASC.Core
 
         public string[] Methods { get; set; }
 
+        public string MethodsFromDb { set { Methods = value.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries); } }
+
 
         public static implicit operator SubscriptionMethod(SubscriptionMethodCache cache)
         {

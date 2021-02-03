@@ -2,31 +2,31 @@ export function getGroupList() {
   return Promise.resolve([
     {
       id: "group-administration",
-      name: "Administration"
+      name: "Administration",
     },
     {
       id: "group-dev",
-      name: "Development"
+      name: "Development",
     },
     {
       id: "group-management",
-      name: "Management"
+      name: "Management",
     },
     {
       id: "group-marketing",
-      name: "Marketing"
+      name: "Marketing",
     },
     {
       id: "group-mobile",
-      name: "Mobile"
+      name: "Mobile",
     },
     {
       id: "group-support",
-      name: "Support"
+      name: "Support",
     },
     {
       id: "group-web",
-      name: "Web"
-    }
+      name: "Web",
+    },
   ]);
 }

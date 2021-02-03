@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 
@@ -19,12 +20,18 @@ namespace ASC.Core.Common.EF
             var sqlGenerator = factory.Create();
             var command = sqlGenerator.GetCommand(selectExpression);
 
-            string sql = command.CommandText;
+            var sql = command.CommandText;
             return sql;
         }
 
-        private static object Private(this object obj, string privateField) => obj?.GetType().GetField(privateField, BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(obj);
-        private static T Private<T>(this object obj, string privateField) => (T)obj?.GetType().GetField(privateField, BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(obj);
+        private static object Private(this object obj, string privateField)
+        {
+            return obj?.GetType().GetField(privateField, BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(obj);
+        }
 
+        private static T Private<T>(this object obj, string privateField)
+        {
+            return (T)obj?.GetType().GetField(privateField, BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(obj);
+        }
     }
 }

@@ -1,13 +1,7 @@
 {
   "Article": {
-    "Resource":[
-      "People",
-      "Actions",
-      "InviteLinkTitle"
-    ],
-    "PeopleResource": [
-      "ImportPeople"
-    ]
+    "Resource": ["People", "Actions", "InviteLinkTitle"],
+    "PeopleResource": ["ImportPeople"]
   },
   "dialogs": {
     "InviteDialog": {
@@ -20,97 +14,76 @@
         "InviteUsersAsCollaborators",
         "InviteLinkTitle"
       ],
-    "ResourceJS": [
-      "LinkCopySuccess"
-    ]
+      "ResourceJS": ["LinkCopySuccess"]
+    },
+    "ChangeEmailDialog": {
+      "Resource": [
+        "EmailChangeTitle",
+        "EnterEmail",
+        "EmailActivationDescription",
+        "SendButton"
+      ]
+    },
+    "DeleteSelfProfileDialog": {
+      "Resource": [
+        "DeleteProfileTitle",
+        "DeleteProfileInfo",
+        "CloseButton",
+        "SendButton"
+      ]
+    },
+    "ChangePhoneDialog": {
+      "Resource": [
+        "SendButton",
+        "MobilePhoneChangeTitle",
+        "MobilePhoneEraseDescription"
+      ]
+    },
+    "DeleteProfileEverDialog": {
+      "Resource": [
+        "Confirmation",
+        "DeleteUserConfirmation",
+        "Warning",
+        "DeleteUserDataConfirmation"
+      ],
+      "PeopleResource": ["SuccessfullyDeleteUserInfoMessage"],
+      "UserControlsCommonResource": ["NotBeUndone"]
+    },
+    "ChangePasswordDialog": {
+      "Resource": [
+        "PasswordChangeTitle",
+        "MessageSendPasswordChangeInstructionsOnEmail",
+        "SendButton"
+      ]
+    },
+    "DeleteUsersDialog": {
+      "Resource": [
+        "OKButton",
+        "CancelButton",
+        "Warning",
+        "DeleteUserDataConfirmation"
+      ],
+      "UserControlsCommonResource": ["NotBeUndone"]
+    },
+    "SendInviteDialog": {
+      "Resource": [
+        "OKButton",
+        "CancelButton",
+        "SendInviteAgain",
+        "DisabledEmployeeTitle"
+      ],
+      "PeopleJSResource": ["SuccessSendInvitation"]
+    },
+    "ChangeUserStatusDialog": {
+      "PeopleJSResource": ["SuccessChangeUserStatus"],
+      "Resource": ["CancelButton"]
+    },
+    "ChangeUserTypeDialog": {
+      "PeopleJSResource": ["SuccessChangeUserType"],
+      "Resource": ["CancelButton", "GuestCaption"],
+      "AuditResource": ["UserCol"]
+    }
   },
-  "ChangeEmailDialog":{
-    "Resource": [
-      "EmailChangeTitle",
-      "EnterEmail",
-      "EmailActivationDescription",
-      "SendButton"
-    ]
-  },
-  "DeleteSelfProfileDialog":{
-    "Resource": [
-      "DeleteProfileTitle",
-      "DeleteProfileInfo",
-      "CloseButton",
-      "SendButton"
-    ]
-  },
-  "ChangePhoneDialog":{
-    "Resource": [
-      "SendButton",
-      "MobilePhoneChangeTitle",
-      "MobilePhoneEraseDescription"
-    ]
-  },
-  "DeleteProfileEverDialog":{
-    "Resource": [
-      "Confirmation",
-      "DeleteUserConfirmation",
-      "Warning",
-      "DeleteUserDataConfirmation"      
-    ],
-    "PeopleResource": [
-      "SuccessfullyDeleteUserInfoMessage"
-    ],
-    "UserControlsCommonResource":[
-      "NotBeUndone"
-    ]
-  },
-  "ChangePasswordDialog":{
-    "Resource": [
-      "PasswordChangeTitle",
-      "MessageSendPasswordChangeInstructionsOnEmail",
-      "SendButton"
-    ]
-  },
-  "DeleteUsersDialog":{
-    "Resource": [
-      "OKButton",
-      "CancelButton",
-      "Warning",
-      "DeleteUserDataConfirmation"
-    ],
-    "UserControlsCommonResource":[
-      "NotBeUndone"
-    ]
-  },
-  "SendInviteDialog":{
-    "Resource": [
-      "OKButton",
-      "CancelButton",
-      "SendInviteAgain",
-      "DisabledEmployeeTitle"
-    ],
-    "PeopleJSResource": [
-      "SuccessSendInvitation"
-    ]
-  },
-  "ChangeUserStatusDialog":{
-    "PeopleJSResource": [
-      "SuccessChangeUserStatus"
-    ],
-    "Resource": [
-      "CancelButton"
-    ]
-  },
-  "ChangeUserTypeDialog":{
-    "PeopleJSResource": [
-      "SuccessChangeUserType"
-    ],
-    "Resource": [
-      "CancelButton",
-      "GuestCaption"
-    ],
-    "AuditResource": [
-      "UserCol"
-    ]
-  }
-},
   "pages": {
     "Profile": {
       "Resource": [
@@ -145,12 +118,8 @@
         "MessageEmailActivationInstuctionsSentOnEmail",
         "Error"
       ],
-      "ResourceJS": [
-        "ChangesApplied"
-      ],
-      "PeopleJSResource": [
-        "SuccessChangeUserStatus"
-      ]
+      "ResourceJS": ["ChangesApplied"],
+      "PeopleJSResource": ["SuccessChangeUserStatus"]
     },
     "ProfileAction": {
       "Resource": [
@@ -193,10 +162,7 @@
         "Message",
         "WriteComment"
       ],
-      "CustomModeResource": [
-        "ReviewingCustomMode"
-        
-      ]
+      "CustomModeResource": ["ReviewingCustomMode"]
     },
     "Home": {
       "Resource": [
@@ -226,8 +192,6 @@
       "PeopleResource": [
         "LblSendEmail",
         "LblSendMessage",
-        "NotFoundDescription",
-        "NotFoundTitle",
         "ClearButton",
         "LblActive",
         "LblTerminated",
@@ -235,40 +199,19 @@
         "LblOther",
         "LblChangeEmail"
       ],
-      "UserControlsCommonResource": [
-        "NextPage",
-        "PreviousPage",
-        "LblSelect"
-
-      ]
+      "UserControlsCommonResource": ["NextPage", "PreviousPage", "LblSelect"]
     }
   },
   "Layout": {
-    "Resource": [
-      "Profile",
-      "AboutCompanyTitle",
-      "LogoutButton"
-    ]
+    "Resource": ["Profile", "AboutCompanyTitle", "LogoutButton"]
   },
   "GroupAction": {
-    "Resource": [
-      "SaveButton",
-      "CancelButton",
-      "Name"
-    ],
-    "PeopleResource": [
-      "Members",
-      "AddMembers",
-      "AddButton"
-    ],
-    "UserControlsCommonResource": [
-      "Members",
-      "AddMembers",
-      "LblSelect"
-    ]
+    "Resource": ["SaveButton", "CancelButton", "Name"],
+    "PeopleResource": ["Members", "AddMembers", "AddButton"],
+    "UserControlsCommonResource": ["Members", "AddMembers", "LblSelect"]
   },
-  "Reassign":{
-    "PeopleResource":[
+  "Reassign": {
+    "PeopleResource": [
       "ReassignmentData",
       "ReassignsTransferedListHdr",
       "ReassignsTransferedListItem1",
@@ -280,11 +223,7 @@
       "ReassignButton",
       "ReassignsToUser"
     ],
-    "UserControlsCommonResource":[
-      "NotBeUndone"
-    ],
-    "PeopleJSResource":[
-      "ChooseUser"
-    ]
+    "UserControlsCommonResource": ["NotBeUndone"],
+    "PeopleJSResource": ["ChooseUser"]
   }
 }

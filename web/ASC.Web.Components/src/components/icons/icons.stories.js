@@ -1,11 +1,16 @@
-import React from 'react';
-import { storiesOf } from '@storybook/react';
-import withReadme from 'storybook-readme/with-readme';
-import styled from '@emotion/styled';
-import { withKnobs, select, color, boolean } from '@storybook/addon-knobs/react';
-import Readme from './README.md';
+import React from "react";
+import { storiesOf } from "@storybook/react";
+import withReadme from "storybook-readme/with-readme";
+import styled from "@emotion/styled";
+import {
+  withKnobs,
+  select,
+  color,
+  boolean,
+} from "@storybook/addon-knobs/react";
+import Readme from "./README.md";
 
-import {Icons} from '.';
+import { Icons } from ".";
 
 const IconList = styled.div`
   display: grid;
@@ -26,24 +31,34 @@ const IconContainer = styled.div`
 
 const iconNames = Object.keys(Icons);
 
-storiesOf('Components|Icons', module)
+storiesOf("Components|Icons", module)
   .addDecorator(withKnobs)
   .addDecorator(withReadme(Readme))
-  .add('all icons', () => (
+  .add("all icons", () => (
     <IconList>
       {Object.values(Icons).map((Icon, index) => {
-        const sizeValue = select('size', ['small', 'medium', 'big', 'scale'], 'big');
+        const sizeValue = select(
+          "size",
+          ["small", "medium", "big", "scale"],
+          "big"
+        );
 
-        let isFill = boolean('isfill', false);
-        let iconColor = isFill ? {color: `${color('color', "dimgray")}`} : {};
+        let isFill = boolean("isfill", false);
+        let iconColor = isFill ? { color: `${color("color", "dimgray")}` } : {};
 
-        let isStroke = boolean('isStroke', false);
-        let iconStroke = isStroke ? {stroke: `${color('stroke', "dimgray")}`} : {};
+        let isStroke = boolean("isStroke", false);
+        let iconStroke = isStroke
+          ? { stroke: `${color("stroke", "dimgray")}` }
+          : {};
 
         const containerWidth =
-          sizeValue === 'scale'
+          sizeValue === "scale"
             ? {
-                width: `${select('container width', ['100', '200', '300', '400'], '100')}px`,
+                width: `${select(
+                  "container width",
+                  ["100", "200", "300", "400"],
+                  "100"
+                )}px`,
               }
             : {};
         return (

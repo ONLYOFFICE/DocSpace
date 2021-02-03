@@ -29,30 +29,21 @@ using System.Collections.Generic;
 using System.Linq;
 
 using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.Configuration;
 using ASC.Core.Common.Settings;
 using ASC.Data.Storage.Configuration;
 using ASC.Data.Storage.DiscStorage;
-using ASC.Security.Cryptography;
+using ASC.Data.Storage.GoogleCloud;
+using ASC.Data.Storage.RackspaceCloud;
+using ASC.Data.Storage.S3;
 
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Storage
 {
-    public class StorageFactoryListener
-    {
-        public StorageFactoryListener(ICacheNotify<DataStoreCacheItem> cache)
-        {
-            cache.Subscribe((r) => DataStoreCache.Remove(r.TenantId, r.Module), CacheNotifyAction.Remove);
-        }
-    }
-
+    [Singletone(Additional = typeof(StorageConfigExtension))]
     public class StorageFactoryConfig
     {
         public Configuration.Storage Section { get; }
@@ -153,57 +144,32 @@ namespace ASC.Data.Storage
         }
     }
 
-
+    [Scope(Additional = typeof(StorageFactoryExtension))]
     public class StorageFactory
     {
         private const string DefaultTenantName = "default";
 
-        public StorageFactoryListener StorageFactoryListener { get; }
-        public StorageFactoryConfig StorageFactoryConfig { get; }
-        public SettingsManager SettingsManager { get; }
-        public StorageSettingsHelper StorageSettingsHelper { get; }
-        public TenantManager TenantManager { get; }
-        public CoreBaseSettings CoreBaseSettings { get; }
-        public PathUtils PathUtils { get; }
-        public EmailValidationKeyProvider EmailValidationKeyProvider { get; }
-        public IOptionsMonitor<ILog> Options { get; }
-        public IHttpContextAccessor HttpContextAccessor { get; }
+        private StorageFactoryConfig StorageFactoryConfig { get; }
+        private SettingsManager SettingsManager { get; }
+        private StorageSettingsHelper StorageSettingsHelper { get; }
+        private TenantManager TenantManager { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
+        private IServiceProvider ServiceProvider { get; }
 
         public StorageFactory(
-            StorageFactoryListener storageFactoryListener,
+            IServiceProvider serviceProvider,
             StorageFactoryConfig storageFactoryConfig,
             SettingsManager settingsManager,
             StorageSettingsHelper storageSettingsHelper,
             TenantManager tenantManager,
-            CoreBaseSettings coreBaseSettings,
-            PathUtils pathUtils,
-            EmailValidationKeyProvider emailValidationKeyProvider,
-            IOptionsMonitor<ILog> options) :
-            this(storageFactoryListener, storageFactoryConfig, settingsManager, storageSettingsHelper, tenantManager, coreBaseSettings, pathUtils, emailValidationKeyProvider, options, null)
+            CoreBaseSettings coreBaseSettings)
         {
-        }
-        public StorageFactory(
-            StorageFactoryListener storageFactoryListener,
-            StorageFactoryConfig storageFactoryConfig,
-            SettingsManager settingsManager,
-            StorageSettingsHelper storageSettingsHelper,
-            TenantManager tenantManager,
-            CoreBaseSettings coreBaseSettings,
-            PathUtils pathUtils,
-            EmailValidationKeyProvider emailValidationKeyProvider,
-            IOptionsMonitor<ILog> options,
-            IHttpContextAccessor httpContextAccessor)
-        {
-            StorageFactoryListener = storageFactoryListener;
+            ServiceProvider = serviceProvider;
             StorageFactoryConfig = storageFactoryConfig;
             SettingsManager = settingsManager;
             StorageSettingsHelper = storageSettingsHelper;
             TenantManager = tenantManager;
             CoreBaseSettings = coreBaseSettings;
-            PathUtils = pathUtils;
-            EmailValidationKeyProvider = emailValidationKeyProvider;
-            Options = options;
-            HttpContextAccessor = httpContextAccessor;
         }
 
         public IDataStore GetStorage(string tenant, string module)
@@ -232,10 +198,6 @@ namespace ASC.Data.Storage
             //Make tennant path
             tenant = TenantPath.CreatePath(tenant);
 
-            //remove cache
-            //var store = DataStoreCache.Get(tenant, module);
-            //if (store == null)
-            //{
             var section = StorageFactoryConfig.Section;
             if (section == null)
             {
@@ -244,7 +206,6 @@ namespace ASC.Data.Storage
 
             var settings = SettingsManager.LoadForTenant<StorageSettings>(tenantId);
 
-            //}
             return GetDataStore(tenant, module, StorageSettingsHelper.DataStoreConsumer(settings), controller);
         }
 
@@ -263,16 +224,6 @@ namespace ASC.Data.Storage
 
             int.TryParse(tenant, out var tenantId);
             return GetDataStore(tenant, module, consumer, new TenantQuotaController(tenantId, TenantManager));
-        }
-
-        private IDataStore GetStoreAndCache(string tenant, string module, DataStoreConsumer consumer, IQuotaController controller)
-        {
-            var store = GetDataStore(tenant, module, consumer, controller);
-            if (store != null)
-            {
-                DataStoreCache.Put(store, tenant, module);
-            }
-            return store;
         }
 
         private IDataStore GetDataStore(string tenant, string module, DataStoreConsumer consumer, IQuotaController controller)
@@ -301,35 +252,22 @@ namespace ASC.Data.Storage
                 props = handler.Property.ToDictionary(r => r.Name, r => r.Value);
             }
 
-            return ((IDataStore)Activator.CreateInstance(instanceType, TenantManager, PathUtils, EmailValidationKeyProvider, HttpContextAccessor, Options))
+            ;
+            return ((IDataStore)ActivatorUtilities.CreateInstance(ServiceProvider, instanceType))
                 .Configure(tenant, handler, moduleElement, props)
                 .SetQuotaController(moduleElement.Count ? controller : null
                 /*don't count quota if specified on module*/);
         }
     }
 
-
-    public static class StorageFactoryExtension
+    public class StorageFactoryExtension
     {
-        public static DIHelper AddStorageFactoryConfigService(this DIHelper services)
+        public static void Register(DIHelper services)
         {
-            services.TryAddSingleton<StorageFactoryConfig>();
-
-            return services;
-        }
-
-        public static DIHelper AddStorageFactoryService(this DIHelper services)
-        {
-            services.TryAddScoped<StorageFactory>();
-            services.TryAddSingleton<StorageFactoryListener>();
-
-            return services
-                .AddTenantManagerService()
-                .AddCoreBaseSettingsService()
-                .AddPathUtilsService()
-                .AddEmailValidationKeyProviderService()
-                .AddStorageSettingsService()
-                .AddStorageFactoryConfigService();
+            services.TryAdd<DiscDataStore>();
+            services.TryAdd<GoogleCloudStorage>();
+            services.TryAdd<RackspaceCloudStorage>();
+            services.TryAdd<S3Storage>();
         }
     }
 }

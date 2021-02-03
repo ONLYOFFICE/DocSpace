@@ -31,16 +31,16 @@ using System.Net;
 using System.Xml.Linq;
 using System.Xml.XPath;
 
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Core;
-using ASC.Core.Common;
 using ASC.Core.Common.Configuration;
-using ASC.Core.Tenants;
 
 using Microsoft.Extensions.Configuration;
 
 namespace ASC.FederatedLogin.LoginProviders
 {
+    [Scope]
     public class BitlyLoginProvider : Consumer, IValidateKeysProvider
     {
         private string BitlyClientId
@@ -66,12 +66,13 @@ namespace ASC.FederatedLogin.LoginProviders
             CoreSettings coreSettings,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
+            ConsumerFactory consumerFactory,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, name, order, props, additional)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, consumerFactory, name, order, props, additional)
         {
         }
 
-        public bool ValidateKeys(AuthContext authContext, TenantUtil tenantUtil, SecurityContext securityContext, TenantManager tenantManager, BaseCommonLinkUtility baseCommonLinkUtility)
+        public bool ValidateKeys()
         {
             try
             {

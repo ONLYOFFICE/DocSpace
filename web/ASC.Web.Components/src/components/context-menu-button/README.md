@@ -19,8 +19,8 @@ import { ContextMenuButton } from "asc-web-components";
     {
       key: "key",
       label: "label",
-      onClick: () => alert("label")
-    }
+      onClick: () => alert("label"),
+    },
   ]}
 />
 ```

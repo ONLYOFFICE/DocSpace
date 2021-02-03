@@ -1,0 +1,366 @@
+### STAGE 1: Develop ######
+FROM ubuntu:18.04 AS develop
+
+ARG RELEASE_DATE="2016-06-21"
+ARG VERSION="8.9.0.190"
+ARG DEBIAN_FRONTEND=noninteractive
+ARG GIT_BRANCH="master"
+
+LABEL onlyoffice.appserver.release-date="${RELEASE_DATE}" \
+      onlyoffice.appserver.version="${VERSION}" \
+      maintainer="Ascensio System SIA <support@onlyoffice.com>"
+
+ENV LANG=en_US.UTF-8 \
+    LANGUAGE=en_US:en \
+    LC_ALL=en_US.UTF-8
+
+RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \
+    apt-get -y update && \
+    apt-get -y upgrade && \
+    apt-get -y dist-upgrade && \
+    apt-get install -yq sudo locales && \
+    addgroup --system --gid 107 onlyoffice && \
+    adduser -uid 104 --quiet --home /var/www/onlyoffice --system --gid 107 onlyoffice && \
+    locale-gen en_US.UTF-8 && \
+    apt-get -y update && \
+    apt-get install -yq software-properties-common wget curl && \
+    curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash - && \
+    apt-get install -y nodejs && \
+    curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add - && \
+    echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list && \
+    wget -q https://packages.microsoft.com/config/ubuntu/18.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb && \
+    dpkg -i packages-microsoft-prod.deb && \
+    apt-get -y update && \
+    cd ~ && \
+    echo "#!/bin/sh\nexit 0" > /usr/sbin/policy-rc.d && \
+    apt-get install -yq git \
+                        yarn \
+                        dotnet-sdk-3.1 
+
+RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \
+    git clone --depth 1 -b ${GIT_BRANCH} https://github.com/ONLYOFFICE/AppServer.git /app/onlyoffice/src/
+
+RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \ 
+    cd /app/onlyoffice/src/ && \
+    yarn install --cwd web/ASC.Web.Components --frozen-lockfile > build/ASC.Web.Components.log && \
+    yarn pack --cwd web/ASC.Web.Components
+	
+RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \ 
+    cd /app/onlyoffice/src/ && \
+    component=$(ls web/ASC.Web.Components/asc-web-components-v1.*.tgz) && \
+    yarn remove asc-web-components --cwd web/ASC.Web.Common --peer && \
+    yarn add file:../../$component --cwd web/ASC.Web.Common --cache-folder ../../yarn --peer && \
+    yarn install --cwd web/ASC.Web.Common --frozen-lockfile > build/ASC.Web.Common.log && \
+    yarn pack --cwd web/ASC.Web.Common
+
+RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \ 
+    cd /app/onlyoffice/src/ && \
+    npm run build:storybook --prefix web/ASC.Web.Components && \
+    mkdir -p /var/www/story/ && \
+    cp -Rf web/ASC.Web.Components/storybook-static/* /var/www/story/
+
+RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \ 
+    cd /app/onlyoffice/src/ && \
+    component=$(ls web/ASC.Web.Components/asc-web-components-v1.*.tgz) && \
+    common=$(ls web/ASC.Web.Common/asc-web-common-v1.*.tgz) && \
+    yarn remove asc-web-components asc-web-common --cwd web/ASC.Web.Client && \
+    yarn add ../../$component --cwd web/ASC.Web.Client --cache-folder ../../yarn && \
+    yarn add ../../$common --cwd web/ASC.Web.Client --cache-folder ../../yarn && \
+    yarn install --cwd web/ASC.Web.Client --frozen-lockfile || (cd web/ASC.Web.Client && npm i && cd ../../) && \
+    npm run build --prefix web/ASC.Web.Client && \
+    rm -rf /var/www/studio/client/* && \
+    mkdir -p /var/www/studio/client && \
+    cp -rf web/ASC.Web.Client/build/* /var/www/studio/client
+
+RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \ 
+    cd /app/onlyoffice/src/ && \
+    component=$(ls  web/ASC.Web.Components/asc-web-components-v1.*.tgz) && \
+    common=$(ls web/ASC.Web.Common/asc-web-common-v1.*.tgz) && \
+    yarn remove asc-web-components asc-web-common --cwd products/ASC.Files/Client && \
+    yarn add ../../../$component --cwd products/ASC.Files/Client --cache-folder ../../../yarn && \
+    yarn add ../../../$common --cwd products/ASC.Files/Client --cache-folder ../../../yarn && \
+    yarn install --cwd products/ASC.Files/Client --frozen-lockfile || (cd products/ASC.Files/Client && npm i && cd ../../../) && \
+    npm run build --prefix products/ASC.Files/Client && \
+    mkdir -p /var/www/products/ASC.Files/client && \
+    cp -Rf products/ASC.Files/Client/build/* /var/www/products/ASC.Files/client && \
+    mkdir -p /var/www/products/ASC.Files/client/products/files
+
+RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \  
+    cd /app/onlyoffice/src/ && \
+    component=$(ls  web/ASC.Web.Components/asc-web-components-v1.*.tgz) && \
+    common=$(ls web/ASC.Web.Common/asc-web-common-v1.*.tgz) && \
+    yarn remove asc-web-components asc-web-common --cwd products/ASC.People/Client && \
+    yarn add ../../../$component --cwd products/ASC.People/Client --cache-folder ../../../yarn && \
+    yarn add ../../../$common --cwd products/ASC.People/Client --cache-folder ../../../yarn && \
+    yarn install --cwd products/ASC.People/Client --frozen-lockfile || (cd products/ASC.People/Client && npm i && cd ../../../) && \
+    npm run build --prefix products/ASC.People/Client && \
+    mkdir -p /var/www/products/ASC.People/client && \
+    cp -Rf products/ASC.People/Client/build/* /var/www/products/ASC.People/client && \
+    mkdir -p /var/www/products/ASC.People/client/products/people
+
+RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \ 
+    cd /app/onlyoffice/src/ && \
+    #rm -f /etc/nginx/conf.d/* && \
+    mkdir -p  /etc/nginx/conf.d/ && \
+    mkdir -p /var/www/public/ && cp -f public/* /var/www/public/ && \
+    mkdir -p /app/onlyoffice/config/ && cp -rf config/* /app/onlyoffice/config/ && \
+    cp -f config/nginx/onlyoffice*.conf /etc/nginx/conf.d/ && \
+    mkdir -p /etc/nginx/includes/ && cp -f config/nginx/includes/onlyoffice*.conf /etc/nginx/includes/ && \
+    sed -e 's/#//' -i /etc/nginx/conf.d/onlyoffice.conf && \
+    dotnet restore ASC.Web.sln --configfile .nuget/NuGet.Config && \
+    dotnet build -r linux-x64 ASC.Web.sln && \
+    cd products/ASC.People/Server && \
+    dotnet -d publish --no-build --self-contained -r linux-x64 -o /var/www/products/ASC.People/server && \
+    cd ../../../ && \
+    cd products/ASC.Files/Server && \
+    dotnet -d publish --no-build --self-contained -r linux-x64 -o /var/www/products/ASC.Files/server && \
+    cp -avrf DocStore /var/www/products/ASC.Files/server/ && \
+    cd ../../../ && \
+    cd products/ASC.Files/Service && \
+    dotnet add ASC.Files.Service.csproj reference ../../ASC.People/Server/ASC.People.csproj  ../Server/ASC.Files.csproj && \
+    dotnet -d publish --no-build --self-contained -r linux-x64 -o /var/www/products/ASC.Files/service && \
+    cd ../../../ && \
+    cd web/ASC.Web.Api && \
+    dotnet -d publish --no-build --self-contained -r linux-x64 -o /var/www/studio/api && \
+    cd ../../ && \
+    cd web/ASC.Web.Studio && \
+    dotnet -d publish --no-build --self-contained -r linux-x64 -o /var/www/studio/server && \
+    cd ../../ && \
+    cd common/services/ASC.Data.Backup && \
+    dotnet -d publish --no-build --self-contained -r linux-x64 -o /var/www/services/backup && \
+    cd ../../../ && \
+    cd common/services/ASC.Notify && \
+    dotnet -d publish --no-build --self-contained -r linux-x64 -o /var/www/services/notify && \
+    cd ../../../ && \
+    cd common/services/ASC.ApiSystem && \
+    dotnet -d publish --no-build --self-contained -r linux-x64 -o /var/www/services/apisystem && \
+    cd ../../../ && \
+    cd common/services/ASC.Thumbnails.Svc && \
+    dotnet -d publish --no-build --self-contained -r linux-x64 -o /services/thumb/service && \
+    cd ../../../ && \
+    yarn install --cwd common/ASC.Thumbnails --frozen-lockfile && \
+    mkdir -p /var/www/services/thumb/client && cp -Rf common/ASC.Thumbnails/* /var/www/services/thumb/client && \
+    
+    cd common/services/ASC.UrlShortener.Svc && \
+    dotnet -d publish --no-build --self-contained -r linux-x64 -o /services/urlshortener/service && \
+    cd ../../../ && \
+    yarn install --cwd common/ASC.UrlShortener --frozen-lockfile && \
+    mkdir -p /var/www/services/urlshortener/client && cp -Rf common/ASC.UrlShortener/* /var/www/services/urlshortener/client && \
+    
+    cd common/services/ASC.Socket.IO.Svc && \
+    dotnet -d publish --no-build --self-contained -r linux-x64 -o /services/socket/service && \
+    cd ../../../ && \
+    yarn install --cwd common/ASC.Socket.IO --frozen-lockfile && \
+    mkdir -p /var/www/services/socket/client && cp -Rf common/ASC.Socket.IO/* /var/www/services/socket/client && \
+
+    cd common/services/ASC.Studio.Notify && \
+    dotnet add ASC.Studio.Notify.csproj reference ../../../products/ASC.People/Server/ASC.People.csproj  ../../../products/ASC.Files/Server/ASC.Files.csproj  && \
+    dotnet -d publish --no-build --self-contained -r linux-x64 -o /var/www/services/studio.notify
+
+COPY config/mysql/conf.d/mysql.cnf /etc/mysql/conf.d/mysql.cnf
+COPY config/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+RUN sed -i 's/Server=.*;Port=/Server=127.0.0.1;Port=/' /app/onlyoffice/config/appsettings.test.json
+
+RUN rm -rf /var/lib/apt/lists/*
+
+### STAGE 2: Build ###
+
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.1 as builder
+
+COPY --from=develop /app/onlyoffice/config/ /app/onlyoffice/config/
+
+# add defualt user and group for no-root run
+RUN mkdir -p /var/log/onlyoffice && \
+    mkdir -p /app/onlyoffice/data && \
+    mkdir -p /var/www/services/backup && \
+    addgroup --system --gid 107 onlyoffice && \
+    adduser -uid 104 --quiet --home /var/www/onlyoffice --system --gid 107 onlyoffice && \
+    chown onlyoffice:onlyoffice /app/onlyoffice -R && \
+    chown onlyoffice:onlyoffice /var/log -R  && \
+    chown onlyoffice:onlyoffice /var/www -R 
+RUN echo "nameserver 8.8.8.8" | tee /etc/resolv.conf > /dev/null && \ 
+    apt-get -y update && \
+    apt-get -y upgrade && \
+    apt-get install -yq nano &&\
+    apt-get install -yq jq &&\
+    apt-get install -yq nodejs &&\
+    apt-get install -yq libgdiplus
+    
+#USER onlyoffice    
+EXPOSE 5050
+
+ENTRYPOINT ["./docker-entrypoint.sh"]
+
+### STAGE 3: Run ###
+
+## NGINX ##
+FROM nginx:stable-alpine AS web
+
+# Remove default nginx website
+RUN rm -rf /usr/share/nginx/html/* 
+
+# copy artefacts and config values for nginx
+COPY --from=develop /etc/nginx/conf.d /etc/nginx/conf.d
+COPY --from=develop /etc/nginx/includes /etc/nginx/includes
+COPY --from=develop /var/www/story /var/www/story
+COPY --from=develop /var/www/products/ASC.Files/client /var/www/products/ASC.Files/client
+COPY --from=develop /var/www/products/ASC.People/client /var/www/products/ASC.People/client
+COPY --from=develop /var/www/public /var/www/public
+COPY --from=develop /var/www/studio/client /var/www/studio/client
+COPY /config/nginx/templates/upstream.conf.template /etc/nginx/templates/upstream.conf.template
+
+# add defualt user and group for no-root run
+RUN chown nginx:nginx /etc/nginx/* -R &&\
+    chown nginx:nginx /docker-entrypoint.d/* &&\
+    # changes for upstream configure
+    sed -i 's/localhost:5000/$service_api/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/localhost:5010/$service_api_system/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/localhost:5004/$service_people_server/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/localhost:5007/$service_files/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/localhost:5003/$service_studio/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/localhost:5012/$service_backup/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/localhost:9999/$service_sh/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/172.*/$document_server;/' /etc/nginx/conf.d/onlyoffice.conf && \
+    # configute the image nginx whith less privileged https://hub.docker.com/_/nginx
+    sed -i 's/pid.*nginx.pid;/pid \/tmp\/nginx.pid;/' /etc/nginx/nginx.conf && \
+    sed -i 's/http.*{/http {\n client_body_temp_path \/tmp\/client_temp;\n proxy_temp_path \/tmp\/proxy_temp_path;\n fastcgi_temp_path \/tmp\/fastcgi_temp;\n uwsgi_temp_path \/tmp\/uwsgi_temp;\n scgi_temp_path  \/tmp\/scgi_temp;/' /etc/nginx/nginx.conf
+
+
+## backup ##
+FROM builder AS backup
+
+WORKDIR /var/www/services/backup/
+
+COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
+COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/services/backup/ .
+COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.People/server/ASC.People.dll /var/www/products/ASC.People/server/
+COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.Files/server/ASC.Files*.dll /var/www/products/ASC.Files/server/
+
+CMD ["ASC.Data.Backup.dll", "backup", "core:products:folder=/var/www/products/", "core:products:subfolder=server"]
+
+## api ##
+FROM builder AS api
+
+WORKDIR /var/www/studio/api/
+
+COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
+COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/studio/api .
+COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.People/server/ASC.People.dll /var/www/products/ASC.People/server/
+COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.Files/server/ASC.Files*.dll /var/www/products/ASC.Files/server/
+
+CMD ["ASC.Web.Api.dll", "api"]
+
+## api_system ##
+FROM builder AS api_system
+
+WORKDIR /var/www/services/apisystem/
+
+COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
+COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/services/apisystem/ .
+
+CMD ["ASC.ApiSystem.dll", "api_system"]
+
+## urlshortener ##
+FROM builder AS urlshortener
+
+WORKDIR /services/urlshortener/service/ 
+
+COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
+COPY --from=develop --chown=onlyoffice:onlyoffice /services/urlshortener/service/ .
+COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/services/urlshortener/client /services/urlshortener/client
+CMD ["ASC.UrlShortener.Svc.dll", "urlshortener"]
+
+
+## studio.notify ##
+FROM builder AS studio.notify
+
+WORKDIR /var/www/services/studio.notify/
+
+COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
+COPY --from=develop /var/www/services/studio.notify/ .
+COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.People/server/ASC.People.dll /var/www/products/ASC.People/server/
+COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.Files/server/ASC.Files*.dll /var/www/products/ASC.Files/server/
+
+CMD ["ASC.Studio.Notify.dll", "studio.notify", "core:products:folder=/var/www/products/", "core:products:subfolder=server"]
+
+
+## notify ##
+FROM builder AS notify
+
+WORKDIR /var/www/services/notify/
+
+COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
+COPY --from=develop /var/www/services/notify/ .
+COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.People/server/ASC.People.dll /var/www/products/ASC.People/server/
+COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.Files/server/ASC.Files*.dll /var/www/products/ASC.Files/server/
+
+CMD ["ASC.Notify.dll", "notify", "core:products:folder=/var/www/products/", "core:products:subfolder=server"]
+
+## people.server ##
+FROM builder AS people.server
+
+WORKDIR /var/www/products/ASC.People/server/
+
+COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
+COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.People/server/ .
+COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.Files/server/ASC.Files*.dll /var/www/products/ASC.Files/server/
+
+CMD ["ASC.People.dll", "people.server"]
+
+## files ##
+FROM builder AS files
+
+WORKDIR /var/www/products/ASC.Files/server/
+
+COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
+COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.Files/server/ .
+COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.People/server/ASC.People.dll /var/www/products/ASC.People/server/
+
+CMD ["ASC.Files.dll", "files"]
+
+## files_services ##
+FROM builder AS files_services
+
+WORKDIR /var/www/products/ASC.Files/service/
+
+COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
+COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.Files/service/ .
+COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.Files/server/ASC.Files*.dll /var/www/products/ASC.Files/server/
+COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.People/server/ASC.People*.dll /var/www/products/ASC.People/server/
+
+CMD ["ASC.Files.Service.dll", "files_services", "core:products:folder=/var/www/products/", "core:products:subfolder=server"]
+
+## studio ##
+FROM builder AS studio
+
+WORKDIR /var/www/studio/server/
+
+COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
+COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/studio/server/ .
+COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.Files/server/ASC.Files*.dll /var/www/products/ASC.Files/server/
+COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/products/ASC.People/server/ASC.People.dll /var/www/products/ASC.People/server/
+
+CMD ["ASC.Web.Studio.dll", "studio"]
+
+## thumbnails ##
+FROM builder AS thumbnails
+
+WORKDIR /services/thumbnails/service
+
+COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
+COPY --from=develop --chown=onlyoffice:onlyoffice /services/thumb/service/ .
+COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/services/thumb/client /services/thumbnails/client
+
+CMD ["ASC.Thumbnails.Svc.dll", "thumbnails"]
+
+## socket ##
+FROM builder AS socket
+
+WORKDIR /services/socket/service
+
+COPY --chown=onlyoffice:onlyoffice docker-entrypoint.sh .
+COPY --from=develop --chown=onlyoffice:onlyoffice /services/socket/service/ .
+COPY --from=develop --chown=onlyoffice:onlyoffice /var/www/services/socket/client /services/ASC.Socket.IO
+
+CMD ["ASC.Socket.IO.Svc.dll", "socket"]

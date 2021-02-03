@@ -25,7 +25,7 @@
 
 namespace ASC.Web.Studio.Core.Notify
 {
-    static class Tags
+    public static class Tags
     {
         public const string UserName = "UserName";
         public const string UserLastName = "UserLastName";
@@ -59,6 +59,7 @@ namespace ASC.Web.Studio.Core.Notify
         public const string Price = "Price";
         public const string PricePeriod = "PricePeriod";
         public const string PortalUrl = "PortalUrl";
+        public const string ControlPanelUrl = "ControlPanelUrl";
         public const string UserDisplayName = "UserDisplayName";
         public const string PricingPage = "PricingPage";
         public const string BlogLink = "TagBlogLink";
@@ -126,8 +127,6 @@ namespace ASC.Web.Studio.Core.Notify
         public const string MailWhiteLabelSettings = "MailWhiteLabelSettings";
 
         public const string EmbeddedAttachments = "EmbeddedAttachments";
-
-        public const string Analytics = "Analytics";
 
         public const string ImagePath = "ImagePath";
     }

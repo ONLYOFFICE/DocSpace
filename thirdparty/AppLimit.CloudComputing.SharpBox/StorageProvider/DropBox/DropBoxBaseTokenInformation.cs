@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace AppLimit.CloudComputing.SharpBox.StorageProvider.DropBox
+﻿namespace AppLimit.CloudComputing.SharpBox.StorageProvider.DropBox
 {
     /// <summary>
     /// The base class of all credentials

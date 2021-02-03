@@ -17,8 +17,8 @@ import { Paging } from "asc-web-components";
   previousAction={() => console.log("Prev")}
   nextAction={() => console.log("Next")}
   openDirection="bottom"
-  onSelectPage={a => console.log(a)}
-  onSelectCount={a => console.log(a)}
+  onSelectPage={(a) => console.log(a)}
+  onSelectCount={(a) => console.log(a)}
 />
 ```
 

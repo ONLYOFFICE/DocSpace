@@ -7,7 +7,7 @@ const defaultEmailSettingsObj = {
   allowStrictLocalPart: true,
   allowSpaces: false,
   allowName: false,
-  allowLocalDomainName: false
+  allowLocalDomainName: false,
 };
 describe("emailSettings", () => {
   it("get default settings from instance", () => {
@@ -24,7 +24,7 @@ describe("emailSettings", () => {
       allowStrictLocalPart: true,
       allowSpaces: false,
       allowName: false,
-      allowLocalDomainName: true
+      allowLocalDomainName: true,
     };
 
     const emailSettings = new EmailSettings();
@@ -49,7 +49,7 @@ describe("emailSettings", () => {
       allowStrictLocalPart: false,
       allowSpaces: true,
       allowName: true,
-      allowLocalDomainName: true
+      allowLocalDomainName: true,
     };
     const emailSettings = new EmailSettings();
     emailSettings.disableAllSettings();
@@ -180,7 +180,7 @@ describe("emailSettings", () => {
       allowStrictLocalPart: true,
       allowSpaces: false,
       allowName: false,
-      allowLocalDomainName: false
+      allowLocalDomainName: false,
     };
 
     const convertedSettings = EmailSettings.parse(emailSettingsObj);
@@ -200,7 +200,7 @@ describe("emailSettings", () => {
       allowStrictLocalPart: true,
       allowSpaces: false,
       allowName: false,
-      allowLocalDomainName: false
+      allowLocalDomainName: false,
     };
 
     const convertedSettings = EmailSettings.parse(emailSettingsObj);

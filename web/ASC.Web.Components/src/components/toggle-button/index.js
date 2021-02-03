@@ -7,8 +7,7 @@ import Text from "../text";
 const ToggleButtonContainer = styled.label`
   position: absolute;
   -webkit-appearance: none;
-  display: flex;
-  align-items: center;
+  align-items: start;
   outline: none;
 
   user-select: none;
@@ -16,7 +15,11 @@ const ToggleButtonContainer = styled.label`
   -o-user-select: none;
   -webkit-user-select: none;
 
-  ${props =>
+  display: grid;
+  grid-template-columns: min-content auto;
+  grid-gap: 8px;
+
+  ${(props) =>
     props.isDisabled
       ? css`
           cursor: default;
@@ -25,18 +28,20 @@ const ToggleButtonContainer = styled.label`
           cursor: pointer;
         `}
   svg {
-    ${props =>
-    props.isDisabled
-      ? css`
+    ${(props) =>
+      props.isDisabled
+        ? css`
             rect {
               fill: #eceff1;
             }
           `
-      : ""}
+        : ""}
   }
-
+  .toggle-button {
+    min-width: 28px;
+  }
   .toggleText {
-    margin-left: 8px;
+    margin-top: 2px;
   }
 `;
 
@@ -49,14 +54,16 @@ const HiddenInput = styled.input`
 
 const ToggleIcon = ({ isChecked }) => {
   const iconName = isChecked ? "ToggleButtonCheckedIcon" : "ToggleButtonIcon";
-  return <>{React.createElement(Icons[iconName])}</>;
+  return (
+    <>{React.createElement(Icons[iconName], { className: "toggle-button" })}</>
+  );
 };
 
 class ToggleButton extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      checked: props.isChecked
+      checked: props.isChecked,
     };
   }
 
@@ -103,11 +110,11 @@ ToggleButton.propTypes = {
   label: PropTypes.string,
   id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   className: PropTypes.string,
-  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 };
 
 ToggleIcon.propTypes = {
-  isChecked: PropTypes.bool
-}
+  isChecked: PropTypes.bool,
+};
 
 export default ToggleButton;

@@ -28,7 +28,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.Serialization;
 using System.Xml;
 
 using ASC.Common;
@@ -38,7 +37,6 @@ using ASC.Web.Core.PublicResources;
 namespace ASC.Web.Core.Users
 {
     [Serializable]
-    [DataContract]
     public class PeopleNamesSettings : ISettings
     {
         public Guid ID
@@ -46,11 +44,8 @@ namespace ASC.Web.Core.Users
             get { return new Guid("47F34957-6A70-4236-9681-C8281FB762FA"); }
         }
 
-
-        [DataMember(Name = "Item")]
         public PeopleNamesItem Item { get; set; }
 
-        [DataMember(Name = "ItemId")]
         public string ItemID { get; set; }
 
         public ISettings GetDefault(IServiceProvider serviceProvider)
@@ -59,39 +54,28 @@ namespace ASC.Web.Core.Users
         }
     }
 
-    [DataContract]
     public class PeopleNamesItem
     {
         private static readonly StringComparison cmp = StringComparison.InvariantCultureIgnoreCase;
 
-        [DataMember(Name = "SchemaName")]
         private string schemaName;
 
-        [DataMember(Name = "UserCaption")]
         private string userCaption;
 
-        [DataMember(Name = "UsersCaption")]
         private string usersCaption;
 
-        [DataMember(Name = "GroupCaption")]
         private string groupCaption;
 
-        [DataMember(Name = "GroupsCaption")]
         private string groupsCaption;
 
-        [DataMember(Name = "UserPostCaption")]
         private string userPostCaption;
 
-        [DataMember(Name = "GroupHeadCaption")]
         private string groupHeadCaption;
 
-        [DataMember(Name = "RegDateCaption")]
         private string regDateCaption;
 
-        [DataMember(Name = "GuestCaption")]
         private string guestCaption;
 
-        [DataMember(Name = "GuestsCaption")]
         private string guestsCaption;
 
 
@@ -105,7 +89,6 @@ namespace ASC.Web.Core.Users
             get { return "custom"; }
         }
 
-        [DataMember(Name = "Id")]
         public string Id { get; set; }
 
         public string SchemaName
@@ -178,11 +161,21 @@ namespace ASC.Web.Core.Users
         }
     }
 
+    [Scope]
     public class CustomNamingPeople
     {
+        private static object Locked;
         private static bool loaded = false;
 
         private static readonly List<PeopleNamesItem> items = new List<PeopleNamesItem>();
+        private SettingsManager SettingsManager { get; }
+
+        static CustomNamingPeople()
+        {
+            Locked = new object();
+            loaded = false;
+            items = new List<PeopleNamesItem>();
+        }
 
         public CustomNamingPeople(SettingsManager settingsManager)
         {
@@ -199,9 +192,6 @@ namespace ASC.Web.Core.Users
                     GetPeopleNames(settings.ItemID);
             }
         }
-
-        public PeopleNamesSettings PeopleNamesSettings { get; }
-        public SettingsManager SettingsManager { get; }
 
         public string Substitute<T>(string resourceKey) where T : class
         {
@@ -274,28 +264,36 @@ namespace ASC.Web.Core.Users
                 return;
             }
 
-            loaded = true;
-            var doc = new XmlDocument();
-            doc.LoadXml(NamingPeopleResource.PeopleNames);
-
-            items.Clear();
-            foreach (XmlNode node in doc.SelectNodes("/root/item"))
+            lock (Locked)
             {
-                var item = new PeopleNamesItem
+                if (loaded)
                 {
-                    Id = node.SelectSingleNode("id").InnerText,
-                    SchemaName = node.SelectSingleNode("names/schemaname").InnerText,
-                    GroupHeadCaption = node.SelectSingleNode("names/grouphead").InnerText,
-                    GroupCaption = node.SelectSingleNode("names/group").InnerText,
-                    GroupsCaption = node.SelectSingleNode("names/groups").InnerText,
-                    UserCaption = node.SelectSingleNode("names/user").InnerText,
-                    UsersCaption = node.SelectSingleNode("names/users").InnerText,
-                    UserPostCaption = node.SelectSingleNode("names/userpost").InnerText,
-                    RegDateCaption = node.SelectSingleNode("names/regdate").InnerText,
-                    GuestCaption = node.SelectSingleNode("names/guest").InnerText,
-                    GuestsCaption = node.SelectSingleNode("names/guests").InnerText,
-                };
-                items.Add(item);
+                    return;
+                }
+
+                loaded = true;
+                var doc = new XmlDocument();
+                doc.LoadXml(NamingPeopleResource.PeopleNames);
+
+                items.Clear();
+                foreach (XmlNode node in doc.SelectNodes("/root/item"))
+                {
+                    var item = new PeopleNamesItem
+                    {
+                        Id = node.SelectSingleNode("id").InnerText,
+                        SchemaName = node.SelectSingleNode("names/schemaname").InnerText,
+                        GroupHeadCaption = node.SelectSingleNode("names/grouphead").InnerText,
+                        GroupCaption = node.SelectSingleNode("names/group").InnerText,
+                        GroupsCaption = node.SelectSingleNode("names/groups").InnerText,
+                        UserCaption = node.SelectSingleNode("names/user").InnerText,
+                        UsersCaption = node.SelectSingleNode("names/users").InnerText,
+                        UserPostCaption = node.SelectSingleNode("names/userpost").InnerText,
+                        RegDateCaption = node.SelectSingleNode("names/regdate").InnerText,
+                        GuestCaption = node.SelectSingleNode("names/guest").InnerText,
+                        GuestsCaption = node.SelectSingleNode("names/guests").InnerText,
+                    };
+                    items.Add(item);
+                }
             }
         }
 
@@ -387,16 +385,6 @@ namespace ASC.Web.Core.Users
                     .Replace("{!userpost}", item.UserPostCaption.ToLower());
             }
             return text;
-        }
-    }
-
-    public static class CustomNamingPeopleExtension
-    {
-        public static DIHelper AddCustomNamingPeopleService(this DIHelper services)
-        {
-            services.TryAddScoped<CustomNamingPeople>();
-
-            return services.AddSettingsManagerService();
         }
     }
 }

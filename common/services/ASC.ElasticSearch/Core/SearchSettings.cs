@@ -27,14 +27,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
 
 using ASC.Common;
+using ASC.Common.Caching;
 using ASC.Core;
 using ASC.Core.Common.Settings;
 
 using Autofac;
 
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 using Newtonsoft.Json;
@@ -42,10 +43,8 @@ using Newtonsoft.Json;
 namespace ASC.ElasticSearch.Core
 {
     [Serializable]
-    [DataContract]
     public class SearchSettings : ISettings
     {
-        [DataMember(Name = "Data")]
         public string Data { get; set; }
 
         public Guid ID
@@ -81,23 +80,33 @@ namespace ASC.ElasticSearch.Core
         }
     }
 
+    [Scope]
     public class SearchSettingsHelper
     {
-        public SettingsManager SettingsManager { get; }
-        public CoreBaseSettings CoreBaseSettings { get; }
-        public FactoryIndexer FactoryIndexer { get; }
-        public IServiceProvider ServiceProvider { get; }
+        private TenantManager TenantManager { get; }
+        private SettingsManager SettingsManager { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
+        private FactoryIndexer FactoryIndexer { get; }
+        private ICacheNotify<ReIndexAction> CacheNotify { get; }
+        private IServiceProvider ServiceProvider { get; }
+        public IConfiguration Configuration { get; }
 
         public SearchSettingsHelper(
+            TenantManager tenantManager,
             SettingsManager settingsManager,
             CoreBaseSettings coreBaseSettings,
             FactoryIndexer factoryIndexer,
-            IServiceProvider serviceProvider)
+            ICacheNotify<ReIndexAction> cacheNotify,
+            IServiceProvider serviceProvider,
+            IConfiguration configuration)
         {
+            TenantManager = tenantManager;
             SettingsManager = settingsManager;
             CoreBaseSettings = coreBaseSettings;
             FactoryIndexer = factoryIndexer;
+            CacheNotify = cacheNotify;
             ServiceProvider = serviceProvider;
+            Configuration = configuration;
         }
 
         public List<SearchSettingsItem> GetAllItems()
@@ -114,14 +123,12 @@ namespace ASC.ElasticSearch.Core
             }).ToList();
         }
 
-        private List<WrapperWithDoc> allItems;
-        internal List<WrapperWithDoc> AllItems
+        private List<IFactoryIndexer> allItems;
+        internal List<IFactoryIndexer> AllItems
         {
             get
             {
-                return allItems ?? (allItems = FactoryIndexer.Builder.Resolve<IEnumerable<Wrapper>>()
-                               .OfType<WrapperWithDoc>()
-                               .ToList());
+                return allItems ??= FactoryIndexer.Builder.Resolve<IEnumerable<IFactoryIndexer>>().ToList();
             }
         }
 
@@ -138,21 +145,22 @@ namespace ASC.ElasticSearch.Core
             settings.Data = JsonConvert.SerializeObject(items);
             SettingsManager.Save(settings);
 
-            //TODO:
-            //using (var service = new ServiceClient())
-            //{
-            //    service.ReIndex(toReIndex.Select(r => r.ID).ToList(), TenantManager.GetCurrentTenant().TenantId);
-            //}
+            var action = new ReIndexAction() { Tenant = TenantManager.GetCurrentTenant().TenantId };
+            action.Names.AddRange(toReIndex.Select(r => r.ID).ToList());
+
+            CacheNotify.Publish(action, CacheNotifyAction.Any);
         }
 
-        public bool CanSearchByContent<T>(int tenantId) where T : Wrapper
+        public bool CanSearchByContent<T>(int tenantId) where T : class, ISearchItem
         {
-            if (!SearchByContentEnabled) return false;
-
-            if (!typeof(T).IsSubclassOf(typeof(WrapperWithDoc)))
+            if (typeof(ISearchItemDocument).IsAssignableFrom(typeof(T)))
             {
                 return false;
             }
+
+            if (Convert.ToBoolean(Configuration["core:search-by-content"] ?? "false")) return true;
+
+            if (!SearchByContentEnabled) return false;
 
             var settings = SettingsManager.LoadForTenant<SearchSettings>(tenantId);
 
@@ -169,28 +177,12 @@ namespace ASC.ElasticSearch.Core
     }
 
     [Serializable]
-    [DataContract]
     public class SearchSettingsItem
     {
-        [DataMember(Name = "ID")]
         public string ID { get; set; }
 
-        [DataMember(Name = "Enabled")]
         public bool Enabled { get; set; }
 
         public string Title { get; set; }
-    }
-
-    public static class SearchSettingsHelperExtention
-    {
-        public static DIHelper AddSearchSettingsHelperService(this DIHelper services)
-        {
-            services.TryAddScoped<SearchSettingsHelper>();
-
-            return services
-                .AddSettingsManagerService()
-                .AddCoreBaseSettingsService()
-                .AddFactoryIndexerService();
-        }
     }
 }

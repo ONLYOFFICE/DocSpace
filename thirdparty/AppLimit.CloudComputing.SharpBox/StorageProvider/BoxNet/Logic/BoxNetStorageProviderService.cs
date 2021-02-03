@@ -1,5 +1,4 @@
-﻿using System;
-using AppLimit.CloudComputing.SharpBox.StorageProvider.WebDav.Logic;
+﻿using AppLimit.CloudComputing.SharpBox.StorageProvider.WebDav.Logic;
 using AppLimit.CloudComputing.SharpBox.StorageProvider.API;
 
 namespace AppLimit.CloudComputing.SharpBox.StorageProvider.BoxNet.Logic

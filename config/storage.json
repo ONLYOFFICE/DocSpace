@@ -77,7 +77,8 @@
         "virtualpath": "~/products/files/docstore",
         "appendTenantId": false,
         "public": true,
-        "disableMigrate": true
+        "disableMigrate": true,
+		"disableEncryption": true
       },
       {
         "name": "crm",
@@ -86,6 +87,13 @@
         "path": "$STORAGE_ROOT\\Products\\CRM\\Data",
         "virtualpath": "~/products/crm/data",
         "domain": [
+          {
+            "name": "export",
+            "visible": false,
+            "data": "00000000-0000-0000-0000-000000000000",
+            "path": "$STORAGE_ROOT\\Products\\CRM\\Data\\{0}\\export",
+            "expires": "1.0:0:0"
+          },
           {
             "name": "temp",
             "visible": false,
@@ -113,7 +121,8 @@
         "data": "00000000-0000-0000-0000-000000000000",
         "type": "disc",
         "path": "Products\\CRM\\DocStore",
-        "disableMigrate": true
+        "disableMigrate": true,
+        "disableEncryption": true
       },
       {
         "name": "fckuploaders",
@@ -191,7 +200,8 @@
         "visible": "false",
         "type": "disc",
         "path": "$STORAGE_ROOT\\certs\\",
-        "appendTenantId": false
+        "appendTenantId": false,
+		"disableEncryption": true
       },
       {
         "name": "mailaggregator",
@@ -222,7 +232,8 @@
         "type": "disc",
         "path": "$STORAGE_ROOT\\Studio\\{0}\\backup",
         "virtualpath": "~/studio/{0}/backup",
-        "expires": "0:10:0"
+        "expires": "0:10:0",
+		"disableEncryption": true
       },
       {
         "name": "customnavigation",
@@ -256,7 +267,8 @@
         "virtualpath": "~/App_Data/static/partnerdata",
         "appendTenantId": false,
         "public": true,
-        "disableMigrate": true
+        "disableMigrate": true,
+        "disableEncryption": true
       }
     ]
   }

@@ -36,12 +36,13 @@ using Microsoft.Extensions.Hosting;
 
 namespace ASC.Data.Storage
 {
+    [Singletone]
     public class PathUtils
     {
         private string StorageRoot { get; }
-        public IConfiguration Configuration { get; }
+        private IConfiguration Configuration { get; }
         public IHostEnvironment HostEnvironment { get; }
-        public IWebHostEnvironment WebHostEnvironment { get; }
+        private IWebHostEnvironment WebHostEnvironment { get; }
 
         public PathUtils(IConfiguration configuration, IHostEnvironment hostEnvironment)
         {
@@ -115,16 +116,6 @@ namespace ASC.Data.Storage
                 physPath = Path.GetFullPath(Path.Combine(HostEnvironment.ContentRootPath, physPath.Trim(Path.DirectorySeparatorChar)));
             }
             return physPath;
-        }
-    }
-
-    public static class PathUtilsExtension
-    {
-        public static DIHelper AddPathUtilsService(this DIHelper services)
-        {
-            services.TryAddSingleton<PathUtils>();
-
-            return services;
         }
     }
 }

@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { Text } from "asc-web-components";
 import StyledModuleTile from "./StyledModuleTile";
 
-const ModuleTile = props => {
+const ModuleTile = (props) => {
   // console.log("ModuleTile render", props);
   const { title, imageUrl, link, description, isPrimary, onClick } = props;
 
@@ -23,10 +23,10 @@ const ModuleTile = props => {
 
           <div className="title-text-wrapper">
             <div onClick={handleClick.bind(link)} className="title-text">
-              <Text fontSize='36px' className="title-text-header selectable">
+              <Text fontSize="36px" className="title-text-header selectable">
                 {title}
               </Text>
-              <Text fontSize='12px' className="title-text-description">
+              <Text fontSize="12px" className="title-text-description">
                 {description}
               </Text>
             </div>
@@ -44,7 +44,7 @@ const ModuleTile = props => {
           <div>
             <div>
               <Text
-                fontSize='18px'
+                fontSize="18px"
                 className="sub-title-text"
                 onClick={handleClick.bind(link)}
               >
@@ -64,12 +64,12 @@ ModuleTile.propTypes = {
   link: PropTypes.string.isRequired,
   description: PropTypes.string,
   isPrimary: PropTypes.bool,
-  onClick: PropTypes.func.isRequired
+  onClick: PropTypes.func.isRequired,
 };
 
 ModuleTile.defaultProps = {
   isPrimary: false,
-  description: ""
+  description: "",
 };
 
 export default ModuleTile;

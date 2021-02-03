@@ -1,32 +1,62 @@
 /* eslint-disable react/prop-types */
-import React, { useCallback } from 'react';
-import { Redirect, Route } from 'react-router-dom';
-import { AUTH_KEY } from "../../constants";
+import React from "react";
+import { Redirect, Route } from "react-router-dom";
+import { connect } from "react-redux";
+import { getIsLoaded, isAuthenticated } from "../../store/auth/selectors";
+import PageLayout from "../PageLayout";
+import RectangleLoader from "../Loaders/RectangleLoader/RectangleLoader";
 
 export const PublicRoute = ({ component: Component, ...rest }) => {
-    const token = localStorage.getItem(AUTH_KEY);
+  const { wizardToken, wizardCompleted, isAuthenticated, isLoaded } = rest;
 
-    const renderComponent = useCallback(
-        props => {
-            if(token) {
-                return (
-                    <Redirect
-                        to={{
-                            pathname: "/",
-                            state: { from: props.location }
-                        }}
-                    />
-                );
-            }
+  const renderComponent = (props) => {
+    if(!isLoaded) {
+      return (
+        <PageLayout>
+          <PageLayout.SectionBody>
+            <RectangleLoader  height="90vh"/>
+          </PageLayout.SectionBody>
+        </PageLayout>
+      );
+    }
 
-            return <Component {...props} />;
-        }, [token, Component]);
-
-    return (
-        <Route
-            {...rest}
-            render={renderComponent}
+    if (isAuthenticated) {
+      return (
+        <Redirect
+          to={{
+            pathname: "/",
+            state: { from: props.location },
+          }}
         />
-    )
+      );
+    }
+
+    if (wizardToken && !wizardCompleted) {
+      return (
+        <Redirect
+          to={{
+            pathname: "/wizard",
+            state: { from: props.location },
+          }}
+        />
+      );
+    }
+
+    return <Component {...props} />;
+  };
+  return <Route {...rest} render={renderComponent} />;
 };
-export default PublicRoute;
+
+function mapStateToProps(state) {
+  const { settings } = state.auth;
+  const {wizardToken, wizardCompleted} = settings;
+  return {
+    isAuthenticated: isAuthenticated(state),
+    isLoaded: getIsLoaded(state),
+
+    wizardToken,
+    wizardCompleted,
+  };
+}
+
+export default connect(mapStateToProps)(PublicRoute);

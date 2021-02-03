@@ -38,11 +38,12 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Notify.Senders
 {
+    [Singletone(Additional = typeof(JabberSenderExtension))]
     public class JabberSender : INotifySender
     {
         private readonly ILog log;
 
-        public IServiceProvider ServiceProvider { get; }
+        private IServiceProvider ServiceProvider { get; }
 
         public JabberSender(IServiceProvider serviceProvider)
         {
@@ -77,12 +78,11 @@ namespace ASC.Core.Notify.Senders
         }
     }
 
-    public static class JabberSenderExtension
+    public class JabberSenderExtension
     {
-        public static DIHelper AddJabberSenderService(this DIHelper services)
+        public static void Register(DIHelper services)
         {
-            services.TryAddSingleton<JabberSender>();
-            return services.AddJabberServiceClient();
+            services.TryAdd<JabberServiceClient>();
         }
     }
 }

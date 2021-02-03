@@ -5,9 +5,7 @@ import Text from "../text";
 
 describe("<Tooltip />", () => {
   it("renders without error", () => {
-    const wrapper = mount(
-      <Tooltip>{<Text>You tooltip text</Text>}</Tooltip>
-    );
+    const wrapper = mount(<Tooltip>{<Text>You tooltip text</Text>}</Tooltip>);
 
     expect(wrapper).toExist();
   });
@@ -28,19 +26,15 @@ describe("<Tooltip />", () => {
     expect(wrapper.props).toBe(wrapper.props);
   });
 
-  it('accepts className', () => {
-    const wrapper = mount(
-      <Tooltip className="test" />
-    );
+  it("accepts className", () => {
+    const wrapper = mount(<Tooltip className="test" />);
 
-    expect(wrapper.prop('className')).toEqual('test');
+    expect(wrapper.prop("className")).toEqual("test");
   });
 
-  it('accepts style', () => {
-    const wrapper = mount(
-      <Tooltip style={{ color: 'red' }} />
-    );
+  it("accepts style", () => {
+    const wrapper = mount(<Tooltip style={{ color: "red" }} />);
 
-    expect(wrapper.getDOMNode().style).toHaveProperty('color', 'red');
+    expect(wrapper.getDOMNode().style).toHaveProperty("color", "red");
   });
 });

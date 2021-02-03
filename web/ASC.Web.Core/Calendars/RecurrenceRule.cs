@@ -87,7 +87,7 @@ namespace ASC.Web.Core.Calendars
         Hourly = 9
     }
 
-    public class RecurrenceRule : IiCalFormatView, ICloneable
+    public class RecurrenceRule : IICalFormatView, ICloneable
     {
         public static RecurrenceRule Parse(EventRepeatType repeatType)
         {
@@ -198,7 +198,7 @@ namespace ASC.Web.Core.Calendars
         public struct ExDate
         {
             public DateTime Date { get; set; }
-            public bool isDateTime { get; set; }
+            public bool IsDateTime { get; set; }
         }
 
         public List<ExDate> ExDates { get; set; }
@@ -576,7 +576,7 @@ namespace ASC.Web.Core.Calendars
             if (removeExDates && ExDates != null)
             {
                 foreach (var exDate in ExDates)
-                    dates.RemoveAll(dt => (exDate.isDateTime && dt == exDate.Date) || (!exDate.isDateTime && dt.Date == exDate.Date));
+                    dates.RemoveAll(dt => (exDate.IsDateTime && dt == exDate.Date) || (!exDate.IsDateTime && dt.Date == exDate.Date));
             }
 
             dates.RemoveAll(dt => dt < fromDate || dt > endDate);
@@ -593,7 +593,7 @@ namespace ASC.Web.Core.Calendars
             {
                 if (ExDates != null && ExDates.Count > 0)
                 {
-                    return dates.FindAll(dt => dt >= fromDate && !ExDates.Exists(exDate => (exDate.isDateTime && dt == exDate.Date) || (!exDate.isDateTime && dt.Date == exDate.Date)))
+                    return dates.FindAll(dt => dt >= fromDate && !ExDates.Exists(exDate => (exDate.IsDateTime && dt == exDate.Date) || (!exDate.IsDateTime && dt.Date == exDate.Date)))
                         .Count < maxCount;
                 }
                 else
@@ -802,7 +802,7 @@ namespace ASC.Web.Core.Calendars
                 sb.AppendFormat(";exdates=");
                 foreach (var d in this.ExDates)
                 {
-                    if (d.isDateTime)
+                    if (d.IsDateTime)
                         sb.Append(d.Date.ToString("yyyyMMdd'T'HHmmssK") + ",");
                     else
                         sb.Append(d.Date.ToString("yyyyMMdd") + ",");
@@ -925,7 +925,7 @@ namespace ASC.Web.Core.Calendars
                         foreach (var date in val.Split(','))
                         {
                             if (DateTime.TryParseExact(date.ToUpper(), _dateTimeFormats, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out var dt))
-                                rr.ExDates.Add(new ExDate() { Date = dt, isDateTime = (date.ToLower().IndexOf('t') >= 0) });
+                                rr.ExDates.Add(new ExDate() { Date = dt, IsDateTime = (date.ToLower().IndexOf('t') >= 0) });
 
                         }
                         break;
@@ -948,13 +948,13 @@ namespace ASC.Web.Core.Calendars
             if (this.ExDates.Count > 0)
             {
                 sb.Append("\r\nEXDATE");
-                if (!this.ExDates[0].isDateTime)
+                if (!this.ExDates[0].IsDateTime)
                     sb.Append(";VALUE=DATE");
 
                 sb.Append(":");
                 foreach (var d in this.ExDates)
                 {
-                    if (d.isDateTime)
+                    if (d.IsDateTime)
                         sb.Append(d.Date.ToString("yyyyMMdd'T'HHmmssK"));
                     else
                         sb.Append(d.Date.ToString("yyyyMMdd"));

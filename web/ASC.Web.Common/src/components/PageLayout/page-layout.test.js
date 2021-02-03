@@ -1,25 +1,21 @@
-import React from 'react';
-import { mount } from 'enzyme';
-import PageLayout from '.';
+import React from "react";
+import { mount } from "enzyme";
+import PageLayout from ".";
 
 const baseProps = {
   withBodyScroll: true,
-  withBodyAutoFocus: false
-}
+  withBodyAutoFocus: false,
+};
 
-describe('<PageLayout />', () => {
-  it('renders without error', () => {
-    const wrapper = mount(
-      <PageLayout {...baseProps} />
-    );
+describe("<PageLayout />", () => {
+  it("renders without error", () => {
+    const wrapper = mount(<PageLayout {...baseProps} />);
 
     expect(wrapper).toExist();
   });
 
   it("componentDidUpdate() test re-render", () => {
-    const wrapper = mount(
-      <PageLayout {...baseProps} />
-    ).instance();
+    const wrapper = mount(<PageLayout {...baseProps} />).instance();
 
     wrapper.componentDidUpdate({ withBodyScroll: false });
 
@@ -51,9 +47,7 @@ describe('<PageLayout />', () => {
   });
 
   it("call backdropClick()", () => {
-    const wrapper = mount(
-      <PageLayout {...baseProps} />
-    ).instance();
+    const wrapper = mount(<PageLayout {...baseProps} />).instance();
 
     wrapper.backdropClick();
 
@@ -63,9 +57,7 @@ describe('<PageLayout />', () => {
   });
 
   it("call pinArticle()", () => {
-    const wrapper = mount(
-      <PageLayout {...baseProps} />
-    ).instance();
+    const wrapper = mount(<PageLayout {...baseProps} />).instance();
 
     wrapper.pinArticle();
 
@@ -75,9 +67,7 @@ describe('<PageLayout />', () => {
   });
 
   it("call unpinArticle()", () => {
-    const wrapper = mount(
-      <PageLayout {...baseProps} />
-    ).instance();
+    const wrapper = mount(<PageLayout {...baseProps} />).instance();
 
     wrapper.unpinArticle();
 
@@ -87,9 +77,7 @@ describe('<PageLayout />', () => {
   });
 
   it("call showArticle()", () => {
-    const wrapper = mount(
-      <PageLayout {...baseProps} />
-    ).instance();
+    const wrapper = mount(<PageLayout {...baseProps} />).instance();
 
     wrapper.showArticle();
 

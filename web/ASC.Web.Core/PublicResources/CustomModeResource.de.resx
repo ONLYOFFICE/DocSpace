@@ -58,4 +58,43 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="pattern_personal_custom_mode_after_registration8" xml:space="preserve">
+    <value>$PersonalHeaderStart Verbinden Sie Ihren bevorzugten Cloud-Speicher mit ONLYOFFICE $PersonalHeaderEnd
+
+Es ist nun schon eine Woche her, dass Sie Ihr Cloud-Büro eingerichtet haben, daher glauben wir, dass es an der Zeit ist, einige nützliche Funktionen zu aufzuzeigen, die Sie vielleicht noch nicht kennen.
+
+Verbinden Sie *Dropbox*, *Google Drive*, *Box*, *OneDrive*, *Nextcloud*, *ownCloud*, *kDrive* oder *Yandex.Disk* mit ONLYOFFICE und erstellen Sie einen einzigen Bereich zur Dokumentenverwaltung für all Ihre Dokumente. Damit können Sie externe Dateien in ONLYOFFICE bearbeiten und sie auf dem Speicherplatz speichern, auf dem Sie Ihre Dokumente aufbewahren. Lesen Sie "hier":"${__HelpLink}/tipstricks/add-resource.aspx" Einzelheiten über das Verbinden von Dateispeichern mit ONLYOFFICE.
+
+Sie können die ONLYOFFICE-Editoren auch über unsere "Connector-App" in Google Drive integrieren: "https://chrome.google.com/webstore/detail/onlyoffice-personal/iohfebkcjhlelaoibebeohcgkohkcgpn".
+
+Wollen Sie tiefer in die Dokumentenverwaltung einsteigen?
+
+h3. Testen Sie ONLYOFFICE for business "in der Cloud":"https://www.onlyoffice.com/cloud-office.aspx" oder "auf Ihrem eigenen Server":"https://www.onlyoffice.com/server-solutions.aspx" 30 Tage lang kostenlos und testen Sie erweiterte Möglichkeiten der Dokumentenverwaltung zusammen mit einem Business-Toolset:
+
+- Verwalten Sie Dokumente eines Teams in Projekten;
+
+- Integrieren Sie Dokumente in CRM und E-Mail;
+
+- Dateien für Benutzergruppen freigeben;
+
+- Optimieren Sie Ihren Workflow mit Team-Kommunikationstools.
+
+Interessiert? Erfahren Sie mehr über "ONLYOFFICE for business":"http://www.onlyoffice.com/document-management.aspx".
+
+Mit freundlichen Grüßen,
+ONLYOFFICE-Team</value>
+  </data>
+  <data name="pattern_saas_custom_mode_reg_data" xml:space="preserve">
+    <value>h3.Neues Portal wurde registriert
+
+# Portal URL: "${__VirtualRootPath}":"${__VirtualRootPath}"
+# Vorname: $UserName
+# Nachname: $UserLastName
+# E-Mail: $UserEmail
+# Telefon: $Phone
+# Datum der Erstellung: $Date</value>
+  </data>
+  <data name="subject_saas_custom_mode_reg_data" xml:space="preserve">
+    <value>Neues Portal wurde registriert</value>
+  </data>
 </root>

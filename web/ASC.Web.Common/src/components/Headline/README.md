@@ -44,10 +44,10 @@ const StyledText = styled(Headline)`
 
 ### Properties
 
-| Props      |   Type   | Required |     Values      |  Default  | Description                                          |
-| ---------- | :------: | :------: | :-------------: | :-------: | ---------------------------------------------------- |
-| `color`    | `string` |    -     |        -        | `#333333` | Specifies the contentHeader color                    |
-| `isInline` |  `bool`  |    -     |        -        |  `false`  | Sets the 'display: inline-block' property            |
-| `title`    |  `bool`  |    -     |        -        |     -     | Title                                                |
-| `truncate` |  `bool`  |    -     |        -        |  `false`  | Disables word wrapping                               |
+| Props      |   Type   | Required |         Values          |  Default  | Description                                                         |
+| ---------- | :------: | :------: | :---------------------: | :-------: | ------------------------------------------------------------------- |
+| `color`    | `string` |    -     |            -            | `#333333` | Specifies the contentHeader color                                   |
+| `isInline` |  `bool`  |    -     |            -            |  `false`  | Sets the 'display: inline-block' property                           |
+| `title`    |  `bool`  |    -     |            -            |     -     | Title                                                               |
+| `truncate` |  `bool`  |    -     |            -            |  `false`  | Disables word wrapping                                              |
 | `type`     | `oneOf`  |    ✅    | `content, header, menu` |     -     | Sets the size of text: content (21px), header (28px) or menu (27px) |

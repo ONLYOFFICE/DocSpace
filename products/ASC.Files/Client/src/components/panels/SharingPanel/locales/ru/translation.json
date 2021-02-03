@@ -1,0 +1,33 @@
+{
+  "Owner": "Владелец",
+  "SharingSettingsTitle": "Настройки совместного доступа",
+  "LinkText": "Добавить пользователей",
+  "AddGroupsForSharingButton": "Добавить группы",
+  "AddButton": "Сохранить",
+  "AccessRightsFullAccess": "Полный доступ",
+  "AddShareMessage": "Добавить сообщение",
+  "LinkCopySuccess": "Ссылка скопирована в буфер обмена",
+
+  "Notify users": "Уведомить пользователей",
+  "CopyExternalLink": "Скопировать внешнюю ссылку",
+  "CopyInternalLink": "Скопировать внутреннюю ссылку",
+  "ShareVia": "Отправить по",
+  "Embedding": "Встраивание",
+  "ExternalLink": "Внешняя ссылка",
+  "InternalLink": "Внутренняя ссылка",
+
+  "EncryptedFileSaving": "Сохранение зашифрованного файла",
+  "EncryptedFileSharing": "К файлу <strong>{{title}}</strong> успешно предоставлен доступ",
+
+  "FullAccess": "Полный доступ",
+  "ReadOnly": "Только чтение",
+  "Review": "Рецензирование",
+  "Comment": "Комментирование",
+  "FormFilling": "Заполнение форм",
+  "DenyAccess": "Доступ запрещён",
+  "CustomFilter": "Пользовательский фильтр",
+
+  "ShareEveryone": "Все",
+  "ShareEmailSubject": "Вам предоставлен доступ к документу {{itemName}}",
+  "ShareEmailBody": "Вам предоставлен доступ к документу {{itemName}}. Нажмите на ссылку ниже, чтобы открыть документ прямо сейчас: {{shareLink}}"
+}
