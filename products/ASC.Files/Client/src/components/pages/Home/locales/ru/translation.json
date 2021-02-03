@@ -125,5 +125,7 @@
   "EncryptedFileCreating": "Создан новый файл <strong>{{itemTitle}}</strong>",
   "DeleteThirdParty": "Отключить сторонний ресурс",
   "ThirdPartyInfo": "Изменить настройки подключения",
-  "EmptyFile": "Пустой файл"
+  "EmptyFile": "Пустой файл",
+  "DeleteSelectedElem": "Выбранные элементы успешно удалены",
+  "DeleteFromTrash": "Выбранные элементы успешно удалены из корзины"
 }
