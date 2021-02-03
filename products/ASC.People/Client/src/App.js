@@ -36,14 +36,14 @@ const {
   getPortalCultures,
   getIsAuthenticated,
 } = commonStore.auth.actions;
-const { userStore, settingsStore } = commonStore;
+// const { userStore, settingsStore } = commonStore;
 
 /*const Profile = lazy(() => import("./components/pages/Profile"));
 const ProfileAction = lazy(() => import("./components/pages/ProfileAction"));
 const GroupAction = lazy(() => import("./components/pages/GroupAction"));*/
 
 class App extends React.Component {
-  componentDidMount() {
+  async componentDidMount() {
     const {
       setModuleInfo,
       getUser,
@@ -55,36 +55,48 @@ class App extends React.Component {
       fetchPeople,
       setIsLoaded,
       getIsAuthenticated,
+      loadBaseInfo,
     } = this.props;
 
-    setModuleInfo();
-    getIsAuthenticated().then((isAuthenticated) => {
-      if (!isAuthenticated) {
-        utils.updateTempContent();
-        return setIsLoaded();
-      } else {
-        utils.updateTempContent(isAuthenticated);
-      }
+    try {
+      const isAuthenticated = await getIsAuthenticated();
 
-      const requests = [
-        getUser(),
-        getPortalSettings(),
-        //getModules(),
-        getPortalPasswordSettings(),
-        getPortalCultures(),
-        fetchGroups(),
-        fetchPeople(),
-      ];
+      if (isAuthenticated) utils.updateTempContent(isAuthenticated);
 
-      Promise.all(requests)
-        .catch((e) => {
-          toastr.error(e);
-        })
-        .finally(() => {
-          utils.updateTempContent();
-          setIsLoaded();
-        });
-    });
+      await loadBaseInfo();
+      utils.updateTempContent();
+      setIsLoaded();
+    } catch (e) {
+      toastr.error(e);
+    }
+
+    //setModuleInfo();
+    // getIsAuthenticated().then((isAuthenticated) => {
+    //   if (!isAuthenticated) {
+    //     utils.updateTempContent();
+    //     return setIsLoaded();
+    //   } else {
+    //     utils.updateTempContent(isAuthenticated);
+    //   }
+
+    // const requests = [
+    //getUser(),
+    //getPortalSettings(),
+    //getModules(),
+    // getPortalPasswordSettings(),
+    // getPortalCultures(),
+    // fetchGroups(),
+    // fetchPeople(),
+    // ];
+
+    // Promise.all(requests)
+    //   .catch((e) => {
+    //     toastr.error(e);
+    //   })
+    //   .finally(() => {
+    //     utils.updateTempContent();
+    //     setIsLoaded();
+    //   });
   }
 
   render() {
@@ -160,10 +172,10 @@ class App extends React.Component {
 const mapDispatchToProps = (dispatch) => {
   return {
     getIsAuthenticated: () => getIsAuthenticated(dispatch),
-    setModuleInfo: () => {
-      dispatch(setCurrentProductHomePage(config.homepage));
-      dispatch(setCurrentProductId("f4d98afd-d336-4332-8778-3c6945c81ea0"));
-    },
+    // setModuleInfo: () => {
+    //   dispatch(setCurrentProductHomePage(config.homepage));
+    //   dispatch(setCurrentProductId("f4d98afd-d336-4332-8778-3c6945c81ea0"));
+    // },
     //getUser: () => getUser(dispatch),
     //getPortalSettings: () => getPortalSettings(dispatch),
     //getModules: () => getModules(dispatch),
@@ -196,14 +208,15 @@ const mapDispatchToProps = (dispatch) => {
 // export default connect(mapStateToProps, mapDispatchToProps)(AppWrapper);
 
 export default connect(
-  mapStateToProps,
+  null,
   mapDispatchToProps
 )(
-  inject(({ userStore }, { settingsStore }) => ({
-    user: userStore.user,
-    isAuthenticated: userStore.isAuthenticated,
-    getUser: userStore.setCurrentUser,
-    homepage: settingsStore.homepage || config.homepage,
-    encryptionKeys: settingsStore.encryptionKeys,
-  }))(observer(App))
+  inject(({ store }) => ({
+    user: store.userStore.user,
+    isAuthenticated: store.userStore.isAuthenticated,
+    getUser: store.userStore.setCurrentUser,
+    homepage: store.settingsStore.homepage || config.homepage,
+    encryptionKeys: store.settingsStore.encryptionKeys,
+    loadBaseInfo: store.init,
+  }))(App)
 );
