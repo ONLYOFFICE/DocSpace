@@ -1,13 +1,11 @@
 import React, { useEffect } from "react";
-import { connect } from "react-redux";
 import styled from "styled-components";
-import { utils, store } from "asc-web-common";
+import { utils } from "asc-web-common";
 import { Text, utils as Utils, Box } from "asc-web-components";
 import { createI18N } from "../../../../helpers/i18n";
 import { useTranslation, Trans } from "react-i18next";
-import { observer } from "mobx-react";
+import { inject } from "mobx-react";
 
-const { settingsStore } = store;
 const { changeLanguage } = utils;
 const { tablet } = Utils.device;
 
@@ -130,13 +128,6 @@ const AdvantagesContainer = ({ organizationName }) => {
 //   };
 // }
 
-const AdvantagesContainerWrapper = observer((props) => {
-  return (
-    <AdvantagesContainer
-      organizationName={settingsStore.organizationName}
-      {...props}
-    />
-  );
-});
-
-export default connect(null /* mapStateToProps */)(AdvantagesContainerWrapper);
+export default inject(({ store }) => ({
+  organizationName: store.settingsStore.organizationName,
+}))(AdvantagesContainer);

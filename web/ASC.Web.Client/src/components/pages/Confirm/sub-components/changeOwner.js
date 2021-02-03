@@ -1,13 +1,11 @@
 import React from "react";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
-import { connect } from "react-redux";
 import styled from "styled-components";
 import { Button, Text, toastr } from "asc-web-components";
-import { PageLayout, utils as commonUtils, store } from "asc-web-common";
-import { observer } from "mobx-react";
+import { PageLayout, utils as commonUtils } from "asc-web-common";
+import { inject } from "mobx-react";
 const { tryRedirectTo } = commonUtils;
-const { settingsStore } = store;
 
 const BodyStyle = styled.div`
   margin-top: 70px;
@@ -135,18 +133,7 @@ const ChangeOwnerForm = (props) => (
 //   };
 // }
 
-const ChangeOwnerFormWrapper = observer((props) => {
-  return (
-    <ChangeOwnerForm
-      greetingTitle={settingsStore.greetingSettings}
-      defaultPage={settingsStore.defaultPage}
-      {...props}
-    />
-  );
-});
-
-export default connect(
-  null,
-  //mapStateToProps,
-  {}
-)(withRouter(withTranslation()(ChangeOwnerFormWrapper)));
+export default inject(({ store }) => ({
+  greetingTitle: store.settingsStore.greetingSettings,
+  defaultPage: store.settingsStore.defaultPage,
+}))(withRouter(withTranslation()(ChangeOwnerForm)));

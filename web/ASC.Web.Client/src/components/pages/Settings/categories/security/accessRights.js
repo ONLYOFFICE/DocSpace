@@ -1,11 +1,10 @@
 import React, { Component, useEffect } from "react";
 import { withRouter } from "react-router";
-import { connect } from "react-redux";
 //import i18n from "../../i18n";
 import { I18nextProvider, withTranslation } from "react-i18next";
 import styled from "styled-components";
 import { TabContainer } from "asc-web-components";
-import { utils, store } from "asc-web-common";
+import { utils } from "asc-web-common";
 
 import OwnerSettings from "./sub-components/owner";
 import AdminsSettings from "./sub-components/admins";
@@ -13,9 +12,8 @@ import AdminsSettings from "./sub-components/admins";
 
 import { createI18N } from "../../../../../helpers/i18n";
 import { setDocumentTitle } from "../../../../../helpers/utils";
-import { observer } from "mobx-react";
+import { inject } from "mobx-react";
 
-const { settingsStore } = store;
 const i18n = createI18N({
   page: "Settings",
   localesPath: "pages/Settings",
@@ -130,18 +128,9 @@ class PureAccessRights extends Component {
 //   };
 // }
 
-const PureAccessRightsWrapper = observer((props) => {
-  return (
-    <PureAccessRights
-      organizationName={settingsStore.organizationName}
-      {...props}
-    />
-  );
-});
-
-const AccessRightsContainer = connect(null /* mapStateToProps */)(
-  withTranslation()(PureAccessRightsWrapper)
-);
+const AccessRightsContainer = inject(({ store }) => ({
+  organizationName: store.settingsStore.organizationName,
+}))(withTranslation()(PureAccessRights));
 
 const AccessRights = (props) => {
   useEffect(() => {

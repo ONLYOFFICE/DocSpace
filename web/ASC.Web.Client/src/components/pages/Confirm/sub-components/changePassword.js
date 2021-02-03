@@ -18,9 +18,7 @@ import {
   getConfirmationInfo,
   changePassword,
 } from "../../../../store/confirm/actions";
-import { observer } from "mobx-react";
-
-const { settingsStore } = store;
+import { inject } from "mobx-react";
 
 const { createPasswordHash, tryRedirectTo } = commonUtils;
 const { logout /* , getPortalSettings */ } = store.auth.actions;
@@ -215,34 +213,31 @@ function mapStateToProps(state) {
   return {
     isValidConfirmLink: state.auth.isValidConfirmLink,
     isConfirmLoaded: state.confirm.isConfirmLoaded,
-    //settings: state.auth.settings.passwordSettings,
     isAuthenticated: state.auth.isAuthenticated,
+    //settings: state.auth.settings.passwordSettings,
     //greetingTitle: state.auth.settings.greetingSettings,
     //hashSettings: state.auth.settings.hashSettings,
     //defaultPage: state.auth.settings.defaultPage,
   };
 }
 
-const ChangePasswordFormWrapper = observer((props) => {
-  const {
-    greetingSettings,
-    hashSettings,
-    defaultPage,
-  } = settingsStore.settings;
-
-  return (
-    <ChangePasswordForm
-      settings={settingsStore.settings}
-      hashSettings={hashSettings}
-      greetingTitle={greetingSettings}
-      defaultPage={defaultPage}
-      {...props}
-    />
-  );
-});
-
 export default connect(mapStateToProps, {
   changePassword,
   getConfirmationInfo,
   logout,
-})(withRouter(withTranslation()(ChangePasswordFormWrapper)));
+});
+
+inject(({ store }) => {
+  const {
+    greetingSettings,
+    hashSettings,
+    defaultPage,
+    passwordSettings,
+  } = store.settingsStore;
+  return {
+    settings: passwordSettings,
+    hashSettings,
+    greetingTitle: greetingSettings,
+    defaultPage,
+  };
+})(withRouter(withTranslation()(ChangePasswordForm)));

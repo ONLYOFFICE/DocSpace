@@ -6,9 +6,8 @@ import styled from "styled-components";
 import PropTypes from "prop-types";
 import { withTranslation } from "react-i18next";
 import { store, api, PageLayout } from "asc-web-common";
-import { observer } from "mobx-react";
+import { inject } from "mobx-react";
 
-const { settingsStore } = store;
 const { logout } = store.auth.actions;
 const { deleteSelf } = api.people;
 
@@ -126,15 +125,8 @@ function mapStateToProps(state) {
   };
 }
 
-const ProfileRemoveFormWrapper = observer((props) => {
-  return (
-    <ProfileRemoveForm
-      greetingTitle={settingsStore.greetingSettings}
-      {...props}
-    />
-  );
-});
-
 export default connect(mapStateToProps, { logout })(
-  withRouter(withTranslation()(ProfileRemoveFormWrapper))
+  inject(({ store }) => ({
+    greetingTitle: store.settingsStore.greetingSettings,
+  }))(withRouter(withTranslation()(ProfileRemoveForm)))
 );

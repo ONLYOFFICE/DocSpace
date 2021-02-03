@@ -16,10 +16,7 @@ import {
 } from "../../../../../store/settings/actions";
 import { saveToSessionStorage, getFromSessionStorage } from "../../utils";
 import { setDocumentTitle } from "../../../../../helpers/utils";
-import { observer } from "mobx-react";
-import { store } from "asc-web-common";
-
-const { settingsStore } = store;
+import { inject } from "mobx-react";
 
 const StyledComponent = styled.div`
   .margin-top {
@@ -260,18 +257,26 @@ class CustomTitles extends React.Component {
 //   };
 // }
 
-const CustomTitlesWrapper = observer((props) => {
-  const { greetingSettings, organizationName } = settingsStore.settings;
-  return (
-    <CustomTitles
-      greetingSettings={greetingSettings}
-      organizationName={organizationName}
-      {...props}
-    />
-  );
-});
+// const CustomTitlesWrapper = observer((props) => {
+//   const { greetingSettings, organizationName } = settingsStore;
+//   return (
+//     <CustomTitles
+//       greetingSettings={greetingSettings}
+//       organizationName={organizationName}
+//       {...props}
+//     />
+//   );
+// });
 
 export default connect(null /* mapStateToProps */, {
   setGreetingTitle,
   restoreGreetingTitle,
-})(withTranslation()(CustomTitlesWrapper));
+});
+
+inject(({ store }) => {
+  const { greetingSettings, organizationName } = store.settingsStore;
+  return {
+    greetingSettings,
+    organizationName,
+  };
+})(withTranslation()(CustomTitles));

@@ -26,14 +26,12 @@ import {
   EmptyScreenContainer,
   Icons,
 } from "asc-web-components";
-import { FilterInput, PeopleSelector, store } from "asc-web-common";
+import { FilterInput, PeopleSelector } from "asc-web-common";
 import { getUserRole } from "../../../../../../store/settings/selectors";
 import isEmpty from "lodash/isEmpty";
 
 import { createI18N } from "../../../../../../helpers/i18n";
-import { observer } from "mobx-react";
-
-const { settingsStore } = store;
+import { inject } from "mobx-react";
 
 const i18n = createI18N({
   page: "Settings",
@@ -593,17 +591,12 @@ AdminsSettings.propTypes = {
   owner: PropTypes.object,
 };
 
-const AdminsSettingsWrapper = observer((props) => {
-  return (
-    <AdminsSettings
-      groupsCaption={settingsStore.customNames.groupsCaption}
-      {...props}
-    />
-  );
-});
-
 export default connect(mapStateToProps, {
   changeAdmins,
   fetchPeople,
   getUpdateListAdmin,
-})(withRouter(AdminsSettingsWrapper));
+});
+
+inject(({ store }) => ({
+  groupsCaption: store.settingsStore.customNames.groupsCaption,
+}))(withRouter(AdminsSettings));

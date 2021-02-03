@@ -2,13 +2,12 @@ import React from "react";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import { Loader } from "asc-web-components";
-import { PageLayout, utils as commonUtils, store } from "asc-web-common";
+import { PageLayout, utils as commonUtils } from "asc-web-common";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { changeEmail } from "../../../../store/confirm/actions";
-import { observer } from "mobx-react";
+import { inject } from "mobx-react";
 const { tryRedirectTo } = commonUtils;
-const { settingsStore } = store;
 
 class ChangeEmail extends React.PureComponent {
   componentDidMount() {
@@ -74,10 +73,8 @@ function mapStateToProps(state) {
   };
 }
 
-const ChangeEmailFormWrapper = observer((props) => {
-  return <ChangeEmailForm defaultPage={settingsStore.defaultPage} {...props} />;
-});
-
 export default connect(mapStateToProps, { changeEmail })(
-  withRouter(withTranslation()(ChangeEmailFormWrapper))
+  inject(({ store }) => ({
+    defaultPage: store.settingsStore.defaultPage,
+  }))(withRouter(withTranslation()(ChangeEmailForm)))
 );
