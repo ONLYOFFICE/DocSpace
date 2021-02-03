@@ -184,7 +184,7 @@ export function fetchSelectorUsers() {
 }
 
 export function fetchGroups(dispatchFunc = null) {
-  return api.groups.getGroupList().then((groups) => {
+  return api.groups.getGroupListFull().then((groups) => {
     return dispatchFunc
       ? dispatchFunc(setGroups(groups))
       : Promise.resolve((dispatch) => dispatch(setGroups(groups)));
