@@ -922,7 +922,7 @@ const mapStateToProps = (state) => {
     editingForm: state.people.editingForm,
     filter: state.people.filter,
     disableProfileType: getDisableProfileType(state),
-    isAdmin: isAdmin(state),
+    // isAdmin: isAdmin(state),
   };
 };
 
@@ -942,6 +942,7 @@ export default connect(mapStateToProps, {
 })(
   inject(({ store }) => ({
     settings: store.settingsStore,
+    isAdmin: store.isAdmin,
   }))(observer(withRouter(withTranslation()(UpdateUserForm))))
 );
 

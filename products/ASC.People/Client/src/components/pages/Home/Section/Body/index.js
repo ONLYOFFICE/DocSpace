@@ -343,7 +343,7 @@ class SectionBodyContent extends React.PureComponent {
   };
 
   onContentRowSelect = (checked, user) => {
-    //console.log("ContentRow onSelect", checked, user);
+    console.log("ContentRow onSelect", checked, user);
     if (checked) {
       this.props.selectUser(user);
     } else {
@@ -550,7 +550,7 @@ const mapStateToProps = (state) => {
     isLoading,
     peopleList: getPeopleList(state),
     //settings: getSettings(state),
-    isAdmin: isAdmin(state),
+    // isAdmin: isAdmin(state),
     currentUserId: getCurrentUserId(state),
   };
 };
@@ -583,5 +583,6 @@ export default connect(mapStateToProps, {
   inject(({ store }) => ({
     settings: store.settingsStore,
     isLoaded: store.isLoaded,
+    isAdmin: store.isAdmin,
   }))(observer(withRouter(withTranslation()(SectionBodyContent))))
 );

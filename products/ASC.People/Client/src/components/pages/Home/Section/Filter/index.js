@@ -271,7 +271,7 @@ function mapStateToProps(state) {
     groups: getGroups(state),
     filter: getFilter(state),
     //settings: getSettings(state),
-    isAdmin: isAdmin(state),
+    // isAdmin: isAdmin(state),
     // isLoaded: getIsLoaded(state),
   };
 }
@@ -284,6 +284,7 @@ export default connect(mapStateToProps, { fetchPeople })(
   inject(({ store }) => ({
     settings: store.settingsStore,
     isLoaded: store.isLoaded,
+    isAdmin: store.isAdmin,
   }))(
     observer(
       withRouter(withLayoutSize(withTranslation()(SectionFilterContent)))

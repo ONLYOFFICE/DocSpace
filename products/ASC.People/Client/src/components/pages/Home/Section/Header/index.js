@@ -490,7 +490,7 @@ const mapStateToProps = (state) => {
 
   return {
     group: getSelectedGroup(groups, selectedGroup),
-    isAdmin: isAdmin(state),
+    // isAdmin: isAdmin(state),
     //homepage,
     //customNames,
     selection,
@@ -526,5 +526,6 @@ export default connect(mapStateToProps, {
     customNames: store.settingsStore.customNames,
     homepage: store.settingsStore.homepage,
     isLoaded: store.isLoaded,
+    isAdmin: store.isAdmin,
   }))(observer(withTranslation()(withRouter(SectionHeaderContent))))
 );

@@ -187,7 +187,7 @@ function mapStateToProps(state) {
     selectedGroup,
     groups,
     organizationName: getOrganizationName(state),
-    isAdmin: isAdmin(state),
+    // isAdmin: isAdmin(state),
     isLoading: getIsLoading(state),
     // isLoaded: getIsLoaded(state),
   };
@@ -196,5 +196,6 @@ function mapStateToProps(state) {
 export default connect(mapStateToProps, { setSelected, setIsLoading })(
   inject(({ store }) => ({
     isLoaded: store.isLoaded,
+    isAdmin: store.isAdmin,
   }))(observer(withRouter(Home)))
 );

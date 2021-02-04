@@ -187,7 +187,7 @@ const mapStateToProps = (state) => {
   return {
     //settings: state.auth.settings,
     profile: state.profile.targetUser,
-    isAdmin: isAdmin(state),
+    // isAdmin: isAdmin(state),
     viewer: state.auth.user,
   };
 };
@@ -199,6 +199,7 @@ const mapStateToProps = (state) => {
 export default connect(mapStateToProps)(
   inject(({ store }) => ({
     settings: store.settingsStore,
+    isAdmin: store.isAdmin,
   }))(observer(withRouter(withTranslation()(SectionBodyContent))))
 );
 
