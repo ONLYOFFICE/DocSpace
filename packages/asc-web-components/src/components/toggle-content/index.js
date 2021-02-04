@@ -1,46 +1,11 @@
 import React from "react";
-import styled from "styled-components";
-import { Icons } from "../icons";
-import Heading from "../heading";
 import PropTypes from "prop-types";
 
-const StyledContainer = styled.div`
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-
-  .span-toggle-content {
-    cursor: pointer;
-    user-select: none;
-  }
-
-  .heading-toggle-content {
-    height: 24px;
-    line-height: 26px;
-    box-sizing: border-box;
-    font-style: normal;
-
-    &:hover {
-      border-bottom: 1px dashed;
-    }
-  }
-`;
-
-const StyledContent = styled.div`
-  color: #333;
-  display: ${(props) => (props.isOpen ? "block" : "none")};
-  padding-top: 6px;
-`;
+import { ArrowContentIcon } from "./svg";
+import Heading from "../heading";
+import { StyledContent, StyledContainer } from "./styled-toggle-content";
 
 // eslint-disable-next-line react/prop-types, no-unused-vars
-const IconArrow = ({ isOpen, ...props }) => (
-  <Icons.ArrowContentIcon {...props} />
-);
-
-const Arrow = styled(IconArrow)`
-  margin-right: 9px;
-  margin-bottom: 5px;
-  transform: ${(props) => props.isOpen && "rotate(180deg)"};
-`;
-
 class ToggleContent extends React.Component {
   constructor(props) {
     super(props);
@@ -69,9 +34,14 @@ class ToggleContent extends React.Component {
     const { isOpen } = this.state;
 
     return (
-      <StyledContainer className={className} id={id} style={style}>
+      <StyledContainer
+        className={className}
+        isOpen={isOpen}
+        id={id}
+        style={style}
+      >
         <span className="span-toggle-content" onClick={this.toggleContent}>
-          <Arrow color="#333" isfill={true} size="medium" isOpen={isOpen} />
+          <ArrowContentIcon className="arrow-toggle-content" size="medium" />
           <Heading
             className="heading-toggle-content"
             level={2}

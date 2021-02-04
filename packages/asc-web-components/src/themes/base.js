@@ -588,12 +588,19 @@ const Base = {
 
   toggleContent: {
     headingHeight: "24px",
-    headingLineHeight: "18px",
+    headingLineHeight: "26px",
     hoverBorderBottom: "1px dashed",
     contentPadding: "10px 0px 0px 0px",
     arrowMargin: "4px 8px 4px 0px",
+    arrowMarginRight: "9px",
+    arrowMarginBottom: "5px",
     transform: "rotate(180deg)",
     iconColor: black,
+
+    childrenContent:{
+      color: black,
+      paddingTop: "6px",
+    }
   },
 
   toggleButton: {

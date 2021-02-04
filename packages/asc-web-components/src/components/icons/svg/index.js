@@ -85,7 +85,6 @@ import OrigActionsPresentationIcon from "./actions.presentation.react.svg";
 import OrigCatalogTrashIcon from "./catalog.trash.react.svg";
 import OrigRemoveIcon from "./remove.react.svg";
 import OrigCatalogQuestionIcon from "./catalog.question.react.svg";
-import OrigArrowContentIcon from "./arrow.content.react.svg";
 import OrigPhoneIcon from "./phone.react.svg";
 import OrigMobileIcon from "./mobile.react.svg";
 import OrigGmailIcon from "./gmail.react.svg";
@@ -265,10 +264,7 @@ export const AddGuestIcon = createStyledIcon(OrigAddGuestIcon, "AddGuestIcon");
 export const AimIcon = createStyledIcon(OrigAimIcon, "AimIcon");
 export const AlertIcon = createStyledIcon(OrigAlertIcon, "AlertIcon");
 export const AppsIcon = createStyledIcon(OrigAppsIcon, "AppsIcon");
-export const ArrowContentIcon = createStyledIcon(
-  OrigArrowContentIcon,
-  "ArrowContentIcon"
-);
+
 export const BloggerIcon = createStyledIcon(OrigBloggerIcon, "BloggerIcon");
 export const ButtonUploadIcon = createStyledIcon(
   OrigButtonUploadIcon,

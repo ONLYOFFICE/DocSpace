@@ -49,7 +49,7 @@ const Text = ({
   textAlign,
   ...rest
 }) => {
-  console.log("Text render", color)
+
   return (
     <StyledText
       fontSizeProp={fontSize}
