@@ -35,12 +35,12 @@ const Base = {
   fontFamily: "Open Sans, sans-serif, Arial",
   fontSize: "30px",
 
-  // text: {
-  //   color: black,
-  //   disableColor: grayLightMid,
-  //   fontWeight: "normal",
-  //   fontWeightBold: "bold",
-  // },
+  text: {
+    color: black,
+    disableColor: gray,
+    fontWeight: "normal",
+    fontWeightBold: "bold",
+  },
 
   // heading: {
   //   fontSize: {
@@ -183,13 +183,7 @@ const Base = {
   //   hoverBorderColor: gray,
   // },
 
-  // toggleButton: {
-  //   fillColor: blueMain,
-  //   fillColorOff: gray,
 
-  //   disableFillColor: grayLightMid,
-  //   disableFillColorOff: grayLightMid,
-  // },
 
   // radioButton: {
   //   color: black,
@@ -592,15 +586,23 @@ const Base = {
     },
   },
 
-  // toggleContent: {
-  //   headingHeight: "24px",
-  //   headingLineHeight: "18px",
-  //   hoverBorderBottom: "1px dashed",
-  //   contentPadding: "10px 0px 0px 0px",
-  //   arrowMargin: "4px 8px 4px 0px",
-  //   transform: "rotate(180deg)",
-  //   iconColor: black,
-  // },
+  toggleContent: {
+    headingHeight: "24px",
+    headingLineHeight: "18px",
+    hoverBorderBottom: "1px dashed",
+    contentPadding: "10px 0px 0px 0px",
+    arrowMargin: "4px 8px 4px 0px",
+    transform: "rotate(180deg)",
+    iconColor: black,
+  },
+
+  toggleButton: {
+    fillColor: blueMain,
+    fillColorOff: gray,
+
+    disableFillColor: grayLightMid,
+    disableFillColorOff: grayLightMid,
+  },
 
   // calendar: {
   //   baseWidth: "265px",
