@@ -779,9 +779,9 @@ function mapStateToProps(state, props) {
   };
 }
 
-const FilesRowContentWrapper = observer((props) => {
-  return <FilesRowContent homepage={settingsStore.homepage} {...props} />;
-});
+// const FilesRowContentWrapper = observer((props) => {
+//   return <FilesRowContent homepage={settingsStore.homepage} {...props} />;
+// });
 
 export default connect(mapStateToProps, {
   createFile,
@@ -796,4 +796,4 @@ export default connect(mapStateToProps, {
   fetchFiles,
   getEncryptionAccess,
   replaceFileStream,
-})(withRouter(withTranslation()(FilesRowContentWrapper)));
+})(withRouter(withTranslation()(FilesRowContent)));

@@ -25,7 +25,7 @@ import { observer } from "mobx-react";
 
 const { settingsStore } = initStore;
 
-//const { getSettings } = initStore.auth.selectors;
+const { getSettings } = initStore.auth.selectors;
 const i18n = createI18N({
   page: "Article",
   localesPath: "Article",
@@ -186,19 +186,13 @@ const mapStateToProps = (state) => {
   return {
     canCreate: canCreate(state),
     firstLoad: getFirstLoad(state),
-    //settings: getSettings(state),
+    settings: getSettings(state),
     filter: getFilter(state),
     selectedFolder: getSelectedFolder(state),
     isPrivacy: getIsPrivacyFolder(state),
   };
 };
 
-const ArticleMainButtonContentWrapper = observer((props) => {
-  return (
-    <ArticleMainButtonContent homepage={settingsStore.homepage} {...props} />
-  );
-});
-
 export default connect(mapStateToProps, { setAction, startUpload })(
-  withRouter(ArticleMainButtonContentWrapper)
+  withRouter(ArticleMainButtonContent)
 );

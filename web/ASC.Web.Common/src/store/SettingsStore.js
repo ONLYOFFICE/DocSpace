@@ -22,7 +22,7 @@ class SettingsStore {
   dateTimePattern = "dddd, MMMM d, yyyy h:mm:ss tt";
   datepicker = {
     datePattern: "mm/dd/yy",
-    dateTimePattern: "DD: mm dd: yy h:mm:ss tt",
+    dateTimePattern: "DD, mm dd, yy h:mm:ss tt",
     timePattern: "h:mm tt",
   };
   organizationName = "ONLYOFFICE";
@@ -93,6 +93,12 @@ class SettingsStore {
       isLoading: observable,
       setIsLoading: action,
       setIsLoaded: action,
+      getPortalCultures: action,
+      getIsEncryptionSupport: action,
+      updateEncryptionKeys: action,
+      setEncryptionKeys: action,
+      getEncryptionKeys: action,
+      setModuleInfo: action,
     });
   }
 
@@ -147,6 +153,33 @@ class SettingsStore {
 
   setIsLoaded = (isLoaded) => {
     this.isLoaded = isLoaded;
+  };
+
+  getPortalCultures = async () => {
+    this.cultures = await api.settings.getPortalCultures();
+  };
+
+  getIsEncryptionSupport = async () => {
+    this.isEncryptionSupport = await api.files.getIsEncryptionSupport();
+  };
+
+  updateEncryptionKeys = (encryptionKeys) => {
+    this.encryptionKeys = encryptionKeys ?? {};
+  };
+
+  setEncryptionKeys = async (keys) => {
+    await api.files.setEncryptionKeys(keys);
+    this.updateEncryptionKeys(keys);
+  };
+
+  getEncryptionKeys = async () => {
+    const encryptionKeys = await api.files.getEncryptionKeys();
+    this.updateEncryptionKeys(encryptionKeys);
+  };
+
+  setModuleInfo = (homepage, productId) => {
+    this.homepage = homepage;
+    this.currentProductId = productId;
   };
 }
 

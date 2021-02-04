@@ -108,7 +108,7 @@ import {
 import { observer } from "mobx-react";
 const {
   isAdmin,
-  //getSettings,
+  getSettings,
   getCurrentUser,
   isDesktopClient,
   isEncryptionSupport,
@@ -2148,7 +2148,7 @@ const mapStateToProps = (state) => {
     selected: getSelected(state),
     selectedFolderId: getSelectedFolderId(state),
     selection: getSelection(state),
-    //settings: getSettings(state),
+    settings: getSettings(state),
     title: getSelectedFolderTitle(state),
     treeFolders: getTreeFolders(state),
     viewAs: getViewAs(state),
@@ -2164,15 +2164,15 @@ const mapStateToProps = (state) => {
   };
 };
 
-const SectionBodyContentWrapper = observer((props) => {
-  return (
-    <SectionBodyContent
-      homepage={settingsStore.homepage}
-      culture={settingsStore.culture}
-      {...props}
-    />
-  );
-});
+// const SectionBodyContentWrapper = observer((props) => {
+//   return (
+//     <SectionBodyContent
+//       homepage={settingsStore.homepage}
+//       culture={settingsStore.culture}
+//       {...props}
+//     />
+//   );
+// });
 
 export default connect(mapStateToProps, {
   deselectFile,
@@ -2200,4 +2200,4 @@ export default connect(mapStateToProps, {
   setIsVerHistoryPanel,
   setVerHistoryFileId,
   setChangeOwnerPanelVisible,
-})(withRouter(withTranslation()(SectionBodyContentWrapper)));
+})(withRouter(withTranslation()(SectionBodyContent)));
