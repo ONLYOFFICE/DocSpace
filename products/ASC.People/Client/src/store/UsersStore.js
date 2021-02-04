@@ -20,7 +20,7 @@ class UsersStore {
       filterData = Filter.getDefault();
     }
     const res = await api.people.getListAdmins(filterData);
-    this.users = res;
+    this.users = res.items;
   };
 }
 
