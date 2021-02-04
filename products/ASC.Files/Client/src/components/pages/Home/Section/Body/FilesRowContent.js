@@ -79,6 +79,7 @@ const SimpleFilesRowContent = styled(RowContent)`
 
   .favorite {
     cursor: pointer;
+    margin-right: 6px;
   }
 
   .share-icon {
@@ -628,6 +629,17 @@ class FilesRowContent extends React.PureComponent {
                     hoverColor="#3B72A7"
                   />
                 )}
+                {locked && (
+                  <Icons.FileActionsLockedIcon
+                    className="badge lock-file"
+                    size="small"
+                    isfill={true}
+                    color="#3B72A7"
+                    data-id={item.id}
+                    data-locked={true}
+                    onClick={this.props.onClickLock}
+                  />
+                )}
                 {fileStatus === 96 && !isTrashFolder && (
                   <Icons.FavoriteIcon
                     className="favorite"
@@ -644,17 +656,6 @@ class FilesRowContent extends React.PureComponent {
                     size="small"
                     isfill={true}
                     color="#3B72A7"
-                  />
-                )}
-                {locked && (
-                  <Icons.FileActionsLockedIcon
-                    className="badge lock-file"
-                    size="small"
-                    isfill={true}
-                    color="#3B72A7"
-                    data-id={item.id}
-                    data-locked={true}
-                    onClick={this.props.onClickLock}
                   />
                 )}
                 {versionGroup > 1 && (
