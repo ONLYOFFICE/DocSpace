@@ -494,7 +494,7 @@ const mapStateToProps = (state) => {
     //homepage,
     //customNames,
     selection,
-    isLoaded,
+    // isLoaded,
     hasAnybodySelected: hasAnybodySelected(state),
     hasUsersToMakeEmployees: hasUsersToMakeEmployees(state),
     hasUsersToMakeGuests: hasUsersToMakeGuests(state),
@@ -525,5 +525,6 @@ export default connect(mapStateToProps, {
   inject(({ store }) => ({
     customNames: store.settingsStore.customNames,
     homepage: store.settingsStore.homepage,
+    isLoaded: store.isLoaded,
   }))(observer(withTranslation()(withRouter(SectionHeaderContent))))
 );

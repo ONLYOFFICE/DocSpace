@@ -136,7 +136,7 @@ ArticleMainButtonContent.propTypes = {
 const mapStateToProps = (state) => {
   const { isLoaded } = state.auth;
   return {
-    isLoaded,
+    // isLoaded,
     //settings: getSettings(state),
     language: getLanguage(state),
   };
@@ -151,5 +151,6 @@ const mapStateToProps = (state) => {
 export default connect(mapStateToProps)(
   inject(({ store }) => ({
     settings: store.settingsStore,
+    isLoaded: store.isLoaded,
   }))(observer(withRouter(ArticleMainButtonContent)))
 );

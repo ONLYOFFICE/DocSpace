@@ -17,6 +17,7 @@ import {
 import { createI18N } from "../../../helpers/i18n";
 import styled, { css } from "styled-components";
 import { setDocumentTitle } from "../../../helpers/utils";
+import { inject, observer } from "mobx-react";
 
 const i18n = createI18N({
   page: "Article",
@@ -114,14 +115,14 @@ class ArticleBodyContent extends React.Component {
     }
   };
   onSelect = (data) => {
-    const { setIsLoading } = this.props
+    const { setIsLoading } = this.props;
     return () => {
       const { selectGroup } = this.props;
       setIsLoading(true);
       this.changeTitleDocument(data);
       selectGroup(
         data && data.length === 1 && data[0] !== "root" ? data[0] : null
-      ).finally(() => setIsLoading(false))
+      ).finally(() => setIsLoading(false));
     };
   };
   switcherIcon = (obj) => {
@@ -243,7 +244,7 @@ function mapStateToProps(state) {
       : ["root"],
     groups,
     isAdmin: isAdmin(state),
-    isLoaded,
+    // isLoaded,
     editingForm,
   };
 }
@@ -252,4 +253,8 @@ export default connect(mapStateToProps, {
   selectGroup,
   setIsVisibleDataLossDialog,
   setIsLoading,
-})(BodyContent);
+})(
+  inject(({ store }) => ({
+    isLoaded: store.isLoaded,
+  }))(observer(BodyContent))
+);

@@ -544,7 +544,7 @@ const mapStateToProps = (state) => {
   const { isLoaded } = state.auth;
   const { filter, isLoading } = state.people;
   return {
-    isLoaded,
+    // isLoaded,
     isLoadedSection: getIsLoadedSection(state),
     filter,
     isLoading,
@@ -582,5 +582,6 @@ export default connect(mapStateToProps, {
 })(
   inject(({ store }) => ({
     settings: store.settingsStore,
+    isLoaded: store.isLoaded,
   }))(observer(withRouter(withTranslation()(SectionBodyContent))))
 );

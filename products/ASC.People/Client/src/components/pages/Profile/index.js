@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { Profiler, useEffect } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { Loader } from "asc-web-components";
@@ -15,6 +15,7 @@ import { createI18N } from "../../../helpers/i18n";
 import { setDocumentTitle } from "../../../helpers/utils";
 import { withRouter } from "react-router";
 import { isChrome, isAndroid } from "react-device-detect";
+import { inject, observer } from "mobx-react";
 const i18n = createI18N({
   page: "Profile",
   localesPath: "pages/Profile",
@@ -121,7 +122,7 @@ function mapStateToProps(state) {
   const { targetUser } = state.profile;
   return {
     profile: targetUser,
-    isLoaded,
+    // isLoaded,
     isVisitor: isVisitor(state),
     isAdmin: isAdmin(state),
     language: getLanguage(state),
@@ -131,4 +132,8 @@ function mapStateToProps(state) {
 export default connect(mapStateToProps, {
   fetchProfile,
   resetProfile,
-})(Profile);
+})(
+  inject(({ store }) => ({
+    isLoaded: store.isLoaded,
+  }))(observer(Profile))
+);
