@@ -7,12 +7,13 @@ import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import { ErrorBoundary, store as commonStore } from "asc-web-common";
 import { Provider as MobxProvider } from "mobx-react";
+import { peopleStore } from "./store/";
 
 const { authStore } = commonStore;
 
 ReactDOM.render(
   <Provider store={store}>
-    <MobxProvider store={authStore}>
+    <MobxProvider store={authStore} peopleStore={peopleStore}>
       <ErrorBoundary>
         <App />
       </ErrorBoundary>

@@ -56,8 +56,8 @@ class App extends React.Component {
       setIsLoaded,
       getIsAuthenticated,
       loadBaseInfo,
+      loadBasePeopleInfo,
     } = this.props;
-
     try {
       const isAuthenticated = await getIsAuthenticated();
 
@@ -181,18 +181,18 @@ const mapDispatchToProps = (dispatch) => {
     //getModules: () => getModules(dispatch),
     getPortalPasswordSettings: () => getPortalPasswordSettings(dispatch),
     getPortalCultures: () => getPortalCultures(dispatch),
-    fetchGroups: () => fetchGroups(dispatch),
-    fetchPeople: () => {
-      var re = new RegExp(`${config.homepage}((/?)$|/filter)`, "gm");
-      const match = window.location.pathname.match(re);
+    // fetchGroups: () => fetchGroups(dispatch),
+    // fetchPeople: () => {
+    //   var re = new RegExp(`${config.homepage}((/?)$|/filter)`, "gm");
+    //   const match = window.location.pathname.match(re);
 
-      if (match && match.length > 0) {
-        const newFilter = getFilterByLocation(window.location);
-        return fetchPeople(newFilter, dispatch);
-      }
+    //   if (match && match.length > 0) {
+    //     const newFilter = getFilterByLocation(window.location);
+    //     return fetchPeople(newFilter, dispatch);
+    //   }
 
-      return Promise.resolve();
-    },
+    //   return Promise.resolve();
+    // },
     setIsLoaded: () => dispatch(setIsLoaded(true)),
   };
 };
@@ -211,12 +211,17 @@ export default connect(
   null,
   mapDispatchToProps
 )(
-  inject(({ store }) => ({
+  inject(({ store, peopleStore }) => ({
     user: store.userStore.user,
     isAuthenticated: store.userStore.isAuthenticated,
     getUser: store.userStore.setCurrentUser,
     homepage: store.settingsStore.homepage || config.homepage,
     encryptionKeys: store.settingsStore.encryptionKeys,
-    loadBaseInfo: store.init,
-  }))(App)
+    loadBaseInfo: () => {
+      store.init();
+      peopleStore.init();
+    },
+
+    // loadBasePeopleInfo: peopleStore.init,
+  }))(observer(App))
 );

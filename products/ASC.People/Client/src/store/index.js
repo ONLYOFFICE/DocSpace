@@ -1,5 +1,4 @@
 import { store } from "asc-web-common";
-const { moduleStore } = store.moduleStore;
-const { settingsStore } = store.settingsStore;
+import peopleStore from "./PeopleStore";
 
-export { moduleStore, settingsStore};
+export { store, peopleStore };
