@@ -1,8 +1,5 @@
-
-APP_HOST="localhost"
-APP_PORT="80"
-
-APP_CONF="/etc/onlyoffice/appserver/config/appsettings.test.json"
+APP_DIR="/etc/onlyoffice/appserver"
+APP_CONF="$APP_DIR/config/appsettings.test.json"
 NGINX_CONF="/etc/nginx/conf.d"
 
 MYSQL=""
@@ -10,6 +7,9 @@ DB_HOST=""
 DB_NAME=""
 DB_USER=""
 DB_PWD=""
+
+APP_HOST="localhost"
+APP_PORT="80"
 
 DOCUMENT_SERVER_HOST="localhost";
 DOCUMENT_SERVER_PORT="8083";
@@ -24,15 +24,112 @@ ELK_HOST="localhost"
 ELK_PORT="9200"
 ELK_VALUE='"elastic": { "Scheme": "'${ELK_SHEME}'", "Host": "'${ELK_HOST}'", "Port": "'${ELK_PORT}'" },'
 
-[ -e $APP_CONF ] || { echo "Configuration file not found at path $APP_CONF"; exit 1; }
 [ $(id -u) -ne 0 ] && { echo "Root privileges required"; exit 1; }
+
+while [ "$1" != "" ]; do
+	case $1 in
+
+		-ash | --appshost )
+			if [ "$2" != "" ]; then
+				APP_HOST=$2
+				shift
+			fi
+		;;
+
+		-asp | --appsport )
+			if [ "$2" != "" ]; then
+				APP_PORT=$2
+				shift
+			fi
+		;;
+
+		-dsh | --docshost )
+			if [ "$2" != "" ]; then
+				DOCUMENT_SERVER_HOST=$2
+				shift
+			fi
+		;;
+
+		-dsp | --docsport )
+			if [ "$2" != "" ]; then
+				DOCUMENT_SERVER_PORT=$2
+				shift
+			fi
+		;;
+
+		-kh | --kafkahost )
+			if [ "$2" != "" ]; then
+				KAFKA_HOST=$2
+				shift
+			fi
+		;;
+
+		-kp | --kafkaport )
+			if [ "$2" != "" ]; then
+				KAFKA_PORT=$2
+				shift
+			fi
+		;;
+
+		-zkh | --zookeeperhost )
+			if [ "$2" != "" ]; then
+				ZOOKEEPER_HOST=$2
+				shift
+			fi
+		;;
+
+		-zkp | --zookeeperport )
+			if [ "$2" != "" ]; then
+				ZOOKEEPER_HOST=$2
+				shift
+			fi
+		;;
+
+		-esh | --elastichost )
+			if [ "$2" != "" ]; then
+				ELK_HOST=$2
+				shift
+			fi
+		;;
+
+		-esp | --elasticport )
+			if [ "$2" != "" ]; then
+				ELK_HOST=$2
+				shift
+			fi
+		;;
+
+		-? | -h | --help )
+			echo "  Usage: bash appserver-configuration.sh [PARAMETER] [[PARAMETER], ...]"
+			echo
+			echo "    Parameters:"
+			echo "      -ash, --appshost                    appserver ip"
+			echo "      -asp, --appsport                    appserver port (default 80)"
+			echo "      -dsh, --docshost                    document server ip"
+			echo "      -dsp, --docsport                    document server port (default 8083)"
+			echo "      -kh, --kafkahost                    kafka ip"
+			echo "      -kp, --kafkaport                    kafka port (default 9092)"
+			echo "      -zkh, --zookeeperhost               zookeeper ip"
+			echo "      -zkp, --zookeeperport               zookeeper port (default 2181)"
+			echo "      -esh, --elastichost                 elasticsearch ip"
+			echo "      -esp, --elasticport                 elasticsearch port (default 9200)"
+			echo "      -?, -h, --help                      this help"
+			echo
+			exit 0
+		* )
+			echo "Unknown parameter $1" 1>&2
+			exit 1
+		;;
+	esac
+	shift
+done
 
 restart_services() {
 	echo -n "Restarting services... "
 
-	for SVC in nginx mysqld elasticsearch kafka zookeeper appserver-api appserver-socket appserver-api_system appserver-backup \
+	for SVC in nginx mysqld appserver-api appserver-socket appserver-api_system appserver-backup \
 	appserver-files appserver-files_service appserver-notify appserver-people appserver-studio appserver-studio_notify \
-	appserver-thumbnails appserver-urlshortener
+	appserver-thumbnails appserver-urlshortener elasticsearch kafka zookeeper
 	do
 		if systemctl is-active $SVC | grep -q "active"; then
 			systemctl restart $SVC.service >/dev/null 2>&1
@@ -91,10 +188,10 @@ establish_mysql_conn(){
 	fi
 
     #save db params
-    sed -i "s/Server=.*;Port=/Server=$DB_HOST;Port=/" /etc/onlyoffice/appserver/config/appsettings.test.json
-    sed -i "s/Database=.*;User/Database=$DB_NAME;User/" /etc/onlyoffice/appserver/config/appsettings.test.json
-    sed -i "s/User ID=.*;Password=/User ID=$DB_USER;Password=/" /etc/onlyoffice/appserver/config/appsettings.test.json
-    sed -i "s/Password=.*;Pooling=/Password=$DB_PWD;Pooling=/" /etc/onlyoffice/appserver/config/appsettings.test.json
+    sed -i "s/Server=.*;Port=/Server=$DB_HOST;Port=/" $APP_CONF
+    sed -i "s/Database=.*;User/Database=$DB_NAME;User/" $APP_CONF
+    sed -i "s/User ID=.*;Password=/User ID=$DB_USER;Password=/" $APP_CONF
+    sed -i "s/Password=.*;Pooling=/Password=$DB_PWD;Pooling=/" $APP_CONF
     
 	echo "OK"
 }
@@ -205,12 +302,12 @@ execute_mysql_script(){
     if [ "${DB_TABLES_COUNT}" -eq "0" ]; then
 		echo -n "Installing MYSQL database... "
 
-		sed -i -e '1 s/^/SET SQL_MODE='ALLOW_INVALID_DATES';\n/;' /etc/onlyoffice/appserver/onlyoffice.sql
+		sed -i -e '1 s/^/SET SQL_MODE='ALLOW_INVALID_DATES';\n/;' $APP_DIR/onlyoffice.sql
 		$MYSQL -e "CREATE DATABASE IF NOT EXISTS $DB_NAME CHARACTER SET utf8 COLLATE 'utf8_general_ci';"
-		$MYSQL "$DB_NAME" < "/etc/onlyoffice/appserver/createdb.sql" >/dev/null 2>&1
-		$MYSQL "$DB_NAME" < "/etc/onlyoffice/appserver/onlyoffice.sql" >/dev/null 2>&1
-		$MYSQL "$DB_NAME" < "/etc/onlyoffice/appserver/onlyoffice.data.sql" >/dev/null 2>&1
-		$MYSQL "$DB_NAME" < "/etc/onlyoffice/appserver/onlyoffice.resources.sql" >/dev/null 2>&1
+		$MYSQL "$DB_NAME" < "$APP_DIR/createdb.sql" >/dev/null 2>&1
+		$MYSQL "$DB_NAME" < "$APP_DIR/onlyoffice.sql" >/dev/null 2>&1
+		$MYSQL "$DB_NAME" < "$APP_DIR/onlyoffice.data.sql" >/dev/null 2>&1
+		$MYSQL "$DB_NAME" < "$APP_DIR/onlyoffice.resources.sql" >/dev/null 2>&1
 	else
 		echo -n "Upgrading MySQL database... "
     fi
@@ -344,7 +441,7 @@ setup_kafka() {
 
 	if [ $KAFKA_SERVICE ]; then
 
-		local APP_KAFKA_CONF="/etc/onlyoffice/appserver/config/kafka.test.json"
+		local APP_KAFKA_CONF="$APP_DIR/config/kafka.test.json"
 
 		echo -n "Configuring kafka... "
 
