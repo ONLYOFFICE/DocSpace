@@ -455,10 +455,12 @@ const Base = {
       big: "82px",
       max: "160px",
     },
-
   },
 
-  // backdrop: { backgroundColor: "rgba(0, 0, 0, 0.3)" },
+  backdrop: {
+    backgroundColor: "rgba(6, 22, 38, 0.1)",
+    unsetBackgroundColor: "unset",
+  },
 
   // loader: {
   //   color: shuttleGrey,

@@ -1,19 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
-import styled from "styled-components";
 
-const StyledBackdrop = styled.div`
-  background-color: ${(props) =>
-    props.needBackground ? "rgba(6, 22, 38, 0.1)" : "unset"};
-  display: ${(props) => (props.visible ? "block" : "none")};
-  height: 100vh;
-  position: fixed;
-  width: 100vw;
-  z-index: ${(props) => props.zIndex};
-  left: 0;
-  top: 0;
-  cursor: ${(props) => (props.needBackground ? "pointer" : "default")}; ;
-`;
+import StyledBackdrop from "./styled-backdrop";
 
 class Backdrop extends React.Component {
   constructor(props) {
