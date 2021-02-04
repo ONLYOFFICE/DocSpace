@@ -528,69 +528,70 @@ const Base = {
   //   padding: "6px 0px",
   // },
 
-  // comboBox: {
-  //   width: {
-  //     base: "173px",
-  //     middle: "300px",
-  //     big: "350px",
-  //     huge: "500px",
-  //   },
+  comboBox: {
+    padding: "6px 0px",
 
-  //   arrow: {
-  //     width: "8px",
-  //     flex: "0 0 8px",
-  //     marginTopWithBorder: "5px",
-  //     marginTop: "12px",
-  //     marginRight: "8px",
-  //     marginLeft: "auto",
-  //     fillColor: gray,
-  //   },
+    width: {
+      base: "173px",
+      middle: "300px",
+      big: "350px",
+      huge: "500px",
+    },
 
-  // button: {
-  //   height: "18px",
-  //   heightWithBorder: "32px",
-  //   paddingLeft: "8px",
+    arrow: {
+      width: "8px",
+      flex: "0 0 8px",
+      marginTopWithBorder: "5px",
+      marginTop: "12px",
+      marginRight: "8px",
+      marginLeft: "auto",
+      fillColor: gray,
+    },
 
-  //   color: black,
-  //   disabledColor: grayMid,
-  //   background: white,
-  //   backgroundWithBorder: "none",
+  button: {
+    height: "18px",
+    heightWithBorder: "30px",
+    paddingLeft: "8px",
 
-  //   border: `1px solid ${grayMid}`,
-  //   borderRadius: "3px",
-  //   borderColor: blueMain,
+    color: black,
+    disabledColor: grayMid,
+    background: white,
+    backgroundWithBorder: "none",
 
-  //   disabledBorderColor: grayLightMid,
-  //   disabledBackground: grayLight,
+    border: `1px solid ${grayMid}`,
+    borderRadius: "3px",
+    borderColor: blueMain,
 
-  //   hoverBorderColor: gray,
-  //   hoverBorderColorOpen: blueMain,
-  //   hoverDisabledBorderColor: grayLightMid,
-  // },
+    disabledBorderColor: grayLightMid,
+    disabledBackground: grayLight,
 
-  //   label: {
-  //     marginRightWithBorder: "8px",
-  //     marginRight: "4px",
+    hoverBorderColor: gray,
+    hoverBorderColorOpen: blueMain,
+    hoverDisabledBorderColor: grayLightMid,
+  },
 
-  //     defaultDisabledColor: grayMid,
-  //     defaultColor: gray,
-  //     disabledColor: grayMid,
-  //     color: black,
+    label: {
+      marginRightWithBorder: "8px",
+      marginRight: "4px",
 
-  //     maxWidth: "175px",
+      
+      disabledColor: grayMid,
+      color: black,
 
-  //     lineHeightWithoutBorder: "15px",
-  //     lineHeightTextDecoration: "underline dashed transparent",
-  //   },
+      maxWidth: "175px",
 
-  //   childrenButton: {
-  //     marginRight: "8px",
-  //     defaultDisabledColor: grayMid,
-  //     defaultColor: gray,
-  //     disabledColor: grayMid,
-  //     color: black,
-  //   },
-  // },
+      lineHeightWithoutBorder: "15px",
+      lineHeightTextDecoration: "underline dashed transparent",
+    },
+
+    childrenButton: {
+      marginRight: "8px",
+      margin: "-6px 8px 0px 0px",
+      width: "16px",
+      height: "16px",
+    },
+  },
+
   // toggleContent: {
   //   headingHeight: "24px",
   //   headingLineHeight: "18px",

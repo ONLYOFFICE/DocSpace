@@ -1,28 +1,11 @@
-import ComboButton from "./sub-components/combo-button";
-import DropDown from "../drop-down";
-import DropDownItem from "../drop-down-item";
 import PropTypes from "prop-types";
 import React from "react";
 import equal from "fast-deep-equal/react";
-import styled from "styled-components";
 
-const StyledComboBox = styled.div`
-  width: ${(props) =>
-    (props.scaled && "100%") ||
-    (props.size === "base" && "173px") ||
-    (props.size === "middle" && "300px") ||
-    (props.size === "big" && "350px") ||
-    (props.size === "huge" && "500px") ||
-    (props.size === "content" && "fit-content")};
-
-  position: relative;
-  outline: 0;
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-
-  .dropdown-container {
-    padding: ${(props) => props.advancedOptions && `6px 0px`};
-  }
-`;
+import ComboButton from "./sub-components/combo-button";
+import DropDown from "../drop-down";
+import DropDownItem from "../drop-down-item";
+import  StyledComboBox  from "./styled-combobox";
 
 class ComboBox extends React.Component {
   constructor(props) {
