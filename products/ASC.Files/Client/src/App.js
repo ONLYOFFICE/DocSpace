@@ -1,15 +1,13 @@
-import React, { Suspense, useEffect } from "react";
-import { connect } from "react-redux";
+import React, { Suspense } from "react";
 import { Router, Switch, Redirect, Route } from "react-router-dom";
 import Home from "./components/pages/Home";
 import DocEditor from "./components/pages/DocEditor";
 import Settings from "./components/pages/Settings";
 import VersionHistory from "./components/pages/VersionHistory";
-import { fetchTreeFolders } from "./store/files/actions";
 import config from "../package.json";
 
 import {
-  store as commonStore,
+  //store as commonStore,
   history,
   PrivateRoute,
   PublicRoute,
@@ -19,33 +17,32 @@ import {
   Offline,
   NavMenu,
   Main,
-  utils,
-  toastr,
+  //utils,
+  //toastr,
   Layout,
   regDesktop,
 } from "asc-web-common";
 import { inject, observer } from "mobx-react";
 
-const {
-  setIsLoaded,
-  //getUser,
-  getPortalSettings,
-  //getModules,
-  setCurrentProductId,
-  setCurrentProductHomePage,
-  getPortalCultures,
-  setEncryptionKeys,
-  getIsEncryptionSupport,
-  getEncryptionKeys,
-  getIsAuthenticated,
-} = commonStore.auth.actions;
-const {
-  //getCurrentUser,
-  isEncryptionSupport,
-  isDesktopClient,
-  getIsLoaded,
-} = commonStore.auth.selectors;
-const { userStore, settingsStore } = commonStore;
+// const {
+//   setIsLoaded,
+//   getUser,
+//   getPortalSettings,
+//   getModules,
+//   setCurrentProductId,
+//   setCurrentProductHomePage,
+//   getPortalCultures,
+//   setEncryptionKeys,
+//   getIsEncryptionSupport,
+//   getEncryptionKeys,
+//   getIsAuthenticated,
+// } = commonStore.auth.actions;
+// const {
+//   getCurrentUser,
+//   isEncryptionSupport,
+//   isDesktopClient,
+//   getIsLoaded,
+// } = commonStore.auth.selectors;
 
 class App extends React.Component {
   constructor(props) {
@@ -57,11 +54,16 @@ class App extends React.Component {
   }
 
   componentDidMount() {
+    this.props.loadFilesInfo();
+  }
+
+  /*
+  componentDidMount() {
     const {
       setModuleInfo,
       getUser,
       getPortalSettings,
-      //getModules,
+      getModules,
       getPortalCultures,
       fetchTreeFolders,
       setIsLoaded,
@@ -90,7 +92,7 @@ class App extends React.Component {
       if (!this.isEditor) {
         requests.push(
           getPortalSettings(),
-          //getModules(),
+          getModules(),
           getPortalCultures(),
           fetchTreeFolders()
         );
@@ -112,7 +114,7 @@ class App extends React.Component {
         });
     });
   }
-
+*/
   componentDidUpdate(prevProps) {
     const {
       isAuthenticated,
@@ -143,7 +145,7 @@ class App extends React.Component {
 
   render() {
     const { homepage, isDesktop } = this.props;
-    //console.log(Layout);
+    console.log("Files App render", this.props);
 
     return navigator.onLine ? (
       <Layout>
@@ -199,59 +201,50 @@ class App extends React.Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  //const { settings } = state.auth;
-  //const { homepage } = settings;
-  return {
-    //homepage: homepage || config.homepage,
-    //user: getCurrentUser(state),
-    isAuthenticated: state.auth.isAuthenticated,
-    isLoaded: getIsLoaded(state),
-    isEncryption: isEncryptionSupport(state),
-    isDesktop: isDesktopClient(state),
-    //encryptionKeys: settings.encryptionKeys,
-  };
-};
+// const mapStateToProps = (state) => {
+//   const { settings } = state.auth;
+//   const { homepage } = settings;
+//   return {
+//     homepage: homepage || config.homepage,
+//     user: getCurrentUser(state),
+//     isAuthenticated: state.auth.isAuthenticated,
+//     isLoaded: getIsLoaded(state),
+//     isEncryption: isEncryptionSupport(state),
+//     isDesktop: isDesktopClient(state),
+//     encryptionKeys: settings.encryptionKeys,
+//   };
+// };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    getIsAuthenticated: () => getIsAuthenticated(dispatch),
-    setModuleInfo: () => {
-      dispatch(setCurrentProductHomePage(config.homepage));
-      dispatch(setCurrentProductId("e67be73d-f9ae-4ce1-8fec-1880cb518cb4"));
-    },
-    //getUser: () => getUser(dispatch),
-    //getPortalSettings: () => getPortalSettings(dispatch),
-    //getModules: () => getModules(dispatch),
-    getPortalCultures: () => getPortalCultures(dispatch),
-    fetchTreeFolders: () => dispatch(fetchTreeFolders()),
-    setIsLoaded: () => dispatch(setIsLoaded(true)),
-    getIsEncryptionSupport: () => getIsEncryptionSupport(dispatch),
-    getEncryptionKeys: () => getEncryptionKeys(dispatch),
-    setEncryptionKeys: (keys) => dispatch(setEncryptionKeys(keys)),
-  };
-};
+// const mapDispatchToProps = (dispatch) => {
+//   return {
+//     getIsAuthenticated: () => getIsAuthenticated(dispatch),
+//     setModuleInfo: () => {
+//       dispatch(setCurrentProductHomePage(config.homepage));
+//       dispatch(setCurrentProductId("e67be73d-f9ae-4ce1-8fec-1880cb518cb4"));
+//     },
+//     getUser: () => getUser(dispatch),
+//     getPortalSettings: () => getPortalSettings(dispatch),
+//     getModules: () => getModules(dispatch),
+//     getPortalCultures: () => getPortalCultures(dispatch),
+//     fetchTreeFolders: () => dispatch(fetchTreeFolders()),
+//     setIsLoaded: () => dispatch(setIsLoaded(true)),
+//     getIsEncryptionSupport: () => getIsEncryptionSupport(dispatch),
+//     getEncryptionKeys: () => getEncryptionKeys(dispatch),
+//     setEncryptionKeys: (keys) => dispatch(setEncryptionKeys(keys)),
+//   };
+// };
 
-// const AppWrapper = observer((props) => {
-//   useEffect(() => {
-//     userStore.setCurrentUser();
-//   }, []);
+export default inject(({ store, filesStore }) => ({
+  user: store.userStore.user,
+  isAuthenticated: store.isAuthenticated,
+  homepage: store.settingsStore.homepage || config.homepage,
+  encryptionKeys: store.settingsStore.encryptionKeys,
+  isEncryptionSupport: store.settingsStore.isEncryptionSupport,
+  isLoaded: filesStore.isLoaded,
 
-//   return <App user={userStore.user} {...props} />;
-// });
-
-//export default connect(mapStateToProps, mapDispatchToProps)(AppWrapper);
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(
-  inject(({ userStore, settingsStore }) => ({
-    user: userStore.user,
-    isAuthenticated: userStore.isAuthenticated,
-    getUser: userStore.setCurrentUser,
-    homepage: settingsStore.homepage || config.homepage,
-    encryptionKeys: settingsStore.encryptionKeys,
-    getPortalSettings: settingsStore.getPortalSettings,
-  }))(observer(App))
-);
+  setEncryptionKeys: store.settingsStore.setEncryptionKeys,
+  loadFilesInfo: async () => {
+    await store.init();
+    filesStore.initFiles();
+  },
+}))(observer(App));
