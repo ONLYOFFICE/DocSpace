@@ -288,7 +288,14 @@ class SectionBodyContent extends React.Component {
   };
 
   render() {
-    const { t, groupHeadCaption, groupsCaption, me, isLoaded } = this.props;
+    const {
+      t,
+      groupHeadCaption,
+      groupsCaption,
+      me,
+      isLoaded,
+      groups,
+    } = this.props;
     const {
       groupName,
       groupMembers,
@@ -358,6 +365,7 @@ class SectionBodyContent extends React.Component {
                 defaultOption={me}
                 defaultOptionLabel={t("MeLabel")}
                 employeeStatus={1}
+                groupList={groups}
               />
             </FieldContainer>
             <FieldContainer
@@ -396,6 +404,7 @@ class SectionBodyContent extends React.Component {
                 defaultOptionLabel={t("MeLabel")}
                 selectedOptions={groupMembers}
                 employeeStatus={1}
+                groupList={groups}
               />
             </FieldContainer>
             {groupMembers && groupMembers.length > 0 && (
