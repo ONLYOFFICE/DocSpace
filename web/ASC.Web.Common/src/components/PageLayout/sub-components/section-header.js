@@ -28,14 +28,8 @@ const StyledSectionHeader = styled.div`
 
   @media ${tablet} {
     margin-right: 16px;
-    border-bottom: none;
-
-    ${(props) =>
-      props.borderBottom &&
-      `
-      border-bottom: 1px solid #eceef1;
-      padding-bottom: 16px
-    `};
+    border-bottom: 1px solid #eceef1;
+    padding-bottom: 18px;
   }
 
   .section-header {
@@ -75,7 +69,7 @@ const StyledSectionHeader = styled.div`
         padding-bottom: 0 !important;
         > div:first-child {
           top: ${(props) =>
-            !props.isSectionHeaderVisible ? "56px" : "0px"} !important;
+            !props.isSectionHeaderVisible ? "65px" : "0px"} !important;
 
           @media ${desktop} {
             ${isMobile &&
@@ -110,12 +104,7 @@ class SectionHeader extends React.Component {
     //console.log("PageLayout SectionHeader render");
     // eslint-disable-next-line react/prop-types
 
-    const {
-      isArticlePinned,
-      borderBottom,
-      isHeaderVisible,
-      ...rest
-    } = this.props;
+    const { isArticlePinned, isHeaderVisible, ...rest } = this.props;
 
     return (
       <LayoutContextConsumer>
@@ -123,7 +112,6 @@ class SectionHeader extends React.Component {
           <StyledSectionHeader
             isHeaderVisible={isHeaderVisible}
             isArticlePinned={isArticlePinned}
-            borderBottom={borderBottom}
             isSectionHeaderVisible={value.isVisible}
           >
             <div
