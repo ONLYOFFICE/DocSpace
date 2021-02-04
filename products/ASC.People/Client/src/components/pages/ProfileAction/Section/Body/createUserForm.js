@@ -49,7 +49,7 @@ import InfoFieldContainer from "./FormFields/InfoFieldContainer";
 import { DataLossWarningDialog } from "../../../../dialogs";
 import { api, toastr, store } from "asc-web-common";
 import { isMobile } from "react-device-detect";
-import { observer } from "mobx-react";
+import { inject, observer } from "mobx-react";
 
 const { createThumbnailsAvatar, loadAvatar } = api.people;
 const { isTablet } = utils.device;
@@ -81,7 +81,7 @@ class CreateUserForm extends React.Component {
         );
       })
       .catch((error) => toastr.error(error));
-  };
+  }
 
   openAvatarEditor = () => {
     let avatarDefault = this.state.avatar.image;
@@ -668,9 +668,9 @@ const mapStateToProps = (state) => {
   };
 };
 
-const CreateUserFormWrapper = observer((props) => {
-  return <CreateUserForm settings={settingsStore.settings} {...props} />;
-});
+// const CreateUserFormWrapper = observer((props) => {
+//   return <CreateUserForm settings={settingsStore.settings} {...props} />;
+// });
 
 export default connect(mapStateToProps, {
   createProfile,
@@ -683,4 +683,21 @@ export default connect(mapStateToProps, {
   setCreatedAvatar,
   setCroppedAvatar,
   resetProfile,
-})(withRouter(withTranslation()(CreateUserFormWrapper)));
+})(
+  inject(({ store }) => ({
+    settings: store.settingsStore,
+  }))(observer(withRouter(withTranslation()(CreateUserForm))))
+);
+
+// export default connect(mapStateToProps, {
+//   createProfile,
+//   updateCreatedAvatar,
+//   setFilter,
+//   updateProfileInUsers,
+//   setIsVisibleDataLossDialog,
+//   setIsEditingForm,
+//   toggleAvatarEditor,
+//   setCreatedAvatar,
+//   setCroppedAvatar,
+//   resetProfile,
+// })(withRouter(withTranslation()(CreateUserFormWrapper)));

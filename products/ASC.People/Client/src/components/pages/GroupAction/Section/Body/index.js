@@ -28,7 +28,7 @@ import { connect } from "react-redux";
 import styled from "styled-components";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
-import { observer } from "mobx-react";
+import { inject, observer } from "mobx-react";
 
 const {
   getCurrentProductName,
@@ -517,23 +517,23 @@ function mapStateToProps(state) {
   };
 }
 
-const SectionBodyContentWrapper = observer((props) => {
-  const {
-    groupHeadCaption,
-    groupsCaption,
-    groupCaption,
-  } = settingsStore.customNames;
+// const SectionBodyContentWrapper = observer((props) => {
+//   const {
+//     groupHeadCaption,
+//     groupsCaption,
+//     groupCaption,
+//   } = settingsStore.customNames;
 
-  return (
-    <SectionBodyContent
-      settings={settingsStore.settings}
-      groupHeadCaption={groupHeadCaption}
-      groupsCaption={groupsCaption}
-      groupCaption={groupCaption}
-      {...props}
-    />
-  );
-});
+//   return (
+//     <SectionBodyContent
+//       settings={settingsStore.settings}
+//       groupHeadCaption={groupHeadCaption}
+//       groupsCaption={groupsCaption}
+//       groupCaption={groupCaption}
+//       {...props}
+//     />
+//   );
+// });
 
 export default connect(mapStateToProps, {
   resetGroup,
@@ -541,4 +541,19 @@ export default connect(mapStateToProps, {
   updateGroup,
   selectGroup,
   setFilter,
-})(withRouter(withTranslation()(SectionBodyContentWrapper)));
+})(
+  inject(({ store }) => ({
+    settings: store.settingsStore,
+    groupCaption: store.settingsStore.customNames.groupCaption,
+    groupsCaption: store.settingsStore.customNames.groupsCaption,
+    groupHeadCaption: store.settingsStore.customNames.groupHeadCaption,
+  }))(observer(withRouter(withTranslation()(SectionBodyContent))))
+);
+
+// export default connect(mapStateToProps, {
+//   resetGroup,
+//   createGroup,
+//   updateGroup,
+//   selectGroup,
+//   setFilter,
+// })(withRouter(withTranslation()(SectionBodyContentWrapper)));

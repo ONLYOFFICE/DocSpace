@@ -8,11 +8,11 @@ import {
   Text,
   Box,
 } from "asc-web-components";
-import { connect } from "react-redux";
-import { store } from "asc-web-common";
-import { observer } from "mobx-react";
+//import { connect } from "react-redux";
+//import { store } from "asc-web-common";
+import { inject, observer } from "mobx-react";
 
-const { settingsStore } = store;
+//const { settingsStore } = store;
 
 const getFormattedGroups = (user, selectGroup) => {
   let temp = [];
@@ -176,10 +176,14 @@ const UserContent = ({
 //   };
 // }
 
-const UserContentWrapper = observer((props) => {
-  return <UserContent settings={settingsStore.settings} {...props} />;
-});
+// const UserContentWrapper = observer((props) => {
+//   return <UserContent settings={settingsStore.settings} {...props} />;
+// });
 
-export default connect(null /* mapStateToProps */)(
-  withRouter(UserContentWrapper)
-);
+// export default connect(null /* mapStateToProps */)(
+//   withRouter(UserContentWrapper)
+// );
+
+export default inject(({ store }) => ({
+  settings: store.settingsStore,
+}))(observer(withRouter(UserContent)));

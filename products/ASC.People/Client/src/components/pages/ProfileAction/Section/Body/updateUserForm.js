@@ -55,7 +55,7 @@ import {
   ChangePhoneDialog,
 } from "../../../../dialogs";
 import { isMobile } from "react-device-detect";
-import { observer } from "mobx-react";
+import { inject, observer } from "mobx-react";
 
 const { createThumbnailsAvatar, loadAvatar, deleteAvatar } = api.people;
 const { isTablet } = utils.device;
@@ -926,9 +926,9 @@ const mapStateToProps = (state) => {
   };
 };
 
-const UpdateUserFormWrapper = observer((props) => {
-  return <UpdateUserForm settings={settingsStore.settings} {...props} />;
-});
+// const UpdateUserFormWrapper = observer((props) => {
+//   return <UpdateUserForm settings={settingsStore.settings} {...props} />;
+// });
 
 export default connect(mapStateToProps, {
   updateProfile,
@@ -939,4 +939,19 @@ export default connect(mapStateToProps, {
   setFilter,
   toggleAvatarEditor,
   setAvatarMax,
-})(withRouter(withTranslation()(UpdateUserFormWrapper)));
+})(
+  inject(({ store }) => ({
+    settings: store.settingsStore,
+  }))(observer(withRouter(withTranslation()(UpdateUserForm))))
+);
+
+// export default connect(mapStateToProps, {
+//   updateProfile,
+//   fetchProfile,
+//   updateProfileInUsers,
+//   setIsVisibleDataLossDialog,
+//   setIsEditingForm,
+//   setFilter,
+//   toggleAvatarEditor,
+//   setAvatarMax,
+// })(withRouter(withTranslation()(UpdateUserFormWrapper)));

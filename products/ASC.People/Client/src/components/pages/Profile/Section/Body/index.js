@@ -19,7 +19,7 @@ import styled from "styled-components";
 
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
-import { observer } from "mobx-react";
+import { inject, observer } from "mobx-react";
 
 const { isAdmin, isMe } = store.auth.selectors;
 const { settingsStore } = store;
@@ -192,10 +192,16 @@ const mapStateToProps = (state) => {
   };
 };
 
-const SectionBodyContentWrapper = observer((props) => {
-  return <SectionBodyContent settings={settingsStore.settings} {...props} />;
-});
+// const SectionBodyContentWrapper = observer((props) => {
+//   return <SectionBodyContent settings={settingsStore.settings} {...props} />;
+// });
 
 export default connect(mapStateToProps)(
-  withRouter(withTranslation()(SectionBodyContentWrapper))
+  inject(({ store }) => ({
+    settings: store.settingsStore,
+  }))(observer(withRouter(withTranslation()(SectionBodyContent))))
 );
+
+// export default connect(mapStateToProps)(
+//   withRouter(withTranslation()(SectionBodyContentWrapper))
+// );

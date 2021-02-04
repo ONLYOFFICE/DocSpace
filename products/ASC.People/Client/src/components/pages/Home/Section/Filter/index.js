@@ -9,7 +9,7 @@ import { withRouter } from "react-router";
 import { store, FilterInput, Loaders, utils } from "asc-web-common";
 import { isMobileOnly } from "react-device-detect";
 import { getFilter, getGroups } from "../../../../../store/people/selectors";
-import { observer } from "mobx-react";
+import { inject, observer } from "mobx-react";
 
 const {
   isAdmin,
@@ -276,10 +276,16 @@ function mapStateToProps(state) {
   };
 }
 
-const SectionFilterContentWrapper = observer((props) => {
-  return <SectionFilterContent settings={settingsStore.settings} {...props} />;
-});
+// const SectionFilterContentWrapper = observer((props) => {
+//   return <SectionFilterContent settings={settingsStore.settings} {...props} />;
+// });
 
 export default connect(mapStateToProps, { fetchPeople })(
-  withRouter(withLayoutSize(withTranslation()(SectionFilterContentWrapper)))
+  inject(({ store }) => ({
+    settings: store.settingsStore,
+  }))(
+    observer(
+      withRouter(withLayoutSize(withTranslation()(SectionFilterContent)))
+    )
+  )
 );

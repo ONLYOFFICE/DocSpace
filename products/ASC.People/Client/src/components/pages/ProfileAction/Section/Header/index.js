@@ -11,7 +11,7 @@ import {
   toggleAvatarEditor,
 } from "../../../../../store/people/actions";
 import { resetProfile } from "../../../../../store/profile/actions";
-import { observer } from "mobx-react";
+import { inject, observer } from "mobx-react";
 
 const { settingsStore } = store;
 
@@ -119,13 +119,24 @@ function mapStateToProps(state) {
   };
 }
 
-const SectionHeaderContentWrapper = observer((props) => {
-  return <SectionHeaderContent settings={settingsStore.settings} {...props} />;
-});
+// const SectionHeaderContentWrapper = observer((props) => {
+//   return <SectionHeaderContent settings={settingsStore.settings} {...props} />;
+// });
 
 export default connect(mapStateToProps, {
   setFilter,
   setIsVisibleDataLossDialog,
   toggleAvatarEditor,
   resetProfile,
-})(withRouter(SectionHeaderContentWrapper));
+})(
+  inject(({ store }) => ({
+    settings: store.settingsStore,
+  }))(observer(withRouter(SectionHeaderContent)))
+);
+
+// export default connect(mapStateToProps, {
+//   setFilter,
+//   setIsVisibleDataLossDialog,
+//   toggleAvatarEditor,
+//   resetProfile,
+// })(withRouter(SectionHeaderContentWrapper));

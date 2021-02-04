@@ -34,7 +34,7 @@ import {
   ChangeUserStatusDialog,
   ChangeUserTypeDialog,
 } from "../../../../dialogs";
-import { observer } from "mobx-react";
+import { inject, observer } from "mobx-react";
 
 const { tablet, desktop } = utils.device;
 const { Consumer } = utils.context;
@@ -505,15 +505,15 @@ const mapStateToProps = (state) => {
   };
 };
 
-const SectionHeaderContentWrapper = observer((props) => {
-  return (
-    <SectionHeaderContent
-      customNames={settingsStore.customNames}
-      homepage={settingsStore.homepage}
-      {...props}
-    />
-  );
-});
+// const SectionHeaderContentWrapper = observer((props) => {
+//   return (
+//     <SectionHeaderContent
+//       customNames={settingsStore.customNames}
+//       homepage={settingsStore.homepage}
+//       {...props}
+//     />
+//   );
+// });
 
 export default connect(mapStateToProps, {
   updateUserStatus,
@@ -521,4 +521,9 @@ export default connect(mapStateToProps, {
   deleteGroup,
   removeUser,
   setSelected,
-})(withTranslation()(withRouter(SectionHeaderContentWrapper)));
+})(
+  inject(({ store }) => ({
+    customNames: store.settingsStore.customNames,
+    homepage: store.settingsStore.homepage,
+  }))(observer(withTranslation()(withRouter(SectionHeaderContent))))
+);

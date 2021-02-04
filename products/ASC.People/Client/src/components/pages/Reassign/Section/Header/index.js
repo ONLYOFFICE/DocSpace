@@ -5,7 +5,7 @@ import { Headline, store } from "asc-web-common";
 import { withRouter } from "react-router";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
-import { observer } from "mobx-react";
+import { inject, observer } from "mobx-react";
 
 const { settingsStore } = store;
 
@@ -64,10 +64,16 @@ function mapStateToProps(state) {
   };
 }
 
-const SectionHeaderContentWrapper = observer((props) => {
-  return <SectionHeaderContent settings={settingsStore.settings} {...props} />;
-});
+// const SectionHeaderContentWrapper = observer((props) => {
+//   return <SectionHeaderContent settings={settingsStore.settings} {...props} />;
+// });
 
 export default connect(mapStateToProps)(
-  withRouter(SectionHeaderContentWrapper)
+  inject(({ store }) => ({
+    settings: store.settingsStore,
+  }))(observer(withRouter(SectionHeaderContent)))
 );
+
+// export default connect(mapStateToProps)(
+//   withRouter(SectionHeaderContentWrapper)
+// );

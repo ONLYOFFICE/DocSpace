@@ -16,7 +16,7 @@ import {
   fetchPeople,
   setIsLoading,
 } from "../../../../../../store/people/actions";
-import { observer } from "mobx-react";
+import { inject, observer } from "mobx-react";
 
 const { resendUserInvites } = api.people;
 const { settingsStore } = store;
@@ -363,26 +363,40 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-const ProfileInfoWrapper = observer((props) => {
-  const { customNames } = settingsStore.settings;
-  const {
-    groupCaption,
-    regDateCaption,
-    userPostCaption,
-    userCaption,
-    guestCaption,
-  } = customNames;
+// const ProfileInfoWrapper = observer((props) => {
+//   const { customNames } = settingsStore.settings;
+//   const {
+//     groupCaption,
+//     regDateCaption,
+//     userPostCaption,
+//     userCaption,
+//     guestCaption,
+//   } = customNames;
 
-  return (
-    <ProfileInfo
-      groupCaption={groupCaption}
-      regDateCaption={regDateCaption}
-      userPostCaption={userPostCaption}
-      userCaption={userCaption}
-      guestCaption={guestCaption}
-      {...props}
-    />
-  );
-});
+//   return (
+//     <ProfileInfo
+//       groupCaption={groupCaption}
+//       regDateCaption={regDateCaption}
+//       userPostCaption={userPostCaption}
+//       userCaption={userCaption}
+//       guestCaption={guestCaption}
+//       {...props}
+//     />
+//   );
+// });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProfileInfoWrapper);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(
+  inject(({ store }) => ({
+    settings: store.settingsStore,
+    groupCaption: store.settingsStore.customNames.groupCaption,
+    regDateCaption: store.settingsStore.customNames.regDateCaption,
+    userPostCaption: store.settingsStore.customNames.userPostCaption,
+    userCaption: store.settingsStore.customNames.userCaption,
+    guestCaption: store.settingsStore.customNames.guestCaption,
+  }))(observer(ProfileInfo))
+);
+
+//export default connect(mapStateToProps, mapDispatchToProps)(ProfileInfoWrapper);

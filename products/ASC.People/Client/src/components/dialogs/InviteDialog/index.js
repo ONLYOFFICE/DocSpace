@@ -15,7 +15,7 @@ import copy from "copy-to-clipboard";
 import { api, utils, store } from "asc-web-common";
 import { createI18N } from "../../../helpers/i18n";
 import { getPortalInviteLinks } from "../../../store/portal/actions";
-import { observer } from "mobx-react";
+import { inject, observer } from "mobx-react";
 
 const i18n = createI18N({
   page: "InviteDialog",
@@ -238,17 +238,27 @@ InviteDialog.propTypes = {
   onCloseButton: PropTypes.func.isRequired,
 };
 
-const InviteDialogWrapper = observer((props) => {
-  return (
-    <InviteDialog
-      settings={settingsStore.hasShortenService}
-      guestsCaption={settingsStore.customNames.guestsCaption}
-      {...props}
-    />
-  );
-});
+// const InviteDialogWrapper = observer((props) => {
+//   return (
+//     <InviteDialog
+//       settings={settingsStore.hasShortenService}
+//       guestsCaption={settingsStore.customNames.guestsCaption}
+//       {...props}
+//     />
+//   );
+// });
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(InviteDialogWrapper);
+)(
+  inject(({ store }) => ({
+    settings: store.settingsStore,
+    guestsCaption: store.settingsStore.customNames.guestsCaption,
+  }))(observer(InviteDialog))
+);
+
+// export default connect(
+//   mapStateToProps,
+//   mapDispatchToProps
+// )(InviteDialogWrapper);

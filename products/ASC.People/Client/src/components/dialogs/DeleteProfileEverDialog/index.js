@@ -8,7 +8,7 @@ import { api, utils, toastr, store } from "asc-web-common";
 import { fetchPeople } from "../../../store/people/actions";
 import ModalDialogContainer from "../ModalDialogContainer";
 import { createI18N } from "../../../helpers/i18n";
-import { observer } from "mobx-react";
+import { inject, observer } from "mobx-react";
 
 const i18n = createI18N({
   page: "DeleteProfileEverDialog",
@@ -120,15 +120,23 @@ DeleteProfileEverDialog.propTypes = {
 //   };
 // }
 
-const DeleteProfileWrapper = observer((props) => {
-  return (
-    <DeleteProfileEverDialog
-      userCaption={settingsStore.customNames.userCaption}
-      {...props}
-    />
-  );
-});
+// const DeleteProfileWrapper = observer((props) => {
+//   return (
+//     <DeleteProfileEverDialog
+//       userCaption={settingsStore.customNames.userCaption}
+//       {...props}
+//     />
+//   );
+// });
 
-export default connect(null /* mapStateToProps */, { fetchPeople })(
-  withRouter(DeleteProfileWrapper)
+export default connect(null, {
+  fetchPeople,
+})(
+  inject(({ store }) => ({
+    userCaption: store.settingsStore.customNames.userCaption,
+  }))(observer(withRouter(DeleteProfileEverDialog)))
 );
+
+// export default connect(null /* mapStateToProps */, { fetchPeople })(
+//   withRouter(DeleteProfileWrapper)
+// );

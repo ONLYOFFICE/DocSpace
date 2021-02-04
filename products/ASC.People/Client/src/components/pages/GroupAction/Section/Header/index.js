@@ -8,7 +8,7 @@ import { withTranslation } from "react-i18next";
 import { resetGroup } from "../../../../../store/group/actions";
 import { setFilter } from "../../../../../store/people/actions";
 import styled from "styled-components";
-import { observer } from "mobx-react";
+import { inject, observer } from "mobx-react";
 
 const { settingsStore } = store;
 
@@ -85,15 +85,21 @@ function mapStateToProps(state) {
   };
 }
 
-const SectionHeaderContentWrapper = observer((props) => {
-  return (
-    <SectionHeaderContent
-      groupCaption={settingsStore.customNames.groupCaption}
-      {...props}
-    />
-  );
-});
+// const SectionHeaderContentWrapper = observer((props) => {
+//   return (
+//     <SectionHeaderContent
+//       groupCaption={settingsStore.customNames.groupCaption}
+//       {...props}
+//     />
+//   );
+// });
 
 export default connect(mapStateToProps, { resetGroup, setFilter })(
-  withTranslation()(withRouter(SectionHeaderContentWrapper))
+  inject(({ store }) => ({
+    groupCaption: store.settingsStore.customNames.groupCaption,
+  }))(observer(withRouter(withTranslation()(SectionHeaderContent))))
 );
+
+// export default connect(mapStateToProps, { resetGroup, setFilter })(
+//   withTranslation()(withRouter(SectionHeaderContentWrapper))
+// );

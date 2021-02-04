@@ -34,7 +34,7 @@ import {
   DeleteProfileEverDialog,
 } from "../../../../dialogs";
 import { createI18N } from "../../../../../helpers/i18n";
-import { observer } from "mobx-react";
+import { inject, observer } from "mobx-react";
 //import { isMobile } from "react-device-detect";
 
 const i18n = createI18N({
@@ -555,9 +555,20 @@ const mapStateToProps = (state) => {
   };
 };
 
-const SectionBodyContentWrapper = observer((props) => {
-  return <SectionBodyContent settings={settingsStore.settings} {...props} />;
-});
+// const SectionBodyContentWrapper = observer((props) => {
+//   return <SectionBodyContent settings={settingsStore.settings} {...props} />;
+// });
+
+// export default connect(mapStateToProps, {
+//   selectUser,
+//   deselectUser,
+//   setSelection,
+//   updateUserStatus,
+//   resetFilter,
+//   fetchPeople,
+//   selectGroup,
+//   setIsLoadedSection,
+// })(withRouter(withTranslation()(SectionBodyContentWrapper)));
 
 export default connect(mapStateToProps, {
   selectUser,
@@ -568,4 +579,8 @@ export default connect(mapStateToProps, {
   fetchPeople,
   selectGroup,
   setIsLoadedSection,
-})(withRouter(withTranslation()(SectionBodyContentWrapper)));
+})(
+  inject(({ store }) => ({
+    settings: store.settingsStore,
+  }))(observer(withRouter(withTranslation()(SectionBodyContent))))
+);

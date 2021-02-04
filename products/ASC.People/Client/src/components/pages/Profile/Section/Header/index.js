@@ -30,7 +30,7 @@ import {
   DeleteProfileEverDialog,
 } from "../../../../dialogs";
 import { createI18N } from "../../../../../helpers/i18n";
-import { observer } from "mobx-react";
+import { inject, observer } from "mobx-react";
 
 const i18n = createI18N({
   page: "Profile",
@@ -516,13 +516,24 @@ const mapStateToProps = (state) => {
   };
 };
 
-const SectionHeaderContentWrapper = observer((props) => {
-  return <SectionHeaderContent settings={settingsStore.settings} {...props} />;
-});
+// const SectionHeaderContentWrapper = observer((props) => {
+//   return <SectionHeaderContent settings={settingsStore.settings} {...props} />;
+// });
 
 export default connect(mapStateToProps, {
   updateUserStatus,
   fetchProfile,
   updateProfile,
   setFilter,
-})(withRouter(withTranslation()(SectionHeaderContentWrapper)));
+})(
+  inject(({ store }) => ({
+    settings: store.settingsStore,
+  }))(observer(withRouter(withTranslation()(SectionHeaderContent))))
+);
+
+// export default connect(mapStateToProps, {
+//   updateUserStatus,
+//   fetchProfile,
+//   updateProfile,
+//   setFilter,
+// })(withRouter(withTranslation()(SectionHeaderContentWrapper)));

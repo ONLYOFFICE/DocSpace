@@ -8,7 +8,7 @@ import { InviteDialog } from "./../../dialogs";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import { utils, toastr, Loaders } from "asc-web-common";
 import { createI18N } from "../../../helpers/i18n";
-import { observer } from "mobx-react";
+import { inject, observer } from "mobx-react";
 
 const { getLanguage /* getSettings */ } = store.auth.selectors;
 const i18n = createI18N({
@@ -142,10 +142,14 @@ const mapStateToProps = (state) => {
   };
 };
 
-const MainButtonWrapper = observer((props) => {
-  return (
-    <ArticleMainButtonContent settings={settingsStore.settings} {...props} />
-  );
-});
+// const MainButtonWrapper = observer((props) => {
+//   return (
+//     <ArticleMainButtonContent settings={settingsStore.settings} {...props} />
+//   );
+// });
 
-export default connect(mapStateToProps)(withRouter(MainButtonWrapper));
+export default connect(mapStateToProps)(
+  inject(({ store }) => ({
+    settings: store.settingsStore,
+  }))(observer(withRouter(ArticleMainButtonContent)))
+);
