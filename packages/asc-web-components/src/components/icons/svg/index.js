@@ -5,9 +5,6 @@ import OrigExpanderDownIcon from "./expander-down.react.svg";
 import OrigExpanderRightIcon from "./expander-right.react.svg";
 import OrigRotateIcon from "./rotate.react.svg";
 import OrigUploadIcon from "./upload.react.svg";
-import OrigGuestIcon from "./guest.react.svg";
-import OrigAdministratorIcon from "./administrator.react.svg";
-import OrigOwnerIcon from "./owner.react.svg";
 import OrigVerticalDotsIcon from "./vertical-dots.react.svg";
 import OrigCloudServicesGoogleDriveIcon from "./cloud.services.google.drive.react.svg";
 import OrigCloudServicesDropboxIcon from "./cloud.services.dropbox.react.svg";
@@ -55,7 +52,7 @@ import OrigCatalogUnpinIcon from "./catalog.unpin.react.svg";
 import OrigCatalogUserIcon from "./catalog.user.react.svg";
 import OrigProjectsTimeTrackingIcon from "./projects.time.tracking.react.svg";
 import OrigActionsUploadIcon from "./actions.upload.react.svg";
-import OrigCameraIcon from "./camera.react.svg";
+
 import OrigCatalogArchiveIcon from "./catalog.archive.react.svg";
 import OrigCatalogDepartmentsIcon from "./catalog.departments.react.svg";
 import OrigCatalogInboxIcon from "./catalog.inbox.react.svg";
@@ -265,10 +262,7 @@ export const AddEmployeeIcon = createStyledIcon(
   "AddEmployeeIcon"
 );
 export const AddGuestIcon = createStyledIcon(OrigAddGuestIcon, "AddGuestIcon");
-export const AdministratorIcon = createStyledIcon(
-  OrigAdministratorIcon,
-  "AdministratorIcon"
-);
+
 export const AimIcon = createStyledIcon(OrigAimIcon, "AimIcon");
 export const AlertIcon = createStyledIcon(OrigAlertIcon, "AlertIcon");
 export const AppsIcon = createStyledIcon(OrigAppsIcon, "AppsIcon");
@@ -314,7 +308,7 @@ export const ButtonCancelIcon = createStyledIcon(
   "ButtonCancelIcon"
 );
 export const CalendarIcon = createStyledIcon(OrigCalendarIcon, "CalendarIcon");
-export const CameraIcon = createStyledIcon(OrigCameraIcon, "CameraIcon");
+
 export const CatalogAccountsIcon = createStyledIcon(
   OrigCatalogAccountsIcon,
   "CatalogAccountsIcon"
@@ -505,7 +499,7 @@ export const GoogleSquareIcon = createStyledIcon(
   OrigGoogleSquareIcon,
   "GoogleSquareIcon"
 );
-export const GuestIcon = createStyledIcon(OrigGuestIcon, "GuestIcon");
+
 export const HorizontalDotsIcon = createStyledIcon(
   OrigHorizontalDotsIcon,
   "HorizontalDotsIcon"
@@ -603,7 +597,7 @@ export const MediaZoomOutIcon = createStyledIcon(
   "MediaZoomOutIcon"
 );
 export const MyspaceIcon = createStyledIcon(OrigMyspaceIcon, "MyspaceIcon");
-export const OwnerIcon = createStyledIcon(OrigOwnerIcon, "OwnerIcon");
+
 export const PeopleIcon = createStyledIcon(OrigPeopleIcon, "PeopleIcon");
 export const PhoneIcon = createStyledIcon(OrigPhoneIcon, "PhoneIcon");
 export const PlaneIcon = createStyledIcon(OrigPlaneIcon, "PlaneIcon");

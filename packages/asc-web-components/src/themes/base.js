@@ -350,54 +350,113 @@ const Base = {
   //   },
   // },
 
-  // avatar: {
-  //   initialsContainer: {
-  //     color: white,
-  //     left: "50%",
-  //     top: "50%",
-  //     transform: "translate(-50%, -50%)",
-  //     fontWeight: "600",
-  //   },
+  avatar: {
+    initialsContainer: {
+      color: white,
+      left: "50%",
+      top: "50%",
+      transform: "translate(-50%, -50%)",
+      fontWeight: "600",
 
-  //   imageContainer: {
-  //     backgroundImage: blueMain,
-  //     background: grayLightMid,
-  //     borderRadius: "50%",
-  //     height: "100%",
+      fontSize: {
+        min: "12px",
+        small: "12px",
+        medium: "20px",
+        big: "34px",
+        max: "72px",
+      },
+    },
 
-  //     svg: {
-  //       display: "block",
-  //       width: "50%",
-  //       height: "100%",
-  //       margin: "auto",
-  //     },
-  //   },
+    roleWrapperContainer: {
+      left: {
+        min: "-2px",
+        small: "-2px",
+        medium: "-4px",
+        big: "0px",
+        max: "0px",
+      },
 
-  //   image: {
-  //     width: "100%",
-  //     height: "100%",
-  //     borderRadius: "50%",
-  //   },
+      bottom: {
+        min: "3px",
+        small: "3px",
+        medium: "6px",
+        big: "5px",
+        max: "0px",
+      },
 
-  //   width: {
-  //     small: "32px",
-  //     medium: "48px",
-  //     big: "82px",
-  //     max: "160px",
-  //   },
-  //   height: {
-  //     small: "32px",
-  //     medium: "48px",
-  //     big: "82px",
-  //     max: "160px",
-  //   },
-  //   fontSize: {
-  //     small: "12px",
-  //     medium: "20px",
-  //     big: "34px",
-  //     max: "72px",
-  //   },
-  // },
+      width: {
+        medium: "14px",
+        max: "24px",
+      },
+
+      height: {
+        medium: "14px",
+        max: "24px",
+      },
+    },
+
+    imageContainer: {
+      backgroundImage: blueMain,
+      background: grayMid,
+      borderRadius: "50%",
+      height: "100%",
+
+      svg: {
+        display: "block",
+        width: "50%",
+        height: "100%",
+        margin: "auto",
+      },
+    },
+
+    editContainer: {
+      boxSizing: "border-box",
+      width: "100%",
+      height: "100%",
+      top: "50%",
+      left: "50%",
+      transform: "translate(-50%, -50%)",
+      padding: "75% 16px 5px",
+      textAlign: "center",
+      lineHeight: "19px",
+      borderRadius: "50%",
+      linearGradient:
+        "linear-gradient(180deg, rgba(6, 22, 38, 0) 24.48%, rgba(6, 22, 38, 0.75) 100%)",
+      transparent: "transparent",
+    },
+
+    editLink: {
+      paddingLeft: "10px",
+      paddingRight: "10px",
+      borderBottom: "none",
+      display: "inline-block",
+      maxWidth: "100%",
+      textDecoration: "underline dashed",
+    },
+
+    image: {
+      width: "100%",
+      height: "auto",
+      borderRadius: "50%",
+    },
+
+    width: {
+      min: "32px",
+      small: "36px",
+      medium: "48px",
+      big: "82px",
+      max: "160px",
+    },
+
+    height: {
+      min: "32px",
+      small: "36px",
+      medium: "48px",
+      big: "82px",
+      max: "160px",
+    },
+
+  },
 
   // backdrop: { backgroundColor: "rgba(0, 0, 0, 0.3)" },
 

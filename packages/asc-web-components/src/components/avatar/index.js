@@ -1,145 +1,18 @@
 import React, { memo } from "react";
-import styled, { css } from "styled-components";
 import PropTypes from "prop-types";
+
+import { GuestIcon, AdministratorIcon, OwnerIcon } from "./svg";
 import {
-  CameraIcon,
-  GuestIcon,
-  AdministratorIcon,
-  OwnerIcon,
-} from "@appserver/components/src/components/icons/svg";
+  EditLink,
+  EmptyIcon,
+  EditContainer,
+  AvatarWrapper,
+  RoleWrapper,
+  NamedAvatar,
+  StyledImage,
+  StyledAvatar,
+} from "./styled-avatar";
 import Link from "../link";
-
-const whiteColor = "#FFFFFF";
-const avatarBackground = "#D0D5DA";
-const namedAvatarBackground = "#2DA7DB";
-
-const noneUserSelect = css`
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-`;
-
-const StyledAvatar = styled.div`
-  position: relative;
-  width: ${(props) =>
-    (props.size === "max" && "160px") ||
-    (props.size === "big" && "82px") ||
-    (props.size === "medium" && "48px") ||
-    (props.size === "small" && "36px") ||
-    (props.size === "min" && "32px")};
-  height: ${(props) =>
-    (props.size === "max" && "160px") ||
-    (props.size === "big" && "82px") ||
-    (props.size === "medium" && "48px") ||
-    (props.size === "small" && "36px") ||
-    (props.size === "min" && "32px")};
-
-  font-family: "Open Sans", sans-serif, Arial;
-  font-style: normal;
-`;
-
-const RoleWrapper = styled.div`
-  position: absolute;
-  left: ${(props) =>
-    (props.size === "max" && "0px") ||
-    (props.size === "big" && "0px") ||
-    (props.size === "medium" && "-4px") ||
-    (props.size === "small" && "-2px") ||
-    (props.size === "min" && "-2px")};
-  bottom: ${(props) =>
-    (props.size === "max" && "0px") ||
-    (props.size === "big" && "5px") ||
-    (props.size === "medium" && "6px") ||
-    (props.size === "small" && "3px") ||
-    (props.size === "min" && "3px")};
-  width: ${(props) =>
-    (props.size === "max" && "24px") ||
-    (props.size === "medium" && "14px") ||
-    "12px"};
-  height: ${(props) =>
-    (props.size === "max" && "24px") ||
-    (props.size === "medium" && "14px") ||
-    "12px"};
-`;
-
-const ImageStyled = styled.img`
-  width: 100%;
-  height: auto;
-  border-radius: 50%;
-
-  ${noneUserSelect}
-`;
-
-const AvatarWrapper = styled.div`
-  border-radius: 50%;
-  height: 100%;
-  background-color: ${(props) =>
-    (props.source === "" && props.userName !== "" && namedAvatarBackground) ||
-    avatarBackground};
-
-  & > svg {
-    display: block;
-    width: 50% !important;
-    height: 100% !important;
-    margin: auto;
-  }
-`;
-
-const NamedAvatar = styled.div`
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  font-weight: 600;
-  font-size: ${(props) =>
-    (props.size === "max" && "72px") ||
-    (props.size === "big" && "34px") ||
-    (props.size === "medium" && "20px") ||
-    (props.size === "small" && "12px") ||
-    (props.size === "min" && "12px")};
-  color: ${whiteColor};
-
-  ${noneUserSelect}
-`;
-
-const EditContainer = styled.div`
-  box-sizing: border-box;
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  padding: 75% 16px 5px;
-  text-align: center;
-  line-height: 19px;
-  border-radius: 50%;
-  background: ${(props) =>
-    props.gradient
-      ? "linear-gradient(180deg, rgba(6, 22, 38, 0) 24.48%, rgba(6, 22, 38, 0.75) 100%)"
-      : "transparent"};
-`;
-
-const EmptyIcon = styled(CameraIcon)`
-  border-radius: 50%;
-`;
-
-const EditLink = styled.div`
-  padding-left: 10px;
-  padding-right: 10px;
-
-  a:hover {
-    border-bottom: none;
-  }
-
-  span {
-    display: inline-block;
-    max-width: 100%;
-    text-decoration: underline dashed;
-  }
-`;
 
 const getRoleIcon = (role) => {
   switch (role) {
@@ -182,7 +55,7 @@ const Avatar = memo((props) => {
   } = props;
 
   const avatarContent = source ? (
-    <ImageStyled src={source} />
+    <StyledImage src={source} />
   ) : userName ? (
     <Initials userName={userName} size={size} />
   ) : (
