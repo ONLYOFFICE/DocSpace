@@ -23,22 +23,38 @@ class PeopleSelector extends React.Component {
   }
 
   componentDidMount() {
-    const { groupsCaption } = this.props;
-    changeLanguage(i18n).then((t) =>
-      getGroupList(this.props.useFake)
-        .then((groups) =>
-          this.setState({
-            groups: [
+    const { groupsCaption, groupList } = this.props;
+
+    changeLanguage(i18n).then((t) => {
+      if (!groupList) {
+        getGroupList(this.props.useFake)
+          .then((groups) =>
+            this.setState(
               {
-                key: "all",
-                label: t("CustomAllGroups", { groupsCaption }),
-                total: 0,
+                groups: [
+                  {
+                    key: "all",
+                    label: t("CustomAllGroups", { groupsCaption }),
+                    total: 0,
+                  },
+                ].concat(this.convertGroups(groups)),
               },
-            ].concat(this.convertGroups(groups)),
-          })
-        )
-        .catch((error) => console.log(error))
-    );
+              () => console.log(this.state.groups, groups, this.props.groupsArr)
+            )
+          )
+          .catch((error) => console.log(error));
+      } else {
+        this.setState({
+          groups: [
+            {
+              key: "all",
+              label: t("CustomAllGroups", { groupsCaption }),
+              total: 0,
+            },
+          ].concat(groupList),
+        });
+      }
+    });
   }
 
   componentDidUpdate(prevProps) {
@@ -226,6 +242,8 @@ class PeopleSelector extends React.Component {
       selectedOptions,
       showCounter,
     } = this.props;
+
+    console.log("render group");
 
     return (
       <AdvancedSelector
