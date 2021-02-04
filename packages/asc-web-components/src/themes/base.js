@@ -50,6 +50,7 @@ const Base = {
   //     small: "19px",
   //     xsmall: "15px",
   //   },
+
   //   fontWeight: 600,
   // },
 
@@ -182,8 +183,6 @@ const Base = {
 
   //   hoverBorderColor: gray,
   // },
-
-
 
   // radioButton: {
   //   color: black,
@@ -542,33 +541,32 @@ const Base = {
       fillColor: gray,
     },
 
-  button: {
-    height: "18px",
-    heightWithBorder: "30px",
-    paddingLeft: "8px",
+    button: {
+      height: "18px",
+      heightWithBorder: "30px",
+      paddingLeft: "8px",
 
-    color: black,
-    disabledColor: grayMid,
-    background: white,
-    backgroundWithBorder: "none",
+      color: black,
+      disabledColor: grayMid,
+      background: white,
+      backgroundWithBorder: "none",
 
-    border: `1px solid ${grayMid}`,
-    borderRadius: "3px",
-    borderColor: blueMain,
+      border: `1px solid ${grayMid}`,
+      borderRadius: "3px",
+      borderColor: blueMain,
 
-    disabledBorderColor: grayLightMid,
-    disabledBackground: grayLight,
+      disabledBorderColor: grayLightMid,
+      disabledBackground: grayLight,
 
-    hoverBorderColor: gray,
-    hoverBorderColorOpen: blueMain,
-    hoverDisabledBorderColor: grayLightMid,
-  },
+      hoverBorderColor: gray,
+      hoverBorderColorOpen: blueMain,
+      hoverDisabledBorderColor: grayLightMid,
+    },
 
     label: {
       marginRightWithBorder: "8px",
       marginRight: "4px",
 
-      
       disabledColor: grayMid,
       color: black,
 
@@ -597,10 +595,10 @@ const Base = {
     transform: "rotate(180deg)",
     iconColor: black,
 
-    childrenContent:{
+    childrenContent: {
       color: black,
       paddingTop: "6px",
-    }
+    },
   },
 
   toggleButton: {

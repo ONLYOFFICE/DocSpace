@@ -1,7 +1,7 @@
 import { css } from "styled-components";
 
 const commonTextStyles = css`
-  font-family: "Open Sans", sans-serif, Arial;
+  font-family: ${(props) => props.theme.fontFamily};
   text-align: ${(props) => props.textAlign};
   color: ${(props) => props.colorProp};
   ${(props) =>

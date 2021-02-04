@@ -1,43 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
-import styled, { css } from "styled-components";
-import commonTextStyles from "./common-text-styles";
+import StyledText from "./styled-text"
 
-const styleCss = css`
-  font-size: ${(props) => props.fontSizeProp};
-  outline: 0 !important;
-  font-weight: ${(props) =>
-    props.fontWeightProp
-      ? props.fontWeightProp
-      : props.isBold == true
-      ? 700
-      : "normal"};
-  ${(props) =>
-    props.isItalic == true &&
-    css`
-      font-style: italic;
-    `}
-  ${(props) =>
-    props.backgroundColor &&
-    css`
-      background-color: ${(props) => props.backgroundColor};
-    `}
-  ${(props) =>
-    props.isInline
-      ? css`
-          display: inline-block;
-        `
-      : props.display &&
-        css`
-          display: ${(props) => props.display};
-        `}
-  margin: 0;
-`;
-
-const StyledText = styled.p`
-  ${styleCss};
-  ${commonTextStyles};
-`;
 
 const Text = ({
   title,
