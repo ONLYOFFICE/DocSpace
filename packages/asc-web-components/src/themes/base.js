@@ -186,6 +186,19 @@ const Base = {
     },
   },
 
+  selectorAddButton:{
+    background: grayLight,
+    activeBackground: grayLightMid,
+    
+    border: `1px solid ${globalColors.grayLightMid}`,
+    boxSizing: "border-box",
+    borderRadius: "3px",
+    height:" 34px",
+    width: "34px",
+    padding: "9px",
+    color: black,
+  },
+
   // checkbox: {
   //   fillColor: white,
   //   borderColor: grayMid,

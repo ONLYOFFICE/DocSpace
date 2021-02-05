@@ -1,29 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
-import styled from "styled-components";
+
+import StyledButton from "./styled-selector-add-button"
 import IconButton from "../icon-button";
 
-const StyledButton = styled.div`
-  background: #f8f9f9;
-  border: 1px solid #eceef1;
-  box-sizing: border-box;
-  border-radius: 3px;
-  height: 34px;
-  width: 34px;
-  padding: 9px;
-  display: inline-block;
-  cursor: ${(props) => (!props.isDisabled ? "pointer" : "default")};
-
-  &:hover {
-    path {
-      ${(props) => !props.isDisabled && "fill: #333;"}
-    }
-  }
-
-  &:active {
-    ${(props) => !props.isDisabled && "background-color: #ECEEF1;"}
-  }
-`;
 
 const SelectorAddButton = (props) => {
   const { isDisabled, title, className, id, style } = props;
