@@ -20,6 +20,7 @@ import { setSelected, setIsLoading } from "../../../store/people/actions";
 import { createI18N } from "../../../helpers/i18n";
 import { isMobile } from "react-device-detect";
 import { getIsLoading } from "../../../store/people/selectors";
+import { inject, observer } from "mobx-react";
 const i18n = createI18N({
   page: "Home",
   localesPath: "pages/Home",
@@ -180,18 +181,24 @@ Home.propTypes = {
 function mapStateToProps(state) {
   const { users, selection, selected, selectedGroup, groups } = state.people;
   return {
-    users,
+    //users,
     selection,
     selected,
     selectedGroup,
-    groups,
-    organizationName: getOrganizationName(state),
-    isAdmin: isAdmin(state),
+    // groups,
+    // organizationName: getOrganizationName(state),
+    // isAdmin: isAdmin(state),
     isLoading: getIsLoading(state),
-    isLoaded: getIsLoaded(state),
+    // isLoaded: getIsLoaded(state),
   };
 }
 
 export default connect(mapStateToProps, { setSelected, setIsLoading })(
-  withRouter(Home)
+  inject(({ store, peopleStore }) => ({
+    isLoaded: store.isLoaded,
+    isAdmin: store.isAdmin,
+    organizationName: store.settingsStore.organizationName,
+    users: peopleStore.usersStore.users,
+    groups: peopleStore.groupsStore.groups,
+  }))(observer(withRouter(Home)))
 );

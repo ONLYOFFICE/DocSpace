@@ -17,6 +17,7 @@ import {
 import { createI18N } from "../../../helpers/i18n";
 import styled, { css } from "styled-components";
 import { setDocumentTitle } from "../../../helpers/utils";
+import { inject, observer } from "mobx-react";
 
 const i18n = createI18N({
   page: "Article",
@@ -114,14 +115,14 @@ class ArticleBodyContent extends React.Component {
     }
   };
   onSelect = (data) => {
-    const { setIsLoading } = this.props
+    const { setIsLoading } = this.props;
     return () => {
       const { selectGroup } = this.props;
       setIsLoading(true);
       this.changeTitleDocument(data);
       selectGroup(
         data && data.length === 1 && data[0] !== "root" ? data[0] : null
-      ).finally(() => setIsLoading(false))
+      ).finally(() => setIsLoading(false));
     };
   };
   switcherIcon = (obj) => {
@@ -230,20 +231,19 @@ const BodyContent = (props) => {
 };
 
 function mapStateToProps(state) {
-  const groups = state.people.groups;
+  //const groups = state.people.groups;
   const { isLoaded, settings } = state.auth;
   const { customNames } = settings;
   const { groupsCaption } = customNames;
   const { editingForm } = state.people;
-
   return {
-    data: getTreeGroups(groups, groupsCaption),
+    // data: getTreeGroups(groups, groupsCaption),
     selectedKeys: state.people.selectedGroup
       ? [state.people.selectedGroup]
       : ["root"],
-    groups,
-    isAdmin: isAdmin(state),
-    isLoaded,
+    // groups,
+    // isAdmin: isAdmin(state),
+    // isLoaded,
     editingForm,
   };
 }
@@ -252,4 +252,16 @@ export default connect(mapStateToProps, {
   selectGroup,
   setIsVisibleDataLossDialog,
   setIsLoading,
-})(BodyContent);
+})(
+  inject(({ store, peopleStore }) => {
+    const groups = peopleStore.groupsStore.groups;
+    const { groupsCaption } = store.settingsStore.customNames;
+    const data = getTreeGroups(groups, groupsCaption);
+    return {
+      isLoaded: store.isLoaded,
+      isAdmin: store.isAdmin,
+      groups,
+      data,
+    };
+  })(observer(BodyContent))
+);

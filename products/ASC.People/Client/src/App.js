@@ -1,5 +1,5 @@
 import React, { Suspense, useEffect } from "react";
-import { connect } from "react-redux";
+// import { connect } from "react-redux";
 import { Router, Switch, Redirect } from "react-router-dom";
 import Home from "./components/pages/Home";
 import Profile from "./components/pages/Profile";
@@ -15,57 +15,133 @@ import {
   Error520,
   Offline,
   utils,
-  store as commonStore,
+  // store as commonStore,
   NavMenu,
   Main,
   toastr,
 } from "asc-web-common";
-import { getFilterByLocation } from "./helpers/converters";
-import { fetchGroups, fetchPeople } from "./store/people/actions";
+// import { getFilterByLocation } from "./helpers/converters";
+// import { fetchGroups, fetchPeople } from "./store/people/actions";
 import config from "../package.json";
 import { inject, observer } from "mobx-react";
 
-const {
-  setIsLoaded,
-  //getUser,
-  getPortalSettings,
-  //getModules,
-  setCurrentProductId,
-  setCurrentProductHomePage,
-  getPortalPasswordSettings,
-  getPortalCultures,
-  getIsAuthenticated,
-} = commonStore.auth.actions;
+// const {
+// setIsLoaded,
+// getUser,
+// getPortalSettings,
+// getModules,
+// setCurrentProductId,
+// setCurrentProductHomePage,
+// getPortalPasswordSettings,
+// getPortalCultures,
+// getIsAuthenticated,
+// } = commonStore.auth.actions;
 // const { userStore, settingsStore } = commonStore;
 
-/*const Profile = lazy(() => import("./components/pages/Profile"));
-const ProfileAction = lazy(() => import("./components/pages/ProfileAction"));
-const GroupAction = lazy(() => import("./components/pages/GroupAction"));*/
+// const Profile = lazy(() => import("./components/pages/Profile"));
+// const ProfileAction = lazy(() => import("./components/pages/ProfileAction"));
+// const GroupAction = lazy(() => import("./components/pages/GroupAction"));
 
-class App extends React.Component {
+const App = (props) => {
+  const { homepage, isLoaded, loadBaseInfo } = props;
+
+  useEffect(() => {
+    try {
+      console.log("loadBaseInfo call");
+      loadBaseInfo();
+    } catch (err) {
+      toastr.error(err);
+    }
+  }, []);
+
+  useEffect(() => {
+    console.log("App People render", isLoaded);
+    if (isLoaded) utils.updateTempContent();
+  }, [isLoaded]);
+
+  return navigator.onLine ? (
+    <Router history={history}>
+      <NavMenu />
+      <Main>
+        <Suspense fallback={null}>
+          <Switch>
+            <Redirect exact from="/" to={`${homepage}`} />
+            <PrivateRoute
+              exact
+              path={`${homepage}/view/:userId`}
+              component={Profile}
+            />
+            <PrivateRoute
+              path={`${homepage}/edit/:userId`}
+              restricted
+              allowForMe
+              component={ProfileAction}
+            />
+            <PrivateRoute
+              path={`${homepage}/create/:type`}
+              restricted
+              component={ProfileAction}
+            />
+            <PrivateRoute
+              path={[
+                `${homepage}/group/edit/:groupId`,
+                `${homepage}/group/create`,
+              ]}
+              restricted
+              component={GroupAction}
+            />
+            <PrivateRoute
+              path={`${homepage}/reassign/:userId`}
+              restricted
+              component={Reassign}
+            />
+            <PrivateRoute exact path={homepage} component={Home} />
+            <PrivateRoute path={`${homepage}/filter`} component={Home} />
+            <PublicRoute
+              exact
+              path={[
+                "/login",
+                "/login/error=:error",
+                "/login/confirmed-email=:confirmedEmail",
+              ]}
+              component={Login}
+            />
+            <PrivateRoute exact path={`/error=:error`} component={Error520} />
+            <PrivateRoute component={Error404} />
+          </Switch>
+        </Suspense>
+      </Main>
+    </Router>
+  ) : (
+    <Offline />
+  );
+};
+
+/*class App extends React.Component {
   async componentDidMount() {
     const {
-      setModuleInfo,
-      getUser,
-      getPortalSettings,
+      //   setModuleInfo,
+      //   getUser,
+      //   getPortalSettings,
       //getModules,
-      getPortalPasswordSettings,
-      getPortalCultures,
-      fetchGroups,
-      fetchPeople,
-      setIsLoaded,
-      getIsAuthenticated,
+      //   getPortalPasswordSettings,
+      //   getPortalCultures,
+      //   fetchGroups,
+      //   fetchPeople,
+      //   setIsLoaded,
+      //   getIsAuthenticated,
       loadBaseInfo,
+      isLoaded,
+      //   loadBasePeopleInfo,
     } = this.props;
-
     try {
-      const isAuthenticated = await getIsAuthenticated();
+      // const isAuthenticated = await getIsAuthenticated();
 
-      if (isAuthenticated) utils.updateTempContent(isAuthenticated);
+      // if (isAuthenticated) utils.updateTempContent(isAuthenticated);
 
       await loadBaseInfo();
       utils.updateTempContent();
-      setIsLoaded();
+      //   setIsLoaded();
     } catch (e) {
       toastr.error(e);
     }
@@ -169,54 +245,43 @@ class App extends React.Component {
 //   };
 // };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    getIsAuthenticated: () => getIsAuthenticated(dispatch),
-    // setModuleInfo: () => {
-    //   dispatch(setCurrentProductHomePage(config.homepage));
-    //   dispatch(setCurrentProductId("f4d98afd-d336-4332-8778-3c6945c81ea0"));
-    // },
-    //getUser: () => getUser(dispatch),
-    //getPortalSettings: () => getPortalSettings(dispatch),
-    //getModules: () => getModules(dispatch),
-    getPortalPasswordSettings: () => getPortalPasswordSettings(dispatch),
-    getPortalCultures: () => getPortalCultures(dispatch),
-    fetchGroups: () => fetchGroups(dispatch),
-    fetchPeople: () => {
-      var re = new RegExp(`${config.homepage}((/?)$|/filter)`, "gm");
-      const match = window.location.pathname.match(re);
+// const mapDispatchToProps = (dispatch) => {
+//   return {
+//getIsAuthenticated: () => getIsAuthenticated(dispatch),
+// setModuleInfo: () => {
+//   dispatch(setCurrentProductHomePage(config.homepage));
+//   dispatch(setCurrentProductId("f4d98afd-d336-4332-8778-3c6945c81ea0"));
+// },
+//getUser: () => getUser(dispatch),
+//getPortalSettings: () => getPortalSettings(dispatch),
+//getModules: () => getModules(dispatch),
+// getPortalPasswordSettings: () => getPortalPasswordSettings(dispatch),
+// getPortalCultures: () => getPortalCultures(dispatch),
+// fetchGroups: () => fetchGroups(dispatch),
+// fetchPeople: () => {
+//   var re = new RegExp(`${config.homepage}((/?)$|/filter)`, "gm");
+//   const match = window.location.pathname.match(re);
 
-      if (match && match.length > 0) {
-        const newFilter = getFilterByLocation(window.location);
-        return fetchPeople(newFilter, dispatch);
-      }
+//   if (match && match.length > 0) {
+//     const newFilter = getFilterByLocation(window.location);
+//     return fetchPeople(newFilter, dispatch);
+//   }
 
-      return Promise.resolve();
-    },
-    setIsLoaded: () => dispatch(setIsLoaded(true)),
-  };
-};
-
-// const AppWrapper = observer((props) => {
-//   useEffect(() => {
-//     userStore.setCurrentUser();
-//   }, []);
-
-//   return <App user={userStore.user} {...props} />;
-// });
-
-// export default connect(mapStateToProps, mapDispatchToProps)(AppWrapper);
-
-export default connect(
-  null,
-  mapDispatchToProps
-)(
-  inject(({ store }) => ({
-    user: store.userStore.user,
-    isAuthenticated: store.userStore.isAuthenticated,
-    getUser: store.userStore.setCurrentUser,
-    homepage: store.settingsStore.homepage || config.homepage,
-    encryptionKeys: store.settingsStore.encryptionKeys,
-    loadBaseInfo: store.init,
-  }))(App)
-);
+//   return Promise.resolve();
+// },
+//     setIsLoaded: () => dispatch(setIsLoaded(true)),
+//   };
+// };
+*/
+export default inject(({ store, peopleStore }) => ({
+  homepage: store.settingsStore.homepage || config.homepage,
+  loadBaseInfo: () => {
+    store.init();
+    store.settingsStore.setModuleInfo(
+      config.homepage,
+      "f4d98afd-d336-4332-8778-3c6945c81ea0"
+    );
+    peopleStore.init();
+  },
+  isLoaded: store.isLoaded,
+}))(observer(App));

@@ -1,6 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { store, Headline, Loaders } from "asc-web-common";
+import { inject, observer } from "mobx-react";
 
 const { getCurrentProductName } = store.auth.selectors;
 
@@ -19,4 +20,8 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps)(ArticleHeaderContent);
+export default connect(mapStateToProps)(
+  inject(({ store }) => ({
+    currentModuleName: store.product.title,
+  }))(observer(ArticleHeaderContent))
+);

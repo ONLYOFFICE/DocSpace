@@ -6,6 +6,7 @@ import { Paging } from "asc-web-components";
 import { useTranslation } from "react-i18next";
 import { getFilter } from "../../../../../store/people/selectors";
 import { store, Loaders } from "asc-web-common";
+import { inject, observer } from "mobx-react";
 const { getIsLoaded } = store.auth.selectors;
 
 const SectionPagingContent = ({
@@ -154,8 +155,12 @@ const SectionPagingContent = ({
 function mapStateToProps(state) {
   return {
     filter: getFilter(state),
-    isLoaded: getIsLoaded(state),
+    // isLoaded: getIsLoaded(state),
   };
 }
 
-export default connect(mapStateToProps, { fetchPeople })(SectionPagingContent);
+export default connect(mapStateToProps, { fetchPeople })(
+  inject(({ store }) => ({
+    isLoaded: store.isLoaded,
+  }))(observer(SectionPagingContent))
+);
