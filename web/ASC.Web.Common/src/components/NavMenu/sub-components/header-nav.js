@@ -7,14 +7,6 @@ import ProfileActions from "./profile-actions";
 import { useTranslation } from "react-i18next";
 import { utils } from "asc-web-components";
 const { tablet } = utils.device;
-//import { logout } from "../../../store/auth/actions";
-//import store from "../../../store/index";
-// import {
-//   //getCurrentUser,
-//   getLanguage,
-//   getIsolateModules,
-//   getIsLoaded,
-// } from "../../../store/auth/selectors";
 import { inject, observer } from "mobx-react";
 
 const StyledNav = styled.nav`
@@ -93,17 +85,22 @@ const HeaderNav = ({
   //console.log("HeaderNav render");
   return (
     <StyledNav>
-      {modules.map((module) => (
-        <NavItem
-          key={module.id}
-          iconName={module.iconName}
-          iconUrl={module.iconUrl}
-          badgeNumber={module.notifications}
-          onClick={module.onClick}
-          onBadgeClick={module.onBadgeClick}
-          noHover={true}
-        />
-      ))}
+      {modules
+        .filter((m) => m.isolateMode)
+        .map((m) => (
+          <NavItem
+            key={m.id}
+            iconName={m.iconName}
+            iconUrl={m.iconUrl}
+            badgeNumber={m.notifications}
+            onClick={(e) => {
+              window.open(m.link, "_self");
+              e.preventDefault();
+            }}
+            onBadgeClick={(e) => console.log(m.iconName + "Badge Clicked", e)}
+            noHover={true}
+          />
+        ))}
 
       {isAuthenticated && user ? (
         <ProfileActions userActions={getCurrentUserActions()} user={user} />
@@ -139,6 +136,7 @@ export default inject(({ store }) => {
   const { homepage, defaultPage } = settingsStore;
   const { user } = userStore;
   const { modules } = moduleStore;
+
   return {
     user,
     homepage,
