@@ -174,6 +174,13 @@ export function setIsEditingForm(isEdit) {
   };
 }
 
+export function setSelectGroup(groupId) {
+  return {
+    type: SELECT_GROUP,
+    groupId,
+  };
+}
+
 export function fetchSelectorUsers() {
   return (dispatch) => {
     api.people.getSelectorUserList().then((data) => {
@@ -235,10 +242,7 @@ function fetchPeopleByFilter(dispatch, filter) {
   return api.people.getUserList(filterData).then((data) => {
     filterData.total = data.total;
     dispatch(setFilter(filterData));
-    dispatch({
-      type: SELECT_GROUP,
-      groupId: filterData.group,
-    });
+    dispatch(setSelectGroup(filterData.group));
     return dispatch(setUsers(data.items));
   });
 }

@@ -456,3 +456,7 @@ export const getIsEmptyGroup = createSelector(
     return false;
   }
 );
+
+export const getSelectedGroupId = (state) => {
+  return state.people.selectedGroup;
+};

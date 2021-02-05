@@ -19,7 +19,12 @@ import {
   resetGroup,
   updateGroup,
 } from "../../../../../store/group/actions";
-import { selectGroup, setFilter } from "../../../../../store/people/actions";
+import {
+  selectGroup,
+  setFilter,
+  setSelectGroup,
+} from "../../../../../store/people/actions";
+import { getSelectedGroupId } from "../../../../../store/people/selectors";
 
 import { GUID_EMPTY } from "../../../../../helpers/constants";
 import PropTypes from "prop-types";
@@ -89,6 +94,14 @@ class SectionBodyContent extends React.Component {
   constructor(props) {
     super(props);
     this.state = this.mapPropsToState();
+  }
+
+  componentDidMount() {
+    const { selectedGroup, group, setSelectGroup } = this.props;
+    const { id } = group;
+    if (!selectedGroup || selectedGroup !== id) {
+      setSelectGroup(id);
+    }
   }
 
   mapPropsToState = () => {
@@ -520,6 +533,7 @@ function mapStateToProps(state) {
     currentModuleName,
     filter: state.people.filter,
     isLoaded,
+    selectedGroup: getSelectedGroupId(state),
   };
 }
 
@@ -529,4 +543,5 @@ export default connect(mapStateToProps, {
   updateGroup,
   selectGroup,
   setFilter,
+  setSelectGroup,
 })(withRouter(withTranslation()(SectionBodyContent)));
