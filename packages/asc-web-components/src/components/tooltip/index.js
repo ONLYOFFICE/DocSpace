@@ -1,29 +1,8 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import styled from "styled-components";
 import ReactTooltip from "react-tooltip";
 
-const TooltipStyle = styled.div`
-  .__react_component_tooltip {
-    border-radius: 6px;
-    -moz-border-radius: 6px;
-    -webkit-border-radius: 6px;
-    box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.13);
-    -moz-box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.13);
-    -webkit-box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.13);
-    opacity: 1;
-    padding: 16px;
-    pointer-events: auto;
-    max-width: 340px;
-
-    &:before {
-      border: none;
-    }
-    &:after {
-      border: none;
-    }
-  }
-`;
+import StyledTooltip from "./styled-tooltip";
 
 class Tooltip extends Component {
   constructor(props) {
@@ -63,7 +42,7 @@ class Tooltip extends Component {
     } = this.props;
 
     return (
-      <TooltipStyle className={className} style={style}>
+      <StyledTooltip className={className} style={style}>
         <ReactTooltip
           id={id}
           ref={reference}
@@ -85,7 +64,7 @@ class Tooltip extends Component {
         >
           {children}
         </ReactTooltip>
-      </TooltipStyle>
+      </StyledTooltip>
     );
   }
 }
