@@ -63,24 +63,8 @@ class SectionBodyContent extends React.PureComponent {
   }
 
   componentDidMount() {
-    const {
-      isLoaded,
-      fetchPeople,
-      filter,
-      setIsLoadedSection,
-      peopleList,
-    } = this.props;
+    const { isLoaded } = this.props;
     if (!isLoaded) return;
-    if (peopleList.length <= 0) {
-      fetchPeople(filter)
-        .then(() =>
-          isLoaded ? setIsLoadedSection(true) : setIsLoadedSection()
-        )
-        .catch((error) => {
-          isLoaded ? setIsLoadedSection(true) : setIsLoadedSection();
-          toastr.error(error);
-        });
-    }
   }
 
   findUserById = (id) => this.props.peopleList.find((man) => man.id === id);

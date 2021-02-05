@@ -14,7 +14,6 @@ export function setGroup(targetGroup) {
 }
 
 export function resetGroup() {
-  console.log("clean group");
   return {
     type: CLEAN_GROUP,
   };

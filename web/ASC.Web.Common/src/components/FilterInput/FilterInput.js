@@ -257,7 +257,6 @@ class FilterInput extends React.Component {
     this.setState({ sortDirection: !this.state.sortDirection });
   };
   onSearchChanged = (value) => {
-    //this.setState({ searchText: value });
     this.onFilter(
       this.state.filterValues,
       this.state.sortId,
