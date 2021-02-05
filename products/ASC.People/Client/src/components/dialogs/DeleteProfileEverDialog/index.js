@@ -37,7 +37,7 @@ class DeleteProfileEverDialogComponent extends React.Component {
         })
         .catch((error) => toastr.error(error))
         .finally(() => {
-          this.setState({ isRequestRunning: false }, () => onClose());
+          onClose();
         });
     });
   };
