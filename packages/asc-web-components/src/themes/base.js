@@ -614,6 +614,25 @@ const Base = {
     disableFillColorOff: grayLightMid,
   },
 
+  contextMenuButton: {
+    content: {
+      width: "100%",
+      backgroundColor: " #fff",
+      padding: "0 16px 16px",
+    },
+
+    headerContent: {
+      maxWidth: "500px",
+      margin: "0",
+      lineHeight: "56px",
+      fontWeight: "700",
+      borderBottom: `1px solid ${globalColors.pattensBlue}`,
+    },
+
+    bodyContent: {
+      padding: "16px 0",
+    }
+  },
   // calendar: {
   //   baseWidth: "265px",
   //   bigWidth: "289px",

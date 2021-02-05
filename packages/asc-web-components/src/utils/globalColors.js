@@ -16,6 +16,8 @@ const globalColors = {
   blueDisabled: "#A6DCF2",
   blueCharcoal: "#1F2933",
 
+  pattensBlue: "#DEE2E6",
+
   orangeMain: "#ED7309",
   orangeHover: "#FF8932",
   orangePressed: "#C96C27",
@@ -25,7 +27,7 @@ const globalColors = {
   errorColor: "#C96C27",
 
   warningColor: "#f1ca92",
-  red: "#c30"
+  red: "#c30",
 };
 
 export default globalColors;

@@ -1,6 +1,7 @@
 import React from "react";
-import styled from "styled-components";
+import throttle from "lodash/throttle";
 import PropTypes from "prop-types";
+
 import DropDownItem from "../drop-down-item";
 import DropDown from "../drop-down";
 import IconButton from "../icon-button";
@@ -9,54 +10,12 @@ import Aside from "../aside";
 import Heading from "../heading";
 import Link from "../link";
 import { desktop } from "../../utils/device";
-import throttle from "lodash/throttle";
-
-const StyledOuter = styled.div`
-  display: inline-block;
-  position: relative;
-  cursor: pointer;
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-`;
-
-const Content = styled.div`
-  box-sizing: border-box;
-  position: relative;
-  width: 100%;
-  background-color: #fff;
-  padding: 0 16px 16px;
-
-  .header {
-    max-width: 500px;
-    margin: 0;
-    line-height: 56px;
-    font-weight: 700 !important;
-  }
-`;
-
-const Header = styled.div`
-  display: flex;
-  align-items: center;
-  border-bottom: 1px solid #dee2e6;
-`;
-
-const Body = styled.div`
-  position: relative;
-  padding: 16px 0;
-  display: flex;
-  flex-direction: column;
-
-  .context-menu-button_link {
-    margin-top: 17px;
-  }
-
-  .context-menu-button_link-header {
-    text-transform: uppercase;
-  }
-
-  .context-menu-button_link-header:not(:first-child) {
-    margin-top: 50px;
-  }
-`;
+import {
+  StyledBodyContent,
+  StyledHeaderContent,
+  StyledContent,
+  StyledOuter,
+} from "./styled-context-menu-button";
 
 class ContextMenuButton extends React.Component {
   constructor(props) {
@@ -239,13 +198,13 @@ class ContextMenuButton extends React.Component {
               isAside={true}
             />
             <Aside visible={isOpen} scale={false} zIndex={310}>
-              <Content>
-                <Header>
+              <StyledContent>
+                <StyledHeaderContent>
                   <Heading className="header" size="medium" truncate={true}>
                     {asideHeader}
                   </Heading>
-                </Header>
-                <Body>
+                </StyledHeaderContent>
+                <StyledBodyContent>
                   {this.state.data.map(
                     (item, index) =>
                       item &&
@@ -264,8 +223,8 @@ class ContextMenuButton extends React.Component {
                         </Link>
                       )
                   )}
-                </Body>
-              </Content>
+                </StyledBodyContent>
+              </StyledContent>
             </Aside>
           </>
         )}
