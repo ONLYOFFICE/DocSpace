@@ -12,6 +12,7 @@ import {
 import { I18nextProvider } from "react-i18next";
 import { SectionHeaderContent, SectionBodyContent } from "./Section";
 import { createI18N } from "../../../helpers/i18n";
+import { inject, observer } from "mobx-react";
 const i18n = createI18N({
   page: "Reassign",
   localesPath: "pages/Reassign",
@@ -86,11 +87,15 @@ Reassign.propTypes = {
   // fetchProfile: PropTypes.func.isRequired
 };
 
-function mapStateToProps(state) {
-  return {
-    isAdmin: isAdmin(state),
-    // profile: state.profile.targetUser
-  };
-}
+// function mapStateToProps(state) {
+//   return {
+//     isAdmin: isAdmin(state),
+// profile: state.profile.targetUser
+//   };
+// }
 
-export default connect(mapStateToProps, {})(Reassign);
+// export default connect(mapStateToProps, {})(Reassign);
+
+export default inject(({ store }) => ({
+  isAdmin: store.isAdmin,
+}))(observer(Reassign));

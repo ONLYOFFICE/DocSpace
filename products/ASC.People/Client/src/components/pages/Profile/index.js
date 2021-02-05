@@ -124,7 +124,7 @@ function mapStateToProps(state) {
     profile: targetUser,
     // isLoaded,
     isVisitor: isVisitor(state),
-    isAdmin: isAdmin(state),
+    // isAdmin: isAdmin(state),
     language: getLanguage(state),
   };
 }
@@ -135,5 +135,6 @@ export default connect(mapStateToProps, {
 })(
   inject(({ store }) => ({
     isLoaded: store.isLoaded,
+    isAdmin: store.isAdmin,
   }))(observer(Profile))
 );

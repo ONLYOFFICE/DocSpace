@@ -13,6 +13,7 @@ import { fetchGroup, resetGroup } from "../../../store/group/actions";
 import { createI18N } from "../../../helpers/i18n";
 import { setDocumentTitle } from "../../../helpers/utils";
 import { withRouter } from "react-router";
+import { inject, observer } from "mobx-react";
 const i18n = createI18N({
   page: "GroupAction",
   localesPath: "pages/GroupAction",
@@ -117,11 +118,15 @@ function mapStateToProps(state) {
   return {
     //settings: state.auth.settings,
     group: state.group.targetGroup,
-    isAdmin: isAdmin(state),
+    // isAdmin: isAdmin(state),
   };
 }
 
 export default connect(mapStateToProps, {
   fetchGroup,
   resetGroup,
-})(GroupActionContainer);
+})(
+  inject(({ store }) => ({
+    isAdmin: store.isAdmin,
+  }))(observer(GroupActionContainer))
+);

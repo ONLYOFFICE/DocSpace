@@ -243,7 +243,7 @@ function mapStateToProps(state) {
       ? [state.people.selectedGroup]
       : ["root"],
     groups,
-    isAdmin: isAdmin(state),
+    // isAdmin: isAdmin(state),
     // isLoaded,
     editingForm,
   };
@@ -256,5 +256,6 @@ export default connect(mapStateToProps, {
 })(
   inject(({ store }) => ({
     isLoaded: store.isLoaded,
+    isAdmin: store.isAdmin,
   }))(observer(BodyContent))
 );

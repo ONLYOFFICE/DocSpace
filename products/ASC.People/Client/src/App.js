@@ -276,6 +276,10 @@ export default inject(({ store, peopleStore }) => ({
   homepage: store.settingsStore.homepage || config.homepage,
   loadBaseInfo: () => {
     store.init();
+    store.settingsStore.setModuleInfo(
+      config.homepage,
+      "f4d98afd-d336-4332-8778-3c6945c81ea0"
+    );
     peopleStore.init();
   },
   isLoaded: store.isLoaded,
