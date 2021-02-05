@@ -27,6 +27,8 @@ const {
   errorColor,
   warningColor,
   red,
+  blueLightMid,
+  pattensBlue,
 } = globalColors;
 
 const Base = {
@@ -334,12 +336,38 @@ const Base = {
     padding: "16px",
     pointerEvents: "auto",
     maxWidth: "340px",
-  
+
     before: {
       border: "none",
     },
     after: {
       border: "none",
+    },
+  },
+
+  tabsContainer: {
+    scrollbar: {
+      width: "100%",
+      height: "50px",
+    },
+
+    label: {
+      height: " 32px",
+      borderRadius: "16px",
+      minWidth: "fit-content",
+      marginRight: "8px",
+      width: "fit-content",
+
+      backgroundColor: blueLightMid,
+      hoverBackgroundColor: grayLight,
+      disableBackgroundColor: grayLightMid,
+
+      title: {
+        margin: "7px 15px 7px 15px",
+        overflow: "hidden",
+        color: white,
+        disableColor: grayMid,
+      },
     },
   },
 
@@ -631,7 +659,7 @@ const Base = {
 
     bodyContent: {
       padding: "16px 0",
-    }
+    },
   },
   // calendar: {
   //   baseWidth: "265px",

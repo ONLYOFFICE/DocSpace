@@ -1,72 +1,8 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import styled, { css } from "styled-components";
+
 import Text from "../text";
-import Scrollbar from "../scrollbar";
-
-const StyledScrollbar = styled(Scrollbar)`
-  width: 100% !important;
-  height: 50px !important;
-`;
-
-const NavItem = styled.div`
-  position: relative;
-  white-space: nowrap;
-  display: flex;
-`;
-
-const Label = styled.div`
-  height: 32px;
-  border-radius: 16px;
-  min-width: fit-content;
-  margin-right: 8px;
-  width: fit-content;
-
-  .title_style {
-    text-align: center;
-    margin: 7px 15px 7px 15px;
-    overflow: hidden;
-
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-  }
-
-  ${(props) =>
-    props.isDisabled &&
-    css`
-      pointer-events: none;
-    `}
-
-  ${(props) =>
-    props.selected
-      ? css`
-          cursor: default;
-          background-color: #265a8f;
-          .title_style {
-            color: #fff;
-          }
-        `
-      : css`
-          &:hover {
-            cursor: pointer;
-            background-color: #f8f9f9;
-          }
-        `}
-
-  ${(props) =>
-    props.isDisabled &&
-    props.selected &&
-    css`
-      background-color: #eceef1;
-      .title_style {
-        color: #d0d5da;
-      }
-    `}
-`;
+import { NavItem, Label, StyledScrollbar } from "./styled-tabs-container";
 
 class TabContainer extends Component {
   constructor(props) {

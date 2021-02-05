@@ -15,6 +15,7 @@ const globalColors = {
   blueActive: "#1F97CA",
   blueDisabled: "#A6DCF2",
   blueCharcoal: "#1F2933",
+  blueLightMid: "#265A8F",
 
   pattensBlue: "#DEE2E6",
 
