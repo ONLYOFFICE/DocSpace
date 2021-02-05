@@ -243,8 +243,6 @@ class PeopleSelector extends React.Component {
       showCounter,
     } = this.props;
 
-    console.log("render group");
-
     return (
       <AdvancedSelector
         id={id}
