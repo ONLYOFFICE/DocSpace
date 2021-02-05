@@ -28,7 +28,7 @@ const {
   warningColor,
   red,
   blueLightMid,
-  pattensBlue,
+  grayMaxLight,
 } = globalColors;
 
 const Base = {
@@ -136,6 +136,53 @@ const Base = {
       primaryHover: `1px solid ${globalColors.blueHover}`,
       primaryActive: `1px solid ${globalColors.blueActive}`,
       primaryDisabled: `1px solid ${globalColors.blueDisabled}`,
+    },
+  },
+
+  socialButton: {
+    fontWeight: "600",
+    textDecoration: "none",
+    margin: "20px 0 0 20px",
+    padding: "0",
+    borderRadius: "2px",
+    width: "201px",
+    height: "40px",
+    textAlign: "left",
+    stroke: " none",
+    outline: "none",
+
+    background: white,
+    disableBackgroundColor: "rgba(0, 0, 0, 0.08)",
+    hoverBackground: white,
+    activeBackground: grayMaxLight,
+
+    boxShadow:
+      "0px 1px 1px rgba(0, 0, 0, 0.24),0px 0px 1px rgba(0, 0, 0, 0.12)",
+    hoverBoxShadow:
+      "0px 2px 2px rgba(0, 0, 0, 0.24),0px 0px 2px rgba(0, 0, 0, 0.12)",
+
+    color: "rgba(0, 0, 0, 0.54)",
+    disableColor: "rgba(0, 0, 0, 0.4)",
+
+    text: {
+      width: "142px",
+      height: "16px",
+      margin: "12px 9px 12px 10px",
+      fontWeight: "500",
+      fontSize: "14px",
+      lineHeight: "16px",
+      letterSpacing: "0.21875px",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+      whiteSpace: "nowrap",
+    },
+
+    svg: {
+      margin: "11px",
+      width: "18px",
+      height: "18px",
+      minWidth: "18px",
+      minHeight: "18px",
     },
   },
 
