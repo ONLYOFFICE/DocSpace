@@ -8,13 +8,14 @@ import VersionRow from "./VersionRow";
 
 import {
   fetchFileVersions,
-  setIsLoading,
-  setFirstLoad,
+  //setIsLoading,
+  //setFirstLoad,
 } from "../../../../../store/files/actions";
 import {
   getFileVersions,
   getIsLoading,
 } from "../../../../../store/files/selectors";
+import { inject, observer } from "mobx-react";
 
 class SectionBodyContent extends React.Component {
   componentDidMount() {
@@ -76,12 +77,27 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     fetchFileVersions: (fileId) => dispatch(fetchFileVersions(fileId)),
-    setIsLoading: (isLoading) => dispatch(setIsLoading(isLoading)),
-    setFirstLoad: (isFirstLoad) => dispatch(setFirstLoad(isFirstLoad)),
+    //setIsLoading: (isLoading) => dispatch(setIsLoading(isLoading)),
+    //setFirstLoad: (isFirstLoad) => dispatch(setFirstLoad(isFirstLoad)),
   };
 };
+
+// export default connect(
+//   mapStateToProps,
+//   mapDispatchToProps
+// )(withRouter(SectionBodyContent));
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withRouter(SectionBodyContent));
+)(
+  inject(({ store, mainFilesStore }) => {
+    const { filesStore, setIsLoading } = mainFilesStore;
+    const { setFirstLoad } = filesStore;
+
+    return {
+      setFirstLoad,
+      setIsLoading,
+    };
+  })(withRouter(observer(SectionBodyContent)))
+);

@@ -6,17 +6,18 @@ import { ModalDialog, Button, Text } from "asc-web-components";
 import { withTranslation } from "react-i18next";
 import { api, utils, toastr } from "asc-web-common";
 import {
-  fetchFiles,
+  //fetchFiles,
   setSecondaryProgressBarData,
   clearSecondaryProgressData,
 } from "../../../store/files/actions";
 import { TIMEOUT } from "../../../helpers/constants";
 import {
-  getSelectedFolderId,
+  //getSelectedFolderId,
   getFilter,
   getIsLoading,
 } from "../../../store/files/selectors";
 import { createI18N } from "../../../helpers/i18n";
+import { inject, observer } from "mobx-react";
 
 const i18n = createI18N({
   page: "EmptyTrashDialog",
@@ -175,14 +176,31 @@ const EmptyTrashDialog = (props) => (
 
 const mapStateToProps = (state) => {
   return {
-    currentFolderId: getSelectedFolderId(state),
+    //currentFolderId: getSelectedFolderId(state),
     filter: getFilter(state),
     isLoading: getIsLoading(state),
   };
 };
 
+// export default connect(mapStateToProps, {
+//   setSecondaryProgressBarData,
+//   clearSecondaryProgressData,
+//   fetchFiles,
+// })(withRouter(EmptyTrashDialog));
+
 export default connect(mapStateToProps, {
   setSecondaryProgressBarData,
   clearSecondaryProgressData,
-  fetchFiles,
-})(withRouter(EmptyTrashDialog));
+  //fetchFiles,
+})(
+  inject(({ store, mainFilesStore }) => {
+    const { filesStore } = mainFilesStore;
+    const { fetchFiles } = filesStore;
+
+    return {
+      currentFolderId: filesStore.selectedFolderStore.id,
+
+      fetchFiles,
+    };
+  })(withRouter(observer(EmptyTrashDialog)))
+);

@@ -44,6 +44,7 @@ import {
   getFilter,
 } from "../../../../../store/files/selectors";
 import { DeleteThirdPartyDialog, ConnectDialog } from "../../../../dialogs";
+import { inject, observer } from "mobx-react";
 
 const { isAdmin } = store.auth.selectors;
 
@@ -565,9 +566,25 @@ function mapStateToProps(state) {
   };
 }
 
+// export default connect(mapStateToProps, {
+//   setConnectItem,
+//   setShowThirdPartyPanel,
+//   fetchFiles,
+//   setSelectedNode,
+// })(withTranslation()(ConnectClouds));
+
 export default connect(mapStateToProps, {
   setConnectItem,
   setShowThirdPartyPanel,
-  fetchFiles,
+  //fetchFiles,
   setSelectedNode,
-})(withTranslation()(ConnectClouds));
+})(
+  inject(({ store, mainFilesStore }) => {
+    const { filesStore } = mainFilesStore;
+    const { fetchFiles } = filesStore;
+
+    return {
+      fetchFiles,
+    };
+  })(withTranslation()(observer(ConnectClouds)))
+);

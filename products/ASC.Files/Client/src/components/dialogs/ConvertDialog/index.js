@@ -34,21 +34,21 @@ class ConvertDialogComponent extends React.Component {
   onChangeMessageVisible = () =>
     this.setState({ hideMessage: !this.state.hideMessage });
 
-  shouldComponentUpdate(nextProps, nextState) {
-    if (this.props.visible !== nextProps.visible) {
-      return true;
-    }
+  // shouldComponentUpdate(nextProps, nextState) {
+  //   if (this.props.visible !== nextProps.visible) {
+  //     return true;
+  //   }
 
-    if (this.state.saveOriginalFormat !== nextState.saveOriginalFormat) {
-      return true;
-    }
+  //   if (this.state.saveOriginalFormat !== nextState.saveOriginalFormat) {
+  //     return true;
+  //   }
 
-    if (this.state.hideMessage !== nextState.hideMessage) {
-      return true;
-    }
+  //   if (this.state.hideMessage !== nextState.hideMessage) {
+  //     return true;
+  //   }
 
-    return false;
-  }
+  //   return false;
+  // }
 
   onConvert = () => this.props.convertUploadedFiles(this.props.t);
   onClose = () => this.props.setDialogVisible(this.props.t);

@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import { isMobile } from "react-device-detect";
 //import { RequestLoader } from "asc-web-components";
-import { PageLayout, utils, api, store, toastr } from "asc-web-common";
+import { PageLayout, utils, api, toastr } from "asc-web-common";
 import { withTranslation, I18nextProvider, Trans } from "react-i18next";
 import {
   ArticleBodyContent,
@@ -18,26 +18,26 @@ import {
   SectionPagingContent,
 } from "./Section";
 import {
-  fetchFiles,
-  setDragging,
-  setIsLoading,
-  setFirstLoad,
+  //fetchFiles,
+  //setDragging,
+  //setIsLoading,
+  //setFirstLoad,
   startUpload,
   setSelections,
   setUploadPanelVisible,
 } from "../../../store/files/actions";
 import {
   getConvertDialogVisible,
-  getSelectedFolderId,
-  getFileActionId,
+  //getSelectedFolderId,
+  //getFileActionId,
   getFilter,
   getPrimaryProgressData,
   getSecondaryProgressData,
   getTreeFolders,
   getViewAs,
   getIsLoading,
-  getDragging,
-  getFirstLoad,
+  //getDragging,
+  //getFirstLoad,
   isSecondaryProgressFinished,
   getSelectionLength,
   getSelectionTitle,
@@ -49,13 +49,14 @@ import { ChangeOwnerPanel } from "../../panels";
 import { createI18N } from "../../../helpers/i18n";
 import { getFilterByLocation } from "../../../helpers/converters";
 import Panels from "./Panels";
+import { observer, inject } from "mobx-react";
 const i18n = createI18N({
   page: "Home",
   localesPath: "pages/Home",
 });
 const { changeLanguage } = utils;
 const { FilesFilter } = api;
-const { getSettingsHomepage } = store.auth.selectors;
+//const { getSettingsHomepage } = store.auth.selectors;
 
 class PureHome extends React.Component {
   componentDidMount() {
@@ -329,17 +330,17 @@ Home.propTypes = {
 function mapStateToProps(state) {
   return {
     convertDialogVisible: getConvertDialogVisible(state),
-    currentFolderId: getSelectedFolderId(state),
-    fileActionId: getFileActionId(state),
+    //currentFolderId: getSelectedFolderId(state),
+    //fileActionId: getFileActionId(state),
     filter: getFilter(state),
     primaryProgressData: getPrimaryProgressData(state),
     secondaryProgressData: getSecondaryProgressData(state),
     treeFolders: getTreeFolders(state),
     viewAs: getViewAs(state),
     isLoading: getIsLoading(state),
-    homepage: getSettingsHomepage(state),
-    dragging: getDragging(state),
-    firstLoad: getFirstLoad(state),
+    //homepage: getSettingsHomepage(state),
+    //dragging: getDragging(state),
+    //firstLoad: getFirstLoad(state),
     isProgressFinished: isSecondaryProgressFinished(state),
     selectionLength: getSelectionLength(state),
     selectionTitle: getSelectionTitle(state),
@@ -349,16 +350,38 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    setDragging: (dragging) => dispatch(setDragging(dragging)),
+    //setDragging: (dragging) => dispatch(setDragging(dragging)),
     startUpload: (files, folderId, t) =>
       dispatch(startUpload(files, folderId, t)),
-    setIsLoading: (isLoading) => dispatch(setIsLoading(isLoading)),
-    setFirstLoad: (firstLoad) => dispatch(setFirstLoad(firstLoad)),
-    fetchFiles: (folderId, filter) => dispatch(fetchFiles(folderId, filter)),
+    //setIsLoading: (isLoading) => dispatch(setIsLoading(isLoading)),
+    //setFirstLoad: (firstLoad) => dispatch(setFirstLoad(firstLoad)),
+    //fetchFiles: (folderId, filter) => dispatch(fetchFiles(folderId, filter)),
     setSelections: (items) => dispatch(setSelections(items)),
     setUploadPanelVisible: (uploadPanelVisible) =>
       dispatch(setUploadPanelVisible(uploadPanelVisible)),
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Home));
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(
+  inject(({ store, mainFilesStore }) => {
+    const { dragging, setDragging, setIsLoading, filesStore } = mainFilesStore;
+    const { firstLoad, setFirstLoad, fileActionStore, fetchFiles } = filesStore;
+    const { id } = fileActionStore;
+
+    return {
+      homepage: store.settingsStore.homepage,
+      firstLoad,
+      dragging,
+      fileActionId: id,
+      currentFolderId: filesStore.selectedFolderStore.id,
+
+      setFirstLoad,
+      setDragging,
+      setIsLoading,
+      fetchFiles,
+    };
+  })(withRouter(observer(Home)))
+);

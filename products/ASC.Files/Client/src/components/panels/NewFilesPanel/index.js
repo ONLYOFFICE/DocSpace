@@ -26,22 +26,23 @@ import {
   getFileIcon,
   getFolderIcon,
   getFilter,
-  getFiles,
-  getFolders,
+  //getFiles,
+  //getFolders,
   getTreeFolders,
-  getSelectedFolder,
+  //getSelectedFolder,
   getIsPrivacyFolder,
 } from "../../../store/files/selectors";
 import {
-  fetchFiles,
+  //fetchFiles,
   setMediaViewerData,
   setTreeFolders,
   setUpdateTree,
   setNewRowItems,
-  setIsLoading,
+  //setIsLoading,
   addFileToRecentlyViewed,
 } from "../../../store/files/actions";
 import { createI18N } from "../../../helpers/i18n";
+import { inject, observer } from "mobx-react";
 const i18n = createI18N({
   page: "NewFilesPanel",
   localesPath: "panels/NewFilesPanel",
@@ -314,20 +315,42 @@ const NewFilesPanel = (props) => (
 const mapStateToProps = (state) => {
   return {
     filter: getFilter(state),
-    files: getFiles(state),
-    folders: getFolders(state),
+    //files: getFiles(state),
+    //folders: getFolders(state),
     treeFolders: getTreeFolders(state),
-    selectedFolder: getSelectedFolder(state),
     isPrivacy: getIsPrivacyFolder(state),
   };
 };
+
+// export default connect(mapStateToProps, {
+//   setMediaViewerData,
+//   setTreeFolders,
+//   setUpdateTree,
+//   setNewRowItems,
+//   fetchFiles,
+//   addFileToRecentlyViewed,
+//   setIsLoading,
+// })(withRouter(NewFilesPanel));
 
 export default connect(mapStateToProps, {
   setMediaViewerData,
   setTreeFolders,
   setUpdateTree,
   setNewRowItems,
-  fetchFiles,
+  //fetchFiles,
   addFileToRecentlyViewed,
-  setIsLoading,
-})(withRouter(NewFilesPanel));
+  //setIsLoading,
+});
+
+inject(({ store, mainFilesStore }) => {
+  const { filesStore, setIsLoading } = mainFilesStore;
+  const { files, folders, fetchFiles } = filesStore;
+
+  return {
+    files,
+    folders,
+
+    setIsLoading,
+    fetchFiles,
+  };
+})(withRouter(observer(NewFilesPanel)));

@@ -38,16 +38,16 @@ import {
   fetchFavoritesFolder,
   deselectFile,
   updateFile,
-  fetchFiles,
+  //fetchFiles,
   selectFile,
-  setAction,
-  setDragging,
+  //setAction,
+  //setDragging,
   setDragItem,
-  setIsLoading,
+  //setIsLoading,
   setMediaViewerData,
   setUpdateTree,
   setSecondaryProgressBarData,
-  setSelected,
+  //setSelected,
   setSelection,
   setTreeFolders,
   getFileInfo,
@@ -60,26 +60,26 @@ import {
 import { TIMEOUT } from "../../../../../helpers/constants";
 import {
   getCurrentFilesCount,
-  getDragging,
+  //getDragging,
   getDragItem,
-  getFileAction,
+  //getFileAction,
   getFileIcon,
-  getFiles,
+  //getFiles,
   getFilter,
-  getFirstLoad,
+  //getFirstLoad,
   getFolderIcon,
-  getSelectedFolderId,
-  getFolders,
+  //getSelectedFolderId,
+  //getFolders,
   getMediaViewerId,
   getMediaViewerVisibility,
-  getSelectedFolderParentId,
-  getSelected,
-  getSelectedFolderTitle,
+  //getSelectedFolderParentId,
+  //getSelected,
+  //getSelectedFolderTitle,
   getSelection,
   getTreeFolders,
   getViewAs,
   loopTreeFolders,
-  getFilesList,
+  //getFilesList,
   getMediaViewerImageFormats,
   getMediaViewerMediaFormats,
   getIsShareFolder,
@@ -105,7 +105,7 @@ import {
   ConnectDialog,
   ThirdPartyMoveDialog,
 } from "../../../../dialogs";
-import { observer } from "mobx-react";
+import { observer, inject } from "mobx-react";
 const {
   isAdmin,
   getSettings,
@@ -121,7 +121,6 @@ const {
 const { FilesFilter } = api;
 const { FileAction } = constants;
 const { Consumer } = utils.context;
-const { settingsStore } = store;
 
 const linkStyles = {
   isHovered: true,
@@ -264,64 +263,64 @@ class SectionBodyContent extends React.Component {
   //   }
   // }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    //if (this.props && this.props.firstLoad) return true;
+  // shouldComponentUpdate(nextProps, nextState) {
+  //   //if (this.props && this.props.firstLoad) return true;
 
-    const {
-      showMoveToPanel,
-      showCopyPanel,
-      isDrag,
-      showDeleteThirdPartyDialog,
-      connectDialogVisible,
-      showThirdPartyMoveDialog,
-    } = this.state;
-    const { isVersionHistoryPanel } = this.props;
+  //   const {
+  //     showMoveToPanel,
+  //     showCopyPanel,
+  //     isDrag,
+  //     showDeleteThirdPartyDialog,
+  //     connectDialogVisible,
+  //     showThirdPartyMoveDialog,
+  //   } = this.state;
+  //   const { isVersionHistoryPanel } = this.props;
 
-    if (this.props.sharingPanelVisible !== nextProps.sharingPanelVisible) {
-      return true;
-    }
+  //   if (this.props.sharingPanelVisible !== nextProps.sharingPanelVisible) {
+  //     return true;
+  //   }
 
-    if (this.state.showSharingPanel !== nextState.showSharingPanel) {
-      return true;
-    }
+  //   if (this.state.showSharingPanel !== nextState.showSharingPanel) {
+  //     return true;
+  //   }
 
-    if (this.props.dragItem !== nextProps.dragItem) {
-      return false;
-    }
+  //   if (this.props.dragItem !== nextProps.dragItem) {
+  //     return false;
+  //   }
 
-    if (!equal(this.props, nextProps)) {
-      return true;
-    }
+  //   if (!equal(this.props, nextProps)) {
+  //     return true;
+  //   }
 
-    if (
-      showMoveToPanel !== nextState.showMoveToPanel ||
-      showCopyPanel !== nextState.showCopyPanel
-    ) {
-      return true;
-    }
+  //   if (
+  //     showMoveToPanel !== nextState.showMoveToPanel ||
+  //     showCopyPanel !== nextState.showCopyPanel
+  //   ) {
+  //     return true;
+  //   }
 
-    if (isDrag !== nextState.isDrag) {
-      return true;
-    }
+  //   if (isDrag !== nextState.isDrag) {
+  //     return true;
+  //   }
 
-    if (showDeleteThirdPartyDialog !== nextState.showDeleteThirdPartyDialog) {
-      return true;
-    }
+  //   if (showDeleteThirdPartyDialog !== nextState.showDeleteThirdPartyDialog) {
+  //     return true;
+  //   }
 
-    if (connectDialogVisible !== nextState.connectDialogVisible) {
-      return true;
-    }
+  //   if (connectDialogVisible !== nextState.connectDialogVisible) {
+  //     return true;
+  //   }
 
-    if (showThirdPartyMoveDialog !== nextState.showThirdPartyMoveDialog) {
-      return true;
-    }
+  //   if (showThirdPartyMoveDialog !== nextState.showThirdPartyMoveDialog) {
+  //     return true;
+  //   }
 
-    if (isVersionHistoryPanel !== nextProps.isVersionHistoryPanel) {
-      return true;
-    }
+  //   if (isVersionHistoryPanel !== nextProps.isVersionHistoryPanel) {
+  //     return true;
+  //   }
 
-    return false;
-  }
+  //   return false;
+  // }
 
   onOpenLocation = () => {
     const { filter, selection } = this.props;
@@ -401,7 +400,7 @@ class SectionBodyContent extends React.Component {
 
   onEditComplete = (id, isFolder) => {
     const {
-      folderId,
+      selectedFolderId,
       fileAction,
       filter,
       folders,
@@ -422,7 +421,7 @@ class SectionBodyContent extends React.Component {
       fileAction.type === FileAction.Rename
     ) {
       setIsLoading(true);
-      fetchFiles(folderId, filter)
+      fetchFiles(selectedFolderId, filter)
         .then((data) => {
           const newItem = (item && item.id) === -1 ? null : item; //TODO not add new folders?
           if (isFolder) {
@@ -436,7 +435,7 @@ class SectionBodyContent extends React.Component {
         })
         .finally(() => {
           this.setState({ editingId: null }, () => {
-            setAction({ type: null });
+            setAction({ type: null, id: null, extension: null });
             setIsLoading(false);
           });
           fileAction.type === FileAction.Rename &&
@@ -1787,7 +1786,7 @@ class SectionBodyContent extends React.Component {
     const {
       viewer,
       parentId,
-      folderId,
+      selectedFolderId,
       culture,
       selection,
       fileAction,
@@ -1809,6 +1808,8 @@ class SectionBodyContent extends React.Component {
       history,
       filter,
     } = this.props;
+
+    console.log("Section body", this.props);
 
     const {
       editingId,
@@ -1834,7 +1835,7 @@ class SectionBodyContent extends React.Component {
     const items = filesList;
 
     if (fileAction && fileAction.type === FileAction.Create) {
-      this.onCreateAddTempItem(items, folderId, fileAction);
+      this.onCreateAddTempItem(items, selectedFolderId, fileAction);
     }
 
     var playlist = [];
@@ -2119,15 +2120,15 @@ const mapStateToProps = (state) => {
   return {
     currentFolderCount: getCurrentFilesCount(state),
     currentMediaFileId: getMediaViewerId(state),
-    dragging: getDragging(state),
+    //dragging: getDragging(state),
     dragItem: getDragItem(state),
-    fileAction: getFileAction(state),
-    files: getFiles(state),
-    filesList: getFilesList(state)(state),
+    //fileAction: getFileAction(state),
+    //files: getFiles(state),
+    //filesList: getFilesList(state)(state),
     filter: getFilter(state),
-    firstLoad: getFirstLoad(state),
-    folderId: getSelectedFolderId(state),
-    folders: getFolders(state),
+    //firstLoad: getFirstLoad(state),
+    //folderId: getSelectedFolderId(state),
+    //folders: getFolders(state),
     isAdmin: isAdmin(state),
     isCommon: getIsCommonFolder(state),
     isDesktop: isDesktopClient(state),
@@ -2143,13 +2144,13 @@ const mapStateToProps = (state) => {
     mediaViewerVisible: getMediaViewerVisibility(state),
     myDocumentsId: getMyFolderId(state),
     organizationName: getOrganizationName(state),
-    parentId: getSelectedFolderParentId(state),
+    //parentId: getSelectedFolderParentId(state),
     privacyInstructions: getPrivacyInstructionsLink(state),
-    selected: getSelected(state),
-    selectedFolderId: getSelectedFolderId(state),
+    //selected: getSelected(state),
+    //selectedFolderId: getSelectedFolderId(state),
     selection: getSelection(state),
     settings: getSettings(state),
-    title: getSelectedFolderTitle(state),
+    //title: getSelectedFolderTitle(state),
     treeFolders: getTreeFolders(state),
     viewAs: getViewAs(state),
     viewer: getCurrentUser(state),
@@ -2164,31 +2165,47 @@ const mapStateToProps = (state) => {
   };
 };
 
-// const SectionBodyContentWrapper = observer((props) => {
-//   return (
-//     <SectionBodyContent
-//       homepage={settingsStore.homepage}
-//       culture={settingsStore.culture}
-//       {...props}
-//     />
-//   );
-// });
+// export default connect(mapStateToProps, {
+//   deselectFile,
+//   updateFile,
+//   fetchFiles,
+//   selectFile,
+//   setAction,
+//   setTreeFolders,
+//   setDragging,
+//   setDragItem,
+//   setMediaViewerData,
+//   setSecondaryProgressBarData,
+//   setSelection,
+//   setSelected,
+//   setUpdateTree,
+//   setIsLoading,
+//   clearSecondaryProgressData,
+//   markItemAsFavorite,
+//   removeItemFromFavorite,
+//   fetchFavoritesFolder,
+//   getFileInfo,
+//   addFileToRecentlyViewed,
+//   loopFilesOperations,
+//   setSharingPanelVisible,
+//   setIsVerHistoryPanel,
+//   setVerHistoryFileId,
+//   setChangeOwnerPanelVisible,
+// })(withRouter(withTranslation()(SectionBodyContent)));
 
 export default connect(mapStateToProps, {
   deselectFile,
   updateFile,
-  fetchFiles,
+  //fetchFiles,
   selectFile,
-  setAction,
   setTreeFolders,
-  setDragging,
   setDragItem,
   setMediaViewerData,
   setSecondaryProgressBarData,
   setSelection,
-  setSelected,
+  //setSelected,
   setUpdateTree,
-  setIsLoading,
+  //setIsLoading,
   clearSecondaryProgressData,
   markItemAsFavorite,
   removeItemFromFavorite,
@@ -2200,4 +2217,42 @@ export default connect(mapStateToProps, {
   setIsVerHistoryPanel,
   setVerHistoryFileId,
   setChangeOwnerPanelVisible,
-})(withRouter(withTranslation()(SectionBodyContent)));
+})(
+  inject(({ store, mainFilesStore }) => {
+    const { dragging, setDragging, filesStore, setIsLoading } = mainFilesStore;
+    const {
+      files,
+      folders,
+      selected,
+      setSelected,
+      fileActionStore,
+      firstLoad,
+      getFilesList,
+      fetchFiles
+    } = filesStore;
+    
+
+    const { type, extension, id, setAction } = fileActionStore;
+
+    const fileAction = { type, extension, id };
+
+    return {
+      dragging,
+      fileAction,
+      files,
+      folders,
+      selected,
+      firstLoad,
+      filesList: getFilesList(),
+      title: filesStore.selectedFolderStore.title,
+      parentId: filesStore.selectedFolderStore.parentId,
+      selectedFolderId: filesStore.selectedFolderStore.id,
+
+      setDragging,
+      setAction,
+      setSelected,
+      setIsLoading,
+      fetchFiles
+    };
+  })(withRouter(withTranslation()(observer(SectionBodyContent))))
+);

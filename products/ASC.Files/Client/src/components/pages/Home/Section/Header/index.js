@@ -20,12 +20,12 @@ import {
   utils,
 } from "asc-web-components";
 import {
-  fetchFiles,
-  setAction,
+  //fetchFiles,
+  //setAction,
   setSecondaryProgressBarData,
   clearSecondaryProgressData,
-  setIsLoading,
-  setSelected,
+  //setIsLoading,
+  //setSelected,
   setSharingPanelVisible,
 } from "../../../../../store/files/actions";
 import { TIMEOUT } from "../../../../../helpers/constants";
@@ -40,12 +40,12 @@ import {
   getWebEditSelected,
   getIsRecycleBinFolder,
   canCreate,
-  getSelectedFolderTitle,
+  //getSelectedFolderTitle,
   getFilter,
-  getSelectedFolderId,
+  //getSelectedFolderId,
   getSelection,
-  getSelectedFolderParentId,
-  getIsRootFolder,
+  //getSelectedFolderParentId,
+  //getIsRootFolder,
   getHeaderVisible,
   getHeaderIndeterminate,
   getHeaderChecked,
@@ -56,6 +56,7 @@ import {
   getIsPrivacyFolder,
   getOnlyFoldersSelected,
 } from "../../../../../store/files/selectors";
+import { inject, observer } from "mobx-react";
 
 const { isAdmin, isDesktopClient } = store.auth.selectors;
 const { FilterType, FileAction } = constants;
@@ -694,17 +695,17 @@ class SectionHeaderContent extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
-    isRootFolder: getIsRootFolder(state),
+    //isRootFolder: getIsRootFolder(state),
     isAdmin: isAdmin(state),
     isRecycleBin: getIsRecycleBinFolder(state),
     isPrivacy: getIsPrivacyFolder(state),
     isDesktop: isDesktopClient(state),
-    parentId: getSelectedFolderParentId(state),
+    //parentId: getSelectedFolderParentId(state),
     selection: getSelection(state),
-    title: getSelectedFolderTitle(state),
+    //title: getSelectedFolderTitle(state),
     filter: getFilter(state),
     deleteDialogVisible: getUserAccess(state),
-    currentFolderId: getSelectedFolderId(state),
+    //currentFolderId: getSelectedFolderId(state),
     canCreate: canCreate(state),
     isWebEditSelected: getWebEditSelected(state),
     isHeaderVisible: getHeaderVisible(state),
@@ -718,12 +719,39 @@ const mapStateToProps = (state) => {
   };
 };
 
+// export default connect(mapStateToProps, {
+//   setAction,
+//   setSecondaryProgressBarData,
+//   setIsLoading,
+//   clearSecondaryProgressData,
+//   fetchFiles,
+//   setSelected,
+//   setSharingPanelVisible,
+// })(withTranslation()(withRouter(SectionHeaderContent)));
+
 export default connect(mapStateToProps, {
-  setAction,
   setSecondaryProgressBarData,
-  setIsLoading,
+  //setIsLoading,
   clearSecondaryProgressData,
-  fetchFiles,
-  setSelected,
+  //fetchFiles,
+  //setSelected,
   setSharingPanelVisible,
-})(withTranslation()(withRouter(SectionHeaderContent)));
+})(
+  inject(({ store, mainFilesStore }) => {
+    const { filesStore, setIsLoading } = mainFilesStore;
+    const { setSelected, fileActionStore, fetchFiles } = filesStore;
+    const { setAction } = fileActionStore;
+
+    return {
+      isRootFolder: filesStore.selectedFolderStore.parentId === 0,
+      title: filesStore.selectedFolderStore.title,
+      parentId: filesStore.selectedFolderStore.parentId,
+      currentFolderId: filesStore.selectedFolderStore.id,
+
+      setSelected,
+      setAction,
+      setIsLoading,
+      fetchFiles,
+    };
+  })(withTranslation()(withRouter(observer(SectionHeaderContent))))
+);

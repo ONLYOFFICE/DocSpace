@@ -74,36 +74,36 @@ class EmbeddingPanelComponent extends React.Component {
     toastr.success(this.props.t("CodeCopySuccess"));
   };
 
-  shouldComponentUpdate(nextProps, nextState) {
-    const { size, widthValue, heightValue, link } = this.state;
-    const { visible, embeddingLink } = this.props;
+  // shouldComponentUpdate(nextProps, nextState) {
+  //   const { size, widthValue, heightValue, link } = this.state;
+  //   const { visible, embeddingLink } = this.props;
 
-    if (size !== nextState.size) {
-      return true;
-    }
+  //   if (size !== nextState.size) {
+  //     return true;
+  //   }
 
-    if (widthValue !== nextState.widthValue) {
-      return true;
-    }
+  //   if (widthValue !== nextState.widthValue) {
+  //     return true;
+  //   }
 
-    if (heightValue !== nextState.heightValue) {
-      return true;
-    }
+  //   if (heightValue !== nextState.heightValue) {
+  //     return true;
+  //   }
 
-    if (visible !== nextProps.visible) {
-      return true;
-    }
+  //   if (visible !== nextProps.visible) {
+  //     return true;
+  //   }
 
-    if (embeddingLink !== nextProps.embeddingLink) {
-      return true;
-    }
+  //   if (embeddingLink !== nextProps.embeddingLink) {
+  //     return true;
+  //   }
 
-    if (link !== nextState.link) {
-      return true;
-    }
+  //   if (link !== nextState.link) {
+  //     return true;
+  //   }
 
-    return false;
-  }
+  //   return false;
+  // }
 
   componentDidUpdate(prevProps, prevState) {
     const { embeddingLink } = this.props;

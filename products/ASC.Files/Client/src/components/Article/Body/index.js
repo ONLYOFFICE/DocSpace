@@ -6,19 +6,20 @@ import TreeFolders from "./TreeFolders";
 import TreeSettings from "./TreeSettings";
 import isEmpty from "lodash/isEmpty";
 import {
-  fetchFiles,
-  setIsLoading,
+  //fetchFiles,
+  //setIsLoading,
   setSelectedNode,
 } from "../../../store/files/actions";
 import {
   getTreeFolders,
   getFilter,
-  getSelectedFolderTitle,
+  //getSelectedFolderTitle,
   getSelectedTreeNode,
 } from "../../../store/files/selectors";
 import { NewFilesPanel } from "../../panels";
 import { setDocumentTitle } from "../../../helpers/utils";
 import ThirdPartyList from "./ThirdPartyList";
+import { inject, observer } from "mobx-react";
 
 class ArticleBodyContent extends React.Component {
   constructor(props) {
@@ -146,16 +147,32 @@ function mapStateToProps(state) {
     treeFolders: getTreeFolders(state),
     filter: getFilter(state),
     selectedTreeNode: getSelectedTreeNode(state),
-    selectedFolderTitle: getSelectedFolderTitle(state),
+    //selectedFolderTitle: getSelectedFolderTitle(state),
   };
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    setIsLoading: (isLoading) => dispatch(setIsLoading(isLoading)),
+    //setIsLoading: (isLoading) => dispatch(setIsLoading(isLoading)),
     setSelectedNode: (node) => dispatch(setSelectedNode(node)),
-    fetchFiles: (folderId, filter) => dispatch(fetchFiles(folderId, filter)),
+    //fetchFiles: (folderId, filter) => dispatch(fetchFiles(folderId, filter)),
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ArticleBodyContent);
+//export default connect(mapStateToProps, mapDispatchToProps)(ArticleBodyContent);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(
+  inject(({ store, mainFilesStore }) => {
+    const { setIsLoading, filesStore } = mainFilesStore;
+    const { fetchFiles } = filesStore;
+
+    return {
+      selectedFolderTitle: filesStore.selectedFolderStore.title,
+
+      setIsLoading,
+      fetchFiles,
+    };
+  })(observer(ArticleBodyContent))
+);

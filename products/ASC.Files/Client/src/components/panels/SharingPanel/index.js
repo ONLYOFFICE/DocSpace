@@ -18,7 +18,7 @@ import {
   getShareUsers,
   setShareFiles,
   setSharingPanelVisible,
-  setIsLoading,
+  //setIsLoading,
   setFiles,
   setFolders,
   selectUploadedFile,
@@ -31,8 +31,8 @@ import {
   getSharePanelVisible,
   getCanShareOwnerChange,
   getIsLoading,
-  getFiles,
-  getFolders,
+  //getFiles,
+  //getFolders,
   getIsPrivacyFolder,
   //getUploadPanelVisible,
   getUploadSelection,
@@ -48,7 +48,7 @@ import { AddUsersPanel, AddGroupsPanel, EmbeddingPanel } from "../index";
 import SharingRow from "./SharingRow";
 import { createI18N } from "../../../helpers/i18n";
 import { setEncryptionAccess } from "../../../helpers/desktop";
-import { observer } from "mobx-react";
+import { inject, observer } from "mobx-react";
 const i18n = createI18N({
   page: "SharingPanel",
   localesPath: "panels/SharingPanel",
@@ -62,7 +62,6 @@ const {
   //getSettings,
   isDesktopClient,
 } = store.auth.selectors;
-const { settingsStore } = store;
 
 const SharingBodyStyle = { height: `calc(100vh - 156px)` };
 
@@ -641,23 +640,42 @@ const mapStateToProps = (state, ownProps) => {
     sharingPanelVisible: getSharePanelVisible(state),
     canShareOwnerChange: getCanShareOwnerChange(state),
     isLoading: getIsLoading(state),
-    files: getFiles(state),
-    folders: getFolders(state),
+    //files: getFiles(state),
+    //folders: getFolders(state),
     //settings: getSettings(state),
     uploadSelection,
   };
 };
 
-const SharingPanelWrapper = observer((props) => {
-  return <SharingPanel homepage={settingsStore.homepage} {...props} />;
-});
+// export default connect(mapStateToProps, {
+//   replaceFileStream,
+//   setSharingPanelVisible,
+//   setIsLoading,
+//   setFiles,
+//   setFolders,
+//   selectUploadedFile,
+//   updateUploadedItem,
+// })(withRouter(SharingPanel));
 
 export default connect(mapStateToProps, {
   replaceFileStream,
   setSharingPanelVisible,
-  setIsLoading,
+  //setIsLoading,
   setFiles,
   setFolders,
   selectUploadedFile,
   updateUploadedItem,
-})(withRouter(SharingPanelWrapper));
+});
+
+inject(({ store, mainFilesStore }) => {
+  const { filesStore, setIsLoading } = mainFilesStore;
+  const { files, folders } = filesStore;
+
+  return {
+    homepage: store.settingsStore.homepage,
+    files,
+    folders,
+
+    setIsLoading,
+  };
+})(withRouter(observer(SharingPanel)));

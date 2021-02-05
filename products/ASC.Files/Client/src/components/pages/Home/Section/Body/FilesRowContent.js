@@ -16,9 +16,9 @@ import {
   clearSecondaryProgressData,
   createFile,
   createFolder,
-  fetchFiles,
+  //fetchFiles,
   renameFolder,
-  setIsLoading,
+  //setIsLoading,
   setNewRowItems,
   setSecondaryProgressBarData,
   setTreeFolders,
@@ -29,18 +29,18 @@ import { TIMEOUT } from "../../../../../helpers/constants";
 import {
   canConvert,
   canWebEdit,
-  getDragging,
-  getFileAction,
+  //getDragging,
+  //getFileAction,
   getFilter,
-  getFolders,
+  //getFolders,
   getIsLoading,
   getIsPrivacyFolder,
   getIsRecycleBinFolder,
   getNewRowItems,
-  getPathParts,
-  getSelectedFolder,
-  getSelectedFolderNew,
-  getSelectedFolderParentId,
+  //getPathParts,
+  //getSelectedFolder,
+  //getSelectedFolderNew,
+  //getSelectedFolderParentId,
   getTitleWithoutExst,
   getTreeFolders,
   isImage,
@@ -52,13 +52,12 @@ import { ConvertDialog } from "../../../../dialogs";
 import EditingWrapperComponent from "./EditingWrapperComponent";
 import { isMobile } from "react-device-detect";
 import { setEncryptionAccess } from "../../../../../helpers/desktop";
-import { observer } from "mobx-react";
+import { observer, inject } from "mobx-react";
 
 const { FileAction } = constants;
 const sideColor = "#A3A9AE";
 const { /* getSettings, */ isDesktopClient } = initStore.auth.selectors;
 const { getEncryptionAccess, replaceFileStream } = initStore.auth.actions;
-const { settingsStore } = initStore;
 
 const SimpleFilesRowContent = styled(RowContent)`
   .badge-ext {
@@ -407,7 +406,7 @@ class FilesRowContent extends React.PureComponent {
         })
         .catch((err) => toastr.error(err));
     } else {
-      const newFolderId = this.props.selectedFolder.pathParts;
+      const newFolderId = this.props.selectedFolderPathParts;
       newFolderId.push(item.id);
       this.setState({
         showNewFilesPanel: !showNewFilesPanel,
@@ -426,7 +425,7 @@ class FilesRowContent extends React.PureComponent {
 
   getConvertProgress = (fileId) => {
     const {
-      selectedFolder,
+      selectedFolderId,
       filter,
       setIsLoading,
       setSecondaryProgressBarData,
@@ -462,7 +461,7 @@ class FilesRowContent extends React.PureComponent {
           });
           setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
           const newFilter = filter.clone();
-          fetchFiles(selectedFolder.id, newFilter)
+          fetchFiles(selectedFolderId, newFilter)
             .catch((err) => {
               setSecondaryProgressBarData({
                 visible: true,
@@ -537,6 +536,7 @@ class FilesRowContent extends React.PureComponent {
     const updatedDate = updated && this.getStatusByDate();
 
     const isEdit = id === editingId && fileExst === fileAction.extension;
+
     const linkStyles =
       isTrashFolder || window.innerWidth <= 1024
         ? { noHover: true }
@@ -756,17 +756,16 @@ class FilesRowContent extends React.PureComponent {
 function mapStateToProps(state, props) {
   return {
     filter: getFilter(state),
-    fileAction: getFileAction(state),
-    parentFolder: getSelectedFolderParentId(state),
+    //fileAction: getFileAction(state),
+    //parentFolder: getSelectedFolderParentId(state),
     isTrashFolder: getIsRecycleBinFolder(state),
     //settings: getSettings(state),
     treeFolders: getTreeFolders(state),
-    selectedFolderPathParts: getPathParts(state),
-    newItems: getSelectedFolderNew(state),
-    selectedFolder: getSelectedFolder(state),
-    folders: getFolders(state),
+    //selectedFolderPathParts: getPathParts(state),
+    //newItems: getSelectedFolderNew(state),
+    //selectedFolder: getSelectedFolder(state),
+    //folders: getFolders(state),
     newRowItems: getNewRowItems(state),
-    dragging: getDragging(state),
     isLoading: getIsLoading(state),
     isPrivacy: getIsPrivacyFolder(state),
     isDesktop: isDesktopClient(state),
@@ -779,9 +778,20 @@ function mapStateToProps(state, props) {
   };
 }
 
-// const FilesRowContentWrapper = observer((props) => {
-//   return <FilesRowContent homepage={settingsStore.homepage} {...props} />;
-// });
+// export default connect(mapStateToProps, {
+//   createFile,
+//   updateFile,
+//   renameFolder,
+//   setTreeFolders,
+//   setSecondaryProgressBarData,
+//   setUpdateTree,
+//   setNewRowItems,
+//   setIsLoading,
+//   clearSecondaryProgressData,
+//   fetchFiles,
+//   getEncryptionAccess,
+//   replaceFileStream,
+// })(withRouter(withTranslation()(FilesRowContent)));
 
 export default connect(mapStateToProps, {
   createFile,
@@ -791,9 +801,29 @@ export default connect(mapStateToProps, {
   setSecondaryProgressBarData,
   setUpdateTree,
   setNewRowItems,
-  setIsLoading,
+  //setIsLoading,
   clearSecondaryProgressData,
-  fetchFiles,
+  //fetchFiles,
   getEncryptionAccess,
   replaceFileStream,
-})(withRouter(withTranslation()(FilesRowContent)));
+})(
+  inject(({ store, mainFilesStore }) => {
+    const { filesStore, setIsLoading } = mainFilesStore;
+    const { folders, fetchFiles } = filesStore;
+    const { type, extension, id } = filesStore.fileActionStore;
+
+    const fileAction = { type, extension, id };
+
+    return {
+      fileAction,
+      folders,
+      selectedFolderId: filesStore.selectedFolderStore.id,
+      selectedFolderPathParts: filesStore.selectedFolderStore.pathParts,
+      newItems: filesStore.selectedFolderStore.new,
+      parentFolder: filesStore.selectedFolderStore.parentId,
+
+      setIsLoading,
+      fetchFiles,
+    };
+  })(withRouter(withTranslation()(observer(FilesRowContent))))
+);

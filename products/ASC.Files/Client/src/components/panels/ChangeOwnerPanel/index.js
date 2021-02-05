@@ -12,7 +12,7 @@ import {
 import { withTranslation } from "react-i18next";
 import { utils, store, toastr } from "asc-web-common";
 import {
-  setIsLoading,
+  //setIsLoading,
   setFilesOwner,
   setFiles,
   setFolders,
@@ -21,8 +21,8 @@ import {
 import {
   getSelection,
   getIsLoading,
-  getFiles,
-  getFolders,
+  //getFiles,
+  //getFolders,
   getShowOwnerChangePanel,
 } from "../../../store/files/selectors";
 import { createI18N } from "../../../helpers/i18n";
@@ -36,6 +36,7 @@ import {
   StyledHeaderContent,
   StyledBody,
 } from "../StyledPanels";
+import { inject, observer } from "mobx-react";
 
 const i18n = createI18N({
   page: "ChangeOwnerPanel",
@@ -205,15 +206,34 @@ const mapStateToProps = (state) => {
     selection: getSelection(state),
     groupsCaption: getSettingsCustomNamesGroupsCaption(state),
     isLoading: getIsLoading(state),
-    files: getFiles(state),
-    folders: getFolders(state),
+    //files: getFiles(state),
+    //folders: getFolders(state),
     visible: getShowOwnerChangePanel(state),
   };
 };
 
+// export default connect(mapStateToProps, {
+//   setIsLoading,
+//   setFiles,
+//   setFolders,
+//   setChangeOwnerPanelVisible,
+// })(withRouter(ChangeOwnerPanel));
+
 export default connect(mapStateToProps, {
-  setIsLoading,
+  //setIsLoading,
   setFiles,
   setFolders,
   setChangeOwnerPanelVisible,
-})(withRouter(ChangeOwnerPanel));
+});
+
+inject(({ store, mainFilesStore }) => {
+  const { filesStore, setIsLoading } = mainFilesStore;
+  const { files, folders } = filesStore;
+
+  return {
+    files,
+    folders,
+
+    setIsLoading,
+  };
+})(withRouter(observer(ChangeOwnerPanel)));

@@ -11,16 +11,17 @@ import {
   setSelectedNode,
   setExpandSettingsTree,
   getFilesSettings,
-  setSelectedFolder,
-  setIsLoading,
+  //setSelectedFolder,
+  //setIsLoading,
 } from "../../../store/files/actions";
 import {
   getIsLoading,
   getSettingsSelectedTreeNode,
   getExpandedSetting,
   getEnableThirdParty,
-  getSelectedTreeNode,
+  //getSelectedTreeNode,
 } from "../../../store/files/selectors";
+import { inject, observer } from "mobx-react";
 const { isAdmin } = initStore.auth.selectors;
 
 const i18n = createI18N({
@@ -77,7 +78,7 @@ const PureTreeSettings = ({
   setExpandSettingsTree,
   getFilesSettings,
   setSelectedFolder,
-  selectedFolder,
+  //selectedFolder,
   setIsLoading,
   t,
 }) => {
@@ -110,7 +111,8 @@ const PureTreeSettings = ({
   const onSelect = (section) => {
     const path = section[0];
 
-    if (selectedFolder) setSelectedFolder({});
+    //if (selectedFolder) setSelectedFolder({});
+    setSelectedFolder({}); //getSelectedTreeNode
 
     if (path === "settings") {
       setSelectedNode(["common"]);
@@ -210,14 +212,32 @@ function mapStateToProps(state) {
     enableThirdParty: getEnableThirdParty(state),
     isAdmin: isAdmin(state),
     isLoading: getIsLoading(state),
-    selectedFolder: getSelectedTreeNode(state),
+    //selectedFolder: getSelectedTreeNode(state),
   };
 }
+
+// export default connect(mapStateToProps, {
+//   setSelectedNode,
+//   setExpandSettingsTree,
+//   getFilesSettings,
+//   setSelectedFolder,
+//   setIsLoading,
+// })(withRouter(TreeSettings));
 
 export default connect(mapStateToProps, {
   setSelectedNode,
   setExpandSettingsTree,
   getFilesSettings,
-  setSelectedFolder,
-  setIsLoading,
-})(withRouter(TreeSettings));
+  //setSelectedFolder,
+  //setIsLoading,
+})(
+  inject(({ store, mainFilesStore }) => {
+    const { setIsLoading, filesStore } = mainFilesStore;
+    const { setSelectedFolder } = filesStore.selectedFolderStore;
+
+    return {
+      setIsLoading,
+      setSelectedFolder,
+    };
+  })(withRouter(observer(TreeSettings)))
+);

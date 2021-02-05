@@ -145,7 +145,6 @@ class App extends React.Component {
 
   render() {
     const { homepage, isDesktop } = this.props;
-    console.log("Files App render", this.props);
 
     return navigator.onLine ? (
       <Layout>
@@ -234,17 +233,17 @@ class App extends React.Component {
 //   };
 // };
 
-export default inject(({ store, filesStore }) => ({
+export default inject(({ store, mainFilesStore }) => ({
   user: store.userStore.user,
   isAuthenticated: store.isAuthenticated,
   homepage: store.settingsStore.homepage || config.homepage,
   encryptionKeys: store.settingsStore.encryptionKeys,
   isEncryptionSupport: store.settingsStore.isEncryptionSupport,
-  isLoaded: filesStore.isLoaded,
+  isLoaded: mainFilesStore.isLoaded,
 
   setEncryptionKeys: store.settingsStore.setEncryptionKeys,
   loadFilesInfo: async () => {
     await store.init();
-    filesStore.initFiles();
+    mainFilesStore.initFiles();
   },
 }))(observer(App));

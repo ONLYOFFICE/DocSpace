@@ -363,9 +363,9 @@ export const loopTreeFolders = (
   }
 };
 
-export const getSelectedFolder = (state) => {
-  return state.files.selectedFolder;
-};
+// export const getSelectedFolder = (state) => {
+//   return state.files.selectedFolder;
+// };
 
 export const getSelectedFolderId = (state) => {
   return state.files.selectedFolder.id;
@@ -586,9 +586,9 @@ export const getFileIcon = (
   }
 };
 
-export const getFileAction = (state) => {
-  return state.files.fileAction;
-};
+// export const getFileAction = (state) => {
+//   return state.files.fileAction;
+// };
 
 export const getFiles = (state) => {
   return state.files.files;

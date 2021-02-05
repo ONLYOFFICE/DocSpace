@@ -17,10 +17,11 @@ import {
   getOAuthToken,
   openConnectWindow,
   setConnectItem,
-  setSelectedFolder,
+  //setSelectedFolder,
   setSelectedNode,
   setShowThirdPartyPanel,
 } from "../../../store/files/actions";
+import { inject, observer } from "mobx-react";
 
 const { changeLanguage } = utils;
 
@@ -241,9 +242,26 @@ function mapStateToProps(state) {
   };
 }
 
+// export default connect(mapStateToProps, {
+//   setConnectItem,
+//   setSelectedNode,
+//   setSelectedFolder,
+//   setShowThirdPartyPanel,
+// })(ThirdPartyList);
+
 export default connect(mapStateToProps, {
   setConnectItem,
   setSelectedNode,
-  setSelectedFolder,
+  //setSelectedFolder,
   setShowThirdPartyPanel,
-})(ThirdPartyList);
+})(
+  inject(({ store, mainFilesStore }) => {
+    const { setIsLoading, filesStore } = mainFilesStore;
+    const { setSelectedFolder } = filesStore.selectedFolderStore;
+
+    return {
+      setIsLoading,
+      setSelectedFolder,
+    };
+  })(observer(ThirdPartyList))
+);

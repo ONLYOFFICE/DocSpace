@@ -7,19 +7,20 @@ import { utils, toastr, api } from "asc-web-common";
 import {
   deleteThirdParty,
   setThirdPartyProviders,
-  fetchFiles,
+  //fetchFiles,
   setUpdateTree,
   setTreeFolders,
 } from "../../../store/files/actions";
 import {
   getThirdPartyProviders,
-  getSelectedFolderId,
+  //getSelectedFolderId,
   loopTreeFolders,
   getTreeFolders,
   getCommonFolderId,
   getMyFolderId,
 } from "../../../store/files/selectors";
 import { createI18N } from "../../../helpers/i18n";
+import { inject, observer } from "mobx-react";
 const i18n = createI18N({
   page: "DeleteThirdPartyDialog",
   localesPath: "dialogs/DeleteThirdPartyDialog",
@@ -120,16 +121,34 @@ const DeleteThirdPartyDialog = (props) => (
 const mapStateToProps = (state) => {
   return {
     providers: getThirdPartyProviders(state),
-    currentFolderId: getSelectedFolderId(state),
+    //currentFolderId: getSelectedFolderId(state),
     treeFolders: getTreeFolders(state),
     commonId: getCommonFolderId(state),
     myId: getMyFolderId(state),
   };
 };
 
+// export default connect(mapStateToProps, {
+//   setThirdPartyProviders,
+//   fetchFiles,
+//   setUpdateTree,
+//   setTreeFolders,
+// })(withRouter(DeleteThirdPartyDialog));
+
 export default connect(mapStateToProps, {
   setThirdPartyProviders,
-  fetchFiles,
+  //fetchFiles,
   setUpdateTree,
   setTreeFolders,
-})(withRouter(DeleteThirdPartyDialog));
+})(
+  inject(({ store, mainFilesStore }) => {
+    const { filesStore } = mainFilesStore;
+    const { fetchFiles } = filesStore;
+
+    return {
+      currentFolderId: filesStore.selectedFolderStore.id,
+
+      fetchFiles,
+    };
+  })(withRouter(observer(DeleteThirdPartyDialog)))
+);

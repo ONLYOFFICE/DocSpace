@@ -8,23 +8,25 @@ import {
   setFilter,
   setTreeFolders,
   setDragItem,
-  setDragging,
-  setIsLoading,
+  //setDragging,
+  //setIsLoading,
   setUpdateTree,
 } from "../../../store/files/actions";
 import {
   getTreeFolders,
   getFilter,
-  getDragging,
+  //getDragging,
   getUpdateTree,
-  getSelectedFolderId,
+  //getSelectedFolderId,
   getMyFolderId,
   getShareFolderId,
-  getRootFolderId,
+  //getRootFolderId,
   getDraggableItems,
   getIsPrivacyFolder,
 } from "../../../store/files/selectors";
 import { onConvertFiles } from "../../../helpers/files-converter";
+import { observer, inject } from "mobx-react";
+
 const { isAdmin, isDesktopClient } = initStore.auth.selectors;
 
 const { files } = api;
@@ -501,11 +503,11 @@ function mapStateToProps(state) {
     filter: getFilter(state),
     myId: getMyFolderId(state),
     commonId: getShareFolderId(state),
-    currentId: getSelectedFolderId(state),
+    //currentId: getSelectedFolderId(state),
     isAdmin: isAdmin(state),
-    dragging: getDragging(state),
+    //dragging: getDragging(state),
     updateTree: getUpdateTree(state),
-    rootFolderId: getRootFolderId(state),
+    //rootFolderId: getRootFolderId(state),
     draggableItems: getDraggableItems(state),
     isDesktop: isDesktopClient(state),
     isPrivacy: getIsPrivacyFolder(state),
@@ -517,10 +519,29 @@ const mapDispatchToProps = (dispatch) => {
     setFilter: (filter) => dispatch(setFilter(filter)),
     setTreeFolders: (treeFolders) => dispatch(setTreeFolders(treeFolders)),
     setDragItem: (dragItem) => dispatch(setDragItem(dragItem)),
-    setDragging: (dragging) => dispatch(setDragging(dragging)),
-    setIsLoading: (isLoading) => dispatch(setIsLoading(isLoading)),
+    //setDragging: (dragging) => dispatch(setDragging(dragging)),
+    //setIsLoading: (isLoading) => dispatch(setIsLoading(isLoading)),
     setUpdateTree: (updateTree) => dispatch(setUpdateTree(updateTree)),
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(TreeFolders);
+//export default connect(mapStateToProps, mapDispatchToProps)(TreeFolders);
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(
+  inject(({ store, mainFilesStore }) => {
+    const { filesStore, setIsLoading, dragging, setDragging } = mainFilesStore;
+    const { pathParts, id } = filesStore.selectedFolderStore;
+
+    return {
+      dragging,
+      rootFolderId: pathParts,
+      currentId: id,
+
+      setDragging,
+      setIsLoading,
+    };
+  })(observer(TreeFolders))
+);
