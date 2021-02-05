@@ -1,6 +1,6 @@
 %define         debug_package %{nil}
 Name:           onlyoffice-appserver
-Summary:        AppServer
+Summary:        Business productivity tools.
 Version:        %version
 Release:        %release
 Group:          Applications/Internet
@@ -26,9 +26,12 @@ Requires:       %name-people.server
 Requires:       %name-urlshortener
 Requires:       %name-thumbnails
 Requires:       %name-studio
+Requires:       %name-studio.notify
+Requires:       %name-socket
 Requires:       %name-api
 AutoReqProv:    no
 %description
+App Server is a platform for building your own online office by connecting ONLYOFFICE modules packed as separate apps.
 
 %include package.spec
 

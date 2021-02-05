@@ -323,28 +323,29 @@ setup_nginx(){
 
     shopt -s nocasematch
     PORTS=()
-    case $(getenforce) in
-        enforcing|permissive)
-            PORTS+=('8081')
-            PORTS+=('8083')
-            PORTS+=('5001')
-            PORTS+=('5002')
-            PORTS+=('5008')
-	        setsebool -P httpd_can_network_connect on
-        ;;
-        disabled)
-            :
-        ;;
-    esac
+	if %{getenforce} >/dev/null 2>&1; then
+		case $(getenforce) in
+			enforcing|permissive)
+				PORTS+=('8081') #Storybook
+				PORTS+=('8083') #Docs
+				PORTS+=('5001') #ASC.Web.Studio
+				PORTS+=('5002') #ASC.People
+				PORTS+=('5008') #ASC.Files
+				setsebool -P httpd_can_network_connect on
+			;;
+			disabled)
+				:
+			;;
+		esac
 
-    for PORT in ${PORTS[@]}; do
-        semanage port -a -t http_port_t -p tcp $PORT >/dev/null 2>&1 || \
-        semanage port -m -t http_port_t -p tcp $PORT >/dev/null 2>&1 || \
-        true
-    done
+		for PORT in ${PORTS[@]}; do
+			semanage port -a -t http_port_t -p tcp $PORT >/dev/null 2>&1 || \
+			semanage port -m -t http_port_t -p tcp $PORT >/dev/null 2>&1 || \
+			true
+		done
+	fi
     chown nginx:nginx /etc/nginx/* -R
     sudo sed -e 's/#//' -i $NGINX_CONF/onlyoffice.conf
-    systemctl reload nginx
 	echo "OK"
 }
 
@@ -388,11 +389,11 @@ setup_elasticsearch() {
 		/usr/share/elasticsearch/bin/elasticsearch-plugin install -s -b ingest-attachment	
 
 	if [ -f ${ELASTIC_SEARCH_CONF_PATH}.rpmnew ]; then
-	cp -rf ${ELASTIC_SEARCH_CONF_PATH}.rpmnew ${ELASTIC_SEARCH_CONF_PATH};   
+		cp -rf ${ELASTIC_SEARCH_CONF_PATH}.rpmnew ${ELASTIC_SEARCH_CONF_PATH};   
 	fi
 
 	if [ -f ${ELASTIC_SEARCH_JAVA_CONF_PATH}.rpmnew ]; then
-	cp -rf ${ELASTIC_SEARCH_JAVA_CONF_PATH}.rpmnew ${ELASTIC_SEARCH_JAVA_CONF_PATH};   
+		cp -rf ${ELASTIC_SEARCH_JAVA_CONF_PATH}.rpmnew ${ELASTIC_SEARCH_JAVA_CONF_PATH};   
 	fi
 
 	if ! grep -q "indices.fielddata.cache.size" ${ELASTIC_SEARCH_CONF_PATH}; then

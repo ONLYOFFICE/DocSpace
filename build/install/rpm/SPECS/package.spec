@@ -9,6 +9,7 @@ AutoReqProv:    no
 %package        common
 Summary:        common
 Group:          Applications/Internet
+Requires:       jq
 %description    common
 
 %package        files_services
@@ -47,8 +48,8 @@ AutoReqProv:    no
 Summary:        proxy
 Group:          Applications/Internet
 Requires:       %name-common
-Requires:       nginx
-Requires:       mysql-community-client
+Requires:       nginx >= 1.9.5
+Requires:       mysql-community-client >= 5.7.0
 AutoReqProv:    no
 %description    proxy
 
