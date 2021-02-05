@@ -231,18 +231,17 @@ const BodyContent = (props) => {
 };
 
 function mapStateToProps(state) {
-  const groups = state.people.groups;
+  //const groups = state.people.groups;
   const { isLoaded, settings } = state.auth;
   const { customNames } = settings;
   const { groupsCaption } = customNames;
   const { editingForm } = state.people;
-
   return {
-    data: getTreeGroups(groups, groupsCaption),
+    // data: getTreeGroups(groups, groupsCaption),
     selectedKeys: state.people.selectedGroup
       ? [state.people.selectedGroup]
       : ["root"],
-    groups,
+    // groups,
     // isAdmin: isAdmin(state),
     // isLoaded,
     editingForm,
@@ -254,8 +253,15 @@ export default connect(mapStateToProps, {
   setIsVisibleDataLossDialog,
   setIsLoading,
 })(
-  inject(({ store }) => ({
-    isLoaded: store.isLoaded,
-    isAdmin: store.isAdmin,
-  }))(observer(BodyContent))
+  inject(({ store, peopleStore }) => {
+    const groups = peopleStore.groupsStore.groups;
+    const { groupsCaption } = store.settingsStore.customNames;
+    const data = getTreeGroups(groups, groupsCaption);
+    return {
+      isLoaded: store.isLoaded,
+      isAdmin: store.isAdmin,
+      groups,
+      data,
+    };
+  })(observer(BodyContent))
 );

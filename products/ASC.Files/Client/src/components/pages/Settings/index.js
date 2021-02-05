@@ -12,13 +12,13 @@ import { withTranslation, I18nextProvider } from "react-i18next";
 import { createI18N } from "../../../helpers/i18n";
 import {
   getFilesSettings,
-  setIsLoading,
-  setFirstLoad,
+  //setFirstLoad,
   setSelectedNode,
 } from "../../../store/files/actions";
 import { getSettingsTree, getIsLoading } from "../../../store/files/selectors";
 
 import { setDocumentTitle } from "../../../helpers/utils";
+import { inject, observer } from "mobx-react";
 
 const i18n = createI18N({
   page: "Settings",
@@ -136,14 +136,27 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    setIsLoading: (isLoading) => dispatch(setIsLoading(isLoading)),
     getFilesSettings: () => dispatch(getFilesSettings()),
-    setFirstLoad: (firstLoad) => dispatch(setFirstLoad(firstLoad)),
+    //setFirstLoad: (firstLoad) => dispatch(setFirstLoad(firstLoad)),
     setSelectedNode: (node) => dispatch(setSelectedNode(node)),
   };
 };
 
+// export default connect(
+//   mapStateToProps,
+//   mapDispatchToProps
+// )(withRouter(Settings));
+
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withRouter(Settings));
+)(
+  inject(({ store, mainFilesStore }) => {
+    const { filesStore } = mainFilesStore;
+    const { setFirstLoad } = filesStore;
+
+    return {
+      setFirstLoad,
+    };
+  })(withRouter(observer(Settings)))
+);

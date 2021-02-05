@@ -47,11 +47,12 @@ const App = (props) => {
 
   useEffect(() => {
     try {
+      console.log("loadBaseInfo call");
       loadBaseInfo();
     } catch (err) {
       toastr.error(err);
     }
-  }, [loadBaseInfo]);
+  }, []);
 
   useEffect(() => {
     console.log("App People render", isLoaded);

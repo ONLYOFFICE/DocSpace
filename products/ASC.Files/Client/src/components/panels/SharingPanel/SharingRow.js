@@ -4,7 +4,7 @@ import { toastr } from "asc-web-common";
 import copy from "copy-to-clipboard";
 import LinkRow from "./linkRow";
 import AccessComboBox from "./AccessComboBox";
-import equal from "fast-deep-equal/react";
+//import equal from "fast-deep-equal/react";
 import { getAccessIcon } from "../../../store/files/selectors";
 
 class SharingRow extends React.Component {
@@ -23,16 +23,16 @@ class SharingRow extends React.Component {
     }
   }
 
-  shouldComponentUpdate(nextProps) {
-    if (!equal(this.props, nextProps)) {
-      return true;
-    }
-    if (this.state.access !== this.props.item.access) {
-      return true;
-    }
+  // shouldComponentUpdate(nextProps) {
+  //   if (!equal(this.props, nextProps)) {
+  //     return true;
+  //   }
+  //   if (this.state.access !== this.props.item.access) {
+  //     return true;
+  //   }
 
-    return true;
-  }
+  //   return true;
+  // }
 
   onCopyInternalLink = () => {
     const { internalLink, t } = this.props;

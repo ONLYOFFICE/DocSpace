@@ -168,6 +168,7 @@ export function setFilesFilter(filter) {
     filter,
   };
 }
+
 export function setFilter(filter) {
   return {
     type: SET_FILTER,
@@ -481,50 +482,50 @@ export function fetchFiles(folderId, filter, clearFilter = true) {
   };
 }
 
-export function fetchFolders() {
-  return Promise.resolve([]);
-}
+// export function fetchFolders() {
+//   return Promise.resolve([]);
+// }
 
-export function selectFolder() {
-  return Promise.resolve([]);
-}
+// export function selectFolder() {
+//   return Promise.resolve([]);
+// }
 
-export function fetchFolder(folderId, dispatch) {
-  return files.getFolder(folderId).then((data) => {
-    dispatch(setFolders(data.folders));
-    dispatch(setFiles(data.files));
-    return dispatch(
-      setSelectedFolder({
-        folders: data.folders,
-        ...data.current,
-        pathParts: data.pathParts,
-      })
-    );
-  });
-}
+// export function fetchFolder(folderId, dispatch) {
+//   return files.getFolder(folderId).then((data) => {
+//     dispatch(setFolders(data.folders));
+//     dispatch(setFiles(data.files));
+//     return dispatch(
+//       setSelectedFolder({
+//         folders: data.folders,
+//         ...data.current,
+//         pathParts: data.pathParts,
+//       })
+//     );
+//   });
+// }
 
-export function fetchMyFolder(dispatch) {
-  return files.getMyFolderList().then((data) => {
-    dispatch(setFolders(data.folders));
-    dispatch(setFiles(data.files));
-    return dispatch(setSelectedFolder(data.current));
-  });
-}
+// export function fetchMyFolder(dispatch) {
+//   return files.getMyFolderList().then((data) => {
+//     dispatch(setFolders(data.folders));
+//     dispatch(setFiles(data.files));
+//     return dispatch(setSelectedFolder(data.current));
+//   });
+// }
 
-export function fetchTrashFolder(dispatch) {
-  return files.getTrashFolderList().then((data) => {
-    dispatch(setFiles(data.files));
-    return dispatch(setSelectedFolder(data.current));
-  });
-}
+// export function fetchTrashFolder(dispatch) {
+//   return files.getTrashFolderList().then((data) => {
+//     dispatch(setFiles(data.files));
+//     return dispatch(setSelectedFolder(data.current));
+//   });
+// }
 
-export function fetchCommonFolder(dispatch) {
-  return files.getCommonFolderList().then((data) => {
-    dispatch(setFolders(data.folders));
-    dispatch(setFiles(data.files));
-    return dispatch(setSelectedFolder(data.current));
-  });
-}
+// export function fetchCommonFolder(dispatch) {
+//   return files.getCommonFolderList().then((data) => {
+//     dispatch(setFolders(data.folders));
+//     dispatch(setFiles(data.files));
+//     return dispatch(setSelectedFolder(data.current));
+//   });
+// }
 
 export function fetchFavoritesFolder(folderId) {
   return (dispatch) => {
@@ -562,21 +563,21 @@ export function getFileInfo(id) {
   };
 }
 
-export function fetchProjectsFolder(dispatch) {
-  return files.getProjectsFolderList().then((data) => {
-    dispatch(setFolders(data.folders));
-    dispatch(setFiles(data.files));
-    return dispatch(setSelectedFolder(data.current));
-  });
-}
+// export function fetchProjectsFolder(dispatch) {
+//   return files.getProjectsFolderList().then((data) => {
+//     dispatch(setFolders(data.folders));
+//     dispatch(setFiles(data.files));
+//     return dispatch(setSelectedFolder(data.current));
+//   });
+// }
 
-export function fetchSharedFolder(dispatch) {
-  return files.getSharedFolderList().then((data) => {
-    dispatch(setFolders(data.folders));
-    dispatch(setFiles(data.files));
-    return dispatch(setSelectedFolder(data.current));
-  });
-}
+// export function fetchSharedFolder(dispatch) {
+//   return files.getSharedFolderList().then((data) => {
+//     dispatch(setFolders(data.folders));
+//     dispatch(setFiles(data.files));
+//     return dispatch(setSelectedFolder(data.current));
+//   });
+// }
 
 export function fetchTreeFolders() {
   return (dispatch) =>

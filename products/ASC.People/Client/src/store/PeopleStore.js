@@ -7,10 +7,12 @@ import GroupsStore from "./GroupsStore";
 import UsersStore from "./UsersStore";
 import { getFilterByLocation } from "../helpers/converters";
 import config from "../../package.json";
+import TargetUserStore from "./TargetUserStore";
 
 class PeopleStore {
   groupsStore = null;
   usersStore = null;
+  targetUserStore = null;
 
   isLoading = false;
   //isAuthenticated = false;
@@ -18,6 +20,7 @@ class PeopleStore {
   constructor() {
     this.setGroupsStore(new GroupsStore());
     this.setUsersStore(new UsersStore());
+    this.setTargetUserStore(new TargetUserStore());
 
     makeObservable(this, {
       isLoading: observable,
@@ -44,6 +47,9 @@ class PeopleStore {
   };
   setUsersStore = (store) => {
     this.usersStore = store;
+  };
+  setTargetUserStore = (store) => {
+    this.targetUserStore = store;
   };
 }
 

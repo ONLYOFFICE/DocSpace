@@ -4,43 +4,42 @@ import { withRouter } from "react-router";
 import { Trans, withTranslation } from "react-i18next";
 import styled from "styled-components";
 import { Link, Text, Icons, Badge } from "asc-web-components";
-import { constants, api, toastr, store as initStore } from "asc-web-common";
+import { constants, api, toastr } from "asc-web-common";
 import {
   createFile,
   createFolder,
   renameFolder,
   updateFile,
-  fetchFiles,
+  //fetchFiles,
   setTreeFolders,
-  setIsLoading,
+  //setIsLoading,
 } from "../../../../../store/files/actions";
 import {
   canWebEdit,
   getDragging,
-  getFileAction,
+  //getFileAction,
   getFilter,
-  getFolders,
+  //getFolders,
   getIsLoading,
   getNewRowItems,
-  getSelectedFolder,
-  getSelectedFolderNew,
-  getSelectedFolderParentId,
+  //getSelectedFolder,
+  //getSelectedFolderNew,
+  //getSelectedFolderParentId,
   getTitleWithoutExst,
   getTreeFolders,
   isImage,
   isSound,
   isVideo,
   getIsRecycleBinFolder,
-  getRootFolderId,
+  //getRootFolderId,
 } from "../../../../../store/files/selectors";
 import { NewFilesPanel } from "../../../../panels";
 import EditingWrapperComponent from "./EditingWrapperComponent";
 import TileContent from "./TileContent";
 import { isMobile } from "react-device-detect";
-import { observer } from "mobx-react";
+import { inject, observer } from "mobx-react";
 
 const { FileAction } = constants;
-const { settingsStore } = initStore;
 //const { getSettings } = initStore.auth.selectors;
 
 const SimpleFilesTileContent = styled(TileContent)`
@@ -325,11 +324,11 @@ class FilesTileContent extends React.PureComponent {
           const dataItem = data.find((x) => x.id === rootFolderId);
           dataItem.newItems = newItems ? dataItem.newItems - 1 : 0; //////newItems
           setTreeFolders(data);
-          fetchFiles(this.props.selectedFolder.id, filter.clone());
+          fetchFiles(this.props.selectedFolderId, filter.clone());
         })
         .catch((err) => toastr.error(err));
     } else {
-      const newFolderId = this.props.selectedFolder.pathParts;
+      const newFolderId = this.props.selectedFolderPathParts;
       newFolderId.push(item.id);
       this.setState({
         showNewFilesPanel: !showNewFilesPanel,
@@ -445,15 +444,14 @@ class FilesTileContent extends React.PureComponent {
 function mapStateToProps(state, props) {
   return {
     filter: getFilter(state),
-    fileAction: getFileAction(state),
-    parentFolder: getSelectedFolderParentId(state),
+    //fileAction: getFileAction(state),
+    //parentFolder: getSelectedFolderParentId(state),
     isTrashFolder: getIsRecycleBinFolder(state),
-    //settings: getSettings(state),
     treeFolders: getTreeFolders(state),
-    rootFolderId: getRootFolderId(state),
-    newItems: getSelectedFolderNew(state),
-    selectedFolder: getSelectedFolder(state),
-    folders: getFolders(state),
+    //rootFolderId: getRootFolderId(state),
+    //newItems: getSelectedFolderNew(state),
+    //selectedFolder: getSelectedFolder(state),
+    //folders: getFolders(state),
     newRowItems: getNewRowItems(state),
     dragging: getDragging(state),
     isLoading: getIsLoading(state),
@@ -461,15 +459,41 @@ function mapStateToProps(state, props) {
   };
 }
 
-const FilesTileContentWrapper = observer((props) => {
-  return <FilesTileContent homepage={settingsStore.homepage} {...props} />;
-});
+// export default connect(mapStateToProps, {
+//   createFile,
+//   updateFile,
+//   renameFolder,
+//   setTreeFolders,
+//   setIsLoading,
+//   fetchFiles,
+// })(withRouter(withTranslation()(FilesTileContent)));
 
 export default connect(mapStateToProps, {
   createFile,
   updateFile,
   renameFolder,
   setTreeFolders,
-  setIsLoading,
-  fetchFiles,
-})(withRouter(withTranslation()(FilesTileContentWrapper)));
+  //setIsLoading,
+  //fetchFiles,
+})(
+  inject(({ store, mainFilesStore }) => {
+    const { filesStore, setIsLoading } = mainFilesStore;
+    const { folders, fetchFiles } = filesStore;
+    const { type, extension, id } = filesStore.fileActionStore;
+
+    const fileAction = { type, extension, id };
+
+    return {
+      fileAction,
+      folders,
+      rootFolderId: filesStore.selectedFolderStore.pathParts,
+      selectedFolderId: filesStore.selectedFolderStore.id,
+      selectedFolderPathParts: filesStore.selectedFolderStore.pathParts,
+      newItems: filesStore.selectedFolderStore.new,
+      parentFolder: filesStore.selectedFolderStore.parentId,
+
+      setIsLoading,
+      fetchFiles,
+    };
+  })(withRouter(withTranslation()(observer(FilesTileContent))))
+);

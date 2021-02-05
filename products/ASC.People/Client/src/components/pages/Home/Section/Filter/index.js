@@ -266,11 +266,11 @@ class SectionFilterContent extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    user: getCurrentUser(state),
-    language: getLanguage(state),
-    groups: getGroups(state),
+    //user: getCurrentUser(state),
+    //language: getLanguage(state),
+    //groups: getGroups(state),
     filter: getFilter(state),
-    //settings: getSettings(state),
+    // settings: getSettings(state),
     // isAdmin: isAdmin(state),
     // isLoaded: getIsLoaded(state),
   };
@@ -281,11 +281,17 @@ function mapStateToProps(state) {
 // });
 
 export default connect(mapStateToProps, { fetchPeople })(
-  inject(({ store }) => ({
-    settings: store.settingsStore,
-    isLoaded: store.isLoaded,
-    isAdmin: store.isAdmin,
-  }))(
+  inject(({ store, peopleStore }) => {
+    // const { isAdmin, isLoaded, language, settings } = store;
+    return {
+      settings: store.settingsStore,
+      isLoaded: store.isLoaded,
+      isAdmin: store.isAdmin,
+      language: store.language,
+      user: store.userStore.user,
+      groups: peopleStore.groupsStore.groups,
+    };
+  })(
     observer(
       withRouter(withLayoutSize(withTranslation()(SectionFilterContent)))
     )

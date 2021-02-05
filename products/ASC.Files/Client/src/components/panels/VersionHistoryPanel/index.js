@@ -116,7 +116,6 @@ const VersionHistoryPanel = (props) => {
 VersionHistoryPanelContainer.propTypes = {
   fileId: PropTypes.string,
   visible: PropTypes.bool,
-  setIsLoading: PropTypes.func,
   onClose: PropTypes.func,
 };
 

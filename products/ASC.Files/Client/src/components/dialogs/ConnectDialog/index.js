@@ -17,7 +17,7 @@ import {
   saveThirdParty,
   setTreeFolders,
   setUpdateTree,
-  fetchFiles,
+  //fetchFiles,
 } from "../../../store/files/actions";
 import {
   getTreeFolders,
@@ -25,11 +25,12 @@ import {
   getMyFolderId,
   getCommonFolderId,
   getThirdPartyProviders,
-  getSelectedFolder,
+  //getSelectedFolder,
 } from "../../../store/files/selectors";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import { connect } from "react-redux";
 import { createI18N } from "../../../helpers/i18n";
+import { inject, observer } from "mobx-react";
 
 const i18n = createI18N({
   page: "ConnectDialog",
@@ -51,7 +52,8 @@ const PureConnectDialogContainer = (props) => {
     myFolderId,
     commonFolderId,
     providers,
-    selectedFolder,
+    selectedFolderId,
+    selectedFolderFolders,
     fetchFiles,
   } = props;
   const { corporate, title, link, token, provider_id, provider_key } = item;
@@ -166,10 +168,10 @@ const PureConnectDialogContainer = (props) => {
           fetchThirdPartyProviders();
 
           const newFolder =
-            selectedFolder.folders &&
-            selectedFolder.folders.find((x) => x.id === folderData.id);
+            selectedFolderFolders &&
+            selectedFolderFolders.find((x) => x.id === folderData.id);
           if (newFolder)
-            fetchFiles(selectedFolder.id).then(() => {
+            fetchFiles(selectedFolderId).then(() => {
               onClose();
               setIsLoading(false);
             });
@@ -198,8 +200,8 @@ const PureConnectDialogContainer = (props) => {
     passwordValue,
     provider_id,
     provider_key,
-    selectedFolder.folders,
-    selectedFolder.id,
+    selectedFolderFolders,
+    selectedFolderId,
     setTreeFolders,
     setUpdateTree,
     showUrlField,
@@ -355,14 +357,35 @@ const mapStateToProps = (state) => {
     myFolderId: getMyFolderId(state),
     commonFolderId: getCommonFolderId(state),
     providers: getThirdPartyProviders(state),
-    selectedFolder: getSelectedFolder(state),
+    //selectedFolder: getSelectedFolder(state),
   };
 };
+
+// export default connect(mapStateToProps, {
+//   setUpdateTree,
+//   setTreeFolders,
+//   fetchThirdPartyProviders,
+//   fetchTreeFolders,
+//   fetchFiles,
+// })(ConnectDialog);
 
 export default connect(mapStateToProps, {
   setUpdateTree,
   setTreeFolders,
   fetchThirdPartyProviders,
   fetchTreeFolders,
-  fetchFiles,
-})(ConnectDialog);
+  //fetchFiles,
+})(
+  inject(({ store, mainFilesStore }) => {
+    const { filesStore } = mainFilesStore;
+    const { fetchFiles } = filesStore;
+    const { id, folders } = filesStore.selectedFolderStore;
+
+    return {
+      selectedFolderId: id,
+      selectedFolderFolders: folders,
+
+      fetchFiles,
+    };
+  })(observer(ConnectDialog))
+);

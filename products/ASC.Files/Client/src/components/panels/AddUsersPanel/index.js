@@ -95,24 +95,24 @@ class AddUsersPanelComponent extends React.Component {
     window.removeEventListener("keyup", this.onKeyPress);
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    const { showActionPanel, accessRight } = this.state;
-    const { visible } = this.props;
+  // shouldComponentUpdate(nextProps, nextState) {
+  //   const { showActionPanel, accessRight } = this.state;
+  //   const { visible } = this.props;
 
-    if (accessRight !== nextState.accessRight) {
-      return true;
-    }
+  //   if (accessRight !== nextState.accessRight) {
+  //     return true;
+  //   }
 
-    if (showActionPanel !== nextState.showActionPanel) {
-      return true;
-    }
+  //   if (showActionPanel !== nextState.showActionPanel) {
+  //     return true;
+  //   }
 
-    if (visible !== nextProps.visible) {
-      return true;
-    }
+  //   if (visible !== nextProps.visible) {
+  //     return true;
+  //   }
 
-    return false;
-  }
+  //   return false;
+  // }
 
   onAccessChange = (e) => {
     const accessRight = +e.currentTarget.dataset.access;

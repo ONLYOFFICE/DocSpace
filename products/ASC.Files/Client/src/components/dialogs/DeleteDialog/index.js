@@ -12,7 +12,7 @@ import {
 import { withTranslation } from "react-i18next";
 import { api, utils, toastr } from "asc-web-common";
 import {
-  fetchFiles,
+  //fetchFiles,
   setTreeFolders,
   setSecondaryProgressBarData,
   clearSecondaryProgressData,
@@ -21,7 +21,7 @@ import {
 import { TIMEOUT } from "../../../helpers/constants";
 import {
   loopTreeFolders,
-  getSelectedFolderId,
+  //getSelectedFolderId,
   getFilter,
   getTreeFolders,
   getIsLoading,
@@ -31,6 +31,7 @@ import {
   getIsPrivacyFolder,
 } from "../../../store/files/selectors";
 import { createI18N } from "../../../helpers/i18n";
+import { inject, observer } from "mobx-react";
 const i18n = createI18N({
   page: "DeleteDialog",
   localesPath: "dialogs/DeleteDialog",
@@ -304,7 +305,7 @@ const DeleteDialog = (props) => (
 
 const mapStateToProps = (state) => {
   return {
-    currentFolderId: getSelectedFolderId(state),
+    //currentFolderId: getSelectedFolderId(state),
     filter: getFilter(state),
     treeFolders: getTreeFolders(state),
     isLoading: getIsLoading(state),
@@ -315,10 +316,29 @@ const mapStateToProps = (state) => {
   };
 };
 
+// export default connect(mapStateToProps, {
+//   setTreeFolders,
+//   setSecondaryProgressBarData,
+//   clearSecondaryProgressData,
+//   setUpdateTree,
+//   fetchFiles,
+// })(withRouter(DeleteDialog));
+
 export default connect(mapStateToProps, {
   setTreeFolders,
   setSecondaryProgressBarData,
   clearSecondaryProgressData,
   setUpdateTree,
-  fetchFiles,
-})(withRouter(DeleteDialog));
+  //fetchFiles,
+})(
+  inject(({ store, mainFilesStore }) => {
+    const { filesStore } = mainFilesStore;
+    const { fetchFiles } = filesStore;
+
+    return {
+      currentFolderId: filesStore.selectedFolderStore.id,
+
+      fetchFiles,
+    };
+  })(withRouter(observer(DeleteDialog)))
+);

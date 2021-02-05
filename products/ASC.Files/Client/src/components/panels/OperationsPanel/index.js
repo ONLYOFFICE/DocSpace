@@ -14,13 +14,14 @@ import {
 import {
   getFilter,
   getSelection,
-  getPathParts,
-  getSelectedFolderId,
+  //getPathParts,
+  //getSelectedFolderId,
   getIsRecycleBinFolder,
   getOperationsFolders,
 } from "../../../store/files/selectors";
 import { ThirdPartyMoveDialog } from "../../dialogs";
 import { createI18N } from "../../../helpers/i18n";
+import { inject, observer } from "mobx-react";
 const i18n = createI18N({
   page: "OperationsPanel",
   localesPath: "panels/OperationsPanel",
@@ -209,14 +210,28 @@ const mapStateToProps = (state) => {
   return {
     filter: getFilter(state),
     selection: getSelection(state),
-    expandedKeys: getPathParts(state),
-    currentFolderId: getSelectedFolderId(state),
+    //expandedKeys: getPathParts(state),
+    //currentFolderId: getSelectedFolderId(state),
     isRecycleBin: getIsRecycleBinFolder(state),
     operationsFolders: getOperationsFolders(state),
   };
 };
 
+// export default connect(mapStateToProps, {
+//   setSecondaryProgressBarData,
+//   itemOperationToFolder,
+// })(withRouter(OperationsPanel));
+
 export default connect(mapStateToProps, {
   setSecondaryProgressBarData,
   itemOperationToFolder,
-})(withRouter(OperationsPanel));
+})(
+  inject(({ store, mainFilesStore }) => {
+    const { filesStore } = mainFilesStore;
+
+    return {
+      expandedKeys: filesStore.selectedFolderStore.pathParts,
+      currentFolderId: filesStore.selectedFolderStore.id,
+    };
+  })(withRouter(observer(OperationsPanel)))
+);

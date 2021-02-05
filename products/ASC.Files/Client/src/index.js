@@ -11,13 +11,13 @@ import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import { ErrorBoundary, store as commonStore } from "asc-web-common";
 import { Provider as MobxProvider } from "mobx-react";
-import filesStore from "./store/FilesStore";
+import mainFilesStore from "./store/MainFilesStore";
 
 const { authStore } = commonStore;
 
 ReactDOM.render(
   <Provider store={store}>
-    <MobxProvider store={authStore} filesStore={filesStore}>
+    <MobxProvider store={authStore} mainFilesStore={mainFilesStore}>
       <ErrorBoundary>
         <App />
       </ErrorBoundary>

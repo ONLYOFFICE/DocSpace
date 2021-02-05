@@ -5,12 +5,12 @@ import { withRouter } from "react-router";
 import { MainButton, DropDownItem } from "asc-web-components";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import { isMobile } from "react-device-detect";
-import { setAction, startUpload } from "../../../store/files/actions";
+import { /* setAction, */ startUpload } from "../../../store/files/actions";
 import {
   canCreate,
   getFilter,
   getSelectedFolder,
-  getFirstLoad,
+  //getFirstLoad,
   getIsPrivacyFolder,
 } from "../../../store/files/selectors";
 import {
@@ -21,9 +21,9 @@ import {
 } from "asc-web-common";
 import { createI18N } from "../../../helpers/i18n";
 import { encryptionUploadDialog } from "../../../helpers/desktop";
-import { observer } from "mobx-react";
+import { inject, observer } from "mobx-react";
 
-const { settingsStore } = initStore;
+//const { settingsStore } = initStore;
 
 const { getSettings } = initStore.auth.selectors;
 const i18n = createI18N({
@@ -48,10 +48,10 @@ class PureArticleMainButtonContent extends React.Component {
   onUploadFileClick = () => {
     if (this.props.isPrivacy) {
       encryptionUploadDialog((encryptedFile, encrypted) => {
-        const { selectedFolder, startUpload, t } = this.props;
+        const { selectedFolderId, startUpload, t } = this.props;
         encryptedFile.encrypted = encrypted;
         this.goToHomePage();
-        startUpload([encryptedFile], selectedFolder.id, t);
+        startUpload([encryptedFile], selectedFolderId, t);
       });
     } else {
       this.inputFilesElement.click();
@@ -67,20 +67,20 @@ class PureArticleMainButtonContent extends React.Component {
   };
 
   onFileChange = (e) => {
-    const { selectedFolder, startUpload, t } = this.props;
+    const { selectedFolderId, startUpload, t } = this.props;
     this.goToHomePage();
-    startUpload(e.target.files, selectedFolder.id, t);
+    startUpload(e.target.files, selectedFolderId, t);
   };
 
   onInputClick = (e) => (e.target.value = null);
 
-  shouldComponentUpdate(nextProps, nextState) {
-    return (
-      nextProps.canCreate !== this.props.canCreate ||
-      nextProps.firstLoad !== this.props.firstLoad ||
-      nextProps.isPrivacy !== this.props.isPrivacy
-    );
-  }
+  // shouldComponentUpdate(nextProps, nextState) {
+  //   return (
+  //     nextProps.canCreate !== this.props.canCreate ||
+  //     nextProps.firstLoad !== this.props.firstLoad ||
+  //     nextProps.isPrivacy !== this.props.isPrivacy
+  //   );
+  // }
 
   render() {
     //console.log("Files ArticleMainButtonContent render");
@@ -185,14 +185,24 @@ ArticleMainButtonContent.propTypes = {
 const mapStateToProps = (state) => {
   return {
     canCreate: canCreate(state),
-    firstLoad: getFirstLoad(state),
+    //firstLoad: getFirstLoad(state),
     settings: getSettings(state),
     filter: getFilter(state),
-    selectedFolder: getSelectedFolder(state),
+    //selectedFolder: getSelectedFolder(state),
     isPrivacy: getIsPrivacyFolder(state),
   };
 };
 
-export default connect(mapStateToProps, { setAction, startUpload })(
-  withRouter(ArticleMainButtonContent)
+export default connect(mapStateToProps, { /* setAction, */ startUpload })(
+  inject(({ store, mainFilesStore }) => {
+    const { filesStore } = mainFilesStore;
+    const { firstLoad, fileActionStore } = filesStore;
+    const { id } = filesStore.selectedFolderStore;
+
+    return {
+      firstLoad,
+      selectedFolderId: id,
+      setAction: fileActionStore.setAction,
+    };
+  })(withRouter(observer(ArticleMainButtonContent)))
 );
