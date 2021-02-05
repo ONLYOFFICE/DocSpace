@@ -117,7 +117,14 @@ const StyledOptionalItem = styled.div`
   margin-right: ${(props) => props.theme.comboBox.childrenButton.marginRight};
 
   path {
-    fill: ${(props) => props.color && props.color};
+    fill: ${(props) =>
+      props.defaultOption
+        ? props.isDisabled
+          ? props.theme.comboBox.childrenButton.defaultDisabledColor
+          : props.theme.comboBox.childrenButton.defaultColor
+        : props.isDisabled
+        ? props.theme.comboBox.childrenButton.disabledColor
+        : props.theme.comboBox.childrenButton.color};
   }
 `;
 StyledOptionalItem.defaultProps = { theme: Base };
@@ -126,12 +133,31 @@ const StyledIcon = styled.div`
   margin: ${(props) => props.theme.comboBox.childrenButton.margin};
   width: ${(props) => props.theme.comboBox.childrenButton.width};
   height: ${(props) => props.theme.comboBox.childrenButton.height};
+
+  .combo-button_selected-icon {
+    path {
+      fill: ${(props) =>
+        props.defaultOption
+          ? props.isDisabled
+            ? props.theme.comboBox.childrenButton.defaultDisabledColor
+            : props.theme.comboBox.childrenButton.defaultColor
+          : props.isDisabled
+          ? props.theme.comboBox.childrenButton.disabledColor
+          : props.theme.comboBox.childrenButton.color};
+    }
+  }
 `;
 StyledIcon.defaultProps = { theme: Base };
 
 const StyledArrowIcon = styled.div`
   display: flex;
   align-self: start;
+
+  .combo-buttons_expander-icon {
+    path {
+      fill: ${(props) => props.theme.comboBox.arrow.fillColor};
+    }
+  }
 
   width: ${(props) =>
     props.needDisplay ? props.theme.comboBox.arrow.width : "0px"};

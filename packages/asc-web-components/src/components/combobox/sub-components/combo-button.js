@@ -27,11 +27,9 @@ class ComboButton extends React.Component {
       size,
     } = this.props;
 
-    const boxIconColor = isDisabled ? "#D0D5DA" : "#333333";
-    const arrowIconColor = isDisabled ? "#D0D5DA" : "#A3A9AE";
-    const defaultIconColor = selectedOption.default
-      ? arrowIconColor
-      : boxIconColor;
+    const defaultOption = selectedOption.default;
+
+    const SelectedIcon = Icons[selectedOption.icon];
 
     return (
       <StyledComboButton
@@ -48,18 +46,19 @@ class ComboButton extends React.Component {
         {innerContainer && (
           <StyledOptionalItem
             className={innerContainerClassName}
-            color={defaultIconColor}
+            isDisabled={isDisabled}
+            defaultOption={defaultOption}
           >
             {innerContainer}
           </StyledOptionalItem>
         )}
         {selectedOption && selectedOption.icon && (
-          <StyledIcon className="forceColor">
-            {React.createElement(Icons[selectedOption.icon], {
-              size: "scale",
-              color: defaultIconColor,
-              isfill: true,
-            })}
+          <StyledIcon
+            className="forceColor"
+            isDisabled={isDisabled}
+            defaultOption={defaultOption}
+          >
+            <SelectedIcon size="scale" className="combo-button_selected-icon" />
           </StyledIcon>
         )}
         <Text
@@ -69,7 +68,6 @@ class ComboButton extends React.Component {
           truncate={true}
           fontWeight={600}
           className="combo-button-label"
-          //color={selectedOption.default ? arrowIconColor +' !important' : boxIconColor}
         >
           {selectedOption.label}
         </Text>
@@ -79,15 +77,12 @@ class ComboButton extends React.Component {
           isOpen={isOpen}
           className="combo-buttons_arrow-icon"
         >
-          {(withOptions || withAdvancedOptions) &&
-            React.createElement(Icons["ExpanderDownIcon"], {
-              size: "scale",
-              color:
-                selectedOption.arrowIconColor && !isDisabled
-                  ? selectedOption.arrowIconColor
-                  : arrowIconColor,
-              isfill: true,
-            })}
+          {(withOptions || withAdvancedOptions) && (
+            <Icons.ExpanderDownIcon
+              size="scale"
+              className="combo-buttons_expander-icon"
+            />
+          )}
         </StyledArrowIcon>
       </StyledComboButton>
     );
