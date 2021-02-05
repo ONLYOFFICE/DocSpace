@@ -545,8 +545,6 @@ class FilesRowContent extends React.PureComponent {
         : { onClick: this.onFilesClick };
     const showNew = !!newItems;
 
-    //console.log(fileStatus);
-    console.log(item);
     return isEdit ? (
       <EditingWrapperComponent
         itemTitle={itemTitle}
