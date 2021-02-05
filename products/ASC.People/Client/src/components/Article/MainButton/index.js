@@ -132,5 +132,5 @@ ArticleMainButtonContent.propTypes = {
 export default inject(({ store }) => ({
   settings: store.settingsStore,
   isLoaded: store.isLoaded,
-  language: store.userStore.user.cultureName || store.settingsStore.culture,
+  language: store.language,
 }))(observer(withRouter(ArticleMainButtonContent)));

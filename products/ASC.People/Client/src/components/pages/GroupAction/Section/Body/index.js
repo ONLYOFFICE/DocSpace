@@ -493,47 +493,29 @@ const convertGroups = (groups) => {
 };
 
 function mapStateToProps(state) {
-  const currentModuleName = getCurrentProductName(state);
+  //const currentModuleName = getCurrentProductName(state);
   //const settings = getSettings(state);
   // const {
   //   groupHeadCaption,
   //   groupsCaption,
   //   groupCaption,
   // } = settings.customNames;
-  const { isLoaded } = state.auth;
+  //const { isLoaded } = state.auth;
 
   return {
     //settings,
     group: state.group.targetGroup,
-    groups: convertGroups(state.people.groups),
+    //groups: convertGroups(state.people.groups),
     users: convertUsers(state.people.selector.users), //TODO: replace to api requests with search
     // groupHeadCaption,
     // groupsCaption,
     // groupCaption,
-    me: getCurrentUser(state),
-    currentModuleName,
+    //me: getCurrentUser(state),
+    //currentModuleName,
     filter: state.people.filter,
     // isLoaded,
   };
 }
-
-// const SectionBodyContentWrapper = observer((props) => {
-//   const {
-//     groupHeadCaption,
-//     groupsCaption,
-//     groupCaption,
-//   } = settingsStore.customNames;
-
-//   return (
-//     <SectionBodyContent
-//       settings={settingsStore.settings}
-//       groupHeadCaption={groupHeadCaption}
-//       groupsCaption={groupsCaption}
-//       groupCaption={groupCaption}
-//       {...props}
-//     />
-//   );
-// });
 
 export default connect(mapStateToProps, {
   resetGroup,
@@ -542,13 +524,19 @@ export default connect(mapStateToProps, {
   selectGroup,
   setFilter,
 })(
-  inject(({ store }) => ({
-    settings: store.settingsStore,
-    groupCaption: store.settingsStore.customNames.groupCaption,
-    groupsCaption: store.settingsStore.customNames.groupsCaption,
-    groupHeadCaption: store.settingsStore.customNames.groupHeadCaption,
-    isLoaded: store.isLoaded,
-  }))(observer(withRouter(withTranslation()(SectionBodyContent))))
+  inject(({ store, peopleStore }) => {
+    const groups = convertGroups(peopleStore.groupsStore.groups);
+    return {
+      settings: store.settingsStore,
+      groupCaption: store.settingsStore.customNames.groupCaption,
+      groupsCaption: store.settingsStore.customNames.groupsCaption,
+      groupHeadCaption: store.settingsStore.customNames.groupHeadCaption,
+      isLoaded: store.isLoaded,
+      currentModuleName: store.product.title,
+      me: store.userStore.user,
+      groups,
+    };
+  })(observer(withRouter(withTranslation()(SectionBodyContent))))
 );
 
 // export default connect(mapStateToProps, {
