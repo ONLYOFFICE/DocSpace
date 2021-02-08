@@ -37,13 +37,13 @@ App Server is a platform for building your own online office by connecting ONLYO
 
 %prep
 
+rm -rf %{_rpmdir}/%{_arch}/%{name}-*
 %setup -n AppServer-%GIT_BRANCH
 
 %include build.spec
 
 %include install.spec
 
-%clean
 
 %include files.spec
 
@@ -63,5 +63,9 @@ chmod +x %{_bindir}/appserver-configuracion.sh
 %preun
 
 %postun
+
+%clean
+
+rm -rf %{buildroot}/%{name}-*
 
 %changelog

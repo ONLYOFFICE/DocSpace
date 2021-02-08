@@ -116,6 +116,8 @@ while [ "$1" != "" ]; do
 			echo "      -?, -h, --help                      this help"
 			echo
 			exit 0
+		;;
+
 		* )
 			echo "Unknown parameter $1" 1>&2
 			exit 1
@@ -147,8 +149,8 @@ restart_services() {
 input_db_params(){
     local def_DB_HOST="localhost"
     local def_DB_NAME="onlyoffice"
-    local def_DB_USER="onlyoffice_user"
-    local def_DB_PWD="onlyoffice_pass"
+    local def_DB_USER="root"
+    local def_DB_PWD="bbThb75KEvbxczk2019!"
 
 	read -e -p "Database host: " -i "$DB_HOST" DB_HOST
 	read -e -p "Database name: " -i "$DB_NAME" DB_NAME
@@ -323,7 +325,7 @@ setup_nginx(){
 
     shopt -s nocasematch
     PORTS=()
-	if %{getenforce} >/dev/null 2>&1; then
+	if $(getenforce) >/dev/null 2>&1; then
 		case $(getenforce) in
 			enforcing|permissive)
 				PORTS+=('8081') #Storybook
