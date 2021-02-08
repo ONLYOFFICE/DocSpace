@@ -282,10 +282,10 @@ const Base = {
   //   hoverBorderColor: gray,
   // },
 
-  // scrollbar: {
-  //   backgroundColorVertical: "rgba(0, 0, 0, 0.1)",
-  //   backgroundColorHorizontal: "rgba(0, 0, 0, 0.1)",
-  // },
+  scrollbar: {
+    backgroundColorVertical: "rgba(0, 0, 0, 0.1)",
+    backgroundColorHorizontal: "rgba(0, 0, 0, 0.1)",
+  },
 
   input: {
     color: "#333333",
@@ -327,7 +327,7 @@ const Base = {
     fontSize: "14px",
     fontWeight: "600",
   },
-  
+
   textInput: {
     fontWeight: "normal",
     userSelect: "none",

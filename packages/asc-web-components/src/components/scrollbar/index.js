@@ -1,18 +1,16 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Scrollbars } from "react-custom-scrollbars";
 
+import StyledScrollbar from "./styled-scrollbar";
 const Scrollbar = React.forwardRef((props, ref) => {
   const scrollbarType = {
     smallWhite: {
       thumbV: {
-        backgroundColor: "rgba(256, 256, 256, 0.2)",
         width: "2px",
         marginLeft: "2px",
         borderRadius: "inherit",
       },
       thumbH: {
-        backgroundColor: "rgba(256, 256, 256, 0.2)",
         height: "2px",
         marginTop: "2px",
         borderRadius: "inherit",
@@ -21,13 +19,11 @@ const Scrollbar = React.forwardRef((props, ref) => {
     },
     smallBlack: {
       thumbV: {
-        backgroundColor: "rgba(0, 0, 0, 0.1)",
         width: "3px",
         marginLeft: "2px",
         borderRadius: "inherit",
       },
       thumbH: {
-        backgroundColor: "rgba(0, 0, 0, 0.1)",
         height: "3px",
         marginTop: "2px",
         borderRadius: "inherit",
@@ -36,12 +32,10 @@ const Scrollbar = React.forwardRef((props, ref) => {
     },
     mediumBlack: {
       thumbV: {
-        backgroundColor: "rgba(0, 0, 0, 0.1)",
         width: "8px",
         borderRadius: "inherit",
       },
       thumbH: {
-        backgroundColor: "rgba(0, 0, 0, 0.1)",
         height: "8px",
         borderRadius: "inherit",
       },
@@ -53,13 +47,11 @@ const Scrollbar = React.forwardRef((props, ref) => {
     },
     preMediumBlack: {
       thumbV: {
-        backgroundColor: "rgba(0, 0, 0, 0.1)",
         width: "5px",
         borderRadius: "inherit",
         cursor: "default",
       },
       thumbH: {
-        backgroundColor: "rgba(0, 0, 0, 0.1)",
         height: "5px",
         borderRadius: "inherit",
         cursor: "default",
@@ -100,7 +92,7 @@ const Scrollbar = React.forwardRef((props, ref) => {
   );
 
   return (
-    <Scrollbars
+    <StyledScrollbar
       renderView={renderView}
       renderThumbVertical={renderNavThumbVertical}
       renderThumbHorizontal={renderNavThumbHorizontal}
