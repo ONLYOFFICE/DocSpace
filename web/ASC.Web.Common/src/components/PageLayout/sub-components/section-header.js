@@ -22,6 +22,7 @@ const StyledSectionHeader = styled.div`
     max-height: 49px;
     width: ${(props) => !props.isLoaded && "100%"};
     margin-top: 64px;
+    padding-bottom: 18px;
     @media ${tablet} {
       margin-top: 55px;
     }
@@ -30,7 +31,6 @@ const StyledSectionHeader = styled.div`
   @media ${tablet} {
     margin-right: 16px;
     border-bottom: 1px solid #eceef1;
-    padding-bottom: 18px;
   }
 
   .section-header {
