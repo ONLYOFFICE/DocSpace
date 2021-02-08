@@ -22,9 +22,9 @@ const StyledSectionHeader = styled.div`
     max-height: 49px;
     width: ${(props) => !props.isLoaded && "100%"};
     margin-top: 64px;
-    padding-bottom: 18px;
     @media ${tablet} {
       margin-top: 55px;
+      padding-bottom: 18px;
     }
   `}
 
