@@ -23,6 +23,7 @@ import {
 } from "../../../../../store/people/actions";
 import { setDocumentTitle } from "../../../../../helpers/utils";
 import { isMobile } from "react-device-detect";
+import { inject, observer } from "mobx-react";
 
 const { createThumbnailsAvatar, loadAvatar } = api.people;
 const { isTablet } = utils.device;
@@ -296,7 +297,7 @@ function mapStateToProps(state) {
     createdAvatar: state.profile.createdAvatar,
     croppedAvatar: state.profile.croppedAvatar,
     //settings: state.auth.settings,
-    editingForm: state.people.editingForm,
+    //editingForm: state.people.editingForm,
   };
 }
 
@@ -310,5 +311,23 @@ export default connect(mapStateToProps, {
   setCreatedAvatar,
   setCroppedAvatar,
   resetProfile,
-  setIsEditingForm,
-})(withTranslation()(withRouter(CreateAvatarEditorPage)));
+  //setIsEditingForm,
+})(
+  inject(({ peopleStore }) => ({
+    editingForm: peopleStore.editingFormStore,
+    setIsEditingForm: peopleStore.editingFormStore.setIsEditingForm,
+  }))(observer(withRouter(withTranslation()(CreateAvatarEditorPage))))
+);
+
+// export default connect(mapStateToProps, {
+//   fetchProfile,
+//   updateProfile,
+//   toggleAvatarEditor,
+//   setAvatarMax,
+//   updateCreatedAvatar,
+//   updateProfileInUsers,
+//   setCreatedAvatar,
+//   setCroppedAvatar,
+//   resetProfile,
+//   setIsEditingForm,
+// })(withTranslation()(withRouter(CreateAvatarEditorPage)));

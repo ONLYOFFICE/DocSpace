@@ -662,7 +662,7 @@ const mapStateToProps = (state) => {
     //settings,
     groups,
     filter,
-    editingForm,
+    //editingForm,
     createdAvatar,
     croppedAvatar,
   };
@@ -677,15 +677,19 @@ export default connect(mapStateToProps, {
   updateCreatedAvatar,
   setFilter,
   updateProfileInUsers,
-  setIsVisibleDataLossDialog,
-  setIsEditingForm,
+  // setIsVisibleDataLossDialog,
+  // setIsEditingForm,
   toggleAvatarEditor,
   setCreatedAvatar,
   setCroppedAvatar,
   resetProfile,
 })(
-  inject(({ store }) => ({
+  inject(({ store, peopleStore }) => ({
     settings: store.settingsStore,
+    editingForm: peopleStore.editingFormStore,
+    setIsVisibleDataLossDialog:
+      peopleStore.editingFormStore.setIsVisibleDataLossDialog,
+    setIsEditingForm: peopleStore.editingFormStore.setIsEditingForm,
   }))(observer(withRouter(withTranslation()(CreateUserForm))))
 );
 

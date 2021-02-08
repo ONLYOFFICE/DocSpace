@@ -114,7 +114,7 @@ function mapStateToProps(state) {
     profile: state.profile.targetUser,
     //settings: state.auth.settings,
     filter: state.people.filter,
-    editingForm: state.people.editingForm,
+    //editingForm: state.people.editingForm,
     avatarEditorIsOpen: state.people.avatarEditorIsOpen,
   };
 }
@@ -125,12 +125,15 @@ function mapStateToProps(state) {
 
 export default connect(mapStateToProps, {
   setFilter,
-  setIsVisibleDataLossDialog,
+  //setIsVisibleDataLossDialog,
   toggleAvatarEditor,
   resetProfile,
 })(
-  inject(({ store }) => ({
+  inject(({ store, peopleStore }) => ({
     settings: store.settingsStore,
+    editingForm: peopleStore.editingFormStore,
+    setIsVisibleDataLossDialog:
+      peopleStore.editingFormStore.setIsVisibleDataLossDialog,
   }))(observer(withRouter(SectionHeaderContent)))
 );
 

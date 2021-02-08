@@ -919,7 +919,7 @@ const mapStateToProps = (state) => {
     avatarMax: state.profile.avatarMax,
     //settings: state.auth.settings,
     groups: state.people.groups,
-    editingForm: state.people.editingForm,
+    //editingForm: state.people.editingForm,
     filter: state.people.filter,
     disableProfileType: getDisableProfileType(state),
     // isAdmin: isAdmin(state),
@@ -934,15 +934,19 @@ export default connect(mapStateToProps, {
   updateProfile,
   fetchProfile,
   updateProfileInUsers,
-  setIsVisibleDataLossDialog,
-  setIsEditingForm,
+  // setIsVisibleDataLossDialog,
+  // setIsEditingForm,
   setFilter,
   toggleAvatarEditor,
   setAvatarMax,
 })(
-  inject(({ store }) => ({
+  inject(({ store, peopleStore }) => ({
     settings: store.settingsStore,
     isAdmin: store.isAdmin,
+    editingForm: peopleStore.editingFormStore,
+    setIsVisibleDataLossDialog:
+      peopleStore.editingFormStore.setIsVisibleDataLossDialog,
+    setIsEditingForm: peopleStore.editingFormStore.setIsEditingForm,
   }))(observer(withRouter(withTranslation()(UpdateUserForm))))
 );
 

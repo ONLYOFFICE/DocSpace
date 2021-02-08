@@ -145,13 +145,15 @@ function mapStateToProps(state) {
     isVisitor: state.auth.user.isVisitor,
     profile: state.profile.targetUser,
     // isAdmin: isAdmin(state),
-    isEdit: state.people.editingForm.isEdit,
+    //isEdit: state.people.editingForm.isEdit,
     avatarEditorIsOpen: state.people.avatarEditorIsOpen,
   };
 }
 
-export default connect(mapStateToProps, { fetchProfile, setIsEditingForm })(
-  inject(({ store }) => ({
+export default connect(mapStateToProps, { fetchProfile /*setIsEditingForm*/ })(
+  inject(({ store, peopleStore }) => ({
     isAdmin: store.isAdmin,
+    isEdit: peopleStore.editingFormStore.isEdit,
+    setIsEditingForm: peopleStore.editingFormStore.setIsEditingForm,
   }))(observer(ProfileActionContainer))
 );
