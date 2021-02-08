@@ -1,19 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
-import styled from "styled-components";
+
 import InputBlock from "../input-block";
-
-const StyledSearchInput = styled.div`
-  font-family: Open Sans;
-  font-style: normal;
-
-  .search-input-block {
-    & > input {
-      font-size: 14px;
-      font-weight: 600;
-    }
-  }
-`;
+import StyledSearchInput from "./styled-search-input";
 
 class SearchInput extends React.Component {
   constructor(props) {

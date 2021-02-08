@@ -323,6 +323,11 @@ const Base = {
     focusDisabledBorderColor: grayLightMid,
   },
 
+  searchInput: {
+    fontSize: "14px",
+    fontWeight: "600",
+  },
+  
   textInput: {
     fontWeight: "normal",
     userSelect: "none",
