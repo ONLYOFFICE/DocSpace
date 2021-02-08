@@ -660,7 +660,7 @@ const mapStateToProps = (state) => {
   const { createdAvatar, croppedAvatar } = state.profile;
   return {
     //settings,
-    groups,
+    //groups,
     filter,
     //editingForm,
     createdAvatar,
@@ -687,6 +687,7 @@ export default connect(mapStateToProps, {
   inject(({ store, peopleStore }) => ({
     settings: store.settingsStore,
     editingForm: peopleStore.editingFormStore,
+    groups: peopleStore.groupsStore.groups,
     setIsVisibleDataLossDialog:
       peopleStore.editingFormStore.setIsVisibleDataLossDialog,
     setIsEditingForm: peopleStore.editingFormStore.setIsEditingForm,
