@@ -1,44 +1,13 @@
 import React from "react";
 import PropTypes from "prop-types";
-import styled from "styled-components";
+
 import Text from "../text";
 import IconButton from "../icon-button";
-
-const StyledSelectedItem = styled.div`
-  position: relative;
-  display: ${(props) => (props.isInline ? "inline-grid" : "grid")};
-  grid-template-columns: 1fr auto;
-  background: #f8f9f9;
-  border: 1px solid #eceef1;
-  box-sizing: border-box;
-  border-radius: 3px;
-`;
-
-const StyledSelectedTextBox = styled.div`
-  padding: 0 8px;
-  display: grid;
-  height: 32px;
-  align-items: center;
-  border-right: 1px solid #eceef1;
-  cursor: default;
-`;
-
-const StyledCloseButton = styled.div`
-  display: flex;
-  align-items: center;
-  padding: 0 8px;
-  cursor: ${(props) => (!props.isDisabled ? "pointer" : "default")};
-
-  &:hover {
-    path {
-      ${(props) => !props.isDisabled && "fill: #555F65;"}
-    }
-  }
-
-  &:active {
-    ${(props) => !props.isDisabled && "background-color: #ECEEF1;"}
-  }
-`;
+import {
+  StyledCloseButton,
+  StyledSelectedTextBox,
+  StyledSelectedItem,
+} from "./styled-selected-item";
 
 const SelectedItem = (props) => {
   const { isDisabled, text, onClose } = props;

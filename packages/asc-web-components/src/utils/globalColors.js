@@ -19,7 +19,8 @@ const globalColors = {
   blueLightMid: "#265A8F",
 
   pattensBlue: "#DEE2E6",
-
+  cyanBlueDarkShade: "#555F65",
+  
   orangeMain: "#ED7309",
   orangeHover: "#FF8932",
   orangePressed: "#C96C27",

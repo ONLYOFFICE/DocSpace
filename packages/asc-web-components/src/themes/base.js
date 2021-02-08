@@ -29,6 +29,7 @@ const {
   red,
   blueLightMid,
   grayMaxLight,
+  cyanBlueDarkShade,
 } = globalColors;
 
 const Base = {
@@ -186,17 +187,37 @@ const Base = {
     },
   },
 
-  selectorAddButton:{
+  selectorAddButton: {
     background: grayLight,
     activeBackground: grayLightMid,
-    
+
     border: `1px solid ${globalColors.grayLightMid}`,
     boxSizing: "border-box",
     borderRadius: "3px",
-    height:" 34px",
+    height: " 34px",
     width: "34px",
     padding: "9px",
     color: black,
+  },
+
+  selectedItem: {
+    background: grayLight,
+    border: `1px solid ${globalColors.grayLightMid}`,
+    borderRadius: "3px",
+
+    textBox: {
+      padding: "0 8px",
+      height: "32px",
+      alignItems: "center",
+      borderRight: `1px solid ${globalColors.grayLightMid}`,
+    },
+
+    closeButton: {
+      alignItems: "center",
+      padding: "0 8px",
+      colorHover: cyanBlueDarkShade,
+      backgroundColor: grayLightMid,
+    },
   },
 
   // checkbox: {
