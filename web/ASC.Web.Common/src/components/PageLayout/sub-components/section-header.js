@@ -69,7 +69,7 @@ const StyledSectionHeader = styled.div`
         padding-bottom: 0 !important;
         > div:first-child {
           top: ${(props) =>
-            !props.isSectionHeaderVisible ? "65px" : "0px"} !important;
+            !props.isSectionHeaderVisible ? "56px" : "0px"} !important;
 
           @media ${desktop} {
             ${isMobile &&
