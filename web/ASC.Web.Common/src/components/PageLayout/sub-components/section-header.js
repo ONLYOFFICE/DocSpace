@@ -14,6 +14,7 @@ const StyledSectionHeader = styled.div`
   height: 55px;
   margin-right: 24px;
   margin-top: -1px;
+  padding-bottom: 9px;
   ${isMobile &&
   css`
     height: 49px;
