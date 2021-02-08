@@ -425,6 +425,38 @@ const Base = {
     },
   },
 
+  linkWithDropdown: {
+    paddingRight: "20px",
+    semiTransparentOpacity: "0.5",
+    textDecoration: "underline dashed",
+    disableColor: gray,
+
+    svg: {
+      opacity: "1",
+      semiTransparentOpacity: "0.5",
+    },
+
+    text: { maxWidth: "100%" },
+
+    span: { maxWidth: "300px" },
+
+    caret: {
+      width: "8px",
+      minWidth: "8px",
+      height: "8px",
+      minHeight: "8px",
+      marginLeft: "5px",
+      marginTop: "-4px",
+      right: "6px",
+      top: "0",
+      bottom: "0",
+      isOpenBottom: "-1px",
+      margin: "auto",
+      opacity: "0",
+      transform: "scale(1, -1)",
+    },
+  },
+
   tooltip: {
     borderRadius: "6px",
     boxShadow: "0px 5px 20px rgba(0, 0, 0, 0.13)",

@@ -1,143 +1,16 @@
 import React from "react";
-import styled, { css } from "styled-components";
 import PropTypes from "prop-types";
-import { Icons } from "../icons";
-import DropDown from "../drop-down";
-import DropDownItem from "../drop-down-item";
-import Text from "../text";
 import equal from "fast-deep-equal/react";
 
-// eslint-disable-next-line no-unused-vars
-const SimpleLinkWithDropdown = ({
-  isBold,
-  fontSize,
-  fontWeight,
-  isTextOverflow,
-  isHovered,
-  isSemitransparent,
-  color,
-  title,
-  dropdownType,
-  data,
-  isDisabled,
-  ...props
-}) => <a {...props}></a>;
+import DropDown from "../drop-down";
+import DropDownItem from "../drop-down-item";
+import {
+  StyledSpan,
+  StyledText,
+  StyledLinkWithDropdown,
+  Caret,
+} from "./styled-link-with-dropdown";
 
-SimpleLinkWithDropdown.propTypes = {
-  isBold: PropTypes.bool,
-  fontSize: PropTypes.number,
-  fontWeight: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-  isTextOverflow: PropTypes.bool,
-  isHovered: PropTypes.bool,
-  isSemitransparent: PropTypes.bool,
-  color: PropTypes.string,
-  title: PropTypes.string,
-  dropdownType: PropTypes.oneOf(["alwaysDashed", "appearDashedAfterHover"])
-    .isRequired,
-  data: PropTypes.array,
-};
-
-const color = (props) => props.color;
-
-// eslint-disable-next-line react/prop-types, no-unused-vars
-const ExpanderDownIcon = ({
-  isSemitransparent,
-  dropdownType,
-  isOpen,
-  ...props
-}) => <Icons.ExpanderDownIcon {...props} />;
-
-const Caret = styled(ExpanderDownIcon)`
-  width: 8px;
-  min-width: 8px;
-  height: 8px;
-  min-height: 8px;
-  margin-left: 5px;
-  margin-top: -4px;
-
-  position: absolute;
-  right: 6px;
-  top: 0;
-  bottom: 0;
-  margin: auto;
-
-  path {
-    fill: ${color};
-  }
-
-  ${(props) => props.dropdownType === "appearDashedAfterHover" && `opacity: 0`};
-
-  ${(props) =>
-    props.isOpen &&
-    `
-    bottom: -1px;
-    transform: scale(1, -1);
-  `}
-`;
-
-const StyledLinkWithDropdown = styled(SimpleLinkWithDropdown)`
-  ${(props) => !props.isDisabled && "cursor: pointer;"}
-  text-decoration: none;
-  user-select: none;
-  padding-right: 20px;
-  position: relative;
-  display: inline-grid;
-
-  color: ${color};
-
-  ${(props) => props.isSemitransparent && `opacity: 0.5`};
-  ${(props) =>
-    props.dropdownType === "alwaysDashed" &&
-    `text-decoration:  underline dashed`};
-
-  &:not([href]):not([tabindex]) {
-    ${(props) =>
-      props.dropdownType === "alwaysDashed" &&
-      `text-decoration:  underline dashed`};
-    color: ${color};
-
-    &:hover {
-      text-decoration: underline dashed;
-      color: ${color};
-    }
-  }
-
-  :hover {
-    color: ${color};
-
-    svg {
-      ${(props) =>
-        props.dropdownType === "appearDashedAfterHover" &&
-        `position: absolute; opacity: 1`};
-      ${(props) => props.isSemitransparent && `opacity: 0.5`};
-    }
-  }
-`;
-
-// eslint-disable-next-line react/prop-types, no-unused-vars
-const SimpleText = ({ color, ...props }) => <Text as="span" {...props} />;
-const StyledText = styled(SimpleText)`
-  color: ${color};
-
-  ${(props) =>
-    props.isTextOverflow &&
-    css`
-      display: inline-block;
-      max-width: 100%;
-    `}
-`;
-
-const StyledSpan = styled.span`
-  position: relative;
-
-  .drop-down-item {
-    display: block;
-  }
-
-  .fixed-max-width {
-    max-width: 300px;
-  }
-`;
 class LinkWithDropdown extends React.Component {
   constructor(props) {
     super(props);
@@ -200,15 +73,13 @@ class LinkWithDropdown extends React.Component {
       ...rest
     } = this.props;
 
-    const disableColor = "#A3A9AE";
-
     return (
       <StyledSpan className={className} id={id} style={style} ref={this.ref}>
         <span onClick={this.onOpen}>
           <StyledLinkWithDropdown
             isSemitransparent={isSemitransparent}
             dropdownType={dropdownType}
-            color={isDisabled ? disableColor : color}
+            color={color}
             isDisabled={isDisabled}
           >
             <StyledText
@@ -216,17 +87,19 @@ class LinkWithDropdown extends React.Component {
               truncate={isTextOverflow}
               fontSize={fontSize}
               fontWeight={fontWeight}
-              color={isDisabled ? disableColor : color}
+              color={color}
               isBold={isBold}
               title={title}
               dropdownType={dropdownType}
+              isDisabled={isDisabled}
             >
               {this.props.children}
             </StyledText>
             <Caret
-              color={isDisabled ? disableColor : color}
+              color={color}
               dropdownType={dropdownType}
               isOpen={this.state.isOpen}
+              isDisabled={isDisabled}
             />
           </StyledLinkWithDropdown>
         </span>
