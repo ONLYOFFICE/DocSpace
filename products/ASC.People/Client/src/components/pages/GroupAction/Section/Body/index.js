@@ -98,9 +98,11 @@ class SectionBodyContent extends React.Component {
 
   componentDidMount() {
     const { selectedGroup, group, setSelectGroup } = this.props;
-    const { id } = group;
-    if (!selectedGroup || selectedGroup !== id) {
-      setSelectGroup(id);
+    if (group) {
+      const { id } = group;
+      if (id && (!selectedGroup || selectedGroup !== id)) {
+        setSelectGroup(id);
+      }
     }
   }
 
