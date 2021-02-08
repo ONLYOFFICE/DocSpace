@@ -918,7 +918,7 @@ const mapStateToProps = (state) => {
     profile: state.profile.targetUser,
     avatarMax: state.profile.avatarMax,
     //settings: state.auth.settings,
-    groups: state.people.groups,
+    //groups: state.people.groups,
     //editingForm: state.people.editingForm,
     filter: state.people.filter,
     disableProfileType: getDisableProfileType(state),
@@ -943,6 +943,7 @@ export default connect(mapStateToProps, {
   inject(({ store, peopleStore }) => ({
     settings: store.settingsStore,
     isAdmin: store.isAdmin,
+    groups: peopleStore.groupsStore.groups,
     editingForm: peopleStore.editingFormStore,
     setIsVisibleDataLossDialog:
       peopleStore.editingFormStore.setIsVisibleDataLossDialog,
