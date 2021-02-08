@@ -27,10 +27,10 @@ import {
 import {
   getAccessOption,
   getExternalAccessOption,
-  getSelection,
+  //getSelection,
   getSharePanelVisible,
   getCanShareOwnerChange,
-  getIsLoading,
+  //getIsLoading,
   //getFiles,
   //getFolders,
   getIsPrivacyFolder,
@@ -639,7 +639,7 @@ const mapStateToProps = (state, ownProps) => {
     groupsCaption: getSettingsCustomNamesGroupsCaption(state),
     sharingPanelVisible: getSharePanelVisible(state),
     canShareOwnerChange: getCanShareOwnerChange(state),
-    isLoading: getIsLoading(state),
+    //isLoading: getIsLoading(state),
     //files: getFiles(state),
     //folders: getFolders(state),
     //settings: getSettings(state),
@@ -668,13 +668,15 @@ export default connect(mapStateToProps, {
 });
 
 inject(({ store, mainFilesStore }) => {
-  const { filesStore, setIsLoading } = mainFilesStore;
-  const { files, folders } = filesStore;
+  const { filesStore, setIsLoading, isLoading } = mainFilesStore;
+  const { files, folders, selection } = filesStore;
 
   return {
     homepage: store.settingsStore.homepage,
     files,
     folders,
+    //selection,
+    isLoading,
 
     setIsLoading,
   };

@@ -24,9 +24,9 @@ import {
   //getSelectedFolderId,
   getFilter,
   getTreeFolders,
-  getIsLoading,
+  //getIsLoading,
   getIsRecycleBinFolder,
-  getSelection,
+  //getSelection,
   isRootFolder,
   getIsPrivacyFolder,
 } from "../../../store/files/selectors";
@@ -308,10 +308,10 @@ const mapStateToProps = (state) => {
     //currentFolderId: getSelectedFolderId(state),
     filter: getFilter(state),
     treeFolders: getTreeFolders(state),
-    isLoading: getIsLoading(state),
+    //isLoading: getIsLoading(state),
     isRecycleBinFolder: getIsRecycleBinFolder(state),
     isPrivacy: getIsPrivacyFolder(state),
-    selection: getSelection(state),
+    //selection: getSelection(state),
     isRootFolder: isRootFolder(state),
   };
 };
@@ -332,11 +332,13 @@ export default connect(mapStateToProps, {
   //fetchFiles,
 })(
   inject(({ store, mainFilesStore }) => {
-    const { filesStore } = mainFilesStore;
-    const { fetchFiles } = filesStore;
+    const { filesStore, isLoading } = mainFilesStore;
+    const { fetchFiles, selection, selectedFolderStore } = filesStore;
 
     return {
-      currentFolderId: filesStore.selectedFolderStore.id,
+      currentFolderId: selectedFolderStore.id,
+      selection,
+      isLoading,
 
       fetchFiles,
     };

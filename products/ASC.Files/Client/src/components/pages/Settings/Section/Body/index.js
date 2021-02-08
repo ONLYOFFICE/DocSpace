@@ -12,7 +12,7 @@ import {
   setForceSave,
 } from "../../../../../store/files/actions";
 import {
-  getIsLoading,
+  //getIsLoading,
   getSettingsSelectedTreeNode,
   getSettingsTreeStoreOriginalFiles,
   getSettingsTreeConfirmDelete,
@@ -23,6 +23,7 @@ import {
   getSettingsTree,
 } from "../../../../../store/files/selectors";
 import ConnectClouds from "./ConnectedClouds";
+import { inject, observer } from "mobx-react";
 
 const { isAdmin } = store.auth.selectors;
 
@@ -189,10 +190,19 @@ function mapStateToProps(state) {
     forceSave: getSettingsTreeForceSave(state),
     storeForceSave: getSettingsTreeStoreForceSave(state),
     enableThirdParty: getSettingsTreeEnableThirdParty(state),
-    isLoading: getIsLoading(state),
+    //isLoading: getIsLoading(state),
     settingsTree: getSettingsTree(state),
   };
 }
+
+// export default connect(mapStateToProps, {
+//   setUpdateIfExist,
+//   setStoreOriginal,
+//   setEnableThirdParty,
+//   setConfirmDelete,
+//   setStoreForceSave,
+//   setForceSave,
+// })(SectionBodyContent);
 
 export default connect(mapStateToProps, {
   setUpdateIfExist,
@@ -201,4 +211,12 @@ export default connect(mapStateToProps, {
   setConfirmDelete,
   setStoreForceSave,
   setForceSave,
-})(SectionBodyContent);
+})(
+  inject(({ store, mainFilesStore }) => {
+    const { isLoading } = mainFilesStore;
+
+    return {
+      isLoading,
+    };
+  })(observer(SectionBodyContent))
+);

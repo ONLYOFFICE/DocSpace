@@ -1,4 +1,4 @@
-import { makeObservable, action, observable } from "mobx";
+import { makeObservable, action, observable, computed } from "mobx";
 import { api, constants, store } from "asc-web-common";
 import FileActionStore from "./FileActionStore";
 import SelectedFolderStore from "./SelectedFolderStore";
@@ -15,6 +15,7 @@ class FilesStore {
   firstLoad = true;
   files = [];
   folders = [];
+  selection = [];
   selected = "close";
   filter = FilesFilter.getDefault(); //TODO: FILTER
 
@@ -28,14 +29,18 @@ class FilesStore {
       folders: observable,
       selected: observable,
       filter: observable, //TODO: FILTER
+      selection: observable,
 
       setFirstLoad: action,
       setFiles: action,
       setFolders: action,
       setSelected: action,
       setFilesFilter: action, //TODO: FILTER
+      setSelection: action,
       fetchFiles: action,
-      getFilesList: action,
+      filesList: computed,
+      selectFile: action,
+      deselectFile: action,
     });
 
     this.fileActionStore = new FileActionStore();
@@ -61,6 +66,10 @@ class FilesStore {
   //TODO: FILTER
   setFilesFilter = (filter) => {
     this.filter = filter;
+  };
+
+  setSelection = (selection) => {
+    this.selection = selection;
   };
 
   fetchFiles = (folderId, filter, clearFilter = true) => {
@@ -128,7 +137,7 @@ class FilesStore {
     });
   };
 
-  getFilesList = () => {
+  get filesList() {
     const items =
       this.folders && this.files
         ? [...this.folders, ...this.files]
@@ -169,11 +178,13 @@ class FilesStore {
 
       //const canOpenPlayer = isMediaOrImage(item.fileExst)(state);
       //const contextOptions = getFilesContextOptions(item,isRecycleBin,isRecent,isFavorites,isVisitor,canOpenPlayer,canChangeOwner,haveAccess,canShare,isPrivacy,isRootFolder);
-      //const checked = isFileSelected(selection, id, parentId);
+      const checked = this.isFileSelected(this.selection, id, parentId);
 
-      //const selectedItem = selection.find((x) => x.id === id && x.fileExst === fileExst);
+      const selectedItem = this.selection.find(
+        (x) => x.id === id && x.fileExst === fileExst
+      );
 
-      //const isFolder = selectedItem ? false : fileExst ? false : true;
+      const isFolder = selectedItem ? false : fileExst ? false : true;
 
       //const draggable = selectedItem && !isRecycleBin && selectedItem.id !== actionId;
 
@@ -187,7 +198,7 @@ class FilesStore {
 
       return {
         access,
-        //checked,
+        checked,
         comment,
         contentLength,
         //contextOptions,
@@ -201,7 +212,7 @@ class FilesStore {
         foldersCount,
         //icon,
         id,
-        //isFolder,
+        isFolder,
         locked,
         new: item.new,
         parentId,
@@ -224,6 +235,29 @@ class FilesStore {
         //canShare,
       };
     });
+  }
+
+  isFileSelected = (selection, fileId, parentId) => {
+    const item = selection.find(
+      (x) => x.id === fileId && x.parentId === parentId
+    );
+
+    return item !== undefined;
+  };
+
+  selectFile = (file) => {
+    console.log("selectFile", file);
+    const { id, parentId } = file;
+    const isFileSelected = this.isFileSelected(this.selection, id, parentId);
+    console.log("isFileSelected", isFileSelected);
+    if (!isFileSelected) this.selection.push(file);
+  };
+
+  deselectFile = (file) => {
+    const { id, parentId } = file;
+    const isFileSelected = this.isFileSelected(this.selection, id, parentId);
+    if (isFileSelected)
+      this.selection = this.selection.filter((x) => x.id !== id);
   };
 }
 

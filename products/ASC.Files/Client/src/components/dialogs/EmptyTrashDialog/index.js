@@ -14,7 +14,7 @@ import { TIMEOUT } from "../../../helpers/constants";
 import {
   //getSelectedFolderId,
   getFilter,
-  getIsLoading,
+  //getIsLoading,
 } from "../../../store/files/selectors";
 import { createI18N } from "../../../helpers/i18n";
 import { inject, observer } from "mobx-react";
@@ -178,7 +178,7 @@ const mapStateToProps = (state) => {
   return {
     //currentFolderId: getSelectedFolderId(state),
     filter: getFilter(state),
-    isLoading: getIsLoading(state),
+    //isLoading: getIsLoading(state),
   };
 };
 
@@ -194,11 +194,12 @@ export default connect(mapStateToProps, {
   //fetchFiles,
 })(
   inject(({ store, mainFilesStore }) => {
-    const { filesStore } = mainFilesStore;
+    const { filesStore, isLoading } = mainFilesStore;
     const { fetchFiles } = filesStore;
 
     return {
       currentFolderId: filesStore.selectedFolderStore.id,
+      isLoading,
 
       fetchFiles,
     };

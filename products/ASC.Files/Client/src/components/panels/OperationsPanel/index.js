@@ -13,7 +13,7 @@ import {
 } from "../../../store/files/actions";
 import {
   getFilter,
-  getSelection,
+  //getSelection,
   //getPathParts,
   //getSelectedFolderId,
   getIsRecycleBinFolder,
@@ -209,7 +209,7 @@ const OperationsPanel = (props) => (
 const mapStateToProps = (state) => {
   return {
     filter: getFilter(state),
-    selection: getSelection(state),
+    //selection: getSelection(state),
     //expandedKeys: getPathParts(state),
     //currentFolderId: getSelectedFolderId(state),
     isRecycleBin: getIsRecycleBinFolder(state),
@@ -228,10 +228,12 @@ export default connect(mapStateToProps, {
 })(
   inject(({ store, mainFilesStore }) => {
     const { filesStore } = mainFilesStore;
+    const { selection, selectedFolderStore } = filesStore;
 
     return {
-      expandedKeys: filesStore.selectedFolderStore.pathParts,
-      currentFolderId: filesStore.selectedFolderStore.id,
+      expandedKeys: selectedFolderStore.pathParts,
+      currentFolderId: selectedFolderStore.id,
+      selection,
     };
   })(withRouter(observer(OperationsPanel)))
 );

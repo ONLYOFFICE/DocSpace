@@ -20,7 +20,7 @@ import {
   //getFileAction,
   getFilter,
   //getFolders,
-  getIsLoading,
+  //getIsLoading,
   getNewRowItems,
   //getSelectedFolder,
   //getSelectedFolderNew,
@@ -454,7 +454,7 @@ function mapStateToProps(state, props) {
     //folders: getFolders(state),
     newRowItems: getNewRowItems(state),
     dragging: getDragging(state),
-    isLoading: getIsLoading(state),
+    //isLoading: getIsLoading(state),
     canWebEdit: canWebEdit(props.item.fileExst)(state),
   };
 }
@@ -477,7 +477,7 @@ export default connect(mapStateToProps, {
   //fetchFiles,
 })(
   inject(({ store, mainFilesStore }) => {
-    const { filesStore, setIsLoading } = mainFilesStore;
+    const { filesStore, setIsLoading, isLoading } = mainFilesStore;
     const { folders, fetchFiles } = filesStore;
     const { type, extension, id } = filesStore.fileActionStore;
 
@@ -491,6 +491,7 @@ export default connect(mapStateToProps, {
       selectedFolderPathParts: filesStore.selectedFolderStore.pathParts,
       newItems: filesStore.selectedFolderStore.new,
       parentFolder: filesStore.selectedFolderStore.parentId,
+      isLoading,
 
       setIsLoading,
       fetchFiles,

@@ -21,7 +21,7 @@ import {
   openConnectWindow,
   setConnectItem,
   setShowThirdPartyPanel,
-  fetchFiles,
+  //fetchFiles,
   setSelectedNode,
 } from "../../../../../store/files/actions";
 import {

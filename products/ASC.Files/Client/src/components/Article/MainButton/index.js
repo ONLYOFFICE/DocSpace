@@ -9,7 +9,7 @@ import { /* setAction, */ startUpload } from "../../../store/files/actions";
 import {
   canCreate,
   getFilter,
-  getSelectedFolder,
+  //getSelectedFolder,
   //getFirstLoad,
   getIsPrivacyFolder,
 } from "../../../store/files/selectors";

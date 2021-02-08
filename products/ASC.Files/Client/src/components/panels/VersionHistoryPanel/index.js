@@ -11,7 +11,7 @@ import { createI18N } from "../../../helpers/i18n";
 import { setIsVerHistoryPanel } from "../../../store/files/actions";
 import {
   getVerHistoryFileId,
-  getIsLoading,
+  //getIsLoading,
   getFileVersions,
 } from "../../../store/files/selectors";
 
@@ -23,6 +23,7 @@ import {
 } from "../StyledPanels";
 
 import { SectionBodyContent } from "../../pages/VersionHistory/Section/";
+import { inject, observer } from "mobx-react";
 
 const i18n = createI18N({
   page: "VersionHistory",
@@ -124,7 +125,7 @@ function mapStateToProps(state) {
     fileId: getVerHistoryFileId(state),
     isTabletView: getIsTabletView(state),
     homepage: getSettingsHomepage(state),
-    isLoading: getIsLoading(state),
+    //isLoading: getIsLoading(state),
     versions: getFileVersions(state),
   };
 }
@@ -136,7 +137,20 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
+// export default connect(
+//   mapStateToProps,
+//   mapDispatchToProps
+// )(VersionHistoryPanel);
+
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(VersionHistoryPanel);
+)(
+  inject(({ store, mainFilesStore }) => {
+    const { isLoading } = mainFilesStore;
+
+    return {
+      isLoading,
+    };
+  })(observer(VersionHistoryPanel))
+);
