@@ -115,14 +115,16 @@ class ArticleBodyContent extends React.Component {
     }
   };
   onSelect = (data) => {
+    console.log(data);
     const { setIsLoading } = this.props;
     return () => {
       const { selectGroup } = this.props;
+      const groupId =
+        data && data.length === 1 && data[0] !== "root" ? data[0] : null;
       setIsLoading(true);
       this.changeTitleDocument(data);
-      selectGroup(
-        data && data.length === 1 && data[0] !== "root" ? data[0] : null
-      ).finally(() => setIsLoading(false));
+      selectGroup(groupId);
+      setIsLoading(false);
     };
   };
   switcherIcon = (obj) => {
@@ -196,20 +198,22 @@ const getTreeGroups = (groups, departments) => {
       ),
       root: true,
       children:
-        groups.map((g) => {
-          return {
-            key: g.id,
-            title: (
-              <Link
-                {...linkProps}
-                href={`${history.location.pathname}?group=${g.id}&${newLink}`}
-              >
-                {g.name}
-              </Link>
-            ),
-            root: false,
-          };
-        }) || [],
+        (groups &&
+          groups.map((g) => {
+            return {
+              key: g.id,
+              title: (
+                <Link
+                  {...linkProps}
+                  href={`${history.location.pathname}?group=${g.id}&${newLink}`}
+                >
+                  {g.name}
+                </Link>
+              ),
+              root: false,
+            };
+          })) ||
+        [],
     },
   ];
 
@@ -230,38 +234,46 @@ const BodyContent = (props) => {
   );
 };
 
-function mapStateToProps(state) {
-  //const groups = state.people.groups;
-  const { isLoaded, settings } = state.auth;
-  const { customNames } = settings;
-  const { groupsCaption } = customNames;
-  const { editingForm } = state.people;
-  return {
-    // data: getTreeGroups(groups, groupsCaption),
-    selectedKeys: state.people.selectedGroup
-      ? [state.people.selectedGroup]
-      : ["root"],
-    // groups,
-    // isAdmin: isAdmin(state),
-    // isLoaded,
-    editingForm,
-  };
-}
+// function mapStateToProps(state) {
+//const groups = state.people.groups;
+// const { isLoaded, settings } = state.auth;
+// const { customNames } = settings;
+// const { groupsCaption } = customNames;
+// const { editingForm } = state.people;
+// return {
+// data: getTreeGroups(groups, groupsCaption),
+// selectedKeys: state.people.selectedGroup
+//   ? [state.people.selectedGroup]
+//   : ["root"],
+// groups,
+// isAdmin: isAdmin(state),
+// isLoaded,
+//editingForm,
+//   };
+// }
 
-export default connect(mapStateToProps, {
-  selectGroup,
-  setIsVisibleDataLossDialog,
+export default connect(null, {
+  //selectGroup,
+  //setIsVisibleDataLossDialog,
   setIsLoading,
 })(
   inject(({ store, peopleStore }) => {
     const groups = peopleStore.groupsStore.groups;
     const { groupsCaption } = store.settingsStore.customNames;
     const data = getTreeGroups(groups, groupsCaption);
+    const selectedKeys = peopleStore.selectedGroupStore.selectedGroup
+      ? [peopleStore.selectedGroupStore.selectedGroup]
+      : ["root"];
     return {
       isLoaded: store.isLoaded,
       isAdmin: store.isAdmin,
       groups,
       data,
+      selectedKeys,
+      selectGroup: peopleStore.selectedGroupStore.setSelectedGroup,
+      editingForm: peopleStore.editingFormStore,
+      setIsVisibleDataLossDialog:
+        peopleStore.editingFormStore.setIsVisibleDataLossDialog,
     };
   })(observer(BodyContent))
 );
