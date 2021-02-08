@@ -1,62 +1,17 @@
 import React from "react";
 import PropTypes from "prop-types";
-import styled from "styled-components";
+
 import TextInput from "../text-input";
 import { Icons } from "../icons";
 import IconButton from "../icon-button";
-import commonInputStyle from "../text-input/common-input-styles";
-import { Base } from "../../themes";
+import {
+  StyledInputGroup,
+  StyledChildrenBlock,
+  StyledIconBlock,
+} from "./styled-input-block";
 
 const iconNames = Object.keys(Icons);
 
-const StyledIconBlock = styled.div`
-  display: ${(props) => props.theme.inputBlock.display};
-  align-items: ${(props) => props.theme.inputBlock.alignItems};
-  cursor: ${(props) =>
-    props.isDisabled || !props.isClickable ? "default" : "pointer"};
-
-  height: ${(props) => props.theme.inputBlock.height};
-  padding-right: ${(props) => props.theme.inputBlock.paddingRight};
-  padding-left: ${(props) => props.theme.inputBlock.paddingLeft};
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-`;
-StyledIconBlock.defaultProps = { theme: Base };
-
-const StyledChildrenBlock = styled.div`
-  display: ${(props) => props.theme.inputBlock.display};
-  align-items: ${(props) => props.theme.inputBlock.alignItems};
-  padding: ${(props) => props.theme.inputBlock.padding};
-`;
-StyledChildrenBlock.defaultProps = { theme: Base };
-
-/* eslint-disable react/prop-types, no-unused-vars */
-const CustomInputGroup = ({
-  isIconFill,
-  hasError,
-  hasWarning,
-  isDisabled,
-  scale,
-  ...props
-}) => <div {...props}></div>;
-/* eslint-enable react/prop-types, no-unused-vars */
-const StyledInputGroup = styled(CustomInputGroup)`
-  display: ${(props) => props.theme.inputBlock.display};
-
-  .prepend {
-    display: ${(props) => props.theme.inputBlock.display};
-    align-items: ${(props) => props.theme.inputBlock.alignItems};
-  }
-
-  .append {
-    align-items: ${(props) => props.theme.inputBlock.alignItems};
-    margin: ${(props) => props.theme.inputBlock.margin};
-  }
-
-  ${commonInputStyle} :focus-within {
-    border-color: ${(props) => props.theme.inputBlock.borderColor};
-  }
-`;
-StyledInputGroup.defaultProps = { theme: Base };
 class InputBlock extends React.Component {
   constructor(props) {
     super(props);
@@ -230,7 +185,6 @@ InputBlock.defaultProps = {
   type: "text",
   maxLength: 255,
   size: "base",
-  theme: Base,
   scale: false,
   tabIndex: -1,
   hasError: false,
