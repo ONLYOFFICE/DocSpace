@@ -10,6 +10,7 @@ import Loaders from "../../Loaders/index";
 import { ReactSVG } from "react-svg";
 
 import { utils } from "asc-web-components";
+import { useTranslation } from "react-i18next";
 // import { connect } from "react-redux";
 // import {
 //   getCurrentProductId,
@@ -85,9 +86,11 @@ const HeaderComponent = ({
   isNavOpened,
   currentProductId,
   toggleAside,
+  isAdmin,
   ...props
 }) => {
   //console.log("Header render");
+  const { t } = useTranslation();
 
   const isNavAvailable = mainModules.length > 0;
   const onLogoClick = () => {
@@ -101,6 +104,42 @@ const HeaderComponent = ({
     toggleAside();
 
     if (item) item.onBadgeClick(e);
+  };
+
+  const onItemClick = (e) => {
+    if (!e) return;
+    const link = e.currentTarget.dataset.link;
+    window.open(link, "_self");
+    e.preventDefault();
+  };
+
+  const getCustomModules = () => {
+    if (!isAdmin) {
+      return [];
+    } // Temporarily hiding the settings module
+
+    return (
+      <>
+        <NavItem
+          separator={true}
+          key={"nav-modules-separator"}
+          data-id={"nav-modules-separator"}
+        />
+        <NavItem
+          separator={false}
+          key={"settings"}
+          data-id={"settings"}
+          data-link="/settings"
+          opened={isNavOpened}
+          active={"settings" == currentProductId}
+          iconName={"SettingsIcon"}
+          onClick={onItemClick}
+          url="/settings"
+        >
+          {t("Settings")}
+        </NavItem>
+      </>
+    );
   };
 
   return (
@@ -140,6 +179,11 @@ const HeaderComponent = ({
           onMouseLeave={onNavMouseLeave}
         >
           <NavLogoItem opened={isNavOpened} onClick={onLogoClick} />
+          <NavItem
+            separator={true}
+            key={"nav-products-separator"}
+            data-id={"nav-products-separator"}
+          />
           {mainModules.map(
             ({
               id,
@@ -147,27 +191,28 @@ const HeaderComponent = ({
               iconName,
               iconUrl,
               notifications,
-              onClick,
-              url,
+              link,
               title,
             }) => (
               <NavItem
                 separator={!!separator}
                 key={id}
                 data-id={id}
+                data-link={link}
                 opened={isNavOpened}
                 active={id == currentProductId}
                 iconName={iconName}
                 iconUrl={iconUrl}
                 badgeNumber={notifications}
-                onClick={onClick}
+                onClick={onItemClick}
                 onBadgeClick={onBadgeClick}
-                url={url}
+                url={link}
               >
                 {title}
               </NavItem>
             )
           )}
+          {getCustomModules()}
         </Nav>
       )}
     </>
@@ -190,6 +235,7 @@ HeaderComponent.propTypes = {
   logoUrl: PropTypes.string,
   isLoaded: PropTypes.bool,
   isAuthenticated: PropTypes.bool,
+  isAdmin: PropTypes.bool,
 };
 
 export default inject(({ store }) => {
@@ -198,11 +244,16 @@ export default inject(({ store }) => {
     moduleStore,
     isLoaded,
     isAuthenticated,
+    isAdmin,
     product,
   } = store;
   const { logoUrl, defaultPage, currentProductId } = settingsStore;
-  const { modules: mainModules, totalNotifications } = moduleStore;
+  const { modules, totalNotifications } = moduleStore;
+
+  const mainModules = modules.filter((m) => !m.isolateMode);
+
   return {
+    isAdmin,
     defaultPage,
     logoUrl,
     mainModules,

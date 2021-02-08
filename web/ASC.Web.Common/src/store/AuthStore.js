@@ -51,13 +51,6 @@ class AuthStore {
     }
 
     return Promise.all(requests);
-
-    // await this.settingsStore.init();
-
-    // if (!this.isAuthenticated) return;
-
-    // await this.userStore.init();
-    // await this.moduleStore.init();
   };
 
   get isLoaded() {
@@ -168,9 +161,11 @@ class AuthStore {
   setUserStore = (store) => {
     this.userStore = store;
   };
+
   setModuleStore = (store) => {
     this.moduleStore = store;
   };
+
   setSettingsStore = (store) => {
     this.settingsStore = store;
   };
