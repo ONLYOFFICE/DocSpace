@@ -1,18 +1,18 @@
-import { action, computed, makeObservable, observable } from "mobx";
-// import api from "../api";
-// import history from "../history";
-// import ModuleStore from "./ModuleStore";
-// import SettingsStore from "./SettingsStore";
+import { action, makeObservable, observable } from "mobx";
 import GroupsStore from "./GroupsStore";
 import UsersStore from "./UsersStore";
 import { getFilterByLocation } from "../helpers/converters";
 import config from "../../package.json";
 import TargetUserStore from "./TargetUserStore";
+import SelectedGroupStore from "./SelectedGroupStore";
+import EditingFormStore from "./EditingFormStore";
 
 class PeopleStore {
   groupsStore = null;
   usersStore = null;
   targetUserStore = null;
+  selectedGroupStore = null;
+  editingFormStore = null;
 
   isLoading = false;
   //isAuthenticated = false;
@@ -21,11 +21,16 @@ class PeopleStore {
     this.setGroupsStore(new GroupsStore());
     this.setUsersStore(new UsersStore());
     this.setTargetUserStore(new TargetUserStore());
+    this.setSelectedGroupStore(new SelectedGroupStore());
+    this.setEditingFormStore(new EditingFormStore());
 
     makeObservable(this, {
       isLoading: observable,
       setGroupsStore: action,
       setUsersStore: action,
+      setTargetUserStore: action,
+      setSelectedGroupStore: action,
+      setEditingFormStore: action,
       init: action,
     });
   }
@@ -50,6 +55,12 @@ class PeopleStore {
   };
   setTargetUserStore = (store) => {
     this.targetUserStore = store;
+  };
+  setSelectedGroupStore = (store) => {
+    this.selectedGroupStore = store;
+  };
+  setEditingFormStore = (store) => {
+    this.editingFormStore = store;
   };
 }
 
