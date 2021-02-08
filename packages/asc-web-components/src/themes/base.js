@@ -200,6 +200,16 @@ const Base = {
     color: black,
   },
 
+  saveCancelButtons: {
+    bottom: "0",
+    width: "100%",
+    left: "0",
+    padding: "8px 24px 8px 16px",
+    marginRight: "8px",
+
+    unsavedColor: gray,
+  },
+
   selectedItem: {
     background: grayLight,
     border: `1px solid ${globalColors.grayLightMid}`,

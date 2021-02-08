@@ -1,38 +1,9 @@
 import React from "react";
-import styled from "styled-components";
+
 import PropTypes from "prop-types";
 import Button from "../button";
 import Text from "../text";
-import { tablet } from "../../utils/device";
-
-const StyledSaveCancelButtons = styled.div`
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  display: flex;
-  left: 0;
-  padding: 8px 24px 8px 16px;
-  justify-content: space-between;
-  box-sizing: border-box;
-  align-items: center;
-
-  .save-button {
-    margin-right: 8px;
-  }
-
-  .unsaved-changes {
-    color: #a3a9ae;
-  }
-
-  @media ${tablet} {
-    justify-content: flex-end;
-    position: fixed;
-
-    .unsaved-changes {
-      display: none;
-    }
-  }
-`;
+import StyledSaveCancelButtons from "./styled-save-cancel-buttons";
 
 const ButtonKeys = Object.freeze({
   enter: 13,
