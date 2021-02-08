@@ -15,7 +15,7 @@ import {
   //setIsLoading,
 } from "../../../store/files/actions";
 import {
-  getIsLoading,
+  //getIsLoading,
   getSettingsSelectedTreeNode,
   getExpandedSetting,
   getEnableThirdParty,
@@ -211,7 +211,7 @@ function mapStateToProps(state) {
     expandedSetting: getExpandedSetting(state),
     enableThirdParty: getEnableThirdParty(state),
     isAdmin: isAdmin(state),
-    isLoading: getIsLoading(state),
+    //isLoading: getIsLoading(state),
     //selectedFolder: getSelectedTreeNode(state),
   };
 }
@@ -232,10 +232,12 @@ export default connect(mapStateToProps, {
   //setIsLoading,
 })(
   inject(({ store, mainFilesStore }) => {
-    const { setIsLoading, filesStore } = mainFilesStore;
+    const { setIsLoading, filesStore, isLoading } = mainFilesStore;
     const { setSelectedFolder } = filesStore.selectedFolderStore;
 
     return {
+      isLoading,
+
       setIsLoading,
       setSelectedFolder,
     };

@@ -18,9 +18,10 @@ import {
 } from "../../../store/files/actions";
 import {
   getFilter,
-  getIsLoading,
+  //getIsLoading,
   getFileVersions,
 } from "../../../store/files/selectors";
+import { inject, observer } from "mobx-react";
 
 const i18n = createI18N({
   page: "VersionHistory",
@@ -116,7 +117,7 @@ VersionHistory.propTypes = {
 
 function mapStateToProps(state) {
   return {
-    isLoading: getIsLoading(state),
+    //isLoading: getIsLoading(state),
     isTabletView: getIsTabletView(state),
     filter: getFilter(state),
     versions: getFileVersions(state),
@@ -131,7 +132,20 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
+// export default connect(
+//   mapStateToProps,
+//   mapDispatchToProps
+// )(withRouter(VersionHistory));
+
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withRouter(VersionHistory));
+)(
+  inject(({ store, mainFilesStore }) => {
+    const { isLoading } = mainFilesStore;
+
+    return {
+      isLoading,
+    };
+  })(withRouter(observer(VersionHistory)))
+);

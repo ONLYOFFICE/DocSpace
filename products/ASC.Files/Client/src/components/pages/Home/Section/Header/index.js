@@ -43,7 +43,7 @@ import {
   //getSelectedFolderTitle,
   getFilter,
   //getSelectedFolderId,
-  getSelection,
+  //getSelection,
   //getSelectedFolderParentId,
   //getIsRootFolder,
   getHeaderVisible,
@@ -701,7 +701,7 @@ const mapStateToProps = (state) => {
     isPrivacy: getIsPrivacyFolder(state),
     isDesktop: isDesktopClient(state),
     //parentId: getSelectedFolderParentId(state),
-    selection: getSelection(state),
+    //selection: getSelection(state),
     //title: getSelectedFolderTitle(state),
     filter: getFilter(state),
     deleteDialogVisible: getUserAccess(state),
@@ -739,7 +739,7 @@ export default connect(mapStateToProps, {
 })(
   inject(({ store, mainFilesStore }) => {
     const { filesStore, setIsLoading } = mainFilesStore;
-    const { setSelected, fileActionStore, fetchFiles } = filesStore;
+    const { setSelected, fileActionStore, fetchFiles, selection } = filesStore;
     const { setAction } = fileActionStore;
 
     return {
@@ -747,6 +747,7 @@ export default connect(mapStateToProps, {
       title: filesStore.selectedFolderStore.title,
       parentId: filesStore.selectedFolderStore.parentId,
       currentFolderId: filesStore.selectedFolderStore.id,
+      selection,
 
       setSelected,
       setAction,

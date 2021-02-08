@@ -33,7 +33,7 @@ import {
   //getFileAction,
   getFilter,
   //getFolders,
-  getIsLoading,
+  //getIsLoading,
   getIsPrivacyFolder,
   getIsRecycleBinFolder,
   getNewRowItems,
@@ -766,7 +766,7 @@ function mapStateToProps(state, props) {
     //selectedFolder: getSelectedFolder(state),
     //folders: getFolders(state),
     newRowItems: getNewRowItems(state),
-    isLoading: getIsLoading(state),
+    //isLoading: getIsLoading(state),
     isPrivacy: getIsPrivacyFolder(state),
     isDesktop: isDesktopClient(state),
 
@@ -808,7 +808,7 @@ export default connect(mapStateToProps, {
   replaceFileStream,
 })(
   inject(({ store, mainFilesStore }) => {
-    const { filesStore, setIsLoading } = mainFilesStore;
+    const { filesStore, setIsLoading, isLoading } = mainFilesStore;
     const { folders, fetchFiles } = filesStore;
     const { type, extension, id } = filesStore.fileActionStore;
 
@@ -821,6 +821,7 @@ export default connect(mapStateToProps, {
       selectedFolderPathParts: filesStore.selectedFolderStore.pathParts,
       newItems: filesStore.selectedFolderStore.new,
       parentFolder: filesStore.selectedFolderStore.parentId,
+      isLoading,
 
       setIsLoading,
       fetchFiles,

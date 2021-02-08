@@ -19,8 +19,8 @@ import {
   setChangeOwnerPanelVisible,
 } from "../../../store/files/actions";
 import {
-  getSelection,
-  getIsLoading,
+  //getSelection,
+  //getIsLoading,
   //getFiles,
   //getFolders,
   getShowOwnerChangePanel,
@@ -203,9 +203,9 @@ const ChangeOwnerPanel = (props) => (
 
 const mapStateToProps = (state) => {
   return {
-    selection: getSelection(state),
+    //selection: getSelection(state),
     groupsCaption: getSettingsCustomNamesGroupsCaption(state),
-    isLoading: getIsLoading(state),
+    //isLoading: getIsLoading(state),
     //files: getFiles(state),
     //folders: getFolders(state),
     visible: getShowOwnerChangePanel(state),
@@ -227,12 +227,14 @@ export default connect(mapStateToProps, {
 });
 
 inject(({ store, mainFilesStore }) => {
-  const { filesStore, setIsLoading } = mainFilesStore;
-  const { files, folders } = filesStore;
+  const { filesStore, setIsLoading, isLoading } = mainFilesStore;
+  const { files, folders, selection } = filesStore;
 
   return {
     files,
     folders,
+    selection,
+    isLoading,
 
     setIsLoading,
   };

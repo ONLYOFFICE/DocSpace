@@ -15,7 +15,9 @@ import {
   //setFirstLoad,
   setSelectedNode,
 } from "../../../store/files/actions";
-import { getSettingsTree, getIsLoading } from "../../../store/files/selectors";
+import {
+  getSettingsTree /* getIsLoading */,
+} from "../../../store/files/selectors";
 
 import { setDocumentTitle } from "../../../helpers/utils";
 import { inject, observer } from "mobx-react";
@@ -129,7 +131,7 @@ const Settings = (props) => {
 
 function mapStateToProps(state) {
   return {
-    isLoading: getIsLoading(state),
+    //isLoading: getIsLoading(state),
     settingsTree: getSettingsTree(state),
   };
 }
@@ -152,10 +154,12 @@ export default connect(
   mapDispatchToProps
 )(
   inject(({ store, mainFilesStore }) => {
-    const { filesStore } = mainFilesStore;
+    const { filesStore, isLoading } = mainFilesStore;
     const { setFirstLoad } = filesStore;
 
     return {
+      isLoading,
+
       setFirstLoad,
     };
   })(withRouter(observer(Settings)))

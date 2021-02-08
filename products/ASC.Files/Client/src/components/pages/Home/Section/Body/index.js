@@ -3,7 +3,7 @@ import { withRouter } from "react-router";
 import { connect } from "react-redux";
 import { ReactSVG } from "react-svg";
 import { withTranslation, Trans } from "react-i18next";
-import equal from "fast-deep-equal/react";
+//import equal from "fast-deep-equal/react";
 import copy from "copy-to-clipboard";
 import styled from "styled-components";
 import queryString from "query-string";
@@ -36,10 +36,10 @@ import {
   markItemAsFavorite,
   removeItemFromFavorite,
   fetchFavoritesFolder,
-  deselectFile,
+  //deselectFile,
   updateFile,
   //fetchFiles,
-  selectFile,
+  //selectFile,
   //setAction,
   //setDragging,
   setDragItem,
@@ -48,7 +48,7 @@ import {
   setUpdateTree,
   setSecondaryProgressBarData,
   //setSelected,
-  setSelection,
+  //setSelection,
   setTreeFolders,
   getFileInfo,
   addFileToRecentlyViewed,
@@ -75,7 +75,7 @@ import {
   //getSelectedFolderParentId,
   //getSelected,
   //getSelectedFolderTitle,
-  getSelection,
+  //getSelection,
   getTreeFolders,
   getViewAs,
   loopTreeFolders,
@@ -973,7 +973,7 @@ class SectionBodyContent extends React.Component {
     });
   };
 
-  needForUpdate = (currentProps, nextProps) => {
+  /*needForUpdate = (currentProps, nextProps) => {
     if (currentProps.widthProp !== nextProps.widthProp) {
       return true;
     }
@@ -997,7 +997,7 @@ class SectionBodyContent extends React.Component {
     }
 
     return false;
-  };
+  };*/
 
   onContentRowSelect = (checked, file) => {
     if (!file) return;
@@ -1974,7 +1974,7 @@ class SectionBodyContent extends React.Component {
                     viewAs={viewAs}
                     {...checkedProps}
                     {...contextOptionsProps}
-                    needForUpdate={this.needForUpdate}
+                    //needForUpdate={this.needForUpdate}
                   >
                     <FilesTileContent
                       item={item}
@@ -2063,7 +2063,7 @@ class SectionBodyContent extends React.Component {
                         isPrivacy={isPrivacy}
                         {...checkedProps}
                         {...contextOptionsProps}
-                        needForUpdate={this.needForUpdate}
+                        //needForUpdate={this.needForUpdate}
                         selectItem={this.onSelectItem.bind(this, item)}
                         contextButtonSpacerWidth={displayShareButton}
                       >
@@ -2148,7 +2148,7 @@ const mapStateToProps = (state) => {
     privacyInstructions: getPrivacyInstructionsLink(state),
     //selected: getSelected(state),
     //selectedFolderId: getSelectedFolderId(state),
-    selection: getSelection(state),
+    //selection: getSelection(state),
     settings: getSettings(state),
     //title: getSelectedFolderTitle(state),
     treeFolders: getTreeFolders(state),
@@ -2194,15 +2194,15 @@ const mapStateToProps = (state) => {
 // })(withRouter(withTranslation()(SectionBodyContent)));
 
 export default connect(mapStateToProps, {
-  deselectFile,
+  //deselectFile,
   updateFile,
   //fetchFiles,
-  selectFile,
+  //selectFile,
   setTreeFolders,
   setDragItem,
   setMediaViewerData,
   setSecondaryProgressBarData,
-  setSelection,
+  //setSelection,
   //setSelected,
   setUpdateTree,
   //setIsLoading,
@@ -2227,10 +2227,13 @@ export default connect(mapStateToProps, {
       setSelected,
       fileActionStore,
       firstLoad,
-      getFilesList,
-      fetchFiles
+      filesList,
+      fetchFiles,
+      setSelection,
+      selection,
+      selectFile,
+      deselectFile,
     } = filesStore;
-    
 
     const { type, extension, id, setAction } = fileActionStore;
 
@@ -2243,16 +2246,20 @@ export default connect(mapStateToProps, {
       folders,
       selected,
       firstLoad,
-      filesList: getFilesList(),
+      filesList,
       title: filesStore.selectedFolderStore.title,
       parentId: filesStore.selectedFolderStore.parentId,
       selectedFolderId: filesStore.selectedFolderStore.id,
+      selection,
 
       setDragging,
       setAction,
       setSelected,
       setIsLoading,
-      fetchFiles
+      setSelection,
+      fetchFiles,
+      selectFile,
+      deselectFile,
     };
   })(withRouter(withTranslation()(observer(SectionBodyContent))))
 );

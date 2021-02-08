@@ -35,7 +35,7 @@ import {
   getSecondaryProgressData,
   getTreeFolders,
   getViewAs,
-  getIsLoading,
+  //getIsLoading,
   //getDragging,
   //getFirstLoad,
   isSecondaryProgressFinished,
@@ -337,7 +337,7 @@ function mapStateToProps(state) {
     secondaryProgressData: getSecondaryProgressData(state),
     treeFolders: getTreeFolders(state),
     viewAs: getViewAs(state),
-    isLoading: getIsLoading(state),
+    //isLoading: getIsLoading(state),
     //homepage: getSettingsHomepage(state),
     //dragging: getDragging(state),
     //firstLoad: getFirstLoad(state),
@@ -367,7 +367,13 @@ export default connect(
   mapDispatchToProps
 )(
   inject(({ store, mainFilesStore }) => {
-    const { dragging, setDragging, setIsLoading, filesStore } = mainFilesStore;
+    const {
+      dragging,
+      setDragging,
+      setIsLoading,
+      filesStore,
+      isLoading,
+    } = mainFilesStore;
     const { firstLoad, setFirstLoad, fileActionStore, fetchFiles } = filesStore;
     const { id } = fileActionStore;
 
@@ -377,6 +383,7 @@ export default connect(
       dragging,
       fileActionId: id,
       currentFolderId: filesStore.selectedFolderStore.id,
+      isLoading,
 
       setFirstLoad,
       setDragging,

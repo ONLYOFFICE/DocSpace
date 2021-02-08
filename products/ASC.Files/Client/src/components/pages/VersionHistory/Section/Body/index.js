@@ -13,7 +13,7 @@ import {
 } from "../../../../../store/files/actions";
 import {
   getFileVersions,
-  getIsLoading,
+  //getIsLoading,
 } from "../../../../../store/files/selectors";
 import { inject, observer } from "mobx-react";
 
@@ -70,7 +70,7 @@ class SectionBodyContent extends React.Component {
 const mapStateToProps = (state) => {
   return {
     versions: getFileVersions(state),
-    isLoading: getIsLoading(state),
+    //isLoading: getIsLoading(state),
   };
 };
 
@@ -92,10 +92,12 @@ export default connect(
   mapDispatchToProps
 )(
   inject(({ store, mainFilesStore }) => {
-    const { filesStore, setIsLoading } = mainFilesStore;
+    const { filesStore, setIsLoading, isLoading } = mainFilesStore;
     const { setFirstLoad } = filesStore;
 
     return {
+      isLoading,
+
       setFirstLoad,
       setIsLoading,
     };
