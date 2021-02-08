@@ -106,7 +106,7 @@ const VersionRow = (props) => {
             fontWeight={600}
             fontSize="14px"
             title={title}
-            truncate={true}
+            isTextOverflow={true}
             className="version-link-file"
           >
             {title}
