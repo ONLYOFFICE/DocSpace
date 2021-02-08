@@ -184,7 +184,7 @@ function mapStateToProps(state) {
     //users,
     selection,
     selected,
-    selectedGroup,
+    //selectedGroup,
     // groups,
     // organizationName: getOrganizationName(state),
     // isAdmin: isAdmin(state),
@@ -200,5 +200,6 @@ export default connect(mapStateToProps, { setSelected, setIsLoading })(
     organizationName: store.settingsStore.organizationName,
     users: peopleStore.usersStore.users,
     groups: peopleStore.groupsStore.groups,
+    selectedGroup: peopleStore.selectedGroupStore.selectedGroup,
   }))(observer(withRouter(Home)))
 );
