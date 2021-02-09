@@ -1013,13 +1013,21 @@ const Base = {
   //   },
   // },
 
-  // datePicker: {
-  //   width: "110px",
-  //   dropDownPadding: "16px 16px 16px 17px",
-  //   inputPadding: "5px 5px 5px 9px",
-  //   inputBorder: blueMain,
-  //   iconPadding: "8px 8px 7px 0px",
-  // },
+  datePicker: {
+    width: "115px",
+    dropDownPadding: "16px 16px 16px 17px",
+    contentPadding: "0 16px 16px",
+    bodyPadding: "16px 0",
+    backgroundColor: white,
+    inputBorder: blueMain,
+    iconPadding: "8px 8px 7px 0px",
+
+    contentMaxWidth: "500px",
+    contentLineHeight: "56px",
+    contentFontWeight: "700",
+
+    borderBottom: `1px solid ${globalColors.pattensBlue}`,
+  },
 
   // phoneInput: {
   //   width: "304px",

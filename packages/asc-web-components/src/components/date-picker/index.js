@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import styled from "styled-components";
+
 import InputBlock from "../input-block";
 import DropDown from "../drop-down";
 import Calendar from "../calendar";
@@ -12,43 +12,13 @@ import { desktop } from "../../utils/device";
 import Backdrop from "../backdrop";
 import Heading from "../heading";
 import throttle from "lodash/throttle";
-
-const DateInputStyle = styled.div`
-  width: 115px;
-`;
-
-const DropDownStyle = styled.div`
-  .drop-down {
-    padding: 16px 16px 16px 17px;
-  }
-  position: relative;
-`;
-
-const Content = styled.div`
-  box-sizing: border-box;
-  position: relative;
-  width: 100%;
-  background-color: #fff;
-  padding: 0 16px 16px;
-
-  .header {
-    max-width: 500px;
-    margin: 0;
-    line-height: 56px;
-    font-weight: 700 !important;
-  }
-`;
-
-const Header = styled.div`
-  display: flex;
-  align-items: center;
-  border-bottom: 1px solid #dee2e6;
-`;
-
-const Body = styled.div`
-  position: relative;
-  padding: 16px 0;
-`;
+import {
+  Body,
+  Header,
+  Content,
+  DropDownStyle,
+  DateInputStyle,
+} from "./styled-date-picker";
 
 class DatePicker extends Component {
   constructor(props) {
