@@ -155,10 +155,6 @@ class PureHome extends React.Component {
             onChange={this.onRowChange}
           />
         </PageLayout.SectionBody>
-
-        <PageLayout.SectionPaging>
-          <SectionPagingContent onLoading={this.onLoading} />
-        </PageLayout.SectionPaging>
       </PageLayout>
     );
   }
