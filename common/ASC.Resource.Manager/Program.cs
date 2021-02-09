@@ -44,9 +44,9 @@ namespace ASC.Resource.Manager
 
                 project = "WebStudio";
                 module = "WebStudio";
-                filePath = "Resource.resx";
-                exportPath = @"C:\Git\portals_core\web\ASC.Web.Core\PublicResources";
-                key = "LicenseUploadedOverdueSupport";
+                filePath = "MonitoringResource.resx";
+                exportPath = @"C:\Git\portals\";
+                key = "*";
 
                 if (format == "json")
                 {
@@ -76,7 +76,6 @@ namespace ASC.Resource.Manager
                 enabledSettings = scopeClass.Configuration.GetSetting<EnabledSettings>("enabled");
                 cultures = scopeClass.ResourceData.GetCultures().Where(r => r.Available).Select(r => r.Title).Intersect(enabledSettings.Langs).ToList();
                 projects = scopeClass.ResourceData.GetAllFiles();
-                //key = CheckExist("FilesJSResource", "ASC.Files.Resources.FilesJSResource,ASC.Files");
 
                 ExportWithProject(project, module, filePath, culture, exportPath, key);
 
@@ -118,8 +117,9 @@ namespace ASC.Resource.Manager
                 {
                     var moduleToExport = projects
                         .Where(r => r.ProjectName == projectName)
-                        .Where(r => string.IsNullOrEmpty(r.FileName) || r.FileName == fileName)
-                        .Select(r => r.ModuleName);
+                        .Where(r => string.IsNullOrEmpty(fileName) || r.FileName == fileName)
+                        .Select(r => r.ModuleName)
+                        .Distinct();
 
                     foreach (var m in moduleToExport)
                     {
@@ -149,17 +149,69 @@ namespace ASC.Resource.Manager
                 }
                 else
                 {
-                    ParallelEnumerable.ForAll(cultures.AsParallel(), c => export(serviceProvider, projectName, moduleName, fileName, c, exportPath, key));
+                    var filePath = Directory.GetFiles(exportPath, $"{fileName}", SearchOption.AllDirectories).FirstOrDefault();
+                    if (string.IsNullOrEmpty(filePath)) return;
+
+                    var name = Path.GetFileNameWithoutExtension(fileName);
+                    if (key == "*")
+                    {
+                        var designerPath = Path.Combine(Path.GetDirectoryName(filePath), $"{name}.Designer.cs");
+                        var data = File.ReadAllText(designerPath);
+                        var regex = new Regex(@"namespace\s(\S*)\s", RegexOptions.IgnoreCase);
+                        var matches = regex.Matches(data);
+                        if (!matches.Any() || matches[0].Groups.Count < 2)
+                        {
+                            return;
+                        }
+
+                        File.Delete(designerPath);
+
+                        var nsp = matches[0].Groups[1].Value;
+                        var asmbl = "";
+                        var assmlPath = Path.GetDirectoryName(filePath);
+
+                        do
+                        {
+                            asmbl = Directory.GetFiles(assmlPath, "*.csproj").FirstOrDefault();
+                            assmlPath = Path.GetFullPath(Path.Combine(assmlPath, ".."));
+                        }
+                        while (string.IsNullOrEmpty(asmbl));
+
+                        regex = new Regex(@"\<AssemblyName\>(\S*)\<\/AssemblyName\>", RegexOptions.IgnoreCase);
+                        matches = regex.Matches(File.ReadAllText(asmbl));
+                        if (!matches.Any() || matches[0].Groups.Count < 2)
+                        {
+                            return;
+                        }
+                        asmbl = matches[0].Groups[1].Value;
+
+                        key = CheckExist(fileName, $"{nsp}.{name},{asmbl}", exportPath);
+                    }
+
+                    exportPath = Path.GetDirectoryName(filePath);
+
+                    if (string.IsNullOrEmpty(exportPath))
+                    {
+                        return;
+                    }
+
+                    ParallelEnumerable.ForAll(cultures.AsParallel(), c => {
+                        export(serviceProvider, projectName, moduleName, fileName, c, exportPath, key);
+                    });
                 }
             }
         }
 
-        public static string CheckExist(string resName, string fullClassName)
+        public static string CheckExist(string fileName, string fullClassName, string path)
         {
+            var resName = Path.GetFileNameWithoutExtension(fileName);
             var bag = new ConcurrentBag<string>();
-            var path = "..\\..\\..\\..\\..\\";
 
             var csFiles = Directory.GetFiles(Path.GetFullPath(path), "*.cs", SearchOption.AllDirectories);
+            csFiles = csFiles.Concat(Directory.GetFiles(Path.GetFullPath(path), "*.aspx", SearchOption.AllDirectories)).ToArray();
+            csFiles = csFiles.Concat(Directory.GetFiles(Path.GetFullPath(path), "*.ascx", SearchOption.AllDirectories)).ToArray();
+            csFiles = csFiles.Concat(Directory.GetFiles(Path.GetFullPath(path), "*.html", SearchOption.AllDirectories)).ToArray();
+            csFiles = csFiles.Concat(Directory.GetFiles(Path.GetFullPath(path), "*.js", SearchOption.AllDirectories).Where(r => !r.Contains("node_modules"))).ToArray();
             var xmlFiles = Directory.GetFiles(Path.GetFullPath(path), "*.xml", SearchOption.AllDirectories);
 
             string localInit() => "";
@@ -167,7 +219,7 @@ namespace ASC.Resource.Manager
             Func<string, ParallelLoopState, long, string, string> func(string regexp) => (f, state, index, a) =>
             {
                 var data = File.ReadAllText(f);
-                var regex = new Regex(regexp);
+                var regex = new Regex(regexp, RegexOptions.IgnoreCase);
                 var matches = regex.Matches(data);
                 if (matches.Count > 0)
                 {
@@ -188,7 +240,7 @@ namespace ASC.Resource.Manager
             _ = Parallel.ForEach(csFiles, localInit, func(@$"CustomNamingPeople\.Substitute\<{resName}\>\(""(\w*)""\)"), localFinally);
             _ = Parallel.ForEach(xmlFiles, localInit, func(@$"\|(\w*)\|{fullClassName.Replace(".", "\\.")}"), localFinally);
 
-            return string.Join(',', bag.ToArray());
+            return string.Join(',', bag.ToArray().Distinct());
         }
     }
 

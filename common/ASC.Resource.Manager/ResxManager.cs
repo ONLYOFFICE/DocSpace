@@ -81,9 +81,16 @@ namespace ASC.Resource.Manager
                     if (File.Exists(zipFileName))
                     {
                         using var resXResourceReader = new ResXResourceReader(zipFileName);
-                        foreach (var v in resXResourceReader.Cast<DictionaryEntry>())
+                        try
                         {
-                            toAdd.Add(new ResWord { Title = v.Key.ToString(), ValueTo = v.Value?.ToString() });
+                            foreach (var v in resXResourceReader.OfType<DictionaryEntry>())
+                            {
+                                toAdd.Add(new ResWord { Title = v.Key.ToString(), ValueTo = v.Value?.ToString() });
+                            }
+                        }
+                        catch (Exception)
+                        {
+
                         }
                     }
 
