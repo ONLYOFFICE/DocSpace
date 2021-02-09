@@ -81,7 +81,7 @@ function mapStateToProps(state) {
     //settings: state.auth.settings,
     group: state.group.targetGroup,
     //groupCaption: state.auth.settings.customNames.groupCaption,
-    filter: state.people.filter,
+    //filter: state.people.filter,
   };
 }
 
@@ -95,8 +95,9 @@ function mapStateToProps(state) {
 // });
 
 export default connect(mapStateToProps, { resetGroup, setFilter })(
-  inject(({ store }) => ({
+  inject(({ store, peopleStore }) => ({
     groupCaption: store.settingsStore.customNames.groupCaption,
+    filter: peopleStore.filterStore.filter,
   }))(observer(withRouter(withTranslation()(SectionHeaderContent))))
 );
 

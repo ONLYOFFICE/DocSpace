@@ -351,51 +351,31 @@ function mapStateToProps(state) {
     //userPostCaption,
     //userCaption,
     //guestCaption,
-    filter: getFilter(state),
+    //filter: getFilter(state),
   };
 }
 const mapDispatchToProps = (dispatch) => {
   return {
     updateProfileCulture: (id, culture) =>
       dispatch(updateProfileCulture(id, culture)),
-    fetchPeople: (filter) => dispatch(fetchPeople(filter)),
+    //fetchPeople: (filter) => dispatch(fetchPeople(filter)),
     setIsLoading: (isLoading) => dispatch(setIsLoading(isLoading)),
   };
 };
-
-// const ProfileInfoWrapper = observer((props) => {
-//   const { customNames } = settingsStore.settings;
-//   const {
-//     groupCaption,
-//     regDateCaption,
-//     userPostCaption,
-//     userCaption,
-//     guestCaption,
-//   } = customNames;
-
-//   return (
-//     <ProfileInfo
-//       groupCaption={groupCaption}
-//       regDateCaption={regDateCaption}
-//       userPostCaption={userPostCaption}
-//       userCaption={userCaption}
-//       guestCaption={guestCaption}
-//       {...props}
-//     />
-//   );
-// });
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(
-  inject(({ store }) => ({
+  inject(({ store, peopleStore }) => ({
     settings: store.settingsStore,
     groupCaption: store.settingsStore.customNames.groupCaption,
     regDateCaption: store.settingsStore.customNames.regDateCaption,
     userPostCaption: store.settingsStore.customNames.userPostCaption,
     userCaption: store.settingsStore.customNames.userCaption,
     guestCaption: store.settingsStore.customNames.guestCaption,
+    fetchPeople: peopleStore.usersStore.getUsersList,
+    filter: peopleStore.filterStore.filter,
   }))(observer(ProfileInfo))
 );
 

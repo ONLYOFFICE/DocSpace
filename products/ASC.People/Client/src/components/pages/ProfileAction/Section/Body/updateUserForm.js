@@ -920,7 +920,7 @@ const mapStateToProps = (state) => {
     //settings: state.auth.settings,
     //groups: state.people.groups,
     //editingForm: state.people.editingForm,
-    filter: state.people.filter,
+    //filter: state.people.filter,
     disableProfileType: getDisableProfileType(state),
     // isAdmin: isAdmin(state),
   };
@@ -948,6 +948,7 @@ export default connect(mapStateToProps, {
     setIsVisibleDataLossDialog:
       peopleStore.editingFormStore.setIsVisibleDataLossDialog,
     setIsEditingForm: peopleStore.editingFormStore.setIsEditingForm,
+    filter: peopleStore.filterStore.filter,
   }))(observer(withRouter(withTranslation()(UpdateUserForm))))
 );
 

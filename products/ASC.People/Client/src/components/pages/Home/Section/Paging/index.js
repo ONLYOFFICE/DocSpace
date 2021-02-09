@@ -154,13 +154,15 @@ const SectionPagingContent = ({
 
 function mapStateToProps(state) {
   return {
-    filter: getFilter(state),
+    //filter: getFilter(state),
     // isLoaded: getIsLoaded(state),
   };
 }
 
-export default connect(mapStateToProps, { fetchPeople })(
-  inject(({ store }) => ({
+export default connect(mapStateToProps)(
+  inject(({ store, peopleStore }) => ({
     isLoaded: store.isLoaded,
+    fetchPeople: peopleStore.usersStore.getUsersList,
+    filter: peopleStore.filterStore.filter,
   }))(observer(SectionPagingContent))
 );

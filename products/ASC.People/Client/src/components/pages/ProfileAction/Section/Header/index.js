@@ -113,7 +113,7 @@ function mapStateToProps(state) {
   return {
     profile: state.profile.targetUser,
     //settings: state.auth.settings,
-    filter: state.people.filter,
+    //filter: state.people.filter,
     //editingForm: state.people.editingForm,
     avatarEditorIsOpen: state.people.avatarEditorIsOpen,
   };
@@ -134,6 +134,7 @@ export default connect(mapStateToProps, {
     editingForm: peopleStore.editingFormStore,
     setIsVisibleDataLossDialog:
       peopleStore.editingFormStore.setIsVisibleDataLossDialog,
+    filter: peopleStore.filterStore.filter,
   }))(observer(withRouter(SectionHeaderContent)))
 );
 

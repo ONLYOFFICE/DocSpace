@@ -114,29 +114,7 @@ DeleteProfileEverDialog.propTypes = {
   history: PropTypes.object.isRequired,
 };
 
-// function mapStateToProps(state) {
-//   return {
-//     userCaption: state.auth.settings.customNames.userCaption,
-//   };
-// }
-
-// const DeleteProfileWrapper = observer((props) => {
-//   return (
-//     <DeleteProfileEverDialog
-//       userCaption={settingsStore.customNames.userCaption}
-//       {...props}
-//     />
-//   );
-// });
-
-export default connect(null, {
-  fetchPeople,
-})(
-  inject(({ store }) => ({
-    userCaption: store.settingsStore.customNames.userCaption,
-  }))(observer(withRouter(DeleteProfileEverDialog)))
-);
-
-// export default connect(null /* mapStateToProps */, { fetchPeople })(
-//   withRouter(DeleteProfileWrapper)
-// );
+export default inject(({ store, peopleStore }) => ({
+  userCaption: store.settingsStore.customNames.userCaption,
+  fetchPeople: peopleStore.usersStore.getUsersList,
+}))(observer(withRouter(DeleteProfileEverDialog)));

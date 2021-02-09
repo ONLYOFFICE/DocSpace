@@ -18,6 +18,7 @@ import { removeUser, setSelected } from "../../../store/people/actions";
 import ModalDialogContainer from "../ModalDialogContainer";
 import { createI18N } from "../../../helpers/i18n";
 import { getUsersToRemoveIds } from "../../../store/people/selectors";
+import { inject, observer } from "mobx-react";
 const i18n = createI18N({
   page: "DeleteUsersDialog",
   localesPath: "dialogs/DeleteUsersDialog",
@@ -193,12 +194,18 @@ const mapStateToProps = (state) => {
   const usersToRemoveIds = getUsersToRemoveIds(state);
 
   return {
-    filter,
+    //filter,
     userIds: usersToRemoveIds,
     selectedUsers: selection,
   };
 };
 
+// export default connect(mapStateToProps, { removeUser, setSelected })(
+//   withRouter(DeleteUsersDialog)
+// );
+
 export default connect(mapStateToProps, { removeUser, setSelected })(
-  withRouter(DeleteUsersDialog)
+  inject(({ peopleStore }) => ({
+    filter: peopleStore.filterStore.filter,
+  }))(observer(withRouter(DeleteUsersDialog)))
 );

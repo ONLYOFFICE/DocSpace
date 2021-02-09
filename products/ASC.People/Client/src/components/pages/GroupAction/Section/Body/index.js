@@ -512,7 +512,7 @@ function mapStateToProps(state) {
     // groupCaption,
     //me: getCurrentUser(state),
     //currentModuleName,
-    filter: state.people.filter,
+    //filter: state.people.filter,
     // isLoaded,
   };
 }
@@ -535,6 +535,7 @@ export default connect(mapStateToProps, {
       currentModuleName: store.product.title,
       me: store.userStore.user,
       groups,
+      filter: peopleStore.filterStore.filter,
     };
   })(observer(withRouter(withTranslation()(SectionBodyContent))))
 );

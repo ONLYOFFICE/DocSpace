@@ -6,6 +6,7 @@ import config from "../../package.json";
 import TargetUserStore from "./TargetUserStore";
 import SelectedGroupStore from "./SelectedGroupStore";
 import EditingFormStore from "./EditingFormStore";
+import FilterStore from "./FilterStore";
 
 class PeopleStore {
   groupsStore = null;
@@ -13,16 +14,17 @@ class PeopleStore {
   targetUserStore = null;
   selectedGroupStore = null;
   editingFormStore = null;
+  filterStore = null;
 
   isLoading = false;
-  //isAuthenticated = false;
 
   constructor() {
-    this.setGroupsStore(new GroupsStore());
-    this.setUsersStore(new UsersStore());
-    this.setTargetUserStore(new TargetUserStore());
-    this.setSelectedGroupStore(new SelectedGroupStore());
-    this.setEditingFormStore(new EditingFormStore());
+    this.setGroupsStore(new GroupsStore(this));
+    this.setUsersStore(new UsersStore(this));
+    this.setTargetUserStore(new TargetUserStore(this));
+    this.setSelectedGroupStore(new SelectedGroupStore(this));
+    this.setEditingFormStore(new EditingFormStore(this));
+    this.setFilterStore(new FilterStore(this));
 
     makeObservable(this, {
       isLoading: observable,
@@ -31,6 +33,7 @@ class PeopleStore {
       setTargetUserStore: action,
       setSelectedGroupStore: action,
       setEditingFormStore: action,
+      setFilterStore: action,
       init: action,
     });
   }
@@ -44,7 +47,6 @@ class PeopleStore {
       await this.usersStore.getUsersList(newFilter);
     }
     await this.groupsStore.getGroupList();
-    //await this.usersStore.getUsersList();
   };
 
   setGroupsStore = (store) => {
@@ -61,6 +63,9 @@ class PeopleStore {
   };
   setEditingFormStore = (store) => {
     this.editingFormStore = store;
+  };
+  setFilterStore = (store) => {
+    this.filterStore = store;
   };
 }
 

@@ -270,7 +270,7 @@ export default connect(null, {
       groups,
       data,
       selectedKeys,
-      selectGroup: peopleStore.selectedGroupStore.setSelectedGroup,
+      selectGroup: peopleStore.selectedGroupStore.selectGroup,
       editingForm: peopleStore.editingFormStore,
       setIsVisibleDataLossDialog:
         peopleStore.editingFormStore.setIsVisibleDataLossDialog,

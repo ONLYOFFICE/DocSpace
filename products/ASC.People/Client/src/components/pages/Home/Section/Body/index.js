@@ -546,29 +546,14 @@ const mapStateToProps = (state) => {
   return {
     // isLoaded,
     isLoadedSection: getIsLoadedSection(state),
-    filter,
+    //filter,
     isLoading,
-    peopleList: getPeopleList(state),
+    //peopleList: getPeopleList(state),
     //settings: getSettings(state),
     // isAdmin: isAdmin(state),
     // currentUserId: getCurrentUserId(state),
   };
 };
-
-// const SectionBodyContentWrapper = observer((props) => {
-//   return <SectionBodyContent settings={settingsStore.settings} {...props} />;
-// });
-
-// export default connect(mapStateToProps, {
-//   selectUser,
-//   deselectUser,
-//   setSelection,
-//   updateUserStatus,
-//   resetFilter,
-//   fetchPeople,
-//   selectGroup,
-//   setIsLoadedSection,
-// })(withRouter(withTranslation()(SectionBodyContentWrapper)));
 
 export default connect(mapStateToProps, {
   selectUser,
@@ -576,7 +561,7 @@ export default connect(mapStateToProps, {
   setSelection,
   updateUserStatus,
   resetFilter,
-  fetchPeople,
+  //fetchPeople,
   selectGroup,
   setIsLoadedSection,
 })(
@@ -585,6 +570,8 @@ export default connect(mapStateToProps, {
     isLoaded: store.isLoaded,
     isAdmin: store.isAdmin,
     currentUserId: store.userStore.user.id,
-    //peopleList: peopleStore.usersStore.users,
+    fetchPeople: peopleStore.usersStore.getUsersList,
+    peopleList: peopleStore.usersStore.composePeopleList(),
+    filter: peopleStore.filterStore.filter,
   }))(observer(withRouter(withTranslation()(SectionBodyContent))))
 );

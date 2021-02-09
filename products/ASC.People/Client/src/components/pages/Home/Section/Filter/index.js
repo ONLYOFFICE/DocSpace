@@ -269,7 +269,7 @@ function mapStateToProps(state) {
     //user: getCurrentUser(state),
     //language: getLanguage(state),
     //groups: getGroups(state),
-    filter: getFilter(state),
+    //filter: getFilter(state),
     // settings: getSettings(state),
     // isAdmin: isAdmin(state),
     // isLoaded: getIsLoaded(state),
@@ -280,7 +280,7 @@ function mapStateToProps(state) {
 //   return <SectionFilterContent settings={settingsStore.settings} {...props} />;
 // });
 
-export default connect(mapStateToProps, { fetchPeople })(
+export default connect(mapStateToProps)(
   inject(({ store, peopleStore }) => {
     // const { isAdmin, isLoaded, language, settings } = store;
     return {
@@ -290,6 +290,8 @@ export default connect(mapStateToProps, { fetchPeople })(
       language: store.language,
       user: store.userStore.user,
       groups: peopleStore.groupsStore.groups,
+      fetchPeople: peopleStore.usersStore.getUsersList,
+      filter: peopleStore.filterStore.filter,
     };
   })(
     observer(

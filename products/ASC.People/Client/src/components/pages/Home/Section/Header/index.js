@@ -505,27 +505,18 @@ const mapStateToProps = (state) => {
   };
 };
 
-// const SectionHeaderContentWrapper = observer((props) => {
-//   return (
-//     <SectionHeaderContent
-//       customNames={settingsStore.customNames}
-//       homepage={settingsStore.homepage}
-//       {...props}
-//     />
-//   );
-// });
-
 export default connect(mapStateToProps, {
   updateUserStatus,
-  fetchPeople,
+  //fetchPeople,
   deleteGroup,
   removeUser,
   setSelected,
 })(
-  inject(({ store }) => ({
+  inject(({ store, peopleStore }) => ({
     customNames: store.settingsStore.customNames,
     homepage: store.settingsStore.homepage,
     isLoaded: store.isLoaded,
     isAdmin: store.isAdmin,
+    fetchPeople: peopleStore.usersStore.getUsersList,
   }))(observer(withTranslation()(withRouter(SectionHeaderContent))))
 );

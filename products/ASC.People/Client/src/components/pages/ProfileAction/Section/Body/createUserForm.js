@@ -661,7 +661,7 @@ const mapStateToProps = (state) => {
   return {
     //settings,
     //groups,
-    filter,
+    //filter,
     //editingForm,
     createdAvatar,
     croppedAvatar,
@@ -691,6 +691,7 @@ export default connect(mapStateToProps, {
     setIsVisibleDataLossDialog:
       peopleStore.editingFormStore.setIsVisibleDataLossDialog,
     setIsEditingForm: peopleStore.editingFormStore.setIsEditingForm,
+    filter: peopleStore.filterStore.filter,
   }))(observer(withRouter(withTranslation()(CreateUserForm))))
 );
 

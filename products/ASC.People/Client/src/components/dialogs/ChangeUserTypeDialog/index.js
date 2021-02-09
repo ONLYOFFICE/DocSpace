@@ -71,6 +71,7 @@ class ChangeUserTypeDialogComponent extends React.Component {
     const { onClose, setSelected, t, userType, updateUserType } = this.props;
     const { userIds } = this.state;
     this.setState({ isRequestRunning: true }, () => {
+      debugger;
       updateUserType(userType, userIds)
         .then(() => toastr.success(t("SuccessChangeUserType")))
         .catch((error) => toastr.error(error))
