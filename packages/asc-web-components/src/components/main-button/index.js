@@ -1,107 +1,15 @@
 import React from "react";
 import PropTypes from "prop-types";
-import styled, { css } from "styled-components";
-import DropDown from "../drop-down";
+
 import { Icons } from "../icons";
 import { handleAnyClick } from "../../utils/event";
 import Text from "../text";
-
-const backgroundColor = "#ED7309",
-  disableBackgroundColor = "#FFCCA6",
-  hoverBackgroundColor = "#FF8932",
-  clickBackgroundColor = "#C96C27";
-
-const hoveredCss = css`
-  background-color: ${hoverBackgroundColor};
-  cursor: pointer;
-`;
-const clickCss = css`
-  background-color: ${clickBackgroundColor};
-  cursor: pointer;
-`;
-
-const arrowDropdown = css`
-  border-left: 4px solid transparent;
-  border-right: 4px solid transparent;
-  border-top: 4px solid white;
-  content: "";
-  height: 0;
-  margin-top: -1px;
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  width: 0;
-`;
-
-const notDisableStyles = css`
-  &:hover {
-    ${hoveredCss}
-  }
-
-  &:active {
-    ${clickCss}
-  }
-`;
-
-const notDropdown = css`
-  &:after {
-    display: none;
-  }
-
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
-`;
-
-const GroupMainButton = styled.div`
-  position: relative;
-  display: grid;
-  grid-template-columns: ${(props) => (props.isDropdown ? "1fr" : "1fr 32px")};
-  ${(props) => !props.isDropdown && "grid-column-gap: 1px"};
-`;
-
-const StyledDropDown = styled(DropDown)`
-  width: 100%;
-  top: 100%;
-`;
-
-const StyledMainButton = styled.div`
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-  position: relative;
-  display: block;
-  vertical-align: middle;
-  box-sizing: border-box;
-  background-color: ${(props) =>
-    props.isDisabled ? disableBackgroundColor : backgroundColor};
-  padding: 5px 10px;
-  border-radius: 3px;
-  -moz-border-radius: 3px;
-  -webkit-border-radius: 3px;
-  line-height: 22px;
-
-  &:after {
-    ${arrowDropdown}
-  }
-
-  ${(props) => !props.isDisabled && notDisableStyles}
-  ${(props) => !props.isDropdown && notDropdown}
-
-    & > svg {
-    display: block;
-    margin: auto;
-    height: 100%;
-  }
-`;
-
-const StyledSecondaryButton = styled(StyledMainButton)`
-  display: inline-block;
-  height: 32px;
-  padding: 0;
-  border-radius: 3px;
-  -moz-border-radius: 3px;
-  -webkit-border-radius: 3px;
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
-`;
+import {
+  StyledSecondaryButton,
+  StyledMainButton,
+  StyledDropDown,
+  GroupMainButton,
+} from "./styled-main-button";
 
 class MainButton extends React.PureComponent {
   constructor(props) {

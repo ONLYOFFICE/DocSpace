@@ -140,6 +140,49 @@ const Base = {
     },
   },
 
+  mainButton: {
+    backgroundColor: orangeMain,
+    disableBackgroundColor: orangeDisabled,
+    hoverBackgroundColor: orangeHover,
+    clickBackgroundColor: orangePressed,
+
+    padding: "5px 10px",
+    borderRadius: "3px",
+    lineHeight: "22px",
+
+    cornerRoundsTopRight: "0",
+    cornerRoundsBottomRight: "0",
+
+    svg: {
+      margin: "auto",
+      height: "100%",
+    },
+
+    secondaryButton: {
+      height: "32px",
+      padding: "0",
+      borderRadius: "3px",
+      cornerRoundsTopLeft: "0",
+      cornerRoundsBottomLeft: "0",
+    },
+
+    dropDown: {
+      width: "100%",
+      top: "100%",
+    },
+    
+    arrowDropdown:{
+      borderLeft: "4px solid transparent",
+      borderRight: "4px solid transparent",
+      borderTop: "4px solid white",
+      right: "10px",
+      top: "50%",
+      width: "0",
+      height: "0",
+      marginTop:" -1px",
+    },
+  },
+
   socialButton: {
     fontWeight: "600",
     textDecoration: "none",
