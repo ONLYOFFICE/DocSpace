@@ -37,7 +37,7 @@ namespace ASC.Resource.Manager
 {
     public class ResxManager
     {
-        public static void Export(IServiceProvider serviceProvider, string project, string module, string fName, string language, string exportPath, string key = null)
+        public static bool Export(IServiceProvider serviceProvider, string project, string module, string fName, string language, string exportPath, string key = null)
         {
             var filter = new ResCurrent
             {
@@ -54,7 +54,7 @@ namespace ASC.Resource.Manager
             if (!words.Any())
             {
                 Console.WriteLine("Error!!! Can't find appropriate project and module. Possibly wrong names!");
-                return;
+                return false;
             }
 
             foreach (var fileWords in words)
@@ -81,9 +81,16 @@ namespace ASC.Resource.Manager
                     if (File.Exists(zipFileName))
                     {
                         using var resXResourceReader = new ResXResourceReader(zipFileName);
-                        foreach (var v in resXResourceReader.Cast<DictionaryEntry>())
+                        try
                         {
-                            toAdd.Add(new ResWord { Title = v.Key.ToString(), ValueTo = v.Value?.ToString() });
+                            foreach (var v in resXResourceReader.OfType<DictionaryEntry>())
+                            {
+                                toAdd.Add(new ResWord { Title = v.Key.ToString(), ValueTo = v.Value?.ToString() });
+                            }
+                        }
+                        catch (Exception)
+                        {
+
                         }
                     }
 
@@ -114,6 +121,8 @@ namespace ASC.Resource.Manager
                 resXResourceWriter.Generate();
                 resXResourceWriter.Close();
             }
+
+            return true;
         }
     }
 }
