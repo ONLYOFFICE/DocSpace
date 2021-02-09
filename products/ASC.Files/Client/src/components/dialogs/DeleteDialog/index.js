@@ -13,7 +13,7 @@ import { withTranslation } from "react-i18next";
 import { api, utils, toastr } from "asc-web-common";
 import {
   //fetchFiles,
-  setTreeFolders,
+  //setTreeFolders,
   setSecondaryProgressBarData,
   clearSecondaryProgressData,
   setUpdateTree,
@@ -23,12 +23,12 @@ import {
   loopTreeFolders,
   //getSelectedFolderId,
   getFilter,
-  getTreeFolders,
+  //getTreeFolders,
   //getIsLoading,
-  getIsRecycleBinFolder,
+  //getIsRecycleBinFolder,
   //getSelection,
   isRootFolder,
-  getIsPrivacyFolder,
+  //getIsPrivacyFolder,
 } from "../../../store/files/selectors";
 import { createI18N } from "../../../helpers/i18n";
 import { inject, observer } from "mobx-react";
@@ -307,10 +307,10 @@ const mapStateToProps = (state) => {
   return {
     //currentFolderId: getSelectedFolderId(state),
     filter: getFilter(state),
-    treeFolders: getTreeFolders(state),
+    //treeFolders: getTreeFolders(state),
     //isLoading: getIsLoading(state),
-    isRecycleBinFolder: getIsRecycleBinFolder(state),
-    isPrivacy: getIsPrivacyFolder(state),
+    //isRecycleBinFolder: getIsRecycleBinFolder(state),
+    //isPrivacy: getIsPrivacyFolder(state),
     //selection: getSelection(state),
     isRootFolder: isRootFolder(state),
   };
@@ -325,7 +325,7 @@ const mapStateToProps = (state) => {
 // })(withRouter(DeleteDialog));
 
 export default connect(mapStateToProps, {
-  setTreeFolders,
+  //setTreeFolders,
   setSecondaryProgressBarData,
   clearSecondaryProgressData,
   setUpdateTree,
@@ -333,14 +333,30 @@ export default connect(mapStateToProps, {
 })(
   inject(({ store, mainFilesStore }) => {
     const { filesStore, isLoading } = mainFilesStore;
-    const { fetchFiles, selection, selectedFolderStore } = filesStore;
+    const {
+      fetchFiles,
+      selection,
+      selectedFolderStore,
+      treeFoldersStore,
+    } = filesStore;
+
+    const {
+      treeFolders,
+      setTreeFolders,
+      isRecycleBinFolder,
+      isPrivacyFolder,
+    } = treeFoldersStore;
 
     return {
       currentFolderId: selectedFolderStore.id,
       selection,
       isLoading,
+      treeFolders,
+      isRecycleBinFolder,
+      isPrivacy: isPrivacyFolder,
 
       fetchFiles,
+      setTreeFolders,
     };
   })(withRouter(observer(DeleteDialog)))
 );

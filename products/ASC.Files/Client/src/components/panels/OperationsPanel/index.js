@@ -16,7 +16,7 @@ import {
   //getSelection,
   //getPathParts,
   //getSelectedFolderId,
-  getIsRecycleBinFolder,
+  //getIsRecycleBinFolder,
   getOperationsFolders,
 } from "../../../store/files/selectors";
 import { ThirdPartyMoveDialog } from "../../dialogs";
@@ -212,7 +212,7 @@ const mapStateToProps = (state) => {
     //selection: getSelection(state),
     //expandedKeys: getPathParts(state),
     //currentFolderId: getSelectedFolderId(state),
-    isRecycleBin: getIsRecycleBinFolder(state),
+    //isRecycleBin: getIsRecycleBinFolder(state),
     operationsFolders: getOperationsFolders(state),
   };
 };
@@ -228,12 +228,14 @@ export default connect(mapStateToProps, {
 })(
   inject(({ store, mainFilesStore }) => {
     const { filesStore } = mainFilesStore;
-    const { selection, selectedFolderStore } = filesStore;
+    const { selection, selectedFolderStore, treeFoldersStore } = filesStore;
+    const { isRecycleBinFolder } = treeFoldersStore;
 
     return {
       expandedKeys: selectedFolderStore.pathParts,
       currentFolderId: selectedFolderStore.id,
       selection,
+      isRecycleBin: isRecycleBinFolder,
     };
   })(withRouter(observer(OperationsPanel)))
 );

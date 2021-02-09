@@ -28,7 +28,7 @@ import {
   MediaViewer,
   toastr,
   Loaders,
-  store,
+  //store,
 } from "asc-web-common";
 import {
   clearSecondaryProgressData,
@@ -49,7 +49,7 @@ import {
   setSecondaryProgressBarData,
   //setSelected,
   //setSelection,
-  setTreeFolders,
+  //setTreeFolders,
   getFileInfo,
   addFileToRecentlyViewed,
   setIsVerHistoryPanel,
@@ -76,21 +76,21 @@ import {
   //getSelected,
   //getSelectedFolderTitle,
   //getSelection,
-  getTreeFolders,
+  //getTreeFolders,
   getViewAs,
   loopTreeFolders,
   //getFilesList,
   getMediaViewerImageFormats,
   getMediaViewerMediaFormats,
-  getIsShareFolder,
-  getIsCommonFolder,
-  getIsRecycleBinFolder,
-  getIsRecentFolder,
-  getIsMyFolder,
-  getIsFavoritesFolder,
-  getMyFolderId,
+  //getIsShareFolder,
+  //getIsCommonFolder,
+  //getIsRecycleBinFolder,
+  //getIsRecentFolder,
+  //getIsMyFolder,
+  //getIsFavoritesFolder,
+  //getMyFolderId,
   getTooltipLabel,
-  getIsPrivacyFolder,
+  //getIsPrivacyFolder,
   getPrivacyInstructionsLink,
   getIconOfDraggedFile,
   getSharePanelVisible,
@@ -106,15 +106,15 @@ import {
   ThirdPartyMoveDialog,
 } from "../../../../dialogs";
 import { observer, inject } from "mobx-react";
-const {
-  isAdmin,
-  getSettings,
-  getCurrentUser,
-  isDesktopClient,
-  isEncryptionSupport,
-  getOrganizationName,
-  getIsTabletView,
-} = store.auth.selectors;
+// const {
+//   isAdmin,
+//   getSettings,
+//   getCurrentUser,
+//   isDesktopClient,
+//   isEncryptionSupport,
+//   getOrganizationName,
+//   getIsTabletView,
+// } = store.auth.selectors;
 //import { getFilterByLocation } from "../../../../../helpers/converters";
 //import config from "../../../../../../package.json";
 
@@ -1809,7 +1809,7 @@ class SectionBodyContent extends React.Component {
       filter,
     } = this.props;
 
-    console.log("Section body", this.props);
+    //console.log("Section body", this.props);
 
     const {
       editingId,
@@ -2129,31 +2129,31 @@ const mapStateToProps = (state) => {
     //firstLoad: getFirstLoad(state),
     //folderId: getSelectedFolderId(state),
     //folders: getFolders(state),
-    isAdmin: isAdmin(state),
-    isCommon: getIsCommonFolder(state),
-    isDesktop: isDesktopClient(state),
-    isEncryptionSupport: isEncryptionSupport(state),
-    isFavorites: getIsFavoritesFolder(state),
-    isMy: getIsMyFolder(state),
-    isRecycleBin: getIsRecycleBinFolder(state),
-    isRecent: getIsRecentFolder(state),
-    isShare: getIsShareFolder(state),
-    isPrivacy: getIsPrivacyFolder(state),
+    //isAdmin: isAdmin(state),
+    //isCommon: getIsCommonFolder(state),
+    //isDesktop: isDesktopClient(state),
+    //isEncryptionSupport: isEncryptionSupport(state),
+    //isFavorites: getIsFavoritesFolder(state),
+    //isMy: getIsMyFolder(state),
+    //isRecycleBin: getIsRecycleBinFolder(state),
+    //isRecent: getIsRecentFolder(state),
+    //isShare: getIsShareFolder(state),
+    //isPrivacy: getIsPrivacyFolder(state),
     mediaViewerImageFormats: getMediaViewerImageFormats(state),
     mediaViewerMediaFormats: getMediaViewerMediaFormats(state),
     mediaViewerVisible: getMediaViewerVisibility(state),
-    myDocumentsId: getMyFolderId(state),
-    organizationName: getOrganizationName(state),
+    //myDocumentsId: getMyFolderId(state),
+    //organizationName: getOrganizationName(state),
     //parentId: getSelectedFolderParentId(state),
     privacyInstructions: getPrivacyInstructionsLink(state),
     //selected: getSelected(state),
     //selectedFolderId: getSelectedFolderId(state),
     //selection: getSelection(state),
-    settings: getSettings(state),
+    //settings: getSettings(state),
     //title: getSelectedFolderTitle(state),
-    treeFolders: getTreeFolders(state),
+    //treeFolders: getTreeFolders(state),
     viewAs: getViewAs(state),
-    viewer: getCurrentUser(state),
+    //viewer: getCurrentUser(state),
     tooltipValue: getTooltipLabel(state),
     iconOfDraggedFile: getIconOfDraggedFile(state)(state),
     sharingPanelVisible: getSharePanelVisible(state),
@@ -2161,7 +2161,7 @@ const mapStateToProps = (state) => {
     providers: getThirdPartyProviders(state),
     capabilities: getThirdPartyCapabilities(state),
     isVersionHistoryPanel: getIsVerHistoryPanel(state),
-    isTabletView: getIsTabletView(state),
+    //isTabletView: getIsTabletView(state),
   };
 };
 
@@ -2198,7 +2198,7 @@ export default connect(mapStateToProps, {
   updateFile,
   //fetchFiles,
   //selectFile,
-  setTreeFolders,
+  //setTreeFolders,
   setDragItem,
   setMediaViewerData,
   setSecondaryProgressBarData,
@@ -2219,6 +2219,14 @@ export default connect(mapStateToProps, {
   setChangeOwnerPanelVisible,
 })(
   inject(({ store, mainFilesStore }) => {
+    const {
+      homepage,
+      culture,
+      isEncryptionSupport,
+      isTabletView,
+      organizationName,
+      isDesktopClient,
+    } = store.settingsStore;
     const { dragging, setDragging, filesStore, setIsLoading } = mainFilesStore;
     const {
       files,
@@ -2233,13 +2241,35 @@ export default connect(mapStateToProps, {
       selection,
       selectFile,
       deselectFile,
+      treeFoldersStore,
     } = filesStore;
+
+    const {
+      treeFolders,
+      setTreeFolders,
+      myFolderId,
+      isMyFolder,
+      isRecycleBinFolder,
+      isShareFolder,
+      isFavoritesFolder,
+      isCommonFolder,
+      isRecentFolder,
+      isPrivacyFolder
+    } = treeFoldersStore;
 
     const { type, extension, id, setAction } = fileActionStore;
 
     const fileAction = { type, extension, id };
 
     return {
+      isAdmin: store.isAdmin,
+      homepage,
+      culture,
+      isEncryptionSupport,
+      isTabletView,
+      viewer: store.userStore.user,
+      organizationName,
+      isDesktop: isDesktopClient,
       dragging,
       fileAction,
       files,
@@ -2251,6 +2281,15 @@ export default connect(mapStateToProps, {
       parentId: filesStore.selectedFolderStore.parentId,
       selectedFolderId: filesStore.selectedFolderStore.id,
       selection,
+      treeFolders,
+      isRecycleBin: isRecycleBinFolder,
+      myDocumentsId: myFolderId,
+      isShare: isShareFolder,
+      isFavorites: isFavoritesFolder,
+      isCommon: isCommonFolder,
+      isRecent: isRecentFolder,
+      isMy: isMyFolder,
+      isPrivacy: isPrivacyFolder,
 
       setDragging,
       setAction,
@@ -2260,6 +2299,7 @@ export default connect(mapStateToProps, {
       fetchFiles,
       selectFile,
       deselectFile,
+      setTreeFolders,
     };
   })(withRouter(withTranslation()(observer(SectionBodyContent))))
 );

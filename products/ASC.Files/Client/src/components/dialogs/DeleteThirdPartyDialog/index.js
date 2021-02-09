@@ -9,15 +9,15 @@ import {
   setThirdPartyProviders,
   //fetchFiles,
   setUpdateTree,
-  setTreeFolders,
+  //setTreeFolders,
 } from "../../../store/files/actions";
 import {
   getThirdPartyProviders,
   //getSelectedFolderId,
   loopTreeFolders,
-  getTreeFolders,
-  getCommonFolderId,
-  getMyFolderId,
+  //getTreeFolders,
+  //getCommonFolderId,
+  //getMyFolderId,
 } from "../../../store/files/selectors";
 import { createI18N } from "../../../helpers/i18n";
 import { inject, observer } from "mobx-react";
@@ -122,9 +122,9 @@ const mapStateToProps = (state) => {
   return {
     providers: getThirdPartyProviders(state),
     //currentFolderId: getSelectedFolderId(state),
-    treeFolders: getTreeFolders(state),
-    commonId: getCommonFolderId(state),
-    myId: getMyFolderId(state),
+    //treeFolders: getTreeFolders(state),
+    //commonId: getCommonFolderId(state),
+    //myId: getMyFolderId(state),
   };
 };
 
@@ -139,16 +139,27 @@ export default connect(mapStateToProps, {
   setThirdPartyProviders,
   //fetchFiles,
   setUpdateTree,
-  setTreeFolders,
+  //setTreeFolders,
 })(
   inject(({ store, mainFilesStore }) => {
     const { filesStore } = mainFilesStore;
-    const { fetchFiles } = filesStore;
+    const { fetchFiles, treeFoldersStore } = filesStore;
+
+    const {
+      treeFolders,
+      setTreeFolders,
+      myFolderId,
+      commonFolderId,
+    } = treeFoldersStore;
 
     return {
       currentFolderId: filesStore.selectedFolderStore.id,
+      treeFolders,
+      myId: myFolderId,
+      commonId: commonFolderId,
 
       fetchFiles,
+      setTreeFolders,
     };
   })(withRouter(observer(DeleteThirdPartyDialog)))
 );

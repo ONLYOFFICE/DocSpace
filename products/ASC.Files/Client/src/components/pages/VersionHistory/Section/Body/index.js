@@ -96,6 +96,7 @@ export default connect(
     const { setFirstLoad } = filesStore;
 
     return {
+      culture: store.settingsStore.culture,
       isLoading,
 
       setFirstLoad,

@@ -33,7 +33,7 @@ import {
   //getIsLoading,
   //getFiles,
   //getFolders,
-  getIsPrivacyFolder,
+  //getIsPrivacyFolder,
   //getUploadPanelVisible,
   getUploadSelection,
 } from "../../../store/files/selectors";
@@ -56,12 +56,12 @@ const i18n = createI18N({
 const { changeLanguage } = commonUtils;
 const { ShareAccessRights } = constants;
 const { replaceFileStream } = store.auth.actions;
-const {
-  getCurrentUserId,
-  getSettingsCustomNamesGroupsCaption,
-  //getSettings,
-  isDesktopClient,
-} = store.auth.selectors;
+// const {
+//   getCurrentUserId,
+//   getSettingsCustomNamesGroupsCaption,
+//   getSettings,
+//   isDesktopClient,
+// } = store.auth.selectors;
 
 const SharingBodyStyle = { height: `calc(100vh - 156px)` };
 
@@ -632,11 +632,11 @@ const mapStateToProps = (state, ownProps) => {
     getAccessOption: (selection) => getAccessOption(state, selection),
     getExternalAccessOption: (selection) =>
       getExternalAccessOption(state, selection),
-    isMyId: getCurrentUserId(state),
+    //isMyId: getCurrentUserId(state),
     selection: selectedFile,
-    isPrivacy: getIsPrivacyFolder(state),
-    isDesktop: isDesktopClient(state),
-    groupsCaption: getSettingsCustomNamesGroupsCaption(state),
+    //isPrivacy: getIsPrivacyFolder(state),
+    //isDesktop: isDesktopClient(state),
+    //groupsCaption: getSettingsCustomNamesGroupsCaption(state),
     sharingPanelVisible: getSharePanelVisible(state),
     canShareOwnerChange: getCanShareOwnerChange(state),
     //isLoading: getIsLoading(state),
@@ -668,15 +668,21 @@ export default connect(mapStateToProps, {
 });
 
 inject(({ store, mainFilesStore }) => {
+  const { customNames, isDesktopClient, homepage } = store.settingsStore;
   const { filesStore, setIsLoading, isLoading } = mainFilesStore;
-  const { files, folders, selection } = filesStore;
+  const { files, folders, selection, treeFoldersStore } = filesStore;
+  const { isPrivacyFolder } = treeFoldersStore;
 
   return {
-    homepage: store.settingsStore.homepage,
+    isMyId: store.userStore.user.id,
+    groupsCaption: customNames.groupsCaption,
+    isDesktop: isDesktopClient,
+    homepage,
     files,
     folders,
     //selection,
     isLoading,
+    isPrivacy: isPrivacyFolder,
 
     setIsLoading,
   };

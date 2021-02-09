@@ -6,11 +6,12 @@ import { ModalDialog, Button, Text, Checkbox } from "asc-web-components";
 import { withTranslation } from "react-i18next";
 import { utils } from "asc-web-common";
 import {
-  setTreeFolders,
+  //setTreeFolders,
   setDialogVisible,
   convertUploadedFiles,
 } from "../../../store/files/actions";
 import { createI18N } from "../../../helpers/i18n";
+import { inject, observer } from "mobx-react";
 const i18n = createI18N({
   page: "ConvertDialog",
   localesPath: "dialogs/ConvertDialog",
@@ -118,8 +119,23 @@ const ConvertDialog = (props) => (
   <ModalDialogContainerTranslated i18n={i18n} {...props} />
 );
 
+// export default connect(null, {
+//   setTreeFolders,
+//   setDialogVisible,
+//   convertUploadedFiles,
+// })(withRouter(ConvertDialog));
+
 export default connect(null, {
-  setTreeFolders,
+  //setTreeFolders,
   setDialogVisible,
   convertUploadedFiles,
-})(withRouter(ConvertDialog));
+})(
+  inject(({ store, mainFilesStore }) => {
+    const { filesStore } = mainFilesStore;
+    const { setTreeFolders } = filesStore.treeFoldersStore;
+
+    return {
+      setTreeFolders,
+    };
+  })(withRouter(observer(ConvertDialog)))
+);

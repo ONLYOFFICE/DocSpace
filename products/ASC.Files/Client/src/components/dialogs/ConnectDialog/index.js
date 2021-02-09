@@ -15,15 +15,15 @@ import {
   getOAuthToken,
   openConnectWindow,
   saveThirdParty,
-  setTreeFolders,
+  //setTreeFolders,
   setUpdateTree,
   //fetchFiles,
 } from "../../../store/files/actions";
 import {
-  getTreeFolders,
+  //getTreeFolders,
   loopTreeFolders,
-  getMyFolderId,
-  getCommonFolderId,
+  //getMyFolderId,
+  //getCommonFolderId,
   getThirdPartyProviders,
   //getSelectedFolder,
 } from "../../../store/files/selectors";
@@ -353,9 +353,9 @@ const ConnectDialog = (props) => {
 
 const mapStateToProps = (state) => {
   return {
-    treeFolders: getTreeFolders(state),
-    myFolderId: getMyFolderId(state),
-    commonFolderId: getCommonFolderId(state),
+    //treeFolders: getTreeFolders(state),
+    //myFolderId: getMyFolderId(state),
+    //commonFolderId: getCommonFolderId(state),
     providers: getThirdPartyProviders(state),
     //selectedFolder: getSelectedFolder(state),
   };
@@ -371,21 +371,32 @@ const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps, {
   setUpdateTree,
-  setTreeFolders,
+  //setTreeFolders,
   fetchThirdPartyProviders,
   fetchTreeFolders,
   //fetchFiles,
 })(
   inject(({ store, mainFilesStore }) => {
     const { filesStore } = mainFilesStore;
-    const { fetchFiles } = filesStore;
+    const { fetchFiles, treeFoldersStore } = filesStore;
+
+    const {
+      treeFolders,
+      setTreeFolders,
+      myFolderId,
+      commonFolderId,
+    } = treeFoldersStore;
     const { id, folders } = filesStore.selectedFolderStore;
 
     return {
       selectedFolderId: id,
       selectedFolderFolders: folders,
+      treeFolders,
+      myFolderId,
+      commonFolderId,
 
       fetchFiles,
+      setTreeFolders,
     };
   })(observer(ConnectDialog))
 );

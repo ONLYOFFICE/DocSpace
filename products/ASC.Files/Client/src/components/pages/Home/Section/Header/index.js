@@ -5,7 +5,7 @@ import { withRouter } from "react-router";
 import {
   constants,
   Headline,
-  store,
+  //store,
   api,
   toastr,
   Loaders,
@@ -38,7 +38,7 @@ import { OperationsPanel } from "../../../../panels";
 import {
   getUserAccess,
   getWebEditSelected,
-  getIsRecycleBinFolder,
+  //getIsRecycleBinFolder,
   canCreate,
   //getSelectedFolderTitle,
   getFilter,
@@ -53,12 +53,12 @@ import {
   getSelectionLength,
   getSharePanelVisible,
   getIsThirdPartySelection,
-  getIsPrivacyFolder,
+  //getIsPrivacyFolder,
   getOnlyFoldersSelected,
 } from "../../../../../store/files/selectors";
 import { inject, observer } from "mobx-react";
 
-const { isAdmin, isDesktopClient } = store.auth.selectors;
+//const { isAdmin, isDesktopClient } = store.auth.selectors;
 const { FilterType, FileAction } = constants;
 const { tablet, desktop } = utils.device;
 const { Consumer } = utils.context;
@@ -696,10 +696,10 @@ class SectionHeaderContent extends React.Component {
 const mapStateToProps = (state) => {
   return {
     //isRootFolder: getIsRootFolder(state),
-    isAdmin: isAdmin(state),
-    isRecycleBin: getIsRecycleBinFolder(state),
-    isPrivacy: getIsPrivacyFolder(state),
-    isDesktop: isDesktopClient(state),
+    //isAdmin: isAdmin(state),
+    //isRecycleBin: getIsRecycleBinFolder(state),
+    //isPrivacy: getIsPrivacyFolder(state),
+    //isDesktop: isDesktopClient(state),
     //parentId: getSelectedFolderParentId(state),
     //selection: getSelection(state),
     //title: getSelectedFolderTitle(state),
@@ -739,15 +739,27 @@ export default connect(mapStateToProps, {
 })(
   inject(({ store, mainFilesStore }) => {
     const { filesStore, setIsLoading } = mainFilesStore;
-    const { setSelected, fileActionStore, fetchFiles, selection } = filesStore;
+    const {
+      setSelected,
+      fileActionStore,
+      fetchFiles,
+      selection,
+      selectedFolderStore,
+      treeFoldersStore,
+    } = filesStore;
+    const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
     const { setAction } = fileActionStore;
 
     return {
-      isRootFolder: filesStore.selectedFolderStore.parentId === 0,
-      title: filesStore.selectedFolderStore.title,
-      parentId: filesStore.selectedFolderStore.parentId,
-      currentFolderId: filesStore.selectedFolderStore.id,
+      isAdmin: store.isAdmin,
+      isDesktop: store.settingsStore.isDesktopClient,
+      isRootFolder: selectedFolderStore.parentId === 0,
+      title: selectedFolderStore.title,
+      parentId: selectedFolderStore.parentId,
+      currentFolderId: selectedFolderStore.id,
       selection,
+      isRecycleBin: isRecycleBinFolder,
+      isPrivacy: isPrivacyFolder,
 
       setSelected,
       setAction,

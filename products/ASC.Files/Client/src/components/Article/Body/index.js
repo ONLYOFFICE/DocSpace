@@ -11,10 +11,10 @@ import {
   setSelectedNode,
 } from "../../../store/files/actions";
 import {
-  getTreeFolders,
+  //getTreeFolders,
   getFilter,
   //getSelectedFolderTitle,
-  getSelectedTreeNode,
+  //getSelectedTreeNode,
 } from "../../../store/files/selectors";
 import { NewFilesPanel } from "../../panels";
 import { setDocumentTitle } from "../../../helpers/utils";
@@ -38,20 +38,20 @@ class ArticleBodyContent extends React.Component {
     };
   }
 
-  componentDidUpdate(prevProps) {
-    const { filter, treeFolders } = this.props;
+  // componentDidUpdate(prevProps) {
+  //   const { filter, treeFolders } = this.props;
 
-    if (
-      filter.treeFolders.length !== prevProps.filter.treeFolders.length ||
-      this.state.expandedKeys.length !== filter.treeFolders.length
-    ) {
-      this.setState({ expandedKeys: filter.treeFolders });
-    }
+  //   if (
+  //     filter.treeFolders.length !== prevProps.filter.treeFolders.length ||
+  //     this.state.expandedKeys.length !== filter.treeFolders.length
+  //   ) {
+  //     this.setState({ expandedKeys: filter.treeFolders });
+  //   }
 
-    if (!utils.array.isArrayEqual(prevProps.treeFolders, treeFolders)) {
-      this.setState({ data: treeFolders });
-    }
-  }
+  //   if (!utils.array.isArrayEqual(prevProps.treeFolders, treeFolders)) {
+  //     this.setState({ data: treeFolders });
+  //   }
+  // }
 
   componentDidMount() {
     if (this.props.currentId) {
@@ -108,7 +108,6 @@ class ArticleBodyContent extends React.Component {
     const { treeFolders, filter, onTreeDrop, selectedTreeNode } = this.props;
     const { showNewFilesPanel, expandedKeys, newFolderId } = this.state;
 
-    //console.log("Article Body render");
     return (
       <>
         {showNewFilesPanel && (
@@ -144,9 +143,9 @@ class ArticleBodyContent extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    treeFolders: getTreeFolders(state),
+    //treeFolders: getTreeFolders(state),
     filter: getFilter(state),
-    selectedTreeNode: getSelectedTreeNode(state),
+    //selectedTreeNode: getSelectedTreeNode(state),
     //selectedFolderTitle: getSelectedFolderTitle(state),
   };
 }
@@ -166,10 +165,14 @@ export default connect(
 )(
   inject(({ store, mainFilesStore }) => {
     const { setIsLoading, filesStore } = mainFilesStore;
-    const { fetchFiles } = filesStore;
+    const { fetchFiles, treeFoldersStore, selectedFolderStore } = filesStore;
+    const { treeFolders } = treeFoldersStore;
+    const selectedTreeNode = [selectedFolderStore.id + ""];
 
     return {
-      selectedFolderTitle: filesStore.selectedFolderStore.title,
+      selectedFolderTitle: selectedFolderStore.title,
+      treeFolders,
+      selectedTreeNode,
 
       setIsLoading,
       fetchFiles,

@@ -11,7 +11,7 @@ import {
 import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
 import { connect } from "react-redux";
-import { toastr, store } from "asc-web-common";
+import { toastr /* store */ } from "asc-web-common";
 import {
   markAsVersion,
   restoreVersion,
@@ -19,8 +19,9 @@ import {
 } from "../../../../../store/files/actions";
 import VersionBadge from "./VersionBadge";
 import StyledVersionRow from "./StyledVersionRow";
+import { inject, observer } from "mobx-react";
 
-const { getLanguage } = store.auth.selectors;
+//const { getLanguage } = store.auth.selectors;
 
 const VersionRow = (props) => {
   const {
@@ -233,11 +234,11 @@ const VersionRow = (props) => {
   );
 };
 
-const mapStateToProps = (state) => {
-  return {
-    culture: getLanguage(state),
-  };
-};
+// const mapStateToProps = (state) => {
+//   return {
+//     culture: getLanguage(state),
+//   };
+// };
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -249,7 +250,22 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
+// export default connect(
+//   mapStateToProps,
+//   mapDispatchToProps
+// )(withRouter(withTranslation()(VersionRow)));
+
 export default connect(
-  mapStateToProps,
+  null,
   mapDispatchToProps
-)(withRouter(withTranslation()(VersionRow)));
+)(
+  inject(({ store, mainFilesStore }) => {
+    const { user } = store.userStore;
+    const { culture } = store.settingsStore;
+    const language = (user && user.cultureName) || culture || "en-US";
+
+    return {
+      culture: language,
+    };
+  })(withRouter(withTranslation()(observer(VersionRow))))
+);

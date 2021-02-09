@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { connect } from "react-redux";
 import { Heading, ToggleButton } from "asc-web-components";
-import { Error403, Error520, store } from "asc-web-common";
+import { Error403, Error520 /* store */ } from "asc-web-common";
 import {
   setUpdateIfExist,
   setStoreOriginal,
@@ -25,7 +25,7 @@ import {
 import ConnectClouds from "./ConnectedClouds";
 import { inject, observer } from "mobx-react";
 
-const { isAdmin } = store.auth.selectors;
+//const { isAdmin } = store.auth.selectors;
 
 const StyledSettings = styled.div`
   display: grid;
@@ -182,7 +182,7 @@ const SectionBodyContent = ({
 
 function mapStateToProps(state) {
   return {
-    isAdmin: isAdmin(state),
+    //isAdmin: isAdmin(state),
     selectedTreeNode: getSettingsSelectedTreeNode(state),
     storeOriginalFiles: getSettingsTreeStoreOriginalFiles(state),
     confirmDelete: getSettingsTreeConfirmDelete(state),
@@ -216,6 +216,7 @@ export default connect(mapStateToProps, {
     const { isLoading } = mainFilesStore;
 
     return {
+      isAdmin: store.isAdmin,
       isLoading,
     };
   })(observer(SectionBodyContent))

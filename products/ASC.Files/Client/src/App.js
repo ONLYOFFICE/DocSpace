@@ -17,8 +17,8 @@ import {
   Offline,
   NavMenu,
   Main,
-  //utils,
-  //toastr,
+  utils,
+  toastr,
   Layout,
   regDesktop,
 } from "asc-web-common";
@@ -54,7 +54,13 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    this.props.loadFilesInfo();
+    this.props
+      .loadFilesInfo()
+      .catch((err) => toastr.error(err))
+      .finally(() => {
+        this.props.setIsLoaded(true);
+        utils.updateTempContent();
+      });
   }
 
   /*
@@ -234,16 +240,18 @@ class App extends React.Component {
 // };
 
 export default inject(({ store, mainFilesStore }) => ({
+  isDesktop: store.settingsStore.isDesktopClient,
   user: store.userStore.user,
   isAuthenticated: store.isAuthenticated,
   homepage: store.settingsStore.homepage || config.homepage,
   encryptionKeys: store.settingsStore.encryptionKeys,
-  isEncryptionSupport: store.settingsStore.isEncryptionSupport,
+  isEncryption: store.settingsStore.isEncryptionSupport,
   isLoaded: mainFilesStore.isLoaded,
 
+  setIsLoaded: mainFilesStore.setIsLoaded,
   setEncryptionKeys: store.settingsStore.setEncryptionKeys,
   loadFilesInfo: async () => {
     await store.init();
-    mainFilesStore.initFiles();
+    await mainFilesStore.initFiles();
   },
 }))(observer(App));

@@ -11,7 +11,7 @@ import {
   renameFolder,
   updateFile,
   //fetchFiles,
-  setTreeFolders,
+  //setTreeFolders,
   //setIsLoading,
 } from "../../../../../store/files/actions";
 import {
@@ -26,11 +26,11 @@ import {
   //getSelectedFolderNew,
   //getSelectedFolderParentId,
   getTitleWithoutExst,
-  getTreeFolders,
+  //getTreeFolders,
   isImage,
   isSound,
   isVideo,
-  getIsRecycleBinFolder,
+  //getIsRecycleBinFolder,
   //getRootFolderId,
 } from "../../../../../store/files/selectors";
 import { NewFilesPanel } from "../../../../panels";
@@ -446,8 +446,8 @@ function mapStateToProps(state, props) {
     filter: getFilter(state),
     //fileAction: getFileAction(state),
     //parentFolder: getSelectedFolderParentId(state),
-    isTrashFolder: getIsRecycleBinFolder(state),
-    treeFolders: getTreeFolders(state),
+    //isTrashFolder: getIsRecycleBinFolder(state),
+    //treeFolders: getTreeFolders(state),
     //rootFolderId: getRootFolderId(state),
     //newItems: getSelectedFolderNew(state),
     //selectedFolder: getSelectedFolder(state),
@@ -472,18 +472,28 @@ export default connect(mapStateToProps, {
   createFile,
   updateFile,
   renameFolder,
-  setTreeFolders,
+  //setTreeFolders,
   //setIsLoading,
   //fetchFiles,
 })(
   inject(({ store, mainFilesStore }) => {
+    const { homepage, culture } = store.settingsStore;
     const { filesStore, setIsLoading, isLoading } = mainFilesStore;
-    const { folders, fetchFiles } = filesStore;
+    const { folders, fetchFiles, treeFoldersStore } = filesStore;
+
+    const {
+      treeFolders,
+      setTreeFolders,
+      isRecycleBinFolder,
+    } = treeFoldersStore;
+
     const { type, extension, id } = filesStore.fileActionStore;
 
     const fileAction = { type, extension, id };
 
     return {
+      culture,
+      homepage,
       fileAction,
       folders,
       rootFolderId: filesStore.selectedFolderStore.pathParts,
@@ -492,9 +502,12 @@ export default connect(mapStateToProps, {
       newItems: filesStore.selectedFolderStore.new,
       parentFolder: filesStore.selectedFolderStore.parentId,
       isLoading,
+      treeFolders,
+      isTrashFolder: isRecycleBinFolder,
 
       setIsLoading,
       fetchFiles,
+      setTreeFolders,
     };
   })(withRouter(withTranslation()(observer(FilesTileContent))))
 );

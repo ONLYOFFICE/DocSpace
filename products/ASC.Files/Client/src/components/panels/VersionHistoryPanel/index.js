@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
 import { Backdrop, Heading, Aside } from "asc-web-components";
-import { utils, Loaders, store } from "asc-web-common";
+import { utils, Loaders /* store */ } from "asc-web-common";
 
 import { withTranslation, I18nextProvider } from "react-i18next";
 import { createI18N } from "../../../helpers/i18n";
@@ -32,7 +32,7 @@ const i18n = createI18N({
 
 const { changeLanguage } = utils;
 
-const { getIsTabletView, getSettingsHomepage } = store.auth.selectors;
+//const { getIsTabletView, getSettingsHomepage } = store.auth.selectors;
 
 class PureVersionHistoryPanel extends React.Component {
   componentDidUpdate(preProps) {
@@ -123,8 +123,8 @@ VersionHistoryPanelContainer.propTypes = {
 function mapStateToProps(state) {
   return {
     fileId: getVerHistoryFileId(state),
-    isTabletView: getIsTabletView(state),
-    homepage: getSettingsHomepage(state),
+    //isTabletView: getIsTabletView(state),
+    //homepage: getSettingsHomepage(state),
     //isLoading: getIsLoading(state),
     versions: getFileVersions(state),
   };
@@ -150,6 +150,8 @@ export default connect(
     const { isLoading } = mainFilesStore;
 
     return {
+      isTabletView: store.settingsStore.isTabletView,
+      homepage: store.settingsStore.homepage,
       isLoading,
     };
   })(observer(VersionHistoryPanel))

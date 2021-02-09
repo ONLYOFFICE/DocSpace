@@ -10,7 +10,7 @@ import {
   Aside,
 } from "asc-web-components";
 import { withTranslation } from "react-i18next";
-import { utils, store, toastr } from "asc-web-common";
+import { utils, /* store, */ toastr } from "asc-web-common";
 import {
   //setIsLoading,
   setFilesOwner,
@@ -43,7 +43,7 @@ const i18n = createI18N({
   localesPath: "panels/ChangeOwnerPanel",
 });
 const { changeLanguage } = utils;
-const { getSettingsCustomNamesGroupsCaption } = store.auth.selectors;
+//const { getSettingsCustomNamesGroupsCaption } = store.auth.selectors;
 
 class ChangeOwnerComponent extends React.Component {
   constructor(props) {
@@ -204,7 +204,7 @@ const ChangeOwnerPanel = (props) => (
 const mapStateToProps = (state) => {
   return {
     //selection: getSelection(state),
-    groupsCaption: getSettingsCustomNamesGroupsCaption(state),
+    //groupsCaption: getSettingsCustomNamesGroupsCaption(state),
     //isLoading: getIsLoading(state),
     //files: getFiles(state),
     //folders: getFolders(state),
@@ -231,6 +231,7 @@ inject(({ store, mainFilesStore }) => {
   const { files, folders, selection } = filesStore;
 
   return {
+    groupsCaption: store.settingsStore.customNames.groupsCaption,
     files,
     folders,
     selection,

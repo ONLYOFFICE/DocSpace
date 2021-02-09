@@ -28,14 +28,14 @@ import {
   getFilter,
   //getFiles,
   //getFolders,
-  getTreeFolders,
+  //getTreeFolders,
   //getSelectedFolder,
-  getIsPrivacyFolder,
+  //getIsPrivacyFolder,
 } from "../../../store/files/selectors";
 import {
   //fetchFiles,
   setMediaViewerData,
-  setTreeFolders,
+  //setTreeFolders,
   setUpdateTree,
   setNewRowItems,
   //setIsLoading,
@@ -317,8 +317,8 @@ const mapStateToProps = (state) => {
     filter: getFilter(state),
     //files: getFiles(state),
     //folders: getFolders(state),
-    treeFolders: getTreeFolders(state),
-    isPrivacy: getIsPrivacyFolder(state),
+    //treeFolders: getTreeFolders(state),
+    //isPrivacy: getIsPrivacyFolder(state),
   };
 };
 
@@ -334,7 +334,7 @@ const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps, {
   setMediaViewerData,
-  setTreeFolders,
+  //setTreeFolders,
   setUpdateTree,
   setNewRowItems,
   //fetchFiles,
@@ -344,13 +344,17 @@ export default connect(mapStateToProps, {
 
 inject(({ store, mainFilesStore }) => {
   const { filesStore, setIsLoading } = mainFilesStore;
-  const { files, folders, fetchFiles } = filesStore;
+  const { files, folders, fetchFiles, treeFoldersStore } = filesStore;
+  const { treeFolders, setTreeFolders, isPrivacyFolder } = treeFoldersStore;
 
   return {
     files,
     folders,
+    treeFolders,
+    isPrivacy: isPrivacyFolder,
 
     setIsLoading,
     fetchFiles,
+    setTreeFolders,
   };
 })(withRouter(observer(NewFilesPanel)));

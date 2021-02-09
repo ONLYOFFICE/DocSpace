@@ -11,12 +11,12 @@ import {
   getFilter,
   //getSelectedFolder,
   //getFirstLoad,
-  getIsPrivacyFolder,
+  //getIsPrivacyFolder,
 } from "../../../store/files/selectors";
 import {
   utils as commonUtils,
   constants,
-  store as initStore,
+  //store as initStore,
   Loaders,
 } from "asc-web-common";
 import { createI18N } from "../../../helpers/i18n";
@@ -25,7 +25,7 @@ import { inject, observer } from "mobx-react";
 
 //const { settingsStore } = initStore;
 
-const { getSettings } = initStore.auth.selectors;
+//const { getSettings } = initStore.auth.selectors;
 const i18n = createI18N({
   page: "Article",
   localesPath: "Article",
@@ -186,23 +186,26 @@ const mapStateToProps = (state) => {
   return {
     canCreate: canCreate(state),
     //firstLoad: getFirstLoad(state),
-    settings: getSettings(state),
+    //settings: getSettings(state),
     filter: getFilter(state),
     //selectedFolder: getSelectedFolder(state),
-    isPrivacy: getIsPrivacyFolder(state),
+    //isPrivacy: getIsPrivacyFolder(state),
   };
 };
 
 export default connect(mapStateToProps, { /* setAction, */ startUpload })(
   inject(({ store, mainFilesStore }) => {
     const { filesStore } = mainFilesStore;
-    const { firstLoad, fileActionStore } = filesStore;
+    const { firstLoad, fileActionStore, treeFoldersStore } = filesStore;
+    const { isPrivacyFolder } = treeFoldersStore;
     const { id } = filesStore.selectedFolderStore;
 
     return {
+      homepage: store.settingsStore.homepage,
       firstLoad,
       selectedFolderId: id,
       setAction: fileActionStore.setAction,
+      isPrivacy: isPrivacyFolder,
     };
   })(withRouter(observer(ArticleMainButtonContent)))
 );

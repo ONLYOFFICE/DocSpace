@@ -11,7 +11,7 @@ import {
   Row,
   Icons,
 } from "asc-web-components";
-import { store } from "asc-web-common";
+//import { store } from "asc-web-common";
 import { withTranslation } from "react-i18next";
 import EmptyFolderContainer from "../../../Home/Section/Body/EmptyFolderContainer";
 import { createI18N } from "../../../../../helpers/i18n";
@@ -46,7 +46,7 @@ import {
 import { DeleteThirdPartyDialog, ConnectDialog } from "../../../../dialogs";
 import { inject, observer } from "mobx-react";
 
-const { isAdmin } = store.auth.selectors;
+//const { isAdmin } = store.auth.selectors;
 
 const i18n = createI18N({
   page: "SectionBodyContent",
@@ -545,7 +545,7 @@ class ConnectClouds extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    isAdmin: isAdmin(state),
+    //isAdmin: isAdmin(state),
     capabilities: getThirdPartyCapabilities(state),
     googleConnectItem: getGoogleConnect(state),
     boxConnectItem: getBoxConnect(state),
@@ -584,6 +584,8 @@ export default connect(mapStateToProps, {
     const { fetchFiles } = filesStore;
 
     return {
+      isAdmin: store.isAdmin,
+
       fetchFiles,
     };
   })(withTranslation()(observer(ConnectClouds)))

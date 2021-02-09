@@ -21,7 +21,7 @@ import {
   //setIsLoading,
   setNewRowItems,
   setSecondaryProgressBarData,
-  setTreeFolders,
+  //setTreeFolders,
   setUpdateTree,
   updateFile,
 } from "../../../../../store/files/actions";
@@ -34,15 +34,15 @@ import {
   getFilter,
   //getFolders,
   //getIsLoading,
-  getIsPrivacyFolder,
-  getIsRecycleBinFolder,
+  //getIsPrivacyFolder,
+  //getIsRecycleBinFolder,
   getNewRowItems,
   //getPathParts,
   //getSelectedFolder,
   //getSelectedFolderNew,
   //getSelectedFolderParentId,
   getTitleWithoutExst,
-  getTreeFolders,
+  //getTreeFolders,
   isImage,
   isSound,
   isVideo,
@@ -56,7 +56,7 @@ import { observer, inject } from "mobx-react";
 
 const { FileAction } = constants;
 const sideColor = "#A3A9AE";
-const { /* getSettings, */ isDesktopClient } = initStore.auth.selectors;
+//const {  getSettings,  isDesktopClient } = initStore.auth.selectors;
 const { getEncryptionAccess, replaceFileStream } = initStore.auth.actions;
 
 const SimpleFilesRowContent = styled(RowContent)`
@@ -758,17 +758,17 @@ function mapStateToProps(state, props) {
     filter: getFilter(state),
     //fileAction: getFileAction(state),
     //parentFolder: getSelectedFolderParentId(state),
-    isTrashFolder: getIsRecycleBinFolder(state),
+    //isTrashFolder: getIsRecycleBinFolder(state),
     //settings: getSettings(state),
-    treeFolders: getTreeFolders(state),
+    //treeFolders: getTreeFolders(state),
     //selectedFolderPathParts: getPathParts(state),
     //newItems: getSelectedFolderNew(state),
     //selectedFolder: getSelectedFolder(state),
     //folders: getFolders(state),
     newRowItems: getNewRowItems(state),
     //isLoading: getIsLoading(state),
-    isPrivacy: getIsPrivacyFolder(state),
-    isDesktop: isDesktopClient(state),
+    //isPrivacy: getIsPrivacyFolder(state),
+    //isDesktop: isDesktopClient(state),
 
     canWebEdit: canWebEdit(props.item.fileExst)(state),
     canConvert: canConvert(props.item.fileExst)(state),
@@ -797,7 +797,7 @@ export default connect(mapStateToProps, {
   createFile,
   updateFile,
   renameFolder,
-  setTreeFolders,
+  //setTreeFolders,
   setSecondaryProgressBarData,
   setUpdateTree,
   setNewRowItems,
@@ -808,13 +808,25 @@ export default connect(mapStateToProps, {
   replaceFileStream,
 })(
   inject(({ store, mainFilesStore }) => {
+    const { homepage, culture, isDesktopClient } = store.settingsStore;
     const { filesStore, setIsLoading, isLoading } = mainFilesStore;
-    const { folders, fetchFiles } = filesStore;
+    const { folders, fetchFiles, treeFoldersStore } = filesStore;
+
+    const {
+      treeFolders,
+      setTreeFolders,
+      isRecycleBinFolder,
+      isPrivacyFolder
+    } = treeFoldersStore;
+
     const { type, extension, id } = filesStore.fileActionStore;
 
     const fileAction = { type, extension, id };
 
     return {
+      isDesktop: isDesktopClient,
+      homepage,
+      culture,
       fileAction,
       folders,
       selectedFolderId: filesStore.selectedFolderStore.id,
@@ -822,9 +834,13 @@ export default connect(mapStateToProps, {
       newItems: filesStore.selectedFolderStore.new,
       parentFolder: filesStore.selectedFolderStore.parentId,
       isLoading,
+      treeFolders,
+      isTrashFolder: isRecycleBinFolder,
+      isPrivacy: isPrivacyFolder,
 
       setIsLoading,
       fetchFiles,
+      setTreeFolders,
     };
   })(withRouter(withTranslation()(observer(FilesRowContent))))
 );

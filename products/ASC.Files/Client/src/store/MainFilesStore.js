@@ -1,6 +1,5 @@
 import { makeObservable, action, observable } from "mobx";
 import { store, utils } from "asc-web-common";
-import TreeFoldersStore from "./TreeFoldersStore";
 import FilesStore from "./FilesStore";
 import config from "../../package.json";
 
@@ -11,18 +10,15 @@ class MainFilesStore {
   isLoading = false;
   dragging = false;
 
-  treeFoldersStore = null;
   filesStore = null;
 
   constructor() {
-    this.treeFoldersStore = new TreeFoldersStore();
     this.filesStore = new FilesStore();
 
     const pathname = window.location.pathname.toLowerCase();
     this.isEditor = pathname.indexOf("doceditor") !== -1;
 
     makeObservable(this, {
-      treeFoldersStore: observable,
       filesStore: observable,
       isLoaded: observable,
       isLoading: observable,
@@ -47,7 +43,7 @@ class MainFilesStore {
     this.isLoading = isLoading;
   };
 
-  initFiles = async () => {
+  initFiles = () => {
     const isAuthenticated = authStore.isAuthenticated;
     const {
       getPortalCultures,
@@ -71,17 +67,15 @@ class MainFilesStore {
     if (!this.isEditor) {
       requests.push(
         getPortalCultures(),
-        this.treeFoldersStore.fetchTreeFolders()
+        this.filesStore.treeFoldersStore.fetchTreeFolders()
       );
 
       if (isDesktopClient) {
         requests.push(getIsEncryptionSupport(), getEncryptionKeys());
       }
     }
-    return Promise.all(requests).finally(() => {
-      this.setIsLoaded(true);
-      utils.updateTempContent();
-    });
+
+    return Promise.all(requests);
   };
 }
 

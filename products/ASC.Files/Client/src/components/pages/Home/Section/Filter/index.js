@@ -16,18 +16,23 @@ import find from "lodash/find";
 import result from "lodash/result";
 import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
-import { constants, FilterInput, store, Loaders, utils } from "asc-web-common";
+import {
+  constants,
+  FilterInput,
+  /* store, */ Loaders,
+  utils,
+} from "asc-web-common";
 //import equal from "fast-deep-equal/react";
 import { isMobileOnly } from "react-device-detect";
 import { inject, observer } from "mobx-react";
 
 const { withLayoutSize } = utils;
 
-const {
-  getCurrentUser,
-  getSettingsCustomNames,
-  getLanguage,
-} = store.auth.selectors;
+// const {
+//   getCurrentUser,
+//   getSettingsCustomNames,
+//   getLanguage,
+// } = store.auth.selectors;
 const { FilterType } = constants;
 
 const getFilterType = (filterValues) => {
@@ -328,9 +333,9 @@ class SectionFilterContent extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    user: getCurrentUser(state),
-    customNames: getSettingsCustomNames(state),
-    language: getLanguage(state),
+    //user: getCurrentUser(state),
+    //customNames: getSettingsCustomNames(state),
+    //language: getLanguage(state),
     //firstLoad: getFirstLoad(state),
     filter: getFilter(state),
     //selectedFolderId: getSelectedFolderId(state),
@@ -354,7 +359,14 @@ export default connect(mapStateToProps, {
     const { filesStore, setIsLoading } = mainFilesStore;
     const { firstLoad, fetchFiles } = filesStore;
 
+    const { user } = store.userStore;
+    const { customNames, culture } = store.settingsStore;
+    const language = (user && user.cultureName) || culture || "en-US";
+
     return {
+      customNames,
+      user,
+      language,
       firstLoad,
       selectedFolderId: filesStore.selectedFolderStore.id,
 

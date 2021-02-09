@@ -11,7 +11,7 @@ const {
   isDesktopClient,
 } = store.auth.selectors;
 
-const presentInArray = (array, search, caseInsensitive = false) => {
+export const presentInArray = (array, search, caseInsensitive = false) => {
   let pattern = caseInsensitive ? search.toLowerCase() : search;
   const result = array.findIndex((item) => item === pattern);
   return result === -1 ? false : true;

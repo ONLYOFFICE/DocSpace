@@ -33,7 +33,7 @@ import {
   getFilter,
   getPrimaryProgressData,
   getSecondaryProgressData,
-  getTreeFolders,
+  //getTreeFolders,
   getViewAs,
   //getIsLoading,
   //getDragging,
@@ -335,7 +335,7 @@ function mapStateToProps(state) {
     filter: getFilter(state),
     primaryProgressData: getPrimaryProgressData(state),
     secondaryProgressData: getSecondaryProgressData(state),
-    treeFolders: getTreeFolders(state),
+    //treeFolders: getTreeFolders(state),
     viewAs: getViewAs(state),
     //isLoading: getIsLoading(state),
     //homepage: getSettingsHomepage(state),
@@ -374,7 +374,16 @@ export default connect(
       filesStore,
       isLoading,
     } = mainFilesStore;
-    const { firstLoad, setFirstLoad, fileActionStore, fetchFiles } = filesStore;
+    const {
+      firstLoad,
+      setFirstLoad,
+      fileActionStore,
+      fetchFiles,
+      treeFoldersStore,
+    } = filesStore;
+
+    const { treeFolders } = treeFoldersStore;
+
     const { id } = fileActionStore;
 
     return {
@@ -384,6 +393,7 @@ export default connect(
       fileActionId: id,
       currentFolderId: filesStore.selectedFolderStore.id,
       isLoading,
+      treeFolders,
 
       setFirstLoad,
       setDragging,

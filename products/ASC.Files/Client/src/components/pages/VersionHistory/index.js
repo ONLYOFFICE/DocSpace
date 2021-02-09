@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
-import { PageLayout, Loaders, utils, store } from "asc-web-common";
+import { PageLayout, Loaders, utils /* store */ } from "asc-web-common";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import {
   ArticleHeaderContent,
@@ -29,7 +29,7 @@ const i18n = createI18N({
 });
 
 const { changeLanguage } = utils;
-const { getIsTabletView } = store.auth.selectors;
+//const { getIsTabletView } = store.auth.selectors;
 
 class PureVersionHistory extends React.Component {
   componentDidMount() {
@@ -118,7 +118,7 @@ VersionHistory.propTypes = {
 function mapStateToProps(state) {
   return {
     //isLoading: getIsLoading(state),
-    isTabletView: getIsTabletView(state),
+    //isTabletView: getIsTabletView(state),
     filter: getFilter(state),
     versions: getFileVersions(state),
   };
@@ -145,6 +145,7 @@ export default connect(
     const { isLoading } = mainFilesStore;
 
     return {
+      isTabletView: store.settingsStore.isTabletView,
       isLoading,
     };
   })(withRouter(observer(VersionHistory)))
