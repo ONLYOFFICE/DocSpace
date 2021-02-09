@@ -1,21 +1,12 @@
 /* eslint-disable react/display-name */
 import React, { memo } from "react";
-import styled from "styled-components";
+
 import PropTypes from "prop-types";
 import CustomScrollbarsVirtualList from "../scrollbar/custom-scrollbars-virtual-list";
 import { FixedSizeList as List, areEqual } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import ContextMenu from "../context-menu";
-
-const StyledRowContainer = styled.div`
-  height: ${(props) =>
-    props.useReactWindow
-      ? props.manualHeight
-        ? props.manualHeight
-        : "100%"
-      : "auto"};
-  position: relative;
-`;
+import StyledRowContainer from "./styled-row-container";
 
 class RowContainer extends React.PureComponent {
   constructor(props) {
