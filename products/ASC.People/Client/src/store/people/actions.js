@@ -231,7 +231,7 @@ function fetchPeopleByFilter(dispatch, filter) {
     filterData = Filter.getDefault();
     filterData.employeeStatus = EmployeeStatus.Active;
   }
-
+  filterData.pageCount = filterData.total;
   return api.people.getUserList(filterData).then((data) => {
     filterData.total = data.total;
     dispatch(setFilter(filterData));
