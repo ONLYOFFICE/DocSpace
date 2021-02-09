@@ -53,6 +53,7 @@ const isRefetchPeople = true;
 
 const StyledContainer = styled.div`
   height: 100vh;
+  margin-bottom: 16px;
 `;
 class SectionBodyContent extends React.PureComponent {
   constructor(props) {
