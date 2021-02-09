@@ -1,4 +1,5 @@
 import React from "react";
+import styled from "styled-components";
 import { withRouter } from "react-router";
 import { connect } from "react-redux";
 import { withTranslation, Trans } from "react-i18next";
@@ -34,6 +35,7 @@ import {
   DeleteProfileEverDialog,
 } from "../../../../dialogs";
 import { createI18N } from "../../../../../helpers/i18n";
+import PeopleList from "./PeopleList";
 
 const i18n = createI18N({
   page: "Home",
@@ -53,6 +55,9 @@ const { EmployeeStatus } = constants;
 
 const isRefetchPeople = true;
 
+const StyledContainer = styled.div`
+  height: 100vh;
+`;
 class SectionBodyContent extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -394,74 +399,29 @@ class SectionBodyContent extends React.PureComponent {
     } = this.props;
 
     const { dialogsVisible, user } = this.state;
-
+    console.log(this.props);
     return !isLoaded || (isMobile && isLoading) || !isLoadedSection ? (
       <Loaders.Rows isRectangle={false} />
     ) : peopleList.length > 0 ? (
       <>
         <Consumer>
           {(context) => (
-            <RowContainer
-              className="people-row-container"
-              useReactWindow={false}
-            >
-              {peopleList.map((man) => {
-                const {
-                  checked,
-                  role,
-                  displayName,
-                  avatar,
-                  id,
-                  status,
-                  options,
-                } = man;
-                const sectionWidth = context.sectionWidth;
-                const showContextMenu = options && options.length > 0;
-                const contextOptionsProps =
-                  (isAdmin && showContextMenu) ||
-                  (showContextMenu && id === currentUserId)
-                    ? {
-                        contextOptions: this.getUserContextOptions(options, id),
-                      }
-                    : {};
-
-                const checkedProps =
-                  checked !== null && isAdmin ? { checked } : {};
-
-                const element = (
-                  <Avatar
-                    size="min"
-                    role={role}
-                    userName={displayName}
-                    source={avatar}
-                  />
-                );
-
-                return (
-                  <Row
-                    key={id}
-                    status={status}
-                    data={man}
-                    element={element}
-                    onSelect={this.onContentRowSelect}
-                    {...checkedProps}
-                    {...contextOptionsProps}
-                    needForUpdate={this.needForUpdate}
-                    sectionWidth={sectionWidth}
-                  >
-                    <UserContent
-                      isMobile={isMobile}
-                      widthProp={widthProp}
-                      user={man}
-                      history={history}
-                      settings={settings}
-                      selectGroup={selectGroup}
-                      sectionWidth={sectionWidth}
-                    />
-                  </Row>
-                );
-              })}
-            </RowContainer>
+            <StyledContainer>
+              <PeopleList
+                peopleList={peopleList}
+                widthProp={widthProp}
+                selectGroup={selectGroup}
+                isAdmin={isAdmin}
+                currentUserId={currentUserId}
+                context={context}
+                isMobile={isMobile}
+                history={history}
+                settings={settings}
+                getUserContextOptions={this.getUserContextOptions}
+                onContentRowSelect={this.onContentRowSelect}
+                needForUpdate={this.needForUpdate}
+              />
+            </StyledContainer>
           )}
         </Consumer>
 
