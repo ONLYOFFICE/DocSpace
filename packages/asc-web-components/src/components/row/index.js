@@ -1,80 +1,17 @@
-import Checkbox from "../checkbox";
-import ContextMenuButton from "../context-menu-button";
 import PropTypes from "prop-types";
 import React from "react";
-import styled from "styled-components";
-import { tablet } from "../../utils/device";
 import equal from "fast-deep-equal/react";
 
-const StyledRow = styled.div`
-  cursor: default;
-
-  min-height: 47px;
-  width: 100%;
-  border-bottom: 1px solid #eceef1;
-
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-
-  justify-content: flex-start;
-  align-items: center;
-  align-content: center;
-`;
-
-const StyledContent = styled.div`
-  display: flex;
-  flex-basis: 100%;
-
-  min-width: 160px;
-
-  @media ${tablet} {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-`;
-
-const StyledCheckbox = styled.div`
-  flex: 0 0 16px;
-`;
-
-const StyledElement = styled.div`
-  flex: 0 0 auto;
-  display: flex;
-  margin-right: 8px;
-  margin-left: 2px;
-  user-select: none;
-`;
-
-const StyledContentElement = styled.div`
-  margin-top: 6px;
-  user-select: none;
-`;
-
-const StyledOptionButton = styled.div`
-  display: flex;
-  width: ${(props) => props.spacerWidth && props.spacerWidth};
-  justify-content: flex-end;
-
-  .expandButton > div:first-child {
-    padding: 8px 0px 9px 7px;
-
-    margin-right: 0px;
-
-    @media (min-width: 1024px) {
-      margin-right: -1px;
-    }
-    @media (max-width: 516px) {
-      padding-left: 10px;
-    }
-  }
-
-  //margin-top: -1px;
-  @media ${tablet} {
-    margin-top: unset;
-  }
-`;
+import Checkbox from "../checkbox";
+import ContextMenuButton from "../context-menu-button";
+import {
+  StyledOptionButton,
+  StyledContentElement,
+  StyledElement,
+  StyledCheckbox,
+  StyledContent,
+  StyledRow,
+} from "./styled-row";
 
 class Row extends React.Component {
   constructor(props) {

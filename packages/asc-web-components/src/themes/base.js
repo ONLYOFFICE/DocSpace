@@ -349,6 +349,24 @@ const Base = {
     width: "100%",
   },
 
+  row: {
+    minHeight: "47px",
+    width: "100%",
+    borderBottom: `1px solid ${globalColors.grayLightMid}`,
+    minWidth: "160px",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+
+    element: {
+      marginRight: "8px",
+      marginLeft: "2px",
+    },
+
+    optionButton: {
+      padding: "8px 0px 9px 7px",
+    },
+  },
+  
   scrollbar: {
     backgroundColorVertical: "rgba(0, 0, 0, 0.1)",
     backgroundColorHorizontal: "rgba(0, 0, 0, 0.1)",
