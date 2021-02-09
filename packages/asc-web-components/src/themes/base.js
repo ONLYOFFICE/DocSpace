@@ -366,7 +366,14 @@ const Base = {
       padding: "8px 0px 9px 7px",
     },
   },
-  
+
+  badge: {
+    border: "1px solid transparent",
+    padding: "1px",
+    lineHeight: "0.8",
+    overflow: "hidden",
+  },
+
   scrollbar: {
     backgroundColorVertical: "rgba(0, 0, 0, 0.1)",
     backgroundColorHorizontal: "rgba(0, 0, 0, 0.1)",
