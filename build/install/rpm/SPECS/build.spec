@@ -1,6 +1,6 @@
 %build
 
-cd %{_builddir}/AppServer-%GIT_BRANCH/build/install/rpm/systemd/
+cd %{_builddir}/AppServer-%GIT_BRANCH/build/install/common/systemd/
 bash build.sh
 
 cd %{_builddir}/AppServer-%GIT_BRANCH/
