@@ -374,6 +374,24 @@ const Base = {
     },
   },
 
+  paging: {
+    button: {
+      marginRight: "8px",
+      maxWidth: "110px",
+      padding: "6px 8px 10px",
+    },
+
+    page: {
+      marginRight: "8px",
+      width: "110%",
+    },
+
+    comboBox: {
+      marginLeft: "auto",
+      marginRight: "0px",
+    },
+  },
+
   input: {
     color: "#333333",
     disableColor: "#A3A9AE",

@@ -1,49 +1,9 @@
 import React from "react";
-import styled from "styled-components";
 import PropTypes from "prop-types";
 
 import Button from "../button";
 import ComboBox from "../combobox";
-
-const StyledPaging = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-
-  & > button {
-    margin-right: 8px;
-    max-width: 110px;
-  }
-
-  .buttonCustomStyle {
-    padding: 6px 8px 10px;
-  }
-`;
-
-const StyledOnPage = styled.div`
-  margin-left: auto;
-  margin-right: 0px;
-
-  .hideDisabled {
-    div[disabled] {
-      display: none;
-    }
-  }
-
-  @media (max-width: 450px) {
-    display: none;
-  }
-`;
-
-const StyledPage = styled.div`
-  margin-right: 8px;
-
-  .manualWidth {
-    .dropdown-container {
-      width: 110%;
-    }
-  }
-`;
+import { StyledPage, StyledOnPage, StyledPaging } from "./styled-paging";
 
 const Paging = (props) => {
   //console.log("Paging render");
