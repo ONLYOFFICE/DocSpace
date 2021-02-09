@@ -10,6 +10,7 @@ const globalColors = {
   gray: "#A3A9AE",
   grayMain: "#657077",
   shuttleGrey: "#63686A",
+  veryLightGrey: "#CACACA",
 
   blueMain: "#2DA7DB",
   blueHover: "#3DB8EC",
@@ -20,7 +21,7 @@ const globalColors = {
 
   pattensBlue: "#DEE2E6",
   cyanBlueDarkShade: "#555F65",
-  
+
   orangeMain: "#ED7309",
   orangeHover: "#FF8932",
   orangePressed: "#C96C27",

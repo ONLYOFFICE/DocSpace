@@ -324,7 +324,7 @@ const Base = {
     textColor: black,
     textDisableColor: gray,
     disableColor: grayLight,
-    marginRight:"4px",
+    marginRight: "4px",
 
     fillColor: black,
     borderColor: grayMid,
@@ -333,6 +333,20 @@ const Base = {
     disableBorderColor: grayLightMid,
 
     hoverBorderColor: gray,
+  },
+
+  requestLoader: {
+    backgroundColor: white,
+    border: `1px solid ${globalColors.veryLightGrey}`,
+    overflow: "hidden",
+    padding: "5px 10px",
+    lineHeight: "16px",
+    borderRadius: "5px",
+    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.3)",
+
+    marginRight: "10px",
+    top: "10px",
+    width: "100%",
   },
 
   scrollbar: {
@@ -737,7 +751,7 @@ const Base = {
       },
     },
 
-    dropDown:{
+    dropDown: {
       padding: "16px 16px 16px 17px",
     },
   },

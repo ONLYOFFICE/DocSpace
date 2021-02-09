@@ -1,46 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
-import styled from "styled-components";
-import Loader from "../loader";
 import Text from "../text";
-
-const StyledOuter = styled.div`
-  position: fixed;
-  text-align: center;
-  top: 10px;
-  width: 100%;
-  z-index: ${(props) => props.zIndex};
-  display: ${(props) => (props.visible ? "block" : "none")};
-`;
-
-const StyledInner = styled.div`
-  background-color: #fff;
-  border: 1px solid #cacaca;
-  display: inline-block;
-  white-space: nowrap;
-  overflow: hidden;
-  padding: 5px 10px;
-  line-height: 16px;
-  z-index: ${(props) => props.zIndex};
-  border-radius: 5px;
-  -moz-border-radius: 5px;
-  -webkit-border-radius: 5px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-  -moz-box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-  -webkit-box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-
-  .text-style {
-    display: contents;
-  }
-`;
-
-const OvalLoader = styled(Loader)`
-  display: inline;
-  margin-right: 10px;
-  svg {
-    vertical-align: middle;
-  }
-`;
+import { OvalLoader, StyledInner, StyledOuter } from "./styled-request-loader";
 
 const RequestLoader = (props) => {
   //console.log("RequestLoader render");
