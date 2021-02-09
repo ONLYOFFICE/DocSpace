@@ -1,69 +1,19 @@
 import React from "react";
 import PropTypes from "prop-types";
-import styled from "styled-components";
+
 import Backdrop from "../backdrop";
 import Aside from "../aside";
 import Heading from "../heading";
 import { desktop } from "../../utils/device";
 import throttle from "lodash/throttle";
-import { Icons } from "../icons";
 import Box from "../box";
-
-const Dialog = styled.div`
-  position: relative;
-  width: auto;
-  max-width: 560px;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  min-height: 100%;
-  cursor: default;
-`;
-
-const Content = styled.div`
-  position: relative;
-  height: ${(props) => props.contentHeight};
-  width: ${(props) => props.contentWidth};
-  background-color: #fff;
-  padding: 0 16px 16px;
-  box-sizing: border-box;
-  .heading {
-    max-width: 500px;
-    margin: 0;
-    line-height: 56px;
-    font-weight: 700;
-  }
-`;
-
-const StyledHeader = styled.div`
-  display: flex;
-  align-items: center;
-  border-bottom: 1px solid #dee2e6;
-`;
-
-const CloseButton = styled(Icons.CrossSidebarIcon)`
-  cursor: pointer;
-  position: absolute;
-
-  width: 17px;
-  height: 17px;
-  min-width: 17px;
-  min-height: 17px;
-
-  right: 16px;
-  top: 19px;
-
-  &:hover {
-    path {
-      fill: #657077;
-    }
-  }
-`;
-
-const BodyBox = styled(Box)`
-  position: relative;
-`;
-
+import {
+  CloseButton,
+  StyledHeader,
+  Content,
+  Dialog,
+  BodyBox,
+} from "./styled-modal-dialog";
 function Header() {
   return null;
 }

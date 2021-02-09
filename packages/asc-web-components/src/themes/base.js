@@ -170,8 +170,8 @@ const Base = {
       width: "100%",
       top: "100%",
     },
-    
-    arrowDropdown:{
+
+    arrowDropdown: {
       borderLeft: "4px solid transparent",
       borderRight: "4px solid transparent",
       borderTop: "4px solid white",
@@ -179,7 +179,7 @@ const Base = {
       top: "50%",
       width: "0",
       height: "0",
-      marginTop:" -1px",
+      marginTop: " -1px",
     },
   },
 
@@ -338,6 +338,40 @@ const Base = {
   scrollbar: {
     backgroundColorVertical: "rgba(0, 0, 0, 0.1)",
     backgroundColorHorizontal: "rgba(0, 0, 0, 0.1)",
+  },
+
+  modalDialog: {
+    width: "auto",
+    maxwidth: "560px",
+    margin: " 0 auto",
+    minHeight: "100%",
+
+    content: {
+      backgroundColor: white,
+      padding: "0 16px 16px",
+
+      heading: {
+        maxWidth: "500px",
+        margin: "0",
+        lineHeight: "56px",
+        fontWeight: "700",
+      },
+    },
+
+    header: {
+      borderBottom: `1px solid ${globalColors.pattensBlue}`,
+    },
+
+    closeButton: {
+      width: "17px",
+      height: "17px",
+      minWidth: "17px",
+      minHeight: "17px",
+
+      right: "16px",
+      top: "19px",
+      hoverColor: grayMain,
+    },
   },
 
   input: {
