@@ -16,7 +16,7 @@ const PeopleRow = ({
   onContentRowSelect,
   needForUpdate,
 }) => {
-  console.log("PeopleRow render");
+  //console.log("PeopleRow render");
   const { checked, role, displayName, avatar, id, status, options } = man;
   const sectionWidth = context.sectionWidth;
   const showContextMenu = options && options.length > 0;

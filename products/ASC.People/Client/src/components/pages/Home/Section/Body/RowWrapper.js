@@ -3,9 +3,9 @@ import { areEqual } from "react-window";
 import PeopleRow from "./PeopleRow";
 
 const RowWrapper = memo(({ data, index, style }) => {
-  console.log("Data", data);
+  //console.log("RowWrapper render");
   const man = data.peopleList[index];
-  console.log("RowWrapper render");
+
   return (
     <div style={style}>
       <PeopleRow

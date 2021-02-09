@@ -4,17 +4,13 @@ import { withRouter } from "react-router";
 import { connect } from "react-redux";
 import { withTranslation, Trans } from "react-i18next";
 import {
-  Row,
-  Avatar,
   EmptyScreenContainer,
   IconButton,
   Link,
-  RowContainer,
   utils,
   Box,
   Grid,
 } from "asc-web-components";
-import UserContent from "./userContent";
 import {
   selectUser,
   deselectUser,
@@ -399,7 +395,7 @@ class SectionBodyContent extends React.PureComponent {
     } = this.props;
 
     const { dialogsVisible, user } = this.state;
-    console.log(this.props);
+
     return !isLoaded || (isMobile && isLoading) || !isLoadedSection ? (
       <Loaders.Rows isRectangle={false} />
     ) : peopleList.length > 0 ? (

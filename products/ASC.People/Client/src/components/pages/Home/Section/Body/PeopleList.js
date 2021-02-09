@@ -20,7 +20,7 @@ const PeopleList = ({
   onContentRowSelect,
   needForUpdate,
 }) => {
-  console.log("PeopleList render");
+  //console.log("PeopleList render");
 
   const createItemData = memoize(
     (
