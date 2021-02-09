@@ -305,7 +305,7 @@ execute_mysql_script(){
 		echo -n "Installing MYSQL database... "
 
 		sed -i -e '1 s/^/SET SQL_MODE='ALLOW_INVALID_DATES';\n/;' $APP_DIR/onlyoffice.sql
-		$MYSQL -e "CREATE DATABASE IF NOT EXISTS $DB_NAME CHARACTER SET utf8 COLLATE 'utf8_general_ci';"
+		$MYSQL -e "CREATE DATABASE IF NOT EXISTS $DB_NAME CHARACTER SET utf8 COLLATE 'utf8_general_ci';" >/dev/null 2>&1
 		$MYSQL "$DB_NAME" < "$APP_DIR/createdb.sql" >/dev/null 2>&1
 		$MYSQL "$DB_NAME" < "$APP_DIR/onlyoffice.sql" >/dev/null 2>&1
 		$MYSQL "$DB_NAME" < "$APP_DIR/onlyoffice.data.sql" >/dev/null 2>&1

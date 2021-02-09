@@ -66,6 +66,6 @@ chmod +x %{_bindir}/appserver-configuracion.sh
 
 %clean
 
-rm -rf %{buildroot}/%{name}-*
+rm -rf %{buildroot}
 
 %changelog
