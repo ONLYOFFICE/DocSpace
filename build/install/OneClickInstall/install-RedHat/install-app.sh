@@ -152,7 +152,7 @@ expect << EOF
 		set timeout -1
 		log_user 1
 
-		spawn appserver-configuracion.sh
+		spawn appserver-configuration.sh
 		expect -re "Database host:"
 		send "\025$MYSQL_SERVER_HOST\r"
 
@@ -169,7 +169,7 @@ expect << EOF
 EOF
 	APPSERVER_INSTALLED="true";
 	else 
-		bash appserver-configuracion.sh
+		bash appserver-configuration.sh
 	fi
 fi
 

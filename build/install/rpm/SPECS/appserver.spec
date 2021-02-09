@@ -58,7 +58,7 @@ getent passwd onlyoffice >/dev/null || useradd -r -g onlyoffice -s /sbin/nologin
 
 %post common
 
-chmod +x %{_bindir}/appserver-configuracion.sh
+chmod +x %{_bindir}/appserver-configuration.sh
 
 %preun
 
