@@ -85,7 +85,6 @@ const VersionRow = (props) => {
   ];
 
   const onClickProp = canEdit ? { onClick: onVersionClick } : {};
-
   return (
     <StyledVersionRow
       showEditPanel={showEditPanel}
@@ -107,6 +106,7 @@ const VersionRow = (props) => {
             fontWeight={600}
             fontSize="14px"
             title={title}
+            isTextOverflow={true}
             className="version-link-file"
           >
             {title}
