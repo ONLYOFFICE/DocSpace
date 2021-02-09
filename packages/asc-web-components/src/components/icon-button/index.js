@@ -1,17 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
-import styled from "styled-components";
+
 import { Icons } from "../icons";
 import isEmpty from "lodash/isEmpty";
+import StyledOuter from "./styled-icon-button";
 
-const StyledOuter = styled.div`
-  width: ${(props) =>
-    props.size ? Math.abs(parseInt(props.size)) + "px" : "20px"};
-  cursor: ${(props) =>
-    props.isDisabled || !props.isClickable ? "default" : "pointer"};
-  line-height: 0;
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-`;
 class IconButton extends React.PureComponent {
   constructor(props) {
     super(props);
