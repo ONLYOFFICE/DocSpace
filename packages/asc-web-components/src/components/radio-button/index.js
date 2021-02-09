@@ -1,91 +1,26 @@
 import React from "react";
 import PropTypes from "prop-types";
-import styled, { css } from "styled-components";
-import { Icons } from "../icons";
+
+import { RadioButtonIcon, RadioButtonIconChecked } from "./svg";
 import Text from "../text";
-
-const disableColor = "#A3A9AE";
-const hoverColor = disableColor;
-const internalCircleDisabledColor = "#D0D5DA";
-const externalCircleDisabledColor = "#eceef1";
-
-// eslint-disable-next-line react/prop-types, no-unused-vars
-const ClearLabel = ({ spacing, isDisabled, orientation, ...props }) => (
-  <label {...props} />
-);
-const Label = styled(ClearLabel)`
-  display: flex;
-  align-items: center;
-  position: relative;
-  margin: 0;
-  user-select: none;
-  cursor: ${(props) => !props.isDisabled && "pointer"};
-
-  .radiobutton {
-    margin-right: 4px;
-  }
-
-  ${(props) =>
-    props.isDisabled
-      ? css`
-          cursor: default;
-          path:first-child {
-            stroke: ${externalCircleDisabledColor};
-          }
-          path:nth-child(even) {
-            fill: ${internalCircleDisabledColor};
-          }
-        `
-      : css`
-          cursor: pointer;
-
-          &:hover {
-            svg {
-              path:first-child {
-                stroke: ${hoverColor};
-              }
-            }
-          }
-        `}
-
-  &:not(:first-child) {
-    ${(props) =>
-      props.orientation === "horizontal" &&
-      css`
-        margin-left: ${props.spacing};
-      `};
-  }
-
-  &:not(:last-child) {
-    ${(props) =>
-      props.orientation === "vertical" &&
-      css`
-        margin-bottom: ${props.spacing};
-      `};
-  }
-`;
-
-const Input = styled.input`
-  position: absolute;
-  z-index: -1;
-  opacity: 0.0001;
-`;
+import { Label, Input } from "./styled-radio-button";
 
 // eslint-disable-next-line react/prop-types
-const RadiobuttonIcon = ({ isChecked, isDisabled }) => {
-  const iconName = isChecked ? "RadiobuttonCheckedIcon" : "RadiobuttonIcon";
-
+const RadiobuttonIcon = ({ isChecked }) => {
   let newProps = {
     size: "medium",
-    className: "radiobutton",
+    className: "radio-button",
   };
 
-  if (isDisabled) {
-    newProps.isfill = true;
-    newProps.color = "#F8F9F9";
-  }
-
-  return <>{React.createElement(Icons[iconName], { ...newProps })}</>;
+  return (
+    <>
+      {isChecked ? (
+        <RadioButtonIconChecked {...newProps} />
+      ) : (
+        <RadioButtonIcon {...newProps} />
+      )}
+    </>
+  );
 };
 
 class RadioButton extends React.Component {
@@ -104,8 +39,6 @@ class RadioButton extends React.Component {
   }
 
   render() {
-    const colorProps = this.props.isDisabled ? { color: disableColor } : {};
-
     return (
       <Label
         orientation={this.props.orientation}
@@ -133,9 +66,9 @@ class RadioButton extends React.Component {
         <RadiobuttonIcon {...this.props} />
         <Text
           as="span"
+          className="radio-button_text"
           fontSize={this.props.fontSize}
           fontWeight={this.props.fontWeight}
-          {...colorProps}
         >
           {this.props.label || this.props.value}
         </Text>

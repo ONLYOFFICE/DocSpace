@@ -112,8 +112,6 @@ import OrigClipIcon from "./clip.react.svg";
 import OrigAZSortingIcon from "./a-z.sorting.react.svg";
 import OrigZASortingIcon from "./z-a.sorting.react.svg";
 import OrigExternalLinkIcon from "./external.link.react.svg";
-import OrigRadiobuttonIcon from "./radiobutton.react.svg";
-import OrigRadiobuttonCheckedIcon from "./radiobutton.checked.react.svg";
 import OrigPlusIcon from "./actions.header.touch.react.svg";
 import OrigPlusSharpIcon from "./plus.sharp.react.svg";
 import OrigMainMenuPeopleIcon from "./main.menu.people.react.svg";
@@ -626,14 +624,7 @@ export const ProjectsTimeTrackingIcon = createStyledIcon(
   OrigProjectsTimeTrackingIcon,
   "ProjectsTimeTrackingIcon"
 );
-export const RadiobuttonCheckedIcon = createStyledIcon(
-  OrigRadiobuttonCheckedIcon,
-  "RadiobuttonCheckedIcon"
-);
-export const RadiobuttonIcon = createStyledIcon(
-  OrigRadiobuttonIcon,
-  "RadiobuttonIcon"
-);
+
 export const RectangleFilterIcon = createStyledIcon(
   OrigRectangleFilterIcon,
   "RectangleFilterIcon"

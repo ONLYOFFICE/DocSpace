@@ -320,20 +320,20 @@ const Base = {
   //   hoverBorderColor: gray,
   // },
 
-  // radioButton: {
-  //   color: black,
-  //   disableColor: grayLightMid,
-  //   width: "16px",
-  //   height: "16px",
+  radioButton: {
+    textColor: black,
+    textDisableColor: gray,
+    disableColor: grayLight,
+    marginRight:"4px",
 
-  //   fillColor: black,
-  //   borderColor: grayMid,
+    fillColor: black,
+    borderColor: grayMid,
 
-  //   disableFillColor: grayMid,
-  //   disableBorderColor: grayLightMid,
+    disableFillColor: grayMid,
+    disableBorderColor: grayLightMid,
 
-  //   hoverBorderColor: gray,
-  // },
+    hoverBorderColor: gray,
+  },
 
   scrollbar: {
     backgroundColorVertical: "rgba(0, 0, 0, 0.1)",
@@ -736,7 +736,7 @@ const Base = {
         fontWeight: "600",
       },
     },
-    
+
     dropDown:{
       padding: "16px 16px 16px 17px",
     },
