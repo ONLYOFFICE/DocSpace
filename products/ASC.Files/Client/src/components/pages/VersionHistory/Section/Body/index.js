@@ -1,20 +1,20 @@
 import React from "react";
-import { connect } from "react-redux";
+//import { connect } from "react-redux";
 import { withRouter } from "react-router";
 
 import { RowContainer } from "asc-web-components";
 import { Loaders } from "asc-web-common";
 import VersionRow from "./VersionRow";
 
-import {
-  fetchFileVersions,
-  //setIsLoading,
-  //setFirstLoad,
-} from "../../../../../store/files/actions";
-import {
-  getFileVersions,
-  //getIsLoading,
-} from "../../../../../store/files/selectors";
+// import {
+//   fetchFileVersions,
+//   setIsLoading,
+//   setFirstLoad,
+// } from "../../../../../store/files/actions";
+// import {
+//   getFileVersions,
+//   getIsLoading,
+// } from "../../../../../store/files/selectors";
 import { inject, observer } from "mobx-react";
 
 class SectionBodyContent extends React.Component {
@@ -67,39 +67,38 @@ class SectionBodyContent extends React.Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    versions: getFileVersions(state),
-    //isLoading: getIsLoading(state),
-  };
-};
+// const mapStateToProps = (state) => {
+//   return {
+//     versions: getFileVersions(state),
+//     isLoading: getIsLoading(state),
+//   };
+// };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    fetchFileVersions: (fileId) => dispatch(fetchFileVersions(fileId)),
-    //setIsLoading: (isLoading) => dispatch(setIsLoading(isLoading)),
-    //setFirstLoad: (isFirstLoad) => dispatch(setFirstLoad(isFirstLoad)),
-  };
-};
+// const mapDispatchToProps = (dispatch) => {
+//   return {
+//     fetchFileVersions: (fileId) => dispatch(fetchFileVersions(fileId)),
+//     setIsLoading: (isLoading) => dispatch(setIsLoading(isLoading)),
+//     setFirstLoad: (isFirstLoad) => dispatch(setFirstLoad(isFirstLoad)),
+//   };
+// };
 
 // export default connect(
 //   mapStateToProps,
 //   mapDispatchToProps
 // )(withRouter(SectionBodyContent));
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(
-  inject(({ store, mainFilesStore }) => {
-    const { filesStore, setIsLoading, isLoading } = mainFilesStore;
-    const { setFirstLoad } = filesStore;
+export default inject(({ store, mainFilesStore }) => {
+  const { filesStore, setIsLoading, isLoading } = mainFilesStore;
+  const { setFirstLoad, versionHistoryStore } = filesStore;
+  const { versions, fetchFileVersions } = versionHistoryStore;
 
-    return {
-      isLoading,
+  return {
+    culture: store.settingsStore.culture,
+    isLoading,
+    versions,
 
-      setFirstLoad,
-      setIsLoading,
-    };
-  })(withRouter(observer(SectionBodyContent)))
-);
+    setFirstLoad,
+    setIsLoading,
+    fetchFileVersions,
+  };
+})(withRouter(observer(SectionBodyContent)));

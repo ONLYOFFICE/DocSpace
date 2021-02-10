@@ -25,17 +25,17 @@ import {
 import {
   getFileIcon,
   getFolderIcon,
-  getFilter,
+  //getFilter,
   //getFiles,
   //getFolders,
-  getTreeFolders,
+  //getTreeFolders,
   //getSelectedFolder,
-  getIsPrivacyFolder,
+  //getIsPrivacyFolder,
 } from "../../../store/files/selectors";
 import {
   //fetchFiles,
-  setMediaViewerData,
-  setTreeFolders,
+  //setMediaViewerData,
+  //setTreeFolders,
   setUpdateTree,
   setNewRowItems,
   //setIsLoading,
@@ -312,15 +312,15 @@ const NewFilesPanel = (props) => (
   <NewFilesPanelContainerTranslated i18n={i18n} {...props} />
 );
 
-const mapStateToProps = (state) => {
-  return {
-    filter: getFilter(state),
-    //files: getFiles(state),
-    //folders: getFolders(state),
-    treeFolders: getTreeFolders(state),
-    isPrivacy: getIsPrivacyFolder(state),
-  };
-};
+// const mapStateToProps = (state) => {
+//   return {
+//     filter: getFilter(state),
+//     files: getFiles(state),
+//     folders: getFolders(state),
+//     treeFolders: getTreeFolders(state),
+//     isPrivacy: getIsPrivacyFolder(state),
+//   };
+// };
 
 // export default connect(mapStateToProps, {
 //   setMediaViewerData,
@@ -332,9 +332,9 @@ const mapStateToProps = (state) => {
 //   setIsLoading,
 // })(withRouter(NewFilesPanel));
 
-export default connect(mapStateToProps, {
-  setMediaViewerData,
-  setTreeFolders,
+export default connect(null, {
+  //setMediaViewerData,
+  //setTreeFolders,
   setUpdateTree,
   setNewRowItems,
   //fetchFiles,
@@ -344,13 +344,27 @@ export default connect(mapStateToProps, {
 
 inject(({ store, mainFilesStore }) => {
   const { filesStore, setIsLoading } = mainFilesStore;
-  const { files, folders, fetchFiles } = filesStore;
+  const {
+    files,
+    folders,
+    fetchFiles,
+    treeFoldersStore,
+    filter,
+    mediaViewerDataStore,
+  } = filesStore;
+  const { treeFolders, setTreeFolders, isPrivacyFolder } = treeFoldersStore;
+  const { setMediaViewerData } = mediaViewerDataStore;
 
   return {
     files,
     folders,
+    treeFolders,
+    isPrivacy: isPrivacyFolder,
+    filter,
 
     setIsLoading,
     fetchFiles,
+    setTreeFolders,
+    setMediaViewerData,
   };
 })(withRouter(observer(NewFilesPanel)));

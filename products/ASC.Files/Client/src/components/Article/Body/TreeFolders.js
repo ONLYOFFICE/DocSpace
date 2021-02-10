@@ -2,32 +2,36 @@ import React from "react";
 import { TreeMenu, TreeNode, Icons } from "asc-web-components";
 import styled from "styled-components";
 import equal from "fast-deep-equal/react";
-import { api, constants, toastr, store as initStore } from "asc-web-common";
+import {
+  api,
+  constants,
+  toastr /* store as initStore */,
+} from "asc-web-common";
 import { connect } from "react-redux";
 import {
-  setFilter,
-  setTreeFolders,
-  setDragItem,
+  //setFilter,
+  //setTreeFolders,
+  //setDragItem,
   //setDragging,
   //setIsLoading,
   setUpdateTree,
 } from "../../../store/files/actions";
 import {
-  getTreeFolders,
-  getFilter,
+  //getTreeFolders,
+  //getFilter,
   //getDragging,
   getUpdateTree,
   //getSelectedFolderId,
-  getMyFolderId,
-  getShareFolderId,
+  //getMyFolderId,
+  //getShareFolderId,
   //getRootFolderId,
   getDraggableItems,
-  getIsPrivacyFolder,
+  //getIsPrivacyFolder,
 } from "../../../store/files/selectors";
 import { onConvertFiles } from "../../../helpers/files-converter";
 import { observer, inject } from "mobx-react";
 
-const { isAdmin, isDesktopClient } = initStore.auth.selectors;
+//const { isAdmin, isDesktopClient } = initStore.auth.selectors;
 
 const { files } = api;
 const { FolderType, ShareAccessRights } = constants;
@@ -499,26 +503,26 @@ TreeFolders.defaultProps = {
 
 function mapStateToProps(state) {
   return {
-    treeFolders: getTreeFolders(state),
-    filter: getFilter(state),
-    myId: getMyFolderId(state),
-    commonId: getShareFolderId(state),
+    //treeFolders: getTreeFolders(state),
+    //filter: getFilter(state),
+    //myId: getMyFolderId(state),
+    //commonId: getShareFolderId(state),
     //currentId: getSelectedFolderId(state),
-    isAdmin: isAdmin(state),
+    //isAdmin: isAdmin(state),
     //dragging: getDragging(state),
     updateTree: getUpdateTree(state),
     //rootFolderId: getRootFolderId(state),
     draggableItems: getDraggableItems(state),
-    isDesktop: isDesktopClient(state),
-    isPrivacy: getIsPrivacyFolder(state),
+    //isDesktop: isDesktopClient(state),
+    //isPrivacy: getIsPrivacyFolder(state),
   };
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    setFilter: (filter) => dispatch(setFilter(filter)),
-    setTreeFolders: (treeFolders) => dispatch(setTreeFolders(treeFolders)),
-    setDragItem: (dragItem) => dispatch(setDragItem(dragItem)),
+    //setFilter: (filter) => dispatch(setFilter(filter)),
+    //setTreeFolders: (treeFolders) => dispatch(setTreeFolders(treeFolders)),
+    //setDragItem: (dragItem) => dispatch(setDragItem(dragItem)),
     //setDragging: (dragging) => dispatch(setDragging(dragging)),
     //setIsLoading: (isLoading) => dispatch(setIsLoading(isLoading)),
     setUpdateTree: (updateTree) => dispatch(setUpdateTree(updateTree)),
@@ -532,16 +536,46 @@ export default connect(
   mapDispatchToProps
 )(
   inject(({ store, mainFilesStore }) => {
-    const { filesStore, setIsLoading, dragging, setDragging } = mainFilesStore;
-    const { pathParts, id } = filesStore.selectedFolderStore;
+    const {
+      filesStore,
+      setIsLoading,
+      dragging,
+      setDragging,
+      setDragItem,
+    } = mainFilesStore;
+    const {
+      treeFoldersStore,
+      selectedFolderStore,
+      filter,
+      setFilter,
+    } = filesStore;
+
+    const {
+      treeFolders,
+      setTreeFolders,
+      myFolderId,
+      commonFolderId,
+      isPrivacyFolder,
+    } = treeFoldersStore;
+    const { pathParts, id } = selectedFolderStore;
 
     return {
+      isAdmin: store.isAdmin,
+      isDesktop: store.settingsStore.isDesktopClient,
       dragging,
       rootFolderId: pathParts,
       currentId: id,
+      treeFolders,
+      myId: myFolderId,
+      commonId: commonFolderId,
+      isPrivacy: isPrivacyFolder,
+      filter,
 
       setDragging,
       setIsLoading,
+      setTreeFolders,
+      setFilter,
+      setDragItem,
     };
   })(observer(TreeFolders))
 );

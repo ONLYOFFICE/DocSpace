@@ -13,7 +13,7 @@ import { createI18N } from "../../../helpers/i18n";
 import {
   getFilesSettings,
   //setFirstLoad,
-  setSelectedNode,
+  //setSelectedNode,
 } from "../../../store/files/actions";
 import {
   getSettingsTree /* getIsLoading */,
@@ -140,7 +140,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     getFilesSettings: () => dispatch(getFilesSettings()),
     //setFirstLoad: (firstLoad) => dispatch(setFirstLoad(firstLoad)),
-    setSelectedNode: (node) => dispatch(setSelectedNode(node)),
+    //setSelectedNode: (node) => dispatch(setSelectedNode(node)),
   };
 };
 
@@ -155,12 +155,14 @@ export default connect(
 )(
   inject(({ store, mainFilesStore }) => {
     const { filesStore, isLoading } = mainFilesStore;
-    const { setFirstLoad } = filesStore;
+    const { setFirstLoad, treeFoldersStore } = filesStore;
+    const { setSelectedNode } = treeFoldersStore;
 
     return {
       isLoading,
 
       setFirstLoad,
+      setSelectedNode,
     };
   })(withRouter(observer(Settings)))
 );

@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { connect } from "react-redux";
 import { Heading, ToggleButton } from "asc-web-components";
-import { Error403, Error520, store } from "asc-web-common";
+import { Error403, Error520 /* store */ } from "asc-web-common";
 import {
   setUpdateIfExist,
   setStoreOriginal,
@@ -13,7 +13,7 @@ import {
 } from "../../../../../store/files/actions";
 import {
   //getIsLoading,
-  getSettingsSelectedTreeNode,
+  //getSettingsSelectedTreeNode,
   getSettingsTreeStoreOriginalFiles,
   getSettingsTreeConfirmDelete,
   getSettingsTreeUpdateIfExist,
@@ -25,7 +25,7 @@ import {
 import ConnectClouds from "./ConnectedClouds";
 import { inject, observer } from "mobx-react";
 
-const { isAdmin } = store.auth.selectors;
+//const { isAdmin } = store.auth.selectors;
 
 const StyledSettings = styled.div`
   display: grid;
@@ -182,8 +182,8 @@ const SectionBodyContent = ({
 
 function mapStateToProps(state) {
   return {
-    isAdmin: isAdmin(state),
-    selectedTreeNode: getSettingsSelectedTreeNode(state),
+    //isAdmin: isAdmin(state),
+    //selectedTreeNode: getSettingsSelectedTreeNode(state),
     storeOriginalFiles: getSettingsTreeStoreOriginalFiles(state),
     confirmDelete: getSettingsTreeConfirmDelete(state),
     updateIfExist: getSettingsTreeUpdateIfExist(state),
@@ -213,10 +213,13 @@ export default connect(mapStateToProps, {
   setForceSave,
 })(
   inject(({ store, mainFilesStore }) => {
-    const { isLoading } = mainFilesStore;
+    const { isLoading, filesStore } = mainFilesStore;
+    const { selectedTreeNode } = filesStore.treeFoldersStore;
 
     return {
+      isAdmin: store.isAdmin,
       isLoading,
+      selectedTreeNode,
     };
   })(observer(SectionBodyContent))
 );

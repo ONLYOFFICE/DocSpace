@@ -18,13 +18,14 @@ import {
   getFolderIcon,
   getSortedFiles,
 } from "../../../store/files/selectors";
-import {
-  setSecondaryProgressBarData,
-  clearSecondaryProgressData,
-} from "../../../store/files/actions";
+// import {
+//   setSecondaryProgressBarData,
+//   clearSecondaryProgressData,
+// } from "../../../store/files/actions";
 import { TIMEOUT } from "../../../helpers/constants";
 import DownloadContent from "./DownloadContent";
 import { createI18N } from "../../../helpers/i18n";
+import { inject, observer } from "mobx-react";
 const i18n = createI18N({
   page: "DownloadDialog",
   localesPath: "dialogs/DownloadDialog",
@@ -609,7 +610,23 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, {
-  setSecondaryProgressBarData,
-  clearSecondaryProgressData,
-})(withRouter(DownloadDialog));
+// export default connect(mapStateToProps, {
+//   setSecondaryProgressBarData,
+//   clearSecondaryProgressData,
+// })(withRouter(DownloadDialog));
+
+export default connect(mapStateToProps)(
+  inject(({ store, mainFilesStore }) => {
+    const { filesStore } = mainFilesStore;
+    const { secondaryProgressDataStore } = filesStore;
+    const {
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
+    } = secondaryProgressDataStore;
+
+    return {
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
+    };
+  })(withRouter(observer(DownloadDialog)))
+);

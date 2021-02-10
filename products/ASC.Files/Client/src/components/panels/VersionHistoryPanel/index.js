@@ -1,19 +1,18 @@
 import React, { useEffect } from "react";
 import PropTypes from "prop-types";
-import { connect } from "react-redux";
 
 import { Backdrop, Heading, Aside } from "asc-web-components";
-import { utils, Loaders, store } from "asc-web-common";
+import { utils, Loaders /* store */ } from "asc-web-common";
 
 import { withTranslation, I18nextProvider } from "react-i18next";
 import { createI18N } from "../../../helpers/i18n";
 
-import { setIsVerHistoryPanel } from "../../../store/files/actions";
-import {
-  getVerHistoryFileId,
-  //getIsLoading,
-  getFileVersions,
-} from "../../../store/files/selectors";
+//import { setIsVerHistoryPanel } from "../../../store/files/actions";
+// import {
+//   getVerHistoryFileId,
+//   getIsLoading,
+//   getFileVersions,
+// } from "../../../store/files/selectors";
 
 import {
   StyledVersionHistoryPanel,
@@ -32,7 +31,7 @@ const i18n = createI18N({
 
 const { changeLanguage } = utils;
 
-const { getIsTabletView, getSettingsHomepage } = store.auth.selectors;
+//const { getIsTabletView, getSettingsHomepage } = store.auth.selectors;
 
 class PureVersionHistoryPanel extends React.Component {
   componentDidUpdate(preProps) {
@@ -120,37 +119,46 @@ VersionHistoryPanelContainer.propTypes = {
   onClose: PropTypes.func,
 };
 
-function mapStateToProps(state) {
-  return {
-    fileId: getVerHistoryFileId(state),
-    isTabletView: getIsTabletView(state),
-    homepage: getSettingsHomepage(state),
-    //isLoading: getIsLoading(state),
-    versions: getFileVersions(state),
-  };
-}
+// function mapStateToProps(state) {
+//   return {
+//     fileId: getVerHistoryFileId(state),
+//     isTabletView: getIsTabletView(state),
+//     homepage: getSettingsHomepage(state),
+//     isLoading: getIsLoading(state),
+//     versions: getFileVersions(state),
+//   };
+// }
 
-function mapDispatchToProps(dispatch) {
-  return {
-    setIsVerHistoryPanel: (isVisible) =>
-      dispatch(setIsVerHistoryPanel(isVisible)),
-  };
-}
+// function mapDispatchToProps(dispatch) {
+//   return {
+//     setIsVerHistoryPanel: (isVisible) =>
+//       dispatch(setIsVerHistoryPanel(isVisible)),
+//   };
+// }
 
 // export default connect(
 //   mapStateToProps,
 //   mapDispatchToProps
 // )(VersionHistoryPanel);
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(
-  inject(({ store, mainFilesStore }) => {
-    const { isLoading } = mainFilesStore;
+export default inject(({ store, mainFilesStore }) => {
+  const { isLoading, filesStore } = mainFilesStore;
+  const { versionHistoryStore } = filesStore;
+  const {
+    fileId,
+    versions,
+    setIsVerHistoryPanel,
+    setVerHistoryFileId,
+  } = versionHistoryStore;
 
-    return {
-      isLoading,
-    };
-  })(observer(VersionHistoryPanel))
-);
+  return {
+    isTabletView: store.settingsStore.isTabletView,
+    homepage: store.settingsStore.homepage,
+    isLoading,
+    fileId,
+    versions,
+
+    setIsVerHistoryPanel,
+    setVerHistoryFileId,
+  };
+})(observer(VersionHistoryPanel));

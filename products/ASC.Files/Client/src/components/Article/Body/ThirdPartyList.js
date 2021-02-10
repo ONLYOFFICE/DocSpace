@@ -18,7 +18,7 @@ import {
   openConnectWindow,
   setConnectItem,
   //setSelectedFolder,
-  setSelectedNode,
+  //setSelectedNode,
   setShowThirdPartyPanel,
 } from "../../../store/files/actions";
 import { inject, observer } from "mobx-react";
@@ -251,17 +251,19 @@ function mapStateToProps(state) {
 
 export default connect(mapStateToProps, {
   setConnectItem,
-  setSelectedNode,
+  //setSelectedNode,
   //setSelectedFolder,
   setShowThirdPartyPanel,
 })(
   inject(({ store, mainFilesStore }) => {
     const { setIsLoading, filesStore } = mainFilesStore;
     const { setSelectedFolder } = filesStore.selectedFolderStore;
+    const { setSelectedNode } = filesStore.treeFoldersStore;
 
     return {
       setIsLoading,
       setSelectedFolder,
+      setSelectedNode,
     };
   })(observer(ThirdPartyList))
 );

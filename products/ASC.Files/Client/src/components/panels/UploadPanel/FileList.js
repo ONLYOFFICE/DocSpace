@@ -2,9 +2,9 @@ import React from "react";
 import { CustomScrollbarsVirtualList } from "asc-web-components";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { FixedSizeList as List } from "react-window";
-import { connect } from "react-redux";
-import { getUploadDataFiles } from "../../../store/files/selectors";
+//import { getUploadDataFiles } from "../../../store/files/selectors";
 import RowWrapper from "./RowWrapper";
+import { inject, observer } from "mobx-react";
 
 const FileList = ({ uploadDataFiles }) => {
   //console.log("FileList render");
@@ -28,10 +28,18 @@ const FileList = ({ uploadDataFiles }) => {
   );
 };
 
-const mapStateToProps = (state) => {
-  return {
-    uploadDataFiles: getUploadDataFiles(state),
-  };
-};
+// const mapStateToProps = (state) => {
+//   return {
+//     uploadDataFiles: getUploadDataFiles(state),
+//   };
+// };
 
-export default connect(mapStateToProps)(FileList);
+export default inject(({ mainFilesStore }) => {
+  const { filesStore } = mainFilesStore;
+  const { uploadDataStore } = filesStore;
+  const { files } = uploadDataStore;
+
+  return {
+    uploadDataFiles: files,
+  };
+})(observer(FileList));

@@ -28,10 +28,10 @@ import {
   MediaViewer,
   toastr,
   Loaders,
-  store,
+  //store,
 } from "asc-web-common";
 import {
-  clearSecondaryProgressData,
+  //clearSecondaryProgressData,
   loopFilesOperations,
   markItemAsFavorite,
   removeItemFromFavorite,
@@ -42,62 +42,62 @@ import {
   //selectFile,
   //setAction,
   //setDragging,
-  setDragItem,
+  //setDragItem,
   //setIsLoading,
-  setMediaViewerData,
+  //setMediaViewerData,
   setUpdateTree,
-  setSecondaryProgressBarData,
+  //setSecondaryProgressBarData,
   //setSelected,
   //setSelection,
-  setTreeFolders,
+  //setTreeFolders,
   getFileInfo,
   addFileToRecentlyViewed,
-  setIsVerHistoryPanel,
-  setVerHistoryFileId,
-  setSharingPanelVisible,
-  setChangeOwnerPanelVisible,
+  //setIsVerHistoryPanel,
+  //setVerHistoryFileId,
+  //setSharingPanelVisible,
+  //setChangeOwnerPanelVisible,
 } from "../../../../../store/files/actions";
 import { TIMEOUT } from "../../../../../helpers/constants";
 import {
   getCurrentFilesCount,
   //getDragging,
-  getDragItem,
+  //getDragItem,
   //getFileAction,
   getFileIcon,
   //getFiles,
-  getFilter,
+  //getFilter,
   //getFirstLoad,
   getFolderIcon,
   //getSelectedFolderId,
   //getFolders,
-  getMediaViewerId,
-  getMediaViewerVisibility,
+  //getMediaViewerId,
+  //getMediaViewerVisibility,
   //getSelectedFolderParentId,
   //getSelected,
   //getSelectedFolderTitle,
   //getSelection,
-  getTreeFolders,
-  getViewAs,
+  //getTreeFolders,
+  //getViewAs,
   loopTreeFolders,
   //getFilesList,
   getMediaViewerImageFormats,
   getMediaViewerMediaFormats,
-  getIsShareFolder,
-  getIsCommonFolder,
-  getIsRecycleBinFolder,
-  getIsRecentFolder,
-  getIsMyFolder,
-  getIsFavoritesFolder,
-  getMyFolderId,
+  //getIsShareFolder,
+  //getIsCommonFolder,
+  //getIsRecycleBinFolder,
+  //getIsRecentFolder,
+  //getIsMyFolder,
+  //getIsFavoritesFolder,
+  //getMyFolderId,
   getTooltipLabel,
-  getIsPrivacyFolder,
-  getPrivacyInstructionsLink,
+  //getIsPrivacyFolder,
+  //getPrivacyInstructionsLink,
   getIconOfDraggedFile,
-  getSharePanelVisible,
+  //getSharePanelVisible,
   isRootFolder,
   getThirdPartyProviders,
   getThirdPartyCapabilities,
-  getIsVerHistoryPanel,
+  //getIsVerHistoryPanel,
 } from "../../../../../store/files/selectors";
 import { OperationsPanel, VersionHistoryPanel } from "../../../../panels";
 import {
@@ -106,15 +106,15 @@ import {
   ThirdPartyMoveDialog,
 } from "../../../../dialogs";
 import { observer, inject } from "mobx-react";
-const {
-  isAdmin,
-  getSettings,
-  getCurrentUser,
-  isDesktopClient,
-  isEncryptionSupport,
-  getOrganizationName,
-  getIsTabletView,
-} = store.auth.selectors;
+// const {
+//   isAdmin,
+//   getSettings,
+//   getCurrentUser,
+//   isDesktopClient,
+//   isEncryptionSupport,
+//   getOrganizationName,
+//   getIsTabletView,
+// } = store.auth.selectors;
 //import { getFilterByLocation } from "../../../../../helpers/converters";
 //import config from "../../../../../../package.json";
 
@@ -1625,7 +1625,11 @@ class SectionBodyContent extends React.Component {
     conflictResolveType,
     deleteAfter
   ) => {
-    const { loopFilesOperations, clearSecondaryProgressData } = this.props;
+    const {
+      loopFilesOperations,
+      clearSecondaryProgressData,
+      setSecondaryProgressBarData,
+    } = this.props;
 
     api.files
       .copyToFolder(
@@ -1656,7 +1660,11 @@ class SectionBodyContent extends React.Component {
     conflictResolveType,
     deleteAfter
   ) => {
-    const { loopFilesOperations, clearSecondaryProgressData } = this.props;
+    const {
+      loopFilesOperations,
+      clearSecondaryProgressData,
+      setSecondaryProgressBarData,
+    } = this.props;
 
     api.files
       .moveToFolder(
@@ -1809,7 +1817,7 @@ class SectionBodyContent extends React.Component {
       filter,
     } = this.props;
 
-    console.log("Section body", this.props);
+    //console.log("Section body", this.props);
 
     const {
       editingId,
@@ -2119,49 +2127,49 @@ SectionBodyContent.defaultProps = {
 const mapStateToProps = (state) => {
   return {
     currentFolderCount: getCurrentFilesCount(state),
-    currentMediaFileId: getMediaViewerId(state),
+    //currentMediaFileId: getMediaViewerId(state),
     //dragging: getDragging(state),
-    dragItem: getDragItem(state),
+    //dragItem: getDragItem(state),
     //fileAction: getFileAction(state),
     //files: getFiles(state),
     //filesList: getFilesList(state)(state),
-    filter: getFilter(state),
+    //filter: getFilter(state),
     //firstLoad: getFirstLoad(state),
     //folderId: getSelectedFolderId(state),
     //folders: getFolders(state),
-    isAdmin: isAdmin(state),
-    isCommon: getIsCommonFolder(state),
-    isDesktop: isDesktopClient(state),
-    isEncryptionSupport: isEncryptionSupport(state),
-    isFavorites: getIsFavoritesFolder(state),
-    isMy: getIsMyFolder(state),
-    isRecycleBin: getIsRecycleBinFolder(state),
-    isRecent: getIsRecentFolder(state),
-    isShare: getIsShareFolder(state),
-    isPrivacy: getIsPrivacyFolder(state),
+    //isAdmin: isAdmin(state),
+    //isCommon: getIsCommonFolder(state),
+    //isDesktop: isDesktopClient(state),
+    //isEncryptionSupport: isEncryptionSupport(state),
+    //isFavorites: getIsFavoritesFolder(state),
+    //isMy: getIsMyFolder(state),
+    //isRecycleBin: getIsRecycleBinFolder(state),
+    //isRecent: getIsRecentFolder(state),
+    //isShare: getIsShareFolder(state),
+    //isPrivacy: getIsPrivacyFolder(state),
     mediaViewerImageFormats: getMediaViewerImageFormats(state),
     mediaViewerMediaFormats: getMediaViewerMediaFormats(state),
-    mediaViewerVisible: getMediaViewerVisibility(state),
-    myDocumentsId: getMyFolderId(state),
-    organizationName: getOrganizationName(state),
+    //mediaViewerVisible: getMediaViewerVisibility(state),
+    //myDocumentsId: getMyFolderId(state),
+    //organizationName: getOrganizationName(state),
     //parentId: getSelectedFolderParentId(state),
-    privacyInstructions: getPrivacyInstructionsLink(state),
+    //privacyInstructions: getPrivacyInstructionsLink(state),
     //selected: getSelected(state),
     //selectedFolderId: getSelectedFolderId(state),
     //selection: getSelection(state),
-    settings: getSettings(state),
+    //settings: getSettings(state),
     //title: getSelectedFolderTitle(state),
-    treeFolders: getTreeFolders(state),
-    viewAs: getViewAs(state),
-    viewer: getCurrentUser(state),
+    //treeFolders: getTreeFolders(state),
+    //viewAs: getViewAs(state),
+    //viewer: getCurrentUser(state),
     tooltipValue: getTooltipLabel(state),
     iconOfDraggedFile: getIconOfDraggedFile(state)(state),
-    sharingPanelVisible: getSharePanelVisible(state),
+    //sharingPanelVisible: getSharePanelVisible(state),
     isRootFolder: isRootFolder(state),
     providers: getThirdPartyProviders(state),
     capabilities: getThirdPartyCapabilities(state),
-    isVersionHistoryPanel: getIsVerHistoryPanel(state),
-    isTabletView: getIsTabletView(state),
+    //isVersionHistoryPanel: getIsVerHistoryPanel(state),
+    //isTabletView: getIsTabletView(state),
   };
 };
 
@@ -2198,34 +2206,50 @@ export default connect(mapStateToProps, {
   updateFile,
   //fetchFiles,
   //selectFile,
-  setTreeFolders,
-  setDragItem,
-  setMediaViewerData,
-  setSecondaryProgressBarData,
+  //setTreeFolders,
+  //setDragItem,
+  //setMediaViewerData,
+  //setSecondaryProgressBarData,
   //setSelection,
   //setSelected,
   setUpdateTree,
   //setIsLoading,
-  clearSecondaryProgressData,
+  //clearSecondaryProgressData,
   markItemAsFavorite,
   removeItemFromFavorite,
   fetchFavoritesFolder,
   getFileInfo,
   addFileToRecentlyViewed,
   loopFilesOperations,
-  setSharingPanelVisible,
-  setIsVerHistoryPanel,
-  setVerHistoryFileId,
-  setChangeOwnerPanelVisible,
+  //setSharingPanelVisible,
+  //setIsVerHistoryPanel,
+  //setVerHistoryFileId,
+  //setChangeOwnerPanelVisible,
 })(
   inject(({ store, mainFilesStore }) => {
-    const { dragging, setDragging, filesStore, setIsLoading } = mainFilesStore;
+    const {
+      homepage,
+      culture,
+      isEncryptionSupport,
+      isTabletView,
+      organizationName,
+      isDesktopClient,
+    } = store.settingsStore;
+    const {
+      dragging,
+      setDragging,
+      filesStore,
+      setIsLoading,
+      viewAs,
+      dragItem,
+      setDragItem,
+      privacyInstructions
+    } = mainFilesStore;
     const {
       files,
       folders,
       selected,
       setSelected,
-      fileActionStore,
       firstLoad,
       filesList,
       fetchFiles,
@@ -2233,13 +2257,57 @@ export default connect(mapStateToProps, {
       selection,
       selectFile,
       deselectFile,
+      filter,
+      fileActionStore,
+      treeFoldersStore,
+      mediaViewerDataStore,
+      secondaryProgressDataStore,
+      dialogsStore,
+      versionHistoryStore,
     } = filesStore;
+
+    const {
+      treeFolders,
+      setTreeFolders,
+      myFolderId,
+      isMyFolder,
+      isRecycleBinFolder,
+      isShareFolder,
+      isFavoritesFolder,
+      isCommonFolder,
+      isRecentFolder,
+      isPrivacyFolder,
+    } = treeFoldersStore;
 
     const { type, extension, id, setAction } = fileActionStore;
 
     const fileAction = { type, extension, id };
+    const {
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
+    } = secondaryProgressDataStore;
+
+    const {
+      sharingPanelVisible,
+      setChangeOwnerPanelVisible,
+      setSharingPanelVisible,
+    } = dialogsStore;
+
+    const {
+      isVisible: isVersionHistoryPanel,
+      setIsVerHistoryPanel,
+      setVerHistoryFileId,
+    } = versionHistoryStore;
 
     return {
+      isAdmin: store.isAdmin,
+      homepage,
+      culture,
+      isEncryptionSupport,
+      isTabletView,
+      viewer: store.userStore.user,
+      organizationName,
+      isDesktop: isDesktopClient,
       dragging,
       fileAction,
       files,
@@ -2251,6 +2319,23 @@ export default connect(mapStateToProps, {
       parentId: filesStore.selectedFolderStore.parentId,
       selectedFolderId: filesStore.selectedFolderStore.id,
       selection,
+      treeFolders,
+      isRecycleBin: isRecycleBinFolder,
+      myDocumentsId: myFolderId,
+      isShare: isShareFolder,
+      isFavorites: isFavoritesFolder,
+      isCommon: isCommonFolder,
+      isRecent: isRecentFolder,
+      isMy: isMyFolder,
+      isPrivacy: isPrivacyFolder,
+      filter,
+      viewAs,
+      dragItem,
+      currentMediaFileId: mediaViewerDataStore.id,
+      mediaViewerVisible: mediaViewerDataStore.visible,
+      sharingPanelVisible,
+      isVersionHistoryPanel,
+      privacyInstructions,
 
       setDragging,
       setAction,
@@ -2260,6 +2345,15 @@ export default connect(mapStateToProps, {
       fetchFiles,
       selectFile,
       deselectFile,
+      setTreeFolders,
+      setDragItem,
+      setMediaViewerData: mediaViewerDataStore.setMediaViewerData,
+      setSecondaryProgressBarData,
+      setChangeOwnerPanelVisible,
+      setSharingPanelVisible,
+      clearSecondaryProgressData,
+      setIsVerHistoryPanel,
+      setVerHistoryFileId,
     };
   })(withRouter(withTranslation()(observer(SectionBodyContent))))
 );

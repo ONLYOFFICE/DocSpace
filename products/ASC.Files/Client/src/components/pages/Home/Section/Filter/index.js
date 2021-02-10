@@ -1,14 +1,14 @@
 import React from "react";
 import { connect } from "react-redux";
+// import {
+//   fetchFiles,
+//   setViewAs,
+//   setIsLoading,
+// } from "../../../../../store/files/actions";
 import {
-  //fetchFiles,
-  setViewAs,
-  //setIsLoading,
-} from "../../../../../store/files/actions";
-import {
-  getFilter,
+  //getFilter,
   //getSelectedFolderId,
-  getViewAs,
+  //getViewAs,
   getFilterSelectedItem,
   //getFirstLoad,
 } from "../../../../../store/files/selectors";
@@ -16,18 +16,23 @@ import find from "lodash/find";
 import result from "lodash/result";
 import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
-import { constants, FilterInput, store, Loaders, utils } from "asc-web-common";
+import {
+  constants,
+  FilterInput,
+  /* store, */ Loaders,
+  utils,
+} from "asc-web-common";
 //import equal from "fast-deep-equal/react";
 import { isMobileOnly } from "react-device-detect";
 import { inject, observer } from "mobx-react";
 
 const { withLayoutSize } = utils;
 
-const {
-  getCurrentUser,
-  getSettingsCustomNames,
-  getLanguage,
-} = store.auth.selectors;
+// const {
+//   getCurrentUser,
+//   getSettingsCustomNames,
+//   getLanguage,
+// } = store.auth.selectors;
 const { FilterType } = constants;
 
 const getFilterType = (filterValues) => {
@@ -328,14 +333,14 @@ class SectionFilterContent extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    user: getCurrentUser(state),
-    customNames: getSettingsCustomNames(state),
-    language: getLanguage(state),
+    //user: getCurrentUser(state),
+    //customNames: getSettingsCustomNames(state),
+    //language: getLanguage(state),
     //firstLoad: getFirstLoad(state),
-    filter: getFilter(state),
+    //filter: getFilter(state),
     //selectedFolderId: getSelectedFolderId(state),
     selectedItem: getFilterSelectedItem(state),
-    viewAs: getViewAs(state),
+    //viewAs: getViewAs(state),
   };
 }
 
@@ -345,21 +350,27 @@ function mapStateToProps(state) {
 //   setIsLoading,
 // })(withRouter(withLayoutSize(withTranslation()(SectionFilterContent))));
 
-export default connect(mapStateToProps, {
-  //fetchFiles,
-  setViewAs,
-  //setIsLoading,
-})(
+export default connect(mapStateToProps)(
   inject(({ store, mainFilesStore }) => {
-    const { filesStore, setIsLoading } = mainFilesStore;
-    const { firstLoad, fetchFiles } = filesStore;
+    const { filesStore, setIsLoading, setViewAs, viewAs } = mainFilesStore;
+    const { firstLoad, fetchFiles, filter, selectedFolderStore } = filesStore;
+
+    const { user } = store.userStore;
+    const { customNames, culture } = store.settingsStore;
+    const language = (user && user.cultureName) || culture || "en-US";
 
     return {
+      customNames,
+      user,
+      language,
       firstLoad,
-      selectedFolderId: filesStore.selectedFolderStore.id,
+      selectedFolderId: selectedFolderStore.id,
+      filter,
+      viewAs,
 
       setIsLoading,
       fetchFiles,
+      setViewAs,
     };
   })(
     withRouter(

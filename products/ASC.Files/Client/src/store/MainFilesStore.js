@@ -1,6 +1,5 @@
 import { makeObservable, action, observable } from "mobx";
 import { store, utils } from "asc-web-common";
-import TreeFoldersStore from "./TreeFoldersStore";
 import FilesStore from "./FilesStore";
 import config from "../../package.json";
 
@@ -9,34 +8,43 @@ const { authStore } = store;
 class MainFilesStore {
   isLoaded = false;
   isLoading = false;
+  viewAs = "row";
   dragging = false;
+  dragItem = null;
 
-  treeFoldersStore = null;
   filesStore = null;
+  privacyInstructions = "https://www.onlyoffice.com/private-rooms.aspx";
 
   constructor() {
-    this.treeFoldersStore = new TreeFoldersStore();
     this.filesStore = new FilesStore();
 
     const pathname = window.location.pathname.toLowerCase();
     this.isEditor = pathname.indexOf("doceditor") !== -1;
 
     makeObservable(this, {
-      treeFoldersStore: observable,
       filesStore: observable,
       isLoaded: observable,
       isLoading: observable,
+      viewAs: observable,
       dragging: observable,
+      dragItem: observable,
+      privacyInstructions: observable,
 
       initFiles: action,
       setIsLoaded: action,
       setIsLoading: action,
+      setViewAs: action,
       setDragging: action,
+      setDragItem: action,
     });
   }
 
   setIsLoaded = (isLoaded) => {
     this.isLoaded = isLoaded;
+  };
+
+  setViewAs = (viewAs) => {
+    this.viewAs = viewAs;
   };
 
   setDragging = (dragging) => {
@@ -47,7 +55,11 @@ class MainFilesStore {
     this.isLoading = isLoading;
   };
 
-  initFiles = async () => {
+  setDragItem = (dragItem) => {
+    this.dragItem = dragItem;
+  };
+
+  initFiles = () => {
     const isAuthenticated = authStore.isAuthenticated;
     const {
       getPortalCultures,
@@ -71,17 +83,15 @@ class MainFilesStore {
     if (!this.isEditor) {
       requests.push(
         getPortalCultures(),
-        this.treeFoldersStore.fetchTreeFolders()
+        this.filesStore.treeFoldersStore.fetchTreeFolders()
       );
 
       if (isDesktopClient) {
         requests.push(getIsEncryptionSupport(), getEncryptionKeys());
       }
     }
-    return Promise.all(requests).finally(() => {
-      this.setIsLoaded(true);
-      utils.updateTempContent();
-    });
+
+    return Promise.all(requests);
   };
 }
 

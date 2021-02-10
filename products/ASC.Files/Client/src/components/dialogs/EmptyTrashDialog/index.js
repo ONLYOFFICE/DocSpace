@@ -1,21 +1,20 @@
 import React, { useCallback, useEffect } from "react";
-import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import ModalDialogContainer from "../ModalDialogContainer";
 import { ModalDialog, Button, Text } from "asc-web-components";
 import { withTranslation } from "react-i18next";
 import { api, utils, toastr } from "asc-web-common";
-import {
-  //fetchFiles,
-  setSecondaryProgressBarData,
-  clearSecondaryProgressData,
-} from "../../../store/files/actions";
+// import {
+//   fetchFiles,
+//   setSecondaryProgressBarData,
+//   clearSecondaryProgressData,
+// } from "../../../store/files/actions";
 import { TIMEOUT } from "../../../helpers/constants";
-import {
-  //getSelectedFolderId,
-  getFilter,
-  //getIsLoading,
-} from "../../../store/files/selectors";
+// import {
+//   getSelectedFolderId,
+//   getFilter,
+//   getIsLoading,
+// } from "../../../store/files/selectors";
 import { createI18N } from "../../../helpers/i18n";
 import { inject, observer } from "mobx-react";
 
@@ -174,13 +173,13 @@ const EmptyTrashDialog = (props) => (
   <ModalDialogContainerTranslated i18n={i18n} {...props} />
 );
 
-const mapStateToProps = (state) => {
-  return {
-    //currentFolderId: getSelectedFolderId(state),
-    filter: getFilter(state),
-    //isLoading: getIsLoading(state),
-  };
-};
+// const mapStateToProps = (state) => {
+//   return {
+//     currentFolderId: getSelectedFolderId(state),
+//     filter: getFilter(state),
+//     isLoading: getIsLoading(state),
+//   };
+// };
 
 // export default connect(mapStateToProps, {
 //   setSecondaryProgressBarData,
@@ -188,20 +187,21 @@ const mapStateToProps = (state) => {
 //   fetchFiles,
 // })(withRouter(EmptyTrashDialog));
 
-export default connect(mapStateToProps, {
-  setSecondaryProgressBarData,
-  clearSecondaryProgressData,
-  //fetchFiles,
-})(
-  inject(({ store, mainFilesStore }) => {
-    const { filesStore, isLoading } = mainFilesStore;
-    const { fetchFiles } = filesStore;
+export default inject(({ store, mainFilesStore }) => {
+  const { filesStore, isLoading } = mainFilesStore;
+  const { fetchFiles, filter, secondaryProgressDataStore } = filesStore;
+  const {
+    setSecondaryProgressBarData,
+    clearSecondaryProgressData,
+  } = secondaryProgressDataStore;
 
-    return {
-      currentFolderId: filesStore.selectedFolderStore.id,
-      isLoading,
+  return {
+    currentFolderId: filesStore.selectedFolderStore.id,
+    isLoading,
+    filter,
 
-      fetchFiles,
-    };
-  })(withRouter(observer(EmptyTrashDialog)))
-);
+    fetchFiles,
+    setSecondaryProgressBarData,
+    clearSecondaryProgressData,
+  };
+})(withRouter(observer(EmptyTrashDialog)));

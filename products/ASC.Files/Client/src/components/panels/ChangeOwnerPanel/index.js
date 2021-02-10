@@ -10,21 +10,21 @@ import {
   Aside,
 } from "asc-web-components";
 import { withTranslation } from "react-i18next";
-import { utils, store, toastr } from "asc-web-common";
+import { utils, /* store, */ toastr } from "asc-web-common";
 import {
   //setIsLoading,
   setFilesOwner,
   setFiles,
   setFolders,
-  setChangeOwnerPanelVisible,
+  //setChangeOwnerPanelVisible,
 } from "../../../store/files/actions";
-import {
-  //getSelection,
-  //getIsLoading,
-  //getFiles,
-  //getFolders,
-  getShowOwnerChangePanel,
-} from "../../../store/files/selectors";
+// import {
+//   getSelection,
+//   getIsLoading,
+//   getFiles,
+//   getFolders,
+//   getShowOwnerChangePanel,
+// } from "../../../store/files/selectors";
 import { createI18N } from "../../../helpers/i18n";
 
 import OwnerSelector from "./OwnerSelector";
@@ -43,7 +43,7 @@ const i18n = createI18N({
   localesPath: "panels/ChangeOwnerPanel",
 });
 const { changeLanguage } = utils;
-const { getSettingsCustomNamesGroupsCaption } = store.auth.selectors;
+//const { getSettingsCustomNamesGroupsCaption } = store.auth.selectors;
 
 class ChangeOwnerComponent extends React.Component {
   constructor(props) {
@@ -201,16 +201,16 @@ const ChangeOwnerPanel = (props) => (
   <ModalDialogContainerTranslated i18n={i18n} {...props} />
 );
 
-const mapStateToProps = (state) => {
-  return {
-    //selection: getSelection(state),
-    groupsCaption: getSettingsCustomNamesGroupsCaption(state),
-    //isLoading: getIsLoading(state),
-    //files: getFiles(state),
-    //folders: getFolders(state),
-    visible: getShowOwnerChangePanel(state),
-  };
-};
+// const mapStateToProps = (state) => {
+//   return {
+//     selection: getSelection(state),
+//     groupsCaption: getSettingsCustomNamesGroupsCaption(state),
+//     isLoading: getIsLoading(state),
+//     files: getFiles(state),
+//     folders: getFolders(state),
+//     visible: getShowOwnerChangePanel(state),
+//   };
+// };
 
 // export default connect(mapStateToProps, {
 //   setIsLoading,
@@ -219,23 +219,27 @@ const mapStateToProps = (state) => {
 //   setChangeOwnerPanelVisible,
 // })(withRouter(ChangeOwnerPanel));
 
-export default connect(mapStateToProps, {
+export default connect(null, {
   //setIsLoading,
   setFiles,
   setFolders,
-  setChangeOwnerPanelVisible,
+  //setChangeOwnerPanelVisible,
 });
 
 inject(({ store, mainFilesStore }) => {
   const { filesStore, setIsLoading, isLoading } = mainFilesStore;
-  const { files, folders, selection } = filesStore;
+  const { files, folders, selection, dialogsStore } = filesStore;
+  const { ownerPanelVisible, setChangeOwnerPanelVisible } = dialogsStore;
 
   return {
+    groupsCaption: store.settingsStore.customNames.groupsCaption,
     files,
     folders,
     selection,
     isLoading,
+    visible: ownerPanelVisible,
 
     setIsLoading,
+    setChangeOwnerPanelVisible,
   };
 })(withRouter(observer(ChangeOwnerPanel)));

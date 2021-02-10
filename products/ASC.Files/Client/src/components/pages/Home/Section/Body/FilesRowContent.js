@@ -13,15 +13,15 @@ import {
 } from "asc-web-components";
 import { constants, api, toastr, store as initStore } from "asc-web-common";
 import {
-  clearSecondaryProgressData,
+  //clearSecondaryProgressData,
   createFile,
   createFolder,
   //fetchFiles,
   renameFolder,
   //setIsLoading,
   setNewRowItems,
-  setSecondaryProgressBarData,
-  setTreeFolders,
+  //setSecondaryProgressBarData,
+  //setTreeFolders,
   setUpdateTree,
   updateFile,
 } from "../../../../../store/files/actions";
@@ -31,18 +31,18 @@ import {
   canWebEdit,
   //getDragging,
   //getFileAction,
-  getFilter,
+  //getFilter,
   //getFolders,
   //getIsLoading,
-  getIsPrivacyFolder,
-  getIsRecycleBinFolder,
+  //getIsPrivacyFolder,
+  //getIsRecycleBinFolder,
   getNewRowItems,
   //getPathParts,
   //getSelectedFolder,
   //getSelectedFolderNew,
   //getSelectedFolderParentId,
   getTitleWithoutExst,
-  getTreeFolders,
+  //getTreeFolders,
   isImage,
   isSound,
   isVideo,
@@ -56,7 +56,7 @@ import { observer, inject } from "mobx-react";
 
 const { FileAction } = constants;
 const sideColor = "#A3A9AE";
-const { /* getSettings, */ isDesktopClient } = initStore.auth.selectors;
+//const {  getSettings,  isDesktopClient } = initStore.auth.selectors;
 const { getEncryptionAccess, replaceFileStream } = initStore.auth.actions;
 
 const SimpleFilesRowContent = styled(RowContent)`
@@ -755,20 +755,20 @@ class FilesRowContent extends React.PureComponent {
 
 function mapStateToProps(state, props) {
   return {
-    filter: getFilter(state),
+    //filter: getFilter(state),
     //fileAction: getFileAction(state),
     //parentFolder: getSelectedFolderParentId(state),
-    isTrashFolder: getIsRecycleBinFolder(state),
+    //isTrashFolder: getIsRecycleBinFolder(state),
     //settings: getSettings(state),
-    treeFolders: getTreeFolders(state),
+    //treeFolders: getTreeFolders(state),
     //selectedFolderPathParts: getPathParts(state),
     //newItems: getSelectedFolderNew(state),
     //selectedFolder: getSelectedFolder(state),
     //folders: getFolders(state),
     newRowItems: getNewRowItems(state),
     //isLoading: getIsLoading(state),
-    isPrivacy: getIsPrivacyFolder(state),
-    isDesktop: isDesktopClient(state),
+    //isPrivacy: getIsPrivacyFolder(state),
+    //isDesktop: isDesktopClient(state),
 
     canWebEdit: canWebEdit(props.item.fileExst)(state),
     canConvert: canConvert(props.item.fileExst)(state),
@@ -797,34 +797,64 @@ export default connect(mapStateToProps, {
   createFile,
   updateFile,
   renameFolder,
-  setTreeFolders,
-  setSecondaryProgressBarData,
+  //setTreeFolders,
+  //setSecondaryProgressBarData,
   setUpdateTree,
   setNewRowItems,
   //setIsLoading,
-  clearSecondaryProgressData,
+  //clearSecondaryProgressData,
   //fetchFiles,
   getEncryptionAccess,
   replaceFileStream,
 })(
   inject(({ store, mainFilesStore }) => {
+    const { homepage, culture, isDesktopClient } = store.settingsStore;
     const { filesStore, setIsLoading, isLoading } = mainFilesStore;
-    const { folders, fetchFiles } = filesStore;
+    const {
+      folders,
+      fetchFiles,
+      treeFoldersStore,
+      filter,
+      selectedFolderStore,
+      secondaryProgressDataStore,
+    } = filesStore;
+
+    const {
+      treeFolders,
+      setTreeFolders,
+      isRecycleBinFolder,
+      isPrivacyFolder,
+    } = treeFoldersStore;
+
     const { type, extension, id } = filesStore.fileActionStore;
 
     const fileAction = { type, extension, id };
+    const {
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
+    } = secondaryProgressDataStore;
 
     return {
+      isDesktop: isDesktopClient,
+      homepage,
+      culture,
       fileAction,
       folders,
-      selectedFolderId: filesStore.selectedFolderStore.id,
-      selectedFolderPathParts: filesStore.selectedFolderStore.pathParts,
-      newItems: filesStore.selectedFolderStore.new,
-      parentFolder: filesStore.selectedFolderStore.parentId,
+      selectedFolderId: selectedFolderStore.id,
+      selectedFolderPathParts: selectedFolderStore.pathParts,
+      newItems: selectedFolderStore.new,
+      parentFolder: selectedFolderStore.parentId,
       isLoading,
+      treeFolders,
+      isTrashFolder: isRecycleBinFolder,
+      isPrivacy: isPrivacyFolder,
+      filter,
 
       setIsLoading,
       fetchFiles,
+      setTreeFolders,
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
     };
   })(withRouter(withTranslation()(observer(FilesRowContent))))
 );
