@@ -13,11 +13,13 @@ class SelectedGroupStore {
 
   selectGroup = (groupId) => {
     const { filter } = this.peopleStore.filterStore;
-
+    const { clearSelection } = this.peopleStore.selectionStore;
+    const { getUsersList } = this.peopleStore.usersStore;
     let newFilter = filter.clone();
-    newFilter.group = groupId;
 
-    this.peopleStore.usersStore.getUsersList(newFilter);
+    newFilter.group = groupId;
+    clearSelection();
+    getUsersList(newFilter);
   };
 
   setSelectedGroup = (group) => {
