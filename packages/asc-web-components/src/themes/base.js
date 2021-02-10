@@ -1029,6 +1029,19 @@ const Base = {
     borderBottom: `1px solid ${globalColors.pattensBlue}`,
   },
 
+  aside: {
+    backgroundColor: white,
+    height: "100%",
+    overflowX: "hidden",
+    overflowY: "auto",
+    position: "fixed",
+    right: "0",
+    top: "0",
+    bottom: "16px",
+    paddingBottom: "64px",
+    transition: "transform 0.3s ease-in-out",
+  },
+
   // phoneInput: {
   //   width: "304px",
   //   height: "44px",

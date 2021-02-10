@@ -1,41 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
-import styled from "styled-components";
+
 import Scrollbar from "../scrollbar";
-
-/* eslint-disable no-unused-vars */
-/* eslint-disable react/prop-types */
-const Container = ({ visible, scale, zIndex, ...props }) => (
-  <aside {...props} />
-);
-/* eslint-enable react/prop-types */
-/* eslint-enable no-unused-vars */
-
-const StyledAside = styled(Container)`
-  background-color: #fff;
-  height: 100%;
-  overflow-x: hidden;
-  overflow-y: auto;
-  position: fixed;
-  right: 0;
-  top: 0;
-  transform: translateX(
-    ${(props) => (props.visible ? "0" : props.scale ? "100%" : "325px")}
-  );
-  transition: transform 0.3s ease-in-out;
-  width: ${(props) => (props.scale ? "100%" : "325px")};
-  z-index: ${(props) => props.zIndex};
-  box-sizing: border-box;
-
-  &.modal-dialog-aside {
-    padding-bottom: 64px;
-
-    .modal-dialog-aside-footer {
-      position: fixed;
-      bottom: 16px;
-    }
-  }
-`;
+import StyledAside from "./styled-aside";
 
 const Aside = React.memo((props) => {
   //console.log("Aside render");
