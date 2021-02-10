@@ -523,5 +523,6 @@ export default connect(mapStateToProps, {
     isHeaderVisible: peopleStore.headerMenuStore.isHeaderVisible,
     isHeaderIndeterminate: peopleStore.headerMenuStore.isHeaderIndeterminate,
     isHeaderChecked: peopleStore.headerMenuStore.isHeaderChecked,
+    onClose: peopleStore.selectionStore.clearSelection,
   }))(observer(withTranslation()(withRouter(SectionHeaderContent))))
 );

@@ -84,11 +84,11 @@ class PureHome extends React.Component {
     this.props.setSelected(selected);
   };
 
-  onClose = () => {
-    const { setSelected } = this.props;
-    setSelected("none");
-    this.setState({ isHeaderVisible: false });
-  };
+  // onClose = () => {
+  //   const { clearSelection } = this.props;
+  //   clearSelection();
+  //   this.setState({ isHeaderVisible: false });
+  // };
 
   onLoading = (status) => {
     this.props.setIsLoading(status);
@@ -131,7 +131,7 @@ class PureHome extends React.Component {
             // isHeaderChecked={isHeaderChecked}
             onCheck={this.onSectionHeaderContentCheck}
             onSelect={this.onSectionHeaderContentSelect}
-            onClose={this.onClose}
+            // onClose={this.onClose}
             onLoading={this.onLoading}
           />
         </PageLayout.SectionHeader>
@@ -201,5 +201,6 @@ export default connect(mapStateToProps, { setSelected, setIsLoading })(
     users: peopleStore.usersStore.users,
     groups: peopleStore.groupsStore.groups,
     selectedGroup: peopleStore.selectedGroupStore.selectedGroup,
+    clearSelection: peopleStore.selectionStore.clearSelection,
   }))(observer(withRouter(Home)))
 );

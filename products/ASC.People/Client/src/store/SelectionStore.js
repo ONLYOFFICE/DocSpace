@@ -9,6 +9,7 @@ class SelectionStore {
       selection: observable,
       selectUser: action,
       deselectUser: action,
+      clearSelection: action,
     });
   }
 
@@ -22,6 +23,10 @@ class SelectionStore {
     const newData = this.selection.filter((el) => el.id !== user.id);
     this.selection = newData;
     console.log(this.selection);
+  };
+
+  clearSelection = () => {
+    this.selection = [];
   };
 }
 
