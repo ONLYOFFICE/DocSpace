@@ -7,6 +7,8 @@ import TargetUserStore from "./TargetUserStore";
 import SelectedGroupStore from "./SelectedGroupStore";
 import EditingFormStore from "./EditingFormStore";
 import FilterStore from "./FilterStore";
+import SelectionStore from "./SelectionStore";
+import HeaderMenuStore from "./HeaderMenuStore";
 
 class PeopleStore {
   groupsStore = null;
@@ -15,6 +17,8 @@ class PeopleStore {
   selectedGroupStore = null;
   editingFormStore = null;
   filterStore = null;
+  selectionStore = null;
+  headerMenuStore = null;
 
   isLoading = false;
 
@@ -25,6 +29,8 @@ class PeopleStore {
     this.setSelectedGroupStore(new SelectedGroupStore(this));
     this.setEditingFormStore(new EditingFormStore(this));
     this.setFilterStore(new FilterStore(this));
+    this.setSelectionStore(new SelectionStore(this));
+    this.setHeaderMenuStore(new HeaderMenuStore(this));
 
     makeObservable(this, {
       isLoading: observable,
@@ -66,6 +72,12 @@ class PeopleStore {
   };
   setFilterStore = (store) => {
     this.filterStore = store;
+  };
+  setSelectionStore = (store) => {
+    this.selectionStore = store;
+  };
+  setHeaderMenuStore = (store) => {
+    this.headerMenuStore = store;
   };
 }
 
