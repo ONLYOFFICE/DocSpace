@@ -803,6 +803,40 @@ const Base = {
     borderRadius: "6px",
     boxShadow: "0px 5px 20px rgba(0, 0, 0, 0.13)",
   },
+  dropDownItem: {
+    color: black,
+    disableColor: gray,
+    backgroundColor: white,
+    hoverBackgroundColor: grayLight,
+    hoverDisabledBackgroundColor: white,
+    fontWeight: "600",
+    fontSize: "13px",
+    width: "100%",
+    maxWidth: "500px",
+    border: "0px",
+    margin: "0px",
+    padding: "0px 16px",
+    lineHeight: "32px",
+    tabletLineHeight: "36px",
+
+    icon: {
+      width: "16px",
+      marginRight: "8px",
+      lineHeight: "14px",
+
+      color: black,
+      disableColor: gray,
+    },
+
+    separator: {
+      padding: "0px 16px",
+      borderBottom: `1px solid ${globalColors.grayLightMid}`,
+      margin: " 4px 16px 4px",
+      lineHeight: "1px",
+      height: "1px",
+      width: "calc(100% - 32px)",
+    },
+  },
 
   // loader: {
   //   color: shuttleGrey,
@@ -860,7 +894,6 @@ const Base = {
   //   },
 
   //   tablet: { lineHeight: "36px" },
-
 
   comboBox: {
     padding: "6px 0px",
