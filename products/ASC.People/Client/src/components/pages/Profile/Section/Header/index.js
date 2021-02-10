@@ -14,7 +14,7 @@ import {
 import { withTranslation, Trans } from "react-i18next";
 import {
   updateUserStatus,
-  setFilter,
+  // setFilter,
 } from "../../../../../store/people/actions";
 import { updateProfile } from "../../../../../store/profile/actions";
 import {
@@ -521,16 +521,18 @@ const mapStateToProps = (state) => {
 // });
 
 export default connect(mapStateToProps, {
-  updateUserStatus,
+  // updateUserStatus,
   fetchProfile,
   updateProfile,
-  setFilter,
+  //setFilter,
 })(
   inject(({ store, peopleStore }) => ({
     settings: store.settingsStore,
     isAdmin: store.isAdmin,
     viewer: store.userStore.user,
     filter: peopleStore.filterStore.filter,
+    setFilter: peopleStore.filterStore.setFilterParams,
+    updateUserStatus: peopleStore.usersStore.updateUserStatus,
   }))(observer(withRouter(withTranslation()(SectionHeaderContent))))
 );
 

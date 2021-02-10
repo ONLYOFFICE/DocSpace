@@ -675,7 +675,7 @@ const mapStateToProps = (state) => {
 export default connect(mapStateToProps, {
   createProfile,
   updateCreatedAvatar,
-  setFilter,
+  //setFilter,
   updateProfileInUsers,
   // setIsVisibleDataLossDialog,
   // setIsEditingForm,
@@ -692,6 +692,7 @@ export default connect(mapStateToProps, {
       peopleStore.editingFormStore.setIsVisibleDataLossDialog,
     setIsEditingForm: peopleStore.editingFormStore.setIsEditingForm,
     filter: peopleStore.filterStore.filter,
+    setFilter: peopleStore.filterStore.setFilterParams,
   }))(observer(withRouter(withTranslation()(CreateUserForm))))
 );
 

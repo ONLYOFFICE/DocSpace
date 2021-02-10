@@ -521,8 +521,8 @@ export default connect(mapStateToProps, {
   resetGroup,
   createGroup,
   updateGroup,
-  selectGroup,
-  setFilter,
+  // selectGroup,
+  // setFilter,
 })(
   inject(({ store, peopleStore }) => {
     const groups = convertGroups(peopleStore.groupsStore.groups);
@@ -536,6 +536,8 @@ export default connect(mapStateToProps, {
       me: store.userStore.user,
       groups,
       filter: peopleStore.filterStore.filter,
+      setFilter: peopleStore.filterStore.setFilterParams,
+      selectGroup: peopleStore.selectedGroupStore.selectGroup,
     };
   })(observer(withRouter(withTranslation()(SectionBodyContent))))
 );

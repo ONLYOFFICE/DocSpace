@@ -6,7 +6,7 @@ import { IconButton } from "asc-web-components";
 import { Headline, store } from "asc-web-common";
 import { useTranslation } from "react-i18next";
 import {
-  setFilter,
+  //setFilter,
   setIsVisibleDataLossDialog,
   toggleAvatarEditor,
 } from "../../../../../store/people/actions";
@@ -124,7 +124,7 @@ function mapStateToProps(state) {
 // });
 
 export default connect(mapStateToProps, {
-  setFilter,
+  //setFilter,
   //setIsVisibleDataLossDialog,
   toggleAvatarEditor,
   resetProfile,
@@ -135,6 +135,7 @@ export default connect(mapStateToProps, {
     setIsVisibleDataLossDialog:
       peopleStore.editingFormStore.setIsVisibleDataLossDialog,
     filter: peopleStore.filterStore.filter,
+    setFilter: peopleStore.filterStore.setFilterParams,
   }))(observer(withRouter(SectionHeaderContent)))
 );
 
