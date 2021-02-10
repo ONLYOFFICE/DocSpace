@@ -52,8 +52,9 @@ const { EmployeeStatus } = constants;
 const isRefetchPeople = true;
 
 const StyledContainer = styled.div`
-  height: 100vh;
+  height: calc(100vh - 220px);
   margin-bottom: 16px;
+  margin-top: -22px;
 `;
 class SectionBodyContent extends React.PureComponent {
   constructor(props) {
