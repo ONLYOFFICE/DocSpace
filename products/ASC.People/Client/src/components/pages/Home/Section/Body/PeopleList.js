@@ -76,7 +76,7 @@ const PeopleList = ({
           width={width}
           itemData={itemData}
           itemCount={peopleList.length}
-          itemSize={49}
+          itemSize={itemData.isMobile ? 57 : 48}
           outerElementType={CustomScrollbarsVirtualList}
         >
           {RowWrapper}
