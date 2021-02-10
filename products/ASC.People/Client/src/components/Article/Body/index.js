@@ -115,7 +115,6 @@ class ArticleBodyContent extends React.Component {
     }
   };
   onSelect = (data) => {
-    console.log(data);
     const { setIsLoading } = this.props;
     return () => {
       const { selectGroup } = this.props;

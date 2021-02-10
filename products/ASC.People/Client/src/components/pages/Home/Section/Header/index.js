@@ -140,6 +140,7 @@ const SectionHeaderContent = (props) => {
   } = customNames;
 
   //console.log("SectionHeaderContent render");
+  console.log(isHeaderVisible, isHeaderIndeterminate, isHeaderChecked);
 
   const toggleEmployeeDialog = useCallback(
     () => setEmployeeDialogVisible(!employeeDialogVisible),
@@ -493,7 +494,7 @@ const mapStateToProps = (state) => {
     // isAdmin: isAdmin(state),
     //homepage,
     //customNames,
-    selection,
+    //selection,
     // isLoaded,
     hasAnybodySelected: hasAnybodySelected(state),
     hasUsersToMakeEmployees: hasUsersToMakeEmployees(state),
@@ -518,5 +519,10 @@ export default connect(mapStateToProps, {
     isLoaded: store.isLoaded,
     isAdmin: store.isAdmin,
     fetchPeople: peopleStore.usersStore.getUsersList,
+    selection: peopleStore.selectionStore.selection,
+    isHeaderVisible: peopleStore.headerMenuStore.isHeaderVisible,
+    isHeaderIndeterminate: peopleStore.headerMenuStore.isHeaderIndeterminate,
+    isHeaderChecked: peopleStore.headerMenuStore.isHeaderChecked,
+    onClose: peopleStore.selectionStore.clearSelection,
   }))(observer(withTranslation()(withRouter(SectionHeaderContent))))
 );

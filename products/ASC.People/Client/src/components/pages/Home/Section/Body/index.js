@@ -573,5 +573,7 @@ export default connect(mapStateToProps, {
     fetchPeople: peopleStore.usersStore.getUsersList,
     peopleList: peopleStore.usersStore.composePeopleList(),
     filter: peopleStore.filterStore.filter,
+    selectUser: peopleStore.selectionStore.selectUser,
+    deselectUser: peopleStore.selectionStore.deselectUser,
   }))(observer(withRouter(withTranslation()(SectionBodyContent))))
 );

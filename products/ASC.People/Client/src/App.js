@@ -47,7 +47,6 @@ const App = (props) => {
 
   useEffect(() => {
     try {
-      console.log("loadBaseInfo call");
       loadBaseInfo();
     } catch (err) {
       toastr.error(err);
@@ -55,7 +54,6 @@ const App = (props) => {
   }, []);
 
   useEffect(() => {
-    console.log("App People render", isLoaded);
     if (isLoaded) utils.updateTempContent();
   }, [isLoaded]);
 

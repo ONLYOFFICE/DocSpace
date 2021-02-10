@@ -29,43 +29,43 @@ const { changeLanguage } = utils;
 const { isAdmin, getIsLoaded, getOrganizationName } = store.auth.selectors;
 
 class PureHome extends React.Component {
-  constructor(props) {
-    super(props);
+  // constructor(props) {
+  //   super(props);
 
-    this.state = {
-      isHeaderVisible: false,
-      isHeaderIndeterminate: false,
-      isHeaderChecked: false,
-    };
-  }
+  //   this.state = {
+  // isHeaderVisible: false,
+  // isHeaderIndeterminate: false,
+  // isHeaderChecked: false,
+  //   };
+  // }
 
-  renderGroupButtonMenu = () => {
-    const { users, selection, selected, setSelected } = this.props;
+  // renderGroupButtonMenu = () => {
+  //   const { users, selection, selected, setSelected } = this.props;
 
-    const headerVisible = selection.length > 0;
-    const headerIndeterminate =
-      headerVisible && selection.length > 0 && selection.length < users.length;
-    const headerChecked = headerVisible && selection.length === users.length;
+  //   const headerVisible = selection.length > 0;
+  //   const headerIndeterminate =
+  //     headerVisible && selection.length > 0 && selection.length < users.length;
+  //   const headerChecked = headerVisible && selection.length === users.length;
 
-    let newState = {};
+  //   let newState = {};
 
-    if (headerVisible || selected === "close") {
-      newState.isHeaderVisible = headerVisible;
-      if (selected === "close") {
-        setSelected("none");
-      }
-    }
+  //   if (headerVisible || selected === "close") {
+  //     newState.isHeaderVisible = headerVisible;
+  //     if (selected === "close") {
+  //       setSelected("none");
+  //     }
+  //   }
 
-    newState.isHeaderIndeterminate = headerIndeterminate;
-    newState.isHeaderChecked = headerChecked;
+  //   newState.isHeaderIndeterminate = headerIndeterminate;
+  //   newState.isHeaderChecked = headerChecked;
 
-    this.setState(newState);
-  };
+  //   this.setState(newState);
+  // };
 
   componentDidUpdate(prevProps) {
-    if (this.props.selection !== prevProps.selection) {
-      this.renderGroupButtonMenu();
-    }
+    // if (this.props.selection !== prevProps.selection) {
+    //   this.renderGroupButtonMenu();
+    // }
 
     if (this.props.isLoading !== prevProps.isLoading) {
       if (this.props.isLoading) {
@@ -84,23 +84,23 @@ class PureHome extends React.Component {
     this.props.setSelected(selected);
   };
 
-  onClose = () => {
-    const { setSelected } = this.props;
-    setSelected("none");
-    this.setState({ isHeaderVisible: false });
-  };
+  // onClose = () => {
+  //   const { clearSelection } = this.props;
+  //   clearSelection();
+  //   this.setState({ isHeaderVisible: false });
+  // };
 
   onLoading = (status) => {
     this.props.setIsLoading(status);
   };
 
   render() {
-    const {
-      isHeaderVisible,
-      isHeaderIndeterminate,
-      isHeaderChecked,
-      selected,
-    } = this.state;
+    // const {
+    // isHeaderVisible,
+    // isHeaderIndeterminate,
+    // isHeaderChecked,
+    // selected,
+    // } = this.state;
 
     const { isAdmin, isLoaded } = this.props;
 
@@ -126,12 +126,12 @@ class PureHome extends React.Component {
 
         <PageLayout.SectionHeader>
           <SectionHeaderContent
-            isHeaderVisible={isHeaderVisible}
-            isHeaderIndeterminate={isHeaderIndeterminate}
-            isHeaderChecked={isHeaderChecked}
+            // isHeaderVisible={isHeaderVisible}
+            // isHeaderIndeterminate={isHeaderIndeterminate}
+            // isHeaderChecked={isHeaderChecked}
             onCheck={this.onSectionHeaderContentCheck}
             onSelect={this.onSectionHeaderContentSelect}
-            onClose={this.onClose}
+            // onClose={this.onClose}
             onLoading={this.onLoading}
           />
         </PageLayout.SectionHeader>
@@ -143,7 +143,7 @@ class PureHome extends React.Component {
         <PageLayout.SectionBody>
           <SectionBodyContent
             isMobile={isMobile}
-            selected={selected}
+            // selected={selected}
             onLoading={this.onLoading}
             onChange={this.onRowChange}
           />
@@ -201,5 +201,6 @@ export default connect(mapStateToProps, { setSelected, setIsLoading })(
     users: peopleStore.usersStore.users,
     groups: peopleStore.groupsStore.groups,
     selectedGroup: peopleStore.selectedGroupStore.selectedGroup,
+    clearSelection: peopleStore.selectionStore.clearSelection,
   }))(observer(withRouter(Home)))
 );
