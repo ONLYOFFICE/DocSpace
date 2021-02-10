@@ -24,7 +24,7 @@ import {
   updateUserStatus,
   fetchPeople,
   removeUser,
-  setSelected,
+  //setSelected,
 } from "../../../../../store/people/actions";
 import { deleteGroup } from "../../../../../store/group/actions";
 import {
@@ -182,6 +182,7 @@ const SectionHeaderContent = (props) => {
 
   const onSelectorSelect = useCallback(
     (item) => {
+      console.log("onSelectorSelect", item);
       onSelect && onSelect(item.key);
     },
     [onSelect]
@@ -507,11 +508,11 @@ const mapStateToProps = (state) => {
 };
 
 export default connect(mapStateToProps, {
-  updateUserStatus,
+  // updateUserStatus,
   //fetchPeople,
-  deleteGroup,
-  removeUser,
-  setSelected,
+  //deleteGroup,
+  // removeUser,
+  // setSelected,
 })(
   inject(({ store, peopleStore }) => ({
     customNames: store.settingsStore.customNames,
@@ -524,5 +525,8 @@ export default connect(mapStateToProps, {
     isHeaderIndeterminate: peopleStore.headerMenuStore.isHeaderIndeterminate,
     isHeaderChecked: peopleStore.headerMenuStore.isHeaderChecked,
     onClose: peopleStore.selectionStore.clearSelection,
+    deleteGroup: peopleStore.groupsStore.deleteGroup,
+    removeUser: peopleStore.usersStore.removeUser,
+    updateUserStatus: peopleStore.usersStore.updateUserStatus,
   }))(observer(withTranslation()(withRouter(SectionHeaderContent))))
 );

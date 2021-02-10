@@ -556,13 +556,13 @@ const mapStateToProps = (state) => {
 };
 
 export default connect(mapStateToProps, {
-  selectUser,
-  deselectUser,
-  setSelection,
-  updateUserStatus,
-  resetFilter,
+  // selectUser,
+  // deselectUser,
+  // setSelection,
+  // updateUserStatus,
+  // resetFilter,
   //fetchPeople,
-  selectGroup,
+  // selectGroup,
   setIsLoadedSection,
 })(
   inject(({ store, peopleStore }) => ({
@@ -573,7 +573,10 @@ export default connect(mapStateToProps, {
     fetchPeople: peopleStore.usersStore.getUsersList,
     peopleList: peopleStore.usersStore.composePeopleList(),
     filter: peopleStore.filterStore.filter,
+    resetFilter: peopleStore.filterStore.resetFilter,
     selectUser: peopleStore.selectionStore.selectUser,
     deselectUser: peopleStore.selectionStore.deselectUser,
+    selectGroup: peopleStore.selectedGroupStore.selectGroup,
+    updateUserStatus: peopleStore.usersStore.updateUserStatus,
   }))(observer(withRouter(withTranslation()(SectionBodyContent))))
 );
