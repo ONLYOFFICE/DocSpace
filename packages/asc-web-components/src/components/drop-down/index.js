@@ -1,71 +1,13 @@
 import React, { memo } from "react";
-import styled, { css } from "styled-components";
 import PropTypes from "prop-types";
-import CustomScrollbarsVirtualList from "../scrollbar/custom-scrollbars-virtual-list";
-import DropDownItem from "../drop-down-item";
-import Backdrop from "../backdrop";
-import Box from "../box";
 import { VariableSizeList } from "react-window";
 import onClickOutside from "react-onclickoutside";
 import { isMobile } from "react-device-detect";
 
-const StyledDropdown = styled.div`
-  font-family: "Open Sans", sans-serif, Arial;
-  font-style: normal;
-  font-weight: 600;
-  font-size: 13px;
-  ${(props) =>
-    props.maxHeight &&
-    `
-      max-height: ${props.maxHeight}px;
-      overflow-y: auto;
-    `}
-  height: fit-content;
-  position: absolute;
-  ${(props) => props.manualWidth && `width: ${props.manualWidth};`}
-  ${(props) =>
-    props.directionY === "top" &&
-    css`
-      bottom: ${(props) => (props.manualY ? props.manualY : "100%")};
-    `}
-    ${(props) =>
-    props.directionY === "bottom" &&
-    css`
-      top: ${(props) => (props.manualY ? props.manualY : "100%")};
-    `}
-    ${(props) =>
-    props.directionX === "right" &&
-    css`
-      right: ${(props) => (props.manualX ? props.manualX : "0px")};
-    `}
-    ${(props) =>
-    props.directionX === "left" &&
-    css`
-      left: ${(props) => (props.manualX ? props.manualX : "0px")};
-    `}
-    z-index: 200;
-  display: ${(props) =>
-    props.open ? (props.columnCount ? "block" : "table") : "none"};
-  background: #ffffff;
-  border-radius: 6px;
-  -moz-border-radius: 6px;
-  -webkit-border-radius: 6px;
-  box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.13);
-  -moz-box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.13);
-  -webkit-box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.13);
-  padding: ${(props) =>
-    !props.maxHeight &&
-    props.children &&
-    props.children.length > 1 &&
-    `4px 0px`};
-  ${(props) =>
-    props.columnCount &&
-    `
-      -webkit-column-count: ${props.columnCount};
-      -moz-column-count: ${props.columnCount};
-            column-count: ${props.columnCount};
-    `}
-`;
+import CustomScrollbarsVirtualList from "../scrollbar/custom-scrollbars-virtual-list";
+import DropDownItem from "../drop-down-item";
+import Backdrop from "../backdrop";
+import StyledDropdown from "./styled-drop-down";
 
 // eslint-disable-next-line react/display-name, react/prop-types
 const Row = memo(({ data, index, style }) => {

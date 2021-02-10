@@ -795,6 +795,15 @@ const Base = {
     },
   },
 
+  dropDown: {
+    fontWeight: "600",
+    fontSize: "13px",
+    zIndex: "200",
+    background: white,
+    borderRadius: "6px",
+    boxShadow: "0px 5px 20px rgba(0, 0, 0, 0.13)",
+  },
+
   // loader: {
   //   color: shuttleGrey,
   //   size: "40px",
@@ -851,15 +860,7 @@ const Base = {
   //   },
 
   //   tablet: { lineHeight: "36px" },
-  // },
 
-  // dropDown: {
-  //   zIndex: "150",
-  //   background: white,
-  //   borderRadius: "6px",
-  //   boxShadow: "0px 5px 20px rgba(0, 0, 0, 0.13)",
-  //   padding: "6px 0px",
-  // },
 
   comboBox: {
     padding: "6px 0px",
