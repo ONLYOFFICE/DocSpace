@@ -22,6 +22,7 @@ import {
   getUsersToActivateIds,
   getUsersToDisableIds,
 } from "../../../store/people/selectors";
+import { inject, observer } from "mobx-react";
 const i18n = createI18N({
   page: "ChangeUserStatusDialog",
   localesPath: "dialogs/ChangeUserStatusDialog",
@@ -66,7 +67,7 @@ class ChangeUserStatusDialogComponent extends React.Component {
         .catch((error) => toastr.error(error))
         .finally(() => {
           this.setState({ isRequestRunning: false }, () => {
-            setSelected("close");
+            //setSelected("close");
             onClose();
           });
         });
@@ -208,6 +209,14 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-export default connect(mapStateToProps, { updateUserStatus, setSelected })(
-  withRouter(ChangeUserStatusDialog)
+// export default connect(mapStateToProps, { updateUserStatus, setSelected })(
+//   withRouter(ChangeUserStatusDialog)
+// );
+
+export default connect(mapStateToProps, {
+  // setSelected,
+})(
+  inject(({ peopleStore }) => ({
+    updateUserStatus: peopleStore.usersStore.updateUserStatus,
+  }))(observer(withRouter(ChangeUserStatusDialog)))
 );
