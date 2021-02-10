@@ -59,7 +59,7 @@ class DeleteGroupUsersDialogComponent extends React.Component {
         .catch((error) => toastr.error(error))
         .finally(() => {
           this.setState({ isRequestRunning: false }, () => {
-            setSelected("close");
+            //setSelected("close");
             onClose();
           });
         });
@@ -204,8 +204,11 @@ const mapStateToProps = (state) => {
 //   withRouter(DeleteUsersDialog)
 // );
 
-export default connect(mapStateToProps, { removeUser, setSelected })(
+export default connect(mapStateToProps, {
+  /*setSelected*/
+})(
   inject(({ peopleStore }) => ({
     filter: peopleStore.filterStore.filter,
+    removeUser: peopleStore.usersStore.removeUser,
   }))(observer(withRouter(DeleteUsersDialog)))
 );
