@@ -276,6 +276,27 @@ const Base = {
     },
   },
 
+  groupButtonsMenu: {
+    top: "0",
+    background: white,
+    boxShadow: " 0px 10px 18px -8px rgba(0, 0, 0, 0.100306)",
+    height: "56px",
+    padding: "0 18px 19px 0",
+    width: "100%",
+    zIndex: "189",
+    marginTop: "1px",
+
+    closeButton: {
+      right: "11px",
+      top: "10px",
+      width: "20px",
+      height: "20px",
+      padding: "8px",
+      hoverBackgroundColor: cyanBlueDarkShade,
+      backgroundColor: grayMid,
+    },
+  },
+
   selectorAddButton: {
     background: grayLight,
     activeBackground: grayLightMid,

@@ -1,75 +1,15 @@
 import React from "react";
-import styled from "styled-components";
+
 import PropTypes from "prop-types";
 import GroupButton from "../group-button";
 import DropDownItem from "../drop-down-item";
 import throttle from "lodash/throttle";
 import { isArrayEqual } from "../../utils/array";
-import { tablet, desktop } from "../../utils/device";
-
-const StyledGroupButtonsMenu = styled.div`
-  box-sizing: border-box;
-  position: sticky;
-  top: 0;
-  background: #ffffff;
-  box-shadow: 0px 10px 18px -8px rgba(0, 0, 0, 0.100306);
-  height: 56px;
-  list-style: none;
-  padding: 0 18px 19px 0;
-  width: 100%;
-  white-space: nowrap;
-
-  display: ${(props) => (props.visible ? "block" : "none")};
-  z-index: 189;
-
-  @media ${desktop} {
-    margin-top: 1px;
-  }
-`;
-
-const CloseButton = styled.div`
-  position: absolute;
-  right: 11px;
-  top: 10px;
-  width: 20px;
-  height: 20px;
-  padding: 8px;
-
-  @media ${tablet} {
-    right: 3px;
-  }
-
-  &:hover {
-    cursor: pointer;
-
-    &:before,
-    &:after {
-      background-color: #555f65;
-    }
-  }
-
-  &:before,
-  &:after {
-    position: absolute;
-    left: 15px;
-    content: " ";
-    height: 20px;
-    width: 1px;
-    background-color: #d0d5da;
-  }
-
-  &:before {
-    transform: rotate(45deg);
-  }
-
-  &:after {
-    transform: rotate(-45deg);
-  }
-`;
-
-const GroupMenuWrapper = styled.div`
-  display: inline-block;
-`;
+import {
+  StyledGroupButtonsMenu,
+  CloseButton,
+  GroupMenuWrapper,
+} from "./styled-group-buttons-menu";
 
 class GroupButtonsMenu extends React.Component {
   constructor(props) {
