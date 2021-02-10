@@ -8,11 +8,11 @@ import { utils as commonUtils, toastr } from "asc-web-common";
 import { StyledAsidePanel } from "../StyledPanels";
 import TreeFolders from "../../Article/Body/TreeFolders";
 import {
-  setSecondaryProgressBarData,
+  //setSecondaryProgressBarData,
   itemOperationToFolder,
 } from "../../../store/files/actions";
 import {
-  getFilter,
+  //getFilter,
   //getSelection,
   //getPathParts,
   //getSelectedFolderId,
@@ -208,7 +208,7 @@ const OperationsPanel = (props) => (
 
 const mapStateToProps = (state) => {
   return {
-    filter: getFilter(state),
+    //filter: getFilter(state),
     //selection: getSelection(state),
     //expandedKeys: getPathParts(state),
     //currentFolderId: getSelectedFolderId(state),
@@ -223,19 +223,29 @@ const mapStateToProps = (state) => {
 // })(withRouter(OperationsPanel));
 
 export default connect(mapStateToProps, {
-  setSecondaryProgressBarData,
+  //setSecondaryProgressBarData,
   itemOperationToFolder,
 })(
   inject(({ store, mainFilesStore }) => {
     const { filesStore } = mainFilesStore;
-    const { selection, selectedFolderStore, treeFoldersStore } = filesStore;
+    const {
+      selection,
+      selectedFolderStore,
+      treeFoldersStore,
+      filter,
+      secondaryProgressDataStore,
+    } = filesStore;
     const { isRecycleBinFolder } = treeFoldersStore;
+    const { setSecondaryProgressBarData } = secondaryProgressDataStore;
 
     return {
       expandedKeys: selectedFolderStore.pathParts,
       currentFolderId: selectedFolderStore.id,
       selection,
       isRecycleBin: isRecycleBinFolder,
+      filter,
+
+      setSecondaryProgressBarData,
     };
   })(withRouter(observer(OperationsPanel)))
 );

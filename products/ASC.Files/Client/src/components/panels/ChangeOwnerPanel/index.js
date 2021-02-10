@@ -16,15 +16,15 @@ import {
   setFilesOwner,
   setFiles,
   setFolders,
-  setChangeOwnerPanelVisible,
+  //setChangeOwnerPanelVisible,
 } from "../../../store/files/actions";
-import {
-  //getSelection,
-  //getIsLoading,
-  //getFiles,
-  //getFolders,
-  getShowOwnerChangePanel,
-} from "../../../store/files/selectors";
+// import {
+//   getSelection,
+//   getIsLoading,
+//   getFiles,
+//   getFolders,
+//   getShowOwnerChangePanel,
+// } from "../../../store/files/selectors";
 import { createI18N } from "../../../helpers/i18n";
 
 import OwnerSelector from "./OwnerSelector";
@@ -201,16 +201,16 @@ const ChangeOwnerPanel = (props) => (
   <ModalDialogContainerTranslated i18n={i18n} {...props} />
 );
 
-const mapStateToProps = (state) => {
-  return {
-    //selection: getSelection(state),
-    //groupsCaption: getSettingsCustomNamesGroupsCaption(state),
-    //isLoading: getIsLoading(state),
-    //files: getFiles(state),
-    //folders: getFolders(state),
-    visible: getShowOwnerChangePanel(state),
-  };
-};
+// const mapStateToProps = (state) => {
+//   return {
+//     selection: getSelection(state),
+//     groupsCaption: getSettingsCustomNamesGroupsCaption(state),
+//     isLoading: getIsLoading(state),
+//     files: getFiles(state),
+//     folders: getFolders(state),
+//     visible: getShowOwnerChangePanel(state),
+//   };
+// };
 
 // export default connect(mapStateToProps, {
 //   setIsLoading,
@@ -219,16 +219,17 @@ const mapStateToProps = (state) => {
 //   setChangeOwnerPanelVisible,
 // })(withRouter(ChangeOwnerPanel));
 
-export default connect(mapStateToProps, {
+export default connect(null, {
   //setIsLoading,
   setFiles,
   setFolders,
-  setChangeOwnerPanelVisible,
+  //setChangeOwnerPanelVisible,
 });
 
 inject(({ store, mainFilesStore }) => {
   const { filesStore, setIsLoading, isLoading } = mainFilesStore;
-  const { files, folders, selection } = filesStore;
+  const { files, folders, selection, dialogsStore } = filesStore;
+  const { ownerPanelVisible, setChangeOwnerPanelVisible } = dialogsStore;
 
   return {
     groupsCaption: store.settingsStore.customNames.groupsCaption,
@@ -236,7 +237,9 @@ inject(({ store, mainFilesStore }) => {
     folders,
     selection,
     isLoading,
+    visible: ownerPanelVisible,
 
     setIsLoading,
+    setChangeOwnerPanelVisible,
   };
 })(withRouter(observer(ChangeOwnerPanel)));

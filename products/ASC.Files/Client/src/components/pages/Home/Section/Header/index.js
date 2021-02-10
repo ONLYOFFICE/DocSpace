@@ -19,15 +19,15 @@ import {
   IconButton,
   utils,
 } from "asc-web-components";
-import {
-  //fetchFiles,
-  //setAction,
-  setSecondaryProgressBarData,
-  clearSecondaryProgressData,
-  //setIsLoading,
-  //setSelected,
-  setSharingPanelVisible,
-} from "../../../../../store/files/actions";
+// import {
+//   fetchFiles,
+//   setAction,
+//   setSecondaryProgressBarData,
+//   clearSecondaryProgressData,
+//   setIsLoading,
+//   setSelected,
+//   setSharingPanelVisible,
+// } from "../../../../../store/files/actions";
 import { TIMEOUT } from "../../../../../helpers/constants";
 import {
   EmptyTrashDialog,
@@ -41,7 +41,7 @@ import {
   //getIsRecycleBinFolder,
   canCreate,
   //getSelectedFolderTitle,
-  getFilter,
+  //getFilter,
   //getSelectedFolderId,
   //getSelection,
   //getSelectedFolderParentId,
@@ -51,7 +51,7 @@ import {
   getHeaderChecked,
   getAccessedSelected,
   getSelectionLength,
-  getSharePanelVisible,
+  //getSharePanelVisible,
   getIsThirdPartySelection,
   //getIsPrivacyFolder,
   getOnlyFoldersSelected,
@@ -266,7 +266,7 @@ class SectionHeaderContent extends React.Component {
         }
       })
       .catch((err) => {
-        setSecondaryProgressBarData({
+        this.props.setSecondaryProgressBarData({
           visible: true,
           alert: true,
         });
@@ -703,7 +703,7 @@ const mapStateToProps = (state) => {
     //parentId: getSelectedFolderParentId(state),
     //selection: getSelection(state),
     //title: getSelectedFolderTitle(state),
-    filter: getFilter(state),
+    //filter: getFilter(state),
     deleteDialogVisible: getUserAccess(state),
     //currentFolderId: getSelectedFolderId(state),
     canCreate: canCreate(state),
@@ -713,7 +713,7 @@ const mapStateToProps = (state) => {
     isHeaderChecked: getHeaderChecked(state),
     isAccessedSelected: getAccessedSelected(state),
     isItemsSelected: getSelectionLength(state),
-    sharingPanelVisible: getSharePanelVisible(state),
+    //sharingPanelVisible: getSharePanelVisible(state),
     isThirdPartySelection: getIsThirdPartySelection(state),
     isOnlyFoldersSelected: getOnlyFoldersSelected(state),
   };
@@ -729,14 +729,7 @@ const mapStateToProps = (state) => {
 //   setSharingPanelVisible,
 // })(withTranslation()(withRouter(SectionHeaderContent)));
 
-export default connect(mapStateToProps, {
-  setSecondaryProgressBarData,
-  //setIsLoading,
-  clearSecondaryProgressData,
-  //fetchFiles,
-  //setSelected,
-  setSharingPanelVisible,
-})(
+export default connect(mapStateToProps)(
   inject(({ store, mainFilesStore }) => {
     const { filesStore, setIsLoading } = mainFilesStore;
     const {
@@ -746,9 +739,17 @@ export default connect(mapStateToProps, {
       selection,
       selectedFolderStore,
       treeFoldersStore,
+      filter,
+      secondaryProgressDataStore,
+      dialogsStore,
     } = filesStore;
     const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
     const { setAction } = fileActionStore;
+    const {
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
+    } = secondaryProgressDataStore;
+    const { sharingPanelVisible, setSharingPanelVisible } = dialogsStore;
 
     return {
       isAdmin: store.isAdmin,
@@ -760,11 +761,16 @@ export default connect(mapStateToProps, {
       selection,
       isRecycleBin: isRecycleBinFolder,
       isPrivacy: isPrivacyFolder,
+      filter,
+      sharingPanelVisible,
 
       setSelected,
       setAction,
       setIsLoading,
       fetchFiles,
+      setSecondaryProgressBarData,
+      setSharingPanelVisible,
+      clearSecondaryProgressData,
     };
   })(withTranslation()(withRouter(observer(SectionHeaderContent))))
 );

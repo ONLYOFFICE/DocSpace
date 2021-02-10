@@ -13,14 +13,14 @@ import {
 } from "asc-web-components";
 import { constants, api, toastr, store as initStore } from "asc-web-common";
 import {
-  clearSecondaryProgressData,
+  //clearSecondaryProgressData,
   createFile,
   createFolder,
   //fetchFiles,
   renameFolder,
   //setIsLoading,
   setNewRowItems,
-  setSecondaryProgressBarData,
+  //setSecondaryProgressBarData,
   //setTreeFolders,
   setUpdateTree,
   updateFile,
@@ -31,7 +31,7 @@ import {
   canWebEdit,
   //getDragging,
   //getFileAction,
-  getFilter,
+  //getFilter,
   //getFolders,
   //getIsLoading,
   //getIsPrivacyFolder,
@@ -755,7 +755,7 @@ class FilesRowContent extends React.PureComponent {
 
 function mapStateToProps(state, props) {
   return {
-    filter: getFilter(state),
+    //filter: getFilter(state),
     //fileAction: getFileAction(state),
     //parentFolder: getSelectedFolderParentId(state),
     //isTrashFolder: getIsRecycleBinFolder(state),
@@ -798,11 +798,11 @@ export default connect(mapStateToProps, {
   updateFile,
   renameFolder,
   //setTreeFolders,
-  setSecondaryProgressBarData,
+  //setSecondaryProgressBarData,
   setUpdateTree,
   setNewRowItems,
   //setIsLoading,
-  clearSecondaryProgressData,
+  //clearSecondaryProgressData,
   //fetchFiles,
   getEncryptionAccess,
   replaceFileStream,
@@ -810,18 +810,29 @@ export default connect(mapStateToProps, {
   inject(({ store, mainFilesStore }) => {
     const { homepage, culture, isDesktopClient } = store.settingsStore;
     const { filesStore, setIsLoading, isLoading } = mainFilesStore;
-    const { folders, fetchFiles, treeFoldersStore } = filesStore;
+    const {
+      folders,
+      fetchFiles,
+      treeFoldersStore,
+      filter,
+      selectedFolderStore,
+      secondaryProgressDataStore,
+    } = filesStore;
 
     const {
       treeFolders,
       setTreeFolders,
       isRecycleBinFolder,
-      isPrivacyFolder
+      isPrivacyFolder,
     } = treeFoldersStore;
 
     const { type, extension, id } = filesStore.fileActionStore;
 
     const fileAction = { type, extension, id };
+    const {
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
+    } = secondaryProgressDataStore;
 
     return {
       isDesktop: isDesktopClient,
@@ -829,18 +840,21 @@ export default connect(mapStateToProps, {
       culture,
       fileAction,
       folders,
-      selectedFolderId: filesStore.selectedFolderStore.id,
-      selectedFolderPathParts: filesStore.selectedFolderStore.pathParts,
-      newItems: filesStore.selectedFolderStore.new,
-      parentFolder: filesStore.selectedFolderStore.parentId,
+      selectedFolderId: selectedFolderStore.id,
+      selectedFolderPathParts: selectedFolderStore.pathParts,
+      newItems: selectedFolderStore.new,
+      parentFolder: selectedFolderStore.parentId,
       isLoading,
       treeFolders,
       isTrashFolder: isRecycleBinFolder,
       isPrivacy: isPrivacyFolder,
+      filter,
 
       setIsLoading,
       fetchFiles,
       setTreeFolders,
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
     };
   })(withRouter(withTranslation()(observer(FilesRowContent))))
 );

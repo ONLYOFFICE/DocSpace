@@ -1,11 +1,11 @@
 import React from "react";
-import { connect } from "react-redux";
-import {
-  //getSelection,
-  getSharePanelVisible,
-  getUploadPanelVisible,
-  //getUploadSelection,
-} from "../../../../store/files/selectors";
+import { inject, observer } from "mobx-react";
+// import {
+//   getSelection,
+//   getSharePanelVisible,
+//   getUploadPanelVisible,
+//   getUploadSelection,
+// } from "../../../../store/files/selectors";
 import { SharingPanel, UploadPanel } from "../../../panels";
 
 const Panels = (props) => {
@@ -22,17 +22,26 @@ const Panels = (props) => {
   ];
 };
 
-function mapStateToProps(state) {
-  //   const commonSelection = getSelection(state);
-  //   const uploadSelection = getUploadSelection(state);
-  //   const uploadPanelVisible = getUploadPanelVisible(state);
-  //   const selectionItem = uploadPanelVisible ? uploadSelection : commonSelection;
-  // TODO: implement fetching selection data from this component
-  return {
-    uploadPanelVisible: getUploadPanelVisible(state),
-    sharingPanelVisible: getSharePanelVisible(state),
-    //selection: selectionItem,
-  };
-}
+// function mapStateToProps(state) {
+//   //   const commonSelection = getSelection(state);
+//   //   const uploadSelection = getUploadSelection(state);
+//   //   const uploadPanelVisible = getUploadPanelVisible(state);
+//   //   const selectionItem = uploadPanelVisible ? uploadSelection : commonSelection;
+//   // TODO: implement fetching selection data from this component
+//   return {
+//     uploadPanelVisible: getUploadPanelVisible(state),
+//     sharingPanelVisible: getSharePanelVisible(state),
+//     selection: selectionItem,
+//   };
+// }
 
-export default connect(mapStateToProps)(Panels);
+export default inject(({ mainFilesStore }) => {
+  const { filesStore } = mainFilesStore;
+  const { dialogsStore } = filesStore;
+  const { sharingPanelVisible, uploadPanelVisible } = dialogsStore;
+
+  return {
+    sharingPanelVisible,
+    uploadPanelVisible,
+  };
+})(observer(Panels));

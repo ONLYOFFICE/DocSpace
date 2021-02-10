@@ -14,15 +14,15 @@ import { api, utils, toastr } from "asc-web-common";
 import {
   //fetchFiles,
   //setTreeFolders,
-  setSecondaryProgressBarData,
-  clearSecondaryProgressData,
+  //setSecondaryProgressBarData,
+  //clearSecondaryProgressData,
   setUpdateTree,
 } from "../../../store/files/actions";
 import { TIMEOUT } from "../../../helpers/constants";
 import {
   loopTreeFolders,
   //getSelectedFolderId,
-  getFilter,
+  //getFilter,
   //getTreeFolders,
   //getIsLoading,
   //getIsRecycleBinFolder,
@@ -306,7 +306,7 @@ const DeleteDialog = (props) => (
 const mapStateToProps = (state) => {
   return {
     //currentFolderId: getSelectedFolderId(state),
-    filter: getFilter(state),
+    //filter: getFilter(state),
     //treeFolders: getTreeFolders(state),
     //isLoading: getIsLoading(state),
     //isRecycleBinFolder: getIsRecycleBinFolder(state),
@@ -326,8 +326,8 @@ const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps, {
   //setTreeFolders,
-  setSecondaryProgressBarData,
-  clearSecondaryProgressData,
+  //setSecondaryProgressBarData,
+  //clearSecondaryProgressData,
   setUpdateTree,
   //fetchFiles,
 })(
@@ -338,6 +338,8 @@ export default connect(mapStateToProps, {
       selection,
       selectedFolderStore,
       treeFoldersStore,
+      filter,
+      secondaryProgressDataStore,
     } = filesStore;
 
     const {
@@ -347,6 +349,11 @@ export default connect(mapStateToProps, {
       isPrivacyFolder,
     } = treeFoldersStore;
 
+    const {
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
+    } = secondaryProgressDataStore;
+
     return {
       currentFolderId: selectedFolderStore.id,
       selection,
@@ -354,9 +361,12 @@ export default connect(mapStateToProps, {
       treeFolders,
       isRecycleBinFolder,
       isPrivacy: isPrivacyFolder,
+      filter,
 
       fetchFiles,
       setTreeFolders,
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
     };
   })(withRouter(observer(DeleteDialog)))
 );

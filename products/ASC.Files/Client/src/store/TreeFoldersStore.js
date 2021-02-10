@@ -7,12 +7,14 @@ class TreeFoldersStore {
   selectedFolderStore = null;
 
   treeFolders = [];
+  selectedTreeNode = [];
 
   constructor() {
     makeObservable(this, {
       selectedFolderStore: observable,
 
       treeFolders: observable,
+      selectedTreeNode: observable,
 
       myFolderId: computed,
       //shareFolderId: computed,
@@ -50,6 +52,12 @@ class TreeFoldersStore {
 
   setTreeFolders = (treeFolders) => {
     this.treeFolders = treeFolders;
+  };
+
+  setSelectedNode = (node) => {
+    if (node[0]) {
+      this.selectedTreeNode = node;
+    }
   };
 
   /////////////////////////////////////TODO: FOLDER

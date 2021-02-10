@@ -16,9 +16,9 @@ import {
 } from "../../../../../store/files/actions";
 import {
   canWebEdit,
-  getDragging,
+  //getDragging,
   //getFileAction,
-  getFilter,
+  //getFilter,
   //getFolders,
   //getIsLoading,
   getNewRowItems,
@@ -443,7 +443,7 @@ class FilesTileContent extends React.PureComponent {
 
 function mapStateToProps(state, props) {
   return {
-    filter: getFilter(state),
+    //filter: getFilter(state),
     //fileAction: getFileAction(state),
     //parentFolder: getSelectedFolderParentId(state),
     //isTrashFolder: getIsRecycleBinFolder(state),
@@ -453,7 +453,7 @@ function mapStateToProps(state, props) {
     //selectedFolder: getSelectedFolder(state),
     //folders: getFolders(state),
     newRowItems: getNewRowItems(state),
-    dragging: getDragging(state),
+    //dragging: getDragging(state),
     //isLoading: getIsLoading(state),
     canWebEdit: canWebEdit(props.item.fileExst)(state),
   };
@@ -478,8 +478,8 @@ export default connect(mapStateToProps, {
 })(
   inject(({ store, mainFilesStore }) => {
     const { homepage, culture } = store.settingsStore;
-    const { filesStore, setIsLoading, isLoading } = mainFilesStore;
-    const { folders, fetchFiles, treeFoldersStore } = filesStore;
+    const { filesStore, setIsLoading, isLoading, dragging } = mainFilesStore;
+    const { folders, fetchFiles, treeFoldersStore, filter } = filesStore;
 
     const {
       treeFolders,
@@ -504,6 +504,8 @@ export default connect(mapStateToProps, {
       isLoading,
       treeFolders,
       isTrashFolder: isRecycleBinFolder,
+      filter,
+      dragging,
 
       setIsLoading,
       fetchFiles,

@@ -24,24 +24,24 @@ import {
   //setFirstLoad,
   startUpload,
   setSelections,
-  setUploadPanelVisible,
+  //setUploadPanelVisible,
 } from "../../../store/files/actions";
 import {
-  getConvertDialogVisible,
+  //getConvertDialogVisible,
   //getSelectedFolderId,
   //getFileActionId,
-  getFilter,
-  getPrimaryProgressData,
-  getSecondaryProgressData,
+  //getFilter,
+  //getPrimaryProgressData,
+  //getSecondaryProgressData,
   //getTreeFolders,
-  getViewAs,
+  //getViewAs,
   //getIsLoading,
   //getDragging,
   //getFirstLoad,
   isSecondaryProgressFinished,
   getSelectionLength,
   getSelectionTitle,
-  getShowOwnerChangePanel,
+  //getShowOwnerChangePanel,
 } from "../../../store/files/selectors";
 
 import { ConvertDialog } from "../../dialogs";
@@ -327,16 +327,16 @@ Home.propTypes = {
   history: PropTypes.object.isRequired,
 };
 
-function mapStateToProps(state) {
+function mapStateToProps(state, ownProps) {
   return {
-    convertDialogVisible: getConvertDialogVisible(state),
+    //convertDialogVisible: getConvertDialogVisible(state),
     //currentFolderId: getSelectedFolderId(state),
     //fileActionId: getFileActionId(state),
-    filter: getFilter(state),
-    primaryProgressData: getPrimaryProgressData(state),
-    secondaryProgressData: getSecondaryProgressData(state),
+    //filter: getFilter(state),
+    //primaryProgressData: getPrimaryProgressData(state),
+    //secondaryProgressData: getSecondaryProgressData(state),
     //treeFolders: getTreeFolders(state),
-    viewAs: getViewAs(state),
+    //viewAs: getViewAs(state),
     //isLoading: getIsLoading(state),
     //homepage: getSettingsHomepage(state),
     //dragging: getDragging(state),
@@ -344,7 +344,7 @@ function mapStateToProps(state) {
     isProgressFinished: isSecondaryProgressFinished(state),
     selectionLength: getSelectionLength(state),
     selectionTitle: getSelectionTitle(state),
-    showOwnerChangePanel: getShowOwnerChangePanel(state),
+    //showOwnerChangePanel: getShowOwnerChangePanel(state),
   };
 }
 
@@ -357,48 +357,71 @@ const mapDispatchToProps = (dispatch) => {
     //setFirstLoad: (firstLoad) => dispatch(setFirstLoad(firstLoad)),
     //fetchFiles: (folderId, filter) => dispatch(fetchFiles(folderId, filter)),
     setSelections: (items) => dispatch(setSelections(items)),
-    setUploadPanelVisible: (uploadPanelVisible) =>
-      dispatch(setUploadPanelVisible(uploadPanelVisible)),
+    // setUploadPanelVisible: (uploadPanelVisible) =>
+    //   dispatch(setUploadPanelVisible(uploadPanelVisible)),
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(
-  inject(({ store, mainFilesStore }) => {
-    const {
-      dragging,
-      setDragging,
-      setIsLoading,
-      filesStore,
-      isLoading,
-    } = mainFilesStore;
-    const {
-      firstLoad,
-      setFirstLoad,
-      fileActionStore,
-      fetchFiles,
-      treeFoldersStore,
-    } = filesStore;
+export default inject(({ store, mainFilesStore }) => {
+  const {
+    dragging,
+    setDragging,
+    setIsLoading,
+    filesStore,
+    isLoading,
+    viewAs,
+  } = mainFilesStore;
+  const {
+    firstLoad,
+    setFirstLoad,
+    fetchFiles,
+    filter,
+    fileActionStore,
+    treeFoldersStore,
+    primaryProgressDataStore,
+    secondaryProgressDataStore,
+    dialogsStore,
+  } = filesStore;
 
-    const { treeFolders } = treeFoldersStore;
+  const { treeFolders } = treeFoldersStore;
 
-    const { id } = fileActionStore;
+  const { id } = fileActionStore;
 
-    return {
-      homepage: store.settingsStore.homepage,
-      firstLoad,
-      dragging,
-      fileActionId: id,
-      currentFolderId: filesStore.selectedFolderStore.id,
-      isLoading,
-      treeFolders,
+  const { visible, percent, icon, alert } = primaryProgressDataStore;
+  const primaryProgressData = { visible, percent, icon, alert };
 
-      setFirstLoad,
-      setDragging,
-      setIsLoading,
-      fetchFiles,
-    };
-  })(withRouter(observer(Home)))
-);
+  const secondaryProgressData = {
+    visible: secondaryProgressDataStore.visible,
+    percent: secondaryProgressDataStore.percent,
+    icon: secondaryProgressDataStore.icon,
+    alert: secondaryProgressDataStore.alert,
+  };
+
+  const {
+    convertDialogVisible,
+    ownerPanelVisible: showOwnerChangePanel,
+    setUploadPanelVisible,
+  } = dialogsStore;
+
+  return {
+    homepage: store.settingsStore.homepage,
+    firstLoad,
+    dragging,
+    fileActionId: id,
+    currentFolderId: filesStore.selectedFolderStore.id,
+    isLoading,
+    treeFolders,
+    filter,
+    viewAs,
+    primaryProgressData,
+    secondaryProgressData,
+    convertDialogVisible,
+    showOwnerChangePanel,
+
+    setFirstLoad,
+    setDragging,
+    setIsLoading,
+    fetchFiles,
+    setUploadPanelVisible,
+  };
+})(withRouter(observer(Home)));

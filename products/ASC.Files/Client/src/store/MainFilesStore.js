@@ -8,9 +8,12 @@ const { authStore } = store;
 class MainFilesStore {
   isLoaded = false;
   isLoading = false;
+  viewAs = "row";
   dragging = false;
+  dragItem = null;
 
   filesStore = null;
+  privacyInstructions = "https://www.onlyoffice.com/private-rooms.aspx";
 
   constructor() {
     this.filesStore = new FilesStore();
@@ -22,17 +25,26 @@ class MainFilesStore {
       filesStore: observable,
       isLoaded: observable,
       isLoading: observable,
+      viewAs: observable,
       dragging: observable,
+      dragItem: observable,
+      privacyInstructions: observable,
 
       initFiles: action,
       setIsLoaded: action,
       setIsLoading: action,
+      setViewAs: action,
       setDragging: action,
+      setDragItem: action,
     });
   }
 
   setIsLoaded = (isLoaded) => {
     this.isLoaded = isLoaded;
+  };
+
+  setViewAs = (viewAs) => {
+    this.viewAs = viewAs;
   };
 
   setDragging = (dragging) => {
@@ -41,6 +53,10 @@ class MainFilesStore {
 
   setIsLoading = (isLoading) => {
     this.isLoading = isLoading;
+  };
+
+  setDragItem = (dragItem) => {
+    this.dragItem = dragItem;
   };
 
   initFiles = () => {

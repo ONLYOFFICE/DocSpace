@@ -6,6 +6,12 @@ import TreeFoldersStore from "./TreeFoldersStore";
 import FormatsStore from "./FormatsStore";
 import MediaViewersFormatsStore from "./MediaViewersFormatsStore";
 import DocserviceStore from "./DocserviceStore";
+import MediaViewerDataStore from "./MediaViewerDataStore";
+import PrimaryProgressDataStore from "./PrimaryProgressDataStore";
+import SecondaryProgressDataStore from "./SecondaryProgressDataStore";
+import DialogsStore from "./DialogsStore";
+import VersionHistoryStore from "./VersionHistoryStore";
+import UploadDataStore from "./UploadDataStore";
 import { createTreeFolders } from "./files/selectors";
 
 const { FilesFilter } = api;
@@ -19,6 +25,12 @@ class FilesStore {
   formatsStore = null;
   mediaViewersFormatsStore = null;
   docserviceStore = null;
+  mediaViewerDataStore = null;
+  primaryProgressDataStore = null;
+  secondaryProgressDataStore = null;
+  dialogsStore = null;
+  versionHistoryStore = null;
+  uploadDataStore = null;
 
   firstLoad = true;
   files = [];
@@ -36,6 +48,12 @@ class FilesStore {
       formatsStore: observable,
       mediaViewersFormatsStore: observable,
       docserviceStore: observable,
+      mediaViewerDataStore: observable, //TODO: MainFiles?
+      primaryProgressDataStore: observable, //TODO: MainFiles?
+      secondaryProgressDataStore: observable, //TODO: MainFiles?
+      dialogsStore: observable, //TODO: MainFiles?
+      versionHistoryStore: observable, //TODO: MainFiles?
+      uploadDataStore: observable, //TODO: MainFiles?
 
       firstLoad: observable,
       files: observable,
@@ -63,6 +81,12 @@ class FilesStore {
     this.formatsStore = new FormatsStore();
     this.mediaViewersFormatsStore = new MediaViewersFormatsStore();
     this.docserviceStore = new DocserviceStore();
+    this.mediaViewerDataStore = new MediaViewerDataStore();
+    this.primaryProgressDataStore = new PrimaryProgressDataStore();
+    this.secondaryProgressDataStore = new SecondaryProgressDataStore();
+    this.dialogsStore = new DialogsStore();
+    this.versionHistoryStore = new VersionHistoryStore();
+    this.uploadDataStore = new UploadDataStore();
   }
 
   setFirstLoad = (firstLoad) => {
@@ -81,14 +105,57 @@ class FilesStore {
     this.selected = selected;
   };
 
-  //TODO: FILTER
-  setFilesFilter = (filter) => {
-    this.filter = filter;
-  };
-
   setSelection = (selection) => {
     this.selection = selection;
   };
+
+  //TODO: FILTER
+  setFilesFilter = (filter) => {
+    //setFilterUrl(filter);
+    this.filter = filter;
+  };
+
+  setFilter = (filter) => {
+    this.filter = filter;
+  };
+
+  /*setFilterUrl = (filter) => {
+    const defaultFilter = FilesFilter.getDefault();
+    const params = [];
+    const URLParams = queryString.parse(window.location.href);
+  
+    if (filter.filterType) {
+      params.push(`${FILTER_TYPE}=${filter.filterType}`);
+    }
+  
+    if (filter.withSubfolders === "false") {
+      params.push(`${SEARCH_TYPE}=${filter.withSubfolders}`);
+    }
+  
+    if (filter.search) {
+      params.push(`${SEARCH}=${filter.search.trim()}`);
+    }
+    if (filter.authorType) {
+      params.push(`${AUTHOR_TYPE}=${filter.authorType}`);
+    }
+    if (filter.folder) {
+      params.push(`${FOLDER}=${filter.folder}`);
+    }
+  
+    if (filter.pageCount !== defaultFilter.pageCount) {
+      params.push(`${PAGE_COUNT}=${filter.pageCount}`);
+    }
+  
+    if (URLParams.preview) {
+      params.push(`${PREVIEW}=${URLParams.preview}`);
+    }
+  
+    params.push(`${PAGE}=${filter.page + 1}`);
+    params.push(`${SORT_BY}=${filter.sortBy}`);
+    params.push(`${SORT_ORDER}=${filter.sortOrder}`);
+  
+    history.push(`${config.homepage}/filter?${params.join("&")}`);
+  }*/
 
   fetchFiles = (folderId, filter, clearFilter = true) => {
     const filterData = filter ? filter.clone() : FilesFilter.getDefault();

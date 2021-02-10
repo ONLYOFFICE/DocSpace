@@ -22,7 +22,7 @@ import {
   setConnectItem,
   setShowThirdPartyPanel,
   //fetchFiles,
-  setSelectedNode,
+  //setSelectedNode,
 } from "../../../../../store/files/actions";
 import {
   getThirdPartyCapabilities,
@@ -41,7 +41,7 @@ import {
   getThirdPartyProviders,
   getMyDirectoryFolders,
   getCommonDirectoryFolders,
-  getFilter,
+  //getFilter,
 } from "../../../../../store/files/selectors";
 import { DeleteThirdPartyDialog, ConnectDialog } from "../../../../dialogs";
 import { inject, observer } from "mobx-react";
@@ -562,7 +562,7 @@ function mapStateToProps(state) {
     providers: getThirdPartyProviders(state),
     myDirectoryFolders: getMyDirectoryFolders(state),
     commonDirectoryFolders: getCommonDirectoryFolders(state),
-    filter: getFilter(state),
+    //filter: getFilter(state),
   };
 }
 
@@ -577,16 +577,19 @@ export default connect(mapStateToProps, {
   setConnectItem,
   setShowThirdPartyPanel,
   //fetchFiles,
-  setSelectedNode,
+  //setSelectedNode,
 })(
   inject(({ store, mainFilesStore }) => {
     const { filesStore } = mainFilesStore;
-    const { fetchFiles } = filesStore;
+    const { fetchFiles, treeFoldersStore, filter } = filesStore;
+    const { setSelectedNode } = treeFoldersStore;
 
     return {
       isAdmin: store.isAdmin,
+      filter,
 
       fetchFiles,
+      setSelectedNode,
     };
   })(withTranslation()(observer(ConnectClouds)))
 );

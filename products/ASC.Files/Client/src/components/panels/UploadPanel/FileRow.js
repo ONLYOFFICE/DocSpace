@@ -4,16 +4,15 @@ import { Row, Text, Icons, Tooltip, Link } from "asc-web-components";
 
 import LoadingButton from "./LoadingButton";
 import { connect } from "react-redux";
-import {
-  cancelCurrentUpload,
-} from "../../../store/files/actions";
+import { cancelCurrentUpload } from "../../../store/files/actions";
 import {
   getLoadingFile,
-  isUploaded,
+  //isUploaded,
   isMediaOrImage,
   getIconSrc,
 } from "../../../store/files/selectors";
 import ShareButton from "./ShareButton";
+import { inject, observer } from "mobx-react";
 
 const StyledFileRow = styled(Row)`
   margin: 0 16px;
@@ -193,7 +192,7 @@ const mapStateToProps = (state, ownProps) => {
       loadingFile && loadingFile.uniqueId === uniqueId
         ? loadingFile.percent
         : null,
-    uploaded: isUploaded(state),
+    //uploaded: isUploaded(state),
     isMedia: isMediaOrImage(ext)(state),
     fileIcon: getIconSrc(ext, 24)(state),
     ext,
@@ -205,4 +204,14 @@ const mapStateToProps = (state, ownProps) => {
 export default connect(mapStateToProps, {
   cancelCurrentUpload,
   // setMediaViewerData,
-})(FileRow);
+});
+
+inject(({ mainFilesStore }) => {
+  const { filesStore } = mainFilesStore;
+  const { uploadDataStore } = filesStore;
+  const { uploaded } = uploadDataStore;
+
+  return {
+    uploaded,
+  };
+})(observer(FileRow));

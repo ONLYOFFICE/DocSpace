@@ -9,16 +9,16 @@ import {
 } from "asc-web-common";
 import { connect } from "react-redux";
 import {
-  setFilter,
+  //setFilter,
   //setTreeFolders,
-  setDragItem,
+  //setDragItem,
   //setDragging,
   //setIsLoading,
   setUpdateTree,
 } from "../../../store/files/actions";
 import {
   //getTreeFolders,
-  getFilter,
+  //getFilter,
   //getDragging,
   getUpdateTree,
   //getSelectedFolderId,
@@ -504,7 +504,7 @@ TreeFolders.defaultProps = {
 function mapStateToProps(state) {
   return {
     //treeFolders: getTreeFolders(state),
-    filter: getFilter(state),
+    //filter: getFilter(state),
     //myId: getMyFolderId(state),
     //commonId: getShareFolderId(state),
     //currentId: getSelectedFolderId(state),
@@ -520,9 +520,9 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    setFilter: (filter) => dispatch(setFilter(filter)),
+    //setFilter: (filter) => dispatch(setFilter(filter)),
     //setTreeFolders: (treeFolders) => dispatch(setTreeFolders(treeFolders)),
-    setDragItem: (dragItem) => dispatch(setDragItem(dragItem)),
+    //setDragItem: (dragItem) => dispatch(setDragItem(dragItem)),
     //setDragging: (dragging) => dispatch(setDragging(dragging)),
     //setIsLoading: (isLoading) => dispatch(setIsLoading(isLoading)),
     setUpdateTree: (updateTree) => dispatch(setUpdateTree(updateTree)),
@@ -536,8 +536,19 @@ export default connect(
   mapDispatchToProps
 )(
   inject(({ store, mainFilesStore }) => {
-    const { filesStore, setIsLoading, dragging, setDragging } = mainFilesStore;
-    const { treeFoldersStore, selectedFolderStore } = filesStore;
+    const {
+      filesStore,
+      setIsLoading,
+      dragging,
+      setDragging,
+      setDragItem,
+    } = mainFilesStore;
+    const {
+      treeFoldersStore,
+      selectedFolderStore,
+      filter,
+      setFilter,
+    } = filesStore;
 
     const {
       treeFolders,
@@ -558,10 +569,13 @@ export default connect(
       myId: myFolderId,
       commonId: commonFolderId,
       isPrivacy: isPrivacyFolder,
+      filter,
 
       setDragging,
       setIsLoading,
       setTreeFolders,
+      setFilter,
+      setDragItem,
     };
   })(observer(TreeFolders))
 );

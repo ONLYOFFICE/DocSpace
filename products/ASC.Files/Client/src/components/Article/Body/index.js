@@ -1,21 +1,20 @@
 import React from "react";
-import { connect } from "react-redux";
-import { utils } from "asc-web-components";
+//import { connect } from "react-redux";
+//import { utils } from "asc-web-components";
 import { toastr, Loaders } from "asc-web-common";
 import TreeFolders from "./TreeFolders";
 import TreeSettings from "./TreeSettings";
 import isEmpty from "lodash/isEmpty";
-import {
-  //fetchFiles,
-  //setIsLoading,
-  setSelectedNode,
-} from "../../../store/files/actions";
-import {
-  //getTreeFolders,
-  getFilter,
-  //getSelectedFolderTitle,
-  //getSelectedTreeNode,
-} from "../../../store/files/selectors";
+import //fetchFiles,
+//setIsLoading,
+//setSelectedNode,
+"../../../store/files/actions";
+// import {
+//   getTreeFolders,
+//   getFilter,
+//   getSelectedFolderTitle,
+//   getSelectedTreeNode,
+// } from "../../../store/files/selectors";
 import { NewFilesPanel } from "../../panels";
 import { setDocumentTitle } from "../../../helpers/utils";
 import ThirdPartyList from "./ThirdPartyList";
@@ -105,7 +104,7 @@ class ArticleBodyContent extends React.Component {
   };
 
   render() {
-    const { treeFolders, filter, onTreeDrop, selectedTreeNode } = this.props;
+    const { treeFolders, onTreeDrop, selectedTreeNode } = this.props;
     const { showNewFilesPanel, expandedKeys, newFolderId } = this.state;
 
     return (
@@ -127,7 +126,6 @@ class ArticleBodyContent extends React.Component {
               selectedKeys={selectedTreeNode}
               onSelect={this.onSelect}
               data={treeFolders}
-              filter={filter}
               expandedKeys={expandedKeys}
               onBadgeClick={this.onShowNewFilesPanel}
               onTreeDrop={onTreeDrop}
@@ -141,41 +139,43 @@ class ArticleBodyContent extends React.Component {
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    //treeFolders: getTreeFolders(state),
-    filter: getFilter(state),
-    //selectedTreeNode: getSelectedTreeNode(state),
-    //selectedFolderTitle: getSelectedFolderTitle(state),
-  };
-}
+// function mapStateToProps(state) {
+//   return {
+//     treeFolders: getTreeFolders(state),
+//     filter: getFilter(state),
+//     selectedTreeNode: getSelectedTreeNode(state),
+//     selectedFolderTitle: getSelectedFolderTitle(state),
+//   };
+// }
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    //setIsLoading: (isLoading) => dispatch(setIsLoading(isLoading)),
-    setSelectedNode: (node) => dispatch(setSelectedNode(node)),
-    //fetchFiles: (folderId, filter) => dispatch(fetchFiles(folderId, filter)),
-  };
-};
+// const mapDispatchToProps = (dispatch) => {
+//   return {
+//     setIsLoading: (isLoading) => dispatch(setIsLoading(isLoading)),
+//     setSelectedNode: (node) => dispatch(setSelectedNode(node)),
+//     fetchFiles: (folderId, filter) => dispatch(fetchFiles(folderId, filter)),
+//   };
+// };
 
 //export default connect(mapStateToProps, mapDispatchToProps)(ArticleBodyContent);
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(
-  inject(({ store, mainFilesStore }) => {
-    const { setIsLoading, filesStore } = mainFilesStore;
-    const { fetchFiles, treeFoldersStore, selectedFolderStore } = filesStore;
-    const { treeFolders } = treeFoldersStore;
-    const selectedTreeNode = [selectedFolderStore.id + ""];
+export default inject(({ store, mainFilesStore }) => {
+  const { setIsLoading, filesStore } = mainFilesStore;
+  const {
+    fetchFiles,
+    treeFoldersStore,
+    selectedFolderStore,
+    filter,
+  } = filesStore;
+  const { treeFolders, setSelectedNode } = treeFoldersStore;
+  const selectedTreeNode = [selectedFolderStore.id + ""];
 
-    return {
-      selectedFolderTitle: selectedFolderStore.title,
-      treeFolders,
-      selectedTreeNode,
+  return {
+    selectedFolderTitle: selectedFolderStore.title,
+    treeFolders,
+    selectedTreeNode,
+    filter,
 
-      setIsLoading,
-      fetchFiles,
-    };
-  })(observer(ArticleBodyContent))
-);
+    setIsLoading,
+    fetchFiles,
+    setSelectedNode,
+  };
+})(observer(ArticleBodyContent));

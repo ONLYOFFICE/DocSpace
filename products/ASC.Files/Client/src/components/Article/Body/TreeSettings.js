@@ -8,7 +8,7 @@ import { withTranslation, I18nextProvider } from "react-i18next";
 import { createI18N } from "../../../helpers/i18n";
 
 import {
-  setSelectedNode,
+  //setSelectedNode,
   setExpandSettingsTree,
   getFilesSettings,
   //setSelectedFolder,
@@ -16,7 +16,7 @@ import {
 } from "../../../store/files/actions";
 import {
   //getIsLoading,
-  getSettingsSelectedTreeNode,
+  //getSettingsSelectedTreeNode,
   getExpandedSetting,
   getEnableThirdParty,
   //getSelectedTreeNode,
@@ -207,7 +207,7 @@ const TreeSettings = (props) => {
 
 function mapStateToProps(state) {
   return {
-    selectedTreeNode: getSettingsSelectedTreeNode(state),
+    //selectedTreeNode: getSettingsSelectedTreeNode(state),
     expandedSetting: getExpandedSetting(state),
     enableThirdParty: getEnableThirdParty(state),
     //isAdmin: isAdmin(state),
@@ -225,7 +225,7 @@ function mapStateToProps(state) {
 // })(withRouter(TreeSettings));
 
 export default connect(mapStateToProps, {
-  setSelectedNode,
+  //setSelectedNode,
   setExpandSettingsTree,
   getFilesSettings,
   //setSelectedFolder,
@@ -234,13 +234,16 @@ export default connect(mapStateToProps, {
   inject(({ store, mainFilesStore }) => {
     const { setIsLoading, filesStore, isLoading } = mainFilesStore;
     const { setSelectedFolder } = filesStore.selectedFolderStore;
+    const { selectedTreeNode, setSelectedNode } = filesStore.treeFoldersStore;
 
     return {
       isAdmin: store.isAdmin,
       isLoading,
+      selectedTreeNode,
 
       setIsLoading,
       setSelectedFolder,
+      setSelectedNode,
     };
   })(withRouter(observer(TreeSettings)))
 );

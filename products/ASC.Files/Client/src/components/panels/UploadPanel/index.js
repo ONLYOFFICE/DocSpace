@@ -4,15 +4,15 @@ import { connect } from "react-redux";
 import { withTranslation } from "react-i18next";
 import { utils as commonUtils } from "asc-web-common";
 import {
-  setUploadPanelVisible,
+  //setUploadPanelVisible,
   cancelUpload,
   clearUploadData,
 } from "../../../store/files/actions";
-import {
-  getUploadPanelVisible,
-  getSharePanelVisible,
-  isUploaded,
-} from "../../../store/files/selectors";
+// import {
+//   getUploadPanelVisible,
+//   getSharePanelVisible,
+//   isUploaded,
+// } from "../../../store/files/selectors";
 import SharingPanel from "../SharingPanel";
 import {
   StyledAsidePanel,
@@ -23,6 +23,7 @@ import {
 import FileList from "./FileList";
 
 import { createI18N } from "../../../helpers/i18n";
+import { inject, observer } from "mobx-react";
 
 const i18n = createI18N({
   page: "UploadPanel",
@@ -143,17 +144,37 @@ const UploadPanel = (props) => (
   <UploadPanelContainerTranslated i18n={i18n} {...props} />
 );
 
-const mapStateToProps = (state) => {
-  //console.log("mapStateToProps");
-  return {
-    uploadPanelVisible: getUploadPanelVisible(state),
-    sharingPanelVisible: getSharePanelVisible(state),
-    uploaded: isUploaded(state),
-  };
-};
+// const mapStateToProps = (state) => {
+//   //console.log("mapStateToProps");
+//   return {
+//     uploadPanelVisible: getUploadPanelVisible(state),
+//     sharingPanelVisible: getSharePanelVisible(state),
+//     uploaded: isUploaded(state),
+//   };
+// };
 
-export default connect(mapStateToProps, {
-  setUploadPanelVisible,
+export default connect(null, {
+  //setUploadPanelVisible,
   cancelUpload,
   clearUploadData,
-})(UploadPanel);
+})(
+  inject(({ mainFilesStore }) => {
+    const { filesStore } = mainFilesStore;
+    const { dialogsStore, uploadDataStore } = filesStore;
+    const {
+      sharingPanelVisible,
+      uploadPanelVisible,
+      setUploadPanelVisible,
+    } = dialogsStore;
+
+    const { uploaded } = uploadDataStore;
+
+    return {
+      sharingPanelVisible,
+      uploadPanelVisible,
+      uploaded,
+
+      setUploadPanelVisible,
+    };
+  })(observer(UploadPanel))
+);

@@ -1904,21 +1904,21 @@ export function oAuthPopup(url, modal) {
   return newWindow;
 }
 
-export function fetchFileVersions(fileId) {
-  return (dispatch, getState) => {
-    const state = getState();
-    const currentId = getVerHistoryFileId(state);
-    if (currentId !== fileId) {
-      dispatch(setVerHistoryFileId(fileId));
-      return api.files
-        .getFileVersionInfo(fileId)
-        .then((versions) => dispatch(setFileVersions(versions)));
-    } else {
-      const currentVersions = getFileVersions(state);
-      return Promise.resolve(currentVersions);
-    }
-  };
-}
+// export function fetchFileVersions(fileId) {
+//   return (dispatch, getState) => {
+//     const state = getState();
+//     const currentId = getVerHistoryFileId(state);
+//     if (currentId !== fileId) {
+//       dispatch(setVerHistoryFileId(fileId));
+//       return api.files
+//         .getFileVersionInfo(fileId)
+//         .then((versions) => dispatch(setFileVersions(versions)));
+//     } else {
+//       const currentVersions = getFileVersions(state);
+//       return Promise.resolve(currentVersions);
+//     }
+//   };
+// }
 
 export function markAsVersion(id, isVersion, version) {
   return (dispatch) => {

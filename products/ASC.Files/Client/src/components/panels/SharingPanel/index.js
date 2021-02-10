@@ -17,25 +17,24 @@ import { utils as commonUtils, constants, toastr, store } from "asc-web-common";
 import {
   getShareUsers,
   setShareFiles,
-  setSharingPanelVisible,
+  //setSharingPanelVisible,
   //setIsLoading,
   setFiles,
   setFolders,
-  selectUploadedFile,
+  //selectUploadedFile,
   updateUploadedItem,
 } from "../../../store/files/actions";
 import {
   getAccessOption,
   getExternalAccessOption,
   //getSelection,
-  getSharePanelVisible,
+  //getSharePanelVisible,
   getCanShareOwnerChange,
   //getIsLoading,
   //getFiles,
   //getFolders,
   //getIsPrivacyFolder,
-  //getUploadPanelVisible,
-  getUploadSelection,
+  //getUploadSelection,
 } from "../../../store/files/selectors";
 import {
   StyledAsidePanel,
@@ -622,28 +621,28 @@ const SharingPanel = (props) => (
 );
 
 const mapStateToProps = (state, ownProps) => {
-  const selection = getSelection(state);
-  const uploadSelection = getUploadSelection(state);
-  const selectedFile = ownProps.uploadPanelVisible
-    ? uploadSelection
-    : selection; // TODO: take out this implementation from this component
+  //const selection = getSelection(state);
+  //const uploadSelection = getUploadSelection(state);
+  // const selectedFile = ownProps.uploadPanelVisible
+  //   ? uploadSelection
+  //   : selection; // TODO: take out this implementation from this component
 
   return {
     getAccessOption: (selection) => getAccessOption(state, selection),
     getExternalAccessOption: (selection) =>
       getExternalAccessOption(state, selection),
     //isMyId: getCurrentUserId(state),
-    selection: selectedFile,
+    //selection: selectedFile,
     //isPrivacy: getIsPrivacyFolder(state),
     //isDesktop: isDesktopClient(state),
     //groupsCaption: getSettingsCustomNamesGroupsCaption(state),
-    sharingPanelVisible: getSharePanelVisible(state),
+    //sharingPanelVisible: getSharePanelVisible(state),
     canShareOwnerChange: getCanShareOwnerChange(state),
     //isLoading: getIsLoading(state),
     //files: getFiles(state),
     //folders: getFolders(state),
     //settings: getSettings(state),
-    uploadSelection,
+    //uploadSelection,
   };
 };
 
@@ -659,31 +658,44 @@ const mapStateToProps = (state, ownProps) => {
 
 export default connect(mapStateToProps, {
   replaceFileStream,
-  setSharingPanelVisible,
+  //setSharingPanelVisible,
   //setIsLoading,
   setFiles,
   setFolders,
-  selectUploadedFile,
+  //selectUploadedFile,
   updateUploadedItem,
-});
+})(
+  inject(({ store, mainFilesStore }, { uploadPanelVisible }) => {
+    const { customNames, isDesktopClient, homepage } = store.settingsStore;
+    const { filesStore, setIsLoading, isLoading } = mainFilesStore;
+    const {
+      files,
+      folders,
+      selection,
+      treeFoldersStore,
+      dialogsStore,
+      uploadDataStore,
+    } = filesStore;
+    const { isPrivacyFolder } = treeFoldersStore;
+    const { sharingPanelVisible, setSharingPanelVisible } = dialogsStore;
+    const { uploadSelection, selectUploadedFile } = uploadDataStore;
 
-inject(({ store, mainFilesStore }) => {
-  const { customNames, isDesktopClient, homepage } = store.settingsStore;
-  const { filesStore, setIsLoading, isLoading } = mainFilesStore;
-  const { files, folders, selection, treeFoldersStore } = filesStore;
-  const { isPrivacyFolder } = treeFoldersStore;
+    return {
+      isMyId: store.userStore.user.id,
+      groupsCaption: customNames.groupsCaption,
+      isDesktop: isDesktopClient,
+      homepage,
+      files,
+      folders,
+      selection: uploadPanelVisible ? uploadSelection : selection,
+      isLoading,
+      isPrivacy: isPrivacyFolder,
+      sharingPanelVisible,
+      uploadSelection,
 
-  return {
-    isMyId: store.userStore.user.id,
-    groupsCaption: customNames.groupsCaption,
-    isDesktop: isDesktopClient,
-    homepage,
-    files,
-    folders,
-    //selection,
-    isLoading,
-    isPrivacy: isPrivacyFolder,
-
-    setIsLoading,
-  };
-})(withRouter(observer(SharingPanel)));
+      setIsLoading,
+      setSharingPanelVisible,
+      selectUploadedFile,
+    };
+  })(withRouter(observer(SharingPanel)))
+);

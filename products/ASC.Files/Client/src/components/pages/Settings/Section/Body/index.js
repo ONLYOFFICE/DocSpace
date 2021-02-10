@@ -13,7 +13,7 @@ import {
 } from "../../../../../store/files/actions";
 import {
   //getIsLoading,
-  getSettingsSelectedTreeNode,
+  //getSettingsSelectedTreeNode,
   getSettingsTreeStoreOriginalFiles,
   getSettingsTreeConfirmDelete,
   getSettingsTreeUpdateIfExist,
@@ -183,7 +183,7 @@ const SectionBodyContent = ({
 function mapStateToProps(state) {
   return {
     //isAdmin: isAdmin(state),
-    selectedTreeNode: getSettingsSelectedTreeNode(state),
+    //selectedTreeNode: getSettingsSelectedTreeNode(state),
     storeOriginalFiles: getSettingsTreeStoreOriginalFiles(state),
     confirmDelete: getSettingsTreeConfirmDelete(state),
     updateIfExist: getSettingsTreeUpdateIfExist(state),
@@ -213,11 +213,13 @@ export default connect(mapStateToProps, {
   setForceSave,
 })(
   inject(({ store, mainFilesStore }) => {
-    const { isLoading } = mainFilesStore;
+    const { isLoading, filesStore } = mainFilesStore;
+    const { selectedTreeNode } = filesStore.treeFoldersStore;
 
     return {
       isAdmin: store.isAdmin,
       isLoading,
+      selectedTreeNode,
     };
   })(observer(SectionBodyContent))
 );

@@ -8,7 +8,7 @@ import { isMobile } from "react-device-detect";
 import { /* setAction, */ startUpload } from "../../../store/files/actions";
 import {
   canCreate,
-  getFilter,
+  //getFilter,
   //getSelectedFolder,
   //getFirstLoad,
   //getIsPrivacyFolder,
@@ -187,7 +187,7 @@ const mapStateToProps = (state) => {
     canCreate: canCreate(state),
     //firstLoad: getFirstLoad(state),
     //settings: getSettings(state),
-    filter: getFilter(state),
+    //filter: getFilter(state),
     //selectedFolder: getSelectedFolder(state),
     //isPrivacy: getIsPrivacyFolder(state),
   };
@@ -196,7 +196,7 @@ const mapStateToProps = (state) => {
 export default connect(mapStateToProps, { /* setAction, */ startUpload })(
   inject(({ store, mainFilesStore }) => {
     const { filesStore } = mainFilesStore;
-    const { firstLoad, fileActionStore, treeFoldersStore } = filesStore;
+    const { firstLoad, fileActionStore, treeFoldersStore, filter } = filesStore;
     const { isPrivacyFolder } = treeFoldersStore;
     const { id } = filesStore.selectedFolderStore;
 
@@ -206,6 +206,7 @@ export default connect(mapStateToProps, { /* setAction, */ startUpload })(
       selectedFolderId: id,
       setAction: fileActionStore.setAction,
       isPrivacy: isPrivacyFolder,
+      filter,
     };
   })(withRouter(observer(ArticleMainButtonContent)))
 );

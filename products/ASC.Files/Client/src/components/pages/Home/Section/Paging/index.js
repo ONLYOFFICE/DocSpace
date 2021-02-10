@@ -1,15 +1,15 @@
 import React, { useCallback, useMemo } from "react";
-import { connect } from "react-redux";
+//import { connect } from "react-redux";
 import { isMobile } from "react-device-detect";
 /* import {
   fetchFiles, setIsLoading,
 } from "../../../../../store/files/actions"; */
-import {
-  getFilter,
-  //getSelectedFolderId,
-  //getFiles,
-  //getFolders,
-} from "../../../../../store/files/selectors";
+// import {
+//   getFilter,
+//   getSelectedFolderId,
+//   getFiles,
+//   getFolders,
+// } from "../../../../../store/files/selectors";
 import { Paging } from "asc-web-components";
 import { useTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
@@ -172,31 +172,36 @@ const SectionPagingContent = ({
   );
 };
 
-function mapStateToProps(state) {
-  return {
-    filter: getFilter(state),
-    //selectedFolderId: getSelectedFolderId(state),
-    //files: getFiles(state),
-    //folders: getFolders(state),
-  };
-}
+// function mapStateToProps(state) {
+//   return {
+//     filter: getFilter(state),
+//     selectedFolderId: getSelectedFolderId(state),
+//     files: getFiles(state),
+//     folders: getFolders(state),
+//   };
+// }
 
 // export default connect(mapStateToProps, { fetchFiles, setIsLoading })(
 //   SectionPagingContent
 // );
 
-export default connect(mapStateToProps)(
-  inject(({ store, mainFilesStore }) => {
-    const { filesStore, setIsLoading } = mainFilesStore;
-    const { files, folders, fetchFiles } = filesStore;
+export default inject(({ store, mainFilesStore }) => {
+  const { filesStore, setIsLoading } = mainFilesStore;
+  const {
+    files,
+    folders,
+    fetchFiles,
+    filter,
+    selectedFolderStore,
+  } = filesStore;
 
-    return {
-      files,
-      folders,
-      selectedFolderId: filesStore.selectedFolderStore.id,
+  return {
+    files,
+    folders,
+    selectedFolderId: selectedFolderStore.id,
+    filter,
 
-      setIsLoading,
-      fetchFiles,
-    };
-  })(observer(SectionPagingContent))
-);
+    setIsLoading,
+    fetchFiles,
+  };
+})(observer(SectionPagingContent));
