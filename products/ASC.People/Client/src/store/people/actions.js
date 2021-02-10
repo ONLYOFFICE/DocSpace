@@ -1,16 +1,16 @@
 import { api, history, constants } from "asc-web-common";
-import config from "../../../package.json";
-import {
-  EMPLOYEE_STATUS,
-  ACTIVATION_STATUS,
-  ROLE,
-  GROUP,
-  SEARCH,
-  SORT_BY,
-  SORT_ORDER,
-  PAGE,
-  PAGE_COUNT,
-} from "../../helpers/constants";
+// import config from "../../../package.json";
+// import {
+//   EMPLOYEE_STATUS,
+//   ACTIVATION_STATUS,
+//   ROLE,
+//   GROUP,
+//   SEARCH,
+//   SORT_BY,
+//   SORT_ORDER,
+//   PAGE,
+//   PAGE_COUNT,
+// } from "../../helpers/constants";
 import { getUserByUserName } from "../people/selectors";
 
 const { EmployeeStatus } = constants;
@@ -59,12 +59,12 @@ export function setGroups(groups) {
   };
 }
 
-export function setSelection(selection) {
-  return {
-    type: SET_SELECTION,
-    selection,
-  };
-}
+// export function setSelection(selection) {
+//   return {
+//     type: SET_SELECTION,
+//     selection,
+//   };
+// }
 
 export function setSelected(selected) {
   return {
@@ -73,31 +73,31 @@ export function setSelected(selected) {
   };
 }
 
-export function selectGroup(groupId) {
-  return (dispatch, getState) => {
-    const { people } = getState();
-    const { filter } = people;
+// export function selectGroup(groupId) {
+//   return (dispatch, getState) => {
+//     const { people } = getState();
+//     const { filter } = people;
 
-    let newFilter = filter.clone();
-    newFilter.group = groupId;
+//     let newFilter = filter.clone();
+//     newFilter.group = groupId;
 
-    return fetchPeople(newFilter, dispatch);
-  };
-}
+//     return fetchPeople(newFilter, dispatch);
+//   };
+// }
 
-export function selectUser(user) {
-  return {
-    type: SELECT_USER,
-    user,
-  };
-}
+// export function selectUser(user) {
+//   return {
+//     type: SELECT_USER,
+//     user,
+//   };
+// }
 
-export function deselectUser(user) {
-  return {
-    type: DESELECT_USER,
-    user,
-  };
-}
+// export function deselectUser(user) {
+//   return {
+//     type: DESELECT_USER,
+//     user,
+//   };
+// }
 
 export function toggleAvatarEditor(avatarEditorIsOpen) {
   return {
@@ -106,51 +106,51 @@ export function toggleAvatarEditor(avatarEditorIsOpen) {
   };
 }
 
-export function setFilterUrl(filter) {
-  const defaultFilter = Filter.getDefault();
-  const params = [];
+// export function setFilterUrl(filter) {
+//   const defaultFilter = Filter.getDefault();
+//   const params = [];
 
-  if (filter.employeeStatus) {
-    params.push(`${EMPLOYEE_STATUS}=${filter.employeeStatus}`);
-  }
+//   if (filter.employeeStatus) {
+//     params.push(`${EMPLOYEE_STATUS}=${filter.employeeStatus}`);
+//   }
 
-  if (filter.activationStatus) {
-    params.push(`${ACTIVATION_STATUS}=${filter.activationStatus}`);
-  }
+//   if (filter.activationStatus) {
+//     params.push(`${ACTIVATION_STATUS}=${filter.activationStatus}`);
+//   }
 
-  if (filter.role) {
-    params.push(`${ROLE}=${filter.role}`);
-  }
+//   if (filter.role) {
+//     params.push(`${ROLE}=${filter.role}`);
+//   }
 
-  if (filter.group) {
-    params.push(`${GROUP}=${filter.group}`);
-  }
+//   if (filter.group) {
+//     params.push(`${GROUP}=${filter.group}`);
+//   }
 
-  if (filter.search) {
-    params.push(`${SEARCH}=${filter.search.trim()}`);
-  }
+//   if (filter.search) {
+//     params.push(`${SEARCH}=${filter.search.trim()}`);
+//   }
 
-  if (filter.pageCount !== defaultFilter.pageCount) {
-    params.push(`${PAGE_COUNT}=${filter.pageCount}`);
-  }
+//   if (filter.pageCount !== defaultFilter.pageCount) {
+//     params.push(`${PAGE_COUNT}=${filter.pageCount}`);
+//   }
 
-  params.push(`${PAGE}=${filter.page + 1}`);
-  params.push(`${SORT_BY}=${filter.sortBy}`);
-  params.push(`${SORT_ORDER}=${filter.sortOrder}`);
+//   params.push(`${PAGE}=${filter.page + 1}`);
+//   params.push(`${SORT_BY}=${filter.sortBy}`);
+//   params.push(`${SORT_ORDER}=${filter.sortOrder}`);
 
-  //const isProfileView = history.location.pathname.includes('/people/view') || history.location.pathname.includes('/people/edit');
-  //if (params.length > 0 && !isProfileView) {
-  history.push(`${config.homepage}/filter?${params.join("&")}`);
-  //}
-}
+//   //const isProfileView = history.location.pathname.includes('/people/view') || history.location.pathname.includes('/people/edit');
+//   //if (params.length > 0 && !isProfileView) {
+//   history.push(`${config.homepage}/filter?${params.join("&")}`);
+//   //}
+// }
 
-export function setFilter(filter) {
-  setFilterUrl(filter);
-  return {
-    type: SET_FILTER,
-    filter,
-  };
-}
+// export function setFilter(filter) {
+//   setFilterUrl(filter);
+//   return {
+//     type: SET_FILTER,
+//     filter,
+//   };
+// }
 
 export function setSelectorUsers(users) {
   return {
@@ -183,35 +183,35 @@ export function fetchSelectorUsers() {
   };
 }
 
-export function fetchGroups(dispatchFunc = null) {
-  return api.groups.getGroupList().then((groups) => {
-    return dispatchFunc
-      ? dispatchFunc(setGroups(groups))
-      : Promise.resolve((dispatch) => dispatch(setGroups(groups)));
-  });
-}
+// export function fetchGroups(dispatchFunc = null) {
+//   return api.groups.getGroupList().then((groups) => {
+//     return dispatchFunc
+//       ? dispatchFunc(setGroups(groups))
+//       : Promise.resolve((dispatch) => dispatch(setGroups(groups)));
+//   });
+// }
 
-export function fetchPeople(filter, dispatchFunc = null) {
-  return dispatchFunc
-    ? fetchPeopleByFilter(dispatchFunc, filter)
-    : (dispatch, getState) => {
-        if (filter) {
-          return fetchPeopleByFilter(dispatch, filter);
-        } else {
-          const { people } = getState();
-          const { filter } = people;
-          return fetchPeopleByFilter(dispatch, filter);
-        }
-      };
-}
+// export function fetchPeople(filter, dispatchFunc = null) {
+//   return dispatchFunc
+//     ? fetchPeopleByFilter(dispatchFunc, filter)
+//     : (dispatch, getState) => {
+//         if (filter) {
+//           return fetchPeopleByFilter(dispatch, filter);
+//         } else {
+//           const { people } = getState();
+//           const { filter } = people;
+//           return fetchPeopleByFilter(dispatch, filter);
+//         }
+//       };
+// }
 
-export function removeUser(userId, filter) {
-  return (dispatch) => {
-    return api.people
-      .deleteUsers(userId)
-      .then(() => fetchPeople(filter, dispatch));
-  };
-}
+// export function removeUser(userId, filter) {
+//   return (dispatch) => {
+//     return api.people
+//       .deleteUsers(userId)
+//       .then(() => fetchPeople(filter, dispatch));
+//   };
+// }
 
 export function updateUserList(dispatch, filter) {
   let filterData = filter && filter.clone();
@@ -224,36 +224,36 @@ export function updateUserList(dispatch, filter) {
   });
 }
 
-function fetchPeopleByFilter(dispatch, filter) {
-  let filterData = filter && filter.clone();
+// function fetchPeopleByFilter(dispatch, filter) {
+//   let filterData = filter && filter.clone();
 
-  if (!filterData) {
-    filterData = Filter.getDefault();
-    filterData.employeeStatus = EmployeeStatus.Active;
-  }
+//   if (!filterData) {
+//     filterData = Filter.getDefault();
+//     filterData.employeeStatus = EmployeeStatus.Active;
+//   }
 
-  return api.people.getUserList(filterData).then((data) => {
-    filterData.total = data.total;
-    dispatch(setFilter(filterData));
-    dispatch({
-      type: SELECT_GROUP,
-      groupId: filterData.group,
-    });
-    return dispatch(setUsers(data.items));
-  });
-}
+//   return api.people.getUserList(filterData).then((data) => {
+//     filterData.total = data.total;
+//     dispatch(setFilter(filterData));
+//     dispatch({
+//       type: SELECT_GROUP,
+//       groupId: filterData.group,
+//     });
+//     return dispatch(setUsers(data.items));
+//   });
+// }
 
-export function updateUserStatus(status, userIds, isRefetchPeople = false) {
-  return (dispatch, getState) => {
-    return api.people.updateUserStatus(status, userIds).then((users) => {
-      const { people } = getState();
-      const { filter } = people;
-      return isRefetchPeople
-        ? fetchPeople(filter, dispatch)
-        : Promise.resolve();
-    });
-  };
-}
+// export function updateUserStatus(status, userIds, isRefetchPeople = false) {
+//   return (dispatch, getState) => {
+//     return api.people.updateUserStatus(status, userIds).then((users) => {
+//       const { people } = getState();
+//       const { filter } = people;
+//       return isRefetchPeople
+//         ? fetchPeople(filter, dispatch)
+//         : Promise.resolve();
+//     });
+//   };
+// }
 
 export function updateUserType(type, userIds) {
   return (dispatch) => {
@@ -265,16 +265,16 @@ export function updateUserType(type, userIds) {
   };
 }
 
-export function resetFilter() {
-  return (dispatch, getState) => {
-    const { people } = getState();
-    const { filter } = people;
+// export function resetFilter() {
+//   return (dispatch, getState) => {
+//     const { people } = getState();
+//     const { filter } = people;
 
-    const newFilter = filter.clone(true);
+//     const newFilter = filter.clone(true);
 
-    return fetchPeople(newFilter, dispatch);
-  };
-}
+//     return fetchPeople(newFilter, dispatch);
+//   };
+// }
 
 export function updateProfileInUsers(updatedProfile) {
   return (dispatch, getState) => {

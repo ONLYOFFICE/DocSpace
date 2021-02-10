@@ -58,19 +58,19 @@ export function updateGroup(id, groupName, groupManager, members) {
   };
 }
 
-export function deleteGroup(id) {
-  return (dispatch, getState) => {
-    const { people } = getState();
-    const { groups, filter } = people;
+// export function deleteGroup(id) {
+//   return (dispatch, getState) => {
+//     const { people } = getState();
+//     const { groups, filter } = people;
 
-    return api.groups
-      .deleteGroup(id)
-      .then((res) => {
-        return dispatch(setGroups(groups.filter((g) => g.id !== id)));
-      })
-      .then(() => {
-        const newFilter = filter.clone(true);
-        return fetchPeople(newFilter, dispatch);
-      });
-  };
-}
+//     return api.groups
+//       .deleteGroup(id)
+//       .then((res) => {
+//         return dispatch(setGroups(groups.filter((g) => g.id !== id)));
+//       })
+//       .then(() => {
+//         const newFilter = filter.clone(true);
+//         return fetchPeople(newFilter, dispatch);
+//       });
+//   };
+// }
