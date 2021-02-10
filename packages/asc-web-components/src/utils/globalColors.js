@@ -11,6 +11,7 @@ const globalColors = {
   grayMain: "#657077",
   shuttleGrey: "#63686A",
   veryLightGrey: "#CACACA",
+  darkSilver: "#bbb",
 
   blueMain: "#2DA7DB",
   blueHover: "#3DB8EC",
@@ -26,6 +27,8 @@ const globalColors = {
   orangeHover: "#FF8932",
   orangePressed: "#C96C27",
   orangeDisabled: "#FFCCA6",
+  lightMediumGoldenrod: "#EFEFB2",
+  lightCumulus: "#F8F7BF",
 
   link: "#316DAA",
   errorColor: "#C96C27",

@@ -30,6 +30,8 @@ const {
   blueLightMid,
   grayMaxLight,
   cyanBlueDarkShade,
+  lightCumulus,
+  lightMediumGoldenrod,
 } = globalColors;
 
 const Base = {
@@ -1040,6 +1042,14 @@ const Base = {
     bottom: "16px",
     paddingBottom: "64px",
     transition: "transform 0.3s ease-in-out",
+  },
+
+  dragAndDrop: {
+    height: "100%",
+    border: `1px solid ${globalColors.darkSilver}`,
+    transparentBorder: "1px solid transparent",
+    acceptBackground: lightMediumGoldenrod,
+    background: lightCumulus,
   },
 
   // phoneInput: {
