@@ -145,6 +145,10 @@ class UsersStore {
     return options;
   };
 
+  isUserSelected = (id) => {
+    return this.peopleStore.selectionStore.selection.some((el) => el.id === id);
+  };
+
   composePeopleList = () => {
     return this.users.map((user) => {
       const {
@@ -176,7 +180,7 @@ class UsersStore {
 
       return {
         id,
-        checked: isViewerAdmin ? false : undefined,
+        checked: isViewerAdmin ? this.isUserSelected(user.id) : undefined,
         status,
         activationStatus,
         statusType,
