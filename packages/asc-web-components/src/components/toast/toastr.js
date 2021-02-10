@@ -1,60 +1,19 @@
 import React from "react";
 import { toast } from "react-toastify";
-import styled from "styled-components";
-import { Icons } from "../icons";
+
+import { CheckToastIcon, DangerToastIcon, InfoToastIcon } from "./svg";
 import IconButton from "../icon-button";
 import Text from "../text";
-
+import { StyledCloseWrapper, StyledDiv, IconWrapper } from "./styled-toastr";
 // eslint-disable-next-line react/prop-types
 const Icon = ({ type }) =>
   type === "success" ? (
-    <Icons.CheckToastIcon color="#333333" isfill={true} />
+    <CheckToastIcon className="toastr_icon"  />
   ) : type === "error" || type === "warning" ? (
-    <Icons.DangerToastIcon color="#333333" isfill={true} />
+    <DangerToastIcon  className="toastr_icon" />
   ) : (
-    <Icons.InfoToastIcon color="#333333" isfill={true} />
+    <InfoToastIcon className="toastr_icon" />
   );
-
-const IconWrapper = styled.div`
-  align-self: end;
-  display: flex;
-  svg {
-    width: 16px;
-    min-width: 16px;
-    height: 16px;
-    min-height: 16px;
-  }
-`;
-
-const StyledDiv = styled.div`
-  margin: 0 15px;
-
-  .toast-title {
-    font-weight: 600;
-    margin: 0;
-    margin-bottom: 5px;
-    line-height: 16px;
-    color: #000000;
-    font-size: 12px;
-  }
-
-  .toast-text {
-    line-height: 1.3;
-    align-self: center;
-    font-size: 12px;
-    color: #333333;
-  }
-`;
-
-const StyledCloseWrapper = styled.div`
-  .closeButton {
-    opacity: 0.5;
-    padding-top: 2px;
-    &:hover {
-      opacity: 1;
-    }
-  }
-`;
 
 const toastr = {
   clear: clear,

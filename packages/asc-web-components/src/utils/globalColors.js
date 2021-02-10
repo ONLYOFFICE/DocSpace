@@ -1,5 +1,6 @@
 const globalColors = {
   black: "#333",
+  darkBlack: "#000",
   white: "#FFF",
   whiteSolitude: "#E4E7EB",
   grayLight: "#F8F9F9",
@@ -35,6 +36,16 @@ const globalColors = {
 
   warningColor: "#f1ca92",
   red: "#c30",
+
+  activeSuccess: "#CAE796",
+  activeError: "#FFBFAA",
+  activeInfo: "#F1DA92",
+  activeWarning: "#F1CA92",
+
+  hoverSuccess: "#BCDF7E",
+  hoverError: "#FFA98D",
+  hoverInfo: "#EED27B",
+  hoverWarning: "#EEB97B",
 };
 
 export default globalColors;

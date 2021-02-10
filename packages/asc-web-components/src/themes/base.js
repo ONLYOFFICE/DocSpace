@@ -32,6 +32,15 @@ const {
   cyanBlueDarkShade,
   lightCumulus,
   lightMediumGoldenrod,
+  activeSuccess,
+  activeError,
+  activeInfo,
+  activeWarning,
+  hoverSuccess,
+  hoverError,
+  hoverInfo,
+  hoverWarning,
+  darkBlack,
 } = globalColors;
 
 const Base = {
@@ -838,6 +847,80 @@ const Base = {
     },
   },
 
+  toast: {
+    active: {
+      success: activeSuccess,
+      error: activeError,
+      info: activeInfo,
+      warning: activeWarning,
+    },
+    hover: {
+      success: hoverSuccess,
+      error: hoverError,
+      info: hoverInfo,
+      warning: hoverWarning,
+    },
+
+    zIndex: "9999",
+    position: "fixed",
+    padding: "4px",
+    width: "320px",
+    color: white,
+    top: "16px",
+    right: "24px",
+    marginTop: "0px",
+
+    closeButton: {
+      color: white,
+      fontWeight: "700",
+      fontSize: "14px",
+      background: "transparent",
+      padding: "0",
+      opacity: "0.7",
+      hoverOpacity: "1",
+      transition: "0.3s ease",
+    },
+
+    main: {
+      marginBottom: "1rem",
+      boxShadow: "0px 10px 16px -12px rgba(0, 0, 0, 0.3)",
+      maxHeight: "800px",
+      overflow: "hidden",
+      borderRadius: "6px",
+      color: darkBlack,
+      margin: "0 0 12px",
+      padding: "12px",
+      minHeight: "32px",
+      width: "100%",
+      right: "0",
+      transition: "0.3s",
+    },
+  },
+
+  toastr: {
+    svg: {
+      width: "16px",
+      minWidth: "16px",
+      height: "16px",
+      minHeight: "16px",
+      color: black,
+    },
+
+    text: {
+      lineHeight: " 1.3",
+      fontSize: "12px",
+      color: black,
+    },
+
+    title: {
+      fontWeight: "600",
+      margin: "0",
+      marginBottom: "5px",
+      lineHeight: "16px",
+      color: darkBlack,
+      fontSize: "12px",
+    },
+  },
   // loader: {
   //   color: shuttleGrey,
   //   size: "40px",
