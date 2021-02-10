@@ -142,6 +142,18 @@ const Base = {
     },
   },
 
+  helpButton: {
+    width: "100%",
+    backgroundColor: white,
+    maxWidth: "500px",
+    margin: "0",
+    lineHeight: "56px",
+    fontWeight: "700",
+    borderBottom: `1px solid ${globalColors.pattensBlue}`,
+    padding: "0 16px 16px",
+    bodyPadding: "16px 0",
+  },
+
   mainButton: {
     backgroundColor: orangeMain,
     disableBackgroundColor: orangeDisabled,

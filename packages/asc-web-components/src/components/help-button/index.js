@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+
 import IconButton from "../icon-button";
 import Tooltip from "../tooltip";
 import { handleAnyClick } from "../../utils/event";
@@ -9,33 +10,7 @@ import { desktop } from "../../utils/device";
 import Backdrop from "../backdrop";
 import Heading from "../heading";
 import throttle from "lodash/throttle";
-import styled from "styled-components";
-
-const Content = styled.div`
-  box-sizing: border-box;
-  position: relative;
-  width: 100%;
-  background-color: #fff;
-  padding: 0 16px 16px;
-
-  .header {
-    max-width: 500px;
-    margin: 0;
-    line-height: 56px;
-    font-weight: 700;
-  }
-`;
-
-const HeaderContent = styled.div`
-  display: flex;
-  align-items: center;
-  border-bottom: 1px solid #dee2e6;
-`;
-
-const Body = styled.div`
-  position: relative;
-  padding: 16px 0;
-`;
+import { Content, HeaderContent, Body } from "./styled-help-button";
 
 class HelpButton extends React.Component {
   constructor(props) {
