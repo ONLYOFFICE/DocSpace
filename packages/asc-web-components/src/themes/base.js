@@ -253,6 +253,29 @@ const Base = {
     },
   },
 
+  groupButton: {
+    fontSize: "14px",
+    lineHeight: "19px",
+    color: black,
+    disableColor: gray,
+    float: "left",
+    height: "19px",
+    overflow: "hidden",
+    padding: "0px",
+
+    separator: {
+      border: `1px solid ${globalColors.grayLightMid}`,
+      width: "0px",
+      height: "24px",
+      margin: "16px 12px 0 12px",
+    },
+
+    checkbox: {
+      margin: "auto 0 auto 24px",
+      tabletMargin: "auto 0 auto 16px",
+    },
+  },
+
   selectorAddButton: {
     background: grayLight,
     activeBackground: grayLightMid,

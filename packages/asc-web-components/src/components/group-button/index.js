@@ -1,111 +1,18 @@
 import React from "react";
-import styled, { css } from "styled-components";
 import PropTypes from "prop-types";
+
 import { Icons } from "../icons";
 import DropDown from "../drop-down";
 import DropDownItem from "../drop-down-item";
 import Checkbox from "../checkbox";
-import { tablet } from "../../utils/device";
 import { isArrayEqual } from "../../utils/array";
-
-const textColor = "#333333",
-  disabledTextColor = "#A3A9AE";
-
-const activatedCss = css`
-  cursor: pointer;
-`;
-
-const hoveredCss = css`
-  cursor: pointer;
-`;
-
-const StyledGroupButton = styled.div`
-  position: relative;
-  display: inline-flex;
-  vertical-align: middle;
-`;
-
-const StyledDropdownToggle = styled.div`
-  font-family: Open Sans;
-  font-style: normal;
-  font-weight: ${(props) => props.fontWeight};
-  font-size: 14px;
-  line-height: 19px;
-
-  cursor: default;
-  outline: 0;
-
-  color: ${(props) => (props.disabled ? disabledTextColor : textColor)};
-
-  float: left;
-  height: 19px;
-  margin: 18px 12px 19px ${(props) => (props.isSelect ? "0px" : "13px")};
-  overflow: hidden;
-  padding: 0px;
-
-  text-align: center;
-  text-decoration: none;
-  white-space: nowrap;
-
-  user-select: none;
-  -o-user-select: none;
-  -moz-user-select: none;
-  -webkit-user-select: none;
-
-  ${(props) =>
-    !props.disabled &&
-    (props.activated
-      ? `${activatedCss}`
-      : css`
-          &:active {
-            ${activatedCss}
-          }
-        `)}
-
-  ${(props) =>
-    !props.disabled &&
-    (props.hovered
-      ? `${hoveredCss}`
-      : css`
-          &:hover {
-            ${hoveredCss}
-          }
-        `)}
-`;
-
-const Caret = styled.div`
-  display: inline-block;
-  width: 8px;
-  margin-left: 6px;
-
-  ${(props) =>
-    props.isOpen &&
-    `
-    padding-bottom: 2px;
-    transform: scale(1, -1);
-  `}
-`;
-
-const Separator = styled.div`
-  vertical-align: middle;
-  border: 1px solid #eceef1;
-  width: 0px;
-  height: 24px;
-  margin: 16px 12px 0 12px;
-`;
-
-const StyledCheckbox = styled.div`
-  display: inline-block;
-  margin: auto 0 auto 24px;
-
-  @media ${tablet} {
-    margin: auto 0 auto 16px;
-  }
-
-  & > * {
-    margin: 0px;
-  }
-`;
+import {
+  StyledCheckbox,
+  Separator,
+  Caret,
+  StyledDropdownToggle,
+  StyledGroupButton,
+} from "./styled-group-button";
 
 class GroupButton extends React.Component {
   constructor(props) {
