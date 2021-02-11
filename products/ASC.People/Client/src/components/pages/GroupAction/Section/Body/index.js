@@ -144,7 +144,8 @@ class SectionBodyContent extends React.Component {
           ? {
               key: group.manager.id,
               label:
-                group.manager.displayName === "profile removed"
+                group.manager.displayName === "profile removed" ||
+                group.manager.id === "4a515a15-d4d6-4b8e-828e-e0586f18f3a3"
                   ? t("LblSelect")
                   : group.manager.displayName,
             }
