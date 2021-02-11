@@ -164,7 +164,6 @@ class FilterInput extends React.Component {
       isGroupChanged
     ) {
       const sortData = getSortData();
-      const filterValues = this.getDefaultFilterData();
       this.setState({
         sortDirection: sortDirection === "desc" ? true : false,
         sortId:
@@ -173,11 +172,10 @@ class FilterInput extends React.Component {
             : sortData.length > 0
             ? sortData[0].key
             : "",
-        filterValues: filterValues,
         searchText: selectedFilterData.inputValue || "",
         needUpdateFilter: false,
       });
-      this.updateFilter(filterValues);
+      this.updateFilter();
     }
 
     if (
@@ -193,7 +191,16 @@ class FilterInput extends React.Component {
     ) {
       this.clearFilter();
     }
+    if (
+      !equal(
+        prevProps.selectedFilterData.filterValues,
+        selectedFilterData.filterValues
+      )
+    ) {
+      this.checkingOrderItems();
+    }
   }
+
   shouldComponentUpdate(nextProps, nextState) {
     const {
       selectedFilterData,
@@ -225,6 +232,44 @@ class FilterInput extends React.Component {
 
     return !equal(this.state, nextState);
   }
+
+  checkingOrderItems = () => {
+    const { filterValues: itemsState } = this.state;
+    const filterValues = this.getDefaultFilterData();
+    let updatedValues = itemsState.slice();
+
+    if (itemsState.length === filterValues.length) {
+      itemsState.map((item, index) => {
+        if (item.group === "filter-group" && index !== -1) {
+          const newGroup = filterValues.find((i) => i.group === "filter-group");
+          updatedValues.splice(index, 1, newGroup);
+        }
+      });
+    }
+
+    if (itemsState.length > filterValues.length) {
+      if (itemsState.length > filterValues.length + 1) {
+        updatedValues = filterValues.slice();
+      } else {
+        itemsState.map((item, index) => {
+          if (!filterValues.find((i) => i.group === item.group)) {
+            updatedValues.splice(index, 1);
+          }
+        });
+      }
+    }
+
+    if (itemsState.length < filterValues.length) {
+      filterValues.map((item) => {
+        if (!itemsState.find((i) => i.group === item.group)) {
+          updatedValues.push(item);
+        }
+      });
+    }
+
+    this.setState({ filterValues: updatedValues });
+    this.updateFilter(updatedValues);
+  };
 
   onChangeSortDirection = (key) => {
     this.onFilter(
