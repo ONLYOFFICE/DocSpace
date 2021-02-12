@@ -535,6 +535,45 @@ const Base = {
     focusDisabledBorderColor: grayLightMid,
   },
 
+  fileInput: {
+    width: {
+      base: "173px",
+      middle: "300px",
+      big: "350px",
+      huge: "500px",
+      large: "550px",
+    },
+
+    paddingRight: {
+      base: "37px",
+      middle: "48px",
+      big: "53px",
+      huge: "58px",
+      large: "64px",
+    },
+
+    icon: {
+      border: "1px solid",
+      borderRadius: "0 3px 3px 0",
+
+      width: {
+        base: "30px",
+        middle: "36px",
+        big: "37px",
+        huge: "38px",
+        large: "48px",
+      },
+
+      height: {
+        base: "30px",
+        middle: "36px",
+        big: "36px",
+        huge: "37px",
+        large: "43px",
+      },
+    },
+  },
+
   searchInput: {
     fontSize: "14px",
     fontWeight: "600",
@@ -1257,6 +1296,7 @@ const Base = {
       padding: "16px 0",
     },
   },
+
   calendar: {
     baseWidth: "265px",
     bigWidth: "289px",
