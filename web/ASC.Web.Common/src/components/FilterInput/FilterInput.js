@@ -248,7 +248,7 @@ class FilterInput extends React.Component {
     }
 
     if (itemsState.length > filterValues.length) {
-      if (itemsState.length > filterValues.length + 1) {
+      if (itemsState.length > +filterValues.length + 1) {
         updatedValues = filterValues.slice();
       } else {
         itemsState.map((item, index) => {
@@ -260,15 +260,17 @@ class FilterInput extends React.Component {
     }
 
     if (itemsState.length < filterValues.length) {
-      filterValues.map((item) => {
+      filterValues.map((item, index) => {
         if (!itemsState.find((i) => i.group === item.group)) {
           updatedValues.push(item);
         }
       });
     }
 
-    this.setState({ filterValues: updatedValues });
-    this.updateFilter(updatedValues);
+    this.setState({ filterValues: updatedValues }, () => {
+      this.updateFilter(updatedValues);
+    });
+    //this.updateFilter(updatedValues);
   };
 
   onChangeSortDirection = (key) => {
@@ -642,12 +644,6 @@ class FilterInput extends React.Component {
     });
 
     if (filterItem.isSelector) {
-      const indexFilterItem = currentFilterItems.findIndex(
-        (x) => x.group === filterItem.group
-      );
-      if (indexFilterItem != -1) {
-        currentFilterItems.splice(indexFilterItem, 1);
-      }
       const typeSelector = filterItem.key.includes("user")
         ? "user"
         : filterItem.key.includes("group")
@@ -677,7 +673,17 @@ class FilterInput extends React.Component {
         defaultSelectLabel: filterItem.defaultSelectLabel,
         selectedItem,
       };
-      currentFilterItems.push(selectFilterItem);
+
+      const indexFilterItem = currentFilterItems.findIndex(
+        (x) => x.group === filterItem.group
+      );
+
+      if (indexFilterItem != -1) {
+        currentFilterItems.splice(indexFilterItem, 1, selectFilterItem);
+      } else {
+        currentFilterItems.push(selectFilterItem);
+      }
+
       this.setState({
         filterValues: currentFilterItems,
         openFilterItems: currentFilterItems,
