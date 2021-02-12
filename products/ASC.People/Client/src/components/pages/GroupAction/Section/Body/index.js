@@ -33,7 +33,7 @@ import { connect } from "react-redux";
 import styled from "styled-components";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
-
+import { ID_NO_GROUP_MANAGER } from "../../../../../helpers/constants";
 const {
   getCurrentProductName,
   getSettings,
@@ -145,7 +145,7 @@ class SectionBodyContent extends React.Component {
               key: group.manager.id,
               label:
                 group.manager.displayName === "profile removed" ||
-                group.manager.id === "4a515a15-d4d6-4b8e-828e-e0586f18f3a3"
+                group.manager.id === ID_NO_GROUP_MANAGER
                   ? t("LblSelect")
                   : group.manager.displayName,
             }
