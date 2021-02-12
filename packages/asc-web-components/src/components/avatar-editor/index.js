@@ -3,16 +3,7 @@ import PropTypes from "prop-types";
 import ModalDialog from "../modal-dialog";
 import Button from "../button";
 import AvatarEditorBody from "./sub-components/avatar-editor-body";
-import styled from "styled-components";
-
-const StyledButtonsWrapper = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-gap: 8px;
-  min-width: 208px;
-  max-width: 300px;
-  width: max-content;
-`;
+import StyledButtonsWrapper from "./styled-avatar-editor";
 
 class AvatarEditor extends React.Component {
   constructor(props) {

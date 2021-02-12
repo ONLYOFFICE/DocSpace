@@ -13,6 +13,7 @@ const globalColors = {
   shuttleGrey: "#63686A",
   veryLightGrey: "#CACACA",
   darkSilver: "#bbb",
+  silver: "#CCCCCC",
 
   blueMain: "#2DA7DB",
   blueHover: "#3DB8EC",

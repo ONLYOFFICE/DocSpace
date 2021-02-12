@@ -41,6 +41,7 @@ const {
   hoverInfo,
   hoverWarning,
   darkBlack,
+  silver,
 } = globalColors;
 
 const Base = {
@@ -807,6 +808,127 @@ const Base = {
     },
   },
 
+  avatarEditor: {
+    minWidth: "208px",
+    maxWidth: "300px",
+    width: "max-content",
+  },
+
+  avatarEditorBody: {
+    maxWidth: "400px",
+
+    slider: {
+      width: "100%",
+      margin: "8px 0",
+      backgroundColor: "transparent",
+
+      runnableTrack: {
+        background: grayLightMid,
+        focusBackground: grayLightMid,
+        border: `1.4px solid ${grayLightMid}`,
+        borderRadius: "5.6px",
+        width: "100%",
+        height: "8px",
+      },
+
+      sliderThumb: {
+        marginTop: "-9.4px",
+        width: "24px",
+        height: "24px",
+        background: blueMain,
+        border: `6px solid ${white}`,
+        borderRadius: "30px",
+        boxShadow: "0px 5px 20px rgba(4, 15, 27, 0.13)",
+      },
+
+      thumb: {
+        width: "24px",
+        height: "24px",
+        background: blueMain,
+        border: `6px solid ${white}`,
+        borderRadius: "30px",
+        marginTop: "0px",
+        boxShadow: "0px 5px 20px rgba(4, 15, 27, 0.13)",
+      },
+
+      rangeTrack: {
+        background: grayLightMid,
+        border: `1.4px solid ${grayLightMid}`,
+        borderRadius: "5.6px",
+        width: "100%",
+        height: "8px",
+      },
+
+      rangeThumb: {
+        width: "14px",
+        height: "14px",
+        background: blueMain,
+        border: `6px solid ${white}`,
+        borderRadius: "30px",
+        boxShadow: "0px 5px 20px rgba(4, 15, 27, 0.13)",
+      },
+
+      track: {
+        background: "transparent",
+        borderColor: "transparent",
+        borderWidth: "10.2px 0",
+        color: "transparent",
+        width: "100%",
+        height: "8px",
+      },
+
+      fillLower: {
+        background: grayLightMid,
+        focusBackground: grayLightMid,
+        border: `1.4px solid ${grayLightMid}`,
+        borderRadius: "11.2px",
+      },
+
+      fillUpper: {
+        background: grayLightMid,
+        focusBackground: grayLightMid,
+        border: `1.4px solid ${grayLightMid}`,
+        borderRadius: "11.2px",
+      },
+    },
+
+    dropZone: {
+      border: `1px dashed ${silver}`,
+    },
+
+    container: {
+      miniPreview: {
+        width: "160px",
+        border: `1px solid ${grayLightMid}`,
+        borderRadius: "6px",
+        padding: "8px",
+      },
+
+      buttons: {
+        height: "32px",
+        background: gray,
+
+        mobileWidth: "40px",
+        mobileHeight: "100%",
+        mobileBackground: "none",
+      },
+
+      button: {
+        background: gray,
+        padding: "0 12px",
+        height: "40px",
+        borderRadius: "6px",
+      },
+
+      zoom: {
+        height: "56px",
+
+        mobileHeight: "24px",
+        marginTop: "16px",
+      },
+    },
+  },
+
   backdrop: {
     backgroundColor: "rgba(6, 22, 38, 0.1)",
     unsetBackgroundColor: "unset",
@@ -969,8 +1091,8 @@ const Base = {
   loader: {
     color: shuttleGrey,
     size: "40px",
-   marginRight: "2px",
-   borderRadius: "50%",
+    marginRight: "2px",
+    borderRadius: "50%",
   },
 
   // dropDownItem: {
