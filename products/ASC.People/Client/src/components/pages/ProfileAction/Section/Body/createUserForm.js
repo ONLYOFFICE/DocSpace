@@ -679,7 +679,7 @@ export default connect(mapStateToProps, {
   updateProfileInUsers,
   // setIsVisibleDataLossDialog,
   // setIsEditingForm,
-  toggleAvatarEditor,
+  // toggleAvatarEditor,
   setCreatedAvatar,
   setCroppedAvatar,
   resetProfile,
@@ -693,6 +693,7 @@ export default connect(mapStateToProps, {
     setIsEditingForm: peopleStore.editingFormStore.setIsEditingForm,
     filter: peopleStore.filterStore.filter,
     setFilter: peopleStore.filterStore.setFilterParams,
+    toggleAvatarEditor: peopleStore.avatarEditorStore.toggleAvatarEditor,
   }))(observer(withRouter(withTranslation()(CreateUserForm))))
 );
 

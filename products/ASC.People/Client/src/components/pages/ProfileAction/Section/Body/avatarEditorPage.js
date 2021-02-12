@@ -15,6 +15,7 @@ import { toEmployeeWrapper } from "../../../../../store/people/selectors";
 import { toggleAvatarEditor } from "../../../../../store/people/actions";
 import { setDocumentTitle } from "../../../../../helpers/utils";
 import { isMobile } from "react-device-detect";
+import { inject, observer } from "mobx-react";
 
 const { createThumbnailsAvatar, loadAvatar, deleteAvatar } = api.people;
 const { isTablet } = utils.device;
@@ -322,9 +323,20 @@ function mapStateToProps(state) {
   };
 }
 
+// export default connect(mapStateToProps, {
+//   fetchProfile,
+//   updateProfile,
+//   toggleAvatarEditor,
+//   setAvatarMax,
+// })(withTranslation()(withRouter(AvatarEditorPage)));
+
 export default connect(mapStateToProps, {
   fetchProfile,
   updateProfile,
-  toggleAvatarEditor,
+  //toggleAvatarEditor,
   setAvatarMax,
-})(withTranslation()(withRouter(AvatarEditorPage)));
+})(
+  inject(({ peopleStore }) => ({
+    toggleAvatarEditor: peopleStore.avatarEditorStore.toggleAvatarEditor,
+  }))(observer(withRouter(withTranslation()(AvatarEditorPage))))
+);
