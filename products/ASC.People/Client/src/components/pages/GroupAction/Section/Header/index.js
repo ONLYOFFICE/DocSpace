@@ -79,7 +79,7 @@ SectionHeaderContent.defaultProps = {
 function mapStateToProps(state) {
   return {
     //settings: state.auth.settings,
-    group: state.group.targetGroup,
+    //group: state.group.targetGroup,
     //groupCaption: state.auth.settings.customNames.groupCaption,
     //filter: state.people.filter,
   };
@@ -94,11 +94,13 @@ function mapStateToProps(state) {
 //   );
 // });
 
-export default connect(mapStateToProps, { resetGroup })(
+export default connect(mapStateToProps)(
   inject(({ store, peopleStore }) => ({
     groupCaption: store.settingsStore.customNames.groupCaption,
     filter: peopleStore.filterStore.filter,
     setFilter: peopleStore.filterStore.setFilterParams,
+    group: peopleStore.selectedGroupStore.targetedGroup,
+    resetGroup: peopleStore.selectedGroupStore.resetGroup,
   }))(observer(withRouter(withTranslation()(SectionHeaderContent))))
 );
 
