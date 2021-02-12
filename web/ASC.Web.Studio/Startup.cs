@@ -4,6 +4,7 @@ using ASC.Common.DependencyInjection;
 using ASC.Data.Storage;
 using ASC.Data.Storage.DiscStorage;
 using ASC.FederatedLogin;
+using ASC.FederatedLogin.LoginProviders;
 
 using Autofac;
 
@@ -36,6 +37,9 @@ namespace ASC.Web.Studio
             DIHelper.TryAdd<Login>();
             DIHelper.TryAdd<PathUtils>();
             DIHelper.TryAdd<StorageHandlerScope>();
+            DIHelper.TryAdd<GoogleLoginProvider>();
+            DIHelper.TryAdd<FacebookLoginProvider>();
+            DIHelper.TryAdd<LinkedInLoginProvider>();
         }
 
         public void ConfigureContainer(ContainerBuilder builder)
