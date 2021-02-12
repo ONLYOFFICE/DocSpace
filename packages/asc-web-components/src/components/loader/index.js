@@ -46,7 +46,6 @@ Loader.propTypes = {
 };
 
 Loader.defaultProps = {
-  color: "#63686a",
   type: "base",
   size: "40px",
   label: "Loading content, please wait.",

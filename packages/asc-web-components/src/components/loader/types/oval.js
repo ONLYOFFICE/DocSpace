@@ -1,13 +1,14 @@
 import React from "react";
 
+import { StyledOval } from "../styled-loader";
+
 // eslint-disable-next-line react/prop-types
 export const Oval = ({ size, color, label }) => (
-  <svg
-    width={size}
-    height={size}
+  <StyledOval
+    size={size}
+    color={color}
     viewBox="0 0 38 38"
     xmlns="http://www.w3.org/2000/svg"
-    stroke={color}
     aria-label={label}
   >
     <g fill="none" fillRule="evenodd">
@@ -25,5 +26,5 @@ export const Oval = ({ size, color, label }) => (
         </path>
       </g>
     </g>
-  </svg>
+  </StyledOval>
 );

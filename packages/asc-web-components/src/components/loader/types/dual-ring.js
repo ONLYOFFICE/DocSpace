@@ -1,13 +1,13 @@
 import React from "react";
-
+import { StyledDualRing } from "../styled-loader";
 // eslint-disable-next-line react/prop-types
 export const DualRing = ({ size, color, label }) => (
-  <svg
+  <StyledDualRing
     width={size}
     height={size}
     viewBox="0 0 100 100"
     xmlns="http://www.w3.org/2000/svg"
-    stroke={color}
+    color={color}
     aria-label={label}
   >
     <circle
@@ -64,5 +64,5 @@ export const DualRing = ({ size, color, label }) => (
         repeatCount="indefinite"
       ></animateTransform>
     </circle>
-  </svg>
+  </StyledDualRing>
 );

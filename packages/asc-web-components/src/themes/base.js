@@ -965,12 +965,13 @@ const Base = {
       fontSize: "12px",
     },
   },
-  // loader: {
-  //   color: shuttleGrey,
-  //   size: "40px",
-  //   ovalFill: "none",
-  //   strokeWidth: 2,
-  // },
+
+  loader: {
+    color: shuttleGrey,
+    size: "40px",
+   marginRight: "2px",
+   borderRadius: "50%",
+  },
 
   // dropDownItem: {
   //   width: "100%",
