@@ -1,26 +1,9 @@
 import React from "react";
-import styled from "styled-components";
 import PropTypes from "prop-types";
+
 import Text from "../../text";
 import isEqual from "lodash/isEqual";
-
-const StyledDay = styled.div`
-  display: flex;
-  flex-basis: 14.2857%; /*(1/7*100%)*/
-  text-align: center;
-  line-height: 33px;
-  user-select: none;
-  ${(props) =>
-    props.size === "base" ? "margin-top: 3px;" : "margin-top: 7.5px;"}
-`;
-
-const DayContent = styled.div`
-  width: 32px;
-  height: 32px;
-  .textStyle {
-    text-align: center;
-  }
-`;
+import { StyledDay, DayContent } from "../styled-calendar";
 
 class Day extends React.Component {
   shouldComponentUpdate(nextProps) {

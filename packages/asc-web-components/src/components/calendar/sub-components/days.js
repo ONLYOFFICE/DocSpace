@@ -1,14 +1,9 @@
 import React from "react";
-import styled from "styled-components";
-import Day from "./day";
 import PropTypes from "prop-types";
-import { isArrayEqual } from "../../../utils/array";
 
-const StyledDays = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  ${(props) => (props.size === "base" ? "width: 270px;" : "width: 294px;")}
-`;
+import Day from "./day";
+import { isArrayEqual } from "../../../utils/array";
+import { StyledDays } from "../styled-calendar";
 
 class Days extends React.Component {
   shouldComponentUpdate(nextProps) {

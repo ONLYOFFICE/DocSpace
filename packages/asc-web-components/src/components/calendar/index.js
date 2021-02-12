@@ -1,92 +1,18 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import styled, { css } from "styled-components";
+
 import ComboBox from "../combobox";
 import moment from "moment";
 import { Weekdays, Days } from "./sub-components";
 import isEmpty from "lodash/isEmpty";
-
-const HoverStyle = css`
-  &:hover {
-    background-color: #eceef1;
-    border-radius: 16px;
-    cursor: pointer;
-  }
-`;
-
-const DisabledStyle = css`
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-`;
-
-const ComboBoxStyle = styled.div`
-  position: relative;
-  display: flex;
-  padding-bottom: 24px !important;
-`;
-
-const ComboBoxMonthStyle = styled.div`
-  ${(props) =>
-    props.size === "base"
-      ? `width: 172px; max-width: 172px;`
-      : `width: 205px; max-width: 196px;`}
-`;
-
-const ComboBoxDateStyle = styled.div`
-  min-width: 80px;
-  height: 32px;
-  margin-left: 8px;
-`;
-
-const CalendarContainer = styled.div`
-  ${(props) =>
-    props.size === "base" ? `max-width: 293px;` : `max-width: 325px;`}
-`;
-
-const CalendarStyle = styled.div`
-  ${(props) => (props.size === "base" ? "width: 265px;" : `width: 289px;`)}
-
-  box-sizing: content-box;
-
-  .calendar-month {
-    ${HoverStyle}
-  }
-
-  .calendar-month_neighboringMonth {
-    color: #eceef1;
-
-    ${HoverStyle}
-    &:hover {
-      color: #333;
-    }
-  }
-
-  .calendar-month_disabled {
-    ${DisabledStyle}
-    color: #ECEEF1;
-    pointer-events: none;
-  }
-
-  .calendar-month_weekend {
-    color: #a3a9ae;
-    ${HoverStyle}
-  }
-
-  .calendar-month_selected-day {
-    background-color: ${(props) => props.color};
-    border-radius: 16px;
-    cursor: pointer;
-    color: #fff;
-  }
-`;
-
-const Month = styled.div`
-  width: ${(props) => (props.size === "base" ? "267px" : "295px")};
-`;
+import {
+  Month,
+  CalendarStyle,
+  CalendarContainer,
+  ComboBoxDateStyle,
+  ComboBoxMonthStyle,
+  ComboBoxStyle,
+} from "./styled-calendar.js";
 
 class Calendar extends Component {
   constructor(props) {
@@ -305,7 +231,7 @@ class Calendar extends Component {
       arrayWeekDays.push({
         key: `${this.props.locale}_${i}`,
         value: weekdays[i],
-        color: i >= 5 ? "#A3A9AE" : undefined,
+        disabled: i >= 5 ? true : false,
       });
     }
     return arrayWeekDays;
