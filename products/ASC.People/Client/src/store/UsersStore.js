@@ -6,13 +6,17 @@ const { Filter } = api;
 const { EmployeeStatus, EmployeeActivationStatus } = constants;
 const { authStore } = store;
 class UsersStore {
-  users = null;
+  users = [];
 
   constructor(peopleStore) {
     this.peopleStore = peopleStore;
     makeObservable(this, {
       users: observable,
       getUsersList: action,
+      removeUser: action,
+      updateUserStatus: action,
+      updateUserType: action,
+      updateProfileInUsers: action,
     });
   }
 
@@ -36,7 +40,7 @@ class UsersStore {
 
   removeUser = async (userId, filter) => {
     await api.people.deleteUsers(userId);
-    this.getUsersList(filter);
+    await this.getUsersList(filter);
   };
 
   updateUserStatus = async (status, userIds, isRefetchPeople = false) => {
@@ -45,9 +49,9 @@ class UsersStore {
     isRefetchPeople && this.getUsersList(filter);
   };
 
-  updateUserType = async (type, userIds) => {
-    const res = await api.people.updateUserType(type, userIds);
-    res.forEach((user) => this.users.push(user));
+  updateUserType = async (type, userIds, filter) => {
+    await api.people.updateUserType(type, userIds);
+    await this.getUsersList(filter);
   };
 
   updateProfileInUsers = async (updatedProfile) => {
@@ -150,7 +154,7 @@ class UsersStore {
   };
 
   composePeopleList = () => {
-    return this.users.map((user) => {
+    const list = this.users.map((user) => {
       const {
         id,
         displayName,
@@ -197,6 +201,8 @@ class UsersStore {
         groups,
       };
     });
+
+    return list;
   };
 }
 
