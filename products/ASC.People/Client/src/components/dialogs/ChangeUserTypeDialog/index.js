@@ -21,6 +21,7 @@ import {
   getUsersToMakeEmployeesIds,
   getUsersToMakeGuestsIds,
 } from "../../../store/people/selectors";
+import { inject, observer } from "mobx-react";
 
 const i18n = createI18N({
   page: "ChangeUserTypeDialog",
@@ -68,11 +69,17 @@ class ChangeUserTypeDialogComponent extends React.Component {
   };
 
   onChangeUserType = () => {
-    const { onClose, setSelected, t, userType, updateUserType } = this.props;
+    const {
+      onClose,
+      setSelected,
+      t,
+      userType,
+      updateUserType,
+      filter,
+    } = this.props;
     const { userIds } = this.state;
     this.setState({ isRequestRunning: true }, () => {
-      debugger;
-      updateUserType(userType, userIds)
+      updateUserType(userType, userIds, filter)
         .then(() => toastr.success(t("SuccessChangeUserType")))
         .catch((error) => toastr.error(error))
         .finally(() => {
@@ -196,6 +203,12 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-export default connect(mapStateToProps, { updateUserType /*setSelected */ })(
-  withRouter(ChangeUserTypeDialog)
+export default connect(mapStateToProps, {
+  /*updateUserType*/
+  /*setSelected */
+})(
+  inject(({ peopleStore }) => ({
+    filter: peopleStore.filterStore.filter,
+    updateUserType: peopleStore.usersStore.updateUserType,
+  }))(observer(withRouter(ChangeUserTypeDialog)))
 );
