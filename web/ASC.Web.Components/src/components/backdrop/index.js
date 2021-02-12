@@ -85,7 +85,7 @@ class Backdrop extends React.Component {
     return modifiedClass;
   };
 
-  onTouchMoveHandler = (e) => {
+  onTouchHandler = (e) => {
     this.backdropRef.current.click();
   };
 
@@ -102,7 +102,8 @@ class Backdrop extends React.Component {
         className={modifiedClassName}
         needBackground={needBackground}
         visible={visible}
-        onTouchMove={this.onTouchMoveHandler}
+        onTouchMove={this.onTouchHandler}
+        onTouchEnd={this.onTouchHandler}
       />
     ) : null;
   }
