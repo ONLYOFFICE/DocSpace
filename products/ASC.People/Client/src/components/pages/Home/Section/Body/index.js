@@ -180,7 +180,6 @@ class SectionBodyContent extends React.PureComponent {
 
   toggleDeleteProfileEverDialog = (e) => {
     this.onCloseDialog();
-    //this.props.onCancelScrollUp(true, true);
     const user = this.findUserById(e.currentTarget.dataset.id);
 
     if (!user) return;
