@@ -98,9 +98,9 @@ const HeaderComponent = ({
   };
 
   const onBadgeClick = (e) => {
-    const item = mainModules.find(
-      (module) => module.id === e.currentTarget.dataset.id
-    );
+    if (!e) return;
+    const id = e.currentTarget.dataset.id;
+    const item = mainModules.find((m) => m.id === id);
     toggleAside();
 
     if (item) item.onBadgeClick(e);
