@@ -86,6 +86,7 @@ class Backdrop extends React.Component {
   };
 
   onTouchHandler = (e) => {
+    e.preventDefault();
     this.backdropRef.current.click();
   };
 
