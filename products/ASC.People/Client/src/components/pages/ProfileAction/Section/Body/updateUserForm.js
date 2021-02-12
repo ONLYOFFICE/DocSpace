@@ -937,7 +937,7 @@ export default connect(mapStateToProps, {
   // setIsVisibleDataLossDialog,
   // setIsEditingForm,
   // setFilter,
-  toggleAvatarEditor,
+  // toggleAvatarEditor,
   setAvatarMax,
 })(
   inject(({ store, peopleStore }) => ({
@@ -950,6 +950,7 @@ export default connect(mapStateToProps, {
     setIsEditingForm: peopleStore.editingFormStore.setIsEditingForm,
     filter: peopleStore.filterStore.filter,
     setFilter: peopleStore.filterStore.setFilterParams,
+    toggleAvatarEditor: peopleStore.avatarEditorStore.toggleAvatarEditor,
   }))(observer(withRouter(withTranslation()(UpdateUserForm))))
 );
 

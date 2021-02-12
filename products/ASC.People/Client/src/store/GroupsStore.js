@@ -2,13 +2,16 @@ import { action, makeObservable, observable } from "mobx";
 import { api } from "asc-web-common";
 
 class GroupsStore {
-  groups = null;
+  groups = [];
 
   constructor(peopleStore) {
     this.peopleStore = peopleStore;
     makeObservable(this, {
       groups: observable,
       getGroupList: action,
+      deleteGroup: action,
+      createGroup: action,
+      updateGroup: action,
     });
   }
 
@@ -23,6 +26,29 @@ class GroupsStore {
     const newData = this.groups.filter((g) => g.id !== id);
     this.groups = newData;
     await this.peopleStore.usersStore.getUsersList(filter);
+  };
+
+  createGroup = async (groupName, groupManager, members) => {
+    const res = await api.groups.createGroup(groupName, groupManager, members);
+    this.peopleStore.selectedGroupStore.resetGroup();
+    this.groups.push(res);
+    return Promise.resolve(res);
+  };
+
+  updateGroup = async (id, groupName, groupManager, members) => {
+    const res = await api.groups.updateGroup(
+      id,
+      groupName,
+      groupManager,
+      members
+    );
+    console.log("res: ", res);
+    console.log("old groups: ", this.groups);
+    this.peopleStore.selectedGroupStore.resetGroup();
+    await this.getGroupList();
+    console.log("new groups: ", this.groups);
+
+    return Promise.resolve(res);
   };
 }
 

@@ -304,7 +304,7 @@ function mapStateToProps(state) {
 export default connect(mapStateToProps, {
   fetchProfile,
   updateProfile,
-  toggleAvatarEditor,
+  //toggleAvatarEditor,
   setAvatarMax,
   updateCreatedAvatar,
   updateProfileInUsers,
@@ -316,6 +316,7 @@ export default connect(mapStateToProps, {
   inject(({ peopleStore }) => ({
     editingForm: peopleStore.editingFormStore,
     setIsEditingForm: peopleStore.editingFormStore.setIsEditingForm,
+    toggleAvatarEditor: peopleStore.avatarEditorStore.toggleAvatarEditor,
   }))(observer(withRouter(withTranslation()(CreateAvatarEditorPage))))
 );
 

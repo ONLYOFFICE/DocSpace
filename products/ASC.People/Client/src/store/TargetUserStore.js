@@ -1,9 +1,5 @@
 import { api } from "asc-web-common";
 import { action, makeObservable, observable } from "mobx";
-// import { getFilterByLocation } from "../helpers/converters";
-// import { api } from "asc-web-common";
-
-// const { Filter } = api;
 
 class TargetUserStore {
   targetUser = null;

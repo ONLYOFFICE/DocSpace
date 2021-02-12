@@ -1,4 +1,4 @@
-import { api, history, constants } from "asc-web-common";
+import { api, /*history,*/ constants } from "asc-web-common";
 // import config from "../../../package.json";
 // import {
 //   EMPLOYEE_STATUS,
@@ -31,6 +31,7 @@ export const SET_IS_VISIBLE_DATA_LOSS_DIALOG =
 export const SET_IS_EDITING_FORM = "SET_IS_EDITING_FORM";
 export const SET_IS_LOADING = "SET_IS_LOADING";
 export const TOGGLE_AVATAR_EDITOR = "TOGGLE_AVATAR_EDITOR";
+
 export function setIsLoading(isLoading) {
   return {
     type: SET_IS_LOADING,
@@ -38,12 +39,12 @@ export function setIsLoading(isLoading) {
   };
 }
 
-export function setUser(user) {
-  return {
-    type: SET_USER,
-    user,
-  };
-}
+// export function setUser(user) {
+//   return {
+//     type: SET_USER,
+//     user,
+//   };
+// }
 
 export function setUsers(users) {
   return {
@@ -52,12 +53,12 @@ export function setUsers(users) {
   };
 }
 
-export function setGroups(groups) {
-  return {
-    type: SET_GROUPS,
-    groups,
-  };
-}
+// export function setGroups(groups) {
+//   return {
+//     type: SET_GROUPS,
+//     groups,
+//   };
+// }
 
 // export function setSelection(selection) {
 //   return {
@@ -152,36 +153,36 @@ export function toggleAvatarEditor(avatarEditorIsOpen) {
 //   };
 // }
 
-export function setSelectorUsers(users) {
-  return {
-    type: SET_SELECTOR_USERS,
-    users,
-  };
-}
+// export function setSelectorUsers(users) {
+//   return {
+//     type: SET_SELECTOR_USERS,
+//     users,
+//   };
+// }
 
-export function setIsVisibleDataLossDialog(isVisible, callback) {
-  return {
-    type: SET_IS_VISIBLE_DATA_LOSS_DIALOG,
-    isVisible,
-    callback,
-  };
-}
+// export function setIsVisibleDataLossDialog(isVisible, callback) {
+//   return {
+//     type: SET_IS_VISIBLE_DATA_LOSS_DIALOG,
+//     isVisible,
+//     callback,
+//   };
+// }
 
-export function setIsEditingForm(isEdit) {
-  return {
-    type: SET_IS_EDITING_FORM,
-    isEdit,
-  };
-}
+// export function setIsEditingForm(isEdit) {
+//   return {
+//     type: SET_IS_EDITING_FORM,
+//     isEdit,
+//   };
+// }
 
-export function fetchSelectorUsers() {
-  return (dispatch) => {
-    api.people.getSelectorUserList().then((data) => {
-      const users = data.items;
-      return dispatch(setSelectorUsers(users));
-    });
-  };
-}
+// export function fetchSelectorUsers() {
+//   return (dispatch) => {
+//     api.people.getSelectorUserList().then((data) => {
+//       const users = data.items;
+//       return dispatch(setSelectorUsers(users));
+//     });
+//   };
+// }
 
 // export function fetchGroups(dispatchFunc = null) {
 //   return api.groups.getGroupList().then((groups) => {
@@ -255,15 +256,15 @@ export function updateUserList(dispatch, filter) {
 //   };
 // }
 
-export function updateUserType(type, userIds) {
-  return (dispatch) => {
-    return api.people.updateUserType(type, userIds).then((users) => {
-      users.forEach((user) => {
-        dispatch(setUser(user));
-      });
-    });
-  };
-}
+// export function updateUserType(type, userIds) {
+//   return (dispatch) => {
+//     return api.people.updateUserType(type, userIds).then((users) => {
+//       users.forEach((user) => {
+//         dispatch(setUser(user));
+//       });
+//     });
+//   };
+// }
 
 // export function resetFilter() {
 //   return (dispatch, getState) => {

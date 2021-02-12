@@ -126,7 +126,7 @@ function mapStateToProps(state) {
 export default connect(mapStateToProps, {
   //setFilter,
   //setIsVisibleDataLossDialog,
-  toggleAvatarEditor,
+  // toggleAvatarEditor,
   resetProfile,
 })(
   inject(({ store, peopleStore }) => ({
@@ -136,6 +136,7 @@ export default connect(mapStateToProps, {
       peopleStore.editingFormStore.setIsVisibleDataLossDialog,
     filter: peopleStore.filterStore.filter,
     setFilter: peopleStore.filterStore.setFilterParams,
+    toggleAvatarEditor: peopleStore.avatarEditorStore.toggleAvatarEditor,
   }))(observer(withRouter(SectionHeaderContent)))
 );
 

@@ -491,7 +491,7 @@ const mapStateToProps = (state) => {
   //const { homepage, customNames } = settings;
 
   return {
-    group: getSelectedGroup(groups, selectedGroup),
+    //group: getSelectedGroup(groups, selectedGroup),
     // isAdmin: isAdmin(state),
     //homepage,
     //customNames,
@@ -528,5 +528,6 @@ export default connect(mapStateToProps, {
     deleteGroup: peopleStore.groupsStore.deleteGroup,
     removeUser: peopleStore.usersStore.removeUser,
     updateUserStatus: peopleStore.usersStore.updateUserStatus,
+    group: peopleStore.selectedGroupStore.group,
   }))(observer(withTranslation()(withRouter(SectionHeaderContent))))
 );
