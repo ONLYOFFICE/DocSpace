@@ -29,18 +29,15 @@ class PeopleSelector extends React.Component {
       if (!groupList) {
         getGroupList(this.props.useFake)
           .then((groups) =>
-            this.setState(
-              {
-                groups: [
-                  {
-                    key: "all",
-                    label: t("CustomAllGroups", { groupsCaption }),
-                    total: 0,
-                  },
-                ].concat(this.convertGroups(groups)),
-              },
-              () => console.log(this.state.groups, groups, this.props.groupsArr)
-            )
+            this.setState({
+              groups: [
+                {
+                  key: "all",
+                  label: t("CustomAllGroups", { groupsCaption }),
+                  total: 0,
+                },
+              ].concat(this.convertGroups(groups)),
+            })
           )
           .catch((error) => console.log(error));
       } else {
