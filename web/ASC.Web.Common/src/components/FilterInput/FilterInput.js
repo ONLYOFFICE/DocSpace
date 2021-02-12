@@ -173,7 +173,7 @@ class FilterInput extends React.Component {
             ? sortData[0].key
             : "",
         searchText: selectedFilterData.inputValue || "",
-        needUpdateFilter: false,
+        needUpdateFilter: true,
       });
       this.updateFilter();
     }
@@ -260,17 +260,15 @@ class FilterInput extends React.Component {
     }
 
     if (itemsState.length < filterValues.length) {
-      filterValues.map((item, index) => {
+      filterValues.map((item) => {
         if (!itemsState.find((i) => i.group === item.group)) {
           updatedValues.push(item);
         }
       });
     }
 
-    this.setState({ filterValues: updatedValues }, () => {
-      this.updateFilter(updatedValues);
-    });
-    //this.updateFilter(updatedValues);
+    this.setState({ filterValues: updatedValues });
+    this.updateFilter(updatedValues);
   };
 
   onChangeSortDirection = (key) => {
@@ -553,6 +551,7 @@ class FilterInput extends React.Component {
         (x) => x.id === "filter-items-container"
       ).children
     );
+
     const numberOfHiddenItems = this.calcHiddenItems(searchWidth, filterArr);
     if (searchWidth !== 0 && currentFilterItems.length > 0) {
       this.setState({
