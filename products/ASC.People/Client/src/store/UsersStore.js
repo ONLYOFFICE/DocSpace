@@ -38,6 +38,32 @@ class UsersStore {
     console.log("user: ", this.users.length);
   };
 
+  setUsers = (users) => {
+    this.users = users;
+  };
+
+  employeeWrapperToMemberModel = (profile) => {
+    const comment = profile.notes;
+    const department = profile.groups
+      ? profile.groups.map((group) => group.id)
+      : [];
+    const worksFrom = profile.workFrom;
+
+    return { ...profile, comment, department, worksFrom };
+  };
+
+  createUser = async (user) => {
+    const filter = this.peopleStore.filterStore.filter;
+    const member = this.employeeWrapperToMemberModel(user);
+    let result;
+    const res = await api.people.createUser(member);
+    result = res;
+
+    await this.peopleStore.targetUserStore.getTargetUser(result.userName);
+    await this.getUsersList(filter);
+    return Promise.resolve(result);
+  };
+
   removeUser = async (userId, filter) => {
     await api.people.deleteUsers(userId);
     await this.getUsersList(filter);
@@ -59,8 +85,28 @@ class UsersStore {
       return this.getUsersList();
     }
     if (!updatedProfile) {
-      //TODO
+      updatedProfile = this.peopleStore.targetUserStore.targetUser;
     }
+    const { userName } = updatedProfile;
+    const oldProfile = this.users.filter((u) => u.userName === userName);
+    const newProfile = {};
+
+    for (let key in oldProfile) {
+      if (
+        updatedProfile.hasOwnProperty(key) &&
+        updatedProfile[key] !== oldProfile[key]
+      ) {
+        newProfile[key] = updatedProfile[key];
+      } else {
+        newProfile[key] = oldProfile[key];
+      }
+    }
+
+    const updatedUsers = this.users.map((user) =>
+      user.id === newProfile.id ? newProfile : user
+    );
+
+    this.setUsers(updatedUsers);
   };
 
   getStatusType = (user) => {
