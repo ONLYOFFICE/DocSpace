@@ -57,23 +57,7 @@ const SectionHeaderContent = (props) => {
   );
 };
 
-function mapStateToProps(state) {
-  return {
-    profile: state.profile.targetUser,
-    //settings: state.auth.settings,
-  };
-}
-
-// const SectionHeaderContentWrapper = observer((props) => {
-//   return <SectionHeaderContent settings={settingsStore.settings} {...props} />;
-// });
-
-export default connect(mapStateToProps)(
-  inject(({ store }) => ({
-    settings: store.settingsStore,
-  }))(observer(withRouter(SectionHeaderContent)))
-);
-
-// export default connect(mapStateToProps)(
-//   withRouter(SectionHeaderContentWrapper)
-// );
+export default inject(({ store, peopleStore }) => ({
+  settings: store.settingsStore,
+  profile: peopleStore.targetUserStore.targetUser,
+}))(observer(withRouter(SectionHeaderContent)));

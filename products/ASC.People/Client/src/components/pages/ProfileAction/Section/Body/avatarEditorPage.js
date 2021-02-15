@@ -311,8 +311,8 @@ class AvatarEditorPage extends React.PureComponent {
 
 function mapStateToProps(state) {
   return {
-    profile: state.profile.targetUser,
-    avatarMax: state.profile.avatarMax,
+    // profile: state.profile.targetUser,
+    // avatarMax: state.profile.avatarMax,
   };
 }
 
@@ -321,6 +321,7 @@ export default connect(mapStateToProps)(
     toggleAvatarEditor: peopleStore.avatarEditorStore.toggleAvatarEditor,
     fetchProfile: peopleStore.targetUserStore.getTargetUser,
     profile: peopleStore.targetUserStore.targetUser,
+    avatarMax: peopleStore.avatarEditorStore.avatarMax,
     setAvatarMax: peopleStore.avatarEditorStore.setAvatarMax,
     updateProfile: peopleStore.targetUserStore.updateProfile,
     getUserPhoto: peopleStore.targetUserStore.getUserPhoto,

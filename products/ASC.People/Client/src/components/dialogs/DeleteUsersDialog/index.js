@@ -196,7 +196,7 @@ const mapStateToProps = (state) => {
   return {
     //filter,
     userIds: usersToRemoveIds,
-    selectedUsers: selection,
+    //selectedUsers: selection,
   };
 };
 

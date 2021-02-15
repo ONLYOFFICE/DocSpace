@@ -142,7 +142,7 @@ const ProfileActionContainer = (props) => {
 
 function mapStateToProps(state) {
   return {
-    isVisitor: state.auth.user.isVisitor,
+    // isVisitor: state.auth.user.isVisitor,
     // profile: state.profile.targetUser,
     // isAdmin: isAdmin(state),
     //isEdit: state.people.editingForm.isEdit,
@@ -156,6 +156,7 @@ export default connect(mapStateToProps, {
 })(
   inject(({ store, peopleStore }) => ({
     isAdmin: store.isAdmin,
+    isVisitor: store.userStore.user.isVisitor,
     isEdit: peopleStore.editingFormStore.isEdit,
     setIsEditingForm: peopleStore.editingFormStore.setIsEditingForm,
     fetchProfile: peopleStore.targetUserStore.getTargetUser,

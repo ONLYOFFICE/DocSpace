@@ -293,9 +293,9 @@ class CreateAvatarEditorPage extends React.PureComponent {
 function mapStateToProps(state) {
   return {
     // profile: state.profile.targetUser,
-    avatarMax: state.profile.avatarMax,
-    createdAvatar: state.profile.createdAvatar,
-    croppedAvatar: state.profile.croppedAvatar,
+    // avatarMax: state.profile.avatarMax,
+    // createdAvatar: state.profile.createdAvatar,
+    // croppedAvatar: state.profile.croppedAvatar,
     //settings: state.auth.settings,
     //editingForm: state.people.editingForm,
   };
@@ -325,6 +325,9 @@ export default connect(mapStateToProps, {
     updateProfile: peopleStore.targetUserStore.updateProfile,
     updateCreatedAvatar: peopleStore.targetUserStore.updateCreatedAvatar,
     getUserPhoto: peopleStore.targetUserStore.getUserPhoto,
+    createdAvatar: peopleStore.avatarEditorStore.createdAvatar,
+    avatarMax: peopleStore.avatarEditorStore.avatarMax,
+    croppedAvatar: peopleStore.avatarEditorStore.croppedAvatar,
   }))(observer(withRouter(withTranslation()(CreateAvatarEditorPage))))
 );
 

@@ -119,12 +119,13 @@ Profile.propTypes = {
 
 function mapStateToProps(state) {
   return {
-    isVisitor: isVisitor(state),
+    //isVisitor: isVisitor(state),
   };
 }
 
 export default connect(mapStateToProps)(
   inject(({ store, peopleStore }) => ({
+    isVisitor: store.userStore.user.isVisitor,
     isLoaded: store.isLoaded,
     isAdmin: store.isAdmin,
     language: store.language,
