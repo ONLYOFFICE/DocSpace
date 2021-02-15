@@ -7,7 +7,7 @@ STORAGE_ROOT="${BASE_DIR}/data"
 LOG_DIR="/var/log/${PRODUCT}"
 DOTNET_RUN="/usr/bin/dotnet"
 APP_URLS="http://0.0.0.0"
-ENVIRONMENT=" --ENVIRONMENT=test"
+ENVIRONMENT=" --ENVIRONMENT=production"
 
 service_name=(
 	api

@@ -1,9 +1,15 @@
+#!/bin/bash
+ENVIRONMENT="production"
+
 APP_DIR="/etc/onlyoffice/appserver"
-APP_CONF="$APP_DIR/config/appsettings.test.json"
+APP_CONF="$APP_DIR/config/appsettings.json"
+USER_CONF="$APP_DIR/config/appsettings.$ENVIRONMENT.json"
 NGINX_CONF="/etc/nginx/conf.d"
+SYSTEMD_DIR="/etc/systemd/system"
 
 MYSQL=""
 DB_HOST=""
+DB_PORT="3306"
 DB_NAME=""
 DB_USER=""
 DB_PWD=""
@@ -22,7 +28,6 @@ ZOOKEEPER_PORT="2181"
 ELK_SHEME="http"
 ELK_HOST="localhost"
 ELK_PORT="9200"
-ELK_VALUE='"elastic": { "Scheme": "'${ELK_SHEME}'", "Host": "'${ELK_HOST}'", "Port": "'${ELK_PORT}'" },'
 
 [ $(id -u) -ne 0 ] && { echo "Root privileges required"; exit 1; }
 
@@ -99,6 +104,13 @@ while [ "$1" != "" ]; do
 			fi
 		;;
 
+		-e | --environment )
+			if [ "$2" != "" ]; then
+				ENVIRONMENT=$2
+				shift
+			fi
+		;;
+
 		-? | -h | --help )
 			echo "  Usage: bash appserver-configuration.sh [PARAMETER] [[PARAMETER], ...]"
 			echo
@@ -113,6 +125,7 @@ while [ "$1" != "" ]; do
 			echo "      -zkp, --zookeeperport               zookeeper port (default 2181)"
 			echo "      -esh, --elastichost                 elasticsearch ip"
 			echo "      -esp, --elasticport                 elasticsearch port (default 9200)"
+			echo "      -e, --environment                 	environment (default 'production')"
 			echo "      -?, -h, --help                      this help"
 			echo
 			exit 0
@@ -126,6 +139,33 @@ while [ "$1" != "" ]; do
 	shift
 done
 
+install_json() {
+	echo -n "Install json package... "
+
+	local JSON_FILE="/usr/bin/json"
+	if [ ! -e $JSON_FILE ]; then
+		if rpm -q nodejs >/dev/null; then
+			curl -sL https://rpm.nodesource.com/setup_10.x | sudo -E bash - >/dev/null 2>&1
+			yum install -y nodejs >/dev/null 2>&1
+		fi
+		wget -O $JSON_FILE https://github.com/trentm/json/raw/master/lib/json.js >/dev/null 2>&1
+		chmod 755 $JSON_FILE >/dev/null 2>&1
+		echo "OK"
+	else
+		echo "Already installed"
+	fi
+
+	#Creating a user-defined .json
+	if [ ! -e $USER_CONF ]; then
+		echo "{}" >> $USER_CONF
+		chown onlyoffice:onlyoffice $USER_CONF
+	
+	json -I -f $USER_CONF -e "this.core={'base-domain': \"$APP_HOST\", 'machinekey': '1VVAepxpW8f7', \
+	'products': { 'folder': '../../products', 'subfolder': 'server' }, 'notify': { 'postman': 'services' }}" >/dev/null 2>&1
+	
+	fi
+}
+
 restart_services() {
 	echo -n "Restarting services... "
 
@@ -133,6 +173,7 @@ restart_services() {
 	appserver-files appserver-files_service appserver-notify appserver-people appserver-studio appserver-studio_notify \
 	appserver-thumbnails appserver-urlshortener elasticsearch kafka zookeeper
 	do
+		sed -i "s/ENVIRONMENT=.*/ENVIRONMENT=$ENVIRONMENT/" $SYSTEMD_DIR/$SVC.service >/dev/null 2>&1
 		if systemctl is-active $SVC | grep -q "active"; then
 			systemctl restart $SVC.service >/dev/null 2>&1
 		else
@@ -189,12 +230,11 @@ establish_mysql_conn(){
 		$MYSQL -e ";" >/dev/null 2>&1 || { echo "FAILURE"; exit 1; }
 	fi
 
-    #save db params
-    sed -i "s/Server=.*;Port=/Server=$DB_HOST;Port=/" $APP_CONF
-    sed -i "s/Database=.*;User/Database=$DB_NAME;User/" $APP_CONF
-    sed -i "s/User ID=.*;Password=/User ID=$DB_USER;Password=/" $APP_CONF
-    sed -i "s/Password=.*;Pooling=/Password=$DB_PWD;Pooling=/" $APP_CONF
-    
+    #Save db settings in .json
+	json -I -f $USER_CONF -e "this.ConnectionStrings={'default': {'connectionString': \"\
+	Server=$DB_HOST;Port=$DB_PORT;Database=$DB_NAME;User ID=$DB_USER;Password=$DB_PWD;\
+	Pooling=true;Character Set=utf8;AutoEnlist=false;SSL Mode=none\"}}" >/dev/null 2>&1
+
 	echo "OK"
 }
 
@@ -299,11 +339,13 @@ execute_mysql_script(){
 	   $MYSQL -D "mysql" -e "update user set plugin='mysql_native_password' where user='root';ALTER USER '${DB_USER}'@'localhost' IDENTIFIED WITH mysql_native_password BY '${DB_PWD}';" >/dev/null 2>&1
 	fi
 
+	#Checking the quantity of the tables created in the db
     DB_TABLES_COUNT=$($MYSQL --silent --skip-column-names -e "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='${DB_NAME}'"); 
     
     if [ "${DB_TABLES_COUNT}" -eq "0" ]; then
 		echo -n "Installing MYSQL database... "
 
+		#Adding data to the db
 		sed -i -e '1 s/^/SET SQL_MODE='ALLOW_INVALID_DATES';\n/;' $APP_DIR/onlyoffice.sql
 		$MYSQL -e "CREATE DATABASE IF NOT EXISTS $DB_NAME CHARACTER SET utf8 COLLATE 'utf8_general_ci';" >/dev/null 2>&1
 		$MYSQL "$DB_NAME" < "$APP_DIR/createdb.sql" >/dev/null 2>&1
@@ -355,32 +397,32 @@ setup_docs() {
 	echo -n "Configuring Docs... "
 	local DS_CONF="/etc/onlyoffice/documentserver/local.json"
 
+	#Changing the Docs port in nginx conf
 	sed -i "s/0.0.0.0:.*;/0.0.0.0:$DOCUMENT_SERVER_PORT;/" $NGINX_CONF/ds.conf
-	sed -i "s/]:.*;/]:$DOCUMENT_SERVER_PORT default_server;/g" $NGINX_CONF/ds.conf  	
+	sed -i "s/]:.*;/]:$DOCUMENT_SERVER_PORT default_server;/g" $NGINX_CONF/ds.conf 
+	sed "0,/proxy_pass .*;/{s/proxy_pass .*;/proxy_pass http:\/\/${DOCUMENT_SERVER_HOST}:${DOCUMENT_SERVER_PORT};/}" -i $NGINX_CONF/onlyoffice.conf 	
 
-	local DOCUMENT_SERVER_JWT_SECRET=$(cat ${DS_CONF} | jq -r '.services.CoAuthoring.secret.inbox.string')
-	local DOCUMENT_SERVER_JWT_HEADER=$(cat ${DS_CONF} | jq -r '.services.CoAuthoring.token.inbox.header')
-
-	sed "s!\"browser\": .*!\"browser\": true!" -i ${DS_CONF}
-	sed "0,/\"inbox\": .*/{s/\"inbox\": .*/\"inbox\": true,/}" -i ${DS_CONF}
-	sed "0,/\"outbox\": .*/{s/\"outbox\": .*/\"outbox\": true/}" -i ${DS_CONF}
-	sed "s!\"internal\": .*,!\"internal\": \"http://${DOCUMENT_SERVER_HOST}:${DOCUMENT_SERVER_PORT}\",!" -i ${APP_CONF}
-	sed "s!\"header\": \".*\"!\"header\": \"${DOCUMENT_SERVER_JWT_HEADER}\"!" -i ${APP_CONF}
-	sed "0,/\"value\": \".*\",/{s/\"value\": \".*\",/\"value\": \"$DOCUMENT_SERVER_JWT_SECRET\",/}" -i ${APP_CONF}
-	sed "s!\"portal\": \".*\"!\"portal\": \"http://$APP_HOST:$APP_PORT\"!" -i ${APP_CONF}
-	sed "0,/proxy_pass .*;/{s/proxy_pass .*;/proxy_pass http:\/\/${DOCUMENT_SERVER_HOST}:${DOCUMENT_SERVER_PORT};/}" -i $NGINX_CONF/onlyoffice.conf
+	#Enable JWT validation for Docs
+	json -I -f $DS_CONF -e "this.services.CoAuthoring.token.enable.browser='true'" >/dev/null 2>&1 
+	json -I -f $DS_CONF -e "this.services.CoAuthoring.token.enable.request.inbox='true'" >/dev/null 2>&1
+	json -I -f $DS_CONF -e "this.services.CoAuthoring.token.enable.request.outbox='true'" >/dev/null 2>&1
 	
+	local DOCUMENT_SERVER_JWT_SECRET=$(cat ${DS_CONF} | json services.CoAuthoring.secret.inbox.string)
+	local DOCUMENT_SERVER_JWT_HEADER=$(cat ${DS_CONF} | json services.CoAuthoring.token.inbox.header)
+
+	#Save Docs address and JWT in .json
+	json -I -f $USER_CONF -e "this.files={'docservice': {\
+	'secret': {'value': \"$DOCUMENT_SERVER_JWT_SECRET\",'header': \"$DOCUMENT_SERVER_JWT_HEADER\"}, \
+	'url': {'public': '/ds-vpath/','internal': \"http://${DOCUMENT_SERVER_HOST}:${DOCUMENT_SERVER_PORT}\",'portal': \"http://$APP_HOST:$APP_PORT\"}}}" >/dev/null 2>&1
+	
+	#Enable ds-example autostart
 	sudo sed 's,autostart=false,autostart=true,' -i /etc/supervisord.d/ds-example.ini
 	sudo supervisorctl start ds:example >/dev/null 2>&1
-	sudo supervisorctl restart ds:* >/dev/null 2>&1
 	
 	echo "OK"
 }
 
-setup_elasticsearch() {
-	echo -n "Configuring elasticsearch... "
-
-	grep -q "${ELK_VALUE}" ${APP_CONF} || sed -i "s!\"files\".*!${ELK_VALUE}\n\"files\": {!" ${APP_CONF}
+change_elasticsearch_config(){
 	local ELASTIC_SEARCH_VERSION=$(rpm -qi elasticsearch | grep Version | tail -n1 | awk -F': ' '/Version/ {print $2}');
 	local ELASTIC_SEARCH_CONF_PATH="/etc/elasticsearch/elasticsearch.yml"
 	local ELASTIC_SEARCH_JAVA_CONF_PATH="/etc/elasticsearch/jvm.options";
@@ -434,22 +476,29 @@ setup_elasticsearch() {
 	if [ -d /etc/elasticsearch/ ]; then 
 		chmod g+ws /etc/elasticsearch/
 	fi
+}
+
+setup_elasticsearch() {
+	echo -n "Configuring elasticsearch... "
+
+	#Save elasticsearch parameters in .json
+	json -I -f $USER_CONF -e "this.elastic={'Scheme': \"${ELK_SHEME}\",'Host': \"${ELK_HOST}\",'Port': \"${ELK_PORT}\" }" >/dev/null 2>&1
+
+	change_elasticsearch_config
 	
 	echo "OK"
 }
 
 setup_kafka() {
 
-	local KAFKA_SERVICE=$(systemctl --type=service | grep 'kafka' | grep -oE '[^ ]+$' | tail -n1)
+	local KAFKA_SERVICE=$(systemctl --type=service | grep 'kafka' | tr -d '●' | awk '{print $1;}')
 
 	if [ $KAFKA_SERVICE ]; then
 
-		local APP_KAFKA_CONF="$APP_DIR/config/kafka.test.json"
-
 		echo -n "Configuring kafka... "
 
+		#Change kafka config
 		local KAFKA_CONF="$(cat /etc/systemd/system/$KAFKA_SERVICE | grep ExecStop= | cut -c 10- | rev | cut -c 26- | rev)/config"
-
 		sed -i "s/clientPort=.*/clientPort=${ZOOKEEPER_PORT}/g" $KAFKA_CONF/zookeeper.properties
 		sed -i "s/zookeeper.connect=.*/zookeeper.connect=${ZOOKEEPER_HOST}:${ZOOKEEPER_PORT}/g" $KAFKA_CONF/server.properties
 		sed -i "s/bootstrap.servers=.*/bootstrap.servers=${KAFKA_HOST}:${KAFKA_PORT}/g" $KAFKA_CONF/consumer.properties
@@ -457,13 +506,16 @@ setup_kafka() {
 		sed -i "s/logger.kafka.controller=.*,/logger.kafka.controller=INFO,/g" $KAFKA_CONF/log4j.properties
 		sed -i "s/logger.state.change.logger=.*,/logger.state.change.logger=INFO,/g" $KAFKA_CONF/log4j.properties
 		echo "log4j.logger.kafka.producer.async.DefaultEventHandler=INFO, kafkaAppender" >> $KAFKA_CONF/log4j.properties
+		
+		#Save kafka parameters in .json
+		json -I -f $USER_CONF -e "this.kafka={'BootstrapServers': \"${KAFKA_HOST}:${KAFKA_PORT}\"}" >/dev/null 2>&1
 
-		sed -i "s/\"BootstrapServers\".*/\"BootstrapServers\": \"${KAFKA_HOST}:${KAFKA_PORT}\"/g" ${APP_KAFKA_CONF}
-	
 		echo "OK"
 	fi
 
 }
+
+install_json
 
 if rpm -q mysql-community-client >/dev/null; then
     input_db_params

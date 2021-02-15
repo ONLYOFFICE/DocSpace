@@ -9,7 +9,6 @@ AutoReqProv:    no
 %package        common
 Summary:        common
 Group:          Applications/Internet
-Requires:       jq
 %description    common
 
 %package        files_services
