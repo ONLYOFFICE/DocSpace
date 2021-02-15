@@ -5,14 +5,14 @@ import {
   SET_FILES,
   SET_FILTER,
   SET_VIEW_AS,
-  SET_FOLDER,
+  //SET_FOLDER,
   SET_FOLDERS,
   SET_TREE_FOLDERS,
   SET_SELECTED_FOLDER,
   SET_SELECTED,
   SET_SELECTION,
-  SELECT_FILE,
-  DESELECT_FILE,
+  //SELECT_FILE,
+  //DESELECT_FILE,
   SET_DRAGGING,
   SET_DRAG_ITEM,
   SET_MEDIA_VIEWER_VISIBLE,
@@ -21,30 +21,32 @@ import {
   SET_CONVERT_DIALOG_VISIBLE,
   SET_SHARING_PANEL_VISIBLE,
   SET_UPLOAD_PANEL_VISIBLE,
-  SET_UPDATE_TREE,
-  SET_NEW_ROW_ITEMS,
+  //SET_UPDATE_TREE,
+  //SET_NEW_ROW_ITEMS,
   SET_SELECTED_NODE,
-  SET_EXPAND_SETTINGS_TREE,
+  //SET_EXPAND_SETTINGS_TREE,
   SET_IS_LOADING,
   SET_THIRD_PARTY,
   SET_FILES_SETTINGS,
-  SET_FILES_SETTING,
-  SET_IS_ERROR_SETTINGS,
+  //SET_FILES_SETTING,
+  //SET_IS_ERROR_SETTINGS,
   SET_FIRST_LOAD,
   SET_UPLOAD_DATA,
-  SET_THIRDPARTY_CAPABILITIES,
-  SET_THIRDPARTY_PROVIDERS,
-  SET_CONNECT_ITEM,
+  //SET_THIRDPARTY_CAPABILITIES,
+  //SET_THIRDPARTY_PROVIDERS,
+  //SET_CONNECT_ITEM,
   SET_SHOW_THIRDPARTY_PANEL,
   SET_IS_VER_HISTORY_PANEL,
   SET_VER_HISTORY_FILE_ID,
-  SET_FILE_VERSIONS,
+  //SET_FILE_VERSIONS,
   SET_CHANGE_OWNER_VISIBLE,
   SELECT_UPLOADED_FILE,
   UPDATE_UPLOADED_FILE,
 } from "./actions";
 import { api } from "asc-web-common";
-import { isFileSelected, skipFile, getFilesBySelected } from "./selectors";
+import {
+  /* isFileSelected, skipFile, */ getFilesBySelected,
+} from "./selectors";
 const { FilesFilter } = api;
 
 const initialState = {
@@ -79,8 +81,8 @@ const initialState = {
   convertDialogVisible: false,
   sharingPanelVisible: false,
   uploadPanelVisible: false,
-  updateTree: false,
-  newRowItems: [],
+  //updateTree: false,
+  //newRowItems: [],
   selectedTreeNode: [],
   isLoading: false,
   firstLoad: true,
@@ -400,26 +402,26 @@ const initialState = {
     ],
   },
   privacyInstructions: "https://www.onlyoffice.com/private-rooms.aspx",
-  capabilities: [],
-  providers: [],
-  connectItem: null,
-  showThirdPartyPanel: false,
-  versionHistory: {
-    isVisible: false,
-    fileId: null,
-    versions: null,
-  },
+  //capabilities: [],
+  //providers: [],
+  //connectItem: null,
+  //showThirdPartyPanel: false,
+  // versionHistory: {
+  //   isVisible: false,
+  //   fileId: null,
+  //   versions: null,
+  // },
   ownerPanelVisible: false,
 };
 
 const filesReducer = (state = initialState, action) => {
   switch (action.type) {
-    case SET_FOLDER:
-      return Object.assign({}, state, {
-        folders: state.folders.map((folder) =>
-          folder.id === action.folder.id ? action.folder : folder
-        ),
-      });
+    // case SET_FOLDER:
+    //   return Object.assign({}, state, {
+    //     folders: state.folders.map((folder) =>
+    //       folder.id === action.folder.id ? action.folder : folder
+    //     ),
+    //   });
     case SET_FOLDERS:
       return Object.assign({}, state, {
         folders: action.folders,
@@ -466,22 +468,22 @@ const filesReducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         filter: action.filter,
       });
-    case SELECT_FILE:
-      if (
-        !isFileSelected(state.selection, action.file.id, action.file.parentId)
-      ) {
-        return Object.assign({}, state, {
-          selection: [...state.selection, action.file],
-        });
-      } else return state;
-    case DESELECT_FILE:
-      if (
-        isFileSelected(state.selection, action.file.id, action.file.parentId)
-      ) {
-        return Object.assign({}, state, {
-          selection: skipFile(state.selection, action.file.id),
-        });
-      } else return state;
+    // case SELECT_FILE:
+    //   if (
+    //     !isFileSelected(state.selection, action.file.id, action.file.parentId)
+    //   ) {
+    //     return Object.assign({}, state, {
+    //       selection: [...state.selection, action.file],
+    //     });
+    //   } else return state;
+    // case DESELECT_FILE:
+    //   if (
+    //     isFileSelected(state.selection, action.file.id, action.file.parentId)
+    //   ) {
+    //     return Object.assign({}, state, {
+    //       selection: skipFile(state.selection, action.file.id),
+    //     });
+    //   } else return state;
     case SET_ACTION:
       return Object.assign({}, state, {
         fileAction: action.fileAction,
@@ -518,14 +520,14 @@ const filesReducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         uploadPanelVisible: action.uploadPanelVisible,
       });
-    case SET_UPDATE_TREE:
-      return Object.assign({}, state, {
-        updateTree: action.updateTree,
-      });
-    case SET_NEW_ROW_ITEMS:
-      return Object.assign({}, state, {
-        newRowItems: action.newRowItems,
-      });
+    // case SET_UPDATE_TREE:
+    //   return Object.assign({}, state, {
+    //     updateTree: action.updateTree,
+    //   });
+    // case SET_NEW_ROW_ITEMS:
+    //   return Object.assign({}, state, {
+    //     newRowItems: action.newRowItems,
+    //   });
     case SET_SELECTED_NODE:
       if (action.node[0]) {
         return Object.assign({}, state, {
@@ -534,13 +536,13 @@ const filesReducer = (state = initialState, action) => {
       } else {
         return state;
       }
-    case SET_EXPAND_SETTINGS_TREE:
-      return Object.assign({}, state, {
-        settingsTree: {
-          ...state.settingsTree,
-          expandedSetting: action.setting,
-        },
-      });
+    // case SET_EXPAND_SETTINGS_TREE:
+    //   return Object.assign({}, state, {
+    //     settingsTree: {
+    //       ...state.settingsTree,
+    //       expandedSetting: action.setting,
+    //     },
+    //   });
     case SET_IS_LOADING:
       return Object.assign({}, state, {
         isLoading: action.isLoading,
@@ -569,21 +571,21 @@ const filesReducer = (state = initialState, action) => {
           enableThirdParty,
         },
       });
-    case SET_FILES_SETTING:
-      const { setting, val } = action;
-      return Object.assign({}, state, {
-        settingsTree: {
-          ...state.settingsTree,
-          [setting]: val,
-        },
-      });
-    case SET_IS_ERROR_SETTINGS:
-      return Object.assign({}, state, {
-        settingsTree: {
-          ...state.settingsTree,
-          isErrorSettings: action.isError,
-        },
-      });
+    // case SET_FILES_SETTING:
+    //   const { setting, val } = action;
+    //   return Object.assign({}, state, {
+    //     settingsTree: {
+    //       ...state.settingsTree,
+    //       [setting]: val,
+    //     },
+    //   });
+    // case SET_IS_ERROR_SETTINGS:
+    //   return Object.assign({}, state, {
+    //     settingsTree: {
+    //       ...state.settingsTree,
+    //       isErrorSettings: action.isError,
+    //     },
+    //   });
     case SET_FIRST_LOAD:
       return Object.assign({}, state, {
         firstLoad: action.firstLoad,
@@ -592,18 +594,18 @@ const filesReducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         uploadData: action.uploadData,
       });
-    case SET_THIRDPARTY_CAPABILITIES:
-      return Object.assign({}, state, {
-        capabilities: action.capabilities,
-      });
-    case SET_THIRDPARTY_PROVIDERS:
-      return Object.assign({}, state, {
-        providers: action.providers,
-      });
-    case SET_CONNECT_ITEM:
-      return Object.assign({}, state, {
-        connectItem: action.connectItem,
-      });
+    // case SET_THIRDPARTY_CAPABILITIES:
+    //   return Object.assign({}, state, {
+    //     capabilities: action.capabilities,
+    //   });
+    // case SET_THIRDPARTY_PROVIDERS:
+    //   return Object.assign({}, state, {
+    //     providers: action.providers,
+    //   });
+    // case SET_CONNECT_ITEM:
+    //   return Object.assign({}, state, {
+    //     connectItem: action.connectItem,
+    //   });
     case SET_SHOW_THIRDPARTY_PANEL:
       return Object.assign({}, state, {
         showThirdPartyPanel: action.showThirdPartyPanel,
@@ -624,14 +626,14 @@ const filesReducer = (state = initialState, action) => {
         },
       });
     }
-    case SET_FILE_VERSIONS: {
-      return Object.assign({}, state, {
-        versionHistory: {
-          ...state.versionHistory,
-          versions: action.versions,
-        },
-      });
-    }
+    // case SET_FILE_VERSIONS: {
+    //   return Object.assign({}, state, {
+    //     versionHistory: {
+    //       ...state.versionHistory,
+    //       versions: action.versions,
+    //     },
+    //   });
+    // }
     case SET_CHANGE_OWNER_VISIBLE: {
       return Object.assign({}, state, {
         ownerPanelVisible: action.ownerPanelVisible,

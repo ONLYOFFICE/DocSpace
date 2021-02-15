@@ -1,4 +1,4 @@
-import { makeObservable, action, observable } from "mobx";
+import { makeObservable, action, observable, computed } from "mobx";
 
 class SecondaryProgressDataStore {
   percent = 0;
@@ -14,6 +14,8 @@ class SecondaryProgressDataStore {
       visible: observable,
       icon: observable,
       alert: observable,
+
+      isSecondaryProgressFinished: computed,
 
       setSecondaryProgressBarData: action,
       clearSecondaryProgressData: action,
@@ -36,6 +38,10 @@ class SecondaryProgressDataStore {
     this.icon = "";
     this.alert = false;
   };
+
+  get isSecondaryProgressFinished() {
+    return this.percent === 100;
+  }
 }
 
 export default SecondaryProgressDataStore;

@@ -1,4 +1,4 @@
-import { makeObservable, action, observable } from "mobx";
+import { makeObservable, action, observable, computed } from "mobx";
 import FileActionStore from "./FileActionStore";
 
 class SelectedFolderStore {
@@ -18,6 +18,7 @@ class SelectedFolderStore {
   updatedBy = null;
   rootFolderType = null;
   pathParts = [];
+  providerItem = null;
 
   constructor() {
     makeObservable(this, {
@@ -37,11 +38,18 @@ class SelectedFolderStore {
       updatedBy: observable,
       rootFolderType: observable,
       pathParts: observable,
+      providerItem: observable,
+
+      isRootFolder: computed,
 
       setSelectedFolder: action,
     });
 
     this.fileActionStore = new FileActionStore();
+  }
+
+  get isRootFolder() {
+    return this.pathParts && this.pathParts.length <= 1;
   }
 
   setSelectedFolder = (selectedFolder) => {

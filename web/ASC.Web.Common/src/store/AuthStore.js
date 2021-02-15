@@ -5,7 +5,7 @@ import history from "../history";
 import ModuleStore from "./ModuleStore";
 import SettingsStore from "./SettingsStore";
 import UserStore from "./UserStore";
-import { logout as logoutDesktop } from "../desktop";
+import { logout as logoutDesktop, desktopConstants } from "../desktop";
 
 class AuthStore {
   userStore = null;
@@ -36,6 +36,9 @@ class AuthStore {
       setUserStore: action,
       setModuleStore: action,
       setSettingsStore: action,
+      replaceFileStream: action,
+      getEncryptionAccess: action,
+      setEncryptionAccess: action,
     });
   }
 
@@ -168,6 +171,48 @@ class AuthStore {
 
   setSettingsStore = (store) => {
     this.settingsStore = store;
+  };
+
+  getEncryptionAccess = (fileId) => {
+    return api.files
+      .getEncryptionAccess(fileId)
+      .then((keys) => {
+        return Promise.resolve(keys);
+      })
+      .catch((err) => console.error(err));
+  };
+
+  replaceFileStream = (fileId, file, encrypted, forcesave) => {
+    return api.files.updateFileStream(file, fileId, encrypted, forcesave);
+  };
+
+  setEncryptionAccess = (file) => {
+    return this.getEncryptionAccess(file.id).then((keys) => {
+      let promise = new Promise((resolve, reject) => {
+        try {
+          window.AscDesktopEditor.cloudCryptoCommand(
+            "share",
+            {
+              cryptoEngineId: desktopConstants.guid,
+              file: [file.viewUrl],
+              keys: keys,
+            },
+            (obj) => {
+              let file = null;
+              if (obj.isCrypto) {
+                let bytes = obj.bytes;
+                let filename = "temp_name";
+                file = new File([bytes], filename);
+              }
+              resolve(file);
+            }
+          );
+        } catch (e) {
+          reject(e);
+        }
+      });
+      return promise;
+    });
   };
 }
 

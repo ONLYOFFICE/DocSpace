@@ -1,18 +1,18 @@
 import React, { useEffect } from "react";
-import { connect } from "react-redux";
+//import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import { MainButton, DropDownItem } from "asc-web-components";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import { isMobile } from "react-device-detect";
-import { /* setAction, */ startUpload } from "../../../store/files/actions";
-import {
-  canCreate,
-  //getFilter,
-  //getSelectedFolder,
-  //getFirstLoad,
-  //getIsPrivacyFolder,
-} from "../../../store/files/selectors";
+//import { setAction, startUpload } from "../../../store/files/actions";
+// import {
+//   canCreate,
+//   getFilter,
+//   getSelectedFolder,
+//   getFirstLoad,
+//   getIsPrivacyFolder,
+// } from "../../../store/files/selectors";
 import {
   utils as commonUtils,
   constants,
@@ -182,31 +182,40 @@ ArticleMainButtonContent.propTypes = {
   history: PropTypes.object.isRequired,
 };
 
-const mapStateToProps = (state) => {
+// const mapStateToProps = (state) => {
+//   return {
+//     canCreate: canCreate(state),
+//     firstLoad: getFirstLoad(state),
+//     settings: getSettings(state),
+//     filter: getFilter(state),
+//     selectedFolder: getSelectedFolder(state),
+//     isPrivacy: getIsPrivacyFolder(state),
+//   };
+// };
+
+export default inject(({ store, mainFilesStore }) => {
+  const { filesStore } = mainFilesStore;
+  const {
+    firstLoad,
+    fileActionStore,
+    treeFoldersStore,
+    filter,
+    canCreate,
+    uploadDataStore,
+  } = filesStore;
+  const { isPrivacyFolder } = treeFoldersStore;
+  const { id } = filesStore.selectedFolderStore;
+  const { startUpload } = uploadDataStore;
+
   return {
-    canCreate: canCreate(state),
-    //firstLoad: getFirstLoad(state),
-    //settings: getSettings(state),
-    //filter: getFilter(state),
-    //selectedFolder: getSelectedFolder(state),
-    //isPrivacy: getIsPrivacyFolder(state),
+    homepage: store.settingsStore.homepage,
+    firstLoad,
+    selectedFolderId: id,
+    isPrivacy: isPrivacyFolder,
+    filter,
+    canCreate,
+
+    setAction: fileActionStore.setAction,
+    startUpload,
   };
-};
-
-export default connect(mapStateToProps, { /* setAction, */ startUpload })(
-  inject(({ store, mainFilesStore }) => {
-    const { filesStore } = mainFilesStore;
-    const { firstLoad, fileActionStore, treeFoldersStore, filter } = filesStore;
-    const { isPrivacyFolder } = treeFoldersStore;
-    const { id } = filesStore.selectedFolderStore;
-
-    return {
-      homepage: store.settingsStore.homepage,
-      firstLoad,
-      selectedFolderId: id,
-      setAction: fileActionStore.setAction,
-      isPrivacy: isPrivacyFolder,
-      filter,
-    };
-  })(withRouter(observer(ArticleMainButtonContent)))
-);
+})(withRouter(observer(ArticleMainButtonContent)));

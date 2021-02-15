@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { connect } from "react-redux";
+//import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import { isMobile } from "react-device-detect";
@@ -17,32 +17,32 @@ import {
   SectionHeaderContent,
   SectionPagingContent,
 } from "./Section";
-import {
-  //fetchFiles,
-  //setDragging,
-  //setIsLoading,
-  //setFirstLoad,
-  startUpload,
-  setSelections,
-  //setUploadPanelVisible,
-} from "../../../store/files/actions";
-import {
-  //getConvertDialogVisible,
-  //getSelectedFolderId,
-  //getFileActionId,
-  //getFilter,
-  //getPrimaryProgressData,
-  //getSecondaryProgressData,
-  //getTreeFolders,
-  //getViewAs,
-  //getIsLoading,
-  //getDragging,
-  //getFirstLoad,
-  isSecondaryProgressFinished,
-  getSelectionLength,
-  getSelectionTitle,
-  //getShowOwnerChangePanel,
-} from "../../../store/files/selectors";
+// import {
+//   fetchFiles,
+//   setDragging,
+//   setIsLoading,
+//   setFirstLoad,
+//   startUpload,
+//   setSelections,
+//   setUploadPanelVisible,
+// } from "../../../store/files/actions";
+// import {
+//   getConvertDialogVisible,
+//   getSelectedFolderId,
+//   getFileActionId,
+//   getFilter,
+//   getPrimaryProgressData,
+//   getSecondaryProgressData,
+//   getTreeFolders,
+//   getViewAs,
+//   getIsLoading,
+//   getDragging,
+//   getFirstLoad,
+//   isSecondaryProgressFinished,
+//   getSelectionLength,
+//   getSelectionTitle,
+//   getShowOwnerChangePanel,
+// } from "../../../store/files/selectors";
 
 import { ConvertDialog } from "../../dialogs";
 import { ChangeOwnerPanel } from "../../panels";
@@ -327,40 +327,40 @@ Home.propTypes = {
   history: PropTypes.object.isRequired,
 };
 
-function mapStateToProps(state, ownProps) {
-  return {
-    //convertDialogVisible: getConvertDialogVisible(state),
-    //currentFolderId: getSelectedFolderId(state),
-    //fileActionId: getFileActionId(state),
-    //filter: getFilter(state),
-    //primaryProgressData: getPrimaryProgressData(state),
-    //secondaryProgressData: getSecondaryProgressData(state),
-    //treeFolders: getTreeFolders(state),
-    //viewAs: getViewAs(state),
-    //isLoading: getIsLoading(state),
-    //homepage: getSettingsHomepage(state),
-    //dragging: getDragging(state),
-    //firstLoad: getFirstLoad(state),
-    isProgressFinished: isSecondaryProgressFinished(state),
-    selectionLength: getSelectionLength(state),
-    selectionTitle: getSelectionTitle(state),
-    //showOwnerChangePanel: getShowOwnerChangePanel(state),
-  };
-}
+// function mapStateToProps(state, ownProps) {
+//   return {
+//     convertDialogVisible: getConvertDialogVisible(state),
+//     currentFolderId: getSelectedFolderId(state),
+//     fileActionId: getFileActionId(state),
+//     filter: getFilter(state),
+//     primaryProgressData: getPrimaryProgressData(state),
+//     secondaryProgressData: getSecondaryProgressData(state),
+//     treeFolders: getTreeFolders(state),
+//     viewAs: getViewAs(state),
+//     isLoading: getIsLoading(state),
+//     homepage: getSettingsHomepage(state),
+//     dragging: getDragging(state),
+//     firstLoad: getFirstLoad(state),
+//     isProgressFinished: isSecondaryProgressFinished(state),
+//     selectionLength: getSelectionLength(state),
+//     selectionTitle: getSelectionTitle(state),
+//     showOwnerChangePanel: getShowOwnerChangePanel(state),
+//   };
+// }
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    //setDragging: (dragging) => dispatch(setDragging(dragging)),
-    startUpload: (files, folderId, t) =>
-      dispatch(startUpload(files, folderId, t)),
-    //setIsLoading: (isLoading) => dispatch(setIsLoading(isLoading)),
-    //setFirstLoad: (firstLoad) => dispatch(setFirstLoad(firstLoad)),
-    //fetchFiles: (folderId, filter) => dispatch(fetchFiles(folderId, filter)),
-    setSelections: (items) => dispatch(setSelections(items)),
-    // setUploadPanelVisible: (uploadPanelVisible) =>
-    //   dispatch(setUploadPanelVisible(uploadPanelVisible)),
-  };
-};
+// const mapDispatchToProps = (dispatch) => {
+//   return {
+//     setDragging: (dragging) => dispatch(setDragging(dragging)),
+//     startUpload: (files, folderId, t) =>
+//       dispatch(startUpload(files, folderId, t)),
+//     setIsLoading: (isLoading) => dispatch(setIsLoading(isLoading)),
+//     setFirstLoad: (firstLoad) => dispatch(setFirstLoad(firstLoad)),
+//     fetchFiles: (folderId, filter) => dispatch(fetchFiles(folderId, filter)),
+//     setSelections: (items) => dispatch(setSelections(items)),
+//     setUploadPanelVisible: (uploadPanelVisible) =>
+//       dispatch(setUploadPanelVisible(uploadPanelVisible)),
+//   };
+// };
 
 export default inject(({ store, mainFilesStore }) => {
   const {
@@ -381,6 +381,10 @@ export default inject(({ store, mainFilesStore }) => {
     primaryProgressDataStore,
     secondaryProgressDataStore,
     dialogsStore,
+    uploadDataStore,
+    selection,
+    selectionTitle,
+    setSelections,
   } = filesStore;
 
   const { treeFolders } = treeFoldersStore;
@@ -400,8 +404,9 @@ export default inject(({ store, mainFilesStore }) => {
   const {
     convertDialogVisible,
     ownerPanelVisible: showOwnerChangePanel,
-    setUploadPanelVisible,
   } = dialogsStore;
+
+  const { setUploadPanelVisible, startUpload } = uploadDataStore;
 
   return {
     homepage: store.settingsStore.homepage,
@@ -417,11 +422,16 @@ export default inject(({ store, mainFilesStore }) => {
     secondaryProgressData,
     convertDialogVisible,
     showOwnerChangePanel,
+    selectionLength: selection.length,
+    isProgressFinished: secondaryProgressDataStore.isSecondaryProgressFinished,
+    selectionTitle,
 
     setFirstLoad,
     setDragging,
     setIsLoading,
     fetchFiles,
     setUploadPanelVisible,
+    setSelections,
+    startUpload,
   };
 })(withRouter(observer(Home)));

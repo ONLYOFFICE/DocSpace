@@ -125,18 +125,18 @@ class DocserviceStore {
     makeObservable(this, {});
   }
 
-  canWebEdit = (extension) => {
-    presentInArray(this.editedDocs, extension);
-  };
+  canWebEdit = (extension) => presentInArray(this.editedDocs, extension);
 
-  getWebEditSelected = (selection, editedFormats) => {
-    //getSelection,
-    //getEditedFormats,
-    return selection.some((selected) => {
-      if (selected.isFolder === true || !selected.fileExst) return false;
-      return editedFormats.find((format) => selected.fileExst === format);
-    });
-  };
+  canConvert = (extension) => presentInArray(this.convertDocs, extension);
+
+  canWebComment = (extension) => presentInArray(this.commentedDocs, extension);
+
+  canWebReview = (extension) => presentInArray(this.reviewedDocs, extension);
+
+  canFormFillingDocs = (extension) =>
+    presentInArray(this.formfillingDocs, extension);
+
+  canWebFilterEditing = (extension) =>
+    presentInArray(this.customfilterDocs, extension);
 }
-
 export default DocserviceStore;

@@ -1,6 +1,6 @@
 import React from "react";
 import { withRouter } from "react-router";
-import { connect } from "react-redux";
+//import { connect } from "react-redux";
 import ModalDialogContainer from "../ModalDialogContainer";
 import {
   ModalDialog,
@@ -16,7 +16,7 @@ import { utils, api } from "asc-web-common";
 import {
   getFileIcon,
   getFolderIcon,
-  getSortedFiles,
+  //getSortedFiles,
 } from "../../../store/files/selectors";
 // import {
 //   setSecondaryProgressBarData,
@@ -604,29 +604,29 @@ const DownloadDialog = (props) => (
   <ModalDialogContainerTranslated i18n={i18n} {...props} />
 );
 
-const mapStateToProps = (state) => {
-  return {
-    sortedFiles: getSortedFiles(state),
-  };
-};
+// const mapStateToProps = (state) => {
+//   return {
+//     sortedFiles: getSortedFiles(state),
+//   };
+// };
 
 // export default connect(mapStateToProps, {
 //   setSecondaryProgressBarData,
 //   clearSecondaryProgressData,
 // })(withRouter(DownloadDialog));
 
-export default connect(mapStateToProps)(
-  inject(({ store, mainFilesStore }) => {
-    const { filesStore } = mainFilesStore;
-    const { secondaryProgressDataStore } = filesStore;
-    const {
-      setSecondaryProgressBarData,
-      clearSecondaryProgressData,
-    } = secondaryProgressDataStore;
+export default inject(({ store, mainFilesStore }) => {
+  const { filesStore } = mainFilesStore;
+  const { sortedFiles, secondaryProgressDataStore } = filesStore;
+  const {
+    setSecondaryProgressBarData,
+    clearSecondaryProgressData,
+  } = secondaryProgressDataStore;
 
-    return {
-      setSecondaryProgressBarData,
-      clearSecondaryProgressData,
-    };
-  })(withRouter(observer(DownloadDialog)))
-);
+  return {
+    sortedFiles,
+
+    setSecondaryProgressBarData,
+    clearSecondaryProgressData,
+  };
+})(withRouter(observer(DownloadDialog)));

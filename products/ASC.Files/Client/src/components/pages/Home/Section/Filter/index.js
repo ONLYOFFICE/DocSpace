@@ -1,17 +1,17 @@
 import React from "react";
-import { connect } from "react-redux";
+//import { connect } from "react-redux";
 // import {
 //   fetchFiles,
 //   setViewAs,
 //   setIsLoading,
 // } from "../../../../../store/files/actions";
-import {
-  //getFilter,
-  //getSelectedFolderId,
-  //getViewAs,
-  getFilterSelectedItem,
-  //getFirstLoad,
-} from "../../../../../store/files/selectors";
+// import {
+//   getFilter,
+//   getSelectedFolderId,
+//   getViewAs,
+//   getFilterSelectedItem,
+//   getFirstLoad,
+// } from "../../../../../store/files/selectors";
 import find from "lodash/find";
 import result from "lodash/result";
 import { withTranslation } from "react-i18next";
@@ -331,18 +331,18 @@ class SectionFilterContent extends React.Component {
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    //user: getCurrentUser(state),
-    //customNames: getSettingsCustomNames(state),
-    //language: getLanguage(state),
-    //firstLoad: getFirstLoad(state),
-    //filter: getFilter(state),
-    //selectedFolderId: getSelectedFolderId(state),
-    selectedItem: getFilterSelectedItem(state),
-    //viewAs: getViewAs(state),
-  };
-}
+// function mapStateToProps(state) {
+//   return {
+//     user: getCurrentUser(state),
+//     customNames: getSettingsCustomNames(state),
+//     language: getLanguage(state),
+//     firstLoad: getFirstLoad(state),
+//     filter: getFilter(state),
+//     selectedFolderId: getSelectedFolderId(state),
+//     selectedItem: getFilterSelectedItem(state),
+//     viewAs: getViewAs(state),
+//   };
+// }
 
 // export default connect(mapStateToProps, {
 //   fetchFiles,
@@ -350,31 +350,28 @@ function mapStateToProps(state) {
 //   setIsLoading,
 // })(withRouter(withLayoutSize(withTranslation()(SectionFilterContent))));
 
-export default connect(mapStateToProps)(
-  inject(({ store, mainFilesStore }) => {
-    const { filesStore, setIsLoading, setViewAs, viewAs } = mainFilesStore;
-    const { firstLoad, fetchFiles, filter, selectedFolderStore } = filesStore;
+export default inject(({ store, mainFilesStore }) => {
+  const { filesStore, setIsLoading, setViewAs, viewAs } = mainFilesStore;
+  const { firstLoad, fetchFiles, filter, selectedFolderStore } = filesStore;
 
-    const { user } = store.userStore;
-    const { customNames, culture } = store.settingsStore;
-    const language = (user && user.cultureName) || culture || "en-US";
+  const { user } = store.userStore;
+  const { customNames, culture } = store.settingsStore;
+  const language = (user && user.cultureName) || culture || "en-US";
 
-    return {
-      customNames,
-      user,
-      language,
-      firstLoad,
-      selectedFolderId: selectedFolderStore.id,
-      filter,
-      viewAs,
+  return {
+    customNames,
+    user,
+    language,
+    firstLoad,
+    selectedFolderId: selectedFolderStore.id,
+    selectedItem: filter.selectedItem,
+    filter,
+    viewAs,
 
-      setIsLoading,
-      fetchFiles,
-      setViewAs,
-    };
-  })(
-    withRouter(
-      withLayoutSize(withTranslation()(observer(SectionFilterContent)))
-    )
-  )
+    setIsLoading,
+    fetchFiles,
+    setViewAs,
+  };
+})(
+  withRouter(withLayoutSize(withTranslation()(observer(SectionFilterContent))))
 );

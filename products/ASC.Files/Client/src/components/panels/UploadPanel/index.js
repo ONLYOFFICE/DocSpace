@@ -1,13 +1,13 @@
 import React from "react";
 import { Backdrop, Heading, Aside, IconButton } from "asc-web-components";
-import { connect } from "react-redux";
+//import { connect } from "react-redux";
 import { withTranslation } from "react-i18next";
 import { utils as commonUtils } from "asc-web-common";
-import {
-  //setUploadPanelVisible,
-  cancelUpload,
-  clearUploadData,
-} from "../../../store/files/actions";
+// import {
+//   setUploadPanelVisible,
+//   cancelUpload,
+//   clearUploadData,
+// } from "../../../store/files/actions";
 // import {
 //   getUploadPanelVisible,
 //   getSharePanelVisible,
@@ -153,28 +153,26 @@ const UploadPanel = (props) => (
 //   };
 // };
 
-export default connect(null, {
-  //setUploadPanelVisible,
-  cancelUpload,
-  clearUploadData,
-})(
-  inject(({ mainFilesStore }) => {
-    const { filesStore } = mainFilesStore;
-    const { dialogsStore, uploadDataStore } = filesStore;
-    const {
-      sharingPanelVisible,
-      uploadPanelVisible,
-      setUploadPanelVisible,
-    } = dialogsStore;
+export default inject(({ mainFilesStore }) => {
+  const { filesStore } = mainFilesStore;
+  const { dialogsStore, uploadDataStore } = filesStore;
+  const { sharingPanelVisible } = dialogsStore;
 
-    const { uploaded } = uploadDataStore;
+  const {
+    uploaded,
+    clearUploadData,
+    cancelUpload,
+    uploadPanelVisible,
+    setUploadPanelVisible,
+  } = uploadDataStore;
 
-    return {
-      sharingPanelVisible,
-      uploadPanelVisible,
-      uploaded,
+  return {
+    sharingPanelVisible,
+    uploadPanelVisible,
+    uploaded,
 
-      setUploadPanelVisible,
-    };
-  })(observer(UploadPanel))
-);
+    setUploadPanelVisible,
+    clearUploadData,
+    cancelUpload,
+  };
+})(observer(UploadPanel));

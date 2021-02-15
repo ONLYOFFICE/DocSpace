@@ -1,27 +1,27 @@
 import React from "react";
 import styled from "styled-components";
-import { connect } from "react-redux";
+//import { connect } from "react-redux";
 import { Heading, ToggleButton } from "asc-web-components";
 import { Error403, Error520 /* store */ } from "asc-web-common";
-import {
-  setUpdateIfExist,
-  setStoreOriginal,
-  setEnableThirdParty,
-  setConfirmDelete,
-  setStoreForceSave,
-  setForceSave,
-} from "../../../../../store/files/actions";
-import {
-  //getIsLoading,
-  //getSettingsSelectedTreeNode,
-  getSettingsTreeStoreOriginalFiles,
-  getSettingsTreeConfirmDelete,
-  getSettingsTreeUpdateIfExist,
-  getSettingsTreeForceSave,
-  getSettingsTreeStoreForceSave,
-  getSettingsTreeEnableThirdParty,
-  getSettingsTree,
-} from "../../../../../store/files/selectors";
+// import {
+//   setUpdateIfExist,
+//   setStoreOriginal,
+//   setEnableThirdParty,
+//   setConfirmDelete,
+//   setStoreForceSave,
+//   setForceSave,
+// } from "../../../../../store/files/actions";
+// import {
+//   getIsLoading,
+//   getSettingsSelectedTreeNode,
+//   getSettingsTreeStoreOriginalFiles,
+//   getSettingsTreeConfirmDelete,
+//   getSettingsTreeUpdateIfExist,
+//   getSettingsTreeForceSave,
+//   getSettingsTreeStoreForceSave,
+//   getSettingsTreeEnableThirdParty,
+//   getSettingsTree,
+// } from "../../../../../store/files/selectors";
 import ConnectClouds from "./ConnectedClouds";
 import { inject, observer } from "mobx-react";
 
@@ -180,20 +180,20 @@ const SectionBodyContent = ({
   );
 };
 
-function mapStateToProps(state) {
-  return {
-    //isAdmin: isAdmin(state),
-    //selectedTreeNode: getSettingsSelectedTreeNode(state),
-    storeOriginalFiles: getSettingsTreeStoreOriginalFiles(state),
-    confirmDelete: getSettingsTreeConfirmDelete(state),
-    updateIfExist: getSettingsTreeUpdateIfExist(state),
-    forceSave: getSettingsTreeForceSave(state),
-    storeForceSave: getSettingsTreeStoreForceSave(state),
-    enableThirdParty: getSettingsTreeEnableThirdParty(state),
-    //isLoading: getIsLoading(state),
-    settingsTree: getSettingsTree(state),
-  };
-}
+// function mapStateToProps(state) {
+//   return {
+//     isAdmin: isAdmin(state),
+//     selectedTreeNode: getSettingsSelectedTreeNode(state),
+//     storeOriginalFiles: getSettingsTreeStoreOriginalFiles(state),
+//     confirmDelete: getSettingsTreeConfirmDelete(state),
+//     updateIfExist: getSettingsTreeUpdateIfExist(state),
+//     forceSave: getSettingsTreeForceSave(state),
+//     storeForceSave: getSettingsTreeStoreForceSave(state),
+//     enableThirdParty: getSettingsTreeEnableThirdParty(state),
+//     isLoading: getIsLoading(state),
+//     settingsTree: getSettingsTree(state),
+//   };
+// }
 
 // export default connect(mapStateToProps, {
 //   setUpdateIfExist,
@@ -204,22 +204,45 @@ function mapStateToProps(state) {
 //   setForceSave,
 // })(SectionBodyContent);
 
-export default connect(mapStateToProps, {
-  setUpdateIfExist,
-  setStoreOriginal,
-  setEnableThirdParty,
-  setConfirmDelete,
-  setStoreForceSave,
-  setForceSave,
-})(
-  inject(({ store, mainFilesStore }) => {
-    const { isLoading, filesStore } = mainFilesStore;
-    const { selectedTreeNode } = filesStore.treeFoldersStore;
+export default inject(({ store, mainFilesStore }) => {
+  const { isLoading, filesStore } = mainFilesStore;
+  const { treeFoldersStore, settingsTreeStore } = filesStore;
+  const { selectedTreeNode } = treeFoldersStore;
+  const {
+    settingsTree: settings,
+    storeOriginalFiles,
+    confirmDelete,
+    updateIfExist,
+    forcesave,
+    storeForcesave,
+    enableThirdParty,
+    setUpdateIfExist,
+    setStoreOriginal,
+    setEnableThirdParty,
+    setConfirmDelete,
+    setStoreForceSave,
+    setForceSave,
+  } = settingsTreeStore;
 
-    return {
-      isAdmin: store.isAdmin,
-      isLoading,
-      selectedTreeNode,
-    };
-  })(observer(SectionBodyContent))
-);
+  const settingsTree = Object.keys(settings).length !== 0 ? settings : {};
+
+  return {
+    isAdmin: store.isAdmin,
+    isLoading,
+    selectedTreeNode,
+    settingsTree,
+    storeOriginalFiles,
+    confirmDelete,
+    updateIfExist,
+    forceSave: forcesave,
+    storeForceSave: storeForcesave,
+    enableThirdParty,
+
+    setUpdateIfExist,
+    setStoreOriginal,
+    setEnableThirdParty,
+    setConfirmDelete,
+    setStoreForceSave,
+    setForceSave,
+  };
+})(observer(SectionBodyContent));
