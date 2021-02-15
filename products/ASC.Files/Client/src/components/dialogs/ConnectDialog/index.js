@@ -9,26 +9,26 @@ import {
   toastr,
 } from "asc-web-components";
 import { utils as commonUtils } from "asc-web-common";
-import {
-  fetchThirdPartyProviders,
-  fetchTreeFolders,
-  getOAuthToken,
-  openConnectWindow,
-  saveThirdParty,
+// import {
+//   fetchThirdPartyProviders,
+//   fetchTreeFolders,
+//   getOAuthToken,
+//   openConnectWindow,
+//   saveThirdParty,
   //setTreeFolders,
-  setUpdateTree,
+//   setUpdateTree,
   //fetchFiles,
-} from "../../../store/files/actions";
+// } from "../../../store/files/actions";
 import {
   //getTreeFolders,
   loopTreeFolders,
   //getMyFolderId,
   //getCommonFolderId,
-  getThirdPartyProviders,
+  //getThirdPartyProviders,
   //getSelectedFolder,
 } from "../../../store/files/selectors";
 import { withTranslation, I18nextProvider } from "react-i18next";
-import { connect } from "react-redux";
+//import { connect } from "react-redux";
 import { createI18N } from "../../../helpers/i18n";
 import { inject, observer } from "mobx-react";
 
@@ -45,7 +45,7 @@ const PureConnectDialogContainer = (props) => {
     t,
     item,
     treeFolders,
-    setUpdateTree,
+    //setUpdateTree,
     setTreeFolders,
     fetchThirdPartyProviders,
     fetchTreeFolders,
@@ -55,6 +55,9 @@ const PureConnectDialogContainer = (props) => {
     selectedFolderId,
     selectedFolderFolders,
     fetchFiles,
+    getOAuthToken,
+    saveThirdParty,
+    openConnectWindow,
   } = props;
   const { corporate, title, link, token, provider_id, provider_key } = item;
 
@@ -164,7 +167,7 @@ const PureConnectDialogContainer = (props) => {
             isCorporate ? folderData : null
           );
           setTreeFolders(newTreeFolders);
-          setUpdateTree(true);
+          //setUpdateTree(true);
           fetchThirdPartyProviders();
 
           const newFolder =
@@ -203,10 +206,11 @@ const PureConnectDialogContainer = (props) => {
     selectedFolderFolders,
     selectedFolderId,
     setTreeFolders,
-    setUpdateTree,
+    //setUpdateTree,
     showUrlField,
     treeFolders,
     urlValue,
+    saveThirdParty,
   ]);
 
   const onReconnect = () => {
@@ -351,15 +355,15 @@ const ConnectDialog = (props) => {
   );
 };
 
-const mapStateToProps = (state) => {
-  return {
+// const mapStateToProps = (state) => {
+//   return {
     //treeFolders: getTreeFolders(state),
     //myFolderId: getMyFolderId(state),
     //commonFolderId: getCommonFolderId(state),
-    providers: getThirdPartyProviders(state),
+//     providers: getThirdPartyProviders(state),
     //selectedFolder: getSelectedFolder(state),
-  };
-};
+//   };
+// };
 
 // export default connect(mapStateToProps, {
 //   setUpdateTree,
@@ -369,15 +373,15 @@ const mapStateToProps = (state) => {
 //   fetchFiles,
 // })(ConnectDialog);
 
-export default connect(mapStateToProps, {
-  setUpdateTree,
-  //setTreeFolders,
+export default inject(({ mainFilesStore, settingsStore }) => {
+  const { filesStore } = mainFilesStore;
+  const {
+    providers,
+    getOAuthToken,
+    saveThirdParty,
+    openConnectWindow,
   fetchThirdPartyProviders,
-  fetchTreeFolders,
-  //fetchFiles,
-})(
-  inject(({ mainFilesStore }) => {
-    const { filesStore } = mainFilesStore;
+  } = settingsStore.thirdPartyStore;
     const { fetchFiles, treeFoldersStore } = filesStore;
 
     const {
@@ -385,6 +389,7 @@ export default connect(mapStateToProps, {
       setTreeFolders,
       myFolderId,
       commonFolderId,
+    fetchTreeFolders,
     } = treeFoldersStore;
     const { id, folders } = filesStore.selectedFolderStore;
 
@@ -394,9 +399,14 @@ export default connect(mapStateToProps, {
       treeFolders,
       myFolderId,
       commonFolderId,
+    providers,
 
       fetchFiles,
       setTreeFolders,
+    getOAuthToken,
+    saveThirdParty,
+    openConnectWindow,
+    fetchThirdPartyProviders,
+    fetchTreeFolders,
     };
-  })(observer(ConnectDialog))
-);
+})(observer(ConnectDialog));

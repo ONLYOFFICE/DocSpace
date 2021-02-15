@@ -1,26 +1,26 @@
 import React, { useEffect } from "react";
-import { connect } from "react-redux";
+//import { connect } from "react-redux";
 import styled from "styled-components";
 import { Link } from "asc-web-components";
 import { history, utils } from "asc-web-common";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import { createI18N } from "../../../helpers/i18n";
-import {
-  getGoogleConnect,
-  getBoxConnect,
-  getDropboxConnect,
-  getOneDriveConnect,
-  getNextCloudConnect,
-  getWebDavConnect,
-} from "../../../store/files/selectors";
-import {
-  getOAuthToken,
-  openConnectWindow,
-  setConnectItem,
+// import {
+//   getGoogleConnect,
+//   getBoxConnect,
+//   getDropboxConnect,
+//   getOneDriveConnect,
+//   getNextCloudConnect,
+//   getWebDavConnect,
+// } from "../../../store/files/selectors";
+// import {
+//   getOAuthToken,
+//   openConnectWindow,
+//   setConnectItem,
   //setSelectedFolder,
   //setSelectedNode,
-  setShowThirdPartyPanel,
-} from "../../../store/files/actions";
+//   setShowThirdPartyPanel,
+// } from "../../../store/files/actions";
 import { inject, observer } from "mobx-react";
 
 const { changeLanguage } = utils;
@@ -118,6 +118,8 @@ const PureThirdPartyListContainer = ({
   setShowThirdPartyPanel,
   setSelectedNode,
   setSelectedFolder,
+  getOAuthToken,
+  openConnectWindow,
 }) => {
   const redirectAction = () => {
     const thirdPartyUrl = "/products/files/settings/thirdParty";
@@ -231,16 +233,16 @@ const ThirdPartyList = (props) => {
   );
 };
 
-function mapStateToProps(state) {
-  return {
-    googleConnectItem: getGoogleConnect(state),
-    boxConnectItem: getBoxConnect(state),
-    dropboxConnectItem: getDropboxConnect(state),
-    oneDriveConnectItem: getOneDriveConnect(state),
-    nextCloudConnectItem: getNextCloudConnect(state),
-    webDavConnectItem: getWebDavConnect(state),
-  };
-}
+// function mapStateToProps(state) {
+//   return {
+//     googleConnectItem: getGoogleConnect(state),
+//     boxConnectItem: getBoxConnect(state),
+//     dropboxConnectItem: getDropboxConnect(state),
+//     oneDriveConnectItem: getOneDriveConnect(state),
+//     nextCloudConnectItem: getNextCloudConnect(state),
+//     webDavConnectItem: getWebDavConnect(state),
+//   };
+// }
 
 // export default connect(mapStateToProps, {
 //   setConnectItem,
@@ -249,21 +251,37 @@ function mapStateToProps(state) {
 //   setShowThirdPartyPanel,
 // })(ThirdPartyList);
 
-export default connect(mapStateToProps, {
-  setConnectItem,
-  //setSelectedNode,
-  //setSelectedFolder,
-  setShowThirdPartyPanel,
-})(
-  inject(({ auth, mainFilesStore }) => {
+export default inject(({ mainFilesStore, settingsStore }) => {
     const { setIsLoading, filesStore } = mainFilesStore;
     const { setSelectedFolder } = filesStore.selectedFolderStore;
     const { setSelectedNode } = filesStore.treeFoldersStore;
+  const {
+    setConnectItem,
+    setShowThirdPartyPanel,
+    googleConnectItem,
+    boxConnectItem,
+    dropboxConnectItem,
+    oneDriveConnectItem,
+    nextCloudConnectItem,
+    webDavConnectItem,
+    getOAuthToken,
+    openConnectWindow,
+  } = settingsStore.thirdPartyStore;
 
     return {
+    googleConnectItem,
+    boxConnectItem,
+    dropboxConnectItem,
+    oneDriveConnectItem,
+    nextCloudConnectItem,
+    webDavConnectItem,
+
       setIsLoading,
       setSelectedFolder,
       setSelectedNode,
+    setConnectItem,
+    setShowThirdPartyPanel,
+    getOAuthToken,
+    openConnectWindow,
     };
-  })(observer(ThirdPartyList))
-);
+})(observer(ThirdPartyList));

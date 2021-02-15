@@ -1,4 +1,4 @@
-import { makeObservable, action, observable } from "mobx";
+import { makeObservable, action, observable, computed } from "mobx";
 
 class PrimaryProgressDataStore {
   percent = 0;
@@ -15,6 +15,8 @@ class PrimaryProgressDataStore {
       icon: observable,
       alert: observable,
 
+      loadingFile: computed,
+
       setPrimaryProgressBarData: action,
     });
   }
@@ -27,6 +29,11 @@ class PrimaryProgressDataStore {
       }
     }
   };
+  //TODO: loadingFile
+  get loadingFile() {
+    if (!this.loadingFile || !this.loadingFile.uniqueId) return null;
+    return this.loadingFile;
+  }
 }
 
 export default PrimaryProgressDataStore;

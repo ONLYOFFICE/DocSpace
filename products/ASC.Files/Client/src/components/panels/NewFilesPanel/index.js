@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { connect } from "react-redux";
+//import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import {
   Backdrop,
@@ -32,15 +32,15 @@ import {
   //getSelectedFolder,
   //getIsPrivacyFolder,
 } from "../../../store/files/selectors";
-import {
+// import {
   //fetchFiles,
   //setMediaViewerData,
   //setTreeFolders,
-  setUpdateTree,
-  setNewRowItems,
+//   setUpdateTree,
+//   setNewRowItems,
   //setIsLoading,
-  addFileToRecentlyViewed,
-} from "../../../store/files/actions";
+//   addFileToRecentlyViewed,
+// } from "../../../store/files/actions";
 import { createI18N } from "../../../helpers/i18n";
 import { inject, observer } from "mobx-react";
 const i18n = createI18N({
@@ -125,7 +125,7 @@ class NewFilesPanelComponent extends React.Component {
     api.files
       .markAsRead(folderIds, fileId)
       .then(() => {
-        this.props.setUpdateTree(true);
+        //this.props.setUpdateTree(true);
         this.setNewFilesCount(folderId, false, item);
         this.onFilesClick(item);
       })
@@ -174,7 +174,7 @@ class NewFilesPanelComponent extends React.Component {
       setTreeFolders,
       folders,
       files,
-      setUpdateTree,
+      //setUpdateTree,
     } = this.props;
 
     const data = treeFolders;
@@ -223,7 +223,7 @@ class NewFilesPanelComponent extends React.Component {
       }
     }
 
-    setUpdateTree(true);
+    //setUpdateTree(true);
     setTreeFolders(data);
   };
 
@@ -332,17 +332,7 @@ const NewFilesPanel = (props) => (
 //   setIsLoading,
 // })(withRouter(NewFilesPanel));
 
-export default connect(null, {
-  //setMediaViewerData,
-  //setTreeFolders,
-  setUpdateTree,
-  setNewRowItems,
-  //fetchFiles,
-  addFileToRecentlyViewed,
-  //setIsLoading,
-});
-
-inject(({ mainFilesStore }) => {
+export default inject(({ auth, mainFilesStore }) => {
   const { filesStore, setIsLoading } = mainFilesStore;
   const {
     files,
@@ -351,6 +341,8 @@ inject(({ mainFilesStore }) => {
     treeFoldersStore,
     filter,
     mediaViewerDataStore,
+    addFileToRecentlyViewed,
+    setNewRowItems,
   } = filesStore;
   const { treeFolders, setTreeFolders, isPrivacyFolder } = treeFoldersStore;
   const { setMediaViewerData } = mediaViewerDataStore;
@@ -366,5 +358,7 @@ inject(({ mainFilesStore }) => {
     fetchFiles,
     setTreeFolders,
     setMediaViewerData,
+    addFileToRecentlyViewed,
+    setNewRowItems,
   };
 })(withRouter(observer(NewFilesPanel)));

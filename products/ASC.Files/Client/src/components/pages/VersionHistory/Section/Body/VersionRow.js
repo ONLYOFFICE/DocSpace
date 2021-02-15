@@ -10,13 +10,13 @@ import {
 } from "asc-web-components";
 import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
-import { connect } from "react-redux";
+//import { connect } from "react-redux";
 import { toastr /* store */ } from "asc-web-common";
-import {
-  markAsVersion,
-  restoreVersion,
-  updateCommentVersion,
-} from "../../../../../store/files/actions";
+// import {
+//   markAsVersion,
+//   restoreVersion,
+//   updateCommentVersion,
+// } from "../../../../../store/files/actions";
 import VersionBadge from "./VersionBadge";
 import StyledVersionRow from "./StyledVersionRow";
 import { inject, observer } from "mobx-react";
@@ -240,32 +240,37 @@ const VersionRow = (props) => {
 //   };
 // };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    markAsVersion: (id, isVersion, version) =>
-      dispatch(markAsVersion(id, isVersion, version)),
-    restoreVersion: (id, version) => dispatch(restoreVersion(id, version)),
-    updateCommentVersion: (id, comment, version) =>
-      dispatch(updateCommentVersion(id, comment, version)),
-  };
-};
+// const mapDispatchToProps = (dispatch) => {
+//   return {
+//     markAsVersion: (id, isVersion, version) =>
+//       dispatch(markAsVersion(id, isVersion, version)),
+//     restoreVersion: (id, version) => dispatch(restoreVersion(id, version)),
+//     updateCommentVersion: (id, comment, version) =>
+//       dispatch(updateCommentVersion(id, comment, version)),
+//   };
+// };
 
 // export default connect(
 //   mapStateToProps,
 //   mapDispatchToProps
 // )(withRouter(withTranslation()(VersionRow)));
 
-export default connect(
-  null,
-  mapDispatchToProps
-)(
-  inject(({ auth, mainFilesStore }) => {
-    const { user } = auth.userStore;
-    const { culture } = auth.settingsStore;
+export default inject(({ auth, mainFilesStore }) => {
+  const { user } = auth.userStore;
+  const { culture } = auth.settingsStore;
     const language = (user && user.cultureName) || culture || "en-US";
+
+  const {
+    markAsVersion,
+    restoreVersion,
+    updateCommentVersion,
+  } = mainFilesStore.filesStore.versionHistoryStore;
 
     return {
       culture: language,
+
+    markAsVersion,
+    restoreVersion,
+    updateCommentVersion,
     };
-  })(withRouter(withTranslation()(observer(VersionRow))))
-);
+})(withRouter(withTranslation()(observer(VersionRow))));

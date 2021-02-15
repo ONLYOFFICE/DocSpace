@@ -19,7 +19,7 @@ import {
 import { updateProfile } from "../../../../../store/profile/actions";
 import {
   fetchProfile,
-  getUserPhoto,
+  // getUserPhoto,
 } from "../../../../../store/profile/actions";
 import styled from "styled-components";
 import { store, api, constants } from "asc-web-common";
@@ -122,7 +122,7 @@ class SectionHeaderContent extends React.PureComponent {
   };
 
   openAvatarEditor = () => {
-    getUserPhoto(this.state.profile.id).then((userPhotoData) => {
+    this.props.getUserPhoto(this.state.profile.id).then((userPhotoData) => {
       if (userPhotoData.original) {
         let avatarDefaultSizes = /_(\d*)-(\d*)./g.exec(userPhotoData.original);
         if (avatarDefaultSizes !== null && avatarDefaultSizes.length > 2) {
@@ -536,6 +536,8 @@ export default connect(mapStateToProps, {
     resetProfile: peopleStore.targetUserStore.resetTargetUser,
     fetchProfile: peopleStore.targetUserStore.getTargetUser,
     profile: peopleStore.targetUserStore.targetUser,
+    updateProfile: peopleStore.targetUserStore.updateProfile,
+    getUserPhoto: peopleStore.targetUserStore.getUserPhoto,
   }))(observer(withRouter(withTranslation()(SectionHeaderContent))))
 );
 

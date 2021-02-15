@@ -386,6 +386,90 @@ class FormatsStore {
         return `${folderPath}/file.svg`;
     }
   };
+
+  getIconSrc = (ext, size = 24) => {
+    const folderPath = `images/icons/${size}`;
+
+    if (presentInArray(this.archive, ext, true))
+      return `${folderPath}/file_archive.svg`;
+
+    if (presentInArray(this.image, ext, true)) return `${folderPath}/image.svg`;
+
+    if (presentInArray(this.sound, ext, true)) return `${folderPath}/sound.svg`;
+
+    if (presentInArray(this.html, ext, true)) return `${folderPath}/html.svg`;
+
+    const extension = ext.toLowerCase();
+
+    switch (extension) {
+      case ".avi":
+        return `${folderPath}/avi.svg`;
+      case ".csv":
+        return `${folderPath}/csv.svg`;
+      case ".djvu":
+        return `${folderPath}/djvu.svg`;
+      case ".doc":
+        return `${folderPath}/doc.svg`;
+      case ".docx":
+        return `${folderPath}/docx.svg`;
+      case ".dvd":
+        return `${folderPath}/dvd.svg`;
+      case ".epub":
+        return `${folderPath}/epub.svg`;
+      case ".pb2":
+        return `${folderPath}/fb2.svg`;
+      case ".flv":
+        return `${folderPath}/flv.svg`;
+      case ".iaf":
+        return `${folderPath}/iaf.svg`;
+      case ".m2ts":
+        return `${folderPath}/m2ts.svg`;
+      case ".mht":
+        return `${folderPath}/mht.svg`;
+      case ".mkv":
+        return `${folderPath}/mkv.svg`;
+      case ".mov":
+        return `${folderPath}/mov.svg`;
+      case ".mp4":
+        return `${folderPath}/mp4.svg`;
+      case ".mpg":
+        return `${folderPath}/mpg.svg`;
+      case ".odp":
+        return `${folderPath}/odp.svg`;
+      case ".ods":
+        return `${folderPath}/ods.svg`;
+      case ".odt":
+        return `${folderPath}/odt.svg`;
+      case ".pdf":
+        return `${folderPath}/pdf.svg`;
+      case ".pps":
+        return `${folderPath}/pps.svg`;
+      case ".ppsx":
+        return `${folderPath}/ppsx.svg`;
+      case ".ppt":
+        return `${folderPath}/ppt.svg`;
+      case ".pptx":
+        return `${folderPath}/pptx.svg`;
+      case ".rtf":
+        return `${folderPath}/rtf.svg`;
+      case ".svg":
+        return `${folderPath}/svg.svg`;
+      case ".txt":
+        return `${folderPath}/txt.svg`;
+      case ".webm":
+        return `${folderPath}/webm.svg`;
+      case ".xls":
+        return `${folderPath}/xls.svg`;
+      case ".xlsx":
+        return `${folderPath}/xlsx.svg`;
+      case ".xps":
+        return `${folderPath}/xps.svg`;
+      case ".xml":
+        return `${folderPath}/xml.svg`;
+      default:
+        return `${folderPath}/file.svg`;
+    }
+  };
 }
 
 export default FormatsStore;

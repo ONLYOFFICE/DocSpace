@@ -1,9 +1,10 @@
 import React from "react";
-import { connect } from "react-redux";
+//import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import styled from "styled-components";
 import { Icons, Badge } from "asc-web-components";
-import { canWebEdit, canConvert } from "../../../../../store/files/selectors";
+//import { canWebEdit, canConvert } from "../../../../../store/files/selectors";
+import { inject, observer } from "mobx-react";
 
 const StyledBadgesFileTile = styled.div`
   display: flex;
@@ -92,11 +93,22 @@ class BadgesFileTile extends React.PureComponent {
   }
 }
 
-const mapStateToProps = (state, props) => {
-  return {
-    canWebEdit: canWebEdit(props.item.fileExst)(state),
-    canConvert: canConvert(props.item.fileExst)(state),
-  };
-};
+// const mapStateToProps = (state, props) => {
+//   return {
+//     canWebEdit: canWebEdit(props.item.fileExst)(state),
+//     canConvert: canConvert(props.item.fileExst)(state),
+//   };
+// };
 
-export default connect(mapStateToProps, {})(withRouter(BadgesFileTile));
+export default inject(({ mainFilesStore }, { item }) => {
+  const { filesStore } = mainFilesStore;
+  const { docserviceStore } = filesStore;
+
+  const canWebEdit = docserviceStore.canWebEdit(item.fileExst);
+  const canConvert = docserviceStore.canConvert(item.fileExst);
+
+  return {
+    canWebEdit,
+    canConvert,
+  };
+})(withRouter(observer(BadgesFileTile)));

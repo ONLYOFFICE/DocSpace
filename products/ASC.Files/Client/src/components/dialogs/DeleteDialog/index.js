@@ -1,6 +1,6 @@
 import React from "react";
 import { withRouter } from "react-router";
-import { connect } from "react-redux";
+//import { connect } from "react-redux";
 import ModalDialogContainer from "../ModalDialogContainer";
 import {
   ModalDialog,
@@ -11,13 +11,12 @@ import {
 } from "asc-web-components";
 import { withTranslation } from "react-i18next";
 import { api, utils, toastr } from "asc-web-common";
-import {
-  //fetchFiles,
+import //fetchFiles,
   //setTreeFolders,
   //setSecondaryProgressBarData,
   //clearSecondaryProgressData,
-  setUpdateTree,
-} from "../../../store/files/actions";
+//setUpdateTree,
+"../../../store/files/actions";
 import { TIMEOUT } from "../../../helpers/constants";
 import {
   loopTreeFolders,
@@ -27,7 +26,7 @@ import {
   //getIsLoading,
   //getIsRecycleBinFolder,
   //getSelection,
-  isRootFolder,
+  //isRootFolder,
   //getIsPrivacyFolder,
 } from "../../../store/files/selectors";
 import { createI18N } from "../../../helpers/i18n";
@@ -82,7 +81,7 @@ class DeleteDialogComponent extends React.Component {
       clearSecondaryProgressData,
       t,
       fetchFiles,
-      setUpdateTree,
+      //setUpdateTree,
     } = this.props;
     const successMessage = t("DeleteSelectedElem");
     api.files
@@ -114,7 +113,7 @@ class DeleteDialogComponent extends React.Component {
               const folders = data.selectedFolder.folders;
               const foldersCount = data.selectedFolder.foldersCount;
               loopTreeFolders(path, newTreeFolders, folders, foldersCount);
-              setUpdateTree(true);
+              //setUpdateTree(true);
               setTreeFolders(newTreeFolders);
             }
             toastr.success(successMessage);
@@ -303,8 +302,8 @@ const DeleteDialog = (props) => (
   <ModalDialogContainerTranslated i18n={i18n} {...props} />
 );
 
-const mapStateToProps = (state) => {
-  return {
+// const mapStateToProps = (state) => {
+//   return {
     //currentFolderId: getSelectedFolderId(state),
     //filter: getFilter(state),
     //treeFolders: getTreeFolders(state),
@@ -312,9 +311,9 @@ const mapStateToProps = (state) => {
     //isRecycleBinFolder: getIsRecycleBinFolder(state),
     //isPrivacy: getIsPrivacyFolder(state),
     //selection: getSelection(state),
-    isRootFolder: isRootFolder(state),
-  };
-};
+//     isRootFolder: isRootFolder(state),
+//   };
+// };
 
 // export default connect(mapStateToProps, {
 //   setTreeFolders,
@@ -324,14 +323,7 @@ const mapStateToProps = (state) => {
 //   fetchFiles,
 // })(withRouter(DeleteDialog));
 
-export default connect(mapStateToProps, {
-  //setTreeFolders,
-  //setSecondaryProgressBarData,
-  //clearSecondaryProgressData,
-  setUpdateTree,
-  //fetchFiles,
-})(
-  inject(({ mainFilesStore }) => {
+export default inject(({ auth, mainFilesStore }) => {
     const { filesStore, isLoading } = mainFilesStore;
     const {
       fetchFiles,
@@ -362,11 +354,11 @@ export default connect(mapStateToProps, {
       isRecycleBinFolder,
       isPrivacy: isPrivacyFolder,
       filter,
+    isRootFolder: selectedFolderStore.isRootFolder,
 
       fetchFiles,
       setTreeFolders,
       setSecondaryProgressBarData,
       clearSecondaryProgressData,
     };
-  })(withRouter(observer(DeleteDialog)))
-);
+})(withRouter(observer(DeleteDialog)));

@@ -1,17 +1,17 @@
 import React from "react";
-import { connect } from "react-redux";
+//import { connect } from "react-redux";
 // import {
 //   fetchFiles,
 //   setViewAs,
 //   setIsLoading,
 // } from "../../../../../store/files/actions";
-import {
+// import {
   //getFilter,
   //getSelectedFolderId,
   //getViewAs,
-  getFilterSelectedItem,
+//   getFilterSelectedItem,
   //getFirstLoad,
-} from "../../../../../store/files/selectors";
+// } from "../../../../../store/files/selectors";
 import find from "lodash/find";
 import result from "lodash/result";
 import { withTranslation } from "react-i18next";
@@ -331,18 +331,18 @@ class SectionFilterContent extends React.Component {
   }
 }
 
-function mapStateToProps(state) {
-  return {
+// function mapStateToProps(state) {
+//   return {
     //user: getCurrentUser(state),
     //customNames: getSettingsCustomNames(state),
     //language: getLanguage(state),
     //firstLoad: getFirstLoad(state),
     //filter: getFilter(state),
     //selectedFolderId: getSelectedFolderId(state),
-    selectedItem: getFilterSelectedItem(state),
+//     selectedItem: getFilterSelectedItem(state),
     //viewAs: getViewAs(state),
-  };
-}
+//   };
+// }
 
 // export default connect(mapStateToProps, {
 //   fetchFiles,
@@ -350,8 +350,7 @@ function mapStateToProps(state) {
 //   setIsLoading,
 // })(withRouter(withLayoutSize(withTranslation()(SectionFilterContent))));
 
-export default connect(mapStateToProps)(
-  inject(({ auth, mainFilesStore }) => {
+export default inject(({ auth, mainFilesStore }) => {
     const { filesStore, setIsLoading, setViewAs, viewAs } = mainFilesStore;
     const { firstLoad, fetchFiles, filter, selectedFolderStore } = filesStore;
 
@@ -365,6 +364,7 @@ export default connect(mapStateToProps)(
       language,
       firstLoad,
       selectedFolderId: selectedFolderStore.id,
+    selectedItem: filter.selectedItem,
       filter,
       viewAs,
 
@@ -373,8 +373,5 @@ export default connect(mapStateToProps)(
       setViewAs,
     };
   })(
-    withRouter(
-      withLayoutSize(withTranslation()(observer(SectionFilterContent)))
-    )
-  )
+  withRouter(withLayoutSize(withTranslation()(observer(SectionFilterContent))))
 );

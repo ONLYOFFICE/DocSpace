@@ -10,7 +10,7 @@ import {
   toastr,
   Loaders,
 } from "asc-web-common";
-import { connect } from "react-redux";
+//import { connect } from "react-redux";
 import { withTranslation } from "react-i18next";
 import {
   ContextMenuButton,
@@ -35,27 +35,27 @@ import {
   DownloadDialog,
 } from "../../../../dialogs";
 import { OperationsPanel } from "../../../../panels";
-import {
-  getUserAccess,
-  getWebEditSelected,
+// import {
+//   getUserAccess,
+//   getWebEditSelected,
   //getIsRecycleBinFolder,
-  canCreate,
+//   canCreate,
   //getSelectedFolderTitle,
   //getFilter,
   //getSelectedFolderId,
   //getSelection,
   //getSelectedFolderParentId,
   //getIsRootFolder,
-  getHeaderVisible,
-  getHeaderIndeterminate,
-  getHeaderChecked,
-  getAccessedSelected,
-  getSelectionLength,
+//   getHeaderVisible,
+//   getHeaderIndeterminate,
+//   getHeaderChecked,
+//   getAccessedSelected,
+//   getSelectionLength,
   //getSharePanelVisible,
-  getIsThirdPartySelection,
+//   getIsThirdPartySelection,
   //getIsPrivacyFolder,
-  getOnlyFoldersSelected,
-} from "../../../../../store/files/selectors";
+//   getOnlyFoldersSelected,
+// } from "../../../../../store/files/selectors";
 import { inject, observer } from "mobx-react";
 
 //const { isAdmin, isDesktopClient } = store.auth.selectors;
@@ -693,8 +693,8 @@ class SectionHeaderContent extends React.Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
+// const mapStateToProps = (state) => {
+//   return {
     //isRootFolder: getIsRootFolder(state),
     //isAdmin: isAdmin(state),
     //isRecycleBin: getIsRecycleBinFolder(state),
@@ -704,20 +704,20 @@ const mapStateToProps = (state) => {
     //selection: getSelection(state),
     //title: getSelectedFolderTitle(state),
     //filter: getFilter(state),
-    deleteDialogVisible: getUserAccess(state),
+//     deleteDialogVisible: getUserAccess(state),
     //currentFolderId: getSelectedFolderId(state),
-    canCreate: canCreate(state),
-    isWebEditSelected: getWebEditSelected(state),
-    isHeaderVisible: getHeaderVisible(state),
-    isHeaderIndeterminate: getHeaderIndeterminate(state),
-    isHeaderChecked: getHeaderChecked(state),
-    isAccessedSelected: getAccessedSelected(state),
-    isItemsSelected: getSelectionLength(state),
+//     canCreate: canCreate(state),
+//     isWebEditSelected: getWebEditSelected(state),
+//     isHeaderVisible: getHeaderVisible(state),
+//     isHeaderIndeterminate: getHeaderIndeterminate(state),
+//     isHeaderChecked: getHeaderChecked(state),
+//     isAccessedSelected: getAccessedSelected(state),
+//     isItemsSelected: getSelectionLength(state),
     //sharingPanelVisible: getSharePanelVisible(state),
-    isThirdPartySelection: getIsThirdPartySelection(state),
-    isOnlyFoldersSelected: getOnlyFoldersSelected(state),
-  };
-};
+//     isThirdPartySelection: getIsThirdPartySelection(state),
+//     isOnlyFoldersSelected: getOnlyFoldersSelected(state),
+//   };
+// };
 
 // export default connect(mapStateToProps, {
 //   setAction,
@@ -729,8 +729,7 @@ const mapStateToProps = (state) => {
 //   setSharingPanelVisible,
 // })(withTranslation()(withRouter(SectionHeaderContent)));
 
-export default connect(mapStateToProps)(
-  inject(({ auth, mainFilesStore }) => {
+export default inject(({ auth, mainFilesStore }) => {
     const { filesStore, setIsLoading } = mainFilesStore;
     const {
       setSelected,
@@ -742,6 +741,15 @@ export default connect(mapStateToProps)(
       filter,
       secondaryProgressDataStore,
       dialogsStore,
+    canCreate,
+    isHeaderVisible,
+    isHeaderIndeterminate,
+    isHeaderChecked,
+    userAccess,
+    isAccessedSelected,
+    isOnlyFoldersSelected,
+    isThirdPartySelection,
+    isWebEditSelected,
     } = filesStore;
     const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
     const { setAction } = fileActionStore;
@@ -763,6 +771,16 @@ export default connect(mapStateToProps)(
       isPrivacy: isPrivacyFolder,
       filter,
       sharingPanelVisible,
+    canCreate,
+    isItemsSelected: selection.length,
+    isHeaderVisible,
+    isHeaderIndeterminate,
+    isHeaderChecked,
+    deleteDialogVisible: userAccess,
+    isAccessedSelected,
+    isOnlyFoldersSelected,
+    isThirdPartySelection,
+    isWebEditSelected,
 
       setSelected,
       setAction,
@@ -772,5 +790,4 @@ export default connect(mapStateToProps)(
       setSharingPanelVisible,
       clearSecondaryProgressData,
     };
-  })(withTranslation()(withRouter(observer(SectionHeaderContent))))
-);
+})(withTranslation()(withRouter(observer(SectionHeaderContent))));

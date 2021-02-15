@@ -1,35 +1,35 @@
 import React from "react";
-import { connect } from "react-redux";
+//import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { Trans, withTranslation } from "react-i18next";
 import styled from "styled-components";
 import { Link, Text, Icons, Badge } from "asc-web-components";
 import { constants, api, toastr } from "asc-web-common";
 import {
-  createFile,
+  //createFile,
   createFolder,
-  renameFolder,
-  updateFile,
+  //renameFolder,
+  //updateFile,
   //fetchFiles,
   //setTreeFolders,
   //setIsLoading,
 } from "../../../../../store/files/actions";
 import {
-  canWebEdit,
+  //canWebEdit,
   //getDragging,
   //getFileAction,
   //getFilter,
   //getFolders,
   //getIsLoading,
-  getNewRowItems,
+  //getNewRowItems,
   //getSelectedFolder,
   //getSelectedFolderNew,
   //getSelectedFolderParentId,
   getTitleWithoutExst,
   //getTreeFolders,
-  isImage,
-  isSound,
-  isVideo,
+  //isImage,
+  //isSound,
+  //isVideo,
   //getIsRecycleBinFolder,
   //getRootFolderId,
 } from "../../../../../store/files/selectors";
@@ -228,6 +228,9 @@ class FilesTileContent extends React.PureComponent {
       fetchFiles,
       canWebEdit,
       openDocEditor,
+      isVideo,
+      isImage,
+      isSound,
     } = this.props;
     if (!fileExst) {
       setIsLoading(true);
@@ -247,8 +250,7 @@ class FilesTileContent extends React.PureComponent {
         return openDocEditor(id, providerKey);
       }
 
-      const isOpenMedia =
-        isImage(fileExst) || isSound(fileExst) || isVideo(fileExst);
+      const isOpenMedia = isImage || isSound || isVideo;
 
       if (isOpenMedia) {
         onMediaFileClick(id);
@@ -441,8 +443,8 @@ class FilesTileContent extends React.PureComponent {
   }
 }
 
-function mapStateToProps(state, props) {
-  return {
+// function mapStateToProps(state, props) {
+//   return {
     //filter: getFilter(state),
     //fileAction: getFileAction(state),
     //parentFolder: getSelectedFolderParentId(state),
@@ -452,12 +454,12 @@ function mapStateToProps(state, props) {
     //newItems: getSelectedFolderNew(state),
     //selectedFolder: getSelectedFolder(state),
     //folders: getFolders(state),
-    newRowItems: getNewRowItems(state),
+//     newRowItems: getNewRowItems(state),
     //dragging: getDragging(state),
     //isLoading: getIsLoading(state),
-    canWebEdit: canWebEdit(props.item.fileExst)(state),
-  };
-}
+//     canWebEdit: canWebEdit(props.item.fileExst)(state),
+//   };
+// }
 
 // export default connect(mapStateToProps, {
 //   createFile,
@@ -468,28 +470,33 @@ function mapStateToProps(state, props) {
 //   fetchFiles,
 // })(withRouter(withTranslation()(FilesTileContent)));
 
-export default connect(mapStateToProps, {
+export default inject(({ auth, mainFilesStore }, { item }) => {
+  const { homepage, culture } = auth.settingsStore;
+  const { filesStore, setIsLoading, isLoading, dragging } = mainFilesStore;
+  const {
+    folders,
+    fetchFiles,
+    treeFoldersStore,
+    filter,
+    docserviceStore,
+    mediaViewersFormatsStore,
+    formatsStore,
+    newRowItems,
   createFile,
   updateFile,
   renameFolder,
-  //setTreeFolders,
-  //setIsLoading,
-  //fetchFiles,
-})(
-  inject(({ auth, mainFilesStore }) => {
-    const { homepage, culture } = auth.settingsStore;
-    const { filesStore, setIsLoading, isLoading, dragging } = mainFilesStore;
-    const { folders, fetchFiles, treeFoldersStore, filter } = filesStore;
+  } = filesStore;
 
-    const {
-      treeFolders,
-      setTreeFolders,
-      isRecycleBinFolder,
-    } = treeFoldersStore;
+  const { treeFolders, setTreeFolders, isRecycleBinFolder } = treeFoldersStore;
 
     const { type, extension, id } = filesStore.fileActionStore;
 
     const fileAction = { type, extension, id };
+
+  const canWebEdit = docserviceStore.canWebEdit(item.fileExst);
+  const isVideo = mediaViewersFormatsStore.isVideo(item.fileExst);
+  const isImage = formatsStore.isImage(item.fileExst);
+  const isSound = formatsStore.isSound(item.fileExst);
 
     return {
       culture,
@@ -506,10 +513,17 @@ export default connect(mapStateToProps, {
       isTrashFolder: isRecycleBinFolder,
       filter,
       dragging,
+    canWebEdit,
+    isVideo,
+    isImage,
+    isSound,
+    newRowItems,
 
       setIsLoading,
       fetchFiles,
       setTreeFolders,
+    createFile,
+    updateFile,
+    renameFolder,
     };
-  })(withRouter(withTranslation()(observer(FilesTileContent))))
-);
+})(withRouter(withTranslation()(observer(FilesTileContent))));

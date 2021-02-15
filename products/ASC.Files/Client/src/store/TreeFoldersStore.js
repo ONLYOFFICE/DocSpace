@@ -160,22 +160,22 @@ class TreeFoldersStore {
       this.selectedFolderStore.id === this.recycleBinFolder.id
     );
   }
+
+  get operationsFolders() {
+    if (this.isPrivacyFolder) {
+      return this.treeFolders.filter(
+        (folder) => folder.rootFolderType === FolderType.Privacy && folder
+      );
+    } else {
+      return this.treeFolders.filter(
+        (folder) =>
+          (folder.rootFolderType === FolderType.USER ||
+            folder.rootFolderType === FolderType.COMMON ||
+            folder.rootFolderType === FolderType.Projects) &&
+          folder
+      );
+    }
+  }
 }
 
 export default TreeFoldersStore;
-
-/*
-
-export const getMyDirectoryFolders = createSelector(getMyFolder, (myFolder) => {
-  if (myFolder) return myFolder.folders;
-});
-
-export const getCommonDirectoryFolders = createSelector(
-  getCommonFolder,
-  (commonFolder) => {
-    if (commonFolder) return commonFolder.folders;
-  }
-);
-
-
-*/

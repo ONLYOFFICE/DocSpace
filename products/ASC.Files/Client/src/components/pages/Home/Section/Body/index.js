@@ -1,6 +1,6 @@
 import React from "react";
 import { withRouter } from "react-router";
-import { connect } from "react-redux";
+//import { connect } from "react-redux";
 import { ReactSVG } from "react-svg";
 import { withTranslation, Trans } from "react-i18next";
 //import equal from "fast-deep-equal/react";
@@ -30,14 +30,14 @@ import {
   Loaders,
   //store,
 } from "asc-web-common";
-import {
+// import {
   //clearSecondaryProgressData,
-  loopFilesOperations,
-  markItemAsFavorite,
-  removeItemFromFavorite,
-  fetchFavoritesFolder,
+//   loopFilesOperations,
+//   markItemAsFavorite,
+//   removeItemFromFavorite,
+//   fetchFavoritesFolder,
   //deselectFile,
-  updateFile,
+//   updateFile,
   //fetchFiles,
   //selectFile,
   //setAction,
@@ -45,21 +45,21 @@ import {
   //setDragItem,
   //setIsLoading,
   //setMediaViewerData,
-  setUpdateTree,
+//   setUpdateTree,
   //setSecondaryProgressBarData,
   //setSelected,
   //setSelection,
   //setTreeFolders,
-  getFileInfo,
-  addFileToRecentlyViewed,
+//   getFileInfo,
+//   addFileToRecentlyViewed,
   //setIsVerHistoryPanel,
   //setVerHistoryFileId,
   //setSharingPanelVisible,
   //setChangeOwnerPanelVisible,
-} from "../../../../../store/files/actions";
+// } from "../../../../../store/files/actions";
 import { TIMEOUT } from "../../../../../helpers/constants";
 import {
-  getCurrentFilesCount,
+  //getCurrentFilesCount,
   //getDragging,
   //getDragItem,
   //getFileAction,
@@ -80,8 +80,8 @@ import {
   //getViewAs,
   loopTreeFolders,
   //getFilesList,
-  getMediaViewerImageFormats,
-  getMediaViewerMediaFormats,
+  //getMediaViewerImageFormats,
+  //getMediaViewerMediaFormats,
   //getIsShareFolder,
   //getIsCommonFolder,
   //getIsRecycleBinFolder,
@@ -89,14 +89,14 @@ import {
   //getIsMyFolder,
   //getIsFavoritesFolder,
   //getMyFolderId,
-  getTooltipLabel,
+  //getTooltipLabel,
   //getIsPrivacyFolder,
   //getPrivacyInstructionsLink,
-  getIconOfDraggedFile,
+  //getIconOfDraggedFile,
   //getSharePanelVisible,
-  isRootFolder,
-  getThirdPartyProviders,
-  getThirdPartyCapabilities,
+  //isRootFolder,
+  //getThirdPartyProviders,
+  //getThirdPartyCapabilities,
   //getIsVerHistoryPanel,
 } from "../../../../../store/files/selectors";
 import { OperationsPanel, VersionHistoryPanel } from "../../../../panels";
@@ -409,7 +409,7 @@ class SectionBodyContent extends React.Component {
       setTreeFolders,
       setIsLoading,
       fetchFiles,
-      setUpdateTree,
+      //setUpdateTree,
       setAction,
       selection,
     } = this.props;
@@ -429,7 +429,7 @@ class SectionBodyContent extends React.Component {
             const newTreeFolders = treeFolders;
             const folders = data.selectedFolder.folders;
             loopTreeFolders(path, newTreeFolders, folders, null, newItem);
-            setUpdateTree(true);
+            //setUpdateTree(true);
             setTreeFolders(newTreeFolders);
           }
         })
@@ -504,7 +504,7 @@ class SectionBodyContent extends React.Component {
       t,
       setSecondaryProgressBarData,
       fetchFiles,
-      setUpdateTree,
+      //setUpdateTree,
     } = this.props;
     api.files.getProgress().then((res) => {
       const deleteProgress = res.find((x) => x.id === id);
@@ -533,7 +533,7 @@ class SectionBodyContent extends React.Component {
               const folders = data.selectedFolder.folders;
               const foldersCount = data.selectedFolder.foldersCount;
               loopTreeFolders(path, newTreeFolders, folders, foldersCount);
-              setUpdateTree(true);
+              //setUpdateTree(true);
               setTreeFolders(newTreeFolders);
             }
             isFolder
@@ -2124,9 +2124,9 @@ SectionBodyContent.defaultProps = {
   files: null,
 };
 
-const mapStateToProps = (state) => {
-  return {
-    currentFolderCount: getCurrentFilesCount(state),
+// const mapStateToProps = (state) => {
+//   return {
+//     currentFolderCount: getCurrentFilesCount(state),
     //currentMediaFileId: getMediaViewerId(state),
     //dragging: getDragging(state),
     //dragItem: getDragItem(state),
@@ -2147,8 +2147,8 @@ const mapStateToProps = (state) => {
     //isRecent: getIsRecentFolder(state),
     //isShare: getIsShareFolder(state),
     //isPrivacy: getIsPrivacyFolder(state),
-    mediaViewerImageFormats: getMediaViewerImageFormats(state),
-    mediaViewerMediaFormats: getMediaViewerMediaFormats(state),
+//     mediaViewerImageFormats: getMediaViewerImageFormats(state),
+//     mediaViewerMediaFormats: getMediaViewerMediaFormats(state),
     //mediaViewerVisible: getMediaViewerVisibility(state),
     //myDocumentsId: getMyFolderId(state),
     //organizationName: getOrganizationName(state),
@@ -2162,16 +2162,16 @@ const mapStateToProps = (state) => {
     //treeFolders: getTreeFolders(state),
     //viewAs: getViewAs(state),
     //viewer: getCurrentUser(state),
-    tooltipValue: getTooltipLabel(state),
-    iconOfDraggedFile: getIconOfDraggedFile(state)(state),
+//     tooltipValue: getTooltipLabel(state),
+//     iconOfDraggedFile: getIconOfDraggedFile(state)(state),
     //sharingPanelVisible: getSharePanelVisible(state),
-    isRootFolder: isRootFolder(state),
-    providers: getThirdPartyProviders(state),
-    capabilities: getThirdPartyCapabilities(state),
+//     isRootFolder: isRootFolder(state),
+//     providers: getThirdPartyProviders(state),
+//     capabilities: getThirdPartyCapabilities(state),
     //isVersionHistoryPanel: getIsVerHistoryPanel(state),
     //isTabletView: getIsTabletView(state),
-  };
-};
+//   };
+// };
 
 // export default connect(mapStateToProps, {
 //   deselectFile,
@@ -2201,32 +2201,8 @@ const mapStateToProps = (state) => {
 //   setChangeOwnerPanelVisible,
 // })(withRouter(withTranslation()(SectionBodyContent)));
 
-export default connect(mapStateToProps, {
-  //deselectFile,
-  updateFile,
-  //fetchFiles,
-  //selectFile,
-  //setTreeFolders,
-  //setDragItem,
-  //setMediaViewerData,
-  //setSecondaryProgressBarData,
-  //setSelection,
-  //setSelected,
-  setUpdateTree,
-  //setIsLoading,
-  //clearSecondaryProgressData,
-  markItemAsFavorite,
-  removeItemFromFavorite,
-  fetchFavoritesFolder,
-  getFileInfo,
-  addFileToRecentlyViewed,
-  loopFilesOperations,
-  //setSharingPanelVisible,
-  //setIsVerHistoryPanel,
-  //setVerHistoryFileId,
-  //setChangeOwnerPanelVisible,
-})(
-  inject(({ auth, mainFilesStore }) => {
+export default inject(({ auth, mainFilesStore, settingsStore }) => {
+  const { providers, capabilities } = settingsStore.thirdPartyStore;
     const {
       homepage,
       culture,
@@ -2243,7 +2219,8 @@ export default connect(mapStateToProps, {
       viewAs,
       dragItem,
       setDragItem,
-      privacyInstructions,
+    privacyInstructions,
+    tooltipValue,
     } = mainFilesStore;
     const {
       files,
@@ -2264,6 +2241,17 @@ export default connect(mapStateToProps, {
       secondaryProgressDataStore,
       dialogsStore,
       versionHistoryStore,
+    selectedFolderStore,
+    mediaViewersFormatsStore,
+    addFileToRecentlyViewed,
+    updateFile,
+    currentFolderCount,
+    iconOfDraggedFile,
+    markItemAsFavorite,
+    removeItemFromFavorite,
+    fetchFavoritesFolder,
+    getFileInfo,
+    loopFilesOperations,
     } = filesStore;
 
     const {
@@ -2299,6 +2287,8 @@ export default connect(mapStateToProps, {
       setVerHistoryFileId,
     } = versionHistoryStore;
 
+  const { images, media } = mediaViewersFormatsStore;
+
     return {
       isAdmin: auth.isAdmin,
       homepage,
@@ -2315,9 +2305,9 @@ export default connect(mapStateToProps, {
       selected,
       firstLoad,
       filesList,
-      title: filesStore.selectedFolderStore.title,
-      parentId: filesStore.selectedFolderStore.parentId,
-      selectedFolderId: filesStore.selectedFolderStore.id,
+    title: selectedFolderStore.title,
+    parentId: selectedFolderStore.parentId,
+    selectedFolderId: selectedFolderStore.id,
       selection,
       treeFolders,
       isRecycleBin: isRecycleBinFolder,
@@ -2336,6 +2326,14 @@ export default connect(mapStateToProps, {
       sharingPanelVisible,
       isVersionHistoryPanel,
       privacyInstructions,
+    isRootFolder: selectedFolderStore.isRootFolder,
+    mediaViewerImageFormats: images,
+    mediaViewerMediaFormats: media,
+    providers,
+    capabilities,
+    currentFolderCount,
+    iconOfDraggedFile,
+    tooltipValue,
 
       setDragging,
       setAction,
@@ -2354,6 +2352,12 @@ export default connect(mapStateToProps, {
       clearSecondaryProgressData,
       setIsVerHistoryPanel,
       setVerHistoryFileId,
+    addFileToRecentlyViewed,
+    updateFile,
+    markItemAsFavorite,
+    removeItemFromFavorite,
+    fetchFavoritesFolder,
+    getFileInfo,
+    loopFilesOperations,
     };
-  })(withRouter(withTranslation()(observer(SectionBodyContent))))
-);
+})(withRouter(withTranslation()(observer(SectionBodyContent))));

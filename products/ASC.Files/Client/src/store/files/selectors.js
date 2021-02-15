@@ -1,4 +1,4 @@
-import { find, filter } from "lodash";
+// import { find, filter } from "lodash";
 import { constants, store } from "asc-web-common";
 import { createSelector } from "reselect";
 
@@ -7,8 +7,8 @@ const {
   isAdmin,
   isVisitor,
   getCurrentUserId,
-  isEncryptionSupport,
-  isDesktopClient,
+  //isEncryptionSupport,
+  //isDesktopClient,
 } = store.auth.selectors;
 
 export const presentInArray = (array, search, caseInsensitive = false) => {
@@ -40,33 +40,33 @@ export const getAccessIcon = (access) => {
   }
 };
 
-export const getMediaViewerImageFormats = (state) => {
-  return state.files.mediaViewerFormats.images;
-};
+// export const getMediaViewerImageFormats = (state) => {
+//   return state.files.mediaViewerFormats.images;
+// };
 
-export const getMediaViewerMediaFormats = (state) => {
-  return state.files.mediaViewerFormats.media;
-};
+// export const getMediaViewerMediaFormats = (state) => {
+//   return state.files.mediaViewerFormats.media;
+// };
 
-export const getEditedFormats = (state) => {
-  return state.files.docservice.editedDocs;
-};
+// export const getEditedFormats = (state) => {
+//   return state.files.docservice.editedDocs;
+// };
 
-export const getCommentedFormats = (state) => {
-  return state.files.docservice.commentedDocs;
-};
+// export const getCommentedFormats = (state) => {
+//   return state.files.docservice.commentedDocs;
+// };
 
-export const getReviewedFormats = (state) => {
-  return state.files.docservice.reviewedDocs;
-};
+// export const getReviewedFormats = (state) => {
+//   return state.files.docservice.reviewedDocs;
+// };
 
-export const getWebFilterFormats = (state) => {
-  return state.files.docservice.customfilterDocs;
-};
+// export const getWebFilterFormats = (state) => {
+//   return state.files.docservice.customfilterDocs;
+// };
 
-export const getFormFillingFormats = (state) => {
-  return state.files.docservice.formfillingDocs;
-};
+// export const getFormFillingFormats = (state) => {
+//   return state.files.docservice.formfillingDocs;
+// };
 
 export const getConvertedFormats = (state) => {
   return state.files.docservice.convertDocs;
@@ -112,34 +112,34 @@ export const getSpreadsheetFormats = (state) => {
   return state.files.formats.spreadsheet;
 };
 
-export const canWebEdit = (extension) => {
-  return createSelector(getEditedFormats, (formats) => {
-    return presentInArray(formats, extension);
-  });
-};
+// export const canWebEdit = (extension) => {
+//   return createSelector(getEditedFormats, (formats) => {
+//     return presentInArray(formats, extension);
+//   });
+// };
 
-export const canWebComment = (extension) => {
-  return createSelector(getCommentedFormats, (formats) => {
-    return presentInArray(formats, extension);
-  });
-};
+// export const canWebComment = (extension) => {
+//   return createSelector(getCommentedFormats, (formats) => {
+//     return presentInArray(formats, extension);
+//   });
+// };
 
-export const canWebReview = (extension) => {
-  return createSelector(getReviewedFormats, (formats) => {
-    return presentInArray(formats, extension);
-  });
-};
+// export const canWebReview = (extension) => {
+//   return createSelector(getReviewedFormats, (formats) => {
+//     return presentInArray(formats, extension);
+//   });
+// };
 
-export const canWebFilterEditing = (extension) => {
-  return createSelector(getWebFilterFormats, (formats) => {
-    return presentInArray(formats, extension);
-  });
-};
-export const canFormFillingDocs = (extension) => {
-  return createSelector(getFormFillingFormats, (formats) => {
-    return presentInArray(formats, extension);
-  });
-};
+// export const canWebFilterEditing = (extension) => {
+//   return createSelector(getWebFilterFormats, (formats) => {
+//     return presentInArray(formats, extension);
+//   });
+// };
+// export const canFormFillingDocs = (extension) => {
+//   return createSelector(getFormFillingFormats, (formats) => {
+//     return presentInArray(formats, extension);
+//   });
+// };
 
 export const canConvert = (extension) => {
   return createSelector(getConvertedFormats, (formats) => {
@@ -165,11 +165,11 @@ export const isSound = (extension) => {
   });
 };
 
-export const isVideo = (extension) => {
-  return createSelector(getMediaViewerMediaFormats, (formats) => {
-    return presentInArray(formats, extension);
-  });
-};
+// export const isVideo = (extension) => {
+//   return createSelector(getMediaViewerMediaFormats, (formats) => {
+//     return presentInArray(formats, extension);
+//   });
+// };
 
 export const isHtml = (extension) => {
   return createSelector(getHtmlFormats, (formats) => {
@@ -177,45 +177,45 @@ export const isHtml = (extension) => {
   });
 };
 
-export const isEbook = (extension) => {
-  return createSelector(getEbookFormats, (formats) => {
-    return presentInArray(formats, extension);
-  });
-};
+// export const isEbook = (extension) => {
+//   return createSelector(getEbookFormats, (formats) => {
+//     return presentInArray(formats, extension);
+//   });
+// };
 
-export const isDocument = (extension) => {
-  return createSelector(getDocumentFormats, (formats) => {
-    return presentInArray(formats, extension);
-  });
-};
+// export const isDocument = (extension) => {
+//   return createSelector(getDocumentFormats, (formats) => {
+//     return presentInArray(formats, extension);
+//   });
+// };
 
-export const isPresentation = (extension) => {
-  return createSelector(getPresentationFormats, (formats) => {
-    return presentInArray(formats, extension);
-  });
-};
+// export const isPresentation = (extension) => {
+//   return createSelector(getPresentationFormats, (formats) => {
+//     return presentInArray(formats, extension);
+//   });
+// };
 
-export const isSpreadsheet = (extension) => {
-  return createSelector(getSpreadsheetFormats, (formats) => {
-    return presentInArray(formats, extension);
-  });
-};
+// export const isSpreadsheet = (extension) => {
+//   return createSelector(getSpreadsheetFormats, (formats) => {
+//     return presentInArray(formats, extension);
+//   });
+// };
 
-export function getSelectedFile(selection, fileId, parentId) {
-  return find(selection, function (obj) {
-    return obj.id === fileId && obj.parentId === parentId;
-  });
-}
+// export function getSelectedFile(selection, fileId, parentId) {
+//   return find(selection, function (obj) {
+//     return obj.id === fileId && obj.parentId === parentId;
+//   });
+// }
 
-export function isFileSelected(selection, fileId, parentId) {
-  return getSelectedFile(selection, fileId, parentId) !== undefined;
-}
+// export function isFileSelected(selection, fileId, parentId) {
+//   return getSelectedFile(selection, fileId, parentId) !== undefined;
+// }
 
-export function skipFile(selection, fileId) {
-  return filter(selection, function (obj) {
-    return obj.id !== fileId;
-  });
-}
+// export function skipFile(selection, fileId) {
+//   return filter(selection, function (obj) {
+//     return obj.id !== fileId;
+//   });
+// }
 
 export function getFilesBySelected(files, selected) {
   let newSelection = [];
@@ -371,21 +371,21 @@ export const getSelectedFolderId = (state) => {
   return state.files.selectedFolder.id;
 };
 
-export const getSelectedFolderParentId = (state) => {
-  return state.files.selectedFolder.parentId;
-};
+// export const getSelectedFolderParentId = (state) => {
+//   return state.files.selectedFolder.parentId;
+// };
 
-export const getSelectedFolderProviderItem = (state) => {
-  return state.files.selectedFolder.providerItem;
-};
+// export const getSelectedFolderProviderItem = (state) => {
+//   return state.files.selectedFolder.providerItem;
+// };
 
-export const getSelectedFolderNew = (state) => {
-  return state.files.selectedFolder.new;
-};
+// export const getSelectedFolderNew = (state) => {
+//   return state.files.selectedFolder.new;
+// };
 
-export const getSelectedFolderTitle = (state) => {
-  return state.files.selectedFolder.title;
-};
+// export const getSelectedFolderTitle = (state) => {
+//   return state.files.selectedFolder.title;
+// };
 
 export const getPathParts = (state) => {
   return state.files.selectedFolder.pathParts;
@@ -395,80 +395,80 @@ export const getSelectedFolderRootFolderType = (state) => {
   return state.files.selectedFolder.rootFolderType;
 };
 
-const getSelectedFolderAccess = (state) => {
-  return state.files.selectedFolder.access;
-};
+// const getSelectedFolderAccess = (state) => {
+//   return state.files.selectedFolder.access;
+// };
 
-export const getIsRootFolder = (state) => {
-  return state.files.selectedFolder.parentId === 0;
-};
+// export const getIsRootFolder = (state) => {
+//   return state.files.selectedFolder.parentId === 0;
+// };
 
-export const getRootFolderId = (state) => {
-  if (state.files.selectedFolder.rootFolderType)
-    return state.files.selectedFolder.rootFolderType;
-};
+// export const getRootFolderId = (state) => {
+//   if (state.files.selectedFolder.rootFolderType)
+//     return state.files.selectedFolder.rootFolderType;
+// };
 
-export const isRootFolder = createSelector(getPathParts, (pathParts) => {
-  return pathParts && pathParts.length <= 1;
-});
+// export const isRootFolder = createSelector(getPathParts, (pathParts) => {
+//   return pathParts && pathParts.length <= 1;
+// });
 
-export const canCreate = createSelector(
-  getSelectedFolderRootFolderType,
-  isAdmin,
-  isRootFolder,
-  getSelectedFolderAccess,
-  isEncryptionSupport,
-  isDesktopClient,
-  (folderType, isAdmin, isRootFolder, access, isSupport, isDesktop) => {
-    switch (folderType) {
-      case FolderType.USER:
-        return true;
-      case FolderType.SHARE:
-        const canCreateInSharedFolder = access === 1;
-        return !isRootFolder && canCreateInSharedFolder;
-      case FolderType.Privacy:
-        return isDesktop && isSupport;
-      case FolderType.COMMON:
-        return isAdmin;
-      case FolderType.TRASH:
-      default:
-        return false;
-    }
-  }
-);
+// export const canCreate = createSelector(
+//   getSelectedFolderRootFolderType,
+//   isAdmin,
+//   isRootFolder,
+//   getSelectedFolderAccess,
+//   isEncryptionSupport,
+//   isDesktopClient,
+//   (folderType, isAdmin, isRootFolder, access, isSupport, isDesktop) => {
+//     switch (folderType) {
+//       case FolderType.USER:
+//         return true;
+//       case FolderType.SHARE:
+//         const canCreateInSharedFolder = access === 1;
+//         return !isRootFolder && canCreateInSharedFolder;
+//       case FolderType.Privacy:
+//         return isDesktop && isSupport;
+//       case FolderType.COMMON:
+//         return isAdmin;
+//       case FolderType.TRASH:
+//       default:
+//         return false;
+//     }
+//   }
+// );
 
 //TODO: Get the whole list of extensions
-export const getAccessOption = (state, selection) => {
-  return getOptions(state, selection);
-};
+// export const getAccessOption = (state, selection) => {
+//   return getOptions(state, selection);
+// };
 
-export const getExternalAccessOption = (state, selection) => {
-  return getOptions(state, selection, true);
-};
+// export const getExternalAccessOption = (state, selection) => {
+//   return getOptions(state, selection, true);
+// };
 
-const getOptions = (state, selection, externalAccess = false) => {
-  const webEdit = selection.find((x) => canWebEdit(x.fileExst)(state));
-  const webComment = selection.find((x) => canWebComment(x.fileExst)(state));
-  const webReview = selection.find((x) => canWebReview(x.fileExst)(state));
-  const formFillingDocs = selection.find((x) =>
-    canFormFillingDocs(x.fileExst)(state)
-  );
-  const webFilter = selection.find((x) =>
-    canWebFilterEditing(x.fileExst)(state)
-  );
+// const getOptions = (state, selection, externalAccess = false) => {
+//   const webEdit = selection.find((x) => canWebEdit(x.fileExst)(state));
+//   const webComment = selection.find((x) => canWebComment(x.fileExst)(state));
+//   const webReview = selection.find((x) => canWebReview(x.fileExst)(state));
+//   const formFillingDocs = selection.find((x) =>
+//     canFormFillingDocs(x.fileExst)(state)
+//   );
+//   const webFilter = selection.find((x) =>
+//     canWebFilterEditing(x.fileExst)(state)
+//   );
 
-  let AccessOptions = [];
+//   let AccessOptions = [];
 
-  if (webEdit || !externalAccess) AccessOptions.push("FullAccess");
+//   if (webEdit || !externalAccess) AccessOptions.push("FullAccess");
 
-  AccessOptions.push("ReadOnly", "DenyAccess");
+//   AccessOptions.push("ReadOnly", "DenyAccess");
 
-  if (webComment) AccessOptions.push("Comment");
-  if (webReview) AccessOptions.push("Review");
-  if (formFillingDocs) AccessOptions.push("FormFilling");
-  if (webFilter) AccessOptions.push("FilterEditing");
-  return AccessOptions;
-};
+//   if (webComment) AccessOptions.push("Comment");
+//   if (webReview) AccessOptions.push("Review");
+//   if (formFillingDocs) AccessOptions.push("FormFilling");
+//   if (webFilter) AccessOptions.push("FilterEditing");
+//   return AccessOptions;
+// };
 
 export const getFolderIcon = (providerKey, size = 32) => {
   const folderPath = `images/icons/${size}`;
@@ -602,9 +602,9 @@ export const getFilter = (state) => {
   return state.files.filter;
 };
 
-export const getNewRowItems = (state) => {
-  return state.files.newRowItems;
-};
+// export const getNewRowItems = (state) => {
+//   return state.files.newRowItems;
+// };
 
 export const getSelected = (state) => {
   return state.files.selected;
@@ -625,10 +625,10 @@ export const getSelectionLength = (state) => {
   return state.files.selection.length;
 };
 
-export const getSelectionTitle = createSelector(getSelection, (selection) => {
-  if (selection.length === 0) return null;
-  return selection.find((el) => el.title).title;
-});
+// export const getSelectionTitle = createSelector(getSelection, (selection) => {
+//   if (selection.length === 0) return null;
+//   return selection.find((el) => el.title).title;
+// });
 
 export const getViewAs = (state) => {
   return state.files.viewAs;
@@ -638,27 +638,27 @@ export const getTreeFolders = (state) => {
   return state.files.treeFolders;
 };
 
-export const getServiceFilesCount = (state) => {
-  const { files, folders } = state.files;
-  const filesLength = files ? files.length : 0;
-  const foldersLength = folders ? folders.length : 0;
-  return filesLength + foldersLength;
-};
+// export const getServiceFilesCount = (state) => {
+//   const { files, folders } = state.files;
+//   const filesLength = files ? files.length : 0;
+//   const foldersLength = folders ? folders.length : 0;
+//   return filesLength + foldersLength;
+// };
 
-export const getFilesCount = (state) => {
-  const { selectedFolder, folders } = state.files;
-  const { filesCount, foldersCount } = selectedFolder;
-  return filesCount + folders ? folders.length : foldersCount;
-};
+// export const getFilesCount = (state) => {
+//   const { selectedFolder, folders } = state.files;
+//   const { filesCount, foldersCount } = selectedFolder;
+//   return filesCount + folders ? folders.length : foldersCount;
+// };
 
-export const getCurrentFilesCount = createSelector(
-  getSelectedFolderProviderItem,
-  getFilesCount,
-  getServiceFilesCount,
-  (providerItem, filesCount, serviceFilesCount) => {
-    return providerItem ? serviceFilesCount : filesCount;
-  }
-);
+// export const getCurrentFilesCount = createSelector(
+//   getSelectedFolderProviderItem,
+//   getFilesCount,
+//   getServiceFilesCount,
+//   (providerItem, filesCount, serviceFilesCount) => {
+//     return providerItem ? serviceFilesCount : filesCount;
+//   }
+// );
 
 export const getDragItem = (state) => {
   return state.files.dragItem;
@@ -684,149 +684,149 @@ export const getFirstLoad = (state) => {
   return state.files.firstLoad;
 };
 
-export const isMediaOrImage = (fileExst) => {
-  return createSelector(
-    [getMediaViewerImageFormats, getMediaViewerMediaFormats],
-    (media, images) => {
-      if (media.includes(fileExst) || images.includes(fileExst)) {
-        return true;
-      }
-      return false;
-    }
-  );
-};
+// export const isMediaOrImage = (fileExst) => {
+//   return createSelector(
+//     [getMediaViewerImageFormats, getMediaViewerMediaFormats],
+//     (media, images) => {
+//       if (media.includes(fileExst) || images.includes(fileExst)) {
+//         return true;
+//       }
+//       return false;
+//     }
+//   );
+// };
 
-const getFilesContextOptions = (
-  item,
-  isRecycleBin,
-  isRecent,
-  isFavorites,
-  isVisitor,
-  canOpenPlayer,
-  canChangeOwner,
-  haveAccess,
-  canShare,
-  isPrivacy,
-  isRootFolder
-) => {
-  const options = [];
+// const getFilesContextOptions = (
+//   item,
+//   isRecycleBin,
+//   isRecent,
+//   isFavorites,
+//   isVisitor,
+//   canOpenPlayer,
+//   canChangeOwner,
+//   haveAccess,
+//   canShare,
+//   isPrivacy,
+//   isRootFolder
+// ) => {
+//   const options = [];
 
-  const isFile = !!item.fileExst;
-  const isFavorite = item.fileStatus === 32;
-  const isFullAccess = item.access < 2;
-  const isThirdPartyFolder = item.providerKey && isRootFolder;
+//   const isFile = !!item.fileExst;
+//   const isFavorite = item.fileStatus === 32;
+//   const isFullAccess = item.access < 2;
+//   const isThirdPartyFolder = item.providerKey && isRootFolder;
 
-  if (item.id <= 0) return [];
+//   if (item.id <= 0) return [];
 
-  if (isRecycleBin) {
-    options.push("download");
-    options.push("download-as");
-    options.push("restore");
-    options.push("separator0");
-    options.push("delete");
-  } else if (isPrivacy) {
-    if (isFile) {
-      options.push("sharing-settings");
-      options.push("separator0");
-      options.push("show-version-history");
-      options.push("separator1");
-    }
-    options.push("download");
-    options.push("move");
-    options.push("rename");
-    options.push("separator2");
-    options.push("delete");
-  } else {
-    if (!isFile) {
-      options.push("open");
-      options.push("separator0");
-    }
+//   if (isRecycleBin) {
+//     options.push("download");
+//     options.push("download-as");
+//     options.push("restore");
+//     options.push("separator0");
+//     options.push("delete");
+//   } else if (isPrivacy) {
+//     if (isFile) {
+//       options.push("sharing-settings");
+//       options.push("separator0");
+//       options.push("show-version-history");
+//       options.push("separator1");
+//     }
+//     options.push("download");
+//     options.push("move");
+//     options.push("rename");
+//     options.push("separator2");
+//     options.push("delete");
+//   } else {
+//     if (!isFile) {
+//       options.push("open");
+//       options.push("separator0");
+//     }
 
-    //TODO: use canShare selector
-    if (/*!(isRecent || isFavorites || isVisitor) && */ canShare) {
-      options.push("sharing-settings");
-    }
+//     //TODO: use canShare selector
+//     if (/*!(isRecent || isFavorites || isVisitor) && */ canShare) {
+//       options.push("sharing-settings");
+//     }
 
-    if (isFile && !isVisitor) {
-      options.push("send-by-email");
-    }
+//     if (isFile && !isVisitor) {
+//       options.push("send-by-email");
+//     }
 
-    canChangeOwner && options.push("owner-change");
-    options.push("link-for-portal-users");
+//     canChangeOwner && options.push("owner-change");
+//     options.push("link-for-portal-users");
 
-    if (!isVisitor) {
-      options.push("separator1");
-    }
+//     if (!isVisitor) {
+//       options.push("separator1");
+//     }
 
-    if (isFile) {
-      options.push("show-version-history");
-      if (!isVisitor) {
-        if (isFullAccess && !item.providerKey && !canOpenPlayer) {
-          options.push("finalize-version");
-          options.push("block-unblock-version");
-        }
-        options.push("separator2");
+//     if (isFile) {
+//       options.push("show-version-history");
+//       if (!isVisitor) {
+//         if (isFullAccess && !item.providerKey && !canOpenPlayer) {
+//           options.push("finalize-version");
+//           options.push("block-unblock-version");
+//         }
+//         options.push("separator2");
 
-        if (isRecent) {
-          options.push("open-location");
-        }
-        if (!isFavorite) {
-          options.push("mark-as-favorite");
-        }
-      } else {
-        options.push("separator3");
-      }
+//         if (isRecent) {
+//           options.push("open-location");
+//         }
+//         if (!isFavorite) {
+//           options.push("mark-as-favorite");
+//         }
+//       } else {
+//         options.push("separator3");
+//       }
 
-      if (canOpenPlayer) {
-        options.push("view");
-      } else {
-        options.push("edit");
-        options.push("preview");
-      }
+//       if (canOpenPlayer) {
+//         options.push("view");
+//       } else {
+//         options.push("edit");
+//         options.push("preview");
+//       }
 
-      options.push("download");
-    }
+//       options.push("download");
+//     }
 
-    if (!isVisitor) {
-      !isThirdPartyFolder && haveAccess && options.push("move");
-      options.push("copy");
+//     if (!isVisitor) {
+//       !isThirdPartyFolder && haveAccess && options.push("move");
+//       options.push("copy");
 
-      if (isFile) {
-        options.push("duplicate");
-      }
+//       if (isFile) {
+//         options.push("duplicate");
+//       }
 
-      haveAccess && options.push("rename");
-      isThirdPartyFolder &&
-        haveAccess &&
-        options.push("change-thirdparty-info");
-      options.push("separator3");
-      haveAccess && options.push("delete");
-    } else {
-      options.push("copy");
-    }
-  }
+//       haveAccess && options.push("rename");
+//       isThirdPartyFolder &&
+//         haveAccess &&
+//         options.push("change-thirdparty-info");
+//       options.push("separator3");
+//       haveAccess && options.push("delete");
+//     } else {
+//       options.push("copy");
+//     }
+//   }
 
-  if (isFavorite && !isRecycleBin) {
-    options.push("remove-from-favorites");
-  }
+//   if (isFavorite && !isRecycleBin) {
+//     options.push("remove-from-favorites");
+//   }
 
-  return options;
-};
+//   return options;
+// };
 
-export const getItemsList = createSelector(
-  [getFolders, getFiles],
-  (folders, files) => {
-    const items =
-      folders && files
-        ? [...folders, ...files]
-        : folders
-        ? folders
-        : files
-        ? files
-        : [];
-    return items;
-  }
-);
+// export const getItemsList = createSelector(
+//   [getFolders, getFiles],
+//   (folders, files) => {
+//     const items =
+//       folders && files
+//         ? [...folders, ...files]
+//         : folders
+//         ? folders
+//         : files
+//         ? files
+//         : [];
+//     return items;
+//   }
+// );
 
 const getMyFolder = createSelector(getTreeFolders, (treeFolders) => {
   return treeFolders.find((x) => x.rootFolderName === "@my");
@@ -856,16 +856,16 @@ export const getMyFolderId = createSelector(getMyFolder, (myFolder) => {
   if (myFolder) return myFolder.id;
 });
 
-export const getMyDirectoryFolders = createSelector(getMyFolder, (myFolder) => {
-  if (myFolder) return myFolder.folders;
-});
+// export const getMyDirectoryFolders = createSelector(getMyFolder, (myFolder) => {
+//   if (myFolder) return myFolder.folders;
+// });
 
-export const getCommonDirectoryFolders = createSelector(
-  getCommonFolder,
-  (commonFolder) => {
-    if (commonFolder) return commonFolder.folders;
-  }
-);
+// export const getCommonDirectoryFolders = createSelector(
+//   getCommonFolder,
+//   (commonFolder) => {
+//     if (commonFolder) return commonFolder.folders;
+//   }
+// );
 
 export const getShareFolderId = createSelector(
   getShareFolder,
@@ -965,162 +965,162 @@ export const getIsPrivacyFolder = createSelector(
   }
 );
 
-export const getFileActionId = (state) => {
-  return state.files.fileAction.id;
-};
+// export const getFileActionId = (state) => {
+//   return state.files.fileAction.id;
+// };
 
-export const getFilesList = (state) => {
-  return createSelector(
-    [
-      getFolders,
-      getFiles,
-      getSelection,
-      getIsRecycleBinFolder,
-      getIsRecentFolder,
-      getIsFavoritesFolder,
-      getFileActionId,
-      isVisitor,
-      getCanShareOwnerChange,
-      getUserAccess,
-      isCanShare,
-      getIsPrivacyFolder,
-      isRootFolder,
-    ],
-    (
-      folders,
-      files,
-      selection,
-      isRecycleBin,
-      isRecent,
-      isFavorites,
-      actionId,
-      isVisitor,
-      canChangeOwner,
-      haveAccess,
-      canShare,
-      isPrivacy,
-      isRootFolder
-    ) => {
-      const items =
-        folders && files
-          ? [...folders, ...files]
-          : folders
-          ? folders
-          : files
-          ? files
-          : [];
-      return items.map((item) => {
-        const {
-          access,
-          comment,
-          contentLength,
-          created,
-          createdBy,
-          fileExst,
-          filesCount,
-          fileStatus,
-          fileType,
-          folderId,
-          foldersCount,
-          id,
-          locked,
-          parentId,
-          pureContentLength,
-          rootFolderType,
-          shared,
-          title,
-          updated,
-          updatedBy,
-          version,
-          versionGroup,
-          viewUrl,
-          webUrl,
-          providerKey,
-        } = item;
+// export const getFilesList = (state) => {
+//   return createSelector(
+//     [
+//       getFolders,
+//       getFiles,
+//       getSelection,
+//       getIsRecycleBinFolder,
+//       getIsRecentFolder,
+//       getIsFavoritesFolder,
+//       getFileActionId,
+//       isVisitor,
+//       getCanShareOwnerChange,
+//       getUserAccess,
+//       isCanShare,
+//       getIsPrivacyFolder,
+//       isRootFolder,
+//     ],
+//     (
+//       folders,
+//       files,
+//       selection,
+//       isRecycleBin,
+//       isRecent,
+//       isFavorites,
+//       actionId,
+//       isVisitor,
+//       canChangeOwner,
+//       haveAccess,
+//       canShare,
+//       isPrivacy,
+//       isRootFolder
+//     ) => {
+//       const items =
+//         folders && files
+//           ? [...folders, ...files]
+//           : folders
+//           ? folders
+//           : files
+//           ? files
+//           : [];
+//       return items.map((item) => {
+//         const {
+//           access,
+//           comment,
+//           contentLength,
+//           created,
+//           createdBy,
+//           fileExst,
+//           filesCount,
+//           fileStatus,
+//           fileType,
+//           folderId,
+//           foldersCount,
+//           id,
+//           locked,
+//           parentId,
+//           pureContentLength,
+//           rootFolderType,
+//           shared,
+//           title,
+//           updated,
+//           updatedBy,
+//           version,
+//           versionGroup,
+//           viewUrl,
+//           webUrl,
+//           providerKey,
+//         } = item;
 
-        const canOpenPlayer = isMediaOrImage(item.fileExst)(state);
-        const contextOptions = getFilesContextOptions(
-          item,
-          isRecycleBin,
-          isRecent,
-          isFavorites,
-          isVisitor,
-          canOpenPlayer,
-          canChangeOwner,
-          haveAccess,
-          canShare,
-          isPrivacy,
-          isRootFolder
-        );
-        const checked = isFileSelected(selection, id, parentId);
+//         const canOpenPlayer = isMediaOrImage(item.fileExst)(state);
+//         const contextOptions = getFilesContextOptions(
+//           item,
+//           isRecycleBin,
+//           isRecent,
+//           isFavorites,
+//           isVisitor,
+//           canOpenPlayer,
+//           canChangeOwner,
+//           haveAccess,
+//           canShare,
+//           isPrivacy,
+//           isRootFolder
+//         );
+//         const checked = isFileSelected(selection, id, parentId);
 
-        const selectedItem = selection.find(
-          (x) => x.id === id && x.fileExst === fileExst
-        );
+//         const selectedItem = selection.find(
+//           (x) => x.id === id && x.fileExst === fileExst
+//         );
 
-        const isFolder = selectedItem ? false : fileExst ? false : true;
+//         const isFolder = selectedItem ? false : fileExst ? false : true;
 
-        const draggable =
-          selectedItem && !isRecycleBin && selectedItem.id !== actionId;
+//         const draggable =
+//           selectedItem && !isRecycleBin && selectedItem.id !== actionId;
 
-        let value = fileExst ? `file_${id}` : `folder_${id}`;
+//         let value = fileExst ? `file_${id}` : `folder_${id}`;
 
-        const isCanWebEdit = canWebEdit(item.fileExst)(state);
+//         const isCanWebEdit = canWebEdit(item.fileExst)(state);
 
-        const icon = getIcon(state, 24, fileExst, providerKey);
+//         const icon = getIcon(state, 24, fileExst, providerKey);
 
-        //TODO: use canShare selector
-        /*const canShare = !(
-          isRecycleBin ||
-          isFavorites ||
-          isRecent ||
-          isVisitor
-        );*/
+//         //TODO: use canShare selector
+//         /*const canShare = !(
+//           isRecycleBin ||
+//           isFavorites ||
+//           isRecent ||
+//           isVisitor
+//         );*/
 
-        value += draggable ? "_draggable" : "";
+//         value += draggable ? "_draggable" : "";
 
-        return {
-          access,
-          checked,
-          comment,
-          contentLength,
-          contextOptions,
-          created,
-          createdBy,
-          fileExst,
-          filesCount,
-          fileStatus,
-          fileType,
-          folderId,
-          foldersCount,
-          icon,
-          id,
-          isFolder,
-          locked,
-          new: item.new,
-          parentId,
-          pureContentLength,
-          rootFolderType,
-          selectedItem,
-          shared,
-          title,
-          updated,
-          updatedBy,
-          value,
-          version,
-          versionGroup,
-          viewUrl,
-          webUrl,
-          providerKey,
-          draggable,
-          canOpenPlayer,
-          canWebEdit: isCanWebEdit,
-          canShare,
-        };
-      });
-    }
-  );
-};
+//         return {
+//           access,
+//           checked,
+//           comment,
+//           contentLength,
+//           contextOptions,
+//           created,
+//           createdBy,
+//           fileExst,
+//           filesCount,
+//           fileStatus,
+//           fileType,
+//           folderId,
+//           foldersCount,
+//           icon,
+//           id,
+//           isFolder,
+//           locked,
+//           new: item.new,
+//           parentId,
+//           pureContentLength,
+//           rootFolderType,
+//           selectedItem,
+//           shared,
+//           title,
+//           updated,
+//           updatedBy,
+//           value,
+//           version,
+//           versionGroup,
+//           viewUrl,
+//           webUrl,
+//           providerKey,
+//           draggable,
+//           canOpenPlayer,
+//           canWebEdit: isCanWebEdit,
+//           canShare,
+//         };
+//       });
+//     }
+//   );
+// };
 
 export const getSelectedTreeNode = createSelector(getSelectedFolderId, (id) => {
   if (id) return [id.toString()];
@@ -1130,53 +1130,53 @@ export const getConvertDialogVisible = (state) => {
   return state.files.convertDialogVisible;
 };
 
-export const getPrimaryProgressData = (state) => {
-  return state.files.primaryProgressData;
-};
+// export const getPrimaryProgressData = (state) => {
+//   return state.files.primaryProgressData;
+// };
 
 export const getSecondaryProgressData = (state) => {
   return state.files.secondaryProgressData;
 };
 
-export const getUpdateTree = (state) => {
-  return state.files.updateTree;
-};
+// export const getUpdateTree = (state) => {
+//   return state.files.updateTree;
+// };
 
 export const getSettingsSelectedTreeNode = (state) => {
   return state.files.selectedTreeNode;
 };
 
-export const getSettingsTreeStoreOriginalFiles = (state) => {
-  return state.files.settingsTree.storeOriginalFiles;
-};
+// export const getSettingsTreeStoreOriginalFiles = (state) => {
+//   return state.files.settingsTree.storeOriginalFiles;
+// };
 
-export const getSettingsTreeConfirmDelete = (state) => {
-  return state.files.settingsTree.confirmDelete;
-};
+// export const getSettingsTreeConfirmDelete = (state) => {
+//   return state.files.settingsTree.confirmDelete;
+// };
 
-export const getSettingsTreeUpdateIfExist = (state) => {
-  return state.files.settingsTree.updateIfExist;
-};
+// export const getSettingsTreeUpdateIfExist = (state) => {
+//   return state.files.settingsTree.updateIfExist;
+// };
 
-export const getSettingsTreeForceSave = (state) => {
-  return state.files.settingsTree.forceSave;
-};
+// export const getSettingsTreeForceSave = (state) => {
+//   return state.files.settingsTree.forceSave;
+// };
 
-export const getSettingsTreeStoreForceSave = (state) => {
-  return state.files.settingsTree.storeForceSave;
-};
+// export const getSettingsTreeStoreForceSave = (state) => {
+//   return state.files.settingsTree.storeForceSave;
+// };
 
-export const getSettingsTreeEnableThirdParty = (state) => {
-  return state.files.settingsTree.enableThirdParty;
-};
+// export const getSettingsTreeEnableThirdParty = (state) => {
+//   return state.files.settingsTree.enableThirdParty;
+// };
 
-export const getExpandedSetting = (state) => {
-  return state.files.settingsTree.expandedSetting;
-};
+// export const getExpandedSetting = (state) => {
+//   return state.files.settingsTree.expandedSetting;
+// };
 
-export const getEnableThirdParty = (state) => {
-  return state.files.settingsTree.enableThirdParty;
-};
+// export const getEnableThirdParty = (state) => {
+//   return state.files.settingsTree.enableThirdParty;
+// };
 
 export const getFilterSelectedItem = (state) => {
   return state.files.filter.selectedItem;
@@ -1198,45 +1198,45 @@ export const getFileVersions = (state) => {
   return state.files.versionHistory.versions;
 };
 
-export const getHeaderVisible = createSelector(
-  getSelectionLength,
-  getSelected,
-  (selectionLength, selected) => {
-    return selectionLength > 0 || selected !== "close";
-  }
-);
+// export const getHeaderVisible = createSelector(
+//   getSelectionLength,
+//   getSelected,
+//   (selectionLength, selected) => {
+//     return selectionLength > 0 || selected !== "close";
+//   }
+// );
 
-export const getHeaderIndeterminate = createSelector(
-  getHeaderVisible,
-  getSelectionLength,
-  getItemsList,
-  (headerVisible, selectionLength, items) => {
-    return headerVisible && selectionLength
-      ? selectionLength < items.length
-      : false;
-  }
-);
+// export const getHeaderIndeterminate = createSelector(
+//   getHeaderVisible,
+//   getSelectionLength,
+//   getItemsList,
+//   (headerVisible, selectionLength, items) => {
+//     return headerVisible && selectionLength
+//       ? selectionLength < items.length
+//       : false;
+//   }
+// );
 
-export const getHeaderChecked = createSelector(
-  getHeaderVisible,
-  getSelectionLength,
-  getItemsList,
-  (headerVisible, selectionLength, items) => {
-    return headerVisible && selectionLength === items.length;
-  }
-);
+// export const getHeaderChecked = createSelector(
+//   getHeaderVisible,
+//   getSelectionLength,
+//   getItemsList,
+//   (headerVisible, selectionLength, items) => {
+//     return headerVisible && selectionLength === items.length;
+//   }
+// );
 
-export const getDraggableItems = createSelector(
-  getSelection,
-  getDragging,
-  (selection, dragging) => {
-    if (dragging) {
-      return selection;
-    } else {
-      return false;
-    }
-  }
-);
+// export const getDraggableItems = createSelector(
+//   getSelection,
+//   getDragging,
+//   (selection, dragging) => {
+//     if (dragging) {
+//       return selection;
+//     } else {
+//       return false;
+//     }
+//   }
+// );
 
 const getSettingsTreeSelector = (state) => {
   return state.files.settingsTree;
@@ -1252,228 +1252,228 @@ export const getSettingsTree = createSelector(
   }
 );
 
-export const getTooltipLabel = createSelector(
-  getSelectionLength,
-  isAdmin,
-  getIsShareFolder,
-  getIsCommonFolder,
-  getSelection,
-  getDragging,
-  (selectionLength, isAdmin, isShare, isCommon, selection, dragging) => {
-    if (!dragging) return null;
+// export const getTooltipLabel = createSelector(
+//   getSelectionLength,
+//   isAdmin,
+//   getIsShareFolder,
+//   getIsCommonFolder,
+//   getSelection,
+//   getDragging,
+//   (selectionLength, isAdmin, isShare, isCommon, selection, dragging) => {
+//     if (!dragging) return null;
 
-    const elementTitle = selectionLength && selection[0].title;
-    const singleElement = selectionLength === 1;
-    const filesCount = singleElement ? elementTitle : selectionLength;
+//     const elementTitle = selectionLength && selection[0].title;
+//     const singleElement = selectionLength === 1;
+//     const filesCount = singleElement ? elementTitle : selectionLength;
 
-    let operationName;
+//     let operationName;
 
-    if (isAdmin && isShare) {
-      operationName = "copy";
-    } else if (!isAdmin && (isShare || isCommon)) {
-      operationName = "copy";
-    } else {
-      operationName = "move";
-    }
+//     if (isAdmin && isShare) {
+//       operationName = "copy";
+//     } else if (!isAdmin && (isShare || isCommon)) {
+//       operationName = "copy";
+//     } else {
+//       operationName = "move";
+//     }
 
-    return operationName === "copy"
-      ? singleElement
-        ? { label: "TooltipElementCopyMessage", filesCount }
-        : { label: "TooltipElementsCopyMessage", filesCount }
-      : singleElement
-      ? { label: "TooltipElementMoveMessage", filesCount }
-      : { label: "TooltipElementsMoveMessage", filesCount };
-  }
-);
+//     return operationName === "copy"
+//       ? singleElement
+//         ? { label: "TooltipElementCopyMessage", filesCount }
+//         : { label: "TooltipElementsCopyMessage", filesCount }
+//       : singleElement
+//       ? { label: "TooltipElementMoveMessage", filesCount }
+//       : { label: "TooltipElementsMoveMessage", filesCount };
+//   }
+// );
 
-export const getOnlyFoldersSelected = createSelector(
-  getSelection,
-  (selection) => {
-    return selection.every((selected) => selected.isFolder === true);
-  }
-);
+// export const getOnlyFoldersSelected = createSelector(
+//   getSelection,
+//   (selection) => {
+//     return selection.every((selected) => selected.isFolder === true);
+//   }
+// );
 
-export const getWebEditSelected = createSelector(
-  getSelection,
-  getEditedFormats,
-  (selection, editedFormats) => {
-    return selection.some((selected) => {
-      if (selected.isFolder === true || !selected.fileExst) return false;
-      return editedFormats.find((format) => selected.fileExst === format);
-    });
-  }
-);
+// export const getWebEditSelected = createSelector(
+//   getSelection,
+//   getEditedFormats,
+//   (selection, editedFormats) => {
+//     return selection.some((selected) => {
+//       if (selected.isFolder === true || !selected.fileExst) return false;
+//       return editedFormats.find((format) => selected.fileExst === format);
+//     });
+//   }
+// );
 
-export const getAccessedSelected = createSelector(
-  getSelection,
-  getSelectionLength,
-  isAdmin,
-  (selection, selectionLength, isAdmin) => {
-    return (
-      selectionLength &&
-      isAdmin &&
-      selection.every((x) => x.access === 1 || x.access === 0)
-    );
-  }
-);
+// export const getAccessedSelected = createSelector(
+//   getSelection,
+//   getSelectionLength,
+//   isAdmin,
+//   (selection, selectionLength, isAdmin) => {
+//     return (
+//       selectionLength &&
+//       isAdmin &&
+//       selection.every((x) => x.access === 1 || x.access === 0)
+//     );
+//   }
+// );
 
-export const getOperationsFolders = createSelector(
-  getTreeFolders,
-  getIsPrivacyFolder,
-  (treeFolders, isPrivacy) => {
-    if (isPrivacy) {
-      return treeFolders.filter(
-        (folder) => folder.rootFolderType === FolderType.Privacy && folder
-      );
-    } else {
-      return treeFolders.filter(
-        (folder) =>
-          (folder.rootFolderType === FolderType.USER ||
-            folder.rootFolderType === FolderType.COMMON ||
-            folder.rootFolderType === FolderType.Projects) &&
-          folder
-      );
-    }
-  }
-);
-const getIcon = (state, size = 24, fileExst = null, providerKey = null) => {
-  if (fileExst) {
-    const isArchiveItem = isArchive(fileExst)(state);
-    const isImageItem = isImage(fileExst)(state);
-    const isSoundItem = isSound(fileExst)(state);
-    const isHtmlItem = isHtml(fileExst)(state);
+// export const getOperationsFolders = createSelector(
+//   getTreeFolders,
+//   getIsPrivacyFolder,
+//   (treeFolders, isPrivacy) => {
+//     if (isPrivacy) {
+//       return treeFolders.filter(
+//         (folder) => folder.rootFolderType === FolderType.Privacy && folder
+//       );
+//     } else {
+//       return treeFolders.filter(
+//         (folder) =>
+//           (folder.rootFolderType === FolderType.USER ||
+//             folder.rootFolderType === FolderType.COMMON ||
+//             folder.rootFolderType === FolderType.Projects) &&
+//           folder
+//       );
+//     }
+//   }
+// );
+// const getIcon = (state, size = 24, fileExst = null, providerKey = null) => {
+//   if (fileExst) {
+//     const isArchiveItem = isArchive(fileExst)(state);
+//     const isImageItem = isImage(fileExst)(state);
+//     const isSoundItem = isSound(fileExst)(state);
+//     const isHtmlItem = isHtml(fileExst)(state);
 
-    const icon = getFileIcon(
-      fileExst,
-      size,
-      isArchiveItem,
-      isImageItem,
-      isSoundItem,
-      isHtmlItem
-    );
+//     const icon = getFileIcon(
+//       fileExst,
+//       size,
+//       isArchiveItem,
+//       isImageItem,
+//       isSoundItem,
+//       isHtmlItem
+//     );
 
-    return icon;
-  } else {
-    return getFolderIcon(providerKey, size);
-  }
-};
+//     return icon;
+//   } else {
+//     return getFolderIcon(providerKey, size);
+//   }
+// };
 
-export const getIconOfDraggedFile = (state) => {
-  return createSelector(getSelection, (selection) => {
-    if (selection.length === 1) {
-      const icon = getIcon(
-        state,
-        24,
-        selection[0].fileExst,
-        selection[0].providerKey
-      );
+// export const getIconOfDraggedFile = (state) => {
+//   return createSelector(getSelection, (selection) => {
+//     if (selection.length === 1) {
+//       const icon = getIcon(
+//         state,
+//         24,
+//         selection[0].fileExst,
+//         selection[0].providerKey
+//       );
 
-      return icon;
-    }
-    return;
-  });
-};
+//       return icon;
+//     }
+//     return;
+//   });
+// };
 
 export const getSharePanelVisible = (state) => {
   return state.files.sharingPanelVisible;
 };
 
-export const getThirdPartyCapabilities = (state) => {
-  return state.files.capabilities;
-};
+// export const getThirdPartyCapabilities = (state) => {
+//   return state.files.capabilities;
+// };
 
-export const getThirdPartyProviders = (state) => {
-  return state.files.providers;
-};
+// export const getThirdPartyProviders = (state) => {
+//   return state.files.providers;
+// };
 
-export const getGoogleConnect = createSelector(
-  getThirdPartyCapabilities,
-  (capabilities) => {
-    return capabilities.find((x) => x[0] === "GoogleDrive");
-  }
-);
+// export const getGoogleConnect = createSelector(
+//   getThirdPartyCapabilities,
+//   (capabilities) => {
+//     return capabilities.find((x) => x[0] === "GoogleDrive");
+//   }
+// );
 
-export const getBoxConnect = createSelector(
-  getThirdPartyCapabilities,
-  (capabilities) => {
-    return capabilities.find((x) => x[0] === "Box");
-  }
-);
+// export const getBoxConnect = createSelector(
+//   getThirdPartyCapabilities,
+//   (capabilities) => {
+//     return capabilities.find((x) => x[0] === "Box");
+//   }
+// );
 
-export const getDropboxConnect = createSelector(
-  getThirdPartyCapabilities,
-  (capabilities) => {
-    return capabilities.find((x) => x[0] === "DropboxV2");
-  }
-);
-export const getOneDriveConnect = createSelector(
-  getThirdPartyCapabilities,
-  (capabilities) => {
-    return capabilities.find((x) => x[0] === "OneDrive");
-  }
-);
+// export const getDropboxConnect = createSelector(
+//   getThirdPartyCapabilities,
+//   (capabilities) => {
+//     return capabilities.find((x) => x[0] === "DropboxV2");
+//   }
+// );
+// export const getOneDriveConnect = createSelector(
+//   getThirdPartyCapabilities,
+//   (capabilities) => {
+//     return capabilities.find((x) => x[0] === "OneDrive");
+//   }
+// );
 
-export const getSharePointConnect = createSelector(
-  getThirdPartyCapabilities,
-  (capabilities) => {
-    return capabilities.find((x) => x[0] === "SharePoint");
-  }
-);
+// export const getSharePointConnect = createSelector(
+//   getThirdPartyCapabilities,
+//   (capabilities) => {
+//     return capabilities.find((x) => x[0] === "SharePoint");
+//   }
+// );
 
-export const getkDriveConnect = createSelector(
-  getThirdPartyCapabilities,
-  (capabilities) => {
-    return capabilities.find((x) => x[0] === "kDrive");
-  }
-);
+// export const getkDriveConnect = createSelector(
+//   getThirdPartyCapabilities,
+//   (capabilities) => {
+//     return capabilities.find((x) => x[0] === "kDrive");
+//   }
+// );
 
-export const getYandexConnect = createSelector(
-  getThirdPartyCapabilities,
-  (capabilities) => {
-    return capabilities.find((x) => x[0] === "Yandex");
-  }
-);
+// export const getYandexConnect = createSelector(
+//   getThirdPartyCapabilities,
+//   (capabilities) => {
+//     return capabilities.find((x) => x[0] === "Yandex");
+//   }
+// );
 
-export const getWebDavConnect = createSelector(
-  getThirdPartyCapabilities,
-  (capabilities) => {
-    return capabilities.find((x) => x[0] === "WebDav");
-  }
-);
+// export const getWebDavConnect = createSelector(
+//   getThirdPartyCapabilities,
+//   (capabilities) => {
+//     return capabilities.find((x) => x[0] === "WebDav");
+//   }
+// );
 
-// TODO: remove WebDav get NextCloud
-export const getNextCloudConnect = createSelector(
-  getThirdPartyCapabilities,
-  (capabilities) => {
-    return capabilities.find((x) => x[0] === "WebDav");
-    //return capabilities.find((x) => x[0] === "NextCloud");
-  }
-);
-// TODO:remove WebDav get OwnCloud
-export const getOwnCloudConnect = createSelector(
-  getThirdPartyCapabilities,
-  (capabilities) => {
-    return capabilities.find((x) => x[0] === "WebDav");
-    //return capabilities.find((x) => x[0] === "OwnCloud");
-  }
-);
+// // TODO: remove WebDav get NextCloud
+// export const getNextCloudConnect = createSelector(
+//   getThirdPartyCapabilities,
+//   (capabilities) => {
+//     return capabilities.find((x) => x[0] === "WebDav");
+//     //return capabilities.find((x) => x[0] === "NextCloud");
+//   }
+// );
+// // TODO:remove WebDav get OwnCloud
+// export const getOwnCloudConnect = createSelector(
+//   getThirdPartyCapabilities,
+//   (capabilities) => {
+//     return capabilities.find((x) => x[0] === "WebDav");
+//     //return capabilities.find((x) => x[0] === "OwnCloud");
+//   }
+// );
 
-export const getConnectItem = (state) => {
-  return state.files.connectItem;
-};
+// export const getConnectItem = (state) => {
+//   return state.files.connectItem;
+// };
 
-export const getShowThirdPartyPanel = (state) => {
-  return state.files.showThirdPartyPanel;
-};
+// export const getShowThirdPartyPanel = (state) => {
+//   return state.files.showThirdPartyPanel;
+// };
 
-export const getIsThirdPartySelection = createSelector(
-  getSelectionSelector,
-  isRootFolder,
-  (selection, isRootItem) => {
-    const withProvider = selection && selection.find((x) => !x.providerKey);
-    return !withProvider && isRootItem;
-  }
-);
+// export const getIsThirdPartySelection = createSelector(
+//   getSelectionSelector,
+//   isRootFolder,
+//   (selection, isRootItem) => {
+//     const withProvider = selection && selection.find((x) => !x.providerKey);
+//     return !withProvider && isRootItem;
+//   }
+// );
 
 export const getCanShareOwnerChange = createSelector(
   isAdmin,
@@ -1493,76 +1493,76 @@ export const getCanShareOwnerChange = createSelector(
   }
 );
 
-export const isSecondaryProgressFinished = createSelector(
-  getSecondaryProgressData,
-  (data) => {
-    return data && data.percent === 100;
-  }
-);
+// export const isSecondaryProgressFinished = createSelector(
+//   getSecondaryProgressData,
+//   (data) => {
+//     return data && data.percent === 100;
+//   }
+// );
 
-export const getSortedFiles = (state) => {
-  const formatKeys = Object.freeze({
-    OriginalFormat: 0,
-  });
+// export const getSortedFiles = (state) => {
+//   const formatKeys = Object.freeze({
+//     OriginalFormat: 0,
+//   });
 
-  const items = getSelection(state);
+//   const items = getSelection(state);
 
-  let sortedFiles = {
-    documents: [],
-    spreadsheets: [],
-    presentations: [],
-    other: [],
-  };
+//   let sortedFiles = {
+//     documents: [],
+//     spreadsheets: [],
+//     presentations: [],
+//     other: [],
+//   };
 
-  for (let item of items) {
-    item.checked = true;
-    item.format = formatKeys.OriginalFormat;
+//   for (let item of items) {
+//     item.checked = true;
+//     item.format = formatKeys.OriginalFormat;
 
-    if (item.fileExst) {
-      if (isSpreadsheet(item.fileExst)(state)) {
-        sortedFiles.spreadsheets.push(item);
-      } else if (isPresentation(item.fileExst)(state)) {
-        sortedFiles.presentations.push(item);
-      } else if (item.fileExst !== ".pdf" && canWebEdit(item.fileExst)(state)) {
-        sortedFiles.documents.push(item);
-      } else {
-        sortedFiles.other.push(item);
-      }
-    } else {
-      sortedFiles.other.push(item);
-    }
-  }
+//     if (item.fileExst) {
+//       if (isSpreadsheet(item.fileExst)(state)) {
+//         sortedFiles.spreadsheets.push(item);
+//       } else if (isPresentation(item.fileExst)(state)) {
+//         sortedFiles.presentations.push(item);
+//       } else if (item.fileExst !== ".pdf" && canWebEdit(item.fileExst)(state)) {
+//         sortedFiles.documents.push(item);
+//       } else {
+//         sortedFiles.other.push(item);
+//       }
+//     } else {
+//       sortedFiles.other.push(item);
+//     }
+//   }
 
-  return sortedFiles;
-};
+//   return sortedFiles;
+// };
 
 export const getShowOwnerChangePanel = (state) => {
   return state.files.ownerPanelVisible;
 };
 
-export const getUserAccess = createSelector(
-  getSelectedFolderRootFolderType,
-  isAdmin,
-  getSelectionSelector,
-  (folderType, isAdmin, selection) => {
-    switch (folderType) {
-      case FolderType.USER:
-        return true;
-      case FolderType.SHARE:
-        return false;
-      case FolderType.COMMON:
-        return (
-          isAdmin || selection.some((x) => x.access === 0 || x.access === 1)
-        );
-      case FolderType.Privacy:
-        return true;
-      case FolderType.TRASH:
-        return true;
-      default:
-        return false;
-    }
-  }
-);
+// export const getUserAccess = createSelector(
+//   getSelectedFolderRootFolderType,
+//   isAdmin,
+//   getSelectionSelector,
+//   (folderType, isAdmin, selection) => {
+//     switch (folderType) {
+//       case FolderType.USER:
+//         return true;
+//       case FolderType.SHARE:
+//         return false;
+//       case FolderType.COMMON:
+//         return (
+//           isAdmin || selection.some((x) => x.access === 0 || x.access === 1)
+//         );
+//       case FolderType.Privacy:
+//         return true;
+//       case FolderType.TRASH:
+//         return true;
+//       default:
+//         return false;
+//     }
+//   }
+// );
 
 export const isCanShare = createSelector(
   getSelectedFolderRootFolderType,
@@ -1610,14 +1610,14 @@ export const getUploadDataFiles = (state) => {
   return state.files.uploadData.files;
 };
 
-export const getLoadingFile = createSelector(
-  getPrimaryProgressData,
-  (primaryProgressData) => {
-    const { loadingFile } = primaryProgressData;
-    if (!loadingFile || !loadingFile.uniqueId) return null;
-    return loadingFile;
-  }
-);
+// export const getLoadingFile = createSelector(
+//   getPrimaryProgressData,
+//   (primaryProgressData) => {
+//     const { loadingFile } = primaryProgressData;
+//     if (!loadingFile || !loadingFile.uniqueId) return null;
+//     return loadingFile;
+//   }
+// );
 
 export const getFileByFileId = (state, fileId) => {
   return state.files.files.find((file) => file.id === fileId);
@@ -1635,100 +1635,100 @@ export const getFileByFileId = (state, fileId) => {
 //   );
 // };
 
-export const getIconSrc = (ext, size = 24) => {
-  return createSelector(
-    getArchiveFormats,
-    getImageFormats,
-    getSoundFormats,
-    getHtmlFormats,
-    (archiveFormats, imageFormats, soundFormats, htmlFormats) => {
-      const folderPath = `images/icons/${size}`;
+// export const getIconSrc = (ext, size = 24) => {
+//   return createSelector(
+//     getArchiveFormats,
+//     getImageFormats,
+//     getSoundFormats,
+//     getHtmlFormats,
+//     (archiveFormats, imageFormats, soundFormats, htmlFormats) => {
+//       const folderPath = `images/icons/${size}`;
 
-      if (presentInArray(archiveFormats, ext, true))
-        return `${folderPath}/file_archive.svg`;
+//       if (presentInArray(archiveFormats, ext, true))
+//         return `${folderPath}/file_archive.svg`;
 
-      if (presentInArray(imageFormats, ext, true))
-        return `${folderPath}/image.svg`;
+//       if (presentInArray(imageFormats, ext, true))
+//         return `${folderPath}/image.svg`;
 
-      if (presentInArray(soundFormats, ext, true))
-        return `${folderPath}/sound.svg`;
+//       if (presentInArray(soundFormats, ext, true))
+//         return `${folderPath}/sound.svg`;
 
-      if (presentInArray(htmlFormats, ext, true))
-        return `${folderPath}/html.svg`;
+//       if (presentInArray(htmlFormats, ext, true))
+//         return `${folderPath}/html.svg`;
 
-      const extension = ext.toLowerCase();
+//       const extension = ext.toLowerCase();
 
-      switch (extension) {
-        case ".avi":
-          return `${folderPath}/avi.svg`;
-        case ".csv":
-          return `${folderPath}/csv.svg`;
-        case ".djvu":
-          return `${folderPath}/djvu.svg`;
-        case ".doc":
-          return `${folderPath}/doc.svg`;
-        case ".docx":
-          return `${folderPath}/docx.svg`;
-        case ".dvd":
-          return `${folderPath}/dvd.svg`;
-        case ".epub":
-          return `${folderPath}/epub.svg`;
-        case ".pb2":
-          return `${folderPath}/fb2.svg`;
-        case ".flv":
-          return `${folderPath}/flv.svg`;
-        case ".iaf":
-          return `${folderPath}/iaf.svg`;
-        case ".m2ts":
-          return `${folderPath}/m2ts.svg`;
-        case ".mht":
-          return `${folderPath}/mht.svg`;
-        case ".mkv":
-          return `${folderPath}/mkv.svg`;
-        case ".mov":
-          return `${folderPath}/mov.svg`;
-        case ".mp4":
-          return `${folderPath}/mp4.svg`;
-        case ".mpg":
-          return `${folderPath}/mpg.svg`;
-        case ".odp":
-          return `${folderPath}/odp.svg`;
-        case ".ods":
-          return `${folderPath}/ods.svg`;
-        case ".odt":
-          return `${folderPath}/odt.svg`;
-        case ".pdf":
-          return `${folderPath}/pdf.svg`;
-        case ".pps":
-          return `${folderPath}/pps.svg`;
-        case ".ppsx":
-          return `${folderPath}/ppsx.svg`;
-        case ".ppt":
-          return `${folderPath}/ppt.svg`;
-        case ".pptx":
-          return `${folderPath}/pptx.svg`;
-        case ".rtf":
-          return `${folderPath}/rtf.svg`;
-        case ".svg":
-          return `${folderPath}/svg.svg`;
-        case ".txt":
-          return `${folderPath}/txt.svg`;
-        case ".webm":
-          return `${folderPath}/webm.svg`;
-        case ".xls":
-          return `${folderPath}/xls.svg`;
-        case ".xlsx":
-          return `${folderPath}/xlsx.svg`;
-        case ".xps":
-          return `${folderPath}/xps.svg`;
-        case ".xml":
-          return `${folderPath}/xml.svg`;
-        default:
-          return `${folderPath}/file.svg`;
-      }
-    }
-  );
-};
+//       switch (extension) {
+//         case ".avi":
+//           return `${folderPath}/avi.svg`;
+//         case ".csv":
+//           return `${folderPath}/csv.svg`;
+//         case ".djvu":
+//           return `${folderPath}/djvu.svg`;
+//         case ".doc":
+//           return `${folderPath}/doc.svg`;
+//         case ".docx":
+//           return `${folderPath}/docx.svg`;
+//         case ".dvd":
+//           return `${folderPath}/dvd.svg`;
+//         case ".epub":
+//           return `${folderPath}/epub.svg`;
+//         case ".pb2":
+//           return `${folderPath}/fb2.svg`;
+//         case ".flv":
+//           return `${folderPath}/flv.svg`;
+//         case ".iaf":
+//           return `${folderPath}/iaf.svg`;
+//         case ".m2ts":
+//           return `${folderPath}/m2ts.svg`;
+//         case ".mht":
+//           return `${folderPath}/mht.svg`;
+//         case ".mkv":
+//           return `${folderPath}/mkv.svg`;
+//         case ".mov":
+//           return `${folderPath}/mov.svg`;
+//         case ".mp4":
+//           return `${folderPath}/mp4.svg`;
+//         case ".mpg":
+//           return `${folderPath}/mpg.svg`;
+//         case ".odp":
+//           return `${folderPath}/odp.svg`;
+//         case ".ods":
+//           return `${folderPath}/ods.svg`;
+//         case ".odt":
+//           return `${folderPath}/odt.svg`;
+//         case ".pdf":
+//           return `${folderPath}/pdf.svg`;
+//         case ".pps":
+//           return `${folderPath}/pps.svg`;
+//         case ".ppsx":
+//           return `${folderPath}/ppsx.svg`;
+//         case ".ppt":
+//           return `${folderPath}/ppt.svg`;
+//         case ".pptx":
+//           return `${folderPath}/pptx.svg`;
+//         case ".rtf":
+//           return `${folderPath}/rtf.svg`;
+//         case ".svg":
+//           return `${folderPath}/svg.svg`;
+//         case ".txt":
+//           return `${folderPath}/txt.svg`;
+//         case ".webm":
+//           return `${folderPath}/webm.svg`;
+//         case ".xls":
+//           return `${folderPath}/xls.svg`;
+//         case ".xlsx":
+//           return `${folderPath}/xlsx.svg`;
+//         case ".xps":
+//           return `${folderPath}/xps.svg`;
+//         case ".xml":
+//           return `${folderPath}/xml.svg`;
+//         default:
+//           return `${folderPath}/file.svg`;
+//       }
+//     }
+//   );
+// };
 
 export const getUploadedFile = (id) => {
   return createSelector(getUploadDataFiles, (files) => {

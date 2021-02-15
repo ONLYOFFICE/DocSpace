@@ -1,5 +1,5 @@
 import React from "react";
-import { connect } from "react-redux";
+//import { connect } from "react-redux";
 import styled from "styled-components";
 import {
   Box,
@@ -16,33 +16,32 @@ import { withTranslation } from "react-i18next";
 import EmptyFolderContainer from "../../../Home/Section/Body/EmptyFolderContainer";
 import { createI18N } from "../../../../../helpers/i18n";
 import { Trans } from "react-i18next";
-import {
-  getOAuthToken,
-  openConnectWindow,
-  setConnectItem,
-  setShowThirdPartyPanel,
+// import {
+//   getOAuthToken,
+//   openConnectWindow,
+//   setConnectItem,
+//   setShowThirdPartyPanel,
   //fetchFiles,
   //setSelectedNode,
-} from "../../../../../store/files/actions";
-import {
-  getThirdPartyCapabilities,
-  getGoogleConnect,
-  getBoxConnect,
-  getDropboxConnect,
-  getOneDriveConnect,
-  getNextCloudConnect,
-  getSharePointConnect,
-  getkDriveConnect,
-  getYandexConnect,
-  getOwnCloudConnect,
-  getWebDavConnect,
-  getConnectItem,
-  getShowThirdPartyPanel,
-  getThirdPartyProviders,
-  getMyDirectoryFolders,
-  getCommonDirectoryFolders,
+// } from "../../../../../store/files/actions";
+import //getThirdPartyCapabilities,
+//getGoogleConnect,
+//getBoxConnect,
+//getDropboxConnect,
+//getOneDriveConnect,
+// getNextCloudConnect,
+// getSharePointConnect,
+// getkDriveConnect,
+// getYandexConnect,
+// getOwnCloudConnect,
+// getWebDavConnect,
+//getConnectItem,
+//getShowThirdPartyPanel,
+//getThirdPartyProviders,
+//getMyDirectoryFolders,
+//getCommonDirectoryFolders,
   //getFilter,
-} from "../../../../../store/files/selectors";
+"../../../../../store/files/selectors";
 import { DeleteThirdPartyDialog, ConnectDialog } from "../../../../dialogs";
 import { inject, observer } from "mobx-react";
 
@@ -161,10 +160,12 @@ class ConnectClouds extends React.Component {
         "Authorization",
         "height=600, width=1020"
       );
-      openConnectWindow(selectedServiceData.title, authModal).then((modal) =>
-        getOAuthToken(modal).then((token) =>
-          this.showOAuthModal(token, selectedServiceData)
-        )
+      this.props
+        .openConnectWindow(selectedServiceData.title, authModal)
+        .then((modal) =>
+          this.props
+            .getOAuthToken(modal)
+            .then((token) => this.showOAuthModal(token, selectedServiceData))
       );
     }
 
@@ -543,28 +544,28 @@ class ConnectClouds extends React.Component {
   }
 }
 
-function mapStateToProps(state) {
-  return {
+// function mapStateToProps(state) {
+//   return {
     //isAdmin: isAdmin(state),
-    capabilities: getThirdPartyCapabilities(state),
-    googleConnectItem: getGoogleConnect(state),
-    boxConnectItem: getBoxConnect(state),
-    dropboxConnectItem: getDropboxConnect(state),
-    oneDriveConnectItem: getOneDriveConnect(state),
-    nextCloudConnectItem: getNextCloudConnect(state),
-    sharePointConnectItem: getSharePointConnect(state),
-    kDriveConnectItem: getkDriveConnect(state),
-    yandexConnectItem: getYandexConnect(state),
-    ownCloudConnectItem: getOwnCloudConnect(state),
-    webDavConnectItem: getWebDavConnect(state),
-    connectItem: getConnectItem(state),
-    showThirdPartyPanel: getShowThirdPartyPanel(state),
-    providers: getThirdPartyProviders(state),
-    myDirectoryFolders: getMyDirectoryFolders(state),
-    commonDirectoryFolders: getCommonDirectoryFolders(state),
+//     capabilities: getThirdPartyCapabilities(state),
+//     googleConnectItem: getGoogleConnect(state),
+//     boxConnectItem: getBoxConnect(state),
+//     dropboxConnectItem: getDropboxConnect(state),
+//     oneDriveConnectItem: getOneDriveConnect(state),
+//     nextCloudConnectItem: getNextCloudConnect(state),
+//     sharePointConnectItem: getSharePointConnect(state),
+//     kDriveConnectItem: getkDriveConnect(state),
+//     yandexConnectItem: getYandexConnect(state),
+//     ownCloudConnectItem: getOwnCloudConnect(state),
+//     webDavConnectItem: getWebDavConnect(state),
+//     connectItem: getConnectItem(state),
+//     showThirdPartyPanel: getShowThirdPartyPanel(state),
+//     providers: getThirdPartyProviders(state),
+//     myDirectoryFolders: getMyDirectoryFolders(state),
+//     commonDirectoryFolders: getCommonDirectoryFolders(state),
     //filter: getFilter(state),
-  };
-}
+//   };
+// }
 
 // export default connect(mapStateToProps, {
 //   setConnectItem,
@@ -573,23 +574,54 @@ function mapStateToProps(state) {
 //   setSelectedNode,
 // })(withTranslation()(ConnectClouds));
 
-export default connect(mapStateToProps, {
+export default inject(({ auth, mainFilesStore, settingsStore }) => {
+  const { filesStore } = mainFilesStore;
+  const {
+    providers,
+    connectItem,
+    capabilities,
   setConnectItem,
+    showThirdPartyPanel,
   setShowThirdPartyPanel,
-  //fetchFiles,
-  //setSelectedNode,
-})(
-  inject(({ auth, mainFilesStore }) => {
-    const { filesStore } = mainFilesStore;
+    googleConnectItem,
+    boxConnectItem,
+    dropboxConnectItem,
+    oneDriveConnectItem,
+    nextCloudConnectItem,
+    kDriveConnectItem,
+    yandexConnectItem,
+    ownCloudConnectItem,
+    webDavConnectItem,
+    getOAuthToken,
+    openConnectWindow,
+  } = settingsStore.thirdPartyStore;
     const { fetchFiles, treeFoldersStore, filter } = filesStore;
-    const { setSelectedNode } = treeFoldersStore;
+  const { setSelectedNode, myFolder, commonFolder } = treeFoldersStore;
 
     return {
       isAdmin: auth.isAdmin,
       filter,
+    providers,
+    showThirdPartyPanel,
+    connectItem,
+    capabilities,
+    googleConnectItem,
+    boxConnectItem,
+    dropboxConnectItem,
+    oneDriveConnectItem,
+    nextCloudConnectItem,
+    kDriveConnectItem,
+    yandexConnectItem,
+    ownCloudConnectItem,
+    webDavConnectItem,
+    myDirectoryFolders: myFolder && myFolder.folders,
+    commonDirectoryFolders: commonFolder && commonFolder.folders,
 
       fetchFiles,
       setSelectedNode,
+    setConnectItem,
+    setShowThirdPartyPanel,
+    getOAuthToken,
+    openConnectWindow,
     };
-  })(withTranslation()(observer(ConnectClouds)))
-);
+})(withTranslation()(observer(ConnectClouds)));

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { connect } from "react-redux";
+//import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { PageLayout, utils, Loaders } from "asc-web-common";
 import {
@@ -10,14 +10,12 @@ import {
 import { SectionHeaderContent, SectionBodyContent } from "./Section";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import { createI18N } from "../../../helpers/i18n";
-import {
-  getFilesSettings,
+// import {
+//   getFilesSettings,
   //setFirstLoad,
   //setSelectedNode,
-} from "../../../store/files/actions";
-import {
-  getSettingsTree /* getIsLoading */,
-} from "../../../store/files/selectors";
+// } from "../../../store/files/actions";
+//import { getSettingsTree, getIsLoading } from "../../../store/files/selectors";
 
 import { setDocumentTitle } from "../../../helpers/utils";
 import { inject, observer } from "mobx-react";
@@ -129,40 +127,40 @@ const Settings = (props) => {
   );
 };
 
-function mapStateToProps(state) {
-  return {
+// function mapStateToProps(state) {
+//   return {
     //isLoading: getIsLoading(state),
-    settingsTree: getSettingsTree(state),
-  };
-}
+//     settingsTree: getSettingsTree(state),
+//   };
+// }
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    getFilesSettings: () => dispatch(getFilesSettings()),
+// const mapDispatchToProps = (dispatch) => {
+//   return {
+//     getFilesSettings: () => dispatch(getFilesSettings()),
     //setFirstLoad: (firstLoad) => dispatch(setFirstLoad(firstLoad)),
     //setSelectedNode: (node) => dispatch(setSelectedNode(node)),
-  };
-};
+//   };
+// };
 
 // export default connect(
 //   mapStateToProps,
 //   mapDispatchToProps
 // )(withRouter(Settings));
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(
-  inject(({ mainFilesStore }) => {
+export default inject(({ mainFilesStore, settingsStore }) => {
     const { filesStore, isLoading } = mainFilesStore;
     const { setFirstLoad, treeFoldersStore } = filesStore;
     const { setSelectedNode } = treeFoldersStore;
+  const { getFilesSettings, settingsTree: settings } = settingsStore;
+
+  const settingsTree = Object.keys(settings).length !== 0 ? settings : {};
 
     return {
       isLoading,
+    settingsTree,
 
       setFirstLoad,
       setSelectedNode,
+    getFilesSettings,
     };
-  })(withRouter(observer(Settings)))
-);
+})(withRouter(observer(Settings)));

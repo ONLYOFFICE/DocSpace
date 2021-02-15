@@ -1,4 +1,5 @@
-import { makeObservable } from "mobx";
+import { makeObservable, observable } from "mobx";
+import { presentInArray } from "../store/files/selectors";
 
 class MediaViewersFormatsStore {
   images = [
@@ -33,8 +34,15 @@ class MediaViewersFormatsStore {
   ];
 
   constructor() {
-    makeObservable(this, {});
+    makeObservable(this, {
+      images: observable,
+      media: observable,
+    });
   }
+
+  isVideo = (extension) => {
+    return presentInArray(this.media, extension);
+  };
 
   isMediaOrImage = (fileExst) => {
     if (this.media.includes(fileExst) || this.images.includes(fileExst)) {

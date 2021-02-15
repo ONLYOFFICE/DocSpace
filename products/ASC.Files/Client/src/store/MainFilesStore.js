@@ -1,9 +1,10 @@
-import { makeObservable, action, observable } from "mobx";
+import { makeObservable, action, observable, computed } from "mobx";
 import { store, utils } from "asc-web-common";
 import FilesStore from "./FilesStore";
 import config from "../../package.json";
 
 const { authStore } = store;
+const { isAdmin } = authStore;
 
 class MainFilesStore {
   isLoaded = false;
@@ -29,6 +30,8 @@ class MainFilesStore {
       dragging: observable,
       dragItem: observable,
       privacyInstructions: observable,
+
+      tooltipValue: computed,
 
       initFiles: action,
       setIsLoaded: action,
@@ -58,6 +61,34 @@ class MainFilesStore {
   setDragItem = (dragItem) => {
     this.dragItem = dragItem;
   };
+
+  get tooltipValue() {
+    if (!this.dragging) return null;
+
+    const selectionLength = this.filesStore.selection.length;
+    const elementTitle = selectionLength && this.filesStore.selection[0].title;
+    const singleElement = selectionLength === 1;
+    const filesCount = singleElement ? elementTitle : selectionLength;
+    const { isShareFolder, isCommonFolder } = this.filesStore.treeFoldersStore;
+
+    let operationName;
+
+    if (isAdmin && isShareFolder) {
+      operationName = "copy";
+    } else if (!isAdmin && (isShareFolder || isCommonFolder)) {
+      operationName = "copy";
+    } else {
+      operationName = "move";
+    }
+
+    return operationName === "copy"
+      ? singleElement
+        ? { label: "TooltipElementCopyMessage", filesCount }
+        : { label: "TooltipElementsCopyMessage", filesCount }
+      : singleElement
+      ? { label: "TooltipElementMoveMessage", filesCount }
+      : { label: "TooltipElementsMoveMessage", filesCount };
+  }
 
   initFiles = () => {
     const isAuthenticated = authStore.isAuthenticated;

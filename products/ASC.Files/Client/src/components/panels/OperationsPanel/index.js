@@ -1,24 +1,24 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { connect } from "react-redux";
+//import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { ModalDialog } from "asc-web-components";
 import { withTranslation } from "react-i18next";
 import { utils as commonUtils, toastr } from "asc-web-common";
 import { StyledAsidePanel } from "../StyledPanels";
 import TreeFolders from "../../Article/Body/TreeFolders";
-import {
+// import {
   //setSecondaryProgressBarData,
-  itemOperationToFolder,
-} from "../../../store/files/actions";
-import {
+//   itemOperationToFolder,
+// } from "../../../store/files/actions";
+// import {
   //getFilter,
   //getSelection,
   //getPathParts,
   //getSelectedFolderId,
   //getIsRecycleBinFolder,
-  getOperationsFolders,
-} from "../../../store/files/selectors";
+//   getOperationsFolders,
+// } from "../../../store/files/selectors";
 import { ThirdPartyMoveDialog } from "../../dialogs";
 import { createI18N } from "../../../helpers/i18n";
 import { inject, observer } from "mobx-react";
@@ -206,27 +206,23 @@ const OperationsPanel = (props) => (
   <OperationsPanelContainerTranslated i18n={i18n} {...props} />
 );
 
-const mapStateToProps = (state) => {
-  return {
+// const mapStateToProps = (state) => {
+//   return {
     //filter: getFilter(state),
     //selection: getSelection(state),
     //expandedKeys: getPathParts(state),
     //currentFolderId: getSelectedFolderId(state),
     //isRecycleBin: getIsRecycleBinFolder(state),
-    operationsFolders: getOperationsFolders(state),
-  };
-};
+//     operationsFolders: getOperationsFolders(state),
+//   };
+// };
 
 // export default connect(mapStateToProps, {
 //   setSecondaryProgressBarData,
 //   itemOperationToFolder,
 // })(withRouter(OperationsPanel));
 
-export default connect(mapStateToProps, {
-  //setSecondaryProgressBarData,
-  itemOperationToFolder,
-})(
-  inject(({ mainFilesStore }) => {
+export default inject(({ auth, mainFilesStore }) => {
     const { filesStore } = mainFilesStore;
     const {
       selection,
@@ -234,8 +230,9 @@ export default connect(mapStateToProps, {
       treeFoldersStore,
       filter,
       secondaryProgressDataStore,
+    itemOperationToFolder,
     } = filesStore;
-    const { isRecycleBinFolder } = treeFoldersStore;
+  const { isRecycleBinFolder, operationsFolders } = treeFoldersStore;
     const { setSecondaryProgressBarData } = secondaryProgressDataStore;
 
     return {
@@ -244,8 +241,9 @@ export default connect(mapStateToProps, {
       selection,
       isRecycleBin: isRecycleBinFolder,
       filter,
+    operationsFolders,
 
       setSecondaryProgressBarData,
+    itemOperationToFolder,
     };
-  })(withRouter(observer(OperationsPanel)))
-);
+})(withRouter(observer(OperationsPanel)));
