@@ -11,16 +11,11 @@ import {
   EmailInput,
 } from "asc-web-components";
 import styled from "styled-components";
-import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { store, PageLayout, utils as commonUtils } from "asc-web-common";
-import {
-  getConfirmationInfo,
-  createConfirmUser,
-} from "../../../../store/confirm/actions";
-import { inject } from "mobx-react";
+import { api, PageLayout, utils as commonUtils } from "asc-web-common";
 
-const { logout, login } = store.auth.actions;
+import { inject, observer } from "mobx-react";
+
 const { createPasswordHash, tryRedirectTo } = commonUtils;
 const inputWidth = "400px";
 
@@ -66,6 +61,7 @@ class Confirm extends React.PureComponent {
     super(props);
 
     this.state = {
+      isConfirmLoaded: false,
       email: "",
       emailValid: true,
       firstName: "",
@@ -91,12 +87,7 @@ class Confirm extends React.PureComponent {
 
   onSubmit = () => {
     this.setState({ isLoading: true }, () => {
-      const {
-        defaultPage,
-        createConfirmUser,
-        linkData,
-        hashSettings,
-      } = this.props;
+      const { defaultPage, linkData, hashSettings } = this.props;
       const isVisitor = parseInt(linkData.emplType) === 2;
 
       this.setState({ errorText: "" });
@@ -146,7 +137,7 @@ class Confirm extends React.PureComponent {
         isVisitor: isVisitor,
       });
 
-      createConfirmUser(registerData, loginData, this.state.key)
+      this.createConfirmUser(registerData, loginData, this.state.key)
         .then(() => {
           toastr.success("User has been created successfully");
           tryRedirectTo(defaultPage);
@@ -161,6 +152,41 @@ class Confirm extends React.PureComponent {
     });
   };
 
+  createConfirmUser = async (registerData, loginData, key) => {
+    const data = Object.assign(
+      { fromInviteLink: true },
+      registerData,
+      loginData
+    );
+
+    const user = await api.people.createUser(data, key);
+
+    return user;
+
+    //TODO: Fix working process
+    //       dispatch(setCurrentUser(user));
+    //     })
+    //     .then(() => {
+    //       const promise = new Promise((resolve, reject) => {
+    //         setTimeout(() => {
+    //           login(
+    //             loginData.userName,
+    //             loginData.passwordHash
+    //           )(dispatch)
+    //             .then(() => {
+    //               resolve(loadInitInfo(dispatch));
+    //             })
+    //             .catch((e) => {
+    //               reject(e);
+    //             });
+    //         }, 1000);
+    //       });
+
+    //       return promise;
+    //     });
+    // };
+  };
+
   onKeyPress = (event) => {
     if (event.key === "Enter") {
       this.onSubmit();
@@ -172,12 +198,19 @@ class Confirm extends React.PureComponent {
   validatePassword = (value) => this.setState({ passwordValid: value });
 
   componentDidMount() {
-    const { getConfirmationInfo, history } = this.props;
+    const { history, getSettings, getPortalPasswordSettings } = this.props;
 
-    getConfirmationInfo(this.state.key).catch((e) => {
-      console.error("get settings error", e);
-      history.push(`/login/error=${e}`);
-    });
+    const requests = [getSettings(), getPortalPasswordSettings(this.state.key)];
+
+    Promise.all(requests)
+      .then(() => {
+        this.setState({ isConfirmLoaded: true });
+        console.log("get settings success");
+      })
+      .catch((e) => {
+        console.error("get settings error", e);
+        history.push(`/login/error=${e}`);
+      });
 
     window.addEventListener("keydown", this.onKeyPress);
     window.addEventListener("keyup", this.onKeyPress);
@@ -355,8 +388,6 @@ class Confirm extends React.PureComponent {
 }
 
 Confirm.propTypes = {
-  getConfirmationInfo: PropTypes.func.isRequired,
-  createConfirmUser: PropTypes.func.isRequired,
   location: PropTypes.object.isRequired,
   history: PropTypes.object.isRequired,
 };
@@ -368,35 +399,26 @@ const CreateUserForm = (props) => (
   </PageLayout>
 );
 
-function mapStateToProps(state) {
-  return {
-    isConfirmLoaded: state.confirm.isConfirmLoaded,
-    isAuthenticated: state.auth.isAuthenticated,
-    //settings: state.auth.settings.passwordSettings,
-    //greetingTitle: state.auth.settings.greetingSettings,
-    //hashSettings: state.auth.settings.hashSettings,
-    //defaultPage: state.auth.settings.defaultPage,
-  };
-}
-
-export default connect(mapStateToProps, {
-  getConfirmationInfo,
-  createConfirmUser,
-  login,
-  logout,
-});
-inject(({ store }) => {
+export default inject(({ auth }) => {
+  const { login, logout, isAuthenticated, settingsStore } = auth;
   const {
     passwordSettings,
     greetingSettings,
     hashSettings,
     defaultPage,
-  } = store.settingsStore.settings;
+    getSettings,
+    getPortalPasswordSettings,
+  } = settingsStore;
 
   return {
     settings: passwordSettings,
     greetingTitle: greetingSettings,
     hashSettings,
     defaultPage,
+    isAuthenticated,
+    login,
+    logout,
+    getSettings,
+    getPortalPasswordSettings,
   };
-})(withRouter(withTranslation()(CreateUserForm)));
+})(withRouter(withTranslation()(observer(CreateUserForm))));

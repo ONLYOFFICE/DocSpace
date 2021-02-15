@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { connect } from "react-redux";
 import { withRouter } from "react-router";
 //import i18n from "../../../i18n";
 import { I18nextProvider, withTranslation } from "react-i18next";
@@ -135,4 +134,4 @@ const ModulesSettings = (props) => (
   </I18nextProvider>
 );
 
-export default connect(null, {})(withRouter(ModulesSettings));
+export default withRouter(ModulesSettings);

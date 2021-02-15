@@ -194,14 +194,14 @@ const mapStateToProps = (state) => {
 };
 
 export default connect(mapStateToProps, { /* setAction, */ startUpload })(
-  inject(({ store, mainFilesStore }) => {
+  inject(({ auth, mainFilesStore }) => {
     const { filesStore } = mainFilesStore;
     const { firstLoad, fileActionStore, treeFoldersStore, filter } = filesStore;
     const { isPrivacyFolder } = treeFoldersStore;
     const { id } = filesStore.selectedFolderStore;
 
     return {
-      homepage: store.settingsStore.homepage,
+      homepage: auth.settingsStore.homepage,
       firstLoad,
       selectedFolderId: id,
       setAction: fileActionStore.setAction,

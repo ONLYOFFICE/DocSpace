@@ -4,7 +4,7 @@ import { withTranslation } from "react-i18next";
 import styled from "styled-components";
 import { Button, Text, toastr } from "asc-web-components";
 import { PageLayout, utils as commonUtils } from "asc-web-common";
-import { inject } from "mobx-react";
+import { inject, observer } from "mobx-react";
 const { tryRedirectTo } = commonUtils;
 
 const BodyStyle = styled.div`
@@ -133,7 +133,7 @@ const ChangeOwnerForm = (props) => (
 //   };
 // }
 
-export default inject(({ store }) => ({
-  greetingTitle: store.settingsStore.greetingSettings,
-  defaultPage: store.settingsStore.defaultPage,
-}))(withRouter(withTranslation()(ChangeOwnerForm)));
+export default inject(({ auth }) => ({
+  greetingTitle: auth.settingsStore.greetingSettings,
+  defaultPage: auth.settingsStore.defaultPage,
+}))(withRouter(withTranslation()(observer(ChangeOwnerForm))));

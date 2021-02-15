@@ -579,13 +579,13 @@ export default connect(mapStateToProps, {
   //fetchFiles,
   //setSelectedNode,
 })(
-  inject(({ store, mainFilesStore }) => {
+  inject(({ auth, mainFilesStore }) => {
     const { filesStore } = mainFilesStore;
     const { fetchFiles, treeFoldersStore, filter } = filesStore;
     const { setSelectedNode } = treeFoldersStore;
 
     return {
-      isAdmin: store.isAdmin,
+      isAdmin: auth.isAdmin,
       filter,
 
       fetchFiles,

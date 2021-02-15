@@ -476,8 +476,8 @@ export default connect(mapStateToProps, {
   //setIsLoading,
   //fetchFiles,
 })(
-  inject(({ store, mainFilesStore }) => {
-    const { homepage, culture } = store.settingsStore;
+  inject(({ auth, mainFilesStore }) => {
+    const { homepage, culture } = auth.settingsStore;
     const { filesStore, setIsLoading, isLoading, dragging } = mainFilesStore;
     const { folders, fetchFiles, treeFoldersStore, filter } = filesStore;
 

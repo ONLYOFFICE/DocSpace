@@ -123,8 +123,8 @@ Home.propTypes = {
   defaultPage: PropTypes.string,
 };
 
-export default inject(({ store }) => {
-  const { isLoaded, settingsStore, moduleStore } = store;
+export default inject(({ auth }) => {
+  const { isLoaded, settingsStore, moduleStore } = auth;
   const { defaultPage } = settingsStore;
   const { modules } = moduleStore;
   return {

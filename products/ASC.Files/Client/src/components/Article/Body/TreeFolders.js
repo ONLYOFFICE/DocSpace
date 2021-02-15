@@ -535,7 +535,7 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(
-  inject(({ store, mainFilesStore }) => {
+  inject(({ auth, mainFilesStore }) => {
     const {
       filesStore,
       setIsLoading,
@@ -560,8 +560,8 @@ export default connect(
     const { pathParts, id } = selectedFolderStore;
 
     return {
-      isAdmin: store.isAdmin,
-      isDesktop: store.settingsStore.isDesktopClient,
+      isAdmin: auth.isAdmin,
+      isDesktop: auth.settingsStore.isDesktopClient,
       dragging,
       rootFolderId: pathParts,
       currentId: id,

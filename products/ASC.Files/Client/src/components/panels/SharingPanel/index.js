@@ -665,8 +665,8 @@ export default connect(mapStateToProps, {
   //selectUploadedFile,
   updateUploadedItem,
 })(
-  inject(({ store, mainFilesStore }, { uploadPanelVisible }) => {
-    const { customNames, isDesktopClient, homepage } = store.settingsStore;
+  inject(({ auth, mainFilesStore }, { uploadPanelVisible }) => {
+    const { customNames, isDesktopClient, homepage } = auth.settingsStore;
     const { filesStore, setIsLoading, isLoading } = mainFilesStore;
     const {
       files,
@@ -681,7 +681,7 @@ export default connect(mapStateToProps, {
     const { uploadSelection, selectUploadedFile } = uploadDataStore;
 
     return {
-      isMyId: store.userStore.user.id,
+      isMyId: auth.userStore.user.id,
       groupsCaption: customNames.groupsCaption,
       isDesktop: isDesktopClient,
       homepage,

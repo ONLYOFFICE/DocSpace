@@ -807,8 +807,8 @@ export default connect(mapStateToProps, {
   getEncryptionAccess,
   replaceFileStream,
 })(
-  inject(({ store, mainFilesStore }) => {
-    const { homepage, culture, isDesktopClient } = store.settingsStore;
+  inject(({ auth, mainFilesStore }) => {
+    const { homepage, culture, isDesktopClient } = auth.settingsStore;
     const { filesStore, setIsLoading, isLoading } = mainFilesStore;
     const {
       folders,

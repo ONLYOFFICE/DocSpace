@@ -47,6 +47,6 @@ NavLogoItem.propTypes = {
 //   };
 // };
 
-export default inject(({ store }) => ({
-  logoUrl: store.settingsStore.logoUrl,
+export default inject(({ auth }) => ({
+  logoUrl: auth.settingsStore.logoUrl,
 }))(observer(NavLogoItem));

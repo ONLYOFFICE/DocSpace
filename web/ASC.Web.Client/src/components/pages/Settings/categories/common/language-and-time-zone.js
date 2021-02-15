@@ -1,5 +1,4 @@
 import React from "react";
-import { connect } from "react-redux";
 import { withTranslation } from "react-i18next";
 import {
   FieldContainer,
@@ -12,23 +11,11 @@ import {
 } from "asc-web-components";
 import styled from "styled-components";
 import { Trans } from "react-i18next";
-import { store, utils } from "asc-web-common";
-import {
-  setLanguageAndTime,
-  getPortalTimezones,
-} from "../../../../../store/settings/actions";
 import { saveToSessionStorage, getFromSessionStorage } from "../../utils";
-import { default as clientStore } from "../../../../../store/store";
 import { setDocumentTitle } from "../../../../../helpers/utils";
-import { inject } from "mobx-react";
-
-const { getLanguage } = store.auth.selectors;
+import { inject, observer } from "mobx-react";
+import { utils } from "asc-web-common";
 const { changeLanguage } = utils;
-const {
-  getPortalCultures,
-  //getModules,
-  getCurrentCustomSchema,
-} = store.auth.actions;
 
 const mapCulturesToArray = (cultures, t) => {
   return cultures.map((culture) => {
@@ -193,7 +180,7 @@ class LanguageAndTimeZone extends React.Component {
       timezoneDefault,
       languageDefault,
     } = this.state;
-    const { i18n, language, nameSchemaId } = this.props;
+    const { i18n, language, nameSchemaId, getCurrentCustomSchema } = this.props;
     if (timezones.length && languages.length && !prevState.isLoadedData) {
       this.setState({ isLoadedData: true });
     }
@@ -215,7 +202,7 @@ class LanguageAndTimeZone extends React.Component {
           });
         })
         //.then(() => getModules(clientStore.dispatch))
-        .then(() => getCurrentCustomSchema(clientStore.dispatch, nameSchemaId));
+        .then(() => getCurrentCustomSchema(nameSchemaId));
     }
     if (timezoneDefault && languageDefault) {
       this.checkChanges();
@@ -403,35 +390,7 @@ class LanguageAndTimeZone extends React.Component {
   }
 }
 
-// function mapStateToProps(state) {
-//   const {
-//     culture,
-//     timezone,
-//     timezones,
-//     cultures,
-//     greetingSettings,
-//     nameSchemaId,
-//     organizationName,
-//   } = state.auth.settings;
-//   return {
-//     portalLanguage: culture,
-//     portalTimeZoneId: timezone,
-//     language: getLanguage(state),
-//     rawTimezones: timezones,
-//     rawCultures: cultures,
-//     greetingSettings,
-//     nameSchemaId,
-//     organizationName,
-//   };
-// }
-
-export default connect(null, {
-  getPortalCultures,
-  setLanguageAndTime,
-  getPortalTimezones,
-});
-
-inject(({ store }) => {
+export default inject(({ auth, setup }) => {
   const {
     culture,
     timezone,
@@ -440,15 +399,25 @@ inject(({ store }) => {
     nameSchemaId,
     organizationName,
     greetingSettings,
-  } = store.settingsStore;
+    getPortalCultures,
+    getPortalTimezones,
+    getCurrentCustomSchema,
+  } = auth.settingsStore;
+
+  const { setLanguageAndTime } = setup;
+
   return {
     portalLanguage: culture,
     portalTimeZoneId: timezone,
-    language: culture || "en-US",
+    language: culture,
     rawTimezones: timezones,
     rawCultures: cultures,
     greetingSettings,
     nameSchemaId,
     organizationName,
+    getPortalCultures,
+    setLanguageAndTime,
+    getCurrentCustomSchema,
+    getPortalTimezones,
   };
-})(withTranslation()(LanguageAndTimeZone));
+})(withTranslation()(observer(LanguageAndTimeZone)));

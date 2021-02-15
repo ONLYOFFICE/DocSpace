@@ -259,9 +259,9 @@ export default connect(
   null,
   mapDispatchToProps
 )(
-  inject(({ store, mainFilesStore }) => {
-    const { user } = store.userStore;
-    const { culture } = store.settingsStore;
+  inject(({ auth, mainFilesStore }) => {
+    const { user } = auth.userStore;
+    const { culture } = auth.settingsStore;
     const language = (user && user.cultureName) || culture || "en-US";
 
     return {

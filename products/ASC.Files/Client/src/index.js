@@ -17,7 +17,7 @@ const { authStore } = commonStore;
 
 ReactDOM.render(
   <Provider store={store}>
-    <MobxProvider store={authStore} mainFilesStore={mainFilesStore}>
+    <MobxProvider auth={authStore} mainFilesStore={mainFilesStore}>
       <ErrorBoundary>
         <App />
       </ErrorBoundary>

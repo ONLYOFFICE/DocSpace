@@ -684,8 +684,8 @@ export default connect(mapStateToProps, {
   // setCroppedAvatar,
   // resetProfile,
 })(
-  inject(({ store, peopleStore }) => ({
-    settings: store.settingsStore,
+  inject(({ auth, peopleStore }) => ({
+    settings: auth.settingsStore,
     editingForm: peopleStore.editingFormStore,
     groups: peopleStore.groupsStore.groups,
     setIsVisibleDataLossDialog:

@@ -231,13 +231,13 @@ export default connect(mapStateToProps, {
   //setSelectedFolder,
   //setIsLoading,
 })(
-  inject(({ store, mainFilesStore }) => {
+  inject(({ auth, mainFilesStore }) => {
     const { setIsLoading, filesStore, isLoading } = mainFilesStore;
     const { setSelectedFolder } = filesStore.selectedFolderStore;
     const { selectedTreeNode, setSelectedNode } = filesStore.treeFoldersStore;
 
     return {
-      isAdmin: store.isAdmin,
+      isAdmin: auth.isAdmin,
       isLoading,
       selectedTreeNode,
 

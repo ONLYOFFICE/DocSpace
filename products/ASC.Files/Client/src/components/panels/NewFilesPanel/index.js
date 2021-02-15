@@ -342,7 +342,7 @@ export default connect(null, {
   //setIsLoading,
 });
 
-inject(({ store, mainFilesStore }) => {
+inject(({ mainFilesStore }) => {
   const { filesStore, setIsLoading } = mainFilesStore;
   const {
     files,

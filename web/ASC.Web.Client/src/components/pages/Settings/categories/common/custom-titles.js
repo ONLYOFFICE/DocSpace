@@ -1,5 +1,4 @@
 import React from "react";
-import { connect } from "react-redux";
 import { withTranslation } from "react-i18next";
 import {
   FieldContainer,
@@ -10,13 +9,9 @@ import {
   SaveCancelButtons,
 } from "asc-web-components";
 import styled from "styled-components";
-import {
-  setGreetingTitle,
-  restoreGreetingTitle,
-} from "../../../../../store/settings/actions";
 import { saveToSessionStorage, getFromSessionStorage } from "../../utils";
 import { setDocumentTitle } from "../../../../../helpers/utils";
-import { inject } from "mobx-react";
+import { inject, observer } from "mobx-react";
 
 const StyledComponent = styled.div`
   .margin-top {
@@ -249,34 +244,13 @@ class CustomTitles extends React.Component {
   }
 }
 
-// function mapStateToProps(state) {
-//   const { greetingSettings, organizationName } = state.auth.settings;
-//   return {
-//     greetingSettings,
-//     organizationName,
-//   };
-// }
-
-// const CustomTitlesWrapper = observer((props) => {
-//   const { greetingSettings, organizationName } = settingsStore;
-//   return (
-//     <CustomTitles
-//       greetingSettings={greetingSettings}
-//       organizationName={organizationName}
-//       {...props}
-//     />
-//   );
-// });
-
-export default connect(null /* mapStateToProps */, {
-  setGreetingTitle,
-  restoreGreetingTitle,
-});
-
-inject(({ store }) => {
-  const { greetingSettings, organizationName } = store.settingsStore;
+export default inject(({ auth, setup }) => {
+  const { greetingSettings, organizationName } = auth.settingsStore;
+  const { setGreetingTitle, restoreGreetingTitle } = setup;
   return {
     greetingSettings,
     organizationName,
+    setGreetingTitle,
+    restoreGreetingTitle,
   };
-})(withTranslation()(CustomTitles));
+})(withTranslation()(observer(CustomTitles)));

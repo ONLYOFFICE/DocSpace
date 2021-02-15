@@ -508,11 +508,11 @@ const mapStateToProps = (state) => {
 };
 
 export default connect(mapStateToProps)(
-  inject(({ store, peopleStore }) => ({
-    customNames: store.settingsStore.customNames,
-    homepage: store.settingsStore.homepage,
-    isLoaded: store.isLoaded,
-    isAdmin: store.isAdmin,
+  inject(({ auth, peopleStore }) => ({
+    customNames: auth.settingsStore.customNames,
+    homepage: auth.settingsStore.homepage,
+    isLoaded: auth.isLoaded,
+    isAdmin: auth.isAdmin,
     fetchPeople: peopleStore.usersStore.getUsersList,
     selection: peopleStore.selectionStore.selection,
     isHeaderVisible: peopleStore.headerMenuStore.isHeaderVisible,

@@ -940,9 +940,9 @@ export default connect(mapStateToProps, {
   // toggleAvatarEditor,
   //setAvatarMax,
 })(
-  inject(({ store, peopleStore }) => ({
-    settings: store.settingsStore,
-    isAdmin: store.isAdmin,
+  inject(({ auth, peopleStore }) => ({
+    settings: auth.settingsStore,
+    isAdmin: auth.isAdmin,
     groups: peopleStore.groupsStore.groups,
     editingForm: peopleStore.editingFormStore,
     setIsVisibleDataLossDialog:

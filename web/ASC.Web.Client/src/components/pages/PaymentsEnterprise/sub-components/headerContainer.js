@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { Text } from "asc-web-components";
 import { utils } from "asc-web-common";
@@ -9,7 +8,7 @@ import { utils } from "asc-web-common";
 import { useTranslation, Trans } from "react-i18next";
 import { createI18N } from "../../../../helpers/i18n";
 import moment from "moment";
-import { inject } from "mobx-react";
+import { inject, observer } from "mobx-react";
 
 const { changeLanguage } = utils;
 
@@ -106,22 +105,14 @@ HeaderContainer.propTypes = {
   expiresDate: PropTypes.object,
   trialMode: PropTypes.bool,
 };
-function mapStateToProps({ auth, payments }) {
-  //const { culture, organizationName } = auth.settings;
-  const { expiresDate, trialMode } = payments.currentLicense;
-  return {
-    //culture,
-    expiresDate,
-    trialMode,
-    //organizationName,
-  };
-}
 
-export default connect(mapStateToProps);
-inject(({ store }) => {
-  const { organizationName, culture } = store.settingsStore;
+export default inject(({ auth, payments }) => {
+  const { organizationName, culture } = auth.settingsStore;
+  const { expiresDate, trialMode } = payments;
   return {
     organizationName,
     culture,
+    expiresDate,
+    trialMode,
   };
-})(withRouter(HeaderContainer));
+})(withRouter(observer(HeaderContainer)));

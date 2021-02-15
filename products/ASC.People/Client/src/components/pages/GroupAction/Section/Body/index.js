@@ -524,16 +524,16 @@ export default connect(mapStateToProps, {
   // selectGroup,
   // setFilter,
 })(
-  inject(({ store, peopleStore }) => {
+  inject(({ auth, peopleStore }) => {
     const groups = convertGroups(peopleStore.groupsStore.groups);
     return {
-      settings: store.settingsStore,
-      groupCaption: store.settingsStore.customNames.groupCaption,
-      groupsCaption: store.settingsStore.customNames.groupsCaption,
-      groupHeadCaption: store.settingsStore.customNames.groupHeadCaption,
-      isLoaded: store.isLoaded,
-      currentModuleName: store.product.title,
-      me: store.userStore.user,
+      settings: auth.settingsStore,
+      groupCaption: auth.settingsStore.customNames.groupCaption,
+      groupsCaption: auth.settingsStore.customNames.groupsCaption,
+      groupHeadCaption: auth.settingsStore.customNames.groupHeadCaption,
+      isLoaded: auth.isLoaded,
+      currentModuleName: auth.product.title,
+      me: auth.userStore.user,
       groups,
       filter: peopleStore.filterStore.filter,
       setFilter: peopleStore.filterStore.setFilterParams,

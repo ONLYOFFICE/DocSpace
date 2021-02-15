@@ -238,7 +238,7 @@ HeaderComponent.propTypes = {
   isAdmin: PropTypes.bool,
 };
 
-export default inject(({ store }) => {
+export default inject(({ auth }) => {
   const {
     settingsStore,
     moduleStore,
@@ -246,7 +246,7 @@ export default inject(({ store }) => {
     isAuthenticated,
     isAdmin,
     product,
-  } = store;
+  } = auth;
   const { logoUrl, defaultPage, currentProductId } = settingsStore;
   const { modules, totalNotifications } = moduleStore;
 

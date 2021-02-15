@@ -226,7 +226,7 @@ export default connect(mapStateToProps, {
   //setSecondaryProgressBarData,
   itemOperationToFolder,
 })(
-  inject(({ store, mainFilesStore }) => {
+  inject(({ mainFilesStore }) => {
     const { filesStore } = mainFilesStore;
     const {
       selection,

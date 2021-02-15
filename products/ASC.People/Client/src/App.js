@@ -271,15 +271,15 @@ const App = (props) => {
 //   };
 // };
 */
-export default inject(({ store, peopleStore }) => ({
-  homepage: store.settingsStore.homepage || config.homepage,
+export default inject(({ auth, peopleStore }) => ({
+  homepage: auth.settingsStore.homepage || config.homepage,
   loadBaseInfo: () => {
-    store.init();
-    store.settingsStore.setModuleInfo(
+    auth.init();
+    auth.settingsStore.setModuleInfo(
       config.homepage,
       "f4d98afd-d336-4332-8778-3c6945c81ea0"
     );
     peopleStore.init();
   },
-  isLoaded: store.isLoaded,
+  isLoaded: auth.isLoaded,
 }))(observer(App));

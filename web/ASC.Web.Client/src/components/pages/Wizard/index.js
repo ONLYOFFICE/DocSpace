@@ -2,7 +2,6 @@ import React, { Component, useEffect } from "react";
 import { withRouter } from "react-router";
 import styled from "styled-components";
 import { withTranslation } from "react-i18next";
-import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
 import {
@@ -19,21 +18,9 @@ import SettingsContainer from "./sub-components/settings-container";
 import InputContainer from "./sub-components/input-container";
 import ModalContainer from "./sub-components/modal-dialog-container";
 
-import {
-  getPortalPasswordSettings,
-  getPortalTimezones,
-  getPortalCultures,
-  setIsWizardLoaded,
-  getMachineName,
-  getIsRequiredLicense,
-  setPortalOwner,
-  setLicense,
-  resetLicenseUploaded,
-} from "../../../store/wizard/actions";
-
 import { createI18N } from "../../../helpers/i18n";
 import { setDocumentTitle } from "../../../helpers/utils";
-import { inject } from "mobx-react";
+import { inject, observer } from "mobx-react";
 
 const i18n = createI18N({
   page: "Wizard",
@@ -223,7 +210,13 @@ class Body extends Component {
     const valid = this.checkingValid();
 
     if (valid) {
-      const { setPortalOwner, wizardToken, hashSettings } = this.props;
+      const {
+        setPortalOwner,
+        wizardToken,
+        hashSettings,
+        getPortalSettings,
+        setWizardComplete,
+      } = this.props;
 
       const {
         password,
@@ -249,6 +242,10 @@ class Body extends Component {
         wizardToken,
         analytics
       )
+        .then(() => {
+          setWizardComplete();
+          getPortalSettings();
+        })
         .then(() => history.push("/login"))
         .catch((e) =>
           this.setState({
@@ -528,73 +525,60 @@ WizardPage.propTypes = {
   isLoaded: PropTypes.bool,
 };
 
-function mapStateToProps({ wizard, auth }) {
+export default inject(({ auth, wizard }) => {
+  const {
+    passwordSettings,
+    culture,
+    wizardToken,
+    cultures,
+    timezones,
+    timezone,
+    urlLicense,
+    hashSettings,
+    getPortalSettings,
+    setWizardComplete,
+    getPortalTimezones,
+    getPortalCultures,
+    getPortalPasswordSettings,
+  } = auth.settingsStore;
+
   const {
     isWizardLoaded,
     machineName,
     isLicenseRequired,
     licenseUpload,
+    setIsWizardLoaded,
+    getMachineName,
+    getIsRequiredLicense,
+    setPortalOwner,
+    setLicense,
+    resetLicenseUploaded,
   } = wizard;
-
-  // const {
-  //   culture,
-  //   wizardToken,
-  //   passwordSettings,
-  //   cultures,
-  //   timezones,
-  //   timezone,
-  //   urlLicense,
-  //   hashSettings,
-  // } = auth.settings;
 
   return {
     isLoaded: auth.isLoaded,
+    culture,
+    wizardToken,
+    passwordSettings,
+    cultures,
+    timezones,
+    timezone,
+    urlLicense,
+    hashSettings,
     isWizardLoaded,
     machineName,
-    //culture,
-    //wizardToken,
-    //passwordSettings,
-    //cultures,
-    //timezones,
-    //timezone,
-    //urlLicense,
     isLicenseRequired,
     licenseUpload,
-    //hashSettings,
+    getPortalSettings,
+    setWizardComplete,
+    getPortalPasswordSettings,
+    getPortalCultures,
+    getPortalTimezones,
+    setIsWizardLoaded,
+    getMachineName,
+    getIsRequiredLicense,
+    setPortalOwner,
+    setLicense,
+    resetLicenseUploaded,
   };
-}
-
-export default connect(mapStateToProps, {
-  getPortalPasswordSettings,
-  getPortalCultures,
-  getPortalTimezones,
-  setIsWizardLoaded,
-  getMachineName,
-  getIsRequiredLicense,
-  setPortalOwner,
-  setLicense,
-  resetLicenseUploaded,
-});
-
-inject(({ store }) => {
-  const {
-    culture,
-    wizardToken,
-    passwordSettings,
-    cultures,
-    timezones,
-    timezone,
-    urlLicense,
-    hashSettings,
-  } = store.settingsStore;
-  return {
-    culture,
-    wizardToken,
-    passwordSettings,
-    cultures,
-    timezones,
-    timezone,
-    urlLicense,
-    hashSettings,
-  };
-})(withRouter(WizardPage));
+})(withRouter(observer(WizardPage)));

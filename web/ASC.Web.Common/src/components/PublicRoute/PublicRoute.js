@@ -45,8 +45,8 @@ export const PublicRoute = ({ component: Component, ...rest }) => {
   return <Route {...rest} render={renderComponent} />;
 };
 
-export default inject(({ store }) => {
-  const { settingsStore, isAuthenticated, isLoaded } = store;
+export default inject(({ auth }) => {
+  const { settingsStore, isAuthenticated, isLoaded } = auth;
   const { wizardToken, wizardCompleted } = settingsStore;
 
   return {

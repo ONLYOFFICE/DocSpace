@@ -160,8 +160,8 @@ function mapStateToProps(state) {
 }
 
 export default connect(mapStateToProps)(
-  inject(({ store, peopleStore }) => ({
-    isLoaded: store.isLoaded,
+  inject(({ auth, peopleStore }) => ({
+    isLoaded: auth.isLoaded,
     fetchPeople: peopleStore.usersStore.getUsersList,
     filter: peopleStore.filterStore.filter,
   }))(observer(SectionPagingContent))

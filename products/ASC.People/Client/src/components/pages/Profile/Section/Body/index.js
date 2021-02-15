@@ -197,11 +197,11 @@ const mapStateToProps = (state) => {
 // });
 
 export default connect(mapStateToProps)(
-  inject(({ store, peopleStore }) => ({
-    settings: store.settingsStore,
-    isAdmin: store.isAdmin,
+  inject(({ auth, peopleStore }) => ({
+    settings: auth.settingsStore,
+    isAdmin: auth.isAdmin,
     profile: peopleStore.targetUserStore.targetUser,
-    viewer: store.userStore.user,
+    viewer: auth.userStore.user,
   }))(observer(withRouter(withTranslation()(SectionBodyContent))))
 );
 

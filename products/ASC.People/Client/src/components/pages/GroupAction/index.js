@@ -126,8 +126,8 @@ export default connect(mapStateToProps, {
   //fetchGroup,
   //resetGroup,
 })(
-  inject(({ store, peopleStore }) => ({
-    isAdmin: store.isAdmin,
+  inject(({ auth, peopleStore }) => ({
+    isAdmin: auth.isAdmin,
     fetchGroup: peopleStore.selectedGroupStore.setTargetedGroup,
     group: peopleStore.selectedGroupStore.targetedGroup,
     resetGroup: peopleStore.selectedGroupStore.resetGroup,

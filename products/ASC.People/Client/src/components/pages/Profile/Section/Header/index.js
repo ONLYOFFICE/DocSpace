@@ -526,10 +526,10 @@ export default connect(mapStateToProps, {
   // updateProfile,
   //setFilter,
 })(
-  inject(({ store, peopleStore }) => ({
-    settings: store.settingsStore,
-    isAdmin: store.isAdmin,
-    viewer: store.userStore.user,
+  inject(({ auth, peopleStore }) => ({
+    settings: auth.settingsStore,
+    isAdmin: auth.isAdmin,
+    viewer: auth.userStore.user,
     filter: peopleStore.filterStore.filter,
     setFilter: peopleStore.filterStore.setFilterParams,
     updateUserStatus: peopleStore.usersStore.updateUserStatus,

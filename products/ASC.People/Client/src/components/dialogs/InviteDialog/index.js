@@ -252,9 +252,9 @@ export default connect(
   mapStateToProps
   //mapDispatchToProps
 )(
-  inject(({ store, peopleStore }) => ({
-    settings: store.settingsStore,
-    guestsCaption: store.settingsStore.customNames.guestsCaption,
+  inject(({ auth, peopleStore }) => ({
+    settings: auth.settingsStore,
+    guestsCaption: auth.settingsStore.customNames.guestsCaption,
     getPortalInviteLinks: peopleStore.inviteLinksStore.getPortalInviteLinks,
     userInvitationLink: peopleStore.inviteLinksStore.inviteLinks.userLink,
     guestInvitationLink: peopleStore.inviteLinksStore.inviteLinks.guestLink,

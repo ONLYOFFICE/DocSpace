@@ -376,7 +376,7 @@ export default connect(mapStateToProps, {
   fetchTreeFolders,
   //fetchFiles,
 })(
-  inject(({ store, mainFilesStore }) => {
+  inject(({ mainFilesStore }) => {
     const { filesStore } = mainFilesStore;
     const { fetchFiles, treeFoldersStore } = filesStore;
 

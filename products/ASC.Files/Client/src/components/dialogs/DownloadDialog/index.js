@@ -616,7 +616,7 @@ const mapStateToProps = (state) => {
 // })(withRouter(DownloadDialog));
 
 export default connect(mapStateToProps)(
-  inject(({ store, mainFilesStore }) => {
+  inject(({ mainFilesStore }) => {
     const { filesStore } = mainFilesStore;
     const { secondaryProgressDataStore } = filesStore;
     const {

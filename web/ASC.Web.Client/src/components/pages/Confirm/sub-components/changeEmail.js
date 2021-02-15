@@ -3,10 +3,8 @@ import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import { Loader } from "asc-web-components";
 import { PageLayout, utils as commonUtils } from "asc-web-common";
-import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { changeEmail } from "../../../../store/confirm/actions";
-import { inject } from "mobx-react";
+import { inject, observer } from "mobx-react";
 const { tryRedirectTo } = commonUtils;
 
 class ChangeEmail extends React.PureComponent {
@@ -65,16 +63,13 @@ const ChangeEmailForm = (props) => (
   </PageLayout>
 );
 
-function mapStateToProps(state) {
+export default inject(({ auth }) => {
+  const { logout, userStore, settingsStore, isLoaded } = auth;
   return {
-    isLoaded: state.auth.isLoaded,
-    userId: state.auth.user.id,
-    //defaultPage: state.auth.settings.defaultPage,
+    isLoaded,
+    userId: userStore.user.id,
+    logout,
+    changeEmail: userStore.changeEmail,
+    defaultPage: settingsStore.defaultPage,
   };
-}
-
-export default connect(mapStateToProps, { changeEmail })(
-  inject(({ store }) => ({
-    defaultPage: store.settingsStore.defaultPage,
-  }))(withRouter(withTranslation()(ChangeEmailForm)))
-);
+})(observer(withRouter(withTranslation()(ChangeEmailForm))));

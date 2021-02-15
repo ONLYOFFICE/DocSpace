@@ -348,13 +348,13 @@ export default connect(
   null,
   mapDispatchToProps
 )(
-  inject(({ store, peopleStore }) => ({
-    settings: store.settingsStore,
-    groupCaption: store.settingsStore.customNames.groupCaption,
-    regDateCaption: store.settingsStore.customNames.regDateCaption,
-    userPostCaption: store.settingsStore.customNames.userPostCaption,
-    userCaption: store.settingsStore.customNames.userCaption,
-    guestCaption: store.settingsStore.customNames.guestCaption,
+  inject(({ auth, peopleStore }) => ({
+    settings: auth.settingsStore,
+    groupCaption: auth.settingsStore.customNames.groupCaption,
+    regDateCaption: auth.settingsStore.customNames.regDateCaption,
+    userPostCaption: auth.settingsStore.customNames.userPostCaption,
+    userCaption: auth.settingsStore.customNames.userCaption,
+    guestCaption: auth.settingsStore.customNames.guestCaption,
     fetchPeople: peopleStore.usersStore.getUsersList,
     filter: peopleStore.filterStore.filter,
     setIsLoading: peopleStore.setIsLoading,

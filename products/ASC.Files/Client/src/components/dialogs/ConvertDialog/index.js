@@ -130,7 +130,7 @@ export default connect(null, {
   setDialogVisible,
   convertUploadedFiles,
 })(
-  inject(({ store, mainFilesStore }) => {
+  inject(({ mainFilesStore }) => {
     const { filesStore } = mainFilesStore;
     const { setTreeFolders } = filesStore.treeFoldersStore;
 

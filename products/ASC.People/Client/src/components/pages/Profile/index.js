@@ -133,10 +133,10 @@ export default connect(mapStateToProps, {
   // fetchProfile,
   // resetProfile,
 })(
-  inject(({ store, peopleStore }) => ({
-    isLoaded: store.isLoaded,
-    isAdmin: store.isAdmin,
-    language: store.language,
+  inject(({ auth, peopleStore }) => ({
+    isLoaded: auth.isLoaded,
+    isAdmin: auth.isAdmin,
+    language: auth.language,
     resetProfile: peopleStore.targetUserStore.resetTargetUser,
     fetchProfile: peopleStore.targetUserStore.getTargetUser,
     profile: peopleStore.targetUserStore.targetUser,

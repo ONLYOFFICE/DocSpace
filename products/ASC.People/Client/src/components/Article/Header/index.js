@@ -10,6 +10,6 @@ const ArticleHeaderContent = ({ currentModuleName }) => {
   );
 };
 
-export default inject(({ store }) => ({
-  currentModuleName: store.product.title,
+export default inject(({ auth }) => ({
+  currentModuleName: auth.product.title,
 }))(observer(ArticleHeaderContent));

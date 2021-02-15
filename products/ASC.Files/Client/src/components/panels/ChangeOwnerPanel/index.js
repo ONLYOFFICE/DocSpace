@@ -226,13 +226,13 @@ export default connect(null, {
   //setChangeOwnerPanelVisible,
 });
 
-inject(({ store, mainFilesStore }) => {
+inject(({ auth, mainFilesStore }) => {
   const { filesStore, setIsLoading, isLoading } = mainFilesStore;
   const { files, folders, selection, dialogsStore } = filesStore;
   const { ownerPanelVisible, setChangeOwnerPanelVisible } = dialogsStore;
 
   return {
-    groupsCaption: store.settingsStore.customNames.groupsCaption,
+    groupsCaption: auth.settingsStore.customNames.groupsCaption,
     files,
     folders,
     selection,

@@ -331,7 +331,7 @@ export default connect(mapStateToProps, {
   setUpdateTree,
   //fetchFiles,
 })(
-  inject(({ store, mainFilesStore }) => {
+  inject(({ mainFilesStore }) => {
     const { filesStore, isLoading } = mainFilesStore;
     const {
       fetchFiles,

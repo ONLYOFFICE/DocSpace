@@ -730,7 +730,7 @@ const mapStateToProps = (state) => {
 // })(withTranslation()(withRouter(SectionHeaderContent)));
 
 export default connect(mapStateToProps)(
-  inject(({ store, mainFilesStore }) => {
+  inject(({ auth, mainFilesStore }) => {
     const { filesStore, setIsLoading } = mainFilesStore;
     const {
       setSelected,
@@ -752,8 +752,8 @@ export default connect(mapStateToProps)(
     const { sharingPanelVisible, setSharingPanelVisible } = dialogsStore;
 
     return {
-      isAdmin: store.isAdmin,
-      isDesktop: store.settingsStore.isDesktopClient,
+      isAdmin: auth.isAdmin,
+      isDesktop: auth.settingsStore.isDesktopClient,
       isRootFolder: selectedFolderStore.parentId === 0,
       title: selectedFolderStore.title,
       parentId: selectedFolderStore.parentId,

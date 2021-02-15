@@ -153,7 +153,7 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(
-  inject(({ store, mainFilesStore }) => {
+  inject(({ mainFilesStore }) => {
     const { filesStore, isLoading } = mainFilesStore;
     const { setFirstLoad, treeFoldersStore } = filesStore;
     const { setSelectedNode } = treeFoldersStore;

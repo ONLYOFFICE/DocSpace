@@ -255,7 +255,7 @@ export default connect(mapStateToProps, {
   //setSelectedFolder,
   setShowThirdPartyPanel,
 })(
-  inject(({ store, mainFilesStore }) => {
+  inject(({ auth, mainFilesStore }) => {
     const { setIsLoading, filesStore } = mainFilesStore;
     const { setSelectedFolder } = filesStore.selectedFolderStore;
     const { setSelectedNode } = filesStore.treeFoldersStore;

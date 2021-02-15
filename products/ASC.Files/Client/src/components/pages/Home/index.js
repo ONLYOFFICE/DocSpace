@@ -362,7 +362,7 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default inject(({ store, mainFilesStore }) => {
+export default inject(({ auth, mainFilesStore }) => {
   const {
     dragging,
     setDragging,
@@ -404,7 +404,7 @@ export default inject(({ store, mainFilesStore }) => {
   } = dialogsStore;
 
   return {
-    homepage: store.settingsStore.homepage,
+    homepage: auth.settingsStore.homepage,
     firstLoad,
     dragging,
     fileActionId: id,

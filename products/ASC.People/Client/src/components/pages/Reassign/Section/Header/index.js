@@ -69,8 +69,8 @@ function mapStateToProps(state) {
 // });
 
 export default connect(mapStateToProps)(
-  inject(({ store }) => ({
-    settings: store.settingsStore,
+  inject(({ auth }) => ({
+    settings: auth.settingsStore,
   }))(observer(withRouter(SectionHeaderContent)))
 );
 

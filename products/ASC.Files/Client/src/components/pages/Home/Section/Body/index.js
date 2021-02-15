@@ -2226,7 +2226,7 @@ export default connect(mapStateToProps, {
   //setVerHistoryFileId,
   //setChangeOwnerPanelVisible,
 })(
-  inject(({ store, mainFilesStore }) => {
+  inject(({ auth, mainFilesStore }) => {
     const {
       homepage,
       culture,
@@ -2234,7 +2234,7 @@ export default connect(mapStateToProps, {
       isTabletView,
       organizationName,
       isDesktopClient,
-    } = store.settingsStore;
+    } = auth.settingsStore;
     const {
       dragging,
       setDragging,
@@ -2243,7 +2243,7 @@ export default connect(mapStateToProps, {
       viewAs,
       dragItem,
       setDragItem,
-      privacyInstructions
+      privacyInstructions,
     } = mainFilesStore;
     const {
       files,
@@ -2300,12 +2300,12 @@ export default connect(mapStateToProps, {
     } = versionHistoryStore;
 
     return {
-      isAdmin: store.isAdmin,
+      isAdmin: auth.isAdmin,
       homepage,
       culture,
       isEncryptionSupport,
       isTabletView,
-      viewer: store.userStore.user,
+      viewer: auth.userStore.user,
       organizationName,
       isDesktop: isDesktopClient,
       dragging,

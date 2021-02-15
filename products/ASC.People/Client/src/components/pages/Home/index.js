@@ -196,10 +196,10 @@ function mapStateToProps(state) {
 }
 
 export default connect(mapStateToProps, { setSelected /*setIsLoading*/ })(
-  inject(({ store, peopleStore }) => ({
-    isLoaded: store.isLoaded,
-    isAdmin: store.isAdmin,
-    organizationName: store.settingsStore.organizationName,
+  inject(({ auth, peopleStore }) => ({
+    isLoaded: auth.isLoaded,
+    isAdmin: auth.isAdmin,
+    organizationName: auth.settingsStore.organizationName,
     users: peopleStore.usersStore.users,
     groups: peopleStore.groupsStore.groups,
     selectedGroup: peopleStore.selectedGroupStore.selectedGroup,

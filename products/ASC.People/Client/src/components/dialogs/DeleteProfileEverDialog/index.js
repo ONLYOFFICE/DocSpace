@@ -114,7 +114,7 @@ DeleteProfileEverDialog.propTypes = {
   history: PropTypes.object.isRequired,
 };
 
-export default inject(({ store, peopleStore }) => ({
-  userCaption: store.settingsStore.customNames.userCaption,
+export default inject(({ auth, peopleStore }) => ({
+  userCaption: auth.settingsStore.customNames.userCaption,
   fetchPeople: peopleStore.usersStore.getUsersList,
 }))(observer(withRouter(DeleteProfileEverDialog)));

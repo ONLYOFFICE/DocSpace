@@ -96,6 +96,6 @@ Reassign.propTypes = {
 
 // export default connect(mapStateToProps, {})(Reassign);
 
-export default inject(({ store }) => ({
-  isAdmin: store.isAdmin,
+export default inject(({ auth }) => ({
+  isAdmin: auth.isAdmin,
 }))(observer(Reassign));

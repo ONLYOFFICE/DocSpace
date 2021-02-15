@@ -351,12 +351,12 @@ function mapStateToProps(state) {
 // })(withRouter(withLayoutSize(withTranslation()(SectionFilterContent))));
 
 export default connect(mapStateToProps)(
-  inject(({ store, mainFilesStore }) => {
+  inject(({ auth, mainFilesStore }) => {
     const { filesStore, setIsLoading, setViewAs, viewAs } = mainFilesStore;
     const { firstLoad, fetchFiles, filter, selectedFolderStore } = filesStore;
 
-    const { user } = store.userStore;
-    const { customNames, culture } = store.settingsStore;
+    const { user } = auth.userStore;
+    const { customNames, culture } = auth.settingsStore;
     const language = (user && user.cultureName) || culture || "en-US";
 
     return {
