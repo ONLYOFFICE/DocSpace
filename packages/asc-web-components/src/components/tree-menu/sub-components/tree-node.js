@@ -5,6 +5,8 @@ import { getCssFromSvg } from "../../icons/get-css-from-svg";
 import { TreeNode } from "rc-tree";
 import ReactDOMServer from "react-dom/server";
 import PropTypes from "prop-types";
+import NoUserSelect from "../../../utils/commonStyles";
+import { Base } from "../../../themes";
 
 var checkboxIcon,
   checkboxСheckedIcon,
@@ -101,18 +103,16 @@ const TreeNodeMenu = styled(TreeNode)`
 
   position: relative;
 
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
+  ${NoUserSelect}
 
   ${(props) =>
     props.dragging &&
     css`
       .draggable {
-        background: #f8f7bf;
-        border-radius: 3px;
+        background: ${(props) =>
+          props.theme.treeNode.dragging.draggable.background};
+        border-radius: ${(props) =>
+          props.theme.treeNode.dragging.draggable.borderRadius};
         ${(props) =>
           !props.isFullFillSelection &&
           `
@@ -122,33 +122,37 @@ const TreeNodeMenu = styled(TreeNode)`
           `}
 
         :hover {
-          background: #efefb2;
+          background: ${(props) =>
+            props.theme.treeNode.dragging.draggable.hoverBackgroundColor};
         }
         .rc-tree-title {
-          width: 85% !important;
+          width: ${(props) =>
+            props.theme.treeNode.dragging.title.width} !important;
         }
       }
     `}
   .draggable {
-    color: #555F65;
+    color: ${(props) => props.theme.treeNode.draggable.color};
     /* Required to make elements draggable in old WebKit */
     -khtml-user-drag: none;
     -webkit-user-drag: none;
   }
   &.drag-over > .draggable {
-    background-color: #316ac5;
-    color: white;
-    border: 1px #316ac5 solid;
+    background-color: ${(props) =>
+      props.theme.treeNode.draggable.dragOverBackgroundColor};
+    color: ${(props) => props.theme.treeNode.draggable.dragOverColor};
+    border: ${(props) => props.theme.treeNode.draggable.border};
     opacity: 0.8;
   }
   &.drag-over-gap-top > .draggable {
-    border-top: 2px blue solid;
+    border-top: ${(props) => props.theme.treeNode.draggable.gapTop.borderTop};
   }
   &.drag-over-gap-bottom > .draggable {
-    border-bottom: 2px blue solid;
+    border-bottom: ${(props) =>
+      props.theme.treeNode.draggable.gapBottom.borderBottom};
   }
   &.filter-node > .rc-tree-node-content-wrapper {
-    color: #a60000 !important;
+    color: ${(props) => props.theme.treeNode.contentWrapper.color} !important;
     font-weight: bold !important;
   }
   ul {
@@ -276,9 +280,9 @@ const TreeNodeMenu = styled(TreeNode)`
     top: 5px;
     width: 5px;
     height: 0;
-    border: 2px solid #fff;
-    border-top: 0;
-    border-left: 0;
+    border: ${(props) => props.theme.treeNode.checkbox.border};
+    border-top: ${(props) => props.theme.treeNode.checkbox.borderTop};
+    border-left: ${(props) => props.theme.treeNode.checkbox.borderLeft};
   }
   span.rc-tree-title {
     display: inline-block;
@@ -291,7 +295,7 @@ const TreeNodeMenu = styled(TreeNode)`
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    color: #555F65;
+    color: ${(props) => props.theme.treeNode.title.color};
     padding-left: ${(props) =>
       props.icon || props.disableSwitch ? "0" : "20px"};
   }
@@ -304,9 +308,9 @@ const TreeNodeMenu = styled(TreeNode)`
     top: 2px;
   }
   .rc-tree-node-selected {
-    background: #dfe2e3;
+    background: ${(props) => props.theme.treeNode.selected.background};
     mix-blend-mode: normal;
-    border-radius: 3px;
+    border-radius: ${(props) => props.theme.treeNode.selected.borderRadius};
     z-index: 0;
     ${(props) =>
       props.disableSwitch &&
@@ -315,7 +319,8 @@ const TreeNodeMenu = styled(TreeNode)`
         width: auto;
       `}
     :hover {
-      background: #dfe2e3;
+      background: ${(props) =>
+        props.theme.treeNode.selected.hoverBackgroundColor};
     }
     overflow: visible;
   }
@@ -343,5 +348,6 @@ TreeNodeMenu.propTypes = {
   showBadge: PropTypes.bool,
   onBadgeClick: PropTypes.func,
 };
+TreeNodeMenu.defaultProps = { theme: Base };
 
 export default TreeNodeMenu;

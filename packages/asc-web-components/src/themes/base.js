@@ -42,6 +42,9 @@ const {
   hoverWarning,
   darkBlack,
   silver,
+  strongBlue,
+  lightGrayishStrongBlue,
+  darkRed,
 } = globalColors;
 
 const Base = {
@@ -159,7 +162,7 @@ const Base = {
     margin: "0",
     lineHeight: "56px",
     fontWeight: "700",
-    borderBottom: `1px solid ${globalColors.pattensBlue}`,
+    borderBottom: `1px solid ${globalColors.lightGrayishBlue}`,
     padding: "0 16px 16px",
     bodyPadding: "16px 0",
   },
@@ -494,7 +497,7 @@ const Base = {
     },
 
     header: {
-      borderBottom: `1px solid ${globalColors.pattensBlue}`,
+      borderBottom: `1px solid ${globalColors.lightGrayishBlue}`,
     },
 
     closeButton: {
@@ -1084,6 +1087,55 @@ const Base = {
     unsetBackgroundColor: "unset",
   },
 
+  treeNode: {
+    dragging: {
+      draggable: {
+        background: lightCumulus,
+        hoverBackgroundColor: lightMediumGoldenrod,
+        borderRadius: "3px",
+      },
+
+      title: {
+        width: "85%",
+      },
+    },
+
+    draggable: {
+      color: cyanBlueDarkShade,
+      dragOverBackgroundColor: strongBlue,
+      border: `1px ${strongBlue} solid`,
+      dragOverColor: white,
+
+      gapTop: {
+        borderTop: `2px blue solid`,
+      },
+
+      gapBottom: {
+        borderBottom: `2px blue solid`,
+      },
+    },
+
+    contentWrapper: {
+      color: darkRed,
+    },
+
+    title: {
+      color: cyanBlueDarkShade,
+    },
+
+    selected: {
+      background: lightGrayishStrongBlue,
+      hoverBackgroundColor: lightGrayishStrongBlue,
+      borderRadius: "3px",
+    },
+
+    checkbox: {
+      border: `2px solid ${white}`,
+      borderTop: 0,
+      borderLeft: 0,
+    },
+  },
+
   progressBar: {
     height: "22px",
     backgroundColor: grayLight,
@@ -1400,7 +1452,7 @@ const Base = {
       margin: "0",
       lineHeight: "56px",
       fontWeight: "700",
-      borderBottom: `1px solid ${globalColors.pattensBlue}`,
+      borderBottom: `1px solid ${globalColors.lightGrayishBlue}`,
     },
 
     bodyContent: {
@@ -1481,7 +1533,7 @@ const Base = {
     contentLineHeight: "56px",
     contentFontWeight: "700",
 
-    borderBottom: `1px solid ${globalColors.pattensBlue}`,
+    borderBottom: `1px solid ${globalColors.lightGrayishBlue}`,
   },
 
   aside: {
