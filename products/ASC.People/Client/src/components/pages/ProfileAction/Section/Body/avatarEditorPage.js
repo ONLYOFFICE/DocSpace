@@ -8,7 +8,7 @@ import { api, toastr } from "asc-web-common";
 import {
   fetchProfile,
   updateProfile,
-  getUserPhoto,
+  // getUserPhoto,
   setAvatarMax,
 } from "../../../../../store/profile/actions";
 import { toEmployeeWrapper } from "../../../../../store/people/selectors";
@@ -73,7 +73,7 @@ class AvatarEditorPage extends React.PureComponent {
 
   updateUserPhotoInState = () => {
     var profile = toEmployeeWrapper(this.props.profile);
-    getUserPhoto(profile.id).then((userPhotoData) => {
+    this.props.getUserPhoto(profile.id).then((userPhotoData) => {
       if (userPhotoData.original) {
         let avatarDefaultSizes = /_(\d*)-(\d*)./g.exec(userPhotoData.original);
         if (avatarDefaultSizes !== null && avatarDefaultSizes.length > 2) {
@@ -97,7 +97,7 @@ class AvatarEditorPage extends React.PureComponent {
   mapPropsToState = (props) => {
     var profile = toEmployeeWrapper(props.profile);
 
-    getUserPhoto(profile.id).then((userPhotoData) => {
+    this.props.getUserPhoto(profile.id).then((userPhotoData) => {
       if (userPhotoData.original) {
         let avatarDefaultSizes = /_(\d*)-(\d*)./g.exec(userPhotoData.original);
         if (avatarDefaultSizes !== null && avatarDefaultSizes.length > 2) {
@@ -259,7 +259,7 @@ class AvatarEditorPage extends React.PureComponent {
       return;
     }
 
-    getUserPhoto(profile.id).then((userPhotoData) => {
+    this.props.getUserPhoto(profile.id).then((userPhotoData) => {
       if (userPhotoData.original) {
         let avatarDefaultSizes = /_(\d*)-(\d*)./g.exec(userPhotoData.original);
         if (avatarDefaultSizes !== null && avatarDefaultSizes.length > 2) {
@@ -332,7 +332,7 @@ function mapStateToProps(state) {
 
 export default connect(mapStateToProps, {
   // fetchProfile,
-  updateProfile,
+  // updateProfile,
   //toggleAvatarEditor,
   // setAvatarMax,
 })(
@@ -341,5 +341,7 @@ export default connect(mapStateToProps, {
     fetchProfile: peopleStore.targetUserStore.getTargetUser,
     profile: peopleStore.targetUserStore.targetUser,
     setAvatarMax: peopleStore.avatarEditorStore.setAvatarMax,
+    updateProfile: peopleStore.targetUserStore.updateProfile,
+    getUserPhoto: peopleStore.targetUserStore.getUserPhoto,
   }))(observer(withRouter(withTranslation()(AvatarEditorPage))))
 );

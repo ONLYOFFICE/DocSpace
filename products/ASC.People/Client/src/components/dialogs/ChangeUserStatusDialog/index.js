@@ -67,7 +67,7 @@ class ChangeUserStatusDialogComponent extends React.Component {
         .catch((error) => toastr.error(error))
         .finally(() => {
           this.setState({ isRequestRunning: false }, () => {
-            //setSelected("close");
+            setSelected("close");
             onClose();
           });
         });
@@ -213,11 +213,10 @@ const mapStateToProps = (state, ownProps) => {
 //   withRouter(ChangeUserStatusDialog)
 // );
 
-export default connect(mapStateToProps, {
-  // setSelected,
-})(
+export default connect(mapStateToProps)(
   inject(({ peopleStore }) => ({
     updateUserStatus: peopleStore.usersStore.updateUserStatus,
     selectedUsers: peopleStore.selectionStore.selection,
+    setSelected: peopleStore.selectionStore.setSelected,
   }))(observer(withRouter(ChangeUserStatusDialog)))
 );

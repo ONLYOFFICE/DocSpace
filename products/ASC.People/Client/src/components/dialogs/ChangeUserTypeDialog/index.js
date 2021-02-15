@@ -84,7 +84,7 @@ class ChangeUserTypeDialogComponent extends React.Component {
         .catch((error) => toastr.error(error))
         .finally(() => {
           this.setState({ isRequestRunning: false }, () => {
-            //setSelected("close");
+            setSelected("close");
             onClose();
           });
         });
@@ -203,13 +203,11 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-export default connect(mapStateToProps, {
-  /*updateUserType*/
-  /*setSelected */
-})(
+export default connect(mapStateToProps)(
   inject(({ peopleStore }) => ({
     filter: peopleStore.filterStore.filter,
     updateUserType: peopleStore.usersStore.updateUserType,
     selectedUsers: peopleStore.selectionStore.selection,
+    setSelected: peopleStore.selectionStore.setSelected,
   }))(observer(withRouter(ChangeUserTypeDialog)))
 );
