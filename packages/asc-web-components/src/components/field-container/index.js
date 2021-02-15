@@ -1,80 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
-import styled, { css } from "styled-components";
-import { tablet } from "../../utils/device";
+
 import Label from "../label";
 import HelpButton from "../help-button";
 import Text from "../text";
-
-function getHorizontalCss(labelWidth) {
-  return css`
-    display: flex;
-    flex-direction: row;
-    align-items: start;
-    margin: 0 0 16px 0;
-
-    .field-label {
-      line-height: 32px;
-      margin: 0;
-      position: relative;
-    }
-    .field-label-icon {
-      display: inline-flex;
-      min-width: ${labelWidth};
-      width: ${labelWidth};
-    }
-    .field-body {
-      flex-grow: 1;
-    }
-    .icon-button {
-      position: relative;
-      margin-top: 10px;
-      margin-left: 8px;
-    }
-  `;
-}
-
-function getVerticalCss() {
-  return css`
-    display: flex;
-    flex-direction: column;
-    align-items: start;
-    margin: 0 0 16px 0;
-
-    .field-label {
-      line-height: 13px;
-      height: 15px;
-      display: inline-block;
-    }
-    .field-label-icon {
-      display: inline-flex;
-      width: 100%;
-      margin: 0 0 8px 0;
-    }
-    .field-body {
-      width: 100%;
-    }
-    .icon-button {
-      position: relative;
-      margin: 0;
-      padding: 0px 8px;
-      width: 13px;
-      height: 13px;
-    }
-  `;
-}
-
-const Container = styled.div`
-  .error-label {
-    max-width: ${(props) => (props.maxwidth ? props.maxwidth : "293px")};
-  }
-  ${(props) =>
-    props.vertical ? getVerticalCss() : getHorizontalCss(props.maxLabelWidth)}
-
-  @media ${tablet} {
-    ${getVerticalCss()}
-  }
-`;
+import Container from "./styled-field-container";
 
 class FieldContainer extends React.Component {
   constructor(props) {

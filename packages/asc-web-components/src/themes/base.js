@@ -298,7 +298,7 @@ const Base = {
     },
   },
 
- 
+
   selectorAddButton: {
     background: grayLight,
     activeBackground: grayLightMid,
@@ -446,7 +446,7 @@ const Base = {
     fontStyle: "normal",
     fontWeight: "600",
     height: "56px",
-    maxWidth:" 100%",
+    maxWidth: " 100%",
 
     sideInfo: {
       minWidth: "160px",
@@ -461,7 +461,6 @@ const Base = {
       marginTop: "8px",
       width: "95%",
     },
-
   },
 
   badge: {
@@ -602,6 +601,7 @@ const Base = {
       },
     },
   },
+
 
 
   searchInput: {
@@ -766,6 +766,51 @@ const Base = {
         overflow: "hidden",
         color: white,
         disableColor: grayMid,
+      },
+    },
+  },
+
+  fieldContainer: {
+    horizontal: {
+      margin: "0 0 16px 0",
+
+      label: {
+        lineHeight: "32px",
+        margin: "0",
+      },
+
+      body: {
+        flexGrow: "1",
+      },
+
+      iconButton: {
+        marginTop: "10px",
+        marginLeft: "8px",
+      },
+    },
+
+    vertical: {
+      margin: "0 0 16px 0",
+
+      label: {
+        lineHeight: "13px",
+        height: "15px",
+      },
+
+      labelIcon: {
+        width: "100%",
+        margin: "0 0 8px 0",
+      },
+
+      body: {
+        width: "100%",
+      },
+
+      iconButton: {
+        margin: "0",
+        padding: "0px 8px",
+        width: "13px",
+        height: "13px",
       },
     },
   },
