@@ -264,38 +264,17 @@ class SectionFilterContent extends React.Component {
   }
 }
 
-function mapStateToProps(state) {
+export default inject(({ store, peopleStore }) => {
   return {
-    //user: getCurrentUser(state),
-    //language: getLanguage(state),
-    //groups: getGroups(state),
-    //filter: getFilter(state),
-    // settings: getSettings(state),
-    // isAdmin: isAdmin(state),
-    // isLoaded: getIsLoaded(state),
+    settings: store.settingsStore,
+    isLoaded: store.isLoaded,
+    isAdmin: store.isAdmin,
+    language: store.language,
+    user: store.userStore.user,
+    groups: peopleStore.groupsStore.groups,
+    fetchPeople: peopleStore.usersStore.getUsersList,
+    filter: peopleStore.filterStore.filter,
   };
-}
-
-// const SectionFilterContentWrapper = observer((props) => {
-//   return <SectionFilterContent settings={settingsStore.settings} {...props} />;
-// });
-
-export default connect(mapStateToProps)(
-  inject(({ store, peopleStore }) => {
-    // const { isAdmin, isLoaded, language, settings } = store;
-    return {
-      settings: store.settingsStore,
-      isLoaded: store.isLoaded,
-      isAdmin: store.isAdmin,
-      language: store.language,
-      user: store.userStore.user,
-      groups: peopleStore.groupsStore.groups,
-      fetchPeople: peopleStore.usersStore.getUsersList,
-      filter: peopleStore.filterStore.filter,
-    };
-  })(
-    observer(
-      withRouter(withLayoutSize(withTranslation()(SectionFilterContent)))
-    )
-  )
+})(
+  observer(withRouter(withLayoutSize(withTranslation()(SectionFilterContent))))
 );
