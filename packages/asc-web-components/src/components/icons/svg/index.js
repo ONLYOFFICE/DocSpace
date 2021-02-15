@@ -101,7 +101,6 @@ import OrigMyspaceIcon from "./myspace.react.svg";
 import OrigBloggerIcon from "./blogger.react.svg";
 import OrigYahooIcon from "./yahoo.react.svg";
 import OrigCalendarEmptyIcon from "./calendar.empty.react.svg";
-import OrigRefreshIcon from "./refresh.react.svg";
 import OrigForwardIcon from "./forward.react.svg";
 import OrigFileActionsLockedIcon from "./file.actions.locked.react.svg";
 import OrigReplyAllIcon from "./reply.all.react.svg";
@@ -142,14 +141,10 @@ import OrigNavLogoOpenedIcon from "./nav.logo.opened.react.svg";
 
 import OrigCheckIcon from "./check.react.svg";
 
-
 import OrigDangerIcon from "./danger.react.svg";
 import OrigInfoIcon from "./info.react.svg";
 
-
 import OrigArrowPathIcon from "./arrow.path.react.svg";
-
-
 
 import OrigQuestionIcon from "./question.react.svg";
 
@@ -631,7 +626,7 @@ export const RectangleFilterClickIcon = createStyledIcon(
   OrigRectangleFilterClickIcon,
   "RectangleFilterClickIcon"
 );
-export const RefreshIcon = createStyledIcon(OrigRefreshIcon, "RefreshIcon");
+
 export const RemoveIcon = createStyledIcon(OrigRemoveIcon, "RemoveIcon");
 export const ReplyAllIcon = createStyledIcon(OrigReplyAllIcon, "ReplyAllIcon");
 export const ReplyIcon = createStyledIcon(OrigReplyIcon, "ReplyIcon");
@@ -687,9 +682,6 @@ export const ArrowPathIcon = createStyledIcon(
   OrigArrowPathIcon,
   "ArrowPathIcon"
 );
-
-
-
 
 export const QuestionIcon = createStyledIcon(
   OrigQuestionIcon,

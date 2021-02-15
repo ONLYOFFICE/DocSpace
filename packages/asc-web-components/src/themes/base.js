@@ -298,7 +298,7 @@ const Base = {
     },
   },
 
-
+  iconButton: {},
   selectorAddButton: {
     background: grayLight,
     activeBackground: grayLightMid,
@@ -602,7 +602,43 @@ const Base = {
     },
   },
 
+  passwordInput: {
+    disableColor: grayMid,
+    color: gray,
 
+    hoverColor: gray,
+
+    lineHeight: "32px",
+
+    text: {
+      lineHeight: "14px",
+      marginTop: "-2px",
+    },
+
+    link: {
+      marginTop: "-6px",
+
+      tablet: {
+        width: "100%",
+        marginLeft: "0px",
+        marginTop: "-1px",
+      },
+    },
+
+    progress: {
+      borderRadius: "2px",
+      marginTop: "-1px",
+    },
+
+    newPassword: {
+      margin: "0 16px",
+
+      svg: {
+        overflow: "hidden",
+        marginBottom: "4px",
+      },
+    },
+  },
 
   searchInput: {
     fontSize: "14px",
