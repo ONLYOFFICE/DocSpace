@@ -205,7 +205,7 @@ const mapStateToProps = (state, ownProps) => {
       userStatus === EmployeeStatus.Active
         ? getUsersToActivateIds(state)
         : getUsersToDisableIds(state),
-    selectedUsers: selection,
+    //selectedUsers: selection,
   };
 };
 
@@ -218,5 +218,6 @@ export default connect(mapStateToProps, {
 })(
   inject(({ peopleStore }) => ({
     updateUserStatus: peopleStore.usersStore.updateUserStatus,
+    selectedUsers: peopleStore.selectionStore.selection,
   }))(observer(withRouter(ChangeUserStatusDialog)))
 );

@@ -210,5 +210,6 @@ export default connect(mapStateToProps, {
   inject(({ peopleStore }) => ({
     filter: peopleStore.filterStore.filter,
     removeUser: peopleStore.usersStore.removeUser,
+    selectedUsers: peopleStore.selectionStore.selection,
   }))(observer(withRouter(DeleteUsersDialog)))
 );

@@ -199,7 +199,7 @@ const mapStateToProps = (state, ownProps) => {
       userType === EmployeeType.User
         ? getUsersToMakeEmployeesIds(state)
         : getUsersToMakeGuestsIds(state),
-    selectedUsers: selection,
+    //selectedUsers: selection,
   };
 };
 
@@ -210,5 +210,6 @@ export default connect(mapStateToProps, {
   inject(({ peopleStore }) => ({
     filter: peopleStore.filterStore.filter,
     updateUserType: peopleStore.usersStore.updateUserType,
+    selectedUsers: peopleStore.selectionStore.selection,
   }))(observer(withRouter(ChangeUserTypeDialog)))
 );
