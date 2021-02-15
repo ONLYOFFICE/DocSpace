@@ -223,7 +223,7 @@ const TreeSettings = (props) => {
 //   setIsLoading,
 // })(withRouter(TreeSettings));
 
-export default inject(({ store, mainFilesStore }) => {
+export default inject(({ store, mainFilesStore, settingsStore }) => {
   const { setIsLoading, filesStore, isLoading } = mainFilesStore;
   const { setSelectedFolder } = filesStore.selectedFolderStore;
   const { selectedTreeNode, setSelectedNode } = filesStore.treeFoldersStore;
@@ -232,7 +232,7 @@ export default inject(({ store, mainFilesStore }) => {
     enableThirdParty,
     expandedSetting,
     setExpandSettingsTree,
-  } = filesStore.settingsTreeStore;
+  } = settingsStore;
 
   return {
     isAdmin: store.isAdmin,

@@ -147,11 +147,11 @@ const Settings = (props) => {
 //   mapDispatchToProps
 // )(withRouter(Settings));
 
-export default inject(({ mainFilesStore }) => {
+export default inject(({ mainFilesStore, settingsStore }) => {
   const { filesStore, isLoading } = mainFilesStore;
-  const { setFirstLoad, treeFoldersStore, settingsTreeStore } = filesStore;
+  const { setFirstLoad, treeFoldersStore } = filesStore;
   const { setSelectedNode } = treeFoldersStore;
-  const { getFilesSettings, settingsTree: settings } = settingsTreeStore;
+  const { getFilesSettings, settingsTree: settings } = settingsStore;
 
   const settingsTree = Object.keys(settings).length !== 0 ? settings : {};
 

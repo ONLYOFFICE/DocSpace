@@ -1,17 +1,22 @@
 import { makeObservable, action, observable } from "mobx";
 import { api } from "asc-web-common";
 import axios from "axios";
+import ThirdPartyStore from "./ThirdPartyStore";
 
-class SettingsTreeStore {
+class SettingsStore {
+  thirdPartyStore = null;
   settingsTree = {};
 
   constructor() {
     makeObservable(this, {
+      thirdPartyStore: observable,
       settingsTree: observable,
 
       getFilesSettings: action,
       setExpandSettingsTree: action,
     });
+
+    this.thirdPartyStore = new ThirdPartyStore();
   }
 
   setFilesSettings = (settings) => {
@@ -19,9 +24,6 @@ class SettingsTreeStore {
     for (let key of settingsItems) {
       this.settingsTree[key] = settings[key];
     }
-
-    //forceSave: forcesave,
-    //storeForceSave: storeForcesave,
   };
 
   setIsErrorSettings = (isError) => {
@@ -48,9 +50,8 @@ class SettingsTreeStore {
                 for (let item of capabilities) {
                   item.splice(1, 1);
                 }
-
-                //setThirdPartyCapabilities(capabilities);
-                //setThirdPartyProviders(providers);
+                this.thirdPartyStore.setThirdPartyCapabilities(capabilities);
+                this.thirdPartyStore.setThirdPartyProviders(providers);
               });
           }
         })
@@ -93,4 +94,4 @@ class SettingsTreeStore {
     api.files.forceSave(data).then((res) => this.setFilesSetting(setting, res));
 }
 
-export default SettingsTreeStore;
+export default new SettingsStore();

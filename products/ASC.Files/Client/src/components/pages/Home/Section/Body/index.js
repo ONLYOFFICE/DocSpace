@@ -2201,8 +2201,8 @@ SectionBodyContent.defaultProps = {
 //   setChangeOwnerPanelVisible,
 // })(withRouter(withTranslation()(SectionBodyContent)));
 
-export default inject(({ store, mainFilesStore, thirdParty }) => {
-  const { providers, capabilities } = thirdParty;
+export default inject(({ store, mainFilesStore, settingsStore }) => {
+  const { providers, capabilities } = settingsStore.thirdPartyStore;
   const {
     homepage,
     culture,

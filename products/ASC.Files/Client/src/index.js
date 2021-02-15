@@ -12,9 +12,7 @@ import * as serviceWorker from "./serviceWorker";
 import { ErrorBoundary, store as commonStore } from "asc-web-common";
 import { Provider as MobxProvider } from "mobx-react";
 import mainFilesStore from "./store/MainFilesStore";
-import ThirdPartyStore from "./store/ThirdPartyStore";
-
-const thirdPartyStore = new ThirdPartyStore();
+import settingsStore from "./store/SettingsStore";
 
 const { authStore } = commonStore;
 
@@ -22,7 +20,7 @@ ReactDOM.render(
   <MobxProvider
     store={authStore}
     mainFilesStore={mainFilesStore}
-    thirdParty={thirdPartyStore}
+    settingsStore={settingsStore}
   >
     <ErrorBoundary>
       <App />

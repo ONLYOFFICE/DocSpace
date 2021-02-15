@@ -13,11 +13,10 @@ import SecondaryProgressDataStore from "./SecondaryProgressDataStore";
 import DialogsStore from "./DialogsStore";
 import VersionHistoryStore from "./VersionHistoryStore";
 import UploadDataStore from "./UploadDataStore";
-import SettingsTreeStore from "./SettingsTreeStore";
 import { createTreeFolders } from "./files/selectors";
 
 const { FilesFilter } = api;
-const { FolderType } = constants;
+const { FolderType, FilterType, FileType } = constants;
 const { authStore } = store;
 const { settingsStore, userStore, isAdmin } = authStore;
 const { isEncryptionSupport, isDesktopClient } = settingsStore;
@@ -35,7 +34,6 @@ class FilesStore {
   dialogsStore = null;
   versionHistoryStore = null;
   uploadDataStore = null;
-  settingsTreeStore = null;
 
   firstLoad = true;
   files = [];
@@ -60,7 +58,6 @@ class FilesStore {
       dialogsStore: observable, //TODO: MainFiles?
       versionHistoryStore: observable, //TODO: MainFiles?
       uploadDataStore: observable, //TODO: MainFiles?
-      settingsTreeStore: observable, //TODO: MainFiles?
 
       firstLoad: observable,
       files: observable,
@@ -124,7 +121,6 @@ class FilesStore {
     this.dialogsStore = new DialogsStore();
     this.versionHistoryStore = new VersionHistoryStore();
     this.uploadDataStore = new UploadDataStore();
-    this.settingsTreeStore = new SettingsTreeStore();
   }
 
   setFirstLoad = (firstLoad) => {
@@ -139,8 +135,46 @@ class FilesStore {
     this.folders = folders;
   };
 
+  getFilesChecked = (file, selected) => {
+    const type = file.fileType;
+    switch (selected) {
+      case "all":
+        return true;
+      case FilterType.FoldersOnly.toString():
+        return file.parentId;
+      case FilterType.DocumentsOnly.toString():
+        return type === FileType.Document;
+      case FilterType.PresentationsOnly.toString():
+        return type === FileType.Presentation;
+      case FilterType.SpreadsheetsOnly.toString():
+        return type === FileType.Spreadsheet;
+      case FilterType.ImagesOnly.toString():
+        return type === FileType.Image;
+      case FilterType.MediaOnly.toString():
+        return type === FileType.Video || type === FileType.Audio;
+      case FilterType.ArchiveOnly.toString():
+        return type === FileType.Archive;
+      case FilterType.FilesOnly.toString():
+        return type || !file.parentId;
+      default:
+        return false;
+    }
+  };
+
+  getFilesBySelected = (files, selected) => {
+    let newSelection = [];
+    files.forEach((file) => {
+      const checked = this.getFilesChecked(file, selected);
+
+      if (checked) newSelection.push(file);
+    });
+
+    return newSelection;
+  };
+
   setSelected = (selected) => {
     this.selected = selected;
+    this.selection = this.getFilesBySelected(this.folders, selected);
   };
 
   setSelection = (selection) => {

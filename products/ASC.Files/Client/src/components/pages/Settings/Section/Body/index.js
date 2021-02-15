@@ -204,9 +204,9 @@ const SectionBodyContent = ({
 //   setForceSave,
 // })(SectionBodyContent);
 
-export default inject(({ store, mainFilesStore }) => {
+export default inject(({ store, mainFilesStore, settingsStore }) => {
   const { isLoading, filesStore } = mainFilesStore;
-  const { treeFoldersStore, settingsTreeStore } = filesStore;
+  const { treeFoldersStore } = filesStore;
   const { selectedTreeNode } = treeFoldersStore;
   const {
     settingsTree: settings,
@@ -222,7 +222,7 @@ export default inject(({ store, mainFilesStore }) => {
     setConfirmDelete,
     setStoreForceSave,
     setForceSave,
-  } = settingsTreeStore;
+  } = settingsStore;
 
   const settingsTree = Object.keys(settings).length !== 0 ? settings : {};
 

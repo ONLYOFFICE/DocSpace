@@ -373,7 +373,7 @@ const ConnectDialog = (props) => {
 //   fetchFiles,
 // })(ConnectDialog);
 
-export default inject(({ mainFilesStore, thirdParty }) => {
+export default inject(({ mainFilesStore, settingsStore }) => {
   const { filesStore } = mainFilesStore;
   const {
     providers,
@@ -381,7 +381,7 @@ export default inject(({ mainFilesStore, thirdParty }) => {
     saveThirdParty,
     openConnectWindow,
     fetchThirdPartyProviders,
-  } = thirdParty;
+  } = settingsStore.thirdPartyStore;
   const { fetchFiles, treeFoldersStore } = filesStore;
 
   const {

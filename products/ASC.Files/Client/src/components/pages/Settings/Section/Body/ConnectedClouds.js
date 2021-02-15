@@ -574,7 +574,7 @@ class ConnectClouds extends React.Component {
 //   setSelectedNode,
 // })(withTranslation()(ConnectClouds));
 
-export default inject(({ store, mainFilesStore, thirdParty }) => {
+export default inject(({ store, mainFilesStore, settingsStore }) => {
   const { filesStore } = mainFilesStore;
   const {
     providers,
@@ -594,7 +594,7 @@ export default inject(({ store, mainFilesStore, thirdParty }) => {
     webDavConnectItem,
     getOAuthToken,
     openConnectWindow,
-  } = thirdParty;
+  } = settingsStore.thirdPartyStore;
   const { fetchFiles, treeFoldersStore, filter } = filesStore;
   const { setSelectedNode, myFolder, commonFolder } = treeFoldersStore;
 

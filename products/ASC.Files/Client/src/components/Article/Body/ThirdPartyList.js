@@ -251,7 +251,7 @@ const ThirdPartyList = (props) => {
 //   setShowThirdPartyPanel,
 // })(ThirdPartyList);
 
-export default inject(({ mainFilesStore, thirdParty }) => {
+export default inject(({ mainFilesStore, settingsStore }) => {
   const { setIsLoading, filesStore } = mainFilesStore;
   const { setSelectedFolder } = filesStore.selectedFolderStore;
   const { setSelectedNode } = filesStore.treeFoldersStore;
@@ -266,7 +266,7 @@ export default inject(({ mainFilesStore, thirdParty }) => {
     webDavConnectItem,
     getOAuthToken,
     openConnectWindow,
-  } = thirdParty;
+  } = settingsStore.thirdPartyStore;
 
   return {
     googleConnectItem,
