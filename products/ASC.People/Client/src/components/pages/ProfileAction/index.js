@@ -143,17 +143,23 @@ const ProfileActionContainer = (props) => {
 function mapStateToProps(state) {
   return {
     isVisitor: state.auth.user.isVisitor,
-    profile: state.profile.targetUser,
+    // profile: state.profile.targetUser,
     // isAdmin: isAdmin(state),
     //isEdit: state.people.editingForm.isEdit,
-    avatarEditorIsOpen: state.people.avatarEditorIsOpen,
+    // avatarEditorIsOpen: state.people.avatarEditorIsOpen,
   };
 }
 
-export default connect(mapStateToProps, { fetchProfile /*setIsEditingForm*/ })(
+export default connect(mapStateToProps, {
+  /*fetchProfile*/
+  /*setIsEditingForm*/
+})(
   inject(({ store, peopleStore }) => ({
     isAdmin: store.isAdmin,
     isEdit: peopleStore.editingFormStore.isEdit,
     setIsEditingForm: peopleStore.editingFormStore.setIsEditingForm,
+    fetchProfile: peopleStore.targetUserStore.getTargetUser,
+    profile: peopleStore.targetUserStore.targetUser,
+    avatarEditorIsOpen: peopleStore.avatarEditorStore.visible,
   }))(observer(ProfileActionContainer))
 );

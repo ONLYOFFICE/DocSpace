@@ -504,7 +504,7 @@ function mapStateToProps(state) {
 
   return {
     //settings,
-    group: state.group.targetGroup,
+    //group: state.group.targetGroup,
     //groups: convertGroups(state.people.groups),
     users: convertUsers(state.people.selector.users), //TODO: replace to api requests with search
     // groupHeadCaption,
@@ -518,11 +518,11 @@ function mapStateToProps(state) {
 }
 
 export default connect(mapStateToProps, {
-  resetGroup,
-  createGroup,
-  updateGroup,
-  selectGroup,
-  setFilter,
+  // resetGroup,
+  //createGroup,
+  //updateGroup,
+  // selectGroup,
+  // setFilter,
 })(
   inject(({ store, peopleStore }) => {
     const groups = convertGroups(peopleStore.groupsStore.groups);
@@ -536,6 +536,12 @@ export default connect(mapStateToProps, {
       me: store.userStore.user,
       groups,
       filter: peopleStore.filterStore.filter,
+      setFilter: peopleStore.filterStore.setFilterParams,
+      selectGroup: peopleStore.selectedGroupStore.selectGroup,
+      updateGroup: peopleStore.groupsStore.updateGroup,
+      createGroup: peopleStore.groupsStore.createGroup,
+      group: peopleStore.selectedGroupStore.targetedGroup,
+      resetGroup: peopleStore.selectedGroupStore.resetGroup,
     };
   })(observer(withRouter(withTranslation()(SectionBodyContent))))
 );

@@ -16,7 +16,12 @@ class EditingFormStore {
   setIsEditingForm = (isEdit) => {
     return (this.isEdit = isEdit);
   };
-  setIsVisibleDataLossDialog = (isVisible) => {
+
+  setIsVisibleDataLossDialog = (isVisible, callback = null) => {
+    if (typeof callback === "function") {
+      this.isVisibleDataLossDialog = isVisible;
+      return callback();
+    }
     return (this.isVisibleDataLossDialog = isVisible);
   };
 }

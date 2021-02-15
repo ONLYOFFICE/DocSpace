@@ -9,6 +9,8 @@ import EditingFormStore from "./EditingFormStore";
 import FilterStore from "./FilterStore";
 import SelectionStore from "./SelectionStore";
 import HeaderMenuStore from "./HeaderMenuStore";
+import AvatarEditorStore from "./AvatarEditorStore";
+import InviteLinksStore from "./InviteLinksStore";
 
 class PeopleStore {
   groupsStore = null;
@@ -19,6 +21,8 @@ class PeopleStore {
   filterStore = null;
   selectionStore = null;
   headerMenuStore = null;
+  avatarEditorStore = null;
+  inviteLinksStore = null;
 
   isLoading = false;
 
@@ -31,6 +35,8 @@ class PeopleStore {
     this.setFilterStore(new FilterStore(this));
     this.setSelectionStore(new SelectionStore(this));
     this.setHeaderMenuStore(new HeaderMenuStore(this));
+    this.setAvatarEditorStore(new AvatarEditorStore(this));
+    this.setInviteLinksStore(new InviteLinksStore(this));
 
     makeObservable(this, {
       isLoading: observable,
@@ -40,6 +46,10 @@ class PeopleStore {
       setSelectedGroupStore: action,
       setEditingFormStore: action,
       setFilterStore: action,
+      setSelectionStore: action,
+      setHeaderMenuStore: action,
+      setAvatarEditorStore: action,
+      setInviteLinksStore: action,
       init: action,
     });
   }
@@ -53,6 +63,10 @@ class PeopleStore {
       await this.usersStore.getUsersList(newFilter);
     }
     await this.groupsStore.getGroupList();
+  };
+
+  setIsLoading = (loading) => {
+    this.isLoading = loading;
   };
 
   setGroupsStore = (store) => {
@@ -78,6 +92,12 @@ class PeopleStore {
   };
   setHeaderMenuStore = (store) => {
     this.headerMenuStore = store;
+  };
+  setAvatarEditorStore = (store) => {
+    this.avatarEditorStore = store;
+  };
+  setInviteLinksStore = (store) => {
+    this.inviteLinksStore = store;
   };
 }
 

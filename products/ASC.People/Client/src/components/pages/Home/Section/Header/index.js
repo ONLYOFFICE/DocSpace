@@ -24,7 +24,7 @@ import {
   updateUserStatus,
   fetchPeople,
   removeUser,
-  setSelected,
+  //setSelected,
 } from "../../../../../store/people/actions";
 import { deleteGroup } from "../../../../../store/group/actions";
 import {
@@ -182,6 +182,7 @@ const SectionHeaderContent = (props) => {
 
   const onSelectorSelect = useCallback(
     (item) => {
+      console.log("onSelectorSelect", item);
       onSelect && onSelect(item.key);
     },
     [onSelect]
@@ -485,12 +486,12 @@ const SectionHeaderContent = (props) => {
 };
 
 const mapStateToProps = (state) => {
-  const { isLoaded /* settings */ } = state.auth;
-  const { groups, selection, selectedGroup } = state.people;
+  // const { isLoaded /* settings */ } = state.auth;
+  // const { groups, selection, selectedGroup } = state.people;
   //const { homepage, customNames } = settings;
 
   return {
-    group: getSelectedGroup(groups, selectedGroup),
+    //group: getSelectedGroup(groups, selectedGroup),
     // isAdmin: isAdmin(state),
     //homepage,
     //customNames,
@@ -506,13 +507,7 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, {
-  updateUserStatus,
-  //fetchPeople,
-  deleteGroup,
-  removeUser,
-  setSelected,
-})(
+export default connect(mapStateToProps)(
   inject(({ store, peopleStore }) => ({
     customNames: store.settingsStore.customNames,
     homepage: store.settingsStore.homepage,
@@ -524,5 +519,9 @@ export default connect(mapStateToProps, {
     isHeaderIndeterminate: peopleStore.headerMenuStore.isHeaderIndeterminate,
     isHeaderChecked: peopleStore.headerMenuStore.isHeaderChecked,
     onClose: peopleStore.selectionStore.clearSelection,
+    deleteGroup: peopleStore.groupsStore.deleteGroup,
+    removeUser: peopleStore.usersStore.removeUser,
+    updateUserStatus: peopleStore.usersStore.updateUserStatus,
+    group: peopleStore.selectedGroupStore.group,
   }))(observer(withTranslation()(withRouter(SectionHeaderContent))))
 );

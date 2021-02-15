@@ -119,9 +119,9 @@ Profile.propTypes = {
 
 function mapStateToProps(state) {
   const { isLoaded } = state.auth;
-  const { targetUser } = state.profile;
+  //const { targetUser } = state.profile;
   return {
-    profile: targetUser,
+    // profile: targetUser,
     // isLoaded,
     isVisitor: isVisitor(state),
     // isAdmin: isAdmin(state),
@@ -130,12 +130,15 @@ function mapStateToProps(state) {
 }
 
 export default connect(mapStateToProps, {
-  fetchProfile,
-  resetProfile,
+  // fetchProfile,
+  // resetProfile,
 })(
-  inject(({ store }) => ({
+  inject(({ store, peopleStore }) => ({
     isLoaded: store.isLoaded,
     isAdmin: store.isAdmin,
     language: store.language,
+    resetProfile: peopleStore.targetUserStore.resetTargetUser,
+    fetchProfile: peopleStore.targetUserStore.getTargetUser,
+    profile: peopleStore.targetUserStore.targetUser,
   }))(observer(Profile))
 );

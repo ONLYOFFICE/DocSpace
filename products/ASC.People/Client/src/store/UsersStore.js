@@ -6,13 +6,17 @@ const { Filter } = api;
 const { EmployeeStatus, EmployeeActivationStatus } = constants;
 const { authStore } = store;
 class UsersStore {
-  users = null;
+  users = [];
 
   constructor(peopleStore) {
     this.peopleStore = peopleStore;
     makeObservable(this, {
       users: observable,
       getUsersList: action,
+      removeUser: action,
+      updateUserStatus: action,
+      updateUserType: action,
+      updateProfileInUsers: action,
     });
   }
 
@@ -34,9 +38,35 @@ class UsersStore {
     console.log("user: ", this.users.length);
   };
 
+  setUsers = (users) => {
+    this.users = users;
+  };
+
+  employeeWrapperToMemberModel = (profile) => {
+    const comment = profile.notes;
+    const department = profile.groups
+      ? profile.groups.map((group) => group.id)
+      : [];
+    const worksFrom = profile.workFrom;
+
+    return { ...profile, comment, department, worksFrom };
+  };
+
+  createUser = async (user) => {
+    const filter = this.peopleStore.filterStore.filter;
+    const member = this.employeeWrapperToMemberModel(user);
+    let result;
+    const res = await api.people.createUser(member);
+    result = res;
+
+    await this.peopleStore.targetUserStore.getTargetUser(result.userName);
+    await this.getUsersList(filter);
+    return Promise.resolve(result);
+  };
+
   removeUser = async (userId, filter) => {
     await api.people.deleteUsers(userId);
-    this.getUsersList(filter);
+    await this.getUsersList(filter);
   };
 
   updateUserStatus = async (status, userIds, isRefetchPeople = false) => {
@@ -45,9 +75,9 @@ class UsersStore {
     isRefetchPeople && this.getUsersList(filter);
   };
 
-  updateUserType = async (type, userIds) => {
-    const res = await api.people.updateUserType(type, userIds);
-    res.forEach((user) => this.users.push(user));
+  updateUserType = async (type, userIds, filter) => {
+    await api.people.updateUserType(type, userIds);
+    await this.getUsersList(filter);
   };
 
   updateProfileInUsers = async (updatedProfile) => {
@@ -55,8 +85,28 @@ class UsersStore {
       return this.getUsersList();
     }
     if (!updatedProfile) {
-      //TODO
+      updatedProfile = this.peopleStore.targetUserStore.targetUser;
     }
+    const { userName } = updatedProfile;
+    const oldProfile = this.users.filter((u) => u.userName === userName);
+    const newProfile = {};
+
+    for (let key in oldProfile) {
+      if (
+        updatedProfile.hasOwnProperty(key) &&
+        updatedProfile[key] !== oldProfile[key]
+      ) {
+        newProfile[key] = updatedProfile[key];
+      } else {
+        newProfile[key] = oldProfile[key];
+      }
+    }
+
+    const updatedUsers = this.users.map((user) =>
+      user.id === newProfile.id ? newProfile : user
+    );
+
+    this.setUsers(updatedUsers);
   };
 
   getStatusType = (user) => {
@@ -150,7 +200,7 @@ class UsersStore {
   };
 
   composePeopleList = () => {
-    return this.users.map((user) => {
+    const list = this.users.map((user) => {
       const {
         id,
         displayName,
@@ -197,6 +247,8 @@ class UsersStore {
         groups,
       };
     });
+
+    return list;
   };
 }
 

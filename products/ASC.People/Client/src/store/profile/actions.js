@@ -1,7 +1,7 @@
-import { updateUserList } from "../people/actions";
+// import { updateUserList } from "../people/actions";
 import { store, api } from "asc-web-common";
 const { setCurrentUser } = store.auth.actions;
-const { isMe } = store.auth.selectors;
+// const { isMe } = store.auth.selectors;
 
 export const SET_PROFILE = "SET_PROFILE";
 export const CLEAN_PROFILE = "CLEAN_PROFILE";
@@ -16,11 +16,11 @@ export function setProfile(targetUser) {
   };
 }
 
-export function resetProfile() {
-  return {
-    type: CLEAN_PROFILE,
-  };
-}
+// export function resetProfile() {
+//   return {
+//     type: CLEAN_PROFILE,
+//   };
+// }
 
 export function employeeWrapperToMemberModel(profile) {
   const comment = profile.notes;
@@ -32,40 +32,41 @@ export function employeeWrapperToMemberModel(profile) {
   return { ...profile, comment, department, worksFrom };
 }
 
-export function fetchProfile(userName) {
-  return (dispatch, getState) => {
-    const { auth } = getState();
+// export function fetchProfile(userName) {
+//   return (dispatch, getState) => {
+//     const { auth } = getState();
 
-    if (isMe(auth.user, userName)) {
-      dispatch(setProfile(auth.user));
-    } else {
-      api.people.getUser(userName).then((user) => {
-        dispatch(setProfile(user));
-      });
-    }
-  };
-}
-export function createProfile(profile) {
-  return (dispatch, getState) => {
-    const { people } = getState();
-    const { filter } = people;
-    const member = employeeWrapperToMemberModel(profile);
-    let result;
+//     if (isMe(auth.user, userName)) {
+//       dispatch(setProfile(auth.user));
+//     } else {
+//       api.people.getUser(userName).then((user) => {
+//         dispatch(setProfile(user));
+//       });
+//     }
+//   };
+// }
 
-    return api.people
-      .createUser(member)
-      .then((user) => {
-        result = user;
-        return dispatch(setProfile(user));
-      })
-      .then(() => {
-        return updateUserList(dispatch, filter);
-      })
-      .then(() => {
-        return Promise.resolve(result);
-      });
-  };
-}
+// export function createProfile(profile) {
+//   return (dispatch, getState) => {
+//     const { people } = getState();
+//     const { filter } = people;
+//     const member = employeeWrapperToMemberModel(profile);
+//     let result;
+
+//     return api.people
+//       .createUser(member)
+//       .then((user) => {
+//         result = user;
+//         return dispatch(setProfile(user));
+//       })
+//       .then(() => {
+//         return updateUserList(dispatch, filter);
+//       })
+//       .then(() => {
+//         return Promise.resolve(result);
+//       });
+//   };
+// }
 
 export function updateProfile(profile) {
   return (dispatch) => {
@@ -128,23 +129,23 @@ export function updateCreatedAvatar(avatar) {
   };
 }
 
-export function setAvatarMax(avatarMax) {
-  return {
-    type: SET_AVATAR_MAX,
-    avatarMax,
-  };
-}
+// export function setAvatarMax(avatarMax) {
+//   return {
+//     type: SET_AVATAR_MAX,
+//     avatarMax,
+//   };
+// }
 
-export function setCreatedAvatar(avatar) {
-  return {
-    type: SET_CREATED_AVATAR,
-    avatar,
-  };
-}
+// export function setCreatedAvatar(avatar) {
+//   return {
+//     type: SET_CREATED_AVATAR,
+//     avatar,
+//   };
+// }
 
-export function setCroppedAvatar(croppedAvatar) {
-  return {
-    type: SET_CROPPED_AVATAR,
-    croppedAvatar,
-  };
-}
+// export function setCroppedAvatar(croppedAvatar) {
+//   return {
+//     type: SET_CROPPED_AVATAR,
+//     croppedAvatar,
+//   };
+// }

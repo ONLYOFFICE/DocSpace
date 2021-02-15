@@ -18,6 +18,7 @@ import { createI18N } from "../../../helpers/i18n";
 import { connect } from "react-redux";
 import { getUsersToInviteIds } from "../../../store/people/selectors";
 import { setSelected } from "../../../store/people/actions";
+import { inject, observer } from "mobx-react";
 
 const i18n = createI18N({
   page: "SendInviteDialog",
@@ -60,7 +61,7 @@ class SendInviteDialogComponent extends React.Component {
         .catch((error) => toastr.error(error))
         .finally(() => {
           this.setState({ isRequestRunning: false }, () => {
-            setSelected("close");
+            //setSelected("close");
             onClose();
           });
         });
@@ -181,10 +182,14 @@ const mapStateToProps = (state) => {
 
   return {
     userIds: usersToInviteIds,
-    selectedUsers: selection,
+    //selectedUsers: selection,
   };
 };
 
-export default connect(mapStateToProps, { setSelected })(
-  withRouter(SendInviteDialog)
+export default connect(mapStateToProps, {
+  /*setSelected */
+})(
+  inject(({ peopleStore }) => ({
+    selectedUsers: peopleStore.selectionStore.selection,
+  }))(observer(withRouter(SendInviteDialog)))
 );

@@ -292,7 +292,7 @@ class CreateAvatarEditorPage extends React.PureComponent {
 
 function mapStateToProps(state) {
   return {
-    profile: state.profile.targetUser,
+    // profile: state.profile.targetUser,
     avatarMax: state.profile.avatarMax,
     createdAvatar: state.profile.createdAvatar,
     croppedAvatar: state.profile.croppedAvatar,
@@ -302,20 +302,26 @@ function mapStateToProps(state) {
 }
 
 export default connect(mapStateToProps, {
-  fetchProfile,
+  // fetchProfile,
   updateProfile,
-  toggleAvatarEditor,
-  setAvatarMax,
+  //toggleAvatarEditor,
+  //setAvatarMax,
   updateCreatedAvatar,
-  updateProfileInUsers,
-  setCreatedAvatar,
-  setCroppedAvatar,
-  resetProfile,
+  // updateProfileInUsers,
+  // setCreatedAvatar,
+  // setCroppedAvatar,
+  // resetProfile,
   //setIsEditingForm,
 })(
   inject(({ peopleStore }) => ({
     editingForm: peopleStore.editingFormStore,
     setIsEditingForm: peopleStore.editingFormStore.setIsEditingForm,
+    toggleAvatarEditor: peopleStore.avatarEditorStore.toggleAvatarEditor,
+    resetProfile: peopleStore.targetUserStore.resetTargetUser,
+    fetchProfile: peopleStore.targetUserStore.getTargetUser,
+    profile: peopleStore.targetUserStore.targetUser,
+    setCreatedAvatar: peopleStore.avatarEditorStore.setCreatedAvatar,
+    setCroppedAvatar: peopleStore.avatarEditorStore.setCroppedAvatar,
   }))(observer(withRouter(withTranslation()(CreateAvatarEditorPage))))
 );
 

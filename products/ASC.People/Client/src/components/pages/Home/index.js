@@ -77,10 +77,12 @@ class PureHome extends React.Component {
   }
 
   onSectionHeaderContentCheck = (checked) => {
+    console.log("onSectionHeaderContentCheck");
     this.props.setSelected(checked ? "all" : "none");
   };
 
   onSectionHeaderContentSelect = (selected) => {
+    console.log("onSectionHeaderContentSelect");
     this.props.setSelected(selected);
   };
 
@@ -182,18 +184,18 @@ function mapStateToProps(state) {
   const { users, selection, selected, selectedGroup, groups } = state.people;
   return {
     //users,
-    selection,
+    //selection,
     selected,
     //selectedGroup,
     // groups,
     // organizationName: getOrganizationName(state),
     // isAdmin: isAdmin(state),
-    isLoading: getIsLoading(state),
+    //isLoading: getIsLoading(state),
     // isLoaded: getIsLoaded(state),
   };
 }
 
-export default connect(mapStateToProps, { setSelected, setIsLoading })(
+export default connect(mapStateToProps, { setSelected /*setIsLoading*/ })(
   inject(({ store, peopleStore }) => ({
     isLoaded: store.isLoaded,
     isAdmin: store.isAdmin,
@@ -202,5 +204,8 @@ export default connect(mapStateToProps, { setSelected, setIsLoading })(
     groups: peopleStore.groupsStore.groups,
     selectedGroup: peopleStore.selectedGroupStore.selectedGroup,
     clearSelection: peopleStore.selectionStore.clearSelection,
+    isLoading: peopleStore.isLoading,
+    setIsLoading: peopleStore.setIsLoading,
+    selection: peopleStore.selectionStore.selection,
   }))(observer(withRouter(Home)))
 );

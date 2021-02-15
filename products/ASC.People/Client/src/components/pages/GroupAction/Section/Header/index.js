@@ -6,7 +6,7 @@ import { IconButton } from "asc-web-components";
 import { Headline, store } from "asc-web-common";
 import { withTranslation } from "react-i18next";
 import { resetGroup } from "../../../../../store/group/actions";
-import { setFilter } from "../../../../../store/people/actions";
+// import { setFilter } from "../../../../../store/people/actions";
 import styled from "styled-components";
 import { inject, observer } from "mobx-react";
 
@@ -79,7 +79,7 @@ SectionHeaderContent.defaultProps = {
 function mapStateToProps(state) {
   return {
     //settings: state.auth.settings,
-    group: state.group.targetGroup,
+    //group: state.group.targetGroup,
     //groupCaption: state.auth.settings.customNames.groupCaption,
     //filter: state.people.filter,
   };
@@ -94,10 +94,13 @@ function mapStateToProps(state) {
 //   );
 // });
 
-export default connect(mapStateToProps, { resetGroup, setFilter })(
+export default connect(mapStateToProps)(
   inject(({ store, peopleStore }) => ({
     groupCaption: store.settingsStore.customNames.groupCaption,
     filter: peopleStore.filterStore.filter,
+    setFilter: peopleStore.filterStore.setFilterParams,
+    group: peopleStore.selectedGroupStore.targetedGroup,
+    resetGroup: peopleStore.selectedGroupStore.resetGroup,
   }))(observer(withRouter(withTranslation()(SectionHeaderContent))))
 );
 

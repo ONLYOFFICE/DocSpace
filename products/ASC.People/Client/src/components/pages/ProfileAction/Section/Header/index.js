@@ -6,7 +6,7 @@ import { IconButton } from "asc-web-components";
 import { Headline, store } from "asc-web-common";
 import { useTranslation } from "react-i18next";
 import {
-  setFilter,
+  //setFilter,
   setIsVisibleDataLossDialog,
   toggleAvatarEditor,
 } from "../../../../../store/people/actions";
@@ -111,11 +111,11 @@ const SectionHeaderContent = (props) => {
 
 function mapStateToProps(state) {
   return {
-    profile: state.profile.targetUser,
+    // profile: state.profile.targetUser,
     //settings: state.auth.settings,
     //filter: state.people.filter,
     //editingForm: state.people.editingForm,
-    avatarEditorIsOpen: state.people.avatarEditorIsOpen,
+    // avatarEditorIsOpen: state.people.avatarEditorIsOpen,
   };
 }
 
@@ -124,10 +124,10 @@ function mapStateToProps(state) {
 // });
 
 export default connect(mapStateToProps, {
-  setFilter,
+  //setFilter,
   //setIsVisibleDataLossDialog,
-  toggleAvatarEditor,
-  resetProfile,
+  // toggleAvatarEditor,
+  // resetProfile,
 })(
   inject(({ store, peopleStore }) => ({
     settings: store.settingsStore,
@@ -135,6 +135,11 @@ export default connect(mapStateToProps, {
     setIsVisibleDataLossDialog:
       peopleStore.editingFormStore.setIsVisibleDataLossDialog,
     filter: peopleStore.filterStore.filter,
+    setFilter: peopleStore.filterStore.setFilterParams,
+    toggleAvatarEditor: peopleStore.avatarEditorStore.toggleAvatarEditor,
+    resetProfile: peopleStore.targetUserStore.resetTargetUser,
+    profile: peopleStore.targetUserStore.targetUser,
+    avatarEditorIsOpen: peopleStore.avatarEditorStore.visible,
   }))(observer(withRouter(SectionHeaderContent)))
 );
 

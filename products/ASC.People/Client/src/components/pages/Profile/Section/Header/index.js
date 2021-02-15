@@ -14,7 +14,7 @@ import {
 import { withTranslation, Trans } from "react-i18next";
 import {
   updateUserStatus,
-  setFilter,
+  // setFilter,
 } from "../../../../../store/people/actions";
 import { updateProfile } from "../../../../../store/profile/actions";
 import {
@@ -509,7 +509,7 @@ class SectionHeaderContent extends React.PureComponent {
 const mapStateToProps = (state) => {
   return {
     //settings: state.auth.settings,
-    profile: state.profile.targetUser,
+    // profile: state.profile.targetUser,
     //viewer: state.auth.user,
     // isAdmin: isAdmin(state),
     //filter: state.people.filter,
@@ -521,16 +521,21 @@ const mapStateToProps = (state) => {
 // });
 
 export default connect(mapStateToProps, {
-  updateUserStatus,
-  fetchProfile,
-  updateProfile,
-  setFilter,
+  // updateUserStatus,
+  // fetchProfile,
+  // updateProfile,
+  //setFilter,
 })(
   inject(({ store, peopleStore }) => ({
     settings: store.settingsStore,
     isAdmin: store.isAdmin,
     viewer: store.userStore.user,
     filter: peopleStore.filterStore.filter,
+    setFilter: peopleStore.filterStore.setFilterParams,
+    updateUserStatus: peopleStore.usersStore.updateUserStatus,
+    resetProfile: peopleStore.targetUserStore.resetTargetUser,
+    fetchProfile: peopleStore.targetUserStore.getTargetUser,
+    profile: peopleStore.targetUserStore.targetUser,
   }))(observer(withRouter(withTranslation()(SectionHeaderContent))))
 );
 
