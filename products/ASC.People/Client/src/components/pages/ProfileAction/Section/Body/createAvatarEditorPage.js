@@ -8,7 +8,7 @@ import { api, toastr } from "asc-web-common";
 import {
   fetchProfile,
   updateProfile,
-  getUserPhoto,
+  // getUserPhoto,
   setAvatarMax,
   updateCreatedAvatar,
   setCreatedAvatar,
@@ -88,7 +88,7 @@ class CreateAvatarEditorPage extends React.PureComponent {
 
   updateUserPhotoInState = () => {
     var profile = toEmployeeWrapper(this.props.profile);
-    getUserPhoto(profile.id).then((userPhotoData) => {
+    this.props.getUserPhoto(profile.id).then((userPhotoData) => {
       if (userPhotoData.original) {
         let avatarDefaultSizes = /_(\d*)-(\d*)./g.exec(userPhotoData.original);
         if (avatarDefaultSizes !== null && avatarDefaultSizes.length > 2) {
@@ -234,7 +234,7 @@ class CreateAvatarEditorPage extends React.PureComponent {
       return;
     }
 
-    getUserPhoto(profile.id).then((userPhotoData) => {
+    this.props.getUserPhoto(profile.id).then((userPhotoData) => {
       if (userPhotoData.original) {
         let avatarDefaultSizes = /_(\d*)-(\d*)./g.exec(userPhotoData.original);
         if (avatarDefaultSizes !== null && avatarDefaultSizes.length > 2) {
@@ -303,10 +303,10 @@ function mapStateToProps(state) {
 
 export default connect(mapStateToProps, {
   // fetchProfile,
-  updateProfile,
+  // updateProfile,
   //toggleAvatarEditor,
   //setAvatarMax,
-  updateCreatedAvatar,
+  // updateCreatedAvatar,
   // updateProfileInUsers,
   // setCreatedAvatar,
   // setCroppedAvatar,
@@ -322,6 +322,9 @@ export default connect(mapStateToProps, {
     profile: peopleStore.targetUserStore.targetUser,
     setCreatedAvatar: peopleStore.avatarEditorStore.setCreatedAvatar,
     setCroppedAvatar: peopleStore.avatarEditorStore.setCroppedAvatar,
+    updateProfile: peopleStore.targetUserStore.updateProfile,
+    updateCreatedAvatar: peopleStore.targetUserStore.updateCreatedAvatar,
+    getUserPhoto: peopleStore.targetUserStore.getUserPhoto,
   }))(observer(withRouter(withTranslation()(CreateAvatarEditorPage))))
 );
 

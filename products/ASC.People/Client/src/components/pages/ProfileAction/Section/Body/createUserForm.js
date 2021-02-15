@@ -656,7 +656,7 @@ class CreateUserForm extends React.Component {
 
 const mapStateToProps = (state) => {
   //const { settings } = state.auth;
-  const { groups, filter, editingForm } = state.people;
+  // const { groups, filter, editingForm } = state.people;
   const { createdAvatar, croppedAvatar } = state.profile;
   return {
     //settings,
@@ -674,7 +674,7 @@ const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps, {
   // createProfile,
-  updateCreatedAvatar,
+  // updateCreatedAvatar,
   //setFilter,
   // updateProfileInUsers,
   // setIsVisibleDataLossDialog,
@@ -699,6 +699,7 @@ export default connect(mapStateToProps, {
     setCreatedAvatar: peopleStore.avatarEditorStore.setCreatedAvatar,
     setCroppedAvatar: peopleStore.avatarEditorStore.setCroppedAvatar,
     updateProfileInUsers: peopleStore.usersStore.updateProfileInUsers,
+    updateCreatedAvatar: peopleStore.targetUserStore.updateCreatedAvatar,
   }))(observer(withRouter(withTranslation()(CreateUserForm))))
 );
 

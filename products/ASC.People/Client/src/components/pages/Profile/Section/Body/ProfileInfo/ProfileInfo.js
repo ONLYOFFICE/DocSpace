@@ -337,8 +337,8 @@ class ProfileInfo extends React.PureComponent {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    updateProfileCulture: (id, culture) =>
-      dispatch(updateProfileCulture(id, culture)),
+    // updateProfileCulture: (id, culture) =>
+    //   dispatch(updateProfileCulture(id, culture)),
     //fetchPeople: (filter) => dispatch(fetchPeople(filter)),
     //setIsLoading: (isLoading) => dispatch(setIsLoading(isLoading)),
   };
@@ -358,6 +358,7 @@ export default connect(
     fetchPeople: peopleStore.usersStore.getUsersList,
     filter: peopleStore.filterStore.filter,
     setIsLoading: peopleStore.setIsLoading,
+    updateProfileCulture: peopleStore.targetUserStore.updateProfileCulture,
   }))(observer(ProfileInfo))
 );
 

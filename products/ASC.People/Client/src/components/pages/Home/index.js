@@ -181,11 +181,11 @@ Home.propTypes = {
 };
 
 function mapStateToProps(state) {
-  const { users, selection, selected, selectedGroup, groups } = state.people;
+  // const { users, selection, selected, selectedGroup, groups } = state.people;
   return {
     //users,
     //selection,
-    selected,
+    // selected,
     //selectedGroup,
     // groups,
     // organizationName: getOrganizationName(state),
@@ -195,7 +195,7 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, { setSelected /*setIsLoading*/ })(
+export default connect(mapStateToProps)(
   inject(({ store, peopleStore }) => ({
     isLoaded: store.isLoaded,
     isAdmin: store.isAdmin,
@@ -207,5 +207,7 @@ export default connect(mapStateToProps, { setSelected /*setIsLoading*/ })(
     isLoading: peopleStore.isLoading,
     setIsLoading: peopleStore.setIsLoading,
     selection: peopleStore.selectionStore.selection,
+    setSelected: peopleStore.selectionStore.setSelected,
+    selected: peopleStore.selectionStore.selected,
   }))(observer(withRouter(Home)))
 );

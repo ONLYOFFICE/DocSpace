@@ -61,7 +61,7 @@ class SendInviteDialogComponent extends React.Component {
         .catch((error) => toastr.error(error))
         .finally(() => {
           this.setState({ isRequestRunning: false }, () => {
-            //setSelected("close");
+            setSelected("close");
             onClose();
           });
         });
@@ -186,10 +186,9 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, {
-  /*setSelected */
-})(
+export default connect(mapStateToProps)(
   inject(({ peopleStore }) => ({
     selectedUsers: peopleStore.selectionStore.selection,
+    setSelected: peopleStore.selectionStore.setSelected,
   }))(observer(withRouter(SendInviteDialog)))
 );

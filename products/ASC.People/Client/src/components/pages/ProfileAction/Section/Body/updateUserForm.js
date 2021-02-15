@@ -22,7 +22,7 @@ import {
 } from "../../../../../store/people/selectors";
 import {
   updateProfile,
-  getUserPhoto,
+  // getUserPhoto,
   fetchProfile,
   setAvatarMax,
 } from "../../../../../store/profile/actions";
@@ -129,7 +129,7 @@ class UpdateUserForm extends React.Component {
 
   updateUserPhotoInState = () => {
     var profile = toEmployeeWrapper(this.props.profile);
-    getUserPhoto(profile.id).then((userPhotoData) => {
+    this.props.getUserPhoto(profile.id).then((userPhotoData) => {
       if (userPhotoData.original) {
         let avatarDefaultSizes = /_(\d*)-(\d*)./g.exec(userPhotoData.original);
         if (avatarDefaultSizes !== null && avatarDefaultSizes.length > 2) {
@@ -155,7 +155,7 @@ class UpdateUserForm extends React.Component {
     var allOptions = mapGroupsToGroupSelectorOptions(props.groups);
     var selected = mapGroupsToGroupSelectorOptions(profile.groups);
 
-    getUserPhoto(profile.id).then((userPhotoData) => {
+    this.props.getUserPhoto(profile.id).then((userPhotoData) => {
       if (userPhotoData.original) {
         let avatarDefaultSizes = /_(\d*)-(\d*)./g.exec(userPhotoData.original);
         if (avatarDefaultSizes !== null && avatarDefaultSizes.length > 2) {
@@ -916,30 +916,17 @@ class UpdateUserForm extends React.Component {
 const mapStateToProps = (state) => {
   return {
     // profile: state.profile.targetUser,
-    avatarMax: state.profile.avatarMax,
+    //avatarMax: state.profile.avatarMax,
     //settings: state.auth.settings,
     //groups: state.people.groups,
     //editingForm: state.people.editingForm,
     //filter: state.people.filter,
-    disableProfileType: getDisableProfileType(state),
+    // disableProfileType: getDisableProfileType(state),
     // isAdmin: isAdmin(state),
   };
 };
 
-// const UpdateUserFormWrapper = observer((props) => {
-//   return <UpdateUserForm settings={settingsStore.settings} {...props} />;
-// });
-
-export default connect(mapStateToProps, {
-  updateProfile,
-  // fetchProfile,
-  // updateProfileInUsers,
-  // setIsVisibleDataLossDialog,
-  // setIsEditingForm,
-  // setFilter,
-  // toggleAvatarEditor,
-  //setAvatarMax,
-})(
+export default connect(mapStateToProps)(
   inject(({ store, peopleStore }) => ({
     settings: store.settingsStore,
     isAdmin: store.isAdmin,
@@ -953,18 +940,11 @@ export default connect(mapStateToProps, {
     toggleAvatarEditor: peopleStore.avatarEditorStore.toggleAvatarEditor,
     profile: peopleStore.targetUserStore.targetUser,
     fetchProfile: peopleStore.targetUserStore.getTargetUser,
+    avatarMax: peopleStore.avatarEditorStore.avatarMax,
     setAvatarMax: peopleStore.avatarEditorStore.setAvatarMax,
     updateProfileInUsers: peopleStore.usersStore.updateProfileInUsers,
+    updateProfile: peopleStore.targetUserStore.updateProfile,
+    getUserPhoto: peopleStore.targetUserStore.getUserPhoto,
+    disableProfileType: peopleStore.targetUserStore.getDisableProfileType,
   }))(observer(withRouter(withTranslation()(UpdateUserForm))))
 );
-
-// export default connect(mapStateToProps, {
-//   updateProfile,
-//   fetchProfile,
-//   updateProfileInUsers,
-//   setIsVisibleDataLossDialog,
-//   setIsEditingForm,
-//   setFilter,
-//   toggleAvatarEditor,
-//   setAvatarMax,
-// })(withRouter(withTranslation()(UpdateUserFormWrapper)));
