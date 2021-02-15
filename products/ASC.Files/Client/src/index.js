@@ -2,9 +2,9 @@
 
 import React from "react";
 import ReactDOM from "react-dom";
-import { Provider } from "react-redux";
+//import { Provider } from "react-redux";
 
-import store from "./store/store";
+//import store from "./store/store";
 import "./custom.scss";
 import App from "./App";
 
@@ -12,17 +12,22 @@ import * as serviceWorker from "./serviceWorker";
 import { ErrorBoundary, store as commonStore } from "asc-web-common";
 import { Provider as MobxProvider } from "mobx-react";
 import mainFilesStore from "./store/MainFilesStore";
+import ThirdPartyStore from "./store/ThirdPartyStore";
+
+const thirdPartyStore = new ThirdPartyStore();
 
 const { authStore } = commonStore;
 
 ReactDOM.render(
-  <Provider store={store}>
-    <MobxProvider store={authStore} mainFilesStore={mainFilesStore}>
-      <ErrorBoundary>
-        <App />
-      </ErrorBoundary>
-    </MobxProvider>
-  </Provider>,
+  <MobxProvider
+    store={authStore}
+    mainFilesStore={mainFilesStore}
+    thirdParty={thirdPartyStore}
+  >
+    <ErrorBoundary>
+      <App />
+    </ErrorBoundary>
+  </MobxProvider>,
   document.getElementById("root")
 );
 

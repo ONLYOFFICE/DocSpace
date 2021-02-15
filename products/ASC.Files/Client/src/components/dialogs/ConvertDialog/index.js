@@ -1,15 +1,15 @@
 import React from "react";
 import { withRouter } from "react-router";
-import { connect } from "react-redux";
+//import { connect } from "react-redux";
 import ModalDialogContainer from "../ModalDialogContainer";
 import { ModalDialog, Button, Text, Checkbox } from "asc-web-components";
 import { withTranslation } from "react-i18next";
 import { utils } from "asc-web-common";
-import {
-  //setTreeFolders,
-  setDialogVisible,
-  convertUploadedFiles,
-} from "../../../store/files/actions";
+// import {
+//   setTreeFolders,
+//   setDialogVisible,
+//   convertUploadedFiles,
+// } from "../../../store/files/actions";
 import { createI18N } from "../../../helpers/i18n";
 import { inject, observer } from "mobx-react";
 const i18n = createI18N({
@@ -125,17 +125,14 @@ const ConvertDialog = (props) => (
 //   convertUploadedFiles,
 // })(withRouter(ConvertDialog));
 
-export default connect(null, {
-  //setTreeFolders,
-  setDialogVisible,
-  convertUploadedFiles,
-})(
-  inject(({ store, mainFilesStore }) => {
-    const { filesStore } = mainFilesStore;
-    const { setTreeFolders } = filesStore.treeFoldersStore;
+export default inject(({ mainFilesStore }) => {
+  const { filesStore } = mainFilesStore;
+  const { setTreeFolders } = filesStore.treeFoldersStore;
+  const { setDialogVisible, convertUploadedFiles } = filesStore.uploadDataStore;
 
-    return {
-      setTreeFolders,
-    };
-  })(withRouter(observer(ConvertDialog)))
-);
+  return {
+    setTreeFolders,
+    setDialogVisible,
+    convertUploadedFiles,
+  };
+})(withRouter(observer(ConvertDialog)));

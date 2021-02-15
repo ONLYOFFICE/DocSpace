@@ -3,14 +3,14 @@ import styled from "styled-components";
 import { Row, Text, Icons, Tooltip, Link } from "asc-web-components";
 
 import LoadingButton from "./LoadingButton";
-import { connect } from "react-redux";
-import { cancelCurrentUpload } from "../../../store/files/actions";
-import {
-  getLoadingFile,
-  //isUploaded,
-  isMediaOrImage,
-  getIconSrc,
-} from "../../../store/files/selectors";
+//import { connect } from "react-redux";
+//import { cancelCurrentUpload } from "../../../store/files/actions";
+// import {
+//   getLoadingFile,
+//   isUploaded,
+//   isMediaOrImage,
+//   getIconSrc,
+// } from "../../../store/files/selectors";
 import ShareButton from "./ShareButton";
 import { inject, observer } from "mobx-react";
 
@@ -73,7 +73,6 @@ const FileRow = (props) => {
     isMedia,
     ext,
     name,
-    uniqueId,
   } = props;
 
   const onCancelCurrentUpload = (e) => {
@@ -134,7 +133,7 @@ const FileRow = (props) => {
             <></>
           )}
           {item.fileId ? (
-            <ShareButton uniqueId={uniqueId} />
+            <ShareButton uniqueId={item.uniqueId} />
           ) : item.error || (!item.fileId && uploaded) ? (
             <div className="upload_panel-icon">
               {" "}
@@ -167,11 +166,40 @@ const FileRow = (props) => {
     </>
   );
 };
-const mapStateToProps = (state, ownProps) => {
-  const loadingFile = getLoadingFile(state);
+// const mapStateToProps = (state, ownProps) => {
+//   const loadingFile = getLoadingFile(state);
 
-  const { item } = ownProps;
+//   const { item } = ownProps;
 
+//   let ext;
+//   let name;
+//   let splitted;
+//   if (item.file) {
+//     splitted = item.file.name.split(".");
+//     ext = splitted.length > 1 ? "." + splitted.pop() : "";
+//     name = splitted[0];
+//   } else {
+//     ext = item.fileInfo.fileExst;
+//     splitted = item.fileInfo.title.split(".");
+//     name = splitted[0];
+//   }
+
+//   const { uniqueId } = item;
+
+//   return {
+//     currentFileUploadProgress:
+//       loadingFile && loadingFile.uniqueId === uniqueId
+//         ? loadingFile.percent
+//         : null,
+//     uploaded: isUploaded(state),
+//     isMedia: isMediaOrImage(ext)(state),
+//     fileIcon: getIconSrc(ext, 24)(state),
+//     ext,
+//     name,
+//   };
+// };
+
+export default inject(({ mainFilesStore }, { item }) => {
   let ext;
   let name;
   let splitted;
@@ -185,33 +213,33 @@ const mapStateToProps = (state, ownProps) => {
     name = splitted[0];
   }
 
-  const { uniqueId } = item;
+  const { filesStore } = mainFilesStore;
+  const {
+    uploadDataStore,
+    mediaViewersFormatsStore,
+    formatsStore,
+    cancelCurrentUpload,
+    primaryProgressDataStore,
+  } = filesStore;
+  const { uploaded } = uploadDataStore;
+  const { loadingFile } = primaryProgressDataStore;
+  const isMedia = mediaViewersFormatsStore.isMediaOrImage(ext);
+  const fileIcon = formatsStore.getIconSrc(ext, 24);
+
+  const currentFileUploadProgress =
+    loadingFile && loadingFile.uniqueId === item.uniqueId
+      ? loadingFile.percent
+      : null;
 
   return {
-    currentFileUploadProgress:
-      loadingFile && loadingFile.uniqueId === uniqueId
-        ? loadingFile.percent
-        : null,
-    //uploaded: isUploaded(state),
-    isMedia: isMediaOrImage(ext)(state),
-    fileIcon: getIconSrc(ext, 24)(state),
+    currentFileUploadProgress,
+    uploaded,
+    isMedia,
+    fileIcon,
     ext,
     name,
-    uniqueId,
-  };
-};
+    loadingFile,
 
-export default connect(mapStateToProps, {
-  cancelCurrentUpload,
-  // setMediaViewerData,
-});
-
-inject(({ mainFilesStore }) => {
-  const { filesStore } = mainFilesStore;
-  const { uploadDataStore } = filesStore;
-  const { uploaded } = uploadDataStore;
-
-  return {
-    uploaded,
+    cancelCurrentUpload,
   };
 })(observer(FileRow));

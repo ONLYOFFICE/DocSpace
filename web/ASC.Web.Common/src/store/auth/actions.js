@@ -292,14 +292,14 @@ export function getEncryptionKeys(dispatch) {
     .catch((err) => console.error(err));
 }
 
-export function getEncryptionAccess(fileId) {
-  return api.files
-    .getEncryptionAccess(fileId)
-    .then((keys) => {
-      return Promise.resolve(keys);
-    })
-    .catch((err) => console.error(err));
-}
+// export function getEncryptionAccess(fileId) {
+//   return api.files
+//     .getEncryptionAccess(fileId)
+//     .then((keys) => {
+//       return Promise.resolve(keys);
+//     })
+//     .catch((err) => console.error(err));
+// }
 
 export function getIsEncryptionSupport(dispatch) {
   return api.files
@@ -308,8 +308,8 @@ export function getIsEncryptionSupport(dispatch) {
     .catch((err) => console.error(err));
 }
 
-export function replaceFileStream(fileId, file, encrypted, forcesave) {
-  return (dispatch) => {
-    return api.files.updateFileStream(file, fileId, encrypted, forcesave);
-  };
-}
+// export function replaceFileStream(fileId, file, encrypted, forcesave) {
+//   return (dispatch) => {
+//     return api.files.updateFileStream(file, fileId, encrypted, forcesave);
+//   };
+// }

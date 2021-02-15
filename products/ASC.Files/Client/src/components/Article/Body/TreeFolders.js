@@ -1,33 +1,33 @@
 import React from "react";
 import { TreeMenu, TreeNode, Icons } from "asc-web-components";
 import styled from "styled-components";
-import equal from "fast-deep-equal/react";
+//import equal from "fast-deep-equal/react";
 import {
   api,
   constants,
   toastr /* store as initStore */,
 } from "asc-web-common";
-import { connect } from "react-redux";
-import {
-  //setFilter,
-  //setTreeFolders,
-  //setDragItem,
-  //setDragging,
-  //setIsLoading,
-  setUpdateTree,
-} from "../../../store/files/actions";
-import {
-  //getTreeFolders,
-  //getFilter,
-  //getDragging,
-  getUpdateTree,
-  //getSelectedFolderId,
-  //getMyFolderId,
-  //getShareFolderId,
-  //getRootFolderId,
-  getDraggableItems,
-  //getIsPrivacyFolder,
-} from "../../../store/files/selectors";
+// import { connect } from "react-redux";
+// import {
+//   setFilter,
+//   setTreeFolders,
+//   setDragItem,
+//   setDragging,
+//   setIsLoading,
+//   setUpdateTree,
+// } from "../../../store/files/actions";
+// import {
+//   getTreeFolders,
+//   getFilter,
+//   getDragging,
+//   getUpdateTree,
+//   getSelectedFolderId,
+//   getMyFolderId,
+//   getShareFolderId,
+//   getRootFolderId,
+//   getDraggableItems,
+//   getIsPrivacyFolder,
+// } from "../../../store/files/selectors";
 import { onConvertFiles } from "../../../helpers/files-converter";
 import { observer, inject } from "mobx-react";
 
@@ -67,26 +67,26 @@ class TreeFolders extends React.Component {
     this.state = { treeData: data, expandedKeys, isExpand: false };
   }
 
-  componentDidUpdate(prevProps) {
-    const { expandedKeys, data, needUpdate } = this.props;
-    if (
-      needUpdate &&
-      expandedKeys &&
-      this.state.expandedKeys.length !== expandedKeys.length
-    ) {
-      this.setState({ expandedKeys });
-    }
+  // componentDidUpdate(prevProps) {
+  //   const { expandedKeys, data, needUpdate } = this.props;
+  //   if (
+  //     needUpdate &&
+  //     expandedKeys &&
+  //     this.state.expandedKeys.length !== expandedKeys.length
+  //   ) {
+  //     this.setState({ expandedKeys });
+  //   }
 
-    if (!equal(prevProps.data, data)) {
-      //!utils.array.isArrayEqual(prevProps.data, data)) {
-      this.setState({ treeData: data });
-    }
+  //   if (!equal(prevProps.data, data)) {
+  //     //!utils.array.isArrayEqual(prevProps.data, data)) {
+  //     this.setState({ treeData: data });
+  //   }
 
-    if (this.props.updateTree) {
-      this.props.setUpdateTree(false);
-      this.forceUpdate();
-    }
-  }
+  //   if (this.props.updateTree) {
+  //     this.props.setUpdateTree(false);
+  //     this.forceUpdate();
+  //   }
+  // }
 
   onBadgeClick = (e) => {
     const id = e.currentTarget.dataset.id;
@@ -501,81 +501,78 @@ TreeFolders.defaultProps = {
   needUpdate: true,
 };
 
-function mapStateToProps(state) {
-  return {
-    //treeFolders: getTreeFolders(state),
-    //filter: getFilter(state),
-    //myId: getMyFolderId(state),
-    //commonId: getShareFolderId(state),
-    //currentId: getSelectedFolderId(state),
-    //isAdmin: isAdmin(state),
-    //dragging: getDragging(state),
-    updateTree: getUpdateTree(state),
-    //rootFolderId: getRootFolderId(state),
-    draggableItems: getDraggableItems(state),
-    //isDesktop: isDesktopClient(state),
-    //isPrivacy: getIsPrivacyFolder(state),
-  };
-}
+// function mapStateToProps(state) {
+//   return {
+//     treeFolders: getTreeFolders(state),
+//     filter: getFilter(state),
+//     myId: getMyFolderId(state),
+//     commonId: getShareFolderId(state),
+//     currentId: getSelectedFolderId(state),
+//     isAdmin: isAdmin(state),
+//     dragging: getDragging(state),
+//     updateTree: getUpdateTree(state),
+//     rootFolderId: getRootFolderId(state),
+//     draggableItems: getDraggableItems(state),
+//     isDesktop: isDesktopClient(state),
+//     isPrivacy: getIsPrivacyFolder(state),
+//   };
+// }
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    //setFilter: (filter) => dispatch(setFilter(filter)),
-    //setTreeFolders: (treeFolders) => dispatch(setTreeFolders(treeFolders)),
-    //setDragItem: (dragItem) => dispatch(setDragItem(dragItem)),
-    //setDragging: (dragging) => dispatch(setDragging(dragging)),
-    //setIsLoading: (isLoading) => dispatch(setIsLoading(isLoading)),
-    setUpdateTree: (updateTree) => dispatch(setUpdateTree(updateTree)),
-  };
-};
+// const mapDispatchToProps = (dispatch) => {
+//   return {
+//     setFilter: (filter) => dispatch(setFilter(filter)),
+//     setTreeFolders: (treeFolders) => dispatch(setTreeFolders(treeFolders)),
+//     setDragItem: (dragItem) => dispatch(setDragItem(dragItem)),
+//     setDragging: (dragging) => dispatch(setDragging(dragging)),
+//     setIsLoading: (isLoading) => dispatch(setIsLoading(isLoading)),
+//     setUpdateTree: (updateTree) => dispatch(setUpdateTree(updateTree)),
+//   };
+// };
 
 //export default connect(mapStateToProps, mapDispatchToProps)(TreeFolders);
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(
-  inject(({ store, mainFilesStore }) => {
-    const {
-      filesStore,
-      setIsLoading,
-      dragging,
-      setDragging,
-      setDragItem,
-    } = mainFilesStore;
-    const {
-      treeFoldersStore,
-      selectedFolderStore,
-      filter,
-      setFilter,
-    } = filesStore;
+export default inject(({ store, mainFilesStore }) => {
+  const {
+    filesStore,
+    setIsLoading,
+    dragging,
+    setDragging,
+    setDragItem,
+  } = mainFilesStore;
+  const {
+    treeFoldersStore,
+    selectedFolderStore,
+    filter,
+    setFilter,
+    selection,
+  } = filesStore;
 
-    const {
-      treeFolders,
-      setTreeFolders,
-      myFolderId,
-      commonFolderId,
-      isPrivacyFolder,
-    } = treeFoldersStore;
-    const { pathParts, id } = selectedFolderStore;
+  const {
+    treeFolders,
+    setTreeFolders,
+    myFolderId,
+    commonFolderId,
+    isPrivacyFolder,
+  } = treeFoldersStore;
+  const { pathParts, id } = selectedFolderStore;
 
-    return {
-      isAdmin: store.isAdmin,
-      isDesktop: store.settingsStore.isDesktopClient,
-      dragging,
-      rootFolderId: pathParts,
-      currentId: id,
-      treeFolders,
-      myId: myFolderId,
-      commonId: commonFolderId,
-      isPrivacy: isPrivacyFolder,
-      filter,
+  return {
+    isAdmin: store.isAdmin,
+    isDesktop: store.settingsStore.isDesktopClient,
+    dragging,
+    rootFolderId: pathParts,
+    currentId: id,
+    treeFolders,
+    myId: myFolderId,
+    commonId: commonFolderId,
+    isPrivacy: isPrivacyFolder,
+    filter,
+    draggableItems: dragging ? selection : false,
 
-      setDragging,
-      setIsLoading,
-      setTreeFolders,
-      setFilter,
-      setDragItem,
-    };
-  })(observer(TreeFolders))
-);
+    setDragging,
+    setIsLoading,
+    setTreeFolders,
+    setFilter,
+    setDragItem,
+  };
+})(observer(TreeFolders));

@@ -1,5 +1,5 @@
 import React from "react";
-import { connect } from "react-redux";
+//import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { Trans, withTranslation } from "react-i18next";
 import styled from "styled-components";
@@ -11,24 +11,28 @@ import {
   IconButton,
   Badge,
 } from "asc-web-components";
-import { constants, api, toastr, store as initStore } from "asc-web-common";
+import {
+  constants,
+  api,
+  toastr /* store as initStore */,
+} from "asc-web-common";
 import {
   //clearSecondaryProgressData,
-  createFile,
+  //createFile,
   createFolder,
   //fetchFiles,
-  renameFolder,
+  //renameFolder,
   //setIsLoading,
-  setNewRowItems,
+  //setNewRowItems,
   //setSecondaryProgressBarData,
   //setTreeFolders,
-  setUpdateTree,
-  updateFile,
+  //setUpdateTree,
+  //updateFile,
 } from "../../../../../store/files/actions";
 import { TIMEOUT } from "../../../../../helpers/constants";
 import {
-  canConvert,
-  canWebEdit,
+  //canConvert,
+  //canWebEdit,
   //getDragging,
   //getFileAction,
   //getFilter,
@@ -36,28 +40,28 @@ import {
   //getIsLoading,
   //getIsPrivacyFolder,
   //getIsRecycleBinFolder,
-  getNewRowItems,
+  //getNewRowItems,
   //getPathParts,
   //getSelectedFolder,
   //getSelectedFolderNew,
   //getSelectedFolderParentId,
   getTitleWithoutExst,
   //getTreeFolders,
-  isImage,
-  isSound,
-  isVideo,
+  //isImage,
+  //isSound,
+  //isVideo,
 } from "../../../../../store/files/selectors";
 import { NewFilesPanel } from "../../../../panels";
 import { ConvertDialog } from "../../../../dialogs";
 import EditingWrapperComponent from "./EditingWrapperComponent";
 import { isMobile } from "react-device-detect";
-import { setEncryptionAccess } from "../../../../../helpers/desktop";
+//import { setEncryptionAccess } from "../../../../../helpers/desktop";
 import { observer, inject } from "mobx-react";
 
 const { FileAction } = constants;
 const sideColor = "#A3A9AE";
 //const {  getSettings,  isDesktopClient } = initStore.auth.selectors;
-const { getEncryptionAccess, replaceFileStream } = initStore.auth.actions;
+//const { getEncryptionAccess, replaceFileStream } = initStore.auth.actions;
 
 const SimpleFilesRowContent = styled(RowContent)`
   .badge-ext {
@@ -177,6 +181,7 @@ class FilesRowContent extends React.PureComponent {
       replaceFileStream,
       i18n,
       t,
+      setEncryptionAccess,
     } = this.props;
     const { itemTitle } = this.state;
 
@@ -389,7 +394,7 @@ class FilesRowContent extends React.PureComponent {
       selectedFolderPathParts,
       newItems,
       setNewRowItems,
-      setUpdateTree,
+      //setUpdateTree,
     } = this.props;
     if (item.fileExst) {
       api.files
@@ -400,7 +405,7 @@ class FilesRowContent extends React.PureComponent {
             (x) => x.id === selectedFolderPathParts[0]
           );
           dataItem.newItems = newItems ? dataItem.newItems - 1 : 0;
-          setUpdateTree(true);
+          //setUpdateTree(true);
           setTreeFolders(data);
           setNewRowItems([`${item.id}`]);
         })
@@ -753,30 +758,29 @@ class FilesRowContent extends React.PureComponent {
   }
 }
 
-function mapStateToProps(state, props) {
-  return {
-    //filter: getFilter(state),
-    //fileAction: getFileAction(state),
-    //parentFolder: getSelectedFolderParentId(state),
-    //isTrashFolder: getIsRecycleBinFolder(state),
-    //settings: getSettings(state),
-    //treeFolders: getTreeFolders(state),
-    //selectedFolderPathParts: getPathParts(state),
-    //newItems: getSelectedFolderNew(state),
-    //selectedFolder: getSelectedFolder(state),
-    //folders: getFolders(state),
-    newRowItems: getNewRowItems(state),
-    //isLoading: getIsLoading(state),
-    //isPrivacy: getIsPrivacyFolder(state),
-    //isDesktop: isDesktopClient(state),
-
-    canWebEdit: canWebEdit(props.item.fileExst)(state),
-    canConvert: canConvert(props.item.fileExst)(state),
-    isImage: isImage(props.item.fileExst)(state),
-    isSound: isSound(props.item.fileExst)(state),
-    isVideo: isVideo(props.item.fileExst)(state),
-  };
-}
+// function mapStateToProps(state, props) {
+//   return {
+//     filter: getFilter(state),
+//     fileAction: getFileAction(state),
+//     parentFolder: getSelectedFolderParentId(state),
+//     isTrashFolder: getIsRecycleBinFolder(state),
+//     settings: getSettings(state),
+//     treeFolders: getTreeFolders(state),
+//     selectedFolderPathParts: getPathParts(state),
+//     newItems: getSelectedFolderNew(state),
+//     selectedFolder: getSelectedFolder(state),
+//     folders: getFolders(state),
+//     newRowItems: getNewRowItems(state),
+//     isLoading: getIsLoading(state),
+//     isPrivacy: getIsPrivacyFolder(state),
+//     isDesktop: isDesktopClient(state),
+//     canWebEdit: canWebEdit(props.item.fileExst)(state),
+//     canConvert: canConvert(props.item.fileExst)(state),
+//     isImage: isImage(props.item.fileExst)(state),
+//     isSound: isSound(props.item.fileExst)(state),
+//     isVideo: isVideo(props.item.fileExst)(state),
+//   };
+// }
 
 // export default connect(mapStateToProps, {
 //   createFile,
@@ -793,68 +797,81 @@ function mapStateToProps(state, props) {
 //   replaceFileStream,
 // })(withRouter(withTranslation()(FilesRowContent)));
 
-export default connect(mapStateToProps, {
-  createFile,
-  updateFile,
-  renameFolder,
-  //setTreeFolders,
-  //setSecondaryProgressBarData,
-  setUpdateTree,
-  setNewRowItems,
-  //setIsLoading,
-  //clearSecondaryProgressData,
-  //fetchFiles,
-  getEncryptionAccess,
-  replaceFileStream,
-})(
-  inject(({ store, mainFilesStore }) => {
-    const { homepage, culture, isDesktopClient } = store.settingsStore;
-    const { filesStore, setIsLoading, isLoading } = mainFilesStore;
-    const {
-      folders,
-      fetchFiles,
-      treeFoldersStore,
-      filter,
-      selectedFolderStore,
-      secondaryProgressDataStore,
-    } = filesStore;
+export default inject(({ store, mainFilesStore }, { item }) => {
+  const { replaceFileStream, getEncryptionAccess, setEncryptionAccess } = store;
+  const { homepage, culture, isDesktopClient } = store.settingsStore;
+  const { filesStore, setIsLoading, isLoading } = mainFilesStore;
+  const {
+    folders,
+    fetchFiles,
+    treeFoldersStore,
+    filter,
+    selectedFolderStore,
+    secondaryProgressDataStore,
+    docserviceStore,
+    mediaViewersFormatsStore,
+    formatsStore,
+    setNewRowItems,
+    newRowItems,
+    createFile,
+    updateFile,
+    renameFolder,
+  } = filesStore;
 
-    const {
-      treeFolders,
-      setTreeFolders,
-      isRecycleBinFolder,
-      isPrivacyFolder,
-    } = treeFoldersStore;
+  const {
+    treeFolders,
+    setTreeFolders,
+    isRecycleBinFolder,
+    isPrivacyFolder,
+  } = treeFoldersStore;
 
-    const { type, extension, id } = filesStore.fileActionStore;
+  const { type, extension, id } = filesStore.fileActionStore;
 
-    const fileAction = { type, extension, id };
-    const {
-      setSecondaryProgressBarData,
-      clearSecondaryProgressData,
-    } = secondaryProgressDataStore;
+  const fileAction = { type, extension, id };
+  const {
+    setSecondaryProgressBarData,
+    clearSecondaryProgressData,
+  } = secondaryProgressDataStore;
 
-    return {
-      isDesktop: isDesktopClient,
-      homepage,
-      culture,
-      fileAction,
-      folders,
-      selectedFolderId: selectedFolderStore.id,
-      selectedFolderPathParts: selectedFolderStore.pathParts,
-      newItems: selectedFolderStore.new,
-      parentFolder: selectedFolderStore.parentId,
-      isLoading,
-      treeFolders,
-      isTrashFolder: isRecycleBinFolder,
-      isPrivacy: isPrivacyFolder,
-      filter,
+  const canWebEdit = docserviceStore.canWebEdit(item.fileExst);
+  const canConvert = docserviceStore.canConvert(item.fileExst);
+  const isVideo = mediaViewersFormatsStore.isVideo(item.fileExst);
+  const isImage = formatsStore.isImage(item.fileExst);
+  const isSound = formatsStore.isSound(item.fileExst);
 
-      setIsLoading,
-      fetchFiles,
-      setTreeFolders,
-      setSecondaryProgressBarData,
-      clearSecondaryProgressData,
-    };
-  })(withRouter(withTranslation()(observer(FilesRowContent))))
-);
+  return {
+    isDesktop: isDesktopClient,
+    homepage,
+    culture,
+    fileAction,
+    folders,
+    selectedFolderId: selectedFolderStore.id,
+    selectedFolderPathParts: selectedFolderStore.pathParts,
+    newItems: selectedFolderStore.new,
+    parentFolder: selectedFolderStore.parentId,
+    isLoading,
+    treeFolders,
+    isTrashFolder: isRecycleBinFolder,
+    isPrivacy: isPrivacyFolder,
+    filter,
+    canWebEdit,
+    canConvert,
+    isVideo,
+    isImage,
+    isSound,
+    newRowItems,
+
+    setIsLoading,
+    fetchFiles,
+    setTreeFolders,
+    setSecondaryProgressBarData,
+    clearSecondaryProgressData,
+    setNewRowItems,
+    createFile,
+    updateFile,
+    renameFolder,
+    replaceFileStream,
+    getEncryptionAccess,
+    setEncryptionAccess,
+  };
+})(withRouter(withTranslation()(observer(FilesRowContent))));

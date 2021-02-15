@@ -1,6 +1,6 @@
 import React from "react";
 import { withRouter } from "react-router";
-import { connect } from "react-redux";
+//import { connect } from "react-redux";
 import {
   Button,
   Heading,
@@ -11,13 +11,13 @@ import {
 } from "asc-web-components";
 import { withTranslation } from "react-i18next";
 import { utils, /* store, */ toastr } from "asc-web-common";
-import {
-  //setIsLoading,
-  setFilesOwner,
-  setFiles,
-  setFolders,
-  //setChangeOwnerPanelVisible,
-} from "../../../store/files/actions";
+// import {
+//   setIsLoading,
+//   setFilesOwner,
+//   setFiles,
+//   setFolders,
+//   setChangeOwnerPanelVisible,
+// } from "../../../store/files/actions";
 // import {
 //   getSelection,
 //   getIsLoading,
@@ -85,6 +85,7 @@ class ChangeOwnerComponent extends React.Component {
       setFolders,
       setFiles,
       setIsLoading,
+      setFilesOwner,
     } = this.props;
     const folderIds = [];
     const fileIds = [];
@@ -219,16 +220,17 @@ const ChangeOwnerPanel = (props) => (
 //   setChangeOwnerPanelVisible,
 // })(withRouter(ChangeOwnerPanel));
 
-export default connect(null, {
-  //setIsLoading,
-  setFiles,
-  setFolders,
-  //setChangeOwnerPanelVisible,
-});
-
-inject(({ store, mainFilesStore }) => {
+export default inject(({ store, mainFilesStore }) => {
   const { filesStore, setIsLoading, isLoading } = mainFilesStore;
-  const { files, folders, selection, dialogsStore } = filesStore;
+  const {
+    files,
+    folders,
+    selection,
+    dialogsStore,
+    setFiles,
+    setFolders,
+    setFilesOwner,
+  } = filesStore;
   const { ownerPanelVisible, setChangeOwnerPanelVisible } = dialogsStore;
 
   return {
@@ -239,7 +241,10 @@ inject(({ store, mainFilesStore }) => {
     isLoading,
     visible: ownerPanelVisible,
 
+    setFiles,
+    setFolders,
     setIsLoading,
     setChangeOwnerPanelVisible,
+    setFilesOwner,
   };
 })(withRouter(observer(ChangeOwnerPanel)));
