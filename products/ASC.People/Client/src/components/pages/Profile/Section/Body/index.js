@@ -186,9 +186,9 @@ class SectionBodyContent extends React.PureComponent {
 const mapStateToProps = (state) => {
   return {
     //settings: state.auth.settings,
-    profile: state.profile.targetUser,
+    // profile: state.profile.targetUser,
     // isAdmin: isAdmin(state),
-    viewer: state.auth.user,
+    //viewer: state.auth.user,
   };
 };
 
@@ -197,9 +197,11 @@ const mapStateToProps = (state) => {
 // });
 
 export default connect(mapStateToProps)(
-  inject(({ store }) => ({
+  inject(({ store, peopleStore }) => ({
     settings: store.settingsStore,
     isAdmin: store.isAdmin,
+    profile: peopleStore.targetUserStore.targetUser,
+    viewer: store.userStore.user,
   }))(observer(withRouter(withTranslation()(SectionBodyContent))))
 );
 
