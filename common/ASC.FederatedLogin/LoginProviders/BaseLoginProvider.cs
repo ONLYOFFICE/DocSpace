@@ -150,7 +150,7 @@ namespace ASC.FederatedLogin.LoginProviders
             var code = context.Request.Query["code"];
             if (string.IsNullOrEmpty(code))
             {
-                OAuth20TokenHelper.RequestCode<T>(scopes, additionalArgs);
+                context.Response.Redirect(OAuth20TokenHelper.RequestCode<T>(scopes, additionalArgs));
                 redirect = true;
                 return null;
             }

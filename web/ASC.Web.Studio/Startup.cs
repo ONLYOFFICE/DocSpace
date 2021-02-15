@@ -3,6 +3,7 @@ using ASC.Api.Core;
 using ASC.Data.Storage;
 using ASC.Data.Storage.DiscStorage;
 using ASC.FederatedLogin;
+using ASC.FederatedLogin.LoginProviders;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -33,6 +34,9 @@ namespace ASC.Web.Studio
             DIHelper.TryAdd<Login>();
             DIHelper.TryAdd<PathUtils>();
             DIHelper.TryAdd<StorageHandlerScope>();
+            DIHelper.TryAdd<GoogleLoginProvider>();
+            DIHelper.TryAdd<FacebookLoginProvider>();
+            DIHelper.TryAdd<LinkedInLoginProvider>();
         }
 
         public override void Configure(IApplicationBuilder app, IWebHostEnvironment env)
