@@ -45,7 +45,6 @@ Text.propTypes = {
 
 Text.defaultProps = {
   title: null,
-  color: "#333333",
   textAlign: "left",
   fontSize: "13px",
   truncate: false,
