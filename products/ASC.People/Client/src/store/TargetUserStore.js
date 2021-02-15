@@ -1,5 +1,7 @@
-import { api } from "asc-web-common";
+import { api, store } from "asc-web-common";
 import { action, makeObservable, observable } from "mobx";
+
+const { authStore } = store;
 
 class TargetUserStore {
   targetUser = null;
@@ -8,12 +10,21 @@ class TargetUserStore {
     makeObservable(this, {
       targetUser: observable,
       getTargetUser: action,
+      resetTargetUser: action,
     });
   }
 
   getTargetUser = async (userName) => {
-    const user = await api.people.getUser(userName);
-    this.targetUser = user;
+    if (authStore.userStore.user.userName === userName) {
+      return (this.targetUser = authStore.userStore.user);
+    } else {
+      const user = await api.people.getUser(userName);
+      return (this.targetUser = user);
+    }
+  };
+
+  resetTargetUser = () => {
+    this.targetUser = null;
   };
 }
 

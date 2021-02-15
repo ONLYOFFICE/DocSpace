@@ -331,12 +331,15 @@ function mapStateToProps(state) {
 // })(withTranslation()(withRouter(AvatarEditorPage)));
 
 export default connect(mapStateToProps, {
-  fetchProfile,
+  // fetchProfile,
   updateProfile,
   //toggleAvatarEditor,
-  setAvatarMax,
+  // setAvatarMax,
 })(
   inject(({ peopleStore }) => ({
     toggleAvatarEditor: peopleStore.avatarEditorStore.toggleAvatarEditor,
+    fetchProfile: peopleStore.targetUserStore.getTargetUser,
+    profile: peopleStore.targetUserStore.targetUser,
+    setAvatarMax: peopleStore.avatarEditorStore.setAvatarMax,
   }))(observer(withRouter(withTranslation()(AvatarEditorPage))))
 );

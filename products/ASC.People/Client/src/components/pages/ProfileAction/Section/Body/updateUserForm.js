@@ -915,7 +915,7 @@ class UpdateUserForm extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
-    profile: state.profile.targetUser,
+    // profile: state.profile.targetUser,
     avatarMax: state.profile.avatarMax,
     //settings: state.auth.settings,
     //groups: state.people.groups,
@@ -932,13 +932,13 @@ const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps, {
   updateProfile,
-  fetchProfile,
-  updateProfileInUsers,
+  // fetchProfile,
+  // updateProfileInUsers,
   // setIsVisibleDataLossDialog,
   // setIsEditingForm,
   // setFilter,
   // toggleAvatarEditor,
-  setAvatarMax,
+  //setAvatarMax,
 })(
   inject(({ store, peopleStore }) => ({
     settings: store.settingsStore,
@@ -951,6 +951,10 @@ export default connect(mapStateToProps, {
     filter: peopleStore.filterStore.filter,
     setFilter: peopleStore.filterStore.setFilterParams,
     toggleAvatarEditor: peopleStore.avatarEditorStore.toggleAvatarEditor,
+    profile: peopleStore.targetUserStore.targetUser,
+    fetchProfile: peopleStore.targetUserStore.getTargetUser,
+    setAvatarMax: peopleStore.avatarEditorStore.setAvatarMax,
+    updateProfileInUsers: peopleStore.usersStore.updateProfileInUsers,
   }))(observer(withRouter(withTranslation()(UpdateUserForm))))
 );
 

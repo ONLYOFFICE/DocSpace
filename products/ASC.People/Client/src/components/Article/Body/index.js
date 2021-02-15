@@ -1,11 +1,7 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { utils, TreeMenu, TreeNode, Icons, Link } from "asc-web-components";
-import {
-  selectGroup,
-  setIsVisibleDataLossDialog,
-  setIsLoading,
-} from "../../../store/people/actions";
+import { setIsLoading } from "../../../store/people/actions";
 import { getSelectedGroup } from "../../../store/people/selectors";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import {
@@ -233,46 +229,23 @@ const BodyContent = (props) => {
   );
 };
 
-// function mapStateToProps(state) {
-//const groups = state.people.groups;
-// const { isLoaded, settings } = state.auth;
-// const { customNames } = settings;
-// const { groupsCaption } = customNames;
-// const { editingForm } = state.people;
-// return {
-// data: getTreeGroups(groups, groupsCaption),
-// selectedKeys: state.people.selectedGroup
-//   ? [state.people.selectedGroup]
-//   : ["root"],
-// groups,
-// isAdmin: isAdmin(state),
-// isLoaded,
-//editingForm,
-//   };
-// }
-
-export default connect(null, {
-  //selectGroup,
-  //setIsVisibleDataLossDialog,
-  setIsLoading,
-})(
-  inject(({ store, peopleStore }) => {
-    const groups = peopleStore.groupsStore.groups;
-    const { groupsCaption } = store.settingsStore.customNames;
-    const data = getTreeGroups(groups, groupsCaption);
-    const selectedKeys = peopleStore.selectedGroupStore.selectedGroup
-      ? [peopleStore.selectedGroupStore.selectedGroup]
-      : ["root"];
-    return {
-      isLoaded: store.isLoaded,
-      isAdmin: store.isAdmin,
-      groups,
-      data,
-      selectedKeys,
-      selectGroup: peopleStore.selectedGroupStore.selectGroup,
-      editingForm: peopleStore.editingFormStore,
-      setIsVisibleDataLossDialog:
-        peopleStore.editingFormStore.setIsVisibleDataLossDialog,
-    };
-  })(observer(BodyContent))
-);
+export default inject(({ store, peopleStore }) => {
+  const groups = peopleStore.groupsStore.groups;
+  const { groupsCaption } = store.settingsStore.customNames;
+  const data = getTreeGroups(groups, groupsCaption);
+  const selectedKeys = peopleStore.selectedGroupStore.selectedGroup
+    ? [peopleStore.selectedGroupStore.selectedGroup]
+    : ["root"];
+  return {
+    isLoaded: store.isLoaded,
+    isAdmin: store.isAdmin,
+    groups,
+    data,
+    selectedKeys,
+    selectGroup: peopleStore.selectedGroupStore.selectGroup,
+    editingForm: peopleStore.editingFormStore,
+    setIsVisibleDataLossDialog:
+      peopleStore.editingFormStore.setIsVisibleDataLossDialog,
+    setIsLoading: peopleStore.setIsLoading,
+  };
+})(observer(BodyContent));

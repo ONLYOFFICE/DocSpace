@@ -509,7 +509,7 @@ class SectionHeaderContent extends React.PureComponent {
 const mapStateToProps = (state) => {
   return {
     //settings: state.auth.settings,
-    profile: state.profile.targetUser,
+    // profile: state.profile.targetUser,
     //viewer: state.auth.user,
     // isAdmin: isAdmin(state),
     //filter: state.people.filter,
@@ -522,8 +522,8 @@ const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps, {
   // updateUserStatus,
-  fetchProfile,
-  updateProfile,
+  // fetchProfile,
+  // updateProfile,
   //setFilter,
 })(
   inject(({ store, peopleStore }) => ({
@@ -533,6 +533,9 @@ export default connect(mapStateToProps, {
     filter: peopleStore.filterStore.filter,
     setFilter: peopleStore.filterStore.setFilterParams,
     updateUserStatus: peopleStore.usersStore.updateUserStatus,
+    resetProfile: peopleStore.targetUserStore.resetTargetUser,
+    fetchProfile: peopleStore.targetUserStore.getTargetUser,
+    profile: peopleStore.targetUserStore.targetUser,
   }))(observer(withRouter(withTranslation()(SectionHeaderContent))))
 );
 

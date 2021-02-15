@@ -170,20 +170,6 @@ const UserContent = ({
   );
 };
 
-// function mapStateToProps(state) {
-//   return {
-//     settings: state.auth.settings,
-//   };
-// }
-
-// const UserContentWrapper = observer((props) => {
-//   return <UserContent settings={settingsStore.settings} {...props} />;
-// });
-
-// export default connect(null /* mapStateToProps */)(
-//   withRouter(UserContentWrapper)
-// );
-
 export default inject(({ store }) => ({
   settings: store.settingsStore,
 }))(observer(withRouter(UserContent)));

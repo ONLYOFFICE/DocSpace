@@ -486,8 +486,8 @@ const SectionHeaderContent = (props) => {
 };
 
 const mapStateToProps = (state) => {
-  const { isLoaded /* settings */ } = state.auth;
-  const { groups, selection, selectedGroup } = state.people;
+  // const { isLoaded /* settings */ } = state.auth;
+  // const { groups, selection, selectedGroup } = state.people;
   //const { homepage, customNames } = settings;
 
   return {
@@ -507,13 +507,7 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, {
-  // updateUserStatus,
-  //fetchPeople,
-  //deleteGroup,
-  // removeUser,
-  // setSelected,
-})(
+export default connect(mapStateToProps)(
   inject(({ store, peopleStore }) => ({
     customNames: store.settingsStore.customNames,
     homepage: store.settingsStore.homepage,

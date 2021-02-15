@@ -32,12 +32,12 @@ export const SET_IS_EDITING_FORM = "SET_IS_EDITING_FORM";
 export const SET_IS_LOADING = "SET_IS_LOADING";
 export const TOGGLE_AVATAR_EDITOR = "TOGGLE_AVATAR_EDITOR";
 
-export function setIsLoading(isLoading) {
-  return {
-    type: SET_IS_LOADING,
-    isLoading,
-  };
-}
+// export function setIsLoading(isLoading) {
+//   return {
+//     type: SET_IS_LOADING,
+//     isLoading,
+//   };
+// }
 
 // export function setUser(user) {
 //   return {
@@ -46,12 +46,12 @@ export function setIsLoading(isLoading) {
 //   };
 // }
 
-export function setUsers(users) {
-  return {
-    type: SET_USERS,
-    users,
-  };
-}
+// export function setUsers(users) {
+//   return {
+//     type: SET_USERS,
+//     users,
+//   };
+// }
 
 // export function setGroups(groups) {
 //   return {
@@ -100,12 +100,12 @@ export function setSelected(selected) {
 //   };
 // }
 
-export function toggleAvatarEditor(avatarEditorIsOpen) {
-  return {
-    type: TOGGLE_AVATAR_EDITOR,
-    avatarEditorIsOpen,
-  };
-}
+// export function toggleAvatarEditor(avatarEditorIsOpen) {
+//   return {
+//     type: TOGGLE_AVATAR_EDITOR,
+//     avatarEditorIsOpen,
+//   };
+// }
 
 // export function setFilterUrl(filter) {
 //   const defaultFilter = Filter.getDefault();
@@ -214,16 +214,16 @@ export function toggleAvatarEditor(avatarEditorIsOpen) {
 //   };
 // }
 
-export function updateUserList(dispatch, filter) {
-  let filterData = filter && filter.clone();
-  if (!filterData) {
-    filterData = Filter.getDefault();
-    filterData.employeeStatus = EmployeeStatus.Active;
-  }
-  return api.people.getUserList(filterData).then((data) => {
-    return dispatch(setUsers(data.items));
-  });
-}
+// export function updateUserList(dispatch, filter) {
+//   let filterData = filter && filter.clone();
+//   if (!filterData) {
+//     filterData = Filter.getDefault();
+//     filterData.employeeStatus = EmployeeStatus.Active;
+//   }
+//   return api.people.getUserList(filterData).then((data) => {
+//     return dispatch(setUsers(data.items));
+//   });
+// }
 
 // function fetchPeopleByFilter(dispatch, filter) {
 //   let filterData = filter && filter.clone();
@@ -277,42 +277,42 @@ export function updateUserList(dispatch, filter) {
 //   };
 // }
 
-export function updateProfileInUsers(updatedProfile) {
-  return (dispatch, getState) => {
-    const { people } = getState();
-    const { users } = people;
+// export function updateProfileInUsers(updatedProfile) {
+//   return (dispatch, getState) => {
+//     const { people } = getState();
+//     const { users } = people;
 
-    if (!users) {
-      return updateUserList(dispatch);
-    }
+//     if (!users) {
+//       return updateUserList(dispatch);
+//     }
 
-    if (!updatedProfile) {
-      const { profile } = getState();
-      updatedProfile = profile.targetUser;
-    }
+//     if (!updatedProfile) {
+//       const { profile } = getState();
+//       updatedProfile = profile.targetUser;
+//     }
 
-    const { userName } = updatedProfile;
-    const oldProfile = getUserByUserName(users, userName);
-    const newProfile = {};
+//     const { userName } = updatedProfile;
+//     const oldProfile = getUserByUserName(users, userName);
+//     const newProfile = {};
 
-    for (let key in oldProfile) {
-      if (
-        updatedProfile.hasOwnProperty(key) &&
-        updatedProfile[key] !== oldProfile[key]
-      ) {
-        newProfile[key] = updatedProfile[key];
-      } else {
-        newProfile[key] = oldProfile[key];
-      }
-    }
+//     for (let key in oldProfile) {
+//       if (
+//         updatedProfile.hasOwnProperty(key) &&
+//         updatedProfile[key] !== oldProfile[key]
+//       ) {
+//         newProfile[key] = updatedProfile[key];
+//       } else {
+//         newProfile[key] = oldProfile[key];
+//       }
+//     }
 
-    const updatedUsers = users.map((user) => {
-      if (user.id === newProfile.id) {
-        return newProfile;
-      } else {
-        return user;
-      }
-    });
-    return dispatch(setUsers(updatedUsers));
-  };
-}
+//     const updatedUsers = users.map((user) => {
+//       if (user.id === newProfile.id) {
+//         return newProfile;
+//       } else {
+//         return user;
+//       }
+//     });
+//     return dispatch(setUsers(updatedUsers));
+//   };
+// }

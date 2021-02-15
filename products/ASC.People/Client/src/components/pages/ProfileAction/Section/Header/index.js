@@ -111,11 +111,11 @@ const SectionHeaderContent = (props) => {
 
 function mapStateToProps(state) {
   return {
-    profile: state.profile.targetUser,
+    // profile: state.profile.targetUser,
     //settings: state.auth.settings,
     //filter: state.people.filter,
     //editingForm: state.people.editingForm,
-    avatarEditorIsOpen: state.people.avatarEditorIsOpen,
+    // avatarEditorIsOpen: state.people.avatarEditorIsOpen,
   };
 }
 
@@ -127,7 +127,7 @@ export default connect(mapStateToProps, {
   //setFilter,
   //setIsVisibleDataLossDialog,
   // toggleAvatarEditor,
-  resetProfile,
+  // resetProfile,
 })(
   inject(({ store, peopleStore }) => ({
     settings: store.settingsStore,
@@ -137,6 +137,9 @@ export default connect(mapStateToProps, {
     filter: peopleStore.filterStore.filter,
     setFilter: peopleStore.filterStore.setFilterParams,
     toggleAvatarEditor: peopleStore.avatarEditorStore.toggleAvatarEditor,
+    resetProfile: peopleStore.targetUserStore.resetTargetUser,
+    profile: peopleStore.targetUserStore.targetUser,
+    avatarEditorIsOpen: peopleStore.avatarEditorStore.visible,
   }))(observer(withRouter(SectionHeaderContent)))
 );
 

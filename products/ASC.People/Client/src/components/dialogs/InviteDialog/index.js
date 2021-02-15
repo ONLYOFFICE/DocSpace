@@ -214,17 +214,17 @@ class InviteDialogComponent extends React.Component {
 const mapStateToProps = (state) => {
   return {
     //settings: state.auth.settings.hasShortenService,
-    userInvitationLink: state.portal.inviteLinks.userLink,
-    guestInvitationLink: state.portal.inviteLinks.guestLink,
+    // userInvitationLink: state.portal.inviteLinks.userLink,
+    // guestInvitationLink: state.portal.inviteLinks.guestLink,
     //guestsCaption: state.auth.settings.customNames.guestsCaption,
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    getPortalInviteLinks: () => dispatch(getPortalInviteLinks()),
-  };
-};
+// const mapDispatchToProps = (dispatch) => {
+//   return {
+//     getPortalInviteLinks: () => dispatch(getPortalInviteLinks()),
+//   };
+// };
 
 const InviteDialogTranslated = withTranslation()(InviteDialogComponent);
 
@@ -249,12 +249,15 @@ InviteDialog.propTypes = {
 // });
 
 export default connect(
-  mapStateToProps,
-  mapDispatchToProps
+  mapStateToProps
+  //mapDispatchToProps
 )(
-  inject(({ store }) => ({
+  inject(({ store, peopleStore }) => ({
     settings: store.settingsStore,
     guestsCaption: store.settingsStore.customNames.guestsCaption,
+    getPortalInviteLinks: peopleStore.inviteLinksStore.getPortalInviteLinks,
+    userInvitationLink: peopleStore.inviteLinksStore.inviteLinks.userLink,
+    guestInvitationLink: peopleStore.inviteLinksStore.inviteLinks.guestLink,
   }))(observer(InviteDialog))
 );
 

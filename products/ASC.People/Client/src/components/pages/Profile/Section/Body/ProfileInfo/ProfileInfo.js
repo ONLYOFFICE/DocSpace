@@ -335,36 +335,17 @@ class ProfileInfo extends React.PureComponent {
   }
 }
 
-function mapStateToProps(state) {
-  //const { customNames } = state.auth.settings;
-  // const {
-  //   groupCaption,
-  //   regDateCaption,
-  //   userPostCaption,
-  //   userCaption,
-  //   guestCaption,
-  // } = customNames;
-
-  return {
-    //groupCaption,
-    //regDateCaption,
-    //userPostCaption,
-    //userCaption,
-    //guestCaption,
-    //filter: getFilter(state),
-  };
-}
 const mapDispatchToProps = (dispatch) => {
   return {
     updateProfileCulture: (id, culture) =>
       dispatch(updateProfileCulture(id, culture)),
     //fetchPeople: (filter) => dispatch(fetchPeople(filter)),
-    setIsLoading: (isLoading) => dispatch(setIsLoading(isLoading)),
+    //setIsLoading: (isLoading) => dispatch(setIsLoading(isLoading)),
   };
 };
 
 export default connect(
-  mapStateToProps,
+  null,
   mapDispatchToProps
 )(
   inject(({ store, peopleStore }) => ({
@@ -376,6 +357,7 @@ export default connect(
     guestCaption: store.settingsStore.customNames.guestCaption,
     fetchPeople: peopleStore.usersStore.getUsersList,
     filter: peopleStore.filterStore.filter,
+    setIsLoading: peopleStore.setIsLoading,
   }))(observer(ProfileInfo))
 );
 

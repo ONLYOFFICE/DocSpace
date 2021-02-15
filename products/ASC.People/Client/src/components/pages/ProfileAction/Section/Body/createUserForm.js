@@ -673,16 +673,16 @@ const mapStateToProps = (state) => {
 // });
 
 export default connect(mapStateToProps, {
-  createProfile,
+  // createProfile,
   updateCreatedAvatar,
   //setFilter,
-  updateProfileInUsers,
+  // updateProfileInUsers,
   // setIsVisibleDataLossDialog,
   // setIsEditingForm,
   // toggleAvatarEditor,
-  setCreatedAvatar,
-  setCroppedAvatar,
-  resetProfile,
+  // setCreatedAvatar,
+  // setCroppedAvatar,
+  // resetProfile,
 })(
   inject(({ store, peopleStore }) => ({
     settings: store.settingsStore,
@@ -694,6 +694,11 @@ export default connect(mapStateToProps, {
     filter: peopleStore.filterStore.filter,
     setFilter: peopleStore.filterStore.setFilterParams,
     toggleAvatarEditor: peopleStore.avatarEditorStore.toggleAvatarEditor,
+    resetProfile: peopleStore.targetUserStore.resetTargetUser,
+    createProfile: peopleStore.usersStore.createUser,
+    setCreatedAvatar: peopleStore.avatarEditorStore.setCreatedAvatar,
+    setCroppedAvatar: peopleStore.avatarEditorStore.setCroppedAvatar,
+    updateProfileInUsers: peopleStore.usersStore.updateProfileInUsers,
   }))(observer(withRouter(withTranslation()(CreateUserForm))))
 );
 
