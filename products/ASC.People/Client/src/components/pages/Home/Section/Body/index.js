@@ -14,17 +14,6 @@ import {
   Grid,
 } from "asc-web-components";
 import UserContent from "./userContent";
-import {
-  selectUser,
-  deselectUser,
-  setSelection,
-  updateUserStatus,
-  resetFilter,
-  fetchPeople,
-  selectGroup,
-} from "../../../../../store/people/actions";
-import { getPeopleList } from "../../../../../store/people/selectors";
-
 import equal from "fast-deep-equal/react";
 import { store, api, constants, toastr, Loaders } from "asc-web-common";
 import {
@@ -43,16 +32,10 @@ const i18n = createI18N({
 });
 const { Consumer } = utils.context;
 const { isArrayEqual } = utils.array;
-const {
-  //getSettings,
-  getIsLoadedSection,
-  isAdmin,
-  getCurrentUserId,
-} = store.auth.selectors;
+const { getIsLoadedSection } = store.auth.selectors;
 const { setIsLoadedSection } = store.auth.actions;
 const { resendUserInvites } = api.people;
 const { EmployeeStatus } = constants;
-const { settingsStore } = store;
 
 const isRefetchPeople = true;
 
@@ -541,30 +524,12 @@ class SectionBodyContent extends React.PureComponent {
 }
 
 const mapStateToProps = (state) => {
-  const { isLoaded } = state.auth;
-  const { filter, isLoading } = state.people;
   return {
-    // isLoaded,
     isLoadedSection: getIsLoadedSection(state),
-    //filter,
-    isLoading,
-    //peopleList: getPeopleList(state),
-    //settings: getSettings(state),
-    // isAdmin: isAdmin(state),
-    // currentUserId: getCurrentUserId(state),
   };
 };
 
-export default connect(mapStateToProps, {
-  // selectUser,
-  // deselectUser,
-  // setSelection,
-  // updateUserStatus,
-  // resetFilter,
-  //fetchPeople,
-  // selectGroup,
-  setIsLoadedSection,
-})(
+export default connect(mapStateToProps, { setIsLoadedSection })(
   inject(({ store, peopleStore }) => ({
     settings: store.settingsStore,
     isLoaded: store.isLoaded,
@@ -578,5 +543,6 @@ export default connect(mapStateToProps, {
     deselectUser: peopleStore.selectionStore.deselectUser,
     selectGroup: peopleStore.selectedGroupStore.selectGroup,
     updateUserStatus: peopleStore.usersStore.updateUserStatus,
+    isLoading: peopleStore.isLoading,
   }))(observer(withRouter(withTranslation()(SectionBodyContent))))
 );

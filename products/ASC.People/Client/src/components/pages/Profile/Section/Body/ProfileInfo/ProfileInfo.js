@@ -9,17 +9,9 @@ import {
 } from "asc-web-components";
 import styled from "styled-components";
 import { api, toastr, Loaders, store } from "asc-web-common";
-import { connect } from "react-redux";
-import { updateProfileCulture } from "../../../../../../store/profile/actions";
-import { getFilter } from "../../../../../../store/people/selectors";
-import {
-  fetchPeople,
-  setIsLoading,
-} from "../../../../../../store/people/actions";
 import { inject, observer } from "mobx-react";
 
 const { resendUserInvites } = api.people;
-const { settingsStore } = store;
 
 const InfoContainer = styled.div`
   margin-bottom: 24px;
@@ -335,31 +327,15 @@ class ProfileInfo extends React.PureComponent {
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    // updateProfileCulture: (id, culture) =>
-    //   dispatch(updateProfileCulture(id, culture)),
-    //fetchPeople: (filter) => dispatch(fetchPeople(filter)),
-    //setIsLoading: (isLoading) => dispatch(setIsLoading(isLoading)),
-  };
-};
-
-export default connect(
-  null,
-  mapDispatchToProps
-)(
-  inject(({ store, peopleStore }) => ({
-    settings: store.settingsStore,
-    groupCaption: store.settingsStore.customNames.groupCaption,
-    regDateCaption: store.settingsStore.customNames.regDateCaption,
-    userPostCaption: store.settingsStore.customNames.userPostCaption,
-    userCaption: store.settingsStore.customNames.userCaption,
-    guestCaption: store.settingsStore.customNames.guestCaption,
-    fetchPeople: peopleStore.usersStore.getUsersList,
-    filter: peopleStore.filterStore.filter,
-    setIsLoading: peopleStore.setIsLoading,
-    updateProfileCulture: peopleStore.targetUserStore.updateProfileCulture,
-  }))(observer(ProfileInfo))
-);
-
-//export default connect(mapStateToProps, mapDispatchToProps)(ProfileInfoWrapper);
+export default inject(({ store, peopleStore }) => ({
+  settings: store.settingsStore,
+  groupCaption: store.settingsStore.customNames.groupCaption,
+  regDateCaption: store.settingsStore.customNames.regDateCaption,
+  userPostCaption: store.settingsStore.customNames.userPostCaption,
+  userCaption: store.settingsStore.customNames.userCaption,
+  guestCaption: store.settingsStore.customNames.guestCaption,
+  fetchPeople: peopleStore.usersStore.getUsersList,
+  filter: peopleStore.filterStore.filter,
+  setIsLoading: peopleStore.setIsLoading,
+  updateProfileCulture: peopleStore.targetUserStore.updateProfileCulture,
+}))(observer(ProfileInfo));

@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
-import { connect } from "react-redux";
 import { Loader } from "asc-web-components";
-import { PageLayout, utils, store } from "asc-web-common";
+import { PageLayout, utils } from "asc-web-common";
 import {
   ArticleHeaderContent,
   ArticleMainButtonContent,
@@ -9,7 +8,6 @@ import {
 } from "../../Article";
 import { SectionHeaderContent, SectionBodyContent } from "./Section";
 import { I18nextProvider, withTranslation } from "react-i18next";
-import { fetchGroup, resetGroup } from "../../../store/group/actions";
 import { createI18N } from "../../../helpers/i18n";
 import { setDocumentTitle } from "../../../helpers/utils";
 import { withRouter } from "react-router";
@@ -19,7 +17,6 @@ const i18n = createI18N({
   localesPath: "pages/GroupAction",
 });
 const { changeLanguage } = utils;
-const { isAdmin } = store.auth.selectors;
 
 class GroupAction extends React.Component {
   componentDidMount() {
@@ -114,22 +111,9 @@ const GroupActionContainer = (props) => {
   );
 };
 
-function mapStateToProps(state) {
-  return {
-    //settings: state.auth.settings,
-    //group: state.group.targetGroup,
-    // isAdmin: isAdmin(state),
-  };
-}
-
-export default connect(mapStateToProps, {
-  //fetchGroup,
-  //resetGroup,
-})(
-  inject(({ store, peopleStore }) => ({
-    isAdmin: store.isAdmin,
-    fetchGroup: peopleStore.selectedGroupStore.setTargetedGroup,
-    group: peopleStore.selectedGroupStore.targetedGroup,
-    resetGroup: peopleStore.selectedGroupStore.resetGroup,
-  }))(observer(GroupActionContainer))
-);
+export default inject(({ store, peopleStore }) => ({
+  isAdmin: store.isAdmin,
+  fetchGroup: peopleStore.selectedGroupStore.setTargetedGroup,
+  group: peopleStore.selectedGroupStore.targetedGroup,
+  resetGroup: peopleStore.selectedGroupStore.resetGroup,
+}))(observer(GroupActionContainer));

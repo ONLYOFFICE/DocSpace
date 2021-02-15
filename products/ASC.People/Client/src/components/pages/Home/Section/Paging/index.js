@@ -1,13 +1,9 @@
 import React, { useCallback, useMemo } from "react";
-import { connect } from "react-redux";
 import { isMobile } from "react-device-detect";
-import { fetchPeople } from "../../../../../store/people/actions";
 import { Paging } from "asc-web-components";
 import { useTranslation } from "react-i18next";
-import { getFilter } from "../../../../../store/people/selectors";
-import { store, Loaders } from "asc-web-common";
+import { Loaders } from "asc-web-common";
 import { inject, observer } from "mobx-react";
-const { getIsLoaded } = store.auth.selectors;
 
 const SectionPagingContent = ({
   fetchPeople,
@@ -152,17 +148,8 @@ const SectionPagingContent = ({
   );
 };
 
-function mapStateToProps(state) {
-  return {
-    //filter: getFilter(state),
-    // isLoaded: getIsLoaded(state),
-  };
-}
-
-export default connect(mapStateToProps)(
-  inject(({ store, peopleStore }) => ({
-    isLoaded: store.isLoaded,
-    fetchPeople: peopleStore.usersStore.getUsersList,
-    filter: peopleStore.filterStore.filter,
-  }))(observer(SectionPagingContent))
-);
+export default inject(({ store, peopleStore }) => ({
+  isLoaded: store.isLoaded,
+  fetchPeople: peopleStore.usersStore.getUsersList,
+  filter: peopleStore.filterStore.filter,
+}))(observer(SectionPagingContent));

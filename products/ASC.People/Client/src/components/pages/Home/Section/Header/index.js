@@ -7,10 +7,9 @@ import {
   ContextMenuButton,
   utils,
 } from "asc-web-components";
-import { Headline, toastr, Loaders, store, constants } from "asc-web-common";
+import { Headline, toastr, Loaders, constants } from "asc-web-common";
 import { connect } from "react-redux";
 import {
-  getSelectedGroup,
   hasAnybodySelected,
   hasUsersToMakeEmployees,
   hasUsersToMakeGuests,
@@ -20,13 +19,6 @@ import {
   hasUsersToRemove,
 } from "../../../../../store/people/selectors";
 import { withTranslation } from "react-i18next";
-import {
-  updateUserStatus,
-  fetchPeople,
-  removeUser,
-  //setSelected,
-} from "../../../../../store/people/actions";
-import { deleteGroup } from "../../../../../store/group/actions";
 import {
   InviteDialog,
   DeleteUsersDialog,
@@ -39,8 +31,6 @@ import { inject, observer } from "mobx-react";
 const { tablet, desktop } = utils.device;
 const { Consumer } = utils.context;
 
-const { isAdmin } = store.auth.selectors;
-const { settingsStore } = store;
 const { EmployeeType, EmployeeStatus } = constants;
 
 const StyledContainer = styled.div`
@@ -486,17 +476,7 @@ const SectionHeaderContent = (props) => {
 };
 
 const mapStateToProps = (state) => {
-  // const { isLoaded /* settings */ } = state.auth;
-  // const { groups, selection, selectedGroup } = state.people;
-  //const { homepage, customNames } = settings;
-
   return {
-    //group: getSelectedGroup(groups, selectedGroup),
-    // isAdmin: isAdmin(state),
-    //homepage,
-    //customNames,
-    //selection,
-    // isLoaded,
     hasAnybodySelected: hasAnybodySelected(state),
     hasUsersToMakeEmployees: hasUsersToMakeEmployees(state),
     hasUsersToMakeGuests: hasUsersToMakeGuests(state),

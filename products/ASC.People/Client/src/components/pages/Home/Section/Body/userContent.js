@@ -8,11 +8,7 @@ import {
   Text,
   Box,
 } from "asc-web-components";
-//import { connect } from "react-redux";
-//import { store } from "asc-web-common";
 import { inject, observer } from "mobx-react";
-
-//const { settingsStore } = store;
 
 const getFormattedGroups = (user, selectGroup) => {
   let temp = [];

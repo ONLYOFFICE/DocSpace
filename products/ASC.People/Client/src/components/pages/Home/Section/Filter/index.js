@@ -1,25 +1,12 @@
 import React from "react";
-import { connect } from "react-redux";
-import { fetchPeople } from "../../../../../store/people/actions";
 import find from "lodash/find";
 import result from "lodash/result";
 import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
-//import { getFilterByLocation } from "../../../../../helpers/converters";
-import { store, FilterInput, Loaders, utils } from "asc-web-common";
+import { FilterInput, Loaders, utils } from "asc-web-common";
 import { isMobileOnly } from "react-device-detect";
-import { getFilter, getGroups } from "../../../../../store/people/selectors";
 import { inject, observer } from "mobx-react";
 
-const {
-  isAdmin,
-  getCurrentUser,
-  getLanguage,
-  //getSettings,
-  getIsLoaded,
-} = store.auth.selectors;
-
-const { settingsStore } = store;
 const { withLayoutSize } = utils;
 
 const getEmployeeStatus = (filterValues) => {

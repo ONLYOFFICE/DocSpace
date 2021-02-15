@@ -1,5 +1,4 @@
 import React from "react";
-import { connect } from "react-redux";
 import {
   IconButton,
   ContextMenuButton,
@@ -12,15 +11,6 @@ import {
   toEmployeeWrapper,
 } from "../../../../../store/people/selectors";
 import { withTranslation, Trans } from "react-i18next";
-import {
-  updateUserStatus,
-  // setFilter,
-} from "../../../../../store/people/actions";
-import { updateProfile } from "../../../../../store/profile/actions";
-import {
-  fetchProfile,
-  // getUserPhoto,
-} from "../../../../../store/profile/actions";
 import styled from "styled-components";
 import { store, api, constants } from "asc-web-common";
 import {
@@ -37,7 +27,6 @@ const i18n = createI18N({
   localesPath: "pages/Profile",
 });
 const { isAdmin, isMe } = store.auth.selectors;
-const { settingsStore } = store;
 const {
   resendUserInvites,
   createThumbnailsAvatar,
@@ -506,44 +495,16 @@ class SectionHeaderContent extends React.PureComponent {
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    //settings: state.auth.settings,
-    // profile: state.profile.targetUser,
-    //viewer: state.auth.user,
-    // isAdmin: isAdmin(state),
-    //filter: state.people.filter,
-  };
-};
-
-// const SectionHeaderContentWrapper = observer((props) => {
-//   return <SectionHeaderContent settings={settingsStore.settings} {...props} />;
-// });
-
-export default connect(mapStateToProps, {
-  // updateUserStatus,
-  // fetchProfile,
-  // updateProfile,
-  //setFilter,
-})(
-  inject(({ store, peopleStore }) => ({
-    settings: store.settingsStore,
-    isAdmin: store.isAdmin,
-    viewer: store.userStore.user,
-    filter: peopleStore.filterStore.filter,
-    setFilter: peopleStore.filterStore.setFilterParams,
-    updateUserStatus: peopleStore.usersStore.updateUserStatus,
-    resetProfile: peopleStore.targetUserStore.resetTargetUser,
-    fetchProfile: peopleStore.targetUserStore.getTargetUser,
-    profile: peopleStore.targetUserStore.targetUser,
-    updateProfile: peopleStore.targetUserStore.updateProfile,
-    getUserPhoto: peopleStore.targetUserStore.getUserPhoto,
-  }))(observer(withRouter(withTranslation()(SectionHeaderContent))))
-);
-
-// export default connect(mapStateToProps, {
-//   updateUserStatus,
-//   fetchProfile,
-//   updateProfile,
-//   setFilter,
-// })(withRouter(withTranslation()(SectionHeaderContentWrapper)));
+export default inject(({ store, peopleStore }) => ({
+  settings: store.settingsStore,
+  isAdmin: store.isAdmin,
+  viewer: store.userStore.user,
+  filter: peopleStore.filterStore.filter,
+  setFilter: peopleStore.filterStore.setFilterParams,
+  updateUserStatus: peopleStore.usersStore.updateUserStatus,
+  resetProfile: peopleStore.targetUserStore.resetTargetUser,
+  fetchProfile: peopleStore.targetUserStore.getTargetUser,
+  profile: peopleStore.targetUserStore.targetUser,
+  updateProfile: peopleStore.targetUserStore.updateProfile,
+  getUserPhoto: peopleStore.targetUserStore.getUserPhoto,
+}))(observer(withRouter(withTranslation()(SectionHeaderContent))));
