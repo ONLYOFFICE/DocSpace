@@ -48,8 +48,8 @@ const {
 } = globalColors;
 
 const Base = {
-  // color: black,
-  // backgroundColor: white,
+  color: black,
+  backgroundColor: white,
   fontFamily: "Open Sans, sans-serif, Arial",
   fontSize: "30px",
 
@@ -531,8 +531,8 @@ const Base = {
   },
 
   input: {
-    color: "#333333",
-    disableColor: "#A3A9AE",
+    color: black,
+    disableColor: grayMid,
 
     backgroundColor: white,
     disableBackgroundColor: grayLight,
@@ -1180,6 +1180,7 @@ const Base = {
     borderRadius: "6px",
     boxShadow: "0px 5px 20px rgba(0, 0, 0, 0.13)",
   },
+
   dropDownItem: {
     color: black,
     disableColor: gray,
@@ -1482,6 +1483,7 @@ const Base = {
       bigMarginTop: "7.5px",
       lineHeight: "33px",
     },
+
     weekdays: {
       color: black,
       disabledColor: gray,
@@ -1489,6 +1491,7 @@ const Base = {
       bigWidth: "295px",
       marginBottom: "-5px",
     },
+
     month: {
       baseWidth: "267px",
       bigWidth: "295px",
@@ -1498,12 +1501,14 @@ const Base = {
       neighboringHoverColor: black,
       neighboringColor: grayLightMid,
     },
+
     selectedDay: {
       backgroundColor: orangeMain,
       borderRadius: "16px",
       cursor: "pointer",
       color: white,
     },
+    
     comboBox: {
       color: black,
       minWidth: "80px",
