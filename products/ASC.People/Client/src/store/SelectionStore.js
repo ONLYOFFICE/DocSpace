@@ -1,4 +1,4 @@
-import { action, makeObservable, observable } from "mobx";
+import { action, computed, makeObservable, observable } from "mobx";
 import { constants, store } from "asc-web-common";
 
 const { EmployeeStatus, EmployeeActivationStatus } = constants;
@@ -12,9 +12,20 @@ class SelectionStore {
     this.peopleStore = peopleStore;
     makeObservable(this, {
       selection: observable,
+      selected: observable,
       selectUser: action,
       deselectUser: action,
+      selectAll: action,
       clearSelection: action,
+      selectByStatus: action,
+      setSelected: action,
+      hasAnybodySelected: computed,
+      hasUsersToMakeEmployees: computed,
+      hasUsersToMakeGuests: computed,
+      hasUsersToActivate: computed,
+      hasUsersToDisable: computed,
+      hasUsersToInvite: computed,
+      hasUsersToRemove: computed,
     });
   }
 

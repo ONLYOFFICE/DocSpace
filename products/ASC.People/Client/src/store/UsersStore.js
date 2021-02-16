@@ -13,6 +13,8 @@ class UsersStore {
     makeObservable(this, {
       users: observable,
       getUsersList: action,
+      setUsers: action,
+      createUser: action,
       removeUser: action,
       updateUserStatus: action,
       updateUserType: action,

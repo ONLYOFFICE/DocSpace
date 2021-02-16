@@ -9,6 +9,7 @@ class EditingFormStore {
     makeObservable(this, {
       isEdit: observable,
       isVisibleDataLossDialog: observable,
+      callback: observable,
       setIsEditingForm: action,
       setIsVisibleDataLossDialog: action,
     });

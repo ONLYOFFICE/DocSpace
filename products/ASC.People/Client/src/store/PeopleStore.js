@@ -44,6 +44,7 @@ class PeopleStore {
 
     makeObservable(this, {
       isLoading: observable,
+      setIsLoading: action,
       setGroupsStore: action,
       setUsersStore: action,
       setTargetUserStore: action,
