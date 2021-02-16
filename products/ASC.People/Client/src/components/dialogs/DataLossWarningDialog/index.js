@@ -35,17 +35,17 @@ class DataLossWarningDialogComponent extends React.Component {
       onContinue,
       setIsVisibleDataLossDialog,
       setIsEditingForm,
-      // editingForm,
+      callback,
     } = this.props;
 
     setIsVisibleDataLossDialog(false);
     setIsEditingForm(false);
 
-    // if (editingForm.callback) {
-    //   editingForm.callback();
-    // } else {
-    onContinue && onContinue();
-    // }
+    if (callback) {
+      callback();
+    } else {
+      onContinue && onContinue();
+    }
   };
   render() {
     const { t, isVisibleDataLossDialog } = this.props;
@@ -99,5 +99,6 @@ export default inject(({ peopleStore }) => {
     setIsVisibleDataLossDialog:
       peopleStore.editingFormStore.setIsVisibleDataLossDialog,
     setIsEditingForm: peopleStore.editingFormStore.setIsEditingForm,
+    callback: peopleStore.editingFormStore.callback,
   };
 })(observer(DataLossWarningDialog));
