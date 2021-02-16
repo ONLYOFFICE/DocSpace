@@ -9,13 +9,11 @@ import {
   Login,
   Error404,
   Offline,
-  ComingSoon,
   NavMenu,
   Main,
   utils,
   toastr,
   Layout,
-  ScrollToTop,
 } from "asc-web-common";
 import Home from "./components/pages/Home";
 
@@ -25,6 +23,7 @@ const Settings = lazy(() => import("./components/pages/Settings"));
 const Wizard = lazy(() => import("./components/pages/Wizard"));
 const Payments = lazy(() => import("./components/pages/Payments"));
 const ThirdPartyResponse = lazy(() => import("./components/pages/ThirdParty"));
+const ComingSoon = lazy(() => import("./components/pages/ComingSoon"));
 const {
   setIsLoaded,
   getUser,
