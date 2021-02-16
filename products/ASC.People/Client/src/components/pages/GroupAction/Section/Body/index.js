@@ -19,7 +19,12 @@ import {
   resetGroup,
   updateGroup,
 } from "../../../../../store/group/actions";
-import { selectGroup, setFilter } from "../../../../../store/people/actions";
+import {
+  selectGroup,
+  setFilter,
+  setSelectGroup,
+} from "../../../../../store/people/actions";
+import { getSelectedGroupId } from "../../../../../store/people/selectors";
 
 import { GUID_EMPTY } from "../../../../../helpers/constants";
 import PropTypes from "prop-types";
@@ -28,7 +33,7 @@ import { connect } from "react-redux";
 import styled from "styled-components";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
-
+import { ID_NO_GROUP_MANAGER } from "../../../../../helpers/constants";
 const {
   getCurrentProductName,
   getSettings,
@@ -91,6 +96,16 @@ class SectionBodyContent extends React.Component {
     this.state = this.mapPropsToState();
   }
 
+  componentDidMount() {
+    const { selectedGroup, group, setSelectGroup } = this.props;
+    if (group) {
+      const { id } = group;
+      if (id && (!selectedGroup || selectedGroup !== id)) {
+        setSelectGroup(id);
+      }
+    }
+  }
+
   mapPropsToState = () => {
     const { group, users, groups, t } = this.props;
     const buttonLabel = group ? t("SaveButton") : t("AddButton");
@@ -129,7 +144,8 @@ class SectionBodyContent extends React.Component {
           ? {
               key: group.manager.id,
               label:
-                group.manager.displayName === "profile removed"
+                group.manager.displayName === "profile removed" ||
+                group.manager.id === ID_NO_GROUP_MANAGER
                   ? t("LblSelect")
                   : group.manager.displayName,
             }
@@ -288,7 +304,14 @@ class SectionBodyContent extends React.Component {
   };
 
   render() {
-    const { t, groupHeadCaption, groupsCaption, me, isLoaded } = this.props;
+    const {
+      t,
+      groupHeadCaption,
+      groupsCaption,
+      me,
+      isLoaded,
+      groups,
+    } = this.props;
     const {
       groupName,
       groupMembers,
@@ -358,6 +381,7 @@ class SectionBodyContent extends React.Component {
                 defaultOption={me}
                 defaultOptionLabel={t("MeLabel")}
                 employeeStatus={1}
+                groupList={groups}
               />
             </FieldContainer>
             <FieldContainer
@@ -396,6 +420,7 @@ class SectionBodyContent extends React.Component {
                 defaultOptionLabel={t("MeLabel")}
                 selectedOptions={groupMembers}
                 employeeStatus={1}
+                groupList={groups}
               />
             </FieldContainer>
             {groupMembers && groupMembers.length > 0 && (
@@ -511,6 +536,7 @@ function mapStateToProps(state) {
     currentModuleName,
     filter: state.people.filter,
     isLoaded,
+    selectedGroup: getSelectedGroupId(state),
   };
 }
 
@@ -520,4 +546,5 @@ export default connect(mapStateToProps, {
   updateGroup,
   selectGroup,
   setFilter,
+  setSelectGroup,
 })(withRouter(withTranslation()(SectionBodyContent)));

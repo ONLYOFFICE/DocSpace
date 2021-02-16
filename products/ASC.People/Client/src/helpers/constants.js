@@ -8,3 +8,4 @@ export const SORT_BY = "sortby";
 export const SORT_ORDER = "sortorder";
 export const PAGE = "page";
 export const PAGE_COUNT = "pagecount";
+export const ID_NO_GROUP_MANAGER = "4a515a15-d4d6-4b8e-828e-e0586f18f3a3";
