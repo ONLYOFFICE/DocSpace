@@ -194,14 +194,12 @@ const mapStateToProps = (state) => {
 //   return <SectionBodyContent settings={settingsStore.settings} {...props} />;
 // });
 
-export default connect(mapStateToProps)(
-  inject(({ auth, peopleStore }) => ({
-    settings: auth.settingsStore,
-    isAdmin: auth.isAdmin,
-    profile: peopleStore.targetUserStore.targetUser,
-    viewer: auth.userStore.user,
-  }))(observer(withRouter(withTranslation()(SectionBodyContent))))
-);
+export default inject(({ auth, peopleStore }) => ({
+  settings: auth.settingsStore,
+  isAdmin: auth.isAdmin,
+  profile: peopleStore.targetUserStore.targetUser,
+  viewer: auth.userStore.user,
+}))(observer(withRouter(withTranslation()(SectionBodyContent))));
 
 // export default connect(mapStateToProps)(
 //   withRouter(withTranslation()(SectionBodyContentWrapper))

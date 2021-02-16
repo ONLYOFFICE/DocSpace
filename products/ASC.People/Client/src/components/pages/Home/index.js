@@ -191,19 +191,17 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(
-  inject(({ auth, peopleStore }) => ({
-    isLoaded: auth.isLoaded,
-    isAdmin: auth.isAdmin,
-    organizationName: auth.settingsStore.organizationName,
-    users: peopleStore.usersStore.users,
-    groups: peopleStore.groupsStore.groups,
-    selectedGroup: peopleStore.selectedGroupStore.selectedGroup,
-    clearSelection: peopleStore.selectionStore.clearSelection,
-    isLoading: peopleStore.isLoading,
-    setIsLoading: peopleStore.setIsLoading,
-    selection: peopleStore.selectionStore.selection,
-    setSelected: peopleStore.selectionStore.setSelected,
-    selected: peopleStore.selectionStore.selected,
-  }))(observer(withRouter(Home)))
-);
+export default inject(({ auth, peopleStore }) => ({
+  isLoaded: auth.isLoaded,
+  isAdmin: auth.isAdmin,
+  organizationName: auth.settingsStore.organizationName,
+  users: peopleStore.usersStore.users,
+  groups: peopleStore.groupsStore.groups,
+  selectedGroup: peopleStore.selectedGroupStore.selectedGroup,
+  clearSelection: peopleStore.selectionStore.clearSelection,
+  isLoading: peopleStore.isLoading,
+  setIsLoading: peopleStore.setIsLoading,
+  selection: peopleStore.selectionStore.selection,
+  setSelected: peopleStore.selectionStore.setSelected,
+  selected: peopleStore.selectionStore.selected,
+}))(observer(withRouter(Home)));

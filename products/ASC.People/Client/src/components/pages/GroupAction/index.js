@@ -119,14 +119,9 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, {
-  //fetchGroup,
-  //resetGroup,
-})(
-  inject(({ auth, peopleStore }) => ({
-    isAdmin: auth.isAdmin,
-    fetchGroup: peopleStore.selectedGroupStore.setTargetedGroup,
-    group: peopleStore.selectedGroupStore.targetedGroup,
-    resetGroup: peopleStore.selectedGroupStore.resetGroup,
-  }))(observer(GroupActionContainer))
-);
+export default inject(({ auth, peopleStore }) => ({
+  isAdmin: auth.isAdmin,
+  fetchGroup: peopleStore.selectedGroupStore.setTargetedGroup,
+  group: peopleStore.selectedGroupStore.targetedGroup,
+  resetGroup: peopleStore.selectedGroupStore.resetGroup,
+}))(observer(GroupActionContainer));

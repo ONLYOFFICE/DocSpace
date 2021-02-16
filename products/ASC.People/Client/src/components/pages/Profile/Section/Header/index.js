@@ -509,26 +509,19 @@ const mapStateToProps = (state) => {
 //   return <SectionHeaderContent settings={settingsStore.settings} {...props} />;
 // });
 
-export default connect(mapStateToProps, {
-  // updateUserStatus,
-  // fetchProfile,
-  // updateProfile,
-  //setFilter,
-})(
-  inject(({ auth, peopleStore }) => ({
-    settings: auth.settingsStore,
-    isAdmin: auth.isAdmin,
-    viewer: auth.userStore.user,
-    filter: peopleStore.filterStore.filter,
-    setFilter: peopleStore.filterStore.setFilterParams,
-    updateUserStatus: peopleStore.usersStore.updateUserStatus,
-    resetProfile: peopleStore.targetUserStore.resetTargetUser,
-    fetchProfile: peopleStore.targetUserStore.getTargetUser,
-    profile: peopleStore.targetUserStore.targetUser,
-    updateProfile: peopleStore.targetUserStore.updateProfile,
-    getUserPhoto: peopleStore.targetUserStore.getUserPhoto,
-  }))(observer(withRouter(withTranslation()(SectionHeaderContent))))
-);
+export default inject(({ auth, peopleStore }) => ({
+  settings: auth.settingsStore,
+  isAdmin: auth.isAdmin,
+  viewer: auth.userStore.user,
+  filter: peopleStore.filterStore.filter,
+  setFilter: peopleStore.filterStore.setFilterParams,
+  updateUserStatus: peopleStore.usersStore.updateUserStatus,
+  resetProfile: peopleStore.targetUserStore.resetTargetUser,
+  fetchProfile: peopleStore.targetUserStore.getTargetUser,
+  profile: peopleStore.targetUserStore.targetUser,
+  updateProfile: peopleStore.targetUserStore.updateProfile,
+  getUserPhoto: peopleStore.targetUserStore.getUserPhoto,
+}))(observer(withRouter(withTranslation()(SectionHeaderContent))));
 
 // export default connect(mapStateToProps, {
 //   updateUserStatus,

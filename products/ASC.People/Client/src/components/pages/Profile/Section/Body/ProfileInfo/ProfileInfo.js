@@ -336,22 +336,17 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(
-  null,
-  mapDispatchToProps
-)(
-  inject(({ auth, peopleStore }) => ({
-    settings: auth.settingsStore,
-    groupCaption: auth.settingsStore.customNames.groupCaption,
-    regDateCaption: auth.settingsStore.customNames.regDateCaption,
-    userPostCaption: auth.settingsStore.customNames.userPostCaption,
-    userCaption: auth.settingsStore.customNames.userCaption,
-    guestCaption: auth.settingsStore.customNames.guestCaption,
-    fetchPeople: peopleStore.usersStore.getUsersList,
-    filter: peopleStore.filterStore.filter,
-    setIsLoading: peopleStore.setIsLoading,
-    updateProfileCulture: peopleStore.targetUserStore.updateProfileCulture,
-  }))(observer(ProfileInfo))
-);
+export default inject(({ auth, peopleStore }) => ({
+  settings: auth.settingsStore,
+  groupCaption: auth.settingsStore.customNames.groupCaption,
+  regDateCaption: auth.settingsStore.customNames.regDateCaption,
+  userPostCaption: auth.settingsStore.customNames.userPostCaption,
+  userCaption: auth.settingsStore.customNames.userCaption,
+  guestCaption: auth.settingsStore.customNames.guestCaption,
+  fetchPeople: peopleStore.usersStore.getUsersList,
+  filter: peopleStore.filterStore.filter,
+  setIsLoading: peopleStore.setIsLoading,
+  updateProfileCulture: peopleStore.targetUserStore.updateProfileCulture,
+}))(observer(ProfileInfo));
 
 //export default connect(mapStateToProps, mapDispatchToProps)(ProfileInfoWrapper);

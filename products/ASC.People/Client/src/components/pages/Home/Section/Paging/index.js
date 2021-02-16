@@ -155,10 +155,8 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(
-  inject(({ auth, peopleStore }) => ({
-    isLoaded: auth.isLoaded,
-    fetchPeople: peopleStore.usersStore.getUsersList,
-    filter: peopleStore.filterStore.filter,
-  }))(observer(SectionPagingContent))
-);
+export default inject(({ auth, peopleStore }) => ({
+  isLoaded: auth.isLoaded,
+  fetchPeople: peopleStore.usersStore.getUsersList,
+  filter: peopleStore.filterStore.filter,
+}))(observer(SectionPagingContent));
