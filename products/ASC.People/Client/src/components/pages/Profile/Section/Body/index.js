@@ -181,9 +181,28 @@ class SectionBodyContent extends React.PureComponent {
   }
 }
 
-export default inject(({ store, peopleStore }) => ({
-  settings: store.settingsStore,
-  isAdmin: store.isAdmin,
-  profile: peopleStore.targetUserStore.targetUser,
-  viewer: store.userStore.user,
-}))(observer(withRouter(withTranslation()(SectionBodyContent))));
+const mapStateToProps = (state) => {
+  return {
+    //settings: state.auth.settings,
+    // profile: state.profile.targetUser,
+    // isAdmin: isAdmin(state),
+    //viewer: state.auth.user,
+  };
+};
+
+// const SectionBodyContentWrapper = observer((props) => {
+//   return <SectionBodyContent settings={settingsStore.settings} {...props} />;
+// });
+
+export default connect(mapStateToProps)(
+  inject(({ auth, peopleStore }) => ({
+    settings: auth.settingsStore,
+    isAdmin: auth.isAdmin,
+    profile: peopleStore.targetUserStore.targetUser,
+    viewer: auth.userStore.user,
+  }))(observer(withRouter(withTranslation()(SectionBodyContent))))
+);
+
+// export default connect(mapStateToProps)(
+//   withRouter(withTranslation()(SectionBodyContentWrapper))
+// );

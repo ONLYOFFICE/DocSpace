@@ -46,6 +46,15 @@ class UserStore {
   setUser = (user) => {
     this.user = user;
   };
+
+  changeEmail = async (userId, email, key) => {
+    this.setIsLoading(true);
+
+    const user = await api.people.changeEmail(userId, email, key);
+
+    this.setUser(user);
+    this.setIsLoading(false);
+  };
 }
 
 export default UserStore;

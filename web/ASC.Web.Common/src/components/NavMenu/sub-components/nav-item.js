@@ -82,17 +82,19 @@ const NavItem = React.memo((props) => {
     onBadgeClick,
     url,
     noHover,
+    ...rest
   } = props;
   const color = active ? activeColor : baseColor;
 
   return separator ? (
-    <NavItemSeparator />
+    <NavItemSeparator {...rest} />
   ) : (
     <NavItemWrapper
       noHover={noHover}
       href={url}
       onClick={onClick}
       iconColor={color}
+      {...rest}
     >
       {iconUrl ? (
         <ReactSVG

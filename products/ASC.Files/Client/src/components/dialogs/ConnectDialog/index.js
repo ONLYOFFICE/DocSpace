@@ -15,9 +15,9 @@ import { utils as commonUtils } from "asc-web-common";
 //   getOAuthToken,
 //   openConnectWindow,
 //   saveThirdParty,
-//   setTreeFolders,
+  //setTreeFolders,
 //   setUpdateTree,
-//   fetchFiles,
+  //fetchFiles,
 // } from "../../../store/files/actions";
 import {
   //getTreeFolders,
@@ -357,11 +357,11 @@ const ConnectDialog = (props) => {
 
 // const mapStateToProps = (state) => {
 //   return {
-//     treeFolders: getTreeFolders(state),
-//     myFolderId: getMyFolderId(state),
-//     commonFolderId: getCommonFolderId(state),
+    //treeFolders: getTreeFolders(state),
+    //myFolderId: getMyFolderId(state),
+    //commonFolderId: getCommonFolderId(state),
 //     providers: getThirdPartyProviders(state),
-//     selectedFolder: getSelectedFolder(state),
+    //selectedFolder: getSelectedFolder(state),
 //   };
 // };
 
@@ -373,40 +373,40 @@ const ConnectDialog = (props) => {
 //   fetchFiles,
 // })(ConnectDialog);
 
-export default inject(({ mainFilesStore, thirdParty }) => {
+export default inject(({ mainFilesStore, settingsStore }) => {
   const { filesStore } = mainFilesStore;
   const {
     providers,
     getOAuthToken,
     saveThirdParty,
     openConnectWindow,
-    fetchThirdPartyProviders,
-  } = thirdParty;
-  const { fetchFiles, treeFoldersStore } = filesStore;
+  fetchThirdPartyProviders,
+  } = settingsStore.thirdPartyStore;
+    const { fetchFiles, treeFoldersStore } = filesStore;
 
-  const {
-    treeFolders,
-    setTreeFolders,
-    myFolderId,
-    commonFolderId,
+    const {
+      treeFolders,
+      setTreeFolders,
+      myFolderId,
+      commonFolderId,
     fetchTreeFolders,
-  } = treeFoldersStore;
-  const { id, folders } = filesStore.selectedFolderStore;
+    } = treeFoldersStore;
+    const { id, folders } = filesStore.selectedFolderStore;
 
-  return {
-    selectedFolderId: id,
-    selectedFolderFolders: folders,
-    treeFolders,
-    myFolderId,
-    commonFolderId,
+    return {
+      selectedFolderId: id,
+      selectedFolderFolders: folders,
+      treeFolders,
+      myFolderId,
+      commonFolderId,
     providers,
 
-    fetchFiles,
-    setTreeFolders,
+      fetchFiles,
+      setTreeFolders,
     getOAuthToken,
     saveThirdParty,
     openConnectWindow,
     fetchThirdPartyProviders,
     fetchTreeFolders,
-  };
+    };
 })(observer(ConnectDialog));

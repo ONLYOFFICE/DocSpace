@@ -176,17 +176,34 @@ Home.propTypes = {
   isAdmin: PropTypes.bool,
 };
 
-export default inject(({ store, peopleStore }) => ({
-  isLoaded: store.isLoaded,
-  isAdmin: store.isAdmin,
-  organizationName: store.settingsStore.organizationName,
-  users: peopleStore.usersStore.users,
-  groups: peopleStore.groupsStore.groups,
-  selectedGroup: peopleStore.selectedGroupStore.selectedGroup,
-  clearSelection: peopleStore.selectionStore.clearSelection,
-  isLoading: peopleStore.isLoading,
-  setIsLoading: peopleStore.setIsLoading,
-  selection: peopleStore.selectionStore.selection,
-  setSelected: peopleStore.selectionStore.setSelected,
-  selected: peopleStore.selectionStore.selected,
-}))(observer(withRouter(Home)));
+function mapStateToProps(state) {
+  // const { users, selection, selected, selectedGroup, groups } = state.people;
+  return {
+    //users,
+    //selection,
+    // selected,
+    //selectedGroup,
+    // groups,
+    // organizationName: getOrganizationName(state),
+    // isAdmin: isAdmin(state),
+    //isLoading: getIsLoading(state),
+    // isLoaded: getIsLoaded(state),
+  };
+}
+
+export default connect(mapStateToProps)(
+  inject(({ auth, peopleStore }) => ({
+    isLoaded: auth.isLoaded,
+    isAdmin: auth.isAdmin,
+    organizationName: auth.settingsStore.organizationName,
+    users: peopleStore.usersStore.users,
+    groups: peopleStore.groupsStore.groups,
+    selectedGroup: peopleStore.selectedGroupStore.selectedGroup,
+    clearSelection: peopleStore.selectionStore.clearSelection,
+    isLoading: peopleStore.isLoading,
+    setIsLoading: peopleStore.setIsLoading,
+    selection: peopleStore.selectionStore.selection,
+    setSelected: peopleStore.selectionStore.setSelected,
+    selected: peopleStore.selectionStore.selected,
+  }))(observer(withRouter(Home)))
+);

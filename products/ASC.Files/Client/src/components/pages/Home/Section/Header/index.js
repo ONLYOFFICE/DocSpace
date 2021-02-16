@@ -38,22 +38,22 @@ import { OperationsPanel } from "../../../../panels";
 // import {
 //   getUserAccess,
 //   getWebEditSelected,
-//   getIsRecycleBinFolder,
+  //getIsRecycleBinFolder,
 //   canCreate,
-//   getSelectedFolderTitle,
-//   getFilter,
-//   getSelectedFolderId,
-//   getSelection,
-//   getSelectedFolderParentId,
-//   getIsRootFolder,
+  //getSelectedFolderTitle,
+  //getFilter,
+  //getSelectedFolderId,
+  //getSelection,
+  //getSelectedFolderParentId,
+  //getIsRootFolder,
 //   getHeaderVisible,
 //   getHeaderIndeterminate,
 //   getHeaderChecked,
 //   getAccessedSelected,
 //   getSelectionLength,
-//   getSharePanelVisible,
+  //getSharePanelVisible,
 //   getIsThirdPartySelection,
-//   getIsPrivacyFolder,
+  //getIsPrivacyFolder,
 //   getOnlyFoldersSelected,
 // } from "../../../../../store/files/selectors";
 import { inject, observer } from "mobx-react";
@@ -695,17 +695,17 @@ class SectionHeaderContent extends React.Component {
 
 // const mapStateToProps = (state) => {
 //   return {
-//     isRootFolder: getIsRootFolder(state),
-//     isAdmin: isAdmin(state),
-//     isRecycleBin: getIsRecycleBinFolder(state),
-//     isPrivacy: getIsPrivacyFolder(state),
-//     isDesktop: isDesktopClient(state),
-//     parentId: getSelectedFolderParentId(state),
-//     selection: getSelection(state),
-//     title: getSelectedFolderTitle(state),
-//     filter: getFilter(state),
+    //isRootFolder: getIsRootFolder(state),
+    //isAdmin: isAdmin(state),
+    //isRecycleBin: getIsRecycleBinFolder(state),
+    //isPrivacy: getIsPrivacyFolder(state),
+    //isDesktop: isDesktopClient(state),
+    //parentId: getSelectedFolderParentId(state),
+    //selection: getSelection(state),
+    //title: getSelectedFolderTitle(state),
+    //filter: getFilter(state),
 //     deleteDialogVisible: getUserAccess(state),
-//     currentFolderId: getSelectedFolderId(state),
+    //currentFolderId: getSelectedFolderId(state),
 //     canCreate: canCreate(state),
 //     isWebEditSelected: getWebEditSelected(state),
 //     isHeaderVisible: getHeaderVisible(state),
@@ -713,7 +713,7 @@ class SectionHeaderContent extends React.Component {
 //     isHeaderChecked: getHeaderChecked(state),
 //     isAccessedSelected: getAccessedSelected(state),
 //     isItemsSelected: getSelectionLength(state),
-//     sharingPanelVisible: getSharePanelVisible(state),
+    //sharingPanelVisible: getSharePanelVisible(state),
 //     isThirdPartySelection: getIsThirdPartySelection(state),
 //     isOnlyFoldersSelected: getOnlyFoldersSelected(state),
 //   };
@@ -729,18 +729,18 @@ class SectionHeaderContent extends React.Component {
 //   setSharingPanelVisible,
 // })(withTranslation()(withRouter(SectionHeaderContent)));
 
-export default inject(({ store, mainFilesStore }) => {
-  const { filesStore, setIsLoading } = mainFilesStore;
-  const {
-    setSelected,
-    fileActionStore,
-    fetchFiles,
-    selection,
-    selectedFolderStore,
-    treeFoldersStore,
-    filter,
-    secondaryProgressDataStore,
-    dialogsStore,
+export default inject(({ auth, mainFilesStore }) => {
+    const { filesStore, setIsLoading } = mainFilesStore;
+    const {
+      setSelected,
+      fileActionStore,
+      fetchFiles,
+      selection,
+      selectedFolderStore,
+      treeFoldersStore,
+      filter,
+      secondaryProgressDataStore,
+      dialogsStore,
     canCreate,
     isHeaderVisible,
     isHeaderIndeterminate,
@@ -750,27 +750,27 @@ export default inject(({ store, mainFilesStore }) => {
     isOnlyFoldersSelected,
     isThirdPartySelection,
     isWebEditSelected,
-  } = filesStore;
-  const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
-  const { setAction } = fileActionStore;
-  const {
-    setSecondaryProgressBarData,
-    clearSecondaryProgressData,
-  } = secondaryProgressDataStore;
-  const { sharingPanelVisible, setSharingPanelVisible } = dialogsStore;
+    } = filesStore;
+    const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
+    const { setAction } = fileActionStore;
+    const {
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
+    } = secondaryProgressDataStore;
+    const { sharingPanelVisible, setSharingPanelVisible } = dialogsStore;
 
-  return {
-    isAdmin: store.isAdmin,
-    isDesktop: store.settingsStore.isDesktopClient,
-    isRootFolder: selectedFolderStore.parentId === 0,
-    title: selectedFolderStore.title,
-    parentId: selectedFolderStore.parentId,
-    currentFolderId: selectedFolderStore.id,
-    selection,
-    isRecycleBin: isRecycleBinFolder,
-    isPrivacy: isPrivacyFolder,
-    filter,
-    sharingPanelVisible,
+    return {
+      isAdmin: auth.isAdmin,
+      isDesktop: auth.settingsStore.isDesktopClient,
+      isRootFolder: selectedFolderStore.parentId === 0,
+      title: selectedFolderStore.title,
+      parentId: selectedFolderStore.parentId,
+      currentFolderId: selectedFolderStore.id,
+      selection,
+      isRecycleBin: isRecycleBinFolder,
+      isPrivacy: isPrivacyFolder,
+      filter,
+      sharingPanelVisible,
     canCreate,
     isItemsSelected: selection.length,
     isHeaderVisible,
@@ -782,12 +782,12 @@ export default inject(({ store, mainFilesStore }) => {
     isThirdPartySelection,
     isWebEditSelected,
 
-    setSelected,
-    setAction,
-    setIsLoading,
-    fetchFiles,
-    setSecondaryProgressBarData,
-    setSharingPanelVisible,
-    clearSecondaryProgressData,
-  };
+      setSelected,
+      setAction,
+      setIsLoading,
+      fetchFiles,
+      setSecondaryProgressBarData,
+      setSharingPanelVisible,
+      clearSecondaryProgressData,
+    };
 })(withTranslation()(withRouter(observer(SectionHeaderContent))));

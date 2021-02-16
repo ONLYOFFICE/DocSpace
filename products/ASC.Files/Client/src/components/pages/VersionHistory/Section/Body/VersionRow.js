@@ -255,10 +255,10 @@ const VersionRow = (props) => {
 //   mapDispatchToProps
 // )(withRouter(withTranslation()(VersionRow)));
 
-export default inject(({ store, mainFilesStore }) => {
-  const { user } = store.userStore;
-  const { culture } = store.settingsStore;
-  const language = (user && user.cultureName) || culture || "en-US";
+export default inject(({ auth, mainFilesStore }) => {
+  const { user } = auth.userStore;
+  const { culture } = auth.settingsStore;
+    const language = (user && user.cultureName) || culture || "en-US";
 
   const {
     markAsVersion,
@@ -266,11 +266,11 @@ export default inject(({ store, mainFilesStore }) => {
     updateCommentVersion,
   } = mainFilesStore.filesStore.versionHistoryStore;
 
-  return {
-    culture: language,
+    return {
+      culture: language,
 
     markAsVersion,
     restoreVersion,
     updateCommentVersion,
-  };
+    };
 })(withRouter(withTranslation()(observer(VersionRow))));

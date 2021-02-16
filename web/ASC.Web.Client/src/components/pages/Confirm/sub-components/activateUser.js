@@ -11,14 +11,9 @@ import {
 } from "asc-web-components";
 import { PageLayout } from "asc-web-common";
 import styled from "styled-components";
-import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { constants, utils as commonUtils } from "asc-web-common";
-import {
-  getConfirmationInfo,
-  activateConfirmUser,
-} from "../../../../store/confirm/actions";
-import { inject } from "mobx-react";
+import { constants, utils as commonUtils, api } from "asc-web-common";
+import { inject, observer } from "mobx-react";
 
 const { EmployeeActivationStatus } = constants;
 const { createPasswordHash, tryRedirectTo } = commonUtils;
@@ -67,6 +62,7 @@ class Confirm extends React.PureComponent {
     super(props);
 
     this.state = {
+      isConfirmLoaded: false,
       email: props.linkData.email,
       firstName: props.linkData.firstname,
       firstNameValid: true,
@@ -85,7 +81,7 @@ class Confirm extends React.PureComponent {
 
   onSubmit = (e) => {
     this.setState({ isLoading: true }, function () {
-      const { activateConfirmUser, hashSettings, defaultPage } = this.props;
+      const { hashSettings, defaultPage } = this.props;
 
       this.setState({ errorText: "" });
 
@@ -127,7 +123,8 @@ class Confirm extends React.PureComponent {
         firstname: this.state.firstName,
         lastname: this.state.lastName,
       };
-      activateConfirmUser(
+
+      this.activateConfirmUser(
         personalData,
         loginData,
         this.state.key,
@@ -145,6 +142,56 @@ class Confirm extends React.PureComponent {
     });
   };
 
+  activateConfirmUser = async (
+    personalData,
+    loginData,
+    key,
+    userId,
+    activationStatus
+  ) => {
+    const changedData = {
+      id: userId,
+      FirstName: personalData.firstname,
+      LastName: personalData.lastname,
+    };
+
+    const res1 = await api.people.changePassword(
+      userId,
+      loginData.passwordHash,
+      key
+    );
+
+    const res2 = await api.people.updateActivationStatus(
+      activationStatus,
+      userId,
+      key
+    );
+
+    //TODO: Fix working process
+    // .then((data) => {
+    //   const promise = new Promise((resolve, reject) => {
+    //     setTimeout(() => {
+    //       login(
+    //         loginData.userName,
+    //         loginData.passwordHash
+    //       )(dispatch)
+    //         .then(() => {
+    //           resolve(loadInitInfo(dispatch));
+    //         })
+    //         .catch((e) => {
+    //           reject(e);
+    //         });
+    //     }, 1000);
+    //   });
+
+    //   return promise;
+    // })
+    // .then((data) => {
+    //   return api.people.updateUser(changedData);
+    // })
+    // .then((user) => dispatch(setCurrentUser(user)));
+  };
+
   onKeyPress = (event) => {
     if (event.key === "Enter") {
       this.onSubmit();
@@ -156,10 +203,12 @@ class Confirm extends React.PureComponent {
   validatePassword = (value) => this.setState({ passwordValid: value });
 
   componentDidMount() {
-    const { getConfirmationInfo, history } = this.props;
+    const { getSettings, getPortalPasswordSettings, history } = this.props;
+    const requests = [getSettings(), getPortalPasswordSettings(this.state.key)];
 
-    getConfirmationInfo(this.state.key)
-      .then(function () {
+    Promise.all(requests)
+      .then(() => {
+        this.setState({ isConfirmLoaded: true });
         console.log("get settings success");
       })
       .catch((e) => {
@@ -341,33 +390,22 @@ const ActivateUserForm = (props) => (
   </PageLayout>
 );
 
-function mapStateToProps(state) {
+export default inject(({ auth }) => {
+  const {
+    greetingSettings,
+    hashSettings,
+    defaultPage,
+    passwordSettings,
+    getSettings,
+    getPortalPasswordSettings,
+  } = auth.settingsStore;
+
   return {
-    isConfirmLoaded: state.confirm.isConfirmLoaded,
-    //settings: state.auth.settings.passwordSettings,
-    //greetingTitle: state.auth.settings.greetingSettings,
-    //hashSettings: state.auth.settings.hashSettings,
-    //defaultPage: state.auth.settings.defaultPage,
+    settings: passwordSettings,
+    greetingTitle: greetingSettings,
+    hashSettings,
+    defaultPage,
+    getSettings,
+    getPortalPasswordSettings,
   };
-}
-
-export default connect(mapStateToProps, {
-  getConfirmationInfo,
-  activateConfirmUser,
-})(
-  inject(({ store }) => {
-    const {
-      greetingSettings,
-      hashSettings,
-      defaultPage,
-      passwordSettings,
-    } = store.settingsStore;
-
-    return {
-      settings: passwordSettings,
-      greetingTitle: greetingSettings,
-      hashSettings,
-      defaultPage,
-    };
-  })(withRouter(withTranslation()(ActivateUserForm)))
-);
+})(withRouter(withTranslation()(observer(ActivateUserForm))));

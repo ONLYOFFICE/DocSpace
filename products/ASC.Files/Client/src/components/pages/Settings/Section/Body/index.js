@@ -12,8 +12,8 @@ import { Error403, Error520 /* store */ } from "asc-web-common";
 //   setForceSave,
 // } from "../../../../../store/files/actions";
 // import {
-//   getIsLoading,
-//   getSettingsSelectedTreeNode,
+  //getIsLoading,
+  //getSettingsSelectedTreeNode,
 //   getSettingsTreeStoreOriginalFiles,
 //   getSettingsTreeConfirmDelete,
 //   getSettingsTreeUpdateIfExist,
@@ -182,15 +182,15 @@ const SectionBodyContent = ({
 
 // function mapStateToProps(state) {
 //   return {
-//     isAdmin: isAdmin(state),
-//     selectedTreeNode: getSettingsSelectedTreeNode(state),
+    //isAdmin: isAdmin(state),
+    //selectedTreeNode: getSettingsSelectedTreeNode(state),
 //     storeOriginalFiles: getSettingsTreeStoreOriginalFiles(state),
 //     confirmDelete: getSettingsTreeConfirmDelete(state),
 //     updateIfExist: getSettingsTreeUpdateIfExist(state),
 //     forceSave: getSettingsTreeForceSave(state),
 //     storeForceSave: getSettingsTreeStoreForceSave(state),
 //     enableThirdParty: getSettingsTreeEnableThirdParty(state),
-//     isLoading: getIsLoading(state),
+    //isLoading: getIsLoading(state),
 //     settingsTree: getSettingsTree(state),
 //   };
 // }
@@ -204,9 +204,9 @@ const SectionBodyContent = ({
 //   setForceSave,
 // })(SectionBodyContent);
 
-export default inject(({ store, mainFilesStore }) => {
+export default inject(({ auth, mainFilesStore, settingsStore }) => {
   const { isLoading, filesStore } = mainFilesStore;
-  const { treeFoldersStore, settingsTreeStore } = filesStore;
+  const { treeFoldersStore } = filesStore;
   const { selectedTreeNode } = treeFoldersStore;
   const {
     settingsTree: settings,
@@ -216,20 +216,20 @@ export default inject(({ store, mainFilesStore }) => {
     forcesave,
     storeForcesave,
     enableThirdParty,
-    setUpdateIfExist,
-    setStoreOriginal,
-    setEnableThirdParty,
-    setConfirmDelete,
-    setStoreForceSave,
-    setForceSave,
-  } = settingsTreeStore;
+  setUpdateIfExist,
+  setStoreOriginal,
+  setEnableThirdParty,
+  setConfirmDelete,
+  setStoreForceSave,
+  setForceSave,
+  } = settingsStore;
 
   const settingsTree = Object.keys(settings).length !== 0 ? settings : {};
 
-  return {
-    isAdmin: store.isAdmin,
-    isLoading,
-    selectedTreeNode,
+    return {
+      isAdmin: auth.isAdmin,
+      isLoading,
+      selectedTreeNode,
     settingsTree,
     storeOriginalFiles,
     confirmDelete,
@@ -244,5 +244,5 @@ export default inject(({ store, mainFilesStore }) => {
     setConfirmDelete,
     setStoreForceSave,
     setForceSave,
-  };
+    };
 })(observer(SectionBodyContent));

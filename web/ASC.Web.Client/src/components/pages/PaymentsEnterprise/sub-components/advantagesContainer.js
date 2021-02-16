@@ -128,6 +128,6 @@ const AdvantagesContainer = ({ organizationName }) => {
 //   };
 // }
 
-export default inject(({ store }) => ({
-  organizationName: store.settingsStore.organizationName,
+export default inject(({ auth }) => ({
+  organizationName: auth.settingsStore.organizationName,
 }))(AdvantagesContainer);

@@ -128,8 +128,8 @@ class PureAccessRights extends Component {
 //   };
 // }
 
-const AccessRightsContainer = inject(({ store }) => ({
-  organizationName: store.settingsStore.organizationName,
+const AccessRightsContainer = inject(({ auth }) => ({
+  organizationName: auth.settingsStore.organizationName,
 }))(withTranslation()(PureAccessRights));
 
 const AccessRights = (props) => {

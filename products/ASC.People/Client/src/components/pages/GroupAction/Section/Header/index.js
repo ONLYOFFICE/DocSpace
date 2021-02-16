@@ -95,8 +95,8 @@ function mapStateToProps(state) {
 // });
 
 export default connect(mapStateToProps)(
-  inject(({ store, peopleStore }) => ({
-    groupCaption: store.settingsStore.customNames.groupCaption,
+  inject(({ auth, peopleStore }) => ({
+    groupCaption: auth.settingsStore.customNames.groupCaption,
     filter: peopleStore.filterStore.filter,
     setFilter: peopleStore.filterStore.setFilterParams,
     group: peopleStore.selectedGroupStore.targetedGroup,

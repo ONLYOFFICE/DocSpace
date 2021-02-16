@@ -124,11 +124,11 @@ function mapStateToProps(state) {
 }
 
 export default connect(mapStateToProps)(
-  inject(({ store, peopleStore }) => ({
-    isVisitor: store.userStore.user.isVisitor,
-    isLoaded: store.isLoaded,
-    isAdmin: store.isAdmin,
-    language: store.language,
+  inject(({ auth, peopleStore }) => ({
+    isVisitor: auth.userStore.user.isVisitor,
+    isLoaded: auth.isLoaded,
+    isAdmin: auth.isAdmin,
+    language: auth.language,
     resetProfile: peopleStore.targetUserStore.resetTargetUser,
     fetchProfile: peopleStore.targetUserStore.getTargetUser,
     profile: peopleStore.targetUserStore.targetUser,

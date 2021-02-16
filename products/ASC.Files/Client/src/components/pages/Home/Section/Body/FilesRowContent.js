@@ -760,20 +760,20 @@ class FilesRowContent extends React.PureComponent {
 
 // function mapStateToProps(state, props) {
 //   return {
-//     filter: getFilter(state),
-//     fileAction: getFileAction(state),
-//     parentFolder: getSelectedFolderParentId(state),
-//     isTrashFolder: getIsRecycleBinFolder(state),
-//     settings: getSettings(state),
-//     treeFolders: getTreeFolders(state),
-//     selectedFolderPathParts: getPathParts(state),
-//     newItems: getSelectedFolderNew(state),
-//     selectedFolder: getSelectedFolder(state),
-//     folders: getFolders(state),
+//filter: getFilter(state),
+//fileAction: getFileAction(state),
+//parentFolder: getSelectedFolderParentId(state),
+//isTrashFolder: getIsRecycleBinFolder(state),
+//settings: getSettings(state),
+//treeFolders: getTreeFolders(state),
+//selectedFolderPathParts: getPathParts(state),
+//newItems: getSelectedFolderNew(state),
+//selectedFolder: getSelectedFolder(state),
+//folders: getFolders(state),
 //     newRowItems: getNewRowItems(state),
-//     isLoading: getIsLoading(state),
-//     isPrivacy: getIsPrivacyFolder(state),
-//     isDesktop: isDesktopClient(state),
+//isLoading: getIsLoading(state),
+//isPrivacy: getIsPrivacyFolder(state),
+//isDesktop: isDesktopClient(state),
 //     canWebEdit: canWebEdit(props.item.fileExst)(state),
 //     canConvert: canConvert(props.item.fileExst)(state),
 //     isImage: isImage(props.item.fileExst)(state),
@@ -797,9 +797,9 @@ class FilesRowContent extends React.PureComponent {
 //   replaceFileStream,
 // })(withRouter(withTranslation()(FilesRowContent)));
 
-export default inject(({ store, mainFilesStore }, { item }) => {
-  const { replaceFileStream, getEncryptionAccess, setEncryptionAccess } = store;
-  const { homepage, culture, isDesktopClient } = store.settingsStore;
+export default inject(({ auth, mainFilesStore }, { item }) => {
+  const { replaceFileStream, getEncryptionAccess, setEncryptionAccess } = auth;
+  const { homepage, culture, isDesktopClient } = auth.settingsStore;
   const { filesStore, setIsLoading, isLoading } = mainFilesStore;
   const {
     folders,

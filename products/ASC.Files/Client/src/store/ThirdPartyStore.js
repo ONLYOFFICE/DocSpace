@@ -25,6 +25,7 @@ class ThirdPartyStore {
       ownCloudConnectItem: computed,
 
       setThirdPartyProviders: action,
+      setThirdPartyCapabilities: action,
       fetchThirdPartyProviders: action,
       deleteThirdParty: action,
       setConnectItem: action,
@@ -36,6 +37,10 @@ class ThirdPartyStore {
 
   setThirdPartyProviders = (providers) => {
     this.providers = providers;
+  };
+
+  setThirdPartyCapabilities = (capabilities) => {
+    this.capabilities = capabilities;
   };
 
   deleteThirdParty = (id) => api.files.deleteThirdParty(id);
@@ -61,8 +66,8 @@ class ThirdPartyStore {
     customerTitle,
     providerKey,
     providerId
-  ) =>
-    api.files.saveThirdParty(
+  ) => {
+    return api.files.saveThirdParty(
       url,
       login,
       password,
@@ -72,6 +77,7 @@ class ThirdPartyStore {
       providerKey,
       providerId
     );
+  };
 
   getOAuthToken = () => {
     return new Promise((resolve) => {

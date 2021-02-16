@@ -327,15 +327,31 @@ class ProfileInfo extends React.PureComponent {
   }
 }
 
-export default inject(({ store, peopleStore }) => ({
-  settings: store.settingsStore,
-  groupCaption: store.settingsStore.customNames.groupCaption,
-  regDateCaption: store.settingsStore.customNames.regDateCaption,
-  userPostCaption: store.settingsStore.customNames.userPostCaption,
-  userCaption: store.settingsStore.customNames.userCaption,
-  guestCaption: store.settingsStore.customNames.guestCaption,
-  fetchPeople: peopleStore.usersStore.getUsersList,
-  filter: peopleStore.filterStore.filter,
-  setIsLoading: peopleStore.setIsLoading,
-  updateProfileCulture: peopleStore.targetUserStore.updateProfileCulture,
-}))(observer(ProfileInfo));
+const mapDispatchToProps = (dispatch) => {
+  return {
+    // updateProfileCulture: (id, culture) =>
+    //   dispatch(updateProfileCulture(id, culture)),
+    //fetchPeople: (filter) => dispatch(fetchPeople(filter)),
+    //setIsLoading: (isLoading) => dispatch(setIsLoading(isLoading)),
+  };
+};
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(
+  inject(({ auth, peopleStore }) => ({
+    settings: auth.settingsStore,
+    groupCaption: auth.settingsStore.customNames.groupCaption,
+    regDateCaption: auth.settingsStore.customNames.regDateCaption,
+    userPostCaption: auth.settingsStore.customNames.userPostCaption,
+    userCaption: auth.settingsStore.customNames.userCaption,
+    guestCaption: auth.settingsStore.customNames.guestCaption,
+    fetchPeople: peopleStore.usersStore.getUsersList,
+    filter: peopleStore.filterStore.filter,
+    setIsLoading: peopleStore.setIsLoading,
+    updateProfileCulture: peopleStore.targetUserStore.updateProfileCulture,
+  }))(observer(ProfileInfo))
+);
+
+//export default connect(mapStateToProps, mapDispatchToProps)(ProfileInfoWrapper);

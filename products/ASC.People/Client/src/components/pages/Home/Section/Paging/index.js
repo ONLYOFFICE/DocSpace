@@ -148,8 +148,17 @@ const SectionPagingContent = ({
   );
 };
 
-export default inject(({ store, peopleStore }) => ({
-  isLoaded: store.isLoaded,
-  fetchPeople: peopleStore.usersStore.getUsersList,
-  filter: peopleStore.filterStore.filter,
-}))(observer(SectionPagingContent));
+function mapStateToProps(state) {
+  return {
+    //filter: getFilter(state),
+    // isLoaded: getIsLoaded(state),
+  };
+}
+
+export default connect(mapStateToProps)(
+  inject(({ auth, peopleStore }) => ({
+    isLoaded: auth.isLoaded,
+    fetchPeople: peopleStore.usersStore.getUsersList,
+    filter: peopleStore.filterStore.filter,
+  }))(observer(SectionPagingContent))
+);

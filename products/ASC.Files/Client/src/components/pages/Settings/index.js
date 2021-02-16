@@ -12,8 +12,8 @@ import { withTranslation, I18nextProvider } from "react-i18next";
 import { createI18N } from "../../../helpers/i18n";
 // import {
 //   getFilesSettings,
-//   setFirstLoad,
-//   setSelectedNode,
+  //setFirstLoad,
+  //setSelectedNode,
 // } from "../../../store/files/actions";
 //import { getSettingsTree, getIsLoading } from "../../../store/files/selectors";
 
@@ -129,7 +129,7 @@ const Settings = (props) => {
 
 // function mapStateToProps(state) {
 //   return {
-//     isLoading: getIsLoading(state),
+    //isLoading: getIsLoading(state),
 //     settingsTree: getSettingsTree(state),
 //   };
 // }
@@ -137,8 +137,8 @@ const Settings = (props) => {
 // const mapDispatchToProps = (dispatch) => {
 //   return {
 //     getFilesSettings: () => dispatch(getFilesSettings()),
-//     setFirstLoad: (firstLoad) => dispatch(setFirstLoad(firstLoad)),
-//     setSelectedNode: (node) => dispatch(setSelectedNode(node)),
+    //setFirstLoad: (firstLoad) => dispatch(setFirstLoad(firstLoad)),
+    //setSelectedNode: (node) => dispatch(setSelectedNode(node)),
 //   };
 // };
 
@@ -147,20 +147,20 @@ const Settings = (props) => {
 //   mapDispatchToProps
 // )(withRouter(Settings));
 
-export default inject(({ mainFilesStore }) => {
-  const { filesStore, isLoading } = mainFilesStore;
-  const { setFirstLoad, treeFoldersStore, settingsTreeStore } = filesStore;
-  const { setSelectedNode } = treeFoldersStore;
-  const { getFilesSettings, settingsTree: settings } = settingsTreeStore;
+export default inject(({ mainFilesStore, settingsStore }) => {
+    const { filesStore, isLoading } = mainFilesStore;
+    const { setFirstLoad, treeFoldersStore } = filesStore;
+    const { setSelectedNode } = treeFoldersStore;
+  const { getFilesSettings, settingsTree: settings } = settingsStore;
 
   const settingsTree = Object.keys(settings).length !== 0 ? settings : {};
 
-  return {
-    isLoading,
+    return {
+      isLoading,
     settingsTree,
 
-    setFirstLoad,
-    setSelectedNode,
+      setFirstLoad,
+      setSelectedNode,
     getFilesSettings,
-  };
+    };
 })(withRouter(observer(Settings)));

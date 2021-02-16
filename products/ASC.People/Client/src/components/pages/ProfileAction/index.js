@@ -154,9 +154,9 @@ export default connect(mapStateToProps, {
   /*fetchProfile*/
   /*setIsEditingForm*/
 })(
-  inject(({ store, peopleStore }) => ({
-    isAdmin: store.isAdmin,
-    isVisitor: store.userStore.user.isVisitor,
+  inject(({ auth, peopleStore }) => ({
+    isAdmin: auth.isAdmin,
+    isVisitor: auth.userStore.user.isVisitor,
     isEdit: peopleStore.editingFormStore.isEdit,
     setIsEditingForm: peopleStore.editingFormStore.setIsEditingForm,
     fetchProfile: peopleStore.targetUserStore.getTargetUser,

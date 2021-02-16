@@ -21,8 +21,8 @@ import { Trans } from "react-i18next";
 //   openConnectWindow,
 //   setConnectItem,
 //   setShowThirdPartyPanel,
-//   fetchFiles,
-//   setSelectedNode,
+  //fetchFiles,
+  //setSelectedNode,
 // } from "../../../../../store/files/actions";
 import //getThirdPartyCapabilities,
 //getGoogleConnect,
@@ -40,7 +40,7 @@ import //getThirdPartyCapabilities,
 //getThirdPartyProviders,
 //getMyDirectoryFolders,
 //getCommonDirectoryFolders,
-//getFilter,
+  //getFilter,
 "../../../../../store/files/selectors";
 import { DeleteThirdPartyDialog, ConnectDialog } from "../../../../dialogs";
 import { inject, observer } from "mobx-react";
@@ -166,7 +166,7 @@ class ConnectClouds extends React.Component {
           this.props
             .getOAuthToken(modal)
             .then((token) => this.showOAuthModal(token, selectedServiceData))
-        );
+      );
     }
 
     this.setState({
@@ -546,7 +546,7 @@ class ConnectClouds extends React.Component {
 
 // function mapStateToProps(state) {
 //   return {
-//     isAdmin: isAdmin(state),
+    //isAdmin: isAdmin(state),
 //     capabilities: getThirdPartyCapabilities(state),
 //     googleConnectItem: getGoogleConnect(state),
 //     boxConnectItem: getBoxConnect(state),
@@ -563,7 +563,7 @@ class ConnectClouds extends React.Component {
 //     providers: getThirdPartyProviders(state),
 //     myDirectoryFolders: getMyDirectoryFolders(state),
 //     commonDirectoryFolders: getCommonDirectoryFolders(state),
-//     filter: getFilter(state),
+    //filter: getFilter(state),
 //   };
 // }
 
@@ -574,15 +574,15 @@ class ConnectClouds extends React.Component {
 //   setSelectedNode,
 // })(withTranslation()(ConnectClouds));
 
-export default inject(({ store, mainFilesStore, thirdParty }) => {
+export default inject(({ auth, mainFilesStore, settingsStore }) => {
   const { filesStore } = mainFilesStore;
   const {
     providers,
     connectItem,
     capabilities,
-    setConnectItem,
+  setConnectItem,
     showThirdPartyPanel,
-    setShowThirdPartyPanel,
+  setShowThirdPartyPanel,
     googleConnectItem,
     boxConnectItem,
     dropboxConnectItem,
@@ -594,13 +594,13 @@ export default inject(({ store, mainFilesStore, thirdParty }) => {
     webDavConnectItem,
     getOAuthToken,
     openConnectWindow,
-  } = thirdParty;
-  const { fetchFiles, treeFoldersStore, filter } = filesStore;
+  } = settingsStore.thirdPartyStore;
+    const { fetchFiles, treeFoldersStore, filter } = filesStore;
   const { setSelectedNode, myFolder, commonFolder } = treeFoldersStore;
 
-  return {
-    isAdmin: store.isAdmin,
-    filter,
+    return {
+      isAdmin: auth.isAdmin,
+      filter,
     providers,
     showThirdPartyPanel,
     connectItem,
@@ -617,11 +617,11 @@ export default inject(({ store, mainFilesStore, thirdParty }) => {
     myDirectoryFolders: myFolder && myFolder.folders,
     commonDirectoryFolders: commonFolder && commonFolder.folders,
 
-    fetchFiles,
-    setSelectedNode,
+      fetchFiles,
+      setSelectedNode,
     setConnectItem,
     setShowThirdPartyPanel,
     getOAuthToken,
     openConnectWindow,
-  };
+    };
 })(withTranslation()(observer(ConnectClouds)));

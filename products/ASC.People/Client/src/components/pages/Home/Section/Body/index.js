@@ -530,11 +530,11 @@ const mapStateToProps = (state) => {
 };
 
 export default connect(mapStateToProps, { setIsLoadedSection })(
-  inject(({ store, peopleStore }) => ({
-    settings: store.settingsStore,
-    isLoaded: store.isLoaded,
-    isAdmin: store.isAdmin,
-    currentUserId: store.userStore.user.id,
+  inject(({ auth, peopleStore }) => ({
+    settings: auth.settingsStore,
+    isLoaded: auth.isLoaded,
+    isAdmin: auth.isAdmin,
+    currentUserId: auth.userStore.user.id,
     fetchPeople: peopleStore.usersStore.getUsersList,
     peopleList: peopleStore.usersStore.composePeopleList(),
     filter: peopleStore.filterStore.filter,

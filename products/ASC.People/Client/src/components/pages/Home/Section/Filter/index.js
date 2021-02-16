@@ -251,13 +251,13 @@ class SectionFilterContent extends React.Component {
   }
 }
 
-export default inject(({ store, peopleStore }) => {
+export default inject(({ auth, peopleStore }) => {
   return {
-    settings: store.settingsStore,
-    isLoaded: store.isLoaded,
-    isAdmin: store.isAdmin,
-    language: store.language,
-    user: store.userStore.user,
+    settings: auth.settingsStore,
+    isLoaded: auth.isLoaded,
+    isAdmin: auth.isAdmin,
+    language: auth.language,
+    user: auth.userStore.user,
     groups: peopleStore.groupsStore.groups,
     fetchPeople: peopleStore.usersStore.getUsersList,
     filter: peopleStore.filterStore.filter,

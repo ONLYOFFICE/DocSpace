@@ -98,9 +98,9 @@ const HeaderComponent = ({
   };
 
   const onBadgeClick = (e) => {
-    const item = mainModules.find(
-      (module) => module.id === e.currentTarget.dataset.id
-    );
+    if (!e) return;
+    const id = e.currentTarget.dataset.id;
+    const item = mainModules.find((m) => m.id === id);
     toggleAside();
 
     if (item) item.onBadgeClick(e);
@@ -238,7 +238,7 @@ HeaderComponent.propTypes = {
   isAdmin: PropTypes.bool,
 };
 
-export default inject(({ store }) => {
+export default inject(({ auth }) => {
   const {
     settingsStore,
     moduleStore,
@@ -246,7 +246,7 @@ export default inject(({ store }) => {
     isAuthenticated,
     isAdmin,
     product,
-  } = store;
+  } = auth;
   const { logoUrl, defaultPage, currentProductId } = settingsStore;
   const { modules, totalNotifications } = moduleStore;
 

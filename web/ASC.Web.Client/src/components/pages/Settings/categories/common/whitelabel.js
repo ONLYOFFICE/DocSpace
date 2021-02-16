@@ -1,5 +1,5 @@
 import React from "react";
-import { connect } from "react-redux";
+
 import { withTranslation, Trans } from "react-i18next";
 import {
   FieldContainer,
@@ -10,12 +10,8 @@ import {
   Link,
   TextInput,
 } from "asc-web-components";
-import {
-  getWhiteLabelLogoText,
-  getWhiteLabelLogoSizes,
-  getWhiteLabelLogoUrls,
-} from "../../../../../store/settings/actions";
 import styled from "styled-components";
+import { inject, observer } from "mobx-react";
 
 const StyledComponent = styled.div`
   .margin-top {
@@ -469,16 +465,22 @@ class WhiteLabel extends React.Component {
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    logoText: state.settings.common.whiteLabel.logoText,
-    rawSizes: state.settings.common.whiteLabel.logoSizes,
-    logoUrls: state.settings.common.whiteLabel.logoUrls,
-  };
-}
+export default inject(({ setup }) => {
+  const {
+    common,
+    getWhiteLabelLogoText,
+    getWhiteLabelLogoSizes,
+    getWhiteLabelLogoUrls,
+  } = setup;
 
-export default connect(mapStateToProps, {
-  getWhiteLabelLogoText,
-  getWhiteLabelLogoSizes,
-  getWhiteLabelLogoUrls,
-})(withTranslation()(WhiteLabel));
+  const { logoText, logoSizes: rawSizes, logoUrls } = common.whiteLabel;
+
+  return {
+    logoText,
+    rawSizes,
+    logoUrls,
+    getWhiteLabelLogoText,
+    getWhiteLabelLogoSizes,
+    getWhiteLabelLogoUrls,
+  };
+})(withTranslation()(observer(WhiteLabel)));

@@ -8,10 +8,10 @@ import { isMobile } from "react-device-detect";
 //import { setAction, startUpload } from "../../../store/files/actions";
 // import {
 //   canCreate,
-//   getFilter,
-//   getSelectedFolder,
-//   getFirstLoad,
-//   getIsPrivacyFolder,
+  //getFilter,
+  //getSelectedFolder,
+  //getFirstLoad,
+  //getIsPrivacyFolder,
 // } from "../../../store/files/selectors";
 import {
   utils as commonUtils,
@@ -185,16 +185,16 @@ ArticleMainButtonContent.propTypes = {
 // const mapStateToProps = (state) => {
 //   return {
 //     canCreate: canCreate(state),
-//     firstLoad: getFirstLoad(state),
-//     settings: getSettings(state),
-//     filter: getFilter(state),
-//     selectedFolder: getSelectedFolder(state),
-//     isPrivacy: getIsPrivacyFolder(state),
+    //firstLoad: getFirstLoad(state),
+    //settings: getSettings(state),
+    //filter: getFilter(state),
+    //selectedFolder: getSelectedFolder(state),
+    //isPrivacy: getIsPrivacyFolder(state),
 //   };
 // };
 
-export default inject(({ store, mainFilesStore }) => {
-  const { filesStore } = mainFilesStore;
+export default inject(({ auth, mainFilesStore }) => {
+    const { filesStore } = mainFilesStore;
   const {
     firstLoad,
     fileActionStore,
@@ -203,19 +203,19 @@ export default inject(({ store, mainFilesStore }) => {
     canCreate,
     uploadDataStore,
   } = filesStore;
-  const { isPrivacyFolder } = treeFoldersStore;
-  const { id } = filesStore.selectedFolderStore;
+    const { isPrivacyFolder } = treeFoldersStore;
+    const { id } = filesStore.selectedFolderStore;
   const { startUpload } = uploadDataStore;
 
-  return {
-    homepage: store.settingsStore.homepage,
-    firstLoad,
-    selectedFolderId: id,
-    isPrivacy: isPrivacyFolder,
-    filter,
+    return {
+      homepage: auth.settingsStore.homepage,
+      firstLoad,
+      selectedFolderId: id,
+      isPrivacy: isPrivacyFolder,
+      filter,
     canCreate,
 
     setAction: fileActionStore.setAction,
     startUpload,
-  };
+    };
 })(withRouter(observer(ArticleMainButtonContent)));
