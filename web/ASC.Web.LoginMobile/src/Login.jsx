@@ -5,8 +5,8 @@ import { withTranslation } from "react-i18next";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 
-import { PageLayout, store, api, utils } from "ASCWebCommon";
-import { checkPwd } from "ASCWebCommon/desktop";
+import { PageLayout, store, api, utils } from "ASC.Web.Common";
+import { checkPwd } from "ASC.Web.Common/desktop";
 import {
   Box,
   Button,
@@ -19,7 +19,7 @@ import {
   PasswordInput,
   FieldContainer,
   tre,
-} from "ASCWebComponents";
+} from "ASC.Web.Components";
 
 import i18n from "./i18n";
 import ForgotPasswordModalDialog from "./sub-components/forgot-password-modal-dialog";
