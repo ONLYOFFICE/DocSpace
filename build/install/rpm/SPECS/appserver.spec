@@ -54,8 +54,6 @@ rm -rf %{_rpmdir}/%{_arch}/%{name}-*
 getent group onlyoffice >/dev/null || groupadd -r onlyoffice
 getent passwd onlyoffice >/dev/null || useradd -r -g onlyoffice -s /sbin/nologin onlyoffice
 
-%post
-
 %post 
 
 chmod +x %{_bindir}/appserver-configuration.sh
