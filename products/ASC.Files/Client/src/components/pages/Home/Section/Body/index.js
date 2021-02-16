@@ -2204,13 +2204,19 @@ SectionBodyContent.defaultProps = {
 export default inject(
   ({
     auth,
-    mainFilesStore,
+    initFilesStore,
+    filesStore,
     settingsStore,
     mediaViewerDataStore,
     formatsStore,
+    versionHistoryStore,
+    uploadDataStore,
+    dialogsStore,
+    treeFoldersStore,
   }) => {
     const { providers, capabilities } = settingsStore.thirdPartyStore;
     const { mediaViewersFormatsStore } = formatsStore;
+    const { secondaryProgressDataStore } = uploadDataStore;
     const {
       homepage,
       culture,
@@ -2222,14 +2228,13 @@ export default inject(
     const {
       dragging,
       setDragging,
-      filesStore,
       setIsLoading,
       viewAs,
       dragItem,
       setDragItem,
       privacyInstructions,
       tooltipValue,
-    } = mainFilesStore;
+    } = initFilesStore;
     const {
       files,
       folders,
@@ -2244,10 +2249,6 @@ export default inject(
       deselectFile,
       filter,
       fileActionStore,
-      treeFoldersStore,
-      secondaryProgressDataStore,
-      dialogsStore,
-      versionHistoryStore,
       selectedFolderStore,
       addFileToRecentlyViewed,
       updateFile,

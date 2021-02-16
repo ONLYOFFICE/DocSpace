@@ -21,8 +21,8 @@ import { Trans } from "react-i18next";
 //   openConnectWindow,
 //   setConnectItem,
 //   setShowThirdPartyPanel,
-  //fetchFiles,
-  //setSelectedNode,
+//fetchFiles,
+//setSelectedNode,
 // } from "../../../../../store/files/actions";
 import //getThirdPartyCapabilities,
 //getGoogleConnect,
@@ -40,7 +40,7 @@ import //getThirdPartyCapabilities,
 //getThirdPartyProviders,
 //getMyDirectoryFolders,
 //getCommonDirectoryFolders,
-  //getFilter,
+//getFilter,
 "../../../../../store/files/selectors";
 import { DeleteThirdPartyDialog, ConnectDialog } from "../../../../dialogs";
 import { inject, observer } from "mobx-react";
@@ -166,7 +166,7 @@ class ConnectClouds extends React.Component {
           this.props
             .getOAuthToken(modal)
             .then((token) => this.showOAuthModal(token, selectedServiceData))
-      );
+        );
     }
 
     this.setState({
@@ -546,7 +546,7 @@ class ConnectClouds extends React.Component {
 
 // function mapStateToProps(state) {
 //   return {
-    //isAdmin: isAdmin(state),
+//isAdmin: isAdmin(state),
 //     capabilities: getThirdPartyCapabilities(state),
 //     googleConnectItem: getGoogleConnect(state),
 //     boxConnectItem: getBoxConnect(state),
@@ -563,7 +563,7 @@ class ConnectClouds extends React.Component {
 //     providers: getThirdPartyProviders(state),
 //     myDirectoryFolders: getMyDirectoryFolders(state),
 //     commonDirectoryFolders: getCommonDirectoryFolders(state),
-    //filter: getFilter(state),
+//filter: getFilter(state),
 //   };
 // }
 
@@ -574,54 +574,55 @@ class ConnectClouds extends React.Component {
 //   setSelectedNode,
 // })(withTranslation()(ConnectClouds));
 
-export default inject(({ auth, mainFilesStore, settingsStore }) => {
-  const { filesStore } = mainFilesStore;
-  const {
-    providers,
-    connectItem,
-    capabilities,
-  setConnectItem,
-    showThirdPartyPanel,
-  setShowThirdPartyPanel,
-    googleConnectItem,
-    boxConnectItem,
-    dropboxConnectItem,
-    oneDriveConnectItem,
-    nextCloudConnectItem,
-    kDriveConnectItem,
-    yandexConnectItem,
-    ownCloudConnectItem,
-    webDavConnectItem,
-    getOAuthToken,
-    openConnectWindow,
-  } = settingsStore.thirdPartyStore;
-    const { fetchFiles, treeFoldersStore, filter } = filesStore;
-  const { setSelectedNode, myFolder, commonFolder } = treeFoldersStore;
+export default inject(
+  ({ auth, filesStore, settingsStore, treeFoldersStore }) => {
+    const {
+      providers,
+      connectItem,
+      capabilities,
+      setConnectItem,
+      showThirdPartyPanel,
+      setShowThirdPartyPanel,
+      googleConnectItem,
+      boxConnectItem,
+      dropboxConnectItem,
+      oneDriveConnectItem,
+      nextCloudConnectItem,
+      kDriveConnectItem,
+      yandexConnectItem,
+      ownCloudConnectItem,
+      webDavConnectItem,
+      getOAuthToken,
+      openConnectWindow,
+    } = settingsStore.thirdPartyStore;
+    const { fetchFiles, filter } = filesStore;
+    const { setSelectedNode, myFolder, commonFolder } = treeFoldersStore;
 
     return {
       isAdmin: auth.isAdmin,
       filter,
-    providers,
-    showThirdPartyPanel,
-    connectItem,
-    capabilities,
-    googleConnectItem,
-    boxConnectItem,
-    dropboxConnectItem,
-    oneDriveConnectItem,
-    nextCloudConnectItem,
-    kDriveConnectItem,
-    yandexConnectItem,
-    ownCloudConnectItem,
-    webDavConnectItem,
-    myDirectoryFolders: myFolder && myFolder.folders,
-    commonDirectoryFolders: commonFolder && commonFolder.folders,
+      providers,
+      showThirdPartyPanel,
+      connectItem,
+      capabilities,
+      googleConnectItem,
+      boxConnectItem,
+      dropboxConnectItem,
+      oneDriveConnectItem,
+      nextCloudConnectItem,
+      kDriveConnectItem,
+      yandexConnectItem,
+      ownCloudConnectItem,
+      webDavConnectItem,
+      myDirectoryFolders: myFolder && myFolder.folders,
+      commonDirectoryFolders: commonFolder && commonFolder.folders,
 
       fetchFiles,
       setSelectedNode,
-    setConnectItem,
-    setShowThirdPartyPanel,
-    getOAuthToken,
-    openConnectWindow,
+      setConnectItem,
+      setShowThirdPartyPanel,
+      getOAuthToken,
+      openConnectWindow,
     };
-})(withTranslation()(observer(ConnectClouds)));
+  }
+)(withTranslation()(observer(ConnectClouds)));

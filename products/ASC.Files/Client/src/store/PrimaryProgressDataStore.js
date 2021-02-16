@@ -6,6 +6,7 @@ class PrimaryProgressDataStore {
   visible = false;
   icon = "upload";
   alert = false;
+  loadingFile = null;
 
   constructor() {
     makeObservable(this, {
@@ -14,26 +15,29 @@ class PrimaryProgressDataStore {
       visible: observable,
       icon: observable,
       alert: observable,
-
-      loadingFile: computed,
+      loadingFile: observable,
 
       setPrimaryProgressBarData: action,
+      clearPrimaryProgressData: action,
     });
   }
 
   setPrimaryProgressBarData = (primaryProgressData) => {
     const progressDataItems = Object.keys(primaryProgressData);
     for (let key of progressDataItems) {
-      if (key in this) {
-        this[key] = primaryProgressData[key];
-      }
+      this[key] = primaryProgressData[key];
     }
   };
-  //TODO: loadingFile
-  get loadingFile() {
-    if (!this.loadingFile || !this.loadingFile.uniqueId) return null;
-    return this.loadingFile;
-  }
+
+  clearPrimaryProgressData = () => {
+    this.setPrimaryProgressBarData({
+      visible: false,
+      percent: 0,
+      label: "",
+      icon: "",
+      alert: false,
+    });
+  };
 }
 
 export default PrimaryProgressDataStore;

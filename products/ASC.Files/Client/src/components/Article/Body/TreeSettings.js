@@ -8,17 +8,17 @@ import { withTranslation, I18nextProvider } from "react-i18next";
 import { createI18N } from "../../../helpers/i18n";
 
 // import {
-  //setSelectedNode,
+//setSelectedNode,
 //   setExpandSettingsTree,
 //   getFilesSettings,
-  //setSelectedFolder,
-  //setIsLoading,
+//setSelectedFolder,
+//setIsLoading,
 // } from "../../../store/files/actions";
 import //getIsLoading,
-  //getSettingsSelectedTreeNode,
+//getSettingsSelectedTreeNode,
 //getExpandedSetting,
 //getEnableThirdParty,
-  //getSelectedTreeNode,
+//getSelectedTreeNode,
 "../../../store/files/selectors";
 import { inject, observer } from "mobx-react";
 //const { isAdmin } = initStore.auth.selectors;
@@ -206,12 +206,12 @@ const TreeSettings = (props) => {
 
 // function mapStateToProps(state) {
 //   return {
-    //selectedTreeNode: getSettingsSelectedTreeNode(state),
+//selectedTreeNode: getSettingsSelectedTreeNode(state),
 //     expandedSetting: getExpandedSetting(state),
 //     enableThirdParty: getEnableThirdParty(state),
-    //isAdmin: isAdmin(state),
-    //isLoading: getIsLoading(state),
-    //selectedFolder: getSelectedTreeNode(state),
+//isAdmin: isAdmin(state),
+//isLoading: getIsLoading(state),
+//selectedFolder: getSelectedTreeNode(state),
 //   };
 // }
 
@@ -223,28 +223,30 @@ const TreeSettings = (props) => {
 //   setIsLoading,
 // })(withRouter(TreeSettings));
 
-export default inject(({ auth, mainFilesStore, settingsStore }) => {
-    const { setIsLoading, filesStore, isLoading } = mainFilesStore;
+export default inject(
+  ({ auth, initFilesStore, filesStore, settingsStore, treeFoldersStore }) => {
+    const { setIsLoading, isLoading } = initFilesStore;
     const { setSelectedFolder } = filesStore.selectedFolderStore;
-    const { selectedTreeNode, setSelectedNode } = filesStore.treeFoldersStore;
-  const {
-    getFilesSettings,
-    enableThirdParty,
-    expandedSetting,
-    setExpandSettingsTree,
-  } = settingsStore;
+    const { selectedTreeNode, setSelectedNode } = treeFoldersStore;
+    const {
+      getFilesSettings,
+      enableThirdParty,
+      expandedSetting,
+      setExpandSettingsTree,
+    } = settingsStore;
 
     return {
       isAdmin: auth.isAdmin,
       isLoading,
       selectedTreeNode,
-    enableThirdParty,
-    expandedSetting,
+      enableThirdParty,
+      expandedSetting,
 
       setIsLoading,
       setSelectedFolder,
       setSelectedNode,
-    getFilesSettings,
-    setExpandSettingsTree,
+      getFilesSettings,
+      setExpandSettingsTree,
     };
-})(withRouter(observer(TreeSettings)));
+  }
+)(withRouter(observer(TreeSettings)));

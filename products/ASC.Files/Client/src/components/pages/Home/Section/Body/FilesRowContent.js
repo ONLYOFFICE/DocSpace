@@ -797,84 +797,99 @@ class FilesRowContent extends React.PureComponent {
 //   replaceFileStream,
 // })(withRouter(withTranslation()(FilesRowContent)));
 
-export default inject(({ auth, mainFilesStore, formatsStore }, { item }) => {
-  const { replaceFileStream, getEncryptionAccess, setEncryptionAccess } = auth;
-  const { homepage, culture, isDesktopClient } = auth.settingsStore;
-  const { filesStore, setIsLoading, isLoading } = mainFilesStore;
-  const {
-    iconFormatsStore,
-    mediaViewersFormatsStore,
-    docserviceStore,
-  } = formatsStore;
+export default inject(
+  (
+    {
+      auth,
+      initFilesStore,
+      filesStore,
+      formatsStore,
+      uploadDataStore,
+      treeFoldersStore,
+    },
+    { item }
+  ) => {
+    const {
+      replaceFileStream,
+      getEncryptionAccess,
+      setEncryptionAccess,
+    } = auth;
+    const { homepage, culture, isDesktopClient } = auth.settingsStore;
+    const { setIsLoading, isLoading } = initFilesStore;
+    const { secondaryProgressDataStore } = uploadDataStore;
+    const {
+      iconFormatsStore,
+      mediaViewersFormatsStore,
+      docserviceStore,
+    } = formatsStore;
 
-  const {
-    folders,
-    fetchFiles,
-    treeFoldersStore,
-    filter,
-    selectedFolderStore,
-    secondaryProgressDataStore,
-    setNewRowItems,
-    newRowItems,
-    createFile,
-    updateFile,
-    renameFolder,
-  } = filesStore;
+    const {
+      folders,
+      fetchFiles,
+      filter,
+      selectedFolderStore,
+      setNewRowItems,
+      newRowItems,
+      createFile,
+      updateFile,
+      renameFolder,
+    } = filesStore;
 
-  const {
-    treeFolders,
-    setTreeFolders,
-    isRecycleBinFolder,
-    isPrivacyFolder,
-  } = treeFoldersStore;
+    const {
+      treeFolders,
+      setTreeFolders,
+      isRecycleBinFolder,
+      isPrivacyFolder,
+    } = treeFoldersStore;
 
-  const { type, extension, id } = filesStore.fileActionStore;
+    const { type, extension, id } = filesStore.fileActionStore;
 
-  const fileAction = { type, extension, id };
-  const {
-    setSecondaryProgressBarData,
-    clearSecondaryProgressData,
-  } = secondaryProgressDataStore;
+    const fileAction = { type, extension, id };
+    const {
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
+    } = secondaryProgressDataStore;
 
-  const canWebEdit = docserviceStore.canWebEdit(item.fileExst);
-  const canConvert = docserviceStore.canConvert(item.fileExst);
-  const isVideo = mediaViewersFormatsStore.isVideo(item.fileExst);
-  const isImage = iconFormatsStore.isImage(item.fileExst);
-  const isSound = iconFormatsStore.isSound(item.fileExst);
+    const canWebEdit = docserviceStore.canWebEdit(item.fileExst);
+    const canConvert = docserviceStore.canConvert(item.fileExst);
+    const isVideo = mediaViewersFormatsStore.isVideo(item.fileExst);
+    const isImage = iconFormatsStore.isImage(item.fileExst);
+    const isSound = iconFormatsStore.isSound(item.fileExst);
 
-  return {
-    isDesktop: isDesktopClient,
-    homepage,
-    culture,
-    fileAction,
-    folders,
-    selectedFolderId: selectedFolderStore.id,
-    selectedFolderPathParts: selectedFolderStore.pathParts,
-    newItems: selectedFolderStore.new,
-    parentFolder: selectedFolderStore.parentId,
-    isLoading,
-    treeFolders,
-    isTrashFolder: isRecycleBinFolder,
-    isPrivacy: isPrivacyFolder,
-    filter,
-    canWebEdit,
-    canConvert,
-    isVideo,
-    isImage,
-    isSound,
-    newRowItems,
+    return {
+      isDesktop: isDesktopClient,
+      homepage,
+      culture,
+      fileAction,
+      folders,
+      selectedFolderId: selectedFolderStore.id,
+      selectedFolderPathParts: selectedFolderStore.pathParts,
+      newItems: selectedFolderStore.new,
+      parentFolder: selectedFolderStore.parentId,
+      isLoading,
+      treeFolders,
+      isTrashFolder: isRecycleBinFolder,
+      isPrivacy: isPrivacyFolder,
+      filter,
+      canWebEdit,
+      canConvert,
+      isVideo,
+      isImage,
+      isSound,
+      newRowItems,
 
-    setIsLoading,
-    fetchFiles,
-    setTreeFolders,
-    setSecondaryProgressBarData,
-    clearSecondaryProgressData,
-    setNewRowItems,
-    createFile,
-    updateFile,
-    renameFolder,
-    replaceFileStream,
-    getEncryptionAccess,
-    setEncryptionAccess,
-  };
-})(withRouter(withTranslation()(observer(FilesRowContent))));
+      setIsLoading,
+      fetchFiles,
+      setTreeFolders,
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
+      setNewRowItems,
+      createFile,
+      updateFile,
+      renameFolder,
+      replaceFileStream,
+      getEncryptionAccess,
+      setEncryptionAccess,
+    };
+  }
+)(withRouter(withTranslation()(observer(FilesRowContent))));

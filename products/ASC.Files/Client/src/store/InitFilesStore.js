@@ -1,6 +1,7 @@
 import { makeObservable, action, observable, computed } from "mobx";
 import { store, utils } from "asc-web-common";
-import FilesStore from "./FilesStore";
+import filesStore from "./FilesStore";
+import treeFoldersStore from "./TreeFoldersStore";
 import config from "../../package.json";
 
 const { authStore } = store;
@@ -12,18 +13,13 @@ class MainFilesStore {
   viewAs = "row";
   dragging = false;
   dragItem = null;
-
-  filesStore = null;
   privacyInstructions = "https://www.onlyoffice.com/private-rooms.aspx";
 
   constructor() {
-    this.filesStore = new FilesStore();
-
     const pathname = window.location.pathname.toLowerCase();
     this.isEditor = pathname.indexOf("doceditor") !== -1;
 
     makeObservable(this, {
-      filesStore: observable,
       isLoaded: observable,
       isLoading: observable,
       viewAs: observable,
@@ -65,11 +61,11 @@ class MainFilesStore {
   get tooltipValue() {
     if (!this.dragging) return null;
 
-    const selectionLength = this.filesStore.selection.length;
-    const elementTitle = selectionLength && this.filesStore.selection[0].title;
+    const selectionLength = filesStore.selection.length;
+    const elementTitle = selectionLength && filesStore.selection[0].title;
     const singleElement = selectionLength === 1;
     const filesCount = singleElement ? elementTitle : selectionLength;
-    const { isShareFolder, isCommonFolder } = this.filesStore.treeFoldersStore;
+    const { isShareFolder, isCommonFolder } = treeFoldersStore;
 
     let operationName;
 
@@ -112,10 +108,7 @@ class MainFilesStore {
     }
 
     if (!this.isEditor) {
-      requests.push(
-        getPortalCultures(),
-        this.filesStore.treeFoldersStore.fetchTreeFolders()
-      );
+      requests.push(getPortalCultures(), treeFoldersStore.fetchTreeFolders());
 
       if (isDesktopClient) {
         requests.push(getIsEncryptionSupport(), getEncryptionKeys());

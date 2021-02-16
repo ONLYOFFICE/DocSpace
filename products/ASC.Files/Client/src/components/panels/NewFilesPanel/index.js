@@ -33,12 +33,12 @@ import {
   //getIsPrivacyFolder,
 } from "../../../store/files/selectors";
 // import {
-  //fetchFiles,
-  //setMediaViewerData,
-  //setTreeFolders,
+//fetchFiles,
+//setMediaViewerData,
+//setTreeFolders,
 //   setUpdateTree,
 //   setNewRowItems,
-  //setIsLoading,
+//setIsLoading,
 //   addFileToRecentlyViewed,
 // } from "../../../store/files/actions";
 import { createI18N } from "../../../helpers/i18n";
@@ -332,32 +332,33 @@ const NewFilesPanel = (props) => (
 //   setIsLoading,
 // })(withRouter(NewFilesPanel));
 
-export default inject(({ mainFilesStore, mediaViewerDataStore }) => {
-  const { filesStore, setIsLoading } = mainFilesStore;
-  const {
-    files,
-    folders,
-    fetchFiles,
-    treeFoldersStore,
-    filter,
-    addFileToRecentlyViewed,
-    setNewRowItems,
-  } = filesStore;
-  const { treeFolders, setTreeFolders, isPrivacyFolder } = treeFoldersStore;
-  const { setMediaViewerData } = mediaViewerDataStore;
+export default inject(
+  ({ initFilesStore, filesStore, mediaViewerDataStore, treeFoldersStore }) => {
+    const { setIsLoading } = initFilesStore;
+    const {
+      files,
+      folders,
+      fetchFiles,
+      filter,
+      addFileToRecentlyViewed,
+      setNewRowItems,
+    } = filesStore;
+    const { treeFolders, setTreeFolders, isPrivacyFolder } = treeFoldersStore;
+    const { setMediaViewerData } = mediaViewerDataStore;
 
-  return {
-    files,
-    folders,
-    treeFolders,
-    isPrivacy: isPrivacyFolder,
-    filter,
+    return {
+      files,
+      folders,
+      treeFolders,
+      isPrivacy: isPrivacyFolder,
+      filter,
 
-    setIsLoading,
-    fetchFiles,
-    setTreeFolders,
-    setMediaViewerData,
-    addFileToRecentlyViewed,
-    setNewRowItems,
-  };
-})(withRouter(observer(NewFilesPanel)));
+      setIsLoading,
+      fetchFiles,
+      setTreeFolders,
+      setMediaViewerData,
+      addFileToRecentlyViewed,
+      setNewRowItems,
+    };
+  }
+)(withRouter(observer(NewFilesPanel)));

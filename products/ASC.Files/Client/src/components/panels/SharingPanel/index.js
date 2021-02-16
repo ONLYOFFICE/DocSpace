@@ -21,24 +21,24 @@ import {
 // import {
 //   getShareUsers,
 //   setShareFiles,
-  //setSharingPanelVisible,
-  //setIsLoading,
+//setSharingPanelVisible,
+//setIsLoading,
 //   setFiles,
 //   setFolders,
-  //selectUploadedFile,
+//selectUploadedFile,
 //   updateUploadedItem,
 // } from "../../../store/files/actions";
 // import {
 //   getAccessOption,
 //   getExternalAccessOption,
-  //getSelection,
-  //getSharePanelVisible,
+//getSelection,
+//getSharePanelVisible,
 //   getCanShareOwnerChange,
-  //getIsLoading,
-  //getFiles,
-  //getFolders,
-  //getIsPrivacyFolder,
-  //getUploadSelection,
+//getIsLoading,
+//getFiles,
+//getFolders,
+//getIsPrivacyFolder,
+//getUploadSelection,
 // } from "../../../store/files/selectors";
 import {
   StyledAsidePanel,
@@ -628,28 +628,28 @@ const SharingPanel = (props) => (
 );
 
 // const mapStateToProps = (state, ownProps) => {
-  //const selection = getSelection(state);
-  //const uploadSelection = getUploadSelection(state);
-  // const selectedFile = ownProps.uploadPanelVisible
-  //   ? uploadSelection
-  //   : selection; // TODO: take out this implementation from this component
+//const selection = getSelection(state);
+//const uploadSelection = getUploadSelection(state);
+// const selectedFile = ownProps.uploadPanelVisible
+//   ? uploadSelection
+//   : selection; // TODO: take out this implementation from this component
 
 //   return {
 //     getAccessOption: (selection) => getAccessOption(state, selection),
 //     getExternalAccessOption: (selection) =>
 //       getExternalAccessOption(state, selection),
-    //isMyId: getCurrentUserId(state),
-    //selection: selectedFile,
-    //isPrivacy: getIsPrivacyFolder(state),
-    //isDesktop: isDesktopClient(state),
-    //groupsCaption: getSettingsCustomNamesGroupsCaption(state),
-    //sharingPanelVisible: getSharePanelVisible(state),
+//isMyId: getCurrentUserId(state),
+//selection: selectedFile,
+//isPrivacy: getIsPrivacyFolder(state),
+//isDesktop: isDesktopClient(state),
+//groupsCaption: getSettingsCustomNamesGroupsCaption(state),
+//sharingPanelVisible: getSharePanelVisible(state),
 //     canShareOwnerChange: getCanShareOwnerChange(state),
-    //isLoading: getIsLoading(state),
-    //files: getFiles(state),
-    //folders: getFolders(state),
-    //settings: getSettings(state),
-    //uploadSelection,
+//isLoading: getIsLoading(state),
+//files: getFiles(state),
+//folders: getFolders(state),
+//settings: getSettings(state),
+//uploadSelection,
 //   };
 // };
 
@@ -663,32 +663,40 @@ const SharingPanel = (props) => (
 //   updateUploadedItem,
 // })(withRouter(SharingPanel));
 
-export default inject(({ auth, mainFilesStore }, { uploadPanelVisible }) => {
-  const { replaceFileStream, setEncryptionAccess } = auth;
-  const { customNames, isDesktopClient, homepage } = auth.settingsStore;
-    const { filesStore, setIsLoading, isLoading } = mainFilesStore;
+export default inject(
+  (
+    {
+      auth,
+      initFilesStore,
+      filesStore,
+      uploadDataStore,
+      dialogsStore,
+      treeFoldersStore,
+    },
+    { uploadPanelVisible }
+  ) => {
+    const { replaceFileStream, setEncryptionAccess } = auth;
+    const { customNames, isDesktopClient, homepage } = auth.settingsStore;
+    const { setIsLoading, isLoading } = initFilesStore;
     const {
       files,
       folders,
       selection,
-      treeFoldersStore,
-      dialogsStore,
-      uploadDataStore,
-    canShareOwnerChange,
-    getAccessOption,
-    getExternalAccessOption,
-    setFiles,
-    setFolders,
-    getShareUsers,
-    setShareFiles,
+      canShareOwnerChange,
+      getAccessOption,
+      getExternalAccessOption,
+      setFiles,
+      setFolders,
+      getShareUsers,
+      setShareFiles,
     } = filesStore;
     const { isPrivacyFolder } = treeFoldersStore;
     const { sharingPanelVisible, setSharingPanelVisible } = dialogsStore;
-  const {
-    uploadSelection,
-    selectUploadedFile,
-    updateUploadedItem,
-  } = uploadDataStore;
+    const {
+      uploadSelection,
+      selectUploadedFile,
+      updateUploadedItem,
+    } = uploadDataStore;
 
     return {
       isMyId: auth.userStore.user.id,
@@ -702,19 +710,20 @@ export default inject(({ auth, mainFilesStore }, { uploadPanelVisible }) => {
       isPrivacy: isPrivacyFolder,
       sharingPanelVisible,
       uploadSelection,
-    canShareOwnerChange,
+      canShareOwnerChange,
 
       setIsLoading,
       setSharingPanelVisible,
       selectUploadedFile,
-    updateUploadedItem,
-    replaceFileStream,
-    setEncryptionAccess,
-    getAccessOption,
-    getExternalAccessOption,
-    setFiles,
-    setFolders,
-    getShareUsers,
-    setShareFiles,
+      updateUploadedItem,
+      replaceFileStream,
+      setEncryptionAccess,
+      getAccessOption,
+      getExternalAccessOption,
+      setFiles,
+      setFolders,
+      getShareUsers,
+      setShareFiles,
     };
-})(withRouter(observer(SharingPanel)));
+  }
+)(withRouter(observer(SharingPanel)));

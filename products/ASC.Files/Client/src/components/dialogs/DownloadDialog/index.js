@@ -615,18 +615,18 @@ const DownloadDialog = (props) => (
 //   clearSecondaryProgressData,
 // })(withRouter(DownloadDialog));
 
-export default inject(({ auth, mainFilesStore }) => {
-    const { filesStore } = mainFilesStore;
-  const { sortedFiles, secondaryProgressDataStore } = filesStore;
-    const {
-      setSecondaryProgressBarData,
-      clearSecondaryProgressData,
-    } = secondaryProgressDataStore;
+export default inject(({ filesStore, uploadDataStore }) => {
+  const { secondaryProgressDataStore } = uploadDataStore;
+  const { sortedFiles } = filesStore;
+  const {
+    setSecondaryProgressBarData,
+    clearSecondaryProgressData,
+  } = secondaryProgressDataStore;
 
-    return {
+  return {
     sortedFiles,
 
-      setSecondaryProgressBarData,
-      clearSecondaryProgressData,
-    };
+    setSecondaryProgressBarData,
+    clearSecondaryProgressData,
+  };
 })(withRouter(observer(DownloadDialog)));

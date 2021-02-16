@@ -187,9 +187,10 @@ const EmptyTrashDialog = (props) => (
 //   fetchFiles,
 // })(withRouter(EmptyTrashDialog));
 
-export default inject(({ mainFilesStore }) => {
-  const { filesStore, isLoading } = mainFilesStore;
-  const { fetchFiles, filter, secondaryProgressDataStore } = filesStore;
+export default inject(({ initFilesStore, filesStore, uploadDataStore }) => {
+  const { isLoading } = initFilesStore;
+  const { secondaryProgressDataStore } = uploadDataStore;
+  const { fetchFiles, filter } = filesStore;
   const {
     setSecondaryProgressBarData,
     clearSecondaryProgressData,

@@ -8,10 +8,10 @@ import { isMobile } from "react-device-detect";
 //import { setAction, startUpload } from "../../../store/files/actions";
 // import {
 //   canCreate,
-  //getFilter,
-  //getSelectedFolder,
-  //getFirstLoad,
-  //getIsPrivacyFolder,
+//getFilter,
+//getSelectedFolder,
+//getFirstLoad,
+//getIsPrivacyFolder,
 // } from "../../../store/files/selectors";
 import {
   utils as commonUtils,
@@ -185,27 +185,20 @@ ArticleMainButtonContent.propTypes = {
 // const mapStateToProps = (state) => {
 //   return {
 //     canCreate: canCreate(state),
-    //firstLoad: getFirstLoad(state),
-    //settings: getSettings(state),
-    //filter: getFilter(state),
-    //selectedFolder: getSelectedFolder(state),
-    //isPrivacy: getIsPrivacyFolder(state),
+//firstLoad: getFirstLoad(state),
+//settings: getSettings(state),
+//filter: getFilter(state),
+//selectedFolder: getSelectedFolder(state),
+//isPrivacy: getIsPrivacyFolder(state),
 //   };
 // };
 
-export default inject(({ auth, mainFilesStore }) => {
-    const { filesStore } = mainFilesStore;
-  const {
-    firstLoad,
-    fileActionStore,
-    treeFoldersStore,
-    filter,
-    canCreate,
-    uploadDataStore,
-  } = filesStore;
+export default inject(
+  ({ auth, filesStore, uploadDataStore, treeFoldersStore }) => {
+    const { firstLoad, fileActionStore, filter, canCreate } = filesStore;
     const { isPrivacyFolder } = treeFoldersStore;
     const { id } = filesStore.selectedFolderStore;
-  const { startUpload } = uploadDataStore;
+    const { startUpload } = uploadDataStore;
 
     return {
       homepage: auth.settingsStore.homepage,
@@ -213,9 +206,10 @@ export default inject(({ auth, mainFilesStore }) => {
       selectedFolderId: id,
       isPrivacy: isPrivacyFolder,
       filter,
-    canCreate,
+      canCreate,
 
-    setAction: fileActionStore.setAction,
-    startUpload,
+      setAction: fileActionStore.setAction,
+      startUpload,
     };
-})(withRouter(observer(ArticleMainButtonContent)));
+  }
+)(withRouter(observer(ArticleMainButtonContent)));

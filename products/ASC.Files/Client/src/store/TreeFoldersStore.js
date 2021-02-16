@@ -60,6 +60,88 @@ class TreeFoldersStore {
     }
   };
 
+  renameTreeFolder = (folders, newItems, currentFolder) => {
+    const newItem = folders.find((x) => x.id === currentFolder.id);
+    const oldItemIndex = newItems.folders.findIndex(
+      (x) => x.id === currentFolder.id
+    );
+    newItem.folders = newItems.folders[oldItemIndex].folders;
+    newItems.folders[oldItemIndex] = newItem;
+
+    return;
+  };
+
+  removeTreeFolder = (folders, newItems, foldersCount) => {
+    const newFolders = JSON.parse(JSON.stringify(newItems.folders));
+    for (let folder of newFolders) {
+      let currentFolder;
+      if (folders) {
+        currentFolder = folders.find((x) => x.id === folder.id);
+      }
+
+      if (!currentFolder) {
+        const arrayFolders = newItems.folders.filter((x) => x.id !== folder.id);
+        newItems.folders = arrayFolders;
+        newItems.foldersCount = foldersCount;
+      }
+    }
+  };
+
+  addTreeFolder = (folders, newItems, foldersCount) => {
+    let array;
+    let newItemFolders = newItems.folders ? newItems.folders : [];
+    for (let folder of folders) {
+      let currentFolder;
+      if (newItemFolders) {
+        currentFolder = newItemFolders.find((x) => x.id === folder.id);
+      }
+
+      if (folders.length < 1 || !currentFolder) {
+        array = [...newItemFolders, ...[folder]].sort((prev, next) =>
+          prev.title.toLowerCase() < next.title.toLowerCase() ? -1 : 1
+        );
+        newItems.folders = array;
+        newItemFolders = array;
+        newItems.foldersCount = foldersCount;
+      }
+    }
+  };
+
+  loopTreeFolders = (path, item, folders, foldersCount, currentFolder) => {
+    const newPath = path;
+    while (path.length !== 0) {
+      const newItems = item.find((x) => x.id === path[0]);
+      if (!newItems) {
+        return;
+      }
+      newPath.shift();
+      if (path.length === 0) {
+        let foldersLength = newItems.folders ? newItems.folders.length : 0;
+        if (folders.length > foldersLength) {
+          this.addTreeFolder(folders, newItems, foldersCount);
+        } else if (folders.length < foldersLength) {
+          this.removeTreeFolder(folders, newItems, foldersCount);
+        } else if (
+          folders.length > 0 &&
+          newItems.folders.length > 0 &&
+          currentFolder
+        ) {
+          this.renameTreeFolder(folders, newItems, currentFolder);
+        } else {
+          return;
+        }
+        return;
+      }
+      this.loopTreeFolders(
+        newPath,
+        newItems.folders,
+        folders,
+        foldersCount,
+        currentFolder
+      );
+    }
+  };
+
   /////////////////////////////////////TODO: FOLDER
 
   get myFolder() {
@@ -178,4 +260,4 @@ class TreeFoldersStore {
   }
 }
 
-export default TreeFoldersStore;
+export default new TreeFoldersStore();

@@ -3,14 +3,15 @@ import { api, constants, store } from "asc-web-common";
 import axios from "axios";
 import FileActionStore from "./FileActionStore";
 import SelectedFolderStore from "./SelectedFolderStore";
-import TreeFoldersStore from "./TreeFoldersStore";
-import PrimaryProgressDataStore from "./PrimaryProgressDataStore";
-import SecondaryProgressDataStore from "./SecondaryProgressDataStore";
-import DialogsStore from "./DialogsStore";
-import VersionHistoryStore from "./VersionHistoryStore";
-import UploadDataStore from "./UploadDataStore";
 import formatsStore from "./FormatsStore";
+import treeFoldersStore from "./TreeFoldersStore";
 import { createTreeFolders } from "./files/selectors";
+
+const { FilesFilter } = api;
+const { FolderType, FilterType, FileType } = constants;
+const { authStore } = store;
+const { settingsStore, userStore, isAdmin } = authStore;
+const { isEncryptionSupport, isDesktopClient } = settingsStore;
 
 const {
   iconFormatsStore,
@@ -27,21 +28,18 @@ const {
   canWebFilterEditing,
 } = docserviceStore;
 
-const { FilesFilter } = api;
-const { FolderType, FilterType, FileType } = constants;
-const { authStore } = store;
-const { settingsStore, userStore, isAdmin } = authStore;
-const { isEncryptionSupport, isDesktopClient } = settingsStore;
+const {
+  privacyFolder,
+  isRecycleBinFolder,
+  isPrivacyFolder,
+  isRecentFolder,
+  //isFavoritesFolder,
+  commonFolder,
+} = treeFoldersStore;
 
 class FilesStore {
   fileActionStore = null;
   selectedFolderStore = null;
-  treeFoldersStore = null;
-  primaryProgressDataStore = null;
-  secondaryProgressDataStore = null;
-  dialogsStore = null;
-  versionHistoryStore = null;
-  uploadDataStore = null;
 
   firstLoad = true;
   files = [];
@@ -56,12 +54,6 @@ class FilesStore {
     makeObservable(this, {
       fileActionStore: observable,
       selectedFolderStore: observable,
-      treeFoldersStore: observable,
-      primaryProgressDataStore: observable, //TODO: MainFiles?
-      secondaryProgressDataStore: observable, //TODO: MainFiles?
-      dialogsStore: observable, //TODO: MainFiles?
-      versionHistoryStore: observable, //TODO: MainFiles?
-      uploadDataStore: observable, //TODO: MainFiles?
 
       firstLoad: observable,
       files: observable,
@@ -115,12 +107,6 @@ class FilesStore {
 
     this.fileActionStore = new FileActionStore();
     this.selectedFolderStore = new SelectedFolderStore();
-    this.treeFoldersStore = new TreeFoldersStore();
-    this.primaryProgressDataStore = new PrimaryProgressDataStore();
-    this.secondaryProgressDataStore = new SecondaryProgressDataStore();
-    this.dialogsStore = new DialogsStore();
-    this.versionHistoryStore = new VersionHistoryStore();
-    this.uploadDataStore = new UploadDataStore();
   }
 
   setFirstLoad = (firstLoad) => {
@@ -241,8 +227,6 @@ class FilesStore {
     const filterData = filter ? filter.clone() : FilesFilter.getDefault();
     filterData.folder = folderId;
 
-    const { privacyFolder } = this.treeFoldersStore;
-
     if (privacyFolder && privacyFolder.id === +folderId) {
       if (!isEncryptionSupport) {
         filterData.treeFolders = createTreeFolders(
@@ -347,13 +331,6 @@ class FilesStore {
   };
 
   getFilesContextOptions = (item, canOpenPlayer, canShare) => {
-    const {
-      isRecycleBinFolder,
-      isPrivacyFolder,
-      isRecentFolder,
-      //isFavoritesFolder
-    } = this.treeFoldersStore;
-
     const options = [];
     const isVisitor = (userStore.user && userStore.user.isVisitor) || false;
 
@@ -530,8 +507,6 @@ class FilesStore {
   }
 
   get canShareOwnerChange() {
-    const { commonFolder } = this.treeFoldersStore;
-
     const pathParts = this.selectedFolderStore.pathParts;
     const userId = userStore.user.id;
     return (
@@ -640,7 +615,7 @@ class FilesStore {
 
       const draggable =
         selectedItem &&
-        !this.treeFoldersStore.isRecycleBinFolder &&
+        isRecycleBinFolder &&
         selectedItem.id !== this.fileActionStore.id;
 
       let value = fileExst ? `file_${id}` : `folder_${id}`;
@@ -1022,8 +997,7 @@ class FilesStore {
   };
 
   loopFilesOperations = (id, destFolderId, isCopy) => {
-    /*const { isRecycleBinFolder } = this.treeFoldersStore;
-
+    /*
     const progressData = getSecondaryProgressData(state);
     const treeFolders = getTreeFolders(state);
 
@@ -1148,4 +1122,4 @@ class FilesStore {
   };
 }
 
-export default FilesStore;
+export default new FilesStore();

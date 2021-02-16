@@ -185,8 +185,8 @@ const SectionPagingContent = ({
 //   SectionPagingContent
 // );
 
-export default inject(({ mainFilesStore }) => {
-  const { filesStore, setIsLoading } = mainFilesStore;
+export default inject(({ initFilesStore, filesStore }) => {
+  const { setIsLoading } = initFilesStore;
   const {
     files,
     folders,
