@@ -7,10 +7,9 @@ import {
   ContextMenuButton,
   utils,
 } from "asc-web-components";
-import { Headline, toastr, Loaders, store, constants } from "asc-web-common";
+import { Headline, toastr, Loaders, constants } from "asc-web-common";
 import { connect } from "react-redux";
 import {
-  getSelectedGroup,
   hasAnybodySelected,
   hasUsersToMakeEmployees,
   hasUsersToMakeGuests,
@@ -20,13 +19,6 @@ import {
   hasUsersToRemove,
 } from "../../../../../store/people/selectors";
 import { withTranslation } from "react-i18next";
-import {
-  updateUserStatus,
-  fetchPeople,
-  removeUser,
-  //setSelected,
-} from "../../../../../store/people/actions";
-import { deleteGroup } from "../../../../../store/group/actions";
 import {
   InviteDialog,
   DeleteUsersDialog,
@@ -39,8 +31,6 @@ import { inject, observer } from "mobx-react";
 const { tablet, desktop } = utils.device;
 const { Consumer } = utils.context;
 
-const { isAdmin } = store.auth.selectors;
-const { settingsStore } = store;
 const { EmployeeType, EmployeeStatus } = constants;
 
 const StyledContainer = styled.div`
@@ -111,9 +101,9 @@ const SectionHeaderContent = (props) => {
     isHeaderVisible,
     isHeaderIndeterminate,
     isHeaderChecked,
-    onCheck,
-    onSelect,
-    onClose,
+    //onCheck,
+    //onSelect,
+    clearSelection,
     group,
     isAdmin,
     t,
@@ -130,6 +120,8 @@ const SectionHeaderContent = (props) => {
     hasUsersToInvite,
     hasUsersToRemove,
     isLoaded,
+    selectAll,
+    selectByStatus,
   } = props;
 
   const {
@@ -140,7 +132,13 @@ const SectionHeaderContent = (props) => {
   } = customNames;
 
   //console.log("SectionHeaderContent render");
-  console.log(isHeaderVisible, isHeaderIndeterminate, isHeaderChecked);
+
+  const onCheck = () => {
+    return isHeaderChecked ? clearSelection() : selectAll();
+  };
+  const onSelect = useCallback((status) => selectByStatus(status), [
+    selectByStatus,
+  ]);
 
   const toggleEmployeeDialog = useCallback(
     () => setEmployeeDialogVisible(!employeeDialogVisible),
@@ -183,7 +181,7 @@ const SectionHeaderContent = (props) => {
   const onSelectorSelect = useCallback(
     (item) => {
       console.log("onSelectorSelect", item);
-      onSelect && onSelect(item.key);
+      onSelect && onSelect(item.props.statusId);
     },
     [onSelect]
   );
@@ -197,13 +195,24 @@ const SectionHeaderContent = (props) => {
         isSelect: true,
         fontWeight: "bold",
         children: [
-          <DropDownItem key="active" label={t("LblActive")} data-index={0} />,
+          <DropDownItem
+            key="active"
+            label={t("LblActive")}
+            data-index={0}
+            statusId={1}
+          />,
           <DropDownItem
             key="disabled"
             label={t("LblTerminated")}
             data-index={1}
+            statusId={2}
           />,
-          <DropDownItem key="invited" label={t("LblInvited")} data-index={2} />,
+          <DropDownItem
+            key="invited"
+            label={t("LblInvited")}
+            data-index={2}
+            statusId={0}
+          />,
         ],
         onSelect: onSelectorSelect,
       },
@@ -414,7 +423,7 @@ const SectionHeaderContent = (props) => {
                 visible={isHeaderVisible}
                 moreLabel={t("More")}
                 closeTitle={t("CloseButton")}
-                onClose={onClose}
+                onClose={clearSelection}
                 selected={menuItems[0].label}
                 sectionWidth={context.sectionWidth}
               />
@@ -486,39 +495,38 @@ const SectionHeaderContent = (props) => {
 };
 
 const mapStateToProps = (state) => {
-  // const { isLoaded /* settings */ } = state.auth;
-  // const { groups, selection, selectedGroup } = state.people;
-  //const { homepage, customNames } = settings;
-
   return {
-    //group: getSelectedGroup(groups, selectedGroup),
-    // isAdmin: isAdmin(state),
-    //homepage,
-    //customNames,
-    //selection,
-    // isLoaded,
-    hasAnybodySelected: hasAnybodySelected(state),
-    hasUsersToMakeEmployees: hasUsersToMakeEmployees(state),
-    hasUsersToMakeGuests: hasUsersToMakeGuests(state),
-    hasUsersToActivate: hasUsersToActivate(state),
-    hasUsersToDisable: hasUsersToDisable(state),
-    hasUsersToInvite: hasUsersToInvite(state),
-    hasUsersToRemove: hasUsersToRemove(state),
+    // hasAnybodySelected: hasAnybodySelected(state),
+    // hasUsersToMakeEmployees: hasUsersToMakeEmployees(state),
+    // hasUsersToMakeGuests: hasUsersToMakeGuests(state),
+    // hasUsersToActivate: hasUsersToActivate(state),
+    // hasUsersToDisable: hasUsersToDisable(state),
+    // hasUsersToInvite: hasUsersToInvite(state),
+    // hasUsersToRemove: hasUsersToRemove(state),
   };
 };
 
 export default connect(mapStateToProps)(
-  inject(({ store, peopleStore }) => ({
-    customNames: store.settingsStore.customNames,
-    homepage: store.settingsStore.homepage,
-    isLoaded: store.isLoaded,
-    isAdmin: store.isAdmin,
+  inject(({ auth, peopleStore }) => ({
+    customNames: auth.settingsStore.customNames,
+    homepage: auth.settingsStore.homepage,
+    isLoaded: auth.isLoaded,
+    isAdmin: auth.isAdmin,
     fetchPeople: peopleStore.usersStore.getUsersList,
     selection: peopleStore.selectionStore.selection,
+    selectByStatus: peopleStore.selectionStore.selectByStatus,
     isHeaderVisible: peopleStore.headerMenuStore.isHeaderVisible,
     isHeaderIndeterminate: peopleStore.headerMenuStore.isHeaderIndeterminate,
     isHeaderChecked: peopleStore.headerMenuStore.isHeaderChecked,
-    onClose: peopleStore.selectionStore.clearSelection,
+    clearSelection: peopleStore.selectionStore.clearSelection,
+    selectAll: peopleStore.selectionStore.selectAll,
+    hasAnybodySelected: peopleStore.selectionStore.hasAnybodySelected,
+    hasUsersToMakeEmployees: peopleStore.selectionStore.hasUsersToMakeEmployees,
+    hasUsersToMakeGuests: peopleStore.selectionStore.hasUsersToMakeGuests,
+    hasUsersToActivate: peopleStore.selectionStore.hasUsersToActivate,
+    hasUsersToDisable: peopleStore.selectionStore.hasUsersToDisable,
+    hasUsersToInvite: peopleStore.selectionStore.hasUsersToInvite,
+    hasUsersToRemove: peopleStore.selectionStore.hasUsersToRemove,
     deleteGroup: peopleStore.groupsStore.deleteGroup,
     removeUser: peopleStore.usersStore.removeUser,
     updateUserStatus: peopleStore.usersStore.updateUserStatus,

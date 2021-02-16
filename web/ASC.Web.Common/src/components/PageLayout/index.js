@@ -492,6 +492,6 @@ PageLayout.propTypes = {
   children: PropTypes.any,
 };
 
-export default inject(({ store }) => ({ language: store.language }))(
+export default inject(({ auth }) => ({ language: auth.language }))(
   observer(PageLayout)
 );

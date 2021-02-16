@@ -8,11 +8,7 @@ import {
   Text,
   Box,
 } from "asc-web-components";
-//import { connect } from "react-redux";
-//import { store } from "asc-web-common";
 import { inject, observer } from "mobx-react";
-
-//const { settingsStore } = store;
 
 const getFormattedGroups = (user, selectGroup) => {
   let temp = [];
@@ -170,6 +166,6 @@ const UserContent = ({
   );
 };
 
-export default inject(({ store }) => ({
-  settings: store.settingsStore,
+export default inject(({ auth }) => ({
+  settings: auth.settingsStore,
 }))(observer(withRouter(UserContent)));

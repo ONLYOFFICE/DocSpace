@@ -1,8 +1,6 @@
-import React, { Suspense, lazy /*useEffect*/, useEffect } from "react";
+import React, { Suspense, lazy, useEffect } from "react";
 import { Router, Route, Switch } from "react-router-dom";
-//import { connect } from "react-redux";
 import {
-  //store as CommonStore,
   history,
   PrivateRoute,
   PublicRoute,
@@ -24,14 +22,6 @@ const Settings = lazy(() => import("./components/pages/Settings"));
 const Wizard = lazy(() => import("./components/pages/Wizard"));
 const Payments = lazy(() => import("./components/pages/Payments"));
 const ThirdPartyResponse = lazy(() => import("./components/pages/ThirdParty"));
-// const {
-//   setIsLoaded,
-//   //getUser,
-//   //getPortalSettings,
-//   //getModules,
-//   getIsAuthenticated,
-// } = CommonStore.auth.actions;
-//const { userStore, settingsStore } = CommonStore;
 
 const App = (props) => {
   //constructor(props) {
@@ -133,8 +123,8 @@ const App = (props) => {
   );
 };
 
-export default inject(({ store }) => {
-  const { init, isLoaded } = store;
+export default inject(({ auth }) => {
+  const { init, isLoaded } = auth;
 
   const pathname = window.location.pathname.toLowerCase();
   const isThirdPartyResponse = pathname.indexOf("thirdparty") !== -1;

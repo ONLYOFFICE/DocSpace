@@ -92,8 +92,8 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
   return <Route {...rest} render={renderComponent} />;
 };
 
-export default inject(({ store }) => {
-  const { userStore, isAuthenticated, isLoaded, isAdmin } = store;
+export default inject(({ auth }) => {
+  const { userStore, isAuthenticated, isLoaded, isAdmin } = auth;
   const { user } = userStore;
 
   return {

@@ -33,12 +33,12 @@ import {
   //getIsPrivacyFolder,
 } from "../../../store/files/selectors";
 // import {
-//   fetchFiles,
-//   setMediaViewerData,
-//   setTreeFolders,
+  //fetchFiles,
+  //setMediaViewerData,
+  //setTreeFolders,
 //   setUpdateTree,
 //   setNewRowItems,
-//   setIsLoading,
+  //setIsLoading,
 //   addFileToRecentlyViewed,
 // } from "../../../store/files/actions";
 import { createI18N } from "../../../helpers/i18n";

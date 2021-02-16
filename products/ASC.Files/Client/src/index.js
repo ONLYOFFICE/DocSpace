@@ -20,15 +20,15 @@ const { authStore } = commonStore;
 
 ReactDOM.render(
   <MobxProvider
-    store={authStore}
+    auth={authStore}
     mainFilesStore={mainFilesStore}
     settingsStore={settingsStore}
     mediaViewerDataStore={mediaViewerDataStore}
     formatsStore={formatsStore}
   >
-    <ErrorBoundary>
-      <App />
-    </ErrorBoundary>
+      <ErrorBoundary>
+        <App />
+      </ErrorBoundary>
   </MobxProvider>,
   document.getElementById("root")
 );

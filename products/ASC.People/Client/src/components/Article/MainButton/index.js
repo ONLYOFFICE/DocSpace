@@ -129,8 +129,8 @@ ArticleMainButtonContent.propTypes = {
   language: PropTypes.string,
 };
 
-export default inject(({ store }) => ({
-  settings: store.settingsStore,
-  isLoaded: store.isLoaded,
-  language: store.language,
+export default inject(({ auth }) => ({
+  settings: auth.settingsStore,
+  isLoaded: auth.isLoaded,
+  language: auth.language,
 }))(observer(withRouter(ArticleMainButtonContent)));

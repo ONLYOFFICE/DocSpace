@@ -1,9 +1,8 @@
 import React, { useEffect } from "react";
-import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 //import { RequestLoader } from "asc-web-components";
-import { PageLayout, utils, store } from "asc-web-common";
+import { PageLayout, utils } from "asc-web-common";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import {
   ArticleHeaderContent,
@@ -16,17 +15,14 @@ import {
   SectionFilterContent,
   SectionPagingContent,
 } from "./Section";
-import { setSelected, setIsLoading } from "../../../store/people/actions";
 import { createI18N } from "../../../helpers/i18n";
 import { isMobile } from "react-device-detect";
-import { getIsLoading } from "../../../store/people/selectors";
 import { inject, observer } from "mobx-react";
 const i18n = createI18N({
   page: "Home",
   localesPath: "pages/Home",
 });
 const { changeLanguage } = utils;
-const { isAdmin, getIsLoaded, getOrganizationName } = store.auth.selectors;
 
 class PureHome extends React.Component {
   // constructor(props) {
@@ -76,15 +72,15 @@ class PureHome extends React.Component {
     }
   }
 
-  onSectionHeaderContentCheck = (checked) => {
-    console.log("onSectionHeaderContentCheck");
-    this.props.setSelected(checked ? "all" : "none");
-  };
+  // onSectionHeaderContentCheck = (checked) => {
+  //   console.log("onSectionHeaderContentCheck");
+  //   this.props.setSelected(checked ? "all" : "none");
+  // };
 
-  onSectionHeaderContentSelect = (selected) => {
-    console.log("onSectionHeaderContentSelect");
-    this.props.setSelected(selected);
-  };
+  // onSectionHeaderContentSelect = (selected) => {
+  //   console.log("onSectionHeaderContentSelect");
+  //   this.props.setSelected(selected);
+  // };
 
   // onClose = () => {
   //   const { clearSelection } = this.props;
@@ -131,8 +127,8 @@ class PureHome extends React.Component {
             // isHeaderVisible={isHeaderVisible}
             // isHeaderIndeterminate={isHeaderIndeterminate}
             // isHeaderChecked={isHeaderChecked}
-            onCheck={this.onSectionHeaderContentCheck}
-            onSelect={this.onSectionHeaderContentSelect}
+            // onCheck={this.onSectionHeaderContentCheck}
+            // onSelect={this.onSectionHeaderContentSelect}
             // onClose={this.onClose}
             onLoading={this.onLoading}
           />
@@ -195,19 +191,17 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(
-  inject(({ store, peopleStore }) => ({
-    isLoaded: store.isLoaded,
-    isAdmin: store.isAdmin,
-    organizationName: store.settingsStore.organizationName,
-    users: peopleStore.usersStore.users,
-    groups: peopleStore.groupsStore.groups,
-    selectedGroup: peopleStore.selectedGroupStore.selectedGroup,
-    clearSelection: peopleStore.selectionStore.clearSelection,
-    isLoading: peopleStore.isLoading,
-    setIsLoading: peopleStore.setIsLoading,
-    selection: peopleStore.selectionStore.selection,
-    setSelected: peopleStore.selectionStore.setSelected,
-    selected: peopleStore.selectionStore.selected,
-  }))(observer(withRouter(Home)))
-);
+export default inject(({ auth, peopleStore }) => ({
+  isLoaded: auth.isLoaded,
+  isAdmin: auth.isAdmin,
+  organizationName: auth.settingsStore.organizationName,
+  users: peopleStore.usersStore.users,
+  groups: peopleStore.groupsStore.groups,
+  selectedGroup: peopleStore.selectedGroupStore.selectedGroup,
+  clearSelection: peopleStore.selectionStore.clearSelection,
+  isLoading: peopleStore.isLoading,
+  setIsLoading: peopleStore.setIsLoading,
+  selection: peopleStore.selectionStore.selection,
+  setSelected: peopleStore.selectionStore.setSelected,
+  selected: peopleStore.selectionStore.selected,
+}))(observer(withRouter(Home)));

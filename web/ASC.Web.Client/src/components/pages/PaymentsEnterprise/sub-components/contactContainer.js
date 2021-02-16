@@ -1,12 +1,12 @@
 import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { Text, Link } from "asc-web-components";
 import { useTranslation } from "react-i18next";
 import { createI18N } from "../../../../helpers/i18n";
 import { utils } from "asc-web-common";
+import { inject, observer } from "mobx-react";
 const { changeLanguage } = utils;
 
 const i18n = createI18N({
@@ -51,10 +51,10 @@ ContactContainer.propTypes = {
   helpUrl: PropTypes.string,
 };
 
-function mapStateToProps(state) {
+export default inject(({ payments }) => {
+  const { salesEmail, helpUrl } = payments;
   return {
-    salesEmail: state.payments.salesEmail,
-    helpUrl: state.payments.helpUrl,
+    salesEmail,
+    helpUrl,
   };
-}
-export default connect(mapStateToProps)(withRouter(ContactContainer));
+})(withRouter(observer(ContactContainer)));

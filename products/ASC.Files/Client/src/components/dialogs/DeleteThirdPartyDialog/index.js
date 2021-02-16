@@ -7,9 +7,9 @@ import { utils, toastr, api } from "asc-web-common";
 // import {
 //   deleteThirdParty,
 //   setThirdPartyProviders,
-//   fetchFiles,
+  //fetchFiles,
 //   setUpdateTree,
-//   setTreeFolders,
+  //setTreeFolders,
 // } from "../../../store/files/actions";
 import {
   //getThirdPartyProviders,
@@ -122,10 +122,10 @@ const DeleteThirdPartyDialog = (props) => (
 // const mapStateToProps = (state) => {
 //   return {
 //     providers: getThirdPartyProviders(state),
-//     currentFolderId: getSelectedFolderId(state),
-//     treeFolders: getTreeFolders(state),
-//     commonId: getCommonFolderId(state),
-//     myId: getMyFolderId(state),
+    //currentFolderId: getSelectedFolderId(state),
+    //treeFolders: getTreeFolders(state),
+    //commonId: getCommonFolderId(state),
+    //myId: getMyFolderId(state),
 //   };
 // };
 
@@ -136,7 +136,7 @@ const DeleteThirdPartyDialog = (props) => (
 //   setTreeFolders,
 // })(withRouter(DeleteThirdPartyDialog));
 
-export default inject(({ store, mainFilesStore, thirdParty }) => {
+export default inject(({ auth, mainFilesStore, thirdParty }) => {
     const { filesStore } = mainFilesStore;
     const { providers, setThirdPartyProviders, deleteThirdParty } = thirdParty;
     const { fetchFiles, treeFoldersStore } = filesStore;

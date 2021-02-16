@@ -129,8 +129,8 @@ export default connect(mapStateToProps, {
   // toggleAvatarEditor,
   // resetProfile,
 })(
-  inject(({ store, peopleStore }) => ({
-    settings: store.settingsStore,
+  inject(({ auth, peopleStore }) => ({
+    settings: auth.settingsStore,
     editingForm: peopleStore.editingFormStore,
     setIsVisibleDataLossDialog:
       peopleStore.editingFormStore.setIsVisibleDataLossDialog,

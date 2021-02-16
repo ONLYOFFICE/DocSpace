@@ -362,7 +362,7 @@ Home.propTypes = {
 //   };
 // };
 
-export default inject(({ store, mainFilesStore }) => {
+export default inject(({ auth, mainFilesStore }) => {
   const {
     dragging,
     setDragging,
@@ -409,7 +409,7 @@ export default inject(({ store, mainFilesStore }) => {
   const { setUploadPanelVisible, startUpload } = uploadDataStore;
 
   return {
-    homepage: store.settingsStore.homepage,
+    homepage: auth.settingsStore.homepage,
     firstLoad,
     dragging,
     fileActionId: id,

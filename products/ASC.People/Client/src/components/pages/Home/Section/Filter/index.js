@@ -1,25 +1,12 @@
 import React from "react";
-import { connect } from "react-redux";
-import { fetchPeople } from "../../../../../store/people/actions";
 import find from "lodash/find";
 import result from "lodash/result";
 import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
-//import { getFilterByLocation } from "../../../../../helpers/converters";
-import { store, FilterInput, Loaders, utils } from "asc-web-common";
+import { FilterInput, Loaders, utils } from "asc-web-common";
 import { isMobileOnly } from "react-device-detect";
-import { getFilter, getGroups } from "../../../../../store/people/selectors";
 import { inject, observer } from "mobx-react";
 
-const {
-  isAdmin,
-  getCurrentUser,
-  getLanguage,
-  //getSettings,
-  getIsLoaded,
-} = store.auth.selectors;
-
-const { settingsStore } = store;
 const { withLayoutSize } = utils;
 
 const getEmployeeStatus = (filterValues) => {
@@ -264,13 +251,13 @@ class SectionFilterContent extends React.Component {
   }
 }
 
-export default inject(({ store, peopleStore }) => {
+export default inject(({ auth, peopleStore }) => {
   return {
-    settings: store.settingsStore,
-    isLoaded: store.isLoaded,
-    isAdmin: store.isAdmin,
-    language: store.language,
-    user: store.userStore.user,
+    settings: auth.settingsStore,
+    isLoaded: auth.isLoaded,
+    isAdmin: auth.isAdmin,
+    language: auth.language,
+    user: auth.userStore.user,
     groups: peopleStore.groupsStore.groups,
     fetchPeople: peopleStore.usersStore.getUsersList,
     filter: peopleStore.filterStore.filter,

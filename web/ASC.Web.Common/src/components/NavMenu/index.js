@@ -196,8 +196,8 @@ NavMenuWrapper.propTypes = {
   language: PropTypes.string.isRequired,
 };
 
-export default inject(({ store }) => {
-  const { settingsStore, isAuthenticated, isLoaded, language } = store;
+export default inject(({ auth }) => {
+  const { settingsStore, isAuthenticated, isLoaded, language } = auth;
   const { isDesktopClient: isDesktop } = settingsStore;
   return {
     isAuthenticated,

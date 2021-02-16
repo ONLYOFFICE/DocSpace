@@ -13,7 +13,6 @@ import {
 
 import ProfileInfo from "./ProfileInfo/ProfileInfo";
 import React from "react";
-import { connect } from "react-redux";
 import { store } from "asc-web-common";
 import styled from "styled-components";
 
@@ -21,8 +20,7 @@ import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 
-const { isAdmin, isMe } = store.auth.selectors;
-const { settingsStore } = store;
+const { isMe } = store.auth.selectors;
 
 const ProfileWrapper = styled.div`
   display: flex;
@@ -196,14 +194,12 @@ const mapStateToProps = (state) => {
 //   return <SectionBodyContent settings={settingsStore.settings} {...props} />;
 // });
 
-export default connect(mapStateToProps)(
-  inject(({ store, peopleStore }) => ({
-    settings: store.settingsStore,
-    isAdmin: store.isAdmin,
-    profile: peopleStore.targetUserStore.targetUser,
-    viewer: store.userStore.user,
-  }))(observer(withRouter(withTranslation()(SectionBodyContent))))
-);
+export default inject(({ auth, peopleStore }) => ({
+  settings: auth.settingsStore,
+  isAdmin: auth.isAdmin,
+  profile: peopleStore.targetUserStore.targetUser,
+  viewer: auth.userStore.user,
+}))(observer(withRouter(withTranslation()(SectionBodyContent))));
 
 // export default connect(mapStateToProps)(
 //   withRouter(withTranslation()(SectionBodyContentWrapper))

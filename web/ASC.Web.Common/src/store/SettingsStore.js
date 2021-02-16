@@ -52,6 +52,9 @@ class SettingsStore {
   title = "";
   ownerId = null;
   nameSchemaId = null;
+  owner = {};
+  wizardCompleted = true;
+  passwordSettings = null;
 
   constructor() {
     makeObservable(this, {
@@ -85,6 +88,7 @@ class SettingsStore {
       hashSettings: observable,
       ownerId: observable,
       nameSchemaId: observable,
+      wizardCompleted: observable,
       getSettings: action,
       getCurrentCustomSchema: action,
       getPortalSettings: action,
@@ -99,6 +103,11 @@ class SettingsStore {
       setEncryptionKeys: action,
       getEncryptionKeys: action,
       setModuleInfo: action,
+      setCurrentProductId: action,
+      setWizardComplete: action,
+      setPasswordSettings: action,
+      getPortalPasswordSettings: action,
+      setTimezones: action,
     });
   }
 
@@ -179,7 +188,39 @@ class SettingsStore {
 
   setModuleInfo = (homepage, productId) => {
     this.homepage = homepage;
-    this.currentProductId = productId;
+    this.setCurrentProductId(productId);
+  };
+
+  setCurrentProductId = (currentProductId) => {
+    this.currentProductId = currentProductId;
+  };
+
+  getPortalOwner = async () => {
+    const owner = await api.people.getUserById(this.ownerId);
+    this.owner = owner;
+    return owner;
+  };
+
+  setWizardComplete = () => {
+    this.setWizardComplete = true;
+  };
+
+  setPasswordSettings = (passwordSettings) => {
+    this.passwordSettings = passwordSettings;
+  };
+
+  getPortalPasswordSettings = async (confirmKey = null) => {
+    const settings = await api.settings.getPortalPasswordSettings(confirmKey);
+    this.setPasswordSettings(settings);
+  };
+
+  setTimezones = (timezones) => {
+    this.timezones = timezones;
+  };
+
+  getPortalTimezones = async (token = undefined) => {
+    const timezones = await api.settings.getPortalTimezones(token);
+    this.setTimezones(timezones);
   };
 }
 

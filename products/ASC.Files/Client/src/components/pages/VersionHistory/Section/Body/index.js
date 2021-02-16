@@ -87,13 +87,13 @@ class SectionBodyContent extends React.Component {
 //   mapDispatchToProps
 // )(withRouter(SectionBodyContent));
 
-export default inject(({ store, mainFilesStore }) => {
+export default inject(({ auth, mainFilesStore }) => {
   const { filesStore, setIsLoading, isLoading } = mainFilesStore;
   const { setFirstLoad, versionHistoryStore } = filesStore;
   const { versions, fetchFileVersions } = versionHistoryStore;
 
   return {
-    culture: store.settingsStore.culture,
+    culture: auth.settingsStore.culture,
     isLoading,
     versions,
 

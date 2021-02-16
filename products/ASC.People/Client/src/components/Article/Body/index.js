@@ -229,16 +229,16 @@ const BodyContent = (props) => {
   );
 };
 
-export default inject(({ store, peopleStore }) => {
+export default inject(({ auth, peopleStore }) => {
   const groups = peopleStore.groupsStore.groups;
-  const { groupsCaption } = store.settingsStore.customNames;
+  const { groupsCaption } = auth.settingsStore.customNames;
   const data = getTreeGroups(groups, groupsCaption);
   const selectedKeys = peopleStore.selectedGroupStore.selectedGroup
     ? [peopleStore.selectedGroupStore.selectedGroup]
     : ["root"];
   return {
-    isLoaded: store.isLoaded,
-    isAdmin: store.isAdmin,
+    isLoaded: auth.isLoaded,
+    isAdmin: auth.isAdmin,
     groups,
     data,
     selectedKeys,

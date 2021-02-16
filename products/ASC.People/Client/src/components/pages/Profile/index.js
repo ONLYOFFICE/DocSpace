@@ -118,25 +118,17 @@ Profile.propTypes = {
 };
 
 function mapStateToProps(state) {
-  const { isLoaded } = state.auth;
-  //const { targetUser } = state.profile;
   return {
-    // profile: targetUser,
-    // isLoaded,
-    isVisitor: isVisitor(state),
-    // isAdmin: isAdmin(state),
-    //language: getLanguage(state),
+    //isVisitor: isVisitor(state),
   };
 }
 
-export default connect(mapStateToProps, {
-  // fetchProfile,
-  // resetProfile,
-})(
-  inject(({ store, peopleStore }) => ({
-    isLoaded: store.isLoaded,
-    isAdmin: store.isAdmin,
-    language: store.language,
+export default connect(mapStateToProps)(
+  inject(({ auth, peopleStore }) => ({
+    isVisitor: auth.userStore.user.isVisitor,
+    isLoaded: auth.isLoaded,
+    isAdmin: auth.isAdmin,
+    language: auth.language,
     resetProfile: peopleStore.targetUserStore.resetTargetUser,
     fetchProfile: peopleStore.targetUserStore.getTargetUser,
     profile: peopleStore.targetUserStore.targetUser,

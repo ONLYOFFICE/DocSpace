@@ -1,4 +1,4 @@
-import { api, /*history,*/ constants } from "asc-web-common";
+// import { api, /*history,*/ constants } from "asc-web-common";
 // import config from "../../../package.json";
 // import {
 //   EMPLOYEE_STATUS,
@@ -11,26 +11,26 @@ import { api, /*history,*/ constants } from "asc-web-common";
 //   PAGE,
 //   PAGE_COUNT,
 // } from "../../helpers/constants";
-import { getUserByUserName } from "../people/selectors";
+// import { getUserByUserName } from "../people/selectors";
 
-const { EmployeeStatus } = constants;
-const { Filter } = api;
+// const { EmployeeStatus } = constants;
+// const { Filter } = api;
 
-export const SET_GROUPS = "SET_GROUPS";
-export const SET_USERS = "SET_USERS";
-export const SET_USER = "SET_USER";
-export const SET_SELECTION = "SET_SELECTION";
-export const SELECT_USER = "SELECT_USER";
-export const DESELECT_USER = "DESELECT_USER";
-export const SET_SELECTED = "SET_SELECTED";
-export const SET_FILTER = "SET_FILTER";
-export const SELECT_GROUP = "SELECT_GROUP";
-export const SET_SELECTOR_USERS = "SET_SELECTOR_USERS";
-export const SET_IS_VISIBLE_DATA_LOSS_DIALOG =
-  "SET_IS_VISIBLE_DATA_LOSS_DIALOG";
-export const SET_IS_EDITING_FORM = "SET_IS_EDITING_FORM";
-export const SET_IS_LOADING = "SET_IS_LOADING";
-export const TOGGLE_AVATAR_EDITOR = "TOGGLE_AVATAR_EDITOR";
+// export const SET_GROUPS = "SET_GROUPS";
+// export const SET_USERS = "SET_USERS";
+// export const SET_USER = "SET_USER";
+// export const SET_SELECTION = "SET_SELECTION";
+// export const SELECT_USER = "SELECT_USER";
+// export const DESELECT_USER = "DESELECT_USER";
+// export const SET_SELECTED = "SET_SELECTED";
+// export const SET_FILTER = "SET_FILTER";
+// export const SELECT_GROUP = "SELECT_GROUP";
+// export const SET_SELECTOR_USERS = "SET_SELECTOR_USERS";
+// export const SET_IS_VISIBLE_DATA_LOSS_DIALOG =
+//   "SET_IS_VISIBLE_DATA_LOSS_DIALOG";
+// export const SET_IS_EDITING_FORM = "SET_IS_EDITING_FORM";
+// export const SET_IS_LOADING = "SET_IS_LOADING";
+// export const TOGGLE_AVATAR_EDITOR = "TOGGLE_AVATAR_EDITOR";
 
 // export function setIsLoading(isLoading) {
 //   return {
@@ -67,12 +67,12 @@ export const TOGGLE_AVATAR_EDITOR = "TOGGLE_AVATAR_EDITOR";
 //   };
 // }
 
-export function setSelected(selected) {
-  return {
-    type: SET_SELECTED,
-    selected,
-  };
-}
+// export function setSelected(selected) {
+//   return {
+//     type: SET_SELECTED,
+//     selected,
+//   };
+// }
 
 // export function selectGroup(groupId) {
 //   return (dispatch, getState) => {

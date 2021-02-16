@@ -157,7 +157,7 @@ class ArticleBodyContent extends React.Component {
 // };
 
 //export default connect(mapStateToProps, mapDispatchToProps)(ArticleBodyContent);
-export default inject(({ store, mainFilesStore }) => {
+export default inject(({ auth, mainFilesStore }) => {
   const { setIsLoading, filesStore } = mainFilesStore;
   const {
     fetchFiles,

@@ -5,14 +5,8 @@ import styled from "styled-components";
 import { withTranslation } from "react-i18next";
 import { AvatarEditor, utils, Loader } from "asc-web-components";
 import { api, toastr } from "asc-web-common";
-import {
-  fetchProfile,
-  updateProfile,
-  // getUserPhoto,
-  setAvatarMax,
-} from "../../../../../store/profile/actions";
+
 import { toEmployeeWrapper } from "../../../../../store/people/selectors";
-import { toggleAvatarEditor } from "../../../../../store/people/actions";
 import { setDocumentTitle } from "../../../../../helpers/utils";
 import { isMobile } from "react-device-detect";
 import { inject, observer } from "mobx-react";
@@ -317,29 +311,17 @@ class AvatarEditorPage extends React.PureComponent {
 
 function mapStateToProps(state) {
   return {
-    profile: state.profile.targetUser,
-    avatarMax: state.profile.avatarMax,
-    //settings: state.auth.settings,
+    // profile: state.profile.targetUser,
+    // avatarMax: state.profile.avatarMax,
   };
 }
 
-// export default connect(mapStateToProps, {
-//   fetchProfile,
-//   updateProfile,
-//   toggleAvatarEditor,
-//   setAvatarMax,
-// })(withTranslation()(withRouter(AvatarEditorPage)));
-
-export default connect(mapStateToProps, {
-  // fetchProfile,
-  // updateProfile,
-  //toggleAvatarEditor,
-  // setAvatarMax,
-})(
+export default connect(mapStateToProps)(
   inject(({ peopleStore }) => ({
     toggleAvatarEditor: peopleStore.avatarEditorStore.toggleAvatarEditor,
     fetchProfile: peopleStore.targetUserStore.getTargetUser,
     profile: peopleStore.targetUserStore.targetUser,
+    avatarMax: peopleStore.avatarEditorStore.avatarMax,
     setAvatarMax: peopleStore.avatarEditorStore.setAvatarMax,
     updateProfile: peopleStore.targetUserStore.updateProfile,
     getUserPhoto: peopleStore.targetUserStore.getUserPhoto,

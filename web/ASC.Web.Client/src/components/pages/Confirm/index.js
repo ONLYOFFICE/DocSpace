@@ -2,11 +2,9 @@ import React, { Suspense, lazy, useEffect } from "react";
 import { Route, Switch } from "react-router-dom";
 import ConfirmRoute from "../../../helpers/confirmRoute";
 import { I18nextProvider } from "react-i18next";
-import { Error404, utils, store, PageLayout, Loaders } from "asc-web-common";
+import { Error404, utils, PageLayout, Loaders } from "asc-web-common";
 import { createI18N } from "../../../helpers/i18n";
-import { connect } from "react-redux";
-
-const { getIsLoaded } = store.auth.selectors;
+import { inject, observer } from "mobx-react";
 
 const i18n = createI18N({
   page: "Confirm",
@@ -89,10 +87,9 @@ const Confirm = ({ match, isLoaded }) => {
   );
 };
 
-function mapStateToProps(state) {
+export default inject(({ auth }) => {
+  const { isLoaded } = auth;
   return {
-    isLoaded: getIsLoaded(state),
+    isLoaded,
   };
-}
-
-export default connect(mapStateToProps)(Confirm);
+})(observer(Confirm));

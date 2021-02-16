@@ -197,7 +197,7 @@ ChangeUserStatusDialog.propTypes = {
 };
 
 const mapStateToProps = (state, ownProps) => {
-  const { selection } = state.people;
+  // const { selection } = state.people;
   const { userStatus } = ownProps;
 
   return {

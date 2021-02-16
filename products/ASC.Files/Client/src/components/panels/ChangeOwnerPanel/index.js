@@ -12,11 +12,11 @@ import {
 import { withTranslation } from "react-i18next";
 import { utils, /* store, */ toastr } from "asc-web-common";
 // import {
-//   setIsLoading,
+  //setIsLoading,
 //   setFilesOwner,
 //   setFiles,
 //   setFolders,
-//   setChangeOwnerPanelVisible,
+  //setChangeOwnerPanelVisible,
 // } from "../../../store/files/actions";
 // import {
 //   getSelection,
@@ -220,21 +220,21 @@ const ChangeOwnerPanel = (props) => (
 //   setChangeOwnerPanelVisible,
 // })(withRouter(ChangeOwnerPanel));
 
-export default inject(({ store, mainFilesStore }) => {
+export default inject(({ auth, mainFilesStore }) => {
   const { filesStore, setIsLoading, isLoading } = mainFilesStore;
   const {
     files,
     folders,
     selection,
     dialogsStore,
-    setFiles,
-    setFolders,
+  setFiles,
+  setFolders,
     setFilesOwner,
   } = filesStore;
   const { ownerPanelVisible, setChangeOwnerPanelVisible } = dialogsStore;
 
   return {
-    groupsCaption: store.settingsStore.customNames.groupsCaption,
+    groupsCaption: auth.settingsStore.customNames.groupsCaption,
     files,
     folders,
     selection,

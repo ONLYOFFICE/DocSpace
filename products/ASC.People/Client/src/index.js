@@ -13,7 +13,7 @@ const { authStore } = commonStore;
 
 ReactDOM.render(
   <Provider store={store}>
-    <MobxProvider store={authStore} peopleStore={peopleStore}>
+    <MobxProvider auth={authStore} peopleStore={peopleStore}>
       <ErrorBoundary>
         <App />
       </ErrorBoundary>

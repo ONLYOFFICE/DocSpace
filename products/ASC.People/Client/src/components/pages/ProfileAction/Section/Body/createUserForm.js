@@ -657,14 +657,14 @@ class CreateUserForm extends React.Component {
 const mapStateToProps = (state) => {
   //const { settings } = state.auth;
   // const { groups, filter, editingForm } = state.people;
-  const { createdAvatar, croppedAvatar } = state.profile;
+  // const { createdAvatar, croppedAvatar } = state.profile;
   return {
     //settings,
     //groups,
     //filter,
     //editingForm,
-    createdAvatar,
-    croppedAvatar,
+    // createdAvatar,
+    // croppedAvatar,
   };
 };
 
@@ -684,8 +684,8 @@ export default connect(mapStateToProps, {
   // setCroppedAvatar,
   // resetProfile,
 })(
-  inject(({ store, peopleStore }) => ({
-    settings: store.settingsStore,
+  inject(({ auth, peopleStore }) => ({
+    settings: auth.settingsStore,
     editingForm: peopleStore.editingFormStore,
     groups: peopleStore.groupsStore.groups,
     setIsVisibleDataLossDialog:
@@ -696,7 +696,9 @@ export default connect(mapStateToProps, {
     toggleAvatarEditor: peopleStore.avatarEditorStore.toggleAvatarEditor,
     resetProfile: peopleStore.targetUserStore.resetTargetUser,
     createProfile: peopleStore.usersStore.createUser,
+    createdAvatar: peopleStore.avatarEditorStore.createdAvatar,
     setCreatedAvatar: peopleStore.avatarEditorStore.setCreatedAvatar,
+    croppedAvatar: peopleStore.avatarEditorStore.croppedAvatar,
     setCroppedAvatar: peopleStore.avatarEditorStore.setCroppedAvatar,
     updateProfileInUsers: peopleStore.usersStore.updateProfileInUsers,
     updateCreatedAvatar: peopleStore.targetUserStore.updateCreatedAvatar,

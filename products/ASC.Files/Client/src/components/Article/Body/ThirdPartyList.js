@@ -17,8 +17,8 @@ import { createI18N } from "../../../helpers/i18n";
 //   getOAuthToken,
 //   openConnectWindow,
 //   setConnectItem,
-//   setSelectedFolder,
-//   setSelectedNode,
+  //setSelectedFolder,
+  //setSelectedNode,
 //   setShowThirdPartyPanel,
 // } from "../../../store/files/actions";
 import { inject, observer } from "mobx-react";
@@ -252,9 +252,9 @@ const ThirdPartyList = (props) => {
 // })(ThirdPartyList);
 
 export default inject(({ mainFilesStore, settingsStore }) => {
-  const { setIsLoading, filesStore } = mainFilesStore;
-  const { setSelectedFolder } = filesStore.selectedFolderStore;
-  const { setSelectedNode } = filesStore.treeFoldersStore;
+    const { setIsLoading, filesStore } = mainFilesStore;
+    const { setSelectedFolder } = filesStore.selectedFolderStore;
+    const { setSelectedNode } = filesStore.treeFoldersStore;
   const {
     setConnectItem,
     setShowThirdPartyPanel,
@@ -268,7 +268,7 @@ export default inject(({ mainFilesStore, settingsStore }) => {
     openConnectWindow,
   } = settingsStore.thirdPartyStore;
 
-  return {
+    return {
     googleConnectItem,
     boxConnectItem,
     dropboxConnectItem,
@@ -276,12 +276,12 @@ export default inject(({ mainFilesStore, settingsStore }) => {
     nextCloudConnectItem,
     webDavConnectItem,
 
-    setIsLoading,
-    setSelectedFolder,
-    setSelectedNode,
+      setIsLoading,
+      setSelectedFolder,
+      setSelectedNode,
     setConnectItem,
     setShowThirdPartyPanel,
     getOAuthToken,
     openConnectWindow,
-  };
+    };
 })(observer(ThirdPartyList));

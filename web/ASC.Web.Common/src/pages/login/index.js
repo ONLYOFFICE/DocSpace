@@ -465,8 +465,8 @@ LoginForm.propTypes = {
   isDesktop: PropTypes.bool.isRequired,
 };
 
-export default inject(({ store }) => {
-  const { settingsStore, isAuthenticated, isLoaded, language, login } = store;
+export default inject(({ auth }) => {
+  const { settingsStore, isAuthenticated, isLoaded, language, login } = auth;
   const {
     greetingSettings: greetingTitle,
     organizationName,

@@ -109,8 +109,8 @@ RegisterWrapper.propTypes = {
   enabledJoin: PropTypes.bool,
 };
 
-export default inject(({ store }) => {
-  const { settingsStore, isAuthenticated, language } = store;
+export default inject(({ auth }) => {
+  const { settingsStore, isAuthenticated, language } = auth;
   const { enabledJoin } = settingsStore;
   return {
     enabledJoin,

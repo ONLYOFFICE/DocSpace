@@ -38,11 +38,11 @@ Layout.propTypes = {
   setIsTabletView: PropTypes.func,
 };
 
-export default inject(({ store }) => {
+export default inject(({ auth }) => {
   return {
-    isTabletView: store.settingsStore.isTabletView,
+    isTabletView: auth.settingsStore.isTabletView,
     setIsTabletView: (isTablet) => {
-      store.settingsStore.isTabletView = isTablet;
+      auth.settingsStore.isTabletView = isTablet;
     },
   };
 })(observer(Layout));

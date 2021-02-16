@@ -1,13 +1,12 @@
 import React, { useEffect, createRef } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { Button, utils as Utils, toastr } from "asc-web-components";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import { createI18N } from "../../../../helpers/i18n";
 import { utils } from "asc-web-common";
-import { setPaymentsLicense } from "../../../../store/payments/actions";
+import { inject, observer } from "mobx-react";
 const { changeLanguage } = utils;
 const { tablet } = Utils.device;
 const i18n = createI18N({
@@ -114,12 +113,11 @@ const ButtonContainer = (props) => {
 ButtonContainer.propTypes = {
   buyUrl: PropTypes.string,
 };
-function mapStateToProps(state) {
-  const { buyUrl } = state.payments;
+
+export default inject(({ payments }) => {
+  const { buyUrl, setPaymentsLicense } = payments;
   return {
     buyUrl,
+    setPaymentsLicense,
   };
-}
-export default connect(mapStateToProps, { setPaymentsLicense })(
-  ButtonContainer
-);
+})(withRouter(observer(ButtonContainer)));

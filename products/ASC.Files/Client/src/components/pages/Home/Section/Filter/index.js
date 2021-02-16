@@ -6,11 +6,11 @@ import React from "react";
 //   setIsLoading,
 // } from "../../../../../store/files/actions";
 // import {
-//   getFilter,
-//   getSelectedFolderId,
-//   getViewAs,
+  //getFilter,
+  //getSelectedFolderId,
+  //getViewAs,
 //   getFilterSelectedItem,
-//   getFirstLoad,
+  //getFirstLoad,
 // } from "../../../../../store/files/selectors";
 import find from "lodash/find";
 import result from "lodash/result";
@@ -333,14 +333,14 @@ class SectionFilterContent extends React.Component {
 
 // function mapStateToProps(state) {
 //   return {
-//     user: getCurrentUser(state),
-//     customNames: getSettingsCustomNames(state),
-//     language: getLanguage(state),
-//     firstLoad: getFirstLoad(state),
-//     filter: getFilter(state),
-//     selectedFolderId: getSelectedFolderId(state),
+    //user: getCurrentUser(state),
+    //customNames: getSettingsCustomNames(state),
+    //language: getLanguage(state),
+    //firstLoad: getFirstLoad(state),
+    //filter: getFilter(state),
+    //selectedFolderId: getSelectedFolderId(state),
 //     selectedItem: getFilterSelectedItem(state),
-//     viewAs: getViewAs(state),
+    //viewAs: getViewAs(state),
 //   };
 // }
 
@@ -350,28 +350,28 @@ class SectionFilterContent extends React.Component {
 //   setIsLoading,
 // })(withRouter(withLayoutSize(withTranslation()(SectionFilterContent))));
 
-export default inject(({ store, mainFilesStore }) => {
-  const { filesStore, setIsLoading, setViewAs, viewAs } = mainFilesStore;
-  const { firstLoad, fetchFiles, filter, selectedFolderStore } = filesStore;
+export default inject(({ auth, mainFilesStore }) => {
+    const { filesStore, setIsLoading, setViewAs, viewAs } = mainFilesStore;
+    const { firstLoad, fetchFiles, filter, selectedFolderStore } = filesStore;
 
-  const { user } = store.userStore;
-  const { customNames, culture } = store.settingsStore;
-  const language = (user && user.cultureName) || culture || "en-US";
+    const { user } = auth.userStore;
+    const { customNames, culture } = auth.settingsStore;
+    const language = (user && user.cultureName) || culture || "en-US";
 
-  return {
-    customNames,
-    user,
-    language,
-    firstLoad,
-    selectedFolderId: selectedFolderStore.id,
+    return {
+      customNames,
+      user,
+      language,
+      firstLoad,
+      selectedFolderId: selectedFolderStore.id,
     selectedItem: filter.selectedItem,
-    filter,
-    viewAs,
+      filter,
+      viewAs,
 
-    setIsLoading,
-    fetchFiles,
-    setViewAs,
-  };
-})(
+      setIsLoading,
+      fetchFiles,
+      setViewAs,
+    };
+  })(
   withRouter(withLayoutSize(withTranslation()(observer(SectionFilterContent))))
 );

@@ -123,7 +123,7 @@ HeaderNav.propTypes = {
   isLoaded: PropTypes.bool,
 };
 
-export default inject(({ store }) => {
+export default inject(({ auth }) => {
   const {
     settingsStore,
     userStore,
@@ -132,7 +132,7 @@ export default inject(({ store }) => {
     isLoaded,
     language,
     logout,
-  } = store;
+  } = auth;
   const { homepage, defaultPage } = settingsStore;
   const { user } = userStore;
   const { modules } = moduleStore;

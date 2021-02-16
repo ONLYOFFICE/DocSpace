@@ -1,21 +1,20 @@
 import React, { useEffect } from "react";
-import { connect } from "react-redux";
 import { PageLayout } from "asc-web-common";
 import { I18nextProvider } from "react-i18next";
 import { ArticleHeaderContent, ArticleBodyContent } from "./Article";
 import { SectionHeaderContent } from "./Section";
-import { store, utils } from "asc-web-common";
+import { utils } from "asc-web-common";
 
 import { createI18N } from "../../../../helpers/i18n";
+import { inject, observer } from "mobx-react";
 
 const i18n = createI18N({
   page: "Settings",
   localesPath: "pages/Settings",
 });
 
-const { setCurrentProductId } = store.auth.actions;
 const { changeLanguage } = utils;
-const { getLanguage } = store.auth.selectors;
+
 const Layout = ({
   currentProductId,
   setCurrentProductId,
@@ -48,10 +47,10 @@ const Layout = ({
   );
 };
 
-function mapStateToProps(state) {
+export default inject(({ auth }) => {
+  const { language, settingsStore } = auth;
   return {
-    language: getLanguage(state),
+    language,
+    setCurrentProductId: settingsStore.setCurrentProductId,
   };
-}
-
-export default connect(mapStateToProps, { setCurrentProductId })(Layout);
+})(observer(Layout));

@@ -9,17 +9,9 @@ import {
 } from "asc-web-components";
 import styled from "styled-components";
 import { api, toastr, Loaders, store } from "asc-web-common";
-import { connect } from "react-redux";
-import { updateProfileCulture } from "../../../../../../store/profile/actions";
-import { getFilter } from "../../../../../../store/people/selectors";
-import {
-  fetchPeople,
-  setIsLoading,
-} from "../../../../../../store/people/actions";
 import { inject, observer } from "mobx-react";
 
 const { resendUserInvites } = api.people;
-const { settingsStore } = store;
 
 const InfoContainer = styled.div`
   margin-bottom: 24px;
@@ -344,22 +336,17 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(
-  null,
-  mapDispatchToProps
-)(
-  inject(({ store, peopleStore }) => ({
-    settings: store.settingsStore,
-    groupCaption: store.settingsStore.customNames.groupCaption,
-    regDateCaption: store.settingsStore.customNames.regDateCaption,
-    userPostCaption: store.settingsStore.customNames.userPostCaption,
-    userCaption: store.settingsStore.customNames.userCaption,
-    guestCaption: store.settingsStore.customNames.guestCaption,
-    fetchPeople: peopleStore.usersStore.getUsersList,
-    filter: peopleStore.filterStore.filter,
-    setIsLoading: peopleStore.setIsLoading,
-    updateProfileCulture: peopleStore.targetUserStore.updateProfileCulture,
-  }))(observer(ProfileInfo))
-);
+export default inject(({ auth, peopleStore }) => ({
+  settings: auth.settingsStore,
+  groupCaption: auth.settingsStore.customNames.groupCaption,
+  regDateCaption: auth.settingsStore.customNames.regDateCaption,
+  userPostCaption: auth.settingsStore.customNames.userPostCaption,
+  userCaption: auth.settingsStore.customNames.userCaption,
+  guestCaption: auth.settingsStore.customNames.guestCaption,
+  fetchPeople: peopleStore.usersStore.getUsersList,
+  filter: peopleStore.filterStore.filter,
+  setIsLoading: peopleStore.setIsLoading,
+  updateProfileCulture: peopleStore.targetUserStore.updateProfileCulture,
+}))(observer(ProfileInfo));
 
 //export default connect(mapStateToProps, mapDispatchToProps)(ProfileInfoWrapper);
