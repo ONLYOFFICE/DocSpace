@@ -215,8 +215,8 @@ class UpdateUserForm extends React.Component {
   };
 
   setIsEdit() {
-    const { editingForm, setIsEditingForm } = this.props;
-    if (!editingForm.isEdit) setIsEditingForm(true);
+    const { isEdit, setIsEditingForm } = this.props;
+    if (!isEdit) setIsEditingForm(true);
   }
 
   onInputChange(event) {
@@ -300,9 +300,9 @@ class UpdateUserForm extends React.Component {
       });
   }
   onCancelHandler() {
-    const { editingForm, setIsVisibleDataLossDialog } = this.props;
+    const { isEdit, setIsVisibleDataLossDialog } = this.props;
 
-    if (editingForm.isEdit) {
+    if (isEdit) {
       setIsVisibleDataLossDialog(true);
     } else {
       this.onCancel();
@@ -931,7 +931,7 @@ export default connect(mapStateToProps)(
     settings: auth.settingsStore,
     isAdmin: auth.isAdmin,
     groups: peopleStore.groupsStore.groups,
-    editingForm: peopleStore.editingFormStore,
+    isEdit: peopleStore.editingFormStore.isEdit,
     setIsVisibleDataLossDialog:
       peopleStore.editingFormStore.setIsVisibleDataLossDialog,
     setIsEditingForm: peopleStore.editingFormStore.setIsEditingForm,

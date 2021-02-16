@@ -102,9 +102,9 @@ class ArticleBodyContent extends React.Component {
     return false;
   }
   onSelectHandler = (data) => {
-    const { editingForm, setIsVisibleDataLossDialog } = this.props;
+    const { isEdit, setIsVisibleDataLossDialog } = this.props;
 
-    if (editingForm.isEdit) {
+    if (isEdit) {
       setIsVisibleDataLossDialog(true, this.onSelect(data));
     } else {
       this.onSelect(data)();
@@ -243,7 +243,7 @@ export default inject(({ auth, peopleStore }) => {
     data,
     selectedKeys,
     selectGroup: peopleStore.selectedGroupStore.selectGroup,
-    editingForm: peopleStore.editingFormStore,
+    isEdit: peopleStore.editingFormStore.isEdit,
     setIsVisibleDataLossDialog:
       peopleStore.editingFormStore.setIsVisibleDataLossDialog,
     setIsLoading: peopleStore.setIsLoading,
