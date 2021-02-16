@@ -4,16 +4,28 @@ import axios from "axios";
 import FileActionStore from "./FileActionStore";
 import SelectedFolderStore from "./SelectedFolderStore";
 import TreeFoldersStore from "./TreeFoldersStore";
-import FormatsStore from "./FormatsStore";
-import MediaViewersFormatsStore from "./MediaViewersFormatsStore";
-import DocserviceStore from "./DocserviceStore";
-import MediaViewerDataStore from "./MediaViewerDataStore";
 import PrimaryProgressDataStore from "./PrimaryProgressDataStore";
 import SecondaryProgressDataStore from "./SecondaryProgressDataStore";
 import DialogsStore from "./DialogsStore";
 import VersionHistoryStore from "./VersionHistoryStore";
 import UploadDataStore from "./UploadDataStore";
+import formatsStore from "./FormatsStore";
 import { createTreeFolders } from "./files/selectors";
+
+const {
+  iconFormatsStore,
+  mediaViewersFormatsStore,
+  docserviceStore,
+} = formatsStore;
+const { isSpreadsheet, isPresentation } = iconFormatsStore;
+const { getIcon } = iconFormatsStore;
+const {
+  canWebEdit,
+  canWebComment,
+  canWebReview,
+  canFormFillingDocs,
+  canWebFilterEditing,
+} = docserviceStore;
 
 const { FilesFilter } = api;
 const { FolderType, FilterType, FileType } = constants;
@@ -25,10 +37,6 @@ class FilesStore {
   fileActionStore = null;
   selectedFolderStore = null;
   treeFoldersStore = null;
-  formatsStore = null;
-  mediaViewersFormatsStore = null;
-  docserviceStore = null;
-  mediaViewerDataStore = null;
   primaryProgressDataStore = null;
   secondaryProgressDataStore = null;
   dialogsStore = null;
@@ -49,10 +57,6 @@ class FilesStore {
       fileActionStore: observable,
       selectedFolderStore: observable,
       treeFoldersStore: observable,
-      formatsStore: observable,
-      mediaViewersFormatsStore: observable,
-      docserviceStore: observable,
-      mediaViewerDataStore: observable, //TODO: MainFiles?
       primaryProgressDataStore: observable, //TODO: MainFiles?
       secondaryProgressDataStore: observable, //TODO: MainFiles?
       dialogsStore: observable, //TODO: MainFiles?
@@ -112,10 +116,6 @@ class FilesStore {
     this.fileActionStore = new FileActionStore();
     this.selectedFolderStore = new SelectedFolderStore();
     this.treeFoldersStore = new TreeFoldersStore();
-    this.formatsStore = new FormatsStore();
-    this.mediaViewersFormatsStore = new MediaViewersFormatsStore();
-    this.docserviceStore = new DocserviceStore();
-    this.mediaViewerDataStore = new MediaViewerDataStore();
     this.primaryProgressDataStore = new PrimaryProgressDataStore();
     this.secondaryProgressDataStore = new SecondaryProgressDataStore();
     this.dialogsStore = new DialogsStore();
@@ -518,7 +518,7 @@ class FilesStore {
 
   get iconOfDraggedFile() {
     if (this.selection.length === 1) {
-      const icon = this.formatsStore.getIcon(
+      const icon = getIcon(
         24,
         this.selection[0].fileExst,
         this.selection[0].providerKey
@@ -619,7 +619,7 @@ class FilesStore {
         providerKey,
       } = item;
 
-      const canOpenPlayer = this.mediaViewersFormatsStore.isMediaOrImage(
+      const canOpenPlayer = mediaViewersFormatsStore.isMediaOrImage(
         item.fileExst
       );
 
@@ -646,8 +646,8 @@ class FilesStore {
       let value = fileExst ? `file_${id}` : `folder_${id}`;
       value += draggable ? "_draggable" : "";
 
-      const isCanWebEdit = this.docserviceStore.canWebEdit(item.fileExst);
-      const icon = this.formatsStore.getIcon(24, fileExst, providerKey);
+      const isCanWebEdit = canWebEdit(item.fileExst);
+      const icon = getIcon(24, fileExst, providerKey);
 
       return {
         access,
@@ -701,9 +701,6 @@ class FilesStore {
       presentations: [],
       other: [],
     };
-
-    const { isSpreadsheet, isPresentation } = this.formatsStore;
-    const { canWebEdit } = this.docserviceStore;
 
     for (let item of this.selection) {
       item.checked = true;
@@ -767,7 +764,7 @@ class FilesStore {
   get isWebEditSelected() {
     return this.selection.some((selected) => {
       if (selected.isFolder === true || !selected.fileExst) return false;
-      return this.docserviceStore.editedDocs.find(
+      return docserviceStore.editedDocs.find(
         (format) => selected.fileExst === format
       );
     });
@@ -779,14 +776,6 @@ class FilesStore {
   }
 
   getOptions = (selection, externalAccess = false) => {
-    const {
-      canWebEdit,
-      canWebComment,
-      canWebReview,
-      canFormFillingDocs,
-      canWebFilterEditing,
-    } = this.docserviceStore;
-
     const webEdit = selection.find((x) => canWebEdit(x.fileExst));
     const webComment = selection.find((x) => canWebComment(x.fileExst));
     const webReview = selection.find((x) => canWebReview(x.fileExst));

@@ -13,6 +13,8 @@ import { ErrorBoundary, store as commonStore } from "asc-web-common";
 import { Provider as MobxProvider } from "mobx-react";
 import mainFilesStore from "./store/MainFilesStore";
 import settingsStore from "./store/SettingsStore";
+import mediaViewerDataStore from "./store/MediaViewerDataStore";
+import formatsStore from "./store/FormatsStore";
 
 const { authStore } = commonStore;
 
@@ -21,6 +23,8 @@ ReactDOM.render(
     store={authStore}
     mainFilesStore={mainFilesStore}
     settingsStore={settingsStore}
+    mediaViewerDataStore={mediaViewerDataStore}
+    formatsStore={formatsStore}
   >
     <ErrorBoundary>
       <App />

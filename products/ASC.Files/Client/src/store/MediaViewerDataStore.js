@@ -19,4 +19,4 @@ class MediaViewerDataStore {
   };
 }
 
-export default MediaViewerDataStore;
+export default new MediaViewerDataStore();

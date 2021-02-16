@@ -797,10 +797,16 @@ class FilesRowContent extends React.PureComponent {
 //   replaceFileStream,
 // })(withRouter(withTranslation()(FilesRowContent)));
 
-export default inject(({ store, mainFilesStore }, { item }) => {
+export default inject(({ store, mainFilesStore, formatsStore }, { item }) => {
   const { replaceFileStream, getEncryptionAccess, setEncryptionAccess } = store;
   const { homepage, culture, isDesktopClient } = store.settingsStore;
   const { filesStore, setIsLoading, isLoading } = mainFilesStore;
+  const {
+    iconFormatsStore,
+    mediaViewersFormatsStore,
+    docserviceStore,
+  } = formatsStore;
+
   const {
     folders,
     fetchFiles,
@@ -808,9 +814,6 @@ export default inject(({ store, mainFilesStore }, { item }) => {
     filter,
     selectedFolderStore,
     secondaryProgressDataStore,
-    docserviceStore,
-    mediaViewersFormatsStore,
-    formatsStore,
     setNewRowItems,
     newRowItems,
     createFile,
@@ -836,8 +839,8 @@ export default inject(({ store, mainFilesStore }, { item }) => {
   const canWebEdit = docserviceStore.canWebEdit(item.fileExst);
   const canConvert = docserviceStore.canConvert(item.fileExst);
   const isVideo = mediaViewersFormatsStore.isVideo(item.fileExst);
-  const isImage = formatsStore.isImage(item.fileExst);
-  const isSound = formatsStore.isSound(item.fileExst);
+  const isImage = iconFormatsStore.isImage(item.fileExst);
+  const isSound = iconFormatsStore.isSound(item.fileExst);
 
   return {
     isDesktop: isDesktopClient,

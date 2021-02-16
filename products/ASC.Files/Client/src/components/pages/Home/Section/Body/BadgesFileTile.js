@@ -100,9 +100,8 @@ class BadgesFileTile extends React.PureComponent {
 //   };
 // };
 
-export default inject(({ mainFilesStore }, { item }) => {
-  const { filesStore } = mainFilesStore;
-  const { docserviceStore } = filesStore;
+export default inject(({ formatsStore }, { item }) => {
+  const { docserviceStore } = formatsStore;
 
   const canWebEdit = docserviceStore.canWebEdit(item.fileExst);
   const canConvert = docserviceStore.canConvert(item.fileExst);

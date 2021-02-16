@@ -23,5 +23,5 @@ const ArticleHeaderContent = ({ currentModuleName }) => {
 // export default connect(mapStateToProps)(ArticleHeaderContent);
 
 export default inject(({ store }) => ({
-  currentProductName: (store.product && store.product.title) || "",
+  currentModuleName: (store.product && store.product.title) || "",
 }))(observer(ArticleHeaderContent));

@@ -332,7 +332,7 @@ const NewFilesPanel = (props) => (
 //   setIsLoading,
 // })(withRouter(NewFilesPanel));
 
-export default inject(({ store, mainFilesStore }) => {
+export default inject(({ mainFilesStore, mediaViewerDataStore }) => {
   const { filesStore, setIsLoading } = mainFilesStore;
   const {
     files,
@@ -340,7 +340,6 @@ export default inject(({ store, mainFilesStore }) => {
     fetchFiles,
     treeFoldersStore,
     filter,
-    mediaViewerDataStore,
     addFileToRecentlyViewed,
     setNewRowItems,
   } = filesStore;

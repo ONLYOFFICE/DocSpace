@@ -470,17 +470,19 @@ class FilesTileContent extends React.PureComponent {
 //   fetchFiles,
 // })(withRouter(withTranslation()(FilesTileContent)));
 
-export default inject(({ store, mainFilesStore }, { item }) => {
+export default inject(({ store, mainFilesStore, formatsStore }, { item }) => {
   const { homepage, culture } = store.settingsStore;
   const { filesStore, setIsLoading, isLoading, dragging } = mainFilesStore;
+  const {
+    iconFormatsStore,
+    mediaViewersFormatsStore,
+    docserviceStore,
+  } = formatsStore;
   const {
     folders,
     fetchFiles,
     treeFoldersStore,
     filter,
-    docserviceStore,
-    mediaViewersFormatsStore,
-    formatsStore,
     newRowItems,
     createFile,
     updateFile,
@@ -495,8 +497,8 @@ export default inject(({ store, mainFilesStore }, { item }) => {
 
   const canWebEdit = docserviceStore.canWebEdit(item.fileExst);
   const isVideo = mediaViewersFormatsStore.isVideo(item.fileExst);
-  const isImage = formatsStore.isImage(item.fileExst);
-  const isSound = formatsStore.isSound(item.fileExst);
+  const isImage = iconFormatsStore.isImage(item.fileExst);
+  const isSound = iconFormatsStore.isSound(item.fileExst);
 
   return {
     culture,

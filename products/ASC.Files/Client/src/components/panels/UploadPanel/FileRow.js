@@ -199,7 +199,7 @@ const FileRow = (props) => {
 //   };
 // };
 
-export default inject(({ mainFilesStore }, { item }) => {
+export default inject(({ mainFilesStore, formatsStore }, { item }) => {
   let ext;
   let name;
   let splitted;
@@ -214,17 +214,16 @@ export default inject(({ mainFilesStore }, { item }) => {
   }
 
   const { filesStore } = mainFilesStore;
+  const { iconFormatsStore, mediaViewersFormatsStore } = formatsStore;
   const {
     uploadDataStore,
-    mediaViewersFormatsStore,
-    formatsStore,
     cancelCurrentUpload,
     primaryProgressDataStore,
   } = filesStore;
   const { uploaded } = uploadDataStore;
   const { loadingFile } = primaryProgressDataStore;
   const isMedia = mediaViewersFormatsStore.isMediaOrImage(ext);
-  const fileIcon = formatsStore.getIconSrc(ext, 24);
+  const fileIcon = iconFormatsStore.getIconSrc(ext, 24);
 
   const currentFileUploadProgress =
     loadingFile && loadingFile.uniqueId === item.uniqueId
