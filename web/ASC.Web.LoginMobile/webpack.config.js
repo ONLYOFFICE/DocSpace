@@ -25,11 +25,11 @@ module.exports = {
       crypto: false,
     },
     alias: {
-      ASCWebComponents: path.resolve(
+      "ASC.Web.Components": path.resolve(
         __dirname,
         "../../packages/asc-web-components/src/"
       ),
-      ASCWebCommon: path.resolve(
+      "ASC.Web.Common": path.resolve(
         __dirname,
         "../../packages/asc-web-common/src"
       ),
@@ -72,10 +72,21 @@ module.exports = {
           "source-map-loader",
         ],
       },
+      {
+        test: /\.s[ac]ss$/i,
+        use: [
+          // Creates `style` nodes from JS strings
+          "style-loader",
+          // Translates CSS into CommonJS
+          "css-loader",
+          // Compiles Sass to CSS
+          "sass-loader",
+        ],
+      },
     ],
   },
 
-  plugins: [  
+  plugins: [
     new HtmlWebpackPlugin({
       template: "./public/index.html",
     }),
