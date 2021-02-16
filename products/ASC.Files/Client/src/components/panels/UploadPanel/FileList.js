@@ -34,9 +34,7 @@ const FileList = ({ uploadDataFiles }) => {
 //   };
 // };
 
-export default inject(({ mainFilesStore }) => {
-  const { filesStore } = mainFilesStore;
-  const { uploadDataStore } = filesStore;
+export default inject(({ uploadDataStore }) => {
   const { files } = uploadDataStore;
 
   return {

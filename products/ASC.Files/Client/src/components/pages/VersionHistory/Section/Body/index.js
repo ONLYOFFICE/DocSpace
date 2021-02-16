@@ -87,18 +87,20 @@ class SectionBodyContent extends React.Component {
 //   mapDispatchToProps
 // )(withRouter(SectionBodyContent));
 
-export default inject(({ auth, mainFilesStore }) => {
-  const { filesStore, setIsLoading, isLoading } = mainFilesStore;
-  const { setFirstLoad, versionHistoryStore } = filesStore;
-  const { versions, fetchFileVersions } = versionHistoryStore;
+export default inject(
+  ({ auth, initFilesStore, filesStore, versionHistoryStore }) => {
+    const { setIsLoading, isLoading } = initFilesStore;
+    const { setFirstLoad } = filesStore;
+    const { versions, fetchFileVersions } = versionHistoryStore;
 
-  return {
-    culture: auth.settingsStore.culture,
-    isLoading,
-    versions,
+    return {
+      culture: auth.settingsStore.culture,
+      isLoading,
+      versions,
 
-    setFirstLoad,
-    setIsLoading,
-    fetchFileVersions,
-  };
-})(withRouter(observer(SectionBodyContent)));
+      setFirstLoad,
+      setIsLoading,
+      fetchFileVersions,
+    };
+  }
+)(withRouter(observer(SectionBodyContent)));

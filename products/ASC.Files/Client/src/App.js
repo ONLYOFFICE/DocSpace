@@ -239,19 +239,19 @@ class App extends React.Component {
 //   };
 // };
 
-export default inject(({ auth, mainFilesStore }) => ({
+export default inject(({ auth, initFilesStore }) => ({
   isDesktop: auth.settingsStore.isDesktopClient,
   user: auth.userStore.user,
   isAuthenticated: auth.isAuthenticated,
   homepage: auth.settingsStore.homepage || config.homepage,
   encryptionKeys: auth.settingsStore.encryptionKeys,
   isEncryption: auth.settingsStore.isEncryptionSupport,
-  isLoaded: mainFilesStore.isLoaded,
+  isLoaded: initFilesStore.isLoaded,
 
-  setIsLoaded: mainFilesStore.setIsLoaded,
+  setIsLoaded: initFilesStore.setIsLoaded,
   setEncryptionKeys: auth.settingsStore.setEncryptionKeys,
   loadFilesInfo: async () => {
     await auth.init();
-    await mainFilesStore.initFiles();
+    await initFilesStore.initFiles();
   },
 }))(observer(App));

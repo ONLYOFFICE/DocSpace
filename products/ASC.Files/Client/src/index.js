@@ -11,20 +11,34 @@ import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import { ErrorBoundary, store as commonStore } from "asc-web-common";
 import { Provider as MobxProvider } from "mobx-react";
-import mainFilesStore from "./store/MainFilesStore";
+import initFilesStore from "./store/InitFilesStore";
+import filesStore from "./store/FilesStore";
 import settingsStore from "./store/SettingsStore";
+import mediaViewerDataStore from "./store/MediaViewerDataStore";
+import formatsStore from "./store/FormatsStore";
+import versionHistoryStore from "./store/VersionHistoryStore";
+import uploadDataStore from "./store/UploadDataStore";
+import dialogsStore from "./store/DialogsStore";
+import treeFoldersStore from "./store/TreeFoldersStore";
 
 const { authStore } = commonStore;
 
 ReactDOM.render(
   <MobxProvider
     auth={authStore}
-    mainFilesStore={mainFilesStore}
+    initFilesStore={initFilesStore}
+    filesStore={filesStore}
     settingsStore={settingsStore}
+    mediaViewerDataStore={mediaViewerDataStore}
+    formatsStore={formatsStore}
+    versionHistoryStore={versionHistoryStore}
+    uploadDataStore={uploadDataStore}
+    dialogsStore={dialogsStore}
+    treeFoldersStore={treeFoldersStore}
   >
-      <ErrorBoundary>
-        <App />
-      </ErrorBoundary>
+    <ErrorBoundary>
+      <App />
+    </ErrorBoundary>
   </MobxProvider>,
   document.getElementById("root")
 );

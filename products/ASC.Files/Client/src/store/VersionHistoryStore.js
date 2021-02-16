@@ -75,4 +75,4 @@ class VersionHistoryStore {
   };
 }
 
-export default VersionHistoryStore;
+export default new VersionHistoryStore();

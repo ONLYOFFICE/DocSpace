@@ -199,47 +199,45 @@ const FileRow = (props) => {
 //   };
 // };
 
-export default inject(({ mainFilesStore }, { item }) => {
-  let ext;
-  let name;
-  let splitted;
-  if (item.file) {
-    splitted = item.file.name.split(".");
-    ext = splitted.length > 1 ? "." + splitted.pop() : "";
-    name = splitted[0];
-  } else {
-    ext = item.fileInfo.fileExst;
-    splitted = item.fileInfo.title.split(".");
-    name = splitted[0];
+export default inject(
+  ({ filesStore, formatsStore, uploadDataStore }, { item }) => {
+    let ext;
+    let name;
+    let splitted;
+    if (item.file) {
+      splitted = item.file.name.split(".");
+      ext = splitted.length > 1 ? "." + splitted.pop() : "";
+      name = splitted[0];
+    } else {
+      ext = item.fileInfo.fileExst;
+      splitted = item.fileInfo.title.split(".");
+      name = splitted[0];
+    }
+
+    const { iconFormatsStore, mediaViewersFormatsStore } = formatsStore;
+    const { cancelCurrentUpload } = filesStore;
+    const { uploaded, primaryProgressDataStore } = uploadDataStore;
+    const { loadingFile: file } = primaryProgressDataStore;
+    const isMedia = mediaViewersFormatsStore.isMediaOrImage(ext);
+    const fileIcon = iconFormatsStore.getIconSrc(ext, 24);
+
+    const loadingFile = !file || !file.uniqueId ? null : file;
+
+    const currentFileUploadProgress =
+      file && loadingFile.uniqueId === item.uniqueId
+        ? loadingFile.percent
+        : null;
+
+    return {
+      currentFileUploadProgress,
+      uploaded,
+      isMedia,
+      fileIcon,
+      ext,
+      name,
+      loadingFile,
+
+      cancelCurrentUpload,
+    };
   }
-
-  const { filesStore } = mainFilesStore;
-  const {
-    uploadDataStore,
-    mediaViewersFormatsStore,
-    formatsStore,
-    cancelCurrentUpload,
-    primaryProgressDataStore,
-  } = filesStore;
-  const { uploaded } = uploadDataStore;
-  const { loadingFile } = primaryProgressDataStore;
-  const isMedia = mediaViewersFormatsStore.isMediaOrImage(ext);
-  const fileIcon = formatsStore.getIconSrc(ext, 24);
-
-  const currentFileUploadProgress =
-    loadingFile && loadingFile.uniqueId === item.uniqueId
-      ? loadingFile.percent
-      : null;
-
-  return {
-    currentFileUploadProgress,
-    uploaded,
-    isMedia,
-    fileIcon,
-    ext,
-    name,
-    loadingFile,
-
-    cancelCurrentUpload,
-  };
-})(observer(FileRow));
+)(observer(FileRow));

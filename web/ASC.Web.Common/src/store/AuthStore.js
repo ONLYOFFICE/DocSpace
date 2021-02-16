@@ -26,6 +26,7 @@ class AuthStore {
       isAdmin: computed,
       isLoaded: computed,
       language: computed,
+      product: computed,
       userStore: observable,
       moduleStore: observable,
       settingsStore: observable,

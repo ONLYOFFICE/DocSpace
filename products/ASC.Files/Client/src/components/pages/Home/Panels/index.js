@@ -35,9 +35,7 @@ const Panels = (props) => {
 //   };
 // }
 
-export default inject(({ mainFilesStore }) => {
-  const { filesStore } = mainFilesStore;
-  const { dialogsStore, uploadDataStore } = filesStore;
+export default inject(({ dialogsStore, uploadDataStore }) => {
   const { sharingPanelVisible } = dialogsStore;
   const { uploadPanelVisible } = uploadDataStore;
 

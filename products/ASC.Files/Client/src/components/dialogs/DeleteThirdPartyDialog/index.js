@@ -7,9 +7,9 @@ import { utils, toastr, api } from "asc-web-common";
 // import {
 //   deleteThirdParty,
 //   setThirdPartyProviders,
-  //fetchFiles,
+//fetchFiles,
 //   setUpdateTree,
-  //setTreeFolders,
+//setTreeFolders,
 // } from "../../../store/files/actions";
 import {
   //getThirdPartyProviders,
@@ -60,7 +60,7 @@ class DeleteThirdPartyDialogComponent extends React.Component {
       currentFolderId,
       commonId,
       myId,
-      deleteThirdParty
+      deleteThirdParty,
     } = this.props;
 
     const providerItem = providers.find((x) => x.provider_id === removeItem.id);
@@ -122,10 +122,10 @@ const DeleteThirdPartyDialog = (props) => (
 // const mapStateToProps = (state) => {
 //   return {
 //     providers: getThirdPartyProviders(state),
-    //currentFolderId: getSelectedFolderId(state),
-    //treeFolders: getTreeFolders(state),
-    //commonId: getCommonFolderId(state),
-    //myId: getMyFolderId(state),
+//currentFolderId: getSelectedFolderId(state),
+//treeFolders: getTreeFolders(state),
+//commonId: getCommonFolderId(state),
+//myId: getMyFolderId(state),
 //   };
 // };
 
@@ -136,28 +136,27 @@ const DeleteThirdPartyDialog = (props) => (
 //   setTreeFolders,
 // })(withRouter(DeleteThirdPartyDialog));
 
-export default inject(({ auth, mainFilesStore, thirdParty }) => {
-    const { filesStore } = mainFilesStore;
-    const { providers, setThirdPartyProviders, deleteThirdParty } = thirdParty;
-    const { fetchFiles, treeFoldersStore } = filesStore;
+export default inject(({ auth, filesStore, thirdParty, treeFoldersStore }) => {
+  const { providers, setThirdPartyProviders, deleteThirdParty } = thirdParty;
+  const { fetchFiles } = filesStore;
 
-    const {
-      treeFolders,
-      setTreeFolders,
-      myFolderId,
-      commonFolderId,
-    } = treeFoldersStore;
+  const {
+    treeFolders,
+    setTreeFolders,
+    myFolderId,
+    commonFolderId,
+  } = treeFoldersStore;
 
-    return {
-      currentFolderId: filesStore.selectedFolderStore.id,
-      treeFolders,
-      myId: myFolderId,
-      commonId: commonFolderId,
-      providers,
+  return {
+    currentFolderId: filesStore.selectedFolderStore.id,
+    treeFolders,
+    myId: myFolderId,
+    commonId: commonFolderId,
+    providers,
 
-      fetchFiles,
-      setTreeFolders,
-      setThirdPartyProviders,
-      deleteThirdParty
-    };
-  })(withRouter(observer(DeleteThirdPartyDialog)))
+    fetchFiles,
+    setTreeFolders,
+    setThirdPartyProviders,
+    deleteThirdParty,
+  };
+})(withRouter(observer(DeleteThirdPartyDialog)));

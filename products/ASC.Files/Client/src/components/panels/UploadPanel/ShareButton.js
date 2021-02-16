@@ -53,9 +53,7 @@ const ShareButton = (props) => {
 //   };
 // };
 
-export default inject(({ mainFilesStore }, { uniqueId }) => {
-  const { filesStore } = mainFilesStore;
-  const { dialogsStore, uploadDataStore } = filesStore;
+export default inject(({ dialogsStore, uploadDataStore }, { uniqueId }) => {
   const { sharingPanelVisible, setSharingPanelVisible } = dialogsStore;
   const { selectUploadedFile, getUploadedFile } = uploadDataStore;
 

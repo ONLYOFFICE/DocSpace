@@ -157,14 +157,9 @@ class ArticleBodyContent extends React.Component {
 // };
 
 //export default connect(mapStateToProps, mapDispatchToProps)(ArticleBodyContent);
-export default inject(({ auth, mainFilesStore }) => {
-  const { setIsLoading, filesStore } = mainFilesStore;
-  const {
-    fetchFiles,
-    treeFoldersStore,
-    selectedFolderStore,
-    filter,
-  } = filesStore;
+export default inject(({ initFilesStore, filesStore, treeFoldersStore }) => {
+  const { setIsLoading } = initFilesStore;
+  const { fetchFiles, selectedFolderStore, filter } = filesStore;
   const { treeFolders, setSelectedNode } = treeFoldersStore;
   const selectedTreeNode = [selectedFolderStore.id + ""];
 

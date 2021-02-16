@@ -141,9 +141,9 @@ VersionHistoryPanelContainer.propTypes = {
 //   mapDispatchToProps
 // )(VersionHistoryPanel);
 
-export default inject(({ auth, mainFilesStore }) => {
-  const { isLoading, filesStore } = mainFilesStore;
-  const { versionHistoryStore } = filesStore;
+export default inject(({ auth, initFilesStore, versionHistoryStore }) => {
+  const { isTabletView, homepage } = auth.settingsStore;
+  const { isLoading } = initFilesStore;
   const {
     fileId,
     versions,
@@ -152,8 +152,8 @@ export default inject(({ auth, mainFilesStore }) => {
   } = versionHistoryStore;
 
   return {
-    isTabletView: auth.settingsStore.isTabletView,
-    homepage: auth.settingsStore.homepage,
+    isTabletView,
+    homepage,
     isLoading,
     fileId,
     versions,

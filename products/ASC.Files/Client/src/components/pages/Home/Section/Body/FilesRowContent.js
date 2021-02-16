@@ -797,81 +797,99 @@ class FilesRowContent extends React.PureComponent {
 //   replaceFileStream,
 // })(withRouter(withTranslation()(FilesRowContent)));
 
-export default inject(({ auth, mainFilesStore }, { item }) => {
-  const { replaceFileStream, getEncryptionAccess, setEncryptionAccess } = auth;
-  const { homepage, culture, isDesktopClient } = auth.settingsStore;
-  const { filesStore, setIsLoading, isLoading } = mainFilesStore;
-  const {
-    folders,
-    fetchFiles,
-    treeFoldersStore,
-    filter,
-    selectedFolderStore,
-    secondaryProgressDataStore,
-    docserviceStore,
-    mediaViewersFormatsStore,
-    formatsStore,
-    setNewRowItems,
-    newRowItems,
-    createFile,
-    updateFile,
-    renameFolder,
-  } = filesStore;
+export default inject(
+  (
+    {
+      auth,
+      initFilesStore,
+      filesStore,
+      formatsStore,
+      uploadDataStore,
+      treeFoldersStore,
+    },
+    { item }
+  ) => {
+    const {
+      replaceFileStream,
+      getEncryptionAccess,
+      setEncryptionAccess,
+    } = auth;
+    const { homepage, culture, isDesktopClient } = auth.settingsStore;
+    const { setIsLoading, isLoading } = initFilesStore;
+    const { secondaryProgressDataStore } = uploadDataStore;
+    const {
+      iconFormatsStore,
+      mediaViewersFormatsStore,
+      docserviceStore,
+    } = formatsStore;
 
-  const {
-    treeFolders,
-    setTreeFolders,
-    isRecycleBinFolder,
-    isPrivacyFolder,
-  } = treeFoldersStore;
+    const {
+      folders,
+      fetchFiles,
+      filter,
+      selectedFolderStore,
+      setNewRowItems,
+      newRowItems,
+      createFile,
+      updateFile,
+      renameFolder,
+    } = filesStore;
 
-  const { type, extension, id } = filesStore.fileActionStore;
+    const {
+      treeFolders,
+      setTreeFolders,
+      isRecycleBinFolder,
+      isPrivacyFolder,
+    } = treeFoldersStore;
 
-  const fileAction = { type, extension, id };
-  const {
-    setSecondaryProgressBarData,
-    clearSecondaryProgressData,
-  } = secondaryProgressDataStore;
+    const { type, extension, id } = filesStore.fileActionStore;
 
-  const canWebEdit = docserviceStore.canWebEdit(item.fileExst);
-  const canConvert = docserviceStore.canConvert(item.fileExst);
-  const isVideo = mediaViewersFormatsStore.isVideo(item.fileExst);
-  const isImage = formatsStore.isImage(item.fileExst);
-  const isSound = formatsStore.isSound(item.fileExst);
+    const fileAction = { type, extension, id };
+    const {
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
+    } = secondaryProgressDataStore;
 
-  return {
-    isDesktop: isDesktopClient,
-    homepage,
-    culture,
-    fileAction,
-    folders,
-    selectedFolderId: selectedFolderStore.id,
-    selectedFolderPathParts: selectedFolderStore.pathParts,
-    newItems: selectedFolderStore.new,
-    parentFolder: selectedFolderStore.parentId,
-    isLoading,
-    treeFolders,
-    isTrashFolder: isRecycleBinFolder,
-    isPrivacy: isPrivacyFolder,
-    filter,
-    canWebEdit,
-    canConvert,
-    isVideo,
-    isImage,
-    isSound,
-    newRowItems,
+    const canWebEdit = docserviceStore.canWebEdit(item.fileExst);
+    const canConvert = docserviceStore.canConvert(item.fileExst);
+    const isVideo = mediaViewersFormatsStore.isVideo(item.fileExst);
+    const isImage = iconFormatsStore.isImage(item.fileExst);
+    const isSound = iconFormatsStore.isSound(item.fileExst);
 
-    setIsLoading,
-    fetchFiles,
-    setTreeFolders,
-    setSecondaryProgressBarData,
-    clearSecondaryProgressData,
-    setNewRowItems,
-    createFile,
-    updateFile,
-    renameFolder,
-    replaceFileStream,
-    getEncryptionAccess,
-    setEncryptionAccess,
-  };
-})(withRouter(withTranslation()(observer(FilesRowContent))));
+    return {
+      isDesktop: isDesktopClient,
+      homepage,
+      culture,
+      fileAction,
+      folders,
+      selectedFolderId: selectedFolderStore.id,
+      selectedFolderPathParts: selectedFolderStore.pathParts,
+      newItems: selectedFolderStore.new,
+      parentFolder: selectedFolderStore.parentId,
+      isLoading,
+      treeFolders,
+      isTrashFolder: isRecycleBinFolder,
+      isPrivacy: isPrivacyFolder,
+      filter,
+      canWebEdit,
+      canConvert,
+      isVideo,
+      isImage,
+      isSound,
+      newRowItems,
+
+      setIsLoading,
+      fetchFiles,
+      setTreeFolders,
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
+      setNewRowItems,
+      createFile,
+      updateFile,
+      renameFolder,
+      replaceFileStream,
+      getEncryptionAccess,
+      setEncryptionAccess,
+    };
+  }
+)(withRouter(withTranslation()(observer(FilesRowContent))));

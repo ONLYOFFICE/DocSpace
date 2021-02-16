@@ -3,16 +3,8 @@ import { api, constants, store } from "asc-web-common";
 import axios from "axios";
 import FileActionStore from "./FileActionStore";
 import SelectedFolderStore from "./SelectedFolderStore";
-import TreeFoldersStore from "./TreeFoldersStore";
-import FormatsStore from "./FormatsStore";
-import MediaViewersFormatsStore from "./MediaViewersFormatsStore";
-import DocserviceStore from "./DocserviceStore";
-import MediaViewerDataStore from "./MediaViewerDataStore";
-import PrimaryProgressDataStore from "./PrimaryProgressDataStore";
-import SecondaryProgressDataStore from "./SecondaryProgressDataStore";
-import DialogsStore from "./DialogsStore";
-import VersionHistoryStore from "./VersionHistoryStore";
-import UploadDataStore from "./UploadDataStore";
+import formatsStore from "./FormatsStore";
+import treeFoldersStore from "./TreeFoldersStore";
 import { createTreeFolders } from "./files/selectors";
 
 const { FilesFilter } = api;
@@ -21,19 +13,33 @@ const { authStore } = store;
 const { settingsStore, userStore, isAdmin } = authStore;
 const { isEncryptionSupport, isDesktopClient } = settingsStore;
 
+const {
+  iconFormatsStore,
+  mediaViewersFormatsStore,
+  docserviceStore,
+} = formatsStore;
+const { isSpreadsheet, isPresentation } = iconFormatsStore;
+const { getIcon } = iconFormatsStore;
+const {
+  canWebEdit,
+  canWebComment,
+  canWebReview,
+  canFormFillingDocs,
+  canWebFilterEditing,
+} = docserviceStore;
+
+const {
+  privacyFolder,
+  isRecycleBinFolder,
+  isPrivacyFolder,
+  isRecentFolder,
+  //isFavoritesFolder,
+  commonFolder,
+} = treeFoldersStore;
+
 class FilesStore {
   fileActionStore = null;
   selectedFolderStore = null;
-  treeFoldersStore = null;
-  formatsStore = null;
-  mediaViewersFormatsStore = null;
-  docserviceStore = null;
-  mediaViewerDataStore = null;
-  primaryProgressDataStore = null;
-  secondaryProgressDataStore = null;
-  dialogsStore = null;
-  versionHistoryStore = null;
-  uploadDataStore = null;
 
   firstLoad = true;
   files = [];
@@ -48,16 +54,6 @@ class FilesStore {
     makeObservable(this, {
       fileActionStore: observable,
       selectedFolderStore: observable,
-      treeFoldersStore: observable,
-      formatsStore: observable,
-      mediaViewersFormatsStore: observable,
-      docserviceStore: observable,
-      mediaViewerDataStore: observable, //TODO: MainFiles?
-      primaryProgressDataStore: observable, //TODO: MainFiles?
-      secondaryProgressDataStore: observable, //TODO: MainFiles?
-      dialogsStore: observable, //TODO: MainFiles?
-      versionHistoryStore: observable, //TODO: MainFiles?
-      uploadDataStore: observable, //TODO: MainFiles?
 
       firstLoad: observable,
       files: observable,
@@ -111,16 +107,6 @@ class FilesStore {
 
     this.fileActionStore = new FileActionStore();
     this.selectedFolderStore = new SelectedFolderStore();
-    this.treeFoldersStore = new TreeFoldersStore();
-    this.formatsStore = new FormatsStore();
-    this.mediaViewersFormatsStore = new MediaViewersFormatsStore();
-    this.docserviceStore = new DocserviceStore();
-    this.mediaViewerDataStore = new MediaViewerDataStore();
-    this.primaryProgressDataStore = new PrimaryProgressDataStore();
-    this.secondaryProgressDataStore = new SecondaryProgressDataStore();
-    this.dialogsStore = new DialogsStore();
-    this.versionHistoryStore = new VersionHistoryStore();
-    this.uploadDataStore = new UploadDataStore();
   }
 
   setFirstLoad = (firstLoad) => {
@@ -241,8 +227,6 @@ class FilesStore {
     const filterData = filter ? filter.clone() : FilesFilter.getDefault();
     filterData.folder = folderId;
 
-    const { privacyFolder } = this.treeFoldersStore;
-
     if (privacyFolder && privacyFolder.id === +folderId) {
       if (!isEncryptionSupport) {
         filterData.treeFolders = createTreeFolders(
@@ -347,13 +331,6 @@ class FilesStore {
   };
 
   getFilesContextOptions = (item, canOpenPlayer, canShare) => {
-    const {
-      isRecycleBinFolder,
-      isPrivacyFolder,
-      isRecentFolder,
-      //isFavoritesFolder
-    } = this.treeFoldersStore;
-
     const options = [];
     const isVisitor = (userStore.user && userStore.user.isVisitor) || false;
 
@@ -518,7 +495,7 @@ class FilesStore {
 
   get iconOfDraggedFile() {
     if (this.selection.length === 1) {
-      const icon = this.formatsStore.getIcon(
+      const icon = getIcon(
         24,
         this.selection[0].fileExst,
         this.selection[0].providerKey
@@ -530,8 +507,6 @@ class FilesStore {
   }
 
   get canShareOwnerChange() {
-    const { commonFolder } = this.treeFoldersStore;
-
     const pathParts = this.selectedFolderStore.pathParts;
     const userId = userStore.user.id;
     return (
@@ -619,7 +594,7 @@ class FilesStore {
         providerKey,
       } = item;
 
-      const canOpenPlayer = this.mediaViewersFormatsStore.isMediaOrImage(
+      const canOpenPlayer = mediaViewersFormatsStore.isMediaOrImage(
         item.fileExst
       );
 
@@ -640,14 +615,14 @@ class FilesStore {
 
       const draggable =
         selectedItem &&
-        !this.treeFoldersStore.isRecycleBinFolder &&
+        isRecycleBinFolder &&
         selectedItem.id !== this.fileActionStore.id;
 
       let value = fileExst ? `file_${id}` : `folder_${id}`;
       value += draggable ? "_draggable" : "";
 
-      const isCanWebEdit = this.docserviceStore.canWebEdit(item.fileExst);
-      const icon = this.formatsStore.getIcon(24, fileExst, providerKey);
+      const isCanWebEdit = canWebEdit(item.fileExst);
+      const icon = getIcon(24, fileExst, providerKey);
 
       return {
         access,
@@ -701,9 +676,6 @@ class FilesStore {
       presentations: [],
       other: [],
     };
-
-    const { isSpreadsheet, isPresentation } = this.formatsStore;
-    const { canWebEdit } = this.docserviceStore;
 
     for (let item of this.selection) {
       item.checked = true;
@@ -767,7 +739,7 @@ class FilesStore {
   get isWebEditSelected() {
     return this.selection.some((selected) => {
       if (selected.isFolder === true || !selected.fileExst) return false;
-      return this.docserviceStore.editedDocs.find(
+      return docserviceStore.editedDocs.find(
         (format) => selected.fileExst === format
       );
     });
@@ -779,14 +751,6 @@ class FilesStore {
   }
 
   getOptions = (selection, externalAccess = false) => {
-    const {
-      canWebEdit,
-      canWebComment,
-      canWebReview,
-      canFormFillingDocs,
-      canWebFilterEditing,
-    } = this.docserviceStore;
-
     const webEdit = selection.find((x) => canWebEdit(x.fileExst));
     const webComment = selection.find((x) => canWebComment(x.fileExst));
     const webReview = selection.find((x) => canWebReview(x.fileExst));
@@ -1033,8 +997,7 @@ class FilesStore {
   };
 
   loopFilesOperations = (id, destFolderId, isCopy) => {
-    /*const { isRecycleBinFolder } = this.treeFoldersStore;
-
+    /*
     const progressData = getSecondaryProgressData(state);
     const treeFolders = getTreeFolders(state);
 
@@ -1159,4 +1122,4 @@ class FilesStore {
   };
 }
 
-export default FilesStore;
+export default new FilesStore();

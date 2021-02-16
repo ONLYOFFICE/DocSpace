@@ -8,15 +8,15 @@ import { utils as commonUtils, toastr } from "asc-web-common";
 import { StyledAsidePanel } from "../StyledPanels";
 import TreeFolders from "../../Article/Body/TreeFolders";
 // import {
-  //setSecondaryProgressBarData,
+//setSecondaryProgressBarData,
 //   itemOperationToFolder,
 // } from "../../../store/files/actions";
 // import {
-  //getFilter,
-  //getSelection,
-  //getPathParts,
-  //getSelectedFolderId,
-  //getIsRecycleBinFolder,
+//getFilter,
+//getSelection,
+//getPathParts,
+//getSelectedFolderId,
+//getIsRecycleBinFolder,
 //   getOperationsFolders,
 // } from "../../../store/files/selectors";
 import { ThirdPartyMoveDialog } from "../../dialogs";
@@ -208,11 +208,11 @@ const OperationsPanel = (props) => (
 
 // const mapStateToProps = (state) => {
 //   return {
-    //filter: getFilter(state),
-    //selection: getSelection(state),
-    //expandedKeys: getPathParts(state),
-    //currentFolderId: getSelectedFolderId(state),
-    //isRecycleBin: getIsRecycleBinFolder(state),
+//filter: getFilter(state),
+//selection: getSelection(state),
+//expandedKeys: getPathParts(state),
+//currentFolderId: getSelectedFolderId(state),
+//isRecycleBin: getIsRecycleBinFolder(state),
 //     operationsFolders: getOperationsFolders(state),
 //   };
 // };
@@ -222,17 +222,16 @@ const OperationsPanel = (props) => (
 //   itemOperationToFolder,
 // })(withRouter(OperationsPanel));
 
-export default inject(({ auth, mainFilesStore }) => {
-    const { filesStore } = mainFilesStore;
+export default inject(
+  ({ auth, filesStore, uploadDataStore, treeFoldersStore }) => {
+    const { secondaryProgressDataStore } = uploadDataStore;
     const {
       selection,
       selectedFolderStore,
-      treeFoldersStore,
       filter,
-      secondaryProgressDataStore,
-    itemOperationToFolder,
+      itemOperationToFolder,
     } = filesStore;
-  const { isRecycleBinFolder, operationsFolders } = treeFoldersStore;
+    const { isRecycleBinFolder, operationsFolders } = treeFoldersStore;
     const { setSecondaryProgressBarData } = secondaryProgressDataStore;
 
     return {
@@ -241,9 +240,10 @@ export default inject(({ auth, mainFilesStore }) => {
       selection,
       isRecycleBin: isRecycleBinFolder,
       filter,
-    operationsFolders,
+      operationsFolders,
 
       setSecondaryProgressBarData,
-    itemOperationToFolder,
+      itemOperationToFolder,
     };
-})(withRouter(observer(OperationsPanel)));
+  }
+)(withRouter(observer(OperationsPanel)));

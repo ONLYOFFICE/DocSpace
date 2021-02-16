@@ -24,4 +24,4 @@ class DialogsStore {
   };
 }
 
-export default DialogsStore;
+export default new DialogsStore();

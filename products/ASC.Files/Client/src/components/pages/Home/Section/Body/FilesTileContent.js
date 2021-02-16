@@ -445,18 +445,18 @@ class FilesTileContent extends React.PureComponent {
 
 // function mapStateToProps(state, props) {
 //   return {
-    //filter: getFilter(state),
-    //fileAction: getFileAction(state),
-    //parentFolder: getSelectedFolderParentId(state),
-    //isTrashFolder: getIsRecycleBinFolder(state),
-    //treeFolders: getTreeFolders(state),
-    //rootFolderId: getRootFolderId(state),
-    //newItems: getSelectedFolderNew(state),
-    //selectedFolder: getSelectedFolder(state),
-    //folders: getFolders(state),
+//filter: getFilter(state),
+//fileAction: getFileAction(state),
+//parentFolder: getSelectedFolderParentId(state),
+//isTrashFolder: getIsRecycleBinFolder(state),
+//treeFolders: getTreeFolders(state),
+//rootFolderId: getRootFolderId(state),
+//newItems: getSelectedFolderNew(state),
+//selectedFolder: getSelectedFolder(state),
+//folders: getFolders(state),
 //     newRowItems: getNewRowItems(state),
-    //dragging: getDragging(state),
-    //isLoading: getIsLoading(state),
+//dragging: getDragging(state),
+//isLoading: getIsLoading(state),
 //     canWebEdit: canWebEdit(props.item.fileExst)(state),
 //   };
 // }
@@ -470,33 +470,42 @@ class FilesTileContent extends React.PureComponent {
 //   fetchFiles,
 // })(withRouter(withTranslation()(FilesTileContent)));
 
-export default inject(({ auth, mainFilesStore }, { item }) => {
-  const { homepage, culture } = auth.settingsStore;
-  const { filesStore, setIsLoading, isLoading, dragging } = mainFilesStore;
-  const {
-    folders,
-    fetchFiles,
-    treeFoldersStore,
-    filter,
-    docserviceStore,
-    mediaViewersFormatsStore,
-    formatsStore,
-    newRowItems,
-  createFile,
-  updateFile,
-  renameFolder,
-  } = filesStore;
+export default inject(
+  (
+    { auth, initFilesStore, filesStore, formatsStore, treeFoldersStore },
+    { item }
+  ) => {
+    const { homepage, culture } = auth.settingsStore;
+    const { setIsLoading, isLoading, dragging } = initFilesStore;
+    const {
+      iconFormatsStore,
+      mediaViewersFormatsStore,
+      docserviceStore,
+    } = formatsStore;
+    const {
+      folders,
+      fetchFiles,
+      filter,
+      newRowItems,
+      createFile,
+      updateFile,
+      renameFolder,
+    } = filesStore;
 
-  const { treeFolders, setTreeFolders, isRecycleBinFolder } = treeFoldersStore;
+    const {
+      treeFolders,
+      setTreeFolders,
+      isRecycleBinFolder,
+    } = treeFoldersStore;
 
     const { type, extension, id } = filesStore.fileActionStore;
 
     const fileAction = { type, extension, id };
 
-  const canWebEdit = docserviceStore.canWebEdit(item.fileExst);
-  const isVideo = mediaViewersFormatsStore.isVideo(item.fileExst);
-  const isImage = formatsStore.isImage(item.fileExst);
-  const isSound = formatsStore.isSound(item.fileExst);
+    const canWebEdit = docserviceStore.canWebEdit(item.fileExst);
+    const isVideo = mediaViewersFormatsStore.isVideo(item.fileExst);
+    const isImage = iconFormatsStore.isImage(item.fileExst);
+    const isSound = iconFormatsStore.isSound(item.fileExst);
 
     return {
       culture,
@@ -513,17 +522,18 @@ export default inject(({ auth, mainFilesStore }, { item }) => {
       isTrashFolder: isRecycleBinFolder,
       filter,
       dragging,
-    canWebEdit,
-    isVideo,
-    isImage,
-    isSound,
-    newRowItems,
+      canWebEdit,
+      isVideo,
+      isImage,
+      isSound,
+      newRowItems,
 
       setIsLoading,
       fetchFiles,
       setTreeFolders,
-    createFile,
-    updateFile,
-    renameFolder,
+      createFile,
+      updateFile,
+      renameFolder,
     };
-})(withRouter(withTranslation()(observer(FilesTileContent))));
+  }
+)(withRouter(withTranslation()(observer(FilesTileContent))));

@@ -137,26 +137,26 @@ VersionHistory.propTypes = {
 //   mapDispatchToProps
 // )(withRouter(VersionHistory));
 
-export default inject(({ auth, mainFilesStore }) => {
-  const { isLoading, filesStore } = mainFilesStore;
-  const { filter, setFilesFilter, versionHistoryStore } = filesStore;
+export default inject(
+  ({ auth, initFilesStore, filesStore, versionHistoryStore }) => {
+    const { isLoading } = initFilesStore;
+    const { filter, setFilesFilter } = filesStore;
 
-  const {
-    setIsVerHistoryPanel,
-    setVerHistoryFileId,
-    versions,
-  } = versionHistoryStore;
+    const {
+      setIsVerHistoryPanel,
+      setVerHistoryFileId,
+      versions,
+    } = versionHistoryStore;
 
-  console.log("versions", versions);
+    return {
+      isTabletView: auth.settingsStore.isTabletView,
+      isLoading,
+      filter,
+      versions,
 
-  return {
-    isTabletView: auth.settingsStore.isTabletView,
-    isLoading,
-    filter,
-    versions,
-
-    setFilesFilter,
-    setIsVerHistoryPanel,
-    setVerHistoryFileId,
-  };
-})(withRouter(observer(VersionHistory)));
+      setFilesFilter,
+      setIsVerHistoryPanel,
+      setVerHistoryFileId,
+    };
+  }
+)(withRouter(observer(VersionHistory)));

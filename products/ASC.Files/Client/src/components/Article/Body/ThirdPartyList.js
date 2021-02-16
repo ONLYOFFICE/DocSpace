@@ -17,8 +17,8 @@ import { createI18N } from "../../../helpers/i18n";
 //   getOAuthToken,
 //   openConnectWindow,
 //   setConnectItem,
-  //setSelectedFolder,
-  //setSelectedNode,
+//setSelectedFolder,
+//setSelectedNode,
 //   setShowThirdPartyPanel,
 // } from "../../../store/files/actions";
 import { inject, observer } from "mobx-react";
@@ -251,37 +251,39 @@ const ThirdPartyList = (props) => {
 //   setShowThirdPartyPanel,
 // })(ThirdPartyList);
 
-export default inject(({ mainFilesStore, settingsStore }) => {
-    const { setIsLoading, filesStore } = mainFilesStore;
+export default inject(
+  ({ initFilesStore, filesStore, settingsStore, treeFoldersStore }) => {
+    const { setIsLoading } = initFilesStore;
     const { setSelectedFolder } = filesStore.selectedFolderStore;
-    const { setSelectedNode } = filesStore.treeFoldersStore;
-  const {
-    setConnectItem,
-    setShowThirdPartyPanel,
-    googleConnectItem,
-    boxConnectItem,
-    dropboxConnectItem,
-    oneDriveConnectItem,
-    nextCloudConnectItem,
-    webDavConnectItem,
-    getOAuthToken,
-    openConnectWindow,
-  } = settingsStore.thirdPartyStore;
+    const { setSelectedNode } = treeFoldersStore;
+    const {
+      setConnectItem,
+      setShowThirdPartyPanel,
+      googleConnectItem,
+      boxConnectItem,
+      dropboxConnectItem,
+      oneDriveConnectItem,
+      nextCloudConnectItem,
+      webDavConnectItem,
+      getOAuthToken,
+      openConnectWindow,
+    } = settingsStore.thirdPartyStore;
 
     return {
-    googleConnectItem,
-    boxConnectItem,
-    dropboxConnectItem,
-    oneDriveConnectItem,
-    nextCloudConnectItem,
-    webDavConnectItem,
+      googleConnectItem,
+      boxConnectItem,
+      dropboxConnectItem,
+      oneDriveConnectItem,
+      nextCloudConnectItem,
+      webDavConnectItem,
 
       setIsLoading,
       setSelectedFolder,
       setSelectedNode,
-    setConnectItem,
-    setShowThirdPartyPanel,
-    getOAuthToken,
-    openConnectWindow,
+      setConnectItem,
+      setShowThirdPartyPanel,
+      getOAuthToken,
+      openConnectWindow,
     };
-})(observer(ThirdPartyList));
+  }
+)(observer(ThirdPartyList));

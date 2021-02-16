@@ -12,8 +12,8 @@ import { Error403, Error520 /* store */ } from "asc-web-common";
 //   setForceSave,
 // } from "../../../../../store/files/actions";
 // import {
-  //getIsLoading,
-  //getSettingsSelectedTreeNode,
+//getIsLoading,
+//getSettingsSelectedTreeNode,
 //   getSettingsTreeStoreOriginalFiles,
 //   getSettingsTreeConfirmDelete,
 //   getSettingsTreeUpdateIfExist,
@@ -182,15 +182,15 @@ const SectionBodyContent = ({
 
 // function mapStateToProps(state) {
 //   return {
-    //isAdmin: isAdmin(state),
-    //selectedTreeNode: getSettingsSelectedTreeNode(state),
+//isAdmin: isAdmin(state),
+//selectedTreeNode: getSettingsSelectedTreeNode(state),
 //     storeOriginalFiles: getSettingsTreeStoreOriginalFiles(state),
 //     confirmDelete: getSettingsTreeConfirmDelete(state),
 //     updateIfExist: getSettingsTreeUpdateIfExist(state),
 //     forceSave: getSettingsTreeForceSave(state),
 //     storeForceSave: getSettingsTreeStoreForceSave(state),
 //     enableThirdParty: getSettingsTreeEnableThirdParty(state),
-    //isLoading: getIsLoading(state),
+//isLoading: getIsLoading(state),
 //     settingsTree: getSettingsTree(state),
 //   };
 // }
@@ -204,45 +204,46 @@ const SectionBodyContent = ({
 //   setForceSave,
 // })(SectionBodyContent);
 
-export default inject(({ auth, mainFilesStore, settingsStore }) => {
-  const { isLoading, filesStore } = mainFilesStore;
-  const { treeFoldersStore } = filesStore;
-  const { selectedTreeNode } = treeFoldersStore;
-  const {
-    settingsTree: settings,
-    storeOriginalFiles,
-    confirmDelete,
-    updateIfExist,
-    forcesave,
-    storeForcesave,
-    enableThirdParty,
-  setUpdateIfExist,
-  setStoreOriginal,
-  setEnableThirdParty,
-  setConfirmDelete,
-  setStoreForceSave,
-  setForceSave,
-  } = settingsStore;
+export default inject(
+  ({ auth, initFilesStore, settingsStore, treeFoldersStore }) => {
+    const { isLoading } = initFilesStore;
+    const { selectedTreeNode } = treeFoldersStore;
+    const {
+      settingsTree: settings,
+      storeOriginalFiles,
+      confirmDelete,
+      updateIfExist,
+      forcesave,
+      storeForcesave,
+      enableThirdParty,
+      setUpdateIfExist,
+      setStoreOriginal,
+      setEnableThirdParty,
+      setConfirmDelete,
+      setStoreForceSave,
+      setForceSave,
+    } = settingsStore;
 
-  const settingsTree = Object.keys(settings).length !== 0 ? settings : {};
+    const settingsTree = Object.keys(settings).length !== 0 ? settings : {};
 
     return {
       isAdmin: auth.isAdmin,
       isLoading,
       selectedTreeNode,
-    settingsTree,
-    storeOriginalFiles,
-    confirmDelete,
-    updateIfExist,
-    forceSave: forcesave,
-    storeForceSave: storeForcesave,
-    enableThirdParty,
+      settingsTree,
+      storeOriginalFiles,
+      confirmDelete,
+      updateIfExist,
+      forceSave: forcesave,
+      storeForceSave: storeForcesave,
+      enableThirdParty,
 
-    setUpdateIfExist,
-    setStoreOriginal,
-    setEnableThirdParty,
-    setConfirmDelete,
-    setStoreForceSave,
-    setForceSave,
+      setUpdateIfExist,
+      setStoreOriginal,
+      setEnableThirdParty,
+      setConfirmDelete,
+      setStoreForceSave,
+      setForceSave,
     };
-})(observer(SectionBodyContent));
+  }
+)(observer(SectionBodyContent));

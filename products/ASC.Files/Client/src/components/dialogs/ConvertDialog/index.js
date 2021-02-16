@@ -6,7 +6,7 @@ import { ModalDialog, Button, Text, Checkbox } from "asc-web-components";
 import { withTranslation } from "react-i18next";
 import { utils } from "asc-web-common";
 // import {
-  //setTreeFolders,
+//setTreeFolders,
 //   setDialogVisible,
 //   convertUploadedFiles,
 // } from "../../../store/files/actions";
@@ -125,14 +125,13 @@ const ConvertDialog = (props) => (
 //   convertUploadedFiles,
 // })(withRouter(ConvertDialog));
 
-export default inject(({ mainFilesStore }) => {
-    const { filesStore } = mainFilesStore;
-    const { setTreeFolders } = filesStore.treeFoldersStore;
-  const { setDialogVisible, convertUploadedFiles } = filesStore.uploadDataStore;
+export default inject(({ uploadDataStore, treeFoldersStore }) => {
+  const { setTreeFolders } = treeFoldersStore;
+  const { setDialogVisible, convertUploadedFiles } = uploadDataStore;
 
-    return {
-      setTreeFolders,
+  return {
+    setTreeFolders,
     setDialogVisible,
     convertUploadedFiles,
-    };
+  };
 })(withRouter(observer(ConvertDialog)));
