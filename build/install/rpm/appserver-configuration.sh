@@ -143,6 +143,15 @@ while [ "$1" != "" ]; do
 	shift
 done
 
+set_core_machinekey () {
+	if [ -f $APP_DIR/.private/machinekey ]; then
+		CORE_MACHINEKEY=$(cat $APP_DIR/.private/machinekey)
+	else
+		CORE_MACHINEKEY=$(cat /dev/urandom | tr -dc A-Za-z0-9 | head -c 12);
+		echo $CORE_MACHINEKEY >> $APP_DIR/.private/machinekey
+	fi
+}
+
 install_json() {
 
 	if [ ! -e /usr/bin/json ]; then
@@ -156,7 +165,8 @@ install_json() {
 		echo "{}" >> $USER_CONF
 		chown onlyoffice:onlyoffice $USER_CONF
 	
-		$JSON_USERCONF "this.core={'base-domain': \"$APP_HOST\", 'machinekey': '1VVAepxpW8f7'}" >/dev/null 2>&1
+		set_core_machinekey
+		$JSON_USERCONF "this.core={'base-domain': \"$APP_HOST\", 'machinekey': \"$CORE_MACHINEKEY\"}" >/dev/null 2>&1
 		$JSON $APP_CONF -e "this.core.products.subfolder='server'" >/dev/null 2>&1 #Fix error
 	fi
 }
