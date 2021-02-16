@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "components": ["@appserver/components/src/components"],
+      "ASCWebComponents": ["../../packages/asc-web-components/src"],
+      "ASCWebCommon": ["../../packages/asc-web-common/src"]
+    }
+  },
+  "exclude": ["node_modules"]
+}

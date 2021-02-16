@@ -23,10 +23,14 @@
 		{
 			"name": "ASC.Files.Client"
 			"path": "./products/ASC.Files/Client"
+		},
+		{
+			"name": "ASC.Web.LoginMobile"
+			"path": "./web/ASC.Web.LoginMobile"
 		}
 	],
 	"settings": {
-        "window.zoomLevel": 1,
+        "window.zoomLevel": 0,
 		"files.autoSave": "afterDelay",
 		"editor.formatOnSave": true,
 		"editor.defaultFormatter": "esbenp.prettier-vscode"

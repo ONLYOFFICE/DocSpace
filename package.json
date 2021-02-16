@@ -7,7 +7,8 @@
     "web/ASC.Web.Login",
     "web/ASC.Web.Client",
     "products/ASC.People/Client",
-    "products/ASC.Files/Client"
+    "products/ASC.Files/Client",
+    "web/ASC.Web.LoginMobile"
   ],
   "scripts": {
     "wipe": "rimraf node_modules yarn.lock web/**/node_modules products/**/node_modules",
