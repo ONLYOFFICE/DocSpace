@@ -314,7 +314,7 @@ class Form extends Component {
             textAlign="center"
             className="greeting-title"
           >
-            {greetingTitle}
+            {t("LoginTitle")}
           </Text>
 
           <form className="auth-form-container">
