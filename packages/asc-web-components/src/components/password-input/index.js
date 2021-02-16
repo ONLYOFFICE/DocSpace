@@ -1,127 +1,20 @@
 import React from "react";
-import styled from "styled-components";
 import PropTypes from "prop-types";
 import equal from "fast-deep-equal/react";
 
-import { tablet, mobile } from "../../utils/device";
 import InputBlock from "../input-block";
-import { Icons } from "../icons";
+import { RefreshIcon } from "./svg";
 import Link from "../link";
 import Text from "../text";
 import Tooltip from "../tooltip";
 import { Base } from "../../themes";
-
-// eslint-disable-next-line no-unused-vars
-const SimpleInput = ({ onValidateInput, onCopyToClipboard, ...props }) => (
-  <div {...props}></div>
-);
-
-SimpleInput.propTypes = {
-  onValidateInput: PropTypes.func,
-  onCopyToClipboard: PropTypes.func,
-};
-
-const StyledInput = styled(SimpleInput)`
-  display: flex;
-  align-items: center;
-  line-height: 32px;
-  flex-direction: row;
-  flex-wrap: wrap;
-  @media ${tablet} {
-    flex-wrap: wrap;
-  }
-
-  .append {
-    padding-right: 8px;
-  }
-
-  .prepend-children {
-    padding: 0;
-  }
-
-  .break {
-    flex-basis: 100%;
-    height: 0;
-  }
-
-  .text-tooltip {
-    line-height: 14px;
-    margin-top: -2px;
-  }
-
-  .password-field-wrapper {
-    display: flex;
-    width: auto;
-
-    @media ${mobile} {
-      width: 100%;
-    }
-  }
-`;
-
-const PasswordProgress = styled.div`
-  ${(props) =>
-    props.inputWidth ? `width: ${props.inputWidth};` : `flex: auto;`}
-  .input-relative {
-    position: relative;
-    svg {
-      overflow: hidden;
-      vertical-align: middle;
-    }
-  }
-  *,
-  *::before,
-  *::after {
-    box-sizing: border-box;
-  }
-`;
-
-const NewPasswordButton = styled.div`
-  margin: 0 16px;
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-  svg {
-    overflow: hidden;
-    vertical-align: middle;
-    margin-bottom: 4px;
-  }
-  :hover {
-    cursor: pointer;
-  }
-`;
-
-const CopyLink = styled.div`
-  margin-top: -6px;
-  @media ${tablet} {
-    width: 100%;
-    margin-left: 0px;
-    margin-top: -1px;
-  }
-`;
-
-const TooltipStyle = styled.div`
-  .__react_component_tooltip {
-  }
-`;
-const Progress = styled.div`
-  border: 1.5px solid
-    ${(props) =>
-      !props.isDisabled && props.progressColor
-        ? props.progressColor
-        : "transparent"};
-  border-radius: 2px;
-  margin-top: -1px;
-  width: ${(props) => (props.progressWidth ? props.progressWidth + "%" : "0%")};
-`;
-
-const StyledTooltipContainer = styled(Text)`
-  //margin: 8px 16px 16px 16px;
-`;
-
-const StyledTooltipItem = styled(Text)`
-  margin-left: 8px;
-  height: 24px;
-  color: ${(props) => (props.valid ? "#44bb00" : "#B40404")};
-`;
+import {
+  Progress,
+  CopyLink,
+  NewPasswordButton,
+  PasswordProgress,
+  StyledInput,
+} from "./styled-password-input";
 
 class PasswordInput extends React.Component {
   constructor(props) {
@@ -441,7 +334,6 @@ class PasswordInput extends React.Component {
     } = this.props;
 
     const { type, progressColor, progressWidth, inputValue } = this.state;
-    const iconsColor = isDisabled ? "#D0D5DA" : "#A3A9AE";
     const iconName = type === "password" ? "EyeOffIcon" : "EyeIcon";
 
     return (
@@ -459,7 +351,6 @@ class PasswordInput extends React.Component {
           scale={scale}
           size={size}
           type={type}
-          iconColor={`${iconsColor} !important`}
           iconSize={16}
           hoverColor={"#A3A9AE"}
           isIconFill={true}
@@ -500,6 +391,7 @@ class PasswordInput extends React.Component {
       style,
       simpleView,
       hideNewPasswordButton,
+      isDisabled,
     } = this.props;
     const { copyLabel, disableCopyAction } = this.state;
 
@@ -523,15 +415,14 @@ class PasswordInput extends React.Component {
                 data-tip=""
                 data-event="click"
                 ref={this.ref}
+                isDisabled={isDisabled}
               >
                 {this.renderInputGroup()}
               </PasswordProgress>
               {!hideNewPasswordButton ? (
-                <NewPasswordButton>
-                  <Icons.RefreshIcon
+                <NewPasswordButton isDisabled={isDisabled}>
+                  <RefreshIcon
                     size="medium"
-                    color={iconsColor}
-                    isfill={true}
                     onClick={this.onGeneratePassword}
                   />
                 </NewPasswordButton>
@@ -543,7 +434,7 @@ class PasswordInput extends React.Component {
                 type="action"
                 isHovered={true}
                 fontSize="13px"
-                color={iconsColor}
+                className="password-input_link"
                 isSemitransparent={disableCopyAction}
                 onClick={this.copyToClipboard.bind(this, emailInputName)}
               >

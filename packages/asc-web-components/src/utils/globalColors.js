@@ -21,8 +21,10 @@ const globalColors = {
   blueDisabled: "#A6DCF2",
   blueCharcoal: "#1F2933",
   blueLightMid: "#265A8F",
+  strongBlue: "#316AC5",
 
-  pattensBlue: "#DEE2E6",
+  lightGrayishBlue: "#DEE2E6",
+  lightGrayishStrongBlue: "#DFE2E3",
   cyanBlueDarkShade: "#555F65",
 
   orangeMain: "#ED7309",
@@ -37,7 +39,7 @@ const globalColors = {
 
   warningColor: "#f1ca92",
   red: "#c30",
-
+  darkRed: "#A60000",
   activeSuccess: "#CAE796",
   activeError: "#FFBFAA",
   activeInfo: "#F1DA92",

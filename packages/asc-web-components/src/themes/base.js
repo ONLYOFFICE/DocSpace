@@ -42,11 +42,14 @@ const {
   hoverWarning,
   darkBlack,
   silver,
+  strongBlue,
+  lightGrayishStrongBlue,
+  darkRed,
 } = globalColors;
 
 const Base = {
-  // color: black,
-  // backgroundColor: white,
+  color: black,
+  backgroundColor: white,
   fontFamily: "Open Sans, sans-serif, Arial",
   fontSize: "30px",
 
@@ -159,7 +162,7 @@ const Base = {
     margin: "0",
     lineHeight: "56px",
     fontWeight: "700",
-    borderBottom: `1px solid ${globalColors.pattensBlue}`,
+    borderBottom: `1px solid ${globalColors.lightGrayishBlue}`,
     padding: "0 16px 16px",
     bodyPadding: "16px 0",
   },
@@ -298,6 +301,7 @@ const Base = {
     },
   },
 
+  iconButton: {},
   selectorAddButton: {
     background: grayLight,
     activeBackground: grayLightMid,
@@ -435,6 +439,33 @@ const Base = {
     },
   },
 
+  rowContent: {
+    icons: {
+      height: "19px",
+    },
+
+    margin: "0 6px",
+    fontSize: "12px",
+    fontStyle: "normal",
+    fontWeight: "600",
+    height: "56px",
+    maxWidth: " 100%",
+
+    sideInfo: {
+      minWidth: "160px",
+      margin: "0 6px",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+    },
+
+    mainWrapper: {
+      minWidth: "140px",
+      marginRight: "8px",
+      marginTop: "8px",
+      width: "95%",
+    },
+  },
+
   badge: {
     border: "1px solid transparent",
     padding: "1px",
@@ -466,7 +497,7 @@ const Base = {
     },
 
     header: {
-      borderBottom: `1px solid ${globalColors.pattensBlue}`,
+      borderBottom: `1px solid ${globalColors.lightGrayishBlue}`,
     },
 
     closeButton: {
@@ -500,8 +531,8 @@ const Base = {
   },
 
   input: {
-    color: "#333333",
-    disableColor: "#A3A9AE",
+    color: black,
+    disableColor: grayMid,
 
     backgroundColor: white,
     disableBackgroundColor: grayLight,
@@ -570,6 +601,44 @@ const Base = {
         big: "36px",
         huge: "37px",
         large: "43px",
+      },
+    },
+  },
+
+  passwordInput: {
+    disableColor: grayMid,
+    color: gray,
+
+    hoverColor: gray,
+
+    lineHeight: "32px",
+
+    text: {
+      lineHeight: "14px",
+      marginTop: "-2px",
+    },
+
+    link: {
+      marginTop: "-6px",
+
+      tablet: {
+        width: "100%",
+        marginLeft: "0px",
+        marginTop: "-1px",
+      },
+    },
+
+    progress: {
+      borderRadius: "2px",
+      marginTop: "-1px",
+    },
+
+    newPassword: {
+      margin: "0 16px",
+
+      svg: {
+        overflow: "hidden",
+        marginBottom: "4px",
       },
     },
   },
@@ -736,6 +805,51 @@ const Base = {
         overflow: "hidden",
         color: white,
         disableColor: grayMid,
+      },
+    },
+  },
+
+  fieldContainer: {
+    horizontal: {
+      margin: "0 0 16px 0",
+
+      label: {
+        lineHeight: "32px",
+        margin: "0",
+      },
+
+      body: {
+        flexGrow: "1",
+      },
+
+      iconButton: {
+        marginTop: "10px",
+        marginLeft: "8px",
+      },
+    },
+
+    vertical: {
+      margin: "0 0 16px 0",
+
+      label: {
+        lineHeight: "13px",
+        height: "15px",
+      },
+
+      labelIcon: {
+        width: "100%",
+        margin: "0 0 8px 0",
+      },
+
+      body: {
+        width: "100%",
+      },
+
+      iconButton: {
+        margin: "0",
+        padding: "0px 8px",
+        width: "13px",
+        height: "13px",
       },
     },
   },
@@ -973,6 +1087,55 @@ const Base = {
     unsetBackgroundColor: "unset",
   },
 
+  treeNode: {
+    dragging: {
+      draggable: {
+        background: lightCumulus,
+        hoverBackgroundColor: lightMediumGoldenrod,
+        borderRadius: "3px",
+      },
+
+      title: {
+        width: "85%",
+      },
+    },
+
+    draggable: {
+      color: cyanBlueDarkShade,
+      dragOverBackgroundColor: strongBlue,
+      border: `1px ${strongBlue} solid`,
+      dragOverColor: white,
+
+      gapTop: {
+        borderTop: `2px blue solid`,
+      },
+
+      gapBottom: {
+        borderBottom: `2px blue solid`,
+      },
+    },
+
+    contentWrapper: {
+      color: darkRed,
+    },
+
+    title: {
+      color: cyanBlueDarkShade,
+    },
+
+    selected: {
+      background: lightGrayishStrongBlue,
+      hoverBackgroundColor: lightGrayishStrongBlue,
+      borderRadius: "3px",
+    },
+
+    checkbox: {
+      border: `2px solid ${white}`,
+      borderTop: 0,
+      borderLeft: 0,
+    },
+  },
+
   progressBar: {
     height: "22px",
     backgroundColor: grayLight,
@@ -1017,6 +1180,7 @@ const Base = {
     borderRadius: "6px",
     boxShadow: "0px 5px 20px rgba(0, 0, 0, 0.13)",
   },
+
   dropDownItem: {
     color: black,
     disableColor: gray,
@@ -1289,7 +1453,7 @@ const Base = {
       margin: "0",
       lineHeight: "56px",
       fontWeight: "700",
-      borderBottom: `1px solid ${globalColors.pattensBlue}`,
+      borderBottom: `1px solid ${globalColors.lightGrayishBlue}`,
     },
 
     bodyContent: {
@@ -1319,6 +1483,7 @@ const Base = {
       bigMarginTop: "7.5px",
       lineHeight: "33px",
     },
+
     weekdays: {
       color: black,
       disabledColor: gray,
@@ -1326,6 +1491,7 @@ const Base = {
       bigWidth: "295px",
       marginBottom: "-5px",
     },
+
     month: {
       baseWidth: "267px",
       bigWidth: "295px",
@@ -1335,12 +1501,14 @@ const Base = {
       neighboringHoverColor: black,
       neighboringColor: grayLightMid,
     },
+
     selectedDay: {
       backgroundColor: orangeMain,
       borderRadius: "16px",
       cursor: "pointer",
       color: white,
     },
+    
     comboBox: {
       color: black,
       minWidth: "80px",
@@ -1370,7 +1538,7 @@ const Base = {
     contentLineHeight: "56px",
     contentFontWeight: "700",
 
-    borderBottom: `1px solid ${globalColors.pattensBlue}`,
+    borderBottom: `1px solid ${globalColors.lightGrayishBlue}`,
   },
 
   aside: {

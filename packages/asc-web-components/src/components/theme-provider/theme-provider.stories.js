@@ -4,7 +4,7 @@ import ThemeProvider from ".";
 import withReadme from "storybook-readme/with-readme";
 import Readme from "./README.md";
 import { BooleanValue } from "react-values";
-import Box from "../Box/";
+import Box from "../Box";
 import Text from "../Text";
 import JSONPretty from "react-json-pretty";
 import { Base, Dark } from "../../themes";
