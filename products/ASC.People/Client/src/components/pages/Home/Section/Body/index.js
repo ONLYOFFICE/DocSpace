@@ -2,17 +2,7 @@ import React from "react";
 import { withRouter } from "react-router";
 import { connect } from "react-redux";
 import { withTranslation, Trans } from "react-i18next";
-import {
-  Row,
-  Avatar,
-  EmptyScreenContainer,
-  IconButton,
-  Link,
-  RowContainer,
-  utils,
-  Box,
-  Grid,
-} from "asc-web-components";
+import { Row, Avatar, RowContainer, utils } from "asc-web-components";
 import UserContent from "./userContent";
 import {
   selectUser,
@@ -23,7 +13,10 @@ import {
   fetchPeople,
   selectGroup,
 } from "../../../../../store/people/actions";
-import { getPeopleList } from "../../../../../store/people/selectors";
+import {
+  getPeopleList,
+  getIsEmptyGroup,
+} from "../../../../../store/people/selectors";
 
 import equal from "fast-deep-equal/react";
 import { store, api, constants, toastr, Loaders } from "asc-web-common";
@@ -34,6 +27,7 @@ import {
   DeleteProfileEverDialog,
 } from "../../../../dialogs";
 import { createI18N } from "../../../../../helpers/i18n";
+import EmptyScreen from "./sub-components/EmptyScreen";
 
 const i18n = createI18N({
   page: "Home",
@@ -69,24 +63,8 @@ class SectionBodyContent extends React.PureComponent {
   }
 
   componentDidMount() {
-    const {
-      isLoaded,
-      fetchPeople,
-      filter,
-      setIsLoadedSection,
-      peopleList,
-    } = this.props;
+    const { isLoaded } = this.props;
     if (!isLoaded) return;
-    if (peopleList.length <= 0) {
-      fetchPeople(filter)
-        .then(() =>
-          isLoaded ? setIsLoadedSection(true) : setIsLoadedSection()
-        )
-        .catch((error) => {
-          isLoaded ? setIsLoadedSection(true) : setIsLoadedSection();
-          toastr.error(error);
-        });
-    }
   }
 
   findUserById = (id) => this.props.peopleList.find((man) => man.id === id);
@@ -202,8 +180,6 @@ class SectionBodyContent extends React.PureComponent {
 
   toggleDeleteProfileEverDialog = (e) => {
     this.onCloseDialog();
-
-    this.props.onCancelScrollUp(true, true);
     const user = this.findUserById(e.currentTarget.dataset.id);
 
     if (!user) return;
@@ -353,7 +329,7 @@ class SectionBodyContent extends React.PureComponent {
   onResetFilter = () => {
     const { onLoading, resetFilter } = this.props;
     onLoading(true);
-    resetFilter().finally(() => onLoading(false));
+    resetFilter(true).finally(() => onLoading(false));
   };
 
   needForUpdate = (currentProps, nextProps) => {
@@ -391,6 +367,7 @@ class SectionBodyContent extends React.PureComponent {
       isLoading,
       isAdmin,
       currentUserId,
+      isEmptyGroup,
     } = this.props;
 
     const { dialogsVisible, user } = this.state;
@@ -500,40 +477,10 @@ class SectionBodyContent extends React.PureComponent {
         )}
       </>
     ) : (
-      <EmptyScreenContainer
-        imageSrc="images/empty_screen_filter.png"
-        imageAlt="Empty Screen Filter image"
-        headerText={t("NotFoundTitle")}
-        descriptionText={t("NotFoundDescription")}
-        buttons={
-          <Grid
-            marginProp="13px 0"
-            gridColumnGap="8px"
-            columnsProp={["12px 1fr"]}
-          >
-            <Box>
-              <IconButton
-                className="empty-folder_container-icon"
-                size="12"
-                onClick={this.onResetFilter}
-                iconName="CrossIcon"
-                isFill
-                color="#657077"
-              />
-            </Box>
-            <Box marginProp="-4px 0 0 0">
-              <Link
-                type="action"
-                isHovered={true}
-                fontWeight="600"
-                color="#555f65"
-                onClick={this.onResetFilter}
-              >
-                {t("ClearButton")}
-              </Link>
-            </Box>
-          </Grid>
-        }
+      <EmptyScreen
+        t={t}
+        onResetFilter={this.onResetFilter}
+        isEmptyGroup={isEmptyGroup}
       />
     );
   }
@@ -551,6 +498,7 @@ const mapStateToProps = (state) => {
     settings: getSettings(state),
     isAdmin: isAdmin(state),
     currentUserId: getCurrentUserId(state),
+    isEmptyGroup: getIsEmptyGroup(state),
   };
 };
 

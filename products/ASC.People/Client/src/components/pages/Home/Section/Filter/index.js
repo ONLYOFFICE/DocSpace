@@ -71,7 +71,7 @@ class SectionFilterContent extends React.Component {
     const activationStatus = getActivationStatus(data.filterValues);
     const role = getRole(data.filterValues);
     const group = getGroup(data.filterValues);
-    const search = data.inputValue || null;
+    const search = data.inputValue || "";
     const sortBy = data.sortId;
     const sortOrder =
       data.sortDirection === "desc" ? "descending" : "ascending";
