@@ -139,7 +139,6 @@ ${package_manager} -y install epel-release \
 			dotnet-sdk-3.1 \
 			elasticsearch-7.8.1 --enablerepo=elasticsearch \
 			mysql-server \
-			jq \
 			nginx \
 			supervisor \
 			postgresql \
@@ -152,5 +151,5 @@ postgresql-setup initdb	|| true
 semanage permissive -a httpd_t
 
 systemctl daemon-reload
-package_services="rabbitmq-server postgresql redis supervisord nginx"
+package_services="rabbitmq-server postgresql redis supervisord nginx kafka"
 systemctl enable mysqld && systemctl start mysqld

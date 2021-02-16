@@ -1,4 +1,5 @@
 %files
+%config %attr(644, root, root) %{_bindir}/*
 
 %files api
 %defattr(-, onlyoffice, onlyoffice, -)
@@ -30,7 +31,6 @@
 %defattr(-, onlyoffice, onlyoffice, -)
 %config %{_sysconfdir}/onlyoffice/appserver/
 %{_var}/log/onlyoffice/appserver/
-%config %attr(644, root, root) %{_bindir}/*
 %dir %{_sysconfdir}/onlyoffice/
 %dir %{_var}/log/onlyoffice/
 

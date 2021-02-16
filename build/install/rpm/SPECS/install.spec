@@ -26,8 +26,8 @@ mkdir -p "%{buildroot}/services/thumb/client/"
 mkdir -p "%{buildroot}/services/thumb/service/"
 mkdir -p "%{buildroot}/services/urlshortener/client/"
 mkdir -p "%{buildroot}/services/urlshortener/service/"
-mkdir -p %{buildroot}%{_var}/www/products/ASC.Files/client/products/files
-mkdir -p %{buildroot}%{_var}/www/products/ASC.People/client/products/people
+mkdir -p "%{buildroot}%{_var}/www/products/ASC.Files/client/products/files"
+mkdir -p "%{buildroot}%{_var}/www/products/ASC.People/client/products/people"
 cp -rf %{_builddir}%{_var}/www/products/ASC.Files/server/* "%{buildroot}%{_var}/www/products/ASC.Files/server/"
 cp -rf %{_builddir}%{_var}/www/products/ASC.Files/service/* "%{buildroot}%{_var}/www/products/ASC.Files/service/"
 cp -rf %{_builddir}%{_var}/www/products/ASC.People/server/* "%{buildroot}%{_var}/www/products/ASC.People/server/"

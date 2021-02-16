@@ -29,6 +29,10 @@ ELK_SHEME="http"
 ELK_HOST="localhost"
 ELK_PORT="9200"
 
+JSON="json -I -f"
+JSON_USERCONF="$JSON $USER_CONF -e"
+JSON_DSCONF="$JSON $DS_CONF -e"
+
 [ $(id -u) -ne 0 ] && { echo "Root privileges required"; exit 1; }
 
 while [ "$1" != "" ]; do
@@ -140,19 +144,11 @@ while [ "$1" != "" ]; do
 done
 
 install_json() {
-	echo -n "Install json package... "
 
-	local JSON_FILE="/usr/bin/json"
-	if [ ! -e $JSON_FILE ]; then
-		if rpm -q nodejs >/dev/null; then
-			curl -sL https://rpm.nodesource.com/setup_10.x | sudo -E bash - >/dev/null 2>&1
-			yum install -y nodejs >/dev/null 2>&1
-		fi
-		wget -O $JSON_FILE https://github.com/trentm/json/raw/master/lib/json.js >/dev/null 2>&1
-		chmod 755 $JSON_FILE >/dev/null 2>&1
+	if [ ! -e /usr/bin/json ]; then
+		echo -n "Install json package... "
+		npm i json -g >/dev/null 2>&1
 		echo "OK"
-	else
-		echo "Already installed"
 	fi
 
 	#Creating a user-defined .json
@@ -160,9 +156,8 @@ install_json() {
 		echo "{}" >> $USER_CONF
 		chown onlyoffice:onlyoffice $USER_CONF
 	
-	json -I -f $USER_CONF -e "this.core={'base-domain': \"$APP_HOST\", 'machinekey': '1VVAepxpW8f7', \
-	'products': { 'folder': '../../products', 'subfolder': 'server' }, 'notify': { 'postman': 'services' }}" >/dev/null 2>&1
-	
+		$JSON_USERCONF "this.core={'base-domain': \"$APP_HOST\", 'machinekey': '1VVAepxpW8f7'}" >/dev/null 2>&1
+		$JSON $APP_CONF -e "this.core.products.subfolder='server'" >/dev/null 2>&1 #Fix error
 	fi
 }
 
@@ -174,6 +169,7 @@ restart_services() {
 	appserver-thumbnails appserver-urlshortener elasticsearch kafka zookeeper
 	do
 		sed -i "s/ENVIRONMENT=.*/ENVIRONMENT=$ENVIRONMENT/" $SYSTEMD_DIR/$SVC.service >/dev/null 2>&1
+		
 		if systemctl is-active $SVC | grep -q "active"; then
 			systemctl restart $SVC.service >/dev/null 2>&1
 		else
@@ -231,9 +227,8 @@ establish_mysql_conn(){
 	fi
 
     #Save db settings in .json
-	json -I -f $USER_CONF -e "this.ConnectionStrings={'default': {'connectionString': \"\
-	Server=$DB_HOST;Port=$DB_PORT;Database=$DB_NAME;User ID=$DB_USER;Password=$DB_PWD;\
-	Pooling=true;Character Set=utf8;AutoEnlist=false;SSL Mode=none\"}}" >/dev/null 2>&1
+	$JSON_USERCONF "this.ConnectionStrings={'default': {'connectionString': \
+	\"Server=$DB_HOST;Port=$DB_PORT;Database=$DB_NAME;User ID=$DB_USER;Password=$DB_PWD;Pooling=true;Character Set=utf8;AutoEnlist=false;SSL Mode=none\"}}" >/dev/null 2>&1
 
 	echo "OK"
 }
@@ -371,7 +366,7 @@ setup_nginx(){
 		case $(getenforce) in
 			enforcing|permissive)
 				PORTS+=('8081') #Storybook
-				PORTS+=('8083') #Docs
+				PORTS+=("$DOCUMENT_SERVER_PORT")
 				PORTS+=('5001') #ASC.Web.Studio
 				PORTS+=('5002') #ASC.People
 				PORTS+=('5008') #ASC.Files
@@ -403,15 +398,15 @@ setup_docs() {
 	sed "0,/proxy_pass .*;/{s/proxy_pass .*;/proxy_pass http:\/\/${DOCUMENT_SERVER_HOST}:${DOCUMENT_SERVER_PORT};/}" -i $NGINX_CONF/onlyoffice.conf 	
 
 	#Enable JWT validation for Docs
-	json -I -f $DS_CONF -e "this.services.CoAuthoring.token.enable.browser='true'" >/dev/null 2>&1 
-	json -I -f $DS_CONF -e "this.services.CoAuthoring.token.enable.request.inbox='true'" >/dev/null 2>&1
-	json -I -f $DS_CONF -e "this.services.CoAuthoring.token.enable.request.outbox='true'" >/dev/null 2>&1
+	$JSON_DSCONF "this.services.CoAuthoring.token.enable.browser='true'" >/dev/null 2>&1 
+	$JSON_DSCONF "this.services.CoAuthoring.token.enable.request.inbox='true'" >/dev/null 2>&1
+	$JSON_DSCONF "this.services.CoAuthoring.token.enable.request.outbox='true'" >/dev/null 2>&1
 	
 	local DOCUMENT_SERVER_JWT_SECRET=$(cat ${DS_CONF} | json services.CoAuthoring.secret.inbox.string)
 	local DOCUMENT_SERVER_JWT_HEADER=$(cat ${DS_CONF} | json services.CoAuthoring.token.inbox.header)
 
 	#Save Docs address and JWT in .json
-	json -I -f $USER_CONF -e "this.files={'docservice': {\
+	$JSON_USERCONF "this.files={'docservice': {\
 	'secret': {'value': \"$DOCUMENT_SERVER_JWT_SECRET\",'header': \"$DOCUMENT_SERVER_JWT_HEADER\"}, \
 	'url': {'public': '/ds-vpath/','internal': \"http://${DOCUMENT_SERVER_HOST}:${DOCUMENT_SERVER_PORT}\",'portal': \"http://$APP_HOST:$APP_PORT\"}}}" >/dev/null 2>&1
 	
@@ -482,7 +477,7 @@ setup_elasticsearch() {
 	echo -n "Configuring elasticsearch... "
 
 	#Save elasticsearch parameters in .json
-	json -I -f $USER_CONF -e "this.elastic={'Scheme': \"${ELK_SHEME}\",'Host': \"${ELK_HOST}\",'Port': \"${ELK_PORT}\" }" >/dev/null 2>&1
+	$JSON_USERCONF "this.elastic={'Scheme': \"${ELK_SHEME}\",'Host': \"${ELK_HOST}\",'Port': \"${ELK_PORT}\" }" >/dev/null 2>&1
 
 	change_elasticsearch_config
 	
@@ -498,7 +493,7 @@ setup_kafka() {
 		echo -n "Configuring kafka... "
 
 		#Change kafka config
-		local KAFKA_CONF="$(cat /etc/systemd/system/$KAFKA_SERVICE | grep ExecStop= | cut -c 10- | rev | cut -c 26- | rev)/config"
+		local KAFKA_CONF="$(cat $SYSTEMD_DIR/$KAFKA_SERVICE | grep ExecStop= | cut -c 10- | rev | cut -c 26- | rev)/config"
 		sed -i "s/clientPort=.*/clientPort=${ZOOKEEPER_PORT}/g" $KAFKA_CONF/zookeeper.properties
 		sed -i "s/zookeeper.connect=.*/zookeeper.connect=${ZOOKEEPER_HOST}:${ZOOKEEPER_PORT}/g" $KAFKA_CONF/server.properties
 		sed -i "s/bootstrap.servers=.*/bootstrap.servers=${KAFKA_HOST}:${KAFKA_PORT}/g" $KAFKA_CONF/consumer.properties
@@ -508,7 +503,7 @@ setup_kafka() {
 		echo "log4j.logger.kafka.producer.async.DefaultEventHandler=INFO, kafkaAppender" >> $KAFKA_CONF/log4j.properties
 		
 		#Save kafka parameters in .json
-		json -I -f $USER_CONF -e "this.kafka={'BootstrapServers': \"${KAFKA_HOST}:${KAFKA_PORT}\"}" >/dev/null 2>&1
+		$JSON_USERCONF "this.kafka={'BootstrapServers': \"${KAFKA_HOST}:${KAFKA_PORT}\"}" >/dev/null 2>&1
 
 		echo "OK"
 	fi
