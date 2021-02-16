@@ -72,15 +72,15 @@ class PureHome extends React.Component {
     }
   }
 
-  onSectionHeaderContentCheck = (checked) => {
-    console.log("onSectionHeaderContentCheck");
-    this.props.setSelected(checked ? "all" : "none");
-  };
+  // onSectionHeaderContentCheck = (checked) => {
+  //   console.log("onSectionHeaderContentCheck");
+  //   this.props.setSelected(checked ? "all" : "none");
+  // };
 
-  onSectionHeaderContentSelect = (selected) => {
-    console.log("onSectionHeaderContentSelect");
-    this.props.setSelected(selected);
-  };
+  // onSectionHeaderContentSelect = (selected) => {
+  //   console.log("onSectionHeaderContentSelect");
+  //   this.props.setSelected(selected);
+  // };
 
   // onClose = () => {
   //   const { clearSelection } = this.props;
@@ -127,8 +127,8 @@ class PureHome extends React.Component {
             // isHeaderVisible={isHeaderVisible}
             // isHeaderIndeterminate={isHeaderIndeterminate}
             // isHeaderChecked={isHeaderChecked}
-            onCheck={this.onSectionHeaderContentCheck}
-            onSelect={this.onSectionHeaderContentSelect}
+            // onCheck={this.onSectionHeaderContentCheck}
+            // onSelect={this.onSectionHeaderContentSelect}
             // onClose={this.onClose}
             onLoading={this.onLoading}
           />
