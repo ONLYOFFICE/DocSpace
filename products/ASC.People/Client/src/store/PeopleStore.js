@@ -1,4 +1,6 @@
-import { action, makeObservable, observable } from "mobx";
+import { action, computed, makeObservable, observable } from "mobx";
+import { store } from "asc-web-common";
+
 import GroupsStore from "./GroupsStore";
 import UsersStore from "./UsersStore";
 import { getFilterByLocation } from "../helpers/converters";
@@ -11,6 +13,8 @@ import SelectionStore from "./SelectionStore";
 import HeaderMenuStore from "./HeaderMenuStore";
 import AvatarEditorStore from "./AvatarEditorStore";
 import InviteLinksStore from "./InviteLinksStore";
+
+const { authStore } = store;
 
 class PeopleStore {
   groupsStore = null;
@@ -51,7 +55,15 @@ class PeopleStore {
       setAvatarEditorStore: action,
       setInviteLinksStore: action,
       init: action,
+      isPeoplesAdmin: computed,
     });
+  }
+
+  get isPeoplesAdmin() {
+    return (
+      authStore.userStore.user &&
+      authStore.userStore.user.listAdminModules.includes("people")
+    );
   }
 
   init = async () => {
