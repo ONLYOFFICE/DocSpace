@@ -275,10 +275,6 @@ export default inject(({ auth, peopleStore }) => ({
   homepage: auth.settingsStore.homepage || config.homepage,
   loadBaseInfo: () => {
     auth.init();
-    auth.settingsStore.setModuleInfo(
-      config.homepage,
-      "f4d98afd-d336-4332-8778-3c6945c81ea0"
-    );
     peopleStore.init();
   },
   isLoaded: auth.isLoaded,
