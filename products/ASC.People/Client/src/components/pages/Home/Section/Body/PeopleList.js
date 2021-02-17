@@ -77,7 +77,6 @@ const PeopleList = ({
   const isItemLoaded = (index) => !!peopleList[index];
 
   const loadMoreItems = () => {
-    console.log("filter", filter);
     loadMoreUsers(filter);
   };
 
