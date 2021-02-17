@@ -5,27 +5,27 @@ import { isMobileOnly } from "react-device-detect";
 const { isAdmin, isMe, getCurrentUser } = store.auth.selectors;
 const { EmployeeActivationStatus, EmployeeStatus } = constants;
 
-export function getSelectedUser(selection, userId) {
-  return find(selection, function (obj) {
-    return obj.id === userId;
-  });
-}
+// export function getSelectedUser(selection, userId) {
+//   return find(selection, function (obj) {
+//     return obj.id === userId;
+//   });
+// }
 
-export function getUserByUserName(users, userName) {
-  return find(users, function (obj) {
-    return obj.userName === userName;
-  });
-}
+// export function getUserByUserName(users, userName) {
+//   return find(users, function (obj) {
+//     return obj.userName === userName;
+//   });
+// }
 
-export function isUserSelected(selection, userId) {
-  return getSelectedUser(selection, userId) !== undefined;
-}
+// export function isUserSelected(selection, userId) {
+//   return getSelectedUser(selection, userId) !== undefined;
+// }
 
-export function skipUser(selection, userId) {
-  return filter(selection, function (obj) {
-    return obj.id !== userId;
-  });
-}
+// export function skipUser(selection, userId) {
+//   return filter(selection, function (obj) {
+//     return obj.id !== userId;
+//   });
+// }
 
 export const getUserStatus = (user) => {
   if (
@@ -109,36 +109,36 @@ export const getUserContacts = (contacts) => {
   return info;
 };
 
-const getUserChecked = (user, selected) => {
-  const status = getUserStatus(user);
-  switch (selected) {
-    case "all":
-      return true;
-    case "active":
-      return status === "normal";
-    case "disabled":
-      return status === "disabled";
-    case "invited":
-      return status === "pending";
-    default:
-      return false;
-  }
-};
+// const getUserChecked = (user, selected) => {
+//   const status = getUserStatus(user);
+//   switch (selected) {
+//     case "all":
+//       return true;
+//     case "active":
+//       return status === "normal";
+//     case "disabled":
+//       return status === "disabled";
+//     case "invited":
+//       return status === "pending";
+//     default:
+//       return false;
+//   }
+// };
 
-export function getUsersBySelected(users, selected) {
-  let newSelection = [];
-  users.forEach((user) => {
-    const checked = getUserChecked(user, selected);
+// export function getUsersBySelected(users, selected) {
+//   let newSelection = [];
+//   users.forEach((user) => {
+//     const checked = getUserChecked(user, selected);
 
-    if (checked) newSelection.push(user);
-  });
+//     if (checked) newSelection.push(user);
+//   });
 
-  return newSelection;
-}
+//   return newSelection;
+// }
 
-export function isUserDisabled(user) {
-  return getUserStatus(user) === "disabled";
-}
+// export function isUserDisabled(user) {
+//   return getUserStatus(user) === "disabled";
+// }
 
 export function getSelectedGroup(groups, selectedGroupId) {
   return find(groups, (group) => group.id === selectedGroupId);
@@ -191,250 +191,250 @@ export function filterGroupSelectorOptions(options, template) {
   });
 }
 
-export const getIsLoading = (state) => {
-  return state.people.isLoading;
-};
+// export const getIsLoading = (state) => {
+//   return state.people.isLoading;
+// };
 
-export const getUsers = (state) => state.people.users || [];
+// export const getUsers = (state) => state.people.users || [];
 
-export const getSelection = (state) => state.people.selection;
+// export const getSelection = (state) => state.people.selection;
 
-const getUserContextOptions = (
-  isMySelf,
-  isOwner,
-  statusType,
-  status,
-  hasMobileNumber
-) => {
-  const options = [];
+// const getUserContextOptions = (
+//   isMySelf,
+//   isOwner,
+//   statusType,
+//   status,
+//   hasMobileNumber
+// ) => {
+//   const options = [];
 
-  switch (statusType) {
-    case "normal":
-    case "unknown":
-      options.push("send-email");
+//   switch (statusType) {
+//     case "normal":
+//     case "unknown":
+//       options.push("send-email");
 
-      if (hasMobileNumber && isMobileOnly) {
-        options.push("send-message");
-      }
+//       if (hasMobileNumber && isMobileOnly) {
+//         options.push("send-message");
+//       }
 
-      options.push("separator");
-      options.push("edit");
-      options.push("change-password");
-      options.push("change-email");
+//       options.push("separator");
+//       options.push("edit");
+//       options.push("change-password");
+//       options.push("change-email");
 
-      if (isMySelf) {
-        if (!isOwner) {
-          options.push("delete-self-profile");
-        }
-      } else {
-        options.push("disable");
-      }
+//       if (isMySelf) {
+//         if (!isOwner) {
+//           options.push("delete-self-profile");
+//         }
+//       } else {
+//         options.push("disable");
+//       }
 
-      break;
-    case "disabled":
-      options.push("enable");
-      //TODO: Need implementation
-      /*options.push("reassign-data");
-      options.push("delete-personal-data");*/
-      options.push("delete-profile");
-      break;
-    case "pending":
-      options.push("edit");
-      options.push("invite-again");
+//       break;
+//     case "disabled":
+//       options.push("enable");
+//       //TODO: Need implementation
+//       /*options.push("reassign-data");
+//       options.push("delete-personal-data");*/
+//       options.push("delete-profile");
+//       break;
+//     case "pending":
+//       options.push("edit");
+//       options.push("invite-again");
 
-      if (isMySelf) {
-        options.push("delete-profile");
-      } else {
-        if (status === EmployeeStatus.Active) {
-          options.push("disable");
-        } else {
-          options.push("enable");
-        }
-      }
-      break;
-    default:
-      break;
-  }
+//       if (isMySelf) {
+//         options.push("delete-profile");
+//       } else {
+//         if (status === EmployeeStatus.Active) {
+//           options.push("disable");
+//         } else {
+//           options.push("enable");
+//         }
+//       }
+//       break;
+//     default:
+//       break;
+//   }
 
-  return options;
-};
+//   return options;
+// };
 
-export const getPeopleList = createSelector(
-  [getUsers, getSelection, isAdmin, getCurrentUser],
-  (users, selection, isViewerAdmin, viewer) => {
-    return users.map((user) => {
-      const {
-        id,
-        displayName,
-        avatar,
-        email,
-        isOwner,
-        isAdmin: isAdministrator,
-        isVisitor,
-        mobilePhone,
-        userName,
-        activationStatus,
-        status,
-        groups,
-      } = user;
-      const statusType = getUserStatus(user);
-      const role = getUserRole(user);
-      const isMySelf = isMe(user, viewer.userName);
+// export const getPeopleList = createSelector(
+//   [getUsers, getSelection, isAdmin, getCurrentUser],
+//   (users, selection, isViewerAdmin, viewer) => {
+//     return users.map((user) => {
+//       const {
+//         id,
+//         displayName,
+//         avatar,
+//         email,
+//         isOwner,
+//         isAdmin: isAdministrator,
+//         isVisitor,
+//         mobilePhone,
+//         userName,
+//         activationStatus,
+//         status,
+//         groups,
+//       } = user;
+//       const statusType = getUserStatus(user);
+//       const role = getUserRole(user);
+//       const isMySelf = isMe(user, viewer.userName);
 
-      const options = getUserContextOptions(
-        isMySelf,
-        isOwner,
-        statusType,
-        status,
-        !!mobilePhone
-      );
+//       const options = getUserContextOptions(
+//         isMySelf,
+//         isOwner,
+//         statusType,
+//         status,
+//         !!mobilePhone
+//       );
 
-      return {
-        id,
-        checked: isViewerAdmin ? isUserSelected(selection, user.id) : undefined,
-        status,
-        activationStatus,
-        statusType,
-        role,
-        isOwner,
-        isAdmin: isAdministrator,
-        isVisitor,
-        displayName,
-        avatar,
-        email,
-        userName,
-        mobilePhone,
-        options,
-        groups,
-      };
-    });
-  }
-);
+//       return {
+//         id,
+//         checked: isViewerAdmin ? isUserSelected(selection, user.id) : undefined,
+//         status,
+//         activationStatus,
+//         statusType,
+//         role,
+//         isOwner,
+//         isAdmin: isAdministrator,
+//         isVisitor,
+//         displayName,
+//         avatar,
+//         email,
+//         userName,
+//         mobilePhone,
+//         options,
+//         groups,
+//       };
+//     });
+//   }
+// );
 
-const getUsersIds = (users) => {
-  return users.map((user) => {
-    return user.id;
-  });
-};
+// const getUsersIds = (users) => {
+//   return users.map((user) => {
+//     return user.id;
+//   });
+// };
 
-const hasAny = (users) => users && users.length > 0;
+// const hasAny = (users) => users && users.length > 0;
 
-export const hasAnybodySelected = createSelector([getSelection], hasAny);
+// export const hasAnybodySelected = createSelector([getSelection], hasAny);
 
-export const getUsersToMakeEmployees = createSelector(
-  [getSelection, getCurrentUser],
-  (selection, user) => {
-    //console.log("getUsersToMakeEmployees", selection, user);
-    return selection.filter(
-      (x) =>
-        !x.isAdmin &&
-        !x.isOwner &&
-        x.isVisitor &&
-        x.status !== EmployeeStatus.Disabled &&
-        x.id !== user.id
-    );
-  }
-);
+// export const getUsersToMakeEmployees = createSelector(
+//   [getSelection, getCurrentUser],
+//   (selection, user) => {
+//     //console.log("getUsersToMakeEmployees", selection, user);
+//     return selection.filter(
+//       (x) =>
+//         !x.isAdmin &&
+//         !x.isOwner &&
+//         x.isVisitor &&
+//         x.status !== EmployeeStatus.Disabled &&
+//         x.id !== user.id
+//     );
+//   }
+// );
 
-export const getUsersToMakeEmployeesIds = createSelector(
-  [getUsersToMakeEmployees],
-  getUsersIds
-);
+// export const getUsersToMakeEmployeesIds = createSelector(
+//   [getUsersToMakeEmployees],
+//   getUsersIds
+// );
 
-export const hasUsersToMakeEmployees = createSelector(
-  [getUsersToMakeEmployees],
-  hasAny
-);
+// export const hasUsersToMakeEmployees = createSelector(
+//   [getUsersToMakeEmployees],
+//   hasAny
+// );
 
-export const getUsersToMakeGuests = createSelector(
-  [getSelection, getCurrentUser],
-  (selection, user) => {
-    //console.log("getUsersToMakeGuests", selection, user);
-    return selection.filter(
-      (x) =>
-        !x.isAdmin &&
-        !x.isOwner &&
-        !x.isVisitor &&
-        x.status !== EmployeeStatus.Disabled &&
-        x.id !== user.id
-    );
-  }
-);
+// export const getUsersToMakeGuests = createSelector(
+//   [getSelection, getCurrentUser],
+//   (selection, user) => {
+//     //console.log("getUsersToMakeGuests", selection, user);
+//     return selection.filter(
+//       (x) =>
+//         !x.isAdmin &&
+//         !x.isOwner &&
+//         !x.isVisitor &&
+//         x.status !== EmployeeStatus.Disabled &&
+//         x.id !== user.id
+//     );
+//   }
+// );
 
-export const getUsersToMakeGuestsIds = createSelector(
-  [getUsersToMakeGuests],
-  getUsersIds
-);
+// export const getUsersToMakeGuestsIds = createSelector(
+//   [getUsersToMakeGuests],
+//   getUsersIds
+// );
 
-export const hasUsersToMakeGuests = createSelector(
-  [getUsersToMakeGuests],
-  hasAny
-);
+// export const hasUsersToMakeGuests = createSelector(
+//   [getUsersToMakeGuests],
+//   hasAny
+// );
 
-export const getUsersToActivate = createSelector(
-  [getSelection, getCurrentUser],
-  (selection, user) => {
-    //console.log("getUsersToActivate", selection, user);
-    return selection.filter(
-      (x) =>
-        !x.isOwner && x.status !== EmployeeStatus.Active && x.id !== user.id
-    );
-  }
-);
+// export const getUsersToActivate = createSelector(
+//   [getSelection, getCurrentUser],
+//   (selection, user) => {
+//console.log("getUsersToActivate", selection, user);
+//     return selection.filter(
+//       (x) =>
+//         !x.isOwner && x.status !== EmployeeStatus.Active && x.id !== user.id
+//     );
+//   }
+// );
 
-export const getUsersToActivateIds = createSelector(
-  [getUsersToActivate],
-  getUsersIds
-);
+// export const getUsersToActivateIds = createSelector(
+//   [getUsersToActivate],
+//   getUsersIds
+// );
 
-export const hasUsersToActivate = createSelector([getUsersToActivate], hasAny);
+// export const hasUsersToActivate = createSelector([getUsersToActivate], hasAny);
 
-export const getUsersToDisable = createSelector(
-  [getSelection, getCurrentUser],
-  (selection, user) => {
-    //console.log("getUsersToDisable", selection, user);
-    return selection.filter(
-      (x) =>
-        !x.isOwner && x.status !== EmployeeStatus.Disabled && x.id !== user.id
-    );
-  }
-);
+// export const getUsersToDisable = createSelector(
+//   [getSelection, getCurrentUser],
+//   (selection, user) => {
+//console.log("getUsersToDisable", selection, user);
+//     return selection.filter(
+//       (x) =>
+//         !x.isOwner && x.status !== EmployeeStatus.Disabled && x.id !== user.id
+//     );
+//   }
+// );
 
-export const getUsersToDisableIds = createSelector(
-  [getUsersToDisable],
-  getUsersIds
-);
+// export const getUsersToDisableIds = createSelector(
+//   [getUsersToDisable],
+//   getUsersIds
+// );
 
-export const hasUsersToDisable = createSelector([getUsersToDisable], hasAny);
+// export const hasUsersToDisable = createSelector([getUsersToDisable], hasAny);
 
-export const getUsersToInvite = createSelector([getSelection], (selection) => {
-  //console.log("getUsersToInvite", selection);
-  return selection.filter(
-    (x) =>
-      x.activationStatus === EmployeeActivationStatus.Pending &&
-      x.status === EmployeeStatus.Active
-  );
-});
+// export const getUsersToInvite = createSelector([getSelection], (selection) => {
+//console.log("getUsersToInvite", selection);
+//   return selection.filter(
+//     (x) =>
+//       x.activationStatus === EmployeeActivationStatus.Pending &&
+//       x.status === EmployeeStatus.Active
+//   );
+// });
 
-export const getUsersToInviteIds = createSelector(
-  [getUsersToInvite],
-  getUsersIds
-);
+// export const getUsersToInviteIds = createSelector(
+//   [getUsersToInvite],
+//   getUsersIds
+// );
 
-export const hasUsersToInvite = createSelector([getUsersToInvite], hasAny);
+// export const hasUsersToInvite = createSelector([getUsersToInvite], hasAny);
 
-export const getUsersToRemove = createSelector([getSelection], (selection) => {
-  //console.log("getUsersToRemove", selection);
-  return selection.filter((x) => x.status === EmployeeStatus.Disabled);
-});
+// export const getUsersToRemove = createSelector([getSelection], (selection) => {
+//console.log("getUsersToRemove", selection);
+//   return selection.filter((x) => x.status === EmployeeStatus.Disabled);
+// });
 
-export const getUsersToRemoveIds = createSelector(
-  [getUsersToRemove],
-  getUsersIds
-);
+// export const getUsersToRemoveIds = createSelector(
+//   [getUsersToRemove],
+//   getUsersIds
+// );
 
-export const hasUsersToRemove = createSelector([getUsersToRemove], hasAny);
+// export const hasUsersToRemove = createSelector([getUsersToRemove], hasAny);
 
-export const getFilter = (state) => state.people.filter;
+// export const getFilter = (state) => state.people.filter;
 
-export const getGroups = (state) => state.people.groups;
+// export const getGroups = (state) => state.people.groups;
