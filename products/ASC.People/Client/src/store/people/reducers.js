@@ -13,6 +13,7 @@ import {
   SET_IS_EDITING_FORM,
   SET_IS_LOADING,
   TOGGLE_AVATAR_EDITOR,
+  ADD_USERS,
 } from "./actions";
 import { isUserSelected, skipUser, getUsersBySelected } from "./selectors";
 import { api } from "asc-web-common";
@@ -42,6 +43,10 @@ const peopleReducer = (state = initialState, action) => {
         groups: action.groups,
       });
     case SET_USERS:
+      return Object.assign({}, state, {
+        users: action.users,
+      });
+    case ADD_USERS:
       if (state.users.length + action.users.length <= state.filter.total)
         return Object.assign({}, state, {
           users: state.users.concat(action.users),

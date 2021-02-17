@@ -31,6 +31,8 @@ export const SET_IS_VISIBLE_DATA_LOSS_DIALOG =
 export const SET_IS_EDITING_FORM = "SET_IS_EDITING_FORM";
 export const SET_IS_LOADING = "SET_IS_LOADING";
 export const TOGGLE_AVATAR_EDITOR = "TOGGLE_AVATAR_EDITOR";
+export const ADD_USERS = "ADD_USERS";
+
 export function setIsLoading(isLoading) {
   return {
     type: SET_IS_LOADING,
@@ -48,6 +50,13 @@ export function setUser(user) {
 export function setUsers(users) {
   return {
     type: SET_USERS,
+    users,
+  };
+}
+
+export function addUsers(users) {
+  return {
+    type: ADD_USERS,
     users,
   };
 }
@@ -338,7 +347,7 @@ export function loadMoreUsers(filter) {
 
     api.people.getUserList(filterData).then((data) => {
       filterData.total = data.total;
-      dispatch(setUsers(data.items));
+      dispatch(addUsers(data.items));
     });
 
     dispatch(setFilter(filterData));
