@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 
-import Logo from "../../public/images/nav.logo.opened.react.svg";
+import Logo from "../../../../../public/images/nav.logo.opened.react.svg";
 
 const StyledHeader = styled("div")`
   width: 100%;
@@ -12,9 +12,8 @@ const StyledHeader = styled("div")`
     width: 146px;
     height: 24px;
     position: relative;
-    padding: 0 20px 0 6px;
+    padding: 16px 0 0 32px;
     display: block;
-    padding: 16px 0px 0 38px;
   }
 `;
 

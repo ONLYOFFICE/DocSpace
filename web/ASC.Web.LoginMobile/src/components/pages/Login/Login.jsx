@@ -7,25 +7,16 @@ import { withRouter } from "react-router";
 
 import { PageLayout, store, api, utils } from "ASC.Web.Common";
 import { checkPwd } from "ASC.Web.Common/desktop";
-import {
-  Box,
-  Button,
-  Text,
-  TextInput,
-  Link,
-  toastr,
-  Checkbox,
-  HelpButton,
-  PasswordInput,
-  FieldContainer,
-  tre,
-} from "ASC.Web.Components";
+import { Text, toastr } from "ASC.Web.Components";
 
-import i18n from "./i18n";
+import i18n from "../../../i18n";
 import ForgotPasswordModalDialog from "./sub-components/forgot-password-modal-dialog";
 import Register from "./sub-components/register-container";
+import RegisterButton from "./sub-components/register-button";
+import Header from "./sub-components/header-login-mobile";
+import LoginForm from "./sub-components/login-form";
 
-import { fakeHashSettings } from "./api/fakeApi";
+import * as fakeApi from "../../../api/fakeApi";
 
 const { login, setIsLoaded, reloadPortalSettings } = store.auth.actions;
 const { getLanguage, isDesktopClient } = store.auth.selectors;
@@ -33,83 +24,15 @@ const { sendInstructionsToChangePassword } = api.people;
 const { createPasswordHash, tryRedirectTo } = utils;
 
 const LoginContainer = styled.div`
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-gap: 30px;
   align-items: center;
-  margin: 120px auto 0 auto;
-  max-width: 960px;
-
-  @media (max-width: 768px) {
-    padding: 0 16px;
-    max-width: 475px;
-  }
-  @media (max-width: 375px) {
-    margin: 72px auto 0 auto;
-    max-width: 311px;
-  }
+  margin: 34px 32px 0 32px;
 
   .greeting-title {
     width: 100%;
-
-    @media (max-width: 768px) {
-      text-align: left;
-    }
-    @media (max-width: 375px) {
-      font-size: 23px;
-    }
-  }
-
-  .auth-form-container {
-    margin: 32px 213px 0 213px;
-    width: 311px;
-
-    @media (max-width: 768px) {
-      margin: 32px 0 0 0;
-      width: 100%;
-    }
-    @media (max-width: 375px) {
-      margin: 32px 0 0 0;
-      width: 100%;
-    }
-
-    .login-forgot-wrapper {
-      height: 36px;
-      padding: 14px 0;
-
-      .login-checkbox-wrapper {
-        display: flex;
-
-        .login-checkbox {
-          float: left;
-          span {
-            font-size: 12px;
-          }
-        }
-      }
-
-      .login-link {
-        line-height: 18px;
-        margin-left: auto;
-      }
-    }
-
-    .login-button {
-      margin-bottom: 16px;
-    }
-
-    .login-button-dialog {
-      margin-right: 8px;
-    }
-
-    .login-bottom-border {
-      width: 100%;
-      height: 1px;
-      background: #eceef1;
-    }
-
-    .login-bottom-text {
-      margin: 0 8px;
-    }
+    text-align: left;
   }
 `;
 
@@ -163,7 +86,7 @@ class Form extends Component {
 
   onChangeCheckbox = () => this.setState({ isChecked: !this.state.isChecked });
 
-  onClick = () => {
+  onClickForgot = () => {
     this.setState({
       openDialog: true,
       isDisabled: true,
@@ -233,11 +156,12 @@ class Form extends Component {
     if (hasError) return false;
 
     this.setState({ isLoading: true });
-    const hash = createPasswordHash(pass, fakeHashSettings);
+    const hash = createPasswordHash(pass, fakeApi.fakeHashSettings);
 
     isDesktop && checkPwd();
 
-    login(userName, hash)
+    fakeApi
+      .login(userName, hash)
       .then(() => {
         if (!tryRedirectTo(defaultPage)) {
           setIsLoaded(true);
@@ -269,7 +193,7 @@ class Form extends Component {
     // confirmedEmail && this.setState({ identifier: confirmedEmail });
     window.addEventListener("keyup", this.onKeyPress);
 
-    if (!fakeHashSettings) {
+    if (!fakeApi.fakeHashSettings) {
       reloadPortalSettings();
     }
   }
@@ -278,15 +202,8 @@ class Form extends Component {
     window.removeEventListener("keyup", this.onKeyPress);
   }
 
-  settings = {
-    minLength: 6,
-    upperCase: false,
-    digits: false,
-    specSymbols: false,
-  };
-
   render() {
-    const { greetingTitle, match, t } = this.props;
+    const { match, t } = this.props;
 
     const {
       identifierValid,
@@ -307,9 +224,10 @@ class Form extends Component {
 
     return (
       <>
+        <Header />
         <LoginContainer>
           <Text
-            fontSize="32px"
+            fontSize="23px"
             fontWeight={600}
             textAlign="center"
             className="greeting-title"
@@ -317,128 +235,38 @@ class Form extends Component {
             {t("LoginTitle")}
           </Text>
 
-          <form className="auth-form-container">
-            <FieldContainer
-              isVertical={true}
-              labelVisible={false}
-              hasError={!identifierValid}
-              errorMessage={errorText ? errorText : t("RequiredFieldMessage")} //TODO: Add wrong login server error
-            >
-              <TextInput
-                id="login"
-                name="login"
-                hasError={!identifierValid}
-                value={identifier}
-                placeholder={t("RegistrationEmailWatermark")}
-                size="large"
-                scale={true}
-                isAutoFocussed={true}
-                tabIndex={1}
-                isDisabled={isLoading}
-                autoComplete="username"
-                onChange={this.onChangeLogin}
-                onKeyDown={this.onKeyPress}
-              />
-            </FieldContainer>
-            <FieldContainer
-              isVertical={true}
-              labelVisible={false}
-              hasError={!passwordValid}
-              errorMessage={errorText ? "" : t("RequiredFieldMessage")} //TODO: Add wrong password server error
-            >
-              <PasswordInput
-                simpleView={true}
-                passwordSettings={this.settings}
-                id="password"
-                inputName="password"
-                placeholder={t("Password")}
-                type="password"
-                hasError={!passwordValid}
-                inputValue={password}
-                size="large"
-                scale={true}
-                tabIndex={1}
-                isDisabled={isLoading}
-                autoComplete="current-password"
-                onChange={this.onChangePassword}
-                onKeyDown={this.onKeyPress}
-              />
-            </FieldContainer>
-            <div className="login-forgot-wrapper">
-              <div className="login-checkbox-wrapper">
-                <Checkbox
-                  className="login-checkbox"
-                  isChecked={isChecked}
-                  onChange={this.onChangeCheckbox}
-                  label={<Text fontSize="13px">{t("Remember")}</Text>}
-                />
-                {/*<HelpButton
-                  className="login-tooltip"
-                  helpButtonHeaderContent={t("CookieSettingsTitle")}
-                  tooltipContent={
-                    <Text fontSize="12px">{t("RememberHelper")}</Text>
-                  }
-                />*/}
-                <Link
-                  fontSize="13px"
-                  color="#316DAA"
-                  className="login-link"
-                  type="page"
-                  isHovered={false}
-                  onClick={this.onClick}
-                >
-                  {t("ForgotPassword")}
-                </Link>
-              </div>
-            </div>
+          <LoginForm
+            className="auth-form-container"
+            t={t}
+            identifierValid={identifierValid}
+            identifier={identifier}
+            passwordValid={passwordValid}
+            password={password}
+            isChecked={isChecked}
+            errorText={errorText}
+            socialButtons={socialButtons}
+            isLoading={isLoading}
+            onChangeLogin={this.onChangeLogin}
+            onKeyPress={this.onKeyPress}
+            onChangePassword={this.onChangePassword}
+            onChangeCheckbox={this.onChangeCheckbox}
+            onClickForgot={this.onClickForgot}
+            onSubmit={this.onSubmit}
+          />
 
-            {openDialog && (
-              <ForgotPasswordModalDialog
-                openDialog={openDialog}
-                isLoading={isLoading}
-                email={email}
-                emailError={emailError}
-                onChangeEmail={this.onChangeEmail}
-                onSendPasswordInstructions={this.onSendPasswordInstructions}
-                onDialogClose={this.onDialogClose}
-                t={t}
-              />
-            )}
-
-            <Button
-              id="button"
-              className="login-button"
-              primary
-              size="large"
-              scale={true}
-              label={isLoading ? t("LoadingProcessing") : t("LoginButton")}
-              tabIndex={1}
-              isDisabled={isLoading}
+          {openDialog && (
+            <ForgotPasswordModalDialog
+              openDialog={openDialog}
               isLoading={isLoading}
-              onClick={this.onSubmit}
+              email={email}
+              emailError={emailError}
+              onChangeEmail={this.onChangeEmail}
+              onSendPasswordInstructions={this.onSendPasswordInstructions}
+              onDialogClose={this.onDialogClose}
+              t={t}
             />
-
-            {/*confirmedEmail && (
-              <Text isBold={true} fontSize="16px">
-                {t("MessageEmailConfirmed")} {t("MessageAuthorize")}
-              </Text>
-            )*/}
-            {/* TODO: old error indication
-            
-            <Text fontSize="14px" color="#c30">
-              {errorText}
-            </Text> */}
-
-            {socialButtons.length ? (
-              <Box displayProp="flex" alignItems="center">
-                <div className="login-bottom-border"></div>
-                <Text className="login-bottom-text" color="#A3A9AE">
-                  {t("Or")}
-                </Text>
-                <div className="login-bottom-border"></div>
-              </Box>
-            ) : null}
-          </form>
+          )}
+          <RegisterButton title={t("LoginRegistrationBtn")} />
         </LoginContainer>
       </>
     );
@@ -451,7 +279,6 @@ Form.propTypes = {
   hashSettings: PropTypes.object,
   reloadPortalSettings: PropTypes.func,
   setIsLoaded: PropTypes.func, //.isRequired,
-  greetingTitle: PropTypes.string, //.isRequired,
   t: PropTypes.func, //.isRequired,
   i18n: PropTypes.object, //.isRequired,
   language: PropTypes.string, //.isRequired,
@@ -475,7 +302,7 @@ const FormWrapper = withTranslation()(Form);
 
 //const RegisterWrapper = withTranslation()(Register);
 
-const LoginForm = (props) => {
+const Login = (props) => {
   const { language, enabledJoin, isDesktop } = props;
 
   useEffect(() => {
@@ -490,7 +317,7 @@ const LoginForm = (props) => {
   );
 };
 
-LoginForm.propTypes = {
+Login.propTypes = {
   language: PropTypes.string, //.isRequired,
   isLoaded: PropTypes.bool,
   enabledJoin: PropTypes.bool,
@@ -513,14 +340,13 @@ function mapStateToProps(state) {
     isDesktop: isDesktopClient(state),
     organizationName,
     language: getLanguage(state),
-    greetingTitle: greetingSettings,
     hashSettings,
     enabledJoin,
     defaultPage,
   };
 }
 
-export default LoginForm; //connect(mapStateToProps, {
+export default Login; //connect(mapStateToProps, {
 //login,
 //setIsLoaded,
 //reloadPortalSettings,

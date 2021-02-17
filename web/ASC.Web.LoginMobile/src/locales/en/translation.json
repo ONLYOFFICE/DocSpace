@@ -24,5 +24,11 @@
   "Authorization": "Authorization",
   "Or": "OR",
   "Register": "Register",
-  "LoginTitle": "Sign in to your ONLYOFFICE cloud office"
+  "LoginTitle": "Sign in to your ONLYOFFICE cloud office",
+  "TooltipPasswordTitle": "Password must contain:",
+  "TooltipPasswordLength": "-30 characters",
+  "TooltipPasswordDigits": "digits",
+  "TooltipPasswordCapital": "capital letters",
+  "TooltipPasswordSpecial": "special characters (!@#$%^&*)", 
+  "LoginRegistrationBtn": "Register"
 }

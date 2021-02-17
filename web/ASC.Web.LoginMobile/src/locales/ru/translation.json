@@ -24,5 +24,11 @@
   "Authorization": "Авторизация",
   "Or": "ИЛИ",
   "Register": "Регистрация",
-  "LoginTitle": "Войдите в облачный офис ONLYOFFICE"
+  "LoginTitle": "Войдите в облачный офис ONLYOFFICE",
+  "TooltipPasswordTitle": "Пароль должен содержать:",
+  "TooltipPasswordLength": "-30 символов",
+  "TooltipPasswordDigits": "цыфры",
+  "TooltipPasswordCapital": "Заглавные буквы",
+  "TooltipPasswordSpecial": "Специальные символы (!@#$%^&*)",
+  "LoginRegistrationBtn": "Регистрация"
 }

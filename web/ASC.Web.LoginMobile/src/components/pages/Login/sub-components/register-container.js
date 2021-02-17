@@ -11,7 +11,7 @@ import { sendRegisterRequest } from "@appserver/common/src/api/settings";
 import { I18nextProvider, withTranslation } from "react-i18next";
 import { getLanguage } from "@appserver/common/src/store/auth/selectors";
 import { connect } from "react-redux";
-import i18n from "../i18n";
+import i18n from "../../../../i18n";
 
 const StyledRegister = styled(Box)`
   display: flex;
