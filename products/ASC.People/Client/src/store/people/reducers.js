@@ -42,9 +42,11 @@ const peopleReducer = (state = initialState, action) => {
         groups: action.groups,
       });
     case SET_USERS:
-      return Object.assign({}, state, {
-        users: state.users.concat(action.users),
-      });
+      if (state.users.length + action.users.length <= state.filter.total)
+        return Object.assign({}, state, {
+          users: state.users.concat(action.users),
+        });
+      else return state;
     case SET_USER:
       return Object.assign({}, state, {
         users: state.users.map((user) =>
