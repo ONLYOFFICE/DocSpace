@@ -19,7 +19,7 @@ import { api } from "asc-web-common";
 const { Filter } = api;
 
 const initialState = {
-  users: null,
+  users: [],
   groups: [],
   selection: [],
   selected: "none",
@@ -43,7 +43,7 @@ const peopleReducer = (state = initialState, action) => {
       });
     case SET_USERS:
       return Object.assign({}, state, {
-        users: action.users,
+        users: state.users.concat(action.users),
       });
     case SET_USER:
       return Object.assign({}, state, {
