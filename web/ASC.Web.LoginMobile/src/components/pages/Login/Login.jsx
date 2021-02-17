@@ -1,27 +1,21 @@
 import React, { Component, useEffect } from "react";
-import { connect } from "react-redux";
 import styled, { css } from "styled-components";
 import { withTranslation } from "react-i18next";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 
-import { PageLayout, store, api, utils } from "ASC.Web.Common";
-import { checkPwd } from "ASC.Web.Common/desktop";
+import {  store, api,  } from "ASC.Web.Common";
 import { Text, toastr } from "ASC.Web.Components";
 
 import i18n from "../../../i18n";
 import ForgotPasswordModalDialog from "./sub-components/forgot-password-modal-dialog";
-import Register from "./sub-components/register-container";
 import RegisterButton from "./sub-components/register-button";
 import Header from "./sub-components/header-login-mobile";
 import LoginForm from "./sub-components/login-form";
 
-import * as fakeApi from "../../../api/fakeApi";
-
 const { login, setIsLoaded, reloadPortalSettings } = store.auth.actions;
 const { getLanguage, isDesktopClient } = store.auth.selectors;
 const { sendInstructionsToChangePassword } = api.people;
-const { createPasswordHash, tryRedirectTo } = utils;
 
 const LoginContainer = styled.div`
   display: grid;
@@ -53,12 +47,8 @@ class Form extends Component {
     super(props);
 
     this.state = {
-      identifierValid: true,
-      identifier: "",
       isLoading: false,
       isDisabled: false,
-      passwordValid: true,
-      password: "",
       isChecked: false,
       openDialog: false,
       email: "",
@@ -67,18 +57,6 @@ class Form extends Component {
       socialButtons: [],
     };
   }
-
-  onChangeLogin = (event) => {
-    this.setState({ identifier: event.target.value });
-    !this.state.identifierValid && this.setState({ identifierValid: true });
-    this.state.errorText && this.setState({ errorText: "" });
-  };
-
-  onChangePassword = (event) => {
-    this.setState({ password: event.target.value });
-    !this.state.passwordValid && this.setState({ passwordValid: true });
-    this.state.errorText && this.setState({ errorText: "" });
-  };
 
   onChangeEmail = (event) => {
     this.setState({ email: event.target.value, emailError: false });
@@ -92,14 +70,6 @@ class Form extends Component {
       isDisabled: true,
       email: this.state.identifier,
     });
-  };
-
-  onKeyPress = (event) => {
-    if (event.key === "Enter") {
-      !this.state.isDisabled
-        ? this.onSubmit()
-        : this.onSendPasswordInstructions();
-    }
   };
 
   onSendPasswordInstructions = () => {
@@ -126,96 +96,20 @@ class Form extends Component {
     });
   };
 
-  onSubmit = () => {
-    const { errorText, identifier, password } = this.state;
-    const {
-      login,
-      setIsLoaded,
-      hashSettings,
-      isDesktop,
-      defaultPage,
-    } = this.props;
-
-    errorText && this.setState({ errorText: "" });
-    let hasError = false;
-
-    const userName = identifier.trim();
-
-    if (!userName) {
-      hasError = true;
-      this.setState({ identifierValid: !hasError });
-    }
-
-    const pass = password.trim();
-
-    if (!pass) {
-      hasError = true;
-      this.setState({ passwordValid: !hasError });
-    }
-
-    if (hasError) return false;
-
-    this.setState({ isLoading: true });
-    const hash = createPasswordHash(pass, fakeApi.fakeHashSettings);
-
-    isDesktop && checkPwd();
-
-    fakeApi
-      .login(userName, hash)
-      .then(() => {
-        if (!tryRedirectTo(defaultPage)) {
-          setIsLoaded(true);
-        }
-      })
-      .catch((error) => {
-        this.setState({
-          errorText: error,
-          identifierValid: !error,
-          passwordValid: !error,
-          isLoading: false,
-        });
-      });
-  };
-
-  componentDidMount() {
-    const {
-      match,
-      t,
-      hashSettings, // eslint-disable-line react/prop-types
-      reloadPortalSettings, // eslint-disable-line react/prop-types
-      organizationName,
-    } = this.props;
-    //const { error /*confirmedEmail*/ } = match.params;
-
-    document.title = `${t("Authorization")} – ${organizationName}`; //TODO: implement the setDocumentTitle() utility in ASC.Web.Common
-
-    //error && this.setState({ errorText: error });
-    // confirmedEmail && this.setState({ identifier: confirmedEmail });
-    window.addEventListener("keyup", this.onKeyPress);
-
-    if (!fakeApi.fakeHashSettings) {
-      reloadPortalSettings();
-    }
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener("keyup", this.onKeyPress);
+  onClickRegistration = () => {
+    const { history } = this.props;
+    history.push('/registration')
   }
 
   render() {
-    const { match, t } = this.props;
+    const { t } = this.props;
 
     const {
-      identifierValid,
-      identifier,
       isLoading,
-      passwordValid,
-      password,
       isChecked,
       openDialog,
       email,
       emailError,
-      errorText,
       socialButtons,
     } = this.state;
     //const { confirmedEmail } = match.params;
@@ -238,20 +132,11 @@ class Form extends Component {
           <LoginForm
             className="auth-form-container"
             t={t}
-            identifierValid={identifierValid}
-            identifier={identifier}
-            passwordValid={passwordValid}
-            password={password}
             isChecked={isChecked}
-            errorText={errorText}
             socialButtons={socialButtons}
             isLoading={isLoading}
-            onChangeLogin={this.onChangeLogin}
-            onKeyPress={this.onKeyPress}
-            onChangePassword={this.onChangePassword}
             onChangeCheckbox={this.onChangeCheckbox}
             onClickForgot={this.onClickForgot}
-            onSubmit={this.onSubmit}
           />
 
           {openDialog && (
@@ -266,7 +151,7 @@ class Form extends Component {
               t={t}
             />
           )}
-          <RegisterButton title={t("LoginRegistrationBtn")} />
+          <RegisterButton title={t("LoginRegistrationBtn")} onClick={this.onClickRegistration}/>
         </LoginContainer>
       </>
     );
@@ -295,12 +180,6 @@ Form.defaultProps = {
 };
 
 const FormWrapper = withTranslation()(Form);
-
-// const LoginForm = (props) => <FormWrapper i18n={i18n} {...props} />;
-
-// export default LoginForm;
-
-//const RegisterWrapper = withTranslation()(Register);
 
 const Login = (props) => {
   const { language, enabledJoin, isDesktop } = props;
@@ -346,7 +225,7 @@ function mapStateToProps(state) {
   };
 }
 
-export default Login; //connect(mapStateToProps, {
+export default withRouter(Login); //connect(mapStateToProps, {
 //login,
 //setIsLoaded,
 //reloadPortalSettings,

@@ -19,15 +19,14 @@ const StyledRegisterButton = styled(Box)`
   }
 `;
 
-const RegisterButton = ({ title }) => {
+const RegisterButton = ({ title, onClick }) => {
   return (
     <StyledRegisterButton>
-      <Link className="link-registration" fontSize="13px">
+      <Link className="link-registration" fontSize="13px" onClick={onClick}>
         {title}
       </Link>
     </StyledRegisterButton>
   );
 };
-
 
 export default RegisterButton;

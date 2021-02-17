@@ -4,9 +4,9 @@ import { FieldContainer, TextInput } from "ASC.Web.Components";
 
 const EmailField = ({
   t,
-  identifierValid,
+  userNameValid,
   errorText,
-  identifier,
+  userName,
   isLoading,
   onChangeLogin,
   onKeyPress,
@@ -15,14 +15,14 @@ const EmailField = ({
     <FieldContainer
       isVertical={true}
       labelVisible={false}
-      hasError={!identifierValid}
+      hasError={!userNameValid}
       errorMessage={errorText ? errorText : t("RequiredFieldMessage")} //TODO: Add wrong login server error
     >
       <TextInput
         id="login"
         name="login"
-        hasError={!identifierValid}
-        value={identifier}
+        hasError={!userNameValid}
+        value={userName}
         placeholder={t("RegistrationEmailWatermark")}
         size="large"
         scale={true}

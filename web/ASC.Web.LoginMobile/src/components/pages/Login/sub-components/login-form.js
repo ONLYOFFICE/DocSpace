@@ -1,14 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 
-import {
-  Checkbox,
-  Button,
-  Link,
-  Text,
-} from "ASC.Web.Components";
+import { Checkbox, Button, Link, Text } from "ASC.Web.Components";
+import { checkPwd, utils } from "ASC.Web.Common";
 
 import { PasswordField, EmailField } from "../../../fields";
+import { fakeApi } from "LoginMobileApi";
+
+const { createPasswordHash, tryRedirectTo } = utils;
 
 const StyledLoginForm = styled("form")`
   width: 100%;
@@ -57,30 +56,80 @@ const StyledLoginForm = styled("form")`
 
 const LoginForm = ({
   t,
-  identifierValid,
-  identifier,
-  passwordValid,
-  password,
   isChecked,
-  errorText,
   socialButtons,
-  isLoading,
-  onChangeLogin,
   onKeyPress,
-  onChangePassword,
   onChangeCheckbox,
   onClickForgot,
-  onSubmit,
 }) => {
+  const [errorText, setErrorText] = useState("");
+  const [userName, setUserName] = useState("");
+  const [userNameValid, setUserNameValid] = useState(true);
+  const [password, setPassword] = useState("");
+  const [passwordValid, setPasswordValid] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const onSubmitHandler = () => {
+    errorText && setErrorText("");
+    let hasError = false;
+
+    const clearUserName = userName.trim();
+
+    if (!clearUserName) {
+      hasError = true;
+      setUserNameValid(!hasError);
+    }
+
+    const pass = password.trim();
+
+    if (!pass) {
+      hasError = true;
+      setPasswordValid(!hasError);
+    }
+
+    if (hasError) return false;
+
+    setIsLoading(true);
+    const hash = createPasswordHash(pass, fakeApi.fakeHashSettings);
+
+    // checkPwd(); //?
+
+    fakeApi
+      .login(clearUserName, hash)
+      .then(() => {
+        tryRedirectTo("/portal-selection");
+      })
+      .catch((err) => {
+        setErrorText(err);
+        setPasswordValid(false);
+        setUserNameValid(false);
+      })
+      .finally(setIsLoading(false));
+  };
+
+  const onChangeLogin = (e) => {
+    setUserName(e.target.value);
+    !userNameValid && setUserNameValid(true);
+    errorText && setErrorText("");
+  };
+
+  const onChangePassword = (e) => {
+    setPassword(e.target.value);
+    !passwordValid && setPasswordValid(true);
+    errorText && setErrorText("");
+  };
+
   return (
     <StyledLoginForm>
-      <EmailField t={t}
-        identifierValid={identifierValid}
+      <EmailField
+        t={t}
+        userNameValid={userNameValid}
         errorText={errorText}
-        identifier={identifier}
+        userName={userName}
         isLoading={isLoading}
         onChangeLogin={onChangeLogin}
-        onKeyPress={onKeyPress}/>
+        onKeyPress={onKeyPress}
+      />
       <PasswordField
         t={t}
         passwordValid={passwordValid}
@@ -119,7 +168,7 @@ const LoginForm = ({
         tabIndex={1}
         isDisabled={isLoading}
         isLoading={isLoading}
-        onClick={onSubmit}
+        onClick={onSubmitHandler}
       />
 
       {socialButtons.length ? (

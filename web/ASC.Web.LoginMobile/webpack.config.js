@@ -33,6 +33,10 @@ module.exports = {
         __dirname,
         "../../packages/asc-web-common/src"
       ),
+      "LoginMobileApi": path.resolve(
+        __dirname,
+        './src/api'
+      )
     },
   },
 
