@@ -1624,21 +1624,6 @@ class SectionBodyContent extends React.Component {
     setSelection([item]);
   };
 
-  onCreateAddTempItem = (items, folderId, fileAction) => {
-    if (items.length && items[0].id === -1) return; //TODO: if change media collection from state remove this;
-    const icon = fileAction.extension
-      ? this.props.getFileIcon(`.${fileAction.extension}`, 24)
-      : this.props.getFolderIcon(null, 24);
-
-    items.unshift({
-      id: -1,
-      title: "",
-      parentId: folderId,
-      fileExst: fileAction.extension,
-      icon,
-    });
-  };
-
   getSharedButton = (shared) => {
     const color = shared ? "#657077" : "#a3a9ae";
     return (
@@ -1712,7 +1697,6 @@ class SectionBodyContent extends React.Component {
     const {
       viewer,
       parentId,
-      selectedFolderId,
       culture,
       selection,
       fileAction,
@@ -1759,10 +1743,6 @@ class SectionBodyContent extends React.Component {
     }
 
     const items = filesList;
-
-    if (fileAction && fileAction.type === FileAction.Create) {
-      this.onCreateAddTempItem(items, selectedFolderId, fileAction);
-    }
 
     var playlist = [];
     let id = 0;

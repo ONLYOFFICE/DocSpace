@@ -3,12 +3,7 @@ import find from "lodash/find";
 import result from "lodash/result";
 import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
-import {
-  constants,
-  FilterInput,
-  Loaders,
-  utils,
-} from "asc-web-common";
+import { constants, FilterInput, Loaders, utils } from "asc-web-common";
 //import equal from "fast-deep-equal/react";
 import { isMobileOnly } from "react-device-detect";
 import { inject, observer } from "mobx-react";
@@ -312,7 +307,6 @@ class SectionFilterContent extends React.Component {
     );
   }
 }
-
 
 export default inject(({ auth, initFilesStore, filesStore }) => {
   const { setIsLoading, setViewAs, viewAs } = initFilesStore;

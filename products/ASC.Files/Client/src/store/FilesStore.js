@@ -1,14 +1,28 @@
 import { makeObservable, action, observable, computed } from "mobx";
-import { api, constants, store } from "asc-web-common";
+import { api, constants, store, history } from "asc-web-common";
 import axios from "axios";
+import queryString from "query-string";
 import FileActionStore from "./FileActionStore";
 import SelectedFolderStore from "./SelectedFolderStore";
 import formatsStore from "./FormatsStore";
 import treeFoldersStore from "./TreeFoldersStore";
-import { createTreeFolders, loopTreeFolders } from "../helpers/files-helpers";
+import { createTreeFolders } from "../helpers/files-helpers";
+import {
+  AUTHOR_TYPE,
+  FILTER_TYPE,
+  PAGE_COUNT,
+  PAGE,
+  SEARCH_TYPE,
+  SEARCH,
+  SORT_BY,
+  SORT_ORDER,
+  FOLDER,
+  PREVIEW,
+} from "../helpers/constants";
+import config from "../../package.json";
 
 const { FilesFilter } = api;
-const { FolderType, FilterType, FileType } = constants;
+const { FolderType, FilterType, FileType, FileAction } = constants;
 const { authStore } = store;
 const { settingsStore, userStore, isAdmin } = authStore;
 const { isEncryptionSupport, isDesktopClient } = settingsStore;
@@ -18,7 +32,12 @@ const {
   mediaViewersFormatsStore,
   docserviceStore,
 } = formatsStore;
-const { isSpreadsheet, isPresentation } = iconFormatsStore;
+const {
+  isSpreadsheet,
+  isPresentation,
+  getFileIcon,
+  getFolderIcon,
+} = iconFormatsStore;
 const { getIcon } = iconFormatsStore;
 const {
   canWebEdit,
@@ -159,7 +178,8 @@ class FilesStore {
 
   setSelected = (selected) => {
     this.selected = selected;
-    this.selection = this.getFilesBySelected(this.folders, selected);
+    const files = this.files.concat(this.folders);
+    this.selection = this.getFilesBySelected(files, selected);
   };
 
   setSelection = (selection) => {
@@ -168,7 +188,7 @@ class FilesStore {
 
   //TODO: FILTER
   setFilesFilter = (filter) => {
-    //setFilterUrl(filter);
+    this.setFilterUrl(filter);
     this.filter = filter;
   };
 
@@ -184,19 +204,19 @@ class FilesStore {
     return api.files.setFileOwner(folderIds, fileIds, ownerId);
   };
 
-  /*setFilterUrl = (filter) => {
+  setFilterUrl = (filter) => {
     const defaultFilter = FilesFilter.getDefault();
     const params = [];
     const URLParams = queryString.parse(window.location.href);
-  
+
     if (filter.filterType) {
       params.push(`${FILTER_TYPE}=${filter.filterType}`);
     }
-  
+
     if (filter.withSubfolders === "false") {
       params.push(`${SEARCH_TYPE}=${filter.withSubfolders}`);
     }
-  
+
     if (filter.search) {
       params.push(`${SEARCH}=${filter.search.trim()}`);
     }
@@ -206,21 +226,21 @@ class FilesStore {
     if (filter.folder) {
       params.push(`${FOLDER}=${filter.folder}`);
     }
-  
+
     if (filter.pageCount !== defaultFilter.pageCount) {
       params.push(`${PAGE_COUNT}=${filter.pageCount}`);
     }
-  
+
     if (URLParams.preview) {
       params.push(`${PREVIEW}=${URLParams.preview}`);
     }
-  
+
     params.push(`${PAGE}=${filter.page + 1}`);
     params.push(`${SORT_BY}=${filter.sortBy}`);
     params.push(`${SORT_ORDER}=${filter.sortOrder}`);
-  
+
     history.push(`${config.homepage}/filter?${params.join("&")}`);
-  }*/
+  };
 
   fetchFiles = (folderId, filter, clearFilter = true) => {
     const filterData = filter ? filter.clone() : FilesFilter.getDefault();
@@ -558,6 +578,21 @@ class FilesStore {
     }
   }
 
+  onCreateAddTempItem = (items) => {
+    if (items.length && items[0].id === -1) return; //TODO: if change media collection from state remove this;
+    const icon = this.fileActionStore.extension
+      ? getFileIcon(`.${this.fileActionStore.extension}`, 24)
+      : getFolderIcon(null, 24);
+
+    items.unshift({
+      id: -1,
+      title: "",
+      parentId: this.selectedFolderStore.id,
+      fileExst: this.fileActionStore.extension,
+      icon,
+    });
+  };
+
   get filesList() {
     const items =
       this.folders && this.files
@@ -568,7 +603,7 @@ class FilesStore {
         ? this.files
         : [];
 
-    return items.map((item) => {
+    const newItem = items.map((item) => {
       const {
         access,
         comment,
@@ -666,6 +701,12 @@ class FilesStore {
         canShare,
       };
     });
+
+    if (this.fileActionStore.type === FileAction.Create) {
+      this.onCreateAddTempItem(newItem);
+    }
+
+    return newItem;
   }
 
   get sortedFiles() {
