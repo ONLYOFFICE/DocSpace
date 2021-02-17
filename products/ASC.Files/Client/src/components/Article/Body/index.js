@@ -127,24 +127,6 @@ class ArticleBodyContent extends React.Component {
   }
 }
 
-// function mapStateToProps(state) {
-//   return {
-//     treeFolders: getTreeFolders(state),
-//     filter: getFilter(state),
-//     selectedTreeNode: getSelectedTreeNode(state),
-//     selectedFolderTitle: getSelectedFolderTitle(state),
-//   };
-// }
-
-// const mapDispatchToProps = (dispatch) => {
-//   return {
-//     setIsLoading: (isLoading) => dispatch(setIsLoading(isLoading)),
-//     setSelectedNode: (node) => dispatch(setSelectedNode(node)),
-//     fetchFiles: (folderId, filter) => dispatch(fetchFiles(folderId, filter)),
-//   };
-// };
-
-//export default connect(mapStateToProps, mapDispatchToProps)(ArticleBodyContent);
 export default inject(({ initFilesStore, filesStore, treeFoldersStore }) => {
   const { setIsLoading } = initFilesStore;
   const { fetchFiles, selectedFolderStore, filter } = filesStore;
